@@ -1,6 +1,7 @@
 import { observedSpawnSync as spawnSync } from "./gate-deadlines.mjs";
 import { withWriterRegistration } from "./writer-teardown.mjs";
 import { createHash, randomBytes } from "node:crypto";
+import { AsyncLocalStorage } from "node:async_hooks";
 import {
   appendFileSync,
   existsSync,
@@ -247,6 +248,7 @@ interface HookConfig {
     readonly skeletonVersion: string;
     readonly boundaryContract: "feedback-v1";
     readonly snapshot?: string;
+    readonly targetId?: string;
     readonly files?: readonly {
       readonly path: string;
       readonly hash: string;
@@ -327,8 +329,16 @@ const digest = (text: string) =>
 const physicalLines = (text: string) =>
   text.match(/[^\n]*\n|[^\n]+$/g)?.length ?? 0;
 const lineParts = (text: string) => text.match(/[^\n]*\n|[^\n]+$/g) ?? [];
-export const harnessStateDirectory = (root: string) =>
-  join(root, "docs/control/local/harness");
+const targetState = new AsyncLocalStorage<{
+  root: string;
+  directory: string;
+}>();
+export const harnessStateDirectory = (root: string) => {
+  const target = targetState.getStore();
+  return target?.root === root
+    ? target.directory
+    : join(root, "docs/control/local/harness");
+};
 const sessionKey = (input: HarnessInput) =>
   digest(input.session_id ?? "unknown");
 const statePath = (root: string, input: HarnessInput) =>
@@ -3114,4 +3124,157 @@ export function releaseHarnessWriterByOperator(root: string, force = false) {
     return { ...view, released: true };
   }
   throw new Error("Writer reservation release exceeded its retry budget");
+}
+
+/** The target's runtime is in the launchpad snapshot; only Git facts use target cwd. */
+export async function runTargetHarnessHook(
+  config: HookConfig,
+  boundary: typeof feedbackBoundary,
+): Promise<void> {
+  const deny = (reason: string) => protocolRefusal("PreToolUse", reason);
+  let response: Record<string, unknown>;
+  try {
+    const decoded = decodeHarnessInput(
+      JSON.parse(await streamText(process.stdin)),
+      "PreToolUse",
+    );
+    if (!decoded.ok) throw new Error("target hook input unavailable");
+    const input = decoded.value;
+    const root = harnessRoot(input.cwd);
+    if (digest(root) !== config.runtime.targetId)
+      throw new Error("target worktree binding differs");
+    const snapshot = realpathSync(
+      fileURLToPath(new URL("../../../../", import.meta.url)),
+    );
+    const launchpad = realpathSync(join(snapshot, "../../.."));
+    if (
+      !config.runtime.snapshot ||
+      realpathSync(join(launchpad, config.runtime.snapshot)) !== snapshot
+    )
+      throw new Error("target immutable runtime binding differs");
+    assertHarnessRuntime(config, launchpad);
+    const directory = join(
+      launchpad,
+      "docs/control/local/harness/targets",
+      digest(root),
+    );
+    // Refuse symlinked local state rather than following a target-controlled route.
+    let parent = launchpad;
+    for (const part of relative(launchpad, directory).split(sep)) {
+      parent = join(parent, part);
+      const info = lstatSync(parent, { throwIfNoEntry: false });
+      if (info && (!info.isDirectory() || info.isSymbolicLink()))
+        throw new Error("target state directory unavailable");
+    }
+    response = await targetState.run({ root, directory }, async () => {
+      let result: Record<string, unknown>;
+      try {
+        if (config.kind === "permission") {
+          if (!config.envelope)
+            throw new Error("compiled target authority missing");
+          const effect = permissionEffect(input, root, config.tools);
+          if (
+            !harnessAuthorization(config.envelope, effect, Date.now())
+              .authorized
+          )
+            throw new Error(`compiled authority does not permit ${effect}`);
+          const tool = config.tools?.[input.tool_name ?? ""];
+          const args = input.tool_input ?? {};
+          const protect = (candidate: string) => {
+            const path = contained(root, candidate);
+            const local = relative(root, path).toLowerCase();
+            const protectedPaths = [
+              ".git",
+              "claude.local.md",
+              ".dotln",
+              ".claude/settings.json",
+              ".claude/target-worker-manifest.json",
+              ".claude/hooks/permissions.mjs",
+              ".claude/hooks/concurrent-work-requires-worktrees.mjs",
+              ".claude/hooks/no-attribution.mjs",
+            ];
+            if (
+              protectedPaths.some(
+                (entry) =>
+                  local === entry ||
+                  local.startsWith(`${entry}/`) ||
+                  entry.startsWith(`${local}/`),
+              )
+            )
+              throw new Error(
+                "target bundle or host scratch is outside the writable surface",
+              );
+            let destination = root;
+            for (const part of relative(root, path).split(sep)) {
+              destination = join(destination, part);
+              const info = lstatSync(destination, { throwIfNoEntry: false });
+              if (
+                info &&
+                (info.isSymbolicLink() ||
+                  (!info.isDirectory() && (!info.isFile() || info.nlink !== 1)))
+              )
+                throw new Error(
+                  "target write requires ordinary unlinked file paths",
+                );
+            }
+          };
+          if (tool === "write") {
+            const path = args.file_path ?? args.notebook_path;
+            if (typeof path !== "string")
+              throw new Error("target write path unavailable");
+            protect(path);
+          } else if (tool === "shell") {
+            const cwd = args.workdir ?? args.cwd ?? root;
+            if (
+              typeof cwd !== "string" ||
+              realpathSync(resolve(root, cwd)) !== root
+            )
+              throw new Error("target shell requires worktree-root cwd");
+            const command = args.command ?? args.cmd;
+            const paths =
+              typeof command === "string" ? shellWritePaths(command) : null;
+            if (paths === null)
+              throw new Error(
+                "target shell destinations unavailable; host must run opaque commands",
+              );
+            for (const path of paths) protect(path);
+          } else if (tool === "spawn" || tool === "interaction") {
+            throw new Error(
+              "target delegation or interaction has no bounded worker adapter",
+            );
+          }
+          result = {};
+        } else if (config.kind === "feedback" && config.policy) {
+          const facts = harnessFeedbackFacts(
+            config.policy,
+            input,
+            root,
+            initialSession(),
+          );
+          for (const fact of facts) boundary(config.policy, fact, () => {});
+          result = {};
+        } else throw new Error("target guard configuration unavailable");
+      } catch (error) {
+        const reason =
+          error instanceof FeedbackRefused
+            ? "compiled feedback refused target effect"
+            : error instanceof HarnessCommandRefused
+              ? "target effect classification unavailable"
+              : error instanceof Error
+                ? error.message
+                : "target guard unavailable";
+        result = deny(`DOTLN_TARGET_REFUSED: ${reason}`);
+      }
+      record(root, input, {
+        kind: config.kind,
+        allowed: !result.hookSpecificOutput,
+      });
+      return result;
+    });
+  } catch {
+    response = deny(
+      "DOTLN_TARGET_RUNTIME_REFUSED: pinned launchpad runtime or target facts unavailable",
+    );
+  }
+  process.stdout.write(JSON.stringify(response));
 }

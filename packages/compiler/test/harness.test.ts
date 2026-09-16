@@ -301,3 +301,95 @@ test("WO-132 both harness roles receive identical duties and the shared instruct
     assert.doesNotMatch(file.contents, /permissionDecision: "deny"/);
   }
 });
+
+test("WO-049 target lowering is explicit, omits importRoot from metadata and emits PreToolUse only", () => {
+  const targetProgram: HarnessProgram = {
+    ...program,
+    facets: [
+      {
+        facetId: "fixture.permissions",
+        kind: "permission-guard",
+        matchers: [
+          {
+            effect: program.loadout.authorityEnvelope.deniedEffects[0]!,
+            deny: "Bash(ssh *)",
+          },
+        ],
+      },
+    ],
+  };
+  const policy = compileFeedbackUnits([
+    unit("writer-isolation"),
+    unit("attribution"),
+  ]);
+  const unavailable = {
+    available: false,
+    evidence: "docs/probe.md",
+    reason: "Target omits lifecycle and skills",
+  };
+  const target: HarnessProfile = {
+    ...profile,
+    kind: "target-worker-v1",
+    profileId: "target-worker-fixture",
+    instruction: { ...available, path: "CLAUDE.local.md" },
+    skills: { ...unavailable, root: ".claude/skills" },
+    events: {
+      PreToolUse: available,
+      PostToolUse: unavailable,
+      Stop: unavailable,
+      UserPromptSubmit: unavailable,
+    },
+    runtime: {
+      ...profile.runtime,
+      snapshot: ".runtime/harness/0123456789abcdef",
+      importRoot: "/fixture launchpad/#unicode-é",
+      targetId: "a".repeat(64),
+    },
+  };
+  const bundle = lower(targetProgram, policy, target);
+  assert.equal(verifyHarnessBundle(bundle), true);
+  assert.deepEqual(bundle, lower(targetProgram, policy, target));
+  assert.ok(!JSON.stringify(bundle.manifest).includes("importRoot"));
+  assert.ok(!JSON.stringify(bundle.manifest).includes("/fixture launchpad"));
+  const settings = JSON.parse(
+    bundle.files.find((file) => file.path === ".claude/settings.json")!
+      .contents,
+  );
+  assert.deepEqual(Object.keys(settings.hooks), ["PreToolUse"]);
+  assert.ok(
+    !bundle.files.some((file) => /SKILL.md|commit-msg.mjs/.test(file.path)),
+  );
+  for (const file of bundle.files.filter((file) =>
+    file.path.endsWith(".mjs"),
+  )) {
+    assert.match(
+      file.contents,
+      /new URL\("file:\/\/\/fixture%20launchpad\/%23unicode-%C3%A9/,
+    );
+    assert.match(file.contents, /permissionDecision: "deny"/);
+    assert.ok(!file.contents.includes("operatorControl"));
+    assert.ok(!file.contents.includes('"importRoot"'));
+  }
+  for (const importRoot of [
+    "relative",
+    "/fixture/../launchpad",
+    "/fixture\nlaunchpad",
+    "/fixture/back\\slash",
+  ])
+    assert.throws(
+      () =>
+        lower(targetProgram, policy, {
+          ...target,
+          runtime: { ...target.runtime, importRoot },
+        }),
+      /absolute target import root/,
+    );
+  assert.throws(
+    () =>
+      lower(targetProgram, policy, {
+        ...target,
+        skills: { ...target.skills, available: true },
+      }),
+    /PreToolUse only/,
+  );
+});

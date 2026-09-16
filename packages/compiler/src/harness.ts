@@ -40,6 +40,7 @@ export interface HarnessObservation {
   readonly reason?: string;
 }
 export interface HarnessProfile {
+  readonly kind?: "contributor-v1" | "target-worker-v1";
   readonly profileId: string;
   readonly harness: "claude-code" | "codex-cli";
   readonly observedVersion: string;
@@ -62,6 +63,9 @@ export interface HarnessProfile {
     readonly skeletonVersion: string;
     readonly boundaryContract: "feedback-v1";
     readonly snapshot?: string;
+    /** Emit-time launchpad path; never serialized into a manifest or config. */
+    readonly importRoot?: string;
+    readonly targetId?: string;
     readonly files?: readonly {
       readonly path: string;
       readonly hash: string;
@@ -228,13 +232,47 @@ export function assertHarnessProfile(profile: HarnessProfile): void {
   ensure(
     profile.settings.path === ".claude/settings.json" &&
       profile.instruction.path ===
-        (profile.harness === "claude-code" ? "CLAUDE.md" : "AGENTS.md"),
+        (profile.kind === "target-worker-v1"
+          ? "CLAUDE.local.md"
+          : profile.harness === "claude-code"
+            ? "CLAUDE.md"
+            : "AGENTS.md"),
     "project-only profile surfaces",
   );
   ensure(
     !profile.settings.allow,
     "allow entries have no observed local contract",
   );
+  ensure(
+    profile.kind === undefined ||
+      ["contributor-v1", "target-worker-v1"].includes(profile.kind),
+    "profile kind",
+  );
+  ensure(
+    profile.runtime.importRoot === undefined ||
+      (profile.kind === "target-worker-v1" &&
+        profile.runtime.importRoot.startsWith("/") &&
+        !profile.runtime.importRoot.includes("\\") &&
+        !profile.runtime.importRoot
+          .split("/")
+          .some((part) => part === ".." || part === ".") &&
+        !/[\u0000-\u001f\u007f]/.test(profile.runtime.importRoot)),
+    "absolute target import root",
+  );
+  if (profile.kind === "target-worker-v1") {
+    ensure(
+      Boolean(profile.runtime.importRoot && profile.runtime.snapshot) &&
+        /^[a-f0-9]{64}$/.test(profile.runtime.targetId ?? ""),
+      "target runtime binding",
+    );
+    ensure(
+      !profile.skills.available &&
+        !profile.events.PostToolUse.available &&
+        !profile.events.Stop.available &&
+        !profile.events.UserPromptSubmit.available,
+      "target profile has PreToolUse only and no skills",
+    );
+  }
   ensure(
     !events.some((event) => profile.events[event].available) ||
       (profile.harness === "claude-code" &&
@@ -372,6 +410,15 @@ export function lowerToHarness(
     semanticHash: semantic,
   });
   const targetHash = hash(canonicalStringify(program));
+  if (profile.kind === "target-worker-v1")
+    return lowerTargetWorker(
+      program,
+      feedback,
+      envelope,
+      profile,
+      semantic,
+      targetHash,
+    );
   const files: HarnessFile[] = [];
   const residue: HarnessResidue[] = [];
   for (const component of program.loadout.componentManifest) {
@@ -800,4 +847,155 @@ export function mergeHarnessFragments(
     ),
   ];
   return `${HARNESS_START}\nCapabilities and residue: .claude/harness-manifest.json; planning: refute[ full] selects dotln-refuter.\n${HARNESS_BOUNDARIES}\n${lines.join("\n")}${lines.length ? "\n" : ""}${HARNESS_END}\n`;
+}
+
+/** Reduced worker projection. Contributor generation above remains independent. */
+function lowerTargetWorker(
+  program: HarnessProgram,
+  feedback: CompiledFeedback,
+  envelope: AuthorityEnvelope,
+  profile: HarnessProfile,
+  semantic: string,
+  targetHash: string,
+): HarnessBundle {
+  const { importRoot, ...runtime } = profile.runtime;
+  const publicProfile = { ...profile, runtime };
+  const units = feedback.units.filter(
+    (unit) =>
+      ["writer-isolation", "attribution"].includes(unit.trigger) &&
+      unit.mechanism.kind !== "prose",
+  );
+  const permissions = program.facets.filter(
+    (facet): facet is Extract<HarnessFacet, { kind: "permission-guard" }> =>
+      facet.kind === "permission-guard",
+  );
+  ensure(
+    permissions.length > 0 &&
+      units.some((unit) => unit.trigger === "writer-isolation") &&
+      units.some((unit) => unit.trigger === "attribution"),
+    "target guards required",
+  );
+  const names = [
+    ...permissions.map((facet) => facet.facetId),
+    ...units.map((unit) => unit.unitId),
+  ].sort();
+  const origin: HarnessOrigin = {
+    ids: names,
+    loadoutId: program.loadout.loadoutId,
+    semanticHash: semantic,
+  };
+  const files: HarnessFile[] = [];
+  const emit = (path: string, contents: string, rung: number) =>
+    files.push({ path, contents, origin, rung });
+  const importURL = (file: string) =>
+    "file://" +
+    `${importRoot!.replace(/\/$/, "")}/${runtime.snapshot}/${file}`
+      .split("/")
+      .map(encodeURIComponent)
+      .join("/");
+  const hooks: string[] = [];
+  if (profile.events.PreToolUse.available) {
+    const configs = [
+      { name: "permissions", kind: "permission", envelope },
+      ...units.map((unit) => ({
+        name: unit.unitId,
+        kind: "feedback",
+        policy: compileFeedbackUnits([unit]),
+      })),
+    ];
+    for (const { name, ...guard } of configs) {
+      const path = `.claude/hooks/${name}.mjs`;
+      hooks.push(path);
+      const config = {
+        compilerPackageVersion: COMPILER_PACKAGE_VERSION,
+        runtime,
+        event: "PreToolUse",
+        tools: profile.tools,
+        ...guard,
+      };
+      emit(
+        path,
+        `// Origin: ${canonicalStringify(origin)}
+try {
+const { feedbackBoundary } = await import(new URL(${JSON.stringify(importURL("packages/skeleton/dist/src/feedback-boundary.js"))}));
+const { runTargetHarnessHook } = await import(new URL(${JSON.stringify(importURL("packages/skeleton/dist/src/harness-host.js"))}));
+await runTargetHarnessHook(${json(config).trim()}, feedbackBoundary);
+} catch {
+process.stdout.write(JSON.stringify({ hookSpecificOutput: { hookEventName: "PreToolUse", permissionDecision: "deny", permissionDecisionReason: "DOTLN_TARGET_RUNTIME_REFUSED: pinned launchpad runtime unavailable" } }));
+}
+`,
+        2,
+      );
+    }
+  }
+  if (profile.settings.available)
+    emit(
+      profile.settings.path,
+      json({
+        autoMemoryEnabled: false,
+        attribution: { commit: "", pr: "", sessionUrl: false },
+        permissions: {
+          deny: [
+            ...new Set(
+              permissions.flatMap((facet) =>
+                facet.matchers
+                  .filter((matcher) =>
+                    envelope.deniedEffects.includes(matcher.effect),
+                  )
+                  .map((matcher) => matcher.deny),
+              ),
+            ),
+          ].sort(),
+        },
+        hooks: {
+          PreToolUse: [
+            {
+              matcher: ".*",
+              hooks: hooks.map((path) => ({
+                type: "command",
+                command: `node "$CLAUDE_PROJECT_DIR/${path}"`,
+                timeout: 15,
+              })),
+            },
+          ],
+        },
+      }),
+      2,
+    );
+  const instruction = `${HARNESS_START}
+Target worker: perform only the assigned work in this Git worktree. Keep one writer per worktree. Never commit generated local harness files or expose credentials, private identifiers or employer material. Never guess: check evidence before claims and identify unknowns. Do not add AI attribution to commits or pull requests.
+Allowed effects: ${envelope.allowedEffects.join(", ")}.
+Denied effects: ${envelope.deniedEffects.join(", ")}.
+Applied explicit grants: ${(program.loadout.grants ?? []).length}; provenance remains in the launchpad receipt.
+Claude Code uses PreToolUse permission, writer and attribution guards; unavailable runtime refuses the tool. Codex has no observed hook event; its launch profile and host diff checks supply governance. Read this local block explicitly when the harness does not load it automatically. Preserve the local bundle and its exclude entries.
+${HARNESS_END}
+`;
+  emit(profile.instruction.path, instruction, 8);
+  files.sort((a, b) => a.path.localeCompare(b.path, "en"));
+  return {
+    contractVersion: "harness-v1",
+    files,
+    manifest: {
+      contractVersion: "harness-v1",
+      compilerPackageVersion: COMPILER_PACKAGE_VERSION,
+      feedbackPolicyHash: feedback.policyHash,
+      grants: program.loadout.grants ?? [],
+      authorityGrantRegistryHash:
+        program.loadout.trace.authorityGrants?.registryHash ?? null,
+      profile: publicProfile,
+      loadout: {
+        id: program.loadout.loadoutId,
+        semanticHash: semantic,
+        targetHash,
+      },
+      files: files.map(({ path, contents, origin, rung }) => ({
+        path,
+        hash: hash(contents),
+        origin,
+        rung,
+      })),
+      origin,
+    },
+    residue: { items: [], bytes: 0, fragment: instruction },
+  };
 }

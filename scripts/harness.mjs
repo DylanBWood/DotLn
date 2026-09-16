@@ -1,7 +1,13 @@
 #!/usr/bin/env node
 import { mkdirSync, readFileSync, realpathSync } from "node:fs";
 import { resolve } from "node:path";
-import { emitHarness, checkHarness } from "./lib/harness.mjs";
+import {
+  emitHarness,
+  checkHarness,
+  emitTargetHarness,
+  checkTargetHarness,
+  removeTargetHarness,
+} from "./lib/harness.mjs";
 import {
   beginGateRun,
   requestGateStop,
@@ -33,7 +39,7 @@ async function optionalCodexSession(root) {
 }
 
 const usage =
-  "usage: harness emit|check [--loadout contributor] [--profile id] [--out dir] | harness evidence [--stop|--fail] | harness usage <session> | harness read-output <path> [--offset <byte>] [--length <bytes>] | harness writer --show | harness writer --release [--force]";
+  "usage: harness emit|check [--loadout contributor] [--profile id] [--out dir] | harness emit|check|remove --target worktree [--runtime-root launchpad] [--profile target-worker-claude|target-worker-codex] | harness evidence [--stop|--fail] | harness usage <session> | harness read-output <path> [--offset <byte>] [--length <bytes>] | harness writer --show | harness writer --release [--force]";
 try {
   const root = harnessRoot(process.cwd());
   const [action, ...args] = process.argv.slice(2);
@@ -160,30 +166,54 @@ try {
         active.release();
       }
     } else {
-      if (!["emit", "check"].includes(action)) throw new Error(usage);
+      if (!["emit", "check", "remove"].includes(action)) throw new Error(usage);
       const options = {};
       for (let index = 0; index < args.length; index += 2) {
         if (
-          !["--loadout", "--profile", "--out"].includes(args[index]) ||
-          !args[index + 1]
+          ![
+            "--loadout",
+            "--profile",
+            "--out",
+            "--target",
+            "--runtime-root",
+          ].includes(args[index]) ||
+          !args[index + 1] ||
+          options[args[index].slice(2)]
         )
           throw new Error(usage);
         options[args[index].slice(2)] = args[index + 1];
       }
-      const out = resolve(root, options.out ?? ".");
-      if (action === "emit") mkdirSync(out, { recursive: true });
-      options.termsRoot = root;
-      options.instructionFloor = readFileSync(
-        resolve(root, "CLAUDE.md"),
-        "utf8",
-      );
-      const result =
-        action === "emit"
-          ? emitHarness(realpathSync(out), options)
-          : checkHarness(realpathSync(out), options);
-      console.log(
-        `harness ${action}: ${result.files} generated surfaces; local-terms list: ${result.localTerms.status}`,
-      );
+      if (options.target) {
+        if (options.out || options.loadout)
+          throw new Error("target does not accept --out or --loadout");
+        const operation = {
+          emit: emitTargetHarness,
+          check: checkTargetHarness,
+          remove: removeTargetHarness,
+        }[action];
+        const result = operation(resolve(root, options.target), {
+          profile: options.profile,
+          runtimeRoot: resolve(root, options["runtime-root"] ?? "."),
+        });
+        console.log(`harness ${action}: ${result.files} target surfaces`);
+      } else {
+        if (action === "remove" || options["runtime-root"])
+          throw new Error("remove and --runtime-root require --target");
+        const out = resolve(root, options.out ?? ".");
+        if (action === "emit") mkdirSync(out, { recursive: true });
+        options.termsRoot = root;
+        options.instructionFloor = readFileSync(
+          resolve(root, "CLAUDE.md"),
+          "utf8",
+        );
+        const result =
+          action === "emit"
+            ? emitHarness(realpathSync(out), options)
+            : checkHarness(realpathSync(out), options);
+        console.log(
+          `harness ${action}: ${result.files} generated surfaces; local-terms list: ${result.localTerms.status}`,
+        );
+      }
     }
   }
 } catch (error) {

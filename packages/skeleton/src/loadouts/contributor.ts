@@ -632,3 +632,61 @@ export const contributorProfiles: readonly HarnessProfile[] = [
     },
   },
 ];
+
+/** Bounded writing-worker observations; no Contributor lifecycle or skills. */
+export const targetWorkerProfiles: readonly HarnessProfile[] =
+  contributorProfiles.map((profile) => {
+    const evidence = "docs/discovery/writing-worker-smoke-2026-09-14.md";
+    const unavailable = {
+      available: false,
+      evidence: `${evidence}#X-W4`,
+      reason: "No Codex hook event was observed in the bounded exec probe",
+    };
+    const lifecycle =
+      profile.harness === "claude-code"
+        ? {
+            available: false,
+            evidence: `${evidence}#C-W4`,
+            reason:
+              "Observed in Claude print mode; deliberately omitted by the PreToolUse-only target profile",
+          }
+        : unavailable;
+    const skills = {
+      available: false,
+      evidence: "docs/work-orders/WO-049-target-worktree-bundle.md",
+      reason:
+        "Skills deliberately omitted by target profile scope; no unavailability observation claimed",
+    };
+    return {
+      ...profile,
+      kind: "target-worker-v1",
+      profileId:
+        profile.harness === "claude-code"
+          ? "target-worker-claude"
+          : "target-worker-codex",
+      observedVersion:
+        profile.harness === "claude-code" ? "2.1.270" : "0.154.0",
+      events: {
+        PreToolUse:
+          profile.harness === "claude-code"
+            ? { available: true, evidence: `${evidence}#C-W4` }
+            : { ...unavailable, evidence: `${evidence}#X-W3` },
+        PostToolUse: lifecycle,
+        Stop: lifecycle,
+        UserPromptSubmit:
+          profile.harness === "claude-code"
+            ? lifecycle
+            : { ...unavailable, evidence: `${evidence}#X-W10` },
+      },
+      skills: { ...skills, root: profile.skills.root },
+      settings: {
+        ...profile.settings,
+        evidence: `${evidence}#${profile.harness === "claude-code" ? "C-W3" : "X-W3"}`,
+      },
+      instruction: {
+        available: true,
+        path: "CLAUDE.local.md",
+        evidence: `${evidence}#${profile.harness === "claude-code" ? "C-W7" : "X-W7"}`,
+      },
+    };
+  });

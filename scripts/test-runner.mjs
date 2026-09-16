@@ -78,6 +78,7 @@ const machinerySources = {
     "packages/skeleton/src/feedback-boundary.ts",
     "packages/skeleton/src/gate-evidence.mjs",
     "scripts/test-harness.mjs",
+    "scripts/test-target-harness.mjs",
     "scripts/lib/harness.mjs",
     "packages/compiler/src/harness.ts",
     "packages/skeleton/src/harness-host.ts",

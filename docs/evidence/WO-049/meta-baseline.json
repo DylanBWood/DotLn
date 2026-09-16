@@ -1,0 +1,4031 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-16T19:44:40.947Z",
+  "revision": "0eacb54d070134127f36eebd380239d8c806b86a",
+  "orders": [
+    {
+      "workOrder": "WO-050",
+      "phase": "closed",
+      "phases": [
+        {
+          "phase": "implementation",
+          "role": "executor",
+          "elapsedMs": 1869688
+        },
+        {
+          "phase": "verification",
+          "role": "verifier",
+          "elapsedMs": 308930
+        },
+        {
+          "phase": "finalReview",
+          "role": "reviewer",
+          "elapsedMs": 2231517
+        }
+      ],
+      "metrics": {
+        "elapsedMs": 4410135,
+        "attempts": 3,
+        "gateMs": null,
+        "fastGateMs": null,
+        "readObligationCount": null,
+        "readObligationBytes": null,
+        "codeDiffBytes": null,
+        "readAmplification": null,
+        "machineryShare": 0.5760474452596123,
+        "elapsedPerCodeByte": null,
+        "tokens": null,
+        "costUsd": null,
+        "declaredPromptTokens": null,
+        "coldStartBytes": null,
+        "subjectCharacters": null,
+        "gateStepCount": null,
+        "operatorCorrections": 0,
+        "guardRefusals": null,
+        "stopRefusals": null,
+        "reAnnouncements": null,
+        "manualCloseoutSteps": null,
+        "emergencyPasses": null,
+        "bypassTools": null,
+        "adHocScripts": null,
+        "commandsRun": null,
+        "bytesReadIntoContext": null,
+        "stepCount": null,
+        "authorshipSnapshots": null,
+        "authorshipMs": null,
+        "authorshipBytes": null,
+        "authorshipCommands": null,
+        "authorshipMeanMs": null,
+        "authorshipPeakBytes": null,
+        "hookRuns": null,
+        "hookMs": null,
+        "hookMeanMs": null,
+        "hookPeakMs": null,
+        "prBodyBytes": 9684
+      },
+      "dispatches": [
+        {
+          "role": "executor",
+          "wallClockMs": 1869688,
+          "attempts": 1,
+          "bytesReadIntoContext": null,
+          "commandsRun": null,
+          "stepCount": null,
+          "authorshipSnapshots": null,
+          "authorshipMs": null,
+          "authorshipBytes": null,
+          "authorshipCommands": null,
+          "authorshipMeanMs": null,
+          "authorshipPeakBytes": null,
+          "hookRuns": null,
+          "hookMs": null,
+          "hookMeanMs": null,
+          "hookPeakMs": null,
+          "observedTokens": null,
+          "observedCostUsd": null,
+          "declaredPromptTokens": null,
+          "delta": {
+            "wallClockMs": null,
+            "attempts": null,
+            "bytesReadIntoContext": null,
+            "commandsRun": null,
+            "stepCount": null,
+            "authorshipSnapshots": null,
+            "authorshipMs": null,
+            "authorshipBytes": null,
+            "authorshipCommands": null,
+            "authorshipMeanMs": null,
+            "authorshipPeakBytes": null,
+            "hookRuns": null,
+            "hookMs": null,
+            "hookMeanMs": null,
+            "hookPeakMs": null,
+            "observedTokens": null,
+            "observedCostUsd": null,
+            "declaredPromptTokens": null
+          }
+        },
+        {
+          "role": "verifier",
+          "wallClockMs": 308930,
+          "attempts": 1,
+          "bytesReadIntoContext": null,
+          "commandsRun": null,
+          "stepCount": null,
+          "authorshipSnapshots": null,
+          "authorshipMs": null,
+          "authorshipBytes": null,
+          "authorshipCommands": null,
+          "authorshipMeanMs": null,
+          "authorshipPeakBytes": null,
+          "hookRuns": null,
+          "hookMs": null,
+          "hookMeanMs": null,
+          "hookPeakMs": null,
+          "observedTokens": null,
+          "observedCostUsd": null,
+          "declaredPromptTokens": null,
+          "delta": {
+            "wallClockMs": null,
+            "attempts": null,
+            "bytesReadIntoContext": null,
+            "commandsRun": null,
+            "stepCount": null,
+            "authorshipSnapshots": null,
+            "authorshipMs": null,
+            "authorshipBytes": null,
+            "authorshipCommands": null,
+            "authorshipMeanMs": null,
+            "authorshipPeakBytes": null,
+            "hookRuns": null,
+            "hookMs": null,
+            "hookMeanMs": null,
+            "hookPeakMs": null,
+            "observedTokens": null,
+            "observedCostUsd": null,
+            "declaredPromptTokens": null
+          }
+        },
+        {
+          "role": "reviewer",
+          "wallClockMs": 2231517,
+          "attempts": 1,
+          "bytesReadIntoContext": null,
+          "commandsRun": null,
+          "stepCount": null,
+          "authorshipSnapshots": null,
+          "authorshipMs": null,
+          "authorshipBytes": null,
+          "authorshipCommands": null,
+          "authorshipMeanMs": null,
+          "authorshipPeakBytes": null,
+          "hookRuns": null,
+          "hookMs": null,
+          "hookMeanMs": null,
+          "hookPeakMs": null,
+          "observedTokens": null,
+          "observedCostUsd": null,
+          "declaredPromptTokens": null,
+          "delta": {
+            "wallClockMs": null,
+            "attempts": null,
+            "bytesReadIntoContext": null,
+            "commandsRun": null,
+            "stepCount": null,
+            "authorshipSnapshots": null,
+            "authorshipMs": null,
+            "authorshipBytes": null,
+            "authorshipCommands": null,
+            "authorshipMeanMs": null,
+            "authorshipPeakBytes": null,
+            "hookRuns": null,
+            "hookMs": null,
+            "hookMeanMs": null,
+            "hookPeakMs": null,
+            "observedTokens": null,
+            "observedCostUsd": null,
+            "declaredPromptTokens": null
+          }
+        },
+        {
+          "role": "release-close",
+          "wallClockMs": null,
+          "attempts": null,
+          "bytesReadIntoContext": null,
+          "commandsRun": null,
+          "stepCount": null,
+          "authorshipSnapshots": null,
+          "authorshipMs": null,
+          "authorshipBytes": null,
+          "authorshipCommands": null,
+          "authorshipMeanMs": null,
+          "authorshipPeakBytes": null,
+          "hookRuns": null,
+          "hookMs": null,
+          "hookMeanMs": null,
+          "hookPeakMs": null,
+          "observedTokens": null,
+          "observedCostUsd": null,
+          "declaredPromptTokens": null,
+          "delta": {
+            "wallClockMs": null,
+            "attempts": null,
+            "bytesReadIntoContext": null,
+            "commandsRun": null,
+            "stepCount": null,
+            "authorshipSnapshots": null,
+            "authorshipMs": null,
+            "authorshipBytes": null,
+            "authorshipCommands": null,
+            "authorshipMeanMs": null,
+            "authorshipPeakBytes": null,
+            "hookRuns": null,
+            "hookMs": null,
+            "hookMeanMs": null,
+            "hookPeakMs": null,
+            "observedTokens": null,
+            "observedCostUsd": null,
+            "declaredPromptTokens": null
+          }
+        },
+        {
+          "role": "planner",
+          "wallClockMs": null,
+          "attempts": null,
+          "bytesReadIntoContext": null,
+          "commandsRun": null,
+          "stepCount": null,
+          "authorshipSnapshots": null,
+          "authorshipMs": null,
+          "authorshipBytes": null,
+          "authorshipCommands": null,
+          "authorshipMeanMs": null,
+          "authorshipPeakBytes": null,
+          "hookRuns": null,
+          "hookMs": null,
+          "hookMeanMs": null,
+          "hookPeakMs": null,
+          "observedTokens": null,
+          "observedCostUsd": null,
+          "declaredPromptTokens": null,
+          "delta": {
+            "wallClockMs": null,
+            "attempts": null,
+            "bytesReadIntoContext": null,
+            "commandsRun": null,
+            "stepCount": null,
+            "authorshipSnapshots": null,
+            "authorshipMs": null,
+            "authorshipBytes": null,
+            "authorshipCommands": null,
+            "authorshipMeanMs": null,
+            "authorshipPeakBytes": null,
+            "hookRuns": null,
+            "hookMs": null,
+            "hookMeanMs": null,
+            "hookPeakMs": null,
+            "observedTokens": null,
+            "observedCostUsd": null,
+            "declaredPromptTokens": null
+          }
+        },
+        {
+          "role": "refuter",
+          "wallClockMs": null,
+          "attempts": null,
+          "bytesReadIntoContext": null,
+          "commandsRun": null,
+          "stepCount": null,
+          "authorshipSnapshots": null,
+          "authorshipMs": null,
+          "authorshipBytes": null,
+          "authorshipCommands": null,
+          "authorshipMeanMs": null,
+          "authorshipPeakBytes": null,
+          "hookRuns": null,
+          "hookMs": null,
+          "hookMeanMs": null,
+          "hookPeakMs": null,
+          "observedTokens": null,
+          "observedCostUsd": null,
+          "declaredPromptTokens": null,
+          "delta": {
+            "wallClockMs": null,
+            "attempts": null,
+            "bytesReadIntoContext": null,
+            "commandsRun": null,
+            "stepCount": null,
+            "authorshipSnapshots": null,
+            "authorshipMs": null,
+            "authorshipBytes": null,
+            "authorshipCommands": null,
+            "authorshipMeanMs": null,
+            "authorshipPeakBytes": null,
+            "hookRuns": null,
+            "hookMs": null,
+            "hookMeanMs": null,
+            "hookPeakMs": null,
+            "observedTokens": null,
+            "observedCostUsd": null,
+            "declaredPromptTokens": null
+          }
+        }
+      ],
+      "usage": [],
+      "coldStart": null,
+      "sizes": null,
+      "declared": null,
+      "source": {
+        "phases": "canonical control fold",
+        "usage": "unavailable",
+        "unobserved": "null means unavailable, never zero"
+      },
+      "delta": {
+        "elapsedMs": null,
+        "attempts": null,
+        "gateMs": null,
+        "fastGateMs": null,
+        "readObligationCount": null,
+        "readObligationBytes": null,
+        "codeDiffBytes": null,
+        "readAmplification": null,
+        "machineryShare": null,
+        "elapsedPerCodeByte": null,
+        "tokens": null,
+        "costUsd": null,
+        "declaredPromptTokens": null,
+        "coldStartBytes": null,
+        "subjectCharacters": null,
+        "gateStepCount": null,
+        "operatorCorrections": null,
+        "guardRefusals": null,
+        "stopRefusals": null,
+        "reAnnouncements": null,
+        "manualCloseoutSteps": null,
+        "emergencyPasses": null,
+        "bypassTools": null,
+        "adHocScripts": null,
+        "commandsRun": null,
+        "bytesReadIntoContext": null,
+        "stepCount": null,
+        "authorshipSnapshots": null,
+        "authorshipMs": null,
+        "authorshipBytes": null,
+        "authorshipCommands": null,
+        "authorshipMeanMs": null,
+        "authorshipPeakBytes": null,
+        "hookRuns": null,
+        "hookMs": null,
+        "hookMeanMs": null,
+        "hookPeakMs": null,
+        "prBodyBytes": null
+      },
+      "sizeDeltas": {}
+    },
+    {
+      "workOrder": "WO-047",
+      "phase": "closed",
+      "phases": [
+        {
+          "phase": "implementation",
+          "role": "executor",
+          "elapsedMs": 1034402
+        },
+        {
+          "phase": "verification",
+          "role": "verifier",
+          "elapsedMs": 1752780
+        },
+        {
+          "phase": "repair",
+          "role": "executor",
+          "elapsedMs": 1460308
+        },
+        {
+          "phase": "verification",
+          "role": "verifier",
+          "elapsedMs": 833186
+        },
+        {
+          "phase": "finalReview",
+          "role": "reviewer",
+          "elapsedMs": 3351574
+        }
+      ],
+      "metrics": {
+        "elapsedMs": 8432250,
+        "attempts": 5,
+        "gateMs": null,
+        "fastGateMs": null,
+        "readObligationCount": null,
+        "readObligationBytes": null,
+        "codeDiffBytes": null,
+        "readAmplification": null,
+        "machineryShare": 0.7041465800942809,
+        "elapsedPerCodeByte": null,
+        "tokens": null,
+        "costUsd": null,
+        "declaredPromptTokens": null,
+        "coldStartBytes": null,
+        "subjectCharacters": null,
+        "gateStepCount": null,
+        "operatorCorrections": 0,
+        "guardRefusals": null,
+        "stopRefusals": null,
+        "reAnnouncements": null,
+        "manualCloseoutSteps": null,
+        "emergencyPasses": null,
+        "bypassTools": null,
+        "adHocScripts": null,
+        "commandsRun": null,
+        "bytesReadIntoContext": null,
+        "stepCount": null,
+        "authorshipSnapshots": null,
+        "authorshipMs": null,
+        "authorshipBytes": null,
+        "authorshipCommands": null,
+        "authorshipMeanMs": null,
+        "authorshipPeakBytes": null,
+        "hookRuns": null,
+        "hookMs": null,
+        "hookMeanMs": null,
+        "hookPeakMs": null,
+        "prBodyBytes": 8290
+      },
+      "dispatches": [
+        {
+          "role": "executor",
+          "wallClockMs": 2494710,
+          "attempts": 2,
+          "bytesReadIntoContext": null,
+          "commandsRun": null,
+          "stepCount": null,
+          "authorshipSnapshots": null,
+          "authorshipMs": null,
+          "authorshipBytes": null,
+          "authorshipCommands": null,
+          "authorshipMeanMs": null,
+          "authorshipPeakBytes": null,
+          "hookRuns": null,
+          "hookMs": null,
+          "hookMeanMs": null,
+          "hookPeakMs": null,
+          "observedTokens": null,
+          "observedCostUsd": null,
+          "declaredPromptTokens": null,
+          "delta": {
+            "wallClockMs": 625022,
+            "attempts": 1,
+            "bytesReadIntoContext": null,
+            "commandsRun": null,
+            "stepCount": null,
+            "authorshipSnapshots": null,
+            "authorshipMs": null,
+            "authorshipBytes": null,
+            "authorshipCommands": null,
+            "authorshipMeanMs": null,
+            "authorshipPeakBytes": null,
+            "hookRuns": null,
+            "hookMs": null,
+            "hookMeanMs": null,
+            "hookPeakMs": null,
+            "observedTokens": null,
+            "observedCostUsd": null,
+            "declaredPromptTokens": null
+          }
+        },
+        {
+          "role": "verifier",
+          "wallClockMs": 2585966,
+          "attempts": 2,
+          "bytesReadIntoContext": null,
+          "commandsRun": null,
+          "stepCount": null,
+          "authorshipSnapshots": null,
+          "authorshipMs": null,
+          "authorshipBytes": null,
+          "authorshipCommands": null,
+          "authorshipMeanMs": null,
+          "authorshipPeakBytes": null,
+          "hookRuns": null,
+          "hookMs": null,
+          "hookMeanMs": null,
+          "hookPeakMs": null,
+          "observedTokens": null,
+          "observedCostUsd": null,
+          "declaredPromptTokens": null,
+          "delta": {
+            "wallClockMs": 2277036,
+            "attempts": 1,
+            "bytesReadIntoContext": null,
+            "commandsRun": null,
+            "stepCount": null,
+            "authorshipSnapshots": null,
+            "authorshipMs": null,
+            "authorshipBytes": null,
+            "authorshipCommands": null,
+            "authorshipMeanMs": null,
+            "authorshipPeakBytes": null,
+            "hookRuns": null,
+            "hookMs": null,
+            "hookMeanMs": null,
+            "hookPeakMs": null,
+            "observedTokens": null,
+            "observedCostUsd": null,
+            "declaredPromptTokens": null
+          }
+        },
+        {
+          "role": "reviewer",
+          "wallClockMs": 3351574,
+          "attempts": 1,
+          "bytesReadIntoContext": null,
+          "commandsRun": null,
+          "stepCount": null,
+          "authorshipSnapshots": null,
+          "authorshipMs": null,
+          "authorshipBytes": null,
+          "authorshipCommands": null,
+          "authorshipMeanMs": null,
+          "authorshipPeakBytes": null,
+          "hookRuns": null,
+          "hookMs": null,
+          "hookMeanMs": null,
+          "hookPeakMs": null,
+          "observedTokens": null,
+          "observedCostUsd": null,
+          "declaredPromptTokens": null,
+          "delta": {
+            "wallClockMs": 1120057,
+            "attempts": 0,
+            "bytesReadIntoContext": null,
+            "commandsRun": null,
+            "stepCount": null,
+            "authorshipSnapshots": null,
+            "authorshipMs": null,
+            "authorshipBytes": null,
+            "authorshipCommands": null,
+            "authorshipMeanMs": null,
+            "authorshipPeakBytes": null,
+            "hookRuns": null,
+            "hookMs": null,
+            "hookMeanMs": null,
+            "hookPeakMs": null,
+            "observedTokens": null,
+            "observedCostUsd": null,
+            "declaredPromptTokens": null
+          }
+        },
+        {
+          "role": "release-close",
+          "wallClockMs": null,
+          "attempts": null,
+          "bytesReadIntoContext": null,
+          "commandsRun": null,
+          "stepCount": null,
+          "authorshipSnapshots": null,
+          "authorshipMs": null,
+          "authorshipBytes": null,
+          "authorshipCommands": null,
+          "authorshipMeanMs": null,
+          "authorshipPeakBytes": null,
+          "hookRuns": null,
+          "hookMs": null,
+          "hookMeanMs": null,
+          "hookPeakMs": null,
+          "observedTokens": null,
+          "observedCostUsd": null,
+          "declaredPromptTokens": null,
+          "delta": {
+            "wallClockMs": null,
+            "attempts": null,
+            "bytesReadIntoContext": null,
+            "commandsRun": null,
+            "stepCount": null,
+            "authorshipSnapshots": null,
+            "authorshipMs": null,
+            "authorshipBytes": null,
+            "authorshipCommands": null,
+            "authorshipMeanMs": null,
+            "authorshipPeakBytes": null,
+            "hookRuns": null,
+            "hookMs": null,
+            "hookMeanMs": null,
+            "hookPeakMs": null,
+            "observedTokens": null,
+            "observedCostUsd": null,
+            "declaredPromptTokens": null
+          }
+        },
+        {
+          "role": "planner",
+          "wallClockMs": null,
+          "attempts": null,
+          "bytesReadIntoContext": null,
+          "commandsRun": null,
+          "stepCount": null,
+          "authorshipSnapshots": null,
+          "authorshipMs": null,
+          "authorshipBytes": null,
+          "authorshipCommands": null,
+          "authorshipMeanMs": null,
+          "authorshipPeakBytes": null,
+          "hookRuns": null,
+          "hookMs": null,
+          "hookMeanMs": null,
+          "hookPeakMs": null,
+          "observedTokens": null,
+          "observedCostUsd": null,
+          "declaredPromptTokens": null,
+          "delta": {
+            "wallClockMs": null,
+            "attempts": null,
+            "bytesReadIntoContext": null,
+            "commandsRun": null,
+            "stepCount": null,
+            "authorshipSnapshots": null,
+            "authorshipMs": null,
+            "authorshipBytes": null,
+            "authorshipCommands": null,
+            "authorshipMeanMs": null,
+            "authorshipPeakBytes": null,
+            "hookRuns": null,
+            "hookMs": null,
+            "hookMeanMs": null,
+            "hookPeakMs": null,
+            "observedTokens": null,
+            "observedCostUsd": null,
+            "declaredPromptTokens": null
+          }
+        },
+        {
+          "role": "refuter",
+          "wallClockMs": null,
+          "attempts": null,
+          "bytesReadIntoContext": null,
+          "commandsRun": null,
+          "stepCount": null,
+          "authorshipSnapshots": null,
+          "authorshipMs": null,
+          "authorshipBytes": null,
+          "authorshipCommands": null,
+          "authorshipMeanMs": null,
+          "authorshipPeakBytes": null,
+          "hookRuns": null,
+          "hookMs": null,
+          "hookMeanMs": null,
+          "hookPeakMs": null,
+          "observedTokens": null,
+          "observedCostUsd": null,
+          "declaredPromptTokens": null,
+          "delta": {
+            "wallClockMs": null,
+            "attempts": null,
+            "bytesReadIntoContext": null,
+            "commandsRun": null,
+            "stepCount": null,
+            "authorshipSnapshots": null,
+            "authorshipMs": null,
+            "authorshipBytes": null,
+            "authorshipCommands": null,
+            "authorshipMeanMs": null,
+            "authorshipPeakBytes": null,
+            "hookRuns": null,
+            "hookMs": null,
+            "hookMeanMs": null,
+            "hookPeakMs": null,
+            "observedTokens": null,
+            "observedCostUsd": null,
+            "declaredPromptTokens": null
+          }
+        }
+      ],
+      "usage": [],
+      "coldStart": null,
+      "sizes": null,
+      "declared": null,
+      "source": {
+        "phases": "canonical control fold",
+        "usage": "unavailable",
+        "unobserved": "null means unavailable, never zero"
+      },
+      "delta": {
+        "elapsedMs": 4022115,
+        "attempts": 2,
+        "gateMs": null,
+        "fastGateMs": null,
+        "readObligationCount": null,
+        "readObligationBytes": null,
+        "codeDiffBytes": null,
+        "readAmplification": null,
+        "machineryShare": 0.12809913483466862,
+        "elapsedPerCodeByte": null,
+        "tokens": null,
+        "costUsd": null,
+        "declaredPromptTokens": null,
+        "coldStartBytes": null,
+        "subjectCharacters": null,
+        "gateStepCount": null,
+        "operatorCorrections": 0,
+        "guardRefusals": null,
+        "stopRefusals": null,
+        "reAnnouncements": null,
+        "manualCloseoutSteps": null,
+        "emergencyPasses": null,
+        "bypassTools": null,
+        "adHocScripts": null,
+        "commandsRun": null,
+        "bytesReadIntoContext": null,
+        "stepCount": null,
+        "authorshipSnapshots": null,
+        "authorshipMs": null,
+        "authorshipBytes": null,
+        "authorshipCommands": null,
+        "authorshipMeanMs": null,
+        "authorshipPeakBytes": null,
+        "hookRuns": null,
+        "hookMs": null,
+        "hookMeanMs": null,
+        "hookPeakMs": null,
+        "prBodyBytes": -1394
+      },
+      "sizeDeltas": {}
+    },
+    {
+      "workOrder": "WO-133",
+      "phase": "closed",
+      "phases": [
+        {
+          "phase": "implementation",
+          "role": "executor",
+          "elapsedMs": 3083731
+        },
+        {
+          "phase": "verification",
+          "role": "verifier",
+          "elapsedMs": 1326141
+        },
+        {
+          "phase": "finalReview",
+          "role": "reviewer",
+          "elapsedMs": 1711089
+        },
+        {
+          "phase": "repair",
+          "role": "executor",
+          "elapsedMs": 1177357
+        },
+        {
+          "phase": "verification",
+          "role": "verifier",
+          "elapsedMs": 1425070
+        },
+        {
+          "phase": "finalReview",
+          "role": "reviewer",
+          "elapsedMs": 1393514
+        }
+      ],
+      "metrics": {
+        "elapsedMs": 10116902,
+        "attempts": 6,
+        "gateMs": null,
+        "fastGateMs": null,
+        "readObligationCount": null,
+        "readObligationBytes": null,
+        "codeDiffBytes": null,
+        "readAmplification": null,
+        "machineryShare": 0.5788149376162782,
+        "elapsedPerCodeByte": null,
+        "tokens": null,
+        "costUsd": null,
+        "declaredPromptTokens": null,
+        "coldStartBytes": null,
+        "subjectCharacters": null,
+        "gateStepCount": null,
+        "operatorCorrections": 2,
+        "guardRefusals": null,
+        "stopRefusals": null,
+        "reAnnouncements": null,
+        "manualCloseoutSteps": null,
+        "emergencyPasses": null,
+        "bypassTools": null,
+        "adHocScripts": null,
+        "commandsRun": null,
+        "bytesReadIntoContext": null,
+        "stepCount": null,
+        "authorshipSnapshots": null,
+        "authorshipMs": null,
+        "authorshipBytes": null,
+        "authorshipCommands": null,
+        "authorshipMeanMs": null,
+        "authorshipPeakBytes": null,
+        "hookRuns": null,
+        "hookMs": null,
+        "hookMeanMs": null,
+        "hookPeakMs": null,
+        "prBodyBytes": 8611
+      },
+      "dispatches": [
+        {
+          "role": "executor",
+          "wallClockMs": 4261088,
+          "attempts": 2,
+          "bytesReadIntoContext": null,
+          "commandsRun": null,
+          "stepCount": null,
+          "authorshipSnapshots": null,
+          "authorshipMs": null,
+          "authorshipBytes": null,
+          "authorshipCommands": null,
+          "authorshipMeanMs": null,
+          "authorshipPeakBytes": null,
+          "hookRuns": null,
+          "hookMs": null,
+          "hookMeanMs": null,
+          "hookPeakMs": null,
+          "observedTokens": null,
+          "observedCostUsd": null,
+          "declaredPromptTokens": null,
+          "delta": {
+            "wallClockMs": 1766378,
+            "attempts": 0,
+            "bytesReadIntoContext": null,
+            "commandsRun": null,
+            "stepCount": null,
+            "authorshipSnapshots": null,
+            "authorshipMs": null,
+            "authorshipBytes": null,
+            "authorshipCommands": null,
+            "authorshipMeanMs": null,
+            "authorshipPeakBytes": null,
+            "hookRuns": null,
+            "hookMs": null,
+            "hookMeanMs": null,
+            "hookPeakMs": null,
+            "observedTokens": null,
+            "observedCostUsd": null,
+            "declaredPromptTokens": null
+          }
+        },
+        {
+          "role": "verifier",
+          "wallClockMs": 2751211,
+          "attempts": 2,
+          "bytesReadIntoContext": null,
+          "commandsRun": null,
+          "stepCount": null,
+          "authorshipSnapshots": null,
+          "authorshipMs": null,
+          "authorshipBytes": null,
+          "authorshipCommands": null,
+          "authorshipMeanMs": null,
+          "authorshipPeakBytes": null,
+          "hookRuns": null,
+          "hookMs": null,
+          "hookMeanMs": null,
+          "hookPeakMs": null,
+          "observedTokens": null,
+          "observedCostUsd": null,
+          "declaredPromptTokens": null,
+          "delta": {
+            "wallClockMs": 165245,
+            "attempts": 0,
+            "bytesReadIntoContext": null,
+            "commandsRun": null,
+            "stepCount": null,
+            "authorshipSnapshots": null,
+            "authorshipMs": null,
+            "authorshipBytes": null,
+            "authorshipCommands": null,
+            "authorshipMeanMs": null,
+            "authorshipPeakBytes": null,
+            "hookRuns": null,
+            "hookMs": null,
+            "hookMeanMs": null,
+            "hookPeakMs": null,
+            "observedTokens": null,
+            "observedCostUsd": null,
+            "declaredPromptTokens": null
+          }
+        },
+        {
+          "role": "reviewer",
+          "wallClockMs": 3104603,
+          "attempts": 2,
+          "bytesReadIntoContext": null,
+          "commandsRun": null,
+          "stepCount": null,
+          "authorshipSnapshots": null,
+          "authorshipMs": null,
+          "authorshipBytes": null,
+          "authorshipCommands": null,
+          "authorshipMeanMs": null,
+          "authorshipPeakBytes": null,
+          "hookRuns": null,
+          "hookMs": null,
+          "hookMeanMs": null,
+          "hookPeakMs": null,
+          "observedTokens": null,
+          "observedCostUsd": null,
+          "declaredPromptTokens": null,
+          "delta": {
+            "wallClockMs": -246971,
+            "attempts": 1,
+            "bytesReadIntoContext": null,
+            "commandsRun": null,
+            "stepCount": null,
+            "authorshipSnapshots": null,
+            "authorshipMs": null,
+            "authorshipBytes": null,
+            "authorshipCommands": null,
+            "authorshipMeanMs": null,
+            "authorshipPeakBytes": null,
+            "hookRuns": null,
+            "hookMs": null,
+            "hookMeanMs": null,
+            "hookPeakMs": null,
+            "observedTokens": null,
+            "observedCostUsd": null,
+            "declaredPromptTokens": null
+          }
+        },
+        {
+          "role": "release-close",
+          "wallClockMs": null,
+          "attempts": null,
+          "bytesReadIntoContext": null,
+          "commandsRun": null,
+          "stepCount": null,
+          "authorshipSnapshots": null,
+          "authorshipMs": null,
+          "authorshipBytes": null,
+          "authorshipCommands": null,
+          "authorshipMeanMs": null,
+          "authorshipPeakBytes": null,
+          "hookRuns": null,
+          "hookMs": null,
+          "hookMeanMs": null,
+          "hookPeakMs": null,
+          "observedTokens": null,
+          "observedCostUsd": null,
+          "declaredPromptTokens": null,
+          "delta": {
+            "wallClockMs": null,
+            "attempts": null,
+            "bytesReadIntoContext": null,
+            "commandsRun": null,
+            "stepCount": null,
+            "authorshipSnapshots": null,
+            "authorshipMs": null,
+            "authorshipBytes": null,
+            "authorshipCommands": null,
+            "authorshipMeanMs": null,
+            "authorshipPeakBytes": null,
+            "hookRuns": null,
+            "hookMs": null,
+            "hookMeanMs": null,
+            "hookPeakMs": null,
+            "observedTokens": null,
+            "observedCostUsd": null,
+            "declaredPromptTokens": null
+          }
+        },
+        {
+          "role": "planner",
+          "wallClockMs": null,
+          "attempts": null,
+          "bytesReadIntoContext": null,
+          "commandsRun": null,
+          "stepCount": null,
+          "authorshipSnapshots": null,
+          "authorshipMs": null,
+          "authorshipBytes": null,
+          "authorshipCommands": null,
+          "authorshipMeanMs": null,
+          "authorshipPeakBytes": null,
+          "hookRuns": null,
+          "hookMs": null,
+          "hookMeanMs": null,
+          "hookPeakMs": null,
+          "observedTokens": null,
+          "observedCostUsd": null,
+          "declaredPromptTokens": null,
+          "delta": {
+            "wallClockMs": null,
+            "attempts": null,
+            "bytesReadIntoContext": null,
+            "commandsRun": null,
+            "stepCount": null,
+            "authorshipSnapshots": null,
+            "authorshipMs": null,
+            "authorshipBytes": null,
+            "authorshipCommands": null,
+            "authorshipMeanMs": null,
+            "authorshipPeakBytes": null,
+            "hookRuns": null,
+            "hookMs": null,
+            "hookMeanMs": null,
+            "hookPeakMs": null,
+            "observedTokens": null,
+            "observedCostUsd": null,
+            "declaredPromptTokens": null
+          }
+        },
+        {
+          "role": "refuter",
+          "wallClockMs": null,
+          "attempts": null,
+          "bytesReadIntoContext": null,
+          "commandsRun": null,
+          "stepCount": null,
+          "authorshipSnapshots": null,
+          "authorshipMs": null,
+          "authorshipBytes": null,
+          "authorshipCommands": null,
+          "authorshipMeanMs": null,
+          "authorshipPeakBytes": null,
+          "hookRuns": null,
+          "hookMs": null,
+          "hookMeanMs": null,
+          "hookPeakMs": null,
+          "observedTokens": null,
+          "observedCostUsd": null,
+          "declaredPromptTokens": null,
+          "delta": {
+            "wallClockMs": null,
+            "attempts": null,
+            "bytesReadIntoContext": null,
+            "commandsRun": null,
+            "stepCount": null,
+            "authorshipSnapshots": null,
+            "authorshipMs": null,
+            "authorshipBytes": null,
+            "authorshipCommands": null,
+            "authorshipMeanMs": null,
+            "authorshipPeakBytes": null,
+            "hookRuns": null,
+            "hookMs": null,
+            "hookMeanMs": null,
+            "hookPeakMs": null,
+            "observedTokens": null,
+            "observedCostUsd": null,
+            "declaredPromptTokens": null
+          }
+        }
+      ],
+      "usage": [],
+      "coldStart": null,
+      "sizes": null,
+      "declared": null,
+      "source": {
+        "phases": "canonical control fold",
+        "usage": "unavailable",
+        "unobserved": "null means unavailable, never zero"
+      },
+      "delta": {
+        "elapsedMs": 1684652,
+        "attempts": 1,
+        "gateMs": null,
+        "fastGateMs": null,
+        "readObligationCount": null,
+        "readObligationBytes": null,
+        "codeDiffBytes": null,
+        "readAmplification": null,
+        "machineryShare": -0.12533164247800266,
+        "elapsedPerCodeByte": null,
+        "tokens": null,
+        "costUsd": null,
+        "declaredPromptTokens": null,
+        "coldStartBytes": null,
+        "subjectCharacters": null,
+        "gateStepCount": null,
+        "operatorCorrections": 2,
+        "guardRefusals": null,
+        "stopRefusals": null,
+        "reAnnouncements": null,
+        "manualCloseoutSteps": null,
+        "emergencyPasses": null,
+        "bypassTools": null,
+        "adHocScripts": null,
+        "commandsRun": null,
+        "bytesReadIntoContext": null,
+        "stepCount": null,
+        "authorshipSnapshots": null,
+        "authorshipMs": null,
+        "authorshipBytes": null,
+        "authorshipCommands": null,
+        "authorshipMeanMs": null,
+        "authorshipPeakBytes": null,
+        "hookRuns": null,
+        "hookMs": null,
+        "hookMeanMs": null,
+        "hookPeakMs": null,
+        "prBodyBytes": 321
+      },
+      "sizeDeltas": {}
+    },
+    {
+      "workOrder": "WO-068",
+      "phase": "closed",
+      "phases": [
+        {
+          "phase": "implementation",
+          "role": "executor",
+          "elapsedMs": 3692768
+        },
+        {
+          "phase": "verification",
+          "role": "verifier",
+          "elapsedMs": 1075023
+        },
+        {
+          "phase": "finalReview",
+          "role": "reviewer",
+          "elapsedMs": 1214376
+        }
+      ],
+      "metrics": {
+        "elapsedMs": 5982167,
+        "attempts": 3,
+        "gateMs": null,
+        "fastGateMs": null,
+        "readObligationCount": null,
+        "readObligationBytes": null,
+        "codeDiffBytes": null,
+        "readAmplification": null,
+        "machineryShare": 0.38270395995297357,
+        "elapsedPerCodeByte": null,
+        "tokens": null,
+        "costUsd": null,
+        "declaredPromptTokens": null,
+        "coldStartBytes": null,
+        "subjectCharacters": null,
+        "gateStepCount": null,
+        "operatorCorrections": 0,
+        "guardRefusals": null,
+        "stopRefusals": null,
+        "reAnnouncements": null,
+        "manualCloseoutSteps": null,
+        "emergencyPasses": null,
+        "bypassTools": null,
+        "adHocScripts": null,
+        "commandsRun": null,
+        "bytesReadIntoContext": null,
+        "stepCount": null,
+        "authorshipSnapshots": null,
+        "authorshipMs": null,
+        "authorshipBytes": null,
+        "authorshipCommands": null,
+        "authorshipMeanMs": null,
+        "authorshipPeakBytes": null,
+        "hookRuns": null,
+        "hookMs": null,
+        "hookMeanMs": null,
+        "hookPeakMs": null,
+        "prBodyBytes": 8994
+      },
+      "dispatches": [
+        {
+          "role": "executor",
+          "wallClockMs": 3692768,
+          "attempts": 1,
+          "bytesReadIntoContext": null,
+          "commandsRun": null,
+          "stepCount": null,
+          "authorshipSnapshots": null,
+          "authorshipMs": null,
+          "authorshipBytes": null,
+          "authorshipCommands": null,
+          "authorshipMeanMs": null,
+          "authorshipPeakBytes": null,
+          "hookRuns": null,
+          "hookMs": null,
+          "hookMeanMs": null,
+          "hookPeakMs": null,
+          "observedTokens": null,
+          "observedCostUsd": null,
+          "declaredPromptTokens": null,
+          "delta": {
+            "wallClockMs": -568320,
+            "attempts": -1,
+            "bytesReadIntoContext": null,
+            "commandsRun": null,
+            "stepCount": null,
+            "authorshipSnapshots": null,
+            "authorshipMs": null,
+            "authorshipBytes": null,
+            "authorshipCommands": null,
+            "authorshipMeanMs": null,
+            "authorshipPeakBytes": null,
+            "hookRuns": null,
+            "hookMs": null,
+            "hookMeanMs": null,
+            "hookPeakMs": null,
+            "observedTokens": null,
+            "observedCostUsd": null,
+            "declaredPromptTokens": null
+          }
+        },
+        {
+          "role": "verifier",
+          "wallClockMs": 1075023,
+          "attempts": 1,
+          "bytesReadIntoContext": null,
+          "commandsRun": null,
+          "stepCount": null,
+          "authorshipSnapshots": null,
+          "authorshipMs": null,
+          "authorshipBytes": null,
+          "authorshipCommands": null,
+          "authorshipMeanMs": null,
+          "authorshipPeakBytes": null,
+          "hookRuns": null,
+          "hookMs": null,
+          "hookMeanMs": null,
+          "hookPeakMs": null,
+          "observedTokens": null,
+          "observedCostUsd": null,
+          "declaredPromptTokens": null,
+          "delta": {
+            "wallClockMs": -1676188,
+            "attempts": -1,
+            "bytesReadIntoContext": null,
+            "commandsRun": null,
+            "stepCount": null,
+            "authorshipSnapshots": null,
+            "authorshipMs": null,
+            "authorshipBytes": null,
+            "authorshipCommands": null,
+            "authorshipMeanMs": null,
+            "authorshipPeakBytes": null,
+            "hookRuns": null,
+            "hookMs": null,
+            "hookMeanMs": null,
+            "hookPeakMs": null,
+            "observedTokens": null,
+            "observedCostUsd": null,
+            "declaredPromptTokens": null
+          }
+        },
+        {
+          "role": "reviewer",
+          "wallClockMs": 1214376,
+          "attempts": 1,
+          "bytesReadIntoContext": null,
+          "commandsRun": null,
+          "stepCount": null,
+          "authorshipSnapshots": null,
+          "authorshipMs": null,
+          "authorshipBytes": null,
+          "authorshipCommands": null,
+          "authorshipMeanMs": null,
+          "authorshipPeakBytes": null,
+          "hookRuns": null,
+          "hookMs": null,
+          "hookMeanMs": null,
+          "hookPeakMs": null,
+          "observedTokens": null,
+          "observedCostUsd": null,
+          "declaredPromptTokens": null,
+          "delta": {
+            "wallClockMs": -1890227,
+            "attempts": -1,
+            "bytesReadIntoContext": null,
+            "commandsRun": null,
+            "stepCount": null,
+            "authorshipSnapshots": null,
+            "authorshipMs": null,
+            "authorshipBytes": null,
+            "authorshipCommands": null,
+            "authorshipMeanMs": null,
+            "authorshipPeakBytes": null,
+            "hookRuns": null,
+            "hookMs": null,
+            "hookMeanMs": null,
+            "hookPeakMs": null,
+            "observedTokens": null,
+            "observedCostUsd": null,
+            "declaredPromptTokens": null
+          }
+        },
+        {
+          "role": "release-close",
+          "wallClockMs": null,
+          "attempts": null,
+          "bytesReadIntoContext": null,
+          "commandsRun": null,
+          "stepCount": null,
+          "authorshipSnapshots": null,
+          "authorshipMs": null,
+          "authorshipBytes": null,
+          "authorshipCommands": null,
+          "authorshipMeanMs": null,
+          "authorshipPeakBytes": null,
+          "hookRuns": null,
+          "hookMs": null,
+          "hookMeanMs": null,
+          "hookPeakMs": null,
+          "observedTokens": null,
+          "observedCostUsd": null,
+          "declaredPromptTokens": null,
+          "delta": {
+            "wallClockMs": null,
+            "attempts": null,
+            "bytesReadIntoContext": null,
+            "commandsRun": null,
+            "stepCount": null,
+            "authorshipSnapshots": null,
+            "authorshipMs": null,
+            "authorshipBytes": null,
+            "authorshipCommands": null,
+            "authorshipMeanMs": null,
+            "authorshipPeakBytes": null,
+            "hookRuns": null,
+            "hookMs": null,
+            "hookMeanMs": null,
+            "hookPeakMs": null,
+            "observedTokens": null,
+            "observedCostUsd": null,
+            "declaredPromptTokens": null
+          }
+        },
+        {
+          "role": "planner",
+          "wallClockMs": null,
+          "attempts": null,
+          "bytesReadIntoContext": null,
+          "commandsRun": null,
+          "stepCount": null,
+          "authorshipSnapshots": null,
+          "authorshipMs": null,
+          "authorshipBytes": null,
+          "authorshipCommands": null,
+          "authorshipMeanMs": null,
+          "authorshipPeakBytes": null,
+          "hookRuns": null,
+          "hookMs": null,
+          "hookMeanMs": null,
+          "hookPeakMs": null,
+          "observedTokens": null,
+          "observedCostUsd": null,
+          "declaredPromptTokens": null,
+          "delta": {
+            "wallClockMs": null,
+            "attempts": null,
+            "bytesReadIntoContext": null,
+            "commandsRun": null,
+            "stepCount": null,
+            "authorshipSnapshots": null,
+            "authorshipMs": null,
+            "authorshipBytes": null,
+            "authorshipCommands": null,
+            "authorshipMeanMs": null,
+            "authorshipPeakBytes": null,
+            "hookRuns": null,
+            "hookMs": null,
+            "hookMeanMs": null,
+            "hookPeakMs": null,
+            "observedTokens": null,
+            "observedCostUsd": null,
+            "declaredPromptTokens": null
+          }
+        },
+        {
+          "role": "refuter",
+          "wallClockMs": null,
+          "attempts": null,
+          "bytesReadIntoContext": null,
+          "commandsRun": null,
+          "stepCount": null,
+          "authorshipSnapshots": null,
+          "authorshipMs": null,
+          "authorshipBytes": null,
+          "authorshipCommands": null,
+          "authorshipMeanMs": null,
+          "authorshipPeakBytes": null,
+          "hookRuns": null,
+          "hookMs": null,
+          "hookMeanMs": null,
+          "hookPeakMs": null,
+          "observedTokens": null,
+          "observedCostUsd": null,
+          "declaredPromptTokens": null,
+          "delta": {
+            "wallClockMs": null,
+            "attempts": null,
+            "bytesReadIntoContext": null,
+            "commandsRun": null,
+            "stepCount": null,
+            "authorshipSnapshots": null,
+            "authorshipMs": null,
+            "authorshipBytes": null,
+            "authorshipCommands": null,
+            "authorshipMeanMs": null,
+            "authorshipPeakBytes": null,
+            "hookRuns": null,
+            "hookMs": null,
+            "hookMeanMs": null,
+            "hookPeakMs": null,
+            "observedTokens": null,
+            "observedCostUsd": null,
+            "declaredPromptTokens": null
+          }
+        }
+      ],
+      "usage": [],
+      "coldStart": null,
+      "sizes": null,
+      "declared": null,
+      "source": {
+        "phases": "canonical control fold",
+        "usage": "unavailable",
+        "unobserved": "null means unavailable, never zero"
+      },
+      "delta": {
+        "elapsedMs": -4134735,
+        "attempts": -3,
+        "gateMs": null,
+        "fastGateMs": null,
+        "readObligationCount": null,
+        "readObligationBytes": null,
+        "codeDiffBytes": null,
+        "readAmplification": null,
+        "machineryShare": -0.19611097766330465,
+        "elapsedPerCodeByte": null,
+        "tokens": null,
+        "costUsd": null,
+        "declaredPromptTokens": null,
+        "coldStartBytes": null,
+        "subjectCharacters": null,
+        "gateStepCount": null,
+        "operatorCorrections": -2,
+        "guardRefusals": null,
+        "stopRefusals": null,
+        "reAnnouncements": null,
+        "manualCloseoutSteps": null,
+        "emergencyPasses": null,
+        "bypassTools": null,
+        "adHocScripts": null,
+        "commandsRun": null,
+        "bytesReadIntoContext": null,
+        "stepCount": null,
+        "authorshipSnapshots": null,
+        "authorshipMs": null,
+        "authorshipBytes": null,
+        "authorshipCommands": null,
+        "authorshipMeanMs": null,
+        "authorshipPeakBytes": null,
+        "hookRuns": null,
+        "hookMs": null,
+        "hookMeanMs": null,
+        "hookPeakMs": null,
+        "prBodyBytes": 383
+      },
+      "sizeDeltas": {}
+    },
+    {
+      "workOrder": "WO-134",
+      "phase": "closed",
+      "phases": [
+        {
+          "phase": "implementation",
+          "role": "executor",
+          "elapsedMs": 1495725
+        },
+        {
+          "phase": "verification",
+          "role": "verifier",
+          "elapsedMs": 1014653
+        },
+        {
+          "phase": "finalReview",
+          "role": "reviewer",
+          "elapsedMs": 1066939
+        }
+      ],
+      "metrics": {
+        "elapsedMs": 3577317,
+        "attempts": 3,
+        "gateMs": null,
+        "fastGateMs": null,
+        "readObligationCount": null,
+        "readObligationBytes": null,
+        "codeDiffBytes": null,
+        "readAmplification": null,
+        "machineryShare": 0.5818863690301977,
+        "elapsedPerCodeByte": null,
+        "tokens": null,
+        "costUsd": null,
+        "declaredPromptTokens": null,
+        "coldStartBytes": null,
+        "subjectCharacters": 46,
+        "gateStepCount": null,
+        "operatorCorrections": 0,
+        "guardRefusals": null,
+        "stopRefusals": null,
+        "reAnnouncements": null,
+        "manualCloseoutSteps": null,
+        "emergencyPasses": null,
+        "bypassTools": null,
+        "adHocScripts": null,
+        "commandsRun": null,
+        "bytesReadIntoContext": null,
+        "stepCount": null,
+        "authorshipSnapshots": null,
+        "authorshipMs": null,
+        "authorshipBytes": null,
+        "authorshipCommands": null,
+        "authorshipMeanMs": null,
+        "authorshipPeakBytes": null,
+        "hookRuns": null,
+        "hookMs": null,
+        "hookMeanMs": null,
+        "hookPeakMs": null,
+        "prBodyBytes": 4454
+      },
+      "dispatches": [
+        {
+          "role": "executor",
+          "wallClockMs": 1495725,
+          "attempts": 1,
+          "bytesReadIntoContext": null,
+          "commandsRun": null,
+          "stepCount": null,
+          "authorshipSnapshots": null,
+          "authorshipMs": null,
+          "authorshipBytes": null,
+          "authorshipCommands": null,
+          "authorshipMeanMs": null,
+          "authorshipPeakBytes": null,
+          "hookRuns": null,
+          "hookMs": null,
+          "hookMeanMs": null,
+          "hookPeakMs": null,
+          "observedTokens": null,
+          "observedCostUsd": null,
+          "declaredPromptTokens": null,
+          "delta": {
+            "wallClockMs": -2197043,
+            "attempts": 0,
+            "bytesReadIntoContext": null,
+            "commandsRun": null,
+            "stepCount": null,
+            "authorshipSnapshots": null,
+            "authorshipMs": null,
+            "authorshipBytes": null,
+            "authorshipCommands": null,
+            "authorshipMeanMs": null,
+            "authorshipPeakBytes": null,
+            "hookRuns": null,
+            "hookMs": null,
+            "hookMeanMs": null,
+            "hookPeakMs": null,
+            "observedTokens": null,
+            "observedCostUsd": null,
+            "declaredPromptTokens": null
+          }
+        },
+        {
+          "role": "verifier",
+          "wallClockMs": 1014653,
+          "attempts": 1,
+          "bytesReadIntoContext": null,
+          "commandsRun": null,
+          "stepCount": null,
+          "authorshipSnapshots": null,
+          "authorshipMs": null,
+          "authorshipBytes": null,
+          "authorshipCommands": null,
+          "authorshipMeanMs": null,
+          "authorshipPeakBytes": null,
+          "hookRuns": null,
+          "hookMs": null,
+          "hookMeanMs": null,
+          "hookPeakMs": null,
+          "observedTokens": null,
+          "observedCostUsd": null,
+          "declaredPromptTokens": null,
+          "delta": {
+            "wallClockMs": -60370,
+            "attempts": 0,
+            "bytesReadIntoContext": null,
+            "commandsRun": null,
+            "stepCount": null,
+            "authorshipSnapshots": null,
+            "authorshipMs": null,
+            "authorshipBytes": null,
+            "authorshipCommands": null,
+            "authorshipMeanMs": null,
+            "authorshipPeakBytes": null,
+            "hookRuns": null,
+            "hookMs": null,
+            "hookMeanMs": null,
+            "hookPeakMs": null,
+            "observedTokens": null,
+            "observedCostUsd": null,
+            "declaredPromptTokens": null
+          }
+        },
+        {
+          "role": "reviewer",
+          "wallClockMs": 1066939,
+          "attempts": 1,
+          "bytesReadIntoContext": null,
+          "commandsRun": null,
+          "stepCount": null,
+          "authorshipSnapshots": null,
+          "authorshipMs": null,
+          "authorshipBytes": null,
+          "authorshipCommands": null,
+          "authorshipMeanMs": null,
+          "authorshipPeakBytes": null,
+          "hookRuns": null,
+          "hookMs": null,
+          "hookMeanMs": null,
+          "hookPeakMs": null,
+          "observedTokens": null,
+          "observedCostUsd": null,
+          "declaredPromptTokens": null,
+          "delta": {
+            "wallClockMs": -147437,
+            "attempts": 0,
+            "bytesReadIntoContext": null,
+            "commandsRun": null,
+            "stepCount": null,
+            "authorshipSnapshots": null,
+            "authorshipMs": null,
+            "authorshipBytes": null,
+            "authorshipCommands": null,
+            "authorshipMeanMs": null,
+            "authorshipPeakBytes": null,
+            "hookRuns": null,
+            "hookMs": null,
+            "hookMeanMs": null,
+            "hookPeakMs": null,
+            "observedTokens": null,
+            "observedCostUsd": null,
+            "declaredPromptTokens": null
+          }
+        },
+        {
+          "role": "release-close",
+          "wallClockMs": null,
+          "attempts": null,
+          "bytesReadIntoContext": null,
+          "commandsRun": null,
+          "stepCount": null,
+          "authorshipSnapshots": null,
+          "authorshipMs": null,
+          "authorshipBytes": null,
+          "authorshipCommands": null,
+          "authorshipMeanMs": null,
+          "authorshipPeakBytes": null,
+          "hookRuns": null,
+          "hookMs": null,
+          "hookMeanMs": null,
+          "hookPeakMs": null,
+          "observedTokens": null,
+          "observedCostUsd": null,
+          "declaredPromptTokens": null,
+          "delta": {
+            "wallClockMs": null,
+            "attempts": null,
+            "bytesReadIntoContext": null,
+            "commandsRun": null,
+            "stepCount": null,
+            "authorshipSnapshots": null,
+            "authorshipMs": null,
+            "authorshipBytes": null,
+            "authorshipCommands": null,
+            "authorshipMeanMs": null,
+            "authorshipPeakBytes": null,
+            "hookRuns": null,
+            "hookMs": null,
+            "hookMeanMs": null,
+            "hookPeakMs": null,
+            "observedTokens": null,
+            "observedCostUsd": null,
+            "declaredPromptTokens": null
+          }
+        },
+        {
+          "role": "planner",
+          "wallClockMs": null,
+          "attempts": null,
+          "bytesReadIntoContext": null,
+          "commandsRun": null,
+          "stepCount": null,
+          "authorshipSnapshots": null,
+          "authorshipMs": null,
+          "authorshipBytes": null,
+          "authorshipCommands": null,
+          "authorshipMeanMs": null,
+          "authorshipPeakBytes": null,
+          "hookRuns": null,
+          "hookMs": null,
+          "hookMeanMs": null,
+          "hookPeakMs": null,
+          "observedTokens": null,
+          "observedCostUsd": null,
+          "declaredPromptTokens": null,
+          "delta": {
+            "wallClockMs": null,
+            "attempts": null,
+            "bytesReadIntoContext": null,
+            "commandsRun": null,
+            "stepCount": null,
+            "authorshipSnapshots": null,
+            "authorshipMs": null,
+            "authorshipBytes": null,
+            "authorshipCommands": null,
+            "authorshipMeanMs": null,
+            "authorshipPeakBytes": null,
+            "hookRuns": null,
+            "hookMs": null,
+            "hookMeanMs": null,
+            "hookPeakMs": null,
+            "observedTokens": null,
+            "observedCostUsd": null,
+            "declaredPromptTokens": null
+          }
+        },
+        {
+          "role": "refuter",
+          "wallClockMs": null,
+          "attempts": null,
+          "bytesReadIntoContext": null,
+          "commandsRun": null,
+          "stepCount": null,
+          "authorshipSnapshots": null,
+          "authorshipMs": null,
+          "authorshipBytes": null,
+          "authorshipCommands": null,
+          "authorshipMeanMs": null,
+          "authorshipPeakBytes": null,
+          "hookRuns": null,
+          "hookMs": null,
+          "hookMeanMs": null,
+          "hookPeakMs": null,
+          "observedTokens": null,
+          "observedCostUsd": null,
+          "declaredPromptTokens": null,
+          "delta": {
+            "wallClockMs": null,
+            "attempts": null,
+            "bytesReadIntoContext": null,
+            "commandsRun": null,
+            "stepCount": null,
+            "authorshipSnapshots": null,
+            "authorshipMs": null,
+            "authorshipBytes": null,
+            "authorshipCommands": null,
+            "authorshipMeanMs": null,
+            "authorshipPeakBytes": null,
+            "hookRuns": null,
+            "hookMs": null,
+            "hookMeanMs": null,
+            "hookPeakMs": null,
+            "observedTokens": null,
+            "observedCostUsd": null,
+            "declaredPromptTokens": null
+          }
+        }
+      ],
+      "usage": [],
+      "coldStart": null,
+      "sizes": null,
+      "declared": null,
+      "source": {
+        "phases": "canonical control fold",
+        "usage": "unavailable",
+        "unobserved": "null means unavailable, never zero"
+      },
+      "delta": {
+        "elapsedMs": -2404850,
+        "attempts": 0,
+        "gateMs": null,
+        "fastGateMs": null,
+        "readObligationCount": null,
+        "readObligationBytes": null,
+        "codeDiffBytes": null,
+        "readAmplification": null,
+        "machineryShare": 0.19918240907722418,
+        "elapsedPerCodeByte": null,
+        "tokens": null,
+        "costUsd": null,
+        "declaredPromptTokens": null,
+        "coldStartBytes": null,
+        "subjectCharacters": null,
+        "gateStepCount": null,
+        "operatorCorrections": 0,
+        "guardRefusals": null,
+        "stopRefusals": null,
+        "reAnnouncements": null,
+        "manualCloseoutSteps": null,
+        "emergencyPasses": null,
+        "bypassTools": null,
+        "adHocScripts": null,
+        "commandsRun": null,
+        "bytesReadIntoContext": null,
+        "stepCount": null,
+        "authorshipSnapshots": null,
+        "authorshipMs": null,
+        "authorshipBytes": null,
+        "authorshipCommands": null,
+        "authorshipMeanMs": null,
+        "authorshipPeakBytes": null,
+        "hookRuns": null,
+        "hookMs": null,
+        "hookMeanMs": null,
+        "hookPeakMs": null,
+        "prBodyBytes": -4540
+      },
+      "sizeDeltas": {}
+    },
+    {
+      "workOrder": "WO-049",
+      "phase": "active",
+      "phases": [],
+      "metrics": {
+        "elapsedMs": null,
+        "attempts": 0,
+        "gateMs": null,
+        "fastGateMs": null,
+        "readObligationCount": null,
+        "readObligationBytes": null,
+        "codeDiffBytes": 57232,
+        "readAmplification": null,
+        "machineryShare": null,
+        "elapsedPerCodeByte": null,
+        "tokens": null,
+        "costUsd": null,
+        "declaredPromptTokens": 669,
+        "coldStartBytes": 17930,
+        "subjectCharacters": 80,
+        "gateStepCount": null,
+        "operatorCorrections": 1,
+        "guardRefusals": 0,
+        "stopRefusals": 0,
+        "reAnnouncements": null,
+        "manualCloseoutSteps": null,
+        "emergencyPasses": null,
+        "bypassTools": null,
+        "adHocScripts": null,
+        "commandsRun": null,
+        "bytesReadIntoContext": null,
+        "stepCount": null,
+        "authorshipSnapshots": null,
+        "authorshipMs": null,
+        "authorshipBytes": null,
+        "authorshipCommands": null,
+        "authorshipMeanMs": null,
+        "authorshipPeakBytes": null,
+        "hookRuns": 1,
+        "hookMs": 236.153417,
+        "hookMeanMs": 236.153417,
+        "hookPeakMs": 236.153417,
+        "prBodyBytes": 3167
+      },
+      "dispatches": [
+        {
+          "role": "executor",
+          "wallClockMs": 99,
+          "attempts": null,
+          "bytesReadIntoContext": null,
+          "commandsRun": null,
+          "stepCount": null,
+          "authorshipSnapshots": null,
+          "authorshipMs": null,
+          "authorshipBytes": null,
+          "authorshipCommands": null,
+          "authorshipMeanMs": null,
+          "authorshipPeakBytes": null,
+          "hookRuns": 1,
+          "hookMs": 236.153417,
+          "hookMeanMs": 236.153417,
+          "hookPeakMs": 236.153417,
+          "observedTokens": null,
+          "observedCostUsd": null,
+          "declaredPromptTokens": 669,
+          "delta": {
+            "wallClockMs": -1495626,
+            "attempts": null,
+            "bytesReadIntoContext": null,
+            "commandsRun": null,
+            "stepCount": null,
+            "authorshipSnapshots": null,
+            "authorshipMs": null,
+            "authorshipBytes": null,
+            "authorshipCommands": null,
+            "authorshipMeanMs": null,
+            "authorshipPeakBytes": null,
+            "hookRuns": null,
+            "hookMs": null,
+            "hookMeanMs": null,
+            "hookPeakMs": null,
+            "observedTokens": null,
+            "observedCostUsd": null,
+            "declaredPromptTokens": null
+          }
+        },
+        {
+          "role": "verifier",
+          "wallClockMs": null,
+          "attempts": null,
+          "bytesReadIntoContext": null,
+          "commandsRun": null,
+          "stepCount": null,
+          "authorshipSnapshots": null,
+          "authorshipMs": null,
+          "authorshipBytes": null,
+          "authorshipCommands": null,
+          "authorshipMeanMs": null,
+          "authorshipPeakBytes": null,
+          "hookRuns": null,
+          "hookMs": null,
+          "hookMeanMs": null,
+          "hookPeakMs": null,
+          "observedTokens": null,
+          "observedCostUsd": null,
+          "declaredPromptTokens": null,
+          "delta": {
+            "wallClockMs": null,
+            "attempts": null,
+            "bytesReadIntoContext": null,
+            "commandsRun": null,
+            "stepCount": null,
+            "authorshipSnapshots": null,
+            "authorshipMs": null,
+            "authorshipBytes": null,
+            "authorshipCommands": null,
+            "authorshipMeanMs": null,
+            "authorshipPeakBytes": null,
+            "hookRuns": null,
+            "hookMs": null,
+            "hookMeanMs": null,
+            "hookPeakMs": null,
+            "observedTokens": null,
+            "observedCostUsd": null,
+            "declaredPromptTokens": null
+          }
+        },
+        {
+          "role": "reviewer",
+          "wallClockMs": null,
+          "attempts": null,
+          "bytesReadIntoContext": null,
+          "commandsRun": null,
+          "stepCount": null,
+          "authorshipSnapshots": null,
+          "authorshipMs": null,
+          "authorshipBytes": null,
+          "authorshipCommands": null,
+          "authorshipMeanMs": null,
+          "authorshipPeakBytes": null,
+          "hookRuns": null,
+          "hookMs": null,
+          "hookMeanMs": null,
+          "hookPeakMs": null,
+          "observedTokens": null,
+          "observedCostUsd": null,
+          "declaredPromptTokens": null,
+          "delta": {
+            "wallClockMs": null,
+            "attempts": null,
+            "bytesReadIntoContext": null,
+            "commandsRun": null,
+            "stepCount": null,
+            "authorshipSnapshots": null,
+            "authorshipMs": null,
+            "authorshipBytes": null,
+            "authorshipCommands": null,
+            "authorshipMeanMs": null,
+            "authorshipPeakBytes": null,
+            "hookRuns": null,
+            "hookMs": null,
+            "hookMeanMs": null,
+            "hookPeakMs": null,
+            "observedTokens": null,
+            "observedCostUsd": null,
+            "declaredPromptTokens": null
+          }
+        },
+        {
+          "role": "release-close",
+          "wallClockMs": null,
+          "attempts": null,
+          "bytesReadIntoContext": null,
+          "commandsRun": null,
+          "stepCount": null,
+          "authorshipSnapshots": null,
+          "authorshipMs": null,
+          "authorshipBytes": null,
+          "authorshipCommands": null,
+          "authorshipMeanMs": null,
+          "authorshipPeakBytes": null,
+          "hookRuns": null,
+          "hookMs": null,
+          "hookMeanMs": null,
+          "hookPeakMs": null,
+          "observedTokens": null,
+          "observedCostUsd": null,
+          "declaredPromptTokens": null,
+          "delta": {
+            "wallClockMs": null,
+            "attempts": null,
+            "bytesReadIntoContext": null,
+            "commandsRun": null,
+            "stepCount": null,
+            "authorshipSnapshots": null,
+            "authorshipMs": null,
+            "authorshipBytes": null,
+            "authorshipCommands": null,
+            "authorshipMeanMs": null,
+            "authorshipPeakBytes": null,
+            "hookRuns": null,
+            "hookMs": null,
+            "hookMeanMs": null,
+            "hookPeakMs": null,
+            "observedTokens": null,
+            "observedCostUsd": null,
+            "declaredPromptTokens": null
+          }
+        },
+        {
+          "role": "planner",
+          "wallClockMs": null,
+          "attempts": null,
+          "bytesReadIntoContext": null,
+          "commandsRun": null,
+          "stepCount": null,
+          "authorshipSnapshots": null,
+          "authorshipMs": null,
+          "authorshipBytes": null,
+          "authorshipCommands": null,
+          "authorshipMeanMs": null,
+          "authorshipPeakBytes": null,
+          "hookRuns": null,
+          "hookMs": null,
+          "hookMeanMs": null,
+          "hookPeakMs": null,
+          "observedTokens": null,
+          "observedCostUsd": null,
+          "declaredPromptTokens": null,
+          "delta": {
+            "wallClockMs": null,
+            "attempts": null,
+            "bytesReadIntoContext": null,
+            "commandsRun": null,
+            "stepCount": null,
+            "authorshipSnapshots": null,
+            "authorshipMs": null,
+            "authorshipBytes": null,
+            "authorshipCommands": null,
+            "authorshipMeanMs": null,
+            "authorshipPeakBytes": null,
+            "hookRuns": null,
+            "hookMs": null,
+            "hookMeanMs": null,
+            "hookPeakMs": null,
+            "observedTokens": null,
+            "observedCostUsd": null,
+            "declaredPromptTokens": null
+          }
+        },
+        {
+          "role": "refuter",
+          "wallClockMs": null,
+          "attempts": null,
+          "bytesReadIntoContext": null,
+          "commandsRun": null,
+          "stepCount": null,
+          "authorshipSnapshots": null,
+          "authorshipMs": null,
+          "authorshipBytes": null,
+          "authorshipCommands": null,
+          "authorshipMeanMs": null,
+          "authorshipPeakBytes": null,
+          "hookRuns": null,
+          "hookMs": null,
+          "hookMeanMs": null,
+          "hookPeakMs": null,
+          "observedTokens": null,
+          "observedCostUsd": null,
+          "declaredPromptTokens": null,
+          "delta": {
+            "wallClockMs": null,
+            "attempts": null,
+            "bytesReadIntoContext": null,
+            "commandsRun": null,
+            "stepCount": null,
+            "authorshipSnapshots": null,
+            "authorshipMs": null,
+            "authorshipBytes": null,
+            "authorshipCommands": null,
+            "authorshipMeanMs": null,
+            "authorshipPeakBytes": null,
+            "hookRuns": null,
+            "hookMs": null,
+            "hookMeanMs": null,
+            "hookPeakMs": null,
+            "observedTokens": null,
+            "observedCostUsd": null,
+            "declaredPromptTokens": null
+          }
+        }
+      ],
+      "usage": [
+        {
+          "workOrder": "WO-049",
+          "role": "executor",
+          "startedAt": "2026-09-16T19:27:03.551Z",
+          "durationMs": 99,
+          "observation": {
+            "activity": {
+              "stepCount": null,
+              "commandsRun": null,
+              "source": "unavailable"
+            },
+            "source": "unavailable",
+            "scope": "dispatch",
+            "observedAt": "2026-09-16T19:27:03.649Z",
+            "usage": {
+              "inputTokens": null,
+              "cachedInputTokens": null,
+              "cacheWriteInputTokens": null,
+              "outputTokens": null,
+              "reasoningOutputTokens": null,
+              "totalTokens": null,
+              "costUsd": null
+            },
+            "context": null
+          },
+          "recordedAt": "2026-09-16T19:27:03.650Z"
+        }
+      ],
+      "coldStart": [
+        {
+          "role": "executor",
+          "skillsRoot": ".claude/skills",
+          "bytes": 17930
+        },
+        {
+          "role": "verifier",
+          "skillsRoot": ".claude/skills",
+          "bytes": 15278
+        },
+        {
+          "role": "reviewer",
+          "skillsRoot": ".claude/skills",
+          "bytes": 16496
+        },
+        {
+          "role": "release-close",
+          "skillsRoot": ".claude/skills",
+          "bytes": 9870
+        },
+        {
+          "role": "planner",
+          "skillsRoot": ".claude/skills",
+          "bytes": 10942
+        },
+        {
+          "role": "refuter",
+          "skillsRoot": ".claude/skills",
+          "bytes": 11599
+        },
+        {
+          "role": "executor",
+          "skillsRoot": ".agents/skills",
+          "bytes": 17930
+        },
+        {
+          "role": "verifier",
+          "skillsRoot": ".agents/skills",
+          "bytes": 15278
+        },
+        {
+          "role": "reviewer",
+          "skillsRoot": ".agents/skills",
+          "bytes": 16496
+        },
+        {
+          "role": "release-close",
+          "skillsRoot": ".agents/skills",
+          "bytes": 9870
+        },
+        {
+          "role": "planner",
+          "skillsRoot": ".agents/skills",
+          "bytes": 10942
+        },
+        {
+          "role": "refuter",
+          "skillsRoot": ".agents/skills",
+          "bytes": 11599
+        }
+      ],
+      "sizes": {
+        "docs/planning/sequence.md": 4620,
+        "docs/planning/work-order-map.md": 218226,
+        "docs/work-orders/README.md": 238526,
+        "docs/lineage/idea-ledger.md": 676219,
+        "CLAUDE.md": 4763,
+        ".claude/skills/dotln-executor/SKILL.md": 13167,
+        ".claude/skills/dotln-verifier/SKILL.md": 10515,
+        ".claude/skills/dotln-reviewer/SKILL.md": 11733,
+        ".claude/skills/dotln-release-close/SKILL.md": 5107,
+        ".claude/skills/dotln-planner/SKILL.md": 6179,
+        ".claude/skills/dotln-refuter/SKILL.md": 6836,
+        ".agents/skills/dotln-executor/SKILL.md": 13167,
+        ".agents/skills/dotln-verifier/SKILL.md": 10515,
+        ".agents/skills/dotln-reviewer/SKILL.md": 11733,
+        ".agents/skills/dotln-release-close/SKILL.md": 5107,
+        ".agents/skills/dotln-planner/SKILL.md": 6179,
+        ".agents/skills/dotln-refuter/SKILL.md": 6836
+      },
+      "declared": {
+        "promptTokens": 669,
+        "supports": 8,
+        "units": 10,
+        "hooks": 9
+      },
+      "source": {
+        "phases": "canonical control fold",
+        "usage": "host observations",
+        "unobserved": "null means unavailable, never zero"
+      },
+      "delta": {
+        "elapsedMs": null,
+        "attempts": -3,
+        "gateMs": null,
+        "fastGateMs": null,
+        "readObligationCount": null,
+        "readObligationBytes": null,
+        "codeDiffBytes": null,
+        "readAmplification": null,
+        "machineryShare": null,
+        "elapsedPerCodeByte": null,
+        "tokens": null,
+        "costUsd": null,
+        "declaredPromptTokens": null,
+        "coldStartBytes": null,
+        "subjectCharacters": 34,
+        "gateStepCount": null,
+        "operatorCorrections": 1,
+        "guardRefusals": null,
+        "stopRefusals": null,
+        "reAnnouncements": null,
+        "manualCloseoutSteps": null,
+        "emergencyPasses": null,
+        "bypassTools": null,
+        "adHocScripts": null,
+        "commandsRun": null,
+        "bytesReadIntoContext": null,
+        "stepCount": null,
+        "authorshipSnapshots": null,
+        "authorshipMs": null,
+        "authorshipBytes": null,
+        "authorshipCommands": null,
+        "authorshipMeanMs": null,
+        "authorshipPeakBytes": null,
+        "hookRuns": null,
+        "hookMs": null,
+        "hookMeanMs": null,
+        "hookPeakMs": null,
+        "prBodyBytes": -1287
+      },
+      "sizeDeltas": {
+        "docs/planning/sequence.md": null,
+        "docs/planning/work-order-map.md": null,
+        "docs/work-orders/README.md": null,
+        "docs/lineage/idea-ledger.md": null,
+        "CLAUDE.md": null,
+        ".claude/skills/dotln-executor/SKILL.md": null,
+        ".claude/skills/dotln-verifier/SKILL.md": null,
+        ".claude/skills/dotln-reviewer/SKILL.md": null,
+        ".claude/skills/dotln-release-close/SKILL.md": null,
+        ".claude/skills/dotln-planner/SKILL.md": null,
+        ".claude/skills/dotln-refuter/SKILL.md": null,
+        ".agents/skills/dotln-executor/SKILL.md": null,
+        ".agents/skills/dotln-verifier/SKILL.md": null,
+        ".agents/skills/dotln-reviewer/SKILL.md": null,
+        ".agents/skills/dotln-release-close/SKILL.md": null,
+        ".agents/skills/dotln-planner/SKILL.md": null,
+        ".agents/skills/dotln-refuter/SKILL.md": null
+      }
+    }
+  ],
+  "costReconciliation": [
+    {
+      "workOrder": "WO-003",
+      "promisedRemoval": "Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).",
+      "observedAt": "2026-09-16T19:44:40.947Z",
+      "observedRows": [],
+      "ceilingMs": null,
+      "outcome": "unknown",
+      "planningInput": null,
+      "historicalMetrics": null
+    },
+    {
+      "workOrder": "WO-004",
+      "promisedRemoval": "Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).",
+      "observedAt": "2026-09-16T19:44:40.947Z",
+      "observedRows": [],
+      "ceilingMs": null,
+      "outcome": "unknown",
+      "planningInput": null,
+      "historicalMetrics": null
+    },
+    {
+      "workOrder": "WO-012",
+      "promisedRemoval": "Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).",
+      "observedAt": "2026-09-16T19:44:40.947Z",
+      "observedRows": [],
+      "ceilingMs": null,
+      "outcome": "unknown",
+      "planningInput": null,
+      "historicalMetrics": null
+    },
+    {
+      "workOrder": "WO-101",
+      "promisedRemoval": "Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).",
+      "observedAt": "2026-09-16T19:44:40.947Z",
+      "observedRows": [],
+      "ceilingMs": null,
+      "outcome": "unknown",
+      "planningInput": null,
+      "historicalMetrics": null
+    },
+    {
+      "workOrder": "WO-005",
+      "promisedRemoval": "Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).",
+      "observedAt": "2026-09-16T19:44:40.947Z",
+      "observedRows": [],
+      "ceilingMs": null,
+      "outcome": "unknown",
+      "planningInput": null,
+      "historicalMetrics": null
+    },
+    {
+      "workOrder": "WO-006",
+      "promisedRemoval": "Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).",
+      "observedAt": "2026-09-16T19:44:40.947Z",
+      "observedRows": [],
+      "ceilingMs": null,
+      "outcome": "unknown",
+      "planningInput": null,
+      "historicalMetrics": null
+    },
+    {
+      "workOrder": "WO-015",
+      "promisedRemoval": "Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).",
+      "observedAt": "2026-09-16T19:44:40.947Z",
+      "observedRows": [],
+      "ceilingMs": null,
+      "outcome": "unknown",
+      "planningInput": null,
+      "historicalMetrics": null
+    },
+    {
+      "workOrder": "WO-007",
+      "promisedRemoval": "Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).",
+      "observedAt": "2026-09-16T19:44:40.947Z",
+      "observedRows": [],
+      "ceilingMs": null,
+      "outcome": "unknown",
+      "planningInput": null,
+      "historicalMetrics": null
+    },
+    {
+      "workOrder": "WO-013",
+      "promisedRemoval": "Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).",
+      "observedAt": "2026-09-16T19:44:40.947Z",
+      "observedRows": [],
+      "ceilingMs": null,
+      "outcome": "unknown",
+      "planningInput": null,
+      "historicalMetrics": null
+    },
+    {
+      "workOrder": "WO-024",
+      "promisedRemoval": "Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).",
+      "observedAt": "2026-09-16T19:44:40.947Z",
+      "observedRows": [],
+      "ceilingMs": null,
+      "outcome": "unknown",
+      "planningInput": null,
+      "historicalMetrics": null
+    },
+    {
+      "workOrder": "WO-025",
+      "promisedRemoval": "Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).",
+      "observedAt": "2026-09-16T19:44:40.947Z",
+      "observedRows": [],
+      "ceilingMs": null,
+      "outcome": "unknown",
+      "planningInput": null,
+      "historicalMetrics": null
+    },
+    {
+      "workOrder": "WO-019",
+      "promisedRemoval": "Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).",
+      "observedAt": "2026-09-16T19:44:40.947Z",
+      "observedRows": [],
+      "ceilingMs": null,
+      "outcome": "unknown",
+      "planningInput": null,
+      "historicalMetrics": null
+    },
+    {
+      "workOrder": "WO-027",
+      "promisedRemoval": "Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).",
+      "observedAt": "2026-09-16T19:44:40.947Z",
+      "observedRows": [],
+      "ceilingMs": null,
+      "outcome": "unknown",
+      "planningInput": null,
+      "historicalMetrics": null
+    },
+    {
+      "workOrder": "WO-017",
+      "promisedRemoval": "Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).",
+      "observedAt": "2026-09-16T19:44:40.947Z",
+      "observedRows": [],
+      "ceilingMs": null,
+      "outcome": "unknown",
+      "planningInput": null,
+      "historicalMetrics": null
+    },
+    {
+      "workOrder": "WO-016",
+      "promisedRemoval": "Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).",
+      "observedAt": "2026-09-16T19:44:40.947Z",
+      "observedRows": [],
+      "ceilingMs": null,
+      "outcome": "unknown",
+      "planningInput": null,
+      "historicalMetrics": null
+    },
+    {
+      "workOrder": "WO-008",
+      "promisedRemoval": "Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).",
+      "observedAt": "2026-09-16T19:44:40.947Z",
+      "observedRows": [],
+      "ceilingMs": null,
+      "outcome": "unknown",
+      "planningInput": null,
+      "historicalMetrics": null
+    },
+    {
+      "workOrder": "WO-018",
+      "promisedRemoval": "Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).",
+      "observedAt": "2026-09-16T19:44:40.947Z",
+      "observedRows": [],
+      "ceilingMs": null,
+      "outcome": "unknown",
+      "planningInput": null,
+      "historicalMetrics": null
+    },
+    {
+      "workOrder": "WO-023",
+      "promisedRemoval": "Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).",
+      "observedAt": "2026-09-16T19:44:40.947Z",
+      "observedRows": [],
+      "ceilingMs": null,
+      "outcome": "unknown",
+      "planningInput": null,
+      "historicalMetrics": null
+    },
+    {
+      "workOrder": "WO-028",
+      "promisedRemoval": "Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).",
+      "observedAt": "2026-09-16T19:44:40.947Z",
+      "observedRows": [],
+      "ceilingMs": null,
+      "outcome": "unknown",
+      "planningInput": null,
+      "historicalMetrics": null
+    },
+    {
+      "workOrder": "WO-026",
+      "promisedRemoval": "Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).",
+      "observedAt": "2026-09-16T19:44:40.947Z",
+      "observedRows": [],
+      "ceilingMs": null,
+      "outcome": "unknown",
+      "planningInput": null,
+      "historicalMetrics": null
+    },
+    {
+      "workOrder": "WO-020",
+      "promisedRemoval": "Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).",
+      "observedAt": "2026-09-16T19:44:40.947Z",
+      "observedRows": [],
+      "ceilingMs": null,
+      "outcome": "unknown",
+      "planningInput": null,
+      "historicalMetrics": null
+    },
+    {
+      "workOrder": "WO-030",
+      "promisedRemoval": "Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).",
+      "observedAt": "2026-09-16T19:44:40.947Z",
+      "observedRows": [],
+      "ceilingMs": null,
+      "outcome": "unknown",
+      "planningInput": null,
+      "historicalMetrics": null
+    },
+    {
+      "workOrder": "WO-021",
+      "promisedRemoval": "Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).",
+      "observedAt": "2026-09-16T19:44:40.947Z",
+      "observedRows": [],
+      "ceilingMs": null,
+      "outcome": "unknown",
+      "planningInput": null,
+      "historicalMetrics": null
+    },
+    {
+      "workOrder": "WO-029",
+      "promisedRemoval": "Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).",
+      "observedAt": "2026-09-16T19:44:40.947Z",
+      "observedRows": [],
+      "ceilingMs": null,
+      "outcome": "unknown",
+      "planningInput": null,
+      "historicalMetrics": null
+    },
+    {
+      "workOrder": "WO-009",
+      "promisedRemoval": "Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).",
+      "observedAt": "2026-09-16T19:44:40.947Z",
+      "observedRows": [],
+      "ceilingMs": null,
+      "outcome": "unknown",
+      "planningInput": null,
+      "historicalMetrics": null
+    },
+    {
+      "workOrder": "WO-031",
+      "promisedRemoval": "Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).",
+      "observedAt": "2026-09-16T19:44:40.947Z",
+      "observedRows": [],
+      "ceilingMs": null,
+      "outcome": "unknown",
+      "planningInput": null,
+      "historicalMetrics": null
+    },
+    {
+      "workOrder": "WO-022",
+      "promisedRemoval": "Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).",
+      "observedAt": "2026-09-16T19:44:40.947Z",
+      "observedRows": [],
+      "ceilingMs": null,
+      "outcome": "unknown",
+      "planningInput": null,
+      "historicalMetrics": null
+    },
+    {
+      "workOrder": "WO-010",
+      "promisedRemoval": "Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).",
+      "observedAt": "2026-09-16T19:44:40.947Z",
+      "observedRows": [],
+      "ceilingMs": null,
+      "outcome": "unknown",
+      "planningInput": null,
+      "historicalMetrics": null
+    },
+    {
+      "workOrder": "WO-011",
+      "promisedRemoval": "Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).",
+      "observedAt": "2026-09-16T19:44:40.947Z",
+      "observedRows": [],
+      "ceilingMs": null,
+      "outcome": "unknown",
+      "planningInput": null,
+      "historicalMetrics": null
+    },
+    {
+      "workOrder": "WO-108",
+      "promisedRemoval": "Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).",
+      "observedAt": "2026-09-16T19:44:40.947Z",
+      "observedRows": [],
+      "ceilingMs": null,
+      "outcome": "unknown",
+      "planningInput": null,
+      "historicalMetrics": null
+    },
+    {
+      "workOrder": "WO-038",
+      "promisedRemoval": "Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).",
+      "observedAt": "2026-09-16T19:44:40.947Z",
+      "observedRows": [],
+      "ceilingMs": null,
+      "outcome": "unknown",
+      "planningInput": null,
+      "historicalMetrics": null
+    },
+    {
+      "workOrder": "WO-041",
+      "promisedRemoval": "Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).",
+      "observedAt": "2026-09-16T19:44:40.947Z",
+      "observedRows": [],
+      "ceilingMs": null,
+      "outcome": "unknown",
+      "planningInput": null,
+      "historicalMetrics": null
+    },
+    {
+      "workOrder": "WO-032",
+      "promisedRemoval": "Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).",
+      "observedAt": "2026-09-16T19:44:40.947Z",
+      "observedRows": [],
+      "ceilingMs": null,
+      "outcome": "unknown",
+      "planningInput": null,
+      "historicalMetrics": null
+    },
+    {
+      "workOrder": "WO-109",
+      "promisedRemoval": "Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).",
+      "observedAt": "2026-09-16T19:44:40.947Z",
+      "observedRows": [],
+      "ceilingMs": null,
+      "outcome": "unknown",
+      "planningInput": null,
+      "historicalMetrics": null
+    },
+    {
+      "workOrder": "WO-039",
+      "promisedRemoval": "Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).",
+      "observedAt": "2026-09-16T19:44:40.947Z",
+      "observedRows": [],
+      "ceilingMs": null,
+      "outcome": "unknown",
+      "planningInput": null,
+      "historicalMetrics": null
+    },
+    {
+      "workOrder": "WO-042",
+      "promisedRemoval": "Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).",
+      "observedAt": "2026-09-16T19:44:40.947Z",
+      "observedRows": [],
+      "ceilingMs": null,
+      "outcome": "unknown",
+      "planningInput": null,
+      "historicalMetrics": null
+    },
+    {
+      "workOrder": "WO-126",
+      "promisedRemoval": "adds one fast gate run per turn end (under 120 s), one cost line per order, and the meter's run per order; removes the byte reads of inherited and generated outputs (5,305,410 bytes at WO-042's review), the full suite at every turn end and at the tag, the hand-written closeout, the whole-map planner read (184,668 bytes) and the whole-horizon refutation for a one-order pass. Net: hours per order and hundreds of kilobytes per session removed for seconds added.",
+      "observedAt": "2026-09-16T19:44:40.947Z",
+      "observedRows": [],
+      "ceilingMs": null,
+      "outcome": "unknown",
+      "planningInput": null,
+      "historicalMetrics": {
+        "source": "docs/evidence/WO-126/meta.json",
+        "cutoff": "2026-09-10T02:54:25.067Z",
+        "metrics": {
+          "elapsedMs": 18579222,
+          "attempts": 2,
+          "gateMs": 3716712,
+          "fastGateMs": 108717,
+          "readObligationCount": 3,
+          "readObligationBytes": 41539,
+          "codeDiffBytes": 692568,
+          "readAmplification": 0.05997822596481501,
+          "machineryShare": 0.09024602860119761,
+          "elapsedPerCodeByte": 26.826567210728765,
+          "tokens": 128922679,
+          "costUsd": null,
+          "declaredPromptTokens": 504,
+          "coldStartBytes": 11782,
+          "subjectCharacters": 91,
+          "gateStepCount": 12,
+          "operatorCorrections": 2,
+          "guardRefusals": 0,
+          "stopRefusals": 0,
+          "reAnnouncements": null,
+          "manualCloseoutSteps": null,
+          "emergencyPasses": null,
+          "bypassTools": null,
+          "adHocScripts": null,
+          "commandsRun": 211,
+          "bytesReadIntoContext": 564755122,
+          "stepCount": 236,
+          "authorshipSnapshots": 5,
+          "authorshipMs": 667.442083,
+          "authorshipBytes": 35102051,
+          "authorshipCommands": 10,
+          "authorshipMeanMs": 133.4884166,
+          "authorshipPeakBytes": 7038523,
+          "prBodyBytes": 3128
+        }
+      }
+    },
+    {
+      "workOrder": "WO-127",
+      "promisedRemoval": "Adds bounded closeout enumeration and byte verification for retained local records, plus focused regression cases; removes manual archival and a full release gate that rejects unchanged planning inputs after execution commits. Focused preservation fixtures took 1517.638 ms and the planning-cost regression took 875.693 ms; retain measured observations without inventing caps.",
+      "observedAt": "2026-09-16T19:44:40.947Z",
+      "observedRows": [],
+      "ceilingMs": null,
+      "outcome": "unknown",
+      "planningInput": null,
+      "historicalMetrics": null
+    },
+    {
+      "workOrder": "WO-043",
+      "promisedRemoval": "Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).",
+      "observedAt": "2026-09-16T19:44:40.947Z",
+      "observedRows": [],
+      "ceilingMs": null,
+      "outcome": "unknown",
+      "planningInput": null,
+      "historicalMetrics": {
+        "source": "docs/evidence/WO-043/meta.json",
+        "cutoff": "2026-09-11T17:56:24.687Z",
+        "metrics": {
+          "elapsedMs": 40453399,
+          "attempts": 5,
+          "gateMs": 5124955,
+          "fastGateMs": null,
+          "readObligationCount": 9,
+          "readObligationBytes": 126327,
+          "codeDiffBytes": 314404,
+          "readAmplification": 0.4017983231765499,
+          "machineryShare": 0.11257061489443693,
+          "elapsedPerCodeByte": 128.66693489904708,
+          "tokens": 74440475,
+          "costUsd": null,
+          "declaredPromptTokens": 658,
+          "coldStartBytes": 12881,
+          "subjectCharacters": null,
+          "gateStepCount": 37,
+          "operatorCorrections": 0,
+          "guardRefusals": 11,
+          "stopRefusals": 0,
+          "reAnnouncements": null,
+          "manualCloseoutSteps": null,
+          "emergencyPasses": null,
+          "bypassTools": null,
+          "adHocScripts": null,
+          "commandsRun": 156,
+          "bytesReadIntoContext": 115815398,
+          "stepCount": 249,
+          "authorshipSnapshots": 345,
+          "authorshipMs": 54928.80108699996,
+          "authorshipBytes": 1346659725,
+          "authorshipCommands": 690,
+          "authorshipMeanMs": 159.2139161942028,
+          "authorshipPeakBytes": 5419214,
+          "hookRuns": 1506,
+          "hookMs": 452546.8300879996,
+          "hookMeanMs": 300.49590311288154,
+          "hookPeakMs": 11070.990666,
+          "prBodyBytes": 3064
+        }
+      }
+    },
+    {
+      "workOrder": "WO-125",
+      "promisedRemoval": "Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).",
+      "observedAt": "2026-09-16T19:44:40.947Z",
+      "observedRows": [],
+      "ceilingMs": null,
+      "outcome": "unknown",
+      "planningInput": null,
+      "historicalMetrics": null
+    },
+    {
+      "workOrder": "WO-128",
+      "promisedRemoval": "adds one operator-run measurement series inside the order (five fresh full gates at the 2026-09-12 durations of 476–839 s, once, or twice if the shared-cap series fails and the retained configuration is measured again) and one diagnostic record per deadline hit (bytes on disk, no context read); adds no step to any phase. Removes the failed fresh full gate and its rerun: on 2026-09-11/12 twelve fresh full gates across WO-043, WO-125 and WO-127 failed on a load-sensitive deadline or on a tree changed during the run, 8,387 s in total, and each was followed by a passing rerun of 41–419 s. If the exclusivity re-measurement passes, it also removes up to 206 s of concurrency-one time per fresh gate, the `harness-fixtures` and `process-debt` spans measured at 2026-09-12T16:08Z. Context bytes, commands and tokens per gate are unchanged; gate runs per phase drop from two to one.",
+      "observedAt": "2026-09-16T19:44:40.947Z",
+      "observedRows": [],
+      "ceilingMs": null,
+      "outcome": "unknown",
+      "planningInput": null,
+      "historicalMetrics": null
+    },
+    {
+      "workOrder": "WO-129",
+      "promisedRemoval": "adds one declaration lookup per suite and one explanation line per fresh task per gate; the shared cache adds no per-gate work and one directory under the Git common directory. Removes the fully fresh full gate that today follows every lifecycle transition: five of WO-125's ten fresh full runs (3,876 s) followed a transition with no source change and re-executed all 78 tasks; at the current scope coverage they compose as 32-fresh/46-reused runs (observed 243–419 s on 2026-09-11/12), and after WO-130 as 10-fresh/68-reused runs (observed 41–47 s). The release close's full gate on main (78 fresh tasks, 476 s at 2026-09-12T16:08Z) cannot reuse the reviewed worktree's successes today because the cache is per worktree and the key hashes the path and `HEAD`. Steps, commands and tokens per phase are unchanged.",
+      "observedAt": "2026-09-16T19:44:40.947Z",
+      "observedRows": [],
+      "ceilingMs": null,
+      "outcome": "unknown",
+      "planningInput": null,
+      "historicalMetrics": null
+    },
+    {
+      "workOrder": "WO-130",
+      "promisedRemoval": "adds one plain copy of the installed roots per fresh gate (43 MB of `node_modules`, 2.5 MB of package builds and 10 MB of the pinned harness snapshot, about 1,400 files, measured 2026-09-12) and one copy of each narrowed suite's declared paths per fresh execution of that suite, in ignored scratch; no step, command or prompt. Removes the re-execution of the package suites after changes to source they never read: today every reusable suite's key selects every non-document candidate file, so a change under `scripts/`, `corpus/` or a fixture re-executes `kernel`, `compiler` and `skeleton` (89–162 s for `skeleton` alone on 2026-09-12) although a declaration covering only their built packages and declared documents would reuse them. The post-transition class is WO-129's removal and the document-only class is WO-131's; neither is counted here.",
+      "observedAt": "2026-09-16T19:44:40.947Z",
+      "observedRows": [],
+      "ceilingMs": null,
+      "outcome": "unknown",
+      "planningInput": null,
+      "historicalMetrics": null
+    },
+    {
+      "workOrder": "WO-131",
+      "promisedRemoval": "adds path and environment declarations per narrowed suite and, where the host permits a kernel sandbox, one availability probe per gate; no added prompt, command or operator step per gate beyond WO-130's replica copies. The release-close and installed-link repairs add bounded regression fixtures. Removes the whole-tree executions from every document-only gate: on 2026-09-11/12 the composed gates after a report write ran 32 fresh tasks in 243–419 s while identical-tree reruns ran 10 fresh tasks in 41–47 s; the difference is the whole-tree class re-executing for bytes it never read. The current-tree checks (`format`, `index`, `publication`, `plan` and the evidence checks that read the real repository) and the live checks always execute, so the measured target is the build, preparation and those checks; the `plan` check alone took 33–35 s on 2026-09-12. The post-transition class is WO-129's removal and is not counted here. Criteria 7, 10 and 11 also remove repeated declared-suite execution across role and release-close sessions; their host rows must measure the wall-clock removal, with token and context changes reported as observed or unavailable.",
+      "observedAt": "2026-09-16T19:44:40.947Z",
+      "observedRows": [],
+      "ceilingMs": null,
+      "outcome": "unknown",
+      "planningInput": null,
+      "historicalMetrics": null
+    },
+    {
+      "workOrder": "WO-044",
+      "promisedRemoval": "Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).",
+      "observedAt": "2026-09-16T19:44:40.947Z",
+      "observedRows": [],
+      "ceilingMs": null,
+      "outcome": "unknown",
+      "planningInput": null,
+      "historicalMetrics": null
+    },
+    {
+      "workOrder": "WO-132",
+      "promisedRemoval": "adds nothing recurring: no new check, receipt, hook, key or ritual. Removes, per order, every gate run that a lifecycle transition demanded (on 2026-09-15 the operator's host ran eight full gates of 633, 634, 648, 644, 570, 67, 71 and 605 s, six of them cold with 78–82 fresh tasks; WO-044's close alone paid five, about 52 minutes) and the fresh gate, `npm ci` and CLI smoke row at release close (605 s, 82 fresh, 0 reused at v0.17.7); removes the replica copies, kernel-denial probes, per-task expansion and the isolated 135 s runner suite from the default gate, whose estimated fresh wall-clock with only product and lifecycle suites is about 250 s against 605 s today; removes the effort, version and readback refusals and their dated-amendment round trips, the main-branch shell refusals that cost the v0.17.6 close two override episodes and this pass's opening, and the refutation loop that cost the 2026-09-12 pass three holds at 2,454, 833 and 333 s and the 2026-09-13 refresh a fourth at 755 s. Context bytes and tokens per session fall by the refusal reads and the report-edit/gate loop; commands per order fall by the override round trips. No reduction is claimed for the product suites themselves.",
+      "observedAt": "2026-09-16T19:44:40.947Z",
+      "observedRows": [],
+      "ceilingMs": null,
+      "outcome": "unknown",
+      "planningInput": null,
+      "historicalMetrics": null
+    },
+    {
+      "workOrder": "WO-067",
+      "promisedRemoval": "Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).",
+      "observedAt": "2026-09-16T19:44:40.947Z",
+      "observedRows": [],
+      "ceilingMs": null,
+      "outcome": "unknown",
+      "planningInput": null,
+      "historicalMetrics": null
+    },
+    {
+      "workOrder": "WO-045",
+      "promisedRemoval": "Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).",
+      "observedAt": "2026-09-16T19:44:40.947Z",
+      "observedRows": [],
+      "ceilingMs": null,
+      "outcome": "unknown",
+      "planningInput": null,
+      "historicalMetrics": null
+    },
+    {
+      "workOrder": "WO-046",
+      "promisedRemoval": "Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).",
+      "observedAt": "2026-09-16T19:44:40.947Z",
+      "observedRows": [],
+      "ceilingMs": null,
+      "outcome": "unknown",
+      "planningInput": null,
+      "historicalMetrics": null
+    },
+    {
+      "workOrder": "WO-048",
+      "promisedRemoval": "Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).",
+      "observedAt": "2026-09-16T19:44:40.947Z",
+      "observedRows": [],
+      "ceilingMs": null,
+      "outcome": "unknown",
+      "planningInput": null,
+      "historicalMetrics": null
+    },
+    {
+      "workOrder": "WO-050",
+      "promisedRemoval": "Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).",
+      "observedAt": "2026-09-16T19:44:40.947Z",
+      "observedRows": [],
+      "ceilingMs": null,
+      "outcome": "unknown",
+      "planningInput": null,
+      "historicalMetrics": null
+    },
+    {
+      "workOrder": "WO-047",
+      "promisedRemoval": "Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).",
+      "observedAt": "2026-09-16T19:44:40.947Z",
+      "observedRows": [],
+      "ceilingMs": null,
+      "outcome": "unknown",
+      "planningInput": null,
+      "historicalMetrics": null
+    },
+    {
+      "workOrder": "WO-133",
+      "promisedRemoval": "adds no recurring step, check, receipt, hook, key or ritual; adds one `npm run build` (3.9 s measured) to a release close or worktree finish whose fast-forward changed the pinned runtime. Removes, per session on main after a close, the advisory that today repeats on every hook event (344 journal rows between 2026-09-16T00:08Z and 03:03Z in one session, two per Bash call) and the rebuild the operator has to remember (seven closes on 2026-09-15); removes the `unknown` model and effort that every completion since 2026-09-15T18:22Z has recorded although the operator selected both; removes about 400 s from every reviewer gate whose only change under `harness-host.ts` or `loadouts/` is a version literal (observed 625, 663, 716, 807 and 840 s with `harness-fixtures` and `process-debt` selected against 191 to 413 s without; five of the seven reviewer gates since WO-132 paid it). Context bytes and tokens per session fall by the flood's lines.",
+      "observedAt": "2026-09-16T19:44:40.947Z",
+      "observedRows": [],
+      "ceilingMs": null,
+      "outcome": "unknown",
+      "planningInput": null,
+      "historicalMetrics": null
+    },
+    {
+      "workOrder": "WO-068",
+      "promisedRemoval": "adds the process the operator runs, which is the product the vision's first sentence names; one slice and fold, two commands, about 5 s of fixture wall-clock with a fake clock and doubles; no receipt, hook or gate. Removes nothing that exists in DotLn today; in the operator's practice it replaces v1's harness-resident crons, and in the critical path it unblocks gate R: WO-099, WO-100, WO-114, WO-115, WO-119, WO-121, WO-122 and WO-123 hard-depend on it. Context bytes and tokens are unmeasured; the executor records entry and handoff usage when available.",
+      "observedAt": "2026-09-16T19:44:40.947Z",
+      "observedRows": [],
+      "ceilingMs": null,
+      "outcome": "unknown",
+      "planningInput": null,
+      "historicalMetrics": null
+    },
+    {
+      "workOrder": "WO-134",
+      "promisedRemoval": "adds no recurring step, check, receipt, hook, key or ritual; adds one test case to an existing suite. It removes an operator correction per same-day planning pass and removes the silent wrong-pass selection that currently depends on a documented but unchecked ledger convention.",
+      "observedAt": "2026-09-16T19:44:40.947Z",
+      "observedRows": [],
+      "ceilingMs": null,
+      "outcome": "unknown",
+      "planningInput": null,
+      "historicalMetrics": null
+    }
+  ],
+  "unassignedDispatches": [],
+  "coldStart": {
+    "schemaVersion": 2,
+    "comparisonEdition": "v0.16.0",
+    "method": "Installed CLAUDE.md plus the installed role skill only; source bytes, no task documents or estimated tokens.",
+    "instruction": {
+      "path": "CLAUDE.md",
+      "bytes": 4763,
+      "previousBytes": 3593
+    },
+    "profiles": [
+      {
+        "role": "executor",
+        "skillsRoot": ".claude/skills",
+        "path": ".claude/skills/dotln-executor/SKILL.md",
+        "skillBytes": 13167,
+        "bytes": 17930,
+        "previousBytes": 10847,
+        "delta": 7083,
+        "ceiling": 20480,
+        "metric": "coldStartBytes.executor",
+        "verdict": "within"
+      },
+      {
+        "role": "verifier",
+        "skillsRoot": ".claude/skills",
+        "path": ".claude/skills/dotln-verifier/SKILL.md",
+        "skillBytes": 10515,
+        "bytes": 15278,
+        "previousBytes": 8232,
+        "delta": 7046,
+        "ceiling": 16384,
+        "metric": "coldStartBytes.verifier",
+        "verdict": "within"
+      },
+      {
+        "role": "reviewer",
+        "skillsRoot": ".claude/skills",
+        "path": ".claude/skills/dotln-reviewer/SKILL.md",
+        "skillBytes": 11733,
+        "bytes": 16496,
+        "previousBytes": 8665,
+        "delta": 7831,
+        "ceiling": 16384,
+        "metric": "coldStartBytes.reviewer",
+        "verdict": "breach"
+      },
+      {
+        "role": "release-close",
+        "skillsRoot": ".claude/skills",
+        "path": ".claude/skills/dotln-release-close/SKILL.md",
+        "skillBytes": 5107,
+        "bytes": 9870,
+        "previousBytes": 6107,
+        "delta": 3763,
+        "ceiling": 8192,
+        "metric": "coldStartBytes.release-close",
+        "verdict": "breach"
+      },
+      {
+        "role": "planner",
+        "skillsRoot": ".claude/skills",
+        "path": ".claude/skills/dotln-planner/SKILL.md",
+        "skillBytes": 6179,
+        "bytes": 10942,
+        "previousBytes": 5455,
+        "delta": 5487,
+        "ceiling": 24576,
+        "metric": "coldStartBytes.planner",
+        "verdict": "within"
+      },
+      {
+        "role": "refuter",
+        "skillsRoot": ".claude/skills",
+        "path": ".claude/skills/dotln-refuter/SKILL.md",
+        "skillBytes": 6836,
+        "bytes": 11599,
+        "previousBytes": null,
+        "delta": null,
+        "ceiling": null,
+        "metric": "coldStartBytes.refuter",
+        "verdict": "unset"
+      },
+      {
+        "role": "executor",
+        "skillsRoot": ".agents/skills",
+        "path": ".agents/skills/dotln-executor/SKILL.md",
+        "skillBytes": 13167,
+        "bytes": 17930,
+        "previousBytes": 12012,
+        "delta": 5918,
+        "ceiling": 20480,
+        "metric": "coldStartBytes.executor",
+        "verdict": "within"
+      },
+      {
+        "role": "verifier",
+        "skillsRoot": ".agents/skills",
+        "path": ".agents/skills/dotln-verifier/SKILL.md",
+        "skillBytes": 10515,
+        "bytes": 15278,
+        "previousBytes": 9397,
+        "delta": 5881,
+        "ceiling": 16384,
+        "metric": "coldStartBytes.verifier",
+        "verdict": "within"
+      },
+      {
+        "role": "reviewer",
+        "skillsRoot": ".agents/skills",
+        "path": ".agents/skills/dotln-reviewer/SKILL.md",
+        "skillBytes": 11733,
+        "bytes": 16496,
+        "previousBytes": 9830,
+        "delta": 6666,
+        "ceiling": 16384,
+        "metric": "coldStartBytes.reviewer",
+        "verdict": "breach"
+      },
+      {
+        "role": "release-close",
+        "skillsRoot": ".agents/skills",
+        "path": ".agents/skills/dotln-release-close/SKILL.md",
+        "skillBytes": 5107,
+        "bytes": 9870,
+        "previousBytes": 7272,
+        "delta": 2598,
+        "ceiling": 8192,
+        "metric": "coldStartBytes.release-close",
+        "verdict": "breach"
+      },
+      {
+        "role": "planner",
+        "skillsRoot": ".agents/skills",
+        "path": ".agents/skills/dotln-planner/SKILL.md",
+        "skillBytes": 6179,
+        "bytes": 10942,
+        "previousBytes": 6620,
+        "delta": 4322,
+        "ceiling": 24576,
+        "metric": "coldStartBytes.planner",
+        "verdict": "within"
+      },
+      {
+        "role": "refuter",
+        "skillsRoot": ".agents/skills",
+        "path": ".agents/skills/dotln-refuter/SKILL.md",
+        "skillBytes": 6836,
+        "bytes": 11599,
+        "previousBytes": null,
+        "delta": null,
+        "ceiling": null,
+        "metric": "coldStartBytes.refuter",
+        "verdict": "unset"
+      }
+    ]
+  },
+  "declared": {
+    "promptTokens": 669,
+    "supports": 8,
+    "units": 10,
+    "hooks": 9
+  },
+  "sizes": {
+    "docs/planning/sequence.md": 4620,
+    "docs/planning/work-order-map.md": 218226,
+    "docs/work-orders/README.md": 238526,
+    "docs/lineage/idea-ledger.md": 676219,
+    "CLAUDE.md": 4763,
+    ".claude/skills/dotln-executor/SKILL.md": 13167,
+    ".claude/skills/dotln-verifier/SKILL.md": 10515,
+    ".claude/skills/dotln-reviewer/SKILL.md": 11733,
+    ".claude/skills/dotln-release-close/SKILL.md": 5107,
+    ".claude/skills/dotln-planner/SKILL.md": 6179,
+    ".claude/skills/dotln-refuter/SKILL.md": 6836,
+    ".agents/skills/dotln-executor/SKILL.md": 13167,
+    ".agents/skills/dotln-verifier/SKILL.md": 10515,
+    ".agents/skills/dotln-reviewer/SKILL.md": 11733,
+    ".agents/skills/dotln-release-close/SKILL.md": 5107,
+    ".agents/skills/dotln-planner/SKILL.md": 6179,
+    ".agents/skills/dotln-refuter/SKILL.md": 6836
+  },
+  "subjects": [
+    {
+      "title": ":mute: A stale runtime is reported once per session, and closing a release rebuilds it #72",
+      "characters": 90,
+      "workOrder": null
+    },
+    {
+      "title": ":sparkles: An offline resident now runs the compiled presence policy while the operator is away #73",
+      "characters": 99,
+      "workOrder": null
+    },
+    {
+      "title": "Judge the runtime.resident capability claim and clear B1 #74",
+      "characters": 60,
+      "workOrder": null
+    },
+    {
+      "title": "Record the session defects and file WO-134 #75",
+      "characters": 46,
+      "workOrder": "WO-134"
+    },
+    {
+      "title": ":bug: Keep same-day planning reviews on the current pass #76",
+      "characters": 60,
+      "workOrder": null
+    }
+  ],
+  "budgets": [
+    {
+      "metric": "coldStartBytes.executor",
+      "value": 17930,
+      "ceiling": 20480,
+      "verdict": "within"
+    },
+    {
+      "metric": "coldStartBytes.verifier",
+      "value": 15278,
+      "ceiling": 16384,
+      "verdict": "within"
+    },
+    {
+      "metric": "coldStartBytes.reviewer",
+      "value": 16496,
+      "ceiling": 16384,
+      "verdict": "breach"
+    },
+    {
+      "metric": "coldStartBytes.release-close",
+      "value": 9870,
+      "ceiling": 8192,
+      "verdict": "breach"
+    },
+    {
+      "metric": "coldStartBytes.planner",
+      "value": 10942,
+      "ceiling": 24576,
+      "verdict": "within"
+    },
+    {
+      "metric": "coldStartBytes.refuter",
+      "value": 11599,
+      "ceiling": null,
+      "verdict": "unset"
+    },
+    {
+      "metric": "coldStartBytes.executor",
+      "value": 17930,
+      "ceiling": 20480,
+      "verdict": "within"
+    },
+    {
+      "metric": "coldStartBytes.verifier",
+      "value": 15278,
+      "ceiling": 16384,
+      "verdict": "within"
+    },
+    {
+      "metric": "coldStartBytes.reviewer",
+      "value": 16496,
+      "ceiling": 16384,
+      "verdict": "breach"
+    },
+    {
+      "metric": "coldStartBytes.release-close",
+      "value": 9870,
+      "ceiling": 8192,
+      "verdict": "breach"
+    },
+    {
+      "metric": "coldStartBytes.planner",
+      "value": 10942,
+      "ceiling": 24576,
+      "verdict": "within"
+    },
+    {
+      "metric": "coldStartBytes.refuter",
+      "value": 11599,
+      "ceiling": null,
+      "verdict": "unset"
+    },
+    {
+      "metric": "sequenceBytes",
+      "value": 4620,
+      "ceiling": 8192,
+      "verdict": "within"
+    },
+    {
+      "metric": "fastGateMs",
+      "scope": "WO-049",
+      "value": null,
+      "ceiling": 120000,
+      "verdict": "unavailable"
+    },
+    {
+      "metric": "prBodyBytes",
+      "scope": "WO-049",
+      "value": 3167,
+      "ceiling": null,
+      "verdict": "unset"
+    },
+    {
+      "metric": "executor.tokens",
+      "scope": "WO-049",
+      "dispatchStartedAt": "2026-09-16T19:27:03.551Z",
+      "value": null,
+      "ceiling": null,
+      "verdict": "unset"
+    },
+    {
+      "metric": "executor.costUsd",
+      "scope": "WO-049",
+      "dispatchStartedAt": "2026-09-16T19:27:03.551Z",
+      "value": null,
+      "ceiling": null,
+      "verdict": "unset"
+    },
+    {
+      "metric": "verifier.tokens",
+      "scope": "WO-049",
+      "dispatchStartedAt": null,
+      "value": null,
+      "ceiling": null,
+      "verdict": "unset"
+    },
+    {
+      "metric": "verifier.costUsd",
+      "scope": "WO-049",
+      "dispatchStartedAt": null,
+      "value": null,
+      "ceiling": null,
+      "verdict": "unset"
+    },
+    {
+      "metric": "reviewer.tokens",
+      "scope": "WO-049",
+      "dispatchStartedAt": null,
+      "value": null,
+      "ceiling": null,
+      "verdict": "unset"
+    },
+    {
+      "metric": "reviewer.costUsd",
+      "scope": "WO-049",
+      "dispatchStartedAt": null,
+      "value": null,
+      "ceiling": null,
+      "verdict": "unset"
+    },
+    {
+      "metric": "release-close.tokens",
+      "scope": "WO-049",
+      "dispatchStartedAt": null,
+      "value": null,
+      "ceiling": null,
+      "verdict": "unset"
+    },
+    {
+      "metric": "release-close.costUsd",
+      "scope": "WO-049",
+      "dispatchStartedAt": null,
+      "value": null,
+      "ceiling": null,
+      "verdict": "unset"
+    },
+    {
+      "metric": "planner.tokens",
+      "scope": "WO-049",
+      "dispatchStartedAt": null,
+      "value": null,
+      "ceiling": null,
+      "verdict": "unset"
+    },
+    {
+      "metric": "planner.costUsd",
+      "scope": "WO-049",
+      "dispatchStartedAt": null,
+      "value": null,
+      "ceiling": null,
+      "verdict": "unset"
+    },
+    {
+      "metric": "refuter.tokens",
+      "scope": "WO-049",
+      "dispatchStartedAt": null,
+      "value": null,
+      "ceiling": null,
+      "verdict": "unset"
+    },
+    {
+      "metric": "refuter.costUsd",
+      "scope": "WO-049",
+      "dispatchStartedAt": null,
+      "value": null,
+      "ceiling": null,
+      "verdict": "unset"
+    }
+  ],
+  "traps": [
+    {
+      "id": "rule-beating",
+      "signal": "Read-obligation bytes against diff bytes; Stop refusals and re-announcements",
+      "metric": "readAmplification",
+      "series": [
+        {
+          "workOrder": "WO-050",
+          "value": null,
+          "delta": null
+        },
+        {
+          "workOrder": "WO-047",
+          "value": null,
+          "delta": null
+        },
+        {
+          "workOrder": "WO-133",
+          "value": null,
+          "delta": null
+        },
+        {
+          "workOrder": "WO-068",
+          "value": null,
+          "delta": null
+        },
+        {
+          "workOrder": "WO-134",
+          "value": null,
+          "delta": null
+        },
+        {
+          "workOrder": "WO-049",
+          "value": null,
+          "delta": null
+        }
+      ],
+      "indicators": [
+        {
+          "metric": "readAmplification",
+          "series": [
+            {
+              "workOrder": "WO-050",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-047",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-133",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-068",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-134",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-049",
+              "value": null,
+              "delta": null
+            }
+          ]
+        },
+        {
+          "metric": "stopRefusals",
+          "series": [
+            {
+              "workOrder": "WO-050",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-047",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-133",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-068",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-134",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-049",
+              "value": 0,
+              "delta": null
+            }
+          ]
+        },
+        {
+          "metric": "reAnnouncements",
+          "series": [
+            {
+              "workOrder": "WO-050",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-047",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-133",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-068",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-134",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-049",
+              "value": null,
+              "delta": null
+            }
+          ]
+        }
+      ],
+      "worsening": [],
+      "reopenCandidate": false
+    },
+    {
+      "id": "seeking-the-wrong-goal",
+      "signal": "Machinery share of elapsed time; phase durations against code-change size",
+      "metric": "machineryShare",
+      "series": [
+        {
+          "workOrder": "WO-050",
+          "value": 0.5760474452596123,
+          "delta": null
+        },
+        {
+          "workOrder": "WO-047",
+          "value": 0.7041465800942809,
+          "delta": 0.12809913483466862
+        },
+        {
+          "workOrder": "WO-133",
+          "value": 0.5788149376162782,
+          "delta": -0.12533164247800266
+        },
+        {
+          "workOrder": "WO-068",
+          "value": 0.38270395995297357,
+          "delta": -0.19611097766330465
+        },
+        {
+          "workOrder": "WO-134",
+          "value": 0.5818863690301977,
+          "delta": 0.19918240907722418
+        },
+        {
+          "workOrder": "WO-049",
+          "value": null,
+          "delta": null
+        }
+      ],
+      "indicators": [
+        {
+          "metric": "machineryShare",
+          "series": [
+            {
+              "workOrder": "WO-050",
+              "value": 0.5760474452596123,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-047",
+              "value": 0.7041465800942809,
+              "delta": 0.12809913483466862
+            },
+            {
+              "workOrder": "WO-133",
+              "value": 0.5788149376162782,
+              "delta": -0.12533164247800266
+            },
+            {
+              "workOrder": "WO-068",
+              "value": 0.38270395995297357,
+              "delta": -0.19611097766330465
+            },
+            {
+              "workOrder": "WO-134",
+              "value": 0.5818863690301977,
+              "delta": 0.19918240907722418
+            },
+            {
+              "workOrder": "WO-049",
+              "value": null,
+              "delta": null
+            }
+          ]
+        },
+        {
+          "metric": "elapsedPerCodeByte",
+          "series": [
+            {
+              "workOrder": "WO-050",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-047",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-133",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-068",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-134",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-049",
+              "value": null,
+              "delta": null
+            }
+          ]
+        }
+      ],
+      "worsening": [],
+      "reopenCandidate": false
+    },
+    {
+      "id": "shifting-the-burden-to-the-intervenor",
+      "signal": "Operator corrections, manual closeout steps and emergency planning passes",
+      "metric": "operatorCorrections",
+      "series": [
+        {
+          "workOrder": "WO-050",
+          "value": 0,
+          "delta": null
+        },
+        {
+          "workOrder": "WO-047",
+          "value": 0,
+          "delta": 0
+        },
+        {
+          "workOrder": "WO-133",
+          "value": 2,
+          "delta": 2
+        },
+        {
+          "workOrder": "WO-068",
+          "value": 0,
+          "delta": -2
+        },
+        {
+          "workOrder": "WO-134",
+          "value": 0,
+          "delta": 0
+        },
+        {
+          "workOrder": "WO-049",
+          "value": 1,
+          "delta": 1
+        }
+      ],
+      "indicators": [
+        {
+          "metric": "operatorCorrections",
+          "series": [
+            {
+              "workOrder": "WO-050",
+              "value": 0,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-047",
+              "value": 0,
+              "delta": 0
+            },
+            {
+              "workOrder": "WO-133",
+              "value": 2,
+              "delta": 2
+            },
+            {
+              "workOrder": "WO-068",
+              "value": 0,
+              "delta": -2
+            },
+            {
+              "workOrder": "WO-134",
+              "value": 0,
+              "delta": 0
+            },
+            {
+              "workOrder": "WO-049",
+              "value": 1,
+              "delta": 1
+            }
+          ]
+        },
+        {
+          "metric": "manualCloseoutSteps",
+          "series": [
+            {
+              "workOrder": "WO-050",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-047",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-133",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-068",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-134",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-049",
+              "value": null,
+              "delta": null
+            }
+          ]
+        },
+        {
+          "metric": "emergencyPasses",
+          "series": [
+            {
+              "workOrder": "WO-050",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-047",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-133",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-068",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-134",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-049",
+              "value": null,
+              "delta": null
+            }
+          ]
+        }
+      ],
+      "worsening": [],
+      "reopenCandidate": false
+    },
+    {
+      "id": "drift-to-low-performance",
+      "signal": "Subject length, gate step count and cold-start byte series",
+      "metric": "coldStartBytes",
+      "series": [
+        {
+          "workOrder": "WO-050",
+          "value": null,
+          "delta": null
+        },
+        {
+          "workOrder": "WO-047",
+          "value": null,
+          "delta": null
+        },
+        {
+          "workOrder": "WO-133",
+          "value": null,
+          "delta": null
+        },
+        {
+          "workOrder": "WO-068",
+          "value": null,
+          "delta": null
+        },
+        {
+          "workOrder": "WO-134",
+          "value": null,
+          "delta": null
+        },
+        {
+          "workOrder": "WO-049",
+          "value": 17930,
+          "delta": null
+        }
+      ],
+      "indicators": [
+        {
+          "metric": "coldStartBytes",
+          "series": [
+            {
+              "workOrder": "WO-050",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-047",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-133",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-068",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-134",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-049",
+              "value": 17930,
+              "delta": null
+            }
+          ]
+        },
+        {
+          "metric": "subjectCharacters",
+          "series": [
+            {
+              "workOrder": "WO-050",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-047",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-133",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-068",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-134",
+              "value": 46,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-049",
+              "value": 80,
+              "delta": 34
+            }
+          ]
+        },
+        {
+          "metric": "gateStepCount",
+          "series": [
+            {
+              "workOrder": "WO-050",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-047",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-133",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-068",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-134",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-049",
+              "value": null,
+              "delta": null
+            }
+          ]
+        }
+      ],
+      "worsening": [],
+      "reopenCandidate": false
+    },
+    {
+      "id": "policy-resistance",
+      "signal": "Guard refusals, bypass tools and ad hoc scripts",
+      "metric": "guardRefusals",
+      "series": [
+        {
+          "workOrder": "WO-050",
+          "value": null,
+          "delta": null
+        },
+        {
+          "workOrder": "WO-047",
+          "value": null,
+          "delta": null
+        },
+        {
+          "workOrder": "WO-133",
+          "value": null,
+          "delta": null
+        },
+        {
+          "workOrder": "WO-068",
+          "value": null,
+          "delta": null
+        },
+        {
+          "workOrder": "WO-134",
+          "value": null,
+          "delta": null
+        },
+        {
+          "workOrder": "WO-049",
+          "value": 0,
+          "delta": null
+        }
+      ],
+      "indicators": [
+        {
+          "metric": "guardRefusals",
+          "series": [
+            {
+              "workOrder": "WO-050",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-047",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-133",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-068",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-134",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-049",
+              "value": 0,
+              "delta": null
+            }
+          ]
+        },
+        {
+          "metric": "bypassTools",
+          "series": [
+            {
+              "workOrder": "WO-050",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-047",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-133",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-068",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-134",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-049",
+              "value": null,
+              "delta": null
+            }
+          ]
+        },
+        {
+          "metric": "adHocScripts",
+          "series": [
+            {
+              "workOrder": "WO-050",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-047",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-133",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-068",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-134",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-049",
+              "value": null,
+              "delta": null
+            }
+          ]
+        }
+      ],
+      "worsening": [],
+      "reopenCandidate": false
+    }
+  ],
+  "reopenCandidates": []
+}

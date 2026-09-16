@@ -5458,6 +5458,133 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-16ec8bf493661a05",
+      "key": "decision:docs/evidence/WO-049/decisions.md#wo-049-d001",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "5469c72cc3c7aec267163722fc5cf349413b7f783dd8d4d3494e8d61ddc0a979",
+          "ref": "docs/evidence/WO-049/decisions.md#wo-049-d001",
+          "title": "WO-049-D001: Put the no-guessing rule in the shared hand-written instruction, requiring checked evidence before dependent claims and actions.",
+          "summary": "{ \"id\": \"WO-049-D001\", \"date\": \"2026-09-16\", \"dispatch\": \"resume: next; scope expand: evidence before claims\", \"decision\": \"Put the no-guessing rule in the shared hand-written instruction, requiring checked evidence before dependent claims and actions.\", \"evidence\": [ \"Operator scope expansion on 2026-09-16\", \"CLAUDE.md\", \"Existing executor Never guess duty\" ], \"rejected\": [ { \"option\": \"NoOp\", \"reason\": \"Leaves the reported repeated unsupported claims unaddressed.\" }, { \"option\": \"New compiled support\", \"reason\": \"No observed mechanical detection to justify added machinery.\" } ], \"reopenWhen\": \"Observed failures identify a specific enforceable mechanism beyond shared instructions.\", \"workOr",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-d217775b9c71ce81",
+      "key": "decision:docs/evidence/WO-049/decisions.md#wo-049-d002",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "cfdfd2e953552e7e36bab8339e506929ff6d60bff93bf0dabe312fb03208117c",
+          "ref": "docs/evidence/WO-049/decisions.md#wo-049-d002",
+          "title": "WO-049-D002: Remove the phrase ban and address unsupported reasoning directly.",
+          "summary": "{ \"id\": \"WO-049-D002\", \"date\": \"2026-09-16\", \"dispatch\": \"operator correction during resume: next\", \"kind\": \"correction\", \"decision\": \"Remove the phrase ban and address unsupported reasoning directly.\", \"misread\": \"Treated an example admission of guessing as a separate wording defect.\", \"meant\": \"Prevent guessing; the phrase is evidence of the reasoning failure.\", \"changed\": \"Removed the phrase ban and stated that wording changes cannot correct unsupported claims.\", \"evidence\": [ \"Operator correction on 2026-09-16\", \"CLAUDE.md\" ], \"rejected\": [ { \"option\": \"Keep phrase ban\", \"reason\": \"Could conceal guessing without correcting it.\" } ], \"reopenWhen\": \"Evidence shows the instruction needs a c",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-e10174c5cfc4014d",
+      "key": "decision:docs/evidence/WO-049/decisions.md#wo-049-d003",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "af45cddf1fcdaa636ccc5515635857f9b2a3aad42f592a2eb28ef3c1e4fcfa4d",
+          "ref": "docs/evidence/WO-049/decisions.md#wo-049-d003",
+          "title": "WO-049-D003: Add opt-in target lowering and fail-closed execution with immutable launchpad imports and off-target state; preserve Contributor behavior, allowing required version/pin/hash updates.",
+          "summary": "{ \"id\": \"WO-049-D003\", \"date\": \"2026-09-16\", \"dispatch\": \"resume: next; operator pin-update clarification\", \"decision\": \"Add opt-in target lowering and fail-closed execution with immutable launchpad imports and off-target state; preserve Contributor behavior, allowing required version/pin/hash updates.\", \"evidence\": [ \"docs/work-orders/WO-049-target-worktree-bundle.md\", \"docs/discovery/writing-worker-smoke-2026-09-14.md\", \"Operator permits required pin updates while preserving behavior\" ], \"rejected\": [ { \"option\": \"Copy runtime or commit bundle into target\", \"reason\": \"Violates target bundle boundary.\" }, { \"option\": \"Reuse Contributor fallback\", \"reason\": \"Its advisory behavior does not en",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-af9588fc2292e660",
+      "key": "decision:docs/evidence/WO-049/decisions.md#wo-049-d004",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "7b816091ef4a9ec457106c13513537e055048355be7b8866889c7042763d0437",
+          "ref": "docs/evidence/WO-049/decisions.md#wo-049-d004",
+          "title": "WO-049-D004: Stage application v0.24.0 with compiler 0.12.0 and skeleton 0.20.0; retain kernel and console versions.",
+          "summary": "{ \"id\": \"WO-049-D004\", \"date\": \"2026-09-16\", \"dispatch\": \"resume: next\", \"decision\": \"Stage application v0.24.0 with compiler 0.12.0 and skeleton 0.20.0; retain kernel and console versions.\", \"evidence\": [ \"Local latest tag v0.23.0\", \"WO-049 minor classification\", \"Changed compiler and skeleton source; additive APIs\" ], \"rejected\": [ { \"option\": \"Bump unchanged packages\", \"reason\": \"No changed component source requires it.\" }, { \"option\": \"No release\", \"reason\": \"Standing classified release preparation applies.\" } ], \"reopenWhen\": \"Final-review integration observes a newer published version and retimes under minor classification.\", \"workOrder\": \"WO-049\", \"path\": \"docs/evidence/WO-049/decisio",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-dc6998a465b1f388",
+      "key": "decision:docs/evidence/WO-049/decisions.md#wo-049-d005",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "7c03b0cbc659cc6a089ceccd3d6402c41249d8a0e00e43472b05c47d57710527",
+          "ref": "docs/evidence/WO-049/decisions.md#wo-049-d005",
+          "title": "WO-049-D005: Automatically report accessible active Codex session metadata in existing workflow output without adding a progress gate.",
+          "summary": "{ \"id\": \"WO-049-D005\", \"date\": \"2026-09-16\", \"dispatch\": \"operator correction during resume: next\", \"kind\": \"correction\", \"decision\": \"Automatically report accessible active Codex session metadata in existing workflow output without adding a progress gate.\", \"misread\": \"Put a Codex preference in the shared Claude instruction floor and claimed effective readback was unavailable without inspecting the current session record.\", \"meant\": \"Report the model, effort and CLI version the current Codex harness actually exposes; add no red tape.\", \"changed\": \"Removed the misplaced default; read active-thread session_meta and latest turn_context independently of token counters; include their values in e",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-6c87de1d4b6be1f7",
+      "key": "decision:docs/evidence/WO-049/decisions.md#wo-049-d006",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "035848da763947dbb3ab6a44dd6947730771614f19c890af58cb6815c105db3c",
+          "ref": "docs/evidence/WO-049/decisions.md#wo-049-d006",
+          "title": "WO-049-D006: Keep the operator's GPT-6 Astra/ultra preference scoped to this Codex harness; separately launched DotLn workers follow their task assignments.",
+          "summary": "{ \"id\": \"WO-049-D006\", \"date\": \"2026-09-16\", \"dispatch\": \"operator correction during resume: next\", \"kind\": \"correction\", \"decision\": \"Keep the operator's GPT-6 Astra/ultra preference scoped to this Codex harness; separately launched DotLn workers follow their task assignments.\", \"misread\": \"Extended the operator's Codex harness preference to the separately launched feedback-audit verifier and supplied --effort ultra.\", \"meant\": \"The preference applies within the Codex harness, not to DotLn's independent worker-selection decisions.\", \"changed\": \"Corrected the interpretation for subsequent worker calls. No DotLn worker-selection default was changed; completed audit evidence retains the actual",
+          "missing": false
+        },
+        {
+          "hash": "9b38aa73db94a881547201bd3240cdb058547d5e5b70acf9837e7356242e818f",
+          "ref": "docs/evidence/WO-049/decisions.md#wo-049-d006",
+          "title": "WO-049-D006: Keep the operator's GPT-6 Astra/ultra preference scoped to this Codex harness; separately launched DotLn workers follow their task assignments.",
+          "summary": "{ \"id\": \"WO-049-D006\", \"date\": \"2026-09-16\", \"dispatch\": \"operator correction during resume: next\", \"kind\": \"correction\", \"decision\": \"Keep the operator's GPT-6 Astra/ultra preference scoped to this Codex harness; separately launched DotLn workers follow their task assignments.\", \"misread\": \"Extended the operator's Codex harness preference to the separately launched feedback-audit verifier and supplied --effort ultra.\", \"meant\": \"The preference applies within the Codex harness, not to DotLn's independent worker-selection decisions.\", \"changed\": \"Corrected the interpretation for subsequent worker calls. No DotLn worker-selection default was changed; completed audit evidence retains the actual",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-a84c28e135431f8e",
+      "key": "decision:docs/evidence/WO-049/decisions.md#wo-049-d007",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "52cd15dfc71f94d0fc54c39666b4cf56256c2bcdde7598138e7f71a820765329",
+          "ref": "docs/evidence/WO-049/decisions.md#wo-049-d007",
+          "title": "WO-049-D007: Repair exclude-block ownership and the unspaced effort selector; integrate WO-051 and retime the unpublished minor release while preserving prior evidence.",
+          "summary": "{ \"id\": \"WO-049-D007\", \"date\": \"2026-09-16\", \"dispatch\": \"resume: fix; operator main-merge housekeeping direction\", \"decision\": \"Repair exclude-block ownership and the unspaced effort selector; integrate WO-051 and retime the unpublished minor release while preserving prior evidence.\", \"evidence\": [ \"docs/verifications/WO-049/VER-001.md F1 and operator-authorized F5\", \"Operator housekeeping direction during this repair\", \"Local main includes WO-051 and v0.24.0; its skeleton is 0.20.0 and compiler 0.11.2\" ], \"rejected\": [ { \"option\": \"NoOp\", \"reason\": \"Leaves demonstrated ignore-rule damage and incorrect selector records.\" }, { \"option\": \"Remove every matching substring\", \"reason\": \"Ambiguous",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-ce5b8eeb95889137",
+      "key": "decision:docs/evidence/WO-049/decisions.md#wo-049-d008",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "ba014be689893bf0359610d49cbd5486849f0df3d28ad6c0cd77d4e4e0cdb064",
+          "ref": "docs/evidence/WO-049/decisions.md#wo-049-d008",
+          "title": "WO-049-D008: Correct target capability provenance, reject unloadable backslash import roots, and document the existing opaque-command boundary without weakening it.",
+          "summary": "{ \"id\": \"WO-049-D008\", \"date\": \"2026-09-16\", \"dispatch\": \"resume: fix; Adjacent Repair\", \"decision\": \"Correct target capability provenance, reject unloadable backslash import roots, and document the existing opaque-command boundary without weakening it.\", \"evidence\": [ \"docs/verifications/WO-049/VER-001.md F2, F3 and F4\", \"docs/discovery/writing-worker-smoke-2026-09-14.md C-W4, X-W3, X-W4, X-W10\", \"packages/skeleton/src/worker-transport.ts source-change allowlist still loads project hooks\" ], \"rejected\": [ { \"option\": \"NoOp\", \"reason\": \"Leaves contradicted capability provenance and roots known to generate unloadable hooks.\" }, { \"option\": \"Broaden shell authorization or add a capability sche",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }
