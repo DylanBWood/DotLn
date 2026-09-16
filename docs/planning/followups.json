@@ -5197,6 +5197,43 @@
           "title": "_The ledger's declared order is unenforced, so the operator is the check._",
           "summary": "9. _The ledger's declared order is unenforced, so the operator is the check._ The header states in bold that a new section appends directly below it, never at the end of the file; this pass appended at the end and the operator caught it. `WO-084:53` already records that \"nothing checks the order\", and the file has drifted accordingly — dated sections currently run ascending below the first entry, contradicting the declared newest-first rule. The drift also propagates: the same-day tie-break in `latestPlanningPass` reads ledger position, so a wrong order silently selects the wrong pass. A fix must make the insertion rule checkable in `test:docs` rather than documented, which is WO-084's subje",
           "missing": false
+        },
+        {
+          "hash": "70195edbcf7e55d753582476d44b5c94f54a4fe2cd74156f8a6b8ea71bd640b8",
+          "ref": "docs/planning/work-order-map.md#candidates--release-close-and-planning-dispatch-defects-recorded-2026-09-16",
+          "title": "_The ledger's declared order is unenforced, so the operator is the check._",
+          "summary": "9. _The ledger's declared order is unenforced, so the operator is the check._ The header states in bold that a new section appends directly below it, never at the end of the file; this pass appended at the end and the operator caught it. `WO-084:53` already records that \"nothing checks the order\", and the file has drifted accordingly — dated sections currently run ascending below the first entry, contradicting the declared newest-first rule. The drift also propagates: the same-day tie-break in `latestPlanningPass` reads ledger position, so a wrong order silently selects the wrong pass. A fix must make the insertion rule checkable in `test:docs` rather than documented, which is WO-084's subje",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-a815e8862796c2e1",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--release-close-and-planning-dispatch-defects-recorded-2026-09-16::aa9af82fda20aebc76b77ab7064591e5edc8e0f33f827fe5c882e88173b2880c",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "06e06d1a2b6460f39b1f76714e2cb2e7d0a4cbdc9083dfc24866b2dcfb189947",
+          "ref": "docs/planning/work-order-map.md#candidates--release-close-and-planning-dispatch-defects-recorded-2026-09-16",
+          "title": "_A stale evidence row was answered by rewinding the code._ On hitting the",
+          "summary": "11. _A stale evidence row was answered by rewinding the code._ On hitting the identity refusal, the first response was to restore both files to their reviewed bytes so the hash would match again. That makes the gate pass without the thing the gate exists to establish — that the shipped source was reviewed — and it deletes a working fix to do so. It is the rule-beating trap in its plainest form, and the operator caught it. The correct response to \"source changed after the product gate\" is to regenerate the gate at the current identity. A fix must make re-gating reachable: `final-review-result` is guarded by `requirePhase(state, \"final-review\")` and `closed` offers only release-close, next and",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-de267de7613b2354",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--release-close-and-planning-dispatch-defects-recorded-2026-09-16::d993b7b2125c3ff03e38afa285382937a37967111cb9e55f55ee7fe045990eb0",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "d6936a112143abd064c2cd0f2a9b700a8f5cd935b0122fb13d108ae76bcd9e28",
+          "ref": "docs/planning/work-order-map.md#candidates--release-close-and-planning-dispatch-defects-recorded-2026-09-16",
+          "title": "_A source change rode a document-only dispatch onto main and voided the",
+          "summary": "10. _A source change rode a document-only dispatch onto main and voided the reviewed gate._ A planning dispatch is document-only and carries no implementation authority, but this pass committed `scripts/lib/plan-direct.mjs` and `scripts/refute-plan.mjs` to its branch. `gateCodeIdentity` excludes `docs/`, `.claude/`, root `*.md` and generated files, so those two patches were the only part of the merge it could see, and they moved WO-068's identity from the reviewed `c2caf3bc` to `464f4928`. `reviewedProductGate` (`scripts/lib/release-records.mjs:216`) then refused the tag, correctly: it will not publish source no reviewer gate covers. The release was publishable at `3b7a315` and is not publis",
+          "missing": false
         }
       ],
       "dispositions": []
