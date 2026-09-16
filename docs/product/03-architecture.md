@@ -421,6 +421,17 @@ one shared account or authority envelope.
 
 #### Runtime primitive catalogs
 
+WO-068's executable `actorCatalog` is a typed table of `kind`, `available()`
+and `run()`. `script` runs declared absolute argv in a declared working
+directory with a cleared inherited environment, bounded output/time and a
+macOS sandbox denying network operations. A disposable supervisor kills the
+ordinary process group on timeout, return cancellation or resident death.
+Unsupported hosts or an unavailable sandbox produce a reasoned NoOp.
+`cli-worker`, `human-handoff` and `local-model` remain unavailable with their
+WO-122/WO-110 reasons; the catalog never substitutes another kind. This is a
+dated native adapter, not portable isolation or protection from a hostile
+same-user actor. The resident itself has no network transport.
+
 An agent runtime is not merely a text-completion endpoint. Claude, Codex, and
 future harnesses expose different native composition mechanisms. DotLn records
 each as a versioned `RuntimePrimitiveCatalog` discovered from the actual
@@ -1385,8 +1396,9 @@ portfolio), reset and loop. This is the bounded interpretation selected by
 WO-067; general hold/shrink/time-conditioned profiles remain candidate work.
 
 The compiler emits a statechart with `present`, named phase states and
-`expired`, and typed transition guards/actions. WO-068 supplies its consuming
-host. A host selects one named policy; a collection does not implicitly combine
+`expired`, and typed transition guards/actions. WO-068's resident consumes this
+table through the interpreter shared with the WO-067 fixtures. A host selects
+one named policy; a collection does not implicitly combine
 their allocations or dispatch multiple portfolios. It uses recorded time,
 presence and episode identity/generation; outcomes from a prior arm or a
 foreground task cannot advance the policy. `current-policy-episode-while-absent`
@@ -1406,9 +1418,22 @@ dispatch or outcome), only while no policy episode is in flight. At the
 scope/budget and effect allocation, cancels pending dispatch and enters
 `expired`. A recorded return followed by fresh absence rearms the first phase;
 repeated absence observations cannot silently replenish an expired allocation.
-The foreground task retains its own authority. The fixture interpreter executes
-the emitted table and real kernel cadence/authorization functions; it is not a
-resident scheduler or a claim that live adapters enforce this policy today.
+The foreground task retains its own authority. `dotln resident --store <dir>
+--policy <id>` runs the local loop; `--once` performs one complete cycle for an
+outside scheduler. `dotln presence away|back --store <dir>` appends explicit
+presence. There is no automatic stage launch, work selection, presence sensor
+or installed system service in this order.
+
+The resident folds its optional reactor slice through the explicit environment
+projector. Old serialized states acquire no resident key. Every sampled clock
+value is an event; backward samples do not move logical policy time backward.
+A lifetime worker-store lock admits one host and inspects state before reclaim;
+a separate short append lock orders human presence against dispatch/spawn and
+outcome admission. Both use the existing inspected dead-owner lock pattern.
+On restart, outstanding episodes become lost and the policy rearms without
+redispatching an old identity. Same-time fresh arms have distinct generations.
+The fixture evidence is [WO-068](../evidence/WO-068/implementation.md); live
+model-worker operation and automatic task derivation remain later work.
 
 ### Candidate — progressive absence authority and return readiness
 

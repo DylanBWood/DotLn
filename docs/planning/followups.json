@@ -4983,6 +4983,66 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-5e2af9420066410f",
+      "key": "decision:docs/evidence/WO-068/decisions.md#wo-068-d001",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "7dd11e8d563f7964e1938d838a548cafa0a6d243d7c66d57e62534c0117d7d2d",
+          "ref": "docs/evidence/WO-068/decisions.md#wo-068-d001",
+          "title": "WO-068-D001: Use a shared presence interpreter, optional resident slice and inspected lifetime plus append locks for the local resident.",
+          "summary": "{ \"id\": \"WO-068-D001\", \"date\": \"2026-09-16\", \"dispatch\": \"resume: next\", \"decision\": \"Use a shared presence interpreter, optional resident slice and inspected lifetime plus append locks for the local resident.\", \"evidence\": [ \"packages/skeleton/test/presence.test.ts\", \"packages/skeleton/src/worker-store.ts\", \"docs/work-orders/WO-068-resident-host.md\" ], \"rejected\": [ { \"option\": \"NoOp\", \"reason\": \"Leaves the compiled policy without a consuming host.\" }, { \"option\": \"Harness scheduler, network daemon or duplicate interpreter\", \"reason\": \"Unavailable or unrelated mechanisms do not satisfy this bounded order.\" } ], \"reopenWhen\": \"Fixtures cannot establish return precedence, restart identity or ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-9fbddb5358dc3252",
+      "key": "decision:docs/evidence/WO-068/decisions.md#wo-068-d002",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "c5c469564646a4e71eb45a91c6086ad6b660c6e3377c4c6a73db567224dc8e44",
+          "ref": "docs/evidence/WO-068/decisions.md#wo-068-d002",
+          "title": "WO-068-D002: Use a native macOS no-network script supervisor, exact argv and declared resource/output contracts; unsupported actor kinds remain unavailable.",
+          "summary": "{ \"id\": \"WO-068-D002\", \"date\": \"2026-09-16\", \"dispatch\": \"resume: next\", \"decision\": \"Use a native macOS no-network script supervisor, exact argv and declared resource/output contracts; unsupported actor kinds remain unavailable.\", \"evidence\": [ \"packages/skeleton/src/actor-catalog.ts\", \"packages/skeleton/src/script-episode.ts\", \"packages/skeleton/test/resident.test.ts\" ], \"rejected\": [ { \"option\": \"Cleared environment alone or an unsandboxed fallback\", \"reason\": \"Neither enforces the no-network contract.\" }, { \"option\": \"Treat exit zero or actor prose as verification\", \"reason\": \"The host must check a declared output expectation.\" } ], \"reopenWhen\": \"A new host boundary is observed or a con",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-11409749eaaceed9",
+      "key": "decision:docs/evidence/WO-068/decisions.md#wo-068-d003",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "10c36156647c3d2f0d66487e6636883650a6fd6d10c84f6322a0e92cc75ea96c",
+          "ref": "docs/evidence/WO-068/decisions.md#wo-068-d003",
+          "title": "WO-068-D003: Complete the activation assignment at application v0.23.0 and skeleton 0.19.0; regenerate pinned runtime dependencies and a fresh feedback edition.",
+          "summary": "{ \"id\": \"WO-068-D003\", \"date\": \"2026-09-16\", \"dispatch\": \"resume: next\", \"decision\": \"Complete the activation assignment at application v0.23.0 and skeleton 0.19.0; regenerate pinned runtime dependencies and a fresh feedback edition.\", \"evidence\": [ \"docs/work-orders/WO-068-resident-host.md\", \"packages/skeleton/package.json\", \"scripts/lib/harness.mjs\", \"scripts/lib/evidence-sources.mjs\" ], \"rejected\": [ { \"option\": \"No component bump or reuse old behavior-source evidence\", \"reason\": \"A new runtime and reactor dependencies require a minor component and current evidence.\" } ], \"reopenWhen\": \"Final integration consumes the staged version or source changes invalidate the selected edition.\", \"wor",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0998f7236d75a775",
+      "key": "decision:docs/evidence/WO-068/decisions.md#wo-068-d004",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "97a1b06215efa4e1796735454a5d418abe614864ea3741309530eee8d95dcc0f",
+          "ref": "docs/evidence/WO-068/decisions.md#wo-068-d004",
+          "title": "WO-068-D004: Rewrite the README release block as four labelled paragraphs and tell the next author to rewrite rather than append; nominate the per-order \"one sentence\" write-back duty that causes the ",
+          "summary": "{ \"id\": \"WO-068-D004\", \"date\": \"2026-09-16\", \"dispatch\": \"resume: final review; operator instruction during the dispatch to fix the appended README \\\"What runs today\\\" block\", \"decision\": \"Rewrite the README release block as four labelled paragraphs and tell the next author to rewrite rather than append; nominate the per-order \\\"one sentence\\\" write-back duty that causes the accretion.\", \"evidence\": [ \"README.md\", \"scripts/release.mjs\", \"scripts/lib/release-preparation.mjs\", \"docs/product/07-execution-guide.md\" ], \"rejected\": [ { \"option\": \"NoOp\", \"reason\": \"The block grows one sentence per order and nothing prunes it; it had reached 26 sentences on one physical line.\" }, { \"option\": \"Reorga",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

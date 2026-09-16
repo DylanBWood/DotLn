@@ -15,6 +15,8 @@ import { runVerificationDemo } from "./verification-demo.js";
 import { FakeVerificationTransport } from "./verification-fake.js";
 import { runFeedbackSelfhost } from "./feedback-selfhost.js";
 import { harnessControl } from "./harness-host.js";
+import { ResidentHost } from "./resident-host.js";
+import { recordPresence } from "./resident-store.js";
 import {
   recordUsageObservation,
   type usageObservation,
@@ -22,17 +24,25 @@ import {
 
 const args = process.argv.slice(2);
 const command = args.shift();
+const presenceAction = command === "presence" ? args.shift() : undefined;
 const options = new Map<string, string>();
 const switches = new Set<string>();
 try {
   while (args.length) {
     const key = args.shift()!;
-    if (["--json", "--beacons"].includes(key)) {
+    if (["--json", "--beacons", "--once"].includes(key)) {
       if (switches.has(key)) throw new Error("duplicate option");
       switches.add(key);
     } else {
       if (
-        !["--store", "--transport", "--model", "--effort"].includes(key) ||
+        ![
+          "--store",
+          "--transport",
+          "--model",
+          "--effort",
+          "--policy",
+          "--tick",
+        ].includes(key) ||
         options.has(key)
       )
         throw new Error("unknown or duplicate option");
@@ -45,10 +55,51 @@ try {
   const directory = options.get("--store");
   if (!directory)
     throw new Error(
-      "usage: dotln status --store <directory> [--json] | dotln demo --store <directory> --transport <claude-cli-print|codex-cli-exec> --model <model> --effort <level> [--beacons] | dotln <verify-demo|feedback-audit> --store <directory> [--transport fake|claude-cli-print|codex-cli-exec --model <model> --effort <level>]",
+      "usage: dotln resident --store <directory> --policy <id> [--tick <ms> | --once] | dotln presence away|back --store <directory> | dotln status --store <directory> [--json] | dotln demo --store <directory> --transport <claude-cli-print|codex-cli-exec> --model <model> --effort <level> [--beacons] | dotln <verify-demo|feedback-audit> --store <directory> [--transport fake|claude-cli-print|codex-cli-exec --model <model> --effort <level>]",
     );
-  if (command === "status") {
-    if (options.size !== 1 || switches.has("--beacons"))
+  if (command === "presence") {
+    if (
+      options.size !== 1 ||
+      switches.size ||
+      !["away", "back"].includes(presenceAction ?? "")
+    )
+      throw new Error("usage: dotln presence away|back --store <directory>");
+    await recordPresence(
+      directory,
+      presenceAction === "away" ? "away" : "returned",
+    );
+    console.log(`Presence recorded: ${presenceAction}`);
+  } else if (command === "resident") {
+    if (
+      !options.get("--policy") ||
+      [...options.keys()].some(
+        (key) => !["--store", "--policy", "--tick"].includes(key),
+      ) ||
+      [...switches].some((key) => key !== "--once") ||
+      (switches.has("--once") && options.has("--tick"))
+    )
+      throw new Error(
+        "usage: dotln resident --store <directory> --policy <id> [--tick <ms> | --once]",
+      );
+    const abort = new AbortController();
+    const stop = () => abort.abort();
+    process.once("SIGINT", stop);
+    process.once("SIGTERM", stop);
+    try {
+      await new ResidentHost({
+        directory,
+        policyId: options.get("--policy")!,
+      }).run({
+        once: switches.has("--once"),
+        tickMs: Number(options.get("--tick") ?? 1000),
+        signal: abort.signal,
+      });
+    } finally {
+      process.removeListener("SIGINT", stop);
+      process.removeListener("SIGTERM", stop);
+    }
+  } else if (command === "status") {
+    if (options.size !== 1 || [...switches].some((key) => key !== "--json"))
       throw new Error("status accepts only --store and --json");
     const status = projectWorkerStatus(
       decodeLog(new WorkerStore(directory).read()),
@@ -59,6 +110,13 @@ try {
         : renderWorkerStatus(status),
     );
   } else if (command === "verify-demo" || command === "feedback-audit") {
+    if (
+      [...options.keys()].some(
+        (key) =>
+          !["--store", "--transport", "--model", "--effort"].includes(key),
+      )
+    )
+      throw new Error("demo requires its declared options");
     if (switches.size > 0) throw new Error("demo requires no switches");
     const transportName = options.get("--transport") ?? "fake";
     const model =
@@ -126,6 +184,14 @@ try {
       if (result.matrix.phase !== "complete") process.exitCode = 1;
     }
   } else if (command === "demo") {
+    if (
+      [...options.keys()].some(
+        (key) =>
+          !["--store", "--transport", "--model", "--effort"].includes(key),
+      ) ||
+      switches.has("--once")
+    )
+      throw new Error("demo requires its declared options");
     if (process.env.DOTLN_LIVE_WORKERS !== "1")
       throw new Error(
         "live demo requires DOTLN_LIVE_WORKERS=1 on an authenticated runner that permits child CLI execution",
@@ -163,7 +229,9 @@ try {
     console.log(JSON.stringify(result.envelope));
     if (result.envelope.status !== "completed") process.exitCode = 1;
   } else
-    throw new Error("expected status, demo, verify-demo or feedback-audit");
+    throw new Error(
+      "expected resident, presence, status, demo, verify-demo or feedback-audit",
+    );
 } catch (error) {
   // Unexpected external diagnostics may contain paths or auth details.
   console.error(

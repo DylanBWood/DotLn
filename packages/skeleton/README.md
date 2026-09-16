@@ -1,4 +1,15 @@
-# `@dotln/skeleton` 0.18.4
+# `@dotln/skeleton` 0.19.0
+
+For application v0.23.0 (WO-068), an operator-started resident host folds one
+launchpad log, records every wall-clock sample and explicit presence change as
+an event, and drives the compiled presence statechart through the interpreter
+it now shares with the WO-067 fixtures. When a phase allows it, the host
+dispatches one bounded `script` episode through the actor catalog; `cli-worker`,
+`human-handoff` and `local-model` stay unavailable with their reasons and never
+fall back to another kind. `dotln resident` and `dotln presence` are the two new
+commands, `--once` runs one complete cycle for an outside scheduler, and a
+restart records an unobserved episode lost rather than dispatching its identity
+twice. The runbook is [Resident host](#resident-host).
 
 For application v0.22.1 (WO-133), runtime advisories appear once per session and
 cause, with silent PostToolUse observers and a SessionStart diagnostic. Release
@@ -154,6 +165,80 @@ explicit replay projector has since landed and returns the same
 `policy` stay at the top level and replay cannot drift from the live path.
 The [WO-050 identity receipt](../../docs/evidence/WO-050/implementation.md)
 compares complete Decisions and semantic projections without normalizing state.
+
+## Resident host
+
+WO-068 adds an operator-started local loop, independent of Contributor stages.
+It runs only declared scripts; it does not select work orders or launch coding
+agents. The native script adapter currently requires macOS `sandbox-exec` and
+refuses execution when that no-network boundary cannot start. No system daemon
+or scheduler is installed.
+
+Create a dedicated store directory and its `resident.json` containing:
+
+```json
+{
+  "graph": "replace with your complete LoadoutGraph object",
+  "environment": "replace with your CompilationEnvironment object",
+  "policyId": "your.compiled.policy",
+  "evidence": [],
+  "actors": {
+    "your-phase-id": {
+      "kind": "script",
+      "effect": "repo.inspect",
+      "surface": "your-declared-surface",
+      "resources": { "files": 1, "lines": 0, "tokens": 0 },
+      "command": ["/absolute/path/to/executable", "literal-argument"],
+      "cwd": "/absolute/path/to/worktree",
+      "timeoutMs": 1000,
+      "expectedStdoutSha256": "replace with the 64 lowercase hex digits of expected stdout"
+    }
+  }
+}
+```
+
+This illustrates the shape; placeholder values are not executable. Supply one
+actor for every phase, evidence required by the policy, and all scope/budget
+resource keys, including zero amounts. The graph compiles before use; select
+the same policy id at launch. Current live capabilities include `actor.script`;
+other required capabilities need a host binding and are refused by this CLI.
+Arguments are passed literally without a shell. Scripts inherit no operator
+environment or stdin; a language runtime may create its own environment keys.
+The timeout is 1–180,000 ms, combined output is bounded to 65,536 bytes, and
+only stdout's digest and first line (160 characters) enter the event log.
+Use commands whose first line is appropriate to retain. Exit zero plus the
+expected stdout hash is the bounded verification contract.
+
+```sh
+npm run build
+node packages/skeleton/dist/src/dotln.js resident --store .runtime/my-resident --policy your.compiled.policy --tick 1000
+node packages/skeleton/dist/src/dotln.js presence away --store .runtime/my-resident
+node packages/skeleton/dist/src/dotln.js presence back --store .runtime/my-resident
+```
+
+An outside scheduler can invoke one cycle with:
+
+```sh
+node packages/skeleton/dist/src/dotln.js resident --store .runtime/my-resident --policy your.compiled.policy --once
+```
+
+`--once` waits for its bounded episode, records the outcome and exits. Loop
+mode evaluates every tick after the previous episode drains. Return is observed
+while an episode runs: `kill` terminates it; `finish` drains it without advancing
+the reset policy. A new absence cannot overlap a finishing episode. Idle expiry
+needs a fresh back/away edge. `SIGINT`/`SIGTERM` stop the loop after the bounded
+cycle. SIGKILL leaves the log and worktree; restart inspects them, records an
+unobserved episode lost and never dispatches that id twice. Torn logs or
+interrupted lock-recovery guards refuse for inspection without truncation.
+
+Configuration is immutable within a store; changing policy or scripts requires
+a fresh store. Retain the old store for inspection. The store records paths and
+commands supplied by its owner; use appropriate local storage. Resource
+reservations and effect declarations are checked before execution; this adapter
+does not measure actual file/line edits or replace source-change verification.
+`cli-worker`, `human-handoff` and `local-model` yield unavailable reasons.
+The [fixtures](test/resident.test.ts) cover fake-clock replay and real local
+process/network boundaries, not unattended live-model work.
 
 ## Disposable workers
 

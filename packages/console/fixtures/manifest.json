@@ -1,6 +1,6 @@
 {
   "fixtureVersion": "uifa-board-fixtures-v1",
-  "capture": "2026-09-07 WO-032 executor; canonical records and source-format snapshots. Constellation checkout addresses replaced by declared fixture addresses; no liveness or human identity inferred. 2026-09-08 WO-039 integration: the self-hosted case follows the WO-039 feedback edition recorded under compiler 0.7.0, because the skeleton refuses the WO-011 edition's verifier stream as persisted compilation drift; the WO-011 edition remains historical bytes. 2026-09-08 WO-042 integration: the self-hosted case follows the live WO-042 feedback edition under compiler 0.8.0; prior editions remain historical bytes. WO-042 final source: the self-hosted case and collector follow immutable feedback revision 002 after the console patch changed the declared lock projection; the earlier WO-042 feedback directory stays intact. 2026-09-09 WO-126 integration: self-hosted input follows feedback revision 002 under compiler 0.9.0; the current v2 unit snapshot distinguishes prose/advice from prevented incidents. Prior source editions and the v1 unit snapshot remain intact. Current selfhost recording follows docs/evidence/WO-043/feedback-001; previous source editions retain their bytes. Current selfhost recording follows docs/evidence/WO-131/feedback-001; previous source editions retain their bytes. Current selfhost recording follows docs/evidence/WO-044/feedback-001; previous source editions retain their bytes. Current selfhost recording follows docs/evidence/WO-044/feedback-002; previous source editions retain their bytes. Current selfhost recording follows docs/evidence/WO-132/feedback; previous source editions retain their bytes. WO-132 fixture migration pins the current personal feedback units, including writer-isolation version 2; earlier snapshots remain unchanged. Current selfhost recording follows docs/evidence/WO-067/feedback; previous source editions retain their bytes. Current selfhost recording follows docs/evidence/WO-045/feedback-001; previous source editions retain their bytes. Current selfhost recording follows docs/evidence/WO-133/feedback; previous source editions retain their bytes.",
+  "capture": "2026-09-07 WO-032 executor; canonical records and source-format snapshots. Constellation checkout addresses replaced by declared fixture addresses; no liveness or human identity inferred. 2026-09-08 WO-039 integration: the self-hosted case follows the WO-039 feedback edition recorded under compiler 0.7.0, because the skeleton refuses the WO-011 edition's verifier stream as persisted compilation drift; the WO-011 edition remains historical bytes. 2026-09-08 WO-042 integration: the self-hosted case follows the live WO-042 feedback edition under compiler 0.8.0; prior editions remain historical bytes. WO-042 final source: the self-hosted case and collector follow immutable feedback revision 002 after the console patch changed the declared lock projection; the earlier WO-042 feedback directory stays intact. 2026-09-09 WO-126 integration: self-hosted input follows feedback revision 002 under compiler 0.9.0; the current v2 unit snapshot distinguishes prose/advice from prevented incidents. Prior source editions and the v1 unit snapshot remain intact. Current selfhost recording follows docs/evidence/WO-043/feedback-001; previous source editions retain their bytes. Current selfhost recording follows docs/evidence/WO-131/feedback-001; previous source editions retain their bytes. Current selfhost recording follows docs/evidence/WO-044/feedback-001; previous source editions retain their bytes. Current selfhost recording follows docs/evidence/WO-044/feedback-002; previous source editions retain their bytes. Current selfhost recording follows docs/evidence/WO-132/feedback; previous source editions retain their bytes. WO-132 fixture migration pins the current personal feedback units, including writer-isolation version 2; earlier snapshots remain unchanged. Current selfhost recording follows docs/evidence/WO-067/feedback; previous source editions retain their bytes. Current selfhost recording follows docs/evidence/WO-045/feedback-001; previous source editions retain their bytes. Current selfhost recording follows docs/evidence/WO-133/feedback; previous source editions retain their bytes. Current selfhost recording follows docs/evidence/WO-068/feedback-001; previous source editions retain their bytes. Current selfhost recording follows docs/evidence/WO-068/feedback-002; previous source editions retain their bytes.",
   "inputs": {
     "loadouts": {
       "path": "packages/console/fixtures/inputs/loadouts.json",
@@ -69,22 +69,22 @@
       "sha256": "4f89e73d7776c7d990f9ba1cea9fcfe0192f8d6cb02f38a24379645193467029"
     },
     "selfhostAudit": {
-      "path": "docs/evidence/WO-133/feedback/selfhost-audit.jsonl",
-      "ref": "docs/evidence/WO-133/feedback/selfhost-audit.jsonl",
+      "path": "docs/evidence/WO-068/feedback-002/selfhost-audit.jsonl",
+      "ref": "docs/evidence/WO-068/feedback-002/selfhost-audit.jsonl",
       "format": "log",
-      "sha256": "f3abffd25392faeff2c165ea0b18c51dc97336944ac2b6d28b28c269f74f26cf"
+      "sha256": "27a561999be53da2bd98e1846f7d4e88db9d585f96c94ce64cb2c945522b6767"
     },
     "selfhostVerifier": {
-      "path": "docs/evidence/WO-133/feedback/selfhost-verification.jsonl",
-      "ref": "docs/evidence/WO-133/feedback/selfhost-verification.jsonl",
+      "path": "docs/evidence/WO-068/feedback-002/selfhost-verification.jsonl",
+      "ref": "docs/evidence/WO-068/feedback-002/selfhost-verification.jsonl",
       "format": "log",
-      "sha256": "5aea269275b4a6a43b5d729c4557c904da60ec1b2805ba9894c094c7640682cc"
+      "sha256": "caf053eeb962a828bf4f29d6f8a61fda818a62a62199db05b756d4971092b44a"
     },
     "maturity": {
-      "path": "docs/evidence/WO-133/feedback/feedback.json",
-      "ref": "docs/evidence/WO-133/feedback/feedback.json",
+      "path": "docs/evidence/WO-068/feedback-002/feedback.json",
+      "ref": "docs/evidence/WO-068/feedback-002/feedback.json",
       "format": "json",
-      "sha256": "bb2bb743952524b0dcee8d4ec8a27cf0eb13a1dd99256801875ebcc7ddc8c8a5"
+      "sha256": "5ed73e81896e9218a168876f51cf24ccb1dc50b76627de5364ef32f634425f44"
     },
     "controlLog": {
       "path": "docs/control/orders/WO-031.jsonl",
@@ -163,12 +163,12 @@
       "stores": [
         {
           "id": "selfhost-audit",
-          "label": "WO-133 self-hosted executor",
+          "label": "WO-068 self-hosted executor",
           "input": "selfhostAudit"
         },
         {
           "id": "selfhost-verifier",
-          "label": "WO-133 self-hosted verifier",
+          "label": "WO-068 self-hosted verifier",
           "input": "selfhostVerifier"
         }
       ],

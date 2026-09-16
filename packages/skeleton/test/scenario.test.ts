@@ -127,7 +127,7 @@ const replacePayload = (
   return { log: encodeLog(events), eventIndex };
 };
 
-test("WO-016 AC1 one typed reactor owns every skeleton kernel decider", async () => {
+test("WO-016 AC1 one typed reactor and its pure resident helpers own kernel decisions", async () => {
   const sourceDirectory = fileURLToPath(new URL("../../src/", import.meta.url));
   const sourceFiles = (await readdir(sourceDirectory))
     .filter((file) => file.endsWith(".ts"))
@@ -151,6 +151,7 @@ test("WO-016 AC1 one typed reactor owns every skeleton kernel decider", async ()
   assert.deepEqual(
     [...reactor.matchAll(/from\s+"([^"]+)"/gu)].map((match) => match[1]),
     [
+      "./resident-state.js",
       "@dotln/kernel",
       "@dotln/compiler",
       "./artifact-identity.js",
@@ -160,13 +161,16 @@ test("WO-016 AC1 one typed reactor owns every skeleton kernel decider", async ()
       "./control-beacon.js",
       "./verification-protocol.js",
     ],
-    "the reactor imports only the kernel, pure compiler, identity checks, pure Beacon projections and pure verification contracts",
+    "the reactor imports only the kernel, pure compiler, identity checks, pure Beacon projections, pure verification contracts and the pure resident fold",
   );
   for (const pure of [
     "beacon-perception.ts",
     "execution-environment.ts",
     "verification-protocol.ts",
     "verification.ts",
+    "resident-state.ts",
+    "presence-machine.ts",
+    "actor-contract.ts",
   ])
     assert.doesNotMatch(
       sources.get(pure) ?? "",
@@ -181,7 +185,11 @@ test("WO-016 AC1 one typed reactor owns every skeleton kernel decider", async ()
   ]) {
     assert.match(reactor, new RegExp(`\\b${decider}\\(`, "u"));
     for (const [file, source] of sources)
-      if (file !== "reactor.ts")
+      if (
+        file !== "reactor.ts" &&
+        !(decider === "evaluateCadence" && file === "presence-machine.ts") &&
+        !(decider === "authorize" && file === "resident-state.ts")
+      )
         assert.doesNotMatch(
           source,
           new RegExp(`\\b${decider}\\(`, "u"),
