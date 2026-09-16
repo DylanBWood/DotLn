@@ -1,22 +1,22 @@
 # Current control state
 
-## WO-134
+## WO-051
 
-- Work order: WO-134
-- Work-order path: docs/work-orders/WO-134-planning-pass-selection.md
+- Work order: WO-051
+- Work-order path: docs/work-orders/WO-051-source-change-transport-profile.md
 - Phase: closed
 - Latest verification: VER-001
-- Verification path: docs/verifications/WO-134/VER-001.md
+- Verification path: docs/verifications/WO-051/VER-001.md
 - Latest verdict: pass
 - Final review: FINAL-001
-- Final-review path: docs/final-reviews/WO-134/FINAL-001.md
-- Latest attestation: harness codex-cli; version 0.154.0; model gpt-6-astra; effort max; source operator-attested; account not-applicable
-- Effort drift: max -> xhigh
-- Latest recordedAt: 2026-09-16T19:10:33.266Z
-- Elapsed implementation: 1495725 ms
-- Elapsed verification: 1014653 ms
-- Elapsed finalReview: 1066939 ms
-- Latest checkpoint: 4b7f1fc04b47f596a4090f2823aeadd78b80a6d8 (restore: `git checkout refs/dotln/checkpoint/WO-134/6 -- .`)
+- Final-review path: docs/final-reviews/WO-051/FINAL-001.md
+- Latest attestation: harness claude-code; version 2.1.273; model claude-fable-5-1; effort xhigh; source self-reported; account not-applicable
+- Effort drift: xhigh (subagents) (raw: ultra) -> xhigh
+- Latest recordedAt: 2026-09-16T20:55:51.498Z
+- Elapsed implementation: 2322102 ms
+- Elapsed verification: 1093807 ms
+- Elapsed finalReview: 1611248 ms
+- Latest checkpoint: 843a8e0bdbef17d505bf093fedb88ce4f27d1782 (restore: `git checkout refs/dotln/checkpoint/WO-051/6 -- .`)
 - Legal next actions: release-close, next, activate
 
 Generated from the append-only `docs/control/resume.jsonl` and `docs/control/orders/WO-NNN.jsonl` segments; do not edit this projection manually.
