@@ -12,6 +12,7 @@ import {
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { reportHarnessRuntime } from "./lib/harness-runtime.mjs";
 import { mainWorktree, runGit } from "./lib/git.mjs";
 import {
   projectActor,
@@ -471,7 +472,11 @@ export const parseActor = (action, args, positional = "") => {
   const harnessVersion = values.get("--harness-version");
   const model = values.get("--model");
   const suppliedEffort = values.get("--effort");
-  const source = values.get("--source");
+  const suppliedSource = values.get("--source");
+  const source =
+    suppliedSource === "operator-selected-model-effective-effort-unavailable"
+      ? "operator-attested"
+      : suppliedSource;
   const subagents = ["ultra", "ultra code"].includes(
     suppliedEffort.toLowerCase(),
   );
@@ -723,6 +728,7 @@ const recordedBriefings = {
 
 export const main = async (argv = process.argv.slice(2)) => {
   const [action = "status", ...rawArgs] = argv;
+  reportHarnessRuntime(repoRoot);
   const { args, workOrder } = selectionArgs(rawArgs);
   let control = readControl(repoRoot);
   const branch = action === "usage" ? undefined : branchWorkOrder(repoRoot);
