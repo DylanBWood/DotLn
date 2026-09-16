@@ -102,7 +102,7 @@ const commit = (repo, label, date = "2030-01-02T00:00:00Z") => {
 const orderPath = (id) => `docs/work-orders/${id}-fixture.md`;
 const order = (id) =>
   `# ${id} — Fixture\n\n**Model:** fixture\n**Effort:** executor any; verifier any; reviewer any.\n**Nomination provenance:** PLANNER_NARRATIVE_SENTINEL\n\n**Objective:** Move the shape.\n\n**Design:** PLANNER_NARRATIVE_SENTINEL\n\n**Acceptance criteria (all required)**\n\n1. Evidence confirms a useful shape.\n2. Keep a bounded result.\n\n**Evidence gate:** PLANNER_NARRATIVE_SENTINEL\n\n**Non-goals:** Other shapes.\n\n**Operator-review assumptions**\n\n1. PLANNER_NARRATIVE_SENTINEL\n`;
-const makeRepo = (parent, name) => {
+const makeRepo = (parent, name, oldDate = "2029-01-01") => {
   const repo = join(parent, name);
   mkdirSync(repo);
   runGit(repo, ["init", "-q"]);
@@ -116,7 +116,7 @@ const makeRepo = (parent, name) => {
   write(
     repo,
     PLAN_LEDGER,
-    "# Ledger\n\n## 2029-01-01 old planning pass\n\nPLANNER_NARRATIVE_SENTINEL\n",
+    `# Ledger\n\n## ${oldDate} old planning pass\n\nPLANNER_NARRATIVE_SENTINEL\n`,
   );
   write(
     repo,
@@ -252,6 +252,183 @@ export async function fixtures() {
   );
   const check = (label, run) => test(label, run);
   try {
+    await check(
+      "WO-134 both refutation paths select the gate's missing same-day pass independent of ledger order",
+      async () => {
+        for (const transport of ["direct", "fake"]) {
+          for (const newestFirst of [false, true]) {
+            const repo = makeRepo(
+              parent,
+              `same-day-${transport}-${newestFirst}`,
+            );
+            const first = passFor(repo);
+            const original = read(repo, PLAN_LEDGER);
+            assert.deepEqual(await latestPlanningPass(repo), first);
+            write(repo, PLAN_LEDGER, `# Ledger\n\n## ${first.heading}\n`);
+            assert.deepEqual(await latestPlanningPass(repo), first);
+            write(repo, PLAN_LEDGER, original);
+            const resultPath = "docs/control/local/result.json";
+            const statementPath = "docs/control/local/statement.txt";
+            const subject = buildPlanSubject(repo, "HEAD", {
+              goalReview: true,
+            });
+            write(repo, resultPath, JSON.stringify(cannedGoalReview(subject)));
+            write(
+              repo,
+              statementPath,
+              "Synthetic same-day regression judgment; canonical fixture subject only.",
+            );
+            let prior, priorRequest;
+            if (transport === "direct") {
+              await plan(["refute", "--direct", "--scope", "full"], repo);
+              const pointer = JSON.parse(
+                read(repo, "docs/control/local/plan/current-direct.json"),
+              );
+              priorRequest = {
+                path: pointer.path,
+                bytes: read(repo, pointer.path),
+              };
+              // Requests saved before pass-specific filenames remain fileable.
+              const legacyPath = pointer.path.replace(`-${first.id}`, "");
+              write(repo, legacyPath, priorRequest.bytes);
+              write(
+                repo,
+                "docs/control/local/plan/current-direct.json",
+                JSON.stringify({ path: legacyPath }),
+              );
+              await fileDirectRefutation(repo, resultPath, statementPath, {
+                commit: false,
+              });
+              prior = (await readReceipts(repo)).at(-1);
+            } else {
+              prior = await writeDirectReceipt(repo);
+            }
+            commit(repo, "first planning receipt");
+            const priorBytes = read(
+              repo,
+              `${RECEIPTS}/${prior.receiptId}.json`,
+            );
+            const heading = "2030-01-02 second planning pass";
+            const second = {
+              id: planningPasses(`## ${heading}`)[0].id,
+              kind: "planning",
+              heading,
+            };
+            const section = `\n## ${heading}\n\nAnother pass.\n`;
+            const ledgers = [
+              original + section,
+              `# Ledger\n${section}${original.slice(original.indexOf("## "))}`,
+            ];
+            for (const ledger of ledgers) {
+              write(repo, PLAN_LEDGER, ledger);
+              await assert.rejects(checkPlanGate(repo), (error) =>
+                error.message.includes(
+                  `planning pass ${second.id} needs a receipt`,
+                ),
+              );
+              assert.deepEqual(await latestPlanningPass(repo), second);
+              assert.equal(
+                buildPlanSubject(repo, "HEAD", {
+                  workspace: true,
+                  goalReview: true,
+                }).hash,
+                subject.hash,
+              );
+            }
+            write(repo, PLAN_LEDGER, ledgers[Number(newestFirst)]);
+            commit(repo, "second same-day planning pass");
+            if (transport === "direct") {
+              await plan(["refute", "--direct", "--scope", "full"], repo);
+              const pointer = JSON.parse(
+                read(repo, "docs/control/local/plan/current-direct.json"),
+              );
+              assert.deepEqual(
+                JSON.parse(read(repo, pointer.path)).pass,
+                second,
+              );
+              assert.notEqual(pointer.path, priorRequest.path);
+              assert.equal(read(repo, priorRequest.path), priorRequest.bytes);
+              const result = await fileDirectRefutation(
+                repo,
+                resultPath,
+                statementPath,
+                { commit: false },
+              );
+              assert.equal(result.gate.passes, 2);
+            } else {
+              const result = await plan(
+                ["refute", "--transport", "fake"],
+                repo,
+              );
+              const receipt = JSON.parse(
+                read(repo, result.receipt.replace(/\.md$/u, ".json")),
+              );
+              assert.deepEqual(receipt.pass, second);
+            }
+            for (const ledger of ledgers) {
+              write(repo, PLAN_LEDGER, ledger);
+              assert.deepEqual(await latestPlanningPass(repo), second);
+            }
+            // A later evidence receipt cannot supersede the planning chain.
+            await plan(
+              ["refute", "--transport", "fake", "--evidence-only"],
+              repo,
+            );
+            assert.deepEqual(await latestPlanningPass(repo), second);
+            assert.equal(
+              read(repo, `${RECEIPTS}/${prior.receiptId}.json`),
+              priorBytes,
+            );
+            const laterHeading = "2030-01-03 later planning pass";
+            write(
+              repo,
+              PLAN_LEDGER,
+              `${original}${section}\n## ${laterHeading}\n`,
+            );
+            assert.equal(
+              (await latestPlanningPass(repo)).heading,
+              laterHeading,
+            );
+          }
+        }
+        for (const oldDate of ["2030-01-02", "2031-01-01"]) {
+          const repo = makeRepo(parent, `exempt-${oldDate}`, oldDate);
+          const current = passFor(repo);
+          await assert.rejects(checkPlanGate(repo), (error) =>
+            error.message.includes(
+              `planning pass ${current.id} needs a receipt`,
+            ),
+          );
+          assert.deepEqual(await latestPlanningPass(repo), current);
+          await writeDirectReceipt(repo);
+          assert.equal((await checkPlanGate(repo)).passes, 1);
+          assert.deepEqual(await latestPlanningPass(repo), current);
+        }
+        const repo = makeRepo(parent, "same-day-ambiguous");
+        const original = read(repo, PLAN_LEDGER);
+        const section = "\n## 2030-01-02 unjudged planning pass\n";
+        for (const ledger of [original + section, section + original]) {
+          write(repo, PLAN_LEDGER, ledger);
+          await assert.rejects(
+            latestPlanningPass(repo),
+            /ambiguous planning passes on 2030-01-02/u,
+          );
+          await assert.rejects(
+            plan(["refute"], repo),
+            /ambiguous planning passes/u,
+          );
+          await assert.rejects(
+            plan(["refute", "--transport", "fake"], repo),
+            /ambiguous planning passes/u,
+          );
+        }
+        write(repo, PLAN_LEDGER, "# No planning headings\n");
+        await assert.rejects(
+          latestPlanningPass(repo),
+          /no dated planning-pass ledger heading/u,
+        );
+      },
+    );
     await check(
       "WO-132 goal review preserves hypothetical findings without holding and requires observed evidence",
       async () => {
@@ -2327,7 +2504,7 @@ else {
         const scope = await planJudgmentScope(
           repo,
           nextSubject,
-          latestPlanningPass(repo),
+          await latestPlanningPass(repo),
         );
         assert.deepEqual(scope.judgedOrderIds, ["WO-901"]);
         assert.equal(scope.carried[0].workOrderId, "WO-902");
@@ -2381,7 +2558,7 @@ else {
         const scope = await planJudgmentScope(
           repo,
           subject,
-          latestPlanningPass(repo),
+          await latestPlanningPass(repo),
           "full",
         );
         assert.deepEqual(scope.judgedOrderIds, ["WO-901", "WO-902"]);

@@ -14,6 +14,7 @@ import {
   checkPlanGate,
   RECEIPTS,
   requireChangedPlanEvidence,
+  planningPassScope,
 } from "./plan-receipts.mjs";
 import { containedRegularFile } from "./paths.mjs";
 
@@ -27,16 +28,33 @@ export const planOrderHash = (order) =>
     order.nonGoals,
     ...(Object.hasOwn(order, "cost") ? [order.cost] : []),
   ]);
-export function latestPlanningPass(root) {
-  const passes = planningPasses(readFileSync(join(root, PLAN_LEDGER), "utf8"));
-  // Two planning passes can share a calendar day. The ledger header declares
-  // newest section first, so the earlier ledger position is the current pass.
-  const pass = [...passes]
-    .map((row, index) => ({ row, index }))
-    .sort(
-      (a, b) => b.row.date.localeCompare(a.row.date) || a.index - b.index,
-    )[0]?.row;
-  if (!pass) throw new Error("no dated planning-pass ledger heading");
+export async function latestPlanningPass(root, history) {
+  const enforced = planningPassScope(root).passes;
+  const passes = enforced.length
+    ? enforced
+    : planningPasses(readFileSync(join(root, PLAN_LEDGER), "utf8"));
+  const date = passes
+    .map((pass) => pass.date)
+    .sort()
+    .at(-1);
+  if (!date) throw new Error("no dated planning-pass ledger heading");
+  const current = passes.filter((pass) => pass.date === date);
+  const receipts = (history ?? (await readReceipts(root))).filter(
+    (receipt) => receipt.pass.kind === "planning",
+  );
+  // The gate requires each new pass's receipt, then follows the validated
+  // receipt chain. Neither fact depends on where a ledger section was filed.
+  const pending = current.filter(
+    (pass) => !receipts.some((receipt) => receipt.pass.id === pass.id),
+  );
+  if (pending.length > 1)
+    throw new Error(
+      `ambiguous planning passes on ${date}: multiple unjudged headings`,
+    );
+  const latest = [...receipts]
+    .reverse()
+    .find((receipt) => current.some((pass) => pass.id === receipt.pass.id));
+  const pass = pending[0] ?? current.find((pass) => pass.id === latest.pass.id);
   return { id: pass.id, kind: "planning", heading: pass.heading };
 }
 export async function planJudgmentScope(root, subject, pass, scope = "pass") {
@@ -177,7 +195,8 @@ export async function beginDirectRefutation(
   { scope = "pass", now = () => new Date().toISOString() } = {},
 ) {
   const subject = buildPlanSubject(root, "HEAD", { goalReview: true }),
-    pass = latestPlanningPass(root);
+    history = await readReceipts(root),
+    pass = await latestPlanningPass(root, history);
   if (
     buildPlanSubject(root, "HEAD", { workspace: true, goalReview: true })
       .hash !== subject.hash
@@ -185,7 +204,6 @@ export async function beginDirectRefutation(
     throw new Error(
       "commit the planning subject before refutation; committed subject differs from workspace",
     );
-  const history = await readReceipts(root);
   requireChangedPlanEvidence(pass, subject, history);
   if (
     history.some(
@@ -194,7 +212,7 @@ export async function beginDirectRefutation(
   )
     throw new Error("same subject cannot be re-rolled");
   const review = await planJudgmentScope(root, subject, pass, scope);
-  const path = `${local}/direct-${subject.hash.slice(7)}-${scope}.json`;
+  const path = `${local}/direct-${subject.hash.slice(7)}-${pass.id}-${scope}.json`;
   const pending = existsSync(join(root, path))
     ? JSON.parse(readFileSync(join(root, path), "utf8"))
     : {
@@ -207,6 +225,7 @@ export async function beginDirectRefutation(
       };
   if (
     pending.subjectHash !== subject.hash ||
+    JSON.stringify(pending.pass) !== JSON.stringify(pass) ||
     JSON.stringify(pending.review) !== JSON.stringify(review)
   )
     throw new Error(
@@ -260,9 +279,9 @@ export async function fileDirectRefutation(
     readFileSync(join(root, local, "current-direct.json"), "utf8"),
   );
   if (
-    !new RegExp(`^${local}/direct-[a-f0-9]{64}-(?:pass|full)\\.json$`).test(
-      pointer.path,
-    )
+    !new RegExp(
+      `^${local}/direct-[a-f0-9]{64}-(?:planning-[a-f0-9]{16}-)?(?:pass|full)\\.json$`,
+    ).test(pointer.path)
   )
     throw new Error("Invalid direct refutation pointer");
   const pending = JSON.parse(readFileSync(join(root, pointer.path), "utf8"));

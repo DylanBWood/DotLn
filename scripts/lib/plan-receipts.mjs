@@ -1100,6 +1100,39 @@ export function checkPassReceipt(
   return latest;
 }
 
+export function planningPassScope(root) {
+  // The first-parent introduction dates the standard after a squash or merge.
+  // Before this mechanism is committed, only its executable fixtures and live
+  // evidence receipts apply. Same-day earlier headings are explicitly exempt.
+  const introduction = runGit(root, [
+    "log",
+    "--first-parent",
+    "--reverse",
+    "--diff-filter=A",
+    "--format=%H %cI",
+    "HEAD",
+    "--",
+    "scripts/refute-plan.mjs",
+  ])
+    .split("\n")
+    .find(Boolean);
+  if (!introduction) return { passes: [], enforcement: null };
+  const [revision, at] = introduction.split(" ");
+  let old = [];
+  try {
+    old = planningPasses(
+      committedReader(root, `${revision}^`).read(PLAN_LEDGER),
+    );
+  } catch {
+    /* fixture root commit */
+  }
+  const exempt = new Set(old.map(({ heading }) => heading));
+  const passes = planningPasses(read(root, PLAN_LEDGER)).filter(
+    ({ date, heading }) => date >= at.slice(0, 10) && !exempt.has(heading),
+  );
+  return { passes, enforcement: at.slice(0, 10) };
+}
+
 export async function checkPlanGate(root) {
   const localTerms = checkLocalTerms(root, []).status;
   const receipts = await readReceipts(root);
@@ -1137,41 +1170,14 @@ export async function checkPlanGate(root) {
       ),
       "override names missing receipt or hold",
     );
-  // The first-parent introduction dates the standard after a squash or merge.
-  // Before this mechanism is committed, only its executable fixtures and live
-  // evidence receipts apply. Same-day earlier headings are explicitly exempt.
-  const introduction = runGit(root, [
-    "log",
-    "--first-parent",
-    "--reverse",
-    "--diff-filter=A",
-    "--format=%H %cI",
-    "HEAD",
-    "--",
-    "scripts/refute-plan.mjs",
-  ])
-    .split("\n")
-    .find(Boolean);
-  if (!introduction)
+  const { passes, enforcement } = planningPassScope(root);
+  if (!enforcement)
     return {
       receipts: receipts.length,
       passes: 0,
       enforcement: "pending introduction commit",
       localTerms,
     };
-  const [revision, at] = introduction.split(" ");
-  let old = [];
-  try {
-    old = planningPasses(
-      committedReader(root, `${revision}^`).read(PLAN_LEDGER),
-    );
-  } catch {
-    /* fixture root commit */
-  }
-  const exempt = new Set(old.map(({ heading }) => heading));
-  const passes = planningPasses(read(root, PLAN_LEDGER)).filter(
-    ({ date, heading }) => date >= at.slice(0, 10) && !exempt.has(heading),
-  );
   let continuation = null;
   if (passes.length) {
     const currentReceipt = [...receipts]
@@ -1222,7 +1228,7 @@ export async function checkPlanGate(root) {
   return {
     receipts: receipts.length,
     passes: passes.length,
-    enforcement: at.slice(0, 10),
+    enforcement,
     localTerms,
     continuation,
   };
