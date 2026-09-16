@@ -236,6 +236,6 @@ This addendum reassesses `program.evaluable-subset` against the executable type
 and decoder staged for v0.21.0. [Independent verification VER-001](../verifications/WO-046/VER-001.md)
 passed on 2026-09-15 with no blocking finding.
 
-| Capability key | New staged evidence | Remaining gate | Disposition |
+| Capability key | New staged evidence | Blocking-gate reassessment | Disposition |
 | --- | --- | --- | --- |
 | `program.evaluable-subset` | Recursive `ExecutableProgramV1`, compile-time kind equality, typed path-addressed decoding, and persisted runtime/verification fold validation. [Decoder tests](../../packages/kernel/test/wo046-continuation-decoder.test.ts), [fold tests](../../packages/skeleton/test/wo046-continuations.test.ts), [corpus](../../corpus/harness/wo101-program-corpus.test.mjs), and [implementation evidence](../evidence/WO-046/implementation.md) preserve executable steps, serialization and replay identity. | Persist one Await residual, resume in a fresh real episode, deliver its correlated event, and compare the trace with lifecycle, recovery, authority and audit evidence. | Retain **2 — dependable**, target **3 — integrated**, efficiency **E0 — unknown**. Decode safety strengthens L2 without supplying the real-session proof. |
