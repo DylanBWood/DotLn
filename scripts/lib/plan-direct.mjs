@@ -29,7 +29,13 @@ export const planOrderHash = (order) =>
   ]);
 export function latestPlanningPass(root) {
   const passes = planningPasses(readFileSync(join(root, PLAN_LEDGER), "utf8"));
-  const pass = passes.sort((a, b) => b.date.localeCompare(a.date))[0];
+  // Two planning passes can share a calendar day. Break the date tie by
+  // ledger order so the later heading is the current pass.
+  const pass = [...passes]
+    .map((row, index) => ({ row, index }))
+    .sort(
+      (a, b) => b.row.date.localeCompare(a.row.date) || b.index - a.index,
+    )[0]?.row;
   if (!pass) throw new Error("no dated planning-pass ledger heading");
   return { id: pass.id, kind: "planning", heading: pass.heading };
 }
