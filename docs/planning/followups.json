@@ -5160,6 +5160,13 @@
           "title": "_Scope choices were reported as repository refusals._ Declining to patch",
           "summary": "8. _Scope choices were reported as repository refusals._ Declining to patch machinery inside a document-only dispatch was a judgment call presented as though the process had refused, which removed a decision belonging to the operator. Cost observation: about ninety minutes across three sessions, on a release that was publishable throughout.",
           "missing": false
+        },
+        {
+          "hash": "2997762010a74a609917fd96616b3682ddb2f518c4b7d704b44c0ea8d7dd57c7",
+          "ref": "docs/planning/work-order-map.md#candidates--release-close-and-planning-dispatch-defects-recorded-2026-09-16",
+          "title": "_Scope choices were reported as repository refusals._ Declining to patch",
+          "summary": "8. _Scope choices were reported as repository refusals._ Declining to patch machinery inside a document-only dispatch was a judgment call presented as though the process had refused, which removed a decision belonging to the operator.",
+          "missing": false
         }
       ],
       "dispositions": []
@@ -5174,6 +5181,21 @@
           "ref": "docs/planning/work-order-map.md#candidates--release-close-and-planning-dispatch-defects-recorded-2026-09-16",
           "title": "_The plan gate was unsatisfiable on any day carrying two passes._",
           "summary": "2. _The plan gate was unsatisfiable on any day carrying two passes._ `checkPlanGate` demanded a receipt for the later dated heading while `latestPlanningPass` returned the earlier one: both sorted headings by date alone, and `Array.prototype.sort` is stable. Patched in `8a5eb79` by breaking the tie on ledger order. **The patch carries no regression test**, so the defect can return; the test is the nomination. Latent since the mechanism shipped, surfaced by the first day with two passes.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-d3940f4e6201b477",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--release-close-and-planning-dispatch-defects-recorded-2026-09-16::74ff87385062abd6b97c564e830d8bb5205e15da8b8fc083adda3bfcdf2fe9b9",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "37201a975883502614c193391d1acf01918d53372ee0f7a6e96f45421e4495e4",
+          "ref": "docs/planning/work-order-map.md#candidates--release-close-and-planning-dispatch-defects-recorded-2026-09-16",
+          "title": "_The ledger's declared order is unenforced, so the operator is the check._",
+          "summary": "9. _The ledger's declared order is unenforced, so the operator is the check._ The header states in bold that a new section appends directly below it, never at the end of the file; this pass appended at the end and the operator caught it. `WO-084:53` already records that \"nothing checks the order\", and the file has drifted accordingly — dated sections currently run ascending below the first entry, contradicting the declared newest-first rule. The drift also propagates: the same-day tie-break in `latestPlanningPass` reads ledger position, so a wrong order silently selects the wrong pass. A fix must make the insertion rule checkable in `test:docs` rather than documented, which is WO-084's subje",
           "missing": false
         }
       ],

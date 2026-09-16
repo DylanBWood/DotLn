@@ -23,6 +23,84 @@ file. Two standing reference surfaces sit at the very bottom because they are
 founding-era: **Resolutions of known tensions** (settled contradictions — do
 not relitigate them) and the founding chat/notes/image corpus.
 
+
+## 2026-09-16 — Planning pass: the `runtime.resident` capability admission (WO-068)
+
+- **`runtime.resident` is admitted to the capability inventory at
+  1 — demonstrable, target 2 — dependable** `adopted`
+  - The id entered the repository as an executor write-back under WO-068
+    criterion 7 and has never been judged by a planning pass. This pass takes
+    up the claim. The declared scope — local presence-policy loop and one-tick
+    mode, script actor, durable restart — is supported by fixture evidence:
+    fake-clock phase, return and expiry; byte-identical replay; fresh-process
+    once and loop logs; a native macOS no-network script; exclusive lock and
+    SIGKILL recovery. [VER-001](../verifications/WO-068/VER-001.md) passed on
+    2026-09-16 with four non-blocking findings and no criterion failure, and
+    [FINAL-001](../final-reviews/WO-068/FINAL-001.md) passed the order. Level 1
+    is the correct claim for that evidence and this pass does not raise it.
+  - Reopen when the row's evidence changes: promote to 2 — dependable only
+    when the important failure paths carry automated checks, which today they
+    do not (see the next entry).
+  - Provenance: `docs/planning/capability-table.md` §WO-068 dated addition;
+    WO-068 implementation evidence; the resident fixtures in
+    `packages/skeleton/test/resident.test.ts`.
+- **The claim is not promoted to 2 — dependable on this pass** `rejected`
+  - The table's own reading rule makes level 2 a statement that the declared
+    scope has automated checks and repeatable evidence for its normal *and*
+    important failure paths. VER-001 **F1** is an important failure path that
+    does not yet meet that bar: a SIGKILL inside the append-lock recovery
+    window leaves a store that refuses until a human removes a directory.
+    Promotion would assert coverage the repository does not have.
+  - Reverse when F1's recovery window is closed with an automated check over
+    the once and loop paths.
+  - Provenance: `docs/verifications/WO-068/VER-001.md` §F1; the capability
+    table's "Reading the table" §.
+- **Level 3 — integrated stays blocked, unchanged by this pass** `adopted`
+  - All resident evidence is fixture evidence. The table's rule holds level 3
+    shut wherever the proof is a deterministic fake rather than a real DotLn
+    workflow carrying lifecycle, recovery, authority and audit evidence
+    together. No live model actor, work derivation, presence sensing or
+    installed service is claimed.
+  - Reopen when WO-099, WO-100, WO-110, WO-111, WO-121 or WO-122 supplies a
+    real resident episode with those four evidence families.
+  - Provenance: the capability table's level-3 rule; the row's own
+    remaining-gate cell; the sequence entries for those orders.
+- **The filing defect behind B1 is nominated, not repaired here** `deferred`
+  - WO-068 criterion 7 directed an executor to introduce a new capability id.
+    `scripts/lib/plan-continuation.mjs:94` refuses exactly that
+    (`requireSamePlan(knownIds.has(id), ...)`), because new ids are a planning
+    claim and not an execution write-back. The order therefore mandated an
+    edit the repository's own gate rejects by design, and FINAL-001 recorded
+    it as **B1**, correctly classified as a planning defect with no executor
+    repair. The same shape recurs on the next order that introduces an id.
+    FINAL-001 already nominated two candidate fixes: admit new ids through the
+    planning pass that files the order, or teach `reassessments` a dated
+    addition form for ids the filing order itself introduces. Choosing between
+    them is a work order with its own evidence, not a document edit inside
+    this pass.
+  - Reopen at the next order whose criteria name a capability id absent from
+    the latest receipt's subject.
+  - Provenance: `docs/work-orders/WO-068-resident-host.md` criterion 7;
+    `docs/final-reviews/WO-068/FINAL-001.md` §B1;
+    `scripts/lib/plan-continuation.mjs`.
+- **Corrections during this pass, logged** `adopted`
+  - The dispatch was prefixed `planning:` in the operator's first message and
+    was read as a question rather than a dispatch; four turns of diagnosis ran
+    before the pass opened. The diagnosis is retained in the ignored intake
+    capture because it established two facts this pass relies on: the release
+    helper never calls the planning gate, and the earlier hold came from an
+    answered `AskUserQuestion`, not a tool refusal.
+  - The session's hooks are in their fallback path (`pins-differ`), so the
+    writer reservation and usage counters were unavailable throughout.
+- **Process cost of this pass** `adopted`
+  - Unknown. `node scripts/harness.mjs usage` returned "Begin the harness
+    session before measuring usage", so no counter was observed at entry or
+    handoff. The pass ran no code suite and one background goal review.
+- **Amending the gate, promoting the row, renaming the heading, refreshing the
+  receipt alone, and replanning the horizon** `rejected`
+  - Each with its evidence and reversal condition in the map's NoOps of this
+    pass.
+
 ## 2026-09-09 WO-126 ideation — context continuity and observation before caps
 
 Source: the operator's context warning, explicit ideation dispatch and two
@@ -6969,80 +7047,3 @@ existing contract; no runtime source, contract, or locked boundary changes.
 - **A host-side containment order, waiting for WO-133, residue as boy-scout items on WO-049, four residue orders, a model-composed commit message, a harness scheduler, a second statechart interpreter, splitting the host, moving evidence, consolidating scripts, settling the register now, a retention rule now, the two rejected pairings, and a cross-order review gate** `rejected`
   - Each with its evidence and reversal condition in the planning
     document's NoOp register (§6) and the map's NoOps of this pass.
-
-## 2026-09-16 — Planning pass: the `runtime.resident` capability admission (WO-068)
-
-- **`runtime.resident` is admitted to the capability inventory at
-  1 — demonstrable, target 2 — dependable** `adopted`
-  - The id entered the repository as an executor write-back under WO-068
-    criterion 7 and has never been judged by a planning pass. This pass takes
-    up the claim. The declared scope — local presence-policy loop and one-tick
-    mode, script actor, durable restart — is supported by fixture evidence:
-    fake-clock phase, return and expiry; byte-identical replay; fresh-process
-    once and loop logs; a native macOS no-network script; exclusive lock and
-    SIGKILL recovery. [VER-001](../verifications/WO-068/VER-001.md) passed on
-    2026-09-16 with four non-blocking findings and no criterion failure, and
-    [FINAL-001](../final-reviews/WO-068/FINAL-001.md) passed the order. Level 1
-    is the correct claim for that evidence and this pass does not raise it.
-  - Reopen when the row's evidence changes: promote to 2 — dependable only
-    when the important failure paths carry automated checks, which today they
-    do not (see the next entry).
-  - Provenance: `docs/planning/capability-table.md` §WO-068 dated addition;
-    WO-068 implementation evidence; the resident fixtures in
-    `packages/skeleton/test/resident.test.ts`.
-- **The claim is not promoted to 2 — dependable on this pass** `rejected`
-  - The table's own reading rule makes level 2 a statement that the declared
-    scope has automated checks and repeatable evidence for its normal *and*
-    important failure paths. VER-001 **F1** is an important failure path that
-    does not yet meet that bar: a SIGKILL inside the append-lock recovery
-    window leaves a store that refuses until a human removes a directory.
-    Promotion would assert coverage the repository does not have.
-  - Reverse when F1's recovery window is closed with an automated check over
-    the once and loop paths.
-  - Provenance: `docs/verifications/WO-068/VER-001.md` §F1; the capability
-    table's "Reading the table" §.
-- **Level 3 — integrated stays blocked, unchanged by this pass** `adopted`
-  - All resident evidence is fixture evidence. The table's rule holds level 3
-    shut wherever the proof is a deterministic fake rather than a real DotLn
-    workflow carrying lifecycle, recovery, authority and audit evidence
-    together. No live model actor, work derivation, presence sensing or
-    installed service is claimed.
-  - Reopen when WO-099, WO-100, WO-110, WO-111, WO-121 or WO-122 supplies a
-    real resident episode with those four evidence families.
-  - Provenance: the capability table's level-3 rule; the row's own
-    remaining-gate cell; the sequence entries for those orders.
-- **The filing defect behind B1 is nominated, not repaired here** `deferred`
-  - WO-068 criterion 7 directed an executor to introduce a new capability id.
-    `scripts/lib/plan-continuation.mjs:94` refuses exactly that
-    (`requireSamePlan(knownIds.has(id), ...)`), because new ids are a planning
-    claim and not an execution write-back. The order therefore mandated an
-    edit the repository's own gate rejects by design, and FINAL-001 recorded
-    it as **B1**, correctly classified as a planning defect with no executor
-    repair. The same shape recurs on the next order that introduces an id.
-    FINAL-001 already nominated two candidate fixes: admit new ids through the
-    planning pass that files the order, or teach `reassessments` a dated
-    addition form for ids the filing order itself introduces. Choosing between
-    them is a work order with its own evidence, not a document edit inside
-    this pass.
-  - Reopen at the next order whose criteria name a capability id absent from
-    the latest receipt's subject.
-  - Provenance: `docs/work-orders/WO-068-resident-host.md` criterion 7;
-    `docs/final-reviews/WO-068/FINAL-001.md` §B1;
-    `scripts/lib/plan-continuation.mjs`.
-- **Corrections during this pass, logged** `adopted`
-  - The dispatch was prefixed `planning:` in the operator's first message and
-    was read as a question rather than a dispatch; four turns of diagnosis ran
-    before the pass opened. The diagnosis is retained in the ignored intake
-    capture because it established two facts this pass relies on: the release
-    helper never calls the planning gate, and the earlier hold came from an
-    answered `AskUserQuestion`, not a tool refusal.
-  - The session's hooks are in their fallback path (`pins-differ`), so the
-    writer reservation and usage counters were unavailable throughout.
-- **Process cost of this pass** `adopted`
-  - Unknown. `node scripts/harness.mjs usage` returned "Begin the harness
-    session before measuring usage", so no counter was observed at entry or
-    handoff. The pass ran no code suite and one background goal review.
-- **Amending the gate, promoting the row, renaming the heading, refreshing the
-  receipt alone, and replanning the horizon** `rejected`
-  - Each with its evidence and reversal condition in the map's NoOps of this
-    pass.

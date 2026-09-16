@@ -845,6 +845,20 @@ track.
    though the process had refused, which removed a decision belonging to the
    operator.
 
+9. _The ledger's declared order is unenforced, so the operator is the check._
+   The header states in bold that a new section appends directly below it,
+   never at the end of the file; this pass appended at the end and the operator
+   caught it. `WO-084:53` already records that "nothing checks the order", and
+   the file has drifted accordingly — dated sections currently run ascending
+   below the first entry, contradicting the declared newest-first rule. The
+   drift also propagates: the same-day tie-break in `latestPlanningPass` reads
+   ledger position, so a wrong order silently selects the wrong pass. A fix
+   must make the insertion rule checkable in `test:docs` rather than
+   documented, which is WO-084's subject. Until then every ledger write spends
+   an operator correction. Recorded against the
+   shifting-the-burden-to-the-intervenor trap: five operator corrections in
+   this session, all catching agent error rather than directing work.
+
 Cost observation: about ninety minutes across three sessions, on a release that
 was publishable throughout.
 
