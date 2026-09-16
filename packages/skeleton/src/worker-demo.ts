@@ -13,6 +13,7 @@ import { canonicalStringify, seiriEnvironment } from "@dotln/compiler";
 import { decodeLog, type JsonValue } from "@dotln/kernel";
 import {
   expectedInspectCommandId,
+  walkingStateFromRuntime,
   loadout,
   MINUTE,
   WORKSTREAM,
@@ -188,7 +189,11 @@ export async function runWorkerDemo(
         (event.payload as { workerResultVersion?: number })
           .workerResultVersion === 1,
     );
-    if (!completed && resultEvent && driver.state.inspectionCompleted) {
+    if (
+      !completed &&
+      resultEvent &&
+      walkingStateFromRuntime(driver.state).inspectionCompleted
+    ) {
       const payload = resultEvent.payload as unknown as {
         workerEpisodeId: string;
         commandId: string;
@@ -221,7 +226,7 @@ export async function runWorkerDemo(
     const workerPath = join(worktrees.directory, expectedInspectCommandId);
     if (
       completed &&
-      driver.state.verificationCompleted &&
+      walkingStateFromRuntime(driver.state).verificationCompleted &&
       !existsSync(workerPath)
     ) {
       return {
@@ -276,7 +281,10 @@ export async function runWorkerDemo(
     });
     let envelope: ResultEnvelope;
     let resultStep;
-    if (resultEvent && driver.state.inspectionCompleted) {
+    if (
+      resultEvent &&
+      walkingStateFromRuntime(driver.state).inspectionCompleted
+    ) {
       envelope = (
         resultEvent.payload as unknown as { envelope: ResultEnvelope }
       ).envelope;

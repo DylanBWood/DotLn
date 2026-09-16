@@ -12,6 +12,8 @@ import {
   EPISODE,
   commandFromState,
   workOrderFromState,
+  walkingStateFromRuntime,
+  workerStateFromRuntime,
 } from "./reactor.js";
 import {
   LiveReactorDriver,
@@ -62,7 +64,7 @@ export class WorkerHost {
     const request: WorkerRequest = {
       command: commandFromState(driver.state),
       workOrder: workOrderFromState(driver.state),
-      artifactIdentity: driver.state
+      artifactIdentity: walkingStateFromRuntime(driver.state)
         .artifactIdentity as unknown as ArtifactIdentityV1,
       episodeId: `${EPISODE}_worker_${episodes.length + 1}`,
       model,
@@ -206,7 +208,7 @@ export class WorkerHost {
           try {
             // A delayed host callback cannot renew a lease it already missed.
             this.expireLeases();
-            if (driver.state.workerLeaseExpired) {
+            if (workerStateFromRuntime(driver.state).workerLeaseExpired) {
               dispatch!.kill();
               return;
             }
