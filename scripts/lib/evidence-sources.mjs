@@ -24,6 +24,7 @@ const commonSources = [
   "packages/compiler/src/views.ts",
   "packages/compiler/tsconfig.json",
   "packages/kernel/package.json",
+  "packages/kernel/src/continuation.ts",
   "packages/kernel/tsconfig.json",
   "packages/skeleton/package.json",
   "packages/skeleton/src/evidence-editions.mjs",

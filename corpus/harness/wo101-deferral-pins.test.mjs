@@ -2,12 +2,9 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {
   Program,
-  decideProgram,
-  stepProgram,
+  decodeContinuation,
 } from "../../packages/kernel/dist/src/index.js";
 
-const predicates = { "always.false": { 1: () => false } };
-const env = { now: 0, rngState: 1, predicates };
 const ref = { registryId: "always.false", version: 1 };
 
 // WO-101 DEFERRED PROGRAM PINS. Keep all five arrive-on-contact deferral
@@ -27,18 +24,15 @@ test("WO-101 pins exactly the five deferred Program kinds and no semantics", () 
     ["Choose", "All", "Race", "Repeat", "Compensate"],
   );
   for (const [kind, program] of deferred) {
-    const exact = (error) =>
-      error instanceof Error &&
-      error.message === `Program ${kind} evaluation is deferred`;
-    assert.throws(
-      () => stepProgram(program, {}, env),
-      exact,
-      `${kind} stepProgram deferral drift`,
-    );
-    assert.throws(
-      () => decideProgram(program, {}, env),
-      exact,
-      `${kind} decideProgram deferral drift`,
-    );
+    for (const [value, path] of [
+      [program, "$.kind"],
+      [Program.Sequence([Program.Done(), program]), "$.programs[1].kind"],
+    ]) {
+      const decoded = decodeContinuation(value);
+      assert.equal(decoded.ok, false);
+      assert.equal(decoded.code, "DEFERRED_PROGRAM_KIND");
+      assert.equal(decoded.path, path);
+      assert.match(decoded.message, new RegExp(kind));
+    }
   }
 });

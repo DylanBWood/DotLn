@@ -50,11 +50,15 @@ function roundTrip(program, label) {
   assertNoFunctions(program, label);
   const serialized = kernel.serializeContinuation(program);
   assert.equal(typeof serialized, "string");
-  const revived = kernel.deserializeContinuation(serialized);
+  const decoded = kernel.decodeContinuation(serialized);
+  assert.ok(decoded.ok, decoded.message);
+  const revived = decoded.value;
   assert.deepEqual(revived, program, `${label} continuation round-trip drift`);
+  return revived;
 }
 
 function evaluate(input) {
+  input = { ...input, program: roundTrip(input.program, "evaluated input") };
   const env = environmentFor(input);
   const step = errorRecord(() =>
     kernel.stepProgram(input.program, input.state, env, input.event),
@@ -219,7 +223,7 @@ test("WO-101 full bounded enumeration is deterministic and pure under poisoned a
       roundTrip(program, `enumeration.${evaluations}.input`);
       for (const context of EXECUTION_CONTEXTS) {
         const input = {
-          program: structuredClone(program),
+          program: roundTrip(program, "full enumeration input"),
           state: structuredClone(context.state),
           env: structuredClone(context.env),
           ...(context.event === undefined
@@ -610,5 +614,12 @@ test("WO-101 frozen predicate registry drives both branches and pins unknown ref
       ),
     (error) =>
       error instanceof Error && error.message === "Unknown predicate missing@9",
+  );
+});
+
+test("WO-046 corpus root kinds cover the type-exhaustive executable constant", () => {
+  assert.deepEqual(
+    Object.keys(manifest.program.counts.fullEnumeration.rootKindCounts).sort(),
+    [...kernel.EVALUABLE_PROGRAM_KINDS].sort(),
   );
 });

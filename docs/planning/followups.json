@@ -4609,6 +4609,36 @@
       "dispositions": []
     },
     {
+      "id": "FUP-c07edeaba48f5c5b",
+      "key": "decision:docs/evidence/WO-046/decisions.md#wo-046-d001",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "ad5cbe53c767dde73f615fe5b7d06c34edd9d603d78bf143f58b24327d8220b3",
+          "ref": "docs/evidence/WO-046/decisions.md#wo-046-d001",
+          "title": "WO-046-D001: Keep Program.T as the authoring grammar; add a recursive ExecutableProgramV1 union, constructor overloads, and a typed decoder at persisted-state reads.",
+          "summary": "{ \"id\": \"WO-046-D001\", \"date\": \"2026-09-15\", \"dispatch\": \"resume: next\", \"decision\": \"Keep Program.T as the authoring grammar; add a recursive ExecutableProgramV1 union, constructor overloads, and a typed decoder at persisted-state reads.\", \"evidence\": [ \"packages/kernel/src/types.ts\", \"packages/kernel/src/core.ts\", \"packages/skeleton/src/reactor.ts\", \"corpus/harness/wo101-program-corpus.test.mjs\" ], \"rejected\": [ { \"option\": \"NoOp\", \"reason\": \"Leaves deferred or malformed continuations to fail after execution begins.\" }, { \"option\": \"Implement deferred kinds\", \"reason\": \"No consumer or semantics is authorized by this order.\" }, { \"option\": \"Generic child parameters throughout the authoring ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-1f92b61ce1a8f6a1",
+      "key": "decision:docs/evidence/WO-046/decisions.md#wo-046-d002",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "a966539820f1694d9b4a6a07e1a8f9a6abb8371c4837b0d9071c14bdea617c92",
+          "ref": "docs/evidence/WO-046/decisions.md#wo-046-d002",
+          "title": "WO-046-D002: Stage application v0.21.0, kernel 0.4.0 and skeleton 0.18.0; refresh immutable evidence editions and generated runtime pins.",
+          "summary": "{ \"id\": \"WO-046-D002\", \"date\": \"2026-09-15\", \"dispatch\": \"resume: next\", \"decision\": \"Stage application v0.21.0, kernel 0.4.0 and skeleton 0.18.0; refresh immutable evidence editions and generated runtime pins.\", \"evidence\": [ \"package-lock.json\", \"docs/work-orders/WO-046-executable-program-split.md\", \"docs/evidence/current.json\" ], \"rejected\": [ { \"option\": \"Patch kernel\", \"reason\": \"Narrowed stepper input and replacement decoder are public API changes under 0.x.\" }, { \"option\": \"Bump compiler or console\", \"reason\": \"Their implementation and artifact identity are unchanged.\" }, { \"option\": \"Reuse historical source evidence\", \"reason\": \"New runtime bytes require a fresh edition; prior editio",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
       "id": "FUP-f5dd7dd0e70d0f6c",
       "key": "decision:docs/evidence/WO-048/decisions.md#wo-048-d001",
       "kind": "decision",
@@ -4633,6 +4663,21 @@
           "ref": "docs/evidence/WO-048/decisions.md#wo-048-d002",
           "title": "WO-048-D002: Stage application v0.20.1 and skeleton 0.17.1, retain the kernel/compiler contracts and immutable prior evidence, and refresh the runtime bundle and verification/feedback editions.",
           "summary": "{ \"id\": \"WO-048-D002\", \"date\": \"2026-09-15\", \"dispatch\": \"resume: next\", \"decision\": \"Stage application v0.20.1 and skeleton 0.17.1, retain the kernel/compiler contracts and immutable prior evidence, and refresh the runtime bundle and verification/feedback editions.\", \"evidence\": [ \"package-lock.json\", \"docs/product/06-roadmap.md\", \"docs/evidence/current.json\" ], \"rejected\": [ { \"option\": \"No component bump\", \"reason\": \"The skeleton runtime changed and must carry its classified patch impact.\" }, { \"option\": \"New schema, dependency or hash rule\", \"reason\": \"This hardening composes existing transport/capsule validators without changing their contracts.\" }, { \"option\": \"Overwrite previous evide",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-db12035f56118cc2",
+      "key": "decision:docs/evidence/WO-048/decisions.md#wo-048-d003",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "31d70be10777c1ed364ba366d74690b977f149b72cbcae0c67099754d59f8c24",
+          "ref": "docs/evidence/WO-048/decisions.md#wo-048-d003",
+          "title": "WO-048-D003: Retime the staged release from application v0.20.1 / skeleton 0.17.1 to v0.21.1 / skeleton 0.18.1 after WO-046 published v0.21.0 / skeleton 0.18.0, preserving the order's recorded patch c",
+          "summary": "{ \"id\": \"WO-048-D003\", \"date\": \"2026-09-15\", \"dispatch\": \"resume: final review\", \"decision\": \"Retime the staged release from application v0.20.1 / skeleton 0.17.1 to v0.21.1 / skeleton 0.18.1 after WO-046 published v0.21.0 / skeleton 0.18.0, preserving the order's recorded patch classification and declared compatibility impact.\", \"evidence\": [ \"README.md\", \"docs/product/06-roadmap.md\", \"package-lock.json\", \"packages/skeleton/package.json\", \"packages/skeleton/src/harness-host.ts\", \"packages/skeleton/src/loadouts/contributor.ts\", \"docs/work-orders/WO-048-worker-host-on-disk-decode.md\" ], \"rejected\": [ { \"option\": \"Keep v0.20.1 / 0.17.1\", \"reason\": \"Upstream consumed the staged numbers; the bra",
           "missing": false
         }
       ],

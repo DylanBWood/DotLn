@@ -97,3 +97,46 @@ The first full-gate attempt overlapped a metadata refresh and was explicitly
 stopped, with no check recorded; the final passing gate started only after
 generation completed. Its retained stopped transcript and implementation report
 record the same-day process correction. No code changed after the final pass.
+
+## WO-048-D003
+
+Retime the staged release during final-review integration (2026-09-15)
+
+```json
+{
+  "id": "WO-048-D003",
+  "date": "2026-09-15",
+  "dispatch": "resume: final review",
+  "decision": "Retime the staged release from application v0.20.1 / skeleton 0.17.1 to v0.21.1 / skeleton 0.18.1 after WO-046 published v0.21.0 / skeleton 0.18.0, preserving the order's recorded patch classification and declared compatibility impact.",
+  "evidence": [
+    "README.md",
+    "docs/product/06-roadmap.md",
+    "package-lock.json",
+    "packages/skeleton/package.json",
+    "packages/skeleton/src/harness-host.ts",
+    "packages/skeleton/src/loadouts/contributor.ts",
+    "docs/work-orders/WO-048-worker-host-on-disk-decode.md"
+  ],
+  "rejected": [
+    { "option": "Keep v0.20.1 / 0.17.1", "reason": "Upstream consumed the staged numbers; the branch would claim a version below its own base." },
+    { "option": "Reclassify above patch", "reason": "The integrated source adds no contract, schema, dependency or hash change, so the recorded patch classification still holds." },
+    { "option": "Return the order to repair", "reason": "Retiming an unpublished release under its existing classification is final-review integration work, not a behavioral defect." }
+  ],
+  "reopenWhen": "Another sibling publishes v0.21.1 before this branch merges, or a check on the integrated tree shows a compatibility impact beyond patch."
+}
+```
+
+Correction recorded under D002's stated reopening condition ("Integration
+consumes the staged version"). What was misread: nothing in the original
+judgment; D002 was correct at its recorded subject, where the observed local
+tag was `v0.20.0`. What was meant: the smallest patch above the then-current
+release for the skeleton runtime alone. What changed: WO-046 merged to `main`
+as `v0.21.0` with skeleton `0.18.0` while this branch was in final review, so
+the same patch intent now lands at `v0.21.1` / `0.18.1`.
+
+The retiming also moves `HARNESS_HOST_VERSION` and both contributor-profile
+`skeletonVersion` literals to `0.18.1`. Observation for the operator, not a
+finding against this order: `main` carries those three constants at `0.17.0`
+while its `packages/skeleton/package.json` reads `0.18.0`, so WO-046 bumped the
+package without its runtime literals. This order's own declared bump is what
+brings them back into agreement; WO-046's gap is its own record.

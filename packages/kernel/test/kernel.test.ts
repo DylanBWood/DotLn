@@ -10,7 +10,7 @@ import {
   commandId,
   decideProgram,
   decodeLog,
-  deserializeContinuation,
+  decodeContinuation,
   emptyOutbox,
   encodeLog,
   evaluateCadence,
@@ -280,7 +280,9 @@ test("AC4 continuations: correlated Invoke/Await sequence serializes and resumes
     decideProgram(program, { flag: true }, env()).continuation,
     step.residual,
   );
-  let residual = deserializeContinuation(serializeContinuation(step.residual));
+  const decoded = decodeContinuation(serializeContinuation(step.residual));
+  assert.ok(decoded.ok, decoded.ok ? "" : decoded.message);
+  let residual = decoded.value;
   assert.deepEqual(residual, step.residual);
   assert.equal(findFunctions(residual), false);
   step = stepProgram(

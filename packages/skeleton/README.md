@@ -1,4 +1,6 @@
-# `@dotln/skeleton` 0.17.0
+# `@dotln/skeleton` 0.18.0
+
+For application v0.21.0, a persisted continuation is decoded before the reactor folds it. `seiriReactor` decodes `state.program` on every event and `verificationStateFromRuntime` decodes the stored verification continuation, so a deferred Program kind or a malformed node refuses with a code and JSON path, prefixed `runtime program:` or `verification continuation:`, before a command is dispatched or a result is consumed. The kernel type those reads produce is `ExecutableProgramV1`.
 
 For application v0.20.0, hook input is positively decoded before ordinary host work. `decodeHarnessInput(value, expectedEvent?)` returns the kernel `DecodeResult` shape, validates every declared input field and the configured event, and retains unconsumed native metadata. `tool_name` is a string; `tool_input` and `tool_response` are objects. Invalid JSON and malformed fields use the event's existing protocol response with a code and JSON path. PreToolUse denies; prompt submission remains accepted with a diagnostic, and PostToolUse/Stop report the failure. The generated entry preserves valid `analysis:` and `operator override:` recovery even when the built runtime is unavailable.
 

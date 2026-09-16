@@ -1,4 +1,4 @@
-# `@dotln/kernel` v0.3.0
+# `@dotln/kernel` v0.4.0
 
 The deterministic, framework-free DotLn core. Kernel functions perform no I/O
 and consult no ambient clock or randomness. Import the public API from
@@ -15,8 +15,8 @@ and consult no ambient clock or randomness. Import the public API from
 | `Schedule`, `Cadence`, `CadenceResult`, `CADENCE_KINDS`, `EVALUABLE_CADENCE_KINDS`, `evaluateCadence` and all 14 constructors | Schedule, Cadence temporal-algebra AST and virtual-time evaluation                                       |
 | `Intent`, `ActIntent`, `WaitIntent`, `ObserveIntent`, `NoOpIntent`                                                            | Intent (`Act \| Wait \| Observe \| NoOp`)                                                                |
 | `Command`, `CommandReceipt`, `commandId`, `stableHash`                                                                        | Command, CommandReceipt, deterministic outbox identity                                                   |
-| `Program`, `ProgramStep`, `ProgramDecision`, `EVALUABLE_PROGRAM_KINDS`, `stepProgram`, `decideProgram`                        | Program grammar, residual Decision continuation, and its v0.1 evaluation subset                          |
-| `serializeContinuation`, `deserializeContinuation`                                                                            | Continuation                                                                                             |
+| `Program`, `ExecutableProgramV1`, `ProgramStep`, `ProgramDecision`, `EVALUABLE_PROGRAM_KINDS`, `stepProgram`, `decideProgram`                        | Program grammar, residual Decision continuation, and its v0.1 evaluation subset                          |
+| `serializeContinuation`, `decodeContinuation`                                                                            | Continuation                                                                                             |
 | `PredicateRef`, `Predicate`, `predicate`                                                                                      | Conditions as data: the versioned predicate registry consulted by Cadence and Program guards             |
 | `AuthorityEnvelope`, `authorize`, `AuthorizationResult`, `Refusal`                                                            | AuthorityEnvelope and structural command-authorization guard                                             |
 | `WorkOrder`, `ResultEnvelope`                                                                                                 | WorkOrder and Result envelope                                                                            |
@@ -31,14 +31,27 @@ Cadence exports types for `Once`, `After`, `Every`, `Burst`, `Calendar`,
 intentionally limited to `Done`, `Emit`, `Invoke`, `Await`, `Sequence`, and
 `Guard`. `CADENCE_KINDS` is the compile-time-exhaustive machine-readable source
 for the complete Cadence root-kind union; the runtime constructors must match it
-in both directions. The two `EVALUABLE_*_KINDS` exports are the machine-readable
-source for their exact subsets; kinds outside them fail loudly as deferred. The subset lists are
-exact by root kind and shallow by shape: a listed combinator such as `Gate` or
-`Sequence` still throws `is deferred` when it wraps an unlisted child, so a
-consumer must not read membership as a promise about nested trees. A recursive
-evaluable subset type is recorded as a candidate in the idea ledger.
+in both directions. `ExecutableProgramV1` recursively constrains every Program child to `Done`,
+`Emit`, `Invoke`, `Await`, `Guard`, or `Sequence`. `stepProgram` and
+`decideProgram` accept that type; their residuals remain executable. Constructor
+overloads preserve executable types when supplied executable children while
+`Program.T` retains the full authoring grammar. `EVALUABLE_PROGRAM_KINDS` is
+compile-time exhaustive for the executable union. Cadence's evaluable list still
+classifies root kinds only; nested deferred cadences remain deferred.
 
-Component `0.3.0` is staged for application `v0.20.0`. `tryDecodeLog` returns
+`decodeContinuation(value: unknown)` replaces `deserializeContinuation`. It
+accepts serialized JSON or parsed JSON data and returns
+`DecodeResult<ExecutableProgramV1>`. Failures include a code, JSON path and message;
+all five deferred Program kinds fail at their `.kind` path, including nested
+children. It validates required and optional fields, rejects unknown structural
+fields, and checks EventDrafts, Act commands, patterns, predicate references and
+full Cadence timeout shapes. Payloads and predicate params retain JSON data;
+closures, cycles, accessors, inherited fields and non-finite numbers are refused.
+Predicate registry availability is checked by execution. Await returns a wait;
+decoding its full Cadence shape does not claim that cadence can be evaluated.
+`serializeContinuation` retains its existing JSON.stringify bytes.
+
+Component `0.4.0` narrows the executable API and adds continuation decoding. `tryDecodeLog` returns
 `DecodeResult<readonly Event[]>`: either `{ ok: true, value }` or
 `{ ok: false, code, path, message }`. Every envelope must have schema version 1,
 sequential `evt_<n>` identity, required string fields, finite numeric time,
