@@ -190,7 +190,13 @@ export async function main(args = process.argv.slice(2), root = toolRoot) {
     );
   const subject = buildPlanSubject(root, "HEAD", { goalReview: true });
   const passes = planningPasses(readFileSync(join(root, PLAN_LEDGER), "utf8"));
-  const latest = passes.sort((a, b) => b.date.localeCompare(a.date))[0];
+  // Two planning passes can share a calendar day. The ledger header declares
+  // newest section first, so the earlier ledger position is the current pass.
+  const latest = [...passes]
+    .map((row, index) => ({ row, index }))
+    .sort(
+      (a, b) => b.row.date.localeCompare(a.row.date) || a.index - b.index,
+    )[0]?.row;
   const pass = opt["--evidence-only"]
     ? {
         id: `evidence-${opt["--slug"] ?? "plan-refutation"}`,

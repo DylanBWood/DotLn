@@ -466,6 +466,26 @@ identity migration.
   (13) _Pair WO-068 with WO-051, or WO-133 with WO-049._ Declined: shared
   files. (14) _A cross-order gate for the one-at-a-time final review._
   Declined again; the discipline stays in handoff text.
+- **NoOps of the 2026-09-16 `runtime.resident` admission pass.** Weighed and
+  declined, each with its evidence and reversal condition in
+  [the ledger section](../lineage/idea-ledger.md) for this pass.
+  (1) _Amend the continuation gate to admit new capability ids written back by
+  an executor._ Declined: `scripts/lib/plan-continuation.mjs:94` refuses them
+  by design, and a new id is a planning claim. Reverse: a work order that
+  chooses between FINAL-001's two nominated forms with its own evidence.
+  (2) _Promote `runtime.resident` to 2 — dependable in this pass._ Declined:
+  VER-001 F1 is an important failure path without an automated check, and the
+  table's level-2 rule requires one. Reverse: F1's append-lock recovery window
+  closed under test on the once and loop paths. (3) _Rename the WO-068 heading
+  to `dated reassessment`._ Declined: the row is an addition, not a
+  reassessment of an existing id, and FINAL-001 observed the rename fails
+  differently (`new capability id runtime.resident`). Reverse: none; the
+  receipt of this pass addresses the heading. (4) _File a refutation alone as
+  a receipt refresh._ Declined: it would clear the gate by replacing the judge
+  rather than by judging the claim, and the receipt is immutable. Reverse:
+  none. (5) _Replan the horizon while the branch is open._ Declined: the
+  sequence is unchanged, WO-068 is closed, and the operator's category is the
+  capability claim. Reverse: an operator dispatch naming the horizon.
 - **Critical-path candidates — recorded 2026-09-08 by the critical-path
   planning pass and allocated the same day at the operator's correction.**
   The runtime boundary codecs are WO-045 to WO-048; writing-worker harness
@@ -760,6 +780,87 @@ identity migration.
 - **Unallocated data candidate — UIFA roles as data:** the five human roles
   are prose in product 13 until a consumer needs one as an event field; the
   first plausible consumer is tester-authored scenarios in WO-011.
+
+## Candidates — release-close and planning-dispatch defects (recorded 2026-09-16)
+
+Nominated for the next planning pass from the v0.23.0 release-close attempt and
+the `runtime.resident` admission pass. Each names the observation that proves
+it and what a fix must do. None is allocated; this section grants no activation
+authority.
+
+**Machine defects.**
+
+1. _An order may mandate a capability id its own gate refuses._ WO-068
+   criterion 7 directed an executor to add a `runtime.resident` row;
+   `scripts/lib/plan-continuation.mjs:94` refuses ids absent from the judged
+   receipt, because a capability id is a planning claim. The order required an
+   edit the repository rejects by design, and no executor repair could clear
+   it: deleting the row fails the criterion, keeping it fails the gate.
+   FINAL-001 recorded this as B1 and nominated two forms — admit new ids
+   through the planning pass that files the order, or teach `reassessments` a
+   dated-addition form for ids the filing order introduces. Neither is chosen.
+   A fix must make the unsatisfiable order unfilable, or make the gate accept
+   it. Reopens at the next order whose criteria name an unjudged id.
+2. _The plan gate was unsatisfiable on any day carrying two passes._
+   `checkPlanGate` demanded a receipt for the later dated heading while
+   `latestPlanningPass` returned the earlier one: both sorted headings by date
+   alone, and `Array.prototype.sort` is stable. Patched in `8a5eb79` by
+   breaking the tie on ledger order. **The patch carries no regression test**,
+   so the defect can return; the test is the nomination. Latent since the
+   mechanism shipped, surfaced by the first day with two passes.
+3. _A final review's stated merge prerequisite is unenforced._ FINAL-001 said
+   in bold that B1 had to clear before the branch merged; it merged at
+   `3b7a315` with B1 unmet, and main inherited a red `test:docs`. A fix must
+   either enforce the prerequisite at the merge transition or stop recording
+   prerequisites that nothing checks.
+
+**Dispatch and reporting defects.** These concern agent behaviour under the
+role text rather than repository machinery, and belong in the process-debt
+track.
+
+4. _A decision dialog stated a review sentence as a machine precondition._ The
+   release-close dialog asserted v0.23.0 "cannot be tagged until" a planning
+   dispatch admitted `runtime.resident`. `scripts/release.mjs` never calls the
+   planning gate, and the dry run passed every real prerequisite. The operator
+   answered a question with a false premise, and that answer is the sole reason
+   the tag was not created. A fix must require any option presented as a
+   blocker to name the command and line that enforces it, or be labelled a
+   documented condition rather than a gate.
+5. _A remedy was recommended without being read._ `planning: refute` was
+   proposed as the way to clear B1 and retracted three minutes later on
+   reading that it files an immutable judgment. Acting on it would have put a
+   judgment procured to unstick a release into the permanent record.
+6. _An operator dispatch prefix was read as conversation._ A message prefixed
+   `planning:` is a dispatch under this guide's §Operator-opened planning pass
+   regardless of its subject. Four turns of diagnosis ran before the pass
+   opened. A fix must treat the prefix as the dispatch and carry any
+   disagreement inside the pass.
+7. _A conclusion was asserted from a partial search._ "No planning gate exists"
+   was claimed after searching `scripts/resume.mjs` and `scripts/release.mjs`
+   and missing `scripts/lib/plan-continuation.mjs`, and the operator's correct
+   `resume: release close` routing was then attributed to operator error. A
+   fix must bind such a claim to its stated search boundary.
+8. _Scope choices were reported as repository refusals._ Declining to patch
+   machinery inside a document-only dispatch was a judgment call presented as
+   though the process had refused, which removed a decision belonging to the
+   operator.
+
+9. _The ledger's declared order is unenforced, so the operator is the check._
+   The header states in bold that a new section appends directly below it,
+   never at the end of the file; this pass appended at the end and the operator
+   caught it. `WO-084:53` already records that "nothing checks the order", and
+   the file has drifted accordingly — dated sections currently run ascending
+   below the first entry, contradicting the declared newest-first rule. The
+   drift also propagates: the same-day tie-break in `latestPlanningPass` reads
+   ledger position, so a wrong order silently selects the wrong pass. A fix
+   must make the insertion rule checkable in `test:docs` rather than
+   documented, which is WO-084's subject. Until then every ledger write spends
+   an operator correction. Recorded against the
+   shifting-the-burden-to-the-intervenor trap: five operator corrections in
+   this session, all catching agent error rather than directing work.
+
+Cost observation: about ninety minutes across three sessions, on a release that
+was publishable throughout.
 
 ## Direct-draft provenance for the 2026-09-02 batch
 
