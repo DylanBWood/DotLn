@@ -1,4 +1,4 @@
-# WO-049 — Target-worktree harness bundle: emit a governed bundle into a worktree that is not DotLn, importing the launchpad's immutable runtime snapshot by absolute path, as untracked files under the target's local exclude, with hooks for Claude Code and an instruction block for both harnesses (version assigned at activation)
+# WO-049 — Target-worktree harness bundle: emit a governed bundle into a worktree that is not DotLn, importing the launchpad's immutable runtime snapshot by absolute path, as untracked files under the target's local exclude, with hooks for Claude Code and an instruction block for both harnesses (v0.25.0)
 
 **Model:** any capable model for the emitter and fixtures. The live smoke
 (criterion 6) needs the actual harnesses, run by the operator from a
@@ -226,3 +226,7 @@ predicates.
    order; merging is later work with its own observed rows.
 4. Anchored exclude lines in the repository's shared `info/exclude` are
    acceptable; they name only bundle paths.
+
+## Execution record
+
+2026-09-16, repair after VER-001 F2: the Non-goals' stated rationale for omitting a `.git/hooks` commit-message install, that attribution is the PreToolUse commit-command check, does not hold as filed. The installed attribution pre-check does not bypass the permission guard's opaque-command denial, so no commit reaches it through the guarded shell tool; host-authorized command execution remains separate WO-052 and WO-053 integration work (WO-049-D008). The Non-goal itself is unchanged. The repair had corrected the sentence in place; final review restored the filed bytes and moved the correction here, the appended form the planning continuation contract admits.
