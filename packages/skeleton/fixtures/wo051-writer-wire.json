@@ -1,0 +1,16 @@
+{
+  "provenance": "Synthetic values in the field shapes recorded by WO-044 C-W8 and X-W8; no raw live transcript.",
+  "claude": [
+    { "type": "system", "subtype": "hook_started" },
+    { "type": "system", "subtype": "hook_response" },
+    { "type": "result", "subtype": "success", "is_error": false, "result": "<envelope>", "permission_denials": [{ "tool_name": "Bash", "tool_input": { "command": "synthetic denied command" } }], "total_cost_usd": 0.01, "usage": { "input_tokens": 10, "output_tokens": 5 } }
+  ],
+  "codex": [
+    { "type": "thread.started" },
+    { "type": "turn.started" },
+    { "type": "item.started", "item": { "type": "command_execution" } },
+    { "type": "item.completed", "item": { "type": "command_execution" } },
+    { "type": "item.completed", "item": { "type": "agent_message", "text": "<envelope>" } },
+    { "type": "turn.completed", "usage": { "input_tokens": 10, "output_tokens": 5 } }
+  ]
+}

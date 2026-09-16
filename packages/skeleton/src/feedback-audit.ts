@@ -35,6 +35,8 @@ export const FEEDBACK_SOURCE_PATHS = [
   "packages/skeleton/src/verification-host.ts",
   "packages/skeleton/src/worker-transport.ts",
   "packages/skeleton/src/worker-protocol.ts",
+  "packages/skeleton/src/execution-environment.ts",
+  "packages/skeleton/src/source-change-environment.ts",
   "packages/skeleton/src/usage-observation.mjs",
   "packages/skeleton/src/worker-store.ts",
   "packages/skeleton/test/feedback-fixtures.test.ts",

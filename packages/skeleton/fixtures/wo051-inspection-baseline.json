@@ -1,0 +1,336 @@
+{
+  "request": {
+    "command": {
+      "commandId": "cmd_5ee0c6d8e207bd25",
+      "episodeId": "ep_seiri_1",
+      "workstreamId": "ws_repo_garden",
+      "intent": {
+        "kind": "Act",
+        "effect": "repo.inspect",
+        "resource": "inspections",
+        "payload": {
+          "workOrder": {
+            "acceptanceCriteria": [
+              "Inventory every fixture path",
+              "Classify every path",
+              "Attach reference evidence to every candidate"
+            ],
+            "allowedOperations": [
+              "repo.inventory",
+              "repo.classify",
+              "repo.references",
+              "repo.proposeDeletion"
+            ],
+            "baseCommit": "fixture-base",
+            "constraints": [
+              "Inspect only the fixture tree",
+              "Do not mutate repository contents"
+            ],
+            "decisions": [
+              "Repo Gardener uses Seiri",
+              "Deletion remains operator-owned"
+            ],
+            "knownFacts": [
+              "The repository is a deterministic fixture",
+              "The operator is absent at dispatch"
+            ],
+            "nonGoals": [
+              "Delete files",
+              "Inspect another repository"
+            ],
+            "objective": "Inspect the bounded fixture repository and propose safe deletion candidates.",
+            "outputContract": {
+              "candidateFields": [
+                "path",
+                "classification",
+                "evidence"
+              ],
+              "result": "candidates",
+              "type": "CommandResult"
+            },
+            "prohibitedOperations": [
+              "repo.delete",
+              "repo.write"
+            ],
+            "repo": "packages/skeleton/fixtures/repo-tree.json",
+            "requiredEvidence": [
+              "inventory",
+              "classification",
+              "reference-analysis"
+            ],
+            "workOrderId": "wo_repo_inspection_1"
+          }
+        }
+      }
+    },
+    "workOrder": {
+      "acceptanceCriteria": [
+        "Inventory every fixture path",
+        "Classify every path",
+        "Attach reference evidence to every candidate"
+      ],
+      "allowedOperations": [
+        "repo.inventory",
+        "repo.classify",
+        "repo.references",
+        "repo.proposeDeletion"
+      ],
+      "baseCommit": "fixture-base",
+      "constraints": [
+        "Inspect only the fixture tree",
+        "Do not mutate repository contents"
+      ],
+      "decisions": [
+        "Repo Gardener uses Seiri",
+        "Deletion remains operator-owned"
+      ],
+      "knownFacts": [
+        "The repository is a deterministic fixture",
+        "The operator is absent at dispatch"
+      ],
+      "nonGoals": [
+        "Delete files",
+        "Inspect another repository"
+      ],
+      "objective": "Inspect the bounded fixture repository and propose safe deletion candidates.",
+      "outputContract": {
+        "candidateFields": [
+          "path",
+          "classification",
+          "evidence"
+        ],
+        "result": "candidates",
+        "type": "CommandResult"
+      },
+      "prohibitedOperations": [
+        "repo.delete",
+        "repo.write"
+      ],
+      "repo": "packages/skeleton/fixtures/repo-tree.json",
+      "requiredEvidence": [
+        "inventory",
+        "classification",
+        "reference-analysis"
+      ],
+      "workOrderId": "wo_repo_inspection_1"
+    },
+    "artifactIdentity": {
+      "schemaVersion": 1,
+      "compilerContractVersion": "1",
+      "compilerPackageVersion": "0.11.2",
+      "semanticHash": "fnv1a64:9ca8d0229c6bd8db",
+      "compilationEnvironment": {
+        "baseCommit": "fixture-base",
+        "capabilities": [
+          "fixture-repository"
+        ],
+        "environmentId": "skeleton.fixture",
+        "repo": "packages/skeleton/fixtures/repo-tree.json",
+        "version": 1
+      },
+      "authorityExpiresAt": 2400000,
+      "componentDefinitions": [
+        {
+          "componentKind": "active-mechanic",
+          "componentId": "seiri",
+          "version": 1,
+          "hashScheme": "dotln-component-definition-fnv1a64-v1",
+          "definitionHash": "fnv1a64:a1dc633c08fe612a"
+        },
+        {
+          "componentKind": "support-facet",
+          "componentId": "seiri.absence-cadence",
+          "version": 1,
+          "hashScheme": "dotln-component-definition-fnv1a64-v1",
+          "definitionHash": "fnv1a64:3ba4c5c8c41c29ce"
+        },
+        {
+          "componentKind": "support-facet",
+          "componentId": "seiri.evidence-capture",
+          "version": 1,
+          "hashScheme": "dotln-component-definition-fnv1a64-v1",
+          "definitionHash": "fnv1a64:2d7c14fd977ccdac"
+        },
+        {
+          "componentKind": "support-facet",
+          "componentId": "seiri.independent-verification",
+          "version": 1,
+          "hashScheme": "dotln-component-definition-fnv1a64-v1",
+          "definitionHash": "fnv1a64:0e7f7f2049db9807"
+        },
+        {
+          "componentKind": "support-facet",
+          "componentId": "seiri.read-only",
+          "version": 1,
+          "hashScheme": "dotln-component-definition-fnv1a64-v1",
+          "definitionHash": "fnv1a64:e91545e6fad79347"
+        },
+        {
+          "componentKind": "support-facet",
+          "componentId": "seiri.repo-scope",
+          "version": 1,
+          "hashScheme": "dotln-component-definition-fnv1a64-v1",
+          "definitionHash": "fnv1a64:d7bd95978a68a675"
+        }
+      ]
+    },
+    "episodeId": "worker_1",
+    "model": "required-model",
+    "effort": "high",
+    "cwd": "/fixture",
+    "fixture": {
+      "files": [
+        {
+          "path": "README.md",
+          "referencedBy": [
+            "package.json"
+          ],
+          "classification": "documentation"
+        },
+        {
+          "path": "src/index.ts",
+          "referencedBy": [
+            "package.json"
+          ],
+          "classification": "source"
+        },
+        {
+          "path": "tmp/old-report.txt",
+          "referencedBy": [],
+          "classification": "generated-stale"
+        },
+        {
+          "path": "notes/keep.txt",
+          "referencedBy": [
+            "README.md"
+          ],
+          "classification": "notes"
+        }
+      ]
+    },
+    "profile": {
+      "profileId": "fixture-inspection-v1",
+      "mounts": [
+        {
+          "path": "/fixture",
+          "access": "read"
+        }
+      ]
+    }
+  },
+  "claude": [
+    "--print",
+    "--model",
+    "required-model",
+    "--effort",
+    "high",
+    "--output-format",
+    "json",
+    "--json-schema",
+    "{\"type\":\"object\",\"additionalProperties\":false,\"required\":[\"envelope\",\"candidates\",\"beaconClaim\"],\"properties\":{\"envelope\":{\"type\":\"object\",\"additionalProperties\":false,\"required\":[\"workOrderId\",\"episodeId\",\"status\",\"resultId\",\"summary\",\"requiresHuman\"],\"properties\":{\"workOrderId\":{\"type\":\"string\",\"enum\":[\"wo_repo_inspection_1\"]},\"episodeId\":{\"type\":\"string\",\"enum\":[\"worker_1\"]},\"resultId\":{\"type\":\"string\",\"enum\":[\"result_cmd_5ee0c6d8e207bd25\"]},\"status\":{\"type\":\"string\",\"enum\":[\"completed\",\"blocked\",\"failed\"]},\"summary\":{\"type\":\"string\"},\"requiresHuman\":{\"type\":\"boolean\"}}},\"candidates\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"additionalProperties\":false,\"required\":[\"path\",\"classification\",\"evidence\"],\"properties\":{\"path\":{\"type\":\"string\"},\"classification\":{\"type\":\"string\"},\"evidence\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}}}}},\"beaconClaim\":{\"type\":\"string\",\"enum\":[\"inspection-completed\",\"blocked\"]}}}",
+    "--no-session-persistence",
+    "--setting-sources",
+    "project,local",
+    "--settings",
+    "{\"autoMemoryEnabled\":false}",
+    "--tools",
+    "",
+    "--disable-slash-commands",
+    "--safe-mode",
+    "--strict-mcp-config",
+    "--mcp-config",
+    "{\"mcpServers\":{}}",
+    "--no-chrome",
+    "--max-budget-usd",
+    "1.00"
+  ],
+  "codex": [
+    "exec",
+    "--ephemeral",
+    "--ignore-user-config",
+    "--strict-config",
+    "--model",
+    "required-model",
+    "--json",
+    "--output-schema",
+    "/schema.json",
+    "--cd",
+    "/fixture",
+    "-c",
+    "default_permissions=\"dotln-worker\"",
+    "-c",
+    "permissions.dotln-worker.filesystem={\":minimal\"=\"read\",\":workspace_roots\"=\"read\"}",
+    "-c",
+    "permissions.dotln-worker.network.enabled=false",
+    "-c",
+    "approval_policy=\"never\"",
+    "-c",
+    "web_search=\"disabled\"",
+    "-c",
+    "project_doc_max_bytes=0",
+    "-c",
+    "mcp_servers={}",
+    "-c",
+    "memories.use_memories=false",
+    "-c",
+    "memories.generate_memories=false",
+    "-c",
+    "shell_environment_policy.inherit=\"none\"",
+    "--disable",
+    "apps",
+    "--disable",
+    "browser_use",
+    "--disable",
+    "computer_use",
+    "--disable",
+    "image_generation",
+    "--disable",
+    "in_app_browser",
+    "--disable",
+    "in_app_chat",
+    "--disable",
+    "in_app_local_automation",
+    "--disable",
+    "multi_agent",
+    "--disable",
+    "multi_agent_v2",
+    "--disable",
+    "code_mode_host",
+    "--disable",
+    "plugins",
+    "--disable",
+    "remote_plugin",
+    "--disable",
+    "hooks",
+    "--disable",
+    "memories",
+    "--disable",
+    "context_management",
+    "--disable",
+    "skill_search",
+    "--disable",
+    "skill_mcp_dependency_install",
+    "--disable",
+    "tool_suggest",
+    "--disable",
+    "workspace_dependencies",
+    "--disable",
+    "shell_snapshot",
+    "--disable",
+    "view_image",
+    "--disable",
+    "shell_tool",
+    "--disable",
+    "unified_exec",
+    "-c",
+    "model_reasoning_effort=\"high\"",
+    "-"
+  ],
+  "prompt": "{\"workOrder\":{\"acceptanceCriteria\":[\"Inventory every fixture path\",\"Classify every path\",\"Attach reference evidence to every candidate\"],\"allowedOperations\":[\"repo.inventory\",\"repo.classify\",\"repo.references\",\"repo.proposeDeletion\"],\"baseCommit\":\"fixture-base\",\"constraints\":[\"Inspect only the fixture tree\",\"Do not mutate repository contents\"],\"decisions\":[\"Repo Gardener uses Seiri\",\"Deletion remains operator-owned\"],\"knownFacts\":[\"The repository is a deterministic fixture\",\"The operator is absent at dispatch\"],\"nonGoals\":[\"Delete files\",\"Inspect another repository\"],\"objective\":\"Inspect the bounded fixture repository and propose safe deletion candidates.\",\"outputContract\":{\"candidateFields\":[\"path\",\"classification\",\"evidence\"],\"result\":\"candidates\",\"type\":\"CommandResult\"},\"prohibitedOperations\":[\"repo.delete\",\"repo.write\"],\"repo\":\"packages/skeleton/fixtures/repo-tree.json\",\"requiredEvidence\":[\"inventory\",\"classification\",\"reference-analysis\"],\"workOrderId\":\"wo_repo_inspection_1\"},\"artifactReceipt\":{\"semanticHash\":\"fnv1a64:9ca8d0229c6bd8db\",\"compilerContractVersion\":\"1\",\"compilerPackageVersion\":\"0.11.2\"},\"episodeId\":\"worker_1\",\"resultId\":\"result_cmd_5ee0c6d8e207bd25\",\"inventory\":{\"files\":[{\"path\":\"README.md\",\"referencedBy\":[\"package.json\"],\"classification\":\"documentation\"},{\"path\":\"src/index.ts\",\"referencedBy\":[\"package.json\"],\"classification\":\"source\"},{\"path\":\"tmp/old-report.txt\",\"referencedBy\":[],\"classification\":\"generated-stale\"},{\"path\":\"notes/keep.txt\",\"referencedBy\":[\"README.md\"],\"classification\":\"notes\"}]},\"outputInstructions\":\"This is the executor inspection phase. The supplied inventory is the complete mounted sense projection; no file opening or tools are needed. Inspect it and propose only generated-stale files with no references. Evidence uses inventory:<path>, classification:<classification>, references:none. The host handles deletion refusal and independent verification separately. Set status completed when your inspection and candidate proposal are complete; this is a self-report, not verified completion. Set requiresHuman only when an operator decision is needed. Return the schema object and keep summary under 320 characters. No other context or tool access is granted.\"}",
+  "sourceBlocks": [
+    "export interface WorkerRequest {\n  readonly command: Command;\n  readonly workOrder: WorkOrder;\n  readonly artifactIdentity: ArtifactIdentityV1;\n  readonly episodeId: string;\n  readonly model: string;\n  readonly effort: WorkerEffort;\n  readonly cwd: string;\n  readonly fixture: FixtureTree;\n  readonly profile: FixtureInspectionProfile;\n}",
+    "export function parseWorkerResult(\n  value: unknown,\n  request: WorkerRequest,\n): WorkerResult {\n  const root = object(value);\n  const envelope = object(root?.envelope);\n  if (\n    !root ||\n    !envelope ||\n    !keys(root, [\"envelope\", \"candidates\", \"beaconClaim\"]) ||\n    !keys(envelope, [\n      \"workOrderId\",\n      \"episodeId\",\n      \"status\",\n      \"resultId\",\n      \"summary\",\n      \"requiresHuman\",\n    ]) ||\n    envelope.workOrderId !== request.workOrder.workOrderId ||\n    envelope.episodeId !== request.episodeId ||\n    envelope.resultId !== resultId(request.command) ||\n    ![\"completed\", \"blocked\", \"failed\"].includes(String(envelope.status)) ||\n    !line(envelope.summary, 320) ||\n    typeof envelope.requiresHuman !== \"boolean\" ||\n    ![\"inspection-completed\", \"blocked\"].includes(String(root.beaconClaim)) ||\n    !Array.isArray(root.candidates) ||\n    root.candidates.length > 100\n  )\n    throw new WorkerFailure(\n      \"invalid-result\",\n      !root\n        ? \"result-object-absent\"\n        : !envelope\n          ? \"envelope-object-absent\"\n          : \"envelope-or-root-contract\",\n    );\n  const seen = new Set<string>();\n  for (const candidate of root.candidates) {\n    const entry = object(candidate);\n    if (\n      !entry ||\n      !keys(entry, [\"path\", \"classification\", \"evidence\"]) ||\n      !line(entry.path, 256) ||\n      !request.fixture.files.some((file) => file.path === entry.path) ||\n      seen.has(entry.path) ||\n      !line(entry.classification, 100) ||\n      !Array.isArray(entry.evidence) ||\n      entry.evidence.length < 1 ||\n      entry.evidence.length > 10 ||\n      !entry.evidence.every((item) => line(item, 320))\n    )\n      throw new WorkerFailure(\"invalid-result\", \"candidate-contract\");\n    seen.add(entry.path);\n  }\n  return root as unknown as WorkerResult;\n}",
+    "export function workerPrompt(request: WorkerRequest): string {\n  // Compiled WorkOrder plus explicitly mounted inventory, never transcript history.\n  return JSON.stringify({\n    workOrder: request.workOrder,\n    artifactReceipt: {\n      semanticHash: request.artifactIdentity.semanticHash,\n      compilerContractVersion: request.artifactIdentity.compilerContractVersion,\n      compilerPackageVersion: request.artifactIdentity.compilerPackageVersion,\n    },\n    episodeId: request.episodeId,\n    resultId: resultId(request.command),\n    inventory: request.fixture,\n    outputInstructions:\n      \"This is the executor inspection phase. The supplied inventory is the complete mounted sense projection; no file opening or tools are needed. Inspect it and propose only generated-stale files with no references. Evidence uses inventory:<path>, classification:<classification>, references:none. The host handles deletion refusal and independent verification separately. Set status completed when your inspection and candidate proposal are complete; this is a self-report, not verified completion. Set requiresHuman only when an operator decision is needed. Return the schema object and keep summary under 320 characters. No other context or tool access is granted.\",\n  });\n}",
+    "export function validateRequest(request: WorkerRequest): void {\n  if (\n    request.command.intent.kind !== \"Act\" ||\n    request.command.intent.effect !== \"repo.inspect\" ||\n    !line(request.model, 100) ||\n    !/^[a-zA-Z0-9][a-zA-Z0-9._:-]*$/u.test(request.model) ||\n    !/^[a-zA-Z0-9_-]+$/u.test(request.episodeId) ||\n    request.profile.profileId !== \"fixture-inspection-v1\" ||\n    request.profile.mounts.length !== 1 ||\n    request.profile.mounts[0].path !== request.cwd ||\n    request.profile.mounts[0].access !== \"read\" ||\n    !request.workOrder.prohibitedOperations.includes(\"repo.write\") ||\n    !request.workOrder.prohibitedOperations.includes(\"repo.delete\")\n  )\n    throw new WorkerFailure(\"profile-refused\");\n}"
+  ]
+}

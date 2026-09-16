@@ -1,0 +1,198 @@
+TAP version 13
+# Subtest: WO-016 AC1 one typed reactor and its pure resident helpers own kernel decisions
+ok 1 - WO-016 AC1 one typed reactor and its pure resident helpers own kernel decisions
+  ---
+  duration_ms: 6.462291
+  ...
+# Subtest: WO-016 AC3 live and replay match every complete Decision and semantic projection
+ok 2 - WO-016 AC3 live and replay match every complete Decision and semantic projection
+  ---
+  duration_ms: 112.899292
+  ...
+# Subtest: WO-008 AC6 the running scenario consumes the compiled Seiri loadout
+ok 3 - WO-008 AC6 the running scenario consumes the compiled Seiri loadout
+  ---
+  duration_ms: 1.598
+  ...
+# Subtest: WO-029 the new trace delta adds only the boundary, receipts and pin inputs to the frozen WO-003 mechanics
+ok 4 - WO-029 the new trace delta adds only the boundary, receipts and pin inputs to the frozen WO-003 mechanics
+  ---
+  duration_ms: 45.072959
+  ...
+# Subtest: WO-008 AC2 an unequipped support changes the live reactor program
+ok 5 - WO-008 AC2 an unequipped support changes the live reactor program
+  ---
+  duration_ms: 88.939083
+  ...
+# Subtest: WO-008 AC2 the running reactor consumes compiled cadence identifiers
+ok 6 - WO-008 AC2 the running reactor consumes compiled cadence identifiers
+  ---
+  duration_ms: 44.189
+  ...
+# Subtest: WO-008 AC3 the precedence winner authorizes the emitted runtime effect
+ok 7 - WO-008 AC3 the precedence winner authorizes the emitted runtime effect
+  ---
+  duration_ms: 1.256167
+  ...
+# Subtest: the canonical scenario milestones retain exact order with the WO-029 enforcement and receipt delta
+ok 8 - the canonical scenario milestones retain exact order with the WO-029 enforcement and receipt delta
+  ---
+  duration_ms: 44.337209
+  ...
+# Subtest: WO-016 AC6 every derived event names an earlier canonical cause and its pulse or command
+ok 9 - WO-016 AC6 every derived event names an earlier canonical cause and its pulse or command
+  ---
+  duration_ms: 43.670667
+  ...
+# Subtest: WO-016 step 9 preserves deletion paths, evidence, and structural refusal
+ok 10 - WO-016 step 9 preserves deletion paths, evidence, and structural refusal
+  ---
+  duration_ms: 43.138625
+  ...
+# Subtest: WO-016 step 12 executes the reactor's NoOp and declared cancellations
+ok 11 - WO-016 step 12 executes the reactor's NoOp and declared cancellations
+  ---
+  duration_ms: 43.752958
+  ...
+# Subtest: WO-016 AC4 semantic payload changes alter the decision at their event
+    # Subtest: CommandResult.candidates
+    ok 1 - CommandResult.candidates
+      ---
+      duration_ms: 59.793875
+      ...
+    # Subtest: VerificationCompleted.accepted
+    ok 2 - VerificationCompleted.accepted
+      ---
+      duration_ms: 58.432292
+      ...
+    # Subtest: WorkOrderEmitted.workOrder
+    ok 3 - WorkOrderEmitted.workOrder
+      ---
+      duration_ms: 53.617584
+      ...
+    # Subtest: CommandRefused.reason
+    ok 4 - CommandRefused.reason
+      ---
+      duration_ms: 55.863916
+      ...
+    # Subtest: SchedulesCancelled.scheduleIds
+    ok 5 - SchedulesCancelled.scheduleIds
+      ---
+      duration_ms: 54.903958
+      ...
+    # Subtest: CommandPersisted.command.intent.effect
+    ok 6 - CommandPersisted.command.intent.effect
+      ---
+      duration_ms: 52.095125
+      ...
+    1..6
+ok 12 - WO-016 AC4 semantic payload changes alter the decision at their event
+  ---
+  duration_ms: 379.457708
+  ...
+# Subtest: WO-016 AC7 a negative fixture stays unverified in live, replay, and glyph state
+ok 13 - WO-016 AC7 a negative fixture stays unverified in live, replay, and glyph state
+  ---
+  duration_ms: 83.052542
+  ...
+# Subtest: row 1 crash recovery replays state, redispatches, and adapter-deduplicates
+ok 14 - row 1 crash recovery replays state, redispatches, and adapter-deduplicates
+  ---
+  duration_ms: 140.546917
+  ...
+# Subtest: WO-047 complete Decision bytes match across stored skeleton streams
+    # Subtest: WO-003 oracle
+    ok 1 - WO-003 oracle
+      ---
+      duration_ms: 29.452083
+      ...
+    # 21 complete decisions; 280279 identical serialized bytes
+    # Subtest: demo
+    ok 2 - demo
+      ---
+      duration_ms: 29.8025
+      ...
+    # 28 complete decisions; 401014 identical serialized bytes
+    # Subtest: worker recovery
+    ok 3 - worker recovery
+      ---
+      duration_ms: 4.252167
+      ...
+    # 37 complete decisions; 48350 identical serialized bytes
+    # Subtest: verification
+    ok 4 - verification
+      ---
+      duration_ms: 19.492375
+      ...
+    # 31 complete decisions; 732540 identical serialized bytes
+    # Subtest: feedback audit
+    ok 5 - feedback audit
+      ---
+      duration_ms: 16.313833
+      ...
+    # 5 complete decisions; 132378 identical serialized bytes
+    # Subtest: feedback verifier
+    ok 6 - feedback verifier
+      ---
+      duration_ms: 821.120333
+      ...
+    # 54 complete decisions; 102347602 identical serialized bytes
+    1..6
+ok 15 - WO-047 complete Decision bytes match across stored skeleton streams
+  ---
+  duration_ms: 921.549458
+  ...
+# Subtest: WO-051 inspection request, validator, parser, prompt and both launch arrays retain activation bytes
+ok 16 - WO-051 inspection request, validator, parser, prompt and both launch arrays retain activation bytes
+  ---
+  duration_ms: 1.395709
+  ...
+# Subtest: WO-051 writer authority, command and environment refuse invalid requests before a launch
+ok 17 - WO-051 writer authority, command and environment refuse invalid requests before a launch
+  ---
+  duration_ms: 225.612875
+  ...
+# Subtest: WO-051 source-change mount accepts scratch worktrees and rejects root, prefix and symlink escapes
+ok 18 - WO-051 source-change mount accepts scratch worktrees and rejects root, prefix and symlink escapes
+  ---
+  duration_ms: 304.668875
+  ...
+# Subtest: WO-051 C-W2/C-W3/C-W8/C-W9 and X-W1/X-W2/X-W8 canonical writer shapes
+ok 19 - WO-051 C-W2/C-W3/C-W8/C-W9 and X-W1/X-W2/X-W8 canonical writer shapes
+  ---
+  duration_ms: 279.283875
+  ...
+# Subtest: WO-051 claude subprocess observes committed and C-K1 edited-uncommitted outcomes
+ok 20 - WO-051 claude subprocess observes committed and C-K1 edited-uncommitted outcomes
+  ---
+  duration_ms: 821.979167
+  ...
+# Subtest: WO-051 claude malformed, spoofed and failed vendor output never becomes a writer result
+ok 21 - WO-051 claude malformed, spoofed and failed vendor output never becomes a writer result
+  ---
+  duration_ms: 917.693584
+  ...
+# Subtest: WO-051 codex subprocess observes committed and C-K1 edited-uncommitted outcomes
+ok 22 - WO-051 codex subprocess observes committed and C-K1 edited-uncommitted outcomes
+  ---
+  duration_ms: 758.991333
+  ...
+# Subtest: WO-051 codex malformed, spoofed and failed vendor output never becomes a writer result
+ok 23 - WO-051 codex malformed, spoofed and failed vendor output never becomes a writer result
+  ---
+  duration_ms: 766.385333
+  ...
+# Subtest: WO-051 strict writer parser keeps observations host-owned and validates stored fields
+ok 24 - WO-051 strict writer parser keeps observations host-owned and validates stored fields
+  ---
+  duration_ms: 186.300417
+  ...
+1..24
+# tests 36
+# suites 0
+# pass 36
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4333.221709

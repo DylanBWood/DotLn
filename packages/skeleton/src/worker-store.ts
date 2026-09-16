@@ -71,6 +71,8 @@ function decodeReceipt(value: unknown) {
     "resultId",
     "summary",
     "requiresHuman",
+    ...("observedDenials" in envelope ? ["observedDenials"] : []),
+    ...("observedCommit" in envelope ? ["observedCommit"] : []),
   ]);
   if (
     typeof envelope.episodeId !== "string" ||
@@ -108,6 +110,8 @@ function syncDirectory(path: string): void {
   }
 }
 export function workerRequestKey(request: TransportRequest): string {
+  // Writer kind, mount authority, command and host message path remain in the
+  // stable key. Only a physical retry's episode is excluded for every kind.
   const { episodeId: _attempt, ...stable } = request;
   return createHash("sha256").update(canonicalStringify(stable)).digest("hex");
 }

@@ -315,6 +315,63 @@ recovers a fresh episode, then runs Codex. See the
 [acceptance evidence](../../docs/evidence/WO-009/README.md) for observed envelopes,
 failure rows, launch controls and the boundary of this implementation.
 
+## Source-change transport profile
+
+`WriterRequest` (`kind: "source-change"`) and `source-change-v1` add a bounded
+writer branch to both CLI adapters. Inspection and Beacon profiles retain their
+existing behavior. This API is the transport layer; it does not create target
+worktrees, write commit messages or install target governance.
+
+The host first supplies a compiled WorkOrder and authority envelope allowing
+`repo.write` and `git.local`, with remote, credential, settings and sandbox
+effects prohibited. `SOURCE_CHANGE_DENIED` names the required prohibitions;
+every supplied allowance must stay local and non-conflicting. The transport
+does not compile or grant this authority. The dispatching host still checks its
+current expiry, revocations and resource budget.
+
+Create the environment with `sourceChangeProfile({ worktree, worktreeParent,
+launchpadCheckout, commitMessagePath })`. All paths must be canonical; the mount
+must be a Git worktree root strictly within the parent, disjoint from the
+launchpad. The host must already have written a regular message file inside the
+worktree, with the target bundle's private-path exclusions in place. The returned
+profile declares exactly one read-write mount and one writable surface.
+
+Pass that profile and the WorkOrder, authority envelope, command (`Act` /
+`repo.write`), artifact identity, episode, model/effort, cwd, `testCommand` and
+`commitMessagePath` to either existing CLI transport. The test is one exact,
+single-space-separated command; tokens admit letters, digits, `_`, `.`, `/`,
+`-` and argument `=` only. The message path uses the same unquoted safe-path
+alphabet without spaces or `=`. Shell operators, substitutions, quotes, wildcard
+patterns and allowlist delimiters refuse. The declared command is host-owned
+input, not proof that an arbitrary test program has no other effects.
+
+Claude gets Edit/Write/Read and exactly three Bash patterns: the declared test,
+`git add -A`, and `git commit -F <host message>`. Codex gets the `dotln-writer`
+named workspace-write profile with network disabled and non-shell features
+disabled. The prompt forbids changing `.claude/`, `.dotln/` or the message file.
+Tools-only Claude, Codex on-request approval and Codex hook expectations refuse
+with C-W1, X-U2 and X-W3 respectively. Discovery-backed arrays and their limits
+are in [the writing-worker record](../../docs/discovery/writing-worker-smoke-2026-09-14.md).
+
+The result retains the six-field envelope and adds host observations there:
+`observedCommit` only when Git HEAD moved, and `observedDenials` (Claude's
+reported denial-array count, or `unavailable` for Codex). Worker-supplied Git
+identity is rejected. Completed prose with a dirty uncommitted tree remains
+without a commit observation. `WorkerStore` retains those observations across
+physical retries and rejects request-key drift. Raw vendor transcripts are not
+returned. These observations do not establish correctness or confinement.
+
+Run the process-double proof without a model or authentication:
+
+```sh
+npm run build
+node --test packages/skeleton/dist/test/writer.test.js
+```
+
+WO-052 owns the target host and WO-053 the live source-change proof. The sandbox
+alone did not confine sibling writes in C-W6/X-W6; the target governance and
+host's diff checks remain necessary. No live writer was launched for WO-051.
+
 ## Beacon metadata projection
 
 ```sh

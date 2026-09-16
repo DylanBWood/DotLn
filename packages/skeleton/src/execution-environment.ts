@@ -3,6 +3,15 @@ import {
   GROUP_METADATA_CAPABILITY,
   type SenseId,
 } from "@dotln/compiler";
+export interface SourceChangeProfile {
+  readonly profileId: "source-change-v1";
+  readonly mounts: readonly [
+    { readonly path: string; readonly access: "read-write" },
+  ];
+  readonly writableSurfaces: readonly [string];
+  readonly worktreeParent: string;
+  readonly launchpadCheckout: string;
+}
 
 export interface FixtureInspectionProfile {
   readonly profileId: "fixture-inspection-v1";
@@ -32,7 +41,7 @@ export interface BeaconPerceptionProfile {
   readonly narrativeSurfaces: readonly [];
 }
 export type ExecutionEnvironmentProfile =
-  FixtureInspectionProfile | BeaconPerceptionProfile;
+  FixtureInspectionProfile | BeaconPerceptionProfile | SourceChangeProfile;
 
 export interface PerceptionDeclaration {
   readonly version: 1;
