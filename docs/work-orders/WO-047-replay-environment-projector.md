@@ -1,14 +1,15 @@
-# WO-047 — Replay takes an explicit environment projector: the kernel stops guessing where an application keeps its RNG state and policy (version assigned at activation)
+# WO-047 — Replay takes an explicit environment projector: the kernel stops guessing where an application keeps its RNG state and policy (v0.22.0)
 
 **Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
 
 **Model:** any capable model. State the model and effort actually run in the
 result (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.
-**Release classification:** patch to minor. An optional parameter on
+**Release classification:** minor. An optional parameter on
 `replay` whose default reproduces today's documented behavior byte for byte;
 the skeleton supplies its projector explicitly. Kernel package moves.
-Assigned at activation under the standing opt-out default.
+Assigned v0.22.0 during execution within the planned patch-to-minor range;
+see WO-047-D002. The standing opt-out default applies.
 **Nomination provenance:** the 2026-09-08 critical-path planning pass (gate
 C1, third bounded order), cut at the operator's same-day correction. The
 audit's P1 is verified as a documented coupling, not a silent one: product 02

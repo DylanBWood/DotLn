@@ -1,6 +1,6 @@
 // Origin: {"ids":["no-attribution"],"loadoutId":"contributor","semanticHash":"fnv1a64:f7e29ff3f4ede75c"}
-const { runCommitMessageHook } = await import("../../.runtime/harness/01fbc22957655b21/packages/skeleton/dist/src/harness-host.js");
-const { feedbackBoundary } = await import("../../.runtime/harness/01fbc22957655b21/packages/skeleton/dist/src/feedback-boundary.js");
+const { runCommitMessageHook } = await import("../../.runtime/harness/75868836568b4f8f/packages/skeleton/dist/src/harness-host.js");
+const { feedbackBoundary } = await import("../../.runtime/harness/75868836568b4f8f/packages/skeleton/dist/src/feedback-boundary.js");
 await runCommitMessageHook({
   "compilerPackageVersion": "0.11.1",
   "runtime": {
@@ -53,10 +53,10 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/reactor.js",
-        "hash": "fnv1a64:d0b95cfe4ad92ec2"
+        "hash": "fnv1a64:eab8118f84dd3b49"
       }
     ],
-    "snapshot": ".runtime/harness/01fbc22957655b21"
+    "snapshot": ".runtime/harness/75868836568b4f8f"
   },
   "policy": {
     "contractVersion": "feedback-v1",
