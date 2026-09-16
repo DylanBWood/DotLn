@@ -29,6 +29,7 @@ import {
 import { projectAuditEvents } from "../packages/skeleton/dist/src/audit.js";
 import {
   seiriPredicates,
+  projectRuntimeEnvironment,
   seiriReactor,
 } from "../packages/skeleton/dist/src/reactor.js";
 import { entropyReducerLoadout } from "../packages/skeleton/dist/src/loadouts/entropy-reducer.js";
@@ -279,6 +280,7 @@ for (const [name, patch] of [
     [{ ...pulse, eventId: "evt_relocation_probe" }],
     seiriReactor,
     seiriPredicates,
+    projectRuntimeEnvironment,
   );
   assert.equal(
     result.decisions[0].continuation.event.type,

@@ -6,7 +6,12 @@ import {
   type EventDraft,
   type JsonValue,
 } from "@dotln/kernel";
-import { initialState, seiriPredicates, seiriReactor } from "./reactor.js";
+import {
+  initialState,
+  projectRuntimeEnvironment,
+  seiriPredicates,
+  seiriReactor,
+} from "./reactor.js";
 import type { BeaconSweepRequest } from "./control-beacon.js";
 import { declareBeaconPerception } from "./execution-environment.js";
 import {
@@ -95,7 +100,13 @@ export function projectBeaconSparseTwin(
 }
 
 export function replayBeaconSweep(log: string) {
-  return replay(initialState(), decodeLog(log), seiriReactor, seiriPredicates);
+  return replay(
+    initialState(),
+    decodeLog(log),
+    seiriReactor,
+    seiriPredicates,
+    projectRuntimeEnvironment,
+  );
 }
 
 // Host inputs carry the grant; the Observe intent does not manufacture it.

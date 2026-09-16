@@ -145,6 +145,13 @@ export type RuntimeState = Readonly<{
 
 export const loadout: Loadout = seiriLoadout;
 
+/** The skeleton owns the layout of its replayable environment state. */
+export function projectRuntimeEnvironment(
+  state: RuntimeState,
+): Omit<KernelEnv, "now" | "predicates"> {
+  return { rngState: state.rngState, policy: state.policy };
+}
+
 const statePresence = (state: JsonValue): JsonValue | undefined =>
   state !== null && !Array.isArray(state) && typeof state === "object"
     ? (state as Readonly<Record<string, JsonValue>>)["presence"]

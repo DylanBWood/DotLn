@@ -39,7 +39,11 @@ import {
   verificationStateFromRuntime,
   type VerificationState,
 } from "./verification.js";
-import { seiriReactor, type RuntimeState } from "./reactor.js";
+import {
+  projectRuntimeEnvironment,
+  seiriReactor,
+  type RuntimeState,
+} from "./reactor.js";
 
 /** Run inside WorkerStore.acquire's read-only preflight, including historical
  * commands whose completion removed them from the driver's pending state. */
@@ -95,6 +99,7 @@ export class VerificationDriver {
       decodeLog(this.#log),
       seiriReactor,
       {},
+      projectRuntimeEnvironment,
     );
     this.#runtime = restored.state;
     this.#decisions = [...restored.decisions];

@@ -25,6 +25,7 @@ import { WorkerStore } from "./worker-store.js";
 import {
   feedbackStateFromRuntime,
   initialState,
+  projectRuntimeEnvironment,
   seiriReactor,
   type RuntimeState,
 } from "./reactor.js";
@@ -57,6 +58,7 @@ class FeedbackDriver {
       decodeLog(this.log),
       seiriReactor,
       {},
+      projectRuntimeEnvironment,
     );
     this.state = restored.state;
     this.decisions = [...restored.decisions];
@@ -195,6 +197,7 @@ export async function runFeedbackSelfhost(options: FeedbackSelfhostOptions) {
       decodeLog(driver.log),
       seiriReactor,
       {},
+      projectRuntimeEnvironment,
     );
     if (
       !same(replayed.state, driver.state) ||

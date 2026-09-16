@@ -559,20 +559,42 @@ function stateField(state: JsonValue, key: string): JsonValue | undefined {
     ? (state as Readonly<Record<string, JsonValue>>)[key]
     : undefined;
 }
+/** Legacy state-layout contract for callers that omit a replay projector. */
+export function defaultEnvironmentProjection(
+  state: JsonValue,
+): Omit<KernelEnv, "now" | "predicates"> {
+  const rngState = stateField(state, "rngState");
+  const policy = stateField(state, "policy");
+  return {
+    rngState: typeof rngState === "number" ? rngState : 0,
+    ...(policy === undefined ? {} : { policy }),
+  };
+}
 export function replay<S extends JsonValue>(
   initial: S,
   events: readonly Event[],
   reactor: Reactor<S>,
   predicates: PredicateRegistry,
+  projectEnvironment?: (
+    state: S,
+    event: Event,
+  ) => Omit<KernelEnv, "now" | "predicates">,
 ): ReplayResult<S> {
   let state = initial;
   const decisions: Decision<S>[] = [];
   for (const event of events) {
-    const rngState = stateField(state, "rngState");
-    const policy = stateField(state, "policy");
+    const projected =
+      projectEnvironment === undefined
+        ? defaultEnvironmentProjection(state)
+        : projectEnvironment(state, event);
+    const { rngState, policy } = projected;
+    if (projectEnvironment !== undefined && !Number.isFinite(rngState))
+      throw new Error(
+        "Replay environment projector must return a finite rngState",
+      );
     const env: KernelEnv = {
       now: event.occurredAt,
-      rngState: typeof rngState === "number" ? rngState : 0,
+      rngState,
       predicates,
       ...(policy === undefined ? {} : { policy }),
     };

@@ -7,7 +7,10 @@ import {
   decodeLog,
   encodeLog,
   pendingCommands,
+  replay,
   replayOutbox,
+  defaultEnvironmentProjection,
+  type PredicateRegistry,
   type DecisionTrace,
   type ActIntent,
   type Event,
@@ -20,12 +23,55 @@ import {
   compileWorkOrder,
   expectedInspectCommandId,
   loadout,
-  replayScenario,
-  runScenario,
+  replayScenario as replayScenarioUnchecked,
+  runScenario as runScenarioUnchecked,
   type FixtureTree,
   type Loadout,
   type ScenarioResult,
 } from "../src/scenario.js";
+
+import {
+  initialState,
+  initialVerificationRuntime,
+  projectRuntimeEnvironment,
+  seiriPredicates,
+  seiriReactor,
+  type RuntimeState,
+} from "../src/reactor.js";
+
+const assertProjectionIdentity = (
+  log: string,
+  initial: RuntimeState = initialState(),
+  registry: PredicateRegistry = seiriPredicates,
+) => {
+  const events = decodeLog(log);
+  const fallback = replay(initial, events, seiriReactor, registry);
+  for (const projector of [
+    projectRuntimeEnvironment,
+    defaultEnvironmentProjection,
+  ]) {
+    const explicit = replay(initial, events, seiriReactor, registry, projector);
+    assert.deepEqual(explicit, fallback);
+    assert.equal(
+      JSON.stringify(explicit.decisions),
+      JSON.stringify(fallback.decisions),
+    );
+  }
+  return fallback;
+};
+const runScenario: typeof runScenarioUnchecked = (...args) => {
+  const result = runScenarioUnchecked(...args);
+  assert.deepEqual(
+    assertProjectionIdentity(result.log).decisions,
+    result.decisions,
+  );
+  return result;
+};
+const replayScenario: typeof replayScenarioUnchecked = (log) => {
+  const result = replayScenarioUnchecked(log);
+  assert.deepEqual(assertProjectionIdentity(log).decisions, result.decisions);
+  return result;
+};
 
 const fixture = JSON.parse(
   await readFile(
@@ -793,4 +839,51 @@ test("row 1 crash recovery replays state, redispatches, and adapter-deduplicates
   assert.equal(redispatched?.causationId, requested?.eventId);
   assert.equal(commandResult?.correlationId, expectedInspectCommandId);
   assert.equal(commandResult?.causationId, redispatched?.eventId);
+});
+
+test("WO-047 complete Decision bytes match across stored skeleton streams", async (t) => {
+  const root = new URL("../../../../", import.meta.url);
+  const fixtures = [
+    [
+      "WO-003 oracle",
+      "packages/skeleton/fixtures/wo029-legacy-scenario.jsonl",
+      null,
+    ],
+    ["demo", "docs/evidence/WO-046/artifact-identity/scenario.jsonl", null],
+    ["worker recovery", "packages/console/fixtures/wo009.events.jsonl", null],
+    [
+      "verification",
+      "docs/evidence/WO-048/verification/events.jsonl",
+      "ws_independent_verification",
+    ],
+    [
+      "feedback audit",
+      "docs/evidence/WO-048/feedback-002/selfhost-audit.jsonl",
+      null,
+    ],
+    [
+      "feedback verifier",
+      "docs/evidence/WO-048/feedback-002/selfhost-verification.jsonl",
+      "ws_feedback_audit_verification",
+    ],
+  ] as const;
+  for (const [name, path, workstream] of fixtures)
+    await t.test(name, async (subtest) => {
+      const log = await readFile(new URL(path, root), "utf8");
+      const replayed = assertProjectionIdentity(
+        log,
+        workstream === null
+          ? initialState()
+          : initialVerificationRuntime(workstream),
+        name === "feedback audit" || workstream !== null ? {} : seiriPredicates,
+      );
+      subtest.diagnostic(
+        `${replayed.decisions.length} complete decisions; ${Buffer.byteLength(JSON.stringify(replayed.decisions))} identical serialized bytes`,
+      );
+      if (name === "WO-003 oracle")
+        assert.deepEqual(
+          replayed.decisions.map((decision) => decision.trace),
+          wo003DecisionTraces,
+        );
+    });
 });
