@@ -1,10 +1,10 @@
 // Origin: {"ids":["no-attribution"],"loadoutId":"contributor","semanticHash":"fnv1a64:f7e29ff3f4ede75c"}
-const { runCommitMessageHook } = await import("../../.runtime/harness/6b1dc0917ec592c3/packages/skeleton/dist/src/harness-host.js");
-const { feedbackBoundary } = await import("../../.runtime/harness/6b1dc0917ec592c3/packages/skeleton/dist/src/feedback-boundary.js");
+const { runCommitMessageHook } = await import("../../.runtime/harness/4f9815f782d52c03/packages/skeleton/dist/src/harness-host.js");
+const { feedbackBoundary } = await import("../../.runtime/harness/4f9815f782d52c03/packages/skeleton/dist/src/feedback-boundary.js");
 await runCommitMessageHook({
   "compilerPackageVersion": "0.11.2",
   "runtime": {
-    "skeletonVersion": "0.18.4",
+    "skeletonVersion": "0.19.0",
     "boundaryContract": "feedback-v1",
     "files": [
       {
@@ -37,7 +37,7 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/version.js",
-        "hash": "fnv1a64:386edbbcf7a3e788"
+        "hash": "fnv1a64:c36d25fbcb6c25f9"
       },
       {
         "path": "packages/skeleton/dist/src/harness-command.js",
@@ -61,10 +61,30 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/reactor.js",
-        "hash": "fnv1a64:0b6cc9ad2bb31bfd"
+        "hash": "fnv1a64:02a8da54794faba5"
+      },
+      {
+        "path": "packages/skeleton/dist/src/resident-state.js",
+        "hash": "fnv1a64:bd0f3a3196b1e880"
+      },
+      {
+        "path": "packages/skeleton/dist/src/presence-machine.js",
+        "hash": "fnv1a64:51c76f10d439a1dd"
+      },
+      {
+        "path": "packages/skeleton/dist/src/actor-catalog.js",
+        "hash": "fnv1a64:ae3c04f276ba7ef0"
+      },
+      {
+        "path": "packages/skeleton/dist/src/actor-contract.js",
+        "hash": "fnv1a64:4db68bc88b60fc1b"
+      },
+      {
+        "path": "packages/skeleton/dist/src/script-episode.js",
+        "hash": "fnv1a64:a17dabf227a72161"
       }
     ],
-    "snapshot": ".runtime/harness/6b1dc0917ec592c3"
+    "snapshot": ".runtime/harness/4f9815f782d52c03"
   },
   "policy": {
     "contractVersion": "feedback-v1",

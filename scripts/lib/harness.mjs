@@ -94,6 +94,11 @@ export function harnessInstallation(options = {}) {
     "packages/skeleton/dist/src/usage-observation.mjs",
     "packages/skeleton/dist/src/writer-teardown.mjs",
     "packages/skeleton/dist/src/reactor.js",
+    "packages/skeleton/dist/src/resident-state.js",
+    "packages/skeleton/dist/src/presence-machine.js",
+    "packages/skeleton/dist/src/actor-catalog.js",
+    "packages/skeleton/dist/src/actor-contract.js",
+    "packages/skeleton/dist/src/script-episode.js",
   ].map((path) => ({
     path,
     hash: hash(readFileSync(join(sourceRoot, path), "utf8")),
