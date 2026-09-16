@@ -130,6 +130,16 @@ recovery can safely re-dispatch pending outbox commands.
 
 ## Disposable workers
 
+Recovery validates the log, lock, saved receipts, request keys and saved
+verification capsules before reclaiming a dead host lock or dispatching. A
+malformed file or leftover `.pending` result refuses with its path; preserve
+the store and inspect that file before retrying. Pending bytes are never accepted
+as a result or silently removed. Custom recovery callers must supply
+`WorkerStore.acquire` with a read-only callback that calls `loadResult` with
+each receipt's original request context. The shipped hosts reconstruct it from
+the persisted command and caller's pinned fixture/model/mount. See the
+[read-path inventory](../../docs/evidence/WO-048/read-paths.md).
+
 The opt-in demo replaces only the fixture executor with one real CLI episode.
 The inventory is synthetic and mounted as a host-read projection; models have
 no tools and cannot write the repository. The verifier and other demo actors

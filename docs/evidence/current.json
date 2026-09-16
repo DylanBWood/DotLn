@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "editions": {
     "authority": {
-      "workOrder": "WO-046",
+      "workOrder": "WO-048",
       "revision": null
     },
     "artifact-identity": {
@@ -10,12 +10,12 @@
       "revision": null
     },
     "verification": {
-      "workOrder": "WO-046",
+      "workOrder": "WO-048",
       "revision": null
     },
     "feedback": {
-      "workOrder": "WO-046",
-      "revision": null
+      "workOrder": "WO-048",
+      "revision": "002"
     }
   }
 }

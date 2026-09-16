@@ -20,6 +20,14 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-048 activation completion (2026-09-15):** application `v0.21.1` and
+skeleton `0.18.1` stage positive decoding before worker/verification recovery
+effects. Kernel/compiler versions, persisted contracts and hash rules remain
+unchanged; malformed stores preserve their bytes for inspection. Retimed from
+the staged `v0.20.1`/`0.17.1` during final-review integration after WO-046
+published `v0.21.0`/`0.18.0`; the recorded patch classification and declared
+compatibility impact are unchanged.
+
 **WO-046 activation completion (2026-09-15):** application `v0.21.0` stages the executable Program type and typed continuation decoder; kernel `0.4.0` and skeleton `0.18.0` carry the API and persisted-input boundary changes. The full authoring grammar, event schema and semantic/artifact identities are unchanged.
 
 **WO-067 activation completion (2026-09-15):** application `v0.19.0` is the

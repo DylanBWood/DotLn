@@ -51,6 +51,31 @@ export class WorkerHost {
   constructor(private readonly options: WorkerHostOptions) {
     this.now = options.now ?? Date.now;
   }
+  preflight(
+    cwd: string,
+    fixture: FixtureTree,
+    model: string,
+    effort: WorkerEffort,
+  ) {
+    const { driver, store } = this.options;
+    const episodes = projectWorkerStatus(decodeLog(driver.log)).episodes;
+    const request: WorkerRequest = {
+      command: commandFromState(driver.state),
+      workOrder: workOrderFromState(driver.state),
+      artifactIdentity: driver.state
+        .artifactIdentity as unknown as ArtifactIdentityV1,
+      episodeId: `${EPISODE}_worker_${episodes.length + 1}`,
+      model,
+      effort,
+      cwd,
+      fixture,
+      profile: {
+        profileId: "fixture-inspection-v1",
+        mounts: [{ path: cwd, access: "read" }],
+      },
+    };
+    return { request, cached: store.loadResult(request) };
+  }
   private record(
     type: string,
     payload: object,
@@ -105,6 +130,7 @@ export class WorkerHost {
           .command?.commandId === command.commandId,
     );
     if (!source) throw new Error("worker command lacks its persist event");
+    const { request, cached } = this.preflight(cwd, fixture, model, effort);
     const gate = this.record(
       "CommandRedispatchRequested",
       { commandId: command.commandId, workerDispatchVersion: 1 },
@@ -121,23 +147,7 @@ export class WorkerHost {
       throw new WorkerFailure("profile-refused");
     this.expireLeases();
     const episodes = projectWorkerStatus(decodeLog(driver.log)).episodes;
-    const episodeId = `${EPISODE}_worker_${episodes.length + 1}`;
-    const request: WorkerRequest = {
-      command,
-      workOrder,
-      artifactIdentity: driver.state
-        .artifactIdentity as unknown as ArtifactIdentityV1,
-      episodeId,
-      model,
-      effort,
-      cwd,
-      fixture,
-      profile: {
-        profileId: "fixture-inspection-v1",
-        mounts: [{ path: cwd, access: "read" }],
-      },
-    };
-    const cached = store.loadResult(request);
+    const episodeId = request.episodeId;
     if (
       !cached &&
       episodes.some((episode) =>

@@ -4637,6 +4637,51 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-f5dd7dd0e70d0f6c",
+      "key": "decision:docs/evidence/WO-048/decisions.md#wo-048-d001",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "e0a2a2e022c8511bfbb65cd976d32e408ee5af1edbba1213704a1977a224e4da",
+          "ref": "docs/evidence/WO-048/decisions.md#wo-048-d001",
+          "title": "WO-048-D001: Inspect store artifacts under the acquisition guard before reclaiming a lock; validate receipts against reconstructed requests before host events, and preserve unpublished staging files f",
+          "summary": "{ \"id\": \"WO-048-D001\", \"date\": \"2026-09-15\", \"dispatch\": \"resume: next\", \"decision\": \"Inspect store artifacts under the acquisition guard before reclaiming a lock; validate receipts against reconstructed requests before host events, and preserve unpublished staging files for inspection.\", \"evidence\": [ \"packages/skeleton/src/worker-store.ts\", \"packages/skeleton/src/worker-host.ts\", \"packages/skeleton/src/verification-host.ts\", \"docs/work-orders/WO-048-worker-host-on-disk-decode.md\" ], \"rejected\": [ { \"option\": \"NoOp\", \"reason\": \"Recovery currently changes locks and appends events before discovering malformed saved receipts.\" }, { \"option\": \"General schema layer or SQLite\", \"reason\": \"Existin",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-5402a9f4b38a2f9c",
+      "key": "decision:docs/evidence/WO-048/decisions.md#wo-048-d002",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "da1e7b8345101a7d34f6f46a553db8ad17dae073393cfa1c92d58f2992b1780a",
+          "ref": "docs/evidence/WO-048/decisions.md#wo-048-d002",
+          "title": "WO-048-D002: Stage application v0.20.1 and skeleton 0.17.1, retain the kernel/compiler contracts and immutable prior evidence, and refresh the runtime bundle and verification/feedback editions.",
+          "summary": "{ \"id\": \"WO-048-D002\", \"date\": \"2026-09-15\", \"dispatch\": \"resume: next\", \"decision\": \"Stage application v0.20.1 and skeleton 0.17.1, retain the kernel/compiler contracts and immutable prior evidence, and refresh the runtime bundle and verification/feedback editions.\", \"evidence\": [ \"package-lock.json\", \"docs/product/06-roadmap.md\", \"docs/evidence/current.json\" ], \"rejected\": [ { \"option\": \"No component bump\", \"reason\": \"The skeleton runtime changed and must carry its classified patch impact.\" }, { \"option\": \"New schema, dependency or hash rule\", \"reason\": \"This hardening composes existing transport/capsule validators without changing their contracts.\" }, { \"option\": \"Overwrite previous evide",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-db12035f56118cc2",
+      "key": "decision:docs/evidence/WO-048/decisions.md#wo-048-d003",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "31d70be10777c1ed364ba366d74690b977f149b72cbcae0c67099754d59f8c24",
+          "ref": "docs/evidence/WO-048/decisions.md#wo-048-d003",
+          "title": "WO-048-D003: Retime the staged release from application v0.20.1 / skeleton 0.17.1 to v0.21.1 / skeleton 0.18.1 after WO-046 published v0.21.0 / skeleton 0.18.0, preserving the order's recorded patch c",
+          "summary": "{ \"id\": \"WO-048-D003\", \"date\": \"2026-09-15\", \"dispatch\": \"resume: final review\", \"decision\": \"Retime the staged release from application v0.20.1 / skeleton 0.17.1 to v0.21.1 / skeleton 0.18.1 after WO-046 published v0.21.0 / skeleton 0.18.0, preserving the order's recorded patch classification and declared compatibility impact.\", \"evidence\": [ \"README.md\", \"docs/product/06-roadmap.md\", \"package-lock.json\", \"packages/skeleton/package.json\", \"packages/skeleton/src/harness-host.ts\", \"packages/skeleton/src/loadouts/contributor.ts\", \"docs/work-orders/WO-048-worker-host-on-disk-decode.md\" ], \"rejected\": [ { \"option\": \"Keep v0.20.1 / 0.17.1\", \"reason\": \"Upstream consumed the staged numbers; the bra",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

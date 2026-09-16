@@ -35,7 +35,11 @@ import {
   type FeedbackAuditReport,
 } from "./feedback-audit.js";
 import { feedbackContentHash } from "./feedback-boundary.js";
-import { VerificationDriver, VerificationHost } from "./verification-host.js";
+import {
+  preflightVerificationRecovery,
+  VerificationDriver,
+  VerificationHost,
+} from "./verification-host.js";
 import { projectAcceptanceEvidenceMatrices } from "./verification.js";
 import type { WorkOrderTransport } from "./worker-transport.js";
 import type { EvidenceWorkerRequest } from "./verification-protocol.js";
@@ -271,7 +275,16 @@ export async function runFeedbackSelfhost(options: FeedbackSelfhostOptions) {
     })),
   };
   const verifierStore = new WorkerStore(join(options.directory, "verifier"));
-  verifierStore.acquire();
+  verifierStore.acquire(() =>
+    preflightVerificationRecovery(
+      verifierStore,
+      "ws_feedback_audit_verification",
+      () => join(verifierStore.directory, "mount"),
+      options.model,
+      options.effort,
+      program,
+    ),
+  );
   try {
     const driver = new VerificationDriver(
       verifierStore,

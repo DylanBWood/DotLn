@@ -1,4 +1,4 @@
-# WO-048 — Every on-disk value the worker and verification hosts trust is decoded positively before dispatch, and malformed state refuses without partial execution (version assigned at activation)
+# WO-048 — Every on-disk value the worker and verification hosts trust is decoded positively before dispatch, and malformed state refuses without partial execution (v0.21.1)
 
 **Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
 
