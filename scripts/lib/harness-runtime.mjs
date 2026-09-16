@@ -70,6 +70,25 @@ export function reportHarnessRuntime(root) {
   return cause;
 }
 
+// Optional information must not become a startup dependency or admission check.
+export async function codexSessionReport(root) {
+  try {
+    const { currentCodexSession, renderCodexSession } =
+      await import("../../packages/skeleton/src/usage-observation.mjs");
+    const session = currentCodexSession(root);
+    return { session, text: renderCodexSession(session) };
+  } catch {
+    return {
+      session: {
+        available: false,
+        source: "unavailable",
+        reason: "Current Codex session reader could not be loaded",
+      },
+      text: "Current Codex session: reader could not be loaded.",
+    };
+  }
+}
+
 export function refreshHarnessRuntime(root, build) {
   const cause = harnessRuntimeCause(root);
   if (!cause) return false;

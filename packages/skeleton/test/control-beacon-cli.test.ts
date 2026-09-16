@@ -85,6 +85,8 @@ test("WO-021 agent constellation CLI persists permission/refusal and one metadat
       "docs/work-orders/WO-099-fixture.md",
     ]),
   );
+  // Optional Codex reporting cannot make this source-minimal consumer unusable.
+  ok(command("resume", ["status", "--json"]));
   const request: BeaconSweepRequest = {
     intent: { kind: "Observe", subject: "control-beacons" },
     audience: "public",

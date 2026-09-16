@@ -19,6 +19,19 @@ import {
   measureHarnessUsage,
 } from "../packages/skeleton/dist/src/harness-host.js";
 
+async function optionalCodexSession(root) {
+  try {
+    const { codexSessionReport } = await import("./lib/harness-runtime.mjs");
+    return (await codexSessionReport(root)).session;
+  } catch {
+    return {
+      available: false,
+      source: "unavailable",
+      reason: "Current Codex session reader could not be loaded",
+    };
+  }
+}
+
 const usage =
   "usage: harness emit|check [--loadout contributor] [--profile id] [--out dir] | harness evidence [--stop|--fail] | harness usage <session> | harness read-output <path> [--offset <byte>] [--length <bytes>] | harness writer --show | harness writer --release [--force]";
 try {
@@ -43,11 +56,23 @@ try {
     if (flag === "--adopt-file" && !Array.isArray(adopted))
       throw new Error("Authorship adoption must be an explicit path array");
     console.log(
-      JSON.stringify(beginHarnessSession(root, session, role, adopted)),
+      JSON.stringify({
+        ...beginHarnessSession(root, session, role, adopted),
+        ...(process.env.CODEX_THREAD_ID
+          ? { currentSession: await optionalCodexSession(root) }
+          : {}),
+      }),
     );
   } else if (action === "usage") {
     if (args.length !== 1) throw new Error("usage: harness usage <session>");
-    console.log(JSON.stringify(measureHarnessUsage(root, args[0])));
+    console.log(
+      JSON.stringify({
+        ...measureHarnessUsage(root, args[0]),
+        ...(process.env.CODEX_THREAD_ID
+          ? { currentSession: await optionalCodexSession(root) }
+          : {}),
+      }),
+    );
   } else if (action === "observe") {
     if (args.length !== 1) throw new Error("usage: harness observe <session>");
     console.log(JSON.stringify(observeHarnessSession(root, args[0])));

@@ -134,6 +134,7 @@ const machinerySources = {
     "scripts/discover.mjs",
     "packages/skeleton/src/usage-observation.mjs",
     "scripts/test-process-debt.mjs",
+    "scripts/test-codex-session.mjs",
     "scripts/lib/harness-runtime.mjs",
     "scripts/lib/lifecycle-evidence.mjs",
     "scripts/lib/process-budget.mjs",
