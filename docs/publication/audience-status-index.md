@@ -222,6 +222,9 @@ as a current blocked verdict.
 | [Candidate — recurring review of implementation alternatives](../product/07-execution-guide.md#candidate--recurring-review-of-implementation-alternatives)   | everyday-ai-user, software-engineer | vision      |
 | [Candidate — cold-gate structural cuts](../product/07-execution-guide.md#candidate--cold-gate-structural-cuts)                                               | software-engineer                   | vision      |
 | [Candidate — refutation pass worth its cost](../product/07-execution-guide.md#candidate--refutation-pass-worth-its-cost)                                     | software-engineer                   | vision      |
+| [Candidate — follow-up register settlement](../product/07-execution-guide.md#candidate--follow-up-register-settlement) | software-engineer | vision |
+| [Candidate — local lane retention](../product/07-execution-guide.md#candidate--local-lane-retention) | software-engineer | vision |
+| [Candidate — stale writer reservation self-diagnosis](../product/07-execution-guide.md#candidate--stale-writer-reservation-self-diagnosis) | software-engineer | vision |
 | [Workflow closeout and releases](../product/07-execution-guide.md#workflow-closeout-and-releases)                                                            | software-engineer                   | implemented |
 | [Documentation freshness and ownership](../product/07-execution-guide.md#documentation-freshness-and-ownership)                                              | everyday-ai-user, software-engineer | specified   |
 | [Discipline](../product/07-execution-guide.md#discipline)                                                                                                    | software-engineer                   | specified   |
