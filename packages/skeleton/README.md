@@ -1,4 +1,6 @@
-# `@dotln/skeleton` 0.18.0
+# `@dotln/skeleton` 0.18.2
+
+For application v0.22.0, every skeleton replay path passes `projectRuntimeEnvironment` from `reactor.ts`. The skeleton owns its RNG and policy state layout; complete decisions and serialized bytes remain identical to the kernel fallback.
 
 For application v0.21.0, a persisted continuation is decoded before the reactor folds it. `seiriReactor` decodes `state.program` on every event and `verificationStateFromRuntime` decodes the stored verification continuation, so a deferred Program kind or a malformed node refuses with a code and JSON path, prefixed `runtime program:` or `verification continuation:`, before a command is dispatched or a result is consumed. The kernel type those reads produce is `ExecutableProgramV1`.
 
