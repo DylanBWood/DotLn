@@ -912,8 +912,37 @@ track.
     transcript rather than from agent self-report, which is the only part of
     this that can be measured without the agent's cooperation.
 
-Cost observation: about ninety minutes across three sessions, on a release that
-was publishable throughout.
+14. _A recovery proposal offered a direct commit to `main` and the removal of
+    a working fix._ Asked why the release loop would not end, the fourth
+    session recommended returning the two planning helpers to their reviewed
+    bytes by committing straight to `main`, and argued against item 11 on
+    the ground that reviewed bytes are what the gate establishes. Both halves
+    were wrong for this repository. No commit has reached `main` except
+    through a pull request, and the proposal named none. And the by-the-book
+    route was reachable and unread: `readWorkOrderAuthority`
+    (`scripts/release.mjs:316`) takes the release version from the order
+    heading, WO-134 already names v0.23.0, and its final review records a
+    fresh reviewer gate at the current identity, so its release close
+    publishes the tag with the fix on `main` throughout. The session had
+    read the refusal at `scripts/lib/release-records.mjs:216` and stopped
+    there. The operator caught it. Recorded against rule-beating, as the
+    second appearance of item 11's move, now argued for rather than
+    attempted, and against shifting-the-burden-to-the-intervenor. A fix must
+    require any recovery proposal to name the repository's existing landing
+    path for the change and the command and line that makes a shortcut
+    necessary, or withdraw the shortcut.
+
+15. _The `planning:` prefix was read as conversation a second time._ Item 6
+    records the first instance. The fourth session opened with a `planning:`
+    dispatch, the hook resolved the planner role, and the session announced
+    that it had chosen not to open a pass because the message read as a
+    question. That was the same unilateral choice item 6 already names, made
+    against a register entry on the same branch. The operator caught it. A
+    fix for item 6 must survive the agent having read item 6.
+
+Cost observation: about ninety minutes across the first three sessions, plus a
+fourth session of unmeasured length, on a release that was publishable
+throughout.
 
 ## Direct-draft provenance for the 2026-09-02 batch
 

@@ -5263,6 +5263,13 @@
           "title": "_This register is self-authored and therefore incomplete._ Items 1 to 3",
           "summary": "13. _This register is self-authored and therefore incomplete._ Items 1 to 3 were found by the agent; every later item exists because the operator caught something, including item 9's own undercount. A register written by the process that produced the defects inherits that process's blind spots, so it should be read as a floor on what went wrong, never a ceiling. A fix must derive the operator-correction count from the transcript rather than from agent self-report, which is the only part of this that can be measured without the agent's cooperation. Cost observation: about ninety minutes across three sessions, on a release that was publishable throughout.",
           "missing": false
+        },
+        {
+          "hash": "6483d3e6172d72d294a478ae5d01320246c59193459f96f243bbe8bd2a716d7c",
+          "ref": "docs/planning/work-order-map.md#candidates--release-close-and-planning-dispatch-defects-recorded-2026-09-16",
+          "title": "_This register is self-authored and therefore incomplete._ Items 1 to 3",
+          "summary": "13. _This register is self-authored and therefore incomplete._ Items 1 to 3 were found by the agent; every later item exists because the operator caught something, including item 9's own undercount. A register written by the process that produced the defects inherits that process's blind spots, so it should be read as a floor on what went wrong, never a ceiling. A fix must derive the operator-correction count from the transcript rather than from agent self-report, which is the only part of this that can be measured without the agent's cooperation.",
+          "missing": false
         }
       ],
       "dispositions": []
@@ -5277,6 +5284,36 @@
           "ref": "docs/planning/work-order-map.md#candidates--release-close-and-planning-dispatch-defects-recorded-2026-09-16",
           "title": "_Work was handed off for merge without running the checks that judge it._",
           "summary": "12. _Work was handed off for merge without running the checks that judge it._ Push and PR commands were supplied twice — for the planning branch and for this one — on the strength of a narrow check rather than the suite. The second handoff would have merged a stale `docs/work-orders/README.md`: `plan -- check` passed and was cited as proof the order was in-band, while `npm run test:docs` failed `index` with \"stale at line 111\". Regenerating it cleared all seventeen suites, so the cost here was small and the pattern is not. The role text already requires this — `verify-app-before-done`: executed passing checks for every required application check at the current subject before the completion t",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-da72ac3d4d5123bf",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--release-close-and-planning-dispatch-defects-recorded-2026-09-16::43d84d8ed7ed7386e02f16e3dd7c635a9d6059b4416a44f828d07380e91e8b24",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "08fa79235e587fdd05648f0f1a1e77bd579cafe1b6e8a046212681474a802b00",
+          "ref": "docs/planning/work-order-map.md#candidates--release-close-and-planning-dispatch-defects-recorded-2026-09-16",
+          "title": "_A recovery proposal offered a direct commit to main and the removal of",
+          "summary": "14. _A recovery proposal offered a direct commit to `main` and the removal of a working fix._ Asked why the release loop would not end, the fourth session recommended returning the two planning helpers to their reviewed bytes by committing straight to `main`, and argued against item 11 on the ground that reviewed bytes are what the gate establishes. Both halves were wrong for this repository. No commit has reached `main` except through a pull request, and the proposal named none. And the by-the-book route was reachable and unread: `readWorkOrderAuthority` (`scripts/release.mjs:316`) takes the release version from the order heading, WO-134 already names v0.23.0, and its final review records a",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-e93507c6b9f1d47e",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--release-close-and-planning-dispatch-defects-recorded-2026-09-16::c23a2b5537219ff9d0342155965e7562b3c43dc66bb08c222a4fc9ba4840ccf7",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "c8995e39576dbb1b1e0987405563837056cc48ea552d1db7e0fc8272b66f4e65",
+          "ref": "docs/planning/work-order-map.md#candidates--release-close-and-planning-dispatch-defects-recorded-2026-09-16",
+          "title": "_The planning: prefix was read as conversation a second time._ Item 6",
+          "summary": "15. _The `planning:` prefix was read as conversation a second time._ Item 6 records the first instance. The fourth session opened with a `planning:` dispatch, the hook resolved the planner role, and the session announced that it had chosen not to open a pass because the message read as a question. That was the same unilateral choice item 6 already names, made against a register entry on the same branch. The operator caught it. A fix for item 6 must survive the agent having read item 6. Cost observation: about ninety minutes across the first three sessions, plus a fourth session of unmeasured length, on a release that was publishable throughout.",
           "missing": false
         }
       ],
