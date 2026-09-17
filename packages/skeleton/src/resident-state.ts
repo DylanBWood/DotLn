@@ -14,6 +14,7 @@ import {
 } from "@dotln/kernel";
 import {
   assertActorResult,
+  scriptResultVerified,
   assertActorSpec,
   type ActorSpec,
 } from "./actor-contract.js";
@@ -266,14 +267,8 @@ export function foldResidentEvent(
       throw new Error("lost episode needs a reason");
     if (!lost) {
       assertActorResult(payload);
-      const expected =
-        state.configuration!.actors[state.episodePhases[id]!]!
-          .expectedStdoutSha256;
-      const verified =
-        payload.exitCode === 0 &&
-        payload.signal === null &&
-        payload.reason === "completed" &&
-        payload.stdoutSha256 === expected;
+      const spec = state.configuration!.actors[state.episodePhases[id]!]!;
+      const verified = scriptResultVerified(spec, payload);
       if (payload.verified !== verified)
         throw new Error("script verification contradicts recorded output");
     }
