@@ -1,10 +1,10 @@
 // Origin: {"ids":["no-attribution"],"loadoutId":"contributor","semanticHash":"fnv1a64:f7e29ff3f4ede75c"}
-const { runCommitMessageHook } = await import("../../.runtime/harness/44b1e7b00bdb62a5/packages/skeleton/dist/src/harness-host.js");
-const { feedbackBoundary } = await import("../../.runtime/harness/44b1e7b00bdb62a5/packages/skeleton/dist/src/feedback-boundary.js");
+const { runCommitMessageHook } = await import("../../.runtime/harness/238d316bea90dcd4/packages/skeleton/dist/src/harness-host.js");
+const { feedbackBoundary } = await import("../../.runtime/harness/238d316bea90dcd4/packages/skeleton/dist/src/feedback-boundary.js");
 await runCommitMessageHook({
   "compilerPackageVersion": "0.13.0",
   "runtime": {
-    "skeletonVersion": "0.25.0",
+    "skeletonVersion": "0.25.1",
     "boundaryContract": "feedback-v1",
     "files": [
       {
@@ -33,7 +33,15 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/harness-host.js",
-        "hash": "fnv1a64:9dc62b0f760af773"
+        "hash": "fnv1a64:69642767a41937e9"
+      },
+      {
+        "path": "packages/skeleton/dist/src/observed-facts.js",
+        "hash": "fnv1a64:30a0b40d09a87feb"
+      },
+      {
+        "path": "packages/skeleton/dist/src/correction-observation.mjs",
+        "hash": "fnv1a64:9de0f1abc1c9c83b"
       },
       {
         "path": "packages/skeleton/dist/src/source-change-command.js",
@@ -45,7 +53,7 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/version.js",
-        "hash": "fnv1a64:392302a640d97da8"
+        "hash": "fnv1a64:77cf6a9dd81ea7b9"
       },
       {
         "path": "packages/skeleton/dist/src/harness-command.js",
@@ -61,7 +69,7 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/usage-observation.mjs",
-        "hash": "fnv1a64:363c00d6378fdd0b"
+        "hash": "fnv1a64:d3bbff22ad6be87f"
       },
       {
         "path": "packages/skeleton/dist/src/writer-teardown.mjs",
@@ -148,7 +156,7 @@ await runCommitMessageHook({
         "hash": "fnv1a64:6359806743e418ea"
       }
     ],
-    "snapshot": ".runtime/harness/44b1e7b00bdb62a5"
+    "snapshot": ".runtime/harness/238d316bea90dcd4"
   },
   "policy": {
     "contractVersion": "feedback-v1",

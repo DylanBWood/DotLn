@@ -73,6 +73,13 @@ import {
 } from "./feedback-boundary.js";
 
 import { HARNESS_HOST_VERSION } from "./version.js";
+import {
+  observationBoundary,
+  observeBackgroundTool,
+  observeTypedCorrection,
+  namedJudgmentUnits,
+  type ObservationScope,
+} from "./observed-facts.js";
 export { HARNESS_HOST_VERSION } from "./version.js";
 export interface HarnessInput {
   readonly hook_event_name: HarnessEvent | "SessionStart";
@@ -2523,6 +2530,24 @@ export async function evaluateHarnessHook(
     session.reads = observations.flatMap((row) => row.receipts ?? []);
     session.byteReads = observations.flatMap((row) => row.byteReads ?? []);
   }
+  const observationScope = (): ObservationScope => ({
+    sessionKey: sessionKey(input),
+    usageKey: session.usageSessionKey ?? sessionKey(input),
+    workOrder: session.workOrder ?? null,
+    phase:
+      session.intent === "resume: fix"
+        ? "repair"
+        : ((
+            {
+              executor: "implementation",
+              verifier: "verification",
+              reviewer: "finalReview",
+            } as Record<string, string>
+          )[session.role ?? ""] ??
+          session.role ??
+          "unknown"),
+    ...(session.startedAt ? { startedAt: session.startedAt } : {}),
+  });
   if (config.kind === "session") {
     let additionalContext: string | undefined;
     let receipt: string | undefined;
@@ -2650,6 +2675,16 @@ export async function evaluateHarnessHook(
       }
     }
     writeJson(statePath(root, input), session);
+    // Measurement grants no effects and does not classify untyped language.
+    // The session hook owns the standard token's measurement, with or without
+    // the separately configured correction-effect hook.
+    observeTypedCorrection(root, observationScope(), input.prompt ?? "");
+    additionalContext = [
+      additionalContext,
+      observationBoundary(root, observationScope()),
+    ]
+      .filter(Boolean)
+      .join("\n");
     // The receipt is the operator's only terminal evidence of the dispatch;
     // the briefing itself reaches the model alone.
     const notices = [receipt, warning].filter(Boolean).join("\n");
@@ -2694,6 +2729,12 @@ export async function evaluateHarnessHook(
     record(root, input, {
       reads: paths,
       role: session.role,
+      ...(observeBackgroundTool(
+        input.tool_name ?? "",
+        input.tool_input ?? {},
+        input.tool_response ?? {},
+        new Date().toISOString(),
+      ) ?? {}),
       ...(authorship ? { authorship } : {}),
       receipts: session.reads.slice(before),
       byteReads: session.byteReads?.slice(rangesBefore) ?? [],
@@ -2751,11 +2792,22 @@ export async function evaluateHarnessHook(
           .reduce((sum, row) => sum + row.bytes, 0),
       });
     }
-    return unmet.length
-      ? {
-          systemMessage: `DotLn advisory: pending ${unmet.join(", ")}; these observations do not block lifecycle completion.`,
-        }
-      : {};
+    return {
+      systemMessage: [
+        observationBoundary(root, observationScope(), {
+          stop: true,
+          reentry: input.stop_hook_active === true,
+          ...(input.transcript_path
+            ? { transcriptPath: input.transcript_path }
+            : {}),
+        }),
+        ...(unmet.length
+          ? [
+              `DotLn advisory: pending ${unmet.join(", ")}; these observations do not block lifecycle completion.`,
+            ]
+          : []),
+      ].join("\n"),
+    };
   }
   if (config.kind === "permission") {
     if (!config.envelope) throw new Error("Missing compiled authority");
@@ -2818,6 +2870,13 @@ export async function evaluateHarnessHook(
     writeJson(correctionPath, session.correction);
     record(root, input, {
       typedEvent: "OperatorCorrectionReceived",
+      eventId: `correction-effect:${session.correction.corrections.length - 1}`,
+      // The compiled session hook measures this standard prompt exactly once.
+      // Custom effect tokens retain their own journal-derived measurement.
+      measurement: config.correctionToken !== "correction:",
+      workOrder: observationScope().workOrder,
+      phase: observationScope().phase,
+      units: namedJudgmentUnits(input.prompt),
       correction: session.correction,
     });
     return {
@@ -2954,7 +3013,7 @@ export async function runHarnessHook(
           permission?.permissionDecision === "deny";
         record(root, input, {
           ...(typeof response.systemMessage === "string" &&
-          response.systemMessage.startsWith("DotLn advisory:")
+          response.systemMessage.includes("DotLn advisory:")
             ? { advisory: response.systemMessage, delegated: true }
             : {}),
           // Retain each hook outcome but correlate denials of the same tool use.

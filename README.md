@@ -93,7 +93,7 @@ intent → task-scoped build → bounded WorkOrder → disposable executor
 -->
 <!-- DOTLN-RELEASE-BEGIN -->
 
-This source prepares DotLn `v0.29.0`.
+This source prepares DotLn `v0.29.1`.
 
 **The core.** A local-first compiler turns a loadout graph into a bounded
 program: one identity, one active mechanic, its linked supports, and an
@@ -137,7 +137,10 @@ judgment to host permissions; `analysis:` and `operator override:` stay
 available even when setup or lifecycle state fails. The [execution
 guide](docs/product/07-execution-guide.md) and its [independent
 workflow](docs/product/07-execution-guide.md#independent-workflows-and-integration)
-carry the rest.
+carry the rest. Session observations now put measured times and counters in
+briefings and hook context. A lexical hedge in a final message is journaled and
+corrected once by advisory, without holding the turn; the process meter counts
+journal corrections by order, phase and named judgment unit.
 
 **Not yet.** A live model actor, automatic work derivation, general
 source-writing workers and portable starter export remain later work, and the

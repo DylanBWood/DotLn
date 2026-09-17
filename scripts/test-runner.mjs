@@ -81,6 +81,9 @@ const machinerySources = {
     "packages/skeleton/src/feedback-boundary.ts",
     "packages/skeleton/src/gate-evidence.mjs",
     "scripts/test-harness.mjs",
+    "scripts/test-observed-facts.mjs",
+    "packages/skeleton/src/observed-facts.ts",
+    "packages/skeleton/src/correction-observation.mjs",
     "scripts/test-target-harness.mjs",
     "scripts/lib/harness.mjs",
     "packages/compiler/src/harness.ts",
@@ -132,6 +135,7 @@ const machinerySources = {
     "packages/skeleton/src/gate-deadlines.mjs",
   ],
   "process-debt": [
+    "packages/skeleton/src/correction-observation.mjs",
     "scripts/lib/meta.mjs",
     "scripts/lib/intake-reconciliation.mjs",
     "scripts/lib/evidence-preparation.mjs",
@@ -154,6 +158,7 @@ const machinerySources = {
   "verification-evidence": evidenceSources["verification"],
   "feedback-evidence": evidenceSources["feedback"],
   meta: [
+    "packages/skeleton/src/correction-observation.mjs",
     "scripts/lib/control-store.mjs",
     "scripts/lib/control-time.mjs",
     "scripts/lib/planning-followups.mjs",

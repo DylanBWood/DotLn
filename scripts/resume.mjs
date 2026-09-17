@@ -15,6 +15,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import {
   reportHarnessRuntime,
   codexSessionReport,
+  observedFactsReport,
 } from "./lib/harness-runtime.mjs";
 import { mainWorktree, runGit } from "./lib/git.mjs";
 import {
@@ -1116,6 +1117,17 @@ export const main = async (argv = process.argv.slice(2)) => {
             2,
           )
         : `${message}\n${report.text}`;
+  }
+  if (!["status", "times", "usage"].includes(action)) {
+    const observationState = [
+      "activate",
+      "fix",
+      "verify",
+      "final-review",
+    ].includes(action)
+      ? (control.orders.get(selected)?.state ?? state)
+      : state;
+    message += `\n${await observedFactsReport(repoRoot, observationState, message)}`;
   }
   process.stdout.write(`${message}\n`);
 };
