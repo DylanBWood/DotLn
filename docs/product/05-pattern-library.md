@@ -67,6 +67,27 @@ host duties and records the pending correction to the compiled Shape-First
 wording. The generated residue and historical review receipts are not edited
 to make that future correction appear shipped.
 
+**Executable discovery (WO-119).** Sort and Shine also have a deterministic,
+bounded producer in `packages/skeleton/src/discovery.ts`. Its kernel-stepped
+Sequence/Guard/Invoke program observes declared lint/test failures, explicit
+placement violations, declared generated files with no literal-token references
+in the bounded corpus, and repeated entries in structured target repair history.
+Each WorkCandidate has relative paths, evidence references, optional proposed
+home and measured file count; none carries repair or deletion authority. Profile
+conventions are direct input, `.dotln/discovery.json`, or a selected profile's
+`dotln-discovery` block. Without them, defaults use package lint/test scripts
+and optional `.dotln/repairs.jsonl`, with no guessed placement/generated rules.
+WO-073's full profile system remains future work.
+
+The resident can run the producer as a native script and persist its validated
+report in `ScriptEpisodeObserved`; no operator await is present. The six-candidate
+fixture and scratch Git row exercise real commands, confinement and replay.
+Reference absence is scoped to the declared tokens and bounded non-dependency
+corpus, not a language-complete proof of unreachability. The candidate's file
+count is observed scope, not repair effort. WO-100 consumes this typed input
+later; derivation and autonomous repair are not implemented here. Evidence,
+alternatives and reopening conditions: [WO-119 decisions](../evidence/WO-119/decisions.md).
+
 ## Leadership & autonomy — Marquet
 
 - **Ladder of Leadership**, 7 rungs, each a _paired speech act_ (worker/leader):
@@ -1254,6 +1275,16 @@ of the authorized work: the actor resumes the right objective, constraints,
 decisions and next action without losing obligations or repeating completed
 effects. A reassuring summary alone does not demonstrate that outcome.
 
+The operator's 2026-09-16 follow-up identifies a second outcome: useful work
+must actually continue after recovery. The reported failure is an actor
+answering an old chat message after compaction, then ending its turn with
+unfinished work and no independent wake event. During WO-119, the executor
+did end a turn after a conversation-only answer while the work order remained
+unfinished, contrary to product 07's existing continuation instruction. That
+observed conduct does not by itself establish a compaction implementation bug
+or prove the absence of every harness wake mechanism; see the
+[breakout receipt](../evidence/WO-119/ideation-authority.md).
+
 The operator locates the eventual framework in DotLn itself, using the future
 offline work queue and shared state. The queue, admitted work, authority,
 decisions and accepted evidence outlive a model window. DotLn should assemble
@@ -1264,6 +1295,17 @@ the context needed for its assigned result. A harness's recovery feature is a
 discovered adapter capability, not the owner of that shared state. Compose this
 candidate with the planned resident and work-derivation orders; it does not
 create a parallel queue or allocate another implementation order here.
+
+Recover current work identity and message disposition together: distinguish
+answered side questions from pending requests, superseding steering, explicit
+pauses and completed tasks. An old last-visible message must not displace the
+active obligation. When an episode ends prematurely, the responsible host must
+reconcile durable work state and arrange the next authorized action even with
+zero running tools. A completed model turn alone does not establish completed
+work. Continuation must honor actual pauses, unmet dependencies and authority
+boundaries, and must not duplicate completed effects or start a second writer.
+The mechanism and host-specific adapter remain open; this is no claim that
+today's resident can wake the current interactive harness session.
 
 The support needs an observed harness capability for context consumption and
 capacity, including the measurement time, units and session/window identity.
@@ -1325,6 +1367,16 @@ Synthetic context replacement is useful fixture evidence but must be labeled;
 only an actual automatic-compaction run supports a live-host claim. A pass is
 bounded evidence for those runs, never a universal claim of zero information
 loss.
+
+Include a fixture with an old, already-answered side question, newer steering,
+unfinished authorized work and no running tool or incoming operator message.
+Require the next correct action and bounded-task completion within a declared
+test deadline; record which component schedules continuation. Inject premature
+turn completion and show recovery without another operator nudge. Repeat with
+an explicit pause, a completed task and an actual authority boundary to prove
+that continuation is selective. Repeated stale answers, silent idle work and
+duplicate effects fail. These are proposed acceptance cases, not executed
+compaction evidence from WO-119.
 
 This is a preserved support candidate, with no implementation or equipment
 claim in WO-126. It composes with the existing decision, output-review and
