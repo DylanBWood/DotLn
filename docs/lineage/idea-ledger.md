@@ -232,7 +232,15 @@ is used only as an expectation. The full record is
   - Entry 124,346 total tokens (Claude transcript, dispatch scope); no code
     suite; one background documentation lookup; two in-harness background
     goal reviews of drafts dispatched and not filed (recorded as waste); the
-    receipt from the external Codex transport; `npm run test:docs` at the
+    receipt from the external Codex transport, whose first dispatch
+    failed on the installed CLI's git-repository check (an empty `mkdtemp`
+    working directory; boy-scout item for WO-110) and was rerun with the
+    temporary root in an empty git repository; the second dispatch was
+    rejected by the validator for a known issue without a reopening
+    observation, which the result schema permits and the protocol refuses,
+    and the host deleted it (two boy-scout items for WO-135: a conditional
+    schema, and a retained rejected result); the third dispatch is receipt
+    017, aligned-with-findings with no hold; `npm run test:docs` at the
     end. Handoff counters in the response. USD unknown.
 - **Adopting the brief one for one, a single lane, the narrower WO-135, any
   settings change now, a Codex tool proxy now, a new work-order kind or

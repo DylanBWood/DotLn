@@ -351,7 +351,13 @@ the review the operator caught the planner estimating an elapsed time the
 session's own files held, and directed that no-guessing enforcement be the
 next order: WO-141 is filed first, the sequence is recut into fifteen pairs
 with WO-141 beside WO-136, and the refutation runs through the external
-Codex transport by the operator's explicit request.
+Codex transport by the operator's explicit request. Its first dispatch failed on
+the CLI's git-repository check against the transport's empty `mkdtemp`
+directory (boy-scout item for WO-110); its second was rejected by the
+validator for a known issue without a reopening observation, which the
+result schema permits and the host then deleted (two boy-scout items for
+WO-135: a conditional schema, and a retained rejected result); the third is
+receipt 017.
 
 Earlier rationale is preserved in the [planning archive](archive/work-order-map-2026-09-09.md).
 
