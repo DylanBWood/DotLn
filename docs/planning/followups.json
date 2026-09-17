@@ -5152,6 +5152,13 @@
           "title": "_An order may mandate a capability id its own gate refuses._ WO-068",
           "summary": "1. _An order may mandate a capability id its own gate refuses._ WO-068 criterion 7 directed an executor to add a `runtime.resident` row; `scripts/lib/plan-continuation.mjs:94` refuses ids absent from the judged receipt, because a capability id is a planning claim. The order required an edit the repository rejects by design, and no executor repair could clear it: deleting the row fails the criterion, keeping it fails the gate. FINAL-001 recorded this as B1 and nominated two forms — admit new ids through the planning pass that files the order, or teach `reassessments` a dated-addition form for ids the filing order introduces. Neither is chosen. A fix must make the unsatisfiable order unfilable",
           "missing": false
+        },
+        {
+          "hash": "65196f437e0cdff28b416b3b569efeb222fa616c33f18b202e48866255e404f4",
+          "ref": "docs/planning/work-order-map.md#candidates--release-close-and-planning-dispatch-defects-recorded-2026-09-16",
+          "title": "_An order may mandate a capability id its own gate refuses._ WO-068",
+          "summary": "1. _An order may mandate a capability id its own gate refuses._ WO-068 criterion 7 directed an executor to add a `runtime.resident` row; `scripts/lib/plan-continuation.mjs:94` refuses ids absent from the judged receipt, because a capability id is a planning claim. The order required an edit the repository rejects by design, and no executor repair could clear it: deleting the row fails the criterion, keeping it fails the gate. FINAL-001 recorded this as B1 and nominated two forms — admit new ids through the planning pass that files the order, or teach `reassessments` a dated-addition form for ids the filing order introduces. Neither is chosen. A fix must make the unsatisfiable order unfilable",
+          "missing": false
         }
       ],
       "dispositions": []

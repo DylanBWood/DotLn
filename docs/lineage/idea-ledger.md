@@ -70,25 +70,29 @@ not relitigate them) and the founding chat/notes/image corpus.
     with those four evidence families.
   - Provenance: the capability table's level-3 rule; the row's own
     remaining-gate cell; the sequence entries for those orders.
-- **The filing defect recurred exactly where the last pass said it would**
-  `adopted`
+- **The filing defect recurred exactly where the last pass said it would, and
+  this pass files its repair** `adopted`
   - The 2026-09-16 pass deferred the fix and recorded its reopening condition
     as "the next order whose criteria name a capability id absent from the
     latest receipt's subject". WO-052 is that order, one day later, and it cost
     a second final review the same diagnosis and a second purpose-built pass.
     Two occurrences in two consecutive capability-introducing orders is the
-    evidence the deferral asked for. The two candidate fixes stand as filed —
-    admit new ids through the planning pass that files the order, or teach
-    `reassessments` a dated-addition form for ids the filing order itself
-    introduces — and the second is now the cheaper one, because the first
-    requires a planning dispatch per order while the second is a bounded
-    machinery change with fixtures. Choosing and implementing it is still a
-    work order with its own evidence, not a document edit inside this pass.
-  - Reopen: this entry is the nomination; it closes when an order is filed and
-    verified.
+    evidence the deferral asked for, so this pass stops deferring and files
+    [WO-135](../work-orders/WO-135-capability-id-admission.md).
+  - The order takes the second of the two nominated forms: a dated addition may
+    introduce a capability id when the heading's order is in the judged subject
+    and that order's own judged criteria name the id, because the pass that
+    judged the order judged the sentence naming the capability; the table row
+    alone is new. Every other new id stays refused, since that is a genuine
+    planning claim. The first form — a planning pass per filing order — is
+    declined as the status quo whose cost this pass is paying for the second
+    time. Classification patch, no dependency, no capability id of its own.
+  - Reopen if a fix admits an id no judged order's criteria name, or if the
+    criteria-text rule proves too narrow for a real order.
   - Provenance: `docs/final-reviews/WO-068/FINAL-001.md` §B1;
     `docs/final-reviews/WO-052/FINAL-001.md` §B1;
     `docs/evidence/WO-052/decisions.md` §WO-052-D005;
+    `docs/planning/work-order-map.md` candidate 1;
     `scripts/lib/plan-continuation.mjs`.
 - **How this pass was dispatched, logged** `adopted`
   - The operator's instruction was not prefixed `planning:`. It was a direct

@@ -108,6 +108,7 @@ Edit sequence.md's marked sequence to change the plan; do not cross off entries 
 - [WO-103] — Authorization guard and outbox factorial decision-table corpus (version assigned at activation)
 - [WO-105] — Crash-shape corpus: store truncation sweep, skeleton recovery sweep, golden traces, and fixture-tree families (version assigned at activation)
 - [WO-107] — Deterministic profiling harness and first baseline observation corpus (version assigned at activation)
+- [WO-135] — Capability-id admission: a dated addition may introduce a capability id that a judged order's own criteria already name, so filing an order no longer mandates an edit the plan gate refuses (version assigned at activation)
 
 Full evidence follows, grouped by lifecycle state.
 
@@ -1302,6 +1303,22 @@ None.
 - Cost: Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
 - Inherited ledger duty: discharge with [this order's decisions](../evidence/WO-124/decisions.md) and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
 - Authority: [docs/work-orders/WO-124-impact-surfaces-derivation.md](WO-124-impact-surfaces-derivation.md)
+
+### WO-135
+
+[WO-135 — Capability-id admission: a dated addition may introduce a capability id that a judged order's own criteria already name, so filing an order no longer mandates an edit the plan gate refuses (version assigned at activation)](WO-135-capability-id-admission.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: conservative token view; does not block.
+- References: none declared.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor any; verifier any; reviewer any.
+- Cost: removes one purpose-built planning pass, one refutation dispatch and one final-review diagnosis per capability-introducing order; it has cost two of those in two days. It adds one branch in an existing helper and fixtures to an existing suite, and no recurring step, check, receipt, hook, key or ritual.
+- Authority: [docs/work-orders/WO-135-capability-id-admission.md](WO-135-capability-id-admission.md)
 
 ## Closed
 
@@ -2547,3 +2564,4 @@ See [the human planning map](../planning/work-order-map.md) for recommendation, 
 [WO-132]: WO-132-machinery-stand-down.md
 [WO-133]: WO-133-stand-down-residue.md
 [WO-134]: WO-134-planning-pass-selection.md
+[WO-135]: WO-135-capability-id-admission.md
