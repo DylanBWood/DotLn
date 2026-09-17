@@ -1386,6 +1386,14 @@ usage measurement before token caps; this candidate sets no numeric threshold
 or automatic stop. Reopen allocation when the host can expose the required
 signals and the proposed recovery fixture can measure a useful improvement.
 
+**Deferred 2026-09-17 (vision-into-use pass).** No separate order: the
+durable work identity and continuation this candidate wants are owned by
+[WO-120](../work-orders/WO-120-derived-work-identity.md) and
+[WO-100](../work-orders/WO-100-preauthorized-portfolio.md) on the resident
+chain, and the compaction claim remains unverified. Reopen on a bounded live
+reproduction with host events and a measured continuation outcome, or when
+WO-120 lands and the candidate can compose with a real work identity.
+
 ## Candidate — Beware of Naive Interventionism
 
 **"Beware of naive interventionism"** is a candidate support for any active

@@ -220,6 +220,7 @@ as a current blocked verdict.
 | [Ideation breakout receipt and verification](../product/07-execution-guide.md#ideation-breakout-receipt-and-verification)                                    | software-engineer                   | specified   |
 | [Operator-opened planning pass](../product/07-execution-guide.md#operator-opened-planning-pass)                                                              | software-engineer                   | implemented |
 | [Retained planning follow-ups](../product/07-execution-guide.md#retained-planning-follow-ups)                                                                | software-engineer                   | implemented |
+| [Research and guided-operator work orders](../product/07-execution-guide.md#research-and-guided-operator-work-orders) | everyday-ai-user, software-engineer | specified |
 | [Candidate — guided operator work orders](../product/07-execution-guide.md#candidate--guided-operator-work-orders) | everyday-ai-user, software-engineer | planned |
 | [Candidate — planner startup context](../product/07-execution-guide.md#candidate--planner-startup-context)                                                   | software-engineer                   | specified   |
 | [Candidate — recurring review of implementation alternatives](../product/07-execution-guide.md#candidate--recurring-review-of-implementation-alternatives)   | everyday-ai-user, software-engineer | vision      |
@@ -228,6 +229,7 @@ as a current blocked verdict.
 | [Candidate — follow-up register settlement](../product/07-execution-guide.md#candidate--follow-up-register-settlement) | software-engineer | vision |
 | [Candidate — local lane retention](../product/07-execution-guide.md#candidate--local-lane-retention) | software-engineer | vision |
 | [Candidate — stale writer reservation self-diagnosis](../product/07-execution-guide.md#candidate--stale-writer-reservation-self-diagnosis) | software-engineer | vision |
+| [Candidate — total subagent cap across every spawn path](../product/07-execution-guide.md#candidate--total-subagent-cap-across-every-spawn-path) | software-engineer | vision |
 | [Workflow closeout and releases](../product/07-execution-guide.md#workflow-closeout-and-releases)                                                            | software-engineer                   | implemented |
 | [Documentation freshness and ownership](../product/07-execution-guide.md#documentation-freshness-and-ownership)                                              | everyday-ai-user, software-engineer | specified   |
 | [Discipline](../product/07-execution-guide.md#discipline)                                                                                                    | software-engineer                   | specified   |

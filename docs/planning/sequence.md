@@ -9,14 +9,17 @@ Planning entry returns the pending [follow-up register](followups.json) in
 bounded pages. Use `npm run plan -- followups` for its current counts, source
 pointers and continuation command; untouched items persist across passes.
 
-Lane pairs (operator direction, 2026-09-16): from WO-133 onward the queued
-entries are grouped two per blank-separated pair for two parallel lanes,
-chosen so the two orders name disjoint primary surfaces and neither
-hard-depends on the other; the run after the eleventh pair keeps its serial
-reading order until R2. One order at a time passes final review and release
-close, and the second lane's final review integrates main by the checklist in
-product 07 §Independent workflows and integration. The pairs and their
-evidence are in [the R1 replan document](r1-replan-2026-09-16.md) §7.
+Lane pairs (operator direction, 2026-09-16; recut 2026-09-17): from WO-135
+onward the queued entries are grouped two per blank-separated pair for two
+parallel lanes. Inside a pair the two orders name disjoint primary surfaces
+and neither hard-depends on the other; the delivery lane is the first entry
+and the second lane is by preference an evidence-only or machinery order.
+The run after the fourteenth pair keeps its serial reading order until R2.
+One order at a time passes final review and release close, and the second
+lane's final review integrates main by the checklist in product 07
+§Independent workflows and integration. The pairs and their evidence are in
+[the vision-into-use document](vision-into-use-2026-09-17.md) §4; the
+earlier cut is in [the R1 replan document](r1-replan-2026-09-16.md) §7.
 
 <!-- dotln-work-order-sequence:start -->
 
@@ -36,65 +39,74 @@ evidence are in [the R1 replan document](r1-replan-2026-09-16.md) §7.
 - WO-047 — Replay environment projector
 - WO-048 — Worker and verification hosts decode on-disk state
 - WO-050 — Reactor typed state slices
-
 - WO-133 — Stand-down residue
 - WO-068 — Resident host
-
 - WO-049 — Target-worktree harness bundle
 - WO-051 — Source-change writer request and transport profile
-
 - WO-121 — Presence signals with origin
 - WO-119 — Executable discovery producer
-
 - WO-052 — Source-change host and commit receipt
 - WO-122 — Actor catalog: cli-worker and human-handoff
 
+- WO-135 — Planning-gate corrections
+- WO-136 — Authority enforcement boundary
+
 - WO-053 — The first external source change
-- WO-099 — Mission check
-
-- WO-114 — Runtime status projection
-- WO-069 — Configuration root
-
-- WO-070 — Beacon portability
-- WO-120 — Derived work identity
+- WO-139 — Subagent cap
 
 - WO-054 — Verification over a real worktree
-- WO-115 — Console parity contract
+- WO-137 — Local runner readiness
 
 - WO-055 — Repair continuation
-- WO-116 — Audit projection served
+- WO-140 — Gate sandbox preflight and usage readback
 
 - WO-056 — Live blinded verification and repair
+- WO-110 — Local-model transport
+
+- WO-099 — Mission check
+- WO-079 — Worktree integrate
+
+- WO-069 — Configuration root
+- WO-138 — Local-model role qualification pilot
+
+- WO-071 — Registered target repositories
+- WO-120 — Derived work identity
+
+- WO-063 — Outward-artifact lint
 - WO-100 — Preauthorized portfolio and work derivation
 
+- WO-064 — Target publish
 - WO-111 — The unattended hour
-- WO-117 — Console live host
 
+- WO-114 — Runtime status projection
+- WO-070 — Beacon portability
+
+- WO-115 — Console parity contract
+- WO-060 — SourceBundle contract
+
+- WO-116 — Audit projection served
+- WO-065 — Pull-request state observation
+
+- WO-117 — Console live host
+- WO-066 — Review-comment resolution loop
+
+- WO-057 — Browser runtime truth
+- WO-058 — Visual and network claim types
+- WO-059 — Playwright evidence adapter
+- WO-061 — StoryContract compile
+- WO-124 — Impact surfaces derivation
+- WO-062 — GitHub Issue source adapter
+- WO-123 — dotln vertical composition
+- WO-112 — The loop from core
 - WO-074 — Launchpad export kit
 - WO-075 — Kit runtime and harness bundle in the export
-- WO-071 — Registered target repositories
 - WO-072 — Target worktree lifecycle
 - WO-073 — Repository class and profile documents
 - WO-076 — Instance build overlay
 - WO-077 — Launchpad export update
 - WO-078 — Sibling registry and export receipts
-- WO-057 — Browser runtime truth
-- WO-058 — Visual and network claim types
-- WO-059 — Playwright evidence adapter
-- WO-060 — SourceBundle contract
-- WO-061 — StoryContract compile
-- WO-124 — Impact surfaces derivation
-- WO-062 — GitHub Issue source adapter
-- WO-063 — Outward-artifact lint
-- WO-064 — Target publish
-- WO-065 — Pull-request state observation
-- WO-066 — Review-comment resolution loop
-- WO-123 — dotln vertical composition
-- WO-112 — The loop from core
 - WO-118 — The resident-owned loop from a starter instance
 - WO-113 — Work-order files are stable contracts
-- WO-110 — Local-model transport
-- WO-079 — Worktree sync
 - WO-080 — Workstream document and index grouping
 - WO-081 — Board Workstreams section
 - WO-082 — Synthetic pilot

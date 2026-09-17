@@ -24,6 +24,201 @@ founding-era: **Resolutions of known tensions** (settled contradictions — do
 not relitigate them) and the founding chat/notes/image corpus.
 
 
+## 2026-09-17 — Planning pass: vision into use (WO-135 rewritten, WO-079 rewritten, WO-136 to WO-140)
+
+Source: the operator's `planning:` dispatch and twelve mid-turn messages,
+including an operator-endorsed third-party brief ("bring the vision into
+use"), a pointer to Steve Yegge's 2011 platforms essay and, before merge, a
+third-party review of the draft pull request, captured verbatim in ignored
+intake (`docs/intake/notes/2026-09-17-vision-into-use-planning.md`,
+SHA-256 `aab1ebea10004c8e82f6ec2538ddd7ddc6b774e270f6b0f9301eb3e76d1b0b51`).
+Shape-First Synthesis; the clean-room screen found one item to fence: the
+operator's comparison with an employer-provided setup carries no detail and
+is used only as an expectation. The full record is
+[the planning document](../planning/vision-into-use-2026-09-17.md).
+
+- **The sweep found 62 register entries created since the R1 pass and none
+  read, four candidates that asked for this pass, and no unsynthesized
+  intake** `adopted`
+  - Register: 359 entries, 344 untriaged; every entry since 2026-09-16 is
+    untriaged (45 decision records, four ideation candidates, fifteen
+    defect-register items, one NoOp bullet). Intake: ten notes in the
+    window, each with a committed synthesis. Worktrees: only `main`; the
+    five stashes are preserve records. Provenance: the planning document
+    §1; `npm run plan -- followups`; the register's Git history. Reopen: a
+    capture in the window without a synthesis.
+- **The ladder is the plan's spine: eight milestones as dependency waves,
+  and the delivery lane is WO-053 → WO-054 → WO-055 → WO-056 → WO-069 →
+  WO-071 → WO-063 → WO-064, then the operator's own repository at R2**
+  `adopted`
+  - Each rung is a live demonstration with the command the operator runs
+    and what it does not prove; the console follows the contracts it
+    renders, the starter export follows the real-repository run. Provenance:
+    the planning document §3; the critical path's gate table; the typed
+    dependency blocks. Reopen: a live proof that fails a claim a fixture
+    supported, or R2.
+- **The committed sequence violated two typed hard edges and nothing
+  checked it; the sequence is recut into fourteen pairs and a serial run,
+  and the check enters WO-135** `adopted`
+  - WO-114 preceded WO-120 and WO-115 preceded WO-100, both hard edges;
+    WO-070 and WO-120 shared `scripts/resume.mjs` in one pair. A 40-line
+    check over the typed blocks reports no violation on the new order.
+    Provenance: the planning document §4; the check in this session's
+    scratch directory, whose rule is WO-135 criterion 3. Reopen: a
+    violation the check does not catch.
+- **The second lane is a research and machinery lane, evidence-only where
+  possible; WO-079 becomes `worktree integrate` at pair 6** `adopted`
+  - Final reviews since 2026-09-13 ran 14 to 56 minutes; integrating
+    reviews a median of about 32 against about 25. The cost is bounded;
+    the variance and the remembered checklist are the defect. Two
+    operator-assisted orders never share a pair; live inference never
+    overlaps a product gate. Provenance: the control segments; the operator's
+    message 3; the R1 decision 7's reopening condition. Reopen: an
+    integration after WO-079 more than fifteen minutes above the
+    non-integrating median, or a third lane.
+- **WO-135 is rewritten: a capability write-back is an execution update;
+  the level is judged by verification, final review and the next receipt,
+  never by a planning dispatch after a final review** `adopted`
+  - Two orders in two days paid a purpose-built pass and a refutation for a
+    table row; the narrower form judged by receipt 016 left the class in
+    place. The order also carries the topology check and a write-time
+    refusal of non-document paths on a planning branch (register item 10).
+    Provenance: WO-068 and WO-052 FINAL-001 §B1, WO-052 D005, receipt 016,
+    `scripts/lib/plan-continuation.mjs`, the operator's message 4. Reopen:
+    a capability row on `main` that no verification or final review judged.
+- **Research and guided-operator work orders get a convention and no
+  machinery** `adopted`
+  - One product 07 section: the question and the decision it informs, a
+    bounded budget, method criteria, an outcome of exactly `ready`,
+    `negative` or `inconclusive` named in the execution record, a failure
+    artifact for guided orders, experimental code under `scripts/probes/`
+    promoted only by a separate order, live evaluations never inside
+    `npm test`, and requalification triggers. A negative result closes a
+    research order and satisfies no live-proof criterion or capability
+    level. Provenance: WO-027, WO-044 and WO-053 as the existing practice;
+    the brief §5; the guided-operator candidate. Reopen: an index consumer
+    that needs the outcome typed.
+- **Authority without the sandbox is assessed, not decided: six mechanisms
+  kept apart, a per-limit enforcement table with its unknowns named, three
+  feasible modes with honest guarantees, and WO-136 as the experiment**
+  `adopted`
+  - For Claude the compiled hook and the exact allow-list prevent at the
+    tool level; for Codex exec no hook fires, so the launch profile is the
+    only pre-effect mechanism; neither sandbox confines a sibling write; an
+    admitted command's contents are trusted. A trusted-unconfined mode is
+    admissible only labeled as such. The deny lists stay in every mode.
+    Provenance: WO-044's rows, ADR-0003 to ADR-0005, WO-052's limits, the
+    product 03 candidate; the planning document §6. Reopen: WO-136's matrix.
+- **Local models: readiness (WO-137) before the transport (WO-110) before
+  role qualification (WO-138)** `adopted`
+  - LM Studio is installed, its CLI changed on 2026-09-15 after WO-027's
+    crash, the server is not running, readiness is unknown; hardware M3 Max,
+    48 GB. Three read-only tasks with deterministic oracles qualify roles one
+    at a time; no download, launch or setting is authorized here.
+    Provenance: the product 06 candidate, WO-027's packet, the observed
+    host. Reopen: a readiness failure artifact or a pilot that contradicts
+    the catalog.
+- **A hard, configurable subagent cap enters as WO-139; the fan-out is
+  batched against the remaining budget** `adopted`
+  - The harness has no total cap, a soft size guideline, sixteen concurrent
+    agents and hooks that fire inside subagents; the guideline bounds one
+    level of a tree, so five becomes 5 + 15 + 45. The cap is a third hard
+    refusal at spawn admission, exact for what the hook sees and reported
+    as partial where it cannot see; advisory in Codex. Provenance: the
+    operator's messages 3 and 9; the documentation lookup cited in the
+    planning document §11. Reopen: a session exceeding the cap through a
+    path the hook cannot see, twice.
+- **The gate that verifiers ran twice and the usage readback enter as
+  WO-140** `adopted`
+  - Every verification since WO-049 records its passing gate outside the
+    sandbox; WO-121's ran inside first and failed twice. Of 98 attested
+    control events since 2026-09-13, 14 report an unknown model or effort,
+    all before WO-133; usage counters appear in one receipt. The runner
+    refuses up front inside a sandbox when a suite needs the outside; the
+    briefing prints the session id and the usage command; receipts carry
+    counters or a cause code. Provenance: the reports and segments named in
+    the planning document §9 and §10. Reopen: a receipt after WO-140 with
+    neither counters nor a cause code.
+- **The repository writ large: five times the files and 3.7 times the
+  source in twelve days, evidence and machinery fastest, the kernel
+  smallest; debt is paid in passes and boy-scout items, not queued; one new
+  candidate with a threshold (receipt size)** `adopted`
+  - 1,923 files, 79,148 source lines, 51,407 test lines, 817 evidence
+    files, 133 orders at v0.29.0; of 24 orders closed since the stand-down
+    13 are machinery or hardening and 10 product; the queue is product-heavy
+    by design. Reorganization declined again on R1's reasons. Provenance:
+    the planning document §8 with its observed commands. Reopen: 30 MB of
+    receipts, or a product order that must change the host's structure.
+- **A capability lands as an interface something else consumes** `adopted`
+  - Yegge's four lessons (interfaces only, externalizable from day one,
+    dogfood first, accessibility as a first requirement) become a platform
+    lens paragraph in product 07 §Goal-aligned decisions; the refuter's
+    platform-first sentence is unchanged. Provenance: the operator's message
+    11 and the essay. Reopen: a capability that lands without a consuming
+    interface, projection or actor.
+- **The cold-start ceilings have one normal route, and the two live breaches
+  are accepted** `adopted`
+  - Orders that change the Contributor's role text kept hitting the per-role
+    cold-start byte ceilings and each breach was raised by hand or left
+    advisory (the reviewer at 16,587 of 16,384 and release-close at 9,941 of
+    8,192 today). The budgets contract already turns a dated acceptance into
+    `accepted`; WO-044's decision record set the policy that caps yield to
+    needed rules. Product 07 now says a breaching reviewed rule raises the
+    ceiling by one 4 KB step in the same change, named, or records the
+    acceptance, never trimmed around; the two breaches are accepted in
+    `docs/control/budgets.json`. Provenance: the operator's message 12; the
+    meter; WO-044 D-record. Reopen: a breach left unrecorded after this pass.
+- **The register: the section 7 dispositions are applied; the settlement
+  threshold rises to 400 pending** `adopted`
+  - Allocated: the local-model candidate (WO-137, WO-110, WO-138), the
+    guided-operator candidate (the product 07 section; WO-137 first), the
+    authority candidate (WO-136), register items 1, 3 and 10 (WO-135).
+    Settled: item 2 (WO-134). Declined as orders: items 4 to 8 and 12 to 15
+    (role-text duties the shared instruction carries). Deferred: Context
+    Continuity (a bounded live reproduction with host events), FUP-0132
+    (WO-113). Open: FUP-0111, measured again. Reopen: 400 pending, or a
+    recurrence of a declined item after this pass.
+- **The draft was reviewed by a third party before merge; every claim was
+  checked and the orders carry the corrections** `adopted`
+  - Verified true and corrected: the planning document's §9 had described
+    the WO-129 to WO-131 suite cache and replica execution as current
+    although WO-132 criterion 4 deleted them (the error was the planner's;
+    reuse exists at one grain, the whole `npm test` row by code identity);
+    `findGateCheck` matches that identity by code identity alone, so WO-140
+    gives a sandbox-subset run the distinct identity
+    `npm test -- --inside-sandbox` that no gate consumer accepts, with a
+    regression fixture; WO-139 is an admission cap that states per harness
+    and spawn path when admission happens, fails open on an unreadable
+    counter and leaves the total-cap requirement open as a product 07
+    candidate; WO-110 proceeds against doubles with a `ready` or
+    `unavailable` live row while WO-138 activates only on a `ready` WO-137
+    with pre-registered floors; WO-136 budgets operator time and its packet
+    proposes the operating mode, the minimal Claude allow/deny table and the
+    next step, decided at the checkpoint after its close; WO-140's Cost line
+    no longer misstates WO-121 VER-001; WO-135 refuses only repository
+    writes and updates every hook-boundary count. Verified false: the
+    committed sequence's pairs are intact (fourteen two-entry groups); WO-135
+    gains a parse fixture. Provenance: the review (message 13 of the
+    capture); WO-132 criterion 4; `scripts/test-runner.mjs`;
+    `packages/skeleton/src/gate-evidence.mjs`; `git show` of the sequence.
+    Reopen: a document that claims reuse below the whole-gate row, or a
+    partial row consumed as a gate.
+- **Process cost of this pass** `adopted`
+  - Entry 124,346 total tokens (Claude transcript, dispatch scope); no code
+    suite; one background documentation lookup; two background goal reviews
+    of the draft, the second on the reviewed text and filed as the pass's
+    receipt; `npm run test:docs` at the end. Handoff counters in the
+    response. USD unknown.
+- **Adopting the brief one for one, a single lane, the narrower WO-135, any
+  settings change now, a Codex tool proxy now, a new work-order kind or
+  transition, live evaluation inside `npm test`, model downloads, the
+  starter before a real repository, the console before M3, a scheduler, a
+  harness-setting cap, refusing the Workflow tool, a mandatory sandbox,
+  reorganization, a usage-only order, disposing decision records one by
+  one, and the Gate H order now** `rejected`
+  - Each with its evidence and reversal condition in
+    [the planning document §14](../planning/vision-into-use-2026-09-17.md#14-declined-alternatives--the-noop-register-of-this-pass).
+
 ## 2026-09-17 — Planning pass: the `worker.source-change` capability admission (WO-052)
 
 - **`worker.source-change` is admitted to the capability inventory at

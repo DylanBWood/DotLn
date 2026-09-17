@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "source": "WO-126 criteria 10 and 15; operator budget clarification during resume: next on 2026-09-09; operator direction during resume: next on 2026-09-14 (WO-044): artificial caps yield to needed rules and accuracy comes before efficiency, so the cold-start ceilings the shared no-guessing line touches carry real margin",
+  "source": "WO-126 criteria 10 and 15; operator budget clarification during resume: next on 2026-09-09; operator direction during resume: next on 2026-09-14 (WO-044): artificial caps yield to needed rules and accuracy comes before efficiency, so the cold-start ceilings the shared no-guessing line touches carry real margin; operator direction during the 2026-09-17 vision-into-use planning dispatch (message 12): a cold-start ceiling that a reviewed rule breaches is raised in the same change to the measured bytes plus one 4 KB step with the rule named, or the breach is recorded as a dated acceptance here, never trimmed around and never left advisory across orders; the reviewer (16,587) and release-close (9,941) ceilings were raised on 2026-09-17 under that direction",
   "dispatches": {
     "executor": {
       "tokens": null,
@@ -31,8 +31,8 @@
     "coldStartBytes": {
       "executor": 20480,
       "verifier": 16384,
-      "reviewer": 16384,
-      "release-close": 8192,
+      "reviewer": 20480,
+      "release-close": 12288,
       "planner": 24576,
       "refuter": null
     },
@@ -58,6 +58,22 @@
       "dispatch": "refuter",
       "ceiling": 1800000,
       "reason": "Operator direction 2026-09-15 in the machinery stand-down dispatch (ignored capture SHA-256 19061ea60115a416bc536e4eae66faffc5549dfd9a33841d886bd51dffd8350f): free rein to spend the resources this pass needs. The acceptance covers one background goal review of the committed subject, its file-backed result and receipt filing within a 30-minute ceiling. It applies to this pass only; WO-132 criterion 11 removes the budget refusal for later passes."
+    },
+    {
+      "date": "2026-09-17",
+      "metric": "coldStartBytes.reviewer",
+      "scope": null,
+      "dispatch": "reviewer",
+      "ceiling": 20480,
+      "reason": "Measured 16,587 bytes on 2026-09-17 (installed CLAUDE.md plus the reviewer skill, both roots) against the 16,384 ceiling after the WO-132 stand-down and the WO-133 role-text regeneration; the operator's 2026-09-17 direction raises the ceiling by one 4 KB step rather than trimming reviewed rules. Applies until a reviewed rule needs more, when the same route records the next acceptance."
+    },
+    {
+      "date": "2026-09-17",
+      "metric": "coldStartBytes.release-close",
+      "scope": null,
+      "dispatch": "release-close",
+      "ceiling": 12288,
+      "reason": "Measured 9,941 bytes on 2026-09-17 against the 8,192 ceiling (the R1 replan pass recorded 8,865 on 2026-09-16 and left it advisory); raised by one 4 KB step under the operator's 2026-09-17 direction. Applies until a reviewed rule needs more."
     }
   ],
   "unsetPolicy": "Collect observed usage first. The operator left token, dollar and PR-body ceilings unset; null is not zero and never triggers an invented cap.",
