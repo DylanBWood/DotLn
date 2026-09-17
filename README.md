@@ -93,7 +93,7 @@ intent → task-scoped build → bounded WorkOrder → disposable executor
 -->
 <!-- DOTLN-RELEASE-BEGIN -->
 
-This source prepares DotLn `v0.27.0`.
+This source prepares DotLn `v0.28.0`.
 
 **The core.** A local-first compiler turns a loadout graph into a bounded
 program: one identity, one active mechanic, its linked supports, and an

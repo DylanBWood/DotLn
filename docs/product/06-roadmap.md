@@ -20,6 +20,8 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-052 activation completion (2026-09-17):** source-change host stages application `v0.28.0` and skeleton `0.24.0` under its minor classification. It adds commit-identity recovery and one reactor slice; kernel/compiler versions, event schema and hash preimages remain unchanged. Live writing and remote publication remain separate orders.
+
 **WO-121 activation completion (2026-09-16):** application `v0.26.0` stages
 the next minor above locally observed `v0.25.0`. Compiler `0.13.0` adds optional
 human-idle policy data and generated heartbeat hooks; skeleton `0.23.0` adds

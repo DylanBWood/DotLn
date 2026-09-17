@@ -1,10 +1,10 @@
 // Origin: {"ids":["no-attribution"],"loadoutId":"contributor","semanticHash":"fnv1a64:f7e29ff3f4ede75c"}
-const { runCommitMessageHook } = await import("../../.runtime/harness/f2f802369ae4e877/packages/skeleton/dist/src/harness-host.js");
-const { feedbackBoundary } = await import("../../.runtime/harness/f2f802369ae4e877/packages/skeleton/dist/src/feedback-boundary.js");
+const { runCommitMessageHook } = await import("../../.runtime/harness/85aaa2de89707dca/packages/skeleton/dist/src/harness-host.js");
+const { feedbackBoundary } = await import("../../.runtime/harness/85aaa2de89707dca/packages/skeleton/dist/src/feedback-boundary.js");
 await runCommitMessageHook({
   "compilerPackageVersion": "0.13.0",
   "runtime": {
-    "skeletonVersion": "0.23.0",
+    "skeletonVersion": "0.24.0",
     "boundaryContract": "feedback-v1",
     "files": [
       {
@@ -33,11 +33,19 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/harness-host.js",
-        "hash": "fnv1a64:c8cd448a284a79a4"
+        "hash": "fnv1a64:9dc62b0f760af773"
+      },
+      {
+        "path": "packages/skeleton/dist/src/source-change-command.js",
+        "hash": "fnv1a64:cbd81fc0aefe372b"
+      },
+      {
+        "path": "packages/skeleton/dist/src/source-change-state.js",
+        "hash": "fnv1a64:c37242cb80738d4d"
       },
       {
         "path": "packages/skeleton/dist/src/version.js",
-        "hash": "fnv1a64:0fd610389367ba6e"
+        "hash": "fnv1a64:c282dac889796e2d"
       },
       {
         "path": "packages/skeleton/dist/src/harness-command.js",
@@ -61,7 +69,7 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/reactor.js",
-        "hash": "fnv1a64:02a8da54794faba5"
+        "hash": "fnv1a64:2a365ded308bea88"
       },
       {
         "path": "packages/skeleton/dist/src/resident-state.js",
@@ -81,7 +89,7 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/worker-store.js",
-        "hash": "fnv1a64:415dd77d2fd95d85"
+        "hash": "fnv1a64:1f2a5e2018465c7c"
       },
       {
         "path": "packages/skeleton/dist/src/verification-protocol.js",
@@ -132,7 +140,7 @@ await runCommitMessageHook({
         "hash": "fnv1a64:6359806743e418ea"
       }
     ],
-    "snapshot": ".runtime/harness/f2f802369ae4e877"
+    "snapshot": ".runtime/harness/85aaa2de89707dca"
   },
   "policy": {
     "contractVersion": "feedback-v1",

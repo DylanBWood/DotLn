@@ -127,7 +127,7 @@ const replacePayload = (
   return { log: encodeLog(events), eventIndex };
 };
 
-test("WO-016 AC1 one typed reactor and its pure resident helpers own kernel decisions", async () => {
+test("WO-016 AC1 one typed reactor and its pure helpers own kernel decisions", async () => {
   const sourceDirectory = fileURLToPath(new URL("../../src/", import.meta.url));
   const sourceFiles = (await readdir(sourceDirectory))
     .filter((file) => file.endsWith(".ts"))
@@ -152,6 +152,8 @@ test("WO-016 AC1 one typed reactor and its pure resident helpers own kernel deci
     [...reactor.matchAll(/from\s+"([^"]+)"/gu)].map((match) => match[1]),
     [
       "./resident-state.js",
+      "./source-change-state.js",
+      "./source-change-state.js",
       "@dotln/kernel",
       "@dotln/compiler",
       "./artifact-identity.js",
@@ -161,7 +163,16 @@ test("WO-016 AC1 one typed reactor and its pure resident helpers own kernel deci
       "./control-beacon.js",
       "./verification-protocol.js",
     ],
-    "the reactor imports only the kernel, pure compiler, identity checks, pure Beacon projections, pure verification contracts and the pure resident fold",
+    "the reactor imports only the kernel, pure compiler, identity checks, pure Beacon projections, pure verification contracts and pure resident/source-change folds",
+  );
+  assert.deepEqual(
+    [
+      ...(sources.get("source-change-state.ts") ?? "").matchAll(
+        /from\s+"([^"]+)"/gu,
+      ),
+    ].map((match) => match[1]),
+    ["@dotln/compiler", "@dotln/kernel"],
+    "the source-change fold has no host dependency",
   );
   for (const pure of [
     "beacon-perception.ts",
@@ -169,6 +180,7 @@ test("WO-016 AC1 one typed reactor and its pure resident helpers own kernel deci
     "verification-protocol.ts",
     "verification.ts",
     "resident-state.ts",
+    "source-change-state.ts",
     "presence-machine.ts",
     "actor-contract.ts",
     "work-candidate.ts",
