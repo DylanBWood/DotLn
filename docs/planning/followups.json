@@ -1412,6 +1412,13 @@
           "title": "Candidate — Context Continuity",
           "summary": "## Candidate — Context Continuity The operator's [2026-09-09 ideation](../evidence/WO-126/ideation.md) asks for a support that observes context use automatically and demonstrates that an actor retains its task through automatic compaction. Its outcome is continuity of the authorized work: the actor resumes the right objective, constraints, decisions and next action without losing obligations or repeating completed effects. A reassuring summary alone does not demonstrate that outcome. The operator locates the eventual framework in DotLn itself, using the future offline work queue and shared state. The queue, admitted work, authority, decisions and accepted evidence outlive a model window. Dot",
           "missing": false
+        },
+        {
+          "hash": "ab302435ad90848dcde87aadd61b7719a4928d38a0ce8a48434e7898ce34b185",
+          "ref": "docs/product/05-pattern-library.md#candidate--context-continuity",
+          "title": "Candidate — Context Continuity",
+          "summary": "## Candidate — Context Continuity The operator's [2026-09-09 ideation](../evidence/WO-126/ideation.md) asks for a support that observes context use automatically and demonstrates that an actor retains its task through automatic compaction. Its outcome is continuity of the authorized work: the actor resumes the right objective, constraints, decisions and next action without losing obligations or repeating completed effects. A reassuring summary alone does not demonstrate that outcome. The operator's 2026-09-16 follow-up identifies a second outcome: useful work must actually continue after recovery. The reported failure is an actor answering an old chat message after compaction, then ending it",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -5581,6 +5588,51 @@
           "ref": "docs/evidence/WO-049/decisions.md#wo-049-d008",
           "title": "WO-049-D008: Correct target capability provenance, reject unloadable backslash import roots, and document the existing opaque-command boundary without weakening it.",
           "summary": "{ \"id\": \"WO-049-D008\", \"date\": \"2026-09-16\", \"dispatch\": \"resume: fix; Adjacent Repair\", \"decision\": \"Correct target capability provenance, reject unloadable backslash import roots, and document the existing opaque-command boundary without weakening it.\", \"evidence\": [ \"docs/verifications/WO-049/VER-001.md F2, F3 and F4\", \"docs/discovery/writing-worker-smoke-2026-09-14.md C-W4, X-W3, X-W4, X-W10\", \"packages/skeleton/src/worker-transport.ts source-change allowlist still loads project hooks\" ], \"rejected\": [ { \"option\": \"NoOp\", \"reason\": \"Leaves contradicted capability provenance and roots known to generate unloadable hooks.\" }, { \"option\": \"Broaden shell authorization or add a capability sche",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-3682b768d1d00a3b",
+      "key": "candidate:docs/product/03-architecture.md#candidate--dotln-owned-authority-with-minimal-native-harness-restrictions",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "fddd2a7545b71712c06086d4c3db86bd552bd143f3ce550f1a2d3e6003470e02",
+          "ref": "docs/product/03-architecture.md#candidate--dotln-owned-authority-with-minimal-native-harness-restrictions",
+          "title": "Candidate — DotLn-owned authority with minimal native harness restrictions",
+          "summary": "## Candidate — DotLn-owned authority with minimal native harness restrictions Operator direction during WO-119 (2026-09-16): reach an operating mode as soon as evidence supports it in which native Claude and Codex harness sandboxes can be disabled and Claude's settings have nearly empty allow/deny lists. The source of permissions, security and authority is the equipped DotLn supports, build and role. The operator clarified the assurance requirement: faithful runtime enforcement plus adversarial tests, including attempts to bypass the declared authority. See the [ideation receipt](../evidence/WO-119/ideation-authority.md). This candidate asks planning to identify the earliest justified route ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-70e121b85af432c7",
+      "key": "decision:docs/evidence/WO-119/decisions.md#wo-119-d001",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "79dc57879a26324d51527cf1691514e3cae13880c854b3c13b9f7c0a0858c547",
+          "ref": "docs/evidence/WO-119/decisions.md#wo-119-d001",
+          "title": "WO-119-D001: Run bounded repo-native observation with the executable kernel program and persist a strictly validated discovery result in the resident's existing script observation event.",
+          "summary": "{ \"id\": \"WO-119-D001\", \"date\": \"2026-09-16\", \"dispatch\": \"resume: next\", \"decision\": \"Run bounded repo-native observation with the executable kernel program and persist a strictly validated discovery result in the resident's existing script observation event.\", \"evidence\": [ \"docs/work-orders/WO-119-executable-discovery-producer.md\", \"packages/skeleton/src/actor-contract.ts\", \"packages/skeleton/src/script-episode.ts\", \"packages/skeleton/src/resident-state.ts\", \"packages/kernel/src/core.ts\", \"docs/work-orders/WO-073-repository-class-and-profile.md\" ], \"rejected\": [ { \"option\": \"NoOp\", \"reason\": \"Leaves WO-100 without an executable candidate producer.\" }, { \"option\": \"Implement Program.All or ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-896087ed2b7185ac",
+      "key": "decision:docs/evidence/WO-119/decisions.md#wo-119-d002",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "48e1103f73937fbaff98788ba96676f246b5badccc0a38af29dfc84c83b5588e",
+          "ref": "docs/evidence/WO-119/decisions.md#wo-119-d002",
+          "title": "WO-119-D002: Use a single native discovery sandbox for the pinned resident producer, full canonical-output digest verification during pure replay, and stage application v0.26.0 / skeleton 0.22.0.",
+          "summary": "{ \"id\": \"WO-119-D002\", \"date\": \"2026-09-16\", \"dispatch\": \"resume: next\", \"decision\": \"Use a single native discovery sandbox for the pinned resident producer, full canonical-output digest verification during pure replay, and stage application v0.26.0 / skeleton 0.22.0.\", \"evidence\": [ \"packages/skeleton/src/script-episode.ts\", \"packages/skeleton/src/discovery-sandbox.ts\", \"packages/skeleton/src/work-candidate.ts\", \"packages/skeleton/test/discovery.test.ts\" ], \"rejected\": [ { \"option\": \"Nested sandbox-exec\", \"reason\": \"Direct checks passed, but the native resident episode failed before discovery because the outer sandbox cannot install another sandbox.\" }, { \"option\": \"Environment-variable byp",
           "missing": false
         }
       ],

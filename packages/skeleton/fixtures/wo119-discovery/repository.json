@@ -1,0 +1,30 @@
+{
+  "files": {
+    "package.json": "{\"private\":true,\"scripts\":{\"lint\":\"node checks/lint.cjs\",\"test\":\"node checks/test.cjs\"}}\n",
+    "checks/lint.cjs": "const fs = require('node:fs'); process.exit(fs.readFileSync('src/main.js', 'utf8').includes('BAD_STYLE') ? 1 : 0);\n",
+    "checks/test.cjs": "const assert = require('node:assert/strict'); const fs = require('node:fs'); assert.equal(fs.readFileSync('src/main.js', 'utf8').includes('BROKEN_RESULT'), false);\n",
+    "src/main.js": "// BAD_STYLE BROKEN_RESULT\nmodule.exports = 1;\n",
+    "loose/guide.md": "Move this documented guide into docs.\n",
+    "loose/helper.js": "module.exports = 2;\n",
+    "generated/obsolete.txt": "Synthetic generated output.\n",
+    ".dotln/repairs.jsonl": "{\"eventId\":\"repair-1\",\"repairId\":\"main-regression\",\"paths\":[\"src/main.js\"]}\n{\"eventId\":\"repair-2\",\"repairId\":\"main-regression\",\"paths\":[\"src/main.js\"]}\n"
+  },
+  "conventions": {
+    "placements": [
+      { "path": "loose/guide.md", "home": "docs/guide.md" },
+      { "path": "loose/helper.js", "home": "src/helper.js" }
+    ],
+    "generated": [
+      { "path": "generated/obsolete.txt", "referenceTokens": ["generated/obsolete.txt", "obsolete.txt"] }
+    ],
+    "repairHistory": ".dotln/repairs.jsonl"
+  },
+  "expected": [
+    { "kind": "failing-lint", "paths": ["src/main.js"] },
+    { "kind": "failing-test", "paths": ["src/main.js"] },
+    { "kind": "misplaced-file", "paths": ["loose/guide.md"], "proposedHome": "docs/guide.md" },
+    { "kind": "misplaced-file", "paths": ["loose/helper.js"], "proposedHome": "src/helper.js" },
+    { "kind": "stale-generated", "paths": ["generated/obsolete.txt"] },
+    { "kind": "repeated-repair", "paths": ["src/main.js"] }
+  ]
+}

@@ -1,4 +1,4 @@
-# `@dotln/skeleton` 0.21.0
+# `@dotln/skeleton` 0.22.0
 
 For application v0.25.0 (WO-049), target-worker bundles use the launchpad's
 immutable runtime and keep journals and writer reservations outside the target.
@@ -762,3 +762,53 @@ runtime/journals. Empty target directories may remain. State is under
 paths are not copied into the manifest or installation receipt; only hook import
 lines contain the runtime path. Checks bind local bytes, not hostile-user
 isolation or authenticity.
+
+
+## Executable discovery (WO-119)
+
+After building, run `node packages/skeleton/dist/src/discovery-cli.js <canonical-target>`
+from the launchpad, optionally followed by a target-relative profile path.
+`discover(worktree, conventions)` is also available from `discovery.ts`.
+The default profile is `.dotln/discovery.json`; a Markdown profile uses one
+fenced `dotln-discovery` JSON block. Its fields are:
+
+- `checks`: at most one `lint` and one `test`, each with absolute `argv` and
+  target-relative file `paths` defining observed scope.
+- `placements`: explicit `{ path, home }` rules; home must be unoccupied.
+- `generated`: `{ path, referenceTokens }` declarations. The complete bounded
+  text corpus, excluding that file, the selected profile and repair history,
+  is scanned literally. Dependencies and Git metadata are excluded.
+- `repairHistory`: a relative JSONL file whose rows are `{ eventId, repairId,
+  paths }`. Two distinct events for the same repair and path set are recurring.
+
+Without a profile, the npm CLI installed alongside Node runs package lint/test
+scripts, including their pre/post hooks and lifecycle environment, with a cleared
+inherited environment and a local tool PATH; scope is `package.json`, since the
+producer does not invent implicated source paths. The optional default history
+is `.dotln/repairs.jsonl`; placement/generated defaults are empty. A declared
+non-npm package manager or unavailable npm requires explicit check conventions.
+Resolved placement sources and removed generated files cease producing candidates.
+
+The fixture declaration in `fixtures/wo119-discovery/repository.json` shows the
+wire shape. Limits: 1,024 files, 4 MiB total input, 4,096 directory entries,
+16 levels, two checks of at most five seconds/64 KiB each, and 128 candidates.
+Symlinks, special files, malformed declarations/history, incomplete scans and
+failed launches refuse the episode. Binary reference corpora refuse rather than
+claiming absence. Candidate size is file count, not a predicted repair size.
+
+For the resident, declare the exact Node executable and built `discovery-cli.js`
+path, followed by its canonical worktree (equal to actor `cwd`) and optional
+profile path; set `outputContract: "work-candidates-v1"` instead of
+`expectedStdoutSha256`. Retain the ordinary phase effect, surface, resource and
+timeout declarations. The native supervisor recognizes only this exact producer
+entry, runs its private bootstrap inside one no-network, target-write-confined
+sandbox, and permits read-only tool/runtime resources. Public discovery callers
+establish the same boundary per check. Native support is macOS sandbox-exec;
+unsupported check execution refuses. No host permission settings change.
+
+`ScriptEpisodeObserved.discovery` holds the bounded report and evidence; its
+canonical stdout digest is validated during replay. Schema verification is not
+independent verification of repairs or permission to execute them. The trusted
+repo-command boundary does not claim isolation from hostile same-user processes
+or a deliberately detached descendant; the outer script supervisor retains its
+existing process-group deadline/return/death handling.

@@ -171,6 +171,7 @@ test("WO-016 AC1 one typed reactor and its pure resident helpers own kernel deci
     "resident-state.ts",
     "presence-machine.ts",
     "actor-contract.ts",
+    "work-candidate.ts",
   ])
     assert.doesNotMatch(
       sources.get(pure) ?? "",

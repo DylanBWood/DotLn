@@ -7098,3 +7098,63 @@ records staging, review and reconciliation.
     07 §Candidate — guided operator work orders. Reopen at the next planning
     pass alongside local-model readiness, or when another assisted setup/result
     needs this path.
+
+## 2026-09-16 — DotLn-owned authority with minimal native harness restrictions
+
+Source: operator `ideation:` during WO-119; unedited provisional capture in
+`docs/intake/notes/WO-119-expanded-ideation-2026-09-16.md`. Shape-First
+Synthesis; clean-room screen found no stop condition. Main intake reconciliation
+is pending before worktree removal; see the
+[breakout receipt](../evidence/WO-119/ideation-authority.md).
+
+- **Earn the ability to disable native harness sandboxes** `preserved`
+  - Prioritize establishing when Claude and Codex can run with their native
+    sandbox modes off and Claude's settings can carry nearly empty allow/deny
+    lists. Permissions, security and authority should be declared through
+    DotLn supports, builds and roles, with trustworthy empirical evidence that
+    the declared behavior is faithfully realized. This is a desired future
+    operating mode, not authorization to change today's settings or a claim
+    that instruction text alone enforces effects. The final assurance phrase
+    was incomplete in the first capture; the clarification below supplies it.
+  - Promoted to product 03 §Candidate — DotLn-owned authority with minimal
+    native harness restrictions. Reopen in the next planning pass to identify
+    the earliest evidence-backed path, or on new harness/adapter enforcement
+    evidence. The current runtime and locked clean-room floor remain facts and
+    constraints to account for, not silently rewritten conclusions.
+
+- **Faithful enforcement must survive adversarial tests** `preserved`
+  - The operator explicitly confirmed that runtime enforcement and tests of
+    attempts to bypass authority must precede disabling native sandboxes.
+    This completes the first message's unfinished assurance phrase. The
+    concrete coverage matrix and acceptance thresholds await planning.
+- **Basic authorized calls must not stall unattended work** `preserved`
+  - A second ideation message makes unattended liveness part of the outcome:
+    agents cannot work usefully while the operator is absent if routine calls
+    intermittently wait for basic permissions. Empirical acceptance should
+    cover sustained authorized workflows without unexpected approval prompts,
+    alongside the adversarial denial tests. This does not grant new effects
+    from silence; the preauthorized envelope remains the boundary. Reopen on
+    the next planning pass or a measured prompt/stall inside an existing grant.
+    Product 03's same candidate carries the requirement. Provenance: messages
+    2 and 3 in the same unedited capture and breakout receipt.
+
+## 2026-09-16 — Continuation after compaction and premature turn completion
+
+Source: message 4 of the operator's WO-119 ideation capture named above;
+Shape-First Synthesis with the same clean-room treatment and pending main
+intake reconciliation. See the [breakout receipt](../evidence/WO-119/ideation-authority.md).
+
+- **Recovering context must also recover progress** `preserved`
+  - The operator reports stale chat answers after compaction followed by idle
+    unfinished work when no tool or other event wakes the harness. The executor
+    separately acknowledges ending its last turn after a conversation-only
+    answer despite an unfinished order. Compaction as the causal mechanism and
+    the host's wake coverage remain unverified.
+  - Extend product 05's existing Context Continuity candidate and product 03's
+    session lifecycle: retain current obligations and which messages have been
+    handled; assign continuation to a host independently of pending tools.
+    Test actual compaction, stale side questions, zero running tools, premature
+    turn completion, selective resumption and respect for pause/authority.
+    No new queue, numeric token cap or present harness capability is claimed.
+    Reopen in planning or on a bounded live reproduction with host events and
+    a measured continuation outcome.

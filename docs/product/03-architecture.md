@@ -576,6 +576,49 @@ and worker spawning. It stays alive across model-session death, rate limits,
 crashes, and network loss. An implementation that omits persistence does not
 claim this recovery behavior.
 
+## Candidate — DotLn-owned authority with minimal native harness restrictions
+
+Operator direction during WO-119 (2026-09-16): reach an operating mode as soon
+as evidence supports it in which native Claude and Codex harness sandboxes can
+be disabled and Claude's settings have nearly empty allow/deny lists. The
+source of permissions, security and authority is the equipped DotLn supports,
+build and role. The operator clarified the assurance requirement: faithful
+runtime enforcement plus adversarial tests, including attempts to bypass the
+declared authority. See the [ideation receipt](../evidence/WO-119/ideation-authority.md).
+
+This candidate asks planning to identify the earliest justified route and the
+observations needed to enable that mode, not to maintain duplicate hand-authored
+policies indefinitely. Declarations, generated residue, runtime mediation and
+observed effects must remain distinguishable. The assurance evaluation must
+trace each declared limit to its actual enforcement point and exercise
+both allowed work and attempts to exceed authority, including subprocess and
+alternate-tool paths. The requirement is operator-confirmed; the concrete test matrix and
+implementation remain for planning, not a shipped capability.
+
+The same direction defines an unattended liveness requirement: routine calls
+inside the preauthorized work and effect envelope must complete without
+intermittently waiting for the operator to approve basic tools. A session that
+is safe only because it repeatedly pauses for permission has not established
+useful operator-absent work. Validation must exercise a representative sustained
+workflow, record unexpected prompts and stalls as failures, and distinguish
+legitimate boundary crossings from redundant prompts inside established
+authority. Absence never supplies missing authority; work outside the envelope
+must retain an explicit refusal or deferred disposition that does not hold up
+independent authorized work. The exact disposition mechanism remains open.
+
+Current evidence limits the immediate choice: WO-133 leaves most project hook
+judgments advisory and native host permissions in control; the recorded Codex
+probe did not establish pre-effect hooks. WO-051 also records that sandbox flags
+alone did not establish sibling-write containment. The new mode therefore needs
+an evidenced replacement for each protection it claims, an explicit account of
+any remaining host boundary, and a way to restore the previous configuration.
+Supports may compile into executable mediation; prose compliance is not by
+itself a technical enforcement boundary. The clean-room floor remains locked.
+No settings, launch defaults, current authority or runtime claims change with
+this candidate. Reopen at the next planning pass or on new enforcement evidence;
+harness-specific implementation, acceptable residual risk and measurable
+coverage thresholds remain unresolved.
+
 ## Candidate — isolated execution environments
 
 DotLn may eventually select and attest an execution boundary per episode: the
@@ -1187,6 +1230,15 @@ continuation contract is the path toward single-use inference calls. Harness
 compaction remains a discovered adapter capability; it does not replace the
 resident's queue, shared state or evidence admission. The candidate composes
 with that future work and creates no second queue in WO-126.
+
+The 2026-09-16 continuity follow-up also requires liveness after a model turn
+ends: unfinished admitted work needs a responsible host that schedules its
+next authorized action without depending on a running tool or another operator
+message. Recovery distinguishes handled conversation from current obligations,
+and actual pause, completion and authority boundaries from accidental idle
+state. The Context Continuity candidate specifies the zero-running-tool test.
+Host binding and live evidence remain open; the resident's current tick loop
+does not establish that it can restart an interactive Claude or Codex turn.
 
 The operator worktree projection automates the reversible control-plane edges
 around that state: start from a clean `main`, fetch and fast-forward the base,
