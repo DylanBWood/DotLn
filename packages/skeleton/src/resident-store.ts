@@ -65,8 +65,9 @@ export class ResidentTransaction {
       eventId: `evt_${this.events.length + 1}`,
       type,
       occurredAt,
-      actorId:
-        type === "OperatorPresenceChanged" ? "operator" : "resident-host",
+      actorId: ["OperatorPresenceChanged", "HandoffAnswered"].includes(type)
+        ? "operator"
+        : "resident-host",
       workstreamId: "resident",
       payload: payload as JsonValue,
     };
@@ -171,6 +172,26 @@ export async function recordPresence(
     undefined,
     now,
   );
+}
+export async function answerHandoff(
+  directory: string,
+  input: {
+    episodeId: string;
+    workOrderId: string;
+    optionId: string;
+  },
+  now = Date.now,
+) {
+  if (process.env["DOTLN_RESIDENT_EPISODE_ID"])
+    throw new Error("resident actors cannot answer a human handoff");
+  const store = new ResidentStore(directory);
+  await store.transaction((tx) => {
+    tx.append(
+      "HandoffAnswered",
+      { ...input, origin: "human" },
+      Math.max(now(), tx.resident?.at ?? 0),
+    );
+  });
 }
 export async function recordPresenceObservation(
   directory: string,

@@ -1,0 +1,37 @@
+{
+  "workOrder": "WO-122",
+  "recordedAt": "2026-09-17T02:17:26.844Z",
+  "label": "blocked",
+  "sourceRow": "X-U1",
+  "launch": "detached Node parent → resident → supervised Codex source-change-v1; no terminal",
+  "model": "gpt-6-astra",
+  "effort": "xhigh",
+  "harnessVersion": "0.154.0",
+  "operatorAwayBeforeAndAfter": true,
+  "origin": "actor",
+  "profile": "source-change-v1",
+  "envelopeShape": {
+    "workOrderId": "string",
+    "episodeId": "string",
+    "resultId": "string",
+    "status": "string",
+    "summary": "string",
+    "requiresHuman": "boolean",
+    "observedDenials": "string"
+  },
+  "failure": null,
+  "hostChecks": {
+    "changed": false,
+    "testPassed": false,
+    "commitObserved": false,
+    "selfReportCompleted": false,
+    "verifiedPromotion": false
+  },
+  "durationMs": 49533,
+  "limits": [
+    "One synthetic scratch worktree and one real launch",
+    "Authentication lifetime unknown",
+    "Self-report is not independent source-change verification",
+    "No raw transcript, paths or session/commit identities in this row"
+  ]
+}

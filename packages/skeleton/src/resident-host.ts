@@ -101,11 +101,25 @@ export class ResidentHost {
           for (const [episodeId, status] of Object.entries(
             tx.resident!.episodes,
           ))
-            if (status === "dispatched")
-              tx.append("ScriptEpisodeLost", {
-                episodeId,
-                reason: "resident restarted without an observation",
-              });
+            if (status === "dispatched") {
+              const spec =
+                tx.resident!.configuration!.actors[
+                  tx.resident!.episodePhases[episodeId]!
+                ]!;
+              if (spec.kind === "human-handoff") {
+                const run = this.catalog[spec.kind].run(spec, {
+                  residentStore: resolve(this.options.directory),
+                  episodeId,
+                });
+                if (!run.handoff)
+                  throw new Error("handoff adapter returned no packet");
+                tx.append("HandoffRequested", { packet: run.handoff });
+              } else
+                tx.append("ScriptEpisodeLost", {
+                  episodeId,
+                  reason: "resident restarted without an observation",
+                });
+            }
           this.firstTick = false;
         }
         const state = tx.resident!;
@@ -126,9 +140,13 @@ export class ResidentHost {
         if (dueAt === null) return null;
         const spec = state.configuration!.actors[phase.phaseId]!;
         const adapter = this.catalog[spec.kind];
-        const unavailable = adapter.available();
+        const unavailable = adapter.available(spec);
         if (unavailable) return noOp("ActorUnavailable", unavailable);
-        const capabilities = this.options.capabilities?.() ?? ["actor.script"];
+        const capabilities = this.options.capabilities?.() ?? [
+          "actor.script",
+          "actor.cli-worker",
+          "actor.human-handoff",
+        ];
         const missing = phase.requiredCapabilities.filter(
           (capability) => !capabilities.includes(capability),
         );
@@ -150,13 +168,20 @@ export class ResidentHost {
           authorityEnvelopeId: phase.effectiveEnvelope.authorityEnvelopeId,
         });
         // Append/fsync precedes spawn; the same short lock orders presence against both.
+        const run = adapter.run(spec, {
+          residentStore: resolve(this.options.directory),
+          episodeId: id,
+        });
+        if (spec.kind === "human-handoff") {
+          if (!run.handoff)
+            throw new Error("handoff adapter returned no packet");
+          tx.append("HandoffRequested", { packet: run.handoff });
+          return null;
+        }
         return {
           id,
           deadline: observationDeadline(tx.resident!),
-          run: adapter.run(spec, {
-            residentStore: resolve(this.options.directory),
-            episodeId: id,
-          }),
+          run,
         };
       },
     );
@@ -185,10 +210,19 @@ export class ResidentHost {
     await this.store.transaction((tx) => {
       // Presence already in the canonical log wins before accepting this result.
       tx.sample(this.now());
-      tx.append("ScriptEpisodeObserved", {
-        episodeId: dispatched.id,
-        ...result,
-      });
+      const spec =
+        tx.resident!.configuration!.actors[
+          tx.resident!.episodePhases[dispatched.id]!
+        ]!;
+      tx.append(
+        spec.kind === "cli-worker"
+          ? "CliWorkerObserved"
+          : "ScriptEpisodeObserved",
+        {
+          episodeId: dispatched.id,
+          ...result,
+        },
+      );
       tx.append("OperatorPresenceObserved", {
         signal: { kind: "progress", taskId: dispatched.id },
         origin: "task",

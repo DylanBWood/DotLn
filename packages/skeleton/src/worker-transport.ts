@@ -45,6 +45,7 @@ import { validateSourceChangeEnvironment } from "./source-change-environment.js"
 export { normalizeWorkerEffort };
 
 export interface WorkerLaunch {
+  readonly resident?: { readonly store: string; readonly episodeId: string };
   readonly binary: string;
   readonly args: readonly string[];
   readonly cwd: string;
@@ -78,14 +79,27 @@ export const runWorkerProcess: ProcessRunner = (launch) => {
     stdio: ["pipe", fd, "pipe"],
     // Auth is resolved by the CLI, never copied into a prompt or log. Restrict
     // model tool environments separately in the canonical launch below.
-    env: process.env,
+    env: launch.resident
+      ? {
+          ...process.env,
+          DOTLN_RESIDENT_STORE: launch.resident.store,
+          DOTLN_RESIDENT_EPISODE_ID: launch.resident.episodeId,
+        }
+      : process.env,
+    ...(launch.resident ? { detached: true } : {}),
   });
   let live = false;
   let stderr = "";
   let failure: WorkerFailure | undefined;
   const kill = () => {
     failure ??= new WorkerFailure("interrupted");
-    child.kill("SIGKILL");
+    if (launch.resident && child.pid) {
+      try {
+        process.kill(-child.pid, "SIGKILL");
+      } catch {}
+      child.stderr?.destroy();
+      child.stdin?.destroy();
+    } else child.kill("SIGKILL");
   };
   const accepted = new Promise<void>((resolve, reject) => {
     child.once("spawn", () => {
@@ -122,6 +136,12 @@ export const runWorkerProcess: ProcessRunner = (launch) => {
     });
     child.once("exit", () => {
       live = false;
+      if (launch.resident && child.pid) {
+        try {
+          process.kill(-child.pid, "SIGKILL");
+        } catch {}
+        child.stderr?.destroy();
+      }
     });
     child.once("close", (exitCode, signal) => {
       observation.finish();
@@ -398,9 +418,13 @@ function sourceChangeArgs(
     "memories.generate_memories=false",
     "-c",
     'shell_environment_policy.inherit="none"',
-    // X-W1 needs the shell; all other disabled features stay disabled.
+    // X-W1 needs native tools. WO-122's live row also requires the stable
+    // code-mode host: disabling it leaves model-exposed tools unable to run.
     ...codexDisabled
-      .filter((feature) => !["shell_tool", "unified_exec"].includes(feature))
+      .filter(
+        (feature) =>
+          !["shell_tool", "unified_exec", "code_mode_host"].includes(feature),
+      )
       .flatMap((feature) => ["--disable", feature]),
     ...(effort === "unknown"
       ? []

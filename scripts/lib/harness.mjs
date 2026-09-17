@@ -112,6 +112,8 @@ export function harnessInstallation(options = {}) {
     "packages/skeleton/dist/src/presence-machine.js",
     "packages/skeleton/dist/src/actor-catalog.js",
     "packages/skeleton/dist/src/actor-contract.js",
+    "packages/skeleton/dist/src/cli-actor-contract.js",
+    "packages/skeleton/dist/src/handoff-contract.js",
     "packages/skeleton/dist/src/work-candidate.js",
     "packages/skeleton/dist/src/script-episode.js",
     "packages/skeleton/dist/src/discovery-sandbox.js",

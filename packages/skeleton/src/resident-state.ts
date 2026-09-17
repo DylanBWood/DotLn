@@ -27,6 +27,8 @@ import {
   decodePresenceObservation,
   presenceActorKey,
 } from "./presence-signals.js";
+import { assertHandoffPacket, type HandoffPacket } from "./handoff-contract.js";
+import { isWriterRequest } from "./worker-protocol.js";
 
 export interface ResidentConfiguration {
   graph: LoadoutGraph;
@@ -44,6 +46,7 @@ export interface ResidentState {
   present: boolean;
   episodes: Record<string, "dispatched" | "observed" | "lost">;
   episodePhases: Record<string, string>;
+  episodeGenerations: Record<string, number>;
   revokedBy: Event[];
   lastNoOp: string | null;
   lastHumanAt: number | null;
@@ -57,6 +60,15 @@ export interface ResidentState {
     }
   >;
   progress: Record<string, number>;
+  handoffs: Record<
+    string,
+    {
+      packet: HandoffPacket;
+      phaseId: string;
+      generation: number;
+      answer?: string;
+    }
+  >;
 }
 export function decodeResidentConfiguration(
   value: unknown,
@@ -109,11 +121,13 @@ export const emptyResidentState = (): ResidentState => ({
   present: true,
   episodes: {},
   episodePhases: {},
+  episodeGenerations: {},
   revokedBy: [],
   lastNoOp: null,
   lastHumanAt: null,
   actors: {},
   progress: {},
+  handoffs: {},
 });
 export function residentMachine(
   state: ResidentState,
@@ -153,6 +167,9 @@ export const residentEventTypes = [
   "ScriptEpisodeRefused",
   "ActorUnavailable",
   "OperatorPresenceObserved",
+  "HandoffRequested",
+  "HandoffAnswered",
+  "CliWorkerObserved",
 ] as const;
 
 function expireActorHeartbeats(state: ResidentState) {
@@ -171,6 +188,15 @@ export function residentRefusal(
 ): string | null {
   const phase = machine.phase()!;
   const spec = state.configuration!.actors[phase.phaseId]!;
+  const orderId =
+    spec.worker?.request.workOrder.workOrderId ?? spec.handoff?.workOrderId;
+  if (
+    orderId &&
+    Object.values(state.handoffs).some(
+      (h) => h.packet.workOrderId === orderId && h.answer === undefined,
+    )
+  )
+    return "work order is waiting for a human handoff answer";
   if (!phase.scope.surfaces.includes(spec.surface))
     return "actor surface is outside phase scope";
   const limits: Record<string, number> = {
@@ -204,6 +230,58 @@ export function residentRefusal(
       predicateEnv: { rngState: 0, predicates: machine.predicates },
     },
   );
+  if (spec.worker) {
+    const request = spec.worker.request;
+    const envelope = phase.effectiveEnvelope;
+    const effects = [...request.workOrder.allowedOperations];
+    if (isWriterRequest(request)) {
+      const authority = request.authorityEnvelope;
+      if (
+        authority.expiresAt > envelope.expiresAt ||
+        Object.entries(authority.resourceLimits).some(
+          ([key, amount]) => amount > (spec.resources[key] ?? 0),
+        ) ||
+        envelope.requiredEvidence.some(
+          (e) => !authority.requiredEvidence.includes(e),
+        ) ||
+        envelope.revocationEventTypes.some(
+          (e) => !authority.revocationEventTypes.includes(e),
+        ) ||
+        authority.revocationEventTypes.some(
+          (e) => !envelope.revocationEventTypes.includes(e),
+        ) ||
+        (authority.revocationConditions?.length ?? 0) > 0 ||
+        (envelope.revocationConditions?.length ?? 0) > 0
+      )
+        return "worker authority exceeds or cannot represent the resident phase";
+      effects.push(
+        ...authority.allowedEffects.filter((e) => !effects.includes(e)),
+      );
+    }
+    for (const effect of effects) {
+      for (const candidate of isWriterRequest(request)
+        ? [envelope, request.authorityEnvelope]
+        : [envelope]) {
+        const check = authorize(
+          { kind: "Act", effect, payload: {} },
+          candidate,
+          {
+            now: state.at,
+            actorId: spec.kind,
+            workstreamId: "resident",
+            decisionIndex: 0,
+            intentIndex: 0,
+            evidence: state.configuration!.evidence,
+            revokedBy: state.revokedBy,
+            state: machine.projected(),
+            predicateEnv: { rngState: 0, predicates: machine.predicates },
+          },
+        );
+        if (!check.authorized)
+          return "worker operations exceed the resident phase authority";
+      }
+    }
+  }
   return authorization.authorized ? null : authorization.refusal.payload.reason;
 }
 
@@ -363,6 +441,7 @@ export function foldResidentEvent(
       throw new Error("invalid or repeated resident dispatch");
     state.episodes[id] = "dispatched";
     state.episodePhases[id] = phase!.phaseId;
+    state.episodeGenerations[id] = machine.generation;
     state.actors[`episode:${id}`] = {
       lastHeartbeatAt: state.at,
       status: "live",
@@ -371,7 +450,69 @@ export function foldResidentEvent(
     machine.dispatch(id);
     state.lastNoOp = null;
   }
-  if (["ScriptEpisodeObserved", "ScriptEpisodeLost"].includes(event.type)) {
+  if (event.type === "HandoffRequested") {
+    const packet = payload["packet"];
+    assertHandoffPacket(packet);
+    const id = packet.episodeId;
+    const phaseId = state.episodePhases[id];
+    const spec = phaseId ? state.configuration!.actors[phaseId] : undefined;
+    if (
+      state.episodes[id] !== "dispatched" ||
+      !spec?.handoff ||
+      canonicalStringify(packet) !==
+        canonicalStringify({ ...spec.handoff, episodeId: id }) ||
+      Object.values(state.handoffs).some(
+        (h) =>
+          h.packet.workOrderId === packet.workOrderId && h.answer === undefined,
+      )
+    )
+      throw new Error("invalid or repeated handoff request");
+    state.handoffs[id] = {
+      packet,
+      phaseId: phaseId!,
+      generation: state.episodeGenerations[id]!,
+    };
+    state.episodes[id] = "observed";
+    state.actors[`episode:${id}`]!.status = "stopped";
+    // Waiting is durable state, not a live actor or an occupied process slot.
+    machine.waitForInput(id);
+  }
+  if (event.type === "HandoffAnswered") {
+    const id = payload["episodeId"];
+    const handoff = typeof id === "string" ? state.handoffs[id] : undefined;
+    const option = payload["optionId"];
+    if (
+      event.actorId !== "operator" ||
+      payload["origin"] !== "human" ||
+      !handoff ||
+      handoff.answer !== undefined ||
+      payload["workOrderId"] !== handoff.packet.workOrderId ||
+      typeof option !== "string" ||
+      !handoff.packet.options.some((o) => o.id === option)
+    )
+      throw new Error("invalid, stale or repeated human handoff answer");
+    handoff.answer = option;
+    state.at = Math.max(state.at, event.occurredAt);
+    machine.now = state.at;
+    machine.transition("idle-expired");
+    if (
+      !machine.present &&
+      !machine.current &&
+      machine.state === handoff.phaseId &&
+      machine.generation === handoff.generation
+    ) {
+      machine.dispatch(handoff.packet.episodeId);
+      machine.outcome("verified-success", handoff.packet.episodeId);
+    }
+    state.lastNoOp = null;
+  }
+  if (
+    [
+      "ScriptEpisodeObserved",
+      "CliWorkerObserved",
+      "ScriptEpisodeLost",
+    ].includes(event.type)
+  ) {
     const id = payload["episodeId"];
     if (typeof id !== "string" || state.episodes[id] !== "dispatched")
       throw new Error("resident outcome has no pending dispatch");
@@ -381,7 +522,9 @@ export function foldResidentEvent(
     if (!lost) {
       assertActorResult(payload);
       const spec = state.configuration!.actors[state.episodePhases[id]!]!;
-      const verified = scriptResultVerified(spec, payload);
+      if ((event.type === "CliWorkerObserved") !== (spec.kind === "cli-worker"))
+        throw new Error("actor observation kind differs from dispatch");
+      const verified = scriptResultVerified(spec, payload, id);
       if (payload.verified !== verified)
         throw new Error("script verification contradicts recorded output");
     }

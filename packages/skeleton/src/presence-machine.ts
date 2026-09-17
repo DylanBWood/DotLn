@@ -159,6 +159,11 @@ export class PresenceMachine {
       this.lastActivity = at;
     }
   }
+  /** A durable human question frees the process slot without failing/resetting
+   * the policy. Its recorded generation binds the later answer continuation. */
+  waitForInput(episode: string) {
+    if (this.current?.id === episode) this.current = null;
+  }
   due(at: number): number | null {
     this.now = at;
     this.transition("idle-expired");

@@ -430,8 +430,30 @@ directory with a cleared inherited environment, bounded output/time and a
 macOS sandbox denying network operations. A disposable supervisor kills the
 ordinary process group on timeout, return cancellation or resident death.
 Unsupported hosts or an unavailable sandbox produce a reasoned NoOp.
-`cli-worker`, `human-handoff` and `local-model` remain unavailable with their
-WO-122/WO-110 reasons; the catalog never substitutes another kind. This is a
+`cli-worker` uses the existing inspection or source-change transport through a
+disposable supervisor, with C-U1/X-U1 detached-launch evidence and explicit
+resident origin stamps. Availability receives the selected declaration; an
+unavailable row produces a named NoOp. Both the phase and nested writer
+authority apply. `CliWorkerObserved` records launch claims and the validated
+envelope; a harness completion claim never promotes a phase as independently
+verified. `ScriptEpisodeDispatched` records dispatch for all kinds.
+`ScriptEpisodeLost` records script/CLI recovery; human handoffs recover their
+durable packet and request instead.
+
+`human-handoff` atomically publishes its question, options and evidence references
+at `<resident-store>/control/local/handoffs/<episode>.json`, then appends
+`HandoffRequested`. The replayed hold is keyed by work order; waiting owns no
+process slot, survives restart and blocks further dispatch for that order.
+`HandoffAnswered` binds an explicit human option to that packet and order.
+Only the still-current, unexpired policy generation resumes its continuation;
+a late answer records the decision without reviving old authority. Answers
+are local operator inputs, not model results or authenticated remote messages.
+The CLI rejects an answer from an explicitly stamped resident process.
+`local-model` remains unavailable with its WO-110 reason. The catalog never
+substitutes another kind. Reopen these launch claims when a new discovery row
+contradicts the dated C-U1/X-U1 observations (WO-122-D001).
+
+The script sandbox is a
 dated native adapter, not portable isolation or protection from a hostile
 same-user actor. The resident itself has no network transport.
 

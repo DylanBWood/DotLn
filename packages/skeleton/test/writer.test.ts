@@ -391,7 +391,15 @@ test("WO-051 C-W2/C-W3/C-W8/C-W9 and X-W1/X-W2/X-W8 canonical writer shapes", ()
       );
       assert.deepEqual(
         args.map((arg) => arg.replaceAll(s.request.cwd, "<worktree>")),
-        pinned[key].args,
+        // WO-122 live evidence corrects exactly this inherited inspection
+        // disable. Preserve the historical WO-051 fixture and every other arg.
+        key === "codex"
+          ? pinned[key].args.filter(
+              (arg: string, index: number, all: string[]) =>
+                arg !== "code_mode_host" &&
+                !(arg === "--disable" && all[index + 1] === "code_mode_host"),
+            )
+          : pinned[key].args,
       );
     }
     const args = canonicalWorkerArgs(
