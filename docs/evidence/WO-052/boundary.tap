@@ -1,0 +1,20 @@
+TAP version 13
+# Subtest: WO-052 wrong branch and outside-surface commits refuse without redispatch or discard
+ok 1 - WO-052 wrong branch and outside-surface commits refuse without redispatch or discard
+  ---
+  duration_ms: 5549.743208
+  ...
+# Subtest: WO-052 a second interrupted attempt exhausts recovery; no third dispatch
+ok 2 - WO-052 a second interrupted attempt exhausts recovery; no third dispatch
+  ---
+  duration_ms: 3320.914584
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 8944.869791

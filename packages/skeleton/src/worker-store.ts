@@ -20,6 +20,12 @@ import {
   type VerificationTask,
 } from "@dotln/compiler";
 import type { PlanRefutationRequest } from "./plan-refutation-protocol.js";
+import type { WriterRequest } from "./worker-protocol.js";
+import {
+  decodeSourceObservation,
+  sameSourceValue,
+  type SourceChangeObserved,
+} from "./source-change-state.js";
 import {
   parseTransportResult,
   parseEvidenceResult,
@@ -217,6 +223,25 @@ export class WorkerStore {
           throw new Error(
             `${path}: unpublished pending result; inspect before recovery`,
           );
+        if (name.endsWith(".source-change.json")) {
+          atPath(path, "source-change effect receipt", () => {
+            const key = name.slice(0, -".source-change.json".length);
+            commandKey(key);
+            regularFile(path);
+            const receipt = object(JSON.parse(readFileSync(path, "utf8")));
+            exact(receipt, ["requestKey", "observation"]);
+            if (
+              typeof receipt.requestKey !== "string" ||
+              !/^[a-f0-9]{64}$/u.test(receipt.requestKey)
+            )
+              throw new Error("expected canonical request key");
+            decodeSourceObservation(receipt.observation);
+            if (!commands.has(key))
+              throw new Error("receipt has no persisted command");
+            receiptPaths.push(path);
+          });
+          continue;
+        }
         if (!name.endsWith(".result.json")) continue;
         atPath(path, "saved result receipt", () => {
           const key = name.slice(0, -".result.json".length);
@@ -349,5 +374,73 @@ export class WorkerStore {
   private resultPath(request: TransportRequest): string {
     commandKey(request.command.commandId);
     return join(this.directory, `${request.command.commandId}.result.json`);
+  }
+
+  /** A Git observation is an effect receipt, never a fabricated worker result. */
+  saveSourceChangeReceipt(
+    request: WriterRequest,
+    observation: SourceChangeObserved,
+  ): void {
+    if (!this.#locked)
+      throw new Error("effect receipt writer lacks its host lock");
+    decodeSourceObservation(observation);
+    if (
+      observation.workOrderId !== request.workOrder.workOrderId ||
+      observation.testBefore.command !== request.testCommand
+    )
+      throw new Error("source-change receipt request mismatch");
+    const existing = this.loadSourceChangeReceipt(request);
+    if (existing) {
+      if (!sameSourceValue(existing, observation))
+        throw new Error("source-change effect receipt is immutable");
+      return;
+    }
+    const path = this.sourceChangePath(request);
+    const staging = `${path}.pending`;
+    durableWrite(
+      staging,
+      JSON.stringify({ requestKey: workerRequestKey(request), observation }) +
+        "\n",
+    );
+    try {
+      linkSync(staging, path);
+      syncDirectory(this.directory);
+    } finally {
+      unlinkSync(staging);
+    }
+  }
+
+  loadSourceChangeReceipt(
+    request: WriterRequest,
+  ): SourceChangeObserved | undefined {
+    const path = this.sourceChangePath(request);
+    if (present(`${path}.pending`))
+      throw new Error(
+        `${path}.pending: unpublished pending effect; inspect before recovery`,
+      );
+    if (!present(path)) return undefined;
+    return atPath(path, "source-change effect receipt", () => {
+      regularFile(path);
+      const receipt = object(JSON.parse(readFileSync(path, "utf8")));
+      exact(receipt, ["requestKey", "observation"]);
+      if (receipt.requestKey !== workerRequestKey(request))
+        throw new Error("source-change receipt belongs to a different request");
+      const observation = decodeSourceObservation(receipt.observation);
+      if (
+        observation.workOrderId !== request.workOrder.workOrderId ||
+        observation.testBefore.command !== request.testCommand
+      )
+        throw new Error("source-change receipt request mismatch");
+      this.#preflightReads?.add(path);
+      return observation;
+    });
+  }
+
+  private sourceChangePath(request: WriterRequest): string {
+    commandKey(request.command.commandId);
+    return join(
+      this.directory,
+      `${request.command.commandId}.source-change.json`,
+    );
   }
 }

@@ -107,6 +107,29 @@ In prose, a “task” remains a bounded unit realized as a WorkOrder. Planned
 background-session, subagent, workflow, SDK, browser-driven and human transport
 adapters remain empirically selected per environment (Principle 15).
 
+WO-052 adds three positively decoded event payloads under schema 1:
+`SourceChangeRequested { workOrderId, repo, baseCommit, branch, surfaces }`,
+`SourceChangeObserved { workOrderId, commit, branch, diffHash, testBefore,
+testAfter }`, and `SourceChangeRefused { workOrderId, reason }`. Their dedicated
+reactor slice also owns existing command/worker lifecycle observations in that
+source-change workstream. Other slices and historical Decision bytes retain
+their existing behavior. The two focused-test observations carry the exact
+command, exit code/signal and SHA-256 output digests; the original before-test
+is durable before dispatch. An observed commit is an effect, not independent
+verification or a worker's completion claim; even a failing after-test remains
+an observation for the later verifier.
+
+The source host accepts a compiled WorkOrder, artifact identity and supplied
+authority, with already-established authority evidence separate from required
+evidence. It authorizes local writing, Git and test execution, emits the target
+bundle, dispatches the source-change profile, and checks the target's branch,
+base ancestry, clean committed source, allowed changed paths and bundle bytes.
+The immutable worker-store effect receipt binds that request to the commit,
+branch, base-relative binary diff digest and both test observations. A recovered
+Git effect never fabricates a worker result. No new schema version or command
+hash preimage is introduced. The fixture-evidenced host and its limits are in
+[WO-052](../evidence/WO-052/implementation.md); the live episode remains WO-053.
+
 WO-068 adds the resident's schema-1 events: `ResidentConfigured` pins one
 compiled presence policy and its exact phase actor declarations; `ClockSampled
 { at }` records every wall-clock input; `OperatorPresenceChanged` records

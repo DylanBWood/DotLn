@@ -5152,6 +5152,13 @@
           "title": "_An order may mandate a capability id its own gate refuses._ WO-068",
           "summary": "1. _An order may mandate a capability id its own gate refuses._ WO-068 criterion 7 directed an executor to add a `runtime.resident` row; `scripts/lib/plan-continuation.mjs:94` refuses ids absent from the judged receipt, because a capability id is a planning claim. The order required an edit the repository rejects by design, and no executor repair could clear it: deleting the row fails the criterion, keeping it fails the gate. FINAL-001 recorded this as B1 and nominated two forms — admit new ids through the planning pass that files the order, or teach `reassessments` a dated-addition form for ids the filing order introduces. Neither is chosen. A fix must make the unsatisfiable order unfilable",
           "missing": false
+        },
+        {
+          "hash": "65196f437e0cdff28b416b3b569efeb222fa616c33f18b202e48866255e404f4",
+          "ref": "docs/planning/work-order-map.md#candidates--release-close-and-planning-dispatch-defects-recorded-2026-09-16",
+          "title": "_An order may mandate a capability id its own gate refuses._ WO-068",
+          "summary": "1. _An order may mandate a capability id its own gate refuses._ WO-068 criterion 7 directed an executor to add a `runtime.resident` row; `scripts/lib/plan-continuation.mjs:94` refuses ids absent from the judged receipt, because a capability id is a planning claim. The order required an edit the repository rejects by design, and no executor repair could clear it: deleting the row fails the criterion, keeping it fails the gate. FINAL-001 recorded this as B1 and nominated two forms — admit new ids through the planning pass that files the order, or teach `reassessments` a dated-addition form for ids the filing order introduces. Neither is chosen. A fix must make the unsatisfiable order unfilable",
+          "missing": false
         }
       ],
       "dispositions": []
@@ -5708,6 +5715,81 @@
           "ref": "docs/evidence/WO-121/decisions.md#wo-121-d005",
           "title": "WO-121-D005: Retime the unpublished staging to application v0.27.0 and skeleton 0.23.0 under the recorded minor classification, because WO-119 published v0.26.0 with skeleton 0.22.0 during this order'",
           "summary": "{ \"id\": \"WO-121-D005\", \"date\": \"2026-09-17\", \"dispatch\": \"resume: final review\", \"decision\": \"Retime the unpublished staging to application v0.27.0 and skeleton 0.23.0 under the recorded minor classification, because WO-119 published v0.26.0 with skeleton 0.22.0 during this order's review; compiler 0.13.0 is unchanged.\", \"evidence\": [ \"docs/product/07-execution-guide.md\", \"docs/product/06-roadmap.md\", \"packages/skeleton/package.json\", \"packages/skeleton/src/version.ts\", \"README.md\", \"docs/final-reviews/WO-121/FINAL-001.md\" ], \"rejected\": [ { \"option\": \"Keep the staged v0.26.0 and skeleton 0.22.0\", \"reason\": \"Both labels are published at tag v0.26.0 with different bytes; republishing them wou",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-821f332daff393dd",
+      "key": "decision:docs/evidence/WO-052/decisions.md#wo-052-d001",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "fb90de3d4f84de09a6a2cfd42bb75446c274e5c7a8b104910131071e0cadac40",
+          "ref": "docs/evidence/WO-052/decisions.md#wo-052-d001",
+          "title": "WO-052-D001: Add one source-change slice and a separate source-change host, preserving the inspection host. Persist the original focused-test observation before dispatch; recover the target branch's d",
+          "summary": "{ \"id\": \"WO-052-D001\", \"date\": \"2026-09-17\", \"dispatch\": \"resume: next\", \"decision\": \"Add one source-change slice and a separate source-change host, preserving the inspection host. Persist the original focused-test observation before dispatch; recover the target branch's descendant commit before considering another dispatch; save a distinct immutable commit receipt without inventing a worker result.\", \"evidence\": [ \"docs/work-orders/WO-052-source-change-host.md\", \"packages/skeleton/src/worker-host.ts\", \"packages/skeleton/src/worker-store.ts\", \"packages/skeleton/src/worker-worktree.ts\", \"packages/skeleton/src/worker-protocol.ts\", \"packages/skeleton/src/worker-transport.ts\", \"packages/skeleton",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-d9422708995be096",
+      "key": "decision:docs/evidence/WO-052/decisions.md#wo-052-d002",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "e60a11ec0275b892b2544b2a6aa97b8eb634d939b76c864b10b626f146391247",
+          "ref": "docs/evidence/WO-052/decisions.md#wo-052-d002",
+          "title": "WO-052-D002: Issue a strictly decoded launchpad-side route for the exact focused test, git add -A and host-message commit, fenced by owner liveness, expiry, branch/base and message identity. Keep nati",
+          "summary": "{ \"id\": \"WO-052-D002\", \"date\": \"2026-09-17\", \"dispatch\": \"resume: next\", \"decision\": \"Issue a strictly decoded launchpad-side route for the exact focused test, git add -A and host-message commit, fenced by owner liveness, expiry, branch/base and message identity. Keep native compiled permission, writer and attribution guards active.\", \"evidence\": [ \"packages/skeleton/README.md#target-worktree-bundle\", \"packages/skeleton/src/harness-host.ts\", \"packages/skeleton/src/source-change-command.ts\", \"packages/skeleton/fixtures/source-change-cli.mjs\", \"packages/skeleton/test/source-change-host.test.ts\" ], \"rejected\": [ { \"option\": \"NoOp or process doubles that skip native guards\", \"reason\": \"The exist",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-4e7b98d9a7a92548",
+      "key": "decision:docs/evidence/WO-052/decisions.md#wo-052-d003",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "02b2ee788c401176e5a37a90676e3c8bdbdd71f266dfc315f5d2738c8e3571f5",
+          "ref": "docs/evidence/WO-052/decisions.md#wo-052-d003",
+          "title": "WO-052-D003: Prepare application v0.28.0 and skeleton 0.24.0 under the order's minor classification; refresh bundle pins, deterministic evidence and the existing read-only feedback audit after source ",
+          "summary": "{ \"id\": \"WO-052-D003\", \"date\": \"2026-09-17\", \"dispatch\": \"resume: next\", \"decision\": \"Prepare application v0.28.0 and skeleton 0.24.0 under the order's minor classification; refresh bundle pins, deterministic evidence and the existing read-only feedback audit after source stabilizes.\", \"evidence\": [ \"docs/work-orders/WO-052-source-change-host.md\", \"scripts/lib/release-preparation.mjs\", \"scripts/feedback-evidence.mjs\", \"docs/evidence/WO-051/decisions.md\" ], \"rejected\": [ { \"option\": \"NoOp or retain stale evidence\", \"reason\": \"The work order requires a release and fresh runtime evidence.\" }, { \"option\": \"Live source-change launch or remote publication\", \"reason\": \"Those are separate WO-053/WO-",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-9159a635909de04a",
+      "key": "decision:docs/evidence/WO-052/decisions.md#wo-052-d004",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "08fe651e9ece6aa7335b439276e71752061679ad87315f1cf30bce57aca1ee0f",
+          "ref": "docs/evidence/WO-052/decisions.md#wo-052-d004",
+          "title": "WO-052-D004: Record the reviewer's failing npm test -- --review row and its causation proof in FINAL-001, the pull-request body and the release notes, and carry WO-052's pass on the product gate its A",
+          "summary": "{ \"id\": \"WO-052-D004\", \"date\": \"2026-09-17\", \"dispatch\": \"resume: final review\", \"decision\": \"Record the reviewer's failing `npm test -- --review` row and its causation proof in FINAL-001, the pull-request body and the release notes, and carry WO-052's pass on the product gate its AC6 names. The three failing `process-debt` subtests assert the pre-presence hook wiring and are reproduced byte-for-byte on a clean `main` extract that contains none of this order's changes; they are WO-121's regression and belong to a separately verified bounded order, not to this diff.\", \"evidence\": [ \"docs/control/local/harness/checks.json\", \"scripts/test-process-debt.mjs\", \"scripts/test-runner.mjs\", \"packages/",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-5bc267c1603cdf94",
+      "key": "decision:docs/evidence/WO-052/decisions.md#wo-052-d005",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "074e2b53a70d316b2d183666056be61f3c9674cf0d9ec74e9c3b303156e94b95",
+          "ref": "docs/evidence/WO-052/decisions.md#wo-052-d005",
+          "title": "WO-052-D005: Record criterion 5's new capability id worker.source-change as a merge prerequisite cleared only by a planning dispatch, leave the executor's dated addition heading and the row itself unt",
+          "summary": "{ \"id\": \"WO-052-D005\", \"date\": \"2026-09-17\", \"dispatch\": \"resume: final review\", \"decision\": \"Record criterion 5's new capability id `worker.source-change` as a merge prerequisite cleared only by a planning dispatch, leave the executor's `dated addition` heading and the row itself untouched, and re-raise WO-068's still-open nomination rather than inventing a reviewer-local workaround.\", \"evidence\": [ \"scripts/lib/plan-continuation.mjs\", \"docs/final-reviews/WO-068/FINAL-001.md\", \"docs/planning/capability-table.md\", \"docs/planning/refutations/2026-09-16-planning-496d3a8cf6dab3e9-015.json\", \"docs/work-orders/WO-052-source-change-host.md\" ], \"rejected\": [ { \"option\": \"Rename the heading to `date",
           "missing": false
         }
       ],

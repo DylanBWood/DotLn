@@ -1,0 +1,74 @@
+diff --git a/packages/skeleton/src/reactor.ts b/packages/skeleton/src/reactor.ts
+index 4225a57..469d6a6 100644
+--- a/packages/skeleton/src/reactor.ts
++++ b/packages/skeleton/src/reactor.ts
+@@ -3,6 +3,12 @@ import {
+   residentEventTypes,
+   type ResidentState,
+ } from "./resident-state.js";
++import {
++  sourceChangeDecision,
++  sourceChangeEventTypes,
++  type SourceChangeSlice,
++} from "./source-change-state.js";
++export type { SourceChangeSlice } from "./source-change-state.js";
+ import {
+   Cadence,
+   Program,
+@@ -164,7 +170,6 @@ export type WorkerEpisodeSlice = Readonly<{
+   workerEpisodeId: string | null;
+   workerLeaseExpired: boolean;
+ }>;
+-export type SourceChangeSlice = Readonly<Record<string, never>>;
+ export type SkeletonState = Readonly<{
+   version: 1;
+   walking: WalkingSkeletonSlice;
+@@ -305,14 +310,20 @@ export const sliceEventTypes = {
+     "CommandResult",
+     ...SEMANTIC_CORRECTIONS,
+   ],
+-  sourceChange: [],
++  sourceChange: sourceChangeEventTypes,
+   resident: residentEventTypes,
+ } as const;
+-export type FoldedSlice = Exclude<keyof typeof sliceEventTypes, "sourceChange">;
++export type FoldedSlice = keyof typeof sliceEventTypes;
+ export function selectEventSlice(
+   state: SkeletonState,
+   event: Event,
+ ): FoldedSlice {
++  if (
++    sourceChangeEventTypes.some((type) => type === event.type) ||
++    (selectSourceChangeSlice(state).workstreamId !== undefined &&
++      selectSourceChangeSlice(state).workstreamId === event.workstreamId)
++  )
++    return "sourceChange";
+   if (
+     selectResidentSlice(state) !== undefined ||
+     residentEventTypes.some((type) => type === event.type)
+@@ -1641,6 +1652,11 @@ export const seiriReactor: Reactor<RuntimeState> = (runtime, event, env) => {
+   // Retain the old validation order even in a feedback/verification workstream.
+   if (walking.program !== null) programFromState(walking);
+   switch (selectEventSlice(state, event)) {
++    case "sourceChange":
++      return runtimeDecision(
++        sourceChangeDecision(selectSourceChangeSlice(state), event),
++        (sourceChange) => ({ ...runtime, sourceChange }),
++      );
+     case "resident":
+       return runtimeDecision(
+         observed(
+@@ -1849,6 +1865,13 @@ export function planRefutationAuthorization(
+   );
+ }
+ 
++/** Source-change hosts keep kernel decisions in the pure reactor boundary. */
++export function sourceChangeAuthorization(
++  ...args: Parameters<typeof authorize>
++): ReturnType<typeof authorize> {
++  return authorize(...args);
++}
++
+ /** Harness adapters share the skeleton's authority decider owner. */
+ export function harnessAuthorization(
+   authority: AuthorityEnvelope,

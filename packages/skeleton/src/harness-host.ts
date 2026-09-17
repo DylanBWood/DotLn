@@ -1,5 +1,6 @@
 import { observedSpawnSync as spawnSync } from "./gate-deadlines.mjs";
 import { withWriterRegistration } from "./writer-teardown.mjs";
+import { sourceChangeCommandEffect } from "./source-change-command.js";
 import { createHash, randomBytes } from "node:crypto";
 import { AsyncLocalStorage } from "node:async_hooks";
 import {
@@ -3231,8 +3232,22 @@ export async function runTargetHarnessHook(
             )
               throw new Error("target shell requires worktree-root cwd");
             const command = args.command ?? args.cmd;
-            const paths =
-              typeof command === "string" ? shellWritePaths(command) : null;
+            const hostCommand =
+              typeof command === "string" &&
+              sourceChangeCommandEffect(launchpad, root, command);
+            if (
+              hostCommand &&
+              !harnessAuthorization(config.envelope, hostCommand, Date.now())
+                .authorized
+            )
+              throw new Error(
+                `compiled authority does not permit ${hostCommand}`,
+              );
+            const paths = hostCommand
+              ? []
+              : typeof command === "string"
+                ? shellWritePaths(command)
+                : null;
             if (paths === null)
               throw new Error(
                 "target shell destinations unavailable; host must run opaque commands",

@@ -24,6 +24,114 @@ founding-era: **Resolutions of known tensions** (settled contradictions — do
 not relitigate them) and the founding chat/notes/image corpus.
 
 
+## 2026-09-17 — Planning pass: the `worker.source-change` capability admission (WO-052)
+
+- **`worker.source-change` is admitted to the capability inventory at
+  1 — demonstrable, target 2 — dependable** `adopted`
+  - The id is not new to the plan. The 2026-09-08 critical-path pass named it,
+    and receipts 002 to 004 carry it as `capabilityRow: new:worker.source-change`
+    against WO-052 and WO-053; WO-053 and WO-111 name it in their order text.
+    What no pass has judged is its **level**. The row itself entered the
+    capability table as an executor write-back under WO-052 criterion 5, and the
+    id is absent from the judged subject's `standard.capabilities` — the set
+    `plan-continuation.mjs:94` checks — which is what the gate refuses on. This
+    pass takes up the level claim.
+  - **Correction (2026-09-17, from the independent refutation).** This section
+    first read "has never been judged by a planning pass", and
+    `docs/final-reviews/WO-052/FINAL-001.md` §B1 first read "appears nowhere in
+    the repository before this branch". Both were wrong, in the same way, and
+    [receipt 016](../planning/refutations/2026-09-17-planning-023b7806ac203499-016.md)
+    recorded it as a finding. The operative claim was correct; the novelty claim
+    around it was not, and it was not checked before it was written. Both
+    surfaces now say what was actually observed.
+  - The declared scope — one governed target branch, typed effect
+    observations and commit-identity recovery — is supported by fixture
+    evidence: real foreign Git worktrees created from a declared base; the
+    governed bundle emitted into them; a failing before-test and a passing
+    after-test recorded as observations; immutable commit receipts; three real
+    `SIGKILL` windows in separate processes, each recovering exactly one
+    effect; and one bounded recovery dispatch with
+    `recovery-dispatch-exhausted` beyond it. Historical reactor Decisions
+    replay unchanged. [VER-001](../verifications/WO-052/VER-001.md) passed on
+    2026-09-17 with five candidate findings all refuted, and
+    [FINAL-001](../final-reviews/WO-052/FINAL-001.md) passed the order. Level 1
+    is the correct claim for that evidence and this pass does not raise it.
+  - Reopen when the row's evidence changes: promote to 2 — dependable only when
+    a real writer episode, not a process double, carries the normal and
+    important failure paths.
+  - Provenance: `docs/planning/capability-table.md` §WO-052 dated addition;
+    WO-052 implementation evidence; the host fixtures in
+    `packages/skeleton/test/source-change-host.test.ts`.
+- **The claim is not promoted to 2 — dependable on this pass** `rejected`
+  - Every writer episode in WO-052 is an out-of-process double against a
+    scratch repository, and the order's own non-goals fence the live episode to
+    WO-053. A level-2 claim would assert repeatable evidence for the important
+    failure paths of a capability whose central actor has never run. The
+    order's limits say so plainly: an expired lease is not proof that an
+    orphaned writer process stopped, and exact command grants are not OS
+    isolation of an arbitrary test script.
+  - Reverse when WO-053 supplies a live episode and its failure paths carry
+    automated checks.
+  - Provenance: `docs/work-orders/WO-052-source-change-host.md` §Non-goals;
+    `docs/evidence/WO-052/implementation.md` §Limits; the capability table's
+    "Reading the table" §.
+- **Level 3 — integrated stays blocked, unchanged by this pass** `adopted`
+  - All source-change evidence is fixture evidence with process doubles. The
+    table's rule holds level 3 shut wherever the proof is a deterministic fake
+    rather than a real DotLn workflow carrying lifecycle, recovery, authority
+    and audit evidence together.
+  - Reopen when WO-053, WO-054 or WO-064 supplies a real source-change episode
+    with those four evidence families.
+  - Provenance: the capability table's level-3 rule; the row's own
+    remaining-gate cell; the sequence entries for those orders.
+- **The filing defect recurred exactly where the last pass said it would, and
+  this pass files its repair** `adopted`
+  - The 2026-09-16 pass deferred the fix and recorded its reopening condition
+    as "the next order whose criteria name a capability id absent from the
+    latest receipt's subject". WO-052 is that order, one day later, and it cost
+    a second final review the same diagnosis and a second purpose-built pass.
+    Two occurrences in two consecutive capability-introducing orders is the
+    evidence the deferral asked for, so this pass stops deferring and files
+    [WO-135](../work-orders/WO-135-capability-id-admission.md).
+  - The order takes the second of the two nominated forms: a dated addition may
+    introduce a capability id when the heading's order is in the judged subject
+    and that order's own judged criteria name the id, because the pass that
+    judged the order judged the sentence naming the capability; the table row
+    alone is new. Every other new id stays refused, since that is a genuine
+    planning claim. The first form — a planning pass per filing order — is
+    declined as the status quo whose cost this pass is paying for the second
+    time. Classification patch, no dependency, no capability id of its own.
+  - Reopen if a fix admits an id no judged order's criteria name, or if the
+    criteria-text rule proves too narrow for a real order.
+  - Provenance: `docs/final-reviews/WO-068/FINAL-001.md` §B1;
+    `docs/final-reviews/WO-052/FINAL-001.md` §B1;
+    `docs/evidence/WO-052/decisions.md` §WO-052-D005;
+    `docs/planning/work-order-map.md` candidate 1;
+    `scripts/lib/plan-continuation.mjs`.
+- **How this pass was dispatched, logged** `adopted`
+  - The operator's instruction was not prefixed `planning:`. It was a direct
+    correction, in this session, that the reviewer stop handing the merge
+    prerequisite back and clear it. That is recorded here as the pass's
+    authority rather than inferred from a phrase, and the pass is deliberately
+    narrow: it admits one capability level and files one bounded repair. It
+    changes no sequence and reallocates nothing.
+  - The same session performed WO-052's final review. That is disclosed, not
+    hidden: the independent judgment of this subject is the background
+    refuter's receipt, not this section.
+- **Process cost of this pass** `adopted`
+  - The pass ran no code suite. It appended one ledger section, filed one work
+    order with its map disposition, dispatched one background goal review that
+    ran 546 s, and filed one receipt. Session counters are reported in the
+    handoff response; USD is unavailable and remains unknown.
+- **Promoting the row, amending the gate here, or replanning the horizon**
+  `rejected`
+  - Promotion is refused above on the evidence. Amending
+    `scripts/lib/plan-continuation.mjs` inside a planning pass would be a
+    machinery change with no fixture and no verification, made by the session
+    that also reviewed the order it unblocks. Replanning is out of scope: this
+    pass takes up one capability claim, and the horizon's sequence, orders and
+    allocations are untouched.
+
 ## 2026-09-16 — Planning pass: the `runtime.resident` capability admission (WO-068)
 
 - **`runtime.resident` is admitted to the capability inventory at

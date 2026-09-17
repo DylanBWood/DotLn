@@ -801,6 +801,14 @@ authority.
    dated-addition form for ids the filing order introduces. Neither is chosen.
    A fix must make the unsatisfiable order unfilable, or make the gate accept
    it. Reopens at the next order whose criteria name an unjudged id.
+   **Disposition (2026-09-17, WO-135):** the reopening condition fired one day
+   later on WO-052's `worker.source-change`, which cost a second final-review
+   diagnosis and a second purpose-built single-claim pass. Filed as
+   [WO-135](../work-orders/WO-135-capability-id-admission.md), taking the
+   second nominated form: a dated addition may introduce an id that a judged
+   order's own criteria already name, because the pass that judged the order
+   judged that sentence; every other new id stays refused. Reopen if a fix
+   admits an id no judged order names.
 2. _The plan gate was unsatisfiable on any day carrying two passes._
    `checkPlanGate` demanded a receipt for the later dated heading while
    `latestPlanningPass` returned the earlier one: both sorted headings by date

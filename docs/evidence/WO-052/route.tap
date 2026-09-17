@@ -1,0 +1,15 @@
+TAP version 13
+# Subtest: WO-052 emitted Claude permission hook admits only live host-issued exact commands
+ok 1 - WO-052 emitted Claude permission hook admits only live host-issued exact commands
+  ---
+  duration_ms: 9562.022833
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 9632.564875

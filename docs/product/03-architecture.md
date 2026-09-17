@@ -1265,6 +1265,37 @@ changes.
 
 Worker and verification recovery positively decode the event log, host lock, saved receipts, canonical request keys and persisted verification capsules before lock reclaim or dispatch; cached-result loads revalidate the concrete request, and malformed or unpublished staging state refuses by path while preserving store bytes for inspection.
 
+**Source-change host (WO-052):** one compiled order names a target repository,
+immutable base, branch, changed surfaces and focused test. The host creates a
+branch worktree under the configured parent, emits the governed target bundle,
+and records the original test observation before dispatch. WorkerStore retains
+the request and its existing five-second worker leases. After an interrupted
+lease expires, recovery checks Git first: a clean descendant commit on the
+declared branch is observed, tested and saved as an immutable effect receipt
+without a second worker dispatch. A baseline branch permits one recovery
+dispatch; another interrupted attempt exhausts that bounded retry. Dirty
+committed trees, changed requests, foreign branches and malformed receipts
+refuse without discarding work. A crash after receipt persistence reuses both
+test observations and appends the missing source observation once.
+
+The host rechecks supplied authority before dispatch, after worker completion,
+and around its after-test. The worker lease governs the child process; subsequent
+host observation and testing do not invent another worker lease. The existing
+target guards admit only the host-issued exact test, `git add -A`, and
+host-message commit command while their launchpad-side route has a live owner
+and an unexpired deadline. Branch/base/message checks, compiled permissions,
+writer isolation and attribution checks still apply. The route disappears when
+dispatch ends. This is trusted-host governance, not OS isolation of arbitrary
+test scripts or a proof that every orphan Codex writer has stopped after a host
+kill. WO-053 retains that live evidence boundary.
+
+Only explicit `SourceChangeHost.finish()` removes a successfully observed
+worktree, after checking its persisted commit receipt and refusing unowned
+residue. It uses the existing bundle removal followed by safe Git worktree
+removal; the commit branch remains. It never pushes, rebases, force-removes or
+resets. Interruption during preparation/removal can require operator inspection;
+the three tested kill windows cover worker execution and receipt persistence.
+
 `WorkerAttemptStarted`, `CommandReceipt`, `WorkerHeartbeat`, `WorkerInterrupted`, `WorkerLeaseExpired`, `WorkerCompleted`, and `WorkerResultQuarantined` make runtime status replayable. The host checks its child process every 1,000 ms; the lease lasts 5,000 ms after the latest recorded check, and each invocation has a 180,000 ms deadline. A delayed check cannot renew an expired lease. A process check proves process existence, not model progress or a network response. Expiry preserves the command, WorkOrder and continuation; fresh attempts receive distinct episode ids and keep the stable command id. `WorkerResultObserved` persists the typed completed-result observation before the shared reactor admits or quarantines it. An expired authority, operator return, or expired/superseded lease yields a traced NoOp without candidate mutation or outbox acknowledgement. Only an admitted observation becomes `CommandResult`, using the same admission time. Incomplete envelopes retain partial evidence and a pending command without poisoning the success cache. Duplicate marked results do not change candidate state. Historical fake-result semantics remain unchanged.
 
 `dotln status --store <directory> [--json]` projects only the stored episodes, lease/heartbeat timestamps, pending commands and eight recent event headers. It appends nothing, consults no live clock, and creates no missing store. The default skeleton demo remains synchronous and deterministic; the opt-in real demo shares its opening and completion code, including the fake verifier, structural deletion refusal, and queued-pulse cancellation. A lifecycle Beacon and a worker's self-report never refresh a host heartbeat.

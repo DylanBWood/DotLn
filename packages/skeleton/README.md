@@ -1,4 +1,11 @@
-# `@dotln/skeleton` 0.22.0
+# `@dotln/skeleton` 0.24.0
+
+For application v0.28.0 (WO-052), a source-change host turns one compiled
+WorkOrder into one governed branch worktree in a target repository: it emits
+the bundle, records the focused test before and after, dispatches the
+source-change transport, and saves the observed commit identity as an
+immutable effect receipt so recovery reads Git instead of dispatching a second
+writer. The runbook is [Source-change host (WO-052)](#source-change-host-wo-052).
 
 For application v0.25.0 (WO-049), target-worker bundles use the launchpad's
 immutable runtime and keep journals and writer reservations outside the target.
@@ -155,14 +162,16 @@ recovery can safely re-dispatch pending outbox commands.
 ## Reactor state slices
 
 `reactor.ts` composes `SkeletonState` version 1 from typed walking-skeleton,
-worker-episode, verification and feedback slices. Each event selects one fold
+worker-episode, verification, feedback, resident and source-change slices.
+Each event selects one fold
 by its active workstream mode and event type; unknown observations stay in that
-mode. `sourceChange` is an empty typed slot with no fold for WO-052 to extend.
+mode. WO-052 implements the reserved `sourceChange` slot with its pure fold.
 Kernel deciders remain owned by the one exported `seiriReactor`.
 
 The operator selected the existing flat `RuntimeState` as the public Decision
 compatibility boundary. Pure adapters expose typed slices internally and write
-only the selected slice back; no state is persisted and no event changes.
+only the selected slice back. The WO-050 extraction introduced no persisted
+state or event changes; subsequent hosts add their own typed event contracts.
 Hosts read exported selectors, including kernel predicate context. WO-047's
 explicit replay projector has since landed and returns the same
 `kernelStateFromRuntime` slice the live folds read, so public `rngState` and
@@ -741,10 +750,12 @@ file URLs into the pinned launchpad snapshot. Runtime or classification failures
 refuse the tool. Bounded writes must stay inside the target and leave the bundle
 intact. Opaque shell commands, including test scripts and Git commits, need a
 host route; this profile does not claim universal shell containment. The
-attribution adapter checks explicit commit messages independently, but the
-permission guard currently denies the commit command even when that check passes.
-WO-051's transport allowlist does not bypass the guard. Host-authorized opaque
-command execution remains a WO-052/WO-053 integration obligation.
+attribution adapter checks explicit commit messages independently. WO-052's host
+issues a launchpad-side route for exactly the focused test, `git add -A`, and
+`git commit -F <host-message-path>`. The permission hook checks its live host,
+expiry, branch/base and message bytes; unmatched opaque commands still refuse.
+WO-051's transport allowlist does not bypass the guard. The live source-change
+proof remains WO-053.
 
 Emit refuses unowned or tracked destination files, symlinks, incompatible
 launchpad runtime bytes and target ignore rules that would expose the bundle.
@@ -763,6 +774,65 @@ paths are not copied into the manifest or installation receipt; only hook import
 lines contain the runtime path. Checks bind local bytes, not hostile-user
 isolation or authenticity.
 
+
+## Source-change host (WO-052)
+
+After `npm run build`, import `SourceChangeHost` from
+`packages/skeleton/dist/src/source-change-host.js` and `WorkerStore` from
+`worker-store.js`. Supply a compiled `workOrder`, its `artifactIdentity`,
+`authorityEnvelope`, and already-established `authorityEvidence`; the host does
+not compile Markdown or treat required evidence as observed evidence. Its
+remaining options name one `branch`, relative file/directory `surfaces`, an
+existing canonical `worktreeParent`, `launchpadCheckout`, exact `testCommand`,
+host-authored `commitMessage`, `model`, `effort`, and one of the existing
+source-change CLI transports. `repo.write`, `git.local`, `shell.run` and one
+writer resource must be authorized; prohibited remote effects remain denied.
+
+```js
+const host = new SourceChangeHost({
+  ...compiledContext,
+  ...targetEpisodeConfiguration,
+  store: new WorkerStore(episodeStoreDirectory),
+  transport,
+});
+const outcome = await host.run();
+// Inspect outcome and retain the worktree for the separate verifier.
+// Only when explicitly finishing this episode:
+host.finish();
+```
+
+`run()` creates the target branch from the declared base, emits the matching
+target-worker bundle, records the host's baseline test, and dispatches. Test
+commands are bounded argument vectors, with no shell interpolation. Results
+are `observed` with a commit/diff/test receipt, or `refused` with a reason;
+observation alone never claims verification. A returned worker without a commit
+refuses and retains any edits. A failed after-test is recorded faithfully.
+The host checks every changed path against `surfaces`, plus branch identity,
+base ancestry, clean source and governance/message integrity.
+
+To recover, construct the host with exactly the same configuration and store
+and call `run()` again. A live host lock or unexpired worker lease refuses.
+After expiry, a committed effect is read from Git without dispatch; a saved
+receipt also preserves the original test observations. If no commit exists,
+one recovery attempt is permitted with existing edits preserved. A further
+interruption refuses with `recovery-dispatch-exhausted`. Stored malformed or
+pending artifacts refuse before lock reclaim. Do not edit receipts to bypass
+these checks.
+
+`finish()` requires a saved receipt and observation and checks that the branch
+still names that effect. It removes only owned bundle/message files and then
+safely removes the clean worktree, retaining the branch. Unknown ignored files
+and dirty state refuse. A kill during preparation or partial finish can leave
+safe residue requiring inspection; no automatic discard or forced cleanup is
+provided. Store leases and exact command routes do not establish general orphan
+writer fencing or sandbox containment; the live test remains WO-053.
+
+Fixture evidence, including real host SIGKILL and native emitted Claude guards:
+
+```sh
+node --test packages/skeleton/dist/test/source-change-host.test.js
+node scripts/reactor-identity.mjs --check
+```
 
 ## Executable discovery (WO-119)
 

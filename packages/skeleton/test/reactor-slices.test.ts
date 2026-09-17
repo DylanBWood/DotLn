@@ -47,7 +47,7 @@ test("WO-050 full pre-refactor Decision bytes and every retained semantic projec
   );
 });
 
-test("WO-050 slices have exclusive event ownership in each active mode and an empty source-change slot", () => {
+test("WO-050 slices have exclusive event ownership; WO-052 fills only the reserved source-change slot", () => {
   const walking = skeletonStateFromRuntime(initialState());
   const verification = skeletonStateFromRuntime(
     initialVerificationRuntime("fixture"),
@@ -78,7 +78,11 @@ test("WO-050 slices have exclusive event ownership in each active mode and an em
     "the next source-change payload cannot become walking state",
   );
   assert.deepEqual(selectSourceChangeSlice(reserved), {});
-  assert.deepEqual(sliceEventTypes.sourceChange, []);
+  assert.deepEqual(sliceEventTypes.sourceChange, [
+    "SourceChangeRequested",
+    "SourceChangeObserved",
+    "SourceChangeRefused",
+  ]);
   const walkingEvents = [...sliceEventTypes.walking, ...sliceEventTypes.worker];
   assert.equal(
     new Set(walkingEvents).size,
