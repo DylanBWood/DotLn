@@ -28,9 +28,23 @@ not relitigate them) and the founding chat/notes/image corpus.
 
 - **`worker.source-change` is admitted to the capability inventory at
   1 — demonstrable, target 2 — dependable** `adopted`
-  - The id entered the repository as an executor write-back under WO-052
-    criterion 5 and has never been judged by a planning pass. This pass takes
-    up the claim. The declared scope — one governed target branch, typed effect
+  - The id is not new to the plan. The 2026-09-08 critical-path pass named it,
+    and receipts 002 to 004 carry it as `capabilityRow: new:worker.source-change`
+    against WO-052 and WO-053; WO-053 and WO-111 name it in their order text.
+    What no pass has judged is its **level**. The row itself entered the
+    capability table as an executor write-back under WO-052 criterion 5, and the
+    id is absent from the judged subject's `standard.capabilities` — the set
+    `plan-continuation.mjs:94` checks — which is what the gate refuses on. This
+    pass takes up the level claim.
+  - **Correction (2026-09-17, from the independent refutation).** This section
+    first read "has never been judged by a planning pass", and
+    `docs/final-reviews/WO-052/FINAL-001.md` §B1 first read "appears nowhere in
+    the repository before this branch". Both were wrong, in the same way, and
+    [receipt 016](../planning/refutations/2026-09-17-planning-023b7806ac203499-016.md)
+    recorded it as a finding. The operative claim was correct; the novelty claim
+    around it was not, and it was not checked before it was written. Both
+    surfaces now say what was actually observed.
+  - The declared scope — one governed target branch, typed effect
     observations and commit-identity recovery — is supported by fixture
     evidence: real foreign Git worktrees created from a declared base; the
     governed bundle emitted into them; a failing before-test and a passing
@@ -99,15 +113,16 @@ not relitigate them) and the founding chat/notes/image corpus.
     correction, in this session, that the reviewer stop handing the merge
     prerequisite back and clear it. That is recorded here as the pass's
     authority rather than inferred from a phrase, and the pass is deliberately
-    narrow: it admits one capability id and nominates one repair. It changes no
-    sequence, files no order and reallocates nothing.
+    narrow: it admits one capability level and files one bounded repair. It
+    changes no sequence and reallocates nothing.
   - The same session performed WO-052's final review. That is disclosed, not
     hidden: the independent judgment of this subject is the background
     refuter's receipt, not this section.
 - **Process cost of this pass** `adopted`
-  - The pass ran no code suite. It appended one ledger section, dispatched one
-    background goal review and filed one receipt. Session counters are reported
-    in the handoff response; USD is unavailable and remains unknown.
+  - The pass ran no code suite. It appended one ledger section, filed one work
+    order with its map disposition, dispatched one background goal review that
+    ran 546 s, and filed one receipt. Session counters are reported in the
+    handoff response; USD is unavailable and remains unknown.
 - **Promoting the row, amending the gate here, or replanning the horizon**
   `rejected`
   - Promotion is refused above on the evidence. Amending

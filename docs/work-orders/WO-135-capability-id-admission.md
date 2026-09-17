@@ -115,3 +115,12 @@ reorganization.
    row is bookkeeping rather than a new planning claim. A reviewer may require
    that the rule read the criteria text only, and not the objective or the
    cited sections.
+2. A dated addition asserts a level and a remaining gate, and no criterion need
+   state either; the rule above keys only on the id. Both real cases happen to
+   state the level in their criteria, so this is constructible rather than
+   observed, and it sits in tension with this order's own non-goal of not
+   changing how a capability claim is judged. Recorded by
+   [receipt 016](../planning/refutations/2026-09-17-planning-023b7806ac203499-016.md).
+   A reviewer may require the rule to check the asserted level against the
+   criteria text as well, or may accept that the level rides on the order's
+   judged criteria.
