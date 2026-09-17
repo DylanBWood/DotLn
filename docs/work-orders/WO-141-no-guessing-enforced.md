@@ -90,9 +90,10 @@ loadout) and the operator's repeated observation is that they are not
 applied. Prose is not application, so this order measures application: a
 journaled correction or hedge names the phase, the order and, when the
 operator or the agent names one, the unit it violated; the meter's
-shifting-the-burden row shows corrections per phase and unit; and the
-process-debt track reads that row, so a phase that keeps failing a unit is
-repaired from observation instead of from another prose line. This
+shifting-the-burden row shows corrections per phase and unit. Measurement
+only: no automatic consequence is attached, by the operator's direction
+("just measurement for now"); what a later pass does with the rows is that
+pass's decision. This
 discharges FUP-0130's deferral (WO-126 D003: the support-behavior repair
 waits for observed operation), whose reopening condition this session met.
 In Codex, no hook fires: (a) prints in the `resume` briefing and the

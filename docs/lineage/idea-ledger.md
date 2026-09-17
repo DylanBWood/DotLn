@@ -26,12 +26,12 @@ not relitigate them) and the founding chat/notes/image corpus.
 
 ## 2026-09-17 — Planning pass: vision into use (WO-135 rewritten, WO-079 rewritten, WO-136 to WO-140)
 
-Source: the operator's `planning:` dispatch and twenty-five mid-turn messages,
+Source: the operator's `planning:` dispatch and twenty-six mid-turn messages,
 including an operator-endorsed third-party brief ("bring the vision into
 use"), a pointer to Steve Yegge's 2011 platforms essay and, before merge, a
 third-party review of the draft pull request, captured verbatim in ignored
 intake (`docs/intake/notes/2026-09-17-vision-into-use-planning.md`,
-SHA-256 `7f47a99676f26308a2068718b04143c19c3d2d61621f194c5aee203f188a8b2f`).
+SHA-256 `e267d8e2c26e8c55bacc1e13240b9fac7ec2570ebf0cd0ecfe270ff64b203a26`).
 Shape-First Synthesis; the clean-room screen found one item to fence: the
 operator's comparison with an employer-provided setup carries no detail and
 is used only as an expectation. The full record is
@@ -219,7 +219,8 @@ is used only as an expectation. The full record is
     anti-oscillation, the ban on over-literal or malicious compliance) and
     observed they are not applied; they are compiled prose in every role,
     and WO-141 measures their application per phase, order and unit through
-    the journaled corrections and the meter, discharging FUP-0130. The
+    the journaled corrections and the meter, measurement only with no
+    attached consequence, discharging FUP-0130. The
     operator also directed that the planning refutation use
     `npm run plan -- refute --transport codex-cli-exec`; the two in-harness
     background reviews of earlier drafts were not filed and are recorded as

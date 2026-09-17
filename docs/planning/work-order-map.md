@@ -324,7 +324,7 @@ burden (the checklist is executed, the cap is enforced, the gate refuses up
 front) and commons (operator-assisted orders never share a pair; inference
 never overlaps a gate). The dispatch and every follow-up are captured
 verbatim in ignored intake (SHA-256
-`7f47a99676f26308a2068718b04143c19c3d2d61621f194c5aee203f188a8b2f`); the
+`e267d8e2c26e8c55bacc1e13240b9fac7ec2570ebf0cd0ecfe270ff64b203a26`); the
 refutation is one background goal review. The full assessment, decisions and
 NoOp register are in [the planning document](vision-into-use-2026-09-17.md).
 
