@@ -62,6 +62,21 @@ suite or dependency install. Its egress preflight and the host's permissions
 still govern publication. Worktree cleanup follows publication as best effort;
 protected local settings or intake can block cleanup without undoing the release.
 
+## Authority boundary measurement — WO-136, 2026-09-17
+
+The [authority matrix](discovery/authority-boundary-2026-09-17.md) records an
+**inconclusive** bounded experiment using Claude Code 2.1.274 and Codex CLI
+0.154.0, with native sandbox on/off launch selectors. Forty individually
+approved launches used only temporary fixtures, a random credential sentinel,
+loopback and a local bare remote. Several sandbox-off script effects were
+observed-only; missing attempts and unavailable human-prompt telemetry prevent
+qualifying another operating mode. The packet retains partial workflow effects
+and failed attempts separately. Native sandbox selection is a launch claim,
+not effective-state attestation. The proposed Claude rule table was not applied;
+this experiment changes neither personal settings nor the current baseline.
+The post-close planning checkpoint decides the next mode or experiment from
+these observations.
+
 ## Recorded host posture (2026-09-01, with dated amendments)
 
 WO-051's `source-change-v1` worker profile uses one host-declared writable Git

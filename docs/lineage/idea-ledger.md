@@ -24,6 +24,26 @@ founding-era: **Resolutions of known tensions** (settled contradictions — do
 not relitigate them) and the founding chat/notes/image corpus.
 
 
+## 2026-09-17 — WO-136 authority research outcome
+
+Source: the operator's `resume: next` dispatch, the explicit ledger write-back
+in [WO-136](../work-orders/WO-136-authority-enforcement-boundary.md), and the
+completed [fixture-only matrix](../discovery/authority-boundary-2026-09-17.md).
+This records the outcome of the already allocated planning question; it adds
+no new operating-mode decision or raw intake.
+
+- **Authority-boundary research is inconclusive; retain current modes as the
+  proposal to the post-close planning checkpoint** `preserved`
+  - Forty launches and approvals reached thirty-eight cells within the
+    two-hour budget. Sandbox-off observed-only routes exist in Claude rows
+    2, 4, 7 and 9 and Codex rows 1–8. Missing attempts, prompt telemetry and
+    revocation ordering prevent qualifying a new mode. The packet records
+    the remaining unknowns and proposed, unapplied Claude configuration.
+    [D004](../evidence/WO-136/decisions.md#wo-136-d004--finish-the-bounded-investigation-as-inconclusive)
+    records alternatives, budget closure and the bounded recovery correction.
+    Reopen: the planning checkpoint after WO-136 closes authorizes the next
+    experiment or implementation from this evidence; R2 confirms the mode.
+
 ## 2026-09-17 — Ideation: reversible permission-mode trials
 
 Source: operator ideation during WO-141, captured in ignored
