@@ -1,0 +1,162 @@
+TAP version 13
+# Subtest: WO-121 optional human idle threshold is independent, validated and retained by editable views
+ok 1 - WO-121 optional human idle threshold is independent, validated and retained by editable views
+  ---
+  duration_ms: 9.278541
+  ...
+# Subtest: WO-067 three phases compile without changing the base or conflating the four axes
+ok 2 - WO-067 three phases compile without changing the base or conflating the four axes
+  ---
+  duration_ms: 2.492083
+  ...
+# Subtest: WO-067 every authority dimension narrows the final base, including wildcard denials
+ok 3 - WO-067 every authority dimension narrows the final base, including wildcard denials
+  ---
+  duration_ms: 5.263167
+  ...
+# Subtest: WO-067 malformed policies refuse naming their field before normalization
+ok 4 - WO-067 malformed policies refuse naming their field before normalization
+  ---
+  duration_ms: 0.996
+  ...
+# Subtest: WO-067 three serialized editable views preserve presence and phase order exactly
+ok 5 - WO-067 three serialized editable views preserve presence and phase order exactly
+  ---
+  duration_ms: 6.282417
+  ...
+# Subtest: WO-067 empty presence retains exact Seiri semantic bytes; tooltip derives policy values
+ok 6 - WO-067 empty presence retains exact Seiri semantic bytes; tooltip derives policy values
+  ---
+  duration_ms: 5.547
+  ...
+# Subtest: WO-121 classifier depends on signal evidence and stamp, never launch path
+ok 7 - WO-121 classifier depends on signal evidence and stamp, never launch path
+  ---
+  duration_ms: 0.678125
+  ...
+# all activity=actor; stamped prompt=actor; observed human prompt=human; launch-path permutations identical
+# Subtest: WO-121 negative activity stream never changes away phase or cancels; human return preserves foreground
+ok 8 - WO-121 negative activity stream never changes away phase or cancels; human return preserves foreground
+  ---
+  duration_ms: 2727.521708
+  ...
+# back/kill: away stream caused zero phase changes/cancellations; foreground completed under own authority
+# back/finish: away stream caused zero phase changes/cancellations; foreground completed under own authority
+# back/foreground: away stream caused zero phase changes/cancellations; foreground completed under own authority
+# heartbeat/kill: away stream caused zero phase changes/cancellations; foreground completed under own authority
+# heartbeat/finish: away stream caused zero phase changes/cancellations; foreground completed under own authority
+# heartbeat/foreground: away stream caused zero phase changes/cancellations; foreground completed under own authority
+# Subtest: WO-121 human idle threshold, actor stall, and task progress are independent replay clocks
+ok 9 - WO-121 human idle threshold, actor stall, and task progress are independent replay clocks
+  ---
+  duration_ms: 205.154792
+  ...
+# actor stalled at 35 without presence change; human idle at 40; phase decay at 140; task progress renewed neither clock; replay identical
+# Subtest: WO-121 running actor silence is sampled without incoming traffic
+ok 10 - WO-121 running actor silence is sampled without incoming traffic
+  ---
+  duration_ms: 117.06125
+  ...
+# Subtest: WO-121 late heartbeats retain missed deadlines; backwards live back preserves intent; task keys are data
+ok 11 - WO-121 late heartbeats retain missed deadlines; backwards live back preserves intent; task keys are data
+  ---
+  duration_ms: 187.207291
+  ...
+# Subtest: WO-121 generated hooks emit exactly one reduced observation per event and no SessionStart heartbeat
+ok 12 - WO-121 generated hooks emit exactly one reduced observation per event and no SessionStart heartbeat
+  ---
+  duration_ms: 675.768625
+  ...
+# Subtest: WO-121 native script receives only explicit resident stamp environment
+ok 13 - WO-121 native script receives only explicit resident stamp environment
+  ---
+  duration_ms: 100.333708
+  ...
+# Subtest: WO-067 fixture: hold, verified-only advance, failure reset, peak/reset/loop
+ok 14 - WO-067 fixture: hold, verified-only advance, failure reset, peak/reset/loop
+  ---
+  duration_ms: 1.4165
+  ...
+# NoOp:present | absence:probe | NoOp:gate-or-cadence | dispatch:probe | verified-success:widen | dispatch:widen | failure:probe | dispatch:probe | verified-success:widen | dispatch:widen | verified-success:peak | dispatch:peak | verified-success:probe | dispatch:probe | verified-success:widen | dispatch:widen | verified-success:peak | dispatch:peak | verified-success:probe
+# Subtest: WO-067 fixture: return kills or finishes discretionary work, preserves foreground and wins races
+ok 15 - WO-067 fixture: return kills or finishes discretionary work, preserves foreground and wins races
+  ---
+  duration_ms: 0.535709
+  ...
+# absence:probe | dispatch:probe | in-flight:kill | return:present | NoOp:present | foreground:completed-under-own-authority
+# absence:probe | dispatch:probe | in-flight:kill | return:present | NoOp:present | foreground:completed-under-own-authority
+# absence:probe | dispatch:probe | verified-success:widen | dispatch:widen | in-flight:finish | return:present | NoOp:present | absence:probe | NoOp:gate-or-cadence | dispatch:probe | foreground:completed-under-own-authority
+# Subtest: WO-067 fixture: idle deadline expires phase allocation and requires a fresh absence edge
+ok 16 - WO-067 fixture: idle deadline expires phase allocation and requires a fresh absence edge
+  ---
+  duration_ms: 0.126333
+  ...
+# absence:probe | expired:attention,work-scope,effect-authority | idle-expired:expired | NoOp:expired | NoOp:expired | return:present | absence:probe | dispatch:probe | foreground:completed-under-own-authority
+# Subtest: WO-067 fixture: a preauthorized portfolio effect with an unavailable adapter emits NoOp
+ok 17 - WO-067 fixture: a preauthorized portfolio effect with an unavailable adapter emits NoOp
+  ---
+  duration_ms: 2.115542
+  ...
+# absence:probe | NoOp:Presence policy fixture.progressive phase probe: unavailable external capability: adapter.portfolio
+# Subtest: WO-067 fixture: real kernel authorizer enforces every phase ceiling and inherited restrictions
+ok 18 - WO-067 fixture: real kernel authorizer enforces every phase ceiling and inherited restrictions
+  ---
+  duration_ms: 0.467083
+  ...
+# Subtest: WO-067 fixture: condition entry and every emitted cadence execute in the kernel subset
+ok 19 - WO-067 fixture: condition entry and every emitted cadence execute in the kernel subset
+  ---
+  duration_ms: 1.053666
+  ...
+# Subtest: WO-068 recorded clock drives all phases; replay ignores ambient clock; return cancels; idle needs a fresh edge
+ok 20 - WO-068 recorded clock drives all phases; replay ignores ambient clock; return cancels; idle needs a fresh edge
+  ---
+  duration_ms: 627.115625
+  ...
+# dispatches=4; replay byte-identical; expired→return→absence rearmed
+# Subtest: WO-068 in-flight kill and finish obey return precedence and reject stale advancement
+ok 21 - WO-068 in-flight kill and finish obey return precedence and reject stale advancement
+  ---
+  duration_ms: 423.678416
+  ...
+# Subtest: WO-068 envelope, scope and runtime capability refusals never spawn; unavailable actor has no fallback
+ok 22 - WO-068 envelope, scope and runtime capability refusals never spawn; unavailable actor has no fallback
+  ---
+  duration_ms: 664.063791
+  ...
+# Subtest: WO-068 two once invocations produce byte-identical events to two loop ticks
+ok 23 - WO-068 two once invocations produce byte-identical events to two loop ticks
+  ---
+  duration_ms: 554.602
+  ...
+# Subtest: WO-068 malformed saved evidence refuses before append/reclaim; presence rejects symlink stores
+ok 24 - WO-068 malformed saved evidence refuses before append/reclaim; presence rejects symlink stores
+  ---
+  duration_ms: 85.107084
+  ...
+# Subtest: WO-068 inspected restart records lost once and cannot reuse dispatched identity
+ok 25 - WO-068 inspected restart records lost once and cannot reuse dispatched identity
+  ---
+  duration_ms: 312.303959
+  ...
+# Subtest: WO-068 native script uses exact argv/cwd, clears inherited env, verifies output and denies network
+ok 26 - WO-068 native script uses exact argv/cwd, clears inherited env, verifies output and denies network
+  ---
+  duration_ms: 635.331083
+  ...
+# native sandbox: EPERM; exact argv/cwd; inherited sentinel absent; timeout/output cap enforced
+# Subtest: WO-068 fresh CLI once and presence commands; SIGKILL recovery and dead-owner reclaim
+ok 27 - WO-068 fresh CLI once and presence commands; SIGKILL recovery and dead-owner reclaim
+  ---
+  duration_ms: 1014.862833
+  ...
+# fresh --once exit 0; live-owner refusal; SIGKILL orphan stopped; dead-owner inspection/reclaim; lost recorded once
+1..27
+# tests 27
+# suites 0
+# pass 27
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4396.535208

@@ -3265,7 +3265,14 @@ test("WO-133 stale generated hooks emit once per session/cause, retain every row
     );
     assert.deepEqual(
       settings.hooks.SessionStart,
-      settings.hooks.UserPromptSubmit,
+      settings.hooks.UserPromptSubmit.map((row) => ({
+        ...row,
+        hooks: row.hooks.filter((hook) => !hook.command.includes("/presence-")),
+      })),
+    );
+    assert.doesNotMatch(
+      JSON.stringify(settings.hooks.SessionStart),
+      /presence-/,
     );
     assert.deepEqual(invoke(root, "session", input(root, "SessionStart")), {});
     const hooks = [

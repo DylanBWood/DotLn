@@ -104,6 +104,15 @@ doctrine.
 
 ## Amendments
 
+2026-09-16 — WO-121 separates human presence, actor liveness and task progress
+in `OperatorPresenceObserved`. Activity and stamped prompts never imply human
+return; the currently observed harness profiles require explicit away/back
+because they cannot establish typed prompt origin. Optional human inactivity
+is distinct from phase expiry and actor heartbeat budgets. Return preserves
+explicit foreground authority and follows discretionary kill/finish policy.
+See [the presence contract](../product/03-architecture.md#operator-presence-policy)
+and [decision receipt](../evidence/WO-121/decisions.md).
+
 2026-09-15 — WO-067 compiles the first optional `PresencePolicy` subset:
 four named axes, owner-ordered progressive phases, verified-success advancement,
 failure/peak reset, discretionary return disposition and idle phase expiry.

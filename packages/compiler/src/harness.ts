@@ -171,6 +171,14 @@ const ensure: (ok: unknown, reason: string) => asserts ok = (ok, reason) => {
 const id = (value: string) => /^[a-z][a-z0-9.-]{0,99}$/.test(value);
 const hash = (text: string) => `fnv1a64:${fnv1a64(text)}`;
 const json = (value: unknown) => JSON.stringify(value, null, 2) + "\n";
+const heartbeatHook = (event: HarnessEvent, runtimeURL: string) => `try {
+const { text } = await import("node:stream/consumers");
+const input = JSON.parse(await text(process.stdin));
+const { recordHarnessHeartbeat } = await import(${JSON.stringify(runtimeURL)});
+await recordHarnessHeartbeat(${JSON.stringify(event)}, input);
+} catch { process.stderr.write("DotLn advisory: presence heartbeat unavailable\\n"); }
+process.stdout.write("{}");
+`;
 const events: readonly HarnessEvent[] = [
   "PreToolUse",
   "PostToolUse",
@@ -673,6 +681,21 @@ process.stdout.write(JSON.stringify(response));`;
       ],
       6,
     );
+  for (const event of events) {
+    if (!profile.events[event].available) continue;
+    const path = `${hookRoot}/presence-${event.toLowerCase()}.mjs`;
+    emit(
+      path,
+      `// Origin: ${canonicalStringify(origin([]))}\n` +
+        heartbeatHook(
+          event,
+          `../../${profile.runtime.snapshot ? `${profile.runtime.snapshot}/` : ""}packages/skeleton/dist/src/presence-heartbeat.js`,
+        ),
+      [],
+      1,
+    );
+    hookPaths.set(event, [...(hookPaths.get(event) ?? []), path]);
+  }
   for (const role of program.roles) {
     const supportIds = program.facets.flatMap((facet) =>
       facet.kind === "role-procedure" &&
@@ -895,6 +918,17 @@ function lowerTargetWorker(
       .join("/");
   const hooks: string[] = [];
   if (profile.events.PreToolUse.available) {
+    const heartbeatPath = ".claude/hooks/presence-pretooluse.mjs";
+    hooks.push(heartbeatPath);
+    emit(
+      heartbeatPath,
+      `// Origin: ${canonicalStringify(origin)}\n` +
+        heartbeatHook(
+          "PreToolUse",
+          importURL("packages/skeleton/dist/src/presence-heartbeat.js"),
+        ),
+      1,
+    );
     const configs = [
       { name: "permissions", kind: "permission", envelope },
       ...units.map((unit) => ({

@@ -27,6 +27,7 @@ export const FEEDBACK_SOURCE_PATHS = [
   "packages/skeleton/src/feedback-selfhost.ts",
   "packages/skeleton/src/reactor.ts",
   "packages/skeleton/src/resident-state.ts",
+  "packages/skeleton/src/presence-signals.ts",
   "packages/skeleton/src/presence-machine.ts",
   "packages/skeleton/src/actor-catalog.ts",
   "packages/skeleton/src/actor-contract.ts",

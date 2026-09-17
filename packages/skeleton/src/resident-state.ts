@@ -23,6 +23,10 @@ import {
   presencePredicates,
   type PresenceSnapshot,
 } from "./presence-machine.js";
+import {
+  decodePresenceObservation,
+  presenceActorKey,
+} from "./presence-signals.js";
 
 export interface ResidentConfiguration {
   graph: LoadoutGraph;
@@ -30,6 +34,7 @@ export interface ResidentConfiguration {
   policyId: string;
   actors: Record<string, ActorSpec>;
   evidence: string[];
+  heartbeatBudgetMs?: number;
 }
 export interface ResidentState {
   configuration: ResidentConfiguration | null;
@@ -41,6 +46,17 @@ export interface ResidentState {
   episodePhases: Record<string, string>;
   revokedBy: Event[];
   lastNoOp: string | null;
+  lastHumanAt: number | null;
+  actors: Record<
+    string,
+    {
+      lastHeartbeatAt: number;
+      status: "live" | "stalled" | "stopped";
+      failureAt?: number;
+      episodeId?: string;
+    }
+  >;
+  progress: Record<string, number>;
 }
 export function decodeResidentConfiguration(
   value: unknown,
@@ -51,9 +67,14 @@ export function decodeResidentConfiguration(
   if (
     Object.keys(v).some(
       (key) =>
-        !["graph", "environment", "policyId", "actors", "evidence"].includes(
-          key,
-        ),
+        ![
+          "graph",
+          "environment",
+          "policyId",
+          "actors",
+          "evidence",
+          "heartbeatBudgetMs",
+        ].includes(key),
     ) ||
     typeof v.policyId !== "string" ||
     !v.actors ||
@@ -63,6 +84,11 @@ export function decodeResidentConfiguration(
     v.evidence.some((item) => typeof item !== "string")
   )
     throw new Error("invalid resident configuration fields");
+  if (
+    v.heartbeatBudgetMs !== undefined &&
+    (!Number.isSafeInteger(v.heartbeatBudgetMs) || v.heartbeatBudgetMs < 1)
+  )
+    throw new Error("invalid resident heartbeat budget");
   const program = requireCompiled(compileLoadout(v.graph, v.environment));
   const policy = program.presence?.find((p) => p.policyId === v.policyId);
   if (!policy) throw new Error("resident policy is not compiled");
@@ -85,6 +111,9 @@ export const emptyResidentState = (): ResidentState => ({
   episodePhases: {},
   revokedBy: [],
   lastNoOp: null,
+  lastHumanAt: null,
+  actors: {},
+  progress: {},
 });
 export function residentMachine(
   state: ResidentState,
@@ -123,7 +152,18 @@ export const residentEventTypes = [
   "ScriptEpisodeLost",
   "ScriptEpisodeRefused",
   "ActorUnavailable",
+  "OperatorPresenceObserved",
 ] as const;
+
+function expireActorHeartbeats(state: ResidentState) {
+  const budget = state.configuration?.heartbeatBudgetMs ?? 30000;
+  for (const actor of Object.values(state.actors)) {
+    if (actor.status === "live" && state.at - actor.lastHeartbeatAt >= budget) {
+      actor.status = "stalled";
+      actor.failureAt = actor.lastHeartbeatAt + budget;
+    }
+  }
+}
 
 export function residentRefusal(
   state: ResidentState,
@@ -172,7 +212,7 @@ export function foldResidentEvent(
   event: Event,
   predicates: PredicateRegistry,
 ): ResidentState {
-  const state = structuredClone(previous ?? emptyResidentState());
+  const state = structuredClone({ ...emptyResidentState(), ...previous });
   const payload = event.payload as Record<string, unknown>;
   if (!payload || typeof payload !== "object" || Array.isArray(payload))
     throw new Error("invalid resident event payload");
@@ -205,6 +245,56 @@ export function foldResidentEvent(
     )
       throw new Error("invalid recorded clock sample");
     state.at = Math.max(state.at, at); // A backwards wall clock cannot replenish a phase.
+    expireActorHeartbeats(state);
+  }
+  let humanChanged = false;
+  if (event.type === "OperatorPresenceObserved") {
+    const observation = decodePresenceObservation(payload);
+    if (observation.at !== event.occurredAt)
+      throw new Error("presence time differs from event");
+    state.at = Math.max(state.at, observation.at);
+    // A late heartbeat cannot hide a deadline crossed before its arrival.
+    expireActorHeartbeats(state);
+    const { signal, origin, stamp } = observation;
+    if (
+      origin === "human" &&
+      observation.at >= state.at &&
+      observation.at >= (state.lastHumanAt ?? 0)
+    ) {
+      state.lastHumanAt = observation.at;
+      state.present = signal.kind !== "away";
+      humanChanged = true;
+    }
+    if (origin === "actor" && signal.kind === "heartbeat") {
+      const key = presenceActorKey(signal, stamp);
+      const old = state.actors[key];
+      // A late heartbeat cannot resurrect a completed/lost resident episode.
+      if (
+        observation.at >= state.at &&
+        (!stamp ||
+          !["observed", "lost"].includes(
+            state.episodes[stamp.episodeId] ?? "",
+          )) &&
+        (!old || observation.at >= old.lastHeartbeatAt)
+      ) {
+        state.actors[key] = {
+          lastHeartbeatAt: observation.at,
+          status: "live",
+          ...(stamp ? { episodeId: stamp.episodeId } : {}),
+          ...(old?.failureAt === undefined ? {} : { failureAt: old.failureAt }),
+        };
+      }
+    }
+    if (origin === "task" && signal.kind === "progress")
+      state.progress = {
+        ...state.progress,
+        [signal.taskId]: Math.max(
+          Object.hasOwn(state.progress, signal.taskId)
+            ? state.progress[signal.taskId]!
+            : 0,
+          observation.at,
+        ),
+      };
   }
   if (event.type === "OperatorPresenceChanged") {
     if (
@@ -213,15 +303,33 @@ export function foldResidentEvent(
     )
       throw new Error("invalid resident presence");
     state.present = payload["presence"] === "returned";
+    state.lastHumanAt = state.at;
+    humanChanged = true;
+  }
+  if (
+    event.type === "ClockSampled" &&
+    state.present &&
+    state.lastHumanAt !== null &&
+    state.policy?.humanIdleMs !== undefined &&
+    state.at - state.lastHumanAt >= state.policy.humanIdleMs
+  ) {
+    state.present = false;
+    humanChanged = true;
   }
   if (!state.machine) {
-    if (!["ClockSampled", "OperatorPresenceChanged"].includes(event.type))
+    if (
+      ![
+        "ClockSampled",
+        "OperatorPresenceChanged",
+        "OperatorPresenceObserved",
+      ].includes(event.type)
+    )
       throw new Error("resident event precedes configuration");
     return state;
   }
   const machine = residentMachine(state, predicates);
   machine.now = state.at;
-  if (event.type === "OperatorPresenceChanged") {
+  if (humanChanged) {
     if (state.present) machine.returned();
     else machine.absence();
   }
@@ -255,6 +363,11 @@ export function foldResidentEvent(
       throw new Error("invalid or repeated resident dispatch");
     state.episodes[id] = "dispatched";
     state.episodePhases[id] = phase!.phaseId;
+    state.actors[`episode:${id}`] = {
+      lastHeartbeatAt: state.at,
+      status: "live",
+      episodeId: id,
+    };
     machine.dispatch(id);
     state.lastNoOp = null;
   }
@@ -273,6 +386,8 @@ export function foldResidentEvent(
         throw new Error("script verification contradicts recorded output");
     }
     state.episodes[id] = lost ? "lost" : "observed";
+    const actor = state.actors[`episode:${id}`];
+    if (actor) actor.status = "stopped";
     machine.outcome(
       !lost && payload["verified"] === true ? "verified-success" : "failure",
       id,

@@ -296,8 +296,15 @@ test("WO-132 both harness roles receive identical duties and the shared instruct
     (file) =>
       file.path.endsWith(".mjs") && !file.path.endsWith("commit-msg.mjs"),
   )) {
-    assert.match(file.contents, /built adapter unavailable/);
-    assert.match(file.contents, /delegated: true/);
+    if (file.path.includes("/presence-"))
+      assert.match(
+        file.contents,
+        /DotLn advisory: presence heartbeat unavailable/,
+      );
+    else {
+      assert.match(file.contents, /built adapter unavailable/);
+      assert.match(file.contents, /delegated: true/);
+    }
     assert.doesNotMatch(file.contents, /permissionDecision: "deny"/);
   }
 });
@@ -362,11 +369,24 @@ test("WO-049 target lowering is explicit, omits importRoot from metadata and emi
   for (const file of bundle.files.filter((file) =>
     file.path.endsWith(".mjs"),
   )) {
-    assert.match(
-      file.contents,
-      /new URL\("file:\/\/\/fixture%20launchpad\/%23unicode-%C3%A9/,
-    );
-    assert.match(file.contents, /permissionDecision: "deny"/);
+    if (file.path.includes("/presence-")) {
+      assert.equal(file.path, ".claude/hooks/presence-pretooluse.mjs");
+      assert.match(
+        file.contents,
+        /import\("file:\/\/\/fixture%20launchpad\/%23unicode-%C3%A9/,
+      );
+      assert.match(
+        file.contents,
+        /recordHarnessHeartbeat\("PreToolUse", input\)/,
+      );
+      assert.doesNotMatch(file.contents, /permissionDecision/);
+    } else {
+      assert.match(
+        file.contents,
+        /new URL\("file:\/\/\/fixture%20launchpad\/%23unicode-%C3%A9/,
+      );
+      assert.match(file.contents, /permissionDecision: "deny"/);
+    }
     assert.ok(!file.contents.includes("operatorControl"));
     assert.ok(!file.contents.includes('"importRoot"'));
   }

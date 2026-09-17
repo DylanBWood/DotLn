@@ -386,6 +386,8 @@ export interface PresencePolicy {
   readonly phases: readonly PresencePhase[];
   readonly curve: "progressive";
   readonly returnRule: "cancel-on-return";
+  /** Optional human inactivity threshold, independent of phase allocation decay. */
+  readonly humanIdleMs?: number;
   /** Expire phase allocations; fresh absence is needed to rearm. */
   readonly decay: Readonly<{ idleMs: number; expires: "phase" }>;
 }

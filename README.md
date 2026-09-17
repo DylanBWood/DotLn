@@ -93,7 +93,7 @@ intent → task-scoped build → bounded WorkOrder → disposable executor
 -->
 <!-- DOTLN-RELEASE-BEGIN -->
 
-This source prepares DotLn `v0.26.0`.
+This source prepares DotLn `v0.27.0`.
 
 **The core.** A local-first compiler turns a loadout graph into a bounded
 program: one identity, one active mechanic, its linked supports, and an
@@ -109,7 +109,9 @@ base-bounded authority, return handling, idle expiry and observed adapter
 availability; the three editable views preserve it.
 
 **What you can run.** An offline resident now drives that policy from recorded
-time and explicit presence. It records every clock sample as an event,
+time and observations separating human presence, actor liveness and task
+progress. Current harness profiles use explicit away/back for human presence;
+tool activity never implies return. It records every clock sample as an event,
 dispatches one declared bounded script per phase when the policy allows, and
 resumes after a kill without dispatching an episode twice. `dotln resident` runs
 the loop, `--once` runs a single cycle under an outside scheduler, and `dotln

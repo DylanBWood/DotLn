@@ -1,0 +1,50 @@
+{
+  "baseline": "work-order HEAD",
+  "existingHooks": [
+    {
+      "path": ".claude/hooks/commit-msg.mjs",
+      "comparison": "identical except runtime pins and derived identities"
+    },
+    {
+      "path": ".claude/hooks/concurrent-work-requires-worktrees.mjs",
+      "comparison": "identical except runtime pins and derived identities"
+    },
+    {
+      "path": ".claude/hooks/finish.mjs",
+      "comparison": "identical except runtime pins and derived identities"
+    },
+    {
+      "path": ".claude/hooks/no-attribution.mjs",
+      "comparison": "identical except runtime pins and derived identities"
+    },
+    {
+      "path": ".claude/hooks/no-lint-type-disables-as-fixes.mjs",
+      "comparison": "identical except runtime pins and derived identities"
+    },
+    {
+      "path": ".claude/hooks/permissions.mjs",
+      "comparison": "identical except runtime pins and derived identities"
+    },
+    {
+      "path": ".claude/hooks/read-observer.mjs",
+      "comparison": "identical except runtime pins and derived identities"
+    },
+    {
+      "path": ".claude/hooks/session.mjs",
+      "comparison": "identical except runtime pins and derived identities"
+    },
+    {
+      "path": ".claude/hooks/write-observer.mjs",
+      "comparison": "identical except runtime pins and derived identities"
+    }
+  ],
+  "addedHeartbeatHooks": [
+    ".claude/hooks/presence-posttooluse.mjs",
+    ".claude/hooks/presence-pretooluse.mjs",
+    ".claude/hooks/presence-stop.mjs",
+    ".claude/hooks/presence-userpromptsubmit.mjs"
+  ],
+  "settings": "only heartbeat registrations added",
+  "skillsAndInstruction": "byte-identical",
+  "manifest": "harness check validates regenerated pins and installed file hashes"
+}

@@ -390,6 +390,20 @@ const projections = Object.entries({
 // Generated runtime/policy hashes are derived from the executing compiler pin.
 // Compare every other hook configuration byte and every wrapper byte exactly.
 const parseHook = (source) => {
+  const heartbeat = /await recordHarnessHeartbeat\(("[^"]+"), input\);/u.exec(
+    source,
+  );
+  if (heartbeat) {
+    const event = JSON.parse(heartbeat[1]);
+    assert.ok(
+      ["UserPromptSubmit", "PreToolUse", "PostToolUse", "Stop"].includes(event),
+    );
+    assert.match(
+      source,
+      /packages\/skeleton\/dist\/src\/presence-heartbeat\.js/,
+    );
+    return { config: { kind: "presence", event }, wrapper: source };
+  }
   const call = /await (?:runHarnessHook|runCommitMessageHook)\(/u.exec(source);
   assert.ok(call, "known generated hook adapter");
   const start = call.index + call[0].length;
@@ -481,7 +495,8 @@ const bundleFiles = comparisonPaths.map((path) => {
   const after = generated(unequipped, path);
   if (after !== null && path.startsWith(".claude/hooks/")) {
     const { config } = parseHook(after);
-    assert.equal(config.compilerPackageVersion, COMPILER_PACKAGE_VERSION);
+    if (config.kind !== "presence")
+      assert.equal(config.compilerPackageVersion, COMPILER_PACKAGE_VERSION);
     if (config.policy) assertCompiledFeedback(config.policy);
   }
   return {

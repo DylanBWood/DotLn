@@ -147,6 +147,7 @@ export const normalizePresencePolicies = (
         "phases",
         "curve",
         "returnRule",
+        "humanIdleMs",
         "decay",
       ]);
       const policyId = text(source["policyId"], `${path}.policyId`);
@@ -292,6 +293,15 @@ export const normalizePresencePolicies = (
         phases,
         curve: "progressive",
         returnRule: "cancel-on-return",
+        ...(source["humanIdleMs"] === undefined
+          ? {}
+          : {
+              humanIdleMs: integer(
+                source["humanIdleMs"],
+                `${path}.humanIdleMs`,
+                1,
+              ),
+            }),
         decay: {
           idleMs: number(decay["idleMs"], `${path}.decay.idleMs`),
           expires: "phase",

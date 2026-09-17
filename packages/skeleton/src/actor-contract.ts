@@ -60,7 +60,10 @@ export function assertActorResult(
 export interface ActorAdapter {
   kind: ActorKind;
   available(): string | null;
-  run(spec: ActorSpec): ActorRun;
+  run(
+    spec: ActorSpec,
+    context?: { residentStore: string; episodeId: string },
+  ): ActorRun;
 }
 export const SCRIPT_SANDBOX = "(version 1)(allow default)(deny network*)";
 export function assertActorSpec(value: unknown): asserts value is ActorSpec {
