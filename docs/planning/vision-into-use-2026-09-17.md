@@ -864,7 +864,22 @@ empty git repository outside this checkout, which satisfies the check
 without giving the refuter anything to read; the transport's own fix (pass
 `--skip-git-repo-check`, or initialize the temporary directory) is a
 boy-scout item for the next order that touches `worker-transport.ts`
-(WO-110). The follow-up feed's first page was read;
+(WO-110). The second dispatch returned a judgment the validator rejected
+("known issue requires a reopening observation") and the host deleted it:
+the result schema allows `reopenWhen: null` on every finding kind while
+`plan-refutation-protocol.ts` refuses a known issue without one, and the
+Codex transport constrains generation to that schema, so the model may emit
+what the validator refuses; the host's `rmSync` on "invalid-result" then
+discards the only copy. Two boy-scout items for WO-135, the planning
+machinery order first in the delivery lane: make the schema conditional (a
+known issue requires a non-empty `reopenWhen`; an observed failure or
+vision contradiction requires an `evidence` id) so a constrained transport
+cannot produce a rejectable result, and retain a rejected result and
+statement in the local lane so a formatting repair replaces a re-judgment.
+The third dispatch validated and is receipt 017: aligned-with-findings, no
+hold; WO-122, WO-136, WO-137, WO-110, WO-079 and WO-138 aligned, WO-141,
+WO-135, WO-139 and WO-140 aligned with six known issues carrying reopening
+observations. The follow-up feed's first page was read;
 the dispositions of section 7 are applied to the register in this pass.
 Handoff process cost is reported in the response.
 
