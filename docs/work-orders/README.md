@@ -28,7 +28,7 @@
 - [x] [WO-119] — Executable discovery producer · **final-reviewed**
 - [x] [WO-052] — Source-change host and commit receipt · **final-reviewed**
 - [x] [WO-122] — Actor catalog: cli-worker and human-handoff · **final-reviewed**
-- [ ] [WO-141] — No guessing, enforced · **queued**
+- [x] [WO-141] — No guessing, enforced · **final-reviewed**
 - [ ] [WO-136] — Authority enforcement boundary · **queued**
 - [ ] [WO-135] — Planning-gate corrections · **queued**
 - [ ] [WO-053] — The first external source change · **queued**
@@ -1392,22 +1392,6 @@ None.
 - Cost: removes one failed sandboxed gate per attended verification (observed: WO-121 VER-001 ran the gate twice inside the sandbox, 17 of 19 and 18 of 19, one failure being the genuine intermittent defect F1 and the other the &#96;.claude/hooks/**&#96; denial, and did not itself run the gate outside; VER-002 ran 18 of 19 inside before its passing outside run; WO-049, WO-051, WO-052, WO-134, WO-122 and WO-121 VER-002 record their passing gate outside the sandbox), 191 to 515 s of fresh gate wall-clock each plus its diagnosis; removes the bare "unknown" default in cost lines (one receipt since 2026-09-13 reports an entry measurement). Adds one preflight check under a second, one &#96;needs:&#96; declaration per affected suite, one distinct partial check identity, one briefing line, one closed cause-code list and one document check; no gate, hook or recurring step.
 - Authority: [docs/work-orders/WO-140-gate-sandbox-preflight.md](WO-140-gate-sandbox-preflight.md)
 
-### WO-141
-
-[WO-141 — No guessing, enforced without gating the operator: the session's observed facts are always in front of the agent, a hedged number or duration that slips into a handoff is journaled and corrected as an advisory that never holds a turn, and operator corrections are counted from the journal instead of self-report (version assigned at activation)](WO-141-no-guessing-enforced.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-133: satisfied-by-close (met) — the built runtime follows main after a fast-forward; WO-131: satisfied-by-close (met) — the Stop hook path and hook-input decoding.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh+; verifier xhigh+; reviewer any.
-- Cost: removes operator corrections of unmeasured claims: on 2026-09-17 the planner reported a background review as dispatched "roughly 10 minutes ago" while the session's own files held the dispatch time (14:06) and the clock (14:32), and the operator caught it; the 2026-09-16 defect register counted nine operator corrections in one session (items 7 and 13), and the meter's &#96;operatorCorrections&#96; reads decision records, which is self-report. Adds one observed-facts block in the briefing, the prompt-submit context and the Stop advisory, one advisory scan of the final message (under 100 ms), one journal-derived counter and fixtures; no refusal, no held turn, no new receipt, key or ritual. The operator's direction is explicit: the mechanism removes the guess, it does not gate responses.
-- Authority: [docs/work-orders/WO-141-no-guessing-enforced.md](WO-141-no-guessing-enforced.md)
-
 ## Closed
 
 ### WO-003
@@ -2484,6 +2468,23 @@ None.
 - Inherited ledger duty: discharge with [this order's decisions](../evidence/WO-134/decisions.md) and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
 - Latest attestation: harness codex-cli; version 0.154.0; model gpt-6-astra; effort max; source operator-attested; account not-applicable.
 - Authority: [docs/work-orders/WO-134-planning-pass-selection.md](WO-134-planning-pass-selection.md)
+
+### WO-141
+
+[WO-141 — No guessing, enforced without gating the operator: the session's observed facts are always in front of the agent, a hedged number or duration that slips into a handoff is journaled and corrected as an advisory that never holds a turn, and operator corrections are counted from the journal instead of self-report (v0.29.1)](WO-141-no-guessing-enforced.md)
+
+- State: closed.
+- Application target: v0.29.1.
+- Dependencies: typed; activation not applicable.
+- References: WO-133: satisfied-by-close (met) — the built runtime follows main after a fast-forward; WO-131: satisfied-by-close (met) — the Stop hook path and hook-input decoding.
+- Verification: [VER-001](../../docs/verifications/WO-141/VER-001.md) (pass).
+- Final review: [FINAL-001](../../docs/final-reviews/WO-141/FINAL-001.md) (pass).
+- Release: unreleased.
+- Model: any. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Cost: removes operator corrections of unmeasured claims: on 2026-09-17 the planner reported a background review as dispatched "roughly 10 minutes ago" while the session's own files held the dispatch time (14:06) and the clock (14:32), and the operator caught it; the 2026-09-16 defect register counted nine operator corrections in one session (items 7 and 13), and the meter's &#96;operatorCorrections&#96; reads decision records, which is self-report. Adds one observed-facts block in the briefing, the prompt-submit context and the Stop advisory, one advisory scan of the final message (under 100 ms), one journal-derived counter and fixtures; no refusal, no held turn, no new receipt, key or ritual. The operator's direction is explicit: the mechanism removes the guess, it does not gate responses.
+- Latest attestation: harness claude-code; version 2.1.274; model claude-opus-5&#91;1m&#93;; effort xhigh; source self-reported; account not-applicable.
+- Authority: [docs/work-orders/WO-141-no-guessing-enforced.md](WO-141-no-guessing-enforced.md)
 
 ## Historical
 
