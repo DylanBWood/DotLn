@@ -68,7 +68,11 @@ make_repo() {
     "$node_bin" "$script_dir/lib/release-fixtures.mjs" copy "$release_template" "$fixture"
   else
   git init --bare "$origin" >/dev/null
-  git clone "$origin" "$main" >/dev/null 2>&1
+  # These disposable stores are copied into templates and local clones. A
+  # detached repack can remove objects during copying or race fixture cleanup.
+  git -C "$origin" config maintenance.auto false
+  git -C "$origin" config receive.autogc false
+  git clone -c maintenance.auto=false "$origin" "$main" >/dev/null 2>&1
   git -C "$main" config user.email test@example.invalid
   git -C "$main" config user.name "DotLn Release Test"
   git -C "$main" config core.quotePath true
@@ -594,7 +598,7 @@ printf 'release surface version and component fixtures passed\n'
 
 release_case_surfaceclose() {
 make_repo surfaceclose
-git clone "$origin" "$fixture/integrator" >/dev/null 2>&1
+git clone -c maintenance.auto=false "$origin" "$fixture/integrator" >/dev/null 2>&1
 git -C "$fixture/integrator" config user.email test@example.invalid
 git -C "$fixture/integrator" config user.name "DotLn Surface Integrator"
 git -C "$fixture/integrator" switch main >/dev/null 2>&1
@@ -1027,7 +1031,7 @@ git -C "$main" worktree add "$stale_subject" -b wo-099 >/dev/null
 cp "$script_dir/release.mjs" "$script_dir/worktree.mjs" "$stale_subject/scripts/"
 commit_candidate "$stale_subject" WO-099 v0.2.1
 git -C "$stale_subject" push -u origin wo-099 >/dev/null 2>&1
-git clone "$origin" "$fixture/integrator" >/dev/null 2>&1
+git clone -c maintenance.auto=false "$origin" "$fixture/integrator" >/dev/null 2>&1
 git -C "$fixture/integrator" config user.email test@example.invalid
 git -C "$fixture/integrator" config user.name "DotLn Stale-Helper Integrator"
 git -C "$fixture/integrator" switch main >/dev/null 2>&1
@@ -1101,7 +1105,10 @@ NODE
   runtime_pin "$subject" 'console.log("fixture skeleton bootstrap");' no
   commit_candidate "$subject" WO-099 v0.2.1
   git -C "$subject" push -u origin wo-099 >/dev/null 2>&1
-  git clone "$origin" "$fixture/integrator" >/dev/null 2>&1
+  git clone -c maintenance.auto=false "$origin" "$fixture/integrator" >"$fixture/integrator-clone.log" 2>&1 || {
+    cat "$fixture/integrator-clone.log" >&2
+    return 1
+  }
   git -C "$fixture/integrator" switch main >/dev/null 2>&1
   git -C "$fixture/integrator" merge --ff-only origin/wo-099 >/dev/null
   git -C "$fixture/integrator" push origin main >/dev/null 2>&1
@@ -1174,7 +1181,7 @@ printf 'tracked Unicode fixture\n' >"$subject/$tracked_path"
 printf 'leading-space fixture\n' >"$subject/$leading_path"
 commit_candidate "$subject" WO-099 v0.2.1
 git -C "$subject" push -u origin wo-099 >/dev/null 2>&1
-git clone "$origin" "$fixture/integrator" >/dev/null 2>&1
+git clone -c maintenance.auto=false "$origin" "$fixture/integrator" >/dev/null 2>&1
 git -C "$fixture/integrator" config user.email test@example.invalid
 git -C "$fixture/integrator" config user.name "DotLn Release Integrator"
 git -C "$fixture/integrator" switch main >/dev/null 2>&1
