@@ -20,6 +20,15 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-136 activation completion (2026-09-17):** the authority-boundary research
+probe stages application `v0.29.1`, the next patch above the observed local
+`v0.29.0` tag. Package versions, runtime behavior, installed harness settings
+and compiled bundles stay fixed. This assignment completes the activation's
+version placeholder; live measurements and the planning mode decision remain
+distinct from release preparation.
+
+**WO-136 collision retiming (2026-09-17):** unpublished target `v0.29.1` is superseded by `v0.29.2` under the existing patch classification because the observed release baseline is `v0.29.1`. Scope, acceptance, component versions, and published tags are unchanged by this retiming.
+
 **WO-141 activation completion (2026-09-17):** application `v0.29.1` and
 skeleton `0.25.1` stage the observed-facts display, nonblocking lexical advisory
 and journal-derived correction meter above locally observed `v0.29.0`.
