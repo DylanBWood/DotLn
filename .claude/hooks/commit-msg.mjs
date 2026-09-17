@@ -1,10 +1,10 @@
 // Origin: {"ids":["no-attribution"],"loadoutId":"contributor","semanticHash":"fnv1a64:f7e29ff3f4ede75c"}
-const { runCommitMessageHook } = await import("../../.runtime/harness/707526280b332f0d/packages/skeleton/dist/src/harness-host.js");
-const { feedbackBoundary } = await import("../../.runtime/harness/707526280b332f0d/packages/skeleton/dist/src/feedback-boundary.js");
+const { runCommitMessageHook } = await import("../../.runtime/harness/d9c71d521af31eb2/packages/skeleton/dist/src/harness-host.js");
+const { feedbackBoundary } = await import("../../.runtime/harness/d9c71d521af31eb2/packages/skeleton/dist/src/feedback-boundary.js");
 await runCommitMessageHook({
   "compilerPackageVersion": "0.12.0",
   "runtime": {
-    "skeletonVersion": "0.21.0",
+    "skeletonVersion": "0.22.0",
     "boundaryContract": "feedback-v1",
     "files": [
       {
@@ -37,7 +37,7 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/version.js",
-        "hash": "fnv1a64:3d85f76537af4ca4"
+        "hash": "fnv1a64:88ecfa9a20031bb3"
       },
       {
         "path": "packages/skeleton/dist/src/harness-command.js",
@@ -65,7 +65,7 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/resident-state.js",
-        "hash": "fnv1a64:bd0f3a3196b1e880"
+        "hash": "fnv1a64:b08e84fda65c87ca"
       },
       {
         "path": "packages/skeleton/dist/src/presence-machine.js",
@@ -77,14 +77,34 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/actor-contract.js",
-        "hash": "fnv1a64:4db68bc88b60fc1b"
+        "hash": "fnv1a64:bb1bce6dea8db682"
+      },
+      {
+        "path": "packages/skeleton/dist/src/work-candidate.js",
+        "hash": "fnv1a64:74457672d9c64dae"
       },
       {
         "path": "packages/skeleton/dist/src/script-episode.js",
-        "hash": "fnv1a64:a17dabf227a72161"
+        "hash": "fnv1a64:38e6437274507e07"
+      },
+      {
+        "path": "packages/skeleton/dist/src/discovery-sandbox.js",
+        "hash": "fnv1a64:9d809e99a432c81c"
+      },
+      {
+        "path": "packages/skeleton/dist/src/discovery-actor.js",
+        "hash": "fnv1a64:22d10e334cd2edfc"
+      },
+      {
+        "path": "packages/skeleton/dist/src/discovery-cli.js",
+        "hash": "fnv1a64:5206b2bb4f28940f"
+      },
+      {
+        "path": "packages/skeleton/dist/src/discovery.js",
+        "hash": "fnv1a64:6359806743e418ea"
       }
     ],
-    "snapshot": ".runtime/harness/707526280b332f0d"
+    "snapshot": ".runtime/harness/d9c71d521af31eb2"
   },
   "policy": {
     "contractVersion": "feedback-v1",

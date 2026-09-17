@@ -20,6 +20,12 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-119 activation completion (2026-09-16):** application `v0.26.0` and
+skeleton `0.22.0` stage the executable discovery producer and optional typed
+script result. The observed local release baseline is `v0.25.0`; kernel,
+compiler and console behavior and versions are unchanged. Candidate generation
+adds observation, not work derivation or repair authority.
+
 **WO-049 activation completion (2026-09-16):** application `v0.24.0` is the
 next minor above the observed local `v0.23.0`. Compiler `0.12.0` adds the
 optional target-worker harness profile and absolute runtime import root;
