@@ -1512,8 +1512,8 @@ repeated absence observations cannot silently replenish an expired allocation.
 The foreground task retains its own authority. `dotln resident --store <dir>
 --policy <id>` runs the local loop; `--once` performs one complete cycle for an
 outside scheduler. `dotln presence away|back --store <dir>` appends explicit
-presence. There is no automatic stage launch, work selection, presence sensor
-or installed system service in this order.
+presence. WO-068 adds no automatic stage launch, work selection, presence sensor
+or installed system service.
 
 The resident folds its optional reactor slice through the explicit environment
 projector. Old serialized states acquire no resident key. Every sampled clock
@@ -1525,6 +1525,48 @@ On restart, outstanding episodes become lost and the policy rearms without
 redispatching an old identity. Same-time fresh arms have distinct generations.
 The fixture evidence is [WO-068](../evidence/WO-068/implementation.md); live
 model-worker operation and automatic task derivation remain later work.
+
+**Presence origins (WO-121, 2026-09-16).** The resident now folds
+`OperatorPresenceObserved { signal, origin, at, stamp? }`. Human origin means
+an explicit `away`/`back` or an unstamped `UserPromptSubmit` whose interaction
+is established as human. Actor origin covers every `PreToolUse`, `PostToolUse`
+and `Stop`, regardless of who launched the session, and every stamped prompt.
+Task origin records progress independently. The pure classifier reads event
+kind, interaction evidence and the resident's episode stamp; it never reads
+launch paths, process tables or input devices. This is observation, not
+authenticated presence.
+
+The observed Claude prompt input has no typed/scripted discriminator
+([WO-044 C-W10](../discovery/writing-worker-smoke-2026-09-14.md#C-W10)); Codex has
+no observed prompt hook (X-W10). These installed profiles therefore use only
+explicit away/back as human. A future distinguishable noninteractive prompt
+must remain actor; changing a version label does not establish discrimination.
+Generated Contributor hooks emit one heartbeat for each of the four events;
+SessionStart does not. The reduced target bundle retains only PreToolUse.
+An explicit local `DOTLN_RESIDENT_STORE` binding selects the store. Resident
+children also receive `DOTLN_RESIDENT_EPISODE_ID`; unstamped activity retains
+its session identity. Neither prompt content nor tool arguments enter the log.
+Missing bindings do nothing; observation failure advises without changing a
+permission decision. Other inherited environment variables remain excluded
+from resident scripts.
+
+Optional policy `humanIdleMs` derives absence from the last human observation;
+omitting it preserves explicit-only presence. It is independent of
+`decay.idleMs`, which still expires phase allocation. Return is folded before
+a same-time deadline and only cancels policy-discretionary work according to
+its existing kill/finish rule. Foreground tasks retain their own authority.
+Live observation time is monotone even if the wall clock moves backward;
+stale replayed human observations cannot undo newer intent.
+
+Actor liveness uses resident configuration `heartbeatBudgetMs` (default 30000).
+Clock samples and late heartbeat admission retain missed deadlines separately
+from presence and task progress. Stop is activity, not proof of episode
+completion; observed/lost resident outcomes retire their actor. A stalled
+actor reports silence beyond the declared budget, not process death, and causes
+no presence edge or return cancellation. An in-flight host samples at the next
+human/actor deadline rather than every poll. Existing execution timeouts remain
+independent. [WO-121 decisions](../evidence/WO-121/decisions.md) record the
+alternatives and reopening conditions.
 
 ### Candidate — progressive absence authority and return readiness
 
