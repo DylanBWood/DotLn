@@ -854,7 +854,17 @@ were dispatched and not filed (the first judged text later corrected; the
 second was stopped when the subject changed again), a cost the operator
 counted at about 250,000 tokens of their own; the pass's receipt is the
 external Codex review of the final subject, recorded under
-`docs/planning/refutations/`. The follow-up feed's first page was read;
+`docs/planning/refutations/`. The first Codex dispatch failed before
+judging (exit 1: "Not inside a trusted directory and --skip-git-repo-check
+was not specified"): `plan-refutation-host.ts` creates the refuter's empty
+working directory with `mkdtemp` under the temporary root, and the
+installed Codex CLI refuses a working directory outside a git repository.
+The pass reran the transport with the temporary root pointed at a fresh,
+empty git repository outside this checkout, which satisfies the check
+without giving the refuter anything to read; the transport's own fix (pass
+`--skip-git-repo-check`, or initialize the temporary directory) is a
+boy-scout item for the next order that touches `worker-transport.ts`
+(WO-110). The follow-up feed's first page was read;
 the dispositions of section 7 are applied to the register in this pass.
 Handoff process cost is reported in the response.
 
