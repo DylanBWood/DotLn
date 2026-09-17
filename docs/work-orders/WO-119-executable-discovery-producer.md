@@ -1,4 +1,4 @@
-# WO-119 — Executable discovery producer: a bounded actor episode observes a target worktree's real imperfections through the target's own commands and declared conventions and emits typed work candidates with evidence, using only the executable program subset (version assigned at activation)
+# WO-119 — Executable discovery producer: a bounded actor episode observes a target worktree's real imperfections through the target's own commands and declared conventions and emits typed work candidates with evidence, using only the executable program subset (v0.26.0)
 
 **Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
 
@@ -108,3 +108,27 @@ model.
 **Operator-review assumptions**
 
 1. Facts with evidence are enough for the first portfolio; ranking follows.
+
+## Execution record
+
+### Operator scope expansion — 2026-09-16 ideation
+
+The operator opened `ideation:` during execution about moving permissions,
+security and authority into DotLn supports/builds/roles so that native Claude
+and Codex sandboxes can eventually be disabled and Claude's allow/deny settings
+minimized on trustworthy evidence. This expands documentary capture/synthesis,
+not current implementation or settings authority. Verifier and reviewer also
+read [the breakout receipt](../evidence/WO-119/ideation-authority.md), the dated
+ledger entry and product 03 §Candidate — DotLn-owned authority with minimal
+native harness restrictions. The operator clarified faithful runtime enforcement plus adversarial tests
+and added that routine authorized calls must not block unattended work on
+intermittent basic permission prompts. Existing WO-119 acceptance and release classification
+are unchanged.
+
+A further `ideation:` message reports stale-message answers and idle unfinished
+work after compaction. The same receipt and a new dated ledger entry extend
+product 05 §Candidate — Context Continuity and product 03 §Session lifecycle &
+resilience with host-owned continuation and zero-running-tool acceptance cases.
+Verifier and reviewer read those additions too. This remains documentary scope;
+no continuity implementation, harness setting or acceptance change is authorized
+by this note.
