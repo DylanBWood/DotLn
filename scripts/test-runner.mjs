@@ -72,6 +72,9 @@ const machinerySources = {
     "scripts/test-harness-probe.mjs",
   ],
   "harness-fixtures": [
+    "packages/skeleton/src/presence-heartbeat.ts",
+    "packages/skeleton/src/presence-signals.ts",
+    "packages/skeleton/src/resident-store.ts",
     "scripts/terms.mjs",
     "scripts/harness-context.mjs",
     "scripts/lib/harness-context.mjs",
@@ -86,6 +89,9 @@ const machinerySources = {
     "packages/skeleton/src/loadouts/",
   ],
   harness: [
+    "packages/skeleton/src/presence-heartbeat.ts",
+    "packages/skeleton/src/presence-signals.ts",
+    "packages/skeleton/src/resident-store.ts",
     "scripts/harness.mjs",
     "packages/skeleton/src/harness-host.ts",
     "packages/skeleton/src/gate-evidence.mjs",

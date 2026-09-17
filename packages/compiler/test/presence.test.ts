@@ -41,6 +41,32 @@ const modify = (change: (graph: any) => void): LoadoutGraph => {
   return graph;
 };
 
+test("WO-121 optional human idle threshold is independent, validated and retained by editable views", () => {
+  const graph = modify((g) => {
+    g.presence[0].humanIdleMs = 40;
+  });
+  const policy = requireCompiled(compile(graph)).presence![0]!;
+  assert.equal(policy.humanIdleMs, 40);
+  assert.equal(policy.decay.idleMs, 100);
+  assert.deepEqual(
+    compileEditableView(
+      decodeCodeDsl(encodeCodeDsl(defineLoadout(graph))),
+      fixture.environment,
+    ),
+    compile(graph),
+  );
+  assert.equal(requireCompiled(compile()).presence![0]!.humanIdleMs, undefined);
+  for (const value of [0, -1, 1.5, "40", null])
+    assert.equal(
+      compile(
+        modify((g) => {
+          g.presence[0].humanIdleMs = value;
+        }),
+      ).ok,
+      false,
+    );
+});
+
 test("WO-067 three phases compile without changing the base or conflating the four axes", () => {
   const source = structuredClone(fixture);
   const program = requireCompiled(compile());

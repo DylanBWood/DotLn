@@ -24,6 +24,12 @@ import {
 } from "./reactor.js";
 import { type ResidentState } from "./resident-state.js";
 import { WorkerStore } from "./worker-store.js";
+import {
+  classifyPresenceSignal,
+  decodePresenceObservation,
+  type PresenceSignal,
+  type ResidentStamp,
+} from "./presence-signals.js";
 
 export function replayResident(
   log: string,
@@ -157,9 +163,34 @@ export async function recordPresence(
   presence: "away" | "returned",
   now = Date.now,
 ) {
+  if (!["away", "returned"].includes(presence))
+    throw new Error("invalid resident presence");
+  await recordPresenceObservation(
+    directory,
+    { kind: presence === "away" ? "away" : "back" },
+    undefined,
+    now,
+  );
+}
+export async function recordPresenceObservation(
+  directory: string,
+  signal: PresenceSignal,
+  stamp?: ResidentStamp,
+  now = Date.now,
+) {
+  const observation = decodePresenceObservation({
+    signal,
+    origin: classifyPresenceSignal(signal, stamp),
+    at: now(),
+    ...(stamp ? { stamp } : {}),
+  });
   const store = new ResidentStore(directory);
   await store.transaction((tx) => {
-    tx.sample(now());
-    tx.append("OperatorPresenceChanged", { presence });
+    const sampledAt = observation.at;
+    // Live commands retain their explicit intent when the wall clock moves back.
+    observation.at = Math.max(sampledAt, tx.resident?.at ?? 0);
+    // Observe human return before evaluating a deadline at the same time.
+    tx.append("OperatorPresenceObserved", observation, observation.at);
+    tx.sample(sampledAt);
   });
 }

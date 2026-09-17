@@ -32,7 +32,12 @@ const stop = (why: string) => {
 };
 process.on("disconnect", () => stop("resident-disconnected"));
 process.on("message", (raw: unknown) => {
-  const message = raw as { kill?: boolean; spec: ActorSpec; profile: string };
+  const message = raw as {
+    kill?: boolean;
+    spec: ActorSpec;
+    profile: string;
+    context?: { residentStore: string; episodeId: string };
+  };
   if (message.kill) {
     stop("operator-return");
     return;
@@ -75,7 +80,12 @@ process.on("message", (raw: unknown) => {
   }
   child = spawn("/usr/bin/sandbox-exec", ["-p", sandbox, ...command], {
     cwd: spec.cwd!,
-    env: {},
+    env: message.context
+      ? {
+          DOTLN_RESIDENT_STORE: message.context.residentStore,
+          DOTLN_RESIDENT_EPISODE_ID: message.context.episodeId,
+        }
+      : {},
     detached: true,
     stdio: ["ignore", "pipe", "pipe"],
   });

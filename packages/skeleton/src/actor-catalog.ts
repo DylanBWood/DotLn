@@ -23,7 +23,10 @@ export function scriptAvailability(): string | null {
     ? null
     : "script offline boundary unavailable: sandbox-exec refused its local probe";
 }
-function runScript(spec: ActorSpec): ActorRun {
+function runScript(
+  spec: ActorSpec,
+  context?: { residentStore: string; episodeId: string },
+): ActorRun {
   assertActorSpec(spec);
   const child = fork(
     fileURLToPath(new URL("./script-episode.js", import.meta.url)),
@@ -55,7 +58,7 @@ function runScript(spec: ActorSpec): ActorRun {
       ),
     );
   });
-  child.send({ spec, profile: SCRIPT_SANDBOX });
+  child.send({ spec, profile: SCRIPT_SANDBOX, context });
   return {
     completed,
     kill: () => {

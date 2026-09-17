@@ -29,6 +29,10 @@ import { compileFeedbackUnits } from "../packages/compiler/dist/src/index.js";
 import { personalFeedbackUnits } from "../packages/skeleton/dist/src/loadouts/feedback.js";
 import { targetWorkerProfiles } from "../packages/skeleton/dist/src/loadouts/contributor.js";
 import {
+  ResidentStore,
+  replayResident,
+} from "../packages/skeleton/dist/src/resident-store.js";
+import {
   feedbackBoundary,
   FeedbackRefused,
 } from "../packages/skeleton/dist/src/feedback-boundary.js";
@@ -99,14 +103,14 @@ function fixture(unrelated = false) {
     lane: join(launchpad, "docs/control/local/harness/targets", digest(target)),
   };
 }
-function invoke(f, name, tool, session = "fixture-writer") {
+function invoke(f, name, tool, session = "fixture-writer", environment = {}) {
   const result = spawnSync(
     process.execPath,
     [join(f.target, `.claude/hooks/${name}.mjs`)],
     {
       cwd: f.target,
       encoding: "utf8",
-      env: { ...process.env, CLAUDE_PID: String(process.pid) },
+      env: { ...process.env, CLAUDE_PID: String(process.pid), ...environment },
       input: JSON.stringify({
         hook_event_name: "PreToolUse",
         cwd: f.target,
@@ -177,7 +181,13 @@ for (const unrelated of [false, true])
       const installed = JSON.parse(
         readFileSync(join(f.target, manifestPath), "utf8"),
       ).installed;
-      assert.equal(installed.length, 6);
+      assert.equal(installed.length, 7);
+      assert.equal(
+        installed.filter(
+          (file) => file.path === ".claude/hooks/presence-pretooluse.mjs",
+        ).length,
+        1,
+      );
       assert.deepEqual(
         Object.keys(tree(f.target)).sort(),
         [...Object.keys(before), ...installed.map((file) => file.path)].sort(),
@@ -192,7 +202,7 @@ for (const unrelated of [false, true])
       assert.equal(git(f.target, "status", "--porcelain"), "");
       git(f.target, "add", "-A");
       assert.equal(git(f.target, "diff", "--cached", "--name-only"), "");
-      assert.equal(checkTargetHarness(f.target, f.options).files, 6);
+      assert.equal(checkTargetHarness(f.target, f.options).files, 7);
       const post = tree(f.target);
       emitTargetHarness(f.target, f.options);
       assert.deepEqual(tree(f.target), post);
@@ -265,7 +275,7 @@ test("WO-049 removal preserves appended user rules and refuses duplicate exclude
         .filter((line) => line === "/CLAUDE.local.md").length,
       1,
     );
-    assert.equal(checkTargetHarness(f.target, f.options).files, 6);
+    assert.equal(checkTargetHarness(f.target, f.options).files, 7);
     removeTargetHarness(f.target, f.options);
     assert.equal(readFileSync(exclude, "utf8"), revised);
 
@@ -291,6 +301,31 @@ test("WO-049 target hooks execute pinned runtime, enforce boundary, keep state o
   try {
     emitTargetHarness(f.target, f.options);
     const after = tree(f.target);
+    const presenceStore = join(f.launchpad, ".runtime/presence");
+    assert.deepEqual(
+      invoke(f, "presence-pretooluse", {}, "fixture-session", {
+        DOTLN_RESIDENT_STORE: presenceStore,
+        DOTLN_RESIDENT_EPISODE_ID: "fixture-episode",
+      }),
+      {},
+    );
+    const resident = replayResident(new ResidentStore(presenceStore).read())
+      .state.resident;
+    assert.equal(resident.actors["episode:fixture-episode"].status, "live");
+    assert.equal(resident.present, true);
+    assert.deepEqual(tree(f.target), after, "heartbeat state stays off target");
+    assert.deepEqual(
+      invoke(f, "presence-pretooluse", {}, "fixture-session", {
+        DOTLN_RESIDENT_STORE: join(f.target, "source.txt"),
+      }),
+      {},
+      "heartbeat failure cannot introduce a permission decision",
+    );
+    assert.deepEqual(
+      tree(f.target),
+      after,
+      "failed heartbeat preserves target files",
+    );
     assert.deepEqual(invoke(f, "permissions", {}), {});
     assert.ok(
       denied(
@@ -383,7 +418,12 @@ test("WO-049 target hooks execute pinned runtime, enforce boundary, keep state o
     for (const [path, contents] of Object.entries(after))
       for (const line of contents.split("\n")) {
         if (line.includes("file://"))
-          assert.match(line, /^const .*await import\(new URL\("file:\/\//);
+          assert.match(
+            line,
+            /recordHarnessHeartbeat/.test(line)
+              ? /^const .*await import\("file:\/\//
+              : /^const .*await import\(new URL\("file:\/\//,
+          );
         else assert.ok(!line.includes(f.base), `${path} leaked path`);
       }
     const receipt = JSON.parse(

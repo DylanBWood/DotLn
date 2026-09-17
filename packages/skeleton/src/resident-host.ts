@@ -1,5 +1,5 @@
 import { readFileSync } from "node:fs";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
 import { setTimeout as delay } from "node:timers/promises";
 import { canonicalStringify } from "@dotln/compiler";
 import { type PredicateRegistry } from "@dotln/kernel";
@@ -15,8 +15,26 @@ import {
   residentMachine,
   residentRefusal,
   type ResidentConfiguration,
+  type ResidentState,
 } from "./resident-state.js";
 import { ResidentStore } from "./resident-store.js";
+
+function observationDeadline(state: ResidentState) {
+  return Math.min(
+    state.present &&
+      state.lastHumanAt !== null &&
+      state.policy?.humanIdleMs !== undefined
+      ? state.lastHumanAt + state.policy.humanIdleMs
+      : Infinity,
+    ...Object.values(state.actors)
+      .filter((actor) => actor.status === "live")
+      .map(
+        (actor) =>
+          actor.lastHeartbeatAt +
+          (state.configuration?.heartbeatBudgetMs ?? 30000),
+      ),
+  );
+}
 
 export interface ResidentHostOptions {
   directory: string;
@@ -77,7 +95,7 @@ export class ResidentHost {
   async tick(): Promise<void> {
     if (!this.started) throw new Error("resident is not started");
     const dispatched = await this.store.transaction(
-      (tx): { id: string; run: ActorRun } | null => {
+      (tx): { id: string; run: ActorRun; deadline: number } | null => {
         tx.sample(this.now());
         if (this.firstTick) {
           for (const [episodeId, status] of Object.entries(
@@ -132,20 +150,31 @@ export class ResidentHost {
           authorityEnvelopeId: phase.effectiveEnvelope.authorityEnvelopeId,
         });
         // Append/fsync precedes spawn; the same short lock orders presence against both.
-        return { id, run: adapter.run(spec) };
+        return {
+          id,
+          deadline: observationDeadline(tx.resident!),
+          run: adapter.run(spec, {
+            residentStore: resolve(this.options.directory),
+            episodeId: id,
+          }),
+        };
       },
     );
     if (!dispatched) return;
     let killed = false;
     let complete = false;
+    let nextSampleAt = dispatched.deadline;
     const resultPromise = dispatched.run.completed.finally(() => {
       complete = true;
     });
     while (!complete) {
       await Promise.race([resultPromise, delay(20)]);
       if (complete) break;
-      if (!this.store.changed()) continue;
+      const at = this.now();
+      if (!this.store.changed() && at < nextSampleAt) continue;
       await this.store.transaction((tx) => {
+        if (at >= nextSampleAt) tx.sample(at);
+        nextSampleAt = observationDeadline(tx.resident!);
         if (!killed && tx.resident!.machine!.current?.id !== dispatched.id) {
           killed = true;
           dispatched.run.kill();
@@ -159,6 +188,11 @@ export class ResidentHost {
       tx.append("ScriptEpisodeObserved", {
         episodeId: dispatched.id,
         ...result,
+      });
+      tx.append("OperatorPresenceObserved", {
+        signal: { kind: "progress", taskId: dispatched.id },
+        origin: "task",
+        at: tx.resident!.at,
       });
     });
   }
