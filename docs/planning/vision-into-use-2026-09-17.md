@@ -870,8 +870,9 @@ code identity alone, so a sandbox-subset run recorded under that identity
 would be consumed as a complete gate. WO-139's guarantee was overstated by
 its title and Cost line. WO-110's typed block did not reference WO-137, and a
 hard edge is satisfied by any close. WO-138 let the packet propose its own
-floor. Receipt 017's accepted corrections were outside the orders. The
-operating-mode decision waited for R2 without a reason to.
+floor. The corrections an earlier background review of the draft had
+recorded were outside the orders. The operating-mode decision waited for
+R2 without a reason to.
 
 **Verified false.** The sequence file's pairs are intact: `git show
 c347362:docs/planning/sequence.md` parses as fourteen two-entry groups and
