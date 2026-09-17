@@ -5637,6 +5637,81 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-ef7c918385bc3dc5",
+      "key": "decision:docs/evidence/WO-121/decisions.md#wo-121-d001",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "50db3b7a83aeeaf30911017a62b46d0055cf0957b379caf755b8af69627eb14c",
+          "ref": "docs/evidence/WO-121/decisions.md#wo-121-d001",
+          "title": "WO-121-D001: Classify explicit presence, hook activity and task progress by signal evidence and resident stamp; installed ambiguous profiles use explicit human commands only.",
+          "summary": "{ \"id\": \"WO-121-D001\", \"date\": \"2026-09-16\", \"dispatch\": \"resume: next\", \"decision\": \"Classify explicit presence, hook activity and task progress by signal evidence and resident stamp; installed ambiguous profiles use explicit human commands only.\", \"evidence\": [ \"docs/discovery/writing-worker-smoke-2026-09-14.md\", \"packages/skeleton/src/presence-signals.ts\", \"packages/compiler/src/harness.ts\" ], \"rejected\": [ { \"option\": \"NoOp\", \"reason\": \"Leaves the resident without the required origin contract.\" }, { \"option\": \"Infer presence from process tables, input devices or launch paths\", \"reason\": \"None establishes human presence; autonomous activity outlives departure.\" } ], \"reopenWhen\": \"A harne",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-6064e65f5486e1f7",
+      "key": "decision:docs/evidence/WO-121/decisions.md#wo-121-d002",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "b7ad7525dc6ecc4130a8686de14559988dda47560f351beecd1723c86a27cc7e",
+          "ref": "docs/evidence/WO-121/decisions.md#wo-121-d002",
+          "title": "WO-121-D002: Keep optional human inactivity, phase decay and actor heartbeat budgets independent, preserving discretionary return guards and foreground authority.",
+          "summary": "{ \"id\": \"WO-121-D002\", \"date\": \"2026-09-16\", \"dispatch\": \"resume: next\", \"decision\": \"Keep optional human inactivity, phase decay and actor heartbeat budgets independent, preserving discretionary return guards and foreground authority.\", \"evidence\": [ \"packages/skeleton/src/presence-machine.ts\", \"packages/skeleton/src/resident-state.ts\", \"packages/skeleton/test/presence-signals.test.ts\", \"docs/product/03-architecture.md\" ], \"rejected\": [ { \"option\": \"Share the policy decay clock\", \"reason\": \"Would conflate human inactivity with allocation expiry.\" }, { \"option\": \"Treat actor silence or task progress as human return\", \"reason\": \"Neither establishes presence and both could cancel authorized wo",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-662fd13637d7914c",
+      "key": "decision:docs/evidence/WO-121/decisions.md#wo-121-d003",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "1891fa07b507ed3dc316917a275e771ac53b790fca5dd3bcd9ddc46797b2d802",
+          "ref": "docs/evidence/WO-121/decisions.md#wo-121-d003",
+          "title": "WO-121-D003: Complete activation at application v0.26.0, compiler 0.13.0 and skeleton 0.22.0; regenerate heartbeat hooks, dependency pins and current evidence.",
+          "summary": "{ \"id\": \"WO-121-D003\", \"date\": \"2026-09-16\", \"dispatch\": \"resume: next\", \"decision\": \"Complete activation at application v0.26.0, compiler 0.13.0 and skeleton 0.22.0; regenerate heartbeat hooks, dependency pins and current evidence.\", \"evidence\": [ \"docs/work-orders/WO-121-presence-signals-with-origin.md\", \"packages/compiler/package.json\", \"packages/skeleton/package.json\", \"scripts/lib/harness.mjs\", \"scripts/lib/evidence-sources.mjs\" ], \"rejected\": [ { \"option\": \"No component bump or reuse stale source evidence\", \"reason\": \"The additive policy and runtime behavior require minor component releases and current evidence.\" } ], \"reopenWhen\": \"Integration consumes a staged version or behavior cha",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-531a19d1b003905a",
+      "key": "decision:docs/evidence/WO-121/decisions.md#wo-121-d004",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "2cdee343b4cae692a13d10a76d597e7378462a193b502afb4e723d1d93c20a3f",
+          "ref": "docs/evidence/WO-121/decisions.md#wo-121-d004",
+          "title": "WO-121-D004: Disable automatic maintenance in disposable release fixture repositories before seeding or cloning; preserve release behavior and remove the redundant literal-only foreground authorizatio",
+          "summary": "{ \"id\": \"WO-121-D004\", \"date\": \"2026-09-17\", \"dispatch\": \"resume: fix\", \"decision\": \"Disable automatic maintenance in disposable release fixture repositories before seeding or cloning; preserve release behavior and remove the redundant literal-only foreground authorization assertion.\", \"evidence\": [ \"docs/verifications/WO-121/VER-001.md\", \"scripts/test-release.sh\", \"scripts/lib/release-fixtures.mjs\", \"packages/skeleton/test/presence-signals.test.ts\" ], \"rejected\": [ { \"option\": \"NoOp or retry until green\", \"reason\": \"The baseline failed again while a traced receive-pack child repacked the source during the integrator clone.\" }, { \"option\": \"Use --no-hardlinks alone\", \"reason\": \"Git documents",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-47aff6b5d3e95b01",
+      "key": "decision:docs/evidence/WO-121/decisions.md#wo-121-d005",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "13e420a4d25a2845e924d2c34037fffc77ed7cec4744f5e0ed15fe97e7a6be0c",
+          "ref": "docs/evidence/WO-121/decisions.md#wo-121-d005",
+          "title": "WO-121-D005: Retime the unpublished staging to application v0.27.0 and skeleton 0.23.0 under the recorded minor classification, because WO-119 published v0.26.0 with skeleton 0.22.0 during this order'",
+          "summary": "{ \"id\": \"WO-121-D005\", \"date\": \"2026-09-17\", \"dispatch\": \"resume: final review\", \"decision\": \"Retime the unpublished staging to application v0.27.0 and skeleton 0.23.0 under the recorded minor classification, because WO-119 published v0.26.0 with skeleton 0.22.0 during this order's review; compiler 0.13.0 is unchanged.\", \"evidence\": [ \"docs/product/07-execution-guide.md\", \"docs/product/06-roadmap.md\", \"packages/skeleton/package.json\", \"packages/skeleton/src/version.ts\", \"README.md\", \"docs/final-reviews/WO-121/FINAL-001.md\" ], \"rejected\": [ { \"option\": \"Keep the staged v0.26.0 and skeleton 0.22.0\", \"reason\": \"Both labels are published at tag v0.26.0 with different bytes; republishing them wou",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }
