@@ -5898,6 +5898,13 @@
           "title": "Candidate — DotLn-owned authority with minimal native harness restrictions",
           "summary": "## Candidate — DotLn-owned authority with minimal native harness restrictions Operator direction during WO-119 (2026-09-16): reach an operating mode as soon as evidence supports it in which native Claude and Codex harness sandboxes can be disabled and Claude's settings have nearly empty allow/deny lists. The source of permissions, security and authority is the equipped DotLn supports, build and role. The operator clarified the assurance requirement: faithful runtime enforcement plus adversarial tests, including attempts to bypass the declared authority. See the [ideation receipt](../evidence/WO-119/ideation-authority.md). This candidate asks planning to identify the earliest justified route ",
           "missing": false
+        },
+        {
+          "hash": "b9d5a1650b9840e37280c221f8a990eb1fa4f9419d827c70ce2dabd670c2fa40",
+          "ref": "docs/product/03-architecture.md#candidate--dotln-owned-authority-with-minimal-native-harness-restrictions",
+          "title": "Candidate — DotLn-owned authority with minimal native harness restrictions",
+          "summary": "## Candidate — DotLn-owned authority with minimal native harness restrictions Operator direction during WO-119 (2026-09-16): reach an operating mode as soon as evidence supports it in which native Claude and Codex harness sandboxes can be disabled and Claude's settings have nearly empty allow/deny lists. The source of permissions, security and authority is the equipped DotLn supports, build and role. The operator clarified the assurance requirement: faithful runtime enforcement plus adversarial tests, including attempts to bypass the declared authority. See the [ideation receipt](../evidence/WO-119/ideation-authority.md). This candidate asks planning to identify the earliest justified route ",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -6202,6 +6209,87 @@
           "ref": "docs/product/07-execution-guide.md#candidate--total-subagent-cap-across-every-spawn-path",
           "title": "Candidate — total subagent cap across every spawn path",
           "summary": "## Candidate — total subagent cap across every spawn path Operator direction, 2026-09-17: a session's total subagents need a hard, configurable cap (about twenty), because a top-level guideline of five fans out through per-item adversarial and refutation trees to more than a hundred. The harness documents no total cap, only a size guideline, a concurrency ceiling of sixteen and a per-workflow limit of a thousand; its hooks fire for the Agent and Workflow tools and inside subagents. WO-139 counts and refuses at the admission points the hook can see and counts descendants at their first attributable tool call, so an agent the harness creates before any hook fires is counted late or not at all,",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-fe175a1a03e87f2b",
+      "key": "decision:docs/evidence/WO-141/decisions.md#wo-141-d001",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "f80d1b10b20f4ad3182717770015800a5380e2a901834c37f311de99d1fd7b34",
+          "ref": "docs/evidence/WO-141/decisions.md#wo-141-d001",
+          "title": "WO-141-D001: Project session observations and lexical hedge advisories through a shared runtime module; count journal events with recorded phase, order and explicitly named unit. Preserve nonblocking ",
+          "summary": "{ \"id\": \"WO-141-D001\", \"date\": \"2026-09-17\", \"dispatch\": \"resume: next for WO-141\", \"decision\": \"Project session observations and lexical hedge advisories through a shared runtime module; count journal events with recorded phase, order and explicitly named unit. Preserve nonblocking Stop and lifecycle behavior.\", \"evidence\": [ \"WO-141 acceptance criteria 1–6\", \"harness-host.ts finish reads usage but not final assistant text; observe journals tool boundaries without task state\", \"scripts/lib/meta.mjs derives operatorCorrections from decision records\", \"usage-observation.mjs already selects exactly the current session transcript and worktree\", \"FUP-0130 already has an allocated disposition tar",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-ca3179ab47f59b56",
+      "key": "decision:docs/evidence/WO-141/decisions.md#wo-141-d002",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "cdf8e75b8ebf773a3a5c86932a443c82474d2758a06634c78de52eff4a11d57a",
+          "ref": "docs/evidence/WO-141/decisions.md#wo-141-d002",
+          "title": "WO-141-D002: Repair three assertions in scripts/test-process-debt.mjs that conflate observational presence hooks with governance hooks; retain all governance assertions and check the observers' empty ",
+          "summary": "{ \"id\": \"WO-141-D002\", \"date\": \"2026-09-17\", \"dispatch\": \"resume: next; announced adjacent-0001 revision 2 with asynchronous steering opportunity\", \"decision\": \"Repair three assertions in scripts/test-process-debt.mjs that conflate observational presence hooks with governance hooks; retain all governance assertions and check the observers' empty nonblocking response explicitly.\", \"evidence\": [ \"The full process-debt run failed the complete SessionStart/UserPromptSubmit equality, universal operator-control systemMessage, and universal bootstrap advisory assertions.\", \"packages/compiler/src/harness.ts heartbeatHook writes empty JSON and an optional stderr diagnostic, while SessionStart is wire",
+          "missing": false
+        },
+        {
+          "hash": "3e198cf9e1c6d87b757ef4e2b63e19a35a3720eb3ef584b08f433335d6521c80",
+          "ref": "docs/evidence/WO-141/decisions.md#wo-141-d002",
+          "title": "WO-141-D002: Repair three assertions in scripts/test-process-debt.mjs that conflate observational presence hooks with governance hooks; retain all governance assertions and check the observers' empty ",
+          "summary": "{ \"id\": \"WO-141-D002\", \"date\": \"2026-09-17\", \"dispatch\": \"resume: next; announced adjacent-0001 revision 2 with asynchronous steering opportunity\", \"decision\": \"Repair three assertions in scripts/test-process-debt.mjs that conflate observational presence hooks with governance hooks; retain all governance assertions and check the observers' empty nonblocking response explicitly.\", \"evidence\": [ \"The full process-debt run failed the complete SessionStart/UserPromptSubmit equality, universal operator-control systemMessage, and universal bootstrap advisory assertions.\", \"packages/compiler/src/harness.ts heartbeatHook writes empty JSON and an optional stderr diagnostic, while SessionStart is wire",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-1eb27c28466751c4",
+      "key": "decision:docs/evidence/WO-141/decisions.md#wo-141-d003",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "059acadc438cc2a7d9a1faf459c0345c155e899c8d812dfa0e922e8d8b8bc1af",
+          "ref": "docs/evidence/WO-141/decisions.md#wo-141-d003",
+          "title": "WO-141-D003: Stage application v0.29.1 and skeleton 0.25.1 as patch releases. Keep other components and dependency versions unchanged.",
+          "summary": "{ \"id\": \"WO-141-D003\", \"date\": \"2026-09-17\", \"dispatch\": \"resume: next; standing classified-release default\", \"decision\": \"Stage application v0.29.1 and skeleton 0.25.1 as patch releases. Keep other components and dependency versions unchanged.\", \"evidence\": [ \"WO-141 declares a patch classification and initially has no activation version.\", \"Local tag observation lists v0.29.0 as latest; skeleton package and harness host are 0.25.0 at the baseline.\", \"Changes repair existing evidence behavior and add no refusal, dependency or public event schema.\" ], \"rejected\": [ \"Reuse the published application version: conflicts with the next-release duty.\", \"Bump unrelated components: no changed compone",
+          "missing": false
+        },
+        {
+          "hash": "c7ecaa158d6f5389a592504ec45cca166b667028782d1680e0fffd67ec6da2d8",
+          "ref": "docs/evidence/WO-141/decisions.md#wo-141-d003",
+          "title": "WO-141-D003: Stage application v0.29.1, compiler 0.13.1 and skeleton 0.25.1 as patch releases. Align the existing internal compiler dependency; keep other components unchanged.",
+          "summary": "{ \"id\": \"WO-141-D003\", \"date\": \"2026-09-17\", \"dispatch\": \"resume: next; standing classified-release default\", \"decision\": \"Stage application v0.29.1, compiler 0.13.1 and skeleton 0.25.1 as patch releases. Align the existing internal compiler dependency; keep other components unchanged.\", \"evidence\": [ \"WO-141 declares a patch classification and initially has no activation version.\", \"Local tag observation lists v0.29.0 as latest; skeleton package and harness host are 0.25.0 at the baseline.\", \"The compiler passes the existing configured correction token to the session adapter so its effect hook and measurement hook count one prompt once.\", \"Changes repair existing evidence behavior and add n",
+          "missing": false
+        },
+        {
+          "hash": "d0556f4de9b97e3dc7e2669d56d79560c81e957af830b4c9434885e8e1218bfc",
+          "ref": "docs/evidence/WO-141/decisions.md#wo-141-d003",
+          "title": "WO-141-D003: Stage application v0.29.1 and skeleton 0.25.1 as patch releases; keep other components unchanged.",
+          "summary": "{ \"id\": \"WO-141-D003\", \"date\": \"2026-09-17\", \"dispatch\": \"resume: next; standing classified-release default\", \"decision\": \"Stage application v0.29.1 and skeleton 0.25.1 as patch releases; keep other components unchanged.\", \"evidence\": [ \"WO-141 declares a patch classification and initially has no activation version.\", \"Local tag observation lists v0.29.0 as latest; skeleton package and harness host are 0.25.0 at the baseline.\", \"The runtime session hook owns the standard correction-token measurement and the effect hook records that ownership, without changing compiled configuration.\", \"Changes repair existing evidence behavior and add no refusal, new dependency or public event schema.\" ], \"r",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-138d5555a7ac0ce8",
+      "key": "decision:docs/evidence/WO-141/decisions.md#wo-141-d004",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "cc0531c81b8f5f1cd8dccc073ea61ef4dc11c15e0edabe01413ce9128697cadc",
+          "ref": "docs/evidence/WO-141/decisions.md#wo-141-d004",
+          "title": "WO-141-D004: Record new WO-141 authority and feedback revision 001 editions, using the existing live CLI verifier for the changed feedback source; advance only their current-evidence selections and th",
+          "summary": "{ \"id\": \"WO-141-D004\", \"date\": \"2026-09-17\", \"dispatch\": \"resume: next; current-evidence refresh required by the document gate\", \"decision\": \"Record new WO-141 authority and feedback revision 001 editions, using the existing live CLI verifier for the changed feedback source; advance only their current-evidence selections and the console selfhost fixture pins.\", \"evidence\": [ \"The document gate found authority bundle-diff.json stale after generated runtime bindings changed.\", \"readFeedbackSource includes usage-observation.mjs, whose exported session selector changes the exact source subject.\", \"The existing feedback recorder requires an actual CLI verifier, a complete verified matrix and matc",
           "missing": false
         }
       ],
