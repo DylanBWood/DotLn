@@ -1,5 +1,7 @@
 import { fork, spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
+import { cliWorkerAdapter } from "./cli-actor.js";
+import { humanHandoffAdapter } from "./handoff-actor.js";
 import {
   assertActorSpec,
   SCRIPT_SANDBOX,
@@ -75,14 +77,8 @@ const unavailable = (kind: ActorKind, reason: string): ActorAdapter => ({
 });
 export const actorCatalog: Readonly<Record<ActorKind, ActorAdapter>> = {
   script: { kind: "script", available: scriptAvailability, run: runScript },
-  "cli-worker": unavailable(
-    "cli-worker",
-    "cli-worker is unavailable until WO-122",
-  ),
-  "human-handoff": unavailable(
-    "human-handoff",
-    "human-handoff is unavailable until WO-122",
-  ),
+  "cli-worker": cliWorkerAdapter(),
+  "human-handoff": humanHandoffAdapter,
   "local-model": unavailable(
     "local-model",
     "local-model is unavailable until WO-110",

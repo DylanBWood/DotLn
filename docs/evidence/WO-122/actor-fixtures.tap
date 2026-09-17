@@ -1,0 +1,113 @@
+TAP version 13
+# Subtest: WO-122 writer dispatches through the resident with stamp and envelope; a claim never advances the phase
+ok 1 - WO-122 writer dispatches through the resident with stamp and envelope; a claim never advances the phase
+  ---
+  duration_ms: 1592.115208
+  ...
+# writer: 1 dispatch, X-U1 claim, stamped envelope, operator away, no verified promotion
+# Subtest: WO-122 inspection dispatches through the resident with stamp and envelope; a claim never advances the phase
+ok 2 - WO-122 inspection dispatches through the resident with stamp and envelope; a claim never advances the phase
+  ---
+  duration_ms: 811.811375
+  ...
+# inspection: 1 dispatch, X-U1 claim, stamped envelope, operator away, no verified promotion
+# Subtest: WO-122 unavailable launch row names its source and never falls back; nested authority cannot widen the phase
+ok 3 - WO-122 unavailable launch row names its source and never falls back; nested authority cannot widen the phase
+  ---
+  duration_ms: 1790.600583
+  ...
+# Subtest: WO-122 transport rejection and synchronous refusal become one durable failure each
+ok 4 - WO-122 transport rejection and synchronous refusal become one durable failure each
+  ---
+  duration_ms: 2158.183875
+  ...
+# Subtest: WO-122 human packet survives restart, rejects invalid answers, and resumes after an explicit human answer
+ok 5 - WO-122 human packet survives restart, rejects invalid answers, and resumes after an explicit human answer
+  ---
+  duration_ms: 1386.440125
+  ...
+# one packet/request across restart; three invalid answers refused; explicit answer resumed CLI dispatch; replay deterministic
+# Subtest: WO-122 a crash after handoff dispatch recovers the same packet without losing the question
+ok 6 - WO-122 a crash after handoff dispatch recovers the same packet without losing the question
+  ---
+  duration_ms: 1075.61075
+  ...
+# Subtest: WO-122 a crash after handoff dispatch recovers the same packet across a new absence without promoting it
+ok 7 - WO-122 a crash after handoff dispatch recovers the same packet across a new absence without promoting it
+  ---
+  duration_ms: 1113.364583
+  ...
+# Subtest: WO-122 nested expiry, missing evidence and unrepresentable revocation refuse before launch
+ok 8 - WO-122 nested expiry, missing evidence and unrepresentable revocation refuse before launch
+  ---
+  duration_ms: 2290.942583
+  ...
+# Subtest: WO-122 late answers release the hold without advancing an expired policy
+ok 9 - WO-122 late answers release the hold without advancing an expired policy
+  ---
+  duration_ms: 470.414125
+  ...
+# Subtest: WO-122 pending handoff holds its order across return while another order dispatches
+ok 10 - WO-122 pending handoff holds its order across return while another order dispatches
+  ---
+  duration_ms: 861.214083
+  ...
+# Subtest: WO-122 native process stamps are per launch and cancellation does not wait on escaped stderr
+ok 11 - WO-122 native process stamps are per launch and cancellation does not wait on escaped stderr
+  ---
+  duration_ms: 794.174375
+  ...
+# Subtest: WO-051 inspection request, validator, parser, prompt and both launch arrays retain activation bytes
+ok 12 - WO-051 inspection request, validator, parser, prompt and both launch arrays retain activation bytes
+  ---
+  duration_ms: 1.603083
+  ...
+# Subtest: WO-051 writer authority, command and environment refuse invalid requests before a launch
+ok 13 - WO-051 writer authority, command and environment refuse invalid requests before a launch
+  ---
+  duration_ms: 760.671583
+  ...
+# Subtest: WO-051 source-change mount accepts scratch worktrees and rejects root, prefix and symlink escapes
+ok 14 - WO-051 source-change mount accepts scratch worktrees and rejects root, prefix and symlink escapes
+  ---
+  duration_ms: 1113.859375
+  ...
+# Subtest: WO-051 C-W2/C-W3/C-W8/C-W9 and X-W1/X-W2/X-W8 canonical writer shapes
+ok 15 - WO-051 C-W2/C-W3/C-W8/C-W9 and X-W1/X-W2/X-W8 canonical writer shapes
+  ---
+  duration_ms: 828.210875
+  ...
+# Subtest: WO-051 claude subprocess observes committed and C-K1 edited-uncommitted outcomes
+ok 16 - WO-051 claude subprocess observes committed and C-K1 edited-uncommitted outcomes
+  ---
+  duration_ms: 2066.002542
+  ...
+# Subtest: WO-051 claude malformed, spoofed and failed vendor output never becomes a writer result
+ok 17 - WO-051 claude malformed, spoofed and failed vendor output never becomes a writer result
+  ---
+  duration_ms: 2496.834833
+  ...
+# Subtest: WO-051 codex subprocess observes committed and C-K1 edited-uncommitted outcomes
+ok 18 - WO-051 codex subprocess observes committed and C-K1 edited-uncommitted outcomes
+  ---
+  duration_ms: 2017.583
+  ...
+# Subtest: WO-051 codex malformed, spoofed and failed vendor output never becomes a writer result
+ok 19 - WO-051 codex malformed, spoofed and failed vendor output never becomes a writer result
+  ---
+  duration_ms: 2055.125417
+  ...
+# Subtest: WO-051 strict writer parser keeps observations host-owned and validates stored fields
+ok 20 - WO-051 strict writer parser keeps observations host-owned and validates stored fields
+  ---
+  duration_ms: 458.338625
+  ...
+1..20
+# tests 20
+# suites 0
+# pass 20
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 16160.749209

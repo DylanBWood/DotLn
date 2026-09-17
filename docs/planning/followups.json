@@ -5794,6 +5794,81 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-be1e76ee43f78e09",
+      "key": "decision:docs/evidence/WO-122/decisions.md#wo-122-d001",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "5f3c7cd2af62cd06796834fc543bd08d3d676db1b63941e25dc668d747b9eb12",
+          "ref": "docs/evidence/WO-122/decisions.md#wo-122-d001",
+          "title": "WO-122-D001: Reuse the existing writer/inspection transports and origin stamps; add durable per-order human questions and kind-specific result validation.",
+          "summary": "{ \"id\": \"WO-122-D001\", \"date\": \"2026-09-17\", \"dispatch\": \"resume: next\", \"decision\": \"Reuse the existing writer/inspection transports and origin stamps; add durable per-order human questions and kind-specific result validation.\", \"evidence\": [ \"docs/work-orders/WO-122-actor-catalog-cli-and-human.md\", \"docs/discovery/writing-worker-smoke-2026-09-14.md\", \"packages/skeleton/src/actor-contract.ts\", \"packages/skeleton/src/resident-state.ts\" ], \"rejected\": [ { \"option\": \"NoOp\", \"reason\": \"Leaves resident coding and human decisions unimplemented.\" }, { \"option\": \"A second transport or a fallback actor\", \"reason\": \"Duplicates the observed profiles or changes the explicitly selected actor.\" } ], \"reo",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-de7bb344eaf646ff",
+      "key": "decision:docs/evidence/WO-122/decisions.md#wo-122-d002",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "82cd594f581310e97430f05b470f6fbf88fa64d7528f50cc0b58e7a3cf99fb90",
+          "ref": "docs/evidence/WO-122/decisions.md#wo-122-d002",
+          "title": "WO-122-D002: Release the human episode's process slot without a failure transition; bind answers to order, packet, option and policy generation. Authorize worker operations under both phase and nested",
+          "summary": "{ \"id\": \"WO-122-D002\", \"date\": \"2026-09-17\", \"dispatch\": \"resume: next\", \"decision\": \"Release the human episode's process slot without a failure transition; bind answers to order, packet, option and policy generation. Authorize worker operations under both phase and nested writer envelopes.\", \"evidence\": [ \"packages/skeleton/src/presence-machine.ts\", \"packages/skeleton/src/resident-state.ts\", \"packages/skeleton/test/resident-actors.test.ts\" ], \"rejected\": [ { \"option\": \"Model waiting as failure\", \"reason\": \"The existing failure transition resets the generation and loses the continuation.\" }, { \"option\": \"Trust only the broader phase\", \"reason\": \"A narrower writer expiry or evidence requireme",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-675a37c76f5e2de9",
+      "key": "decision:docs/evidence/WO-122/decisions.md#wo-122-d003",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "d8f3804ce4253539168f23b56e0b2575e0d29e11423755dd21bb6fc1ebc7ed84",
+          "ref": "docs/evidence/WO-122/decisions.md#wo-122-d003",
+          "title": "WO-122-D003: Stage application v0.28.0 and skeleton 0.24.0 under the order's minor classification; refresh runtime pins and current source evidence.",
+          "summary": "{ \"id\": \"WO-122-D003\", \"date\": \"2026-09-17\", \"dispatch\": \"resume: next\", \"decision\": \"Stage application v0.28.0 and skeleton 0.24.0 under the order's minor classification; refresh runtime pins and current source evidence.\", \"evidence\": [ \"docs/work-orders/WO-122-actor-catalog-cli-and-human.md\", \"packages/skeleton/package.json\", \"scripts/lib/harness.mjs\", \"scripts/lib/evidence-sources.mjs\" ], \"rejected\": [ { \"option\": \"No component bump\", \"reason\": \"Two actor capabilities and new persisted events are additive public runtime behavior.\" }, { \"option\": \"Bump unchanged compiler, kernel or console\", \"reason\": \"Their behavior is unchanged.\" } ], \"reopenWhen\": \"Integration consumes the staged versio",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-091e97cdf2cc4223",
+      "key": "decision:docs/evidence/WO-122/decisions.md#wo-122-d004",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "806f9f7a10db8c5b0b8fd44a6706d19deffa00ae618b04de45588a2d941249ee",
+          "ref": "docs/evidence/WO-122/decisions.md#wo-122-d004",
+          "title": "WO-122-D004: Remove code_mode_host from source-change-only disabled features, retaining its installed stable default with the two existing shell features.",
+          "summary": "{ \"id\": \"WO-122-D004\", \"date\": \"2026-09-17\", \"dispatch\": \"resume: next; operator confirmed Keep the repair in WO-122\", \"decision\": \"Remove code_mode_host from source-change-only disabled features, retaining its installed stable default with the two existing shell features.\", \"evidence\": [ \"docs/evidence/WO-122/live-attempt-2.json\", \"packages/skeleton/src/worker-transport.ts\", \"packages/skeleton/test/resident-actors.test.ts\" ], \"rejected\": [ { \"option\": \"NoOp\", \"reason\": \"The installed CLI returned a blocked envelope because its workspace tools had no code-mode host.\" }, { \"option\": \"Change the inspection launch\", \"reason\": \"Inspection is tool-free and its exact argv remains the required base",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-d95579472d35ed79",
+      "key": "decision:docs/evidence/WO-122/decisions.md#wo-122-d005",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "606df81370358b23e08302c1c4bdc06924534824b07278779771939d556458b2",
+          "ref": "docs/evidence/WO-122/decisions.md#wo-122-d005",
+          "title": "WO-122-D005: Carry WO-122's verified actor behavior onto main at 352ada5, preserve both orders' records, regenerate shared projections and retime the minor release to application v0.29.0 and skeleton ",
+          "summary": "{ \"id\": \"WO-122-D005\", \"date\": \"2026-09-17\", \"dispatch\": \"resume: final review; operator requested main integration, housekeeping and temporary merge-worktree cleanup\", \"decision\": \"Carry WO-122's verified actor behavior onto main at 352ada5, preserve both orders' records, regenerate shared projections and retime the minor release to application v0.29.0 and skeleton 0.25.0.\", \"evidence\": [ \"docs/product/07-execution-guide.md#independent-workflows-and-integration\", \"docs/verifications/WO-122/VER-001.md\", \"docs/evidence/WO-122/decisions.md#wo-122-d003\", \"docs/final-reviews/WO-122/FINAL-001.md\" ], \"rejected\": [ { \"option\": \"NoOp\", \"reason\": \"Leaves the reviewed branch behind merged main with co",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

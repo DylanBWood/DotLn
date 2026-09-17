@@ -483,7 +483,15 @@ test("WO-119 canonical output digest binds every byte and matches native SHA-256
   assert.throws(
     () =>
       scriptResultVerified(
-        { outputContract: "work-candidates-v1" } as ActorSpec,
+        {
+          kind: "script",
+          effect: "repo.inspect",
+          surface: "fixture.source",
+          resources: {},
+          command: [process.execPath, "-e", ""],
+          cwd: process.cwd(),
+          outputContract: "work-candidates-v1",
+        },
         result,
       ),
     /digest differs/,

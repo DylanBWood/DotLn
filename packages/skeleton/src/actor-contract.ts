@@ -3,6 +3,17 @@ import {
   discoveryOutputSha256,
   type DiscoveryReport,
 } from "./work-candidate.js";
+import {
+  assertCliActorSpec,
+  assertCliObservation,
+  type CliActorSpec,
+  type CliActorObservation,
+} from "./cli-actor-contract.js";
+import {
+  assertHandoffQuestion,
+  type HandoffQuestion,
+  type HandoffPacket,
+} from "./handoff-contract.js";
 /** Pure actor declarations and persisted-result validation; no process access. */
 export const ACTOR_KINDS = [
   "script",
@@ -21,8 +32,11 @@ export type ActorSpec = {
   timeoutMs?: number;
   expectedStdoutSha256?: string;
   outputContract?: "work-candidates-v1";
+  worker?: CliActorSpec;
+  handoff?: HandoffQuestion;
 };
 export interface ActorResult {
+  worker?: CliActorObservation;
   discovery?: DiscoveryReport;
   exitCode: number | null;
   signal: string | null;
@@ -32,6 +46,7 @@ export interface ActorResult {
   reason: string;
 }
 export interface ActorRun {
+  handoff?: HandoffPacket;
   completed: Promise<ActorResult>;
   kill(): void;
 }
@@ -59,7 +74,7 @@ export function assertActorResult(
 }
 export interface ActorAdapter {
   kind: ActorKind;
-  available(): string | null;
+  available(spec?: ActorSpec): string | null;
   run(
     spec: ActorSpec,
     context?: { residentStore: string; episodeId: string },
@@ -83,6 +98,8 @@ export function assertActorSpec(value: unknown): asserts value is ActorSpec {
           "timeoutMs",
           "expectedStdoutSha256",
           "outputContract",
+          "worker",
+          "handoff",
         ].includes(key),
     ) ||
     !ACTOR_KINDS.includes(v.kind as ActorKind) ||
@@ -98,6 +115,18 @@ export function assertActorSpec(value: unknown): asserts value is ActorSpec {
     )
   )
     throw new Error("invalid resident actor declaration");
+  if (v.kind === "cli-worker") {
+    assertCliActorSpec(v.worker);
+    if (
+      v.worker.request.command.intent.kind !== "Act" ||
+      v.worker.request.command.intent.effect !== v.effect
+    )
+      throw new Error("CLI actor effect differs from request");
+  } else if (v.worker !== undefined)
+    throw new Error("worker request on another actor kind");
+  if (v.kind === "human-handoff") assertHandoffQuestion(v.handoff);
+  else if (v.handoff !== undefined)
+    throw new Error("handoff question on another actor kind");
   if (
     v.kind === "script" &&
     (!Array.isArray(v.command) ||
@@ -131,7 +160,19 @@ export function assertActorSpec(value: unknown): asserts value is ActorSpec {
 export function scriptResultVerified(
   spec: ActorSpec,
   result: ActorResult,
+  episodeId?: string,
 ): boolean {
+  if (spec.kind === "cli-worker") {
+    assertCliObservation(
+      result.worker,
+      spec.worker!,
+      episodeId ?? result.worker?.launch.episodeId ?? "",
+    );
+    return false; // A harness completion claim is not independent verification.
+  }
+  if (result.worker !== undefined)
+    throw new Error("CLI result on another actor kind");
+  if (spec.kind !== "script") return false;
   if (spec.outputContract === "work-candidates-v1") {
     if (result.discovery === undefined) return false;
     decodeDiscoveryReport(result.discovery);

@@ -1,10 +1,10 @@
 // Origin: {"ids":["no-attribution"],"loadoutId":"contributor","semanticHash":"fnv1a64:f7e29ff3f4ede75c"}
-const { runCommitMessageHook } = await import("../../.runtime/harness/85aaa2de89707dca/packages/skeleton/dist/src/harness-host.js");
-const { feedbackBoundary } = await import("../../.runtime/harness/85aaa2de89707dca/packages/skeleton/dist/src/feedback-boundary.js");
+const { runCommitMessageHook } = await import("../../.runtime/harness/44b1e7b00bdb62a5/packages/skeleton/dist/src/harness-host.js");
+const { feedbackBoundary } = await import("../../.runtime/harness/44b1e7b00bdb62a5/packages/skeleton/dist/src/feedback-boundary.js");
 await runCommitMessageHook({
   "compilerPackageVersion": "0.13.0",
   "runtime": {
-    "skeletonVersion": "0.24.0",
+    "skeletonVersion": "0.25.0",
     "boundaryContract": "feedback-v1",
     "files": [
       {
@@ -45,7 +45,7 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/version.js",
-        "hash": "fnv1a64:c282dac889796e2d"
+        "hash": "fnv1a64:392302a640d97da8"
       },
       {
         "path": "packages/skeleton/dist/src/harness-command.js",
@@ -73,7 +73,7 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/resident-state.js",
-        "hash": "fnv1a64:1d14bd7fa0812dba"
+        "hash": "fnv1a64:c372057a15bf8b9e"
       },
       {
         "path": "packages/skeleton/dist/src/presence-signals.js",
@@ -85,7 +85,7 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/resident-store.js",
-        "hash": "fnv1a64:4d5bab9a4b895c3d"
+        "hash": "fnv1a64:93e60c5039cb7019"
       },
       {
         "path": "packages/skeleton/dist/src/worker-store.js",
@@ -105,15 +105,23 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/presence-machine.js",
-        "hash": "fnv1a64:51c76f10d439a1dd"
+        "hash": "fnv1a64:c85105aa1cd0ca7d"
       },
       {
         "path": "packages/skeleton/dist/src/actor-catalog.js",
-        "hash": "fnv1a64:af536297b34f8602"
+        "hash": "fnv1a64:d538797ba6444ccd"
       },
       {
         "path": "packages/skeleton/dist/src/actor-contract.js",
-        "hash": "fnv1a64:bb1bce6dea8db682"
+        "hash": "fnv1a64:22aeca349f7a8c36"
+      },
+      {
+        "path": "packages/skeleton/dist/src/cli-actor-contract.js",
+        "hash": "fnv1a64:ce370df3be2d7ec5"
+      },
+      {
+        "path": "packages/skeleton/dist/src/handoff-contract.js",
+        "hash": "fnv1a64:91441a878612f03f"
       },
       {
         "path": "packages/skeleton/dist/src/work-candidate.js",
@@ -140,7 +148,7 @@ await runCommitMessageHook({
         "hash": "fnv1a64:6359806743e418ea"
       }
     ],
-    "snapshot": ".runtime/harness/85aaa2de89707dca"
+    "snapshot": ".runtime/harness/44b1e7b00bdb62a5"
   },
   "policy": {
     "contractVersion": "feedback-v1",

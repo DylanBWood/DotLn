@@ -22,6 +22,16 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 **WO-052 activation completion (2026-09-17):** source-change host stages application `v0.28.0` and skeleton `0.24.0` under its minor classification. It adds commit-identity recovery and one reactor slice; kernel/compiler versions, event schema and hash preimages remain unchanged. Live writing and remote publication remain separate orders.
 
+**WO-122 activation completion (2026-09-17):** application `v0.28.0` and
+skeleton `0.24.0` stage the CLI worker and durable human handoff actors above
+the observed local release baseline `v0.27.0`. Kernel, compiler and console
+versions are unchanged. Launch claims do not grant authority or constitute
+independent verification. Publication remains a separate reviewed action.
+
+**WO-122 collision retiming (2026-09-17):** unpublished target `v0.28.0` is superseded by `v0.29.0` under the existing minor classification because the observed release baseline is `v0.28.0`. Scope, acceptance, component versions, and published tags are unchanged by this retiming.
+
+**WO-122 component integration (2026-09-17):** skeleton `0.24.0` was valid at verification and then published by WO-052. Final review retimes the additive component to `0.25.0`; compiler, kernel and console remain unchanged. See WO-122-D005 for the integration evidence and reopening condition.
+
 **WO-121 activation completion (2026-09-16):** application `v0.26.0` stages
 the next minor above locally observed `v0.25.0`. Compiler `0.13.0` adds optional
 human-idle policy data and generated heartbeat hooks; skeleton `0.23.0` adds

@@ -182,8 +182,8 @@ compares complete Decisions and semantic projections without normalizing state.
 ## Resident host
 
 WO-068 adds an operator-started local loop, independent of Contributor stages.
-It runs only declared scripts; it does not select work orders or launch coding
-agents. The native script adapter currently requires macOS `sandbox-exec` and
+Its catalog runs declared scripts, CLI workers and human handoffs. It does not
+derive or select work orders. The native script adapter requires macOS `sandbox-exec` and
 refuses execution when that no-network boundary cannot start. No system daemon
 or scheduler is installed.
 
@@ -213,7 +213,8 @@ Create a dedicated store directory and its `resident.json` containing:
 This illustrates the shape; placeholder values are not executable. Supply one
 actor for every phase, evidence required by the policy, and all scope/budget
 resource keys, including zero amounts. The graph compiles before use; select
-the same policy id at launch. Current live capabilities include `actor.script`;
+the same policy id at launch. Current live capabilities include `actor.script`,
+`actor.cli-worker` and `actor.human-handoff`;
 other required capabilities need a host binding and are refused by this CLI.
 Arguments are passed literally without a shell. Scripts inherit no operator
 environment or stdin; a language runtime may create its own environment keys.
@@ -249,9 +250,40 @@ a fresh store. Retain the old store for inspection. The store records paths and
 commands supplied by its owner; use appropriate local storage. Resource
 reservations and effect declarations are checked before execution; this adapter
 does not measure actual file/line edits or replace source-change verification.
-`cli-worker`, `human-handoff` and `local-model` yield unavailable reasons.
+`local-model` yields its unavailable reason.
 The [fixtures](test/resident.test.ts) cover fake-clock replay and real local
-process/network boundaries, not unattended live-model work.
+process/network boundaries.
+
+For `kind: "cli-worker"`, add `worker: { transport, request }`: transport is
+`claude-cli-print` or `codex-cli-exec`; request is the existing `WorkerRequest`
+or `WriterRequest` described below. The actor effect must match the request,
+and its operations, reservations, evidence and expiry must fit the current
+phase. Writer revocation event types must match the phase; conditional nested
+revocation is not supported. Prepare the separate worktree and host-written
+message before starting the resident. CLI authentication stays with the CLI.
+The supervisor stamps the child, bounds the existing transport, and kills its
+ordinary process group on resident death or cancellation. C-U1/X-U1 establish
+the launch path, not authentication lifetime or hostile-process isolation.
+`CliWorkerObserved` retains the envelope and launch claims, not raw output;
+completion is a self-report and does not widen a presence phase.
+
+For `kind: "human-handoff"`, add `handoff: { workOrderId, question, options,
+evidenceRefs }`, where options are two to ten `{ id, label }` choices and
+evidenceRefs is a nonempty array of local evidence references. Packets are
+written under the resident store's `control/local/handoffs` directory. Read
+the packet and submit the chosen option explicitly:
+
+```sh
+node packages/skeleton/dist/src/dotln.js handoff answer --store .runtime/my-resident --episode <packet-episode> --work-order <packet-order> --option <option-id>
+```
+
+The answer releases only that order's hold. Unknown, repeated or mismatched
+answers refuse before append. A stale generation or expired policy cannot
+resume from an old answer. The local store is the trust boundary; a model is
+never selected to answer a handoff. The [WO-122 fixtures](test/resident-actors.test.ts)
+exercise both request kinds, recovery and answers; its live row is collected
+by `node scripts/evidence-resident-actors.mjs` on an authenticated runner that
+permits outside-sandbox child CLI execution.
 
 ## Disposable workers
 

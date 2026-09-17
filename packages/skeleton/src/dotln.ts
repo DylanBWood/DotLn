@@ -16,7 +16,7 @@ import { FakeVerificationTransport } from "./verification-fake.js";
 import { runFeedbackSelfhost } from "./feedback-selfhost.js";
 import { harnessControl } from "./harness-host.js";
 import { ResidentHost } from "./resident-host.js";
-import { recordPresence } from "./resident-store.js";
+import { recordPresence, answerHandoff } from "./resident-store.js";
 import {
   recordUsageObservation,
   type usageObservation,
@@ -25,6 +25,7 @@ import {
 const args = process.argv.slice(2);
 const command = args.shift();
 const presenceAction = command === "presence" ? args.shift() : undefined;
+const handoffAction = command === "handoff" ? args.shift() : undefined;
 const options = new Map<string, string>();
 const switches = new Set<string>();
 try {
@@ -42,6 +43,9 @@ try {
           "--effort",
           "--policy",
           "--tick",
+          "--episode",
+          "--work-order",
+          "--option",
         ].includes(key) ||
         options.has(key)
       )
@@ -69,6 +73,24 @@ try {
       presenceAction === "away" ? "away" : "returned",
     );
     console.log(`Presence recorded: ${presenceAction}`);
+  } else if (command === "handoff") {
+    if (
+      handoffAction !== "answer" ||
+      switches.size ||
+      options.size !== 4 ||
+      !options.get("--episode") ||
+      !options.get("--work-order") ||
+      !options.get("--option")
+    )
+      throw new Error(
+        "usage: dotln handoff answer --store <directory> --episode <id> --work-order <id> --option <id>",
+      );
+    await answerHandoff(directory, {
+      episodeId: options.get("--episode")!,
+      workOrderId: options.get("--work-order")!,
+      optionId: options.get("--option")!,
+    });
+    console.log("Human handoff answer recorded");
   } else if (command === "resident") {
     if (
       !options.get("--policy") ||
