@@ -51,7 +51,9 @@ No release dry run was attempted. This dispatch authorizes committing reviewed s
 
 The PR title's gitmoji is selected from the [catalog](https://gitmoji.dev/) for tracking and measurement, and sized from this diff against the whole merged series rather than the previous subject. After the PR merges, the operator dispatches `resume: release close` in `main`.
 
-No temporary repository or registered worktree was created. Recovery checkpoints, intake and the local journals are retained; this session releases its writer reservation at handoff.
+No temporary repository or registered worktree was created. Recovery checkpoints, intake and the local journals are retained. The writer reservation is not released by an action of this session: `.claude/settings.json` wires `PreToolUse`, `PostToolUse`, `UserPromptSubmit`, `SessionStart` and `Stop` and no `SessionEnd`, `harness-host.ts` refuses a takeover only while `owner.pid` is alive, and `writer-teardown.mjs` coordinates worktree removal rather than a per-session release. The reservation therefore lapses when this process exits, and a later session in this worktree takes it by that liveness check.
+
+Correction, same day, recorded under this order's own rule. The sentence above first read "this session releases its writer reservation at handoff". That was asserted from the presence of `writer-teardown.mjs` in the runtime installation list, without reading the module or checking how the reservation ends; the module coordinates worktree teardown and there is no session-end hook to release anything. What was meant was that the reservation does not outlive this session. The sentence now states the observed mechanism and names the three sources for it. The correction is recorded here rather than silently rewritten, and the release prose and PR body are re-pinned to the commit that carries it.
 
 ## Cost and instrument disclosure
 
