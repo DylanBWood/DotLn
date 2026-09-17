@@ -81,10 +81,24 @@ counter: `operatorCorrections` is derived from the journal — typed
 corrections recorded by the existing correction unit plus the journaled
 hedges of (b) — and never from decision records; the meter's
 shifting-the-burden row reads it per order, so a session that guesses is
-visible in the meter and the process-debt track. In Codex, no hook fires:
-(a) prints in the `resume` briefing and the lifecycle commands, (b) runs as
-the same scan inside the lifecycle commands' handoff output, and (c) counts
-typed corrections and those scans; the order records that difference.
+visible in the meter and the process-debt track. (d) The four judgment units the operator names as standard for every
+phase — never guess, accuracy over sycophancy, anti-oscillation, and the ban
+on over-literal or malicious compliance — are compiled prose in every role's
+cold start (`correctness-over-sycophancy`, `anti-oscillation`,
+`fail-conservative-correction` and the no-guessing line in the Contributor
+loadout) and the operator's repeated observation is that they are not
+applied. Prose is not application, so this order measures application: a
+journaled correction or hedge names the phase, the order and, when the
+operator or the agent names one, the unit it violated; the meter's
+shifting-the-burden row shows corrections per phase and unit; and the
+process-debt track reads that row, so a phase that keeps failing a unit is
+repaired from observation instead of from another prose line. This
+discharges FUP-0130's deferral (WO-126 D003: the support-behavior repair
+waits for observed operation), whose reopening condition this session met.
+In Codex, no hook fires: (a) prints in the `resume` briefing and the
+lifecycle commands, (b) runs as the same scan inside the lifecycle
+commands' handoff output, and (c) and (d) count typed corrections and those
+scans; the order records that difference.
 
 **Observed gap (dated 2026-09-17, `main` at `ec502c9`):**
 
@@ -97,6 +111,11 @@ typed corrections and those scans; the order records that difference.
   records nine corrections in one session.
 - The Stop hook already receives `transcript_path` and re-enters with
   `stop_hook_active`; nothing reads the final message.
+- The judgment units are loaded as prose in every role (the skill header
+  of the 2026-09-17 planning session lists them) and the same session
+  over-literalized one direction, reversed it, and estimated a value it
+  held; the operator recorded that these units are repeatedly mentioned and
+  not applied. Nothing measures their application per phase.
 
 **Design (scope discipline):**
 
@@ -139,13 +158,15 @@ the regenerated bundle and manifest; the write-backs below.
    including this session's sentence.
 3. `operatorCorrections` in the meter is derived from journaled typed
    corrections and (b)'s hedge rows; the decision-record derivation is
-   removed; a fixture journal with two corrections and one hedge yields 3
-   and the trap row shows it per order.
+   removed; each row carries the phase, the order and the unit when one is
+   named; a fixture journal with two corrections and one hedge yields 3 and
+   the trap row shows it per order, per phase and per unit.
 4. In Codex, the briefing and the lifecycle commands print (a) and run (b)
    in their handoff output, and the counter reads typed corrections and
    those scans; the decisions record states the difference.
-5. 07 §Discipline records the mechanism beside the no-guessing line and
-   states that it holds no turn; the security runbook's hook-boundary
+5. 07 §Discipline records the mechanism beside the no-guessing line, names
+   the four units it measures and states that it holds no turn; FUP-0130
+   is disposed as allocated to this order; the security runbook's hook-boundary
    section is unchanged (no refusal is added); the compiled bundle and
    manifest regenerate and `harness check` passes.
 6. `npm test` green; `git diff --check` clean; no new dependency.
@@ -156,7 +177,8 @@ the regenerated bundle and manifest; the write-backs below.
 
 **Non-goals:** semantic truth checking; any refusal or held turn; a Codex
 Stop hook; changing the existing refusals or WO-135's and WO-139's; any
-change to the shared instruction's wording.
+change to the four units' wording (they are already standard; this order
+measures their application); a classifier of the operator's tone.
 
 **Operator-review assumptions**
 

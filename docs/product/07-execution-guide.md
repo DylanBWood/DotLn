@@ -486,7 +486,7 @@ prints the affected checks; until it lands the list stands as written. A
 final review records a merge blocker only with the command and line that
 enforces it; a sentence nothing checks is a documented condition, not a
 gate. The capture is `docs/intake/notes/2026-09-17-vision-into-use-planning.md`
-(SHA-256 `f853e35e437d797bb7eec7e73c18ca59111c43e9a92c8a2abdc5c4f83399422b`).
+(SHA-256 `7f47a99676f26308a2068718b04143c19c3d2d61621f194c5aee203f188a8b2f`).
 
 ## Operator recovery controls
 

@@ -1,7 +1,7 @@
 # Vision into use — the capability ladder, the corrected sequence, a research lane, and the machinery that was costing the operator (2026-09-17)
 
 The operator opened this pass on the main checkout at `ec502c9` (v0.29.0)
-with a standard dispatch and twenty-one further messages during the turn: a
+with a standard dispatch and twenty-five further messages during the turn: a
 third-party planning brief titled "bring the vision into use", which the
 operator largely endorses and asked to weigh heavily; persisting
 inconsistency and cost in the two-lane workflow; a configurable hard cap on
@@ -14,10 +14,10 @@ inside the sandbox first; and, late in the turn, the platforms lesson of
 Steve Yegge's 2011 essay; and the cold-start ceiling that orders touching the
 role text keep hitting; and, before merge, a third-party review of the
 draft pull request (section 17), and the operator's direction after it
-that no-guessing enforcement is the next order. All twenty-two messages
+that no-guessing enforcement is the next order. All twenty-six messages
 are captured verbatim in ignored intake
 (`docs/intake/notes/2026-09-17-vision-into-use-planning.md`, SHA-256
-`f853e35e437d797bb7eec7e73c18ca59111c43e9a92c8a2abdc5c4f83399422b`). The
+`7f47a99676f26308a2068718b04143c19c3d2d61621f194c5aee203f188a8b2f`). The
 operator's comparison with an employer-provided setup carries no detail and
 is used only as the operator's expectation.
 
@@ -862,7 +862,7 @@ Handoff process cost is reported in the response.
 
 The operator pasted a third-party review of the pull request at `c347362`
 (message 13 of the capture, SHA-256
-`f853e35e437d797bb7eec7e73c18ca59111c43e9a92c8a2abdc5c4f83399422b`). It
+`7f47a99676f26308a2068718b04143c19c3d2d61621f194c5aee203f188a8b2f`). It
 scored the pass 7.5 of 10, endorsed the research convention, the local-model
 path, the recut sequence and the authority experiment, and asked for a
 bounded amendment before merge. Each of its factual claims was checked
@@ -943,8 +943,17 @@ journals and corrects a hedged number or duration as an advisory that never
 holds a turn (the operator rejected a hard refusal: it would gate their
 turns, the pattern WO-132 removed), and derives the operator-correction
 count from the journal instead of decision records; the prose line of WO-049 D001 stays and is no longer the
-enforcement (reopen: a hedged claim that passes the hook, or a correction
-the journal cannot count). (18) The planning refutation runs through the
+enforcement. The operator then named the four judgment units that are
+supposed to be standard for every phase — never guess, accuracy over
+sycophancy, anti-oscillation, the ban on over-literal or malicious
+compliance — and observed that they are repeatedly mentioned and not
+applied; they are compiled prose in every role's cold start, this session
+is the evidence that prose is not application, and WO-141 measures their
+application per phase, order and unit through the journaled corrections
+and the meter, discharging FUP-0130's deferral, whose reopening condition
+this session met (reopen: a hedged claim that passes the hook, a correction
+the journal cannot count, or a phase that keeps failing a unit after the
+meter shows it). (18) The planning refutation runs through the
 external Codex transport (`npm run plan -- refute --transport
 codex-cli-exec`) by the operator's explicit request; the two background
 in-harness reviews of this pass's drafts were not filed, and their token

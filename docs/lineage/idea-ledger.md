@@ -26,12 +26,12 @@ not relitigate them) and the founding chat/notes/image corpus.
 
 ## 2026-09-17 — Planning pass: vision into use (WO-135 rewritten, WO-079 rewritten, WO-136 to WO-140)
 
-Source: the operator's `planning:` dispatch and twenty-one mid-turn messages,
+Source: the operator's `planning:` dispatch and twenty-five mid-turn messages,
 including an operator-endorsed third-party brief ("bring the vision into
 use"), a pointer to Steve Yegge's 2011 platforms essay and, before merge, a
 third-party review of the draft pull request, captured verbatim in ignored
 intake (`docs/intake/notes/2026-09-17-vision-into-use-planning.md`,
-SHA-256 `f853e35e437d797bb7eec7e73c18ca59111c43e9a92c8a2abdc5c4f83399422b`).
+SHA-256 `7f47a99676f26308a2068718b04143c19c3d2d61621f194c5aee203f188a8b2f`).
 Shape-First Synthesis; the clean-room screen found one item to fence: the
 operator's comparison with an employer-provided setup carries no detail and
 is used only as an expectation. The full record is
@@ -214,7 +214,13 @@ is used only as an expectation. The full record is
     rejected a hard refusal as a gate on their own turns), and counts
     operator corrections from the journal; the prose line of WO-049 D001 stays but is not the enforcement.
     The sequence is recut into fifteen pairs with WO-141 and WO-136 first.
-    The operator also directed that the planning refutation use
+    The operator then named the four judgment units that are supposed to be
+    standard for every phase (never guess, accuracy over sycophancy,
+    anti-oscillation, the ban on over-literal or malicious compliance) and
+    observed they are not applied; they are compiled prose in every role,
+    and WO-141 measures their application per phase, order and unit through
+    the journaled corrections and the meter, discharging FUP-0130. The
+    operator also directed that the planning refutation use
     `npm run plan -- refute --transport codex-cli-exec`; the two in-harness
     background reviews of earlier drafts were not filed and are recorded as
     waste. Provenance: messages 19 and 22 of the capture; `scripts/lib/meta.mjs`

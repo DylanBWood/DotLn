@@ -2117,6 +2117,16 @@
           "reason": "The 2026-09-12 planning pass could not reproduce the omission: a planning session has no executor supports to observe. The operator deferral is carried unchanged in substance.",
           "reopenWhen": "At the next executor dispatch that records a support-behavior omission in its evidence, or at the next planning pass that finds such a record.",
           "at": "2026-09-12T16:40:36.192Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "The reopening condition (a planning pass that finds a record of a support-behavior omission) was met on 2026-09-17: the planning session itself over-literalized a direction, reversed it and estimated a value its journal held, and the operator recorded that the compiled judgment units are repeatedly mentioned and not applied. WO-141 measures their application per phase, order and unit through journaled corrections and the meter.",
+          "reopenWhen": "a phase that keeps failing a unit after the meter shows it, or WO-141 closing without the per-unit rows",
+          "targets": [
+            "WO-141"
+          ],
+          "at": "2026-09-17T18:39:58.296Z"
         }
       ]
     },
