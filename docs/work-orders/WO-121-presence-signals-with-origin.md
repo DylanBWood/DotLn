@@ -1,4 +1,4 @@
-# WO-121 — Presence signals with origin: human presence, actor liveness and task progress are distinct signals, tool activity from any session never implies the operator's return whichever process launched it, and return cancels only discretionary work (version assigned at activation)
+# WO-121 — Presence signals with origin: human presence, actor liveness and task progress are distinct signals, tool activity from any session never implies the operator's return whichever process launched it, and return cancels only discretionary work (v0.27.0)
 
 **Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
 

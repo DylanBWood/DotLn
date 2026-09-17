@@ -20,6 +20,15 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-121 activation completion (2026-09-16):** application `v0.26.0` stages
+the next minor above locally observed `v0.25.0`. Compiler `0.13.0` adds optional
+human-idle policy data and generated heartbeat hooks; skeleton `0.23.0` adds
+origin observations, actor deadline tracking and episode stamps. Kernel and
+console versions, authority rules and publication controls remain unchanged.
+Verification and final review remain separate dispatches.
+
+**WO-121 collision retiming (2026-09-17):** unpublished target `v0.26.0` is superseded by `v0.27.0` under the existing minor classification because the observed release baseline is `v0.26.0`. Scope, acceptance, component versions, and published tags are unchanged by this retiming.
+
 **WO-119 activation completion (2026-09-16):** application `v0.26.0` and
 skeleton `0.22.0` stage the executable discovery producer and optional typed
 script result. The observed local release baseline is `v0.25.0`; kernel,
