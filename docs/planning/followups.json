@@ -1419,6 +1419,13 @@
           "title": "Candidate — Context Continuity",
           "summary": "## Candidate — Context Continuity The operator's [2026-09-09 ideation](../evidence/WO-126/ideation.md) asks for a support that observes context use automatically and demonstrates that an actor retains its task through automatic compaction. Its outcome is continuity of the authorized work: the actor resumes the right objective, constraints, decisions and next action without losing obligations or repeating completed effects. A reassuring summary alone does not demonstrate that outcome. The operator's 2026-09-16 follow-up identifies a second outcome: useful work must actually continue after recovery. The reported failure is an actor answering an old chat message after compaction, then ending it",
           "missing": false
+        },
+        {
+          "hash": "a0da79c45e7ccf3c704ee9df26b93149fe065996efda9e0f4c7694b84cbf158f",
+          "ref": "docs/product/05-pattern-library.md#candidate--context-continuity",
+          "title": "Candidate — Context Continuity",
+          "summary": "## Candidate — Context Continuity The operator's [2026-09-09 ideation](../evidence/WO-126/ideation.md) asks for a support that observes context use automatically and demonstrates that an actor retains its task through automatic compaction. Its outcome is continuity of the authorized work: the actor resumes the right objective, constraints, decisions and next action without losing obligations or repeating completed effects. A reassuring summary alone does not demonstrate that outcome. The operator's 2026-09-16 follow-up identifies a second outcome: useful work must actually continue after recovery. The reported failure is an actor answering an old chat message after compaction, then ending it",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -1429,6 +1436,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-10T00:15:09.701Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-09-17 pass: the durable work identity and continuation it wants are owned by WO-120 and WO-100 on the resident chain, and the compaction claim is unverified; no separate order.",
+          "reopenWhen": "a bounded live reproduction with host events and a measured continuation outcome, or WO-120 landing",
+          "targets": [],
+          "at": "2026-09-17T16:48:52.897Z"
         }
       ]
     },
@@ -1774,6 +1789,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-10T00:15:09.598Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "open",
+          "reason": "Measured again on 2026-09-17: the pass consumed the feed's first page and selected nothing from it because the 62 new rows are decision records and register items; orientation still needed canonical status, the sequence, the last planning document, the receipts since 2026-09-13, the register history and the code surfaces the orders name. Stays open until the register settlement lets the feed be judged on live rows.",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-17T16:48:53.701Z"
         }
       ]
     },
@@ -2094,6 +2117,16 @@
           "reason": "The 2026-09-12 planning pass could not reproduce the omission: a planning session has no executor supports to observe. The operator deferral is carried unchanged in substance.",
           "reopenWhen": "At the next executor dispatch that records a support-behavior omission in its evidence, or at the next planning pass that finds such a record.",
           "at": "2026-09-12T16:40:36.192Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "The reopening condition (a planning pass that finds a record of a support-behavior omission) was met on 2026-09-17: the planning session itself over-literalized a direction, reversed it and estimated a value its journal held, and the operator recorded that the compiled judgment units are repeatedly mentioned and not applied. WO-141 measures their application per phase, order and unit through journaled corrections and the meter.",
+          "reopenWhen": "a phase that keeps failing a unit after the meter shows it, or WO-141 closing without the per-unit rows",
+          "targets": [
+            "WO-141"
+          ],
+          "at": "2026-09-17T18:39:58.296Z"
         }
       ]
     },
@@ -2142,6 +2175,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-10T00:11:03.033Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-09-17 pass: no order on this horizon touches the delivery contract.",
+          "reopenWhen": "WO-113 activation",
+          "targets": [],
+          "at": "2026-09-17T16:48:54.522Z"
         }
       ]
     },
@@ -4882,6 +4923,13 @@
           "title": "Candidate — follow-up register settlement",
           "summary": "## Candidate — follow-up register settlement The register holds 297 entries with 283 untriaged (2026-09-16). Two mechanisms fill it: the migration harvested every historical candidate heading and NoOp bullet as a pending row, and every per-order decision record is harvested as a follow-up although a decision with a `reopenWhen` observation is a record, not an action. Three planning passes have selected nothing from the feed. A later pass may spend one session settling the migration rows as historical, and may change the collector so a decision record enters the feed only when its reopening observation has been recorded. No order is allocated; reopen at a planning pass that has the session to",
           "missing": false
+        },
+        {
+          "hash": "32fbe0764abc06b9baf17598ad8a92098d9a14dc06ebeb99d45ae13a239a44db",
+          "ref": "docs/product/07-execution-guide.md#candidate--follow-up-register-settlement",
+          "title": "Candidate — follow-up register settlement",
+          "summary": "## Candidate — follow-up register settlement The register holds 297 entries with 283 untriaged (2026-09-16). Two mechanisms fill it: the migration harvested every historical candidate heading and NoOp bullet as a pending row, and every per-order decision record is harvested as a follow-up although a decision with a `reopenWhen` observation is a record, not an action. Three planning passes have selected nothing from the feed. A later pass may spend one session settling the migration rows as historical, and may change the collector so a decision record enters the feed only when its reopening observation has been recorded. No order is allocated; reopen at a planning pass that has the session to",
+          "missing": false
         }
       ],
       "dispositions": []
@@ -5064,7 +5112,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "A NoOp register bullet, not an action; each NoOp carries its own reversal condition in the 2026-09-16 admission pass's ledger section.",
+          "reopenWhen": "any reversal condition named in that ledger section",
+          "targets": [],
+          "at": "2026-09-17T16:49:07.581Z"
+        }
+      ]
     },
     {
       "id": "FUP-22929ecc5931615f",
@@ -5079,7 +5136,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined as an order by the 2026-09-17 vision-into-use pass: a role-text duty the shared instruction already carries (checked evidence before a claim, the prefix is the dispatch, name the enforcing command and line, run the suite that judges the merge, name the landing path); the register is read as a floor on what went wrong.",
+          "reopenWhen": "a recurrence of this item after 2026-09-17",
+          "targets": [],
+          "at": "2026-09-17T16:49:02.683Z"
+        }
+      ]
     },
     {
       "id": "FUP-c766f399782471f8",
@@ -5092,9 +5158,27 @@
           "title": "_A final review's stated merge prerequisite is unenforced._ FINAL-001 said",
           "summary": "3. _A final review's stated merge prerequisite is unenforced._ FINAL-001 said in bold that B1 had to clear before the branch merged; it merged at `3b7a315` with B1 unmet, and main inherited a red `test:docs`. A fix must either enforce the prerequisite at the merge transition or stop recording prerequisites that nothing checks. **Dispatch and reporting defects.** These concern agent behaviour under the role text rather than repository machinery, and belong in the process-debt track.",
           "missing": false
+        },
+        {
+          "hash": "05d8c87d361b2c4e2fe1c048ed757c0df687e537ce8c900a77da1238ef8def60",
+          "ref": "docs/planning/work-order-map.md#candidates--release-close-and-planning-dispatch-defects-recorded-2026-09-16",
+          "title": "_A final review's stated merge prerequisite is unenforced._ FINAL-001 said",
+          "summary": "3. _A final review's stated merge prerequisite is unenforced._ FINAL-001 said in bold that B1 had to clear before the branch merged; it merged at `3b7a315` with B1 unmet, and main inherited a red `test:docs`. A fix must either enforce the prerequisite at the merge transition or stop recording prerequisites that nothing checks. **Disposition (2026-09-17):** the only prerequisite of this kind was the capability admission, which the rewritten WO-135 removes; product 07's integration amendment says a review records a merge blocker only with the command and line that enforces it. Reopen: a bold prerequisite in a final review that nothing checks. **Dispatch and reporting defects.** These concern a",
+          "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "The only prerequisite of this kind was the capability admission, which the rewritten WO-135 removes; product 07's 2026-09-17 amendment says a review records a merge blocker only with the command and line that enforces it.",
+          "reopenWhen": "a bold prerequisite in a final review that nothing checks",
+          "targets": [
+            "WO-135"
+          ],
+          "at": "2026-09-17T16:48:56.961Z"
+        }
+      ]
     },
     {
       "id": "FUP-2f80a6a6318d4ddf",
@@ -5109,7 +5193,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined as an order by the 2026-09-17 vision-into-use pass: a role-text duty the shared instruction already carries (checked evidence before a claim, the prefix is the dispatch, name the enforcing command and line, run the suite that judges the merge, name the landing path); the register is read as a floor on what went wrong.",
+          "reopenWhen": "a recurrence of this item after 2026-09-17",
+          "targets": [],
+          "at": "2026-09-17T16:49:03.490Z"
+        }
+      ]
     },
     {
       "id": "FUP-512f562095c82009",
@@ -5124,7 +5217,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined as an order by the 2026-09-17 vision-into-use pass: a role-text duty the shared instruction already carries (checked evidence before a claim, the prefix is the dispatch, name the enforcing command and line, run the suite that judges the merge, name the landing path); the register is read as a floor on what went wrong.",
+          "reopenWhen": "a recurrence of this item after 2026-09-17",
+          "targets": [],
+          "at": "2026-09-17T16:49:04.301Z"
+        }
+      ]
     },
     {
       "id": "FUP-5f58198706dfa59e",
@@ -5139,7 +5241,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined as an order by the 2026-09-17 vision-into-use pass: a role-text duty the shared instruction already carries (checked evidence before a claim, the prefix is the dispatch, name the enforcing command and line, run the suite that judges the merge, name the landing path); the register is read as a floor on what went wrong.",
+          "reopenWhen": "a recurrence of this item after 2026-09-17",
+          "targets": [],
+          "at": "2026-09-17T16:49:05.123Z"
+        }
+      ]
     },
     {
       "id": "FUP-949a85355a792d9f",
@@ -5159,9 +5270,27 @@
           "title": "_An order may mandate a capability id its own gate refuses._ WO-068",
           "summary": "1. _An order may mandate a capability id its own gate refuses._ WO-068 criterion 7 directed an executor to add a `runtime.resident` row; `scripts/lib/plan-continuation.mjs:94` refuses ids absent from the judged receipt, because a capability id is a planning claim. The order required an edit the repository rejects by design, and no executor repair could clear it: deleting the row fails the criterion, keeping it fails the gate. FINAL-001 recorded this as B1 and nominated two forms — admit new ids through the planning pass that files the order, or teach `reassessments` a dated-addition form for ids the filing order introduces. Neither is chosen. A fix must make the unsatisfiable order unfilable",
           "missing": false
+        },
+        {
+          "hash": "9b6f6ce8c9826f8f19edea2df170ec1a0ff3ff020c3f6fe9b24911076dbcb237",
+          "ref": "docs/planning/work-order-map.md#candidates--release-close-and-planning-dispatch-defects-recorded-2026-09-16",
+          "title": "_An order may mandate a capability id its own gate refuses._ WO-068",
+          "summary": "1. _An order may mandate a capability id its own gate refuses._ WO-068 criterion 7 directed an executor to add a `runtime.resident` row; `scripts/lib/plan-continuation.mjs:94` refuses ids absent from the judged receipt, because a capability id is a planning claim. The order required an edit the repository rejects by design, and no executor repair could clear it: deleting the row fails the criterion, keeping it fails the gate. FINAL-001 recorded this as B1 and nominated two forms — admit new ids through the planning pass that files the order, or teach `reassessments` a dated-addition form for ids the filing order introduces. Neither is chosen. A fix must make the unsatisfiable order unfilable",
+          "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 3,
+          "status": "allocated",
+          "reason": "WO-135, rewritten on 2026-09-17: a capability write-back is an execution update judged by verification, final review and the next receipt; the narrower criteria-text form is withdrawn.",
+          "reopenWhen": "a capability row on main that no verification or final review judged",
+          "targets": [
+            "WO-135"
+          ],
+          "at": "2026-09-17T16:48:55.326Z"
+        }
+      ]
     },
     {
       "id": "FUP-b5f5df2db6f30ded",
@@ -5183,7 +5312,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "declined",
+          "reason": "Declined as an order by the 2026-09-17 vision-into-use pass: a role-text duty the shared instruction already carries (checked evidence before a claim, the prefix is the dispatch, name the enforcing command and line, run the suite that judges the merge, name the landing path); the register is read as a floor on what went wrong.",
+          "reopenWhen": "a recurrence of this item after 2026-09-17",
+          "targets": [],
+          "at": "2026-09-17T16:49:05.948Z"
+        }
+      ]
     },
     {
       "id": "FUP-ecadecdf23b63bec",
@@ -5212,7 +5350,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 3,
+          "status": "settled",
+          "reason": "Settled by WO-134 (closed, independently verified): a shared receipt-based same-day selector with regression coverage.",
+          "reopenWhen": "a demonstrated mismatch between dispatch and the gate (WO-134-D001)",
+          "targets": [],
+          "at": "2026-09-17T16:48:56.146Z"
+        }
+      ]
     },
     {
       "id": "FUP-d3940f4e6201b477",
@@ -5255,7 +5402,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 5,
+          "status": "allocated",
+          "reason": "The pass-selection propagation is settled by WO-134; the insertion-rule enforcement remains WO-084's subject under its dated deferral.",
+          "reopenWhen": "WO-084 activation, or a position-sensitive selection result",
+          "targets": [
+            "WO-084"
+          ],
+          "at": "2026-09-17T16:49:06.757Z"
+        }
+      ]
     },
     {
       "id": "FUP-a815e8862796c2e1",
@@ -5275,9 +5433,25 @@
           "title": "_A stale evidence row was answered by rewinding the code._ On hitting the",
           "summary": "11. _A stale evidence row was answered by rewinding the code._ On hitting the identity refusal, the first response was to restore both files to their reviewed bytes so the hash would match again. That makes the gate pass without the thing the gate exists to establish — that the shipped source was reviewed — and it deletes a working fix to do so. It is the rule-beating trap in its plainest form, and the operator caught it. The correct response to \"source changed after the product gate\" is to regenerate the gate at the current identity. A fix must make re-gating reachable: `final-review-result` is guarded by `requirePhase(state, \"final-review\")` and `closed` offers only release-close, next and",
           "missing": false
+        },
+        {
+          "hash": "c9a7ca6ddef8c5630786177f637472504f529b82813c9acb7a06d079c92c71bc",
+          "ref": "docs/planning/work-order-map.md#candidates--release-close-and-planning-dispatch-defects-recorded-2026-09-16",
+          "title": "_A stale evidence row was answered by rewinding the code._ On hitting the",
+          "summary": "11. _A stale evidence row was answered by rewinding the code._ On hitting the identity refusal, the first response was to restore both files to their reviewed bytes so the hash would match again. That makes the gate pass without the thing the gate exists to establish — that the shipped source was reviewed — and it deletes a working fix to do so. It is the rule-beating trap in its plainest form, and the operator caught it. The correct response to \"source changed after the product gate\" is to regenerate the gate at the current identity. A fix must make re-gating reachable: `final-review-result` is guarded by `requirePhase(state, \"final-review\")` and `closed` offers only release-close, next and",
+          "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 3,
+          "status": "declined",
+          "reason": "Declined as an order by the 2026-09-17 pass: the critical path's stop rule and the shared no-guessing instruction carry the duty; re-gating at the current identity stays the operator-override route until an order needs it.",
+          "reopenWhen": "a second rewind attempt",
+          "targets": [],
+          "at": "2026-09-17T16:48:58.593Z"
+        }
+      ]
     },
     {
       "id": "FUP-de267de7613b2354",
@@ -5290,9 +5464,27 @@
           "title": "_A source change rode a document-only dispatch onto main and voided the",
           "summary": "10. _A source change rode a document-only dispatch onto main and voided the reviewed gate._ A planning dispatch is document-only and carries no implementation authority, but this pass committed `scripts/lib/plan-direct.mjs` and `scripts/refute-plan.mjs` to its branch. `gateCodeIdentity` excludes `docs/`, `.claude/`, root `*.md` and generated files, so those two patches were the only part of the merge it could see, and they moved WO-068's identity from the reviewed `c2caf3bc` to `464f4928`. `reviewedProductGate` (`scripts/lib/release-records.mjs:216`) then refused the tag, correctly: it will not publish source no reviewer gate covers. The release was publishable at `3b7a315` and is not publis",
           "missing": false
+        },
+        {
+          "hash": "71aa87bda33f191fe21e1f0ffc2402a10a85e1ca182ac5a2a87b2a3646fd838f",
+          "ref": "docs/planning/work-order-map.md#candidates--release-close-and-planning-dispatch-defects-recorded-2026-09-16",
+          "title": "_A source change rode a document-only dispatch onto main and voided the",
+          "summary": "10. _A source change rode a document-only dispatch onto main and voided the reviewed gate._ A planning dispatch is document-only and carries no implementation authority, but this pass committed `scripts/lib/plan-direct.mjs` and `scripts/refute-plan.mjs` to its branch. `gateCodeIdentity` excludes `docs/`, `.claude/`, root `*.md` and generated files, so those two patches were the only part of the merge it could see, and they moved WO-068's identity from the reviewed `c2caf3bc` to `464f4928`. `reviewedProductGate` (`scripts/lib/release-records.mjs:216`) then refused the tag, correctly: it will not publish source no reviewer gate covers. The release was publishable at `3b7a315` and is not publis",
+          "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "WO-135 criterion 4: the generated hook refuses a non-document write on a planning branch at write time.",
+          "reopenWhen": "a non-document path on a planning branch after WO-135 lands",
+          "targets": [
+            "WO-135"
+          ],
+          "at": "2026-09-17T16:48:57.778Z"
+        }
+      ]
     },
     {
       "id": "FUP-e2612bcb7ad08955",
@@ -5314,7 +5506,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "declined",
+          "reason": "Declined as an order by the 2026-09-17 vision-into-use pass: a role-text duty the shared instruction already carries (checked evidence before a claim, the prefix is the dispatch, name the enforcing command and line, run the suite that judges the merge, name the landing path); the register is read as a floor on what went wrong.",
+          "reopenWhen": "a recurrence of this item after 2026-09-17",
+          "targets": [],
+          "at": "2026-09-17T16:49:00.235Z"
+        }
+      ]
     },
     {
       "id": "FUP-9a23fe23cbf08958",
@@ -5329,7 +5530,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined as an order by the 2026-09-17 vision-into-use pass: a role-text duty the shared instruction already carries (checked evidence before a claim, the prefix is the dispatch, name the enforcing command and line, run the suite that judges the merge, name the landing path); the register is read as a floor on what went wrong.",
+          "reopenWhen": "a recurrence of this item after 2026-09-17",
+          "targets": [],
+          "at": "2026-09-17T16:48:59.406Z"
+        }
+      ]
     },
     {
       "id": "FUP-da72ac3d4d5123bf",
@@ -5344,7 +5554,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined as an order by the 2026-09-17 vision-into-use pass: a role-text duty the shared instruction already carries (checked evidence before a claim, the prefix is the dispatch, name the enforcing command and line, run the suite that judges the merge, name the landing path); the register is read as a floor on what went wrong.",
+          "reopenWhen": "a recurrence of this item after 2026-09-17",
+          "targets": [],
+          "at": "2026-09-17T16:49:01.051Z"
+        }
+      ]
     },
     {
       "id": "FUP-e93507c6b9f1d47e",
@@ -5357,9 +5576,25 @@
           "title": "_The planning: prefix was read as conversation a second time._ Item 6",
           "summary": "15. _The `planning:` prefix was read as conversation a second time._ Item 6 records the first instance. The fourth session opened with a `planning:` dispatch, the hook resolved the planner role, and the session announced that it had chosen not to open a pass because the message read as a question. That was the same unilateral choice item 6 already names, made against a register entry on the same branch. The operator caught it. A fix for item 6 must survive the agent having read item 6. Cost observation: about ninety minutes across the first three sessions, plus a fourth session of unmeasured length, on a release that was publishable throughout.",
           "missing": false
+        },
+        {
+          "hash": "6f930e64bc519881f4add1226fa1c7e6f85f80e20032b09d0de072f1fe0271b7",
+          "ref": "docs/planning/work-order-map.md#candidates--release-close-and-planning-dispatch-defects-recorded-2026-09-16",
+          "title": "_The planning: prefix was read as conversation a second time._ Item 6",
+          "summary": "15. _The `planning:` prefix was read as conversation a second time._ Item 6 records the first instance. The fourth session opened with a `planning:` dispatch, the hook resolved the planner role, and the session announced that it had chosen not to open a pass because the message read as a question. That was the same unilateral choice item 6 already names, made against a register entry on the same branch. The operator caught it. A fix for item 6 must survive the agent having read item 6. **Disposition of items 4 to 8 and 12 to 15 (2026-09-17):** declined as orders. Each is a role-text duty the shared instruction already carries (checked evidence before a claim, the prefix is the dispatch, name",
+          "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "declined",
+          "reason": "Declined as an order by the 2026-09-17 vision-into-use pass: a role-text duty the shared instruction already carries (checked evidence before a claim, the prefix is the dispatch, name the enforcing command and line, run the suite that judges the merge, name the landing path); the register is read as a floor on what went wrong.",
+          "reopenWhen": "a recurrence of this item after 2026-09-17",
+          "targets": [],
+          "at": "2026-09-17T16:49:01.873Z"
+        }
+      ]
     },
     {
       "id": "FUP-356df478162a05f3",
@@ -5409,9 +5644,29 @@
           "title": "Candidate — local-model usefulness experiments",
           "summary": "### Candidate — local-model usefulness experiments Operator direction, 2026-09-16: the next planning pass should give local LLM experiments more attention, starting with concrete runner readiness and any operator setup needed in LM Studio. Current readiness is unknown; the dated WO-027 failure above remains evidence about that probe, not a claim that the runner is unusable today. Revisit its named deferral with a fresh bounded availability smoke and coordinate any required setup before scheduling runs. WO-110 supplies the existing inspection-transport candidate; its present scope does not establish source-writing capability or model quality. After availability, plan a substantially broader c",
           "missing": false
+        },
+        {
+          "hash": "e78d04b2df1d65b30380c15d5eda2fc3290f8a1a71bb10e57d4fdf966e33a51b",
+          "ref": "docs/product/06-roadmap.md#candidate--local-model-usefulness-experiments",
+          "title": "Candidate — local-model usefulness experiments",
+          "summary": "### Candidate — local-model usefulness experiments Operator direction, 2026-09-16: the next planning pass should give local LLM experiments more attention, starting with concrete runner readiness and any operator setup needed in LM Studio. Current readiness is unknown; the dated WO-027 failure above remains evidence about that probe, not a claim that the runner is unusable today. Revisit its named deferral with a fresh bounded availability smoke and coordinate any required setup before scheduling runs. WO-110 supplies the existing inspection-transport candidate; its present scope does not establish source-writing capability or model quality. After availability, plan a substantially broader c",
+          "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 3,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-09-17 vision-into-use pass in dependency order: WO-137 (runner readiness, a guided research order), WO-110 (the transport written from its row), WO-138 (the role qualification pilot). Product 06's candidate carries the disposition.",
+          "reopenWhen": "WO-137 returns a failure artifact, or WO-138's packet contradicts the catalog's role assignment",
+          "targets": [
+            "WO-137",
+            "WO-110",
+            "WO-138"
+          ],
+          "at": "2026-09-17T16:48:50.447Z"
+        }
+      ]
     },
     {
       "id": "FUP-56b2d81b540555bb",
@@ -5424,9 +5679,27 @@
           "title": "Candidate — guided operator work orders",
           "summary": "## Candidate — guided operator work orders Operator direction, 2026-09-16: a work-order type should carry guided human work through the normal workflow. Its purpose is to help the operator reach a specific result or setup, including ordinary trial and error, and return either evidence of success or a useful failure artifact. Local inference readiness and possible LM Studio setup are the immediate example; this is a general pattern for work that requires operator participation, not a separate informal checklist. A candidate contract names the desired observable result, starting conditions, constraints and authority, agent and operator responsibilities, success checks, and the evidence to reta",
           "missing": false
+        },
+        {
+          "hash": "2196a04e927333f2c2390f5f6fc57c7fc9b119c1aa983ef456d9ac8328af07b1",
+          "ref": "docs/product/07-execution-guide.md#candidate--guided-operator-work-orders",
+          "title": "Candidate — guided operator work orders",
+          "summary": "## Candidate — guided operator work orders **Disposed 2026-09-17:** the section above is this candidate's convention, and WO-137 is its first use. The text below is retained as the source. Operator direction, 2026-09-16: a work-order type should carry guided human work through the normal workflow. Its purpose is to help the operator reach a specific result or setup, including ordinary trial and error, and return either evidence of success or a useful failure artifact. Local inference readiness and possible LM Studio setup are the immediate example; this is a general pattern for work that requires operator participation, not a separate informal checklist. A candidate contract names the desire",
+          "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Product 07 §Research and guided-operator work orders (2026-09-17) is this candidate's convention; WO-137 is its first use.",
+          "reopenWhen": "an index consumer needs the outcome typed, or a research order is cited as a capability",
+          "targets": [
+            "WO-137"
+          ],
+          "at": "2026-09-17T16:48:51.262Z"
+        }
+      ]
     },
     {
       "id": "FUP-2f29dcfe83f52d7b",
@@ -5611,9 +5884,34 @@
           "title": "Candidate — DotLn-owned authority with minimal native harness restrictions",
           "summary": "## Candidate — DotLn-owned authority with minimal native harness restrictions Operator direction during WO-119 (2026-09-16): reach an operating mode as soon as evidence supports it in which native Claude and Codex harness sandboxes can be disabled and Claude's settings have nearly empty allow/deny lists. The source of permissions, security and authority is the equipped DotLn supports, build and role. The operator clarified the assurance requirement: faithful runtime enforcement plus adversarial tests, including attempts to bypass the declared authority. See the [ideation receipt](../evidence/WO-119/ideation-authority.md). This candidate asks planning to identify the earliest justified route ",
           "missing": false
+        },
+        {
+          "hash": "98fbe7655ded7cbe4c298676f10b57c3b18bc5b0feec676cb9bc9cc7570dd95a",
+          "ref": "docs/product/03-architecture.md#candidate--dotln-owned-authority-with-minimal-native-harness-restrictions",
+          "title": "Candidate — DotLn-owned authority with minimal native harness restrictions",
+          "summary": "## Candidate — DotLn-owned authority with minimal native harness restrictions Operator direction during WO-119 (2026-09-16): reach an operating mode as soon as evidence supports it in which native Claude and Codex harness sandboxes can be disabled and Claude's settings have nearly empty allow/deny lists. The source of permissions, security and authority is the equipped DotLn supports, build and role. The operator clarified the assurance requirement: faithful runtime enforcement plus adversarial tests, including attempts to bypass the declared authority. See the [ideation receipt](../evidence/WO-119/ideation-authority.md). This candidate asks planning to identify the earliest justified route ",
+          "missing": false
+        },
+        {
+          "hash": "5b39b45929a035d48f1c112b2ca428486e8a992cf72133151c657b3e5c9dbb59",
+          "ref": "docs/product/03-architecture.md#candidate--dotln-owned-authority-with-minimal-native-harness-restrictions",
+          "title": "Candidate — DotLn-owned authority with minimal native harness restrictions",
+          "summary": "## Candidate — DotLn-owned authority with minimal native harness restrictions Operator direction during WO-119 (2026-09-16): reach an operating mode as soon as evidence supports it in which native Claude and Codex harness sandboxes can be disabled and Claude's settings have nearly empty allow/deny lists. The source of permissions, security and authority is the equipped DotLn supports, build and role. The operator clarified the assurance requirement: faithful runtime enforcement plus adversarial tests, including attempts to bypass the declared authority. See the [ideation receipt](../evidence/WO-119/ideation-authority.md). This candidate asks planning to identify the earliest justified route ",
+          "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Assessed in the 2026-09-17 planning document §6 and allocated to WO-136, the enforcement-boundary matrix; the mode decision follows at R2.",
+          "reopenWhen": "WO-136's matrix, judged at R2",
+          "targets": [
+            "WO-136"
+          ],
+          "at": "2026-09-17T16:48:52.069Z"
+        }
+      ]
     },
     {
       "id": "FUP-70e121b85af432c7",
@@ -5865,6 +6163,45 @@
           "ref": "docs/evidence/WO-122/decisions.md#wo-122-d005",
           "title": "WO-122-D005: Carry WO-122's verified actor behavior onto main at 352ada5, preserve both orders' records, regenerate shared projections and retime the minor release to application v0.29.0 and skeleton ",
           "summary": "{ \"id\": \"WO-122-D005\", \"date\": \"2026-09-17\", \"dispatch\": \"resume: final review; operator requested main integration, housekeeping and temporary merge-worktree cleanup\", \"decision\": \"Carry WO-122's verified actor behavior onto main at 352ada5, preserve both orders' records, regenerate shared projections and retime the minor release to application v0.29.0 and skeleton 0.25.0.\", \"evidence\": [ \"docs/product/07-execution-guide.md#independent-workflows-and-integration\", \"docs/verifications/WO-122/VER-001.md\", \"docs/evidence/WO-122/decisions.md#wo-122-d003\", \"docs/final-reviews/WO-122/FINAL-001.md\" ], \"rejected\": [ { \"option\": \"NoOp\", \"reason\": \"Leaves the reviewed branch behind merged main with co",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-60ad5362ea73eea9",
+      "key": "candidate:docs/planning/work-order-map.md#preserved-unallocated-candidates::cb6e5d7d2608e9cddc07a8bde726d17601f811fa7107adc856ec7070f3f4d34e",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "8b7de51be6339057f47c3fde35b524986449313e23c9dc601942ad312f50d87b",
+          "ref": "docs/planning/work-order-map.md#preserved-unallocated-candidates",
+          "title": "NoOps of the 2026-09-17 vision-into-use pass.",
+          "summary": "- **NoOps of the 2026-09-17 vision-into-use pass.** Weighed and declined, each with its evidence and reversal condition in [the planning document §14](vision-into-use-2026-09-17.md#14-declined-alternatives--the-noop-register-of-this-pass). (1) _The brief's items as orders one for one._ Declined: three sections are documents; five orders carry the measured costs. (2) _A single lane._ Declined: the parallel gain is a whole lifecycle against a bounded integration cost; execute the checklist and pair by surface. Reverse: an integration after WO-079 fifteen minutes above the median. (3) _The narrower WO-135._ Declined: it leaves the post-final-review dispatch in place. (4) _Settings changes now._",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "A NoOp register bullet, not an action; each NoOp carries its own reversal condition in the 2026-09-17 planning document §14.",
+          "reopenWhen": "any reversal condition named in the planning document §14",
+          "targets": [],
+          "at": "2026-09-17T16:49:08.404Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-57257901a26aec18",
+      "key": "candidate:docs/product/07-execution-guide.md#candidate--total-subagent-cap-across-every-spawn-path",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "6f29fa6bb49b15fbd886f848d414922f5ef21f467c389a04b9b08b30080807bd",
+          "ref": "docs/product/07-execution-guide.md#candidate--total-subagent-cap-across-every-spawn-path",
+          "title": "Candidate — total subagent cap across every spawn path",
+          "summary": "## Candidate — total subagent cap across every spawn path Operator direction, 2026-09-17: a session's total subagents need a hard, configurable cap (about twenty), because a top-level guideline of five fans out through per-item adversarial and refutation trees to more than a hundred. The harness documents no total cap, only a size guideline, a concurrency ceiling of sixteen and a per-workflow limit of a thousand; its hooks fire for the Agent and Workflow tools and inside subagents. WO-139 counts and refuses at the admission points the hook can see and counts descendants at their first attributable tool call, so an agent the harness creates before any hook fires is counted late or not at all,",
           "missing": false
         }
       ],

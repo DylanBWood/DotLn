@@ -1094,6 +1094,25 @@ and [WO-051 breakout receipt](../evidence/WO-051/ideation-local-models.md).
 Reopen at the next planning pass or when the operator reports setup readiness;
 record the resulting plan, concrete setup needs and bounded first experiment.
 
+**Allocated 2026-09-17 (vision-into-use pass).** Observed on the host: the
+application is installed, its CLI build changed on 2026-09-15 after the
+2026-09-03 crash, the server is not running and nothing listens on the
+loopback port; Apple M3 Max, 48 GB. Readiness of the current build is
+unknown, so the plan is three orders in dependency order:
+[WO-137](../work-orders/WO-137-local-runner-readiness.md) (a guided research
+order: reproducible noninteractive calls with determinism, schema and
+tool-call round trip, cancellation, timeout and provenance, or a failure
+artifact), then [WO-110](../work-orders/WO-110-local-model-transport.md)
+written from its row, then
+[WO-138](../work-orders/WO-138-local-model-role-qualification.md) (three
+read-only tasks with deterministic oracles, local against one remote
+transport with repeats and one-factor cells, deciding which inspection roles
+the local kind may fill at what floor). Bounded implementation and
+independent verification are later qualifications, each its own experiment.
+Live evaluations never run inside `npm test`; requalification triggers are in
+07 §Research and guided-operator work orders. No download, launch or setting
+is authorized by this allocation.
+
 <!-- prettier-ignore -->
 ## v0.0.0 — Clean-room bootstrap  *(mostly complete)*
 

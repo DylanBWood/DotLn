@@ -641,6 +641,30 @@ this candidate. Reopen at the next planning pass or on new enforcement evidence;
 harness-specific implementation, acceptable residual risk and measurable
 coverage thresholds remain unresolved.
 
+**Assessed 2026-09-17 (vision-into-use pass); allocated to
+[WO-136](../work-orders/WO-136-authority-enforcement-boundary.md).** The
+pass kept six mechanisms apart (approval prompts, harness permission rules,
+operating-system confinement, DotLn's authorization of routed effects, the
+process's credentials, and detection with recovery) and read each declared
+limit against the record: for Claude print mode the compiled hook and the
+exact allow-list prevent at the tool level (C-W2, C-W3, C-W4); for Codex
+exec no hook fires (X-W3 to X-W10), so the launch profile is the only
+pre-effect mechanism; neither sandbox confines a sibling write (C-W6, X-W6);
+the contents of an admitted command are trusted in every mode (WO-052's
+limits); credential and transport denies stay in every mode. Three modes are
+feasible and must be labeled by what they guarantee: the current mode; a
+trusted-unconfined mode (sandbox off, tool-level prevention where a hook
+fires, detection and recovery, no confinement of shell effects or network);
+and a hook-mediated mode for Claude in which only exactly declared commands
+run. Neither of the latter is offered until WO-136's matrix records, per
+limit, harness and mode, prevented or observed-only, and whether authorized
+work stalled. The planning checkpoint after WO-136's close decides the mode
+from that matrix and allocates the smallest supported mode's implementation
+or the next experiment; WO-136's packet proposes, per harness, that mode
+with its guarantees and the minimal Claude allow/deny configuration it
+needs, as a table that is not applied; R2 confirms. The full table is in the
+[planning document](../planning/vision-into-use-2026-09-17.md) §6 and §17.
+
 ## Candidate — isolated execution environments
 
 DotLn may eventually select and attest an execution boundary per episode: the

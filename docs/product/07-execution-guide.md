@@ -89,6 +89,20 @@ evidence that would reopen the choice. Scale detail to consequence: explain
 applicable risks and briefly group immaterial lenses with a reason; do not
 manufacture eight repetitive paragraphs for routine edits.
 
+**Platform lens (operator direction, 2026-09-17).** Four checks from the
+platforms lesson the operator pointed at (Steve Yegge's 2011 account of the
+Amazon service mandate) apply to any capability a plan or order lands: it
+arrives as an interface something else consumes (a transport profile, a
+typed event, a projection, a handoff packet), never only as a script or a
+session; it is externalizable by construction (content-addressed inputs,
+declared contracts, no private setting as the source of a guarantee); this
+repository and the operator's own repository consume it before any export;
+and its result is usable by a stranger to the session, so a receipt that
+needs reverse-engineering is an accessibility failure. The planning
+refuter's platform-first standard in this guide is unchanged; the
+[2026-09-17 planning document](../planning/vision-into-use-2026-09-17.md)
+§12 applies the four checks to the current plan.
+
 Material choices and rationales go in existing phase evidence: per-order
 `docs/evidence/WO-NNN/decisions.md` and cited product sections for work-order
 decisions; planning dispositions/candidate records for planning choices; the
@@ -459,6 +473,21 @@ this decision. The capture is
 `docs/intake/notes/2026-09-16-r1-replan-planning.md` (SHA-256
 `07ffad87a856637579b6a40ba7f7bf77a533ccbd5e0622784086bc33a2bab279`).
 
+**Amendment (2026-09-17, vision-into-use pass).** The operator reported the
+integration still handled inconsistently and its todo nearly negating the
+parallel gain; the record since 2026-09-13 shows integrating final reviews at
+a median of about 32 minutes against about 25 for the rest, with a 56-minute
+worst case. Two rules follow. The second lane is by preference an
+evidence-only or machinery order that touches surfaces the delivery order
+does not, so its integration has no release retime and no source merge;
+two operator-assisted orders never share a pair. The checklist above becomes
+one command, `worktree integrate` (WO-079, rewritten), which runs it and
+prints the affected checks; until it lands the list stands as written. A
+final review records a merge blocker only with the command and line that
+enforces it; a sentence nothing checks is a documented condition, not a
+gate. The capture is `docs/intake/notes/2026-09-17-vision-into-use-planning.md`
+(SHA-256 `e267d8e2c26e8c55bacc1e13240b9fac7ec2570ebf0cd0ecfe270ff64b203a26`).
+
 ## Operator recovery controls
 
 `analysis:` interrupts the current routine and opens operator-directed diagnosis.
@@ -797,7 +826,75 @@ choice or reconciling a source change. The metadata and document gates check
 freshness; executor deferrals need a checked public FUP destination. Neither the
 feed nor a disposition grants work-order activation authority.
 
+## Research and guided-operator work orders
+
+Operator decision, 2026-09-17 (the vision-into-use planning pass, from the
+2026-09-16 guided-operator ideation and the operator-endorsed brief of
+2026-09-17). Not every valuable order begins with a known implementation or
+ends with the hoped-for result. A research order investigates a question
+whose answer changes a decision; a guided operator order reaches a setup or
+result with the operator's participation. Both use the ordinary work-order
+file, lifecycle, evidence directories, verification and final review; no
+kind field, transition or command is added. WO-027, WO-044 and WO-053 are the
+existing practice this section names.
+
+1. The Objective states the question or hypothesis and the decision it
+   informs. The Design states the setup, the permitted effects, a bounded
+   budget (attempts, wall-clock, tokens where the harness reports them) and
+   the stopping conditions. The acceptance criteria are method criteria: the
+   artifacts, their `observed`/`blocked`/`unavailable`/`ambiguous` labels,
+   provenance, budget adherence, and an outcome reported as exactly one of
+   `ready`, `negative` or `inconclusive`. A criterion never requires that
+   the experiment find a winning approach; it requires methodological
+   completion and honest reporting.
+2. A guided operator order names the operator's steps; the agent proposes
+   the next step from observed results, keeps unexecuted proposals distinct
+   from observations, preserves progress across sessions, and closes in one
+   of two ways: the declared check passes, or a failure artifact records the
+   attempted path, the observed errors, the ruled-out causes, the remaining
+   blocker and the next useful action or reopening condition. A failure
+   artifact discharges the investigation and never marks the setup as
+   achieved. An environment limitation is distinguished from a DotLn defect.
+3. The execution record's first sentence names the outcome class. A
+   `negative` or `inconclusive` outcome closes a research order and
+   satisfies no implementation or live-proof criterion; a research outcome
+   is planning evidence, never a capability level (the capability table's
+   rule that only real workflow evidence promotes stands). An order whose
+   criteria require an observed successful capability keeps its own rule
+   that a failed run does not close it. The typed dependency graph
+   expresses closes, not outcomes, so an order that requires a `ready`
+   outcome of a research order says so in its activation preflight and its
+   first criterion, and an order that may proceed on doubles while a live
+   row is unavailable says that instead (WO-138 and WO-110 are the two
+   forms, 2026-09-17).
+4. Experimental code lives under `scripts/probes/` or the order's evidence
+   directory, carries tests proportionate to its risk (the existing rule for
+   ideation helpers), is reviewed as code, and is promoted into supported
+   product code only by a separate implementation order that cites the
+   receipt.
+5. Live model evaluations and live harness launches run under explicit
+   `probe:` or `evidence:` commands, never inside `npm test`; deterministic
+   adapter and protocol tests stay in the gate. A change to the transport,
+   the tool or output protocol, the model artifact or quantization, the
+   runtime's version, or authority behavior triggers live requalification,
+   recorded as a dated discovery row. Live local inference runs when no
+   product gate is running on the host, because the gate bands are timing
+   evidence.
+
+The verifier judges method and honesty; the reviewer judges the decision
+packet and whether a speculative result was presented as settled.
+[WO-136](../work-orders/WO-136-authority-enforcement-boundary.md),
+[WO-137](../work-orders/WO-137-local-runner-readiness.md) and
+[WO-138](../work-orders/WO-138-local-model-role-qualification.md) are the
+first orders written to this section; the
+[planning document](../planning/vision-into-use-2026-09-17.md) §5 records
+the alternatives declined. Reopen when an index consumer needs the outcome
+typed, or when a research order is cited as a capability.
+
 ## Candidate — guided operator work orders
+
+**Disposed 2026-09-17:** the section above is this candidate's convention,
+and WO-137 is its first use. The text below is retained as the source.
 
 Operator direction, 2026-09-16: a work-order type should carry guided human
 work through the normal workflow. Its purpose is to help the operator reach a
@@ -1014,6 +1111,14 @@ a decision record enters the feed only when its reopening observation has
 been recorded. No order is allocated; reopen at a planning pass that has the
 session to spend, or when the pending count exceeds three hundred.
 
+**Measured 2026-09-17 (vision-into-use pass).** 359 entries, 348 pending,
+344 untriaged; the 62 entries added since the R1 pass are 45 decision
+records, four ideation candidates, fifteen defect-register items and one
+NoOp bullet, and every one was untriaged until this pass disposed the
+candidates and the register items it decided. The pending count crossed
+three hundred by harvesting decision records, so the threshold rises to
+four hundred; the collector change stays the candidate's substance.
+
 ## Candidate — local lane retention
 
 Ignored local lanes grow without a rule: 13 immutable harness runtime
@@ -1035,6 +1140,24 @@ every refusal, and has the Codex lifecycle completion release the
 reservation it holds. The stand-down declined a shell classifier; this
 candidate needs none. No order is allocated; reopen on a second observed
 occurrence.
+
+## Candidate — total subagent cap across every spawn path
+
+Operator direction, 2026-09-17: a session's total subagents need a hard,
+configurable cap (about twenty), because a top-level guideline of five fans
+out through per-item adversarial and refutation trees to more than a
+hundred. The harness documents no total cap, only a size guideline, a
+concurrency ceiling of sixteen and a per-workflow limit of a thousand; its
+hooks fire for the Agent and Workflow tools and inside subagents. WO-139
+counts and refuses at the admission points the hook can see and counts
+descendants at their first attributable tool call, so an agent the harness
+creates before any hook fires is counted late or not at all, and Codex's
+`spawn_agent` fires no hook. The requirement that remains open is a
+guaranteed maximum across every path: admission before creation, including
+descendants and concurrent spawns. No order is allocated for it; the
+Contributor's batching rule is the interim control. Reopen when the harness
+documents a pre-creation admission hook or a total-cap setting, or when a
+session exceeds the cap on a path WO-139 reports as uncounted.
 
 ## Workflow closeout and releases
 
@@ -1343,6 +1466,18 @@ claim evidence or releases it does not have.
   and limits in other sections are not inferred as Cost ceilings. The
   [WO-132 repair decisions](../evidence/WO-132/decisions.md#wo-132-d004)
   record the parser correction and its end-to-end regression.
+
+  The cold-start ceilings in `docs/control/budgets.json` (installed
+  `CLAUDE.md` plus the role skill, per role) have one normal route
+  (operator direction, 2026-09-17): a reviewed rule that breaches a ceiling
+  raises it in the same change by one 4 KB step above the measured bytes
+  with the rule named, or records a dated acceptance for that metric; the
+  breach is never trimmed around, never resolved by cutting another rule,
+  and never left advisory across orders. `npm run meta` reports the verdict;
+  the [WO-044 decision](../evidence/WO-044/decisions.md) of 2026-09-14
+  (caps yield to needed rules, accuracy before efficiency) is the policy,
+  and the [2026-09-17 pass](../planning/vision-into-use-2026-09-17.md) §10
+  records the two acceptances made under it.
 
   During the live gate, the existing shell destination adapter recognizes
   ordinary `ls`, `head` and `grep` reads, including literal pipelines.

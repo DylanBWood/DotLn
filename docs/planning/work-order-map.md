@@ -282,6 +282,83 @@ follow-ups are captured verbatim in ignored intake (SHA-256
 refutation is one background goal review. The full diagnosis, decisions and
 NoOp register are in [the R1 replan document](r1-replan-2026-09-16.md).
 
+**Vision into use (2026-09-17):** the operator opened a standard pass on
+the `v0.29.0` checkout with ten mid-turn additions, chiefly an
+operator-endorsed third-party brief asking for the shortest credible path to
+usable capability, a capability map, a corrected sequence, a small set of
+experiments around local models and sandbox-off authority, a convention for
+research work orders, a milestone view and the tradeoffs; plus the two-lane
+integration cost, a hard subagent cap, the post-final-review planning
+dispatch behind WO-135, a meta view of growth, inconsistent usage and
+attestation readback, verifiers running the gate twice, and the platforms
+lesson. The sweep found 62 register entries created since the R1 pass and
+none read, four 2026-09-16 candidates asking for this pass, no
+unsynthesized intake and no other worktree. The pass builds the capability
+map from the table and the receipts (section 2), the eight-milestone
+ladder (section 3), and checks every typed dependency against the sequence:
+two hard-edge violations (WO-114 before WO-120, WO-115 before WO-100) and
+one shared-surface pair (WO-070 with WO-120) are corrected in a recut of
+fourteen pairs with the delivery lane first and an evidence-only or
+machinery second lane, the console after the contracts it renders and the
+starter export after the real-repository run. It rewrites WO-135 so a
+capability write-back is an execution update judged by verification, final
+review and the next receipt (with the topology check and a planning-branch
+write refusal), rewrites WO-079 as `worktree integrate` at pair 6, and files
+WO-136 (the authority enforcement-boundary matrix), WO-137 (local runner
+readiness, the first guided research order), WO-138 (the local-model role
+qualification pilot), WO-139 (the subagent cap as a third hard refusal, with
+the batching rule) and WO-140 (the gate's sandbox preflight and the usage
+cause codes). Product 07 gains the research and guided-operator convention,
+a platform lens and the one normal route for a breached cold-start ceiling
+(raise by one 4 KB step in the same change, named, or record the acceptance;
+the two live breaches are accepted in the budgets file); products 03, 05 and
+06 carry their candidates' dispositions. Goal alignment: every rung of the ladder makes an existing
+claim true in a real session; the NoOp leaves the console before its
+contracts, two source lanes paying a retime at every second review, and
+nothing usable before pair 11; the traps weighed are seeking the wrong goal
+(rungs are live demonstrations, not fixture counts), success to the
+successful (the starter's investment buys no place before a real target),
+rule beating (the plan gate judged plans, not rows; a row is judged three
+times), escalation (five bounded orders, no new process), shifting the
+burden (the checklist is executed, the cap is enforced, the gate refuses up
+front) and commons (operator-assisted orders never share a pair; inference
+never overlaps a gate). The dispatch and every follow-up are captured
+verbatim in ignored intake (SHA-256
+`e267d8e2c26e8c55bacc1e13240b9fac7ec2570ebf0cd0ecfe270ff64b203a26`); the
+refutation is one background goal review. The full assessment, decisions and
+NoOp register are in [the planning document](vision-into-use-2026-09-17.md).
+
+**Reviewed before merge (2026-09-17):** a third-party review of the draft
+pull request asked for a bounded set of corrections, applied inside the
+same pass. Verified true and corrected: the planning document's §9 had
+described the WO-129 to WO-131 suite cache and replica execution as
+current although WO-132 criterion 4 deleted them (reuse exists at one grain,
+the whole `npm test` row by code identity); `findGateCheck` matches that
+identity by code identity alone, so WO-140 now gives a sandbox-subset run a
+distinct identity that no gate consumer accepts; WO-139 is retitled an
+admission cap that states per harness and spawn path when admission happens
+and leaves the total-cap requirement open as a product 07 candidate; WO-110
+proceeds against doubles with a `ready` or `unavailable` live row while
+WO-138 activates only on a `ready` WO-137 with pre-registered floors; WO-136
+budgets operator time and its packet proposes the mode, the minimal Claude
+allow/deny table and the next step, decided at the checkpoint after its
+close; receipt 017's accepted corrections are inside the orders. Verified
+false: the pairs in the committed sequence are intact (fourteen two-entry
+groups); WO-135 gains a parse fixture. The corrected orders are what the
+pass's receipt judges. Section 17 of
+[the planning document](vision-into-use-2026-09-17.md) records it. After
+the review the operator caught the planner estimating an elapsed time the
+session's own files held, and directed that no-guessing enforcement be the
+next order: WO-141 is filed first, the sequence is recut into fifteen pairs
+with WO-141 beside WO-136, and the refutation runs through the external
+Codex transport by the operator's explicit request. Its first dispatch failed on
+the CLI's git-repository check against the transport's empty `mkdtemp`
+directory (boy-scout item for WO-110); its second was rejected by the
+validator for a known issue without a reopening observation, which the
+result schema permits and the host then deleted (two boy-scout items for
+WO-135: a conditional schema, and a retained rejected result); the third is
+receipt 017.
+
 Earlier rationale is preserved in the [planning archive](archive/work-order-map-2026-09-09.md).
 
 Earlier rationale is preserved in the [planning archive](archive/work-order-map-2026-09-09.md).
@@ -486,6 +563,32 @@ identity migration.
   none. (5) _Replan the horizon while the branch is open._ Declined: the
   sequence is unchanged, WO-068 is closed, and the operator's category is the
   capability claim. Reverse: an operator dispatch naming the horizon.
+- **NoOps of the 2026-09-17 vision-into-use pass.** Weighed and declined,
+  each with its evidence and reversal condition in
+  [the planning document §14](vision-into-use-2026-09-17.md#14-declined-alternatives--the-noop-register-of-this-pass).
+  (1) _The brief's items as orders one for one._ Declined: three sections
+  are documents; five orders carry the measured costs. (2) _A single lane._
+  Declined: the parallel gain is a whole lifecycle against a bounded
+  integration cost; execute the checklist and pair by surface. Reverse: an
+  integration after WO-079 fifteen minutes above the median. (3) _The
+  narrower WO-135._ Declined: it leaves the post-final-review dispatch in
+  place. (4) _Settings changes now._ Declined: no enforcement-boundary
+  evidence. Reverse: WO-136's matrix. (5) _A Codex tool proxy now._
+  Declined: the largest answer to an unasked question. (6) _A research
+  work-order kind, field or transition._ Declined: the lifecycle and
+  evidence directories suffice. (7) _Live evaluation inside `npm test`._
+  Declined. (8) _Model downloads or a leaderboard._ Declined. (9) _The
+  starter before a real repository._ Declined: portability is not the next
+  useful experience. (10) _The console before M3._ Declined: two hard
+  edges. (11) _A scheduler or solver._ Declined: a 40-line check enters
+  WO-135. (12) _A harness-setting cap._ Declined: none exists for the
+  total. (13) _Refusing the Workflow tool._ Declined. (14) _A mandatory
+  sandbox everywhere._ Declined. (15) _Reorganization; shrinking receipts
+  now._ Declined again; the receipt-size candidate has a threshold. (16)
+  _A usage-only order._ Declined: one criterion in WO-140. (17) _Disposing
+  decision records one by one._ Declined: the settlement candidate changes
+  the collector. (18) _The Gate H order now._ Declined: its evidence and
+  profile do not exist; R2 files it.
 - **Critical-path candidates — recorded 2026-09-08 by the critical-path
   planning pass and allocated the same day at the operator's correction.**
   The runtime boundary codecs are WO-045 to WO-048; writing-worker harness
@@ -809,6 +912,13 @@ authority.
    order's own criteria already name, because the pass that judged the order
    judged that sentence; every other new id stays refused. Reopen if a fix
    admits an id no judged order names.
+   **Disposition (2026-09-17, vision-into-use pass):** the narrower form is
+   withdrawn; WO-135 is rewritten so any appended dated capability section
+   for an order in the judged sequence is an execution update, new ids
+   included, judged by verification, final review and the next receipt, and
+   the order also carries the sequence topology check and a planning-branch
+   write refusal. Reopen: a capability row on `main` that no verification or
+   final review judged.
 2. _The plan gate was unsatisfiable on any day carrying two passes._
    `checkPlanGate` demanded a receipt for the later dated heading while
    `latestPlanningPass` returned the earlier one: both sorted headings by date
@@ -827,6 +937,11 @@ authority.
    `3b7a315` with B1 unmet, and main inherited a red `test:docs`. A fix must
    either enforce the prerequisite at the merge transition or stop recording
    prerequisites that nothing checks.
+   **Disposition (2026-09-17):** the only prerequisite of this kind was the
+   capability admission, which the rewritten WO-135 removes; product 07's
+   integration amendment says a review records a merge blocker only with
+   the command and line that enforces it. Reopen: a bold prerequisite in a
+   final review that nothing checks.
 
 **Dispatch and reporting defects.** These concern agent behaviour under the
 role text rather than repository machinery, and belong in the process-debt
@@ -895,6 +1010,9 @@ track.
     — was on the record and was not applied when the PR was handed over. A fix
     must refuse a non-document path in a planning dispatch at write time, not
     at release time.
+    **Disposition (2026-09-17):** WO-135 criterion 4, the planning-branch
+    write refusal in the generated hook. Reopen: a non-document path on a
+    planning branch after it lands.
 11. _A stale evidence row was answered by rewinding the code._ On hitting the
     identity refusal, the first response was to restore both files to their
     reviewed bytes so the hash would match again. That makes the gate pass
@@ -908,6 +1026,10 @@ track.
     release-close, next and activate (`scripts/resume.mjs:152`), so today the
     only route is an operator override. Recorded against rule-beating and
     seeking-the-wrong-goal.
+    **Disposition (2026-09-17):** declined as an order; the stop rule in the
+    critical path and the shared no-guessing instruction carry the duty, and
+    re-gating at the current identity remains the operator-override route
+    until an order needs it. Reopen: a second rewind attempt.
 
 12. _Work was handed off for merge without running the checks that judge it._
     Push and PR commands were supplied twice — for the planning branch and
@@ -959,6 +1081,13 @@ track.
     question. That was the same unilateral choice item 6 already names, made
     against a register entry on the same branch. The operator caught it. A
     fix for item 6 must survive the agent having read item 6.
+
+**Disposition of items 4 to 8 and 12 to 15 (2026-09-17):** declined as
+orders. Each is a role-text duty the shared instruction already carries
+(checked evidence before a claim, the prefix is the dispatch, name the
+enforcing command and line, run the suite that judges the merge, name the
+landing path); the register is read as a floor on what went wrong. Reopen:
+a recurrence of any item after this pass.
 
 Cost observation: about ninety minutes across the first three sessions, plus a
 fourth session of unmeasured length, on a release that was publishable
@@ -1150,7 +1279,7 @@ Retained dependency wording is dated planning context, not a second state source
 | [WO-076](../work-orders/WO-076-instance-build-overlay.md)             | starter — the fork's `build/overlay.json` composed over the kit build under the floor                                                                                                                                                                                                          | WO-075 and WO-042 merged; assign version at activation (minor)                                                                                                                                                             | control-plane implementer, then independent verifier                                                      | fixture overlays                                                                                                                                                      | `scripts/harness.mjs`, `scripts/lib/harness.mjs`, the client README, ADR-0006 §Amendments                                                                                                                        |
 | [WO-077](../work-orders/WO-077-launchpad-export-update.md)            | starter — `--update` by manifest, refusing modified kit files, printing instance actions                                                                                                                                                                                                       | WO-074 merged; assign version at activation (minor)                                                                                                                                                                        | control-plane implementer, then independent verifier                                                      | fixture exports                                                                                                                                                       | `scripts/launchpad.mjs`                                                                                                                                                                                          |
 | [WO-078](../work-orders/WO-078-sibling-registry.md)                   | starter — the sibling registry and export receipts with a check                                                                                                                                                                                                                                | WO-074 merged; assign version at activation (patch)                                                                                                                                                                        | documentation/tooling implementer, then independent verifier                                              | fixture receipts                                                                                                                                                      | `docs/siblings/README.md`, `docs/evidence/siblings/`                                                                                                                                                             |
-| [WO-079](../work-orders/WO-079-worktree-sync.md)                      | control plane — the lane-sync helper with checkpoint, kept stash, classified conflicts and three refusals                                                                                                                                                                                      | no open input; assign version at activation (patch)                                                                                                                                                                        | control-plane implementer, then independent verifier                                                      | a real-Git fixture                                                                                                                                                    | `scripts/worktree.mjs`, the playbook                                                                                                                                                                             |
+| [WO-079](../work-orders/WO-079-worktree-sync.md) | control plane — `worktree integrate`: the second lane's integration checklist as one command (checkpoint, named stash, merge main, regenerate generated surfaces, union the register, retime with a dated decision stub, print the affected checks); rewritten 2026-09-17 | no open input; pair 6 beside WO-099; assign version at activation (patch) | control-plane implementer, then independent verifier | a real-Git fixture with two orders and a merged sibling; no network | `scripts/worktree.mjs`, `docs/PLAYBOOK.md` §Concurrency, product 07 §Independent workflows and integration, the reviewer skill line |
 | [WO-080](../work-orders/WO-080-workstream-document-and-index.md)      | workstream application — the workstream document, field and index grouping with staleness                                                                                                                                                                                                      | WO-071 merged; assign version at activation (patch)                                                                                                                                                                        | control-plane implementer, then independent verifier                                                      | fixtures                                                                                                                                                              | `scripts/work-orders.mjs`, `docs/workstreams/`, product 12                                                                                                                                                       |
 | [WO-081](../work-orders/WO-081-board-workstreams-section.md)          | console — the board's Workstreams section as an additive view-model extension                                                                                                                                                                                                                  | WO-080 merged; assign version at activation (minor)                                                                                                                                                                        | console implementer, then independent verifier                                                            | regenerated fixture expectations                                                                                                                                      | `packages/console`                                                                                                                                                                                               |
 | [WO-082](../work-orders/WO-082-synthetic-pilot-six-demonstrations.md) | workstream application — product 12's six demonstrations as fixtures over a real-Git launchpad                                                                                                                                                                                                 | WO-080, WO-072 and WO-075 merged; assign version at activation (patch)                                                                                                                                                     | fixture implementer, then independent verifier                                                            | a real-Git fixture with three targets                                                                                                                                 | the fixture suite, product 12                                                                                                                                                                                    |
@@ -1172,7 +1301,7 @@ Retained dependency wording is dated planning context, not a second state source
 | [WO-098](../work-orders/WO-098-rule-migration-batch-1b.md)            | rule migration — six more units including a skill and a cadence unit; the whole-set measurement and template                                                                                                                                                                                   | WO-097 merged; assign version at activation (minor); live feedback audit operator-run                                                                                                                                      | unit author and lowering implementer, then independent verifier                                           | the actual harness for the feedback audit                                                                                                                             | the same surfaces, products 02/06/13, README, capability table                                                                                                                                                   |
 | [WO-099](../work-orders/WO-099-mission-check.md)                      | runtime — the cadence-driven mission check with a hold; the first unattended proof                                                                                                                                                                                                             | WO-068 merged; the operator runs the unattended row; assign version at activation (minor); live feedback audit operator-run                                                                                                | skeleton implementer, then independent verifier                                                           | the actual harness as verifier; a fixture resident                                                                                                                    | the episode protocol, the resident's hold, the Contributor policy's cadence, products 02/03                                                                                                                      |
 | [WO-100](../work-orders/WO-100-preauthorized-portfolio.md)            | runtime — the preauthorized portfolio and pure work derivation from the Gardener's candidates                                                                                                                                                                                                  | WO-068, WO-052, WO-054 and WO-042 merged; assign version at activation (minor); live feedback audit operator-run                                                                                                           | skeleton implementer, then independent verifier                                                           | doubles over the scratch target                                                                                                                                       | the configuration schema, `packages/skeleton/src/portfolio.ts` (new), the resident's activation path, products 03/06/07                                                                                          |
-| [WO-110](../work-orders/WO-110-local-model-transport.md)              | worker transport — a third transport over the local inference endpoint for the inspection profile                                                                                                                                                                                              | no open input (WO-068 recommended first); assign version at activation (minor); operator runs the smoke                                                                                                                    | skeleton implementer, then independent verifier                                                           | the operator's local endpoint                                                                                                                                         | `packages/skeleton/src/worker-transport.ts`, the actor catalog, `environment.md`                                                                                                                                 |
+| [WO-110](../work-orders/WO-110-local-model-transport.md)              | worker transport — a third transport over the local inference endpoint for the inspection profile                                                                                                                                                                                              | no open input (WO-068 recommended first); activation does not wait for WO-137's outcome: doubles plus a `ready` or `unavailable` live row, no qualification claimed; assign version at activation (minor); operator runs the smoke                                                                                                                    | skeleton implementer, then independent verifier                                                           | the operator's local endpoint                                                                                                                                         | `packages/skeleton/src/worker-transport.ts`, the actor catalog, `environment.md`                                                                                                                                 |
 | [WO-111](../work-orders/WO-111-unattended-live-proof.md)              | live proof — the unattended hour: 5S work derived, executed, verified and stopped on return                                                                                                                                                                                                    | WO-100, WO-099, WO-053 and WO-054 merged; the operator runs the window; assign version at activation (patch); R2 follows                                                                                                   | operator-run window; independent verifier reads the receipt                                               | the actual harnesses; a seeded scratch repository                                                                                                                     | `docs/evidence/WO-111/`, a seed generator                                                                                                                                                                        |
 | [WO-112](../work-orders/WO-112-core-run-loop-proof.md)                | live proof — WO-123's composition run once against a scratch issue and target, the representative scenario fully resolved and a control scenario proving legitimate escalation                                                                                                                 | every primitive gate merged (see the order); the operator witnesses; assign version at activation (minor); R3 follows                                                                                                      | operator-witnessed composition; independent verifier reads the receipt                                    | the actual harnesses; a scratch target and issue in a personal public repository                                                                                      | the `dotln vertical` command, `docs/evidence/WO-112/`, products 06 and 12                                                                                                                                        |
 | [WO-113](../work-orders/WO-113-work-order-files-stable-contracts.md)  | control plane — the five-surface separation checked forward from a cutoff; open orders' dated notes migrated                                                                                                                                                                                   | WO-043 merged; assign version at activation (patch)                                                                                                                                                                        | tooling implementer, then independent verifier                                                            | repository-wide checks                                                                                                                                                | `scripts/work-orders.mjs`, open order files, evidence READMEs, product 07                                                                                                                                        |
@@ -1194,6 +1323,13 @@ Retained dependency wording is dated planning context, not a second state source
 | [WO-131](../work-orders/WO-131-remaining-suites-under-replica.md)     | test infrastructure — the remaining suites declared and executed in replicas or retained with a reason; document-only gates compose; a kernel denial where the host permits it                                                                                                                 | after WO-130 in the same lane; assign version at activation (patch); the operator records one composed document-only gate and the terminal probe                                                                           | runner and fixture implementer, then independent verifier                                                 | replica execution from WO-130; `sandbox-exec` only where available, never required                                                                                    | `scripts/lib/suite-evidence.mjs`, `scripts/test-runner.mjs`, `scripts/test-suite-evidence.mjs`, `scripts/test-process-debt.mjs`, product 07                                                                      |
 | [WO-132](../work-orders/WO-132-machinery-stand-down.md) | lifecycle machinery — transitions never gate; one product gate per order keyed by code identity; release close publishes only; attestation, versions and effort logged; two hook refusals; default gate of product and lifecycle suites; goal-review refuter | first, alone, by the operator's 2026-09-15 exemption; assign version at activation (minor); the operator runs three fresh gates and one lifecycle on the host | lifecycle, runner, release and harness implementer, then independent verifier | the operator's host for the fresh rows; egress and gh authentication for the release fixture's real path are not required | `scripts/resume.mjs`, `scripts/lib/lifecycle-evidence.mjs`, `packages/skeleton/src/gate-evidence.mjs`, `scripts/test-runner.mjs`, `scripts/lib/suite-evidence.mjs`, `scripts/release.mjs`, `scripts/worktree.mjs`, `packages/skeleton/src/harness-host.ts`, `packages/skeleton/src/harness-command.ts`, `packages/compiler/src/feedback.ts`, `packages/compiler/src/harness.ts`, `packages/skeleton/src/worker-transport.ts`, `packages/skeleton/src/plan-refutation-protocol.ts`, product 07 |
 | [WO-133](../work-orders/WO-133-stand-down-residue.md) | lifecycle machinery — four residue repairs of WO-132: the built runtime follows main, one advisory per session per cause, attestation keeps supplied values, a version module outside every machinery source list | WO-132 closed; first in reading order; lane pair with WO-068; assign version at activation (patch) | harness/scripts implementer, then independent verifier | the existing harness, process-debt, release and resume fixtures | `packages/skeleton/src/harness-host.ts`, `version.ts`, `packages/compiler/src/harness.ts`, `loadouts/contributor.ts`, `scripts/resume.mjs`, `scripts/release.mjs`, `scripts/worktree.mjs`, `scripts/test-runner.mjs` |
+| [WO-135](../work-orders/WO-135-capability-id-admission.md) | planning machinery — a capability write-back is an execution update; the sequence is checked against typed hard edges and pair boundaries; a planning branch refuses non-document writes; rewritten 2026-09-17 | no open input; pair 1, first, beside WO-136; assign version at activation (patch) | planning-tooling implementer, then independent verifier | the existing plan-refutation, work-order and harness fixtures | `scripts/lib/plan-continuation.mjs`, `scripts/lib/plan-receipts.mjs`, `scripts/work-orders.mjs`, the generated hook's planning-branch rule, product 07 §Operator-opened planning pass |
+| [WO-136](../work-orders/WO-136-authority-enforcement-boundary.md) | research — the authority enforcement-boundary matrix: ten limits, both harnesses, sandbox on and off, prevented or observed-only, prompts and stalls | WO-044, WO-049 and WO-051 closed; pair 1 beside WO-135; assign version at activation (patch, evidence-only); the operator launches from an outside terminal and approves each unsandboxed ask | probe author, then independent verifier | the actual harnesses; scratch worktrees, a fixture remote and a sentinel file; no real credential | `scripts/harness-probe.mjs`, `scripts/lib/writing-worker-probe.mjs`, `docs/discovery/`, product 03's authority candidate, the security runbook pointer |
+| [WO-137](../work-orders/WO-137-local-runner-readiness.md) | guided research — the installed LM Studio build serves reproducible noninteractive calls with cancel, timeout, schema and tool-call round trip and full provenance, or leaves a failure artifact | WO-027 closed; pair 3 beside WO-054; assign version at activation (patch, evidence-only); operator present for the outside-terminal steps; budget 90 minutes and three attempts per blocker | guided executor with the operator, then independent verifier | the local runner on the operator's host; live runs only when no product gate is running | `scripts/probes/local-runner-smoke.mjs`, `docs/discovery/`, product 06's local-model candidate, `environment.md` addendum |
+| [WO-138](../work-orders/WO-138-local-model-role-qualification.md) | research — three read-only tasks with deterministic oracles and pre-registered floors, local against one remote transport with repeats; which inspection roles the local kind may fill | WO-110 merged and WO-137 closed with outcome `ready` (the preflight carries the outcome; the typed graph cannot); pair 7 beside WO-069; assign version at activation (patch, evidence-only); one operator session for the T2 ranking | evaluation-harness author, then independent verifier | the pinned local artifact and one remote transport; live runs only when no product gate is running | `scripts/probes/`, `docs/evidence/WO-138/`, product 03 actor catalog sentence, product 06 candidate disposition |
+| [WO-139](../work-orders/WO-139-subagent-cap.md) | harness machinery — a configurable subagent admission cap: spawns refused at the admission points the hook can see, descendants counted at their first attributable tool call, uncounted paths reported, the total-cap requirement left open as a product 07 candidate, and the Contributor's batching rule | WO-131 and WO-133 closed; pair 2 beside WO-053; assign version at activation (patch); a probe row of subagent hook-input shapes precedes the mechanism | harness-host implementer, then independent verifier | the existing harness probe and process-debt fixtures | `packages/skeleton/src/harness-host.ts`, `docs/control/budgets.json`, `loadouts/contributor.ts`, the regenerated bundle, product 07 §Discipline and the total-cap candidate, the security runbook's hook boundary |
+| [WO-140](../work-orders/WO-140-gate-sandbox-preflight.md) | test infrastructure and process cost — `npm test` refuses up front inside a harness sandbox when a declared suite needs the outside for an environmental cause; a sandbox-subset run records a distinct partial identity no gate consumer accepts; the briefing prints the session id and usage command; new receipts carry counters or a cause code | WO-132 and WO-133 closed; pair 4 beside WO-055; assign version at activation (patch); a probe row of the sandbox marker precedes the preflight | test-runner implementer, then independent verifier | a fake sandbox marker fixture; the existing runner and gate-evidence fixtures | `scripts/test-runner.mjs`, suite declarations, `packages/skeleton/src/gate-evidence.mjs` consumers' fixtures, `scripts/resume.mjs` briefing, the verifier and reviewer skills, one document check, product 07 Process Cost text |
+| [WO-141](../work-orders/WO-141-no-guessing-enforced.md) | harness machinery — no guessing, enforced without gating the operator: the observed-facts block in the briefing, the prompt-submit context and the Stop advisory, an advisory scan that journals and corrects a hedged number or duration without holding a turn, and the operator-correction counter derived from the journal | first, pair 1 beside WO-136, by the operator's 2026-09-17 direction; WO-131 and WO-133 closed; assign version at activation (patch) | harness-host and meter implementer, then independent verifier | the existing harness and process-debt fixtures; a fixture journal | `packages/skeleton/src/harness-host.ts` (Stop path), `scripts/resume.mjs` briefing, `scripts/lib/meta.mjs`, the regenerated bundle, product 07 §Discipline, the security runbook's hook boundary |
 | [WO-101](../work-orders/WO-101-program-and-hash-corpus.md)            | evidence/corpus — Program and identity regression floor                                                                                                                                                                                                                                        | not applicable                                                                                                                                                                                                             | deterministic corpus executor                                                                             | offline harness                                                                                                                                                       | `corpus/harness/`, fixtures, manifests                                                                                                                                                                           |
 | [WO-102](../work-orders/WO-102-cadence-corpus.md)                     | evidence/corpus — cadence boundary sweep                                                                                                                                                                                                                                                       | assign version and close disposition; pin suitable base/deps and governed closeout path                                                                                                                                    | deterministic corpus executor                                                                             | offline harness                                                                                                                                                       | cadence fixtures and manifests                                                                                                                                                                                   |
 | [WO-103](../work-orders/WO-103-authority-outbox-corpus.md)            | evidence/corpus — authority/outbox decision table                                                                                                                                                                                                                                              | assign version and close disposition; pin the landed WO-017 base and governed closeout path                                                                                                                                | deterministic corpus executor                                                                             | offline harness                                                                                                                                                       | authority/outbox fixtures and manifests                                                                                                                                                                          |
@@ -1219,13 +1355,19 @@ affect?” needs a conceptual product/app area plus an optional writable-path
 envelope. “What does it require?” needs hard dependency separately from
 activation preflight.
 
-**Lane pairs (operator direction, 2026-09-16).** The sequence groups queued
-orders two per pair for two parallel lanes: adjacent entries, blank-separated,
-with disjoint primary surfaces and no hard edge inside the pair. The second
+**Lane pairs (operator direction, 2026-09-16; recut 2026-09-17).** The
+sequence groups queued orders two per pair for two parallel lanes: adjacent
+entries, blank-separated, with disjoint primary surfaces and no hard edge
+inside the pair; the delivery lane is the first entry and the second lane is
+by preference an evidence-only or machinery order, so its integration has no
+release retime and no source merge. Two operator-assisted orders never share
+a pair; live local inference never overlaps a product gate. The second
 lane's final review integrates main by the checklist in product 07
-§Independent workflows and integration; one order at a time passes final
-review and release close. The pairs are argued in
-[the R1 replan document](r1-replan-2026-09-16.md#7-lane-pairs).
+§Independent workflows and integration (one command once WO-079 lands); one
+order at a time passes final review and release close. The fifteen pairs are
+argued in [the vision-into-use document](vision-into-use-2026-09-17.md#4-the-corrected-sequence-and-the-two-lanes);
+the earlier cut is in [the R1 replan document](r1-replan-2026-09-16.md#7-lane-pairs).
+The plan check verifies typed hard edges against the list once WO-135 lands.
 
 Unallocated research candidates currently include the source-grounded Team
 Topologies mining pass and the post-1.0 Embodied Explorer simulation fixture.

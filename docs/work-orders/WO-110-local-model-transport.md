@@ -19,7 +19,11 @@ implements; closed); WO-009 merged (the transport port; satisfied at
 **Recommended placement:** any free lane after WO-068 so the catalog
 exists; it edits `packages/skeleton/src/worker-transport.ts` and the actor
 catalog. The source-change profile for this transport waits for its own
-observed rows. A recommendation, not a dependency token.
+observed rows. Activation does not wait for WO-137's outcome (2026-09-17): the transport is written against doubles, criterion 2's live
+smoke records a `ready` row from WO-137's packet when one exists or an
+`unavailable` row otherwise, and no qualification is claimed; WO-138 is the
+qualification and activates only on a `ready` WO-137. A recommendation, not
+a dependency token.
 
 <!-- dotln-dependencies:start -->
 [
@@ -38,13 +42,20 @@ observed rows. A recommendation, not a dependency token.
     "workOrderId": "WO-068",
     "relation": "reference-only",
     "reason": "the actor catalog it joins"
+  },
+  {
+    "workOrderId": "WO-137",
+    "relation": "reference-only",
+    "reason": "the readiness row the live smoke reports when it exists; an unavailable row is admitted without it"
   }
 ]
 <!-- dotln-dependencies:end -->
 
 **Cites (read these sections):** 03-architecture.md §Ports
 (`WorkOrderTransport`) and §Runtime primitive catalogs; `docs/discovery/local-inference.md`
-and `.json` (WO-027's rows); `packages/skeleton/src/worker-transport.ts`;
+and `.json` (WO-027's rows); `docs/work-orders/WO-137-local-runner-readiness.md`
+(the readiness row and pinned artifact when they exist);
+`packages/skeleton/src/worker-transport.ts`;
 `docs/work-orders/WO-068-resident-host.md` (the catalog).
 
 **Objective:** Implement the port over the local endpoint shape WO-027
