@@ -665,6 +665,18 @@ with its guarantees and the minimal Claude allow/deny configuration it
 needs, as a table that is not applied; R2 confirms. The full table is in the
 [planning document](../planning/vision-into-use-2026-09-17.md) §6 and §17.
 
+**Trial idea, 2026-09-17 (during WO-141).** The operator is considering
+different sandbox permissions or automation modes for a few work orders,
+with likely reversion. Preserve the trial as a reversible comparison; the
+specific modes and duration remain open. A supplied session policy or an
+effective host readback is direct evidence with a source and cutoff; a
+rejection is evidence about that operation, not a complete mode detector.
+WO-136's evidence-only matrix does not add automatic session-mode readback.
+When no such readback exists, keep the mode unknown or separately
+operator-attested. Reopen after WO-136, selection of a concrete trial, or a
+new host readback surface. See the
+[breakout receipt](../evidence/WO-141/ideation-permission-trial.md).
+
 ## Candidate — isolated execution environments
 
 DotLn may eventually select and attest an execution boundary per episode: the

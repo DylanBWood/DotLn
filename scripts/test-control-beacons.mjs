@@ -236,6 +236,7 @@ await test("test-control-beacons", async (t) => {
 
       restricted = privateNext
         .split("Restricted host Beacon directory: ")[1]
+        .split("\n", 1)[0]
         .trim();
 
       name = restricted.split("/").at(-1);

@@ -297,7 +297,7 @@ function transcriptFiles(directory, depth) {
  * @param {string} root
  * @param {{sessionKey?: string, transcriptPath?: string, since?: string, until?: string, codexDirectory?: string, claudeDirectory?: string, env?: NodeJS.ProcessEnv}} [options]
  */
-function sessionTranscript(root, options = {}) {
+export function sessionTranscript(root, options = {}) {
   const env = options.env ?? process.env;
   const key =
     options.sessionKey ??

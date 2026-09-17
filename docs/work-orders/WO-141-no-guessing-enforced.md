@@ -1,4 +1,4 @@
-# WO-141 — No guessing, enforced without gating the operator: the session's observed facts are always in front of the agent, a hedged number or duration that slips into a handoff is journaled and corrected as an advisory that never holds a turn, and operator corrections are counted from the journal instead of self-report (version assigned at activation)
+# WO-141 — No guessing, enforced without gating the operator: the session's observed facts are always in front of the agent, a hedged number or duration that slips into a handoff is journaled and corrected as an advisory that never holds a turn, and operator corrections are counted from the journal instead of self-report (v0.29.1)
 
 **Model:** any. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
@@ -189,3 +189,17 @@ measures their application); a classifier of the operator's tone.
 2. The counter counts what the journal can see; a correction the operator
    gives without the typed form and without a journaled hedge is not
    counted, and the order says so.
+
+## Execution record
+
+Ideation scope expansion (operator dispatch, 2026-09-17): the permission-mode
+trial ideation adds [its receipt](../evidence/WO-141/ideation-permission-trial.md),
+the dated ledger entry and product 03's DotLn-owned authority candidate paragraph
+to verifier/reviewer reads. Documentary capture only in implementation scope;
+no permission setting or WO-136 implementation is changed.
+
+Execution inputs added for verification: the current authority and live
+feedback revision 001 evidence under `docs/evidence/WO-141/`, their selections
+in `docs/evidence/current.json`, the console's current-selfhost fixture outputs,
+and `scripts/lib/evidence-sources.mjs` dependency pins. These are the existing
+evidence refresh required by the changed runtime/source bindings; see D004.

@@ -1,5 +1,11 @@
 import test from "node:test";
 import "./test-target-harness.mjs";
+import "./test-observed-facts.mjs";
+import {
+  journalRows,
+  appendObservation,
+  correctionCounts,
+} from "../packages/skeleton/dist/src/observed-facts.js";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import {
@@ -1205,7 +1211,7 @@ test("WO-132 hooks preserve boundary observations and delegate non-writer judgme
     );
     for (const response of [first, second]) {
       assert.equal(allowed(response), true);
-      assert.equal(response.systemMessage, undefined);
+      assert.match(response.systemMessage, /Observed facts/);
     }
     const pendingRows = readFileSync(
       join(
@@ -1224,9 +1230,15 @@ test("WO-132 hooks preserve boundary observations and delegate non-writer judgme
     for (const row of pendingRows) {
       assert.match(
         row.advisory,
-        /^DotLn advisory: pending .*verify-app-before-done/,
+        /^DotLn advisory: pending .*verify-app-before-done/m,
       );
-      assert.equal(row.advisory.split("\n").length, 1);
+      assert.match(row.advisory, /^Observed facts/);
+      assert.equal(
+        row.advisory
+          .split("\n")
+          .filter((line) => line.startsWith("DotLn advisory:")).length,
+        1,
+      );
     }
     assert.equal(
       existsSync(join(root, "docs/control/local/harness/writer")),
@@ -3407,6 +3419,114 @@ test("WO-133 stale generated hooks emit once per session/cause, retain every row
         ).systemMessage,
         /snapshot-missing/,
       );
+  } finally {
+    removeFixture(root, { recursive: true });
+  }
+});
+
+test("WO-141 confirmed correction token counts once across both prompt hooks", () => {
+  const root = fixture();
+  try {
+    emitHarness(root, {
+      program: { ...contributorProgram(), correctionToken: "correction:" },
+      feedback: compileFeedbackUnits(retainedFeedbackUnitsV1),
+    });
+    const payload = input(root, "UserPromptSubmit", {
+      prompt: "correction: anti-oscillation",
+    });
+    for (let index = 0; index < 2; index++) {
+      for (const name of index === 0
+        ? ["fail-conservative-correction", "session"]
+        : ["session", "fail-conservative-correction"])
+        invoke(root, name, payload);
+    }
+    const sessionKey = createHash("sha256")
+      .update("synthetic-session")
+      .digest("hex");
+    const count = correctionCounts(
+      journalRows(root, { sessionKey, workOrder: null, phase: "unknown" }),
+    );
+    assert.equal(count.total, 2);
+    assert.equal(count.byUnit["anti-oscillation"], 2);
+  } finally {
+    removeFixture(root, { recursive: true });
+  }
+});
+
+test("WO-141 generated prompt and repeated Stop deliver facts and a single deferred hedge advisory", () => {
+  const root = fixture();
+  try {
+    const sessionKey = createHash("sha256")
+      .update("synthetic-session")
+      .digest("hex");
+    const scope = { sessionKey, workOrder: null, phase: "unknown" };
+    const dispatchedAt = new Date(Date.now() - 1560000).toISOString();
+    appendObservation(root, scope, {
+      backgroundTask: {
+        key: "fixture",
+        dispatchedAt,
+        state: "running",
+        observedAt: dispatchedAt,
+      },
+    });
+    const transcriptPath = join(root, "synthetic-session.jsonl");
+    writeFileSync(
+      transcriptPath,
+      JSON.stringify({ sessionId: "synthetic-session", cwd: root }) +
+        "\n" +
+        JSON.stringify({
+          type: "assistant",
+          uuid: "fixture-final",
+          message: {
+            role: "assistant",
+            content: [
+              {
+                type: "text",
+                text: "I dispatched the background review roughly 10 minutes ago.",
+              },
+            ],
+          },
+        }) +
+        "\n",
+    );
+    for (const stop_hook_active of [false, true, false]) {
+      const response = invoke(
+        root,
+        "finish",
+        input(root, "Stop", {
+          transcript_path: transcriptPath,
+          stop_hook_active,
+        }),
+      );
+      assert.equal(response.decision, undefined);
+      assert.match(response.systemMessage, /Observed facts/);
+      assert.match(response.systemMessage, /task 1/);
+    }
+    assert.equal(
+      journalRows(root, scope).filter(
+        (row) => row.typedEvent === "HedgedQuantityObserved",
+      ).length,
+      1,
+    );
+    const first = invoke(
+      root,
+      "session",
+      input(root, "UserPromptSubmit", { prompt: "Continue" }),
+    );
+    assert.match(
+      first.hookSpecificOutput.additionalContext,
+      /measurement advisory/,
+    );
+    const second = invoke(
+      root,
+      "session",
+      input(root, "UserPromptSubmit", { prompt: "Continue" }),
+    );
+    assert.match(second.hookSpecificOutput.additionalContext, /Observed facts/);
+    assert.doesNotMatch(
+      second.hookSpecificOutput.additionalContext,
+      /measurement advisory/,
+    );
   } finally {
     removeFixture(root, { recursive: true });
   }

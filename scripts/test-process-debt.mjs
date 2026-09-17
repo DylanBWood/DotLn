@@ -126,7 +126,99 @@ import {
   readAdjacentQueue,
 } from "./lib/adjacent-queue.mjs";
 import { main as planMain } from "./refute-plan.mjs";
+import {
+  appendObservation,
+  observeTypedCorrection,
+  scanMessage,
+} from "../packages/skeleton/dist/src/observed-facts.js";
 const source = resolve(import.meta.dirname, "..");
+
+test("WO-141 meter counts journal events under their original order and phase", async (t) => {
+  const root = repo(t);
+  const key = createHash("sha256").update("correction-fixture").digest("hex");
+  const scope = {
+    sessionKey: key,
+    workOrder: "WO-999",
+    phase: "implementation",
+  };
+  // Mutable current state has moved on; immutable event attribution wins.
+  write(
+    root,
+    `docs/control/local/harness/${key}.json`,
+    json({ workOrder: "WO-998" }),
+  );
+  observeTypedCorrection(root, scope, "correction: anti-oscillation");
+  observeTypedCorrection(
+    root,
+    { ...scope, phase: "verification" },
+    "correction: accuracy over sycophancy",
+  );
+  scanMessage(
+    root,
+    scope,
+    "roughly 10 minutes ago",
+    "final",
+    "2026-09-17T14:32:00.000Z",
+  );
+  appendObservation(
+    root,
+    { ...scope, workOrder: "WO-998" },
+    { typedEvent: "OperatorCorrectionReceived", eventId: "correction:other" },
+  );
+  const meta = await collectMeta(root);
+  const order = meta.orders.find((row) => row.workOrder === "WO-999");
+  assert.equal(order.metrics.operatorCorrections, 3);
+  assert.deepEqual(order.corrections.byPhase, {
+    implementation: 2,
+    verification: 1,
+  });
+  const trap = meta.traps.find(
+    (row) => row.id === "shifting-the-burden-to-the-intervenor",
+  );
+  assert.equal(
+    trap.corrections.find((row) => row.workOrder === "WO-999").byUnit[
+      "anti-oscillation"
+    ],
+    1,
+  );
+});
+test("WO-141 meter retains only journal-derived historical correction counts", async (t) => {
+  const root = repo(t);
+  const workOrder = "WO-999";
+  const corrections = {
+    total: 3,
+    byPhase: { implementation: 2, verification: 1 },
+    byUnit: { "anti-oscillation": 1, unnamed: 2 },
+    byPhaseAndUnit: {
+      implementation: { "anti-oscillation": 1, unnamed: 1 },
+      verification: { unnamed: 1 },
+    },
+    source: "session-journal",
+  };
+  write(
+    root,
+    `docs/evidence/${workOrder}/meta.json`,
+    json({
+      orders: [{ workOrder, metrics: { operatorCorrections: 3 }, corrections }],
+    }),
+  );
+  const retained = (await collectMeta(root)).orders.find(
+    (row) => row.workOrder === workOrder,
+  );
+  assert.equal(retained.metrics.operatorCorrections, 3);
+  assert.deepEqual(retained.corrections, corrections);
+  write(
+    root,
+    `docs/evidence/${workOrder}/meta.json`,
+    json({
+      orders: [{ workOrder, metrics: { operatorCorrections: 9 } }],
+    }),
+  );
+  const legacy = (await collectMeta(root)).orders.find(
+    (row) => row.workOrder === workOrder,
+  );
+  assert.equal(legacy.metrics.operatorCorrections, 0);
+});
 const json = (value) => JSON.stringify(value, null, 2) + "\n";
 const write = (root, path, value) => {
   mkdirSync(dirname(join(root, path)), { recursive: true });
@@ -812,9 +904,9 @@ test("WO-132 all four completions admit missing gates, reads and counters; Stop 
   assert.ok(
     !stopped.decision && !stopped.hookSpecificOutput?.permissionDecision,
   );
-  assert.match(stopped.systemMessage, /^DotLn advisory: pending /);
+  assert.match(stopped.systemMessage, /DotLn advisory: pending /);
   assert.match(stopped.systemMessage, /do not block lifecycle completion/);
-  assert.equal(stopped.systemMessage.split("\n").length, 1);
+  assert.match(stopped.systemMessage, /^Observed facts/);
   assert.equal(
     existsSync(join(root, "docs/control/local/harness/writer")),
     false,
@@ -1032,9 +1124,12 @@ test("every installed hook is wired to a harness event or the Git commit boundar
   );
   assert.equal(installed.length, new Set(commands).size + 1);
   assert.equal(commands.length, new Set(commands).size + 1);
-  assert.deepEqual(
-    settings.hooks.SessionStart,
-    settings.hooks.UserPromptSubmit,
+  assert.deepEqual(settings.hooks.SessionStart, [
+    { hooks: [settings.hooks.UserPromptSubmit[0].hooks[0]] },
+  ]);
+  assert.match(
+    settings.hooks.UserPromptSubmit[0].hooks[1].command,
+    /presence-userpromptsubmit\.mjs/,
   );
   assert.match(settings.hooks.SessionStart[0].hooks[0].command, /session\.mjs/);
   for (const file of installed)
@@ -1049,7 +1144,9 @@ test("every installed hook is wired to a harness event or the Git commit boundar
     "verify-app-before-done",
   ])
     assert.equal(existsSync(join(root, `.claude/hooks/${name}.mjs`)), false);
-  assert.equal(settings.hooks.Stop.flatMap((row) => row.hooks).length, 1);
+  const stopHooks = settings.hooks.Stop.flatMap((row) => row.hooks);
+  assert.equal(stopHooks.length, 2);
+  assert.match(stopHooks[1].command, /presence-stop\.mjs/);
 });
 
 test("discovery uses a bounded observed probe and session warns once off the version line", async (t) => {
@@ -1268,7 +1365,10 @@ test("discovery uses a bounded observed probe and session warns once off the ver
     },
   );
   assert.equal(parentHook.status, 0, parentHook.stderr);
-  assert.deepEqual(JSON.parse(parentHook.stdout), {});
+  assert.match(
+    JSON.parse(parentHook.stdout).hookSpecificOutput.additionalContext,
+    /Observed facts/,
+  );
   assert.deepEqual(state(root, "parent-probe").versionObservation, {
     value: "2.1.266",
     channel: "ancestor-executable",
@@ -1428,7 +1528,10 @@ test("ancestor text mapping resolves an opaque process name once per session", a
       ),
     });
     assert.equal(hook.status, 0, hook.stderr);
-    assert.deepEqual(JSON.parse(hook.stdout), {});
+    assert.match(
+      JSON.parse(hook.stdout).hookSpecificOutput.additionalContext,
+      /Observed facts/,
+    );
   }
   assert.deepEqual(state(root, "mapping-probe").versionObservation, {
     value: "2.1.266",
@@ -2140,8 +2243,8 @@ test("WO-132 delegated advisories are journaled without counting guard refusals 
     undefined,
   );
   const stop = invoke("finish", "Stop", undefined, undefined);
-  assert.equal(stop.systemMessage, undefined);
-  assert.equal(visible.length, 1);
+  assert.match(stop.systemMessage, /Observed facts/);
+  assert.equal(visible.length, 2);
   assert.equal(stop.decision, undefined);
   const journal = readFileSync(
     statePath(root).replace(/\.json$/, ".jsonl"),
@@ -2419,6 +2522,7 @@ test("harness evidence --fail records only the diff check the failing verdict re
     "gate-evidence.mjs",
     "gate-deadlines.mjs",
     "usage-observation.mjs",
+    "correction-observation.mjs",
   ])
     copyFileSync(
       join(source, "packages/skeleton/src", name),
@@ -4584,15 +4688,18 @@ test("WO-131 operator-control precedes runtime, state, Git, gate and writer chec
             cwd: dirname(root),
           }),
         );
-        for (const { path, event } of paths)
-          accepts(
-            invoke(path, event, session, {
-              cwd: dirname(root),
-              ...(event === "UserPromptSubmit"
-                ? { prompt: "continue the diagnosis" }
-                : {}),
-            }),
-          );
+        for (const { path, event } of paths) {
+          const response = invoke(path, event, session, {
+            cwd: dirname(root),
+            ...(event === "UserPromptSubmit"
+              ? { prompt: "continue the diagnosis" }
+              : {}),
+          });
+          // Presence observers have no governance decision or context response.
+          if (/\/presence-[^/]+\.mjs$/.test(path))
+            assert.deepEqual(response, {});
+          else accepts(response);
+        }
       }
       assert.equal(
         readFileSync(controlLog, "utf8"),
@@ -4937,6 +5044,10 @@ test("WO-132 missing bootstrap runtime delegates every pre-tool hook to host per
           true,
           `${name}: ${JSON.stringify(tool_input)}`,
         );
+        if (name.startsWith("presence-")) {
+          assert.deepEqual(response, {});
+          continue;
+        }
         assert.match(response.systemMessage, /advisory:/, name);
         assert.match(
           response.systemMessage,
@@ -5443,8 +5554,20 @@ test("WO-131 prompt submission stays open while dispatches retain the ordinary c
     /Dispatch fix is already recorded \(phase repairing\); continue without repeating it\. Open the reply with one line that begins 'I intend to' and names the concrete initial action, before any tool call\.\nRepair docs\/work-orders\/WO-999-fixture\.md/,
   );
   assert.equal(
-    briefingOf(resumed.hookSpecificOutput.additionalContext),
-    briefingOf(repair.hookSpecificOutput.additionalContext),
+    briefingOf(resumed.hookSpecificOutput.additionalContext).split(
+      "\nObserved facts at ",
+    )[0],
+    briefingOf(repair.hookSpecificOutput.additionalContext).split(
+      "\nObserved facts at ",
+    )[0],
+  );
+  assert.match(
+    resumed.hookSpecificOutput.additionalContext,
+    /Observed facts at /,
+  );
+  assert.match(
+    repair.hookSpecificOutput.additionalContext,
+    /Observed facts at /,
   );
   assert.equal(
     resumed.systemMessage,

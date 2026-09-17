@@ -33,6 +33,7 @@ export const installBeaconFixture = (root) => {
     "gate-evidence.mjs",
     "writer-teardown.mjs",
     "usage-observation.mjs",
+    "correction-observation.mjs",
     "beacon-codebook.mjs",
     "control-codebook.mjs",
     "beacon-io.mjs",

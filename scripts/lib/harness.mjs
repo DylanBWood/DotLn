@@ -92,6 +92,8 @@ export function harnessInstallation(options = {}) {
     "packages/skeleton/dist/src/feedback-boundary.js",
     "packages/skeleton/dist/src/feedback-source-comments.js",
     "packages/skeleton/dist/src/harness-host.js",
+    "packages/skeleton/dist/src/observed-facts.js",
+    "packages/skeleton/dist/src/correction-observation.mjs",
     "packages/skeleton/dist/src/source-change-command.js",
     "packages/skeleton/dist/src/source-change-state.js",
     "packages/skeleton/dist/src/version.js",

@@ -1283,6 +1283,24 @@ claim evidence or releases it does not have.
 - **Evidence gates over prose.** Completion claims require the work order's
   evidence: passing tests you ran, output you captured, behavior you witnessed.
   Read your own diff before reporting. Never infer completion.
+- **Never guess — observed facts and advisory measurement (WO-141).** The
+  briefing, Claude prompt context and Stop advisory print the clock, journaled
+  background dispatch times with last observed state and elapsed time, gate
+  durations, and usage counters with source and cutoff. Missing values remain
+  `unknown` with a cause. A lexical estimate marker attached to a number,
+  duration or clock time in final assistant text is journaled with the observed
+  quantity when unambiguous, otherwise `unmeasured`; quotes and fenced code are
+  exempt. Its correction is delivered once at the next boundary. This holds no
+  turn, refuses no action and causes no Stop re-entry. Codex has no Stop hook:
+  lifecycle and briefing output run the same scan over already available final
+  messages and their handoff text; a later final answer waits for the next
+  boundary. The journal counts typed `correction:` events and hedges by order,
+  phase and explicitly named unit: never guess, accuracy over sycophancy
+  (`correctness-over-sycophancy`), `anti-oscillation`, and the ban on over-literal
+  or malicious compliance (`fail-conservative-correction`). Untyped corrections
+  and unmarked guesses are outside this lexical count. The meter's
+  shifting-the-burden row measures these events without automatic consequence;
+  it no longer treats decision documents as correction telemetry.
 - **Recovery point before destruction.** Never run `git checkout .`,
   `git restore .`, `git reset --hard`, `git clean` (any flags), or
   `git stash drop` in a work-order worktree. Until final review, the

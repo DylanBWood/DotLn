@@ -24,6 +24,23 @@ founding-era: **Resolutions of known tensions** (settled contradictions — do
 not relitigate them) and the founding chat/notes/image corpus.
 
 
+## 2026-09-17 — Ideation: reversible permission-mode trials
+
+Source: operator ideation during WO-141, captured in ignored
+`docs/intake/notes/WO-141-expanded-ideation-2026-09-17.md`. Shape-First Synthesis;
+clean-room screen found no stop condition. See the
+[breakout receipt](../evidence/WO-141/ideation-permission-trial.md).
+
+- **Try permission and automation modes across a few work orders, with likely
+  reversion, and distinguish direct mode readback from observed rejections**
+  `preserved`
+  - A reversible trial is proposed, not a permanent default. WO-136 supplies
+    an enforcement matrix, not automatic session-mode detection. Capture
+    supplied policy or effective host readback with its source when available;
+    otherwise keep mode unknown or operator-attested, without deriving a full
+    configuration from denials. Product 03 preserves this candidate. Reopen
+    when WO-136 lands, a trial mode is chosen, or effective readback appears.
+
 ## 2026-09-17 — Planning pass: vision into use (WO-135 rewritten, WO-079 rewritten, WO-136 to WO-140)
 
 Source: the operator's `planning:` dispatch and twenty-six mid-turn messages,

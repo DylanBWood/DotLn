@@ -11,6 +11,7 @@ import { dirname, join } from "node:path";
 import { pathToFileURL } from "node:url";
 import { spawnSync } from "node:child_process";
 import { usageRecordIdentity } from "../../packages/skeleton/src/usage-observation.mjs";
+import { correctionCounts } from "../../packages/skeleton/src/correction-observation.mjs";
 import { readControl, eventsForOrder } from "./control-store.mjs";
 import { completedPhaseAttempts } from "./control-time.mjs";
 import { readGateChecks } from "./gate-evidence.mjs";
@@ -234,14 +235,24 @@ function hookObservations(root, workOrder) {
         `docs/control/local/harness/${name.slice(0, -1)}`,
         {},
       );
-      if (state.workOrder !== workOrder) return [];
       let role;
-      return jsonl(root, `docs/control/local/harness/${name}`).map((row) => {
-        if (row.role) role = row.role;
-        // Timing follows the evaluated event. Attribute it from the preceding
-        // observed role, without an extra session-file read on every hook call.
-        return row.hookTiming && !row.role && role ? { ...row, role } : row;
-      });
+      return jsonl(root, `docs/control/local/harness/${name}`)
+        .filter(
+          (row) =>
+            (Object.hasOwn(row, "workOrder")
+              ? row.workOrder
+              : state.workOrder) === workOrder,
+        )
+        .map((row) => {
+          if (row.role) role = row.role;
+          // Timing follows the evaluated event. Attribute it from the preceding
+          // observed role, without an extra session-file read on every hook call.
+          return {
+            ...row,
+            journal: name,
+            ...(row.hookTiming && !row.role && role ? { role } : {}),
+          };
+        });
     });
 }
 function usageRows(root, workOrder) {
@@ -368,6 +379,14 @@ export function trapRows(orders) {
     return {
       id,
       signal,
+      ...(id === "shifting-the-burden-to-the-intervenor"
+        ? {
+            corrections: orders.map((row) => ({
+              workOrder: row.workOrder,
+              ...row.corrections,
+            })),
+          }
+        : {}),
       metric,
       series,
       indicators,
@@ -531,6 +550,12 @@ export async function collectMeta(
         ),
     }));
     const hook = hookObservations(root, workOrder);
+    // Closed worktrees retain their local journal elsewhere. Preserve only a
+    // snapshot explicitly derived from that journal, never the old decision count.
+    const corrections =
+      !hook.length && prior?.corrections?.source === "session-journal"
+        ? prior.corrections
+        : correctionCounts(hook);
     const usage = usageRows(root, workOrder);
     const gateRows = checks.filter(
       (check) =>
@@ -643,9 +668,7 @@ export async function collectMeta(
         prior?.metrics.subjectCharacters ??
         null,
       gateStepCount: gateSteps ?? prior?.metrics.gateStepCount ?? null,
-      operatorCorrections: decisions.filter(
-        (value) => value.workOrder === workOrder && value.kind === "correction",
-      ).length,
+      operatorCorrections: corrections.total,
       guardRefusals: hook.length
         ? guardRefusalCount(hook)
         : (prior?.metrics.guardRefusals ?? null),
@@ -740,6 +763,7 @@ export async function collectMeta(
       phase: row.state.phase,
       phases,
       metrics,
+      corrections,
       dispatches,
       usage,
       coldStart: active
@@ -1026,6 +1050,10 @@ export function renderMeta(meta) {
     ),
     "",
     "Systems-trap signals:",
+    ...meta.orders.map(
+      (row) =>
+        `${row.workOrder} journal corrections: ${row.corrections.total}; per phase ${JSON.stringify(row.corrections.byPhase)}; per unit ${JSON.stringify(row.corrections.byUnit)}; per phase/unit ${JSON.stringify(row.corrections.byPhaseAndUnit)}.`,
+    ),
     ...meta.traps.map(
       (row) =>
         `${row.id}: ${row.indicators.map((indicator) => `${indicator.metric} ${display(indicator.series.at(-1)?.value)} (Δ ${display(indicator.series.at(-1)?.delta)})`).join("; ")}; ${row.reopenCandidate ? "REOPEN CANDIDATE" : "insufficient worsening evidence"}`,

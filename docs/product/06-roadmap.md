@@ -20,6 +20,12 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-141 activation completion (2026-09-17):** application `v0.29.1` and
+skeleton `0.25.1` stage the observed-facts display, nonblocking lexical advisory
+and journal-derived correction meter above locally observed `v0.29.0`.
+This is a patch to the existing evidence behavior; kernel, compiler, console,
+public event schemas and permission boundaries are unchanged.
+
 **WO-052 activation completion (2026-09-17):** source-change host stages application `v0.28.0` and skeleton `0.24.0` under its minor classification. It adds commit-identity recovery and one reactor slice; kernel/compiler versions, event schema and hash preimages remain unchanged. Live writing and remote publication remain separate orders.
 
 **WO-122 activation completion (2026-09-17):** application `v0.28.0` and

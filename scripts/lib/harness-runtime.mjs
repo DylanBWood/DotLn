@@ -89,6 +89,31 @@ export async function codexSessionReport(root) {
   }
 }
 
+export async function observedFactsReport(root, state, output) {
+  try {
+    const { observationBoundary, codexObservationScope } =
+      await import("../../packages/skeleton/dist/src/observed-facts.js");
+    const phase =
+      {
+        active: "implementation",
+        repairing: "repair",
+        verifying: "verification",
+        "final-review": "finalReview",
+      }[state.phase] ?? state.phase;
+    if (!process.env.CODEX_THREAD_ID)
+      return `Observed facts at ${new Date().toISOString()}: unknown (session-identity-unavailable).`;
+    const scope = codexObservationScope(
+      process.env.CODEX_THREAD_ID,
+      state.workOrderId ?? null,
+      phase,
+      root,
+    );
+    return observationBoundary(root, scope, { codex: true, output });
+  } catch {
+    return `Observed facts at ${new Date().toISOString()}: unknown (observation-runtime-unavailable); advisory only.`;
+  }
+}
+
 export function refreshHarnessRuntime(root, build) {
   const cause = harnessRuntimeCause(root);
   if (!cause) return false;
