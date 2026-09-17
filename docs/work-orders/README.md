@@ -28,10 +28,11 @@
 - [x] [WO-119] — Executable discovery producer · **final-reviewed**
 - [x] [WO-052] — Source-change host and commit receipt · **final-reviewed**
 - [x] [WO-122] — Actor catalog: cli-worker and human-handoff · **final-reviewed**
-- [ ] [WO-135] — Planning-gate corrections · **queued**
+- [ ] [WO-141] — No guessing, enforced · **queued**
 - [ ] [WO-136] — Authority enforcement boundary · **queued**
+- [ ] [WO-135] — Planning-gate corrections · **queued**
 - [ ] [WO-053] — The first external source change · **queued**
-- [ ] [WO-139] — Subagent cap · **queued**
+- [ ] [WO-139] — Subagent admission cap · **queued**
 - [ ] [WO-054] — Verification over a real worktree · **queued**
 - [ ] [WO-137] — Local runner readiness · **queued**
 - [ ] [WO-055] — Repair continuation · **queued**
@@ -1391,6 +1392,22 @@ None.
 - Cost: removes one failed sandboxed gate per attended verification (observed: WO-121 VER-001 ran the gate twice inside the sandbox, 17 of 19 and 18 of 19, one failure being the genuine intermittent defect F1 and the other the &#96;.claude/hooks/**&#96; denial, and did not itself run the gate outside; VER-002 ran 18 of 19 inside before its passing outside run; WO-049, WO-051, WO-052, WO-134, WO-122 and WO-121 VER-002 record their passing gate outside the sandbox), 191 to 515 s of fresh gate wall-clock each plus its diagnosis; removes the bare "unknown" default in cost lines (one receipt since 2026-09-13 reports an entry measurement). Adds one preflight check under a second, one &#96;needs:&#96; declaration per affected suite, one distinct partial check identity, one briefing line, one closed cause-code list and one document check; no gate, hook or recurring step.
 - Authority: [docs/work-orders/WO-140-gate-sandbox-preflight.md](WO-140-gate-sandbox-preflight.md)
 
+### WO-141
+
+[WO-141 — No guessing, enforced: the handoff carries the session's observed facts, a hedged number or duration in a handoff is refused unless it is bound to an observation or written as unknown, and operator corrections are counted from the journal instead of self-report (version assigned at activation)](WO-141-no-guessing-enforced.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; dependency-ready.
+- References: WO-133: satisfied-by-close (met) — the built runtime follows main after a fast-forward; WO-131: satisfied-by-close (met) — the Stop hook path and hook-input decoding.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Cost: removes operator corrections of unmeasured claims: on 2026-09-17 the planner reported a background review as dispatched "roughly 10 minutes ago" while the session's own files held the dispatch time (14:06) and the clock (14:32), and the operator caught it; the 2026-09-16 defect register counted nine operator corrections in one session (items 7 and 13), and the meter's &#96;operatorCorrections&#96; reads decision records, which is self-report. Adds one Stop-hook scan of the final message (under 100 ms), one observed facts block in the briefing and the Stop advisory, one journal-derived counter and fixtures; one more hard refusal in the hook boundary; no new receipt, key or ritual.
+- Authority: [docs/work-orders/WO-141-no-guessing-enforced.md](WO-141-no-guessing-enforced.md)
+
 ## Closed
 
 ### WO-003
@@ -2659,3 +2676,4 @@ See [the human planning map](../planning/work-order-map.md) for recommendation, 
 [WO-138]: WO-138-local-model-role-qualification.md
 [WO-139]: WO-139-subagent-cap.md
 [WO-140]: WO-140-gate-sandbox-preflight.md
+[WO-141]: WO-141-no-guessing-enforced.md

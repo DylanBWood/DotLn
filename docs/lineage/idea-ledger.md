@@ -26,12 +26,12 @@ not relitigate them) and the founding chat/notes/image corpus.
 
 ## 2026-09-17 — Planning pass: vision into use (WO-135 rewritten, WO-079 rewritten, WO-136 to WO-140)
 
-Source: the operator's `planning:` dispatch and twelve mid-turn messages,
+Source: the operator's `planning:` dispatch and twenty-one mid-turn messages,
 including an operator-endorsed third-party brief ("bring the vision into
 use"), a pointer to Steve Yegge's 2011 platforms essay and, before merge, a
 third-party review of the draft pull request, captured verbatim in ignored
 intake (`docs/intake/notes/2026-09-17-vision-into-use-planning.md`,
-SHA-256 `aab1ebea10004c8e82f6ec2538ddd7ddc6b774e270f6b0f9301eb3e76d1b0b51`).
+SHA-256 `f853e35e437d797bb7eec7e73c18ca59111c43e9a92c8a2abdc5c4f83399422b`).
 Shape-First Synthesis; the clean-room screen found one item to fence: the
 operator's comparison with an employer-provided setup carries no detail and
 is used only as an expectation. The full record is
@@ -203,12 +203,29 @@ is used only as an expectation. The full record is
     `packages/skeleton/src/gate-evidence.mjs`; `git show` of the sequence.
     Reopen: a document that claims reuse below the whole-gate row, or a
     partial row consumed as a gate.
+- **No-guessing enforcement is the next order, first in the sequence, and
+  the refutation runs through the external Codex transport** `adopted`
+  - After catching the planner report a background review as dispatched
+    "roughly 10 minutes ago" while the session's files held the dispatch
+    time and the clock 26 minutes apart, the operator directed that
+    enforcement be the next order: WO-141 puts the observed facts in the
+    handoff, refuses a hedged number or duration not bound to an observation
+    or written as `unknown`, and counts operator corrections from the
+    journal; the prose line of WO-049 D001 stays but is not the enforcement.
+    The sequence is recut into fifteen pairs with WO-141 and WO-136 first.
+    The operator also directed that the planning refutation use
+    `npm run plan -- refute --transport codex-cli-exec`; the two in-harness
+    background reviews of earlier drafts were not filed and are recorded as
+    waste. Provenance: messages 19 and 22 of the capture; `scripts/lib/meta.mjs`
+    (`operatorCorrections` from decision records); the harness host's Stop
+    path. Reopen: a hedged claim that passes the hook, or an operator
+    direction on the transport.
 - **Process cost of this pass** `adopted`
   - Entry 124,346 total tokens (Claude transcript, dispatch scope); no code
-    suite; one background documentation lookup; two background goal reviews
-    of the draft, the second on the reviewed text and filed as the pass's
-    receipt; `npm run test:docs` at the end. Handoff counters in the
-    response. USD unknown.
+    suite; one background documentation lookup; two in-harness background
+    goal reviews of drafts dispatched and not filed (recorded as waste); the
+    receipt from the external Codex transport; `npm run test:docs` at the
+    end. Handoff counters in the response. USD unknown.
 - **Adopting the brief one for one, a single lane, the narrower WO-135, any
   settings change now, a Codex tool proxy now, a new work-order kind or
   transition, live evaluation inside `npm test`, model downloads, the

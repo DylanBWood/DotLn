@@ -1,7 +1,7 @@
 # Vision into use — the capability ladder, the corrected sequence, a research lane, and the machinery that was costing the operator (2026-09-17)
 
 The operator opened this pass on the main checkout at `ec502c9` (v0.29.0)
-with a standard dispatch and twelve further messages during the turn: a
+with a standard dispatch and twenty-one further messages during the turn: a
 third-party planning brief titled "bring the vision into use", which the
 operator largely endorses and asked to weigh heavily; persisting
 inconsistency and cost in the two-lane workflow; a configurable hard cap on
@@ -13,10 +13,11 @@ and effort; and verifiers running the product gate twice because it fails
 inside the sandbox first; and, late in the turn, the platforms lesson of
 Steve Yegge's 2011 essay; and the cold-start ceiling that orders touching the
 role text keep hitting; and, before merge, a third-party review of the
-draft pull request (section 17). All thirteen messages are captured
-verbatim in ignored intake
+draft pull request (section 17), and the operator's direction after it
+that no-guessing enforcement is the next order. All twenty-two messages
+are captured verbatim in ignored intake
 (`docs/intake/notes/2026-09-17-vision-into-use-planning.md`, SHA-256
-`aab1ebea10004c8e82f6ec2538ddd7ddc6b774e270f6b0f9301eb3e76d1b0b51`). The
+`f853e35e437d797bb7eec7e73c18ca59111c43e9a92c8a2abdc5c4f83399422b`). The
 operator's comparison with an employer-provided setup carries no detail and
 is used only as the operator's expectation.
 
@@ -235,27 +236,29 @@ index validates activation. The protocol identifiers that carry `v1`
 WO-133 moved the version literals into one module, and no check was
 observed reading a protocol id as a version. No action.
 
-**The sequence.** Closed entries stay. From WO-135 onward the queued entries
-are fourteen pairs, then the serial run:
+**The sequence.** Closed entries stay. From WO-141 onward the queued entries
+are fifteen pairs, then the serial run (recut once more on 2026-09-17 when
+the operator directed that no-guessing enforcement be the next order):
 
-| Pair | Delivery lane | Second lane | Why they do not collide |
+| Pair | First lane | Second lane | Why they do not collide |
 | --- | --- | --- | --- |
-| 1 | WO-135 planning-gate corrections | WO-136 authority enforcement boundary | A planning helper and its fixtures; a probe extension under `scripts/lib/` and `docs/discovery/`. |
-| 2 | WO-053 the first external source change | WO-139 subagent cap | Evidence and one receipt fixture; the harness host and the budgets file. WO-053 is operator-run; WO-139 is not. |
-| 3 | WO-054 verification over a real worktree | WO-137 local runner readiness | The verification host; a discovery record and a probe. WO-137 is operator-assisted; WO-054 is not. |
-| 4 | WO-055 repair continuation | WO-140 gate sandbox preflight and usage readback | Verification and continuation; the test runner and the briefing. |
-| 5 | WO-056 live blinded verification and repair | WO-110 local-model transport | Evidence of a live episode; `worker-transport.ts` and the catalog. WO-110 reads WO-137's row. |
-| 6 | WO-099 mission check | WO-079 worktree integrate | A resident episode; `scripts/worktree.mjs`. |
-| 7 | WO-069 configuration root | WO-138 local-model role qualification pilot | `scripts/lib/config.mjs`; evidence only. |
-| 8 | WO-071 registered target repositories | WO-120 derived work identity | Configuration and the compiled envelope; `resume.mjs` and `work-orders.mjs`. |
-| 9 | WO-063 outward-artifact lint | WO-100 preauthorized portfolio | A lint over outward artifacts; the resident's derivation. |
-| 10 | WO-064 target publish | WO-111 the unattended hour | `worktree publish` for a target; a live resident proof. R2 follows pair 10. |
-| 11 | WO-114 runtime status projection | WO-070 beacon portability | A projection; the seven build-free beacon leaves and `resume.mjs`, after WO-120 merged. |
-| 12 | WO-115 console parity contract | WO-060 SourceBundle contract | Console contracts; a source contract. |
-| 13 | WO-116 audit projection served | WO-065 pull-request state observation | Console; the GitHub observation. |
-| 14 | WO-117 console live host | WO-066 review-comment resolution loop | Console; the post-PR loop. |
+| 1 | WO-141 no guessing, enforced | WO-136 authority enforcement boundary | The Stop hook, the briefing and the meter; a probe extension and a discovery packet. WO-136 is operator-assisted; WO-141 is not. |
+| 2 | WO-135 planning-gate corrections | WO-053 the first external source change | Planning helpers and fixtures; evidence and one receipt fixture. WO-053 is operator-run. |
+| 3 | WO-139 subagent admission cap | WO-054 verification over a real worktree | The harness host's spawn admission and the budgets file; the verification host. |
+| 4 | WO-137 local runner readiness | WO-055 repair continuation | A discovery record and a probe; verification and continuation. WO-137 is operator-assisted. |
+| 5 | WO-140 gate sandbox preflight and usage readback | WO-056 live blinded verification and repair | The test runner, gate-evidence consumers and the briefing; evidence of a live episode. |
+| 6 | WO-110 local-model transport | WO-099 mission check | `worker-transport.ts` and the catalog; a resident episode. WO-110 reads WO-137's row when one exists. |
+| 7 | WO-079 worktree integrate | WO-069 configuration root | `scripts/worktree.mjs`; `scripts/lib/config.mjs`. |
+| 8 | WO-138 local-model role qualification pilot | WO-071 registered target repositories | Evidence only, on a `ready` WO-137; configuration and the compiled envelope. |
+| 9 | WO-120 derived work identity | WO-063 outward-artifact lint | `resume.mjs` and `work-orders.mjs`; a lint over outward artifacts. |
+| 10 | WO-100 preauthorized portfolio | WO-064 target publish | The resident's derivation; `worktree publish` for a target. |
+| 11 | WO-111 the unattended hour | WO-114 runtime status projection | A live resident proof; a projection. R2 follows WO-111. |
+| 12 | WO-070 beacon portability | WO-115 console parity contract | The seven build-free beacon leaves and `resume.mjs`, after WO-120 merged; console contracts. |
+| 13 | WO-060 SourceBundle contract | WO-116 audit projection served | A source contract; console. |
+| 14 | WO-065 pull-request state observation | WO-117 console live host | The GitHub observation; console. |
+| 15 | WO-066 review-comment resolution loop | WO-057 browser runtime truth | The post-PR loop; browser evidence. |
 
-Then, serially: WO-057, WO-058, WO-059, WO-061, WO-124, WO-062, WO-123,
+Then, serially: WO-058, WO-059, WO-061, WO-124, WO-062, WO-123,
 WO-112, the starter tranche (WO-074, WO-075, WO-072, WO-073, WO-076,
 WO-077, WO-078), WO-118, WO-113, the workstream family, the migration
 family, the workshop family and the documentation reset, unchanged in their
@@ -846,9 +849,12 @@ Entry process cost: 124,346 total tokens (source
 ran no code suite; one background documentation lookup (Claude Code's
 workflow, hooks, settings and sandboxing pages); the sequence check script
 in the session's scratch directory, whose rule enters WO-135; `npm run
-test:docs` at the end; two background goal reviews of the draft, the second
-on the reviewed text and recorded under `docs/planning/refutations/` as the
-pass's receipt. The follow-up feed's first page was read;
+test:docs` at the end. Two in-harness background goal reviews of drafts
+were dispatched and not filed (the first judged text later corrected; the
+second was stopped when the subject changed again), a cost the operator
+counted at about 250,000 tokens of their own; the pass's receipt is the
+external Codex review of the final subject, recorded under
+`docs/planning/refutations/`. The follow-up feed's first page was read;
 the dispositions of section 7 are applied to the register in this pass.
 Handoff process cost is reported in the response.
 
@@ -856,7 +862,7 @@ Handoff process cost is reported in the response.
 
 The operator pasted a third-party review of the pull request at `c347362`
 (message 13 of the capture, SHA-256
-`aab1ebea10004c8e82f6ec2538ddd7ddc6b774e270f6b0f9301eb3e76d1b0b51`). It
+`f853e35e437d797bb7eec7e73c18ca59111c43e9a92c8a2abdc5c4f83399422b`). It
 scored the pass 7.5 of 10, endorsed the research convention, the local-model
 path, the recut sequence and the authority experiment, and asked for a
 bounded amendment before merge. Each of its factual claims was checked
@@ -915,7 +921,7 @@ were corrected and the final text is what the pass's receipt judges):
    update every place that counts the hook's hard refusals; criterion 3 gains
    the pair-parse fixture.
 
-**Decisions 12 to 16.** (12) Reuse exists at one grain, the whole gate at
+**Decisions 12 to 18.** (12) Reuse exists at one grain, the whole gate at
 one code identity; no document claims reuse below it (reopen: a claim of
 suite-level reuse). (13) A partial run never satisfies a gate consumer
 (reopen: a partial row consumed as a gate). (14) The cap is enforced where
@@ -928,7 +934,21 @@ observed and stays a candidate for the index (reopen: an activation that
 ignores such a preflight). (16) The operating mode is decided at the
 checkpoint after WO-136's close, with the minimal configuration owned by
 WO-136's packet (reopen: WO-136 closing without that decision in the next
-pass).
+pass). (17) No-guessing enforcement is the next order, first in the
+sequence, by the operator's direction after catching the planner reporting
+a background review as dispatched "roughly 10 minutes ago" while the
+session's own files held the dispatch time and the clock 26 minutes apart:
+WO-141 puts the observed facts in the handoff, refuses a hedged number or
+duration that is not bound to an observation or written as `unknown`, and
+derives the operator-correction count from the journal instead of decision
+records; the prose line of WO-049 D001 stays and is no longer the
+enforcement (reopen: a hedged claim that passes the hook, or a correction
+the journal cannot count). (18) The planning refutation runs through the
+external Codex transport (`npm run plan -- refute --transport
+codex-cli-exec`) by the operator's explicit request; the two background
+in-harness reviews of this pass's drafts were not filed, and their token
+cost is recorded as waste in section 16 (reopen: an operator direction to
+change the transport).
 
 **Declined.** A broad replan (the review asked for a bounded amendment); a
 research kind or outcome field in the index now (the preflight sentence and
