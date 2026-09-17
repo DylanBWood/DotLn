@@ -938,10 +938,11 @@ pass). (17) No-guessing enforcement is the next order, first in the
 sequence, by the operator's direction after catching the planner reporting
 a background review as dispatched "roughly 10 minutes ago" while the
 session's own files held the dispatch time and the clock 26 minutes apart:
-WO-141 puts the observed facts in the handoff, refuses a hedged number or
-duration that is not bound to an observation or written as `unknown`, and
-derives the operator-correction count from the journal instead of decision
-records; the prose line of WO-049 D001 stays and is no longer the
+WO-141 puts the observed facts in front of the agent before it speaks,
+journals and corrects a hedged number or duration as an advisory that never
+holds a turn (the operator rejected a hard refusal: it would gate their
+turns, the pattern WO-132 removed), and derives the operator-correction
+count from the journal instead of decision records; the prose line of WO-049 D001 stays and is no longer the
 enforcement (reopen: a hedged claim that passes the hook, or a correction
 the journal cannot count). (18) The planning refutation runs through the
 external Codex transport (`npm run plan -- refute --transport

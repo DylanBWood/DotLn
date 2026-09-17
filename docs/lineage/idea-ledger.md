@@ -208,10 +208,11 @@ is used only as an expectation. The full record is
   - After catching the planner report a background review as dispatched
     "roughly 10 minutes ago" while the session's files held the dispatch
     time and the clock 26 minutes apart, the operator directed that
-    enforcement be the next order: WO-141 puts the observed facts in the
-    handoff, refuses a hedged number or duration not bound to an observation
-    or written as `unknown`, and counts operator corrections from the
-    journal; the prose line of WO-049 D001 stays but is not the enforcement.
+    enforcement be the next order: WO-141 puts the observed facts in
+    front of the agent before it speaks, journals and corrects a hedged
+    number or duration as an advisory that never holds a turn (the operator
+    rejected a hard refusal as a gate on their own turns), and counts
+    operator corrections from the journal; the prose line of WO-049 D001 stays but is not the enforcement.
     The sequence is recut into fifteen pairs with WO-141 and WO-136 first.
     The operator also directed that the planning refutation use
     `npm run plan -- refute --transport codex-cli-exec`; the two in-harness

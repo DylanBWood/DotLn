@@ -1394,7 +1394,7 @@ None.
 
 ### WO-141
 
-[WO-141 — No guessing, enforced: the handoff carries the session's observed facts, a hedged number or duration in a handoff is refused unless it is bound to an observation or written as unknown, and operator corrections are counted from the journal instead of self-report (version assigned at activation)](WO-141-no-guessing-enforced.md)
+[WO-141 — No guessing, enforced without gating the operator: the session's observed facts are always in front of the agent, a hedged number or duration that slips into a handoff is journaled and corrected as an advisory that never holds a turn, and operator corrections are counted from the journal instead of self-report (version assigned at activation)](WO-141-no-guessing-enforced.md)
 
 - State: draft.
 - Application target: unassigned.
@@ -1405,7 +1405,7 @@ None.
 - Release: none recorded.
 - Model: any. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
 - Effort: executor xhigh+; verifier xhigh+; reviewer any.
-- Cost: removes operator corrections of unmeasured claims: on 2026-09-17 the planner reported a background review as dispatched "roughly 10 minutes ago" while the session's own files held the dispatch time (14:06) and the clock (14:32), and the operator caught it; the 2026-09-16 defect register counted nine operator corrections in one session (items 7 and 13), and the meter's &#96;operatorCorrections&#96; reads decision records, which is self-report. Adds one Stop-hook scan of the final message (under 100 ms), one observed facts block in the briefing and the Stop advisory, one journal-derived counter and fixtures; one more hard refusal in the hook boundary; no new receipt, key or ritual.
+- Cost: removes operator corrections of unmeasured claims: on 2026-09-17 the planner reported a background review as dispatched "roughly 10 minutes ago" while the session's own files held the dispatch time (14:06) and the clock (14:32), and the operator caught it; the 2026-09-16 defect register counted nine operator corrections in one session (items 7 and 13), and the meter's &#96;operatorCorrections&#96; reads decision records, which is self-report. Adds one observed-facts block in the briefing, the prompt-submit context and the Stop advisory, one advisory scan of the final message (under 100 ms), one journal-derived counter and fixtures; no refusal, no held turn, no new receipt, key or ritual. The operator's direction is explicit: the mechanism removes the guess, it does not gate responses.
 - Authority: [docs/work-orders/WO-141-no-guessing-enforced.md](WO-141-no-guessing-enforced.md)
 
 ## Closed
