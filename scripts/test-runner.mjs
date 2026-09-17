@@ -67,6 +67,10 @@ const machinerySources = {
     "scripts/test-fixture-temp-root.sh",
   ],
   "harness-probe": [
+    "scripts/harness-probe.mjs",
+    "scripts/lib/authority-probe.mjs",
+    "scripts/fixtures/authority-effect.mjs",
+    "scripts/test-authority-probe.mjs",
     "scripts/lib/writing-worker-probe.mjs",
     "scripts/probe-worker-hosts.mjs",
     "scripts/test-harness-probe.mjs",
@@ -340,7 +344,15 @@ export const suites = [
     }),
   ),
   nodeTests("adjacent-queue", "scripts/test-adjacent-queue.mjs"),
-  nodeTests("harness-probe", "scripts/test-harness-probe.mjs"),
+  nodeTests("harness-probe", "scripts/test-harness-probe.mjs", {
+    command: [
+      process.execPath,
+      "--test",
+      "--test-concurrency=1",
+      "scripts/test-harness-probe.mjs",
+      "scripts/test-authority-probe.mjs",
+    ],
+  }),
   nodeTests("authority-grants", "scripts/test-authority-grants.mjs"),
   node("authority-evidence", "scripts/authority-evidence.mjs", {
     args: ["--check"],

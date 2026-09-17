@@ -665,6 +665,26 @@ with its guarantees and the minimal Claude allow/deny configuration it
 needs, as a table that is not applied; R2 confirms. The full table is in the
 [planning document](../planning/vision-into-use-2026-09-17.md) §6 and §17.
 
+**Measured 2026-09-17 — WO-136, inconclusive.** The
+[authority matrix](../discovery/authority-boundary-2026-09-17.md) and its
+[JSON packet](../discovery/authority-boundary-2026-09-17.json) retain forty
+operator-approved launches across thirty-eight cells in 59 minutes 7.940
+seconds. With the sandbox selected off, Claude's admitted script wrote outside
+the worktree, reached loopback, ran nested/alternate executables and continued
+after its grant was revoked; these routes were observed-only. Codex's
+sandbox-off rows 1–8 have observed-only routes, including the sentinel script
+read and local fixture push. Neither result establishes access to real
+credentials or an external remote. Immediate-next-call revocation remains
+ambiguous or unavailable in both harnesses. Codex's sandbox-on workflow
+completed ten tool calls with zero measured stalls; Claude's first sandbox-on
+attempt produced edit/test/commit effects but timed out. Human prompt counts
+remain unavailable in every mode, and the sandbox-off Codex workflow was not
+launched before the budget ended. The packet proposes retaining current modes,
+with guarantees limited to the labeled paths, and names a separately budgeted
+experiment for the missing observations. Planning after close decides the mode;
+no new mode, setting or mediation is implemented by this research. Reopen with
+that experiment's host observations, including prompt and revocation ordering.
+
 **Trial idea, 2026-09-17 (during WO-141).** The operator is considering
 different sandbox permissions or automation modes for a few work orders,
 with likely reversion. Preserve the trial as a reversible comparison; the

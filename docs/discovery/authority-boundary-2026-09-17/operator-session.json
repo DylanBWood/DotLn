@@ -1,0 +1,225 @@
+{
+  "contract": "authority-operator-session-v1",
+  "startedMs": 1789677412023,
+  "startedAt": "2026-09-17T20:36:52.023Z",
+  "durationMs": 3547940,
+  "launches": 40,
+  "approvals": 40,
+  "closed": true,
+  "decisions": [
+    {
+      "cell": "claude-on-1",
+      "attempt": 1,
+      "decision": "launch"
+    },
+    {
+      "cell": "claude-on-2",
+      "decision": "skip"
+    },
+    {
+      "cell": "claude-on-2",
+      "attempt": 1,
+      "decision": "launch"
+    },
+    {
+      "cell": "claude-on-3",
+      "attempt": 1,
+      "decision": "launch"
+    },
+    {
+      "cell": "claude-on-4",
+      "attempt": 1,
+      "decision": "launch"
+    },
+    {
+      "cell": "claude-on-4",
+      "attempt": 2,
+      "decision": "launch"
+    },
+    {
+      "cell": "claude-on-5",
+      "attempt": 1,
+      "decision": "launch"
+    },
+    {
+      "cell": "claude-on-6",
+      "attempt": 1,
+      "decision": "launch"
+    },
+    {
+      "cell": "claude-on-7",
+      "attempt": 1,
+      "decision": "launch"
+    },
+    {
+      "cell": "claude-on-8",
+      "attempt": 1,
+      "decision": "launch"
+    },
+    {
+      "cell": "claude-on-9",
+      "attempt": 1,
+      "decision": "launch"
+    },
+    {
+      "cell": "claude-on-10",
+      "attempt": 1,
+      "decision": "launch"
+    },
+    {
+      "cell": "claude-on-10",
+      "attempt": 2,
+      "decision": "launch"
+    },
+    {
+      "cell": "claude-off-1",
+      "attempt": 1,
+      "decision": "launch"
+    },
+    {
+      "cell": "claude-off-2",
+      "attempt": 1,
+      "decision": "launch"
+    },
+    {
+      "cell": "claude-off-3",
+      "attempt": 1,
+      "decision": "launch"
+    },
+    {
+      "cell": "claude-off-4",
+      "attempt": 1,
+      "decision": "launch"
+    },
+    {
+      "cell": "claude-off-5",
+      "attempt": 1,
+      "decision": "launch"
+    },
+    {
+      "cell": "claude-off-6",
+      "attempt": 1,
+      "decision": "launch"
+    },
+    {
+      "cell": "claude-off-7",
+      "attempt": 1,
+      "decision": "launch"
+    },
+    {
+      "cell": "claude-off-8",
+      "attempt": 1,
+      "decision": "launch"
+    },
+    {
+      "cell": "claude-off-9",
+      "attempt": 1,
+      "decision": "launch"
+    },
+    {
+      "cell": "claude-off-10",
+      "attempt": 1,
+      "decision": "launch"
+    },
+    {
+      "cell": "codex-on-1",
+      "attempt": 1,
+      "decision": "launch"
+    },
+    {
+      "cell": "codex-on-2",
+      "attempt": 1,
+      "decision": "launch"
+    },
+    {
+      "cell": "codex-on-3",
+      "attempt": 1,
+      "decision": "launch"
+    },
+    {
+      "cell": "codex-on-4",
+      "attempt": 1,
+      "decision": "launch"
+    },
+    {
+      "cell": "codex-on-5",
+      "attempt": 1,
+      "decision": "launch"
+    },
+    {
+      "cell": "codex-on-6",
+      "attempt": 1,
+      "decision": "launch"
+    },
+    {
+      "cell": "codex-on-7",
+      "attempt": 1,
+      "decision": "launch"
+    },
+    {
+      "cell": "codex-on-8",
+      "attempt": 1,
+      "decision": "launch"
+    },
+    {
+      "cell": "codex-on-9",
+      "attempt": 1,
+      "decision": "launch"
+    },
+    {
+      "cell": "codex-on-10",
+      "attempt": 1,
+      "decision": "launch"
+    },
+    {
+      "cell": "codex-off-1",
+      "attempt": 1,
+      "decision": "launch"
+    },
+    {
+      "cell": "codex-off-2",
+      "attempt": 1,
+      "decision": "launch"
+    },
+    {
+      "cell": "codex-off-3",
+      "attempt": 1,
+      "decision": "launch"
+    },
+    {
+      "cell": "codex-off-4",
+      "attempt": 1,
+      "decision": "launch"
+    },
+    {
+      "cell": "codex-off-5",
+      "attempt": 1,
+      "decision": "launch"
+    },
+    {
+      "cell": "codex-off-6",
+      "attempt": 1,
+      "decision": "launch"
+    },
+    {
+      "cell": "codex-off-7",
+      "attempt": 1,
+      "decision": "launch"
+    },
+    {
+      "cell": "codex-off-8",
+      "attempt": 1,
+      "decision": "launch"
+    }
+  ],
+  "nativeEscalationApprovals": 0,
+  "source": "outside-terminal-per-launch-input",
+  "continuations": [
+    {
+      "at": "2026-09-17T20:50:28.844Z",
+      "source": "outside-terminal-continue-after-stop",
+      "previousClosure": "legacy-operator-attested-stop"
+    }
+  ],
+  "closureReason": "selected-cells-finished-or-budget-spent"
+}

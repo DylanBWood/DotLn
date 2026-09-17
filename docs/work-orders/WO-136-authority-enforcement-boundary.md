@@ -1,10 +1,10 @@
-# WO-136 — Authority enforcement boundary: for each declared limit, in both harnesses, with the native sandbox on and off, a matrix records prevented, observed-only or not observed, and whether authorized work stalled (version assigned at activation)
+# WO-136 — Authority enforcement boundary: for each declared limit, in both harnesses, with the native sandbox on and off, a matrix records prevented, observed-only or not observed, and whether authorized work stalled (v0.29.2)
 
 **Model:** the actual local harnesses, launched by the probe from an
 outside terminal; the record states the harness version, model and effort
 launched as launch claims (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.
-**Release classification:** patch, evidence-only. A probe extension under
+**Release classification:** patch. Evidence-only: a probe extension under
 `scripts/` and `scripts/lib/`, one discovery packet; no runtime capability
 change, no change to this checkout's settings or compiled bundle. Assigned
 at activation under the standing opt-out default.

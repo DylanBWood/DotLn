@@ -5905,6 +5905,13 @@
           "title": "Candidate — DotLn-owned authority with minimal native harness restrictions",
           "summary": "## Candidate — DotLn-owned authority with minimal native harness restrictions Operator direction during WO-119 (2026-09-16): reach an operating mode as soon as evidence supports it in which native Claude and Codex harness sandboxes can be disabled and Claude's settings have nearly empty allow/deny lists. The source of permissions, security and authority is the equipped DotLn supports, build and role. The operator clarified the assurance requirement: faithful runtime enforcement plus adversarial tests, including attempts to bypass the declared authority. See the [ideation receipt](../evidence/WO-119/ideation-authority.md). This candidate asks planning to identify the earliest justified route ",
           "missing": false
+        },
+        {
+          "hash": "32a2c9fe72426347ae5569e16d03bd1e4a1ac2dc2b4788335594214059b18c67",
+          "ref": "docs/product/03-architecture.md#candidate--dotln-owned-authority-with-minimal-native-harness-restrictions",
+          "title": "Candidate — DotLn-owned authority with minimal native harness restrictions",
+          "summary": "## Candidate — DotLn-owned authority with minimal native harness restrictions Operator direction during WO-119 (2026-09-16): reach an operating mode as soon as evidence supports it in which native Claude and Codex harness sandboxes can be disabled and Claude's settings have nearly empty allow/deny lists. The source of permissions, security and authority is the equipped DotLn supports, build and role. The operator clarified the assurance requirement: faithful runtime enforcement plus adversarial tests, including attempts to bypass the declared authority. See the [ideation receipt](../evidence/WO-119/ideation-authority.md). This candidate asks planning to identify the earliest justified route ",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -6290,6 +6297,96 @@
           "ref": "docs/evidence/WO-141/decisions.md#wo-141-d004",
           "title": "WO-141-D004: Record new WO-141 authority and feedback revision 001 editions, using the existing live CLI verifier for the changed feedback source; advance only their current-evidence selections and th",
           "summary": "{ \"id\": \"WO-141-D004\", \"date\": \"2026-09-17\", \"dispatch\": \"resume: next; current-evidence refresh required by the document gate\", \"decision\": \"Record new WO-141 authority and feedback revision 001 editions, using the existing live CLI verifier for the changed feedback source; advance only their current-evidence selections and the console selfhost fixture pins.\", \"evidence\": [ \"The document gate found authority bundle-diff.json stale after generated runtime bindings changed.\", \"readFeedbackSource includes usage-observation.mjs, whose exported session selector changes the exact source subject.\", \"The existing feedback recorder requires an actual CLI verifier, a complete verified matrix and matc",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-914126862d4794c7",
+      "key": "decision:docs/evidence/WO-136/decisions.md#wo-136-d001",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "fa5aeb511bfd4942fde2402850202b7f007ea698e3b3e44bdb1c89b101c4a1ab",
+          "ref": "docs/evidence/WO-136/decisions.md#wo-136-d001",
+          "title": "WO-136-D001: Measure the existing target bundle and exact-command grants in temporary fixtures, preserving per-route host observations and unknowns.",
+          "summary": "{ \"id\": \"WO-136-D001\", \"date\": \"2026-09-17\", \"dispatch\": \"resume: next\", \"decision\": \"Measure the existing target bundle and exact-command grants in temporary fixtures, preserving per-route host observations and unknowns.\", \"evidence\": [ \"docs/work-orders/WO-136-authority-enforcement-boundary.md\", \"scripts/lib/writing-worker-probe.mjs\", \"packages/skeleton/src/harness-host.ts\", \"packages/skeleton/src/source-change-command.ts\", \"docs/evidence/WO-052/implementation.md\" ], \"rejected\": [ { \"option\": \"NoOp\", \"reason\": \"Leaves the authority-mode decision without the requested observations.\" }, { \"option\": \"Synthetic enforcement hook or container\", \"reason\": \"Measures a different boundary and exceed",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-eb3646b72c2e8c50",
+      "key": "decision:docs/evidence/WO-136/decisions.md#wo-136-d002",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "1d0bda3390b78fa22131bac1c2042d7439b2d8f1a1b64de7c6c99417646de040",
+          "ref": "docs/evidence/WO-136/decisions.md#wo-136-d002",
+          "title": "WO-136-D002: Assign application v0.29.1 under the declared patch classification, with no component bump; use only the existing granted commands and retain unavailable prompt observations.",
+          "summary": "{ \"id\": \"WO-136-D002\", \"date\": \"2026-09-17\", \"dispatch\": \"resume: next\", \"decision\": \"Assign application v0.29.1 under the declared patch classification, with no component bump; use only the existing granted commands and retain unavailable prompt observations.\", \"evidence\": [ \"scripts/lib/release-preparation.mjs\", \"docs/work-orders/WO-136-authority-enforcement-boundary.md\", \"packages/skeleton/src/source-change-command.ts\", \"scripts/test-authority-probe.mjs\" ], \"rejected\": [ { \"option\": \"NoOp on activation placeholder\", \"reason\": \"The release helper cannot consume it.\" }, { \"option\": \"Change release machinery or infer prompt counts\", \"reason\": \"Neither is needed to stage this research honestl",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-b0dfa36b3003496b",
+      "key": "decision:docs/evidence/WO-136/decisions.md#wo-136-d003",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "c85f84b05bf78d10b456254474f9a9a9108a063386757f208424a9869b33a027",
+          "ref": "docs/evidence/WO-136/decisions.md#wo-136-d003",
+          "title": "WO-136-D003: Clarify each operator choice and allow explicit continuation of a clean stop while preserving all recorded attempts and the original budget.",
+          "summary": "{ \"id\": \"WO-136-D003\", \"date\": \"2026-09-17\", \"dispatch\": \"resume: next\", \"decision\": \"Clarify each operator choice and allow explicit continuation of a clean stop while preserving all recorded attempts and the original budget.\", \"evidence\": [ \"docs/discovery/authority-boundary-2026-09-17/operator-session.json\", \"docs/discovery/authority-boundary-2026-09-17/claude-on-1-attempt-1.json\", \"scripts/lib/authority-probe.mjs\", \"scripts/test-authority-probe.mjs\", \"docs/evidence/WO-136/operator.md\" ], \"rejected\": [ { \"option\": \"NoOp or close the investigation immediately\", \"reason\": \"The operator wanted to run the matrix and stopped because the directions were unclear.\" }, { \"option\": \"Delete the sess",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-c781ec0a628bfbf5",
+      "key": "decision:docs/evidence/WO-136/decisions.md#wo-136-d004",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "d3f4de81b5bc7e5e1e75070bb7f751dbdc4772ade5730006ccbcbe5be746e36f",
+          "ref": "docs/evidence/WO-136/decisions.md#wo-136-d004",
+          "title": "WO-136-D004: Preserve all forty operator launches, close the research as inconclusive, and repair cross-selection recovery before the executor handoff.",
+          "summary": "{ \"id\": \"WO-136-D004\", \"date\": \"2026-09-17\", \"dispatch\": \"resume: next\", \"decision\": \"Preserve all forty operator launches, close the research as inconclusive, and repair cross-selection recovery before the executor handoff.\", \"evidence\": [ \"docs/discovery/authority-boundary-2026-09-17.json\", \"docs/discovery/authority-boundary-2026-09-17/operator-session.json\", \"scripts/lib/authority-probe.mjs\", \"scripts/test-authority-probe.mjs\" ], \"rejected\": [ { \"option\": \"NoOp on the recovery gap\", \"reason\": \"An ordinary filtered resume can overlook a missing reservation in another harness/mode after a hard interruption.\" }, { \"option\": \"More launches in this session\", \"reason\": \"All forty launches and a",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-66a14f3766829b35",
+      "key": "decision:docs/evidence/WO-136/decisions.md#wo-136-d005",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "ccbe4c406fb56b63f8956ff03efdd6cb82455b4048f389309e5f31bcf40939b0",
+          "ref": "docs/evidence/WO-136/decisions.md#wo-136-d005",
+          "title": "WO-136-D005: Repair only the termination-test fixture: observe a synchronous descendant heartbeat, use a bounded startup allowance, and require descendant exit plus no further effects.",
+          "summary": "{ \"id\": \"WO-136-D005\", \"date\": \"2026-09-17\", \"dispatch\": \"resume: next\", \"decision\": \"Repair only the termination-test fixture: observe a synchronous descendant heartbeat, use a bounded startup allowance, and require descendant exit plus no further effects.\", \"evidence\": [ \"scripts/test-authority-probe.mjs\", \"docs/evidence/WO-136/implementation.md\" ], \"rejected\": [ { \"option\": \"NoOp or retry until green\", \"reason\": \"The fixed 250 ms timeout did not establish the descendant-start prerequisite.\" }, { \"option\": \"Treat a missing heartbeat as cleanup success\", \"reason\": \"That would pass without testing a running descendant.\" }, { \"option\": \"Change the production runner\", \"reason\": \"The observed E",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-b5367529ea34976b",
+      "key": "decision:docs/evidence/WO-136/decisions.md#wo-136-d006",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "52331815fdf2426807fe66467f3b73381d06f798086b6d773521a9f3b3973a97",
+          "ref": "docs/evidence/WO-136/decisions.md#wo-136-d006",
+          "title": "WO-136-D006: Integrate main at 83e01cb and retime the unpublished application target from v0.29.1 to v0.29.2 under the existing patch classification, with no component bump and no change to scope or a",
+          "summary": "{ \"id\": \"WO-136-D006\", \"date\": \"2026-09-17\", \"dispatch\": \"resume: final review\", \"decision\": \"Integrate main at 83e01cb and retime the unpublished application target from v0.29.1 to v0.29.2 under the existing patch classification, with no component bump and no change to scope or acceptance.\", \"evidence\": [ \"docs/product/07-execution-guide.md#independent-workflows-and-integration\", \"docs/evidence/WO-136/decisions.md#wo-136-d002\", \"docs/product/06-roadmap.md\", \"README.md\", \"docs/work-orders/WO-136-authority-enforcement-boundary.md\" ], \"rejected\": [ { \"option\": \"NoOp on the collision\", \"reason\": \"v0.29.1 is already an annotated published tag, so release close would refuse the colliding target.\"",
           "missing": false
         }
       ],
