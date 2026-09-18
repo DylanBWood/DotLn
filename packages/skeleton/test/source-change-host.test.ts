@@ -432,7 +432,7 @@ test("WO-052 emitted Claude permission hook admits only live host-issued exact c
       sourceFixtureOptions(root, () => 10, "commit", "claude"),
     );
     await host.run();
-    const hook = (command: string, cwd = host.tree.path) => {
+    const hook = (command: string, cwd = host.tree.path, tool = "Bash") => {
       const result = spawnSync(
         process.execPath,
         [join(host.tree.path, ".claude/hooks/permissions.mjs")],
@@ -444,7 +444,7 @@ test("WO-052 emitted Claude permission hook admits only live host-issued exact c
             hook_event_name: "PreToolUse",
             cwd: host.tree.path,
             session_id: "route-check",
-            tool_name: "Bash",
+            tool_name: tool,
             tool_input: { command, cwd },
           }),
         },
@@ -455,6 +455,14 @@ test("WO-052 emitted Claude permission hook admits only live host-issued exact c
         "deny"
       );
     };
+    assert.equal(
+      hook("schema result data", host.tree.path, "StructuredOutput"),
+      true,
+    );
+    assert.equal(
+      hook("schema result data", host.tree.path, "UnknownOutputTool"),
+      false,
+    );
     const testCommand = host.options.testCommand;
     assert.equal(
       hook(testCommand),

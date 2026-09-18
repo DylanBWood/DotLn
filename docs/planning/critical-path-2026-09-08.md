@@ -316,6 +316,7 @@ these edges into typed blocks in the order files.
    first portfolio edit toward the operator's repositories; whether the
    starter's first export should wait for WO-100; whether the deferred
    families are waived.
+   **WO-053 disposition (2026-09-17):** [both live writer smokes and commit-identity recovery passed](../evidence/WO-053/README.md); R2's combined prioritization decision awaits WO-111's receipt, with no export decision or family waiver inferred.
 3. **R3, after WO-112 and the fork's first run (WO-083).** The console
    framework decision, the migration cadence, the second starter export and
    the work fork's first orders are re-cut on the measurements.

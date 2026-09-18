@@ -1,4 +1,4 @@
-# WO-053 — The first external source change: one live episode edits one file, turns one test green and commits in a repository outside DotLn, with every containment claim checked by the host and recorded from an outside terminal (version assigned at activation)
+# WO-053 — The first external source change: one live episode edits one file, turns one test green and commits in a repository outside DotLn, with every containment claim checked by the host and recorded from an outside terminal (v0.29.3)
 
 **Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
 
@@ -7,10 +7,12 @@ outside the sandbox; the receipt states the harness version, model and
 effort launched for each episode as launch claims (07-execution-guide.md
 §Model-specific notes).
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.
-**Release classification:** patch. An evidence record and its fixtures; no
-runtime capability change. If a defect found by the episode needs a runtime
-fix, that fix is a separate bounded order. Assigned at activation under the
-standing opt-out default.
+**Release classification:** patch. An evidence record, its fixtures, and bounded
+repairs to the existing source-change capability. Operator override on
+2026-09-17 keeps the live-discovered inspection-route and structured-result
+repairs in this order. Atomic orders remain the default; this override applies
+to the defects impeding this proof. Assigned at activation under the standing
+opt-out default.
 **Nomination provenance:** the 2026-09-08 critical-path planning pass (gate
 D2, the live proof), cut as a bounded order at the operator's same-day
 correction; the pass's prioritization rule, "the most valuable order makes an
@@ -22,8 +24,10 @@ employer enters it.
 **Depends on:** WO-052 merged (the host, events and receipt this episode
 runs through).
 **Recommended placement:** immediately after WO-052; the second mandatory
-replan checkpoint follows its receipt. It edits only `docs/evidence/WO-053/`
-and a fixture that pins the receipt's shape. A recommendation, not a
+replan checkpoint follows its receipt. It edits `docs/evidence/WO-053/`,
+receipt fixtures and, under the 2026-09-17 operator override, the bounded writer
+protocol/transport/command routes, their regression tests and required generated
+evidence. A recommendation, not a
 dependency token.
 
 <!-- dotln-dependencies:start -->
@@ -63,9 +67,9 @@ outside terminal.
 
 - A fixture generator creates the scratch target (one module, one failing
   test, a `README` stating the contract) and the WorkOrder from a committed
-  worker loadout under WO-042's floor; the operator runs
-  `npm run dotln -- source-change <order>` twice (one clean episode, one
-  kill-after-commit episode) for each installed harness.
+  worker loadout under WO-042's floor. The execution readback below records
+  the available host API and the smoke/recovery coverage required by criteria
+  1 and 2.
 - The receipt records, per episode: the launch claims; the main checkout
   hash before and after; the sentinel tree hash; the parent session's
   transcript growth (the envelope only); `testBefore` red and `testAfter`
@@ -101,20 +105,34 @@ with the sanitized receipts and JSON; the write-backs below.
    table's `worker.source-change` row reassessed to the live-evidenced level,
    ledger entry; the planning map's second replan checkpoint is answered with
    a one-line disposition.
-6. `npm test` green; `git diff --check` clean; no runtime source, generated
-   configuration or dependency change in this order.
+6. `npm test` green; `git diff --check` clean; no dependency change. The
+   2026-09-17 operator override admits the bounded writer runtime repairs,
+   their regression tests, regenerated bundle pins and fresh feedback evidence.
+   The inspection profile must retain its pinned behavior.
 
 **Evidence gate:** the receipts; `npm test`.
 
 **Write-back duty:** as listed in criterion 5.
 
 **Non-goals:** verification of the change (WO-054 onward); the operator's
-repositories; pull requests; a second repository; any runtime fix (a
-separate order).
+repositories; pull requests; a second repository; unrelated runtime changes.
+The bounded 2026-09-17 repairs are included by operator override; no separate
+planning pass is required for them.
 
 **Operator-review assumptions**
 
 1. The operator runs the episodes and files the receipt from an outside
    terminal; the sandbox cannot dispatch either transport.
 2. A run that fails records its receipt under this order's evidence and does not close the order; dependents wait for an observed success, and the operator may withdraw the order with a dated note. An episode that fails a containment check stops the gate until the
-   containment is structural.
+  containment is structural.
+
+**Execution readback (2026-09-17):** the named `dotln source-change` CLI does
+not exist; the evidence fixture consumes the documented `SourceChangeHost`
+API. The authorized executor launched both installed harnesses from its
+unrestricted host terminal. This records executor action, not a claim that
+the operator typed the commands. Each harness has a successful clean episode;
+Codex also has the required killed-host recovery. Parent transcript growth is
+measured at the fixture's actual child-stdout handoff, where only the envelope
+is delivered; the complete executor conversation remains explicitly unknown.
+The new loadout source and its exact historical editions are filed and hashed,
+with the branch commit reserved for final review by repository policy.

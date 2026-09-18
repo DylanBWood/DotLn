@@ -20,6 +20,16 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-053 activation completion (2026-09-17):** application `v0.29.3` and
+skeleton `0.25.2` stage the first live external source change and the bounded
+writer repairs it exposed. Claude now submits its native schema result through
+the target guard; Codex receives explicit bounded inspection instructions.
+Kernel, compiler and console versions, event schemas and dependency sets stay
+unchanged. The operator's scope override keeps these repairs in this order;
+atomic work orders remain the default.
+
+**WO-053 collision retiming (2026-09-17):** unpublished target `v0.29.2` is superseded by `v0.29.3` under the existing patch classification because the observed release baseline is `v0.29.2`. Scope, acceptance, component versions, and published tags are unchanged by this retiming.
+
 **WO-136 activation completion (2026-09-17):** the authority-boundary research
 probe stages application `v0.29.1`, the next patch above the observed local
 `v0.29.0` tag. Package versions, runtime behavior, installed harness settings
@@ -1483,7 +1493,10 @@ consumer; the Marquet ladder and voice selector remain a later order.
 
 ## Application version pending — Source-to-deliverable vertical
 
-Prove the ports with a personal-flavor vertical: GitHub Issue → SourceBundle →
+The [first external source change is live-evidenced](../evidence/WO-053/README.md):
+Claude and Codex each fix one synthetic module, turn a host-run test green and
+commit, and a killed host recovers the same commit without redispatch.
+The remaining personal-flavor vertical is planned: GitHub Issue → SourceBundle →
 StoryContract → RepoProfile + ImpactMap → **Live Witness baseline** (reproduce
 before changing; preserve baseline evidence) → implementation episode → blinded
 behavior verification **and** independent code review (two separate episodes) →

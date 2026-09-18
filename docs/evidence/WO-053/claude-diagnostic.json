@@ -1,0 +1,190 @@
+{
+  "schemaVersion": 1,
+  "kind": "wo053-live-source-change",
+  "episode": "claude-diagnostic",
+  "recordedAt": "2026-09-17T23:12:35.919Z",
+  "launch": {
+    "epistemic": "launch-claim",
+    "value": {
+      "harness": "claude",
+      "version": "2.1.274",
+      "model": "claude-fable-5",
+      "effort": "xhigh"
+    },
+    "effectiveReadback": "unknown"
+  },
+  "fixture": {
+    "epistemic": "observed",
+    "value": {
+      "target": "<scratch-repository>",
+      "worktree": "<scratch-repository-worktree>",
+      "launchpad": "<selected-dotln-worktree>",
+      "store": "<episode-store>",
+      "baseCommit": "b61cbae2773ed9dfa303c02b92fb53f6fe9e7d3c",
+      "loadoutHash": "0d0e0eb9ab6b86d58840eae16d4523bb75edd36b8c898cd08c5c732c9a4ae0a6",
+      "semanticHash": "fnv1a64:b7d2b3c70459d795",
+      "allowedEffects": [
+        "repo.read",
+        "repo.write",
+        "git.local",
+        "shell.run"
+      ],
+      "grants": []
+    }
+  },
+  "boundary": {
+    "epistemic": "observed",
+    "value": {
+      "before": {
+        "launchpad": {
+          "head": "8471dc7e42aadfa64206771dae09541d6b1942b6",
+          "tree": "55a930ee591227c313f95f96337a8e6c9999f6e4",
+          "workingBytes": "e41b97611e0a879fc8c60198144ec626558041d1a79e5e2ed191001f2da58d7e",
+          "index": "4a75f9d7cc87ce6cc84a931d8e87826de96f85e6aef57f173b22710ca4501f12",
+          "status": "62e8fe962016bcfe0b02b4062f5651d2c9e03c7ec5debf8063bd778508f18339"
+        },
+        "targetMain": {
+          "head": "b61cbae2773ed9dfa303c02b92fb53f6fe9e7d3c",
+          "tree": "b368103b836e55609d99ba2c4d6b2fd574d4049a",
+          "workingBytes": "12a493f64ae22820e5b15480fe524ae5304582ee45e7845aa62bb39a89530a82",
+          "index": "bb0579f78b8500f4bdf7be26e39f06aa2915b63daebf7728026e11f71a7134c6",
+          "status": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "sentinel": "bcd3da55be1de6334ae0748e93729d562805b5594baa3aae713690fa759e556a"
+      },
+      "after": {
+        "launchpad": {
+          "head": "8471dc7e42aadfa64206771dae09541d6b1942b6",
+          "tree": "55a930ee591227c313f95f96337a8e6c9999f6e4",
+          "workingBytes": "e41b97611e0a879fc8c60198144ec626558041d1a79e5e2ed191001f2da58d7e",
+          "index": "4a75f9d7cc87ce6cc84a931d8e87826de96f85e6aef57f173b22710ca4501f12",
+          "status": "62e8fe962016bcfe0b02b4062f5651d2c9e03c7ec5debf8063bd778508f18339"
+        },
+        "targetMain": {
+          "head": "b61cbae2773ed9dfa303c02b92fb53f6fe9e7d3c",
+          "tree": "b368103b836e55609d99ba2c4d6b2fd574d4049a",
+          "workingBytes": "12a493f64ae22820e5b15480fe524ae5304582ee45e7845aa62bb39a89530a82",
+          "index": "bb0579f78b8500f4bdf7be26e39f06aa2915b63daebf7728026e11f71a7134c6",
+          "status": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "sentinel": "bcd3da55be1de6334ae0748e93729d562805b5594baa3aae713690fa759e556a"
+      },
+      "unchanged": true
+    }
+  },
+  "host": {
+    "epistemic": "observed",
+    "value": {
+      "outcome": null,
+      "changedPaths": [
+        "sum.mjs"
+      ],
+      "commitCount": 1,
+      "attempts": 1,
+      "eventTypes": [
+        "ArtifactIdentityEnforcementStarted",
+        "SourceChangeRequested",
+        "CommandPersisted",
+        "WorkerAttemptStarted",
+        "CommandReceipt",
+        "WorkerHeartbeat",
+        "WorkerInterrupted"
+      ]
+    }
+  },
+  "gitEffect": {
+    "epistemic": "observed",
+    "value": {
+      "commit": "55e56b2caceb3322ee8055469c1cd3ca9da434b8",
+      "changedPaths": [
+        "sum.mjs"
+      ],
+      "commitCount": 1
+    }
+  },
+  "wire": {
+    "epistemic": "observed",
+    "value": {
+      "lines": 93,
+      "invalidLines": 0,
+      "terminals": 1,
+      "terminalSuccess": true,
+      "denialArrayPresent": true,
+      "resultFormat": "non-json",
+      "containsEnvelope": false
+    }
+  },
+  "envelope": {
+    "epistemic": "observed",
+    "value": null
+  },
+  "parentHandoff": {
+    "epistemic": "observed",
+    "value": {
+      "scope": "evidence collector's child-stdout transcript",
+      "beforeBytes": 0,
+      "afterBytes": 0,
+      "envelopeOnly": false,
+      "rawWorkerTranscriptForwarded": false
+    }
+  },
+  "executorSessionTranscript": {
+    "epistemic": "unknown",
+    "value": null,
+    "reason": "The complete Codex conversation was not measured; the isolated parent stdout sink is the observed boundary"
+  },
+  "recovery": {
+    "epistemic": "observed",
+    "value": {
+      "requested": false,
+      "first": {
+        "exitCode": 1,
+        "signal": null,
+        "durationMs": 52455,
+        "stderrBytes": 0
+      },
+      "interruption": null,
+      "second": null,
+      "recoveryByCommitWithoutRedispatch": null
+    }
+  },
+  "usage": {
+    "epistemic": "observed",
+    "value": {
+      "activity": {
+        "stepCount": 7,
+        "commandsRun": 4,
+        "source": "transcript tool-call metadata; wrapped command count may be unavailable"
+      },
+      "source": "claude-result-envelope",
+      "scope": "dispatch",
+      "observedAt": null,
+      "usage": {
+        "inputTokens": 14,
+        "cachedInputTokens": 58839,
+        "cacheWriteInputTokens": 4933,
+        "outputTokens": 1957,
+        "reasoningOutputTokens": null,
+        "totalTokens": 65743,
+        "costUsd": 0.257419
+      },
+      "context": null
+    }
+  },
+  "failure": {
+    "epistemic": "observed",
+    "value": {
+      "code": "invalid-result",
+      "detail": "writer wire JSON"
+    }
+  },
+  "result": {
+    "epistemic": "observed",
+    "value": {
+      "functionalPass": false,
+      "recoveryPass": true,
+      "containmentPass": true,
+      "startedAt": "2026-09-17T23:11:42.909Z"
+    }
+  }
+}

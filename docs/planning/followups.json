@@ -6391,6 +6391,51 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-d578978a88d4effe",
+      "key": "decision:docs/evidence/WO-053/decisions.md#wo-053-d001",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "6f390a3080eb84227459bc03a7214fe08f67394377f31d02e2a4d549a09342e7",
+          "ref": "docs/evidence/WO-053/decisions.md#wo-053-d001",
+          "title": "WO-053-D001: Use an evidence-local fixture consuming SourceChangeHost, compile an explicit worker base, preserve failed receipts and measure protected checkout bytes and the parent envelope channel.",
+          "summary": "{ \"id\": \"WO-053-D001\", \"date\": \"2026-09-17\", \"dispatch\": \"resume: next\", \"decision\": \"Use an evidence-local fixture consuming SourceChangeHost, compile an explicit worker base, preserve failed receipts and measure protected checkout bytes and the parent envelope channel.\", \"evidence\": [ \"docs/work-orders/WO-053-first-external-source-change.md\", \"packages/skeleton/README.md\", \"packages/skeleton/src/source-change-host.ts\", \"packages/skeleton/src/dotln.ts\" ], \"rejected\": [ { \"option\": \"NoOp\", \"reason\": \"The existing source-change primitive still lacks live proof.\" }, { \"option\": \"Add a runtime CLI\", \"reason\": \"An existing public host API already supplies the required interface.\" }, { \"option\": ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-8565fda88762fa26",
+      "key": "decision:docs/evidence/WO-053/decisions.md#wo-053-d002",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "ae233ef213db517c4799101a9a7c080889771bc332493df971fdd573aeebd742",
+          "ref": "docs/evidence/WO-053/decisions.md#wo-053-d002",
+          "title": "WO-053-D002: Repair the live-discovered writer failures in WO-053 using native Claude structured output and bounded Codex inspection instructions; rerun both smokes and killed-host recovery without wi",
+          "summary": "{ \"id\": \"WO-053-D002\", \"date\": \"2026-09-17\", \"dispatch\": \"Operator correction during resume: next rejects deferring the blockers and preserves the right to override atomic work-order boundaries.\", \"decision\": \"Repair the live-discovered writer failures in WO-053 using native Claude structured output and bounded Codex inspection instructions; rerun both smokes and killed-host recovery without widening mutation routes.\", \"evidence\": [ \"docs/evidence/WO-053/claude-clean.json\", \"docs/evidence/WO-053/claude-diagnostic.json\", \"docs/evidence/WO-053/codex-clean.json\", \"packages/skeleton/src/worker-protocol.ts\", \"packages/skeleton/src/worker-transport.ts\" ], \"rejected\": [ { \"option\": \"NoOp or another",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-a5eaead398f76252",
+      "key": "decision:docs/evidence/WO-053/decisions.md#wo-053-d003",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "01275600d6434a18d5763ff8e60c86402f26446f84476e161a5f09edb45510e2",
+          "ref": "docs/evidence/WO-053/decisions.md#wo-053-d003",
+          "title": "WO-053-D003: Require Claude aggregate JSON structured_output, admit its data-only StructuredOutput tool through the target guard, and provide the fixture's exact Node executable. File successful Claud",
+          "summary": "{ \"id\": \"WO-053-D003\", \"date\": \"2026-09-17\", \"dispatch\": \"resume: next continued under the operator's bounded scope override\", \"decision\": \"Require Claude aggregate JSON structured_output, admit its data-only StructuredOutput tool through the target guard, and provide the fixture's exact Node executable. File successful Claude and Codex clean receipts and one Codex killed-host recovery; stage application v0.29.3 and skeleton 0.25.2 as patch releases.\", \"evidence\": [ \"docs/evidence/WO-053/claude-json.json\", \"docs/evidence/WO-053/codex-fixed.json\", \"docs/evidence/WO-053/claude-schema.json\", \"docs/evidence/WO-053/codex-runtime.json\", \"docs/evidence/WO-053/codex-recovery.json\", \"packages/skeleto",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

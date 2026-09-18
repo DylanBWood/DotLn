@@ -93,7 +93,7 @@ intent → task-scoped build → bounded WorkOrder → disposable executor
 -->
 <!-- DOTLN-RELEASE-BEGIN -->
 
-This source prepares DotLn `v0.29.2`.
+This source prepares DotLn `v0.29.3`.
 
 **The core.** A local-first compiler turns a loadout graph into a bounded
 program: one identity, one active mechanic, its linked supports, and an
@@ -122,10 +122,10 @@ presence away|back` records the operator edge; the [skeleton
 runbook](packages/skeleton/README.md#resident-host) carries the configuration
 and its limits. The [actor board](packages/console/README.md), mutation corpus,
 inspection workers, verification matrices and Beacon senses are also runnable
-today. A separate source-change transport profile admits one declared writable
-Git worktree, one test command and a host-written commit message, and reports
-host-observed commits and denial counts. Its process-double proof preserves the
-inspection profiles; the target host and live writing proof are still pending.
+today. The [first live external source-change proof](docs/evidence/WO-053/README.md)
+uses both Claude and Codex to fix one synthetic module, pass the host's test and
+commit in an isolated Git worktree; a killed Codex host recovers that commit
+without a second worker attempt, with the protected checkouts and sentinel unchanged.
 
 **How this repository builds itself.** Work proceeds through independent
 implementation, verification and final review, each recording its own report and

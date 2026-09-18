@@ -1,0 +1,162 @@
+{
+  "schemaVersion": 1,
+  "kind": "wo053-live-source-change",
+  "episode": "claude-clean",
+  "recordedAt": "2026-09-17T23:08:25.561Z",
+  "launch": {
+    "epistemic": "launch-claim",
+    "value": {
+      "harness": "claude",
+      "version": "2.1.274",
+      "model": "claude-fable-5",
+      "effort": "xhigh"
+    },
+    "effectiveReadback": "unknown"
+  },
+  "fixture": {
+    "epistemic": "observed",
+    "value": {
+      "target": "<scratch-repository>",
+      "worktree": "<scratch-repository-worktree>",
+      "launchpad": "<selected-dotln-worktree>",
+      "store": "<episode-store>",
+      "baseCommit": "b61cbae2773ed9dfa303c02b92fb53f6fe9e7d3c",
+      "loadoutHash": "0d0e0eb9ab6b86d58840eae16d4523bb75edd36b8c898cd08c5c732c9a4ae0a6",
+      "semanticHash": "fnv1a64:9da978a0ca7c461f",
+      "allowedEffects": [
+        "repo.read",
+        "repo.write",
+        "git.local",
+        "shell.run"
+      ],
+      "grants": []
+    }
+  },
+  "boundary": {
+    "epistemic": "observed",
+    "value": {
+      "before": {
+        "launchpad": {
+          "head": "8471dc7e42aadfa64206771dae09541d6b1942b6",
+          "tree": "55a930ee591227c313f95f96337a8e6c9999f6e4",
+          "workingBytes": "c562ec195fa9204e6cb0f0e0b3d55ab3ba4ef83a14f7dd1ce493088ec7d28b33",
+          "status": "d6945e72301b5391981e8b8c2c470600e8df9fe4b04a03ae7497973de859277e"
+        },
+        "targetMain": {
+          "head": "b61cbae2773ed9dfa303c02b92fb53f6fe9e7d3c",
+          "tree": "b368103b836e55609d99ba2c4d6b2fd574d4049a",
+          "workingBytes": "1d65e72b34d4c6db6f4cb8761ff08db841dc854379763dea5d56de8249d5b12b",
+          "status": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "sentinel": "bcd3da55be1de6334ae0748e93729d562805b5594baa3aae713690fa759e556a"
+      },
+      "after": {
+        "launchpad": {
+          "head": "8471dc7e42aadfa64206771dae09541d6b1942b6",
+          "tree": "55a930ee591227c313f95f96337a8e6c9999f6e4",
+          "workingBytes": "c562ec195fa9204e6cb0f0e0b3d55ab3ba4ef83a14f7dd1ce493088ec7d28b33",
+          "status": "d6945e72301b5391981e8b8c2c470600e8df9fe4b04a03ae7497973de859277e"
+        },
+        "targetMain": {
+          "head": "b61cbae2773ed9dfa303c02b92fb53f6fe9e7d3c",
+          "tree": "b368103b836e55609d99ba2c4d6b2fd574d4049a",
+          "workingBytes": "1d65e72b34d4c6db6f4cb8761ff08db841dc854379763dea5d56de8249d5b12b",
+          "status": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "sentinel": "bcd3da55be1de6334ae0748e93729d562805b5594baa3aae713690fa759e556a"
+      },
+      "unchanged": true
+    }
+  },
+  "host": {
+    "epistemic": "observed",
+    "value": {
+      "outcome": null,
+      "changedPaths": [],
+      "commitCount": null,
+      "attempts": 1,
+      "eventTypes": [
+        "ArtifactIdentityEnforcementStarted",
+        "SourceChangeRequested",
+        "CommandPersisted",
+        "WorkerAttemptStarted",
+        "CommandReceipt",
+        "WorkerHeartbeat",
+        "WorkerInterrupted"
+      ]
+    }
+  },
+  "envelope": {
+    "epistemic": "observed",
+    "value": null
+  },
+  "parentHandoff": {
+    "epistemic": "observed",
+    "value": {
+      "scope": "evidence collector's child-stdout transcript",
+      "beforeBytes": 0,
+      "afterBytes": 0,
+      "envelopeOnly": false,
+      "rawWorkerTranscriptForwarded": false
+    }
+  },
+  "executorSessionTranscript": {
+    "epistemic": "unknown",
+    "value": null,
+    "reason": "The complete Codex conversation was not measured; the isolated parent stdout sink is the observed boundary"
+  },
+  "recovery": {
+    "epistemic": "observed",
+    "value": {
+      "requested": false,
+      "first": {
+        "exitCode": 1,
+        "signal": null,
+        "durationMs": 31691,
+        "stderrBytes": 0
+      },
+      "interruption": null,
+      "second": null,
+      "recoveryByCommitWithoutRedispatch": null
+    }
+  },
+  "usage": {
+    "epistemic": "observed",
+    "value": {
+      "activity": {
+        "stepCount": 6,
+        "commandsRun": 3,
+        "source": "transcript tool-call metadata; wrapped command count may be unavailable"
+      },
+      "source": "claude-result-envelope",
+      "scope": "dispatch",
+      "observedAt": null,
+      "usage": {
+        "inputTokens": 12,
+        "cachedInputTokens": 43379,
+        "cacheWriteInputTokens": 9554,
+        "outputTokens": 1399,
+        "reasoningOutputTokens": null,
+        "totalTokens": 54344,
+        "costUsd": 0.30643
+      },
+      "context": null
+    }
+  },
+  "failure": {
+    "epistemic": "observed",
+    "value": {
+      "code": "invalid-result",
+      "detail": "writer wire JSON"
+    }
+  },
+  "result": {
+    "epistemic": "observed",
+    "value": {
+      "functionalPass": false,
+      "recoveryPass": true,
+      "containmentPass": true,
+      "startedAt": "2026-09-17T23:07:52.824Z"
+    }
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "loadoutId": "source-change-proof.v1",
+  "identity": {
+    "identityId": "source-change-proof",
+    "version": 1,
+    "name": "Scratch source worker",
+    "dispositions": ["bounded", "evidence-bound"],
+    "invariants": ["Only synthetic source; one writer in the assigned worktree"],
+    "updateLaws": ["Review source changes before publication"],
+    "lineage": ["WO-053"]
+  },
+  "role": {
+    "roleId": "scratch-source-worker",
+    "version": 1,
+    "name": "Scratch source worker",
+    "obligations": ["Fix the module, run the test, read its printed diff and commit"],
+    "permissions": [],
+    "objectives": ["One bounded source change"],
+    "policyDeltas": []
+  },
+  "containers": [{
+    "containerId": "scratch-worktree", "version": 1,
+    "name": "Scratch worktree", "kind": "workspace", "socketBudget": 0,
+    "activeMechanicIds": ["source-change"], "supportFacetIds": []
+  }],
+  "activeMechanics": [{
+    "activeMechanicId": "source-change", "version": 1,
+    "name": "Bounded source change", "tags": ["mutate"],
+    "requiredCapabilities": [], "semantics": ["One source change and local commit"],
+    "authorityEnvelope": {
+      "authorityEnvelopeId": "scratch-source-base",
+      "allowedEffects": ["repo.read", "repo.write", "git.local", "shell.run"],
+      "deniedEffects": ["repo.push", "remote.*", "credentials.*", "settings.*", "sandbox.*", "transport.*", "package.publish"],
+      "resourceLimits": {"writers": 1}, "requiredEvidence": [],
+      "expiresAt": 1790294400000, "revocationEventTypes": []
+    },
+    "workOrder": {
+      "workOrderId": "wo053_scratch",
+      "objective": "Fix add in sum.mjs to return the sum of its two numeric arguments. Read README.md and sum.mjs; change only sum.mjs; run node focused-test.mjs, read the diff printed by that test, then stage and commit with the exact host command.",
+      "acceptanceCriteria": ["Only sum.mjs changes", "node focused-test.mjs passes", "Exactly one local commit above the base"],
+      "knownFacts": ["This is a synthetic repository", "The focused test prints the source diff before checking behavior"],
+      "decisions": ["Authority is supplied only by this base; no explicit grants"],
+      "constraints": ["Do not change the test, README, governance, settings or message", "Use only the declared test and exact add/commit commands"],
+      "nonGoals": ["Remote effects", "Other repositories", "Additional commits"],
+      "allowedOperations": ["repo.read", "repo.write", "git.local", "shell.run"],
+      "prohibitedOperations": ["repo.push", "remote.*", "credentials.*", "settings.*", "sandbox.*", "transport.*", "package.publish"],
+      "requiredEvidence": [],
+      "outputContract": {"type": "source-change-envelope", "required": ["workOrderId", "episodeId", "status", "resultId", "summary", "requiresHuman"]}
+    },
+    "inspection": {"originalTerm": "Source change", "translation": "Source change", "kanji": "", "rpgTitle": "Scratch worker", "grants": [], "restrictions": [], "obligations": [], "passive": [], "pulse": [], "interrupt": []}
+  }],
+  "supportFacets": [], "links": [], "linkGroups": [],
+  "explicitPipelines": [], "ambientEffects": [], "authorityGrants": [],
+  "resourceModel": {"resourceModelId": "scratch-resources", "version": 1, "capacities": {"writers": 1}, "reservations": []},
+  "polarAxes": []
+}

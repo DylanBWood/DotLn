@@ -379,9 +379,10 @@ function sourceChangeArgs(
       "--permission-prompts",
       "none", // C-W2; C-U2 establishes unattended denial
       "--output-format",
-      "stream-json",
-      "--verbose",
-      "--include-hook-events", // C-W8
+      "json",
+      // WO-053 live result prose was not JSON despite the prompted schema.
+      "--json-schema",
+      JSON.stringify(transportResultSchema(request)),
     ];
   return [
     "-a",
@@ -456,10 +457,13 @@ function decodeWriterResult(
   before: string,
 ): WriterResult {
   try {
-    const events = output.stdout
-      .trim()
-      .split("\n")
-      .map((line) => JSON.parse(line) as Record<string, unknown>);
+    const events =
+      name === "claude-cli-print"
+        ? [JSON.parse(output.stdout) as Record<string, unknown>]
+        : output.stdout
+            .trim()
+            .split("\n")
+            .map((line) => JSON.parse(line) as Record<string, unknown>);
     let reported: unknown;
     let observedDenials: WriterObservations["observedDenials"] = "unavailable";
     if (name === "claude-cli-print") {
@@ -471,17 +475,17 @@ function decodeWriterResult(
         terminal.is_error === true
       )
         throw new WorkerFailure("transport-failed", "writer terminal result");
-      // C-W8: result text and permission_denials array, not inspection structured_output.
+      // WO-053 requires the native schema result; display prose is not a wire contract.
       if (
         !Array.isArray(terminal.permission_denials) ||
-        typeof terminal.result !== "string"
+        terminal.structured_output === undefined
       )
         throw new WorkerFailure(
           "invalid-result",
-          "C-W8 result or permission_denials unavailable",
+          "writer structured_output or permission_denials unavailable",
         );
       observedDenials = terminal.permission_denials.length;
-      reported = JSON.parse(terminal.result);
+      reported = terminal.structured_output;
     } else {
       if (
         events.some((event) =>

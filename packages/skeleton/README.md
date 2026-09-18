@@ -394,11 +394,19 @@ Claude gets Edit/Write/Read and exactly three Bash patterns: the declared test,
 `git add -A`, and `git commit -F <host message>`. Codex gets the `dotln-writer`
 named workspace-write profile with network disabled and non-shell features
 disabled. The prompt forbids changing `.claude/`, `.dotln/` or the message file.
+It also explicitly authorizes bounded inspection of the assigned worktree:
+native reads, or separately invoked literal read-only shell commands when
+native read tools are unavailable. These instructions do not install a Codex
+command classifier or expand Claude's three Bash patterns. A test may print
+the diff for a Claude worker whose direct diff command is unavailable.
 Tools-only Claude, Codex on-request approval and Codex hook expectations refuse
 with C-W1, X-U2 and X-W3 respectively. Discovery-backed arrays and their limits
 are in [the writing-worker record](../../docs/discovery/writing-worker-smoke-2026-09-14.md).
 
-The result retains the six-field envelope and adds host observations there:
+Claude's writer launch uses `--output-format json --json-schema <schema>` and
+requires `structured_output`; display prose is never parsed as the result.
+The target guard recognizes Claude's data-only `StructuredOutput` submission.
+Codex retains its existing JSONL result path. The result retains the six-field envelope and adds host observations there:
 `observedCommit` only when Git HEAD moved, and `observedDenials` (Claude's
 reported denial-array count, or `unavailable` for Codex). Worker-supplied Git
 identity is rejected. Completed prose with a dirty uncommitted tree remains
@@ -413,9 +421,11 @@ npm run build
 node --test packages/skeleton/dist/test/writer.test.js
 ```
 
-WO-052 owns the target host and WO-053 the live source-change proof. The sandbox
-alone did not confine sibling writes in C-W6/X-W6; the target governance and
-host's diff checks remain necessary. No live writer was launched for WO-051.
+WO-052 supplies the target host. [WO-053's live receipts](../../docs/evidence/WO-053/README.md)
+show both installed writers fixing the synthetic module and a killed host
+recovering one existing commit without redispatch. The sandbox alone did not
+confine sibling writes in C-W6/X-W6; target governance and host checks remain
+necessary. The successful sampled episodes do not establish universal confinement.
 
 ## Beacon metadata projection
 
@@ -787,7 +797,7 @@ issues a launchpad-side route for exactly the focused test, `git add -A`, and
 `git commit -F <host-message-path>`. The permission hook checks its live host,
 expiry, branch/base and message bytes; unmatched opaque commands still refuse.
 WO-051's transport allowlist does not bypass the guard. The live source-change
-proof remains WO-053.
+proof is recorded in [WO-053](../../docs/evidence/WO-053/README.md).
 
 Emit refuses unowned or tracked destination files, symlinks, incompatible
 launchpad runtime bytes and target ignore rules that would expose the bundle.

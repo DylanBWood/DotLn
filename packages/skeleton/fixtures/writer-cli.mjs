@@ -46,8 +46,16 @@ const tape = JSON.parse(
 );
 const events = tape[transport];
 for (const event of events) {
-  if (event.result === "<envelope>")
-    event.result = JSON.stringify({ envelope });
+  if (event.result === "<envelope>") {
+    // WO-053: a successful display message need not itself be JSON.
+    event.result = "The synthetic change is complete.";
+    event.structured_output = { envelope };
+    if (behavior === "missing-structured") {
+      event.result = JSON.stringify({ envelope });
+      delete event.structured_output;
+    }
+    if (behavior === "invalid-structured") event.structured_output = "invalid";
+  }
   if (event.item?.text === "<envelope>")
     event.item.text = JSON.stringify({ envelope });
   if (behavior === "missing-denials" && event.type === "result")
@@ -58,6 +66,7 @@ for (const event of events) {
     event.is_error = true;
   if (behavior === "failed-wire" && event.type === "turn.completed")
     event.type = "turn.failed";
-  console.log(JSON.stringify(event));
+  if (transport !== "claude" || event.type === "result")
+    console.log(JSON.stringify(event));
 }
 if (behavior === "nonzero") process.exitCode = 7;

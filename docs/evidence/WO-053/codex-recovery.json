@@ -1,0 +1,236 @@
+{
+  "schemaVersion": 1,
+  "kind": "wo053-live-source-change",
+  "episode": "codex-recovery",
+  "recordedAt": "2026-09-17T23:31:17.488Z",
+  "launch": {
+    "epistemic": "launch-claim",
+    "value": {
+      "harness": "codex",
+      "version": "0.154.0",
+      "model": "gpt-6-astra",
+      "effort": "xhigh"
+    },
+    "effectiveReadback": "unknown"
+  },
+  "fixture": {
+    "epistemic": "observed",
+    "value": {
+      "target": "<scratch-repository>",
+      "worktree": "<scratch-repository-worktree>",
+      "launchpad": "<selected-dotln-worktree>",
+      "store": "<episode-store>",
+      "baseCommit": "b61cbae2773ed9dfa303c02b92fb53f6fe9e7d3c",
+      "loadoutHash": "61c49d5c49bcf3646c4a2c87bcab81794ae3444b1de368f467eff0d0c9257e7e",
+      "semanticHash": "fnv1a64:2e5a201e0f357640",
+      "allowedEffects": [
+        "repo.read",
+        "repo.write",
+        "git.local",
+        "shell.run"
+      ],
+      "grants": []
+    }
+  },
+  "boundary": {
+    "epistemic": "observed",
+    "value": {
+      "before": {
+        "launchpad": {
+          "head": "8471dc7e42aadfa64206771dae09541d6b1942b6",
+          "tree": "55a930ee591227c313f95f96337a8e6c9999f6e4",
+          "workingBytes": "fd7faf226ef778c01fafba1021dc96b894595fa9d12970658b23a4058360bfb6",
+          "index": "4a75f9d7cc87ce6cc84a931d8e87826de96f85e6aef57f173b22710ca4501f12",
+          "status": "28c4966ee13b38a8ca3da6f64c74057e6d3457cd8e6aea26e3d366e4591bbc39"
+        },
+        "targetMain": {
+          "head": "b61cbae2773ed9dfa303c02b92fb53f6fe9e7d3c",
+          "tree": "b368103b836e55609d99ba2c4d6b2fd574d4049a",
+          "workingBytes": "12a493f64ae22820e5b15480fe524ae5304582ee45e7845aa62bb39a89530a82",
+          "index": "bb0579f78b8500f4bdf7be26e39f06aa2915b63daebf7728026e11f71a7134c6",
+          "status": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "sentinel": "bcd3da55be1de6334ae0748e93729d562805b5594baa3aae713690fa759e556a"
+      },
+      "after": {
+        "launchpad": {
+          "head": "8471dc7e42aadfa64206771dae09541d6b1942b6",
+          "tree": "55a930ee591227c313f95f96337a8e6c9999f6e4",
+          "workingBytes": "fd7faf226ef778c01fafba1021dc96b894595fa9d12970658b23a4058360bfb6",
+          "index": "4a75f9d7cc87ce6cc84a931d8e87826de96f85e6aef57f173b22710ca4501f12",
+          "status": "28c4966ee13b38a8ca3da6f64c74057e6d3457cd8e6aea26e3d366e4591bbc39"
+        },
+        "targetMain": {
+          "head": "b61cbae2773ed9dfa303c02b92fb53f6fe9e7d3c",
+          "tree": "b368103b836e55609d99ba2c4d6b2fd574d4049a",
+          "workingBytes": "12a493f64ae22820e5b15480fe524ae5304582ee45e7845aa62bb39a89530a82",
+          "index": "bb0579f78b8500f4bdf7be26e39f06aa2915b63daebf7728026e11f71a7134c6",
+          "status": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "sentinel": "bcd3da55be1de6334ae0748e93729d562805b5594baa3aae713690fa759e556a"
+      },
+      "unchanged": true
+    }
+  },
+  "host": {
+    "epistemic": "observed",
+    "value": {
+      "outcome": {
+        "status": "observed",
+        "observation": {
+          "workOrderId": "wo053_codex_recovery",
+          "commit": "ce52c3eef72fa315ddadad3739e1c5e19cfba3ed",
+          "diffHash": "1984f1c08da302f4057123d36ede66d6547294a1f8788910a09baa8bc830cf26",
+          "branch": "codex-recovery",
+          "testBefore": {
+            "command": "<node-executable> focused-test.mjs",
+            "exitCode": 1,
+            "signal": null,
+            "stdoutHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderrHash": "b146025bc1f3a2399d2affba7c3f883671344e438a79a6343cef54d1f4af0086"
+          },
+          "testAfter": {
+            "command": "<node-executable> focused-test.mjs",
+            "exitCode": 0,
+            "signal": null,
+            "stdoutHash": "8437ab36f9614deed008bffbfae6299c95b06582fed7160479524381cd9aab0a",
+            "stderrHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        }
+      },
+      "changedPaths": [
+        "sum.mjs"
+      ],
+      "commitCount": 1,
+      "attempts": 1,
+      "eventTypes": [
+        "ArtifactIdentityEnforcementStarted",
+        "SourceChangeRequested",
+        "CommandPersisted",
+        "WorkerAttemptStarted",
+        "CommandReceipt",
+        "WorkerHeartbeat",
+        "WorkerLeaseExpired",
+        "SourceChangeObserved",
+        "CommandResult",
+        "WorkerCompleted"
+      ]
+    }
+  },
+  "gitEffect": {
+    "epistemic": "observed",
+    "value": {
+      "commit": "ce52c3eef72fa315ddadad3739e1c5e19cfba3ed",
+      "changedPaths": [
+        "sum.mjs"
+      ],
+      "commitCount": 1
+    }
+  },
+  "wire": {
+    "epistemic": "observed",
+    "value": {
+      "lines": 32,
+      "invalidLines": 0,
+      "terminals": 0,
+      "terminalSuccess": false,
+      "denialArrayPresent": false,
+      "resultFormat": "absent",
+      "containsEnvelope": false,
+      "structuredEnvelopePresent": false
+    }
+  },
+  "envelope": {
+    "epistemic": "observed",
+    "value": {
+      "workOrderId": "wo053_codex_recovery",
+      "episodeId": "ep_523a75e92cab25ac0c7673df_1",
+      "resultId": "result_cmd_244a0221a7cf2a47",
+      "status": "completed",
+      "summary": "Changed only sum.mjs to return left + right. The exact host-supplied test passed, and its printed diff was reviewed. Created one local commit, ce52c3e, using the exact stage and commit commands. Working tree is clean.",
+      "requiresHuman": false,
+      "observedDenials": "unavailable",
+      "observedCommit": {
+        "sha": "ce52c3eef72fa315ddadad3739e1c5e19cfba3ed",
+        "branch": "codex-recovery"
+      }
+    }
+  },
+  "parentHandoff": {
+    "epistemic": "observed",
+    "value": {
+      "scope": "evidence collector's child-stdout transcript",
+      "beforeBytes": 0,
+      "afterBytes": 523,
+      "envelopeOnly": true,
+      "rawWorkerTranscriptForwarded": false
+    }
+  },
+  "executorSessionTranscript": {
+    "epistemic": "unknown",
+    "value": null,
+    "reason": "The complete Codex conversation was not measured; the isolated parent stdout sink is the observed boundary"
+  },
+  "recovery": {
+    "epistemic": "observed",
+    "value": {
+      "requested": true,
+      "first": {
+        "exitCode": null,
+        "signal": "SIGKILL",
+        "durationMs": 47202,
+        "stderrBytes": 0
+      },
+      "interruption": {
+        "commit": "ce52c3eef72fa315ddadad3739e1c5e19cfba3ed",
+        "attempts": 1,
+        "sourceObserved": false,
+        "sourceReceiptPresent": false,
+        "recordedAt": "2026-09-17T23:31:09.933Z"
+      },
+      "second": {
+        "exitCode": 0,
+        "signal": null,
+        "durationMs": 2515,
+        "stderrBytes": 0
+      },
+      "recoveryByCommitWithoutRedispatch": true
+    }
+  },
+  "usage": {
+    "epistemic": "observed",
+    "value": {
+      "activity": {
+        "stepCount": null,
+        "commandsRun": null,
+        "source": "unavailable"
+      },
+      "source": "codex-result-envelope",
+      "scope": "dispatch",
+      "observedAt": null,
+      "usage": {
+        "inputTokens": 116641,
+        "cachedInputTokens": 101504,
+        "cacheWriteInputTokens": 0,
+        "outputTokens": 799,
+        "reasoningOutputTokens": 48,
+        "totalTokens": 117440,
+        "costUsd": null
+      },
+      "context": null
+    }
+  },
+  "failure": {
+    "epistemic": "observed",
+    "value": null
+  },
+  "result": {
+    "epistemic": "observed",
+    "value": {
+      "functionalPass": true,
+      "recoveryPass": true,
+      "containmentPass": true,
+      "startedAt": "2026-09-17T23:30:22.733Z"
+    }
+  }
+}
