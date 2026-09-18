@@ -1,0 +1,23 @@
+{
+  "command": "node --test --test-name-pattern='WO-132 spawn and classification advisories|WO-132 all four completions' scripts/test-process-debt.mjs",
+  "exitCode": 1,
+  "passed": 0,
+  "failed": 2,
+  "durationMs": 10893.056167,
+  "findings": [
+    {
+      "test": "WO-132 spawn and classification advisories delegate to host permissions while live-gate writes remain denied",
+      "assertion": "scripts/test-process-debt.mjs:493",
+      "expected": "systemMessage undefined (classification advisory already shown)",
+      "actual": "DotLn advisory: command classification: Unclassified effectful tool: SomeNewTool; host permissions decide."
+    },
+    {
+      "test": "WO-132 all four completions admit missing gates, reads and counters; Stop advises and releases",
+      "assertion": "scripts/test-process-debt.mjs:909",
+      "expected": "systemMessage matches /^Observed facts/",
+      "actual": "systemMessage begins with Subagents: 0/20 and includes Observed facts on the next line"
+    }
+  ],
+  "limits": "Structured summary of actual captured output; raw stack paths omitted. No implementation changes made."
+}
+

@@ -1,0 +1,9 @@
+
+> publication:check
+> node scripts/check-publication.mjs
+
+PASS index coverage: 272/272 product headings indexed
+PASS dual-voice links: 3 identical claim links per voice
+CURRENT everyday-ai-user-toc.md: 30 linked source sections match
+CURRENT software-engineer-toc.md: 45 linked source sections match
+PASS publication bootstrap checks

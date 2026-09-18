@@ -1,0 +1,10 @@
+{
+  "probe": "WO-139 missing cap runtime module",
+  "module": "packages/skeleton/dist/src/subagent-budget.js",
+  "modulePinned": false,
+  "harnessCheckPassed": true,
+  "checkedSurfaces": 28,
+  "permissionHookResponse": {
+    "systemMessage": "DotLn advisory: runtime-unavailable: built adapter unavailable; run node scripts/bootstrap.mjs to prepare this worktree; host permissions decide."
+  }
+}

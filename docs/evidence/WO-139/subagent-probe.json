@@ -1,0 +1,394 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-18T14:16:54.557Z",
+  "harness": "claude-code",
+  "version": "2.1.276 (Claude Code)",
+  "actor": {
+    "model": "claude-fable-5",
+    "effort": "xhigh",
+    "source": "launch-selector"
+  },
+  "exitCode": 0,
+  "timedOut": false,
+  "tools": [
+    {
+      "name": "Agent",
+      "parent": false
+    },
+    {
+      "name": "Read",
+      "parent": true
+    },
+    {
+      "name": "Workflow",
+      "parent": false
+    }
+  ],
+  "error": false,
+  "workflowUnavailable": false,
+  "authenticationUnavailable": false,
+  "events": [
+    {
+      "event": "SessionStart",
+      "fields": {
+        "session_id": "string",
+        "transcript_path": "string",
+        "cwd": "string",
+        "hook_event_name": "string",
+        "source": "string"
+      },
+      "sessionMatchesRoot": true,
+      "hasAgentId": false,
+      "denied": false
+    },
+    {
+      "event": "UserPromptSubmit",
+      "fields": {
+        "session_id": "string",
+        "transcript_path": "string",
+        "cwd": "string",
+        "prompt_id": "string",
+        "permission_mode": "string",
+        "hook_event_name": "string",
+        "prompt": "string"
+      },
+      "sessionMatchesRoot": true,
+      "hasAgentId": false,
+      "denied": false
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Agent",
+      "fields": {
+        "session_id": "string",
+        "transcript_path": "string",
+        "cwd": "string",
+        "prompt_id": "string",
+        "permission_mode": "string",
+        "effort": {
+          "level": "string"
+        },
+        "hook_event_name": "string",
+        "tool_name": "string",
+        "tool_input": {
+          "description": "string",
+          "prompt": "string",
+          "subagent_type": "string",
+          "run_in_background": "boolean"
+        },
+        "tool_use_id": "string"
+      },
+      "sessionMatchesRoot": true,
+      "hasAgentId": false,
+      "denied": false
+    },
+    {
+      "event": "SubagentStart",
+      "fields": {
+        "session_id": "string",
+        "transcript_path": "string",
+        "cwd": "string",
+        "prompt_id": "string",
+        "agent_id": "string",
+        "agent_type": "string",
+        "hook_event_name": "string"
+      },
+      "sessionMatchesRoot": true,
+      "hasAgentId": true,
+      "denied": false
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Read",
+      "fields": {
+        "session_id": "string",
+        "transcript_path": "string",
+        "cwd": "string",
+        "prompt_id": "string",
+        "permission_mode": "string",
+        "agent_id": "string",
+        "agent_type": "string",
+        "effort": {
+          "level": "string"
+        },
+        "hook_event_name": "string",
+        "tool_name": "string",
+        "tool_input": {
+          "file_path": "string"
+        },
+        "tool_use_id": "string"
+      },
+      "sessionMatchesRoot": true,
+      "hasAgentId": true,
+      "fixture": "direct.txt",
+      "denied": false
+    },
+    {
+      "event": "PostToolUse",
+      "tool": "Read",
+      "fields": {
+        "session_id": "string",
+        "transcript_path": "string",
+        "cwd": "string",
+        "prompt_id": "string",
+        "permission_mode": "string",
+        "agent_id": "string",
+        "agent_type": "string",
+        "effort": {
+          "level": "string"
+        },
+        "hook_event_name": "string",
+        "tool_name": "string",
+        "tool_input": {
+          "file_path": "string"
+        },
+        "tool_response": {
+          "type": "string",
+          "file": {
+            "filePath": "string",
+            "content": "string",
+            "numLines": "number",
+            "startLine": "number",
+            "totalLines": "number"
+          }
+        },
+        "tool_use_id": "string",
+        "duration_ms": "number"
+      },
+      "sessionMatchesRoot": true,
+      "hasAgentId": true,
+      "fixture": "direct.txt",
+      "responseFields": {
+        "type": "string",
+        "file": {
+          "filePath": "string",
+          "content": "string",
+          "numLines": "number",
+          "startLine": "number",
+          "totalLines": "number"
+        }
+      },
+      "denied": false
+    },
+    {
+      "event": "SubagentStop",
+      "fields": {
+        "session_id": "string",
+        "transcript_path": "string",
+        "cwd": "string",
+        "prompt_id": "string",
+        "permission_mode": "string",
+        "agent_id": "string",
+        "agent_type": "string",
+        "effort": {
+          "level": "string"
+        },
+        "hook_event_name": "string",
+        "stop_hook_active": "boolean",
+        "agent_transcript_path": "string",
+        "last_assistant_message": "string",
+        "background_tasks": [],
+        "session_crons": []
+      },
+      "sessionMatchesRoot": true,
+      "hasAgentId": true,
+      "denied": false
+    },
+    {
+      "event": "PostToolUse",
+      "tool": "Agent",
+      "fields": {
+        "session_id": "string",
+        "transcript_path": "string",
+        "cwd": "string",
+        "prompt_id": "string",
+        "permission_mode": "string",
+        "effort": {
+          "level": "string"
+        },
+        "hook_event_name": "string",
+        "tool_name": "string",
+        "tool_input": {
+          "description": "string",
+          "prompt": "string",
+          "subagent_type": "string",
+          "run_in_background": "boolean"
+        },
+        "tool_response": {
+          "status": "string",
+          "prompt": "string",
+          "agentId": "string",
+          "agentType": "string",
+          "harnessNoteCount": "number",
+          "harnessTailCount": "number",
+          "harnessSectionHash": "string",
+          "content": [
+            {
+              "type": "string",
+              "text": "string"
+            }
+          ],
+          "resolvedModel": "string",
+          "totalDurationMs": "number",
+          "totalTokens": "number",
+          "totalToolUseCount": "number",
+          "usage": {
+            "output_tokens_details": {
+              "thinking_tokens": "number"
+            },
+            "input_tokens": "number",
+            "cache_creation_input_tokens": "number",
+            "cache_read_input_tokens": "number",
+            "output_tokens": "number",
+            "server_tool_use": {
+              "web_search_requests": "number",
+              "web_fetch_requests": "number"
+            },
+            "service_tier": "string",
+            "cache_creation": {
+              "ephemeral_1h_input_tokens": "number",
+              "ephemeral_5m_input_tokens": "number"
+            },
+            "inference_geo": "string",
+            "iterations": [
+              {
+                "input_tokens": "number",
+                "output_tokens": "number",
+                "cache_read_input_tokens": "number",
+                "cache_creation_input_tokens": "number",
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": "number",
+                  "ephemeral_1h_input_tokens": "number"
+                },
+                "type": "string"
+              }
+            ],
+            "speed": "string"
+          },
+          "toolStats": {
+            "readCount": "number",
+            "searchCount": "number",
+            "bashCount": "number",
+            "editFileCount": "number",
+            "linesAdded": "number",
+            "linesRemoved": "number",
+            "otherToolCount": "number"
+          }
+        },
+        "tool_use_id": "string",
+        "duration_ms": "number"
+      },
+      "sessionMatchesRoot": true,
+      "hasAgentId": false,
+      "responseFields": {
+        "status": "string",
+        "prompt": "string",
+        "agentId": "string",
+        "agentType": "string",
+        "harnessNoteCount": "number",
+        "harnessTailCount": "number",
+        "harnessSectionHash": "string",
+        "content": [
+          {
+            "type": "string",
+            "text": "string"
+          }
+        ],
+        "resolvedModel": "string",
+        "totalDurationMs": "number",
+        "totalTokens": "number",
+        "totalToolUseCount": "number",
+        "usage": {
+          "output_tokens_details": {
+            "thinking_tokens": "number"
+          },
+          "input_tokens": "number",
+          "cache_creation_input_tokens": "number",
+          "cache_read_input_tokens": "number",
+          "output_tokens": "number",
+          "server_tool_use": {
+            "web_search_requests": "number",
+            "web_fetch_requests": "number"
+          },
+          "service_tier": "string",
+          "cache_creation": {
+            "ephemeral_1h_input_tokens": "number",
+            "ephemeral_5m_input_tokens": "number"
+          },
+          "inference_geo": "string",
+          "iterations": [
+            {
+              "input_tokens": "number",
+              "output_tokens": "number",
+              "cache_read_input_tokens": "number",
+              "cache_creation_input_tokens": "number",
+              "cache_creation": {
+                "ephemeral_5m_input_tokens": "number",
+                "ephemeral_1h_input_tokens": "number"
+              },
+              "type": "string"
+            }
+          ],
+          "speed": "string"
+        },
+        "toolStats": {
+          "readCount": "number",
+          "searchCount": "number",
+          "bashCount": "number",
+          "editFileCount": "number",
+          "linesAdded": "number",
+          "linesRemoved": "number",
+          "otherToolCount": "number"
+        }
+      },
+      "denied": false
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Workflow",
+      "fields": {
+        "session_id": "string",
+        "transcript_path": "string",
+        "cwd": "string",
+        "prompt_id": "string",
+        "permission_mode": "string",
+        "effort": {
+          "level": "string"
+        },
+        "hook_event_name": "string",
+        "tool_name": "string",
+        "tool_input": {
+          "scriptPath": "string"
+        },
+        "tool_use_id": "string"
+      },
+      "sessionMatchesRoot": true,
+      "hasAgentId": false,
+      "denied": true
+    },
+    {
+      "event": "Stop",
+      "fields": {
+        "session_id": "string",
+        "transcript_path": "string",
+        "cwd": "string",
+        "prompt_id": "string",
+        "permission_mode": "string",
+        "effort": {
+          "level": "string"
+        },
+        "hook_event_name": "string",
+        "stop_hook_active": "boolean",
+        "last_assistant_message": "string",
+        "background_tasks": [],
+        "session_crons": []
+      },
+      "sessionMatchesRoot": true,
+      "hasAgentId": false,
+      "denied": false
+    }
+  ],
+  "rawTranscriptRetained": false,
+  "userSettingsWritten": false,
+  "requestedAgents": 3
+}
