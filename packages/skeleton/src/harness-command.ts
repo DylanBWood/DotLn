@@ -320,9 +320,14 @@ const literalRedirectOperand = (
  * are opaque, never an empty write set. Keep expansion/quotation provenance;
  * arbitrary scripts and interpreters need their own reviewed path adapter.
  */
-export function shellWritePaths(source: string): readonly string[] | null {
+export function shellWriteTargets(source: string):
+  | readonly {
+      path: string;
+      followFinalSymlink: boolean;
+    }[]
+  | null {
   try {
-    const paths: string[] = [];
+    const paths: { path: string; followFinalSymlink: boolean }[] = [];
     for (const invocation of shellWords(source)) {
       if (invocation.stdin.length) return null;
       const words = invocation.words;
@@ -344,7 +349,7 @@ export function shellWritePaths(source: string): readonly string[] | null {
           if (!literalRedirectOperand(operand)) return null;
           if (ampersandRedirect[1] === ">" && /^(?:\d+|-)$/.test(operand.value))
             continue;
-          paths.push(operand.value);
+          paths.push({ path: operand.value, followFinalSymlink: true });
           continue;
         }
         const redirect = /^(?:\d*>>?|&>>?)(.*)$/.exec(word.value);
@@ -353,7 +358,7 @@ export function shellWritePaths(source: string): readonly string[] | null {
             ? { ...word, value: redirect[1] }
             : words[++index];
           if (!literalRedirectOperand(target)) return null;
-          paths.push(target.value);
+          paths.push({ path: target.value, followFinalSymlink: true });
         } else {
           // Mixed quoted/unquoted redirects and embedded redirects are opaque.
           if (/[<>]/.test(word.value)) return null;
@@ -383,6 +388,12 @@ export function shellWritePaths(source: string): readonly string[] | null {
         rm: /^-(?:[rf]+|-)/,
       };
       if (!flags[program]) return null;
+      const optionEnd = args.indexOf("--");
+      const touchNoFollow =
+        program === "touch" &&
+        args
+          .slice(0, optionEnd < 0 ? args.length : optionEnd)
+          .some((arg) => /^-[acmh]+$/.test(arg) && arg.includes("h"));
       let operands = false;
       for (const arg of args) {
         if (!operands && arg === "--") {
@@ -392,13 +403,20 @@ export function shellWritePaths(source: string): readonly string[] | null {
         if (!operands && arg.startsWith("-")) {
           if (!flags[program]!.test(arg) || !/^-([acmhpirf]+)$/.test(arg))
             return null;
-        } else paths.push(arg);
+        } else
+          paths.push({
+            path: arg,
+            followFinalSymlink: program !== "rm" && !touchNoFollow,
+          });
       }
     }
     return paths;
   } catch {
     return null;
   }
+}
+export function shellWritePaths(source: string): readonly string[] | null {
+  return shellWriteTargets(source)?.map(({ path }) => path) ?? null;
 }
 const requireLiteral = (word: ShellWord | undefined, position: string) => {
   if (!word || word.dynamic)
