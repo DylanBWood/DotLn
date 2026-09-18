@@ -23,7 +23,7 @@ No account setting, launch default, permission rule or remote effect changes. Th
 
 ## Progressive polish
 
-The root README, roadmap, capability table, planning map and critical-path checkpoint now point at the live receipts; the skeleton README's writer runbook describes the schema result and inspection authorization; the decisions index and follow-up register carry WO-053's three decisions; the evidence manifest selects fresh WO-053 authority and feedback editions and the console selfhost fixtures follow them. The fixture redacts the machine-specific Node executable to `<node-executable>` in public receipts.
+The root README, roadmap, capability table, planning map and critical-path checkpoint now point at the live receipts; the skeleton README's writer runbook describes the schema result and inspection authorization; the decisions index and follow-up register carry WO-053's three decisions; the evidence manifest selects fresh WO-053 authority and feedback editions and the console selfhost fixtures follow them. The fixture replaces the machine-specific Node executable with a fixed placeholder token in public receipts.
 
 ## Evidence and compatibility
 

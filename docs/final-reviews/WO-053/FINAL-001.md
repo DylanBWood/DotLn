@@ -285,7 +285,13 @@ by `correctionCounts`; the operator's 2026-09-17 correction is the one recorded
 in D002, and I make no further claim about the journal's count. The five-section
 release notes follow the publication contract with one physical source line per
 prose paragraph and disclose the bounded scope of the proof. The executor's
-provisional drafts of both files are replaced, not inherited.
+provisional drafts of both files are replaced, not inherited. Correction, same
+session: the first `worktree publish` attempt was refused by its own
+`check-surfaces` preflight before any push, because the notes' redaction sentence
+carried the literal angle-bracket placeholder token and the GitHub body profile
+admits no raw HTML in reviewed notes; the sentence was reworded to describe the
+token instead of quoting it, and this paragraph records that the earlier claim
+that the notes already met the profile was wrong at the time it was written.
 
 The PR title's gitmoji is `:sparkles:`, chosen from the catalog for a capability
 that now exists where before it was pending, and the title is sized from this
