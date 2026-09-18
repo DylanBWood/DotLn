@@ -51,7 +51,7 @@ const common = [
   "No branch commits before final review. Never reset, restore, clean, drop a stash, or discard intake. Preserve work through the canonical checkpoint and named recovery procedure if rollback is needed.",
   "Read: `@subject-files`",
   "Read: `package.json`",
-  "Run `npm run work-orders -- index` after dispatch and after recording a result. The canonical evidence command refreshes owned projections before checking; lifecycle commands do not regenerate that index.",
+  "Run `npm run work-orders -- index` after dispatch. Executor completion refreshes the index automatically; other roles refresh it after recording a result. The canonical evidence command refreshes owned projections before checking.",
   "Write durable product decisions to the cited product docs and `docs/evidence/WO-NNN/decisions.md`, naming the operator dispatch, evidence, alternatives and reopening condition. Run `npm run meta` to refresh the decisions index. The ledger is for operator ideation and planning synthesis only. For an order filed before 2026-09-09, a ledger-entry duty is discharged by its decisions file and index row; the work-order index marks this substitution. Record a correction the same day: what was misread, what was meant and what changed. Decided means sourced, not frozen; an order's non-goal fences that order alone.",
 ];
 const actor =
@@ -75,7 +75,7 @@ export const contributorRoles: readonly HarnessRole[] = [
       "Implement the complete bounded deliverable and its write-backs. Prepare its classified release with `npm run release -- prepare --local`; bump only changed components with their compatibility impact and retain all publication controls.",
       evidence,
       actor,
-      "When green, record `npm run resume -- implementation-ready <actor-flags>` or `npm run resume -- repair-complete <actor-flags>`, then refresh the index and reread updated outputs in `@subject-files`. A repair is unfinished until repair-complete records. Report evidence, attestation, and limits; leave verification and final review to their separate dispatches.",
+      "Finish all authored output, index preparation, review and usage observations before recording `npm run resume -- implementation-ready <actor-flags>` or `npm run resume -- repair-complete <actor-flags>`. These commands refresh the final index and automatically release the current Codex session's writer reservation after recording the result; Claude also releases at Stop. Read the resulting projections without another write. A repair is unfinished until repair-complete records. Report evidence, attestation, and limits; leave verification and final review to their separate dispatches. Never leave the writer reserved at handoff or ask the operator to release it.",
     ],
   },
   {
@@ -423,6 +423,8 @@ const targetRoles: readonly HarnessRole[] = contributorRoles.map((role) => {
     procedure: [
       procedure[0]!,
       sessionCommands,
+      "When an explicit operator scope expansion changes a judged order's text, record its authorization in that order's structured decisions and run `npm run plan -- amend-order WO-NNN WO-NNN-DNNN \"operator authorization and bounded scope\"`. This binds the approved bytes in the existing planning log; it neither grants scope nor discharges a refutation hold. Run the planning check and repair encountered failures within authority instead of repeatedly carrying an inherited failure into review.",
+      "Plan fan-out against the root session's remaining `docs/control/budgets.json` `subagentCap` budget (default 20; null disables) before the first spawn and state that plan in the response. Count descendants in the same plan. Batch review and refutation over groups of items: one agent judges several items, never one agent per item per pass. Check `harness usage <session>` for observed counts and unknown remainder; Codex has no spawn hook, so keep an explicit session count and apply this rule as role text. Reuse agents before spawning more; unknown coverage is not a fresh budget.",
       "Without effective readback, keep the operator-selected model and effort with `--source operator-attested`; use `unknown` only for a value nobody supplied. Codex briefings automatically report the active thread model, effort and CLI version, independently of token-counter availability. Never replace a supplied value with unknown or invent effective readback.",
       "After an authorized product-document edit, run `npm run publication:check`; this grants no editing authority to a read-only role.",
       ...procedure.slice(1),

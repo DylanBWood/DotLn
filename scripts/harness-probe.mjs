@@ -291,7 +291,10 @@ function phaseZero(mode) {
   );
 }
 
-if (process.argv[2] === "--authority") {
+if (process.argv[2] === "--subagents") {
+  const { subagentProbe } = await import("./lib/subagent-probe.mjs");
+  await subagentProbe(process.argv.slice(3));
+} else if (process.argv[2] === "--authority") {
   const { authorityCli } = await import("./lib/authority-probe.mjs");
   await authorityCli(process.argv.slice(3));
 } else if (process.argv[2] === "--writing-worker")

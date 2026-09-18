@@ -850,9 +850,9 @@ export function verifyHarnessBundle(bundle: HarnessBundle): boolean {
   );
 }
 
-/** The three repository refusals have the same duties in each harness (WO-135). */
+/** WO-139 adds observable subagent admission to WO-135's three refusals. */
 const HARNESS_BOUNDARIES =
-  "DotLn has three refusals (WO-135): it reserves one writer per worktree on any branch, including main; refuses writes to gate inputs or the success record during a live npm test; and on planning/ branches refuses repository writes outside docs/ and root Markdown, while admitting paths outside the repository. Inspect the writer with node scripts/harness.mjs writer --show; stop this session's gate with node scripts/harness.mjs evidence --stop; use operator override: for authorized planning recovery. Claude hooks enforce these three refusals for classified tool effects; Codex carries the same duties as role text. Every other hook judgment is advisory and host permissions decide.";
+  "DotLn has four refusals (WO-135, WO-139): it reserves one writer per worktree on any branch, including main; refuses writes to gate inputs or the success record during a live npm test; on planning/ branches refuses repository writes outside docs/ and root Markdown while admitting external paths; and refuses observable subagent admissions beyond docs/control/budgets.json subagentCap (default 20; null disables). Descendants count at their first attributable tool call; unresolved direct/child overlap is a reported minimum, and unobserved agents remain unknown. Inspect the writer with node scripts/harness.mjs writer --show; stop this session's gate with node scripts/harness.mjs evidence --stop; use operator override: for authorized recovery. Claude hooks enforce these four refusals at observed boundaries; Codex carries the duties and cap as role text without automatic enforcement. Every other hook judgment is advisory and host permissions decide.";
 
 /** The shared instruction symlink contains all profile-qualified residue. */
 export function mergeHarnessFragments(
