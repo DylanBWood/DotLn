@@ -1541,6 +1541,12 @@ claim evidence or releases it does not have.
   and the [2026-09-17 pass](../planning/vision-into-use-2026-09-17.md) §10
   records the two acceptances made under it.
 
+  WO-054 raises the executor ceiling to 24,576 bytes and release-close to
+  16,384 bytes for the shared advisory-boundary and Codex continuation rule
+  (measured 20,849 and 12,437 bytes in both roots). The operator directed
+  incrementing these now and reviewing efficiency later; see
+  [WO-054-D006](../evidence/WO-054/decisions.md#wo-054-d006).
+
   During the live gate, the existing shell destination adapter recognizes
   ordinary `ls`, `head` and `grep` reads, including literal pipelines.
   Ordinary literal redirections and chained writes identify their destinations,
@@ -1607,6 +1613,27 @@ claim evidence or releases it does not have.
   unavailable; only an unsupplied value is `unknown`. Authorized product-document
   edits are followed by `npm run publication:check`. See
   [WO-133 decisions](../evidence/WO-133/decisions.md).
+- **Codex continuity after compaction (WO-054 scope expansion, 2026-09-18).**
+  The Codex contributor bundle uses `PostCompact` to record the turn and
+  `SessionStart` with `source: compact` to restore its saved unfinished work
+  order as developer context. An old side question does not replace that task.
+  A synchronous `Stop` hook can request one continuation for the compacted turn
+  when the same root session still owns the writer and its recorded completion
+  event remains outstanding. It does not dispatch, acquire/release ownership or
+  start another worker. Duplicate/already-continued stops cannot loop. Explicit
+  recovery controls remain decisive; native interruption remains with the host,
+  and missing state leaves native stopping available. The adapter does not parse
+  conversational stop/resume language or maintain an extra pause protocol. The
+  operator's repair clarification names the actual failure: automatic compaction,
+  an answer to an old message, then idle. Recovery uses the unfinished task state
+  regardless of that reply. This operator-authorized continuation is a narrow exception
+  to advisory completion judgments and adds no tool/write refusal. A native
+  Codex CLI 0.155.0 probe demonstrated context delivery and continuation without
+  an external wake-up; desktop activation is not established. Native hook trust
+  is required, and the checked CLI loads linked-worktree definitions from the
+  root checkout. See [behavior, proof and activation](../evidence/WO-054/codex-continuation.md)
+  and [D005](../evidence/WO-054/decisions.md#wo-054-d005). The original native
+  probes did not exercise interruption; no native interruption proof is claimed.
 - **Write once, run once (WO-132).** The reviewer stages intended new source
   files and runs `npm test -- --review` once after the last source edit. The
   runner records `npm test` by tracked, non-generated code identity, excluding

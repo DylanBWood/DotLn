@@ -697,6 +697,30 @@ operator-attested. Reopen after WO-136, selection of a concrete trial, or a
 new host readback surface. See the
 [breakout receipt](../evidence/WO-141/ideation-permission-trial.md).
 
+**Operator direction 2026-09-18 (ideation during WO-054 verification):
+out-of-project file effects are an explicit grant.** Creating, editing or
+deleting a file outside the project should require a support or role that
+grants it. Without that grant, the write is refused, so a mistaken path cannot
+create or remove anything outside the project. The trigger was an unintended
+shell redirect that created a file in the directory above a worktree. Work
+that legitimately needs outside paths would carry the grant: main's ignored
+intake, the session scratch directory, and the external paths that planning
+branches admit today. The operator recalls that ordinary sandbox rules would
+have prevented this write. That recollection is not evidence of containment,
+because this candidate's record is that neither native sandbox confined a
+sibling write (C-W6, X-W6).
+
+Still open:
+
+- the grant's shape: a support, a role, or both;
+- how allowed outside roots are declared;
+- the enforcement point for shell redirections and subprocesses, as distinct
+  from tool-level writes;
+- how the grant relates to today's planning-branch admission of external paths.
+
+The operator set this for priority at the next planning pass. See the
+[breakout receipt](../evidence/WO-054/ideation-2026-09-18.md).
+
 ## Candidate — isolated execution environments
 
 DotLn may eventually select and attest an execution boundary per episode: the
@@ -1554,7 +1578,22 @@ text, never the default channel for state you own in structured form.
   to maintain and ship?") are **separate independent episodes** — the reviewer
   reports findings, may not silently rewrite the branch, and its minor
   suggestions never auto-expand scope.
-  WO-010 implements the initial port as pure `compileVerificationTask` capsules plus a separate effect host that drives the verification branch of the shared typed reactor. `verification-snapshot-v1` exposes only a clean detached worktree's explicit host-read files, pinned diff, criteria and witnessed evidence; no model tools or implementer narrative are admitted. The complete capsule carries its compiler version and input equality key. Kernel programs and authority gates precede the persisted command; host leases, strict result validation and producing-episode identity gate acceptance. The host-owned log, not an actor-supplied event, determines which role produced evidence. The matrix retains criterion status and old/stale evaluations throughout the stream. Every blocking finding compiles a focused repair WorkOrder; one repair is applied before a fresh verifier rechecks affected criteria. The synthetic adapter accepts JSON policy data and runs only its fixed interpreter. Both CLI protocols pass local subprocess evidence; live model verification is supported by the launch path but unwitnessed in WO-010. Source-writing workers, review and post-PR loops remain deferred. See [the pinned contract](02-domain-model.md#independent-verification-v1) and [the runbook](../../packages/skeleton/README.md#independent-verification).
+  WO-010 implements the initial port as pure `compileVerificationTask` capsules plus a separate effect host that drives the verification branch of the shared typed reactor. `verification-snapshot-v1` exposes only a clean detached worktree's explicit host-read files, pinned diff, criteria and witnessed evidence; no model tools or implementer narrative are admitted. The complete capsule carries its compiler version and input equality key. Kernel programs and authority gates precede the persisted command; host leases, strict result validation and producing-episode identity gate acceptance. The host-owned log, not an actor-supplied event, determines which role produced evidence. The matrix retains criterion status and old/stale evaluations throughout the stream. Every blocking finding compiles a focused repair WorkOrder; one repair is applied before a fresh verifier rechecks affected criteria. The synthetic adapter accepts JSON policy data and runs only its fixed interpreter. Both CLI protocols pass local subprocess evidence; live model verification is supported by the launch path but unwitnessed in WO-010. See [the pinned contract](02-domain-model.md#independent-verification-v1) and [the runbook](../../packages/skeleton/README.md#independent-verification).
+
+  WO-054's `prepareWorktreeVerification` is the effectful snapshot adapter beside
+  that unchanged synthetic host. It accepts the declared base, observed commit,
+  canonical WO-052 target worktree, public repository label, closed WorkOrder
+  contract, criteria, named tests and new host-owned output directory. It returns
+  the witnessed subject, read-only snapshot path and retained execution-copy
+  paths. The caller records baseline/candidate subjects through `VerificationOpened`
+  and uses `VerificationHost` with `worktree-snapshot`; no separate acceptance
+  reducer exists. Each test gets the existing macOS confinement policy and a
+  fresh copy without shared Git metadata. The host checks actual snapshot bytes,
+  inventory, executable modes and read-only permissions at dispatch and recovery,
+  and again before result admission. Host-run witnesses carry `origin: host` and
+  `source: live`; the worker result cannot supply them. Missing confinement stays
+  unavailable. The new profile refuses repair execution until WO-055 provides
+  that continuation, and WO-056 owns the live verifier proof.
 
 - `DeliveryAdapter`: PR/patch/report generation _from artifacts, not narrative_
   — the deliverable body is generated from the StoryContract, the actual diff,

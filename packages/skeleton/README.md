@@ -593,7 +593,35 @@ The store lives under the gitignored `.runtime/` root like the disposable-worker
 
 The host preserves the existing one-second heartbeat, five-second lease, three-minute transport deadline, serialized store writer and immutable completed-result cache. Interrupted work keeps its stable command; after lease expiry a new physical episode can retry. A saved result can be queried without another model invocation while retaining its original producing episode. Accepted-result/status and applied-repair/event crash windows recover without repeating the effect. Unknown model selection, capsule drift, dirty mounts and expired or revoked authority refuse; a worker requesting a human decision leaves the workstream at `attention`. The default repair bound is three applications.
 
-This adapter permits a fixed interpreter and validated JSON policy data only. It cannot apply arbitrary repository patches or execute proposed source. Claim types are state and behavior; explicit `synthetic-fixture`/`live` labels prevent fixture evidence from certifying integration. The event store is host-owned, not authenticated against a hostile same-user writer. The pure compiler and kernel retain zero runtime dependencies. The repository's manual independent verifier still judges this implementation; the runtime demo does not replace `resume: verify`.
+This original adapter permits a fixed interpreter and validated JSON policy data only. It cannot apply arbitrary repository patches or execute proposed source. Claim types are state and behavior; explicit `synthetic-fixture`/`live` labels prevent fixture evidence from certifying integration. The event store is host-owned, not authenticated against a hostile same-user writer. The pure compiler and kernel retain zero runtime dependencies. The repository's manual independent verifier still judges this implementation; the runtime demo does not replace `resume: verify`.
+
+The additive `worktree-snapshot` profile uses
+`prepareWorktreeVerification` from `src/verification-worktree.ts`. Supply a
+canonical committed target `worktree`, declared `baseCommit`, `observedCommit`,
+public `repo` label, closed WorkOrder `contract`, mapped `criteria`/`tests`, and
+a new `directory` beside the target. Contract fields are `workOrderId`,
+`objective`, `acceptanceCriteria`, `constraints`, `nonGoals`, `requiredEvidence`;
+the last list contains the exact named command strings. Test entries are
+`{ criterionId, checkId, command }`. The return is `{ subject, snapshotPath,
+testPaths }`. Prepare the baseline separately at the declared base, then feed
+both subjects into the existing `VerificationOpened` event. `VerificationHost`
+selects the new profile from the capsule and runs with `snapshotPath` as its
+read mount. [The fixture](test/verification-worktree-fixture.ts) demonstrates
+the complete WO-052-to-verifier handoff.
+
+Only committed regular UTF-8 files are accepted: at most 100 files, 100,000 bytes
+per file, and 100,000 diff characters. Git modes, source bytes, diff, contract and
+commands enter the snapshot seal; witnesses enter the capsule hash. Extra fields
+refuse with their path. The host runs each exact command in a separate fresh
+copy using macOS `sandbox-exec`, a minimal environment, 30-second deadline and
+64-KiB output bound. No shell quoting/interpolation or dependency installation
+is supplied. Test copies may create caches but cannot change sealed inputs.
+Missing confinement or interrupted execution produces unavailable evidence.
+The verifier has no tools and cannot submit a host-test witness. Physical paths
+can occur in raw test output; callers must apply their publication policy before
+sharing it. Copies remain available for inspection; no automatic cleanup or
+hostile-process containment is claimed. Source-writing repair and live model
+verification remain WO-055/WO-056.
 
 Evidence can be reproduced and checked mechanically:
 
@@ -701,6 +729,17 @@ It preserves the hand-written floor, validates contained destinations before
 writing, refuses unowned stale surfaces and never edits user settings. Native
 sandbox and approval remain in force. The CLI only accepts Contributor today;
 new saved builds need explicit adapter declarations and observed profiles.
+
+The Codex contributor profile also emits `.codex/hooks.json`, a comment-only
+project config and a source-only continuation hook. After compaction it restores
+the saved work order and can request one immediate continuation if that same
+owned task remains unfinished. It preserves explicit pause/recovery controls and
+does not dispatch or release a writer. Review native hook trust with `/hooks`;
+the checked Codex CLI 0.155.0 loads linked-worktree definitions from the root
+checkout, so integration there is required for those worktrees. Emission never
+overwrites unowned Codex configuration. See [behavior, native proof and activation
+limits](../../docs/evidence/WO-054/codex-continuation.md). This separate observation
+does not upgrade historical generic tool-hook or target-worker capabilities.
 
 Claude hooks load the reviewed built runtime and refuse if its pinned bytes
 differ. Permission checks use the shared reactor's authority owner, included in
