@@ -44,6 +44,8 @@ import {
   OVERRIDES,
   overridePlanHold,
   disposePlanHold,
+  amendPlanOrder,
+  criterionDispositions,
   readOverrides,
   readReceipts,
   RECEIPTS,
@@ -61,7 +63,10 @@ import {
   planJudgmentScope,
   latestPlanningPass,
 } from "./lib/plan-direct.mjs";
-import { reassessments } from "./lib/plan-continuation.mjs";
+import {
+  capabilityHistoryRepair,
+  reassessments,
+} from "./lib/plan-continuation.mjs";
 import {
   checkSequenceTopology,
   parseSequenceGroups,
@@ -1965,6 +1970,292 @@ else {
         assert.equal(receipt.episode.effort, "max");
         assert.equal(receipt.episode.selectionSource, "host-launch");
         assert.equal(receipt.episode.effectiveEffort, "unknown");
+      },
+    );
+    await check(
+      "WO-139 source-bound execution amendments admit only authorized bytes and preserve receipt/hold semantics",
+      async () => {
+        const repo = makeRepo(parent, "execution-amendment");
+        const path = orderPath("WO-901");
+        mutate(
+          repo,
+          path,
+          "# WO-901 — Fixture",
+          "# WO-901 — Fixture (version assigned at activation)",
+        );
+        const receipt = await writeDirectReceipt(repo);
+        commit(repo, "record reviewed plan");
+        const receiptBytes = read(
+          repo,
+          `${RECEIPTS}/${receipt.receiptId}.json`,
+        );
+        const decision = {
+          id: "WO-901-D001",
+          date: "2030-01-02",
+          dispatch:
+            "scope expand: operator authorizes bounded execution repair",
+          decision: "Repair the observed fixture defect within the order",
+          evidence: ["operator direction; reproduced failure"],
+          rejected: ["NoOp retains a failing check"],
+          reopenWhen: "A distinct defect changes scope",
+        };
+        const decisionPath = "docs/evidence/WO-901/decisions.md";
+        write(
+          repo,
+          decisionPath,
+          `# Decisions\n\n\`\`\`json\n${JSON.stringify(decision)}\n\`\`\`\n`,
+        );
+        write(
+          repo,
+          path,
+          read(repo, path).replace("useful shape", "repaired useful shape"),
+        );
+        write(
+          repo,
+          path,
+          read(repo, path).replace(
+            "Other shapes.",
+            "Other shapes except the authorized repair.",
+          ),
+        );
+        await assert.rejects(
+          checkPlanGate(repo),
+          /work-order bytes changed|no text-bound disposition/,
+        );
+        write(
+          repo,
+          path,
+          read(repo, path) +
+            "\n## Execution record\n\nExisting approved evidence.\n",
+        );
+        const event = await amendPlanOrder(repo, {
+          workOrderId: "WO-901",
+          decisionId: decision.id,
+          reason: "Operator authorized the bounded repair",
+          now: () => "2030-01-02T13:00:00.000Z",
+        });
+        assert.equal(event.type, "PlanExecutionAmended");
+        assert.deepEqual(
+          criterionDispositions([receipt], [event]),
+          [],
+          "amendments are never hold dispositions",
+        );
+        const log = read(repo, OVERRIDES);
+        assert.deepEqual(
+          await amendPlanOrder(repo, {
+            workOrderId: "WO-901",
+            decisionId: decision.id,
+            reason: "Repeat same authorization",
+            now: () => "2030-01-02T14:00:00.000Z",
+          }),
+          event,
+        );
+        assert.equal(read(repo, OVERRIDES), log);
+        assert.equal(
+          (await checkPlanGate(repo)).continuation.workspaceUpdates[0].kind,
+          "authorized-execution-amendment",
+        );
+        for (const field of [
+          "receiptHash",
+          "sourceOrderHash",
+          "orderHash",
+          "decisionHash",
+        ]) {
+          write(
+            repo,
+            OVERRIDES,
+            JSON.stringify({ ...event, [field]: sha256("wrong") }) + "\n",
+          );
+          await assert.rejects(checkPlanGate(repo));
+        }
+        write(repo, OVERRIDES, log);
+        write(
+          repo,
+          decisionPath,
+          read(repo, decisionPath).replace(
+            "Repair the observed",
+            "Change the observed",
+          ),
+        );
+        await assert.rejects(checkPlanGate(repo), /decision binding differs/);
+        write(
+          repo,
+          decisionPath,
+          `# Decisions\n\n\`\`\`json\n${JSON.stringify(decision)}\n\`\`\`\n`,
+        );
+        const approved = read(repo, path);
+        write(
+          repo,
+          path,
+          approved.replace(
+            "Existing approved evidence.",
+            "Rewritten evidence.",
+          ),
+        );
+        await assert.rejects(checkPlanGate(repo));
+        write(repo, path, approved);
+        const decisionBytes = read(repo, decisionPath);
+        const outside = join(parent, "outside-decision.md");
+        writeFileSync(outside, decisionBytes);
+        rmSync(join(repo, decisionPath));
+        symlinkSync(outside, join(repo, decisionPath));
+        await assert.rejects(checkPlanGate(repo), /contained regular file/);
+        rmSync(join(repo, decisionPath));
+        write(repo, decisionPath, decisionBytes);
+        write(
+          repo,
+          path,
+          approved.replace("bounded result", "unbounded result"),
+        );
+        await assert.rejects(
+          checkPlanGate(repo),
+          /work-order bytes changed|no text-bound disposition/,
+        );
+        write(
+          repo,
+          path,
+          approved.replace("(version assigned at activation)", "(v1.2.3)") +
+            "\n## Execution record\n\nVerified bounded repair.\n",
+        );
+        assert.equal(
+          (await checkPlanGate(repo)).continuation.workspaceUpdates[0].kind,
+          "authorized-execution-amendment",
+        );
+        commit(repo, "authorized execution repair");
+        assert.equal(
+          (await checkPlanGate(repo)).continuation.committedUpdates[0].kind,
+          "authorized-execution-amendment",
+        );
+        assert.equal(
+          read(repo, `${RECEIPTS}/${receipt.receiptId}.json`),
+          receiptBytes,
+        );
+        write(repo, OVERRIDES, "");
+        assert.throws(() => readOverrides(repo), /append-only/);
+        write(repo, OVERRIDES, log);
+      },
+    );
+    await check(
+      "WO-139 execution amendments do not discharge an independent hold",
+      async () => {
+        const repo = makeRepo(parent, "execution-amendment-held");
+        const receipt = await writeDirectReceipt(repo, cannedPlanDrift);
+        commit(repo, "held plan");
+        const decision = {
+          id: "WO-901-D001",
+          date: "2030-01-02",
+          dispatch: "scope expand: authorized repair",
+          decision: "Repair the fixture",
+          evidence: ["operator direction"],
+          rejected: [],
+          reopenWhen: "More evidence",
+        };
+        write(
+          repo,
+          "docs/evidence/WO-901/decisions.md",
+          `# Decisions\n\n\`\`\`json\n${JSON.stringify(decision)}\n\`\`\`\n`,
+        );
+        mutate(repo, orderPath("WO-901"), "useful shape", "repaired shape");
+        await amendPlanOrder(repo, {
+          workOrderId: "WO-901",
+          decisionId: decision.id,
+          reason: "Authorized repair, no hold waiver",
+          now: () => "2030-01-02T13:00:00.000Z",
+        });
+        assert.deepEqual(
+          criterionDispositions([receipt], readOverrides(repo)),
+          [],
+        );
+        await assert.rejects(
+          checkPlanGate(repo),
+          /hold|unaddressed|unanswered/,
+        );
+      },
+    );
+    await check(
+      "WO-139 inherited capability rows can be restored only with exact dated preservation",
+      async () => {
+        const repo = makeRepo(parent, "capability-history-repair");
+        const path = "docs/planning/capability-table.md";
+        write(
+          repo,
+          path,
+          read(repo, path) +
+            "| `fixture.second` | **0 — latent** | Second fixture observation. |\n",
+        );
+        commit(repo, "two capability rows");
+        const receipt = await writeDirectReceipt(repo);
+        commit(repo, "record reviewed plan");
+        const original = read(repo, path);
+        const changed = original.replace("**0", "**1");
+        assert.notEqual(changed, original);
+        const changedRows = changed
+          .split("\n")
+          .filter((line, index) => line !== original.split("\n")[index]);
+        const appendix =
+          "\n\n## WO-901 dated reassessment (2030-01-02)\n\n" +
+          "| Capability | Observation | Evidence |\n| --- | --- | --- |\n" +
+          changedRows.join("\n") +
+          "\n";
+        const repaired = original.trimEnd() + appendix;
+        const proof = (head, workspace = repaired) =>
+          capabilityHistoryRepair(original, head, workspace, receipt.subject);
+        assert.equal(proof(changed).kind, "pending-capability-history-repair");
+        for (const [head, workspace] of [
+          [changed, original],
+          [changed, repaired.replace("**1", "**2")],
+          [changed, repaired.replace("**0", "**2")],
+          [changed.replace("`fixture.first`", "`fixture.other`"), repaired],
+          [changed + "extra\n", repaired],
+          [changed.replace(/^# /u, "# Changed "), repaired],
+        ])
+          assert.throws(
+            () => proof(head, workspace),
+            /matching the current subject/u,
+          );
+        // More than one inherited edit must preserve every changed row.
+        const two = original.replaceAll("**0", "**1");
+        assert.notEqual(two, changed);
+        assert.throws(() => proof(two), /every changed committed row/u);
+        const secondRow = two
+          .split("\n")
+          .find((line) => line.includes("`fixture.second`"));
+        assert.equal(proof(two, repaired + secondRow + "\n").ids.length, 2);
+        write(repo, path, changed);
+        commit(repo, "inherited overwritten observation");
+        await assert.rejects(
+          checkPlanGate(repo),
+          /matching the current subject/u,
+        );
+        write(repo, path, original);
+        await assert.rejects(
+          checkPlanGate(repo),
+          /matching the current subject/u,
+        );
+        write(repo, path, repaired);
+        const pending = await checkPlanGate(repo);
+        assert.equal(
+          pending.continuation.committedUpdates[0].kind,
+          "pending-capability-history-repair",
+        );
+        assert.equal(
+          pending.continuation.workspaceUpdates[0].kind,
+          "dated-capability-reassessment",
+        );
+        commit(repo, "restore history and preserve dated observation");
+        const completed = await checkPlanGate(repo);
+        assert.equal(
+          completed.continuation.committedUpdates[0].kind,
+          "dated-capability-reassessment",
+        );
+        assert.deepEqual(
+          completed.continuation.committedUpdates,
+          completed.continuation.workspaceUpdates,
+        );
+        assert.equal(
+          (await readReceipts(repo))[0].receiptHash,
+          receipt.receiptHash,
+        );
       },
     );
     await check(
