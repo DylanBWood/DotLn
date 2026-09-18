@@ -5,7 +5,10 @@ DotLn. It records personal-machine posture; the repository does not install or
 enforce these settings. Re-check vendor documentation and local behavior after
 upgrades because names, defaults, precedence, and sandbox boundaries can change.
 
-**Snapshot:** 2026-09-01, Claude Code 2.1.257 and Codex CLI 0.151.0.
+**Current operating note:** 2026-09-17; Codex CLI 0.154.0 checked locally.
+The September 1 snapshot below records Claude Code 2.1.257 and Codex CLI
+0.151.0. Its sandboxed configuration is retained as a reference, not the current
+operator-selected mode.
 
 The original safety-boundary decision is
 [ADR-0003](decisions/0003-personal-ai-harness-security.md), partially superseded
@@ -34,19 +37,192 @@ harness that launches them. Browser, web-search, plugin, app, MCP, and other
 connectors can have separate permission and network boundaries; neither shell
 sandbox below automatically governs all of them.
 
-## DotLn hook boundary — WO-132, 2026-09-15
+## Current mode choices and settings locations — 2026-09-17
 
-DotLn's generated hooks refuse two conditions: a second live writer in the same
-worktree, and a write to the product gate's inputs or success record while the
-reviewer's `npm test -- --review` is running. The writer reservation applies on
-main as on a work-order branch; dead reservations may be reclaimed.
+The operator reports **Claude sandbox off, auto mode on**, with the supplied
+user settings file unchanged. The active Codex session reports **approval
+`never`, sandbox `danger-full-access`**; the operator removed
+`approvals_reviewer = "auto_review"` from their TOML. These choices supersede
+the earlier operating preference below. Claude's mode is operator-attested here,
+not a fresh enforcement probe. The WO-136 experiment remains inconclusive.
+
+During WO-135 the operator separately authorized installing
+`~/.codex/rules/personal-remote-deny.rules`. That file now forbids matching
+SSH/SCP/SFTP commands. **No `config.toml` edit was needed or made**, and no
+sensitive-file permission profile was installed. The operator then requested
+this cross-harness reference. Personal settings and credential contents are
+not repository artifacts.
+
+Sandboxing and permission decisions are independent controls:
+
+| Harness and mode | Command decisions | Filesystem boundary |
+| --- | --- | --- |
+| Claude, sandbox enabled | Explicit deny rules remain active. `autoAllowBashIfSandboxed` can admit sandbox-contained Bash. Auto permission mode separately uses classifier review. | Sandbox read/write restrictions apply to contained subprocesses; inspect any excluded commands or unsandboxed requests. |
+| Claude, sandbox disabled, auto mode | Explicit tool denies still win; the classifier reviews actions that still need approval. Auto mode can still prompt. | No OS sandbox. Read/Edit denies cover built-in tools and recognized shell file operations, not every indirect file open by an arbitrary script. |
+| Codex, `workspace-write` with `on-request` | Command rules apply; approval can be requested for escalation. | Workspace-oriented write restrictions; network follows `[sandbox_workspace_write]`. Broad reads are not a sensitive-file denial. |
+| Codex, `danger-full-access` with `never` | Matching `forbidden` command rules still reject before execution. Other actions do not ask for approval. | No filesystem sandbox; command rules do not prevent arbitrary programs from reading sensitive paths. |
+| Codex, named permission profile with `never` | Command rules still apply; denied operations do not escalate through prompts. | Explicit filesystem path rules are enforced for sandbox-contained commands. Broad access elsewhere and network access can be retained. |
+
+These are tool and subprocess boundaries, not an assertion that browser, MCP or
+other connectors share them. Claude documents Bash-pattern and indirect-read
+limits; Codex documents its bounded shell command parsing. Neither set of
+command patterns is an OS-wide ban on every possible implementation of remote
+access. Sources: [Claude permissions](https://code.claude.com/docs/en/permissions),
+[Claude sandboxing](https://code.claude.com/docs/en/sandboxing),
+[Codex permissions](https://learn.chatgpt.com/docs/permissions), and
+[Codex command rules](https://learn.chatgpt.com/docs/agent-configuration/rules).
+
+| Setting | Location and scope |
+| --- | --- |
+| Claude personal defaults, including `permissions.deny`, `permissions.defaultMode` and `sandbox` | `~/.claude/settings.json`, across projects. |
+| Claude shared project settings | `.claude/settings.json`; in DotLn this also contains generated hook wiring. |
+| Claude personal project overrides | `.claude/settings.local.json`, normally ignored. `/sandbox` changes can be stored here. |
+| Claude session/UI mode | CLI `--permission-mode` affects a launch; Desktop remembers a mode per folder. A user settings file alone cannot establish effective mode. |
+| Codex personal defaults and named permission profiles | `~/.codex/config.toml`, or `config.toml` under an explicitly selected `CODEX_HOME`. |
+| Codex selected configuration profile | `~/.codex/<name>.config.toml`, selected with `--profile <name>`; separate from a `[permissions.<name>]` permission profile. |
+| Codex managed requirements | Organization-managed `requirements.toml` constrains configuration separately from personal defaults. |
+| Codex project configuration | `.codex/config.toml` in a trusted project, subject to config precedence and managed requirements. |
+| Codex command rules | `.rules` files under active configuration layers' `rules/` directories; the personal file installed here is `~/.codex/rules/personal-remote-deny.rules`. These are separate from TOML. |
+
+Claude's documented precedence is managed, CLI, project local, shared project,
+then user; permission lists merge across scopes. Current Claude docs require
+`defaultMode: "auto"` in user or managed settings, or a CLI selector: that value
+is ignored in project/local settings. Check `/status` and `/permissions` for
+loaded sources and effective rules. See [Claude settings](https://code.claude.com/docs/en/settings)
+and [permission modes](https://code.claude.com/docs/en/permission-modes).
+Codex CLI overrides and project layers can change the personal TOML's effective
+values; a trusted project can also provide `.codex/rules/*.rules`. Configuration
+profiles use separate files in this version; see [profiles](https://learn.chatgpt.com/docs/config-file/config-advanced#profiles)
+and [configuration precedence](https://learn.chatgpt.com/docs/config-file/config-basic).
+
+### Claude examples: keep the denies in either sandbox mode
+
+The operator-supplied permission block is:
+
+```json
+{
+  "permissions": {
+    "deny": [
+      "Bash(ssh)", "Bash(ssh *)",
+      "Bash(scp)", "Bash(scp *)",
+      "Bash(sftp)", "Bash(sftp *)",
+      "Read(~/.ssh/**)", "Edit(~/.ssh/**)",
+      "Read(~/.aws/**)", "Read(~/.gnupg/**)", "Read(~/.netrc)",
+      "Read(~/.config/gh/**)", "Read(~/.kube/**)",
+      "Read(~/.docker/config.json)"
+    ],
+    "defaultMode": "auto"
+  }
+}
+```
+
+Merge keys into personal settings; do not replace unrelated settings. With
+`sandbox.enabled: false`, those tool rules remain applicable. With
+`sandbox.enabled: true`, they combine with sandbox filesystem enforcement;
+`sandbox.filesystem.denyRead` and `denyWrite` can express subprocess path
+restrictions. `autoAllowBashIfSandboxed` and `defaultMode: "auto"` are different
+features. The earlier sandboxed example below retains the separately recorded
+`acceptEdits` configuration. No Claude settings were edited in this dispatch.
+[Claude Read/Edit boundaries](https://code.claude.com/docs/en/permissions#read-and-edit),
+[sandbox settings](https://code.claude.com/docs/en/sandboxing).
+
+### Codex examples: TOML chooses the mode, rules deny commands
+
+The operator's retained personal TOML mode is:
+
+```toml
+approval_policy = "never"
+sandbox_mode = "danger-full-access"
+```
+
+Removing the reviewer selector does not reproduce Claude auto review: `never`
+means no approval prompts. The installed rules file contains this restriction
+plus positive/negative matching examples:
+
+```python
+prefix_rule(
+    pattern = [[
+        "ssh", "/usr/bin/ssh",
+        "scp", "/usr/bin/scp",
+        "sftp", "/usr/bin/sftp",
+    ]],
+    decision = "forbidden",
+    justification = "Remote shell and file transfer commands are disabled.",
+)
+```
+
+A prefix covers the bare command and its arguments. The installed Codex 0.154.0
+policy checker returned `forbidden` for twelve basename/absolute-path cases,
+with and without arguments; `git status` and `ls` were not forbidden. No SSH
+command was executed. The versioned implementation maps a matched forbidden
+rule to rejection independently of approval policy and sandbox mode, and the
+orchestrator refuses before launch. This corrects the initial uncertainty in
+this session: **command denials work with full access; filesystem denials
+require sandbox enforcement**. [Policy implementation](https://github.com/openai/codex/blob/rust-v0.154.0/codex-rs/core/src/exec_policy.rs),
+[execution rejection](https://github.com/openai/codex/blob/rust-v0.154.0/codex-rs/core/src/tools/orchestrator.rs).
+
+Codex loads `.rules` files when a root session starts. **Restart Codex after
+adding this file**; validation alone does not replace the active session's
+cached policy. A harmless matching check is:
+
+```sh
+codex execpolicy check --rules ~/.codex/rules/personal-remote-deny.rules -- ssh example.invalid
+```
+
+This evaluates tokens without opening a connection. See the
+[rule installation procedure](https://learn.chatgpt.com/docs/agent-configuration/rules#create-a-rules-file).
+Absolute paths outside the listed forms and opaque script invocations need
+separate consideration; the file is a bounded command policy.
+
+For sandboxed sensitive-file protection while retaining broad access elsewhere,
+Codex 0.154.0 also supports this **alternative, not installed**:
+
+```toml
+approval_policy = "never"
+default_permissions = "personal"
+
+[permissions.personal.filesystem]
+":root" = "write"
+"~/.ssh" = "deny"
+"~/.aws" = "deny"
+"~/.gnupg" = "deny"
+"~/.netrc" = "deny"
+"~/.config/gh" = "deny"
+"~/.kube" = "deny"
+"~/.docker/config.json" = "deny"
+
+[permissions.personal.network]
+enabled = true
+```
+
+Remove the legacy `sandbox_mode` and `[sandbox_workspace_write]` configuration
+when selecting this alternative: legacy sandbox settings take precedence over
+`default_permissions`. A path `deny` blocks both reads and writes for sandboxed
+processes. Claude `Read` denies also block built-in Edit/Write; an `Edit` deny
+is needed to cover every editing tool, including NotebookEdit. Review existing
+Codex `allow` command rules before adopting path restrictions: those rules can
+run matching commands outside the sandbox. A disposable profile blocked access to harmless `/etc/hosts` while allowing an ordinary
+command; no credential file was read. Named profiles are documented as beta.
+The earlier `workspace-write` example below remains another sandboxed option.
+[Named permission profiles](https://learn.chatgpt.com/docs/permissions).
+
+## DotLn hook boundary — WO-132 and WO-135, 2026-09-17
+
+DotLn's generated hooks refuse three conditions (WO-135): a second live writer
+in the same worktree; a write to gate inputs or the success record during a live
+`npm test`; and a classified repository write outside `docs/` and root Markdown
+on a `planning/` branch. External scratch paths remain admitted; the existing
+`operator override:` route supports authorized planning recovery. The writer
+reservation applies on main as on a work-order branch; dead reservations may be
+reclaimed.
 
 Unclassified tools, unsupported shell forms, unavailable adapters, outside-root
 reads, output-read observation failures and attribution pre-checks emit advisory
 information and defer to the host's own permission decision. A post-tool
 observer cannot turn a completed read into a refused operation. This delegation
-grants no new network, filesystem, credential or publication authority. Existing
-host denials for publication, SSH/SCP/SFTP and credential access remain in force.
+grants no new network, filesystem, credential or publication authority. Any
+configured host denials for publication, SSH/SCP/SFTP and credential access
+remain in force; DotLn role text does not establish those host restrictions.
 Claude applies the generated hooks; Codex receives the same invariants and
 commands as role text without claiming automatic hook enforcement.
 
@@ -73,9 +249,9 @@ observed-only; missing attempts and unavailable human-prompt telemetry prevent
 qualifying another operating mode. The packet retains partial workflow effects
 and failed attempts separately. Native sandbox selection is a launch claim,
 not effective-state attestation. The proposed Claude rule table was not applied;
-this experiment changes neither personal settings nor the current baseline.
-The post-close planning checkpoint decides the next mode or experiment from
-these observations.
+the experiment itself changed no personal settings. The later operator-selected
+modes and command-rule installation are recorded above and do not turn these
+inconclusive measurements into a passing qualification.
 
 ## Recorded host posture (2026-09-01, with dated amendments)
 
@@ -165,9 +341,9 @@ owned temporary base also exited zero with 77 of 77 compiled tests passing and
 empty before/after residue listings. This note updates the fixture-path evidence
 only; it does not replace the broader dated posture snapshot above.
 
-## Claude Code
+## Claude Code — retained sandboxed reference
 
-### Enable or restore the baseline
+### Enable or restore the September 1 sandboxed configuration
 
 The durable baseline belongs in personal user settings so new sessions and
 worktrees do not depend on a gitignored file being copied. Merge the following
@@ -276,8 +452,8 @@ Do not verify by attempting a real SSH connection or opening a private key.
   exact entry through the current permissions UI or local settings. Do not
   replace the whole file or remove unrelated rules as a shortcut.
 - To disable Claude's sandbox intentionally, set `sandbox.enabled` to `false` or
-  use the current `/sandbox` UI. This removes a useful defense and is not the
-  recommended DotLn posture.
+  use the current `/sandbox` UI. Tool permission rules remain separate; the
+  September 17 operator choice above uses this mode.
 - To refuse every unsandboxed ask again, set `allowUnsandboxedCommands` to
   `false`; sessions then cannot regenerate generated surfaces or launch an
   authenticated child harness, and those steps return to an operator terminal.
@@ -285,13 +461,13 @@ Do not verify by attempting a real SSH connection or opening a private key.
   controls to version-dependent defaults. Keep the SSH credential block and deny
   rules unless the intent is also to make those credentials reachable.
 
-Managed, command-line, local, project, and user settings can override one
-another. Always verify effective state in the actual worktree instead of
+Managed, command-line, local, project and user settings follow the precedence
+order above. Always verify effective state in the actual worktree instead of
 trusting one file in isolation.
 
-## Codex CLI
+## Codex CLI — retained sandboxed reference
 
-### Enable or restore the baseline
+### Enable or restore the September 1 sandboxed configuration
 
 Merge this block into `~/.codex/config.toml`:
 
@@ -308,19 +484,21 @@ The reviewer line is explicit even though `user` is the documented current
 default. Do not use `approvals_reviewer = "auto_review"` or `--approve-for-me`
 when the goal is human review.
 
-Codex 0.151.0 locally rejects `approval_policy = "untrusted"`, although newer
-online documentation describes that policy. Use the locally validated
-`on-request` value for this snapshot and re-test after upgrading rather than
-copying a newer example blindly.
+Codex 0.151.0 locally rejected `approval_policy = "untrusted"`. Current
+documentation also says that selectable policy has been removed; use the
+documented `on-request` or `never` choices and verify the installed version.
 
-Exact Claude-style command-review parity is unavailable in this installed Codex
-version. A stricter supported alternative is `sandbox_mode = "read-only"` with
-`approval_policy = "on-request"`; built-in/file reading remains available, but
-shell-command execution, edits, and network access require approval. This is
-substantially noisier than Claude's current sandboxed-Bash auto-allow posture.
+The September 1 comparison did not establish exact Claude-style command-review
+parity in Codex 0.151.0. This does not imply an absence of forbidden command rules;
+the 0.154.0 behavior is documented above. A stricter supported alternative is
+`sandbox_mode = "read-only"` with `approval_policy = "on-request"`; built-in/file
+reading remains available, and shell reads can still run inside the boundary. Operations needing writes
+or network beyond that policy require escalation; it is not a prompt for
+every shell command. This corrects the earlier overbroad description of
+read-only mode.
 
-The personal command-rules file currently contains no pre-approved commands. A
-Codex `allow` rule runs a matching command outside the sandbox without asking;
+At the September 1 snapshot, the personal command-rules file contained no
+pre-approved commands. A Codex `allow` rule runs a matching command outside the sandbox without asking;
 add one only for a stable, narrowly reviewed command. A stale WO-specific Git
 stash exception was removed when this baseline was recorded.
 
@@ -343,14 +521,15 @@ restricted filesystem sandbox, and a restricted network sandbox.
 
 - To undo only the explicit reviewer pin, remove `approvals_reviewer = "user"`;
   it returns to the version-dependent default.
-- To restore this recommended sandbox after experimentation, set
+- To restore the earlier sandboxed configuration, set
   `sandbox_mode = "workspace-write"`, `approval_policy = "on-request"`, and
   `network_access = false` as above.
-- `sandbox_mode = "danger-full-access"` disables the filesystem sandbox. It is
-  an intentionally unsafe mode, not the inverse recommended for normal DotLn
-  work. Never pair it with `approval_policy = "never"` as a convenience.
+- `sandbox_mode = "danger-full-access"` disables the filesystem sandbox.
+  Pairing it with `approval_policy = "never"` is the September 17 operator
+  choice above; forbidden command rules still apply.
 
-Workspace-write primarily protects writes. In the current local profile, Codex
+Workspace-write primarily protects writes. In the September 1 local profile,
+Codex
 can broadly read outside the repository, so this is not proof that `~/.ssh` is
 unreadable. Shell network denial and human-reviewed escalation stop an
 unsolicited SSH connection, while repository policy forbids credential
@@ -360,7 +539,11 @@ filesystem permissions should be treated as a separate reviewed migration
 because it replaces, rather than simply augments, this legacy sandbox
 configuration.
 
-## Why recovery checkpoints warn under Codex
+## Why recovery checkpoints warn under sandboxed Codex
+
+This subsection describes the retained `workspace-write` plus `on-request`
+mode. Full-access sessions do not use that escalation path; host settings and
+the operator's existing authorization determine execution.
 
 Every state-changing `npm run resume -- ...` transition first tries to capture
 the dirty worktree in a local `refs/dotln/checkpoint/...` Git ref. Codex's
@@ -391,9 +574,10 @@ and not a reason to disable the whole sandbox. At this snapshot:
   the `resume` mapping in `package.json`, and the current `scripts/resume.mjs`
   diff. Approve once rather than creating a persistent command rule; the
   operator may instead run the reviewed exact command directly.
-- Claude's current sandbox permits the linked worktree's shared Git metadata
+- Claude's recorded sandboxed posture permits the linked worktree's shared Git
+  metadata
   writes, apart from protected Git configuration and hooks, so the same
-  checkpoint normally succeeds with the current sandboxed-Bash auto-allow
+  checkpoint normally succeeds with that sandboxed-Bash auto-allow
   posture.
 - If the warning already occurred, run `npm run resume -- status`, trust the
   recorded phase, and do not use an older checkpoint. Any later stash or Git
