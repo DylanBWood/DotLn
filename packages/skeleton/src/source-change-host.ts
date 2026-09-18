@@ -41,6 +41,7 @@ import {
   SourceChangeWorktree,
   runFocusedTest,
   sourceDigest,
+  sourceGit,
 } from "./source-change-worktree.js";
 import { installSourceChangeCommands } from "./source-change-command.js";
 import { isArtifactIdentityV1 } from "./artifact-identity.js";
@@ -48,6 +49,9 @@ import { isArtifactIdentityV1 } from "./artifact-identity.js";
 export interface SourceChangeHostOptions {
   readonly store: WorkerStore;
   readonly workOrder: WorkOrder;
+  /** Repair execution parent; the original contract base stays in workOrder. */
+  readonly executionBaseCommit?: string;
+  readonly repairContext?: JsonValue;
   readonly authorityEnvelope: AuthorityEnvelope;
   /** Evidence already established by the compilation/dispatch host. */
   readonly authorityEvidence: readonly string[];
@@ -97,6 +101,12 @@ export class SourceChangeHost {
         resource: "writers",
         payload: json({
           workOrder: options.workOrder,
+          ...(options.executionBaseCommit
+            ? { executionBaseCommit: options.executionBaseCommit }
+            : {}),
+          ...(options.repairContext
+            ? { repairContext: options.repairContext }
+            : {}),
           authorityEnvelope: options.authorityEnvelope,
           authorityEvidence: options.authorityEvidence,
           artifactIdentity: options.artifactIdentity,
@@ -116,10 +126,18 @@ export class SourceChangeHost {
     const requested = decodeSourceRequest({
       workOrderId: options.workOrder.workOrderId,
       repo: options.workOrder.repo,
-      baseCommit: options.workOrder.baseCommit,
+      baseCommit: options.executionBaseCommit ?? options.workOrder.baseCommit,
       branch: options.branch,
       surfaces: options.surfaces,
     });
+    if (options.executionBaseCommit)
+      sourceGit(
+        options.workOrder.repo,
+        "merge-base",
+        "--is-ancestor",
+        options.workOrder.baseCommit,
+        options.executionBaseCommit,
+      );
     this.tree = new SourceChangeWorktree({
       requested,
       commandId: this.command.commandId,
@@ -218,7 +236,7 @@ export class SourceChangeHost {
     if (
       receipt &&
       (receipt.branch !== this.options.branch ||
-        receipt.commit === this.options.workOrder.baseCommit ||
+        receipt.commit === this.tree.options.requested.baseCommit ||
         !this.state.request)
     )
       throw new Error("source-change receipt differs from its request");
@@ -403,7 +421,7 @@ export class SourceChangeHost {
         before ?? runFocusedTest(this.tree.path, this.options.testCommand);
       if (!before) {
         this.tree.clean();
-        if (this.tree.verify() !== this.options.workOrder.baseCommit)
+        if (this.tree.verify() !== this.tree.options.requested.baseCommit)
           throw new Error("source-change baseline test moved HEAD");
       }
       this.checkAuthority();
@@ -435,7 +453,7 @@ export class SourceChangeHost {
         requestKey: workerRequestKey(request),
         episodeId,
         branch: this.options.branch,
-        baseCommit: this.options.workOrder.baseCommit,
+        baseCommit: this.tree.options.requested.baseCommit,
         testCommand: this.options.testCommand,
         messagePath: this.tree.messagePath,
         expiresAt:

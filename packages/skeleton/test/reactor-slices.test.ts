@@ -59,6 +59,7 @@ test("WO-050 slices have exclusive event ownership; WO-052 fills only the reserv
     "worker",
     "verification",
     "feedback",
+    "repair",
     "sourceChange",
     "resident",
   ]);
@@ -98,6 +99,14 @@ test("WO-050 slices have exclusive event ownership; WO-052 fills only the reserv
     for (const type of types) {
       if (slice === "verification")
         assert.equal(selectEventSlice(verification, event(type)), slice);
+      else if (slice === "repair")
+        assert.equal(
+          selectEventSlice(
+            { ...walking, repair: { workstreamId: "fixture" } as any },
+            event(type),
+          ),
+          slice,
+        );
       else if (slice !== "feedback")
         assert.equal(selectEventSlice(walking, event(type)), slice);
     }
@@ -214,7 +223,10 @@ test("WO-050 slices have exclusive event ownership; WO-052 fills only the reserv
     [...sliceEventTypes.feedback].sort(),
     [
       ...literalBranches(
-        source.slice(source.indexOf("function feedbackDecision")),
+        source.slice(
+          source.indexOf("function feedbackDecision"),
+          source.indexOf("function repairDecision"),
+        ),
       ),
       ...SEMANTIC_CORRECTIONS,
     ].sort(),
