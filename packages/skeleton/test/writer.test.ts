@@ -399,7 +399,16 @@ test("WO-051 C-W2/C-W3/C-W8/C-W9 and X-W1/X-W2/X-W8 canonical writer shapes", ()
                 arg !== "code_mode_host" &&
                 !(arg === "--disable" && all[index + 1] === "code_mode_host"),
             )
-          : pinned[key].args,
+          : [
+              ...pinned[key].args
+                .filter(
+                  (arg: string) =>
+                    !["--verbose", "--include-hook-events"].includes(arg),
+                )
+                .map((arg: string) => (arg === "stream-json" ? "json" : arg)),
+              "--json-schema",
+              JSON.stringify(transportResultSchema(s.request)),
+            ],
       );
     }
     const args = canonicalWorkerArgs(
@@ -419,6 +428,16 @@ test("WO-051 C-W2/C-W3/C-W8/C-W9 and X-W1/X-W2/X-W8 canonical writer shapes", ()
     assert.equal(prompt.testCommand, s.request.testCommand);
     assert.match(prompt.outputInstructions, /Never compose a commit message/);
     assert.match(prompt.outputInstructions, /\.claude\/.*\.dotln\//);
+    assert.match(
+      prompt.inspectionInstructions,
+      /cat -- <worktree-relative-file>/,
+    );
+    assert.match(
+      prompt.inspectionInstructions,
+      /git rev-parse --show-toplevel/,
+    );
+    assert.match(prompt.inspectionInstructions, /no shell composition/i);
+    assert.match(prompt.outputInstructions, /only effectful shell commands/);
   } finally {
     s.dispose();
   }
@@ -537,7 +556,9 @@ for (const name of ["claude", "codex"] as const) {
         "wrong-id",
         "failed-wire",
         "nonzero",
-        ...(name === "claude" ? ["missing-denials"] : []),
+        ...(name === "claude"
+          ? ["missing-denials", "missing-structured", "invalid-structured"]
+          : []),
       ]) {
         const transport =
           name === "claude"

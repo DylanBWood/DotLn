@@ -9,6 +9,10 @@ export class HarnessCommandRefused extends Error {}
  */
 export const harnessToolEffects = {
   Read: "read",
+  // Native schema-result submission carries data only; it cannot execute or
+  // mutate the worktree. WO-053 observed this tool denied by the unknown-tool
+  // branch, preventing Claude from returning its validated writer envelope.
+  StructuredOutput: "read",
   Glob: "read",
   Grep: "read",
   WebFetch: "read",
