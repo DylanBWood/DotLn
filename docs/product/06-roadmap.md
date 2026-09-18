@@ -20,6 +20,14 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-054 activation completion (2026-09-18):** application `v0.30.0`, compiler
+`0.14.0` and skeleton `0.26.0` stage the additive worktree verification profile
+with the Codex contributor continuation adapter. `verification-v1` admits optional snapshot
+metadata and host-run test witnesses; legacy profile fields and matrix rules
+retain their semantics. Kernel, console, dependency sets and publication
+controls are unchanged. Live verifier and source-writing repair episodes remain
+separate orders.
+
 **WO-139 activation completion (2026-09-18):** application `v0.29.5`, compiler
 `0.13.2` and skeleton `0.25.4` stage the observable subagent admission cap and
 the operator-expanded planning-continuation repair above local `v0.29.4`.
