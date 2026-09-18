@@ -6771,6 +6771,21 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-e62cae509ef18138",
+      "key": "decision:docs/evidence/WO-055/decisions.md#wo-055-d001",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "048408cf804bd439074c2d20fb49f4cb685148b7d7b5d75ba6e346a7b28b30dd",
+          "ref": "docs/evidence/WO-055/decisions.md#wo-055-d001",
+          "title": "WO-055-D001: Compose existing source-change and verification hosts through a bounded persisted repair program; keep original contract and authority, exact admitted scope expansions, and separate execu",
+          "summary": "{ \"id\": \"WO-055-D001\", \"date\": \"2026-09-18\", \"dispatch\": \"resume: next\", \"decision\": \"Compose existing source-change and verification hosts through a bounded persisted repair program; keep original contract and authority, exact admitted scope expansions, and separate execution baseline.\", \"evidence\": [ \"docs/work-orders/WO-055-repair-continuation.md\", \"docs/product/02-domain-model.md#independent-verification-v1\", \"packages/skeleton/src/source-change-host.ts\", \"packages/skeleton/src/verification-host.ts\", \"packages/kernel/src/core.ts\" ], \"rejected\": [ { \"option\": \"NoOp\", \"reason\": \"Leaves repair coordination manual and does not satisfy the selected order.\" }, { \"option\": \"Let verifier referen",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

@@ -159,6 +159,29 @@ catalog definitions remain inert.
 The fake adapter deduplicates by the kernel-generated command id so crash
 recovery can safely re-dispatch pending outbox commands.
 
+Component `0.27.0` adds bounded source-writing repair (`WO-055`).
+`deriveRepairOrder` in `src/repair.ts` resolves a finding against pinned host
+witnesses, contains its paths and exact reproduction commands, and preserves the
+original contract and effective authority. Exact expansions require a matching
+host registry grant with WO-042 provenance. `RepairHost` in `src/repair-host.ts`
+consumes that interface through a persisted executable program in the shared
+reactor, with WO-052 source-change and WO-054 verification child stores.
+
+The original order declares `roundLimit` (default two); exhaustion records the
+last finding in `RepairExhausted` and leaves the next action to a human. Each
+repair starts a fresh worker at the failing commit using `executionBaseCommit`,
+while the original contract base stays unchanged. The host runs all derived
+reproduction commands and re-verifies the complete original contract. A child
+commit or prepared verification snapshot survives host death without another
+repair dispatch. Stores and worktrees remain inspectable; cleanup is explicit.
+
+Run `npm run build` then
+`node --test packages/skeleton/dist/test/repair.test.js` for containment,
+exact grants, one-round success, two-round exhaustion and actual host SIGKILL
+fixtures. These use synthetic workers, real scratch commits and macOS confined
+checks. This is not WO-056's live model loop. See
+[WO-055 evidence](../../docs/evidence/WO-055/implementation.md).
+
 ## Reactor state slices
 
 `reactor.ts` composes `SkeletonState` version 1 from typed walking-skeleton,
