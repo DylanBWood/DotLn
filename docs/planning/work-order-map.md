@@ -32,6 +32,8 @@ Earlier rationale is preserved in the [planning archive](archive/work-order-map-
 
 <!-- dotln-wo044-disposition --> **WO-044 checkpoint disposition (2026-09-14):** the writing-worker record is filed at [writing-worker-smoke-2026-09-14.md](../discovery/writing-worker-smoke-2026-09-14.md) with 23 observed, 0 blocked, 8 unavailable, 2 ambiguous rows; the first mandatory replan checkpoint is now open for the next planning pass, which designs WO-049, WO-051 and WO-068 from those labels.
 
+**WO-053 checkpoint disposition (2026-09-17):** [both live writer smokes and commit-identity recovery passed](../evidence/WO-053/README.md); R2's combined prioritization decision awaits WO-111's receipt, with no export decision or family waiver inferred.
+
 **Process debt (2026-09-09):** the operator opened an emergency pass after
 the `v0.16.0` close with eleven observed failures of the lifecycle machinery
 and one direction: one order, first in line, exempt from the one-seam rule.
