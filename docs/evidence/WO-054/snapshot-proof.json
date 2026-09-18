@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "provenance": "WO-052 scratch target; process-double implementer and verifier; real Git and confined host tests",
+  "projection": "Portable observed results. Physical paths, raw stdout/stderr, timestamps and random commit identities are omitted; this is not the raw capsule or event log.",
+  "profile": "worktree-snapshot",
+  "contract": {
+    "workOrderId": "wo_source_fixture",
+    "objective": "Change the fixture and preserve the contract marker.",
+    "acceptanceCriteria": [
+      "The changed file also contains the contract marker."
+    ],
+    "constraints": [
+      "Change only fixture.txt."
+    ],
+    "nonGoals": [],
+    "requiredEvidence": [
+      "node fixture-test.mjs",
+      "node contract-test.mjs"
+    ]
+  },
+  "files": [
+    {
+      "path": "contract-test.mjs",
+      "contents": "import assert from 'node:assert/strict'; import {readFileSync} from 'node:fs'; assert.match(readFileSync('fixture.txt','utf8'), /contract-satisfied/);\n",
+      "mode": "100644"
+    },
+    {
+      "path": "fixture-test.mjs",
+      "contents": "import assert from 'node:assert/strict'; import {readFileSync} from 'node:fs'; assert.equal(readFileSync('fixture.txt','utf8'), 'changed by synthetic worker\\n');\n",
+      "mode": "100644"
+    },
+    {
+      "path": "fixture.txt",
+      "contents": "changed by synthetic worker\n",
+      "mode": "100644"
+    }
+  ],
+  "diff": "diff --git a/fixture.txt b/fixture.txt\nindex 180b47c..ad1f42a 100644\n--- a/fixture.txt\n+++ b/fixture.txt\n@@ -1 +1 @@\n-baseline\n+changed by synthetic worker\n",
+  "observedCommitMatchesWorkerCommit": true,
+  "snapshotHashPresent": true,
+  "workerFocusedTestExitCode": 0,
+  "hostTests": [
+    {
+      "checkId": "superficial",
+      "source": "live",
+      "origin": "host",
+      "kind": "host-run-test",
+      "command": "node fixture-test.mjs",
+      "exitCode": 0,
+      "signal": null,
+      "outcome": "pass",
+      "observed": "exit 0",
+      "expected": "exit 0"
+    },
+    {
+      "checkId": "contract",
+      "source": "live",
+      "origin": "host",
+      "kind": "host-run-test",
+      "command": "node contract-test.mjs",
+      "exitCode": 1,
+      "signal": null,
+      "outcome": "fail",
+      "observed": "exit 1",
+      "expected": "exit 0"
+    }
+  ],
+  "finding": [
+    {
+      "criterionId": "AC-contract",
+      "severity": "blocking",
+      "expected": "exit 0",
+      "observed": "exit 1",
+      "likelySurface": [
+        "fixture.txt"
+      ],
+      "hasReproduction": true,
+      "hasEvidenceReferences": true
+    }
+  ],
+  "rowStatuses": [
+    {
+      "criterionId": "AC-contract",
+      "status": "failed"
+    }
+  ],
+  "phase": "attention",
+  "eventTypes": [
+    "VerificationOpened",
+    "VerificationDispatchRequested",
+    "CommandPersisted",
+    "WorkerAttemptStarted",
+    "CommandReceipt",
+    "VerificationWorkerResultObserved",
+    "CommandResult",
+    "WorkerCompleted",
+    "VerificationContinuation"
+  ]
+}

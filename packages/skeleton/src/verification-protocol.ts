@@ -55,7 +55,7 @@ export interface EvidenceWorkerRequest {
   readonly effort: WorkerEffort;
   readonly cwd: string;
   readonly profile: {
-    readonly profileId: "verification-snapshot-v1";
+    readonly profileId: "verification-snapshot-v1" | "worktree-snapshot";
     readonly mounts: readonly {
       readonly path: string;
       readonly access: "read";
@@ -424,14 +424,19 @@ export function validateTransportRequest(request: TransportRequest): void {
       !/^[a-zA-Z0-9][a-zA-Z0-9._:-]*$/u.test(request.model) ||
       request.model.length > 100 ||
       !/^[a-zA-Z0-9_-]+$/u.test(request.episodeId) ||
-      request.profile.profileId !== "verification-snapshot-v1" ||
+      request.profile.profileId !==
+        (request.capsule.subject.snapshot?.profile ??
+          "verification-snapshot-v1") ||
       request.profile.mounts.length !== 1 ||
       request.profile.mounts[0]?.path !== request.cwd ||
       request.profile.mounts[0]?.access !== "read"
     )
       throw new Error("profile mismatch");
-  } catch {
-    throw new WorkerFailure("profile-refused");
+  } catch (error) {
+    throw new WorkerFailure(
+      "profile-refused",
+      error instanceof Error ? error.message : "invalid verification profile",
+    );
   }
 }
 export function transportResultSchema(request: TransportRequest): object {
