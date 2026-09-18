@@ -99,7 +99,7 @@ const readContained = (root, path) => {
 
 // Only this explicit operator-authored block selects the proposed order.
 // References elsewhere in the map or a Depends on paragraph cannot select it.
-export const parseSequence = (markdown) => {
+export const parseSequenceGroups = (markdown) => {
   const lines = markdown.split(/\r?\n/);
   const positions = (marker) =>
     lines.flatMap((line, index) => (line.trim() === marker ? [index] : []));
@@ -108,10 +108,13 @@ export const parseSequence = (markdown) => {
   if (starts.length !== 1 || ends.length !== 1 || starts[0] >= ends[0])
     throw new Error(`${planningPath}: expected one marked proposed sequence`);
   const seen = new Set();
-  return lines
-    .slice(starts[0] + 1, ends[0])
-    .filter((line) => line.trim())
-    .map((line) => {
+  const groups = [];
+  let group = [];
+  for (const line of lines.slice(starts[0] + 1, ends[0])) {
+    if (!line.trim()) {
+      if (group.length) groups.push(group);
+      group = [];
+    } else {
       const match = /^- (WO-\d{3}) — (\S(?:.*\S)?)$/u.exec(line);
       if (!match)
         throw new Error(`${planningPath}: expected '- WO-NNN — short label'`);
@@ -119,8 +122,41 @@ export const parseSequence = (markdown) => {
       if (seen.has(id))
         throw new Error(`${planningPath}: duplicate proposed order ${id}`);
       seen.add(id);
-      return { id, label };
-    });
+      group.push({ id, label });
+    }
+  }
+  if (group.length) groups.push(group);
+  return groups;
+};
+
+export const parseSequence = (markdown) => parseSequenceGroups(markdown).flat();
+
+/** Check current planning topology without changing historical receipt subjects. */
+export const checkSequenceTopology = ({ rows, sequence, groups }) => {
+  const positions = new Map(sequence.map(({ id }, index) => [id, index]));
+  const pairs = groups.filter((group) => group.length === 2);
+  const failures = [];
+  for (const { id, dependencies } of rows) {
+    if (!positions.has(id)) continue;
+    for (const edge of dependencies.blocking) {
+      const target =
+        edge.relation === "planning-deferral" ? edge.until : edge.workOrderId;
+      if (!positions.has(target)) continue;
+      const label = `${id} -> ${target} (${edge.relation})`;
+      if (positions.get(id) < positions.get(target))
+        failures.push(`${label}: dependency follows its dependent`);
+      if (
+        pairs.some(
+          (pair) =>
+            pair.some((row) => row.id === id) &&
+            pair.some((row) => row.id === target),
+        )
+      )
+        failures.push(`${label}: blocking edge inside a two-entry pair`);
+    }
+  }
+  if (failures.length)
+    throw new Error(`${planningPath}: ${failures.join("; ")}`);
 };
 
 export const readIndex = (root, releases = localReleaseRecords(root)) => {
@@ -283,7 +319,7 @@ export const readIndex = (root, releases = localReleaseRecords(root)) => {
       throw new Error(
         `${id}: control authority is missing from the catalog: ${state.workOrderPath}`,
       );
-  const sequence = parseSequence(
+  const groups = parseSequenceGroups(
     readContained(
       root,
       existsSync(join(root, planningPath))
@@ -291,10 +327,11 @@ export const readIndex = (root, releases = localReleaseRecords(root)) => {
         : "docs/planning/work-order-map.md",
     ),
   );
+  const sequence = groups.flat();
   for (const { id } of sequence)
     if (!ids.has(id))
       throw new Error(`${planningPath}: unknown proposed order ${id}`);
-  return { rows, releases, sequence };
+  return { rows, releases, sequence, groups };
 };
 
 const cell = (value) =>
@@ -503,7 +540,9 @@ export const main = (args = process.argv.slice(2), root = toolRoot) => {
       );
     const actual = readFileSync(destination, "utf8");
     const releases = localReleaseRecords(root, readTagSnapshot(actual));
-    checkIndex(renderIndex(readIndex(root, releases)), actual);
+    const index = readIndex(root, releases);
+    checkSequenceTopology(index);
+    checkIndex(renderIndex(index), actual);
     const names = new Set(releases.map(({ name }) => name));
     const newer = localReleaseTags(root).filter(({ name }) => !names.has(name));
     if (newer.length)

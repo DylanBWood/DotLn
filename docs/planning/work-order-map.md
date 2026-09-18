@@ -921,6 +921,10 @@ authority.
    the order also carries the sequence topology check and a planning-branch
    write refusal. Reopen: a capability row on `main` that no verification or
    final review judged.
+   **Execution disposition (2026-09-17, WO-135):** implemented the broader
+   dated-section admission, with historical WO-068/WO-052 replay fixtures and
+   current-sequence topology checking. Independent verification and final review
+   remain separate; evidence is in [WO-135](../evidence/WO-135/README.md).
 2. _The plan gate was unsatisfiable on any day carrying two passes._
    `checkPlanGate` demanded a receipt for the later dated heading while
    `latestPlanningPass` returned the earlier one: both sorted headings by date
@@ -1015,6 +1019,11 @@ track.
     **Disposition (2026-09-17):** WO-135 criterion 4, the planning-branch
     write refusal in the generated hook. Reopen: a non-document path on a
     planning branch after it lands.
+    **Execution disposition (2026-09-17, WO-135):** the generated Claude
+    pre-tool boundary now refuses classified non-document repository writes on
+    `planning/` branches, including physical-path aliases; external scratch and
+    the existing override remain usable. Codex receives the same role duty.
+    Opaque shell effects remain host-delegated; this is not an OS sandbox.
 11. _A stale evidence row was answered by rewinding the code._ On hitting the
     identity refusal, the first response was to restore both files to their
     reviewed bytes so the hash would match again. That makes the gate pass

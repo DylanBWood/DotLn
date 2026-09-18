@@ -761,9 +761,10 @@ date. Earlier headings, including same-day headings already present at that
 boundary, are exempt. Every later dated planning-pass heading needs an addressed
 receipt. The latest receipt remains bound to its original committed subject.
 The continuing-work gate compares both HEAD and workspace inputs with it,
-admitting only an assigned release placeholder, appended execution-record
-sections, and appended dated reassessments of existing capability ids for
-orders in that reviewed sequence. It reports these execution updates separately;
+admitting an assigned release placeholder, appended execution-record
+sections, and appended dated capability additions or reassessments for orders
+in that reviewed sequence, including new ids. Verification, final review and
+the next planning receipt judge their level claims. It reports these execution updates separately;
 they are not a fresh planning verdict. Existing text and rows, objectives,
 dependencies, non-goals, sequence, vision and roles still require a
 matching subject. Criterion and goal-review Cost repairs use their text-bound disposition. Producing a new receipt still requires its
@@ -774,6 +775,16 @@ legacy-unavailable Cost declaration may be inserted after an existing order
 heading without rewriting its prior verdict. It claims no measured reduction;
 new refutations judge that missing evidence. Arbitrary headers and substantive
 authority edits remain outside this exception.
+WO-135 also admits the exact release-header correction from
+`patch, evidence-only. A` to `patch. Evidence-only: a` (likewise for minor and
+major), preserving the release type and every following description byte;
+it reports `release-classification-format` without rewriting the receipt.
+`plan check` and `work-orders index --check` check every unmet typed blocking
+edge between sequenced orders and refuse a blocking edge inside a two-entry pair;
+larger groups retain serial dependency order. On a `planning/` branch created by
+`plan start`, Claude hooks refuse classified repository writes outside `docs/`
+and root Markdown (WO-135); external scratch remains admitted, Codex carries
+the same duty as role text, and `operator override:` admits authorized recovery.
 The six manual redirect receipts are
 pre-mechanism evidence and are never rewritten or re-run by this gate.
 
@@ -1528,9 +1539,10 @@ claim evidence or releases it does not have.
   and the close consume; release close is the post-merge publish of the tag
   and Release and runs no suite; attested harness, version, model and effort
   are logged as given and never refuse, and `ultra` means `xhigh` with
-  subagents; DotLn's hooks refuse a second writer in a worktree and a write
-  during the live gate, and delegate every other judgment to the host's own
-  permission prompt on both harnesses; the default gate holds the suites that
+  subagents; DotLn has three hook refusals (WO-135): a second writer in a
+  worktree, a write during the live gate, and a classified repository write
+  outside `docs/` and root Markdown on a `planning/` branch. Codex carries
+  the same duties as role text; other judgments delegate to host permissions; the default gate holds the suites that
   protect product and lifecycle behavior, each naming what it protects, and
   the machinery's own suites run on demand; the planning refuter judges goal
   alignment, system traps, constraint removal and antifragility, and a

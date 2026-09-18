@@ -58,7 +58,7 @@ const executionAppendix = (before, after) => {
   return true;
 };
 
-const reassessments = (before, after, subject) => {
+export const reassessments = (before, after, subject) => {
   const prefix = before.trimEnd();
   requireSamePlan(
     after.startsWith(prefix),
@@ -67,7 +67,7 @@ const reassessments = (before, after, subject) => {
   const appended = after.slice(prefix.length);
   const headings = [
     ...appended.matchAll(
-      /^## (WO-\d{3}) dated reassessment \((\d{4}-\d{2}-\d{2})\)\r?$/gm,
+      /^## (WO-\d{3}) dated (?:addition|reassessment) \((\d{4}-\d{2}-\d{2})\)\r?$/gm,
     ),
   ];
   requireSamePlan(
@@ -91,7 +91,6 @@ const reassessments = (before, after, subject) => {
       const cells = line.split("|").slice(1, -1);
       const id = cells[0]?.match(/`([a-z][a-z0-9-]*(?:\.[a-z0-9-]+)+)`/u)?.[1];
       if (!id) return [];
-      requireSamePlan(knownIds.has(id), `new capability id ${id}`);
       requireSamePlan(
         Boolean(cells[1]?.trim()),
         `missing capability observation ${id}`,
@@ -99,7 +98,14 @@ const reassessments = (before, after, subject) => {
       return [id];
     });
     requireSamePlan(ids.length > 0, "empty capability reassessment");
-    return { kind: "dated-capability-reassessment", workOrderId, date, ids };
+    return {
+      kind: ids.some((id) => !knownIds.has(id))
+        ? "dated-capability-addition"
+        : "dated-capability-reassessment",
+      workOrderId,
+      date,
+      ids,
+    };
   });
 };
 
@@ -267,6 +273,28 @@ export function checkPlanContinuation(
           workOrderId,
           kind: "disposed-criterion",
           criterionId: oldCriterion.id,
+        });
+      }
+    }
+    // Release preparation requires "patch." rather than the older
+    // "patch, evidence-only." spelling. Admit only this exact presentation
+    // correction; the axis and every following description byte stay judged.
+    const legacyClassification = before.match(
+      /^\*\*Release classification:\*\* (patch|minor|major), evidence-only\. A /m,
+    );
+    if (legacyClassification) {
+      const canonical = after.match(
+        /^\*\*Release classification:\*\* (patch|minor|major)\. Evidence-only: a /m,
+      );
+      if (canonical?.[1] === legacyClassification[1]) {
+        after =
+          after.slice(0, canonical.index) +
+          legacyClassification[0] +
+          after.slice(canonical.index + canonical[0].length);
+        updates.push({
+          path,
+          workOrderId,
+          kind: "release-classification-format",
         });
       }
     }
