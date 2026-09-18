@@ -20,6 +20,14 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-135 activation completion (2026-09-17):** application `v0.29.3`, compiler
+`0.13.1` and skeleton `0.25.2` stage the planning-gate corrections above the
+observed local `v0.29.2` tag. This patch preserves receipt and public contract
+identity; only planning admission, topology checks and classified planning write
+refusals change. Publication and independent review remain separate.
+
+**WO-135 collision retiming (2026-09-18):** unpublished target `v0.29.3` is superseded by `v0.29.4` under the existing patch classification because the observed release baseline is `v0.29.3`. Scope, acceptance, component versions, and published tags are unchanged by this retiming.
+
 **WO-053 activation completion (2026-09-17):** application `v0.29.3` and
 skeleton `0.25.2` stage the first live external source change and the bounded
 writer repairs it exposed. Claude now submits its native schema result through

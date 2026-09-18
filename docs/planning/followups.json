@@ -5277,6 +5277,13 @@
           "title": "_An order may mandate a capability id its own gate refuses._ WO-068",
           "summary": "1. _An order may mandate a capability id its own gate refuses._ WO-068 criterion 7 directed an executor to add a `runtime.resident` row; `scripts/lib/plan-continuation.mjs:94` refuses ids absent from the judged receipt, because a capability id is a planning claim. The order required an edit the repository rejects by design, and no executor repair could clear it: deleting the row fails the criterion, keeping it fails the gate. FINAL-001 recorded this as B1 and nominated two forms — admit new ids through the planning pass that files the order, or teach `reassessments` a dated-addition form for ids the filing order introduces. Neither is chosen. A fix must make the unsatisfiable order unfilable",
           "missing": false
+        },
+        {
+          "hash": "29b2431f568ede2b5b47cf082d6c57cfff0239b8ad328ada4f49fe6b3d0848a9",
+          "ref": "docs/planning/work-order-map.md#candidates--release-close-and-planning-dispatch-defects-recorded-2026-09-16",
+          "title": "_An order may mandate a capability id its own gate refuses._ WO-068",
+          "summary": "1. _An order may mandate a capability id its own gate refuses._ WO-068 criterion 7 directed an executor to add a `runtime.resident` row; `scripts/lib/plan-continuation.mjs:94` refuses ids absent from the judged receipt, because a capability id is a planning claim. The order required an edit the repository rejects by design, and no executor repair could clear it: deleting the row fails the criterion, keeping it fails the gate. FINAL-001 recorded this as B1 and nominated two forms — admit new ids through the planning pass that files the order, or teach `reassessments` a dated-addition form for ids the filing order introduces. Neither is chosen. A fix must make the unsatisfiable order unfilable",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -5467,6 +5474,13 @@
         },
         {
           "hash": "71aa87bda33f191fe21e1f0ffc2402a10a85e1ca182ac5a2a87b2a3646fd838f",
+          "ref": "docs/planning/work-order-map.md#candidates--release-close-and-planning-dispatch-defects-recorded-2026-09-16",
+          "title": "_A source change rode a document-only dispatch onto main and voided the",
+          "summary": "10. _A source change rode a document-only dispatch onto main and voided the reviewed gate._ A planning dispatch is document-only and carries no implementation authority, but this pass committed `scripts/lib/plan-direct.mjs` and `scripts/refute-plan.mjs` to its branch. `gateCodeIdentity` excludes `docs/`, `.claude/`, root `*.md` and generated files, so those two patches were the only part of the merge it could see, and they moved WO-068's identity from the reviewed `c2caf3bc` to `464f4928`. `reviewedProductGate` (`scripts/lib/release-records.mjs:216`) then refused the tag, correctly: it will not publish source no reviewer gate covers. The release was publishable at `3b7a315` and is not publis",
+          "missing": false
+        },
+        {
+          "hash": "1bd55ac3ba3b97727d992160d19e17119c77db3150f471c245e37c3022fd0071",
           "ref": "docs/planning/work-order-map.md#candidates--release-close-and-planning-dispatch-defects-recorded-2026-09-16",
           "title": "_A source change rode a document-only dispatch onto main and voided the",
           "summary": "10. _A source change rode a document-only dispatch onto main and voided the reviewed gate._ A planning dispatch is document-only and carries no implementation authority, but this pass committed `scripts/lib/plan-direct.mjs` and `scripts/refute-plan.mjs` to its branch. `gateCodeIdentity` excludes `docs/`, `.claude/`, root `*.md` and generated files, so those two patches were the only part of the merge it could see, and they moved WO-068's identity from the reviewed `c2caf3bc` to `464f4928`. `reviewedProductGate` (`scripts/lib/release-records.mjs:216`) then refused the tag, correctly: it will not publish source no reviewer gate covers. The release was publishable at `3b7a315` and is not publis",
@@ -6432,6 +6446,111 @@
           "ref": "docs/evidence/WO-053/decisions.md#wo-053-d003",
           "title": "WO-053-D003: Require Claude aggregate JSON structured_output, admit its data-only StructuredOutput tool through the target guard, and provide the fixture's exact Node executable. File successful Claud",
           "summary": "{ \"id\": \"WO-053-D003\", \"date\": \"2026-09-17\", \"dispatch\": \"resume: next continued under the operator's bounded scope override\", \"decision\": \"Require Claude aggregate JSON structured_output, admit its data-only StructuredOutput tool through the target guard, and provide the fixture's exact Node executable. File successful Claude and Codex clean receipts and one Codex killed-host recovery; stage application v0.29.3 and skeleton 0.25.2 as patch releases.\", \"evidence\": [ \"docs/evidence/WO-053/claude-json.json\", \"docs/evidence/WO-053/codex-fixed.json\", \"docs/evidence/WO-053/claude-schema.json\", \"docs/evidence/WO-053/codex-runtime.json\", \"docs/evidence/WO-053/codex-recovery.json\", \"packages/skeleto",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-76e2ad6be3db040e",
+      "key": "decision:docs/evidence/WO-135/decisions.md#wo-135-d001",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "49d9b504b52f2919ba084207c9c4c76800387973a91e4de4d72dd7843f56f69b",
+          "ref": "docs/evidence/WO-135/decisions.md#wo-135-d001",
+          "title": "WO-135-D001: Admit dated capability additions, validate current sequence topology through existing dependency projections, and refuse classified non-document planning writes.",
+          "summary": "{ \"id\": \"WO-135-D001\", \"date\": \"2026-09-17\", \"dispatch\": \"resume: next\", \"decision\": \"Admit dated capability additions, validate current sequence topology through existing dependency projections, and refuse classified non-document planning writes.\", \"evidence\": [ \"WO-068 FINAL-001 B1\", \"WO-052 FINAL-001 B1 and D005\", \"WO-135 acceptance criteria 1–6\", \"scripts/lib/plan-continuation.mjs\", \"scripts/work-orders.mjs\" ], \"rejected\": [ \"NoOp preserves two observed review interruptions.\", \"Criteria-text admission retains the failure class.\", \"A scheduler, separate start receipt or arbitrary shell interpreter adds unneeded machinery.\" ], \"reopenWhen\": \"An admitted capability row lacks verification/re",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-9574e4a499baeed5",
+      "key": "decision:docs/evidence/WO-135/decisions.md#wo-135-d002",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "ef0ef1f817efe5844d01176fb8faf100810277b4ab6daf14b87928d6ce9a5055",
+          "ref": "docs/evidence/WO-135/decisions.md#wo-135-d002",
+          "title": "WO-135-D002: Pin the historical fourteen-pair sequence and its satisfaction state; independently check the current fifteen-pair sequence.",
+          "summary": "{ \"id\": \"WO-135-D002\", \"date\": \"2026-09-17\", \"dispatch\": \"resume: next\", \"decision\": \"Pin the historical fourteen-pair sequence and its satisfaction state; independently check the current fifteen-pair sequence.\", \"evidence\": [ \"4576594 original vision-into-use sequence\", \"8bb00ef later WO-141 recut\" ], \"rejected\": [ \"Assert fourteen against current HEAD: contradicts the subsequent committed sequence.\", \"Use current closure in historical failures: future closes erase regression evidence.\" ], \"reopenWhen\": \"The historical fixture source is unavailable or a new grouping contract is adopted.\", \"workOrder\": \"WO-135\", \"path\": \"docs/evidence/WO-135/decisions.md\" }",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-a73bb2633a1b2a6c",
+      "key": "decision:docs/evidence/WO-135/decisions.md#wo-135-d003",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "aff54cac3ed4a19722a34626f7f81835bbc4ac8478458f485cc711fefdec85d9",
+          "ref": "docs/evidence/WO-135/decisions.md#wo-135-d003",
+          "title": "WO-135-D003: Install only the explicitly authorized personal SSH/SCP/SFTP forbidden rules; retain current Codex TOML and explain command denials separately from sandbox path restrictions.",
+          "summary": "{ \"id\": \"WO-135-D003\", \"date\": \"2026-09-17\", \"dispatch\": \"scope expand: during resume: next\", \"decision\": \"Install only the explicitly authorized personal SSH/SCP/SFTP forbidden rules; retain current Codex TOML and explain command denials separately from sandbox path restrictions.\", \"evidence\": [ \"Operator scope expand and subsequent instruction to add SSH/SCP/SFTP bans\", \"Installed Codex CLI 0.154.0\", \"Versioned Codex execution-policy and orchestrator source\", \"Twelve combined-policy forbidden results and two allowed controls\" ], \"rejected\": [ \"Switch back to a filesystem permission profile: operator chose to retain sandbox off.\", \"Claim command rules cannot work with full access: contradic",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-17b0aa22fab7cb52",
+      "key": "decision:docs/evidence/WO-135/decisions.md#wo-135-d004",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "6d2b0d4eec034bb2664857cc2af6cce3017c30b9d49c35a95150ef846af6d6bf",
+          "ref": "docs/evidence/WO-135/decisions.md#wo-135-d004",
+          "title": "WO-135-D004: Stage patch application v0.29.3, compiler 0.13.1 and skeleton 0.25.2.",
+          "summary": "{ \"id\": \"WO-135-D004\", \"date\": \"2026-09-17\", \"dispatch\": \"resume: next\", \"decision\": \"Stage patch application v0.29.3, compiler 0.13.1 and skeleton 0.25.2.\", \"evidence\": [ \"WO-135 patch classification\", \"Latest local tag v0.29.2\", \"Changed compiler and skeleton source\" ], \"rejected\": [ \"No release contradicts the standing opt-out default.\", \"A minor bump implies capability scope this order excludes.\" ], \"reopenWhen\": \"A sibling publishes the target before final integration.\", \"workOrder\": \"WO-135\", \"path\": \"docs/evidence/WO-135/decisions.md\" }",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-5047977fa705e78b",
+      "key": "decision:docs/evidence/WO-135/decisions.md#wo-135-d005",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "1cc34d1da93974d59e4915a5516d4bb08c91833bfd2949932ea9b221b2ffe77e",
+          "ref": "docs/evidence/WO-135/decisions.md#wo-135-d005",
+          "title": "WO-135-D005: Update the existing AI harness security runbook with current mode choices, both sandboxed and unsandboxed variants, tool-rule versus filesystem boundaries, and separate settings/rules loc",
+          "summary": "{ \"id\": \"WO-135-D005\", \"date\": \"2026-09-17\", \"dispatch\": \"scope expand: update an AI security document\", \"decision\": \"Update the existing AI harness security runbook with current mode choices, both sandboxed and unsandboxed variants, tool-rule versus filesystem boundaries, and separate settings/rules locations for Claude and Codex. Retain earlier dated evidence as historical reference.\", \"evidence\": [ \"Operator request during WO-135\", \"Official Claude settings, permission-modes, permissions and sandboxing docs\", \"Official Codex config, permissions and rules docs\", \"Codex 0.154.0 source and installed command-rule checks\" ], \"rejected\": [ \"Overwrite historical probe results: would misrepresent",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-25e41a95e06089ca",
+      "key": "decision:docs/evidence/WO-135/decisions.md#wo-135-d006",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "e27e876bb344eff4d615eec241741be2792e1fd03f10df06216b24fd61b883bc",
+          "ref": "docs/evidence/WO-135/decisions.md#wo-135-d006",
+          "title": "WO-135-D006: Classify only the exact same-axis evidence-only release-prefix correction as an execution update, preserving the remaining byte comparison and immutable receipts.",
+          "summary": "{ \"id\": \"WO-135-D006\", \"date\": \"2026-09-17\", \"dispatch\": \"resume: next; adjacent-0001\", \"decision\": \"Classify only the exact same-axis evidence-only release-prefix correction as an execution update, preserving the remaining byte comparison and immutable receipts.\", \"evidence\": [ \"Document gate rejected inherited WO-136 release-classification bytes\", \"Receipt 017 subject versus HEAD: only the assigned title and exact prefix changed\", \"scripts/lib/release-preparation.mjs requires a period after the release axis\", \"Independent read-only source comparison agrees the description is unchanged\" ], \"rejected\": [ \"NoOp leaves the current documented release preparation incompatible with continuation.\"",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-313d23acae0a713e",
+      "key": "decision:docs/evidence/WO-135/decisions.md#wo-135-d007",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "221507505dfa2c23fd33bde4e210e3a151ac0d2cc3a5a764abd3883a7fcb9403",
+          "ref": "docs/evidence/WO-135/decisions.md#wo-135-d007",
+          "title": "WO-135-D007: Merge main at f7ec9f3 into the preserved WO-135 state; retime the unpublished application target from v0.29.3 to v0.29.4 and skeleton from 0.25.2 to 0.25.3 under the existing patch classi",
+          "summary": "{ \"id\": \"WO-135-D007\", \"date\": \"2026-09-18\", \"dispatch\": \"resume: final review\", \"decision\": \"Merge main at f7ec9f3 into the preserved WO-135 state; retime the unpublished application target from v0.29.3 to v0.29.4 and skeleton from 0.25.2 to 0.25.3 under the existing patch classification, keeping compiler 0.13.1; record authority revision 003 deterministically and feedback revision 003 from a fresh live Codex verifier audit on the integrated tree.\", \"evidence\": [ \"docs/product/07-execution-guide.md#independent-workflows-and-integration\", \"docs/evidence/WO-135/decisions.md#wo-135-d004\", \"origin tag v0.29.3 at f7ec9f3 (WO-053, PR #86)\", \"docs/evidence/WO-135/authority/003/authority.json byte-",
           "missing": false
         }
       ],

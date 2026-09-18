@@ -1,0 +1,91 @@
+PASS work-order index fixtures
+TAP version 13
+# Subtest: index derives release membership, no-release, unreleased, active, blocked, ready, malformed and unknown
+ok 1 - index derives release membership, no-release, unreleased, active, blocked, ready, malformed and unknown
+  ---
+  duration_ms: 1348.567208
+  ...
+# Subtest: plain-text checklist first, complete details once per file, sorted sections, safe Markdown and deterministic bytes
+ok 2 - plain-text checklist first, complete details once per file, sorted sections, safe Markdown and deterministic bytes
+  ---
+  duration_ms: 4362.781041
+  ...
+# Subtest: check is read-only; deleting a detail or editing evidence names the first differing line
+ok 3 - check is read-only; deleting a detail or editing evidence names the first differing line
+  ---
+  duration_ms: 3222.192041
+  ...
+# Subtest: sequence edits stale the generated view; malformed, missing, duplicate and unknown recommendations refuse without mutation
+ok 4 - sequence edits stale the generated view; malformed, missing, duplicate and unknown recommendations refuse without mutation
+  ---
+  duration_ms: 15585.983958
+  ...
+# Subtest: a new release tag preserves the recorded check; explicit refresh includes it without retroactive no-release inference
+ok 5 - a new release tag preserves the recorded check; explicit refresh includes it without retroactive no-release inference
+  ---
+  duration_ms: 10179.72
+  ...
+# Subtest: later tag time cannot turn an old source prefix into a prior release; unvalidated additional tags do not invalidate the snapshot
+ok 6 - later tag time cannot turn an old source prefix into a prior release; unvalidated additional tags do not invalidate the snapshot
+  ---
+  duration_ms: 10437.617125
+  ...
+# Subtest: missing or changed recorded tag objects refuse without rewriting the index
+ok 7 - missing or changed recorded tag objects refuse without rewriting the index
+  ---
+  duration_ms: 614.353083
+  ...
+# Subtest: lifecycle transitions stale the index; failed final review and a new request have distinct verdicts
+ok 8 - lifecycle transitions stale the index; failed final review and a new request have distinct verdicts
+  ---
+  duration_ms: 15379.676042
+  ...
+# Subtest: unknown event and invalid time refuse at the original global ordinal
+ok 9 - unknown event and invalid time refuse at the original global ordinal
+  ---
+  duration_ms: 1046.010375
+  ...
+# Subtest: unknown headers, invalid versions, duplicate fields, body metadata and duplicate IDs never become guesses
+ok 10 - unknown headers, invalid versions, duplicate fields, body metadata and duplicate IDs never become guesses
+  ---
+  duration_ms: 1086.423875
+  ...
+# Subtest: source and destination symlinks refuse; CLI rejects unknown arguments
+ok 11 - source and destination symlinks refuse; CLI rejects unknown arguments
+  ---
+  duration_ms: 1497.835208
+  ...
+# Subtest: the sole manifest-free historical release requires its explicit record
+ok 12 - the sole manifest-free historical release requires its explicit record
+  ---
+  duration_ms: 1241.105583
+  ...
+# Subtest: segments retain close attribution, every open row, and tagged source inventories
+ok 13 - segments retain close attribution, every open row, and tagged source inventories
+  ---
+  duration_ms: 2161.877625
+  ...
+# Subtest: typed parser accepts all relations and refuses malformed authority entries with their source
+ok 14 - typed parser accepts all relations and refuses malformed authority entries with their source
+  ---
+  duration_ms: 1.141666
+  ...
+# Subtest: typed projection distinguishes passing closure, ancestry, deferral and non-blocking relations
+ok 15 - typed projection distinguishes passing closure, ancestry, deferral and non-blocking relations
+  ---
+  duration_ms: 1036.731375
+  ...
+# Subtest: typed index shares status projection, stales on declaration edits, and never reopens closed or historical rows
+ok 16 - typed index shares status projection, stales on declaration edits, and never reopens closed or historical rows
+  ---
+  duration_ms: 1008.889209
+  ...
+1..16
+# tests 16
+# suites 0
+# pass 16
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 71670.986916
