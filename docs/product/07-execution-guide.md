@@ -307,13 +307,17 @@ WO-026's generated index observes current headers and control evidence with a
 recorded snapshot of local annotated release tag objects and the control
 segments contained in each tagged revision. Prefix checks are per segment; a
 sibling merge cannot shift another order's close ordinal. Run
-`npm run work-orders -- index` after executor dispatch, before its evidence gate, and again
-after `implementation-ready`; verification and final-review actors refresh
+`npm run work-orders -- index` after executor dispatch and before its evidence gate.
+`implementation-ready` and `repair-complete` refresh the final index automatically,
+then release the current Codex session's writer reservation after the result and
+observations are recorded. Finish authored writes before that command; reading
+the resulting projections needs no new writer. No operator release command is
+part of ordinary completion. Verification and final-review actors refresh
 after dispatch and after recording their result. `npm run test:docs` includes
 `index --check`: it reports a stale projection or a missing/changed recorded tag,
 while reporting additional local release tags as newer evidence. Explicit
-regeneration includes those tags. No lifecycle transition regenerates the
-index; its final refresh is later than the transition's immutable checkpoint.
+regeneration includes those tags. The executor's final index refresh is later
+than the transition's immutable checkpoint and before writer release.
 
 For completed actor usage, run
 `npm run resume --silent -- usage [--json]`: it reports every known order using
@@ -767,7 +771,26 @@ in that reviewed sequence, including new ids. Verification, final review and
 the next planning receipt judge their level claims. It reports these execution updates separately;
 they are not a fresh planning verdict. Existing text and rows, objectives,
 dependencies, non-goals, sequence, vision and roles still require a
-matching subject. Criterion and goal-review Cost repairs use their text-bound disposition. Producing a new receipt still requires its
+matching subject. WO-139 adds the explicit execution-amendment route for
+operator-authorized scope changes: record the authorization in the affected
+order's structured decisions, then run `npm run plan -- amend-order WO-NNN
+WO-NNN-DNNN "operator authorization and bounded scope"`. The helper appends
+`PlanExecutionAmended` to the existing planning control log, binding the
+current planning receipt, original order, approved order text and individual
+decision. It preserves existing execution evidence; later strict execution
+appendices and release-title retiming remain admitted. Unrecorded changes
+still fail with their order/criterion named. This is an actor-attested
+authorization record, not a fresh planning verdict or a way to discharge an
+independent hold. Do this during authorized execution rather than carrying an
+inherited failure through later reviews. The WO-053 amendment recorded under
+WO-139 repairs the reproduced inherited failure without changing receipt 017.
+If committed execution overwrote an existing capability row, restore the judged
+source and append the exact newer row as a dated reassessment. The continuing-work
+check reports a pending history repair before commit only when every changed HEAD
+line is a same-ID capability row preserved byte-for-byte in that appendix, with
+all historical bytes restored. Dropped claims, changed headings, changed IDs and
+other committed edits still fail. After commit, ordinary reassessment rules apply.
+Criterion and goal-review Cost repairs use their text-bound disposition. Producing a new receipt still requires its
 complete committed subject and an identical workspace. Earlier receipts keep
 their judged revisions, with unresolved holds carried through the receipt chain.
 WO-126 has one explicit contract-adoption exception: the exact
@@ -1163,7 +1186,17 @@ hooks fire for the Agent and Workflow tools and inside subagents. WO-139
 counts and refuses at the admission points the hook can see and counts
 descendants at their first attributable tool call, so an agent the harness
 creates before any hook fires is counted late or not at all, and Codex's
-`spawn_agent` fires no hook. The requirement that remains open is a
+`spawn_agent` fires no hook in the recorded profile. The 2026-09-18
+[WO-139 probe](../evidence/WO-139/README.md) observes Claude 2.1.276 sharing
+`session_id` and supplying distinct `agent_id` values for direct and workflow
+children. Direct Agent results join that identity to `tool_use_id` only after
+the child finishes. During unresolved overlap the counter reports a minimum
+distinct count, preserving every observation and excluding children seen
+before a later spawn; it never invents a parent link. For example, two
+unresolved direct admissions and two later workflow children can represent
+four agents while the minimum is two. Agents created before their first
+hook, silent agents, unknown identities, unreadable counters and this
+unresolved overlap remain outside an exact total guarantee. The requirement that remains open is a
 guaranteed maximum across every path: admission before creation, including
 descendants and concurrent spawns. No order is allocated for it; the
 Contributor's batching rule is the interim control. Reopen when the harness
@@ -1539,10 +1572,19 @@ claim evidence or releases it does not have.
   and the close consume; release close is the post-merge publish of the tag
   and Release and runs no suite; attested harness, version, model and effort
   are logged as given and never refuse, and `ultra` means `xhigh` with
-  subagents; DotLn has three hook refusals (WO-135): a second writer in a
+  subagents; DotLn has four hook refusals (WO-135 and WO-139): a second writer in a
   worktree, a write during the live gate, and a classified repository write
-  outside `docs/` and root Markdown on a `planning/` branch. Codex carries
-  the same duties as role text; other judgments delegate to host permissions; the default gate holds the suites that
+  outside `docs/` and root Markdown on a `planning/` branch; and an observable
+  subagent admission exceeding `docs/control/budgets.json` `subagentCap`
+  (default 20, `null` disables). Workflow admission needs a remaining unit;
+  the workflow call consumes none, and attributable children count at their
+  first tool call. Missing/unreadable counters admit with a cause-specific
+  advisory. Stop and `harness usage` report observed count, cap and unknown
+  remainder; unresolved direct/child overlap is labeled a minimum. Plan the
+  whole fan-out against the root's remaining budget before the first spawn,
+  state it in the response, and batch review/refutation over item groups:
+  one agent judges several items, never one agent per item per pass. Codex carries
+  the same duties and advisory cap as role text; other judgments delegate to host permissions; the default gate holds the suites that
   protect product and lifecycle behavior, each naming what it protects, and
   the machinery's own suites run on demand; the planning refuter judges goal
   alignment, system traps, constraint removal and antifragility, and a

@@ -206,12 +206,22 @@ command; no credential file was read. Named profiles are documented as beta.
 The earlier `workspace-write` example below remains another sandboxed option.
 [Named permission profiles](https://learn.chatgpt.com/docs/permissions).
 
-## DotLn hook boundary — WO-132 and WO-135, 2026-09-17
+## DotLn hook boundary — WO-132, WO-135 and WO-139, 2026-09-18
 
-DotLn's generated hooks refuse three conditions (WO-135): a second live writer
+DotLn's generated hooks refuse four conditions (WO-135 and WO-139): a second live writer
 in the same worktree; a write to gate inputs or the success record during a live
 `npm test`; and a classified repository write outside `docs/` and root Markdown
-on a `planning/` branch. External scratch paths remain admitted; the existing
+on a `planning/` branch; and an observable subagent admission beyond
+`docs/control/budgets.json` `subagentCap` (default 20; `null` disables).
+The session-local counter serializes observed admissions. Workflow calls need
+one remaining unit but consume no unit themselves; attributable descendants
+count at their first tool call. Direct/child identities are joined only from
+the observed Agent result. Until that join, possible overlap is reported as a
+minimum count; missing/unreadable counters admit with a named advisory.
+Stop and `harness usage` disclose the count/cap and unknown remainder. This is
+not a total creation cap: silent agents, unobserved paths and unresolved
+overlap remain open ([WO-139 evidence](evidence/WO-139/README.md)).
+External scratch paths remain admitted; the existing
 `operator override:` route supports authorized planning recovery. The writer
 reservation applies on main as on a work-order branch; dead reservations may be
 reclaimed.

@@ -6231,6 +6231,13 @@
           "title": "Candidate — total subagent cap across every spawn path",
           "summary": "## Candidate — total subagent cap across every spawn path Operator direction, 2026-09-17: a session's total subagents need a hard, configurable cap (about twenty), because a top-level guideline of five fans out through per-item adversarial and refutation trees to more than a hundred. The harness documents no total cap, only a size guideline, a concurrency ceiling of sixteen and a per-workflow limit of a thousand; its hooks fire for the Agent and Workflow tools and inside subagents. WO-139 counts and refuses at the admission points the hook can see and counts descendants at their first attributable tool call, so an agent the harness creates before any hook fires is counted late or not at all,",
           "missing": false
+        },
+        {
+          "hash": "a991c945db4ef5f104f292ab45283ea64c667b9e2ffa497e807f5942bbe19f4d",
+          "ref": "docs/product/07-execution-guide.md#candidate--total-subagent-cap-across-every-spawn-path",
+          "title": "Candidate — total subagent cap across every spawn path",
+          "summary": "## Candidate — total subagent cap across every spawn path Operator direction, 2026-09-17: a session's total subagents need a hard, configurable cap (about twenty), because a top-level guideline of five fans out through per-item adversarial and refutation trees to more than a hundred. The harness documents no total cap, only a size guideline, a concurrency ceiling of sixteen and a per-workflow limit of a thousand; its hooks fire for the Agent and Workflow tools and inside subagents. WO-139 counts and refuses at the admission points the hook can see and counts descendants at their first attributable tool call, so an agent the harness creates before any hook fires is counted late or not at all,",
+          "missing": false
         }
       ],
       "dispositions": []
@@ -6551,6 +6558,96 @@
           "ref": "docs/evidence/WO-135/decisions.md#wo-135-d007",
           "title": "WO-135-D007: Merge main at f7ec9f3 into the preserved WO-135 state; retime the unpublished application target from v0.29.3 to v0.29.4 and skeleton from 0.25.2 to 0.25.3 under the existing patch classi",
           "summary": "{ \"id\": \"WO-135-D007\", \"date\": \"2026-09-18\", \"dispatch\": \"resume: final review\", \"decision\": \"Merge main at f7ec9f3 into the preserved WO-135 state; retime the unpublished application target from v0.29.3 to v0.29.4 and skeleton from 0.25.2 to 0.25.3 under the existing patch classification, keeping compiler 0.13.1; record authority revision 003 deterministically and feedback revision 003 from a fresh live Codex verifier audit on the integrated tree.\", \"evidence\": [ \"docs/product/07-execution-guide.md#independent-workflows-and-integration\", \"docs/evidence/WO-135/decisions.md#wo-135-d004\", \"origin tag v0.29.3 at f7ec9f3 (WO-053, PR #86)\", \"docs/evidence/WO-135/authority/003/authority.json byte-",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-2ace82ab7cc83423",
+      "key": "decision:docs/evidence/WO-139/decisions.md#wo-139-d001",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "529235a816ea7ccb07512204cb7338d2ebedb752c91a0dc6f62556363daf8c0e",
+          "ref": "docs/evidence/WO-139/decisions.md#wo-139-d001",
+          "title": "WO-139-D001: Count observable spawn admissions, probe descendant identity before choosing the key, and retain the open total-cap requirement.",
+          "summary": "{ \"id\": \"WO-139-D001\", \"date\": \"2026-09-18\", \"dispatch\": \"resume: next\", \"decision\": \"Count observable spawn admissions, probe descendant identity before choosing the key, and retain the open total-cap requirement.\", \"evidence\": [ \"WO-139\", \"packages/skeleton/src/harness-host.ts\", \"docs/planning/vision-into-use-2026-09-17.md §11\" ], \"rejected\": [ \"NoOp retains recurring fan-out arithmetic.\", \"Advisory only misses the requested refusal.\", \"Script parsing cannot establish runtime fan-out; banning workflows removes useful batching.\" ], \"reopenWhen\": \"A live probe or official contract supplies pre-creation admission for every descendant or a native total cap.\", \"workOrder\": \"WO-139\", \"path\": \"do",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-e9dc147c642fe637",
+      "key": "decision:docs/evidence/WO-139/decisions.md#wo-139-d002",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "c7181fd7e3fd22633c99e3afb44508d716aa16c4fa9a78bde487fbd375cc14dd",
+          "ref": "docs/evidence/WO-139/decisions.md#wo-139-d002",
+          "title": "WO-139-D002: Add an explicit source-bound execution-amendment event and helper to the existing planning control log; record WO-053's already-authorized amendment and preserve independent refutation ho",
+          "summary": "{ \"id\": \"WO-139-D002\", \"date\": \"2026-09-18\", \"dispatch\": \"scope expand: during resume: next; operator requests a durable fix for inherited planning-check failures\", \"decision\": \"Add an explicit source-bound execution-amendment event and helper to the existing planning control log; record WO-053's already-authorized amendment and preserve independent refutation holds.\", \"evidence\": [ \"docs/final-reviews/WO-135/FINAL-001.md §The document gate on the integrated tree\", \"docs/evidence/WO-053/decisions.md#wo-053-d002\", \"Clean main at 494e682: node scripts/refute-plan.mjs check fails on changed criterion without text-bound disposition\", \"scripts/lib/plan-continuation.mjs\" ], \"rejected\": [ \"NoOp rep",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-6ba020b61acdf818",
+      "key": "decision:docs/evidence/WO-139/decisions.md#wo-139-d003",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "13952ffdc12d9b385eaf354bf8b99d61d68f2c10184a398be3a36b015054a0d2",
+          "ref": "docs/evidence/WO-139/decisions.md#wo-139-d003",
+          "title": "WO-139-D003: Key the counter by observed root session and child identity; reserve direct invocations, join only exact returned identities, and label unresolved overlap as a minimum distinct count.",
+          "summary": "{ \"id\": \"WO-139-D003\", \"date\": \"2026-09-18\", \"dispatch\": \"resume: next\", \"decision\": \"Key the counter by observed root session and child identity; reserve direct invocations, join only exact returned identities, and label unresolved overlap as a minimum distinct count.\", \"evidence\": [ \"docs/evidence/WO-139/subagent-probe-2.json\", \"packages/skeleton/test/subagent-budget.test.ts\", \"scripts/test-harness.mjs WO-139 fixture\" ], \"rejected\": [ \"Charging direct admission and its child twice refuses already-admitted work.\", \"Assigning pending credits by arrival order invents a parent relation.\", \"Agent type is not a reliable workflow origin: workflow agents can select an ordinary type.\", \"NoOp leaves",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-a71dcf35aec1904c",
+      "key": "decision:docs/evidence/WO-139/decisions.md#wo-139-d004",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "bbf898fe5aceec7d6037d49dcd7993f5eb0289ca740cfecfb5aa822d3019ca14",
+          "ref": "docs/evidence/WO-139/decisions.md#wo-139-d004",
+          "title": "WO-139-D004: Stage application v0.29.5, compiler 0.13.2 and skeleton 0.25.4; preserve package publication controls and all historical evidence.",
+          "summary": "{ \"id\": \"WO-139-D004\", \"date\": \"2026-09-18\", \"dispatch\": \"resume: next with authorized planning-repair scope expansion\", \"decision\": \"Stage application v0.29.5, compiler 0.13.2 and skeleton 0.25.4; preserve package publication controls and all historical evidence.\", \"evidence\": [ \"WO-139 patch classification\", \"Latest observed local tag v0.29.4\", \"Changed compiler boundary text and skeleton host/instruction source\" ], \"rejected\": [ \"No release contradicts the standing classified-release default.\", \"Bumping unchanged kernel or console source would misstate compatibility impact.\" ], \"reopenWhen\": \"Final-review integration observes a newer published release or a changed compatibility impact.\", ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-e21ffd011013819f",
+      "key": "decision:docs/evidence/WO-139/decisions.md#wo-139-d005",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "0ddc98ebb052dda0c40fbae3bd5ced141576a51587d06b44d127debb6e9358c9",
+          "ref": "docs/evidence/WO-139/decisions.md#wo-139-d005",
+          "title": "WO-139-D005: Make implementation-ready and repair-complete perform the final index refresh and release only the current Codex session's writer reservation after the durable result and observations. No",
+          "summary": "{ \"id\": \"WO-139-D005\", \"date\": \"2026-09-18\", \"dispatch\": \"scope expand: fix Codex retaining its executor/fix writer lock\", \"decision\": \"Make implementation-ready and repair-complete perform the final index refresh and release only the current Codex session's writer reservation after the durable result and observations. No operator release command is part of handoff.\", \"evidence\": [ \"WO-139's completed executor handoff retained its reservation with no release journal row\", \"scripts/resume.mjs had no writer release\", \"packages/skeleton/src/harness-host.ts releases at Claude Stop, which the Codex profile does not provide\", \"scripts/test-harness.mjs WO-139 Codex executor and fix completion fixtu",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-cc86d70a403ccf33",
+      "key": "decision:docs/evidence/WO-139/decisions.md#wo-139-d006",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "3b657ba5814aa3f3fcc1be18210eed7676f57e624df18353b3526f78b433c656",
+          "ref": "docs/evidence/WO-139/decisions.md#wo-139-d006",
+          "title": "WO-139-D006: Pin the imported cap module in the existing runtime declaration and mark actual budget advisories at their source so classification throttling remains independent; reconcile the Stop fixt",
+          "summary": "{ \"id\": \"WO-139-D006\", \"date\": \"2026-09-18\", \"dispatch\": \"resume: fix\", \"decision\": \"Pin the imported cap module in the existing runtime declaration and mark actual budget advisories at their source so classification throttling remains independent; reconcile the Stop fixture with its two preserved sections.\", \"evidence\": [ \"docs/final-reviews/WO-139/FINAL-001.md F1 and F2\", \"scripts/lib/harness.mjs runtimeFiles\", \"packages/skeleton/src/harness-host.ts advisory selection\", \"scripts/test-process-debt.mjs\" ], \"rejected\": [ \"NoOp leaves installed behavior stale and the required review gate failing.\", \"Matching the word subagent cannot distinguish budget provenance from remote-agent classificatio",
           "missing": false
         }
       ],
