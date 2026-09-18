@@ -31,6 +31,50 @@ const write = (root, path, text) => {
   writeFileSync(join(root, path), text);
 };
 
+test("WO-139 subagent probe confines reads and parent fan-out structurally", (t) => {
+  const root = mkdtempSync(join(tmpdir(), "dotln-probe-budget-test-"));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  write(root, "root-session.txt", "synthetic-root");
+  write(root, "identity-key.txt", "synthetic-key");
+  const invoke = (tool, tool_input, agent_id) => {
+    const run = spawnSync(
+      process.execPath,
+      [join(repository, "scripts/fixtures/subagent-probe-hook.mjs")],
+      {
+        cwd: root,
+        input: JSON.stringify({
+          cwd: root,
+          session_id: "synthetic-root",
+          hook_event_name: "PreToolUse",
+          tool_name: tool,
+          tool_input,
+          ...(agent_id ? { agent_id } : {}),
+        }),
+        encoding: "utf8",
+      },
+    );
+    assert.equal(run.status, 0, run.stderr);
+    return JSON.parse(run.stdout).hookSpecificOutput?.permissionDecision;
+  };
+  assert.equal(invoke("Read", { file_path: "/outside/direct.txt" }), "deny");
+  assert.equal(
+    invoke("Read", { file_path: join(root, "direct.txt") }),
+    undefined,
+  );
+  assert.equal(invoke("Agent", {}, "child"), "deny");
+  assert.equal(invoke("Agent", {}), undefined);
+  assert.equal(invoke("Agent", {}), "deny");
+  assert.equal(
+    invoke("Workflow", { scriptPath: "/outside/probe-workflow.ts" }),
+    "deny",
+  );
+  assert.equal(
+    invoke("Workflow", { scriptPath: join(root, "probe-workflow.ts") }),
+    undefined,
+  );
+  assert.equal(invoke("Workflow", { scriptPath: "probe-workflow.ts" }), "deny");
+});
+
 // Stub harnesses. They imitate the launch surfaces the probe drives (print
 // and exec runs, hook invocation, background sessions, help) so the probe's
 // plumbing, sanitization and report are exercised without a live account.

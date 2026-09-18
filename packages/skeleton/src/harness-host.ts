@@ -76,6 +76,13 @@ import {
 
 import { HARNESS_HOST_VERSION } from "./version.js";
 import {
+  admitSubagentTool,
+  initializeSubagentCounter,
+  linkSubagentResult,
+  subagentSummary,
+  subagentUsage,
+} from "./subagent-budget.js";
+import {
   observationBoundary,
   observeBackgroundTool,
   observeTypedCorrection,
@@ -88,6 +95,7 @@ export interface HarnessInput {
   readonly cwd: string;
   readonly transcript_path?: string;
   readonly session_id: string;
+  readonly agent_id?: string;
   readonly tool_name?: string;
   readonly tool_use_id?: string;
   readonly tool_input?: Record<string, unknown>;
@@ -136,6 +144,7 @@ function decodeHarnessRecord(
     "hook_event_name",
     "cwd",
     "session_id",
+    "agent_id",
     "tool_name",
     "tool_use_id",
     "transcript_path",
@@ -157,6 +166,7 @@ function decodeHarnessRecord(
     "hook_event_name",
     "cwd",
     "session_id",
+    "agent_id",
     "tool_name",
     "tool_use_id",
     "transcript_path",
@@ -1468,6 +1478,12 @@ export function beginHarnessSession(
     authoredPaths: adopted,
   };
   writeJson(statePath(root, input), session);
+  const counterWarning = initializeSubagentCounter(
+    harnessStateDirectory(root),
+    sessionId,
+  );
+  if (counterWarning)
+    process.stderr.write(`DotLn advisory: subagent ${counterWarning}.\n`);
   record(root, input, {
     role,
     source: adopted.length
@@ -1526,7 +1542,10 @@ export function measureHarnessSessionUsage(
     durationMs: Date.now() - Date.parse(session.startedAt),
     observation,
   });
-  return observation;
+  return {
+    ...observation,
+    subagents: subagentUsage(root, harnessStateDirectory(root), key, true),
+  };
 }
 
 export function measureHarnessUsage(root: string, sessionId: string) {
@@ -1538,7 +1557,10 @@ export function measureHarnessUsage(root: string, sessionId: string) {
   );
   if (!session)
     throw new Error("Begin the harness session before measuring usage");
-  return measureHarnessSessionUsage(root, session, sessionKey(input));
+  return {
+    ...measureHarnessSessionUsage(root, session, sessionKey(input)),
+    subagents: subagentUsage(root, harnessStateDirectory(root), sessionId),
+  };
 }
 
 export function observeHarnessSession(root: string, sessionId: string) {
@@ -2338,6 +2360,13 @@ const stopReentry = (input: HarnessInput) =>
 const protocolAdvisory = (reason: string) => ({
   systemMessage: `DotLn advisory: ${reason.replace(/\s+/g, " ")}; host permissions decide.`,
 });
+// Preserve budget provenance without adding fields to the host protocol.
+// Classification messages can also mention subagents; wording is not origin.
+const subagentAdvisories = new WeakSet<object>();
+const subagentAdvisory = (response: { systemMessage: string }) => {
+  subagentAdvisories.add(response);
+  return response;
+};
 const protocolRefusal = (
   event: HarnessEvent | "SessionStart",
   reason: string,
@@ -2547,8 +2576,17 @@ export async function evaluateHarnessHook(
   if (
     config.event === "SessionStart" &&
     input.hook_event_name === "SessionStart"
-  )
-    return {};
+  ) {
+    const warning = input.agent_id
+      ? null
+      : initializeSubagentCounter(
+          harnessStateDirectory(root),
+          input.session_id,
+        );
+    return warning
+      ? subagentAdvisory(protocolAdvisory(`subagent ${warning}`))
+      : {};
+  }
   if (input.hook_event_name !== config.event || !input.session_id)
     throw new Error("Hook input contract mismatch");
   const session = readJson(statePath(root, input), initialSession(), true);
@@ -2609,6 +2647,8 @@ export async function evaluateHarnessHook(
     ...(session.startedAt ? { startedAt: session.startedAt } : {}),
   });
   if (config.kind === "session") {
+    if (!input.agent_id)
+      initializeSubagentCounter(harnessStateDirectory(root), input.session_id);
     let additionalContext: string | undefined;
     let receipt: string | undefined;
     const intent = input.prompt?.trim() ?? "";
@@ -2761,6 +2801,11 @@ export async function evaluateHarnessHook(
         : {};
   }
   if (config.kind === "observe") {
+    if (
+      input.hook_event_name === "PostToolUse" &&
+      ["Agent", "Task"].includes(input.tool_name ?? "")
+    )
+      linkSubagentResult(harnessStateDirectory(root), input);
     const authorship = observeAuthorship(input, root, session);
     if (input.hook_event_name === "PreToolUse") {
       record(root, input, {
@@ -2854,6 +2899,9 @@ export async function evaluateHarnessHook(
     }
     return {
       systemMessage: [
+        subagentSummary(
+          subagentUsage(root, harnessStateDirectory(root), input.session_id),
+        ),
         observationBoundary(root, observationScope(), {
           stop: true,
           reentry: input.stop_hook_active === true,
@@ -2871,6 +2919,19 @@ export async function evaluateHarnessHook(
   }
   if (config.kind === "permission") {
     if (!config.envelope) throw new Error("Missing compiled authority");
+    const spawn = config.tools?.[input.tool_name ?? ""] === "spawn";
+    const admission =
+      spawn || input.agent_id
+        ? admitSubagentTool(root, harnessStateDirectory(root), input, spawn)
+        : undefined;
+    if (admission?.refusal)
+      return protocolRefusal(config.event, admission.refusal);
+    // A counter advisory never bypasses the existing permission classification.
+    if (admission?.advisory)
+      record(root, input, {
+        subagents: admission.usage,
+        advisory: admission.advisory,
+      });
     const scopeResult = scope ? readScopeRefusal(input, root, scope) : null;
     if (scopeResult) {
       record(root, input, {
@@ -2897,7 +2958,9 @@ export async function evaluateHarnessHook(
     );
     record(root, input, { effect, allowed: decision.authorized });
     return decision.authorized
-      ? {}
+      ? admission?.advisory
+        ? subagentAdvisory({ systemMessage: admission.advisory })
+        : {}
       : protocolAdvisory(`compiled authority does not permit ${effect}`);
   }
   if (!config.policy) throw new Error("Missing compiled unit");
@@ -3120,7 +3183,9 @@ export async function runHarnessHook(
       "runtime-unavailable",
     ].includes(reasonClass)
       ? reasonClass
-      : "classification";
+      : subagentAdvisories.has(response)
+        ? `subagent-budget:${response.systemMessage.includes("counter missing") ? "missing" : response.systemMessage.includes("unreadable") ? "unreadable" : response.systemMessage.includes("at least") ? "overlap" : "unavailable"}`
+        : "classification";
     if (
       !showHarnessAdvisory(
         observed?.input.session_id,

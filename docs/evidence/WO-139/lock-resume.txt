@@ -1,0 +1,91 @@
+PASS activation refuses hard; no event or projection write
+PASS activation refuses satisfied-by-close; no event or projection write
+PASS activation refuses satisfied-by-release; no event or projection write
+PASS activation refuses planning-deferral until WO-098; no event or projection write
+PASS activation refuses planning-deferral until candidate: later; no event or projection write
+PASS met closure and dated waiver activate; selected typed status is read-only; sibling log unchanged
+PASS conservative tokens never refuse activation
+Advisory: attestation recorded as supplied; claude-code unobserved effort Future Effort has no matching discovery observation.
+Advisory: attestation recorded as supplied; claude-code unobserved effort Future Effort has no matching discovery observation.
+Advisory: attestation recorded as supplied; codex-cli unobserved effort Future Effort has no matching discovery observation.
+Advisory: attestation recorded as supplied; codex-cli unobserved effort Future Effort has no matching discovery observation.
+Advisory: attestation recorded as supplied; made-up unobserved effort low has no matching discovery observation.
+Advisory: attestation recorded as supplied; made-up unobserved effort medium has no matching discovery observation.
+Advisory: attestation recorded as supplied; made-up unobserved effort max has no matching discovery observation.
+Advisory: attestation recorded as supplied; made-up unobserved effort unknown has no matching discovery observation.
+Advisory: attestation recorded as supplied; made-up unobserved effort constructor has no matching discovery observation.
+Advisory: attestation recorded as supplied; made-up unobserved effort toString has no matching discovery observation.
+Advisory: attestation recorded as supplied; made-up unobserved effort __proto__ has no matching discovery observation.
+Advisory: attestation recorded as supplied; made-up unobserved effort malformed has no matching discovery observation.
+Advisory: attestation recorded as supplied; made-up unobserved effort custom-selector has no matching discovery observation.
+Advisory: attestation recorded as supplied; unknown unknown effort ultra has no matching discovery observation.
+Advisory: attestation recorded as supplied; unknown unknown effort ultra code has no matching discovery observation.
+Advisory: attestation recorded as supplied; unknown unknown effort ultracode has no matching discovery observation.
+Advisory: attestation recorded as supplied; unknown unknown effort UltraCode has no matching discovery observation.
+time append: 10 events, all 8 types, valid host times and non-decreasing order in one process; invalid append preserved bytes
+time projection: mixed={"implementation":"unknown","verification":4000,"repair":3000,"finalReview":5000}; latest attempts, in-flight phases, activation reset, absent and backwards times checked
+time validation: 15 malformed values refuse with ordinal and preserve log/projection; valid leap day accepted
+time-blind current.md cmp: absent passed
+time-blind current.md cmp: reordered passed
+time-blind current.md cmp: backwards passed
+usage fixture: {"attempts":10,"elapsedMs":11000,"unknown":1}; 6 exact actor/phase groups; all three work-order groups and text numbers match
+usage privacy: every instrumented filesystem call avoided docs/control/local; ambient label ignored; stale projection and every segment preserved
+usage cmp: current.md, legacy log and both order segments byte-identical after both output forms and refused arguments
+usage source boundary: no subprocess or Git discovery; CLI and direct dispatcher reports agree
+account labels: 11 invalid forms, missing/duplicate flags and invalid env refused before append; a1/claude-2 accepted; env default and flag override checked through all four completion commands
+account projections: optional field stays absent in stored history; status/current render not-applicable; labelled status/current/index and report-header parity checked
+docs/control/local/account-labels.md
+usage cmp: legacy and every original order segment unchanged; local mapping ignored
+TAP version 13
+# Subtest: test-control-segments
+    # Subtest: synthetic interleaving: WO-901 ready-to-verify; WO-902 active
+    ok 1 - synthetic interleaving: WO-901 ready-to-verify; WO-902 active
+      ---
+      duration_ms: 92.977541
+      ...
+    # Subtest: activation owns storage: legacy appends remain legacy; new orders never span segments
+    ok 2 - activation owns storage: legacy appends remain legacy; new orders never span segments
+      ---
+      duration_ms: 1677.049792
+      ...
+    # Subtest: corrupt segments: path and ordinal reported; all observed commands preserve every control byte
+    ok 3 - corrupt segments: path and ordinal reported; all observed commands preserve every control byte
+      ---
+      duration_ms: 2962.698666
+      ...
+    # Subtest: per-segment byte-prefix proof: sibling additions pass; deletions and equivalent-JSON rewrites refuse
+    ok 4 - per-segment byte-prefix proof: sibling additions pass; deletions and equivalent-JSON rewrites refuse
+      ---
+      duration_ms: 6.036292
+      ...
+    # Subtest: named-order reactivation retains its segment while a sibling is open; active reactivation refuses
+    ok 5 - named-order reactivation retains its segment while a sibling is open; active reactivation refuses
+      ---
+      duration_ms: 2427.967708
+      ...
+    # Subtest: legacy comparison: observed events, unchanged bytes and v0.6.0 per-order states
+    ok 6 - legacy comparison: observed events, unchanged bytes and v0.6.0 per-order states
+      ---
+      duration_ms: 1.437792
+      ...
+    # Subtest: legacy times: byte-identical observation, observed named local refs, original global ordinals and source labels
+    ok 7 - legacy times: byte-identical observation, observed named local refs, original global ordinals and source labels
+      ---
+      duration_ms: 4923.960708
+      ...
+    1..7
+ok 1 - test-control-segments
+  ---
+  duration_ms: 12093.510542
+  ...
+1..1
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 12100.044834
+beacons: every lifecycle transition matches phase/verdict/effort/time; status and next preserve inode/ctime/size/mtime
+resume tests passed

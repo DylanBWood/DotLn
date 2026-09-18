@@ -58,13 +58,15 @@ const roleForPhase = {
   finalReview: "reviewer",
 };
 
-export function readDecisions(root) {
+export function readDecisions(root, { workOrder } = {}) {
   const directory = join(root, "docs/evidence");
   const decisions = [];
   if (!existsSync(directory)) return decisions;
   for (const name of readdirSync(directory)
     .sort()
-    .filter((name) => /^WO-\d{3}$/.test(name))) {
+    .filter(
+      (name) => /^WO-\d{3}$/.test(name) && (!workOrder || name === workOrder),
+    )) {
     const path = `docs/evidence/${name}/decisions.md`;
     if (!existsSync(join(root, path))) continue;
     const source = readFileSync(join(root, path), "utf8");

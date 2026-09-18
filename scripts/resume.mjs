@@ -28,6 +28,10 @@ import {
   renderControlUsage,
 } from "./lib/control-usage.mjs";
 import { requireLifecycleEvidence } from "./lib/lifecycle-evidence.mjs";
+import {
+  executorWriterRelease,
+  refreshExecutorIndex,
+} from "./lib/executor-handoff.mjs";
 import { executorEntryBriefing } from "./lib/executor-readiness.mjs";
 import { dependencyRefusal, readDependencies } from "./lib/dependencies.mjs";
 import {
@@ -732,6 +736,7 @@ const recordedBriefings = {
 
 export const main = async (argv = process.argv.slice(2)) => {
   const [action = "status", ...rawArgs] = argv;
+  let releaseExecutorWriter;
   reportHarnessRuntime(repoRoot);
   const { args, workOrder } = selectionArgs(rawArgs);
   let control = readControl(repoRoot);
@@ -856,6 +861,7 @@ export const main = async (argv = process.argv.slice(2)) => {
     case "implementation-ready": {
       requirePhase(state, "active");
       const actor = completionActor(action, args, state, "executor");
+      releaseExecutorWriter = await executorWriterRelease(repoRoot);
       const evidence = await requireLifecycleEvidence(
         repoRoot,
         action,
@@ -956,6 +962,7 @@ export const main = async (argv = process.argv.slice(2)) => {
     case "repair-complete": {
       requirePhase(state, "repairing");
       const actor = completionActor(action, args, state, "executor");
+      releaseExecutorWriter = await executorWriterRelease(repoRoot);
       const evidence = await requireLifecycleEvidence(
         repoRoot,
         action,
@@ -1082,52 +1089,66 @@ export const main = async (argv = process.argv.slice(2)) => {
       throw new Error(`unknown resume action: ${action}`);
   }
 
-  if (!["status", "times", "usage", "briefing"].includes(action)) {
-    control = readControl(repoRoot);
-    latestClosed = latestClosedOrder(
-      control,
-      repoRoot,
-      "HEAD",
-      branch ?? selected,
-    );
-    project(render(control, latestClosed));
-  }
-  // Informational readback, independent of token-counter availability and phase gates.
-  if (
-    process.env.CODEX_THREAD_ID &&
-    [
-      "status",
-      "next",
-      "briefing",
-      "fix",
-      "verify",
-      "final-review",
-      "implementation-ready",
-      "repair-complete",
-      "verification-result",
-      "final-review-result",
-    ].includes(action)
-  ) {
-    const report = await codexSessionReport(repoRoot);
-    message =
-      action === "status" && args.includes("--json")
-        ? JSON.stringify(
-            { ...JSON.parse(message), currentSession: report.session },
-            null,
-            2,
-          )
-        : `${message}\n${report.text}`;
-  }
-  if (!["status", "times", "usage"].includes(action)) {
-    const observationState = [
-      "activate",
-      "fix",
-      "verify",
-      "final-review",
-    ].includes(action)
-      ? (control.orders.get(selected)?.state ?? state)
-      : state;
-    message += `\n${await observedFactsReport(repoRoot, observationState, message)}`;
+  try {
+    if (!["status", "times", "usage", "briefing"].includes(action)) {
+      control = readControl(repoRoot);
+      latestClosed = latestClosedOrder(
+        control,
+        repoRoot,
+        "HEAD",
+        branch ?? selected,
+      );
+      project(render(control, latestClosed));
+    }
+    if (releaseExecutorWriter) await refreshExecutorIndex(repoRoot);
+    // Informational readback, independent of token-counter availability and phase gates.
+    if (
+      process.env.CODEX_THREAD_ID &&
+      [
+        "status",
+        "next",
+        "briefing",
+        "fix",
+        "verify",
+        "final-review",
+        "implementation-ready",
+        "repair-complete",
+        "verification-result",
+        "final-review-result",
+      ].includes(action)
+    ) {
+      const report = await codexSessionReport(repoRoot);
+      message =
+        action === "status" && args.includes("--json")
+          ? JSON.stringify(
+              { ...JSON.parse(message), currentSession: report.session },
+              null,
+              2,
+            )
+          : `${message}\n${report.text}`;
+    }
+    if (!["status", "times", "usage"].includes(action)) {
+      const observationState = [
+        "activate",
+        "fix",
+        "verify",
+        "final-review",
+      ].includes(action)
+        ? (control.orders.get(selected)?.state ?? state)
+        : state;
+      message += `\n${await observedFactsReport(repoRoot, observationState, message)}`;
+    }
+  } catch (error) {
+    if (releaseExecutorWriter)
+      throw new Error(
+        `Completion recorded; final handoff failed: ${error.message}. Do not repeat the transition.`,
+        { cause: error },
+      );
+    throw error;
+  } finally {
+    // The durable result has recorded. Release even if a later projection fails:
+    // retrying that transition is illegal, and Codex has no subsequent Stop hook.
+    releaseExecutorWriter?.();
   }
   process.stdout.write(`${message}\n`);
 };

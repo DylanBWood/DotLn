@@ -1,0 +1,55 @@
+TAP version 13
+# Subtest: WO-139 third admission succeeds; fourth and exhausted Workflow refuse; duplicate hooks and sessions remain independent
+ok 1 - WO-139 third admission succeeds; fourth and exhausted Workflow refuse; duplicate hooks and sessions remain independent
+  ---
+  duration_ms: 7.890083
+  ...
+# Subtest: WO-139 workflow children count once at their first attributed call, including rejection retries
+ok 2 - WO-139 workflow children count once at their first attributed call, including rejection retries
+  ---
+  duration_ms: 7.024667
+  ...
+# Subtest: WO-139 only observed result joins resolve direct/child overlap; mixed concurrency stays explicitly partial
+ok 3 - WO-139 only observed result joins resolve direct/child overlap; mixed concurrency stays explicitly partial
+  ---
+  duration_ms: 6.812375
+  ...
+# Subtest: WO-139 a direct child is not double charged before or after its exact result join
+ok 4 - WO-139 a direct child is not double charged before or after its exact result join
+  ---
+  duration_ms: 3.269917
+  ...
+# Subtest: WO-139 new direct spawns cannot overlap previously observed workflow children
+ok 5 - WO-139 new direct spawns cannot overlap previously observed workflow children
+  ---
+  duration_ms: 2.808417
+  ...
+# Subtest: WO-139 child observation persists when that child's first spawn request is refused
+ok 6 - WO-139 child observation persists when that child's first spawn request is refused
+  ---
+  duration_ms: 2.357792
+  ...
+# Subtest: WO-139 null disables refusal but preserves counting; zero denies, absent key defaults to 20
+ok 7 - WO-139 null disables refusal but preserves counting; zero denies, absent key defaults to 20
+  ---
+  duration_ms: 10.268875
+  ...
+# Subtest: WO-139 missing, malformed, non-file, locked counters and invalid budgets admit with named causes
+ok 8 - WO-139 missing, malformed, non-file, locked counters and invalid budgets admit with named causes
+  ---
+  duration_ms: 726.838875
+  ...
+# Subtest: WO-139 concurrent independent admissions serialize at the remaining unit
+ok 9 - WO-139 concurrent independent admissions serialize at the remaining unit
+  ---
+  duration_ms: 236.754083
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1143.305708

@@ -58,6 +58,17 @@ const executionAppendix = (before, after) => {
   return true;
 };
 
+/** Bind the entire approved order, including existing execution records;
+ * only the admitted release label is normalized. Later appendices are checked separately.
+ */
+export const executionAmendmentSource = (source) => {
+  const normalized = source.replace(
+    /^(# [^\r\n]+)\(v(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\)$/mu,
+    "$1(version assigned at activation)",
+  );
+  return normalized.trimEnd();
+};
+
 export const reassessments = (before, after, subject) => {
   const prefix = before.trimEnd();
   requireSamePlan(
@@ -109,6 +120,44 @@ export const reassessments = (before, after, subject) => {
   });
 };
 
+/** Repair an inherited in-place row edit without losing either assessment.
+ * Before commit, the workspace must restore all judged bytes and move every
+ * changed HEAD row, byte-for-byte, into an admitted dated appendix.
+ */
+export function capabilityHistoryRepair(before, committed, repaired, subject) {
+  reassessments(before, repaired, subject);
+  const oldLines = before.trimEnd().split(/\r?\n/u);
+  const headLines = committed.trimEnd().split(/\r?\n/u);
+  const appended = repaired.slice(before.trimEnd().length).split(/\r?\n/u);
+  const rowId = (line) =>
+    line.match(/^\|\s*`([a-z][a-z0-9-]*(?:\.[a-z0-9-]+)+)`[^|]*\|/u)?.[1];
+  requireSamePlan(
+    oldLines.length === headLines.length,
+    "capability history repair cannot hide added or removed committed lines",
+  );
+  const ids = [];
+  for (let i = 0; i < oldLines.length; i++) {
+    if (oldLines[i] === headLines[i]) continue;
+    const id = rowId(oldLines[i]);
+    const preserved = appended.indexOf(headLines[i]);
+    requireSamePlan(
+      id && id === rowId(headLines[i]) && preserved >= 0,
+      "capability history repair must preserve every changed committed row in a dated appendix",
+    );
+    appended.splice(preserved, 1);
+    ids.push(id);
+  }
+  requireSamePlan(
+    ids.length > 0,
+    "capability history repair has no changed rows",
+  );
+  return {
+    kind: "pending-capability-history-repair",
+    ids,
+    repairSourceHash: sha256(repaired),
+  };
+}
+
 /**
  * Preserve v1 receipt identity. This is a continuation comparison, not another
  * refutation and not a normalization change to its historical subject.
@@ -117,7 +166,12 @@ export function checkPlanContinuation(
   root,
   judged,
   current,
-  { workspace = false, dispositions = [] } = {},
+  {
+    workspace = false,
+    dispositions = [],
+    amendments = [],
+    allowCapabilityHistoryRepair = false,
+  } = {},
 ) {
   if (judged.hash === current.hash) return [];
   const original = committedReader(root, judged.revision);
@@ -188,6 +242,28 @@ export function checkPlanContinuation(
   for (const { path, workOrderId } of judged.orders) {
     let before = original.read(path);
     let after = read(path);
+    const amendment = amendments.find(
+      (row) =>
+        row.workOrderId === workOrderId &&
+        row.sourceOrderHash === sha256(executionAmendmentSource(before)) &&
+        row.orderHash ===
+          sha256(executionAmendmentSource(after).slice(0, row.orderLength)),
+    );
+    if (amendment) {
+      const normalized = executionAmendmentSource(after);
+      if (normalized.length !== amendment.orderLength)
+        executionAppendix(
+          normalized.slice(0, amendment.orderLength),
+          normalized,
+        );
+      updates.push({
+        path,
+        workOrderId,
+        kind: "authorized-execution-amendment",
+        decisionId: amendment.decisionId,
+      });
+      continue;
+    }
     if (
       adoptsCost &&
       !before.includes(LEGACY_COST_HEADER) &&
@@ -259,7 +335,7 @@ export function checkPlanContinuation(
               row.sourceCriterionHash === textHash(oldCriterion.text) &&
               row.criterionHash === textHash(newCriterion.text),
           ),
-          "changed criterion has no text-bound disposition",
+          `changed criterion has no text-bound disposition or authorized execution amendment: ${workOrderId} ${oldCriterion.id} (${path})`,
         );
         const start = after.indexOf("**Acceptance criteria");
         const target = after.indexOf(newCriterion.text, start);
@@ -328,8 +404,26 @@ export function checkPlanContinuation(
   if (!same(capabilityInputs(judged), capabilityInputs(current))) {
     const before = original.read(capabilityPath);
     const after = read(capabilityPath);
+    let capabilityUpdates;
+    try {
+      capabilityUpdates = reassessments(before, after, judged);
+    } catch (error) {
+      if (workspace || !allowCapabilityHistoryRepair) throw error;
+      requireSamePlan(
+        containedRegularFile(join(root, capabilityPath), root),
+        "capability history repair is not a contained regular file",
+      );
+      capabilityUpdates = [
+        capabilityHistoryRepair(
+          before,
+          after,
+          readFileSync(join(root, capabilityPath), "utf8"),
+          judged,
+        ),
+      ];
+    }
     updates.push(
-      ...reassessments(before, after, judged).map((update) => ({
+      ...capabilityUpdates.map((update) => ({
         path: capabilityPath,
         ...update,
       })),

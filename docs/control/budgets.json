@@ -1,5 +1,6 @@
 {
   "schemaVersion": 1,
+  "subagentCap": 20,
   "source": "WO-126 criteria 10 and 15; operator budget clarification during resume: next on 2026-09-09; operator direction during resume: next on 2026-09-14 (WO-044): artificial caps yield to needed rules and accuracy comes before efficiency, so the cold-start ceilings the shared no-guessing line touches carry real margin; operator direction during the 2026-09-17 vision-into-use planning dispatch (message 12): a cold-start ceiling that a reviewed rule breaches is raised in the same change to the measured bytes plus one 4 KB step with the rule named, or the breach is recorded as a dated acceptance here, never trimmed around and never left advisory across orders; the reviewer (16,587) and release-close (9,941) ceilings were raised on 2026-09-17 under that direction",
   "dispatches": {
     "executor": {
@@ -30,7 +31,7 @@
   "limits": {
     "coldStartBytes": {
       "executor": 20480,
-      "verifier": 16384,
+      "verifier": 20480,
       "reviewer": 20480,
       "release-close": 12288,
       "planner": 24576,
@@ -74,6 +75,14 @@
       "dispatch": "release-close",
       "ceiling": 12288,
       "reason": "Measured 9,941 bytes on 2026-09-17 against the 8,192 ceiling (the R1 replan pass recorded 8,865 on 2026-09-16 and left it advisory); raised by one 4 KB step under the operator's 2026-09-17 direction. Applies until a reviewed rule needs more."
+    },
+    {
+      "date": "2026-09-18",
+      "metric": "coldStartBytes.verifier",
+      "scope": null,
+      "dispatch": "verifier",
+      "ceiling": 20480,
+      "reason": "WO-139 measured 17,477 bytes in both generated roots against 16,384 after adding the shared root-budget batching rule, four-refusal boundary and operator-authorized planning-amendment instruction. Raise the ceiling by one 4 KB step under the standing operator direction; preserve all reviewed rules. Reassess when another reviewed rule needs more."
     }
   ],
   "unsetPolicy": "Collect observed usage first. The operator left token, dollar and PR-body ceilings unset; null is not zero and never triggers an invented cap.",

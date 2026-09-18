@@ -22,6 +22,12 @@ export function readBudgets(root) {
     throw new Error("Invalid process budget contract");
   const numberOrNull = (entry) =>
     entry === null || (Number.isFinite(entry) && entry >= 0);
+  if (
+    value.subagentCap !== undefined &&
+    value.subagentCap !== null &&
+    (!Number.isSafeInteger(value.subagentCap) || value.subagentCap < 0)
+  )
+    throw new Error("Invalid budget: subagentCap");
   for (const role of dispatchKinds) {
     if (
       !numberOrNull(value.dispatches?.[role]?.tokens) ||

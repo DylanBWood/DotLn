@@ -467,16 +467,18 @@ test("WO-132 spawn and classification advisories delegate to host permissions wh
     prompt: "Summarize the orders",
     subagent_type: "Explore",
   };
-  assert.notEqual(
-    invoke({ tool_name: "Agent", tool_input: agent }).permissionDecision,
-    "deny",
-  );
-  assert.notEqual(
-    invoke({
-      tool_name: "Task",
-      tool_input: { ...agent, isolation: "worktree" },
-    }).permissionDecision,
-    "deny",
+  const missingCounter = invoke({ tool_name: "Agent", tool_input: agent });
+  assert.equal(missingCounter.permissionDecision, undefined);
+  assert.match(missingCounter.systemMessage, /subagent.*counter missing/);
+  const repeatedBudget = invoke({
+    tool_name: "Task",
+    tool_input: { ...agent, isolation: "worktree" },
+  });
+  assert.equal(repeatedBudget.permissionDecision, undefined);
+  assert.equal(repeatedBudget.systemMessage, undefined);
+  assert.match(
+    advisoryRows(root, `${root}:spawn`).at(-1).advisory,
+    /subagent.*counter missing/,
   );
   const remote = invoke({
     tool_name: "Agent",
@@ -906,7 +908,8 @@ test("WO-132 all four completions admit missing gates, reads and counters; Stop 
   );
   assert.match(stopped.systemMessage, /DotLn advisory: pending /);
   assert.match(stopped.systemMessage, /do not block lifecycle completion/);
-  assert.match(stopped.systemMessage, /^Observed facts/);
+  assert.match(stopped.systemMessage, /^Subagents: 0\/20/);
+  assert.match(stopped.systemMessage, /^Observed facts/m);
   assert.equal(
     existsSync(join(root, "docs/control/local/harness/writer")),
     false,

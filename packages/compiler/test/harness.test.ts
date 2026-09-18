@@ -292,13 +292,16 @@ test("WO-132 both harness roles receive identical duties and the shared instruct
   assert.match(merged, /one writer per worktree on any branch, including main/);
   assert.match(merged, /success record during a live npm test/);
   assert.match(merged, /node scripts\/harness\.mjs evidence --stop/);
-  assert.match(merged, /three refusals \(WO-135\)/);
+  assert.match(merged, /four refusals \(WO-135, WO-139\)/);
   assert.match(
     merged,
     /planning\/ branches refuses repository writes outside docs\/ and root Markdown/,
   );
   assert.match(merged, /operator override:/);
-  assert.match(merged, /Codex carries the same duties as role text/);
+  assert.match(
+    merged,
+    /Codex carries the duties and cap as role text without automatic enforcement/,
+  );
   for (const file of availableBundle.files.filter(
     (file) =>
       file.path.endsWith(".mjs") && !file.path.endsWith("commit-msg.mjs"),

@@ -1,4 +1,4 @@
-# WO-139 — Subagent admission cap: a session's spawns are counted and refused at the admission points the hook can see, descendants are counted at their first attributable tool call, uncounted paths are reported, and the total-cap requirement stays open where the harness creates agents before any hook fires (version assigned at activation)
+# WO-139 — Subagent admission cap: a session's spawns are counted and refused at the admission points the hook can see, descendants are counted at their first attributable tool call, uncounted paths are reported, and the total-cap requirement stays open where the harness creates agents before any hook fires (v0.29.5)
 
 **Model:** any. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).

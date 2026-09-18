@@ -20,6 +20,14 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-139 activation completion (2026-09-18):** application `v0.29.5`, compiler
+`0.13.2` and skeleton `0.25.4` stage the observable subagent admission cap and
+the operator-expanded planning-continuation repair above local `v0.29.4`.
+This patch adds one hook refusal with explicit coverage limits and a typed
+execution-amendment record in the existing planning log. Existing receipts,
+hold semantics and package publication controls remain intact; no dependency
+is added. Independent verification and final review remain separate.
+
 **WO-135 activation completion (2026-09-17):** application `v0.29.3`, compiler
 `0.13.1` and skeleton `0.25.2` stage the planning-gate corrections above the
 observed local `v0.29.2` tag. This patch preserves receipt and public contract

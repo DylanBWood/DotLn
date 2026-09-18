@@ -1,0 +1,15 @@
+{
+  "probe": "WO-139 isolated runtime pin coverage",
+  "module": "packages/skeleton/dist/src/subagent-budget.js",
+  "modulePinned": false,
+  "snapshotIdentityChanged": false,
+  "generatedCheck": {
+    "files": 28,
+    "localTerms": {
+      "status": "unavailable"
+    }
+  },
+  "changedBuildDefaultCap": 21,
+  "installedHookDefaultCap": 20,
+  "installedBytesEqualBuild": false
+}

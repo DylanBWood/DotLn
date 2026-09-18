@@ -1,0 +1,245 @@
+{
+  "schemaVersion": 2,
+  "comparisonEdition": {
+    "schemaVersion": 1,
+    "subagentCap": 20,
+    "source": "WO-126 criteria 10 and 15; operator budget clarification during resume: next on 2026-09-09; operator direction during resume: next on 2026-09-14 (WO-044): artificial caps yield to needed rules and accuracy comes before efficiency, so the cold-start ceilings the shared no-guessing line touches carry real margin; operator direction during the 2026-09-17 vision-into-use planning dispatch (message 12): a cold-start ceiling that a reviewed rule breaches is raised in the same change to the measured bytes plus one 4 KB step with the rule named, or the breach is recorded as a dated acceptance here, never trimmed around and never left advisory across orders; the reviewer (16,587) and release-close (9,941) ceilings were raised on 2026-09-17 under that direction",
+    "dispatches": {
+      "executor": {
+        "tokens": null,
+        "costUsd": null
+      },
+      "verifier": {
+        "tokens": null,
+        "costUsd": null
+      },
+      "reviewer": {
+        "tokens": null,
+        "costUsd": null
+      },
+      "release-close": {
+        "tokens": null,
+        "costUsd": null
+      },
+      "planner": {
+        "tokens": null,
+        "costUsd": null
+      },
+      "refuter": {
+        "tokens": null,
+        "costUsd": null
+      }
+    },
+    "limits": {
+      "coldStartBytes": {
+        "executor": 20480,
+        "verifier": 20480,
+        "reviewer": 20480,
+        "release-close": 12288,
+        "planner": 24576,
+        "refuter": null
+      },
+      "fastGateMs": 120000,
+      "readCapBytes": 65536,
+      "sequenceBytes": 8192,
+      "prBodyBytes": null,
+      "passRefutationMs": 120000
+    },
+    "acceptances": [
+      {
+        "date": "2026-09-12",
+        "metric": "passRefutationMs",
+        "scope": "planning-dc998fb93c27e337",
+        "dispatch": "refuter",
+        "ceiling": 1800000,
+        "reason": "Operator accepted the timing overrun for this planning pass and authorized filing its completed one-hold review. This acceptance covers the original review, repeated canonical prompt generation after truncated output, receipt filing, and waiting within a 30-minute ceiling. It applies to this pass only and does not change the default 120-second limit or authorize broader review scope."
+      },
+      {
+        "date": "2026-09-15",
+        "metric": "passRefutationMs",
+        "scope": "planning-39243aa3f0fc8df2",
+        "dispatch": "refuter",
+        "ceiling": 1800000,
+        "reason": "Operator direction 2026-09-15 in the machinery stand-down dispatch (ignored capture SHA-256 19061ea60115a416bc536e4eae66faffc5549dfd9a33841d886bd51dffd8350f): free rein to spend the resources this pass needs. The acceptance covers one background goal review of the committed subject, its file-backed result and receipt filing within a 30-minute ceiling. It applies to this pass only; WO-132 criterion 11 removes the budget refusal for later passes."
+      },
+      {
+        "date": "2026-09-17",
+        "metric": "coldStartBytes.reviewer",
+        "scope": null,
+        "dispatch": "reviewer",
+        "ceiling": 20480,
+        "reason": "Measured 16,587 bytes on 2026-09-17 (installed CLAUDE.md plus the reviewer skill, both roots) against the 16,384 ceiling after the WO-132 stand-down and the WO-133 role-text regeneration; the operator's 2026-09-17 direction raises the ceiling by one 4 KB step rather than trimming reviewed rules. Applies until a reviewed rule needs more, when the same route records the next acceptance."
+      },
+      {
+        "date": "2026-09-17",
+        "metric": "coldStartBytes.release-close",
+        "scope": null,
+        "dispatch": "release-close",
+        "ceiling": 12288,
+        "reason": "Measured 9,941 bytes on 2026-09-17 against the 8,192 ceiling (the R1 replan pass recorded 8,865 on 2026-09-16 and left it advisory); raised by one 4 KB step under the operator's 2026-09-17 direction. Applies until a reviewed rule needs more."
+      },
+      {
+        "date": "2026-09-18",
+        "metric": "coldStartBytes.verifier",
+        "scope": null,
+        "dispatch": "verifier",
+        "ceiling": 20480,
+        "reason": "WO-139 measured 17,477 bytes in both generated roots against 16,384 after adding the shared root-budget batching rule, four-refusal boundary and operator-authorized planning-amendment instruction. Raise the ceiling by one 4 KB step under the standing operator direction; preserve all reviewed rules. Reassess when another reviewed rule needs more."
+      }
+    ],
+    "unsetPolicy": "Collect observed usage first. The operator left token, dollar and PR-body ceilings unset; null is not zero and never triggers an invented cap.",
+    "decision": "docs/evidence/WO-126/decisions.md#wo-126-d001"
+  },
+  "method": "Installed CLAUDE.md plus the installed role skill only; source bytes, no task documents or estimated tokens.",
+  "instruction": {
+    "path": "CLAUDE.md",
+    "bytes": 5280,
+    "previousBytes": 320
+  },
+  "profiles": [
+    {
+      "role": "executor",
+      "skillsRoot": ".claude/skills",
+      "path": ".claude/skills/dotln-executor/SKILL.md",
+      "skillBytes": 14849,
+      "bytes": 20129,
+      "previousBytes": 640,
+      "delta": 19489,
+      "ceiling": 20480,
+      "metric": "coldStartBytes.executor",
+      "verdict": "within"
+    },
+    {
+      "role": "verifier",
+      "skillsRoot": ".claude/skills",
+      "path": ".claude/skills/dotln-verifier/SKILL.md",
+      "skillBytes": 12197,
+      "bytes": 17477,
+      "previousBytes": 640,
+      "delta": 16837,
+      "ceiling": 20480,
+      "metric": "coldStartBytes.verifier",
+      "verdict": "within"
+    },
+    {
+      "role": "reviewer",
+      "skillsRoot": ".claude/skills",
+      "path": ".claude/skills/dotln-reviewer/SKILL.md",
+      "skillBytes": 13415,
+      "bytes": 18695,
+      "previousBytes": 640,
+      "delta": 18055,
+      "ceiling": 20480,
+      "metric": "coldStartBytes.reviewer",
+      "verdict": "within"
+    },
+    {
+      "role": "release-close",
+      "skillsRoot": ".claude/skills",
+      "path": ".claude/skills/dotln-release-close/SKILL.md",
+      "skillBytes": 6769,
+      "bytes": 12049,
+      "previousBytes": 640,
+      "delta": 11409,
+      "ceiling": 12288,
+      "metric": "coldStartBytes.release-close",
+      "verdict": "within"
+    },
+    {
+      "role": "planner",
+      "skillsRoot": ".claude/skills",
+      "path": ".claude/skills/dotln-planner/SKILL.md",
+      "skillBytes": 7841,
+      "bytes": 13121,
+      "previousBytes": 640,
+      "delta": 12481,
+      "ceiling": 24576,
+      "metric": "coldStartBytes.planner",
+      "verdict": "within"
+    },
+    {
+      "role": "refuter",
+      "skillsRoot": ".claude/skills",
+      "path": ".claude/skills/dotln-refuter/SKILL.md",
+      "skillBytes": 8498,
+      "bytes": 13778,
+      "previousBytes": 640,
+      "delta": 13138,
+      "ceiling": null,
+      "metric": "coldStartBytes.refuter",
+      "verdict": "unset"
+    },
+    {
+      "role": "executor",
+      "skillsRoot": ".agents/skills",
+      "path": ".agents/skills/dotln-executor/SKILL.md",
+      "skillBytes": 14849,
+      "bytes": 20129,
+      "previousBytes": 640,
+      "delta": 19489,
+      "ceiling": 20480,
+      "metric": "coldStartBytes.executor",
+      "verdict": "within"
+    },
+    {
+      "role": "verifier",
+      "skillsRoot": ".agents/skills",
+      "path": ".agents/skills/dotln-verifier/SKILL.md",
+      "skillBytes": 12197,
+      "bytes": 17477,
+      "previousBytes": 640,
+      "delta": 16837,
+      "ceiling": 20480,
+      "metric": "coldStartBytes.verifier",
+      "verdict": "within"
+    },
+    {
+      "role": "reviewer",
+      "skillsRoot": ".agents/skills",
+      "path": ".agents/skills/dotln-reviewer/SKILL.md",
+      "skillBytes": 13415,
+      "bytes": 18695,
+      "previousBytes": 640,
+      "delta": 18055,
+      "ceiling": 20480,
+      "metric": "coldStartBytes.reviewer",
+      "verdict": "within"
+    },
+    {
+      "role": "release-close",
+      "skillsRoot": ".agents/skills",
+      "path": ".agents/skills/dotln-release-close/SKILL.md",
+      "skillBytes": 6769,
+      "bytes": 12049,
+      "previousBytes": 640,
+      "delta": 11409,
+      "ceiling": 12288,
+      "metric": "coldStartBytes.release-close",
+      "verdict": "within"
+    },
+    {
+      "role": "planner",
+      "skillsRoot": ".agents/skills",
+      "path": ".agents/skills/dotln-planner/SKILL.md",
+      "skillBytes": 7841,
+      "bytes": 13121,
+      "previousBytes": 640,
+      "delta": 12481,
+      "ceiling": 24576,
+      "metric": "coldStartBytes.planner",
+      "verdict": "within"
+    },
+    {
+      "role": "refuter",
+      "skillsRoot": ".agents/skills",
+      "path": ".agents/skills/dotln-refuter/SKILL.md",
+      "skillBytes": 8498,
+      "bytes": 13778,
+      "previousBytes": 640,
+      "delta": 13138,
+      "ceiling": null,
+      "metric": "coldStartBytes.refuter",
+      "verdict": "unset"
+    }
+  ]
+}

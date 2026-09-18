@@ -7,6 +7,7 @@ import {
   checkPlanGate,
   overridePlanHold,
   disposePlanHold,
+  amendPlanOrder,
   requireChangedPlanEvidence,
   readReceipts,
   writePlanReceipt,
@@ -29,7 +30,7 @@ import {
 
 const toolRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const usage =
-  "plan subject | check | refute [--direct] [--scope pass|full] | refute --transport claude-cli-print|codex-cli-exec|fake [--slug <label>] [--model <model>] [--effort <level>] [--dispositions <file>] [--evidence-only] | dispose <receipt-id> <hold-id> <reason> | override <receipt-id> <hold-id> <reason> --capture <ignored-intake-file> --capture-hash sha256:<digest> [actor-flags]";
+  "plan subject | check | refute [--direct] [--scope pass|full] | refute --transport claude-cli-print|codex-cli-exec|fake [--slug <label>] [--model <model>] [--effort <level>] [--dispositions <file>] [--evidence-only] | dispose <receipt-id> <hold-id> <reason> | amend-order <WO-NNN> <WO-NNN-DNNN> <operator-authorization reason> | override <receipt-id> <hold-id> <reason> --capture <ignored-intake-file> --capture-hash sha256:<digest> [actor-flags]";
 const options = (args, allowed) => {
   const out = {};
   for (let i = 0; i < args.length; i++) {
@@ -125,6 +126,17 @@ export async function main(args = process.argv.slice(2), root = toolRoot) {
     return disposePlanHold(root, {
       receiptId: rest[0],
       holdId: rest[1],
+      reason: rest[2],
+    });
+  }
+  if (command === "amend-order") {
+    if (rest.length !== 3)
+      throw new Error(
+        "usage: plan amend-order <WO-NNN> <WO-NNN-DNNN> <operator-authorization reason>",
+      );
+    return amendPlanOrder(root, {
+      workOrderId: rest[0],
+      decisionId: rest[1],
       reason: rest[2],
     });
   }

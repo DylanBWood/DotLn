@@ -22,7 +22,11 @@ import { checkLocalTerms } from "./terms.mjs";
 import { containedRegularFile } from "./paths.mjs";
 import { runGit } from "./git.mjs";
 import { validateAccountLabel } from "./control-actor.mjs";
-import { checkPlanContinuation } from "./plan-continuation.mjs";
+import {
+  checkPlanContinuation,
+  executionAmendmentSource,
+} from "./plan-continuation.mjs";
+import { readDecisions } from "./meta.mjs";
 import { checkSequenceTopology, readIndex } from "../work-orders.mjs";
 
 export const RECEIPTS = "docs/planning/refutations";
@@ -383,6 +387,7 @@ const repairedCostBinding = (root, receipt, hold) => {
 /** Both historical dispositions and new control events bind accepted text. */
 export function criterionDispositions(receipts, events) {
   const bindings = events.flatMap((event) => {
+    if (event.type === "PlanExecutionAmended") return [];
     if (event.schemaVersion === 2) return [event];
     const receipt = receipts.find(
       (row) =>
@@ -831,6 +836,42 @@ export function readOverrides(root) {
     .filter(Boolean)
     .map((line) => {
       const event = json(line, "planning control log");
+      if (event.type === "PlanExecutionAmended") {
+        check(
+          exact(event, [
+            "schemaVersion",
+            "type",
+            "recordedAt",
+            "receiptId",
+            "receiptHash",
+            "workOrderId",
+            "sourceOrderHash",
+            "orderHash",
+            "orderLength",
+            "decisionId",
+            "decisionHash",
+            "reason",
+          ]) &&
+            event.schemaVersion === 3 &&
+            Number.isSafeInteger(event.orderLength) &&
+            event.orderLength > 0 &&
+            timestamp(event.recordedAt) &&
+            validReceiptId(event.receiptId) &&
+            /^WO-\d{3}$/u.test(event.workOrderId) &&
+            new RegExp(`^${event.workOrderId}-D\\d{3}$`, "u").test(
+              event.decisionId,
+            ) &&
+            [
+              event.receiptHash,
+              event.sourceOrderHash,
+              event.orderHash,
+              event.decisionHash,
+            ].every(validDigest) &&
+            text(event.reason),
+          "invalid execution-amendment event",
+        );
+        return event;
+      }
       if (event.schemaVersion === 2) {
         const override = event.type === "PlanHoldOverridden";
         check(
@@ -1067,6 +1108,118 @@ export async function disposePlanHold(
   });
 }
 
+const amendmentDecision = (root, decisionId) => {
+  const workOrderId = decisionId.slice(0, 6);
+  const path = `docs/evidence/${workOrderId}/decisions.md`;
+  check(
+    containedRegularFile(join(root, path), root),
+    "execution amendment decision must be a contained regular file",
+  );
+  const decision = readDecisions(root, { workOrder: workOrderId }).find(
+    (row) => row.id === decisionId,
+  );
+  check(decision, `execution amendment needs recorded decision ${decisionId}`);
+  const { path: decisionPath, workOrder, ...entry } = decision;
+  return { workOrder, hash: sha256(stable(entry)) };
+};
+const validateAmendment = (root, event, receipts) => {
+  const receipt = receipts.find(
+    (row) =>
+      row.receiptId === event.receiptId &&
+      row.receiptHash === event.receiptHash,
+  );
+  const order = receipt?.subject.orders.find(
+    (row) => row.workOrderId === event.workOrderId,
+  );
+  check(
+    order && event.recordedAt >= receipt.episode.completedAt,
+    "execution amendment names missing receipt/order or predates its receipt",
+  );
+  check(
+    sha256(
+      executionAmendmentSource(
+        committedReader(root, receipt.subject.revision).read(order.path),
+      ),
+    ) === event.sourceOrderHash,
+    "execution amendment source order binding differs",
+  );
+  const decision = amendmentDecision(root, event.decisionId);
+  check(
+    decision.workOrder === event.workOrderId &&
+      decision.hash === event.decisionHash,
+    "execution amendment decision binding differs",
+  );
+};
+
+/** Operator-authorized execution change, not a refutation or hold disposition. */
+export async function amendPlanOrder(
+  root,
+  { workOrderId, decisionId, reason, now = () => new Date().toISOString() },
+) {
+  return locked(root, async () => {
+    const receipts = await readReceipts(root);
+    const receipt = [...receipts]
+      .reverse()
+      .find((row) => row.pass.kind === "planning");
+    const order = receipt?.subject.orders.find(
+      (row) => row.workOrderId === workOrderId,
+    );
+    check(
+      order && text(reason),
+      "execution amendment requires an order in the current judged horizon and an authorization reason",
+    );
+    check(
+      new RegExp(`^${workOrderId}-D\\d{3}$`, "u").test(decisionId),
+      "execution amendment decision must belong to the order",
+    );
+    const sourceOrderHash = sha256(
+      executionAmendmentSource(
+        committedReader(root, receipt.subject.revision).read(order.path),
+      ),
+    );
+    const amendedSource = executionAmendmentSource(read(root, order.path));
+    const orderHash = sha256(amendedSource);
+    check(
+      sourceOrderHash !== orderHash,
+      "order has no substantive execution amendment",
+    );
+    const decision = amendmentDecision(root, decisionId);
+    const event = {
+      schemaVersion: 3,
+      type: "PlanExecutionAmended",
+      recordedAt: now(),
+      receiptId: receipt.receiptId,
+      receiptHash: receipt.receiptHash,
+      workOrderId,
+      sourceOrderHash,
+      orderHash,
+      orderLength: amendedSource.length,
+      decisionId,
+      decisionHash: decision.hash,
+      reason,
+    };
+    check(timestamp(event.recordedAt), "invalid execution amendment timestamp");
+    validateAmendment(root, event, receipts);
+    const prior = readOverrides(root).find(
+      (row) =>
+        row.type === event.type &&
+        row.receiptHash === event.receiptHash &&
+        row.workOrderId === workOrderId &&
+        row.orderHash === orderHash &&
+        row.decisionHash === decision.hash,
+    );
+    if (prior) return prior;
+    checkLocalTerms(root, [
+      { name: "execution-amendment-event", text: JSON.stringify(event) },
+    ]);
+    ensureDirectory(root, "docs/control");
+    appendFileSync(join(root, OVERRIDES), `${JSON.stringify(event)}\n`, {
+      mode: 0o644,
+    });
+    return event;
+  });
+}
+
 export function checkPassReceipt(
   pass,
   subject,
@@ -1139,7 +1292,11 @@ export async function checkPlanGate(root) {
   const localTerms = checkLocalTerms(root, []).status;
   const receipts = await readReceipts(root);
   const overrides = readOverrides(root);
-  for (const event of overrides)
+  for (const event of overrides) {
+    if (event.type === "PlanExecutionAmended") {
+      validateAmendment(root, event, receipts);
+      continue;
+    }
     check(
       receipts.some(
         (receipt) =>
@@ -1172,6 +1329,7 @@ export async function checkPlanGate(root) {
       ),
       "override names missing receipt or hold",
     );
+  }
   const { passes, enforcement } = planningPassScope(root);
   if (!enforcement)
     return {
@@ -1219,11 +1377,22 @@ export async function checkPlanGate(root) {
       committedSubject: subject.hash,
       workspaceSubject: observed.hash,
       committedUpdates: checkPlanContinuation(root, latest.subject, subject, {
+        allowCapabilityHistoryRepair: true,
         dispositions: criterionDispositions(receipts, overrides),
+        amendments: overrides.filter(
+          (row) =>
+            row.type === "PlanExecutionAmended" &&
+            row.receiptHash === latest.receiptHash,
+        ),
       }),
       workspaceUpdates: checkPlanContinuation(root, latest.subject, observed, {
         workspace: true,
         dispositions: criterionDispositions(receipts, overrides),
+        amendments: overrides.filter(
+          (row) =>
+            row.type === "PlanExecutionAmended" &&
+            row.receiptHash === latest.receiptHash,
+        ),
       }),
     };
   }

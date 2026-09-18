@@ -54,12 +54,14 @@ import {
 import {
   beginHarnessSession,
   measureHarnessSessionUsage,
+  measureHarnessUsage,
   harnessOutputObligations,
   harnessControl,
   harnessFeedbackFacts,
   harnessHostProcess,
   harnessOutputs,
   harnessProcessAlive,
+  harnessWriterView,
   evaluateHarnessHook,
   readHarnessOutput,
   releaseHarnessWriter,
@@ -72,6 +74,7 @@ import {
   harnessInstallation,
 } from "./lib/harness.mjs";
 import { termsCheck } from "./terms.mjs";
+import { executorWriterRelease } from "./lib/executor-handoff.mjs";
 import {
   compareObservedReads,
   countReads,
@@ -222,6 +225,179 @@ const input = (root, event, extra = {}) => ({
   hook_event_name: event,
   ...extra,
 });
+
+test("WO-139 Codex executor and fix completion automatically release after the final index", async () => {
+  const root = fixture();
+  try {
+    for (const path of [
+      "scripts/resume.mjs",
+      "scripts/work-orders.mjs",
+      "scripts/lib",
+      "packages/skeleton/src",
+    ])
+      cpSync(join(sourceRoot, path), join(root, path), { recursive: true });
+    rmSync(join(root, "docs/control/orders/WO-999.jsonl"));
+    write(
+      root,
+      "docs/work-orders/WO-999-fixture.md",
+      "# WO-999 — Fixture\n\n**Model:** fixture.\n**Effort:** executor any; verifier any; reviewer any.\n**Objective:** exercise completion ownership.\n",
+    );
+    write(
+      root,
+      "docs/planning/sequence.md",
+      "<!-- dotln-work-order-sequence:start -->\n- WO-999 — Fixture\n<!-- dotln-work-order-sequence:end -->\n",
+    );
+    const pkg = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
+    pkg.scripts["work-orders"] = "node scripts/work-orders.mjs";
+    write(root, "package.json", json(pkg));
+    const sessionId = "synthetic-session";
+    const actor = [
+      "--harness",
+      "codex-cli",
+      "--harness-version",
+      "fixture",
+      "--model",
+      "fixture",
+      "--effort",
+      "high",
+      "--source",
+      "self-reported",
+    ];
+    const resume = (...args) =>
+      spawnSync(process.execPath, ["scripts/resume.mjs", ...args], {
+        cwd: root,
+        encoding: "utf8",
+        env: { ...process.env, CODEX_THREAD_ID: sessionId },
+      });
+    const pass = (...args) => {
+      const result = resume(...args);
+      assert.equal(result.status, 0, result.stderr);
+      return result;
+    };
+    pass("activate", "WO-999", "docs/work-orders/WO-999-fixture.md");
+    const acquire = (id = sessionId) => {
+      assert.equal(
+        allowed(
+          invoke(
+            root,
+            "concurrent-work-requires-worktrees",
+            input(root, "PreToolUse", {
+              session_id: id,
+              tool_name: "Write",
+              tool_input: { file_path: join(root, "fixture.ts") },
+            }),
+          ),
+        ),
+        true,
+      );
+      assert.equal(
+        harnessWriterView(root).alive,
+        true,
+        "the host remains alive through handoff",
+      );
+    };
+    acquire();
+    pass("next");
+    assert.equal(harnessWriterView(root).reserved, true);
+    assert.notEqual(resume("implementation-ready").status, 0);
+    assert.equal(
+      harnessWriterView(root).reserved,
+      true,
+      "invalid actor flags retain ownership",
+    );
+    write(root, "fixture.ts", "export const value = 1;  \n");
+    assert.notEqual(resume("implementation-ready", ...actor).status, 0);
+    assert.equal(
+      harnessWriterView(root).reserved,
+      true,
+      "a failed diff check retains ownership",
+    );
+    write(root, "fixture.ts", "export const value = 1;\n");
+    pass("implementation-ready", ...actor);
+    assert.equal(harnessWriterView(root).reserved, false);
+    assert.match(
+      readFileSync(join(root, "docs/work-orders/README.md"), "utf8"),
+      /ready-to-verify/,
+    );
+    const indexCheck = spawnSync(
+      process.execPath,
+      ["scripts/work-orders.mjs", "index", "--check"],
+      { cwd: root, encoding: "utf8" },
+    );
+    assert.equal(indexCheck.status, 0, indexCheck.stderr);
+    // A different verifier can acquire immediately without operator recovery.
+    acquire("verifier-session");
+    releaseHarnessWriter(
+      root,
+      input(root, "Stop", { session_id: "verifier-session" }),
+    );
+    pass("verify");
+    write(
+      root,
+      "docs/verifications/WO-999/VER-001.md",
+      '# Fixture finding\n\n**Actor attestation:** {"harness":"codex-cli","harnessVersion":"fixture","model":"fixture","effort":"high","source":"self-reported"}\n',
+    );
+    pass("verification-result", "fail", ...actor);
+    acquire();
+    pass("fix");
+    assert.equal(
+      harnessWriterView(root).reserved,
+      true,
+      "repair dispatch is not a handoff",
+    );
+    assert.notEqual(resume("repair-complete").status, 0);
+    assert.equal(harnessWriterView(root).reserved, true);
+    pass("repair-complete", ...actor);
+    assert.equal(harnessWriterView(root).reserved, false);
+    acquire();
+    pass("fix");
+    write(root, "docs/work-orders/README.md", "stale index\n");
+    write(
+      root,
+      "docs/work-orders/README.md.tmp",
+      "preserved interrupted projection\n",
+    );
+    const interrupted = resume("repair-complete", ...actor);
+    assert.notEqual(interrupted.status, 0);
+    assert.match(
+      interrupted.stderr,
+      /Completion recorded; final handoff failed:.*EEXIST/,
+    );
+    assert.match(interrupted.stderr, /Do not repeat the transition/);
+    assert.equal(
+      JSON.parse(pass("status", "--json").stdout).phase,
+      "ready-to-verify",
+    );
+    assert.equal(
+      harnessWriterView(root).reserved,
+      false,
+      "a post-append projection failure cannot strand the writer",
+    );
+    const release = await executorWriterRelease(root, sessionId);
+    release();
+    assert.equal(
+      harnessWriterView(root).reserved,
+      false,
+      "cleanup is idempotent",
+    );
+    acquire("verifier-session");
+    const foreign = harnessWriterView(root);
+    release();
+    assert.deepEqual(
+      harnessWriterView(root),
+      foreign,
+      "a subsequent holder is untouched",
+    );
+    (await executorWriterRelease(root, ""))();
+    assert.deepEqual(
+      harnessWriterView(root),
+      foreign,
+      "missing session identity never guesses ownership",
+    );
+  } finally {
+    removeFixture(root, { recursive: true });
+  }
+});
 const stopUnits = new Set([
   "verify-app-before-done",
   "no-partial-completion",
@@ -283,6 +459,133 @@ function invoke(root, name, payload, removed = false) {
 const allowed = (result) =>
   result.decision !== "block" &&
   result.hookSpecificOutput?.permissionDecision !== "deny";
+
+test("WO-139 generated permission, observer, Stop and usage share the root subagent cap", () => {
+  const root = fixture();
+  try {
+    write(root, "docs/control/budgets.json", json({ subagentCap: 3 }));
+    beginHarnessSession(root, "synthetic-session", "executor");
+    const call = (id, tool = "Agent", extra = {}) =>
+      input(root, "PreToolUse", {
+        tool_name: tool,
+        tool_use_id: id,
+        tool_input: {},
+        ...extra,
+      });
+    for (const id of ["one", "two", "three"]) {
+      const payload = call(id);
+      assert.equal(allowed(invoke(root, "permissions", payload)), true);
+      assert.equal(allowed(invoke(root, "permissions", payload)), true);
+      // Other PreToolUse hooks may observe the invocation but never charge it.
+      invoke(root, "concurrent-work-requires-worktrees", payload);
+    }
+    assert.match(
+      invoke(root, "permissions", call("four")).hookSpecificOutput
+        .permissionDecisionReason,
+      /count 3, cap 3.*subagentCap/,
+    );
+    assert.equal(
+      allowed(invoke(root, "permissions", call("workflow", "Workflow"))),
+      false,
+    );
+    const row = measureHarnessUsage(root, "synthetic-session").subagents;
+    assert.equal(row.count, 3);
+    assert.equal(row.cap, 3);
+    assert.match(
+      invoke(root, "finish", input(root, "Stop")).systemMessage,
+      /Subagents: 3\/3.*uncounted remainder unknown/,
+    );
+    const counter = readdirSync(join(root, "docs/control/local/harness")).find(
+      (name) => name.endsWith(".subagents.json"),
+    );
+    rmSync(join(root, "docs/control/local/harness", counter));
+    assert.match(
+      invoke(root, "permissions", call("missing")).systemMessage,
+      /counter missing/,
+    );
+    const active = beginGateRun(root, "npm test");
+    try {
+      assert.equal(
+        allowed(
+          invoke(
+            root,
+            "permissions",
+            call("write", "Write", {
+              agent_id: "child",
+              tool_input: { file_path: "package.json", content: "{}" },
+            }),
+          ),
+        ),
+        false,
+      );
+    } finally {
+      active.release();
+    }
+  } finally {
+    removeFixture(root, { recursive: true, force: true });
+  }
+});
+
+test("WO-139 cap-module-only changes refresh the runtime and snapshot damage is detected", () => {
+  const root = fixture();
+  beginHarnessSession(root, "synthetic-session", "executor");
+  const options = { runtimeRoot: root };
+  const modulePath = "packages/skeleton/dist/src/subagent-budget.js";
+  try {
+    const previous = configFor(root, "permissions").runtime;
+    const original = readFileSync(join(root, modulePath), "utf8");
+    const changed = original
+      .replaceAll("return 20;", "return 21;")
+      .replace(
+        "value.subagentCap === undefined ? 20 :",
+        "value.subagentCap === undefined ? 21 :",
+      );
+    assert.notEqual(changed, original);
+    write(root, modulePath, changed);
+    emitHarness(root, options);
+    const current = configFor(root, "permissions").runtime;
+    assert.notEqual(current.snapshot, previous.snapshot);
+    assert.ok(current.files.some((file) => file.path === modulePath));
+    const installed = join(root, current.snapshot, modulePath);
+    assert.equal(readFileSync(installed, "utf8"), changed);
+    assert.equal(
+      readFileSync(join(root, previous.snapshot, modulePath), "utf8"),
+      original,
+    );
+    assert.equal(checkHarness(root, options).files, 28);
+    assert.match(
+      invoke(root, "finish", input(root, "Stop")).systemMessage,
+      /^Subagents: 0\/21/,
+    );
+
+    for (const damage of ["changed", "missing"]) {
+      if (damage === "changed") writeFileSync(installed, original);
+      else rmSync(installed);
+      assert.throws(
+        () => checkHarness(root, options),
+        /harness drift: pinned snapshot missing or changed .*subagent-budget\.js/,
+      );
+      const response = invoke(
+        root,
+        "permissions",
+        input(root, "PreToolUse", {
+          tool_name: "Agent",
+          tool_use_id: damage,
+          tool_input: {},
+        }),
+      );
+      assert.match(
+        response.systemMessage,
+        damage === "changed"
+          ? /DotLn advisory: pins-differ/
+          : /DotLn advisory: snapshot-missing/,
+      );
+      assert.notEqual(response.hookSpecificOutput?.permissionDecision, "deny");
+    }
+  } finally {
+    removeFixture(root, { recursive: true, force: true });
+  }
+});
 
 test("WO-067 compiler-only release installs a fresh compatible harness snapshot", () => {
   const root = fixture();
@@ -1232,7 +1535,7 @@ test("WO-132 hooks preserve boundary observations and delegate non-writer judgme
         row.advisory,
         /^DotLn advisory: pending .*verify-app-before-done/m,
       );
-      assert.match(row.advisory, /^Observed facts/);
+      assert.match(row.advisory, /^Observed facts/m);
       assert.equal(
         row.advisory
           .split("\n")
@@ -3364,7 +3667,10 @@ test("WO-132 missing process-cost counters record unknown at the current dispatc
       .trim()
       .split("\n")
       .map(JSON.parse);
-    assert.deepEqual(rows.at(-1).observation, observation);
+    const { subagents, ...processObservation } = observation;
+    assert.deepEqual(rows.at(-1).observation, processObservation);
+    assert.equal(subagents.countKind, "unknown");
+    assert.equal(subagents.reason, "counter missing");
   } finally {
     removeFixture(root, { recursive: true });
   }
