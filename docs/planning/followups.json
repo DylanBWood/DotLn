@@ -5926,6 +5926,20 @@
           "title": "Candidate — DotLn-owned authority with minimal native harness restrictions",
           "summary": "## Candidate — DotLn-owned authority with minimal native harness restrictions Operator direction during WO-119 (2026-09-16): reach an operating mode as soon as evidence supports it in which native Claude and Codex harness sandboxes can be disabled and Claude's settings have nearly empty allow/deny lists. The source of permissions, security and authority is the equipped DotLn supports, build and role. The operator clarified the assurance requirement: faithful runtime enforcement plus adversarial tests, including attempts to bypass the declared authority. See the [ideation receipt](../evidence/WO-119/ideation-authority.md). This candidate asks planning to identify the earliest justified route ",
           "missing": false
+        },
+        {
+          "hash": "c05e3ab9bb4cc58c69fd54cb3642db74b89f98327f3c6dc205d5626fd32bca4d",
+          "ref": "docs/product/03-architecture.md#candidate--dotln-owned-authority-with-minimal-native-harness-restrictions",
+          "title": "Candidate — DotLn-owned authority with minimal native harness restrictions",
+          "summary": "## Candidate — DotLn-owned authority with minimal native harness restrictions Operator direction during WO-119 (2026-09-16): reach an operating mode as soon as evidence supports it in which native Claude and Codex harness sandboxes can be disabled and Claude's settings have nearly empty allow/deny lists. The source of permissions, security and authority is the equipped DotLn supports, build and role. The operator clarified the assurance requirement: faithful runtime enforcement plus adversarial tests, including attempts to bypass the declared authority. See the [ideation receipt](../evidence/WO-119/ideation-authority.md). This candidate asks planning to identify the earliest justified route ",
+          "missing": false
+        },
+        {
+          "hash": "e0962320a43246cec49ee0710adf588d41142e316e2232b65886be2e6e601292",
+          "ref": "docs/product/03-architecture.md#candidate--dotln-owned-authority-with-minimal-native-harness-restrictions",
+          "title": "Candidate — DotLn-owned authority with minimal native harness restrictions",
+          "summary": "## Candidate — DotLn-owned authority with minimal native harness restrictions Operator direction during WO-119 (2026-09-16): reach an operating mode as soon as evidence supports it in which native Claude and Codex harness sandboxes can be disabled and Claude's settings have nearly empty allow/deny lists. The source of permissions, security and authority is the equipped DotLn supports, build and role. The operator clarified the assurance requirement: faithful runtime enforcement plus adversarial tests, including attempts to bypass the declared authority. See the [ideation receipt](../evidence/WO-119/ideation-authority.md). This candidate asks planning to identify the earliest justified route ",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -6648,6 +6662,111 @@
           "ref": "docs/evidence/WO-139/decisions.md#wo-139-d006",
           "title": "WO-139-D006: Pin the imported cap module in the existing runtime declaration and mark actual budget advisories at their source so classification throttling remains independent; reconcile the Stop fixt",
           "summary": "{ \"id\": \"WO-139-D006\", \"date\": \"2026-09-18\", \"dispatch\": \"resume: fix\", \"decision\": \"Pin the imported cap module in the existing runtime declaration and mark actual budget advisories at their source so classification throttling remains independent; reconcile the Stop fixture with its two preserved sections.\", \"evidence\": [ \"docs/final-reviews/WO-139/FINAL-001.md F1 and F2\", \"scripts/lib/harness.mjs runtimeFiles\", \"packages/skeleton/src/harness-host.ts advisory selection\", \"scripts/test-process-debt.mjs\" ], \"rejected\": [ \"NoOp leaves installed behavior stale and the required review gate failing.\", \"Matching the word subagent cannot distinguish budget provenance from remote-agent classificatio",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-a6c9c74c8d6e93f3",
+      "key": "decision:docs/evidence/WO-054/decisions.md#wo-054-d001",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "0f92af4f657e8592dde15480de7029ac76d01d82b9db7a383f484840ec77a50c",
+          "ref": "docs/evidence/WO-054/decisions.md#wo-054-d001",
+          "title": "WO-054-D001: Add a sealed worktree-snapshot profile with a closed WorkOrder contract and host-run named tests in fresh confined copies; preserve legacy verification semantics and the common acceptance",
+          "summary": "{ \"id\": \"WO-054-D001\", \"date\": \"2026-09-18\", \"dispatch\": \"resume: next\", \"decision\": \"Add a sealed worktree-snapshot profile with a closed WorkOrder contract and host-run named tests in fresh confined copies; preserve legacy verification semantics and the common acceptance fold.\", \"evidence\": [ \"docs/work-orders/WO-054-verification-over-real-worktree.md\", \"docs/product/02-domain-model.md#independent-verification-v1\", \"docs/product/03-architecture.md#ports-what-keeps-work-flavored-verticals-pluggable\", \"packages/skeleton/src/source-change-worktree.ts\", \"packages/skeleton/src/discovery-sandbox.ts\", \"packages/compiler/test/verification.test.ts\" ], \"rejected\": [ { \"option\": \"NoOp\", \"reason\": \"Th",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-55e3f659c9e8e518",
+      "key": "decision:docs/evidence/WO-054/decisions.md#wo-054-d002",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "4efd185a30d00ab92e44aad3ed53b6dee9a6d43d23d5e58b3ed8ccd17f52ad41",
+          "ref": "docs/evidence/WO-054/decisions.md#wo-054-d002",
+          "title": "WO-054-D002: Add a distinct Codex post-compaction continuation adapter for the existing saved session and unfinished work order, with compact context restoration and one automatic premature-stop retry",
+          "summary": "{ \"id\": \"WO-054-D002\", \"date\": \"2026-09-18\", \"dispatch\": \"scope expand:\", \"decision\": \"Add a distinct Codex post-compaction continuation adapter for the existing saved session and unfinished work order, with compact context restoration and one automatic premature-stop retry; keep lifecycle dispatch, writer ownership and operator interruption independent.\", \"evidence\": [ \"docs/work-orders/WO-054-verification-over-real-worktree.md#operator-scope-expansion--2026-09-18\", \"packages/skeleton/src/harness-host.ts\", \"packages/skeleton/src/loadouts/contributor.ts\", \"https://learn.chatgpt.com/docs/hooks\" ], \"rejected\": [ { \"option\": \"NoOp or only stronger role wording\", \"reason\": \"The operator reports ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-64dad83566b2694b",
+      "key": "decision:docs/evidence/WO-054/decisions.md#wo-054-d003",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "66617e2d56299f6ce0c629f5ad5512b0bc04ad8a0f6d235dd2268ad0a9461c3f",
+          "ref": "docs/evidence/WO-054/decisions.md#wo-054-d003",
+          "title": "WO-054-D003: Repair VER-001 F1/F2/F4 with the existing generated-code format exemption, bounded explicit-stop recognition and independent stop suspension; correct F3/F5/F6/F7 documentation to the obse",
+          "summary": "{ \"id\": \"WO-054-D003\", \"date\": \"2026-09-18\", \"dispatch\": \"resume: fix\", \"decision\": \"Repair VER-001 F1/F2/F4 with the existing generated-code format exemption, bounded explicit-stop recognition and independent stop suspension; correct F3/F5/F6/F7 documentation to the observed boundaries.\", \"evidence\": [ \"docs/verifications/WO-054/VER-001.md\", \"packages/compiler/src/codex-continuation.mjs\", \"scripts/test-codex-continuation.mjs\", \"packages/skeleton/src/verification-worktree.ts\", \"packages/skeleton/src/reactor.ts\", \"packages/compiler/src/verification.ts\" ], \"rejected\": [ { \"option\": \"NoOp\", \"reason\": \"Generated code breaks the document gate and ordinary stop directives fail to suspend continuat",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-c6dce0e659a830f1",
+      "key": "decision:docs/evidence/WO-054/decisions.md#wo-054-d004",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "6a73663db4e43a0318c7669a855735a881395802ed5e510bf7beeb9b13229ce3",
+          "ref": "docs/evidence/WO-054/decisions.md#wo-054-d004",
+          "title": "WO-054-D004: Withdraw the expanded natural-language keyword parser as the proposed repair. Record the unnecessary detour and obtain the operator's intended continuation behavior before implementing a ",
+          "summary": "{ \"id\": \"WO-054-D004\", \"date\": \"2026-09-18\", \"dispatch\": \"resume: fix; operator conversation-only correction\", \"decision\": \"Withdraw the expanded natural-language keyword parser as the proposed repair. Record the unnecessary detour and obtain the operator's intended continuation behavior before implementing a replacement.\", \"evidence\": [ \"docs/verifications/WO-054/VER-001.md#f2--major-common-explicit-stop-wordings-do-not-suspend-codex-continuation\", \"packages/compiler/src/codex-continuation.mjs\", \"scripts/test-codex-continuation.mjs\", \"https://learn.chatgpt.com/docs/hooks#stop\", \"https://learn.chatgpt.com/docs/hooks#interrupt\" ], \"rejected\": [ { \"option\": \"Keep extending stop/pause/cancel an",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-027ce99da6c570df",
+      "key": "decision:docs/evidence/WO-054/decisions.md#wo-054-d005",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "5450bbf02f9f9794f142fb0fc18ab5fa95a3b88850b92af50be0f2070b9d280e",
+          "ref": "docs/evidence/WO-054/decisions.md#wo-054-d005",
+          "title": "WO-054-D005: Keep compaction task restoration and its bounded automatic wake-up for the observed old-message-reply then idle failure. Remove conversational parsing, the separate pause latch and the cu",
+          "summary": "{ \"id\": \"WO-054-D005\", \"date\": \"2026-09-18\", \"dispatch\": \"operator clarification during resume: fix\", \"decision\": \"Keep compaction task restoration and its bounded automatic wake-up for the observed old-message-reply then idle failure. Remove conversational parsing, the separate pause latch and the custom Interrupt hook; preserve existing native interruption and explicit recovery controls.\", \"evidence\": [ \"docs/work-orders/WO-054-verification-over-real-worktree.md#operator-scope-expansion--2026-09-18\", \"docs/evidence/WO-054/decisions.md#wo-054-d004\", \"https://learn.chatgpt.com/docs/hooks#stop\", \"https://learn.chatgpt.com/docs/hooks#interrupt\" ], \"rejected\": [ { \"option\": \"Either option in th",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-f1c7a256bec46737",
+      "key": "decision:docs/evidence/WO-054/decisions.md#wo-054-d006",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "84baf25590f659e79604ff7399bcc4e00e994fbec158d96fc2ec9dd74a11999b",
+          "ref": "docs/evidence/WO-054/decisions.md#wo-054-d006",
+          "title": "WO-054-D006: Raise the executor cold-start ceiling from 20,480 to 24,576 bytes and release-close from 12,288 to 16,384 bytes; record the measured rule growth and leave efficiency redesign for the oper",
+          "summary": "{ \"id\": \"WO-054-D006\", \"date\": \"2026-09-18\", \"dispatch\": \"resume: fix; operator budget direction\", \"decision\": \"Raise the executor cold-start ceiling from 20,480 to 24,576 bytes and release-close from 12,288 to 16,384 bytes; record the measured rule growth and leave efficiency redesign for the operator's later pass.\", \"evidence\": [ \"docs/verifications/WO-054/VER-002.md#n1--major-the-generated-role-text-breaches-two-cold-start-ceilings-which-are-left-advisory\", \"docs/product/07-execution-guide.md#goal-aligned-decisions\", \"docs/control/budgets.json\", \"scripts/lib/process-budget.mjs\" ], \"rejected\": [ { \"option\": \"NoOp or only accept the breach\", \"reason\": \"The operator explicitly chose to incre",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-fe8f162b7d022512",
+      "key": "decision:docs/evidence/WO-054/decisions.md#wo-054-d007",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "3da92015040bdd07e32a8a3f1e31f85e73692b270f28d2aec0296664f1730151",
+          "ref": "docs/evidence/WO-054/decisions.md#wo-054-d007",
+          "title": "WO-054-D007: Treat a bare ideation: message as the documented full intake (capture, clean-room screen, synthesis, ledger entry, product write-back and receipt) and nothing beyond it. Record the verifi",
+          "summary": "{ \"id\": \"WO-054-D007\", \"date\": \"2026-09-18\", \"dispatch\": \"operator ideation: during resume: verify (VER-003), with follow-up corrections at 2026-09-18T20:45Z, 20:46Z and 20:47Z\", \"kind\": \"correction\", \"decision\": \"Treat a bare ideation: message as the documented full intake (capture, clean-room screen, synthesis, ledger entry, product write-back and receipt) and nothing beyond it. Record the verifier's handling of this intake as a failure under shifting the burden to the intervenor.\", \"misread\": \"The verifier began checking this session's sandbox configuration, which the ideation did not ask for. After the operator said to take note of the ideation and that's it, the verifier stopped at raw ",
           "missing": false
         }
       ],
