@@ -17,3 +17,4 @@ corpus/manifests/
 packages/console/fixtures/inputs/
 packages/console/fixtures/expected/
 .claude/hooks/
+.codex/hooks/

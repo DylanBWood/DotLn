@@ -1,0 +1,139 @@
+{
+  "probe": "native-codex-generated-dotln-continuation",
+  "cliVersion": "0.155.0",
+  "requestedModel": "gpt-6-astra",
+  "requestedEffort": "ultra",
+  "effectiveEffort": "not independently reported",
+  "generatedSurfaceSha256": {
+    ".codex/config.toml": "fc1e5fe1a12f023b0cfd1811ce4e39ca4a2ee06973effc8398f58ccf35a25131",
+    ".codex/hooks.json": "21d689610c67f577184e6b7b6f075653c2f3d63f0819ac2da1074be2ccc5f860",
+    ".codex/hooks/continuation.mjs": "3cc825eeaf5504e52691c13a42d758f7a773a6680786c645cfc1ef07c09c1505"
+  },
+  "generation": "harnessInstallation().files from scripts/lib/harness.mjs after build, with final Stop precheck, 15-second status timeout and 30-second hook timeout.",
+  "fixtureBoundary": {
+    "native": "Actual installed Codex runtime, automatic compaction events, project hook discovery, model requests, Stop continuation and foreground output write.",
+    "synthetic": "Canonical status reports active WO-999; session record expects executor ImplementationReady; writer query reports the initialized actor. These are scratch host fixtures, not production lifecycle execution.",
+    "instrumentation": "Generated hooks.json and config.toml remain unchanged. Its hook entry delegates through an inspected wrapper that initializes synthetic session/actor records on the first native event, then executes byte-identical generated continuation code and records outputs. Wrapper adds no model context or continuation decision.",
+    "historicalQuestion": "Prompt identifies the already-answered idle/status side question as historical. Selected work-order ID is absent from user prompt.",
+    "limitations": [
+      "Does not reproduce the entire desktop-app conversation or establish hooks are activated there.",
+      "Writer ownership and canonical lifecycle state are synthetic fixture observations.",
+      "No live child-agent behavior was exercised."
+    ]
+  },
+  "invocationShape": [
+    "codex",
+    "exec",
+    "--ignore-user-config",
+    "--ignore-rules",
+    "--ephemeral",
+    "--dangerously-bypass-hook-trust",
+    "--sandbox",
+    "workspace-write",
+    "--model",
+    "gpt-6-astra",
+    "-c",
+    "model_reasoning_effort=\"ultra\"",
+    "-c",
+    "model_auto_compact_token_limit=12000",
+    "-c",
+    "projects={\"<SCRATCH>\"={trust_level=\"trusted\"}}",
+    "--json",
+    "-"
+  ],
+  "hookObservations": [
+    {
+      "event": "UserPromptSubmit",
+      "output": {},
+      "status": 0
+    },
+    {
+      "event": "PostCompact",
+      "trigger": "auto",
+      "output": {},
+      "status": 0
+    },
+    {
+      "event": "SessionStart",
+      "source": "compact",
+      "output": {
+        "hookSpecificOutput": {
+          "hookEventName": "SessionStart",
+          "additionalContext": "DotLn compaction continuation: this session is the executor for WO-999, phase active; its recorded completion event ImplementationReady is still outstanding. Continue the authorized unfinished task from the compacted handoff and current worktree. The last conversational message may be old steering or an already answered side question; do not treat it as replacing or completing the task. Check existing commands and agents before starting new work. Run npm run resume -- briefing read-only for the current role path if needed. Do not replay dispatch, create a new writer, or advance another role. Explicit interruption, pause, analysis: and operator override: remain decisive. If a real external blocker requires the operator, state the blocker and needed input without claiming completion."
+        }
+      },
+      "status": 0
+    },
+    {
+      "event": "Stop",
+      "stop_hook_active": false,
+      "output": {
+        "decision": "block",
+        "reason": "DotLn compaction continuation: this session is the executor for WO-999, phase active; its recorded completion event ImplementationReady is still outstanding. Continue the authorized unfinished task from the compacted handoff and current worktree. The last conversational message may be old steering or an already answered side question; do not treat it as replacing or completing the task. Check existing commands and agents before starting new work. Run npm run resume -- briefing read-only for the current role path if needed. Do not replay dispatch, create a new writer, or advance another role. Explicit interruption, pause, analysis: and operator override: remain decisive. If a real external blocker requires the operator, state the blocker and needed input without claiming completion."
+      },
+      "status": 0
+    },
+    {
+      "event": "PostCompact",
+      "trigger": "auto",
+      "output": {},
+      "status": 0
+    },
+    {
+      "event": "SessionStart",
+      "source": "compact",
+      "output": {
+        "hookSpecificOutput": {
+          "hookEventName": "SessionStart",
+          "additionalContext": "DotLn compaction continuation: this session is the executor for WO-999, phase active; its recorded completion event ImplementationReady is still outstanding. Continue the authorized unfinished task from the compacted handoff and current worktree. The last conversational message may be old steering or an already answered side question; do not treat it as replacing or completing the task. Check existing commands and agents before starting new work. Run npm run resume -- briefing read-only for the current role path if needed. Do not replay dispatch, create a new writer, or advance another role. Explicit interruption, pause, analysis: and operator override: remain decisive. If a real external blocker requires the operator, state the blocker and needed input without claiming completion."
+        }
+      },
+      "status": 0
+    },
+    {
+      "event": "PostCompact",
+      "trigger": "auto",
+      "output": {},
+      "status": 0
+    },
+    {
+      "event": "SessionStart",
+      "source": "compact",
+      "output": {
+        "hookSpecificOutput": {
+          "hookEventName": "SessionStart",
+          "additionalContext": "DotLn compaction continuation: this session is the executor for WO-999, phase active; its recorded completion event ImplementationReady is still outstanding. Continue the authorized unfinished task from the compacted handoff and current worktree. The last conversational message may be old steering or an already answered side question; do not treat it as replacing or completing the task. Check existing commands and agents before starting new work. Run npm run resume -- briefing read-only for the current role path if needed. Do not replay dispatch, create a new writer, or advance another role. Explicit interruption, pause, analysis: and operator override: remain decisive. If a real external blocker requires the operator, state the blocker and needed input without claiming completion."
+        }
+      },
+      "status": 0
+    },
+    {
+      "event": "Stop",
+      "stop_hook_active": true,
+      "output": {},
+      "status": 0
+    }
+  ],
+  "nativeReplies": [
+    "INITIAL_PROGRESS WO-999",
+    "RECOVERED WO-999"
+  ],
+  "foregroundToolEffects": [
+    "Read synthetic payload to force automatic compaction; read completed before initial final response.",
+    "After Stop continuation, wrote recovered.txt containing WO-999."
+  ],
+  "backgroundWorkers": 0,
+  "externalWakeups": 0,
+  "completedToolCalls": 2,
+  "recoveredFileContents": "WO-999",
+  "continuationReceipts": 1,
+  "completionEventWritten": false,
+  "persistentSettingsChanged": false,
+  "exitCode": 0,
+  "linkedWorktreeLimit": "Codex 0.155.0 selects root-checkout hook definitions in linked worktrees; this probe uses a new standalone scratch Git repository.",
+  "sources": [
+    "https://learn.chatgpt.com/docs/hooks",
+    "https://github.com/openai/codex/blob/rust-v0.155.0/codex-rs/config/src/loader/mod.rs"
+  ],
+  "automaticCompactions": 3
+}

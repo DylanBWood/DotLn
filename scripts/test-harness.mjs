@@ -552,7 +552,7 @@ test("WO-139 cap-module-only changes refresh the runtime and snapshot damage is 
       readFileSync(join(root, previous.snapshot, modulePath), "utf8"),
       original,
     );
-    assert.equal(checkHarness(root, options).files, 28);
+    assert.equal(checkHarness(root, options).files, 31);
     assert.match(
       invoke(root, "finish", input(root, "Stop")).systemMessage,
       /^Subagents: 0\/21/,
@@ -1784,6 +1784,49 @@ test("WO-039 installed bundle detects content, missing, unexpected and manifest 
   } finally {
     removeFixture(root, { recursive: true });
     removeFixture(outside, { recursive: true });
+  }
+});
+
+test("WO-054 Codex installation preserves unowned configuration before any bundle write", () => {
+  const root = fixture();
+  try {
+    const manifestPath = join(root, ".claude/harness-manifest.json");
+    const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
+    manifest.installed = manifest.installed.filter(
+      (file) => !file.path.startsWith(".codex/"),
+    );
+    writeFileSync(manifestPath, json(manifest));
+    const config = join(root, ".codex/config.toml");
+    writeFileSync(config, "# Operator-owned configuration.\n");
+    const before = readFileSync(join(root, "CLAUDE.md"));
+    assert.throws(
+      () => emitHarness(root),
+      /unowned Codex output refuses replacement/,
+    );
+    assert.equal(
+      readFileSync(config, "utf8"),
+      "# Operator-owned configuration.\n",
+    );
+    assert.deepEqual(readFileSync(join(root, "CLAUDE.md")), before);
+    for (const file of [
+      ".codex/config.toml",
+      ".codex/hooks.json",
+      ".codex/hooks/continuation.mjs",
+    ])
+      rmSync(join(root, file));
+    write(
+      root,
+      ".codex/unrelated.toml",
+      "# Preserve unrelated project file.\n",
+    );
+    emitHarness(root);
+    assert.ok(checkHarness(root).files > 10);
+    assert.equal(
+      readFileSync(join(root, ".codex/unrelated.toml"), "utf8"),
+      "# Preserve unrelated project file.\n",
+    );
+  } finally {
+    removeFixture(root, { recursive: true });
   }
 });
 

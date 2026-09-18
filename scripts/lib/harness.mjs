@@ -38,9 +38,11 @@ const hash = (text) => `fnv1a64:${fnv1a64(text)}`;
 const allowed = (path) =>
   path === "CLAUDE.md" ||
   path === ".claude/settings.json" ||
+  path === ".codex/config.toml" ||
+  path === ".codex/hooks.json" ||
   path === manifestPath ||
   /^\.(?:claude|agents)\/skills\/dotln-[a-z-]+\/SKILL\.md$/.test(path) ||
-  /^\.claude\/hooks\/[a-z0-9.-]+\.mjs$/.test(path);
+  /^\.(?:claude|codex)\/hooks\/[a-z0-9.-]+\.mjs$/.test(path);
 const contained = (root, path) => {
   if (!allowed(path))
     throw new Error("harness output path is not a generated surface");
@@ -87,6 +89,7 @@ export function harnessInstallation(options = {}) {
     // release must install a fresh snapshot even when hook handlers are equal.
     "packages/compiler/dist/src/artifact-identity.js",
     "packages/compiler/dist/src/harness.js",
+    "packages/compiler/dist/src/codex-continuation.mjs",
     "packages/compiler/dist/src/feedback.js",
     "packages/compiler/dist/src/attribution.mjs",
     "packages/skeleton/dist/src/feedback-boundary.js",
@@ -204,6 +207,13 @@ const walkOwned = (root) => {
     }
   };
   walk(join(root, ".claude/hooks"));
+  const manifest = join(root, manifestPath);
+  const previous = existsSync(manifest)
+    ? JSON.parse(readFileSync(manifest, "utf8"))
+    : null;
+  for (const file of previous?.installed ?? [])
+    if (file.path.startsWith(".codex/") && existsSync(join(root, file.path)))
+      paths.push(file.path);
   for (const skills of [".claude/skills", ".agents/skills"])
     if (existsSync(join(root, skills)))
       for (const name of readdirSync(join(root, skills)))
@@ -237,6 +247,17 @@ export function emitHarness(root, options = {}) {
   const previous = existsSync(join(root, manifestPath))
     ? JSON.parse(readFileSync(contained(root, manifestPath), "utf8"))
     : null;
+  for (const file of writes)
+    if (
+      relative(root, file.path).startsWith(".codex/") &&
+      existsSync(file.path) &&
+      !previous?.installed?.some(
+        (entry) => entry.path === relative(root, file.path),
+      )
+    )
+      throw new Error(
+        `unowned Codex output refuses replacement: ${relative(root, file.path)}`,
+      );
   for (const path of obsolete)
     if (
       !previous?.installed?.some((file) => file.path === path) ||
