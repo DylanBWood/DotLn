@@ -1,4 +1,4 @@
-# WO-135 — Planning-gate corrections: a capability write-back is an execution update, the sequence is checked against every typed hard edge, and a planning dispatch refuses a non-document path at write time (version assigned at activation)
+# WO-135 — Planning-gate corrections: a capability write-back is an execution update, the sequence is checked against every typed hard edge, and a planning dispatch refuses a non-document path at write time (v0.29.4)
 
 **Model:** any. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
@@ -177,3 +177,36 @@ promotion; any document reorganization.
 2. The planning-branch write rule is keyed on the branch prefix; an operator
    who needs a code change during a planning pass uses `operator override:`
    and files the order.
+
+## Execution record
+
+Executed on 2026-09-17 under `resume: next`. Actor: Codex CLI 0.154.0,
+GPT-6 Astra, ultra effort (`xhigh` with subagents), from effective Codex session
+readback. The implementation admits appended dated capability additions,
+checks blocking sequence edges in both public gates, and adds the classified
+planning-branch write refusal with matching Codex role text.
+
+The historical fixture pins the original fourteen queued pairs and serial
+tail at `4576594`; the later committed WO-141 recut has fifteen pairs. Both
+the historical corrected sequence and current sequence pass, without changing
+the order's historical requirement or any planning receipt.
+
+The operator expanded scope to install personal SSH/SCP/SFTP forbidden rules
+and update the AI harness security runbook for both Claude and Codex, sandboxed
+and unsandboxed modes, and separate settings/rules locations. The personal
+rules reside outside the repository; the retained Codex TOML was not edited.
+The bounded adjacent repair admits only the exact same-type evidence-only
+release-header spelling correction and preserves all other description bytes.
+
+Final executable evidence: 38 planning fixtures passed; 16 work-order fixtures
+passed; the full harness suite passed 49 cases before the final no-follow
+symlink refinement, followed by a passing focused generated-hook fixture at
+the final source. `npm test` passed 19 suites with 63 fresh tasks;
+`npm run test:docs` passed all 17 checks, including both planning checks.
+Publication, formatting, installed dependency resolution and diff whitespace
+checks pass. See [implementation evidence](../evidence/WO-135/README.md) and
+[decisions](../evidence/WO-135/decisions.md) for transcripts, sources and limits.
+
+Local release preparation stages application `v0.29.3`, compiler `0.13.1`,
+and skeleton `0.25.2`. Independent verification, final review and publication
+remain separate dispatches; this execution creates no branch commit or PR.

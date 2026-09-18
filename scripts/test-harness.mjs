@@ -3236,6 +3236,107 @@ test("WO-132 only the live product gate refuses input and success-record writes,
   }
 });
 
+test("WO-135 generated planning hooks refuse repository code paths and preserve documents, scratch and override", () => {
+  const root = fixture();
+  const scratch = realpathSync(
+    mkdtempSync(join(tmpdir(), "dotln-planning-scratch-")),
+  );
+  const sessionId = `wo135-planning-${root}`;
+  try {
+    git(root, "switch", "-c", "planning/2030-01-02-fixture");
+    mkdirSync(join(root, "docs"), { recursive: true });
+    symlinkSync(join(root, "scripts"), join(root, "docs/source"));
+    symlinkSync(scratch, join(root, "docs/scratch"));
+    symlinkSync(join(root, "scripts"), join(scratch, "source"));
+    const payload = (tool, args) =>
+      input(root, "PreToolUse", {
+        session_id: sessionId,
+        tool_name: tool,
+        tool_input: args,
+      });
+    const denied = [
+      payload("Write", { file_path: "scripts/new.mjs" }),
+      payload("Edit", { file_path: join(root, "package.json") }),
+      payload("NotebookEdit", { notebook_path: "nested/notes.md" }),
+      payload("Write", { file_path: "docs/source/new.mjs" }),
+      payload("Write", { file_path: join(scratch, "source/new.mjs") }),
+      payload("Bash", { command: "printf x > scripts/new.mjs" }),
+      payload("Bash", { command: "touch -h scripts/new.mjs" }),
+      payload("Bash", { command: "touch docs/source" }),
+      payload("Bash", {
+        command: "touch ../scripts/new.mjs",
+        workdir: join(root, "docs"),
+      }),
+    ];
+    const admitted = [
+      payload("Write", { file_path: "docs/new.json" }),
+      payload("Write", { file_path: "README.md" }),
+      payload("Write", { file_path: join(scratch, "new.txt") }),
+      payload("Write", { file_path: "docs/scratch/new.txt" }),
+      payload("Write", { file_path: "../outside-planning-scratch.txt" }),
+      payload("Bash", { command: "printf x > docs/new.json" }),
+      payload("Bash", { command: "touch new.txt", workdir: scratch }),
+      payload("Bash", { command: "node arbitrary.mjs" }),
+      payload("Bash", { command: "rm docs/source" }),
+      payload("Bash", { command: "touch -h docs/source" }),
+      payload("Bash", { command: "touch -mh docs/source" }),
+      payload("Bash", { command: `rm ${scratch}/source` }),
+      payload("Read", { file_path: "scripts/harness.mjs" }),
+    ];
+    for (const hook of [
+      "permissions",
+      "concurrent-work-requires-worktrees",
+      "write-observer",
+    ]) {
+      for (const request of denied) {
+        const result = invoke(root, hook, request).hookSpecificOutput;
+        assert.equal(
+          result?.permissionDecision,
+          "deny",
+          JSON.stringify(request),
+        );
+        assert.match(result.permissionDecisionReason, /operator override:/);
+        const path =
+          request.tool_input.file_path ?? request.tool_input.notebook_path;
+        if (path) assert.ok(result.permissionDecisionReason.includes(path));
+      }
+      for (const request of admitted)
+        assert.equal(
+          allowed(invoke(root, hook, request)),
+          true,
+          JSON.stringify(request),
+        );
+    }
+    invoke(
+      root,
+      "session",
+      input(root, "UserPromptSubmit", {
+        session_id: sessionId,
+        prompt: "operator override: fixture recovery",
+      }),
+    );
+    assert.equal(allowed(invoke(root, "permissions", denied[0])), true);
+    invoke(
+      root,
+      "session",
+      input(root, "UserPromptSubmit", {
+        session_id: sessionId,
+        prompt: "operator override: off",
+      }),
+    );
+    assert.equal(
+      invoke(root, "permissions", denied[0]).hookSpecificOutput
+        ?.permissionDecision,
+      "deny",
+    );
+    git(root, "switch", "wo-999");
+    assert.equal(allowed(invoke(root, "permissions", denied[0])), true);
+  } finally {
+    removeFixture(root, { recursive: true });
+    removeFixture(scratch, { recursive: true });
+  }
+});
+
 test("WO-132 missing process-cost counters record unknown at the current dispatch cutoff", () => {
   const root = fixture();
   try {

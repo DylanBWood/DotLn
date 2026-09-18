@@ -23,6 +23,7 @@ import { containedRegularFile } from "./paths.mjs";
 import { runGit } from "./git.mjs";
 import { validateAccountLabel } from "./control-actor.mjs";
 import { checkPlanContinuation } from "./plan-continuation.mjs";
+import { checkSequenceTopology, readIndex } from "../work-orders.mjs";
 
 export const RECEIPTS = "docs/planning/refutations";
 export const OVERRIDES = "docs/control/plan-refutations.jsonl";
@@ -1134,6 +1135,7 @@ export function planningPassScope(root) {
 }
 
 export async function checkPlanGate(root) {
+  checkSequenceTopology(readIndex(root, []));
   const localTerms = checkLocalTerms(root, []).status;
   const receipts = await readReceipts(root);
   const overrides = readOverrides(root);

@@ -63,7 +63,7 @@ export function gateInstalledInputRoots(root) {
  * before applying `..`, and follows a dangling final link when creating a file.
  * Native realpath retains on-disk case for every existing component.
  * @param {string} path @returns {string} */
-function prospectiveRealpath(path) {
+export function prospectiveRealpath(path) {
   let physical = parse(path).root;
   const pending = path.slice(physical.length).split(sep);
   let links = 0;

@@ -47,12 +47,14 @@ import {
   harnessToolEffects,
   invocationEffects,
   shellWritePaths,
+  shellWriteTargets,
   commitMessageInputs,
 } from "./harness-command.js";
 import {
   activeGateRuns,
   beginGateRun,
   gateInputPath,
+  prospectiveRealpath,
   gateTreeHash,
   findGateCheck,
   recordGateChecks,
@@ -2374,6 +2376,62 @@ export const GATE_STOP_TEXT = `Stop that gate from this session with ${GATE_STOP
 const gateStopCommand = (command: unknown): boolean =>
   typeof command === "string" && GATE_STOP_COMMANDS.includes(command.trim());
 
+/** WO-135: plan start records document-only authority through planning/*.
+ * Known tool destinations are checked; opaque effects retain host delegation.
+ */
+function planningWriteRefusal(
+  input: HarnessInput,
+  root: string,
+  tools: HookConfig["tools"],
+): string | null {
+  if (input.hook_event_name !== "PreToolUse") return null;
+  const inventory: HookConfig["tools"] = tools ?? harnessToolEffects;
+  const tool = inventory[input.tool_name ?? ""];
+  if (tool !== "write" && tool !== "shell") return null;
+  if (
+    !git(root, ["symbolic-ref", "--quiet", "--short", "HEAD"], true)
+      .trim()
+      .startsWith("planning/")
+  )
+    return null;
+  const args = input.tool_input ?? {};
+  const candidate = args.file_path ?? args.notebook_path;
+  const command = args.command ?? args.cmd;
+  const paths =
+    tool === "write"
+      ? typeof candidate === "string"
+        ? [{ path: candidate, followFinalSymlink: true }]
+        : null
+      : typeof command === "string"
+        ? shellWriteTargets(command)
+        : null;
+  if (!paths?.length) return null;
+  const cwd = tool === "shell" ? (args.workdir ?? args.cwd ?? root) : root;
+  if (typeof cwd !== "string") return null;
+  const directory = prospectiveRealpath(
+    isAbsolute(cwd) ? cwd : `${root}/${cwd}`,
+  );
+  for (const { path, followFinalSymlink } of paths) {
+    const absolute = isAbsolute(path) ? path : `${directory}/${path}`;
+    // Unlink removes the final directory entry, while writes follow its link.
+    const physical =
+      followFinalSymlink || path.endsWith(sep)
+        ? prospectiveRealpath(absolute)
+        : join(prospectiveRealpath(dirname(absolute)), basename(absolute));
+    const local = relative(root, physical);
+    if (local === ".." || local.startsWith(`..${sep}`) || isAbsolute(local))
+      continue;
+    if (
+      local === "docs" ||
+      local.startsWith(`docs${sep}`) ||
+      /^[^/\\]+\.md$/i.test(local)
+    )
+      continue;
+    return `DOTLN_HARNESS_REFUSED: planning branch write to ${path} (repository path ${local || "."}) is outside docs/ and root Markdown (WO-135). Use operator override: for authorized recovery.`;
+  }
+  return null;
+}
+
 /** All generated pre-tool boundaries share this guard. There is no agent-
  * supplied gate-child bypass; gate-owned subprocess writes do not dispatch tools.
  */
@@ -2501,6 +2559,8 @@ export async function evaluateHarnessHook(
     session,
   );
   if (gateRefusal) return protocolRefusal(config.event, gateRefusal);
+  const planningRefusal = planningWriteRefusal(input, root, config.tools);
+  if (planningRefusal) return protocolRefusal(config.event, planningRefusal);
   const correctionPath = join(
     harnessStateDirectory(root),
     `${sessionKey(input)}.correction.json`,

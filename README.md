@@ -93,7 +93,7 @@ intent → task-scoped build → bounded WorkOrder → disposable executor
 -->
 <!-- DOTLN-RELEASE-BEGIN -->
 
-This source prepares DotLn `v0.29.3`.
+This source prepares DotLn `v0.29.4`.
 
 **The core.** A local-first compiler turns a loadout graph into a bounded
 program: one identity, one active mechanic, its linked supports, and an
@@ -131,9 +131,11 @@ without a second worker attempt, with the protected checkouts and sentinel uncha
 implementation, verification and final review, each recording its own report and
 actor attestation. The reviewer runs `npm test -- --review` once, and both PR
 publication and release close consume that committed success row by code
-identity. Hooks refuse exactly two things — a second writer in one worktree, and
-a write to gate inputs during a live reviewer gate — and defer every other
-judgment to host permissions; `analysis:` and `operator override:` stay
+identity. Hooks refuse three conditions (WO-135): a second writer in one
+worktree, a write to gate inputs or the success record during a live `npm test`,
+and a classified repository write outside `docs/` and root Markdown on a
+`planning/` branch. Codex carries the same duties as role text; other judgments
+defer to host permissions. `analysis:` and `operator override:` stay
 available even when setup or lifecycle state fails. The [execution
 guide](docs/product/07-execution-guide.md) and its [independent
 workflow](docs/product/07-execution-guide.md#independent-workflows-and-integration)

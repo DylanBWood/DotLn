@@ -850,9 +850,9 @@ export function verifyHarnessBundle(bundle: HarnessBundle): boolean {
   );
 }
 
-/** The two repository invariants have the same operator commands in each harness. */
+/** The three repository refusals have the same duties in each harness (WO-135). */
 const HARNESS_BOUNDARIES =
-  "DotLn reserves one writer per worktree on any branch, including main, and refuses writes to gate inputs or the success record during a live npm test. Inspect the writer with node scripts/harness.mjs writer --show; stop this session's gate with node scripts/harness.mjs evidence --stop. Claude hooks enforce these two invariants; Codex carries the same duties as role text. Every other hook judgment is advisory and host permissions decide.";
+  "DotLn has three refusals (WO-135): it reserves one writer per worktree on any branch, including main; refuses writes to gate inputs or the success record during a live npm test; and on planning/ branches refuses repository writes outside docs/ and root Markdown, while admitting paths outside the repository. Inspect the writer with node scripts/harness.mjs writer --show; stop this session's gate with node scripts/harness.mjs evidence --stop; use operator override: for authorized planning recovery. Claude hooks enforce these three refusals for classified tool effects; Codex carries the same duties as role text. Every other hook judgment is advisory and host permissions decide.";
 
 /** The shared instruction symlink contains all profile-qualified residue. */
 export function mergeHarnessFragments(

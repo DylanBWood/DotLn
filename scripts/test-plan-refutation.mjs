@@ -31,6 +31,7 @@ import {
 } from "../packages/skeleton/dist/src/worker-transport.js";
 import {
   buildPlanSubject,
+  committedReader,
   PLAN_MAP,
   PLAN_LEDGER,
   planningPasses,
@@ -60,6 +61,14 @@ import {
   planJudgmentScope,
   latestPlanningPass,
 } from "./lib/plan-direct.mjs";
+import { reassessments } from "./lib/plan-continuation.mjs";
+import {
+  checkSequenceTopology,
+  parseSequenceGroups,
+  readIndex,
+  main as workOrders,
+} from "./work-orders.mjs";
+import { projectDependencies } from "./lib/dependencies.mjs";
 import { LEGACY_COST_HEADER } from "./lib/legacy-cost.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -2021,6 +2030,337 @@ else {
       },
     );
     await check(
+      "WO-135 admits only the exact evidence-only release-header format correction",
+      async () => {
+        for (const axis of ["patch", "minor", "major"]) {
+          const repo = makeRepo(parent, `release-header-${axis}`);
+          const path = orderPath("WO-901");
+          const legacy = `**Release classification:** ${axis}, evidence-only. A probe extension under the existing contract.`;
+          const canonical = `**Release classification:** ${axis}. Evidence-only: a probe extension under the existing contract.`;
+          const source = read(repo, path).replace(
+            "# WO-901 — Fixture\n",
+            `# WO-901 — Fixture (version assigned at activation)\n\n${legacy}\n`,
+          );
+          write(repo, path, source);
+          commit(repo, "legacy release declaration subject");
+          const receipt = await writeDirectReceipt(repo);
+          commit(repo, "judge the legacy release declaration");
+          const receiptJson = read(
+            repo,
+            `${RECEIPTS}/${receipt.receiptId}.json`,
+          );
+          const corrected = source
+            .replace(legacy, canonical)
+            .replace("(version assigned at activation)", "(v1.2.3)");
+          write(repo, path, corrected);
+          const result = await checkPlanGate(repo);
+          assert.deepEqual(
+            result.continuation.workspaceUpdates.map(({ kind }) => kind),
+            ["release-classification-format", "release-assignment"],
+          );
+          for (const invalid of [
+            corrected.replace(
+              `${axis}. Evidence-only:`,
+              `${axis === "patch" ? "minor" : "patch"}. Evidence-only:`,
+            ),
+            corrected.replace("the existing contract", "a changed contract"),
+            corrected.replace("Evidence-only: a", "A"),
+            corrected.replace("Evidence-only: a", "Evidence-only: another"),
+          ]) {
+            write(repo, path, invalid);
+            await assert.rejects(
+              checkPlanGate(repo),
+              /existing work-order bytes changed/u,
+            );
+          }
+          write(repo, path, corrected);
+          commit(repo, "canonical release declaration and assigned version");
+          assert.deepEqual(
+            (await checkPlanGate(repo)).continuation.committedUpdates,
+            result.continuation.workspaceUpdates,
+          );
+          assert.equal(
+            read(repo, `${RECEIPTS}/${receipt.receiptId}.json`),
+            receiptJson,
+          );
+        }
+        const repo = makeRepo(parent, "release-header-without-legacy");
+        const path = orderPath("WO-901");
+        write(
+          repo,
+          path,
+          read(repo, path) +
+            "\n**Release classification:** patch. A probe extension under the existing contract.\n",
+        );
+        commit(repo, "release declaration without legacy prefix");
+        await writeDirectReceipt(repo);
+        commit(repo, "judge a declaration without evidence-only status");
+        mutate(repo, path, "patch. A probe", "patch. Evidence-only: a probe");
+        await assert.rejects(
+          checkPlanGate(repo),
+          /existing work-order bytes changed/u,
+        );
+      },
+    );
+    await check(
+      "WO-135 replays the actual WO-068/WO-052 additions against receipts 014/015",
+      () => {
+        const receipts = readdirSync(join(root, RECEIPTS))
+          .filter((name) => /-01[456]\.json$/.test(name))
+          .map((name) => JSON.parse(read(root, `${RECEIPTS}/${name}`)))
+          .sort((a, b) => a.ordinal - b.ordinal);
+        assert.deepEqual(
+          receipts.map((row) => row.ordinal),
+          [14, 15, 16],
+        );
+        for (const [index, workOrderId, id] of [
+          [0, "WO-068", "runtime.resident"],
+          [1, "WO-052", "worker.source-change"],
+        ]) {
+          const judged = receipts[index].subject;
+          const before = committedReader(root, judged.revision).read(
+            "docs/planning/capability-table.md",
+          );
+          const later = committedReader(
+            root,
+            receipts[index + 1].subject.revision,
+          ).read("docs/planning/capability-table.md");
+          const section = later.match(
+            new RegExp(
+              `^## ${workOrderId} dated addition[^\n]*\n[\\s\\S]*?(?=^## |$(?![\\s\\S]))`,
+              "m",
+            ),
+          )?.[0];
+          assert.ok(section, `${workOrderId} historical section`);
+          assert.equal(
+            judged.standard.capabilities.some((row) => row.id === id),
+            false,
+          );
+          const snapshot = JSON.stringify(judged);
+          assert.deepEqual(
+            reassessments(
+              before,
+              before.trimEnd() + "\n\n" + section,
+              judged,
+            ).map(({ kind, ids }) => ({ kind, ids })),
+            [{ kind: "dated-capability-addition", ids: [id] }],
+          );
+          assert.equal(JSON.stringify(judged), snapshot);
+        }
+      },
+    );
+    await check(
+      "WO-135 historical sequence failures reach both gates and original pair separators are pinned",
+      async () => {
+        const path = "docs/planning/sequence.md";
+        const prior = committedReader(
+          root,
+          "ec502c991ca5cde39b131fdbb6432644328cc22f",
+        ).read(path);
+        const corrected = committedReader(
+          root,
+          "45765940a9715c8aee52215c3bfbed74de0ce838",
+        ).read(path);
+        const grouped = (source) =>
+          parseSequenceGroups(source).map((group) =>
+            group.map((row) => row.id),
+          );
+        const expectedPairs = [
+          ["WO-135", "WO-136"],
+          ["WO-053", "WO-139"],
+          ["WO-054", "WO-137"],
+          ["WO-055", "WO-140"],
+          ["WO-056", "WO-110"],
+          ["WO-099", "WO-079"],
+          ["WO-069", "WO-138"],
+          ["WO-071", "WO-120"],
+          ["WO-063", "WO-100"],
+          ["WO-064", "WO-111"],
+          ["WO-114", "WO-070"],
+          ["WO-115", "WO-060"],
+          ["WO-116", "WO-065"],
+          ["WO-117", "WO-066"],
+        ];
+        assert.deepEqual(grouped(corrected).slice(1, -1), expectedPairs);
+        assert.equal(grouped(corrected).at(-1).length, 36);
+        const lost = corrected.replace(/(^- WO-136[^\n]*\n)\n/m, "$1");
+        const added = corrected.replace(/(^- WO-135[^\n]*\n)/m, "$1\n");
+        assert.notDeepEqual(grouped(lost), grouped(corrected));
+        assert.notDeepEqual(grouped(added), grouped(corrected));
+        assert.doesNotThrow(() => checkSequenceTopology(readIndex(root, [])));
+        const repo = makeRepo(parent, "historical-topology");
+        write(repo, PLAN_MAP, corrected);
+        const frozen = committedReader(
+          root,
+          "45765940a9715c8aee52215c3bfbed74de0ce838",
+        );
+        for (const path of frozen.paths.filter((path) =>
+          /^docs\/work-orders\/WO-\d{3}-[^/]+\.md$/.test(path),
+        ))
+          write(repo, path, frozen.read(path));
+        // Freeze satisfaction at the original pass; future closes cannot erase the failures.
+        for (const [path, source] of (
+          await import("./lib/control-store.mjs")
+        ).readControl(root, frozen.revision).sources)
+          write(repo, path, source);
+        const groups = parseSequenceGroups(corrected);
+        assert.doesNotThrow(() =>
+          checkSequenceTopology({
+            ...readIndex(repo, []),
+            groups,
+            sequence: groups.flat(),
+          }),
+        );
+        commit(repo, "frozen corrected planning fixture");
+        await writeDirectReceipt(repo);
+        commit(repo, "record historical fixture receipt");
+        workOrders(["index"], repo);
+        assert.doesNotThrow(() => workOrders(["index", "--check"], repo));
+        await assert.doesNotReject(plan(["check"], repo));
+        write(repo, PLAN_MAP, prior);
+        const failures = ["WO-114 -> WO-120 (hard)", "WO-115 -> WO-100 (hard)"];
+        const diagnostic = (error) => {
+          for (const failure of failures)
+            assert.ok(error.message.includes(failure), error.message);
+          return true;
+        };
+        assert.throws(() => workOrders(["index", "--check"], repo), diagnostic);
+        await assert.rejects(plan(["check"], repo), diagnostic);
+      },
+    );
+    await check(
+      "WO-135 dated additions are execution updates in plan check, with unchanged refusal messages",
+      async () => {
+        const repo = makeRepo(parent, "capability-additions");
+        const receipt = await writeDirectReceipt(repo);
+        commit(repo, "record reviewed plan");
+        const path = "docs/planning/capability-table.md";
+        const before = read(repo, path);
+        for (const heading of ["addition", "reassessment"]) {
+          const appended = `\n## WO-901 dated ${heading} (2030-01-02)\n\n| Capability | Observation |\n| --- | --- |\n| \`fixture.new\` | **1 — demonstrable** |\n`;
+          write(repo, path, before + appended);
+          const result = await plan(["check"], repo);
+          assert.match(JSON.stringify(result), /dated-capability-addition/);
+          assert.deepEqual(
+            reassessments(before, before + appended, receipt.subject)[0].ids,
+            ["fixture.new"],
+          );
+          assert.throws(
+            () =>
+              reassessments(
+                before,
+                before + appended.replace("**1 — demonstrable**", ""),
+                receipt.subject,
+              ),
+            /missing capability observation fixture.new/,
+          );
+          assert.throws(
+            () =>
+              reassessments(
+                before,
+                before + appended + "\n## Stray\n",
+                receipt.subject,
+              ),
+            /capability additions must be appended dated reassessment sections/,
+          );
+        }
+        write(
+          repo,
+          path,
+          before +
+            "\n## WO-901 dated addition (2030-01-02)\n\n| `fixture.first` | 1 |\n",
+        );
+        assert.equal(
+          (await checkPlanGate(repo)).continuation.workspaceUpdates[0].kind,
+          "dated-capability-reassessment",
+        );
+        assert.deepEqual(await readReceipts(repo), [receipt]);
+      },
+    );
+    await check(
+      "WO-135 both current gates refuse dependency reversals and pairs using typed satisfaction",
+      async () => {
+        const repo = makeRepo(parent, "sequence-topology");
+        const block = (entries) =>
+          `\n<!-- dotln-dependencies:start -->\n${JSON.stringify(entries)}\n<!-- dotln-dependencies:end -->\n`;
+        const sequence = (groups) =>
+          `<!-- dotln-work-order-sequence:start -->\n${groups.map((group) => group.map((id) => `- ${id} — Fixture`).join("\n")).join("\n\n")}\n<!-- dotln-work-order-sequence:end -->\n`;
+        const edge = {
+          workOrderId: "WO-902",
+          relation: "hard",
+          reason: "Fixture prerequisite",
+        };
+        write(
+          repo,
+          orderPath("WO-901"),
+          order("WO-901").replace(
+            "**Objective:**",
+            block([edge]) + "\n**Objective:**",
+          ),
+        );
+        workOrders(["index"], repo);
+        const bothRefuse = async () => {
+          await assert.rejects(
+            plan(["check"], repo),
+            /WO-901 -> WO-902 \(hard\)/,
+          );
+          assert.throws(
+            () => workOrders(["index", "--check"], repo),
+            /WO-901 -> WO-902 \(hard\)/,
+          );
+        };
+        await bothRefuse();
+        write(repo, PLAN_MAP, sequence([["WO-902", "WO-901"]]));
+        await bothRefuse(); // Ordered, but the pair cannot execute independently.
+        write(repo, orderPath("WO-903"), order("WO-903"));
+        write(repo, PLAN_MAP, sequence([["WO-902", "WO-901", "WO-903"]]));
+        assert.doesNotThrow(() => checkSequenceTopology(readIndex(repo, [])));
+        write(repo, PLAN_MAP, sequence([["WO-901", "WO-902", "WO-903"]]));
+        await bothRefuse();
+        for (const relation of [
+          "hard",
+          "satisfied-by-close",
+          "satisfied-by-release",
+          "planning-deferral",
+        ]) {
+          const entry = {
+            ...edge,
+            relation,
+            ...(relation === "satisfied-by-release"
+              ? { release: "v1.0.0" }
+              : {}),
+            ...(relation === "planning-deferral"
+              ? { workOrderId: "WO-999", until: "WO-902" }
+              : {}),
+          };
+          const groups = parseSequenceGroups(sequence([["WO-901", "WO-902"]]));
+          const view = (closed, releases) => ({
+            groups,
+            sequence: groups.flat(),
+            rows: [
+              {
+                id: "WO-901",
+                dependencies: projectDependencies(
+                  { source: "typed", entries: [entry] },
+                  closed,
+                  releases,
+                ),
+              },
+            ],
+          });
+          assert.throws(
+            () => checkSequenceTopology(view(new Map(), new Set())),
+            (error) => error.message.includes(`WO-901 -> WO-902 (${relation})`),
+          );
+          assert.doesNotThrow(() =>
+            checkSequenceTopology(
+              view(new Map([["WO-902", "pass"]]), new Set(["v1.0.0"])),
+            ),
+          );
+        }
+      },
+    );
+    await check(
       "WO-043 continuation admits only the reviewed dependency transcription and preserves receipt bytes",
       async () => {
         const repo = makeRepo(parent, "dependency-continuation");
@@ -2280,8 +2620,9 @@ else {
         for (const [heading, id] of [
           ["WO-999 dated reassessment (2030-01-02)", "fixture.first"],
           ["WO-901 dated reassessment (2030-02-30)", "fixture.first"],
-          ["WO-901 dated reassessment (2030-01-02)", "fixture.unknown"],
-          ["WO-901 dated addition (2030-01-02)", "fixture.first"],
+          ["WO-999 dated addition (2030-01-02)", "fixture.unknown"],
+          ["WO-901 dated addition (2030-02-30)", "fixture.first"],
+          ["WO-901 stray heading (2030-01-02)", "fixture.first"],
         ]) {
           write(
             repo,
