@@ -15,3 +15,6 @@
 /.claude/settings.json dotln-generated dotln-check=suite:harness
 /.claude/skills/** dotln-generated dotln-check=suite:harness
 /.agents/skills/** dotln-generated dotln-check=suite:harness
+/.codex/hooks/** dotln-generated dotln-check=suite:harness
+/.codex/hooks.json dotln-generated dotln-check=suite:harness
+/.codex/config.toml dotln-generated dotln-check=suite:harness

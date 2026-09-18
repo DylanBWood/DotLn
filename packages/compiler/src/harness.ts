@@ -1,5 +1,6 @@
 import { COMPILER_PACKAGE_VERSION } from "./artifact-identity.js";
 import { operatorControl } from "./operator-control.mjs";
+import { codexContinuation } from "./codex-continuation.mjs";
 import {
   assertCompiledFeedback,
   compileFeedbackUnits,
@@ -51,6 +52,10 @@ export interface HarnessProfile {
     >
   >;
   readonly events: Readonly<Record<HarnessEvent, HarnessObservation>>;
+  /** Separately witnessed native compaction hooks; never enables Claude hooks. */
+  readonly codexContinuation?: HarnessObservation & {
+    readonly observedVersion: string;
+  };
   readonly skills: HarnessObservation & { readonly root: string };
   readonly settings: HarnessObservation & {
     readonly path: string;
@@ -209,6 +214,7 @@ export function assertHarnessProfile(profile: HarnessProfile): void {
     profile.skills,
     profile.settings,
     profile.instruction,
+    ...(profile.codexContinuation ? [profile.codexContinuation] : []),
   ]) {
     ensure(
       capability &&
@@ -251,6 +257,13 @@ export function assertHarnessProfile(profile: HarnessProfile): void {
     !profile.settings.allow,
     "allow entries have no observed local contract",
   );
+  if (profile.codexContinuation)
+    ensure(
+      profile.harness === "codex-cli" &&
+        profile.kind !== "target-worker-v1" &&
+        verificationLine(profile.codexContinuation.observedVersion),
+      "Codex contributor continuation observation",
+    );
   ensure(
     profile.kind === undefined ||
       ["contributor-v1", "target-worker-v1"].includes(profile.kind),
@@ -792,6 +805,56 @@ process.stdout.write(JSON.stringify(response));`;
     };
     emit(profile.settings.path, json(settings), ids, 2);
   }
+  if (profile.codexContinuation?.available) {
+    const path = ".codex/hooks/continuation.mjs";
+    const names = program.roles.map((role) => role.facetId);
+    emit(
+      path,
+      `// Origin: ${canonicalStringify(origin(names))}\n` +
+        `const { text } = await import("node:stream/consumers");\n` +
+        `try {\nconst source = await text(process.stdin);\n` +
+        `if (Buffer.byteLength(source) > 1048576) throw new Error("oversized hook input");\n` +
+        `const output = await (${codexContinuation.toString()})(JSON.parse(source), ${operatorControl.toString()});\n` +
+        `process.stdout.write(JSON.stringify(output));\n` +
+        `} catch { process.stdout.write(JSON.stringify({systemMessage:"DotLn Codex continuation input unavailable; native stopping remains available."})); }\n`,
+      names,
+      1,
+    );
+    emit(
+      ".codex/config.toml",
+      "# DotLn project layer. Continuation hooks are in hooks.json; review them with /hooks.\n",
+      names,
+      1,
+    );
+    emit(
+      ".codex/hooks.json",
+      json({
+        description:
+          "DotLn: restore an owned unfinished task after compaction; one premature-stop continuation per compacted turn.",
+        hooks: Object.fromEntries(
+          ["PostCompact", "SessionStart", "Stop", "UserPromptSubmit"].map(
+            (event) => [
+              event,
+              [
+                {
+                  ...(event === "SessionStart" ? { matcher: "^compact$" } : {}),
+                  hooks: [
+                    {
+                      type: "command",
+                      command: `node \"$(git rev-parse --show-toplevel)/${path}\"`,
+                      timeout: 30,
+                    },
+                  ],
+                },
+              ],
+            ],
+          ),
+        ),
+      }),
+      names,
+      1,
+    );
+  }
   const lines = residue.map(
     (item) =>
       `${item.originId}: ${item.text ?? `unavailable ${item.missingCapabilities.join(", ")}.`}`,
@@ -852,7 +915,7 @@ export function verifyHarnessBundle(bundle: HarnessBundle): boolean {
 
 /** WO-139 adds observable subagent admission to WO-135's three refusals. */
 const HARNESS_BOUNDARIES =
-  "DotLn has four refusals (WO-135, WO-139): it reserves one writer per worktree on any branch, including main; refuses writes to gate inputs or the success record during a live npm test; on planning/ branches refuses repository writes outside docs/ and root Markdown while admitting external paths; and refuses observable subagent admissions beyond docs/control/budgets.json subagentCap (default 20; null disables). Descendants count at their first attributable tool call; unresolved direct/child overlap is a reported minimum, and unobserved agents remain unknown. Inspect the writer with node scripts/harness.mjs writer --show; stop this session's gate with node scripts/harness.mjs evidence --stop; use operator override: for authorized recovery. Claude hooks enforce these four refusals at observed boundaries; Codex carries the duties and cap as role text without automatic enforcement. Every other hook judgment is advisory and host permissions decide.";
+  "DotLn has four refusals (WO-135, WO-139): it reserves one writer per worktree on any branch, including main; refuses writes to gate inputs or the success record during a live npm test; on planning/ branches refuses repository writes outside docs/ and root Markdown while admitting external paths; and refuses observable subagent admissions beyond docs/control/budgets.json subagentCap (default 20; null disables). Descendants count at their first attributable tool call; unresolved direct/child overlap is a reported minimum, and unobserved agents remain unknown. Inspect the writer with node scripts/harness.mjs writer --show; stop this session's gate with node scripts/harness.mjs evidence --stop; use operator override: for authorized recovery. Claude hooks enforce these four refusals at observed boundaries; Codex carries the duties and cap as role text without automatic enforcement. Other tool and completion judgments are advisory and host permissions decide. The separate Codex compaction adapter restores an owned unfinished task and permits one continuation after premature stopping; it never dispatches a role or changes writer ownership.";
 
 /** The shared instruction symlink contains all profile-qualified residue. */
 export function mergeHarnessFragments(

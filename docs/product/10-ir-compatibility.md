@@ -137,6 +137,21 @@ verification fixtures live under `docs/evidence/WO-011/`. The
 [feedback contract](02-domain-model.md#feedback-compiler-v1) states its host and
 judgment boundaries. No new kernel dependency or general migration is introduced.
 
+WO-054 stages compiler `0.14.0`, skeleton `0.26.0` and application `v0.30.0`.
+The optional `worktree-snapshot` subject extension adds a sealed contract,
+named tests, Git file modes and `hostTest` evidence with `origin: host`.
+`verification-v1`, accepted-result version 1 and event schema 1 remain unchanged:
+legacy subjects omit every new field and preserve their construction/result
+semantics. The new extension names `snapshot` and `hostTest` are reserved and
+validated when present; unrelated legacy extra fields retain positive selection.
+New-profile direct compiler inputs and compiled capsules are closed and refuse
+extra fields with a path. The existing `VerificationOpened` event boundary
+still positively selects criteria and payload fields before compilation;
+new capsules still pin the compiler version, so older compilers cannot execute
+them by silently dropping metadata. Current artifact, verification and feedback
+editions are under WO-054; historical receipts are preserved. This additive
+compatibility decision does not grant source-writing repair or publication.
+
 WO-042 advances compiler `0.7.0` to `0.8.0` and prepares application
 `v0.16.0`. LoadoutGraph schema `1`, compiled-program contract `"1"`,
 `harness-v1`, `feedback-v1`, `verification-v1`, the event schema and kernel

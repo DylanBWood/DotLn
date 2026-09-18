@@ -925,7 +925,57 @@ The pure compiler constructs `VerificationTask` with `contractVersion: "verifica
 
 `projectAcceptanceEvidenceMatrices(events)` is a read-only kernel replay per workstream through the verification branch of the same typed `seiriReactor` used by the live host. Complete live/replayed Decisions are compared in the acceptance suite. Each matrix exposes the current subject revision and phase, baseline, immutable witnesses, finding history, derived staleness records, and rows of criterion × evaluation/evidence refs × status (`incomplete | verified | failed | stale`). There is no editable matrix file. Both `dotln status` formats query that same fold; JSON includes it under `acceptanceEvidenceMatrices`. The [recorded stale projection](../evidence/WO-010/stale-status.txt) shows the matrix during repair, and the [final projection](../evidence/WO-010/matrix.json) preserves old stale evaluations beside fresh passing evidence.
 
-The shipped application host is `verification-snapshot-v1`: clean detached worktrees, no model tools, a synthetic file-selection repository, and host-applied declarative JSON policy repair. It executes only the pinned fixture interpreter; proposed source code is never run. Local subprocess doubles exercise both CLI wire formats. This proves the mechanism and synthetic behavior, with no claim of live model or live-integration verification. Broader repository providers, source-writing repairers, independent code review and post-PR loops remain separate rungs. The existing manual `resume: verify` / `resume: fix` loop remains the control-plane workflow for this repository.
+The original application host is `verification-snapshot-v1`: clean detached worktrees, no model tools, a synthetic file-selection repository, and host-applied declarative JSON policy repair. It executes only the pinned fixture interpreter; proposed source code is never run. Local subprocess doubles exercise both CLI wire formats. This proves the mechanism and synthetic behavior, with no claim of live model or live-integration verification. The existing manual `resume: verify` / `resume: fix` loop remains the control-plane workflow for this repository.
+
+WO-054 adds the optional `worktree-snapshot` profile. Its subject includes
+`snapshot: { profile, observedCommit, snapshotHash, contract, tests }` and each
+file carries its Git regular-file mode. The contract is a closed WorkOrder
+projection: `workOrderId`, `objective`, `acceptanceCriteria`, `constraints`,
+`nonGoals`, and `requiredEvidence` (the exact named command strings). Each test
+maps a command to one criterion and required check. All contract criteria must
+be represented in the initial verification task. Only live behavior criteria
+are supported by this profile. Direct compiler inputs and compiled capsules
+refuse extra fields with their schema path. `VerificationOpened` still positively
+selects criteria and payload fields before compilation; raw extra event fields
+can remain in the host log, but do not enter the capsule. Its baseline uses the
+shared subject validator, whose diagnostic paths begin `$.subject`. Legacy
+subjects retain positive selection for unrelated extra fields; `snapshot` and
+evidence `hostTest` are now reserved extension names and are validated when
+present (including rejection of `null`). The snapshot seal
+covers base, observed commit, diff, files/modes, contract and named tests. The
+existing capsule input hash additionally binds the host witnesses. Neither
+equality key authenticates a hostile writer.
+
+The host captures all committed regular UTF-8 files from the observed target
+worktree, compares their bytes and executable modes with its immutable Git tree,
+and excludes ignored worker scaffolding. Dirty/untracked source, symlinks,
+submodules and binary files refuse. Bounds remain 100 files, 100,000 bytes per
+file, and 100,000 diff characters. Named-test source bytes come from the observed
+commit, and their changes are visible in the verifier's diff; they are not an
+independently authenticated test oracle. Each named test runs before the verifier in a
+fresh files-only checkout under macOS confinement: only that copy is writable,
+runtime paths are readable, and direct filesystem reads outside the admitted
+paths and network access are denied. This does not block all indirect access
+through process execution or system IPC.
+Commands are exact whitespace-separated argument vectors without shell syntax;
+each run has a 30-second timeout and 64-KiB output bounds. Changing a source/test
+input during a check refuses. The read mount is separately sealed with read-only
+permissions and rechecked before dispatch/cache lookup and after worker completion.
+
+Each witness retains the existing evidence fields and adds
+`hostTest: { kind: "host-run-test", origin: "host", snapshotHash, command,
+exitCode, signal, stdout, stderr }`. Its source is `live` because the host ran
+the target command; fixture provenance and a double verifier are still explicitly
+labeled in the enclosing proof. An ordinary completed command's exit zero is
+pass and nonzero is fail. Missing confinement, a process error or interrupted
+execution is unavailable. The launcher also treats stderr beginning
+`sandbox-exec:` as launch-unavailable, so target output can downgrade a failed
+test to unavailable. This heuristic does not authenticate launcher output and
+cannot turn it into a passing witness. An unavailable
+witness cannot certify acceptance. The same matrix fold preserves failures against
+implementer success claims. This is the first-proof isolation, not a hostile-process
+security boundary; descendant cleanup is not established. Source-writing repair,
+live verifier episodes, visual/network claims and review remain separate orders.
 
 ## Memory and observation
 

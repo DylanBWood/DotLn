@@ -93,7 +93,7 @@ intent → task-scoped build → bounded WorkOrder → disposable executor
 -->
 <!-- DOTLN-RELEASE-BEGIN -->
 
-This source prepares DotLn `v0.29.5`.
+This source prepares DotLn `v0.30.0`.
 
 **The core.** A local-first compiler turns a loadout graph into a bounded
 program: one identity, one active mechanic, its linked supports, and an
@@ -126,6 +126,11 @@ today. The [first live external source-change proof](docs/evidence/WO-053/README
 uses both Claude and Codex to fix one synthetic module, pass the host's test and
 commit in an isolated Git worktree; a killed Codex host recovers that commit
 without a second worker attempt, with the protected checkouts and sentinel unchanged.
+A worktree verification profile now seals that target’s contract, diff and source
+files, runs its named tests in confined copies, and supplies independent host
+witnesses to the blinded verifier. The fixture records a contract failure even
+when the worker’s superficial test passes. Live model verification is the next
+separate proof.
 
 **How this repository builds itself.** Work proceeds through independent
 implementation, verification and final review, each recording its own report and

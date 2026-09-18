@@ -1,19 +1,23 @@
 // Origin: {"ids":["no-attribution"],"loadoutId":"contributor","semanticHash":"fnv1a64:f7e29ff3f4ede75c"}
-const { runCommitMessageHook } = await import("../../.runtime/harness/bb9522b84d7a517d/packages/skeleton/dist/src/harness-host.js");
-const { feedbackBoundary } = await import("../../.runtime/harness/bb9522b84d7a517d/packages/skeleton/dist/src/feedback-boundary.js");
+const { runCommitMessageHook } = await import("../../.runtime/harness/0ccad9b7d8829ee7/packages/skeleton/dist/src/harness-host.js");
+const { feedbackBoundary } = await import("../../.runtime/harness/0ccad9b7d8829ee7/packages/skeleton/dist/src/feedback-boundary.js");
 await runCommitMessageHook({
-  "compilerPackageVersion": "0.13.2",
+  "compilerPackageVersion": "0.14.0",
   "runtime": {
-    "skeletonVersion": "0.25.4",
+    "skeletonVersion": "0.26.0",
     "boundaryContract": "feedback-v1",
     "files": [
       {
         "path": "packages/compiler/dist/src/artifact-identity.js",
-        "hash": "fnv1a64:16100fadee18e8a1"
+        "hash": "fnv1a64:a54f8235eb9578f4"
       },
       {
         "path": "packages/compiler/dist/src/harness.js",
-        "hash": "fnv1a64:1b5d5b86d6c43c6e"
+        "hash": "fnv1a64:fe79dd629c80dc34"
+      },
+      {
+        "path": "packages/compiler/dist/src/codex-continuation.mjs",
+        "hash": "fnv1a64:31bfebf311f308ea"
       },
       {
         "path": "packages/compiler/dist/src/feedback.js",
@@ -57,7 +61,7 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/version.js",
-        "hash": "fnv1a64:ba11d284e8bb55a4"
+        "hash": "fnv1a64:d97ba39c0be72c07"
       },
       {
         "path": "packages/skeleton/dist/src/harness-command.js",
@@ -105,7 +109,7 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/verification-protocol.js",
-        "hash": "fnv1a64:0da60082a9fc97b8"
+        "hash": "fnv1a64:7344e812c6d1bca9"
       },
       {
         "path": "packages/skeleton/dist/src/plan-refutation-protocol.js",
@@ -160,11 +164,11 @@ await runCommitMessageHook({
         "hash": "fnv1a64:6359806743e418ea"
       }
     ],
-    "snapshot": ".runtime/harness/bb9522b84d7a517d"
+    "snapshot": ".runtime/harness/0ccad9b7d8829ee7"
   },
   "policy": {
     "contractVersion": "feedback-v1",
-    "compilerPackageVersion": "0.13.2",
+    "compilerPackageVersion": "0.14.0",
     "units": [
       {
         "unitId": "no-attribution",
@@ -217,6 +221,6 @@ await runCommitMessageHook({
         "enforcement": "hard"
       }
     ],
-    "policyHash": "fnv1a64:717f410b0f5357ab"
+    "policyHash": "fnv1a64:2b8b2de2304fb2f8"
   }
 }, feedbackBoundary);

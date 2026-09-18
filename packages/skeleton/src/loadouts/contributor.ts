@@ -598,6 +598,11 @@ export const contributorProfiles: readonly HarnessProfile[] = [
     profileId: "codex-cli-0.153.4",
     harness: "codex-cli",
     observedVersion: "0.153.4",
+    codexContinuation: {
+      available: true,
+      observedVersion: "0.155.0",
+      evidence: "docs/evidence/WO-054/codex-continuation.md#native-probe",
+    },
     tools: harnessToolEffects,
     events: Object.fromEntries(
       ["PreToolUse", "PostToolUse", "Stop", "UserPromptSubmit"].map((event) => [
@@ -638,6 +643,7 @@ export const contributorProfiles: readonly HarnessProfile[] = [
 /** Bounded writing-worker observations; no Contributor lifecycle or skills. */
 export const targetWorkerProfiles: readonly HarnessProfile[] =
   contributorProfiles.map((profile) => {
+    const { codexContinuation: _continuation, ...workerProfile } = profile;
     const evidence = "docs/discovery/writing-worker-smoke-2026-09-14.md";
     const unavailable = {
       available: false,
@@ -660,7 +666,7 @@ export const targetWorkerProfiles: readonly HarnessProfile[] =
         "Skills deliberately omitted by target profile scope; no unavailability observation claimed",
     };
     return {
-      ...profile,
+      ...workerProfile,
       kind: "target-worker-v1",
       profileId:
         profile.harness === "claude-code"

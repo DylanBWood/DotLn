@@ -15,6 +15,7 @@ import {
   type VerificationTask,
 } from "@dotln/compiler";
 import { WorkerStore } from "./worker-store.js";
+import { assertWorktreeSnapshot } from "./verification-worktree.js";
 import {
   HEARTBEAT_MS,
   LEASE_MS,
@@ -76,11 +77,13 @@ export function preflightVerificationRecovery(
       effort,
       cwd: path,
       profile: {
-        profileId: "verification-snapshot-v1",
+        profileId:
+          capsule.subject.snapshot?.profile ?? "verification-snapshot-v1",
         mounts: [{ path, access: "read" }],
       },
     };
     validateTransportRequest(request);
+    assertWorktreeSnapshot(capsule, path);
     store.loadResult(request);
   }
 }
@@ -215,11 +218,14 @@ export class VerificationHost {
       model,
       effort,
       profile: {
-        profileId: "verification-snapshot-v1",
+        profileId:
+          pending.capsule.subject.snapshot?.profile ??
+          "verification-snapshot-v1",
         mounts: [{ path: cwd, access: "read" }],
       },
     };
     validateTransportRequest(request);
+    assertWorktreeSnapshot(request.capsule, cwd);
     return { request, cached: driver.store.loadResult(request) };
   }
   private expire(): void {
@@ -345,6 +351,7 @@ export class VerificationHost {
         }, HEARTBEAT_MS);
         this.options.onRunning?.(dispatch);
         result = parseEvidenceResult(await dispatch.completed, request);
+        assertWorktreeSnapshot(request.capsule, cwd);
         if (heartbeatError) throw heartbeatError;
       } catch (error) {
         dispatch?.kill();
@@ -369,6 +376,7 @@ export class VerificationHost {
         this.options.afterResultSaved?.();
       }
     }
+    assertWorktreeSnapshot(request.capsule, cwd);
     if (result.envelope.status !== "completed") {
       driver.record(
         "WorkerInterrupted",

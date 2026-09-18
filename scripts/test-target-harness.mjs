@@ -132,6 +132,7 @@ const denied = (response) =>
 
 test("WO-049 target capabilities distinguish observed omissions from unavailable hooks", () => {
   for (const profile of targetWorkerProfiles) {
+    assert.equal(profile.codexContinuation, undefined);
     for (const event of ["PostToolUse", "Stop", "UserPromptSubmit"]) {
       const capability = profile.events[event];
       assert.equal(capability.available, false);

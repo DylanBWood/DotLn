@@ -7531,3 +7531,31 @@ intake reconciliation. See the [breakout receipt](../evidence/WO-119/ideation-au
     No new queue, numeric token cap or present harness capability is claimed.
     Reopen in planning or on a bounded live reproduction with host events and
     a measured continuation outcome.
+
+## 2026-09-18 — Out-of-project file effects as an explicit grant
+
+Source: operator `ideation:` during WO-054 `resume: verify` (VER-003). The
+unedited capture is in main's ignored intake,
+`docs/intake/notes/WO-054-expanded-ideation-2026-09-18.md`. Shape-First
+Synthesis; the clean-room screen found no stop condition. See the
+[breakout receipt](../evidence/WO-054/ideation-2026-09-18.md).
+
+- **Writes outside the project need a support or role grant** `preserved`
+  - A verifier shell command carried an unintended stderr redirect. Its
+    destination resolved to the directory above the worktree and created a
+    file there, which the session then removed.
+  - The shape the operator wants: creating, editing and deleting files outside
+    the project is a capability that a support or role grants explicitly.
+    Without the grant, such a write is refused rather than happening by
+    mistake. Work with a legitimate outside destination holds the grant.
+  - The operator recalls that ordinary sandbox rules would have prevented the
+    write. That is kept as recollection. It was not investigated in the
+    session, at the operator's direction. Product 03 records that neither
+    native sandbox confined a sibling write (C-W6, X-W6), so the native
+    sandbox is not evidence of containment here.
+  - The idea runs against today's planning-branch refusal, which admits
+    external paths. That is a tension for planning, not a settled change.
+  - Promoted to product 03 §Candidate — DotLn-owned authority with minimal
+    native harness restrictions.
+  - The operator set this for priority at the next planning pass. Reopen
+    there, or on a measured refusal of an ungranted outside write.

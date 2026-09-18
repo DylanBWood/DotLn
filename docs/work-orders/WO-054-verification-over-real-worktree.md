@@ -1,4 +1,4 @@
-# WO-054 — Verification over a real worktree: the blinded verifier receives a contract, a diff and a snapshot of the target worktree, runs the target's focused tests itself, and never sees the implementer's narrative (version assigned at activation)
+# WO-054 — Verification over a real worktree: the blinded verifier receives a contract, a diff and a snapshot of the target worktree, runs the target's focused tests itself, and never sees the implementer's narrative (v0.30.0)
 
 **Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
 
@@ -113,3 +113,28 @@ edition.
 
 1. Running a target's named tests in a confined checkout is acceptable
    isolation for the first proof; it is not a security boundary.
+
+## Operator scope expansion — 2026-09-18
+
+The operator's `scope expand:` request adds Codex-specific continuation after
+compaction: unfinished authorized work must remain the active task even when
+the latest conversational message is old. A native compaction hook bridge must
+restore the recorded session/order context and permit a bounded continuation
+when the model otherwise stops. It must preserve explicit interruption and
+operator recovery controls, completed work, session/writer identity, and the
+existing separate dispatches. It must neither replay a dispatch nor create a
+second writer. Native capability evidence and regression tests are required;
+documentation alone is not a claim of installed behavior. This expansion does
+not authorize publication or global account-setting changes.
+
+## Execution record
+
+Operator clarification during `resume: fix`, 2026-09-18: the actual failure is
+automatic compaction during an active work order, an answer to an old user
+message, then idle until another event wakes the session. Restore the unfinished
+task and provide the bounded automatic wake-up. Do not parse conversational
+stop/resume strings or add a pause protocol to this fix. Native interruption and
+the existing explicit recovery controls remain available; interpreting ordinary
+user instructions remains the assistant's responsibility. The operator did not
+approve either alternative offered in the fixer's questionnaire. See
+`docs/evidence/WO-054/decisions.md#wo-054-d004` and `#wo-054-d005` for the correction.

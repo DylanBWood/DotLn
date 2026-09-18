@@ -30,10 +30,10 @@
   },
   "limits": {
     "coldStartBytes": {
-      "executor": 20480,
+      "executor": 24576,
       "verifier": 20480,
       "reviewer": 20480,
-      "release-close": 12288,
+      "release-close": 16384,
       "planner": 24576,
       "refuter": null
     },
@@ -44,6 +44,22 @@
     "passRefutationMs": 120000
   },
   "acceptances": [
+    {
+      "date": "2026-09-18",
+      "metric": "coldStartBytes.executor",
+      "scope": null,
+      "dispatch": "executor",
+      "ceiling": 24576,
+      "reason": "WO-054 VER-002 N1 measured 20,849 bytes in both generated roots against 20,480 after the shared advisory-boundary and Codex compaction-continuation rule was added to CLAUDE.md and the role skill. During resume: fix on 2026-09-18 the operator directed incrementing the budget now and leaving efficiency changes for a later pass. Raise by one 4 KB step, preserving the reviewed rules; reassess at that pass or when another reviewed rule needs more. Decision: docs/evidence/WO-054/decisions.md#wo-054-d006."
+    },
+    {
+      "date": "2026-09-18",
+      "metric": "coldStartBytes.release-close",
+      "scope": null,
+      "dispatch": "release-close",
+      "ceiling": 16384,
+      "reason": "WO-054 VER-002 N1 measured 12,437 bytes in both generated roots against 12,288 after the shared advisory-boundary and Codex compaction-continuation rule was added to CLAUDE.md and the role skill. During resume: fix on 2026-09-18 the operator directed incrementing the budget now and leaving efficiency changes for a later pass. Raise by one 4 KB step, preserving the reviewed rules; reassess at that pass or when another reviewed rule needs more. Decision: docs/evidence/WO-054/decisions.md#wo-054-d006."
+    },
     {
       "date": "2026-09-12",
       "metric": "passRefutationMs",

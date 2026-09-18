@@ -1,0 +1,210 @@
+{
+  "probe": "codex-project-hooks-auto-compaction-continuation",
+  "cliVersion": "0.155.0",
+  "requestedModel": "gpt-6-astra",
+  "requestedEffort": "ultra",
+  "observedModel": [
+    "gpt-6-astra"
+  ],
+  "effectiveEffort": "not independently reported",
+  "sandbox": "workspace-write",
+  "persistentConfigChanged": false,
+  "fixture": "New scratch Git repository with synthetic payload and inspected hooks; no project source or credentials copied.",
+  "invocationShape": [
+    "codex",
+    "exec",
+    "--ignore-user-config",
+    "--ignore-rules",
+    "--ephemeral",
+    "--dangerously-bypass-hook-trust",
+    "--sandbox",
+    "workspace-write",
+    "--model",
+    "gpt-6-astra",
+    "-c",
+    "model_reasoning_effort=\"ultra\"",
+    "-c",
+    "model_auto_compact_token_limit=12000",
+    "-c",
+    "projects={\"<CANONICAL_SCRATCH>\"={trust_level=\"trusted\"}}",
+    "--json",
+    "-"
+  ],
+  "configuredEvents": [
+    "SessionStart",
+    "PreCompact",
+    "PostCompact",
+    "Stop",
+    "SessionEnd"
+  ],
+  "eventSequence": [
+    {
+      "event": "SessionStart",
+      "source": "startup",
+      "model": "gpt-6-astra",
+      "keys": [
+        "cwd",
+        "hook_event_name",
+        "model",
+        "permission_mode",
+        "session_id",
+        "source",
+        "transcript_path"
+      ]
+    },
+    {
+      "event": "PreCompact",
+      "trigger": "auto",
+      "model": "gpt-6-astra",
+      "keys": [
+        "cwd",
+        "hook_event_name",
+        "model",
+        "session_id",
+        "transcript_path",
+        "trigger",
+        "turn_id"
+      ]
+    },
+    {
+      "event": "PostCompact",
+      "trigger": "auto",
+      "model": "gpt-6-astra",
+      "keys": [
+        "cwd",
+        "hook_event_name",
+        "model",
+        "session_id",
+        "transcript_path",
+        "trigger",
+        "turn_id"
+      ]
+    },
+    {
+      "event": "SessionStart",
+      "source": "compact",
+      "model": "gpt-6-astra",
+      "keys": [
+        "cwd",
+        "hook_event_name",
+        "model",
+        "permission_mode",
+        "session_id",
+        "source",
+        "transcript_path"
+      ]
+    },
+    {
+      "event": "Stop",
+      "stop_hook_active": false,
+      "model": "gpt-6-astra",
+      "keys": [
+        "cwd",
+        "hook_event_name",
+        "last_assistant_message",
+        "model",
+        "permission_mode",
+        "session_id",
+        "stop_hook_active",
+        "transcript_path",
+        "turn_id"
+      ]
+    },
+    {
+      "event": "Stop",
+      "stop_hook_active": true,
+      "model": "gpt-6-astra",
+      "keys": [
+        "cwd",
+        "hook_event_name",
+        "last_assistant_message",
+        "model",
+        "permission_mode",
+        "session_id",
+        "stop_hook_active",
+        "transcript_path",
+        "turn_id"
+      ]
+    },
+    {
+      "event": "SessionEnd",
+      "keys": [
+        "cwd",
+        "hook_event_name",
+        "reason",
+        "session_id",
+        "transcript_path"
+      ]
+    }
+  ],
+  "sessionContinuity": true,
+  "turnContinuity": true,
+  "sessionStartCompactOutput": {
+    "hookSpecificOutput": {
+      "hookEventName": "SessionStart",
+      "additionalContext": "COMPACT_CONTEXT_TOKEN_7E2: Compaction recovery is active. Your next final reply must contain COMPACT_CONTEXT_TOKEN_7E2. Finish the original bounded probe. Do not start background tools or subagents."
+    }
+  },
+  "firstStopOutput": {
+    "decision": "block",
+    "reason": "Bounded probe continuation is authorized. Reply exactly STOP_CONTINUATION_TOKEN_9A4 and include any compact recovery token you received. Do not use tools, background processes, or subagents. This is a one-time continuation."
+  },
+  "finalReplies": [
+    "INITIAL_PROBE_REPLY\nCOMPACT_CONTEXT_TOKEN_7E2",
+    "STOP_CONTINUATION_TOKEN_9A4\nCOMPACT_CONTEXT_TOKEN_7E2"
+  ],
+  "completedToolCalls": [
+    {
+      "type": "command_execution",
+      "status": "completed",
+      "exitCode": 0,
+      "command": "cat payload.txt"
+    }
+  ],
+  "externalWakeups": false,
+  "exitCode": 0,
+  "limitations": [
+    "Does not establish desktop app hook activation or behavior.",
+    "First project-hook attempt used an incorrectly quoted dotted CLI project-trust key and produced no hook events. Tagged 0.155.0 override parser splits keys literally on dots, retaining those quotes. This attempt does not judge project hook discovery.",
+    "Synthetic liveness probe verifies supported native signals and continuation, not product recovery policy."
+  ],
+  "source": "https://learn.chatgpt.com/docs/hooks",
+  "hookScriptSha256": "a011e8e117a171437fb55f64c82a904b13e59f2854411f32bf71b0b745f14fea",
+  "projectTrustCorrection": {
+    "source": "https://github.com/openai/codex/blob/rust-v0.155.0/codex-rs/config/src/overrides.rs",
+    "correctedShape": "-c 'projects={\"<CANONICAL_SCRATCH>\"={trust_level=\"trusted\"}}'",
+    "status": "Proved in this native attempt with project hooks."
+  },
+  "linkedWorktreeHookSource": {
+    "finding": "Tagged loader uses matching root-checkout hook definitions for linked worktrees.",
+    "source": "https://github.com/openai/codex/blob/rust-v0.155.0/codex-rs/config/src/loader/mod.rs"
+  },
+  "configurationSource": "Scratch .codex/hooks.json adjacent to .codex/config.toml; no session hook overrides.",
+  "projectConfigContent": "# Scratch project hook capability probe. No user settings are changed.\n",
+  "rootAndChildDiscrimination": {
+    "actualRootPostCompactKeys": [
+      "cwd",
+      "hook_event_name",
+      "model",
+      "session_id",
+      "transcript_path",
+      "trigger",
+      "turn_id"
+    ],
+    "actualRootCompactSessionStartKeys": [
+      "cwd",
+      "hook_event_name",
+      "model",
+      "permission_mode",
+      "session_id",
+      "source",
+      "transcript_path"
+    ],
+    "taggedSourceFinding": "PostCompact adds optional flat agent_id and agent_type for thread-spawned subagents. SessionStart(compact) skips subagents; their startup/fork maps to SubagentStart and their stops to SubagentStop.",
+    "liveChildBehavior": "not exercised",
+    "sources": [
+      "https://github.com/openai/codex/blob/rust-v0.155.0/codex-rs/core/src/hook_runtime.rs",
+      "https://github.com/openai/codex/blob/rust-v0.155.0/codex-rs/hooks/src/schema.rs"
+    ]
+  }
+}

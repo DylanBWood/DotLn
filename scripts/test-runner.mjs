@@ -204,6 +204,8 @@ const protection = {
   "work-orders-fixtures":
     "work-order lookup and dependencies identify executable work",
   "adjacent-queue": "operator steering controls the next bounded repair",
+  "codex-continuation":
+    "Codex restores only its owned unfinished task after compaction, continues once and yields to recovery controls",
   "authority-grants": "workers cannot grant themselves additional authority",
   "artifact-corpus":
     "artifact identity remains stable and collisions are refused",
@@ -352,6 +354,7 @@ export const suites = [
     }),
   ),
   nodeTests("adjacent-queue", "scripts/test-adjacent-queue.mjs"),
+  nodeTests("codex-continuation", "scripts/test-codex-continuation.mjs"),
   nodeTests("harness-probe", "scripts/test-harness-probe.mjs", {
     command: [
       process.execPath,
