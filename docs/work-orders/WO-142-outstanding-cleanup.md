@@ -17,7 +17,9 @@ one on-demand command (`harness prune`, never run by a gate), one equality
 assertion inside the existing `release check-surfaces`, one anchor-resolution
 assertion inside the existing `meta --check`, and one live feedback edition
 for this order (the routine cost of any order that edits a feedback source;
-model spend unknown until run). Removes, measured on 2026-09-19 at
+model spend unknown until run), and one sentence of role text for the
+executor, verifier and reviewer (row B17; bytes reported against ceilings
+with 3,727, 2,589 and 1,371 bytes of headroom on 2026-09-19). Removes, measured on 2026-09-19 at
 `3b3533f8`: the pending follow-up feed's refill (235 of 399 register entries
 are decision records harvested as follow-ups; the feed grew 359 to 399 in two
 days and three passes selected nothing from it); the carried-set eviction
@@ -185,6 +187,7 @@ publication locks and evidence editions; the write-backs in criterion 6.
 | B14    | test pins: the AC3 coupling grep misses alias and destructure forms (`packages/kernel/test/ac2-replay-store.test.ts:305-317`); the read-inventory tripwire misses a module-local rebinding (`packages/skeleton/test/worker-read-inventory.test.ts:28-53`); the `feedback-selfhost.ts` exemption has no positive pin (`packages/skeleton/test/reactor-slices.test.ts:274`); audit fold messages and the adjacency branch are asserted nowhere (`packages/skeleton/src/audit.ts:476`, `:493`, `:707`, `:748-750`); three WO-108 compiler findings survive (F-00005 to F-00007); the presence tooltip is regex-pinned with no non-discretionary fixture (`packages/compiler/test/presence.test.ts:340-356`) | each assertion or fixture added; none weakened                                                                                                                                                                                                    | WO-047, WO-048, WO-050, WO-007, WO-008, WO-067 final reviews            |
 | B15    | diagnostics and small guards: the writer transition-lock refusal names no directory (`packages/skeleton/src/writer-teardown.mjs:48-51`); a malformed-receipt refusal leads with the log path (`packages/skeleton/src/worker-store.ts:264`); the `workerRequestKey` comment understates the key; `ultracode` is normalized in attestation only; the console `attempt` wrapper drops the cause (`packages/console/src/collect.ts:21-30`); one bad `*Loadout` export blanks the Builds panel (`packages/console/src/builds.ts:49`); the skeleton CLI ignores unknown arguments (`packages/skeleton/src/cli.ts:34-42`); the beacon staging sibling is neither ignored nor disposable (`packages/skeleton/src/beacon-io.mjs:215`); `verificationReactor` lives in `src` for one test; one unused import (`packages/skeleton/test/repair.test.ts:3`) | each corrected; unknown CLI arguments refuse                                                                                                                                                                                                      | WO-044, WO-048, WO-051, WO-049, WO-032, WO-020, WO-010, WO-055 reviews  |
 | B16 ★  | boundary validators: (a) the lens-scope validator accepts `*`, `docs/*` and padded scopes while its comment says it rejects broad scopes (`packages/skeleton/src/loadouts/entropy-reducer.ts:1162-1180`), the screen in front of ignored intake; (b) a bare `*` pattern compiles claim-free with no diagnostic (`packages/compiler/src/compile.ts:515-545`); (c) the attribution predicate misses an `Assisted-by:` trailer (`packages/compiler/src/attribution.mjs:14`) | (a) the seven fixture strings of WO-023 FINAL-001 finding 5 refuse; (b) an empty prefix refuses with a fixture; (c) the trailer is refused and a human `Co-authored-by` still passes                                                              | WO-023 FINAL-001 findings 3 and 5; WO-011 FINAL-001 finding 3           |
+| B17 ★  | a verifier or reviewer hands a non-blocking item to "the next planning pass" in a sentence of its report, and nothing collects reports: the shared advisory marker was nominated twice and owned by nobody (WO-133 FINAL-001 and FINAL-002); the boy-scout support says to nominate the rest separately and does not say where, so row A1 alone would admit follow-ups nobody writes | the generated role text for executor, verifier and reviewer carries one rule: a defect met and not fixed is never left as a sentence in a report; it is fixed inside the boy-scout bound, or boarded up as a decision record with a named follow-up (the form row A1 admits to the feed) that the report cites; fixture on the generated text; cold-start totals recorded per role | the operator's 2026-09-19 source (Hunt and Thomas, "Don't Live with Broken Windows", Artima, 2003: fix it when found, or board it up visibly); receipt 018's known issue on criterion 2; the planning document §1 and §11 |
 
 ### Part C — live documents
 
@@ -216,7 +219,9 @@ publication locks and evidence editions; the write-backs in criterion 6.
    observation made before any edit. At most six rows are `returned`, none
    starred, each with its observed reason and a public follow-up record.
 2. Register: a fixture decision without a follow-up creates no pending row
-   and one with a follow-up does; `npm run plan -- followups` on the merged
+   and one with a follow-up does; the generated role text for executor,
+   verifier and reviewer carries row B17's rule, so the follow-ups row A1
+   admits have a writer; `npm run plan -- followups` on the merged
    tree reports the untriaged count, and the order's decisions file records
    it beside the 2026-09-19 figures (364 before the planning pass settled the
    register, zero after).

@@ -1088,7 +1088,12 @@ three trial orders and a pre-registered reading. The book's other twelve
 aspects (unity, vividness, authority, sensitivity, clarity, emphasis, flow,
 suspense, brilliance, precision, proportion, depth) are later dimensions,
 each needing its own measure; the adaptive modifier stays open until that
-record exists.
+record exists. The operator's same-day source, Hunt and Thomas on broken
+windows ([inspirations](../lineage/inspirations.md)), suggests what the
+adaptive modifier's pressure could read instead of elapsed time alone: the
+count and age of defects that were boarded up and not repaired, which the
+follow-up register now records as deferred rows with reopening conditions.
+Recorded as a candidate signal, unselected.
 
 Operator ideation during WO-126 proposes a support that biases a linked mechanic
 toward a small experiment on a relevant question, input, proposed answer or

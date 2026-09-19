@@ -474,3 +474,45 @@ Register after the second pass: 417 entries, none untriaged, two open (the
 planner-startup measurement and the gate-duration candidate) and 75
 deferred with reopening conditions.
 
+## 11. The operator's source on broken windows, and the gap it exposed
+
+During the second pass the operator supplied Hunt and Thomas's 2003
+interview "Don't Live with Broken Windows" as a possible blend of 5S, the
+Tinkerer and the book's Quality. Read for orientation through a fetched
+summary of the public page; recorded in
+[the inspirations register](../lineage/inspirations.md).
+
+What it says, in this repository's terms: a small defect left unrepaired
+teaches everyone who passes it that quality does not matter there, and decay
+accelerates; repair it when it is found, or, when that is not possible,
+board it up visibly so it is managed rather than ignored; and a ledger of
+postponed fixes past some size stops being repaid at all. §1 of this document
+is that account with this repository's numbers: 364 untriaged rows, 31
+misplaced ledger sections, four reopening conditions that fired unobserved.
+An inference, labeled as one: a fresh session that meets those surfaces
+learns that the rules around them are optional, which is the article's
+psychology applied to agents.
+
+**The gap.** The first pass made the register admit only decision records
+that name a follow-up (WO-142 row A1) and recorded, as NoOp 4, that a
+reviewer's nomination should become such a record. No row made any role
+write one. Row A1 alone would therefore hide asks rather than surface them,
+which receipt 018 had already raised as a known issue on criterion 2. WO-142
+gains starred row B17: the executor's, verifier's and reviewer's role text
+carries one rule, that a defect met and not fixed is never left as a sentence
+in a report; it is fixed inside the boy-scout bound, or boarded up as a
+decision record with a named follow-up that the report cites. That is the
+article's two moves, and it costs one sentence of role text for three roles.
+WO-142 now has 51 rows.
+
+**What the source does not change.** 5S: the shine and sustain mechanics
+belong to the pattern workshop (WO-091 to WO-095) and gain this source, not
+an order. Tinkerer: WO-145 stays an economy experiment; product 05 records
+that the adaptive modifier's pressure could read the count and age of
+boarded-up defects, which the register's deferred rows now supply. Reopen:
+WO-093's activation, or WO-145's third trial record.
+
+**Process note.** The second pass's refuter was stopped 547 s after dispatch,
+while still reading, so that this amendment is judged in the same receipt
+rather than a third one.
+

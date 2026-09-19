@@ -26,15 +26,17 @@ not relitigate them) and the founding chat/notes/image corpus.
 
 ## 2026-09-19 — Planning pass: operator answers (WO-143 to WO-145; WO-138 admitted)
 
-Source: the operator's answers to the first pass's open decisions and the
-direction to open the pull request, captured verbatim in the same ignored
+Source: the operator's answers to the first pass's open decisions, the
+direction to open the pull request, and a supplied public source (Hunt and
+Thomas, "Don't Live with Broken Windows", 2003), captured verbatim in the same ignored
 intake note as extended
 (`docs/intake/notes/2026-09-19-outstanding-cleanup-planning.md`, SHA-256
-`825b6e3073bf8f3f7398c7c40633052cc388f5b4b855ecabe88f1738b602f512`).
+`41c2190d775ee08b339f44626b529f2401c4391e061ed9b5722d8c6faf0f3418`).
 Shape-First Synthesis; the clean-room screen found no stop condition (the
 enterprise starter is named only as the operator named it, with no detail).
 The record is
-[the planning document](../planning/outstanding-cleanup-2026-09-19.md) §10.
+[the planning document](../planning/outstanding-cleanup-2026-09-19.md) §10 and
+§11.
 
 - **A planning pass plans what it finds; it does not hand its critical-path
   item to the next pass** `adopted`
@@ -95,6 +97,19 @@ The record is
     that no readable row carries. Provenance: `scripts/lib/meta.mjs`;
     WO-126; `docs/control/budgets.json`. Reopen: a per-suite breakdown of
     one recorded gate.
+- **No broken windows: a defect met is fixed or boarded up, never left as a
+  sentence in a report (WO-142 row B17)** `adopted`
+  - The operator supplied the source as a blend of 5S, the Tinkerer and the
+    book's Quality. It names this pass's finding exactly, and it exposed a gap
+    in the first pass: the register was made to admit only decision records
+    that name a follow-up, and no role was made to write one, so asks would
+    have been hidden rather than surfaced (receipt 018 had raised it as a
+    known issue). WO-142 gains one starred row: role text for executor,
+    verifier and reviewer. Product 05 records the count and age of
+    boarded-up defects as a candidate signal for the Tinkerer's adaptive
+    pressure. Provenance: [inspirations](inspirations.md); the planning
+    document §11. Reopen: a nomination found in a report and in no record
+    after WO-142.
 
 ## 2026-09-19 — Planning pass: outstanding cleanup (WO-142; WO-084 and WO-090 moved)
 

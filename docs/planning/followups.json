@@ -3559,6 +3559,13 @@
           "title": "Candidate — Tinkerer / Scientist",
           "summary": "## Candidate — Tinkerer / Scientist **Near-term planning request, 2026-09-11:** the operator asks to prioritize this candidate soon, including its adaptive bad-luck protection based on time since the last demonstrated application improvement. It remains unimplemented and unallocated. The operator explicitly excludes implementing it in the current WO-043 repair. Carry the request through existing `FUP-fc4158d3207e495d`; the next planning pass should select a bounded experiment and allocation, preserving the budget, evidence and reset distinctions below. Source: the [WO-043 breakout](../evidence/WO-043/ideation-commands-and-usage.md). **Allocated 2026-09-19 (second planning pass of that day).*",
           "missing": false
+        },
+        {
+          "hash": "656ca398ed56b2a037d6b236e60402ca9a31349fe29c05f5e3f605c7215ab47e",
+          "ref": "docs/product/05-pattern-library.md#candidate--tinkerer--scientist",
+          "title": "Candidate — Tinkerer / Scientist",
+          "summary": "## Candidate — Tinkerer / Scientist **Near-term planning request, 2026-09-11:** the operator asks to prioritize this candidate soon, including its adaptive bad-luck protection based on time since the last demonstrated application improvement. It remains unimplemented and unallocated. The operator explicitly excludes implementing it in the current WO-043 repair. Carry the request through existing `FUP-fc4158d3207e495d`; the next planning pass should select a bounded experiment and allocation, preserving the budget, evidence and reset distinctions below. Source: the [WO-043 breakout](../evidence/WO-043/ideation-commands-and-usage.md). **Allocated 2026-09-19 (second planning pass of that day).*",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -3579,6 +3586,16 @@
             "WO-145"
           ],
           "at": "2026-09-19T03:42:33.303Z"
+        },
+        {
+          "sourceRevision": 5,
+          "status": "allocated",
+          "reason": "Allocated by the second planning pass of 2026-09-19, from the operator answers: consider the aspects of quality from Zen and the Art of Motorcycle Maintenance, starting with efficiency and speed. WO-145 is the first bounded experiment: an optional executor support, one economy experiment per order inside 900 s, three trial orders and a reading fixed before the trials. The adaptive modifier, the other twelve aspects, and the broken-windows signal (count and age of boarded-up defects) stay open.",
+          "reopenWhen": "the third trial order record, which the next planning pass reads against the pre-registered reading",
+          "targets": [
+            "WO-145"
+          ],
+          "at": "2026-09-19T03:55:32.624Z"
         }
       ]
     },
