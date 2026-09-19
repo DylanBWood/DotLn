@@ -37,7 +37,7 @@
 - [x] [WO-137] — Local runner readiness · **final-reviewed**
 - [x] [WO-055] — Repair continuation · **final-reviewed**
 - [ ] [WO-142] — Outstanding cleanup · **queued**
-- [ ] [WO-084] — Ledger order and index · **queued**
+- [x] [WO-084] — Ledger order and index · **final-reviewed**
 - [ ] [WO-143] — Resident lock recovery · **queued**
 - [ ] [WO-144] — Outside-project write grant · **queued**
 - [ ] [WO-140] — Gate sandbox preflight and usage readback · **queued**
@@ -688,23 +688,6 @@ None.
 - Cost: Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
 - Inherited ledger duty: discharge with [this order's decisions](../evidence/WO-083/decisions.md) and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
 - Authority: [docs/work-orders/WO-083-real-run-launchpad-instance.md](WO-083-real-run-launchpad-instance.md)
-
-### WO-084
-
-[WO-084 — Ledger order and index: one insertion rule enforced by a generated index and check, Resolutions moved to their own surface, and the trailing sections relocated with a dated migration note (version assigned at activation)](WO-084-ledger-order-and-index.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-053: planning-deferral (met) until WO-053 dated 2026-09-08 — documentation structure is not the product bottleneck.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh+; verifier xhigh+; reviewer any.
-- Cost: adds one generated index (&#96;docs/lineage/README.md&#96;) and one check inside the existing document suite (&#96;npm run test:docs&#96;), never in the product gate; its duration is unknown until built and is recorded at verification. Removes, measured on 2026-09-19 at &#96;3b3533f8&#96;: 31 &#96;##&#96; sections filed below the Resolutions boundary (line 6115 of 7,580) against a header that says never at the end, two of them operator ideation dated 2026-09-18 that a newest-first reader does not meet; and the hand decision, at every ideation and planning write, of where a section goes. Wall-clock, tokens and context bytes of the order itself are unknown until run. This line replaces the legacy-unavailable declaration of 2026-09-09.
-- Inherited ledger duty: discharge with [this order's decisions](../evidence/WO-084/decisions.md) and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
-- Authority: [docs/work-orders/WO-084-ledger-order-and-index.md](WO-084-ledger-order-and-index.md)
 
 ### WO-085
 
@@ -2195,6 +2178,24 @@ None.
 - Inherited ledger duty: discharge with [this order's decisions](../evidence/WO-068/decisions.md) and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
 - Latest attestation: harness claude-code; version 2.1.273; model claude-opus-5&#91;1m&#93;; effort xhigh; source self-reported; account not-applicable.
 - Authority: [docs/work-orders/WO-068-resident-host.md](WO-068-resident-host.md)
+
+### WO-084
+
+[WO-084 — Ledger order and index: one insertion rule enforced by a generated index and check, Resolutions moved to their own surface, and the trailing sections relocated with a dated migration note (v0.31.2)](WO-084-ledger-order-and-index.md)
+
+- State: closed.
+- Application target: v0.31.2.
+- Dependencies: typed; activation not applicable.
+- References: WO-053: planning-deferral (met) until WO-053 dated 2026-09-08 — documentation structure is not the product bottleneck.
+- Verification: [VER-001](../../docs/verifications/WO-084/VER-001.md) (pass).
+- Final review: [FINAL-001](../../docs/final-reviews/WO-084/FINAL-001.md) (pass).
+- Release: unreleased.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Cost: adds one generated index (&#96;docs/lineage/README.md&#96;) and one check inside the existing document suite (&#96;npm run test:docs&#96;), never in the product gate; its duration is unknown until built and is recorded at verification. Removes, measured on 2026-09-19 at &#96;3b3533f8&#96;: 31 &#96;##&#96; sections filed below the Resolutions boundary (line 6115 of 7,580) against a header that says never at the end, two of them operator ideation dated 2026-09-18 that a newest-first reader does not meet; and the hand decision, at every ideation and planning write, of where a section goes. Wall-clock, tokens and context bytes of the order itself are unknown until run. This line replaces the legacy-unavailable declaration of 2026-09-09.
+- Inherited ledger duty: discharge with [this order's decisions](../evidence/WO-084/decisions.md) and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
+- Latest attestation: harness claude-code; version 2.1.278; model claude-fable-5-1; effort xhigh; source operator-attested; account not-applicable.
+- Authority: [docs/work-orders/WO-084-ledger-order-and-index.md](WO-084-ledger-order-and-index.md)
 
 ### WO-101
 

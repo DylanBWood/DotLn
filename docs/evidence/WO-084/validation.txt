@@ -1,0 +1,109 @@
+WO-084 validation transcripts (2026-09-19)
+
+$ npm run test:docs
+PASS build 2.99 s
+PASS publication 1.99 s
+PASS lineage 0.13 s
+PASS format 3.74 s
+PASS harness 0.63 s
+PASS release-surfaces 5.80 s
+PASS harness-context 2.44 s
+PASS artifact-evidence 0.30 s
+PASS harness-evidence 2.46 s
+PASS authority-evidence 6.57 s
+PASS meta 2.56 s
+PASS feedback-evidence 6.26 s
+PASS verification-evidence 11.50 s
+PASS index 32.32 s
+PASS lineage-fixtures 1.07 s
+PASS skeleton-docs 27.38 s
+PASS plan-refutation-current 35.60 s
+PASS plan 36.40 s
+PASS console-docs 120.68 s
+npm run test:docs: 19 passed; 0 failed; 156.11 s; 19 fresh tasks
+
+$ node --test scripts/test-runner.test.mjs
+# tests 29
+# pass 29
+# fail 0
+# cancelled 0
+# skipped 0
+# duration_ms 17745.748208
+
+$ node scripts/harness.mjs evidence  # executes npm test and git diff --check
+Prepared owned evidence projections in 12815.9 ms
+PASS build 3.30 s
+PASS license-surfaces 2.12 s
+PASS release:prepare 1.99 s
+PASS release:case:preflight 0.35 s
+PASS release:case:surfaces 13.15 s
+PASS release:case:surfaces_local_snapshot 3.97 s
+PASS release:case:prepare_independent 1.88 s
+PASS release:case:license_surfaces 12.90 s
+PASS release:case:surfaces_committed_readme 7.57 s
+PASS release:case:surfaces_lower 6.27 s
+PASS release:case:surfaces_first 4.73 s
+PASS release:case:surfaces_component 10.72 s
+PASS release:case:surfaces_non_source 2.70 s
+PASS release:case:surfaces_new_component 3.10 s
+PASS release:case:surfaceclose 11.85 s
+PASS release:case:surfaceclose_linked 11.78 s
+PASS release:case:bodyclose 11.01 s
+PASS release:case:dirty 22.10 s
+PASS release:case:unreachable 13.62 s
+PASS resume 139.81 s
+PASS release:case:derived 11.55 s
+PASS release:case:nonmain 3.28 s
+PASS release:case:settings_scope 14.85 s
+PASS release:case:divergence 4.21 s
+PASS release:case:malformed 4.27 s
+PASS release:case:unauthenticated 7.92 s
+PASS release:case:missinggh 8.82 s
+PASS release:case:splitorigin 3.28 s
+PASS release:case:lower 7.99 s
+PASS release:case:failures 12.69 s
+PASS release:case:cadence_missing 8.30 s
+PASS release:case:conflict 10.42 s
+PASS release:case:localconflict 8.22 s
+PASS release:case:cadence_inconsistent 26.61 s
+PASS release:case:nestedtag 9.49 s
+PASS release:case:prepare 18.82 s
+PASS release:case:missinglocalprevious 18.18 s
+PASS release:case:pushfail 19.82 s
+PASS worktree 250.27 s
+PASS release:case:refrecovery 28.00 s
+PASS release:case:stale_helpers 38.51 s
+PASS release:case:createrecovery 60.29 s
+PASS release:case:runtime_refresh 60.20 s
+PASS release:case:firstrelease 15.52 s
+PASS release:case:edition 39.15 s
+PASS release:case:success 58.95 s
+PASS skeleton 355.05 s
+PASS release:case:cached_evidence 26.36 s
+PASS github-body 0.11 s
+PASS release-preparation 7.04 s
+PASS release:case:composed_evidence 15.59 s
+PASS backup-intake 0.42 s
+PASS publication-fixtures 1.72 s
+PASS checkpoint 11.28 s
+PASS kernel 1.12 s
+PASS compiler 0.87 s
+PASS console 2.48 s
+PASS adjacent-queue 1.34 s
+PASS license-fixtures 24.23 s
+PASS authority-grants 0.20 s
+PASS local-runner-double 1.01 s
+PASS artifact-corpus 0.26 s
+PASS codex-continuation 16.68 s
+PASS release:case:concurrent 63.23 s
+PASS work-orders-fixtures 51.83 s
+npm test: 21 passed; 0 failed; 421.18 s; 65 fresh tasks
+
+Post-gate edits: report/validation text and trailing blank separator in
+resolutions.md only. Product source and test inputs remain at the passing code identity.
+The separately run runner fixture repair adds its two new suite-script stubs;
+all 29 runner tests passed. Document suites do not consume that fixture file.
+Final preservation and tracked/new-file whitespace checks follow below.
+PASS final preservation: all 142 original section bodies, 13 planning IDs, and entry prose retained (listed tag/EOF separator normalization only).
+PASS product code identity unchanged after report and whitespace finishing.
+PASS git diff --check, including every new file via --no-index --check (exit 1 with no diagnostics is the ordinary new-file diff).

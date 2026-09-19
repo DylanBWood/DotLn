@@ -1,0 +1,9 @@
+{
+  "baseline": "cb932c845354ec871fd34e14dec859bb869776ef",
+  "sectionsPreserved": 142,
+  "planningPassIdsPreserved": 13,
+  "allExistingEntryProsePreserved": true,
+  "checkedAt": "2026-09-19T04:38:12.370Z",
+  "resolutionsBodyByteIdenticalIgnoringTrailingSeparators": true,
+  "trailingSeparatorNormalization": "Ledger and Resolutions EOF blank lines removed for the new-file whitespace check."
+}

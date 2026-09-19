@@ -80,8 +80,8 @@ FeedbackUnit) and §Memory and observation (Watcher, Lineage);
 material with the additions below), §Discipline, and §Model-specific notes;
 11-proteino.md §Shape before machinery; `CLAUDE.md` §Clean-room boundary,
 including the terms that must not re-enter;
-`docs/lineage/idea-ledger.md` §Resolutions of known tensions and the "Scrub
-001" entry as scrub precedent; 06-roadmap.md §Application version pending —
+`docs/lineage/resolutions.md` §Resolutions of known tensions and
+`docs/lineage/idea-ledger.md` "Scrub 001" entry as scrub precedent; 06-roadmap.md §Application version pending —
 Feedback compiler (WO-011's ten units are fixed), §Application version pending
 — Pattern workshop, and §Capability progression policies ("Do Nothing remains
 a valid result").

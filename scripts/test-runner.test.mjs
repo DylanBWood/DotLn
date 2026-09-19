@@ -560,6 +560,8 @@ test("only and document CLI selection execute their declared checks with the pro
       "format.cjs",
       "check-publication.mjs",
       "work-orders.mjs",
+      "lineage.mjs",
+      "test-lineage.mjs",
       "refute-plan.mjs",
       "test-plan-refutation.mjs",
       "release.mjs",

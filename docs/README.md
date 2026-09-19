@@ -22,6 +22,8 @@ docs/planning/     capability inventory, human recommendation/preflight map,
                    dated planning-pass plans, and immutable blinded refutation
                    receipts under refutations/ (npm run plan -- refute)
 docs/lineage/      idea-ledger.md — append-only idea history;
+                   README.md — generated section/line and lifecycle index;
+                   resolutions.md — settled founding tensions;
                    inspirations.md — best-known public influence register
 docs/decisions/    ADRs — settled questions
 docs/work-orders/  stable scope addresses + generated README evidence index

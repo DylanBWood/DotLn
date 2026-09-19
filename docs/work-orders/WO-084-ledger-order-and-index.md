@@ -1,4 +1,4 @@
-# WO-084 — Ledger order and index: one insertion rule enforced by a generated index and check, Resolutions moved to their own surface, and the trailing sections relocated with a dated migration note (version assigned at activation)
+# WO-084 — Ledger order and index: one insertion rule enforced by a generated index and check, Resolutions moved to their own surface, and the trailing sections relocated with a dated migration note (v0.31.2)
 
 **Cost:** adds one generated index (`docs/lineage/README.md`) and one check
 inside the existing document suite (`npm run test:docs`), never in the

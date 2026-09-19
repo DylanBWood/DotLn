@@ -328,6 +328,15 @@ export const suites = [
     document: true,
     preflight: true,
   }),
+  node("lineage", "scripts/lineage.mjs", {
+    args: ["index", "--check"],
+    document: true,
+    preflight: true,
+  }),
+  nodeTests("lineage-fixtures", "scripts/test-lineage.mjs", {
+    document: true,
+    needsBuild: false,
+  }),
   ...["kernel", "compiler", "skeleton", "console"].map((name) =>
     nodeTests(name, `packages/${name}/dist/test/*.test.js`, {
       fast: true,
