@@ -8,11 +8,17 @@ import {
   rmSync,
   realpathSync,
   symlinkSync,
+  cpSync,
+  mkdirSync,
+  readdirSync,
+  readlinkSync,
+  lstatSync,
+  unlinkSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { createHash } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import { spawn, spawnSync } from "node:child_process";
 import { setTimeout as delay } from "node:timers/promises";
 import { decodeLog, type Event } from "@dotln/kernel";
@@ -25,6 +31,7 @@ import {
   type ActorSpec,
 } from "../src/actor-catalog.js";
 import { ResidentHost } from "../src/resident-host.js";
+import { WorkerStore } from "../src/worker-store.js";
 import {
   ResidentStore,
   recordPresence,
@@ -634,3 +641,676 @@ test("WO-068 fresh CLI once and presence commands; SIGKILL recovery and dead-own
     "fresh --once exit 0; live-owner refusal; SIGKILL orphan stopped; dead-owner inspection/reclaim; lost recorded once",
   );
 });
+
+const lockProcess = fileURLToPath(
+  new URL("./fixtures/resident-lock-process.js", import.meta.url),
+);
+type LockStep = {
+  index: number;
+  op: string;
+  paths: string[];
+  error: string | null;
+};
+function deadPid() {
+  const child = spawnSync(process.execPath, ["-e", ""], { encoding: "utf8" });
+  assert.equal(child.status, 0);
+  assert.throws(() => process.kill(child.pid, 0), { code: "ESRCH" });
+  return child.pid;
+}
+function abandonedGuard(directory: string, pid: number) {
+  const token = randomUUID();
+  const name = `.host-lock-${token}`;
+  const target = join(directory, name);
+  mkdirSync(target, { recursive: true });
+  writeFileSync(join(target, "owner.json"), JSON.stringify({ pid, token }));
+  symlinkSync(name, join(directory, "host-lock-recovery"), "dir");
+  return { target, token, guard: join(directory, "host-lock-recovery") };
+}
+async function seedFlight(directory: string, at = 0, dispatch = true) {
+  const config = configuration(directory);
+  writeFileSync(join(directory, "resident.json"), JSON.stringify(config));
+  const host = new ResidentHost({
+    directory,
+    policyId: config.policyId,
+    configuration: config,
+    now: () => at,
+    catalog: fake(),
+  });
+  await host.start();
+  try {
+    await recordPresence(directory, "returned", () => at);
+    await recordPresence(directory, "away", () => at);
+    if (!dispatch) return;
+    await host.store.transaction((tx) => {
+      tx.sample(at + 10);
+      const machine = residentMachine(tx.resident!);
+      const dueAt = machine.due(at + 10)!;
+      tx.append("ScriptEpisodeDispatched", {
+        episodeId: residentEpisodeId(machine, dueAt),
+        dueAt,
+        phaseId: machine.phase()!.phaseId,
+        kind: "script",
+        effect: "repo.inspect",
+        authorityEnvelopeId:
+          machine.phase()!.effectiveEnvelope.authorityEnvelopeId,
+      });
+    });
+  } finally {
+    host.close();
+  }
+}
+function crashInput(
+  directory: string,
+  target: string,
+  mode: "once" | "loop",
+  label: string,
+  stop?: number,
+  at?: number,
+) {
+  return {
+    directory,
+    target,
+    mode,
+    trace: `${directory}-${label}.trace`,
+    pause: `${directory}-${label}.pause`,
+    resume: `${directory}-${label}.resume`,
+    ...(stop === undefined ? {} : { stop }),
+    ...(at === undefined ? {} : { at }),
+  };
+}
+function runLockProcess(
+  input: ReturnType<typeof crashInput> & { poll?: boolean },
+) {
+  const observed = spawnSync(
+    process.execPath,
+    [lockProcess, JSON.stringify(input)],
+    {
+      encoding: "utf8",
+      timeout: 10000,
+    },
+  );
+  assert.equal(observed.status, 0, observed.stderr || String(observed.error));
+  return readFileSync(input.trace, "utf8")
+    .trim()
+    .split("\n")
+    .map((line) => JSON.parse(line) as LockStep);
+}
+async function killLockProcess(
+  input: ReturnType<typeof crashInput> & { poll?: boolean },
+) {
+  const child = spawn(process.execPath, [lockProcess, JSON.stringify(input)], {
+    stdio: ["ignore", "ignore", "pipe"],
+  });
+  let error = "";
+  child.stderr!.on("data", (chunk) => {
+    error += String(chunk);
+  });
+  const exited = new Promise<string | null>((resolve) =>
+    child.once("exit", (_code, signal) => resolve(signal)),
+  );
+  try {
+    await until(() => {
+      if (child.exitCode !== null || child.signalCode !== null)
+        assert.fail(
+          `crash child exited before boundary ${input.stop}: ${error}`,
+        );
+      return existsSync(input.pause);
+    }, 10000);
+    const row = JSON.parse(readFileSync(input.pause, "utf8")) as LockStep;
+    assert.equal(row.index, input.stop);
+    child.kill("SIGKILL");
+    assert.equal(await exited, "SIGKILL");
+    return row;
+  } finally {
+    if (child.exitCode === null && child.signalCode === null) {
+      child.kill("SIGKILL");
+      await exited;
+    }
+  }
+}
+
+test(
+  "WO-143 once and loop restart at every acquisition filesystem boundary, including killed reclaimers",
+  { timeout: 240000 },
+  async (t) => {
+    const root = mkdtempSync(join(tmpdir(), "dotln-lock-matrix-"));
+    t.after(() => rmSync(root, { recursive: true, force: true }));
+    const template = join(root, "template");
+    mkdirSync(template);
+    await seedFlight(template);
+    const prefix = readFileSync(join(template, "events.jsonl"), "utf8");
+    const pid = deadPid();
+    for (const mode of ["once", "loop"] as const)
+      for (const scope of ["lifetime", "append"] as const)
+        for (const reclaim of [false, true]) {
+          const make = (label: string) => {
+            const directory = join(root, label);
+            cpSync(template, directory, { recursive: true });
+            const target =
+              scope === "append"
+                ? join(directory, ".resident-append")
+                : directory;
+            for (const path of [directory, join(directory, ".resident-append")])
+              writeFileSync(join(path, "host.lock"), JSON.stringify({ pid }));
+            if (reclaim) abandonedGuard(target, pid);
+            return { directory, target };
+          };
+          const label = `${mode}-${scope}-${reclaim ? "reclaim" : "fresh"}`;
+          const discovery = make(`${label}-discovery`);
+          const steps = runLockProcess(
+            crashInput(discovery.directory, discovery.target, mode, "discover"),
+          );
+          assert.ok(steps.some((step) => step.op === "symlinkSync"));
+          assert.ok(
+            steps.some(
+              (step) =>
+                step.op === "unlinkSync" &&
+                step.paths.some((path) => path.endsWith("host-lock-recovery")),
+            ),
+          );
+          assert.ok(
+            steps.some(
+              (step) =>
+                step.op === "linkSync" &&
+                step.paths.some((path) => path.endsWith("host.lock")),
+            ),
+          );
+          if (reclaim)
+            assert.ok(
+              steps.some(
+                (step) =>
+                  step.op === "linkSync" &&
+                  step.paths.some((path) => path.includes("next-")),
+              ),
+            );
+          let publishedKills = 0;
+          for (const step of steps) {
+            const { directory, target } = make(`${label}-${step.index}`);
+            const actual = await killLockProcess(
+              crashInput(directory, target, mode, "kill", step.index),
+            );
+            assert.deepEqual(actual, step, `${label} boundary trace changed`);
+            if (existsSync(join(target, "host-lock-recovery")))
+              publishedKills++;
+            assert.equal(
+              readFileSync(join(directory, "events.jsonl"), "utf8"),
+              prefix,
+              "kill window changed prior event bytes",
+            );
+            runLockProcess(crashInput(directory, target, mode, "restart"));
+            const store = new ResidentStore(directory);
+            assert.ok(store.read().startsWith(prefix));
+            assert.equal(events(store, "ScriptEpisodeLost").length, 1);
+            const continued = store.read();
+            runLockProcess(crashInput(directory, target, mode, "again"));
+            assert.ok(store.read().startsWith(continued));
+            assert.equal(events(store, "ScriptEpisodeLost").length, 1);
+            assert.equal(existsSync(join(target, "host-lock-recovery")), false);
+          }
+          assert.ok(publishedKills > 0);
+          t.diagnostic(
+            `${label}: ${steps.length} deterministic SIGKILL boundaries; ${publishedKills} with published guard; exact prefix; one Lost; second restart continues`,
+          );
+        }
+  },
+);
+
+test(
+  "WO-143 thirty consecutive kill/restart rounds remain openable on once and loop paths",
+  { timeout: 60000 },
+  async (t) => {
+    const root = mkdtempSync(join(tmpdir(), "dotln-lock-rounds-"));
+    t.after(() => rmSync(root, { recursive: true, force: true }));
+    for (const mode of ["once", "loop"] as const) {
+      const directory = join(root, mode);
+      mkdirSync(directory);
+      const target = join(directory, ".resident-append");
+      // Discover the publication boundary once; each round then kills the actual
+      // subprocess with an in-flight episode and a complete published guard.
+      await seedFlight(directory);
+      const discovery = runLockProcess(
+        crashInput(directory, target, mode, "discover"),
+      );
+      const boundary = discovery.find(
+        (row) => row.op === "symlinkSync" && row.error === null,
+      )!.index;
+      for (let round = 0; round < 30; round++) {
+        const at = 100 + round * 100;
+        await seedFlight(directory, at);
+        const before = readFileSync(join(directory, "events.jsonl"), "utf8");
+        const lostBefore = events(
+          new ResidentStore(directory),
+          "ScriptEpisodeLost",
+        ).length;
+        await killLockProcess(
+          crashInput(
+            directory,
+            target,
+            mode,
+            `kill-${round}`,
+            boundary,
+            at + 11,
+          ),
+        );
+        assert.ok(existsSync(join(target, "host-lock-recovery")));
+        runLockProcess(
+          crashInput(
+            directory,
+            target,
+            mode,
+            `restart-${round}`,
+            undefined,
+            at + 11,
+          ),
+        );
+        const store = new ResidentStore(directory);
+        assert.ok(store.read().startsWith(before));
+        assert.equal(events(store, "ScriptEpisodeLost").length, lostBefore + 1);
+      }
+      const store = new ResidentStore(directory);
+      await store.acquire();
+      store.release();
+      t.diagnostic(
+        `${mode}: 30 consecutive in-flight SIGKILL/restart rounds, one new Lost per round, final store opens`,
+      );
+    }
+  },
+);
+
+function storeSnapshot(directory: string): Record<string, string> {
+  const values: Record<string, string> = {};
+  const visit = (path: string) => {
+    for (const name of readdirSync(path)) {
+      const file = join(path, name);
+      const stat = lstatSync(file);
+      if (stat.isSymbolicLink()) values[file] = `link:${readlinkSync(file)}`;
+      else if (stat.isDirectory()) {
+        values[file] = "directory";
+        visit(file);
+      } else values[file] = readFileSync(file).toString("base64");
+    }
+  };
+  visit(directory);
+  return values;
+}
+
+test("WO-143 live, unreadable and legacy guards refuse unchanged; released locks remain compatible", async (t) => {
+  const root = mkdtempSync(join(tmpdir(), "dotln-guard-refusal-"));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  const pid = deadPid();
+  for (const fault of [
+    "live",
+    "missing",
+    "partial",
+    "malformed",
+    "symlink-owner",
+    "legacy",
+    "dangling",
+    "foreign-target",
+  ] as const) {
+    const directory = join(root, fault);
+    mkdirSync(directory);
+    const prepared = abandonedGuard(
+      directory,
+      fault === "live" ? process.pid : pid,
+    );
+    const owner = join(prepared.target, "owner.json");
+    if (fault === "missing") unlinkSync(owner);
+    if (fault === "partial") writeFileSync(owner, '{"pid":');
+    if (fault === "malformed")
+      writeFileSync(owner, JSON.stringify({ pid: -1, token: prepared.token }));
+    if (fault === "symlink-owner") {
+      unlinkSync(owner);
+      symlinkSync("missing", owner);
+    }
+    if (fault === "legacy") {
+      unlinkSync(prepared.guard);
+      rmSync(prepared.target, { recursive: true });
+      mkdirSync(prepared.guard);
+    }
+    if (fault === "dangling") rmSync(prepared.target, { recursive: true });
+    if (fault === "foreign-target") {
+      unlinkSync(prepared.guard);
+      symlinkSync("../foreign", prepared.guard);
+    }
+    const before = storeSnapshot(directory);
+    assert.throws(
+      () => new WorkerStore(directory).acquire(),
+      (error: unknown) => {
+        assert.ok(error instanceof Error);
+        assert.ok(error.message.includes(prepared.guard));
+        assert.match(
+          error.message,
+          /host lock recovery is busy or interrupted; inspect before recovery/u,
+        );
+        return true;
+      },
+    );
+    assert.deepEqual(storeSnapshot(directory), before, fault);
+  }
+  for (const hasLock of [false, true]) {
+    const directory = join(root, `released-${hasLock}`);
+    mkdirSync(directory);
+    // Generated by v0.32.0's WorkerStore.acquire/append/release, before this
+    // protocol change; retain the exact released bytes through acquisition.
+    const released = readFileSync(
+      new URL("../../fixtures/wo143-released-events.jsonl", import.meta.url),
+      "utf8",
+    );
+    writeFileSync(join(directory, "events.jsonl"), released);
+    if (hasLock)
+      writeFileSync(join(directory, "host.lock"), JSON.stringify({ pid }));
+    const store = new WorkerStore(directory);
+    store.acquire();
+    assert.equal(store.read(), released);
+    assert.deepEqual(
+      JSON.parse(readFileSync(join(directory, "host.lock"), "utf8")),
+      { pid: process.pid },
+    );
+    store.release();
+    assert.deepEqual(readdirSync(directory), ["events.jsonl"]);
+  }
+  const live = join(root, "live-lock");
+  mkdirSync(live);
+  writeFileSync(join(live, "host.lock"), JSON.stringify({ pid: process.pid }));
+  let inspected = false;
+  assert.throws(
+    () =>
+      new WorkerStore(live).acquire(() => {
+        inspected = true;
+      }),
+    /already has a live host/u,
+  );
+  assert.equal(
+    inspected,
+    false,
+    "mutable log must not be inspected before excluding its live writer",
+  );
+});
+
+test("WO-143 malformed resident state preserves dead append guard and lock before reclaim", async (t) => {
+  const root = mkdtempSync(join(tmpdir(), "dotln-guard-inspection-"));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  await seedFlight(root);
+  const target = join(root, ".resident-append");
+  const pid = deadPid();
+  abandonedGuard(target, pid);
+  writeFileSync(join(target, "host.lock"), JSON.stringify({ pid }));
+  writeFileSync(join(root, "events.jsonl"), '{"torn":');
+  const before = storeSnapshot(root);
+  await assert.rejects(
+    new ResidentStore(root).acquire(),
+    /invalid.*event log/u,
+  );
+  assert.deepEqual(storeSnapshot(root), before);
+});
+
+test("WO-143 killed actors drain without further polling lock acquisitions", async (t) => {
+  const directory = mkdtempSync(join(tmpdir(), "dotln-killed-poll-"));
+  t.after(() => rmSync(directory, { recursive: true, force: true }));
+  let at = 0;
+  let killed = false;
+  let finish!: (value: ActorResult) => void;
+  const host = new ResidentHost({
+    directory,
+    policyId: "fixture.progressive",
+    configuration: configuration(directory),
+    now: () => at,
+    capabilities: () => ["adapter.fixture"],
+    catalog: fake(() => ({
+      completed: new Promise((resolve) => {
+        finish = resolve;
+      }),
+      kill: () => {
+        killed = true;
+      },
+    })),
+  });
+  await host.start();
+  let acquisitions = 0;
+  const acquire = WorkerStore.prototype.acquire;
+  WorkerStore.prototype.acquire = function (...args) {
+    acquisitions++;
+    return acquire.apply(this, args);
+  };
+  try {
+    await recordPresence(directory, "away", () => at);
+    at = 10;
+    const tick = host.tick();
+    await until(
+      () => events(host.store, "ScriptEpisodeDispatched").length === 1,
+    );
+    await recordPresence(directory, "returned", () => at);
+    await until(() => killed);
+    const count = acquisitions;
+    at = 100000;
+    await delay(100);
+    assert.equal(
+      acquisitions,
+      count,
+      "expired deadlines must not cycle locks after kill",
+    );
+    await recordPresence(directory, "away", () => at);
+    const withPresence = acquisitions;
+    await delay(100);
+    assert.equal(
+      acquisitions,
+      withPresence,
+      "changed log must not cycle locks after kill",
+    );
+    finish({ ...result, verified: false, reason: "operator-return" });
+    await tick;
+    assert.equal(
+      acquisitions,
+      withPresence + 1,
+      "final outcome still gets its required transaction",
+    );
+  } finally {
+    WorkerStore.prototype.acquire = acquire;
+    host.close();
+  }
+});
+
+test("WO-143 concurrent dead-guard starts publish exactly one reclaim claim", async (t) => {
+  const root = mkdtempSync(join(tmpdir(), "dotln-guard-contenders-"));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  const directory = join(root, "store");
+  mkdirSync(directory);
+  const old = abandonedGuard(directory, deadPid());
+  const processes = ["a", "b"].map((name) =>
+    workerPeer(directory, join(root, name), [
+      { op: "linkSync", match: `next-${old.token}.json`, when: "before" },
+    ]),
+  );
+  t.after(async () => {
+    await Promise.all(processes.map((peer) => peer.stop()));
+  });
+  await Promise.all(processes.map((peer) => peer.ready(0)));
+  for (const peer of processes) peer.go(0);
+  const outcomes = await Promise.all(processes.map((peer) => peer.result()));
+  assert.equal(outcomes.filter((row) => row.acquired).length, 1);
+  assert.equal(
+    outcomes.reduce((sum, row) => sum + row.claims, 0),
+    1,
+  );
+  assert.equal(existsSync(old.guard), false);
+  assert.throws(() => new WorkerStore(directory).acquire(), /live host/u);
+  t.diagnostic(
+    "two starts held before the same exclusive claim: one claim, one writer, one refusal",
+  );
+});
+
+function workerPeer(
+  directory: string,
+  control: string,
+  points: { op: string; match?: string; when?: "before" | "after" }[],
+) {
+  const child = spawn(
+    process.execPath,
+    [
+      fileURLToPath(
+        new URL("./fixtures/worker-lock-process.js", import.meta.url),
+      ),
+      JSON.stringify({ directory, control, points }),
+    ],
+    { stdio: ["ignore", "ignore", "pipe", "ipc"] },
+  );
+  let stderr = "";
+  child.stderr!.on("data", (chunk) => {
+    stderr += String(chunk);
+  });
+  const exited = new Promise<void>((resolve) =>
+    child.once("exit", () => resolve()),
+  );
+  const wait = async (path: string) =>
+    until(() => {
+      if (child.exitCode !== null || child.signalCode !== null)
+        assert.fail(`worker peer exited: ${stderr}`);
+      return existsSync(path);
+    }, 10000);
+  return {
+    child,
+    ready: (index: number) => wait(`${control}.ready-${index}`),
+    go: (index: number) => writeFileSync(`${control}.go-${index}`, "go"),
+    async result() {
+      await wait(`${control}.result`);
+      return JSON.parse(readFileSync(`${control}.result`, "utf8")) as {
+        acquired: boolean;
+        claims: number;
+        error: string;
+      };
+    },
+    async stop() {
+      if (child.exitCode === null && child.signalCode === null)
+        child.kill("SIGKILL");
+      await exited;
+    },
+  };
+}
+
+test("WO-143 a delayed claimant cannot unlink a successor through a retired target", async (t) => {
+  const root = mkdtempSync(join(tmpdir(), "dotln-guard-generation-"));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  const directory = join(root, "store");
+  mkdirSync(directory);
+  const peers: ReturnType<typeof workerPeer>[] = [];
+  t.after(async () => {
+    await Promise.all(peers.map((peer) => peer.stop()));
+  });
+  const original = workerPeer(directory, join(root, "original"), [
+    { op: "preflight" },
+    { op: "unlinkSync", match: "host-lock-recovery", when: "after" },
+  ]);
+  peers.push(original);
+  await original.ready(0);
+  const guard = join(directory, "host-lock-recovery");
+  const originalTarget = readlinkSync(guard);
+  const delayed = workerPeer(directory, join(root, "delayed"), [
+    { op: "readlinkSync", match: "host-lock-recovery", when: "after" },
+  ]);
+  peers.push(delayed);
+  await delayed.ready(0);
+  original.go(0);
+  await original.ready(1);
+  await original.stop();
+  assert.equal(existsSync(guard), false);
+  assert.ok(
+    existsSync(join(directory, originalTarget)),
+    "retired target survives interrupted cleanup",
+  );
+  const successor = workerPeer(directory, join(root, "successor"), [
+    { op: "preflight" },
+  ]);
+  peers.push(successor);
+  await successor.ready(0);
+  const successorTarget = readlinkSync(guard);
+  assert.notEqual(successorTarget, originalTarget);
+  const lock = join(directory, "host.lock");
+  const lockBefore = readFileSync(lock, "utf8");
+  const lockInode = lstatSync(lock).ino;
+  assert.deepEqual(JSON.parse(lockBefore), { pid: original.child.pid });
+  delayed.go(0);
+  const refused = await delayed.result();
+  assert.equal(refused.acquired, false);
+  assert.equal(
+    refused.claims,
+    1,
+    "loser actually claims orphan before canonical-target fence",
+  );
+  assert.equal(
+    readlinkSync(guard),
+    successorTarget,
+    "successor guard is intact",
+  );
+  // Without the claim-time fence the refused claimant still replaces this lock.
+  assert.equal(
+    readFileSync(lock, "utf8"),
+    lockBefore,
+    "refused claimant leaves the shared host lock untouched",
+  );
+  assert.equal(lstatSync(lock).ino, lockInode, "host lock inode is unchanged");
+  successor.go(0);
+  assert.equal((await successor.result()).acquired, true);
+  t.diagnostic(
+    "delayed old-target claim refused after canonical identity changed; successor retained ownership",
+  );
+});
+
+test(
+  "WO-143 once and loop recover kills during a running episode's polling acquisition",
+  { timeout: 60000 },
+  async (t) => {
+    const root = mkdtempSync(join(tmpdir(), "dotln-poll-crash-"));
+    t.after(() => rmSync(root, { recursive: true, force: true }));
+    const template = join(root, "template");
+    mkdirSync(template);
+    await seedFlight(template, 0, false);
+    for (const mode of ["once", "loop"] as const) {
+      const make = (label: string) => {
+        const directory = join(root, label);
+        cpSync(template, directory, { recursive: true });
+        return { directory, target: join(directory, ".resident-append") };
+      };
+      const discovery = make(`${mode}-discovery`);
+      const steps = runLockProcess({
+        ...crashInput(
+          discovery.directory,
+          discovery.target,
+          mode,
+          "discovery",
+          undefined,
+          10,
+        ),
+        poll: true,
+      });
+      for (const step of steps) {
+        const { directory, target } = make(`${mode}-${step.index}`);
+        const actual = await killLockProcess({
+          ...crashInput(directory, target, mode, "kill", step.index, 10),
+          poll: true,
+        });
+        assert.deepEqual(actual, step);
+        const store = new ResidentStore(directory);
+        const before = store.read();
+        assert.equal(
+          events(store, "ScriptEpisodeDispatched").length,
+          1,
+          "actual subprocess dispatched before polling crash",
+        );
+        assert.equal(
+          events(store, "ScriptEpisodeObserved").length,
+          0,
+          "episode remains in flight",
+        );
+        runLockProcess(
+          crashInput(directory, target, mode, "restart", undefined, 111),
+        );
+        assert.ok(store.read().startsWith(before));
+        assert.equal(events(store, "ScriptEpisodeLost").length, 1);
+      }
+      t.diagnostic(
+        `${mode}: ${steps.length} running-episode polling boundaries; dispatched subprocess episode is lost once after restart`,
+      );
+    }
+  },
+);

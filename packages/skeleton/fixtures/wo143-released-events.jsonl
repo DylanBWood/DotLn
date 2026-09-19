@@ -1,0 +1,1 @@
+{"schemaVersion":1,"eventId":"evt_1","type":"LegacyCompatibilityObserved","occurredAt":7,"actorId":"fixture","workstreamId":"fixture","payload":{"release":"v0.32.0"}}

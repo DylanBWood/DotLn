@@ -111,9 +111,14 @@ export class ResidentStore {
       lstatSync(this.store.directory).isSymbolicLink()
     )
       throw new Error("resident store may not be a symlink");
+    let inspected: ResidentTransaction;
     for (let attempt = 0; ; attempt++) {
       try {
-        this.appendStore.acquire();
+        this.appendStore.acquire(() => {
+          // The append lock protects the resident log, not just its auxiliary
+          // store. Validate that actual state before reclaiming either owner.
+          inspected = new ResidentTransaction(this.store, this.predicates);
+        });
         break;
       } catch (error) {
         if (
@@ -126,9 +131,7 @@ export class ResidentStore {
       }
     }
     try {
-      const result = operation(
-        new ResidentTransaction(this.store, this.predicates),
-      );
+      const result = operation(inspected!);
       this.observedBytes = existsSync(this.store.logPath)
         ? statSync(this.store.logPath).size
         : 0;

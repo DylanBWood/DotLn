@@ -1,4 +1,6 @@
 [
+  { "module": "worker-store.ts", "method": "module", "api": "readFileSync", "argument": "path", "shape": "guard owner", "decoder": "readGuardOwner: regular file; exact pid/token keys; positive safe integer and UUID token", "consumer": "generation-fenced exclusive dead-owner guard reclaim" },
+  { "module": "worker-store.ts", "method": "module", "api": "JSON.parse", "argument": "readFileSync(path, \"utf8\")", "shape": "guard owner", "decoder": "readGuardOwner: exact pid/token keys; positive safe integer and UUID token", "consumer": "generation-fenced exclusive dead-owner guard reclaim" },
   { "module": "worker-store.ts", "method": "read", "api": "readFileSync", "argument": "this.logPath", "shape": "event log", "decoder": "decodeLog", "consumer": "driver restore, replay, outbox and read-only status" },
   { "module": "worker-store.ts", "method": "acquire", "api": "readFileSync", "argument": "path", "shape": "saved result receipt", "decoder": "decodeReceipt; parseEvidenceResult for saved capsules; contextual preflight for inspection", "consumer": "pre-reclaim artifact scan" },
   { "module": "worker-store.ts", "method": "acquire", "api": "JSON.parse", "argument": "readFileSync(path, \"utf8\")", "shape": "saved result receipt", "decoder": "decodeReceipt", "consumer": "pre-reclaim artifact scan" },
