@@ -1,0 +1,14 @@
+{
+  "baseline": "HEAD:docs/lineage/idea-ledger.md",
+  "sectionsBefore": 142,
+  "sectionsAfter": 141,
+  "relocatedFromBelowResolutions": 31,
+  "normalizations": {
+    "- **Adopted:**": "- `adopted`:",
+    "- **Preserved:**": "- `preserved`:",
+    "- **Recovered:**": "- `adopted` `recovered`:",
+    "- **Implementation choice:**": "- `adopted` **Implementation choice:**",
+    "**Two NoOps of the first result are reversed by operator direction**\n  `operator-directed`": "**Two NoOps of the first result are reversed by operator direction**\n  `adopted` `operator-directed`"
+  },
+  "proseComparison": "passed: section bodies equal after listed tag normalization and trailing blank-separator removal; Resolutions prose unchanged"
+}

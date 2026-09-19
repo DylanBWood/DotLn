@@ -20,6 +20,12 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-084 activation completion (2026-09-19):** application `v0.31.2` stages
+ledger ordering, the separate Resolutions surface, and a generated index with
+a document-suite check above the observed local `v0.31.1` tag. This is a patch
+with no component source, component version, dependency or publication-control
+change. Independent verification and final review remain separate.
+
 **WO-137 activation completion (2026-09-18):** application `v0.30.1` stages
 the local runner discovery packet and bounded probe clients under the declared
 patch classification above local `v0.30.0`. No component source or package

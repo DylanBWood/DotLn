@@ -10942,6 +10942,21 @@
           "at": "2026-09-19T01:20:07.823Z"
         }
       ]
+    },
+    {
+      "id": "FUP-f84977331ac5c555",
+      "key": "decision:docs/evidence/WO-084/decisions.md#wo-084-d001",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "e9ae9fa3122965968564f11a5ac24b06fd4eb164292b782a4c7a839e4fbcbee2",
+          "ref": "docs/evidence/WO-084/decisions.md#wo-084-d001",
+          "title": "WO-084-D001: Move whole sections into stable descending date order, preserve Resolutions verbatim on its own surface, normalize six entry leads, and generate a checked section/status index in the docu",
+          "summary": "{ \"id\": \"WO-084-D001\", \"date\": \"2026-09-19\", \"dispatch\": \"resume: next\", \"decision\": \"Move whole sections into stable descending date order, preserve Resolutions verbatim on its own surface, normalize six entry leads, and generate a checked section/status index in the document suite only.\", \"evidence\": [ \"docs/work-orders/WO-084-ledger-order-and-index.md\", \"docs/work-orders/WO-035-documentation-structure-reset.md\", \"docs/product/01-principles.md\", \"docs/product/07-execution-guide.md#goal-aligned-decisions\", \"docs/lineage/idea-ledger.md\", \"scripts/lib/plan-subject.mjs#planningPasses\" ], \"rejected\": [ { \"option\": \"NoOp\", \"reason\": \"Leaves 31 sections below the old Resolutions boundary, defeati",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }
