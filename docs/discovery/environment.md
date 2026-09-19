@@ -588,3 +588,11 @@ expanding the admitted version/level set.
 
 The [writing-worker record](writing-worker-smoke-2026-09-14.md) and its [index](writing-worker-smoke-2026-09-14.json) carry 33 labeled rows (23 observed, 0 blocked, 8 unavailable, 2 ambiguous) observed with Claude Code 2.1.270 and Codex CLI 0.154.0. Each launch ran in a fresh scratch worktree outside this checkout with the operator's authentication through the harness's unsandboxed request, and every row cites its command shape and run file; paths, session identifiers and host names were reduced to shapes at collection. Earlier observations above remain time-indexed and unchanged. Requested model and effort are launch selectors, not effective-session readback.
 <!-- dotln-wo044-addendum:end -->
+
+## WO-137 local runner addendum (2026-09-18)
+
+| Observation | Label | Evidence and limit |
+| --- | --- | --- |
+| LM Studio 0.4.24+1 / CLI ff50809 / llama.cpp 2.38.0; Qwen3.6 27B Q4_K_M | observed | [Packet](local-runner-2026-09-18.md) and [JSON](local-runner-2026-09-18.json): loopback start/load, n=3 byte-identical outputs, schema, tool round trip, cancellation, timeout and recovery; no downloaded model. |
+| Two-minute staged load | observed | Nine completed 128-token requests; tenth deadline-cancelled; 130 native health samples nominal thermal / normal memory pressure / zero swap growth; model unloaded and server stopped afterward. This is a short bounded observation, not maximum capacity or hardware safety. |
+| Overall readiness / no-egress boundary | ambiguous | `inconclusive`: successful inference does not establish the absent attributable runner egress restriction or all effective settings and interrupted-case metrics. Historical WO-027 observations remain time-indexed. |

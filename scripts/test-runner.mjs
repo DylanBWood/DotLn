@@ -365,6 +365,21 @@ export const suites = [
     ],
   }),
   nodeTests("authority-grants", "scripts/test-authority-grants.mjs"),
+  nodeTests(
+    "local-runner-double",
+    "scripts/probes/local-runner-smoke.test.mjs",
+    {
+      command: [
+        process.execPath,
+        "--test",
+        "--test-concurrency=1",
+        "scripts/probes/local-runner-smoke.test.mjs",
+        "scripts/probes/local-runner-load.test.mjs",
+      ],
+      protects:
+        "local runner research preserves failures, validates responses and observes cancellation using loopback doubles only",
+    },
+  ),
   node("authority-evidence", "scripts/authority-evidence.mjs", {
     args: ["--check"],
     needsBuild: true,

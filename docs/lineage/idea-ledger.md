@@ -7559,3 +7559,22 @@ Synthesis; the clean-room screen found no stop condition. See the
     native harness restrictions.
   - The operator set this for priority at the next planning pass. Reopen
     there, or on a measured refusal of an ungranted outside write.
+
+## 2026-09-18 — Local runner execution and bounded load observation (WO-137)
+
+Explicit WO-137 criterion 5 write-back. Source: this work order's live
+[discovery packet](../discovery/local-runner-2026-09-18.md), operator-supplied
+prior Terminal observations, thermal caution and explicit `scope expand:`
+request to perform the proposed gentle load test now. Clean-room screen found
+no stop condition; no raw private logs, device identifiers or settings copied.
+
+The installed runner now completes noninteractive inference, deterministic
+repeats, schema output and a tool round trip, and responds to observed HTTP
+cancellation and timeout. A two-minute sequential capped-load run recorded
+nominal thermal state, normal memory pressure and no incremental swap.
+The larger readiness contract remains inconclusive because egress attribution,
+effective template/default settings and interrupted-throughput evidence are
+incomplete. Preserve that distinction in WO-110 and WO-138; reopen when the
+packet's named observations become available. No general safety or model
+quality conclusion follows. Decisions and operator authorization are in
+[WO-137-D001–D003](../evidence/WO-137/decisions.md).

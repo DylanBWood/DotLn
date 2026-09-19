@@ -20,6 +20,15 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-137 activation completion (2026-09-18):** application `v0.30.1` stages
+the local runner discovery packet and bounded probe clients under the declared
+patch classification above local `v0.30.0`. No component source or package
+version changes. Live protocol success and the operator-expanded two-minute
+load observation do not promote model quality, sandbox qualification or a
+capability level. Verification and final review remain separate.
+
+**WO-137 collision retiming (2026-09-19):** unpublished target `v0.30.1` is superseded by `v0.31.1` under the existing patch classification because the observed release baseline is `v0.31.0`. Scope, acceptance, component versions, and published tags are unchanged by this retiming.
+
 **WO-055 activation completion (2026-09-18):** application `v0.31.0` and
 skeleton `0.27.0` stage bounded source-writing repair and complete-contract
 re-verification, with persisted executable continuations and a default limit
@@ -1117,6 +1126,21 @@ comes from trustworthy measurements and successful or informative experiments;
 it never raises maturity automatically.
 
 ### Candidate — local-model usefulness experiments
+
+**WO-137 observation (2026-09-18):** the [readiness packet](../discovery/local-runner-2026-09-18.md)
+records LM Studio `0.4.24+1`, llama.cpp runtime `2.38.0` and an existing pinned
+Qwen3.6 27B Q4_K_M artifact. Explicit CLI start and load now work; the fixed
+three-request smoke is byte-identical, schema and tool round trip pass, HTTP
+cancellation is observed to become idle within five seconds, timeout occurs
+and recovery succeeds. The operator-expanded two-minute sequential load run
+completed nine capped requests and deadline-cancelled the tenth with nominal
+thermal observations, normal memory pressure and no swap growth. Overall
+outcome remains `inconclusive`: effective template/default sampling readback,
+interrupted-case throughput and attributable runner egress denial are missing.
+WO-110 may consume these protocol observations while retaining its unavailable
+readiness path; WO-138's `ready` prerequisite remains unsatisfied. The packet
+names the next useful boundary/provenance experiment. No capability, quality,
+hardware-safety or sustained-load claim follows.
 
 Operator direction, 2026-09-16: the next planning pass should give local LLM
 experiments more attention, starting with concrete runner readiness and any
