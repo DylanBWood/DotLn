@@ -24,7 +24,7 @@ export function harnessRuntimeCause(root) {
       if (!runtime?.files?.length) return "runtime-unavailable";
       for (const file of runtime.files) {
         if (
-          !/^packages\/(?:compiler|skeleton)\/dist\/src\/[a-z-]+\.(?:js|mjs)$/.test(
+          !/^packages\/(?:compiler|skeleton)\/dist\/src\/[A-Za-z0-9_-]+\.(?:js|mjs)$/.test(
             file.path,
           )
         )
@@ -100,8 +100,7 @@ export async function observedFactsReport(root, state, output) {
         verifying: "verification",
         "final-review": "finalReview",
       }[state.phase] ?? state.phase;
-    if (!process.env.CODEX_THREAD_ID)
-      return `Observed facts at ${new Date().toISOString()}: unknown (session-identity-unavailable).`;
+    if (!process.env.CODEX_THREAD_ID) return ""; // Claude supplies its session-bound block through the hook.
     const scope = codexObservationScope(
       process.env.CODEX_THREAD_ID,
       state.workOrderId ?? null,

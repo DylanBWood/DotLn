@@ -79,6 +79,10 @@ for (const flag of [
   "--tools",
   "--safe-mode",
   "--strict-mcp-config",
+  "--disable-slash-commands",
+  "--mcp-config",
+  "--no-chrome",
+  "--max-budget-usd",
 ])
   if (claude.stdout.includes(flag)) evidence.claude.flags.push(flag);
   else throw new Error(`Claude required control absent: ${flag}`);

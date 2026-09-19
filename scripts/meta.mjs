@@ -1,7 +1,8 @@
 #!/usr/bin/env node
+import { isMainModule } from "./lib/paths.mjs";
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
-import { fileURLToPath, pathToFileURL } from "node:url";
+import { fileURLToPath } from "node:url";
 import {
   collectMeta,
   renderMeta,
@@ -15,6 +16,7 @@ import {
   usageSessionKey,
   usageObservation,
 } from "../packages/skeleton/src/usage-observation.mjs";
+import { refreshExecutorIndex } from "./lib/executor-handoff.mjs";
 import { syncFollowups } from "./lib/planning-followups.mjs";
 
 const root = resolve(fileURLToPath(new URL("../", import.meta.url)));
@@ -88,6 +90,7 @@ export async function metaMain(args = process.argv.slice(2), repo = root) {
   }
   writeDecisionsIndex(repo, { check: Boolean(options["--check"]) });
   syncFollowups(repo, { check: Boolean(options["--check"]) });
+  if (!options["--check"]) await refreshExecutorIndex(repo);
   const meta = await collectMeta(repo);
   if (options["--plan-cost"]) {
     const { buildPlanSubject } = await import("./lib/plan-subject.mjs");
@@ -138,10 +141,7 @@ export async function metaMain(args = process.argv.slice(2), repo = root) {
   );
   return meta;
 }
-if (
-  process.argv[1] &&
-  pathToFileURL(resolve(process.argv[1])).href === import.meta.url
-) {
+if (isMainModule(import.meta.url)) {
   try {
     await metaMain();
   } catch (error) {

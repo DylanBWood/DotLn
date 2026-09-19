@@ -1,7 +1,8 @@
 #!/usr/bin/env node
+import { isMainModule } from "./lib/paths.mjs";
 import { lstatSync, readFileSync, realpathSync } from "node:fs";
 import { resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+
 import {
   applyAdjacentCommand,
   nextAdjacentItem,
@@ -52,10 +53,7 @@ export function main(args, root = process.cwd()) {
       "actor-attested; queue state does not prove chat delivery, inbox visibility or executed checks",
   };
 }
-if (
-  process.argv[1] &&
-  resolve(process.argv[1]) === fileURLToPath(import.meta.url)
-) {
+if (isMainModule(import.meta.url)) {
   try {
     process.stdout.write(
       JSON.stringify(main(process.argv.slice(2)), null, 2) + "\n",

@@ -521,3 +521,707 @@ test("bounded lexical scan stays under the order's 100 ms fixture budget", (t) =
   t.diagnostic(`lexical fixture scan: ${duration.toFixed(3)} ms`);
   assert.ok(duration < 100);
 });
+
+for (const status of ["completed", "failed", "stopped", "killed"])
+  for (const envelope of ["user", "queue-operation", "attachment"])
+    test(`WO-142 B2 Bash dispatch and native ${envelope} ${status} notices retain scoped terminal facts only`, (t) => {
+      const root = fixture(t);
+      const sessionId = "fixture-notices";
+      const noticeScope = {
+        ...scope,
+        sessionKey: createHash("sha256").update(sessionId).digest("hex"),
+      };
+      const observation = observeBackgroundTool(
+        "Bash",
+        { run_in_background: true, command: "private-command" },
+        {
+          backgroundTaskId: "task-one",
+          interrupted: false,
+          isImage: false,
+          noOutputExpected: true,
+          stderr: "",
+          stdout: "",
+        },
+        dispatch,
+        "call-one",
+      );
+      assert.equal(observation.backgroundTask.state, "dispatched");
+      appendObservation(root, noticeScope, observation, dispatch);
+      const completedAt = "2026-09-17T14:07:00.000Z";
+      const transcriptPath = join(root, `${sessionId}.jsonl`);
+      const content = `<task-notification><task-id>task-one</task-id><tool-use-id>call-one</tool-use-id><output-file>private-output</output-file><status>${status}</status><summary>private-summary</summary><note><result>private-result</result><usage>private-usage</usage></note></task-notification>`;
+      const native =
+        envelope === "queue-operation"
+          ? { type: envelope, operation: "enqueue", content }
+          : envelope === "attachment"
+            ? {
+                type: envelope,
+                attachment: { type: "queued_command", prompt: content },
+              }
+            : { type: "user", message: { role: "user", content } };
+      writeFileSync(
+        transcriptPath,
+        [
+          { ...native, sessionId, cwd: root, timestamp: completedAt },
+          // Re-delivery must not extend elapsed time; queue removals are not notices.
+          {
+            ...native,
+            sessionId,
+            cwd: root,
+            timestamp: "2026-09-17T14:08:00.000Z",
+          },
+          {
+            type: "queue-operation",
+            operation: "remove",
+            content,
+            timestamp: "2026-09-17T14:09:00.000Z",
+          },
+        ]
+          .map((row) => JSON.stringify(row))
+          .join("\n") + "\n",
+      );
+      const first = observationBoundary(root, noticeScope, {
+        transcriptPath,
+        now,
+      });
+      assert.match(first, new RegExp(`last observed state ${status}`));
+      assert.match(first, /elapsed to terminal observation 60000 ms/);
+      observationBoundary(root, noticeScope, {
+        transcriptPath,
+        now: "2026-09-17T15:00:00.000Z",
+      });
+      assert.equal(
+        observedFacts(root, noticeScope, "2026-09-17T15:00:00.000Z").tasks[0]
+          .elapsedMs,
+        60000,
+      );
+      const journal = journalRows(root, noticeScope);
+      assert.equal(
+        journal.filter((row) => row.eventId?.startsWith("task-notice:")).length,
+        1,
+      );
+      assert.ok(
+        journal.every(
+          (row) =>
+            row.workOrder === scope.workOrder && row.phase === scope.phase,
+        ),
+      );
+      assert.doesNotMatch(
+        JSON.stringify(journal),
+        /private-|task-one|call-one/,
+      );
+    });
+
+test("WO-142 B2 non-Codex briefing leaves the facts block to its hook", async () => {
+  const prior = process.env.CODEX_THREAD_ID;
+  delete process.env.CODEX_THREAD_ID;
+  try {
+    assert.equal(
+      await observedFactsReport("/unused", { phase: "active" }, ""),
+      "",
+    );
+  } finally {
+    if (prior !== undefined) process.env.CODEX_THREAD_ID = prior;
+  }
+});
+
+const nativeNoticeHash = (value) =>
+  createHash("sha256").update(value).digest("hex");
+const nativeNotice = (id, status = "completed", call = "") =>
+  `<task-notification><task-id>${id}</task-id>${call ? `<tool-use-id>${call}</tool-use-id>` : ""}<status>${status}</status><summary>synthetic payload</summary></task-notification>`;
+const nativeNoticeFixture = (t) => {
+  const root = mkdtempSync(join(tmpdir(), "wo142-f2-negative-"));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  const scope = {
+    sessionKey: nativeNoticeHash("fixture-native"),
+    workOrder: "WO-999",
+    phase: "repair",
+    startedAt: "2026-09-17T14:00:00.000Z",
+  };
+  const path = join(root, "fixture-native.jsonl");
+  return {
+    root,
+    scope,
+    path,
+    run(rows) {
+      writeFileSync(
+        path,
+        rows
+          .map((row) =>
+            JSON.stringify({
+              sessionId: "fixture-native",
+              cwd: root,
+              timestamp: "2026-09-17T14:07:00.000Z",
+              ...row,
+            }),
+          )
+          .join("\n") + "\n",
+      );
+      return observationBoundary(root, scope, {
+        transcriptPath: path,
+        now: "2026-09-17T15:00:00.000Z",
+      });
+    },
+  };
+};
+test("F2 queue remove, stale timestamps and unrelated attachments establish no task", (t) => {
+  const f = nativeNoticeFixture(t);
+  f.run([
+    {
+      type: "queue-operation",
+      operation: "remove",
+      content: nativeNotice("removed-only"),
+    },
+    {
+      type: "queue-operation",
+      operation: "enqueue",
+      content: nativeNotice("stale"),
+      timestamp: "2026-09-17T13:59:59.000Z",
+    },
+    {
+      type: "attachment",
+      attachment: { type: "other", prompt: nativeNotice("unrelated") },
+    },
+    {
+      type: "attachment",
+      attachment: { type: "queued_command", prompt: nativeNotice("bad-time") },
+      timestamp: "not-a-time",
+    },
+    {
+      type: "user",
+      message: { role: "assistant", content: nativeNotice("wrong-role") },
+    },
+    {
+      type: "queue-operation",
+      operation: "enqueue",
+      content: nativeNotice("unsupported-status", "pending"),
+    },
+  ]);
+  assert.deepEqual(observedFacts(f.root, f.scope).tasks, []);
+});
+test("F2 mixed native deliveries retain first terminal time and hash invocation aliases", (t) => {
+  const f = nativeNoticeFixture(t);
+  appendObservation(f.root, f.scope, {
+    backgroundTask: {
+      key: nativeNoticeHash("canonical-task"),
+      invocationKey: nativeNoticeHash("fixture-call"),
+      state: "dispatched",
+      dispatchedAt: "2026-09-17T14:06:00.000Z",
+      observedAt: "2026-09-17T14:06:00.000Z",
+    },
+  });
+  const text = nativeNotice("notice-alias", "completed", "fixture-call");
+  f.run([
+    { type: "queue-operation", operation: "enqueue", content: text },
+    {
+      type: "attachment",
+      attachment: { type: "queued_command", prompt: text },
+      timestamp: "2026-09-17T14:08:00.000Z",
+    },
+    {
+      type: "user",
+      message: { role: "user", content: text },
+      timestamp: "2026-09-17T14:09:00.000Z",
+    },
+  ]);
+  const journal = journalRows(f.root, f.scope);
+  const tasks = observedFacts(
+    f.root,
+    f.scope,
+    "2026-09-17T15:00:00.000Z",
+  ).tasks;
+  assert.equal(tasks.length, 1);
+  assert.equal(tasks[0].key, nativeNoticeHash("canonical-task"));
+  assert.equal(tasks[0].elapsedMs, 60000);
+  assert.equal(tasks[0].state, "completed");
+  assert.equal(
+    journal.filter((row) => row.eventId?.startsWith("task-notice:")).length,
+    1,
+  );
+  assert.ok(
+    journal.every(
+      (row) => row.workOrder === "WO-999" && row.phase === "repair",
+    ),
+  );
+  assert.doesNotMatch(
+    JSON.stringify(journal),
+    /canonical-task|fixture-call|notice-alias|synthetic payload/,
+  );
+});
+
+test("VER-002 B2 automatic backgrounding and successful TaskStop retain terminal elapsed", (t) => {
+  const root = fixture(t);
+  const automatic = observeBackgroundTool(
+    "Bash",
+    { command: "private-command" },
+    { backgroundTaskId: "automatic", timedOutAfterMs: 1000 },
+    dispatch,
+    "automatic-call",
+  );
+  assert.equal(automatic?.backgroundTask.state, "dispatched");
+  appendObservation(root, scope, automatic, dispatch);
+  const stoppedAt = "2026-09-17T14:07:00.000Z";
+  const stopped = observeBackgroundTool(
+    "TaskStop",
+    { task_id: "automatic" },
+    {
+      task_id: "automatic",
+      task_type: "local_bash",
+      message: "synthetic-success",
+    },
+    stoppedAt,
+  );
+  assert.equal(stopped.backgroundTask.state, "stopped");
+  appendObservation(root, scope, stopped, stoppedAt);
+  for (const at of [now, "2026-09-17T15:32:00.000Z"])
+    assert.equal(observedFacts(root, scope, at).tasks[0].elapsedMs, 60000);
+  for (const output of [
+    {},
+    { task_id: "automatic", is_error: true },
+    { task_id: "automatic", error: "failed" },
+    { task_id: "automatic", status: "unsupported" },
+  ])
+    assert.equal(
+      observeBackgroundTool("TaskStop", { task_id: "automatic" }, output, now)
+        .backgroundTask.state,
+      "unknown",
+    );
+  for (const status of ["completed", "failed", "stopped", "killed"])
+    assert.equal(
+      observeBackgroundTool(
+        "TaskOutput",
+        { task_id: "automatic" },
+        { status },
+        now,
+      ).backgroundTask.state,
+      status,
+    );
+});
+
+test("VER-002 B2 task fold excludes old scopes and respects observation chronology", (t) => {
+  const root = fixture(t);
+  for (const [otherScope, at, key] of [
+    [{ ...scope, phase: "verification" }, dispatch, "other-phase"],
+    [{ ...scope, workOrder: "WO-998" }, dispatch, "other-order"],
+    [scope, "2026-09-17T13:59:00.000Z", "old-dispatch"],
+  ])
+    appendObservation(
+      root,
+      otherScope,
+      {
+        backgroundTask: {
+          key,
+          state: "dispatched",
+          dispatchedAt: at,
+          observedAt: at,
+        },
+      },
+      at,
+    );
+  assert.deepEqual(observedFacts(root, scope, now).tasks, []);
+  const stoppedAt = "2026-09-17T14:07:00.000Z";
+  appendObservation(
+    root,
+    scope,
+    {
+      backgroundTask: {
+        key: "current",
+        state: "stopped",
+        observedAt: stoppedAt,
+      },
+    },
+    stoppedAt,
+  );
+  appendObservation(
+    root,
+    scope,
+    {
+      backgroundTask: {
+        key: "current",
+        state: "dispatched",
+        dispatchedAt: dispatch,
+        observedAt: dispatch,
+      },
+    },
+    now,
+  );
+  const facts = observedFacts(root, scope, now);
+  assert.equal(facts.tasks.length, 1);
+  assert.equal(facts.tasks[0].state, "stopped");
+  assert.equal(facts.tasks[0].elapsedMs, 60000);
+});
+
+test("VER-002 B2 same-scan invocation aliases link reconstructed dispatch and killed notice", (t) => {
+  const f = nativeNoticeFixture(t);
+  const timestamp = "2026-09-17T14:06:00.000Z";
+  f.run([
+    {
+      type: "assistant",
+      timestamp,
+      message: {
+        role: "assistant",
+        content: [
+          { type: "tool_use", id: "new-call", name: "Bash", input: {} },
+        ],
+      },
+    },
+    {
+      type: "user",
+      timestamp,
+      message: {
+        role: "user",
+        content: [
+          {
+            type: "tool_result",
+            tool_use_id: "new-call",
+            content: JSON.stringify({
+              backgroundTaskId: "canonical",
+              timedOutAfterMs: 1000,
+            }),
+          },
+        ],
+      },
+    },
+    {
+      type: "queue-operation",
+      operation: "enqueue",
+      content: nativeNotice("alias", "killed", "new-call"),
+    },
+  ]);
+  const tasks = observedFacts(f.root, f.scope, now).tasks;
+  assert.equal(tasks.length, 1);
+  assert.equal(tasks[0].state, "killed");
+  assert.equal(tasks[0].elapsedMs, 60000);
+});
+
+test("VER-002 B2 transcript notices do not multiply journal reads or invocation hashes", async (t) => {
+  const fs = (await import("node:fs")).default;
+  const crypto = (await import("node:crypto")).default;
+  const { syncBuiltinESMExports } = await import("node:module");
+  const f = nativeNoticeFixture(t);
+  const journal = join(
+    f.root,
+    "docs/control/local/harness",
+    `${f.scope.sessionKey}.jsonl`,
+  );
+  mkdirSync(dirname(journal), { recursive: true });
+  writeFileSync(
+    journal,
+    Array.from({ length: 16636 }, (_, index) =>
+      JSON.stringify({
+        workOrder: f.scope.workOrder,
+        phase: f.scope.phase,
+        recordedAt: dispatch,
+        backgroundTask: {
+          key: nativeNoticeHash(`task-${index}`),
+          invocationKey: nativeNoticeHash(`call-${index}`),
+          state: "dispatched",
+          dispatchedAt: dispatch,
+          observedAt: dispatch,
+        },
+      }),
+    ).join("\n") + "\n",
+  );
+  const notices = Array.from({ length: 200 }, (_, index) => ({
+    type: "queue-operation",
+    operation: "enqueue",
+    content: nativeNotice(`task-${index}`, "killed", `call-${index}`),
+  }));
+  const read = fs.readFileSync,
+    hash = crypto.createHash;
+  let reads = 0,
+    hashes = 0;
+  fs.readFileSync = function (path, ...args) {
+    if (String(path) === journal) reads++;
+    return read.call(this, path, ...args);
+  };
+  crypto.createHash = function (...args) {
+    hashes++;
+    return hash.apply(this, args);
+  };
+  syncBuiltinESMExports();
+  try {
+    f.run(notices);
+    f.run(notices);
+  } finally {
+    fs.readFileSync = read;
+    crypto.createHash = hash;
+    syncBuiltinESMExports();
+  }
+  t.diagnostic(`two boundaries: ${reads} journal reads, ${hashes} hashes`);
+  assert.ok(reads <= 10, `journal reads must not scale with notices: ${reads}`);
+  assert.ok(hashes <= 2000, `hashes must be linear in notices: ${hashes}`);
+  assert.equal(
+    journalRows(f.root, f.scope).filter((row) =>
+      row.eventId?.startsWith("task-notice:"),
+    ).length,
+    200,
+  );
+});
+
+test("WO-142 terminal lifetime is distinct from dispatch age in measurement advisories", (t) => {
+  const root = fixture(t);
+  task(root);
+  appendObservation(
+    root,
+    scope,
+    {
+      backgroundTask: {
+        key: "a",
+        state: "completed",
+        observedAt: "2026-09-17T14:07:00.000Z",
+      },
+    },
+    "2026-09-17T14:07:00.000Z",
+  );
+  const facts = observedFacts(root, scope, now);
+  assert.equal(facts.tasks[0].elapsedMs, 60000);
+  assert.equal(
+    scanHedges("Task 1 was dispatched roughly 10 minutes ago", facts)[0]
+      .observed,
+    `1560000 ms since ${dispatch}`,
+  );
+  assert.equal(
+    scanHedges("Task 1 was dispatched around 14:06", facts)[0].observed,
+    dispatch,
+  );
+});
+
+for (const [status, tool, content, isError] of [
+  ["completed", "TaskOutput", "synthetic text output", false],
+  ["failed", "TaskOutput", "synthetic failed output", false],
+  ["completed", "TaskStop", "No task found with ID", true],
+  ["killed", "TaskStop", JSON.stringify({ task_id: "terminal-task" }), false],
+]) {
+  test(`VER-003 F1 ${status} notice survives later ${tool} ${isError ? "error" : "result"}`, (t) => {
+    const f = nativeNoticeFixture(t);
+    appendObservation(
+      f.root,
+      f.scope,
+      observeBackgroundTool(
+        "Bash",
+        {},
+        { backgroundTaskId: "terminal-task" },
+        dispatch,
+      ),
+      dispatch,
+    );
+    const text = f.run([
+      {
+        type: "queue-operation",
+        operation: "enqueue",
+        content: nativeNotice("terminal-task", status),
+      },
+      {
+        type: "assistant",
+        timestamp: "2026-09-17T14:08:00.000Z",
+        message: {
+          role: "assistant",
+          content: [
+            {
+              type: "tool_use",
+              id: "later-call",
+              name: tool,
+              input: { task_id: "terminal-task" },
+            },
+          ],
+        },
+      },
+      {
+        type: "user",
+        timestamp: "2026-09-17T14:08:01.000Z",
+        message: {
+          role: "user",
+          content: [
+            {
+              type: "tool_result",
+              tool_use_id: "later-call",
+              content,
+              is_error: isError,
+            },
+          ],
+        },
+      },
+    ]);
+    for (const at of [now, "2026-09-17T16:00:00.000Z"]) {
+      const tasks = observedFacts(f.root, f.scope, at).tasks;
+      assert.equal(tasks.length, 1);
+      assert.equal(tasks[0].state, status);
+      assert.equal(tasks[0].observedAt, "2026-09-17T14:07:00.000Z");
+      assert.equal(tasks[0].elapsedMs, 60000);
+    }
+    assert.match(text, /elapsed to terminal observation 60000 ms/);
+    assert.doesNotMatch(
+      JSON.stringify(journalRows(f.root, f.scope)),
+      /terminal-task|later-call|synthetic text|No task found/,
+    );
+  });
+}
+
+test("VER-003 F1 earliest terminal wins in every append order, with independent earliest dispatch", (t) => {
+  const permutations = (items) =>
+    items.length
+      ? items.flatMap((item, index) =>
+          permutations(items.filter((_, i) => i !== index)).map((rest) => [
+            item,
+            ...rest,
+          ]),
+        )
+      : [[]];
+  const events = [
+    { state: "dispatched", dispatchedAt: dispatch, observedAt: dispatch },
+    { state: "completed", observedAt: "2026-09-17T14:07:00.000Z" },
+    { state: "stopped", observedAt: "2026-09-17T14:08:00.000Z" },
+    {
+      state: "running",
+      dispatchedAt: "2026-09-17T14:06:30.000Z",
+      observedAt: "2026-09-17T14:09:00.000Z",
+    },
+    { state: "unknown", observedAt: "2026-09-17T14:10:00.000Z" },
+  ];
+  for (const order of permutations(events)) {
+    const root = fixture(t);
+    for (const event of order)
+      appendObservation(
+        root,
+        scope,
+        { backgroundTask: { key: "same-task", ...event } },
+        now,
+      );
+    const [result] = observedFacts(root, scope, now).tasks;
+    assert.equal(result.state, "completed");
+    assert.equal(result.observedAt, "2026-09-17T14:07:00.000Z");
+    assert.equal(result.dispatchedAt, dispatch);
+    assert.equal(result.elapsedMs, 60000);
+  }
+});
+
+test("VER-003 N2 nonterminal chronology retains the earliest of multiple dispatch observations", (t) => {
+  for (const reverse of [false, true]) {
+    const root = fixture(t);
+    const events = [
+      { state: "dispatched", dispatchedAt: dispatch, observedAt: dispatch },
+      {
+        state: "running",
+        dispatchedAt: "2026-09-17T14:06:30.000Z",
+        observedAt: "2026-09-17T14:07:00.000Z",
+      },
+    ];
+    for (const event of reverse ? events.reverse() : events)
+      appendObservation(
+        root,
+        scope,
+        { backgroundTask: { key: "same-task", ...event } },
+        now,
+      );
+    const [result] = observedFacts(root, scope, now).tasks;
+    assert.equal(result.state, "running");
+    assert.equal(result.dispatchedAt, dispatch);
+    assert.equal(result.elapsedMs, 1560000);
+  }
+});
+
+for (const axis of ["phase", "order", "start"]) {
+  test(`VER-003 N2 transcript journal ${axis} scope excludes stale notice deduplication and invocation aliases`, (t) => {
+    for (const staleNotice of [false, true]) {
+      const f = nativeNoticeFixture(t);
+      const other = {
+        ...f.scope,
+        ...(axis === "phase" ? { phase: "verification" } : {}),
+        ...(axis === "order" ? { workOrder: "WO-998" } : {}),
+      };
+      const at = axis === "start" ? "2026-09-17T13:59:00.000Z" : dispatch;
+      const key = nativeNoticeHash(
+        staleNotice ? "current-task" : "stale-alias",
+      );
+      appendObservation(
+        f.root,
+        other,
+        {
+          ...(staleNotice
+            ? { eventId: `task-notice:${nativeNoticeHash(`${key}:completed`)}` }
+            : {}),
+          backgroundTask: {
+            key,
+            invocationKey: nativeNoticeHash("reused-call"),
+            state: staleNotice ? "completed" : "dispatched",
+            observedAt: at,
+          },
+        },
+        at,
+      );
+      f.run([
+        {
+          type: "queue-operation",
+          operation: "enqueue",
+          content: nativeNotice("current-task", "completed", "reused-call"),
+        },
+      ]);
+      const tasks = observedFacts(f.root, f.scope, now).tasks;
+      assert.equal(tasks.length, 1);
+      assert.equal(tasks[0].key, nativeNoticeHash("current-task"));
+      assert.equal(tasks[0].observedAt, "2026-09-17T14:07:00.000Z");
+    }
+  });
+}
+
+test("VER-003 N1 native prompt notice is observed before transcript flush and reconciles earlier evidence once", (t) => {
+  const f = nativeNoticeFixture(t);
+  appendObservation(
+    f.root,
+    f.scope,
+    observeBackgroundTool(
+      "Bash",
+      {},
+      { backgroundTaskId: "prompt-task" },
+      dispatch,
+      "prompt-call",
+    ),
+    dispatch,
+  );
+  const prompt = nativeNotice("prompt-task", "completed", "prompt-call");
+  const first = observationBoundary(f.root, f.scope, {
+    transcriptPath: f.path,
+    prompt,
+    now: "2026-09-17T14:07:01.000Z",
+  });
+  assert.match(
+    first,
+    /last observed state completed; elapsed to terminal observation 61000 ms/,
+  );
+  observationBoundary(f.root, f.scope, { transcriptPath: f.path, prompt, now });
+  assert.equal(
+    journalRows(f.root, f.scope).filter((r) =>
+      r.eventId?.startsWith("task-notice:"),
+    ).length,
+    1,
+  );
+  // The queued transcript timestamp can become available after the prompt hook.
+  const rows = [
+    { type: "queue-operation", operation: "enqueue", content: prompt },
+  ];
+  f.run(rows);
+  const size = journalRows(f.root, f.scope).length;
+  f.run(rows);
+  assert.equal(journalRows(f.root, f.scope).length, size);
+  const [result] = observedFacts(f.root, f.scope, now).tasks;
+  assert.equal(result.state, "completed");
+  assert.equal(result.elapsedMs, 60000);
+  assert.doesNotMatch(
+    JSON.stringify(journalRows(f.root, f.scope)),
+    /prompt-task|prompt-call|synthetic payload/,
+  );
+});
+
+test("VER-003 N1 prompt parser ignores ordinary prose, quoted envelopes and unsupported statuses", (t) => {
+  for (const prompt of [
+    "Continue",
+    `Example: ${nativeNotice("fake")}`,
+    `\`\`\`\n${nativeNotice("fake")}\n\`\`\``,
+    nativeNotice("fake", "pending"),
+  ]) {
+    const f = nativeNoticeFixture(t);
+    observationBoundary(f.root, f.scope, { prompt, now });
+    assert.deepEqual(observedFacts(f.root, f.scope, now).tasks, []);
+  }
+});

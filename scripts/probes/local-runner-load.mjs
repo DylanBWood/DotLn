@@ -1,10 +1,11 @@
 #!/usr/bin/env node
+import { isMainModule } from "../lib/paths.mjs";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { resolve } from "node:path";
 import { homedir } from "node:os";
-import { pathToFileURL } from "node:url";
+
 import { performance } from "node:perf_hooks";
 import {
   livePreflightAsync,
@@ -363,8 +364,4 @@ async function main() {
     }),
   );
 }
-if (
-  process.argv[1] &&
-  import.meta.url === pathToFileURL(resolve(process.argv[1])).href
-)
-  await main();
+if (isMainModule(import.meta.url)) await main();

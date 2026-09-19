@@ -7,6 +7,7 @@ import {
   realpathSync,
 } from "node:fs";
 import { basename, join, resolve, sep } from "node:path";
+import { fileURLToPath } from "node:url";
 
 export const containedRegularFile = (path, root) =>
   existsSync(path) &&
@@ -62,6 +63,10 @@ const anchoredBuildOutput = (candidate) =>
   /^(?:node_modules|dist)(?:\/|$)/.test(candidate) ||
   /^packages\/[^/]+\/(?:node_modules|dist)(?:\/|$)/.test(candidate);
 
+export const disposableBasename = (candidate) =>
+  basename(candidate) === ".DS_Store" ||
+  basename(candidate).endsWith(".tsbuildinfo");
+
 export const classifyIgnoredMaterial = (candidate) => {
   const intake = protectedIntake(candidate);
   const disposable =
@@ -69,8 +74,8 @@ export const classifyIgnoredMaterial = (candidate) => {
     (anchoredBuildOutput(candidate) ||
       /^(?:\.runtime|docs\/control\/local\/harness)(?:\/|$)/.test(candidate) ||
       /^(?:\.control-beacons)(?:\/|$)/.test(candidate) ||
-      basename(candidate) === ".DS_Store" ||
-      candidate.endsWith(".tsbuildinfo"));
+      /(?:^|\/)\.dotln-beacon-stage-[A-Za-z0-9]{6}(?:\/|$)/.test(candidate) ||
+      disposableBasename(candidate));
   return {
     disposable,
     releaseEvidenceAllowed:
@@ -205,3 +210,14 @@ export function describeIgnoredMaterial(root, candidate) {
       : "move it outside the checkout from an operator terminal; a nested repository is never deleted here",
   };
 }
+
+export const isMainModule = (moduleUrl, entry = process.argv[1]) => {
+  if (!entry) return false;
+  try {
+    return (
+      realpathSync(resolve(entry)) === realpathSync(fileURLToPath(moduleUrl))
+    );
+  } catch {
+    return false;
+  }
+};

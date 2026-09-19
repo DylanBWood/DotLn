@@ -1,3 +1,22 @@
+import { mkdtempSync, writeFileSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+
+export const withTemporaryBody = (body, operation, filename = "PR.md") => {
+  const directory = mkdtempSync(join(tmpdir(), "dotln-body-"));
+  const path = join(directory, filename);
+  try {
+    writeFileSync(path, body, "utf8");
+    return operation(path);
+  } finally {
+    try {
+      rmSync(directory, { recursive: true, force: true });
+    } catch {
+      // Cleanup must not mask whether the remote operation ran.
+    }
+  }
+};
+
 const quoteContent = (line) => {
   let content = line;
   let depth = 0;

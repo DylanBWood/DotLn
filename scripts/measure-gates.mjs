@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { isMainModule } from "./lib/paths.mjs";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import {
@@ -13,7 +14,7 @@ import {
 } from "node:fs";
 import { availableParallelism } from "node:os";
 import { dirname, join, resolve } from "node:path";
-import { fileURLToPath, pathToFileURL } from "node:url";
+import { fileURLToPath } from "node:url";
 import { readGateChecks } from "./lib/gate-evidence.mjs";
 import { gateCriticalPath } from "./lib/gate-timeline.mjs";
 import { suites } from "./test-runner.mjs";
@@ -140,8 +141,7 @@ function measure(output) {
       cpus: availableParallelism(),
       node: process.version,
     },
-    execution:
-      "operator-authorized host execution outside the sandbox; actor-attested",
+    execution: "unknown",
     configuration: suites
       .filter((row) => ["harness-fixtures", "process-debt"].includes(row.name))
       .every((row) => row.exclusive || row.loadClass === "isolated")
@@ -224,10 +224,7 @@ function measure(output) {
   console.log(JSON.stringify(checkMeasurementSeries(series)));
 }
 
-if (
-  process.argv[1] &&
-  pathToFileURL(resolve(process.argv[1])).href === import.meta.url
-) {
+if (isMainModule(import.meta.url)) {
   try {
     const [mode, file, ...extra] = process.argv.slice(2);
     if (extra.length || !["--run", "--check"].includes(mode) || !file)

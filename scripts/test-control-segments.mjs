@@ -9,6 +9,7 @@ import {
   mkdirSync,
   readFileSync,
   realpathSync,
+  rmSync,
   writeFileSync,
 } from "node:fs";
 import { dirname, isAbsolute, join } from "node:path";
@@ -26,6 +27,7 @@ import {
   readControl,
 } from "./lib/control-store.mjs";
 import { statusProjection } from "./resume.mjs";
+import { recoverControlTimes } from "./lib/control-time.mjs";
 await test("test-control-segments", async (t) => {
   let scriptRoot,
     root,
@@ -177,6 +179,55 @@ await test("test-control-segments", async (t) => {
           );
           seen.set(event.workOrderId, path);
         }
+    },
+  );
+  await t.test(
+    "disposable control basenames are skipped; every other stray refuses",
+    () => {
+      const before = [...readControl(repo).sources];
+      for (const name of [".DS_Store", "fixture.tsbuildinfo"]) {
+        write(`docs/control/orders/${name}`, "not JSON\n");
+        assert.deepEqual([...readControl(repo).sources], before);
+        assert.equal(run(["status"]).status, 0);
+        rmSync(join(repo, "docs/control/orders", name));
+      }
+      write("docs/control/orders/stray.txt", "{}\n");
+      assert.throws(
+        () => readControl(repo),
+        /stray.txt: invalid control segment name at ordinal 1/,
+      );
+      rmSync(join(repo, "docs/control/orders/stray.txt"));
+    },
+  );
+  await t.test(
+    "malformed actor labels and failed checkpoint reads name their ordinal",
+    () => {
+      assert.throws(
+        () =>
+          foldWorkOrders([
+            activation("WO-901"),
+            {
+              type: "ImplementationReady",
+              workOrderId: "WO-901",
+              actor: { accountLabel: "bad@label" },
+            },
+          ]),
+        /invalid account label.*at ordinal 2/,
+      );
+      assert.throws(
+        () =>
+          recoverControlTimes(
+            join(root, "not-a-repository"),
+            [
+              {
+                workOrderId: "WO-901",
+                checkpointRef: "refs/dotln/checkpoint/WO-901/1",
+              },
+            ],
+            [{ segment: "docs/control/orders/WO-901.jsonl", ordinal: 7 }],
+          ),
+        /cannot recover checkpoint time in docs\/control\/orders\/WO-901.jsonl at ordinal 7/,
+      );
     },
   );
   await t.test(

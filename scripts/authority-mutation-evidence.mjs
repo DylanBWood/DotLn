@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import assert from "node:assert/strict";
+import { tmpdir } from "node:os";
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import {
@@ -30,7 +31,7 @@ const root = realpathSync(fileURLToPath(new URL("../", import.meta.url)));
 const git = (cwd, args, options = {}) =>
   execFileSync("git", args, {
     cwd,
-    env: cleanEnvironment("/private/tmp"),
+    env: cleanEnvironment(realpathSync(tmpdir())),
     encoding: "utf8",
     maxBuffer: 32 * 1024 * 1024,
     ...options,

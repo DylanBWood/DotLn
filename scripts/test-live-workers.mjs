@@ -1,6 +1,12 @@
 import assert from "node:assert/strict";
+import { tmpdir } from "node:os";
 import { spawnSync } from "node:child_process";
-import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import {
+  mkdtempSync,
+  readFileSync,
+  writeFileSync,
+  realpathSync,
+} from "node:fs";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { decodeLog } from "../packages/kernel/dist/src/index.js";
@@ -41,7 +47,9 @@ for (const transport of [
   new CodexCliExecWorkOrderTransport(),
 ]) {
   if (args.includes("--only") && option("--only") !== transport.name) continue;
-  const directory = mkdtempSync("/private/tmp/dotln-live-worker-");
+  const directory = mkdtempSync(
+    join(realpathSync(tmpdir()), "dotln-live-worker-"),
+  );
   const store = new WorkerStore(directory);
   const model = option(
     transport.name === "claude-cli-print" ? "--claude-model" : "--codex-model",

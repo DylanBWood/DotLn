@@ -1,3 +1,4 @@
+import { isMainModule } from "./lib/paths.mjs";
 import {
   copyFileSync,
   existsSync,
@@ -34,8 +35,5 @@ export const installLicenseFixture = (root) => {
   }
 };
 
-if (
-  process.argv[1] &&
-  resolve(process.argv[1]) === fileURLToPath(import.meta.url)
-)
+if (isMainModule(import.meta.url))
   installLicenseFixture(resolve(process.argv[2]));

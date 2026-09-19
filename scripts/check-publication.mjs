@@ -473,7 +473,7 @@ function sourceLock(links, failures, consumer) {
   let complete = true;
 
   for (const [key, link] of [...links].sort(([left], [right]) =>
-    left.localeCompare(right),
+    left < right ? -1 : left > right ? 1 : 0,
   )) {
     const section = currentSections(link.file).get(link.anchor);
     if (section === undefined) {

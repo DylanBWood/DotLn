@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { isMainModule } from "./lib/paths.mjs";
 import {
   existsSync,
   mkdirSync,
@@ -11,16 +12,17 @@ import {
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
-import { fileURLToPath, pathToFileURL } from "node:url";
+import { fileURLToPath } from "node:url";
 import {
   reportHarnessRuntime,
   codexSessionReport,
   observedFactsReport,
 } from "./lib/harness-runtime.mjs";
-import { mainWorktree, runGit } from "./lib/git.mjs";
+import { mainWorktree, runGit, shellQuote } from "./lib/git.mjs";
 import {
   projectActor,
   renderAttestation,
+  renderEffort,
   validateAccountLabel,
 } from "./lib/control-actor.mjs";
 import {
@@ -84,7 +86,6 @@ const effortDeclarations = new Set([
 const actorFlagUsage =
   "--harness <harness> --harness-version <version> --model <model> --effort <level> --source <source> [--account-label <label>]";
 const actorHeaderPrefix = "**Actor attestation:**";
-const shellQuote = (value) => `'${value.replaceAll("'", `'\\''`)}'`;
 
 const readEvents = () =>
   [...readControl(repoRoot).eventSegments.values()].flat();
@@ -169,20 +170,25 @@ const legalActions = (state) => {
 const actorCommand = (action, positional = "") =>
   `npm run resume -- ${action}${positional ? ` ${positional}` : ""} ${actorFlagUsage}`;
 
-const commandFor = (action) =>
-  ({
-    activate:
-      "npm run worktree -- start WO-NNN docs/work-orders/WO-NNN-name.md",
-    next: "npm run resume -- next",
-    "implementation-ready": actorCommand("implementation-ready"),
-    verify: "npm run resume -- verify",
-    "verification-result": actorCommand("verification-result", "pass|fail"),
-    fix: "npm run resume -- fix",
-    "repair-complete": actorCommand("repair-complete"),
-    "final-review": "npm run resume -- final-review",
-    "final-review-result": actorCommand("final-review-result", "pass|fail"),
-    "release-close": "npm run release -- close WO-NNN --publish",
-  })[action] ?? `npm run resume -- ${action}`;
+const commandFor = (action, workOrderId) => {
+  const command =
+    {
+      activate:
+        "npm run worktree -- start WO-NNN docs/work-orders/WO-NNN-name.md",
+      next: "npm run resume -- next",
+      "implementation-ready": actorCommand("implementation-ready"),
+      verify: "npm run resume -- verify",
+      "verification-result": actorCommand("verification-result", "pass|fail"),
+      fix: "npm run resume -- fix",
+      "repair-complete": actorCommand("repair-complete"),
+      "final-review": "npm run resume -- final-review",
+      "final-review-result": actorCommand("final-review-result", "pass|fail"),
+      "release-close": "npm run release -- close WO-NNN --publish",
+    }[action] ?? `npm run resume -- ${action}`;
+  return workOrderId && !["activate", "release-close"].includes(action)
+    ? `${command} --work-order ${workOrderId}`
+    : command;
+};
 
 const checkpoint = (action, workOrderId) => {
   const warn = (detail) => {
@@ -514,9 +520,6 @@ export const parseActor = (action, args, positional = "") => {
   return actor;
 };
 
-const renderEffort = ({ effort, raw, mode }) =>
-  `${effort}${mode ? ` (${mode})` : ""}${raw ? ` (raw: ${raw})` : ""}`;
-
 const validateEffort = (actor, role, declaration, workOrderPath) => {
   const recommended = declaration.efforts[role].replace(/\+$/, "");
   if (
@@ -704,7 +707,9 @@ const selectionArgs = (args) => {
 
 const requirePhase = (state, ...phases) => {
   if (phases.includes(state.phase)) return;
-  const commands = legalActions(state).map(commandFor);
+  const commands = legalActions(state).map((action) =>
+    commandFor(action, state.workOrderId),
+  );
   throw new Error(
     `cannot perform action in phase ${state.phase}; run: ${commands.join(" or ") || "no command is currently legal"}`,
   );
@@ -718,7 +723,7 @@ const requirePhase = (state, ...phases) => {
  */
 const executionBriefing = (state) => {
   const declaration = activeWorkOrderDeclaration(state);
-  return `Execute ${state.workOrderPath}.\n${declaration.modelSource}\n${declaration.effortSource}\nRead that authority and only its cited blueprint sections; when its deliverable and evidence exist, run ${commandFor("implementation-ready")}.${executorEntryBriefing(repoRoot, state.workOrderId)}`;
+  return `Execute ${state.workOrderPath}.\n${declaration.modelSource}\n${declaration.effortSource}\nRead that authority and only its cited blueprint sections; when its deliverable and evidence exist, run ${commandFor("implementation-ready", state.workOrderId)}.${executorEntryBriefing(repoRoot, state.workOrderId)}`;
 };
 const repairBriefing = (state) =>
   `Repair ${state.workOrderPath} using ${state.failureSourcePath}; read both artifacts.${executorEntryBriefing(repoRoot, state.workOrderId)}`;
@@ -829,7 +834,11 @@ export const main = async (argv = process.argv.slice(2)) => {
       const recorded = recordedBriefings[state.phase];
       if (!recorded)
         throw new Error(
-          `no dispatch is recorded in phase ${state.phase}; run: ${legalActions(state).map(commandFor).join(" or ") || "no command is currently legal"}`,
+          `no dispatch is recorded in phase ${state.phase}; run: ${
+            legalActions(state)
+              .map((action) => commandFor(action, state.workOrderId))
+              .join(" or ") || "no command is currently legal"
+          }`,
         );
       message = recorded(state);
       break;
@@ -973,7 +982,7 @@ export const main = async (argv = process.argv.slice(2)) => {
         type: "RepairCompleted",
         ...(evidence ? { evidence } : {}),
         workOrderId: state.workOrderId,
-        sourceVerificationId: state.latestVerificationId,
+        sourceVerificationId: state.failureSourceId,
         actor,
       });
       message = `${state.workOrderId} repair is ready for re-verification.`;
@@ -1042,7 +1051,7 @@ export const main = async (argv = process.argv.slice(2)) => {
       });
       message =
         verdict === "pass"
-          ? `Recorded final review pass; commit the reviewed state, then run npm run worktree -- publish ${state.workOrderId} --title <title> --body-file <contained-reviewed-body-path>.`
+          ? `Recorded final review pass; commit the reviewed state, then run npm run worktree -- publish ${state.workOrderId} --title "<title>" --body-file <contained-reviewed-body-path>.`
           : "Recorded final review failure; return to bounded repair.";
       break;
     }
@@ -1099,8 +1108,9 @@ export const main = async (argv = process.argv.slice(2)) => {
         branch ?? selected,
       );
       project(render(control, latestClosed));
+      if (!["next", "release-close"].includes(action))
+        await refreshExecutorIndex(repoRoot);
     }
-    if (releaseExecutorWriter) await refreshExecutorIndex(repoRoot);
     // Informational readback, independent of token-counter availability and phase gates.
     if (
       process.env.CODEX_THREAD_ID &&
@@ -1153,10 +1163,7 @@ export const main = async (argv = process.argv.slice(2)) => {
   process.stdout.write(`${message}\n`);
 };
 
-if (
-  process.argv[1] &&
-  pathToFileURL(resolve(process.argv[1])).href === import.meta.url
-) {
+if (isMainModule(import.meta.url)) {
   try {
     await main();
   } catch (error) {

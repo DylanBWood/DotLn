@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { isMainModule } from "./lib/paths.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
@@ -15,7 +16,7 @@ import {
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
-import { fileURLToPath, pathToFileURL } from "node:url";
+import { fileURLToPath } from "node:url";
 import { authorize } from "../packages/kernel/dist/src/index.js";
 import { compilePlanRefuter } from "../packages/skeleton/dist/src/loadouts/plan-refuter.js";
 import {
@@ -24,7 +25,10 @@ import {
   cannedGoalReview,
 } from "../packages/skeleton/dist/src/plan-refutation-fake.js";
 import { runPlanRefutation } from "../packages/skeleton/dist/src/plan-refutation-host.js";
-import { validatePlanResult } from "../packages/skeleton/dist/src/plan-refutation-protocol.js";
+import {
+  validatePlanResult,
+  planResultSchema,
+} from "../packages/skeleton/dist/src/plan-refutation-protocol.js";
 import {
   ClaudeCliPrintWorkOrderTransport,
   CodexCliExecWorkOrderTransport,
@@ -37,6 +41,8 @@ import {
   planningPasses,
   sha256,
   THESIS_HEADINGS,
+  planOrderHash,
+  carriedOrderHashMatches,
 } from "./lib/plan-subject.mjs";
 import {
   checkPassReceipt,
@@ -65,6 +71,7 @@ import {
 } from "./lib/plan-direct.mjs";
 import {
   capabilityHistoryRepair,
+  executionAmendmentSource,
   reassessments,
 } from "./lib/plan-continuation.mjs";
 import {
@@ -1846,6 +1853,10 @@ export async function fixtures() {
         ]) {
           const runner = (launch) => {
             launches.push(launch);
+            assert.ok(
+              existsSync(join(launch.cwd, ".git")),
+              "scratch cwd is a repository",
+            );
             assert.equal(
               launch.input.includes("PLANNER_NARRATIVE_SENTINEL"),
               false,
@@ -1898,6 +1909,69 @@ export async function fixtures() {
         await assert.rejects(
           runPlanRefutation(subject, fake, "fixture", "max", now),
         );
+      },
+    );
+    await check(
+      "WO-142 B4 rejected paid return and statement survive in local lane",
+      async () => {
+        const repo = makeRepo(parent, "rejected-plan-return");
+        const subject = buildPlanSubject(repo, "HEAD", { goalReview: true });
+        const bad = cannedGoalReview(subject);
+        bad.orders[0].findings = [
+          {
+            criterionId: subject.orders[0].criteria[0].id,
+            kind: "known-issue",
+            reason: "Synthetic issue",
+            evidence: null,
+            reopenWhen: null,
+          },
+        ];
+        const statement = "Synthetic worker statement preserved exactly.";
+        const transport = new ClaudeCliPrintWorkOrderTransport(
+          () => ({
+            accepted: Promise.resolve(),
+            completed: Promise.resolve({
+              stdout: JSON.stringify({
+                type: "result",
+                subtype: "success",
+                structured_output: bad,
+                result: statement,
+              }),
+              stderr: "",
+              exitCode: 0,
+            }),
+            alive: () => false,
+            kill: () => {},
+          }),
+          "2.1.270",
+        );
+        const lane = join(repo, "docs/control/local/refutations");
+        await assert.rejects(
+          runPlanRefutation(subject, transport, "fixture", "max", now, lane),
+          /known issue requires a reopening observation; rejected result and statement retained at/,
+        );
+        const retained = join(lane, readdirSync(lane)[0]);
+        assert.deepEqual(
+          JSON.parse(readFileSync(join(retained, "result.json"), "utf8")),
+          bad,
+        );
+        assert.equal(
+          readFileSync(join(retained, "statement.txt"), "utf8"),
+          statement,
+        );
+        assert.ok(existsSync(join(retained, "wire.jsonl")));
+        const branches =
+          planResultSchema(subject).properties.orders.items.properties.findings
+            .items.anyOf;
+        const known = branches.find((branch) =>
+          branch.properties.kind.enum?.includes("known-issue"),
+        );
+        assert.equal(known.properties.reopenWhen.type, "string");
+        assert.equal(known.properties.reopenWhen.minLength, 1);
+        for (const branch of branches.filter((branch) => branch !== known)) {
+          assert.equal(branch.properties.evidence.type, "string");
+          assert.ok(branch.properties.evidence.enum.length > 0);
+        }
       },
     );
     await check(
@@ -1975,6 +2049,15 @@ else {
     await check(
       "WO-139 source-bound execution amendments admit only authorized bytes and preserve receipt/hold semantics",
       async () => {
+        const laterHeading = "intro\n# Later (v1.2.3)\n";
+        assert.equal(
+          executionAmendmentSource(laterHeading),
+          laterHeading.trimEnd(),
+        );
+        assert.equal(
+          executionAmendmentSource("# First (v1.2.3)\n"),
+          "# First (version assigned at activation)",
+        );
         const repo = makeRepo(parent, "execution-amendment");
         const path = orderPath("WO-901");
         mutate(
@@ -2066,8 +2149,21 @@ else {
             OVERRIDES,
             JSON.stringify({ ...event, [field]: sha256("wrong") }) + "\n",
           );
-          await assert.rejects(checkPlanGate(repo));
+          await assert.rejects(
+            checkPlanGate(repo),
+            /execution amendment|planning pass needs a receipt matching/,
+          );
         }
+        write(
+          repo,
+          OVERRIDES,
+          JSON.stringify({ ...event, orderLength: event.orderLength + 1 }) +
+            "\n",
+        );
+        await assert.rejects(
+          checkPlanGate(repo),
+          /planning pass needs a receipt matching/,
+        );
         write(repo, OVERRIDES, log);
         write(
           repo,
@@ -2472,6 +2568,7 @@ else {
           ["WO-116", "WO-065"],
           ["WO-117", "WO-066"],
         ];
+        assert.equal(grouped(corrected)[0].length, 24);
         assert.deepEqual(grouped(corrected).slice(1, -1), expectedPairs);
         assert.equal(grouped(corrected).at(-1).length, 36);
         const lost = corrected.replace(/(^- WO-136[^\n]*\n)\n/m, "$1");
@@ -3129,6 +3226,14 @@ else {
           orderPath("WO-901"),
           order("WO-901").replace("useful shape", "new useful shape"),
         );
+        write(
+          repo,
+          orderPath("WO-902"),
+          read(repo, orderPath("WO-902")).replace(
+            "# WO-902 — Fixture",
+            "# WO-902 — Fixture (v1.2.3)",
+          ),
+        );
         commit(repo, "one-order pass");
         const nextSubject = buildPlanSubject(repo, "HEAD", {
           goalReview: true,
@@ -3140,6 +3245,28 @@ else {
         );
         assert.deepEqual(scope.judgedOrderIds, ["WO-901"]);
         assert.equal(scope.carried[0].workOrderId, "WO-902");
+        const currentOrder = nextSubject.orders.find(
+          (row) => row.workOrderId === "WO-902",
+        );
+        const previousOrder = subject.orders.find(
+          (row) => row.workOrderId === "WO-902",
+        );
+        assert.equal(planOrderHash(currentOrder), planOrderHash(previousOrder));
+        assert.ok(
+          carriedOrderHashMatches(
+            currentOrder,
+            previousOrder,
+            planOrderHash(previousOrder, { legacy: true }),
+          ),
+        );
+        assert.equal(
+          carriedOrderHashMatches(
+            { ...currentOrder, objective: "changed substantive objective" },
+            previousOrder,
+            planOrderHash(previousOrder, { legacy: true }),
+          ),
+          false,
+        );
         const secondPrompt = await plan(["refute", "--direct"], repo);
         assert.ok(!secondPrompt.includes("PLANNER_NARRATIVE_SENTINEL"));
         const schema = JSON.parse(secondPrompt).resultSchema;
@@ -3529,10 +3656,7 @@ else {
   }
 }
 
-if (
-  process.argv[1] &&
-  import.meta.url === pathToFileURL(resolve(process.argv[1])).href
-) {
+if (isMainModule(import.meta.url)) {
   try {
     if (!process.argv.includes("--check-only")) await fixtures();
     if (!process.argv.includes("--fixtures-only"))

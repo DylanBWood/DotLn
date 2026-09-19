@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { isMainModule } from "./lib/paths.mjs";
 import {
   existsSync,
   readFileSync,
@@ -8,15 +9,16 @@ import {
   writeFileSync,
 } from "node:fs";
 import { basename, dirname, join, resolve, sep } from "node:path";
-import { fileURLToPath, pathToFileURL } from "node:url";
+import { fileURLToPath } from "node:url";
 import { LEGACY_CONTROL_PATH } from "./lib/control.mjs";
-import { readControl } from "./lib/control-store.mjs";
+import { readControl, readControls } from "./lib/control-store.mjs";
 import { renderAttestation } from "./lib/control-actor.mjs";
 import {
   closedDependencySet,
   dependencyHeader,
   dependencyReleaseSet,
   historicalDependencyIds,
+  inheritedLedgerDuty,
   parseDependencies,
   projectDependencies,
 } from "./lib/dependencies.mjs";
@@ -68,11 +70,13 @@ export const parseHeader = (markdown, path) => {
   const versions = strictVersionsIn(title ?? "");
   const version = !title
     ? "unknown"
-    : versions.length === 1 && semver(versions[0])
-      ? versions[0]
-      : versions.length || /\bv\d/.test(title)
-        ? "malformed"
-        : "unassigned";
+    : title.endsWith("(version assigned at activation)")
+      ? "unassigned"
+      : versions.length === 1 && semver(versions[0])
+        ? versions[0]
+        : versions.length || /\bv\d/.test(title)
+          ? "malformed"
+          : "unassigned";
   return {
     path,
     title: title ?? "unknown",
@@ -80,12 +84,7 @@ export const parseHeader = (markdown, path) => {
     model: field("Model") ?? "unknown",
     effort: field("Effort") ?? "unknown",
     cost: field("Cost") ?? "unavailable",
-    ledgerSubstitution:
-      /\b(?:ledger|idea-ledger)\b/i.test(
-        markdown.match(
-          /\*\*Acceptance criteria[\s\S]*?(?=\*\*Non-goals:|$)/,
-        )?.[0] ?? "",
-      ) && !/^# WO-126\b/.test(markdown),
+    ledgerSubstitution: inheritedLedgerDuty(markdown),
     dependencies: parseDependencies(markdown, path),
   };
 };
@@ -170,11 +169,14 @@ export const readIndex = (root, releases = localReleaseRecords(root)) => {
     );
   const control = readControl(root);
   const { orders, locations } = control;
-  const tagLogs = new Map(
-    releases.map(({ name }) => [name, readControl(root, `refs/tags/${name}`)]),
+  const tagLogs = readControls(
+    root,
+    releases.map(({ name }) => `refs/tags/${name}`),
   );
   releases = releases.map((release) => {
-    const controlSegments = [...tagLogs.get(release.name).sources.keys()];
+    const controlSegments = [
+      ...tagLogs.get(`refs/tags/${release.name}`).sources.keys(),
+    ];
     if (
       release.controlSegments !== undefined &&
       JSON.stringify(release.controlSegments) !==
@@ -233,7 +235,7 @@ export const readIndex = (root, releases = localReleaseRecords(root)) => {
       .filter(({ name, taggedAt }) => {
         if (cutoff === undefined || taggedAt === undefined || taggedAt > cutoff)
           return false;
-        const prior = tagLogs.get(name);
+        const prior = tagLogs.get(`refs/tags/${name}`);
         return (
           (segment !== LEGACY_CONTROL_PATH || prior.sources.has(segment)) &&
           (prior.eventSegments.get(segment)?.length ?? 0) <
@@ -304,6 +306,9 @@ export const readIndex = (root, releases = localReleaseRecords(root)) => {
       return {
         id,
         ...header,
+        hasDecisions: existsSync(
+          join(root, `docs/evidence/${id}/decisions.md`),
+        ),
         section,
         phase,
         dependencies,
@@ -430,7 +435,7 @@ export const renderIndex = ({ rows, releases, sequence }) => {
         `- Cost: ${cell(row.cost)}`,
         ...(row.ledgerSubstitution
           ? [
-              `- Inherited ledger duty: discharge with [this order's decisions](../evidence/${row.id}/decisions.md) and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.`,
+              `- Inherited ledger duty: discharge with ${row.hasDecisions ? `[this order's decisions](../evidence/${row.id}/decisions.md)` : `this order's decisions file when recorded`} and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.`,
             ]
           : []),
         ...(state?.latestAttestation
@@ -557,17 +562,22 @@ export const main = (args = process.argv.slice(2), root = toolRoot) => {
       readFileSync(destination, "utf8") !== expected
     ) {
       const temporary = `${destination}.tmp`;
-      writeFileSync(temporary, expected, { flag: "wx" });
+      try {
+        writeFileSync(temporary, expected, { flag: "wx" });
+      } catch (error) {
+        if (error.code === "EEXIST")
+          throw new Error(
+            `work-order index temporary already exists: ${temporary}; inspect the interrupted index write before retrying`,
+          );
+        throw error;
+      }
       renameSync(temporary, destination);
       process.stdout.write(`Generated ${indexPath}\n`);
     }
   }
 };
 
-if (
-  process.argv[1] &&
-  pathToFileURL(resolve(process.argv[1])).href === import.meta.url
-) {
+if (isMainModule(import.meta.url)) {
   try {
     main();
   } catch (error) {

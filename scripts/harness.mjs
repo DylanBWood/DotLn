@@ -39,11 +39,22 @@ async function optionalCodexSession(root) {
 }
 
 const usage =
-  "usage: harness emit|check [--loadout contributor] [--profile id] [--out dir] | harness emit|check|remove --target worktree [--runtime-root launchpad] [--profile target-worker-claude|target-worker-codex] | harness evidence [--stop|--fail] | harness usage <session> | harness read-output <path> [--offset <byte>] [--length <bytes>] | harness writer --show | harness writer --release [--force]";
+  "usage: harness emit|check [--loadout contributor] [--profile id] [--out dir] | harness emit|check|remove --target worktree [--runtime-root launchpad] [--profile target-worker-claude|target-worker-codex] | harness evidence [--stop|--fail] | harness usage <session> | harness read-output <path> [--offset <byte>] [--length <bytes>] | harness prune [--apply] | harness writer --show | harness writer --release [--force]";
 try {
   const root = harnessRoot(process.cwd());
   const [action, ...args] = process.argv.slice(2);
-  if (action === "begin") {
+  if (action === "prune") {
+    if (args.length > 1 || (args.length === 1 && args[0] !== "--apply"))
+      throw new Error("usage: harness prune [--apply]");
+    const { pruneHarness } = await import("./lib/harness-prune.mjs");
+    console.log(
+      JSON.stringify(
+        pruneHarness(root, { apply: args[0] === "--apply" }),
+        null,
+        2,
+      ),
+    );
+  } else if (action === "begin") {
     const [session, role, flag, file] = args;
     if (
       !session ||

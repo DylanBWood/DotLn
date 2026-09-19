@@ -294,7 +294,7 @@ test("DCO checks every new commit's author and trailer, exempts only the operato
     commit(
       root,
       "Outside Contributor <outside@example.invalid>",
-      "outside signed contribution\n\nSigned-off-by: Outside Contributor <outside@example.invalid>\n",
+      "outside signed contribution\n\nSigned-off-by: Outside Contributor <OUTSIDE@EXAMPLE.INVALID>\n",
     );
     assert.equal(failures(contributionSignoffRules(root)), "");
     const badCommits = [];

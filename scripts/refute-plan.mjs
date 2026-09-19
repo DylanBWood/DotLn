@@ -1,7 +1,8 @@
 #!/usr/bin/env node
+import { isMainModule } from "./lib/paths.mjs";
 import { readFileSync } from "node:fs";
-import { dirname, resolve } from "node:path";
-import { fileURLToPath, pathToFileURL } from "node:url";
+import { dirname, join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import { buildPlanSubject } from "./lib/plan-subject.mjs";
 import {
   checkPlanGate,
@@ -266,7 +267,14 @@ export async function main(args = process.argv.slice(2), root = toolRoot) {
         : "fixture");
   const effort =
     opt["--effort"] ?? (name === "codex-cli-exec" ? "unknown" : "max");
-  const episode = await runPlanRefutation(subject, transport, model, effort);
+  const episode = await runPlanRefutation(
+    subject,
+    transport,
+    model,
+    effort,
+    Date.now,
+    join(root, "docs/control/local/refutations"),
+  );
   const receipt = await writePlanReceipt(root, {
     pass,
     slug: opt["--slug"] ?? pass.id,
@@ -287,10 +295,7 @@ export async function main(args = process.argv.slice(2), root = toolRoot) {
   };
 }
 
-if (
-  process.argv[1] &&
-  import.meta.url === pathToFileURL(resolve(process.argv[1])).href
-) {
+if (isMainModule(import.meta.url)) {
   main()
     .then((result) =>
       process.stdout.write(

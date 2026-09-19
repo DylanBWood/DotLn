@@ -86,8 +86,62 @@ const results = {
   ),
   planRefuter: compilePlanRefuter("fixture", 0),
 };
-// Reconstruct the old inspection under the current compiler and verify every
-// historical digest before comparing the one authorized WO-132 migration.
+// Reconstruct each historical subject before comparing its authorized migration.
+const entropyFixturePath =
+  "packages/compiler/fixtures/wo029-entropy-reducer.json";
+const oldEntropyGraph = JSON.parse(prior(entropyFixturePath));
+const shapeFirstId = "entropy-reducer.shape-first";
+const oldShapeFirst = oldEntropyGraph.supportFacets.find(
+  (support) => support.supportFacetId === shapeFirstId,
+);
+assert.equal(oldShapeFirst.version, 1);
+const migratedEntropyGraph = {
+  ...oldEntropyGraph,
+  supportFacets: oldEntropyGraph.supportFacets.map((support) =>
+    support.supportFacetId !== shapeFirstId
+      ? support
+      : {
+          ...support,
+          version: 2,
+          semanticsAdded: [
+            "transfer an operator analogy's intended relationship before evaluating load-bearing literal details",
+          ],
+          emissions: support.emissions.map((emission, index) =>
+            index === 0
+              ? {
+                  ...emission,
+                  text: "For an operator analogy, extract the intended relationship first and carry that useful relation across mechanisms; evaluate a literal detail only when a claim depends on it.",
+                }
+              : emission,
+          ),
+          inspection: {
+            ...support.inspection,
+            obligations: [
+              "Preserve the intended relationship first; examine literal details only when load-bearing",
+            ],
+          },
+        },
+  ),
+};
+assert.equal(
+  canonicalStringify(entropyReducerLoadout(11000)),
+  canonicalStringify(migratedEntropyGraph),
+  "WO-142 changes only Shape-First version, semantic phrase, prompt fragment and inspection obligation",
+);
+assert.equal(
+  canonicalStringify(JSON.parse(read(entropyFixturePath))),
+  canonicalStringify(migratedEntropyGraph),
+  "the recorded current entropy fixture matches the exact authorized migration",
+);
+const oldEntropy = compileLoadout(
+  oldEntropyGraph,
+  baseline.fixtures.entropy.artifactIdentity.compilationEnvironment,
+);
+assert.equal(oldEntropy.ok, true, "historical entropy compilation");
+const currentEntropyIdentity = JSON.parse(
+  read("packages/compiler/fixtures/wo029-identities.json"),
+)["entropy-reducer"];
+// WO-132's inspection migration remains independently reconstructed below.
 const oldPlanSource = prior("packages/skeleton/src/loadouts/plan-refuter.ts");
 const oldStrings = (pattern) => {
   const match = oldPlanSource.match(pattern);
@@ -146,7 +200,8 @@ assert.equal(oldPlan.ok, true, "historical plan-refuter compilation");
 const compatibility = Object.entries(results).map(([name, result]) => {
   assert.equal(result.ok, true, name);
   const before = baseline.fixtures[name];
-  const historical = name === "planRefuter" ? oldPlan : result;
+  const historical =
+    name === "planRefuter" ? oldPlan : name === "entropy" ? oldEntropy : result;
   assert.equal(
     historical.semanticHash,
     before.semanticHash,
@@ -225,6 +280,57 @@ const compatibility = Object.entries(results).map(([name, result]) => {
       "plan-refuter identity changes only release, semantic and component-definition hashes",
     );
   }
+  if (name === "entropy") {
+    assert.deepEqual(
+      result.artifactIdentity,
+      {
+        ...currentEntropyIdentity,
+        compilerPackageVersion: COMPILER_PACKAGE_VERSION,
+      },
+      "current entropy matches its explicitly recorded v2 identity",
+    );
+    for (const field of ["authorityEnvelope", "ambientEffects"])
+      assert.deepEqual(
+        result.program[field],
+        oldEntropy.program[field],
+        `entropy ${field} is unchanged`,
+      );
+    assert.deepEqual(
+      result.program.workOrder,
+      oldEntropy.program.workOrder,
+      "entropy work order, allowed and prohibited operations are unchanged",
+    );
+    const definitions = result.artifactIdentity.componentDefinitions;
+    assert.deepEqual(
+      definitions.filter((entry) => entry.componentId !== shapeFirstId),
+      before.artifactIdentity.componentDefinitions.filter(
+        (entry) => entry.componentId !== shapeFirstId,
+      ),
+      "all other entropy component definitions remain unchanged",
+    );
+    const previous = before.artifactIdentity.componentDefinitions.find(
+      (entry) => entry.componentId === shapeFirstId,
+    );
+    const current = definitions.find(
+      (entry) => entry.componentId === shapeFirstId,
+    );
+    assert.deepEqual(current, {
+      ...previous,
+      version: 2,
+      definitionHash: current.definitionHash,
+    });
+    assert.notEqual(current.definitionHash, previous.definitionHash);
+    assert.deepEqual(
+      result.artifactIdentity,
+      {
+        ...before.artifactIdentity,
+        compilerPackageVersion: COMPILER_PACKAGE_VERSION,
+        semanticHash: result.semanticHash,
+        componentDefinitions: definitions,
+      },
+      "entropy identity changes only release, semantic and one versioned component definition",
+    );
+  }
   const changedArtifactIdentityFields = Object.keys(
     result.artifactIdentity,
   ).filter(
@@ -234,7 +340,7 @@ const compatibility = Object.entries(results).map(([name, result]) => {
   );
   assert.deepEqual(
     changedArtifactIdentityFields,
-    name === "planRefuter"
+    ["planRefuter", "entropy"].includes(name)
       ? ["compilerPackageVersion", "semanticHash", "componentDefinitions"]
       : ["compilerPackageVersion"],
   );
@@ -244,6 +350,30 @@ const compatibility = Object.entries(results).map(([name, result]) => {
     programHash: hash(result.program),
     inspectionHash: hash(result.program.inspection),
     changedArtifactIdentityFields,
+    ...(name === "entropy"
+      ? {
+          migration: {
+            source: "docs/work-orders/WO-142-outstanding-cleanup.md",
+            criterion: "B9",
+            historicalFixture: `${baseline.sourceRevision}:${entropyFixturePath}`,
+            previousSemanticHash: before.semanticHash,
+            changedSupportFields: [
+              "version",
+              "semanticsAdded[0]",
+              "emissions[0].text",
+              "inspection.obligations[0]",
+            ],
+            changedProgramFields: [
+              "componentManifest",
+              "phenotype.semantics",
+              "promptFragments",
+              "inspection.obligations",
+            ],
+            authorityUnchanged: true,
+            effectsUnchanged: true,
+          },
+        }
+      : {}),
     ...(name === "planRefuter"
       ? {
           migration: {
@@ -275,6 +405,20 @@ const frozen = [
   "packages/skeleton/fixtures/wo003-decision-traces.json",
   "packages/compiler/fixtures/wo029-entropy-reducer.json",
 ].map((path) => {
+  if (path === entropyFixturePath) {
+    assert.equal(
+      canonicalStringify(JSON.parse(read(path))),
+      canonicalStringify(migratedEntropyGraph),
+    );
+    return {
+      path,
+      previousHash: digest(prior(path)),
+      hash: digest(read(path)),
+      unchanged: false,
+      migration:
+        "WO-142 B9 Shape-First v2; historical bytes verified through oldEntropy",
+    };
+  }
   assert.equal(read(path), prior(path), `${path} frozen bytes`);
   return { path, hash: digest(read(path)), unchanged: true };
 });
@@ -685,5 +829,5 @@ if (preserved)
     "Retained immutable authority evidence: behavior source is unchanged apart from component release labels.",
   );
 console.log(
-  `${mode === "--write" ? "Recorded" : "Verified"} three unchanged programs, the WO-132 plan-refuter question/schema migration, four widening rejections, nine runtime denials, admitted/reverted grants and ${comparisonPaths.length} bundle comparisons (including additions and removals).`,
+  `${mode === "--write" ? "Recorded" : "Verified"} two unchanged programs, the WO-132 plan-refuter and WO-142 Shape-First migrations, four widening rejections, nine runtime denials, admitted/reverted grants and ${comparisonPaths.length} bundle comparisons (including additions and removals).`,
 );

@@ -221,4 +221,63 @@ const output = JSON.parse(fs.readFileSync(process.argv[2], "utf8"));
 assert.equal(output.localRefsRead, 0);
 assert.equal(output.counts.recordedAt, 2);
 NODE
+# Every state-changing lifecycle transition owns an executable recovery ref.
+lifecycle_repo="$test_root/all-transitions"
+mkdir -p "$lifecycle_repo/scripts" "$lifecycle_repo/docs/work-orders"
+cp "$script_dir/resume.mjs" "$lifecycle_repo/scripts/resume.mjs"
+cp -R "$script_dir/lib" "$lifecycle_repo/scripts/lib"
+node "$script_dir/test-beacon-fixture.mjs" "$lifecycle_repo"
+cp "$script_dir/../.gitignore" "$lifecycle_repo/.gitignore"
+printf '# WO-097 — checkpoint fixture\n\n**Model:** any.\n**Effort:** executor any; verifier any; reviewer any.\n' >"$lifecycle_repo/docs/work-orders/WO-097-fixture.md"
+printf 'initial sentinel\n' >"$lifecycle_repo/recovery-sentinel.txt"
+git -C "$lifecycle_repo" init -q
+git -C "$lifecycle_repo" config user.name 'Checkpoint Fixture'
+git -C "$lifecycle_repo" config user.email fixture@example.invalid
+git -C "$lifecycle_repo" add .
+git -C "$lifecycle_repo" commit -qm initial
+printf 'uncommitted recovery sentinel\n' >"$lifecycle_repo/recovery-sentinel.txt"
+actor_flags=(--harness human --harness-version not-applicable --model human --effort unknown --source operator-attested)
+lifecycle() { node "$lifecycle_repo/scripts/resume.mjs" "$@" >/dev/null; }
+report() {
+  mkdir -p "$(dirname "$lifecycle_repo/$1")"
+  printf '# Fixture report\n\n**Actor attestation:** {"harness":"human","harnessVersion":"not-applicable","model":"human","effort":"unknown","source":"operator-attested"}\n' >"$lifecycle_repo/$1"
+}
+lifecycle activate WO-097 docs/work-orders/WO-097-fixture.md
+lifecycle implementation-ready "${actor_flags[@]}"
+lifecycle verify
+report docs/verifications/WO-097/VER-001.md
+lifecycle verification-result fail "${actor_flags[@]}"
+lifecycle fix
+lifecycle repair-complete "${actor_flags[@]}"
+lifecycle verify
+report docs/verifications/WO-097/VER-002.md
+lifecycle verification-result pass "${actor_flags[@]}"
+lifecycle final-review
+report docs/final-reviews/WO-097/FINAL-001.md
+lifecycle final-review-result fail "${actor_flags[@]}"
+lifecycle fix
+lifecycle repair-complete "${actor_flags[@]}"
+lifecycle verify
+report docs/verifications/WO-097/VER-003.md
+lifecycle verification-result pass "${actor_flags[@]}"
+lifecycle final-review
+report docs/final-reviews/WO-097/FINAL-002.md
+lifecycle final-review-result pass "${actor_flags[@]}"
+node - "$lifecycle_repo" <<'NODE'
+const assert = require("node:assert/strict"), fs = require("node:fs"), path = require("node:path");
+const { execFileSync } = require("node:child_process");
+const root = process.argv[2];
+const events = fs.readFileSync(path.join(root, "docs/control/orders/WO-097.jsonl"), "utf8").trim().split("\n").map(JSON.parse);
+assert.deepEqual([...new Set(events.map((event) => event.type))].sort(), ["WorkOrderActivated", "ImplementationReady", "VerificationRequested", "VerificationCompleted", "RepairRequested", "RepairCompleted", "FinalReviewRequested", "FinalReviewCompleted"].sort());
+assert.equal(new Set(events.map((event) => event.checkpointRef)).size, events.length);
+for (const event of events) {
+  assert.match(event.checkpointSha ?? "", /^[a-f0-9]{40}$/);
+  assert.match(event.checkpointRef ?? "", /^refs\/dotln\/checkpoint\/WO-097\/[1-9]\d*$/);
+  const git = (...args) => execFileSync("git", ["-C", root, ...args], { encoding: "utf8" });
+  assert.equal(git("rev-parse", event.checkpointRef).trim(), event.checkpointSha);
+  assert.equal(git("show", `${event.checkpointRef}:recovery-sentinel.txt`), "uncommitted recovery sentinel\n");
+}
+console.log(`all lifecycle checkpoint refs resolve with recovery bytes: ${events.length} transitions`);
+NODE
+
 printf 'checkpoint tests passed\n'

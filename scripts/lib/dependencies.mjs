@@ -215,9 +215,19 @@ export function dependencyRefusal(path, projection) {
           : entry.relation === "planning-deferral"
             ? idPattern.test(entry.until)
               ? `close ${entry.until}`
-              : `resolve candidate ${entry.until}`
+              : `resolve ${entry.until}`
             : `close ${entry.workOrderId} with a passing final review`;
       return `${entry.workOrderId} (${entry.relation}): ${entry.reason}; ${action}, or change the relation in this authority file with a dated reviewed note`;
     })
     .join("; ")}`;
+}
+
+export function inheritedLedgerDuty(source) {
+  return (
+    /(?:ledger|idea-ledger)/i.test(
+      source.match(
+        /\*\*Acceptance criteria[\s\S]*?(?=\*\*Non-goals:|$)/,
+      )?.[0] ?? "",
+    ) && !/^# WO-126\b/.test(source)
+  );
 }

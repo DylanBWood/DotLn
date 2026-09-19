@@ -1,6 +1,3 @@
-import { existsSync, lstatSync, readFileSync, realpathSync } from "node:fs";
-import { sep } from "node:path";
-
 export const releaseNoteHeadings = Object.freeze([
   "Release overview",
   "Read before upgrading",
@@ -23,27 +20,81 @@ const quotedContent = (line) => {
   }
 };
 
+// Lists and quotations can contain real Markdown headings too.
+const headingContent = (line) => {
+  let content = line;
+  while (true) {
+    const marker = /^ {0,3}(?:>[ \t]?|(?:[-+*]|\d{1,9}[.)])[ \t]+)/.exec(
+      content,
+    );
+    if (!marker) return content;
+    content = content.slice(marker[0].length);
+  }
+};
+const reservedHeading =
+  /^(?:WO-\d{3}[ \t]+[—–-][ \t]+|Derived from the diff[ \t]*#*[ \t]*$|Machine-derived release evidence[ \t]*#*[ \t]*$)/;
+
+// Match visible reserved titles after inline Markdown decoration, escapes and
+// the dash/space entities used in generated title shapes.
+const visibleHeading = (text) => {
+  let visible = text.replace(/[ \t]+#+[ \t]*$/, "");
+  // Strip paired decoration before unescaping, so escaped literal markers and
+  // unpaired punctuation do not manufacture a reserved title.
+  while (true) {
+    const stripped = visible.replace(
+      /(?<![\\\w])(\*{1,2}|_{1,2}|`+)(?=\S)(.*?\S)\1(?!\w)/g,
+      "$2",
+    );
+    if (stripped === visible) break;
+    visible = stripped;
+  }
+  return visible
+    .replace(/\\([!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~])/g, "$1")
+    .replace(/&#(?:x([0-9a-f]+)|(\d+));/gi, (entity, hex, decimal) => {
+      const point = Number.parseInt(hex ?? decimal, hex ? 16 : 10);
+      return point <= 0x10ffff ? String.fromCodePoint(point) : entity;
+    })
+    .replace(
+      /&(?:mdash|ndash|nbsp);/g,
+      (entity) => ({ "&mdash;": "—", "&ndash;": "–", "&nbsp;": " " })[entity],
+    )
+    .replace(/\s+/g, " ")
+    .trim();
+};
+
 const levelTwoHeadings = (markdown, displayPath) => {
   const lines = markdown.split("\n");
   const headings = [];
   let fence;
+  let paragraph = [];
+  let listIndent = 0;
+  let paragraphQuoteDepth = 0;
 
   lines.forEach((line, index) => {
     const withoutCarriageReturn = line.replace(/\r$/, "");
-    const fenceMatch = /^ {0,3}(`{3,}|~{3,})/.exec(withoutCarriageReturn);
+    const quote = quotedContent(withoutCarriageReturn);
+    const quoteDepth = quote?.depth ?? 0;
+    if (fence?.quoteDepth && quoteDepth < fence.quoteDepth) fence = undefined;
+    let fenceContent = withoutCarriageReturn;
+    const fenceDepth = fence?.quoteDepth ?? quoteDepth;
+    for (let depth = 0; depth < fenceDepth; depth++)
+      fenceContent = fenceContent.replace(/^ {0,3}>[ \t]?/, "");
+    const fenceMatch = /^ {0,3}(`{3,}|~{3,})/.exec(fenceContent);
     if (fenceMatch) {
       const marker = fenceMatch[1];
       if (!fence) {
-        const info = withoutCarriageReturn.slice(fenceMatch[0].length);
+        const info = fenceContent.slice(fenceMatch[0].length);
         if (marker[0] !== "`" || !info.includes("`")) {
-          fence = { character: marker[0], length: marker.length };
+          fence = { character: marker[0], length: marker.length, quoteDepth };
+          paragraph = [];
+          listIndent = 0;
           return;
         }
       } else if (
         marker[0] === fence.character &&
         marker.length >= fence.length &&
         new RegExp(`^ {0,3}${fence.character}{${fence.length},}[ \\t]*$`).test(
-          withoutCarriageReturn,
+          fenceContent,
         )
       ) {
         fence = undefined;
@@ -51,6 +102,38 @@ const levelTwoHeadings = (markdown, displayPath) => {
       }
     }
     if (fence) return;
+    if (quoteDepth !== paragraphQuoteDepth) {
+      paragraph = [];
+      listIndent = 0;
+    }
+    paragraphQuoteDepth = quoteDepth;
+    const unquoted = quote?.content ?? withoutCarriageReturn;
+    const list = /^ {0,3}(?:[-+*]|\d{1,9}[.)])[ \t]+/.exec(unquoted);
+    if (list) {
+      listIndent = list[0].length;
+      paragraph = [];
+    } else if (unquoted.trim() && !unquoted.startsWith(" ".repeat(listIndent)))
+      listIndent = 0;
+    const continuation =
+      listIndent > 0 && !list && unquoted.startsWith(" ".repeat(listIndent));
+    const content = headingContent(
+      continuation ? unquoted.slice(listIndent) : withoutCarriageReturn,
+    );
+    const atx = /^ {0,3}#{1,6}[ \t]+(.*)$/.exec(content);
+    const setext =
+      /^ {0,3}(?:=+|-+)[ \t]*$/.test(content) && paragraph.length
+        ? paragraph.join(" ")
+        : undefined;
+    if (
+      (atx && reservedHeading.test(visibleHeading(atx[1]))) ||
+      (setext && reservedHeading.test(visibleHeading(setext)))
+    )
+      throw new Error(
+        `${displayPath}: generated release heading is reserved (line ${index + 1})`,
+      );
+    if (atx || setext || !content.trim()) paragraph = [];
+    else if (!/^(?: {4}|\t)/.test(content)) paragraph.push(content.trim());
+    else paragraph = [];
     if (
       withoutCarriageReturn.includes("<!--") ||
       withoutCarriageReturn.includes("-->")
@@ -171,22 +254,4 @@ export const parseReleaseNotes = (markdown, displayPath) => {
   });
 
   return { sections };
-};
-
-export const readReleaseNotesFile = (
-  filePath,
-  { displayPath = filePath, containmentRoot } = {},
-) => {
-  if (!existsSync(filePath))
-    throw new Error(`${displayPath}: release-notes file is missing`);
-  if (!lstatSync(filePath).isFile())
-    throw new Error(`${displayPath}: release-notes path is not a regular file`);
-  if (
-    containmentRoot &&
-    !realpathSync(filePath).startsWith(`${realpathSync(containmentRoot)}${sep}`)
-  )
-    throw new Error(
-      `${displayPath}: release-notes file escapes its repository`,
-    );
-  return parseReleaseNotes(readFileSync(filePath, "utf8"), displayPath);
 };

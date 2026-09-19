@@ -342,8 +342,22 @@ const event=readFileSync(process.argv[2],"utf8").trim().split("\n").map(JSON.par
 assert.equal(event.actor.model,"fixture.model/alpha");
 assert.equal(event.actor.effort,"xhigh");
 assert.equal(event.actor.source,"operator-attested");
+assert.equal(event.sourceVerificationId, "FINAL-002");
 NODE
 assert_status_read_only
+reopened_final_fix="$(node "$fixture_repo/scripts/resume.mjs" fix 2>/dev/null)"
+grep -q 'FINAL-002.md' <<<"$reopened_final_fix"
+node - "$active_log" <<'NODE'
+const assert = require("node:assert/strict"), fs = require("node:fs");
+const events = fs.readFileSync(process.argv[2], "utf8").trim().split("\n").map(JSON.parse);
+const reopened = events.at(-1);
+assert.equal(reopened.type, "RepairRequested");
+assert.equal(reopened.sourceFindingId, "FINAL-002");
+assert.equal(reopened.sourceReportPath, "docs/final-reviews/WO-099/FINAL-002.md");
+assert.equal(events.filter((event) => event.type === "VerificationCompleted").at(-1).verificationId, "VER-003");
+assert.notEqual(reopened.sourceFindingId, "VER-003");
+NODE
+run_with_actor repair-complete xhigh
 run verify
 grep -q 'VER-004.md' "$fixture_repo/docs/control/current.md"
 printf '%s\n' \
@@ -368,7 +382,7 @@ final_pass_output="$(node "$fixture_repo/scripts/resume.mjs" final-review-result
   --source operator-attested 2>/dev/null)"
 assert_status_read_only
 assert_status_json '{"workOrder":"WO-099","workOrderPath":"docs/work-orders/WO-099-fixture.md","phase":"closed","latestVerification":"VER-004","verificationPath":"docs/verifications/WO-099/VER-004.md","latestVerdict":"pass","finalReview":"FINAL-003","finalReviewPath":"docs/final-reviews/WO-099/FINAL-003.md","latestAttestation":{"harness":"human","harnessVersion":"not-applicable","model":"human","effort":"unknown","source":"operator-attested"},"effortDrift":[{"effort":"xhigh"},{"effort":"custom-selector"},{"effort":"high"},{"effort":"custom-selector-2"},{"effort":"unknown"}],"latestCheckpoint":{"unavailable":true},"legalNextActions":["release-close","next","activate"]}'
-grep -Fq 'npm run worktree -- publish WO-099 --title <title> --body-file <contained-reviewed-body-path>' <<<"$final_pass_output"
+grep -Fq 'npm run worktree -- publish WO-099 --title "<title>" --body-file <contained-reviewed-body-path>' <<<"$final_pass_output"
 grep -Fq 'Latest attestation: harness human; version not-applicable; model human; effort unknown; source operator-attested' "$fixture_repo/docs/control/current.md"
 if grep -Fq 'raw: unknown' "$fixture_repo/docs/control/current.md"; then printf 'error: canonical unknown was duplicated as a raw label\n' >&2; exit 1; fi
 node - "$active_log" <<'NODE'
@@ -382,7 +396,7 @@ NODE
 closed_next="$(node "$fixture_repo/scripts/resume.mjs" next)"
 grep -Fq 'between work orders' <<<"$closed_next"
 grep -Fq 'npm run worktree -- start' <<<"$closed_next"
-test "$(wc -l <"$active_log" | tr -d ' ')" = "18"
+test "$(wc -l <"$active_log" | tr -d ' ')" = "20"
 grep -q 'Phase: closed' "$fixture_repo/docs/control/current.md"
 test "$(grep -c '"verificationId":"VER-002"' "$active_log")" = "2"
 test "$(grep -c '"verificationId":"VER-003"' "$active_log")" = "2"
@@ -458,7 +472,7 @@ grep -q 'Work order: WO-100' "$fixture_repo/docs/control/current.md"
 grep -q 'Latest attestation: none' "$fixture_repo/docs/control/current.md"
 grep -q 'Effort drift: none' "$fixture_repo/docs/control/current.md"
 test "$(wc -l <"$active_log" | tr -d ' ')" = "1"
-test "$(wc -l <"$fixture_repo/docs/control/orders/WO-099.jsonl" | tr -d ' ')" = "18"
+test "$(wc -l <"$fixture_repo/docs/control/orders/WO-099.jsonl" | tr -d ' ')" = "20"
 printf '%s\n' '# next' '' '**Model:** fixture-model.' >"$fixture_repo/docs/work-orders/WO-100-next.md"
 assert_refusal 'missing **Effort:** line' next
 
@@ -767,9 +781,11 @@ process.env.DOTLN_ACCOUNT_LABEL = "invalid@fixture";
 // Observe actual filesystem calls made by the dispatcher; the private lane
 // must remain unopened, even if a mapping is present and the env label is set.
 const savedFs = {};
+let interceptedFsCalls = 0;
 for (const name of ["readFileSync", "readdirSync", "existsSync", "lstatSync", "statSync", "realpathSync"]) {
   savedFs[name] = fs[name];
   fs[name] = (path, ...args) => {
+    interceptedFsCalls++;
     const named = path instanceof URL ? path.pathname : String(path);
     assert.ok(!resolve(named).startsWith(join(root, "docs/control/local")), `private lane accessed by ${name}`);
     return savedFs[name](path, ...args);
@@ -784,6 +800,7 @@ try {
   usage = JSON.parse(await call(["usage", "--json"]));
   rendered = await call(["usage"]);
 } finally { Object.assign(fs, savedFs); childProcess.spawnSync = savedSpawn; syncBuiltinESMExports(); delete process.env.DOTLN_ACCOUNT_LABEL; }
+assert.ok(interceptedFsCalls > 0, "privacy canary must intercept the dispatcher filesystem reads");
 assert.deepEqual(JSON.parse(execFileSync(process.execPath, [join(root, "scripts/resume.mjs"), "usage", "--json"], { encoding: "utf8" })), usage);
 assert.equal(execFileSync(process.execPath, [join(root, "scripts/resume.mjs"), "usage"], { encoding: "utf8" }), rendered);
 assert.deepEqual(usage.totals, { attempts: 10, elapsedMs: 11000, unknown: 1 });

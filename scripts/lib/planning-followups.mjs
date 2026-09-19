@@ -84,7 +84,14 @@ function markdownFiles(root, directory) {
 
 export function collectFollowupSources(root) {
   const found = new Map();
-  const add = (kind, path, locator, title, body) => {
+  const add = (
+    kind,
+    path,
+    locator,
+    title,
+    body,
+    fragment = locator.split("::")[0],
+  ) => {
     const key = `${kind}:${path}#${locator}`;
     requireFollowup(
       !found.has(key),
@@ -95,7 +102,7 @@ export function collectFollowupSources(root) {
       kind,
       source: {
         hash: hash(body),
-        ref: `${path}#${locator.split("::")[0]}`,
+        ref: `${path}#${fragment}`,
         title: compact(title.replace(/\*|`/g, ""), 200),
         summary: compact(body, 700),
         missing: false,
@@ -166,14 +173,30 @@ export function collectFollowupSources(root) {
       /^WO-\d{3}$/.test(name),
     ))
       safePath(root, `docs/evidence/${name}/decisions.md`);
-  for (const decision of readDecisions(root))
+  const decisions = readDecisions(root);
+  for (const row of decisions.filter((row) => row.reopens))
+    requireFollowup(
+      decisions.some((decision) => decision.id === row.reopens.decisionId),
+      `${row.id}: reopened decision ${row.reopens.decisionId} is missing`,
+    );
+  for (const decision of decisions) {
+    const observations = decisions.filter(
+      (row) => row.reopens?.decisionId === decision.id,
+    );
+    if (!decision.followup && !observations.length) continue;
     add(
       "decision",
       decision.path,
       decision.id.toLowerCase(),
-      `${decision.id}: ${decision.decision}`,
-      encode(decision),
+      `${decision.id}: ${decision.followup ?? decision.decision}`,
+      encode(
+        observations.length
+          ? { ...decision, reopeningObservations: observations }
+          : decision,
+      ),
+      decision.anchor ?? decision.id.toLowerCase(),
     );
+  }
   return [...found.values()].sort((a, b) => a.key.localeCompare(b.key));
 }
 
@@ -348,7 +371,13 @@ function projected(root) {
       entry.revisions.push(row.source);
   }
   for (const entry of state.entries)
-    if (!present.has(entry.key) && !entry.revisions.at(-1).missing)
+    // Migration decision rows remain byte-for-byte history until explicitly
+    // nominated or reopened. Removing the old harvest rule is not a missing source.
+    if (
+      entry.kind !== "decision" &&
+      !present.has(entry.key) &&
+      !entry.revisions.at(-1).missing
+    )
       entry.revisions.push({
         ...entry.revisions.at(-1),
         hash: null,
@@ -463,6 +492,12 @@ export function planningFollowups(root, { cursor = null, all = false } = {}) {
   const counts = {};
   for (const entry of state.entries)
     counts[followupStatus(entry)] = (counts[followupStatus(entry)] ?? 0) + 1;
+  const decisionRefs = new Map(
+    readDecisions(root).map((row) => [
+      `decision:${row.path}#${row.id.toLowerCase()}`,
+      `${row.path}#${row.anchor ?? row.id.toLowerCase()}`,
+    ]),
+  );
   const rows = selected.slice(offset, offset + 8).map((entry) => {
     const source = entry.revisions.at(-1),
       disposition = entry.dispositions.at(-1);
@@ -471,7 +506,7 @@ export function planningFollowups(root, { cursor = null, all = false } = {}) {
       status: followupStatus(entry),
       sourceRevision: entry.revisions.length,
       title: source.title,
-      source: source.ref,
+      source: decisionRefs.get(entry.key) ?? source.ref,
       sourceMissing: source.missing,
       reason: disposition ? compact(disposition.reason, 220) : null,
       reopenWhen: disposition?.reopenWhen
@@ -482,7 +517,7 @@ export function planningFollowups(root, { cursor = null, all = false } = {}) {
   const page = {
     revision,
     coverage:
-      "Formal candidate/follow-up/deferred headings in current product and planning documents, their top-level list items, and per-order decision records. Archive snapshots, refutation receipts, private intake and unstructured legacy prose are not claimed as reconciled.",
+      "Formal candidate/follow-up/deferred headings in current product and planning documents, their top-level list items, and decision records naming an action or an observed reopening. Historical register rows are retained. Archive snapshots, refutation receipts, private intake and unstructured legacy prose are not claimed as reconciled.",
     total: state.entries.length,
     counts,
     pending: state.entries.filter((entry) => !closed.has(followupStatus(entry)))

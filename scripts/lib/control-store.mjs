@@ -6,8 +6,8 @@ import {
   foldSegments,
   parseControlEvents,
 } from "./control.mjs";
-import { runGit } from "./git.mjs";
-import { containedRegularFile } from "./paths.mjs";
+import { readGitObjects, runGit } from "./git.mjs";
+import { containedRegularFile, disposableBasename } from "./paths.mjs";
 
 export const controlFromSources = (sources) => {
   const eventSegments = new Map();
@@ -24,27 +24,25 @@ export const controlFromSources = (sources) => {
   return { sources, eventSegments, ...foldSegments(legacy, segments) };
 };
 
-// The same reader owns workspace, commit, and tag views. Git reads use blobs,
-// never a working-tree projection or a symlink's target.
-export const readControl = (root, revision) => {
-  const sources = new Map();
-  if (revision) {
-    const entries = runGit(
-      root,
-      [
-        "ls-tree",
-        "-r",
-        "-z",
-        revision,
-        "--",
-        LEGACY_CONTROL_PATH,
-        CONTROL_ORDERS_PATH,
-      ],
-      { trim: false },
-    )
-      .split("\0")
-      .filter(Boolean);
-    const blobs = entries.map((entry) => {
+const committedControlBlobs = (root, revision) => {
+  const entries = runGit(
+    root,
+    [
+      "ls-tree",
+      "-r",
+      "-z",
+      revision,
+      "--",
+      LEGACY_CONTROL_PATH,
+      CONTROL_ORDERS_PATH,
+    ],
+    { trim: false },
+  )
+    .split("\0")
+    .filter(Boolean);
+  return entries
+    .filter((entry) => !disposableBasename(entry.split("\t")[1]))
+    .map((entry) => {
       const [metadata, path] = entry.split("\t");
       const [mode, type, object] = metadata.split(" ");
       if (type !== "blob" || !["100644", "100755"].includes(mode))
@@ -53,40 +51,58 @@ export const readControl = (root, revision) => {
         );
       return { path, object };
     });
-    // One process per committed view, not one process per order segment.
-    // Git's byte counts frame Unicode JSONL without interpreting its content.
-    const wire = blobs.length
-      ? runGit(root, ["cat-file", "--batch"], {
-          trim: false,
-          encoding: null,
-          input: blobs.map((row) => row.object).join("\n") + "\n",
-        })
-      : Buffer.alloc(0);
-    let offset = 0;
-    for (const { path, object } of blobs) {
-      const end = wire.indexOf(10, offset);
-      const header = wire.subarray(offset, end).toString("ascii").split(" ");
-      const length = Number(header[2]);
-      if (
-        end < offset ||
-        header.length !== 3 ||
-        header[0] !== object ||
-        header[1] !== "blob" ||
-        !/^\d+$/.test(header[2]) ||
-        !Number.isSafeInteger(length) ||
-        length < 0 ||
-        end + length + 1 >= wire.length ||
-        wire[end + length + 1] !== 10
-      )
-        throw new Error("Committed control batch has invalid framing");
-      sources.set(
-        path,
-        wire.subarray(end + 1, end + 1 + length).toString("utf8"),
-      );
-      offset = end + length + 2;
-    }
-    if (offset !== wire.length)
-      throw new Error("Committed control batch has trailing bytes");
+};
+
+// Keep the legacy segment first and every other segment in code-unit order.
+const sortedSources = (sources) =>
+  new Map(
+    [...sources].sort(([a], [b]) =>
+      a === LEGACY_CONTROL_PATH
+        ? -1
+        : b === LEGACY_CONTROL_PATH
+          ? 1
+          : a < b
+            ? -1
+            : a > b
+              ? 1
+              : 0,
+    ),
+  );
+
+// Validate every historical view, sharing immutable blob reads across tags.
+export const readControls = (root, revisions) => {
+  const views = revisions.map((revision) => [
+    revision,
+    committedControlBlobs(root, revision),
+  ]);
+  const objects = readGitObjects(
+    root,
+    views.flatMap(([, blobs]) => blobs.map(({ object }) => object)),
+    "blob",
+  );
+  return new Map(
+    views.map(([revision, blobs]) => [
+      revision,
+      controlFromSources(
+        sortedSources(
+          new Map(
+            blobs.map(({ path, object }) => [
+              path,
+              objects.get(object).toString("utf8"),
+            ]),
+          ),
+        ),
+      ),
+    ]),
+  );
+};
+
+// The same reader owns workspace, commit, and tag views. Git reads use blobs,
+// never a working-tree projection or a symlink's target.
+export const readControl = (root, revision) => {
+  const sources = new Map();
+  if (revision) {
+    return readControls(root, [revision]).get(revision);
   } else {
     const read = (path) => {
       if (!containedRegularFile(join(root, path), root))
@@ -106,24 +122,11 @@ export const readControl = (root, revision) => {
           `${CONTROL_ORDERS_PATH}: expected a regular control directory`,
         );
       for (const name of readdirSync(directory).sort())
-        read(`${CONTROL_ORDERS_PATH}/${name}`);
+        if (!disposableBasename(name)) read(`${CONTROL_ORDERS_PATH}/${name}`);
     }
   }
   // Legacy first; lexicographic segment order is display order, not chronology.
-  const sorted = new Map(
-    [...sources].sort(([a], [b]) =>
-      a === LEGACY_CONTROL_PATH
-        ? -1
-        : b === LEGACY_CONTROL_PATH
-          ? 1
-          : a < b
-            ? -1
-            : a > b
-              ? 1
-              : 0,
-    ),
-  );
-  return controlFromSources(sorted);
+  return controlFromSources(sortedSources(sources));
 };
 
 export const eventsForOrder = (control, id) =>

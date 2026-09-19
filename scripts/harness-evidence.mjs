@@ -1,6 +1,7 @@
+import { isMainModule } from "./lib/paths.mjs";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { readFileSync, readdirSync, realpathSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { checkHarness, harnessInstallation } from "./lib/harness.mjs";
@@ -238,10 +239,7 @@ export function checkHarnessEvidence(root) {
     checkedSurfaces: surfaces.length,
   };
 }
-if (
-  process.argv[1] &&
-  realpathSync(process.argv[1]) === fileURLToPath(import.meta.url)
-) {
+if (isMainModule(import.meta.url)) {
   const result = checkHarnessEvidence(
     fileURLToPath(new URL("../", import.meta.url)),
   );

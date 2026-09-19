@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { isMainModule } from "./lib/paths.mjs";
 import { spawnSync } from "node:child_process";
 import {
   cpSync,
@@ -14,7 +15,7 @@ import {
   unlinkSync,
 } from "node:fs";
 import { dirname, join, resolve } from "node:path";
-import { fileURLToPath, pathToFileURL } from "node:url";
+import { fileURLToPath } from "node:url";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -118,10 +119,7 @@ export function atomicBuild(repo = root, observe = () => {}) {
     rmSync(staging, { recursive: true, force: true });
   }
 }
-if (
-  process.argv[1] &&
-  pathToFileURL(resolve(process.argv[1])).href === import.meta.url
-) {
+if (isMainModule(import.meta.url)) {
   try {
     console.log(
       `Built ${atomicBuild().join(", ")} with atomic file replacement; installed harness snapshots remain immutable`,

@@ -10,7 +10,7 @@ test_root_prefix="dotln-worktree-test"
 create_test_temp_root "$tmp_base" "$test_root_prefix"
 test_root="$test_temp_root_result"
 install_test_temp_root_traps "$tmp_base" "$test_root" "$test_root_prefix"
-node_bin="$(command -v node)"
+node_bin="$(node -p 'process.execPath')"
 real_git="$(command -v git)"
 u202f="$(printf '\342\200\257')"
 assert_u202f() {
@@ -155,6 +155,11 @@ git -C "$subject" add .
 git -C "$subject" add docs/control
 git -C "$subject" commit -m complete >/dev/null
 
+if bad_title="$(node "$subject/scripts/worktree.mjs" publish WO-099 --title unquoted multiple words --body-file pr-body.md 2>&1)"; then
+  printf 'error: surplus publish positionals accepted\n' >&2; exit 1
+fi
+grep -Fq 'quote titles with spaces' <<<"$bad_title"
+
 mkdir -p "$test_root/no-gh-bin"
 ln -s "$test_root/bin/git" "$test_root/no-gh-bin/git"
 ln -s "$node_bin" "$test_root/no-gh-bin/node"
@@ -225,6 +230,42 @@ set_release_notes $'## Release overview\n\nOverview.\n\n## Read before upgrading
 assert_notes_refusal 'duplicated required heading "## Substantive changes"'
 set_release_notes $'## Release overview\n\nOverview.\n\n## Substantive changes\n\nChange.\n\n## Read before upgrading\n\nNone.\n\n## Progressive polish\n\nNone.\n\n## Evidence and compatibility\n\nEvidence.\n'
 assert_notes_refusal 'required headings are misordered'
+# Reserved-heading parsing exercises code blocks and visible title spellings.
+node --input-type=module - "$main/scripts/release-notes.mjs" <<'NODE'
+import assert from "node:assert/strict";
+import { pathToFileURL } from "node:url";
+const { parseReleaseNotes, releaseNoteHeadings } = await import(pathToFileURL(process.argv[2]));
+const notes = (extra) => releaseNoteHeadings.map((name, index) =>
+  `## ${name}\n\n${index === 0 ? extra : "Fixture."}\n`).join("\n");
+for (const extra of [
+  "Derived from\nthe diff\n===", "Machine-derived\nrelease evidence\n===",
+  "# WO\\-123 — Generated shape", "# WO-123 &mdash; Generated shape",
+  "# WO-123 &#x2014; Generated shape", "# **Derived from the diff**",
+  "### _Machine-derived release evidence_", "# **Derived from the diff** ###",
+  "> ```\n> code\n\n# Derived from the diff\n```",
+  "- list item\n\n    ### Derived from the diff",
+]) assert.throws(() => parseReleaseNotes(notes(extra), "fixture"), /generated release heading is reserved/, extra);
+for (const extra of [
+  "    # WO-123 — Generated shape", "\t# Derived from the diff",
+  "> ```\n> # WO-123 — Generated shape\n> ```",
+  "```\n# Derived from the diff\n```", "Ordinary text.",
+  "```\n> ```\n# Derived from the diff\n```",
+  "> ```\n>> ```\n> # Derived from the diff\n> ```",
+  "# Derived from the di_ff", "# \\*Derived from the diff\\*",
+]) assert.equal(Object.keys(parseReleaseNotes(notes(extra), "fixture").sections).length, 5, extra);
+NODE
+for marker in '#' '##' '###' '####' '#####' '######' '- ###' '1. ###' '> - ###'; do
+  for reserved in 'WO-999 — Generated shape' 'Derived from the diff' 'Machine-derived release evidence'; do
+    set_release_notes $'## Release overview\n\nOverview.\n\n'"$marker $reserved"$'\n\n## Read before upgrading\n\nNone.\n\n## Substantive changes\n\nChange.\n\n## Progressive polish\n\nNone.\n\n## Evidence and compatibility\n\nEvidence.\n'
+    assert_notes_refusal 'generated release heading is reserved'
+  done
+done
+for underline in '===' '---'; do
+  for reserved in 'WO-999 — Generated shape' 'Derived from the diff' 'Machine-derived release evidence'; do
+    set_release_notes $'## Release overview\n\nOverview.\n\n'"$reserved"$'\n'"$underline"$'\n\n## Read before upgrading\n\nNone.\n\n## Substantive changes\n\nChange.\n\n## Progressive polish\n\nNone.\n\n## Evidence and compatibility\n\nEvidence.\n'
+    assert_notes_refusal 'generated release heading is reserved'
+  done
+done
 set_release_notes $'## Release overview\n\n   \n\n## Read before upgrading\n\nNone.\n\n## Substantive changes\n\nChange.\n\n## Progressive polish\n\nNone.\n\n## Evidence and compatibility\n\nEvidence.\n'
 assert_notes_refusal 'empty required section "## Release overview"'
 set_release_notes $'## Release overview\n\nOverview.\n\n## Read before upgrading\n\n   \n\n## Substantive changes\n\nChange.\n\n## Progressive polish\n\nNone.\n\n## Evidence and compatibility\n\nEvidence.\n'
@@ -373,6 +414,7 @@ printf 'hidden uncommitted private body\n' >"$subject/pr-body.md"
 printf '<!-- hidden malformed notes -->\n' >"$subject/$notes_path"
 publish_output="$(PATH="$test_root/bin:$PATH" DOTLN_GH_LOG="$gh_log" DOTLN_GH_BODY="$published_body" GH_REPO=wrong/target GH_HOST=wrong.example node "$subject/scripts/worktree.mjs" publish WO-099 --title ':sparkles: fixture' --body-file pr-body.md)"
 grep -Fq "$(cat "$committed_body")" "$published_body"
+if grep -Fq 'hidden uncommitted private body' "$published_body"; then printf 'error: private working body leaked\n' >&2; exit 1; fi
 grep -Fq 'dotln-product-gate:start' "$published_body"
 grep -Fq '"checkId": "npm test"' "$published_body"
 cp "$committed_body" "$subject/pr-body.md"
@@ -428,11 +470,11 @@ rm -- "$subject/.env" "$subject/tsconfig.tsbuildinfo"
 rm -rf -- "$subject/vendor" "$subject/docs/control/local/feedback"
 printf 'removal refusal listed every blocker with its lane and remedy\n'
 mkdir -p "$subject/docs/intake"
-intake_path="docs/intake/raw${u202f}note.md"
+intake_path="docs/intake/raw${u202f}"$'\n'"note.md"
 assert_u202f "$intake_path"
 printf 'raw local note\n' >"$subject/$intake_path"
 intake_output="$(finish_worktree WO-099 --dry-run 2>&1)"
-grep -Fq "$intake_path" <<<"$intake_output"
+"$node_bin" -e 'require("node:assert/strict").ok(process.argv[1].includes(JSON.stringify(process.argv[2])))' "$intake_output" "$intake_path"
 test ! -e "$main/$intake_path"
 test -f "$subject/$intake_path"
 test -d "$subject"

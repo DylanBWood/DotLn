@@ -46,7 +46,11 @@ const scanControl = (events, visit) => {
   let state = emptyState();
   for (const [index, event] of events.entries()) {
     validateRecordedAt(event, `at line ${index + 1}`);
-    validateAccountLabel(event?.actor?.accountLabel);
+    try {
+      validateAccountLabel(event?.actor?.accountLabel);
+    } catch (error) {
+      throw new Error(`${error.message} at ordinal ${index + 1}`);
+    }
     state = states.get(event?.workOrderId) ?? emptyState();
     switch (event?.type) {
       case "WorkOrderActivated":
@@ -211,7 +215,7 @@ export const foldSegments = (legacy, segments = new Map()) => {
     [...orders.keys()].map((id) => [id, LEGACY_CONTROL_PATH]),
   );
   for (const [path, events] of [...segments].sort(([a], [b]) =>
-    a.localeCompare(b),
+    a < b ? -1 : a > b ? 1 : 0,
   )) {
     const id = /^docs\/control\/orders\/(WO-\d{3})\.jsonl$/.exec(path)?.[1];
     if (!id)

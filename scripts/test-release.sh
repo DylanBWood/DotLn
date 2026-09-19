@@ -252,7 +252,7 @@ make_repo() {
     '  if [[ "${DOTLN_FIXTURE_GH_FAIL:-}" == "view404" ]]; then printf "HTTP 404: Not Found\\n" >&2; exit 1; fi' \
     '  if [[ "${DOTLN_FIXTURE_GH_FAIL:-}" == "invalidjson" ]]; then printf "{\\n"; exit 0; fi' \
     '  if [[ ! -f "$body" ]]; then printf "release not found\\n" >&2; exit 1; fi' \
-    '  node -e '\''const fs=require("node:fs"); process.stdout.write(JSON.stringify({body:fs.readFileSync(process.argv[1],"utf8"),name:`DotLn ${process.argv[2]}`,isDraft:false,isPrerelease:false,assets:[]}));'\'' "$body" "$tag"' \
+    '  node -e '\''const fs=require("node:fs"); process.stdout.write(JSON.stringify({body:fs.readFileSync(process.argv[1],"utf8"),name:process.env.DOTLN_FIXTURE_GH_METADATA === "name" ? "Different title" : `DotLn ${process.argv[2]}`,isDraft:process.env.DOTLN_FIXTURE_GH_METADATA === "draft",isPrerelease:process.env.DOTLN_FIXTURE_GH_METADATA === "prerelease",assets:process.env.DOTLN_FIXTURE_GH_METADATA === "assets" ? [{name:"unexpected"}] : []}));'\'' "$body" "$tag"' \
     '  exit 0' \
     'fi' \
     'if [[ "${1:-} ${2:-}" == "release create" ]]; then' \
@@ -421,6 +421,19 @@ git -C "$main" push origin main >/dev/null 2>&1
 surface_pass="$(release_command check-surfaces)"
 grep -Fq 'PASS release-block: observed v0.2.1; expected v0.2.1 (work-order target v0.2.1; latest published v0.2.0)' <<<"$surface_pass"
 grep -Fq 'PASS component-version @dotln/kernel: src unchanged; observed 0.1.0; previous v0.2.0 0.1.0' <<<"$surface_pass"
+# Workspace pins are exact; untracked source is explicitly outside this comparison.
+"$node_bin" -e 'const fs = require("node:fs"), path = process.argv[1], pkg = JSON.parse(fs.readFileSync(path)); pkg.dependencies = { "@dotln/kernel": process.argv[2] }; fs.writeFileSync(path, JSON.stringify(pkg));' "$main/packages/skeleton/package.json" '0.1.0'
+release_command check-surfaces | grep -Fq 'PASS workspace-pin @dotln/skeleton -> @dotln/kernel: observed 0.1.0; expected exact workspace version 0.1.0'
+"$node_bin" -e 'const fs = require("node:fs"), path = process.argv[1], pkg = JSON.parse(fs.readFileSync(path)); pkg.dependencies = { "@dotln/kernel": process.argv[2] }; fs.writeFileSync(path, JSON.stringify(pkg));' "$main/packages/skeleton/package.json" '^0.1.0'
+assert_surface_failure 'FAIL workspace-pin @dotln/skeleton -> @dotln/kernel: observed ^0.1.0; expected exact workspace version 0.1.0'
+git -C "$main" checkout -- packages/skeleton/package.json
+printf 'export const untracked = true;\n' >"$main/packages/kernel/src/untracked.ts"
+release_command check-surfaces | grep -Fq 'advisory: untracked source not compared (1 component source path(s))'
+rm "$main/packages/kernel/src/untracked.ts"
+original_annotated="$(git -C "$main" rev-parse v0.2.0)"
+git -C "$main" update-ref refs/tags/v0.2.0 "$(git -C "$main" rev-parse v0.2.0^{commit})"
+assert_surface_failure 'FAIL component-version @dotln/kernel: cannot compare with v0.2.0: latest published version v0.2.0 is absent or is not an annotated origin tag' --local
+git -C "$main" update-ref refs/tags/v0.2.0 "$original_annotated"
 write_release_block "$main" v0.2.0
 assert_surface_failure 'FAIL release-block: observed v0.2.0; expected exactly one v0.2.1'
 write_release_block "$main" v0.2.1
@@ -674,13 +687,13 @@ if release_close WO-099 --publish >/dev/null 2>&1; then printf 'error: tracked d
 assert_no_candidate_tag "$main" "$origin"
 git -C "$main" checkout -- README.md
 printf 'untracked retained\n' >"$main/untracked.txt"
-foreign_path=".env.fixture${u202f}foreign"
+foreign_path=".env.fixture${u202f}"$'\n'"foreign"
 assert_u202f "$foreign_path"
 printf 'IGNORED=fixture\n' >"$main/$foreign_path"
 ignored_output="$(release_close WO-099 --publish)"
 grep -Fq 'Published annotated v0.2.1' <<<"$ignored_output"
 grep -Fq 'retained untracked material: untracked.txt' <<<"$ignored_output"
-grep -Fq "$foreign_path" <<<"$ignored_output"
+"$node_bin" -e 'require("node:assert/strict").ok(process.argv[1].includes(process.argv[2]))' "$ignored_output" "$foreign_path"
 test -f "$main/untracked.txt"
 test -f "$main/$foreign_path"
 }
@@ -1173,7 +1186,7 @@ git -C "$main" commit -m 'fixture distinct control schema export' >/dev/null
 git -C "$main" push origin main >/dev/null 2>&1
 subject="$fixture/project-wo099"
 git -C "$main" worktree add "$subject" -b wo-099 >/dev/null
-tracked_path="scripts/release.${u202f}fixture.mjs"
+tracked_path="scripts/release.${u202f}"$'\n'"fixture.mjs"
 leading_path=" ${u202f}leading.md"
 assert_u202f "$tracked_path"
 assert_u202f "$leading_path"
@@ -1240,8 +1253,8 @@ test "$(git -C "$main" cat-file -t v0.2.1)" = tag
 test "$(git -C "$main" rev-list -n 1 v0.2.1)" = "$(git --git-dir="$origin" rev-list -n 1 v0.2.1)"
 test "$(git -C "$main" rev-list -n 1 v0.2.1)" = "$(git -C "$main" rev-parse HEAD)"
 test "$(git -C "$main" rev-parse v9.9.9^{tag})" = "$unrelated_tag_object"
-remote_tags="$(git --git-dir="$origin" for-each-ref --format='%(refname)' refs/tags | LC_ALL=C sort)"
-test "$remote_tags" = $'refs/tags/v0.2.0\nrefs/tags/v0.2.1'
+remote_tags="$(git --git-dir="$origin" for-each-ref --format='%(refname)' | LC_ALL=C sort)"
+test "$remote_tags" = $'refs/heads/main\nrefs/heads/wo-099\nrefs/tags/v0.2.0\nrefs/tags/v0.2.1'
 published_object="$(git -C "$main" rev-parse v0.2.1^{tag})"
 case "$main/node_modules" in "$test_root"/*/node_modules) rm -rf -- "$main/node_modules" ;; *) exit 1 ;; esac
 rerun_builds_before="$(grep -c '^build$' "$npm_log")"
@@ -1250,6 +1263,14 @@ grep -Fq 'v0.2.1 is already published' <<<"$rerun_output"
 test "$(git -C "$main" rev-parse v0.2.1^{tag})" = "$published_object"
 test "$(grep -c '^release create v0.2.1 ' "$gh_log")" = 1
 test "$(grep -c '^build$' "$npm_log")" = "$rerun_builds_before"
+for metadata in name draft prerelease assets; do
+  if metadata_output="$(DOTLN_FIXTURE_GH_METADATA="$metadata" release_close WO-099 --publish 2>&1)"; then
+    printf 'error: mismatched GitHub Release %s accepted\n' "$metadata" >&2; exit 1
+  fi
+  grep -Fq 'GitHub Release metadata differs' <<<"$metadata_output"
+  test "$(grep -c '^release create v0.2.1 ' "$gh_log")" = 1
+  test "$(git --git-dir="$origin" for-each-ref --format='%(refname)' | LC_ALL=C sort)" = "$remote_tags"
+done
 test ! -d "$main/node_modules"
 PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" "$node_bin" "$main/scripts/release.mjs" manifest-from-tag v0.2.1 >"$fixture/manifest.json"
 "$node_bin" --input-type=module -e '
@@ -1307,8 +1328,14 @@ done
 
 release_case_edition() {
 make_repo edition
+git -C "$main" switch -c fixture-legacy >/dev/null 2>&1
 commit_legacy_multicommit_candidate "$main" WO-023 v0.2.1
+git -C "$main" switch main >/dev/null 2>&1
+git -C "$main" merge --no-ff fixture-legacy -m 'WO-023 merged legacy fixture' >/dev/null
+git -C "$main" switch -c fixture-reviewed >/dev/null 2>&1
 commit_reviewed_candidate "$main" WO-024 v0.2.1
+git -C "$main" switch main >/dev/null 2>&1
+git -C "$main" merge --no-ff fixture-reviewed -m 'WO-024 merged reviewed fixture' >/dev/null
 git -C "$main" push origin main >/dev/null 2>&1
 edition_publish_output="$(GH_REPO=wrong/target GH_HOST=wrong.example release_close WO-024 --publish)"
 grep -Fq 'Published annotated v0.2.1' <<<"$edition_publish_output"
@@ -1347,7 +1374,9 @@ for (const heading of headings) {
   const section = notes.slice(start, end);
   assert.ok(section.indexOf("### WO-023") < section.indexOf("### WO-024"));
 }
-assert.ok(notes.includes("**Fallback: no reviewed notes for WO-023 (predates WO-024); commit subjects:**\n\n- WO-023 implementation part one\n- WO-023 implementation part two\n- WO-023 final review pass"));
+assert.ok(notes.includes("**Fallback: no reviewed notes for WO-023 (predates WO-024); commit subjects:**\n\n- WO-023 merged legacy fixture"));
+assert.ok(!notes.includes("WO-023 implementation part one"));
+assert.ok(!notes.includes("WO-023 implementation part two"));
 assert.ok(notes.includes("Reviewed overview prose remains on one physical source line even when it is longer than eighty characters, so the reader owns viewport wrapping."));
 assert.ok(notes.includes("Reviewer warning prose remains on one physical source line even when it is longer than eighty characters, so the reader owns viewport wrapping."));
 assert.ok(notes.includes("**Release operations.** Readers now receive the reviewed edition.\n\n### WO-999 is reviewer prose, not release membership\n\nThis heading must not affect the release list."));
@@ -1420,7 +1449,7 @@ release_case_firstrelease() {
 make_repo firstrelease
 git -C "$main" tag -d v0.2.0 >/dev/null
 git --git-dir="$origin" update-ref -d refs/tags/v0.2.0
-first_release_path="${u202f}first-release.md"
+first_release_path="${u202f}"$'\n'"first-release.md"
 assert_u202f "$first_release_path"
 printf 'first release Unicode fixture\n' >"$main/$first_release_path"
 commit_candidate "$main" WO-099 v0.2.1

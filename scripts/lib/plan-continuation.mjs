@@ -63,7 +63,7 @@ const executionAppendix = (before, after) => {
  */
 export const executionAmendmentSource = (source) => {
   const normalized = source.replace(
-    /^(# [^\r\n]+)\(v(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\)$/mu,
+    /^(# [^\r\n]+)\(v(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\)(?=\r?\n|$)/u,
     "$1(version assigned at activation)",
   );
   return normalized.trimEnd();
@@ -251,6 +251,10 @@ export function checkPlanContinuation(
     );
     if (amendment) {
       const normalized = executionAmendmentSource(after);
+      requireSamePlan(
+        amendment.orderLength <= normalized.length,
+        "execution amendment approved length exceeds the current order source",
+      );
       if (normalized.length !== amendment.orderLength)
         executionAppendix(
           normalized.slice(0, amendment.orderLength),

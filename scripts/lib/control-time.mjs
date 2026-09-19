@@ -98,11 +98,19 @@ export const recoverControlTimes = (root, events, locations = []) => {
       )
         throw new Error(`invalid checkpoint ref ${at}`);
       if (!refs.has(ref)) {
-        const row = runGit(root, [
-          "for-each-ref",
-          "--format=%(refname) %(objecttype) %(objectname) %(committerdate:unix)",
-          ref,
-        ])
+        let listing;
+        try {
+          listing = runGit(root, [
+            "for-each-ref",
+            "--format=%(refname) %(objecttype) %(objectname) %(committerdate:unix)",
+            ref,
+          ]);
+        } catch (error) {
+          throw new Error(
+            `cannot recover checkpoint time ${at} (${ref}): ${error.message}`,
+          );
+        }
+        const row = listing
           .split("\n")
           .find((line) => line.startsWith(`${ref} `));
         if (!row) throw new Error(`missing local checkpoint ref ${at}: ${ref}`);

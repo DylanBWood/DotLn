@@ -27,7 +27,7 @@ import {
   environmentWithoutGhRepo,
   resolveGitHubPushTarget,
 } from "./github-repository.mjs";
-import { assertGitHubBodyProfile } from "./github-body.mjs";
+import { assertGitHubBodyProfile, withTemporaryBody } from "./github-body.mjs";
 import {
   applyReleasePreparation,
   planReleasePreparation,
@@ -398,10 +398,13 @@ const componentPackages = (root, revision) => {
         directory,
         name: manifest.name,
         version: manifest.version,
+        dependencies: manifest.dependencies ?? {},
       };
     })
     .filter(Boolean)
-    .sort((left, right) => left.name.localeCompare(right.name));
+    .sort((left, right) =>
+      left.name < right.name ? -1 : left.name > right.name ? 1 : 0,
+    );
 };
 
 const releaseBlockRule = (
@@ -467,7 +470,15 @@ const componentVersionRules = (root, latest, local, remote, revision) => {
     }));
   }
 
-  const previous = publishedTag(latest, local, remote);
+  let previous;
+  try {
+    previous = publishedTag(latest, local, remote);
+  } catch (error) {
+    return components.map((component) => ({
+      pass: false,
+      line: `FAIL component-version ${component.name}: cannot compare with ${latest}: ${error.message}`,
+    }));
+  }
   let previousManifest;
   let manifestError;
   try {
@@ -568,6 +579,25 @@ const githubBodyRule = (root, state, revision) => {
   }
 };
 
+const workspacePinRules = (root, revision) => {
+  const components = componentPackages(root, revision);
+  const versions = new Map(
+    components.map(({ name, version }) => [name, version]),
+  );
+  return components.flatMap((component) =>
+    Object.entries(component.dependencies)
+      .filter(([name]) => name.startsWith("@dotln/"))
+      .map(([name, pin]) => {
+        const version = versions.get(name);
+        const pass = version !== undefined && pin === version;
+        return {
+          pass,
+          line: `${pass ? "PASS" : "FAIL"} workspace-pin ${component.name} -> ${name}: observed ${pin}; expected exact workspace version ${version ?? "missing"}`,
+        };
+      }),
+  );
+};
+
 const checkSurfaces = (root, options = {}) => {
   const revision = options.revision;
   const state =
@@ -603,9 +633,25 @@ const checkSurfaces = (root, options = {}) => {
   const rules = [
     releaseBlockRule(root, authority, latest, revision, options.localOnly),
     ...componentVersionRules(root, latest, local, remote, revision),
+    ...workspacePinRules(root, revision),
     githubBodyRule(root, state, revision),
     ...licenseSurfaceRules(root, revision),
   ];
+  if (!revision) {
+    const untracked = runGitPathList(root, [
+      "ls-files",
+      "--others",
+      "--exclude-standard",
+      "-z",
+      "--",
+      "packages",
+    ]).filter((path) => /^packages\/[^/]+\/src\//.test(path));
+    if (untracked.length)
+      rules.push({
+        pass: true,
+        line: `advisory: untracked source not compared (${untracked.length} component source path(s))`,
+      });
+  }
   return {
     passed: rules.every(({ pass }) => pass),
     report: `${rules.map(({ line }) => line).join("\n")}\n`,
@@ -1548,20 +1594,6 @@ const firstDifferingLine = (expected, actual) => {
   }
   return undefined;
 };
-const withTemporaryBody = (body, operation) => {
-  const directory = mkdtempSync(join(tmpdir(), "dotln-release-body-"));
-  const path = join(directory, "RELEASE.md");
-  try {
-    writeFileSync(path, body, "utf8");
-    return operation(path);
-  } finally {
-    try {
-      rmSync(directory, { recursive: true, force: true });
-    } catch {
-      // A cleanup failure must not mask whether the remote operation ran.
-    }
-  }
-};
 const viewedGitHubRelease = (root, repository, tag) => {
   const viewed = executeGh(root, [
     "release",
@@ -1617,19 +1649,22 @@ const ensureGitHubRelease = (root, repository, tag, expectedBody) => {
   }
   let created;
   try {
-    created = withTemporaryBody(expectedBody, (bodyPath) =>
-      executeGh(root, [
-        "release",
-        "create",
-        tag,
-        "--repo",
-        repository.selector,
-        "--verify-tag",
-        "--title",
-        `DotLn ${tag}`,
-        "--notes-file",
-        bodyPath,
-      ]),
+    created = withTemporaryBody(
+      expectedBody,
+      (bodyPath) =>
+        executeGh(root, [
+          "release",
+          "create",
+          tag,
+          "--repo",
+          repository.selector,
+          "--verify-tag",
+          "--title",
+          `DotLn ${tag}`,
+          "--notes-file",
+          bodyPath,
+        ]),
+      "RELEASE.md",
     );
   } catch (error) {
     throw new Error(
