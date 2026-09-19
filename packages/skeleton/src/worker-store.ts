@@ -7,12 +7,14 @@ import {
   openSync,
   readFileSync,
   readdirSync,
-  rmdirSync,
+  readlinkSync,
+  rmSync,
+  symlinkSync,
   unlinkSync,
   writeFileSync,
 } from "node:fs";
 import { join, resolve } from "node:path";
-import { createHash } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import { decodeLog, type Event } from "@dotln/kernel";
 import {
   assertVerificationTask,
@@ -117,6 +119,119 @@ function syncDirectory(path: string): void {
     closeSync(fd);
   }
 }
+
+const ownerToken = /^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$/u;
+type GuardOwner = { pid: number; token: string };
+function readGuardOwner(path: string): GuardOwner {
+  return atPath(path, "guard owner", () => {
+    regularFile(path);
+    const owner = object(JSON.parse(readFileSync(path, "utf8")));
+    exact(owner, ["pid", "token"]);
+    if (
+      !Number.isSafeInteger(owner.pid) ||
+      Number(owner.pid) <= 0 ||
+      typeof owner.token !== "string" ||
+      !ownerToken.test(owner.token)
+    )
+      throw new Error("invalid guard owner");
+    return owner as GuardOwner;
+  });
+}
+function dead(pid: number): boolean {
+  try {
+    process.kill(pid, 0);
+    return false;
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ESRCH") return true;
+    throw error;
+  }
+}
+
+/** The canonical link only ever exposes a complete owner directory. Immutable
+ * successor claims serialize recovery without introducing another stale mutex.
+ * All claim paths use the unique target, never the reusable canonical name. */
+function acquireGuard(directory: string) {
+  const guard = join(directory, "host-lock-recovery");
+  const refuse = () =>
+    new Error(
+      `${guard}: host lock recovery is busy or interrupted; inspect before recovery`,
+    );
+  const token = randomUUID();
+  const preparedName = `.host-lock-${token}`;
+  const prepared = join(directory, preparedName);
+  let targetName = preparedName;
+  let target = prepared;
+  let claim: string | undefined;
+  let held = false;
+  let preparedCreated = false;
+  try {
+    mkdirSync(prepared, { mode: 0o700 });
+    preparedCreated = true;
+    const ownerPath = join(prepared, "owner.json");
+    durableWrite(ownerPath, JSON.stringify({ pid: process.pid, token }) + "\n");
+    syncDirectory(prepared);
+    try {
+      // Exclusive even when an older version left an empty guard directory.
+      symlinkSync(preparedName, guard, "dir");
+      held = true;
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code !== "EEXIST") throw error;
+      if (!lstatSync(guard).isSymbolicLink()) throw refuse();
+      targetName = readlinkSync(guard);
+      const initialToken = targetName.slice(".host-lock-".length);
+      if (
+        !targetName.startsWith(".host-lock-") ||
+        !ownerToken.test(initialToken)
+      )
+        throw refuse();
+      target = join(directory, targetName);
+      if (!lstatSync(target).isDirectory()) throw refuse();
+      let owner = readGuardOwner(join(target, "owner.json"));
+      if (owner.token !== initialToken) throw refuse();
+      const seen = new Set<string>();
+      for (;;) {
+        if (seen.has(owner.token) || !dead(owner.pid)) throw refuse();
+        seen.add(owner.token);
+        const next = join(target, `next-${owner.token}.json`);
+        if (present(next)) {
+          owner = readGuardOwner(next);
+          continue;
+        }
+        // Only one contender can extend this exact dead owner's chain.
+        linkSync(ownerPath, next);
+        claim = next;
+        // A retired target can outlive its canonical link. Never act on a
+        // successor guard after claiming an orphaned old target.
+        if (readlinkSync(guard) !== targetName) throw refuse();
+        held = true;
+        break;
+      }
+    }
+    syncDirectory(directory);
+    return {
+      prepared,
+      release(inspected: boolean) {
+        if (!claim || inspected) {
+          // A live terminal owner cannot be superseded. Retire atomically,
+          // before private cleanup, so cleanup kills cannot strand the guard.
+          if (readlinkSync(guard) !== targetName) throw refuse();
+          unlinkSync(guard);
+          rmSync(target, { recursive: true, force: true });
+        } else {
+          // Failed inspection preserves the abandoned guard and its evidence.
+          unlinkSync(claim);
+        }
+        if (prepared !== target)
+          rmSync(prepared, { recursive: true, force: true });
+      },
+    };
+  } catch {
+    if (claim) rmSync(claim, { force: true });
+    if (held && !claim) unlinkSync(guard);
+    if (preparedCreated) rmSync(prepared, { recursive: true, force: true });
+    throw refuse();
+  }
+}
 export function workerRequestKey(request: TransportRequest): string {
   // Every request field participates: kind, WorkOrder, command, artifact,
   // environment, model/effort, profile, mounts, authority and host message path.
@@ -150,16 +265,31 @@ export class WorkerStore {
     mkdirSync(this.directory, { recursive: true, mode: 0o700 });
     if (lstatSync(this.directory).isSymbolicLink())
       throw new Error("worker store may not be a symlink");
-    const guard = join(this.directory, "host-lock-recovery");
-    try {
-      mkdirSync(guard, { mode: 0o700 });
-    } catch {
-      throw new Error(
-        "host lock recovery is busy or interrupted; inspect before recovery",
-      );
-    }
+    const guard = acquireGuard(this.directory);
+    let inspected = false;
     try {
       const lock = join(this.directory, "host.lock");
+      // Exclude a current writer before inspecting its mutable log. The guard
+      // prevents any new writer from arriving after this dead/absent check.
+      const abandonedLock = present(lock);
+      if (abandonedLock) {
+        regularFile(lock);
+        const owner = atPath(lock, "host lock", () => {
+          const value = object(JSON.parse(readFileSync(lock, "utf8")));
+          exact(value, ["pid"]);
+          if (!Number.isSafeInteger(value.pid) || Number(value.pid) <= 0)
+            throw new Error(
+              "expected positive safe integer pid; inspect before recovery",
+            );
+          return { pid: value.pid as number };
+        });
+        try {
+          process.kill(owner.pid, 0);
+          throw new Error("worker store already has a live host");
+        } catch (error) {
+          if ((error as NodeJS.ErrnoException).code !== "ESRCH") throw error;
+        }
+      }
       const receiptPaths: string[] = [];
       const events = decodeLog(this.read());
       const commands = new Map<
@@ -270,35 +400,20 @@ export class WorkerStore {
           throw new Error(
             `${path}: saved result receipt requires original request context before recovery`,
           );
-      if (present(lock)) {
-        regularFile(lock);
-        const owner = atPath(lock, "host lock", () => {
-          const value = object(JSON.parse(readFileSync(lock, "utf8")));
-          exact(value, ["pid"]);
-          if (!Number.isSafeInteger(value.pid) || Number(value.pid) <= 0)
-            throw new Error(
-              "expected positive safe integer pid; inspect before recovery",
-            );
-          return { pid: value.pid as number };
-        });
-        try {
-          process.kill(owner.pid, 0);
-          throw new Error("worker store already has a live host");
-        } catch (error) {
-          if ((error as NodeJS.ErrnoException).code !== "ESRCH") throw error;
-        }
-        // A dead host's exclusive lock may be reclaimed; no event/result changes.
-        unlinkSync(lock);
-      }
-      durableWrite(lock, JSON.stringify({ pid: process.pid }) + "\n");
+      inspected = true;
+      // Publish a complete owner even if killed between any two calls here.
+      durableWrite(
+        join(guard.prepared, "host.lock"),
+        JSON.stringify({ pid: process.pid }) + "\n",
+      );
+      if (abandonedLock) unlinkSync(lock);
+      linkSync(join(guard.prepared, "host.lock"), lock);
       this.#locked = true;
       if (!present(this.logPath)) durableWrite(this.logPath, "");
       syncDirectory(this.directory);
     } finally {
       this.#preflightReads = undefined;
-      // Every acquirer holds this guard, so two dead-owner reclaimers cannot
-      // unlink each other's newly acquired host lock. An abandoned guard refuses.
-      rmdirSync(guard);
+      guard.release(inspected);
     }
   }
   release(): void {

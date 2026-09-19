@@ -11188,6 +11188,51 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-ee21001048f41183",
+      "key": "decision:docs/evidence/WO-143/decisions.md#wo-143-d003",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "119722fb3dcf130f3c570b87a12ed9a22574b8a02fb8d0b3e7df1d2bc003bb14",
+          "ref": "docs/evidence/WO-143/decisions.md#wo-143-d003--board-up-ver-001-f1-the-readme-says-the-refusal-names-the-guard-but-the-cli-prints-its-redacted-line",
+          "title": "WO-143-D003: WO-143 final review: rewrite the README v0.32.1 entry and resident-section sentence so they say the store error names host-lock-recovery, the CLI prints its redacted refusal, and the oper",
+          "summary": "{ \"id\": \"WO-143-D003\", \"date\": \"2026-09-19\", \"dispatch\": \"resume: verify\", \"decision\": \"Record VER-001 F1 with an owner. The skeleton README's resident runbook now says a refused guard's diagnostic names host-lock-recovery, and its v0.32.1 entry says refusing guards name the inspection path. The operator-facing dotln resident and dotln presence commands print only their redacted line, 'worker host refused; inspect the store and declared environment before retrying', for legacy, live-owner and malformed guards; the path is in the store-level Error only. Verification changes no product text. Final review corrects the wording, or routes the order to repair if it reads criterion 3 as requiring t",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-6afe08b5f6cab3e0",
+      "key": "decision:docs/evidence/WO-143/decisions.md#wo-143-d004",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "dc2770599202b7ce5fe11928caec13fca7fffd850b7527f735711582535622ec",
+          "ref": "docs/evidence/WO-143/decisions.md#wo-143-d004--board-up-a-pre-existing-contention-race-met-during-verification",
+          "title": "WO-143-D004: Planner: nominate a bounded order before WO-111's first unattended hour. Treat a host.lock that disappears between observation and read as absent or contended (retryable), not as an error",
+          "summary": "{ \"id\": \"WO-143-D004\", \"date\": \"2026-09-19\", \"dispatch\": \"resume: verify\", \"decision\": \"Give an owner to a live-contention defect that verification reproduced and that WO-143 neither introduced nor was scoped to fix. If a live holder releases host.lock after a contender's present(lock) check and before its lstat or read of that lock, WorkerStore.acquire throws a raw ENOENT. ResidentStore.transaction retries only 'already has a live host' and 'recovery is busy', so a presence command or a resident transaction fails instead of waiting. No event is written or lost, and the store stays openable.\", \"evidence\": [ \"docs/verifications/WO-143/VER-001.md O1\", \"packages/skeleton/src/worker-store.ts acq",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-c729ccfa6eac4394",
+      "key": "decision:docs/evidence/WO-143/decisions.md#wo-143-d005",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "07706a39060c7e2dee98e66d81ceccc8c1d6d5b025902d5d105d82ab43d12e00",
+          "ref": "docs/evidence/WO-143/decisions.md#wo-143-d005--board-up-ver-001-f2-the-delayed-claimant-fixture-does-not-detect-removal-of-the-claim-time-fence",
+          "title": "WO-143-D005: WO-143 final review: have the delayed-claimant fixture also assert that host.lock (content and inode) is unchanged by the refused delayed claimant, so that deleting the claim-time recheck",
+          "summary": "{ \"id\": \"WO-143-D005\", \"date\": \"2026-09-19\", \"dispatch\": \"resume: verify\", \"decision\": \"Record VER-001 F2 with an owner. D001's canonical-target recheck after a successor claim is what keeps a delayed claimant away from shared state. Deleting only that recheck leaves all eight WO-143 tests passing. In that mutant, the refused delayed claimant replaces host.lock with its own pid while the successor holds the guard. The fixture asserts only the refusal, one claim, an intact guard link and the successor's acquisition, and release() re-checks the link before unlinking it. The shipped code has the fence and behaves correctly; the evidence does not discriminate it.\", \"evidence\": [ \"docs/verificati",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

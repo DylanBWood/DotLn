@@ -195,6 +195,7 @@ export class ResidentHost {
     while (!complete) {
       await Promise.race([resultPromise, delay(20)]);
       if (complete) break;
+      if (killed) continue;
       const at = this.now();
       if (!this.store.changed() && at < nextSampleAt) continue;
       await this.store.transaction((tx) => {

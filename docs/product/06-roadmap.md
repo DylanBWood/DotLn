@@ -20,6 +20,12 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-143 activation completion (2026-09-19):** this source prepares `v0.32.1`
+under the existing patch classification above the observed local `v0.32.0` tag.
+Skeleton `0.28.1` makes resident lock recovery restartable after acquisition
+crashes; kernel `0.6.0`, compiler `0.15.0` and console `0.1.7` stay unchanged.
+Independent verification, final review and publication remain separate.
+
 **WO-142 activation completion (2026-09-19):** this source prepares `v0.32.0` under the order's minor classification, against the observed local `v0.31.1` release. Kernel `0.6.0`, compiler `0.15.0` and skeleton `0.28.0` narrow the named invalid inputs; console `0.1.7` preserves healthy loadout projections and their diagnostics. Publication remains a later release-close action.
 
 **WO-084 activation completion (2026-09-19):** application `v0.31.2` stages

@@ -1693,10 +1693,23 @@ projector. Old serialized states acquire no resident key. Every sampled clock
 value is an event; backward samples do not move logical policy time backward.
 A lifetime worker-store lock admits one host and inspects state before reclaim;
 a separate short append lock orders human presence against dispatch/spawn and
-outcome admission. Both use the existing inspected dead-owner lock pattern.
+outcome admission. Both use the inspected dead-owner lock pattern. WO-143
+publishes each acquisition guard atomically with a complete PID owner record
+and serializes dead-owner recovery with immutable successor claims in that
+guard's unique directory. A claimant confirms that the canonical guard still
+names that directory before touching shared state, so a delayed claimant cannot
+remove its successor. Live or unreadable owners and legacy ownerless guards
+refuse with a store error that names the inspection path; the `dotln` commands
+print only their redacted refusal. Append recovery positively replays the actual
+resident log after excluding its prior writer; interrupted private preparation
+or cleanup does not block the next start. PID reuse still refuses conservatively.
+The polling loop stops acquiring the append lock after issuing a kill, then
+records the final outcome in its ordinary transaction.
 On restart, outstanding episodes become lost and the policy rearms without
 redispatching an old identity. Same-time fresh arms have distinct generations.
-The fixture evidence is [WO-068](../evidence/WO-068/implementation.md); live
+The fixture evidence is [WO-068](../evidence/WO-068/implementation.md) and
+[WO-143's deterministic acquisition crashes](../evidence/WO-143/implementation.md);
+the latter covers local process kills, not power-loss recovery. Live
 model-worker operation and automatic task derivation remain later work.
 
 **Presence origins (WO-121, 2026-09-16).** The resident now folds
