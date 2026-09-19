@@ -1,0 +1,192 @@
+{
+  "command": "external isolated source counterfactuals; checks named in counterfactuals.md",
+  "scope": "Extracted source functions or full standalone modules; no repo mutations/builds, no live model calls. D1 host observations are inert fixture stubs; generated hook integration remains root responsibility.",
+  "outcomes": [
+    {
+      "row": "B1",
+      "file": "packages/skeleton/src/harness-host.ts",
+      "negativeKind": "HEAD source",
+      "currentSha256": "5b88c51feeaf45e3b663e25f122c5360194f17dc213fb411626727180404946a",
+      "negativeSha256": "c624edeebfe6781018cb6e87c8820fc4bf26715e72639b6bce43bafe9155d1a8",
+      "current": {
+        "passed": true,
+        "observation": {
+          "distinctAdvisoryCounts": [
+            1,
+            1
+          ],
+          "repeatsPerIdentity": 20
+        }
+      },
+      "negative": {
+        "passed": false,
+        "diagnostic": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n  [\n    1,\n+   0\n-   1\n  ]"
+      }
+    },
+    {
+      "row": "B2",
+      "file": "packages/skeleton/src/observed-facts.ts",
+      "negativeKind": "HEAD source",
+      "currentSha256": "634f7ce64359e742176ada5c777064f77c15705d74235e149ff4390e5650095e",
+      "negativeSha256": "b5543d915aabf92b9eda50d1f5b7ce6b4bd136a36c87433cf526437e86d095be",
+      "current": {
+        "passed": true,
+        "observation": {
+          "bashDispatchedAt": "2026-09-19T12:00:00.000Z"
+        }
+      },
+      "negative": {
+        "passed": false,
+        "diagnostic": "Expected values to be strictly equal:\n+ actual - expected\n\n+ undefined\n- '2026-09-19T12:00:00.000Z'"
+      }
+    },
+    {
+      "row": "B3",
+      "file": "packages/skeleton/src/harness-command.ts",
+      "negativeKind": "HEAD source",
+      "currentSha256": "1db363b49e34c4a9ce37d92aece850b795873fcc748e31c60a98416c2dc8a2b9",
+      "negativeSha256": "f14cf5c7566994111a13a6c50751aa4385c0e679cc0e6d80a4874a9add8f14ab",
+      "current": {
+        "passed": true,
+        "observation": {
+          "read": "admitted",
+          "redirect": "tracked write",
+          "sedWrite": "refused"
+        }
+      },
+      "negative": {
+        "passed": false,
+        "diagnostic": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ null\n- []"
+      }
+    },
+    {
+      "row": "B4",
+      "file": "packages/skeleton/src/plan-refutation-protocol.ts",
+      "negativeKind": "HEAD source",
+      "currentSha256": "95e84113a38ac92ddfd58d4b7d422a408a96e90cf5bd2916b64bd9a88e232fb3",
+      "negativeSha256": "d7979506eb236e58b722f69a0011c7e2060cdc32d6d579d8809ad8f5d5066a5c",
+      "current": {
+        "passed": true,
+        "observation": {
+          "nullReopening": "refused",
+          "reopening": "accepted",
+          "supportedObservation": "accepted"
+        }
+      },
+      "negative": {
+        "passed": false,
+        "diagnostic": "known issue with null reopening must be refused by schema"
+      }
+    },
+    {
+      "row": "B5",
+      "file": "packages/skeleton/src/subagent-budget.ts",
+      "negativeKind": "explicit source mutant",
+      "currentSha256": "47f179e3d3e754e3b750272220d024e3fbc0c1b8bef43f38f6f0f9f44c631c31",
+      "negativeSha256": "5aabcc4e6099794ac7efd3b189a27c6b7e5cba4f72ca8b70f3390d00d35b4e74",
+      "current": {
+        "passed": true,
+        "observation": {
+          "resume": "admitted",
+          "count": 1
+        }
+      },
+      "negative": {
+        "passed": false,
+        "diagnostic": "known resumed agent must remain admitted at cap"
+      }
+    },
+    {
+      "row": "B7",
+      "file": "packages/skeleton/src/verification-protocol.ts",
+      "negativeKind": "HEAD source",
+      "currentSha256": "f1e132183e990d97a19d10fee74293b5757300138bf7d6cf9669536d3d282dd9",
+      "negativeSha256": "c74d008c8ef433f5592a92fd7d1e8abed2cfa9abe8c1ec9af0293cbf724a8be6",
+      "current": {
+        "passed": true,
+        "observation": {
+          "summaryMaxLength": 320
+        }
+      },
+      "negative": {
+        "passed": false,
+        "diagnostic": "schema must carry parser bound"
+      }
+    },
+    {
+      "row": "B12a",
+      "file": "packages/skeleton/src/resident-state.ts",
+      "negativeKind": "HEAD source",
+      "currentSha256": "705835c9fc5f0ccf1108ed62024ab3f622dfcb56f0995e726129c835baeea18c",
+      "negativeSha256": "5120d26faaee453653b40673ad654496d742140b13ec09199fdd48461d705ebb",
+      "current": {
+        "passed": true,
+        "observation": {
+          "collidingBudgetReservation": "refused"
+        }
+      },
+      "negative": {
+        "passed": false,
+        "diagnostic": "Expected values to be strictly equal:\n+ actual - expected\n\n+ null\n- 'actor resource reservation exceeds phase scope or authority budget'"
+      }
+    },
+    {
+      "row": "B16",
+      "file": "packages/skeleton/src/loadouts/entropy-reducer.ts",
+      "negativeKind": "HEAD source",
+      "currentSha256": "618d28c5b0f62d756f590e9ed3056dee0ac23b195d691b215bb8407fd42cc004",
+      "negativeSha256": "9a3d83087d1af6de3c4f1cf24ed7fef1fc588225f0c53a96a68e527584da6a06",
+      "current": {
+        "passed": true,
+        "observation": {
+          "unsafeScopesRefused": 7,
+          "safeScope": "accepted"
+        }
+      },
+      "negative": {
+        "passed": false,
+        "diagnostic": "Missing expected exception."
+      }
+    },
+    {
+      "row": "B17",
+      "file": "packages/skeleton/src/loadouts/contributor.ts",
+      "negativeKind": "HEAD source",
+      "currentSha256": "143a4a789c026f8ada1ab90431d5c076b5b7ca1b9a993737e95f99217f5f2112",
+      "negativeSha256": "bc3063b6e418f8839b7c9865c00b6eaf57789be9b13a7faf1305e0c33e13c3c7",
+      "current": {
+        "passed": true,
+        "observation": {
+          "roles": [
+            "executor",
+            "verifier",
+            "reviewer"
+          ]
+        }
+      },
+      "negative": {
+        "passed": false,
+        "diagnostic": "executor must carry durable defect disposition"
+      }
+    },
+    {
+      "row": "D1",
+      "file": "scripts/lib/harness-prune.mjs",
+      "negativeKind": "explicit source mutant",
+      "currentSha256": "4ac468ddaa26fc4fbe0b6367d066977fa2327536ed08b4198bf709a9dc08fda6",
+      "negativeSha256": "3ec99381d3ea29b8ceb12643fccf17a987dd71e20395b0efb1acbd122ebaab33",
+      "current": {
+        "passed": true,
+        "observation": {
+          "installedTarget": "retained",
+          "unownedSnapshot": "eligible"
+        }
+      },
+      "negative": {
+        "passed": false,
+        "diagnostic": "installed target runtime must be retained"
+      }
+    }
+  ],
+  "baselineRevision": "cb932c845354ec871fd34e14dec859bb869776ef"
+}

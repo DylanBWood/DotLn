@@ -1,4 +1,4 @@
-# WO-142 — Outstanding cleanup: the follow-up feed stops refilling with records, the defects and nominations that reviews logged and nobody owned are fixed or returned with a reason, stale claims in the live documents match the tree, and local residue has a prune command (version assigned at activation)
+# WO-142 — Outstanding cleanup: the follow-up feed stops refilling with records, the defects and nominations that reviews logged and nobody owned are fixed or returned with a reason, stale claims in the live documents match the tree, and local residue has a prune command (v0.32.0)
 
 **Model:** any. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
@@ -210,6 +210,25 @@ publication locks and evidence editions; the write-backs in criterion 6.
 | --- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
 | D1  | 27 harness snapshots (80 MB) where the manifest pins one; 18 `.advisory` markers; 96 MB under `.git/dotln/suite-success` that no source writes, while `scripts/test-harness.mjs:1073-1075` still alternates on its name; 46 MB of retained close lanes; nothing prunes any | `node scripts/harness.mjs prune` lists by default and deletes only with `--apply`: snapshots no installed manifest pins, markers of ended sessions, the dead cache, and a retained lane only when its order's release is published and its byte proof is kept; a live session's files are never touched; fixtures in a temporary root | 07 §Candidate — local lane retention (threshold fired); WO-133 FINAL-002 O6 |
 
+### Part E — operator-authorized runtime and compiler upgrade
+
+**Scope expansion (2026-09-19, `resume: fix`):** the operator requested
+“update the app to node 26 and typescript 7” and integration of the parallel
+order merged to main. [WO-142-D010](../evidence/WO-142/decisions.md#wo-142-d010--integrate-main-and-upgrade-node-and-typescript) records the authorization.
+
+| Row | Required result | Evidence |
+| --- | --- | --- |
+| E1 | Node 26 is the declared runtime; TypeScript 7 is exactly pinned across the workspace; compilation, compiler API consumers, and beacon timestamps work under Node 26.9.0. Update active setup documentation and preserve all existing product checks. | `npm run build`, targeted beacon/compiler-consumer checks, `npm test` under Node 26, `npm run test:docs` |
+| E2 | Integrate the fetched main containing WO-084, preserve both orders' decisions and follow-up histories, regenerate affected projections, and retain the minor release classification. | Recorded bases and preservation ref; planning, publication and release checks on the combined subject |
+
+This expansion permits the compiler's required platform packages and API
+migration, bounded beacon timestamp and discovery-cache compatibility repairs,
+and replacement feedback editions with independent live verification when
+runtime fixes change their declared source inputs. D014 records the additional
+revision required by the first integrated gate. Earlier editions remain immutable. It changes no beacon encoding,
+event, replay contract, publication control or product gate. Existing fences
+remain except for the expressly authorized runtime/compiler dependencies.
+
 **Acceptance criteria (all required)**
 
 1. `docs/evidence/WO-142/rows.md` lists every row with one state and the
@@ -242,7 +261,7 @@ publication locks and evidence editions; the write-backs in criterion 6.
    file with the before and after observations this order's Cost line names;
    `npm run publication:check` passes.
 7. `npm test` green once at final review; `npm run test:docs` green;
-   `git diff --check` clean; no new dependency; no new suppression.
+   `git diff --check` clean; no new dependency except E1's compiler upgrade; no new suppression.
 
 **Evidence gate:** the rows file and its transcripts; the fixture suites the
 rows name; one live feedback edition; `npm test` once at final review. The

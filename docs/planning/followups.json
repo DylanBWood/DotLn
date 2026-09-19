@@ -2000,6 +2000,13 @@
           "title": "Candidate — isolated execution environments",
           "summary": "## Candidate — isolated execution environments DotLn may eventually select and attest an execution boundary per episode: the current worktree plus harness sandbox, a hardened container runner (Docker is one possible provider), a disposable VM or microVM, or another environment proved by discovery. `ExecutionEnvironmentProfile` is a working name for the selection record, not a pinned schema. It remains orthogonal to `RuntimePrimitiveCatalog`, `WorkOrderTransport`, and `AuthorityEnvelope`. WO-022 adds the bounded `beacon-perception-v1` specialization beside WO-009's `fixture-inspection-v1`. Both are explicit `ExecutionEnvironmentProfile` variants. A Beacon profile grants a finite set of indivi",
           "missing": false
+        },
+        {
+          "hash": "bc7af17df5845b75e8dc7491517b1f7af2025325893e7fbcbdf26e7fda1b4dd0",
+          "ref": "docs/product/03-architecture.md#candidate--isolated-execution-environments",
+          "title": "Candidate — isolated execution environments",
+          "summary": "## Candidate — isolated execution environments DotLn may eventually select and attest an execution boundary per episode: the current worktree plus harness sandbox, a hardened container runner (Docker is one possible provider), a disposable VM or microVM, or another environment proved by discovery. `ExecutionEnvironmentProfile` is a working name for the selection record, not a pinned schema. It remains orthogonal to `RuntimePrimitiveCatalog`, `WorkOrderTransport`, and `AuthorityEnvelope`. WO-022 adds the bounded `beacon-perception-v1` specialization beside WO-009's `fixture-inspection-v1`. Both are explicit `ExecutionEnvironmentProfile` variants. A Beacon profile grants a finite set of indivi",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -7708,6 +7715,13 @@
           "title": "Candidate — follow-up register settlement",
           "summary": "## Candidate — follow-up register settlement The register holds 297 entries with 283 untriaged (2026-09-16). Two mechanisms fill it: the migration harvested every historical candidate heading and NoOp bullet as a pending row, and every per-order decision record is harvested as a follow-up although a decision with a `reopenWhen` observation is a record, not an action. Three planning passes have selected nothing from the feed. A later pass may spend one session settling the migration rows as historical, and may change the collector so a decision record enters the feed only when its reopening observation has been recorded. No order is allocated; reopen at a planning pass that has the session to",
           "missing": false
+        },
+        {
+          "hash": "a81057311230f7c1f9446f3cb247f4fc10f4c9ee91c2a8aaabf517c90913b800",
+          "ref": "docs/product/07-execution-guide.md#candidate--follow-up-register-settlement",
+          "title": "Candidate — follow-up register settlement",
+          "summary": "## Candidate — follow-up register settlement The register holds 297 entries with 283 untriaged (2026-09-16). Two mechanisms fill it: the migration harvested every historical candidate heading and NoOp bullet as a pending row, and every per-order decision record is harvested as a follow-up although a decision with a `reopenWhen` observation is a record, not an action. Three planning passes have selected nothing from the feed. A later pass may spend one session settling the migration rows as historical, and may change the collector so a decision record enters the feed only when its reopening observation has been recorded. No order is allocated; reopen at a planning pass that has the session to",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -7747,6 +7761,13 @@
         },
         {
           "hash": "b226d35082d41ee55bc2057b81da435b44ff41af8bb2675158871ae73f62bbd1",
+          "ref": "docs/product/07-execution-guide.md#candidate--local-lane-retention",
+          "title": "Candidate — local lane retention",
+          "summary": "## Candidate — local lane retention Ignored local lanes grow without a rule: 13 immutable harness runtime snapshots (34 MB), 36 MB of hook journals and 31 MB of retained close lanes on 2026-09-16. A retention rule may remove a snapshot no installed manifest pins and a retained lane older than its order's published release, keeping the retained-lane byte proofs. No order is allocated; reopen on disk pressure or when the snapshot count exceeds twenty. **Reopened and allocated 2026-09-19 (cleanup pass).** 27 snapshots (80 MB) with one pinned, 99 MB under `docs/control/local/`, and 96 MB under `.git/dotln/suite-success`, which no source has written since WO-132 removed the suite-success cache. A",
+          "missing": false
+        },
+        {
+          "hash": "8b92780ab046123d9616791627ea57f4fd32a0da797f53b42dd51224fda08c4f",
           "ref": "docs/product/07-execution-guide.md#candidate--local-lane-retention",
           "title": "Candidate — local lane retention",
           "summary": "## Candidate — local lane retention Ignored local lanes grow without a rule: 13 immutable harness runtime snapshots (34 MB), 36 MB of hook journals and 31 MB of retained close lanes on 2026-09-16. A retention rule may remove a snapshot no installed manifest pins and a retained lane older than its order's published release, keeping the retained-lane byte proofs. No order is allocated; reopen on disk pressure or when the snapshot count exceeds twenty. **Reopened and allocated 2026-09-19 (cleanup pass).** 27 snapshots (80 MB) with one pinned, 99 MB under `docs/control/local/`, and 96 MB under `.git/dotln/suite-success`, which no source has written since WO-132 removed the suite-success cache. A",
@@ -9039,6 +9060,13 @@
           "title": "Candidate — DotLn-owned authority with minimal native harness restrictions",
           "summary": "## Candidate — DotLn-owned authority with minimal native harness restrictions Operator direction during WO-119 (2026-09-16): reach an operating mode as soon as evidence supports it in which native Claude and Codex harness sandboxes can be disabled and Claude's settings have nearly empty allow/deny lists. The source of permissions, security and authority is the equipped DotLn supports, build and role. The operator clarified the assurance requirement: faithful runtime enforcement plus adversarial tests, including attempts to bypass the declared authority. See the [ideation receipt](../evidence/WO-119/ideation-authority.md). This candidate asks planning to identify the earliest justified route ",
           "missing": false
+        },
+        {
+          "hash": "1dba9371eded11a086680c31493bb68fec57306debc0c7cabf1006a21882e7b8",
+          "ref": "docs/product/03-architecture.md#candidate--dotln-owned-authority-with-minimal-native-harness-restrictions",
+          "title": "Candidate — DotLn-owned authority with minimal native harness restrictions",
+          "summary": "## Candidate — DotLn-owned authority with minimal native harness restrictions Operator direction during WO-119 (2026-09-16): reach an operating mode as soon as evidence supports it in which native Claude and Codex harness sandboxes can be disabled and Claude's settings have nearly empty allow/deny lists. The source of permissions, security and authority is the equipped DotLn supports, build and role. The operator clarified the assurance requirement: faithful runtime enforcement plus adversarial tests, including attempts to bypass the declared authority. See the [ideation receipt](../evidence/WO-119/ideation-authority.md). This candidate asks planning to identify the earliest justified route ",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -9522,6 +9550,13 @@
         },
         {
           "hash": "a991c945db4ef5f104f292ab45283ea64c667b9e2ffa497e807f5942bbe19f4d",
+          "ref": "docs/product/07-execution-guide.md#candidate--total-subagent-cap-across-every-spawn-path",
+          "title": "Candidate — total subagent cap across every spawn path",
+          "summary": "## Candidate — total subagent cap across every spawn path Operator direction, 2026-09-17: a session's total subagents need a hard, configurable cap (about twenty), because a top-level guideline of five fans out through per-item adversarial and refutation trees to more than a hundred. The harness documents no total cap, only a size guideline, a concurrency ceiling of sixteen and a per-workflow limit of a thousand; its hooks fire for the Agent and Workflow tools and inside subagents. WO-139 counts and refuses at the admission points the hook can see and counts descendants at their first attributable tool call, so an agent the harness creates before any hook fires is counted late or not at all,",
+          "missing": false
+        },
+        {
+          "hash": "dbafe37361371c7d006b64424e9f1c1d122f31a0f12b13e0685596d76f393686",
           "ref": "docs/product/07-execution-guide.md#candidate--total-subagent-cap-across-every-spawn-path",
           "title": "Candidate — total subagent cap across every spawn path",
           "summary": "## Candidate — total subagent cap across every spawn path Operator direction, 2026-09-17: a session's total subagents need a hard, configurable cap (about twenty), because a top-level guideline of five fans out through per-item adversarial and refutation trees to more than a hundred. The harness documents no total cap, only a size guideline, a concurrency ceiling of sixteen and a per-workflow limit of a thousand; its hooks fire for the Agent and Workflow tools and inside subagents. WO-139 counts and refuses at the admission points the hook can see and counts descendants at their first attributable tool call, so an agent the harness creates before any hook fires is counted late or not at all,",
@@ -10953,6 +10988,202 @@
           "ref": "docs/evidence/WO-084/decisions.md#wo-084-d001",
           "title": "WO-084-D001: Move whole sections into stable descending date order, preserve Resolutions verbatim on its own surface, normalize six entry leads, and generate a checked section/status index in the docu",
           "summary": "{ \"id\": \"WO-084-D001\", \"date\": \"2026-09-19\", \"dispatch\": \"resume: next\", \"decision\": \"Move whole sections into stable descending date order, preserve Resolutions verbatim on its own surface, normalize six entry leads, and generate a checked section/status index in the document suite only.\", \"evidence\": [ \"docs/work-orders/WO-084-ledger-order-and-index.md\", \"docs/work-orders/WO-035-documentation-structure-reset.md\", \"docs/product/01-principles.md\", \"docs/product/07-execution-guide.md#goal-aligned-decisions\", \"docs/lineage/idea-ledger.md\", \"scripts/lib/plan-subject.mjs#planningPasses\" ], \"rejected\": [ { \"option\": \"NoOp\", \"reason\": \"Leaves 31 sections below the old Resolutions boundary, defeati",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-4f8cd7989607ad3f",
+      "key": "decision:docs/evidence/WO-142/decisions.md#wo-142-d002",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "422eaad8d7443c05a06ca35afaeb93cacb6a5e4c332095b3d910973e10ec66a8",
+          "ref": "docs/evidence/WO-142/decisions.md#wo-142-d002--preserve-replay-behavior-when-returning-resident-noop-identity",
+          "title": "WO-142-D002: Authorize a resident replay order to key NoOp deduplication by reason, phase and arm generation in resident-host.ts and resident-state.ts, with old-log replay and restart-equivalence fixt",
+          "summary": "{ \"id\": \"WO-142-D002\", \"date\": \"2026-09-19\", \"dispatch\": \"resume: next\", \"decision\": \"Fix the resident budget collision in B12(a); return B12(b) because adding phase and arm generation to NoOp identity changes a replay-sensitive route.\", \"evidence\": [ \"packages/skeleton/src/resident-state.ts\", \"packages/skeleton/src/resident-host.ts\", \"docs/work-orders/WO-142-outstanding-cleanup.md §Design (scope discipline)\", \"packages/skeleton/test/resident.test.ts\" ], \"rejected\": [ \"A private host cache forgets the identity on restart and changes equivalent-log behavior.\", \"Changing the replay fold or event payload inside this cleanup would cross its explicit fence.\" ], \"followup\": \"Authorize a resident r",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-75563edf56be23b5",
+      "key": "decision:docs/evidence/WO-142/decisions.md#wo-142-d005",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "e52a5dba632dadb1330823f8332dc52a7a76eb56b5f2ed62785728d034502365",
+          "ref": "docs/evidence/WO-142/decisions.md#wo-142-d005--defer-the-pre-existing-append-serialization-divergence",
+          "title": "WO-142-D005: Next planning session: authorize append serialization/live-replay compatibility in packages/kernel/src/store.ts and ac2-replay-store.test.ts. Choose canonical decoded return values or exp",
+          "summary": "{ \"id\": \"WO-142-D005\", \"date\": \"2026-09-19\", \"dispatch\": \"resume: next\", \"decision\": \"Keep B11's assigned-envelope validation and defer the adjacent live/replay value-normalization change to a replay-scoped planning item.\", \"evidence\": [ \"packages/kernel/src/store.ts\", \"packages/kernel/test/ac2-replay-store.test.ts\", \"docs/evidence/WO-142/counterfactuals.md §Adjacent observation\", \"docs/work-orders/WO-142-outstanding-cleanup.md §Design (scope discipline)\" ], \"rejected\": [ \"Returning a canonical decoded payload now would change live behavior for previously admitted values.\", \"Rejecting additional nested payload shapes would change input admission beyond the specified assigned-envelope check.\"",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-cac1cb0418587c98",
+      "key": "decision:docs/evidence/WO-142/decisions.md#wo-142-d007",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "1bc0a3ed4398807027bbe7ec951787c6735168069fa61843693ba410e90b40d3",
+          "ref": "docs/evidence/WO-142/decisions.md#wo-142-d007--board-up-the-node-26-beacon-timestamp-failure-met-during-verification",
+          "title": "WO-142-D007: Authorize a bounded order that makes beacon size and mtime writes exact under Node 26, or narrows the declared supported Node range. On v26.9.0, utimesSync with fractional seconds reads b",
+          "summary": "{ \"id\": \"WO-142-D007\", \"date\": \"2026-09-19\", \"dispatch\": \"resume: verify\", \"decision\": \"Record, without fixing, the Node 26 beacon timestamp failure that VER-001 met. It fails identically at the activation commit, so it is not a WO-142 regression and lies outside the order's rows.\", \"evidence\": [ \"docs/verifications/WO-142/VER-001.md\", \"packages/skeleton/src/beacon-io.mjs\", \"package.json\" ], \"rejected\": [ \"Fixing beacon timestamp writes during verification would edit the implementation under verification.\", \"Counting the three Node 26 suite failures against WO-142 contradicts the identical failure at the activation commit.\", \"Leaving the failure only in the report would repeat the ownership ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-142 operator-authorized Node 26 expansion implemented D011/D014 timestamp and runtime compatibility. The final integrated gate passed under Node 26.9.0: 35 suites, 79 fresh tasks, zero failures; docs passed 19/19. See docs/evidence/WO-142/repair-001.md.",
+          "reopenWhen": "A declared supported Node 26 host cannot preserve the documented beacon millisecond and sub-microsecond positive bound, or a current compatibility fixture fails.",
+          "targets": [],
+          "at": "2026-09-19T14:21:43.442Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-4050fe828a686c1e",
+      "key": "decision:docs/evidence/WO-142/decisions.md#wo-142-d008",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "cfa400887ada5c10ecfed03d22b4531cb932f772dc23d897db67eaf74efdb6c3",
+          "ref": "docs/evidence/WO-142/decisions.md#wo-142-d008--board-up-the-retained-wo-042-mutation-tools-broken-check",
+          "title": "WO-142-D008: Decide whether node scripts/authority-mutation-evidence.mjs --check should be regenerated against current source or its reproduction command removed from docs/evidence/WO-042/README.md. A",
+          "summary": "{ \"id\": \"WO-142-D008\", \"date\": \"2026-09-19\", \"dispatch\": \"resume: verify\", \"decision\": \"Record, without fixing, that the retained evidence tool named by row A7 already fails its own check mode at the activation commit.\", \"evidence\": [ \"docs/verifications/WO-142/VER-001.md\", \"scripts/authority-mutation-evidence.mjs\", \"docs/evidence/WO-042/README.md\" ], \"rejected\": [ \"Repairing a retained evidence tool during verification would edit implementation.\", \"Treating A7 as not reproduced does not establish that the retained tool still runs.\" ], \"followup\": \"Decide whether `node scripts/authority-mutation-evidence.mjs --check` should be regenerated against current source or its reproduction command re",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-4475529d727a4d25",
+      "key": "decision:docs/evidence/WO-142/decisions.md#wo-142-d009",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "b24683c1856ed35decefaffd8908e697c0acd32a62528157945ea3bc8fca88dc",
+          "ref": "docs/evidence/WO-142/decisions.md#wo-142-d009--board-up-two-lexical-module-entry-guards-outside-row-a13s-ten-scripts",
+          "title": "WO-142-D009: Route corpus/mutation/mutate.mjs and corpus/harness/generator-runtime.mjs through the shared isMainModule realpath helper, with the existing symlink fixture pattern. Priority: low, becaus",
+          "summary": "{ \"id\": \"WO-142-D009\", \"date\": \"2026-09-19\", \"dispatch\": \"resume: verify\", \"decision\": \"Record, without fixing, that corpus/mutation/mutate.mjs and corpus/harness/generator-runtime.mjs still compare the entry path lexically. That is the defect class row A13 fixed for its ten scripts.\", \"evidence\": [ \"docs/verifications/WO-142/VER-001.md\", \"corpus/mutation/mutate.mjs\", \"corpus/harness/generator-runtime.mjs\", \"scripts/lib/paths.mjs\" ], \"rejected\": [ \"Editing corpus sources during verification would edit implementation.\", \"Folding them into A13 after the fact would widen the row's named ten scripts without a decision.\" ], \"followup\": \"Route corpus/mutation/mutate.mjs and corpus/harness/generato",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-9e2be6bfac0708fe",
+      "key": "decision:docs/evidence/WO-142/decisions.md#wo-142-d012",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "1b2f808931a29378480ce839e1867351e139cfb5e4e2d2bf83948c6a117b2580",
+          "ref": "docs/evidence/WO-142/decisions.md#wo-142-d012--retain-existing-git-admission-with-an-explicit-effects-follow-up",
+          "title": "WO-142-D012: Next planning session: choose and implement live-gate Git metadata admission that prevents optional index refresh and configured fsmonitor execution for both metadataCommand exceptions an",
+          "summary": "{ \"id\": \"WO-142-D012\", \"date\": \"2026-09-19\", \"dispatch\": \"resume: fix\", \"decision\": \"Restore the harmless read forms identified by VER-001 F3, add a constrained Git prefix that disables optional locks and fsmonitor, and board N7's pre-existing metadata exception instead of silently narrowing it during an allowlist widening.\", \"evidence\": [ \"docs/verifications/WO-142/VER-001.md F3 and N7\", \"packages/skeleton/src/harness-command.ts\", \"packages/skeleton/src/harness-host.ts metadataCommand\", \"scripts/test-harness.mjs\" ], \"rejected\": [ \"Calling metadata admission side-effect-free is contradicted by an isolated Git 2.55.0 probe.\", \"Rewriting the operator's commands or removing old metadata admissi",
+          "missing": false
+        },
+        {
+          "hash": "c2ca81fc5a5c0ffca551ec5295415cae699642cb87cf5c6eaeb6c072014dc716",
+          "ref": "docs/evidence/WO-142/decisions.md#wo-142-d012--retain-existing-git-admission-with-an-explicit-effects-follow-up",
+          "title": "WO-142-D012: Next planning session: choose and implement live-gate Git metadata admission covering both metadataCommand exceptions and shellWriteTargets. Test index bytes and mtime, configured fsmonit",
+          "summary": "{ \"id\": \"WO-142-D012\", \"date\": \"2026-09-19\", \"dispatch\": \"resume: fix\", \"decision\": \"Restore the harmless read forms identified by VER-001 F3, add a constrained Git prefix that disables optional locks and fsmonitor, and board N7's pre-existing metadata exception instead of silently narrowing it during an allowlist widening.\", \"evidence\": [ \"docs/verifications/WO-142/VER-001.md F3 and N7\", \"packages/skeleton/src/harness-command.ts\", \"packages/skeleton/src/harness-host.ts metadataCommand\", \"scripts/test-harness.mjs\" ], \"rejected\": [ \"Calling metadata admission side-effect-free is contradicted by an isolated Git 2.55.0 probe.\", \"Rewriting the operator's commands or removing old metadata admissi",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-151541120435fd15",
+      "key": "decision:docs/evidence/WO-142/decisions.md#wo-142-d015",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "83c64ecd3ca7e5368a5f7c6ed39a780f541ebcfd278e8248a61409a962bf35e4",
+          "ref": "docs/evidence/WO-142/decisions.md#wo-142-d015--board-up-the-optional-chaining-gap-in-the-kernel-coupling-tripwire-met-during-ver-002",
+          "title": "WO-142-D015: Extend the AC3 reserved-state coupling check so an optional-chained read such as (context.state as { policy?: unknown } | undefined)?.policy inside packages/kernel/src/core.ts fails it, w",
+          "summary": "{ \"id\": \"WO-142-D015\", \"date\": \"2026-09-19\", \"dispatch\": \"resume: verify\", \"decision\": \"Record, without fixing, that the kernel AC3 coupling check in packages/kernel/test/ac2-replay-store.test.ts does not catch a reserved-state read written with optional chaining. The gap exists identically at the activation commit, so it is not a WO-142 weakening; row B14 named only the alias and destructure forms.\", \"evidence\": [ \"docs/verifications/WO-142/VER-002.md\", \"packages/kernel/test/ac2-replay-store.test.ts\", \"packages/kernel/src/core.ts\" ], \"rejected\": [ \"Extending the tripwire during verification would edit the subject under verification.\", \"Counting the gap against B14 contradicts its identical ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-e821aa2ced3aa111",
+      "key": "decision:docs/evidence/WO-142/decisions.md#wo-142-d017",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "1a5cf279fae6879bd6ea68aed4c87b1df2c1a739874d842898e37d76dc4300b9",
+          "ref": "docs/evidence/WO-142/decisions.md#wo-142-d017--retain-the-remaining-observation-improvements-with-explicit-scope",
+          "title": "WO-142-D017: At the next order opening these consumers: select TAP for remaining Node suites started through node() so progress counts appear (O2); replace deprecated openProject aliases in the three ",
+          "summary": "{ \"id\": \"WO-142-D017\", \"date\": \"2026-09-19\", \"dispatch\": \"resume: fix\", \"decision\": \"Keep VER-002's non-failing presentation, compatibility and capacity observations outside this terminal/read-admission correction, with named follow-up work. Repair O5's actual Buffer diagnostic failure and missing-object diagnostic now through adjacent-0002.\", \"evidence\": [ \"docs/verifications/WO-142/VER-002.md O2-O5 and O9\", \"scripts/test-runner.mjs\", \"scripts/lib/git.mjs\", \"packages/skeleton/src/feedback-audit.ts FEEDBACK_SOURCE_PATHS\", \"docs/evidence/WO-142/repair-002.md\" ], \"rejected\": [ \"Changing a declared feedback test source only to replace a functioning deprecated compatibility alias would require n",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-a310804514162e1f",
+      "key": "decision:docs/evidence/WO-142/decisions.md#wo-142-d018",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "c5790a6f6bc397cae02dd158496fcbb46c1899c1b32693d67e67cba50ffdd025",
+          "ref": "docs/evidence/WO-142/decisions.md#wo-142-d018--board-up-the-live-gate-refusal-of-quoted-glob-characters-and-input-redirects-met-during-ver-003",
+          "title": "WO-142-D018: Next order that opens the live-gate shell adapter: admit quoted words whose glob characters cannot expand (grep -n 'N[0-9]' a.md, grep -n \"a\" a.md) and a literal read-only input redirect ",
+          "summary": "{ \"id\": \"WO-142-D018\", \"date\": \"2026-09-19\", \"dispatch\": \"resume: verify\", \"decision\": \"Record, without fixing, that the live-gate shell destination adapter refuses two harmless read shapes: any word containing `*`, `?` or `[`, even when single- or double-quoted, and any `<` input redirect. The activation build (cb932c84) refuses the same commands, so this is not a WO-142 weakening; row B3 named the program and flag vocabulary, not word screening.\", \"evidence\": [ \"docs/verifications/WO-142/VER-003.md\", \"packages/skeleton/src/harness-command.ts shellWriteTargets\", \"live refusals during the VER-003 review gate: a double-quoted grep pattern containing `\\\\*\\\\*` and `N[0-9]`, and `wc -l </dev/nul",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-526d14d44ee178b3",
+      "key": "decision:docs/evidence/WO-142/decisions.md#wo-142-d020",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "bc2bc471a74b45258f91c247fef99df7d3b5204fb392f79c8e6a49de76726a2e",
+          "ref": "docs/evidence/WO-142/decisions.md#wo-142-d020--board-up-the-release-preparation-write-reporting-mismatch",
+          "title": "WO-142-D020: Next release-tooling order: report actual writes from release prepare, including its process-meter block, and reconcile executor-time draft creation/refresh with reviewer ownership. Pin a",
+          "summary": "{ \"id\": \"WO-142-D020\", \"date\": \"2026-09-19\", \"dispatch\": \"resume: fix\", \"decision\": \"Preserve the reviewer draft's entry bytes after release prepare --local unexpectedly refreshed its metrics despite printing no files changed. Record the helper's diagnostic and ownership mismatch separately from the terminal-observation repair.\", \"evidence\": [ \"scripts/release.mjs prepare branch unconditionally writes the process-meter block before testing plan.edits.length\", \"docs/evidence/WO-142/repair-003.md\", \"docs/verifications/WO-142/VER-003.md O5\" ], \"rejected\": [ \"Trusting the no-files-changed message contradicts the four-line comparison with the repair-entry checkpoint.\", \"Changing release preparati",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-6aafd40115ac97fd",
+      "key": "decision:docs/evidence/WO-142/decisions.md#wo-142-d022",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "b400bb7901f963ff21a849632b2985c3b9c88477cce52a5771ecf7056f61465b",
+          "ref": "docs/evidence/WO-142/decisions.md#wo-142-d022--board-up-two-prune-limits-met-at-final-review",
+          "title": "WO-142-D022: Next order opening scripts/lib/harness-prune.mjs: (a) observe publication once per apply, or re-plan only the candidate about to be deleted, keeping the pre-delete inventory comparison, a",
+          "summary": "{ \"id\": \"WO-142-D022\", \"date\": \"2026-09-19\", \"dispatch\": \"resume: final review\", \"decision\": \"Pass row D1 on its criteria and board two limits that no check exercised: an apply recomputes the whole plan, publication lookups included, once per candidate; and the product gate leaves target lanes and installation receipts in the real checkout, where every receipt counts as a snapshot pin.\", \"evidence\": [ \"scripts/lib/harness-prune.mjs pruneHarness (one planHarnessPrune per candidate) and publishedRelease (gh release view and git ls-remote per unregistered lane)\", \"Read-only plan on the main checkout, 2026-09-19 about 17:03Z: 21,827 ms, 58 candidates\", \"docs/control/local/harness/targets counted",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-c787bb9b32bafcf8",
+      "key": "decision:docs/evidence/WO-142/decisions.md#wo-142-d023",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "4cd0fd1c9b93653fd7a2af19db1fd762c11a4e01c64955b5a5f5af14442b7f1d",
+          "ref": "docs/evidence/WO-142/decisions.md#wo-142-d023--board-up-two-items-that-lived-only-in-report-sentences",
+          "title": "WO-142-D023: (a) At the next paid planning refutation, record whether each CLI accepts the result schema at launch; a launch refusal reopens row B4. (b) Whoever takes D012's or D018's follow-up moves ",
+          "summary": "{ \"id\": \"WO-142-D023\", \"date\": \"2026-09-19\", \"dispatch\": \"resume: final review\", \"decision\": \"Give an owner to two items this order's own row B17 says may not stay as report prose: row B4's result schema has never been accepted live by either worker CLI, and a comment in the live-gate adapter was stranded above the wrong function.\", \"evidence\": [ \"docs/verifications/WO-142/VER-001.md L4, VER-002.md L2, VER-003.md L4, VER-004.md L5\", \"packages/skeleton/src/plan-refutation-protocol.ts planResultSchema (anyOf under findings items)\", \"packages/skeleton/src/harness-command.ts:319-327 and :417\" ], \"rejected\": [ \"Buying a live refutation to observe acceptance: the order allows one live spend, the f",
           "missing": false
         }
       ],
