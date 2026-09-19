@@ -3552,6 +3552,13 @@
           "title": "Candidate — Tinkerer / Scientist",
           "summary": "## Candidate — Tinkerer / Scientist **Near-term planning request, 2026-09-11:** the operator asks to prioritize this candidate soon, including its adaptive bad-luck protection based on time since the last demonstrated application improvement. It remains unimplemented and unallocated. The operator explicitly excludes implementing it in the current WO-043 repair. Carry the request through existing `FUP-fc4158d3207e495d`; the next planning pass should select a bounded experiment and allocation, preserving the budget, evidence and reset distinctions below. Source: the [WO-043 breakout](../evidence/WO-043/ideation-commands-and-usage.md). Operator ideation during WO-126 proposes a support that bia",
           "missing": false
+        },
+        {
+          "hash": "46772b38d64230066e9aba800f5cec31f7390bf1fc2c84042cd1f0e5be237286",
+          "ref": "docs/product/05-pattern-library.md#candidate--tinkerer--scientist",
+          "title": "Candidate — Tinkerer / Scientist",
+          "summary": "## Candidate — Tinkerer / Scientist **Near-term planning request, 2026-09-11:** the operator asks to prioritize this candidate soon, including its adaptive bad-luck protection based on time since the last demonstrated application improvement. It remains unimplemented and unallocated. The operator explicitly excludes implementing it in the current WO-043 repair. Carry the request through existing `FUP-fc4158d3207e495d`; the next planning pass should select a bounded experiment and allocation, preserving the budget, evidence and reset distinctions below. Source: the [WO-043 breakout](../evidence/WO-043/ideation-commands-and-usage.md). **Allocated 2026-09-19 (second planning pass of that day).*",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -3562,6 +3569,16 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-19T01:20:01.563Z"
+        },
+        {
+          "sourceRevision": 4,
+          "status": "allocated",
+          "reason": "Allocated by the second planning pass of 2026-09-19, from the operator's answers: consider the aspects of quality from Zen and the Art of Motorcycle Maintenance, starting with efficiency and speed. WO-145 is the first bounded experiment: an optional executor support, one economy experiment per order inside 900 s, three trial orders and a reading fixed before the trials. The adaptive modifier and the other twelve aspects stay open.",
+          "reopenWhen": "the third trial order's record, which the next planning pass reads against the pre-registered reading",
+          "targets": [
+            "WO-145"
+          ],
+          "at": "2026-09-19T03:42:33.303Z"
         }
       ]
     },
@@ -4934,6 +4951,13 @@
           "title": "Candidate — cold-gate structural cuts",
           "summary": "## Candidate — cold-gate structural cuts The 2026-09-12 planning pass declined to allocate the structural cuts that the relayed proof-carrying-gates plan proposed for the one fresh full gate, because their benefit is unmeasured until the gate's critical path is recorded. The 2026-09-12T16:08Z fresh gate ran 475 s of wall-clock over 1,229 s of task time: the two exclusive suites held it at concurrency one for 206 s, and perfect packing over the cap of four would take 307 s. WO-128 records each task's concurrent peers in the gate row; that trace is the entry evidence for this candidate. WO-128's [first accepted shared row](../evidence/WO-128/shared-series-002.json) now supplies that evidence: ",
           "missing": false
+        },
+        {
+          "hash": "8ce47c58b96f526a34d750621c64b221789c6ef14feb0261d0184daa0d3c0144",
+          "ref": "docs/product/07-execution-guide.md#candidate--cold-gate-structural-cuts",
+          "title": "Candidate — cold-gate structural cuts",
+          "summary": "## Candidate — cold-gate structural cuts The 2026-09-12 planning pass declined to allocate the structural cuts that the relayed proof-carrying-gates plan proposed for the one fresh full gate, because their benefit is unmeasured until the gate's critical path is recorded. The 2026-09-12T16:08Z fresh gate ran 475 s of wall-clock over 1,229 s of task time: the two exclusive suites held it at concurrency one for 206 s, and perfect packing over the cap of four would take 307 s. WO-128 records each task's concurrent peers in the gate row; that trace is the entry evidence for this candidate. WO-128's [first accepted shared row](../evidence/WO-128/shared-series-002.json) now supplies that evidence: ",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -4960,6 +4984,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-19T01:20:02.401Z"
+        },
+        {
+          "sourceRevision": 5,
+          "status": "open",
+          "reason": "Kept open by the second planning pass of 2026-09-19, from the operator's answers: seventeen final-review gates since 2026-09-16 ran 303 to 1,178 s, median 793 s, sixteen above the 360 s reopening threshold. The 120 s fastGateMs ceiling budgeted a fast gate that WO-132 removed and was unset. Nothing is allocated because the readable gate rows carry totals and no per-suite durations; an order written without them would guess.",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-19T03:42:33.599Z"
         }
       ]
     },
@@ -8579,6 +8611,13 @@
           "title": "Candidate — local-model usefulness experiments",
           "summary": "### Candidate — local-model usefulness experiments **WO-137 observation (2026-09-18):** the [readiness packet](../discovery/local-runner-2026-09-18.md) records LM Studio `0.4.24+1`, llama.cpp runtime `2.38.0` and an existing pinned Qwen3.6 27B Q4_K_M artifact. Explicit CLI start and load now work; the fixed three-request smoke is byte-identical, schema and tool round trip pass, HTTP cancellation is observed to become idle within five seconds, timeout occurs and recovery succeeds. The operator-expanded two-minute sequential load run completed nine capped requests and deadline-cancelled the tenth with nominal thermal observations, normal memory pressure and no swap growth. Overall outcome rema",
           "missing": false
+        },
+        {
+          "hash": "d0f92a1edf9c18ecc3c584c8d3fe4a4e68b5eb78a5b261ee9ea1325530b6d332",
+          "ref": "docs/product/06-roadmap.md#candidate--local-model-usefulness-experiments",
+          "title": "Candidate — local-model usefulness experiments",
+          "summary": "### Candidate — local-model usefulness experiments **WO-137 observation (2026-09-18):** the [readiness packet](../discovery/local-runner-2026-09-18.md) records LM Studio `0.4.24+1`, llama.cpp runtime `2.38.0` and an existing pinned Qwen3.6 27B Q4_K_M artifact. Explicit CLI start and load now work; the fixed three-request smoke is byte-identical, schema and tool round trip pass, HTTP cancellation is observed to become idle within five seconds, timeout occurs and recovery succeeds. The operator-expanded two-minute sequential load run completed nine capped requests and deadline-cancelled the tenth with nominal thermal observations, normal memory pressure and no swap growth. Overall outcome rema",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -8605,6 +8644,17 @@
             "WO-138"
           ],
           "at": "2026-09-19T01:20:03.270Z"
+        },
+        {
+          "sourceRevision": 5,
+          "status": "allocated",
+          "reason": "Allocated by the second planning pass of 2026-09-19, from the operator's answers: WO-137's live row succeeded and its inconclusive label comes only from running with networking permitted, so WO-138 is amended to activate on that row because its inputs are public; WO-110 proceeds by its own text. Bulk read-only triage is nominated in the roadmap as the next local role to test. A no-egress proof is required before any local role reads private material.",
+          "reopenWhen": "WO-138's packet, or a local role that would read private material",
+          "targets": [
+            "WO-110",
+            "WO-138"
+          ],
+          "at": "2026-09-19T03:42:33.902Z"
         }
       ]
     },
@@ -8965,6 +9015,13 @@
           "title": "Candidate — DotLn-owned authority with minimal native harness restrictions",
           "summary": "## Candidate — DotLn-owned authority with minimal native harness restrictions Operator direction during WO-119 (2026-09-16): reach an operating mode as soon as evidence supports it in which native Claude and Codex harness sandboxes can be disabled and Claude's settings have nearly empty allow/deny lists. The source of permissions, security and authority is the equipped DotLn supports, build and role. The operator clarified the assurance requirement: faithful runtime enforcement plus adversarial tests, including attempts to bypass the declared authority. See the [ideation receipt](../evidence/WO-119/ideation-authority.md). This candidate asks planning to identify the earliest justified route ",
           "missing": false
+        },
+        {
+          "hash": "dc6c67ce8ed003ca66429bd9ce8de5d03cd71616ecb54fa743ffebe9b11cfca8",
+          "ref": "docs/product/03-architecture.md#candidate--dotln-owned-authority-with-minimal-native-harness-restrictions",
+          "title": "Candidate — DotLn-owned authority with minimal native harness restrictions",
+          "summary": "## Candidate — DotLn-owned authority with minimal native harness restrictions Operator direction during WO-119 (2026-09-16): reach an operating mode as soon as evidence supports it in which native Claude and Codex harness sandboxes can be disabled and Claude's settings have nearly empty allow/deny lists. The source of permissions, security and authority is the equipped DotLn supports, build and role. The operator clarified the assurance requirement: faithful runtime enforcement plus adversarial tests, including attempts to bypass the declared authority. See the [ideation receipt](../evidence/WO-119/ideation-authority.md). This candidate asks planning to identify the earliest justified route ",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -8985,6 +9042,16 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-19T01:20:03.552Z"
+        },
+        {
+          "sourceRevision": 8,
+          "status": "allocated",
+          "reason": "Allocated by the second planning pass of 2026-09-19, from the operator's answers: the grant for outside-project writes lives on specific roles or supports, temporary and scratch roots may be common, and the operator's own folders are refused without authorization or direction; WO-144 enforces it for known write destinations. The sandbox is relaxed for throughput only and no permission-mode trial is filed. Opaque command effects, Codex enforcement and the operating-mode confirmation at R2 stay open under the candidate.",
+          "reopenWhen": "WO-144 closes, R2, or an outside write the journal shows admitted without a grant",
+          "targets": [
+            "WO-144"
+          ],
+          "at": "2026-09-19T03:42:34.207Z"
         }
       ]
     },
@@ -10365,6 +10432,16 @@
           "reopenWhen": "the operator's decision on the local-inference horizon, or a readiness row that says ready",
           "targets": [],
           "at": "2026-09-19T01:19:24.041Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the second planning pass of 2026-09-19, from the operator's answers: WO-138 is amended to activate on WO-137's successful live row because its inputs are public; the no-egress experiment the record names is required only before a local role reads private material and is not filed.",
+          "reopenWhen": "a local role that would read private material",
+          "targets": [
+            "WO-138"
+          ],
+          "at": "2026-09-19T03:42:34.823Z"
         }
       ]
     },
@@ -10523,6 +10600,13 @@
           "title": "Append-lock recovery wedge after a kill.",
           "summary": "1. **Append-lock recovery wedge after a kill.** A SIGKILL inside the append-lock recovery window wedges the worker store, and the guard has no owner and sits on the per-transaction path (`packages/skeleton/src/worker-store.ts:150-157`, `packages/skeleton/src/resident-host.ts:199-207`; WO-068 FINAL-001 F1 and O2). Closing it under test is the map's condition for `runtime.resident` level 2, so this is the one return on the critical path and needs its own order. Reopen: the next planning pass, or a second wedged store.",
           "missing": false
+        },
+        {
+          "hash": "b920ef490d9aed5d2691854cde2b92cac633c9b1d7b5a14c0620897a01e18ad3",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-cleanup-pass-recorded-2026-09-19",
+          "title": "Append-lock recovery wedge after a kill.",
+          "summary": "1. **Append-lock recovery wedge after a kill.** A SIGKILL inside the append-lock recovery window wedges the worker store, and the guard has no owner and sits on the per-transaction path (`packages/skeleton/src/worker-store.ts:150-157`, `packages/skeleton/src/resident-host.ts:199-207`; WO-068 FINAL-001 F1 and O2). Closing it under test is the map's condition for `runtime.resident` level 2, so this is the one return on the critical path and needs its own order. Allocated the same day by the second pass, at the operator's direction that a pass plans what it finds: [WO-143](../work-orders/WO-143-resident-lock-recovery.md). Reopen: WO-143 closing without a kill-inside-the-window fixture on both p",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -10541,6 +10625,16 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-19T01:21:03.303Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Allocated by the second planning pass of 2026-09-19, from the operator's answers, which directed that a pass plans what it finds: WO-143 makes the lock-recovery guard name its owner so a resident killed inside lock acquisition restarts without a human.",
+          "reopenWhen": "WO-143 closing without a kill-inside-the-window fixture on both the once and loop paths",
+          "targets": [
+            "WO-143"
+          ],
+          "at": "2026-09-19T03:42:34.512Z"
         }
       ]
     },

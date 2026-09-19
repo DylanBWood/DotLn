@@ -156,7 +156,9 @@ line, the placement, the re-observed gap and the no-rise criterion.
 
 ## 5. Decisions of this pass
 
-Each names its source and its reopening condition.
+Each names its source and its reopening condition. Decisions 4, 6 and 8, and
+the open status of the recovery wedge in decision 12, were superseded the
+same day by the operator's answers (§10).
 
 1. **One cleanup order, WO-142, first in the queue, paired with WO-084.**
    Source: the dispatch; §2 and §3. Reopen: the executor's first day shows
@@ -205,8 +207,8 @@ Each names its source and its reopening condition.
    Reopen: a probe run that a reader could not reproduce from its order.
 8. **The gate-duration observation is recorded and nothing is allocated.**
    Seventeen final-review gates since 2026-09-16: 303 to 1,178 s, median
-   793 s, sixteen above the six-minute reopening threshold; `fastGateMs` reads
-   120,000 with no acceptance. The cause per gate is not analysed and a
+   793 s, sixteen above the 360 s reopening threshold; the `fastGateMs` ceiling
+   reads 120 s with no acceptance. The cause per gate is not analysed and a
    cleanup order is the wrong place to change the gate. Reopen: the next
    planning pass starts from a per-suite breakdown of those rows; the
    operator decides whether `fastGateMs` is raised with a reason or retired.
@@ -358,3 +360,117 @@ store before the recovery order exists.
   reopening, the Tinkerer experiment, the append-lock recovery wedge) and 76
   deferred with reopening conditions.
 - Not run: any code suite (a document-only pass) and any live model.
+
+## 10. Second pass, same day — the operator's answers
+
+After the first handoff the operator answered the open decisions and
+corrected the pass. Captured verbatim in the same ignored intake note.
+
+**Corrections the operator made, and what changed.** The handoff compared a
+ceiling in milliseconds with durations in seconds; every duration in this
+pass's documents is now in seconds. It listed `fastGateMs` and the
+"append-lock recovery wedge" as decisions without saying what they are; both
+are stated plainly below. It told the operator that the one critical-path
+item waited for the next planning pass while a planning pass was open; a pass
+plans what it finds, so the item is an order now. It read WO-137 as a blocker
+where the operator saw a success; the operator's reading is the better one
+for what the next order needs, and the record below says why.
+
+1. **Outside-project writes need a grant from a role or support
+   ([WO-144](../work-orders/WO-144-outside-project-write-grant.md)).** The
+   operator's answers settle the two open questions of the 2026-09-18
+   ideation: the grant lives on specific roles or supports; temporary and
+   scratch roots may be common; a save into the operator's project, document
+   or desktop folders is refused without specific authorization or direction;
+   work-stream-facing roles of the enterprise starter declare their own
+   outside roots when they are written. The order reuses the extractor and
+   path resolution WO-135 added, so it adds one refusal and no classifier,
+   and it states its width honestly: known destinations only; an opaque
+   program stays under host permissions. Reopen: a legitimate write refused
+   in a real session, or an outside write the journal shows admitted without
+   a grant.
+2. **No permission-mode trial is filed.** The 2026-09-17 ideation proposed
+   trying harness permission modes across a few orders. The operator's
+   answer: the sandbox is relaxed for throughput only, and the direction is
+   machinery in roles and supports that makes dangerous activity
+   deterministically impossible. WO-144 is the first such mechanism.
+   Reopen: the operator asks for a recorded comparison of modes.
+3. **The first Tinkerer experiment is economy
+   ([WO-145](../work-orders/WO-145-tinkerer-economy-experiment.md)).** The
+   operator's answer: consider the aspects of quality from _Zen and the Art
+   of Motorcycle Maintenance_, starting with efficiency and speed. The book
+   names thirteen aspects; economy is the one that matches. One optional
+   executor support, one experiment per order inside 900 s, three trial
+   orders, a reading fixed before the trials. Reopen: the third trial
+   order's record.
+4. **Local models: WO-138 activates on WO-137's successful live row.**
+   WO-137 loaded the pinned model, completed inference, passed the schema
+   and tool round trip, produced a byte-identical determinism triple and
+   stopped a cancelled request within five seconds. Its label is
+   `inconclusive` for one reason: the session ran with networking permitted,
+   so it could not prove the runner sends nothing off the machine
+   ("no-egress"). That proof matters before a local role reads private
+   material. WO-138's inputs are committed public material and a seeded
+   scratch repository, so the proof does not bear on it; the order is
+   amended, keeps its slot beside WO-071, and qualifies no private-input
+   role. Bulk read-only triage, the work this pass paid 1,852,818 remote
+   tokens for, is nominated in the roadmap as the next local role to test.
+   Reopen: a local role that would read private material, which needs the
+   no-egress experiment first.
+5. **The 120 s gate ceiling is unset; the gate's duration stays an open
+   candidate.** `fastGateMs` was WO-126's budget for a fast test gate. WO-132
+   removed that gate and kept one full product gate per order, and the
+   metric has read that full gate ever since: 303 to 1,178 s across the
+   seventeen final reviews since 2026-09-16, median 793 s, against a 120 s
+   ceiling nobody enforced and no acceptance ever covered. The ceiling
+   compared two different things, so it is unset in
+   `docs/control/budgets.json` with a dated source sentence. Whether the
+   13-minute median can come down is a real question this pass cannot plan
+   honestly: the gate rows it could read carry totals and no per-suite
+   durations, and an order written without them would guess. Reopen: a
+   per-suite breakdown of one recorded gate.
+6. **The resident's lock recovery is an order
+   ([WO-143](../work-orders/WO-143-resident-lock-recovery.md)).** In plain
+   terms: every time the always-on resident touches its store it first makes
+   a marker directory, does its checks, and removes the marker. If the
+   process is killed in the 0.004 to 0.017 s while the marker exists, the
+   marker stays, nothing records whose it was, and every later start refuses
+   until a person deletes it. The resident passes through that window
+   several times per tick, so an unattended resident will eventually stop
+   for good this way, and the capability table will not call
+   `runtime.resident` dependable until it is closed under test. The order
+   makes the marker name its owner so a dead owner's marker is reclaimed
+   after the same inspection a dead owner's lock already gets. Reopen: WO-111's
+   first unattended hour.
+
+**Sequence.** WO-143 and WO-144 pair directly after the cleanup pair: their
+surfaces are disjoint and both follow WO-142 in files it also edits. WO-145
+pairs with WO-090 after WO-140 and WO-056, so the delivery lane waits one
+added slot, not two. WO-138 returns to its slot beside WO-071.
+
+**Goal alignment.** WO-143 is critical-path work the first pass wrongly left
+open. WO-144 answers an operator priority with the smallest mechanism that
+makes the recorded incident impossible, and adds a refusal against the
+stand-down's grain; the bound is the existing extractor, a fail-open guard
+and an inventory before any default. WO-145 adds cost with no removal named
+in advance, under a dated operator acceptance, capped at 900 s per order and
+ended by a reading fixed beforehand. The WO-138 amendment removes a
+precondition that guarded a claim the pilot never makes. NoOp for each: the
+resident stays one unlucky kill from a manual repair; the next stray redirect
+lands wherever it points; the Tinkerer request enters a fifth pass
+unselected; local-model testing waits on a proof it does not need.
+
+**Evidence of the second pass.** `packages/skeleton/src/worker-store.ts`
+(`acquire`: the guard has no owner; `host.lock` records a process id and is
+probed with signal zero); WO-068 FINAL-001 §F1 and §O2;
+`packages/skeleton/src/harness-host.ts` `planningWriteRefusal` (outside paths
+are skipped today); `docs/discovery/local-runner-2026-09-18.md` §Boundary
+and claim limits; `scripts/lib/meta.mjs` (`fastGateMs` reads the last passing
+`npm test` row) and WO-126's definition of the fast gate; the seventeen
+`FinalReviewCompleted` gate durations; the book's list of aspects, checked
+against a published quotation. One planner inference was corrected while
+drafting: `host.lock` records a process id only, not a start identity.
+Register after the second pass: 417 entries, none untriaged, two open (the
+planner-startup measurement and the gate-duration candidate) and 75
+deferred with reopening conditions.
+

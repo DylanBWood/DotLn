@@ -22,11 +22,14 @@ lane's final review integrates main by the checklist in product 07
 earlier cut is in [the R1 replan document](r1-replan-2026-09-16.md) §7.
 
 Cleanup pass (2026-09-19): WO-142 and WO-084 form the first queued pair, the
-pass the operator budgeted. WO-090 takes the pair slot beside WO-071 that
-WO-138 cannot use while WO-137's outcome is `inconclusive`; WO-138 follows as
-a single entry and activates only on a `ready` readiness row. WO-085 to WO-089
-stay last. The evidence is in
-[the cleanup planning document](outstanding-cleanup-2026-09-19.md) §4 and §5.
+pass the operator budgeted. The same day's second pass, from the operator's
+answers, adds the pair WO-143 and WO-144 directly after it (the resident's
+lock recovery, on the critical path, and outside-project writes as a role or
+support grant) and the pair WO-145 and WO-090 after WO-140 and WO-056. WO-138
+keeps its slot beside WO-071: its pilot reads public inputs only, so WO-137's
+successful live row admits it. WO-085 to WO-089 stay last. The evidence is in
+[the cleanup planning document](outstanding-cleanup-2026-09-19.md) §4, §5 and
+§10.
 
 <!-- dotln-work-order-sequence:start -->
 
@@ -70,8 +73,14 @@ stay last. The evidence is in
 - WO-142 — Outstanding cleanup
 - WO-084 — Ledger order and index
 
+- WO-143 — Resident lock recovery
+- WO-144 — Outside-project write grant
+
 - WO-140 — Gate sandbox preflight and usage readback
 - WO-056 — Live blinded verification and repair
+
+- WO-145 — Tinkerer economy experiment
+- WO-090 — Shorter cold start
 
 - WO-110 — Local-model transport
 - WO-099 — Mission check
@@ -79,10 +88,8 @@ stay last. The evidence is in
 - WO-079 — Worktree integrate
 - WO-069 — Configuration root
 
-- WO-090 — Shorter cold start
-- WO-071 — Registered target repositories
-
 - WO-138 — Local-model role qualification pilot
+- WO-071 — Registered target repositories
 
 - WO-120 — Derived work identity
 - WO-063 — Outward-artifact lint

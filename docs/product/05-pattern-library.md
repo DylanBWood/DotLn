@@ -1079,6 +1079,17 @@ planning pass should select a bounded experiment and allocation, preserving the
 budget, evidence and reset distinctions below. Source: the
 [WO-043 breakout](../evidence/WO-043/ideation-commands-and-usage.md).
 
+**Allocated 2026-09-19 (second planning pass of that day).** The operator's
+answer: consider the aspects of quality from _Zen and the Art of Motorcycle
+Maintenance_, starting with efficiency and speed. The first bounded
+experiment is [WO-145](../work-orders/WO-145-tinkerer-economy-experiment.md):
+an optional executor support, one economy experiment per order inside 900 s,
+three trial orders and a pre-registered reading. The book's other twelve
+aspects (unity, vividness, authority, sensitivity, clarity, emphasis, flow,
+suspense, brilliance, precision, proportion, depth) are later dimensions,
+each needing its own measure; the adaptive modifier stays open until that
+record exists.
+
 Operator ideation during WO-126 proposes a support that biases a linked mechanic
 toward a small experiment on a relevant question, input, proposed answer or
 response. The names Tinkerer and Scientist remain alternatives. The motivating

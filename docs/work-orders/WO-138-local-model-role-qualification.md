@@ -27,12 +27,18 @@ repository's public evidence and a seeded scratch repository.
 **Depends on:** WO-110 merged (the local transport that runs the episodes);
 WO-137 merged (the pinned artifact and the readiness row).
 
-**Recommended placement:** pair 7 beside WO-069, after WO-110's merge.
-Activation preflight: WO-137's execution record must name the outcome
-`ready` and pin the artifact; a `negative` or `inconclusive` WO-137 keeps
-this order queued. The typed graph expresses closes, not outcomes, so this
-sentence and criterion 1 carry the requirement. A recommendation, not a
-dependency token.
+**Recommended placement:** lane pair with WO-071, after WO-110's merge.
+Activation preflight (amended 2026-09-19 at the operator's direction to keep
+testing local models): WO-137's execution record must show a successful live
+inference row and pin the artifact. WO-137 closed `inconclusive` for one
+reason that does not bear on this pilot: it ran with networking permitted,
+so it could not prove the runner sends nothing off the machine. Every input
+of this pilot is committed public material or a seeded scratch repository,
+so that proof is not required here; it is required before any local role
+reads private material, and this order qualifies none. A `negative` WO-137,
+or a record with no successful live row, keeps this order queued. The typed
+graph expresses closes, not outcomes, so this sentence and criterion 1 carry
+the requirement. A recommendation, not a dependency token.
 
 <!-- dotln-dependencies:start -->
 [
@@ -105,8 +111,13 @@ below.
 
 **Acceptance criteria (all required)**
 
-1. WO-137's execution record names outcome `ready` and the artifact this
-   order pins is the one it recorded; the order is not activated otherwise.
+1. WO-137's execution record shows a successful live inference row (its
+   outcome may be `ready`, or `inconclusive` only for the missing no-egress
+   proof) and the artifact this order pins is the one it recorded; the order
+   is not activated otherwise. Every episode input is committed public
+   material or the seeded scratch repository, and the packet states that no
+   no-egress claim is made and no role that reads private material is
+   qualified.
    Each of the thirty baseline episodes has a recorded envelope or a typed
    failure; no episode's success is self-reported.
 2. Per task and model: schema-valid rate, oracle agreement, variability

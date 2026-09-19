@@ -38,15 +38,18 @@
 - [x] [WO-055] — Repair continuation · **final-reviewed**
 - [ ] [WO-142] — Outstanding cleanup · **queued**
 - [ ] [WO-084] — Ledger order and index · **queued**
+- [ ] [WO-143] — Resident lock recovery · **queued**
+- [ ] [WO-144] — Outside-project write grant · **queued**
 - [ ] [WO-140] — Gate sandbox preflight and usage readback · **queued**
 - [ ] [WO-056] — Live blinded verification and repair · **queued**
+- [ ] [WO-145] — Tinkerer economy experiment · **queued**
+- [ ] [WO-090] — Shorter cold start · **queued**
 - [ ] [WO-110] — Local-model transport · **queued**
 - [ ] [WO-099] — Mission check · **queued**
 - [ ] [WO-079] — Worktree integrate · **queued**
 - [ ] [WO-069] — Configuration root · **queued**
-- [ ] [WO-090] — Shorter cold start · **queued**
-- [ ] [WO-071] — Registered target repositories · **queued**
 - [ ] [WO-138] — Local-model role qualification pilot · **queued**
+- [ ] [WO-071] — Registered target repositories · **queued**
 - [ ] [WO-120] — Derived work identity · **queued**
 - [ ] [WO-063] — Outward-artifact lint · **queued**
 - [ ] [WO-100] — Preauthorized portfolio and work derivation · **queued**
@@ -1292,6 +1295,57 @@ None.
 - Cost: adds no recurring step, gate, hook, key, receipt or ritual. Adds one on-demand command (&#96;harness prune&#96;, never run by a gate), one equality assertion inside the existing &#96;release check-surfaces&#96;, one anchor-resolution assertion inside the existing &#96;meta --check&#96;, and one live feedback edition for this order (the routine cost of any order that edits a feedback source; model spend unknown until run). Removes, measured on 2026-09-19 at &#96;3b3533f8&#96;: the pending follow-up feed's refill (235 of 399 register entries are decision records harvested as follow-ups; the feed grew 359 to 399 in two days and three passes selected nothing from it); the carried-set eviction that made the 2026-09-19 refutation re-judge eight orders whose only change was an activation version stamp; a paid refutation lost whenever a result fails validation (recorded once, 2026-09-17); the first &#96;npm run test:docs&#96; failing after every &#96;verify&#96; or &#96;final review&#96; dispatch (four reports); the live-gate refusal of read-only commands such as &#96;git status&#96; and &#96;tail&#96; (nine reports; the seventeen reviewer gates recorded since 2026-09-16 ran 303 to 1,178 s, median 793 s, in &#96;docs/control/orders/&#96;); two full gates lost to a cascade message that hides which dependency failed (WO-048 FINAL-001); and 176 MB of unowned local residue (27 harness snapshots at 80 MB against a candidate threshold of twenty, and 96 MB under &#96;.git/dotln/suite-success&#96; that no source writes since WO-132). The order's own wall-clock, tokens and context bytes are unknown until run.
 - Inherited ledger duty: discharge with [this order's decisions](../evidence/WO-142/decisions.md) and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
 - Authority: [docs/work-orders/WO-142-outstanding-cleanup.md](WO-142-outstanding-cleanup.md)
+
+### WO-143
+
+[WO-143 — Resident lock recovery: a resident killed at any instant restarts without a human, because the lock-recovery guard names its owner and a dead owner's guard is reclaimed after the same inspection a dead owner's lock gets (version assigned at activation)](WO-143-resident-lock-recovery.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; dependency-ready.
+- References: WO-068: satisfied-by-close (met) — the resident host whose store this order makes restartable; WO-048: satisfied-by-close (met) — the inspect-before-reclaim contract the reclaim path keeps.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Cost: adds no step, gate, hook, key or receipt; adds one small file inside the guard directory per acquisition and one kill-inside-the-window fixture to the existing resident suite (duration unknown until built). Removes the one recorded way an unattended resident stops for good: a kill inside a window measured at 0.004 to 0.017 s per transaction (WO-068 VER-001), which the resident enters several times per tick and again on every 0.020 s poll while an episode runs, leaves a guard directory that refuses every later start until a human deletes it. Removes the capability table's recorded blocker for &#96;runtime.resident&#96; level 2. Wall-clock, tokens and context bytes of the order itself are unknown until run.
+- Inherited ledger duty: discharge with [this order's decisions](../evidence/WO-143/decisions.md) and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
+- Authority: [docs/work-orders/WO-143-resident-lock-recovery.md](WO-143-resident-lock-recovery.md)
+
+### WO-144
+
+[WO-144 — Outside-project writes need a grant: a role or support declares the outside roots it may write, the generated hooks refuse a known write destination outside the project that no equipped grant covers, and a mistaken path can no longer create or delete a file in the operator's folders (version assigned at activation)](WO-144-outside-project-write-grant.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; dependency-ready.
+- References: WO-135: satisfied-by-close (met) — the known-destination extractor and the refusal it sits beside; WO-042: satisfied-by-close (met) — authority provenance: a grant is declared, compiled and attributable.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Cost: adds one refusal to the existing pre-tool guard, evaluated only for a write tool or a shell command whose write targets the existing extractor names (&#96;shellWriteTargets&#96;, WO-135); no new hook, gate, key, receipt or classifier. Adds role text: one sentence naming the refusal and the grant, counted against the cold-start ceilings (executor 20,849 of 24,576 bytes on 2026-09-19); the executor reports the new totals. Removes the recorded incident class: a verifier's stray stderr redirect created a file in the directory above its worktree (2026-09-18, WO-054 VER-003), and today nothing refuses the same mistake aimed at the operator's documents. Removes the operator's reliance on the native sandbox for this case, which the operator has relaxed for throughput and which product 03 records as not confining a sibling write on either harness (C-W6, X-W6). Wall-clock, tokens and context bytes of the order itself are unknown until run.
+- Inherited ledger duty: discharge with [this order's decisions](../evidence/WO-144/decisions.md) and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
+- Authority: [docs/work-orders/WO-144-outside-project-write-grant.md](WO-144-outside-project-write-grant.md)
+
+### WO-145
+
+[WO-145 — Tinkerer, first experiment: an optional support has the executor state and run at most one small economy experiment per order, three trial orders record what it cost and what it changed, and the record decides whether it stays equipped (version assigned at activation)](WO-145-tinkerer-economy-experiment.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; dependency-ready.
+- References: WO-126: satisfied-by-close (met) — the decision-record contract the experiment records use.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Cost: adds, only while the support is equipped, one paragraph of executor role text (bytes reported by the executor against the 24,576-byte ceiling) and at most one experiment per trial order, capped at 900 s of wall-clock and recorded with its tokens where a counter is available. Adds one decision-record kind (&#96;experiment&#96;) and no gate, hook, key or recurring check. Names no removal in advance: whether an experiment pays is the question. The dated acceptance for adding cost without a removal is the operator's direction of 2026-09-11 (prioritize a bounded experiment) and 2026-09-19 (start with efficiency and speed). Wall-clock, tokens and context bytes of the order itself are unknown until run.
+- Inherited ledger duty: discharge with [this order's decisions](../evidence/WO-145/decisions.md) and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
+- Authority: [docs/work-orders/WO-145-tinkerer-economy-experiment.md](WO-145-tinkerer-economy-experiment.md)
 
 ## Closed
 
@@ -2704,3 +2758,6 @@ See [the human planning map](../planning/work-order-map.md) for recommendation, 
 [WO-140]: WO-140-gate-sandbox-preflight.md
 [WO-141]: WO-141-no-guessing-enforced.md
 [WO-142]: WO-142-outstanding-cleanup.md
+[WO-143]: WO-143-resident-lock-recovery.md
+[WO-144]: WO-144-outside-project-write-grant.md
+[WO-145]: WO-145-tinkerer-economy-experiment.md

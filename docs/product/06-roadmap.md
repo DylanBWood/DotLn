@@ -1142,6 +1142,21 @@ readiness path; WO-138's `ready` prerequisite remains unsatisfied. The packet
 names the next useful boundary/provenance experiment. No capability, quality,
 hardware-safety or sustained-load claim follows.
 
+Operator direction, 2026-09-19 (second planning pass of that day): the run
+was a success for what local testing needs, and the work is finding more
+places to use local models, or at least to keep testing them. WO-137's label
+is `inconclusive` for one reason: it ran with networking permitted, so it
+could not prove the runner sends nothing off the machine. That proof matters
+before a local role reads private material and does not bear on a pilot whose
+inputs are all public, so
+[WO-138](../work-orders/WO-138-local-model-role-qualification.md) is amended
+to activate on the successful live row and qualifies no private-input role.
+A further use is nominated from that pass's own cost: eight read-only surveys
+spent 1,852,818 remote tokens classifying register rows and review
+observations into closed sets with checkable citations, the shape of WO-138's
+third task; bulk read-only triage is the next local role to test once the
+pilot's packet exists.
+
 Operator direction, 2026-09-16: the next planning pass should give local LLM
 experiments more attention, starting with concrete runner readiness and any
 operator setup needed in LM Studio. Current readiness is unknown; the dated

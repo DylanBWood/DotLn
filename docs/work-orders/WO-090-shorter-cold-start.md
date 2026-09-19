@@ -21,12 +21,11 @@ Clean-room screen: no stop condition.
 **Depends on:** WO-039 merged (the directed-load measurement method,
 criterion 6; closed). The dated planning deferral lapsed by its own terms
 when WO-053 closed on 2026-09-18.
-**Recommended placement:** lane pair with WO-071 in the slot WO-138 cannot
-use while WO-137's outcome is `inconclusive` (2026-09-19 planning pass); after
-WO-142, WO-140 and WO-079, which write product 07 first. It edits product 07,
-`docs/AI-HARNESS-SECURITY.md` and the playbook; WO-071 edits scripts and adds
-one paragraph to a guide section this order does not move. A recommendation,
-not a dependency token.
+**Recommended placement:** lane pair with WO-145 (2026-09-19 planning
+pass), after WO-142, WO-144 and WO-140, which write product 07 and the role
+text first. It edits product 07, `docs/AI-HARNESS-SECURITY.md` and the
+playbook; WO-145 edits the contributor loadout and product 05. A
+recommendation, not a dependency token.
 
 <!-- dotln-dependencies:start -->
 [

@@ -1102,11 +1102,12 @@ that inventory split.
 final-review product gates recorded in `docs/control/orders/` since
 2026-09-16 ran 303 to 1,178 s, median 793 s; sixteen exceeded six minutes.
 The cause of each (suite selection, host load, an integrated sibling) is not
-analysed, and `fastGateMs` in `docs/control/budgets.json` still reads
-120,000 with no acceptance. The cleanup pass allocated nothing: a planning
-pass that takes this starts from a per-suite breakdown of those rows, and
-the operator decides whether the `fastGateMs` ceiling is raised with a
-reason or retired.
+analysed; the gate rows this pass could read carry a total and no per-suite
+durations. The `fastGateMs` ceiling of 120 s was WO-126's budget for a fast
+gate that WO-132 removed; the metric has since read the one full product
+gate, so the same day's second pass unset the ceiling in
+`docs/control/budgets.json`. Nothing is allocated: an order that shortens the
+gate needs the per-suite breakdown first, and none is recorded.
 
 ## Candidate — refutation pass worth its cost
 
