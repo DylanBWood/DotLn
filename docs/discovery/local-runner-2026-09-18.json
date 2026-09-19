@@ -1,0 +1,2947 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-137",
+  "startedAt": "2026-09-18T22:33:01.330Z",
+  "outcome": "inconclusive",
+  "rows": [
+    {
+      "startedAt": "2026-09-18T22:33:01.628Z",
+      "endpoint": "/api/v0/chat/completions",
+      "request": {
+        "model": "dotln-local",
+        "messages": [
+          {
+            "role": "system",
+            "content": "Output only the requested story. Do not explain."
+          },
+          {
+            "role": "user",
+            "content": "Write exactly two sentences, each no more than twelve words, about a lighthouse keeper finding a brass key at dawn."
+          }
+        ],
+        "temperature": 0,
+        "top_p": 1,
+        "seed": 424242,
+        "reasoning_effort": "none",
+        "max_tokens": 80,
+        "stream": false,
+        "stop": [
+          "<|im_end|>"
+        ]
+      },
+      "timeoutMs": 30000,
+      "status": "completed",
+      "latencyMs": 1952.650625,
+      "firstDeltaMs": null,
+      "output": "Dawn broke over the churning sea. He found a brass key.",
+      "reasoning": "",
+      "usage": {
+        "prompt_tokens": 51,
+        "completion_tokens": 16,
+        "total_tokens": 67,
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "stats": {
+        "tokens_per_second": 18.873503488452563,
+        "time_to_first_token": 1.043494,
+        "generation_time": 1.838259,
+        "stop_reason": "eosFound"
+      },
+      "runtime": {
+        "name": "llama.cpp-mac-arm64-apple-metal-advsimd",
+        "version": "2.38.0",
+        "supported_formats": [
+          "gguf"
+        ]
+      },
+      "modelInfo": {
+        "arch": "qwen35",
+        "quant": "Q4_K_M",
+        "format": "gguf",
+        "context_length": 4096
+      },
+      "finishReason": "stop",
+      "abortAtMs": null,
+      "stateBeforeAbort": null,
+      "httpStatus": 200,
+      "toolCalls": [],
+      "name": "smoke-1",
+      "preflight": {
+        "observedAt": "2026-09-18T22:33:01.627Z",
+        "gateProcessCount": 0,
+        "source": "host ps process snapshot; point observation, no cross-worktree lock",
+        "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded"
+      },
+      "idleAfter": {
+        "idle": true,
+        "elapsedMs": 153.84879200000023,
+        "samples": [
+          {
+            "afterMs": 153.83954200000016,
+            "status": "idle",
+            "queued": 0
+          }
+        ]
+      }
+    },
+    {
+      "startedAt": "2026-09-18T22:33:04.785Z",
+      "endpoint": "/api/v0/chat/completions",
+      "request": {
+        "model": "dotln-local",
+        "messages": [
+          {
+            "role": "system",
+            "content": "Output only the requested story. Do not explain."
+          },
+          {
+            "role": "user",
+            "content": "Write exactly two sentences, each no more than twelve words, about a lighthouse keeper finding a brass key at dawn."
+          }
+        ],
+        "temperature": 0,
+        "top_p": 1,
+        "seed": 424242,
+        "reasoning_effort": "none",
+        "max_tokens": 80,
+        "stream": false,
+        "stop": [
+          "<|im_end|>"
+        ]
+      },
+      "timeoutMs": 30000,
+      "status": "completed",
+      "latencyMs": 1425.7027079999998,
+      "firstDeltaMs": null,
+      "output": "Dawn broke over the churning sea. He found a brass key.",
+      "reasoning": "",
+      "usage": {
+        "prompt_tokens": 51,
+        "completion_tokens": 16,
+        "total_tokens": 67,
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "stats": {
+        "tokens_per_second": 18.951070861844165,
+        "time_to_first_token": 0.61512,
+        "generation_time": 1.406632,
+        "stop_reason": "eosFound"
+      },
+      "runtime": {
+        "name": "llama.cpp-mac-arm64-apple-metal-advsimd",
+        "version": "2.38.0",
+        "supported_formats": [
+          "gguf"
+        ]
+      },
+      "modelInfo": {
+        "arch": "qwen35",
+        "quant": "Q4_K_M",
+        "format": "gguf",
+        "context_length": 4096
+      },
+      "finishReason": "stop",
+      "abortAtMs": null,
+      "stateBeforeAbort": null,
+      "httpStatus": 200,
+      "toolCalls": [],
+      "name": "smoke-2",
+      "preflight": {
+        "observedAt": "2026-09-18T22:33:04.785Z",
+        "gateProcessCount": 0,
+        "source": "host ps process snapshot; point observation, no cross-worktree lock",
+        "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded"
+      },
+      "idleAfter": {
+        "idle": true,
+        "elapsedMs": 154.14566699999978,
+        "samples": [
+          {
+            "afterMs": 154.14224999999988,
+            "status": "idle",
+            "queued": 0
+          }
+        ]
+      }
+    },
+    {
+      "startedAt": "2026-09-18T22:33:07.415Z",
+      "endpoint": "/api/v0/chat/completions",
+      "request": {
+        "model": "dotln-local",
+        "messages": [
+          {
+            "role": "system",
+            "content": "Output only the requested story. Do not explain."
+          },
+          {
+            "role": "user",
+            "content": "Write exactly two sentences, each no more than twelve words, about a lighthouse keeper finding a brass key at dawn."
+          }
+        ],
+        "temperature": 0,
+        "top_p": 1,
+        "seed": 424242,
+        "reasoning_effort": "none",
+        "max_tokens": 80,
+        "stream": false,
+        "stop": [
+          "<|im_end|>"
+        ]
+      },
+      "timeoutMs": 30000,
+      "status": "completed",
+      "latencyMs": 1323.357333,
+      "firstDeltaMs": null,
+      "output": "Dawn broke over the churning sea. He found a brass key.",
+      "reasoning": "",
+      "usage": {
+        "prompt_tokens": 51,
+        "completion_tokens": 16,
+        "total_tokens": 67,
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "stats": {
+        "tokens_per_second": 18.915629985056654,
+        "time_to_first_token": 0.515321,
+        "generation_time": 1.308316,
+        "stop_reason": "eosFound"
+      },
+      "runtime": {
+        "name": "llama.cpp-mac-arm64-apple-metal-advsimd",
+        "version": "2.38.0",
+        "supported_formats": [
+          "gguf"
+        ]
+      },
+      "modelInfo": {
+        "arch": "qwen35",
+        "quant": "Q4_K_M",
+        "format": "gguf",
+        "context_length": 4096
+      },
+      "finishReason": "stop",
+      "abortAtMs": null,
+      "stateBeforeAbort": null,
+      "httpStatus": 200,
+      "toolCalls": [],
+      "name": "smoke-3",
+      "preflight": {
+        "observedAt": "2026-09-18T22:33:07.415Z",
+        "gateProcessCount": 0,
+        "source": "host ps process snapshot; point observation, no cross-worktree lock",
+        "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded"
+      },
+      "idleAfter": {
+        "idle": true,
+        "elapsedMs": 155.22791600000073,
+        "samples": [
+          {
+            "afterMs": 155.2244580000006,
+            "status": "idle",
+            "queued": 0
+          }
+        ]
+      }
+    },
+    {
+      "startedAt": "2026-09-18T22:33:09.946Z",
+      "endpoint": "/api/v0/chat/completions",
+      "request": {
+        "model": "dotln-local",
+        "messages": [
+          {
+            "role": "user",
+            "content": "Return JSON with ok true and count 3, and no other fields."
+          }
+        ],
+        "temperature": 0,
+        "top_p": 1,
+        "seed": 424242,
+        "reasoning_effort": "none",
+        "max_tokens": 32,
+        "stream": false,
+        "stop": [
+          "<|im_end|>"
+        ],
+        "response_format": {
+          "type": "json_schema",
+          "json_schema": {
+            "name": "probe",
+            "strict": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "ok": {
+                  "type": "boolean"
+                },
+                "count": {
+                  "type": "integer",
+                  "const": 3
+                }
+              },
+              "required": [
+                "ok",
+                "count"
+              ],
+              "additionalProperties": false
+            }
+          }
+        }
+      },
+      "timeoutMs": 30000,
+      "status": "completed",
+      "latencyMs": 1746.0422500000004,
+      "firstDeltaMs": null,
+      "output": "{\n  \"ok\": true,\n  \"count\": 3\n}",
+      "reasoning": "",
+      "usage": {
+        "prompt_tokens": 27,
+        "completion_tokens": 18,
+        "total_tokens": 45,
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "stats": {
+        "tokens_per_second": 18.89947259354127,
+        "time_to_first_token": 0.765413,
+        "generation_time": 1.6649090000000002,
+        "stop_reason": "eosFound"
+      },
+      "runtime": {
+        "name": "llama.cpp-mac-arm64-apple-metal-advsimd",
+        "version": "2.38.0",
+        "supported_formats": [
+          "gguf"
+        ]
+      },
+      "modelInfo": {
+        "arch": "qwen35",
+        "quant": "Q4_K_M",
+        "format": "gguf",
+        "context_length": 4096
+      },
+      "finishReason": "stop",
+      "abortAtMs": null,
+      "stateBeforeAbort": null,
+      "httpStatus": 200,
+      "toolCalls": [],
+      "name": "schema",
+      "preflight": {
+        "observedAt": "2026-09-18T22:33:09.945Z",
+        "gateProcessCount": 0,
+        "source": "host ps process snapshot; point observation, no cross-worktree lock",
+        "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded"
+      },
+      "idleAfter": {
+        "idle": true,
+        "elapsedMs": 161.10533299999952,
+        "samples": [
+          {
+            "afterMs": 161.10216600000058,
+            "status": "idle",
+            "queued": 0
+          }
+        ]
+      },
+      "schemaValid": true
+    },
+    {
+      "startedAt": "2026-09-18T22:33:12.902Z",
+      "endpoint": "/api/v0/chat/completions",
+      "request": {
+        "model": "dotln-local",
+        "messages": [
+          {
+            "role": "user",
+            "content": "Call add with a=2 and b=3. After receiving the tool result, reply with only that number."
+          }
+        ],
+        "temperature": 0,
+        "top_p": 1,
+        "seed": 424242,
+        "reasoning_effort": "none",
+        "max_tokens": 96,
+        "stream": false,
+        "stop": [
+          "<|im_end|>"
+        ],
+        "tools": [
+          {
+            "type": "function",
+            "function": {
+              "name": "add",
+              "description": "Add two small integers.",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "a": {
+                    "type": "integer"
+                  },
+                  "b": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "a",
+                  "b"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        ],
+        "tool_choice": "required"
+      },
+      "timeoutMs": 30000,
+      "status": "completed",
+      "latencyMs": 4073.0577080000003,
+      "firstDeltaMs": null,
+      "output": "",
+      "reasoning": "",
+      "usage": {
+        "prompt_tokens": 307,
+        "completion_tokens": 35,
+        "total_tokens": 342,
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "stats": {
+        "tokens_per_second": 18.908006984840227,
+        "time_to_first_token": 2.212544,
+        "generation_time": 4.010724,
+        "stop_reason": "toolCalls"
+      },
+      "runtime": {
+        "name": "llama.cpp-mac-arm64-apple-metal-advsimd",
+        "version": "2.38.0",
+        "supported_formats": [
+          "gguf"
+        ]
+      },
+      "modelInfo": {
+        "arch": "qwen35",
+        "quant": "Q4_K_M",
+        "format": "gguf",
+        "context_length": 4096
+      },
+      "finishReason": "tool_calls",
+      "abortAtMs": null,
+      "stateBeforeAbort": null,
+      "httpStatus": 200,
+      "toolCalls": [
+        {
+          "type": "function",
+          "id": "yXMaRVpQsv0uewOTY8WeF10k1aRAHTLW",
+          "function": {
+            "name": "add",
+            "arguments": "{\"a\":2,\"b\":3}"
+          }
+        }
+      ],
+      "name": "tool-call",
+      "preflight": {
+        "observedAt": "2026-09-18T22:33:12.902Z",
+        "gateProcessCount": 0,
+        "source": "host ps process snapshot; point observation, no cross-worktree lock",
+        "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded"
+      },
+      "idleAfter": {
+        "idle": true,
+        "elapsedMs": 158.0294580000009,
+        "samples": [
+          {
+            "afterMs": 158.0262500000008,
+            "status": "idle",
+            "queued": 0
+          }
+        ]
+      },
+      "argumentsValid": true
+    },
+    {
+      "startedAt": "2026-09-18T22:33:18.181Z",
+      "endpoint": "/api/v0/chat/completions",
+      "request": {
+        "model": "dotln-local",
+        "messages": [
+          {
+            "role": "user",
+            "content": "Call add with a=2 and b=3. After receiving the tool result, reply with only that number."
+          },
+          {
+            "role": "assistant",
+            "content": "",
+            "tool_calls": [
+              {
+                "type": "function",
+                "id": "yXMaRVpQsv0uewOTY8WeF10k1aRAHTLW",
+                "function": {
+                  "name": "add",
+                  "arguments": "{\"a\":2,\"b\":3}"
+                }
+              }
+            ]
+          },
+          {
+            "role": "tool",
+            "tool_call_id": "yXMaRVpQsv0uewOTY8WeF10k1aRAHTLW",
+            "content": "5"
+          }
+        ],
+        "temperature": 0,
+        "top_p": 1,
+        "seed": 424242,
+        "reasoning_effort": "none",
+        "max_tokens": 16,
+        "stream": false,
+        "stop": [
+          "<|im_end|>"
+        ],
+        "tools": [
+          {
+            "type": "function",
+            "function": {
+              "name": "add",
+              "description": "Add two small integers.",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "a": {
+                    "type": "integer"
+                  },
+                  "b": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "a",
+                  "b"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        ],
+        "tool_choice": "none"
+      },
+      "timeoutMs": 30000,
+      "status": "completed",
+      "latencyMs": 1224.9177500000005,
+      "firstDeltaMs": null,
+      "output": "5",
+      "reasoning": "",
+      "usage": {
+        "prompt_tokens": 88,
+        "completion_tokens": 2,
+        "total_tokens": 90,
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "stats": {
+        "tokens_per_second": 18.159696369876695,
+        "time_to_first_token": 1.085517,
+        "generation_time": 1.140584,
+        "stop_reason": "eosFound"
+      },
+      "runtime": {
+        "name": "llama.cpp-mac-arm64-apple-metal-advsimd",
+        "version": "2.38.0",
+        "supported_formats": [
+          "gguf"
+        ]
+      },
+      "modelInfo": {
+        "arch": "qwen35",
+        "quant": "Q4_K_M",
+        "format": "gguf",
+        "context_length": 4096
+      },
+      "finishReason": "stop",
+      "abortAtMs": null,
+      "stateBeforeAbort": null,
+      "httpStatus": 200,
+      "toolCalls": [],
+      "name": "tool-result",
+      "preflight": {
+        "observedAt": "2026-09-18T22:33:18.181Z",
+        "gateProcessCount": 0,
+        "source": "host ps process snapshot; point observation, no cross-worktree lock",
+        "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded"
+      },
+      "idleAfter": {
+        "idle": true,
+        "elapsedMs": 159.76216700000077,
+        "samples": [
+          {
+            "afterMs": 159.75325000000157,
+            "status": "idle",
+            "queued": 0
+          }
+        ]
+      }
+    },
+    {
+      "startedAt": "2026-09-18T22:33:20.619Z",
+      "endpoint": "/v1/chat/completions",
+      "request": {
+        "model": "dotln-local",
+        "messages": [
+          {
+            "role": "user",
+            "content": "Count from 1 to 200, one number per line. Do not skip numbers."
+          }
+        ],
+        "temperature": 0,
+        "top_p": 1,
+        "seed": 424242,
+        "reasoning_effort": "none",
+        "max_tokens": 128,
+        "stream": true,
+        "stop": [
+          "<|im_end|>"
+        ]
+      },
+      "timeoutMs": 30000,
+      "status": "cancelled",
+      "latencyMs": 904.7662920000002,
+      "firstDeltaMs": 730.7484589999985,
+      "output": "1",
+      "reasoning": "",
+      "usage": null,
+      "stats": null,
+      "runtime": null,
+      "modelInfo": null,
+      "finishReason": null,
+      "abortAtMs": 903.7198749999989,
+      "stateBeforeAbort": {
+        "status": "generating",
+        "queued": 0
+      },
+      "httpStatus": 200,
+      "errorShape": "AbortError",
+      "name": "cancellation",
+      "preflight": {
+        "observedAt": "2026-09-18T22:33:20.619Z",
+        "gateProcessCount": 0,
+        "source": "host ps process snapshot; point observation, no cross-worktree lock",
+        "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded"
+      },
+      "idleAfter": {
+        "idle": true,
+        "elapsedMs": 163.02062499999738,
+        "samples": [
+          {
+            "afterMs": 163.01670899999954,
+            "status": "idle",
+            "queued": 0
+          }
+        ]
+      }
+    },
+    {
+      "startedAt": "2026-09-18T22:33:22.733Z",
+      "endpoint": "/v1/chat/completions",
+      "request": {
+        "model": "dotln-local",
+        "messages": [
+          {
+            "role": "user",
+            "content": "Count from 1 to 200, one number per line."
+          }
+        ],
+        "temperature": 0,
+        "top_p": 1,
+        "seed": 424242,
+        "reasoning_effort": "none",
+        "max_tokens": 128,
+        "stream": true,
+        "stop": [
+          "<|im_end|>"
+        ]
+      },
+      "timeoutMs": 100,
+      "status": "timeout",
+      "latencyMs": 102.00995800000237,
+      "firstDeltaMs": null,
+      "output": "",
+      "reasoning": "",
+      "usage": null,
+      "stats": null,
+      "runtime": null,
+      "modelInfo": null,
+      "finishReason": null,
+      "abortAtMs": 102.00995800000237,
+      "stateBeforeAbort": null,
+      "httpStatus": 200,
+      "errorShape": "AbortError",
+      "name": "timeout",
+      "preflight": {
+        "observedAt": "2026-09-18T22:33:22.732Z",
+        "gateProcessCount": 0,
+        "source": "host ps process snapshot; point observation, no cross-worktree lock",
+        "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded"
+      },
+      "idleAfter": {
+        "idle": true,
+        "elapsedMs": 161.34016600000177,
+        "samples": [
+          {
+            "afterMs": 161.33629099999962,
+            "status": "idle",
+            "queued": 0
+          }
+        ]
+      }
+    },
+    {
+      "startedAt": "2026-09-18T22:33:24.043Z",
+      "endpoint": "/v1/chat/completions",
+      "request": {
+        "model": "dotln-local",
+        "messages": [
+          {
+            "role": "user",
+            "content": "Reply with only READY."
+          }
+        ],
+        "temperature": 0,
+        "top_p": 1,
+        "seed": 424242,
+        "reasoning_effort": "none",
+        "max_tokens": 8,
+        "stream": false,
+        "stop": [
+          "<|im_end|>"
+        ]
+      },
+      "timeoutMs": 30000,
+      "status": "completed",
+      "latencyMs": 297.51566699999967,
+      "firstDeltaMs": null,
+      "output": "READY",
+      "reasoning": "",
+      "usage": {
+        "prompt_tokens": 17,
+        "completion_tokens": 2,
+        "total_tokens": 19,
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "stats": {},
+      "runtime": null,
+      "modelInfo": null,
+      "finishReason": "stop",
+      "abortAtMs": null,
+      "stateBeforeAbort": null,
+      "httpStatus": 200,
+      "toolCalls": [],
+      "name": "recovery",
+      "preflight": {
+        "observedAt": "2026-09-18T22:33:24.043Z",
+        "gateProcessCount": 0,
+        "source": "host ps process snapshot; point observation, no cross-worktree lock",
+        "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded"
+      },
+      "idleAfter": {
+        "idle": true,
+        "elapsedMs": 149.47354199999972,
+        "samples": [
+          {
+            "afterMs": 149.46941700000025,
+            "status": "idle",
+            "queued": 0
+          }
+        ]
+      }
+    }
+  ],
+  "limits": {
+    "parallel": 1,
+    "maxOutputTokens": 128,
+    "timeoutMs": 30000,
+    "cooldownMs": 1000,
+    "contextLength": 4096
+  },
+  "boundary": "host-permitted client; runner egress not confined by this client",
+  "assessment": {
+    "smokeCompleted": true,
+    "byteIdentical": true,
+    "schemaValid": true,
+    "toolRoundTrip": true,
+    "cancellationObserved": true,
+    "timeoutObserved": true,
+    "recoveryCompleted": true
+  },
+  "finishedAt": "2026-09-18T22:33:25.492Z",
+  "loadBaseline": {
+    "observedAt": "2026-09-18T22:41:09.996Z",
+    "thermalState": 0,
+    "memoryPressure": 1,
+    "swapUsedMiB": 1192.81
+  },
+  "loadBaselineGate": {
+    "observedAt": "2026-09-18T22:41:10.044Z",
+    "gateProcessCount": 0,
+    "source": "host ps process snapshot; point observation, no cross-worktree lock",
+    "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded"
+  },
+  "loadTest": {
+    "startedAt": "2026-09-18T22:42:55.124Z",
+    "baseline": {
+      "observedAt": "2026-09-18T22:41:09.996Z",
+      "thermalState": 0,
+      "memoryPressure": 1,
+      "swapUsedMiB": 1192.81
+    },
+    "rows": [
+      {
+        "startedAt": "2026-09-18T22:42:55.526Z",
+        "endpoint": "/api/v0/chat/completions",
+        "request": {
+          "model": "dotln-local",
+          "temperature": 0,
+          "top_p": 1,
+          "seed": 424242,
+          "reasoning_effort": "none",
+          "max_tokens": 128,
+          "stream": false,
+          "stop": [
+            "<|im_end|>"
+          ],
+          "messages": [
+            {
+              "role": "user",
+              "content": "Count upwards from 1 to 500, separated by commas. Do not skip any numbers. Output only the numbers."
+            }
+          ]
+        },
+        "timeoutMs": 15000,
+        "status": "completed",
+        "latencyMs": 8097.759875,
+        "firstDeltaMs": null,
+        "output": "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 3",
+        "reasoning": "",
+        "usage": {
+          "prompt_tokens": 38,
+          "completion_tokens": 128,
+          "total_tokens": 166,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0
+          }
+        },
+        "stats": {
+          "tokens_per_second": 17.78997270289779,
+          "time_to_first_token": 0.9350499999999999,
+          "generation_time": 8.073903,
+          "stop_reason": "maxPredictedTokensReached"
+        },
+        "runtime": {
+          "name": "llama.cpp-mac-arm64-apple-metal-advsimd",
+          "version": "2.38.0",
+          "supported_formats": [
+            "gguf"
+          ]
+        },
+        "modelInfo": {
+          "arch": "qwen35",
+          "quant": "Q4_K_M",
+          "format": "gguf",
+          "context_length": 4096
+        },
+        "finishReason": "length",
+        "abortAtMs": null,
+        "stateBeforeAbort": null,
+        "httpStatus": 200,
+        "toolCalls": [],
+        "number": 1,
+        "idleAfter": {
+          "idle": true,
+          "elapsedMs": 168.96108300000014,
+          "samples": [
+            {
+              "afterMs": 168.95366599999943,
+              "status": "idle",
+              "queued": 0
+            }
+          ]
+        }
+      },
+      {
+        "startedAt": "2026-09-18T22:43:08.866Z",
+        "endpoint": "/api/v0/chat/completions",
+        "request": {
+          "model": "dotln-local",
+          "temperature": 0,
+          "top_p": 1,
+          "seed": 424242,
+          "reasoning_effort": "none",
+          "max_tokens": 128,
+          "stream": false,
+          "stop": [
+            "<|im_end|>"
+          ],
+          "messages": [
+            {
+              "role": "user",
+              "content": "Count upwards from 1 to 500, separated by commas. Do not skip any numbers. Output only the numbers."
+            }
+          ]
+        },
+        "timeoutMs": 15000,
+        "status": "completed",
+        "latencyMs": 7397.982083000001,
+        "firstDeltaMs": null,
+        "output": "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 3",
+        "reasoning": "",
+        "usage": {
+          "prompt_tokens": 38,
+          "completion_tokens": 128,
+          "total_tokens": 166,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0
+          }
+        },
+        "stats": {
+          "tokens_per_second": 18.4671132702931,
+          "time_to_first_token": 0.46528800000000003,
+          "generation_time": 7.342378000000001,
+          "stop_reason": "maxPredictedTokensReached"
+        },
+        "runtime": {
+          "name": "llama.cpp-mac-arm64-apple-metal-advsimd",
+          "version": "2.38.0",
+          "supported_formats": [
+            "gguf"
+          ]
+        },
+        "modelInfo": {
+          "arch": "qwen35",
+          "quant": "Q4_K_M",
+          "format": "gguf",
+          "context_length": 4096
+        },
+        "finishReason": "length",
+        "abortAtMs": null,
+        "stateBeforeAbort": null,
+        "httpStatus": 200,
+        "toolCalls": [],
+        "number": 2,
+        "idleAfter": {
+          "idle": true,
+          "elapsedMs": 249.66216700000223,
+          "samples": [
+            {
+              "afterMs": 249.65820800000074,
+              "status": "idle",
+              "queued": 0
+            }
+          ]
+        }
+      },
+      {
+        "startedAt": "2026-09-18T22:43:21.583Z",
+        "endpoint": "/api/v0/chat/completions",
+        "request": {
+          "model": "dotln-local",
+          "temperature": 0,
+          "top_p": 1,
+          "seed": 424242,
+          "reasoning_effort": "none",
+          "max_tokens": 128,
+          "stream": false,
+          "stop": [
+            "<|im_end|>"
+          ],
+          "messages": [
+            {
+              "role": "user",
+              "content": "Count upwards from 1 to 500, separated by commas. Do not skip any numbers. Output only the numbers."
+            }
+          ]
+        },
+        "timeoutMs": 15000,
+        "status": "completed",
+        "latencyMs": 7301.272625000001,
+        "firstDeltaMs": null,
+        "output": "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 3",
+        "reasoning": "",
+        "usage": {
+          "prompt_tokens": 38,
+          "completion_tokens": 128,
+          "total_tokens": 166,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0
+          }
+        },
+        "stats": {
+          "tokens_per_second": 18.67307648198063,
+          "time_to_first_token": 0.486026,
+          "generation_time": 7.287262,
+          "stop_reason": "maxPredictedTokensReached"
+        },
+        "runtime": {
+          "name": "llama.cpp-mac-arm64-apple-metal-advsimd",
+          "version": "2.38.0",
+          "supported_formats": [
+            "gguf"
+          ]
+        },
+        "modelInfo": {
+          "arch": "qwen35",
+          "quant": "Q4_K_M",
+          "format": "gguf",
+          "context_length": 4096
+        },
+        "finishReason": "length",
+        "abortAtMs": null,
+        "stateBeforeAbort": null,
+        "httpStatus": 200,
+        "toolCalls": [],
+        "number": 3,
+        "idleAfter": {
+          "idle": true,
+          "elapsedMs": 175.21362500000396,
+          "samples": [
+            {
+              "afterMs": 175.20941599999787,
+              "status": "idle",
+              "queued": 0
+            }
+          ]
+        }
+      },
+      {
+        "startedAt": "2026-09-18T22:43:34.129Z",
+        "endpoint": "/api/v0/chat/completions",
+        "request": {
+          "model": "dotln-local",
+          "temperature": 0,
+          "top_p": 1,
+          "seed": 424242,
+          "reasoning_effort": "none",
+          "max_tokens": 128,
+          "stream": false,
+          "stop": [
+            "<|im_end|>"
+          ],
+          "messages": [
+            {
+              "role": "user",
+              "content": "Count upwards from 1 to 500, separated by commas. Do not skip any numbers. Output only the numbers."
+            }
+          ]
+        },
+        "timeoutMs": 15000,
+        "status": "completed",
+        "latencyMs": 7465.768500000006,
+        "firstDeltaMs": null,
+        "output": "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 3",
+        "reasoning": "",
+        "usage": {
+          "prompt_tokens": 38,
+          "completion_tokens": 128,
+          "total_tokens": 166,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0
+          }
+        },
+        "stats": {
+          "tokens_per_second": 18.25235825498832,
+          "time_to_first_token": 0.492682,
+          "generation_time": 7.450687,
+          "stop_reason": "maxPredictedTokensReached"
+        },
+        "runtime": {
+          "name": "llama.cpp-mac-arm64-apple-metal-advsimd",
+          "version": "2.38.0",
+          "supported_formats": [
+            "gguf"
+          ]
+        },
+        "modelInfo": {
+          "arch": "qwen35",
+          "quant": "Q4_K_M",
+          "format": "gguf",
+          "context_length": 4096
+        },
+        "finishReason": "length",
+        "abortAtMs": null,
+        "stateBeforeAbort": null,
+        "httpStatus": 200,
+        "toolCalls": [],
+        "number": 4,
+        "idleAfter": {
+          "idle": true,
+          "elapsedMs": 170.03008299999783,
+          "samples": [
+            {
+              "afterMs": 170.02579200000037,
+              "status": "idle",
+              "queued": 0
+            }
+          ]
+        }
+      },
+      {
+        "startedAt": "2026-09-18T22:43:46.834Z",
+        "endpoint": "/api/v0/chat/completions",
+        "request": {
+          "model": "dotln-local",
+          "temperature": 0,
+          "top_p": 1,
+          "seed": 424242,
+          "reasoning_effort": "none",
+          "max_tokens": 128,
+          "stream": false,
+          "stop": [
+            "<|im_end|>"
+          ],
+          "messages": [
+            {
+              "role": "user",
+              "content": "Count upwards from 1 to 500, separated by commas. Do not skip any numbers. Output only the numbers."
+            }
+          ]
+        },
+        "timeoutMs": 15000,
+        "status": "completed",
+        "latencyMs": 7482.642625,
+        "firstDeltaMs": null,
+        "output": "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 3",
+        "reasoning": "",
+        "usage": {
+          "prompt_tokens": 38,
+          "completion_tokens": 128,
+          "total_tokens": 166,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0
+          }
+        },
+        "stats": {
+          "tokens_per_second": 18.231687131615843,
+          "time_to_first_token": 0.5035299999999999,
+          "generation_time": 7.469424,
+          "stop_reason": "maxPredictedTokensReached"
+        },
+        "runtime": {
+          "name": "llama.cpp-mac-arm64-apple-metal-advsimd",
+          "version": "2.38.0",
+          "supported_formats": [
+            "gguf"
+          ]
+        },
+        "modelInfo": {
+          "arch": "qwen35",
+          "quant": "Q4_K_M",
+          "format": "gguf",
+          "context_length": 4096
+        },
+        "finishReason": "length",
+        "abortAtMs": null,
+        "stateBeforeAbort": null,
+        "httpStatus": 200,
+        "toolCalls": [],
+        "number": 5,
+        "idleAfter": {
+          "idle": true,
+          "elapsedMs": 276.6078750000015,
+          "samples": [
+            {
+              "afterMs": 276.6028340000048,
+              "status": "idle",
+              "queued": 0
+            }
+          ]
+        }
+      },
+      {
+        "startedAt": "2026-09-18T22:43:59.660Z",
+        "endpoint": "/api/v0/chat/completions",
+        "request": {
+          "model": "dotln-local",
+          "temperature": 0,
+          "top_p": 1,
+          "seed": 424242,
+          "reasoning_effort": "none",
+          "max_tokens": 128,
+          "stream": false,
+          "stop": [
+            "<|im_end|>"
+          ],
+          "messages": [
+            {
+              "role": "user",
+              "content": "Count upwards from 1 to 500, separated by commas. Do not skip any numbers. Output only the numbers."
+            }
+          ]
+        },
+        "timeoutMs": 15000,
+        "status": "completed",
+        "latencyMs": 7509.734625000005,
+        "firstDeltaMs": null,
+        "output": "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 3",
+        "reasoning": "",
+        "usage": {
+          "prompt_tokens": 38,
+          "completion_tokens": 128,
+          "total_tokens": 166,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0
+          }
+        },
+        "stats": {
+          "tokens_per_second": 18.18669487179597,
+          "time_to_first_token": 0.513019,
+          "generation_time": 7.496146,
+          "stop_reason": "maxPredictedTokensReached"
+        },
+        "runtime": {
+          "name": "llama.cpp-mac-arm64-apple-metal-advsimd",
+          "version": "2.38.0",
+          "supported_formats": [
+            "gguf"
+          ]
+        },
+        "modelInfo": {
+          "arch": "qwen35",
+          "quant": "Q4_K_M",
+          "format": "gguf",
+          "context_length": 4096
+        },
+        "finishReason": "length",
+        "abortAtMs": null,
+        "stateBeforeAbort": null,
+        "httpStatus": 200,
+        "toolCalls": [],
+        "number": 6,
+        "idleAfter": {
+          "idle": true,
+          "elapsedMs": 175.92949999999837,
+          "samples": [
+            {
+              "afterMs": 175.92570900000283,
+              "status": "idle",
+              "queued": 0
+            }
+          ]
+        }
+      },
+      {
+        "startedAt": "2026-09-18T22:44:12.417Z",
+        "endpoint": "/api/v0/chat/completions",
+        "request": {
+          "model": "dotln-local",
+          "temperature": 0,
+          "top_p": 1,
+          "seed": 424242,
+          "reasoning_effort": "none",
+          "max_tokens": 128,
+          "stream": false,
+          "stop": [
+            "<|im_end|>"
+          ],
+          "messages": [
+            {
+              "role": "user",
+              "content": "Count upwards from 1 to 500, separated by commas. Do not skip any numbers. Output only the numbers."
+            }
+          ]
+        },
+        "timeoutMs": 15000,
+        "status": "completed",
+        "latencyMs": 7434.964749999999,
+        "firstDeltaMs": null,
+        "output": "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 3",
+        "reasoning": "",
+        "usage": {
+          "prompt_tokens": 38,
+          "completion_tokens": 128,
+          "total_tokens": 166,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0
+          }
+        },
+        "stats": {
+          "tokens_per_second": 18.333303499611105,
+          "time_to_first_token": 0.49506,
+          "generation_time": 7.422344,
+          "stop_reason": "maxPredictedTokensReached"
+        },
+        "runtime": {
+          "name": "llama.cpp-mac-arm64-apple-metal-advsimd",
+          "version": "2.38.0",
+          "supported_formats": [
+            "gguf"
+          ]
+        },
+        "modelInfo": {
+          "arch": "qwen35",
+          "quant": "Q4_K_M",
+          "format": "gguf",
+          "context_length": 4096
+        },
+        "finishReason": "length",
+        "abortAtMs": null,
+        "stateBeforeAbort": null,
+        "httpStatus": 200,
+        "toolCalls": [],
+        "number": 7,
+        "idleAfter": {
+          "idle": true,
+          "elapsedMs": 173.4373329999944,
+          "samples": [
+            {
+              "afterMs": 173.4328749999986,
+              "status": "idle",
+              "queued": 0
+            }
+          ]
+        }
+      },
+      {
+        "startedAt": "2026-09-18T22:44:25.098Z",
+        "endpoint": "/api/v0/chat/completions",
+        "request": {
+          "model": "dotln-local",
+          "temperature": 0,
+          "top_p": 1,
+          "seed": 424242,
+          "reasoning_effort": "none",
+          "max_tokens": 128,
+          "stream": false,
+          "stop": [
+            "<|im_end|>"
+          ],
+          "messages": [
+            {
+              "role": "user",
+              "content": "Count upwards from 1 to 500, separated by commas. Do not skip any numbers. Output only the numbers."
+            }
+          ]
+        },
+        "timeoutMs": 15000,
+        "status": "completed",
+        "latencyMs": 7444.06074999999,
+        "firstDeltaMs": null,
+        "output": "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 3",
+        "reasoning": "",
+        "usage": {
+          "prompt_tokens": 38,
+          "completion_tokens": 128,
+          "total_tokens": 166,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0
+          }
+        },
+        "stats": {
+          "tokens_per_second": 18.336847895846706,
+          "time_to_first_token": 0.505255,
+          "generation_time": 7.4312,
+          "stop_reason": "maxPredictedTokensReached"
+        },
+        "runtime": {
+          "name": "llama.cpp-mac-arm64-apple-metal-advsimd",
+          "version": "2.38.0",
+          "supported_formats": [
+            "gguf"
+          ]
+        },
+        "modelInfo": {
+          "arch": "qwen35",
+          "quant": "Q4_K_M",
+          "format": "gguf",
+          "context_length": 4096
+        },
+        "finishReason": "length",
+        "abortAtMs": null,
+        "stateBeforeAbort": null,
+        "httpStatus": 200,
+        "toolCalls": [],
+        "number": 8,
+        "idleAfter": {
+          "idle": true,
+          "elapsedMs": 167.6674170000042,
+          "samples": [
+            {
+              "afterMs": 167.66320899999118,
+              "status": "idle",
+              "queued": 0
+            }
+          ]
+        }
+      },
+      {
+        "startedAt": "2026-09-18T22:44:37.783Z",
+        "endpoint": "/api/v0/chat/completions",
+        "request": {
+          "model": "dotln-local",
+          "temperature": 0,
+          "top_p": 1,
+          "seed": 424242,
+          "reasoning_effort": "none",
+          "max_tokens": 128,
+          "stream": false,
+          "stop": [
+            "<|im_end|>"
+          ],
+          "messages": [
+            {
+              "role": "user",
+              "content": "Count upwards from 1 to 500, separated by commas. Do not skip any numbers. Output only the numbers."
+            }
+          ]
+        },
+        "timeoutMs": 15000,
+        "status": "completed",
+        "latencyMs": 7389.121791000012,
+        "firstDeltaMs": null,
+        "output": "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 3",
+        "reasoning": "",
+        "usage": {
+          "prompt_tokens": 38,
+          "completion_tokens": 128,
+          "total_tokens": 166,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0
+          }
+        },
+        "stats": {
+          "tokens_per_second": 18.525087928527583,
+          "time_to_first_token": 0.518313,
+          "generation_time": 7.373881,
+          "stop_reason": "maxPredictedTokensReached"
+        },
+        "runtime": {
+          "name": "llama.cpp-mac-arm64-apple-metal-advsimd",
+          "version": "2.38.0",
+          "supported_formats": [
+            "gguf"
+          ]
+        },
+        "modelInfo": {
+          "arch": "qwen35",
+          "quant": "Q4_K_M",
+          "format": "gguf",
+          "context_length": 4096
+        },
+        "finishReason": "length",
+        "abortAtMs": null,
+        "stateBeforeAbort": null,
+        "httpStatus": 200,
+        "toolCalls": [],
+        "number": 9,
+        "idleAfter": {
+          "idle": true,
+          "elapsedMs": 207.19654200000514,
+          "samples": [
+            {
+              "afterMs": 207.1905839999963,
+              "status": "idle",
+              "queued": 0
+            }
+          ]
+        }
+      },
+      {
+        "startedAt": "2026-09-18T22:44:50.448Z",
+        "endpoint": "/api/v0/chat/completions",
+        "request": {
+          "model": "dotln-local",
+          "temperature": 0,
+          "top_p": 1,
+          "seed": 424242,
+          "reasoning_effort": "none",
+          "max_tokens": 128,
+          "stream": false,
+          "stop": [
+            "<|im_end|>"
+          ],
+          "messages": [
+            {
+              "role": "user",
+              "content": "Count upwards from 1 to 500, separated by commas. Do not skip any numbers. Output only the numbers."
+            }
+          ]
+        },
+        "timeoutMs": 4676.177083000002,
+        "status": "timeout",
+        "latencyMs": 4678.636833000011,
+        "firstDeltaMs": null,
+        "output": "",
+        "reasoning": "",
+        "usage": null,
+        "stats": null,
+        "runtime": null,
+        "modelInfo": null,
+        "finishReason": null,
+        "abortAtMs": 4677.836750000002,
+        "stateBeforeAbort": null,
+        "errorShape": "AbortError",
+        "number": 10,
+        "idleAfter": {
+          "idle": true,
+          "elapsedMs": 166.61612500000047,
+          "samples": [
+            {
+              "afterMs": 166.60866600000008,
+              "status": "idle",
+              "queued": 0
+            }
+          ]
+        }
+      }
+    ],
+    "samples": [
+      {
+        "observedAt": "2026-09-18T22:42:55.205Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 401.7113330000001,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:42:56.200Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 1771.929542,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:42:57.207Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 2083.751667,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:42:58.204Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 3079.949542,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:42:59.208Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 4084.685792,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:00.211Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 5087.598167,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:01.208Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 6084.266917,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:02.211Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 7086.926167,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:03.213Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 8089.399208000001,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:03.864Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 8740.269167,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:04.207Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 9083.190042,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:05.206Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 10082.440875,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:06.207Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 11082.936833,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:07.208Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 12084.576875,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:08.209Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 13084.765583,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:09.206Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 14082.346792,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:10.220Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 15096.652375,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:11.218Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 16094.025458,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:12.224Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 17099.988624999998,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:13.227Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 18103.485167,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:14.225Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 19101.547791999998,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:15.225Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 20100.867208,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:16.227Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 21103.672124999997,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:16.582Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 21457.751167,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:17.214Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 22089.819916999997,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:18.214Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 23090.296707999998,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:19.217Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 24093.539083,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:20.221Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 25096.697332999996,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:21.223Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 26098.925457999998,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:22.231Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 27107.018541999998,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:23.234Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 28109.772332999997,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:24.235Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 29111.488791999996,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:25.235Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 30111.57475,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:26.240Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 31115.810917,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:27.237Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 32113.516957999997,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:28.238Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 33113.881625,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:29.128Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 34003.951333000005,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:29.231Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 34106.747875,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:30.232Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 35108.174042,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:31.233Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 36109.212375,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:32.229Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 37105.338208,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:33.233Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 38108.869125000005,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:34.242Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 39118.224042,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:35.249Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 40124.932042,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:36.246Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 41121.652667,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:37.247Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 42122.637542000004,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:38.244Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 43119.762042,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:39.249Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 44125.47525,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:40.248Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 45124.051583,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:41.252Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 46128.404167,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:41.833Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 46708.646125,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:42.241Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 47117.521792,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:43.244Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 48120.211208,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:44.244Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 49120.497542000005,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:45.242Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 50118.000583,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:46.242Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 51117.707208,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:47.249Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 52124.998583,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:48.257Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 53133.479208000004,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:49.261Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 54136.83325,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:50.258Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 55134.397667000005,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:51.256Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 56132.453792,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:52.261Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 57137.293667000005,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:53.261Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 58136.546,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:54.263Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 59139.001292,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:54.658Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 59534.162625000004,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:55.253Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 60129.002625,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:56.253Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 61129.009125000004,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:57.254Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 62129.829542,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:58.256Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 63132.14825,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:43:59.258Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 64134.288875,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:44:00.269Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 65144.797375,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:44:01.266Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 66142.30975,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:44:02.269Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 67145.155708,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:44:03.269Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 68145.219792,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:44:04.274Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 69150.097792,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:44:05.273Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 70149.138083,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:44:06.272Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 71148.18395800001,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:44:07.276Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 72151.60025,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:44:07.416Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 72291.475542,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:44:08.267Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 73142.9155,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:44:09.266Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 74141.867958,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:44:10.268Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 75143.59020800001,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:44:11.265Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 76140.727958,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:44:12.265Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 77141.199083,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:44:13.277Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 78152.935417,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:44:14.278Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 79154.165958,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:44:15.284Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 80159.910542,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:44:16.280Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 81156.395417,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:44:17.285Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 82160.86625,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:44:18.285Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 83160.935833,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:44:19.284Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 84160.047792,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:44:20.097Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 84972.5325,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:44:20.280Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 85155.608917,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:44:21.278Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 86153.930708,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:44:22.278Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 87153.562583,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:44:23.277Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 88152.887375,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:44:24.279Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 89155.100292,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:44:25.287Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 90162.517292,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:44:26.291Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 91166.52725,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:44:27.293Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 92169.012292,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:44:28.295Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 93170.594833,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:44:29.297Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 94172.39995800001,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:44:30.292Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 95168.118333,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:44:31.298Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 96174.359333,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:44:32.300Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 97175.790833,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:44:32.781Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 97657.034625,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:44:33.287Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 98162.617042,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:44:34.289Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 99165.025458,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:44:35.293Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 100168.958083,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:44:36.294Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 101170.255625,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:44:37.293Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 102169.117375,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:44:38.300Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 103175.649083,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:44:39.307Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 104182.375958,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:44:40.309Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 105184.583042,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:44:41.312Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 106188.067042,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:44:42.315Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 107190.417125,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:44:43.310Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 108186.227833,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:44:44.316Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 109191.85375,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:44:45.309Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 110184.480542,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:44:45.447Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 110323.203167,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:44:46.305Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 111180.30125,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:44:47.305Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 112180.355583,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:44:48.303Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 113179.254167,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:44:49.303Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 114178.995167,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:44:50.307Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 115182.317333,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:44:51.316Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 116191.370125,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:44:52.318Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 117193.36683300001,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:44:53.321Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 118197.03,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:44:54.320Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 119195.839458,
+        "gateProcessCount": 0
+      },
+      {
+        "observedAt": "2026-09-18T22:44:55.314Z",
+        "thermalState": 0,
+        "memoryPressure": 1,
+        "swapUsedMiB": 1192.81,
+        "afterMs": 120189.605958,
+        "gateProcessCount": 0
+      }
+    ],
+    "stageChecks": [
+      {
+        "afterRequests": 2,
+        "afterMs": 21458.088708,
+        "health": {
+          "observedAt": "2026-09-18T22:43:16.582Z",
+          "thermalState": 0,
+          "memoryPressure": 1,
+          "swapUsedMiB": 1192.81,
+          "afterMs": 21457.751167,
+          "gateProcessCount": 0
+        },
+        "decision": "continue-to-stage-two"
+      }
+    ],
+    "stopReason": "duration-limit",
+    "limits": {
+      "durationMs": 120000,
+      "maxRequests": 10,
+      "pauseMs": 5000,
+      "pollMs": 1000,
+      "maxOutputTokens": 128,
+      "parallel": 1,
+      "requestTimeoutMs": 15000
+    },
+    "finishedAt": "2026-09-18T22:44:55.314Z",
+    "elapsedMs": 120190.225167
+  },
+  "duringGenerationSockets": {
+    "classification": "observed",
+    "observedAt": "2026-09-18T22:42:56.628Z",
+    "runnerProcessCount": 7,
+    "internetSocketCount": 6,
+    "loopbackSocketCount": 6,
+    "otherSocketCount": 0,
+    "source": "ps comm path selection; lsof -nP Internet sockets; addresses and PIDs discarded",
+    "stateBefore": "generating",
+    "stateAfter": "generating",
+    "duringGeneration": true
+  },
+  "outcomeReason": "Protocol probes passed, but attributable runner egress denial, effective template/default-settings readback and interrupted-case throughput remain unavailable. No readiness or quality promotion.",
+  "actor": {
+    "harness": "codex-cli",
+    "harnessVersion": "0.155.0",
+    "model": "gpt-6-astra",
+    "effort": "ultra",
+    "source": "codex-session-readback"
+  },
+  "provenance": {
+    "classification": "observed",
+    "applicationVersion": "0.4.24+1",
+    "cliCommit": "ff50809",
+    "runtime": {
+      "name": "llama.cpp-mac-arm64-apple-metal-advsimd",
+      "version": "2.38.0",
+      "supported_formats": [
+        "gguf"
+      ]
+    },
+    "hardware": {
+      "chip": "Apple M3 Max",
+      "memoryBytes": 51539607552,
+      "physicalCores": 16
+    },
+    "apiAlias": "dotln-local",
+    "modelKey": "qwen/qwen3.6-27b",
+    "artifact": {
+      "publisher": "lmstudio-community",
+      "repository": "Qwen3.6-27B-GGUF",
+      "file": "Qwen3.6-27B-Q4_K_M.gguf",
+      "bytes": 16547398784,
+      "sha256": "33625d8dc3a5dd8d88c324d47db58561b11f7072816287078bfe58b4c55782f9",
+      "architecture": "qwen35",
+      "parameters": "27B",
+      "quantization": "Q4_K_M",
+      "license": {
+        "classification": "documented officially",
+        "value": "Apache-2.0",
+        "source": "https://huggingface.co/lmstudio-community/Qwen3.6-27B-GGUF"
+      }
+    },
+    "visionProjector": {
+      "file": "mmproj-Qwen3.6-27B-BF16.gguf",
+      "bytes": 931145856,
+      "sha256": "b5d6d9c7063068ce85130bae1d7851eadae1f81f9ecfae82112adffd4b736b45",
+      "imagesSent": 0
+    },
+    "runnerInventoryAggregateBytes": 17478732949,
+    "load": {
+      "contextLength": 4096,
+      "parallel": 1,
+      "gpu": "max",
+      "speculativeDraftMtp": false,
+      "speculativeDraftSimple": false,
+      "loadSeconds": 9.9,
+      "reloadSeconds": 3.3,
+      "reportedGiB": 16.28
+    },
+    "effectiveTemplate": {
+      "classification": "unavailable",
+      "reason": "Embedded template inspected; applied runtime template override not independently read back"
+    },
+    "otherEffectiveSamplingDefaults": {
+      "classification": "unavailable",
+      "reason": "Only request fields and response/load metadata observed; no settings file inspected"
+    },
+    "downloads": 0,
+    "embeddedTemplate": {
+      "classification": "observed",
+      "sha256": "e84f32a23fdda27689f868aa4a1a5621f41133e51a48d7f3efcbea2839574259",
+      "bytes": 7764,
+      "source": "GGUF tokenizer.chat_template",
+      "form": "Jinja; enable_thinking branch; XML function/parameter tool syntax"
+    }
+  },
+  "priorOperatorContext": {
+    "classification": "operator-reported",
+    "completionEvidence": false,
+    "confirmed": [
+      "Normal Terminal application launch",
+      "Explicit loopback CLI start/status",
+      "GET /v1/models responded",
+      "POST requesting dotln-local returned No models loaded"
+    ],
+    "unconfirmed": [
+      "Suggested interactive lms load without a model key",
+      "Generation after that suggestion",
+      "Suggested cleanup"
+    ],
+    "lessons": [
+      "Use CLI rather than mismatched GUI path",
+      "Preserve HTTP error bodies",
+      "Alias is not artifact identity"
+    ]
+  },
+  "steps": [
+    {
+      "step": 1,
+      "action": "Initial curl GET /v1/models",
+      "classification": "observed",
+      "observation": "Connection refused before explicit startup; not evidence that startup fails",
+      "operatorActionRequired": "Direction only; host permitted execution in this session"
+    },
+    {
+      "step": 2,
+      "action": "Bundle plist and CLI --version/help",
+      "classification": "observed",
+      "observation": "LM Studio 0.4.24+1, CLI ff50809; explicit loopback/load flags observed",
+      "operatorActionRequired": "Direction only; host permitted execution in this session"
+    },
+    {
+      "step": 3,
+      "action": "Host process snapshot before live work",
+      "classification": "observed",
+      "observation": "No product gate process observed",
+      "operatorActionRequired": "Direction only; host permitted execution in this session"
+    },
+    {
+      "step": 4,
+      "action": "lms server start --bind 127.0.0.1 --port 1234; status",
+      "classification": "observed",
+      "observation": "Start succeeded; port1234 running",
+      "operatorActionRequired": "Direction only; host permitted execution in this session"
+    },
+    {
+      "step": 5,
+      "action": "lms ls --json; lms ps --json; native v0/v1 model list",
+      "classification": "observed",
+      "observation": "Existing artifacts, zero loaded models, Qwen candidate advertised tool support",
+      "operatorActionRequired": "Direction only; host permitted execution in this session"
+    },
+    {
+      "step": 6,
+      "action": "lms runtime ls --json, then plain ls",
+      "classification": "observed",
+      "observation": "JSON flag unsupported; plain inventory reported selected llama.cpp2.38.0 and MLX1.11.0",
+      "operatorActionRequired": "Direction only; host permitted execution in this session"
+    },
+    {
+      "step": 7,
+      "action": "lms load qwen/qwen3.6-27b@q4_k_m",
+      "classification": "observed",
+      "observation": "Model not found; one rejected variant-key attempt",
+      "operatorActionRequired": "Direction only; host permitted execution in this session"
+    },
+    {
+      "step": 8,
+      "action": "lms load qwen/qwen3.6-27b --identifier dotln-local --context-length 4096 --parallel 1 --gpu max -y",
+      "classification": "observed",
+      "observation": "Model loaded9.90s; idle, context4096, parallel1",
+      "operatorActionRequired": "Direction only; host permitted execution in this session"
+    },
+    {
+      "step": 9,
+      "action": "Hash GGUF and projector; read public GGUF metadata; sysctl hardware",
+      "classification": "observed",
+      "observation": "Exact artifacts and coarse hardware pinned",
+      "operatorActionRequired": "Direction only; host permitted execution in this session"
+    },
+    {
+      "step": 10,
+      "action": "lms log stream --source server; model --filter output --stats --json",
+      "classification": "observed",
+      "observation": "Independent live observers started; no raw session identifiers retained",
+      "operatorActionRequired": "Direction only; host permitted execution in this session"
+    },
+    {
+      "step": 11,
+      "action": "Diagnostic native completion, max64, default reasoning",
+      "classification": "observed",
+      "observation": "64 reasoning tokens, empty answer, finish length; not successful answer",
+      "operatorActionRequired": "Direction only; host permitted execution in this session"
+    },
+    {
+      "step": 12,
+      "action": "Diagnostic native completion, max64, reasoning_effort none",
+      "classification": "observed",
+      "observation": "READY;2 output tokens;0 reasoning tokens; llama.cpp2.38.0",
+      "operatorActionRequired": "Direction only; host permitted execution in this session"
+    },
+    {
+      "step": 13,
+      "action": "local-runner-smoke --live",
+      "classification": "observed",
+      "observation": "Nine requests retained as rows; all seven protocol assessments true",
+      "operatorActionRequired": "Direction only; host permitted execution in this session"
+    },
+    {
+      "step": 14,
+      "action": "Socket inventory at22:33:22UTC",
+      "classification": "observed",
+      "observation": "Nine runner-related processes,10 Internet sockets all loopback; generation overlap not independently established",
+      "operatorActionRequired": "Direction only; host permitted execution in this session"
+    },
+    {
+      "step": 15,
+      "action": "lms unload dotln-local; server stop; ps/status",
+      "classification": "observed",
+      "observation": "Empty model list; server stopped; no recorded thermal warning",
+      "operatorActionRequired": "Direction only; host permitted execution in this session"
+    },
+    {
+      "step": 16,
+      "action": "Stop owned server/model log observers",
+      "classification": "observed",
+      "observation": "Observers exited; no application terminated",
+      "operatorActionRequired": "Direction only; host permitted execution in this session"
+    },
+    {
+      "step": 17,
+      "action": "Proposed separate two-minute gentle load experiment",
+      "classification": "proposed",
+      "observation": "Initially unexecuted; superseded by explicit operator scope expansion",
+      "operatorActionRequired": "Direction only; host permitted execution in this session"
+    },
+    {
+      "step": 18,
+      "action": "Operator scope expand; D002; plan amend-order/check",
+      "classification": "observed",
+      "observation": "Two-minute gentle load experiment authorized now; amendment filed",
+      "operatorActionRequired": "Direction only; host permitted execution in this session"
+    },
+    {
+      "step": 19,
+      "action": "Native pre-load health baseline",
+      "classification": "observed",
+      "observation": "thermal0;memoryPressure1;swap1192.81MiB",
+      "operatorActionRequired": "Direction only; host permitted execution in this session"
+    },
+    {
+      "step": 20,
+      "action": "Explicit CLI restart and same-model reload",
+      "classification": "observed",
+      "observation": "Reload3.30s, context4096, parallel1; no download",
+      "operatorActionRequired": "Direction only; host permitted execution in this session"
+    },
+    {
+      "step": 21,
+      "action": "local-runner-load --live --packet",
+      "classification": "observed",
+      "observation": "130 health samples,10 attempts;9 complete and final deadline timeout; no pressure or incremental swap",
+      "operatorActionRequired": "Direction only; host permitted execution in this session"
+    },
+    {
+      "step": 22,
+      "action": "Final unload/stop/ps/status/native health",
+      "classification": "observed",
+      "observation": "Empty model list; server stopped; thermal0,memory1,swap unchanged at22:45:10.507UTC",
+      "operatorActionRequired": "Direction only; host permitted execution in this session"
+    }
+  ],
+  "diagnosticCompletions": [
+    {
+      "case": "default-reasoning",
+      "maxTokens": 64,
+      "output": "",
+      "finishReason": "length",
+      "promptTokens": 15,
+      "completionTokens": 64,
+      "reasoningTokens": 64,
+      "tokensPerSecond": 18.469835680028567,
+      "firstTokenSeconds": 0.796075,
+      "generationSeconds": 4.207042
+    },
+    {
+      "case": "reasoning-none",
+      "maxTokens": 64,
+      "output": "READY",
+      "finishReason": "stop",
+      "promptTokens": 17,
+      "completionTokens": 2,
+      "reasoningTokens": 0,
+      "tokensPerSecond": 18.261504747991236,
+      "firstTokenSeconds": 0.565083,
+      "generationSeconds": 0.619843
+    }
+  ],
+  "independentLogObservations": {
+    "classification": "observed",
+    "source": "lms server log and model-output observers in this session; sanitized projection",
+    "cancellation": {
+      "disconnectAt": "2026-09-18T22:33:21Z",
+      "cancelToSlotReleaseMs": 52.727,
+      "throughput": null
+    },
+    "timeout": {
+      "disconnectAt": "2026-09-18T22:33:22Z",
+      "cancelAndSlotReleaseAt": "2026-09-18T22:33:23Z",
+      "throughput": null
+    },
+    "recovery": {
+      "tokensPerSecond": 18.183801869294832,
+      "timeToFirstTokenSec": 0.186037,
+      "totalTimeSec": 0.241031,
+      "predictedTokensCount": 2,
+      "stopReason": "eosFound"
+    },
+    "missingInterruptedMetrics": "Neither HTTP response nor model-output observer nor server cancellation/release records supplied interrupted throughput"
+  },
+  "egress": {
+    "classification": "ambiguous",
+    "runnerBoundary": "Normal host application, no deny-egress boundary applied",
+    "binding": "127.0.0.1:1234",
+    "duringGenerationSnapshotRef": "duringGenerationSockets",
+    "claimLimit": "Loopback sockets at one observed instant do not prove no outbound traffic or a preventing boundary; WO-027 deferral not discharged"
+  },
+  "cleanup": {
+    "classification": "observed",
+    "observedAt": "2026-09-18T22:45:10.507Z",
+    "loadedModels": [],
+    "serverRunning": false,
+    "thermalState": 0,
+    "memoryPressure": 1,
+    "swapUsedMiB": 1192.81,
+    "persistentSettingsChanged": false
+  },
+  "budget": {
+    "operatorBudgetMinutes": 90,
+    "operatorTimeCounter": null,
+    "liveSmokeWallMs": 24162,
+    "liveLoadWallMs": 120190.225167,
+    "liveLoadStopReason": "duration-limit",
+    "downloadBytes": 0,
+    "maxAttemptsPerBlocker": 3,
+    "retries": [
+      "Rejected variant key retried once with listed model key",
+      "Default-reasoning answer cap retried once with experimentally verified reasoning_effort none"
+    ],
+    "limit": "No further live inference scheduled; missing observation facilities are documented rather than treated as evidence"
+  },
+  "decisionPacket": {
+    "outcome": "inconclusive",
+    "protocolAssessment": {
+      "smokeCompleted": true,
+      "byteIdentical": true,
+      "schemaValid": true,
+      "toolRoundTrip": true,
+      "cancellationObserved": true,
+      "timeoutObserved": true,
+      "recoveryCompleted": true
+    },
+    "loadOutcome": "bounded traffic limit reached without observed thermal/memory pressure or swap growth",
+    "ruledOut": [
+      "Unavailable API after explicit start",
+      "No installed artifact",
+      "Load or basic inference unavailable",
+      "Schema or tool round-trip failure",
+      "Output differences in this n=3 triple",
+      "Cancellation requiring over5seconds in this case"
+    ],
+    "remainingBlockers": [
+      "No attributable runner egress denial boundary",
+      "Effective template/default-setting stack unobserved",
+      "Interrupted generation token rates unavailable"
+    ],
+    "nextUsefulAction": "Qualify an attributable boundary on the actual runner lifetime with loopback/egress controls, plus effective template and interrupted-token observation before WO-138; WO-110 may use doubles and these shapes without claiming ready",
+    "qualityClaim": false,
+    "capabilityPromotion": false,
+    "stressSafetyGuarantee": false
+  }
+}
