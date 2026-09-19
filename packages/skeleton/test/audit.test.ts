@@ -1148,3 +1148,68 @@ test("AC5 all projection bytes are identical over live, replayed, and re-encoded
   assert.equal(renderAuditProjections(decodeLog(rerun.log)), expected);
   assert.deepEqual(events, before, "pure folds must not mutate the event log");
 });
+
+test("WO-142 audit rejects malformed envelope times, versions and partial NoOp evidence", () => {
+  const event = auditEvent("evt_fixture", "Context", {});
+  assert.throws(
+    () =>
+      deriveAuditRecords([{ ...event, schemaVersion: 2 } as unknown as Event]),
+    /append ordinal 1: unsupported schemaVersion/u,
+  );
+  assert.throws(
+    () => deriveAuditRecords([{ ...event, occurredAt: Number.NaN }]),
+    /append ordinal 1: occurredAt must be finite/u,
+  );
+  assert.throws(
+    () =>
+      deriveAuditRecords([
+        event,
+        auditEvent("evt_noop", "QueuedPulseNoOp", {
+          reason: "return",
+          evidence: [event.eventId, "evt_missing"],
+        }),
+      ]),
+    /missing or non-canonical NoOp evidence/u,
+  );
+});
+
+test("WO-142 audit retains failed and unknown verdicts and bounded adjacency association", () => {
+  for (const [payload, verdict] of [
+    [{ accepted: false }, "failed"],
+    [{}, "unknown"],
+  ] as const) {
+    const record = deriveAuditRecords([
+      auditEvent("evt_done", "VerificationCompleted", payload),
+    ]).find((row) => row.actionClass === "verification");
+    assert.ok(record?.actionClass === "verification");
+    assert.equal(record.verdict, verdict);
+    assert.equal(record.outcome, verdict);
+  }
+  const attempt = auditEvent("evt_attempt", "DeletionAttempted", {
+    effect: "repo.delete",
+  });
+  const refusal = auditEvent("evt_refusal", "CommandRefused", {
+    reason: "effect denied",
+    authorityEnvelopeId: "auth_fixture",
+  });
+  const record = deriveAuditRecords([attempt, refusal]).find(
+    (row) => row.actionClass === "authority-decision",
+  );
+  assert.ok(
+    record?.actionClass === "authority-decision" &&
+      record.decision === "denied",
+  );
+  assert.equal(record.association, "derived-same-episode-time-adjacency");
+  assert.deepEqual(record.eventIds, ["evt_attempt", "evt_refusal"]);
+  const separated = deriveAuditRecords([
+    attempt,
+    auditEvent("evt_gap", "Context", {}),
+    refusal,
+  ]).find((row) => row.actionClass === "authority-decision");
+  assert.ok(
+    separated?.actionClass === "authority-decision" &&
+      separated.decision === "denied",
+  );
+  assert.equal(separated.association, "refusal-event-only");
+  assert.deepEqual(separated.eventIds, ["evt_refusal"]);
+});

@@ -39,6 +39,7 @@ export interface DocumentSource {
 export interface BoardSources {
   readonly stores?: readonly StoreSource[];
   readonly loadouts?: Source<readonly LoadoutSource[]>;
+  readonly loadoutFailures?: readonly Source<never>[];
   readonly feedbackUnits?: Source<readonly FeedbackUnit[]>;
   readonly maturity?: Source<unknown>;
   readonly controlStatus?: Source<readonly unknown[]>;

@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { execFileSync, spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
+import { appendEvent } from "@dotln/kernel";
 import {
   existsSync,
   mkdtempSync,
@@ -317,7 +318,59 @@ test("WO-032 schema refuses a different version, unknown fields, unsupported cel
 });
 
 test("WO-032 AC2 executor, verifier attempts, authority, hashes and actual accepted episode remain distinct", () => {
-  const board = projectBoard(loadFixture("selfhost"));
+  const fixture = loadFixture("selfhost");
+  const store = fixture.stores!.find(
+    (item) => item.id === "selfhost-verifier",
+  )!;
+  assert.equal(store.status.status, "available");
+  if (store.status.status !== "available")
+    assert.fail("missing verifier status");
+  const prior = store.status.value.episodes.find(
+    (episode) => episode.phase === "completed",
+  )!;
+  assert.ok(prior, "fixture needs the accepted completed attempt");
+  // Keep the live recording immutable and add a distinct expired attempt only
+  // to this fixture-local log, independent of the edition's retry count.
+  let log = readFileSync(
+    join(root, manifest.inputs["selfhostVerifier"]!.path),
+    "utf8",
+  );
+  for (const [type, occurredAt] of [
+    ["WorkerAttemptStarted", prior.startedAt],
+    ["WorkerLeaseExpired", prior.leaseExpiresAt],
+  ] as const) {
+    ({ log } = appendEvent(log, {
+      schemaVersion: 1,
+      type,
+      occurredAt,
+      actorId: "worker-host",
+      workstreamId: "fixture-extra-verifier-attempt",
+      payload: {
+        workerEpisodeId: "ep_verifier_fixture_expired",
+        commandId: prior.commandId,
+        model: prior.model,
+        effort: prior.effort,
+        transport: prior.transport,
+        mode: prior.mode,
+        leaseExpiresAt: prior.leaseExpiresAt,
+      },
+    }));
+  }
+  const replacement = storeFromLog(
+    store.id,
+    store.label,
+    available("fixture:two-verifier-attempts", log),
+  );
+  assert.equal(replacement.status.status, "available");
+  if (replacement.status.status !== "available")
+    assert.fail("fixture log refused");
+  assert.ok(replacement.status.value.episodes.length >= 2);
+  const board = projectBoard({
+    ...fixture,
+    stores: fixture.stores!.map((item) =>
+      item === store ? replacement : item,
+    ),
+  });
   const actors = board.panels[0]!.sections.flatMap((section) => section.rows);
   const executor = actors.find(
     (row) => cells(row)["episode"]?.value === "ep_feedback_executor",
@@ -365,6 +418,7 @@ test("WO-032 AC2 executor, verifier attempts, authority, hashes and actual accep
       actor.links.some((link) => link.target.startsWith("recorded-build-")),
     );
   }
+  let expiredAttemptsChecked = 0;
   for (const row of actors) {
     const episode = cells(row)["episode"]?.value;
     if (
@@ -373,12 +427,17 @@ test("WO-032 AC2 executor, verifier attempts, authority, hashes and actual accep
       episode === accepted
     )
       continue;
+    expiredAttemptsChecked++;
     assert.equal(cells(row)["phase"]!.value, "lease-expired");
     assert.equal(
       row.links.some((link) => link.target.startsWith("matrix-")),
       false,
     );
   }
+  assert.ok(
+    expiredAttemptsChecked >= 1,
+    "the expired-attempt assertions must execute",
+  );
   assert.equal(cells(matrix)["phase"]!.value, "complete");
   assert.equal(cells(matrix)["AC-context.status"]!.value, "verified");
   assert.equal(cells(matrix)["AC-context.stale"]!.value, false);
@@ -989,7 +1048,11 @@ test("[document] WO-032 host collection reads current sources and all shipped ex
       sources.roadmap,
       sources.refutations,
     ]) {
-      assert.equal(source?.status, "available", source?.ref);
+      assert.equal(
+        source?.status,
+        "available",
+        source?.ref ?? "missing source",
+      );
     }
     if (sources.loadouts?.status !== "available")
       assert.fail("saved exports unavailable");
@@ -1031,4 +1094,48 @@ test("[document] WO-032 host collection reads current sources and all shipped ex
   } finally {
     rmSync(directory, { recursive: true, force: true });
   }
+});
+
+test("WO-142 one throwing loadout factory preserves healthy builds and names its failure", () => {
+  const failures: { ref: string; status: "unavailable"; reason: string }[] = [];
+  const loadouts = exportedLoadouts(
+    {
+      before: seiriLoadout,
+      brokenLoadout: () => {
+        throw new Error("fixture factory cause");
+      },
+      laterLoadout: () => ({ ...seiriLoadout, loadoutId: "fixture-later" }),
+    },
+    "fixture:exports",
+    seiriEnvironment(),
+    (ref, reason) => failures.push({ ref, status: "unavailable", reason }),
+  );
+  assert.equal(loadouts.length, 2);
+  const board = projectBoard({
+    loadouts: available("fixture:exports", loadouts),
+    loadoutFailures: failures,
+  });
+  assert.equal(section(board, "saved-builds").rows.length, 2);
+  assert.ok(
+    board.sources.some(
+      (source) =>
+        source.ref === "fixture:exports#brokenLoadout" &&
+        source.status === "unavailable" &&
+        source.explanation === "fixture factory cause",
+    ),
+  );
+});
+
+test("WO-142 store projection preserves the underlying parse cause", () => {
+  const store = storeFromLog(
+    "bad",
+    "Bad fixture",
+    available("fixture:bad-log", "not-json\n"),
+  );
+  assert.equal(store.audit.status, "unavailable");
+  if (store.audit.status !== "unavailable") assert.fail("bad JSON projected");
+  assert.match(
+    store.audit.reason,
+    /Source could not be read or its declared format was refused: .+/u,
+  );
 });

@@ -99,6 +99,15 @@ supplied hash. Its text is never copied to public evidence. The command appends
 `PlanHoldOverridden`; receipt prose supplies no override authority. Attribution
 records the acting session and does not authenticate the human's identity.
 
+An operator-authorized change to a judged order uses
+`npm run plan -- amend-order WO-NNN WO-NNN-DNNN "operator authorization and bounded scope"`
+after recording that authorization in the order's structured decisions. It appends
+`PlanExecutionAmended` to the same control log, binding the current receipt,
+original order, approved order text and individual decision; the event has no
+actor field. Later admitted execution appendices and release-title retiming
+preserve that binding. The amendment supplies no new authority and cannot
+discharge an independent hold.
+
 ## Execution and preservation
 
 External CLI review runs only when the operator explicitly requests

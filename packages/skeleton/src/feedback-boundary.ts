@@ -7,7 +7,7 @@ import {
   type FeedbackRequest,
   type FeedbackVerdict,
 } from "@dotln/compiler";
-import { feedbackSourceComments } from "./feedback-source-comments.js";
+import { feedbackSourcesComments } from "./feedback-source-comments.js";
 
 export type FeedbackBoundaryRequest =
   | Exclude<FeedbackRequest, { readonly kind: "suppression-diff" }>
@@ -35,14 +35,23 @@ export function feedbackBoundary<T>(
   facts: FeedbackBoundaryRequest,
   effect: () => T,
 ): T {
+  const comments =
+    facts.kind === "suppression-diff"
+      ? feedbackSourcesComments(
+          facts.files.flatMap((file) => [
+            { path: file.path, source: file.before },
+            { path: file.path, source: file.after },
+          ]),
+        )
+      : [];
   const request: FeedbackRequest =
     facts.kind === "suppression-diff"
       ? {
           kind: facts.kind,
-          files: facts.files.map((file) => ({
+          files: facts.files.map((file, index) => ({
             path: file.path,
-            beforeComments: feedbackSourceComments(file.path, file.before),
-            afterComments: feedbackSourceComments(file.path, file.after),
+            beforeComments: comments[index * 2]!,
+            afterComments: comments[index * 2 + 1]!,
           })),
         }
       : facts;

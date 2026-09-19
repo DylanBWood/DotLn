@@ -5,7 +5,7 @@ export function hasAiAttribution(message) {
     .split(/\r?\n/u)
     .some(
       (line) =>
-        /^\s*Co-authored-by\s*:\s*(?:(?:Claude(?: Code)?|Codex|ChatGPT|OpenAI|Anthropic|AI)(?:\s|<)|[^<>]*<[^<>]*@(?:anthropic\.com|openai\.com)>)/iu.test(
+        /^\s*(?:Co-authored-by|Assisted-by)\s*:\s*(?:(?:Claude(?: Code)?|Codex|ChatGPT|OpenAI|Anthropic|AI)(?:\s|<|$)|[^<>]*<[^<>]*@(?:anthropic\.com|openai\.com)>)/iu.test(
           line,
         ) ||
         /^\s*(?:[\p{Emoji_Presentation}]\s*)?(?:Generated|Written|Co-authored) (?:with|by) (?:\[)?(?:Claude(?: Code)?|Codex|ChatGPT|OpenAI|AI)(?:\b|\])/iu.test(

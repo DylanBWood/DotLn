@@ -78,10 +78,14 @@ The standing security invariant is that a discovered credential, host, open
 port, connector, or capable tool is not authority to use it. Keep untrusted
 execution inside the enabled shell sandbox and route boundary-crossing requests
 through the host's approval mechanism. Re-check effective settings after upgrades.
-DotLn hooks refuse only a second writer in the same worktree and a write to gate
-inputs or its success record during the live reviewer gate. All other hook
-judgments provide advice and defer to host permissions. Claude enforces those
-two hook boundaries; Codex receives the same invariants as role instructions.
+DotLn hooks refuse four conditions: a second writer in one worktree; a write to
+gate inputs or the success record during any live `npm test`; a repository
+write outside `docs/` and root Markdown on a `planning/` branch; and an
+observable subagent admission beyond `docs/control/budgets.json` `subagentCap`
+(default 20; `null` disables). Descendants count at their first attributable
+tool call; unresolved direct/child overlap is a reported minimum and unobserved
+agents remain unknown. Claude enforces these observed boundaries; Codex carries
+the same duties as role text. Other judgments advise and defer to host permissions.
 A registered writer may plan, build, bootstrap and close a release on main.
 
 At the 2026-09-01 Codex baseline, `.git` and a linked worktree's resolved Git
@@ -126,7 +130,10 @@ Prefix a message with `planning:` (or ask for a planning session) on the clean
 main checkout to run the pass described in
 [07 §Operator-opened planning pass](product/07-execution-guide.md#operator-opened-planning-pass).
 Run `npm run plan -- start <slug>` to create the planning branch from clean
-main before writing. The planner reads the sequence and the guide's planning
+main before writing. On a `planning/` branch, repository writes stay within
+`docs/` and root Markdown; external paths remain admitted by this DotLn rule.
+Plan fan-out against the session's remaining `subagentCap`, including descendants,
+and report unknown coverage rather than assuming a fresh budget. The planner reads the sequence and the guide's planning
 and ideation sections, then scopes candidate and source lookups. It returns
 synthesized docs, the sequence and map changes, Cost-bearing order drafts and
 the available process-cost observations. Commit that subject before refutation.
@@ -141,6 +148,10 @@ to the criterion text after repair, without another judgment. The
 [receipt convention](planning/refutations/README.md) supplies the exact commands.
 Finish with `npm run test:docs`, which checks current documents and their runtime projections without the product or machinery fixture suites. Planning
 retains its separate publication authority and does not activate an order.
+During execution, an operator-authorized change to a judged order is recorded in
+its structured decisions and bound with `npm run plan -- amend-order WO-NNN
+WO-NNN-DNNN "operator authorization and bounded scope"`; this appends the
+existing planning-log amendment and does not discharge an independent hold.
 
 ## The loop, per work order
 
@@ -447,8 +458,9 @@ commits), `git stash apply` and keep the stash, regenerate `current.md`, the
 index, and the publication locks rather than hand-merging them, retime the
 release target with a dated note if the sibling took the version, rerun the
 affected checks, and record which claims retained or needed new evidence. A
-new base is not itself a repair finding. WO-033 ships `npm run worktree -- sync WO-NNN`
-for these mechanical steps and the evidence-impact handoff. Expect textual conflicts by construction in the README
+new base is not itself a repair finding. The planned [WO-079](work-orders/WO-079-worktree-sync.md)
+`npm run worktree -- integrate WO-NNN` helper owns these mechanical steps and
+the evidence-impact handoff; until it ships, use the manual procedure above. Expect textual conflicts by construction in the README
 release block, `package.json`, the ledger head, the map's recommendation
 section, and the edition lock lines; none is a reason to union-merge or rewrite
 a control segment. Available actors and one writer per worktree bound resources;
@@ -589,8 +601,9 @@ the evidence identity and cleanup rules.
 Worktree finish makes the same pin comparison after its fast-forward and rebuilds
 before removing the merged worktree. A failed build preserves that worktree.
 
-Without `--publish`, close may fast-forward main and rebuild missing or mismatched runtime
-output, but creates no tag or Release. `--dry-run` previews the steps and manifest.
+Without `--publish`, close may fast-forward main, fetch the latest existing release tag
+when missing before choosing a close path, and rebuild missing or mismatched runtime output;
+it creates no new release tag or GitHub Release. `--dry-run` previews the steps and manifest.
 A deliberately deferred eligible release needs a reviewed durable reason.
 Neither form pushes a main commit or publishes a package, binary, container or
 hosted artifact.

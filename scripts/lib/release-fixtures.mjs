@@ -1,3 +1,4 @@
+import { isMainModule } from "./paths.mjs";
 import { createHash, randomUUID } from "node:crypto";
 import {
   cpSync,
@@ -12,8 +13,8 @@ import {
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
-import { join, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+import { join } from "node:path";
+
 import { spawnSync } from "node:child_process";
 
 const marker = "release-fixture-template.json";
@@ -146,10 +147,7 @@ export function createReleaseFixtureContext() {
   };
 }
 
-if (
-  process.argv[1] &&
-  resolve(process.argv[1]) === fileURLToPath(import.meta.url)
-) {
+if (isMainModule(import.meta.url)) {
   const [action, from, to, ...rest] = process.argv.slice(2);
   try {
     if (action === "list" && from && !to && !rest.length)

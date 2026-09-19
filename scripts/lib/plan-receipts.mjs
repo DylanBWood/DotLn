@@ -13,6 +13,7 @@ import {
   buildPlanSubject,
   committedReader,
   hashParts,
+  carriedOrderHashMatches,
   PLAN_LEDGER,
   planningPasses,
   planCostDeclaration,
@@ -490,15 +491,6 @@ export function admitReceipt(receipt, history, overrides = []) {
           (order) => order.workOrderId === carried.workOrderId,
         ),
       );
-    const orderHash = (order) =>
-      hashParts([
-        order.workOrderId,
-        order.title,
-        order.objective,
-        order.criteria,
-        order.nonGoals,
-        ...(Object.hasOwn(order, "cost") ? [order.cost] : []),
-      ]);
     const order = receipt.subject.orders.find(
       (row) => row.workOrderId === carried.workOrderId,
     );
@@ -508,8 +500,7 @@ export function admitReceipt(receipt, history, overrides = []) {
     check(
       prior?.receiptId === carried.receiptId &&
         prior?.receiptHash === carried.receiptHash &&
-        orderHash(order) === carried.orderHash &&
-        orderHash(previousOrder) === carried.orderHash &&
+        carriedOrderHashMatches(order, previousOrder, carried.orderHash) &&
         same(
           receipt.result.orders.find(
             (row) => row.workOrderId === carried.workOrderId,

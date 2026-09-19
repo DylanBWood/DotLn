@@ -1,19 +1,10 @@
 #!/usr/bin/env node
 import { refreshHarnessRuntime } from "./lib/harness-runtime.mjs";
-import {
-  existsSync,
-  lstatSync,
-  mkdtempSync,
-  readFileSync,
-  realpathSync,
-  rmSync,
-  writeFileSync,
-} from "node:fs";
-import { tmpdir } from "node:os";
+import { existsSync, lstatSync, realpathSync } from "node:fs";
 import { basename, dirname, join, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
-import { assertGitHubBodyProfile } from "./github-body.mjs";
+import { assertGitHubBodyProfile, withTemporaryBody } from "./github-body.mjs";
 import { parseReleaseNotes, releaseNotesPathFor } from "./release-notes.mjs";
 import {
   environmentWithoutGhRepo,
@@ -21,6 +12,7 @@ import {
 } from "./github-repository.mjs";
 import {
   ensureClean,
+  shellQuote,
   mainWorktree,
   parseWorktrees,
   removeMergedBranch,
@@ -42,7 +34,6 @@ import {
 } from "./lib/release-records.mjs";
 
 const toolRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const shellQuote = (value) => `'${value.replaceAll("'", `'\\''`)}'`;
 const executeGh = (cwd, args) =>
   spawnSync("gh", args, {
     cwd,
@@ -95,20 +86,6 @@ const readTrackedTextAtHead = (root, path, displayPath) => {
     );
   } catch {
     throw new Error(`${displayPath}: committed file is not valid UTF-8`);
-  }
-};
-const withTemporaryBody = (body, operation) => {
-  const directory = mkdtempSync(join(tmpdir(), "dotln-pr-body-"));
-  const path = join(directory, "PR.md");
-  try {
-    writeFileSync(path, body, "utf8");
-    return operation(path);
-  } finally {
-    try {
-      rmSync(directory, { recursive: true, force: true });
-    } catch {
-      // A cleanup failure must not mask whether the remote operation ran.
-    }
   }
 };
 // Every blocker is reported at once with its lane and that lane's remedy, so
@@ -329,6 +306,17 @@ const main = async () => {
       `Created ${target} on ${branch}.\n${activated.stdout}Phase: active.\nNext (run manually):\n  cd ${shellQuote(target)}\n  codex\n  enter: resume: next\n`,
     );
   } else if (action === "publish") {
+    if (
+      actionArgs.length !== 4 ||
+      !["--title", "--body-file"].includes(actionArgs[0]) ||
+      !["--title", "--body-file"].includes(actionArgs[2]) ||
+      actionArgs[0] === actionArgs[2] ||
+      !actionArgs[1] ||
+      !actionArgs[3]
+    )
+      throw new Error(
+        'usage: worktree publish WO-NNN --title "<title>" --body-file <contained regular-file path>; quote titles with spaces',
+      );
     const item = parseWorktrees(repoRoot).find(
       (candidate) => candidate.branch === `refs/heads/${branch}`,
     );

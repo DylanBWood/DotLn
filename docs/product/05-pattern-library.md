@@ -63,9 +63,10 @@ The current operator entry point is the
 [manual review guide](../instance/entropy-reducer/README.md): a separate
 Fable 5.1 `max` review, validated output, and a fresh blinded refutation before
 operator disposition. The guide distinguishes compiled data from the manual
-host duties and records the pending correction to the compiled Shape-First
-wording. The generated residue and historical review receipts are not edited
-to make that future correction appear shipped.
+host duties. WO-142 advances the compiled Shape-First support to version 2,
+implementing the operator's relationship-first correction: literal details are
+evaluated only when a claim depends on them. The generated residue and current
+fixtures reflect v2; historical review and refutation receipts retain their bytes.
 
 **Executable discovery (WO-119).** Sort and Shine also have a deterministic,
 bounded producer in `packages/skeleton/src/discovery.ts`. Its kernel-stepped

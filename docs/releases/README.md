@@ -90,7 +90,9 @@ surfaces, builds missing runtime output and validates the manifest. It runs no
 suite, dependency install or CLI smoke check. It then creates and pushes only
 the annotated tag and creates the matching GitHub Release. `--dry-run` previews
 the same sequence and the manifest without publication; without `--publish`,
-the command prepares and validates without creating a tag or Release.
+the command prepares and validates without creating a new release tag or GitHub
+Release; validation may first fetch the latest existing tag locally when it is
+missing, before choosing a close path.
 
 Worktree finish and derived-worktree settlement run after publication as best
 effort. Protected local material is preserved; ignored and untracked material

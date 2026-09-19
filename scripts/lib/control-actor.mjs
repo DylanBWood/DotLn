@@ -15,6 +15,9 @@ export const projectActor = (actor) =>
     ? { ...actor, accountLabel: actor.accountLabel ?? "not-applicable" }
     : null;
 
+export const renderEffort = ({ effort, raw, mode }) =>
+  `${effort}${mode ? ` (${mode})` : ""}${typeof raw === "string" ? ` (raw: ${raw})` : ""}`;
+
 export const renderAttestation = (actor) => {
   if (!actor) return "none";
   const {
@@ -27,6 +30,6 @@ export const renderAttestation = (actor) => {
     source,
     accountLabel,
   } = projectActor(actor);
-  const effortText = `${effort}${mode ? ` (${mode})` : ""}${typeof raw === "string" ? ` (raw: ${raw})` : ""}`;
+  const effortText = renderEffort({ effort, raw, mode });
   return `harness ${harness}; version ${harnessVersion}; model ${model}; effort ${effortText}; source ${source}; account ${accountLabel}`;
 };

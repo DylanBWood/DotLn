@@ -337,6 +337,30 @@ test("WO-023 compiler v1 accepts claim-free prefix wildcards and still rejects w
       },
     })),
   };
+  for (const origin of ["active", "support"] as const)
+    for (const field of [
+      "allowedOperations",
+      "prohibitedOperations",
+      "allowedEffects",
+      "deniedEffects",
+    ] as const) {
+      const bare = structuredClone(graph) as any;
+      const owner =
+        origin === "support"
+          ? bare.supportFacets[0].emissions[0]
+          : field.endsWith("Operations")
+            ? bare.activeMechanics[0].workOrder
+            : bare.activeMechanics[0].authorityEnvelope;
+      owner[field] = ["*"];
+      const refused = compileLoadout(bare, seiriEnvironment());
+      assert.equal(refused.ok, false, `${origin}.${field}`);
+      assert.ok(
+        refused.diagnostics.some((entry) =>
+          entry.message.includes("non-empty prefix"),
+        ),
+        `${origin}.${field}`,
+      );
+    }
   const result = compileLoadout(graph, seiriEnvironment());
   assert.equal(result.ok, true);
   if (!result.ok) assert.fail("claim-free wildcard authority did not compile");
@@ -913,6 +937,24 @@ test("WO-008 compiler reports resource-multiplier overflow as an invalid graph",
       (entry) =>
         entry.code === "INVALID GRAPH" &&
         entry.message.includes("exceed finite JSON range"),
+    ),
+  );
+});
+
+test("WO-142 F-00005 rejects a link group exceeding its container socket budget", () => {
+  const graph: LoadoutGraph = {
+    ...seiriLoadout,
+    containers: seiriLoadout.containers.map((container) => ({
+      ...container,
+      socketBudget: 0,
+    })),
+  };
+  const result = compileLoadout(graph, seiriEnvironment());
+  assert.equal(result.ok, false);
+  if (result.ok) assert.fail("socket overflow compiled");
+  assert.ok(
+    result.diagnostics.some((row) =>
+      /has \d+ links but container .* permits 0/u.test(row.message),
     ),
   );
 });

@@ -29,13 +29,18 @@ export const contributionSignoffRules = (root) => {
       .some(
         (line) =>
           /^Signed-off-by:[ \t]+/i.test(line) &&
-          line.replace(/^[^:]+:[ \t]+/, "") === author,
+          line
+            .replace(/^[^:]+:[ \t]+/, "")
+            .replace(
+              /<([^<>]+)>$/,
+              (_match, address) => `<${address.toLowerCase()}>`,
+            ) === `${name} <${email.toLowerCase()}>`,
       );
     const pass = exempt || signed;
     // Commit IDs identify findings without repeating contributors' identities.
     return {
       pass,
-      line: `${pass ? "PASS" : "FAIL"} contribution-signoff ${commit.slice(0, 12)}: observed ${exempt ? "operator author" : signed ? "matching author sign-off" : "outside author without matching sign-off"}; expected ${exempt ? "operator exemption (no sign-off required)" : "Signed-off-by trailer matching the commit author (DCO 1.1)"}`,
+      line: `${pass ? "PASS" : "FAIL"} contribution-signoff ${commit.slice(0, 12)}: observed ${exempt ? "operator author" : signed ? "matching author sign-off" : "outside author without matching sign-off"}; expected ${exempt ? "operator exemption (no sign-off required)" : "Signed-off-by trailer matching the commit author (DCO 1.1); add it with git commit --amend --signoff after reviewing the DCO"}`,
     };
   });
 };

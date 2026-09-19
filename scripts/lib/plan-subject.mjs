@@ -24,6 +24,34 @@ export const sha256 = (value) =>
 // occurs before hashing source bytes. A revision id is provenance, not identity.
 export const hashParts = (parts) => sha256(JSON.stringify(parts));
 
+// Activation changes only the release-label parenthetical. Preserve legacy
+// receipt hashes while comparing their substantive order content canonically.
+export const planOrderHash = (order, { legacy = false } = {}) =>
+  hashParts([
+    order.workOrderId,
+    legacy
+      ? order.title
+      : order.title?.replace(
+          / \((?:version assigned at activation|v(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*))\)$/u,
+          "",
+        ),
+    order.objective,
+    order.criteria,
+    order.nonGoals,
+    ...(Object.hasOwn(order, "cost") ? [order.cost] : []),
+  ]);
+export const carriedOrderHashMatches = (order, previous, recorded) =>
+  Boolean(
+    order &&
+    previous &&
+    planOrderHash(order) === planOrderHash(previous) &&
+    [
+      planOrderHash(order),
+      planOrderHash(order, { legacy: true }),
+      planOrderHash(previous, { legacy: true }),
+    ].includes(recorded),
+  );
+
 const TREE_CACHE_LIMIT = 64;
 const BLOB_CACHE_LIMIT = 2048;
 const BLOB_BATCH_LIMIT = 32;

@@ -320,6 +320,100 @@ const literalRedirectOperand = (
  * are opaque, never an empty write set. Keep expansion/quotation provenance;
  * arbitrary scripts and interpreters need their own reviewed path adapter.
  */
+/** Keep the activation read vocabulary: literal arguments to these programs
+ * have no file-write or program-execution option. Shell expansion and output
+ * redirections are screened by shellWriteTargets before reaching this function.
+ * Newly admitted programs retain their bounded option vocabulary below.
+ */
+function readCommand(program: string, args: readonly string[]): boolean {
+  if (
+    [
+      "echo",
+      "printf",
+      "cat",
+      "pwd",
+      "true",
+      "false",
+      "ls",
+      "head",
+      "grep",
+    ].includes(program)
+  )
+    return true;
+  const flags: Record<string, RegExp> = {
+    tail: /^(?:-(?:[qv]+|[0-9]+|[nc][+-]?[0-9]+)|--(?:quiet|silent|verbose)|--(?:lines|bytes)=[+-]?[0-9]+)$/,
+    wc: /^-(?:[clmwL]+)$/,
+    ps: /^-(?:[AacefjlMmrSTuvwx]+)$/,
+  };
+  if (program === "sed")
+    return (
+      args[0] === "-n" &&
+      /^\d+(?:,\d+)?p$/.test(args[1] ?? "") &&
+      args.slice(2).every((arg) => !arg.startsWith("-"))
+    );
+  if (program === "git") {
+    if (args[0] !== "--no-pager") return false;
+    const words = args.slice(1);
+    // Add an explicitly effect-reduced spelling without changing legacy forms.
+    // Gate metadata exceptions still need the separately boarded N7 repair.
+    if (
+      words[0] === "--no-optional-locks" &&
+      words[1] === "-c" &&
+      words[2] === "core.fsmonitor=false"
+    )
+      words.splice(0, 3);
+    const subcommand = words.shift();
+    if (!["status", "log", "diff"].includes(subcommand ?? "")) return false;
+    if (
+      subcommand !== "status" &&
+      !(words.includes("--no-ext-diff") && words.includes("--no-textconv"))
+    )
+      return false;
+    const allowed =
+      subcommand === "status"
+        ? /^(?:--short|--branch|--porcelain(?:=v[12])?|--untracked-files(?:=(?:no|normal|all))?|--ignored|--ignore-submodules(?:=(?:none|untracked|dirty|all))?|-[sbz]+)$/
+        : subcommand === "diff"
+          ? /^(?:--no-ext-diff|--no-textconv|--stat|--numstat|--shortstat|--name-only|--name-status|--check|--cached|--staged|--no-renames|--no-color|--exit-code|--quiet|--(?:unified|stat-width|stat-name-width)=\d+|-[pz]+|-U\d+)$/
+          : /^(?:--no-ext-diff|--no-textconv|--oneline|--no-decorate|--decorate(?:=(?:short|full|no))?|--graph|--all|--first-parent|--reverse|--no-merges|--merges|--no-color|--max-count=\d+|--format=(?:oneline|short|medium|full|fuller|reference|raw)|-\d+)$/;
+    let operands = false;
+    return words.every((word) => {
+      if (word === "--") {
+        operands = true;
+        return true;
+      }
+      return operands || !word.startsWith("-") || allowed.test(word);
+    });
+  }
+  if (!Object.hasOwn(flags, program)) return false;
+  let operands = false;
+  for (let index = 0; index < args.length; index++) {
+    const arg = args[index]!;
+    if (operands) continue;
+    if (arg === "--") {
+      operands = true;
+      continue;
+    }
+    if (!arg.startsWith("-")) continue;
+    if (
+      program === "tail" &&
+      ["-n", "-c", "--lines", "--bytes"].includes(arg)
+    ) {
+      if (!/^[+-]?\d+$/.test(args[++index] ?? "")) return false;
+      continue;
+    }
+    if (program === "ps" && ["-p", "-o"].includes(arg)) {
+      const value = args[++index] ?? "";
+      if (
+        !(arg === "-p" ? /^\d+(?:,\d+)*$/ : /^[a-z]+(?:,[a-z]+)*$/).test(value)
+      )
+        return false;
+      continue;
+    }
+    if (!flags[program]!.test(arg)) return false;
+  }
+  return true;
+}
+
 export function shellWriteTargets(source: string):
   | readonly {
       path: string;
@@ -367,20 +461,7 @@ export function shellWriteTargets(source: string):
       }
       const [program, ...args] = command;
       if (!program) continue;
-      if (
-        [
-          "echo",
-          "printf",
-          "cat",
-          "pwd",
-          "true",
-          "false",
-          "ls",
-          "head",
-          "grep",
-        ].includes(program)
-      )
-        continue;
+      if (readCommand(program, args)) continue;
       const flags: Record<string, RegExp> = {
         touch: /^-(?:[acmh]+|-)/,
         mkdir: /^-(?:p|-)/,

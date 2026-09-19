@@ -1,6 +1,36 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import * as ts from "typescript/unstable/ast";
+import { API } from "typescript/unstable/sync";
+import { createVirtualFileSystem } from "typescript/unstable/fs";
+
+// The native compiler owns parsing; the returned tree is local after close.
+function parseSource(fileName: string, source: string): ts.SourceFile {
+  const path = `/source/${fileName.replaceAll("\\", "/").split("/").at(-1)}`;
+  const api = new API({
+    cwd: "/source",
+    fs: createVirtualFileSystem({
+      "/source/tsconfig.json": JSON.stringify({
+        files: [path],
+        compilerOptions: { noLib: true, noResolve: true, allowJs: true },
+      }),
+      [path]: source,
+    }),
+  });
+  try {
+    const snapshot = api.updateSnapshot({
+      openProject: "/source/tsconfig.json",
+    });
+    const tree = snapshot
+      .getProject("/source/tsconfig.json")
+      ?.program.getSourceFile(path);
+    assert.ok(tree, `native compiler parsed ${fileName}`);
+    return tree;
+  } finally {
+    api.close();
+  }
+}
 import {
   Cadence,
   Program,
@@ -294,6 +324,94 @@ test("WO-047 validates and delivers the same projected RNG sample", () => {
   assert.equal(result.decisions.length, 1);
 });
 
+function reservedStateReads(source: string): readonly string[] {
+  const ast = parseSource("coupling.ts", source);
+  const states = new Set(["state", "initialState"]);
+  const readers = new Set(["stateField"]);
+  const property = (node: ts.Node | undefined): string | undefined =>
+    node && (ts.isIdentifier(node) || ts.isStringLiteral(node))
+      ? node.text
+      : undefined;
+  const unwrap = (node: ts.Expression): ts.Expression =>
+    ts.isAsExpression(node) ||
+    ts.isTypeAssertion(node) ||
+    ts.isParenthesizedExpression(node) ||
+    ts.isNonNullExpression(node)
+      ? unwrap(node.expression)
+      : node;
+  const walk = (node: ts.Node, visit: (node: ts.Node) => void): void => {
+    visit(node);
+    node.forEachChild((child) => walk(child, visit));
+  };
+  let changed = true;
+  while (changed) {
+    changed = false;
+    walk(ast, (node) => {
+      if (
+        !ts.isVariableDeclaration(node) ||
+        !ts.isIdentifier(node.name) ||
+        !node.initializer
+      )
+        return;
+      const value = unwrap(node.initializer);
+      if (!ts.isIdentifier(value)) return;
+      for (const aliases of [states, readers])
+        if (aliases.has(value.text) && !aliases.has(node.name.text)) {
+          aliases.add(node.name.text);
+          changed = true;
+        }
+    });
+  }
+  const reads: string[] = [];
+  const reserved = (name: string | undefined) =>
+    name === "rngState" || name === "policy";
+  const state = (node: ts.Expression | undefined) => {
+    if (!node) return false;
+    const value = unwrap(node);
+    return ts.isIdentifier(value) && states.has(value.text);
+  };
+  walk(ast, (node) => {
+    if (
+      ts.isPropertyAccessExpression(node) &&
+      state(node.expression) &&
+      reserved(node.name.text)
+    )
+      reads.push(node.getText(ast));
+    if (
+      ts.isElementAccessExpression(node) &&
+      state(node.expression) &&
+      reserved(property(node.argumentExpression))
+    )
+      reads.push(node.getText(ast));
+    if (
+      ts.isCallExpression(node) &&
+      ts.isIdentifier(node.expression) &&
+      readers.has(node.expression.text) &&
+      reserved(property(node.arguments[1]))
+    )
+      reads.push(node.getText(ast));
+    if (
+      ts.isVariableDeclaration(node) &&
+      ts.isObjectBindingPattern(node.name) &&
+      state(node.initializer)
+    )
+      for (const element of node.name.elements)
+        if (reserved(property(element.propertyName ?? element.name)))
+          reads.push(element.getText(ast));
+  });
+  return reads;
+}
+
+function assertNoReservedStateReads(source: string): void {
+  // Keep the original nested-receiver/stateField coverage beside the AST
+  // alias and destructuring checks; replacing it lost real access forms.
+  assert.doesNotMatch(
+    source,
+    /stateField\([^)]*,\s*["'](?:rngState|policy)["']|\bstate\s*(?:\.\s*(?:rngState|policy)\b|\[\s*["'](?:rngState|policy)["']\s*\])/u,
+  );
+  assert.deepEqual(reservedStateReads(source), []);
+}
+
 test("WO-047 reserved application-state reads occur only in the exported default projector", () => {
   const source = readFileSync(
     new URL("../../src/core.ts", import.meta.url),
@@ -310,10 +428,7 @@ test("WO-047 reserved application-state reads occur only in the exported default
     ["rngState", "policy"],
   );
   const outside = source.slice(0, start) + source.slice(end);
-  assert.doesNotMatch(
-    outside,
-    /stateField\([^)]*,\s*["'](?:rngState|policy)["']|\bstate\s*(?:\.\s*(?:rngState|policy)\b|\[\s*["'](?:rngState|policy)["']\s*\])/u,
-  );
+  assertNoReservedStateReads(outside);
 });
 
 test("AC2 evidence: replay consults nothing outside the log — Date.now and Math.random poisoned to throw", () => {
@@ -558,6 +673,26 @@ test("AC2 evidence: appendEvent edge-assigns sequential literal eventIds evt_1..
   );
 });
 
+test("WO-142 B11: append refuses a draft whose assigned envelope cannot decode", () => {
+  const before = appendEvent("", draft("Added", 10, { amount: 1 })).log;
+  for (const invalid of [
+    { ...draft("Added", 20, {}), schemaVersion: 2 },
+    { ...draft("Added", 20, {}), actorId: 42 },
+    { ...draft("Added", 20, {}), occurredAt: "later" },
+    { ...draft("Added", 20, {}), extra: true },
+  ]) {
+    assert.throws(
+      () => appendEvent(before, invalid as Parameters<typeof appendEvent>[1]),
+      /Malformed JSONL at line 2:/,
+    );
+  }
+  assert.equal(decodeLog(before).length, 1);
+  assert.equal(
+    appendEvent(before, draft("Added", 20, {})).event.eventId,
+    "evt_2",
+  );
+});
+
 test("AC2 evidence: store round trip preserves correlationId, causationId, and episodeId", () => {
   const { log, event: assigned } = appendEvent("", {
     schemaVersion: 1,
@@ -702,5 +837,29 @@ test("WO-017 store contract: well-formed logs retain exact bytes and count only 
     third.log,
     `${before}${JSON.stringify(third.event)}\n`,
     "append changes a well-formed log only by adding the assigned object line",
+  );
+});
+
+test("WO-142 application-state coupling detector catches alias and destructuring reads", () => {
+  for (const source of [
+    "const local = state; local.policy;",
+    "const local = state; const second = local; second['rngState'];",
+    "const { policy: settings } = state;",
+    "const local = state; const { rngState } = local;",
+    "const reader = stateField; reader(state, 'policy');",
+    "context.state.policy;",
+    "this.state.rngState;",
+    "x.state.policy;",
+    "context.state['policy'];",
+    "obj.stateField(state, 'policy');",
+  ])
+    assert.throws(
+      () => assertNoReservedStateReads(source),
+      assert.AssertionError,
+      source,
+    );
+  assert.deepEqual(
+    reservedStateReads("const policy = env.policy; const value = state.other;"),
+    [],
   );
 });

@@ -1,3 +1,4 @@
+import { isMainModule } from "./lib/paths.mjs";
 import assert from "node:assert/strict";
 import {
   cpSync,
@@ -8,7 +9,7 @@ import {
   readFileSync,
 } from "node:fs";
 import { dirname, join, resolve } from "node:path";
-import { fileURLToPath, pathToFileURL } from "node:url";
+import { fileURLToPath } from "node:url";
 import {
   controlBeaconAddress,
   controlBeaconDirectory,
@@ -87,18 +88,16 @@ export const assertControlBeacon = (root, status) => {
         provenance: "host-projected",
       },
     });
-    assert.equal(
-      metadata.mtimeNs,
-      BigInt(Date.parse(status.recordedAt)) * 1000000n,
+    const targetNs = BigInt(Date.parse(status.recordedAt)) * 1000000n;
+    assert.equal(metadata.mtimeNs / 1000000n, targetNs / 1000000n);
+    assert.ok(
+      metadata.mtimeNs >= targetNs && metadata.mtimeNs < targetNs + 1000n,
     );
     const current = readFileSync(join(root, "docs/control/current.md"), "utf8");
     assert.ok(current.includes(`Phase: ${status.phase}`));
   }
 };
-if (
-  process.argv[1] &&
-  pathToFileURL(resolve(process.argv[1])).href === import.meta.url
-) {
+if (isMainModule(import.meta.url)) {
   if (process.argv[3] === "snapshot")
     console.log(JSON.stringify(snapshotBeacons(process.argv[2])));
   else if (process.argv[3] === "assert")

@@ -19,6 +19,7 @@ import {
   findingsText,
   parseTap,
   requireGreenBaseline,
+  reproduceSites,
   runMatrix,
   runProcess,
   summarize,
@@ -481,4 +482,32 @@ test("TAP parsing retains nested named failures and refuses to infer an absent s
   assert.deepEqual(tap.killingTests, ["boundary assertion", "parent"]);
   assert.equal(tap.tests, 4);
   assert.equal(parseTap("").tests, null);
+});
+
+test("survivor reproduction ends with a green unmutated baseline", async () => {
+  const sites = [{ id: "M00001" }, { id: "M00002" }];
+  const calls = [],
+    output = [];
+  await reproduceSites(
+    sites,
+    async (site) => {
+      calls.push(site?.id ?? "baseline");
+      return green;
+    },
+    { survivorsOnly: true, log: (line) => output.push(line) },
+  );
+  assert.deepEqual(calls, ["baseline", "M00001", "M00002", "baseline"]);
+  assert.match(output.at(-1), /^baseline-after /);
+  let baselines = 0;
+  await assert.rejects(
+    reproduceSites(
+      sites,
+      async (site) =>
+        !site && ++baselines === 2
+          ? { ...green, verdict: "killed-by-test" }
+          : green,
+      { survivorsOnly: true, log: () => {} },
+    ),
+    /unmutated baseline is not green/,
+  );
 });

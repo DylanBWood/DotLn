@@ -47,7 +47,7 @@ export function withWriterRegistration(root, operation) {
   try {
     if (lstatSync(lock, { throwIfNoEntry: false }))
       throw new Error(
-        "writer registration or teardown in progress (or lock requires inspection)",
+        `writer registration or teardown in progress at ${lock} (or lock requires inspection)`,
       );
     requireWorktree(root, physical);
     return operation();
@@ -70,13 +70,13 @@ export function withWriterReservationLock(root, operation) {
     mkdirSync(lock, { mode: 0o700 });
   } catch {
     throw new Error(
-      "writer registration or teardown in progress (or lock requires inspection)",
+      `writer registration or teardown in progress at ${lock} (or lock requires inspection)`,
     );
   }
   try {
     if (existsSync(registrations) && readdirSync(registrations).length)
       throw new Error(
-        "writer registration in progress (or lease requires inspection)",
+        `writer registration in progress at ${registrations} (or lease requires inspection)`,
       );
     // A waiter that resolved the path before another teardown cannot recreate it.
     requireWorktree(root, physical);

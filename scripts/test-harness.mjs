@@ -1,4 +1,5 @@
 import test from "node:test";
+import { pruneHarness, pruneInventory } from "./lib/harness-prune.mjs";
 import "./test-target-harness.mjs";
 import "./test-observed-facts.mjs";
 import {
@@ -91,6 +92,8 @@ import {
   gateInputPath,
   gateTreeHash,
 } from "./lib/gate-evidence.mjs";
+
+import { shellWriteTargets } from "../packages/skeleton/dist/src/harness-command.js";
 
 const sourceRoot = fileURLToPath(new URL("../", import.meta.url));
 // Fixtures own the harness-process identity: generated hooks record this test
@@ -361,7 +364,7 @@ test("WO-139 Codex executor and fix completion automatically release after the f
     assert.notEqual(interrupted.status, 0);
     assert.match(
       interrupted.stderr,
-      /Completion recorded; final handoff failed:.*EEXIST/,
+      /Completion recorded; final handoff failed:.*work-order index temporary already exists:.*README\.md\.tmp/,
     );
     assert.match(interrupted.stderr, /Do not repeat the transition/);
     assert.equal(
@@ -1070,14 +1073,12 @@ while (!existsSync("${local}/" + stage + ".go")) {
                 assert.equal(existsSync(join(root, path)), false, path);
               const reason =
                 verdict.hookSpecificOutput.permissionDecisionReason;
-              assert.match(reason, /active gate|suite-success cache/);
+              assert.match(reason, /active gate/);
               assert.ok(
-                reason.includes("suite-success cache") ||
-                  runs.some(
-                    (run) =>
-                      reason.includes(run.runId) &&
-                      reason.includes(run.command),
-                  ),
+                runs.some(
+                  (run) =>
+                    reason.includes(run.runId) && reason.includes(run.command),
+                ),
               );
             }
           for (const hook of [
@@ -1632,6 +1633,32 @@ test("WO-039 ranged receipts require complete current bytes despite gaps, duplic
   }
 });
 
+test("WO-142 B6 explicit output reads delegate sensitive-path permission to the host", () => {
+  const root = fixture();
+  try {
+    write(root, ".env", "SYNTHETIC_FIXTURE=value\n");
+    const verdict = invoke(
+      root,
+      "permissions",
+      input(root, "PreToolUse", {
+        tool_name: "Bash",
+        tool_input: { command: "node scripts/harness.mjs read-output .env" },
+      }),
+    );
+    assert.equal(allowed(verdict), true);
+    assert.match(
+      verdict.systemMessage,
+      /compiled authority does not permit credentials\.access/,
+    );
+    assert.equal(
+      readHarnessOutput(root, ".env", 0, 8192).content,
+      "SYNTHETIC_FIXTURE=value\n",
+    );
+  } finally {
+    removeFixture(root, { recursive: true });
+  }
+});
+
 test("WO-132 inherited outputs add no reads; invalid deliveries advise without creating read receipts", async () => {
   const root = fixture();
   try {
@@ -1850,10 +1877,22 @@ test("WO-039 local terms are unavailable honestly or refuse without echoing the 
   }
 });
 
-test("WO-039 target does not change Seiri or Entropy Reducer semantic hashes", () => {
+test("WO-039 target preserves Seiri history and the explicitly versioned current Entropy Reducer hash", () => {
   const baseline = JSON.parse(
     readFileSync(
       join(sourceRoot, "docs/evidence/WO-029/baseline.json"),
+      "utf8",
+    ),
+  );
+  const currentEntropy = JSON.parse(
+    readFileSync(
+      join(sourceRoot, "packages/compiler/fixtures/wo029-identities.json"),
+      "utf8",
+    ),
+  )["entropy-reducer"];
+  const recordedEntropyGraph = JSON.parse(
+    readFileSync(
+      join(sourceRoot, "packages/compiler/fixtures/wo029-entropy-reducer.json"),
       "utf8",
     ),
   );
@@ -1865,7 +1904,31 @@ test("WO-039 target does not change Seiri or Entropy Reducer semantic hashes", (
       row.environment,
     );
     assert.equal(result.ok, true);
-    assert.equal(result.semanticHash, row.semanticHash);
+    assert.equal(
+      result.semanticHash,
+      row.name === "seiri" ? row.semanticHash : currentEntropy.semanticHash,
+    );
+    if (row.name === "entropy-reducer") {
+      const currentGraph = recordedEntropyGraph;
+      assert.equal(
+        currentGraph.supportFacets.find(
+          (support) => support.supportFacetId === "entropy-reducer.shape-first",
+        ).version,
+        2,
+      );
+      assert.notEqual(
+        result.semanticHash,
+        row.semanticHash,
+        "WO-142 changes the current Shape-First subject; the old baseline remains history",
+      );
+      const recorded = compileLoadout(recordedEntropyGraph, row.environment);
+      assert.equal(recorded.ok, true);
+      assert.equal(
+        result.semanticHash,
+        recorded.semanticHash,
+        "the current factory matches its explicitly recorded fixture",
+      );
+    }
   }
   const installation = harnessInstallation();
   assert.equal(installation.bundles.length, 2);
@@ -3278,7 +3341,8 @@ test("WO-132 generated hooks delegate classification, attribution, scope and run
       const cause =
         /snapshot-missing|runtime-unavailable|pins-differ/.exec(
           advisory,
-        )?.[0] ?? "classification";
+        )?.[0] ??
+        `advisory:${createHash("sha256").update(advisory).digest("hex")}`;
       if (payload.hook_event_name === "PostToolUse" || seen.has(cause))
         assert.equal(result.systemMessage, undefined);
       else {
@@ -3342,6 +3406,13 @@ test("WO-132 generated hooks delegate classification, attribution, scope and run
         tool_input: { file_path: "/outside/fixture.txt" },
         tool_response: {},
       }),
+    );
+    assert.ok(
+      readFileSync(journal, "utf8").includes("observer input unavailable"),
+    );
+    assert.ok(
+      !readFileSync(journal, "utf8").includes("runtime-unavailable"),
+      "observer-input errors must not consume a runtime marker",
     );
     // Missing pinned runtime takes the generated, self-contained fallback.
     removeFixture(join(root, ".runtime"), { recursive: true, force: true });
@@ -3479,7 +3550,19 @@ test("WO-132 only the live product gate refuses input and success-record writes,
       payload("exec_command", { command }),
       payload("exec_command", { cmd: command }),
     ];
+    const legacyReadForms = [
+      "grep -rn value docs",
+      "grep -A3 value fixture.ts",
+      "grep -m 5 value fixture.ts",
+      "head -n5 fixture.ts",
+      "head --lines=5 fixture.ts",
+      "ls --color=never",
+      "cat --number fixture.ts",
+    ];
     const writes = [
+      ...legacyReadForms.map((command) =>
+        payload("Bash", { command: `${command} > fixture.ts` }),
+      ),
       payload("Write", {
         file_path: join(root, "fixture.ts"),
         content: "changed",
@@ -3539,6 +3622,7 @@ test("WO-132 only the live product gate refuses input and success-record writes,
       ].flatMap(shellPayloads),
     ];
     const reads = [
+      ...legacyReadForms.map((command) => payload("Bash", { command })),
       payload("Bash", { command: "ls scripts" }),
       payload("Bash", { command: "head -5 fixture.ts" }),
       payload("Bash", { command: "grep -n value fixture.ts | head -40" }),
@@ -3977,6 +4061,1038 @@ test("WO-141 generated prompt and repeated Stop deliver facts and a single defer
       second.hookSpecificOutput.additionalContext,
       /measurement advisory/,
     );
+  } finally {
+    removeFixture(root, { recursive: true });
+  }
+});
+
+test("WO-142 B17 generated executor, verifier and reviewer text boards up unfixed defects", () => {
+  const files = harnessInstallation().files;
+  for (const harness of [".claude", ".agents"])
+    for (const role of ["executor", "verifier", "reviewer"]) {
+      const path = `${harness}/skills/dotln-${role}/SKILL.md`;
+      const file = files.find((file) => file.path === path);
+      assert.ok(file, path);
+      assert.match(
+        file.contents,
+        /defect met and not fixed.*decisions\.md with a named follow-up.*structured decision JSON `followup` string.*`reopens` object.*cited by the report/,
+      );
+      assert.match(file.contents, /fix it within the boy-scout bound/);
+    }
+});
+
+test("WO-142 D1 prune previews without writes, preserves live files and keeps deleted-lane byte proofs", () => {
+  const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-prune-")));
+  const ended = createHash("sha256").update("ended").digest("hex");
+  const current = createHash("sha256").update("current").digest("hex");
+  const marker = "docs/control/local/harness/";
+  const deadOwner = {
+    pid: spawnSync(process.execPath, ["-e", ""]).pid,
+    source: "parent",
+  };
+  assert.equal(harnessProcessAlive(deadOwner), false);
+  try {
+    git(root, "init", "--quiet");
+    write(
+      root,
+      ".claude/harness-manifest.json",
+      JSON.stringify({
+        contractVersion: "harness-v1",
+        profiles: [
+          {
+            profile: {
+              runtime: { snapshot: ".runtime/harness/aaaaaaaaaaaaaaaa" },
+            },
+          },
+        ],
+      }),
+    );
+    write(root, ".runtime/harness/aaaaaaaaaaaaaaaa/runtime.js", "pinned");
+    write(root, ".runtime/harness/bbbbbbbbbbbbbbbb/runtime.js", "obsolete");
+    write(
+      root,
+      `${marker}ended.advisory`,
+      JSON.stringify({ sessionKey: ended, owner: deadOwner }),
+    );
+    write(
+      root,
+      `${marker}${ended}.jsonl`,
+      JSON.stringify({ event: "Stop", finished: true }) + "\n",
+    );
+    write(
+      root,
+      `${marker}live.advisory`,
+      JSON.stringify({ sessionKey: current }),
+    );
+    write(
+      root,
+      `${marker}${current}.jsonl`,
+      JSON.stringify({ event: "Stop", finished: true }) + "\n",
+    );
+    write(root, `${marker}legacy.advisory`, "seen\n");
+    write(
+      root,
+      "docs/control/local/retained/WO-901/evidence.txt",
+      "retained bytes",
+    );
+    write(
+      root,
+      "docs/control/local/retained/WO-902/evidence.txt",
+      "unpublished bytes",
+    );
+    write(root, ".git/dotln/suite-success/obsolete.json", "dead cache");
+    const options = {
+      sessionId: "current",
+      publishedRelease: (order) => (order === "WO-901" ? "v1.0.0" : null),
+    };
+    const roots = [".claude", ".runtime", "docs", ".git/dotln"];
+    const before = roots.map((path) => pruneInventory(join(root, path)));
+    const preview = pruneHarness(root, options);
+    assert.deepEqual(
+      roots.map((path) => pruneInventory(join(root, path))),
+      before,
+    );
+    assert.deepEqual(preview.candidates.map((row) => row.kind).sort(), [
+      "advisory",
+      "dead-cache",
+      "retained-lane",
+      "snapshot",
+    ]);
+    const applied = pruneHarness(root, { ...options, apply: true });
+    assert.deepEqual(
+      applied.candidates.map((row) => row.path),
+      preview.candidates.map((row) => row.path),
+    );
+    for (const row of applied.candidates)
+      assert.equal(
+        existsSync(
+          row.kind === "dead-cache"
+            ? join(root, ".git/dotln/suite-success")
+            : join(root, row.path),
+        ),
+        false,
+      );
+    for (const path of [
+      ".runtime/harness/aaaaaaaaaaaaaaaa/runtime.js",
+      `${marker}live.advisory`,
+      `${marker}legacy.advisory`,
+      "docs/control/local/retained/WO-902/evidence.txt",
+    ])
+      assert.equal(existsSync(join(root, path)), true, path);
+    const lane = applied.candidates.find((row) => row.kind === "retained-lane");
+    const proof = JSON.parse(readFileSync(join(root, lane.byteProof), "utf8"));
+    assert.equal(proof.workOrder, "WO-901");
+    assert.equal(proof.release, "v1.0.0");
+    assert.equal(
+      proof.files.find((row) => row.path === "evidence.txt").sha256,
+      createHash("sha256").update("retained bytes").digest("hex"),
+    );
+    assert.deepEqual(pruneHarness(root, options).candidates, []);
+    symlinkSync(
+      join(root, "docs"),
+      join(root, ".runtime/harness/cccccccccccccccc"),
+    );
+    const linked = pruneHarness(root, options);
+    assert.ok(
+      linked.retained.some(
+        (row) =>
+          row.path.endsWith("cccccccccccccccc") &&
+          /non-regular/.test(row.reason),
+      ),
+    );
+  } finally {
+    removeFixture(root, { recursive: true });
+  }
+});
+
+test("WO-142 B1 distinct advisories each appear once without repeats suppressing another", () => {
+  const root = fixture();
+  try {
+    const outside = input(root, "PreToolUse", {
+      tool_name: "Read",
+      tool_input: { file_path: "/outside/fixture.txt" },
+    });
+    const attribution = input(root, "PreToolUse", {
+      tool_name: "Bash",
+      tool_input: { command: "git commit -m 'Generated by Codex'" },
+    });
+    let outsideShown = 0,
+      attributionShown = 0;
+    for (let attempt = 0; attempt < 20; attempt++) {
+      const first = invoke(root, "permissions", outside);
+      if (first.systemMessage) {
+        assert.match(
+          first.systemMessage,
+          /compiled authority does not permit settings.user/,
+        );
+        outsideShown++;
+      }
+      const second = invoke(root, "no-attribution", attribution);
+      if (second.systemMessage) {
+        assert.match(second.systemMessage, /DotLn advisory:/);
+        attributionShown++;
+      }
+    }
+    assert.equal(outsideShown, 1);
+    assert.equal(attributionShown, 1);
+    const observed = invoke(
+      root,
+      "read-observer",
+      input(root, "PostToolUse", {
+        tool_name: "Read",
+        tool_input: { file_path: "/outside/fixture.txt" },
+        tool_response: {},
+      }),
+    );
+    assert.equal(observed.systemMessage, undefined);
+    const journal = join(
+      root,
+      "docs/control/local/harness",
+      createHash("sha256").update("synthetic-session").digest("hex") + ".jsonl",
+    );
+    const last = readFileSync(journal, "utf8")
+      .trim()
+      .split("\n")
+      .map(JSON.parse)
+      .at(-1);
+    assert.match(last.advisory, /observer input unavailable/);
+    assert.doesNotMatch(last.advisory, /runtime-unavailable/);
+  } finally {
+    removeFixture(root, { recursive: true });
+  }
+});
+
+test("WO-142 B1 advisory markers identify their session for conservative local pruning", () => {
+  const root = fixture();
+  try {
+    invoke(
+      root,
+      "permissions",
+      input(root, "PreToolUse", { tool_name: "SomeNewTool", tool_input: {} }),
+    );
+    const directory = join(root, "docs/control/local/harness");
+    const expected = createHash("sha256")
+      .update("synthetic-session")
+      .digest("hex");
+    let markers = readdirSync(directory).filter((name) =>
+      name.endsWith(".advisory"),
+    );
+    assert.equal(markers.length, 1);
+    const runtimeMarker = JSON.parse(
+      readFileSync(join(directory, markers[0]), "utf8"),
+    );
+    assert.equal(runtimeMarker.sessionKey, expected);
+    // invoke inherits this test process's declared host identity; the hook's
+    // short-lived child PID is not the host owner.
+    assert.equal(runtimeMarker.owner.pid, process.pid);
+    assert.equal(runtimeMarker.owner.source, "CLAUDE_PID");
+    assert.equal(typeof runtimeMarker.owner.startedAt, "string");
+    assert.ok(runtimeMarker.owner.startedAt.length > 0);
+    removeFixture(join(root, ".runtime"), { recursive: true, force: true });
+    invoke(
+      root,
+      "permissions",
+      input(root, "PreToolUse", {
+        tool_name: "Write",
+        tool_input: { file_path: join(root, "fixture.ts") },
+      }),
+    );
+    markers = readdirSync(directory).filter((name) =>
+      name.endsWith(".advisory"),
+    );
+    assert.equal(markers.length, 2);
+    let knownOwners = 0;
+    for (const marker of markers) {
+      const value = JSON.parse(readFileSync(join(directory, marker), "utf8"));
+      assert.equal(value.sessionKey, expected);
+      if (value.owner) {
+        assert.deepEqual(value.owner, runtimeMarker.owner);
+        knownOwners++;
+      } else assert.deepEqual(value, { sessionKey: expected });
+    }
+    assert.equal(knownOwners, 1, "the fallback cannot invent a host owner");
+  } finally {
+    removeFixture(root, { recursive: true });
+  }
+});
+
+test("WO-142 B3 bounded shell read forms preserve every write target and reject unsafe options", () => {
+  for (const command of [
+    "echo ok",
+    "printf '%s' ok",
+    "cat -n fixture.ts",
+    "cat --number fixture.ts",
+    "cat --number-nonblank --show-ends fixture.ts",
+    "pwd -P",
+    "true",
+    "false",
+    "ls -la",
+    "ls --color=never",
+    "head -n 5 fixture.ts",
+    "head -n5 fixture.ts",
+    "head --lines=5 fixture.ts",
+    "head --lines 5 fixture.ts",
+    "head -c5 fixture.ts",
+    "grep -n text fixture.ts",
+    "grep -rn text docs",
+    "grep -R text docs",
+    "grep -L text fixture.ts",
+    "grep -P text fixture.ts",
+    "grep -A3 text fixture.ts",
+    "grep -A 3 text fixture.ts",
+    "grep -B2 text fixture.ts",
+    "grep -C2 text fixture.ts",
+    "grep -m 5 text fixture.ts",
+    "grep --max-count=5 text fixture.ts",
+    "grep --color=never text fixture.ts",
+    "git --no-pager status --short",
+    "git --no-pager log --no-ext-diff --no-textconv --oneline -5",
+    "git --no-pager diff --no-ext-diff --no-textconv --stat",
+    "git --no-pager --no-optional-locks -c core.fsmonitor=false status --short",
+    "git --no-pager --no-optional-locks -c core.fsmonitor=false log --no-ext-diff --no-textconv --oneline -5",
+    "git --no-pager --no-optional-locks -c core.fsmonitor=false diff --no-ext-diff --no-textconv --stat",
+    "tail -n 5 fixture.ts",
+    "tail -n5 fixture.ts",
+    "tail -c5 fixture.ts",
+    "tail --lines=5 fixture.ts",
+    "wc -l fixture.ts",
+    "ps -p 1 -o pid,comm",
+    "sed -n '1,20p' fixture.ts",
+  ]) {
+    assert.deepEqual(shellWriteTargets(command), [], command);
+    assert.deepEqual(
+      shellWriteTargets(`${command} > fixture.ts`),
+      [{ path: "fixture.ts", followFinalSymlink: true }],
+      `${command} redirection is a write`,
+    );
+    if (/^(?:git|tail|wc|ps|sed) /.test(command))
+      assert.equal(
+        shellWriteTargets(`${command} --unrecognized-option`),
+        null,
+        command,
+      );
+  }
+  for (const command of [
+    "tail --lines=invalid fixture.ts",
+    "tail --lines invalid fixture.ts",
+    "git --no-pager checkout main",
+    "git -c alias.status=write status",
+    "git --no-pager --no-optional-locks -c core.fsmonitor=write status",
+    "git --no-pager --no-optional-locks -c alias.status=write status",
+    "git --no-pager --no-optional-locks -c core.fsmonitor=false diff --no-ext-diff --no-textconv --output=fixture.ts",
+    "git --no-pager diff --output=fixture.ts",
+    "git --no-pager log --ext-diff",
+    "tail --follow fixture.ts",
+    "sed -i '' '1,20p' fixture.ts",
+    "sed -n '1,20w fixture.ts' input",
+    "sed -n '1,20p;w fixture.ts' input",
+    "sed -e '1,20p' input",
+    "find . -delete",
+    "node -e '1'",
+  ])
+    assert.equal(shellWriteTargets(command), null, command);
+});
+
+test("WO-142 B5 generated agent_id hooks charge a live counter and refuse the fourth child", () => {
+  const root = fixture();
+  try {
+    write(root, "docs/control/budgets.json", json({ subagentCap: 3 }));
+    beginHarnessSession(root, "synthetic-session", "executor");
+    const call = (agent, id) =>
+      input(root, "PreToolUse", {
+        tool_name: "Read",
+        tool_use_id: id,
+        agent_id: agent,
+        tool_input: { file_path: join(root, "fixture.ts") },
+      });
+    for (const [index, agent] of ["a", "b", "c"].entries()) {
+      assert.equal(
+        allowed(invoke(root, "permissions", call(agent, `${agent}-one`))),
+        true,
+      );
+      assert.equal(
+        allowed(invoke(root, "permissions", call(agent, `${agent}-two`))),
+        true,
+      );
+      assert.equal(
+        measureHarnessUsage(root, "synthetic-session").subagents.count,
+        index + 1,
+      );
+    }
+    for (const id of ["d-one", "d-two"])
+      assert.match(
+        invoke(root, "permissions", call("d", id)).hookSpecificOutput
+          .permissionDecisionReason,
+        /count 3, cap 3/,
+      );
+    assert.equal(
+      allowed(invoke(root, "permissions", call("a", "a-three"))),
+      true,
+    );
+    assert.equal(
+      measureHarnessUsage(root, "synthetic-session").subagents.count,
+      3,
+    );
+  } finally {
+    removeFixture(root, { recursive: true, force: true });
+  }
+});
+
+test("WO-142 D1 target receipts and stopped live or unknown readers retain their files", () => {
+  const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-prune-safety-")));
+  const local = "docs/control/local/harness";
+  const deadOwner = {
+    pid: spawnSync(process.execPath, ["-e", ""]).pid,
+    source: "parent",
+  };
+  assert.equal(harnessProcessAlive(deadOwner), false);
+  try {
+    git(root, "init", "--quiet");
+    write(
+      root,
+      ".runtime/harness/aaaaaaaaaaaaaaaa/runtime.js",
+      "target-installed",
+    );
+    write(root, ".runtime/harness/bbbbbbbbbbbbbbbb/runtime.js", "unowned");
+    const receipt = `${local}/targets/${"a".repeat(64)}/installation.json`;
+    write(
+      root,
+      receipt,
+      JSON.stringify({
+        contract: "target-worker-v1",
+        runtimeSnapshot: ".runtime/harness/aaaaaaaaaaaaaaaa",
+      }),
+    );
+    const keys = Object.fromEntries(
+      ["live", "unknown", "dead", "history-dead"].map((name) => [
+        name,
+        createHash("sha256").update(name).digest("hex"),
+      ]),
+    );
+    for (const name of Object.keys(keys)) {
+      write(
+        root,
+        `${local}/${name}.advisory`,
+        JSON.stringify({
+          sessionKey: keys[name],
+          ...(name === "live"
+            ? { owner: harnessHostProcess() }
+            : name === "dead"
+              ? { owner: deadOwner }
+              : {}),
+        }),
+      );
+      write(
+        root,
+        `${local}/${keys[name]}.jsonl`,
+        JSON.stringify({ event: "Stop", finished: true }) + "\n",
+      );
+    }
+    write(
+      root,
+      `${local}/writer-events.jsonl`,
+      JSON.stringify({
+        event: "released",
+        actorId: keys["history-dead"],
+        owner: deadOwner,
+      }) + "\n",
+    );
+    const options = {
+      sessionId: "pruning-session",
+      publishedRelease: () => null,
+    };
+    let plan = pruneHarness(root, options);
+    assert.ok(
+      plan.retained.some(
+        (row) =>
+          row.path.endsWith("aaaaaaaaaaaaaaaa") && /pins/.test(row.reason),
+      ),
+    );
+    assert.ok(
+      plan.retained.some(
+        (row) =>
+          row.path.endsWith("live.advisory") && /still live/.test(row.reason),
+      ),
+    );
+    assert.ok(
+      plan.retained.some(
+        (row) =>
+          row.path.endsWith("unknown.advisory") &&
+          /liveness is unknown/.test(row.reason),
+      ),
+    );
+    assert.deepEqual(
+      plan.candidates
+        .filter((row) => row.kind === "advisory")
+        .map((row) => row.path.split("/").at(-1))
+        .sort(),
+      ["dead.advisory", "history-dead.advisory"],
+    );
+    write(root, receipt, "{broken");
+    plan = pruneHarness(root, options);
+    assert.equal(
+      plan.candidates.some((row) => row.kind === "snapshot"),
+      false,
+      "unknown target pins retain all snapshots",
+    );
+    write(
+      root,
+      receipt,
+      JSON.stringify({
+        contract: "target-worker-v1",
+        runtimeSnapshot: ".runtime/harness/aaaaaaaaaaaaaaaa",
+      }),
+    );
+    write(root, ".git/dotln/suite-success/old.json", "dead-cache");
+    const gate = beginGateRun(root, "npm test");
+    try {
+      plan = pruneHarness(root, options);
+      assert.equal(
+        plan.candidates.some((row) =>
+          ["snapshot", "dead-cache"].includes(row.kind),
+        ),
+        false,
+      );
+      assert.ok(plan.retained.some((row) => /live gate/.test(row.reason)));
+    } finally {
+      gate.release();
+    }
+    seedHarnessWriter(root, {
+      actorId: createHash("sha256").update("foreign-writer").digest("hex"),
+      worktree: root,
+      owner: harnessHostProcess(),
+    });
+    plan = pruneHarness(root, options);
+    assert.equal(
+      plan.candidates.some((row) => row.kind === "snapshot"),
+      false,
+    );
+    assert.ok(
+      plan.retained.some((row) =>
+        /another live or unknown writer/.test(row.reason),
+      ),
+    );
+  } finally {
+    removeFixture(root, { recursive: true, force: true });
+  }
+});
+
+test("WO-142 D1 malformed installed manifests never establish absent snapshot ownership", () => {
+  const root = realpathSync(
+    mkdtempSync(join(tmpdir(), "dotln-prune-manifest-")),
+  );
+  try {
+    git(root, "init", "--quiet");
+    write(root, ".runtime/harness/aaaaaaaaaaaaaaaa/runtime.js", "installed");
+    write(root, ".runtime/harness/bbbbbbbbbbbbbbbb/runtime.js", "unowned");
+    const manifestPath = ".claude/harness-manifest.json";
+    const valid = {
+      contractVersion: "harness-v1",
+      profiles: [
+        {
+          profile: {
+            runtime: { snapshot: ".runtime/harness/aaaaaaaaaaaaaaaa" },
+          },
+        },
+      ],
+    };
+    for (const malformed of [
+      null,
+      {},
+      { ...valid, profiles: [] },
+      { ...valid, profiles: [{ profile: { runtime: { snapshot: 42 } } }] },
+      {
+        ...valid,
+        profiles: [
+          { profile: { runtime: { snapshot: ".runtime/harness/unknown" } } },
+        ],
+      },
+    ]) {
+      write(root, manifestPath, JSON.stringify(malformed));
+      assert.equal(
+        pruneHarness(root).candidates.some((row) => row.kind === "snapshot"),
+        false,
+        JSON.stringify(malformed),
+      );
+    }
+    write(root, manifestPath, JSON.stringify(valid));
+    const targetPath = ".claude/target-worker-manifest.json";
+    for (const malformed of [
+      null,
+      {},
+      { installed: [] },
+      { installed: [{ path: targetPath, hash: "bad" }] },
+    ]) {
+      write(root, targetPath, JSON.stringify(malformed));
+      assert.equal(
+        pruneHarness(root).candidates.some((row) => row.kind === "snapshot"),
+        false,
+        JSON.stringify(malformed),
+      );
+    }
+    write(
+      root,
+      targetPath,
+      JSON.stringify({
+        installed: [
+          { path: "CLAUDE.local.md", hash: "fnv1a64:aaaaaaaaaaaaaaaa" },
+          { path: targetPath, hash: "fnv1a64:bbbbbbbbbbbbbbbb" },
+        ],
+      }),
+    );
+    assert.deepEqual(
+      pruneHarness(root)
+        .candidates.filter((row) => row.kind === "snapshot")
+        .map((row) => row.path),
+      [".runtime/harness/bbbbbbbbbbbbbbbb"],
+    );
+  } finally {
+    removeFixture(root, { recursive: true, force: true });
+  }
+});
+
+test("WO-142 D1 publication proof binds the origin repository despite ambient GH targets", () => {
+  const root = realpathSync(
+    mkdtempSync(join(tmpdir(), "dotln-prune-publication-")),
+  );
+  try {
+    git(root, "init", "--quiet");
+    git(
+      root,
+      "-c",
+      "user.name=Fixture",
+      "-c",
+      "user.email=fixture@example.invalid",
+      "commit",
+      "--allow-empty",
+      "-qm",
+      "Fixture",
+    );
+    const tag = "v9.9.9";
+    const manifest = {
+      release: { application: tag },
+      workOrder: { id: "WO-999" },
+      notes: { changedFiles: [] },
+    };
+    git(
+      root,
+      "-c",
+      "user.name=Fixture",
+      "-c",
+      "user.email=fixture@example.invalid",
+      "tag",
+      "-a",
+      tag,
+      "-m",
+      `DotLn ${tag}\n\nDOTLN-MANIFEST-BEGIN\n${JSON.stringify(manifest)}\nDOTLN-MANIFEST-END`,
+    );
+    git(
+      root,
+      "remote",
+      "add",
+      "origin",
+      "https://github.com/fixture-origin/fixture.git",
+    );
+    const object = git(root, "rev-parse", `refs/tags/${tag}`);
+    const realGit = execFileSync("which", ["git"], { encoding: "utf8" }).trim();
+    write(
+      root,
+      "docs/control/local/retained/WO-999/evidence.txt",
+      "retained bytes",
+    );
+    write(
+      root,
+      "bin/git",
+      `#!${process.execPath}\nconst {spawnSync}=require('node:child_process'); const args=process.argv.slice(2); if(args[2]==='ls-remote'){process.stdout.write(${JSON.stringify(object + "\trefs/tags/" + tag + "\n")});}else{const r=spawnSync(${JSON.stringify(realGit)},args,{stdio:'inherit'});process.exit(r.status??1);}\n`,
+    );
+    write(
+      root,
+      "bin/gh",
+      `#!${process.execPath}\nconst fs=require('node:fs');const args=process.argv.slice(2);const bound=args[args.indexOf('--repo')+1]==='github.com/fixture-origin/fixture'&&!process.env.GH_REPO&&!process.env.GH_HOST;fs.appendFileSync(${JSON.stringify(join(root, "gh-observations.jsonl"))},JSON.stringify({args,repo:process.env.GH_REPO??null,host:process.env.GH_HOST??null})+String.fromCharCode(10));if(bound&&process.env.DOTLN_PRUNE_PUBLISHED!=='yes')process.exit(1);process.stdout.write(JSON.stringify({tagName:'v9.9.9',isDraft:false}));\n`,
+    );
+    chmodSync(join(root, "bin/git"), 0o700);
+    chmodSync(join(root, "bin/gh"), 0o700);
+    const invoke = (published) => {
+      const run = spawnSync(
+        process.execPath,
+        [
+          "--input-type=module",
+          "-e",
+          `import {pruneHarness} from ${JSON.stringify(new URL("./lib/harness-prune.mjs", import.meta.url).href)};console.log(JSON.stringify(pruneHarness(process.argv[1])));`,
+          root,
+        ],
+        {
+          encoding: "utf8",
+          env: {
+            ...process.env,
+            PATH: `${join(root, "bin")}:${process.env.PATH}`,
+            GH_REPO: "unrelated/fixture",
+            GH_HOST: "unrelated.example",
+            DOTLN_PRUNE_PUBLISHED: published ? "yes" : "no",
+          },
+        },
+      );
+      assert.equal(run.status, 0, run.stderr);
+      return JSON.parse(run.stdout);
+    };
+    assert.equal(
+      invoke(false).candidates.some((row) => row.kind === "retained-lane"),
+      false,
+      "another repository's Release cannot authorize deletion",
+    );
+    assert.equal(
+      invoke(true).candidates.some((row) => row.kind === "retained-lane"),
+      true,
+    );
+    const observations = readFileSync(
+      join(root, "gh-observations.jsonl"),
+      "utf8",
+    )
+      .trim()
+      .split("\n")
+      .map(JSON.parse);
+    assert.equal(observations.length, 2);
+    for (const row of observations) {
+      assert.equal(
+        row.args[row.args.indexOf("--repo") + 1],
+        "github.com/fixture-origin/fixture",
+      );
+      assert.equal(row.repo, null);
+      assert.equal(row.host, null);
+    }
+  } finally {
+    removeFixture(root, { recursive: true, force: true });
+  }
+});
+
+test("WO-142 D1 snapshot package links are inventoried without traversal while unsafe links and lanes stay retained", () => {
+  const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-prune-links-")));
+  try {
+    git(root, "init", "--quiet");
+    const snapshot = ".runtime/harness/aaaaaaaaaaaaaaaa";
+    const names = ["kernel", "compiler", "skeleton", "console"];
+    mkdirSync(join(root, snapshot, "node_modules/@dotln"), { recursive: true });
+    for (const name of names) {
+      write(root, `${snapshot}/packages/${name}/fixture.js`, `fixture ${name}`);
+      symlinkSync(
+        `../../packages/${name}`,
+        join(root, snapshot, "node_modules/@dotln", name),
+      );
+    }
+    const inventory = pruneInventory(
+      join(root, snapshot),
+      "",
+      join(root, snapshot),
+    );
+    assert.deepEqual(
+      inventory
+        .filter((row) => row.symlink)
+        .map((row) => [row.path, row.symlink]),
+      [...names]
+        .sort()
+        .map((name) => [
+          `node_modules/@dotln/${name}`,
+          `../../packages/${name}`,
+        ]),
+    );
+    assert.equal(
+      inventory.filter((row) => row.path.endsWith("fixture.js")).length,
+      4,
+      "package bytes are inventoried once, never through links",
+    );
+    assert.throws(
+      () => pruneInventory(join(root, snapshot)),
+      /non-regular/,
+      "the ordinary lane inventory does not admit even internal links",
+    );
+    write(root, "outside/sentinel.txt", "outside bytes stay intact");
+    const escaping = ".runtime/harness/bbbbbbbbbbbbbbbb";
+    mkdirSync(join(root, escaping), { recursive: true });
+    symlinkSync("../../../outside", join(root, escaping, "escape"));
+    const absolute = ".runtime/harness/cccccccccccccccc";
+    write(root, `${absolute}/inside.txt`, "internal bytes");
+    symlinkSync(
+      join(root, absolute, "inside.txt"),
+      join(root, absolute, "absolute"),
+    );
+    const lane = "docs/control/local/retained/WO-997";
+    write(root, `${lane}/inside.txt`, "retained lane bytes");
+    symlinkSync("inside.txt", join(root, lane, "internal-link"));
+    const options = { publishedRelease: () => "v9.9.9" };
+    const preview = pruneHarness(root, options);
+    assert.deepEqual(
+      preview.candidates.map((row) => row.path),
+      [snapshot],
+    );
+    for (const path of [escaping, absolute])
+      assert.ok(
+        preview.retained.some(
+          (row) => row.path === path && /symlink target/.test(row.reason),
+        ),
+        path,
+      );
+    assert.ok(
+      preview.retained.some(
+        (row) => row.path === lane && /non-regular/.test(row.reason),
+      ),
+    );
+    const applied = pruneHarness(root, { ...options, apply: true });
+    assert.deepEqual(
+      applied.candidates.map((row) => row.path),
+      [snapshot],
+    );
+    assert.equal(existsSync(join(root, snapshot)), false);
+    assert.equal(
+      readFileSync(join(root, "outside/sentinel.txt"), "utf8"),
+      "outside bytes stay intact",
+    );
+    for (const path of [escaping, absolute, lane])
+      assert.equal(existsSync(join(root, path)), true, path);
+  } finally {
+    removeFixture(root, { recursive: true, force: true });
+  }
+});
+
+test("WO-142 repair B1 one advisory stays quiet across hook kinds", () => {
+  const root = fixture();
+  try {
+    const payload = input(root, "PreToolUse", {
+      tool_name: "Bash",
+      tool_use_id: "fixture-shared-call",
+      tool_input: { command: "echo $(printf fixture)" },
+    });
+    const first = invoke(root, "permissions", payload);
+    assert.match(first.systemMessage, /DotLn advisory:/);
+    const second = invoke(root, "no-attribution", payload);
+    assert.equal(second.systemMessage, undefined);
+    const rows = journalRows(root, {
+      sessionKey: createHash("sha256")
+        .update("synthetic-session")
+        .digest("hex"),
+      workOrder: "WO-999",
+      phase: "implementation",
+    }).filter((row) => row.advisory);
+    assert.equal(
+      rows.at(-1).advisory,
+      first.systemMessage,
+      "both hook kinds observed the identical advisory",
+    );
+  } finally {
+    removeFixture(root, { recursive: true });
+  }
+});
+
+test("WO-142 repair B2 actual PostToolUse background rows carry scope", () => {
+  const root = fixture();
+  try {
+    beginHarnessSession(root, "synthetic-session", "executor");
+    invoke(
+      root,
+      "read-observer",
+      input(root, "PostToolUse", {
+        tool_name: "Bash",
+        tool_use_id: "fixture-bash-call",
+        tool_input: { run_in_background: true, command: "synthetic-command" },
+        tool_response: {
+          backgroundTaskId: "fixture-bash-task",
+          interrupted: false,
+          isImage: false,
+          noOutputExpected: true,
+          stderr: "",
+          stdout: "",
+        },
+      }),
+    );
+    const rows = journalRows(root, {
+      sessionKey: createHash("sha256")
+        .update("synthetic-session")
+        .digest("hex"),
+      workOrder: "WO-999",
+      phase: "implementation",
+    });
+    const row = rows.find((entry) => entry.backgroundTask);
+    assert.ok(row, "the generated PostToolUse hook journals Bash dispatch");
+    assert.equal(row.workOrder, "WO-999");
+    assert.equal(row.phase, "implementation");
+    assert.equal(row.backgroundTask.state, "dispatched");
+    assert.equal(
+      row.backgroundTask.invocationKey,
+      createHash("sha256").update("fixture-bash-call").digest("hex"),
+    );
+    assert.doesNotMatch(
+      JSON.stringify(row),
+      /synthetic-command|fixture-bash-task|fixture-bash-call/,
+    );
+  } finally {
+    removeFixture(root, { recursive: true });
+  }
+});
+
+test("WO-142 repair D1 Claude current session survives a stale finished owner", () => {
+  const root = realpathSync(
+    mkdtempSync(join(tmpdir(), "dotln-prune-current-")),
+  );
+  const saved = Object.fromEntries(
+    ["CODEX_THREAD_ID", "CLAUDE_CODE_SESSION_ID", "CLAUDE_SESSION_ID"].map(
+      (key) => [key, process.env[key]],
+    ),
+  );
+  try {
+    delete process.env.CODEX_THREAD_ID;
+    delete process.env.CLAUDE_SESSION_ID;
+    process.env.CLAUDE_CODE_SESSION_ID = "fixture-current-claude";
+    git(root, "init", "--quiet");
+    const sessionKey = createHash("sha256")
+      .update("fixture-current-claude")
+      .digest("hex");
+    const owner = {
+      pid: spawnSync(process.execPath, ["-e", ""]).pid,
+      source: "parent",
+    };
+    assert.equal(harnessProcessAlive(owner), false);
+    const path = "docs/control/local/harness/current.advisory";
+    write(root, path, JSON.stringify({ sessionKey, owner }));
+    write(
+      root,
+      `docs/control/local/harness/${sessionKey}.jsonl`,
+      JSON.stringify({ event: "Stop", finished: true }) + "\n",
+    );
+    const options = { publishedRelease: () => null };
+    const protectedPlan = pruneHarness(root, options);
+    assert.ok(
+      protectedPlan.retained.some(
+        (row) => row.path === path && /current/.test(row.reason),
+      ),
+    );
+    assert.ok(!protectedPlan.candidates.some((row) => row.path === path));
+    delete process.env.CLAUDE_CODE_SESSION_ID;
+    assert.ok(
+      pruneHarness(root, options).candidates.some((row) => row.path === path),
+      "current-session identity, rather than owner liveness, is the discriminating protection",
+    );
+  } finally {
+    for (const [key, value] of Object.entries(saved)) {
+      if (value === undefined) delete process.env[key];
+      else process.env[key] = value;
+    }
+    removeFixture(root, { recursive: true });
+  }
+});
+
+test("WO-142 VER-002 B3 preserves the activation read vocabulary and every output destination", () => {
+  // cb932c84 admitted these programs after literal/redirect screening, without
+  // interpreting their flags. Pin that class, including unknown literal flags.
+  const programs = [
+    "echo",
+    "printf",
+    "cat",
+    "pwd",
+    "true",
+    "false",
+    "ls",
+    "head",
+    "grep",
+  ];
+  const commands = programs.flatMap((program) =>
+    ["", " x", " -", " --", " --unrecognized-option", " '- item'"].map(
+      (args) => program + args,
+    ),
+  );
+  commands.push(
+    "echo ---",
+    "printf '---\\n'",
+    "printf -v variable value",
+    "true x",
+    "grep -rA3 foo docs",
+    "grep -3 foo a.md",
+    "grep -rA 3 foo docs",
+    "grep -rnm5 foo docs",
+    "grep --exclude-dir=node_modules -r foo .",
+    "grep -r --include=x foo docs",
+    "grep --regexp=foo a.md",
+    "grep -ve foo a.md",
+    "grep foo -",
+    "grep -Z foo a.md",
+    "ls --all",
+    "ls -l@",
+    "ls -D %s -l",
+    "cat - a.md",
+    "cat -l a.md",
+    "pwd -LP",
+  );
+  for (const command of commands) {
+    assert.deepEqual(shellWriteTargets(command), [], command);
+    for (const redirect of [">", "2>", ">>", "1>&", ">>&"])
+      assert.deepEqual(
+        shellWriteTargets(`${command} ${redirect} protected`),
+        [{ path: "protected", followFinalSymlink: true }],
+        `${command} ${redirect}`,
+      );
+    assert.deepEqual(
+      shellWriteTargets(`${command} | tee protected`),
+      [{ path: "protected", followFinalSymlink: true }],
+      `${command} pipeline`,
+    );
+    assert.deepEqual(
+      shellWriteTargets(`${command} && touch protected`),
+      [{ path: "protected", followFinalSymlink: true }],
+      `${command} chain`,
+    );
+  }
+  for (const program of programs)
+    for (const args of [" $(touch protected)", " `touch protected`", " *.md"])
+      assert.equal(shellWriteTargets(program + args), null, program + args);
+});
+
+test("VER-003 N1 generated prompt hook observes an idle notice before transcript flush", () => {
+  const root = fixture();
+  try {
+    const scope = {
+      sessionKey: createHash("sha256")
+        .update("synthetic-session")
+        .digest("hex"),
+      workOrder: null,
+      phase: "unknown",
+    };
+    const dispatchedAt = new Date(Date.now() - 60000).toISOString();
+    appendObservation(root, scope, {
+      backgroundTask: {
+        key: createHash("sha256").update("idle-task").digest("hex"),
+        state: "dispatched",
+        dispatchedAt,
+        observedAt: dispatchedAt,
+      },
+    });
+    const transcript = join(root, "synthetic-session.jsonl");
+    writeFileSync(
+      transcript,
+      JSON.stringify({ sessionId: "synthetic-session", cwd: root }) + "\n",
+    );
+    const prompt =
+      "<task-notification><task-id>idle-task</task-id><status>completed</status><summary>private-summary</summary></task-notification>";
+    const payload = input(root, "UserPromptSubmit", {
+      prompt,
+      transcript_path: transcript,
+    });
+    const first = invoke(root, "session", payload);
+    assert.match(
+      first.hookSpecificOutput.additionalContext,
+      /last observed state completed; elapsed to terminal observation/,
+    );
+    const before = journalRows(root, scope).filter((r) =>
+      r.eventId?.startsWith("task-notice:"),
+    );
+    assert.equal(before.length, 1);
+    const second = invoke(root, "session", payload);
+    assert.match(
+      second.hookSpecificOutput.additionalContext,
+      /last observed state completed/,
+    );
+    const after = journalRows(root, scope).filter((r) =>
+      r.eventId?.startsWith("task-notice:"),
+    );
+    assert.deepEqual(after, before);
+    assert.doesNotMatch(JSON.stringify(after), /idle-task|private-summary/);
   } finally {
     removeFixture(root, { recursive: true });
   }

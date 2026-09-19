@@ -252,7 +252,7 @@ export function admitSubagentTool(
       const refuse = () => {
         save(p.counter, counter);
         return {
-          refusal: `DOTLN_SUBAGENT_CAP_REFUSED: count ${observation(counter, cap).count}, cap ${cap}; docs/control/budgets.json subagentCap would be exceeded. Batch remaining work in existing agents.`,
+          refusal: `DOTLN_SUBAGENT_CAP_REFUSED: count ${observation(counter, cap).countKind === "minimum-observed" ? "at least " : ""}${observation(counter, cap).count}, cap ${cap}; docs/control/budgets.json subagentCap would be exceeded. Batch remaining work in existing agents.`,
           usage: observation(counter, cap),
         };
       };

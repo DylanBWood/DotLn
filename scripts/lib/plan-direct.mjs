@@ -3,7 +3,8 @@ import { join } from "node:path";
 import { runGit } from "./git.mjs";
 import {
   buildPlanSubject,
-  hashParts,
+  planOrderHash,
+  carriedOrderHashMatches,
   PLAN_LEDGER,
   planningPasses,
   sha256,
@@ -19,15 +20,6 @@ import {
 import { containedRegularFile } from "./paths.mjs";
 
 const local = "docs/control/local/plan";
-export const planOrderHash = (order) =>
-  hashParts([
-    order.workOrderId,
-    order.title,
-    order.objective,
-    order.criteria,
-    order.nonGoals,
-    ...(Object.hasOwn(order, "cost") ? [order.cost] : []),
-  ]);
 export async function latestPlanningPass(root, history) {
   const enforced = planningPassScope(root).passes;
   const passes = enforced.length
@@ -163,11 +155,10 @@ export async function carryPlanResult(root, subject, review, value) {
     if (
       !prior ||
       !order ||
-      planOrderHash(order) !== item.orderHash ||
       !prior.subject.orders.some(
         (row) =>
           row.workOrderId === item.workOrderId &&
-          planOrderHash(row) === item.orderHash,
+          carriedOrderHashMatches(order, row, item.orderHash),
       )
     )
       throw new Error("Carried verdict source or current order hash changed");

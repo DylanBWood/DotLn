@@ -58,6 +58,8 @@ const actor =
   "Completion flags: `--harness <harness> --harness-version <version> --model <model> --effort <level> --source <source>`. Supply each field; unknown is admitted. Versions, models and effort are logged, never refused. `ultra` and `ultra code` record xhigh, mode subagents and raw spelling. Never invent effective-session readback. Codex briefings report current-session model, effort and CLI version from the active thread; use that readback when available.";
 const evidence =
   "Run checks that establish the work order's claims. Executor and verifier choose when npm test is useful; lifecycle transitions never require a test gate. Completion runs git diff --check inline and validates report/attestation presence; missing gate rows, output-read observations, usage and planning handoffs advise. Review current authored outputs and record evidence with source and cutoff. Reports, indexes and release text may be completed after a passing gate without invalidating code identity. One registered writer owns a worktree on any branch. Never write gate inputs or its success record during a live npm test; stop your own gate with `node scripts/harness.mjs evidence --stop` when necessary. Every other permission judgment delegates to the host. Read current authored outputs; generated or oversized outputs use their generation/check evidence. Codex can use explicit begin/observe/delivered and `node scripts/harness.mjs read-output <path> --offset 0 --length 8192`, without claiming automatic hooks. Usage is recorded when available and unknown otherwise; it never blocks handoff.";
+const boardedDefect =
+  "A defect met and not fixed must be recorded in docs/evidence/WO-NNN/decisions.md with a named follow-up in its structured decision JSON `followup` string (or a `reopens` object for an existing decision), and cited by the report; fix it within the boy-scout bound or board it up there, never leave it only as a report sentence.";
 export const contributorRoles: readonly HarnessRole[] = [
   {
     facetId: "contributor.executor",
@@ -74,6 +76,7 @@ export const contributorRoles: readonly HarnessRole[] = [
       "Read: `@failure-report`",
       "Implement the complete bounded deliverable and its write-backs. Prepare its classified release with `npm run release -- prepare --local`; bump only changed components with their compatibility impact and retain all publication controls.",
       evidence,
+      boardedDefect,
       actor,
       "Finish all authored output, index preparation, review and usage observations before recording `npm run resume -- implementation-ready <actor-flags>` or `npm run resume -- repair-complete <actor-flags>`. These commands refresh the final index and automatically release the current Codex session's writer reservation after recording the result; Claude also releases at Stop. Read the resulting projections without another write. A repair is unfinished until repair-complete records. Report evidence, attestation, and limits; leave verification and final review to their separate dispatches. Never leave the writer reserved at handoff or ask the operator to release it.",
     ],
@@ -90,6 +93,7 @@ export const contributorRoles: readonly HarnessRole[] = [
       "The `verify` dispatch is recorded with the phrase and delivers the exact new VER path it allocates (Codex runs `npm run resume -- verify` itself); write only that path. Judge the original order and current subject against its acceptance criteria, reproducing consequential claims and checking earlier findings. Substantive implementation defects become findings for repair.",
       "Read: `@verification-reports`",
       evidence,
+      boardedDefect,
       actor,
       "Put exactly one `**Actor attestation:** {<normalized actor JSON>}` line beside the human actor prose in the allocated report; its bytes must agree with the completion flags. Report criterion, observed/expected, reproduction, evidence, severity and limits. Disclose any instrument under verification that also recorded this work.",
       "Record `npm run resume -- verification-result pass|fail <actor-flags>` only after the report and evidence exist; refresh the index and reread updated outputs in `@subject-files`. Never replace an older VER or edit implementation to turn your own verdict green.",
@@ -108,6 +112,7 @@ export const contributorRoles: readonly HarnessRole[] = [
       "Read: `@verification-reports`",
       "Read: `docs/product/08-publication-compiler.md#PRs and commits`",
       evidence,
+      boardedDefect,
       "After the last source edit and intended new source files are staged, run `npm test -- --review` once. This runs the product suites and machinery suites whose own declared sources changed since the base. The passing npm test row is keyed by tracked non-generated code; final-review-result carries it in the control event, worktree publish cites it in the PR, and release close consumes it without running a suite. Source changes require affected checks and a new final product gate; report/control/generated-document changes do not.",
       actor,
       "Prepare the contained PR.md and five-section RELEASE-NOTES.md beside the report, using the current publication contract; use one physical line per prose paragraph. Write the PR title as a headline: one clause saying what changed for the reader and why it matters, the lede first, sized by its content and never by the previous title, with no implementation inventory, version list or repeated work-order prose. A relevant gitmoji shortcode belongs in the PR title; commit subjects stay plain and contain no AI attribution.",

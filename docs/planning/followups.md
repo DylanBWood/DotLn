@@ -10,12 +10,18 @@ Changed items, explicit open items and deferrals precede the untriaged migration
 `docs/planning/followups.json` retains stable identities. `npm run meta` (or
 `npm run plan -- followups --sync`) discovers formal candidate, follow-up and
 deferred headings and their top-level list items in current product/planning
-documents, plus every per-order JSON decision. Existing records start
-untriaged, including historical allocations, declined choices and overlapping
-sources; collection does not infer coverage. Archive snapshots, refutation
-receipts and unstructured legacy prose are outside this migration's claim.
+documents. A per-order JSON decision enters the feed only when its optional
+`followup` string names an action, or another decision carries
+`reopens: { "decisionId": "WO-NNN-DNNN", "observation": "the recorded trigger occurred" }`.
+The observing record cites evidence through its ordinary `evidence` field; it
+does not create a second nomination unless it also names a `followup`. A
+`reopenWhen` condition alone remains a decision record, outside the pending feed.
+Every decision still appears in the decisions index. Existing register entries,
+identities and history are retained; current page links resolve their full
+headings without rewriting historical references. Archive snapshots, refutation
+receipts and unstructured legacy prose are outside the collector's claim.
 New nominations must use a formal candidate heading in the relevant product
-document or an ordinary sourced decision record, then sync in the same pass.
+document or a sourced decision with `followup`, then sync in the same pass.
 Private intake and local queue text are never harvested by this collector.
 
 Use `npm run plan -- followups --apply <request.json>` with a contained JSON

@@ -93,6 +93,9 @@ test("WO-139 only observed result joins resolve direct/child overlap; mixed conc
   f.admit("w2-read", "Read", "w2");
   assert.equal(f.usage().count, 2);
   assert.equal(f.usage().countKind, "minimum-observed");
+  f.budgets(2);
+  assert.match(f.admit("minimum-cap").refusal!, /count at least 2, cap 2/);
+  f.budgets(3);
   assert.match(
     subagentSummary(f.usage()),
     /at least 2\/3.*uncounted remainder unknown/,
@@ -191,29 +194,83 @@ test("WO-139 missing, malformed, non-file, locked counters and invalid budgets a
   assert.match(f.admit("invalid-json").advisory!, /budgets unreadable/);
 });
 
-test("WO-139 concurrent independent admissions serialize at the remaining unit", async (t) => {
+test("WO-139 concurrent independent admissions serialize at caps one and three", async (t) => {
+  for (const cap of [1, 3]) {
+    const f = fixture(t, cap);
+    const module = new URL("../src/subagent-budget.js", import.meta.url).href;
+    const launch = (id: number) =>
+      new Promise<string>((resolve, reject) => {
+        const code = `import{admitSubagentTool}from ${JSON.stringify(module)};console.log(JSON.stringify(admitSubagentTool(process.argv[1],process.argv[2],{session_id:'root',tool_name:'Agent',tool_use_id:process.argv[3]},true)));`;
+        const child = spawn(
+          process.execPath,
+          ["--input-type=module", "-e", code, f.root, f.directory, String(id)],
+          { stdio: ["ignore", "pipe", "pipe"] },
+        );
+        let output = "",
+          error = "";
+        child.stdout.on("data", (x) => (output += x));
+        child.stderr.on("data", (x) => (error += x));
+        child.on("error", reject);
+        child.on("close", (status) =>
+          status === 0 ? resolve(output) : reject(new Error(error)),
+        );
+      });
+    const results = (
+      await Promise.all(Array.from({ length: 8 }, (_, id) => launch(id)))
+    ).map((x) => JSON.parse(x));
+    assert.ok(
+      results.every((row) => !row.advisory),
+      "all competing calls observed the counter",
+    );
+    assert.equal(results.filter((r) => !r.refusal).length, cap);
+    assert.equal(f.usage().count, cap);
+  }
+});
+
+test("WO-142 B5 missing tool identity is unknown and known resumed agents are not recharged", (t) => {
   const f = fixture(t, 1);
-  const module = new URL("../src/subagent-budget.js", import.meta.url).href;
-  const launch = (id: number) =>
-    new Promise<string>((resolve, reject) => {
-      const code = `import{admitSubagentTool}from ${JSON.stringify(module)};console.log(JSON.stringify(admitSubagentTool(process.argv[1],process.argv[2],{session_id:'root',tool_name:'Agent',tool_use_id:process.argv[3]},true)));`;
-      const child = spawn(
-        process.execPath,
-        ["--input-type=module", "-e", code, f.root, f.directory, String(id)],
-        { stdio: ["ignore", "pipe", "pipe"] },
-      );
-      let output = "",
-        error = "";
-      child.stdout.on("data", (x) => (output += x));
-      child.stderr.on("data", (x) => (error += x));
-      child.on("error", reject);
-      child.on("close", (status) =>
-        status === 0 ? resolve(output) : reject(new Error(error)),
-      );
-    });
-  const results = (
-    await Promise.all(Array.from({ length: 8 }, (_, id) => launch(id)))
-  ).map((x) => JSON.parse(x));
-  assert.equal(results.filter((r) => !r.refusal).length, 1);
+  const missing = admitSubagentTool(
+    f.root,
+    f.directory,
+    { session_id: "root", tool_name: "Agent" },
+    true,
+  );
+  assert.match(
+    missing.advisory!,
+    /tool_use_id missing.*uncounted remainder unknown/,
+  );
+  assert.equal(missing.refusal, undefined);
+  assert.equal(f.usage().count, 0);
+  assert.equal(f.admit("original").refusal, undefined);
+  linkSubagentResult(f.directory, {
+    session_id: "root",
+    tool_use_id: "original",
+    tool_response: { agentId: "known-agent" },
+  });
+  const resumed = admitSubagentTool(
+    f.root,
+    f.directory,
+    {
+      session_id: "root",
+      tool_name: "Agent",
+      tool_use_id: "resume-one",
+      tool_input: { resume: "known-agent" },
+    },
+    true,
+  );
+  assert.equal(resumed.refusal, undefined);
+  assert.equal(resumed.usage.count, 1);
+  const unknown = admitSubagentTool(
+    f.root,
+    f.directory,
+    {
+      session_id: "root",
+      tool_name: "Agent",
+      tool_use_id: "resume-unknown",
+      tool_input: { resume: "unknown-agent" },
+    },
+    true,
+  );
+  assert.match(unknown.refusal!, /count 1, cap 1/);
   assert.equal(f.usage().count, 1);
 });

@@ -21,7 +21,7 @@ export interface WorkerEffortSelection {
   readonly raw?: string;
 }
 export function normalizeWorkerEffort(effort: string): WorkerEffortSelection {
-  return effort === "ultra" || effort === "ultra code"
+  return ["ultra", "ultra code", "ultracode"].includes(effort.toLowerCase())
     ? { effort: "xhigh", mode: "subagents", raw: effort }
     : { effort };
 }

@@ -1,12 +1,7 @@
+import { isMainModule } from "./lib/paths.mjs";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
-import {
-  existsSync,
-  mkdirSync,
-  readFileSync,
-  realpathSync,
-  writeFileSync,
-} from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
@@ -172,10 +167,7 @@ export function checkContextMeasurement(measurement) {
         `Advisory: ${row.skillsRoot}/${row.role}: ${JSON.stringify(row.residue)}`,
       );
 }
-if (
-  process.argv[1] &&
-  realpathSync(process.argv[1]) === fileURLToPath(import.meta.url)
-) {
+if (isMainModule(import.meta.url)) {
   const result = measureColdStarts(root);
   requireBudgets(result.profiles);
   const destination = join(root, "docs/evidence/WO-126/harness-context.json");

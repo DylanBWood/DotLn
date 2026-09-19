@@ -1,8 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { execFileSync } from "node:child_process";
 import { readFileSync, readdirSync } from "node:fs";
-import { arch, platform, release } from "node:os";
 import {
   HAND_COMPUTED_COMMAND_VECTOR,
   buildIdCorpus,
@@ -181,22 +179,16 @@ test("WO-101 manifest pins the base, seeds, toolchain, budgets, and run-log inte
     HAND_COMPUTED_COMMAND_VECTOR,
   );
   assert.deepEqual(manifest.toolchainProfile, TOOLCHAIN_PROFILE);
-  assert.equal(TOOLCHAIN_PROFILE.node, process.version);
-  assert.equal(
-    TOOLCHAIN_PROFILE.npm,
-    execFileSync("npm", ["--version"], { encoding: "utf8" }).trim(),
-  );
-  assert.equal(
-    TOOLCHAIN_PROFILE.typescript,
-    execFileSync(`${REPO_ROOT}/node_modules/.bin/tsc`, ["--version"], {
-      encoding: "utf8",
-    })
-      .trim()
-      .replace(/^Version /, ""),
-  );
-  assert.equal(TOOLCHAIN_PROFILE.platform, platform());
-  assert.equal(TOOLCHAIN_PROFILE.architecture, arch());
-  assert.equal(TOOLCHAIN_PROFILE.osKernel, `Darwin ${release()}`);
+  // This is the toolchain that generated the frozen manifest, not a demand
+  // that today's runtime, compiler and operating system impersonate that host.
+  assert.deepEqual(TOOLCHAIN_PROFILE, {
+    node: "v22.2.0",
+    npm: "10.8.0",
+    typescript: "5.4.5",
+    platform: "darwin",
+    architecture: "arm64",
+    osKernel: "Darwin 24.6.0",
+  });
   assert.match(manifest.evidence.runLog, new RegExp(PINNED_BASE_COMMIT));
   assert.match(manifest.evidence.runLogCommitMeaning, /pinned base commit/);
   assert.match(

@@ -169,11 +169,34 @@ test("WO-133 review selection ignores release-only changes and retains host beha
     );
     assert.ok(selected.includes("harness-fixtures"));
     assert.ok(selected.includes("process-debt"));
-    for (const row of suites.filter((row) => row.machinery))
+    const versionConsumers = [
+      "harness-fixtures",
+      "harness",
+      "process-debt",
+      "harness-evidence",
+      "authority-evidence",
+      "artifact-evidence",
+      "verification-evidence",
+      "feedback-evidence",
+    ];
+    for (const name of versionConsumers)
       assert.ok(
-        !row.sources.some((source) => version.startsWith(source)),
-        row.name,
+        suites.find((row) => row.name === name).sources.includes(version),
+        name,
       );
+    writeFileSync(
+      join(repo, "packages/skeleton/src/harness-host.ts"),
+      "export const behavior = 1;\n",
+    );
+    writeFileSync(
+      join(repo, version),
+      'export const HARNESS_HOST_VERSION = "1.0.1";\nexport const behavior = 2;\n',
+    );
+    const behaviorSelected = changedMachinery(repo, suites, "main").map(
+      (row) => row.name,
+    );
+    for (const name of versionConsumers)
+      assert.ok(behaviorSelected.includes(name), name);
     const host = readFileSync(
       join(root, "packages/skeleton/src/harness-host.ts"),
       "utf8",
@@ -205,6 +228,7 @@ test("full inventory retains every command in the previous package test chain", 
       .filter(
         (part) =>
           !part.startsWith("--test-concurrency=") &&
+          part !== "--test-reporter=tap" &&
           !part.startsWith("--test-name-pattern=") &&
           !part.startsWith("--test-skip-pattern="),
       )
@@ -250,6 +274,8 @@ test("full inventory retains every command in the previous package test chain", 
   }
 });
 test("package suites bound child-file concurrency as well as outer scheduling", () => {
+  for (const row of suites.filter((suite) => suite.command.includes("--test")))
+    assert.ok(row.command.includes("--test-reporter=tap"), row.name);
   for (const name of ["kernel", "compiler", "skeleton", "console"]) {
     const row = suites.find((suite) => suite.name === name);
     assert.ok(row.fileConcurrency >= 1 && row.fileConcurrency <= 2);
@@ -341,6 +367,10 @@ test("stale generated evidence stops the gate before expensive fixtures", async 
   assert.ok(started.includes("authority-evidence"));
   assert.ok(started.includes("index"));
   assert.ok(!started.includes("harness-fixtures"));
+  assert.match(
+    rows.find((row) => row.name === "harness-fixtures").output,
+    /failed for harness-fixtures: authority-evidence/,
+  );
   assert.equal(
     rows.find((row) => row.name === "harness-fixtures").executed,
     false,
@@ -420,8 +450,20 @@ test("failed split-case diagnostics survive aggregate evidence as addressed logs
   );
 });
 test("product suites describe protection, machinery is separate and only release expands", () => {
-  for (const row of suites.filter((row) => row.product))
+  for (const row of suites) {
     assert.ok(row.protects?.length > 10, row.name);
+    assert.ok(
+      !row.protects.includes("validates its declared project surface"),
+      row.name,
+    );
+  }
+  const skeleton = suites.find((row) => row.name === "skeleton");
+  assert.equal(skeleton.product, true);
+  for (const path of [
+    "scripts/reactor-identity.mjs",
+    "scripts/fixtures/historical-compiler-loader.mjs",
+  ])
+    assert.ok(skeleton.sources.includes(path));
   for (const row of suites.filter((row) => row.machinery))
     assert.ok(row.sources.length, row.name);
   const selected = suites.filter((row) => row.name !== "release");
@@ -1133,7 +1175,7 @@ test("live progress arrives before a running process completes and remains bound
       command: [
         process.execPath,
         "-e",
-        'console.log("PROGRESS fixture begun"); setTimeout(() => console.log("done"), 100);',
+        'console.log("PROGRESS fixture begun   "); setTimeout(() => console.log("done"), 100);',
       ],
     },
     root,

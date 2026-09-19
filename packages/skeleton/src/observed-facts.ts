@@ -89,15 +89,23 @@ export function namedJudgmentUnits(text: string): string[] {
 
 export { correctionCounts } from "./correction-observation.mjs";
 
+const terminalStates = new Set(["completed", "failed", "stopped", "killed"]);
+const taskInScope = (row: Row, scope: ObservationScope) =>
+  row.workOrder === scope.workOrder &&
+  row.phase === scope.phase &&
+  (!scope.startedAt || row.recordedAt >= scope.startedAt);
+
 // Positive tool metadata projection: no prompts, results or native task IDs.
 export function observeBackgroundTool(
   tool: string,
   input: Row,
   output: Row,
   at: string,
+  invocationId?: string,
 ): Row | null {
   const task = output.task ?? output;
   const id =
+    task.backgroundTaskId ??
     task.agentId ??
     task.agent_id ??
     task.task_id ??
@@ -106,12 +114,13 @@ export function observeBackgroundTool(
     input.agent_id ??
     input.id;
   if (typeof id !== "string") return null;
-  const dispatch = ["Agent", "Task", "spawn_agent"].includes(tool);
+  const dispatch = ["Agent", "Task", "spawn_agent", "Bash"].includes(tool);
   if (
     dispatch &&
     !(
       input.run_in_background === true ||
       output.isAsync === true ||
+      (tool === "Bash" && typeof task.backgroundTaskId === "string") ||
       tool === "spawn_agent"
     )
   )
@@ -125,16 +134,19 @@ export function observeBackgroundTool(
   const state =
     output.is_error === true || output.error
       ? "unknown"
-      : ["completed", "failed", "stopped", "running", "pending"].includes(
-            status,
-          )
+      : terminalStates.has(status) || ["running", "pending"].includes(status)
         ? status
-        : dispatch
-          ? "dispatched"
-          : "unknown";
+        : tool === "TaskStop" &&
+            status === undefined &&
+            typeof task.task_id === "string"
+          ? "stopped"
+          : dispatch
+            ? "dispatched"
+            : "unknown";
   return {
     backgroundTask: {
       key: digest(id),
+      ...(invocationId ? { invocationKey: digest(invocationId) } : {}),
       state,
       ...(dispatch ? { dispatchedAt: at } : {}),
       observedAt: at,
@@ -151,8 +163,29 @@ export function observedFacts(
   const tasks = new Map<string, Row>();
   for (const row of journal) {
     const task = row.backgroundTask;
-    if (!task || typeof task.key !== "string") continue;
-    tasks.set(task.key, { ...tasks.get(task.key), ...task });
+    if (!taskInScope(row, scope) || !task || typeof task.key !== "string")
+      continue;
+    const previous = tasks.get(task.key);
+    // Transcript reconstruction can append older observations after live hooks.
+    // Keep the earliest terminal evidence; later reads, errors or stops cannot
+    // restart elapsed time. Nonterminal facts still follow observation time.
+    const terminal = terminalStates.has(task.state);
+    const previousTerminal = previous && terminalStates.has(previous.state);
+    const keepPrevious =
+      previous &&
+      (previousTerminal
+        ? !terminal || previous.observedAt <= task.observedAt
+        : !terminal && previous.observedAt > task.observedAt);
+    const selected = keepPrevious
+      ? { ...task, ...previous }
+      : { ...previous, ...task };
+    const dispatchedAt = [previous?.dispatchedAt, task.dispatchedAt]
+      .filter((at) => Number.isFinite(Date.parse(at)))
+      .sort()[0];
+    tasks.set(task.key, {
+      ...selected,
+      ...(dispatchedAt ? { dispatchedAt } : {}),
+    });
   }
   const usageRows = rows(join(root, "docs/control/local/process/usage.jsonl"));
   const usage = usageRows
@@ -174,7 +207,8 @@ export function observedFacts(
       ...task,
       label: `task ${index + 1}`,
       elapsedMs: Number.isFinite(Date.parse(task.dispatchedAt))
-        ? Date.parse(now) - Date.parse(task.dispatchedAt)
+        ? Date.parse(terminalStates.has(task.state) ? task.observedAt : now) -
+          Date.parse(task.dispatchedAt)
         : null,
     })),
     gates,
@@ -191,7 +225,7 @@ export function renderObservedFacts(facts: ReturnType<typeof observedFacts>) {
     ...(facts.tasks.length
       ? facts.tasks.map(
           (task) =>
-            `${task.label}: dispatched ${task.dispatchedAt ?? "unknown (dispatch-unavailable)"}; last observed state ${task.state}; elapsed since dispatch ${value(task.elapsedMs, "dispatch-unavailable")} ms; state observed ${task.observedAt}.`,
+            `${task.label}: dispatched ${task.dispatchedAt ?? "unknown (dispatch-unavailable)"}; last observed state ${task.state}; elapsed ${terminalStates.has(task.state) ? "to terminal observation" : "since dispatch"} ${value(task.elapsedMs, "dispatch-unavailable")} ms; state observed ${task.observedAt}.`,
         )
       : ["Background tasks: unknown (no-session-task-observation)."]),
     ...(facts.gates.length
@@ -276,10 +310,11 @@ export function scanHedges(
           : facts.tasks.length === 1
             ? facts.tasks[0]
             : undefined;
-        if (task?.elapsedMs != null) {
+        const age = Date.parse(facts.now) - Date.parse(task?.dispatchedAt);
+        if (task && Number.isFinite(age)) {
           observed = clock
             ? task.dispatchedAt
-            : `${task.elapsedMs} ms since ${task.dispatchedAt}`;
+            : `${age} ms since ${task.dispatchedAt}`;
           source = "session-task-dispatch";
         }
       } else if (
@@ -379,7 +414,14 @@ export function transcriptMessages(path: string): Row[] {
           if (!oversized) {
             try {
               const row = JSON.parse(pending.toString("utf8"));
-              if (row?.type === "response_item" || row?.message)
+              if (
+                row?.type === "response_item" ||
+                row?.message ||
+                (row?.type === "queue-operation" &&
+                  row.operation === "enqueue") ||
+                (row?.type === "attachment" &&
+                  row.attachment?.type === "queued_command")
+              )
                 result.push({ ...row, position: lineStart });
             } catch {
               /* Partial or malformed records establish no observation. */
@@ -414,9 +456,68 @@ function transcriptTasks(
   root: string,
   scope: ObservationScope,
   transcript: Row[],
+  prompt: string | undefined,
+  now: string,
 ) {
   const calls = new Map<string, Row>();
-  const seen = new Set(journalRows(root, scope).map((row) => row.eventId));
+  const journal = journalRows(root, scope).filter((row) =>
+    taskInScope(row, scope),
+  );
+  const seen = new Set(journal.map((row) => row.eventId));
+  const noticeTimes = new Map<string, string>();
+  for (const row of journal) {
+    if (!row.eventId?.startsWith("task-notice:")) continue;
+    const at = row.backgroundTask?.observedAt;
+    if (
+      Number.isFinite(Date.parse(at)) &&
+      (!noticeTimes.has(row.eventId) || at < noticeTimes.get(row.eventId)!)
+    )
+      noticeTimes.set(row.eventId, at);
+  }
+  const invocations = new Map<string, Row>();
+  const remember = (task: Row | undefined) => {
+    if (task?.invocationKey) invocations.set(task.invocationKey, task);
+  };
+  for (const row of journal) remember(row.backgroundTask);
+  const observeNotice = (content: unknown, at: string) => {
+    if (
+      typeof content !== "string" ||
+      !Number.isFinite(Date.parse(at)) ||
+      (scope.startedAt && at < scope.startedAt)
+    )
+      return;
+    const notice = content.trim();
+    if (
+      !notice.startsWith("<task-notification>") ||
+      !notice.endsWith("</task-notification>")
+    )
+      return;
+    const metadata = notice.split("<summary>", 1)[0]!;
+    const id = /<task-id>([^<>]+)<\/task-id>/.exec(metadata)?.[1];
+    const invocation = /<tool-use-id>([^<>]+)<\/tool-use-id>/.exec(
+      metadata,
+    )?.[1];
+    const status = /<status>([^<>]+)<\/status>/.exec(metadata)?.[1];
+    const known = invocation ? invocations.get(digest(invocation)) : undefined;
+    const key = known?.key ?? (id ? digest(id) : undefined);
+    if (!key || !status || !terminalStates.has(status)) return;
+    const eventId = `task-notice:${digest(`${key}:${status}`)}`;
+    const previousAt = noticeTimes.get(eventId);
+    // A prompt may arrive before its earlier transcript row is flushed. Append
+    // that newly learned earlier observation once; duplicate/later delivery adds
+    // nothing and never moves the terminal time forward.
+    if (previousAt && previousAt <= at) return;
+    appendObservation(
+      root,
+      scope,
+      {
+        eventId,
+        backgroundTask: { key, state: status, observedAt: at },
+      },
+      at,
+    );
+    noticeTimes.set(eventId, at);
+  };
   const object = (value: unknown): Row => {
     try {
       const result = typeof value === "string" ? JSON.parse(value) : value;
@@ -427,6 +528,17 @@ function transcriptTasks(
   };
   for (const row of transcript) {
     if (scope.startedAt && row.timestamp < scope.startedAt) continue;
+    // Only native notice envelopes establish completion; result prose does not.
+    // Claude persists the queued notice before attaching it to a user turn.
+    const content =
+      row.type === "queue-operation" && row.operation === "enqueue"
+        ? row.content
+        : row.type === "attachment" && row.attachment?.type === "queued_command"
+          ? row.attachment.prompt
+          : row.type === "user" && row.message?.role === "user"
+            ? row.message.content
+            : undefined;
+    observeNotice(content, row.timestamp);
     const parts =
       row.type === "response_item" ? [row.payload] : row.message?.content;
     if (!Array.isArray(parts)) continue;
@@ -456,20 +568,25 @@ function transcriptTasks(
           call.input,
           output,
           row.timestamp,
+          id,
         );
         if (observation?.backgroundTask.dispatchedAt)
           observation.backgroundTask.dispatchedAt = call.at;
         const eventId = `task:${digest(`${id}:${row.position}`)}`;
-        if (observation && !seen.has(eventId))
+        if (observation && !seen.has(eventId)) {
           appendObservation(
             root,
             scope,
             { ...observation, eventId },
             row.timestamp,
           );
+          seen.add(eventId);
+          remember(observation.backgroundTask);
+        }
       }
     }
   }
+  observeNotice(prompt, now);
 }
 
 export function scanMessage(
@@ -545,6 +662,7 @@ export function observationBoundary(
   scope: ObservationScope,
   options: {
     transcriptPath?: string;
+    prompt?: string;
     stop?: boolean;
     reentry?: boolean;
     output?: string;
@@ -554,6 +672,23 @@ export function observationBoundary(
 ) {
   try {
     const now = options.now ?? new Date().toISOString();
+    let transcript: Row[] | undefined;
+    try {
+      const path = sessionTranscript(root, {
+        sessionKey: scope.usageKey ?? scope.sessionKey,
+        ...(options.transcriptPath
+          ? { transcriptPath: options.transcriptPath }
+          : {}),
+      });
+      transcript = transcriptMessages(path);
+    } catch {
+      /* Missing optional transcript leaves journal facts intact. */
+    }
+    try {
+      transcriptTasks(root, scope, transcript ?? [], options.prompt, now);
+    } catch {
+      /* Optional reconstruction must not hide already journaled facts. */
+    }
     // Capture facts before acknowledging delivery; a broken optional source must
     // not consume pending corrections without displaying them.
     let factsText: string;
@@ -566,14 +701,7 @@ export function observationBoundary(
     let scanCause = "";
     if (!options.reentry && (options.stop || options.codex)) {
       try {
-        const path = sessionTranscript(root, {
-          sessionKey: scope.usageKey ?? scope.sessionKey,
-          ...(options.transcriptPath
-            ? { transcriptPath: options.transcriptPath }
-            : {}),
-        });
-        const transcript = transcriptMessages(path);
-        if (options.codex) transcriptTasks(root, scope, transcript);
+        if (!transcript) throw new Error("session transcript unavailable");
         const messages: Row[] = transcript.flatMap((row) => {
           const message =
             row.type === "response_item" ? row.payload : row.message;

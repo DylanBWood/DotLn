@@ -1,7 +1,36 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import ts from "typescript";
+import * as ts from "typescript/unstable/ast";
+import { API } from "typescript/unstable/sync";
+import { createVirtualFileSystem } from "typescript/unstable/fs";
+
+// The native compiler owns parsing; the returned tree is local after close.
+function parseSource(fileName: string, source: string): ts.SourceFile {
+  const path = `/source/${fileName.replaceAll("\\", "/").split("/").at(-1)}`;
+  const api = new API({
+    cwd: "/source",
+    fs: createVirtualFileSystem({
+      "/source/tsconfig.json": JSON.stringify({
+        files: [path],
+        compilerOptions: { noLib: true, noResolve: true, allowJs: true },
+      }),
+      [path]: source,
+    }),
+  });
+  try {
+    const snapshot = api.updateSnapshot({
+      openProject: "/source/tsconfig.json",
+    });
+    const tree = snapshot
+      .getProject("/source/tsconfig.json")
+      ?.program.getSourceFile(path);
+    assert.ok(tree, `native compiler parsed ${fileName}`);
+    return tree;
+  } finally {
+    api.close();
+  }
+}
 
 interface ReadSite {
   module: string;
@@ -23,7 +52,7 @@ const modules = ["worker-store.ts", "worker-host.ts", "verification-host.ts"];
 const normalize = (value: string) => value.replace(/\s+/gu, " ").trim();
 
 function inventory(module: string, source: string): ReadSite[] {
-  const ast = ts.createSourceFile(module, source, ts.ScriptTarget.Latest, true);
+  const ast = parseSource(module, source);
   const aliases = new Map<string, string>();
   for (const statement of ast.statements) {
     if (
@@ -43,6 +72,44 @@ function inventory(module: string, source: string): ReadSite[] {
           element.name.text,
           element.propertyName?.text ?? element.name.text,
         );
+  }
+  // Track module-local rebinding too: importing a reader and assigning it a
+  // different local name must not remove its boundary from the inventory.
+  const unwrapped = (node: ts.Expression): ts.Expression =>
+    ts.isAsExpression(node) ||
+    ts.isTypeAssertion(node) ||
+    ts.isParenthesizedExpression(node)
+      ? unwrapped(node.expression)
+      : node;
+  let changed = true;
+  while (changed) {
+    changed = false;
+    const bind = (node: ts.Node): void => {
+      if (
+        ts.isVariableDeclaration(node) &&
+        ts.isIdentifier(node.name) &&
+        node.initializer
+      ) {
+        const value = unwrapped(node.initializer);
+        const name = ts.isIdentifier(value)
+          ? aliases.get(value.text)
+          : ts.isPropertyAccessExpression(value)
+            ? value.name.text
+            : undefined;
+        if (
+          name &&
+          /^(readFileSync|readFile|readSync|read|readvSync|readv|createReadStream|openSync|open)$/u.test(
+            name,
+          ) &&
+          !aliases.has(node.name.text)
+        ) {
+          aliases.set(node.name.text, name);
+          changed = true;
+        }
+      }
+      node.forEachChild(bind);
+    };
+    bind(ast);
   }
   const sites: ReadSite[] = [];
   const visit = (node: ts.Node) => {
@@ -101,7 +168,7 @@ function inventory(module: string, source: string): ReadSite[] {
         }
       }
     }
-    ts.forEachChild(node, visit);
+    node.forEachChild(visit);
   };
   visit(ast);
   return sites.sort((a, b) =>
@@ -135,6 +202,9 @@ test("WO-048 inventory tripwire detects newly added and aliased unguarded reads"
     'import {readFile as bytes} from "node:fs/promises"; bytes("new.json");',
     'import * as fs from "node:fs"; fs.readFileSync("new.json");',
     'JSON.parse("null");',
+    'import {readFileSync} from "node:fs"; const readBytes = readFileSync; readBytes("new.json");',
+    'import {readFileSync} from "node:fs"; const first = readFileSync; const second = first; second("new.json");',
+    'import * as fs from "node:fs"; const bytes = fs.readFileSync; bytes("new.json");',
   ])
     assert.throws(
       () => inventory("worker-host.ts", source),

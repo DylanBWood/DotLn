@@ -39,16 +39,26 @@ export function exportedLoadouts(
   exports: Readonly<Record<string, unknown>>,
   ref: string,
   environment: CompilationEnvironment,
+  onError: (ref: string, reason: string) => void = () => {},
 ): readonly LoadoutSource[] {
   const rows: LoadoutSource[] = [];
   for (const name of Object.keys(exports).sort()) {
     const item = exports[name];
     // Existing saved factories share the explicit expiry argument. No other
     // exported function is invoked (compile/dispatch/transport are not factories).
-    const value: unknown =
-      typeof item === "function" && /Loadout$/u.test(name)
-        ? (item as (expiresAt: number) => unknown)(INSPECTION_EXPIRES_AT)
-        : item;
+    let value: unknown;
+    try {
+      value =
+        typeof item === "function" && /Loadout$/u.test(name)
+          ? (item as (expiresAt: number) => unknown)(INSPECTION_EXPIRES_AT)
+          : item;
+    } catch (error) {
+      onError(
+        `${ref}#${name}`,
+        error instanceof Error ? error.message : String(error),
+      );
+      continue;
+    }
     if (
       at(value, "schemaVersion") !== 1 ||
       typeof at(value, "loadoutId") !== "string"
@@ -67,6 +77,7 @@ export function projectBuilds(
   ctx: ProjectionContext,
   sources: BoardSources,
 ): BoardSection {
+  for (const source of sources.loadoutFailures ?? []) ctx.note(source);
   return ctx.section(
     "saved-builds",
     "Saved builds",

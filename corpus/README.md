@@ -23,7 +23,10 @@ decision tables generated from the shipped behavior. That lane is explicitly
 frozen and remains a manual golden-master check outside `npm test`; promotion
 requires a separately reviewed change. `manifests/WO-101.json` pins bounds,
 alphabets, predicate-registry data, counts, budgets, fixture hashes, base commit,
-and toolchain profile.
+and the historical toolchain profile that generated the WO-101 recording.
+The manual generator check below verifies those frozen metadata and fixture
+bytes while running determinism checks on the current supported toolchain; it
+does not require the original Node, npm, TypeScript or operating-system versions.
 
 From the repository root, regenerate or check the committed data with:
 
@@ -35,6 +38,9 @@ node corpus/harness/generate-id-corpus.mjs --seed wo101-seed-20260901 --check
 node --test corpus/harness/wo101-id-corpus.test.mjs
 # Manual frozen Program lane:
 node --test corpus/harness/wo101-program-corpus.test.mjs
+# Manual generator determinism and deferred-kind pins:
+node --test corpus/harness/wo101-generators.test.mjs
+node --test corpus/harness/wo101-deferral-pins.test.mjs
 ```
 
 The generated layout extends `docs/product/03-architecture.md` §Corpus policy.

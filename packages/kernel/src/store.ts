@@ -156,7 +156,11 @@ export function appendEvent(
 ): { readonly log: JsonlLog; readonly event: Event } {
   const eventId = `evt_${decodeLog(log).length + 1}`;
   const assigned = { ...event, eventId } as Event;
-  return { log: `${log}${JSON.stringify(assigned)}\n`, event: assigned };
+  const line = `${JSON.stringify(assigned)}\n`;
+  // Validate the bytes we are about to append through the same envelope
+  // decoder used by readers; a malformed draft must never create a bad log.
+  decodeLog(`${log}${line}`);
+  return { log: `${log}${line}`, event: assigned };
 }
 export function decodeLog(log: JsonlLog): readonly Event[] {
   const result = tryDecodeLog(log);

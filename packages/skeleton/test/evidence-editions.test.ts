@@ -221,41 +221,29 @@ test("evidence compares component release labels by content and preserves behavi
   const host =
     'export const HARNESS_HOST_VERSION = "0.15.12";\nexport const boundaryContract = "feedback-v1";\n';
   assert.equal(
+    evidenceSourceContent("packages/skeleton/src/version.ts", host),
     evidenceSourceContent(
-      "packages/skeleton/src/harness-host.ts",
+      "packages/skeleton/src/version.ts",
       host.replace("0.15.12", "0.16.0"),
     ),
-    evidenceSourceContent("packages/skeleton/src/harness-host.ts", host),
   );
   assert.notEqual(
+    evidenceSourceContent("packages/skeleton/src/version.ts", host),
     evidenceSourceContent(
-      "packages/skeleton/src/harness-host.ts",
+      "packages/skeleton/src/version.ts",
       host.replace("feedback-v1", "feedback-v2"),
     ),
-    evidenceSourceContent("packages/skeleton/src/harness-host.ts", host),
   );
-  const profile =
-    'runtime: { skeletonVersion: "0.15.12", boundaryContract: "feedback-v1" }';
-  assert.equal(
-    evidenceSourceContent(
-      "packages/skeleton/src/loadouts/contributor.ts",
-      profile.replace("0.15.12", "0.16.0"),
-    ),
-    evidenceSourceContent(
-      "packages/skeleton/src/loadouts/contributor.ts",
-      profile,
-    ),
-  );
-  assert.notEqual(
-    evidenceSourceContent(
-      "packages/skeleton/src/loadouts/contributor.ts",
-      profile.replace("feedback-v1", "feedback-v2"),
-    ),
-    evidenceSourceContent(
-      "packages/skeleton/src/loadouts/contributor.ts",
-      profile,
-    ),
-  );
+  // The old locations have no live release literals: unrelated source bytes
+  // at those paths must compare exactly.
+  for (const path of [
+    "packages/skeleton/src/harness-host.ts",
+    "packages/skeleton/src/loadouts/contributor.ts",
+  ])
+    assert.notEqual(
+      evidenceSourceContent(path, host),
+      evidenceSourceContent(path, host.replace("0.15.12", "0.16.0")),
+    );
 });
 
 test("immutable evidence admits a component-only bump while source, external dependency, and evidence changes invalidate", () => {
@@ -281,7 +269,7 @@ test("immutable evidence admits a component-only bump while source, external dep
     },
   };
   const evidence = "docs/evidence/WO-999/verification/events.jsonl";
-  const hostSource = "packages/skeleton/src/harness-host.ts";
+  const hostSource = "packages/skeleton/src/version.ts";
   const host = 'export const HARNESS_HOST_VERSION = "0.15.12";\n';
   const sources = [source, hostSource, "package-lock.json"];
   try {

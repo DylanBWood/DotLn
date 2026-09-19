@@ -31,23 +31,6 @@ export {
   type VerificationState,
 } from "./reactor.js";
 
-/** Compatibility projection over the shared typed reactor, never a second decider. */
-export function verificationReactor(
-  state: VerificationState,
-  event: Event,
-): VerificationState {
-  const runtime = {
-    ...initialVerificationRuntime(state.workstreamId),
-    verification: state as unknown as JsonValue,
-  };
-  return verificationStateFromRuntime(
-    seiriReactor(runtime, event, {
-      now: event.occurredAt,
-      rngState: 17,
-      predicates: {},
-    }).state,
-  );
-}
 export function replayVerification(
   events: readonly Event[],
   workstreamId: string,

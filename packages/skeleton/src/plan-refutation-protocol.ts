@@ -607,20 +607,49 @@ export function planResultSchema(subject: PlanSubject): object {
           findings: {
             type: "array",
             maxItems: 100,
-            items: closed({
-              criterionId: hold.criterionId,
-              kind: {
-                type: "string",
-                enum: [
-                  "observed-failure",
-                  "vision-contradiction",
-                  "known-issue",
-                ],
-              },
-              reason: text,
-              evidence: { type: ["string", "null"] },
-              reopenWhen: { type: ["string", "null"] },
-            }),
+            items: {
+              anyOf: [
+                closed({
+                  criterionId: hold.criterionId,
+                  kind: {
+                    type: "string",
+                    enum: [
+                      "known-issue",
+                      "observed-failure",
+                      "vision-contradiction",
+                    ],
+                  },
+                  reason: text,
+                  evidence: { type: ["string", "null"] },
+                  reopenWhen: text,
+                }),
+                ...(
+                  [
+                    [
+                      "observed-failure",
+                      subject.goalReview.observations.map((row) => row.id),
+                    ],
+                    [
+                      "vision-contradiction",
+                      [
+                        ...subject.standard.theses,
+                        ...subject.standard.exclusions,
+                      ].map((row) => row.id),
+                    ],
+                  ] as const
+                )
+                  .filter(([, ids]) => ids.length)
+                  .map(([kind, ids]) =>
+                    closed({
+                      criterionId: hold.criterionId,
+                      kind: { type: "string", const: kind },
+                      reason: text,
+                      evidence: { ...text, enum: ids },
+                      reopenWhen: { anyOf: [{ type: "null" }, text] },
+                    }),
+                  ),
+              ],
+            },
           },
         }),
       },

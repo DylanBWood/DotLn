@@ -20,6 +20,8 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-142 activation completion (2026-09-19):** this source prepares `v0.32.0` under the order's minor classification, against the observed local `v0.31.1` release. Kernel `0.6.0`, compiler `0.15.0` and skeleton `0.28.0` narrow the named invalid inputs; console `0.1.7` preserves healthy loadout projections and their diagnostics. Publication remains a later release-close action.
+
 **WO-084 activation completion (2026-09-19):** application `v0.31.2` stages
 ledger ordering, the separate Resolutions surface, and a generated index with
 a document-suite check above the observed local `v0.31.1` tag. This is a patch
@@ -422,8 +424,10 @@ tree and merged tree. Documentation, reports, generated projections and release
 text do not invalidate that code key. Close builds missing runtime output, runs
 no suite or dependency installation, and creates/pushes the annotated tag and
 GitHub Release only with explicit publication authority. `resume: release close`
-is that authority. The raw command without `--publish` prepares and validates
-without creating a tag or Release.
+is that authority. The raw command without `--publish` prepares and validates;
+validation may fetch the latest existing annotated tag ref locally when it is
+missing, before choosing any close path. It
+never pushes a tag or creates a GitHub Release without `--publish`.
 
 Worktree finish and derived-worktree settlement follow publication as best effort.
 They preserve protected intake and local material and report cleanup blockers
@@ -1572,7 +1576,13 @@ consumer; the Marquet ladder and voice selector remain a later order.
 The [first external source change is live-evidenced](../evidence/WO-053/README.md):
 Claude and Codex each fix one synthetic module, turn a host-run test green and
 commit, and a killed host recovers the same commit without redispatch.
-The remaining personal-flavor vertical is planned: GitHub Issue → SourceBundle →
+[WO-054](../evidence/WO-054/implementation.md) adds sealed worktree snapshots
+and independent confined host-test witnesses, including a contract failure
+when the worker's superficial test passes.
+[WO-055](../evidence/WO-055/implementation.md) adds bounded source repair and
+original-contract re-verification; doubles establish green completion, exhaustion
+and interruption recovery. WO-056 still owns the live model verification and
+repair-loop proof. The remaining personal-flavor vertical is planned: GitHub Issue → SourceBundle →
 StoryContract → RepoProfile + ImpactMap → **Live Witness baseline** (reproduce
 before changing; preserve baseline evidence) → implementation episode → blinded
 behavior verification **and** independent code review (two separate episodes) →

@@ -1,6 +1,6 @@
 # Using the Entropy Reducer
 
-In `v0.5.0`, the Entropy Reducer is a compiled review loadout used through a
+The Entropy Reducer, first shipped in `v0.5.0`, is a compiled review loadout used through a
 manual model session. Its shipped actor is **Claude Fable 5.1 at `max` in
 Claude Code**. There is no `npm run entropy-reducer` or `resume: entropy`
 command. `npm run skeleton` runs the deterministic Repo Gardener demonstration.
@@ -22,8 +22,8 @@ named scratch copy and respect the compiled operation and resource limits.
 Return validated findings and non-authoritative suggestion payloads, then stop
 for operator disposition. Do not fix, file proposals, activate work, or advance
 the resume lifecycle. For analogies, extract the intended relationship first;
-evaluate a literal detail only if a claim depends on it, recording this dated
-operator correction to the shipped Shape-First wording.
+evaluate a literal detail only if a claim depends on it, as the compiled
+Shape-First v2 support requires.
 ```
 
 Name any specific concern in the dispatch, such as accumulated startup context,
@@ -73,10 +73,10 @@ skill or the entry point of an automatic scheduler. The
 recurring observation, a dedicated launcher, and automatic review dispatch are
 future capabilities.
 
-**Known wording mismatch (2026-09-04):** the shipped Shape-First support and
-generated residue ask for literal weaknesses and fixes before the useful
-relation. The operator has corrected that ordering: transfer the relationship
-first, and check literal details only when they become load-bearing. The
-dispatch above states the correction explicitly. A follow-on correction must
-change the typed support, regenerate the residue, and verify both; hand-editing
-the generated file or historical run would misrepresent `v0.5.0`.
+**Shape-First v2 (WO-142, 2026-09-19):** the typed support now extracts the
+intended relationship first and evaluates literal details only when a claim
+uses them. This implements the operator's 2026-09-04 correction, preserved in
+the [WO-028 ideation synthesis](../../lineage/idea-ledger.md#wo-028-expanded-ideation--cumulative-context-success-under-growth-and-entropy-reducer-use-2026-09-04).
+The residue, compiler fixture and console input are regenerated from this
+version; `runs/REVIEW-001*` and `runs/REFUTATION-001*` remain unchanged historical
+evidence of their recorded programs, not observations of v2.

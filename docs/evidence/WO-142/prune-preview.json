@@ -1,0 +1,74 @@
+{
+  "observedAt": "2026-09-19T05:23:24.293572+00:00",
+  "command": "node scripts/harness.mjs prune",
+  "method": "Sorted lstat inventory before and after; file bytes and relative symlink target bytes hashed without traversal. Directories counted, no directory allocation estimate.",
+  "preview": {
+    "apply": false,
+    "bytes": 100586859,
+    "candidates": [
+      {
+        "kind": "snapshot",
+        "path": ".runtime/harness/05243f7f3687b59a",
+        "bytes": 2747865
+      },
+      {
+        "kind": "dead-cache",
+        "path": "git-common/dotln/suite-success",
+        "bytes": 97838994
+      }
+    ],
+    "retained": [
+      {
+        "kind": "snapshot",
+        "path": ".runtime/harness/880b2897450aceda",
+        "reason": "installed manifest or target receipt pins this snapshot"
+      },
+      {
+        "kind": "snapshot",
+        "path": ".runtime/harness/d20778f2886747fc",
+        "reason": "installed manifest or target receipt pins this snapshot"
+      },
+      {
+        "kind": "snapshot",
+        "path": ".runtime/harness/dda8f561970589d8",
+        "reason": "installed manifest or target receipt pins this snapshot"
+      }
+    ]
+  },
+  "before": {
+    "snapshots": {
+      "bytes": 11098502,
+      "entries": 1675,
+      "inventorySha256": "d53ff02f7f68e3cda73b8fac19d0b7411b9f1261a256fd5dbc482a6659358f62"
+    },
+    "deadCache": {
+      "bytes": 97838994,
+      "entries": 1794,
+      "inventorySha256": "0d1dc1eedf0a1feb2bc6dbd501e7056b7882e5f7768fe56d159ca55c7822e397"
+    },
+    "retainedLanes": {
+      "bytes": 0,
+      "entries": 0,
+      "inventorySha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    }
+  },
+  "after": {
+    "snapshots": {
+      "bytes": 11098502,
+      "entries": 1675,
+      "inventorySha256": "d53ff02f7f68e3cda73b8fac19d0b7411b9f1261a256fd5dbc482a6659358f62"
+    },
+    "deadCache": {
+      "bytes": 97838994,
+      "entries": 1794,
+      "inventorySha256": "0d1dc1eedf0a1feb2bc6dbd501e7056b7882e5f7768fe56d159ca55c7822e397"
+    },
+    "retainedLanes": {
+      "bytes": 0,
+      "entries": 0,
+      "inventorySha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    }
+  },
+  "inventoriesEqual": true,
+  "deletedBytes": 0
+}

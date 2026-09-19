@@ -177,12 +177,18 @@ test("WO-009 AC6 canonical launch shapes pin model, settings, memory, persistenc
   ]) {
     assert.equal(b[b.indexOf(disabled) - 1], "--disable");
   }
-  assert.doesNotThrow(() =>
-    canonicalWorkerArgs("codex-cli-exec", request, "/schema", "0.153.4"),
+  assert.deepEqual(
+    canonicalWorkerArgs(
+      "codex-cli-exec",
+      { ...request, effort: "unknown" },
+      "/schema.json",
+      "0.153.4",
+    ),
+    b,
   );
-  assert.doesNotThrow(
-    () => new CodexCliExecWorkOrderTransport(undefined, "0.153.4"),
-  );
+  const transport = new CodexCliExecWorkOrderTransport(undefined, "0.153.4");
+  assert.equal(transport.name, "codex-cli-exec");
+  assert.equal(transport.harnessVersion, "0.153.4");
   assert.throws(
     () =>
       canonicalWorkerArgs(
@@ -416,7 +422,14 @@ test("WO-132 normalized plan-refuter effort retains its subagent mode at launch"
   startScenario(driver);
   const base = stateRequest(driver);
   const hash = `sha256:${"1".repeat(64)}`;
-  for (const effort of ["ultra", "ultra code"]) {
+  for (const effort of [
+    "ultra",
+    "ultra code",
+    "ultracode",
+    "Ultra",
+    "UltraCode",
+    "ULTRA CODE",
+  ]) {
     const request: PlanRefutationRequest = {
       kind: "plan-refutation",
       command: {
@@ -467,7 +480,14 @@ test("WO-132 normalized plan-refuter effort retains its subagent mode at launch"
 test("WO-132 ultra modes select xhigh, retain host permissions and permit Codex subagents", () => {
   const driver = new LiveReactorDriver();
   startScenario(driver);
-  for (const effort of ["ultra", "ultra code"])
+  for (const effort of [
+    "ultra",
+    "ultra code",
+    "ultracode",
+    "Ultra",
+    "UltraCode",
+    "ULTRA CODE",
+  ])
     for (const name of ["claude-cli-print", "codex-cli-exec"] as const) {
       const args = canonicalWorkerArgs(
         name,
@@ -1229,7 +1249,12 @@ test("WO-009 concurrent dead-host reclaimers admit only one writer and abandoned
 });
 
 test("WO-132 the public worker CLI admits ultra and unrecorded selectors before transport", () => {
-  for (const effort of ["ultra", "ultra code", "future-selector"]) {
+  for (const effort of [
+    "ultra",
+    "ultra code",
+    "ultracode",
+    "future-selector",
+  ]) {
     const store = temporary();
     try {
       const result = spawnSync(

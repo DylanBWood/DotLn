@@ -1,8 +1,9 @@
 #!/usr/bin/env node
+import { isMainModule } from "./lib/paths.mjs";
 import { observedSpawnSync as spawnSync } from "../packages/skeleton/src/gate-deadlines.mjs";
 import { readFileSync, writeFileSync, realpathSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
-import { fileURLToPath, pathToFileURL } from "node:url";
+import { fileURLToPath } from "node:url";
 
 export function probeHarness(name, execute = spawnSync, env = process.env) {
   const fallback = { "claude-code": "claude", "codex-cli": "codex" }[name];
@@ -94,10 +95,7 @@ export function discoverHarness(root, name, probe = probeHarness) {
   writeFileSync(path, JSON.stringify(document, null, 2) + "\n");
   return { harness: name, ...row };
 }
-if (
-  process.argv[1] &&
-  pathToFileURL(resolve(process.argv[1])).href === import.meta.url
-) {
+if (isMainModule(import.meta.url)) {
   try {
     const [action, ...args] = process.argv.slice(2);
     if (action !== "harness" || args.length > 1)

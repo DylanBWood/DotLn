@@ -36,7 +36,7 @@ if (!(
   (args.length === 2 && mode === "--record-selfhost")
 ))
   throw new Error(
-    "usage: feedback-evidence.mjs --write|--check|--record-selfhost <store> [--edition WO-NNN [--revision NNN]] (build first)",
+    "usage: feedback-evidence.mjs --write|--check|--record-selfhost <store> [--edition WO-NNN [--revision NNN]] (build first; run --write before --record-selfhost)",
   );
 const json = (value) => JSON.stringify(value, null, 2) + "\n";
 function immutableWrite(name, source) {

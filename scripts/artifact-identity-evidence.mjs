@@ -57,6 +57,12 @@ assert.equal(
   baseline.frozenOracleSha256,
   "the frozen oracle changed",
 );
+const currentIdentities = JSON.parse(
+  read("packages/compiler/fixtures/wo029-identities.json"),
+);
+const currentEntropy = JSON.parse(
+  read("packages/compiler/fixtures/wo029-entropy-reducer.json"),
+);
 const inventory = baseline.fixtures.map((fixture) => {
   const graph =
     fixture.name === "seiri"
@@ -64,7 +70,35 @@ const inventory = baseline.fixtures.map((fixture) => {
       : entropyReducerLoadout(fixture.episodeEndsAt);
   const compiled = compileLoadout(graph, fixture.environment);
   assert.ok(compiled.ok);
-  assert.equal(compiled.semanticHash, fixture.semanticHash);
+  if (fixture.name === "seiri") {
+    assert.equal(
+      compiled.semanticHash,
+      fixture.semanticHash,
+      "Seiri retains the frozen historical semantic hash",
+    );
+  } else {
+    assert.equal(
+      canonicalStringify(graph),
+      canonicalStringify(currentEntropy),
+      "current Entropy Reducer source must match its explicitly recorded fixture",
+    );
+    assert.equal(
+      compiled.semanticHash,
+      currentIdentities[fixture.name].semanticHash,
+      "Shape-First v2 must match its recorded current identity",
+    );
+    assert.equal(
+      graph.supportFacets.find(
+        (support) => support.supportFacetId === "entropy-reducer.shape-first",
+      ).version,
+      2,
+    );
+    assert.notEqual(
+      compiled.semanticHash,
+      fixture.semanticHash,
+      "the versioned Shape-First correction changes the historical subject",
+    );
+  }
   assert.equal(
     compiled.semanticHash,
     `fnv1a64:${referenceStableHash(canonicalStringify(compiled.program))}`,
@@ -83,7 +117,15 @@ const inventory = baseline.fixtures.map((fixture) => {
       compiled.artifactIdentity.componentDefinitions.length,
     environment: fixture.environment,
     authorityExpiresAt: compiled.artifactIdentity.authorityExpiresAt,
-    unchanged: true,
+    unchanged: compiled.semanticHash === fixture.semanticHash,
+    ...(fixture.name === "entropy-reducer"
+      ? {
+          change:
+            "WO-142 versions Shape-First relationship-first support to v2; historical baseline remains unchanged",
+          currentIdentityRef:
+            "packages/compiler/fixtures/wo029-identities.json#entropy-reducer",
+        }
+      : {}),
     independentOracle: "WO-101 referenceStableHash (32-bit pairs, no BigInt)",
   };
 });
@@ -340,5 +382,5 @@ if (preserved)
   );
 if (!process.exitCode)
   console.log(
-    `${mode[0] === "--write" ? "Recorded" : "Verified"} ${files.size} current artifact evidence files in ${evidenceDirectory}; original semantic hashes and frozen oracle unchanged.`,
+    `${mode[0] === "--write" ? "Recorded" : "Verified"} ${files.size} current artifact evidence files in ${evidenceDirectory}; Seiri semantic hash and frozen oracle unchanged; versioned Entropy Reducer matches its current recorded fixture.`,
   );

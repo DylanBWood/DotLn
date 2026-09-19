@@ -21,7 +21,7 @@ import {
   dependencyReleaseSet,
 } from "./lib/dependencies.mjs";
 import { fold, foldWorkOrders } from "./lib/control.mjs";
-import { runGit } from "./lib/git.mjs";
+import { runGit, failureOf, readGitObjects } from "./lib/git.mjs";
 import {
   localReleaseRecords,
   manifestWorkOrders,
@@ -582,6 +582,183 @@ await check(
 );
 
 await check(
+  "unassigned product versions and inherited decision links follow the source",
+  async () => {
+    const fixture = makeRepo("decision-links");
+    const source =
+      header("WO-901", "SourceBundle v1 (version assigned at activation)") +
+      "\n**Acceptance criteria**\n1. Update the ledgers.\n\n**Non-goals:** None.\n";
+    write(fixture, authorityPath("WO-901"), source);
+    assert.equal(
+      parseHeader(source, authorityPath("WO-901")).version,
+      "unassigned",
+    );
+    assert.equal(
+      parseHeader(source, authorityPath("WO-901")).ledgerSubstitution,
+      true,
+    );
+    commit(fixture, "fixture");
+    let index = readIndex(fixture, []);
+    assert.doesNotMatch(
+      renderIndex(index),
+      /\]\(\.\.\/evidence\/WO-901\/decisions\.md\)/,
+    );
+    write(
+      fixture,
+      "package.json",
+      JSON.stringify({
+        scripts: { "work-orders": "node scripts/work-orders.mjs" },
+      }),
+    );
+    cli(fixture, ["index"]);
+    write(
+      fixture,
+      "docs/evidence/WO-901/decisions.md",
+      "# Decisions\n\n## WO-901-D001\n\n```json\n" +
+        JSON.stringify({
+          id: "WO-901-D001",
+          date: "2026-09-19",
+          dispatch: "fixture",
+          decision: "Preserve a first decision link",
+          evidence: ["fixture"],
+          rejected: [],
+          reopenWhen: "fixture changes",
+        }) +
+        "\n```\n",
+    );
+    assert.match(cli(fixture, ["index", "--check"], false), /stale/);
+    const meta = spawnSync(
+      process.execPath,
+      [
+        "--input-type=module",
+        "-e",
+        `const {metaMain} = await import(${JSON.stringify(new URL("./meta.mjs", import.meta.url).href)}); await metaMain(["--json"], ${JSON.stringify(fixture)});`,
+      ],
+      { encoding: "utf8" },
+    );
+    assert.equal(meta.status, 0, meta.stderr);
+    assert.match(cli(fixture, ["index", "--check"]), /is current/);
+    index = readIndex(fixture, []);
+    assert.match(
+      renderIndex(index),
+      /\]\(\.\.\/evidence\/WO-901\/decisions\.md\)/,
+    );
+  },
+);
+
+await check(
+  "lifecycle dispatch refreshes its index and stale temporary files name recovery",
+  () => {
+    const fixture = makeRepo("dispatch-index");
+    cpSync(join(scriptRoot, "resume.mjs"), join(fixture, "scripts/resume.mjs"));
+    write(
+      fixture,
+      "package.json",
+      JSON.stringify({
+        scripts: { "work-orders": "node scripts/work-orders.mjs" },
+      }),
+    );
+    write(fixture, authorityPath("WO-901"), header("WO-901", "v1.2.3"));
+    commit(fixture, "fixture lifecycle");
+    // Repair observed 62 local releases; VER-001 averaged about 40 ms/Git call.
+    // Model that latency so the 12 s hook budget discriminates on fast hosts.
+    for (let edition = 0; edition < 62; edition++)
+      tag(fixture, `v1.0.${edition}`, "WO-901");
+    const preload = join(fixture, "git-latency.mjs");
+    writeFileSync(
+      preload,
+      `import childProcess from "node:child_process";
+import { syncBuiltinESMExports } from "node:module";
+const spawn = childProcess.spawnSync;
+const wait = new Int32Array(new SharedArrayBuffer(4));
+childProcess.spawnSync = (command, ...args) => {
+  if (command === "git") Atomics.wait(wait, 0, 0, 40);
+  return spawn(command, ...args);
+};
+syncBuiltinESMExports();
+`,
+    );
+    for (const [count, action] of [
+      [2, "verify"],
+      [4, "final-review"],
+    ]) {
+      writeLog(fixture, completed("WO-901").slice(0, count));
+      cli(fixture, ["index"]);
+      const dispatch = spawnSync(
+        process.execPath,
+        [
+          "--import",
+          preload,
+          join(fixture, "scripts/resume.mjs"),
+          action,
+          "--work-order",
+          "WO-901",
+        ],
+        {
+          encoding: "utf8",
+          timeout: 12_000,
+          maxBuffer: 4 * 1024 * 1024,
+          env: { ...process.env, CODEX_THREAD_ID: "" },
+        },
+      );
+      assert.equal(
+        dispatch.status,
+        0,
+        dispatch.error?.message || dispatch.stderr,
+      );
+      assert.match(cli(fixture, ["index", "--check"]), /is current/);
+    }
+    writeLog(fixture, completed("WO-901").slice(0, 1));
+    const priorIndex = readFileSync(
+      join(fixture, "docs/work-orders/README.md"),
+      "utf8",
+    );
+    const next = spawnSync(
+      process.execPath,
+      [join(fixture, "scripts/resume.mjs"), "next", "--work-order", "WO-901"],
+      {
+        encoding: "utf8",
+        timeout: 12_000,
+        env: { ...process.env, CODEX_THREAD_ID: "" },
+      },
+    );
+    assert.equal(next.status, 0, next.stderr);
+    assert.equal(
+      readFileSync(join(fixture, "docs/work-orders/README.md"), "utf8"),
+      priorIndex,
+    );
+    write(fixture, authorityPath("WO-902"), header("WO-902", "v1.2.4"));
+    write(
+      fixture,
+      "docs/work-orders/README.md.tmp",
+      "preserve interrupted output",
+    );
+    assert.match(
+      cli(fixture, ["index"], false),
+      /index temporary already exists:.*README.md.tmp; inspect/,
+    );
+    assert.equal(
+      readFileSync(join(fixture, "docs/work-orders/README.md.tmp"), "utf8"),
+      "preserve interrupted output",
+    );
+  },
+);
+
+await check("a symlinked script entry executes the same index command", () => {
+  const fixture = makeRepo("symlink-entry");
+  write(fixture, authorityPath("WO-901"), header("WO-901", "v1.2.3"));
+  commit(fixture, "fixture");
+  cli(fixture, ["index"]);
+  const alias = join(fixture, "scripts/linked-index.mjs");
+  symlinkSync("work-orders.mjs", alias);
+  const result = spawnSync(process.execPath, [alias, "index", "--check"], {
+    encoding: "utf8",
+  });
+  assert.equal(result.status, 0, result.stderr);
+  assert.match(result.stdout, /PASS docs\/work-orders\/README.md is current/);
+});
+
+await check(
   "unknown headers, invalid versions, duplicate fields, body metadata and duplicate IDs never become guesses",
   () => {
     assert.equal(parseHeader("# A C# tool\n", "fixture.md").title, "A C# tool");
@@ -1054,3 +1231,37 @@ await check(
 
 cli(repo, ["index", "--check"]);
 process.stdout.write("PASS work-order index fixtures\n");
+
+test("WO-142 binary Git failures retain diagnostics and identify missing batch objects", () => {
+  assert.equal(
+    failureOf(
+      { stderr: Buffer.from(" original error "), stdout: Buffer.alloc(0) },
+      "fallback",
+    ),
+    "original error",
+  );
+  assert.equal(
+    failureOf(
+      { stderr: Buffer.alloc(0), stdout: Buffer.from(" output diagnostic ") },
+      "fallback",
+    ),
+    "output diagnostic",
+  );
+  assert.equal(
+    failureOf(
+      {
+        stderr: Buffer.alloc(0),
+        stdout: Buffer.alloc(0),
+        error: new Error("buffer limit"),
+      },
+      "fallback",
+    ),
+    "buffer limit",
+  );
+  assert.equal(failureOf({ stderr: "  ", stdout: "" }, "fallback"), "fallback");
+  const missing = "0".repeat(40);
+  assert.throws(
+    () => readGitObjects(process.cwd(), [missing], "blob"),
+    new RegExp(`invalid framing for requested object ${missing}`),
+  );
+});

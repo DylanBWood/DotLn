@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { tmpdir } from "node:os";
 import { spawnSync } from "node:child_process";
 import {
   copyFileSync,
@@ -92,7 +93,9 @@ function phaseZero(mode) {
     "explicit live harness probe required",
   );
   assert.ok(["claude", "claude-bare", "codex"].includes(mode));
-  const directory = mkdtempSync("/private/tmp/dotln-harness-probe-");
+  const directory = mkdtempSync(
+    join(realpathSync(tmpdir()), "dotln-harness-probe-"),
+  );
   const write = (path, text) => {
     mkdirSync(dirname(join(directory, path)), { recursive: true });
     writeFileSync(join(directory, path), text);

@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { isMainModule } from "./lib/paths.mjs";
 import { spawn, spawnSync } from "node:child_process";
 import { availableParallelism } from "node:os";
 import {
@@ -10,7 +11,7 @@ import {
   writeFileSync,
 } from "node:fs";
 import { dirname, join, resolve } from "node:path";
-import { fileURLToPath, pathToFileURL } from "node:url";
+import { fileURLToPath } from "node:url";
 import { startDeadline } from "../packages/skeleton/src/gate-deadlines.mjs";
 import { evidenceSourceContent } from "../packages/skeleton/src/evidence-editions.mjs";
 import { gateCriticalPath } from "./lib/gate-timeline.mjs";
@@ -39,6 +40,7 @@ const nodeTests = (name, pattern, options = {}) => ({
   command: [
     process.execPath,
     "--test",
+    "--test-reporter=tap",
     ...(options.skipPattern
       ? [`--test-skip-pattern=${options.skipPattern}`]
       : []),
@@ -87,6 +89,7 @@ const machinerySources = {
     "packages/skeleton/src/feedback-boundary.ts",
     "packages/skeleton/src/gate-evidence.mjs",
     "scripts/test-harness.mjs",
+    "scripts/lib/harness-prune.mjs",
     "scripts/test-observed-facts.mjs",
     "scripts/lib/executor-handoff.mjs",
     "scripts/resume.mjs",
@@ -97,6 +100,7 @@ const machinerySources = {
     "scripts/lib/harness.mjs",
     "packages/compiler/src/harness.ts",
     "packages/skeleton/src/harness-host.ts",
+    "packages/skeleton/src/version.ts",
     "packages/skeleton/src/subagent-budget.ts",
     "packages/skeleton/src/harness-command.ts",
     "packages/skeleton/src/loadouts/",
@@ -107,6 +111,7 @@ const machinerySources = {
     "packages/skeleton/src/resident-store.ts",
     "scripts/harness.mjs",
     "packages/skeleton/src/harness-host.ts",
+    "packages/skeleton/src/version.ts",
     "packages/skeleton/src/subagent-budget.ts",
     "packages/skeleton/src/gate-evidence.mjs",
     "scripts/lib/harness.mjs",
@@ -161,6 +166,7 @@ const machinerySources = {
     "scripts/lib/lifecycle-evidence.mjs",
     "scripts/lib/process-budget.mjs",
     "packages/skeleton/src/harness-host.ts",
+    "packages/skeleton/src/version.ts",
     "packages/skeleton/src/subagent-budget.ts",
     "packages/skeleton/src/gate-evidence.mjs",
   ],
@@ -181,6 +187,46 @@ const machinerySources = {
   ],
 };
 const protection = {
+  format: "source and documentation retain the shared formatting rules",
+  "fixture-temp-root":
+    "temporary fixture cleanup stays inside its owned directory",
+  publication:
+    "published documentation links and edition locks match current sources",
+  index: "the work-order index reflects authority files and lifecycle state",
+  lineage:
+    "ledger headings, references and chronological index match their source records",
+  "lineage-fixtures":
+    "ledger ordering and generated indexes preserve source text, anchors and history",
+  "harness-probe":
+    "host capability probes report observed behavior with bounded evidence",
+  "authority-evidence":
+    "authority evidence reproduces the registered boundary claims",
+  "harness-fixtures":
+    "writer, gate, planning and agent-budget refusals preserve their boundaries",
+  harness: "installed hooks and role text match the generated harness bundle",
+  "harness-context":
+    "role read contracts resolve and remain within cold-start bounds",
+  "harness-evidence":
+    "harness claim evidence matches the current bundle and observations",
+  "plan-refutation":
+    "planning receipts preserve judgments, amendments and carried orders",
+  "plan-refutation-current":
+    "the current planning horizon retains its admitted receipt chain",
+  "artifact-evidence":
+    "artifact identity evidence matches the current compiler projection",
+  "verification-evidence":
+    "verification evidence matches the current result protocol",
+  "feedback-evidence":
+    "feedback evidence matches its registered sources and live edition",
+  mutation:
+    "mutation enumeration and execution preserve baselines and result integrity",
+  "runner-fixtures":
+    "suite selection, scheduling, deadlines and diagnostics preserve evidence",
+  "process-debt":
+    "process observations, follow-ups and lifecycle handoffs retain their sources",
+  meta: "decision indexes and process records match their current public sources",
+  plan: "planning authority, dependencies and follow-up records remain consistent",
+
   build: "source compiles into runnable packages",
   "release-surfaces":
     "release claims match component versions and reviewed notes",
@@ -235,7 +281,7 @@ function classifySuite(row) {
       row.protects ??
       protection[row.name] ??
       `${row.name} validates its declared project surface`,
-    sources: machinerySources[row.name] ?? [],
+    sources: [...(row.sources ?? []), ...(machinerySources[row.name] ?? [])],
   };
 }
 export function changedMachinery(repo, table = suites, base = "origin/main") {
@@ -341,6 +387,14 @@ export const suites = [
     nodeTests(name, `packages/${name}/dist/test/*.test.js`, {
       fast: true,
       packageTest: true,
+      ...(name === "skeleton"
+        ? {
+            sources: [
+              "scripts/reactor-identity.mjs",
+              "scripts/fixtures/historical-compiler-loader.mjs",
+            ],
+          }
+        : {}),
       ...(["skeleton", "console"].includes(name)
         ? { skipPattern: "\\[document\\]" }
         : {}),
@@ -368,6 +422,7 @@ export const suites = [
     command: [
       process.execPath,
       "--test",
+      "--test-reporter=tap",
       "--test-concurrency=1",
       "scripts/test-harness-probe.mjs",
       "scripts/test-authority-probe.mjs",
@@ -381,6 +436,7 @@ export const suites = [
       command: [
         process.execPath,
         "--test",
+        "--test-reporter=tap",
         "--test-concurrency=1",
         "scripts/probes/local-runner-smoke.test.mjs",
         "scripts/probes/local-runner-load.test.mjs",
@@ -591,7 +647,7 @@ export function executeSuite(
       lastProgressAt = Date.now();
       onProgress({
         name: row.name,
-        message: message.slice(0, 200),
+        message: message.trimEnd().slice(0, 200).trimEnd(),
         elapsedMs: lastProgressAt - started,
       });
     };
@@ -608,7 +664,7 @@ export function executeSuite(
         partial = lines.pop().slice(-1024);
         for (const line of lines)
           if (/^(?:PROGRESS |# Subtest:|ok \d+ -|not ok \d+ -)/.test(line)) {
-            lastMessage = line.slice(0, 200);
+            lastMessage = line.trimEnd().slice(0, 200).trimEnd();
             if (
               !progressCount ||
               /^(?:PROGRESS |not ok )/.test(line) ||
@@ -771,7 +827,7 @@ export async function scheduleSuites(
           exitCode: 1,
           durationMs: 0,
           executed: false,
-          output: "Required preflight or fixture preparation failed",
+          output: `Required preflight or fixture preparation failed for ${row.name}: ${(row.after ?? []).filter((name) => results.some((result) => result.name === name && result.exitCode !== 0)).join(", ")}`,
         });
       }
     while (!exclusive && lanes.some((lane) => lane.active === null)) {
@@ -1122,10 +1178,7 @@ async function runGateChecks(args, repo, { stopRequested = () => false } = {}) {
   }
 }
 
-if (
-  process.argv[1] &&
-  pathToFileURL(resolve(process.argv[1])).href === import.meta.url
-) {
+if (isMainModule(import.meta.url)) {
   try {
     process.exitCode = (await runGate()).exitCode;
   } catch (error) {

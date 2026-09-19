@@ -1,6 +1,6 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { runGit } from "./git.mjs";
+import { readGitObjects, runGit } from "./git.mjs";
 import { parseJson } from "./paths.mjs";
 import { readControl } from "./control-store.mjs";
 import { gateCodeIdentity } from "./gate-evidence.mjs";
@@ -51,27 +51,28 @@ export const localTags = (root) => {
 };
 export const tagContents = (root, tag) =>
   runGit(root, ["cat-file", "-p", `refs/tags/${tag}`], { trim: false });
-export const tagAnnotation = (root, tag) => {
-  const object = tagContents(root, tag);
+const annotationFromObject = (object, tag) => {
   const boundary = object.indexOf("\n\n");
   if (boundary < 0) throw new Error(`${tag} is not an annotated tag object`);
   return object.slice(boundary + 2);
 };
-export const humanLayerFromTag = (root, tag) => {
-  const annotation = tagAnnotation(root, tag);
+export const tagAnnotation = (root, tag) =>
+  annotationFromObject(tagContents(root, tag), tag);
+const humanLayerFromAnnotation = (annotation) => {
   const marker = annotation.lastIndexOf("\n\nDOTLN-MANIFEST-BEGIN\n");
   if (marker >= 0 && /\nDOTLN-MANIFEST-END\n?$/.test(annotation.slice(marker)))
     return annotation.slice(0, marker);
   return annotation.endsWith("\n") ? annotation.slice(0, -1) : annotation;
 };
+export const humanLayerFromTag = (root, tag) =>
+  humanLayerFromAnnotation(tagAnnotation(root, tag));
 export const isDotLnRelease = (humanLayer, tag) => {
   const firstLine = humanLayer.split("\n", 1)[0];
   return (
     firstLine === `DotLn ${tag}` || firstLine.startsWith(`DotLn ${tag} — `)
   );
 };
-export const manifestFromTag = (root, tag) => {
-  const annotation = tagAnnotation(root, tag);
+const manifestFromAnnotation = (annotation, tag) => {
   const beginMarker = "DOTLN-MANIFEST-BEGIN\n";
   const endMarker = "\nDOTLN-MANIFEST-END";
   const begin = annotation.lastIndexOf(beginMarker);
@@ -91,6 +92,8 @@ export const manifestFromTag = (root, tag) => {
     throw new Error(`${tag} contains invalid manifest JSON`);
   }
 };
+export const manifestFromTag = (root, tag) =>
+  manifestFromAnnotation(tagAnnotation(root, tag), tag);
 export const historicalWorkOrders = (root, tag) => {
   if (tag !== "v0.2.0") return [];
   const path = join(root, "docs/releases/v0.2.0.md");
@@ -118,14 +121,37 @@ export const manifestWorkOrders = (manifest) => [
   ]),
 ];
 
-const releaseTagsFrom = (root, tags) =>
+// Immutable tag objects are read together: release history must not add several
+// subprocesses per tag to the harness's timed lifecycle dispatch.
+const releaseAnnotations = (root, tags) => {
+  const selected = [...tags].filter(
+    ({ name, objectType }) => semver(name) && objectType === "tag",
+  );
+  if (!selected.length) return new Map();
+  const objects = readGitObjects(
+    root,
+    selected.map(({ object }) => object),
+    "tag",
+  );
+  return new Map(
+    selected.map(({ name, object }) => [
+      name,
+      annotationFromObject(objects.get(object).toString("utf8"), name),
+    ]),
+  );
+};
+const releaseTagsFrom = (tags, annotations) =>
   [...tags]
     .filter(({ name, objectType }) => semver(name) && objectType === "tag")
     .sort((left, right) => compareVersions(left.name, right.name))
-    .filter(({ name }) => isDotLnRelease(humanLayerFromTag(root, name), name));
+    .filter(({ name }) =>
+      isDotLnRelease(humanLayerFromAnnotation(annotations.get(name)), name),
+    );
 
-export const localReleaseTags = (root) =>
-  releaseTagsFrom(root, localTags(root).values());
+export const localReleaseTags = (root) => {
+  const tags = [...localTags(root).values()];
+  return releaseTagsFrom(tags, releaseAnnotations(root, tags));
+};
 
 export const localReleaseRecords = (root, snapshot) => {
   const tags = localTags(root);
@@ -141,15 +167,18 @@ export const localReleaseRecords = (root, snapshot) => {
       );
   }
   const selected = snapshot && new Set(snapshot.map(({ name }) => name));
-  const records = releaseTagsFrom(
-    root,
-    [...tags.values()].filter(({ name }) => !selected || selected.has(name)),
-  ).map((tag) => {
+  const selectedTags = [...tags.values()].filter(
+    ({ name }) => !selected || selected.has(name),
+  );
+  const annotations = releaseAnnotations(root, selectedTags);
+  const records = releaseTagsFrom(selectedTags, annotations).map((tag) => {
     // The sole pre-manifest edition has a reviewed repository record.
-    const annotation = tagAnnotation(root, tag.name);
+    const annotation = annotations.get(tag.name);
     const historical =
       tag.name === "v0.2.0" && !annotation.includes("DOTLN-MANIFEST-BEGIN");
-    const manifest = historical ? undefined : manifestFromTag(root, tag.name);
+    const manifest = historical
+      ? undefined
+      : manifestFromAnnotation(annotation, tag.name);
     if (
       !historical &&
       (!manifest ||

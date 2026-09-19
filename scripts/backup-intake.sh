@@ -56,5 +56,5 @@ chmod 600 "$partial"
 mv -- "$partial" "$archive"
 trap - EXIT INT TERM
 
-file_count="$(find "$intake_dir" -type f ! -name '.DS_Store' | wc -l | tr -d ' ')"
+file_count="$(find "$intake_dir" -type f ! -name '.DS_Store' -exec printf '.' \; | wc -c | tr -d ' ')"
 printf 'Created %s (%s files)\n' "$archive" "$file_count"

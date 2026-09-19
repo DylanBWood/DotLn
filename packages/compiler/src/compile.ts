@@ -519,7 +519,14 @@ const graphDiagnostics = (
       ...active.authorityEnvelope.allowedEffects,
       ...active.authorityEnvelope.deniedEffects,
     ])
-      if (pattern.endsWith("*") && linkedAuthorityClaims.length > 0)
+      if (pattern === "*")
+        diagnostics.push(
+          diagnostic(
+            "SEMANTICS UNSUPPORTED",
+            "SEMANTICS UNSUPPORTED: authority and operation wildcard patterns require a non-empty prefix.",
+          ),
+        );
+      else if (pattern.endsWith("*") && linkedAuthorityClaims.length > 0)
         diagnostics.push(
           diagnostic(
             "SEMANTICS UNSUPPORTED",
@@ -536,7 +543,14 @@ const graphDiagnostics = (
         ...emission.allowedEffects,
         ...emission.deniedEffects,
       ])
-        if (pattern.endsWith("*") && linkedAuthorityClaims.length > 0)
+        if (pattern === "*")
+          diagnostics.push(
+            diagnostic(
+              "SEMANTICS UNSUPPORTED",
+              "SEMANTICS UNSUPPORTED: authority and operation wildcard patterns require a non-empty prefix.",
+            ),
+          );
+        else if (pattern.endsWith("*") && linkedAuthorityClaims.length > 0)
           diagnostics.push(
             diagnostic(
               "SEMANTICS UNSUPPORTED",

@@ -58,6 +58,30 @@ const roleForPhase = {
   finalReview: "reviewer",
 };
 
+// GitHub-style fragments include the whole heading, including any title after
+// the stable decision id. Fence contents are never headings.
+export const markdownHeadings = (source) => {
+  const visible = source.replace(
+    /^(```|~~~)[^\n]*\n[\s\S]*?^\1[^\n]*$/gm,
+    (match) => match.replace(/[^\n]/g, " "),
+  );
+  const seen = new Map();
+  return [...visible.matchAll(/^#{1,6} (.+?)[ \t]*#*[ \t]*$/gm)].map(
+    (match) => {
+      const stem = match[1]
+        .toLowerCase()
+        .replace(/[^\p{L}\p{N}_\s-]/gu, "")
+        .replace(/\s/g, "-");
+      const ordinal = seen.get(stem) ?? 0;
+      seen.set(stem, ordinal + 1);
+      return {
+        index: match.index,
+        anchor: `${stem}${ordinal ? `-${ordinal}` : ""}`,
+      };
+    },
+  );
+};
+
 export function readDecisions(root, { workOrder } = {}) {
   const directory = join(root, "docs/evidence");
   const decisions = [];
@@ -70,14 +94,14 @@ export function readDecisions(root, { workOrder } = {}) {
     const path = `docs/evidence/${name}/decisions.md`;
     if (!existsSync(join(root, path))) continue;
     const source = readFileSync(join(root, path), "utf8");
-    const entries = [...source.matchAll(/^```json\n([\s\S]*?)^```/gm)].map(
-      (match) => JSON.parse(match[1]),
-    );
+    const headings = markdownHeadings(source);
+    const entries = [...source.matchAll(/^```json\n([\s\S]*?)^```/gm)];
     if (!entries.length)
       throw new Error(
         `${path}: decision entries must use the documented JSON shape`,
       );
-    for (const entry of entries) {
+    for (const match of entries) {
+      const entry = JSON.parse(match[1]);
       if (
         typeof entry.id !== "string" ||
         !entry.id.startsWith(`${name}-`) ||
@@ -120,7 +144,32 @@ export function readDecisions(root, { workOrder } = {}) {
         );
       if (decisions.some((prior) => prior.id === entry.id))
         throw new Error(`Duplicate decision id: ${entry.id}`);
-      decisions.push({ ...entry, workOrder: name, path });
+      if (
+        entry.followup !== undefined &&
+        !(typeof entry.followup === "string" && entry.followup.trim())
+      )
+        throw new Error(`${path}: followup must name an action`);
+      if (
+        entry.reopens !== undefined &&
+        !(
+          entry.reopens &&
+          typeof entry.reopens === "object" &&
+          /^WO-\d{3}-D\d{3}$/.test(entry.reopens.decisionId) &&
+          entry.reopens.decisionId !== entry.id &&
+          typeof entry.reopens.observation === "string" &&
+          entry.reopens.observation.trim()
+        )
+      )
+        throw new Error(
+          `${path}: reopens requires another decisionId and its observed trigger`,
+        );
+      const row = { ...entry, workOrder: name, path };
+      // Projection metadata cannot alter historic decision/amendment hashes.
+      Object.defineProperty(row, "anchor", {
+        value: headings.findLast((heading) => heading.index < match.index)
+          ?.anchor,
+      });
+      decisions.push(row);
     }
   }
   return decisions;
@@ -137,7 +186,7 @@ export function renderDecisionsIndex(decisions) {
     "| --- | --- | --- | --- |",
     ...decisions.map(
       (row) =>
-        `| [${row.id}](../evidence/${row.workOrder}/decisions.md#${row.id.toLowerCase()}) | ${safeCell(row.dispatch)} | ${safeCell(row.decision)} | ${safeCell(typeof row.reopenWhen === "string" ? row.reopenWhen : JSON.stringify(row.reopenWhen))} |`,
+        `| [${row.id}](../evidence/${row.workOrder}/decisions.md#${row.anchor ?? row.id.toLowerCase()}) | ${safeCell(row.dispatch)} | ${safeCell(row.decision)} | ${safeCell(typeof row.reopenWhen === "string" ? row.reopenWhen : JSON.stringify(row.reopenWhen))} |`,
     ),
     "",
   ].join("\n");
@@ -147,6 +196,18 @@ export function writeDecisionsIndex(root, { check = false } = {}) {
   const path = join(root, "docs/lineage/decisions-index.md");
   const expected = renderDecisionsIndex(decisions);
   if (check) {
+    for (const row of decisions) {
+      const anchors = markdownHeadings(
+        readFileSync(join(root, row.path), "utf8"),
+      );
+      if (
+        !row.anchor ||
+        !anchors.some((heading) => heading.anchor === row.anchor)
+      )
+        throw new Error(
+          `Decision index fragment does not resolve: ${row.path}#${row.anchor ?? row.id.toLowerCase()}`,
+        );
+    }
     if (!existsSync(path) || readFileSync(path, "utf8") !== expected)
       throw new Error("Decisions index is stale; run npm run meta");
   } else if (!existsSync(path) || readFileSync(path, "utf8") !== expected) {
@@ -186,15 +247,7 @@ export function mergedSubjects(root, count = 5) {
   return rows.reverse();
 }
 
-export function inheritedLedgerDuty(source) {
-  return (
-    /(?:ledger|idea-ledger)/i.test(
-      source.match(
-        /\*\*Acceptance criteria[\s\S]*?(?=\*\*Non-goals:|$)/,
-      )?.[0] ?? "",
-    ) && !/^# WO-126\b/.test(source)
-  );
-}
+export { inheritedLedgerDuty } from "./dependencies.mjs";
 export function codeDiffBytes(root, revision) {
   const command = revision
     ? ["show", "--format=", revision, "--", "packages", "scripts"]
@@ -965,6 +1018,9 @@ export function renderMetaTable(meta) {
   const d = (row, key) =>
     `${display(row.metrics[key])} (Δ ${display(row.delta[key])})`;
   return [
+    "",
+    `Observation cutoff: ${meta.observedAt ?? "unknown"}; source: canonical control events and the recorded gate, usage and harness observations collected by npm run meta.`,
+    "",
     "| Work | Phase ms / attempts | Gate ms | Read files / bytes | Observed tokens / USD | Declared prompt tokens | Corrections |",
     "| --- | ---: | ---: | ---: | ---: | ---: | ---: |",
     ...meta.orders.map(

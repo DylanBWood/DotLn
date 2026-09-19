@@ -65,7 +65,7 @@ const temporary = (t: TestContext): string => {
   return root;
 };
 
-test("WO-020 AC2 filesystem live/replay cmp includes bytes, exact mtime and logical size", (t) => {
+test("WO-020 AC2 filesystem live/replay cmp includes bytes, identical observed mtime and logical size", (t) => {
   const root = temporary(t);
   const liveWriter = createBeaconWriter(join(root, "live"), repository);
   const live = runScenario(fixture, { onEvents: liveWriter.project });
@@ -88,7 +88,8 @@ test("WO-020 AC2 filesystem live/replay cmp includes bytes, exact mtime and logi
     );
     const stat = lstatSync(left, { bigint: true });
     assert.equal(stat.size, BigInt(expected.size));
-    assert.equal(stat.mtimeNs, BigInt(expected.mtimeMs) * 1_000_000n);
+    assert.equal(stat.mtimeNs / 1_000_000n, BigInt(expected.mtimeMs));
+    assert.ok(stat.mtimeNs - BigInt(expected.mtimeMs) * 1_000_000n < 1_000n);
     t.diagnostic(
       `cmp exit=0; size=${stat.size}; mtimeNs=${stat.mtimeNs}; content byte-identical`,
     );

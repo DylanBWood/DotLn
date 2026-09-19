@@ -2,7 +2,36 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readdir, readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
-import ts from "typescript";
+import * as ts from "typescript/unstable/ast";
+import { API } from "typescript/unstable/sync";
+import { createVirtualFileSystem } from "typescript/unstable/fs";
+
+// The native compiler owns parsing; the returned tree is local after close.
+function parseSource(fileName: string, source: string): ts.SourceFile {
+  const path = `/source/${fileName.replaceAll("\\", "/").split("/").at(-1)}`;
+  const api = new API({
+    cwd: "/source",
+    fs: createVirtualFileSystem({
+      "/source/tsconfig.json": JSON.stringify({
+        files: [path],
+        compilerOptions: { noLib: true, noResolve: true, allowJs: true },
+      }),
+      [path]: source,
+    }),
+  });
+  try {
+    const snapshot = api.updateSnapshot({
+      openProject: "/source/tsconfig.json",
+    });
+    const tree = snapshot
+      .getProject("/source/tsconfig.json")
+      ?.program.getSourceFile(path);
+    assert.ok(tree, `native compiler parsed ${fileName}`);
+    return tree;
+  } finally {
+    api.close();
+  }
+}
 import {
   compileLoadout,
   seiriEnvironment,
@@ -12,17 +41,14 @@ import {
 
 /** Generated hook text is data; template substitutions are compiler code. */
 const assertSourcePurity = (source: string, file = "fixture.ts") => {
-  const syntax = ts.createSourceFile(
-    file,
-    source,
-    ts.ScriptTarget.Latest,
-    true,
-  );
+  const syntax = parseSource(file, source);
   const imports: string[] = [];
   const ioCalls: string[] = [];
   const module = (expression: ts.Expression | undefined) =>
     imports.push(
-      expression && ts.isStringLiteralLike(expression)
+      expression &&
+        (ts.isStringLiteral(expression) ||
+          ts.isNoSubstitutionTemplateLiteral(expression))
         ? expression.text
         : "<dynamic module>",
     );
@@ -45,7 +71,8 @@ const assertSourcePurity = (source: string, file = "fixture.ts") => {
         : ts.isPropertyAccessExpression(callee)
           ? callee.name.text
           : ts.isElementAccessExpression(callee) &&
-              ts.isStringLiteralLike(callee.argumentExpression)
+              (ts.isStringLiteral(callee.argumentExpression) ||
+                ts.isNoSubstitutionTemplateLiteral(callee.argumentExpression))
             ? callee.argumentExpression.text
             : undefined;
       if (
@@ -56,7 +83,7 @@ const assertSourcePurity = (source: string, file = "fixture.ts") => {
         module(node.arguments[0]);
       if (name === "fetch") ioCalls.push(name);
     }
-    ts.forEachChild(node, visit);
+    node.forEachChild(visit);
   };
   visit(syntax);
   assert.ok(

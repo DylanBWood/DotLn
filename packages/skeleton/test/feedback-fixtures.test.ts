@@ -1,4 +1,5 @@
 import test from "node:test";
+import { feedbackSourcesComments } from "../src/feedback-source-comments.js";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import { observedExecFileSync as execFileSync } from "../src/gate-deadlines.mjs";
@@ -484,4 +485,60 @@ test("WO-011 regression bounded-boy-scout-cleanup", () => {
     /separate candidate/,
   );
   assert.equal(effect(request), "effect-executed");
+});
+
+test("WO-142 TypeScript 7 comment batches preserve snapshot boundaries and escaped literals", () => {
+  const paths = [
+    "value.ts",
+    "value.tsx",
+    "value.jsx",
+    "value.js",
+    "value.mjs",
+    "value.cjs",
+    "value.mts",
+    "value.cts",
+  ];
+  assert.deepEqual(
+    feedbackSourcesComments(
+      paths.map((path) => ({
+        path,
+        source: "/* first */ const value = 1; // last\n",
+      })),
+    ),
+    paths.map(() => [" first ", " last"]),
+  );
+  const cases = [
+    { path: "same.ts", source: "// before\nconst value = '😀 // literal';" },
+    { path: "same.ts", source: "/* after */ const value = /[\\/]/; // tail" },
+    {
+      path: "same.tsx",
+      source:
+        "const value = `raw // literal ${ /* inner */ 1} raw /* literal */`; // end",
+    },
+    {
+      path: "same.tsx",
+      source:
+        'const value = <div title="// literal">/* literal */{ /* jsx */ <b>// literal</b>}</div>; // end',
+    },
+    {
+      path: "same.ts",
+      source:
+        "/** doc */ function f(/* param */ x = 1) { return x /* operation */ + 1; }",
+    },
+    { path: "same.ts", source: "const value = `\\` // literal`; // escaped" },
+    { path: "same.md", source: "// no parsing" },
+  ];
+  assert.deepEqual(feedbackSourcesComments(cases), [
+    [" before"],
+    [" after ", " tail"],
+    [" inner ", " end"],
+    [" jsx ", " end"],
+    ["* doc ", " param ", " operation "],
+    [" escaped"],
+    [],
+  ]);
+  assert.deepEqual(
+    feedbackSourcesComments([{ path: "same.ts", source: "// replacement" }]),
+    [[" replacement"]],
+  );
 });

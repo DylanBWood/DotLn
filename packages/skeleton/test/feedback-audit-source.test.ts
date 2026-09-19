@@ -49,6 +49,22 @@ function fixture() {
       "packages/kernel": { version: "0.2.1", license: "Apache-2.0" },
       "packages/compiler": { version: "0.6.0", license: "Apache-2.0" },
       "packages/skeleton": manifest,
+      "packages/console": { version: "0.1.0", license: "Apache-2.0" },
+      "modules/future": { version: "0.1.0", license: "Apache-2.0" },
+      "node_modules/@dotln/kernel": { link: true, resolved: "packages/kernel" },
+      "node_modules/@dotln/compiler": {
+        link: true,
+        resolved: "packages/compiler",
+      },
+      "node_modules/@dotln/skeleton": {
+        link: true,
+        resolved: "packages/skeleton",
+      },
+      "node_modules/@dotln/console": {
+        link: true,
+        resolved: "packages/console",
+      },
+      "node_modules/@dotln/future": { link: true, resolved: "modules/future" },
       "node_modules/typescript": {
         version: "5.4.5",
         integrity: "fixture-integrity",
@@ -97,6 +113,8 @@ test("feedback audit pins labeled projections and keeps release-only workspace m
       "packages/kernel",
       "packages/compiler",
       "packages/skeleton",
+      "packages/console",
+      "modules/future",
     ] as const) {
       f.lock.packages[key].version += ".changed";
       f.lock.packages[key].license = "fixture-new-license";
@@ -113,6 +131,20 @@ test("feedback audit pins labeled projections and keeps release-only workspace m
   } finally {
     f.dispose();
   }
+});
+
+test("WO-142 discovery entry point participates in both evidence source inventories", async () => {
+  const path = "packages/skeleton/src/discovery-cli.ts";
+  assert.ok(FEEDBACK_SOURCE_PATHS.includes(path));
+  const sourceUrl = new URL(
+    "../../../../scripts/lib/evidence-sources.mjs",
+    import.meta.url,
+  );
+  const { evidenceSources } = (await import(sourceUrl.href)) as {
+    evidenceSources: Record<string, readonly string[]>;
+  };
+  for (const [kind, sources] of Object.entries(evidenceSources))
+    assert.ok(sources.includes(path), kind);
 });
 
 test("feedback audit invalidates every declared runtime and fixture source byte", () => {

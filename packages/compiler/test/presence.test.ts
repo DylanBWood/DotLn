@@ -357,3 +357,26 @@ test("WO-067 empty presence retains exact Seiri semantic bytes; tooltip derives 
   assert.match(tooltip, /probe: discretionary in-flight kill/u);
   assert.match(tooltip, /widen: discretionary in-flight finish/u);
 });
+
+test("WO-142 non-discretionary presence renders the requested-foreground rule", () => {
+  const graph = modify((g) => {
+    g.presence[0].phases[0].discretionary = false;
+    g.presence[0].phases[0].inFlightOnReturn = "finish";
+  });
+  const tooltip = renderCompiledDiff(
+    undefined,
+    requireCompiled(compile(graph)),
+  );
+  assert.match(
+    tooltip,
+    /fixture\.progressive\/probe: requested foreground continues/u,
+  );
+  assert.doesNotMatch(
+    tooltip,
+    /fixture\.progressive\/probe: discretionary in-flight/u,
+  );
+  assert.match(
+    tooltip,
+    /fixture\.progressive\/widen: discretionary in-flight finish/u,
+  );
+});

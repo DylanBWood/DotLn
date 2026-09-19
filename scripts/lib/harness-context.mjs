@@ -1,6 +1,4 @@
-import { execFileSync } from "node:child_process";
-import { readFileSync } from "node:fs";
-import { dirname, join } from "node:path";
+import { dirname } from "node:path";
 
 export const HARNESS_CONTEXT_BASE = "8b55eca3b3427146e98d34c68f67f679dc59bea5";
 const lineParts = (text) => text.match(/[^\n]*\n|[^\n]+$/g) ?? [];
@@ -252,33 +250,6 @@ export function scopeReadEvidence(directed, observations) {
   };
 }
 
-export function snapshotReader(root, revision = HARNESS_CONTEXT_BASE) {
-  const paths = execFileSync(
-    "git",
-    ["ls-tree", "-r", "--name-only", revision],
-    { cwd: root, encoding: "utf8" },
-  )
-    .trim()
-    .split("\n");
-  const cache = new Map();
-  return {
-    paths,
-    read(path) {
-      if (!safePath(path)) throw new Error("Unsafe snapshot path");
-      if (!cache.has(path))
-        cache.set(
-          path,
-          execFileSync("git", ["show", `${revision}:${path}`], {
-            cwd: root,
-            encoding: "utf8",
-            maxBuffer: 16 * 1024 * 1024,
-          }),
-        );
-      return cache.get(path);
-    },
-  };
-}
-
 /** Legacy syntax is audited against the frozen activation source, never inferred from the new skill. */
 export function legacyDirectedReads(instruction, guide, role, selectors, read) {
   const floor = /Cold-start read order:([\s\S]*?)Settled questions/.exec(
@@ -327,6 +298,3 @@ export function legacyDirectedReads(instruction, guide, role, selectors, read) {
     }),
   );
 }
-
-export const currentReader = (root) => (path) =>
-  readFileSync(join(root, path), "utf8");

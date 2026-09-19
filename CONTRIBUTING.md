@@ -20,7 +20,7 @@ The operator, Dylan Wood, does not need to sign off his own commits. The exempti
 
 ## Clean-room boundary
 
-Follow [CLAUDE.md's clean-room boundary](CLAUDE.md#1-clean-room-boundary). Submit original work with its provenance. Employer code, configuration, identifiers, internal service details, credentials, and secrets must never enter this repository. Keep raw ideation local under ignored `docs/intake/`; synthesize it into the product documents under the repository's source-treatment rules. A contribution sign-off does not relax this boundary.
+Follow [CLAUDE.md's clean-room boundary](CLAUDE.md#clean-room--locked-floor). Submit original work with its provenance. Employer code, configuration, identifiers, internal service details, credentials, and secrets must never enter this repository. Keep raw ideation local under ignored `docs/intake/`; synthesize it into the product documents under the repository's source-treatment rules. A contribution sign-off does not relax this boundary.
 
 ## Work and review
 

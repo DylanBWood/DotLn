@@ -1,8 +1,9 @@
 #!/usr/bin/env node
+import { isMainModule } from "./lib/paths.mjs";
 import { execFileSync } from "node:child_process";
 import { readFileSync, realpathSync } from "node:fs";
 import { resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+
 import { checkLocalTerms } from "./lib/terms.mjs";
 import { containedRegularFile } from "./lib/paths.mjs";
 
@@ -18,10 +19,7 @@ export function termsCheck(root, paths) {
   });
   return checkLocalTerms(root, surfaces);
 }
-if (
-  process.argv[1] &&
-  realpathSync(process.argv[1]) === fileURLToPath(import.meta.url)
-) {
+if (isMainModule(import.meta.url)) {
   try {
     if (process.argv[2] !== "check")
       throw new Error("usage: terms check <paths>");

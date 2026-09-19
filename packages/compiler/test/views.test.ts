@@ -267,3 +267,49 @@ test("WO-008 AC2 equipping and unequipping changes the normalized executable pro
     "Do not mutate repository contents",
   ]);
 });
+
+test("WO-142 F-00006 ordered pipeline multiplicity survives normalization and serialized views", () => {
+  const source = {
+    ...seiriLoadout,
+    explicitPipelines: [
+      {
+        pipelineId: "fixture-repeat",
+        linkGroupId: "seiri.links",
+        orderedSupportFacetIds: [
+          "seiri.repo-scope",
+          "seiri.read-only",
+          "seiri.repo-scope",
+        ],
+      },
+    ],
+  };
+  for (const actual of [
+    normalizeLoadoutGraph(source),
+    decodeCodeDsl(encodeCodeDsl(defineLoadout(source))).definition,
+    normalizeLoadoutGraph(normalizeLoadoutGraph(source)),
+  ])
+    assert.deepEqual(actual.explicitPipelines[0]!.orderedSupportFacetIds, [
+      "seiri.repo-scope",
+      "seiri.read-only",
+      "seiri.repo-scope",
+    ]);
+});
+
+test("WO-142 F-00007 identity update laws retain their content through normalization", () => {
+  const source = {
+    ...seiriLoadout,
+    identity: {
+      ...seiriLoadout.identity,
+      updateLaws: ["fixture original law", "fixture second law"],
+    },
+  };
+  assert.deepEqual(normalizeLoadoutGraph(source).identity.updateLaws, [
+    "fixture original law",
+    "fixture second law",
+  ]);
+  assert.deepEqual(
+    decodeCodeDsl(encodeCodeDsl(defineLoadout(source))).definition.identity
+      .updateLaws,
+    ["fixture original law", "fixture second law"],
+  );
+});

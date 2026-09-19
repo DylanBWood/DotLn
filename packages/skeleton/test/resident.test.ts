@@ -222,6 +222,7 @@ test("WO-068 envelope, scope and runtime capability refusals never spawn; unavai
     "evidence",
     "scope",
     "budget",
+    "colliding-budget",
     "capability",
     "unavailable",
   ] as const) {
@@ -232,6 +233,13 @@ test("WO-068 envelope, scope and runtime capability refusals never spawn; unavai
     if (condition === "evidence") config.evidence = [];
     if (condition === "scope") config.actors.probe!.surface = "outside";
     if (condition === "budget") config.actors.probe!.resources.files = 2;
+    if (condition === "colliding-budget")
+      (
+        config.graph.presence![0]!.phases[0]!.scope.budget as Record<
+          string,
+          number
+        >
+      ).files = 0;
     if (condition === "unavailable") config.actors.probe!.kind = "local-model";
     let at = 0,
       launches = 0;

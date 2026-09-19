@@ -47,11 +47,13 @@ function exact(value: Record<string, unknown>, keys: readonly string[]): void {
   if (Object.keys(value).sort().join(",") !== [...keys].sort().join(","))
     throw new Error(`expected exactly ${keys.join(", ")}`);
 }
+class StorePathError extends Error {}
 function atPath<T>(path: string, shape: string, decode: () => T): T {
   try {
     return decode();
   } catch (error) {
-    throw new Error(
+    if (error instanceof StorePathError) throw error;
+    throw new StorePathError(
       `${path}: invalid ${shape}: ${error instanceof Error ? error.message : String(error)}`,
     );
   }
@@ -116,8 +118,9 @@ function syncDirectory(path: string): void {
   }
 }
 export function workerRequestKey(request: TransportRequest): string {
-  // Writer kind, mount authority, command and host message path remain in the
-  // stable key. Only a physical retry's episode is excluded for every kind.
+  // Every request field participates: kind, WorkOrder, command, artifact,
+  // environment, model/effort, profile, mounts, authority and host message path.
+  // Only the physical attempt's episodeId is omitted for every request kind.
   const { episodeId: _attempt, ...stable } = request;
   return createHash("sha256").update(canonicalStringify(stable)).digest("hex");
 }

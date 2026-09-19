@@ -432,6 +432,25 @@ export async function requireGreenBaseline(evaluateBaseline) {
   return baseline;
 }
 
+export async function reproduceSites(
+  selected,
+  execute,
+  { survivorsOnly = false, log = console.log } = {},
+) {
+  log(
+    `baseline ${JSON.stringify(await requireGreenBaseline(() => execute(null)))}`,
+  );
+  for (const site of selected) {
+    const result = await execute(site);
+    log(JSON.stringify({ id: site.id, ...result }));
+    if (survivorsOnly && result.verdict !== "survived")
+      fail(`survivor ${site.id} did not reproduce`);
+  }
+  log(
+    `baseline-after ${JSON.stringify(await requireGreenBaseline(() => execute(null)))}`,
+  );
+}
+
 export function validateRows(text, sites, policyHash, baseCommit) {
   if (text && !text.endsWith("\n"))
     fail(
@@ -855,15 +874,9 @@ async function main(args) {
             .map((row) => row.id);
     const selected = ids.map((id) => sites.find((site) => site.id === id));
     if (selected.some((site) => !site)) fail("unknown mutant id");
-    console.log(
-      `baseline ${JSON.stringify(await requireGreenBaseline(() => execute(null)))}`,
-    );
-    for (const site of selected) {
-      const result = await execute(site);
-      console.log(JSON.stringify({ id: site.id, ...result }));
-      if (mode === "--reproduce-survivors" && result.verdict !== "survived")
-        fail(`survivor ${site.id} did not reproduce`);
-    }
+    await reproduceSites(selected, execute, {
+      survivorsOnly: mode === "--reproduce-survivors",
+    });
     return;
   }
   let rows;

@@ -42,6 +42,7 @@ export const FEEDBACK_SOURCE_PATHS = [
   "packages/skeleton/src/script-episode.ts",
   "packages/skeleton/src/discovery-sandbox.ts",
   "packages/skeleton/src/discovery-actor.ts",
+  "packages/skeleton/src/discovery-cli.ts",
   "packages/skeleton/src/discovery.ts",
   "packages/skeleton/src/verification-protocol.ts",
   "packages/skeleton/src/verification-host.ts",
@@ -77,12 +78,20 @@ export function feedbackSourceFile(path: string, contents: string) {
   if (path === "package-lock.json") {
     if (!object(value.packages))
       throw new Error("feedback lockfile requires a packages object");
-    for (const workspace of [
-      "",
-      "packages/kernel",
-      "packages/compiler",
-      "packages/skeleton",
-    ]) {
+    // npm records each linked workspace with its resolved lockfile entry.
+    // Keep unlinked package metadata and registry dependencies in the subject.
+    const workspaces = new Set([""]);
+    for (const entry of Object.values(value.packages)) {
+      if (!object(entry))
+        throw new Error("feedback package lock entry must be an object");
+      if (
+        entry.link === true &&
+        typeof entry.resolved === "string" &&
+        Object.hasOwn(value.packages, entry.resolved)
+      )
+        workspaces.add(entry.resolved);
+    }
+    for (const workspace of [...workspaces].sort()) {
       const entry = value.packages[workspace];
       if (entry === undefined) continue;
       if (!object(entry))
@@ -187,6 +196,7 @@ export function runFeedbackRegressions(
     if (removed) env.DOTLN_FEEDBACK_ABLATE = unitId;
     const args = [
       "--test",
+      "--test-reporter=tap",
       `--test-name-pattern=^${name}$`,
       unit.version === 1
         ? fixture
