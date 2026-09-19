@@ -24,6 +24,170 @@ founding-era: **Resolutions of known tensions** (settled contradictions — do
 not relitigate them) and the founding chat/notes/image corpus.
 
 
+## 2026-09-19 — Planning pass: operator answers (WO-143 to WO-145; WO-138 admitted)
+
+Source: the operator's answers to the first pass's open decisions, the
+direction to open the pull request, and a supplied public source (Hunt and
+Thomas, "Don't Live with Broken Windows", 2003), captured verbatim in the same ignored
+intake note as extended
+(`docs/intake/notes/2026-09-19-outstanding-cleanup-planning.md`, SHA-256
+`41c2190d775ee08b339f44626b529f2401c4391e061ed9b5722d8c6faf0f3418`).
+Shape-First Synthesis; the clean-room screen found no stop condition (the
+enterprise starter is named only as the operator named it, with no detail).
+The record is
+[the planning document](../planning/outstanding-cleanup-2026-09-19.md) §10 and
+§11.
+
+- **A planning pass plans what it finds; it does not hand its critical-path
+  item to the next pass** `adopted`
+  - The first handoff left the resident's lock-recovery defect open "for the
+    next planning pass" while a pass was open, compared a ceiling in
+    milliseconds with durations in seconds, and listed two items without
+    saying what they were. The operator corrected all three. Durations are
+    in seconds throughout; the item is an order. Provenance: the capture;
+    the planning document §10. Reopen: a handoff that defers an item it had
+    the evidence to plan.
+- **The resident restarts unaided after a kill inside lock acquisition
+  (WO-143)** `adopted`
+  - Every store transaction makes a marker directory with no owner; a kill
+    in the 0.004 to 0.017 s it exists leaves a store that refuses until a
+    person deletes the marker, and the resident enters that window several
+    times per tick. The marker gains an owner and a dead owner's marker is
+    reclaimed after the inspection a dead owner's lock already gets. It is
+    the capability table's recorded blocker for `runtime.resident` level 2.
+    Provenance: WO-068 FINAL-001 F1 and O2; `worker-store.ts` `acquire`.
+    Reopen: WO-111's first unattended hour.
+- **Outside-project writes need a grant from a role or support (WO-144)**
+  `adopted`
+  - The operator's answers: the grant lives on specific roles or supports;
+    temporary and scratch roots may be common; a save into the operator's
+    project, document or desktop folders is refused without specific
+    authorization or direction; work-stream-facing roles of the enterprise
+    starter declare their own outside roots. The sandbox is relaxed for
+    throughput only, and the direction is machinery in roles and supports
+    that makes dangerous activity deterministically impossible, so no
+    permission-mode trial is filed. The order adds one refusal for known
+    write destinations and says plainly that an opaque program stays under
+    host permissions. Provenance: product 03's candidate; the 2026-09-18
+    ledger section; `planningWriteRefusal`. Reopen: a legitimate write
+    refused, or an ungranted outside write admitted.
+- **The first Tinkerer experiment is economy (WO-145)** `adopted`
+  - The operator's answer: the aspects of quality from _Zen and the Art of
+    Motorcycle Maintenance_, starting with efficiency and speed. One
+    optional executor support, one experiment per order inside 900 s, three
+    trial orders, a reading fixed before the trials; the other twelve
+    aspects are recorded as later dimensions. Provenance: product 05's
+    candidate; the founding entry "Books-as-quality-agents". Reopen: the
+    third trial order's record.
+- **Local models keep being tested: WO-138 activates on WO-137's successful
+  live row** `adopted`
+  - WO-137's inference, schema, tool round trip, determinism and
+    cancellation all passed; its `inconclusive` label comes only from running
+    with networking permitted, so it could not prove the runner sends nothing
+    off the machine. WO-138 reads public inputs, so that proof does not bear
+    on it; it is required before a local role reads private material. Bulk
+    read-only triage is nominated as the next local role to test.
+    Provenance: `docs/discovery/local-runner-2026-09-18.md`; the roadmap's
+    candidate. Reopen: a local role that would read private material.
+- **The 120 s gate ceiling is unset; the gate's duration stays open**
+  `adopted`
+  - `fastGateMs` budgeted a fast gate that WO-132 removed; it has since
+    measured the one full gate (303 to 1,178 s, median 793 s) against 120 s
+    that nothing enforced. Shortening the gate needs a per-suite breakdown
+    that no readable row carries. Provenance: `scripts/lib/meta.mjs`;
+    WO-126; `docs/control/budgets.json`. Reopen: a per-suite breakdown of
+    one recorded gate.
+- **No broken windows: a defect met is fixed or boarded up, never left as a
+  sentence in a report (WO-142 row B17)** `adopted`
+  - The operator supplied the source as a blend of 5S, the Tinkerer and the
+    book's Quality. It names this pass's finding exactly, and it exposed a gap
+    in the first pass: the register was made to admit only decision records
+    that name a follow-up, and no role was made to write one, so asks would
+    have been hidden rather than surfaced (receipt 018 had raised it as a
+    known issue). WO-142 gains one starred row: role text for executor,
+    verifier and reviewer. Product 05 records the count and age of
+    boarded-up defects as a candidate signal for the Tinkerer's adaptive
+    pressure. Provenance: [inspirations](inspirations.md); the planning
+    document §11. Reopen: a nomination found in a report and in no record
+    after WO-142.
+
+## 2026-09-19 — Planning pass: outstanding cleanup (WO-142; WO-084 and WO-090 moved)
+
+Source: the operator's `planning:` dispatch and two mid-turn messages (one a
+`conversation only:` question), captured verbatim in ignored intake
+(`docs/intake/notes/2026-09-19-outstanding-cleanup-planning.md`, SHA-256
+`fd1b0d3300d52ba6affb32f1395c1618d42e5701997d9450e469594f416f6811`).
+Shape-First Synthesis; the clean-room screen found no stop condition. The full
+record is
+[the planning document](../planning/outstanding-cleanup-2026-09-19.md).
+
+- **The backlog is real, and its mechanism is that nothing reads what
+  reviews nominate** `adopted`
+  - The follow-up register held 399 entries, 371 pending and 364 never
+    triaged; 235 are decision records harvested as follow-ups. Final reviews
+    hand items to "the next planning pass" while passes read a register that
+    does not collect final reviews; boy-scout items named for WO-135, WO-110
+    and WO-068 appear in none of those orders; four written reopening
+    conditions fired with no observer. Provenance: the planning document §1
+    and §2; eight read-only surveys, thirteen items re-checked by hand.
+    Reopen: a nomination found in a final review and in no record after
+    WO-142.
+- **One order, WO-142, clears what fits: 50 rows, each re-observed before it
+  is edited and ended as fixed, not reproduced or returned** `adopted`
+  - The rows cover the register's refill, the refuter's lost results and the
+    carried-set eviction, the index that goes stale at every dispatch, the
+    shared advisory marker, observed-facts defects, a bounded live-gate read
+    list, the verifier's unstated summary bound, three boundary validators,
+    test pins, stale claims in the live documents and an on-demand prune for
+    176 MB of local residue. It adds no gate, hook or recurring step and
+    fences off `reactor.ts`, worker inputs and semantic hashes. Provenance:
+    the planning document §3; the order's row sources. Reopen: more than six
+    returned rows, or a first day that shows the breadth is wrong.
+- **The register is settled: 389 rows disposed in one pass** `adopted`
+  - 221 settled, 35 allocated, 16 duplicate, 75 deferred, 37 declined and 5
+    open, through `npm run plan -- followups --apply`; none is left
+    untriaged. The open rows are the three operator-prioritized ideations
+    (two carried by the authority candidate), the gate-duration reopening,
+    the planner-startup measurement and the append-lock recovery wedge.
+    Eighteen returns that did not fit WO-142 are recorded in the map with
+    reopening conditions. Provenance: `docs/planning/followups.json`; the
+    planning document §2 and §6. Reopen: untriaged rows pass fifty after
+    WO-142.
+- **WO-084 and WO-090 move; WO-085 to WO-089 hold** `adopted`
+  - All seven deferrals lapsed when WO-053 closed on 2026-09-18 and nothing
+    re-read them. WO-084 pairs with WO-142 (31 ledger sections sit below the
+    boundary, two of them operator ideation dated 2026-09-18). WO-090 takes
+    the pair slot beside WO-071 that WO-138 cannot use (the guide is 1,772
+    lines against 804). WO-085's check would refuse the release tool's own
+    dated note, WO-086's recurring cost is already automated, WO-088's gap
+    does not reproduce, WO-089 conflicts with the append-only capability
+    rule, and WO-087 has no measured reader cost. Two of the planner's first
+    inferences were wrong and are corrected in the planning document §4.
+    Reopen: the conditions in its decision 3.
+- **WO-138 waits as a single entry; the operating mode stays; three
+  operator-prioritized ideations stay open for one answer each** `adopted`
+  - WO-137 closed `inconclusive`, so WO-138's own preflight keeps it queued
+    and the operator decides the local-inference horizon. WO-136 closed
+    `inconclusive` and no failure of the current modes is recorded since.
+    The out-of-project grant, the reversible permission-mode trial and the
+    Tinkerer experiment each need an operator answer an order cannot guess.
+    Provenance: the planning document §5, decisions 4 to 6. Reopen: the
+    operator's answers; R2.
+- **The gate-duration reopening observation is recorded and nothing is
+  allocated** `preserved`
+  - Seventeen final-review gates since 2026-09-16 ran 303 to 1,178 s, median
+    793 s, sixteen above the 360 s threshold; the `fastGateMs` ceiling reads
+    120 s with no acceptance. The cause per gate is not analysed. Provenance:
+    `docs/control/orders/*.jsonl`; product 07 §Candidate — cold-gate
+    structural cuts. Reopen: a planning pass with a per-suite breakdown; the
+    operator's decision on the ceiling.
+- **The append-lock recovery wedge needs its own order** `preserved`
+  - A kill inside the recovery window wedges the worker store and the guard
+    has no owner (WO-068 FINAL-001 F1); closing it under test is the map's
+    condition for `runtime.resident` level 2. It is the one return on the
+    critical path and is recorded first in the map's returns section.
+    Reopen: the next planning pass, or a second wedged store.
+
 ## 2026-09-17 — WO-136 authority research outcome
 
 Source: the operator's `resume: next` dispatch, the explicit ledger write-back

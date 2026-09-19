@@ -12,14 +12,24 @@ pointers and continuation command; untouched items persist across passes.
 Lane pairs (operator direction, 2026-09-16; recut 2026-09-17): from WO-141
 onward the queued entries are grouped two per blank-separated pair for two
 parallel lanes. Inside a pair the two orders name disjoint primary surfaces
-and neither hard-depends on the other; the delivery lane is the first entry
-and the second lane is by preference an evidence-only or machinery order.
-The run after the fifteenth pair keeps its serial reading order until R2.
+and neither hard-depends on the other; one entry is the delivery order and
+the other is by preference an evidence-only or machinery order. The run after
+the last pair (WO-066 and WO-057) keeps its serial reading order until R2.
 One order at a time passes final review and release close, and the second
 lane's final review integrates main by the checklist in product 07
 §Independent workflows and integration. The pairs and their evidence are in
 [the vision-into-use document](vision-into-use-2026-09-17.md) §4; the
 earlier cut is in [the R1 replan document](r1-replan-2026-09-16.md) §7.
+
+Cleanup pass (2026-09-19): WO-142 and WO-084 form the first queued pair, the
+pass the operator budgeted. The same day's second pass, from the operator's
+answers, adds the pair WO-143 and WO-144 directly after it (the resident's
+lock recovery, on the critical path, and outside-project writes as a role or
+support grant) and the pair WO-145 and WO-090 after WO-140 and WO-056. WO-138
+keeps its slot beside WO-071: its pilot reads public inputs only, so WO-137's
+successful live row admits it. WO-085 to WO-089 stay last. The evidence is in
+[the cleanup planning document](outstanding-cleanup-2026-09-19.md) §4, §5 and
+§10.
 
 <!-- dotln-work-order-sequence:start -->
 
@@ -60,8 +70,17 @@ earlier cut is in [the R1 replan document](r1-replan-2026-09-16.md) §7.
 - WO-137 — Local runner readiness
 - WO-055 — Repair continuation
 
+- WO-142 — Outstanding cleanup
+- WO-084 — Ledger order and index
+
+- WO-143 — Resident lock recovery
+- WO-144 — Outside-project write grant
+
 - WO-140 — Gate sandbox preflight and usage readback
 - WO-056 — Live blinded verification and repair
+
+- WO-145 — Tinkerer economy experiment
+- WO-090 — Shorter cold start
 
 - WO-110 — Local-model transport
 - WO-099 — Mission check
@@ -121,12 +140,10 @@ earlier cut is in [the R1 replan document](r1-replan-2026-09-16.md) §7.
 - WO-093 — The 5S mechanics as data
 - WO-094 — Set bonuses lowered
 - WO-095 — Full-set scenario and set tooltip render
-- WO-084 — Ledger order and index
 - WO-085 — Spec/receipt boundary and docs-check
 - WO-086 — Generated release history
 - WO-087 — Roadmap split
 - WO-088 — One source for the phrase table
 - WO-089 — Capability table fold
-- WO-090 — Shorter cold start
 
 <!-- dotln-work-order-sequence:end -->

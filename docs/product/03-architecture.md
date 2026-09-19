@@ -710,6 +710,19 @@ have prevented this write. That recollection is not evidence of containment,
 because this candidate's record is that neither native sandbox confined a
 sibling write (C-W6, X-W6).
 
+**Operator answers 2026-09-19 (second planning pass of that day).** The
+grant belongs to specific roles or supports. Work-stream-facing roles of the
+enterprise starter will by nature write outside a project and declare that
+themselves; temporary and scratch directories may be common across modes; a
+save into the operator's project, document or desktop folders is not allowed
+without specific authorization or direction. The operator relaxes the native
+sandbox for throughput only; the direction is machinery in roles and supports
+that makes dangerous activity deterministically impossible, so no
+permission-mode trial is filed. Allocated to
+[WO-144](../work-orders/WO-144-outside-project-write-grant.md), whose
+guarantee covers known write destinations; opaque command effects and Codex
+enforcement stay open.
+
 Still open:
 
 - the grant's shape: a support, a role, or both;

@@ -1079,6 +1079,22 @@ planning pass should select a bounded experiment and allocation, preserving the
 budget, evidence and reset distinctions below. Source: the
 [WO-043 breakout](../evidence/WO-043/ideation-commands-and-usage.md).
 
+**Allocated 2026-09-19 (second planning pass of that day).** The operator's
+answer: consider the aspects of quality from _Zen and the Art of Motorcycle
+Maintenance_, starting with efficiency and speed. The first bounded
+experiment is [WO-145](../work-orders/WO-145-tinkerer-economy-experiment.md):
+an optional executor support, one economy experiment per order inside 900 s,
+three trial orders and a pre-registered reading. The book's other twelve
+aspects (unity, vividness, authority, sensitivity, clarity, emphasis, flow,
+suspense, brilliance, precision, proportion, depth) are later dimensions,
+each needing its own measure; the adaptive modifier stays open until that
+record exists. The operator's same-day source, Hunt and Thomas on broken
+windows ([inspirations](../lineage/inspirations.md)), suggests what the
+adaptive modifier's pressure could read instead of elapsed time alone: the
+count and age of defects that were boarded up and not repaired, which the
+follow-up register now records as deferred rows with reopening conditions.
+Recorded as a candidate signal, unselected.
+
 Operator ideation during WO-126 proposes a support that biases a linked mechanic
 toward a small experiment on a relevant question, input, proposed answer or
 response. The names Tinkerer and Scientist remain alternatives. The motivating
@@ -1393,6 +1409,14 @@ durable work identity and continuation this candidate wants are owned by
 chain, and the compaction claim remains unverified. Reopen on a bounded live
 reproduction with host events and a measured continuation outcome, or when
 WO-120 lands and the candidate can compose with a real work identity.
+
+**Partly shipped 2026-09-18 (recorded by the 2026-09-19 cleanup pass).** An
+operator scope expansion inside WO-054 added the Codex compaction adapter
+(`packages/compiler/src/codex-continuation.mjs`; the
+[receipt](../evidence/WO-054/codex-continuation.md)): it restores an owned
+unfinished task and permits one continuation after a premature stop, and
+never dispatches a role. The Claude side and a measured automatic-compaction
+outcome stay open; the deferral and its reopening conditions are unchanged.
 
 ## Candidate — Beware of Naive Interventionism
 

@@ -196,7 +196,9 @@ evidence-backed analysis artifact or analysis-only episode; it does not promise
 disclosure of a model's private chain-of-thought. The remaining Westworld
 phrases stay as explicit empty slots until the operator supplies them or an
 authorized source pass records their exact text—remembered approximations do not
-compile.
+compile. Recorded 2026-09-19: `analysis:` and `operator override:` shipped as
+operator recovery controls (product 07 §Operator recovery controls;
+`scripts/operator-control.mjs`); the remaining slots are still empty.
 
 Each exact phrase maps to a typed intent with declared legal source states,
 role, scope (message, episode, or workstream), expiry or exit, precedence,
