@@ -607,7 +607,7 @@ In ideation mode:
    document, and update an ADR only through its permitted amendment mechanism.
    Preserve speculative ideas as `raw` or `preserved` instead of forcing
    premature architecture.
-5. Treat tensions with settled resolutions as tensions to surface, not license
+5. Treat tensions with settled resolutions in `docs/lineage/resolutions.md` as tensions to surface, not license
    to silently overwrite them. A real challenge based on new evidence becomes a
    decision-record proposal.
 6. Keep pre-existing implementation changes intact and distinguish them from
@@ -1456,7 +1456,7 @@ claim evidence or releases it does not have.
   that condition, or when the operator says so, and reopen it as a new
   decision record proposal, never an in-place edit. A rule that a decision
   can never be revisited is inertia written into the repository and is
-  itself the defect; the idea-ledger Resolutions and `docs/decisions/` close
+  itself the defect; `docs/lineage/resolutions.md` and `docs/decisions/` close
   questions on their recorded terms, not forever. Exception:
   each ADR carries an appendable **Amendments** section for notes within the
   decided constraints (a dev-dependency, a tooling choice) — appending there is

@@ -9,20 +9,36 @@ intermediary ideas so let's not have such a recency bias").
 Statuses: `adopted` (in the blueprint now) / `preserved` (available, pull in on
 contact) / `raw` (recorded, unendorsed GPT elaboration) / `superseded` (replaced
 by a later decision — the superseding entry is named) / `transformed` (adopted
-in generalized form; the transformation is described).
+in generalized form; the transformation is described) / `rejected` (declined
+with reasons) / `deferred` (postponed with a reopening condition) / `candidate`
+(proposed for future work) / `open` (unresolved) / `specified` (defined, not
+yet claimed implemented). These include the statuses already used by later
+sessions; declaring them does not change their recorded dispositions.
 
 Provenance: `recovered` = absent from the GPT-era north-star doc and recovered
 here; `north-star` = carried in it; `tension` = conflicted with it (resolved in
-the Resolutions section).
+[Resolutions of known tensions](resolutions.md#resolutions-of-known-tensions)).
+`operator-directed` and `operator-authorized` also record provenance, not lifecycle.
 
 **Order: newest section first.** Sections run reverse-chronologically, so the
 most recent thinking is at the top and the founding corpus (Chat 001 onward)
 is at the bottom. Entries keep their original order *within* a section. Append
 a new session's section directly below this header, never at the end of the
-file. Two standing reference surfaces sit at the very bottom because they are
-founding-era: **Resolutions of known tensions** (settled contradictions — do
-not relitigate them) and the founding chat/notes/image corpus.
+file. Dated headings use YYYY-MM-DD (anywhere in the heading); equal dates
+retain their existing relative order. The founding **Images (reference corpus)**
+and **Chat 011** through **Chat 001** form the final boundary: no session goes
+below them. Images is a reference inventory, not lifecycle-tagged idea entries.
+Every top-level idea entry carries a backtick lifecycle tag in its lead;
+prose-only sections remain visible in the [generated index](README.md).
 
+**Migration, 2026-09-19 (WO-084):** moved Resolutions unchanged to
+[resolutions.md](resolutions.md#resolutions-of-known-tensions), relocated the
+31 sections previously below it into newest-first dated positions, and
+normalized six legacy entry leads without changing their prose or any section
+heading. Same-day ties preserve prior relative order. Existing status names
+are now declared above. The [decision record](../evidence/WO-084/decisions.md)
+records the legacy ledger write-back; `node scripts/lineage.mjs index` generates
+the index and `index --check` enforces this rule in `npm run test:docs`.
 
 ## 2026-09-19 — Planning pass: operator answers (WO-143 to WO-145; WO-138 admitted)
 
@@ -188,6 +204,52 @@ record is
     critical path and is recorded first in the map's returns section.
     Reopen: the next planning pass, or a second wedged store.
 
+## 2026-09-18 — Out-of-project file effects as an explicit grant
+
+Source: operator `ideation:` during WO-054 `resume: verify` (VER-003). The
+unedited capture is in main's ignored intake,
+`docs/intake/notes/WO-054-expanded-ideation-2026-09-18.md`. Shape-First
+Synthesis; the clean-room screen found no stop condition. See the
+[breakout receipt](../evidence/WO-054/ideation-2026-09-18.md).
+
+- **Writes outside the project need a support or role grant** `preserved`
+  - A verifier shell command carried an unintended stderr redirect. Its
+    destination resolved to the directory above the worktree and created a
+    file there, which the session then removed.
+  - The shape the operator wants: creating, editing and deleting files outside
+    the project is a capability that a support or role grants explicitly.
+    Without the grant, such a write is refused rather than happening by
+    mistake. Work with a legitimate outside destination holds the grant.
+  - The operator recalls that ordinary sandbox rules would have prevented the
+    write. That is kept as recollection. It was not investigated in the
+    session, at the operator's direction. Product 03 records that neither
+    native sandbox confined a sibling write (C-W6, X-W6), so the native
+    sandbox is not evidence of containment here.
+  - The idea runs against today's planning-branch refusal, which admits
+    external paths. That is a tension for planning, not a settled change.
+  - Promoted to product 03 §Candidate — DotLn-owned authority with minimal
+    native harness restrictions.
+  - The operator set this for priority at the next planning pass. Reopen
+    there, or on a measured refusal of an ungranted outside write.
+
+## 2026-09-18 — Local runner execution and bounded load observation (WO-137)
+
+Explicit WO-137 criterion 5 write-back. Source: this work order's live
+[discovery packet](../discovery/local-runner-2026-09-18.md), operator-supplied
+prior Terminal observations, thermal caution and explicit `scope expand:`
+request to perform the proposed gentle load test now. Clean-room screen found
+no stop condition; no raw private logs, device identifiers or settings copied.
+
+The installed runner now completes noninteractive inference, deterministic
+repeats, schema output and a tool round trip, and responds to observed HTTP
+cancellation and timeout. A two-minute sequential capped-load run recorded
+nominal thermal state, normal memory pressure and no incremental swap.
+The larger readiness contract remains inconclusive because egress attribution,
+effective template/default settings and interrupted-throughput evidence are
+incomplete. Preserve that distinction in WO-110 and WO-138; reopen when the
+packet's named observations become available. No general safety or model
+quality conclusion follows. Decisions and operator authorization are in
+[WO-137-D001–D003](../evidence/WO-137/decisions.md).
 ## 2026-09-17 — WO-136 authority research outcome
 
 Source: the operator's `resume: next` dispatch, the explicit ledger write-back
@@ -638,6 +700,596 @@ is used only as an expectation. The full record is
   - Each with its evidence and reversal condition in the map's NoOps of this
     pass.
 
+## 2026-09-16 — Planning pass: R1 replan and the stand-down residue (WO-049, WO-051, WO-068, WO-133)
+
+- **R1 is decided from WO-044's record** `adopted`
+  - The operator opened the pass after the v0.22.0 close to plan WO-049,
+    WO-051 and WO-068 at the mandatory checkpoint, review the receipts since
+    the last pass, and take a meta view; two mid-turn messages added the
+    repeated hook advisory and the two-lane sequence. From the 33 rows: a
+    target's hooks and settings govern a Claude print-mode worker (C-W3,
+    C-W4, C-W5, C-W7); Codex exec fires no hooks but loads the instruction
+    surfaces and confines writes under a named profile (X-W3 to X-W7,
+    X-W2); neither sandbox confines a sibling write (C-W6, X-W6); exact
+    allowed-tool patterns admit editing (C-W1, C-W2); a detached launch
+    with stored authentication completes (C-U1, X-U1); a request with no
+    terminal is auto-denied (C-U2); no harness has a scheduler (C-U3,
+    X-U3); a kill leaves a recoverable worktree (C-U6, X-U6). WO-049 keeps
+    hooks for Claude, an instruction block for both, fails closed and
+    claims no sandbox containment; WO-051 uses the observed shapes with a
+    host-written commit message and three exact Bash patterns; WO-068 is
+    its own process with a `--once` tick, executing WO-067's statechart
+    over WO-050's slices with WO-047's projector. The three orders are
+    rewritten as stable contracts with real Cost lines and recommendation
+    effort lines.
+  - Provenance: the dispatch and both follow-ups, captured verbatim in
+    ignored intake (`docs/intake/notes/2026-09-16-r1-replan-planning.md`,
+    SHA-256 `07ffad87a856637579b6a40ba7f7bf77a533ccbd5e0622784086bc33a2bab279`);
+    [the writing-worker record](../discovery/writing-worker-smoke-2026-09-14.md);
+    [the planning document](../planning/r1-replan-2026-09-16.md) §1 and §2.
+    Reopen if a live smoke contradicts a cited row.
+- **WO-133 carries four residue repairs of WO-132, first, as one order** `adopted`
+  - This session's hook journal held 344 "built adapter unavailable"
+    advisories in three hours because the built runtime predated three
+    release closes and the close builds only a missing `dist`; every
+    completion since 2026-09-15T18:22Z attests `unknown` effort although
+    the operator selected one (WO-050 VER-001 finding 2); five of the seven
+    reviewer gates since the stand-down ran 625 to 840 s because a version
+    literal in `harness-host.ts` or `loadouts/` selected `harness-fixtures`
+    and `process-debt`, against 191 to 413 s without. The order rebuilds
+    after a fast-forward that changes the pins, says the advisory once per
+    session per cause and never from an observer, restores the
+    operator-attested fallback, and moves the literals into one module no
+    machinery suite declares. One order, not four: each item is a one-file
+    edit with an observed row and the 2026-09-12 pass paid four lifecycles
+    for four small orders.
+  - Provenance: the capture (message 2 and its screenshot); the ignored
+    gate rows and hook journals; WO-050 VER-001; WO-047 D005 and WO-048
+    D003. Reopen on a criterion failing after merge or a skeleton reviewer
+    gate above 360 s with only a literal changed.
+- **Two lanes are the normal workflow; the sequence is ordered in lane pairs** `adopted`
+  - The operator's third message. Every order since the stand-down ran in
+    parallel with a sibling and each integration was handled a little
+    differently (a verifier read a sibling's publication as a defect; two
+    retimes at final review; two union merges of the follow-up register;
+    regenerated bundles and editions every time; a ratchet broken by a merge
+    neither branch breached). Recorded in product 07 §Independent workflows
+    and integration as the operator's decision with the integration
+    checklist; one order at a time passes final review and release close.
+    The sequence groups queued orders in eleven blank-separated pairs with
+    disjoint surfaces and no intra-pair hard edge (WO-133 with WO-068,
+    WO-049 with WO-051, WO-121 with WO-119, WO-052 with WO-122, WO-053 with
+    WO-099, then the projection, starter and verification pairs); the run
+    after them keeps its serial order until R2.
+  - Provenance: the capture (message 3); WO-045 FINAL-001 item 9; WO-048
+    D003; WO-047 D005 to D007; the critical-path graph edges. Reopen on a
+    conflict inside a pair or a third lane.
+- **The receipts since the last pass, read and disposed** `adopted`
+  - WO-132, WO-067, WO-045, WO-046, WO-048, WO-050 and WO-047 closed after
+    the stand-down pass; WO-130, WO-131 and WO-044 were that pass's subject.
+    Their nominations are disposed in the planning document §3: WO-047
+    D004's planning reconciliation is settled by this pass's cost-table
+    refresh; `scenario.ts` is extracted at the next needed line rather than
+    ratcheted (WO-068's admitted boy-scout item); `appendEvent` draft
+    validation and the stepper backstop pin are one boy-scout pair for the
+    next kernel order; the weakened `test-worktree.sh` assertion waits for
+    the next order touching that script; the publication-check habit is a
+    role-text line inside WO-133; the stale-reservation hazard, the
+    follow-up register migration and local lane retention are candidates in
+    product 07.
+  - Provenance: the seven orders' decisions, verifications and final
+    reviews; `npm run meta` at the branch.
+- **The repository at v0.22.0** `adopted`
+  - 1,205 documentation files, 74 MB tracked, 13 MB packed; 74,000 source
+    lines with `harness-host.ts` at 3,040 and the process-debt test at
+    5,406; 19 product suites at 191 to 413 s, 16 machinery checks at 547 s,
+    17 document checks at 71 s; hooks at 296 ms mean, about 0.6 s per Bash
+    call; 13 runtime snapshots (34 MB), 36 MB of hook journals and 31 MB of
+    retained lanes with no retention rule; the follow-up register at 297
+    entries, 283 untriaged, 24 harvested today from decision records, and
+    no selection from it in three passes. Reorganization of the host, the
+    scripts, the tests and the evidence was weighed and declined; the
+    documentation reset stays deferred behind WO-053.
+  - Provenance: the planning document §4 with its observed commands.
+- **Corrections during this pass, logged** `adopted`
+  - The session started with its hooks in the fallback, so the writer
+    reservation and usage counters were absent; the planner rebuilt the
+    runtime once (3.9 s) to verify the diagnosis before the branch, after
+    which `harness check` passed. Entry and handoff process cost are
+    unknown for that reason. The operator's second and third messages
+    arrived mid-turn and were folded in before any file was written.
+- **Process cost of this pass** `adopted`
+  - Unknown: `node scripts/harness.mjs usage` had no session to measure.
+    The pass ran no code suite and one background goal review.
+- **A host-side containment order, waiting for WO-133, residue as boy-scout items on WO-049, four residue orders, a model-composed commit message, a harness scheduler, a second statechart interpreter, splitting the host, moving evidence, consolidating scripts, settling the register now, a retention rule now, the two rejected pairings, and a cross-order review gate** `rejected`
+  - Each with its evidence and reversal condition in the planning
+    document's NoOp register (§6) and the map's NoOps of this pass.
+
+
+## 2026-09-16 — Local-model experiments for practical use
+
+Source: operator `ideation:` during WO-051, captured unedited in
+`docs/intake/notes/WO-051-expanded-ideation-2026-09-16.md`. Shape-First
+Synthesis; clean-room screen found no stop condition. Provisional worktree-local
+intake is backed up and awaits main reconciliation before removal; see
+[the breakout receipt](../evidence/WO-051/ideation-local-models.md).
+
+- **Local runner readiness deserves next-pass priority** `preserved`
+  - The next planning pass should invest more effort in local LLM experiments
+    and establish what operator setup, potentially in LM Studio, is needed.
+    Revisit the existing WO-027 deferral using fresh availability evidence,
+    retaining its dated failure and WO-110's bounded inspection scope. No
+    installation, configuration or launch is implied by this idea. Reopen at
+    the next planning pass or when the operator reports setup readiness.
+- **Matched model and prompt experiments should identify useful local roles** `preserved`
+  - Follow readiness with a larger comparison program using the same WorkOrder
+    and baseline build: compare local and remote models, measure repeated-run
+    variation with the same model and prompt, then vary prompts or supports
+    while pinning the remaining conditions and identifying changed builds.
+    Preserve outputs and failures; compare independently checked quality,
+    reliability, operator intervention and resource cost. The result should
+    identify practical local responsibilities, limitations and hybrid paths,
+    rather than a universal leaderboard. Plan a small pilot before larger
+    batches; model choices, sample sizes and budgets remain unresolved.
+    Promoted to product 06 §Candidate — local-model usefulness experiments;
+    reopen with a ready runner and the next planning pass's disposition.
+
+
+## 2026-09-16 — Guided operator work orders
+
+Source: the second operator `ideation:` message in
+`docs/intake/notes/WO-051-expanded-ideation-2026-09-16.md`, following the local
+model experiment direction. Shape-First Synthesis; clean-room screen found no
+stop condition. The same [breakout receipt](../evidence/WO-051/ideation-local-models.md)
+records staging, review and reconciliation.
+
+- **Setup and assisted outcomes belong in the ordinary work-order flow** `preserved`
+  - Introduce a work-order type that guides the operator toward a specific
+    setup or result, allowing normal trial and error. Close with either checked
+    success evidence or a failure artifact that preserves attempts, observations
+    and the unresolved blocker. LM Studio readiness is a motivating first use,
+    not the type's exclusive purpose. The work order should carry the goal and
+    continuation across sessions instead of leaving setup as informal homework.
+    Its exact schema and lifecycle representation remain for planning; a failure
+    artifact must not imply the requested setup succeeded. Promoted to product
+    07 §Candidate — guided operator work orders. Reopen at the next planning
+    pass alongside local-model readiness, or when another assisted setup/result
+    needs this path.
+
+## 2026-09-16 — DotLn-owned authority with minimal native harness restrictions
+
+Source: operator `ideation:` during WO-119; unedited provisional capture in
+`docs/intake/notes/WO-119-expanded-ideation-2026-09-16.md`. Shape-First
+Synthesis; clean-room screen found no stop condition. Main intake reconciliation
+is pending before worktree removal; see the
+[breakout receipt](../evidence/WO-119/ideation-authority.md).
+
+- **Earn the ability to disable native harness sandboxes** `preserved`
+  - Prioritize establishing when Claude and Codex can run with their native
+    sandbox modes off and Claude's settings can carry nearly empty allow/deny
+    lists. Permissions, security and authority should be declared through
+    DotLn supports, builds and roles, with trustworthy empirical evidence that
+    the declared behavior is faithfully realized. This is a desired future
+    operating mode, not authorization to change today's settings or a claim
+    that instruction text alone enforces effects. The final assurance phrase
+    was incomplete in the first capture; the clarification below supplies it.
+  - Promoted to product 03 §Candidate — DotLn-owned authority with minimal
+    native harness restrictions. Reopen in the next planning pass to identify
+    the earliest evidence-backed path, or on new harness/adapter enforcement
+    evidence. The current runtime and locked clean-room floor remain facts and
+    constraints to account for, not silently rewritten conclusions.
+
+- **Faithful enforcement must survive adversarial tests** `preserved`
+  - The operator explicitly confirmed that runtime enforcement and tests of
+    attempts to bypass authority must precede disabling native sandboxes.
+    This completes the first message's unfinished assurance phrase. The
+    concrete coverage matrix and acceptance thresholds await planning.
+- **Basic authorized calls must not stall unattended work** `preserved`
+  - A second ideation message makes unattended liveness part of the outcome:
+    agents cannot work usefully while the operator is absent if routine calls
+    intermittently wait for basic permissions. Empirical acceptance should
+    cover sustained authorized workflows without unexpected approval prompts,
+    alongside the adversarial denial tests. This does not grant new effects
+    from silence; the preauthorized envelope remains the boundary. Reopen on
+    the next planning pass or a measured prompt/stall inside an existing grant.
+    Product 03's same candidate carries the requirement. Provenance: messages
+    2 and 3 in the same unedited capture and breakout receipt.
+
+## 2026-09-16 — Continuation after compaction and premature turn completion
+
+Source: message 4 of the operator's WO-119 ideation capture named above;
+Shape-First Synthesis with the same clean-room treatment and pending main
+intake reconciliation. See the [breakout receipt](../evidence/WO-119/ideation-authority.md).
+
+- **Recovering context must also recover progress** `preserved`
+  - The operator reports stale chat answers after compaction followed by idle
+    unfinished work when no tool or other event wakes the harness. The executor
+    separately acknowledges ending its last turn after a conversation-only
+    answer despite an unfinished order. Compaction as the causal mechanism and
+    the host's wake coverage remain unverified.
+  - Extend product 05's existing Context Continuity candidate and product 03's
+    session lifecycle: retain current obligations and which messages have been
+    handled; assign continuation to a host independently of pending tools.
+    Test actual compaction, stale side questions, zero running tools, premature
+    turn completion, selective resumption and respect for pause/authority.
+    No new queue, numeric token cap or present harness capability is claimed.
+    Reopen in planning or on a bounded live reproduction with host events and
+    a measured continuation outcome.
+
+## 2026-09-15 — Planning pass: machinery stand-down (WO-132)
+
+- **The lifecycle evidence identity is the one wholesale change** `adopted`
+  - The operator opened the pass after WO-044's close with the verdict that
+    WO-125, WO-126, WO-128 to WO-131 and WO-044 made the machinery worse
+    and stalled product work, and asked for a meta pass over the previous
+    planning passes and a meta-meta pass over the planning process, with
+    the intuition of surgical fixes plus one wholesale change. Six
+    background diagnoses and the records agree on the location: every
+    transition requires a full-gate row at a whole-tree hash that includes
+    the reports and control events the transition itself writes, so every
+    stage boundary misses by construction and no per-suite key beneath it
+    can help. Adopted: transitions never require gate evidence; one product
+    gate runs once per order at final review, keyed by code identity, and
+    the pull request, the tag manifest and the release close consume that
+    row; release close runs no suite. The replica execution, declared-input
+    reuse, shared cache, kernel-denial probe and per-task expansion leave
+    the default path with their suites. Filed as
+    [WO-132](../work-orders/WO-132-machinery-stand-down.md) at the head of
+    the sequence, one order by the operator's exemption; the diagnosis is
+    [the planning document](../planning/machinery-stand-down-2026-09-15.md).
+  - Provenance: the dispatch and its three follow-up messages, captured
+    verbatim in ignored intake
+    (`docs/intake/notes/2026-09-15-machinery-stand-down-planning.md`,
+    SHA-256 `19061ea60115a416bc536e4eae66faffc5549dfd9a33841d886bd51dffd8350f`);
+    the ignored gate rows; WO-044-D016; WO-131's engineering review. Reopen
+    if a product defect reaches a tag that a removed suite would have caught,
+    or if the once-per-order gate exceeds six minutes after the inventory
+    split.
+- **Versions, effort and tools are logged, never required** `adopted`
+  - Attestation records harness, version, model, effort and source as
+    given; `ultra` and `ultra code` are `xhigh` with a subagents mode and
+    their raw spelling; effort-below-declared, readback, discovery-row and
+    version-minimum refusals become warnings; `Effort:` lines are
+    recommendations. DotLn's hooks refuse a second writer and a write during
+    the live gate and delegate everything else to the host's own permission
+    prompt, on both harnesses; the writer-isolation unit drops its
+    main-branch conjunct so planning, release close, build and bootstrap run
+    on main under a reservation. Five of six refusals recorded this week
+    were unlisted tool names; this pass's own background workers were
+    refused their handback tool, and the parent was refused `SendMessage`.
+  - Provenance: the capture; WO-044-D006, D009, D011, D015; WO-131 R5;
+    the parity diagnosis. Reopen if a second writer is admitted on main or a
+    host prompt admits an effect the settings deny list should have refused.
+- **Release close is the post-merge publish** `adopted`
+  - From merged main, one command proves egress, fast-forwards, runs the
+    sub-minute surface checks, builds its own dist if missing, cites the
+    reviewer's gate row with both trees, tags and creates the Release;
+    teardown and derived-worktree settlement follow as best effort. The
+    record: v0.17.0 needed a patch order, v0.17.5 a fix pull request,
+    v0.17.6 was never published, v0.17.7 ran a 605 s gate reusing nothing.
+  - Provenance: the capture's pasted analysis (partly wrong on the metadata
+    commands, right on every other shell form); WO-044-D001 to D007, D010;
+    the release-close diagnosis. Reopen at a host that cannot grant egress
+    to any session.
+- **The refuter is a goal review** `adopted`
+  - Four questions per order from the Cost line, the meter and the critical
+    path: the gate it unblocks and the NoOp cost; the eight traps applied to
+    the order's own process cost; whether the removal exceeds the addition;
+    whether failure degrades rather than refuses. A hold needs an observed
+    failure or a vision contradiction; a constructible counterexample is a
+    known issue; one judgment per pass; no third-hold stop; a disposition
+    binds the criterion text. This settles product 07's candidate on the
+    refutation pass's cost by allocation to WO-132 criterion 11.
+  - Provenance: the 2026-09-12 and 2026-09-15 captures; receipts 009 to
+    012 (holds at 2,454, 833, 333 and 755 s; two overridden; one re-raised
+    and re-imported as scope). Reopen if the goal review passes an order
+    the operator later names misaligned.
+- **The default gate is the product gate** `adopted`
+  - Product and lifecycle suites run in `npm test`, each with a `protects:`
+    line; machinery suites run on demand or when their own sources changed;
+    the scheduler restores the configuration WO-128 measured faster. The
+    three longest suite numbers were spans between split tasks; the heavy
+    tasks were the machinery's own fixtures; the estimated default gate is
+    about 250 s against 605 s. Only release, worktree, resume and the three
+    package suites have a recorded catch of a real defect.
+  - Provenance: the test-inventory audit over the ignored gate rows and the
+    90 verification and decision records. Reopen per the first entry.
+- **Why the previous four passes compounded the problem** `adopted`
+  - Each pass shipped a self-measured key, filed Cost lines a regex judged
+    and no closeout reconciled, and let verification of machinery produce
+    machinery repairs in the same order; the refuter rewarded contract
+    completeness, overrides bound receipt hashes so holds re-raised, the
+    meter never fired on a sawtooth, findings became criteria in the order
+    that found them, a complaint counted as a question rather than a
+    decision, and no rule ranked logging above refusing. Recorded in the
+    planning document §2 and §3 with the rules that should have bound and
+    why they did not.
+  - Provenance: the map's rationale for 2026-09-08, 09-09 and 09-12; the
+    receipts; the cost table; the merge history (13 of 14 merges after
+    WO-042 changed machinery, none the kernel).
+- **Corrections during this pass, logged** `adopted`
+  - Operator corrections: open the planning branch without asking (every
+    prior pass had); remove a stale reservation and prune dead worktrees
+    without reporting them; do not wait for hand-holding. Applied: the
+    branch, the reclaimed lock, four pruned registrations and the removed
+    WO-131 temporary host worktree preceded the research report. Self
+    corrections: the first shell commands on main were refused for
+    unlisted metadata forms and a `;` separator, replaced by the listed
+    forms; the background workers' handback and the parent's `SendMessage`
+    were refused as unclassified tools, so the reports were recovered from
+    the session transcripts; `git worktree prune` needed one host-approved
+    unsandboxed retry because the sandbox denies `.git/worktrees`.
+  - The refutation itself reproduced mechanism 2 of the diagnosis live:
+    the first fresh worker judged a subject that the timing-acceptance
+    cost-table refresh then changed, so its result was refused as stale and
+    a second fresh worker judged the current subject (receipt 013,
+    dispatch-to-file 808,618 ms, verdict pass with no holds and six known
+    issues); the host still recorded the receipt as a hold because it
+    carried WO-130 criterion 1's absolute-path hold forward from receipt
+    012, whose override bound only that receipt's hash. The operator's
+    2026-09-15 direction was applied as an attributed override of the
+    carried hold (the third time for the same finding), recorded in the
+    planning control log with the capture's SHA-256; WO-132 criterion 11
+    binds dispositions to criterion text so a fourth cannot occur.
+- **Process cost of this pass** `adopted`
+  - Entry measurement (`node scripts/harness.mjs usage`, scope dispatch,
+    source claude-transcript-message-usage, 2026-09-15T04:16Z): 538,326
+    total tokens (196 input, 439,523 cached input, 92,223 cache write,
+    6,384 output) over 15 steps and 3 commands. Six background diagnoses of
+    about 208,000 to 285,000 tokens and 45 to 109 tool calls each, 13 to 15
+    minutes each. The handoff measurement before the
+    planning commit (2026-09-15T05:10Z, same source and scope): 12,301,289
+    total tokens (1,272 input, 11,756,763 cached input, 420,118 cache
+    write, 123,136 output) over 125 steps and 90 commands; the six
+    background diagnoses' own counters (about 1.5 million tokens) are
+    listed above and are not claimed inside this figure. Tradeoff recorded: the pass ran no code
+    suite; the refutation is one background goal review.
+- **Wholesale revert, turning off every test, the key repair alone, one order per fix, opt-in reuse, a classified read-only guard, a detached release worktree, an operator-only close, process cost as a requirement, a hold budget alone, and the three open follow-ups** `rejected`
+  - Each with its evidence and reversal condition in the planning
+    document's NoOp register (§7) and the map's NoOps of this pass.
+
+## 2026-09-14 — operator recovery during WO-131
+
+- **Unconditional operator controls** `adopted`
+  - `analysis:` interrupts the routine for diagnosis and direction.
+    `operator override:` provides access to tools despite DotLn gates, locks
+    or broken setup. Neither depends on the workflow it may need to repair.
+    Source: the WO-131 intake batch and [breakout receipt](../evidence/WO-131/ideation.md).
+    Promoted to product 07 §Operator recovery controls and WO-131 criterion 14.
+    Reopen if any generated entry path can prevent either command reaching the
+    agent or recovering from a failed harness.
+- **Immediate return to a usable repo** `candidate`
+  - Recovery should put the repository into an operator-authorized working
+    state immediately, preserving work and recording bypassed requirements.
+    Scripts versus assisted repair and arbitrary lifecycle reconstruction
+    remain open. Do not turn an override into invented passing evidence.
+    Source and review: the same breakout receipt; promoted as a candidate in
+    product 07. Reopen for implementation planning or an observed recovery
+    that still requires operator rescue outside the session.
+
+## 2026-09-12 — Planning pass: proof-carrying gates (WO-128 to WO-130)
+
+- **The relayed plan's central claim holds; its lifecycle claim does not** `adopted`
+  - The operator opened the pass after the `v0.17.2` close with a second
+    model's plan for proof-carrying gates and full authority to veto or alter
+    it. Verified against `scripts/lib/suite-evidence.mjs`,
+    `scripts/test-runner.mjs`, `scripts/lib/gate-evidence.mjs` and
+    `scripts/lib/lifecycle-evidence.mjs`: the shared suite key hashes every
+    ref, `HEAD`, the checkout path, the CPU count and the whole configuration
+    listing, the cache is per worktree, and only six suites and the release
+    cases declare their documents. Not verified: the lifecycle already accepts
+    the composed exact-tree aggregate (WO-126-D009, D014), so no predicate
+    changes; and the plan's "20-second composed gates" omit the build,
+    preparation and seven live checks that always execute (41–47 s observed at
+    an identical tree).
+  - Provenance: the dispatch, captured verbatim in ignored intake
+    (`docs/intake/notes/2026-09-12-proof-carrying-gates-planning.md`, SHA-256
+    `4eb2c26a6530687e67c05781f2f153233d90b340b7365c1bd0cbb96f4b101993`); the
+    map's gate-cost rationale. Reopen if a composed aggregate is refused by a
+    lifecycle command, or if a suite is found to read repository-global state
+    the key no longer carries.
+- **The largest measured waste is the failed fresh gate, not reuse** `adopted`
+  - From the host's retained gate rows: twelve fresh full gates across
+    WO-043, WO-125 and WO-127 on 2026-09-11/12 failed on fixed wall-clock
+    deadlines under load (`console` six, `plan-refutation:current` two,
+    `harness-fixtures` two, `runner-fixtures` one) or on a tree changed during
+    the run (two), 8,387 s in total, each followed by a passing rerun of
+    41–419 s. WO-125's FINAL-001 item 3 named this pass the owner of the
+    console nomination. WO-128 carries it, with the gate row's per-task
+    concurrency trace and the re-measurement of WO-126-D012's exclusive
+    scheduling, which held the 2026-09-12T16:08Z fresh gate at concurrency
+    one for 206 of 475 s.
+  - Provenance: `docs/control/local/harness/checks.json` and its history on
+    the operator's host; VER-001 O6, VER-003 O3, VER-004 AC5 and FINAL-001
+    item 3 of WO-125; FUP-0054 allocated. Reopen if five consecutive fresh
+    gates pass before WO-128 changes anything, which would make the order a
+    NoOp.
+- **A suite's evidence identity is its declared inputs** `adopted`
+  - After each of WO-125's eighteen transitions the next full gate ran all 78
+    tasks fresh (613–839 s); five of its ten fresh runs (3,876 s) followed a
+    transition with no source change. A checkpoint ref that no suite reads
+    must not invalidate a suite. WO-129 moves the key to declared inputs,
+    shares the cache under the Git common directory and names the changed
+    input class on every miss; WO-130 declares inputs for the whole-tree
+    class of about 25 suites and validates each declaration by executing the
+    suite in a replica that holds only those inputs, so a document-only
+    change composes the gate (243–419 s today against 41–47 s at an identical
+    tree). No test is removed; the fail-closed defaults stay. (The validation
+    half of this entry was withdrawn at receipt 010; see the entry below.)
+  - Provenance: the same rows and the WO-125 control segment; the relayed
+    plan's phase-one items, lowered without a sandbox, syscall tracing or
+    doubled shadow gates. Reopen if a replica ever passes a declaration that a
+    fresh gate refutes, or if the miss explanations show a declaration class
+    that cannot be named.
+- **Cold-gate structural cuts wait for a recorded critical path** `candidate`
+  - Copy-on-write fixture clones, split shell suites, pure policy extraction
+    with a model-based lifecycle check, and sharding are recorded as product
+    07 §Candidate — cold-gate structural cuts, entered by WO-128's concurrency
+    trace. The preflight barrier stays (WO-127-D007; preflights end at 16 s of
+    a 475 s gate). Bazel, Nx and Turborepo are declined as the plan itself
+    advised. Reopen when a trace names the node that bounds the gate after the
+    exclusivity decision.
+- **Corrections during this pass, logged** `adopted`
+  - None from the operator. Two self-corrections: the first shell command on
+    `main` was refused by the writer guard for an unlisted metadata command,
+    and the pass switched to the listed forms before opening the branch with
+    `plan start`; a shell substitution was refused by the command classifier
+    and replaced by explicit reads. Neither changed a file.
+- **Process cost of this pass** `adopted`
+  - Entry measurement (`node scripts/harness.mjs usage`, scope dispatch,
+    source claude-transcript-message-usage, 2026-09-12T16:12Z): 567,803 total
+    tokens (164 input, 450,131 cached input, 110,499 cache write, 7,009
+    output). The reads were dominated by verifying the dispatch's claims in
+    the runner, cache and lifecycle source, which no feed replaces; orientation
+    used the follow-up feed's first page, the sequence, the map's rationale
+    and the critical-path plan. The handoff measurement before the final commit
+    (2026-09-12T16:41Z, same source and scope): 11,146,806 total tokens (996
+    input, 10,539,221 cached input, 462,570 cache write, 144,019 output) over
+    105 steps and 56 commands. After receipt 009's holds were repaired
+    (2026-09-12T17:41Z, same source and scope): 17,904,001 total tokens
+    (1,382 input, 17,201,927 cached input, 525,030 cache write, 175,662
+    output) over 126 steps and 73 commands. After receipt 010's holds were repaired
+    (2026-09-12T18:20Z, same source and scope): 25,715,183 total tokens
+    (1,768 input, 24,856,792 cached input, 606,939 cache write, 249,684
+    output) over 144 steps and 91 commands. At the closing commit after the
+    operator's override (2026-09-12T18:56Z, same source and scope):
+    32,929,366 total tokens (2,060 input, 32,008,097 cached input, 645,211
+    cache write, 273,998 output) over 162 steps and 109 commands. Tradeoff recorded: the pass ran no code suite and no
+    refutation transport; the operator's `planning: refute` supplies the
+    independent judgment.
+- **Receipt 009's two holds, answered by repair and receipt** `adopted`
+  - The direct-session refutation held WO-130 criterion 2: a replica that
+    omits undeclared files validates a declaration even when the suite checks
+    for an optional undeclared file, reads and validates it when present and
+    passes when absent, so a changed optional file could fail a fresh run
+    while its cached success is reused. Repaired with a two-sided replica
+    (undeclared paths absent, then present but unreadable), the counterexample
+    as a fixture, refusal of any declaration without a current validation
+    record, and validation keyed by every input that selects a read path. It
+    also held WO-078 criterion 1 under the added-process cost rule: the
+    registry and receipts added recurring bookkeeping with no removal or dated
+    acceptance. Repaired by generating the registry from receipts written
+    inside the existing export step, naming the removed manual lookup, and
+    replacing the legacy Cost declaration. Both are answered through the
+    disposition chain, never by override.
+  - Provenance: `docs/planning/refutations/2026-09-12-planning-dc998fb93c27e337-009.md`;
+    `docs/planning/proof-carrying-gates-2026-09-12-dispositions.json`. Reopen
+    if a replica ever passes a declaration that a fresh gate refutes, or if
+    WO-078's generator needs a hand-maintained field.
+- **Receipt 010: validation withdrawn, execution inside the replica adopted** `adopted`
+  - The second refutation held WO-130 criterion 2 twice more (a regular-file
+    check skips a directory stand-in; a validation record keyed without the
+    declared inputs that select read paths stays current after a flag
+    flips). The general fact is that no finite probe set validates a
+    declaration against an arbitrary guard. The pass withdrew validation of
+    real-tree runs and made the declaration the suite's world: a narrowed
+    suite executes inside a replica of its declared inputs at every run, so an
+    undeclared file does not exist for it and no guard can find it; a suite
+    that needs an undeclared file fails loudly; there is no validation record
+    to keep current. Host probes from the sandboxed session fixed the
+    mechanism's limits: nested `sandbox-exec` is refused, so a kernel denial
+    is an addition where the host permits it, never a condition of reuse;
+    forced clone-on-write is refused, so replicas are plain copies of 55 MB
+    of installed roots plus each suite's declared paths. The remaining
+    declarations and the document-only measurement moved to WO-131 under the
+    four-hour rule; WO-128's objective admits a host load outside the declared
+    class as a named non-defect and its two series collapse into one on a
+    pass.
+  - Provenance: `docs/planning/refutations/2026-09-12-planning-dc998fb93c27e337-010.md`;
+    the pass's host probes of 2026-09-12; the dispositions file. Reopen if the
+    harness sandbox admits nested profiles (then the denial can become a
+    condition), or if a narrowed suite is found reading the candidate tree by
+    an absolute path the runner did not project.
+- **Operator override of receipt 011's hold; the refutation pass must earn its cost** `adopted`
+  - Receipt 011 (pass scope, 333 s dispatch-to-file) held WO-130 criterion 1
+    on a fixture that hard-codes an absolute path into the candidate tree, the
+    residual the design already names. The operator's correction, captured
+    verbatim in ignored intake (SHA-256
+    `5d5985d3d0d078ca2a3be9b17f77c53ec71dcb59a1020e1830c6555bbc6e10e6`): the
+    point is to create a platform, not to solve every constructible example
+    now; the hold is a known issue to revisit when it becomes applicable or
+    bites; three refutations of one pass, all holds, at 2,454 s, 833 s and
+    333 s of recorded dispatch-to-file and more of operator time, helped
+    nothing. Misread: the pass treated each counterexample as a contract
+    defect to close before filing. Meant: file bounded orders whose known
+    residuals are recorded with reopening conditions, and stop the loop.
+    Changed: the hold is overridden through the gate's attributed route (a
+    `PlanHoldOverridden` event with actor and capture hash in the planning
+    control log), WO-130's execution record carries the known issue and its
+    reopening conditions, and product 07 gains the candidate that directs the
+    next pass to measure the refuter's yield against its cost and change the
+    mechanism, its scope or its budget before another pass pays it.
+  - Provenance: the capture; the override event; receipts 009 to 011. The
+    known issue reopens on the observations WO-130's execution record names;
+    the candidate reopens at the next planning pass.
+- **Doubled shadow gates, time-based expiry, deleting tests, choosing FUP-0091/0111/0132 here** `rejected`
+  - Each with its evidence and reversal condition in the map's NoOps of the
+    2026-09-12 pass.
+
+## 2026-09-11 — First-party session commands and mandatory token measurement (WO-043)
+
+- **Equip cost and goal comparison across every phase** `specified`
+  - The operator accepts Process Cost as a first-class support across the six
+    Contributor roles and asks when solutions are assessed against the eight
+    system traps, Naive Interventionism and NoOp. A final direction requires
+    every phase to understand DotLn's purpose and judge decisions by goal and
+    critical-path progress. Process Cost and separate Goal Alignment support
+    identities now carry those duties through shared role projection.
+  - The product 07 goal card sources the operator-flow mission and current
+    runtime path, requires comparison before material choices, and retains
+    rationale in existing phase evidence, revisiting changed scope/evidence.
+    Deterministic projection is distinct from judgment; generalized trap and
+    counterweight mechanics remain candidate work. No new scheduler or
+    approval loop is selected.
+  - Provenance: the same intake/receipt below, WO-043's execution record and
+    D009/D010. Reopen when a choice cannot name a supported mission/path
+    contribution or observed process overhead outweighs its benefit.
+
+- **Exercise equipped executor supports without operator coaching** `specified`
+  - The operator reports that Adjacent Repair and Intent to Act appear only
+    after being named. WO-043's dated expansion addresses late instruction
+    placement, ordinary dispatch visibility and unresolved-queue completion.
+    It retains independent switches, actual-chat attestation and bounded
+    authority; it does not claim universal model recognition of defects.
+  - Provenance: the same intake batch and breakout receipt below, with product
+    05's earlier WO-126 observation. Reopen with a fresh-session failure or an
+    ablation that identifies a smaller effective mechanism.
+
+- **Prioritize the adaptive Tinkerer in near-term planning** `candidate`
+  - The operator recalls experiment selection becoming more likely as time
+    passes without an application improvement, then excludes implementation
+    here if it remains proposed. Product 05 already specifies that candidate;
+    existing `FUP-fc4158d3207e495d` carries the request for consideration soon.
+    No new order, selected pressure curve or implementation is claimed.
+  - Provenance: the same source batch and receipt. Reopen in the next planning
+    pass to choose a bounded experiment and allocation with measured cost.
+
+- **Recognize scope additions and side questions as commands** `specified`
+  - The operator regularly uses `scope expand:` and `conversation only:` and
+    asks for first-party support. A follow-up defines the latter as a question
+    answered without interrupting the current work-order process. Product 07
+    records the command contract: the former adds the stated bounded work and
+    its receipt; the latter changes no scope, phase or obligation and needs no
+    new resume confirmation. Both preserve existing effect boundaries.
+  - Provenance: `docs/intake/notes/WO-043-expanded-ideation-2026-09-11.md` and
+    `docs/evidence/WO-043/ideation-commands-and-usage.md`. The raw capture is
+    provisional in the worktree and must reconcile to main at closeout.
+    Reopen if the operator changes either command's meaning or a concrete
+    interaction exposes ambiguity; a quoted command is not its invocation.
+
+- **Require measured Codex and Claude tokens before handoff** `specified`
+  - The operator rejects treating session tokens as absent or untracked. Both
+    harnesses already record counters; optional collection and swallowed errors
+    must give way to actual current-session measurements. Retain numeric totals,
+    source, time and scope, and repair collection errors before completion.
+    Cached-input semantics and duplicate messages require source-aware counting;
+    transcript text and raw identities remain private. Historical gaps and
+    unreported prices are not permission to omit new session token counts.
+  - Provenance: the same raw batch and receipt; product 07 and WO-043's
+    execution record carry the new duty and bounded implementation authority.
+    Reopen the collector when either harness changes its recorded format; keep
+    the measurement obligation while repairing its adapter.
+
 ## 2026-09-09 WO-126 ideation — context continuity and observation before caps
 
 Source: the operator's context warning, explicit ideation dispatch and two
@@ -680,6 +1332,320 @@ ablation checks. WO-126 continues its original mechanical reductions; the
 operator permits later allocation of this broader problem. The session's
 correction and chosen disposition live in its decisions file rather than being
 mistaken for a new ledger rule.
+
+## 2026-09-09 — WO-042 VER-001 F1: Unicode boundaries for authority notes
+
+- **Match a literal effect id with Unicode prose boundaries** `adopted`
+  - VER-001 F1 reproduced accepted contradictory notes followed by an em dash,
+    en dash or ellipsis. The guard's ASCII punctuation list also missed curly
+    quotes. Ten new directional fixtures failed before the repair. The guard
+    now uses Unicode punctuation, whitespace and the existing backtick/angle
+    bracket delimiters around a complete escaped effect id. Internal dots and
+    colons still extend a token, while trailing sentence punctuation is accepted.
+    Product 04's authority-inspection contract states the rule explicitly.
+  - The focused criterion-5 gate passes all 14 tests after the repair. Literal
+    ids containing hyphens, underscores, colons, plus signs and parentheses
+    remain intact; prefixed, suffixed, dotted and colon-qualified extensions
+    remain negative cases in both authored-note directions. This corrects the
+    authored-note consistency check without changing effective authority or
+    compiled inspection bytes.
+- **Grow the ASCII punctuation list one character at a time** `rejected`
+  - It would repair the reported examples while retaining the same omission
+    class for other Unicode prose punctuation.
+- **Split every punctuation character inside an effect id** `rejected`
+  - Effect ids may contain punctuation. Splitting them would lose complete ids
+    and confuse their dotted or colon-qualified extensions with exact matches.
+- **Weaken the documented contradiction check or rewrite VER-001** `rejected`
+  - The verified failure is against the accepted contract. The repair restores
+    that behavior and retains the immutable report for independent re-verification.
+
+## 2026-09-09 — Emergency planning pass: process debt (WO-126)
+
+- **Hard enforcement at the lifecycle commands; Stop hooks advise** `adopted`
+  - The operator's dispatch after the `v0.16.0` close: the WO-042 reviewer
+    could not end a turn without the whole suite recorded at the current
+    tree hash and a lifecycle transition appended, and re-announced the same
+    facts for several turns. The transition commands already refuse the same
+    conditions with evidence. A Stop hook that blocks gates nothing extra and
+    prevents a session from stopping to ask a question. WO-126 criterion 4.
+- **Read obligations are what the session wrote or regenerated** `adopted`
+  - Supersedes WO-039's first repair receipt item 3, which considered and
+    did not adopt session-only authorship. The operator's explicit
+    2026-09-09 decision: the obligation exists so a session reads back what
+    it wrote and does not take a regenerating script's word for its output;
+    it is not a license to push every inherited byte through context. The
+    WO-042 reviewer owed 135 files and 5,305,410 bytes it had already
+    reviewed as a diff. Generated and oversized outputs owe a check, not a
+    read. WO-126 criterion 3.
+- **A gate runs once per tree hash** `adopted`
+  - Four roles ran the full suite on the same tree, and the tag ran it
+    again on a fast-forwarded copy. Evidence keyed by tree hash is reused;
+    a changed byte invalidates it. The tag manifest records the gate it
+    ran or reused instead of the literal `npm test`. WO-126 criteria 5, 6.
+- **Growth needs a decision** `adopted`
+  - Every size, duration and count the operator complained about was
+    already recorded somewhere and compared to nothing. A budget file with
+    dated acceptances, a meter that prints the delta into every PR body and
+    the status line, and a gate that fails on an unaccepted breach. The PR
+    subject series (four ramps, four resets) is the microcosm. WO-126
+    criteria 10, 11.
+- **Anti-oscillation is the rule for applying a correction** `adopted`
+  - The operator's definition, stated twice in this pass: a correction
+    points at a category. Failure one is sweeping generalization,
+    extrapolating into adjacent rules and file changes never asked for.
+    Failure two is over-literal reading, shrinking the rule to its exact
+    words and missing obvious members of the category. The middle is
+    judgment: find the category, stay in it, ask one focused question when
+    the boundary is genuinely unclear, and pause before file actions beyond
+    the literal correction. The unit's text had described decision lineage
+    instead and enforced nothing while appearing as residue in the locked
+    floor. Rewritten at version 2 as prose with the worked example; the
+    residue block leaves the floor. WO-126 criterion 9.
+- **Closeout owns the harness's state and reconciles intake** `adopted`
+  - The harness writes session state to `docs/control/local/harness/` and
+    the operator's private terms list lives beside it; the closeout
+    classifier never learned the directory, so the WO-042 close hand-wrote
+    a script. The classifier learns it, `release close` reconciles intake
+    with a dry run, and the skill forbids closeout scripts. WO-126
+    criterion 7.
+- **Attestation by version line with an executable discovery row** `adopted`
+  - A CLI patch bump nobody recorded degraded the reviewer's effort to
+    `unknown` while the environment exposed the value. WO-126 criterion 2.
+- **No AI attribution, including session links** `adopted`
+  - The harness's session guidance proposes a session trailer; the
+    operator's global rule, the compiled unit and every merged PR say no.
+    The guard learns the trailer shape and the settings half is installed.
+    WO-126 criterion 1.
+- **The ledger returns to ideation** `adopted`
+  - The operator asked why entries other than `ideation:` prompts land
+    here. Every lifecycle loadout directs a ledger append and every order's
+    write-back duty names one, so 95 of 122 sections are work-order
+    decision records and the file is 615 KB. Per-order decisions move to
+    the order's evidence directory with a generated index; this section is
+    the last lifecycle-role entry the loadouts direct. WO-126 criterion 13.
+- **Corrections during this pass, logged** `adopted`
+  - Ten operator corrections in one session, each with what was misread,
+    what was meant, and where the fix lives. (1) A guard bug filed as a
+    nomination; the operator wants it fixed or owned: WO-126 criterion 8 and
+    the rule that a finding becomes a criterion. (2) Anti-oscillation
+    written as decision lineage, twice; the operator's rule is about the
+    category a correction points at: criterion 9 and 07 §Operator-opened
+    ideation mode. (3) Fixture output logged as an undiagnosed bug;
+    diagnosed, not a bug: criterion 6 stops fixtures printing as FAIL.
+    (4) The full suite run for a document-only pass, then a blocked wait:
+    the document gate in 07 §Operator-opened planning pass and criterion 6.
+    (5) The refutation run from the session when the operator wanted the
+    option to run it: the correction rule's pause before actions beyond the
+    request. (6) A seven-step manual handoff when the operator wanted
+    automation: criterion 15. (7) `resume: plan refute` named where the
+    operator said `planning: refute`: renamed. (8) The phrase read as
+    picking a CLI by harness where the operator meant the session is the
+    refuter: criterion 15 and the 07 paragraph. (9) A refused amend blamed
+    on the rebuild when the attribution hook lacked a message: the order
+    requires refusals to name their cause. (10) These corrections kept only
+    in the session: this entry, the intake capture, and criterion 13's rule
+    that a correction during any dispatch is recorded the same day in that
+    dispatch's committed record and counted by the meter. (11) The refuter
+    ran the code suite, told to by two sentences the pass had missed (07
+    §Operator-opened planning pass, the refutations README), and its
+    independence was exposed to the map by the planner role's directed
+    reads: both sentences now name the document gate, and criterion 15
+    gives the phrase its own dispatch with no read but the prompt, a scope
+    of changed orders, and a 120 s budget. (12) The refuter's scope swung
+    from the whole horizon to changed orders only, instead of keeping both:
+    criterion 15 names `planning: refute` and `planning: refute full`.
+    (13) The operator's four capitalized questions were treated as venting
+    rather than directives: criterion 16 makes the repository ask them per
+    dispatch through the meter, the order template, the refuter and the
+    role skills, and 07 §Discipline records them as standing doctrine.
+    (14) The cost rule read too literally as "cut what is annoying": the
+    operator's test is whether data materially informs a later decision;
+    such data is kept whatever it costs, and only data nothing decides on
+    is cut. Recorded in 07 §Discipline, which WO-126 cites, so the order's
+    executor reads it without the order's bytes changing. (15) A prior
+    session's playbook sentence, "no token, cost, or attention data is
+    collected", was presented to the operator as the operator's own
+    decision; it never was. Tokens and cost per dispatch are required data
+    for setting context and token budgets: WO-126 criteria 10 and 11, the
+    map's NoOp corrected. Traced: the sentence began as WO-028's non-goal,
+    written by the 2026-09-03 planning pass as "not this order"; the
+    2026-09-04 pass put it in the map, the 2026-09-05 pass recorded it as
+    a NoOp "unchanged from the 2026-09-03 pass", WO-031 repeated it as a
+    non-goal, and WO-031's implementation wrote it into the playbook, 07
+    and 03 as a flat prohibition. No operator dispatch said it. Criterion
+    13 now requires a decision to name its dispatch and forbids restating
+    a non-goal as one. (16) "Settled is settled" as an absolute, which the
+    pass had kept on purpose: the operator names it a systems trap, inertia
+    codified as a hard rule. 07 §Discipline now reads "decided means
+    sourced, not frozen"; criterion 13 gives every decision a reopening
+    condition and makes the meter surface reopen candidates; the floor's
+    sentence is the operator's to change (assumption 6). (17) The pass
+    guessed which system trap the operator meant. The operator named
+    them: rule beating and seeking the wrong goal, with shifting the burden
+    to the intervenor, drift to low performance and policy resistance also
+    live in the meta process. Criterion 17 makes each a meter row with a
+    signal from the repository's data; 07 §Discipline names the lens.
+    (18) Receipt 007 held on criterion 16: the cost judgment it demanded
+    had no permitted input, since criterion 15 gives the refuter only the
+    canonical prompt. Repaired: every order carries a `**Cost:**` header
+    line the subject reader includes and hashes, and the canonical input
+    carries a bounded cost table (dated acceptances and the latest meter
+    rows, refused when stale). The hold is answered by that repair and the
+    receipt that carries its dated accepted disposition. (19) The session
+    then overrode hold 007 through the gate's override route on its own
+    reading of an earlier "operator override" message; the operator had
+    run the refutation precisely so its findings would count and never
+    said to ignore them. The override event was reverted before
+    publication, this entry records it, and the hold is discharged by
+    repair and receipt, the proper route.
+- **Close on repair and receipt, not on override** `adopted`
+  - Receipt 006 (2026-09-09, direct Codex session) passed the whole
+    horizon with WO-126 at `82a3d5b`; receipt 007 held on the corrected
+    criterion 16; the repair landed. The operator's instruction is that a
+    refutation's findings are fixed and re-judged, not waived. The receipt
+    that carries hold 007's dated accepted disposition closes the pass.
+- **Remove the compiled harness wholesale** `rejected`
+  - The build cut the executor cold start 6.5×, and the pre-effect guards
+    catch real defects. The cost is in two design choices this order
+    changes. Reversal condition recorded in the map's NoOps.
+- **Split the debt into bounded orders** `rejected`
+  - The operator's direction; each order would pay the cost model it fixes.
+    The one-seam and four-hour rules stand for every other order.
+- **Provider token or cost telemetry** `rejected`
+  - The 2026-09-05 decision stands; the repository records enough.
+
+## 2026-09-09 — recurring questions that expose simpler alternatives
+
+- **Surface useful alternatives without waiting for an objection** `preserved`
+  - During WO-126 repair, the operator observed that refusing a new Python
+    prerequisite prompted a useful implementation comparison, then asked for a
+    method that asks such questions by default, automatically or occasionally.
+    The shape is routine scrutiny of a method's necessity and cost while keeping
+    its intended outcome and explicit guarantees visible. Dependency avoidance
+    is one trigger, not the universal objective.
+  - Product 07 §Candidate — recurring review of implementation alternatives
+    preserves default, event-triggered and periodic possibilities. Compare the
+    existing four questions, meter and Entropy Reducer before introducing a new
+    recurring cost. Retain useful measurements, no-change outcomes and reopening
+    conditions. Cadence and implementation remain unallocated.
+  - Provenance: `docs/intake/notes/WO-126-recurring-alternative-review-2026-09-09.md`,
+    the operator's same-session `ideation:` dispatch, and
+    `docs/evidence/WO-126/ideation-alternatives.md`. Reopen in planning when a
+    bounded comparison can test discovery benefit against review overhead.
+
+- **Tinkerer / Scientist with an activation-rate modifier** `preserved`
+  - The operator's same-day follow-up proposes an experimental bias applied to
+    a related question/input or answer/response, similar to A/B testing but
+    activated only sometimes. Product 05 preserves the candidate support and
+    uses the already-established term Support modifier for the separate rate
+    control. Naming, relation to A/B testing, eligibility, cadence and rate
+    policy remain open; general support modifiers are not claimed as shipped.
+  - Provenance: `docs/intake/notes/WO-126-experiment-support-followup-2026-09-09.md`
+    and `docs/evidence/WO-126/ideation-alternatives.md`. Reopen in planning with
+    evidence of useful experimental findings, valid skipped opportunities,
+    authority preservation and measured cost.
+
+- **Retain comparative data when a decision forces a similar-purpose alternative** `preserved`
+  - The operator separately asks for comparisons as historical data whenever a
+    decision forces another method serving roughly the same purpose, activated
+    automatically or through equipped support. Product 05 preserves that trigger
+    separately from occasional experimental exploration. Historical evidence is
+    a useful output even when the decision is already settled; differences in
+    guarantees and unavailable counterfactuals remain explicit.
+  - Provenance: `docs/intake/notes/WO-126-historical-comparison-followup-2026-09-09.md`
+    and `docs/evidence/WO-126/ideation-alternatives.md`. Reopen in planning for a
+    bounded collection design, default/equipment choice and measured comparison
+    of retained decision value against collection cost.
+
+- **Measure possible benefits of emoji substitutions** `preserved`
+  - The operator asks whether an emoji can beneficially replace its represented
+    word. Product 05 preserves word/emoji/labeled comparisons for scanning and
+    prompt meaning, with byte size, model tokens and behavior kept distinct.
+    A four-pair Node measurement gave two byte savings, one tie and one increase;
+    token and correctness benefits remain unmeasured. No substitution policy or
+    tokenizer dependency is selected.
+  - Provenance: `docs/intake/notes/WO-126-emoji-substitution-2026-09-09.md` and
+    `docs/evidence/WO-126/ideation-alternatives.md`. Reopen with a concrete
+    consumer/model, representative examples and measurable task outcomes.
+
+- **Separate a browser projection from unattended runtime lifetime** `preserved`
+  - The operator asks whether an always-available app can be a webpage using
+    WebSockets, workers or WebAssembly. Product 04 preserves a browser-hosted
+    option while distinguishing communication, computation and process lifetime.
+    Browser background facilities do not establish a continuously running
+    resident; a separate local or remote host and suspension/recovery remain
+    candidate designs under the same canonical projection contract.
+  - Provenance: `docs/intake/notes/WO-126-browser-runtime-2026-09-09.md` and
+    `docs/evidence/WO-126/ideation-alternatives.md`. Reopen with explicit work
+    requirements for closed windows, stopped processes and sleeping devices,
+    followed by an observed lifecycle comparison.
+
+- **Compare desktop delivery speed and 3D behavior independently** `preserved`
+  - The operator follows with Electron and the fastest option that permits 3D.
+    Product 04's shared candidate distinguishes implementation effort, startup
+    and rendering speed. Electron is an executor hypothesis for quickest
+    resident desktop delivery with existing TypeScript/Node; browser plus a
+    companion and Tauri remain comparisons. The proposed Babylon.js projection
+    stays separate from wrapper choice. No host or new dependency is selected.
+  - Provenance: `docs/intake/notes/WO-126-desktop-3d-runtime-2026-09-09.md` and
+    `docs/evidence/WO-126/ideation-alternatives.md`. Reopen with the same scene and
+    background task, measurements of effort, footprint, frame times and recovery,
+    and the operator's actual meaning of fastest.
+
+- **Use the full eight-system-traps framework beyond the current five signals** `preserved`
+  - The operator supplies eight traps and possible escapes while discussing
+    the review process: policy resistance, commons depletion, downward standards,
+    escalation, compounding winner advantage, dependence on intervention, rule
+    beating and proxy-goal optimization. Product 05 preserves the whole lens
+    across compositions, resources and development; product 07 links it to the
+    five existing meter rows without claiming the other three are implemented.
+  - Project examples and escapes are hypotheses requiring an observed feedback
+    loop and an outcome comparison. Whole-file delivery versus useful review,
+    repeated operator rescue, shared budgets and evidence invalidation are
+    candidate investigations. The current guards remain active; no new meter
+    row, automatic trap verdict or mandatory checklist is introduced.
+  - Provenance: `docs/intake/notes/WO-126-eight-system-traps-2026-09-09.md` and
+    `docs/evidence/WO-126/ideation-alternatives.md`. Reopen with a representative
+    loop, an explicit shared outcome, a bounded proposed escape and measured
+    benefit including retained decision value and the cost of intervention.
+
+- **Let an improvement drought increase experimental initiative** `preserved`
+  - The operator combines an accumulating bad-luck counter with small gains
+    that compound. The proposed Tinkerer modifier observes the last demonstrated
+    repository improvement, stays quiet after a recent gain, then increases
+    activation pressure, search breadth and experiment novelty as the gap grows.
+    A prolonged drought may prompt exploration outside the current work order.
+    A week and one percent per day are illustrative, not selected thresholds.
+  - Product 05 retains this adaptive variant beside fixed and probabilistic
+    activation. It distinguishes a selected investigation from a guaranteed
+    improvement, a recent probe from a real gain, and broader discovery from
+    authority to change other work. Missing history, inactive time, cooldowns,
+    pressure bounds, reset evidence and avoidance of cosmetic wins remain open.
+    PoE's historical evasion entropy and Atomic Habits supply source shapes;
+    no game-wide luck rule or universal performance compounding is asserted.
+  - Provenance: `docs/intake/notes/WO-126-adaptive-improvement-pressure-2026-09-09.md`
+    and `docs/evidence/WO-126/ideation-alternatives.md`. Reopen with comparable
+    fixed/adaptive activation cases, meaningful gains or retained learning,
+    total cost, interruption rate and evidence that the modifier does not reward
+    proxy improvement or escalate work without bound.
+
+- **Retain the alternatives a decision leaves undone** `preserved`
+  - The operator asks for useful history of unchosen options across system-trap
+    judgments, naive-interventionism review, action/NoOp, A/B and Eye Dr
+    comparisons, Tinkerer experiments and forced substitutions. Product 05
+    preserves a shared record of considered alternatives, dispositions,
+    rationale, evidence, uncertainty and reconsideration conditions, building
+    on existing decision receipts and comparison events.
+  - Rejected, deferred, constrained and untested options remain distinct. A
+    NoOp result retains the declined action; an action result retains the NoOp
+    baseline. Ties, inconclusive findings and a decision not to experiment also
+    carry useful history. Selection is not evidence against every untried
+    alternative, and a record alone is not a demonstrated improvement.
+  - Provenance: `docs/intake/notes/WO-126-unchosen-alternatives-2026-09-09.md`
+    and `docs/evidence/WO-126/ideation-alternatives.md`. Reopen with a bounded
+    retention/retrieval design and evidence that useful reuse and avoided
+    repeated investigations justify recording, context and review cost.
+
 
 ## 2026-09-08 WO-042 atomic executor supports and adjacent gate repair
 
@@ -985,7 +1951,7 @@ rule.
     candidates under the dispatch's scope rules, which the operator
     overrode. Durable home: the plan §What the operator corrected; Gate U.
 - **Two NoOps of the first result are reversed by operator direction**
-  `operator-directed`
+  `adopted` `operator-directed`
   - "Filing numbered orders for every later gate" and "activating WO-033
     first or deferring the starter" are reversed with the operator's
     messages as the explicit supersession; "deciding WO-034's premise
@@ -1136,6 +2102,221 @@ rule.
     request from this planning branch, which the operator opens. Durable
     home: the plan §Refutation status; the map's candidates.
 
+## WO-039 fourth repair — immutable reservation instances (2026-09-08)
+
+Provenance: `VER-003` findings F1, F2 and F3 and the `resume: fix` dispatch;
+the [fourth repair receipt](../evidence/WO-039/repair-004.md). This bounds the
+recovery protocol of the existing reservation mechanism and the live-holder
+smoke's pass rule; the locked source boundary is unchanged.
+
+- **A reservation file's facts never change under its name** `adopted`
+  - A session that records a new fact about its own reservation (an owner, or
+    an unavailable liveness) writes a new nonce-named file naming the one it
+    supersedes, then removes the superseded name. A contender's unlink of the
+    observed name therefore fails once those facts were superseded, so the
+    third repair's conditional steps hold for self-refresh too. Superseded
+    files that linger after a crash are reported by the observer and removed
+    by the owner's next dispatch or by retirement; they are never current.
+- **An operator release binds to one observed reservation** `adopted`
+  - The liveness decision, the retirement and the `operator-released` row all
+    describe the instance the command observed. A holder that changed after
+    the decision is judged again by the same rule; a forced release of a
+    changed holder refuses, because the operator judged a different one.
+- **The live-holder smoke requires the writer guard's refusal** `adopted`
+  - In the live-holder scenario every source write is refused first by the
+    writer guard, so the fixture commit's attribution refusal is reached only
+    when the model keeps writing after being told the worktree is another
+    session's; a session that stops is behaving correctly. The scenario's
+    required denied effect is now the writer refusal naming the holder, and
+    whether the attribution refusal was also reached is still recorded. The
+    role runs and the dead-holder scenario still require the attribution
+    refusal. The failed second attempt is preserved unchanged.
+- **Compare-and-unlink through inode or content checks** `rejected`
+  - A stat before the unlink narrows the window but cannot close it; only an
+    immutable name makes unlink-by-name exact.
+- **Refresh by moving the instance directory aside and placing a new one** `rejected`
+  - The slot would be absent between the two renames, so a contender could
+    acquire it and a live session would lose its worktree mid-work, which is
+    the failure the unit exists to prevent.
+- **Steering the live-holder session into the fixture commit** `rejected`
+  - Model behaviour after a refusal is not a fixture input; requiring a
+    further write after a holder refusal would reward the wrong behaviour.
+
+## WO-039 fourth repair — Stop gates at every turn end (2026-09-08)
+
+Provenance: the operator's instruction at the fourth repair's handoff, after
+the three Stop refusals fired at every intermediate turn end of the session;
+the [fourth repair receipt](../evidence/WO-039/repair-004.md). This restates
+the open output-review and Stop-adapter items above with a concrete direction.
+It is filed for a planning pass; nothing here changes the installed bundle.
+
+- **Stop is a turn end, not a completion claim** `preserved`
+  - The v1 lowering maps the three workflow gates to the harness Stop event,
+    and Stop fires whenever a session ends a turn: yielding to a background
+    job, waiting for the operator's outside-terminal steps, answering a
+    question. The gates cannot tell a yield from a claim of completion, so
+    every intermediate turn end is refused. `no-partial-completion` refuses
+    until the phase's completion command is recorded; `verify-app-before-done`
+    refuses whenever the checks receipt does not hash to the current tree,
+    which the gate's duration and any later edit make the usual state;
+    `read-your-own-output` refuses until every file changed since the base
+    revision is read, and because no branch commit precedes final review,
+    every session on an order inherits the whole order's diff. The third
+    repair reduced a refusal to one report per turn end with the obligation
+    recorded; the cause remains.
+- **Move the evidence gates to the completion command's dispatch** `candidate`
+  - The lifecycle completion commands, `implementation-ready`,
+    `repair-complete` and their verifier and reviewer counterparts, are the
+    project's only real claims of completion. Judge the checks receipt and
+    the output reads there, as pre-effect guards on that dispatch, and let a
+    plain turn end pass. The canonical phase already records incompleteness,
+    so `no-partial-completion` becomes advisory at Stop or retires. Unit
+    versions are immutable: this is a new version of each unit with a changed
+    trigger, a compiler lowering change and a profile change, with the old
+    definitions retained for replay. A separate order.
+- **Snapshot the output set at session entry** `candidate`
+  - Record the path and content hash of every tracked and untracked file at
+    session entry, and owe reads only for files whose bytes differ from that
+    snapshot at the completion claim. This attributes outputs by change
+    rather than by tool, so shell writes are still caught, which answers the
+    objection in the restated open item above. One writer per worktree makes
+    later changes the session's own or the operator's outside-terminal
+    steps, which the session relies on and should read. Outputs inherited
+    from earlier sessions on the same order leave the obligation.
+- **Operator's stance** `preserved`
+  - On 2026-09-08 the operator asked for this to be filed, judging refusals
+    at every turn end for the life of an order unacceptable. Until a planning
+    pass decides, the inherited-output question stays the operator's open
+    decision, as recorded above.
+
+## WO-039 fifth repair — integration with the moved base (2026-09-08)
+
+Provenance: [FINAL-001](../final-reviews/WO-039/FINAL-001.md) finding F1 and
+the `resume: fix` dispatch; the [fifth repair receipt](../evidence/WO-039/repair-005.md).
+This is integration bookkeeping and one fresh live evidence edition under the
+existing contract; no runtime source, contract, or locked boundary changes.
+
+- **The integrating actor merges and re-records only the affected claim** `adopted`
+  - `main` advanced by two merged orders while this order was in flight. The
+    repair preserved the seventeen dual-side files in a tagged stash, fast-
+    forwarded the branch to the integrated base, re-applied the stash, and
+    resolved the eleven text conflicts: authored merges for the release claim,
+    the roles table, the package scripts and the feedback runbook;
+    concatenation for the append-only documents; regeneration for the
+    work-order index, both publication locks and the control projection at
+    the next legal transition. The feedback subject moved from the recorded
+    hash to the integrated hash the review had computed in advance, so the
+    review's arithmetic is confirmed and a fresh live edition replaces the
+    stale one under the same edition path. Unchanged acceptance claims keep
+    their original evidence; the affected claim returns through independent
+    verification.
+- **The superseded edition stays beside its replacement** `adopted`
+  - The pre-integration report and both streams are preserved unchanged in a
+    sibling directory, as the first failed edition already was, because the
+    writer accepts one immutable edition per identifier and no evidence is
+    discarded.
+- **Generalize the workspace projection inside this repair** `rejected`
+  - The projection lives in a source file that is itself pinned in the feedback
+    subject, so the change would need its own live edition and its own
+    independent verification, and the review asked that it not be folded in
+    silently. It is nominated as a separate unallocated candidate on the
+    planning map.
+- **Judge the integrated tree with the WO-032 edition** `rejected`
+  - This order changes raw members of the same subject, so that edition cannot
+    speak for this tree.
+- **The context measurement is pinned on both sides** `preserved`
+  - Regenerating the stored measurement after the merge produced identical
+    bytes: task files are read from the frozen activation snapshot on both
+    sides of the controlled comparison, so a later edit to a directed section
+    of a product document cannot move it. The drift the review anticipated
+    there cannot occur under the recorded method.
+- **The actor board follows the root feedback edition** `adopted`
+  - The first integrated gate failed five WO-032 console tests: the merged
+    board reads the WO-011 self-hosted edition by default and pins it as a
+    fixture, and under compiler `0.7.0` that edition's policy hash and pinned
+    verification capsule no longer recompile, so the reactor refuses its
+    verifier stream as persisted compilation drift and the board renders it
+    unavailable. The console now declares the edition it reads, the fixture
+    case is edition-neutral and pins the WO-039 edition, the accepted verifier
+    attempt is derived from the admitted matrix rather than from one run's
+    attempt count, and console `0.1.1` records the patch. WO-032's criteria
+    keep their substance and return through independent verification.
+- **Keep the WO-011 pins or relax the drift refusal for read-only projections**
+  `rejected`
+  - The first leaves the merged tree unable to pass its own gate on this
+    compiler; the second changes a pinned runtime source under the WO-029
+    identity contract and would need its own live edition and verification.
+    Both the historical-projection question and selecting the edition from one
+    declared source are nominated on the planning map.
+- **The draft integrated report stays beside its replacement** `preserved`
+  - The console patch moved the lockfile's console entry, which is raw in the
+    subject, so the first integrated report is preserved as a draft beside the
+    report for the final subject rather than overwritten.
+- **The full gate is judged from three runs and one step-by-step run**
+  `adopted`
+  - The first integrated gate stopped at the five console failures. After the
+    console change, two full gates each passed 305 of 306 tests with one
+    failure: the actor board's host-collection test, whose release listing
+    exceeded its sixty-second budget under full-gate load and passed alone in
+    nineteen seconds. The later gate steps therefore ran individually on the
+    same build and all passed except the feedback evidence check, which reads
+    live streams that only the operator's outside-sandbox audit can record.
+    Filed transcripts replace the checkout address with a placeholder. The
+    console budget is nominated on the planning map rather than changed here:
+    WO-032's own test is not this order's obligation, and a sandbox load limit
+    is not a defect in either order.
+- **The live edition is recorded and the completion receipt waits for the
+  operator's gate** `adopted`
+  - The operator's fourth attempt, from a terminal outside the sandbox through
+    Codex CLI, produced the live audit and verifier streams in nineteen seconds
+    with both criteria verified; the session validated and recorded them,
+    re-pinned the console's self-hosted case to the recorded edition, and the
+    feedback evidence check passes on the integrated tree. A third full gate
+    on this sandbox failed only on the console host-collection budget, so the
+    receipt the completion hooks read comes from the operator's outside-sandbox
+    gate: one captured run filed as a transcript, one quiet run holding the
+    receipt. Recording completion on a receipt that says the tests failed was
+    rejected, even though the one failing test passes alone.
+- **The outside-sandbox gate reproduced the budget failure, and the operator
+  superseded the deferral by serializing the console suite** `adopted`
+  - The operator's outside-sandbox gate, filed as the sixth transcript, failed
+    on the same single test: the release listing took eighty-two seconds
+    against the console's sixty-second budget, with 305 of 306 passing. That
+    refuted the reason the earlier bullet gave for leaving the budget alone,
+    a sandbox load limit, so the session stopped where the receipt said to
+    and put the decision to the operator. The operator chose the direction
+    the planning map names last: the root gate now runs the console suite in
+    its own `node --test` step after the kernel, compiler and skeleton
+    suites, so the board's fixed read-only commands run on a quiet host. The
+    budget, WO-032's test and the console source are unchanged; the listing
+    takes twelve seconds alone on this tree. Raising the budget was rejected
+    as load-dependent, since the listing took between eighty-two and
+    eighty-seven seconds across four full runs, and because a longer budget
+    delays the board's unavailable verdict on a stuck command. Leaving the
+    order blocked until a separate console order lands was rejected as
+    holding a finished repair on a gate-chain question. The candidate keeps
+    the two directions not taken.
+- **The re-pinned board fixture leaves WO-032's multi-attempt assertion
+  unexercised** `adopted`
+  - Final review confirmed the re-pin itself: under compiler `0.7.0` the
+    WO-011 verifier stream projects a generic `verification-host` row with
+    labelled unknowns instead of its four verifier actors, so that case could
+    not be kept and its recorded outputs cannot be restored. The preceding
+    two entries' conclusion that WO-032's criteria keep their substance is
+    corrected for one half of `AC2`: the WO-039 edition records exactly one
+    verifier attempt, and it is the accepted one, so the assertion that every
+    other recorded attempt shows `lease-expired` and takes no matrix link
+    iterates over no rows, and that string appears in no committed fixture
+    output and nowhere else in the suite. The executor/verifier distinctness
+    half is fully exercised and the accepted episode is still pinned by the
+    golden. A fixture-local synthetic store with two or more verifier
+    attempts, in the manner of the hand-authored WO-009 event log, restores
+    the invariant with no live evidence and no behavioural change. Authoring
+    it inside this review was rejected: a reviewer never writes the test that
+    clears their own finding. Failing the order for it was rejected too, as
+    it defeats no criterion of this order and breaks no gate; it is nominated
+    on the planning map instead.
+
 ## 2026-09-07 independent workflows and evidence-scoped integration
 
 Source: the three operator messages captured in main's ignored `docs/intake/notes/2026-09-07-wo041-parallel-workflow-correction.md`; the [WO-041 breakout receipt](../evidence/WO-041/ideation.md) records the capture digest, clean-room screen, and expanded review subject. Ordinary source material was synthesized, not directly filed.
@@ -1159,6 +2340,175 @@ Source: the three operator messages captured in main's ignored `docs/intake/note
 
 - **The first mechanized episode passes; its remaining gap stays visible** `adopted`
   - The [live receipt](../planning/refutations/2026-09-07-wo041-live-001.md) returns no holds over the committed activation-base sequence. It identifies the still-manual route from a newly captured correction to the next compiled batch as the largest gap. WO-041's own verdict remains advisory, and no general runtime-verification capability is promoted from it. Shared transport changes require a new source-pinned feedback audit; the WO-041 edition preserves the original WO-011 evidence and retains the full current-source gate.
+
+## WO-032 implementation — actor board v0 (2026-09-07)
+
+- **Give all five UIFA roles one recorded-evidence surface** `adopted`
+  - Implements the already nominated actor board as `packages/console`: a pure `uifa-board-v1` projection, an 80-column terminal view and one self-contained HTML page. Actors, Builds, Mechanisms, Work and Blueprint preserve their distinct questions. The compiler supplies saved-build tooltips and all three view hashes; existing worker/audit/matrix/control projections supply operational facts. Five pinned fixture families and a question-to-cell mapping make role service reviewable. The board invokes no command, adds no framework or external dependency, and creates no second workflow state machine.
+- **Keep historical gaps visible instead of manufacturing actor facts** `adopted`
+  - The retained WO-011 audit and verifier record different build-contract hashes, neither a LoadoutGraph semantic hash. They remain separately typed, with the absent loadout hash unknown. WO-031 records operator dispatches without identifying a human; the board names the operator role and its actions without asking for new attestation or inferring a person, authorship, attention or presence. Unknown fields and unavailable sources have distinct representations. The implementation receipt explicitly reconciles the draft's source assumptions, including its nonexistent tooltip API name, with the actual retained evidence for independent review.
+- **Declare the first slice without promoting the remaining console horizon** `adopted`
+  - Source prepares `v0.14.0` with console `0.1.0`; other component versions and runtime contracts remain unchanged. The dated `projection.uifa-board` row is staged demonstrable evidence. The whole inventory does not replace the sparse agent twin; Beacon metadata does not become a worker heartbeat, and controlled fixture activations do not become live rates. Adding a workspace invalidates the declared feedback source pin, so WO-032 records a fresh bounded live audit edition and retains the older immutable editions. Interactive commands, authoring, replay and the consumer's application shell keep their separately planned work orders.
+
+## WO-039 implementation — the saved build reaches the harness (2026-09-07)
+
+- **Lower only what the actual harness exposed** `adopted`
+  - A bounded phase-zero probe preceded the lowering rules. Claude Code 2.1.263 exposed the four event hooks, command refusal and project skills; Codex CLI 0.153.4 resolved project skills but no tested project hook fired. `harness-v1` preserves that distinction in observed profiles, emitted files and missing-capability residue. No user settings, sandbox switch, generated allow grant, kernel behavior or earlier contract preimage changes.
+- **One compiled rule, several host seams** `adopted`
+  - Generated unit hooks import the pinned built feedback boundary; fixtures compare their verdicts with that boundary and remove units to show causal refusal. Canonical lifecycle events, executed checks, physical worktrees and delivered output bytes provide host facts. The harness cannot invent semantic judgments for lineage, evidence quality or cleanup; those duties stay in generated role procedure with named missing facts. The correction token remains unconfirmed, so ordinary wording produces no typed event; the confirmed-token path is exercised only synthetically and narrows authority through the compiled correction function.
+- **Replace the mandatory guide read and count late reads too** `adopted`
+  - The locked floor routes four resume roles and separate planning/ideation to generated skills. The measurement scans the whole floor and role procedure, expands the task's declared selectors and includes later reads. A matched synthetic task uses the activation instruction/guide as the before source; it is not an estimate of WO-039's evolving context. Scratch role-entry observations retain all generated read-hook observations through final Stop, reject reads outside the declared set, and retain failed attempts. An empty trailing line reported by the harness is normalized to physical file bytes, with a regression fixture; it does not widen a cited section.
+- **Reproducible project output joins the evidence gate** `adopted`
+  - The Contributor's project settings, hooks, both skill roots and shared instruction residue are installed by `harness emit` and checked byte-for-byte. ADR-0005 and the config log record this one work-order-authorized project mutation. The shared local-terms checker from WO-041 now has its public CLI and screens generated/evidence surfaces; the operator's list stays ignored, never hashed or echoed. Its absence remains unavailable and cannot satisfy WO-039's list-present acceptance condition. Source prepares application v0.14.0 with compiler 0.7.0 and skeleton 0.13.0; new artifact/verification/feedback editions preserve historical receipts. Independent work-order verification and publication remain separate dispatches.
+
+## WO-039 ideation — incremental exclusions and a private list editor (2026-09-07)
+
+Provenance: operator correction and explicit `ideation:` dispatch, captured in
+the main control-plane checkout's ignored
+`docs/intake/notes/WO-039-expanded-ideation-2026-09-07.md`. The
+[breakout receipt](../evidence/WO-039/ideation.md) records synthesis, private
+capture reconciliation and the independent review subject. The following is
+rewritten product understanding; private exclusion values are not source material
+for these public documents.
+
+- **A useful list can grow from what is known** `adopted`
+  - The operator rejected treating the list as a complete up-front inventory.
+    Maintain known entries incrementally. With none known, leave the local file
+    absent and report the screen as unavailable without blocking readiness by
+    itself or claiming a pass. A configured list must pass; the locked Clean
+    Room boundary always applies. This explicitly supersedes the list-present
+    prerequisite in the preceding implementation entry and WO-039's original
+    criterion 8. The existing checker's behavior is unchanged. The operator
+    subsequently authorized an initial private seed, so this order's final
+    local screen can also be observed with a list present.
+- **Make the private list discoverable and editable** `candidate`
+  - The future interface must let the operator find the active list, inspect
+    entries, add entries and remove them, with an explicit unconfigured state.
+    [Interfaces 04](../product/04-interfaces.md#candidate--private-exclusion-list-management)
+    proposes Clean Room → Excluded terms in the build inspector; the roadmap and
+    planning map retain an unallocated open item. The UI host, layout and storage
+    reconciliation remain unresolved. This does not implement a UI or activate
+    another work order.
+
+## WO-039 repair — satisfiable output review and observable read scope (2026-09-07)
+
+Provenance: the operator's `resume: fix` dispatch against
+[VER-001](../verifications/WO-039/VER-001.md), findings 1–4. These are bounded
+repairs to the existing harness contract, not a new work order or changes to
+the locked source boundary.
+
+- **Delivered ranges can discharge one output obligation** `adopted`
+  - The whole-file delivery rule made large evidence outputs impossible to
+    review under the native tool cap. The observer now verifies native line
+    ranges and bounded UTF-8 output-reader deliveries, then combines complete
+    byte coverage only at one file hash. The reader cannot mint its own receipt.
+    Gaps, mismatches, truncation and stale coverage fail. Both completion-hook
+    refusals identify the missing paths and count. The existing session-entry
+    revision still defines the work-order output set across review commits;
+    changing that obligation to session-authored files remains unselected.
+- **Measure attempted reads as well as delivered reads** `adopted`
+  - Historical enforced-scope smokes retain their limits and refused-read counts.
+    New smokes observe native Read requests without enforcing the directed ranges
+    and fail on any out-of-set read or attempt. The host retains relative paths
+    and ranges for scope refusals; shell routes and skill selection remain
+    bounded. The first such executor attempt exposed an unnecessary final-review
+    report read. Generated procedure now distinguishes status metadata from the
+    selected role's required report inputs. Failed attempts remain evidence.
+- **Prove the aggregate hook and describe actual drift coverage** `adopted`
+  - The finish fixture evaluates each eligible unit independently through the
+    existing compiled boundary, with allow/refuse and removal proof. Fixtures
+    also reach missing-file, unexpected-file and manifest drift, unowned
+    replacement refusal and removal of prior-owned obsolete outputs. These
+    extend the existing one-byte and symlink evidence instead of relying on an
+    unsupported receipt sentence.
+
+## WO-039 repair — recoverable writer reservations (2026-09-07)
+
+Provenance: the operator's repair briefing after the blocked `VER-002` attempt
+and the `resume: fix` dispatch; the
+[second repair receipt](../evidence/WO-039/repair-002.md). These bound the
+existing reservation mechanism; the locked source boundary is unchanged.
+
+- **A reservation names its owner and dies with it** `adopted`
+  - The writer lock records the harness process: the declared pid verified
+    against the hook's ancestry, else the nearest non-shell ancestor, with its
+    start time when the process table is readable. A foreign lock whose owner
+    is dead is reclaimed at the next write dispatch with a journal row and an
+    event-log row. A live, unrecorded or self-distrusted owner is honoured and
+    the refusal names it. The executor session reproduced the leak live when
+    the harness resumed it in a new process under a new session id.
+- **The operator can see and release a reservation** `adopted`
+  - `harness writer --show` is a metadata read admitted to refused sessions;
+    `harness writer --release [--force]` is an operator action outside governed
+    sessions that refuses a live owner without force and logs every release.
+- **A time-based lease on the reservation** `rejected`
+  - An idle live session is not a dead one; a lease would hand its worktree to
+    a second writer. The guard errs toward refusal with an explicit operator
+    path instead.
+- **Admitting lifecycle commands as metadata** `rejected`
+  - They write control state; admitting them without a reservation is the
+    concurrent-writer case the unit exists to prevent.
+- **Releasing the reservation in a finally around the Stop units** `rejected`
+  - A refused Stop does not end the session, so releasing there admits a second
+    writer mid-session. The release stays after an accepted finish.
+- **Output-review obligation scope** `open`
+  - Whether the read obligation follows the branch diff or the session's own
+    writes remains the operator's decision; a verifier session that wrote
+    nothing still owed every inherited output.
+
+## WO-039 third repair — serialized reservation recovery (2026-09-07)
+
+Provenance: `VER-002` finding F1 and the `resume: fix` dispatch; the
+[third repair receipt](../evidence/WO-039/repair-003.md). This bounds the
+recovery protocol of the existing reservation mechanism; the locked source
+boundary is unchanged.
+
+- **Every recovery step acts only on the observed instance** `adopted`
+  - The reservation becomes a directory holding one nonce-named file. Reclaim
+    unlinks that exact name, removes the instance only while it is empty, and
+    renames a prepared replacement only onto an absent or emptied slot. Two
+    sessions that classify the same dead holder therefore admit exactly one
+    writer; the loser re-observes, honours the live replacement, and records a
+    `retired` event when it emptied the instance but lost the placement. The
+    compiled predicate, the liveness rules, the journal rows and the operator
+    commands are unchanged.
+- **Pre-repair single-file reservations migrate or are reclaimed** `adopted`
+  - A session's own legacy file migrates into a fresh instance, a dead owner's
+    legacy file is reclaimed, and a live or unknown legacy holder is honoured.
+    The legacy path is never a current-protocol instance, so removing it cannot
+    remove another session's replacement, and the file is never created again.
+- **A separate recovery guard around observe, reclaim and acquire** `rejected`
+  - The worker store's guard serializes its contenders but refuses forever once
+    a crashed holder abandons it. In the harness host that would recreate the
+    unrecoverable-from-inside state the second repair removed, and reclaiming
+    an abandoned guard reintroduces the same observe-then-act race one level
+    up.
+- **Unconditional rename or unlink of the stale lock** `rejected`
+  - Neither primitive can check that the slot still holds the observed
+    reservation, which is exactly the VER-002 counterexample.
+- **Advisory file locks** `rejected`
+  - Node exposes no file locking without a native dependency, and the order
+    admits no new runtime dependency.
+- **A refused Stop is reported once and its re-entry ends the turn** `adopted`
+  - The generated Stop hooks ignored the harness's re-entry flag, so a session
+    that could not yet satisfy its finish predicates was refused at every turn
+    end until the operator interrupted. On re-entry the hooks now record the
+    unmet obligation, never as a finish, and let the turn end. The predicates
+    and the lifecycle ground truth are unchanged. Admitted as adjacent cleanup
+    of the runtime file this repair reinstalls, at the operator's request.
+- **Output refusals name twelve missing paths and the remaining count** `adopted`
+  - A refusal that listed every one of 168 outputs was unusable; the next
+    refusal names the next twelve. The VER-001 obligation to identify missing
+    paths is preserved in a usable form.
+- **One Stop adapter instead of a unit hook per Stop unit plus finish** `open`
+  - Every refusal is reported twice because the three Stop units and the
+    aggregate finish hook all run. Lowering them into one adapter changes the
+    compiler lowering and the installed hook list; a separate order.
+- **Output-review obligation scope, restated** `open`
+  - Narrowing the obligation to session-authored outputs would cut its cost,
+    but a session's shell writes cannot be mechanically attributed to it, so
+    the branch diff remains the only un-gameable set. The trade is the
+    operator's decision, not a defect to repair.
 
 ## 2026-09-06 phase-two redirect (operator correction, second pass of the same day)
 
@@ -1629,34 +2979,109 @@ permission, filesystem and walking-skeleton evidence; no intake was copied or
 mined. The [implementation evidence](../evidence/WO-022/README.md) owns the
 bounded observations and current validation status.
 
-- **Adopted:** a sense is equipped as a perception support, compiled against
+- `adopted`: a sense is equipped as a perception support, compiled against
   host-derived mount/path capabilities, authorized by the existing Observe
   effect guard, and recorded as `BeaconObserved`. Beacon Sight, Fine Spectrum
   and Composition disclose only their codebook channels and declare measured
   context-line costs without changing authority. The sparse twin projects the
   same decision; unavailable supports are `not-sensed`.
-- **Recovered:** denying content reads does not hide metadata. Fresh probes
+- `adopted` `recovered`: denying content reads does not hide metadata. Fresh probes
   retain existence, size and mtime through read denial, and 0111 directories
   refuse listing while permitting known-name status calls. The host profile
   therefore owns the actual path grant; prose and codebook possession grant
   nothing.
-- **Adopted:** individual v3 carries an unsigned 8-bit epoch and exact 16-bit
+- `adopted`: individual v3 carries an unsigned 8-bit epoch and exact 16-bit
   keyed residue, with sparse-required zero-tail content and declared bigint
   maxima. The residue is only a weak keyed consistency/error signal; it cannot
   prove authorship or resist decoder enumeration. A current bad residue is
   `forged-provenance`; an unavailable/non-current epoch is
   `unverifiable-provenance`; legacy v1/v2 remains `unauthenticated-legacy`.
   Rotation has no old-key file and refuses at 255 rather than wrapping.
-- **Preserved:** separate OS-user isolation is the stronger local boundary for
+- `preserved`: separate OS-user isolation is the stronger local boundary for
   mutually untrusted processes. This implementation proves a finite host input
   projection, not concealment from a hostile same-user host process. General
   isolated providers and native model verification remain their existing work.
-- **Implementation choice:** reuse WO-021's `observe.beacons.<audience>` effect
+- `adopted` **Implementation choice:** reuse WO-021's `observe.beacons.<audience>` effect
   lowering without changing the kernel. Reuse WO-009's host-projected profile
   boundary for the mounted deterministic verifier and assert that its actual
   capsule excludes implementer prose. Preserve unversioned observation replay
   and WO-029's historical evidence while recording a new current compiler
   evidence edition. Source prepares `v0.11.0` above published `v0.10.1`.
+
+## WO-010 implementation — evidence across independent episodes (2026-09-06)
+
+- **Blinding is positive context construction; acceptance belongs to verifier evidence** `adopted`
+  - Realizes the existing VerificationAdapter/AcceptanceEvidenceMatrix/VerificationFinding ideas without importing intake material or changing the settled platform/instance boundary. Compiler `verification-v1` capsules copy only criteria, pinned source diff, explicit repository snapshot and host witnesses; a repair capsule additionally names one complete blocking finding. Extra nested implementer prose, transcripts and results have no compiled path. The same WO-009 adapters carry closed request-specific results. Physical role/episode, pinned capsule, authority, source/type sufficiency and lease are host admission conditions. Completion remains a compact self-report; only admitted verifier evidence changes criterion status. Exemplar/dissent fields remain explicitly empty pending their consumers.
+- **A repair invalidates evidence at its affected source surfaces** `adopted`
+  - Exact source-byte changes drive conservative dependency-based staleness; unknown surfaces select the full criterion set. Immutable old evaluations retain their producing episode and revision. An unrelated row remains current. Every blocking finding projects a focused repair WorkOrder, while serial execution performs one repair and a fresh blinded recheck before reconsidering remaining findings. Nonblocking failures, human dispositions and exhausted repair bounds remain attention states. No implementer-emitted event or repair result can certify a criterion.
+- **The executable fixture names its assurance limits** `adopted`
+  - A synthetic repository witnesses its baseline, then contains a planted referenced-file selection defect. Both CLI wire protocols are exercised with local subprocess doubles; a fresh repairer proposes declarative JSON data and the host applies it before re-verification. A fixed pinned interpreter runs behavior checks. There is no authenticated live-model verification claim, general source-writing provider, code-review episode, post-PR loop or agreement rating. The one-writer store, leases, immutable result query and committed-repair recovery preserve the episode boundary. `dotln status` folds the living matrix; no hand-edited table supplies acceptance.
+  - The omitted activation target is completed at application `v0.12.0` above published `v0.11.0`; compiler `0.5.0` and skeleton `0.11.0` move, kernel `0.2.1` and existing schema/hash axes do not. `evidence:verification` checks the planted-defect log and mid-repair/final projections; current artifact-identity receipts move to WO-010 without rewriting WO-029/WO-022 history. Independent repository verification and publication remain separate lifecycle dispatches.
+- **Preserve the established single decider boundary** `adopted`
+  - The WO-010 full-suite architecture guard exposed the initial separate verification decider. The final implementation routes verification through the existing typed `seiriReactor`, with kernel replay and complete Decision equality. The pure protocol and projection are explicit leaves; no edge file gains a kernel decider. The original inspection-only transport signature remains assignable through a defaulted request type. This refines the same authorized verification mechanism without changing the work-order scope or evidence contract.
+
+## 2026-09-06 WO-011 optional consumers and artifact maintenance
+
+Source: operator ideation during `resume: next`, preserved in main's ignored
+`notes/wo-011-expanded-ideation-2026-09-06.md`; Clean Room with Shape-First
+Synthesis, public vocabulary, and provenance. The WO-011 breakout receipt names
+the canonical capture, backup, review subject, and observational limits.
+
+- **Local documentation tools stay optional for consumers** `adopted`
+  - The operator reports adding Playwright and Context7 MCP integrations and Context7 support across the local coding harnesses. This is an environment experiment; neither the service nor a paid account becomes a DotLn prerequisite. Product 03 separates reported installation from witnessed task-relevant retrieval and keeps alternative documentation sources explicit.
+- **Exercise portability through two sibling consumers** `preserved`
+  - The operator's Enterprise Starter repository is intended as an organization-owned launchpad; the Angular repository as an example with Nx, NgRx Signal Store with events, and Transloco. Authentication/authorization remains open, with Auth0 a candidate. A small template consuming versioned contracts is a candidate alternative to maintaining a fork of core. The Angular example can test implicit documentation lookup. Product 03 records these intentions without claiming inspected code, selecting a universal stack, or reopening ADR-0001's founding decision; the planning map preserves the bounded follow-ons.
+- **Retained history needs purpose; its views must not multiply work** `adopted` `preserved`
+  - The operator questions accumulating Markdown and logs while explicitly preserving the value of existing work. Product 03 adopts a named-consumer and lifecycle constraint: reuse canonical sources and existing receipts, regenerate derived views, and keep incidental diagnostics local unless selected as evidence. Product 07 links this at the write-back duty. Required immutable history and recovery evidence remain protected; neither a file quota nor an exponential-growth finding is inferred. A read-only inventory and consolidation proposal is preserved as a bounded planning candidate. This refines the existing anti-oscillation and bounded-cleanup incidents for WO-011, not its ten-unit inventory.
+- **Diagnose before reorganizing; archives are an available response** `adopted` `preserved`
+  - A later same-day clarification, appended to the same raw batch, narrows the preceding artifact-growth idea: if there is no demonstrated problem, leave the structure alone. Clearer folders, navigation, explicit archival folders, consolidation, and other alternatives remain available responses. Product 03 and the planning map retain those choices without selecting a layout, mandating an inventory project, or treating archival as deletion. Useful provenance, stable references, and recovery dependencies remain intact.
+- **A starter fork coordinates the example repos during a workflow pilot** `preserved`
+  - The operator clarifies that DotLn would help create Enterprise Starter, then a fork of that starter would issue work orders across multiple target repos, including DotLn-Angular. Angular changes would travel only through the fork's workflow during the trial. This explicitly supersedes the earlier executor suggestion about maintaining a core fork: the starter is the forked coordination surface. Product 03, product 12, and the planning map record one optional organization-user simulation using personal/synthetic material, not a canonical route or an implemented coordinator. No target-repository mutation is part of this ideation pass.
+- **Disposable backup names do not belong in durable provenance** `adopted`
+  - The operator corrected the executor's inclusion of temporary intake ZIP filenames in the work order and explained that obsolete archives are routinely deleted. Product 07 now distinguishes operational snapshots from canonical intake and promoted source. The WO-011 receipt removes those filenames; backup existence is neither a review dependency nor a condition for the validity of the durable source record.
+
+## WO-011 implementation — ten executable corrections (2026-09-06)
+
+- **Feedback declarations lower to equipped host mechanisms** `adopted`
+  - The ten-unit roadmap inventory becomes a separate `feedback-v1` contract with full public incident references, synthesized behavior, explicit scope/evidence, cheapest-sufficient-rung rationale, regression fixtures, conflicts/supersession, retirement, and next-maturity conditions. Nine host boundaries evaluate concrete facts before an effect; the shared reactor consumes typed operator correction events and emits a diagnosis request while monotonically tightening policy. Ordinary message wording has no trigger path. No eleventh unit, new dependency, or global rule-stack installation is introduced.
+  - Each unit has an isolated passing regression and a corresponding assertion failure when only its mechanism is removed. Host fixtures use real subprocess checks, Git roots, a temporary commit hook, and output-byte read receipts where those facts matter. Semantic judgments remain explicit host/operator inputs; source-comment screening is a bounded lexical check, writer reservations require a lock, and readback is evidence of delivery rather than comprehension. Fixture maturity and unobserved live use remain separate.
+- **The first self-hosted work order is a bounded audit of this repo** `adopted`
+  - `WO-011-feedback-audit` travels through compilation, the existing kernel decider/authority/outbox, a fixed local regression executor, and a separate blinded verification host using the existing CLI transports. Source and report bytes are pinned. Saved completion avoids repeating the audit after interruption; source or verifier-selection drift refuses recovery. The verifier receives a positive source/evidence projection in an empty Git mount with model tools disabled. This does not replace the repository's independent `resume: verify` lifecycle or enable general source-writing workers.
+  - The initial live source audit exceeded the inherited three-minute process deadline. The feedback verifier now has a fixed ten-minute deadline and $3 Claude budget cap, recorded in its attempt; other worker profiles retain their previous bounds. Claude Code `2.1.263` is an additional observed patch, preserving `2.1.261` and refusing unknown versions. Attribution settings apply only to the selected invocation, and the real hook is installed only in a fixture repository. The executor evidence receipt records the final witnessed outcome and the limits of instruments introduced in this same order.
+- **Measure a matched instruction projection without claiming field performance** `adopted`
+  - WO-004's two-file/79-line/3,530-byte common baseline plus ten prose equivalents totals 6,025 bytes; substituting one compiled-policy residue totals 3,632, a reduction of 2,393 UTF-8 instruction bytes. This is a counterfactual projection, not effective-session tokens or whole-workflow cost. One selected causal fixture episode per unit supplies maturity counters; it does not establish field rates or awakened maturity.
+  - Source prepares application `v0.13.0` above published `v0.12.0`, with compiler `0.6.0` and skeleton `0.12.0`; kernel `0.2.1` and existing contract/hash axes remain unchanged. Current artifact-identity and verification editions move under WO-011, preserving historical evidence and the frozen trace oracle. Product 02/06/07/10, entry points, and publication projections carry the same implemented boundary. Independent repository verification and publication remain separate dispatches.
+- **Source comments need a language parser at the host boundary** `adopted`
+  - Later executor review reproduced a gap in the initial lexical scanner: a quoted regular expression could hide a subsequent type-suppression comment. The skeleton now uses the already pinned TypeScript `5.4.5` package as an on-demand runtime parser, refusing version drift and supplying parsed comment bodies to the pure compiler. New regression probes cover regex text, template expressions/literals, JSX text/comments, and trailing directives. This supersedes the preceding lexical/no-new-dependency implementation description; ADR-0002 names the host consumer, and the legal inventory reflects the changed runtime classification without selecting a project license. The intermediate live audit's pass does not certify this revised source; the final witness is regenerated against a new pin.
+- **A rejected model return does not finish its work order** `adopted`
+  - The final source audit's first verifier return failed the result contract and left the command pending. A second physical episode reused the same pinned task and saved audit and supplied admitted passing evaluations for both criteria, completing the matrix. The retained final audit/verification streams preserve that refusal and recovery. The executor receipt distinguishes this live verification of controlled witnesses from field maturity, prior superseded observations, and the later independent repository verification.
+
+## WO-108 ideation — implementation consequences (2026-09-06)
+
+Source: operator ideation during `resume: next`, captured unedited in main's ignored `docs/intake/notes/WO-108-intervention-consequences-2026-09-06.md`. Clean Room treatment is Shape-First Synthesis with public vocabulary and provenance; the work-order breakout receipt defines the independent review subject. The fictional scene is operator recollection, not a load-bearing factual claim.
+
+- **A justified intervention still needs consequence-aware execution** `preserved` `operator-directed`
+  - A sensible effort to keep a necessary object secure can choose a location that activates a hidden process and consumes a resource needed later. The transferable failure is literal compliance with an accepted recommendation while missing the chosen method's delayed effects. It differs from a finding that intervention itself had negative value: retaining the recommendation and revising its implementation or observation may be the right response.
+  - Product 05 extends the existing intervention candidate through method selection, preserved outcomes, proportionate checks, bounded observation ownership and expiry, and a correction path. The 5S reader entry and product 03 suggestion pipeline point to that distinction. Proposed evidence must show both the apparently compliant failure and a method or observation that prevents it. No monitor, new compiler type, universal checklist, automatic scope expansion, or runtime implementation is adopted; the exact composition remains open.
+
+## WO-108 implementation — bounded mutation evidence (2026-09-06)
+
+- **Preserve the census; measure a declared campaign against the shipped suites** `adopted` `operator-directed`
+  - The operator's scope modernization replaces the stale exhaustive-run expectation with a deterministic 32-site campaign drawn before verdicts from the complete 2,901-site conservative census on published `v0.13.0`. Each attempt rebuilds an isolated committed snapshot with local workspace links, checks the actual package suites, and records an append-only verdict. Real synthetic cases exercise the measurement instrument's kills, survivors, baseline refusals, timeouts, provenance, and recovery. Compilation noise and timeouts remain separate from the conclusive compiled denominator; survivor equivalence and unexercised inputs remain investigation questions rather than inflated defect counts.
+  - The corpus runbook and generated findings own measured results and exact reproduction. Product 03 and the corpus entry point distinguish generated mutation evidence from policy-governed incident material, closing the layout follow-up left by WO-101. Source prepares tooling/evidence patch `v0.13.1`; no shipped package behavior, test assertion, dependency version, or runtime schema changes. Independent verification and publication retain their ordinary separate dispatches.
+
+## WO-038 implementation — decided licenses at publication boundaries (2026-09-06)
+
+- **A source license and a distribution channel are separate decisions** `adopted`
+  - Implements the existing 2026-09-06 legal decision: Apache-2.0 in every root/workspace manifest, private workspaces, unchanged Apache/CC BY license texts and NOTICE, and matching lockfile metadata. The observed npm 10.8.0 dry run did not fail for private metadata alone, so an explicit prepublish refusal joins the existing private flag. The license-surface preflight pins the legal bytes and observes the specific refusal using isolated copies of the selected manifests; an unrelated npm failure does not qualify. No package publication is authorized or performed.
+- **An outside contribution carries its origin attestation at the publication seam** `adopted`
+  - CONTRIBUTING.md records DCO 1.1 under the decided outbound licenses, with no CLA and no sign-off requirement for the operator's own commits. The worktree publisher checks every new commit's raw author against a matching trailer before remote effects, includes merged side branches, and excludes historical base commits. The exact existing public operator identity supplies the exemption; mutable publisher settings do not. This check establishes a declared attestation, not identity authentication, and creates no Git hook or settings change.
+- **Carry the decided license files with the kit** `adopted`
+  - WO-033's redirected draft already carried the default; WO-038's retarget note preserves the three manifest-listed, hashed files and the explicit `--license none` no-rights-notice path. The exporter itself remains WO-033. README, LEGAL, the publication runbook, planning map, roadmap, and reader entry point now describe the same implementation. The [WO-038 receipt](../evidence/WO-038/README.md) owns evidence, limitations, and the final reviewer's required clean-room read. Source prepares patch `v0.13.2` above published `v0.13.1`; independent verification and publication remain separate dispatches.
+
+- **Refresh source-bound feedback evidence through one resumable command** `candidate`
+  - WO-038's 2026-09-07 full gate exposed the existing coupling between the declared feedback audit inputs and otherwise behavior-neutral package metadata: only the report's source hash changed, but a fresh bounded live verifier is required. The executor uses the existing regeneration, audit, and recording commands; it does not weaken the pin or change the runtime. The planning map nominates a helper over that existing sequence, with explicit model/budget authority, recovery, and refusal of stale or incomplete recording. The [WO-038 receipt](../evidence/WO-038/README.md#feedback-evidence-refresh) owns the observation; the roadmap links it. This is an unallocated automation candidate, not another implementation inside the license order.
+  - Two rejected returns exposed a diagnostic gap; the second was identified only as an envelope refusal. Inspection also found the host's summary-length and single-line requirement absent from the verifier prompt and schema. A third attempt with a format reminder confirmed a 350-character summary against the host's 320-character limit. The disclosed recovery wrapper can narrow that non-evidentiary summary to a short pointer while preserving all substantive assessment fields and host acceptance checks. Carry complete return-format constraints and bounded rejection diagnostics into the nominated helper; the exact failed fields in the first two returns remain unknown.
 
 ## 2026-09-05 WO-031 actor usage implementation
 
@@ -2082,6 +3507,27 @@ invoked. The planning results that followed are in the section above.
     positioning: the platform hosts harnesses as observed environments and
     contains an orchestration layer, but is defined by the shared substrate on
     which people and software actors hold work, authority, and evidence.
+
+## WO-029 implementation — pinned compilation receipts (2026-09-05)
+
+- **Semantic equality remains canonical compiled-program equality; definition identity is separate** `adopted`
+  - Extends “Semantic equality is canonical compiled-program equality” without rewriting it. Compiler package 0.3.0 adds `ArtifactIdentityV1` beside the unchanged compiled program. Component tuples match active, linked-support, and ambient manifest participants; definition scheme `dotln-component-definition-fnv1a64-v1` hashes canonical JSON with domain `dotln:component-definition:v1`. Non-emitted names affect only their definition identity. Seiri and Entropy Reducer keep their exact old whole-program keys, cross-checked through WO-101’s independent no-BigInt FNV oracle. Raw graph, compilation environment, and explicit authority expiry retain the preimage; relocation requires re-equip and leaves definition hashes alone.
+- **Participation acquires a forward-only local execution receipt** `adopted`
+  - Extends “Composition proves participation per pipeline, including deliberate absence” without changing its negative-assurance limit. The personal host mints only v2 equips, recomputes before storing pin and authority, and records the pin’s semantic hash, compiler contract/package axes, and equip event in every compiled consumer’s decision. One comparison guards scheduling, work, authority, continuations, verification, and recovery dispatch. A logged idempotent boundary prevents legacy replay compatibility from becoming unpinned forward execution. Compile failures and drift become inert durable refusals; L0/governed raw expose their canonical references.
+  - No authority exists before equip. A restored legacy or drifted outbox cannot reach the fake adapter, and a completed restored outbox is not dispatched again. Unknown schedules receive durable refusal evidence after cutover; reused ids still lack issuance stamps. The legacy trace oracle is unchanged and the new trace delta is explicit. Hash equality is neither cryptographic authenticity nor proof against hidden adapter effects or a writer replacing both graph and pin. The existing Beacon v1 counter still represents authority-decision denials, not the separate artifact-receipt family.
+  - Source release target v0.9.0 completes the omitted activation assignment above published v0.8.0 under the standing opt-out default. Product 02/03/04/09/10, package entry points, the planning map, and publication heading links carry the same distinction; `evidence:artifact` regenerates/checks the synthetic receipt package. Independent verification and publication remain separate dispatches.
+
+## WO-009 implementation — disposable inspection episodes (2026-09-05)
+
+- **A physical worker is disposable; the WorkOrder and continuation persist** `adopted`
+  - Implements the scoped next step from the canonical lifecycle matrix without rewriting prior entries. Claude print and Codex exec replace only the executor in the shared Seiri demo; all other actors remain deterministic fakes. The compiled command, v2 equip receipt and exact compilation environment pass the existing shared recovery comparison before external dispatch. One verified detached worktree supplies a synthetic inventory projection. No employer material, intake content or dispatching-session transcript enters the worker prompt.
+  - The host appends/fsyncs canonical JSONL before stepping the reactor. A stable command binds an immutable completed-result receipt to the request; recovery queries it or safely repeats read-only inspection in a new physical episode. A live-host lock and serialized dead-host reclamation prevent competing writers; torn logs and abandoned acquisition guards refuse inspection rather than erase state. Cleanup verifies cwd, base, repository membership and cleanliness and never forces removal.
+- **Liveness is an evidenced host observation, not a worker claim** `adopted`
+  - A one-second process check renews a five-second lease only before expiry; invocation deadline is three minutes. Expiry retains pending work and fences late results. `WorkerResultObserved` persists the occurrence before authority, presence, lease and pinned-artifact admission; only admission produces `CommandResult`. Incomplete results retain partial evidence without candidate application or an invented human-input requirement. A missing completion append can be recovered from the durable result without another model call.
+  - `dotln status` folds only canonical events, leases, pending commands and recent headers. A separately labeled worker Beacon claim never refreshes host liveness. Effective model/effort remain unknown; Codex records unknown launch effort when ignored user configuration leaves no observed dedicated selector. Required model failure never causes adapter substitution in either direction.
+- **Promote the bounded demonstrated seam, preserve its limits** `adopted`
+  - Authenticated live runs witness both CLI transports, in-flight read-only status, identical replay and worktree cleanup; Claude additionally witnesses forced termination and recovery in episode 2. Deterministic subprocess/Git tests cover rows 2/4/6, malformed and stale results, delayed leases, partial evidence, pinned-dispatch refusal and concurrent recovery. Earlier live failures are disclosed in the executor receipt. The initial executor-added blocked-result cross-constraint was removed after evidence showed it exceeded the envelope contract.
+  - Product 02/03, roadmap 06, compatibility 10, roles 13, discovery, entry points and the planning/capability projections carry the implementation boundary. Source prepares application v0.10.0 above published v0.9.0, skeleton 0.9.0; compiler 0.3.0 and kernel 0.2.1 are unchanged and no dependency was added. General writes, broader Senses, real verifier episodes, benchmarking, independent verification and publication remain separate work or dispatches.
 
 ## WO-020 name sound associations — 2026-09-04
 
@@ -6275,1470 +7721,3 @@ Low-signal images (recorded, no entry): 17ffd23b-3276-4ca9-a811-7f3e944c64de.png
   - Dylan's aside — 'you are a slower producer and i am an even slower consumer' — names operator reading bandwidth as the binding constraint of the whole system: agents produce faster than the human can review, so output must be compressed, prioritized, and evidence-backed. Implicit in the north star's operator-burden and bottleneck-flow axiom but never stated as the consumption-bandwidth asymmetry.
 
   *Coined terms:* **single-use sessions** — Dylan's coinage: Claude sessions cleared after each use, replaced by fresh sessions each given a better, clearer, more accurate, more up-to-date initial prompt and orientation.; **main thread** — The top-level interactive session, typically the scarcest execution channel, distinct from delegated mechanisms.; **blackboard architecture** — Coordination model in which agents do not converse directly but modify a shared environment that other agents observe and act on; the environment determines which actions are currently available.; **stigmergy** — Indirect coordination through traces left in a shared environment, the element GPT layers onto the blackboard model.; **browser as protocol, not merely a picture** — The browser is an engineered machine-readable interaction protocol for agents (semantic routes, data attributes, gated controls), not just a dashboard humans look at.; **human projection / agent projection** — Two renderings of the same underlying state: a rich PrimeNG dashboard for humans and a sparse semantic DOM for agents.; **context capsule / work order** — A compiled, current orientation for a fresh session, generated from authoritative launchpad state (typed WorkOrder interface) instead of a handcrafted giant prompt; the launch prompt shrinks to a pointer at the task page.; **context firewall** — The layering that keeps huge source reads and logs in worker contexts, structured durable results in the launchpad, and only IDs, status, and concise conclusions in the main thread.; **airlock (main thread as)** — The main thread's reduced role: understand intent, create/amend a workstream, dispatch, receive a tiny completion envelope, ask for human judgment only when needed.; **disposable incarnations** — Claude sessions as temporary embodiments of persistent identities and workstreams rather than long-lived containers of institutional memory; 'a session dies; the work does not lose its identity or memory'.; **result envelope / completion envelope** — The deliberately tiny structured JSON (taskId, status, resultId, summary, requiresHuman) returned to a parent session while full artifacts stay in the launchpad.; **one coherent task or phase per session** — The session-disposal granularity rule: disposable sessions, not disposable turns — clearing per exchange would force rediscovery of open files and hypotheses.; **browser blackboard** — The literal Model-A topology where all workers share one browser context and immediately see one another's storage and DOM changes.
-
-## Resolutions of known tensions
-
-These are the corpus's internal contradictions, resolved once, here, so no
-future session relitigates them (see decision records for full rationale):
-
-1. **Five-way founding tournament (chat 010) vs. collapse (chat 011).**
-   Resolved: CLOSED. The tournament already ran in blended form and converged
-   (ADR-0001). Tournament-machinery ideas (architecture packets, blind
-   submissions) stay `preserved` for future architecture-scale decisions.
-2. **Comprehensive capability audit vs. bounded toolchain inspection.**
-   Resolved: environment-dependent. On this personal Mac a bounded inspection
-   (WO-001) suffices; the full audit prompt remains preserved for constrained
-   environments where the runtime is wrapped or metered.
-3. **Full-context bootstrap on v1 vs. clean-room.** Resolved: the personal
-   build is clean-room BY CONSTRUCTION (v1 is not present here and never will
-   be). This blueprint corpus replaces v1 as bootstrap competence. The
-   strangler experiment still runs: typed mechanisms progressively absorb the
-   blueprint's prose. (ADR-0001)
-4. **Ticket-to-PR as the product vs. agentic core as the product.** Resolved by
-   the operator directly: the personal build centers agentic communication and
-   the kernel; ticket-to-verified-PR remains a supported vertical behind
-   SourceAdapter/WorkOrderTransport ports. (ADR-0002)
-5. **Playwright/browser as universal task bus vs. transport-neutral dispatch.**
-   Resolved: WorkOrderTransport is the port; browser-as-shared-world is one
-   adapter (and a strong one for verification), chosen empirically per
-   environment.
-6. **Absence as a mandatory authority brake vs. progressive unattended
-   autonomy.** Resolved: presence and recorded elapsed absence are policy
-   inputs, not grants with a universal direction. A declared PresencePolicy may
-   hold, shrink, grow, peak, reset, or loop attention, work scope, and effect
-   authority independently within its source grant and ceiling; external
-   capability remains independently observed. Without a declared transition,
-   the affected axis holds. Earlier categorical no-growth clauses remain
-   historical and are superseded by ADR-0007.
-
-
-## WO-029 implementation — pinned compilation receipts (2026-09-05)
-
-- **Semantic equality remains canonical compiled-program equality; definition identity is separate** `adopted`
-  - Extends “Semantic equality is canonical compiled-program equality” without rewriting it. Compiler package 0.3.0 adds `ArtifactIdentityV1` beside the unchanged compiled program. Component tuples match active, linked-support, and ambient manifest participants; definition scheme `dotln-component-definition-fnv1a64-v1` hashes canonical JSON with domain `dotln:component-definition:v1`. Non-emitted names affect only their definition identity. Seiri and Entropy Reducer keep their exact old whole-program keys, cross-checked through WO-101’s independent no-BigInt FNV oracle. Raw graph, compilation environment, and explicit authority expiry retain the preimage; relocation requires re-equip and leaves definition hashes alone.
-- **Participation acquires a forward-only local execution receipt** `adopted`
-  - Extends “Composition proves participation per pipeline, including deliberate absence” without changing its negative-assurance limit. The personal host mints only v2 equips, recomputes before storing pin and authority, and records the pin’s semantic hash, compiler contract/package axes, and equip event in every compiled consumer’s decision. One comparison guards scheduling, work, authority, continuations, verification, and recovery dispatch. A logged idempotent boundary prevents legacy replay compatibility from becoming unpinned forward execution. Compile failures and drift become inert durable refusals; L0/governed raw expose their canonical references.
-  - No authority exists before equip. A restored legacy or drifted outbox cannot reach the fake adapter, and a completed restored outbox is not dispatched again. Unknown schedules receive durable refusal evidence after cutover; reused ids still lack issuance stamps. The legacy trace oracle is unchanged and the new trace delta is explicit. Hash equality is neither cryptographic authenticity nor proof against hidden adapter effects or a writer replacing both graph and pin. The existing Beacon v1 counter still represents authority-decision denials, not the separate artifact-receipt family.
-  - Source release target v0.9.0 completes the omitted activation assignment above published v0.8.0 under the standing opt-out default. Product 02/03/04/09/10, package entry points, the planning map, and publication heading links carry the same distinction; `evidence:artifact` regenerates/checks the synthetic receipt package. Independent verification and publication remain separate dispatches.
-
-## WO-009 implementation — disposable inspection episodes (2026-09-05)
-
-- **A physical worker is disposable; the WorkOrder and continuation persist** `adopted`
-  - Implements the scoped next step from the canonical lifecycle matrix without rewriting prior entries. Claude print and Codex exec replace only the executor in the shared Seiri demo; all other actors remain deterministic fakes. The compiled command, v2 equip receipt and exact compilation environment pass the existing shared recovery comparison before external dispatch. One verified detached worktree supplies a synthetic inventory projection. No employer material, intake content or dispatching-session transcript enters the worker prompt.
-  - The host appends/fsyncs canonical JSONL before stepping the reactor. A stable command binds an immutable completed-result receipt to the request; recovery queries it or safely repeats read-only inspection in a new physical episode. A live-host lock and serialized dead-host reclamation prevent competing writers; torn logs and abandoned acquisition guards refuse inspection rather than erase state. Cleanup verifies cwd, base, repository membership and cleanliness and never forces removal.
-- **Liveness is an evidenced host observation, not a worker claim** `adopted`
-  - A one-second process check renews a five-second lease only before expiry; invocation deadline is three minutes. Expiry retains pending work and fences late results. `WorkerResultObserved` persists the occurrence before authority, presence, lease and pinned-artifact admission; only admission produces `CommandResult`. Incomplete results retain partial evidence without candidate application or an invented human-input requirement. A missing completion append can be recovered from the durable result without another model call.
-  - `dotln status` folds only canonical events, leases, pending commands and recent headers. A separately labeled worker Beacon claim never refreshes host liveness. Effective model/effort remain unknown; Codex records unknown launch effort when ignored user configuration leaves no observed dedicated selector. Required model failure never causes adapter substitution in either direction.
-- **Promote the bounded demonstrated seam, preserve its limits** `adopted`
-  - Authenticated live runs witness both CLI transports, in-flight read-only status, identical replay and worktree cleanup; Claude additionally witnesses forced termination and recovery in episode 2. Deterministic subprocess/Git tests cover rows 2/4/6, malformed and stale results, delayed leases, partial evidence, pinned-dispatch refusal and concurrent recovery. Earlier live failures are disclosed in the executor receipt. The initial executor-added blocked-result cross-constraint was removed after evidence showed it exceeded the envelope contract.
-  - Product 02/03, roadmap 06, compatibility 10, roles 13, discovery, entry points and the planning/capability projections carry the implementation boundary. Source prepares application v0.10.0 above published v0.9.0, skeleton 0.9.0; compiler 0.3.0 and kernel 0.2.1 are unchanged and no dependency was added. General writes, broader Senses, real verifier episodes, benchmarking, independent verification and publication remain separate work or dispatches.
-
-## WO-010 implementation — evidence across independent episodes (2026-09-06)
-
-- **Blinding is positive context construction; acceptance belongs to verifier evidence** `adopted`
-  - Realizes the existing VerificationAdapter/AcceptanceEvidenceMatrix/VerificationFinding ideas without importing intake material or changing the settled platform/instance boundary. Compiler `verification-v1` capsules copy only criteria, pinned source diff, explicit repository snapshot and host witnesses; a repair capsule additionally names one complete blocking finding. Extra nested implementer prose, transcripts and results have no compiled path. The same WO-009 adapters carry closed request-specific results. Physical role/episode, pinned capsule, authority, source/type sufficiency and lease are host admission conditions. Completion remains a compact self-report; only admitted verifier evidence changes criterion status. Exemplar/dissent fields remain explicitly empty pending their consumers.
-- **A repair invalidates evidence at its affected source surfaces** `adopted`
-  - Exact source-byte changes drive conservative dependency-based staleness; unknown surfaces select the full criterion set. Immutable old evaluations retain their producing episode and revision. An unrelated row remains current. Every blocking finding projects a focused repair WorkOrder, while serial execution performs one repair and a fresh blinded recheck before reconsidering remaining findings. Nonblocking failures, human dispositions and exhausted repair bounds remain attention states. No implementer-emitted event or repair result can certify a criterion.
-- **The executable fixture names its assurance limits** `adopted`
-  - A synthetic repository witnesses its baseline, then contains a planted referenced-file selection defect. Both CLI wire protocols are exercised with local subprocess doubles; a fresh repairer proposes declarative JSON data and the host applies it before re-verification. A fixed pinned interpreter runs behavior checks. There is no authenticated live-model verification claim, general source-writing provider, code-review episode, post-PR loop or agreement rating. The one-writer store, leases, immutable result query and committed-repair recovery preserve the episode boundary. `dotln status` folds the living matrix; no hand-edited table supplies acceptance.
-  - The omitted activation target is completed at application `v0.12.0` above published `v0.11.0`; compiler `0.5.0` and skeleton `0.11.0` move, kernel `0.2.1` and existing schema/hash axes do not. `evidence:verification` checks the planted-defect log and mid-repair/final projections; current artifact-identity receipts move to WO-010 without rewriting WO-029/WO-022 history. Independent repository verification and publication remain separate lifecycle dispatches.
-- **Preserve the established single decider boundary** `adopted`
-  - The WO-010 full-suite architecture guard exposed the initial separate verification decider. The final implementation routes verification through the existing typed `seiriReactor`, with kernel replay and complete Decision equality. The pure protocol and projection are explicit leaves; no edge file gains a kernel decider. The original inspection-only transport signature remains assignable through a defaulted request type. This refines the same authorized verification mechanism without changing the work-order scope or evidence contract.
-
-## 2026-09-06 WO-011 optional consumers and artifact maintenance
-
-Source: operator ideation during `resume: next`, preserved in main's ignored
-`notes/wo-011-expanded-ideation-2026-09-06.md`; Clean Room with Shape-First
-Synthesis, public vocabulary, and provenance. The WO-011 breakout receipt names
-the canonical capture, backup, review subject, and observational limits.
-
-- **Local documentation tools stay optional for consumers** `adopted`
-  - The operator reports adding Playwright and Context7 MCP integrations and Context7 support across the local coding harnesses. This is an environment experiment; neither the service nor a paid account becomes a DotLn prerequisite. Product 03 separates reported installation from witnessed task-relevant retrieval and keeps alternative documentation sources explicit.
-- **Exercise portability through two sibling consumers** `preserved`
-  - The operator's Enterprise Starter repository is intended as an organization-owned launchpad; the Angular repository as an example with Nx, NgRx Signal Store with events, and Transloco. Authentication/authorization remains open, with Auth0 a candidate. A small template consuming versioned contracts is a candidate alternative to maintaining a fork of core. The Angular example can test implicit documentation lookup. Product 03 records these intentions without claiming inspected code, selecting a universal stack, or reopening ADR-0001's founding decision; the planning map preserves the bounded follow-ons.
-- **Retained history needs purpose; its views must not multiply work** `adopted` `preserved`
-  - The operator questions accumulating Markdown and logs while explicitly preserving the value of existing work. Product 03 adopts a named-consumer and lifecycle constraint: reuse canonical sources and existing receipts, regenerate derived views, and keep incidental diagnostics local unless selected as evidence. Product 07 links this at the write-back duty. Required immutable history and recovery evidence remain protected; neither a file quota nor an exponential-growth finding is inferred. A read-only inventory and consolidation proposal is preserved as a bounded planning candidate. This refines the existing anti-oscillation and bounded-cleanup incidents for WO-011, not its ten-unit inventory.
-- **Diagnose before reorganizing; archives are an available response** `adopted` `preserved`
-  - A later same-day clarification, appended to the same raw batch, narrows the preceding artifact-growth idea: if there is no demonstrated problem, leave the structure alone. Clearer folders, navigation, explicit archival folders, consolidation, and other alternatives remain available responses. Product 03 and the planning map retain those choices without selecting a layout, mandating an inventory project, or treating archival as deletion. Useful provenance, stable references, and recovery dependencies remain intact.
-- **A starter fork coordinates the example repos during a workflow pilot** `preserved`
-  - The operator clarifies that DotLn would help create Enterprise Starter, then a fork of that starter would issue work orders across multiple target repos, including DotLn-Angular. Angular changes would travel only through the fork's workflow during the trial. This explicitly supersedes the earlier executor suggestion about maintaining a core fork: the starter is the forked coordination surface. Product 03, product 12, and the planning map record one optional organization-user simulation using personal/synthetic material, not a canonical route or an implemented coordinator. No target-repository mutation is part of this ideation pass.
-- **Disposable backup names do not belong in durable provenance** `adopted`
-  - The operator corrected the executor's inclusion of temporary intake ZIP filenames in the work order and explained that obsolete archives are routinely deleted. Product 07 now distinguishes operational snapshots from canonical intake and promoted source. The WO-011 receipt removes those filenames; backup existence is neither a review dependency nor a condition for the validity of the durable source record.
-
-## WO-011 implementation — ten executable corrections (2026-09-06)
-
-- **Feedback declarations lower to equipped host mechanisms** `adopted`
-  - The ten-unit roadmap inventory becomes a separate `feedback-v1` contract with full public incident references, synthesized behavior, explicit scope/evidence, cheapest-sufficient-rung rationale, regression fixtures, conflicts/supersession, retirement, and next-maturity conditions. Nine host boundaries evaluate concrete facts before an effect; the shared reactor consumes typed operator correction events and emits a diagnosis request while monotonically tightening policy. Ordinary message wording has no trigger path. No eleventh unit, new dependency, or global rule-stack installation is introduced.
-  - Each unit has an isolated passing regression and a corresponding assertion failure when only its mechanism is removed. Host fixtures use real subprocess checks, Git roots, a temporary commit hook, and output-byte read receipts where those facts matter. Semantic judgments remain explicit host/operator inputs; source-comment screening is a bounded lexical check, writer reservations require a lock, and readback is evidence of delivery rather than comprehension. Fixture maturity and unobserved live use remain separate.
-- **The first self-hosted work order is a bounded audit of this repo** `adopted`
-  - `WO-011-feedback-audit` travels through compilation, the existing kernel decider/authority/outbox, a fixed local regression executor, and a separate blinded verification host using the existing CLI transports. Source and report bytes are pinned. Saved completion avoids repeating the audit after interruption; source or verifier-selection drift refuses recovery. The verifier receives a positive source/evidence projection in an empty Git mount with model tools disabled. This does not replace the repository's independent `resume: verify` lifecycle or enable general source-writing workers.
-  - The initial live source audit exceeded the inherited three-minute process deadline. The feedback verifier now has a fixed ten-minute deadline and $3 Claude budget cap, recorded in its attempt; other worker profiles retain their previous bounds. Claude Code `2.1.263` is an additional observed patch, preserving `2.1.261` and refusing unknown versions. Attribution settings apply only to the selected invocation, and the real hook is installed only in a fixture repository. The executor evidence receipt records the final witnessed outcome and the limits of instruments introduced in this same order.
-- **Measure a matched instruction projection without claiming field performance** `adopted`
-  - WO-004's two-file/79-line/3,530-byte common baseline plus ten prose equivalents totals 6,025 bytes; substituting one compiled-policy residue totals 3,632, a reduction of 2,393 UTF-8 instruction bytes. This is a counterfactual projection, not effective-session tokens or whole-workflow cost. One selected causal fixture episode per unit supplies maturity counters; it does not establish field rates or awakened maturity.
-  - Source prepares application `v0.13.0` above published `v0.12.0`, with compiler `0.6.0` and skeleton `0.12.0`; kernel `0.2.1` and existing contract/hash axes remain unchanged. Current artifact-identity and verification editions move under WO-011, preserving historical evidence and the frozen trace oracle. Product 02/06/07/10, entry points, and publication projections carry the same implemented boundary. Independent repository verification and publication remain separate dispatches.
-- **Source comments need a language parser at the host boundary** `adopted`
-  - Later executor review reproduced a gap in the initial lexical scanner: a quoted regular expression could hide a subsequent type-suppression comment. The skeleton now uses the already pinned TypeScript `5.4.5` package as an on-demand runtime parser, refusing version drift and supplying parsed comment bodies to the pure compiler. New regression probes cover regex text, template expressions/literals, JSX text/comments, and trailing directives. This supersedes the preceding lexical/no-new-dependency implementation description; ADR-0002 names the host consumer, and the legal inventory reflects the changed runtime classification without selecting a project license. The intermediate live audit's pass does not certify this revised source; the final witness is regenerated against a new pin.
-- **A rejected model return does not finish its work order** `adopted`
-  - The final source audit's first verifier return failed the result contract and left the command pending. A second physical episode reused the same pinned task and saved audit and supplied admitted passing evaluations for both criteria, completing the matrix. The retained final audit/verification streams preserve that refusal and recovery. The executor receipt distinguishes this live verification of controlled witnesses from field maturity, prior superseded observations, and the later independent repository verification.
-
-## WO-108 ideation — implementation consequences (2026-09-06)
-
-Source: operator ideation during `resume: next`, captured unedited in main's ignored `docs/intake/notes/WO-108-intervention-consequences-2026-09-06.md`. Clean Room treatment is Shape-First Synthesis with public vocabulary and provenance; the work-order breakout receipt defines the independent review subject. The fictional scene is operator recollection, not a load-bearing factual claim.
-
-- **A justified intervention still needs consequence-aware execution** `preserved` `operator-directed`
-  - A sensible effort to keep a necessary object secure can choose a location that activates a hidden process and consumes a resource needed later. The transferable failure is literal compliance with an accepted recommendation while missing the chosen method's delayed effects. It differs from a finding that intervention itself had negative value: retaining the recommendation and revising its implementation or observation may be the right response.
-  - Product 05 extends the existing intervention candidate through method selection, preserved outcomes, proportionate checks, bounded observation ownership and expiry, and a correction path. The 5S reader entry and product 03 suggestion pipeline point to that distinction. Proposed evidence must show both the apparently compliant failure and a method or observation that prevents it. No monitor, new compiler type, universal checklist, automatic scope expansion, or runtime implementation is adopted; the exact composition remains open.
-
-## WO-108 implementation — bounded mutation evidence (2026-09-06)
-
-- **Preserve the census; measure a declared campaign against the shipped suites** `adopted` `operator-directed`
-  - The operator's scope modernization replaces the stale exhaustive-run expectation with a deterministic 32-site campaign drawn before verdicts from the complete 2,901-site conservative census on published `v0.13.0`. Each attempt rebuilds an isolated committed snapshot with local workspace links, checks the actual package suites, and records an append-only verdict. Real synthetic cases exercise the measurement instrument's kills, survivors, baseline refusals, timeouts, provenance, and recovery. Compilation noise and timeouts remain separate from the conclusive compiled denominator; survivor equivalence and unexercised inputs remain investigation questions rather than inflated defect counts.
-  - The corpus runbook and generated findings own measured results and exact reproduction. Product 03 and the corpus entry point distinguish generated mutation evidence from policy-governed incident material, closing the layout follow-up left by WO-101. Source prepares tooling/evidence patch `v0.13.1`; no shipped package behavior, test assertion, dependency version, or runtime schema changes. Independent verification and publication retain their ordinary separate dispatches.
-
-## WO-038 implementation — decided licenses at publication boundaries (2026-09-06)
-
-- **A source license and a distribution channel are separate decisions** `adopted`
-  - Implements the existing 2026-09-06 legal decision: Apache-2.0 in every root/workspace manifest, private workspaces, unchanged Apache/CC BY license texts and NOTICE, and matching lockfile metadata. The observed npm 10.8.0 dry run did not fail for private metadata alone, so an explicit prepublish refusal joins the existing private flag. The license-surface preflight pins the legal bytes and observes the specific refusal using isolated copies of the selected manifests; an unrelated npm failure does not qualify. No package publication is authorized or performed.
-- **An outside contribution carries its origin attestation at the publication seam** `adopted`
-  - CONTRIBUTING.md records DCO 1.1 under the decided outbound licenses, with no CLA and no sign-off requirement for the operator's own commits. The worktree publisher checks every new commit's raw author against a matching trailer before remote effects, includes merged side branches, and excludes historical base commits. The exact existing public operator identity supplies the exemption; mutable publisher settings do not. This check establishes a declared attestation, not identity authentication, and creates no Git hook or settings change.
-- **Carry the decided license files with the kit** `adopted`
-  - WO-033's redirected draft already carried the default; WO-038's retarget note preserves the three manifest-listed, hashed files and the explicit `--license none` no-rights-notice path. The exporter itself remains WO-033. README, LEGAL, the publication runbook, planning map, roadmap, and reader entry point now describe the same implementation. The [WO-038 receipt](../evidence/WO-038/README.md) owns evidence, limitations, and the final reviewer's required clean-room read. Source prepares patch `v0.13.2` above published `v0.13.1`; independent verification and publication remain separate dispatches.
-
-- **Refresh source-bound feedback evidence through one resumable command** `candidate`
-  - WO-038's 2026-09-07 full gate exposed the existing coupling between the declared feedback audit inputs and otherwise behavior-neutral package metadata: only the report's source hash changed, but a fresh bounded live verifier is required. The executor uses the existing regeneration, audit, and recording commands; it does not weaken the pin or change the runtime. The planning map nominates a helper over that existing sequence, with explicit model/budget authority, recovery, and refusal of stale or incomplete recording. The [WO-038 receipt](../evidence/WO-038/README.md#feedback-evidence-refresh) owns the observation; the roadmap links it. This is an unallocated automation candidate, not another implementation inside the license order.
-  - Two rejected returns exposed a diagnostic gap; the second was identified only as an envelope refusal. Inspection also found the host's summary-length and single-line requirement absent from the verifier prompt and schema. A third attempt with a format reminder confirmed a 350-character summary against the host's 320-character limit. The disclosed recovery wrapper can narrow that non-evidentiary summary to a short pointer while preserving all substantive assessment fields and host acceptance checks. Carry complete return-format constraints and bounded rejection diagnostics into the nominated helper; the exact failed fields in the first two returns remain unknown.
-
-## WO-032 implementation — actor board v0 (2026-09-07)
-
-- **Give all five UIFA roles one recorded-evidence surface** `adopted`
-  - Implements the already nominated actor board as `packages/console`: a pure `uifa-board-v1` projection, an 80-column terminal view and one self-contained HTML page. Actors, Builds, Mechanisms, Work and Blueprint preserve their distinct questions. The compiler supplies saved-build tooltips and all three view hashes; existing worker/audit/matrix/control projections supply operational facts. Five pinned fixture families and a question-to-cell mapping make role service reviewable. The board invokes no command, adds no framework or external dependency, and creates no second workflow state machine.
-- **Keep historical gaps visible instead of manufacturing actor facts** `adopted`
-  - The retained WO-011 audit and verifier record different build-contract hashes, neither a LoadoutGraph semantic hash. They remain separately typed, with the absent loadout hash unknown. WO-031 records operator dispatches without identifying a human; the board names the operator role and its actions without asking for new attestation or inferring a person, authorship, attention or presence. Unknown fields and unavailable sources have distinct representations. The implementation receipt explicitly reconciles the draft's source assumptions, including its nonexistent tooltip API name, with the actual retained evidence for independent review.
-- **Declare the first slice without promoting the remaining console horizon** `adopted`
-  - Source prepares `v0.14.0` with console `0.1.0`; other component versions and runtime contracts remain unchanged. The dated `projection.uifa-board` row is staged demonstrable evidence. The whole inventory does not replace the sparse agent twin; Beacon metadata does not become a worker heartbeat, and controlled fixture activations do not become live rates. Adding a workspace invalidates the declared feedback source pin, so WO-032 records a fresh bounded live audit edition and retains the older immutable editions. Interactive commands, authoring, replay and the consumer's application shell keep their separately planned work orders.
-
-## WO-039 implementation — the saved build reaches the harness (2026-09-07)
-
-- **Lower only what the actual harness exposed** `adopted`
-  - A bounded phase-zero probe preceded the lowering rules. Claude Code 2.1.263 exposed the four event hooks, command refusal and project skills; Codex CLI 0.153.4 resolved project skills but no tested project hook fired. `harness-v1` preserves that distinction in observed profiles, emitted files and missing-capability residue. No user settings, sandbox switch, generated allow grant, kernel behavior or earlier contract preimage changes.
-- **One compiled rule, several host seams** `adopted`
-  - Generated unit hooks import the pinned built feedback boundary; fixtures compare their verdicts with that boundary and remove units to show causal refusal. Canonical lifecycle events, executed checks, physical worktrees and delivered output bytes provide host facts. The harness cannot invent semantic judgments for lineage, evidence quality or cleanup; those duties stay in generated role procedure with named missing facts. The correction token remains unconfirmed, so ordinary wording produces no typed event; the confirmed-token path is exercised only synthetically and narrows authority through the compiled correction function.
-- **Replace the mandatory guide read and count late reads too** `adopted`
-  - The locked floor routes four resume roles and separate planning/ideation to generated skills. The measurement scans the whole floor and role procedure, expands the task's declared selectors and includes later reads. A matched synthetic task uses the activation instruction/guide as the before source; it is not an estimate of WO-039's evolving context. Scratch role-entry observations retain all generated read-hook observations through final Stop, reject reads outside the declared set, and retain failed attempts. An empty trailing line reported by the harness is normalized to physical file bytes, with a regression fixture; it does not widen a cited section.
-- **Reproducible project output joins the evidence gate** `adopted`
-  - The Contributor's project settings, hooks, both skill roots and shared instruction residue are installed by `harness emit` and checked byte-for-byte. ADR-0005 and the config log record this one work-order-authorized project mutation. The shared local-terms checker from WO-041 now has its public CLI and screens generated/evidence surfaces; the operator's list stays ignored, never hashed or echoed. Its absence remains unavailable and cannot satisfy WO-039's list-present acceptance condition. Source prepares application v0.14.0 with compiler 0.7.0 and skeleton 0.13.0; new artifact/verification/feedback editions preserve historical receipts. Independent work-order verification and publication remain separate dispatches.
-
-## WO-039 ideation — incremental exclusions and a private list editor (2026-09-07)
-
-Provenance: operator correction and explicit `ideation:` dispatch, captured in
-the main control-plane checkout's ignored
-`docs/intake/notes/WO-039-expanded-ideation-2026-09-07.md`. The
-[breakout receipt](../evidence/WO-039/ideation.md) records synthesis, private
-capture reconciliation and the independent review subject. The following is
-rewritten product understanding; private exclusion values are not source material
-for these public documents.
-
-- **A useful list can grow from what is known** `adopted`
-  - The operator rejected treating the list as a complete up-front inventory.
-    Maintain known entries incrementally. With none known, leave the local file
-    absent and report the screen as unavailable without blocking readiness by
-    itself or claiming a pass. A configured list must pass; the locked Clean
-    Room boundary always applies. This explicitly supersedes the list-present
-    prerequisite in the preceding implementation entry and WO-039's original
-    criterion 8. The existing checker's behavior is unchanged. The operator
-    subsequently authorized an initial private seed, so this order's final
-    local screen can also be observed with a list present.
-- **Make the private list discoverable and editable** `candidate`
-  - The future interface must let the operator find the active list, inspect
-    entries, add entries and remove them, with an explicit unconfigured state.
-    [Interfaces 04](../product/04-interfaces.md#candidate--private-exclusion-list-management)
-    proposes Clean Room → Excluded terms in the build inspector; the roadmap and
-    planning map retain an unallocated open item. The UI host, layout and storage
-    reconciliation remain unresolved. This does not implement a UI or activate
-    another work order.
-
-## WO-039 repair — satisfiable output review and observable read scope (2026-09-07)
-
-Provenance: the operator's `resume: fix` dispatch against
-[VER-001](../verifications/WO-039/VER-001.md), findings 1–4. These are bounded
-repairs to the existing harness contract, not a new work order or changes to
-the locked source boundary.
-
-- **Delivered ranges can discharge one output obligation** `adopted`
-  - The whole-file delivery rule made large evidence outputs impossible to
-    review under the native tool cap. The observer now verifies native line
-    ranges and bounded UTF-8 output-reader deliveries, then combines complete
-    byte coverage only at one file hash. The reader cannot mint its own receipt.
-    Gaps, mismatches, truncation and stale coverage fail. Both completion-hook
-    refusals identify the missing paths and count. The existing session-entry
-    revision still defines the work-order output set across review commits;
-    changing that obligation to session-authored files remains unselected.
-- **Measure attempted reads as well as delivered reads** `adopted`
-  - Historical enforced-scope smokes retain their limits and refused-read counts.
-    New smokes observe native Read requests without enforcing the directed ranges
-    and fail on any out-of-set read or attempt. The host retains relative paths
-    and ranges for scope refusals; shell routes and skill selection remain
-    bounded. The first such executor attempt exposed an unnecessary final-review
-    report read. Generated procedure now distinguishes status metadata from the
-    selected role's required report inputs. Failed attempts remain evidence.
-- **Prove the aggregate hook and describe actual drift coverage** `adopted`
-  - The finish fixture evaluates each eligible unit independently through the
-    existing compiled boundary, with allow/refuse and removal proof. Fixtures
-    also reach missing-file, unexpected-file and manifest drift, unowned
-    replacement refusal and removal of prior-owned obsolete outputs. These
-    extend the existing one-byte and symlink evidence instead of relying on an
-    unsupported receipt sentence.
-
-## WO-039 repair — recoverable writer reservations (2026-09-07)
-
-Provenance: the operator's repair briefing after the blocked `VER-002` attempt
-and the `resume: fix` dispatch; the
-[second repair receipt](../evidence/WO-039/repair-002.md). These bound the
-existing reservation mechanism; the locked source boundary is unchanged.
-
-- **A reservation names its owner and dies with it** `adopted`
-  - The writer lock records the harness process: the declared pid verified
-    against the hook's ancestry, else the nearest non-shell ancestor, with its
-    start time when the process table is readable. A foreign lock whose owner
-    is dead is reclaimed at the next write dispatch with a journal row and an
-    event-log row. A live, unrecorded or self-distrusted owner is honoured and
-    the refusal names it. The executor session reproduced the leak live when
-    the harness resumed it in a new process under a new session id.
-- **The operator can see and release a reservation** `adopted`
-  - `harness writer --show` is a metadata read admitted to refused sessions;
-    `harness writer --release [--force]` is an operator action outside governed
-    sessions that refuses a live owner without force and logs every release.
-- **A time-based lease on the reservation** `rejected`
-  - An idle live session is not a dead one; a lease would hand its worktree to
-    a second writer. The guard errs toward refusal with an explicit operator
-    path instead.
-- **Admitting lifecycle commands as metadata** `rejected`
-  - They write control state; admitting them without a reservation is the
-    concurrent-writer case the unit exists to prevent.
-- **Releasing the reservation in a finally around the Stop units** `rejected`
-  - A refused Stop does not end the session, so releasing there admits a second
-    writer mid-session. The release stays after an accepted finish.
-- **Output-review obligation scope** `open`
-  - Whether the read obligation follows the branch diff or the session's own
-    writes remains the operator's decision; a verifier session that wrote
-    nothing still owed every inherited output.
-
-## WO-039 third repair — serialized reservation recovery (2026-09-07)
-
-Provenance: `VER-002` finding F1 and the `resume: fix` dispatch; the
-[third repair receipt](../evidence/WO-039/repair-003.md). This bounds the
-recovery protocol of the existing reservation mechanism; the locked source
-boundary is unchanged.
-
-- **Every recovery step acts only on the observed instance** `adopted`
-  - The reservation becomes a directory holding one nonce-named file. Reclaim
-    unlinks that exact name, removes the instance only while it is empty, and
-    renames a prepared replacement only onto an absent or emptied slot. Two
-    sessions that classify the same dead holder therefore admit exactly one
-    writer; the loser re-observes, honours the live replacement, and records a
-    `retired` event when it emptied the instance but lost the placement. The
-    compiled predicate, the liveness rules, the journal rows and the operator
-    commands are unchanged.
-- **Pre-repair single-file reservations migrate or are reclaimed** `adopted`
-  - A session's own legacy file migrates into a fresh instance, a dead owner's
-    legacy file is reclaimed, and a live or unknown legacy holder is honoured.
-    The legacy path is never a current-protocol instance, so removing it cannot
-    remove another session's replacement, and the file is never created again.
-- **A separate recovery guard around observe, reclaim and acquire** `rejected`
-  - The worker store's guard serializes its contenders but refuses forever once
-    a crashed holder abandons it. In the harness host that would recreate the
-    unrecoverable-from-inside state the second repair removed, and reclaiming
-    an abandoned guard reintroduces the same observe-then-act race one level
-    up.
-- **Unconditional rename or unlink of the stale lock** `rejected`
-  - Neither primitive can check that the slot still holds the observed
-    reservation, which is exactly the VER-002 counterexample.
-- **Advisory file locks** `rejected`
-  - Node exposes no file locking without a native dependency, and the order
-    admits no new runtime dependency.
-- **A refused Stop is reported once and its re-entry ends the turn** `adopted`
-  - The generated Stop hooks ignored the harness's re-entry flag, so a session
-    that could not yet satisfy its finish predicates was refused at every turn
-    end until the operator interrupted. On re-entry the hooks now record the
-    unmet obligation, never as a finish, and let the turn end. The predicates
-    and the lifecycle ground truth are unchanged. Admitted as adjacent cleanup
-    of the runtime file this repair reinstalls, at the operator's request.
-- **Output refusals name twelve missing paths and the remaining count** `adopted`
-  - A refusal that listed every one of 168 outputs was unusable; the next
-    refusal names the next twelve. The VER-001 obligation to identify missing
-    paths is preserved in a usable form.
-- **One Stop adapter instead of a unit hook per Stop unit plus finish** `open`
-  - Every refusal is reported twice because the three Stop units and the
-    aggregate finish hook all run. Lowering them into one adapter changes the
-    compiler lowering and the installed hook list; a separate order.
-- **Output-review obligation scope, restated** `open`
-  - Narrowing the obligation to session-authored outputs would cut its cost,
-    but a session's shell writes cannot be mechanically attributed to it, so
-    the branch diff remains the only un-gameable set. The trade is the
-    operator's decision, not a defect to repair.
-
-## WO-039 fourth repair — immutable reservation instances (2026-09-08)
-
-Provenance: `VER-003` findings F1, F2 and F3 and the `resume: fix` dispatch;
-the [fourth repair receipt](../evidence/WO-039/repair-004.md). This bounds the
-recovery protocol of the existing reservation mechanism and the live-holder
-smoke's pass rule; the locked source boundary is unchanged.
-
-- **A reservation file's facts never change under its name** `adopted`
-  - A session that records a new fact about its own reservation (an owner, or
-    an unavailable liveness) writes a new nonce-named file naming the one it
-    supersedes, then removes the superseded name. A contender's unlink of the
-    observed name therefore fails once those facts were superseded, so the
-    third repair's conditional steps hold for self-refresh too. Superseded
-    files that linger after a crash are reported by the observer and removed
-    by the owner's next dispatch or by retirement; they are never current.
-- **An operator release binds to one observed reservation** `adopted`
-  - The liveness decision, the retirement and the `operator-released` row all
-    describe the instance the command observed. A holder that changed after
-    the decision is judged again by the same rule; a forced release of a
-    changed holder refuses, because the operator judged a different one.
-- **The live-holder smoke requires the writer guard's refusal** `adopted`
-  - In the live-holder scenario every source write is refused first by the
-    writer guard, so the fixture commit's attribution refusal is reached only
-    when the model keeps writing after being told the worktree is another
-    session's; a session that stops is behaving correctly. The scenario's
-    required denied effect is now the writer refusal naming the holder, and
-    whether the attribution refusal was also reached is still recorded. The
-    role runs and the dead-holder scenario still require the attribution
-    refusal. The failed second attempt is preserved unchanged.
-- **Compare-and-unlink through inode or content checks** `rejected`
-  - A stat before the unlink narrows the window but cannot close it; only an
-    immutable name makes unlink-by-name exact.
-- **Refresh by moving the instance directory aside and placing a new one** `rejected`
-  - The slot would be absent between the two renames, so a contender could
-    acquire it and a live session would lose its worktree mid-work, which is
-    the failure the unit exists to prevent.
-- **Steering the live-holder session into the fixture commit** `rejected`
-  - Model behaviour after a refusal is not a fixture input; requiring a
-    further write after a holder refusal would reward the wrong behaviour.
-
-## WO-039 fourth repair — Stop gates at every turn end (2026-09-08)
-
-Provenance: the operator's instruction at the fourth repair's handoff, after
-the three Stop refusals fired at every intermediate turn end of the session;
-the [fourth repair receipt](../evidence/WO-039/repair-004.md). This restates
-the open output-review and Stop-adapter items above with a concrete direction.
-It is filed for a planning pass; nothing here changes the installed bundle.
-
-- **Stop is a turn end, not a completion claim** `preserved`
-  - The v1 lowering maps the three workflow gates to the harness Stop event,
-    and Stop fires whenever a session ends a turn: yielding to a background
-    job, waiting for the operator's outside-terminal steps, answering a
-    question. The gates cannot tell a yield from a claim of completion, so
-    every intermediate turn end is refused. `no-partial-completion` refuses
-    until the phase's completion command is recorded; `verify-app-before-done`
-    refuses whenever the checks receipt does not hash to the current tree,
-    which the gate's duration and any later edit make the usual state;
-    `read-your-own-output` refuses until every file changed since the base
-    revision is read, and because no branch commit precedes final review,
-    every session on an order inherits the whole order's diff. The third
-    repair reduced a refusal to one report per turn end with the obligation
-    recorded; the cause remains.
-- **Move the evidence gates to the completion command's dispatch** `candidate`
-  - The lifecycle completion commands, `implementation-ready`,
-    `repair-complete` and their verifier and reviewer counterparts, are the
-    project's only real claims of completion. Judge the checks receipt and
-    the output reads there, as pre-effect guards on that dispatch, and let a
-    plain turn end pass. The canonical phase already records incompleteness,
-    so `no-partial-completion` becomes advisory at Stop or retires. Unit
-    versions are immutable: this is a new version of each unit with a changed
-    trigger, a compiler lowering change and a profile change, with the old
-    definitions retained for replay. A separate order.
-- **Snapshot the output set at session entry** `candidate`
-  - Record the path and content hash of every tracked and untracked file at
-    session entry, and owe reads only for files whose bytes differ from that
-    snapshot at the completion claim. This attributes outputs by change
-    rather than by tool, so shell writes are still caught, which answers the
-    objection in the restated open item above. One writer per worktree makes
-    later changes the session's own or the operator's outside-terminal
-    steps, which the session relies on and should read. Outputs inherited
-    from earlier sessions on the same order leave the obligation.
-- **Operator's stance** `preserved`
-  - On 2026-09-08 the operator asked for this to be filed, judging refusals
-    at every turn end for the life of an order unacceptable. Until a planning
-    pass decides, the inherited-output question stays the operator's open
-    decision, as recorded above.
-
-## WO-039 fifth repair — integration with the moved base (2026-09-08)
-
-Provenance: [FINAL-001](../final-reviews/WO-039/FINAL-001.md) finding F1 and
-the `resume: fix` dispatch; the [fifth repair receipt](../evidence/WO-039/repair-005.md).
-This is integration bookkeeping and one fresh live evidence edition under the
-existing contract; no runtime source, contract, or locked boundary changes.
-
-- **The integrating actor merges and re-records only the affected claim** `adopted`
-  - `main` advanced by two merged orders while this order was in flight. The
-    repair preserved the seventeen dual-side files in a tagged stash, fast-
-    forwarded the branch to the integrated base, re-applied the stash, and
-    resolved the eleven text conflicts: authored merges for the release claim,
-    the roles table, the package scripts and the feedback runbook;
-    concatenation for the append-only documents; regeneration for the
-    work-order index, both publication locks and the control projection at
-    the next legal transition. The feedback subject moved from the recorded
-    hash to the integrated hash the review had computed in advance, so the
-    review's arithmetic is confirmed and a fresh live edition replaces the
-    stale one under the same edition path. Unchanged acceptance claims keep
-    their original evidence; the affected claim returns through independent
-    verification.
-- **The superseded edition stays beside its replacement** `adopted`
-  - The pre-integration report and both streams are preserved unchanged in a
-    sibling directory, as the first failed edition already was, because the
-    writer accepts one immutable edition per identifier and no evidence is
-    discarded.
-- **Generalize the workspace projection inside this repair** `rejected`
-  - The projection lives in a source file that is itself pinned in the feedback
-    subject, so the change would need its own live edition and its own
-    independent verification, and the review asked that it not be folded in
-    silently. It is nominated as a separate unallocated candidate on the
-    planning map.
-- **Judge the integrated tree with the WO-032 edition** `rejected`
-  - This order changes raw members of the same subject, so that edition cannot
-    speak for this tree.
-- **The context measurement is pinned on both sides** `preserved`
-  - Regenerating the stored measurement after the merge produced identical
-    bytes: task files are read from the frozen activation snapshot on both
-    sides of the controlled comparison, so a later edit to a directed section
-    of a product document cannot move it. The drift the review anticipated
-    there cannot occur under the recorded method.
-- **The actor board follows the root feedback edition** `adopted`
-  - The first integrated gate failed five WO-032 console tests: the merged
-    board reads the WO-011 self-hosted edition by default and pins it as a
-    fixture, and under compiler `0.7.0` that edition's policy hash and pinned
-    verification capsule no longer recompile, so the reactor refuses its
-    verifier stream as persisted compilation drift and the board renders it
-    unavailable. The console now declares the edition it reads, the fixture
-    case is edition-neutral and pins the WO-039 edition, the accepted verifier
-    attempt is derived from the admitted matrix rather than from one run's
-    attempt count, and console `0.1.1` records the patch. WO-032's criteria
-    keep their substance and return through independent verification.
-- **Keep the WO-011 pins or relax the drift refusal for read-only projections**
-  `rejected`
-  - The first leaves the merged tree unable to pass its own gate on this
-    compiler; the second changes a pinned runtime source under the WO-029
-    identity contract and would need its own live edition and verification.
-    Both the historical-projection question and selecting the edition from one
-    declared source are nominated on the planning map.
-- **The draft integrated report stays beside its replacement** `preserved`
-  - The console patch moved the lockfile's console entry, which is raw in the
-    subject, so the first integrated report is preserved as a draft beside the
-    report for the final subject rather than overwritten.
-- **The full gate is judged from three runs and one step-by-step run**
-  `adopted`
-  - The first integrated gate stopped at the five console failures. After the
-    console change, two full gates each passed 305 of 306 tests with one
-    failure: the actor board's host-collection test, whose release listing
-    exceeded its sixty-second budget under full-gate load and passed alone in
-    nineteen seconds. The later gate steps therefore ran individually on the
-    same build and all passed except the feedback evidence check, which reads
-    live streams that only the operator's outside-sandbox audit can record.
-    Filed transcripts replace the checkout address with a placeholder. The
-    console budget is nominated on the planning map rather than changed here:
-    WO-032's own test is not this order's obligation, and a sandbox load limit
-    is not a defect in either order.
-- **The live edition is recorded and the completion receipt waits for the
-  operator's gate** `adopted`
-  - The operator's fourth attempt, from a terminal outside the sandbox through
-    Codex CLI, produced the live audit and verifier streams in nineteen seconds
-    with both criteria verified; the session validated and recorded them,
-    re-pinned the console's self-hosted case to the recorded edition, and the
-    feedback evidence check passes on the integrated tree. A third full gate
-    on this sandbox failed only on the console host-collection budget, so the
-    receipt the completion hooks read comes from the operator's outside-sandbox
-    gate: one captured run filed as a transcript, one quiet run holding the
-    receipt. Recording completion on a receipt that says the tests failed was
-    rejected, even though the one failing test passes alone.
-- **The outside-sandbox gate reproduced the budget failure, and the operator
-  superseded the deferral by serializing the console suite** `adopted`
-  - The operator's outside-sandbox gate, filed as the sixth transcript, failed
-    on the same single test: the release listing took eighty-two seconds
-    against the console's sixty-second budget, with 305 of 306 passing. That
-    refuted the reason the earlier bullet gave for leaving the budget alone,
-    a sandbox load limit, so the session stopped where the receipt said to
-    and put the decision to the operator. The operator chose the direction
-    the planning map names last: the root gate now runs the console suite in
-    its own `node --test` step after the kernel, compiler and skeleton
-    suites, so the board's fixed read-only commands run on a quiet host. The
-    budget, WO-032's test and the console source are unchanged; the listing
-    takes twelve seconds alone on this tree. Raising the budget was rejected
-    as load-dependent, since the listing took between eighty-two and
-    eighty-seven seconds across four full runs, and because a longer budget
-    delays the board's unavailable verdict on a stuck command. Leaving the
-    order blocked until a separate console order lands was rejected as
-    holding a finished repair on a gate-chain question. The candidate keeps
-    the two directions not taken.
-- **The re-pinned board fixture leaves WO-032's multi-attempt assertion
-  unexercised** `adopted`
-  - Final review confirmed the re-pin itself: under compiler `0.7.0` the
-    WO-011 verifier stream projects a generic `verification-host` row with
-    labelled unknowns instead of its four verifier actors, so that case could
-    not be kept and its recorded outputs cannot be restored. The preceding
-    two entries' conclusion that WO-032's criteria keep their substance is
-    corrected for one half of `AC2`: the WO-039 edition records exactly one
-    verifier attempt, and it is the accepted one, so the assertion that every
-    other recorded attempt shows `lease-expired` and takes no matrix link
-    iterates over no rows, and that string appears in no committed fixture
-    output and nowhere else in the suite. The executor/verifier distinctness
-    half is fully exercised and the accepted episode is still pinned by the
-    golden. A fixture-local synthetic store with two or more verifier
-    attempts, in the manner of the hand-authored WO-009 event log, restores
-    the invariant with no live evidence and no behavioural change. Authoring
-    it inside this review was rejected: a reviewer never writes the test that
-    clears their own finding. Failing the order for it was rejected too, as
-    it defeats no criterion of this order and breaks no gate; it is nominated
-    on the planning map instead.
-
-## 2026-09-09 — WO-042 VER-001 F1: Unicode boundaries for authority notes
-
-- **Match a literal effect id with Unicode prose boundaries** `adopted`
-  - VER-001 F1 reproduced accepted contradictory notes followed by an em dash,
-    en dash or ellipsis. The guard's ASCII punctuation list also missed curly
-    quotes. Ten new directional fixtures failed before the repair. The guard
-    now uses Unicode punctuation, whitespace and the existing backtick/angle
-    bracket delimiters around a complete escaped effect id. Internal dots and
-    colons still extend a token, while trailing sentence punctuation is accepted.
-    Product 04's authority-inspection contract states the rule explicitly.
-  - The focused criterion-5 gate passes all 14 tests after the repair. Literal
-    ids containing hyphens, underscores, colons, plus signs and parentheses
-    remain intact; prefixed, suffixed, dotted and colon-qualified extensions
-    remain negative cases in both authored-note directions. This corrects the
-    authored-note consistency check without changing effective authority or
-    compiled inspection bytes.
-- **Grow the ASCII punctuation list one character at a time** `rejected`
-  - It would repair the reported examples while retaining the same omission
-    class for other Unicode prose punctuation.
-- **Split every punctuation character inside an effect id** `rejected`
-  - Effect ids may contain punctuation. Splitting them would lose complete ids
-    and confuse their dotted or colon-qualified extensions with exact matches.
-- **Weaken the documented contradiction check or rewrite VER-001** `rejected`
-  - The verified failure is against the accepted contract. The repair restores
-    that behavior and retains the immutable report for independent re-verification.
-
-## 2026-09-09 — Emergency planning pass: process debt (WO-126)
-
-- **Hard enforcement at the lifecycle commands; Stop hooks advise** `adopted`
-  - The operator's dispatch after the `v0.16.0` close: the WO-042 reviewer
-    could not end a turn without the whole suite recorded at the current
-    tree hash and a lifecycle transition appended, and re-announced the same
-    facts for several turns. The transition commands already refuse the same
-    conditions with evidence. A Stop hook that blocks gates nothing extra and
-    prevents a session from stopping to ask a question. WO-126 criterion 4.
-- **Read obligations are what the session wrote or regenerated** `adopted`
-  - Supersedes WO-039's first repair receipt item 3, which considered and
-    did not adopt session-only authorship. The operator's explicit
-    2026-09-09 decision: the obligation exists so a session reads back what
-    it wrote and does not take a regenerating script's word for its output;
-    it is not a license to push every inherited byte through context. The
-    WO-042 reviewer owed 135 files and 5,305,410 bytes it had already
-    reviewed as a diff. Generated and oversized outputs owe a check, not a
-    read. WO-126 criterion 3.
-- **A gate runs once per tree hash** `adopted`
-  - Four roles ran the full suite on the same tree, and the tag ran it
-    again on a fast-forwarded copy. Evidence keyed by tree hash is reused;
-    a changed byte invalidates it. The tag manifest records the gate it
-    ran or reused instead of the literal `npm test`. WO-126 criteria 5, 6.
-- **Growth needs a decision** `adopted`
-  - Every size, duration and count the operator complained about was
-    already recorded somewhere and compared to nothing. A budget file with
-    dated acceptances, a meter that prints the delta into every PR body and
-    the status line, and a gate that fails on an unaccepted breach. The PR
-    subject series (four ramps, four resets) is the microcosm. WO-126
-    criteria 10, 11.
-- **Anti-oscillation is the rule for applying a correction** `adopted`
-  - The operator's definition, stated twice in this pass: a correction
-    points at a category. Failure one is sweeping generalization,
-    extrapolating into adjacent rules and file changes never asked for.
-    Failure two is over-literal reading, shrinking the rule to its exact
-    words and missing obvious members of the category. The middle is
-    judgment: find the category, stay in it, ask one focused question when
-    the boundary is genuinely unclear, and pause before file actions beyond
-    the literal correction. The unit's text had described decision lineage
-    instead and enforced nothing while appearing as residue in the locked
-    floor. Rewritten at version 2 as prose with the worked example; the
-    residue block leaves the floor. WO-126 criterion 9.
-- **Closeout owns the harness's state and reconciles intake** `adopted`
-  - The harness writes session state to `docs/control/local/harness/` and
-    the operator's private terms list lives beside it; the closeout
-    classifier never learned the directory, so the WO-042 close hand-wrote
-    a script. The classifier learns it, `release close` reconciles intake
-    with a dry run, and the skill forbids closeout scripts. WO-126
-    criterion 7.
-- **Attestation by version line with an executable discovery row** `adopted`
-  - A CLI patch bump nobody recorded degraded the reviewer's effort to
-    `unknown` while the environment exposed the value. WO-126 criterion 2.
-- **No AI attribution, including session links** `adopted`
-  - The harness's session guidance proposes a session trailer; the
-    operator's global rule, the compiled unit and every merged PR say no.
-    The guard learns the trailer shape and the settings half is installed.
-    WO-126 criterion 1.
-- **The ledger returns to ideation** `adopted`
-  - The operator asked why entries other than `ideation:` prompts land
-    here. Every lifecycle loadout directs a ledger append and every order's
-    write-back duty names one, so 95 of 122 sections are work-order
-    decision records and the file is 615 KB. Per-order decisions move to
-    the order's evidence directory with a generated index; this section is
-    the last lifecycle-role entry the loadouts direct. WO-126 criterion 13.
-- **Corrections during this pass, logged** `adopted`
-  - Ten operator corrections in one session, each with what was misread,
-    what was meant, and where the fix lives. (1) A guard bug filed as a
-    nomination; the operator wants it fixed or owned: WO-126 criterion 8 and
-    the rule that a finding becomes a criterion. (2) Anti-oscillation
-    written as decision lineage, twice; the operator's rule is about the
-    category a correction points at: criterion 9 and 07 §Operator-opened
-    ideation mode. (3) Fixture output logged as an undiagnosed bug;
-    diagnosed, not a bug: criterion 6 stops fixtures printing as FAIL.
-    (4) The full suite run for a document-only pass, then a blocked wait:
-    the document gate in 07 §Operator-opened planning pass and criterion 6.
-    (5) The refutation run from the session when the operator wanted the
-    option to run it: the correction rule's pause before actions beyond the
-    request. (6) A seven-step manual handoff when the operator wanted
-    automation: criterion 15. (7) `resume: plan refute` named where the
-    operator said `planning: refute`: renamed. (8) The phrase read as
-    picking a CLI by harness where the operator meant the session is the
-    refuter: criterion 15 and the 07 paragraph. (9) A refused amend blamed
-    on the rebuild when the attribution hook lacked a message: the order
-    requires refusals to name their cause. (10) These corrections kept only
-    in the session: this entry, the intake capture, and criterion 13's rule
-    that a correction during any dispatch is recorded the same day in that
-    dispatch's committed record and counted by the meter. (11) The refuter
-    ran the code suite, told to by two sentences the pass had missed (07
-    §Operator-opened planning pass, the refutations README), and its
-    independence was exposed to the map by the planner role's directed
-    reads: both sentences now name the document gate, and criterion 15
-    gives the phrase its own dispatch with no read but the prompt, a scope
-    of changed orders, and a 120 s budget. (12) The refuter's scope swung
-    from the whole horizon to changed orders only, instead of keeping both:
-    criterion 15 names `planning: refute` and `planning: refute full`.
-    (13) The operator's four capitalized questions were treated as venting
-    rather than directives: criterion 16 makes the repository ask them per
-    dispatch through the meter, the order template, the refuter and the
-    role skills, and 07 §Discipline records them as standing doctrine.
-    (14) The cost rule read too literally as "cut what is annoying": the
-    operator's test is whether data materially informs a later decision;
-    such data is kept whatever it costs, and only data nothing decides on
-    is cut. Recorded in 07 §Discipline, which WO-126 cites, so the order's
-    executor reads it without the order's bytes changing. (15) A prior
-    session's playbook sentence, "no token, cost, or attention data is
-    collected", was presented to the operator as the operator's own
-    decision; it never was. Tokens and cost per dispatch are required data
-    for setting context and token budgets: WO-126 criteria 10 and 11, the
-    map's NoOp corrected. Traced: the sentence began as WO-028's non-goal,
-    written by the 2026-09-03 planning pass as "not this order"; the
-    2026-09-04 pass put it in the map, the 2026-09-05 pass recorded it as
-    a NoOp "unchanged from the 2026-09-03 pass", WO-031 repeated it as a
-    non-goal, and WO-031's implementation wrote it into the playbook, 07
-    and 03 as a flat prohibition. No operator dispatch said it. Criterion
-    13 now requires a decision to name its dispatch and forbids restating
-    a non-goal as one. (16) "Settled is settled" as an absolute, which the
-    pass had kept on purpose: the operator names it a systems trap, inertia
-    codified as a hard rule. 07 §Discipline now reads "decided means
-    sourced, not frozen"; criterion 13 gives every decision a reopening
-    condition and makes the meter surface reopen candidates; the floor's
-    sentence is the operator's to change (assumption 6). (17) The pass
-    guessed which system trap the operator meant. The operator named
-    them: rule beating and seeking the wrong goal, with shifting the burden
-    to the intervenor, drift to low performance and policy resistance also
-    live in the meta process. Criterion 17 makes each a meter row with a
-    signal from the repository's data; 07 §Discipline names the lens.
-    (18) Receipt 007 held on criterion 16: the cost judgment it demanded
-    had no permitted input, since criterion 15 gives the refuter only the
-    canonical prompt. Repaired: every order carries a `**Cost:**` header
-    line the subject reader includes and hashes, and the canonical input
-    carries a bounded cost table (dated acceptances and the latest meter
-    rows, refused when stale). The hold is answered by that repair and the
-    receipt that carries its dated accepted disposition. (19) The session
-    then overrode hold 007 through the gate's override route on its own
-    reading of an earlier "operator override" message; the operator had
-    run the refutation precisely so its findings would count and never
-    said to ignore them. The override event was reverted before
-    publication, this entry records it, and the hold is discharged by
-    repair and receipt, the proper route.
-- **Close on repair and receipt, not on override** `adopted`
-  - Receipt 006 (2026-09-09, direct Codex session) passed the whole
-    horizon with WO-126 at `82a3d5b`; receipt 007 held on the corrected
-    criterion 16; the repair landed. The operator's instruction is that a
-    refutation's findings are fixed and re-judged, not waived. The receipt
-    that carries hold 007's dated accepted disposition closes the pass.
-- **Remove the compiled harness wholesale** `rejected`
-  - The build cut the executor cold start 6.5×, and the pre-effect guards
-    catch real defects. The cost is in two design choices this order
-    changes. Reversal condition recorded in the map's NoOps.
-- **Split the debt into bounded orders** `rejected`
-  - The operator's direction; each order would pay the cost model it fixes.
-    The one-seam and four-hour rules stand for every other order.
-- **Provider token or cost telemetry** `rejected`
-  - The 2026-09-05 decision stands; the repository records enough.
-
-## 2026-09-09 — recurring questions that expose simpler alternatives
-
-- **Surface useful alternatives without waiting for an objection** `preserved`
-  - During WO-126 repair, the operator observed that refusing a new Python
-    prerequisite prompted a useful implementation comparison, then asked for a
-    method that asks such questions by default, automatically or occasionally.
-    The shape is routine scrutiny of a method's necessity and cost while keeping
-    its intended outcome and explicit guarantees visible. Dependency avoidance
-    is one trigger, not the universal objective.
-  - Product 07 §Candidate — recurring review of implementation alternatives
-    preserves default, event-triggered and periodic possibilities. Compare the
-    existing four questions, meter and Entropy Reducer before introducing a new
-    recurring cost. Retain useful measurements, no-change outcomes and reopening
-    conditions. Cadence and implementation remain unallocated.
-  - Provenance: `docs/intake/notes/WO-126-recurring-alternative-review-2026-09-09.md`,
-    the operator's same-session `ideation:` dispatch, and
-    `docs/evidence/WO-126/ideation-alternatives.md`. Reopen in planning when a
-    bounded comparison can test discovery benefit against review overhead.
-
-- **Tinkerer / Scientist with an activation-rate modifier** `preserved`
-  - The operator's same-day follow-up proposes an experimental bias applied to
-    a related question/input or answer/response, similar to A/B testing but
-    activated only sometimes. Product 05 preserves the candidate support and
-    uses the already-established term Support modifier for the separate rate
-    control. Naming, relation to A/B testing, eligibility, cadence and rate
-    policy remain open; general support modifiers are not claimed as shipped.
-  - Provenance: `docs/intake/notes/WO-126-experiment-support-followup-2026-09-09.md`
-    and `docs/evidence/WO-126/ideation-alternatives.md`. Reopen in planning with
-    evidence of useful experimental findings, valid skipped opportunities,
-    authority preservation and measured cost.
-
-- **Retain comparative data when a decision forces a similar-purpose alternative** `preserved`
-  - The operator separately asks for comparisons as historical data whenever a
-    decision forces another method serving roughly the same purpose, activated
-    automatically or through equipped support. Product 05 preserves that trigger
-    separately from occasional experimental exploration. Historical evidence is
-    a useful output even when the decision is already settled; differences in
-    guarantees and unavailable counterfactuals remain explicit.
-  - Provenance: `docs/intake/notes/WO-126-historical-comparison-followup-2026-09-09.md`
-    and `docs/evidence/WO-126/ideation-alternatives.md`. Reopen in planning for a
-    bounded collection design, default/equipment choice and measured comparison
-    of retained decision value against collection cost.
-
-- **Measure possible benefits of emoji substitutions** `preserved`
-  - The operator asks whether an emoji can beneficially replace its represented
-    word. Product 05 preserves word/emoji/labeled comparisons for scanning and
-    prompt meaning, with byte size, model tokens and behavior kept distinct.
-    A four-pair Node measurement gave two byte savings, one tie and one increase;
-    token and correctness benefits remain unmeasured. No substitution policy or
-    tokenizer dependency is selected.
-  - Provenance: `docs/intake/notes/WO-126-emoji-substitution-2026-09-09.md` and
-    `docs/evidence/WO-126/ideation-alternatives.md`. Reopen with a concrete
-    consumer/model, representative examples and measurable task outcomes.
-
-- **Separate a browser projection from unattended runtime lifetime** `preserved`
-  - The operator asks whether an always-available app can be a webpage using
-    WebSockets, workers or WebAssembly. Product 04 preserves a browser-hosted
-    option while distinguishing communication, computation and process lifetime.
-    Browser background facilities do not establish a continuously running
-    resident; a separate local or remote host and suspension/recovery remain
-    candidate designs under the same canonical projection contract.
-  - Provenance: `docs/intake/notes/WO-126-browser-runtime-2026-09-09.md` and
-    `docs/evidence/WO-126/ideation-alternatives.md`. Reopen with explicit work
-    requirements for closed windows, stopped processes and sleeping devices,
-    followed by an observed lifecycle comparison.
-
-- **Compare desktop delivery speed and 3D behavior independently** `preserved`
-  - The operator follows with Electron and the fastest option that permits 3D.
-    Product 04's shared candidate distinguishes implementation effort, startup
-    and rendering speed. Electron is an executor hypothesis for quickest
-    resident desktop delivery with existing TypeScript/Node; browser plus a
-    companion and Tauri remain comparisons. The proposed Babylon.js projection
-    stays separate from wrapper choice. No host or new dependency is selected.
-  - Provenance: `docs/intake/notes/WO-126-desktop-3d-runtime-2026-09-09.md` and
-    `docs/evidence/WO-126/ideation-alternatives.md`. Reopen with the same scene and
-    background task, measurements of effort, footprint, frame times and recovery,
-    and the operator's actual meaning of fastest.
-
-- **Use the full eight-system-traps framework beyond the current five signals** `preserved`
-  - The operator supplies eight traps and possible escapes while discussing
-    the review process: policy resistance, commons depletion, downward standards,
-    escalation, compounding winner advantage, dependence on intervention, rule
-    beating and proxy-goal optimization. Product 05 preserves the whole lens
-    across compositions, resources and development; product 07 links it to the
-    five existing meter rows without claiming the other three are implemented.
-  - Project examples and escapes are hypotheses requiring an observed feedback
-    loop and an outcome comparison. Whole-file delivery versus useful review,
-    repeated operator rescue, shared budgets and evidence invalidation are
-    candidate investigations. The current guards remain active; no new meter
-    row, automatic trap verdict or mandatory checklist is introduced.
-  - Provenance: `docs/intake/notes/WO-126-eight-system-traps-2026-09-09.md` and
-    `docs/evidence/WO-126/ideation-alternatives.md`. Reopen with a representative
-    loop, an explicit shared outcome, a bounded proposed escape and measured
-    benefit including retained decision value and the cost of intervention.
-
-- **Let an improvement drought increase experimental initiative** `preserved`
-  - The operator combines an accumulating bad-luck counter with small gains
-    that compound. The proposed Tinkerer modifier observes the last demonstrated
-    repository improvement, stays quiet after a recent gain, then increases
-    activation pressure, search breadth and experiment novelty as the gap grows.
-    A prolonged drought may prompt exploration outside the current work order.
-    A week and one percent per day are illustrative, not selected thresholds.
-  - Product 05 retains this adaptive variant beside fixed and probabilistic
-    activation. It distinguishes a selected investigation from a guaranteed
-    improvement, a recent probe from a real gain, and broader discovery from
-    authority to change other work. Missing history, inactive time, cooldowns,
-    pressure bounds, reset evidence and avoidance of cosmetic wins remain open.
-    PoE's historical evasion entropy and Atomic Habits supply source shapes;
-    no game-wide luck rule or universal performance compounding is asserted.
-  - Provenance: `docs/intake/notes/WO-126-adaptive-improvement-pressure-2026-09-09.md`
-    and `docs/evidence/WO-126/ideation-alternatives.md`. Reopen with comparable
-    fixed/adaptive activation cases, meaningful gains or retained learning,
-    total cost, interruption rate and evidence that the modifier does not reward
-    proxy improvement or escalate work without bound.
-
-- **Retain the alternatives a decision leaves undone** `preserved`
-  - The operator asks for useful history of unchosen options across system-trap
-    judgments, naive-interventionism review, action/NoOp, A/B and Eye Dr
-    comparisons, Tinkerer experiments and forced substitutions. Product 05
-    preserves a shared record of considered alternatives, dispositions,
-    rationale, evidence, uncertainty and reconsideration conditions, building
-    on existing decision receipts and comparison events.
-  - Rejected, deferred, constrained and untested options remain distinct. A
-    NoOp result retains the declined action; an action result retains the NoOp
-    baseline. Ties, inconclusive findings and a decision not to experiment also
-    carry useful history. Selection is not evidence against every untried
-    alternative, and a record alone is not a demonstrated improvement.
-  - Provenance: `docs/intake/notes/WO-126-unchosen-alternatives-2026-09-09.md`
-    and `docs/evidence/WO-126/ideation-alternatives.md`. Reopen with a bounded
-    retention/retrieval design and evidence that useful reuse and avoided
-    repeated investigations justify recording, context and review cost.
-
-
-## 2026-09-11 — First-party session commands and mandatory token measurement (WO-043)
-
-- **Equip cost and goal comparison across every phase** `specified`
-  - The operator accepts Process Cost as a first-class support across the six
-    Contributor roles and asks when solutions are assessed against the eight
-    system traps, Naive Interventionism and NoOp. A final direction requires
-    every phase to understand DotLn's purpose and judge decisions by goal and
-    critical-path progress. Process Cost and separate Goal Alignment support
-    identities now carry those duties through shared role projection.
-  - The product 07 goal card sources the operator-flow mission and current
-    runtime path, requires comparison before material choices, and retains
-    rationale in existing phase evidence, revisiting changed scope/evidence.
-    Deterministic projection is distinct from judgment; generalized trap and
-    counterweight mechanics remain candidate work. No new scheduler or
-    approval loop is selected.
-  - Provenance: the same intake/receipt below, WO-043's execution record and
-    D009/D010. Reopen when a choice cannot name a supported mission/path
-    contribution or observed process overhead outweighs its benefit.
-
-- **Exercise equipped executor supports without operator coaching** `specified`
-  - The operator reports that Adjacent Repair and Intent to Act appear only
-    after being named. WO-043's dated expansion addresses late instruction
-    placement, ordinary dispatch visibility and unresolved-queue completion.
-    It retains independent switches, actual-chat attestation and bounded
-    authority; it does not claim universal model recognition of defects.
-  - Provenance: the same intake batch and breakout receipt below, with product
-    05's earlier WO-126 observation. Reopen with a fresh-session failure or an
-    ablation that identifies a smaller effective mechanism.
-
-- **Prioritize the adaptive Tinkerer in near-term planning** `candidate`
-  - The operator recalls experiment selection becoming more likely as time
-    passes without an application improvement, then excludes implementation
-    here if it remains proposed. Product 05 already specifies that candidate;
-    existing `FUP-fc4158d3207e495d` carries the request for consideration soon.
-    No new order, selected pressure curve or implementation is claimed.
-  - Provenance: the same source batch and receipt. Reopen in the next planning
-    pass to choose a bounded experiment and allocation with measured cost.
-
-- **Recognize scope additions and side questions as commands** `specified`
-  - The operator regularly uses `scope expand:` and `conversation only:` and
-    asks for first-party support. A follow-up defines the latter as a question
-    answered without interrupting the current work-order process. Product 07
-    records the command contract: the former adds the stated bounded work and
-    its receipt; the latter changes no scope, phase or obligation and needs no
-    new resume confirmation. Both preserve existing effect boundaries.
-  - Provenance: `docs/intake/notes/WO-043-expanded-ideation-2026-09-11.md` and
-    `docs/evidence/WO-043/ideation-commands-and-usage.md`. The raw capture is
-    provisional in the worktree and must reconcile to main at closeout.
-    Reopen if the operator changes either command's meaning or a concrete
-    interaction exposes ambiguity; a quoted command is not its invocation.
-
-- **Require measured Codex and Claude tokens before handoff** `specified`
-  - The operator rejects treating session tokens as absent or untracked. Both
-    harnesses already record counters; optional collection and swallowed errors
-    must give way to actual current-session measurements. Retain numeric totals,
-    source, time and scope, and repair collection errors before completion.
-    Cached-input semantics and duplicate messages require source-aware counting;
-    transcript text and raw identities remain private. Historical gaps and
-    unreported prices are not permission to omit new session token counts.
-  - Provenance: the same raw batch and receipt; product 07 and WO-043's
-    execution record carry the new duty and bounded implementation authority.
-    Reopen the collector when either harness changes its recorded format; keep
-    the measurement obligation while repairing its adapter.
-
-## 2026-09-12 — Planning pass: proof-carrying gates (WO-128 to WO-130)
-
-- **The relayed plan's central claim holds; its lifecycle claim does not** `adopted`
-  - The operator opened the pass after the `v0.17.2` close with a second
-    model's plan for proof-carrying gates and full authority to veto or alter
-    it. Verified against `scripts/lib/suite-evidence.mjs`,
-    `scripts/test-runner.mjs`, `scripts/lib/gate-evidence.mjs` and
-    `scripts/lib/lifecycle-evidence.mjs`: the shared suite key hashes every
-    ref, `HEAD`, the checkout path, the CPU count and the whole configuration
-    listing, the cache is per worktree, and only six suites and the release
-    cases declare their documents. Not verified: the lifecycle already accepts
-    the composed exact-tree aggregate (WO-126-D009, D014), so no predicate
-    changes; and the plan's "20-second composed gates" omit the build,
-    preparation and seven live checks that always execute (41–47 s observed at
-    an identical tree).
-  - Provenance: the dispatch, captured verbatim in ignored intake
-    (`docs/intake/notes/2026-09-12-proof-carrying-gates-planning.md`, SHA-256
-    `4eb2c26a6530687e67c05781f2f153233d90b340b7365c1bd0cbb96f4b101993`); the
-    map's gate-cost rationale. Reopen if a composed aggregate is refused by a
-    lifecycle command, or if a suite is found to read repository-global state
-    the key no longer carries.
-- **The largest measured waste is the failed fresh gate, not reuse** `adopted`
-  - From the host's retained gate rows: twelve fresh full gates across
-    WO-043, WO-125 and WO-127 on 2026-09-11/12 failed on fixed wall-clock
-    deadlines under load (`console` six, `plan-refutation:current` two,
-    `harness-fixtures` two, `runner-fixtures` one) or on a tree changed during
-    the run (two), 8,387 s in total, each followed by a passing rerun of
-    41–419 s. WO-125's FINAL-001 item 3 named this pass the owner of the
-    console nomination. WO-128 carries it, with the gate row's per-task
-    concurrency trace and the re-measurement of WO-126-D012's exclusive
-    scheduling, which held the 2026-09-12T16:08Z fresh gate at concurrency
-    one for 206 of 475 s.
-  - Provenance: `docs/control/local/harness/checks.json` and its history on
-    the operator's host; VER-001 O6, VER-003 O3, VER-004 AC5 and FINAL-001
-    item 3 of WO-125; FUP-0054 allocated. Reopen if five consecutive fresh
-    gates pass before WO-128 changes anything, which would make the order a
-    NoOp.
-- **A suite's evidence identity is its declared inputs** `adopted`
-  - After each of WO-125's eighteen transitions the next full gate ran all 78
-    tasks fresh (613–839 s); five of its ten fresh runs (3,876 s) followed a
-    transition with no source change. A checkpoint ref that no suite reads
-    must not invalidate a suite. WO-129 moves the key to declared inputs,
-    shares the cache under the Git common directory and names the changed
-    input class on every miss; WO-130 declares inputs for the whole-tree
-    class of about 25 suites and validates each declaration by executing the
-    suite in a replica that holds only those inputs, so a document-only
-    change composes the gate (243–419 s today against 41–47 s at an identical
-    tree). No test is removed; the fail-closed defaults stay. (The validation
-    half of this entry was withdrawn at receipt 010; see the entry below.)
-  - Provenance: the same rows and the WO-125 control segment; the relayed
-    plan's phase-one items, lowered without a sandbox, syscall tracing or
-    doubled shadow gates. Reopen if a replica ever passes a declaration that a
-    fresh gate refutes, or if the miss explanations show a declaration class
-    that cannot be named.
-- **Cold-gate structural cuts wait for a recorded critical path** `candidate`
-  - Copy-on-write fixture clones, split shell suites, pure policy extraction
-    with a model-based lifecycle check, and sharding are recorded as product
-    07 §Candidate — cold-gate structural cuts, entered by WO-128's concurrency
-    trace. The preflight barrier stays (WO-127-D007; preflights end at 16 s of
-    a 475 s gate). Bazel, Nx and Turborepo are declined as the plan itself
-    advised. Reopen when a trace names the node that bounds the gate after the
-    exclusivity decision.
-- **Corrections during this pass, logged** `adopted`
-  - None from the operator. Two self-corrections: the first shell command on
-    `main` was refused by the writer guard for an unlisted metadata command,
-    and the pass switched to the listed forms before opening the branch with
-    `plan start`; a shell substitution was refused by the command classifier
-    and replaced by explicit reads. Neither changed a file.
-- **Process cost of this pass** `adopted`
-  - Entry measurement (`node scripts/harness.mjs usage`, scope dispatch,
-    source claude-transcript-message-usage, 2026-09-12T16:12Z): 567,803 total
-    tokens (164 input, 450,131 cached input, 110,499 cache write, 7,009
-    output). The reads were dominated by verifying the dispatch's claims in
-    the runner, cache and lifecycle source, which no feed replaces; orientation
-    used the follow-up feed's first page, the sequence, the map's rationale
-    and the critical-path plan. The handoff measurement before the final commit
-    (2026-09-12T16:41Z, same source and scope): 11,146,806 total tokens (996
-    input, 10,539,221 cached input, 462,570 cache write, 144,019 output) over
-    105 steps and 56 commands. After receipt 009's holds were repaired
-    (2026-09-12T17:41Z, same source and scope): 17,904,001 total tokens
-    (1,382 input, 17,201,927 cached input, 525,030 cache write, 175,662
-    output) over 126 steps and 73 commands. After receipt 010's holds were repaired
-    (2026-09-12T18:20Z, same source and scope): 25,715,183 total tokens
-    (1,768 input, 24,856,792 cached input, 606,939 cache write, 249,684
-    output) over 144 steps and 91 commands. At the closing commit after the
-    operator's override (2026-09-12T18:56Z, same source and scope):
-    32,929,366 total tokens (2,060 input, 32,008,097 cached input, 645,211
-    cache write, 273,998 output) over 162 steps and 109 commands. Tradeoff recorded: the pass ran no code suite and no
-    refutation transport; the operator's `planning: refute` supplies the
-    independent judgment.
-- **Receipt 009's two holds, answered by repair and receipt** `adopted`
-  - The direct-session refutation held WO-130 criterion 2: a replica that
-    omits undeclared files validates a declaration even when the suite checks
-    for an optional undeclared file, reads and validates it when present and
-    passes when absent, so a changed optional file could fail a fresh run
-    while its cached success is reused. Repaired with a two-sided replica
-    (undeclared paths absent, then present but unreadable), the counterexample
-    as a fixture, refusal of any declaration without a current validation
-    record, and validation keyed by every input that selects a read path. It
-    also held WO-078 criterion 1 under the added-process cost rule: the
-    registry and receipts added recurring bookkeeping with no removal or dated
-    acceptance. Repaired by generating the registry from receipts written
-    inside the existing export step, naming the removed manual lookup, and
-    replacing the legacy Cost declaration. Both are answered through the
-    disposition chain, never by override.
-  - Provenance: `docs/planning/refutations/2026-09-12-planning-dc998fb93c27e337-009.md`;
-    `docs/planning/proof-carrying-gates-2026-09-12-dispositions.json`. Reopen
-    if a replica ever passes a declaration that a fresh gate refutes, or if
-    WO-078's generator needs a hand-maintained field.
-- **Receipt 010: validation withdrawn, execution inside the replica adopted** `adopted`
-  - The second refutation held WO-130 criterion 2 twice more (a regular-file
-    check skips a directory stand-in; a validation record keyed without the
-    declared inputs that select read paths stays current after a flag
-    flips). The general fact is that no finite probe set validates a
-    declaration against an arbitrary guard. The pass withdrew validation of
-    real-tree runs and made the declaration the suite's world: a narrowed
-    suite executes inside a replica of its declared inputs at every run, so an
-    undeclared file does not exist for it and no guard can find it; a suite
-    that needs an undeclared file fails loudly; there is no validation record
-    to keep current. Host probes from the sandboxed session fixed the
-    mechanism's limits: nested `sandbox-exec` is refused, so a kernel denial
-    is an addition where the host permits it, never a condition of reuse;
-    forced clone-on-write is refused, so replicas are plain copies of 55 MB
-    of installed roots plus each suite's declared paths. The remaining
-    declarations and the document-only measurement moved to WO-131 under the
-    four-hour rule; WO-128's objective admits a host load outside the declared
-    class as a named non-defect and its two series collapse into one on a
-    pass.
-  - Provenance: `docs/planning/refutations/2026-09-12-planning-dc998fb93c27e337-010.md`;
-    the pass's host probes of 2026-09-12; the dispositions file. Reopen if the
-    harness sandbox admits nested profiles (then the denial can become a
-    condition), or if a narrowed suite is found reading the candidate tree by
-    an absolute path the runner did not project.
-- **Operator override of receipt 011's hold; the refutation pass must earn its cost** `adopted`
-  - Receipt 011 (pass scope, 333 s dispatch-to-file) held WO-130 criterion 1
-    on a fixture that hard-codes an absolute path into the candidate tree, the
-    residual the design already names. The operator's correction, captured
-    verbatim in ignored intake (SHA-256
-    `5d5985d3d0d078ca2a3be9b17f77c53ec71dcb59a1020e1830c6555bbc6e10e6`): the
-    point is to create a platform, not to solve every constructible example
-    now; the hold is a known issue to revisit when it becomes applicable or
-    bites; three refutations of one pass, all holds, at 2,454 s, 833 s and
-    333 s of recorded dispatch-to-file and more of operator time, helped
-    nothing. Misread: the pass treated each counterexample as a contract
-    defect to close before filing. Meant: file bounded orders whose known
-    residuals are recorded with reopening conditions, and stop the loop.
-    Changed: the hold is overridden through the gate's attributed route (a
-    `PlanHoldOverridden` event with actor and capture hash in the planning
-    control log), WO-130's execution record carries the known issue and its
-    reopening conditions, and product 07 gains the candidate that directs the
-    next pass to measure the refuter's yield against its cost and change the
-    mechanism, its scope or its budget before another pass pays it.
-  - Provenance: the capture; the override event; receipts 009 to 011. The
-    known issue reopens on the observations WO-130's execution record names;
-    the candidate reopens at the next planning pass.
-- **Doubled shadow gates, time-based expiry, deleting tests, choosing FUP-0091/0111/0132 here** `rejected`
-  - Each with its evidence and reversal condition in the map's NoOps of the
-    2026-09-12 pass.
-
-## 2026-09-14 — operator recovery during WO-131
-
-- **Unconditional operator controls** `adopted`
-  - `analysis:` interrupts the routine for diagnosis and direction.
-    `operator override:` provides access to tools despite DotLn gates, locks
-    or broken setup. Neither depends on the workflow it may need to repair.
-    Source: the WO-131 intake batch and [breakout receipt](../evidence/WO-131/ideation.md).
-    Promoted to product 07 §Operator recovery controls and WO-131 criterion 14.
-    Reopen if any generated entry path can prevent either command reaching the
-    agent or recovering from a failed harness.
-- **Immediate return to a usable repo** `candidate`
-  - Recovery should put the repository into an operator-authorized working
-    state immediately, preserving work and recording bypassed requirements.
-    Scripts versus assisted repair and arbitrary lifecycle reconstruction
-    remain open. Do not turn an override into invented passing evidence.
-    Source and review: the same breakout receipt; promoted as a candidate in
-    product 07. Reopen for implementation planning or an observed recovery
-    that still requires operator rescue outside the session.
-
-## 2026-09-15 — Planning pass: machinery stand-down (WO-132)
-
-- **The lifecycle evidence identity is the one wholesale change** `adopted`
-  - The operator opened the pass after WO-044's close with the verdict that
-    WO-125, WO-126, WO-128 to WO-131 and WO-044 made the machinery worse
-    and stalled product work, and asked for a meta pass over the previous
-    planning passes and a meta-meta pass over the planning process, with
-    the intuition of surgical fixes plus one wholesale change. Six
-    background diagnoses and the records agree on the location: every
-    transition requires a full-gate row at a whole-tree hash that includes
-    the reports and control events the transition itself writes, so every
-    stage boundary misses by construction and no per-suite key beneath it
-    can help. Adopted: transitions never require gate evidence; one product
-    gate runs once per order at final review, keyed by code identity, and
-    the pull request, the tag manifest and the release close consume that
-    row; release close runs no suite. The replica execution, declared-input
-    reuse, shared cache, kernel-denial probe and per-task expansion leave
-    the default path with their suites. Filed as
-    [WO-132](../work-orders/WO-132-machinery-stand-down.md) at the head of
-    the sequence, one order by the operator's exemption; the diagnosis is
-    [the planning document](../planning/machinery-stand-down-2026-09-15.md).
-  - Provenance: the dispatch and its three follow-up messages, captured
-    verbatim in ignored intake
-    (`docs/intake/notes/2026-09-15-machinery-stand-down-planning.md`,
-    SHA-256 `19061ea60115a416bc536e4eae66faffc5549dfd9a33841d886bd51dffd8350f`);
-    the ignored gate rows; WO-044-D016; WO-131's engineering review. Reopen
-    if a product defect reaches a tag that a removed suite would have caught,
-    or if the once-per-order gate exceeds six minutes after the inventory
-    split.
-- **Versions, effort and tools are logged, never required** `adopted`
-  - Attestation records harness, version, model, effort and source as
-    given; `ultra` and `ultra code` are `xhigh` with a subagents mode and
-    their raw spelling; effort-below-declared, readback, discovery-row and
-    version-minimum refusals become warnings; `Effort:` lines are
-    recommendations. DotLn's hooks refuse a second writer and a write during
-    the live gate and delegate everything else to the host's own permission
-    prompt, on both harnesses; the writer-isolation unit drops its
-    main-branch conjunct so planning, release close, build and bootstrap run
-    on main under a reservation. Five of six refusals recorded this week
-    were unlisted tool names; this pass's own background workers were
-    refused their handback tool, and the parent was refused `SendMessage`.
-  - Provenance: the capture; WO-044-D006, D009, D011, D015; WO-131 R5;
-    the parity diagnosis. Reopen if a second writer is admitted on main or a
-    host prompt admits an effect the settings deny list should have refused.
-- **Release close is the post-merge publish** `adopted`
-  - From merged main, one command proves egress, fast-forwards, runs the
-    sub-minute surface checks, builds its own dist if missing, cites the
-    reviewer's gate row with both trees, tags and creates the Release;
-    teardown and derived-worktree settlement follow as best effort. The
-    record: v0.17.0 needed a patch order, v0.17.5 a fix pull request,
-    v0.17.6 was never published, v0.17.7 ran a 605 s gate reusing nothing.
-  - Provenance: the capture's pasted analysis (partly wrong on the metadata
-    commands, right on every other shell form); WO-044-D001 to D007, D010;
-    the release-close diagnosis. Reopen at a host that cannot grant egress
-    to any session.
-- **The refuter is a goal review** `adopted`
-  - Four questions per order from the Cost line, the meter and the critical
-    path: the gate it unblocks and the NoOp cost; the eight traps applied to
-    the order's own process cost; whether the removal exceeds the addition;
-    whether failure degrades rather than refuses. A hold needs an observed
-    failure or a vision contradiction; a constructible counterexample is a
-    known issue; one judgment per pass; no third-hold stop; a disposition
-    binds the criterion text. This settles product 07's candidate on the
-    refutation pass's cost by allocation to WO-132 criterion 11.
-  - Provenance: the 2026-09-12 and 2026-09-15 captures; receipts 009 to
-    012 (holds at 2,454, 833, 333 and 755 s; two overridden; one re-raised
-    and re-imported as scope). Reopen if the goal review passes an order
-    the operator later names misaligned.
-- **The default gate is the product gate** `adopted`
-  - Product and lifecycle suites run in `npm test`, each with a `protects:`
-    line; machinery suites run on demand or when their own sources changed;
-    the scheduler restores the configuration WO-128 measured faster. The
-    three longest suite numbers were spans between split tasks; the heavy
-    tasks were the machinery's own fixtures; the estimated default gate is
-    about 250 s against 605 s. Only release, worktree, resume and the three
-    package suites have a recorded catch of a real defect.
-  - Provenance: the test-inventory audit over the ignored gate rows and the
-    90 verification and decision records. Reopen per the first entry.
-- **Why the previous four passes compounded the problem** `adopted`
-  - Each pass shipped a self-measured key, filed Cost lines a regex judged
-    and no closeout reconciled, and let verification of machinery produce
-    machinery repairs in the same order; the refuter rewarded contract
-    completeness, overrides bound receipt hashes so holds re-raised, the
-    meter never fired on a sawtooth, findings became criteria in the order
-    that found them, a complaint counted as a question rather than a
-    decision, and no rule ranked logging above refusing. Recorded in the
-    planning document §2 and §3 with the rules that should have bound and
-    why they did not.
-  - Provenance: the map's rationale for 2026-09-08, 09-09 and 09-12; the
-    receipts; the cost table; the merge history (13 of 14 merges after
-    WO-042 changed machinery, none the kernel).
-- **Corrections during this pass, logged** `adopted`
-  - Operator corrections: open the planning branch without asking (every
-    prior pass had); remove a stale reservation and prune dead worktrees
-    without reporting them; do not wait for hand-holding. Applied: the
-    branch, the reclaimed lock, four pruned registrations and the removed
-    WO-131 temporary host worktree preceded the research report. Self
-    corrections: the first shell commands on main were refused for
-    unlisted metadata forms and a `;` separator, replaced by the listed
-    forms; the background workers' handback and the parent's `SendMessage`
-    were refused as unclassified tools, so the reports were recovered from
-    the session transcripts; `git worktree prune` needed one host-approved
-    unsandboxed retry because the sandbox denies `.git/worktrees`.
-  - The refutation itself reproduced mechanism 2 of the diagnosis live:
-    the first fresh worker judged a subject that the timing-acceptance
-    cost-table refresh then changed, so its result was refused as stale and
-    a second fresh worker judged the current subject (receipt 013,
-    dispatch-to-file 808,618 ms, verdict pass with no holds and six known
-    issues); the host still recorded the receipt as a hold because it
-    carried WO-130 criterion 1's absolute-path hold forward from receipt
-    012, whose override bound only that receipt's hash. The operator's
-    2026-09-15 direction was applied as an attributed override of the
-    carried hold (the third time for the same finding), recorded in the
-    planning control log with the capture's SHA-256; WO-132 criterion 11
-    binds dispositions to criterion text so a fourth cannot occur.
-- **Process cost of this pass** `adopted`
-  - Entry measurement (`node scripts/harness.mjs usage`, scope dispatch,
-    source claude-transcript-message-usage, 2026-09-15T04:16Z): 538,326
-    total tokens (196 input, 439,523 cached input, 92,223 cache write,
-    6,384 output) over 15 steps and 3 commands. Six background diagnoses of
-    about 208,000 to 285,000 tokens and 45 to 109 tool calls each, 13 to 15
-    minutes each. The handoff measurement before the
-    planning commit (2026-09-15T05:10Z, same source and scope): 12,301,289
-    total tokens (1,272 input, 11,756,763 cached input, 420,118 cache
-    write, 123,136 output) over 125 steps and 90 commands; the six
-    background diagnoses' own counters (about 1.5 million tokens) are
-    listed above and are not claimed inside this figure. Tradeoff recorded: the pass ran no code
-    suite; the refutation is one background goal review.
-- **Wholesale revert, turning off every test, the key repair alone, one order per fix, opt-in reuse, a classified read-only guard, a detached release worktree, an operator-only close, process cost as a requirement, a hold budget alone, and the three open follow-ups** `rejected`
-  - Each with its evidence and reversal condition in the planning
-    document's NoOp register (§7) and the map's NoOps of this pass.
-
-## 2026-09-16 — Planning pass: R1 replan and the stand-down residue (WO-049, WO-051, WO-068, WO-133)
-
-- **R1 is decided from WO-044's record** `adopted`
-  - The operator opened the pass after the v0.22.0 close to plan WO-049,
-    WO-051 and WO-068 at the mandatory checkpoint, review the receipts since
-    the last pass, and take a meta view; two mid-turn messages added the
-    repeated hook advisory and the two-lane sequence. From the 33 rows: a
-    target's hooks and settings govern a Claude print-mode worker (C-W3,
-    C-W4, C-W5, C-W7); Codex exec fires no hooks but loads the instruction
-    surfaces and confines writes under a named profile (X-W3 to X-W7,
-    X-W2); neither sandbox confines a sibling write (C-W6, X-W6); exact
-    allowed-tool patterns admit editing (C-W1, C-W2); a detached launch
-    with stored authentication completes (C-U1, X-U1); a request with no
-    terminal is auto-denied (C-U2); no harness has a scheduler (C-U3,
-    X-U3); a kill leaves a recoverable worktree (C-U6, X-U6). WO-049 keeps
-    hooks for Claude, an instruction block for both, fails closed and
-    claims no sandbox containment; WO-051 uses the observed shapes with a
-    host-written commit message and three exact Bash patterns; WO-068 is
-    its own process with a `--once` tick, executing WO-067's statechart
-    over WO-050's slices with WO-047's projector. The three orders are
-    rewritten as stable contracts with real Cost lines and recommendation
-    effort lines.
-  - Provenance: the dispatch and both follow-ups, captured verbatim in
-    ignored intake (`docs/intake/notes/2026-09-16-r1-replan-planning.md`,
-    SHA-256 `07ffad87a856637579b6a40ba7f7bf77a533ccbd5e0622784086bc33a2bab279`);
-    [the writing-worker record](../discovery/writing-worker-smoke-2026-09-14.md);
-    [the planning document](../planning/r1-replan-2026-09-16.md) §1 and §2.
-    Reopen if a live smoke contradicts a cited row.
-- **WO-133 carries four residue repairs of WO-132, first, as one order** `adopted`
-  - This session's hook journal held 344 "built adapter unavailable"
-    advisories in three hours because the built runtime predated three
-    release closes and the close builds only a missing `dist`; every
-    completion since 2026-09-15T18:22Z attests `unknown` effort although
-    the operator selected one (WO-050 VER-001 finding 2); five of the seven
-    reviewer gates since the stand-down ran 625 to 840 s because a version
-    literal in `harness-host.ts` or `loadouts/` selected `harness-fixtures`
-    and `process-debt`, against 191 to 413 s without. The order rebuilds
-    after a fast-forward that changes the pins, says the advisory once per
-    session per cause and never from an observer, restores the
-    operator-attested fallback, and moves the literals into one module no
-    machinery suite declares. One order, not four: each item is a one-file
-    edit with an observed row and the 2026-09-12 pass paid four lifecycles
-    for four small orders.
-  - Provenance: the capture (message 2 and its screenshot); the ignored
-    gate rows and hook journals; WO-050 VER-001; WO-047 D005 and WO-048
-    D003. Reopen on a criterion failing after merge or a skeleton reviewer
-    gate above 360 s with only a literal changed.
-- **Two lanes are the normal workflow; the sequence is ordered in lane pairs** `adopted`
-  - The operator's third message. Every order since the stand-down ran in
-    parallel with a sibling and each integration was handled a little
-    differently (a verifier read a sibling's publication as a defect; two
-    retimes at final review; two union merges of the follow-up register;
-    regenerated bundles and editions every time; a ratchet broken by a merge
-    neither branch breached). Recorded in product 07 §Independent workflows
-    and integration as the operator's decision with the integration
-    checklist; one order at a time passes final review and release close.
-    The sequence groups queued orders in eleven blank-separated pairs with
-    disjoint surfaces and no intra-pair hard edge (WO-133 with WO-068,
-    WO-049 with WO-051, WO-121 with WO-119, WO-052 with WO-122, WO-053 with
-    WO-099, then the projection, starter and verification pairs); the run
-    after them keeps its serial order until R2.
-  - Provenance: the capture (message 3); WO-045 FINAL-001 item 9; WO-048
-    D003; WO-047 D005 to D007; the critical-path graph edges. Reopen on a
-    conflict inside a pair or a third lane.
-- **The receipts since the last pass, read and disposed** `adopted`
-  - WO-132, WO-067, WO-045, WO-046, WO-048, WO-050 and WO-047 closed after
-    the stand-down pass; WO-130, WO-131 and WO-044 were that pass's subject.
-    Their nominations are disposed in the planning document §3: WO-047
-    D004's planning reconciliation is settled by this pass's cost-table
-    refresh; `scenario.ts` is extracted at the next needed line rather than
-    ratcheted (WO-068's admitted boy-scout item); `appendEvent` draft
-    validation and the stepper backstop pin are one boy-scout pair for the
-    next kernel order; the weakened `test-worktree.sh` assertion waits for
-    the next order touching that script; the publication-check habit is a
-    role-text line inside WO-133; the stale-reservation hazard, the
-    follow-up register migration and local lane retention are candidates in
-    product 07.
-  - Provenance: the seven orders' decisions, verifications and final
-    reviews; `npm run meta` at the branch.
-- **The repository at v0.22.0** `adopted`
-  - 1,205 documentation files, 74 MB tracked, 13 MB packed; 74,000 source
-    lines with `harness-host.ts` at 3,040 and the process-debt test at
-    5,406; 19 product suites at 191 to 413 s, 16 machinery checks at 547 s,
-    17 document checks at 71 s; hooks at 296 ms mean, about 0.6 s per Bash
-    call; 13 runtime snapshots (34 MB), 36 MB of hook journals and 31 MB of
-    retained lanes with no retention rule; the follow-up register at 297
-    entries, 283 untriaged, 24 harvested today from decision records, and
-    no selection from it in three passes. Reorganization of the host, the
-    scripts, the tests and the evidence was weighed and declined; the
-    documentation reset stays deferred behind WO-053.
-  - Provenance: the planning document §4 with its observed commands.
-- **Corrections during this pass, logged** `adopted`
-  - The session started with its hooks in the fallback, so the writer
-    reservation and usage counters were absent; the planner rebuilt the
-    runtime once (3.9 s) to verify the diagnosis before the branch, after
-    which `harness check` passed. Entry and handoff process cost are
-    unknown for that reason. The operator's second and third messages
-    arrived mid-turn and were folded in before any file was written.
-- **Process cost of this pass** `adopted`
-  - Unknown: `node scripts/harness.mjs usage` had no session to measure.
-    The pass ran no code suite and one background goal review.
-- **A host-side containment order, waiting for WO-133, residue as boy-scout items on WO-049, four residue orders, a model-composed commit message, a harness scheduler, a second statechart interpreter, splitting the host, moving evidence, consolidating scripts, settling the register now, a retention rule now, the two rejected pairings, and a cross-order review gate** `rejected`
-  - Each with its evidence and reversal condition in the planning
-    document's NoOp register (§6) and the map's NoOps of this pass.
-
-
-## 2026-09-16 — Local-model experiments for practical use
-
-Source: operator `ideation:` during WO-051, captured unedited in
-`docs/intake/notes/WO-051-expanded-ideation-2026-09-16.md`. Shape-First
-Synthesis; clean-room screen found no stop condition. Provisional worktree-local
-intake is backed up and awaits main reconciliation before removal; see
-[the breakout receipt](../evidence/WO-051/ideation-local-models.md).
-
-- **Local runner readiness deserves next-pass priority** `preserved`
-  - The next planning pass should invest more effort in local LLM experiments
-    and establish what operator setup, potentially in LM Studio, is needed.
-    Revisit the existing WO-027 deferral using fresh availability evidence,
-    retaining its dated failure and WO-110's bounded inspection scope. No
-    installation, configuration or launch is implied by this idea. Reopen at
-    the next planning pass or when the operator reports setup readiness.
-- **Matched model and prompt experiments should identify useful local roles** `preserved`
-  - Follow readiness with a larger comparison program using the same WorkOrder
-    and baseline build: compare local and remote models, measure repeated-run
-    variation with the same model and prompt, then vary prompts or supports
-    while pinning the remaining conditions and identifying changed builds.
-    Preserve outputs and failures; compare independently checked quality,
-    reliability, operator intervention and resource cost. The result should
-    identify practical local responsibilities, limitations and hybrid paths,
-    rather than a universal leaderboard. Plan a small pilot before larger
-    batches; model choices, sample sizes and budgets remain unresolved.
-    Promoted to product 06 §Candidate — local-model usefulness experiments;
-    reopen with a ready runner and the next planning pass's disposition.
-
-
-## 2026-09-16 — Guided operator work orders
-
-Source: the second operator `ideation:` message in
-`docs/intake/notes/WO-051-expanded-ideation-2026-09-16.md`, following the local
-model experiment direction. Shape-First Synthesis; clean-room screen found no
-stop condition. The same [breakout receipt](../evidence/WO-051/ideation-local-models.md)
-records staging, review and reconciliation.
-
-- **Setup and assisted outcomes belong in the ordinary work-order flow** `preserved`
-  - Introduce a work-order type that guides the operator toward a specific
-    setup or result, allowing normal trial and error. Close with either checked
-    success evidence or a failure artifact that preserves attempts, observations
-    and the unresolved blocker. LM Studio readiness is a motivating first use,
-    not the type's exclusive purpose. The work order should carry the goal and
-    continuation across sessions instead of leaving setup as informal homework.
-    Its exact schema and lifecycle representation remain for planning; a failure
-    artifact must not imply the requested setup succeeded. Promoted to product
-    07 §Candidate — guided operator work orders. Reopen at the next planning
-    pass alongside local-model readiness, or when another assisted setup/result
-    needs this path.
-
-## 2026-09-16 — DotLn-owned authority with minimal native harness restrictions
-
-Source: operator `ideation:` during WO-119; unedited provisional capture in
-`docs/intake/notes/WO-119-expanded-ideation-2026-09-16.md`. Shape-First
-Synthesis; clean-room screen found no stop condition. Main intake reconciliation
-is pending before worktree removal; see the
-[breakout receipt](../evidence/WO-119/ideation-authority.md).
-
-- **Earn the ability to disable native harness sandboxes** `preserved`
-  - Prioritize establishing when Claude and Codex can run with their native
-    sandbox modes off and Claude's settings can carry nearly empty allow/deny
-    lists. Permissions, security and authority should be declared through
-    DotLn supports, builds and roles, with trustworthy empirical evidence that
-    the declared behavior is faithfully realized. This is a desired future
-    operating mode, not authorization to change today's settings or a claim
-    that instruction text alone enforces effects. The final assurance phrase
-    was incomplete in the first capture; the clarification below supplies it.
-  - Promoted to product 03 §Candidate — DotLn-owned authority with minimal
-    native harness restrictions. Reopen in the next planning pass to identify
-    the earliest evidence-backed path, or on new harness/adapter enforcement
-    evidence. The current runtime and locked clean-room floor remain facts and
-    constraints to account for, not silently rewritten conclusions.
-
-- **Faithful enforcement must survive adversarial tests** `preserved`
-  - The operator explicitly confirmed that runtime enforcement and tests of
-    attempts to bypass authority must precede disabling native sandboxes.
-    This completes the first message's unfinished assurance phrase. The
-    concrete coverage matrix and acceptance thresholds await planning.
-- **Basic authorized calls must not stall unattended work** `preserved`
-  - A second ideation message makes unattended liveness part of the outcome:
-    agents cannot work usefully while the operator is absent if routine calls
-    intermittently wait for basic permissions. Empirical acceptance should
-    cover sustained authorized workflows without unexpected approval prompts,
-    alongside the adversarial denial tests. This does not grant new effects
-    from silence; the preauthorized envelope remains the boundary. Reopen on
-    the next planning pass or a measured prompt/stall inside an existing grant.
-    Product 03's same candidate carries the requirement. Provenance: messages
-    2 and 3 in the same unedited capture and breakout receipt.
-
-## 2026-09-16 — Continuation after compaction and premature turn completion
-
-Source: message 4 of the operator's WO-119 ideation capture named above;
-Shape-First Synthesis with the same clean-room treatment and pending main
-intake reconciliation. See the [breakout receipt](../evidence/WO-119/ideation-authority.md).
-
-- **Recovering context must also recover progress** `preserved`
-  - The operator reports stale chat answers after compaction followed by idle
-    unfinished work when no tool or other event wakes the harness. The executor
-    separately acknowledges ending its last turn after a conversation-only
-    answer despite an unfinished order. Compaction as the causal mechanism and
-    the host's wake coverage remain unverified.
-  - Extend product 05's existing Context Continuity candidate and product 03's
-    session lifecycle: retain current obligations and which messages have been
-    handled; assign continuation to a host independently of pending tools.
-    Test actual compaction, stale side questions, zero running tools, premature
-    turn completion, selective resumption and respect for pause/authority.
-    No new queue, numeric token cap or present harness capability is claimed.
-    Reopen in planning or on a bounded live reproduction with host events and
-    a measured continuation outcome.
-
-## 2026-09-18 — Out-of-project file effects as an explicit grant
-
-Source: operator `ideation:` during WO-054 `resume: verify` (VER-003). The
-unedited capture is in main's ignored intake,
-`docs/intake/notes/WO-054-expanded-ideation-2026-09-18.md`. Shape-First
-Synthesis; the clean-room screen found no stop condition. See the
-[breakout receipt](../evidence/WO-054/ideation-2026-09-18.md).
-
-- **Writes outside the project need a support or role grant** `preserved`
-  - A verifier shell command carried an unintended stderr redirect. Its
-    destination resolved to the directory above the worktree and created a
-    file there, which the session then removed.
-  - The shape the operator wants: creating, editing and deleting files outside
-    the project is a capability that a support or role grants explicitly.
-    Without the grant, such a write is refused rather than happening by
-    mistake. Work with a legitimate outside destination holds the grant.
-  - The operator recalls that ordinary sandbox rules would have prevented the
-    write. That is kept as recollection. It was not investigated in the
-    session, at the operator's direction. Product 03 records that neither
-    native sandbox confined a sibling write (C-W6, X-W6), so the native
-    sandbox is not evidence of containment here.
-  - The idea runs against today's planning-branch refusal, which admits
-    external paths. That is a tension for planning, not a settled change.
-  - Promoted to product 03 §Candidate — DotLn-owned authority with minimal
-    native harness restrictions.
-  - The operator set this for priority at the next planning pass. Reopen
-    there, or on a measured refusal of an ungranted outside write.
-
-## 2026-09-18 — Local runner execution and bounded load observation (WO-137)
-
-Explicit WO-137 criterion 5 write-back. Source: this work order's live
-[discovery packet](../discovery/local-runner-2026-09-18.md), operator-supplied
-prior Terminal observations, thermal caution and explicit `scope expand:`
-request to perform the proposed gentle load test now. Clean-room screen found
-no stop condition; no raw private logs, device identifiers or settings copied.
-
-The installed runner now completes noninteractive inference, deterministic
-repeats, schema output and a tool round trip, and responds to observed HTTP
-cancellation and timeout. A two-minute sequential capped-load run recorded
-nominal thermal state, normal memory pressure and no incremental swap.
-The larger readiness contract remains inconclusive because egress attribution,
-effective template/default settings and interrupted-throughput evidence are
-incomplete. Preserve that distinction in WO-110 and WO-138; reopen when the
-packet's named observations become available. No general safety or model
-quality conclusion follows. Decisions and operator authorization are in
-[WO-137-D001–D003](../evidence/WO-137/decisions.md).
