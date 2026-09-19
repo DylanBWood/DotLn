@@ -1,4 +1,4 @@
-# WO-143 — Resident lock recovery: a resident killed at any instant restarts without a human, because the lock-recovery guard names its owner and a dead owner's guard is reclaimed after the same inspection a dead owner's lock gets (version assigned at activation)
+# WO-143 — Resident lock recovery: a resident killed at any instant restarts without a human, because the lock-recovery guard names its owner and a dead owner's guard is reclaimed after the same inspection a dead owner's lock gets (v0.32.1)
 
 **Model:** any. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
