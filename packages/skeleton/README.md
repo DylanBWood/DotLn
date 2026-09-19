@@ -1,5 +1,15 @@
 # `@dotln/skeleton`
 
+For application v0.32.1 (WO-143), a killed resident can recover an abandoned
+lock-acquisition guard after inspecting the store. Complete owner publication
+and serialized dead-owner reclaim cover both lifetime and append locks. Live,
+unreadable and legacy ownerless guards still refuse. The store error names the
+guard path; the `dotln` commands print only their redacted refusal, so inspect
+`host-lock-recovery` in the store and in its `.resident-append` directory.
+[Crash fixtures](test/resident.test.ts) and
+[implementation evidence](../../docs/evidence/WO-143/implementation.md) state
+the tested boundary.
+
 For application v0.28.0 (WO-052), a source-change host turns one compiled
 WorkOrder into one governed branch worktree in a target repository: it emits
 the bundle, records the focused test before and after, dispatches the
@@ -265,8 +275,19 @@ while an episode runs: `kill` terminates it; `finish` drains it without advancin
 the reset policy. A new absence cannot overlap a finishing episode. Idle expiry
 needs a fresh back/away edge. `SIGINT`/`SIGTERM` stop the loop after the bounded
 cycle. SIGKILL leaves the log and worktree; restart inspects them, records an
-unobserved episode lost and never dispatches that id twice. Torn logs or
-interrupted lock-recovery guards refuse for inspection without truncation.
+unobserved episode lost and never dispatches that id twice. A complete dead-owner
+lock-recovery guard is reclaimed after positive inspection. Torn logs, live or
+unreadable owners, and legacy ownerless guard directories still refuse for
+inspection without truncation. The store error names the refusing
+`host-lock-recovery` path, but `dotln resident` and `dotln presence` print only
+`worker host refused; inspect the store and declared environment before
+retrying`. After that line, inspect `<store>/host-lock-recovery` and
+`<store>/.resident-append/host-lock-recovery`. The guard is an atomic link to a prepared private owner directory; interrupted
+preparation or cleanup may leave an unreferenced `.host-lock-*` directory, which
+grants no ownership and does not prevent reopening. A recycled PID can still
+look live and require inspection. This is local process-crash recovery, not a
+power-loss or hostile same-user isolation guarantee. After actor cancellation,
+polling takes no further append lock while waiting for the final outcome.
 
 Configuration is immutable within a store; changing policy or scripts requires
 a fresh store. Retain the old store for inspection. The store records paths and
@@ -364,8 +385,10 @@ detached worktree. Recovery either starts a new physical episode or queries the
 durable completed-result receipt; it never silently changes the selected model.
 A completed demo can be queried again without dispatch. Cleanup refuses dirty,
 untracked or ignored files, changed bases, aliases and foreign worktrees. Torn
-logs, invalid locks and an abandoned `host-lock-recovery` guard require inspection;
-the command does not erase them. This is an idempotent read-only inspection
+logs, invalid locks and unreadable or ownerless `host-lock-recovery` guards
+require inspection; the command does not erase them. A complete dead-owner
+guard is reclaimed exclusively after the same positive store inspection as a
+dead host lock. This is an idempotent read-only inspection
 protocol, not a transaction mechanism for external writes.
 
 The always-run suite launches synthetic subprocess peers and real Git worktrees;
