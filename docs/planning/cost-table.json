@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "subjectSourceHash": "sha256:b46f6a5c9a467a78b4bcb5b60814f8fae3068c7f78e043ab802a2bd01960b60f",
+  "subjectSourceHash": "sha256:dcf277ba98de46e35dea85f97d311879d3e7f1ca6a58ec39dc711c4d4ea72e9f",
   "acceptances": [
     {
       "date": "2026-09-18",
@@ -59,142 +59,142 @@
       "reason": "WO-139 measured 17,477 bytes in both generated roots against 16,384 after adding the shared root-budget batching rule, four-refusal boundary and operator-authorized planning-amendment instruction. Raise the ceiling by one 4 KB step under the standing operator direction; preserve all reviewed rules. Reassess when another reviewed rule needs more."
     }
   ],
-  "observedAt": "2026-09-19T01:22:28.870Z",
-  "subjectRevision": "8e764aed95d708f264a7f3946cb9f3956fa595fc",
+  "observedAt": "2026-09-19T03:43:52.278Z",
+  "subjectRevision": "ec315bf525a8e5baf14604d5f58dcf813b76bf04",
   "rows": [
     {
       "workOrder": "WO-132",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-126",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-042",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-043",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-125",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-128",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-129",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-130",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-131",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-044",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-067",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-045",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-046",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-047",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-048",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-050",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-133",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-068",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-049",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-051",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-121",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-119",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-052",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-122",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-141",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-136",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-135",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": {
         "elapsedMs": 7699647,
         "attempts": 3,
@@ -238,12 +238,12 @@
     },
     {
       "workOrder": "WO-053",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-139",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": {
         "elapsedMs": 11431171,
         "attempts": 6,
@@ -287,7 +287,7 @@
     },
     {
       "workOrder": "WO-054",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": {
         "elapsedMs": 24848112,
         "attempts": 7,
@@ -331,7 +331,7 @@
     },
     {
       "workOrder": "WO-137",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": {
         "elapsedMs": 5875968,
         "attempts": 3,
@@ -375,7 +375,7 @@
     },
     {
       "workOrder": "WO-055",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": {
         "elapsedMs": 5288212,
         "attempts": 3,
@@ -419,292 +419,307 @@
     },
     {
       "workOrder": "WO-142",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-084",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-143",
+      "observedAt": "2026-09-19T03:43:52.278Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-144",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-140",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-056",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
-      "workOrder": "WO-110",
-      "observedAt": "2026-09-19T01:22:28.870Z",
-      "metrics": null
-    },
-    {
-      "workOrder": "WO-099",
-      "observedAt": "2026-09-19T01:22:28.870Z",
-      "metrics": null
-    },
-    {
-      "workOrder": "WO-079",
-      "observedAt": "2026-09-19T01:22:28.870Z",
-      "metrics": null
-    },
-    {
-      "workOrder": "WO-069",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "workOrder": "WO-145",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-090",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
-      "workOrder": "WO-071",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "workOrder": "WO-110",
+      "observedAt": "2026-09-19T03:43:52.278Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-099",
+      "observedAt": "2026-09-19T03:43:52.278Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-079",
+      "observedAt": "2026-09-19T03:43:52.278Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-069",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-138",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-071",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-120",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-063",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-100",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-064",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-111",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-114",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-070",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-115",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-060",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-116",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-065",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-117",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-066",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-057",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-058",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-059",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-061",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-124",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-062",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-123",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-112",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-074",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-075",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-072",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-073",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-076",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-077",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-078",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-118",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-113",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-080",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-081",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-082",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-083",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-096",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-097",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-098",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-091",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-092",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-093",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-094",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-095",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-085",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-086",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-087",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-088",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     },
     {
       "workOrder": "WO-089",
-      "observedAt": "2026-09-19T01:22:28.870Z",
+      "observedAt": "2026-09-19T03:43:52.278Z",
       "metrics": null
     }
   ],
