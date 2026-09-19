@@ -20,6 +20,13 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-055 activation completion (2026-09-18):** application `v0.31.0` and
+skeleton `0.27.0` stage bounded source-writing repair and complete-contract
+re-verification, with persisted executable continuations and a default limit
+of two rounds. This additive minor changes no dependency, compiler/kernel/
+console version, event envelope schema or publication control. Evidence uses
+fixture workers over real scratch repositories; the live loop remains WO-056.
+
 **WO-054 activation completion (2026-09-18):** application `v0.30.0`, compiler
 `0.14.0` and skeleton `0.26.0` stage the additive worktree verification profile
 with the Codex contributor continuation adapter. `verification-v1` admits optional snapshot

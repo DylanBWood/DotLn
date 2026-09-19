@@ -974,8 +974,50 @@ test to unavailable. This heuristic does not authenticate launcher output and
 cannot turn it into a passing witness. An unavailable
 witness cannot certify acceptance. The same matrix fold preserves failures against
 implementer success claims. This is the first-proof isolation, not a hostile-process
-security boundary; descendant cleanup is not established. Source-writing repair,
-live verifier episodes, visual/network claims and review remain separate orders.
+security boundary; descendant cleanup is not established. Live verifier episodes, visual/network claims and review remain separate orders.
+
+WO-055 adds `deriveRepairOrder(finding, original, grants)` and `RepairHost`.
+The original names the WorkOrder, effective authority envelope, declared file or
+directory surfaces, named tests, criteria and optional `roundLimit` (default two).
+Evidence references resolve only against the failed subject's pinned witnesses.
+The repair surfaces are the unique referenced witness files plus the finding's
+likely surfaces; tests are exact commands resolved from its reproduction steps.
+A step must equal a referenced witness's reproduction step or a named command.
+Unknown references, outside paths and unnamed commands yield `NeedsHuman` naming
+the offending input before any source dispatch. There is no prose-to-shell
+interpretation and a read-only verifier cannot grant writer scope.
+
+An expansion requires a separately admitted exact scope record: a WO-042 grant
+with provenance and repository identity plus explicit file and command lists.
+The whole record must match the host-owned registry, including those lists.
+Used grants cover exactly the extra scope and their IDs enter the derived order.
+They cannot add effects or operations here; the effective envelope and operation
+lists remain the original's. The derived order preserves the original contract
+and base and adds its contract equality hash, finding and incremented round.
+`executionBaseCommit` separately identifies the failing commit from which the
+fresh WO-052 worker branches and measures its repair diff. Earlier worker facts,
+decisions and transcripts are excluded from the repair capsule.
+
+The repair reactor owns an executable `Sequence` of repair `Invoke`,
+`Await(SourceChangeObserved)` and verification `Invoke`, followed by `Guard`
+branches for success and the round limit. The opening and derived round programs
+are persisted and validated on replay. Parent `RepairCommandPersisted` and
+`RepairCommandResult` events record orchestration ownership; child stores retain
+the existing worker outbox and effect receipts. The parent acknowledges ownership
+before awaiting the source observation, so a committed child can be recovered
+without a second writer dispatch. Source workers use the first reproduction as
+their focused test; the host runs every derived reproduction command against the
+committed repair and refuses input changes. Re-verification uses all original
+criteria, named tests and contract, with fresh physical verifier episode IDs.
+A snapshot preparation receipt permits recovery before verifier dispatch;
+unpublished partial copies are preserved and a new attempt uses a fresh copy.
+
+A failed final round emits terminal `RepairExhausted` with the last finding;
+its next action is human. No third repair is dispatched under the default limit.
+Unverified evidence or an explicit attention request yields `NeedsHuman`, never
+success. Fixture doubles exercise real scratch Git commits, confined host tests,
+replay and host kills. A live repair/verifier loop remains WO-056; this mechanism
+retains WO-052/054's trusted-host and snapshot-confinement limits.
 
 ## Memory and observation
 

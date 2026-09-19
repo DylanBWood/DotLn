@@ -1,0 +1,251 @@
+{
+  "schemaVersion": 1,
+  "provenance": "Synthetic writer/verifier doubles; real scratch Git commits, macOS confined verification checks and host SIGKILL. No live model repair claim.",
+  "projection": "Portable assertions omit physical paths, random commit identities, raw output and equality hashes; full source and executable assertions are in fixture.mjs and repair.test.ts.",
+  "cases": [
+    {
+      "kind": "success",
+      "status": "complete",
+      "nextAction": "none",
+      "round": 1,
+      "writerDispatches": 1,
+      "verifierDispatches": 2,
+      "contractUnchanged": true,
+      "derivedSurfaces": [
+        "contract-test.mjs",
+        "fixture-test.mjs",
+        "fixture.txt"
+      ],
+      "derivedTests": [
+        "node contract-test.mjs"
+      ],
+      "refusedInputs": [
+        {
+          "kind": "NeedsHuman",
+          "offending": "outside.txt"
+        },
+        {
+          "kind": "NeedsHuman",
+          "offending": "node outside.mjs"
+        },
+        {
+          "kind": "NeedsHuman",
+          "offending": "evidenceRefs"
+        }
+      ],
+      "repairDiffPaths": [
+        "fixture.txt"
+      ],
+      "originalTestOutcomes": [
+        {
+          "command": "node fixture-test.mjs",
+          "outcome": "pass"
+        },
+        {
+          "command": "node contract-test.mjs",
+          "outcome": "fail"
+        }
+      ],
+      "finalTestOutcomes": [
+        {
+          "command": "node fixture-test.mjs",
+          "outcome": "pass"
+        },
+        {
+          "command": "node contract-test.mjs",
+          "outcome": "pass"
+        }
+      ],
+      "lastFinding": null,
+      "eventTypes": [
+        "RepairOpened",
+        "RepairTick",
+        "RepairCommandPersisted",
+        "RepairCommandResult",
+        "RepairTick",
+        "RepairDerived",
+        "RepairTick",
+        "RepairCommandPersisted",
+        "RepairCommandResult",
+        "RepairTick",
+        "SourceChangeObserved",
+        "RepairTick",
+        "RepairCommandPersisted",
+        "RepairCommandResult",
+        "RepairTick",
+        "RepairCompleted"
+      ],
+      "kill": null
+    },
+    {
+      "kind": "exhaustion",
+      "status": "exhausted",
+      "nextAction": "human",
+      "round": 2,
+      "writerDispatches": 2,
+      "verifierDispatches": 3,
+      "contractUnchanged": true,
+      "derivedSurfaces": [
+        "contract-test.mjs",
+        "fixture-test.mjs",
+        "fixture.txt"
+      ],
+      "derivedTests": [
+        "node contract-test.mjs"
+      ],
+      "refusedInputs": [
+        {
+          "kind": "NeedsHuman",
+          "offending": "outside.txt"
+        },
+        {
+          "kind": "NeedsHuman",
+          "offending": "node outside.mjs"
+        },
+        {
+          "kind": "NeedsHuman",
+          "offending": "evidenceRefs"
+        }
+      ],
+      "repairDiffPaths": [
+        "fixture.txt"
+      ],
+      "originalTestOutcomes": [
+        {
+          "command": "node fixture-test.mjs",
+          "outcome": "pass"
+        },
+        {
+          "command": "node contract-test.mjs",
+          "outcome": "fail"
+        }
+      ],
+      "finalTestOutcomes": [
+        {
+          "command": "node fixture-test.mjs",
+          "outcome": "pass"
+        },
+        {
+          "command": "node contract-test.mjs",
+          "outcome": "fail"
+        }
+      ],
+      "lastFinding": {
+        "criterionId": "AC-contract",
+        "severity": "blocking",
+        "observed": "exit 1",
+        "expected": "exit 0",
+        "likelySurface": [
+          "fixture.txt"
+        ]
+      },
+      "eventTypes": [
+        "RepairOpened",
+        "RepairTick",
+        "RepairCommandPersisted",
+        "RepairCommandResult",
+        "RepairTick",
+        "RepairDerived",
+        "RepairTick",
+        "RepairCommandPersisted",
+        "RepairCommandResult",
+        "RepairTick",
+        "SourceChangeObserved",
+        "RepairTick",
+        "RepairCommandPersisted",
+        "RepairCommandResult",
+        "RepairTick",
+        "RepairDerived",
+        "RepairTick",
+        "RepairCommandPersisted",
+        "RepairCommandResult",
+        "RepairTick",
+        "SourceChangeObserved",
+        "RepairTick",
+        "RepairCommandPersisted",
+        "RepairCommandResult",
+        "RepairTick",
+        "RepairExhausted"
+      ],
+      "kill": null
+    },
+    {
+      "kind": "kill-recovery",
+      "status": "complete",
+      "nextAction": "none",
+      "round": 1,
+      "writerDispatches": 1,
+      "verifierDispatches": 2,
+      "contractUnchanged": true,
+      "derivedSurfaces": [
+        "contract-test.mjs",
+        "fixture-test.mjs",
+        "fixture.txt"
+      ],
+      "derivedTests": [
+        "node contract-test.mjs"
+      ],
+      "refusedInputs": [
+        {
+          "kind": "NeedsHuman",
+          "offending": "outside.txt"
+        },
+        {
+          "kind": "NeedsHuman",
+          "offending": "node outside.mjs"
+        },
+        {
+          "kind": "NeedsHuman",
+          "offending": "evidenceRefs"
+        }
+      ],
+      "repairDiffPaths": [
+        "fixture.txt"
+      ],
+      "originalTestOutcomes": [
+        {
+          "command": "node fixture-test.mjs",
+          "outcome": "pass"
+        },
+        {
+          "command": "node contract-test.mjs",
+          "outcome": "fail"
+        }
+      ],
+      "finalTestOutcomes": [
+        {
+          "command": "node fixture-test.mjs",
+          "outcome": "pass"
+        },
+        {
+          "command": "node contract-test.mjs",
+          "outcome": "pass"
+        }
+      ],
+      "lastFinding": null,
+      "eventTypes": [
+        "RepairOpened",
+        "RepairTick",
+        "RepairCommandPersisted",
+        "RepairCommandResult",
+        "RepairTick",
+        "RepairDerived",
+        "RepairTick",
+        "RepairCommandPersisted",
+        "RepairCommandResult",
+        "RepairTick",
+        "RepairTick",
+        "SourceChangeObserved",
+        "RepairTick",
+        "RepairCommandPersisted",
+        "RepairCommandResult",
+        "RepairTick",
+        "RepairCompleted"
+      ],
+      "kill": {
+        "signal": "SIGKILL",
+        "writerDispatchesBeforeResume": 1
+      }
+    }
+  ]
+}

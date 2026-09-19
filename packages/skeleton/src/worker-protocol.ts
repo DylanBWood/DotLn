@@ -1,3 +1,4 @@
+import type { JsonValue } from "@dotln/kernel";
 import type {
   AuthorityEnvelope,
   Command,
@@ -465,7 +466,15 @@ export function parseStoredWriterResult(
 }
 
 export function writerPrompt(request: WriterRequest): string {
+  const source = request.command.intent.payload as Readonly<
+    Record<string, JsonValue>
+  >;
   return JSON.stringify({
+    ...(source.executionBaseCommit
+      ? { executionBaseCommit: source.executionBaseCommit }
+      : {}),
+    ...(source.repairContext ? { repair: source.repairContext } : {}),
+    ...(source.surfaces ? { surfaces: source.surfaces } : {}),
     workOrder: request.workOrder,
     artifactReceipt: {
       semanticHash: request.artifactIdentity.semanticHash,
@@ -481,6 +490,6 @@ export function writerPrompt(request: WriterRequest): string {
     inspectionInstructions:
       "Inspect only the assigned worktree. Use native read tools when available. Otherwise read-only shell inspection is authorized: pwd; git rev-parse --show-toplevel; git status --short; git ls-files; git diff --no-ext-diff --no-textconv; git diff --cached --no-ext-diff --no-textconv; cat -- <worktree-relative-file>. For cat, use a literal relative file path without shell metacharacters, parent traversal or symlinks, and never read credentials or paths outside this worktree. Run each command separately; no shell composition, redirection, substitutions or interpreters. Native tool permissions still apply; if a diff command is unavailable, read the diff in the declared test output.",
     outputInstructions:
-      "Edit only within the declared worktree mount. Never modify .claude/, .dotln/ or the host-written commit-message file. Never compose a commit message. Run exactly the declared test command. Read the diff, then run git add -A and the exact commitCommand. These are the only effectful shell commands authorized; the separate inspectionInstructions authorize bounded reads. No other shell commands, remote, credential, settings or sandbox effects are authorized. Return the schema object containing only the six-field envelope; no Markdown or prose outside it. Completion is a self-report, not verification; report blocked or failed when work cannot finish, and requiresHuman when an operator decision is needed. Git identity and denial accounting are observed separately by the host.",
+      "Edit only the declared surfaces within the worktree mount. Never modify .claude/, .dotln/ or the host-written commit-message file. Never compose a commit message. Run exactly the declared test command. Read the diff, then run git add -A and the exact commitCommand. These are the only effectful shell commands authorized; the separate inspectionInstructions authorize bounded reads. No other shell commands, remote, credential, settings or sandbox effects are authorized. Return the schema object containing only the six-field envelope; no Markdown or prose outside it. Completion is a self-report, not verification; report blocked or failed when work cannot finish, and requiresHuman when an operator decision is needed. Git identity and denial accounting are observed separately by the host.",
   });
 }

@@ -1,4 +1,21 @@
 import {
+  REPAIR_HOST,
+  repairEventTypes,
+  repairEqual,
+  repairContract,
+  repairCommand,
+  repairVerificationProgram,
+  repairRoundProgram,
+  deriveRepairOrder,
+  type RepairState,
+  type RepairOriginal,
+  type RepairGrants,
+} from "./repair.js";
+import {
+  decodeSourceObservation,
+  decodeFocusedTest,
+} from "./source-change-state.js";
+import {
   foldResidentEvent,
   residentEventTypes,
   type ResidentState,
@@ -116,6 +133,7 @@ export type Loadout = LoadoutGraph;
 type RuntimePolicy = Readonly<{ maintenance: string }>;
 
 export type RuntimeState = Readonly<{
+  repair?: JsonValue;
   resident?: JsonValue;
   sourceChange?: SourceChangeSlice;
   feedback?: JsonValue;
@@ -159,6 +177,7 @@ export type RuntimeState = Readonly<{
 /** Public Decisions retain RuntimeState; this version belongs only to the fold. */
 export type WalkingSkeletonSlice = Omit<
   RuntimeState,
+  | "repair"
   | "sourceChange"
   | "resident"
   | "feedback"
@@ -176,6 +195,7 @@ export type SkeletonState = Readonly<{
   worker: WorkerEpisodeSlice;
   verification: VerificationState | undefined;
   feedback: FeedbackRuntimeState | undefined;
+  repair: RepairState | undefined;
   sourceChange: SourceChangeSlice;
   resident: ResidentState | undefined;
 }>;
@@ -185,6 +205,7 @@ export const walkingStateFromRuntime = (
   state: RuntimeState,
 ): WalkingSkeletonSlice => {
   const {
+    repair,
     sourceChange,
     resident,
     feedback,
@@ -247,6 +268,7 @@ export function skeletonStateFromRuntime(state: RuntimeState): SkeletonState {
       state.feedback === undefined
         ? undefined
         : feedbackStateFromRuntime(state),
+    repair: state.repair as unknown as RepairState | undefined,
     sourceChange: state.sourceChange ?? {},
     resident: state.resident as unknown as ResidentState | undefined,
   };
@@ -310,6 +332,7 @@ export const sliceEventTypes = {
     "CommandResult",
     ...SEMANTIC_CORRECTIONS,
   ],
+  repair: repairEventTypes,
   sourceChange: sourceChangeEventTypes,
   resident: residentEventTypes,
 } as const;
@@ -318,6 +341,11 @@ export function selectEventSlice(
   state: SkeletonState,
   event: Event,
 ): FoldedSlice {
+  if (
+    event.type === "RepairOpened" ||
+    (state.repair && state.repair.workstreamId === event.workstreamId)
+  )
+    return "repair";
   if (
     sourceChangeEventTypes.some((type) => type === event.type) ||
     (selectSourceChangeSlice(state).workstreamId !== undefined &&
@@ -1652,6 +1680,11 @@ export const seiriReactor: Reactor<RuntimeState> = (runtime, event, env) => {
   // Retain the old validation order even in a feedback/verification workstream.
   if (walking.program !== null) programFromState(walking);
   switch (selectEventSlice(state, event)) {
+    case "repair":
+      return runtimeDecision(repairDecision(state.repair, event), (repair) => ({
+        ...runtime,
+        repair: json(repair),
+      }));
     case "sourceChange":
       return runtimeDecision(
         sourceChangeDecision(selectSourceChangeSlice(state), event),
@@ -1726,6 +1759,7 @@ export interface VerificationPending {
   readonly leaseExpired: boolean;
 }
 export interface VerificationState {
+  readonly episodeNamespace?: string;
   readonly workstreamId: string;
   readonly criteria: readonly AcceptanceCriterion[];
   readonly baseline: VerificationSubject | null;
@@ -1802,6 +1836,7 @@ type VerificationPayload = {
   baseline: VerificationSubject;
   subject: VerificationSubject;
   implementerEpisodeId: string;
+  episodeNamespace?: string;
   maxRepairs: number;
   authority: AuthorityEnvelope;
   command: Command;
@@ -1919,7 +1954,7 @@ function dispatch(state: VerificationState): VerificationState {
     state.subject!,
     finding,
   );
-  const episodeId = `ep_${capsule.role}_${ordinal}`;
+  const episodeId = `${state.episodeNamespace ? `${state.episodeNamespace}_` : ""}ep_${capsule.role}_${ordinal}`;
   const command: Command = {
     commandId: commandId(state.workstreamId, episodeId, ordinal, 0),
     episodeId,
@@ -2007,8 +2042,16 @@ function foldVerificationEvent(
           ),
         "baseline witness coverage",
       );
+      requireState(
+        value.episodeNamespace === undefined ||
+          /^[a-zA-Z0-9_-]+$/u.test(value.episodeNamespace),
+        "episode namespace",
+      );
       return {
         ...state,
+        ...(value.episodeNamespace
+          ? { episodeNamespace: value.episodeNamespace }
+          : {}),
         criteria,
         baseline,
         subject,
@@ -2619,4 +2662,329 @@ function feedbackDecision(
     };
   }
   return observed(state, event, "feedback-observed");
+}
+
+/** Repair orchestration uses the same kernel executable subset and owner. */
+function repairDecision(
+  previous: RepairState | undefined,
+  event: Event,
+): SliceDecision<RepairState> {
+  if (event.actorId !== REPAIR_HOST)
+    throw new Error("repair event requires host actor");
+  const p = event.payload as unknown as Record<string, any>;
+  const check = (condition: unknown, detail: string) => {
+    if (!condition) throw new Error(`repair state: ${detail}`);
+  };
+  let state: RepairState;
+  if (event.type === "RepairOpened") {
+    check(!previous, "already opened");
+    const original = p.original as RepairOriginal;
+    const contract = repairContract(original.workOrder);
+    const limit = original.roundLimit ?? 2;
+    check(Number.isSafeInteger(limit) && limit >= 0, "round limit");
+    check(original.surfaces.length && original.tests.length, "original scope");
+    const subject = copySubject(p.subject as VerificationSubject);
+    const baseline = copySubject(p.baseline as VerificationSubject);
+    compileVerificationTask("repair_preflight", original.criteria, subject);
+    check(
+      subject.snapshot &&
+        repairEqual(subject.snapshot.contract, contract) &&
+        repairEqual(subject.snapshot.tests, original.tests) &&
+        subject.baseCommit === original.workOrder.baseCommit,
+      "original contract, tests or base mismatch",
+    );
+    check(
+      baseline.revision === original.workOrder.baseCommit &&
+        baseline.baseCommit === subject.baseCommit &&
+        baseline.repo === subject.repo,
+      "baseline mismatch",
+    );
+    state = {
+      workstreamId: event.workstreamId,
+      original,
+      grants: p.grants as RepairGrants,
+      baseline,
+      subject,
+      currentCommit: subject.revision,
+      round: 0,
+      continuation: Program.Done(),
+      pending: null,
+      emission: null,
+      order: null,
+      finding: null,
+      verified: false,
+      status: "running",
+      reason: null,
+    };
+    const decoded = decodeContinuation(p.continuation);
+    check(
+      decoded.ok &&
+        repairEqual(
+          decoded.ok ? decoded.value : null,
+          repairVerificationProgram(state),
+        ),
+      "opening continuation mismatch",
+    );
+    state = { ...state, continuation: repairVerificationProgram(state) };
+  } else {
+    check(
+      previous && previous.workstreamId === event.workstreamId,
+      "workstream mismatch",
+    );
+    state = previous!;
+    check(state.status === "running", "terminal workstream");
+    const step = (input?: Event) => {
+      const decision = decideProgram(
+        state.continuation,
+        json(state),
+        {
+          now: event.occurredAt,
+          rngState: 0,
+          predicates: {
+            "repair.verified": { 1: () => state.verified },
+            "repair.remaining": {
+              1: () => state.round < (state.original.roundLimit ?? 2),
+            },
+          },
+        },
+        input,
+      );
+      state = {
+        ...state,
+        continuation: decision.continuation,
+        emission: decision.emitted[0]
+          ? {
+              ...decision.emitted[0],
+              payload: { round: state.round, finding: json(state.finding) },
+            }
+          : null,
+      };
+      if (state.emission?.type === "RepairDerived") {
+        const derivation = deriveRepairOrder(
+          state.finding!,
+          { ...state.original, subject: state.subject, round: state.round },
+          state.grants,
+        );
+        const continuation =
+          derivation.kind === "derived"
+            ? repairRoundProgram({
+                ...state,
+                order: derivation.order,
+                round: derivation.order.round,
+              })
+            : Program.Done();
+        state = {
+          ...state,
+          emission: {
+            ...state.emission,
+            payload: {
+              ...(state.emission.payload as Record<string, JsonValue>),
+              derivation: json(derivation),
+              continuation: json(continuation),
+            },
+          },
+        };
+      }
+      return decision;
+    };
+    if (event.type === "RepairTick") {
+      check(!state.pending && !state.emission, "tick with pending effect");
+      const decision = step();
+      // Intents are offered to the host; only CommandPersisted admits ownership.
+      return { ...decision, state };
+    } else if (event.type === "RepairCommandPersisted") {
+      check(!state.pending && !state.emission, "duplicate pending command");
+      const decision = step();
+      const command = p.command as Command;
+      check(
+        decision.intents.length === 1 &&
+          repairEqual(decision.intents[0], command.intent),
+        "command not selected by program",
+      );
+      const kind = (command.intent.payload as { kind: "write" | "verify" })
+        .kind;
+      check(
+        repairEqual(command, repairCommand(state, kind)),
+        "command identity",
+      );
+      state = { ...state, pending: command };
+    } else if (event.type === "RepairCommandResult") {
+      check(
+        state.pending && p.commandId === state.pending.commandId,
+        "result without pending command",
+      );
+      if (state.pending!.intent.effect === "repo.write") {
+        check(
+          p.result === "accepted" && state.order,
+          "repair ownership result",
+        );
+      } else {
+        check(p.result === "completed", "verification result kind");
+        const capsule = p.capsule as VerificationTask;
+        assertVerificationTask(capsule);
+        check(
+          capsule.role === "verifier" &&
+            capsule.subject.revision === state.currentCommit &&
+            capsule.subject.baseCommit ===
+              state.original.workOrder.baseCommit &&
+            capsule.subject.repo === state.subject.repo &&
+            repairEqual(capsule.criteria, state.original.criteria) &&
+            repairEqual(
+              capsule.subject.snapshot?.contract,
+              repairContract(state.original.workOrder),
+            ) &&
+            repairEqual(capsule.subject.snapshot?.tests, state.original.tests),
+          "re-verification changed original contract",
+        );
+        const result = parseEvidenceResult(p.value, {
+          command: p.verifierCommand as Command,
+          workOrder: capsule.workOrder,
+          capsule,
+          episodeId: p.value?.envelope?.episodeId,
+        });
+        check(
+          result.kind === "verification" &&
+            result.envelope.status === "completed",
+          "unusable verification",
+        );
+        if (result.kind !== "verification")
+          throw new Error("repair requires verification");
+        const verified =
+          !result.envelope.requiresHuman &&
+          result.evaluations.length === state.original.criteria.length &&
+          result.evaluations.every((e) => e.verdict === "pass");
+        const finding =
+          result.findings.find((f) => f.severity === "blocking") ?? null;
+        state = { ...state, subject: capsule.subject, verified, finding };
+        if (!verified && (!finding || result.envelope.requiresHuman)) {
+          state = {
+            ...state,
+            pending: null,
+            continuation: Program.Done(),
+            emission: {
+              schemaVersion: 1,
+              type: "NeedsHuman",
+              actorId: REPAIR_HOST,
+              workstreamId: state.workstreamId,
+              occurredAt: 0,
+              payload: {
+                reason: "verification needs human attention",
+                offending: finding?.findingId ?? "unverified",
+              },
+            },
+          };
+          return observed(state, event);
+        }
+      }
+      step({ ...event, type: "CommandResult" });
+      state = { ...state, pending: null };
+    } else if (event.type === "SourceChangeObserved") {
+      check(state.order && !state.pending, "source observation without repair");
+      const observation = decodeSourceObservation(p.observation);
+      check(
+        Array.isArray(p.tests) &&
+          repairEqual(
+            p.tests.map((test: unknown) => decodeFocusedTest(test).command),
+            state.order!.tests.map((test) => test.command),
+          ),
+        "repair reproduction commands mismatch",
+      );
+      const command = repairCommand(state, "write");
+      check(
+        event.correlationId === command.commandId &&
+          observation.workOrderId === state.order!.workOrder.workOrderId &&
+          observation.commit !== state.order!.executionBaseCommit,
+        "source observation identity",
+      );
+      const before = state.continuation;
+      step(event);
+      check(
+        !repairEqual(before, state.continuation),
+        "source observation not awaited",
+      );
+      state = { ...state, currentCommit: observation.commit };
+    } else if (event.type === "NeedsHuman") {
+      if (state.emission)
+        check(
+          state.emission.type === event.type &&
+            repairEqual(state.emission.payload, event.payload),
+          "human disposition mismatch",
+        );
+      check(
+        typeof p.reason === "string" && typeof p.offending === "string",
+        "human disposition fields",
+      );
+      state = {
+        ...state,
+        status: "needs-human",
+        reason: `${p.reason}: ${p.offending}`,
+        continuation: Program.Done(),
+        pending: null,
+        emission: null,
+      };
+    } else {
+      check(
+        state.emission?.type === event.type &&
+          repairEqual(state.emission.payload, event.payload),
+        "program emission mismatch",
+      );
+      state = { ...state, emission: null };
+      if (event.type === "RepairDerived") {
+        const derived = deriveRepairOrder(
+          state.finding!,
+          { ...state.original, subject: state.subject, round: state.round },
+          state.grants,
+        );
+        check(repairEqual(derived, p.derivation), "derived order drift");
+        if (derived.kind === "NeedsHuman") {
+          state = {
+            ...state,
+            continuation: Program.Done(),
+            emission: {
+              schemaVersion: 1,
+              type: "NeedsHuman",
+              actorId: REPAIR_HOST,
+              workstreamId: state.workstreamId,
+              occurredAt: 0,
+              payload: { reason: derived.reason, offending: derived.offending },
+            },
+          };
+        } else {
+          state = {
+            ...state,
+            order: derived.order,
+            round: derived.order.round,
+            verified: false,
+          };
+          const decoded = decodeContinuation(p.continuation);
+          check(
+            decoded.ok &&
+              repairEqual(
+                decoded.ok ? decoded.value : null,
+                repairRoundProgram(state),
+              ),
+            "derived continuation drift",
+          );
+          state = {
+            ...state,
+            continuation: decoded.ok ? decoded.value : Program.Done(),
+          };
+        }
+      } else if (
+        event.type === "RepairCompleted" ||
+        event.type === "RepairExhausted"
+      ) {
+        check(
+          event.type !== "RepairExhausted" || state.finding,
+          "exhaustion lacks last finding",
+        );
+        state = {
+          ...state,
+          status: event.type === "RepairCompleted" ? "complete" : "exhausted",
+          continuation: Program.Done(),
+        };
+      } else throw new Error(`unknown repair event ${event.type}`);
+    }
+  }
+  return observed(state, event);
 }

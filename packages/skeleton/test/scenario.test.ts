@@ -151,6 +151,8 @@ test("WO-016 AC1 one typed reactor and its pure helpers own kernel decisions", a
   assert.deepEqual(
     [...reactor.matchAll(/from\s+"([^"]+)"/gu)].map((match) => match[1]),
     [
+      "./repair.js",
+      "./source-change-state.js",
       "./resident-state.js",
       "./source-change-state.js",
       "./source-change-state.js",
@@ -181,6 +183,7 @@ test("WO-016 AC1 one typed reactor and its pure helpers own kernel decisions", a
     "verification.ts",
     "resident-state.ts",
     "source-change-state.ts",
+    "repair.ts",
     "presence-machine.ts",
     "actor-contract.ts",
     "work-candidate.ts",

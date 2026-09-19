@@ -107,6 +107,7 @@ export function harnessInstallation(options = {}) {
     "packages/skeleton/dist/src/usage-observation.mjs",
     "packages/skeleton/dist/src/writer-teardown.mjs",
     "packages/skeleton/dist/src/reactor.js",
+    "packages/skeleton/dist/src/repair.js",
     "packages/skeleton/dist/src/resident-state.js",
     "packages/skeleton/dist/src/presence-signals.js",
     "packages/skeleton/dist/src/presence-heartbeat.js",

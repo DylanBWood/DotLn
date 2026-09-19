@@ -36,6 +36,8 @@ const commonSources = [
   "packages/skeleton/src/source-change-state.ts",
   "packages/skeleton/src/source-change-worktree.ts",
   "packages/skeleton/src/reactor.ts",
+  "packages/skeleton/src/repair.ts",
+  "packages/skeleton/src/repair-host.ts",
   "packages/skeleton/src/resident-state.ts",
   "packages/skeleton/src/presence-signals.ts",
   "packages/skeleton/src/presence-heartbeat.ts",
