@@ -55,7 +55,8 @@
     "untested",
     "blocked",
     "not found",
-    "ambiguous"
+    "ambiguous",
+    "operator-attested"
   ],
   "toolchain": {
     "os": {

@@ -1,5 +1,12 @@
 # Codex downtime runbook — adjacent evidence/corpus work (stable IDs formerly presented as a WO-10x series)
 
+**Historical runbook, 2026-09-01; marked historical 2026-09-19 (WO-142).**
+The recommendations, single-active-slot model, release instructions and source
+line references below describe that date and are not current launch guidance.
+Use the [current planning map](../planning/work-order-map.md),
+[work-order index](README.md) and [execution guide](../product/07-execution-guide.md)
+for current status and procedure.
+
 Operator runbook for the adjacent evidence/corpus track (WO-101, WO-102,
 WO-103, WO-105, WO-107, WO-108). These stable identifiers were formerly
 presented as a reserved series; they are not a sequence or an instruction for

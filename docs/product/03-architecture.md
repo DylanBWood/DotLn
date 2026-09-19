@@ -656,13 +656,11 @@ feasible and must be labeled by what they guarantee: the current mode; a
 trusted-unconfined mode (sandbox off, tool-level prevention where a hook
 fires, detection and recovery, no confinement of shell effects or network);
 and a hook-mediated mode for Claude in which only exactly declared commands
-run. Neither of the latter is offered until WO-136's matrix records, per
-limit, harness and mode, prevented or observed-only, and whether authorized
-work stalled. The planning checkpoint after WO-136's close decides the mode
-from that matrix and allocates the smallest supported mode's implementation
-or the next experiment; WO-136's packet proposes, per harness, that mode
-with its guarantees and the minimal Claude allow/deny configuration it
-needs, as a table that is not applied; R2 confirms. The full table is in the
+run. The completed [WO-136 matrix](../discovery/authority-boundary-2026-09-17.md)
+was inconclusive: missing prompt telemetry, revocation ordering and workflow
+observations did not qualify either new mode. Its packet retains the current
+modes and an unapplied Claude rule table; a separately budgeted experiment
+must supply the missing observations before planning selects an implementation. The full table is in the
 [planning document](../planning/vision-into-use-2026-09-17.md) §6 and §17.
 
 **Measured 2026-09-17 — WO-136, inconclusive.** The
@@ -693,8 +691,9 @@ effective host readback is direct evidence with a source and cutoff; a
 rejection is evidence about that operation, not a complete mode detector.
 WO-136's evidence-only matrix does not add automatic session-mode readback.
 When no such readback exists, keep the mode unknown or separately
-operator-attested. Reopen after WO-136, selection of a concrete trial, or a
-new host readback surface. See the
+operator-attested. [WO-136](../discovery/authority-boundary-2026-09-17.md)
+closed inconclusive without changing settings; reopen on selection of a
+concrete trial or a new host readback surface. See the
 [breakout receipt](../evidence/WO-141/ideation-permission-trial.md).
 
 **Operator direction 2026-09-18 (ideation during WO-054 verification):
@@ -754,7 +753,10 @@ projection boundary, not a new OS mount namespace or a hostile-process sandbox.
 The deterministic mounted verifier receives an isolated JSON capsule of
 candidate paths, independently projected inventory fields and authorized Beacon
 observations; implementer evidence strings, summaries and log prose are not
-inputs. General native model verification remains WO-010.
+inputs. [WO-010](../evidence/WO-010/README.md) subsequently established the
+verification port and local subprocess protocols;
+[WO-054](../evidence/WO-054/implementation.md) added confined worktree-test
+witnesses. Live model verification remains the separate WO-056 proof.
 
 A profile needs inspectable facts rather than one “stronger isolation” score:
 substrate and provider versions; pinned image, root filesystem, guest kernel, or
@@ -1121,9 +1123,11 @@ The current [operator guide](../instance/entropy-reducer/README.md) dispatches
 this compiled loadout through a separate Fable 5.1 `max` session. It names
 subject freezing, per-operation authority, new receipt IDs, output validation,
 blinded refutation, and operator disposition as manual host duties. No resume
-action or automatic launcher is implied. The 2026-09-04 analogy correction is
-an explicit dispatch instruction pending a versioned correction to the typed
-Shape-First support; the shipped residue and old run remain historical truth.
+action or automatic launcher is implied. WO-142 implements the operator's
+2026-09-04 analogy correction in Shape-First support version 2: extract the
+intended relationship first, then examine literal details only when a claim
+uses them. The [current residue](../instance/entropy-reducer/RESIDUE.md) reflects
+that version; the first review and refutation runs retain their historical bytes.
 
 WO-023 ran the first compiled Entropy Reducer as a read-only implementation
 review over a frozen scratch subject. The pinned Fable reviewer returned seven
@@ -1402,7 +1406,8 @@ and an unexpired deadline. Branch/base/message checks, compiled permissions,
 writer isolation and attribution checks still apply. The route disappears when
 dispatch ends. This is trusted-host governance, not OS isolation of arbitrary
 test scripts or a proof that every orphan Codex writer has stopped after a host
-kill. WO-053 retains that live evidence boundary.
+kill. [WO-053](../evidence/WO-053/README.md) observed both clean harness
+episodes and Codex recovery after worker exit; it did not prove live-orphan fencing.
 
 Only explicit `SourceChangeHost.finish()` removes a successfully observed
 worktree, after checking its persisted commit receipt and refusing unowned
@@ -1435,8 +1440,10 @@ the three tested kill windows cover worker execution and receipt persistence.
   Decision _declares_ the NoOp-with-trace and the future schedule ids to cancel.
   Like every kernel Decision it performs nothing: queue ownership, event-sourced
   presence (`OperatorPresenceChanged` folded into state), and executed
-  cancellation belong to the scheduler runtime that arrives with WO-009 and rows
-  2/4/6.
+  cancellation belong to the host runtime.
+  [WO-009](../evidence/WO-009/README.md) established worker recovery for rows
+  2/4/6; [WO-068](../evidence/WO-068/implementation.md) later supplied the resident
+  scheduler and recorded operator-presence edges.
 
 **Perception cost hierarchy** (distinct from Principle 6's evidence-strength
 ordering — this ranks _reading_ cost, that ranks _proof_ strength): episodes
@@ -1554,10 +1561,11 @@ text, never the default channel for state you own in structured form.
   X-W1/X-W2/X-W8: `-a never exec --ephemeral --ignore-user-config --sandbox
   workspace-write --cd <worktree> --json`, named `dotln-writer` permissions
   (`:minimal` read, `:workspace_roots` write, network disabled), and the
-  inspection profile's hardening minus the shell-tool disables; the retained
-  `shell_environment_policy.inherit="none"` is untested with the three
-  authorized commands until WO-053's live smoke. The exact arrays are pinned in
-  synthetic fixtures.
+  inspection profile's hardening minus the shell-tool disables, retaining
+  `shell_environment_policy.inherit="none"`.
+  [WO-053](../evidence/WO-053/README.md) observed test, add and commit through
+  the live writer profile and records the bounded launch repairs it required;
+  synthetic fixtures pin the exact arrays.
   Construction refuses tools-only Claude (C-W1, ambiguous), on-request Codex
   approval (X-U2, ambiguous) and a Codex hook expectation (X-W3, unavailable).
 
@@ -1569,8 +1577,10 @@ text, never the default channel for state you own in structured form.
   the request's kind, mount, authority and command in its immutable result key.
   The sandbox is not the containment boundary: C-W6 and X-W6 observed sibling
   writes. Target governance and host post-exit checks supply the planned
-  containment proof, not the launch flags alone. WO-051 establishes subprocess
-  fixtures; worktree/message ownership is WO-052 and live proof is WO-053.
+  containment proof, not the launch flags alone. WO-051 established subprocess
+  fixtures, WO-052 supplied worktree/message ownership, and
+  [WO-053](../evidence/WO-053/README.md) observed clean live source changes and
+  post-worker-exit recovery within the recorded limits.
 
 - `VerificationAdapter`: when equipped, claim-typed evidence (visual claim →
   rendered-image check; network claim → trace; state claim → DOM/store read),
@@ -1605,8 +1615,10 @@ text, never the default channel for state you own in structured form.
   inventory, executable modes and read-only permissions at dispatch and recovery,
   and again before result admission. Host-run witnesses carry `origin: host` and
   `source: live`; the worker result cannot supply them. Missing confinement stays
-  unavailable. The new profile refuses repair execution until WO-055 provides
-  that continuation, and WO-056 owns the live verifier proof.
+  unavailable. [WO-055](../evidence/WO-055/implementation.md) now supplies
+  bounded source repair and original-contract re-verification, with doubles
+  establishing exhaustion and interruption recovery; WO-056 still owns the
+  live verifier proof.
 
 - `DeliveryAdapter`: PR/patch/report generation _from artifacts, not narrative_
   — the deliverable body is generated from the StoryContract, the actual diff,

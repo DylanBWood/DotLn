@@ -93,69 +93,46 @@ intent → task-scoped build → bounded WorkOrder → disposable executor
 -->
 <!-- DOTLN-RELEASE-BEGIN -->
 
-This source prepares DotLn `v0.31.2`.
+This source prepares DotLn `v0.32.0`.
 
 **The core.** A local-first compiler turns a loadout graph into a bounded
-program: one identity, one active mechanic, its linked supports, and an
-authority envelope the kernel checks on every decision. One typed reactor folds
-the event log into state slices while preserving complete public Decisions and
-host projections, and replay takes an explicit environment projector, so an
-application owns its own RNG and policy state layout. Every persisted boundary
-decodes before it is folded — schema-1 event logs, hook inputs, recursively
-executable programs, and saved worker locks, receipts, request keys and
-verification capsules — and malformed state is kept for inspection rather than
-truncated. A compiled presence policy can describe progressive absence phases,
-base-bounded authority, return handling, idle expiry and observed adapter
-availability; the three editable views preserve it.
+program and authority envelope that the kernel checks on every decision.
+A typed reactor folds durable, decoded events into replayable state, and the
+compiler preserves presence policy across three editable views.
 
-**What you can run.** An offline resident now drives that policy from recorded
-time and observations separating human presence, actor liveness and task
-progress. Current harness profiles use explicit away/back for human presence;
-tool activity never implies return. It records every clock sample as an event,
-dispatches a declared script, CLI worker or human decision handoff per phase
-when the policy allows, and
-resumes after a kill without dispatching an episode twice. `dotln resident` runs
-the loop; a CLI worker uses the existing inspection or scratch-worktree writer
-profile, while a human handoff holds its order until an explicit answer.
-`--once` runs a single cycle under an outside scheduler, and `dotln
-presence away|back` records the operator edge; the [skeleton
-runbook](packages/skeleton/README.md#resident-host) carries the configuration
-and its limits. The [actor board](packages/console/README.md), mutation corpus,
-inspection workers, verification matrices and Beacon senses are also runnable
-today. The [first live external source-change proof](docs/evidence/WO-053/README.md)
-uses both Claude and Codex to fix one synthetic module, pass the host's test and
-commit in an isolated Git worktree; a killed Codex host recovers that commit
-without a second worker attempt, with the protected checkouts and sentinel unchanged.
-A worktree verification profile now seals that target’s contract, diff and source
-files, runs its named tests in confined copies, and supplies independent host
-witnesses to the blinded verifier. The fixture records a contract failure even
-when the worker’s superficial test passes. Live model verification is the next
-separate proof.
+**What you can run.** The offline resident drives that policy from recorded
+time, explicit away/back edges and actor observations, dispatching declared
+scripts, CLI workers or human handoffs and recovering without duplicate episodes.
+The [skeleton runbook](packages/skeleton/README.md#resident-host) documents
+`dotln resident`, `dotln presence` and their limits; the
+[actor board](packages/console/README.md), mutation corpus, inspection workers,
+verification matrices and Beacon senses are also runnable.
+[Live source-change evidence](docs/evidence/WO-053/README.md) shows Claude and
+Codex fixing a synthetic module, passing its host test and committing in isolated
+worktrees, with killed-host recovery preserving the existing commit.
+Worktree verification seals the contract, diff and source snapshot and supplies
+independent confined host-test witnesses; the
+[bounded repair loop](docs/evidence/WO-055/implementation.md) re-verifies the
+original contract after each repair, with doubles establishing recovery and exhaustion.
 
-**How this repository builds itself.** Work proceeds through independent
-implementation, verification and final review, each recording its own report and
-actor attestation. The reviewer runs `npm test -- --review` once, and both PR
-publication and release close consume that committed success row by code
-identity. Hooks refuse three conditions (WO-135): a second writer in one
-worktree, a write to gate inputs or the success record during a live `npm test`,
-and a classified repository write outside `docs/` and root Markdown on a
-`planning/` branch. Codex carries the same duties as role text; other judgments
-defer to host permissions. `analysis:` and `operator override:` stay
-available even when setup or lifecycle state fails. The [execution
-guide](docs/product/07-execution-guide.md) and its [independent
-workflow](docs/product/07-execution-guide.md#independent-workflows-and-integration)
-carry the rest. Session observations now put measured times and counters in
-briefings and hook context. A lexical hedge in a final message is journaled and
-corrected once by advisory, without holding the turn; the process meter counts
-journal corrections by order, phase and named judgment unit.
+**How this repository builds itself.** Independent implementation, verification
+and final review record their own evidence, and publication consumes the
+reviewer's successful code-identity gate row.
+DotLn hooks refuse four conditions: a second writer in a worktree, writes to gate
+inputs or the success record during live `npm test`, repository writes outside
+`docs/` and root Markdown on `planning/` branches, and observable subagent
+admissions beyond the configured cap.
+Codex carries the same duties as role text, other judgments defer to host
+permissions, and `analysis:` and `operator override:` remain available for recovery.
+The [execution guide](docs/product/07-execution-guide.md#independent-workflows-and-integration)
+explains integration, evidence and the observed limits of those controls.
 
-**Not yet.** A live model actor, automatic work derivation, general
-source-writing workers and portable starter export remain later work, and the
-resident's own consumers are still being built. The [goal
-review](docs/planning/refutations/README.md) records hypothetical issues with
-the observations that would reopen them. Package publication controls are in
-[CONTRIBUTING.md](CONTRIBUTING.md); published source records are on the [GitHub
-Releases page](https://github.com/DylanBWood/DotLn/releases).
+**Not yet.** Live model verification, a live model actor, automatic work
+derivation, general source-writing workers and portable starter export remain
+later work.
+The [goal review](docs/planning/refutations/README.md) retains reopening
+observations; [CONTRIBUTING.md](CONTRIBUTING.md) covers package publication, and
+published source records are on the [GitHub Releases page](https://github.com/DylanBWood/DotLn/releases).
 <!-- DOTLN-RELEASE-END -->
 
 The walking skeleton first shipped in application release `v0.2.0`.
@@ -210,12 +187,17 @@ host and compares complete decisions and semantic projections, including a
 negative verifier outcome. `npm test` runs fresh product and lifecycle suites;
 `npm test -- --list` explains the operator-visible behavior each protects.
 The reviewer uses `npm test -- --review` once, adding machinery suites selected
-by changed sources. `npm run test:machinery` runs that inventory on demand, and
+by changed sources; `npm run test:full` is the alias for that same review selection. `npm run test:machinery` runs that inventory on demand, and
 `npm run test:docs` checks document-only planning and ideation dispatches.
 The former replica/cache runner and repeated exact-tree lifecycle gates are
 retired by WO-132; old evidence retains its original meaning.
-Evidence was recorded with Node 22 on macOS; the shell suites use macOS
-utilities and fail loudly elsewhere. See the
+After `npm run build`, `npm run evidence:artifact -- --check` validates the
+current artifact-identity edition; `-- --write` records it during authorized
+evidence regeneration.
+The workspace targets Node 26 (`.node-version` pins 26.9.0) and TypeScript
+7.0.2; `npm ci` installs the native compiler for the current platform. The
+shell suites use macOS utilities and fail loudly elsewhere. Earlier evidence
+keeps its recorded Node version. See the
 [release index](docs/releases/README.md),
 [v0.2.0 notes](docs/releases/v0.2.0-notes.md), and
 [v0.2.0 compatibility manifest](docs/releases/v0.2.0.md).

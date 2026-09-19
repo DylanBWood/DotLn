@@ -450,7 +450,9 @@ Run the affected executable checks and release/publication preflights on the int
 
 The existing resume phrases remain the operator interface. The actor performing a handoff completes authorized integration chores within that session. `npm run release -- prepare` handles a colliding target, the README claim, and a dated roadmap note under the recorded release classification. It uses origin's tag observation; `--local` deliberately uses only the fetched local tag snapshot. It never publishes, alters component versions, or appends control events. A missing component bump against the verified branch baseline remains an executor defect. A component bump that was valid at verification may be retimed during integration if upstream consumed the same version, preserving its already-declared compatibility impact and recording that evidence; this is distinct from omitting the original bump. `npm test` runs `check-surfaces --local` before expensive suites against annotated local releases in the subject's own `HEAD` ancestry. Worktrees share tag refs, so an unintegrated sibling's newer tag is excluded from this verification baseline. `worktree publish` / `release close` retain the authoritative remote check on the integrated result. No command acquires authority from a sibling's phase.
 
-The fuller `worktree sync` automation remains WO-033's deliverable. Until it ships, the integrating actor runs the existing preserve → fetch/merge → apply → regenerate procedure and records the evidence-impact assessment. That manual seam is explicit; it is not a rule that workflows restart when their bases differ. The [breakout receipt](../evidence/WO-041/ideation.md) records the measured failure that prompted this correction.
+The fuller `worktree integrate` automation belongs to
+[WO-079](../work-orders/WO-079-worktree-sync.md), the successor to
+WO-033's former sync proposal. Until it ships, the integrating actor runs the existing preserve → fetch/merge → apply → regenerate procedure and records the evidence-impact assessment. That manual seam is explicit; it is not a rule that workflows restart when their bases differ. The [breakout receipt](../evidence/WO-041/ideation.md) records the measured failure that prompted this correction.
 
 **Operator decision (2026-09-16, R1 replan pass): two lanes are the normal
 workflow.** Two work orders run in parallel worktrees as a matter of
@@ -779,9 +781,10 @@ WO-NNN-DNNN "operator authorization and bounded scope"`. The helper appends
 current planning receipt, original order, approved order text and individual
 decision. It preserves existing execution evidence; later strict execution
 appendices and release-title retiming remain admitted. Unrecorded changes
-still fail with their order/criterion named. This is an actor-attested
-authorization record, not a fresh planning verdict or a way to discharge an
-independent hold. Do this during authorized execution rather than carrying an
+still fail; criterion drift names its criterion, while a non-criterion byte
+change can fail without naming its order. The decision records the authorization;
+the `PlanExecutionAmended` event binds that decision but has no actor field.
+Neither is a fresh planning verdict or a way to discharge an independent hold. Do this during authorized execution rather than carrying an
 inherited failure through later reviews. The WO-053 amendment recorded under
 WO-139 repairs the reproduced inherited failure without changing receipt 017.
 If committed execution overwrote an existing capability row, restore the judged
@@ -907,7 +910,10 @@ existing practice this section names.
    product code only by a separate implementation order that cites the
    receipt.
 5. Live model evaluations and live harness launches run under explicit
-   `probe:` or `evidence:` commands, never inside `npm test`; deterministic
+   `probe:` or `evidence:` commands, or a probe script invoked by path with
+   its exact command named in the order, never inside `npm test`; add an npm
+   alias when a second order reuses the probe (planning decision 7,
+   [2026-09-19](../planning/outstanding-cleanup-2026-09-19.md#5-decisions-of-this-pass)). Deterministic
    adapter and protocol tests stay in the gate. A change to the transport,
    the tool or output protocol, the model artifact or quantization, the
    runtime's version, or authority behavior triggers live requalification,
@@ -1183,6 +1189,20 @@ reopening conditions. The collector change is
 [WO-142](../work-orders/WO-142-outstanding-cleanup.md) row A1. Reopen if
 untriaged rows pass fifty after WO-142 closes.
 
+**Implemented in WO-142 (2026-09-19).** A decision enters the pending feed
+only when it names a `followup`, or another decision records an observed
+reopening through `reopens.decisionId` and `reopens.observation`. A
+`reopenWhen` condition by itself creates no action. The decisions index still
+lists every record; existing register entries, identifiers and history are
+retained. Executor, verifier and reviewer role text now requires an encountered
+defect to be fixed inside the Boy Scout bound or boarded up as a decision
+record naming its follow-up, cited by the report. The collector change and
+before/after observations are recorded in
+[WO-142 evidence](../evidence/WO-142/README.md) and its
+[decisions](../evidence/WO-142/decisions.md). The next planning pass's feed
+size and untriaged count are the reopening observations; the fifty-row
+threshold above stays in force.
+
 ## Candidate — local lane retention
 
 Ignored local lanes grow without a rule: 13 immutable harness runtime
@@ -1198,6 +1218,30 @@ with one pinned, 99 MB under `docs/control/local/`, and 96 MB under
 removed the suite-success cache. Allocated to
 [WO-142](../work-orders/WO-142-outstanding-cleanup.md) row D1: an on-demand
 prune that lists before it deletes.
+
+**Implemented in WO-142 (2026-09-19).** Run
+`node scripts/harness.mjs prune` to list removable paths, byte totals and
+reasons for retaining other paths; this form writes nothing. After reviewing
+the listing, `node scripts/harness.mjs prune --apply` removes only candidates
+whose ownership and byte inventory still match a fresh observation. Installed
+manifests and target installation receipts across registered worktrees protect
+their snapshots, including targets in separate repositories. A live gate,
+another live or unknown writer, unreadable pins, current or live session
+ownership, and missing session-end observations retain the affected files;
+legacy advisory markers without session ownership are retained. The dead
+suite-success cache is eligible only without a live gate.
+
+A retained order lane is eligible only after its worktree is gone and a
+non-draft published Release and matching remote tag establish publication.
+The command first keeps a sibling `WO-NNN.bytes-<digest>.json` inventory of
+paths, modes, byte lengths and SHA-256 hashes, then removes the lane. Symlinks,
+special files and nested repositories are retained. This is an on-demand
+command, not a new recurring check. The real-checkout listing, before/after
+sizes and fixture evidence belong to
+[WO-142 evidence](../evidence/WO-142/README.md) and its
+[decisions](../evidence/WO-142/decisions.md). Reopen on disk pressure or an
+observed retained candidate that the documented ownership/publication rules
+cannot explain.
 
 ## Candidate — stale writer reservation self-diagnosis
 
@@ -1234,8 +1278,11 @@ creates before any hook fires is counted late or not at all, and Codex's
 `spawn_agent` fires no hook in the recorded profile. The 2026-09-18
 [WO-139 probe](../evidence/WO-139/README.md) observes Claude 2.1.276 sharing
 `session_id` and supplying distinct `agent_id` values for direct and workflow
-children. Direct Agent results join that identity to `tool_use_id` only after
-the child finishes. During unresolved overlap the counter reports a minimum
+children. Direct Agent results join that identity to `tool_use_id` when the
+result is observed, including immediately for background spawns. Probe 2 also
+observed `SubagentStart` carrying `session_id` and `agent_id` before each
+child's first tool call; no hook is registered for it and its ability to deny
+is untested ([WO-139 review, items 5–6](../final-reviews/WO-139/FINAL-002.md)). During unresolved overlap the counter reports a minimum
 distinct count, preserving every observation and excluding children seen
 before a later spawn; it never invents a parent link. For example, two
 unresolved direct admissions and two later workflow children can represent
@@ -1305,7 +1352,10 @@ capability limitations, runbook instructions, planning recommendations, and
 publication links where the change reaches them. Use the diff and inbound
 references to bound the check. Record the affected surfaces and evidence in the
 existing work-order outcome or breakout receipt; do not create a new ceremony
-or rewrite unrelated historical artifacts.
+or rewrite unrelated historical artifacts. A README “What runs today”
+write-back rewrites the existing release block rather than appending another
+release sentence, keeping it within fifteen sentences and moving per-order
+detail into release notes ([WO-068-D004](../evidence/WO-068/decisions.md#wo-068-d004)).
 
 Apply the [corpus maintenance constraint](03-architecture.md#corpus-policy)
 when choosing that surface: reuse an existing outcome or receipt, link canonical
@@ -1376,7 +1426,13 @@ claim evidence or releases it does not have.
   briefing, Claude prompt context and Stop advisory print the clock, journaled
   background dispatch times with last observed state and elapsed time, gate
   durations, and usage counters with source and cutoff. Missing values remain
-  `unknown` with a cause. A lexical estimate marker attached to a number,
+  `unknown` with a cause. Within a dispatch, the earliest terminal observation
+  fixes a task's state and elapsed time; later statusless reads, errors or stops
+  cannot restart it. Claude's prompt hook reads native task notices directly
+  when the transcript has not yet flushed them. It uses the prompt boundary's
+  time until an earlier transcript timestamp is observed, which can shorten
+  the recorded terminal elapsed time. The same scoped parser handles both
+  sources and retains only hashed task joins, status and time. A lexical estimate marker attached to a number,
   duration or clock time in final assistant text is journaled with the observed
   quantity when unambiguous, otherwise `unmeasured`; quotes and fenced code are
   exempt. Its correction is delivered once at the next boundary. This holds no
@@ -1592,8 +1648,33 @@ claim evidence or releases it does not have.
   incrementing these now and reviewing efficiency later; see
   [WO-054-D006](../evidence/WO-054/decisions.md#wo-054-d006).
 
-  During the live gate, the existing shell destination adapter recognizes
-  ordinary `ls`, `head` and `grep` reads, including literal pipelines.
+  During the live gate, the existing shell destination adapter retains
+  activation's literal argument forms for `echo`, `printf`, `cat`, `pwd`,
+  `true`, `false`, `ls`, `head` and `grep`, including combined flags, stdin
+  `-`, and dash-prefixed data. These programs have no file-output or
+  program-execution option; shell expansion and output redirections are
+  screened separately. The added `tail`, `wc`, `ps`, `sed` and `git` programs
+  have bounded flag vocabularies, including attached `tail -n5` / `-c5` counts.
+  Literal pipelines retain every recognized write destination.
+  In the destination adapter, Git reads require `git --no-pager status`, or
+  `git --no-pager log` / `git --no-pager diff` with both `--no-ext-diff` and
+  `--no-textconv`; explicit write-capable options remain refused. The sed form
+  is only `sed -n Np` or `sed -n N,Mp` followed by literal paths. `find`,
+  `node -e`, other sed scripts and unrecognized flags on the added programs
+  remain opaque. WO-142 B3 pins activation parity and read/write fixture pairs.
+  The older metadata exception separately admits exact forms including
+  `git status --short` and `git diff --check`.
+
+  Git admission is not proof of no filesystem or configured-program effect.
+  The admitted prefix `git --no-pager --no-optional-locks -c core.fsmonitor=false`
+  prevented the index refresh and fsmonitor invocation for `status` in the
+  isolated Git 2.55.0 probe. It did not prevent `diff` from rewriting the index
+  or invoking a configured clean filter, and admitted `log` can invoke
+  `gpg.program` when `log.showSignature=true`. Log/diff still need the flags
+  above. Closing these effects across both the metadata exception and the
+  destination adapter is the explicit
+  [Git-effects follow-up](../evidence/WO-142/decisions.md#wo-142-d012--retain-existing-git-admission-with-an-explicit-effects-follow-up);
+  requiring the prefix alone would not discharge it.
   Ordinary literal redirections and chained writes identify their destinations,
   including the descriptor-style `>&file`, `1>&file` and `>>&file` forms that
   VER-002 found admitted; a descriptor number or `-` after `>&` names no file.
@@ -1624,7 +1705,7 @@ claim evidence or releases it does not have.
   and Release and runs no suite; attested harness, version, model and effort
   are logged as given and never refuse, and `ultra` means `xhigh` with
   subagents; DotLn has four hook refusals (WO-135 and WO-139): a second writer in a
-  worktree, a write during the live gate, and a classified repository write
+  worktree; a write during the live gate; a classified repository write
   outside `docs/` and root Markdown on a `planning/` branch; and an observable
   subagent admission exceeding `docs/control/budgets.json` `subagentCap`
   (default 20, `null` disables). Workflow admission needs a remaining unit;
@@ -1645,10 +1726,17 @@ claim evidence or releases it does not have.
   reconciled at closeout against the observed rows. WO-132 implements this contract; `operator override:` remains available for
   authorized recovery. The diagnosis of how four passes compounded the
   problem is [the planning document](../planning/machinery-stand-down-2026-09-15.md).
-  WO-133 reports advisory causes (`pins-differ`, `snapshot-missing`,
-  `runtime-unavailable`, `classification`) once per session and cause, using an
-  atomic marker in ignored harness state. Every invocation retains its journal
-  row; PostToolUse observers emit no advisory. If marker storage is unavailable,
+  WO-142 separates advisory identities within each session. Runtime messages
+  share a key only within their own cause (`pins-differ`, `snapshot-missing`,
+  or `runtime-unavailable`); subagent-budget messages share one key per cause
+  (`missing`, `unreadable`, `overlap`, or `unavailable`). Other messages beginning
+  `DotLn advisory:`, including command classification, use a
+  digest of the message across hook kinds, so repeating the same advisory is quiet while a
+  distinct advisory can appear. Typed `observer-input` errors, such as an
+  outside-worktree read observation, do not consume `runtime-unavailable`.
+  The atomic marker stays in ignored harness state and records session
+  ownership for pruning. Every invocation retains its journal row;
+  PostToolUse observers emit no advisory. If marker storage is unavailable,
   the message remains visible. SessionStart reuses the session handler to compare
   built bytes and the pinned snapshot, without dispatching work. `resume` and
   `plan start` diagnose runtime drift without building. Release close and worktree

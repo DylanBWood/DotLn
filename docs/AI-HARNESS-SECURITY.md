@@ -10,6 +10,12 @@ The September 1 snapshot below records Claude Code 2.1.257 and Codex CLI
 0.151.0. Its sandboxed configuration is retained as a reference, not the current
 operator-selected mode.
 
+**Version-only re-check, 2026-09-19 (WO-142):** `codex --version` returned
+`codex-cli 0.155.0`; `claude --version` returned `2.1.278 (Claude Code)`.
+Only installed CLI version strings were re-checked. The earlier behavioral
+probes remain evidence of their recorded versions; this check does not
+requalify permission behavior or establish current effective settings.
+
 The original safety-boundary decision is
 [ADR-0003](decisions/0003-personal-ai-harness-security.md), partially superseded
 for Claude's sandboxed-Bash review path by
@@ -210,7 +216,7 @@ The earlier `workspace-write` example below remains another sandboxed option.
 
 DotLn's generated hooks refuse four conditions (WO-135 and WO-139): a second live writer
 in the same worktree; a write to gate inputs or the success record during a live
-`npm test`; and a classified repository write outside `docs/` and root Markdown
+`npm test`; a classified repository write outside `docs/` and root Markdown
 on a `planning/` branch; and an observable subagent admission beyond
 `docs/control/budgets.json` `subagentCap` (default 20; `null` disables).
 The session-local counter serializes observed admissions. Workflow calls need

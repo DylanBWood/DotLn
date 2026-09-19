@@ -128,7 +128,9 @@ The immutable worker-store effect receipt binds that request to the commit,
 branch, base-relative binary diff digest and both test observations. A recovered
 Git effect never fabricates a worker result. No new schema version or command
 hash preimage is introduced. The fixture-evidenced host and its limits are in
-[WO-052](../evidence/WO-052/implementation.md); the live episode remains WO-053.
+[WO-052](../evidence/WO-052/implementation.md).
+[WO-053](../evidence/WO-053/README.md) observed clean Claude and Codex source
+changes and Codex recovery of the committed effect after a host kill.
 
 WO-068 adds the resident's schema-1 events: `ResidentConfigured` pins one
 compiled presence policy and its exact phase actor declarations; `ClockSampled
@@ -559,11 +561,16 @@ the execution guide still applies the judgment manually.
 
 ### Feedback compiler v1
 
-**Current harness policy (WO-132, 2026-09-15).** Writer isolation equips
+**Current harness policy (WO-132, WO-135 and WO-139, updated 2026-09-19).** Writer isolation equips
 `concurrent-work-requires-worktrees` version 2: one registered writer per physical
 worktree on any branch, including main. It supersedes version 1's main-branch
-exclusion. The other hard DotLn hook boundary protects product-gate inputs and
-the success record during the reviewer's live `npm test -- --review`. Unclassified
+exclusion. The other three DotLn refusals protect gate inputs and the success
+record during any live `npm test`, restrict repository writes on `planning/`
+branches to `docs/` and root Markdown, and bound observable subagent admissions
+by `docs/control/budgets.json` `subagentCap` (default 20; `null` disables).
+Descendants count at their first attributable tool call; unresolved direct/child
+overlap is a reported minimum and unobserved agents remain unknown. Claude hooks
+enforce these observed boundaries; Codex carries the same duties as role text. Unclassified
 commands/tools, unavailable adapters, outside-root reads, attribution pre-checks
 and observer failures are advisory and defer to host permissions. The generic
 feedback evaluator and historical unit definitions retain their typed contracts;
@@ -1100,6 +1107,20 @@ UTF-8 JSON padded only with trailing newlines, and mtime from the receipt's
 refuses before filesystem mutation; changing the size to fit content would
 change the state and is forbidden.
 
+The host edge preserves that encoded integer millisecond. Before rename, the
+observed nanoseconds must be in `[mtimeMs × 1,000,000, mtimeMs × 1,000,000 + 1,000)`:
+exact timestamps pass, and positive conversion error must be less than one
+microsecond. Node's timestamp API takes binary64 seconds. If the direct write
+falls outside this interval, the edge retries once at half a microsecond above
+the target, then refuses if readback still misses the interval. An earlier
+nanosecond is refused because it would decode as the previous millisecond.
+This is a host-write precision bound, not a normalization of observations.
+Fine Spectrum retains the actual nanoseconds and age comparison stays exact;
+a positive offset can report clock skew in the requested millisecond and remain
+fresh at the nominal stale boundary until the next millisecond. Same-host
+live/replay emission retains identical observed metadata; cross-runtime
+nanosecond identity is not promised.
+
 ### Beacon codebook v2 — control state
 
 WO-021 adds the following normative data, equality-tested against the pure
@@ -1230,8 +1251,9 @@ tail. Its whitelist is the v2 control record with version 3; the epoch and
 authenticator occur only in the size codeword, never the prefix or filename.
 It is **sparse-required**, never dense newline padding. Before
 emission, `probeV3Storage` observes a small hole, exact Node integer conversion,
-the maximum file, its bounded prefix, zero tail, exact mtime and atomic rename
-on the destination device. `MAX_V3_ALLOCATED_BLOCKS = 8` counts 512-byte units;
+the maximum file, its bounded prefix, zero tail, millisecond mtime under the
+host-write precision bound above, and atomic rename on the destination device.
+`MAX_V3_ALLOCATED_BLOCKS = 8` counts 512-byte units;
 the prefix is at most 4,096 bytes. Unsupported sparse, numeric, device, or
 filesystem premises refuse before destination allocation; the host returns to
 planning rather than changing channels. This is an observed codebook ceiling,
