@@ -185,6 +185,18 @@ const writeAll = (fd, bytes) => {
 };
 
 /**
+ * Node sets timestamps through binary64 seconds. Retain the encoded integer
+ * millisecond while allowing less than one microsecond of positive conversion
+ * error. The lower bound is not symmetric: an earlier nanosecond would decode
+ * as the preceding millisecond. Observers retain the actual nanoseconds.
+ * @param {bigint} observedNs @param {number} encodedMs
+ */
+export function beaconMtimeMatches(observedNs, encodedMs) {
+  const targetNs = BigInt(encodedMs) * 1_000_000n;
+  return observedNs >= targetNs && observedNs < targetNs + 1_000n;
+}
+
+/**
  * The same validated temp-file/rename boundary serves v1, v2, and group files.
  * Size refusal precedes any allocation. Sparse group files intentionally have
  * no content; their complete disclosed value is in the independent codebook.
@@ -236,17 +248,20 @@ export function writeBeaconFile(directory, address, encoded, storage) {
     }
     utimesSync(temporary, encoded.mtimeMs / 1000, encoded.mtimeMs / 1000);
     let metadata = lstatSync(temporary, { bigint: true });
-    if (metadata.mtimeNs !== BigInt(encoded.mtimeMs) * 1_000_000n) {
+    if (!beaconMtimeMatches(metadata.mtimeNs, encoded.mtimeMs)) {
+      // A direct conversion can land just below the millisecond boundary.
+      // One centered attempt supports both microsecond and nanosecond hosts;
+      // readback still decides whether this filesystem preserves the contract.
       const centered = encoded.mtimeMs / 1000 + 0.0000005;
       utimesSync(temporary, centered, centered);
       metadata = lstatSync(temporary, { bigint: true });
     }
     if (
       metadata.size !== BigInt(size) ||
-      metadata.mtimeNs !== BigInt(encoded.mtimeMs) * 1_000_000n
+      !beaconMtimeMatches(metadata.mtimeNs, encoded.mtimeMs)
     )
       throw new Error(
-        "filesystem did not preserve the exact beacon size/mtime",
+        "filesystem did not preserve exact beacon size and millisecond mtime within the sub-microsecond bound",
       );
     const allocatedBound = storage.sparse
       ? storage.blockBytes

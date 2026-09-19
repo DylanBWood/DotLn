@@ -537,6 +537,16 @@ function decodeResult<R extends TransportRequest>(
   request: R,
   before?: string,
 ): TransportResultFor<R> {
+  if (isPlanRequest(request)) {
+    writeFileSync(join(request.cwd, "wire.jsonl"), output.stdout, {
+      mode: 0o600,
+    });
+    writeFileSync(
+      join(request.cwd, "statement.txt"),
+      "No separate worker statement was returned; the wire file retains the complete transport return.\n",
+      { mode: 0o600 },
+    );
+  }
   let wireDetail = `exit-${output.exitCode ?? "unknown"}`;
   if (name === "claude-cli-print") {
     try {
@@ -583,6 +593,7 @@ function decodeResult<R extends TransportRequest>(
         subtype?: string;
         is_error?: boolean;
         structured_output?: unknown;
+        result?: unknown;
       };
       if (
         result.type !== "result" ||
@@ -590,6 +601,17 @@ function decodeResult<R extends TransportRequest>(
         result.is_error === true
       )
         throw new WorkerFailure("transport-failed", wireDetail);
+      if (isPlanRequest(request)) {
+        writeFileSync(
+          join(request.cwd, "result.json"),
+          JSON.stringify(result.structured_output ?? null) + "\n",
+          { mode: 0o600 },
+        );
+        if (typeof result.result === "string")
+          writeFileSync(join(request.cwd, "statement.txt"), result.result, {
+            mode: 0o600,
+          });
+      }
       return parseTransportResult(result.structured_output, request);
     }
     const events = output.stdout
@@ -617,6 +639,10 @@ function decodeResult<R extends TransportRequest>(
     if (typeof text !== "string")
       throw new WorkerFailure("invalid-result", "final-message-absent");
     parsePhase = "final-message-json";
+    if (isPlanRequest(request)) {
+      writeFileSync(join(request.cwd, "result.json"), text, { mode: 0o600 });
+      writeFileSync(join(request.cwd, "statement.txt"), text, { mode: 0o600 });
+    }
     return parseTransportResult(JSON.parse(text), request);
   } catch (error) {
     if (error instanceof WorkerFailure) throw error;

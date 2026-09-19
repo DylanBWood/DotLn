@@ -1,4 +1,12 @@
-import { mkdtempSync, rmSync } from "node:fs";
+import {
+  copyFileSync,
+  existsSync,
+  mkdirSync,
+  mkdtempSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
+import { execFileSync } from "node:child_process";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { planRefutationAuthorization } from "./reactor.js";
@@ -21,6 +29,7 @@ export async function runPlanRefutation(
   model: string,
   effort: string,
   now = Date.now,
+  retentionDirectory = join(process.cwd(), "docs/control/local/refutations"),
 ) {
   const selection = normalizeWorkerEffort(effort);
   const dispatchedAt = now();
@@ -38,7 +47,12 @@ export async function runPlanRefutation(
   // The inherited transports disable all model tools and user config/memories.
   const cwd = mkdtempSync(join(tmpdir(), "dotln-plan-refuter-"));
   let dispatch;
+  let preserveScratch = false;
   try {
+    // Empty repository satisfies Codex trust without changing worker input.
+    execFileSync("git", ["-c", "init.templateDir=", "init", "--quiet", cwd], {
+      stdio: "pipe",
+    });
     const request: PlanRefutationRequest = {
       kind: "plan-refutation",
       command: grant.command,
@@ -57,7 +71,17 @@ export async function runPlanRefutation(
       receipt.transport !== transport.name
     )
       throw new WorkerFailure("invalid-result");
-    const result = validatePlanResult(await dispatch.completed, subject);
+    const returned = await dispatch.completed;
+    writeFileSync(join(cwd, "result.json"), JSON.stringify(returned) + "\n", {
+      mode: 0o600,
+    });
+    if (!existsSync(join(cwd, "statement.txt")))
+      writeFileSync(
+        join(cwd, "statement.txt"),
+        `Transport ${transport.name} returned this result for the pinned subject; the host validation follows.\n`,
+        { mode: 0o600 },
+      );
+    const result = validatePlanResult(returned, subject);
     const completedAt = now();
     if (
       !planRefutationAuthorization(
@@ -85,8 +109,32 @@ export async function runPlanRefutation(
     };
   } catch (error) {
     dispatch?.kill();
+    if (
+      existsSync(join(cwd, "result.json")) ||
+      existsSync(join(cwd, "wire.jsonl"))
+    ) {
+      preserveScratch = true;
+      let retained: string;
+      try {
+        mkdirSync(retentionDirectory, { recursive: true, mode: 0o700 });
+        retained = mkdtempSync(join(retentionDirectory, "rejected-"));
+        for (const name of ["result.json", "statement.txt", "wire.jsonl"])
+          if (existsSync(join(cwd, name)))
+            copyFileSync(join(cwd, name), join(retained, name));
+        preserveScratch = false;
+      } catch {
+        throw new WorkerFailure(
+          "transport-failed",
+          `retention lane unavailable; rejected output remains at ${cwd}`,
+        );
+      }
+      throw new WorkerFailure(
+        error instanceof WorkerFailure ? error.code : "invalid-result",
+        `${error instanceof WorkerFailure ? (error.detail ?? error.code) : "plan return rejected"}; rejected result and statement retained at ${retained}`,
+      );
+    }
     throw error;
   } finally {
-    rmSync(cwd, { recursive: true });
+    if (!preserveScratch) rmSync(cwd, { recursive: true });
   }
 }

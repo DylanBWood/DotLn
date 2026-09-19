@@ -24,7 +24,7 @@ process.on(
     void active.completed.then((result) => {
       if (process.connected)
         process.send!(result, () => {
-          process.disconnect();
+          process.disconnect?.();
           process.exit(0);
         });
       else process.exit(0);

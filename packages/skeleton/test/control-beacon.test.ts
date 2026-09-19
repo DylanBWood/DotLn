@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import {
+import fs, {
   mkdtempSync,
   realpathSync,
   rmSync,
@@ -9,6 +9,7 @@ import {
   readFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
+import { syncBuiltinESMExports } from "node:module";
 import { join } from "node:path";
 import {
   decodeLog,
@@ -42,6 +43,7 @@ import {
 } from "../src/control-codebook.mjs";
 import {
   exactHostSize,
+  beaconMtimeMatches,
   probeBeaconStorage,
   writeBeaconFile,
 } from "../src/beacon-io.mjs";
@@ -50,6 +52,7 @@ import {
   controlBeaconDirectory,
   emitGroupBeacon,
   groupBeaconAddress,
+  observeBeaconMetadata,
   sweepControlBeacons,
 } from "../src/control-beacon-fs.mjs";
 import {
@@ -355,7 +358,8 @@ test("WO-021 maximum dense/sparse files obey allocation bounds; unsupported size
       ((MAX_V2_LOGICAL_BYTES + storage.blockBytes - 1n) / storage.blockBytes) *
         storage.blockBytes,
   );
-  assert.equal(denseStat.mtimeNs, BigInt(now) * 1000000n);
+  assert.equal(denseStat.mtimeNs / 1000000n, BigInt(now));
+  assert.ok(denseStat.mtimeNs - BigInt(now) * 1000000n < 1000n);
   assert.deepEqual(
     JSON.parse(readFileSync(join(dense, "value.beacon"), "utf8")),
     { fixture: true },
@@ -421,6 +425,126 @@ test("WO-021 maximum dense/sparse files obey allocation bounds; unsupported size
     assert.ok(stat.blocks * 512n <= storage.blockBytes);
     t.diagnostic(
       `12 actual member files -> group counts=2,2,2,2,1,1,1,1; group blocks=${stat.blocks}`,
+    );
+  }
+});
+
+test("WO-142 Node 26 beacon precision preserves the millisecond and refuses adjacent or coarse timestamps", () => {
+  const target = 1726700000123;
+  const targetNs = BigInt(target) * 1000000n;
+  assert.equal(beaconMtimeMatches(targetNs, target), true);
+  assert.equal(beaconMtimeMatches(targetNs + 999n, target), true);
+  for (const offset of [-1000000n, -1n, 1000n, 999999n, 1000000n])
+    assert.equal(beaconMtimeMatches(targetNs + offset, target), false);
+});
+
+test("WO-142 beacon timestamp readback refusal preserves the published projection", (t) => {
+  const root = realpathSync(
+    mkdtempSync(join(tmpdir(), "dotln-beacon-readback-")),
+  );
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  const storage = probeBeaconStorage(root);
+  const directory = join(root, "beacons");
+  const destination = join(directory, "value.beacon");
+  writeBeaconFile(
+    directory,
+    "value.beacon",
+    { size: 1024, mtimeMs: 0, content: "previous" },
+    storage,
+  );
+  const before = readFileSync(destination);
+  const metadataBefore = lstatSync(destination, { bigint: true });
+  const nativeLstat = fs.lstatSync;
+  const mtimeMs = 1726700000123;
+  for (const offset of [-1n, 1000n, 1000000n]) {
+    t.mock.method(
+      fs,
+      "lstatSync",
+      (path: fs.PathLike, options?: fs.StatOptions) => {
+        const metadata = nativeLstat(path, options);
+        return options?.bigint &&
+          typeof path === "string" &&
+          path.includes("/.dotln-beacon-stage-") &&
+          metadata
+          ? { ...metadata, mtimeNs: BigInt(mtimeMs) * 1000000n + offset }
+          : metadata;
+      },
+    );
+    syncBuiltinESMExports();
+    try {
+      assert.throws(
+        () =>
+          writeBeaconFile(
+            directory,
+            "value.beacon",
+            { size: 1024, mtimeMs, content: "next" },
+            storage,
+          ),
+        /millisecond mtime/,
+      );
+    } finally {
+      t.mock.restoreAll();
+      syncBuiltinESMExports();
+    }
+    assert.deepEqual(readFileSync(destination), before);
+    const after = lstatSync(destination, { bigint: true });
+    assert.equal(
+      after.ino,
+      metadataBefore.ino,
+      "failed precision cannot publish a replacement",
+    );
+    assert.equal(after.mtimeNs, metadataBefore.mtimeNs);
+    assert.deepEqual(
+      readdirSync(root),
+      ["beacons"],
+      "the failed staging directory is removed",
+    );
+  }
+});
+
+test("WO-142 Node 26 beacon emission preserves raw precision and unchanged age boundaries", (t) => {
+  const root = realpathSync(
+    mkdtempSync(join(tmpdir(), "dotln-beacon-precision-")),
+  );
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  const storage = probeBeaconStorage(root);
+  for (const mtimeMs of [
+    0, 1200001, 1726700000123, 1789819200123, 4102444800123,
+  ]) {
+    const encoded = { size: encodeControlBeacon(state), mtimeMs, content: "" };
+    writeBeaconFile(root, "first.beacon", encoded, storage);
+    writeBeaconFile(root, "second.beacon", encoded, storage);
+    const raw = lstatSync(join(root, "first.beacon"), { bigint: true }).mtimeNs;
+    const targetNs = BigInt(mtimeMs) * 1000000n;
+    assert.equal(raw / 1000000n, BigInt(mtimeMs));
+    assert.ok(raw >= targetNs && raw < targetNs + 1000n);
+    assert.equal(
+      lstatSync(join(root, "second.beacon"), { bigint: true }).mtimeNs,
+      raw,
+      "same host and encoded millisecond reproduce identical metadata",
+    );
+    const observed = observeBeaconMetadata(
+      join(root, "first.beacon"),
+      "first.beacon",
+    );
+    assert.equal(observed.mtimeMs, mtimeMs);
+    assert.equal(
+      observed.mtimeNs,
+      String(raw),
+      "the observer must not normalize host precision",
+    );
+    assert.equal(
+      beaconAge(observed, mtimeMs),
+      raw > targetNs ? "clock-skew" : "fresh",
+    );
+    assert.equal(beaconAge(observed, mtimeMs + 1), "fresh");
+    assert.equal(
+      beaconAge(observed, mtimeMs + BEACON_STALE_AFTER_MS),
+      raw > targetNs ? "fresh" : "stale",
+    );
+    assert.equal(
+      beaconAge(observed, mtimeMs + BEACON_STALE_AFTER_MS + 1),
+      "stale",
     );
   }
 });

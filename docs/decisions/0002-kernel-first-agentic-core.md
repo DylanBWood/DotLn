@@ -115,3 +115,16 @@ notes and tooling choices within the decided constraints.
   runtime dependencies. This reuses the existing Apache-2.0 lockfile package,
   introduces no new version or vendored source, and records its host consumer
   under the dependency-posture rule above.
+
+- 2026-09-19, WO-142 supersedes the historical toolchain versions above:
+  Node `>=26.0.0 <27`, TypeScript `7.0.2` and `@types/node` `26.6.2` are the
+  current exact compiler/type pins and runtime line. TypeScript remains the
+  skeleton's exact runtime parser dependency, now consumed through the native
+  `typescript/api` snapshot API by source-comment and test syntax checks.
+  Its twenty optional platform packages are compiler dependencies, recorded
+  as Apache-2.0 in the lockfile; no source is vendored. Kernel and compiler
+  remain free of runtime dependencies. [WO-142-D010](../evidence/WO-142/decisions.md#wo-142-d010--integrate-main-and-upgrade-node-and-typescript)
+  records operator authorization; [D011](../evidence/WO-142/decisions.md#wo-142-d011--preserve-encoded-milliseconds-under-node-26-and-migrate-the-native-parser)
+  records the API migration. The dated WO-002 and WO-011 observations above
+  remain historical evidence; their “no new version” statement describes
+  WO-011 only. [LEGAL](../LEGAL.md) records the updated dependency inventory.

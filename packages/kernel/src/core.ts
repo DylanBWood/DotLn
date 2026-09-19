@@ -236,7 +236,9 @@ export function stepProgram(
       };
     }
     default:
-      throw new Error("Invalid executable program");
+      throw new Error(
+        `Invalid executable program kind: ${String((program as { kind: unknown }).kind)}`,
+      );
   }
 }
 

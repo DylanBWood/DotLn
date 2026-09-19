@@ -1127,7 +1127,11 @@ export function projectCausalTimeline(
   const appendStable = [...ordered].sort(
     (left, right) =>
       left.appendOrdinal - right.appendOrdinal ||
-      left.record.recordId.localeCompare(right.record.recordId),
+      (left.record.recordId < right.record.recordId
+        ? -1
+        : left.record.recordId > right.record.recordId
+          ? 1
+          : 0),
   );
   const grouped = new Map<string, string[]>();
   for (const { record } of appendStable) {

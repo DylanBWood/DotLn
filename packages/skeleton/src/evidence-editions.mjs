@@ -143,15 +143,10 @@ export function evidenceSourceContent(path, contents) {
       /(export const COMPILER_PACKAGE_VERSION = )"\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?"(;)/u,
       '$1"<component release>"$2',
     );
-  if (path === "packages/skeleton/src/harness-host.ts")
+  if (path === "packages/skeleton/src/version.ts")
     return contents.replace(
       /(export const HARNESS_HOST_VERSION = )"\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?"(;)/u,
       '$1"<component release>"$2',
-    );
-  if (path === "packages/skeleton/src/loadouts/contributor.ts")
-    return contents.replaceAll(
-      /(skeletonVersion: )"\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?"/gu,
-      '$1"<component release>"',
     );
   return contents;
 }

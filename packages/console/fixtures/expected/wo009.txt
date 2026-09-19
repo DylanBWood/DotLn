@@ -103,7 +103,7 @@ Entropy Reducer [definition-67907a026f6b5653]
     A declared identity and role; not a claim that an episode is running
   Identity: entropy-reducer [evidence-2]
   Role: Planning reviewer [evidence-2]
-  Loadout semantic hash: fnv1a64:cd6f2c9b6f1c3883 [evidence-2]
+  Loadout semantic hash: fnv1a64:1a09929866810f71 [evidence-2]
   Episode phase: unknown [evidence-2]
     No episode is implied by a saved build
   -> Inspect saved build [build-2893c8f905fe3d13]
@@ -323,10 +323,10 @@ Entropy Reducer [build-2893c8f905fe3d13]
   Loadout: entropy-reducer.review.v1 [evidence-2]
   Identity: entropy-reducer [evidence-2]
   Role: Planning reviewer [evidence-2]
-  Loadout semantic hash: fnv1a64:cd6f2c9b6f1c3883 [evidence-2]
-  code-dsl hash: fnv1a64:cd6f2c9b6f1c3883 [evidence-2]
-  function-table hash: fnv1a64:cd6f2c9b6f1c3883 [evidence-2]
-  statechart-json hash: fnv1a64:cd6f2c9b6f1c3883 [evidence-2]
+  Loadout semantic hash: fnv1a64:1a09929866810f71 [evidence-2]
+  code-dsl hash: fnv1a64:1a09929866810f71 [evidence-2]
+  function-table hash: fnv1a64:1a09929866810f71 [evidence-2]
+  statechart-json hash: fnv1a64:1a09929866810f71 [evidence-2]
   Three views: equivalent [evidence-2]
   Inspection environment: skeleton.fixture [evidence-2]
     Saved build preview; its expiry is a fixed inspection input, not a live
@@ -375,7 +375,8 @@ OBLIGATION
 + Tag the likely surface and intervention altitude
 + Refute independently before promoting findings
 + Name the cheapest executable rung for every recurring finding
-+ Separate literal defects from the analogy's useful shape
++ Preserve the intended relationship first; examine literal details only when
+load-bearing
 + Every finding carries reproduction and evidence refs
 
 PASSIVE
@@ -408,7 +409,7 @@ validation-per-output; episodes=0
 
 SEMANTIC HASH
   before=none
-  after=fnv1a64:cd6f2c9b6f1c3883 [evidence-2]
+  after=fnv1a64:1a09929866810f71 [evidence-2]
     Compiler renderCompiledDiff(undefined, program); original terms remain
 primary
 

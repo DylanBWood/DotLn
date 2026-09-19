@@ -58,9 +58,9 @@ for (const fixture of fixtures) {
       JSON.stringify(first.artifactIdentity),
       JSON.stringify(second.artifactIdentity),
     );
-    // Preserve the historical receipt; only the executing package's version
-    // advances. All semantic hashes, definitions and environment fields remain
-    // pinned to the independently recorded WO-029 identity.
+    // Seiri retains its historical receipt. WO-142 deliberately repins only
+    // Entropy Reducer's Shape-First v2 fixture; compiler package releases alone
+    // still leave each fixture's semantic and definition identities unchanged.
     assert.deepEqual(first.artifactIdentity, {
       ...expected[fixture.name],
       compilerPackageVersion: COMPILER_PACKAGE_VERSION,
@@ -68,7 +68,7 @@ for (const fixture of fixtures) {
     assert.equal(
       first.semanticHash,
       expected[fixture.name]!.semanticHash,
-      "the pre-WO-029 whole-program hash remains byte-identical",
+      "the whole-program hash matches its recorded fixture identity",
     );
     assert.equal(
       first.semanticHash,

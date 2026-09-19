@@ -21,10 +21,10 @@ import { array, at, available, object, string, unavailable } from "./values.js";
 function attempt<T>(ref: string, read: () => T): Source<T> {
   try {
     return available(ref, read());
-  } catch {
+  } catch (error) {
     return unavailable(
       ref,
-      "Source could not be read or its declared format was refused",
+      `Source could not be read or its declared format was refused: ${error instanceof Error ? error.message : String(error)}`,
     );
   }
 }
@@ -123,6 +123,7 @@ export async function collectSources(
     );
   });
   const graphs: LoadoutSource[] = [];
+  const loadoutFailures: Source<never>[] = [];
   let loadouts: Source<readonly LoadoutSource[]>;
   let feedbackUnits: Source<readonly FeedbackUnit[]> = unavailable(
     "packages/skeleton/src/loadouts/feedback.ts",
@@ -142,7 +143,11 @@ export async function collectSources(
         pathToFileURL(join(root, "packages/skeleton/dist/src", module)).href
       )) as Record<string, unknown>;
       const ref = `packages/skeleton/src/${module.replace(/\.js$/u, ".ts")}`;
-      graphs.push(...exportedLoadouts(exports, ref, environment));
+      graphs.push(
+        ...exportedLoadouts(exports, ref, environment, (failedRef, reason) =>
+          loadoutFailures.push(unavailable(failedRef, reason)),
+        ),
+      );
       if (Array.isArray(exports["personalFeedbackUnits"]))
         feedbackUnits = available(
           ref,
@@ -196,6 +201,7 @@ export async function collectSources(
   return {
     stores,
     loadouts,
+    loadoutFailures,
     feedbackUnits,
     controlLog,
     controlStatus,

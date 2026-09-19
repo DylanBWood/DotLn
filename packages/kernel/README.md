@@ -1,4 +1,4 @@
-# `@dotln/kernel` v0.5.0
+# `@dotln/kernel`
 
 The deterministic, framework-free DotLn core. Kernel functions perform no I/O
 and consult no ambient clock or randomness. Import the public API from
@@ -80,3 +80,7 @@ fallback: read the top-level numeric `rngState`, otherwise use zero; promote
 Existing valid-JSON replays retain complete Decision bytes. Applications with
 another state layout can project their own fields; the skeleton explicitly uses
 `projectRuntimeEnvironment` across its scenario and recovery paths.
+
+`appendEvent` validates the full candidate log, including the newly assigned
+envelope, before returning its bytes and event. Invalid drafts cannot enter the
+returned log.

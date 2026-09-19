@@ -22,6 +22,8 @@ dist/
 
 # Explicit, rebuildable skeleton beacon output.
 /.beacons/
+# Atomic Beacon staging siblings can remain after a killed writer.
+.dotln-beacon-stage-*/
 
 # Rebuildable host control projections and local audience capabilities.
 /.control-beacons/

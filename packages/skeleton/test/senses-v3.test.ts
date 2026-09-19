@@ -238,7 +238,8 @@ test("WO-022 AC9 maximum v3 is sparse through atomic replacement; unsupported ho
   const path = join(destination, "fixture.beacon");
   const before = lstatSync(path, { bigint: true });
   assert.equal(before.size, MAX_V3_LOGICAL_BYTES);
-  assert.equal(before.mtimeNs, 1200001000000n);
+  assert.equal(before.mtimeNs / 1000000n, 1200001n);
+  assert.ok(before.mtimeNs - 1200001000000n < 1000n);
   assert.ok(before.blocks <= MAX_V3_ALLOCATED_BLOCKS);
   const fd = openSync(path, "r");
   try {
@@ -266,11 +267,12 @@ test("WO-022 AC9 maximum v3 is sparse through atomic replacement; unsupported ho
   const after = lstatSync(path, { bigint: true });
   assert.notEqual(after.ino, before.ino);
   assert.equal(after.size, before.size);
-  assert.equal(after.mtimeNs, 1200002000000n);
+  assert.equal(after.mtimeNs / 1000000n, 1200002n);
+  assert.ok(after.mtimeNs - 1200002000000n < 1000n);
   assert.ok(after.blocks <= MAX_V3_ALLOCATED_BLOCKS);
   assert.deepEqual(readdirSync(destination), ["fixture.beacon"]);
   t.diagnostic(
-    `maximum file: logical=${after.size}; blocks=${after.blocks}/${MAX_V3_ALLOCATED_BLOCKS}; blockBytes=${storage.blockBytes}; exact mtime and zero tail preserved through temp/rename; unsupported hosts: no files or directories`,
+    `maximum file: logical=${after.size}; blocks=${after.blocks}/${MAX_V3_ALLOCATED_BLOCKS}; blockBytes=${storage.blockBytes}; encoded millisecond with sub-microsecond positive error and zero tail preserved through temp/rename; unsupported hosts: no files or directories`,
   );
 });
 
@@ -343,9 +345,10 @@ test("WO-022 AC6/8/10 dynamic external keys, forged provenance, replay, unknown/
     const path = join(root, file, address);
     const metadata = lstatSync(path, { bigint: true });
     assert.equal(metadata.size, encodeV3Beacon(actual));
-    assert.equal(
-      metadata.mtimeNs,
-      BigInt(Date.parse(record.recordedAt)) * 1000000n,
+    const targetNs = BigInt(Date.parse(record.recordedAt)) * 1000000n;
+    assert.equal(metadata.mtimeNs / 1000000n, targetNs / 1000000n);
+    assert.ok(
+      metadata.mtimeNs >= targetNs && metadata.mtimeNs < targetNs + 1000n,
     );
     const fd = openSync(path, "r");
     try {

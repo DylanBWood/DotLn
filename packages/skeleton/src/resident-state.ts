@@ -199,10 +199,9 @@ export function residentRefusal(
     return "work order is waiting for a human handoff answer";
   if (!phase.scope.surfaces.includes(spec.surface))
     return "actor surface is outside phase scope";
-  const limits: Record<string, number> = {
-    ...phase.scope.budget,
-    ...phase.scope.changeSize,
-  };
+  const limits: Record<string, number> = { ...phase.scope.budget };
+  for (const [resource, amount] of Object.entries(phase.scope.changeSize))
+    limits[resource] = Math.min(limits[resource] ?? Infinity, amount);
   if (
     Object.keys(limits).some((key) => !Object.hasOwn(spec.resources, key)) ||
     Object.entries(spec.resources).some(

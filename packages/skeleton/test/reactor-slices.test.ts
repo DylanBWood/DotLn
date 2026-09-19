@@ -256,9 +256,21 @@ test("WO-050 slices have exclusive event ownership; WO-052 fills only the reserv
   );
 });
 
+test("WO-142 B13 owns the live driver in its extracted module and preserves the scenario re-export", () => {
+  const driver = read("packages/skeleton/src/live-reactor-driver.ts");
+  const scenario = read("packages/skeleton/src/scenario.ts");
+  assert.match(driver, /export\s+class\s+LiveReactorDriver\b/u);
+  assert.doesNotMatch(scenario, /\bclass\s+LiveReactorDriver\b/u);
+  assert.match(
+    scenario,
+    /export\s*\{[^}]*\bLiveReactorDriver\b[^}]*\}\s*from\s*["']\.\/live-reactor-driver\.js["']/u,
+  );
+});
+
 test("WO-050 hosts read raw runtime fields only through exported selectors", () => {
   for (const path of [
     "scenario.ts",
+    "live-reactor-driver.ts",
     "worker-host.ts",
     "verification-host.ts",
     "feedback-selfhost.ts",
@@ -282,6 +294,19 @@ test("WO-050 hosts read raw runtime fields only through exported selectors", () 
     read("packages/skeleton/src/verification-host.ts"),
     /get state\(\): VerificationState \{\s*return verificationStateFromRuntime\(this\.#runtime\)/u,
   );
+  const selfhost = read("packages/skeleton/src/feedback-selfhost.ts");
+  const verifierStart = selfhost.indexOf(
+    "const driver = new VerificationDriver(",
+  );
+  assert.ok(
+    verifierStart >= 0,
+    "the raw driver.state exception requires the typed verification driver",
+  );
+  assert.doesNotMatch(
+    selfhost.slice(0, verifierStart),
+    /driver\.state\s*(?:\.|\[)/u,
+  );
+  assert.match(selfhost.slice(verifierStart), /driver\.state\.next/u);
   assert.match(
     read("packages/skeleton/src/scenario.ts"),
     /const state = walkingStateFromRuntime\(runtime\)/u,

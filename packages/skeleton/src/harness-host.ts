@@ -389,15 +389,17 @@ const contained = (root: string, candidate: string) => {
     !path.startsWith(`${root}${sep}`) ||
     /(?:^|\/)\.git(?:\/|$)/.test(relative(root, path))
   )
-    throw new Error("Path outside the worktree surface");
+    throw new HarnessObserverInput("Path outside the worktree surface");
   let parent = existsSync(path) ? path : dirname(path);
   while (!existsSync(parent)) parent = dirname(parent);
   const physical = realpathSync(parent);
   if (physical !== root && !physical.startsWith(`${root}${sep}`))
-    throw new Error("Path resolves outside the worktree");
+    throw new HarnessObserverInput("Path resolves outside the worktree");
   return path;
 };
 class HarnessStateUnreadable extends Error {}
+/** The observer could not interpret the supplied read/write metadata. */
+class HarnessObserverInput extends Error {}
 const readJson = <T>(path: string, fallback: T, sessionState = false): T => {
   try {
     if (!existsSync(path)) return fallback;
@@ -1973,7 +1975,7 @@ export function harnessFeedbackFacts(
     ["Edit", "Write"].includes(input.tool_name ?? "")
   ) {
     if (typeof args.file_path !== "string")
-      throw new Error("Missing edit path");
+      throw new HarnessObserverInput("Missing edit path");
     const path = relative(root, contained(root, args.file_path));
     const original = input.tool_response?.originalFile;
     const before =
@@ -2074,7 +2076,7 @@ function observeRead(
       !Number.isInteger(file.startLine) ||
       !Number.isInteger(file.numLines)
     )
-      throw new Error("Read response range unavailable");
+      throw new HarnessObserverInput("Read response range unavailable");
     paths.push({
       path,
       startLine: file.startLine!,
@@ -2120,7 +2122,9 @@ function observeRead(
     try {
       delivered = JSON.parse(input.tool_response.stdout);
     } catch {
-      throw new Error("Output read delivery is truncated or unavailable");
+      throw new HarnessObserverInput(
+        "Output read delivery is truncated or unavailable",
+      );
     }
     if (
       !delivered ||
@@ -2130,10 +2134,12 @@ function observeRead(
         ([key, value]) => (delivered as Record<string, unknown>)[key] !== value,
       )
     )
-      throw new Error("Output read delivery differs from current bytes");
+      throw new HarnessObserverInput(
+        "Output read delivery differs from current bytes",
+      );
     const bytes = readFileSync(contained(root, expected.path));
     if (feedbackContentHash(bytes) !== expected.hash)
-      throw new Error("Output changed during read observation");
+      throw new HarnessObserverInput("Output changed during read observation");
     const linesBefore = (end: number) =>
       physicalLines(bytes.subarray(0, end).toString("utf8")) +
       (end > 0 && bytes[end - 1] === 10 ? 1 : 0);
@@ -2781,7 +2787,12 @@ export async function evaluateHarnessHook(
     observeTypedCorrection(root, observationScope(), input.prompt ?? "");
     additionalContext = [
       additionalContext,
-      observationBoundary(root, observationScope()),
+      observationBoundary(root, observationScope(), {
+        ...(input.prompt ? { prompt: input.prompt } : {}),
+        ...(input.transcript_path
+          ? { transcriptPath: input.transcript_path }
+          : {}),
+      }),
     ]
       .filter(Boolean)
       .join("\n");
@@ -2834,11 +2845,14 @@ export async function evaluateHarnessHook(
     record(root, input, {
       reads: paths,
       role: session.role,
+      workOrder: observationScope().workOrder,
+      phase: observationScope().phase,
       ...(observeBackgroundTool(
         input.tool_name ?? "",
         input.tool_input ?? {},
         input.tool_response ?? {},
         new Date().toISOString(),
+        input.tool_use_id,
       ) ?? {}),
       ...(authorship ? { authorship } : {}),
       receipts: session.reads.slice(before),
@@ -3104,14 +3118,16 @@ export async function runHarnessHook(
     response = await evaluateHarnessHook(config, input, root, boundary);
   } catch (error) {
     reasonClass =
-      error instanceof HarnessCommandRefused
-        ? "classification"
-        : error instanceof HarnessStateUnreadable
-          ? "unreadable-state"
-          : error instanceof Error &&
-              /^(pins-differ|snapshot-missing):/.test(error.message)
-            ? error.message.split(":")[0]!
-            : "runtime-unavailable";
+      error instanceof HarnessObserverInput
+        ? "observer-input"
+        : error instanceof HarnessCommandRefused
+          ? "classification"
+          : error instanceof HarnessStateUnreadable
+            ? "unreadable-state"
+            : error instanceof Error &&
+                /^(pins-differ|snapshot-missing):/.test(error.message)
+              ? error.message.split(":")[0]!
+              : "runtime-unavailable";
     // An unexpected failure names its class and a bounded message so it is
     // never mistaken for a policy refusal; typed refusals carry their own.
     const failure =
@@ -3119,11 +3135,13 @@ export async function runHarnessHook(
         ? `${error.constructor.name}: ${error.message.replace(/[\u0000-\u001f\u007f]+/g, " ").slice(0, 120)}`
         : "non-error failure";
     response = protocolAdvisory(
-      error instanceof HarnessCommandRefused
-        ? `command classification: ${error.message}`
-        : error instanceof HarnessStateUnreadable
-          ? error.message
-          : `${reasonClass}: host facts or pinned runtime unavailable (${failure}); run node scripts/bootstrap.mjs to prepare this worktree`,
+      error instanceof HarnessObserverInput
+        ? `observer input unavailable: ${error.message}`
+        : error instanceof HarnessCommandRefused
+          ? `command classification: ${error.message}`
+          : error instanceof HarnessStateUnreadable
+            ? error.message
+            : `${reasonClass}: host facts or pinned runtime unavailable (${failure}); run node scripts/bootstrap.mjs to prepare this worktree`,
     );
   } finally {
     if (observed) {
@@ -3185,7 +3203,7 @@ export async function runHarnessHook(
       ? reasonClass
       : subagentAdvisories.has(response)
         ? `subagent-budget:${response.systemMessage.includes("counter missing") ? "missing" : response.systemMessage.includes("unreadable") ? "unreadable" : response.systemMessage.includes("at least") ? "overlap" : "unavailable"}`
-        : "classification";
+        : `advisory:${digest(response.systemMessage)}`;
     if (
       !showHarnessAdvisory(
         observed?.input.session_id,
@@ -3202,7 +3220,14 @@ export async function runHarnessHook(
             createHash("sha256").update(key).digest("hex") + ".advisory",
           );
           try {
-            writeFileSync(marker, "seen\n", { flag: "wx", mode: 0o600 });
+            writeFileSync(
+              marker,
+              JSON.stringify({
+                sessionKey: digest(String(observed?.input.session_id)),
+                owner: harnessHostProcess(),
+              }) + "\n",
+              { flag: "wx", mode: 0o600 },
+            );
           } catch (error) {
             if (
               error &&

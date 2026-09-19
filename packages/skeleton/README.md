@@ -1,4 +1,4 @@
-# `@dotln/skeleton` 0.24.0
+# `@dotln/skeleton`
 
 For application v0.28.0 (WO-052), a source-change host turns one compiled
 WorkOrder into one governed branch worktree in a target repository: it emits
@@ -493,8 +493,10 @@ codebooks are labeled without guessing state.
 The [normative v1 data](../../docs/product/02-domain-model.md#beacon-codebook-v1)
 assigns 104 states, all at most 51,064 bytes, without sparse files. Oversized
 records and unrepresentable times refuse before publication. The edge stages
-each complete file in a private sibling directory, verifies exact size and
-mtime, and atomically renames it to its stable address; staging is removed on
+each complete file in a private sibling directory, verifies exact size and the
+encoded millisecond with less than one microsecond of positive timestamp
+conversion error, and atomically renames it to its stable address. Observers
+retain the actual nanoseconds and age/skew comparisons; staging is removed on
 normal completion/failure. This is per-file atomicity, not an all-directory
 snapshot or crash-durable storage. The canonical log rebuilds host projections;
 edge-only claims are outside live/replay identity.
@@ -654,7 +656,7 @@ npm run evidence:verification -- --check
 node --test packages/compiler/dist/test/verification.test.js packages/skeleton/dist/test/verification.test.js
 ```
 
-See the [domain payload and matrix contract](../../docs/product/02-domain-model.md#independent-verification-v1) and [WO-010 acceptance mapping](../../docs/evidence/WO-010/README.md). `evidence:verification -- --write` regenerates the synthetic receipt after an intentional source change; `npm test` checks its exact bytes. Compiler-version changes record current loadout identity evidence under `docs/evidence/WO-011/artifact-identity/`, leaving prior receipts intact. The current verification fixture edition is `docs/evidence/WO-011/verification/`.
+See the [domain payload and matrix contract](../../docs/product/02-domain-model.md#independent-verification-v1) and [WO-010 acceptance mapping](../../docs/evidence/WO-010/README.md). `evidence:verification -- --write` regenerates the synthetic receipt after an intentional source change; `npm test` checks its exact bytes. Compiler-version or behavior changes select a new loadout identity or verification edition in [`docs/evidence/current.json`](../../docs/evidence/current.json), leaving prior receipts intact. The evidence scripts and gate read that selection.
 
 ## Feedback compiler and bounded self-hosting
 
@@ -664,8 +666,10 @@ explicit boundary checks, with the semantic correction transition in the shared
 reactor. `feedbackBoundary` checks host-derived facts before running an effect;
 writer reservations must remain locked across observation and dispatch. A read
 receipt witnesses delivered bytes, not whether the reader understood them.
-The source-comment boundary loads the existing TypeScript `5.4.5` parser on
-demand and compares actual comment ranges; parser-version drift refuses.
+The source-comment boundary uses the exactly pinned TypeScript `7.0.2` native
+parser. It batches immutable before/after texts in a virtual project, closes
+the parser after each boundary, and compares actual comment ranges; parser-version
+drift refuses. Regex, template and JSX literal text cannot impersonate comments.
 This host dependency is recorded in ADR-0002. The pure compiler and kernel
 retain zero runtime dependencies.
 
@@ -699,7 +703,7 @@ DOTLN_LIVE_WORKERS=1 npm run dotln -- feedback-audit --store .runtime/feedback-a
 npm run evidence:feedback -- --record-selfhost .runtime/feedback-audit
 ```
 
-The current root evidence command selects the [WO-039 edition](../../docs/evidence/WO-039/README.md), because the compiler package bump changes pinned artifact and feedback identities and the integrated console workspace changes the declared lockfile projection. WO-011, WO-041 and WO-032 receipts remain historical bytes. The [actor board](../console/README.md) reads the same edition by default and pins it as its `selfhost` fixture case, because the reactor refuses an earlier edition's verifier stream as persisted compilation drift. `scripts/feedback-evidence.mjs --edition WO-NNN` selects a new edition; writing different bytes to an existing edition refuses. The logical report label inside the pinned verification capsule is unchanged.
+The root evidence command selects the feedback edition in [`docs/evidence/current.json`](../../docs/evidence/current.json). A compiler or declared source change can require a replacement edition; previous receipts remain historical bytes. The [actor board](../console/README.md) reads the same edition by default and pins it as its `selfhost` fixture case, because the reactor refuses an earlier edition's verifier stream as persisted compilation drift. `scripts/feedback-evidence.mjs --edition WO-NNN` selects a new edition; writing different bytes to an existing edition refuses. The logical report label inside the pinned verification capsule is unchanged.
 
 Use an unused store for a new source revision. Reusing the same store resumes
 only the same source, policy, and verifier selection; an already saved audit or
@@ -845,8 +849,9 @@ npm run harness -- remove --target <worktree> --runtime-root <launchpad>
 The default profile is `target-worker-claude`; select `--profile
 target-worker-codex` to install only `CLAUDE.local.md` and the manifest. A Codex
 launch must explicitly read that instruction block. No Codex hook capability
-is claimed. Launch permissions belong to WO-051; host diff checks and their live
-proof belong to WO-052 and WO-053 respectively.
+is claimed. WO-051 supplied the launch profiles, WO-052 added host diff checks,
+and [WO-053](../../docs/evidence/WO-053/README.md) observed both harnesses
+commit a synthetic repair and Codex recover an existing commit after host kill.
 
 Claude receives three PreToolUse guards (permission, writer, attribution),
 settings deny rules and the local instruction block. Hook imports are absolute
@@ -929,7 +934,9 @@ safely removes the clean worktree, retaining the branch. Unknown ignored files
 and dirty state refuse. A kill during preparation or partial finish can leave
 safe residue requiring inspection; no automatic discard or forced cleanup is
 provided. Store leases and exact command routes do not establish general orphan
-writer fencing or sandbox containment; the live test remains WO-053.
+writer fencing or sandbox containment; [WO-053](../../docs/evidence/WO-053/README.md)
+observed clean Claude/Codex episodes and killed-host recovery after worker exit,
+without establishing fencing of a still-running orphan.
 
 Fixture evidence, including real host SIGKILL and native emitted Claude guards:
 
@@ -961,6 +968,10 @@ inherited environment and a local tool PATH; scope is `package.json`, since the
 producer does not invent implicated source paths. The optional default history
 is `.dotln/repairs.jsonl`; placement/generated defaults are empty. A declared
 non-npm package manager or unavailable npm requires explicit check conventions.
+Checks run with `HOME` and `TMPDIR` set to the target root, so they may create
+caches or temporary files there. Discovery disables Node’s binary compile cache
+for these subprocesses and inventories the resulting bounded
+tree again ([WO-119 review, O5](../../docs/final-reviews/WO-119/FINAL-001.md)).
 Resolved placement sources and removed generated files cease producing candidates.
 
 The fixture declaration in `fixtures/wo119-discovery/repository.json` shows the

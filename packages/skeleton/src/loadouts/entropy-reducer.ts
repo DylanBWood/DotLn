@@ -717,17 +717,18 @@ export const entropyReducerSupports = {
   },
   shapeFirst: {
     ...supportDefaults,
+    version: 2,
     supportFacetId: "entropy-reducer.shape-first",
     name: "Shape-First",
     supportedTags: ["research", "plan"],
     semanticsAdded: [
-      "state literal weaknesses and fixes before carrying an analogy down the mechanism ladder",
+      "transfer an operator analogy's intended relationship before evaluating load-bearing literal details",
     ],
     emissions: [
       {
         kind: "prompt-fragment",
         emissionId: "shape-first.residue",
-        text: "For an operator analogy, state the literal weakness and literal fix first; only then preserve the useful relation across lower mechanisms.",
+        text: "For an operator analogy, extract the intended relationship first and carry that useful relation across mechanisms; evaluate a literal detail only when a claim depends on it.",
       },
     ],
     cost: {
@@ -737,7 +738,9 @@ export const entropyReducerSupports = {
       extraEpisodes: 0,
     },
     inspection: {
-      obligations: ["Separate literal defects from the analogy's useful shape"],
+      obligations: [
+        "Preserve the intended relationship first; examine literal details only when load-bearing",
+      ],
     },
   },
   constraintFirst: {
@@ -1163,6 +1166,8 @@ function validateLensFileScope(scope: string): void {
   const normalized = scope.replace(/\/+/gu, "/").toLowerCase();
   const segments = normalized.split("/");
   if (
+    scope !== scope.trim() ||
+    /[*?\[\]{}]/u.test(scope) ||
     normalized === "." ||
     normalized === "./" ||
     normalized === "docs" ||
@@ -2107,7 +2112,7 @@ export function renderEntropyReducerResidue(source: LoadoutGraph): string {
     "",
     `Role obligations: ${list(graph.role.obligations)}. Active semantics: ${list(active.semantics)}. Active work-order constraints: ${list(active.workOrder.constraints)}.`,
     "",
-    "Read in order: the execution guide, the active work order, only its cited blueprint surfaces, then the implementation and executable evidence. Treat settled decisions as constraints. For an operator analogy, state literal weaknesses and fixes before transferring its useful shape. Identify the evidenced constraint before ordering recommendations.",
+    "Read in order: the execution guide, the active work order, only its cited blueprint surfaces, then the implementation and executable evidence. Treat settled decisions as constraints. For an operator analogy, extract and transfer its intended relationship first; evaluate literal details only when the claim depends on them. Identify the evidenced constraint before ordering recommendations.",
     "",
     "The clean-room floor is mandatory. Stop instead of incorporating employer material, credentials, private identifiers, internal service details, or any other inadmissible source. Census and delegate reads are limited to paths named by `git ls-files`; never inspect `docs/intake/**` during this review. The tracked repository, control plane, remotes, settings, and operator decisions stay read-only. The dispatch host must separately confine scratch probes and ignored intake capture to authorized roots; the compiled envelope names effect families and resource budgets, not filesystem roots.",
     "",

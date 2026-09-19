@@ -1690,7 +1690,7 @@
           }
         },
         {
-          "version": 1,
+          "version": 2,
           "requiredCapabilities": [],
           "semanticsModified": [],
           "authorityChanges": [],
@@ -1707,13 +1707,13 @@
             "plan"
           ],
           "semanticsAdded": [
-            "state literal weaknesses and fixes before carrying an analogy down the mechanism ladder"
+            "transfer an operator analogy's intended relationship before evaluating load-bearing literal details"
           ],
           "emissions": [
             {
               "kind": "prompt-fragment",
               "emissionId": "shape-first.residue",
-              "text": "For an operator analogy, state the literal weakness and literal fix first; only then preserve the useful relation across lower mechanisms."
+              "text": "For an operator analogy, extract the intended relationship first and carry that useful relation across mechanisms; evaluate a literal detail only when a claim depends on it."
             }
           ],
           "cost": {
@@ -1727,7 +1727,7 @@
           },
           "inspection": {
             "obligations": [
-              "Separate literal defects from the analogy's useful shape"
+              "Preserve the intended relationship first; examine literal details only when load-bearing"
             ]
           }
         },

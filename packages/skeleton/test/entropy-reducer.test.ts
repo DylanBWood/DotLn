@@ -41,6 +41,34 @@ const OUTPUT_EXPECTATION = {
   episodeId: "ep_entropy_test",
 } as const;
 
+test("WO-142 Shape-First v2 transfers the relationship before evaluating load-bearing literal details", () => {
+  const shape = entropyReducerSupports.shapeFirst;
+  assert.equal(shape.version, 2);
+  assert.deepEqual(shape.authorityChanges, []);
+  const compiled = compileReviewerWorkOrder({
+    repo: "/fixture/repository",
+    baseCommit: "fixture-base",
+    episodeId: "ep_entropy_test",
+    dispatchedAt: DISPATCHED_AT,
+    episodeEndsAt: EPISODE_ENDS_AT,
+  });
+  assert.match(compiled.residue, /entropy-reducer\.shape-first@2/u);
+  assert.match(
+    compiled.residue,
+    /extract the intended relationship first.*evaluate a literal detail only when a claim depends on it/u,
+  );
+  assert.doesNotMatch(
+    compiled.residue,
+    /literal weakness and literal fix first|state literal weaknesses and fixes before/u,
+  );
+  assert.ok(
+    compiled.compiledProgram.componentManifest.some(
+      (entry) =>
+        entry.componentId === shape.supportFacetId && entry.version === 2,
+    ),
+  );
+});
+
 const compileReviewer = () =>
   compileReviewerWorkOrder({
     repo: "/fixture/repository",
@@ -572,6 +600,13 @@ test("WO-023 AC4 enforces every lens-brief field, no-fix, uniqueness, and the fo
     "default review scopes must not include ignored intake",
   );
   for (const scope of [
+    "docs/*",
+    "*",
+    "**",
+    "docs/int*",
+    "docs/intake ",
+    "docs/intake\t",
+    " docs/intake/",
     "docs/",
     "docs/intake/",
     "docs//intake/",

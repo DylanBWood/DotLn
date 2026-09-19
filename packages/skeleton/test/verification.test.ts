@@ -34,11 +34,11 @@ import {
 import {
   projectAcceptanceEvidenceMatrices,
   replayVerification,
-  verificationReactor,
   type VerificationState,
 } from "../src/verification.js";
 import {
   parseEvidenceResult,
+  evidenceResultSchema,
   transportPrompt,
   type EvidenceWorkerRequest,
   type VerificationWorkerResult,
@@ -53,7 +53,29 @@ import {
 import { LEASE_MS, WorkerFailure } from "../src/worker-protocol.js";
 import { WorkerStore } from "../src/worker-store.js";
 import { projectWorkerStatus } from "../src/worker-status.js";
-import { initialVerificationRuntime, seiriReactor } from "../src/reactor.js";
+import {
+  initialVerificationRuntime,
+  seiriReactor,
+  verificationStateFromRuntime,
+} from "../src/reactor.js";
+
+/** Compatibility projection over the shared typed reactor, never a second decider. */
+function verificationReactor(
+  state: VerificationState,
+  event: Event,
+): VerificationState {
+  const runtime = {
+    ...initialVerificationRuntime(state.workstreamId),
+    verification: state as unknown as JsonValue,
+  };
+  return verificationStateFromRuntime(
+    seiriReactor(runtime, event, {
+      now: event.occurredAt,
+      rngState: 17,
+      predicates: {},
+    }).state,
+  );
+}
 
 const roots: string[] = [];
 const temporary = () => {
@@ -752,4 +774,28 @@ test("WO-010 expired authority or lease quarantines acceptance and replay remain
     Date.now = priorNow;
     Math.random = priorRandom;
   }
+});
+
+test("WO-142 B7 result schema, prompt and bounded rejection agree on summary length", () => {
+  const request = requestFor();
+  const good = structuredClone((resultEvent().payload as any).value);
+  const schema = evidenceResultSchema(request) as any;
+  assert.equal(schema.properties.envelope.properties.summary.maxLength, 320);
+  assert.match(
+    JSON.parse(transportPrompt(request)).outputInstructions,
+    /summary to at most 320 characters/,
+  );
+  good.envelope.summary = "s".repeat(320);
+  assert.equal(parseEvidenceResult(good, request).envelope.summary.length, 320);
+  good.envelope.summary += "s";
+  assert.throws(
+    () => parseEvidenceResult(good, request),
+    (error: unknown) => {
+      assert.ok(error instanceof WorkerFailure);
+      assert.match(error.message, /envelope.summary.*320 characters/);
+      assert.ok(error.message.length < 160);
+      assert.ok(!error.message.includes(good.envelope.summary));
+      return true;
+    },
+  );
 });

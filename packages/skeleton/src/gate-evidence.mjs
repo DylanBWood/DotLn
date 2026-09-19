@@ -812,9 +812,3 @@ export function requireGateChecks(root, required) {
     );
   return treeHash;
 }
-
-/** Completion executes the whitespace check inline. Product tests are a review
- * and publication obligation, never a transition prerequisite.
- * @param {string} [_verdict] @returns {string[]}
- */
-export const lifecycleRequiredChecks = (_verdict) => ["git diff --check"];

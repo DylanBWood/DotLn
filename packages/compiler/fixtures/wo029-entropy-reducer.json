@@ -64,7 +64,9 @@
       "name": "Entropy Reducer helm",
       "kind": "equipment",
       "socketBudget": 8,
-      "activeMechanicIds": ["seiso-shine"],
+      "activeMechanicIds": [
+        "seiso-shine"
+      ],
       "supportFacetIds": [
         "entropy-reducer.seiketsu-standardize",
         "entropy-reducer.verify-first",
@@ -82,7 +84,14 @@
       "activeMechanicId": "seiso-shine",
       "version": 1,
       "name": "Seisō (Shine)",
-      "tags": ["observe", "research", "plan", "verify", "delegate", "narrate"],
+      "tags": [
+        "observe",
+        "research",
+        "plan",
+        "verify",
+        "delegate",
+        "narrate"
+      ],
       "requiredCapabilities": [],
       "semantics": [
         "review makes inspection inseparable from cleanup",
@@ -179,10 +188,17 @@
                     "minLength": 1
                   },
                   "severity": {
-                    "enum": ["blocking", "major", "minor"]
+                    "enum": [
+                      "blocking",
+                      "major",
+                      "minor"
+                    ]
                   },
                   "evidenceLabel": {
-                    "enum": ["measured", "by inspection"]
+                    "enum": [
+                      "measured",
+                      "by inspection"
+                    ]
                   },
                   "observed": {
                     "type": "string",
@@ -197,7 +213,10 @@
                       {
                         "type": "object",
                         "additionalProperties": false,
-                        "required": ["kind", "command"],
+                        "required": [
+                          "kind",
+                          "command"
+                        ],
                         "properties": {
                           "kind": {
                             "const": "command"
@@ -211,7 +230,10 @@
                       {
                         "type": "object",
                         "additionalProperties": false,
-                        "required": ["kind", "steps"],
+                        "required": [
+                          "kind",
+                          "steps"
+                        ],
                         "properties": {
                           "kind": {
                             "const": "inspection"
@@ -250,7 +272,9 @@
                       {
                         "type": "object",
                         "additionalProperties": false,
-                        "required": ["kind"],
+                        "required": [
+                          "kind"
+                        ],
                         "properties": {
                           "kind": {
                             "const": "one-off"
@@ -260,13 +284,22 @@
                       {
                         "type": "object",
                         "additionalProperties": false,
-                        "required": ["kind", "rung", "rationale"],
+                        "required": [
+                          "kind",
+                          "rung",
+                          "rationale"
+                        ],
                         "properties": {
                           "kind": {
                             "const": "recurring"
                           },
                           "rung": {
-                            "enum": ["test", "lint", "guard", "script"]
+                            "enum": [
+                              "test",
+                              "lint",
+                              "guard",
+                              "script"
+                            ]
                           },
                           "rationale": {
                             "type": "string",
@@ -286,7 +319,10 @@
                       "reproduction": {
                         "type": "object",
                         "additionalProperties": false,
-                        "required": ["kind", "command"],
+                        "required": [
+                          "kind",
+                          "command"
+                        ],
                         "properties": {
                           "kind": {
                             "const": "command"
@@ -307,7 +343,10 @@
                       "reproduction": {
                         "type": "object",
                         "additionalProperties": false,
-                        "required": ["kind", "steps"],
+                        "required": [
+                          "kind",
+                          "steps"
+                        ],
                         "properties": {
                           "kind": {
                             "const": "inspection"
@@ -506,7 +545,11 @@
                   "minLength": 1
                 },
                 "status": {
-                  "enum": ["completed", "failed", "blocked"]
+                  "enum": [
+                    "completed",
+                    "failed",
+                    "blocked"
+                  ]
                 },
                 "resultId": {
                   "type": "string",
@@ -525,7 +568,11 @@
             "cleanRoom": {
               "type": "object",
               "additionalProperties": false,
-              "required": ["status", "stopConditionsFound", "evidenceRefs"],
+              "required": [
+                "status",
+                "stopConditionsFound",
+                "evidenceRefs"
+              ],
               "properties": {
                 "status": {
                   "const": "passed"
@@ -568,7 +615,9 @@
         },
         "requiredEvidence": [],
         "expiresAt": 11000,
-        "revocationEventTypes": ["OperatorStopRequested"],
+        "revocationEventTypes": [
+          "OperatorStopRequested"
+        ],
         "revocationConditions": []
       },
       "inspection": {
@@ -591,9 +640,15 @@
           "Apply the clean-room floor",
           "Await operator disposition"
         ],
-        "passive": ["Measure before assuming"],
-        "pulse": ["One review on explicit dispatch"],
-        "interrupt": ["Stop on OperatorStopRequested or episode expiry"]
+        "passive": [
+          "Measure before assuming"
+        ],
+        "pulse": [
+          "One review on explicit dispatch"
+        ],
+        "interrupt": [
+          "Stop on OperatorStopRequested or episode expiry"
+        ]
       }
     }
   ],
@@ -611,7 +666,9 @@
       "claims": [],
       "supportFacetId": "entropy-reducer.seiketsu-standardize",
       "name": "Seiketsu (Standardize)",
-      "supportedTags": ["plan"],
+      "supportedTags": [
+        "plan"
+      ],
       "semanticsAdded": [
         "route every recurring finding to a test, lint, guard, or script rung"
       ],
@@ -651,7 +708,9 @@
       "requiredCapabilities": [],
       "semanticsModified": [],
       "authorityChanges": [],
-      "evidenceRequirements": ["reproduction"],
+      "evidenceRequirements": [
+        "reproduction"
+      ],
       "resourceMultiplier": 1,
       "conflictsWith": [],
       "preservesDeterminism": true,
@@ -659,7 +718,9 @@
       "claims": [],
       "supportFacetId": "entropy-reducer.verify-first",
       "name": "Verify-First",
-      "supportedTags": ["verify"],
+      "supportedTags": [
+        "verify"
+      ],
       "semanticsAdded": [
         "label each finding measured or by inspection",
         "attach an independent reproduction command"
@@ -695,10 +756,17 @@
                 "minLength": 1
               },
               "severity": {
-                "enum": ["blocking", "major", "minor"]
+                "enum": [
+                  "blocking",
+                  "major",
+                  "minor"
+                ]
               },
               "evidenceLabel": {
-                "enum": ["measured", "by inspection"]
+                "enum": [
+                  "measured",
+                  "by inspection"
+                ]
               },
               "observed": {
                 "type": "string",
@@ -713,7 +781,10 @@
                   {
                     "type": "object",
                     "additionalProperties": false,
-                    "required": ["kind", "command"],
+                    "required": [
+                      "kind",
+                      "command"
+                    ],
                     "properties": {
                       "kind": {
                         "const": "command"
@@ -727,7 +798,10 @@
                   {
                     "type": "object",
                     "additionalProperties": false,
-                    "required": ["kind", "steps"],
+                    "required": [
+                      "kind",
+                      "steps"
+                    ],
                     "properties": {
                       "kind": {
                         "const": "inspection"
@@ -766,7 +840,9 @@
                   {
                     "type": "object",
                     "additionalProperties": false,
-                    "required": ["kind"],
+                    "required": [
+                      "kind"
+                    ],
                     "properties": {
                       "kind": {
                         "const": "one-off"
@@ -776,13 +852,22 @@
                   {
                     "type": "object",
                     "additionalProperties": false,
-                    "required": ["kind", "rung", "rationale"],
+                    "required": [
+                      "kind",
+                      "rung",
+                      "rationale"
+                    ],
                     "properties": {
                       "kind": {
                         "const": "recurring"
                       },
                       "rung": {
-                        "enum": ["test", "lint", "guard", "script"]
+                        "enum": [
+                          "test",
+                          "lint",
+                          "guard",
+                          "script"
+                        ]
                       },
                       "rationale": {
                         "type": "string",
@@ -802,7 +887,10 @@
                   "reproduction": {
                     "type": "object",
                     "additionalProperties": false,
-                    "required": ["kind", "command"],
+                    "required": [
+                      "kind",
+                      "command"
+                    ],
                     "properties": {
                       "kind": {
                         "const": "command"
@@ -823,7 +911,10 @@
                   "reproduction": {
                     "type": "object",
                     "additionalProperties": false,
-                    "required": ["kind", "steps"],
+                    "required": [
+                      "kind",
+                      "steps"
+                    ],
                     "properties": {
                       "kind": {
                         "const": "inspection"
@@ -859,14 +950,18 @@
         "extraEpisodes": 0
       },
       "inspection": {
-        "obligations": ["Every finding carries reproduction and evidence refs"]
+        "obligations": [
+          "Every finding carries reproduction and evidence refs"
+        ]
       }
     },
     {
       "version": 1,
       "requiredCapabilities": [],
       "semanticsModified": [],
-      "authorityChanges": ["consume only delegate.readonly"],
+      "authorityChanges": [
+        "consume only delegate.readonly"
+      ],
       "evidenceRequirements": [],
       "resourceMultiplier": 1,
       "conflictsWith": [],
@@ -875,7 +970,9 @@
       "claims": [],
       "supportFacetId": "entropy-reducer.fan-out-lens",
       "name": "Fan-Out Lens",
-      "supportedTags": ["delegate"],
+      "supportedTags": [
+        "delegate"
+      ],
       "semanticsAdded": [
         "delegate at most four read-only lenses with fixed briefs and word budgets"
       ],
@@ -961,7 +1058,9 @@
         "extraEpisodes": 0
       },
       "inspection": {
-        "restrictions": ["At most four no-fix, read-only lens delegates"]
+        "restrictions": [
+          "At most four no-fix, read-only lens delegates"
+        ]
       }
     },
     {
@@ -979,7 +1078,9 @@
       "claims": [],
       "supportFacetId": "entropy-reducer.mutation-drill",
       "name": "Mutation Drill",
-      "supportedTags": ["verify"],
+      "supportedTags": [
+        "verify"
+      ],
       "semanticsAdded": [
         "challenge evidence with bounded perturbations in a scratch copy"
       ],
@@ -1007,11 +1108,13 @@
         "extraEpisodes": 1
       },
       "inspection": {
-        "obligations": ["Refute independently before promoting findings"]
+        "obligations": [
+          "Refute independently before promoting findings"
+        ]
       }
     },
     {
-      "version": 1,
+      "version": 2,
       "requiredCapabilities": [],
       "semanticsModified": [],
       "authorityChanges": [],
@@ -1023,15 +1126,18 @@
       "claims": [],
       "supportFacetId": "entropy-reducer.shape-first",
       "name": "Shape-First",
-      "supportedTags": ["research", "plan"],
+      "supportedTags": [
+        "research",
+        "plan"
+      ],
       "semanticsAdded": [
-        "state literal weaknesses and fixes before carrying an analogy down the mechanism ladder"
+        "transfer an operator analogy's intended relationship before evaluating load-bearing literal details"
       ],
       "emissions": [
         {
           "kind": "prompt-fragment",
           "emissionId": "shape-first.residue",
-          "text": "For an operator analogy, state the literal weakness and literal fix first; only then preserve the useful relation across lower mechanisms."
+          "text": "For an operator analogy, extract the intended relationship first and carry that useful relation across mechanisms; evaluate a literal detail only when a claim depends on it."
         }
       ],
       "cost": {
@@ -1045,7 +1151,7 @@
       },
       "inspection": {
         "obligations": [
-          "Separate literal defects from the analogy's useful shape"
+          "Preserve the intended relationship first; examine literal details only when load-bearing"
         ]
       }
     },
@@ -1062,7 +1168,9 @@
       "claims": [],
       "supportFacetId": "entropy-reducer.constraint-first-ordering",
       "name": "Constraint-First Ordering",
-      "supportedTags": ["plan"],
+      "supportedTags": [
+        "plan"
+      ],
       "semanticsAdded": [
         "order proposals by the currently evidenced constraint before local polish"
       ],
@@ -1083,7 +1191,9 @@
         "extraEpisodes": 0
       },
       "inspection": {
-        "passive": ["Constraint-first proposal ordering"]
+        "passive": [
+          "Constraint-first proposal ordering"
+        ]
       }
     },
     {
@@ -1099,7 +1209,10 @@
       "claims": [],
       "supportFacetId": "entropy-reducer.altitude-tag",
       "name": "Altitude Tag",
-      "supportedTags": ["observe", "plan"],
+      "supportedTags": [
+        "observe",
+        "plan"
+      ],
       "semanticsAdded": [
         "tag every finding and proposal with its mechanism altitude"
       ],
@@ -1129,14 +1242,18 @@
         "extraEpisodes": 0
       },
       "inspection": {
-        "obligations": ["Tag the likely surface and intervention altitude"]
+        "obligations": [
+          "Tag the likely surface and intervention altitude"
+        ]
       }
     },
     {
       "version": 1,
       "requiredCapabilities": [],
       "semanticsModified": [],
-      "authorityChanges": ["validate typed output before report.emit"],
+      "authorityChanges": [
+        "validate typed output before report.emit"
+      ],
       "evidenceRequirements": [],
       "resourceMultiplier": 1,
       "conflictsWith": [],
@@ -1145,7 +1262,9 @@
       "claims": [],
       "supportFacetId": "entropy-reducer.sparse-receipt",
       "name": "Sparse Receipt",
-      "supportedTags": ["narrate"],
+      "supportedTags": [
+        "narrate"
+      ],
       "semanticsAdded": [
         "return a terse result envelope while retaining findings and suggestions by reference"
       ],
@@ -1197,10 +1316,17 @@
                       "minLength": 1
                     },
                     "severity": {
-                      "enum": ["blocking", "major", "minor"]
+                      "enum": [
+                        "blocking",
+                        "major",
+                        "minor"
+                      ]
                     },
                     "evidenceLabel": {
-                      "enum": ["measured", "by inspection"]
+                      "enum": [
+                        "measured",
+                        "by inspection"
+                      ]
                     },
                     "observed": {
                       "type": "string",
@@ -1215,7 +1341,10 @@
                         {
                           "type": "object",
                           "additionalProperties": false,
-                          "required": ["kind", "command"],
+                          "required": [
+                            "kind",
+                            "command"
+                          ],
                           "properties": {
                             "kind": {
                               "const": "command"
@@ -1229,7 +1358,10 @@
                         {
                           "type": "object",
                           "additionalProperties": false,
-                          "required": ["kind", "steps"],
+                          "required": [
+                            "kind",
+                            "steps"
+                          ],
                           "properties": {
                             "kind": {
                               "const": "inspection"
@@ -1268,7 +1400,9 @@
                         {
                           "type": "object",
                           "additionalProperties": false,
-                          "required": ["kind"],
+                          "required": [
+                            "kind"
+                          ],
                           "properties": {
                             "kind": {
                               "const": "one-off"
@@ -1278,13 +1412,22 @@
                         {
                           "type": "object",
                           "additionalProperties": false,
-                          "required": ["kind", "rung", "rationale"],
+                          "required": [
+                            "kind",
+                            "rung",
+                            "rationale"
+                          ],
                           "properties": {
                             "kind": {
                               "const": "recurring"
                             },
                             "rung": {
-                              "enum": ["test", "lint", "guard", "script"]
+                              "enum": [
+                                "test",
+                                "lint",
+                                "guard",
+                                "script"
+                              ]
                             },
                             "rationale": {
                               "type": "string",
@@ -1304,7 +1447,10 @@
                         "reproduction": {
                           "type": "object",
                           "additionalProperties": false,
-                          "required": ["kind", "command"],
+                          "required": [
+                            "kind",
+                            "command"
+                          ],
                           "properties": {
                             "kind": {
                               "const": "command"
@@ -1325,7 +1471,10 @@
                         "reproduction": {
                           "type": "object",
                           "additionalProperties": false,
-                          "required": ["kind", "steps"],
+                          "required": [
+                            "kind",
+                            "steps"
+                          ],
                           "properties": {
                             "kind": {
                               "const": "inspection"
@@ -1524,7 +1673,11 @@
                     "minLength": 1
                   },
                   "status": {
-                    "enum": ["completed", "failed", "blocked"]
+                    "enum": [
+                      "completed",
+                      "failed",
+                      "blocked"
+                    ]
                   },
                   "resultId": {
                     "type": "string",
@@ -1543,7 +1696,11 @@
               "cleanRoom": {
                 "type": "object",
                 "additionalProperties": false,
-                "required": ["status", "stopConditionsFound", "evidenceRefs"],
+                "required": [
+                  "status",
+                  "stopConditionsFound",
+                  "evidenceRefs"
+                ],
                 "properties": {
                   "status": {
                     "const": "passed"
@@ -1606,10 +1763,17 @@
                       "minLength": 1
                     },
                     "severity": {
-                      "enum": ["blocking", "major", "minor"]
+                      "enum": [
+                        "blocking",
+                        "major",
+                        "minor"
+                      ]
                     },
                     "evidenceLabel": {
-                      "enum": ["measured", "by inspection"]
+                      "enum": [
+                        "measured",
+                        "by inspection"
+                      ]
                     },
                     "observed": {
                       "type": "string",
@@ -1624,7 +1788,10 @@
                         {
                           "type": "object",
                           "additionalProperties": false,
-                          "required": ["kind", "command"],
+                          "required": [
+                            "kind",
+                            "command"
+                          ],
                           "properties": {
                             "kind": {
                               "const": "command"
@@ -1638,7 +1805,10 @@
                         {
                           "type": "object",
                           "additionalProperties": false,
-                          "required": ["kind", "steps"],
+                          "required": [
+                            "kind",
+                            "steps"
+                          ],
                           "properties": {
                             "kind": {
                               "const": "inspection"
@@ -1677,7 +1847,9 @@
                         {
                           "type": "object",
                           "additionalProperties": false,
-                          "required": ["kind"],
+                          "required": [
+                            "kind"
+                          ],
                           "properties": {
                             "kind": {
                               "const": "one-off"
@@ -1687,13 +1859,22 @@
                         {
                           "type": "object",
                           "additionalProperties": false,
-                          "required": ["kind", "rung", "rationale"],
+                          "required": [
+                            "kind",
+                            "rung",
+                            "rationale"
+                          ],
                           "properties": {
                             "kind": {
                               "const": "recurring"
                             },
                             "rung": {
-                              "enum": ["test", "lint", "guard", "script"]
+                              "enum": [
+                                "test",
+                                "lint",
+                                "guard",
+                                "script"
+                              ]
                             },
                             "rationale": {
                               "type": "string",
@@ -1713,7 +1894,10 @@
                         "reproduction": {
                           "type": "object",
                           "additionalProperties": false,
-                          "required": ["kind", "command"],
+                          "required": [
+                            "kind",
+                            "command"
+                          ],
                           "properties": {
                             "kind": {
                               "const": "command"
@@ -1734,7 +1918,10 @@
                         "reproduction": {
                           "type": "object",
                           "additionalProperties": false,
-                          "required": ["kind", "steps"],
+                          "required": [
+                            "kind",
+                            "steps"
+                          ],
                           "properties": {
                             "kind": {
                               "const": "inspection"
@@ -1933,7 +2120,11 @@
                     "minLength": 1
                   },
                   "status": {
-                    "enum": ["completed", "failed", "blocked"]
+                    "enum": [
+                      "completed",
+                      "failed",
+                      "blocked"
+                    ]
                   },
                   "resultId": {
                     "type": "string",
@@ -1952,7 +2143,11 @@
               "cleanRoom": {
                 "type": "object",
                 "additionalProperties": false,
-                "required": ["status", "stopConditionsFound", "evidenceRefs"],
+                "required": [
+                  "status",
+                  "stopConditionsFound",
+                  "evidenceRefs"
+                ],
                 "properties": {
                   "status": {
                     "const": "passed"
@@ -1989,7 +2184,9 @@
         "extraEpisodes": 0
       },
       "inspection": {
-        "restrictions": ["The result-envelope summary stays under 200 words"]
+        "restrictions": [
+          "The result-envelope summary stays under 200 words"
+        ]
       }
     }
   ],

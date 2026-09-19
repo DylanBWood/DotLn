@@ -142,6 +142,10 @@ export function parseEvidenceResult(
     "episode result shape",
   );
   check(
+    typeof envelope.summary === "string" && envelope.summary.length <= 320,
+    "episode envelope.summary must be a string of at most 320 characters",
+  );
+  check(
     exact(envelope, [
       "workOrderId",
       "episodeId",
@@ -358,7 +362,7 @@ export function evidenceResultSchema(request: EvidenceWorkerRequest): object {
       episodeId: { ...schemaText, enum: [request.episodeId] },
       resultId: { ...schemaText, enum: [resultId(request.command)] },
       status: { ...schemaText, enum: ["completed", "blocked", "failed"] },
-      summary: schemaText,
+      summary: { ...schemaText, maxLength: 320 },
       requiresHuman: { type: "boolean" },
     }),
     subjectRevision: {
@@ -474,7 +478,7 @@ export function transportPrompt(request: TransportRequest): string {
     resultId: resultId(request.command),
     outputInstructions:
       request.capsule.role === "verifier"
-        ? "Independently assess each criterion using the pinned diff, repository snapshot and host witnesses. This is the complete read mount projection; no tools or other context are granted. Preserve evidence source labels. A pass requires every required check, matching claim type and source, with no adverse witness. Missing or unavailable evidence is unverified. Emit full findings for failures, blocking when repair is required. Return only the schema object; completion means this evaluation finished, never implementation success."
-        : "Propose replacement contents only for the blocking finding's likely surfaces in the pinned repository snapshot. Keep the repair focused. No file writes or other tools are granted; the host applies a validated proposal in its synthetic fixture and dispatches a fresh blinded verifier. Return only the schema object. You cannot certify acceptance.",
+        ? "Independently assess each criterion using the pinned diff, repository snapshot and host witnesses. This is the complete read mount projection; no tools or other context are granted. Preserve evidence source labels. A pass requires every required check, matching claim type and source, with no adverse witness. Missing or unavailable evidence is unverified. Emit full findings for failures, blocking when repair is required. Keep envelope.summary to at most 320 characters. Return only the schema object; completion means this evaluation finished, never implementation success."
+        : "Propose replacement contents only for the blocking finding's likely surfaces in the pinned repository snapshot. Keep the repair focused. No file writes or other tools are granted; the host applies a validated proposal in its synthetic fixture and dispatches a fresh blinded verifier. Keep envelope.summary to at most 320 characters. Return only the schema object. You cannot certify acceptance.",
   });
 }

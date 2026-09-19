@@ -40,6 +40,18 @@ if (
   (beaconIndex !== -1 && (!beaconDirectory || beaconDirectory.startsWith("--")))
 )
   throw new Error("usage: --beacons <directory> (exactly once)");
+const args = process.argv.slice(2);
+for (let index = 0; index < args.length; index++) {
+  const arg = args[index];
+  if (arg === "--beacons") {
+    index++;
+    continue;
+  }
+  if (arg !== "--audit" && arg !== "--compiled-diff")
+    throw new Error(
+      `unknown skeleton argument: ${arg}; usage: [--audit] [--compiled-diff] [--beacons <directory>]`,
+    );
+}
 const writer =
   beaconDirectory === undefined
     ? undefined

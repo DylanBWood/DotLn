@@ -510,7 +510,7 @@ const response = (${showHarnessAdvisory.toString()})(input?.session_id, ${eventE
   const directory = join(root, "docs/control/local/harness");
   fs.mkdirSync(directory, { recursive: true, mode: 0o700 });
   const marker = join(directory, createHash("sha256").update(key).digest("hex") + ".advisory");
-  try { fs.writeFileSync(marker, "seen\\n", { flag: "wx", mode: 0o600 }); }
+  try { fs.writeFileSync(marker, JSON.stringify({ sessionKey: createHash("sha256").update(String(input?.session_id)).digest("hex") }) + "\\n", { flag: "wx", mode: 0o600 }); }
   catch (error) {
     if (error?.code === "EEXIST") return !fs.lstatSync(marker).isFile();
     throw error;

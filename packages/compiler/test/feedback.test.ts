@@ -134,6 +134,9 @@ test("WO-011 exact attribution predicate permits subjects and human coauthors bu
     "Generated with [Claude Code](https://example.invalid)",
     "Co-authored-by: Fable <noreply@anthropic.com>",
     "CO-AUTHORED-BY: Codex <codex@example.invalid>",
+    "Assisted-by: Claude",
+    "Assisted-by: Claude Code <claude@example.invalid>",
+    "ASSISTED-BY: Codex <codex@example.invalid>",
   ])
     assert.equal(hasAiAttribution(message), true, message);
 });

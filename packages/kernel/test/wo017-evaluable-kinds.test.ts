@@ -48,6 +48,20 @@ const emitted: EventDraft = {
   payload: {},
 };
 
+test("WO-142 B11: an invalid executable program identifies its kind", () => {
+  assert.throws(
+    () =>
+      stepProgram(
+        { kind: "UnsupportedKind" } as unknown as Parameters<
+          typeof stepProgram
+        >[0],
+        {},
+        env(),
+      ),
+    /Invalid executable program kind: UnsupportedKind/,
+  );
+});
+
 test("WO-017 evaluable-kind data: every listed Cadence and Program kind evaluates, every unlisted kind throws is deferred", () => {
   assert.deepEqual(CADENCE_KINDS, [
     "Once",

@@ -6,7 +6,9 @@
     "semanticHash": "fnv1a64:9ca8d0229c6bd8db",
     "compilationEnvironment": {
       "baseCommit": "fixture-base",
-      "capabilities": ["fixture-repository"],
+      "capabilities": [
+        "fixture-repository"
+      ],
       "environmentId": "skeleton.fixture",
       "repo": "packages/skeleton/fixtures/repo-tree.json",
       "version": 1
@@ -60,8 +62,8 @@
   "entropy-reducer": {
     "schemaVersion": 1,
     "compilerContractVersion": "1",
-    "compilerPackageVersion": "0.3.0",
-    "semanticHash": "fnv1a64:c5ddbca75f1c4cee",
+    "compilerPackageVersion": "0.15.0",
+    "semanticHash": "fnv1a64:04b7ff37e73a6cd0",
     "compilationEnvironment": {
       "baseCommit": "fixture-base",
       "capabilities": [],
@@ -116,9 +118,9 @@
       {
         "componentKind": "support-facet",
         "componentId": "entropy-reducer.shape-first",
-        "version": 1,
+        "version": 2,
         "hashScheme": "dotln-component-definition-fnv1a64-v1",
-        "definitionHash": "fnv1a64:392c026e031eb2aa"
+        "definitionHash": "fnv1a64:1993d6f5343eef4e"
       },
       {
         "componentKind": "support-facet",

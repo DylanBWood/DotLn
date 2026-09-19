@@ -115,3 +115,19 @@ test("WO-008 AC5 --audit and --compiled-diff preserve deterministic section orde
   assert.equal(result.stderr, "");
   assert.equal(result.stdout, expectedOutput(true, true));
 });
+
+test("WO-142 unknown skeleton arguments refuse before running the scenario", () => {
+  for (const arg of [
+    "--beacons=fixture",
+    "--unknown",
+    "unexpected-positional",
+  ]) {
+    const result = runCli(arg);
+    assert.notEqual(result.status, 0, arg);
+    assert.equal(result.stdout, "", arg);
+    assert.ok(
+      result.stderr.includes(`unknown skeleton argument: ${arg}`),
+      result.stderr,
+    );
+  }
+});

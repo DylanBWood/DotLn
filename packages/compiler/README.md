@@ -1,4 +1,4 @@
-# `@dotln/compiler` v0.12.0
+# `@dotln/compiler`
 
 Component `0.12.0` adds the opt-in `target-worker-v1` harness profile and
 emit-time absolute runtime import root. Target hooks fail closed and omit
@@ -77,19 +77,19 @@ fnv1a64:9ca8d0229c6bd8db
 
 ## Artifact identity v1
 
-Successful `compileLoadout` and `compileEditableView` results also carry `artifactIdentity`: schema version `1`, `compilerContractVersion` (the program's unchanged `compilerVersion: "1"`), `compilerPackageVersion: "0.6.0"`, `semanticHash`, the exact `compilationEnvironment`, `authorityExpiresAt`, and `componentDefinitions`. The package version is a pure source constant tested against `package.json`; compilation performs no manifest I/O.
+Successful `compileLoadout` and `compileEditableView` results also carry `artifactIdentity`: schema version `1`, `compilerContractVersion` (the program's unchanged `compilerVersion: "1"`), `compilerPackageVersion` (the package version from `package.json`), `semanticHash`, the exact `compilationEnvironment`, `authorityExpiresAt`, and `componentDefinitions`. The package version is a pure source constant tested against `package.json`; compilation performs no manifest I/O.
 
 Each definition record contains only `(componentKind, componentId, version)`, `hashScheme: "dotln-component-definition-fnv1a64-v1"`, and `definitionHash`. Its tuples equal the participating component manifest exactly: active mechanics, linked supports, and declared ambient effects. Unlinked catalog entries do not acquire a participation receipt. Link groups and mechanism types remain manifest projections.
 
 The exact definition-hash preimage is the UTF-8 canonical JSON of `{ domain: "dotln:component-definition:v1", componentKind, definition }`, where `definition` is the matching node of `normalizeLoadoutGraph(source)`. Object keys sort lexically; declared set-like collections normalize as before; ordered prose and pipelines retain their meaning. The output is `fnv1a64:` followed by 16 lowercase hex digits. The fixed Unicode ambient vector in `test/artifact-identity.test.ts` hashes to `fnv1a64:3a5e415be9582bed`; every fixture entry is cross-checked through WO-101's independent no-BigInt FNV implementation.
 
-This record sits outside `CompiledProgram`, so neither new provenance metadata nor the compiler package version silently changes the semantic-hash preimage. A support-name edit changes its definition identity while leaving compiled semantics alone. The pinned Entropy Reducer fixture, at `/fixture/repository`, base `fixture-base`, and authority expiry `11000`, retains `fnv1a64:c5ddbca75f1c4cee`. Repository and base commit enter the compiled WorkOrder; authority expiry comes from the raw active definition. Moving a graph to another repository path changes its whole-program hash but not its definition hashes and requires an explicit new equip receipt.
+This record sits outside `CompiledProgram`, so neither new provenance metadata nor the compiler package version silently changes the semantic-hash preimage. A support-name edit changes its definition identity while leaving compiled semantics alone. WO-142 deliberately advances the Entropy Reducer fixture to Shape-First support version 2; `fixtures/wo029-identities.json` pins its current hash at `/fixture/repository`, base `fixture-base`, and authority expiry `11000`. Repository and base commit enter the compiled WorkOrder; authority expiry comes from the raw active definition. Moving a graph to another repository path changes its whole-program hash but not its definition hashes and requires an explicit new equip receipt.
 
 Both hashes are deterministic equality keys. They are not collision-resistant identifiers, integrity proofs, signatures, or authenticity guarantees. The skeleton's comparison policy is the author's personal profile, not mandatory platform doctrine.
 
 Run `npm run skeleton -- --compiled-diff` from the repository root for the
-three-view equality receipt and the exact RPG item tooltip. Run
-`npm run test --workspace @dotln/compiler` for the focused compiler suite.
+three-view equality receipt and the exact RPG item tooltip. After `npm run build` from the repository root, run
+`node --test packages/compiler/dist/test/*.test.js` for the focused compiler suite.
 
 ## Blinded verification capsules
 
@@ -124,3 +124,6 @@ Profiles with hooks bind the built feedback boundary and host bytes; an
 unobserved capability never becomes an emitted enforcement claim. See the
 [harness contract](../../docs/product/02-domain-model.md#harness-compiler-v1)
 and [target fixtures](test/harness.test.ts).
+
+A claim-free bare `*` effect pattern is refused: global effects must carry a
+claim that makes their authority explicit.

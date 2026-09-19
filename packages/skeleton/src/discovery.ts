@@ -316,6 +316,9 @@ function observe(
             PATH: `${join(root, "node_modules/.bin")}:${dirname(process.execPath)}:/usr/bin:/bin`,
             HOME: root,
             TMPDIR: root,
+            // npm enables Node's binary compile cache under TMPDIR by default.
+            // Keep runtime cache bytes out of the bounded reference corpus.
+            NODE_DISABLE_COMPILE_CACHE: "1",
           },
           encoding: "buffer",
           timeout: 5000,

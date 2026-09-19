@@ -211,6 +211,11 @@ for (const mode of ["inspection", "verification"] as const) {
           const before = snapshot(root);
           await assert.rejects(run(false), (error: Error) => {
             assert.ok(error.message.includes(target), error.message);
+            if (shape.target === "receipt")
+              assert.ok(
+                error.message.startsWith(target),
+                "receipt path must lead: " + error.message,
+              );
             assert.ok(error.message.includes(shape.shape), error.message);
             return true;
           });

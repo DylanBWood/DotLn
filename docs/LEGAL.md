@@ -1,6 +1,6 @@
 # Legal and licensing posture
 
-**Status:** project record, last reviewed 2026-09-06. The license posture was
+**Status:** project record; dependency inventory updated 2026-09-19. The license posture was
 decided on 2026-09-06 (see §Decision — 2026-09-06); the remaining gates below
 stay open. This document is not a license or legal advice.
 
@@ -16,13 +16,20 @@ The observed npm 10.8.0 dry run returned success for a synthetic package with `p
 
 Before 2026-09-06 the repository was source-visible without a project license or general reuse grant. GitHub's viewing and in-service forking permissions were not a general source license. The superseded interim direction below preserves that history. Contribution, distribution, and collection of other people's data remain decision triggers before revenue does.
 
-As a package-lock observation rather than an independent audit of upstream
-license texts, `@types/node`, `undici-types`, and Prettier are recorded as MIT,
-and TypeScript as Apache-2.0. WO-011 (2026-09-06) makes the already pinned
-TypeScript `5.4.5` package a skeleton runtime dependency for parsed source-comment
-checks, alongside its local compiler/kernel workspace dependencies. The other
-external packages remain development-only. Kernel and compiler have no runtime
-dependencies. Recheck the material actually shipped when any distribution exists.
+**Dependency inventory update — 2026-09-19 (WO-142).** The current
+`package-lock.json` records TypeScript `7.0.2` and its twenty optional
+`@typescript/typescript-*` platform packages as Apache-2.0. The skeleton loads
+TypeScript's native parser API for source-comment checks; TypeScript is an
+exact runtime dependency there and a root development dependency. `@types/node`
+`26.6.2`, its `undici-types` `8.9.0` dependency, and Prettier `3.9.6` are recorded
+as MIT and development-only. Kernel and compiler have no runtime dependencies.
+These are lockfile observations, not an independent audit of upstream license
+texts; recheck the material actually shipped when any distribution exists.
+[WO-142-D010](evidence/WO-142/decisions.md#wo-142-d010--integrate-main-and-upgrade-node-and-typescript)
+and [D011](evidence/WO-142/decisions.md#wo-142-d011--preserve-encoded-milliseconds-under-node-26-and-migrate-the-native-parser)
+record the authorized upgrade and native parser migration. WO-011's original
+2026-09-06 dependency was TypeScript `5.4.5`; that historical version has been
+superseded. No publication or licensing decision changes here.
 
 **2026-09-06 observation (phase-two planning pass):** the operator intends
 `DotLn-Enterprise-Starter`, an exported launchpad kit of this repository's
