@@ -5665,6 +5665,13 @@
           "title": "Candidate — local-model usefulness experiments",
           "summary": "### Candidate — local-model usefulness experiments Operator direction, 2026-09-16: the next planning pass should give local LLM experiments more attention, starting with concrete runner readiness and any operator setup needed in LM Studio. Current readiness is unknown; the dated WO-027 failure above remains evidence about that probe, not a claim that the runner is unusable today. Revisit its named deferral with a fresh bounded availability smoke and coordinate any required setup before scheduling runs. WO-110 supplies the existing inspection-transport candidate; its present scope does not establish source-writing capability or model quality. After availability, plan a substantially broader c",
           "missing": false
+        },
+        {
+          "hash": "f3fff6171249596ec0ad72efe60c01e3c6bf2238a7bb95e71c66cde7338cc99a",
+          "ref": "docs/product/06-roadmap.md#candidate--local-model-usefulness-experiments",
+          "title": "Candidate — local-model usefulness experiments",
+          "summary": "### Candidate — local-model usefulness experiments **WO-137 observation (2026-09-18):** the [readiness packet](../discovery/local-runner-2026-09-18.md) records LM Studio `0.4.24+1`, llama.cpp runtime `2.38.0` and an existing pinned Qwen3.6 27B Q4_K_M artifact. Explicit CLI start and load now work; the fixed three-request smoke is byte-identical, schema and tool round trip pass, HTTP cancellation is observed to become idle within five seconds, timeout occurs and recovery succeeds. The operator-expanded two-minute sequential load run completed nine capped requests and deadline-cancelled the tenth with nominal thermal observations, normal memory pressure and no swap growth. Overall outcome rema",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -6782,6 +6789,66 @@
           "ref": "docs/evidence/WO-055/decisions.md#wo-055-d001",
           "title": "WO-055-D001: Compose existing source-change and verification hosts through a bounded persisted repair program; keep original contract and authority, exact admitted scope expansions, and separate execu",
           "summary": "{ \"id\": \"WO-055-D001\", \"date\": \"2026-09-18\", \"dispatch\": \"resume: next\", \"decision\": \"Compose existing source-change and verification hosts through a bounded persisted repair program; keep original contract and authority, exact admitted scope expansions, and separate execution baseline.\", \"evidence\": [ \"docs/work-orders/WO-055-repair-continuation.md\", \"docs/product/02-domain-model.md#independent-verification-v1\", \"packages/skeleton/src/source-change-host.ts\", \"packages/skeleton/src/verification-host.ts\", \"packages/kernel/src/core.ts\" ], \"rejected\": [ { \"option\": \"NoOp\", \"reason\": \"Leaves repair coordination manual and does not satisfy the selected order.\" }, { \"option\": \"Let verifier referen",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-ff663c2eb74f4fbf",
+      "key": "decision:docs/evidence/WO-137/decisions.md#wo-137-d001",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "fe1596e47b5c171fb8caa31fab99ee5365911f8f54f909ba22b8eb61de501c20",
+          "ref": "docs/evidence/WO-137/decisions.md#wo-137-d001",
+          "title": "WO-137-D001: Use the installed LM Studio CLI and existing Qwen3.6 27B Q4_K_M artifact; collect a reproducible client packet with conservative readiness and sequential short calls.",
+          "summary": "{ \"id\": \"WO-137-D001\", \"date\": \"2026-09-18\", \"dispatch\": \"resume: next\", \"decision\": \"Use the installed LM Studio CLI and existing Qwen3.6 27B Q4_K_M artifact; collect a reproducible client packet with conservative readiness and sequential short calls.\", \"evidence\": [ \"docs/work-orders/WO-137-local-runner-readiness.md\", \"docs/discovery/local-inference.md\", \"operator's prior Terminal observations and thermal caution on 2026-09-18\", \"LM Studio 0.4.24+1 and CLI ff50809 inventory; empty loaded-model list; successful explicit loopback start and completion\" ], \"rejected\": [ { \"option\": \"NoOp\", \"reason\": \"Leaves the local transport and qualification decisions dependent on the obsolete failed launch",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-b4c33dc8bd9e6b75",
+      "key": "decision:docs/evidence/WO-137/decisions.md#wo-137-d002",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "67d0921531bd8a1c7627a7eaab622edf5d59991ab3efea23c63ba19c14704bdc",
+          "ref": "docs/evidence/WO-137/decisions.md#wo-137-d002",
+          "title": "WO-137-D002: Expand WO-137 with the operator-requested two-minute staged sequential load experiment and automatic resource stops, retaining all original readiness obligations.",
+          "summary": "{ \"id\": \"WO-137-D002\", \"date\": \"2026-09-18\", \"dispatch\": \"resume: next\", \"decision\": \"Expand WO-137 with the operator-requested two-minute staged sequential load experiment and automatic resource stops, retaining all original readiness obligations.\", \"evidence\": [ \"Operator scope expand on 2026-09-18: let's do it now, referring to the proposed longer load test\", \"Nine successful protocol probes with cancellation and timeout records\", \"Native preflight: thermalState 0, memory pressure level 1, 66 percent free memory; pre-existing swap is recorded separately\" ], \"rejected\": [ { \"option\": \"NoOp or defer the load test\", \"reason\": \"The operator explicitly expanded the current order to perform it ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-58cbcb862510d4c3",
+      "key": "decision:docs/evidence/WO-137/decisions.md#wo-137-d003",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "adc93a787e94daedd68bd8c0c0262e18393aff2c5a7beb311397acafdd158af9",
+          "ref": "docs/evidence/WO-137/decisions.md#wo-137-d003",
+          "title": "WO-137-D003: File an inconclusive overall readiness packet with the successful protocol and bounded-load observations; stage application v0.30.1 as evidence-only patch without package changes.",
+          "summary": "{ \"id\": \"WO-137-D003\", \"date\": \"2026-09-18\", \"dispatch\": \"resume: next\", \"decision\": \"File an inconclusive overall readiness packet with the successful protocol and bounded-load observations; stage application v0.30.1 as evidence-only patch without package changes.\", \"evidence\": [ \"docs/discovery/local-runner-2026-09-18.json\", \"docs/discovery/local-runner-2026-09-18.md\", \"local v0.30.0 tag\", \"eight smoke and six load double tests; independent read-only audit\" ], \"rejected\": [ { \"option\": \"Promote to ready from seven true protocol booleans\", \"reason\": \"The contract also requires complete provenance and metrics; interrupted rates, effective template/default settings and attributable runner egr",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-180268a01c198e2c",
+      "key": "decision:docs/evidence/WO-137/decisions.md#wo-137-d004",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "99c898b51df32111f388fbb870054ec3b59713f3d016a773b53f38ac8e449d04",
+          "ref": "docs/evidence/WO-137/decisions.md#wo-137-d004",
+          "title": "WO-137-D004: Integrate main at 4d6dc769 and retime the unpublished application target from v0.30.1 to v0.31.1 under the existing patch classification, with no component bump and no change to scope, ac",
+          "summary": "{ \"id\": \"WO-137-D004\", \"date\": \"2026-09-19\", \"dispatch\": \"resume: final review\", \"decision\": \"Integrate main at 4d6dc769 and retime the unpublished application target from v0.30.1 to v0.31.1 under the existing patch classification, with no component bump and no change to scope, acceptance or the recorded outcome.\", \"evidence\": [ \"docs/product/07-execution-guide.md#independent-workflows-and-integration\", \"docs/evidence/WO-137/decisions.md#wo-137-d003\", \"docs/product/06-roadmap.md\", \"README.md\", \"docs/work-orders/WO-137-local-runner-readiness.md\", \"origin tag observation v0.31.0 by npm run release -- prepare\" ], \"rejected\": [ { \"option\": \"NoOp on the superseded target\", \"reason\": \"main publish",
           "missing": false
         }
       ],

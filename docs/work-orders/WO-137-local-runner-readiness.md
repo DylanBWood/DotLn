@@ -1,10 +1,10 @@
-# WO-137 — Local runner readiness: the installed LM Studio build either serves reproducible noninteractive calls that DotLn can invoke, capture, cancel, time out and evaluate, with full provenance, or leaves a failure artifact that names the blocker (version assigned at activation)
+# WO-137 — Local runner readiness: the installed LM Studio build either serves reproducible noninteractive calls that DotLn can invoke, capture, cancel, time out and evaluate, with full provenance, or leaves a failure artifact that names the blocker (v0.31.1)
 
 **Model:** any capable model for the agent; the local runner is the subject
 of the order, not its actor. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh+; verifier any; reviewer any.
-**Release classification:** patch, evidence-only. A probe client under
+**Release classification:** patch. Evidence-only. A probe client under
 `scripts/probes/` and one discovery packet; nothing under `packages/`.
 Assigned at activation under the standing opt-out default.
 **Cost:** removes the unknown that has held WO-110 and the product 06
@@ -140,3 +140,31 @@ change to harness settings; any capability-level claim.
    the budget; a failure artifact is a complete close of this order.
 2. A model download is an explicit operator decision recorded in the packet
    with its size and license.
+
+## Operator scope expansion — 2026-09-18
+
+During `resume: next`, the operator explicitly said `scope expand:` and
+requested that the proposed longer load experiment be done now. Decision
+WO-137-D002 records that authority. Add one gentle staged load test using the
+same installed runner and pinned model: at most two minutes of traffic,
+at most ten sequential requests, 128 output tokens per request, a five-second
+idle interval, context 4096 and parallelism one. Check native thermal state,
+memory pressure and swap growth before and during traffic. Stop on any
+non-nominal thermal state, non-normal memory pressure, at least 128 MiB
+additional swap, unavailable monitoring, a product gate, unexpected request
+failure, or operator stop. Pause at the first stage boundary after two requests
+to inspect health before continuing. Preserve stopped and partial results.
+Unload the model and stop this session's server after the run. No download,
+hardware settings, stress utility installation, fan override or concurrency
+increase is included. This is bounded load tolerance, not proof of maximum
+capacity or hardware safety.
+
+Deliver `scripts/probes/local-runner-load.mjs` and deterministic doubles under
+`scripts/probes/`, with its observations added to the dated discovery packet.
+The existing test inventory registration is included in criterion 4's duty.
+Acceptance: monitoring is executable and fail-conservative; requests remain
+within those caps; measured latency/throughput, health samples, stop reason,
+staged continuation and cleanup are retained; all double tests and `npm test`
+pass. This addition preserves the original readiness criteria and outcome
+classes. A stopped load test is a valid experimental result, not a stable-run
+claim.
