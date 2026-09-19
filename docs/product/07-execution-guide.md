@@ -990,6 +990,13 @@ records and final reviews, and the code surfaces the orders name. The feed
 cannot be judged until the register settlement candidate below removes the
 migration rows from the pending set; this candidate stays open.
 
+**Measured 2026-09-19 (cleanup pass).** The first page showed four
+invalidated dispositions, one open item, two deferrals and one untriaged
+row of 371 pending, and the pass again selected nothing from it; it read the
+whole register by batch instead. That pass disposed the pending rows, so the
+next planning pass is the first that can judge the feed; this candidate
+stays open until that measurement.
+
 ## Candidate — recurring review of implementation alternatives
 
 The operator's 2026-09-09 ideation during WO-126 asks for useful alternatives
@@ -1091,6 +1098,16 @@ once per order instead of cutting its fixtures
 Reopen only if the once-per-order `npm test` exceeds six minutes fresh after
 that inventory split.
 
+**Reopening observation recorded 2026-09-19 (cleanup pass).** The seventeen
+final-review product gates recorded in `docs/control/orders/` since
+2026-09-16 ran 303 to 1,178 s, median 793 s; sixteen exceeded six minutes.
+The cause of each (suite selection, host load, an integrated sibling) is not
+analysed, and `fastGateMs` in `docs/control/budgets.json` still reads
+120,000 with no acceptance. The cleanup pass allocated nothing: a planning
+pass that takes this starts from a per-suite breakdown of those rows, and
+the operator decides whether the `fastGateMs` ceiling is raised with a
+reason or retired.
+
 ## Candidate — refutation pass worth its cost
 
 The 2026-09-12 planning pass paid three direct-session refutations of one
@@ -1153,6 +1170,18 @@ candidates and the register items it decided. The pending count crossed
 three hundred by harvesting decision records, so the threshold rises to
 four hundred; the collector change stays the candidate's substance.
 
+**Settled and allocated 2026-09-19 (cleanup pass).** 399 entries (235
+decision records, 164 candidate rows), 371 pending, 364 never triaged (228
+decision records, 136 candidate rows).
+The operator budgeted the session this candidate asked for. Eight read-only
+batch surveys classified every pending row against `main` at `3b3533f8` and
+the pass disposed them; the counts and the rows that carried real work are
+in [the planning document](../planning/outstanding-cleanup-2026-09-19.md)
+§2. After it: 417 entries, none untriaged, five open and 76 deferred with
+reopening conditions. The collector change is
+[WO-142](../work-orders/WO-142-outstanding-cleanup.md) row A1. Reopen if
+untriaged rows pass fifty after WO-142 closes.
+
 ## Candidate — local lane retention
 
 Ignored local lanes grow without a rule: 13 immutable harness runtime
@@ -1161,6 +1190,13 @@ on 2026-09-16. A retention rule may remove a snapshot no installed manifest
 pins and a retained lane older than its order's published release, keeping
 the retained-lane byte proofs. No order is allocated; reopen on disk
 pressure or when the snapshot count exceeds twenty.
+
+**Reopened and allocated 2026-09-19 (cleanup pass).** 27 snapshots (80 MB)
+with one pinned, 99 MB under `docs/control/local/`, and 96 MB under
+`.git/dotln/suite-success`, which no source has written since WO-132
+removed the suite-success cache. Allocated to
+[WO-142](../work-orders/WO-142-outstanding-cleanup.md) row D1: an on-demand
+prune that lists before it deletes.
 
 ## Candidate — stale writer reservation self-diagnosis
 
@@ -1174,6 +1210,14 @@ every refusal, and has the Codex lifecycle completion release the
 reservation it holds. The stand-down declined a shell classifier; this
 candidate needs none. No order is allocated; reopen on a second observed
 occurrence.
+
+**Substance shipped 2026-09-18 (recorded by the 2026-09-19 cleanup pass).**
+WO-139's commit `3ea00e50` releases the executor's writer at completion
+(`scripts/lib/executor-handoff.mjs`; `scripts/resume.mjs`
+`executorWriterRelease`), and the hook admits
+`node scripts/harness.mjs writer --show` among its repository commands
+(`packages/skeleton/src/harness-host.ts`). The holder's age on every refusal
+was not checked by that pass. Reopen on a second observed stale reservation.
 
 ## Candidate — total subagent cap across every spawn path
 

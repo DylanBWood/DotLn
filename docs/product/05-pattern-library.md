@@ -1394,6 +1394,14 @@ chain, and the compaction claim remains unverified. Reopen on a bounded live
 reproduction with host events and a measured continuation outcome, or when
 WO-120 lands and the candidate can compose with a real work identity.
 
+**Partly shipped 2026-09-18 (recorded by the 2026-09-19 cleanup pass).** An
+operator scope expansion inside WO-054 added the Codex compaction adapter
+(`packages/compiler/src/codex-continuation.mjs`; the
+[receipt](../evidence/WO-054/codex-continuation.md)): it restores an owned
+unfinished task and permits one continuation after a premature stop, and
+never dispatches a role. The Claude side and a measured automatic-compaction
+outcome stay open; the deferral and its reopening conditions are unchanged.
+
 ## Candidate — Beware of Naive Interventionism
 
 **"Beware of naive interventionism"** is a candidate support for any active
