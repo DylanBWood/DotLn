@@ -31,6 +31,477 @@ const write = (root, path, text) => {
   writeFileSync(join(root, path), text);
 };
 
+test("WO-146 Copilot probe refuses live work without opt-in and reduces payload values", async () => {
+  const { runCopilotProbe } = await import("./lib/copilot-probe.mjs");
+  const { copilotShape } = await import("./fixtures/copilot-probe-hook.mjs");
+  await assert.rejects(
+    runCopilotProbe({ env: {} }),
+    /explicit live harness probe/,
+  );
+  assert.deepEqual(
+    copilotShape({
+      session_id: "private-id",
+      cwd: "/private/path",
+      tool_input: { command: "private command", offset: 42 },
+      prompt: "private prompt",
+      agent_id: "private-agent",
+      active: true,
+      effort: null,
+    }),
+    {
+      session_id: "string",
+      cwd: "string",
+      tool_input: { command: "string", offset: "number" },
+      prompt: "string",
+      agent_id: "string",
+      active: "boolean",
+      effort: "null",
+    },
+  );
+});
+
+const copilotStub = String.raw`#!/usr/bin/env node
+const fs = require("node:fs");
+const path = require("node:path");
+const {spawnSync} = require("node:child_process");
+const args = process.argv.slice(2), cwd = process.cwd();
+const home = process.env.COPILOT_HOME;
+if (!home || !home.startsWith(cwd + path.sep)) throw new Error("non-isolated CLI home");
+if (process.env.COPILOT_AGENT_SESSION_ID) throw new Error("parent session leaked");
+if (args[0] === "--version") { console.log("GitHub Copilot CLI 1.0.86."); process.exit(0); }
+if (!args.includes("-p") || args[args.indexOf("--max-ai-credits")+1] !== "30") throw new Error("unbounded launch");
+const row = JSON.parse(fs.readFileSync("probe-row.json","utf8"));
+const settings = JSON.parse(fs.readFileSync(path.join(home,"settings.json"),"utf8"));
+const state = JSON.parse(fs.readFileSync(path.join(home,"config.json"),"utf8"));
+if (state.trustedFolders.includes(cwd) !== row.trust || settings.trustedFolders !== undefined) throw new Error("trust fixture differs");
+const records = [];
+const emit = (type,data) => records.push({type,timestamp:"2030-01-02T00:00:00.000Z",data});
+emit("session.start",{sessionId:"private-session",copilotVersion:"1.0.86",context:{cwd}});
+emit("session.model_change",{newModel:args.includes("--model")?"auto":"fixture-model",reasoningEffort:args.includes("--model")?null:"xhigh",source:"fixture"});
+const nativeNames = {SessionStart:"sessionStart",UserPromptSubmit:"userPromptSubmitted",PreToolUse:"preToolUse",PostToolUse:"postToolUse",Stop:"agentStop"};
+const markers = ["INSTRUCTION_OBSERVED","SKILL_OBSERVED"];
+function hook(event, tool, input, id) {
+  let denied = false;
+  if (!row.trust) return false;
+  for (const form of row.forms) {
+    const config = JSON.parse(fs.readFileSync(form==="claude"?".claude/settings.json":".github/hooks/probe.json","utf8"));
+    const groups = config.hooks[form==="claude"?event:nativeNames[event]];
+    const hooks = form==="claude"?groups.flatMap(group=>group.hooks):groups;
+    if (hooks.length!==1) throw new Error("duplicate fixture registration");
+    const payload = form==="claude"
+      ? {hook_event_name:event,session_id:"private-session",cwd,tool_name:tool,tool_input:input,tool_use_id:id}
+      : {sessionId:"private-session",cwd,toolName:tool,toolArgs:input,toolCallId:id};
+    for (const entry of hooks) {
+      const result = spawnSync(entry.command || entry.bash,{shell:true,cwd,encoding:"utf8",
+        env:{...process.env,CLAUDE_PROJECT_DIR:cwd,COPILOT_PROJECT_DIR:cwd,COPILOT_AGENT_SESSION_ID:"private-session"},
+        input:JSON.stringify(payload)});
+      const output = result.stdout ? JSON.parse(result.stdout) : {};
+      if(result.status!==0 || output.hookSpecificOutput?.permissionDecision==="deny") denied=true;
+      if(event==="UserPromptSubmit") markers.push(form.toUpperCase()+"_CONTEXT_OBSERVED");
+      if(event==="Stop") console.log(output.systemMessage);
+    }
+  }
+  return denied;
+}
+hook("SessionStart"); hook("UserPromptSubmit");
+let sequence=0;
+function call(name, tool, input, effect) {
+  const id="private-call-"+(++sequence);
+  emit("tool.execution_start",{toolCallId:id,toolName:name,arguments:input});
+  const denied=hook("PreToolUse",tool,input,id);
+  if(!denied) {effect?.();hook("PostToolUse",tool,input,id);}
+  emit("tool.execution_complete",{toolCallId:id,success:!denied,result:{content:denied?"expected refusal":"private-result"}});
+}
+call("skill","Skill",{skill:"dotln-probe"});
+call("view","Read",{file_path:path.join(cwd,"fixture.txt")});
+call("edit","Edit",{file_path:"fixture.txt"},()=>fs.writeFileSync("fixture.txt","after\n"));
+call("create","Write",{file_path:"created.txt"},()=>fs.writeFileSync("created.txt","fixture\n"));
+call("bash","Bash",{command:"node shell-identity.mjs"},()=>fs.writeFileSync("shell-identity.json",JSON.stringify({sessionVariablePresent:true,claudeProjectDirMatches:false})));
+for(const name of ["claude-deny","claude-error","native-deny","native-error"])
+  call("bash","Bash",{command:"printf fixture > "+name+".txt"},()=>fs.writeFileSync(name+".txt","fixture"));
+if(row.child) call("task","Agent",{description:"private-child"});
+emit("assistant.message",{content:markers.join(" ")});
+emit("session.shutdown",{totalNanoAiu:1250000000});
+hook("Stop");
+const log = path.join(home,"session-state/private-session/events.jsonl");
+fs.mkdirSync(path.dirname(log),{recursive:true});
+fs.writeFileSync(log,records.map(JSON.stringify).join("\n")+"\n");
+`;
+
+test("WO-146 Copilot stub exercises both registrations, trust, caps, denial evidence and immutable observations", async (t) => {
+  const {
+    runCopilotProbe,
+    copilotLaunchRows,
+    prepareCopilotScratch,
+    summarizeCopilotProbe,
+    renderCopilotProbe,
+  } = await import("./lib/copilot-probe.mjs");
+  const root = mkdtempSync(join(tmpdir(), "dotln-copilot-test-"));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  const binary = join(root, "copilot-stub");
+  writeFileSync(binary, copilotStub, { mode: 0o700 });
+  const record = await runCopilotProbe({
+    out: root,
+    binary,
+    date: "2030-01-02",
+    base: root,
+    hostModule: null,
+    env: {
+      ...process.env,
+      DOTLN_LIVE_HARNESS: "1",
+      COPILOT_AGENT_SESSION_ID: "private-parent",
+    },
+  });
+  assert.equal(record.launchesStarted, 6);
+  assert.equal(record.rows.length, 6);
+  assert.ok(
+    record.rows.every((row) => row.exitCode === 0 && row.invalidLogLines === 0),
+  );
+  assert.equal(record.rows[0].events.length, 0);
+  assert.equal(record.rows[0].attempts["claude-deny"].denialObserved, false);
+  for (const row of record.rows.slice(1))
+    for (const form of row.forms)
+      for (const verdict of ["deny", "error"])
+        assert.equal(row.attempts[`${form}-${verdict}`].denialObserved, true);
+  assert.equal(record.rows[3].maxInvocationsPerCorrelatedEvent, 1);
+  assert.ok(record.rows[3].events.some((row) => row.registration === "claude"));
+  assert.ok(record.rows[3].events.some((row) => row.registration === "native"));
+  assert.equal(record.rows[5].modelChanges[0].model, "auto");
+  assert.equal(record.rows[5].modelChanges[0].effort, null);
+  assert.ok(record.rows.every((row) => row.aiCredits === 1.25));
+  assert.ok(
+    record.rows.every(
+      (row) =>
+        row.creditSource === "copilot-session.shutdown" &&
+        row.creditScope === "session-cumulative" &&
+        row.creditObservedAt === "2030-01-02T00:00:00.000Z",
+    ),
+  );
+  const collected = renderCopilotProbe({
+    ...record,
+    interactive: [
+      { id: "I1", status: "blocked", enteredBare: true },
+      {
+        ...record.rows[1],
+        id: "I2",
+        status: "collected",
+        enteredBare: true,
+        modelChanges: [
+          ...record.rows[1].modelChanges,
+          ...record.rows[5].modelChanges,
+        ],
+      },
+    ],
+  });
+  assert.match(collected, /Interactive rows - observations collected/);
+  assert.match(collected, /bare interactive mid-session change is observed/);
+  const retained = readFileSync(
+    join(root, "docs/discovery/copilot-cli-2030-01-02.json"),
+    "utf8",
+  );
+  for (const forbidden of [
+    root,
+    "private-session",
+    "private-call",
+    "private-result",
+    "private-child",
+    "correlation",
+  ])
+    assert.ok(!retained.includes(forbidden), forbidden);
+  const markdown = readFileSync(
+    join(root, "docs/discovery/copilot-cli-2030-01-02.md"),
+    "utf8",
+  );
+  for (let index = 1; index <= 12; index++)
+    assert.ok(markdown.includes(`id="H${index}"`));
+  assert.match(markdown, /blocked awaiting operator/);
+  await assert.rejects(
+    runCopilotProbe({
+      out: root,
+      binary,
+      date: "2030-01-02",
+      env: { DOTLN_LIVE_HARNESS: "1" },
+    }),
+    /retain existing/,
+  );
+  const scratch = prepareCopilotScratch(copilotLaunchRows[1], { base: root });
+  const absent = summarizeCopilotProbe(scratch.directory, copilotLaunchRows[1]);
+  assert.equal(absent.attempts["claude-deny"].effectAbsent, true);
+  assert.equal(absent.attempts["claude-deny"].denialObserved, false);
+  assert.equal(absent.maxInvocationsPerCorrelatedEvent, null);
+  assert.equal(absent.instructionLoadedOnce, "untested");
+  const historical = structuredClone(record);
+  for (const row of historical.rows) delete row.trustSource;
+  write(
+    root,
+    "docs/discovery/copilot-cli-2030-01-02.json",
+    JSON.stringify(historical),
+  );
+  const corrected = await runCopilotProbe({
+    out: root,
+    binary,
+    date: "2030-01-02",
+    base: root,
+    hostModule: null,
+    env: { ...process.env, DOTLN_LIVE_HARNESS: "1" },
+    correctTrust: true,
+  });
+  assert.equal(corrected.launchesStarted, 10);
+  assert.deepEqual(corrected.rows.slice(0, 6), historical.rows);
+  assert.deepEqual(
+    corrected.rows.slice(6).map((row) => row.id),
+    ["P7", "P8", "P9", "P10"],
+  );
+  await assert.rejects(
+    runCopilotProbe({
+      out: root,
+      binary,
+      date: "2030-01-02",
+      env: { DOTLN_LIVE_HARNESS: "1" },
+      correctTrust: true,
+    }),
+    /exactly the six original/,
+  );
+  write(
+    root,
+    "docs/discovery/copilot-cli-2030-01-03.json",
+    JSON.stringify({ launchesStarted: 7 }),
+  );
+  await assert.rejects(
+    runCopilotProbe({
+      out: root,
+      binary,
+      date: "2030-01-04",
+      env: { DOTLN_LIVE_HARNESS: "1" },
+    }),
+    /launch bound/,
+  );
+  assert.equal(
+    readdirSync(root).filter((name) => name.startsWith("dotln-copilot-probe-"))
+      .length,
+    1,
+    "only the explicitly prepared no-effects fixture remains; driver scratch was removed",
+  );
+});
+
+test("WO-146 operator qualification uses real fixture transitions, fresh identities and a six-attempt bound", async (t) => {
+  const {
+    prepareCopilotQualification,
+    armCopilotQualification,
+    collectCopilotQualification,
+  } = await import("./lib/copilot-qualification.mjs");
+  const out = mkdtempSync(join(tmpdir(), "dotln-copilot-qualification-test-"));
+  t.after(() => rmSync(out, { recursive: true, force: true }));
+  const { directory } = prepareCopilotQualification({ out, base: out });
+  assert.throws(
+    () => prepareCopilotQualification({ out, base: out }),
+    /preserve the existing/,
+  );
+  const env = {
+    ...process.env,
+    COPILOT_HOME: join(directory, ".copilot-qualification/copilot-home"),
+  };
+  for (const key of ["COPILOT_AGENT_SESSION_ID", "CODEX_THREAD_ID"])
+    delete env[key];
+  const run = (...args) => {
+    const result = spawnSync(
+      process.execPath,
+      ["scripts/resume.mjs", ...args],
+      {
+        cwd: directory,
+        encoding: "utf8",
+        env,
+        timeout: 30_000,
+      },
+    );
+    assert.equal(result.status, 0, `${args.join(" ")}: ${result.stderr}`);
+    return result.stdout;
+  };
+  const actor = {
+    harness: "copilot-cli",
+    harnessVersion: "1.0.86",
+    model: "fixture-model",
+    effort: "high",
+    source: "operator-attested",
+  };
+  const flags = [
+    "--harness",
+    actor.harness,
+    "--harness-version",
+    actor.harnessVersion,
+    "--model",
+    actor.model,
+    "--effort",
+    actor.effort,
+    "--source",
+    actor.source,
+  ];
+  let record;
+  for (let step = 0; step < 4; step++) {
+    const armed = armCopilotQualification(directory, { out });
+    assert.equal(armed.entry, "copilot");
+    assert.throws(
+      () => armCopilotQualification(directory, { out }),
+      /collect the reserved/,
+    );
+    const timestamp = new Date().toISOString();
+    if (step === 0 || step === 2) {
+      run(step === 0 ? "next" : "fix");
+      write(
+        directory,
+        "fixture/add.mjs",
+        "export const add = (left, right) => left + right;\n",
+      );
+      run(step === 0 ? "implementation-ready" : "repair-complete", ...flags);
+    } else {
+      run("verify");
+      const report = `docs/verifications/WO-999/VER-${step === 1 ? "001" : "002"}.md`;
+      write(
+        directory,
+        report,
+        [
+          "# Synthetic qualification verifier",
+          `**Actor attestation:** ${JSON.stringify(actor)}`,
+          "**Process cost:** unknown; cause harness-no-readback",
+          step === 1
+            ? "WO-146 planted fixture defect: fixture/add.mjs fails at import."
+            : "Fixture assertions pass.",
+          "",
+        ].join("\n"),
+      );
+      run("verification-result", step === 1 ? "fail" : "pass", ...flags);
+    }
+    const sessionId = `private-fixture-session-${step}`;
+    write(
+      env.COPILOT_HOME,
+      `session-state/${sessionId}/events.jsonl`,
+      [
+        {
+          type: "session.start",
+          timestamp,
+          data: {
+            sessionId,
+            copilotVersion: "1.0.86",
+            context: { cwd: directory },
+          },
+        },
+        {
+          type: "session.model_change",
+          timestamp,
+          data: { newModel: "fixture-model", reasoningEffort: "high" },
+        },
+        {
+          type: "session.shutdown",
+          timestamp: new Date().toISOString(),
+          data: {
+            tokenDetails: {
+              input: { tokenCount: 10 },
+              output: { tokenCount: 3 },
+              cache_read: { tokenCount: 0 },
+              cache_write: { tokenCount: 0 },
+            },
+          },
+        },
+      ]
+        .map(JSON.stringify)
+        .join("\n") + "\n",
+    );
+    assert.throws(
+      () => collectCopilotQualification(directory, sessionId, { out, env }),
+      /attest a bare/,
+    );
+    record = collectCopilotQualification(directory, sessionId, {
+      out,
+      env,
+      bare: true,
+      permissions: "all",
+    });
+    assert.equal(record.completedEpisodes, step + 1);
+    assert.equal(record.episodes.at(-1).passed, true);
+    assert.throws(
+      () =>
+        collectCopilotQualification(directory, sessionId, {
+          out,
+          env,
+          bare: true,
+        }),
+      /reserve exactly one/,
+    );
+  }
+  assert.equal(record.qualified, true);
+  assert.equal(record.attemptsReserved, 4);
+  assert.equal(record.episodes[1].plantedDefectReported, true);
+  assert.ok(record.episodes.every((row) => row.aiCredits === null));
+  assert.doesNotMatch(
+    JSON.stringify(record),
+    /private-fixture-session|copilot-home|events.jsonl/,
+  );
+  assert.ok(!JSON.stringify(record).includes(directory));
+  assert.throws(
+    () => armCopilotQualification(directory, { out }),
+    /already complete/,
+  );
+  const stateFile = join(directory, ".copilot-qualification/state.json");
+  const state = JSON.parse(readFileSync(stateFile, "utf8"));
+  state.nextEpisode = 0;
+  state.attempts = Array.from({ length: 6 }, () => ({
+    observation: { passed: false },
+  }));
+  writeFileSync(stateFile, JSON.stringify(state));
+  assert.throws(
+    () => armCopilotQualification(directory, { out }),
+    /two retries exhausted/,
+  );
+});
+
+test("WO-146 interactive reservations require operator attestations and preserve blocked observations", async (t) => {
+  const { prepareCopilotInteractive, collectCopilotInteractive } =
+    await import("./lib/copilot-probe.mjs");
+  const out = mkdtempSync(join(tmpdir(), "dotln-copilot-interactive-test-"));
+  t.after(() => rmSync(out, { recursive: true, force: true }));
+  write(
+    out,
+    "docs/discovery/copilot-cli-2030-01-02.json",
+    JSON.stringify({
+      date: "2030-01-02",
+      rows: [],
+      launchesStarted: 0,
+    }),
+  );
+  const first = prepareCopilotInteractive({
+    out,
+    base: out,
+    date: "2030-01-02",
+    trust: false,
+  });
+  assert.equal(first.entry, "copilot");
+  assert.equal(first.launches, 0);
+  assert.throws(
+    () => collectCopilotInteractive(first.directory, { out }),
+    /attest a bare/,
+  );
+  const blocked = collectCopilotInteractive(first.directory, {
+    out,
+    bare: true,
+    blocked: "trust-required",
+  });
+  assert.equal(blocked.status, "blocked");
+  assert.throws(
+    () =>
+      collectCopilotInteractive(first.directory, {
+        out,
+        bare: true,
+        blocked: "trust-required",
+      }),
+    /preserve a collected/,
+  );
+  prepareCopilotInteractive({ out, base: out, date: "2030-01-02" });
+  assert.throws(
+    () => prepareCopilotInteractive({ out, base: out, date: "2030-01-02" }),
+    /two reserved/,
+  );
+});
+
 test("WO-139 subagent probe confines reads and parent fan-out structurally", (t) => {
   const root = mkdtempSync(join(tmpdir(), "dotln-probe-budget-test-"));
   t.after(() => rmSync(root, { recursive: true, force: true }));
