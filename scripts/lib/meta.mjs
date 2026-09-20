@@ -82,6 +82,68 @@ export const markdownHeadings = (source) => {
   );
 };
 
+// Experiment evidence extends the existing decision record, not the runtime
+// schema. Unknown token/effect observations are null, never invented zeros.
+function checkExperiment(entry, path) {
+  const text = (value) => typeof value === "string" && value.trim();
+  const texts = (value) =>
+    Array.isArray(value) && value.length > 0 && value.every(text);
+  const measured = (value) => Number.isFinite(value) && value >= 0;
+  const optionalMeasurement = (value) => value === null || measured(value);
+  const effectMeasurement = (value) => value === null || Number.isFinite(value);
+  if (
+    !text(entry.question) ||
+    !texts(entry.alternatives) ||
+    entry.alternatives.length < 2 ||
+    !text(entry.observation) ||
+    !["run", "declined"].includes(entry.execution) ||
+    !["adopted", "kept-current", "inconclusive"].includes(entry.outcome) ||
+    (entry.execution === "declined" &&
+      (!text(entry.reason) || entry.outcome !== "kept-current"))
+  )
+    throw new Error(
+      `${path}: experiment requires question, alternatives, observation, execution and outcome; declining requires a reason and kept-current`,
+    );
+  if (
+    !measured(entry.budget?.wallSeconds) ||
+    entry.budget.wallSeconds <= 0 ||
+    entry.budget.wallSeconds > 900 ||
+    !measured(entry.cost?.wallSeconds) ||
+    entry.cost.wallSeconds > entry.budget.wallSeconds ||
+    !optionalMeasurement(entry.cost.tokens) ||
+    !texts(entry.cost.commands) ||
+    !text(entry.cost.source)
+  )
+    throw new Error(
+      `${path}: experiment requires measured cost with commands/source inside its budget (at most 900 s); unknown tokens use null`,
+    );
+  if (
+    !effectMeasurement(entry.effect?.wallSecondsPerOrder) ||
+    !effectMeasurement(entry.effect?.tokensPerOrder) ||
+    !texts(entry.effect?.commands) ||
+    !text(entry.effect?.summary)
+  )
+    throw new Error(
+      `${path}: experiment effect requires commands, summary and per-order observations (null when unknown)`,
+    );
+  if (
+    ![true, false, "unknown"].includes(entry.regression) ||
+    !(
+      entry.history?.lastAdoptedImprovementAt === null ||
+      (typeof entry.history?.lastAdoptedImprovementAt === "string" &&
+        /^\d{4}-\d{2}-\d{2}$/.test(entry.history.lastAdoptedImprovementAt))
+    ) ||
+    !(
+      entry.history?.experimentsSinceAdoption === null ||
+      (Number.isInteger(entry.history?.experimentsSinceAdoption) &&
+        entry.history.experimentsSinceAdoption >= 0)
+    )
+  )
+    throw new Error(
+      `${path}: experiment requires regression and history observations; unknown history uses null`,
+    );
+}
+
 export function readDecisions(root, { workOrder } = {}) {
   const directory = join(root, "docs/evidence");
   const decisions = [];
@@ -126,6 +188,7 @@ export function readDecisions(root, { workOrder } = {}) {
         throw new Error(
           `${path}: correction requires what was misread, meant and changed`,
         );
+      if (entry.kind === "experiment") checkExperiment(entry, path);
       const condition = entry.reopenWhen;
       if (
         !(typeof condition === "string" && condition.trim()) &&
