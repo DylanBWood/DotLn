@@ -9067,6 +9067,27 @@
           "title": "Candidate — DotLn-owned authority with minimal native harness restrictions",
           "summary": "## Candidate — DotLn-owned authority with minimal native harness restrictions Operator direction during WO-119 (2026-09-16): reach an operating mode as soon as evidence supports it in which native Claude and Codex harness sandboxes can be disabled and Claude's settings have nearly empty allow/deny lists. The source of permissions, security and authority is the equipped DotLn supports, build and role. The operator clarified the assurance requirement: faithful runtime enforcement plus adversarial tests, including attempts to bypass the declared authority. See the [ideation receipt](../evidence/WO-119/ideation-authority.md). This candidate asks planning to identify the earliest justified route ",
           "missing": false
+        },
+        {
+          "hash": "7f7e5787c8e3b473e397c87c51df2623c1fd42718eebc49cd243278c776df514",
+          "ref": "docs/product/03-architecture.md#candidate--dotln-owned-authority-with-minimal-native-harness-restrictions",
+          "title": "Candidate — DotLn-owned authority with minimal native harness restrictions",
+          "summary": "## Candidate — DotLn-owned authority with minimal native harness restrictions Operator direction during WO-119 (2026-09-16): reach an operating mode as soon as evidence supports it in which native Claude and Codex harness sandboxes can be disabled and Claude's settings have nearly empty allow/deny lists. The source of permissions, security and authority is the equipped DotLn supports, build and role. The operator clarified the assurance requirement: faithful runtime enforcement plus adversarial tests, including attempts to bypass the declared authority. See the [ideation receipt](../evidence/WO-119/ideation-authority.md). This candidate asks planning to identify the earliest justified route ",
+          "missing": false
+        },
+        {
+          "hash": "b48d8934f37caf60e1ac3ac78341cda7d52a4ee0d319830d9f6a3d3eae4e15af",
+          "ref": "docs/product/03-architecture.md#candidate--dotln-owned-authority-with-minimal-native-harness-restrictions",
+          "title": "Candidate — DotLn-owned authority with minimal native harness restrictions",
+          "summary": "## Candidate — DotLn-owned authority with minimal native harness restrictions Operator direction during WO-119 (2026-09-16): reach an operating mode as soon as evidence supports it in which native Claude and Codex harness sandboxes can be disabled and Claude's settings have nearly empty allow/deny lists. The source of permissions, security and authority is the equipped DotLn supports, build and role. The operator clarified the assurance requirement: faithful runtime enforcement plus adversarial tests, including attempts to bypass the declared authority. See the [ideation receipt](../evidence/WO-119/ideation-authority.md). This candidate asks planning to identify the earliest justified route ",
+          "missing": false
+        },
+        {
+          "hash": "c124f2ccc8fb0d2d7b6243da499a8d5b2e74061df9d89364e3a462dd8aa8dbb3",
+          "ref": "docs/product/03-architecture.md#candidate--dotln-owned-authority-with-minimal-native-harness-restrictions",
+          "title": "Candidate — DotLn-owned authority with minimal native harness restrictions",
+          "summary": "## Candidate — DotLn-owned authority with minimal native harness restrictions Operator direction during WO-119 (2026-09-16): reach an operating mode as soon as evidence supports it in which native Claude and Codex harness sandboxes can be disabled and Claude's settings have nearly empty allow/deny lists. The source of permissions, security and authority is the equipped DotLn supports, build and role. The operator clarified the assurance requirement: faithful runtime enforcement plus adversarial tests, including attempts to bypass the declared authority. See the [ideation receipt](../evidence/WO-119/ideation-authority.md). This candidate asks planning to identify the earliest justified route ",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -11229,6 +11250,73 @@
           "ref": "docs/evidence/WO-143/decisions.md#wo-143-d005--board-up-ver-001-f2-the-delayed-claimant-fixture-does-not-detect-removal-of-the-claim-time-fence",
           "title": "WO-143-D005: WO-143 final review: have the delayed-claimant fixture also assert that host.lock (content and inode) is unchanged by the refused delayed claimant, so that deleting the claim-time recheck",
           "summary": "{ \"id\": \"WO-143-D005\", \"date\": \"2026-09-19\", \"dispatch\": \"resume: verify\", \"decision\": \"Record VER-001 F2 with an owner. D001's canonical-target recheck after a successor claim is what keeps a delayed claimant away from shared state. Deleting only that recheck leaves all eight WO-143 tests passing. In that mutant, the refused delayed claimant replaces host.lock with its own pid while the successor holds the guard. The fixture asserts only the refusal, one claim, an intact guard link and the successor's acquisition, and release() re-checks the link before unlinking it. The shipped code has the fence and behaves correctly; the evidence does not discriminate it.\", \"evidence\": [ \"docs/verificati",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-76e02136ac324240",
+      "key": "decision:docs/evidence/WO-144/decisions.md#wo-144-d007",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "39214e3ef81d0410cef68ee09c2ffc37f07a4417ba0974e3fd2d90c428d9bbf1",
+          "ref": "docs/evidence/WO-144/decisions.md#wo-144-d007--fail-final-review-on-a-live-admitted-outside-write-board-the-shared-root-cwd-precondition",
+          "title": "WO-144-D007: Planner: nominate a bounded order for the shared root-cwd precondition. Decide whether the writer, live-gate, planning-branch and subagent refusals should judge when the session's working",
+          "summary": "{ \"id\": \"WO-144-D007\", \"date\": \"2026-09-19\", \"dispatch\": \"resume: final review\", \"decision\": \"Record FINAL-001 as fail and route its two findings to repair under WO-144. F1: every generated hook resolves its root with harnessRoot(input.cwd), which requires the session's working directory to equal the worktree root; after one persisted cd (even into a project subdirectory) the outside-write guard returns only a runtime-unavailable advisory, admits a known ungranted outside destination and journals nothing. F2: the extractor returns null for any command whose program is outside its small vocabulary, so a literal redirect on npm, node or git is unobserved; the recorded incident's own command is",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-64a7f9adb355d94e",
+      "key": "decision:docs/evidence/WO-144/decisions.md#wo-144-d008",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "4174e9ac0dc8195edf2f315e28e81dc9b202057321f49efb6864010f8213601b",
+          "ref": "docs/evidence/WO-144/decisions.md#wo-144-d008--judge-outside-writes-from-any-working-directory-keep-hook-rows-in-the-hooks-own-project",
+          "title": "WO-144-D008: Planner (continues D007): decide whether the four root-bound refusals judge away from the worktree root. Their stand-down is now journaled by every hook, so an inventory can count how oft",
+          "summary": "{ \"id\": \"WO-144-D008\", \"date\": \"2026-09-19\", \"dispatch\": \"resume: fix\", \"decision\": \"Repair FINAL-001 F1 by enforcing, not by documenting the precondition. runHarnessHook takes its root from the session's working directory only while that directory is this hook's own verified worktree root. Otherwise it finds the project from the installed runtime's location (installedHarnessRoot, verified as a Git top level that contains the pinned snapshot), makes only the outside-write judgment, and resolves relative destinations against the session's directory, where the shell opens them. A refusal is returned; any other outcome rethrows the original cause, so the four root-bound refusals keep their stan",
+          "missing": false
+        },
+        {
+          "hash": "5efc5c319be0c62cb44189c899c6806bace3b4d278189aa9ac8fef4fbdabe376",
+          "ref": "docs/evidence/WO-144/decisions.md#wo-144-d008--judge-outside-writes-from-any-working-directory-keep-hook-rows-in-the-hooks-own-project",
+          "title": "WO-144-D008: Planner (continues D007): decide whether the four root-bound refusals judge away from the worktree root. Their stand-down is now journaled by every hook, so an inventory can count how oft",
+          "summary": "{ \"id\": \"WO-144-D008\", \"date\": \"2026-09-19\", \"dispatch\": \"resume: fix\", \"decision\": \"Repair FINAL-001 F1 by enforcing, not by documenting the precondition. runHarnessHook takes its root from the session's working directory only while that directory is this hook's own verified worktree root. Otherwise it finds the project from the installed runtime's location (installedHarnessRoot, verified as a Git top level that contains the pinned snapshot), makes only the outside-write judgment, and resolves relative destinations against the session's directory, where the shell opens them. A refusal is returned; any other outcome rethrows the original cause, so the four root-bound refusals keep their stan",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-6004455b998fa646",
+      "key": "decision:docs/evidence/WO-144/decisions.md#wo-144-d009",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "6bdaefd97592cfc658854b96c187b5a439b1a8b2aa4ecda4092ceeb4a65efcc6",
+          "ref": "docs/evidence/WO-144/decisions.md#wo-144-d009--judge-a-literal-redirect-on-any-program-state-what-stays-unjudged",
+          "title": "WO-144-D009: Planner: the order's own cost line ('removes the recorded incident class') and criterion 2's label ('the recorded incident's shape') remain broader than what ships, because the incident's",
+          "summary": "{ \"id\": \"WO-144-D009\", \"date\": \"2026-09-19\", \"dispatch\": \"resume: fix\", \"decision\": \"Repair FINAL-001 F2 in code and in words. Add shellRedirectTargets beside shellWriteTargets: it names literal output redirects on any program, because the shell opens them, and names a relative one only while no earlier program outside the bounded vocabulary could have moved the shell. Only the outside-write guard consults it, when shellWriteTargets returns null; a named redirect is judged and the program's own effects are still journaled unobserved. shellWriteTargets keeps its contract that null means opaque, so the live-gate and planning-branch refusals read commands exactly as before. Product 03, product ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-04ec9fa011f39d93",
+      "key": "decision:docs/evidence/WO-144/decisions.md#wo-144-d010",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "782d312cb12e80a9382586fa07b4daffa1106fd5396d778a62c3afcb119b34c2",
+          "ref": "docs/evidence/WO-144/decisions.md#wo-144-d010--pass-final-review-after-an-in-review-test-repair-board-the-unrun-suite-and-two-width-edges",
+          "title": "WO-144-D010: Planner: (1) Executor and verifier procedure runs npm test without --review, which omits the machinery suites whose declared sources an order changed; here process-debt declares harness-h",
+          "summary": "{ \"id\": \"WO-144-D010\", \"date\": \"2026-09-19\", \"dispatch\": \"resume: final review\", \"decision\": \"Record FINAL-002 as pass. FINAL-001 F1 and F2 are repaired and were reproduced live from a moved working directory through the shell and the write tool. The final-review gate's first run failed one suite: process-debt, 'WO-131 prompt submission stays open while dispatches retain the ordinary command's gate and writer checks', which compares a resumed session's briefing with the recording session's. D004 prints each session's own scratch path in that context, after the recording-only beacon warning the test stripped only when it was last. The per-session path is the decided behavior (D001, D004), so ",
           "missing": false
         }
       ],
