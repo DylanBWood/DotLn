@@ -129,6 +129,7 @@ mkdir -p "$subject/docs/verifications/WO-099"
 printf '%s\n' \
   '# verification pass' \
   '' \
+  '**Process cost:** unknown; cause no-session' \
   '**Actor attestation:** {"harness":"claude-code","harnessVersion":"fixture","model":"fixture-model","effort":"xhigh","source":"self-reported"}' >"$subject/docs/verifications/WO-099/VER-001.md"
 node "$subject/scripts/resume.mjs" verification-result pass \
   --harness claude-code \
@@ -141,6 +142,7 @@ mkdir -p "$subject/docs/final-reviews/WO-099"
 printf '%s\n' \
   '# final pass' \
   '' \
+  '**Process cost:** unknown; cause no-session' \
   '**Actor attestation:** {"harness":"human","harnessVersion":"not-applicable","model":"human","effort":"unknown","source":"operator-attested"}' >"$subject/docs/final-reviews/WO-099/FINAL-001.md"
 node "$subject/scripts/resume.mjs" final-review-result pass \
   --harness human \

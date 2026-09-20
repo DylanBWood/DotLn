@@ -29,6 +29,11 @@ import {
   controlUsageProjection,
   renderControlUsage,
 } from "./lib/control-usage.mjs";
+import {
+  COST_LINE_REQUIRED,
+  costLineBriefing,
+  requireReceiptCostLine,
+} from "./lib/receipt-cost.mjs";
 import { requireLifecycleEvidence } from "./lib/lifecycle-evidence.mjs";
 import {
   executorWriterRelease,
@@ -728,9 +733,9 @@ const executionBriefing = (state) => {
 const repairBriefing = (state) =>
   `Repair ${state.workOrderPath} using ${state.failureSourcePath}; read both artifacts.${executorEntryBriefing(repoRoot, state.workOrderId)}`;
 const verificationBriefing = (state, reportPath) =>
-  `Verify ${state.workOrderPath}; write the immutable report to ${reportPath}.`;
+  `Verify ${state.workOrderPath}; write the immutable report to ${reportPath}. ${costLineBriefing}`;
 const finalReviewBriefing = (state, reportPath) =>
-  `Final-review ${state.workOrderPath}, the complete verification sequence, and ideation receipt; write ${reportPath}.`;
+  `Final-review ${state.workOrderPath}, the complete verification sequence, and ideation receipt; write ${reportPath}. ${costLineBriefing}`;
 const recordedBriefings = {
   active: executionBriefing,
   repairing: repairBriefing,
@@ -895,6 +900,7 @@ export const main = async (argv = process.argv.slice(2)) => {
         workOrderId: state.workOrderId,
         verificationId,
         reportPath,
+        costLine: COST_LINE_REQUIRED,
       });
       message = verificationBriefing(state, reportPath);
       break;
@@ -931,6 +937,7 @@ export const main = async (argv = process.argv.slice(2)) => {
         actor,
         "verification",
       );
+      requireReceiptCostLine(repoRoot, state.latestVerificationPath);
       const evidence = await requireLifecycleEvidence(
         repoRoot,
         action,
@@ -998,6 +1005,7 @@ export const main = async (argv = process.argv.slice(2)) => {
         throughVerificationId: state.latestVerificationId,
         finalReviewId,
         reportPath,
+        costLine: COST_LINE_REQUIRED,
       });
       message = finalReviewBriefing(state, reportPath);
       break;
@@ -1034,6 +1042,7 @@ export const main = async (argv = process.argv.slice(2)) => {
         actor,
         "final-review",
       );
+      requireReceiptCostLine(repoRoot, state.finalReviewPath);
       const evidence = await requireLifecycleEvidence(
         repoRoot,
         action,

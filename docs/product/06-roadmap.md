@@ -20,6 +20,17 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-140 activation completion (2026-09-19):** assigned application `v0.33.1`
+under the declared patch classification above local `v0.33.0`. Skeleton
+`0.29.1` rejects a partial gate row under any identity and prints the session
+id and usage command in the dispatch briefing; the test runner's sandbox
+preflight, the receipt cost-line check and the role text live in repository
+scripts and generated skills. Kernel `0.6.0`, compiler `0.16.0` and console
+`0.1.7` are unchanged; the console pin follows skeleton. No dependency or
+publication authority is added. The
+[executor decisions](../evidence/WO-140/decisions.md) record the markers, the
+one declared suite and their reopening conditions.
+
 **WO-144 activation completion (2026-09-19):** assigned application `v0.33.0`
 under the standing minor classification above local `v0.32.1`. Compiler
 `0.16.0` adds declared roots bound to admitted authority grants; skeleton

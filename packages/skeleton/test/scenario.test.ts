@@ -53,9 +53,15 @@ const assertProjectionIdentity = (
   ]) {
     const explicit = replay(initial, events, seiriReactor, registry, projector);
     assert.deepEqual(explicit, fallback);
-    assert.equal(
-      JSON.stringify(explicit.decisions),
-      JSON.stringify(fallback.decisions),
+    // The same bytes, one decision at a time: a stored live stream with a few
+    // hundred heartbeats serializes past the engine's string limit as one array.
+    assert.equal(explicit.decisions.length, fallback.decisions.length);
+    explicit.decisions.forEach((decision, index) =>
+      assert.equal(
+        JSON.stringify(decision),
+        JSON.stringify(fallback.decisions[index]),
+        `decision ${index}`,
+      ),
     );
   }
   return fallback;
@@ -907,8 +913,14 @@ test("WO-047 complete Decision bytes match across stored skeleton streams", asyn
           : initialVerificationRuntime(workstream),
         name === "feedback audit" || workstream !== null ? {} : seiriPredicates,
       );
+      // The array's serialized size, summed per decision: brackets, commas
+      // and each element, without building the one oversized string.
+      const serializedBytes = replayed.decisions.reduce(
+        (sum, decision) => sum + Buffer.byteLength(JSON.stringify(decision)),
+        2 + Math.max(0, replayed.decisions.length - 1),
+      );
       subtest.diagnostic(
-        `${replayed.decisions.length} complete decisions; ${Buffer.byteLength(JSON.stringify(replayed.decisions))} identical serialized bytes`,
+        `${replayed.decisions.length} complete decisions; ${serializedBytes} identical serialized bytes`,
       );
       if (name === "WO-003 oracle")
         assert.deepEqual(

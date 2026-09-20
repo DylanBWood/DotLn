@@ -240,7 +240,7 @@ actor_flags=(--harness human --harness-version not-applicable --model human --ef
 lifecycle() { node "$lifecycle_repo/scripts/resume.mjs" "$@" >/dev/null; }
 report() {
   mkdir -p "$(dirname "$lifecycle_repo/$1")"
-  printf '# Fixture report\n\n**Actor attestation:** {"harness":"human","harnessVersion":"not-applicable","model":"human","effort":"unknown","source":"operator-attested"}\n' >"$lifecycle_repo/$1"
+  printf '# Fixture report\n\n**Actor attestation:** {"harness":"human","harnessVersion":"not-applicable","model":"human","effort":"unknown","source":"operator-attested"}\n\n**Process cost:** unknown; cause no-session\n' >"$lifecycle_repo/$1"
 }
 lifecycle activate WO-097 docs/work-orders/WO-097-fixture.md
 lifecycle implementation-ready "${actor_flags[@]}"

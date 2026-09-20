@@ -73,10 +73,14 @@ export function reportHarnessRuntime(root) {
 // Optional information must not become a startup dependency or admission check.
 export async function codexSessionReport(root) {
   try {
-    const { currentCodexSession, renderCodexSession } =
+    const { currentCodexSession, renderCodexSession, usageReadbackLine } =
       await import("../../packages/skeleton/src/usage-observation.mjs");
     const session = currentCodexSession(root);
-    return { session, text: renderCodexSession(session) };
+    const thread = process.env.CODEX_THREAD_ID;
+    return {
+      session,
+      text: `${renderCodexSession(session)}${thread ? `\n${usageReadbackLine(thread)}` : ""}`,
+    };
   } catch {
     return {
       session: {

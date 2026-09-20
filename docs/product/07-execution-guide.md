@@ -1619,6 +1619,27 @@ claim evidence or releases it does not have.
   when available, never substituted from another session or invented as zero.
   Counters and final timings stay in ignored local observations and the
   response; reports may cite them without causing a product-gate rerun.
+  A verification or final-review receipt allocated under WO-140 carries
+  exactly one physical `**Process cost:**` line: `entry <total> tokens;
+  handoff <total> tokens; source <source>`, or `unknown; cause <code>` with
+  exactly one code from this closed list: `hooks-fallback` (the session's
+  hooks ran in their fallback, so no session observation exists),
+  `no-session` (no harness session was found for this role and order, so
+  usage had no subject) and `harness-no-readback` (the harness exposes no
+  counter readback to the session). A new cause adds a code here and in
+  `scripts/lib/receipt-cost.mjs`, never a free-text unknown. `verify` and
+  `final-review` stamp the duty on the receipt they allocate, so every earlier
+  receipt, and a sibling worktree's receipt allocated before it integrated
+  this rule, is not judged and no receipt is edited retroactively. The
+  `verification-result` and `final-review-result` transitions judge the
+  stamped report beside its actor header, while its author can still edit it,
+  so an immutable receipt is never the first to meet the rule;
+  `npm run test:docs` refuses the same line afterwards. The line may be
+  indented or a list item, and a fenced example is not the line. The dispatch
+  briefing prints the session id and the exact
+  `node scripts/harness.mjs usage <session>` command. No counter value is
+  ever required: `unknown` with its cause code is always admitted, so the
+  rule never blocks a handoff on an unavailable measurement.
   All eight system traps and Naive Interventionism remain decision lenses,
   with the NoOp comparison in the existing per-order decisions. Historical
   WO-126–WO-131 measurements remain immutable evidence of the retired system.
@@ -1803,6 +1824,35 @@ claim evidence or releases it does not have.
   no machinery suite; a host behavior edit still selects its declared suites.
   Lifecycle transitions run only the inline whitespace check and record their
   reports/attestations without gate, read or usage prerequisites.
+- **Gate sandbox preflight (WO-140, 2026-09-19).** A suite declares
+  `needs: outside-sandbox` only when an environmental cause means it cannot
+  pass inside a harness sandbox; a failure inside one is never by itself a
+  reason to declare. `skeleton` carries the declaration: its native script
+  cases nest `sandbox-exec`, which an outer Seatbelt sandbox refuses, in every
+  receipt that ran the gate inside one. `release` does not: WO-121's F1 was a
+  defect, and its one temporary-root failure inside the sandbox passed inside
+  in every other receipt. A recognized marker (`CLAUDECODE`, or Codex's
+  `CODEX_SANDBOX`) names the harness and establishes nothing alone, because a
+  run with the sandbox disabled inherits it; one exclusive create in the path
+  that sandbox protects (`.claude/hooks`, or the resolved Git directory)
+  decides. Every marker present is probed, because one harness can inherit
+  another's. Only `EPERM`, `EACCES` or `EROFS` on that create reads as a
+  sandbox; a created probe file is removed, and a removal the host refuses is
+  reported on the row, never thrown. When the write is denied and the
+  selection needs the outside, `npm test` refuses before the build and every
+  suite, names the suites and prints the command that runs the same selection
+  outside. No marker, a missing probe directory, a permitted write or a probe
+  that fails fails open and the gate runs as before; only a selection that
+  needs the outside pays for the probe. `npm test -- --inside-sandbox` runs
+  the remaining suites and records that same identity, with `partial` and
+  `excludedSuites`, never
+  `npm test`; `findGateCheck`, the lifecycle transitions, pull-request
+  publication and release close reject that row, and reject exclusions under
+  any identity. Running unsandboxed stays the operator's approval and is never
+  automatic. In an operator-attended session the verifier and reviewer run the
+  product gate outside from the start; a resident-launched verification runs
+  the inside selection and reports its exclusions as a partial result. See the
+  [WO-140 decisions](../evidence/WO-140/decisions.md).
   Live gates still protect source, installed inputs and the success record
   from concurrent writes. One registered writer owns the worktree. Other hook
   judgments advise and delegate to host permissions. `node scripts/harness.mjs

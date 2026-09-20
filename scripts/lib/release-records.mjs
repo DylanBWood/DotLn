@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { readGitObjects, runGit } from "./git.mjs";
 import { parseJson } from "./paths.mjs";
 import { readControl } from "./control-store.mjs";
-import { gateCodeIdentity } from "./gate-evidence.mjs";
+import { gateCodeIdentity, partialGateCheck } from "./gate-evidence.mjs";
 
 export const semver = (value) => {
   const match = /^v(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/.exec(value);
@@ -229,6 +229,7 @@ export const reviewedProductGate = (root, workOrderId, revision = "HEAD") => {
   if (
     review?.verdict !== "pass" ||
     gate?.checkId !== "npm test" ||
+    partialGateCheck(gate) ||
     gate.executed !== true ||
     gate.exitCode !== 0 ||
     !/^[a-f0-9]{64}$/.test(gate.codeIdentity ?? "") ||

@@ -778,6 +778,15 @@ export function recordGateChecks(root, additions) {
     rmdirSync(lock);
   }
 }
+/** A row that left suites out is a partial result under any identity, never a
+ * complete check (WO-140).
+ * Any other shape of either field is read as partial, never as complete.
+ * @param {GateCheck & {partial?: unknown, excludedSuites?: unknown}} row
+ */
+export const partialGateCheck = (row) =>
+  (row.partial !== undefined && row.partial !== false) ||
+  (row.excludedSuites !== undefined &&
+    !(Array.isArray(row.excludedSuites) && row.excludedSuites.length === 0));
 /** A failed attempt does not erase a later or earlier successful run at identical bytes.
  * @param {string} root @param {string} checkId @param {string} treeHash
  */
@@ -792,6 +801,7 @@ export const findGateCheck = (root, checkId, treeHash) => {
         (checkId === "npm test"
           ? row.codeIdentity === codeIdentity
           : row.treeHash === treeHash) &&
+        !partialGateCheck(row) &&
         row.executed === true &&
         row.exitCode === 0 &&
         Number.isFinite(row.durationMs) &&

@@ -93,7 +93,7 @@ intent → task-scoped build → bounded WorkOrder → disposable executor
 -->
 <!-- DOTLN-RELEASE-BEGIN -->
 
-This source prepares DotLn `v0.33.0`.
+This source prepares DotLn `v0.33.1`.
 
 **The core.** A local-first compiler turns a loadout graph into a bounded
 program and authority envelope that the kernel checks on every decision.
@@ -192,6 +192,10 @@ negative verifier outcome. `npm test` runs fresh product and lifecycle suites;
 The reviewer uses `npm test -- --review` once, adding machinery suites selected
 by changed sources; `npm run test:full` is the alias for that same review selection. `npm run test:machinery` runs that inventory on demand, and
 `npm run test:docs` checks document-only planning and ideation dispatches.
+Inside a harness sandbox, `npm test` refuses before any suite when a selected
+suite declares `needs: outside-sandbox`, naming the suites and the command to
+run outside; `npm test -- --inside-sandbox` runs the rest as a partial result
+that is never product-gate evidence.
 The former replica/cache runner and repeated exact-tree lifecycle gates are
 retired by WO-132; old evidence retains its original meaning.
 After `npm run build`, `npm run evidence:artifact -- --check` validates the

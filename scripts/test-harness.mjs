@@ -378,7 +378,7 @@ test("WO-139 Codex executor and fix completion automatically release after the f
     write(
       root,
       "docs/verifications/WO-999/VER-001.md",
-      '# Fixture finding\n\n**Actor attestation:** {"harness":"codex-cli","harnessVersion":"fixture","model":"fixture","effort":"high","source":"self-reported"}\n',
+      '# Fixture finding\n\n**Actor attestation:** {"harness":"codex-cli","harnessVersion":"fixture","model":"fixture","effort":"high","source":"self-reported"}\n\n**Process cost:** unknown; cause no-session\n',
     );
     pass("verification-result", "fail", ...actor);
     acquire();

@@ -386,7 +386,7 @@ await test("test-control-segments", async (t) => {
 
       write(
         "docs/verifications/WO-901/VER-001.md",
-        `# Verification fixture\n\n**Actor attestation:** ${JSON.stringify(human)}\n`,
+        `# Verification fixture\n\n**Actor attestation:** ${JSON.stringify(human)}\n\n**Process cost:** unknown; cause no-session\n`,
       );
       pass([
         "verification-result",
@@ -398,7 +398,7 @@ await test("test-control-segments", async (t) => {
       pass(["final-review", "--work-order", "WO-901"]);
       write(
         "docs/final-reviews/WO-901/FINAL-001.md",
-        `# Final fixture\n\n**Actor attestation:** ${JSON.stringify(human)}\n`,
+        `# Final fixture\n\n**Actor attestation:** ${JSON.stringify(human)}\n\n**Process cost:** unknown; cause no-session\n`,
       );
       pass([
         "final-review-result",

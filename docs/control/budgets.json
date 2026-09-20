@@ -32,7 +32,7 @@
     "coldStartBytes": {
       "executor": 24576,
       "verifier": 20480,
-      "reviewer": 20480,
+      "reviewer": 24576,
       "release-close": 16384,
       "planner": 24576,
       "refuter": null
@@ -99,6 +99,14 @@
       "dispatch": "verifier",
       "ceiling": 20480,
       "reason": "WO-139 measured 17,477 bytes in both generated roots against 16,384 after adding the shared root-budget batching rule, four-refusal boundary and operator-authorized planning-amendment instruction. Raise the ceiling by one 4 KB step under the standing operator direction; preserve all reviewed rules. Reassess when another reviewed rule needs more."
+    },
+    {
+      "date": "2026-09-19",
+      "metric": "coldStartBytes.reviewer",
+      "scope": null,
+      "dispatch": "reviewer",
+      "ceiling": 24576,
+      "reason": "WO-140 measured 21,299 bytes in both generated roots (installed CLAUDE.md 5,788 plus the reviewer skill 15,511) against 20,480, from 20,434 before it, after adding two reviewed rules of 865 bytes together: the product gate runs outside the harness sandbox from the start in an attended session and a resident-launched verification records a partial result, and the receipt's Process cost line carries counters with their source or one cause code. During resume: next on 2026-09-19 the operator authorized raising the limit; raise by one 4 KB step under that authorization and the standing direction of 2026-09-17, preserving every reviewed rule; the verifier measures 20,081 against 20,480 with the same two rules and stays unchanged. Reassess when another reviewed rule needs more. Decision: docs/evidence/WO-140/decisions.md#wo-140-d005."
     }
   ],
   "unsetPolicy": "Collect observed usage first. The operator left token, dollar and PR-body ceilings unset; null is not zero and never triggers an invented cap.",
