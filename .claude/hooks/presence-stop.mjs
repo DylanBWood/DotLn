@@ -1,8 +1,8 @@
-// Origin: {"ids":[],"loadoutId":"contributor","semanticHash":"fnv1a64:f7e29ff3f4ede75c"}
+// Origin: {"ids":[],"loadoutId":"contributor","semanticHash":"fnv1a64:55b87ceca766bc72"}
 try {
 const { text } = await import("node:stream/consumers");
 const input = JSON.parse(await text(process.stdin));
-const { recordHarnessHeartbeat } = await import("../../.runtime/harness/980d4b5c080ad74d/packages/skeleton/dist/src/presence-heartbeat.js");
+const { recordHarnessHeartbeat } = await import("../../.runtime/harness/15a564c2c1d6840a/packages/skeleton/dist/src/presence-heartbeat.js");
 await recordHarnessHeartbeat("Stop", input);
 } catch { process.stderr.write("DotLn advisory: presence heartbeat unavailable\n"); }
 process.stdout.write("{}");
