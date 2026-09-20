@@ -40,7 +40,7 @@
 - [x] [WO-084] — Ledger order and index · **final-reviewed**
 - [x] [WO-143] — Resident lock recovery · **final-reviewed**
 - [x] [WO-144] — Outside-project write grant · **final-reviewed**
-- [ ] [WO-140] — Gate sandbox preflight and usage readback · **queued**
+- [x] [WO-140] — Gate sandbox preflight and usage readback · **final-reviewed**
 - [ ] [WO-056] — Live blinded verification and repair · **queued**
 - [ ] [WO-146] — Copilot CLI harness · **queued**
 - [ ] [WO-145] — Tinkerer economy experiment · **queued**
@@ -1246,22 +1246,6 @@ None.
 - Cost: removes the standing assumption in the actor catalog that local episodes stay inspection-only indefinitely, and its opposite. Adds one evaluation harness with deterministic tests over recorded envelopes and one evidence directory; budget three tasks × two models × five repeats (30 baseline episodes) plus five one-factor cells and three tool-failure cells, and one operator session of at most 30 minutes for the T2 ranking, recorded; wall-clock unmeasured until run; live runs never inside &#96;npm test&#96;.
 - Inherited ledger duty: discharge with this order's decisions file when recorded and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
 - Authority: [docs/work-orders/WO-138-local-model-role-qualification.md](WO-138-local-model-role-qualification.md)
-
-### WO-140
-
-[WO-140 — Gate sandbox preflight and usage readback: &#96;npm test&#96; refuses inside a harness sandbox when a declared suite needs the outside, the briefing prints the session id and the usage command, and every new receipt's cost line carries counters or a cause code (version assigned at activation)](WO-140-gate-sandbox-preflight.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-132: satisfied-by-close (met) — one product gate per order keyed by code identity; WO-133: satisfied-by-close (met) — attestation keeps operator-supplied values.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh+; verifier any; reviewer any.
-- Cost: removes one failed sandboxed gate per attended verification (observed: WO-121 VER-001 ran the gate twice inside the sandbox, 17 of 19 and 18 of 19, one failure being the genuine intermittent defect F1 and the other the &#96;.claude/hooks/**&#96; denial, and did not itself run the gate outside; VER-002 ran 18 of 19 inside before its passing outside run; WO-049, WO-051, WO-052, WO-134, WO-122 and WO-121 VER-002 record their passing gate outside the sandbox), 191 to 515 s of fresh gate wall-clock each plus its diagnosis; removes the bare "unknown" default in cost lines (one receipt since 2026-09-13 reports an entry measurement). Adds one preflight check under a second, one &#96;needs:&#96; declaration per affected suite, one distinct partial check identity, one briefing line, one closed cause-code list and one document check; no gate, hook or recurring step.
-- Authority: [docs/work-orders/WO-140-gate-sandbox-preflight.md](WO-140-gate-sandbox-preflight.md)
 
 ### WO-145
 
@@ -2515,6 +2499,23 @@ None.
 - Cost: removes uncapped fan-out on the paths the hook admits (operator-observed on 2026-09-17: a top-level guideline of five agents reaching more than a hundred through per-item adversarial and refutation trees, 5 + 15 + 45 before any repair loop) and the operator's manual arithmetic. Adds one counter in the existing spawn admission path, one key in &#96;docs/control/budgets.json&#96;, one role-text rule, one probe row and fixtures; no recurring step. It adds one hard refusal to the hook boundary. It does not deliver a guaranteed maximum across every path: an agent the harness creates before any hook fires is counted late or not at all, and that requirement stays open.
 - Latest attestation: harness claude-code; version 2.1.277; model claude-fable-5-1; effort xhigh; source self-reported; account not-applicable.
 - Authority: [docs/work-orders/WO-139-subagent-cap.md](WO-139-subagent-cap.md)
+
+### WO-140
+
+[WO-140 — Gate sandbox preflight and usage readback: &#96;npm test&#96; refuses inside a harness sandbox when a declared suite needs the outside, the briefing prints the session id and the usage command, and every new receipt's cost line carries counters or a cause code (v0.33.1)](WO-140-gate-sandbox-preflight.md)
+
+- State: closed.
+- Application target: v0.33.1.
+- Dependencies: typed; activation not applicable.
+- References: WO-132: satisfied-by-close (met) — one product gate per order keyed by code identity; WO-133: satisfied-by-close (met) — attestation keeps operator-supplied values.
+- Verification: [VER-001](../../docs/verifications/WO-140/VER-001.md) (pass).
+- Final review: [FINAL-001](../../docs/final-reviews/WO-140/FINAL-001.md) (pass).
+- Release: unreleased.
+- Model: any. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier any; reviewer any.
+- Cost: removes one failed sandboxed gate per attended verification (observed: WO-121 VER-001 ran the gate twice inside the sandbox, 17 of 19 and 18 of 19, one failure being the genuine intermittent defect F1 and the other the &#96;.claude/hooks/**&#96; denial, and did not itself run the gate outside; VER-002 ran 18 of 19 inside before its passing outside run; WO-049, WO-051, WO-052, WO-134, WO-122 and WO-121 VER-002 record their passing gate outside the sandbox), 191 to 515 s of fresh gate wall-clock each plus its diagnosis; removes the bare "unknown" default in cost lines (one receipt since 2026-09-13 reports an entry measurement). Adds one preflight check under a second, one &#96;needs:&#96; declaration per affected suite, one distinct partial check identity, one briefing line, one closed cause-code list and one document check; no gate, hook or recurring step.
+- Latest attestation: harness claude-code; version 2.1.278; model claude-opus-5&#91;1m&#93;; effort xhigh; source operator-attested; account not-applicable.
+- Authority: [docs/work-orders/WO-140-gate-sandbox-preflight.md](WO-140-gate-sandbox-preflight.md)
 
 ### WO-141
 
