@@ -1,5 +1,33 @@
 # WO-090 decisions
 
+## WO-090-D007 — Repair this order's unresolved decision anchors; nominate the repo-wide anchor check separately
+
+```json
+{
+  "id": "WO-090-D007",
+  "date": "2026-09-20",
+  "dispatch": "resume: final review",
+  "decision": "Within the reviewer's bounded cleanup, repair the three short-form decision links in this order's evidence README (D001, D003, D004) to the full GitHub heading slugs, and refresh the two figures the repair superseded: the software-engineer edition lock, which moved again to c0d4e920 after the goal-card edit, and the guide's final size of 1,933 lines and 141,047 bytes. Leave the 41 unresolved decision anchors in closed orders' reports untouched, because those reports are immutable, and nominate a generated anchor check for planning instead of adding one here.",
+  "evidence": [
+    "reviewer scan of every tracked docs Markdown file plus this order's untracked evidence, resolving each ](path/decisions.md#fragment) link against the target file's heading slugs: 41 unresolved before the repair, concentrated in docs/evidence/WO-056 (11), docs/final-reviews/WO-056 (6), docs/final-reviews/WO-140 (6), docs/evidence/WO-140 (4); 0 remain in docs/evidence/WO-090",
+    "docs/evidence/WO-090/decisions.md headings carry titles after an em dash, so the rendered slug is wo-090-dNNN--<title>; a bare #wo-090-d004 resolves nowhere",
+    "docs/lineage/decisions-index.md WO-090 rows: all six generated links use the full slug and resolve, so the generator is already correct",
+    "docs/publication/software-engineer-toc.md line 5: sha256:c0d4e920af3722b6e05fa9d5daadda9dfb802c35d90c5b30ee195a2e851d5fc9, not the 841fa17c the README recorded before the repair",
+    "wc on docs/product/07-execution-guide.md: 1,933 lines, 141,047 bytes at the reviewed subject",
+    "docs/verifications/WO-090/VER-002.md limits: the README's split presentation recorded as a readability limit",
+    "npx prettier --check on the edited README: pass"
+  ],
+  "rationale": "Mission and critical path: this order's deliverable is documentation a cold session can navigate, so links that land at the top of a 162-line decisions file and figures that disagree with the bytes are defects in the deliverable itself, not cosmetics. Scale: five corrections inside the one file this order adds. Policy resistance: the closed reports stay immutable and no check is weakened. Commons: the shared defect is a missing check, recorded once here rather than re-diagnosed by the next reviewer. Drift: the acceptance criteria are unchanged and none depends on these links; VER-002's verdict stands on the measurement, which this reviewer reproduced independently. Escalation: no new step, hook or receipt is added by this order. Success to the successful: the generator already emits correct slugs, so the fix is to the hand-written links, not to the generator. Shifting the burden: the follow-up names paths and cases so planning can size the check instead of inheriting an unstated defect. Rule beating: the repaired links are verified by resolving them, not by asserting them. Seeking the wrong goal: the link count is not offered as evidence for any acceptance criterion. Naive Interventionism: each edit is reversible and touches no measured input, no product document and no closed report; the measurement was re-run after the edits and is unchanged. NoOp would ship three new unresolved links in a file this order creates and leave two figures contradicting the bytes beside them.",
+  "rejected": [
+    {"option": "Repair the 41 unresolved anchors across closed orders' evidence, verification and final-review reports", "reason": "Those reports are immutable records of their own subjects; rewriting them exceeds this order's scope and the reviewer's bounded cleanup."},
+    {"option": "Add an anchor-resolution check to the document suite in this order", "reason": "That is machinery, not the bounded documentation relocation this order authorizes; it needs its own order with a declared failure mode for generated and historical links."},
+    {"option": "Record the three links as a report sentence and leave them unresolved", "reason": "A defect met must be fixed within the bound or boarded up with a named follow-up; these were inside the bound."}
+  ],
+  "followup": "Planning: add a document-suite check that resolves in-repo Markdown anchors against their target headings, and decide the disposition of the 41 unresolved decision anchors already in closed reports. The generator emits correct slugs, so the check should cover hand-written links and treat immutable historical reports as declared exceptions rather than failures. Paths: scripts/test-docs or the document suite it selects, docs/evidence/WO-056, docs/evidence/WO-140, docs/final-reviews/WO-056, docs/final-reviews/WO-140. Check a correct link, a short-form link whose heading carries a title, a link to a missing file and a generated index row. Priority: prevents each new order adding unresolved links by hand; no machinery change is authorized by WO-090.",
+  "reopenWhen": "A document-suite anchor check lands and declares the historical exceptions, or a closed report is reopened for another authorized reason and can carry its own link repair."
+}
+```
+
 ## WO-090-D006 — Operator-authorized local commits refresh the planning judgment
 
 ```json
