@@ -11664,6 +11664,21 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-b66c5b4726dc9262",
+      "key": "decision:docs/evidence/WO-110/decisions.md#wo-110-d013",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "88e7c682fe4f8b53e9e44cfd7616c3a71b81fb6b13cb0bff102343a9f7fc4c2a",
+          "ref": "docs/evidence/WO-110/decisions.md#wo-110-d013--final-review-the-pr-meter-was-rendered-after-the-result-so-its-dispatch-table-is-empty-by-the-renderers-rule",
+          "title": "WO-110-D013: The reviewer procedure should run npm run release -- prepare before final-review-result, as WO-090 did, or the renderer should keep the dispatch rows of the order being published; the nex",
+          "summary": "{ \"id\": \"WO-110-D013\", \"date\": \"2026-09-20\", \"dispatch\": \"resume: final review\", \"decision\": \"Keep the meter block that scripts/lib/meta.mjs rendered at 2026-09-20T20:29:11Z in the PR body, with the order row populated and the dispatch table empty, rather than restoring the stale block release prepare wrote at 18:11 or hand-editing rows into it.\", \"evidence\": [ \"npm run release -- prepare --local after final-review-result: error: release prepare requires an unpublished, open work order; the order's phase was already closed\", \"scripts/lib/meta.mjs renderMetaTable filters dispatch rows with phase !== closed, so the empty dispatch table is the renderer's own output for a closed order\", \"The blo",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

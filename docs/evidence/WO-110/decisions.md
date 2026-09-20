@@ -386,3 +386,27 @@ result is reported with the amendment.
   "reopenWhen": "A runner is observed returning a bare null body, or local-model-transport.ts changes for any other reason."
 }
 ```
+
+## WO-110-D013 — Final review: the PR meter was rendered after the result, so its dispatch table is empty by the renderer's rule
+
+```json
+{
+  "id": "WO-110-D013",
+  "date": "2026-09-20",
+  "dispatch": "resume: final review",
+  "decision": "Keep the meter block that scripts/lib/meta.mjs rendered at 2026-09-20T20:29:11Z in the PR body, with the order row populated and the dispatch table empty, rather than restoring the stale block release prepare wrote at 18:11 or hand-editing rows into it.",
+  "evidence": [
+    "npm run release -- prepare --local after final-review-result: error: release prepare requires an unpublished, open work order; the order's phase was already closed",
+    "scripts/lib/meta.mjs renderMetaTable filters dispatch rows with phase !== closed, so the empty dispatch table is the renderer's own output for a closed order",
+    "The block release prepare wrote at 18:11:42 carried only the executor's in-flight row and predates the verification, repair and review; the 20:29 block carries the whole order: 7,158,026 ms across 5 attempts, 2,723,902 ms of gates, 16 read obligations of 121,450 bytes and one correction",
+    "WO-090's reviewer ran release prepare 37 s before its final-review-result, which is why that PR body carries dispatch rows"
+  ],
+  "rejected": [
+    {"option": "Restore the 18:11 block", "reason": "It is stale by three phases, and its executor row was in flight when it was written."},
+    {"option": "Render the dispatch rows by bypassing the closed filter", "reason": "That would publish a table the repository's renderer does not produce, which is an invented observation."},
+    {"option": "Reopen the order or repeat a transition so release prepare can run", "reason": "No transition may be repeated, and the meter is not worth a lifecycle exception."}
+  ],
+  "followup": "The reviewer procedure should run npm run release -- prepare before final-review-result, as WO-090 did, or the renderer should keep the dispatch rows of the order being published; the next order that edits the reviewer skill or scripts/lib/meta.mjs picks one.",
+  "reopenWhen": "The reviewer skill or the meter renderer changes its ordering rule."
+}
+```
