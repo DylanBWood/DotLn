@@ -17,6 +17,7 @@ const input = JSON.parse(process.argv[2]!) as {
 };
 const append = fs.appendFileSync;
 const write = fs.writeFileSync;
+const rename = fs.renameSync;
 const exists = fs.existsSync;
 const native = fs as unknown as Record<string, (...args: unknown[]) => unknown>;
 const fds = new Map<number, string>();
@@ -90,7 +91,9 @@ for (const op of [
       try {
         append(input.trace, JSON.stringify(row) + "\n");
         if (row.index === input.stop) {
-          write(input.pause, JSON.stringify(row));
+          // Existence is the parent's ready signal: publish only complete JSON.
+          write(`${input.pause}.tmp`, JSON.stringify(row));
+          rename(`${input.pause}.tmp`, input.pause);
           while (!exists(input.resume))
             Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 10);
         }
