@@ -107,8 +107,8 @@ At the 2026-09-01 Codex baseline, `.git` and a linked worktree's resolved Git
 directory remain protected even under `workspace-write`. A Codex session must
 therefore request outside-sandbox approval on the **first invocation** of every
 state-changing `npm run resume -- ...` command so its recovery checkpoint can be
-created. `status` and `times` are read-only; `next` appends no event and creates no
-checkpoint but does refresh the workspace projection. `status --json` exposes
+created. `status`, `times` and `briefing` are read-only; `next` appends no event
+and creates no checkpoint but does refresh the workspace projection. `status --json` exposes
 the same control fields for lifecycle scripts; both status forms are read-only
 and warn without rewriting if the Markdown projection is stale. Do not run a transition
 sandboxed and then retry it: the transition records even when the optional
@@ -116,7 +116,8 @@ checkpoint does not. The approval unsandboxes the whole project-controlled `npm`
 process, so first inspect the exact command, `package.json` mapping, and current
 `scripts/resume.mjs` diff, then request a one-invocation approval—never a
 persistent allow rule. The harness guide explains the warning, current Claude
-asymmetry, verification steps, and rollback.
+asymmetry, verification steps, and rollback. This paragraph is the rule's home;
+product 07 §Operator resume phrases points here since WO-090 (2026-09-20).
 
 ## Ideation breakout
 
@@ -567,6 +568,21 @@ read-only JSON observation with `recordedAt`,
 of local refs read. It refuses a needed missing or mismatched ref, never edits
 history or the projection, and never publishes checkpoint refs. Recovered
 committer dates have second precision and are not substituted into status.
+
+Control-time detail moved here from product 07 §Model-specific notes (WO-090,
+2026-09-20). Every transition since WO-028 (2026-09-04) records host UTC
+`recordedAt` at append; it is optional under schema version `1`, and old
+events are never rewritten. Timing cannot order events or grant a legal
+action, and status reports the latest completed attempt per phase with no
+recovered-time substitution. The dated
+`docs/discovery/control-event-times-2026-09-04.json` observation preserves 120
+second-precision committer times and 15 unknowns from the activation log; its
+refs remain unpushed. This public profile deliberately publishes timing, while
+stricter profiles can omit it or declare coarser public observations. WO-126
+records tokens and cost per dispatch through a separate observation channel,
+CLI usage/cost envelopes and interactive transcript counters; the collector
+preserves source, scope and unavailable values, never raw transcript text or a
+fabricated price, and the time field itself is unchanged.
 
 The raw command surface remains available for debugging. In the normal loop, the
 operator-owned shell steps are worktree start, the printed `cd`, and the Codex

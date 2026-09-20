@@ -306,6 +306,63 @@ suite or dependency install. Its egress preflight and the host's permissions
 still govern publication. Worktree cleanup follows publication as best effort;
 protected local settings or intake can block cleanup without undoing the release.
 
+## Harness version, model and effort readback
+
+These observations moved from product 07 §Model-specific notes on 2026-09-20
+(WO-090); the guide keeps the attestation contract and points here. The
+[WO-090 relocation table](evidence/WO-090/README.md#relocation-table) names
+each paragraph's origin.
+
+**Version and effort observations (WO-132, 2026-09-15).** Harness,
+version, model, effort and source are required attestation fields and are
+recorded as supplied, including `unknown`. `Effort:` recommendations accept
+`any` or a level with or without `+`; below-recommended values and missing
+version/selector/readback observations warn without refusing. CLI transports
+attempt the requested model and effort and report actual invocation failures;
+version minima and discovery gaps no longer prevent launch.
+
+`ultra` and `ultra code` normalize to `effort: xhigh`, `mode: subagents`, and
+the supplied `raw` spelling. Other labels remain as given. Codex launches in
+subagents mode do not disable multi-agent features. Accepted selectors are
+launch observations, not effective-session readback. The five existing Codex
+0.154.0 probes record low, medium, high, xhigh and max; discovery preserves
+historical observations and never acts as an admission list.
+
+Codex briefings, status and usage output report the active thread's model,
+effort and CLI version from its local session metadata. This readback is
+independent of token-counter freshness and adds no admission check. Missing or
+incomplete metadata is reported without substituting a model default. Explicit
+operator-supplied values remain operator-attested when readback is unavailable.
+Optional `--account-label` retains its public opaque-label grammar; no private
+account meaning is inferred. Reports carry exactly one normalized actor header
+matching completion flags. The control log preserves all earlier actor values;
+historical evidence is not rewritten to the new grammar. Values are single-line
+data and missing required fields remain a syntax error.
+
+**Version-line attestation (WO-126).** `npm run discover -- harness` appends
+a bounded observation of the running CLI's major.minor line and newest patch,
+plus whether Claude's effort readback channel exists. WO-132 supersedes
+its effort admission rule: all supplied labels are preserved, including
+unknown versions and efforts. Session entry warns once when the observed CLI
+leaves the recorded line. WO-042's unknown attestation remains unchanged.
+Session detection prefers the explicit harness input, then the exposed
+running executable, then a matching ancestor executable from the host process
+table. A versioned Claude installation path supplies its observed version;
+on macOS, a bare version basename is accepted only for the `CLAUDE_PID`
+process verified in that ancestor chain. An unrelated numeric process name
+supplies no version evidence
+([WO-126-D017](evidence/WO-126/decisions.md#wo-126-d017));
+when a verified Claude ancestor has an opaque process name, a bounded `lsof`
+text-mapping probe can resolve its versioned executable. A supplied PID without
+ancestry is never probed, and ambiguous or unavailable mappings supply no
+version. A successful session observation is reused on later prompts; a changed
+explicit harness-version input can replace it
+([WO-126-D021](evidence/WO-126/decisions.md#wo-126-d021)).
+An unversioned absolute Claude executable is probed directly. PATH is the
+fallback when those channels are unavailable. Only the version and channel
+are recorded, not the process paths or arguments
+([WO-126-D013](evidence/WO-126/decisions.md#wo-126-d013)).
+
 ## Authority boundary measurement — WO-136, 2026-09-17
 
 The [authority matrix](discovery/authority-boundary-2026-09-17.md) records an
@@ -782,6 +839,48 @@ successful defaults.
 | Completion and handoff | **Advisory.** H7 observed Stop callbacks but not their message visibility. Plain lifecycle commands retain their evidence/report checks, and explicit executor/fixer completion releases the identified writer. WO-146 real-command fixtures and all four live operator qualification episodes pass; release was checked after each session exited. | Stop advice is not a publication or completeness gate. |
 | Compaction continuation | **Unsupported.** No Copilot continuation adapter is qualified. The Codex adapter is not reused or relabeled. Ordinary resume/status and preserved state remain available. | No automatic continuation claim. |
 | `analysis:` and `operator override:` | **Advisory as model/terminal delivery; explicit controls available.** H1/H6 and the existing operator-control fixtures. The shared prompt handler may apply the control, but context/message delivery is unobserved; `node scripts/operator-control.mjs analysis|override|off|status` remains the explicit route. | Host permissions still decide. Override never supplies missing operator authority. |
+
+### Selected-session readback, completion and counters
+
+Moved from product 07 §Model-specific notes on 2026-09-20 (WO-090). Enter bare
+`copilot`; model and effort come from the operator's settings or in-session
+selection, not required launch arguments. Briefing, status and usage report
+`copilot-cli`, CLI version, selected model and reasoning effort from the one
+session identified by `COPILOT_AGENT_SESSION_ID`, or an explicitly supplied
+identifier verified against its log and worktree. Hook origin uses the observed
+`COPILOT_PROJECT_DIR` channel. The harness is never inferred from a Claude or
+GPT model name. Source `copilot-session-readback` is **CLI-selected metadata,
+not effective-effort proof**. `auto` without a resolved selection, null effort,
+missing metadata and a foreign worktree remain unknown with causes. Preserve
+values supplied by the operator as `operator-attested`.
+
+The ordinary completion line is
+`npm run resume -- implementation-ready --harness copilot-cli --harness-version <version> --model <id> --effort <level> --source copilot-session-readback`
+when those values came from that readback. Repair and verification use their
+existing result commands and the same actor fields. A prompt hook can record a
+dispatch without demonstrated context delivery: inspect canonical status and
+use `npm run resume -- briefing` for an already-recorded dispatch rather than
+repeat it. The explicit observation/recovery adapters remain available, and
+executor/fixer completion releases the identified Copilot writer.
+
+Counter availability is separate. Copilot shutdown totals are
+session-cumulative; individual recorded model calls may be utility requests
+only, so their scope is `observed-requests-only`, never a fabricated session
+total. AI credits use the latest valid checkpoint or shutdown `totalNanoAiu`
+divided by 1,000,000,000, with their own session-cumulative scope, source and
+cutoff; they do not establish tokens, dollars or dispatch-only cost. Missing
+credit counters, complete token readback and dollar amounts remain unknown.
+See the [dated probe](discovery/copilot-cli-2026-09-20.md), the
+[control table](#copilot-control-table) and the
+[completed operator qualification](evidence/WO-146/qualification.md): four
+bare sessions on CLI 1.0.86 / Claude Sonnet 5 / xhigh completed implementation,
+failing fresh verification, repair and passing fresh verification, with writer
+release confirmed after each exit. Permission choices varied by session; use
+the in-session status instead of inferring persistence. No personal setting is
+written by the integration. Fresh verifier sessions remain the operator's
+responsibility; cross-session memory can transfer implementer context. Final
+review, release close, built-in GitHub MCP, `/delegate`, `--remote`,
+`--fleet` and autopilot are not qualified here.
 
 ### Proposed operator settings
 

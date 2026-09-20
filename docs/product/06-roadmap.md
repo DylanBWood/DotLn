@@ -20,6 +20,16 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-090 activation completion (2026-09-20):** assigned application `v0.35.1`
+under the declared patch classification above local `v0.35.0`. Documentation
+relocation with a measurement: product 07 keeps the executor's operating
+contract, its Codex sandbox-approval paragraph and §Model-specific notes leave
+with pointers to `docs/AI-HARNESS-SECURITY.md` and the playbook, and the
+[WO-090 evidence](../evidence/WO-090/README.md) records the per-role
+directed-load totals before and after by WO-039's method. Compiler `0.17.0`,
+skeleton `0.31.0`, kernel `0.6.0` and console `0.1.7` are unchanged; no
+runtime source, dependency, schema or publication authority changes.
+
 **WO-146 collision retiming (2026-09-20):** unpublished target `v0.34.0` is superseded by `v0.35.0` under the existing minor classification because the observed release baseline is `v0.34.0`. Scope, acceptance, component versions, and published tags are unchanged by this retiming.
 
 **WO-146 release preparation (2026-09-20):** this source stages application
