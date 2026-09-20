@@ -1,0 +1,59 @@
+{
+  "startedAt": "2026-09-20T06:24:39.015Z",
+  "endedAt": "2026-09-20T06:25:38.825Z",
+  "seconds": 59.808866916999996,
+  "runs": [
+    {
+      "mode": "focused",
+      "command": "node --test --test-name-pattern='^(decisions require dispatch|only named actions and observed reopenings)' scripts/test-process-debt.mjs",
+      "seconds": 0.26513245799999996,
+      "status": 0,
+      "error": null,
+      "summary": [
+        "ℹ tests 2",
+        "ℹ pass 2",
+        "ℹ fail 0",
+        "ℹ duration_ms 237.027792"
+      ]
+    },
+    {
+      "mode": "full",
+      "command": "node --test scripts/test-process-debt.mjs",
+      "seconds": 59.009737208,
+      "status": 0,
+      "error": null,
+      "summary": [
+        "ℹ tests 79",
+        "ℹ pass 79",
+        "ℹ fail 0",
+        "ℹ duration_ms 58981.234625"
+      ]
+    },
+    {
+      "mode": "focused",
+      "command": "node --test --test-name-pattern='^(decisions require dispatch|only named actions and observed reopenings)' scripts/test-process-debt.mjs",
+      "seconds": 0.2680353329999998,
+      "status": 0,
+      "error": null,
+      "summary": [
+        "ℹ tests 2",
+        "ℹ pass 2",
+        "ℹ fail 0",
+        "ℹ duration_ms 238.999667"
+      ]
+    },
+    {
+      "mode": "focused",
+      "command": "node --test --test-name-pattern='^(decisions require dispatch|only named actions and observed reopenings)' scripts/test-process-debt.mjs",
+      "seconds": 0.2647569999999978,
+      "status": 0,
+      "error": null,
+      "summary": [
+        "ℹ tests 2",
+        "ℹ pass 2",
+        "ℹ fail 0",
+        "ℹ duration_ms 236.904333"
+      ]
+    }
+  ]
+}

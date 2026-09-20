@@ -1096,6 +1096,29 @@ count and age of defects that were boarded up and not repaired, which the
 follow-up register now records as deferred rows with reopening conditions.
 Recorded as a candidate signal, unselected.
 
+**First economy trial implemented, 2026-09-20 (WO-145).** The optional
+`tinkerer-economy` support uses the existing Contributor support switches and
+is off by default. Equipped, it adds one executor paragraph: pre-register at
+most one in-scope experiment per order, including its deciding observation,
+and run or decline within 900 s including preparation and recording. The
+existing decisions generator validates `kind: experiment`, measured cost,
+commands for the effect, outcome and reopening condition. Unknown token or
+per-order effects remain null; regressions can be recorded as negative savings.
+It adds no authority, hook, agent or recurring check.
+
+The operator selected WO-145, WO-110 and WO-099 as the three trials; the
+[trial record and reading](../evidence/WO-145/decisions.md#wo-145-d001)
+name each record and the fixed decision rule after the third. WO-145's
+scripts-side comparison adopted a faster development test selection, with
+the full integration checks retained; savings per future order remain
+unknown. Default equipment is still unproven. The thirteen aspects attributed
+to _Zen and the Art of Motorcycle Maintenance_ in the allocated order and
+[source register](../lineage/inspirations.md) are unity, vividness, authority,
+economy, sensitivity, clarity, emphasis, flow, suspense, brilliance, precision,
+proportion and depth. Economy is first; each other aspect needs a measure
+before selection. The adaptive modifier and broken-window pressure signal
+remain open, with the third trial's record as the reopening observation.
+
 Operator ideation during WO-126 proposes a support that biases a linked mechanic
 toward a small experiment on a relevant question, input, proposed answer or
 response. The names Tinkerer and Scientist remain alternatives. The motivating

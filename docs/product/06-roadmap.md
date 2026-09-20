@@ -20,6 +20,15 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-145 activation completion (2026-09-20):** assigned application `v0.34.0`
+under its minor classification above local `v0.33.2`. Skeleton `0.30.0` adds
+the optional, default-off economy experiment support through the existing
+Contributor switches; repository scripts validate experiment decisions.
+Compiler `0.16.0`, kernel `0.6.0` and console `0.1.7` retain their versions;
+the console dependency pin follows skeleton. No new dependency or publication
+authority is added. The [trial decisions](../evidence/WO-145/decisions.md)
+record the first result, later trials WO-110 and WO-099, and the reopening rule.
+
 **WO-056 activation completion (2026-09-20):** assigned application `v0.33.2`
 under the declared patch classification above local `v0.33.1`. The order was
 an evidence record until the operator's 2026-09-20 scope expansion added two
