@@ -369,3 +369,33 @@ counters for this session are unknown for the reason in §12.
   profile's version warning fires and the operator decides on a re-probe.
 - The operator wants Copilot for final review or release close: a separate
   qualification order.
+
+## 15. Independent review
+
+Receipt
+[2026-09-20-planning-1a0fb634704921a3-020](refutations/2026-09-20-planning-1a0fb634704921a3-020.md):
+one fresh background reviewer, given only the canonical prompt, judged the
+committed subject at `cd38fa37`. Pass scope; the helper selected WO-146, the
+sequence and WO-142, and carried 92 verdicts by hash. Verdict
+`aligned-with-findings` for both orders and the plan; no hold. Dispatch to file
+took 1,375 s, observed, with no pass-budget refusal. The reviewer disclosed
+that one of its reads was refused by the live-gate guard while this pass ran
+the document gate early, and that it waited and repeated the read.
+
+WO-146's eleven known issues are carried into the map's catalog row for the
+executor's decisions. The ones that change how the order should be run: an
+erroring handler denies every call under a fail-closed host, so the handler's
+behavior on an undecodable payload needs its own decision and fixture; a cell
+may say "holds under `--allow-all-tools`" only from a launch that carried the
+flag; labels are dated to the probed version and need a stated reading when
+the installed version moves; a Copilot row must not fail a check for orders
+that do not touch Copilot; and if the probe selects a native registration or
+leaves most rows unsupported or untested, the additions are restated before
+the rest proceeds. The reviewer also records that the order unblocks no
+critical-path gate and that its NoOp cost is unknown and may be zero; §7 and
+§11 say the same, and the map's row now says it must not make a critical-path
+order wait.
+
+WO-142 is closed; its ten known issues stay in the receipt. One is a plain
+staleness worth a reader's attention: its criterion 4 lists four refusals and
+the tree now has five.
