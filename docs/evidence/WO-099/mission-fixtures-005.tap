@@ -1,0 +1,122 @@
+TAP version 13
+# Subtest: WO-099 the four verdicts: out-of-surface drift, mid-episode clause change, on-contract pass, unavailable verifier
+ok 1 - WO-099 the four verdicts: out-of-surface drift, mid-episode clause change, on-contract pass, unavailable verifier
+  ---
+  duration_ms: 255.685334
+  type: 'test'
+  ...
+# on-mission, host-proved drift, mid-episode clause drift, unavailable, unsupported and model drift
+# Subtest: WO-099 a drift holds unattended dispatch, records the correction, and a human answer clears it
+ok 2 - WO-099 a drift holds unattended dispatch, records the correction, and a human answer clears it
+  ---
+  duration_ms: 533.475583
+  type: 'test'
+  ...
+# drift held, correction recorded, work refused once, human answer released it
+# Subtest: WO-099 an unavailable verifier holds, and only a passing judgment over changed work clears the hold
+ok 3 - WO-099 an unavailable verifier holds, and only a passing judgment over changed work clears the hold
+  ---
+  duration_ms: 498.199791
+  type: 'test'
+  ...
+# unavailable verifier held without a correction; only a passing judgment over changed work cleared it
+# Subtest: WO-099 the check itself stays armed while it holds the work, and the Contributor build declares the cadence
+ok 4 - WO-099 the check itself stays armed while it holds the work, and the Contributor build declares the cadence
+  ---
+  duration_ms: 87.863333
+  type: 'test'
+  ...
+# Contributor cadence declared read-only at 900 s, NoOp without the adapter
+# Subtest: WO-099 VER-001 F1: the cadence judges changed work, and its fresh pass clears the hold
+ok 5 - WO-099 VER-001 F1: the cadence judges changed work, and its fresh pass clears the hold
+  ---
+  duration_ms: 456.19875
+  type: 'test'
+  ...
+# the cadence reached the judge with the repaired capsule and retired the hold without a human
+# Subtest: WO-099 VER-001 F2: the capsule carries untracked work, names what it cannot carry, and refuses past its bounds
+ok 6 - WO-099 VER-001 F2: the capsule carries untracked work, names what it cannot carry, and refuses past its bounds
+  ---
+  duration_ms: 332.815666
+  type: 'test'
+  ...
+# untracked drift judged, 400th path named, 401st refused, oversized text named and unknown, clause change past 4000 bytes observable
+# Subtest: WO-099 VER-004 F1: ignored work is redacted, bounded and judged beside an unignored control
+ok 7 - WO-099 VER-004 F1: ignored work is redacted, bounded and judged beside an unignored control
+  ---
+  duration_ms: 258.6645
+  type: 'test'
+  ...
+# two ignored out-of-surface changes drift by opaque evidence; baseline ignored output stays absent; the unignored control names both paths
+# Subtest: WO-099 VER-005 F1: ordinary build residue under a baselined ignored root leaves the cadence quiet
+ok 8 - WO-099 VER-005 F1: ordinary build residue under a baselined ignored root leaves the cadence quiet
+  ---
+  duration_ms: 237.356291
+  type: 'test'
+  ...
+# one ordinary build leaves two pulses quiet; a planted ignored file, a rewritten baselined ignored file and a removed baselined root still drift; the collapsed-root interior is the disclosed limit
+# Subtest: WO-099 VER-005 F1: an ordinary build during the cadence raises no hold
+ok 9 - WO-099 VER-005 F1: an ordinary build during the cadence raises no hold
+  ---
+  duration_ms: 444.777375
+  type: 'test'
+  ...
+# two pulses across an ordinary build leave the cadence unheld with no correction event
+# Subtest: WO-099 VER-002 F1: a failed verifier cannot erase the drift the capsule already proved
+ok 10 - WO-099 VER-002 F1: a failed verifier cannot erase the drift the capsule already proved
+  ---
+  duration_ms: 656.853458
+  type: 'test'
+  ...
+# an unavailable and an invalid verifier both held the host-proved drift with its finding and correction
+# Subtest: WO-099 VER-002 F2: the capsule carries links as links and reads nothing outside the worktree
+ok 11 - WO-099 VER-002 F2: the capsule carries links as links and reads nothing outside the worktree
+  ---
+  duration_ms: 162.539334
+  type: 'test'
+  ...
+# inside and outside-surface links carried as links, outside bytes absent, linked declared source refused, oversized file omitted unread
+# Subtest: WO-099 VER-003 F1: the host's own findings readmit at the capsule's bounds, and the judge's bound counts only what it adds
+ok 12 - WO-099 VER-003 F1: the host's own findings readmit at the capsule's bounds, and the judge's bound counts only what it adds
+  ---
+  duration_ms: 159.74325
+  type: 'test'
+  ...
+# 203 host findings readmitted with a bounded reason; the judge's 100 counted beyond them; repeated host proof keeps the host reason
+# Subtest: WO-099 VER-003 F1: the resident records the hold for every host finding at the path bound, whether or not the judge answered
+ok 13 - WO-099 VER-003 F1: the resident records the hold for every host finding at the path bound, whether or not the judge answered
+  ---
+  duration_ms: 902.573084
+  type: 'test'
+  ...
+# 400 host findings held and corrected through the resident with an answering and an unavailable judge
+# Subtest: WO-099 VER-003 F1: a judgment the actor contract refuses is recorded as the failed episode with its capsule, and the proved drift still holds
+ok 14 - WO-099 VER-003 F1: a judgment the actor contract refuses is recorded as the failed episode with its capsule, and the proved drift still holds
+  ---
+  duration_ms: 292.510375
+  type: 'test'
+  ...
+# refused judgment recorded as invalid-result with its capsule; the host-proved drift held
+# Subtest: WO-099 VER-003 F2: a decision history that exists but cannot be carried is named and holds; the declared window is honored, including zero
+ok 15 - WO-099 VER-003 F2: a decision history that exists but cannot be carried is named and holds; the declared window is honored, including zero
+  ---
+  duration_ms: 253.565708
+  type: 'test'
+  ...
+# window 0/1/N honored; absent history whole; oversized and linked histories named, unknown and byte-free
+# Subtest: WO-099 VER-003 F2: the resident holds a claimed pass over a history it could not carry
+ok 16 - WO-099 VER-003 F2: the resident holds a claimed pass over a history it could not carry
+  ---
+  duration_ms: 297.102166
+  type: 'test'
+  ...
+# claimed pass over an uncarried history recorded as unknown and held, with no correction
+1..16
+# tests 16
+# suites 0
+# pass 16
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5890.054
