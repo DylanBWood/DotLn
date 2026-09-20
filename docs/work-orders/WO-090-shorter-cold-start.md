@@ -1,4 +1,4 @@
-# WO-090 — Shorter cold start: the execution guide keeps the executor's operating contract, the model-specific and sandbox paragraphs move with pointers, and the directed-load total per role is measured lower (version assigned at activation)
+# WO-090 — Shorter cold start: the execution guide keeps the executor's operating contract, the model-specific and sandbox paragraphs move with pointers, and the directed-load total per role is measured lower (v0.35.1)
 
 **Cost:** adds no step, check, hook or receipt; adds pointers where
 paragraphs leave the guide. Removes context bytes from every role's directed
