@@ -46,6 +46,7 @@ import {
 import {
   ClaudeCliPrintWorkOrderTransport,
   CodexCliExecWorkOrderTransport,
+  canonicalWorkerArgs,
   runWorkerProcess,
   type ProcessRunner,
   type WorkerLaunch,
@@ -774,6 +775,25 @@ test("WO-010 expired authority or lease quarantines acceptance and replay remain
     Date.now = priorNow;
     Math.random = priorRandom;
   }
+});
+
+test("WO-056 the legacy verification profile launches Codex inside its Git worktree, without the repository-check skip", () => {
+  const request = requestFor();
+  assert.equal(request.profile.profileId, "verification-snapshot-v1");
+  const codex = canonicalWorkerArgs(
+    "codex-cli-exec",
+    request,
+    "/schema.json",
+    "0.155.1",
+  );
+  assert.deepEqual(codex.slice(0, 2), ["exec", "--ephemeral"]);
+  assert.ok(!codex.includes("--skip-git-repo-check"));
+  // Its reproduction steps are not host commands and stay free text.
+  assert.deepEqual(
+    (evidenceResultSchema(request) as any).properties.findings.items.properties
+      .reproductionSteps.items,
+    { type: "string" },
+  );
 });
 
 test("WO-142 B7 result schema, prompt and bounded rejection agree on summary length", () => {

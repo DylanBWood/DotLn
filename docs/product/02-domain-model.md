@@ -1026,6 +1026,27 @@ success. Fixture doubles exercise real scratch Git commits, confined host tests,
 replay and host kills. A live repair/verifier loop remains WO-056; this mechanism
 retains WO-052/054's trusted-host and snapshot-confinement limits.
 
+WO-056 (operator scope expansion, 2026-09-20) states the finding contract to
+the verifier without changing it. The first live verifier returned a
+substantively correct blocking finding whose `observed` and `expected`
+described the defect, and admission refused it: until then only doubles that
+copy the host's strings had exercised the rule. `evidenceResultSchema` now
+limits a finding's `observed` and `expected` to the strings of the adverse
+(`fail`) host witnesses and, in the `worktree-snapshot` profile, its
+`reproductionSteps` to those witnesses' steps and the exact named commands. The
+verifier's output instructions state both rules and direct its own diagnosis to
+the envelope summary. With no adverse witness the fields stay free text, and
+legacy-profile steps are never constrained. The admission and derivation rules
+above are unchanged, so a finding still restates a host observation and model
+prose still cannot stand in for one. The verifier's diagnosis has no durable
+field beyond that 320-character summary; whether findings should carry one is
+an open planning question. The Codex transport passes `--skip-git-repo-check`
+for the `worktree-snapshot` profile only, because its sealed read mount is a
+files-only copy without Git metadata; every other launch vector keeps its bytes.
+On the repaired runtime both harnesses completed the live loop once each
+([WO-056 evidence](../evidence/WO-056/README.md)): finding, first-round repair
+confined to the blamed module, and re-verification from the original contract.
+
 ## Memory and observation
 
 | Term                    | Meaning                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |

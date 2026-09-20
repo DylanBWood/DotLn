@@ -165,6 +165,8 @@ test("WO-009 AC6 canonical launch shapes pin model, settings, memory, persistenc
   assert.ok(b.includes("memories.use_memories=false"));
   assert.ok(b.includes("memories.generate_memories=false"));
   assert.ok(!b.includes("--effort"));
+  // Inspection runs inside a Git worktree; only a files-only snapshot skips the check.
+  assert.ok(!b.includes("--skip-git-repo-check"));
   for (const disabled of [
     "apps",
     "plugins",

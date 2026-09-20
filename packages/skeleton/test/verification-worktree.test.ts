@@ -28,16 +28,21 @@ import {
   prepareWorktreeVerification,
 } from "../src/verification-worktree.js";
 import {
+  evidenceResultSchema,
   parseEvidenceResult,
   transportPrompt,
   validateTransportRequest,
+  type VerificationWorkerResult,
 } from "../src/verification-protocol.js";
+import { deriveRepairOrder } from "../src/repair.js";
+import { canonicalWorkerArgs } from "../src/worker-transport.js";
 import { projectAcceptanceEvidenceMatrices } from "../src/verification.js";
 import { fixtureGit } from "./source-change-fixture.js";
 import {
   openSnapshotDriver,
   snapshotCriteria,
   snapshotResult,
+  snapshotTests,
   snapshotTransport,
   sourceSnapshotFixture,
 } from "./verification-worktree-fixture.js";
@@ -468,4 +473,164 @@ test("WO-054 unavailable commands never pass and a named test cannot rewrite its
     readFileSync(join(repo, "change.cjs"), "utf8"),
     "require('node:fs').writeFileSync('change.cjs','changed input');\n",
   );
+});
+
+test("WO-056 verifier schema, instructions and admission agree on the finding contract", () => {
+  const { store, host } = openSnapshotDriver(fixture, "finding-contract");
+  try {
+    const request = host.preflight(
+      fixture.prepared.snapshotPath,
+      "synthetic",
+      "unknown",
+    ).request;
+    const evidence = request.capsule.subject.evidence;
+    const adverse = evidence.filter((entry) => entry.outcome === "fail");
+    const passing = evidence.filter((entry) => entry.outcome === "pass");
+    assert.equal(adverse.length, 1);
+    assert.equal(passing.length, 1);
+    const properties = (schema: object) =>
+      (schema as any).properties.findings.items.properties;
+    const stated = properties(evidenceResultSchema(request));
+    assert.deepEqual(stated.observed.enum, ["exit 1"]);
+    assert.deepEqual(stated.expected.enum, ["exit 0"]);
+    assert.deepEqual(stated.reproductionSteps.items.enum, [
+      ...adverse[0]!.reproductionSteps,
+      ...snapshotTests.map((item) => item.command),
+    ]);
+    assert.ok(
+      !stated.reproductionSteps.items.enum.includes(
+        passing[0]!.reproductionSteps[0],
+      ),
+    );
+    const instructions = JSON.parse(
+      transportPrompt(request),
+    ).outputInstructions;
+    assert.match(
+      instructions,
+      /copy observed and expected verbatim from that witness/,
+    );
+    assert.match(instructions, /contract's exact named commands/);
+    assert.match(instructions, /summary to at most 320 characters/);
+
+    // A finding drawn only from the stated values is admitted and derives a repair.
+    const drawn = parseEvidenceResult(
+      snapshotResult(request),
+      request,
+    ) as VerificationWorkerResult;
+    const finding = drawn.findings[0]!;
+    assert.ok(stated.observed.enum.includes(finding.observed));
+    assert.ok(stated.expected.enum.includes(finding.expected));
+    assert.ok(
+      finding.reproductionSteps.every((step) =>
+        stated.reproductionSteps.items.enum.includes(step),
+      ),
+    );
+    const original = {
+      workOrder: fixture.source.options.workOrder,
+      authorityEnvelope: fixture.source.options.authorityEnvelope,
+      surfaces: snapshotCriteria[0]!.codeSurfaces,
+      tests: snapshotTests,
+      criteria: snapshotCriteria,
+      subject: fixture.prepared.subject,
+      round: 0,
+    };
+    assert.equal(deriveRepairOrder(finding, original).kind, "derived");
+    for (const command of snapshotTests.map((item) => item.command))
+      assert.equal(
+        deriveRepairOrder(
+          { ...finding, reproductionSteps: [command] },
+          original,
+        ).kind,
+        "derived",
+      );
+
+    // The shape a live verifier returned on 2026-09-20: correct in substance,
+    // outside the stated values, and refused by the unchanged admission rule.
+    const described = "node contract-test.mjs exited 1: the marker is missing.";
+    assert.ok(!stated.observed.enum.includes(described));
+    assert.throws(
+      () =>
+        parseEvidenceResult(
+          {
+            ...drawn,
+            findings: [{ ...finding, observed: described }],
+          },
+          request,
+        ),
+      /finding observed versus expected/u,
+    );
+    const paraphrase = "Observe exit code 1 for the contract test.";
+    assert.ok(!stated.reproductionSteps.items.enum.includes(paraphrase));
+    const refused = deriveRepairOrder(
+      {
+        ...finding,
+        reproductionSteps: [...finding.reproductionSteps, paraphrase],
+      },
+      original,
+    );
+    assert.equal(refused.kind, "NeedsHuman");
+    assert.equal(
+      refused.kind === "NeedsHuman" && refused.offending,
+      paraphrase,
+    );
+
+    // No adverse witness means no finding to constrain, and never an empty enum;
+    // the legacy profile's steps are not host commands and stay free text.
+    const clean = structuredClone(request) as any;
+    for (const entry of clean.capsule.subject.evidence) entry.outcome = "pass";
+    assert.deepEqual(properties(evidenceResultSchema(clean)).observed, {
+      type: "string",
+    });
+    const legacy = structuredClone(request) as any;
+    delete legacy.capsule.subject.snapshot;
+    assert.deepEqual(
+      properties(evidenceResultSchema(legacy)).reproductionSteps.items,
+      { type: "string" },
+    );
+    assert.deepEqual(properties(evidenceResultSchema(legacy)).observed.enum, [
+      "exit 1",
+    ]);
+  } finally {
+    store.release();
+  }
+});
+
+test("WO-056 Codex launches a verifier in the files-only snapshot and every other shape keeps its bytes", () => {
+  const { store, host } = openSnapshotDriver(fixture, "codex-launch");
+  try {
+    const request = host.preflight(
+      fixture.prepared.snapshotPath,
+      "synthetic",
+      "unknown",
+    ).request;
+    assert.equal(request.profile.profileId, "worktree-snapshot");
+    // The read mount carries no Git metadata, which Codex refuses by default.
+    assert.ok(!existsSync(join(fixture.prepared.snapshotPath, ".git")));
+    const codex = canonicalWorkerArgs(
+      "codex-cli-exec",
+      request,
+      "/schema.json",
+      "0.155.1",
+    );
+    assert.deepEqual(codex.slice(0, 3), [
+      "exec",
+      "--skip-git-repo-check",
+      "--ephemeral",
+    ]);
+    // The flag is the only difference the profile makes to the vector. The
+    // legacy profile's own vector is pinned in verification.test.ts.
+    assert.equal(
+      codex.filter((argument) => argument === "--skip-git-repo-check").length,
+      1,
+    );
+    assert.ok(
+      !canonicalWorkerArgs(
+        "claude-cli-print",
+        request,
+        "/schema.json",
+      ).includes("--skip-git-repo-check"),
+    );
+  } finally {
+    store.release();
+  }
 });

@@ -351,7 +351,30 @@ const schemaObject = (properties: Record<string, unknown>): object => ({
 });
 const schemaText = { type: "string" };
 const schemaTexts = { type: "array", items: schemaText };
+const schemaOneOf = (values: readonly string[]): object =>
+  values.length > 0
+    ? { ...schemaText, enum: [...new Set(values)] }
+    : schemaText;
+
+/** The strings admission and repair derivation already require of a finding.
+ * A live verifier cannot guess them, so its schema and instructions state them. */
+function findingContract(request: EvidenceWorkerRequest) {
+  const { evidence, snapshot } = request.capsule.subject;
+  const adverse = evidence.filter((entry) => entry.outcome === "fail");
+  return {
+    observed: adverse.map((entry) => entry.observed),
+    expected: adverse.map((entry) => entry.expected),
+    // Only the worktree-snapshot profile turns steps into host-run commands.
+    reproductionSteps: snapshot
+      ? [
+          ...adverse.flatMap((entry) => entry.reproductionSteps),
+          ...snapshot.tests.map((test) => test.command),
+        ]
+      : [],
+  };
+}
 export function evidenceResultSchema(request: EvidenceWorkerRequest): object {
+  const contract = findingContract(request);
   const common = {
     kind: {
       ...schemaText,
@@ -398,9 +421,12 @@ export function evidenceResultSchema(request: EvidenceWorkerRequest): object {
               findingId: schemaText,
               criterionId: schemaText,
               severity: { ...schemaText, enum: ["blocking", "major", "minor"] },
-              observed: schemaText,
-              expected: schemaText,
-              reproductionSteps: schemaTexts,
+              observed: schemaOneOf(contract.observed),
+              expected: schemaOneOf(contract.expected),
+              reproductionSteps: {
+                type: "array",
+                items: schemaOneOf(contract.reproductionSteps),
+              },
               evidenceRefs: schemaTexts,
               likelySurface: schemaTexts,
             }),
@@ -478,7 +504,11 @@ export function transportPrompt(request: TransportRequest): string {
     resultId: resultId(request.command),
     outputInstructions:
       request.capsule.role === "verifier"
-        ? "Independently assess each criterion using the pinned diff, repository snapshot and host witnesses. This is the complete read mount projection; no tools or other context are granted. Preserve evidence source labels. A pass requires every required check, matching claim type and source, with no adverse witness. Missing or unavailable evidence is unverified. Emit full findings for failures, blocking when repair is required. Keep envelope.summary to at most 320 characters. Return only the schema object; completion means this evaluation finished, never implementation success."
+        ? `Independently assess each criterion using the pinned diff, repository snapshot and host witnesses. This is the complete read mount projection; no tools or other context are granted. Preserve evidence source labels. A pass requires every required check, matching claim type and source, with no adverse witness. Missing or unavailable evidence is unverified. Emit full findings for failures, blocking when repair is required. A finding restates host evidence: reference the failing witness in evidenceRefs, which must also appear in that criterion's evaluation, and copy observed and expected verbatim from that witness; keep likelySurface within the criterion's codeSurfaces.${
+            request.capsule.subject.snapshot
+              ? " Each reproduction step must be that witness's reproduction step copied verbatim or one of the contract's exact named commands; the host runs them and interprets no prose."
+              : ""
+          } Put your own diagnosis in envelope.summary. Keep envelope.summary to at most 320 characters. Return only the schema object; completion means this evaluation finished, never implementation success.`
         : "Propose replacement contents only for the blocking finding's likely surfaces in the pinned repository snapshot. Keep the repair focused. No file writes or other tools are granted; the host applies a validated proposal in its synthetic fixture and dispatches a fresh blinded verifier. Keep envelope.summary to at most 320 characters. Return only the schema object. You cannot certify acceptance.",
   });
 }

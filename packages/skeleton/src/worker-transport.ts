@@ -35,6 +35,7 @@ import {
   validateTransportRequest,
   transportPrompt,
   transportResultSchema,
+  isEvidenceRequest,
   isPlanRequest,
   type TransportRequest,
   type TransportResultFor,
@@ -304,6 +305,13 @@ export function canonicalWorkerArgs(
     );
   return [
     "exec",
+    // The worktree-snapshot read mount is a files-only copy without Git
+    // metadata, which Codex refuses unless told to skip its repository check.
+    // Every other shape runs inside a Git worktree and keeps its exact bytes.
+    ...(isEvidenceRequest(request) &&
+    request.profile.profileId === "worktree-snapshot"
+      ? ["--skip-git-repo-check"]
+      : []),
     "--ephemeral",
     "--ignore-user-config",
     "--strict-config",
