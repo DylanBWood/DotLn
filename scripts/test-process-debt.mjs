@@ -3770,6 +3770,156 @@ test("meter diff bytes include newly authored untracked source", (t) => {
   );
 });
 
+test("WO-145 optional economy support preserves released role bytes off and changes only executor instructions on", () => {
+  const baseline = JSON.parse(
+    readFileSync(
+      join(source, "packages/skeleton/fixtures/wo145-role-baseline.json"),
+      "utf8",
+    ),
+  );
+  const off = harnessInstallation();
+  const explicitOff = harnessInstallation({
+    supports: { "tinkerer-economy": false },
+  });
+  const on = harnessInstallation({ supports: { "tinkerer-economy": true } });
+  const withoutOrigin = (text) => text.replace(/^<!-- Origin: .* -->\n/m, "");
+  const roles = off.files.filter((file) => file.path.endsWith("/SKILL.md"));
+  assert.equal(roles.length, Object.keys(baseline.roles).length);
+  for (const file of roles) {
+    assert.equal(
+      createHash("sha256").update(file.contents).digest("hex"),
+      baseline.roles[file.path],
+      file.path,
+    );
+    assert.equal(
+      explicitOff.files.find((row) => row.path === file.path).contents,
+      file.contents,
+    );
+    const equipped = on.files.find((row) => row.path === file.path);
+    if (file.path.endsWith("dotln-executor/SKILL.md")) {
+      assert.match(
+        equipped.contents,
+        /Tinkerer — Economy: Before implementation/,
+      );
+      assert.match(
+        equipped.contents,
+        /at most 900 s including preparation and recording/,
+      );
+      assert.match(equipped.contents, /decline with a reason/);
+      assert.match(equipped.contents, /do not start a second one/);
+      assert.equal(
+        equipped.contents.split("Tinkerer — Economy:").length - 1,
+        1,
+      );
+    } else {
+      // Origin identifies the whole equipped loadout in the existing compiler;
+      // changing equipment must change that hash even for untouched role prose.
+      assert.equal(
+        withoutOrigin(equipped.contents),
+        withoutOrigin(file.contents),
+        file.path,
+      );
+    }
+  }
+  for (const [index, bundle] of on.bundles.entries()) {
+    const manifest = bundle.manifest;
+    assert.ok(JSON.stringify(manifest).includes("tinkerer-economy"));
+    assert.ok(
+      !JSON.stringify(off.bundles[index].manifest).includes("tinkerer-economy"),
+    );
+    const executor = bundle.files.find((file) =>
+      file.path.endsWith("dotln-executor/SKILL.md"),
+    );
+    assert.ok(executor.origin.ids.includes("tinkerer-economy"));
+  }
+});
+
+test("WO-145 experiment decisions retain measured costs, signed effects and unknowns and refuse unsupported evidence", (t) => {
+  const root = repo(t);
+  const record = {
+    id: "WO-999-D001",
+    kind: "experiment",
+    date: "2026-09-20",
+    dispatch: "Synthetic executor trial",
+    decision: "Keep the current method",
+    evidence: ["fixture"],
+    rejected: [],
+    reopenWhen: "A cheaper method preserves the outcome",
+    question: "Does the alternative save time?",
+    alternatives: ["current", "alternative"],
+    observation: "Same passing checks and a shorter duration",
+    budget: { wallSeconds: 900 },
+    execution: "run",
+    cost: {
+      wallSeconds: 2,
+      tokens: null,
+      commands: ["node fixture.mjs"],
+      source: "fixture elapsed timer",
+    },
+    effect: {
+      wallSecondsPerOrder: -1,
+      tokensPerOrder: null,
+      commands: ["node fixture.mjs"],
+      summary: "Alternative was slower",
+    },
+    outcome: "kept-current",
+    regression: true,
+    history: { lastAdoptedImprovementAt: null, experimentsSinceAdoption: null },
+  };
+  const save = (value) =>
+    write(
+      root,
+      "docs/evidence/WO-999/decisions.md",
+      "# Experiment\n\n```json\n" + json(value) + "```\n",
+    );
+  for (const outcome of ["adopted", "kept-current", "inconclusive"]) {
+    save({ ...record, outcome });
+    assert.equal(readDecisions(root)[0].outcome, outcome);
+    writeDecisionsIndex(root);
+    writeDecisionsIndex(root, { check: true });
+  }
+  save({
+    ...record,
+    execution: "declined",
+    reason: "No worthwhile in-scope alternative",
+  });
+  assert.equal(readDecisions(root)[0].execution, "declined");
+  for (const change of [
+    { question: "" },
+    { alternatives: ["current"] },
+    { observation: "" },
+    { outcome: "success" },
+    { execution: "declined" },
+    { execution: "declined", reason: "expensive", outcome: "adopted" },
+    { budget: { wallSeconds: 901 } },
+    { budget: { wallSeconds: 0 } },
+    { cost: undefined },
+    { cost: { ...record.cost, wallSeconds: null } },
+    { cost: { ...record.cost, wallSeconds: -1 } },
+    { cost: { ...record.cost, wallSeconds: 901 } },
+    { cost: { ...record.cost, tokens: "unknown" } },
+    { cost: { ...record.cost, commands: [] } },
+    { cost: { ...record.cost, source: "" } },
+    { effect: undefined },
+    { effect: { ...record.effect, commands: [] } },
+    { effect: { ...record.effect, commands: [" "] } },
+    { effect: { ...record.effect, summary: "" } },
+    { effect: { ...record.effect, tokensPerOrder: "unknown" } },
+    { history: undefined },
+    { regression: undefined },
+    { history: { ...record.history, experimentsSinceAdoption: -1 } },
+  ]) {
+    save({ ...record, ...change });
+    assert.throws(
+      () => readDecisions(root),
+      /experiment/,
+      JSON.stringify(change),
+    );
+  }
+  save({ ...record, reopenWhen: null });
+  assert.throws(() => readDecisions(root), /reopening condition/);
+});
+
 test("decisions require dispatch and reopening source, substitute inherited ledger duties and surface worsening traps", (t) => {
   const root = repo(t),
     ledger = "# Existing operator ideas\nOriginal bytes\n";

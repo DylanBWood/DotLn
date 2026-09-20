@@ -1,6 +1,12 @@
 import type { SupportFacet } from "@dotln/compiler";
 import { promptSupport } from "./prompt-support.js";
 
+export const tinkererEconomy = promptSupport(
+  "tinkerer-economy",
+  "Tinkerer — Economy",
+  "Tinkerer — Economy: Before implementation on next or fix, name at most one economy opportunity per order, within the order's existing authority. State the question, credible alternatives, deciding observation and a wall-clock budget at most 900 s including preparation and recording; run within it or decline with a reason. Record one kind: experiment decision in docs/evidence/WO-NNN/decisions.md with question, alternatives, observation, budget.wallSeconds, execution (run or declined), cost (measured wallSeconds, tokens or null, commands and source), effect (wallSecondsPerOrder and tokensPerOrder or null, commands and summary), outcome (adopted, kept-current or inconclusive) and reopenWhen. Declining uses kept-current and a reason; keeping the current method is valid. Include regression (true, false or unknown) and history (lastAdoptedImprovementAt or null, experimentsSinceAdoption or null); a probe alone is not an improvement. Read an existing experiment before repair; do not start a second one. No new authority, gate, agent or adaptive schedule is granted. See WO-145's decisions for trial selection and the reading after three orders.",
+);
+
 export const adjacentRepair: SupportFacet = {
   ...promptSupport(
     "adjacent-repair",
@@ -70,6 +76,7 @@ export const executorSupports: readonly SupportFacet[] = [
   observation,
   recommendation,
   intentToAct,
+  tinkererEconomy,
 ];
 export const executorSupportDefaults = {
   "adjacent-repair": true,
@@ -79,6 +86,7 @@ export const executorSupportDefaults = {
   "communication-observation": false,
   "communication-recommendation": false,
   "communication-intent": true,
+  "tinkerer-economy": false,
 } as const;
 export const defaultExecutorSupportIds: readonly string[] = Object.entries(
   executorSupportDefaults,

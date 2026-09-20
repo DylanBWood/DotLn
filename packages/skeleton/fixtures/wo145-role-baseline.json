@@ -1,0 +1,18 @@
+{
+  "release": "v0.33.2",
+  "method": "SHA-256 of generated role bytes from the preceding release; runtime identities are not role prose.",
+  "roles": {
+    ".agents/skills/dotln-executor/SKILL.md": "07ecd79397532cb0924e7eaaff325e2e6c66ff76623593b2069730d590dc9aa4",
+    ".agents/skills/dotln-planner/SKILL.md": "ace7d7b9efcc788531865303ec38ad633d9f5b8e739fc5f79415903e4c1000d6",
+    ".agents/skills/dotln-refuter/SKILL.md": "7c3c7cdf53d4453c679d643bdd447df9d82aca33bc3b8141885fbcba51a330ad",
+    ".agents/skills/dotln-release-close/SKILL.md": "001240fc040bb65dc419eb185a016ea7ca73ee061109ee3132744a55090bdb82",
+    ".agents/skills/dotln-reviewer/SKILL.md": "605b0a64b22b0ef09976f64679e8da800224703cbe971e334094aa2a4e009ea1",
+    ".agents/skills/dotln-verifier/SKILL.md": "1e46f150edbc144d687edb8125cbdf3a3a747c055d00346c6903003a46902bcf",
+    ".claude/skills/dotln-executor/SKILL.md": "07ecd79397532cb0924e7eaaff325e2e6c66ff76623593b2069730d590dc9aa4",
+    ".claude/skills/dotln-planner/SKILL.md": "ace7d7b9efcc788531865303ec38ad633d9f5b8e739fc5f79415903e4c1000d6",
+    ".claude/skills/dotln-refuter/SKILL.md": "7c3c7cdf53d4453c679d643bdd447df9d82aca33bc3b8141885fbcba51a330ad",
+    ".claude/skills/dotln-release-close/SKILL.md": "001240fc040bb65dc419eb185a016ea7ca73ee061109ee3132744a55090bdb82",
+    ".claude/skills/dotln-reviewer/SKILL.md": "605b0a64b22b0ef09976f64679e8da800224703cbe971e334094aa2a4e009ea1",
+    ".claude/skills/dotln-verifier/SKILL.md": "1e46f150edbc144d687edb8125cbdf3a3a747c055d00346c6903003a46902bcf"
+  }
+}

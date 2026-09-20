@@ -2,7 +2,7 @@
 
 Source base revision: `f2a4b232e1868691398964433c7e373fca4b84bb`
 
-Source lock: `sha256:2fdb0c11d7a43735716a7e5f04f5f099a244496f731e2bcb1e226ab32cd7b5d1`
+Source lock: `sha256:52395d40a1a183ad4ecf5d4cb967a1555a69f44e81774cac24a701a5858cf1c8`
 
 The base revision identifies where this edition's source set was selected; every
 link must resolve there. The lock pins the exact current bytes of the linked
@@ -104,7 +104,8 @@ implementation-deep, lossy projection of the same
 
 13. **Pattern definitions, candidates, and maturity**
     - synchronized lenses, support semantics, comparison data, and explicit
-      candidates, including method checks and bounded delayed-effect observation
+      candidates, including method checks and bounded delayed-effect observation;
+      the default-off economy support and its three-order trial record
     - sources:
       [Founding pattern library](../product/05-pattern-library.md#founding-pattern-library),
       [The Eye Dr Test](../product/05-pattern-library.md#the-eye-dr-test--pairwise-preference),

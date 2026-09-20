@@ -92,6 +92,29 @@ const combinations = Array.from(
 );
 const baselineEnvelope = contributorProgram([]).loadout.authorityEnvelope;
 
+test("WO-145 economy equipment adds only executor guidance and no authority or host checks", () => {
+  const off = contributorConfiguredProgram();
+  const on = contributorConfiguredProgram({ "tinkerer-economy": true });
+  assert.deepEqual(on.loadout.authorityEnvelope, off.loadout.authorityEnvelope);
+  assert.deepEqual(on.loadout.workOrder, off.loadout.workOrder);
+  assert.deepEqual(
+    on.facets.filter((facet) => facet.kind !== "role-procedure"),
+    off.facets.filter((facet) => facet.kind !== "role-procedure"),
+  );
+  for (const role of off.roles.filter((row) => row.name !== "executor"))
+    assert.deepEqual(
+      on.roles.find((row) => row.name === role.name),
+      role,
+    );
+  assert.equal(executorSupportDefaults["tinkerer-economy"], false);
+  assert.ok(!defaultExecutorSupportIds.includes("tinkerer-economy"));
+  assert.ok(
+    on.loadout.componentManifest.some(
+      (entry) => entry.componentId === "tinkerer-economy",
+    ),
+  );
+});
+
 test("WO-042 atomic support switches compose independently and removal restores the saved build", () => {
   const hashes = new Set<string>();
   for (const ids of combinations) {

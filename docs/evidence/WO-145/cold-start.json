@@ -1,0 +1,21 @@
+{
+  "measuredAt": "2026-09-20T06:31:51.057Z",
+  "method": "Current CLAUDE.md plus generated executor skill; no task documents or estimated tokens.",
+  "ceilingBytes": 24576,
+  "profiles": [
+    {
+      "path": ".agents/skills/dotln-executor/SKILL.md",
+      "offSkillBytes": 16386,
+      "onSkillBytes": 17559,
+      "instructionBytes": 5788,
+      "coldStartBytes": 23347
+    },
+    {
+      "path": ".claude/skills/dotln-executor/SKILL.md",
+      "offSkillBytes": 16386,
+      "onSkillBytes": 17559,
+      "instructionBytes": 5788,
+      "coldStartBytes": 23347
+    }
+  ]
+}

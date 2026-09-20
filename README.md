@@ -93,7 +93,7 @@ intent → task-scoped build → bounded WorkOrder → disposable executor
 -->
 <!-- DOTLN-RELEASE-BEGIN -->
 
-This source prepares DotLn `v0.33.2`.
+This source prepares DotLn `v0.34.0`.
 
 **The core.** A local-first compiler turns a loadout graph into a bounded
 program and authority envelope that the kernel checks on every decision.
@@ -121,7 +121,11 @@ repaired only the blamed module and a second verifier passed the original
 contract. The Claude run's event log is published and replays negative against
 injected implementer events.
 
-**How this repository builds itself.** Independent implementation, verification
+**How this repository builds itself.** An optional executor support asks for one
+bounded economy experiment per order, with measured cost and effect; it stays
+off by default while the [three-order trial](docs/evidence/WO-145/decisions.md)
+establishes whether its savings justify its cost.
+Independent implementation, verification
 and final review record their own evidence, and publication consumes the
 reviewer's successful code-identity gate row.
 DotLn hooks refuse five conditions: a second writer in a worktree, writes to gate
@@ -136,7 +140,7 @@ permissions, and `analysis:` and `operator override:` remain available for recov
 The [execution guide](docs/product/07-execution-guide.md#independent-workflows-and-integration)
 explains integration, evidence and the observed limits of those controls.
 
-**Not yet.** Live model verification, a live model actor, automatic work
+**Not yet.** A live model actor, automatic work
 derivation, general source-writing workers and portable starter export remain
 later work.
 The [goal review](docs/planning/refutations/README.md) retains reopening

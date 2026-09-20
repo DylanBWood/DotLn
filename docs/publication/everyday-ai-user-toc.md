@@ -2,7 +2,7 @@
 
 Source base revision: `f2a4b232e1868691398964433c7e373fca4b84bb`
 
-Source lock: `sha256:0de08c85cf9572b7a24d5876ac6e6fd001f001a2a011e82715c4757bdc77c803`
+Source lock: `sha256:db6d9a30868e74cb191d861193a1f5c9e5fec4e651f90c79070b2652da7a9948`
 
 The base revision identifies where this edition's source set was selected; every
 link must resolve there. The lock pins the exact current bytes of the linked
@@ -84,14 +84,15 @@ route through the [base outline](base-outline.md); mechanics stay one link away.
 10. **Turn a correction into a reusable guard**
     - preserved source, compiled feedback, generated role skills and guards,
       unavailable capabilities, visible maturity, and candidate follow-up checks
-      for useful changes with delayed side effects
+      for useful changes with delayed side effects; an optional economy experiment
+      records whether trying a different working method saves more than it costs
     - sources: [Feedback](../product/02-domain-model.md#feedback),
       [Founding pattern library](../product/05-pattern-library.md#founding-pattern-library)
 
 ## Part VI — Separate today from the destination
 
 11. **What the reference build actually supports**
-    - the implemented baseline, bounded inspection workers, the synthetic blinded verification/repair loop and optional mounted Beacon perception; live model verification remains unwitnessed; evidence strength, known gaps, and a readable
+    - the implemented baseline, bounded inspection workers, the blinded verification/repair loop with bounded live model evidence and optional mounted Beacon perception; evidence strength, known gaps, and a readable
       proposed work sequence with progress derived from evidence and dependency
       readiness from declared relations; candidate
       concurrent workflows, early completion batches, and release traceability
