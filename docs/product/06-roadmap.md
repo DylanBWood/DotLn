@@ -20,6 +20,20 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-146 collision retiming (2026-09-20):** unpublished target `v0.34.0` is superseded by `v0.35.0` under the existing minor classification because the observed release baseline is `v0.34.0`. Scope, acceptance, component versions, and published tags are unchanged by this retiming.
+
+**WO-146 release preparation (2026-09-20):** this source stages application
+`v0.35.0` under the declared minor classification above fetched `v0.34.0`.
+Compiler `0.17.0` additively admits the observed Copilot profile; skeleton
+`0.31.0` adds its input adapters, selected-session readback and shared contributor
+profile. Kernel `0.6.0` and console `0.1.7` behavior are unchanged; internal
+dependency pins follow the changed packages. The two resident-worker profiles
+remain unchanged except their skeleton release metadata, under the operator's
+bounded criterion-4 authorization in
+[WO-146-D009](../evidence/WO-146/decisions.md#wo-146-d009---allow-only-the-worker-profiles-release-version-metadata-to-follow-the-required-component-bump).
+Bare-session qualification is pending; no new dependency, publication authority
+or capability level is claimed.
+
 **WO-145 activation completion (2026-09-20):** assigned application `v0.34.0`
 under its minor classification above local `v0.33.2`. Skeleton `0.30.0` adds
 the optional, default-off economy experiment support through the existing

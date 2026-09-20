@@ -1,4 +1,4 @@
-# WO-146 — Copilot CLI as an operator-launched harness: one compiled profile from the existing loadout, the one generated hook set reused without a second registration, every DotLn control labeled enforced, advisory, unsupported or untested from a dated probe, and an executor, a fixer and an independent verifier qualified live in a scratch repository (version assigned at activation)
+# WO-146 — Copilot CLI as an operator-launched harness: one compiled profile from the existing loadout, the one generated hook set reused without a second registration, every DotLn control labeled enforced, advisory, unsupported or untested from a dated probe, and an executor, a fixer and an independent verifier qualified live in a scratch repository (v0.35.0)
 
 **Model:** any. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
@@ -274,7 +274,10 @@ the qualification record.
    Claude or Codex behavior unchanged. Expected changes: the generated
    `CLAUDE.md` block and `.claude/harness-manifest.json` gain the third
    profile's rows, and the shared boundary sentence gains its clause.
-   `targetWorkerProfiles` still has exactly two entries with unchanged bytes.
+   `targetWorkerProfiles` still has exactly two entries with unchanged bytes,
+   except `runtime.skeletonVersion` follows the changed skeleton's release
+   version. The operator authorized only this metadata exception on
+   2026-09-20 (WO-146-D009); every other worker-profile byte stays unchanged.
 5. The control table is published in `docs/AI-HARNESS-SECURITY.md` with one
    row each for: session and worktree identity; writer reservation (reserve,
    refuse, owner source, liveness, release); presence heartbeat and its origin

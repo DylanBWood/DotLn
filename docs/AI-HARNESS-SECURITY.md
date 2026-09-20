@@ -31,12 +31,14 @@ authority to use it. Repository exploration stays inside the requested project
 unless the operator explicitly expands scope. Sandbox controls are a backstop
 for that judgment rule, not a replacement for it.
 
-Only two harnesses are in the current loop:
+Three harnesses have qualified roles in the current loop; Copilot's compiled
+operator profile has the bounded qualification recorded below:
 
 | Harness     | Provider  | Models or roles using it              |
 | ----------- | --------- | ------------------------------------- |
 | Claude Code | Anthropic | Fable, Opus, and Sonnet assignments   |
 | Codex CLI   | OpenAI    | Codex executor and repair assignments |
+| Copilot CLI | GitHub    | Executor, fixer and fresh verifier qualified on CLI 1.0.86 / Claude Sonnet 5 / xhigh |
 
 Model names are not additional harnesses. They inherit the permissions of the
 harness that launches them. Browser, web-search, plugin, app, MCP, and other
@@ -289,7 +291,8 @@ grants no new network, filesystem, credential or publication authority. Any
 configured host denials for publication, SSH/SCP/SFTP and credential access
 remain in force; DotLn role text does not establish those host restrictions.
 Claude applies the generated hooks; Codex receives the same invariants and
-commands as role text without claiming automatic hook enforcement.
+commands as role text without claiming automatic hook enforcement. Copilot
+reuses the Claude registration; its narrower, dated observations are below.
 
 Harness, version, model, effort and source are recorded as supplied. `unknown`
 is admitted; `ultra` and `ultra code` are `xhigh` with `mode: subagents` and raw
@@ -666,6 +669,137 @@ record and test:
 6. enable, effective-state verification, and rollback steps; and
 7. the tested date and installed version.
 
+## Copilot CLI - WO-146, 2026-09-20
+
+**Observed version: 1.0.86. Four operator workflow episodes completed on Claude Sonnet 5 / xhigh.** The
+[dated probe](discovery/copilot-cli-2026-09-20.md) and its companion JSON
+separate observations, missing observations and blocked work. P1-P6 misplaced
+temporary trust state and cannot establish trusted-folder behavior. Corrected
+P7-P10 establish that the Claude-form registration fires and its pre-tool JSON
+denial and exit-2 error stop the matching fixture command, including P10 with
+allow-all. Both registration sources fire when both are installed; DotLn emits
+only its existing `.claude/settings.json` registration. Event availability is
+not a claim that every handler receives every field it needs.
+
+The operator enters **bare `copilot`** at the worktree root. No wrapper,
+environment prefix or launch flag is required. The two existing, identical skill
+roots and the `AGENTS.md` to `CLAUDE.md` symlink remain the instruction surfaces.
+The [operator runbook](evidence/WO-146/operator-qualification.md) and
+[qualification record](evidence/WO-146/qualification.md) are separate from the
+scripted probe. Final review and release close remain untested under Copilot.
+
+### Seven-item setup record
+
+1. **Settings and trust.** Preferences use `~/.copilot/settings.json`;
+   runtime state, including `trustedFolders`, uses `~/.copilot/config.json`.
+   `COPILOT_HOME` selects another home. The CLI also reads shared
+   `.claude/settings.json`, personal project `.claude/settings.local.json`
+   and native `.github/hooks/*.json`. DotLn adds no native registration or
+   Copilot settings file. Managed policy and session choices can constrain
+   preferences; the complete precedence matrix is not live-qualified here.
+   The 1.0.60 bundled changelog documents worktree trust inheritance, not a
+   second live observation of inheritance or local-setting precedence.
+   Accept trust yourself for a new worktree and verify loaded hooks; a main
+   checkout's trust is not used as this probe's evidence.
+2. **Read/write boundaries.** The installed permissions help describes
+   path approval checks for the working tree and system temp, not OS
+   confinement. With sandboxing off, shell programs have the user's file,
+   credential and network access. Built-in edits are not OS-sandboxed even
+   when command sandboxing is enabled; the CLI describes their policy
+   application as best-effort. DotLn's literal-destination checks do not
+   protect every indirect file open, credential path or `.git` operation.
+3. **Approvals and exceptions.** Documented `manual` mode prompts for
+   writes/commands and auto-approves reads. `assisted` uses an experimental
+   safety classifier, subject to policy. `allow-all` removes tool, path and
+   URL approval prompts; it is not confinement. The help says explicit
+   native denies still precede allows, but their complete exception matrix
+   was not tested here. P10's DotLn-compatible hook denials remain observed
+   separately from native permission rules. The operator's current mode
+   and actual prompt count must be attested or remain unknown.
+4. **Network and outward channels.** Without command sandboxing, shell
+   network access is unconfined by an OS sandbox. Remote MCP is not covered
+   by command sandboxing; local stdio MCP/LSP sandboxing has separate
+   settings. The built-in GitHub MCP server, `/delegate`, `--remote`,
+   `--fleet` and autopilot are outside this qualification and DotLn's
+   publication helpers. Their availability grants no authority to use
+   them. No launch argument is imposed to disable them.
+5. **Unavailable sandbox and hook errors.** Installed `copilot help sandbox`
+   documents command sandboxing as experimental and **off by default**.
+   Enabled sandboxing on an unsupported host makes sandboxed shell and
+   sandboxed MCP/LSP launches fail, with a startup warning; it does not
+   silently establish an unsandboxed replacement. A permitted bypass is a
+   separate operator choice, and managed policy may forbid it. This native
+   failure behavior is documented, not live-qualified here. The hook
+   reference documents pre-tool errors as fail-closed and hook timeouts as
+   fail-open; P7/P10 observed exit-2 refusal, not timeout behavior.
+6. **Enable, verify and undo.** Enter bare `copilot`, inspect the actual
+   mode, model and effort in-session, and accept folder trust only for the
+   intended project. Run `node scripts/harness.mjs check` for generated
+   drift, then the bounded scratch observations rather than testing
+   refusals on real work. Sandboxing is optional in either direction;
+   `/sandbox enable` and `/sandbox disable` are available only when the
+   experimental feature or managed policy exposes that command. Enabling
+   it seeds a policy whose defaults must be inspected, including network,
+   credential injection and bypass. Undo an optional personal change by
+   restoring just that setting; neither deleting generated hooks nor
+   changing personal settings is an automatic DotLn recovery action.
+7. **Date and scope.** Scripted observations and installed help/source
+   checks are dated 2026-09-20 on 1.0.86. Both bare-session rows are
+   collected, and four operator workflow episodes passed with Claude Sonnet 5
+   / xhigh; the separate bare probe observed a change to GPT-5.6 Sol / medium. A version outside the recorded
+   major.minor line warns; it does not refuse a workflow or authorize a
+   new probe.
+
+Sources: the H anchors below; installed 1.0.86 `help config`, `help permissions`
+and `help sandbox`; its bundled changelog; the installed public CLI's
+`disabledMcpServers` user-setting reader/writer and `github-mcp-server`
+registration; and the [GitHub hook reference](https://docs.github.com/en/copilot/reference/hooks-reference).
+Documented vendor behavior is not promoted to observed DotLn enforcement.
+
+### Copilot control table
+
+**Enforced** below means the bounded pre-effect predicate is covered by a
+generated-handler fixture and the live Claude-form refusal channel in H5,
+P7/P10 and bare I2. It does not mean arbitrary shell effects, remote tools or
+hostile same-user processes are confined. The four older guards
+retain their existing worktree-root limit. Unknown observations do not become
+successful defaults.
+
+| DotLn control | Classification and evidence | With allow-all |
+| --- | --- | --- |
+| Session and worktree identity | **Advisory.** H2/H3/H9; `COPILOT_PROJECT_DIR` identifies hook origin, `session_id` identifies that callback, and the shell exposes `COPILOT_AGENT_SESSION_ID`. The reader verifies the log's identity, cwd and supplied Git root; foreign logs yield unknown. WO-146 process-debt fixtures cover selection and refusal of foreign metadata. | Same metadata checks; not an OS boundary. Bare I2 confirms the shell variable, matched worktree and in-session model change. |
+| Writer reservation: reserve, refuse, owner, liveness, release | **Enforced at the observed hook boundary.** H5/P7/P10 plus WO-146 generated writer/freeform fixtures. H11 observed an ancestor owner alive at callback time, not hostile-process isolation. Two real-command fixtures cover explicit completion; all four operator episodes released their writers after exit. | Scripted and bare refusal channels hold; live workflow release is recorded. |
+| Presence heartbeat and origin class | **Advisory.** H1/H3 and `presence-heartbeat.ts`: only an explicit resident-store binding writes a heartbeat; interaction is `unknown`. A scripted prompt is not operator presence and no new resident transport is added. | Not an approval-dependent guarantee; native origin classification unobserved. |
+| Live-gate input protection and `evidence --stop` | **Enforced for classified writes.** H5/P10 and WO-146 generated native-path/freeform live-gate fixtures, with existing WO-135 stop/ownership fixtures. The owner can explicitly stop its gate; no effect is inferred from an absent file alone. | The refusal channel holds in bare I2; a live-gate write attempt in that bare session was not exercised. |
+| Planning-branch write boundary | **Enforced for classified writes at the worktree root.** H5/P10 and WO-146 generated native-path/freeform fixtures retain docs/root-Markdown scope. | Scripted refusal holds; opaque program effects remain unobserved. |
+| Subagent admission and descendant accounting | **Advisory.** H3/H8 provide no `tool_use_id` or child identity. Preserve explicit root-session budgeting; zero observed admissions is not zero agents or fresh budget. No new identity synthesis is added. | No mechanical total-creation cap claimed. |
+| Outside-write grant | **Enforced for recognized literal destinations.** H5/P10; WO-146 native path and multi-file patch fixtures plus WO-144 redirect/symlink fixtures. System-temp and declared session scratch are grants, not a blanket home-directory grant. Expansions and programs' own effects retain their documented gaps. | Scripted denial holds; no OS confinement. |
+| Write observation and authorship | **Advisory.** H3/H4 supply native write paths; the decoder maps them into the existing byte-diff observer. A write record does not prove scope correctness or authorize publication. | Observation remains possible; not a permission guarantee. |
+| Read-your-own-output observation | **Advisory.** H3 has `tool_result`, not Claude's range-bearing `tool_response.file`. Automatic read receipts are not claimed. Use existing `read-output` and actual-stdout `delivered` adapters; WO-146 shares the existing observer rather than fabricating ranges. | No automatic delivery guarantee. |
+| Observed-facts block | **Advisory.** H6 did not deliver the prompt-context marker. Explicit briefing/status adapter output supplies available facts; unsupported scans remain unknown. | No prompt-injection/delivery guarantee. |
+| Usage counters | **Advisory.** H12 and WO-146 fixtures: shutdown counters are session-cumulative; request counters can cover utility calls only and are explicitly partial. Checkpoint/shutdown `totalNanoAiu` supplies session-cumulative AI credits at 1,000,000,000 nanos per credit, with its own source and cutoff. Missing counters carry a cause and never block completion; tokens and dollars are not inferred from credits. | Same readback; completeness independent of approval mode. |
+| Model and effort readback | **Advisory.** H9/H12 and WO-146 process-debt fixtures. Source `copilot-session-readback` means CLI-selected, not effective effort; `auto`, null or missing fields stay unknown with causes. Supplied operator attestations remain unchanged. | Independent of approval mode. |
+| Completion and handoff | **Advisory.** H7 observed Stop callbacks but not their message visibility. Plain lifecycle commands retain their evidence/report checks, and explicit executor/fixer completion releases the identified writer. WO-146 real-command fixtures and all four live operator qualification episodes pass; release was checked after each session exited. | Stop advice is not a publication or completeness gate. |
+| Compaction continuation | **Unsupported.** No Copilot continuation adapter is qualified. The Codex adapter is not reused or relabeled. Ordinary resume/status and preserved state remain available. | No automatic continuation claim. |
+| `analysis:` and `operator override:` | **Advisory as model/terminal delivery; explicit controls available.** H1/H6 and the existing operator-control fixtures. The shared prompt handler may apply the control, but context/message delivery is unobserved; `node scripts/operator-control.mjs analysis|override|off|status` remains the explicit route. | Host permissions still decide. Override never supplies missing operator authority. |
+
+### Proposed operator settings
+
+**Proposals only; none is applied by this order.** Merge individual preferences
+instead of replacing a settings file. DotLn's guarantees come from the table,
+not from private settings. Defaults below are documented defaults, not a fresh
+readback of effective policy.
+
+| File and key | Observed value | Proposed value | Reason | Undo |
+| --- | --- | --- | --- | --- |
+| `~/.copilot/settings.json`: `includeCoAuthoredBy` | `false`, recorded at planning | Keep `false` | Avoid automatic AI attribution; publication preflights remain separate. | Restore the prior preference, without weakening the no-attribution duty. |
+| Same file: `effortLevel` | `xhigh`, recorded at planning | Keep the operator's choice | Bare entry must not force a model or effort. Readback reports what the CLI selects. | Restore the prior value or remove this preference. |
+| Same file: `memory` | Effective value not re-read; documented default `true` | Consider `false` for independent verification | Cross-session recall can carry implementer context into a fresh verifier. This is not mechanical independence. | Restore the previous value; `/memory on` is the documented in-session option. |
+| Same file: `defaultPermissionMode` | Effective value unknown; documented default `manual` | Operator chooses `manual` or `allow-all` | Fewer prompts are optional, not a DotLn requirement or filesystem sandbox. | Restore the previous value or remove the key. |
+| Same file: `sandbox.enabled` | Effective value unknown; documented default `false` | Operator chooses; either mode supported only to its recorded width | Off leaves shell effects unconfined; enabling requires reviewing the seeded policy and host support. | Restore the previous value through settings or the available `/sandbox` control. |
+| Same file: `disabledMcpServers` | Not re-read | Optionally add `github-mcp-server`, preserving other entries | A persisted way to disable the built-in outward channel without a launch argument; DotLn still does not govern external tools. | Remove only that entry or restore its previous state. |
+| `~/.copilot/config.json`: `trustedFolders` | Main's trust was recorded at planning; each live scratch choice is separate | Accept trust yourself for the intended worktree | Repository hook loading depends on trust; an approval choice is not a repository-enforced guarantee. | Remove the specific folder's trust through the CLI; preserve unrelated runtime state. |
+
 ## Vendor references
 
 - Claude Code: [sandboxing](https://code.claude.com/docs/en/sandboxing),
@@ -676,3 +810,6 @@ record and test:
   [basic configuration](https://learn.chatgpt.com/docs/config-file/config-basic),
   [approvals and security](https://learn.chatgpt.com/docs/agent-approvals-security),
   and [command rules](https://learn.chatgpt.com/docs/agent-configuration/rules).
+- Copilot CLI: [command reference](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference),
+  [hooks](https://docs.github.com/en/copilot/reference/hooks-reference), and
+  version-pinned installed help for configuration, permissions and sandboxing.

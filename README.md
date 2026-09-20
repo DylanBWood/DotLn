@@ -93,7 +93,7 @@ intent → task-scoped build → bounded WorkOrder → disposable executor
 -->
 <!-- DOTLN-RELEASE-BEGIN -->
 
-This source prepares DotLn `v0.34.0`.
+This source prepares DotLn `v0.35.0`.
 
 **The core.** A local-first compiler turns a loadout graph into a bounded
 program and authority envelope that the kernel checks on every decision.
@@ -139,6 +139,13 @@ Codex carries the same duties as role text, other judgments defer to host
 permissions, and `analysis:` and `operator override:` remain available for recovery.
 The [execution guide](docs/product/07-execution-guide.md#independent-workflows-and-integration)
 explains integration, evidence and the observed limits of those controls.
+
+The [Copilot CLI integration](docs/evidence/WO-146/decisions.md) adds a third
+operator-harness profile using the same generated hooks and skills. Scripted
+and bare-session observations support the shared registration. The four
+executor/failing-verifier/fixer/passing-verifier episodes are qualified on CLI
+1.0.86 with Claude Sonnet 5 / xhigh. No Copilot resident worker or publication
+workflow is qualified.
 
 **Not yet.** A live model actor, automatic work
 derivation, general source-writing workers and portable starter export remain

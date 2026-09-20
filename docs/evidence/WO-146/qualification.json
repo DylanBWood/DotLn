@@ -1,0 +1,301 @@
+{
+  "schemaVersion": 1,
+  "harness": "copilot-cli",
+  "fixture": "WO-999",
+  "completedEpisodes": 4,
+  "attemptsReserved": 4,
+  "limit": "four episodes and two retries; operator-launched only",
+  "qualified": true,
+  "episodes": [
+    {
+      "attempt": 1,
+      "episode": 1,
+      "role": "executor",
+      "enteredBare": true,
+      "entrySource": "operator-attested",
+      "phase": "ready-to-verify",
+      "passed": true,
+      "selected": {
+        "available": true,
+        "harness": "copilot-cli",
+        "harnessVersion": "1.0.86",
+        "model": "claude-sonnet-5",
+        "effort": "xhigh",
+        "source": "copilot-session-readback",
+        "observedAt": "2026-09-20T14:08:07.587Z",
+        "causes": []
+      },
+      "attestation": {
+        "harness": "copilot-cli",
+        "harnessVersion": "1.0.86",
+        "model": "claude-sonnet-5",
+        "effort": "xhigh",
+        "source": "copilot-session-readback"
+      },
+      "hooks": {
+        "userPromptSubmitted": 1,
+        "sessionStart": 1,
+        "preToolUse": 36,
+        "postToolUse": 41,
+        "agentStop": 1
+      },
+      "hookCountScope": "CLI hook-event batches, not individual generated handlers",
+      "denials": [],
+      "approvalPrompts": "observed",
+      "permissions": "normal",
+      "permissionSource": "operator-attested",
+      "fixtureExitCode": 0,
+      "expectedFailure": false,
+      "plantedDefectReported": null,
+      "writerReleased": true,
+      "aiCredits": 69.38165,
+      "aiCreditCause": null,
+      "usage": {
+        "activity": {
+          "stepCount": 41,
+          "commandsRun": 31,
+          "source": "transcript tool-call metadata; wrapped command count may be unavailable"
+        },
+        "source": "copilot-result-shutdown",
+        "scope": "session-cumulative",
+        "observedAt": "2026-09-20T14:14:56.113Z",
+        "usage": {
+          "inputTokens": 74,
+          "cachedInputTokens": 1983105,
+          "cacheWriteInputTokens": 57115,
+          "outputTokens": 15426,
+          "reasoningOutputTokens": null,
+          "totalTokens": 2055720,
+          "costUsd": null
+        },
+        "context": null,
+        "aiCredits": 69.38165,
+        "creditSource": "copilot-session.shutdown",
+        "creditObservedAt": "2026-09-20T14:14:56.113Z",
+        "creditScope": "session-cumulative"
+      },
+      "durationMs": 409314,
+      "rawTranscriptRetained": false
+    },
+    {
+      "attempt": 2,
+      "episode": 2,
+      "role": "verifier",
+      "enteredBare": true,
+      "entrySource": "operator-attested",
+      "phase": "needs-fix",
+      "passed": true,
+      "selected": {
+        "available": true,
+        "harness": "copilot-cli",
+        "harnessVersion": "1.0.86",
+        "model": "claude-sonnet-5",
+        "effort": "xhigh",
+        "source": "copilot-session-readback",
+        "observedAt": "2026-09-20T14:17:16.114Z",
+        "causes": []
+      },
+      "attestation": {
+        "harness": "copilot-cli",
+        "harnessVersion": "1.0.86",
+        "model": "claude-sonnet-5",
+        "effort": "xhigh",
+        "source": "copilot-session-readback"
+      },
+      "hooks": {
+        "userPromptSubmitted": 1,
+        "sessionStart": 1,
+        "preToolUse": 29,
+        "postToolUse": 29,
+        "agentStop": 1
+      },
+      "hookCountScope": "CLI hook-event batches, not individual generated handlers",
+      "denials": [],
+      "approvalPrompts": "observed",
+      "permissions": "unknown",
+      "permissionSource": "operator-attested transition; no single session-wide mode",
+      "fixtureExitCode": 1,
+      "expectedFailure": true,
+      "plantedDefectReported": true,
+      "writerReleased": true,
+      "aiCredits": 55.71232,
+      "aiCreditCause": null,
+      "usage": {
+        "activity": {
+          "stepCount": 29,
+          "commandsRun": 22,
+          "source": "transcript tool-call metadata; wrapped command count may be unavailable"
+        },
+        "source": "copilot-result-shutdown",
+        "scope": "session-cumulative",
+        "observedAt": "2026-09-20T14:22:45.067Z",
+        "usage": {
+          "inputTokens": 60,
+          "cachedInputTokens": 1454766,
+          "cacheWriteInputTokens": 50520,
+          "outputTokens": 13975,
+          "reasoningOutputTokens": null,
+          "totalTokens": 1519321,
+          "costUsd": null
+        },
+        "context": null,
+        "aiCredits": 55.71232,
+        "creditSource": "copilot-session.shutdown",
+        "creditObservedAt": "2026-09-20T14:22:45.067Z",
+        "creditScope": "session-cumulative"
+      },
+      "durationMs": 329656,
+      "rawTranscriptRetained": false,
+      "permissionTimeline": [
+        {
+          "mode": "normal",
+          "when": "session start; individual approvals observed"
+        },
+        {
+          "mode": "all",
+          "when": "operator enabled allow-all mid-session"
+        }
+      ]
+    },
+    {
+      "attempt": 3,
+      "episode": 3,
+      "role": "fixer",
+      "enteredBare": true,
+      "entrySource": "operator-attested",
+      "phase": "ready-to-verify",
+      "passed": true,
+      "selected": {
+        "available": true,
+        "harness": "copilot-cli",
+        "harnessVersion": "1.0.86",
+        "model": "claude-sonnet-5",
+        "effort": "xhigh",
+        "source": "copilot-session-readback",
+        "observedAt": "2026-09-20T14:24:22.423Z",
+        "causes": []
+      },
+      "attestation": {
+        "harness": "copilot-cli",
+        "harnessVersion": "1.0.86",
+        "model": "claude-sonnet-5",
+        "effort": "xhigh",
+        "source": "copilot-session-readback"
+      },
+      "hooks": {
+        "userPromptSubmitted": 1,
+        "sessionStart": 1,
+        "preToolUse": 20,
+        "postToolUse": 26,
+        "agentStop": 1
+      },
+      "hookCountScope": "CLI hook-event batches, not individual generated handlers",
+      "denials": [],
+      "approvalPrompts": "unknown",
+      "permissions": "all",
+      "permissionSource": "operator-attested",
+      "fixtureExitCode": 0,
+      "expectedFailure": false,
+      "plantedDefectReported": null,
+      "writerReleased": true,
+      "aiCredits": 33.8009,
+      "aiCreditCause": null,
+      "usage": {
+        "activity": {
+          "stepCount": 26,
+          "commandsRun": 19,
+          "source": "transcript tool-call metadata; wrapped command count may be unavailable"
+        },
+        "source": "copilot-result-shutdown",
+        "scope": "session-cumulative",
+        "observedAt": "2026-09-20T14:27:02.747Z",
+        "usage": {
+          "inputTokens": 42,
+          "cachedInputTokens": 897750,
+          "cacheWriteInputTokens": 34666,
+          "outputTokens": 7171,
+          "reasoningOutputTokens": null,
+          "totalTokens": 939629,
+          "costUsd": null
+        },
+        "context": null,
+        "aiCredits": 33.8009,
+        "creditSource": "copilot-session.shutdown",
+        "creditObservedAt": "2026-09-20T14:27:02.747Z",
+        "creditScope": "session-cumulative"
+      },
+      "durationMs": 161057,
+      "rawTranscriptRetained": false
+    },
+    {
+      "attempt": 4,
+      "episode": 4,
+      "role": "verifier",
+      "enteredBare": true,
+      "entrySource": "operator-attested",
+      "phase": "verified",
+      "passed": true,
+      "selected": {
+        "available": true,
+        "harness": "copilot-cli",
+        "harnessVersion": "1.0.86",
+        "model": "claude-sonnet-5",
+        "effort": "xhigh",
+        "source": "copilot-session-readback",
+        "observedAt": "2026-09-20T14:28:02.289Z",
+        "causes": []
+      },
+      "attestation": {
+        "harness": "copilot-cli",
+        "harnessVersion": "1.0.86",
+        "model": "claude-sonnet-5",
+        "effort": "xhigh",
+        "source": "copilot-session-readback"
+      },
+      "hooks": {
+        "userPromptSubmitted": 1,
+        "sessionStart": 1,
+        "preToolUse": 14,
+        "postToolUse": 24,
+        "agentStop": 1
+      },
+      "hookCountScope": "CLI hook-event batches, not individual generated handlers",
+      "denials": [],
+      "approvalPrompts": "unknown",
+      "permissions": "all",
+      "permissionSource": "operator-attested",
+      "fixtureExitCode": 0,
+      "expectedFailure": false,
+      "plantedDefectReported": null,
+      "writerReleased": true,
+      "aiCredits": 37.45694,
+      "aiCreditCause": null,
+      "usage": {
+        "activity": {
+          "stepCount": 24,
+          "commandsRun": 22,
+          "source": "transcript tool-call metadata; wrapped command count may be unavailable"
+        },
+        "source": "copilot-result-shutdown",
+        "scope": "session-cumulative",
+        "observedAt": "2026-09-20T14:31:09.934Z",
+        "usage": {
+          "inputTokens": 30,
+          "cachedInputTokens": 728272,
+          "cacheWriteInputTokens": 45118,
+          "outputTokens": 11606,
+          "reasoningOutputTokens": null,
+          "totalTokens": 785026,
+          "costUsd": null
+        },
+        "context": null,
+        "aiCredits": 37.45694,
+        "creditSource": "copilot-session.shutdown",
+        "creditObservedAt": "2026-09-20T14:31:09.934Z",
+        "creditScope": "session-cumulative"
+      },
+      "durationMs": 188318,
+      "rawTranscriptRetained": false
+    }
+  ]
+}

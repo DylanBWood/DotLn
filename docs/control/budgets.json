@@ -31,7 +31,7 @@
   "limits": {
     "coldStartBytes": {
       "executor": 24576,
-      "verifier": 20480,
+      "verifier": 25151,
       "reviewer": 24576,
       "release-close": 16384,
       "planner": 24576,
@@ -44,6 +44,14 @@
     "passRefutationMs": 120000
   },
   "acceptances": [
+    {
+      "date": "2026-09-20",
+      "metric": "coldStartBytes.verifier",
+      "scope": null,
+      "dispatch": "verifier",
+      "ceiling": 25151,
+      "reason": "WO-146 measured 21,055 bytes in each existing skill root, against 20,480, after the shared Copilot boundary/residue and actor/explicit-adapter clauses added 974 bytes over integrated main 67b4b188. Under product 07's standing 2026-09-17 route, preserve the reviewed duties and set this ceiling to the measured 21,055 plus one 4,096-byte step, 25,151. The other bounded roles remain within their ceilings; refuter remains unset. Reassess when another reviewed rule needs more. Decision: docs/evidence/WO-146/decisions.md#wo-146-d008."
+    },
     {
       "date": "2026-09-18",
       "metric": "coldStartBytes.executor",

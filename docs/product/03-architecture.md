@@ -462,21 +462,28 @@ future harnesses expose different native composition mechanisms. DotLn records
 each as a versioned `RuntimePrimitiveCatalog` discovered from the actual
 environment, then treats it as a compiler target.
 
-**Assessed 2026-09-20 — a third harness, allocated to
-[WO-146](../work-orders/WO-146-copilot-cli-harness.md).** The operator
-installed GitHub Copilot CLI for operator-launched implementation, fixing and
-verification. Observed on CLI 1.0.86 without a model call: it loads
-`AGENTS.md + CLAUDE.md` as repository instructions and lists the six generated
-`dotln-*` skills, so it needs no surface of its own. Documented by the CLI's
-bundled changelog and untested here: it reads `.claude/settings.json` hooks
-and denies a tool call when a pre-tool hook errors, so whether DotLn's
-generated hooks fire, fire twice or deny every call under it is unknown. The
-harness is one more entry in the compiled profile table, recorded apart from
-whichever model the CLI routes, and every control is to be labeled enforced,
-advisory, unsupported or untested from a dated probe; nothing is claimed as
-enforced from documentation. No profile, setting or runtime claim changes with
-this note. The record is
-[the planning document](../planning/copilot-cli-integration-2026-09-20.md).
+**Observed 2026-09-20 - WO-146's third operator harness.** Copilot CLI
+1.0.86 is one `copilot-cli` entry in the contributor profile table, separate
+from its selected model. Corrected scripted rows P7-P10 in the
+[dated probe](../discovery/copilot-cli-2026-09-20.md) establish the existing
+Claude-form callback and denial channel, including allow-all. Byte-identical
+shared output is emitted once; a conflict refuses generation. No native
+registration, instruction tree, plugin or role biography is added. The six
+skill bodies remain identical across the existing roots, and the instruction
+symlink's shared handlers observe canonical `CLAUDE.md`.
+
+The decoder handles observed native paths and freeform patches. Missing child
+identities, range-bearing read results, prompt-context delivery and Stop
+message visibility are limits, not new infrastructure. The
+[control table](../AI-HARNESS-SECURITY.md#copilot-control-table) names each
+bounded guarantee. Bare-interactive observations are collected, and the four
+operator episodes passed on CLI 1.0.86 / Claude Sonnet 5 / xhigh in the
+[qualification record](../evidence/WO-146/qualification.md). The separate bare
+probe also observed a model change to GPT-5.6 Sol / medium; it does not qualify
+the full workflow under that model.
+Target-worker derivation explicitly excludes Copilot and remains at two;
+there is no new resident actor kind or transport. Reopen the profile when a
+new observed version or operator episode contradicts these claims.
 Reopen when WO-146 closes, or on a CLI version that changes how it reads
 instructions, skills or hooks.
 
@@ -654,6 +661,10 @@ an evidenced replacement for each protection it claims, an explicit account of
 any remaining host boundary, and a way to restore the previous configuration.
 Supports may compile into executable mediation; prose compliance is not by
 itself a technical enforcement boundary. The clean-room floor remains locked.
+WO-146's Copilot observations do not complete this candidate: a functioning
+pre-tool denial channel does not confine opaque shell effects, MCP or other
+outward channels. Sandboxing and minimal approvals remain optional personal
+choices; only the dated control table's observed predicates are claimed.
 No settings, launch defaults, current authority or runtime claims change with
 this candidate. Reopen at the next planning pass or on new enforcement evidence;
 harness-specific implementation, acceptable residual risk and measurable
