@@ -10,6 +10,11 @@ import {
   type CliActorObservation,
 } from "./cli-actor-contract.js";
 import {
+  assertMissionSource,
+  isMissionCheckRequest,
+  type MissionSource,
+} from "./mission-check-protocol.js";
+import {
   assertHandoffQuestion,
   type HandoffQuestion,
   type HandoffPacket,
@@ -41,6 +46,9 @@ export type ActorSpec = {
   worker?: CliActorSpec;
   handoff?: HandoffQuestion;
   local?: LocalModelActorSpec;
+  /** Only a mission-check worker: the capsule is completed at dispatch, so a
+   * cadence judges the work as it now reads rather than a frozen snapshot. */
+  missionSource?: MissionSource;
 };
 export interface ActorResult {
   worker?: CliActorObservation;
@@ -109,6 +117,7 @@ export function assertActorSpec(value: unknown): asserts value is ActorSpec {
           "worker",
           "handoff",
           "local",
+          "missionSource",
         ].includes(key),
     ) ||
     !ACTOR_KINDS.includes(v.kind as ActorKind) ||
@@ -133,6 +142,13 @@ export function assertActorSpec(value: unknown): asserts value is ActorSpec {
       throw new Error("CLI actor effect differs from request");
   } else if (v.worker !== undefined)
     throw new Error("worker request on another actor kind");
+  if (
+    v.kind === "cli-worker" &&
+    isMissionCheckRequest((v.worker as CliActorSpec).request)
+  )
+    assertMissionSource(v.missionSource);
+  else if (v.missionSource !== undefined)
+    throw new Error("mission source on another actor kind");
   if (v.kind === "human-handoff") assertHandoffQuestion(v.handoff);
   else if (v.handoff !== undefined)
     throw new Error("handoff question on another actor kind");

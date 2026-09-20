@@ -28,6 +28,13 @@ import {
   presenceActorKey,
 } from "./presence-signals.js";
 import { assertHandoffPacket, type HandoffPacket } from "./handoff-contract.js";
+import {
+  assertMissionCheckSubject,
+  isMissionCheckRequest,
+  validateMissionCheckResult,
+  type MissionCheckFinding,
+  type MissionCheckObserved,
+} from "./mission-check-protocol.js";
 import { isWriterRequest } from "./worker-protocol.js";
 
 export interface ResidentConfiguration {
@@ -37,6 +44,17 @@ export interface ResidentConfiguration {
   actors: Record<string, ActorSpec>;
   evidence: string[];
   heartbeatBudgetMs?: number;
+}
+/** A mission check that did not come back `on-mission` holds unattended
+ * dispatch. The check itself stays armed; nothing else runs until a human
+ * answers or a fresh judgment over changed work clears it. */
+export interface MissionHold {
+  reason: string;
+  episodeId: string;
+  subjectHash: string;
+  verdict: "drift" | "unknown";
+  findings: MissionCheckFinding[];
+  correctionEventId?: string;
 }
 export interface ResidentState {
   configuration: ResidentConfiguration | null;
@@ -69,6 +87,11 @@ export interface ResidentState {
       answer?: string;
     }
   >;
+  missionChecks: Record<
+    string,
+    { subjectHash: string | null; verdict: MissionCheckObserved["verdict"] }
+  >;
+  dispatchHeld: MissionHold | null;
 }
 export function decodeResidentConfiguration(
   value: unknown,
@@ -128,6 +151,8 @@ export const emptyResidentState = (): ResidentState => ({
   actors: {},
   progress: {},
   handoffs: {},
+  missionChecks: {},
+  dispatchHeld: null,
 });
 export function residentMachine(
   state: ResidentState,
@@ -170,7 +195,66 @@ export const residentEventTypes = [
   "HandoffRequested",
   "HandoffAnswered",
   "CliWorkerObserved",
+  "MissionDriftObserved",
+  "MissionHoldCleared",
 ] as const;
+
+/** What the capsule proves on its own, with no model judgment at all. A
+ * verifier that never answered removes the model's verdict, never the host's
+ * evidence, so an episode that failed after observing its capsule is normalized
+ * exactly as an `unknown` model result is. A capsule that was never observed
+ * stays genuinely unjudged. */
+function hostMissionJudgment(subject: unknown): MissionCheckObserved | null {
+  try {
+    assertMissionCheckSubject(subject);
+    return validateMissionCheckResult(
+      { schemaVersion: "mission-check-v1", verdict: "unknown", findings: [] },
+      subject,
+    );
+  } catch {
+    return null;
+  }
+}
+/** The verdict is read from the already-validated observation; the fold never
+ * takes a worker's word for whether a hold is needed. */
+function foldMissionJudgment(
+  state: ResidentState,
+  episodeId: string,
+  payload: Record<string, unknown>,
+) {
+  const observation = (payload as { worker?: unknown }).worker as
+    { result?: unknown; subject?: unknown; failure?: string } | undefined;
+  const subject = observation?.subject as { hash: string } | undefined;
+  const observed = observation?.result as MissionCheckObserved | undefined;
+  const judgment =
+    observed ?? (subject ? hostMissionJudgment(observation!.subject) : null);
+  const verdict: MissionCheckObserved["verdict"] =
+    judgment?.verdict ?? "unknown";
+  state.missionChecks[episodeId] = {
+    subjectHash: subject?.hash ?? null,
+    verdict,
+  };
+  // A pass never holds, and a standing hold is not replaced by a second one.
+  // Retiring it is an explicit `MissionHoldCleared` event the host appends
+  // from this recorded verdict, never a silent effect of the fold.
+  if (verdict === "on-mission" || state.dispatchHeld) return;
+  const findings = judgment?.findings ?? [];
+  const failure = observation?.failure ?? "verifier unavailable";
+  state.dispatchHeld = {
+    reason:
+      verdict === "drift"
+        ? `mission check ${episodeId} found drift: ${findings
+            .map((finding) => `${finding.reference} (${finding.evidence})`)
+            .join("; ")}${
+            observed === undefined ? ` (no model judgment: ${failure})` : ""
+          }`
+        : `mission check ${episodeId} returned no judgment (${failure})`,
+    episodeId,
+    subjectHash: subject?.hash ?? "",
+    verdict,
+    findings: [...findings],
+  };
+}
 
 function expireActorHeartbeats(state: ResidentState) {
   const budget = state.configuration?.heartbeatBudgetMs ?? 30000;
@@ -182,12 +266,20 @@ function expireActorHeartbeats(state: ResidentState) {
   }
 }
 
+/** The read-only judge of running work, declared as a CLI worker actor. */
+export const isMissionActor = (spec: ActorSpec): boolean =>
+  spec.kind === "cli-worker" && isMissionCheckRequest(spec.worker!.request);
+
 export function residentRefusal(
   state: ResidentState,
   machine: PresenceMachine,
 ): string | null {
   const phase = machine.phase()!;
   const spec = state.configuration!.actors[phase.phaseId]!;
+  // Held work waits for a human or a fresh judgment; the check itself is not
+  // the work it holds, so it stays armed and can observe the repair.
+  if (state.dispatchHeld && !isMissionActor(spec))
+    return state.dispatchHeld.reason;
   const orderId =
     spec.worker?.request.workOrder.workOrderId ?? spec.handoff?.workOrderId;
   if (
@@ -527,6 +619,10 @@ export function foldResidentEvent(
       if (payload.verified !== verified)
         throw new Error("script verification contradicts recorded output");
     }
+    if (!lost) {
+      const spec = state.configuration!.actors[state.episodePhases[id]!]!;
+      if (isMissionActor(spec)) foldMissionJudgment(state, id, payload);
+    }
     state.episodes[id] = lost ? "lost" : "observed";
     const actor = state.actors[`episode:${id}`];
     if (actor) actor.status = "stopped";
@@ -534,6 +630,56 @@ export function foldResidentEvent(
       !lost && payload["verified"] === true ? "verified-success" : "failure",
       id,
     );
+  }
+  if (event.type === "MissionDriftObserved") {
+    const hold = state.dispatchHeld;
+    if (
+      event.actorId !== "resident-host" ||
+      !hold ||
+      hold.verdict !== "drift" ||
+      hold.correctionEventId !== undefined ||
+      payload["episodeId"] !== hold.episodeId ||
+      payload["subjectHash"] !== hold.subjectHash ||
+      canonicalStringify(payload["findings"]) !==
+        canonicalStringify(hold.findings)
+    )
+      throw new Error("correction does not record the current mission hold");
+    hold.correctionEventId = event.eventId;
+  }
+  if (event.type === "MissionHoldCleared") {
+    const hold = state.dispatchHeld;
+    const origin = payload["origin"];
+    if (!hold) throw new Error("no mission hold to clear");
+    if (origin === "human") {
+      if (
+        event.actorId !== "operator" ||
+        typeof payload["answer"] !== "string" ||
+        !payload["answer"].trim() ||
+        payload["episodeId"] !== hold.episodeId
+      )
+        throw new Error("invalid human answer to the mission hold");
+    } else if (origin === "verified-repair") {
+      const judged = payload["judgment"];
+      const subject = payload["subject"];
+      if (event.actorId !== "resident-host") throw new Error("invalid clear");
+      assertMissionCheckSubject(subject);
+      const judgment = validateMissionCheckResult(judged, subject);
+      // Only a fresh pass over changed work clears: re-judging the same bytes
+      // cannot retire a finding, and the implementer never clears its own hold.
+      if (
+        judgment.verdict !== "on-mission" ||
+        subject.hash === hold.subjectHash ||
+        typeof payload["episodeId"] !== "string" ||
+        payload["episodeId"] === hold.episodeId
+      )
+        throw new Error("mission hold needs a passing judgment over a repair");
+      state.missionChecks[payload["episodeId"]] = {
+        subjectHash: subject.hash,
+        verdict: judgment.verdict,
+      };
+    } else throw new Error("unknown mission hold clearance origin");
+    state.dispatchHeld = null;
+    state.lastNoOp = null;
   }
   if (["ActorUnavailable", "ScriptEpisodeRefused"].includes(event.type)) {
     if (

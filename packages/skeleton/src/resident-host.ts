@@ -10,7 +10,15 @@ import {
   type ActorRun,
 } from "./actor-catalog.js";
 import {
+  assertActorResult,
+  scriptResultVerified,
+  type ActorResult,
+  type ActorSpec,
+} from "./actor-contract.js";
+import { actorFailure } from "./cli-actor.js";
+import {
   decodeResidentConfiguration,
+  isMissionActor,
   residentEpisodeId,
   residentMachine,
   residentRefusal,
@@ -18,6 +26,40 @@ import {
   type ResidentState,
 } from "./resident-state.js";
 import { ResidentStore } from "./resident-store.js";
+
+/** A CLI observation the actor contract refuses is recorded as the failed
+ * episode it is — `invalid-result`, with its launch and the capsule the episode
+ * observed — rather than thrown out of the transaction, which would leave the
+ * episode pending and nothing held. The fold then derives from that capsule
+ * whatever the host can prove on its own (WO-099 VER-003 F1). The replacement
+ * must pass the same contract, or the original refusal stands; a refused
+ * script observation or launch is still an error. */
+function admittedObservation(
+  spec: ActorSpec,
+  result: ActorResult,
+  episodeId: string,
+): ActorResult {
+  try {
+    assertActorResult(result);
+    scriptResultVerified(spec, result, episodeId);
+    return result;
+  } catch (error) {
+    const worker = result.worker;
+    if (spec.kind !== "cli-worker" || !worker || worker.result === undefined)
+      throw error;
+    const failed: ActorResult = {
+      ...actorFailure("worker-failed"),
+      worker: {
+        launch: worker.launch,
+        failure: "invalid-result",
+        ...(worker.subject ? { subject: worker.subject } : {}),
+      },
+    };
+    assertActorResult(failed);
+    scriptResultVerified(spec, failed, episodeId);
+    return failed;
+  }
+}
 
 function observationDeadline(state: ResidentState) {
   return Math.min(
@@ -207,7 +249,7 @@ export class ResidentHost {
         }
       });
     }
-    const result = await resultPromise;
+    const observed = await resultPromise;
     await this.store.transaction((tx) => {
       // Presence already in the canonical log wins before accepting this result.
       tx.sample(this.now());
@@ -215,6 +257,7 @@ export class ResidentHost {
         tx.resident!.configuration!.actors[
           tx.resident!.episodePhases[dispatched.id]!
         ]!;
+      const result = admittedObservation(spec, observed, dispatched.id);
       tx.append(
         spec.kind === "cli-worker"
           ? "CliWorkerObserved"
@@ -229,6 +272,35 @@ export class ResidentHost {
         origin: "task",
         at: tx.resident!.at,
       });
+      // A drift is a semantic correction with a producer: record it beside the
+      // hold it raised, so the correction surface sees the finding itself.
+      const held = tx.resident!.dispatchHeld;
+      if (held?.verdict === "drift" && held.correctionEventId === undefined)
+        tx.append("MissionDriftObserved", {
+          episodeId: held.episodeId,
+          subjectHash: held.subjectHash,
+          findings: held.findings,
+        });
+      // The repair clearance the hold promises. The verdict is the one the
+      // fold derived from the validated observation, never the worker's claim,
+      // and the capsule must be one the held judgment did not cover. Without
+      // this the resident could only ever raise a hold, and every repair would
+      // still wait for a human answer.
+      const judged = result.worker;
+      if (
+        held &&
+        isMissionActor(spec) &&
+        tx.resident!.missionChecks[dispatched.id]?.verdict === "on-mission" &&
+        judged?.subject &&
+        judged.subject.hash !== held.subjectHash &&
+        dispatched.id !== held.episodeId
+      )
+        tx.append("MissionHoldCleared", {
+          origin: "verified-repair",
+          episodeId: dispatched.id,
+          subject: judged.subject,
+          judgment: judged.result,
+        });
     });
   }
   async run(

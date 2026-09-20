@@ -59,15 +59,22 @@ export class ResidentTransaction {
   get resident(): ResidentState | undefined {
     return this.state.resident as unknown as ResidentState | undefined;
   }
-  append(type: string, payload: object, occurredAt = this.resident?.at ?? 0) {
+  append(
+    type: string,
+    payload: object,
+    occurredAt = this.resident?.at ?? 0,
+    actorId?: "operator" | "resident-host",
+  ) {
     const event: Event = {
       schemaVersion: 1,
       eventId: `evt_${this.events.length + 1}`,
       type,
       occurredAt,
-      actorId: ["OperatorPresenceChanged", "HandoffAnswered"].includes(type)
-        ? "operator"
-        : "resident-host",
+      actorId:
+        actorId ??
+        (["OperatorPresenceChanged", "HandoffAnswered"].includes(type)
+          ? "operator"
+          : "resident-host"),
       workstreamId: "resident",
       payload: payload as JsonValue,
     };
@@ -193,6 +200,32 @@ export async function answerHandoff(
       "HandoffAnswered",
       { ...input, origin: "human" },
       Math.max(now(), tx.resident?.at ?? 0),
+    );
+  });
+}
+/** A human answer or a fresh passing judgment over a repair. A resident actor
+ * cannot clear the hold its own drift raised. */
+export async function clearMissionHold(
+  directory: string,
+  input:
+    | { origin: "human"; episodeId: string; answer: string }
+    | {
+        origin: "verified-repair";
+        episodeId: string;
+        subject: unknown;
+        judgment: unknown;
+      },
+  now = Date.now,
+) {
+  if (process.env["DOTLN_RESIDENT_EPISODE_ID"])
+    throw new Error("resident actors cannot clear a mission hold");
+  const store = new ResidentStore(directory);
+  await store.transaction((tx) => {
+    tx.append(
+      "MissionHoldCleared",
+      input,
+      Math.max(now(), tx.resident?.at ?? 0),
+      input.origin === "human" ? "operator" : "resident-host",
     );
   });
 }

@@ -11679,6 +11679,290 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-abcc64ad8f8c79b9",
+      "key": "decision:docs/evidence/WO-099/decisions.md#wo-099-d007",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "57c80f081f0fba87b9013099bb35dc8f9219ad8460fc14bab254a2aaa68c41ac",
+          "ref": "docs/evidence/WO-099/decisions.md#wo-099-d007",
+          "title": "WO-099-D007: Run node scripts/evidence-mission-check.mjs from an outside terminal, then update the WO-099 capability row and this order's report with the observed row.",
+          "summary": "{ \"id\": \"WO-099-D007\", \"date\": \"2026-09-20\", \"dispatch\": \"resume: next\", \"decision\": \"File the capability row at the fixture-evidenced level and leave the operator-run unattended row as the named remaining gate, rather than recording a live level this dispatch did not observe.\", \"evidence\": [ \"docs/planning/capability-table.md\", \"scripts/evidence-mission-check.mjs\", \"docs/work-orders/WO-099-mission-check.md\" ], \"rejected\": [ { \"option\": \"Write the live-evidenced level now\", \"reason\": \"No live judgment has been observed; the order's own review assumption is that the operator runs the row outside the sandbox.\" }, { \"option\": \"Hold the whole order until the row is run\", \"reason\": \"Every other d",
+          "missing": false
+        },
+        {
+          "hash": "da062707d2f131c1f49f52056257ae3ce4242aec3139ccbaa76e0861b5be2d91",
+          "ref": "docs/evidence/WO-099/decisions.md#wo-099-d007",
+          "title": "WO-099-D007: Run node scripts/evidence-mission-check.mjs from an outside terminal, then update the WO-099 capability row and this order's report with the observed row.",
+          "summary": "{ \"id\": \"WO-099-D007\", \"date\": \"2026-09-20\", \"dispatch\": \"resume: next\", \"decision\": \"File the capability row at the fixture-evidenced level and leave the operator-run unattended row as the named remaining gate, rather than recording a live level this dispatch did not observe.\", \"evidence\": [ \"docs/planning/capability-table.md\", \"scripts/evidence-mission-check.mjs\", \"docs/work-orders/WO-099-mission-check.md\" ], \"rejected\": [ { \"option\": \"Write the live-evidenced level now\", \"reason\": \"No live judgment has been observed; the order's own review assumption is that the operator runs the row outside the sandbox.\" }, { \"option\": \"Hold the whole order until the row is run\", \"reason\": \"Every other d",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-2f0974e3d5d5063a",
+      "key": "decision:docs/evidence/WO-099/decisions.md#wo-099-d008",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "b428f68873339d3153de35e7d4278e02ff0863f190572cd49a1ded04476e1f61",
+          "ref": "docs/evidence/WO-099/decisions.md#wo-099-d008",
+          "title": "WO-099-D008: The tinkerer-economy support was not equipped in this dispatch's briefing although WO-145 D001 selected WO-099 as a trial; equip it explicitly on the next trial dispatch, or record here t",
+          "summary": "{ \"id\": \"WO-099-D008\", \"date\": \"2026-09-20\", \"dispatch\": \"resume: next; WO-145 D001 selected WO-099 as the third economy trial\", \"kind\": \"experiment\", \"decision\": \"Use `npm run build` as the single per-iteration check during implementation instead of `npx tsc --noEmit` followed by a build before each test run.\", \"question\": \"Does a typecheck-only feedback loop cost less per implementation iteration than the full build, once the build that a test run needs anyway is counted?\", \"alternatives\": [ \"npx tsc --noEmit per iteration, then npm run build before each test run (the method in use when the trial started)\", \"npm run build as the only iteration check\", \"no intermediate check, relying on the",
+          "missing": false
+        },
+        {
+          "hash": "93dd9febe28b68cd8d76727ca2a010c0ec873e06f32793d614b39e960ece6b2c",
+          "ref": "docs/evidence/WO-099/decisions.md#wo-099-d008",
+          "title": "WO-099-D008: The tinkerer-economy support was not equipped in this dispatch's briefing although WO-145 D001 selected WO-099 as a trial; equip it explicitly on the next trial dispatch, or record here t",
+          "summary": "{ \"id\": \"WO-099-D008\", \"date\": \"2026-09-20\", \"dispatch\": \"resume: next; WO-145 D001 selected WO-099 as the third economy trial\", \"kind\": \"experiment\", \"decision\": \"Use `npm run build` as the single per-iteration check during implementation instead of `npx tsc --noEmit` followed by a build before each test run.\", \"question\": \"Does a typecheck-only feedback loop cost less per implementation iteration than the full build, once the build that a test run needs anyway is counted?\", \"alternatives\": [ \"npx tsc --noEmit per iteration, then npm run build before each test run (the method in use when the trial started)\", \"npm run build as the only iteration check\", \"no intermediate check, relying on the",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-6c22a74a648a3b56",
+      "key": "candidate:docs/planning/resident-binding-to-active-work-2026-09-20.md#binding-a-resident-to-the-active-work--candidate",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "7ab32085adb5da3bab99d867bfd2ffbc4d9978948da578c524fce0f686807dfc",
+          "ref": "docs/planning/resident-binding-to-active-work-2026-09-20.md#binding-a-resident-to-the-active-work--candidate",
+          "title": "Binding a resident to the active work — candidate",
+          "summary": "# Binding a resident to the active work — candidate **Planning observation:** 2026-09-20 during WO-099, raised by the operator while reading the mission-check implementation. The mechanism the resident needs to watch an order now exists; the path from \"I opened a worktree for WO-NNN\" to \"a resident is watching it\" does not. Nothing here is a defect in WO-068, WO-099 or the operator's workflow. They were built to different boundaries and the boundary between them is empty. ## What is observed - `dotln resident --store <dir> --policy <id> [--tick <ms> | --once]` is operator-started and, in the skeleton runbook's own words, \"independent of Contributor stages\". One process per launchpad, under a",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-2718b4763489318d",
+      "key": "decision:docs/evidence/WO-099/decisions.md#wo-099-d011",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "3a6cb31e5531bf98d1d12ae998135104a06bc892f760381771c256b846d7f6c2",
+          "ref": "docs/evidence/WO-099/decisions.md#wo-099-d011",
+          "title": "WO-099-D011: In resume: fix, rebuild the mission-check authorization and request from the dispatch-time subject, append a validated MissionHoldCleared event for a fresh on-mission resident observation",
+          "summary": "{ \"id\": \"WO-099-D011\", \"date\": \"2026-09-20\", \"dispatch\": \"resume: verify\", \"decision\": \"Fail verification until the resident can dispatch a mission check over changed work and a fresh passing resident observation clears the existing hold.\", \"evidence\": [ \"docs/verifications/WO-099/VER-001.md\", \"packages/skeleton/src/cli-actor.ts\", \"packages/skeleton/src/mission-check-protocol.ts\", \"packages/skeleton/src/resident-state.ts\" ], \"rejected\": [ { \"option\": \"Treat the direct runMissionCheck fixture as proof of resident behavior\", \"reason\": \"That helper builds a new command from the changed subject; the cadence path replaces the subject while retaining the command bound to the old hash.\" }, { \"optio",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-cc537d41c4565aac",
+      "key": "decision:docs/evidence/WO-099/decisions.md#wo-099-d012",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "89b53786c93e1e27c65229d8926dd3e273a8f518538eb0976113aa18375f9142",
+          "ref": "docs/evidence/WO-099/decisions.md#wo-099-d012",
+          "title": "WO-099-D012: In resume: fix, include untracked work in the capsule, replace silent path/diff/clause truncation with complete bounded input or an explicit unknown/refusal, and add adversarial regressio",
+          "summary": "{ \"id\": \"WO-099-D012\", \"date\": \"2026-09-20\", \"dispatch\": \"resume: verify\", \"decision\": \"Fail verification until the mission capsule either represents the complete active diff and contract or returns unknown when an explicit bound is exceeded.\", \"evidence\": [ \"docs/verifications/WO-099/VER-001.md\", \"packages/skeleton/src/mission-check-source.ts\", \"packages/skeleton/src/mission-check-protocol.ts\" ], \"rejected\": [ { \"option\": \"Accept tracked paths 1 through 100 as the active diff\", \"reason\": \"The 101st tracked path can be the only outside-surface edit, and the host then accepts on-mission with no finding.\" }, { \"option\": \"Ignore untracked files because git diff ignores them\", \"reason\": \"This re",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-a7e28c732475c124",
+      "key": "decision:docs/evidence/WO-099/decisions.md#wo-099-d013",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "e07f33907ebd60db920e67136ca5e6e4dacff67f7122ae07849ca7048547f132",
+          "ref": "docs/evidence/WO-099/decisions.md#wo-099-d013",
+          "title": "WO-099-D013: In resume: fix, version or reconstruct the historical Contributor graph used by authority-evidence while retaining the current mission policy, and add a regression that proves both identi",
+          "summary": "{ \"id\": \"WO-099-D013\", \"date\": \"2026-09-20\", \"dispatch\": \"resume: verify\", \"decision\": \"Fail verification until the current Contributor mission-policy identity and the historical saved Contributor identity both reproduce under the authority-evidence gate.\", \"evidence\": [ \"docs/verifications/WO-099/VER-001.md\", \"scripts/authority-evidence.mjs\", \"packages/skeleton/src/loadouts/contributor.ts\", \"docs/evidence/WO-042/authority-baseline.json\" ], \"rejected\": [ { \"option\": \"Replace the historical fixture hash with the current build hash\", \"reason\": \"D009 explicitly preserves the old saved identity and immutable historical receipts while accepting a distinct current identity.\" }, { \"option\": \"Remove",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-8ababf9798853099",
+      "key": "decision:docs/evidence/WO-099/decisions.md#wo-099-d014",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "8f60eb77991732372f15a5fd56d63e9ca338004a1642e4a0d7aed4ca2ff98597",
+          "ref": "docs/evidence/WO-099/decisions.md#wo-099-d014",
+          "title": "WO-099-D014: In resume: fix, record and validate a new immutable WO-099 feedback revision after all implementation repairs, including the required self-host evidence, then update docs/evidence/current",
+          "summary": "{ \"id\": \"WO-099-D014\", \"date\": \"2026-09-20\", \"dispatch\": \"resume: verify\", \"decision\": \"Fail verification until a new immutable feedback evidence revision validates the completed WO-099 feedback source set.\", \"evidence\": [ \"docs/verifications/WO-099/VER-001.md\", \"docs/evidence/WO-099/feedback/feedback.json\", \"docs/evidence/current.json\", \"scripts/feedback-evidence.mjs\", \"scripts/lib/evidence-sources.mjs\" ], \"rejected\": [ { \"option\": \"Rewrite the selected WO-099 feedback edition\", \"reason\": \"The evidence writer and repository policy make filed editions immutable.\" }, { \"option\": \"Accept the ten reproduced fixture outcomes without matching the subject\", \"reason\": \"The evidence subject hash cha",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-d830f01f9cb40278",
+      "key": "decision:docs/evidence/WO-099/decisions.md#wo-099-d003",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "d0aa6155e3261c1d02c1330f7f0b0402ec7df774d8064b9a4499c4ffbfc65a62",
+          "ref": "docs/evidence/WO-099/decisions.md#wo-099-d003",
+          "title": "WO-099-D003: A verdict other than on-mission sets dispatchHeld in the resident slice, refusing every phase actor except the mission check itself; a human answer or a fresh on-mission judgment over a c",
+          "summary": "{ \"id\": \"WO-099-D003\", \"date\": \"2026-09-20\", \"dispatch\": \"resume: next\", \"decision\": \"A verdict other than `on-mission` sets `dispatchHeld` in the resident slice, refusing every phase actor except the mission check itself; a human answer or a fresh `on-mission` judgment over a capsule with a different hash clears it.\", \"evidence\": [ \"packages/skeleton/src/resident-state.ts\", \"packages/skeleton/src/resident-store.ts\", \"packages/skeleton/test/mission-check.test.ts\", \"docs/product/03-architecture.md#operator-presence-policy\" ], \"rejected\": [ { \"option\": \"Let the implementer clear its own hold\", \"reason\": \"Declined in the order: the actor that drifted cannot certify that it stopped. `clearMissio",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-06abc143a1c52367",
+      "key": "decision:docs/evidence/WO-099/decisions.md#wo-099-d016",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "362615a864353e907c6fa6504741c95becb0f66d12b049c1f0cb03cf3ae053a2",
+          "ref": "docs/evidence/WO-099/decisions.md#wo-099-d016",
+          "title": "WO-099-D016: Known limitation for planning, not repaired here: on a worktree whose untracked generated evidence exceeds the diff bound the cadence holds as unknown every pulse until a human answers. T",
+          "summary": "{ \"id\": \"WO-099-D016\", \"date\": \"2026-09-20\", \"dispatch\": \"resume: fix\", \"decision\": \"Make the capsule complete or make it say so: every changed path, tracked or untracked, is named or the observation refuses; diff text is carried a whole path at a time with the unfitted paths listed in `omittedPaths`; and the host cannot record `on-mission` while any path is listed there.\", \"evidence\": [ \"docs/verifications/WO-099/VER-001.md\", \"packages/skeleton/src/mission-check-source.ts\", \"packages/skeleton/src/mission-check-protocol.ts\", \"packages/skeleton/test/mission-check.test.ts\" ], \"rejected\": [ { \"option\": \"Keep the silent first-100-paths and first-100,000-character caps\", \"reason\": \"The 101st path",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-4e6d18b9bdc9d3a1",
+      "key": "decision:docs/evidence/WO-099/decisions.md#wo-099-d018",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "6eef3564f278eb7b6e78938dac33c937ff3189ec6c0047c536a039438b5339d0",
+          "ref": "docs/evidence/WO-099/decisions.md#wo-099-d018",
+          "title": "WO-099-D018: In resume: fix, normalize a failed CLI mission episode that has an observed subject through validateMissionCheckResult with an unknown model result before folding it, preserve the failure",
+          "summary": "{ \"id\": \"WO-099-D018\", \"date\": \"2026-09-20\", \"dispatch\": \"resume: verify\", \"decision\": \"Fail verification until the resident preserves host-derived structural drift when the model episode fails after the dispatch-time capsule was observed, so the drift still records its finding and semantic correction instead of becoming an empty unknown hold.\", \"evidence\": [ \"docs/verifications/WO-099/VER-002.md\", \"packages/skeleton/src/cli-actor.ts\", \"packages/skeleton/src/mission-check-protocol.ts\", \"packages/skeleton/src/resident-state.ts\" ], \"rejected\": [ { \"option\": \"Treat every unavailable verifier as unknown even when the host already proved an outside-surface or changed-contract finding\", \"reason\": ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-47b512d993631d66",
+      "key": "decision:docs/evidence/WO-099/decisions.md#wo-099-d019",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "06e539e65ff643c63b958a8d25d0264cdbbfd02ac7c480cf81e335ca2c1cfdba",
+          "ref": "docs/evidence/WO-099/decisions.md#wo-099-d019",
+          "title": "WO-099-D019: In resume: fix, lstat and containment-check every MissionSource file read, encode an untracked symlink from its link target and Git mode or list it in omittedPaths/refuse, bound reads bef",
+          "summary": "{ \"id\": \"WO-099-D019\", \"date\": \"2026-09-20\", \"dispatch\": \"resume: verify\", \"decision\": \"Fail verification until every mission-source read stays inside the canonical worktree and untracked symlinks are represented as links or fail closed, never followed into outside-worktree bytes that a model can receive under an on-mission capsule.\", \"evidence\": [ \"docs/verifications/WO-099/VER-002.md\", \"packages/skeleton/src/mission-check-source.ts\", \"packages/skeleton/src/mission-check-protocol.ts\" ], \"rejected\": [ { \"option\": \"Treat a repository-relative symlink path as proof that its bytes are repository-contained\", \"reason\": \"readFileSync follows the link; the path passes missionPath while the bytes ca",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-5476dd8c3bcd2472",
+      "key": "decision:docs/evidence/WO-099/decisions.md#wo-099-d022",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "5524c367a028b985aab714ab3d2fd269acdb0ded064b302ab430767b9615672d",
+          "ref": "docs/evidence/WO-099/decisions.md#wo-099-d022",
+          "title": "WO-099-D022: In resume: fix, separate model-input bounds from normalized host-result admission or otherwise make the admitted capsule/result bounds consistent; ensure a host-generated result revalidat",
+          "summary": "{ \"id\": \"WO-099-D022\", \"date\": \"2026-09-20\", \"dispatch\": \"resume: verify\", \"decision\": \"Fail verification until every admitted mission capsule can carry its host-normalized structural findings through resident observation and replay without losing the hold at the result-admission boundary.\", \"evidence\": [ \"docs/verifications/WO-099/VER-003.md\", \"packages/skeleton/src/mission-check-protocol.ts\", \"packages/skeleton/src/cli-actor-contract.ts\", \"packages/skeleton/src/resident-state.ts\", \"packages/skeleton/src/resident-host.ts\" ], \"rejected\": [ { \"option\": \"Accept the green eight-case fixture suite as sufficient\", \"reason\": \"A 102-path capsule inside the declared 400-path limit produced 101 struc",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-72bff07566fb6cd3",
+      "key": "decision:docs/evidence/WO-099/decisions.md#wo-099-d023",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "138207fdef586e792fabf84c90cd4e179144bf6672146a90d92aed5907f739cf",
+          "ref": "docs/evidence/WO-099/decisions.md#wo-099-d023",
+          "title": "WO-099-D023: In resume: fix, preserve the reason for existing decision-source failures instead of swallowing size/containment/read errors as absence; refuse or mark incomplete so no pass is certified ",
+          "summary": "{ \"id\": \"WO-099-D023\", \"date\": \"2026-09-20\", \"dispatch\": \"resume: verify\", \"decision\": \"Fail verification until decision-history projection distinguishes a genuinely absent optional file from a present file it cannot safely read, and honors the declared last-N window including zero.\", \"evidence\": [ \"docs/verifications/WO-099/VER-003.md\", \"packages/skeleton/src/mission-check-source.ts\", \"packages/skeleton/src/mission-check-protocol.ts\", \"docs/work-orders/WO-099-mission-check.md\" ], \"rejected\": [ { \"option\": \"Treat every decision read failure as an empty history\", \"reason\": \"An existing committed history over 200000 bytes lost its final valid decision with no incompleteness marker; an empty mo",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-56b599e15f97e666",
+      "key": "decision:docs/evidence/WO-099/decisions.md#wo-099-d027",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "dd58b4bae60ebdd4f87f520464ecac8a3b7b574d252fd91e9c7b7181220c7df8",
+          "ref": "docs/evidence/WO-099/decisions.md#wo-099-d027",
+          "title": "WO-099-D027: When resident-state.ts next changes with a fresh feedback edition, word the unknown hold from an answered judge as an incomplete capsule — naming the omitted paths and the omitted decisio",
+          "summary": "{ \"id\": \"WO-099-D027\", \"date\": \"2026-09-20\", \"dispatch\": \"resume: fix\", \"decision\": \"Defer correcting the hold reason for an `unknown` verdict the host derived from a judge's answer: the fold words it `returned no judgment (verifier unavailable)` although the judge answered and the capsule was incomplete. The wording lives in `resident-state.ts`, a registered feedback behavior source, so the correction needs a fresh live feedback edition this repair should not spend on a parenthetical.\", \"evidence\": [ \"packages/skeleton/src/resident-state.ts\", \"packages/skeleton/test/mission-check.test.ts\", \"scripts/lib/evidence-sources.mjs\", \"docs/product/07-execution-guide.md#independent-workflows-and-inte",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-af2093088ebe1586",
+      "key": "decision:docs/evidence/WO-099/decisions.md#wo-099-d029",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "6fb4752e04f658bcc37ed68a208e167275d62111f4d79fd15d4da761041cdd15",
+          "ref": "docs/evidence/WO-099/decisions.md#wo-099-d029",
+          "title": "WO-099-D029: In resume: fix, collect ignored entries with the bounded git ls-files --others --ignored --exclude-standard --directory form the repository already uses in source-change-worktree.ts, deci",
+          "summary": "{ \"id\": \"WO-099-D029\", \"date\": \"2026-09-20\", \"dispatch\": \"resume: verify\", \"decision\": \"Fail verification until work the repository's own ignore rules exclude can no longer be certified `on-mission`: an out-of-surface entry Git reports as ignored must either become a host-derived finding or be named as an omission over which no pass is admitted, and the judge's instructions must describe the list it is actually given.\", \"evidence\": [ \"docs/verifications/WO-099/VER-004.md\", \"packages/skeleton/src/mission-check-source.ts\", \"packages/skeleton/src/mission-check-protocol.ts\", \".gitignore\", \"docs/product/03-architecture.md#operator-presence-policy\" ], \"rejected\": [ { \"option\": \"Accept the exclusio",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-ae8e4b2b6ebbecf6",
+      "key": "decision:docs/evidence/WO-099/decisions.md#wo-099-d030",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "e5226821f80db5cd4c71c108fe7abb523a7d6496cd37c3e0c18e834242ca43d5",
+          "ref": "docs/evidence/WO-099/decisions.md#wo-099-d030",
+          "title": "WO-099-D030: In resume: fix, let the host's entry win its own (kind, reference, evidence) key in validateMissionCheckResult — or keep a judge's agreement in a separate field — without changing the fin",
+          "summary": "{ \"id\": \"WO-099-D030\", \"date\": \"2026-09-20\", \"dispatch\": \"resume: verify\", \"decision\": \"Fail verification until a judge that repeats a host-derived finding can no longer replace the host's own reason in the normalized result, the hold and the `MissionDriftObserved` correction event.\", \"evidence\": [ \"docs/verifications/WO-099/VER-004.md\", \"packages/skeleton/src/mission-check-protocol.ts\", \"packages/skeleton/src/resident-state.ts\", \"docs/product/02-domain-model.md#feedback\" ], \"rejected\": [ { \"option\": \"Treat it as harmless because the verdict and the hold still stand\", \"reason\": \"02 §Feedback describes the correction event as the record that carries the finding itself; the sentence a returnin",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-e6be99dffc483430",
+      "key": "decision:docs/evidence/WO-099/decisions.md#wo-099-d033",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "768a9bc66691d1c8c073d6455934f0e53dda80a5086d068ce4f82fa90d21272e",
+          "ref": "docs/evidence/WO-099/decisions.md#wo-099-d033",
+          "title": "WO-099-D033: WO-099 repair five: stop a metadata-only move of a baselined ignored entry from forcing a hold - ignore such a move, re-pin the baseline when a hold is cleared, or classify declared rebui",
+          "summary": "{ \"id\": \"WO-099-D033\", \"date\": \"2026-09-20\", \"dispatch\": \"resume: verify\", \"decision\": \"A metadata-only move of an ignored entry already present in the mission baseline must not by itself prevent an on-mission pass or raise a host-derived drift. The fourth repair fingerprints a git directory-collapsed ignored root by lstat kind/mode/size/mtime, and two ordinary build effects move a collapsed root's own metadata: atomicBuild creates and removes a staging directory directly under .runtime/, and publishBuildTree renames tsconfig.tsbuildinfo into each dist/. The pin is fixed at actor declaration, so after one npm run build the entries never match the baseline again and every later pulse holds: d",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-c4a88b6c0d0a150c",
+      "key": "decision:docs/evidence/WO-099/decisions.md#wo-099-d035",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "22c9a713eee17112383542225613381b795e70af886a6e01316b0e5f087aad6e",
+          "ref": "docs/evidence/WO-099/decisions.md#wo-099-d035",
+          "title": "WO-099-D035: Give codex-cli a working process-cost reading: either call harness begin from the Codex dispatch path so a session record exists before usage is measured, or give Codex the graceful branc",
+          "summary": "{ \"id\": \"WO-099-D035\", \"date\": \"2026-09-20\", \"dispatch\": \"resume: final review\", \"decision\": \"Record, and do not repair under this order, that the process-cost counter is structurally unavailable on codex-cli and always available on claude-code. measureHarnessUsage throws \\\"Begin the harness session before measuring usage\\\" unless a begun session record exists at docs/control/local/harness/<sha256>.json; the Claude hooks write that record at dispatch, and no Codex path ever calls harness begin, because .codex/hooks carries only continuation.mjs and the Codex duties are role text without automatic enforcement. Across every VER and FINAL report in the repository that carries a cost line the sp",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

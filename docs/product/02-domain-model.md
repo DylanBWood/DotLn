@@ -559,6 +559,28 @@ examples alone cannot supply new hard constraints. Its decision-lineage guard
 is implemented for equipped WO-011 feedback boundaries. Outside that host,
 the execution guide still applies the judgment manually.
 
+**A second producer of a correction (WO-099, 2026-09-20).** The four typed
+signals above are operator signals. The `mission-check` episode adds the first
+non-operator producer: `MissionDriftObserved { episodeId, subjectHash,
+findings }`, appended by the resident host beside the hold a `drift` verdict
+raised. It is deliberately a distinct type, because its origin is not the
+operator and it carries no operator intent: it records that a read-only judge,
+given the active contract and the observed diff, named a contract clause, a
+vision thesis or an exclusion — including a finding the host derived from the
+capsule alone when the episode's model never returned a usable judgment
+(WO-099 VER-002 repair). It reaches the same fail-conservative
+disposition from the other direction — the hold freezes unattended dispatch,
+preserves the finding and waits for a human, rather than widening anything.
+A correction event is admitted only when it matches the hold the resident fold
+already derived from the validated observation, so the record cannot claim a
+drift the judgment did not contain. The episode is not an operator correction,
+does not retire a feedback unit and confers no decision authority; the four
+operator signals keep their meaning, their reactor and their policy.
+When a judge repeats a finding the host derived from the capsule, the host's
+finding wins that exact `(kind, reference, evidence)` key. Agreement is kept as
+one finding, but model prose cannot replace the host's proof in the hold or in
+the correction event a returning human reads (WO-099 VER-004 repair).
+
 ### Feedback compiler v1
 
 **Current harness policy (WO-132, WO-135 and WO-139, updated 2026-09-19).** Writer isolation equips

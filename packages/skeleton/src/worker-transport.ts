@@ -14,6 +14,10 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { feedbackClaudeSettings } from "./loadouts/feedback.js";
 import { PLAN_REFUTATION_LIMITS } from "./plan-refutation-protocol.js";
+import {
+  MISSION_CHECK_LIMITS,
+  isMissionCheckRequest,
+} from "./mission-check-protocol.js";
 import { decodeUsageSource, usageObservation } from "./usage-observation.mjs";
 import {
   WorkerFailure,
@@ -295,11 +299,13 @@ export function canonicalWorkerArgs(
       '{"mcpServers":{}}',
       "--no-chrome",
       "--max-budget-usd",
-      isPlanRequest(request)
-        ? PLAN_REFUTATION_LIMITS.maxBudgetUsd
-        : "feedback" in request && request.feedback
-          ? FEEDBACK_VERIFIER_LIMITS.maxBudgetUsd
-          : "1.00",
+      isMissionCheckRequest(request)
+        ? MISSION_CHECK_LIMITS.maxBudgetUsd
+        : isPlanRequest(request)
+          ? PLAN_REFUTATION_LIMITS.maxBudgetUsd
+          : "feedback" in request && request.feedback
+            ? FEEDBACK_VERIFIER_LIMITS.maxBudgetUsd
+            : "1.00",
     ];
   }
   if (!meetsMinimumVersion(harnessVersion, OBSERVED_CLI_VERSIONS.codex))
@@ -722,11 +728,13 @@ abstract class CliWorkOrderTransport implements WorkOrderTransport {
         args,
         cwd: request.cwd,
         input: transportPrompt(request),
-        timeoutMs: isPlanRequest(request)
-          ? PLAN_REFUTATION_LIMITS.timeoutMs
-          : "feedback" in request && request.feedback
-            ? FEEDBACK_VERIFIER_LIMITS.timeoutMs
-            : WORKER_TIMEOUT_MS,
+        timeoutMs: isMissionCheckRequest(request)
+          ? MISSION_CHECK_LIMITS.timeoutMs
+          : isPlanRequest(request)
+            ? PLAN_REFUTATION_LIMITS.timeoutMs
+            : "feedback" in request && request.feedback
+              ? FEEDBACK_VERIFIER_LIMITS.timeoutMs
+              : WORKER_TIMEOUT_MS,
       });
       const receipt = process.accepted.then(() => ({
         commandId: request.command.commandId,
