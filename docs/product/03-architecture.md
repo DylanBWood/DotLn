@@ -462,6 +462,24 @@ future harnesses expose different native composition mechanisms. DotLn records
 each as a versioned `RuntimePrimitiveCatalog` discovered from the actual
 environment, then treats it as a compiler target.
 
+**Assessed 2026-09-20 — a third harness, allocated to
+[WO-146](../work-orders/WO-146-copilot-cli-harness.md).** The operator
+installed GitHub Copilot CLI for operator-launched implementation, fixing and
+verification. Observed on CLI 1.0.86 without a model call: it loads
+`AGENTS.md + CLAUDE.md` as repository instructions and lists the six generated
+`dotln-*` skills, so it needs no surface of its own. Documented by the CLI's
+bundled changelog and untested here: it reads `.claude/settings.json` hooks
+and denies a tool call when a pre-tool hook errors, so whether DotLn's
+generated hooks fire, fire twice or deny every call under it is unknown. The
+harness is one more entry in the compiled profile table, recorded apart from
+whichever model the CLI routes, and every control is to be labeled enforced,
+advisory, unsupported or untested from a dated probe; nothing is claimed as
+enforced from documentation. No profile, setting or runtime claim changes with
+this note. The record is
+[the planning document](../planning/copilot-cli-integration-2026-09-20.md).
+Reopen when WO-146 closes, or on a CLI version that changes how it reads
+instructions, skills or hooks.
+
 The familiar brain-and-body projection is useful only if its losses stay
 visible. The model is the replaceable **brain**; tools and effect adapters are
 the **senses and hands**; the harness is the larger **body** that presents

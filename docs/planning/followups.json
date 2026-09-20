@@ -11321,6 +11321,21 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-16adc40db1da7959",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-copilot-cli-pass-recorded-2026-09-20::f93f956250d4eeff3e3555d5d209b919fc5b83a75e13bcdc9645c75bf60f2f0d",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "6a7a413db779ae5bf27b45aaf06aece0f2cd1ac27f44ba310f2a8c39f62a76a6",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-copilot-cli-pass-recorded-2026-09-20",
+          "title": "A pasted dispatch does not resolve a role.",
+          "summary": "1. **A pasted dispatch does not resolve a role.** In Claude Code the prompt-submit hook resolves a role only when the trimmed prompt equals a known intent or starts with `planning:` or `ideation:` (`packages/skeleton/src/harness-host.ts`, the session branch of `evaluateExistingHarnessHook`). A dispatch that arrives as pasted content is stored behind a paste wrapper, so the session gets no role, no start time and no usage key: every usage counter reads unknown, `harness usage` refuses, and the role's outside-write grants are judged for role \"unknown\". Observed on the 2026-09-20 planning session; the string the hook received is inferred, since the journal stores no prompt text. Whether pasted ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

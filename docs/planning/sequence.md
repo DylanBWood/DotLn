@@ -31,6 +31,15 @@ successful live row admits it. WO-085 to WO-089 stay last. The evidence is in
 [the cleanup planning document](outstanding-cleanup-2026-09-19.md) §4, §5 and
 §10.
 
+Copilot CLI pass (2026-09-20): WO-146 takes its own one-entry slot directly
+after WO-140 and WO-056 and before WO-145 and WO-090. It shares a host file
+with WO-140 and the loadouts and regenerated bundle with WO-145, and it writes
+product 07 and the security document before WO-090 restructures them, so it
+pairs with none of them; it may run in the second lane beside WO-056 once
+WO-140 has closed. It is operator tooling, not critical path, and no pair is
+recut. The evidence is in
+[the Copilot CLI planning document](copilot-cli-integration-2026-09-20.md) §7.
+
 <!-- dotln-work-order-sequence:start -->
 
 - WO-132 — Machinery stand-down
@@ -78,6 +87,8 @@ successful live row admits it. WO-085 to WO-089 stay last. The evidence is in
 
 - WO-140 — Gate sandbox preflight and usage readback
 - WO-056 — Live blinded verification and repair
+
+- WO-146 — Copilot CLI harness
 
 - WO-145 — Tinkerer economy experiment
 - WO-090 — Shorter cold start
