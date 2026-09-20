@@ -14,6 +14,12 @@ import {
   type HandoffQuestion,
   type HandoffPacket,
 } from "./handoff-contract.js";
+import {
+  assertLocalModelActorSpec,
+  assertLocalModelObservation,
+  type LocalModelActorSpec,
+  type LocalModelObservation,
+} from "./local-model-contract.js";
 /** Pure actor declarations and persisted-result validation; no process access. */
 export const ACTOR_KINDS = [
   "script",
@@ -34,9 +40,11 @@ export type ActorSpec = {
   outputContract?: "work-candidates-v1";
   worker?: CliActorSpec;
   handoff?: HandoffQuestion;
+  local?: LocalModelActorSpec;
 };
 export interface ActorResult {
   worker?: CliActorObservation;
+  local?: LocalModelObservation;
   discovery?: DiscoveryReport;
   exitCode: number | null;
   signal: string | null;
@@ -100,6 +108,7 @@ export function assertActorSpec(value: unknown): asserts value is ActorSpec {
           "outputContract",
           "worker",
           "handoff",
+          "local",
         ].includes(key),
     ) ||
     !ACTOR_KINDS.includes(v.kind as ActorKind) ||
@@ -127,6 +136,21 @@ export function assertActorSpec(value: unknown): asserts value is ActorSpec {
   if (v.kind === "human-handoff") assertHandoffQuestion(v.handoff);
   else if (v.handoff !== undefined)
     throw new Error("handoff question on another actor kind");
+  // An endpoint declaration is optional: the operator's local endpoint may not
+  // exist yet, and availability is a separate row. A declared one is validated,
+  // and an actor without one reports unavailable rather than refusing the whole
+  // configuration.
+  if (v.kind === "local-model") {
+    if (v.local !== undefined) {
+      assertLocalModelActorSpec(v.local);
+      if (
+        v.local.request.command.intent.kind !== "Act" ||
+        v.local.request.command.intent.effect !== v.effect
+      )
+        throw new Error("local-model actor effect differs from request");
+    }
+  } else if (v.local !== undefined)
+    throw new Error("local endpoint request on another actor kind");
   if (
     v.kind === "script" &&
     (!Array.isArray(v.command) ||
@@ -172,6 +196,18 @@ export function scriptResultVerified(
   }
   if (result.worker !== undefined)
     throw new Error("CLI result on another actor kind");
+  if (spec.kind === "local-model") {
+    if (!spec.local)
+      throw new Error("local-model result without a declared endpoint");
+    assertLocalModelObservation(
+      result.local,
+      spec.local,
+      episodeId ?? result.local?.launch.episodeId ?? "",
+    );
+    return false; // A local completion claim is not independent verification.
+  }
+  if (result.local !== undefined)
+    throw new Error("local-model result on another actor kind");
   if (spec.kind !== "script") return false;
   if (spec.outputContract === "work-candidates-v1") {
     if (result.discovery === undefined) return false;

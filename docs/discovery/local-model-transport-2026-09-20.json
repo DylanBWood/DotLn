@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-110",
+  "kind": "local-model-transport-smoke",
+  "observedAt": "2026-09-20T18:10:28.241Z",
+  "endpoint": "http://127.0.0.1:1234",
+  "declaredRow": {
+    "row": "L-U1",
+    "label": "unavailable",
+    "observedAt": "2026-09-20",
+    "reason": "local-model endpoint unavailable: WO-137 graded overall local-runner readiness inconclusive and WO-110 observed no loopback listener on 2026-09-20; the operator starts the endpoint explicitly"
+  },
+  "probe": {
+    "label": "unavailable",
+    "httpStatus": null,
+    "latencyMs": 13.583625000000001,
+    "reason": "endpoint did not answer: ECONNREFUSED"
+  },
+  "row": {
+    "outcome": "unavailable",
+    "label": "unavailable",
+    "failure": "model-unavailable",
+    "failureDetail": "endpoint did not answer: ECONNREFUSED"
+  },
+  "outcome": "unavailable",
+  "projection": "shapes only: field names, types, lengths, counts, failure codes and latency; no model-authored text",
+  "boundary": "host-permitted loopback client; this probe starts no server, loads no model and establishes no runner egress boundary"
+}

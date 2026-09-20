@@ -2,7 +2,7 @@
 
 Source base revision: `f2a4b232e1868691398964433c7e373fca4b84bb`
 
-Source lock: `sha256:c0d4e920af3722b6e05fa9d5daadda9dfb802c35d90c5b30ee195a2e851d5fc9`
+Source lock: `sha256:5d79cb7f98e03e34a142a9215cc1e20cbedcffcb8d9a28274e5cdf36051a320c`
 
 The base revision identifies where this edition's source set was selected; every
 link must resolve there. The lock pins the exact current bytes of the linked
@@ -58,7 +58,10 @@ implementation-deep, lossy projection of the same
      [Composition system](../product/03-architecture.md#composition-system)
 8. **Ports, runtime catalogs, and execution boundaries**
    - executor, store, clock, authority, tracker, repository, target lowering,
-     and isolation profiles; version-gated inspection and blinded verification/repair transports, explicit launch claims and the authenticated broker boundary
+     and isolation profiles; version-gated inspection and blinded verification/repair transports, explicit launch claims and the authenticated broker boundary;
+     a third transport carries the inspection profile to an operator-owned local
+     endpoint over one bounded loopback request, with availability read from a
+     dated row rather than a live probe
    - sources:
      [Runtime primitive catalogs](../product/03-architecture.md#runtime-primitive-catalogs),
      [Architecture](../product/03-architecture.md#architecture),

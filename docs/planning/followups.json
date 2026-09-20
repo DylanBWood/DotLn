@@ -11589,6 +11589,81 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-e320a3e9fa4bae1e",
+      "key": "decision:docs/evidence/WO-110/decisions.md#wo-110-d004",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "c6b2c91c15fee3e90577e90518f6162910341e28de919b0bb394bcc51103e0b6",
+          "ref": "docs/evidence/WO-110/decisions.md#wo-110-d004--availability-is-a-declared-row-and-criterion-2-records-the-admitted-unavailable-outcome",
+          "title": "WO-110-D004: The operator can record an envelope row at any time by starting the endpoint and rerunning scripts/probes/local-model-transport-smoke.mjs --live with a new destination; the reproduction i",
+          "summary": "{ \"id\": \"WO-110-D004\", \"date\": \"2026-09-20\", \"dispatch\": \"resume: next\", \"decision\": \"Drive catalog availability from the dated L-U1 row rather than a live probe, ship it as unavailable, and record criterion 2's live smoke as an unavailable row without starting the operator's runner.\", \"evidence\": [ \"docs/work-orders/WO-110-local-model-transport.md: criterion 2 admits an envelope or an unavailable row, and activation says the smoke records a ready row from WO-137's packet when one exists or an unavailable row otherwise\", \"docs/discovery/local-runner-2026-09-18.md: overall readiness is graded inconclusive, WO-138's required ready preflight remains unsatisfied, and WO-110 is told to record rea",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-326526e7c6af3fe0",
+      "key": "decision:docs/evidence/WO-110/decisions.md#wo-110-d007",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "81456b8145915558120254b737a8062425a3174365c831b30c0e703261b7c950",
+          "ref": "docs/evidence/WO-110/decisions.md#wo-110-d007--the-live-envelope-and-the-endpoints-unhonored-model-field",
+          "title": "WO-110-D007: WO-138 must obtain the answering model's identity from the runner rather than the request, and must not treat a served response as evidence that the intended artifact answered.",
+          "summary": "{ \"id\": \"WO-110-D007\", \"date\": \"2026-09-20\", \"dispatch\": \"operator override: amend, after implementation-ready was recorded\", \"decision\": \"Record the operator's live run as criterion 2's primary evidence, rest the L-U1 row's justification on the absent egress boundary rather than the superseded listener observation, and record the endpoint's unhonored model field as a named limitation rather than adding a model-identity check to the transport.\", \"evidence\": [ \"docs/discovery/local-model-transport-live-2026-09-20.json: outcome envelope, probe HTTP 200 in 21.08 ms, dispatch 14558.64 ms, status completed, beaconClaim inspection-completed, 161-character summary, one candidate with 3 evidence str",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-5e2f4ce16f9e8be1",
+      "key": "decision:docs/evidence/WO-110/decisions.md#wo-110-d009",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "a9042d06c3fffed84dab09e10cbdebc84edf090ac43d8919aadbc07fe3eb3624",
+          "ref": "docs/evidence/WO-110/decisions.md#wo-110-d009--ver-001-f2-and-f3-new-wo-110-authority-and-feedback-editions-at-revision-001",
+          "title": "WO-110-D009: The revision-null WO-110 authority and feedback editions are superseded residue that no manifest selects; a later cleanup order may prune unselected editions repository-wide rather than p",
+          "summary": "{ \"id\": \"WO-110-D009\", \"kind\": \"repair\", \"date\": \"2026-09-20\", \"dispatch\": \"resume: fix\", \"decision\": \"Select fresh WO-110 authority and feedback evidence editions rather than rewriting the retained WO-146 bytes, and carry both at revision 001 because the first WO-110 mint was superseded by the skeleton component bump recorded in D010.\", \"evidence\": [ \"authority-evidence before the repair: stale WO-146 revision 002 evidence: bundle-diff.json; select a new edition or revision to preserve existing evidence\", \"feedback-evidence before the repair: feedback evidence is stale; FEEDBACK_SOURCE_PATHS in packages/skeleton/src/feedback-audit.ts includes the WO-110-modified actor-catalog.ts, actor-cont",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-f929731b5d6ac843",
+      "key": "decision:docs/evidence/WO-110/decisions.md#wo-110-d010",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "5a662ecc3fca79d9baed8b39097889166de93e2538b57d811f0fb9e8fa7fbb13",
+          "ref": "docs/evidence/WO-110/decisions.md#wo-110-d010--ver-001-classified-release-surfaces-as-inherited-it-is-subject-caused-and-the-skeleton-component-is-bumped",
+          "title": "WO-110-D010: VER-001's inherited-failure classification for release-surfaces and its five dependents was not reproduced; the next verification should re-derive the base comparison rather than carry th",
+          "summary": "{ \"id\": \"WO-110-D010\", \"kind\": \"repair\", \"date\": \"2026-09-20\", \"dispatch\": \"resume: fix; equipped Adjacent Repair\", \"decision\": \"Treat the release-surfaces failure as a fourth subject-caused defect and bump @dotln/skeleton from 0.31.0 to 0.32.0 as a minor, additive change, correcting VER-001's classification of that suite as inherited from base.\", \"evidence\": [ \"VER-001 states: release-surfaces and five dependent suites are inherited, while F1-F3 are the three additional current-subject failures\", \"The only failing rule at this subject is: FAIL component-version @dotln/skeleton: src changed; observed 0.31.0; previous v0.35.1 0.31.0; expected a different version\", \"scripts/release.mjs compone",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-cac3eb0abfdc73b9",
+      "key": "decision:docs/evidence/WO-110/decisions.md#wo-110-d012",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "cadf5ac520cd28d91ce3516685cf7753fa876020cc7e139765dd436d515be1ae",
+          "ref": "docs/evidence/WO-110/decisions.md#wo-110-d012--final-review-a-bare-null-completion-body-is-labelled-transport-failed-boarded-up-for-the-next-order-that-touches-the-transport",
+          "title": "WO-110-D012: The next order that edits packages/skeleton/src/local-model-transport.ts, WO-138 if it comes first, guards the null payload in decodeLocalModelResult so the case reports invalid-result, a",
+          "summary": "{ \"id\": \"WO-110-D012\", \"date\": \"2026-09-20\", \"dispatch\": \"resume: final review\", \"decision\": \"Leave the verified transport bytes unchanged and record that an HTTP 200 body consisting of the JSON literal null is reported as transport-failed rather than invalid-result; the failure is typed, bounded and reaches the resident as the same worker-failed observation either way.\", \"evidence\": [ \"Reviewer probe against a loopback double at this subject: a 200 response whose body is the JSON literal null ended as WorkerFailure transport-failed with detail local endpoint read, because decodeLocalModelResult reads payload.choices on a null payload before its own invalid-result branches\", \"The same probe ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

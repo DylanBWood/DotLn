@@ -2,6 +2,7 @@ import { fork, spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { cliWorkerAdapter } from "./cli-actor.js";
 import { humanHandoffAdapter } from "./handoff-actor.js";
+import { localModelAdapter } from "./local-model-actor.js";
 import {
   assertActorSpec,
   SCRIPT_SANDBOX,
@@ -68,19 +69,11 @@ function runScript(
     },
   };
 }
-const unavailable = (kind: ActorKind, reason: string): ActorAdapter => ({
-  kind,
-  available: () => reason,
-  run: () => {
-    throw new Error(reason);
-  },
-});
 export const actorCatalog: Readonly<Record<ActorKind, ActorAdapter>> = {
   script: { kind: "script", available: scriptAvailability, run: runScript },
   "cli-worker": cliWorkerAdapter(),
   "human-handoff": humanHandoffAdapter,
-  "local-model": unavailable(
-    "local-model",
-    "local-model is unavailable until WO-110",
-  ),
+  // WO-110's transport is implemented; its declared row still reports the
+  // endpoint unavailable, so the resident records a reasoned NoOp.
+  "local-model": localModelAdapter(),
 };

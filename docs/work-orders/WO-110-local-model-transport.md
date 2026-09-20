@@ -1,4 +1,4 @@
-# WO-110 — Local-model transport: a third `WorkOrderTransport` over a local inference endpoint joins the actor catalog for the inspection profile, written from WO-027's probe and a fresh availability row (version assigned at activation)
+# WO-110 — Local-model transport: a third `WorkOrderTransport` over a local inference endpoint joins the actor catalog for the inspection profile, written from WO-027's probe and a fresh availability row (v0.36.0)
 
 **Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
 

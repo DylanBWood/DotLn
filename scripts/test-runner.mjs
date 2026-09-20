@@ -456,9 +456,10 @@ export const suites = [
         "--test-concurrency=1",
         "scripts/probes/local-runner-smoke.test.mjs",
         "scripts/probes/local-runner-load.test.mjs",
+        "scripts/probes/local-model-transport-smoke.test.mjs",
       ],
       protects:
-        "local runner research preserves failures, validates responses and observes cancellation using loopback doubles only",
+        "local runner research and WO-110's transport smoke preserve failures, validate responses, keep model text out of recorded shapes and observe cancellation using loopback doubles only",
     },
   ),
   node("authority-evidence", "scripts/authority-evidence.mjs", {

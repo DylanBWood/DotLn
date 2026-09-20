@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-110",
+  "decision": "WO-110-D001",
+  "support": "tinkerer-economy",
+  "observedAt": "2026-09-20T18:03:29.000Z",
+  "subject": "packages/skeleton/test/worker.test.ts",
+  "subjectNote": "Nearest-neighbour stand-in: WO-110's own test file does not exist at pre-registration. Source unmodified across every measurement below.",
+  "fullGate": {
+    "command": "npm test",
+    "durationMs": 252611,
+    "passingSuites": 21,
+    "failingSuites": 0,
+    "source": "session gate row recorded 2026-09-20T17:59:37.720Z"
+  },
+  "focused": {
+    "command": "npm run build --silent && node --test --test-reporter=tap packages/skeleton/dist/test/worker.test.js",
+    "runs": [
+      { "run": 1, "exitCode": 0, "durationMs": 14175, "pass": 23, "fail": 0 },
+      { "run": 2, "exitCode": 0, "durationMs": 14045, "pass": 23, "fail": 0 },
+      { "run": 3, "exitCode": 0, "durationMs": 14095, "pass": 23, "fail": 0 }
+    ],
+    "slowestMs": 14175,
+    "includesBuild": true
+  },
+  "reading": {
+    "thresholdMs": 126305.5,
+    "thresholdRule": "slowest focused run < half the full-gate row",
+    "met": true,
+    "savingPerIterationMs": 238436
+  }
+}

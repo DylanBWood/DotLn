@@ -449,8 +449,11 @@ Only the still-current, unexpired policy generation resumes its continuation;
 a late answer records the decision without reviving old authority. Answers
 are local operator inputs, not model results or authenticated remote messages.
 The CLI rejects an answer from an explicitly stamped resident process.
-`local-model` remains unavailable with its WO-110 reason. The catalog never
-substitutes another kind. Reopen these launch claims when a new discovery row
+`local-model` is WO-110's transport behind the same `available()`/`run()` table:
+it reports the dated `L-U1` row, whose `unavailable` label makes the resident
+record a reasoned NoOp, and runs a bounded inspection episode when a `ready`
+row is supplied. A local completion claim is never independent verification.
+The catalog never substitutes another kind. Reopen these launch claims when a new discovery row
 contradicts the dated C-U1/X-U1 observations (WO-122-D001).
 
 The script sandbox is a
@@ -1627,7 +1630,7 @@ text, never the default channel for state you own in structured form.
   patterns. All later commands come from the profile. The **repo-native rule**:
   convention authority resides in the target codebase's demonstrated
   architecture, never in the model's training-set fashion.
-- `WorkOrderTransport`: the deterministic fake remains first-class. The two real Node adapters are `ClaudeCliPrintWorkOrderTransport` and `CodexCliExecWorkOrderTransport`. `dispatch(request, now)` returns separate promises for a `CommandReceipt` and the request-specific validated result, plus host-only process-liveness and kill handles. The existing inspection result remains unchanged; WO-010 adds closed verification-evaluation and repair-proposal schemas through the same adapters. The request carries the compiled WorkOrder, authorized persisted command, pinned artifact/environment, selected model/effort, physical episode and declared read mount. Inspection retains its existing compiled recovery gate; verification checks its pinned capsule and current grant before dispatch. The typed result and evidence stay in the store; only its six-field envelope reaches the dispatching session.
+- `WorkOrderTransport`: the deterministic fake remains first-class. The three real Node adapters are `ClaudeCliPrintWorkOrderTransport`, `CodexCliExecWorkOrderTransport` and WO-110's `LocalModelWorkOrderTransport`. `dispatch(request, now)` returns separate promises for a `CommandReceipt` and the request-specific validated result, plus host-only process-liveness and kill handles. The existing inspection result remains unchanged; WO-010 adds closed verification-evaluation and repair-proposal schemas through the same adapters. The request carries the compiled WorkOrder, authorized persisted command, pinned artifact/environment, selected model/effort, physical episode and declared read mount. Inspection retains its existing compiled recovery gate; verification checks its pinned capsule and current grant before dispatch. The typed result and evidence stay in the store; only its six-field envelope reaches the dispatching session.
 
   The personal inspection profile is `fixture-inspection-v1`: one detached, clean, verified Git worktree, one host-read inventory projection, no repository writes, and no model tool access. Cleanup checks root, common Git directory, exact base, detached state and all dirty/untracked/ignored files; it never force-removes a worktree. Broader mounts or write effects refuse. The CLI broker still needs its own authentication and runtime files; this profile constrains model perception/tools, not a hostile same-user broker process. WO-022 adds the separate metadata-only Beacon profile described above; general environment providers remain candidates.
 
@@ -1671,6 +1674,36 @@ text, never the default channel for state you own in structured form.
   fixtures, WO-052 supplied worktree/message ownership, and
   [WO-053](../evidence/WO-053/README.md) observed clean live source changes and
   post-worker-exit recovery within the recorded limits.
+
+  WO-110 adds the third adapter over an operator-owned local inference
+  endpoint, for the inspection profile only. It launches no child process: one
+  episode is one bounded HTTP request to an explicit IPv4 loopback origin, so
+  aborting it ends the episode with the dispatching host and no disposable
+  supervisor exists. The wire shape comes from WO-137's observed protocol rows,
+  not from a vendor promise: the native `/api/v0/chat/completions` path, a
+  `json_schema` `response_format` carrying the same result schema the CLI
+  adapters pass as a file, and `reasoning_effort: "none"`, without which WO-137
+  observed a bounded token cap spent entirely on reasoning and empty answer
+  content. The DotLn effort selector stays a launch claim: no other wire value
+  for reasoning effort is observed on that runner, so none is invented. The
+  response is read under a declared byte bound, a completion stopped at the
+  token cap is an `output-limit`, and the six-field envelope is validated again
+  at the host boundary exactly as for the CLI adapters. Writing,
+  verification-evidence and plan-refutation requests are refused on their kind
+  before validation; the local model gets no writing profile. A refused,
+  reset or aborted connection is a typed `model-unavailable`, which the resident
+  turns into a reasoned NoOp. Availability is the declared row in
+  [the dated availability record](../discovery/local-model-transport-2026-09-20.md),
+  never a live probe, so the host can report why no work happened without
+  contacting the operator's machine. That row is `unavailable` as a readiness
+  grade, not a liveness check: WO-110 observed the operator's endpoint return a
+  validated inspection envelope, and readiness still fails because no
+  attributable non-local-egress boundary exists and WO-137 grades the runner
+  `inconclusive`. Working inference is not the readiness contract. The same live
+  run recorded that this runner ignores the request's model field, so the
+  transport cannot establish which model produced an envelope and an order
+  needing that identity must obtain it from the runner. Fixtures drive real
+  loopback endpoints rather than stubbed clients.
 
 - `VerificationAdapter`: when equipped, claim-typed evidence (visual claim →
   rendered-image check; network claim → trace; state claim → DOM/store read),
