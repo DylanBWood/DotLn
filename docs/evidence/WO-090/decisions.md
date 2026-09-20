@@ -7,7 +7,7 @@
   "id": "WO-090-D006",
   "date": "2026-09-20",
   "dispatch": "resume: fix; operator response to the concrete local-commit exception: Authorize local commits and refutation",
-  "decision": "After the live product gate finishes, commit the changed planning inputs (product 07 and WO-090's already-assigned title) and this decision record locally, then run the canonical pass-scoped planning refutation with one fresh background worker, no inherited conversation and no descendants. File its frozen judgment through the canonical receipt helper and run the document checks. The operator explicitly authorized the required planning-subject and receipt commits before final review; no push, PR, integration or publication is authorized. Preserve independent work-order verification as a separate dispatch.",
+  "decision": "After the live product gate finishes, commit the changed planning inputs (product 07 and WO-090's already-assigned title) and this decision record locally, refresh the canonical planning cost table from this run's actual observations, commit that input locally, then run the canonical pass-scoped planning refutation with one fresh background worker, no inherited conversation and no descendants. File its frozen judgment through the canonical receipt helper and run the document checks. The operator explicitly authorized the required planning-subject and receipt commits before final review; no push, PR, integration or publication is authorized. Preserve independent work-order verification as a separate dispatch.",
   "evidence": [
     "npm run plan -- check: planning pass needs a receipt matching the current subject: observed evidence or goal standard changed",
     "scripts/lib/plan-subject.mjs#buildGoalSubject: goalStandard is the entire Goal-aligned decisions section",
@@ -15,6 +15,7 @@
     "scripts/lib/plan-direct.mjs#beginDirectRefutation: committed/workspace subject equality; fileDirectRefutation: receipt commit",
     ".agents/skills/dotln-executor/SKILL.md: No branch commits before final review",
     "operator authorization in this resume: fix session, 2026-09-20",
+    "First direct-refutation attempt refused: one judgment per pass requires changed observed evidence; the changed standard alone is not evidence. Product 07 planning deliverables prescribe npm run meta -- --plan-cost to refresh actual meter observations after the subject revision.",
     "git history: guard introduced by 16ecf2cc on 2026-09-15; the goal card's later committed edit was 45765940 on 2026-09-17, a planning pass followed by refutation",
     "npm test: 21 passed, 0 failed, 253.38 seconds, 65 fresh tasks before the local planning-subject commit"
   ],
