@@ -40,6 +40,79 @@ are now declared above. The [decision record](../evidence/WO-084/decisions.md)
 records the legacy ledger write-back; `node scripts/lineage.mjs index` generates
 the index and `index --check` enforces this rule in `npm run test:docs`.
 
+## 2026-09-20 — Planning pass: Copilot CLI as a third harness (WO-146)
+
+Source: the operator's planning dispatch, captured verbatim in ignored intake
+(`docs/intake/notes/2026-09-20-copilot-cli-integration-planning.md`, SHA-256
+`22fc3f0a1167631df6f41c2b99709ea676a323c00bb11848a43adb04b56ac60e`).
+Shape-First Synthesis; the clean-room screen found no stop condition (the CLI
+is a public product the operator installed personally; no account identifier
+is recorded). The record is
+[the planning document](../planning/copilot-cli-integration-2026-09-20.md).
+
+- **A third harness is one profile at the existing source, never a second
+  biography (WO-146)** `adopted`
+  - The installed CLI already loads `AGENTS.md + CLAUDE.md` and lists the six
+    `dotln-*` skills, and the two generated skill roots are byte-identical, so
+    Copilot needs no instruction file, skill root, custom agent or plugin of
+    its own. It joins as one entry in the compiled profile table, with the
+    invariants that admit two harness ids widened. Provenance: the capture;
+    `copilot instruction list` and `copilot skill list` on 1.0.86; the
+    planning document §3 and §4. Reopen: a CLI version that stops reading the
+    existing roots.
+- **Probe before registering a hook; the record chooses reuse, one native
+  registration, or advisory parity with Codex** `adopted`
+  - The CLI's bundled changelog says it reads `.claude/settings.json` hooks
+    and denies a tool call when a pre-tool hook errors, and DotLn's hook
+    commands depend on `$CLAUDE_PROJECT_DIR`. Whether DotLn's hooks already
+    fire, fire twice or deny every call under Copilot is unobserved, so a
+    second registration added first would be the likeliest way to duplicate
+    every handler. Provenance: the capture ("avoid duplicated hooks"); the
+    planning document §3 and §6 D1. Reopen: a probe result no branch covers.
+- **A control is "enforced" only with a live denial and a fixture, and the
+  label says whether it holds with approvals off** `adopted`
+  - Each DotLn control is labeled enforced, advisory, unsupported or untested
+    for the probed CLI version; documentation and binary strings never earn
+    "enforced". Sandbox-off and `--allow-all-tools` stay the operator's
+    choice, and the table says what still holds under them. Provenance: the
+    capture; product 03's record that a documented feature did not establish
+    containment; the planning document §5 and §6 D5. Reopen: none foreseen.
+- **The harness is recorded apart from its model; readback is the CLI's own
+  session log and nothing more** `adopted`
+  - `copilot-cli` is the harness id whichever model the CLI routes. Model,
+    effort and version read from the CLI's session event log carry the source
+    `copilot-session-readback`; a value the operator supplied stays
+    `operator-attested`; `auto` with a null effort reads unknown. Provenance:
+    the capture; observed `session.model_change` rows; the control log's
+    existing `codex-session-readback` convention; the planning document §6 D3
+    and D4. Reopen: the CLI exposes an effective value.
+- **Personal settings are proposed in a list the operator applies; no
+  repository file sets one** `adopted`
+  - Attribution off, cross-session memory off for verifier independence,
+    folder trust per worktree, and the approval and sandbox modes are the
+    operator's. A private setting is not the source of a DotLn guarantee.
+    Provenance: the capture; the platform lens; the planning document §9.
+    Reopen: a DotLn control shown to depend on one.
+- **Final review and release close under Copilot** `deferred`
+  - Their helpers are plain `git` and `gh`, so nothing is known to block them,
+    and nothing has exercised them; the CLI's built-in GitHub MCP server and
+    delegation are outward channels the helpers do not govern. Labeled
+    untested by WO-146. Provenance: the planning document §6 D9. Reopen: a
+    later qualification order at the operator's direction.
+- **Resident-launched and autonomous Copilot** `deferred`
+  - Out of the first milestone at the operator's direction; a CLI worker needs
+    its own observed launch row (WO-122's rule), and target-worker profiles
+    stay two. Provenance: the capture; the planning document §6 D8. Reopen: an
+    order that needs a Copilot worker.
+- **A pasted dispatch does not resolve a role** `candidate`
+  - Met during the pass: a dispatch pasted into Claude Code is stored behind a
+    paste wrapper, the prompt-submit hook matches only a prompt that starts
+    with the phrase, and the session gets no role, start time, usage key or
+    role grants. Whether pasted text may dispatch a role is the operator's
+    judgment. Provenance: this session's state file and journal; the planning
+    document §12; the map's 2026-09-20 candidates section. Reopen: the next
+    planning pass, or a second session that loses its role this way.
+
 ## 2026-09-19 — Planning pass: operator answers (WO-143 to WO-145; WO-138 admitted)
 
 Source: the operator's answers to the first pass's open decisions, the
