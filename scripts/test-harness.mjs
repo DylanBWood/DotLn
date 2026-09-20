@@ -46,6 +46,8 @@ import {
 } from "../packages/compiler/dist/src/index.js";
 import {
   contributorProgram,
+  contributorProfiles,
+  targetWorkerProfiles,
   defaultContributorSupportIds,
   contributorWithSupports,
   contributorOutsideAuthority,
@@ -61,6 +63,7 @@ import {
 } from "../packages/skeleton/dist/src/feedback-boundary.js";
 import {
   beginHarnessSession,
+  decodeHarnessInput,
   measureHarnessSessionUsage,
   measureHarnessUsage,
   harnessOutputObligations,
@@ -104,6 +107,7 @@ import {
 import {
   shellRedirectTargets,
   shellWriteTargets,
+  patchWriteTargets,
 } from "../packages/skeleton/dist/src/harness-command.js";
 
 const sourceRoot = fileURLToPath(new URL("../", import.meta.url));
@@ -503,6 +507,228 @@ function invoke(root, name, payload, removed = false, environment = {}) {
 const allowed = (result) =>
   result.decision !== "block" &&
   result.hookSpecificOutput?.permissionDecision !== "deny";
+
+test("WO-146 three contributors share unique outputs while workers remain explicitly two", () => {
+  assert.deepEqual(
+    contributorProfiles.map((profile) => profile.harness),
+    ["claude-code", "codex-cli", "copilot-cli"],
+  );
+  assert.deepEqual(
+    targetWorkerProfiles.map((profile) => profile.harness),
+    ["claude-code", "codex-cli"],
+  );
+  const workers = structuredClone(targetWorkerProfiles);
+  for (const profile of workers) delete profile.runtime.skeletonVersion;
+  assert.equal(
+    createHash("sha256").update(JSON.stringify(workers)).digest("hex"),
+    "9f41bb7cb0176f0b8e73bd9fe760ef628259e69b4ebdbb28fa0a621bd4dba6fb",
+    "pre-profile worker bytes, excluding only the operator-authorized release-version field",
+  );
+  const installation = harnessInstallation();
+  assert.equal(
+    new Set(installation.files.map((file) => file.path)).size,
+    installation.files.length,
+  );
+  const byHarness = (name) =>
+    installation.bundles.find(
+      (bundle) => bundle.manifest.profile.harness === name,
+    );
+  const hooks = (bundle) =>
+    bundle.files.filter(
+      (file) =>
+        file.path.startsWith(".claude/hooks/") ||
+        file.path === ".claude/settings.json",
+    );
+  assert.deepEqual(
+    hooks(byHarness("copilot-cli")),
+    hooks(byHarness("claude-code")),
+  );
+  const settings = JSON.parse(
+    hooks(byHarness("copilot-cli")).find((file) =>
+      file.path.endsWith("settings.json"),
+    ).contents,
+  );
+  for (const groups of Object.values(settings.hooks)) {
+    const commands = groups.flatMap((group) =>
+      group.hooks.map((hook) => hook.command),
+    );
+    assert.equal(new Set(commands).size, commands.length);
+  }
+});
+
+test("WO-146 Copilot native path aliases retain existing generated write guards", () => {
+  const root = fixture();
+  let active;
+  const env = { COPILOT_PROJECT_DIR: root };
+  try {
+    beginHarnessSession(root, "synthetic-session", "executor");
+    const call = (path, tool_name = "Write") =>
+      input(root, "PreToolUse", {
+        tool_name,
+        tool_input: { path, file_text: "fixture" },
+      });
+    const permissions = (payload) =>
+      invoke(root, "permissions", payload, false, env);
+    assert.equal(allowed(permissions(call(join(root, "src/inside.ts")))), true);
+    assert.match(
+      permissions(call("/dotln-ungranted-fixture/outside.txt"))
+        .hookSpecificOutput.permissionDecisionReason,
+      /outside-write grant/,
+    );
+    assert.match(
+      permissions({
+        ...call("/dotln-ungranted-fixture/outside.txt"),
+        cwd: join(root, "docs"),
+      }).hookSpecificOutput.permissionDecisionReason,
+      /outside-write grant/,
+      "the Copilot project channel remains identifiable away from the root",
+    );
+    assert.match(
+      permissions(
+        input(root, "PreToolUse", {
+          tool_name: "Write",
+          tool_input: {
+            path: "/dotln-ungranted-fixture/outside.txt",
+            file_path: "inside.txt",
+          },
+        }),
+      ).hookSpecificOutput.permissionDecisionReason,
+      /AMBIGUOUS_PATH/,
+    );
+    git(root, "switch", "-c", "planning/2030-01-02-copilot");
+    assert.equal(
+      allowed(permissions(call(join(root, "docs/inside.md")))),
+      true,
+    );
+    assert.match(
+      permissions(call(join(root, "src/inside.ts"), "Edit")).hookSpecificOutput
+        .permissionDecisionReason,
+      /planning branch write/,
+    );
+    git(root, "switch", "wo-999");
+    active = beginGateRun(root, "npm test");
+    assert.match(
+      permissions(call(join(root, "src/inside.ts"))).hookSpecificOutput
+        .permissionDecisionReason,
+      /active gate/,
+    );
+  } finally {
+    active?.release();
+    removeFixture(root, { recursive: true, force: true });
+  }
+});
+
+test("WO-146 freeform patches normalize only recognized tools and retain every write destination", () => {
+  const patch =
+    "*** Begin Patch\n*** Add File: docs/new.md\n+text\n*** Update File: old.ts\n*** Move to: new.ts\n@@\n-old\n+new\n*** Delete File: deleted.ts\n*** End Patch\n";
+  assert.deepEqual(patchWriteTargets(patch), [
+    { path: "docs/new.md", followFinalSymlink: true },
+    { path: "old.ts", followFinalSymlink: false },
+    { path: "new.ts", followFinalSymlink: true },
+    { path: "deleted.ts", followFinalSymlink: false },
+  ]);
+  for (const tool_name of ["Edit", "apply_patch"]) {
+    const decoded = decodeHarnessInput({
+      hook_event_name: "PreToolUse",
+      cwd: "/fixture",
+      session_id: "fixture",
+      tool_name,
+      tool_input: patch,
+    });
+    assert.equal(decoded.ok, true);
+    assert.equal(decoded.value.tool_name, "apply_patch");
+    assert.deepEqual(decoded.value.tool_input, { patch });
+  }
+  for (const bad of [
+    "object",
+    "*** Begin Patch\n*** End Patch",
+    patch + "extra",
+    "*** Begin Patch\n*** Add File: new\n*** Move to: outside\n*** End Patch\n",
+  ]) {
+    assert.equal(patchWriteTargets(bad), null);
+    assert.equal(
+      decodeHarnessInput({
+        hook_event_name: "PreToolUse",
+        cwd: "/fixture",
+        session_id: "fixture",
+        tool_name: "Edit",
+        tool_input: bad,
+      }).ok,
+      false,
+    );
+  }
+  assert.equal(
+    decodeHarnessInput({
+      hook_event_name: "PreToolUse",
+      cwd: "/fixture",
+      session_id: "fixture",
+      tool_name: "Bash",
+      tool_input: patch,
+    }).ok,
+    false,
+  );
+});
+
+test("WO-146 generated hooks keep writer, planning, outside-write and live-gate refusals for freeform patches", () => {
+  const root = fixture();
+  let active;
+  try {
+    beginHarnessSession(root, "synthetic-session", "executor");
+    const patch = (paths) =>
+      "*** Begin Patch\n" +
+      paths.map((path) => `*** Add File: ${path}\n+fixture\n`).join("") +
+      "*** End Patch\n";
+    const call = (paths, session_id = "synthetic-session") =>
+      input(root, "PreToolUse", {
+        tool_name: "Edit",
+        tool_input: patch(paths),
+        session_id,
+      });
+    assert.equal(
+      allowed(invoke(root, "permissions", call(["src/inside.ts"]))),
+      true,
+    );
+    invoke(root, "concurrent-work-requires-worktrees", call(["src/inside.ts"]));
+    assert.equal(
+      allowed(
+        invoke(
+          root,
+          "concurrent-work-requires-worktrees",
+          call(["src/inside.ts"], "other-writer"),
+        ),
+      ),
+      false,
+    );
+    git(root, "switch", "-c", "planning/2030-01-02-patch");
+    assert.equal(
+      allowed(invoke(root, "permissions", call(["docs/inside.md"]))),
+      true,
+    );
+    assert.match(
+      invoke(root, "permissions", call(["docs/inside.md", "src/forbidden.ts"]))
+        .hookSpecificOutput.permissionDecisionReason,
+      /planning branch write/,
+    );
+    assert.match(
+      invoke(
+        root,
+        "permissions",
+        call(["/dotln-ungranted-fixture/outside.txt"]),
+      ).hookSpecificOutput.permissionDecisionReason,
+      /outside-write grant/,
+    );
+    git(root, "switch", "wo-999");
+    active = beginGateRun(root, "npm test");
+    assert.match(
+      invoke(root, "permissions", call(["src/inside.ts"])).hookSpecificOutput
+        .permissionDecisionReason,
+      /active gate/,
+    );
+  } finally {
+    active?.release();
+    removeFixture(root, { recursive: true, force: true });
+  }
+});
 
 test("WO-139 generated permission, observer, Stop and usage share the root subagent cap", () => {
   const root = fixture();
@@ -1972,7 +2198,7 @@ test("WO-039 target preserves Seiri history and the explicitly versioned current
     }
   }
   const installation = harnessInstallation();
-  assert.equal(installation.bundles.length, 2);
+  assert.equal(installation.bundles.length, 3);
   assert.equal(
     contributorProgram().loadout.phenotype.identityId,
     "contributor",

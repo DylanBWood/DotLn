@@ -142,11 +142,18 @@ export function harnessInstallation(options = {}) {
       },
     }),
   );
-  const files = bundles.flatMap((bundle) =>
-    bundle.files.filter(
-      (file) => !["CLAUDE.md", "AGENTS.md"].includes(file.path),
-    ),
-  );
+  const shared = new Map();
+  for (const bundle of bundles)
+    for (const file of bundle.files) {
+      if (["CLAUDE.md", "AGENTS.md"].includes(file.path)) continue;
+      const previous = shared.get(file.path);
+      if (previous && previous.contents !== file.contents)
+        throw new Error(
+          `Harness profiles disagree on shared output: ${file.path}`,
+        );
+      if (!previous) shared.set(file.path, file);
+    }
+  const files = [...shared.values()];
   const block = mergeHarnessFragments(bundles);
   const origin = {
     ids: [

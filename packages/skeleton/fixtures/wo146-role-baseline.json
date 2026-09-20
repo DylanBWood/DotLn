@@ -1,0 +1,20 @@
+{
+  "workOrder": "WO-146",
+  "historicalBaseline": "wo145-role-baseline.json",
+  "method": "SHA-256 of generated default/off roles after the criterion-4 Copilot boundary and adapter changes; historical WO-145 release bytes remain separately checked.",
+  "decision": "docs/evidence/WO-146/decisions.md#wo-146-d012",
+  "roles": {
+    ".agents/skills/dotln-executor/SKILL.md": "c293f29241c1cff211ea395add0c87d7389ce64a61eff81d78b326c570937afe",
+    ".agents/skills/dotln-planner/SKILL.md": "b15ca090a9af8976f5094eddfc5d81df6005aeb868d24276094c52eb1ee32381",
+    ".agents/skills/dotln-refuter/SKILL.md": "a245704551f3397392db85fe51b62cf8f2095dd5cd36600ba84763ee50addf65",
+    ".agents/skills/dotln-release-close/SKILL.md": "c7f7e23d813b3493aac338fd83c96126e4975ce1d86e2434b47ac9b92cf9cdf7",
+    ".agents/skills/dotln-reviewer/SKILL.md": "2b34969468c170684caf44ec226906190ff9d0a35e0cd347f608118b918899ab",
+    ".agents/skills/dotln-verifier/SKILL.md": "91678fd4ce457069e37a06f47d93f559052a6646260d4e4e2bea6c80f34abb74",
+    ".claude/skills/dotln-executor/SKILL.md": "c293f29241c1cff211ea395add0c87d7389ce64a61eff81d78b326c570937afe",
+    ".claude/skills/dotln-planner/SKILL.md": "b15ca090a9af8976f5094eddfc5d81df6005aeb868d24276094c52eb1ee32381",
+    ".claude/skills/dotln-refuter/SKILL.md": "a245704551f3397392db85fe51b62cf8f2095dd5cd36600ba84763ee50addf65",
+    ".claude/skills/dotln-release-close/SKILL.md": "c7f7e23d813b3493aac338fd83c96126e4975ce1d86e2434b47ac9b92cf9cdf7",
+    ".claude/skills/dotln-reviewer/SKILL.md": "2b34969468c170684caf44ec226906190ff9d0a35e0cd347f608118b918899ab",
+    ".claude/skills/dotln-verifier/SKILL.md": "91678fd4ce457069e37a06f47d93f559052a6646260d4e4e2bea6c80f34abb74"
+  }
+}

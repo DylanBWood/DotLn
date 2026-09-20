@@ -51,6 +51,7 @@ import {
   HarnessCommandRefused,
   harnessToolEffects,
   invocationEffects,
+  patchWriteTargets,
   shellRedirectTargets,
   shellWritePaths,
   shellWriteTargets,
@@ -68,6 +69,7 @@ import {
 } from "./gate-evidence.mjs";
 import {
   collectSessionUsage,
+  currentCopilotSession,
   usageObservation,
   recordUsageObservation,
   usageReadbackLine,
@@ -112,6 +114,17 @@ export interface HarnessInput {
   readonly harness_version?: string;
   /** Claude sets this when it re-enters Stop because a Stop hook refused. */
   readonly stop_hook_active?: boolean;
+}
+
+export function harnessInputHarness(
+  input: Pick<HarnessInput, "cwd" | "session_id">,
+  env: NodeJS.ProcessEnv = process.env,
+): "claude-code" | "copilot-cli" {
+  return (typeof env.COPILOT_PROJECT_DIR === "string" &&
+    isAbsolute(env.COPILOT_PROJECT_DIR)) ||
+    env.COPILOT_AGENT_SESSION_ID === input.session_id
+    ? "copilot-cli"
+    : "claude-code";
 }
 
 /** Decode declared host fields; unconsumed native metadata is forward-compatible. */
@@ -204,8 +217,21 @@ function decodeHarnessRecord(
       "$.session_id",
       "expected a nonempty session id",
     );
+  // Copilot's Claude-compatible Edit event retains a freeform apply_patch body.
+  const patch =
+    ["Edit", "apply_patch"].includes(String(value.tool_name)) &&
+    typeof value.tool_input === "string"
+      ? value.tool_input
+      : undefined;
+  if (patch !== undefined && !patchWriteTargets(patch))
+    return fail(
+      "INVALID_PATCH",
+      "$.tool_input",
+      "expected a bounded file patch",
+    );
   for (const key of ["tool_input", "tool_response", "effort"])
-    if (key in value && !object(value[key]))
+    if (key === "tool_input" && patch !== undefined) continue;
+    else if (key in value && !object(value[key]))
       return fail("EXPECTED_OBJECT", `$.${key}`, "expected an object");
   if (object(value.effort)) {
     const descriptor = Object.getOwnPropertyDescriptor(value.effort, "level");
@@ -233,7 +259,35 @@ function decodeHarnessRecord(
     typeof value.stop_hook_active !== "boolean"
   )
     return fail("EXPECTED_BOOLEAN", "$.stop_hook_active", "expected a boolean");
-  return { ok: true, value: value as unknown as HarnessInput };
+  const decoded = value as unknown as HarnessInput;
+  let normalized =
+    patch === undefined
+      ? decoded
+      : { ...decoded, tool_name: "apply_patch", tool_input: { patch } };
+  if (
+    harnessInputHarness(decoded) === "copilot-cli" &&
+    ["Read", "Edit", "Write"].includes(decoded.tool_name ?? "") &&
+    object(decoded.tool_input) &&
+    typeof decoded.tool_input.path === "string"
+  ) {
+    if (
+      decoded.tool_input.file_path !== undefined &&
+      decoded.tool_input.file_path !== decoded.tool_input.path
+    )
+      return fail(
+        "AMBIGUOUS_PATH",
+        "$.tool_input",
+        "conflicting native and normalized paths",
+      );
+    normalized = {
+      ...decoded,
+      tool_input: { ...decoded.tool_input, file_path: decoded.tool_input.path },
+    };
+  }
+  return {
+    ok: true,
+    value: normalized,
+  };
 }
 export interface HarnessCheck {
   readonly checkId: string;
@@ -1497,7 +1551,7 @@ export function beginHarnessSession(
       ? { expectedEvent: expected }
       : {}),
     startedAt: new Date().toISOString(),
-    usageSessionKey: usageSessionKey(process.env.CODEX_THREAD_ID ?? sessionId),
+    usageSessionKey: usageSessionKey(process.env.CODEX_THREAD_ID || sessionId),
     startingEventCount: localEvents(root, control.workOrder).length,
     reads: [],
     beforeOutputs: snapshot,
@@ -1531,6 +1585,7 @@ export function measureHarnessSessionUsage(
   session: HarnessSession,
   key: string,
   transcriptPath?: string,
+  copilotSessionId?: string,
 ) {
   if (!session.role || !session.startedAt)
     throw new Error(
@@ -1541,18 +1596,20 @@ export function measureHarnessSessionUsage(
     (process.env.CODEX_THREAD_ID
       ? usageSessionKey(process.env.CODEX_THREAD_ID)
       : key);
-  let observation: ReturnType<typeof usageObservation>;
+  let observation: ReturnType<typeof usageObservation> & { cause?: string };
   try {
     observation = collectSessionUsage(root, {
       sessionKey: sourceKey,
       since: session.startedAt,
       ...(transcriptPath ? { transcriptPath } : {}),
+      ...(copilotSessionId ? { sessionId: copilotSessionId } : {}),
     });
   } catch {
     observation = {
       ...usageObservation([]),
       observedAt: new Date().toISOString(),
       scope: "dispatch",
+      cause: "session-counters-unavailable",
     };
     process.stderr.write(
       "DotLn advisory: process-cost counters unavailable; recorded unknown.\n",
@@ -1582,11 +1639,34 @@ export function measureHarnessUsage(root: string, sessionId: string) {
     null,
     true,
   );
+  const copilot = currentCopilotSession(root, { sessionId });
+  if (
+    (!session?.role || !session.startedAt) &&
+    (process.env.COPILOT_AGENT_SESSION_ID || copilot.available)
+  ) {
+    process.stderr.write(
+      "DotLn advisory: process-cost dispatch unavailable; reported unknown.\n",
+    );
+    return {
+      ...usageObservation([]),
+      observedAt: new Date().toISOString(),
+      cause: "active-dispatch-unavailable",
+      currentSession: copilot,
+      subagents: subagentUsage(root, harnessStateDirectory(root), sessionId),
+    };
+  }
   if (!session)
     throw new Error("Begin the harness session before measuring usage");
   return {
-    ...measureHarnessSessionUsage(root, session, sessionKey(input)),
+    ...measureHarnessSessionUsage(
+      root,
+      session,
+      sessionKey(input),
+      undefined,
+      copilot.available ? sessionId : undefined,
+    ),
     subagents: subagentUsage(root, harnessStateDirectory(root), sessionId),
+    ...(copilot.available ? { currentSession: copilot } : {}),
   };
 }
 
@@ -2357,10 +2437,26 @@ export function permissionEffect(
   // Ending a task this session started is the session's own process control:
   // it writes no repository byte, and a gate ended this way records no check.
   if (tool === "stop") return "shell.run";
-  if (tool === "write" && !path)
+  if (tool === "write" && !path) {
+    const targets =
+      input.tool_name === "apply_patch" && typeof args.patch === "string"
+        ? patchWriteTargets(args.patch)
+        : null;
+    if (targets) {
+      const effects = targets.map((target) =>
+        permissionEffect(
+          { ...input, tool_input: { file_path: target.path } },
+          root,
+          tools,
+          outsideEffect,
+        ),
+      );
+      return effects.find((effect) => effect !== "repo.write") ?? "repo.write";
+    }
     throw new HarnessCommandRefused(
       "Write tool requires a classified path adapter",
     );
+  }
   if (tool !== "shell") return tool === "write" ? "repo.write" : "repo.read";
   if (input.tool_name !== "Bash" && typeof args.command !== "string")
     throw new HarnessCommandRefused(
@@ -2469,7 +2565,9 @@ function knownWriteDestinations(
     tool === "write"
       ? typeof candidate === "string"
         ? [{ path: candidate, followFinalSymlink: true }]
-        : null
+        : input.tool_name === "apply_patch" && typeof args.patch === "string"
+          ? patchWriteTargets(args.patch)
+          : null
       : typeof command === "string"
         ? shellWriteTargets(command)
         : null;
@@ -2708,6 +2806,12 @@ function activeGateWriteRefusal(
   if (tool === "write") {
     const path = args.file_path ?? args.notebook_path;
     if (typeof path === "string" && !gateInputPath(root, path)) return null;
+    const targets =
+      input.tool_name === "apply_patch" && typeof args.patch === "string"
+        ? patchWriteTargets(args.patch)
+        : null;
+    if (targets?.every((target) => !gateInputPath(root, target.path)))
+      return null;
   }
   if (tool === "shell") {
     const command = args.command ?? args.cmd;
@@ -3039,7 +3143,16 @@ async function evaluateExistingHarnessHook(
         (input.harness_version &&
           input.harness_version !== session.versionObservation.value))
     ) {
-      const observation = observeSessionHarnessVersion(input.harness_version);
+      const harnessId = harnessInputHarness(input);
+      const copilot =
+        harnessId === "copilot-cli"
+          ? currentCopilotSession(root, { sessionId: input.session_id })
+          : undefined;
+      const observation = copilot
+        ? copilot.harnessVersion
+          ? { value: copilot.harnessVersion, channel: copilot.source }
+          : undefined
+        : observeSessionHarnessVersion(input.harness_version);
       const version = observation?.value;
       if (observation) session.versionObservation = observation;
       const observed = readJson<{
@@ -3053,7 +3166,7 @@ async function evaluateExistingHarnessHook(
           >;
         };
       }>(discovery, {});
-      const harness = observed.effortReadbackProbe?.harnesses?.["claude-code"];
+      const harness = observed.effortReadbackProbe?.harnesses?.[harnessId];
       const lines = [
         ...new Set([
           ...(harness?.versionLines ?? [])

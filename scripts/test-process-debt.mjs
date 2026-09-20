@@ -2,6 +2,7 @@ import "./test-codex-session.mjs";
 import test from "node:test";
 import { fnv1a64 } from "../packages/compiler/dist/src/index.js";
 import {
+  currentHarnessSessionReport,
   harnessRuntimeCause,
   refreshHarnessRuntime,
   reportHarnessRuntime,
@@ -74,6 +75,8 @@ import { main as workOrders } from "./work-orders.mjs";
 import { probeHarness, discoverHarness } from "./discover.mjs";
 import {
   collectSessionUsage,
+  currentCopilotSession,
+  renderCopilotSession,
   requireMeasuredUsage,
   recordUsageObservation,
   usageObservation,
@@ -338,6 +341,515 @@ function repo(t, { runtime = false } = {}) {
   git(root, "commit", "-qm", "Fixture base");
   return root;
 }
+
+test("WO-146 Copilot readback selects the parent, follows changes, and preserves honest unknowns", (t) => {
+  const root = repo(t);
+  const env = {
+    COPILOT_HOME: join(root, "copilot"),
+    COPILOT_AGENT_SESSION_ID: "parent",
+  };
+  const path = "copilot/session-state/parent/events.jsonl";
+  const start = {
+    type: "session.start",
+    timestamp: "2030-01-01T00:00:00.000Z",
+    data: {
+      sessionId: "parent",
+      copilotVersion: "1.0.86",
+      context: { cwd: root, gitRoot: root },
+    },
+  };
+  const change = (
+    newModel,
+    reasoningEffort,
+    timestamp = "2030-01-01T00:00:01.000Z",
+  ) => ({
+    type: "session.model_change",
+    timestamp,
+    data: { newModel, reasoningEffort, source: "model_picker" },
+  });
+  const save = (rows) =>
+    write(root, path, rows.map(JSON.stringify).join("\n") + "\n");
+  save([start, change("claude-sonnet-5", "high")]);
+  write(
+    root,
+    "copilot/session-state/child/events.jsonl",
+    [
+      { ...start, data: { ...start.data, sessionId: "child" } },
+      change("child-model", "low"),
+    ]
+      .map(JSON.stringify)
+      .join("\n") + "\n",
+  );
+  const options = { env };
+  let result = currentCopilotSession(root, options);
+  assert.equal(result.model, "claude-sonnet-5");
+  assert.equal(result.effort, "high");
+  assert.equal(result.harness, "copilot-cli");
+  assert.equal(result.source, "copilot-session-readback");
+  assert.equal(result.harnessVersion, "1.0.86");
+  save([
+    start,
+    change("claude-sonnet-5", "high"),
+    change("gpt-6-astra", "xhigh", "2030-01-01T00:00:02.000Z"),
+  ]);
+  result = currentCopilotSession(root, options);
+  assert.equal(result.model, "gpt-6-astra");
+  assert.equal(result.effort, "xhigh");
+  assert.doesNotMatch(
+    JSON.stringify(result),
+    /parent|child-model|sessionId|cwd|gitRoot/,
+  );
+  save([start, change("auto", null)]);
+  result = currentCopilotSession(root, options);
+  assert.equal(result.model, null);
+  assert.equal(result.effort, null);
+  assert.deepEqual(result.causes, [
+    "model-auto-unresolved",
+    "effort-unreported",
+  ]);
+  assert.match(renderCopilotSession(result), /unknown.*not effective effort/);
+  assert.equal(
+    currentCopilotSession(root, { env: {} }).causes[0],
+    "session-unidentified",
+  );
+  assert.equal(
+    currentCopilotSession(root, { env, sessionId: "missing" }).causes[0],
+    "session-log-missing",
+  );
+  assert.equal(
+    currentCopilotSession(root, { env, sessionId: "../parent" }).available,
+    false,
+  );
+  save([
+    { ...start, data: { ...start.data, context: { cwd: dirname(root) } } },
+  ]);
+  assert.equal(currentCopilotSession(root, options).available, false);
+  save([
+    {
+      ...start,
+      data: { ...start.data, context: { cwd: root, gitRoot: dirname(root) } },
+    },
+  ]);
+  assert.equal(currentCopilotSession(root, options).available, false);
+  write(root, path, "corrupt fixture\n");
+  assert.equal(currentCopilotSession(root, options).available, false);
+});
+
+test("WO-146 Copilot counters deduplicate requests and do not turn checkpoints into token usage", () => {
+  const row = {
+    type: "model.model_call_success",
+    timestamp: "2030-01-01T00:00:01.000Z",
+    data: {
+      callId: "one",
+      responseUsage: {
+        prompt_tokens: 10,
+        completion_tokens: 3,
+        total_tokens: 13,
+        prompt_tokens_details: { cached_tokens: 2, cache_creation_tokens: 0 },
+        completion_tokens_details: { reasoning_tokens: 1 },
+      },
+      responseChunk: { usage: { prompt_tokens: 99999 } },
+      copilotUsage: { total_nano_aiu: 99999 },
+    },
+  };
+  const observed = usageObservation([
+    row,
+    row,
+    {
+      type: "tool.execution_start",
+      data: { toolCallId: "tool", toolName: "bash" },
+    },
+  ]);
+  assert.equal(observed.source, "copilot-transcript-request-usage");
+  assert.equal(observed.scope, "observed-requests-only");
+  assert.match(observed.coverage, /not a session total/);
+  assert.equal(observed.usage.totalTokens, 13);
+  assert.equal(observed.usage.cachedInputTokens, 2);
+  assert.equal(observed.usage.costUsd, null);
+  assert.equal(observed.activity.commandsRun, 1);
+  assert.equal(requireMeasuredUsage(observed).usage.totalTokens, 13);
+  assert.equal(
+    usageObservation([
+      {
+        type: "session.usage_checkpoint",
+        data: { totalNanoAiu: 99999 },
+      },
+    ]).source,
+    "unavailable",
+  );
+  const shutdown = usageObservation(
+    [
+      {
+        type: "session.shutdown",
+        timestamp: "2030-01-01T00:00:04.000Z",
+        data: {
+          totalNanoAiu: 99999,
+          tokenDetails: {
+            input: { tokenCount: 10 },
+            cache_read: { tokenCount: 2 },
+            cache_write: { tokenCount: 1 },
+            output: { tokenCount: 3 },
+          },
+        },
+      },
+    ],
+    { since: "2030-01-01T00:00:02.000Z" },
+  );
+  assert.equal(shutdown.scope, "session-cumulative");
+  assert.equal(shutdown.usage.totalTokens, 16);
+  assert.equal(shutdown.usage.costUsd, null);
+  const credits = usageObservation(
+    [
+      {
+        type: "session.usage_checkpoint",
+        timestamp: "2030-01-01T00:00:02.000Z",
+        data: { totalNanoAiu: 4_971_480_870_000 },
+      },
+    ],
+    { since: "2030-01-01T00:00:01.000Z" },
+  );
+  assert.equal(credits.aiCredits, 4971.48087);
+  assert.equal(credits.creditScope, "session-cumulative");
+  assert.equal(credits.creditSource, "copilot-session.usage_checkpoint");
+  assert.equal(credits.usage.totalTokens, null);
+  assert.equal(credits.usage.costUsd, null);
+  assert.equal(
+    usageObservation([
+      {
+        type: "session.shutdown",
+        timestamp: "2030-01-01T00:00:03.000Z",
+        data: { totalNanoAiu: -1 },
+      },
+    ]).aiCredits,
+    null,
+  );
+});
+
+test("WO-146 credit-only and incomplete-token logs remain recordable without inventing tokens", (t) => {
+  const root = repo(t);
+  const env = {
+    COPILOT_HOME: join(root, "copilot"),
+    COPILOT_AGENT_SESSION_ID: "credits",
+  };
+  const start = {
+    type: "session.start",
+    timestamp: "2030-01-01T00:00:00.000Z",
+    data: { sessionId: "credits", context: { cwd: root, gitRoot: root } },
+  };
+  for (const tokenDetails of [undefined, {}, { input: { tokenCount: 2 } }]) {
+    write(
+      root,
+      "copilot/session-state/credits/events.jsonl",
+      [
+        start,
+        {
+          type: "session.shutdown",
+          timestamp: "2030-01-01T00:00:01.000Z",
+          data: {
+            totalNanoAiu: 1_000_000_000,
+            ...(tokenDetails ? { tokenDetails } : {}),
+          },
+        },
+      ]
+        .map(JSON.stringify)
+        .join("\n") + "\n",
+    );
+    const observation = collectSessionUsage(root, { env });
+    assert.doesNotThrow(() =>
+      recordUsageObservation(root, {
+        workOrder: "WO-146",
+        role: "executor",
+        observation,
+      }),
+    );
+    assert.equal(observation.aiCredits, 1);
+    assert.equal(observation.creditSource, "copilot-session.shutdown");
+    assert.equal(observation.creditObservedAt, "2030-01-01T00:00:01.000Z");
+    assert.equal(observation.creditScope, "session-cumulative");
+    assert.equal(observation.source, "unavailable");
+    assert.equal(observation.cause, "session-token-counters-unavailable");
+    assert.equal(observation.usage.totalTokens, null);
+    assert.equal(observation.usage.costUsd, null);
+  }
+});
+
+test("WO-146 discovery admits the Copilot executable without declaring effective effort", (t) => {
+  const root = repo(t);
+  const commands = [];
+  const observed = probeHarness(
+    "copilot-cli",
+    (command, args) => {
+      commands.push([command, ...args]);
+      return {
+        status: 0,
+        stdout:
+          args[0] === "--version"
+            ? "GitHub Copilot CLI 1.0.86"
+            : "--model --allow-all",
+      };
+    },
+    {},
+  );
+  assert.deepEqual(commands, [
+    ["copilot", "--version"],
+    ["copilot", "--help"],
+  ]);
+  assert.equal(observed.probe.readbackChannelPresent, false);
+  write(
+    root,
+    "docs/discovery/environment.json",
+    json({
+      effortReadbackProbe: { harnesses: { "copilot-cli": { versions: [] } } },
+    }),
+  );
+  const result = discoverHarness(root, "copilot-cli", () => observed);
+  assert.equal(result.harness, "copilot-cli");
+  const stored = JSON.parse(
+    readFileSync(join(root, "docs/discovery/environment.json"), "utf8"),
+  ).effortReadbackProbe.harnesses["copilot-cli"];
+  assert.equal(stored.versionLines[0].line, "1.0");
+  assert.equal(stored.effectiveEffortReadback, undefined);
+});
+
+test("WO-146 Copilot briefing warns outside its observed version line without refusing readback", async (t) => {
+  const root = repo(t);
+  const keys = ["COPILOT_HOME", "COPILOT_AGENT_SESSION_ID", "CODEX_THREAD_ID"];
+  const prior = Object.fromEntries(keys.map((key) => [key, process.env[key]]));
+  t.after(() => {
+    for (const key of keys) {
+      if (prior[key] === undefined) delete process.env[key];
+      else process.env[key] = prior[key];
+    }
+  });
+  process.env.COPILOT_HOME = join(root, "copilot");
+  process.env.COPILOT_AGENT_SESSION_ID = "parent";
+  delete process.env.CODEX_THREAD_ID;
+  write(
+    root,
+    "docs/discovery/environment.json",
+    json({
+      effortReadbackProbe: {
+        harnesses: {
+          "copilot-cli": {
+            versionLines: [{ line: "1.0", classification: "observed" }],
+          },
+        },
+      },
+    }),
+  );
+  for (const copilotVersion of ["1.0.86", "2.0.0"]) {
+    write(
+      root,
+      "copilot/session-state/parent/events.jsonl",
+      [
+        {
+          type: "session.start",
+          timestamp: "2030-01-01T00:00:00.000Z",
+          data: { sessionId: "parent", copilotVersion, context: { cwd: root } },
+        },
+        {
+          type: "session.model_change",
+          timestamp: "2030-01-01T00:00:01.000Z",
+          data: { newModel: "gpt-6-astra", reasoningEffort: "xhigh" },
+        },
+      ]
+        .map(JSON.stringify)
+        .join("\n") + "\n",
+    );
+    const report = await currentHarnessSessionReport(root);
+    assert.equal(report.session.available, true);
+    assert.equal(report.session.harnessVersion, copilotVersion);
+    if (copilotVersion === "2.0.0")
+      assert.match(report.text, /leaves observed lines 1\.0/);
+    else assert.doesNotMatch(report.text, /leaves observed lines/);
+  }
+});
+
+test("WO-146 planning actors admit Copilot independently of a Claude or GPT model", async (t) => {
+  const { readOverrides } = await import("./lib/plan-receipts.mjs");
+  const root = repo(t);
+  const event = {
+    schemaVersion: 1,
+    type: "PlanHoldOverridden",
+    recordedAt: "2030-01-02T00:00:00.000Z",
+    receiptId: "2030-01-02-planning-fixture-001",
+    receiptHash: `sha256:${"0".repeat(64)}`,
+    holdId: `hold-${"1".repeat(24)}`,
+    reason: "Synthetic operator authorization",
+    captureHash: `sha256:${"2".repeat(64)}`,
+    actor: {
+      harness: "copilot-cli",
+      harnessVersion: "1.0.86",
+      model: "claude-sonnet-5",
+      effort: "xhigh",
+      source: "operator-attested",
+    },
+  };
+  for (const model of ["claude-sonnet-5", "gpt-6-astra"]) {
+    event.actor.model = model;
+    write(
+      root,
+      "docs/control/plan-refutations.jsonl",
+      JSON.stringify(event) + "\n",
+    );
+    assert.equal(readOverrides(root)[0].actor.harness, "copilot-cli");
+  }
+  event.actor.harness = "not-a-harness";
+  write(
+    root,
+    "docs/control/plan-refutations.jsonl",
+    JSON.stringify(event) + "\n",
+  );
+  assert.throws(() => readOverrides(root), /invalid override actor/);
+});
+
+test("WO-146 two actual completions retain Copilot, their different models and operator attestations", (t) => {
+  for (const model of ["claude-sonnet-5", "gpt-6-astra"]) {
+    const root = repo(t, { runtime: true });
+    cpSync(
+      join(source, "scripts/harness.mjs"),
+      join(root, "scripts/harness.mjs"),
+    );
+    cpSync(
+      join(source, "scripts/resume.mjs"),
+      join(root, "scripts/resume.mjs"),
+    );
+    cpSync(join(source, "scripts/lib"), join(root, "scripts/lib"), {
+      recursive: true,
+    });
+    for (const name of ["compiler", "kernel", "skeleton"])
+      cpSync(
+        join(source, `packages/${name}/src`),
+        join(root, `packages/${name}/src`),
+        { recursive: true },
+      );
+    write(
+      root,
+      "docs/work-orders/WO-999-fixture.md",
+      "# WO-999 fixture\n\n**Model:** any capable model.\n**Effort:** executor any; verifier any; reviewer any.\n",
+    );
+    const env = {
+      ...process.env,
+      CODEX_THREAD_ID: "",
+      COPILOT_AGENT_SESSION_ID: "fixture-session",
+      COPILOT_HOME: join(root, "copilot"),
+    };
+    seedHarnessWriter(root, {
+      actorId: usageSessionKey("fixture-session"),
+      worktree: root,
+      owner: { pid: process.pid, source: "parent" },
+      reservedAt: new Date().toISOString(),
+    });
+    const run = (...args) =>
+      spawnSync(process.execPath, ["scripts/resume.mjs", ...args], {
+        cwd: root,
+        encoding: "utf8",
+        env,
+        timeout: 30_000,
+      });
+    const adapter = (...args) =>
+      spawnSync(process.execPath, ["scripts/harness.mjs", ...args], {
+        cwd: root,
+        encoding: "utf8",
+        env,
+        timeout: 30_000,
+      });
+    const empty = adapter("usage", "fixture-session");
+    assert.equal(empty.status, 0, empty.stderr);
+    assert.equal(JSON.parse(empty.stdout).cause, "active-dispatch-unavailable");
+    const begun = adapter("begin", "fixture-session", "executor");
+    assert.equal(begun.status, 0, begun.stderr);
+    const timestamp = new Date().toISOString();
+    write(
+      root,
+      "copilot/session-state/fixture-session/events.jsonl",
+      [
+        {
+          type: "session.start",
+          timestamp,
+          data: {
+            sessionId: "fixture-session",
+            copilotVersion: "1.0.86",
+            context: { cwd: root, gitRoot: root },
+          },
+        },
+        {
+          type: "session.model_change",
+          timestamp,
+          data: { newModel: model, reasoningEffort: "high" },
+        },
+        {
+          type: "model.model_call_success",
+          timestamp,
+          data: {
+            callId: "request",
+            responseUsage: {
+              prompt_tokens: 10,
+              completion_tokens: 3,
+              total_tokens: 13,
+            },
+          },
+        },
+      ]
+        .map(JSON.stringify)
+        .join("\n") + "\n",
+    );
+    const measured = adapter("usage", "fixture-session");
+    assert.equal(measured.status, 0, measured.stderr);
+    assert.equal(JSON.parse(measured.stdout).usage.totalTokens, 13);
+    const explicit = spawnSync(
+      process.execPath,
+      ["scripts/harness.mjs", "usage", "fixture-session"],
+      {
+        cwd: root,
+        encoding: "utf8",
+        env: { ...env, COPILOT_AGENT_SESSION_ID: "" },
+      },
+    );
+    assert.equal(explicit.status, 0, explicit.stderr);
+    assert.equal(JSON.parse(explicit.stdout).usage.totalTokens, 13);
+    assert.equal(
+      JSON.parse(explicit.stdout).currentSession.source,
+      "copilot-session-readback",
+    );
+    const completed = run(
+      "implementation-ready",
+      "--harness",
+      "copilot-cli",
+      "--harness-version",
+      "1.0.86",
+      "--model",
+      model,
+      "--effort",
+      "xhigh",
+      "--source",
+      "operator-attested",
+    );
+    assert.equal(completed.status, 0, completed.stderr);
+    assert.equal(harnessWriterView(root).reserved, false);
+    const event = readFileSync(
+      join(root, "docs/control/orders/WO-999.jsonl"),
+      "utf8",
+    )
+      .trim()
+      .split("\n")
+      .map(JSON.parse)
+      .at(-1);
+    assert.equal(event.actor.harness, "copilot-cli");
+    assert.equal(event.actor.model, model);
+    assert.equal(
+      event.actor.effort,
+      "xhigh",
+      "selected high does not overwrite supplied xhigh",
+    );
+    assert.equal(event.actor.source, "operator-attested");
+    const status = run("status");
+    assert.equal(status.status, 0, status.stderr);
+    assert.match(status.stdout, /harness copilot-cli/);
+    assert.ok(status.stdout.includes(model));
+  }
+});
+
 const input = (root, event, session = "fixture", extra = {}) => ({
   cwd: root,
   hook_event_name: event,
@@ -3770,10 +4282,18 @@ test("meter diff bytes include newly authored untracked source", (t) => {
   );
 });
 
-test("WO-145 optional economy support preserves released role bytes off and changes only executor instructions on", () => {
-  const baseline = JSON.parse(
+test("WO-145 optional economy support preserves historical and WO-146 role snapshots and changes only executor instructions on", () => {
+  const historical = JSON.parse(
     readFileSync(
       join(source, "packages/skeleton/fixtures/wo145-role-baseline.json"),
+      "utf8",
+    ),
+  );
+  // WO-146 deliberately changes shared role prose. Preserve the released oracle
+  // and bind the authorized new bytes separately; do not erase either baseline.
+  const baseline = JSON.parse(
+    readFileSync(
+      join(source, "packages/skeleton/fixtures/wo146-role-baseline.json"),
       "utf8",
     ),
   );
@@ -3786,6 +4306,15 @@ test("WO-145 optional economy support preserves released role bytes off and chan
   const roles = off.files.filter((file) => file.path.endsWith("/SKILL.md"));
   assert.equal(roles.length, Object.keys(baseline.roles).length);
   for (const file of roles) {
+    const released = execFileSync(
+      "git",
+      ["show", `${historical.release}:${file.path}`],
+      { cwd: source },
+    );
+    assert.equal(
+      createHash("sha256").update(released).digest("hex"),
+      historical.roles[file.path],
+    );
     assert.equal(
       createHash("sha256").update(file.contents).digest("hex"),
       baseline.roles[file.path],

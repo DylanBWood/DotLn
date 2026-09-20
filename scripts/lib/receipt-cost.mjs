@@ -9,7 +9,7 @@ export const usageCauseCodes = {
   "no-session":
     "no harness session was found for this role and order, so usage had no subject",
   "harness-no-readback":
-    "the harness exposes no counter readback to the session",
+    "the harness exposes no complete session counter readback; utility-request counters alone are partial",
 };
 export const COST_LINE_PREFIX = "**Process cost:**";
 /** `verify` and `final-review` stamp this on the receipt they allocate. */

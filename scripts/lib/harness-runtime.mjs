@@ -93,6 +93,50 @@ export async function codexSessionReport(root) {
   }
 }
 
+export async function currentHarnessSessionReport(root, options = {}) {
+  if (process.env.CODEX_THREAD_ID || !process.env.COPILOT_AGENT_SESSION_ID)
+    return codexSessionReport(root);
+  try {
+    const { currentCopilotSession, renderCopilotSession, usageReadbackLine } =
+      await import("../../packages/skeleton/src/usage-observation.mjs");
+    const session = currentCopilotSession(root, options);
+    let warning = "";
+    const discovery = join(root, "docs/discovery/environment.json");
+    if (session.harnessVersion && existsSync(discovery)) {
+      const record = JSON.parse(readFileSync(discovery, "utf8"))
+        .effortReadbackProbe?.harnesses?.["copilot-cli"];
+      const lines = [
+        ...new Set([
+          ...(record?.versionLines ?? [])
+            .filter((row) => row.classification === "observed")
+            .map((row) => row.line),
+          ...(record?.versions ?? [])
+            .filter((row) => row.classification === "observed")
+            .map((row) => row.value.split(".").slice(0, 2).join(".")),
+        ]),
+      ];
+      if (
+        !lines.includes(session.harnessVersion.split(".").slice(0, 2).join("."))
+      )
+        warning = `\nDotLn: harness ${session.harnessVersion} leaves observed lines ${lines.join(", ") || "none"}; run npm run discover -- harness copilot-cli.`;
+    }
+    return {
+      session,
+      text: `${renderCopilotSession(session)}${warning}\n${usageReadbackLine(options.sessionId ?? process.env.COPILOT_AGENT_SESSION_ID)}`,
+    };
+  } catch {
+    return {
+      session: {
+        available: false,
+        harness: "copilot-cli",
+        source: "unavailable",
+        causes: ["session-report-unavailable"],
+      },
+      text: "Current Copilot session: unknown (session-report-unavailable); no default substituted.",
+    };
+  }
+}
+
 export async function observedFactsReport(root, state, output) {
   try {
     const { observationBoundary, codexObservationScope } =
@@ -104,14 +148,19 @@ export async function observedFactsReport(root, state, output) {
         verifying: "verification",
         "final-review": "finalReview",
       }[state.phase] ?? state.phase;
-    if (!process.env.CODEX_THREAD_ID) return ""; // Claude supplies its session-bound block through the hook.
+    const sessionId =
+      process.env.CODEX_THREAD_ID || process.env.COPILOT_AGENT_SESSION_ID;
+    if (!sessionId) return ""; // Claude supplies its session-bound block through the hook.
     const scope = codexObservationScope(
-      process.env.CODEX_THREAD_ID,
+      sessionId,
       state.workOrderId ?? null,
       phase,
       root,
     );
-    return observationBoundary(root, scope, { codex: true, output });
+    return observationBoundary(root, scope, {
+      codex: Boolean(process.env.CODEX_THREAD_ID),
+      output,
+    });
   } catch {
     return `Observed facts at ${new Date().toISOString()}: unknown (observation-runtime-unavailable); advisory only.`;
   }

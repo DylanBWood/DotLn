@@ -43,7 +43,7 @@ export interface HarnessObservation {
 export interface HarnessProfile {
   readonly kind?: "contributor-v1" | "target-worker-v1";
   readonly profileId: string;
-  readonly harness: "claude-code" | "codex-cli";
+  readonly harness: "claude-code" | "codex-cli" | "copilot-cli";
   readonly observedVersion: string;
   readonly tools?: Readonly<
     Record<
@@ -297,7 +297,7 @@ export const HARNESS_END = "<!-- dotln-harness:end -->";
 export function assertHarnessProfile(profile: HarnessProfile): void {
   ensure(profile && id(profile.profileId), "profile identity");
   ensure(
-    ["claude-code", "codex-cli"].includes(profile.harness) &&
+    ["claude-code", "codex-cli", "copilot-cli"].includes(profile.harness) &&
       verificationLine(profile.observedVersion),
     "observed harness version",
   );
@@ -374,6 +374,10 @@ export function assertHarnessProfile(profile: HarnessProfile): void {
   );
   if (profile.kind === "target-worker-v1") {
     ensure(
+      profile.harness !== "copilot-cli",
+      "Copilot is operator-launched only",
+    );
+    ensure(
       Boolean(profile.runtime.importRoot && profile.runtime.snapshot) &&
         /^[a-f0-9]{64}$/.test(profile.runtime.targetId ?? ""),
       "target runtime binding",
@@ -388,7 +392,7 @@ export function assertHarnessProfile(profile: HarnessProfile): void {
   }
   ensure(
     !events.some((event) => profile.events[event].available) ||
-      (profile.harness === "claude-code" &&
+      (["claude-code", "copilot-cli"].includes(profile.harness) &&
         profile.refusal === "claude-command-json-v1" &&
         profile.settings.available),
     "observed refusal protocol required",
@@ -436,6 +440,9 @@ export function lowerToHarness(
 ): HarnessBundle {
   assertHarnessProfile(profile);
   assertCompiledFeedback(feedback);
+  // Copilot loads the AGENTS.md symlink; shared hooks observe its canonical file.
+  const instructionFile =
+    profile.harness === "copilot-cli" ? "CLAUDE.md" : profile.instruction.path;
   ensure(program.contractVersion === "harness-v1", "target version");
   ensure(
     canonicalStringify(envelope) ===
@@ -758,7 +765,7 @@ process.stdout.write(JSON.stringify(response));`;
           name,
           intents,
         })),
-        instructionFile: profile.instruction.path,
+        instructionFile,
       },
       [
         ...program.roles.map((role) => role.facetId),
@@ -781,7 +788,7 @@ process.stdout.write(JSON.stringify(response));`;
           name,
           intents,
         })),
-        instructionFile: profile.instruction.path,
+        instructionFile,
       },
       program.roles.map((role) => role.facetId),
       1,
@@ -1032,7 +1039,7 @@ export function verifyHarnessBundle(bundle: HarnessBundle): boolean {
 
 /** WO-144 adds declared outside-write roots to the existing four refusals. */
 const HARNESS_BOUNDARIES =
-  "DotLn has five refusals (WO-135, WO-139, WO-144): it reserves one writer per worktree on any branch, including main; refuses writes to gate inputs or the success record during a live npm test; on planning/ branches refuses repository writes outside docs/ and root Markdown; refuses observable subagent admissions beyond docs/control/budgets.json subagentCap (default 20; null disables); and refuses known outside-project write destinations without a containing root granted by the active role or equipped support. Literal redirects are judged on any program; expansions such as $PWD and a program's own effects remain unobserved under host permissions; grant failures admit with one advisory and preserve the other refusals. Descendants count at their first attributable tool call; unresolved direct/child overlap is a reported minimum, and unobserved agents remain unknown. Inspect the writer with node scripts/harness.mjs writer --show; stop this session's gate with node scripts/harness.mjs evidence --stop; use operator override: for authorized recovery. Claude hooks enforce these five refusals at observed boundaries; Codex carries the duties and grants as role text without automatic enforcement. Other tool and completion judgments are advisory and host permissions decide. The separate Codex compaction adapter restores an owned unfinished task and permits one continuation after premature stopping; it never dispatches a role or changes writer ownership.";
+  "DotLn has five refusals (WO-135, WO-139, WO-144): it reserves one writer per worktree on any branch, including main; refuses writes to gate inputs or the success record during a live npm test; on planning/ branches refuses repository writes outside docs/ and root Markdown; refuses observable subagent admissions beyond docs/control/budgets.json subagentCap (default 20; null disables); and refuses known outside-project write destinations without a containing root granted by the active role or equipped support. Literal redirects are judged on any program; expansions such as $PWD and a program's own effects remain unobserved under host permissions; grant failures admit with one advisory and preserve the other refusals. Descendants count at their first attributable tool call; unresolved direct/child overlap is a reported minimum, and unobserved agents remain unknown. Inspect the writer with node scripts/harness.mjs writer --show; stop this session's gate with node scripts/harness.mjs evidence --stop; use operator override: for authorized recovery. Claude hooks enforce these five refusals at observed boundaries; Codex carries the duties and grants as role text without automatic enforcement. Copilot reuses the Claude registration: scripted denials hold with allow-all; missing tool-call and child identity leave subagent accounting advisory; WO-146 evidence records interactive qualification. Other tool and completion judgments are advisory and host permissions decide. The separate Codex compaction adapter restores an owned unfinished task and permits one continuation after premature stopping; it never dispatches a role or changes writer ownership.";
 
 /** The shared instruction symlink contains all profile-qualified residue. */
 export function mergeHarnessFragments(

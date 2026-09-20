@@ -105,6 +105,45 @@ const feedback = compileFeedbackUnits([
 const lower = (input = program, policy = feedback, runtime = profile) =>
   lowerToHarness(input, policy, input.loadout.authorityEnvelope, runtime);
 
+test("WO-146 Copilot shares the observed Claude hook bytes, not a second registration", () => {
+  const copilot: HarnessProfile = {
+    ...profile,
+    profileId: "copilot-cli-1.0.86",
+    harness: "copilot-cli",
+    observedVersion: "1.0.86",
+    skills: { ...available, root: ".agents/skills" },
+    instruction: { ...available, path: "AGENTS.md" },
+    settings: { ...profile.settings, deny: false },
+  };
+  const original = lower();
+  const added = lower(program, feedback, copilot);
+  const shared = (bundle: typeof original) =>
+    bundle.files.filter(
+      (file) =>
+        file.path === ".claude/settings.json" ||
+        file.path.startsWith(".claude/hooks/"),
+    );
+  assert.deepEqual(shared(added), shared(original));
+  assert.equal(added.manifest.profile.harness, "copilot-cli");
+  assert.ok(
+    added.files.some((file) => file.path.startsWith(".agents/skills/")),
+  );
+  assert.ok(!added.files.some((file) => file.path.startsWith(".github/")));
+  assert.throws(
+    () => lower(program, feedback, { ...copilot, refusal: "unavailable" }),
+    /observed refusal protocol/,
+  );
+  assert.throws(
+    () =>
+      lower(program, feedback, {
+        ...copilot,
+        kind: "target-worker-v1",
+        instruction: { ...copilot.instruction, path: "CLAUDE.local.md" },
+      }),
+    /operator-launched only/,
+  );
+});
+
 test("WO-144 role grants are closed, source-bearing target data in hooks and manifests", () => {
   for (const invalid of [
     null,

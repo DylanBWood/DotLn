@@ -419,6 +419,50 @@ interface ShellWriteTarget {
   followFinalSymlink: boolean;
   redirect?: true;
 }
+
+/** Freeform patch paths are literal, including both ends of a move. */
+export function patchWriteTargets(
+  source: string,
+): readonly ShellWriteTarget[] | null {
+  const lines = source.replaceAll("\r\n", "\n").split("\n");
+  if (lines.at(-1) === "") lines.pop();
+  if (lines.shift() !== "*** Begin Patch" || lines.pop() !== "*** End Patch")
+    return null;
+  const targets: ShellWriteTarget[] = [];
+  let operation: string | undefined;
+  let moveAllowed = false;
+  for (const line of lines) {
+    const header = /^\*\*\* (Add|Update|Delete) File: (.+)$/.exec(line);
+    if (header) {
+      const path = header[2]!;
+      if (/[\u0000-\u001f\u007f]/.test(path)) return null;
+      operation = header[1];
+      moveAllowed = operation === "Update";
+      targets.push({ path, followFinalSymlink: operation !== "Delete" });
+      continue;
+    }
+    const move = /^\*\*\* Move to: (.+)$/.exec(line);
+    if (move) {
+      if (!moveAllowed || /[\u0000-\u001f\u007f]/.test(move[1]!)) return null;
+      targets[targets.length - 1]!.followFinalSymlink = false;
+      targets.push({ path: move[1]!, followFinalSymlink: true });
+      moveAllowed = false;
+      continue;
+    }
+    moveAllowed = false;
+    if (
+      (operation === "Add" && line.startsWith("+")) ||
+      (operation === "Update" &&
+        (/^[ +\-]/.test(line) ||
+          /^@@(?: |$)/.test(line) ||
+          line === "*** End of File"))
+    )
+      continue;
+    return null;
+  }
+  return targets.length ? targets : null;
+}
+
 const writeCommandFlags: Record<string, RegExp> = {
   touch: /^-(?:[acmh]+|-)/,
   mkdir: /^-(?:p|-)/,

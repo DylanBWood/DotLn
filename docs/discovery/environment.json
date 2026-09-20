@@ -707,6 +707,34 @@
           }
         ]
       },
+      "copilot-cli": {
+        "versions": [
+          {
+            "classification": "observed",
+            "value": "1.0.86",
+            "source": "docs/discovery/copilot-cli-2026-09-20.json"
+          }
+        ],
+        "versionLines": [
+          {
+            "classification": "observed",
+            "line": "1.0",
+            "newestPatch": "1.0.86",
+            "source": "docs/discovery/copilot-cli-2026-09-20.json"
+          }
+        ],
+        "selectedSessionReadback": {
+          "classification": "observed",
+          "channel": "COPILOT_AGENT_SESSION_ID and verified session event log",
+          "source": "docs/discovery/copilot-cli-2026-09-20.md#H12",
+          "scope": "CLI-selected model and reasoning effort, not effective effort"
+        },
+        "effectiveEffortReadback": {
+          "classification": "not found",
+          "value": "unknown",
+          "harnessReadbackEligible": false
+        }
+      },
       "codex-cli": {
         "versions": [
           {

@@ -77,6 +77,9 @@ const machinerySources = {
   ],
   "harness-probe": [
     "scripts/harness-probe.mjs",
+    "scripts/lib/copilot-probe.mjs",
+    "scripts/lib/copilot-qualification.mjs",
+    "scripts/fixtures/copilot-probe-hook.mjs",
     "scripts/lib/subagent-probe.mjs",
     "scripts/fixtures/subagent-probe-hook.mjs",
     "scripts/lib/authority-probe.mjs",
