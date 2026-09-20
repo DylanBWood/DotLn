@@ -6,9 +6,15 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 export function probeHarness(name, execute = spawnSync, env = process.env) {
-  const fallback = { "claude-code": "claude", "codex-cli": "codex" }[name];
+  const fallback = {
+    "claude-code": "claude",
+    "codex-cli": "codex",
+    "copilot-cli": "copilot",
+  }[name];
   if (!fallback)
-    throw new Error("Unknown harness; select claude-code or codex-cli");
+    throw new Error(
+      "Unknown harness; select claude-code, codex-cli or copilot-cli",
+    );
   const running = name === "claude-code" ? env.CLAUDE_CODE_EXECPATH : undefined;
   const command = running || fallback;
   const versionChannel = running ? "CLAUDE_CODE_EXECPATH" : "PATH";
@@ -99,12 +105,16 @@ if (isMainModule(import.meta.url)) {
   try {
     const [action, ...args] = process.argv.slice(2);
     if (action !== "harness" || args.length > 1)
-      throw new Error("usage: discover harness [claude-code|codex-cli]");
+      throw new Error(
+        "usage: discover harness [claude-code|codex-cli|copilot-cli]",
+      );
     const name =
       args[0] ??
-      (process.env.CLAUDE_CODE_EXECPATH || process.env.CLAUDE_PID
-        ? "claude-code"
-        : "codex-cli");
+      (process.env.COPILOT_AGENT_SESSION_ID
+        ? "copilot-cli"
+        : process.env.CLAUDE_CODE_EXECPATH || process.env.CLAUDE_PID
+          ? "claude-code"
+          : "codex-cli");
     console.log(
       JSON.stringify(
         discoverHarness(

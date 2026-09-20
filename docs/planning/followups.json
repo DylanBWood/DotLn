@@ -9102,6 +9102,13 @@
           "title": "Candidate — DotLn-owned authority with minimal native harness restrictions",
           "summary": "## Candidate — DotLn-owned authority with minimal native harness restrictions Operator direction during WO-119 (2026-09-16): reach an operating mode as soon as evidence supports it in which native Claude and Codex harness sandboxes can be disabled and Claude's settings have nearly empty allow/deny lists. The source of permissions, security and authority is the equipped DotLn supports, build and role. The operator clarified the assurance requirement: faithful runtime enforcement plus adversarial tests, including attempts to bypass the declared authority. See the [ideation receipt](../evidence/WO-119/ideation-authority.md). This candidate asks planning to identify the earliest justified route ",
           "missing": false
+        },
+        {
+          "hash": "12dc95d07e34eace471b15f351ed6722ab79db4ca7a5a1658e5efa276ba3c052",
+          "ref": "docs/product/03-architecture.md#candidate--dotln-owned-authority-with-minimal-native-harness-restrictions",
+          "title": "Candidate — DotLn-owned authority with minimal native harness restrictions",
+          "summary": "## Candidate — DotLn-owned authority with minimal native harness restrictions Operator direction during WO-119 (2026-09-16): reach an operating mode as soon as evidence supports it in which native Claude and Codex harness sandboxes can be disabled and Claude's settings have nearly empty allow/deny lists. The source of permissions, security and authority is the equipped DotLn supports, build and role. The operator clarified the assurance requirement: faithful runtime enforcement plus adversarial tests, including attempts to bypass the declared authority. See the [ideation receipt](../evidence/WO-119/ideation-authority.md). This candidate asks planning to identify the earliest justified route ",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -11466,6 +11473,50 @@
           "ref": "docs/evidence/WO-056/decisions.md#wo-056-d008--operator-scope-expansion-repair-both-runtime-defects-in-this-order",
           "title": "WO-056-D008: Planner: the verifier's own diagnosis has no durable field. claude-live-2's refused result named the cause precisely and the repair worker would never have seen it. Weigh an analysis fiel",
           "summary": "{ \"id\": \"WO-056-D008\", \"date\": \"2026-09-20\", \"dispatch\": \"scope expand: (operator, 2026-09-20)\", \"decision\": \"Authorization. The executor offered two routes after D007 and recommended a separate order. The operator's whole reply was the second option pasted back: \\\"scope expand: on WO-056. I fix both here. That's faster, but it turns an evidence-only patch into a runtime change, with the extra regeneration and release work that brings.\\\" The executor reads this as the operator's `scope expand:` selecting that option, said so before acting, and proceeded. Bounded scope: (1) state the existing finding contract to the verifier through its output instructions and result schema; (2) add the Codex",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-d76bf8f9d6b59c36",
+      "key": "decision:docs/evidence/WO-146/decisions.md#wo-146-d010",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "49ffcc677551a4bdb0d284f64cfda90a9569ba0524c849dbbc4e01aa575dbe6f",
+          "ref": "docs/evidence/WO-146/decisions.md#wo-146-d010---integrate-wo-145-and-validate-the-combined-deterministic-deliverable",
+          "title": "WO-146-D010: WO-146 acceptance, required before implementation-ready: collect the operator-launched bare H1/H5/H12 observations and four workflow episodes through scripts/harness-probe.mjs using docs/",
+          "summary": "{ \"id\": \"WO-146-D010\", \"date\": \"2026-09-20\", \"dispatch\": \"resume: next; operator: main was also updated with a new work order, so integrate these changes please\", \"decision\": \"Preserve the current staged and unstaged work and ignored intake, fast-forward wo-146 from 67b4b188 to fetched main 19e706ad, reapply the named retained stash, and reconcile generated outputs and additive source changes. Retain the minor release classification and retime unpublished versions if upstream consumed them. Continue deterministic validation; launch no new Copilot probes or sessions and record no implementation-ready transition while interactive acceptance is missing.\", \"evidence\": [ \"docs/product/07-executio",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-e1ef0e7c41336dbd",
+      "key": "decision:docs/evidence/WO-146/decisions.md#wo-146-d011",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "86a77f6f8880a0af195b58347642357378f394e5b56bd0885386b6a257241426",
+          "ref": "docs/evidence/WO-146/decisions.md#wo-146-d011---account-for-observed-copilot-ai-credits-separately-from-token-completeness",
+          "title": "WO-146-D011: WO-146 acceptance, required before implementation-ready: changed usage/compiler dependencies invalidate the selected feedback edition. Pending the requested authorization for one addition",
+          "summary": "{ \"id\": \"WO-146-D011\", \"date\": \"2026-09-20\", \"dispatch\": \"resume: next; validation of the inherited credit-accounting correction\", \"decision\": \"Keep the checkpoint/shutdown credit projection and reconcile the qualification renderer, security table and product 07 with it. Read the prior parent session through its known scratch-derived session key and exact worktree match; retain only numerical totals, scopes and cutoffs. Do not infer tokens or dollars from AI credits, and do not repeat model work for accounting.\", \"evidence\": [ \"packages/skeleton/src/usage-observation.mjs#usageObservation\", \"scripts/test-process-debt.mjs: WO-146 Copilot counters deduplicate requests and do not turn checkpoint",
+          "missing": false
+        },
+        {
+          "hash": "7720289095968b402f02d3dd25d5cb597eed9629d262d39c65185e3b025a128b",
+          "ref": "docs/evidence/WO-146/decisions.md#wo-146-d011---account-for-observed-copilot-ai-credits-separately-from-token-completeness",
+          "title": "WO-146-D011: WO-146 acceptance, required before implementation-ready: changed usage/compiler dependencies invalidate the selected feedback edition. The operator authorized the single read-only audit, ",
+          "summary": "{ \"id\": \"WO-146-D011\", \"date\": \"2026-09-20\", \"dispatch\": \"resume: next; validation of the inherited credit-accounting correction\", \"decision\": \"Keep the checkpoint/shutdown credit projection and reconcile the qualification renderer, security table and product 07 with it. Read the prior parent session through its known scratch-derived session key and exact worktree match; retain only numerical totals, scopes and cutoffs. Do not infer tokens or dollars from AI credits, and do not repeat model work for accounting.\", \"evidence\": [ \"packages/skeleton/src/usage-observation.mjs#usageObservation\", \"scripts/test-process-debt.mjs: WO-146 Copilot counters deduplicate requests and do not turn checkpoint",
+          "missing": false
+        },
+        {
+          "hash": "077393ff46bdb3f642f103cecf5ba169ffec3f99dd865536aff5bb3c0052f7ee",
+          "ref": "docs/evidence/WO-146/decisions.md#wo-146-d011---account-for-observed-copilot-ai-credits-separately-from-token-completeness",
+          "title": "WO-146-D011: WO-146 acceptance, required before implementation-ready: changed usage/compiler dependencies invalidate the selected feedback edition. The operator authorized the single read-only audit, ",
+          "summary": "{ \"id\": \"WO-146-D011\", \"date\": \"2026-09-20\", \"dispatch\": \"resume: next; validation of the inherited credit-accounting correction\", \"decision\": \"Keep the checkpoint/shutdown credit projection and reconcile the qualification renderer, security table and product 07 with it. Read the prior parent session through its known scratch-derived session key and exact worktree match; retain only numerical totals, scopes and cutoffs. Do not infer tokens or dollars from AI credits, and do not repeat model work for accounting.\", \"evidence\": [ \"packages/skeleton/src/usage-observation.mjs#usageObservation\", \"scripts/test-process-debt.mjs: WO-146 Copilot counters deduplicate requests and do not turn checkpoint",
           "missing": false
         }
       ],

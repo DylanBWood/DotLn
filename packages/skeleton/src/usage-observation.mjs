@@ -66,6 +66,34 @@ function sum(values) {
  * @param {unknown[]} input @param {{since?: string, until?: string}} options
  */
 export function usageObservation(input, options = {}) {
+  const observation = tokenUsageObservation(input, options);
+  const until = options.until ? Date.parse(options.until) : Infinity;
+  const counters = input
+    .map(object)
+    .filter((row) =>
+      ["session.usage_checkpoint", "session.shutdown"].includes(row.type),
+    );
+  if (!counters.length) return observation;
+  const latest = counters
+    .filter(
+      (row) =>
+        Number.isSafeInteger(row.data?.totalNanoAiu) &&
+        row.data.totalNanoAiu >= 0 &&
+        Number.isFinite(Date.parse(row.timestamp)) &&
+        Date.parse(row.timestamp) <= until,
+    )
+    .at(-1);
+  return {
+    ...observation,
+    aiCredits: latest ? latest.data.totalNanoAiu / 1_000_000_000 : null,
+    creditSource: latest ? `copilot-${latest.type}` : "unavailable",
+    creditObservedAt: latest?.timestamp ?? null,
+    creditScope: "session-cumulative",
+  };
+}
+
+/** @param {unknown[]} input @param {{since?: string, until?: string}} options */
+function tokenUsageObservation(input, options = {}) {
   const rows = input.map(object);
   const since = options.since ? Date.parse(options.since) : -Infinity;
   const until = options.until ? Date.parse(options.until) : Infinity;
@@ -74,6 +102,12 @@ export function usageObservation(input, options = {}) {
     (Date.parse(row.timestamp) >= since && Date.parse(row.timestamp) <= until);
   const calls = new Map();
   for (const row of rows.filter(inRange)) {
+    if (
+      row.type === "tool.execution_start" &&
+      typeof row.data?.toolCallId === "string" &&
+      typeof row.data?.toolName === "string"
+    )
+      calls.set(row.data.toolCallId, row.data.toolName);
     const event = row.type === "response_item" ? object(row.payload) : row;
     if (
       ["function_call", "custom_tool_call"].includes(event.type) &&
@@ -95,13 +129,83 @@ export function usageObservation(input, options = {}) {
     commandsRun:
       toolNames.length && !opaqueCommands
         ? toolNames.filter((name) =>
-            /(?:^|[._])(?:exec_command|Bash)$/.test(name),
+            /(?:^|[._])(?:exec_command|Bash|bash)$/.test(name),
           ).length
         : null,
     source: toolNames.length
       ? "transcript tool-call metadata; wrapped command count may be unavailable"
       : "unavailable",
   };
+  const shutdown = rows
+    .filter(
+      (row) =>
+        row.type === "session.shutdown" &&
+        row.data?.tokenDetails &&
+        Date.parse(row.timestamp) <= until,
+    )
+    .at(-1);
+  if (shutdown) {
+    const details = shutdown.data.tokenDetails;
+    const usage = fields(
+      {
+        input_tokens: details.input?.tokenCount,
+        output_tokens: details.output?.tokenCount,
+        cache_read_input_tokens: details.cache_read?.tokenCount,
+        cache_creation_input_tokens: details.cache_write?.tokenCount,
+      },
+      true,
+    );
+    const totals = [
+      usage.inputTokens,
+      usage.outputTokens,
+      usage.cachedInputTokens,
+      usage.cacheWriteInputTokens,
+    ];
+    usage.totalTokens = totals.every((value) => value !== null)
+      ? totals.reduce((total, value) => (total ?? 0) + (value ?? 0), 0)
+      : null;
+    return {
+      activity,
+      source: "copilot-result-shutdown",
+      scope: "session-cumulative",
+      observedAt: shutdown.timestamp,
+      usage,
+      context: null,
+    };
+  }
+  const copilotCalls = new Map();
+  for (const row of rows.filter(inRange))
+    if (
+      row.type === "model.model_call_success" &&
+      typeof row.data?.callId === "string" &&
+      row.data.responseUsage
+    )
+      copilotCalls.set(row.data.callId, row);
+  if (copilotCalls.size)
+    return {
+      activity,
+      source: "copilot-transcript-request-usage",
+      scope: "observed-requests-only",
+      coverage:
+        "Partial: recorded model calls can be utility calls; this is not a session total",
+      observedAt: [...copilotCalls.values()].at(-1)?.timestamp ?? null,
+      usage: sum(
+        [...copilotCalls.values()].map((row) => {
+          const wire = row.data.responseUsage;
+          return fields({
+            input_tokens: wire.prompt_tokens,
+            output_tokens: wire.completion_tokens,
+            total_tokens: wire.total_tokens,
+            cached_input_tokens: wire.prompt_tokens_details?.cached_tokens,
+            cache_creation_input_tokens:
+              wire.prompt_tokens_details?.cache_creation_tokens,
+            reasoning_output_tokens:
+              wire.completion_tokens_details?.reasoning_tokens,
+          });
+        }),
+      ),
+      context: null,
+    };
   const counters = rows.filter(
     (row) =>
       row.type === "event_msg" &&
@@ -247,7 +351,7 @@ export const usageRecordIdentity = (row) =>
 /** @param {ReturnType<typeof usageObservation>} observation @param {string} [since] */
 export function requireMeasuredUsage(observation, since) {
   if (
-    !/^(codex|claude)-(transcript|result)-/.test(observation.source) ||
+    !/^(codex|claude|copilot)-(transcript|result)-/.test(observation.source) ||
     ![
       observation.usage.inputTokens,
       observation.usage.outputTokens,
@@ -262,7 +366,7 @@ export function requireMeasuredUsage(observation, since) {
         Date.parse(observation.observedAt) < Date.parse(since)))
   )
     throw new Error(
-      "Token measurement required: read the current Codex or Claude session counters and repair collection before handoff",
+      "Token measurement required: read the current harness session counters; unavailable counters remain unknown",
     );
   return observation;
 }
@@ -295,13 +399,20 @@ function transcriptFiles(directory, depth) {
  * Hook inputs supply Claude identity; the explicit Codex adapter uses the
  * running thread's environment. Directory overrides support isolated fixtures.
  * @param {string} root
- * @param {{sessionKey?: string, transcriptPath?: string, since?: string, until?: string, codexDirectory?: string, claudeDirectory?: string, env?: NodeJS.ProcessEnv}} [options]
+ * @param {{sessionKey?: string, sessionId?: string, transcriptPath?: string, since?: string, until?: string, codexDirectory?: string, claudeDirectory?: string, copilotDirectory?: string, env?: NodeJS.ProcessEnv}} [options]
  */
 export function sessionTranscript(root, options = {}) {
   const env = options.env ?? process.env;
+  const copilotId = options.sessionId ?? env.COPILOT_AGENT_SESSION_ID;
   const key =
     options.sessionKey ??
-    (env.CODEX_THREAD_ID ? usageSessionKey(env.CODEX_THREAD_ID) : undefined);
+    (options.sessionId
+      ? usageSessionKey(options.sessionId)
+      : env.CODEX_THREAD_ID
+        ? usageSessionKey(env.CODEX_THREAD_ID)
+        : copilotId
+          ? usageSessionKey(copilotId)
+          : undefined);
   if (!key || !/^[a-f0-9]{64}$/.test(key))
     throw new Error(
       "Token measurement requires the current harness session identity",
@@ -313,11 +424,34 @@ export function sessionTranscript(root, options = {}) {
       return false;
     const name = basename(path, ".jsonl");
     if (
+      name !== "events" &&
       usageSessionKey(name) !== key &&
       usageSessionKey(name.slice(-36)) !== key
     )
       return false;
     const rows = transcriptHeader(path);
+    const copilot = rows.find((row) => row.type === "session.start")?.data;
+    if (copilot) {
+      const id = copilot.sessionId;
+      const cwd = copilot.context?.cwd;
+      const gitRoot = copilot.context?.gitRoot;
+      return (
+        typeof id === "string" &&
+        usageSessionKey(id) === key &&
+        typeof cwd === "string" &&
+        existsSync(cwd) &&
+        realpathSync(cwd) === realpathSync(root) &&
+        (gitRoot === undefined ||
+          (typeof gitRoot === "string" &&
+            existsSync(gitRoot) &&
+            realpathSync(gitRoot) === realpathSync(root)))
+      );
+    }
+    if (
+      usageSessionKey(name) !== key &&
+      usageSessionKey(name.slice(-36)) !== key
+    )
+      return false;
     const codex = rows.find((row) => row.type === "session_meta");
     const id =
       codex?.payload?.id ??
@@ -336,22 +470,36 @@ export function sessionTranscript(root, options = {}) {
   };
   const files = options.transcriptPath
     ? [resolve(options.transcriptPath)]
-    : [
-        ...transcriptFiles(
-          options.codexDirectory ??
-            join(env.CODEX_HOME ?? join(homedir(), ".codex"), "sessions"),
-          3,
-        ),
-        ...transcriptFiles(
-          options.claudeDirectory ??
-            join(
-              env.CLAUDE_CONFIG_DIR ?? join(homedir(), ".claude"),
-              "projects",
-              resolve(root).replace(/[^a-zA-Z0-9]/g, "-"),
-            ),
-          0,
-        ),
-      ];
+    : copilotId &&
+        /^[a-zA-Z0-9][a-zA-Z0-9._-]{0,127}$/.test(copilotId) &&
+        usageSessionKey(copilotId) === key
+      ? [
+          join(
+            options.copilotDirectory ??
+              join(
+                env.COPILOT_HOME ?? join(homedir(), ".copilot"),
+                "session-state",
+              ),
+            copilotId,
+            "events.jsonl",
+          ),
+        ]
+      : [
+          ...transcriptFiles(
+            options.codexDirectory ??
+              join(env.CODEX_HOME ?? join(homedir(), ".codex"), "sessions"),
+            3,
+          ),
+          ...transcriptFiles(
+            options.claudeDirectory ??
+              join(
+                env.CLAUDE_CONFIG_DIR ?? join(homedir(), ".claude"),
+                "projects",
+                resolve(root).replace(/[^a-zA-Z0-9]/g, "-"),
+              ),
+            0,
+          ),
+        ];
   const selected = files.filter((path) => existsSync(path) && matches(path));
   const path = selected[0];
   if (selected.length !== 1 || !path)
@@ -366,10 +514,27 @@ export function sessionTranscript(root, options = {}) {
  * @param {Parameters<typeof sessionTranscript>[1]} [options]
  */
 export function collectSessionUsage(root, options = {}) {
-  return requireMeasuredUsage(
-    transcriptUsage(sessionTranscript(root, options), options),
-    options.since,
+  const observation = transcriptUsage(
+    sessionTranscript(root, options),
+    options,
   );
+  try {
+    return requireMeasuredUsage(observation, options.since);
+  } catch (error) {
+    if (!("aiCredits" in observation) || observation.aiCredits === null)
+      throw error;
+    // Credits are independently measured. Do not pass incomplete token fields
+    // to the recorder as a measured token observation merely because credits exist.
+    return {
+      ...observation,
+      source: "unavailable",
+      scope: "unknown",
+      observedAt: null,
+      usage: fields({}),
+      context: null,
+      cause: "session-token-counters-unavailable",
+    };
+  }
 }
 
 /** Current Codex harness metadata only: never transcript text, IDs or paths.
@@ -436,6 +601,108 @@ export function currentCodexSession(root, options = {}) {
       reason: "Current Codex session metadata could not be read",
     };
   }
+}
+
+/** CLI-selected Copilot metadata, not an effective-effort claim.
+ * Select one verified session; never scan siblings or infer harness from model.
+ * @param {string} root
+ * @param {Parameters<typeof sessionTranscript>[1]} [options]
+ */
+export function currentCopilotSession(root, options = {}) {
+  const unavailable = /** @param {string} cause */ (cause) => ({
+    available: false,
+    harness: "copilot-cli",
+    harnessVersion: null,
+    model: null,
+    effort: null,
+    observedAt: null,
+    source: "unavailable",
+    causes: [cause],
+  });
+  const env = options.env ?? process.env;
+  const id = options.sessionId ?? env.COPILOT_AGENT_SESSION_ID;
+  if (!id || !/^[a-zA-Z0-9][a-zA-Z0-9._-]{0,127}$/.test(id))
+    return unavailable("session-unidentified");
+  const path =
+    options.transcriptPath ??
+    join(
+      options.copilotDirectory ??
+        join(env.COPILOT_HOME ?? join(homedir(), ".copilot"), "session-state"),
+      id,
+      "events.jsonl",
+    );
+  if (!existsSync(path)) return unavailable("session-log-missing");
+  try {
+    const selected = sessionTranscript(root, {
+      ...options,
+      sessionKey: options.sessionKey ?? usageSessionKey(id),
+      transcriptPath: path,
+    });
+    const rows = decodeUsageSource(readFileSync(selected, "utf8"));
+    const meta = rows.find((row) => row.type === "session.start")?.data;
+    if (!meta) return unavailable("session-log-not-copilot");
+    const change = rows
+      .filter((row) => row.type === "session.model_change")
+      .at(-1);
+    const selectedModel = change?.data?.newModel;
+    const model =
+      typeof selectedModel === "string" &&
+      selectedModel !== "auto" &&
+      /^[a-zA-Z0-9][a-zA-Z0-9._:-]{0,99}$/.test(selectedModel)
+        ? selectedModel
+        : null;
+    const effort = [
+      "none",
+      "minimal",
+      "low",
+      "medium",
+      "high",
+      "xhigh",
+      "max",
+    ].includes(change?.data?.reasoningEffort)
+      ? change.data.reasoningEffort
+      : null;
+    const version =
+      typeof meta.copilotVersion === "string" &&
+      /^\d+\.\d+\.\d+(?:[-+][a-zA-Z0-9.-]+)?$/.test(meta.copilotVersion)
+        ? meta.copilotVersion
+        : null;
+    const stamp =
+      change?.timestamp ??
+      rows.find((row) => row.type === "session.start")?.timestamp;
+    return {
+      available: true,
+      harness: "copilot-cli",
+      harnessVersion: version,
+      model,
+      effort,
+      source: "copilot-session-readback",
+      observedAt:
+        typeof stamp === "string" &&
+        /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?Z$/.test(stamp) &&
+        Number.isFinite(Date.parse(stamp))
+          ? stamp
+          : null,
+      causes: [
+        ...(model === null
+          ? [
+              selectedModel === "auto"
+                ? "model-auto-unresolved"
+                : "model-unreported",
+            ]
+          : []),
+        ...(effort === null ? ["effort-unreported"] : []),
+        ...(version === null ? ["version-unreported"] : []),
+      ],
+    };
+  } catch {
+    return unavailable("session-log-unreadable-or-unverified");
+  }
+}
+
+/** @param {ReturnType<typeof currentCopilotSession>} session */
+export function renderCopilotSession(session) {
+  return `Current Copilot session: ${session.model ?? "unknown"}; effort ${session.effort ?? "unknown"}; CLI ${session.harnessVersion ?? "unknown"}; source ${session.source}; CLI-selected, not effective effort.${session.causes.length ? ` Unknown: ${session.causes.join(", ")}.` : ""}`;
 }
 
 /** The exact command a session runs to read back its own counters (WO-140).

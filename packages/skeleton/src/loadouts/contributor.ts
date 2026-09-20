@@ -72,9 +72,9 @@ const common = [
   "Write durable product decisions to the cited product docs and `docs/evidence/WO-NNN/decisions.md`, naming the operator dispatch, evidence, alternatives and reopening condition. Run `npm run meta` to refresh the decisions index. The ledger is for operator ideation and planning synthesis only. For an order filed before 2026-09-09, a ledger-entry duty is discharged by its decisions file and index row; the work-order index marks this substitution. Record a correction the same day: what was misread, what was meant and what changed. Decided means sourced, not frozen; an order's non-goal fences that order alone.",
 ];
 const actor =
-  "Completion flags: `--harness <harness> --harness-version <version> --model <model> --effort <level> --source <source>`. Supply each field; unknown is admitted. Versions, models and effort are logged, never refused. `ultra` and `ultra code` record xhigh, mode subagents and raw spelling. Never invent effective-session readback. Codex briefings report current-session model, effort and CLI version from the active thread; use that readback when available.";
+  "Completion flags: `--harness <harness> --harness-version <version> --model <model> --effort <level> --source <source>`. Supply each field; unknown is admitted. Versions, models and effort are logged, never refused. `ultra` and `ultra code` record xhigh, mode subagents and raw spelling. Never invent effective-session readback. Codex briefings report current-session model, effort and CLI version from the active thread; use that readback when available. Copilot readback reports CLI-selected values, not effective effort; retain supplied operator attestations and never derive the harness from the model.";
 const evidence =
-  "Run checks that establish the work order's claims. Executor and verifier choose when npm test is useful; lifecycle transitions never require a test gate. Completion runs git diff --check inline and validates report/attestation presence; missing gate rows, output-read observations, usage and planning handoffs advise. Review current authored outputs and record evidence with source and cutoff. Reports, indexes and release text may be completed after a passing gate without invalidating code identity. One registered writer owns a worktree on any branch. Never write gate inputs or its success record during a live npm test; stop your own gate with `node scripts/harness.mjs evidence --stop` when necessary. Every other permission judgment delegates to the host. Read current authored outputs; generated or oversized outputs use their generation/check evidence. Codex can use explicit begin/observe/delivered and `node scripts/harness.mjs read-output <path> --offset 0 --length 8192`, without claiming automatic hooks. Usage is recorded when available and unknown otherwise; it never blocks handoff.";
+  "Run checks that establish the work order's claims. Executor and verifier choose when npm test is useful; lifecycle transitions never require a test gate. Completion runs git diff --check inline and validates report/attestation presence; missing gate rows, output-read observations, usage and planning handoffs advise. Review current authored outputs and record evidence with source and cutoff. Reports, indexes and release text may be completed after a passing gate without invalidating code identity. One registered writer owns a worktree on any branch. Never write gate inputs or its success record during a live npm test; stop your own gate with `node scripts/harness.mjs evidence --stop` when necessary. Every other permission judgment delegates to the host. Read current authored outputs; generated or oversized outputs use their generation/check evidence. Codex and Copilot can use explicit begin/observe/delivered and `node scripts/harness.mjs read-output <path> --offset 0 --length 8192`, without claiming automatic read receipts. Copilot: inspect canonical status, run `npm run resume -- briefing` after an already-recorded dispatch, otherwise run the legal dispatch once; prompt-context delivery is unobserved. Completion releases its writer; explicit `scripts/operator-control.mjs` recovery remains available. Usage is recorded when available and unknown otherwise; it never blocks handoff.";
 const outsideGate =
   "In an operator-attended session run the product gate outside the harness sandbox from the start: inside one, `npm test` refuses before any suite when a selected suite declares `needs: outside-sandbox` and prints the outside command; running unsandboxed is the operator's approval, never automatic. A resident-launched verification runs `npm test -- --inside-sandbox` and records its excluded suites as a partial result; that row is never product-gate evidence.";
 const costLine =
@@ -606,6 +606,7 @@ export const contributorConfiguredProgram = (
 };
 
 const record = "docs/discovery/harness-smoke-2026-09-07.md";
+const copilotRecord = "docs/discovery/copilot-cli-2026-09-20.md";
 export const contributorProfiles: readonly HarnessProfile[] = [
   {
     profileId: "claude-code-2.1.263",
@@ -685,63 +686,107 @@ export const contributorProfiles: readonly HarnessProfile[] = [
       boundaryContract: "feedback-v1",
     },
   },
+  {
+    profileId: "copilot-cli-1.0.86",
+    harness: "copilot-cli",
+    observedVersion: "1.0.86",
+    tools: harnessToolEffects,
+    events: {
+      PreToolUse: { available: true, evidence: `${copilotRecord}#H5` },
+      PostToolUse: { available: true, evidence: `${copilotRecord}#H3` },
+      Stop: {
+        available: true,
+        evidence: `${copilotRecord}#H1`,
+        reason: "H7 observed the callback, not systemMessage visibility",
+      },
+      UserPromptSubmit: {
+        available: true,
+        evidence: `${copilotRecord}#H1`,
+        reason: "H6 did not observe additionalContext delivery",
+      },
+    },
+    skills: {
+      available: true,
+      evidence: `${copilotRecord}#H10`,
+      root: ".agents/skills",
+    },
+    settings: {
+      available: true,
+      evidence: `${copilotRecord}#H1`,
+      path: ".claude/settings.json",
+      deny: false,
+      allow: false,
+    },
+    instruction: {
+      available: true,
+      evidence: `${copilotRecord}#H10`,
+      path: "AGENTS.md",
+    },
+    refusal: "claude-command-json-v1",
+    runtime: {
+      skeletonVersion: HARNESS_HOST_VERSION,
+      boundaryContract: "feedback-v1",
+    },
+  },
 ];
 
 /** Bounded writing-worker observations; no Contributor lifecycle or skills. */
 export const targetWorkerProfiles: readonly HarnessProfile[] =
-  contributorProfiles.map((profile) => {
-    const { codexContinuation: _continuation, ...workerProfile } = profile;
-    const evidence = "docs/discovery/writing-worker-smoke-2026-09-14.md";
-    const unavailable = {
-      available: false,
-      evidence: `${evidence}#X-W4`,
-      reason: "No Codex hook event was observed in the bounded exec probe",
-    };
-    const lifecycle =
-      profile.harness === "claude-code"
-        ? {
-            available: false,
-            evidence: `${evidence}#C-W4`,
-            reason:
-              "Observed in Claude print mode; deliberately omitted by the PreToolUse-only target profile",
-          }
-        : unavailable;
-    const skills = {
-      available: false,
-      evidence: "docs/work-orders/WO-049-target-worktree-bundle.md",
-      reason:
-        "Skills deliberately omitted by target profile scope; no unavailability observation claimed",
-    };
-    return {
-      ...workerProfile,
-      kind: "target-worker-v1",
-      profileId:
+  contributorProfiles
+    .filter((profile) => profile.harness !== "copilot-cli")
+    .map((profile) => {
+      const { codexContinuation: _continuation, ...workerProfile } = profile;
+      const evidence = "docs/discovery/writing-worker-smoke-2026-09-14.md";
+      const unavailable = {
+        available: false,
+        evidence: `${evidence}#X-W4`,
+        reason: "No Codex hook event was observed in the bounded exec probe",
+      };
+      const lifecycle =
         profile.harness === "claude-code"
-          ? "target-worker-claude"
-          : "target-worker-codex",
-      observedVersion:
-        profile.harness === "claude-code" ? "2.1.270" : "0.154.0",
-      events: {
-        PreToolUse:
+          ? {
+              available: false,
+              evidence: `${evidence}#C-W4`,
+              reason:
+                "Observed in Claude print mode; deliberately omitted by the PreToolUse-only target profile",
+            }
+          : unavailable;
+      const skills = {
+        available: false,
+        evidence: "docs/work-orders/WO-049-target-worktree-bundle.md",
+        reason:
+          "Skills deliberately omitted by target profile scope; no unavailability observation claimed",
+      };
+      return {
+        ...workerProfile,
+        kind: "target-worker-v1",
+        profileId:
           profile.harness === "claude-code"
-            ? { available: true, evidence: `${evidence}#C-W4` }
-            : { ...unavailable, evidence: `${evidence}#X-W3` },
-        PostToolUse: lifecycle,
-        Stop: lifecycle,
-        UserPromptSubmit:
-          profile.harness === "claude-code"
-            ? lifecycle
-            : { ...unavailable, evidence: `${evidence}#X-W10` },
-      },
-      skills: { ...skills, root: profile.skills.root },
-      settings: {
-        ...profile.settings,
-        evidence: `${evidence}#${profile.harness === "claude-code" ? "C-W3" : "X-W3"}`,
-      },
-      instruction: {
-        available: true,
-        path: "CLAUDE.local.md",
-        evidence: `${evidence}#${profile.harness === "claude-code" ? "C-W7" : "X-W7"}`,
-      },
-    };
-  });
+            ? "target-worker-claude"
+            : "target-worker-codex",
+        observedVersion:
+          profile.harness === "claude-code" ? "2.1.270" : "0.154.0",
+        events: {
+          PreToolUse:
+            profile.harness === "claude-code"
+              ? { available: true, evidence: `${evidence}#C-W4` }
+              : { ...unavailable, evidence: `${evidence}#X-W3` },
+          PostToolUse: lifecycle,
+          Stop: lifecycle,
+          UserPromptSubmit:
+            profile.harness === "claude-code"
+              ? lifecycle
+              : { ...unavailable, evidence: `${evidence}#X-W10` },
+        },
+        skills: { ...skills, root: profile.skills.root },
+        settings: {
+          ...profile.settings,
+          evidence: `${evidence}#${profile.harness === "claude-code" ? "C-W3" : "X-W3"}`,
+        },
+        instruction: {
+          available: true,
+          path: "CLAUDE.local.md",
+          evidence: `${evidence}#${profile.harness === "claude-code" ? "C-W7" : "X-W7"}`,
+        },
+      };
+    });

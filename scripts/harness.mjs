@@ -26,15 +26,16 @@ import {
   measureHarnessUsage,
 } from "../packages/skeleton/dist/src/harness-host.js";
 
-async function optionalCodexSession(root) {
+async function optionalCurrentSession(root, sessionId) {
   try {
-    const { codexSessionReport } = await import("./lib/harness-runtime.mjs");
-    return (await codexSessionReport(root)).session;
+    const { currentHarnessSessionReport } =
+      await import("./lib/harness-runtime.mjs");
+    return (await currentHarnessSessionReport(root, { sessionId })).session;
   } catch {
     return {
       available: false,
       source: "unavailable",
-      reason: "Current Codex session reader could not be loaded",
+      reason: "Current harness session reader could not be loaded",
     };
   }
 }
@@ -57,7 +58,9 @@ try {
     );
   } else if (action === "scratch") {
     if (args.length > 1) throw new Error("usage: harness scratch [session]");
-    const session = args[0] ?? process.env.CODEX_THREAD_ID;
+    const session =
+      args[0] ??
+      (process.env.CODEX_THREAD_ID || process.env.COPILOT_AGENT_SESSION_ID);
     if (!session)
       throw new Error(
         "Use the scratch path printed at role dispatch, or pass the host session ID",
@@ -84,8 +87,8 @@ try {
     console.log(
       JSON.stringify({
         ...beginHarnessSession(root, session, role, adopted),
-        ...(process.env.CODEX_THREAD_ID
-          ? { currentSession: await optionalCodexSession(root) }
+        ...(process.env.CODEX_THREAD_ID || process.env.COPILOT_AGENT_SESSION_ID
+          ? { currentSession: await optionalCurrentSession(root, session) }
           : {}),
       }),
     );
@@ -94,8 +97,8 @@ try {
     console.log(
       JSON.stringify({
         ...measureHarnessUsage(root, args[0]),
-        ...(process.env.CODEX_THREAD_ID
-          ? { currentSession: await optionalCodexSession(root) }
+        ...(process.env.CODEX_THREAD_ID || process.env.COPILOT_AGENT_SESSION_ID
+          ? { currentSession: await optionalCurrentSession(root, args[0]) }
           : {}),
       }),
     );

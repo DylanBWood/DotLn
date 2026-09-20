@@ -797,7 +797,9 @@ const actorValid = (actor) => {
       ["low", "medium", "high", "xhigh", "max", "unknown"].includes(
         actor.effort,
       ) &&
-      (["claude-code", "codex-cli", "human"].includes(actor.harness) ||
+      (["claude-code", "codex-cli", "copilot-cli", "human"].includes(
+        actor.harness,
+      ) ||
         /^other:[A-Za-z0-9][A-Za-z0-9._-]*$/u.test(actor.harness)),
     "invalid override actor",
   );

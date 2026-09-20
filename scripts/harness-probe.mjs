@@ -300,6 +300,9 @@ if (process.argv[2] === "--subagents") {
 } else if (process.argv[2] === "--authority") {
   const { authorityCli } = await import("./lib/authority-probe.mjs");
   await authorityCli(process.argv.slice(3));
+} else if (process.argv[2] === "copilot") {
+  const { copilotProbe } = await import("./lib/copilot-probe.mjs");
+  await copilotProbe(process.argv.slice(3));
 } else if (process.argv[2] === "--writing-worker")
   await writingWorker(process.argv.slice(3));
 else phaseZero(process.argv[2]);

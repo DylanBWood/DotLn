@@ -1626,7 +1626,8 @@ claim evidence or releases it does not have.
   hooks ran in their fallback, so no session observation exists),
   `no-session` (no harness session was found for this role and order, so
   usage had no subject) and `harness-no-readback` (the harness exposes no
-  counter readback to the session). A new cause adds a code here and in
+  complete session counter readback; utility-request counters alone are
+  partial). A new cause adds a code here and in
   `scripts/lib/receipt-cost.mjs`, never a free-text unknown. `verify` and
   `final-review` stamp the duty on the receipt they allocate, so every earlier
   receipt, and a sibling worktree's receipt allocated before it integrated
@@ -1930,7 +1931,45 @@ The control log preserves all earlier actor values; historical evidence is not
 rewritten to the new grammar. Values are single-line data and missing required
 fields remain a syntax error.
 
+**Copilot selected-session readback (WO-146, 2026-09-20).** Enter bare
+`copilot`; model and effort come from the operator's settings or in-session
+selection, not required launch arguments. Briefing, status and usage report
+`copilot-cli`, CLI version, selected model and reasoning effort from the one
+session identified by `COPILOT_AGENT_SESSION_ID`, or an explicitly supplied
+identifier verified against its log and worktree. Hook origin uses the observed
+`COPILOT_PROJECT_DIR` channel. The harness is never inferred from a Claude or
+GPT model name. Source `copilot-session-readback` is **CLI-selected metadata,
+not effective-effort proof**. `auto` without a resolved selection, null effort,
+missing metadata and a foreign worktree remain unknown with causes. Preserve
+values supplied by the operator as `operator-attested`.
 
+The ordinary completion line is
+`npm run resume -- implementation-ready --harness copilot-cli --harness-version <version> --model <id> --effort <level> --source copilot-session-readback`
+when those values came from that readback. Repair and verification use their
+existing result commands and the same actor fields. A prompt hook can record a
+dispatch without demonstrated context delivery: inspect canonical status and
+use `npm run resume -- briefing` for an already-recorded dispatch rather than
+repeat it. The explicit observation/recovery adapters remain available, and
+executor/fixer completion releases the identified Copilot writer.
+
+Counter availability is separate. Copilot shutdown totals are
+session-cumulative; individual recorded model calls may be utility requests
+only, so their scope is `observed-requests-only`, never a fabricated session
+total. AI credits use the latest valid checkpoint or shutdown `totalNanoAiu`
+divided by 1,000,000,000, with their own session-cumulative scope, source and
+cutoff; they do not establish tokens, dollars or dispatch-only cost. Missing
+credit counters, complete token readback and dollar amounts remain unknown.
+See the [dated probe](../discovery/copilot-cli-2026-09-20.md), the
+[per-control limits and proposed settings](../AI-HARNESS-SECURITY.md#copilot-cli---wo-146-2026-09-20)
+and [completed operator qualification](../evidence/WO-146/qualification.md): four
+bare sessions on CLI 1.0.86 / Claude Sonnet 5 / xhigh completed implementation,
+failing fresh verification, repair and passing fresh verification, with writer
+release confirmed after each exit. Permission choices varied by session; use
+the in-session status instead of inferring persistence.
+No personal setting is written by the integration. Fresh verifier sessions
+remain the operator's responsibility; cross-session memory can transfer
+implementer context. Final review, release close, built-in GitHub MCP,
+`/delegate`, `--remote`, `--fleet` and autopilot are not qualified here.
 
 - **Control-time migration (2026-09-04, WO-028):** every new transition
   records host UTC `recordedAt` at append; it is optional under schema version

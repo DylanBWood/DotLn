@@ -13,6 +13,18 @@ until it's muscle memory; edit it when reality disagrees.
 | **Opus 5** (1M)                 | the active work order's `verifier` declaration                                                                | Blinded verification of Codex-built work orders                                                                 | Implementing or repairing the work it verifies                                                                     |
 | **Sonnet 5**                    | the active work order's declaration for the role it occupies                                                  | Bounded mechanical work: test scaffolds, renames, formatting, running fixtures, small fan-outs                  | Anything requiring judgment about the blueprint                                                                    |
 | **Codex** (GPT-6 Astra)         | operator-selected `max` default; record the actual model and effort; order declarations are recommendations   | Execute and repair work orders                                                                                  | Acceptance verification of its own work — it reads `AGENTS.md` (symlinked to CLAUDE.md), so the same rules bind it |
+| **Copilot CLI** (operator-selected model) | actual CLI-selected readback or operator attestation, separately from harness identity | Executor, fixer and fresh verifier qualified on CLI 1.0.86 / Claude Sonnet 5 / xhigh | Final review and release close: **untested**; keep those on a qualified harness |
+
+Copilot entry is bare `copilot` from the worktree root, with no required launch
+arguments. Its six role skills are the same generated bodies used by the other
+harnesses. The [dated control table](AI-HARNESS-SECURITY.md#copilot-control-table)
+distinguishes observed hook guarantees from advisory and unsupported controls, and the
+[qualification record](evidence/WO-146/qualification.md) records the actual
+operator episodes. Cross-session memory can carry implementer context into a
+fresh verifier; a different session identifier is not mechanical independence.
+No push, pull request, tag or Release was exercised under Copilot. Its built-in
+GitHub MCP server, `/delegate`, `--remote`, `--fleet` and autopilot remain
+outside this loop's qualification and helper governance.
 
 Three standing rules (WO-132, 2026-09-15):
 
@@ -68,24 +80,27 @@ dollar and PR-body caps remain unset while usage is collected.
 
 ## Harness safety baseline
 
-Before dispatching from a personal machine, verify the dated Claude Code and
-Codex CLI setup in [`AI-HARNESS-SECURITY.md`](AI-HARNESS-SECURITY.md). Fable,
+Before dispatching from a personal machine, verify the dated Claude Code,
+Codex CLI and Copilot CLI setup in [`AI-HARNESS-SECURITY.md`](AI-HARNESS-SECURITY.md). Fable,
 Opus, and Sonnet are roles or model assignments inside Claude Code, not separate
 harnesses; they inherit Claude's effective settings. The same distinction
-applies to future model names inside Codex.
+applies to model names inside Codex or Copilot.
 
 The standing security invariant is that a discovered credential, host, open
 port, connector, or capable tool is not authority to use it. Keep untrusted
 execution inside the enabled shell sandbox and route boundary-crossing requests
 through the host's approval mechanism. Re-check effective settings after upgrades.
-DotLn hooks refuse four conditions: a second writer in one worktree; a write to
+DotLn hooks refuse five conditions: a second writer in one worktree; a write to
 gate inputs or the success record during any live `npm test`; a repository
 write outside `docs/` and root Markdown on a `planning/` branch; and an
 observable subagent admission beyond `docs/control/budgets.json` `subagentCap`
-(default 20; `null` disables). Descendants count at their first attributable
+(default 20; `null` disables); and a known outside-project write destination
+without an active role or support grant. Descendants count at their first attributable
 tool call; unresolved direct/child overlap is a reported minimum and unobserved
 agents remain unknown. Claude enforces these observed boundaries; Codex carries
-the same duties as role text. Other judgments advise and defer to host permissions.
+the same duties as role text. Copilot reuses the existing registration, with
+the control table's field, identity and bare-session limits. Other judgments
+advise and defer to host permissions.
 A registered writer may plan, build, bootstrap and close a release on main.
 
 At the 2026-09-01 Codex baseline, `.git` and a linked worktree's resolved Git

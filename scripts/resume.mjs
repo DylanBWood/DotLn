@@ -15,7 +15,7 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   reportHarnessRuntime,
-  codexSessionReport,
+  currentHarnessSessionReport,
   observedFactsReport,
 } from "./lib/harness-runtime.mjs";
 import { mainWorktree, runGit, shellQuote } from "./lib/git.mjs";
@@ -1122,7 +1122,7 @@ export const main = async (argv = process.argv.slice(2)) => {
     }
     // Informational readback, independent of token-counter availability and phase gates.
     if (
-      process.env.CODEX_THREAD_ID &&
+      (process.env.CODEX_THREAD_ID || process.env.COPILOT_AGENT_SESSION_ID) &&
       [
         "status",
         "next",
@@ -1136,7 +1136,7 @@ export const main = async (argv = process.argv.slice(2)) => {
         "final-review-result",
       ].includes(action)
     ) {
-      const report = await codexSessionReport(repoRoot);
+      const report = await currentHarnessSessionReport(repoRoot);
       message =
         action === "status" && args.includes("--json")
           ? JSON.stringify(

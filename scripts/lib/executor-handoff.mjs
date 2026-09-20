@@ -7,7 +7,8 @@ import { pathToFileURL } from "node:url";
 // not produce a successful handoff with a reservation we cannot retire.
 export async function executorWriterRelease(
   root,
-  sessionId = process.env.CODEX_THREAD_ID,
+  sessionId = process.env.CODEX_THREAD_ID ||
+    process.env.COPILOT_AGENT_SESSION_ID,
 ) {
   if (!sessionId) return () => {};
   const runtime = join(root, "packages/skeleton/dist/src/harness-host.js");
