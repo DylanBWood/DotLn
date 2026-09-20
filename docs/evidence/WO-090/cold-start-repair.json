@@ -1,0 +1,156 @@
+{
+  "schemaVersion": 2,
+  "comparisonEdition": "v0.16.0",
+  "method": "Installed CLAUDE.md plus the installed role skill only; source bytes, no task documents or estimated tokens.",
+  "instruction": {
+    "path": "CLAUDE.md",
+    "bytes": 6113,
+    "previousBytes": 3593
+  },
+  "profiles": [
+    {
+      "role": "executor",
+      "skillsRoot": ".claude/skills",
+      "path": ".claude/skills/dotln-executor/SKILL.md",
+      "skillBytes": 17041,
+      "bytes": 23154,
+      "previousBytes": 10847,
+      "delta": 12307,
+      "ceiling": 24576,
+      "metric": "coldStartBytes.executor",
+      "verdict": "within"
+    },
+    {
+      "role": "verifier",
+      "skillsRoot": ".claude/skills",
+      "path": ".claude/skills/dotln-verifier/SKILL.md",
+      "skillBytes": 14948,
+      "bytes": 21061,
+      "previousBytes": 8232,
+      "delta": 12829,
+      "ceiling": 25151,
+      "metric": "coldStartBytes.verifier",
+      "verdict": "within"
+    },
+    {
+      "role": "reviewer",
+      "skillsRoot": ".claude/skills",
+      "path": ".claude/skills/dotln-reviewer/SKILL.md",
+      "skillBytes": 16166,
+      "bytes": 22279,
+      "previousBytes": 8665,
+      "delta": 13614,
+      "ceiling": 24576,
+      "metric": "coldStartBytes.reviewer",
+      "verdict": "within"
+    },
+    {
+      "role": "release-close",
+      "skillsRoot": ".claude/skills",
+      "path": ".claude/skills/dotln-release-close/SKILL.md",
+      "skillBytes": 7854,
+      "bytes": 13967,
+      "previousBytes": 6107,
+      "delta": 7860,
+      "ceiling": 16384,
+      "metric": "coldStartBytes.release-close",
+      "verdict": "within"
+    },
+    {
+      "role": "planner",
+      "skillsRoot": ".claude/skills",
+      "path": ".claude/skills/dotln-planner/SKILL.md",
+      "skillBytes": 8920,
+      "bytes": 15033,
+      "previousBytes": 5455,
+      "delta": 9578,
+      "ceiling": 24576,
+      "metric": "coldStartBytes.planner",
+      "verdict": "within"
+    },
+    {
+      "role": "refuter",
+      "skillsRoot": ".claude/skills",
+      "path": ".claude/skills/dotln-refuter/SKILL.md",
+      "skillBytes": 9577,
+      "bytes": 15690,
+      "previousBytes": null,
+      "delta": null,
+      "ceiling": null,
+      "metric": "coldStartBytes.refuter",
+      "verdict": "unset"
+    },
+    {
+      "role": "executor",
+      "skillsRoot": ".agents/skills",
+      "path": ".agents/skills/dotln-executor/SKILL.md",
+      "skillBytes": 17041,
+      "bytes": 23154,
+      "previousBytes": 12012,
+      "delta": 11142,
+      "ceiling": 24576,
+      "metric": "coldStartBytes.executor",
+      "verdict": "within"
+    },
+    {
+      "role": "verifier",
+      "skillsRoot": ".agents/skills",
+      "path": ".agents/skills/dotln-verifier/SKILL.md",
+      "skillBytes": 14948,
+      "bytes": 21061,
+      "previousBytes": 9397,
+      "delta": 11664,
+      "ceiling": 25151,
+      "metric": "coldStartBytes.verifier",
+      "verdict": "within"
+    },
+    {
+      "role": "reviewer",
+      "skillsRoot": ".agents/skills",
+      "path": ".agents/skills/dotln-reviewer/SKILL.md",
+      "skillBytes": 16166,
+      "bytes": 22279,
+      "previousBytes": 9830,
+      "delta": 12449,
+      "ceiling": 24576,
+      "metric": "coldStartBytes.reviewer",
+      "verdict": "within"
+    },
+    {
+      "role": "release-close",
+      "skillsRoot": ".agents/skills",
+      "path": ".agents/skills/dotln-release-close/SKILL.md",
+      "skillBytes": 7854,
+      "bytes": 13967,
+      "previousBytes": 7272,
+      "delta": 6695,
+      "ceiling": 16384,
+      "metric": "coldStartBytes.release-close",
+      "verdict": "within"
+    },
+    {
+      "role": "planner",
+      "skillsRoot": ".agents/skills",
+      "path": ".agents/skills/dotln-planner/SKILL.md",
+      "skillBytes": 8920,
+      "bytes": 15033,
+      "previousBytes": 6620,
+      "delta": 8413,
+      "ceiling": 24576,
+      "metric": "coldStartBytes.planner",
+      "verdict": "within"
+    },
+    {
+      "role": "refuter",
+      "skillsRoot": ".agents/skills",
+      "path": ".agents/skills/dotln-refuter/SKILL.md",
+      "skillBytes": 9577,
+      "bytes": 15690,
+      "previousBytes": null,
+      "delta": null,
+      "ceiling": null,
+      "metric": "coldStartBytes.refuter",
+      "verdict": "unset"
+    }
+  ]
+}

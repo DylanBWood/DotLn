@@ -36,6 +36,15 @@ not alter the cold-start comparison or require a new evidence edition. The
 historical [WO-039 measurement](../evidence/WO-039/harness-context.json) retains
 its original broader method.
 
+This guide is the operating contract. Harness-specific observations (version,
+model and effort readback, Codex sandbox approval) live in
+`docs/AI-HARNESS-SECURITY.md` and the playbook, with a pointer where each
+left (WO-090, 2026-09-20). The [WO-090 measurement](../evidence/WO-090/README.md)
+by WO-039's method records that this guide enters the fixture's directed sets
+only through §Goal-aligned decisions; actual orders add their cited sections.
+Retiring that section's duplicated role procedure lowers every measured role's
+directed total; the harness-observation moves alone left those totals unchanged.
+
 ## Goal-aligned decisions
 
 The Contributor's purpose comes from [the vision](00-vision.md): DotLn is a
@@ -53,15 +62,8 @@ Useful prerequisite or risk-reduction work must name the blocked outcome it
 enables. Process activity, receipt volume and agent utilization are not progress
 by themselves. Goal alignment grants no authority to reorder or expand work.
 
-**All phases, operator direction 2026-09-11.** The default Contributor equips
-Goal Alignment and Process Cost for executor/fixer, verifier, reviewer, planner,
-refuter and release-close. Before selecting a material solution, record the
-goal and critical-path contribution, evidence of benefit, the NoOp baseline,
-and the risks of intervening in existing behavior. Compare all eight system
-traps below. Revisit that rationale when evidence or scope changes; verification
-and handoff compare observed outcomes with the promised benefit. Required legal
-or release actions retain their existing authority; NoOp is a considered
-alternative, not an ambient veto or permission to abandon authorized work.
+**All phases, operator direction 2026-09-11.** Goal Alignment and Process Cost
+procedure lives in the generated role skills.
 
 Accuracy takes priority over agreement in every phase. The already-equipped
 Correctness over Sycophancy rule applies to operator suggestions and the agent's
@@ -88,6 +90,12 @@ records what happens if nothing changes, why action or inaction wins, and the
 evidence that would reopen the choice. Scale detail to consequence: explain
 applicable risks and briefly group immaterial lenses with a reason; do not
 manufacture eight repetitive paragraphs for routine edits.
+
+Record evidence of benefit and the risks of intervening in existing behavior;
+verification and handoff compare observed outcomes with the promised benefit.
+Required legal or release actions retain their existing authority; NoOp is a
+considered alternative, not an ambient veto or permission to abandon authorized
+work.
 
 **Platform lens (operator direction, 2026-09-17).** Four checks from the
 platforms lesson the operator pointed at (Steve Yegge's 2011 account of the
@@ -241,19 +249,14 @@ table includes the shared goal card and the refuter's separate subject boundary.
    | `resume: final review`  | `npm run resume -- final-review`                                                                                                                                                                                           | review into the allocated `FINAL-NNN`; on pass, record it, commit the reviewed state, push only the WO branch, and open its PR                                                                                                                                           |
    | `resume: release close` | run the exact `cd <main> && node <main>/scripts/release.mjs close WO-NNN --publish` command projected by `resume release-close` or printed by `worktree publish`; after the subject is already removed, use main's copy | update main, consume the reviewer product gate, publish the validated tag and Release, then attempt worktree cleanup; if Release creation fails after tag push, rerun from updated main |
 
-   At the dated Codex baseline, run each **state-changing** `resume` command
-   with explicit outside-sandbox approval on its first invocation. Codex
-   workspace-write protects the resolved Git directory, while each transition's
-   recovery checkpoint writes a Git object and ref there. `status`, `times` and `briefing` are read-only;
-   `next` appends no event and creates no checkpoint but refreshes the workspace
-   projection. Neither needs Git escalation. Never run a transition sandboxed
-   and then repeat it: the transition records even when its optional checkpoint
-   fails. Outside-sandbox approval covers the entire project-controlled `npm`
-   process, not only Git. Inspect the exact command, the `resume` mapping in
-   `package.json`, and the current `scripts/resume.mjs` diff before requesting a
-   one-invocation approval; never persist an allow rule for it. See
-   `docs/AI-HARNESS-SECURITY.md` for the tested versions, Claude's current
-   behavior, verification, and rollback.
+   Codex sandbox approval for state-changing transitions is harness
+   procedure, not lifecycle contract, and lives with the other harness
+   settings: the playbook's
+   [harness safety baseline](../PLAYBOOK.md#harness-safety-baseline) carries
+   the first-invocation approval rule, and
+   [`docs/AI-HARNESS-SECURITY.md`](../AI-HARNESS-SECURITY.md#why-recovery-checkpoints-warn-under-sandboxed-codex)
+   explains the checkpoint warning, the tested versions, Claude's behavior,
+   verification and rollback (relocated by WO-090, 2026-09-20).
 
 3. Record your outcome when the deliverable, report and evidence exist.
    Completion runs `git diff --check` inline. Gate rows, session authorship,
@@ -1905,112 +1908,26 @@ claim evidence or releases it does not have.
 
 ## Model-specific notes
 
-**Version and effort observations (WO-132, 2026-09-15).** Harness,
-version, model, effort and source are required attestation fields and are
-recorded as supplied, including `unknown`. `Effort:` recommendations accept
-`any` or a level with or without `+`; below-recommended values and missing
-version/selector/readback observations warn without refusing. CLI transports
-attempt the requested model and effort and report actual invocation failures;
-version minima and discovery gaps no longer prevent launch.
+Behavioral guidance rots across model generations; that is why it lives in
+this repository as typed mechanisms and docs instead of prompts. If an
+instruction here fights your model's defaults (e.g., built-in verification),
+flag it in your result rather than ignoring it.
 
-`ultra` and `ultra code` normalize to `effort: xhigh`, `mode: subagents`, and
-the supplied `raw` spelling. Other labels remain as given. Codex launches in
-subagents mode do not disable multi-agent features. Accepted selectors are
-launch observations, not effective-session readback. The five existing Codex
-0.154.0 probes record low, medium, high, xhigh and max; discovery preserves
-historical observations and never acts as an admission list.
+State the harness, version, model, effort and source actually run in the
+result and in the completion flags; §Operator resume phrases step 3 carries
+that contract, the actor-attestation header rule and the `ultra` spelling
+normalization. The per-harness observations that lived here moved on
+2026-09-20 (WO-090), each to one home, and this section keeps the pointers:
 
-Codex briefings, status and usage output report the active thread's model,
-effort and CLI version from its local session metadata. This readback is
-independent of token-counter freshness and adds no admission check. Missing or
-incomplete metadata is reported without substituting a model default. Explicit
-operator-supplied values remain operator-attested when readback is unavailable. Optional `--account-label`
-retains its public opaque-label grammar; no private account meaning is inferred.
-Reports carry exactly one normalized actor header matching completion flags.
-The control log preserves all earlier actor values; historical evidence is not
-rewritten to the new grammar. Values are single-line data and missing required
-fields remain a syntax error.
+- Required attestation fields, `unknown`, Codex thread readback, the
+  `--account-label` grammar, the Codex 0.154.0 effort probes and the WO-126
+  CLI version-line observation with its session-detection channels are in
+  [`docs/AI-HARNESS-SECURITY.md` §Harness version, model and effort readback](../AI-HARNESS-SECURITY.md#harness-version-model-and-effort-readback).
+- Copilot selected-session readback, its completion line and its counters
+  are in [§Copilot CLI](../AI-HARNESS-SECURITY.md#selected-session-readback-completion-and-counters).
+- Control-event timing (WO-028) and the separate dispatch usage channel
+  (WO-126) are in the playbook's
+  [resume command surface](../PLAYBOOK.md#resume-command-surface).
 
-**Copilot selected-session readback (WO-146, 2026-09-20).** Enter bare
-`copilot`; model and effort come from the operator's settings or in-session
-selection, not required launch arguments. Briefing, status and usage report
-`copilot-cli`, CLI version, selected model and reasoning effort from the one
-session identified by `COPILOT_AGENT_SESSION_ID`, or an explicitly supplied
-identifier verified against its log and worktree. Hook origin uses the observed
-`COPILOT_PROJECT_DIR` channel. The harness is never inferred from a Claude or
-GPT model name. Source `copilot-session-readback` is **CLI-selected metadata,
-not effective-effort proof**. `auto` without a resolved selection, null effort,
-missing metadata and a foreign worktree remain unknown with causes. Preserve
-values supplied by the operator as `operator-attested`.
-
-The ordinary completion line is
-`npm run resume -- implementation-ready --harness copilot-cli --harness-version <version> --model <id> --effort <level> --source copilot-session-readback`
-when those values came from that readback. Repair and verification use their
-existing result commands and the same actor fields. A prompt hook can record a
-dispatch without demonstrated context delivery: inspect canonical status and
-use `npm run resume -- briefing` for an already-recorded dispatch rather than
-repeat it. The explicit observation/recovery adapters remain available, and
-executor/fixer completion releases the identified Copilot writer.
-
-Counter availability is separate. Copilot shutdown totals are
-session-cumulative; individual recorded model calls may be utility requests
-only, so their scope is `observed-requests-only`, never a fabricated session
-total. AI credits use the latest valid checkpoint or shutdown `totalNanoAiu`
-divided by 1,000,000,000, with their own session-cumulative scope, source and
-cutoff; they do not establish tokens, dollars or dispatch-only cost. Missing
-credit counters, complete token readback and dollar amounts remain unknown.
-See the [dated probe](../discovery/copilot-cli-2026-09-20.md), the
-[per-control limits and proposed settings](../AI-HARNESS-SECURITY.md#copilot-cli---wo-146-2026-09-20)
-and [completed operator qualification](../evidence/WO-146/qualification.md): four
-bare sessions on CLI 1.0.86 / Claude Sonnet 5 / xhigh completed implementation,
-failing fresh verification, repair and passing fresh verification, with writer
-release confirmed after each exit. Permission choices varied by session; use
-the in-session status instead of inferring persistence.
-No personal setting is written by the integration. Fresh verifier sessions
-remain the operator's responsibility; cross-session memory can transfer
-implementer context. Final review, release close, built-in GitHub MCP,
-`/delegate`, `--remote`, `--fleet` and autopilot are not qualified here.
-
-- **Control-time migration (2026-09-04, WO-028):** every new transition
-  records host UTC `recordedAt` at append; it is optional under schema version
-  `1`, and old events are never rewritten. Timing cannot order events or grant
-  a legal action. Status reports the latest completed attempt per phase with
-  signed milliseconds, `unknown` for missing endpoints, and no recovered-time
-  substitution. `resume times` labels each event `recordedAt`,
-  `recovered-from-local-checkpoint-ref`, or `unknown`; a required missing or
-  mismatched local ref refuses. The dated
-  `docs/discovery/control-event-times-2026-09-04.json` observation preserves
-  120 second-precision committer times and 15 unknowns from the activation log;
-  its refs remain unpushed. This public profile deliberately publishes timing,
-  while stricter profiles can omit it or declare coarser public observations.
-  WO-126 records tokens and cost per dispatch through a separate observation
-  channel: CLI usage/cost envelopes and interactive transcript counters. The
-  collector preserves source, scope and unavailable values, never raw transcript
-  text or a fabricated price. The time field itself remains unchanged.
-- **Version-line attestation (WO-126):** `npm run discover -- harness` appends
-  a bounded observation of the running CLI's major.minor line and newest patch,
-  plus whether Claude's effort readback channel exists. WO-132 supersedes
-  its effort admission rule: all supplied labels are preserved, including
-  unknown versions and efforts. Session entry warns once when the observed CLI
-  leaves the recorded line. WO-042's unknown attestation remains unchanged.
-  Session detection prefers the explicit harness input, then the exposed
-  running executable, then a matching ancestor executable from the host process
-  table. A versioned Claude installation path supplies its observed version;
-  on macOS, a bare version basename is accepted only for the `CLAUDE_PID`
-  process verified in that ancestor chain. An unrelated numeric process name
-  supplies no version evidence
-  ([WO-126-D017](../evidence/WO-126/decisions.md#wo-126-d017));
-  when a verified Claude ancestor has an opaque process name, a bounded `lsof`
-  text-mapping probe can resolve its versioned executable. A supplied PID without
-  ancestry is never probed, and ambiguous or unavailable mappings supply no
-  version. A successful session observation is reused on later prompts; a changed
-  explicit harness-version input can replace it
-  ([WO-126-D021](../evidence/WO-126/decisions.md#wo-126-d021)).
-  An unversioned absolute Claude executable is probed directly. PATH is the
-  fallback when those channels are unavailable. Only the version and channel
-  are recorded, not the process paths or arguments
-  ([WO-126-D013](../evidence/WO-126/decisions.md#wo-126-d013)).
-- Behavioral guidance rots across model generations; that is why it lives here
-  as typed mechanisms and docs instead of prompts. If an instruction here fights
-  your model's defaults (e.g., built-in verification), flag it in your result
-  rather than ignoring it.
+The [WO-090 relocation table](../evidence/WO-090/README.md#relocation-table)
+accounts for every paragraph that left.

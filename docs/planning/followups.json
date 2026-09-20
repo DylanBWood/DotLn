@@ -11521,6 +11521,74 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-ac9c2b1271e1dc05",
+      "key": "decision:docs/evidence/WO-090/decisions.md#wo-090-d001",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "1727eaf1c4f88622679ba0a95326d2798e392559e2de3f3da0a8912c7282c2aa",
+          "ref": "docs/evidence/WO-090/decisions.md#wo-090-d001--the-relocated-sections-were-never-in-any-roles-directed-set-relocate-anyway-prune-nothing-and-put-the-criterion-1-premise-to-the-operator",
+          "title": "WO-090-D001: Operator: WO-090 criterion 1 asks for a strictly lower directed-load total per role by WO-039's method; the measured totals are equal before and after because product 07 enters the measur",
+          "summary": "{ \"id\": \"WO-090-D001\", \"date\": \"2026-09-20\", \"dispatch\": \"resume: next (Claude Code, operator-selected Fable 5.1); WO-090 Cost line: measure the per-role directed-load totals at activation with scripts/harness-context.mjs because no current total is recorded\", \"decision\": \"Measure first, then relocate exactly what the objective names and prune nothing. At activation (f24b5d72) WO-039's method (measureHarnessContext over the WO-999 fixture) puts product 07 into each of the four measured roles' directed sets only as the §Goal-aligned decisions subtree (lines 39–121, 6,205 bytes, 83 lines); §Model-specific notes and the Codex sandbox-approval paragraph are in no role's set, so moving them canno",
+          "missing": false
+        },
+        {
+          "hash": "cd0564e480397640541cdeb70a41041a4b6c5cf53167faefd8d03881b1d39c7f",
+          "ref": "docs/evidence/WO-090/decisions.md#wo-090-d001--the-relocated-sections-were-never-in-any-roles-directed-set-relocate-anyway-prune-nothing-and-put-the-criterion-1-premise-to-the-operator",
+          "title": "WO-090-D001: Operator: WO-090 criterion 1 asks for a strictly lower directed-load total per role by WO-039's method; the measured totals are equal before and after because product 07 enters the measur",
+          "summary": "{ \"id\": \"WO-090-D001\", \"date\": \"2026-09-20\", \"dispatch\": \"resume: next (Claude Code, operator-selected Fable 5.1); WO-090 Cost line: measure the per-role directed-load totals at activation with scripts/harness-context.mjs because no current total is recorded\", \"decision\": \"Measure first, then relocate exactly what the objective names and prune nothing. At activation (f24b5d72) WO-039's method (measureHarnessContext over the WO-999 fixture) puts product 07 into each of the four measured roles' directed sets only as the §Goal-aligned decisions subtree (lines 39–121, 6,205 bytes, 83 lines); §Model-specific notes and the Codex sandbox-approval paragraph are in no role's set, so moving them canno",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-090-D005 reopens the impossibility premise: the authorized repair retires duplicated procedure, retains every unique rule, and measures all eight directed profiles 252 bytes lower. No criterion amendment or operator acceptance of equality is needed; VER-001 remains about the earlier subject.",
+          "reopenWhen": "Fresh verification finds a missing mapped duty or the matched activation-to-repair reduction does not hold.",
+          "targets": [],
+          "at": "2026-09-20T16:53:21.317Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-50a41e39f51a3e01",
+      "key": "decision:docs/evidence/WO-090/decisions.md#wo-090-d006",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "1b3a08e90360dd0224b097889e6e6a46c3bcfe6ae3e32306a5a69cbd683bb1bc",
+          "ref": "docs/evidence/WO-090/decisions.md#wo-090-d006--operator-authorized-local-commits-refresh-the-planning-judgment",
+          "title": "WO-090-D006: Planning: design an explicit executor route for an authorized edit to the goal standard that requires fresh planning refutation before final review. The present exact-text binding plus co",
+          "summary": "{ \"id\": \"WO-090-D006\", \"date\": \"2026-09-20\", \"dispatch\": \"resume: fix; operator response to the concrete local-commit exception: Authorize local commits and refutation\", \"decision\": \"After the live product gate finishes, commit the changed planning inputs (product 07 and WO-090's already-assigned title) and this decision record locally, then run the canonical pass-scoped planning refutation with one fresh background worker, no inherited conversation and no descendants. File its frozen judgment through the canonical receipt helper and run the document checks. The operator explicitly authorized the required planning-subject and receipt commits before final review; no push, PR, integration or p",
+          "missing": false
+        },
+        {
+          "hash": "3b4d6a6dc9286b6f1c82539b1e978c27aa8c3d80549cd53ec7ed5933cc1f9d7d",
+          "ref": "docs/evidence/WO-090/decisions.md#wo-090-d006--operator-authorized-local-commits-refresh-the-planning-judgment",
+          "title": "WO-090-D006: Planning: design an explicit executor route for an authorized edit to the goal standard that requires fresh planning refutation before final review. The present exact-text binding plus co",
+          "summary": "{ \"id\": \"WO-090-D006\", \"date\": \"2026-09-20\", \"dispatch\": \"resume: fix; operator response to the concrete local-commit exception: Authorize local commits and refutation\", \"decision\": \"After the live product gate finishes, commit the changed planning inputs (product 07 and WO-090's already-assigned title) and this decision record locally, refresh the canonical planning cost table from this run's actual observations, commit that input locally, then run the canonical pass-scoped planning refutation with one fresh background worker, no inherited conversation and no descendants. File its frozen judgment through the canonical receipt helper and run the document checks. The operator explicitly autho",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-73ae8355ce4eff85",
+      "key": "decision:docs/evidence/WO-090/decisions.md#wo-090-d007",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "ddea5e7e8407c38471738c1760542409e4ec6cd966f44900667c934d54605436",
+          "ref": "docs/evidence/WO-090/decisions.md#wo-090-d007--repair-this-orders-unresolved-decision-anchors-nominate-the-repo-wide-anchor-check-separately",
+          "title": "WO-090-D007: Planning: add a document-suite check that resolves in-repo Markdown anchors against their target headings, and decide the disposition of the 41 unresolved decision anchors already in clos",
+          "summary": "{ \"id\": \"WO-090-D007\", \"date\": \"2026-09-20\", \"dispatch\": \"resume: final review\", \"decision\": \"Within the reviewer's bounded cleanup, repair the three short-form decision links in this order's evidence README (D001, D003, D004) to the full GitHub heading slugs, and refresh the two figures the repair superseded: the software-engineer edition lock, which moved again to c0d4e920 after the goal-card edit, and the guide's final size of 1,933 lines and 141,047 bytes. Leave the 41 unresolved decision anchors in closed orders' reports untouched, because those reports are immutable, and nominate a generated anchor check for planning instead of adding one here.\", \"evidence\": [ \"reviewer scan of every t",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }
