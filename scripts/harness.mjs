@@ -20,6 +20,7 @@ import {
   releaseHarnessWriterByOperator,
   runHarnessEvidence,
   beginHarnessSession,
+  harnessSessionScratch,
   observeHarnessSession,
   observeHarnessDelivery,
   measureHarnessUsage,
@@ -54,6 +55,14 @@ try {
         2,
       ),
     );
+  } else if (action === "scratch") {
+    if (args.length > 1) throw new Error("usage: harness scratch [session]");
+    const session = args[0] ?? process.env.CODEX_THREAD_ID;
+    if (!session)
+      throw new Error(
+        "Use the scratch path printed at role dispatch, or pass the host session ID",
+      );
+    console.log(harnessSessionScratch(session));
   } else if (action === "begin") {
     const [session, role, flag, file] = args;
     if (

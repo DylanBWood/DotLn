@@ -2,9 +2,11 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {
   compileEditableView,
+  compileLoadout,
   defineLoadout,
   functionTableFromLoadout,
   lowerToHarness,
+  requireCompiled,
   semanticHash,
   statechartJsonFromLoadout,
 } from "@dotln/compiler";
@@ -12,6 +14,7 @@ import {
   contributorConfiguredProgram,
   defaultContributorSupportIds,
   contributorLoadout,
+  contributorOutsideAuthority,
   contributorProfiles,
   contributorProgram,
   contributorRolesFor,
@@ -92,7 +95,10 @@ const baselineEnvelope = contributorProgram([]).loadout.authorityEnvelope;
 test("WO-042 atomic support switches compose independently and removal restores the saved build", () => {
   const hashes = new Set<string>();
   for (const ids of combinations) {
-    const graph = contributorWithSupports(ids);
+    const graph = {
+      ...contributorWithSupports(ids),
+      authorityGrants: contributorOutsideAuthority,
+    };
     const program = contributorProgram(ids);
     const hash = semanticHash(program.loadout);
     hashes.add(hash);
@@ -149,7 +155,10 @@ test("WO-042 atomic support switches compose independently and removal restores 
       functionTableFromLoadout(graph),
       statechartJsonFromLoadout(graph),
     ]) {
-      const roundTrip = compileEditableView(view, environment);
+      const roundTrip = compileEditableView(view, {
+        ...environment,
+        authorityGrantRegistry: contributorOutsideAuthority,
+      });
       assert.equal(roundTrip.ok, true);
       assert.equal(roundTrip.semanticHash, hash);
     }
@@ -160,7 +169,9 @@ test("WO-042 atomic support switches compose independently and removal restores 
   }
   assert.equal(hashes.size, combinations.length);
   assert.equal(
-    semanticHash(contributorProgram([]).loadout),
+    semanticHash(
+      requireCompiled(compileLoadout(contributorLoadout, environment)),
+    ),
     "fnv1a64:06245f5c581212f1",
   );
   assert.equal(contributorWithSupports([]), contributorLoadout);
@@ -192,7 +203,7 @@ test("WO-042 atomic support switches compose independently and removal restores 
         "goal-alignment": false,
       }).loadout,
     ),
-    "fnv1a64:06245f5c581212f1",
+    semanticHash(contributorProgram([]).loadout),
   );
 });
 

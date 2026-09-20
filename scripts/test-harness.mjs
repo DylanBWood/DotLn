@@ -41,8 +41,15 @@ import {
   applyFeedbackCorrection,
   compileLoadout,
   seiriLoadout,
+  requireCompiled,
+  outsideWriteEffect,
 } from "../packages/compiler/dist/src/index.js";
-import { contributorProgram } from "../packages/skeleton/dist/src/loadouts/contributor.js";
+import {
+  contributorProgram,
+  defaultContributorSupportIds,
+  contributorWithSupports,
+  contributorOutsideAuthority,
+} from "../packages/skeleton/dist/src/loadouts/contributor.js";
 import {
   personalFeedbackUnits,
   retainedFeedbackUnitsV1,
@@ -63,6 +70,7 @@ import {
   harnessOutputs,
   harnessProcessAlive,
   harnessWriterView,
+  harnessSessionScratch,
   evaluateHarnessHook,
   readHarnessOutput,
   releaseHarnessWriter,
@@ -93,7 +101,10 @@ import {
   gateTreeHash,
 } from "./lib/gate-evidence.mjs";
 
-import { shellWriteTargets } from "../packages/skeleton/dist/src/harness-command.js";
+import {
+  shellRedirectTargets,
+  shellWriteTargets,
+} from "../packages/skeleton/dist/src/harness-command.js";
 
 const sourceRoot = fileURLToPath(new URL("../", import.meta.url));
 // Fixtures own the harness-process identity: generated hooks record this test
@@ -111,6 +122,35 @@ const write = (root, path, contents) => {
   writeFileSync(join(root, path), contents);
 };
 const json = (value) => JSON.stringify(value, null, 2) + "\n";
+const withOutsideAuthority = (program, roots) => {
+  const grants = [
+    ...contributorOutsideAuthority,
+    ...roots.map((root, index) => ({
+      grantId: `fixture.outside-${index}`,
+      version: 1,
+      grantedBy: "operator",
+      effects: [outsideWriteEffect(root)],
+      repo: "project",
+      reason: root.source,
+    })),
+  ];
+  return {
+    ...program,
+    loadout: requireCompiled(
+      compileLoadout(
+        { ...contributorWithSupports(), authorityGrants: grants },
+        {
+          environmentId: "fixture",
+          version: 1,
+          capabilities: [],
+          repo: "project",
+          baseCommit: "0".repeat(40),
+          authorityGrantRegistry: grants,
+        },
+      ),
+    ),
+  };
+};
 const writableFixtureCopy = (path) => {
   const info = lstatSync(path);
   if (info.isSymbolicLink()) return;
@@ -424,7 +464,7 @@ const configFor = (root, name) => {
   }
   return config;
 };
-function invoke(root, name, payload, removed = false) {
+function invoke(root, name, payload, removed = false, environment = {}) {
   let path = join(root, `.claude/hooks/${hookName(name)}.mjs`);
   if (removed) {
     const source = readFileSync(path, "utf8");
@@ -441,6 +481,7 @@ function invoke(root, name, payload, removed = false) {
   }
   const run = spawnSync(process.execPath, [path], {
     cwd: root,
+    env: { ...process.env, ...environment },
     input: JSON.stringify(payload),
     encoding: "utf8",
     timeout: deadlineLimit(1000, 20_000),
@@ -2276,6 +2317,9 @@ test("WO-039 confirmed-token adapter uses the compiled correction and survives i
           "shell.run",
           "git.local",
           "lifecycle.run",
+          ...program.loadout.authorityEnvelope.allowedEffects.filter((effect) =>
+            effect.startsWith("outside.write:"),
+          ),
         ],
         scopeExpansionAllowed: true,
         preserveEvidence: false,
@@ -2319,6 +2363,74 @@ test("WO-039 confirmed-token adapter uses the compiled correction and survives i
         ),
         expected,
       );
+  } finally {
+    removeFixture(root, { recursive: true });
+  }
+});
+
+test("WO-144 typed correction removes outside-write grants, including reused correction state", () => {
+  const root = fixture();
+  const session = "outside-correction";
+  try {
+    const program = {
+      ...contributorProgram(),
+      correctionToken: "fixture-correction:",
+    };
+    emitHarness(root, {
+      program,
+      feedback: compileFeedbackUnits(retainedFeedbackUnitsV1),
+    });
+    beginHarnessSession(root, session, "executor");
+    const request = input(root, "PreToolUse", {
+      session_id: session,
+      tool_name: "Write",
+      tool_input: { file_path: join(tmpdir(), "dotln-correction-fixture.txt") },
+    });
+    assert.equal(allowed(invoke(root, "permissions", request)), true);
+    const correctionPath = join(
+      "docs/control/local/harness",
+      `${createHash("sha256").update(session).digest("hex")}.correction.json`,
+    );
+    for (const reuse of [false, true]) {
+      if (reuse)
+        write(
+          root,
+          correctionPath,
+          json({
+            allowedEffects: [
+              ...program.loadout.authorityEnvelope.allowedEffects,
+            ],
+            destructiveEffects: ["repo.write"],
+            scopeExpansionAllowed: false,
+            preserveEvidence: true,
+            diagnosisRequired: true,
+            corrections: ["correction:0"],
+          }),
+        );
+      const result = invoke(
+        root,
+        "fail-conservative-correction",
+        input(root, "UserPromptSubmit", {
+          session_id: session,
+          prompt: "fixture-correction: freeze destructive effects",
+        }),
+      );
+      assert.ok(result.hookSpecificOutput?.additionalContext);
+      const state = JSON.parse(
+        readFileSync(join(root, correctionPath), "utf8"),
+      );
+      assert.ok(
+        !state.allowedEffects.some((effect) =>
+          effect.startsWith("outside.write:"),
+        ),
+      );
+      assert.ok(state.allowedEffects.includes("repo.read"));
+      assert.equal(
+        invoke(root, "permissions", request).hookSpecificOutput
+          ?.permissionDecision,
+        "deny",
+      );
+    }
   } finally {
     removeFixture(root, { recursive: true });
   }
@@ -3673,6 +3785,7 @@ test("WO-135 generated planning hooks refuse repository code paths and preserve 
   );
   const sessionId = `wo135-planning-${root}`;
   try {
+    beginHarnessSession(root, sessionId, "planner");
     git(root, "switch", "-c", "planning/2030-01-02-fixture");
     mkdirSync(join(root, "docs"), { recursive: true });
     symlinkSync(join(root, "scripts"), join(root, "docs/source"));
@@ -3764,6 +3877,1118 @@ test("WO-135 generated planning hooks refuse repository code paths and preserve 
   } finally {
     removeFixture(root, { recursive: true });
     removeFixture(scratch, { recursive: true });
+  }
+});
+
+test("WO-144 repair admits null discards and exposes scratch with single consistent observations", () => {
+  const root = fixture();
+  const outside = realpathSync(
+    mkdtempSync(join(tmpdir(), "dotln-repair-grants-")),
+  );
+  const temporary = join(outside, "per-user-temp");
+  const session = "repair-grants";
+  mkdirSync(temporary);
+  const environment = { TMPDIR: temporary, TMP: temporary, TEMP: temporary };
+  const request = (tool, args, event = "PreToolUse") =>
+    input(root, event, {
+      session_id: session,
+      tool_name: tool,
+      tool_input: args,
+    });
+  try {
+    const dispatch = invoke(
+      root,
+      "session",
+      input(root, "UserPromptSubmit", {
+        session_id: session,
+        prompt: "resume: next",
+      }),
+      false,
+      environment,
+    );
+    const scratch = join(
+      temporary,
+      "dotln",
+      createHash("sha256").update(session).digest("hex"),
+      "scratch",
+    );
+    assert.ok(dispatch.hookSpecificOutput.additionalContext.includes(scratch));
+    assert.match(
+      dispatch.hookSpecificOutput.additionalContext,
+      /Native scratch and \/tmp need a separate grant/,
+    );
+    const cli = spawnSync(
+      process.execPath,
+      ["scripts/harness.mjs", "scratch"],
+      {
+        cwd: root,
+        env: { ...process.env, ...environment, CODEX_THREAD_ID: session },
+        encoding: "utf8",
+      },
+    );
+    assert.equal(cli.status, 0, cli.stderr);
+    assert.equal(cli.stdout.trim(), scratch);
+    for (const command of [
+      "true 2>/dev/null",
+      "true >/dev/null 2>&1",
+      "true &>/dev/null",
+    ]) {
+      assert.deepEqual(shellWriteTargets(command), [
+        { path: "/dev/null", followFinalSymlink: true, redirect: true },
+      ]);
+      for (const hook of [
+        "permissions",
+        "concurrent-work-requires-worktrees",
+        "no-attribution",
+        "write-observer",
+      ]) {
+        const result = invoke(
+          root,
+          hook,
+          request("Bash", { command }),
+          false,
+          environment,
+        );
+        assert.equal(allowed(result), true, JSON.stringify(result));
+        assert.equal(result.systemMessage, undefined);
+      }
+    }
+    for (const command of [
+      "rm /dev/null",
+      "touch /dev/null",
+      `touch '${outside}/ungranted' /dev/null/child`,
+    ]) {
+      assert.equal(
+        allowed(
+          invoke(
+            root,
+            "permissions",
+            request("Bash", { command }),
+            false,
+            environment,
+          ),
+        ),
+        false,
+        command,
+      );
+    }
+    // Split TMPDIR from /tmp, as on darwin. Inspect only; execute no denied write.
+    for (const directory of [
+      "/tmp",
+      "/private/tmp/claude-fixture/session/scratchpad",
+      join(outside, "native-scratch"),
+    ]) {
+      for (const call of [
+        request("Write", { file_path: `${directory}/probe.txt` }),
+        request("Bash", { command: `printf x > '${directory}/probe.txt'` }),
+      ]) {
+        assert.equal(
+          allowed(invoke(root, "permissions", call, false, environment)),
+          false,
+        );
+      }
+    }
+    const path = join(scratch, "probe.txt");
+    for (const hook of [
+      "permissions",
+      "concurrent-work-requires-worktrees",
+      "no-attribution",
+      "write-observer",
+    ]) {
+      const result = invoke(
+        root,
+        hook,
+        request("Write", { file_path: path }),
+        false,
+        environment,
+      );
+      assert.equal(allowed(result), true);
+      assert.equal(result.systemMessage, undefined, JSON.stringify(result));
+    }
+    mkdirSync(scratch, { recursive: true });
+    writeFileSync(path, "scratch");
+    const post = invoke(
+      root,
+      "no-lint-type-disables-as-fixes",
+      request("Write", { file_path: path }, "PostToolUse"),
+      false,
+      environment,
+    );
+    assert.equal(post.systemMessage, undefined);
+    const journal = readFileSync(
+      join(
+        root,
+        "docs/control/local/harness",
+        createHash("sha256").update(session).digest("hex") + ".jsonl",
+      ),
+      "utf8",
+    )
+      .trim()
+      .split("\n")
+      .map(JSON.parse);
+    const judgments = journal.filter(
+      (row) => row.outsideWrite?.destination === path,
+    );
+    assert.equal(judgments.length, 1);
+    assert.equal(judgments[0].outsideWrite.status, "granted");
+    assert.ok(
+      journal.some(
+        (row) => row.effect === "outside.write:system-temp" && row.allowed,
+      ),
+    );
+    const credentials = invoke(
+      root,
+      "permissions",
+      request("Write", { file_path: join(scratch, ".env") }),
+      false,
+      environment,
+    );
+    assert.match(credentials.systemMessage, /credentials.access/);
+  } finally {
+    removeFixture(root, { recursive: true });
+    removeFixture(outside, { recursive: true });
+  }
+});
+
+test("WO-144 generated hooks apply active-role grants to physical writes and removals", () => {
+  const root = fixture();
+  const outside = realpathSync(
+    mkdtempSync(join(tmpdir(), "dotln-outside-grants-")),
+  );
+  const temporary = join(outside, "temporary");
+  const session = "outside-grants";
+  mkdirSync(temporary);
+  mkdirSync(join(outside, "home/Documents"), { recursive: true });
+  const environment = { TMPDIR: temporary, TMP: temporary, TEMP: temporary };
+  const request = (tool, args, session_id = session) =>
+    input(root, "PreToolUse", {
+      session_id,
+      tool_name: tool,
+      tool_input: args,
+    });
+  const hooks = [
+    "permissions",
+    "concurrent-work-requires-worktrees",
+    "write-observer",
+  ];
+  try {
+    beginHarnessSession(root, session, "executor");
+    const scratch = join(
+      temporary,
+      "dotln",
+      createHash("sha256").update(session).digest("hex"),
+      "scratch",
+    );
+    for (const directory of [temporary, scratch]) {
+      for (const hook of hooks) {
+        for (const call of [
+          request("Write", { file_path: join(directory, "new.txt") }),
+          request("Bash", { command: `printf x > '${directory}/new.txt'` }),
+        ]) {
+          assert.equal(
+            allowed(invoke(root, hook, call, false, environment)),
+            true,
+          );
+        }
+      }
+    }
+    const refused = [
+      join(root, "../outside-parent.txt"),
+      join(outside, "sibling/new.txt"),
+      join(outside, "home/Documents/new.txt"),
+      join(outside, "temporary-beside/new.txt"),
+    ];
+    symlinkSync(join(outside, "home/Documents"), join(temporary, "escape"));
+    symlinkSync(
+      join(outside, "home/Documents/new.txt"),
+      join(temporary, "dangling"),
+    );
+    refused.push(
+      join(temporary, "escape/new.txt"),
+      join(temporary, "dangling"),
+    );
+    const calls = refused.flatMap((path) => [
+      request("Write", { file_path: path }),
+      request("Bash", { command: `printf x > '${path}'` }),
+    ]);
+    calls.push(
+      request("Bash", { command: `rm '${outside}/home/Documents/new.txt'` }),
+    );
+    calls.push(
+      request("Bash", {
+        command: "touch ../home/Documents/new.txt",
+        workdir: temporary,
+      }),
+    );
+    calls.push(
+      request("Bash", {
+        command: `touch '${outside}/ungranted.txt' /dev/null/child`,
+      }),
+    );
+    for (const hook of hooks) {
+      for (const call of calls) {
+        const response = invoke(root, hook, call, false, environment);
+        assert.equal(
+          response.hookSpecificOutput?.permissionDecision,
+          "deny",
+          JSON.stringify(call),
+        );
+        assert.match(
+          response.hookSpecificOutput.permissionDecisionReason,
+          /physical destination .* lacks an equipped outside-write grant.*operator override:/,
+        );
+      }
+      for (const command of [
+        `rm '${temporary}/escape'`,
+        `touch -h '${temporary}/escape'`,
+        `rm '${temporary}/dangling'`,
+        "node opaque.mjs",
+      ]) {
+        assert.equal(
+          allowed(
+            invoke(
+              root,
+              hook,
+              request("Bash", { command }),
+              false,
+              environment,
+            ),
+          ),
+          true,
+        );
+      }
+      assert.equal(
+        allowed(
+          invoke(
+            root,
+            hook,
+            request("Write", { file_path: "fixture.ts" }),
+            false,
+            environment,
+          ),
+        ),
+        true,
+      );
+    }
+    // Run only admitted tools. A refused call leaves both absent and existing
+    // destinations unchanged, including deletion and the original redirect shape.
+    const sentinel = join(outside, "home/Documents/keep.txt");
+    writeFileSync(sentinel, "keep");
+    const refusedRemoval = request("Bash", { command: `rm '${sentinel}'` });
+    const admittedWrite = request("Bash", {
+      command: `printf kept > '${temporary}/actual.txt'`,
+    });
+    for (const call of [refusedRemoval, calls[1], admittedWrite]) {
+      if (allowed(invoke(root, "permissions", call, false, environment))) {
+        const run = spawnSync("sh", ["-c", call.tool_input.command], {
+          cwd: root,
+          encoding: "utf8",
+        });
+        assert.equal(run.status, 0);
+      }
+    }
+    assert.equal(readFileSync(sentinel, "utf8"), "keep");
+    assert.equal(readFileSync(join(temporary, "actual.txt"), "utf8"), "kept");
+    assert.equal(existsSync(refused[0]), false);
+    const noRole = invoke(
+      root,
+      "permissions",
+      request("Write", { file_path: join(temporary, "no-role") }, "no-role"),
+      false,
+      environment,
+    );
+    assert.equal(noRole.hookSpecificOutput?.permissionDecision, "deny");
+    assert.match(
+      noRole.hookSpecificOutput.permissionDecisionReason,
+      /role unknown/,
+    );
+    invoke(
+      root,
+      "session",
+      input(root, "UserPromptSubmit", {
+        session_id: session,
+        prompt: "operator override: fixture recovery",
+      }),
+      false,
+      environment,
+    );
+    assert.equal(
+      allowed(invoke(root, "permissions", refusedRemoval, false, environment)),
+      true,
+    );
+    invoke(
+      root,
+      "session",
+      input(root, "UserPromptSubmit", {
+        session_id: session,
+        prompt: "operator override: off",
+      }),
+      false,
+      environment,
+    );
+    assert.equal(
+      allowed(invoke(root, "permissions", refusedRemoval, false, environment)),
+      false,
+    );
+    const journal = readFileSync(
+      join(
+        root,
+        "docs/control/local/harness",
+        createHash("sha256").update(session).digest("hex") + ".jsonl",
+      ),
+      "utf8",
+    );
+    assert.match(
+      journal,
+      /"status":"unobserved","cause":"destination-not-extractable"/,
+    );
+    assert.match(journal, /"status":"granted"/);
+    assert.match(journal, /"status":"refused"/);
+    // Stale runtime pins still delegate; outside grants do not conceal failure.
+    const hook = join(root, ".claude/hooks/permissions.mjs");
+    writeFileSync(
+      hook,
+      readFileSync(hook, "utf8").replace(
+        /"compilerPackageVersion": "[^"]+"/,
+        '"compilerPackageVersion": "0.0.0"',
+      ),
+    );
+    const stale = invoke(
+      root,
+      "permissions",
+      refusedRemoval,
+      false,
+      environment,
+    );
+    assert.equal(allowed(stale), true);
+    assert.match(stale.systemMessage, /pins-differ/);
+  } finally {
+    removeFixture(root, { recursive: true });
+    removeFixture(outside, { recursive: true });
+  }
+});
+
+test("WO-144 equipped support grants are attributable and disappear when unequipped", async () => {
+  const root = fixture();
+  const outside = realpathSync(
+    mkdtempSync(join(tmpdir(), "dotln-support-grants-")),
+  );
+  const temporary = join(outside, "temporary");
+  mkdirSync(temporary);
+  const environment = { TMPDIR: temporary };
+  const session = "support-grants";
+  const operatorRoot = join(outside, "authorized");
+  const request = (path) =>
+    input(root, "PreToolUse", {
+      session_id: session,
+      tool_name: "Write",
+      tool_input: { file_path: path },
+    });
+  try {
+    beginHarnessSession(root, session, "executor");
+    const base = contributorProgram();
+    const unadmitted = {
+      ...base,
+      facets: base.facets.map((facet) =>
+        facet.facetId === "process-cost"
+          ? {
+              ...facet,
+              outsideWriteGrants: [
+                {
+                  kind: "operator-root",
+                  root: operatorRoot,
+                  source: "Fixture operator direction",
+                },
+              ],
+            }
+          : facet,
+      ),
+    };
+    assert.throws(
+      () => harnessInstallation({ program: unadmitted }),
+      /provenance-bearing grant/,
+    );
+    const program = withOutsideAuthority(unadmitted, [
+      {
+        kind: "operator-root",
+        root: operatorRoot,
+        source: "Fixture operator direction",
+      },
+    ]);
+    emitHarness(root, { program });
+    assert.equal(
+      allowed(
+        invoke(
+          root,
+          "permissions",
+          request(join(operatorRoot, "new.txt")),
+          false,
+          environment,
+        ),
+      ),
+      true,
+    );
+    assert.equal(
+      allowed(
+        invoke(
+          root,
+          "permissions",
+          request(operatorRoot + "-beside/new.txt"),
+          false,
+          environment,
+        ),
+      ),
+      false,
+    );
+    const config = configFor(root, "permissions");
+    for (const envelope of [
+      { ...config.envelope, expiresAt: 0 },
+      { ...config.envelope, deniedEffects: ["outside.write:*"] },
+      { ...config.envelope, requiredEvidence: ["unobserved-proof"] },
+    ]) {
+      assert.equal(
+        allowed(
+          await evaluateHarnessHook(
+            { ...config, envelope },
+            request(join(operatorRoot, "new.txt")),
+            root,
+            feedbackBoundary,
+          ),
+        ),
+        false,
+      );
+    }
+    const installation = harnessInstallation({ program });
+    for (const bundle of installation.bundles) {
+      const grants = bundle.manifest.outsideWriteGrants.find(
+        (row) => row.role === "executor",
+      ).grants;
+      assert.ok(
+        grants.some(
+          (grant) =>
+            grant.root === operatorRoot &&
+            grant.originId === "process-cost" &&
+            grant.source === "Fixture operator direction",
+        ),
+      );
+    }
+    emitHarness(root, {
+      program: contributorProgram(
+        defaultContributorSupportIds.filter((id) => id !== "process-cost"),
+      ),
+    });
+    assert.equal(
+      allowed(
+        invoke(
+          root,
+          "permissions",
+          request(join(operatorRoot, "new.txt")),
+          false,
+          environment,
+        ),
+      ),
+      false,
+    );
+  } finally {
+    removeFixture(root, { recursive: true });
+    removeFixture(outside, { recursive: true });
+  }
+});
+
+test("WO-144 unreadable grants advise once and preserve all four existing refusals", () => {
+  const root = fixture();
+  const outside = realpathSync(
+    mkdtempSync(join(tmpdir(), "dotln-broken-grants-")),
+  );
+  const session = "broken-grants";
+  const request = (tool, args, extra = {}) =>
+    input(root, "PreToolUse", {
+      session_id: session,
+      tool_name: tool,
+      tool_input: args,
+      ...extra,
+    });
+  try {
+    beginHarnessSession(root, session, "executor");
+    for (const name of [
+      "permissions",
+      "concurrent-work-requires-worktrees",
+      "write-observer",
+    ]) {
+      const path = join(root, `.claude/hooks/${hookName(name)}.mjs`);
+      const config = { ...configFor(root, name), outsideWriteGrants: null };
+      writeFileSync(
+        path,
+        readFileSync(path, "utf8").replace(
+          /await runHarnessHook\([\s\S]*, feedbackBoundary(?:, input(?:, rawInput)?)?\);/,
+          `await runHarnessHook(${json(config).trim()}, feedbackBoundary, input, rawInput);`,
+        ),
+      );
+    }
+    const outsideWrite = request("Write", {
+      file_path: join(outside, "new.txt"),
+    });
+    const replies = [
+      "permissions",
+      "concurrent-work-requires-worktrees",
+      "write-observer",
+    ].map((hook) => invoke(root, hook, outsideWrite));
+    assert.ok(replies.every(allowed));
+    assert.equal(
+      replies.filter((reply) =>
+        reply.systemMessage?.includes("outside-write guard unavailable"),
+      ).length,
+      1,
+    );
+    const inProject = invoke(
+      root,
+      "permissions",
+      request("Write", { file_path: "fixture.ts" }),
+    );
+    assert.equal(inProject.systemMessage, undefined);
+    const foreign = invoke(
+      root,
+      "concurrent-work-requires-worktrees",
+      request(
+        "Write",
+        { file_path: join(outside, "foreign.txt") },
+        { session_id: "foreign" },
+      ),
+    );
+    assert.equal(foreign.hookSpecificOutput?.permissionDecision, "deny");
+    const gate = beginGateRun(root, "npm test");
+    try {
+      assert.equal(
+        allowed(
+          invoke(
+            root,
+            "permissions",
+            request("Write", { file_path: "fixture.ts" }),
+          ),
+        ),
+        false,
+      );
+    } finally {
+      gate.release();
+    }
+    git(root, "switch", "-c", "planning/2030-01-02-grants");
+    assert.equal(
+      allowed(
+        invoke(
+          root,
+          "permissions",
+          request("Write", { file_path: "fixture.ts" }),
+        ),
+      ),
+      false,
+    );
+    assert.equal(
+      allowed(
+        invoke(
+          root,
+          "permissions",
+          request("Bash", { command: "touch fixture.ts /dev/null/child" }),
+        ),
+      ),
+      false,
+    );
+    git(root, "switch", "wo-999");
+    write(root, "docs/control/budgets.json", json({ subagentCap: 0 }));
+    const descendant = invoke(
+      root,
+      "permissions",
+      request(
+        "Write",
+        { file_path: join(outside, "child.txt") },
+        { agent_id: "child" },
+      ),
+    );
+    assert.equal(allowed(descendant), false);
+    assert.match(
+      descendant.hookSpecificOutput.permissionDecisionReason,
+      /subagent/,
+    );
+    const journal = readFileSync(
+      join(
+        root,
+        "docs/control/local/harness",
+        createHash("sha256").update(session).digest("hex") + ".jsonl",
+      ),
+      "utf8",
+    );
+    assert.match(journal, /outside-write grant configuration unreadable/);
+  } finally {
+    removeFixture(root, { recursive: true });
+    removeFixture(outside, { recursive: true });
+  }
+});
+
+test("WO-144 scratch-only role grant is session-scoped and main intake must be ignored", () => {
+  const root = fixture();
+  const outside = realpathSync(
+    mkdtempSync(join(tmpdir(), "dotln-grant-kinds-")),
+  );
+  const linked = join(outside, "linked");
+  const session = "scratch-only";
+  try {
+    const base = contributorProgram();
+    const withGrant = (kind) =>
+      withOutsideAuthority(
+        {
+          ...base,
+          roles: base.roles.map((role) => ({
+            ...role,
+            outsideWriteGrants:
+              role.name === "executor"
+                ? [{ kind, source: "Fixture declared role grant" }]
+                : [],
+          })),
+        },
+        [{ kind, source: "Fixture declared role grant" }],
+      );
+    emitHarness(root, { program: withGrant("session-scratch") });
+    beginHarnessSession(root, session, "executor");
+    const request = (cwd, path) =>
+      input(cwd, "PreToolUse", {
+        session_id: session,
+        tool_name: "Write",
+        tool_input: { file_path: path },
+      });
+    assert.equal(
+      allowed(
+        invoke(
+          root,
+          "permissions",
+          request(root, join(harnessSessionScratch(session), "new.txt")),
+        ),
+      ),
+      true,
+    );
+    assert.equal(
+      allowed(
+        invoke(
+          root,
+          "permissions",
+          request(root, join(harnessSessionScratch("other"), "new.txt")),
+        ),
+      ),
+      false,
+    );
+    assert.equal(
+      allowed(
+        invoke(root, "permissions", request(root, join(outside, "new.txt"))),
+      ),
+      false,
+    );
+    git(root, "worktree", "add", "-b", "wo-linked", linked);
+    for (const path of ["packages", "node_modules"])
+      cpSync(join(root, path), join(linked, path), {
+        recursive: true,
+        verbatimSymlinks: true,
+      });
+    emitHarness(linked, { program: withGrant("main-intake") });
+    beginHarnessSession(linked, session, "executor");
+    write(
+      root,
+      ".gitignore",
+      readFileSync(join(root, ".gitignore"), "utf8") + "docs/intake/\n",
+    );
+    const intake = join(root, "docs/intake/notes/new.md");
+    assert.equal(
+      allowed(invoke(linked, "permissions", request(linked, intake))),
+      true,
+    );
+    assert.equal(
+      allowed(
+        invoke(
+          linked,
+          "permissions",
+          request(linked, join(root, "docs/intake-beside/new.md")),
+        ),
+      ),
+      false,
+    );
+    write(root, ".gitignore", "node_modules/\n**/dist/\ndocs/control/local/\n");
+    const unignored = invoke(linked, "permissions", request(linked, intake));
+    assert.equal(allowed(unignored), true);
+    assert.match(unignored.systemMessage, /ignored intake unavailable/);
+  } finally {
+    removeFixture(root, { recursive: true });
+    removeFixture(outside, { recursive: true });
+  }
+});
+
+test("WO-144 FINAL-001 F1 a moved working directory is still judged and journals in the hook's own project", () => {
+  const root = fixture();
+  const outside = realpathSync(
+    mkdtempSync(join(tmpdir(), "dotln-outside-moved-")),
+  );
+  const temporary = join(outside, "temporary");
+  const other = join(outside, "other-repository");
+  const documents = join(outside, "home/Documents");
+  const session = "outside-moved";
+  for (const directory of [temporary, other, documents])
+    mkdirSync(directory, { recursive: true });
+  git(other, "init", "-b", "main");
+  mkdirSync(join(root, "docs/nested"), { recursive: true });
+  const environment = { TMPDIR: temporary, TMP: temporary, TEMP: temporary };
+  const request = (cwd, tool, args) =>
+    input(root, "PreToolUse", {
+      cwd,
+      session_id: session,
+      tool_name: tool,
+      tool_input: args,
+    });
+  const hooks = [
+    "permissions",
+    "concurrent-work-requires-worktrees",
+    "write-observer",
+  ];
+  try {
+    beginHarnessSession(root, session, "executor");
+    for (const cwd of [join(root, "docs/nested"), outside, other]) {
+      for (const hook of hooks) {
+        for (const call of [
+          request(cwd, "Bash", {
+            command: `printf x > '${documents}/new.txt'`,
+          }),
+          request(cwd, "Write", { file_path: join(documents, "new.txt") }),
+          request(cwd, "Bash", { command: `rm '${documents}/new.txt'` }),
+          // The incident's literal spelling, from a moved directory.
+          request(cwd, "Bash", {
+            command: `npm run meta 2> '${documents}/.x'`,
+          }),
+        ]) {
+          const response = invoke(root, hook, call, false, environment);
+          assert.equal(
+            response.hookSpecificOutput?.permissionDecision,
+            "deny",
+            JSON.stringify(call),
+          );
+          assert.match(
+            response.hookSpecificOutput.permissionDecisionReason,
+            /physical destination .* lacks an equipped outside-write grant for role executor.*operator override:/,
+          );
+        }
+        for (const call of [
+          request(cwd, "Bash", {
+            command: `printf x > '${temporary}/granted.txt'`,
+          }),
+          request(cwd, "Write", { file_path: join(root, "fixture.ts") }),
+          request(cwd, "Bash", { command: "node opaque.mjs" }),
+        ])
+          assert.equal(
+            allowed(invoke(root, hook, call, false, environment)),
+            true,
+            JSON.stringify(call),
+          );
+      }
+    }
+    // A relative destination resolves where the shell will open it.
+    const nested = join(root, "docs/nested");
+    for (const [cwd, command, refused] of [
+      [nested, "printf x > ../../../escaped-parent.txt", true],
+      [nested, "npm run meta 2>../../../.x", true],
+      [nested, "printf x > ../../fixture.ts", false],
+      [nested, "touch beside.md", false],
+      [other, "touch in-another-repository.txt", true],
+      [outside, "printf x > home/Documents/new.txt", true],
+      [outside, "printf x > temporary/granted.txt", false],
+    ])
+      assert.equal(
+        allowed(
+          invoke(
+            root,
+            "permissions",
+            request(cwd, "Bash", { command }),
+            false,
+            environment,
+          ),
+        ),
+        !refused,
+        command,
+      );
+    // The recorded probe: run only what the hook admits from the moved directory.
+    const probe = request(nested, "Bash", {
+      command: `printf probe > '${documents}/probe.txt'`,
+    });
+    if (allowed(invoke(root, "permissions", probe, false, environment)))
+      spawnSync("sh", ["-c", probe.tool_input.command], { cwd: nested });
+    assert.equal(existsSync(join(documents, "probe.txt")), false);
+    const rows = readFileSync(
+      join(
+        root,
+        "docs/control/local/harness",
+        createHash("sha256").update(session).digest("hex") + ".jsonl",
+      ),
+      "utf8",
+    )
+      .split("\n")
+      .filter(Boolean)
+      .map((line) => JSON.parse(line));
+    const judged = rows.filter(
+      (row) => row.outsideWrite?.workingDirectory === "moved",
+    );
+    for (const status of ["refused", "granted", "unobserved"])
+      assert.ok(
+        judged.some((row) => row.outsideWrite.status === status),
+        status,
+      );
+    assert.equal(
+      rows.some(
+        (row) => row.outsideWrite && !row.outsideWrite.workingDirectory,
+      ),
+      false,
+    );
+    // Every hook names the stand-down of the root-bound refusals in a row.
+    assert.ok(
+      rows.some(
+        (row) =>
+          row.delegated &&
+          /Harness requires the verified worktree root/.test(row.advisory),
+      ),
+    );
+    assert.ok(
+      rows.some(
+        (row) =>
+          row.delegated &&
+          /Hook and worktree roots disagree/.test(row.advisory),
+      ),
+    );
+    // adjacent-0003: nothing is journaled or marked in another repository.
+    assert.deepEqual(readdirSync(other), [".git"]);
+    assert.deepEqual(readdirSync(outside).sort(), [
+      "home",
+      "other-repository",
+      "temporary",
+    ]);
+    // From the root the judgment and every other boundary are unchanged.
+    const atRoot = invoke(
+      root,
+      "permissions",
+      request(root, "Bash", { command: `printf x > '${documents}/new.txt'` }),
+      false,
+      environment,
+    );
+    assert.equal(atRoot.hookSpecificOutput?.permissionDecision, "deny");
+    assert.equal(
+      allowed(
+        invoke(
+          root,
+          "permissions",
+          request(root, "Write", { file_path: "fixture.ts" }),
+          false,
+          environment,
+        ),
+      ),
+      true,
+    );
+    // adjacent-0004: with the runtime gone the generated fallback delegates,
+    // and its marker and row still land in the hook's own project.
+    removeFixture(join(root, ".runtime"), { recursive: true, force: true });
+    for (const cwd of [nested, outside, other]) {
+      const fallback = invoke(
+        root,
+        "permissions",
+        request(cwd, "Bash", { command: "pwd" }),
+        false,
+        environment,
+      );
+      assert.equal(allowed(fallback), true);
+      if (cwd === nested)
+        assert.match(fallback.systemMessage, /snapshot-missing/);
+    }
+    assert.deepEqual(readdirSync(other), [".git"]);
+    assert.deepEqual(readdirSync(outside).sort(), [
+      "home",
+      "other-repository",
+      "temporary",
+    ]);
+    assert.equal(existsSync(join(nested, "docs")), false);
+    assert.match(
+      readFileSync(
+        join(
+          root,
+          "docs/control/local/harness",
+          createHash("sha256").update(session).digest("hex") + ".jsonl",
+        ),
+        "utf8",
+      ),
+      /snapshot-missing: built adapter unavailable/,
+    );
+  } finally {
+    removeFixture(root, { recursive: true });
+    removeFixture(outside, { recursive: true });
+  }
+});
+
+test("WO-144 FINAL-001 F2 a literal redirect is judged on any program while the program stays unobserved", () => {
+  for (const [command, targets, redirects] of [
+    ["npm run meta 2>../.x", null, ["../.x"]],
+    ["npm run meta 2>$PWD/../.x", null, null],
+    ["printf x 2>../.x", ["../.x"], ["../.x"]],
+    ["cd docs && npm run meta 2>../.x", null, null],
+    ["cd docs && npm run meta 2>/absolute/.x", null, ["/absolute/.x"]],
+    ["npm run build && npm test > out.log", null, null],
+    ["printf x > one.txt && npm test > two.txt", null, ["one.txt", "two.txt"]],
+    ["(npm test) > ../.x", null, null],
+    ['node -e "a > b" > ../.x', null, null],
+    ["npm test > ../*.x", null, null],
+    // A quoted operand attached to its operator stays opaque, as before.
+    ["npm test 2>'../.x'", null, null],
+    ["npm test 2> '../.x'", null, ["../.x"]],
+    ["ls *.ts > ../.x", null, ["../.x"]],
+    ["npm test >> ../.x 2>&1", null, ["../.x"]],
+    ["node opaque.mjs", null, []],
+  ]) {
+    // The live-gate refusal reads null as opaque; that contract is unchanged.
+    assert.deepEqual(
+      shellWriteTargets(command)?.map(({ path }) => path) ?? null,
+      targets,
+      command,
+    );
+    assert.deepEqual(
+      shellRedirectTargets(command)?.map(({ path }) => path) ?? null,
+      redirects,
+      command,
+    );
+  }
+  const root = fixture();
+  const outside = realpathSync(
+    mkdtempSync(join(tmpdir(), "dotln-outside-redirect-")),
+  );
+  const temporary = join(outside, "temporary");
+  const session = "outside-redirect";
+  mkdirSync(temporary);
+  const environment = { TMPDIR: temporary, TMP: temporary, TEMP: temporary };
+  const request = (command, session_id = session) =>
+    input(root, "PreToolUse", {
+      session_id,
+      tool_name: "Bash",
+      tool_input: { command },
+    });
+  const journal = (session_id) =>
+    readFileSync(
+      join(
+        root,
+        "docs/control/local/harness",
+        createHash("sha256").update(session_id).digest("hex") + ".jsonl",
+      ),
+      "utf8",
+    )
+      .split("\n")
+      .filter(Boolean)
+      .map((line) => JSON.parse(line).outsideWrite)
+      .filter(Boolean);
+  try {
+    beginHarnessSession(root, session, "verifier");
+    for (const hook of [
+      "permissions",
+      "concurrent-work-requires-worktrees",
+      "write-observer",
+    ]) {
+      for (const command of [
+        // The recorded incident's command in its literal spelling.
+        "npm run meta 2>../.x",
+        `node scripts/check.mjs > '${outside}/sibling/out.txt'`,
+        `git status &> '${outside}/status.txt'`,
+        `cd docs && npm run meta 2> '${outside}/.x'`,
+      ]) {
+        const response = invoke(
+          root,
+          hook,
+          request(command),
+          false,
+          environment,
+        );
+        assert.equal(
+          response.hookSpecificOutput?.permissionDecision,
+          "deny",
+          command,
+        );
+        assert.match(
+          response.hookSpecificOutput.permissionDecisionReason,
+          /outside-project write to .* lacks an equipped outside-write grant for role verifier/,
+        );
+      }
+      for (const command of [
+        // Stated width: an expansion, and a relative path after a program
+        // that may have moved the shell, stay under host permissions.
+        "npm run meta 2>$PWD/../.x",
+        "cd docs && npm run meta 2>../../.x",
+        "npm run meta > out.log",
+        "npm run meta 2>/dev/null",
+        `npm run meta 2> '${temporary}/err.txt'`,
+      ])
+        assert.equal(
+          allowed(invoke(root, hook, request(command), false, environment)),
+          true,
+          command,
+        );
+    }
+    // Run only what the hook admits: the incident's file is not created.
+    const incident = request("printf captured 2>../.x");
+    const literal = request("sh -c 'printf captured' >../.x");
+    for (const call of [incident, literal])
+      if (allowed(invoke(root, "permissions", call, false, environment)))
+        spawnSync("sh", ["-c", call.tool_input.command], { cwd: root });
+    assert.equal(existsSync(join(root, "../.x")), false);
+    // A granted or in-project redirect still leaves the program unobserved.
+    beginHarnessSession(root, "outside-redirect-rows", "verifier");
+    for (const command of [
+      `npm run meta 2> '${temporary}/err.txt'`,
+      "npm run meta > out.log",
+      "npm run meta 2>/dev/null",
+    ])
+      invoke(
+        root,
+        "permissions",
+        request(command, "outside-redirect-rows"),
+        false,
+        environment,
+      );
+    assert.deepEqual(
+      journal("outside-redirect-rows").map(({ status, kind, cause }) => ({
+        status,
+        ...(kind ? { kind } : {}),
+        ...(cause ? { cause } : {}),
+      })),
+      [
+        { status: "granted", kind: "system-temp" },
+        { status: "unobserved", cause: "destination-not-extractable" },
+        { status: "unobserved", cause: "destination-not-extractable" },
+        { status: "unobserved", cause: "destination-not-extractable" },
+      ],
+    );
+    // The planning-branch refusal keeps its whole-command reading.
+    git(root, "switch", "-c", "planning/2030-01-03-fixture");
+    assert.equal(
+      allowed(
+        invoke(
+          root,
+          "permissions",
+          request("npm run meta > fixture.ts"),
+          false,
+          environment,
+        ),
+      ),
+      true,
+    );
+    assert.equal(
+      allowed(
+        invoke(
+          root,
+          "permissions",
+          request("printf x > fixture.ts"),
+          false,
+          environment,
+        ),
+      ),
+      false,
+    );
+  } finally {
+    removeFixture(root, { recursive: true });
+    removeFixture(outside, { recursive: true });
   }
 });
 
@@ -4362,7 +5587,7 @@ test("WO-142 B3 bounded shell read forms preserve every write target and reject 
     assert.deepEqual(shellWriteTargets(command), [], command);
     assert.deepEqual(
       shellWriteTargets(`${command} > fixture.ts`),
-      [{ path: "fixture.ts", followFinalSymlink: true }],
+      [{ path: "fixture.ts", followFinalSymlink: true, redirect: true }],
       `${command} redirection is a write`,
     );
     if (/^(?:git|tail|wc|ps|sed) /.test(command))
@@ -5025,7 +6250,7 @@ test("WO-142 VER-002 B3 preserves the activation read vocabulary and every outpu
     for (const redirect of [">", "2>", ">>", "1>&", ">>&"])
       assert.deepEqual(
         shellWriteTargets(`${command} ${redirect} protected`),
-        [{ path: "protected", followFinalSymlink: true }],
+        [{ path: "protected", followFinalSymlink: true, redirect: true }],
         `${command} ${redirect}`,
       );
     assert.deepEqual(

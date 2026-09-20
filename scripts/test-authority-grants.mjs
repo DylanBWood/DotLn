@@ -141,10 +141,13 @@ test("WO-042 AC3 host admits only matching grants from the committed and ignored
 test("WO-042 AC5/6 Contributor projection and grant bundle carry the enforced envelope and registry provenance", () => {
   const contributor = contributorProgram();
   const projection = projectAuthorityInspection(contributor.loadout);
-  assert.deepEqual(
-    projection.grants,
-    contributor.loadout.authorityEnvelope.allowedEffects,
-  );
+  assert.deepEqual(projection.grants, [
+    ...contributor.loadout.authorityEnvelope.allowedEffects.filter(
+      (effect) => !effect.startsWith("outside.write:"),
+    ),
+    "outside.write:session-scratch (grant contributor.outside-temporary; operator)",
+    "outside.write:system-temp (grant contributor.outside-temporary; operator)",
+  ]);
   assert.deepEqual(
     projection.restrictions,
     contributor.loadout.authorityEnvelope.deniedEffects,
@@ -157,7 +160,16 @@ test("WO-042 AC5/6 Contributor projection and grant bundle carry the enforced en
       authorityGrantRegistry: [authorityGrant],
     }),
   );
-  const program = { ...contributor, loadout, facets: [] };
+  const program = {
+    ...contributor,
+    loadout,
+    facets: [],
+    // This fixture admits its unrelated authorityGrant, not Contributor roots.
+    roles: contributor.roles.map((role) => ({
+      ...role,
+      outsideWriteGrants: [],
+    })),
+  };
   const profile = contributorProfiles.find(
     (entry) => entry.harness === "codex-cli",
   );
@@ -166,6 +178,16 @@ test("WO-042 AC5/6 Contributor projection and grant bundle carry the enforced en
     personalFeedback(),
     loadout.authorityEnvelope,
     profile,
+  );
+  assert.throws(
+    () =>
+      lowerToHarness(
+        { ...program, roles: contributor.roles },
+        personalFeedback(),
+        loadout.authorityEnvelope,
+        profile,
+      ),
+    /outside-write root requires an admitted provenance-bearing grant/u,
   );
   assert.deepEqual(bundle.manifest.grants, [authorityGrant]);
   assert.equal(

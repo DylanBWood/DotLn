@@ -722,13 +722,73 @@ permission-mode trial is filed. Allocated to
 guarantee covers known write destinations; opaque command effects and Codex
 enforcement stay open.
 
-Still open:
+**Implemented 2026-09-19 — WO-144.** Roles and equipped supports declare
+`system-temp`, `session-scratch`, `main-intake` or an operator-named absolute
+root with a source. Each root binds an exact `outside.write:` effect to a
+host-registry-admitted WO-042 authority grant in the effective envelope; the
+manifest names that grant and the declaring role/support. Supports cannot
+widen the envelope themselves. The generated Claude pre-tool boundary refuses
+known physical destinations outside the project without an active role's
+containing grant, including removals and the redirects named under the
+FINAL-001 repair below. Symlinks are resolved; removal judges the entry it
+unlinks. The planning restriction still governs
+in-project paths. An in-project write never consults the outside-grant table.
 
-- the grant's shape: a support, a role, or both;
-- how allowed outside roots are declared;
-- the enforcement point for shell redirections and subprocesses, as distinct
-  from tool-level writes;
-- how the grant relates to today's planning-branch admission of external paths.
+All six contributor roles declare system temporary work and the operator's
+selected DotLn scratch convention, `<system-temp>/dotln/<session-key>/scratch`.
+The host temporary root comes from `os.tmpdir()`; it is not every directory
+named tmp. Main's ignored intake and other home roots are not default grants.
+Repair of VER-001 prints the concrete DotLn scratch path at Claude role
+dispatch; Codex retrieves it with `node scripts/harness.mjs scratch`. Use that
+path for temporary work. Native scratch and `/tmp` still need a separate grant
+when outside `os.tmpdir()`. Literal redirects to the `/dev/null` character
+device discard output and need no file grant; removals, other device paths and
+symlink aliases do not receive that exception. Permission judgments own the
+outside-write journal rows, and granted file writes report the actual admitted
+effect. Repository suppression comparisons omit outside files without reading
+them or claiming their contents were checked.
+The [inventory and decisions](../evidence/WO-144/decisions.md) record that
+retained journals omit inputs and cannot reconstruct historical destinations.
+
+Opaque effects, Codex enforcement, native scratch discovery and carrying roots
+from an order into active authority remain open. An unreadable grant table,
+unavailable root or path-resolution failure admits with a journaled cause and
+one advisory; other refusals retain their behavior. A known refusal already
+established in a multi-target command survives a later unreadable destination.
+This prevents the recorded incident only when its destination is extractable;
+it is not subprocess confinement. Reopen on a legitimate write refused or a
+known ungranted write admitted.
+
+**Repair of FINAL-001, 2026-09-19 — the width, stated plainly.** Final review
+admitted an ungranted outside write from a moved working directory and showed
+that the recorded incident's own command was not judged
+([decisions D007–D009](../evidence/WO-144/decisions.md)).
+
+- **Working directory.** The outside-write judgment no longer depends on it.
+  A generated hook finds its project from its installed runtime, so after a
+  persisted `cd` into a subdirectory, out of the project or to another
+  repository's root a known destination is still judged. Relative destinations
+  resolve against the session's directory, where the shell opens them. Such a
+  row carries `workingDirectory: moved`, and rows and advisory markers stay in
+  the hook's own project; before this repair a hook could create them inside
+  the other repository. The four older refusals are still judged only at the
+  worktree root. Away from it every hook now journals its stand-down advisory;
+  whether they should judge there is D007's planner follow-up.
+- **Redirects.** The shell, not the program, opens a redirect, so a literal
+  output redirect is judged on any program: `npm run meta 2>../.x`, the
+  incident's command in its literal spelling, is refused. The program's own
+  effects stay unobserved and the row says so.
+- **Still not judged, under host permissions.** A destination spelled with an
+  expansion, substitution or wildcard: `2>$PWD/../.x`, the incident as it
+  actually happened, is admitted today. A quoted operand attached to its
+  operator (`2>'../x'`; the spaced form is judged). A redirected group or
+  heredoc-fed shell. A relative redirect after an earlier program outside the
+  bounded vocabulary in the same command (`cd docs && npm test > ../out`),
+  because that program may have moved the shell; an absolute one is judged.
+  Operands are read only for `touch`, `mkdir`, `tee` and `rm`. Whatever a
+  program writes by itself is never seen. In the reviewer's session 34 of 35
+  judgment rows were unobserved, and 199 of 238 in the verifier's: the refusal
+  judges a minority of shell calls.
 
 The operator set this for priority at the next planning pass. See the
 [breakout receipt](../evidence/WO-054/ideation-2026-09-18.md).

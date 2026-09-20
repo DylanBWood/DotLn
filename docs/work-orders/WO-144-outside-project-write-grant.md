@@ -1,4 +1,4 @@
-# WO-144 — Outside-project writes need a grant: a role or support declares the outside roots it may write, the generated hooks refuse a known write destination outside the project that no equipped grant covers, and a mistaken path can no longer create or delete a file in the operator's folders (version assigned at activation)
+# WO-144 — Outside-project writes need a grant: a role or support declares the outside roots it may write, the generated hooks refuse a known write destination outside the project that no equipped grant covers, and a mistaken path can no longer create or delete a file in the operator's folders (v0.33.0)
 
 **Model:** any. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).

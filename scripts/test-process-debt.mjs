@@ -5707,15 +5707,21 @@ test("WO-131 prompt submission stays open while dispatches retain the ordinary c
   rmSync(lock, { recursive: true, force: true });
   assert.equal(status().phase, "needs-fix");
   // The transition's optional beacon warning belongs to the recording, not
-  // to the briefing a resumed session receives.
-  const briefingOf = (context) =>
-    context
+  // to the briefing a resumed session receives. WO-144 prints each session's
+  // own scratch path after it, so the warning is no longer last, and the
+  // briefings agree only once each session's own key is set aside.
+  const briefingOf = (context, session) => {
+    const scratch = `/dotln/${actor(session)}/scratch. `;
+    assert.ok(context.includes(scratch), `${session} is given its own scratch`);
+    return context
       .slice(context.indexOf("\nRepair docs/"))
       .split("\nObserved facts at ", 1)[0]
       .replace(
-        /\n+warning: host beacon projection unavailable; transition recorded, do not retry the transition\n*$/u,
+        /\n+warning: host beacon projection unavailable; transition recorded, do not retry the transition(?=\n|$)/u,
         "",
-      );
+      )
+      .replace(scratch, "/dotln/<session-key>/scratch. ");
+  };
   const supportsOf = (message) =>
     /; equipped supports: (.+)\.$/.exec(message)?.[1];
   const repair = prompt("repair-session", "resume: fix");
@@ -5747,8 +5753,8 @@ test("WO-131 prompt submission stays open while dispatches retain the ordinary c
     /Dispatch fix is already recorded \(phase repairing\); continue without repeating it\. Open the reply with one line that begins 'I intend to' and names the concrete initial action, before any tool call\.\nRepair docs\/work-orders\/WO-999-fixture\.md/,
   );
   assert.equal(
-    briefingOf(resumed.hookSpecificOutput.additionalContext),
-    briefingOf(repair.hookSpecificOutput.additionalContext),
+    briefingOf(resumed.hookSpecificOutput.additionalContext, "resumed-repair"),
+    briefingOf(repair.hookSpecificOutput.additionalContext, "repair-session"),
   );
   assert.match(
     resumed.hookSpecificOutput.additionalContext,

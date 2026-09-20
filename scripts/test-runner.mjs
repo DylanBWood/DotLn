@@ -202,7 +202,7 @@ const protection = {
   "authority-evidence":
     "authority evidence reproduces the registered boundary claims",
   "harness-fixtures":
-    "writer, gate, planning and agent-budget refusals preserve their boundaries",
+    "writer, gate, planning, agent-budget and outside-write refusals preserve their boundaries",
   harness: "installed hooks and role text match the generated harness bundle",
   "harness-context":
     "role read contracts resolve and remain within cold-start bounds",

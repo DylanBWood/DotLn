@@ -173,6 +173,8 @@ in `docs/PLAYBOOK.md`.
 
 One line per `.claude/` or CLAUDE.md change (see execution guide):
 
+- 2026-09-19: WO-144 regenerates the fifth known-destination refusal, active-role root declarations bound to admitted authority grants, manifest provenance and both harnesses' role text; personal settings are unchanged.
+
 - 2026-09-16: WO-133 regenerates per-session advisory suppression, registers the existing session handler for SessionStart under explicit operator direction, and preserves operator-supplied attestations in all six roles.
 
 - 2026-09-11: WO-043 makes scope expansion and side questions first-party session commands, and requires actual Codex/Claude token measurements, activates executor support duties at ordinary entry, and equips Process Cost and Goal Alignment across all roles.

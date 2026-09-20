@@ -212,13 +212,52 @@ command; no credential file was read. Named profiles are documented as beta.
 The earlier `workspace-write` example below remains another sandboxed option.
 [Named permission profiles](https://learn.chatgpt.com/docs/permissions).
 
-## DotLn hook boundary — WO-132, WO-135 and WO-139, 2026-09-18
+## DotLn hook boundary — WO-144, 2026-09-19
 
-DotLn's generated hooks refuse four conditions (WO-135 and WO-139): a second live writer
+DotLn's generated hooks refuse five conditions (WO-135, WO-139 and WO-144): a second live writer
 in the same worktree; a write to gate inputs or the success record during a live
 `npm test`; a classified repository write outside `docs/` and root Markdown
-on a `planning/` branch; and an observable subagent admission beyond
-`docs/control/budgets.json` `subagentCap` (default 20; `null` disables).
+on a `planning/` branch; an observable subagent admission beyond
+`docs/control/budgets.json` `subagentCap` (default 20; `null` disables); and a
+known write destination outside the project without a containing grant from
+the active role or an equipped support. The last refusal binds roots to
+host-registry-admitted authority grants and the effective envelope, with
+sources in the manifest. It resolves symlinks; unlinking judges the removed
+entry. It is not confinement of an arbitrary program's effects.
+
+What the fifth refusal judges, after the FINAL-001 repair:
+
+- Recognized write tools, by their path.
+- Shell operands of `touch`, `mkdir`, `tee` and `rm`, when the rest of the
+  command stays inside the bounded read vocabulary.
+- A literal output redirect on any program, because the shell opens it:
+  `npm run meta 2>../.x` is refused. The program's own effects stay unobserved.
+- From any working directory. The hook finds its project from its installed
+  runtime and resolves relative destinations against the session's directory;
+  a row judged away from the worktree root carries `workingDirectory: moved`,
+  and journal rows and advisory markers stay in the hook's own project.
+
+What it does not judge, all left to host permissions:
+
+- A destination spelled with an expansion, substitution or wildcard. The
+  recorded incident redirected to `$PWD/../.x`; that spelling is still admitted.
+- A quoted operand attached to its operator (`2>'../x'`), a redirected group,
+  and a relative redirect after an earlier program outside the vocabulary in
+  the same command (`cd docs && npm test > ../out`); an absolute one is judged.
+- Anything a program writes by itself. In recorded review and verification
+  sessions most shell calls were unobserved (34 of 35 and 199 of 238 rows).
+
+The four older refusals are judged only while the session's working directory
+is the worktree root. Away from it they stand down with one advisory, and each
+hook now journals that row; whether they should judge there is boarded in
+[WO-144 D007](evidence/WO-144/decisions.md).
+Literal shell redirects to the `/dev/null` character device are discards,
+not outside file mutations. This grants no other device path or removal.
+Use the DotLn scratch path printed at Claude role dispatch or returned by
+`node scripts/harness.mjs scratch` in Codex. Native scratch and `/tmp` require
+a separate grant when outside the host's `os.tmpdir()` root. The permission
+hook records one judgment per destination; the other pre-tool hooks still
+enforce the same refusal. Historical duplicate rows remain preserved.
 The session-local counter serializes observed admissions. Workflow calls need
 one remaining unit but consume no unit themselves; attributable descendants
 count at their first tool call. Direct/child identities are joined only from
@@ -227,8 +266,18 @@ minimum count; missing/unreadable counters admit with a named advisory.
 Stop and `harness usage` disclose the count/cap and unknown remainder. This is
 not a total creation cap: silent agents, unobserved paths and unresolved
 overlap remain open ([WO-139 evidence](evidence/WO-139/README.md)).
-External scratch paths remain admitted; the existing
-`operator override:` route supports authorized planning recovery. The writer
+All six default contributor roles grant the host `os.tmpdir()` root and DotLn
+session scratch below `<system-temp>/dotln/<session-key>/scratch`; no role
+grants arbitrary home folders or main intake by default. Main's ignored intake
+and an operator-named absolute root are available declaration kinds, requiring
+explicit admitted authority. Missing active roles grant nothing. An opaque
+destination is journaled as unobserved. Unreadable grant configuration,
+unavailable grant roots and resolution errors admit with one advisory and a
+journaled cause, while the existing refusals remain effective. Existing runtime
+pin failures retain advisory delegation. A refusal already established in a
+multi-target command survives later path failure. In-project writes never use
+the outside-grant check. The existing `operator override:` route supports
+authorized recovery. The writer
 reservation applies on main as on a work-order branch; dead reservations may be
 reclaimed.
 

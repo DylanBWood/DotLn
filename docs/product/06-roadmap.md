@@ -20,6 +20,15 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-144 activation completion (2026-09-19):** assigned application `v0.33.0`
+under the standing minor classification above local `v0.32.1`. Compiler
+`0.16.0` adds declared roots bound to admitted authority grants; skeleton
+`0.29.0` checks known outside-write destinations in generated contributor
+hooks. Kernel and console behavior are unchanged; console dependency pins
+follow the changed components. No dependency or publication authority is added.
+The [executor decisions](../evidence/WO-144/decisions.md) record the inventory
+limits, root defaults and reopening conditions.
+
 **WO-143 activation completion (2026-09-19):** this source prepares `v0.32.1`
 under the existing patch classification above the observed local `v0.32.0` tag.
 Skeleton `0.28.1` makes resident lock recovery restartable after acquisition

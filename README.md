@@ -93,7 +93,7 @@ intent → task-scoped build → bounded WorkOrder → disposable executor
 -->
 <!-- DOTLN-RELEASE-BEGIN -->
 
-This source prepares DotLn `v0.32.1`.
+This source prepares DotLn `v0.33.0`.
 
 **The core.** A local-first compiler turns a loadout graph into a bounded
 program and authority envelope that the kernel checks on every decision.
@@ -118,10 +118,13 @@ original contract after each repair, with doubles establishing recovery and exha
 **How this repository builds itself.** Independent implementation, verification
 and final review record their own evidence, and publication consumes the
 reviewer's successful code-identity gate row.
-DotLn hooks refuse four conditions: a second writer in a worktree, writes to gate
+DotLn hooks refuse five conditions: a second writer in a worktree, writes to gate
 inputs or the success record during live `npm test`, repository writes outside
-`docs/` and root Markdown on `planning/` branches, and observable subagent
-admissions beyond the configured cap.
+`docs/` and root Markdown on `planning/` branches, observable subagent
+admissions beyond the configured cap, and known outside-project write
+destinations without an active role's declared, admitted root grant.
+A literal redirect is known on any program; expansions and a program's own
+effects are opaque and remain under host permissions.
 Codex carries the same duties as role text, other judgments defer to host
 permissions, and `analysis:` and `operator override:` remain available for recovery.
 The [execution guide](docs/product/07-execution-guide.md#independent-workflows-and-integration)

@@ -10,6 +10,9 @@ import {
   seiriLoadout,
   semanticHash,
   verifyHarnessBundle,
+  assertOutsideWriteGrants,
+  outsideWriteEffect,
+  projectAuthorityInspection,
   type FeedbackHandler,
   type FeedbackUnit,
   type HarnessProfile,
@@ -101,6 +104,128 @@ const feedback = compileFeedbackUnits([
 ]);
 const lower = (input = program, policy = feedback, runtime = profile) =>
   lowerToHarness(input, policy, input.loadout.authorityEnvelope, runtime);
+
+test("WO-144 role grants are closed, source-bearing target data in hooks and manifests", () => {
+  for (const invalid of [
+    null,
+    {},
+    [{ kind: "ambient", source: "fixture" }],
+    [{ kind: "system-temp" }],
+    [{ kind: "operator-root", source: "fixture", root: "relative" }],
+    [{ kind: "system-temp", source: "fixture", root: "/unexpected" }],
+  ]) {
+    assert.throws(() => assertOutsideWriteGrants(invalid), /outside-write/);
+  }
+  const rootGrant = {
+    kind: "operator-root" as const,
+    root: "/fixture/authorized",
+    source: "Fixture operator direction",
+  };
+  const authority = {
+    grantId: "fixture.outside",
+    version: 1,
+    grantedBy: "operator" as const,
+    effects: [outsideWriteEffect(rootGrant)],
+    repo: seiriEnvironment().repo,
+    reason: rootGrant.source,
+  };
+  const admitted = requireCompiled(
+    compileLoadout(
+      { ...seiriLoadout, authorityGrants: [authority] },
+      { ...seiriEnvironment(), authorityGrantRegistry: [authority] },
+    ),
+  );
+  const input: HarnessProgram = {
+    ...program,
+    loadout: admitted,
+    roles: program.roles.map((role) => ({
+      ...role,
+      outsideWriteGrants: [
+        {
+          kind: "operator-root",
+          root: "/fixture/authorized",
+          source: "Fixture operator direction",
+        },
+      ],
+    })),
+  };
+  const bundle = lower(input);
+  assert.deepEqual(bundle.manifest.outsideWriteGrants, [
+    {
+      role: "executor",
+      grants: [
+        {
+          kind: "operator-root",
+          root: "/fixture/authorized",
+          source: "Fixture operator direction",
+          originId: "fixture.executor",
+          authorityGrantId: "fixture.outside",
+        },
+      ],
+    },
+  ]);
+  assert.notEqual(
+    bundle.manifest.loadout.targetHash,
+    lower().manifest.loadout.targetHash,
+  );
+  assert.equal(
+    bundle.manifest.loadout.semanticHash,
+    lower({ ...program, loadout: admitted }).manifest.loadout.semanticHash,
+  );
+  assert.throws(
+    () => lower({ ...input, loadout: program.loadout }),
+    /provenance-bearing grant/,
+  );
+  assert.throws(
+    () =>
+      lower({
+        ...input,
+        loadout: {
+          ...admitted,
+          authorityEnvelope: {
+            ...admitted.authorityEnvelope,
+            deniedEffects: ["outside.write:*"],
+          },
+        },
+      }),
+    /effective envelope/,
+  );
+  assert.match(
+    projectAuthorityInspection(admitted).grants.join("\n"),
+    /outside.write:operator-root:.*fixture.outside/,
+  );
+  assert.doesNotMatch(
+    outsideWriteEffect({ ...rootGrant, root: "/fixture/a*b" }),
+    /\*/,
+  );
+  const hook = bundle.files.find((file) =>
+    file.path.endsWith("write-observer.mjs"),
+  )!;
+  assert.match(hook.contents, /outsideWriteGrants/);
+  assert.ok(hook.origin.ids.includes("fixture.executor"));
+  assert.throws(
+    () =>
+      lower({
+        ...input,
+        facets: [
+          {
+            facetId: "unequipped",
+            kind: "role-procedure",
+            roleName: "executor",
+            text: input.roles[0]!.procedure[0]!,
+            outsideWriteGrants: [
+              {
+                kind: "operator-root",
+                root: "/fixture/unauthorized",
+                source: "Untrusted fixture",
+              },
+            ],
+          },
+        ],
+      }),
+    /equipped prompt support/,
+  );
+});
 const freeze = (value: unknown) => {
   if (value && typeof value === "object") {
     Object.freeze(value);
@@ -292,7 +417,7 @@ test("WO-132 both harness roles receive identical duties and the shared instruct
   assert.match(merged, /one writer per worktree on any branch, including main/);
   assert.match(merged, /success record during a live npm test/);
   assert.match(merged, /node scripts\/harness\.mjs evidence --stop/);
-  assert.match(merged, /four refusals \(WO-135, WO-139\)/);
+  assert.match(merged, /five refusals \(WO-135, WO-139, WO-144\)/);
   assert.match(
     merged,
     /planning\/ branches refuses repository writes outside docs\/ and root Markdown/,
@@ -300,7 +425,7 @@ test("WO-132 both harness roles receive identical duties and the shared instruct
   assert.match(merged, /operator override:/);
   assert.match(
     merged,
-    /Codex carries the duties and cap as role text without automatic enforcement/,
+    /Codex carries the duties and grants as role text without automatic enforcement/,
   );
   for (const file of availableBundle.files.filter(
     (file) =>

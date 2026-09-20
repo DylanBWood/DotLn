@@ -1704,11 +1704,33 @@ claim evidence or releases it does not have.
   and the close consume; release close is the post-merge publish of the tag
   and Release and runs no suite; attested harness, version, model and effort
   are logged as given and never refuse, and `ultra` means `xhigh` with
-  subagents; DotLn has four hook refusals (WO-135 and WO-139): a second writer in a
+  subagents; DotLn has five hook refusals (WO-135, WO-139 and WO-144): a second writer in a
   worktree; a write during the live gate; a classified repository write
-  outside `docs/` and root Markdown on a `planning/` branch; and an observable
+  outside `docs/` and root Markdown on a `planning/` branch; an observable
   subagent admission exceeding `docs/control/budgets.json` `subagentCap`
-  (default 20, `null` disables). Workflow admission needs a remaining unit;
+  (default 20, `null` disables); and a known outside-project write destination
+  without a containing root declared by its active role or equipped support
+  and admitted through the compiled authority envelope. Root kinds are system
+  temporary, DotLn session scratch, main's ignored intake and an operator-named
+  absolute root; the manifest names declaration and authority-grant sources.
+  The six default roles carry temporary and session-scratch grants only.
+  `os.tmpdir()` identifies the temporary root; scratch is
+  `<system-temp>/dotln/<session-key>/scratch`. Claude role dispatch prints the
+  concrete path; Codex uses `node scripts/harness.mjs scratch`. Use that scratch
+  path: native scratch and `/tmp` need a separate grant when outside system-temp.
+  Literal redirects to the `/dev/null` character device discard output; other
+  device mutations still need grants. Symlinks and removals use physical
+  destinations. The outside-write judgment holds from any working directory
+  and resolves relative destinations there; the four older refusals are judged
+  only at the worktree root and journal their stand-down elsewhere. A literal
+  redirect is judged on any program (`npm run meta 2>../.x` refuses); a
+  destination spelled with an expansion such as `$PWD`, the recorded incident's
+  own spelling, a relative redirect after an unrecognized earlier program, and
+  whatever a program writes by itself stay unobserved under host permissions,
+  which is most shell calls; a
+  guard failure advises once and preserves the other refusals. In-project
+  writes do not consult this grant. `operator override:` remains recovery.
+  Order-named roots do not automatically become grants. Workflow admission needs a remaining unit;
   the workflow call consumes none, and attributable children count at their
   first tool call. Missing/unreadable counters admit with a cause-specific
   advisory. Stop and `harness usage` report observed count, cap and unknown
@@ -1716,7 +1738,7 @@ claim evidence or releases it does not have.
   whole fan-out against the root's remaining budget before the first spawn,
   state it in the response, and batch review/refutation over item groups:
   one agent judges several items, never one agent per item per pass. Codex carries
-  the same duties and advisory cap as role text; other judgments delegate to host permissions; the default gate holds the suites that
+  the same duties, grants and advisory cap as role text, without outside-write hook enforcement; other judgments delegate to host permissions; the default gate holds the suites that
   protect product and lifecycle behavior, each naming what it protects, and
   the machinery's own suites run on demand; the planning refuter judges goal
   alignment, system traps, constraint removal and antifragility, and a

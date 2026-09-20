@@ -3,6 +3,7 @@ import { withWriterRegistration } from "./writer-teardown.mjs";
 import { sourceChangeCommandEffect } from "./source-change-command.js";
 import { createHash, randomBytes } from "node:crypto";
 import { AsyncLocalStorage } from "node:async_hooks";
+import { tmpdir } from "node:os";
 import {
   appendFileSync,
   existsSync,
@@ -35,10 +36,14 @@ import {
   COMPILER_PACKAGE_VERSION,
   fnv1a64,
   showHarnessAdvisory,
+  assertOutsideWriteGrants,
+  outsideWriteEffect,
   type AuthorityEnvelope,
   type CompiledFeedback,
   type CorrectionState,
   type HarnessEvent,
+  type RoleOutsideWriteGrants,
+  type AuthorityGrant,
 } from "@dotln/compiler";
 import { harnessAuthorization } from "./reactor.js";
 import { personalFeedback } from "./loadouts/feedback.js";
@@ -46,6 +51,7 @@ import {
   HarnessCommandRefused,
   harnessToolEffects,
   invocationEffects,
+  shellRedirectTargets,
   shellWritePaths,
   shellWriteTargets,
   commitMessageInputs,
@@ -263,6 +269,8 @@ interface HarnessByteRead {
   readonly endByte: number;
 }
 interface HookConfig {
+  readonly outsideWriteGrants?: readonly RoleOutsideWriteGrants[];
+  readonly grants?: readonly AuthorityGrant[];
   readonly compilerPackageVersion: string;
   readonly runtime: {
     readonly skeletonVersion: string;
@@ -382,6 +390,21 @@ export function harnessRoot(cwd: string): string {
   if (physical !== root)
     throw new Error("Harness requires the verified worktree root");
   return root;
+}
+/** WO-144: the project this generated hook was installed for, found from the
+ * runtime's own location. harnessRoot trusts the session's working directory,
+ * which one persisted `cd` moves into a subdirectory or another repository.
+ */
+function installedHarnessRoot(snapshot: string | undefined): string {
+  const installed = realpathSync(
+    fileURLToPath(new URL("../../../../", import.meta.url)),
+  );
+  let root = installed;
+  for (const part of (snapshot ?? "").split(/[\\/]+/))
+    if (part && part !== ".") root = dirname(root);
+  if (realpathSync(join(root, snapshot ?? ".")) !== installed)
+    throw new Error("Hook and worktree roots disagree");
+  return harnessRoot(root);
 }
 const contained = (root: string, candidate: string) => {
   const path = resolve(root, candidate);
@@ -1495,6 +1518,7 @@ export function beginHarnessSession(
   });
   return {
     session: sessionKey(input),
+    scratch: harnessSessionScratch(sessionId),
     inheritedOutputs: Object.keys(snapshot).length - adopted.length,
   };
 }
@@ -1976,6 +2000,10 @@ export function harnessFeedbackFacts(
   ) {
     if (typeof args.file_path !== "string")
       throw new HarnessObserverInput("Missing edit path");
+    // This comparison owns repository source only. An outside write has no
+    // repository baseline and must not be reported as a broken observer input.
+    if (!withinRoot(root, prospectiveRealpath(resolve(root, args.file_path))))
+      return [];
     const path = relative(root, contained(root, args.file_path));
     const original = input.tool_response?.originalFile;
     const before =
@@ -2289,6 +2317,7 @@ export function permissionEffect(
   input: HarnessInput,
   root: string,
   tools: HookConfig["tools"] = harnessToolEffects,
+  outsideEffect?: string,
 ): string {
   const args = input.tool_input ?? {};
   const path =
@@ -2300,6 +2329,7 @@ export function permissionEffect(
   if (path) {
     if (/(?:^|[\\/])\.ssh(?:[\\/]|$)|(?:^|[\\/])\.env(?:\.|$)/.test(path))
       return "credentials.access";
+    if (outsideEffect) return outsideEffect;
     if (
       path.startsWith("~") ||
       (isAbsolute(path) && !path.startsWith(`${root}${sep}`))
@@ -2414,25 +2444,27 @@ const gateStopCommand = (command: unknown): boolean =>
 /** WO-135: plan start records document-only authority through planning/*.
  * Known tool destinations are checked; opaque effects retain host delegation.
  */
-function planningWriteRefusal(
+function knownWriteDestinations(
   input: HarnessInput,
   root: string,
   tools: HookConfig["tools"],
-): string | null {
-  if (input.hook_event_name !== "PreToolUse") return null;
+  // WO-144 judges from the session's real directory and also names a literal
+  // redirect on a program outside the vocabulary. The planning refusal keeps
+  // its root-relative, whole-command reading.
+  outside?: { readonly directory: string },
+): {
+  readonly destinations: Iterable<{ path: string; physical: string }>;
+  /** Redirects were named; the program's own effects were not. */
+  readonly partial: boolean;
+} | null {
   const inventory: HookConfig["tools"] = tools ?? harnessToolEffects;
   const tool = inventory[input.tool_name ?? ""];
-  if (tool !== "write" && tool !== "shell") return null;
-  if (
-    !git(root, ["symbolic-ref", "--quiet", "--short", "HEAD"], true)
-      .trim()
-      .startsWith("planning/")
-  )
-    return null;
+  if (tool !== "write" && tool !== "shell")
+    return { destinations: [], partial: false };
   const args = input.tool_input ?? {};
   const candidate = args.file_path ?? args.notebook_path;
   const command = args.command ?? args.cmd;
-  const paths =
+  let paths =
     tool === "write"
       ? typeof candidate === "string"
         ? [{ path: candidate, followFinalSymlink: true }]
@@ -2440,22 +2472,66 @@ function planningWriteRefusal(
       : typeof command === "string"
         ? shellWriteTargets(command)
         : null;
-  if (!paths?.length) return null;
-  const cwd = tool === "shell" ? (args.workdir ?? args.cwd ?? root) : root;
+  let partial = false;
+  if (!paths && outside && tool === "shell" && typeof command === "string") {
+    const redirects = shellRedirectTargets(command);
+    if (redirects?.length) {
+      paths = redirects;
+      partial = true;
+    }
+  }
+  if (!paths) return null;
+  if (!paths.length) return { destinations: [], partial };
+  const base = outside?.directory ?? root;
+  const cwd = tool === "shell" ? (args.workdir ?? args.cwd ?? base) : base;
   if (typeof cwd !== "string") return null;
   const directory = prospectiveRealpath(
-    isAbsolute(cwd) ? cwd : `${root}/${cwd}`,
+    isAbsolute(cwd) ? cwd : `${base}/${cwd}`,
   );
-  for (const { path, followFinalSymlink } of paths) {
-    const absolute = isAbsolute(path) ? path : `${directory}/${path}`;
-    // Unlink removes the final directory entry, while writes follow its link.
-    const physical =
-      followFinalSymlink || path.endsWith(sep)
-        ? prospectiveRealpath(absolute)
-        : join(prospectiveRealpath(dirname(absolute)), basename(absolute));
+  const destinations = (function* () {
+    for (const target of paths) {
+      const { path, followFinalSymlink } = target;
+      // A literal discard redirect opens no operator file. Do not extend this
+      // exception to rm/touch, a symlink spelling, descendants or stream fds.
+      if (
+        "redirect" in target &&
+        target.redirect &&
+        path === "/dev/null" &&
+        lstatSync(path).isCharacterDevice()
+      )
+        continue;
+      const absolute = isAbsolute(path) ? path : `${directory}/${path}`;
+      // Unlink removes the final directory entry, while writes follow its link.
+      const physical =
+        followFinalSymlink || path.endsWith(sep)
+          ? prospectiveRealpath(absolute)
+          : join(prospectiveRealpath(dirname(absolute)), basename(absolute));
+      yield { path, physical };
+    }
+  })();
+  return { destinations, partial };
+}
+const withinRoot = (root: string, path: string) => {
+  const local = relative(root, path);
+  return local !== ".." && !local.startsWith(`..${sep}`) && !isAbsolute(local);
+};
+
+function planningWriteRefusal(
+  input: HarnessInput,
+  root: string,
+  tools: HookConfig["tools"],
+): string | null {
+  if (input.hook_event_name !== "PreToolUse") return null;
+  if (
+    !git(root, ["symbolic-ref", "--quiet", "--short", "HEAD"], true)
+      .trim()
+      .startsWith("planning/")
+  )
+    return null;
+  for (const { path, physical } of knownWriteDestinations(input, root, tools)
+    ?.destinations ?? []) {
+    if (!withinRoot(root, physical)) continue;
     const local = relative(root, physical);
-    if (local === ".." || local.startsWith(`..${sep}`) || isAbsolute(local))
-      continue;
     if (
       local === "docs" ||
       local.startsWith(`docs${sep}`) ||
@@ -2465,6 +2541,149 @@ function planningWriteRefusal(
     return `DOTLN_HARNESS_REFUSED: planning branch write to ${path} (repository path ${local || "."}) is outside docs/ and root Markdown (WO-135). Use operator override: for authorized recovery.`;
   }
   return null;
+}
+
+/** A new scratch convention, not discovery of a native harness scratch path. */
+export const harnessSessionScratch = (sessionId: string) =>
+  join(tmpdir(), "dotln", digest(sessionId), "scratch");
+
+function outsideWriteResponse(
+  config: HookConfig,
+  input: HarnessInput,
+  root: string,
+  moved = false,
+): { response?: Record<string, unknown>; effect?: string } {
+  if (input.hook_event_name !== "PreToolUse") return {};
+  // Every boundary still judges, but only the permission hook owns the row.
+  // A row judged away from the worktree root says so.
+  const observe = (judgment: Record<string, unknown>) => {
+    if (config.kind === "permission")
+      record(root, input, {
+        outsideWrite: {
+          ...judgment,
+          ...(moved ? { workingDirectory: "moved" } : {}),
+        },
+      });
+  };
+  const unobserved = () =>
+    observe({ status: "unobserved", cause: "destination-not-extractable" });
+  let effect: string | undefined;
+  // Relative destinations resolve where the shell will: the session's directory.
+  const known = knownWriteDestinations(input, root, config.tools, {
+    directory: input.cwd,
+  });
+  if (known === null) {
+    unobserved();
+    return {};
+  }
+  for (const destination of known.destinations) {
+    // Resolve and judge in order: a later unreadable path cannot erase a refusal.
+    if (withinRoot(root, destination.physical)) continue;
+    const session = readJson(statePath(root, input), initialSession(), true);
+    if (!Array.isArray(config.outsideWriteGrants))
+      throw new Error("outside-write grant configuration unreadable");
+    const rows: readonly RoleOutsideWriteGrants[] = config.outsideWriteGrants;
+    const seen = new Set<string>();
+    for (const row of rows) {
+      if (!row || typeof row.role !== "string" || seen.has(row.role))
+        throw new Error("outside-write role configuration unreadable");
+      seen.add(row.role);
+      assertOutsideWriteGrants(row.grants);
+      if (
+        row.grants.some(
+          (grant) => typeof grant.originId !== "string" || !grant.originId,
+        )
+      )
+        throw new Error("outside-write source origin unreadable");
+    }
+    const grants = rows.find((row) => row.role === session.role)?.grants ?? [];
+    if (!config.envelope || !Array.isArray(config.grants))
+      throw new Error("outside-write authority configuration unreadable");
+    const correction = readJson<CorrectionState | null>(
+      join(harnessStateDirectory(root), `${sessionKey(input)}.correction.json`),
+      null,
+    );
+    const envelope = correction
+      ? {
+          ...config.envelope,
+          allowedEffects: config.envelope.allowedEffects.filter((effect) =>
+            correction.allowedEffects.includes(effect),
+          ),
+        }
+      : config.envelope;
+    const roots = grants
+      .filter((grant) => {
+        const effect = outsideWriteEffect(grant);
+        return (
+          config.grants!.some(
+            (authority) =>
+              authority.grantId === grant.authorityGrantId &&
+              authority.effects.includes(effect),
+          ) && harnessAuthorization(envelope, effect, Date.now()).authorized
+        );
+      })
+      .map((grant) => {
+        let path: string;
+        switch (grant.kind) {
+          case "system-temp":
+            path = tmpdir();
+            break;
+          case "session-scratch":
+            path = harnessSessionScratch(input.session_id);
+            break;
+          case "operator-root":
+            path = grant.root;
+            break;
+          case "main-intake": {
+            const main = git(root, ["worktree", "list", "--porcelain", "-z"])
+              .split("\0")[0]
+              ?.slice("worktree ".length);
+            if (
+              !main ||
+              !isAbsolute(main) ||
+              !git(
+                main,
+                ["check-ignore", "--", "docs/intake/.outside-write-probe"],
+                true,
+              ).trim()
+            )
+              throw new Error("main checkout ignored intake unavailable");
+            path = join(main, "docs/intake");
+            break;
+          }
+        }
+        return { ...grant, physical: prospectiveRealpath(path) };
+      });
+    const grant = roots.find((candidate) =>
+      withinRoot(candidate.physical, destination.physical),
+    );
+    observe({
+      role: session.role ?? "unknown",
+      destination: destination.physical,
+      status: grant ? "granted" : "refused",
+      ...(grant
+        ? {
+            kind: grant.kind,
+            originId: grant.originId,
+            source: grant.source,
+            authorityGrantId: grant.authorityGrantId,
+          }
+        : {}),
+    });
+    if (!grant)
+      return {
+        response: protocolRefusal(
+          config.event,
+          `DOTLN_HARNESS_REFUSED: outside-project write to ${destination.path} (physical destination ${destination.physical}) lacks an equipped outside-write grant for role ${session.role ?? "unknown"} (WO-144). Use operator override: for authorized recovery.`,
+        ),
+      };
+    const tools: HookConfig["tools"] = config.tools ?? harnessToolEffects;
+    if (tools[input.tool_name ?? ""] === "write")
+      effect = outsideWriteEffect(grant);
+  }
+  // Only the redirects were named: the program's own effects stay unobserved.
+  if (known.partial) unobserved();
+  return effect ? { effect } : {};
 }
 
 /** All generated pre-tool boundaries share this guard. There is no agent-
@@ -2573,12 +2792,83 @@ export async function evaluateHarnessHook(
   input: HarnessInput,
   root: string,
   boundary: typeof feedbackBoundary,
+  // WO-144: why the session's directory is not this worktree's root, if so.
+  moved?: unknown,
 ): Promise<Record<string, unknown>> {
   if (config.event === "SessionStart") {
     const { snapshot, ...built } = config.runtime;
     assertHarnessRuntime({ ...config, runtime: built }, root);
   }
   assertHarnessRuntime(config, root);
+  if (input.hook_event_name !== config.event || !input.session_id)
+    throw new Error("Hook input contract mismatch");
+  let outside: Record<string, unknown> | null = null;
+  let outsideEffect: string | undefined;
+  try {
+    const judgment = outsideWriteResponse(
+      config,
+      input,
+      root,
+      moved !== undefined,
+    );
+    outside = judgment.response ?? null;
+    outsideEffect = judgment.effect;
+  } catch (error) {
+    const cause = error instanceof Error ? error.message : "unknown failure";
+    outside = protocolAdvisory(`outside-write guard unavailable: ${cause}`);
+    try {
+      if (config.kind === "permission")
+        record(root, input, {
+          outsideWrite: {
+            status: "unobserved",
+            cause,
+            ...(moved !== undefined ? { workingDirectory: "moved" } : {}),
+          },
+          delegated: true,
+        });
+    } catch {
+      /* Observation cannot change admission. */
+    }
+  }
+  const outsideDenied =
+    (outside?.hookSpecificOutput as { permissionDecision?: string } | undefined)
+      ?.permissionDecision === "deny";
+  // Away from the root only the outside-write judgment is made. The root-bound
+  // refusals keep their stand-down and its advisory (WO-144-D007 follow-up).
+  if (moved !== undefined) {
+    if (outsideDenied) return outside!;
+    throw moved;
+  }
+  // Grant failure must not skip any existing refusal. Conversely an observer
+  // or opaque permission classifier cannot erase a known destination refusal.
+  let result: Record<string, unknown>;
+  try {
+    result = await evaluateExistingHarnessHook(
+      config,
+      input,
+      root,
+      boundary,
+      outsideEffect,
+    );
+  } catch (error) {
+    if (outsideDenied) return outside!;
+    throw error;
+  }
+  const permission = result.hookSpecificOutput as
+    { permissionDecision?: string } | undefined;
+  return permission?.permissionDecision === "deny" ||
+    result.decision === "block"
+    ? result
+    : (outside ?? result);
+}
+
+async function evaluateExistingHarnessHook(
+  config: HookConfig,
+  input: HarnessInput,
+  root: string,
+  boundary: typeof feedbackBoundary,
+  outsideEffect?: string,
+): Promise<Record<string, unknown>> {
   if (
     config.event === "SessionStart" &&
     input.hook_event_name === "SessionStart"
@@ -2593,8 +2883,6 @@ export async function evaluateHarnessHook(
       ? subagentAdvisory(protocolAdvisory(`subagent ${warning}`))
       : {};
   }
-  if (input.hook_event_name !== config.event || !input.session_id)
-    throw new Error("Hook input contract mismatch");
   const session = readJson(statePath(root, input), initialSession(), true);
   const gateRefusal = activeGateWriteRefusal(
     input,
@@ -2700,6 +2988,7 @@ export async function evaluateHarnessHook(
         receipt = dispatched.receipt;
       }
       additionalContext = `DotLn resolved role ${role.name}. Load the dotln-${role.name} skill.${control.workOrderPath ? ` Read the selected work order ${control.workOrderPath} before interpreting the phase, including a closed phase.` : " Follow its requested observation or planning/ideation procedure."} A skill grants no authority.${dispatched ? `\n${dispatched.context}` : ""}`;
+      additionalContext += `\nDotLn session scratch: ${harnessSessionScratch(input.session_id)}. Use this path for temporary work. Native scratch and /tmp need a separate grant when outside system-temp; a printed path does not override the active grants.`;
       const expected: Record<string, string> = {
         "resume: next": "ImplementationReady",
         "resume: fix": "RepairCompleted",
@@ -2957,7 +3246,7 @@ export async function evaluateHarnessHook(
       });
     }
     if (scopeResult) return protocolAdvisory(scopeResult.reason);
-    const effect = permissionEffect(input, root, config.tools);
+    const effect = permissionEffect(input, root, config.tools, outsideEffect);
     const decision = harnessAuthorization(
       session.correction
         ? {
@@ -2983,21 +3272,32 @@ export async function evaluateHarnessHook(
     config.correctionToken &&
     input.prompt?.startsWith(config.correctionToken)
   ) {
+    const previous = session.correction ?? {
+      allowedEffects: [...(config.envelope?.allowedEffects ?? [])],
+      destructiveEffects: [],
+      scopeExpansionAllowed: true,
+      preserveEvidence: false,
+      diagnosisRequired: false,
+      corrections: [],
+    };
     session.correction = applyFeedbackCorrection(
       config.policy,
-      session.correction ?? {
-        allowedEffects: [...(config.envelope?.allowedEffects ?? [])],
+      {
+        ...previous,
         destructiveEffects: [
-          "repo.write",
-          "repo.delete",
-          "shell.run",
-          "git.local",
-          "lifecycle.run",
+          ...new Set([
+            ...previous.destructiveEffects,
+            "repo.write",
+            "repo.delete",
+            "shell.run",
+            "git.local",
+            "lifecycle.run",
+            ...[
+              ...previous.allowedEffects,
+              ...(config.envelope?.allowedEffects ?? []),
+            ].filter((effect) => effect.startsWith("outside.write:")),
+          ]),
         ],
-        scopeExpansionAllowed: true,
-        preserveEvidence: false,
-        diagnosisRequired: false,
-        corrections: [],
       },
       {
         type: "OperatorCorrectionReceived",
@@ -3106,16 +3406,32 @@ export async function runHarnessHook(
     const input = decoded.value;
     if (config.kind === "session" && input.hook_event_name === "SessionStart")
       config = { ...config, event: "SessionStart" };
-    const root = harnessRoot(input.cwd);
+    // The session's directory names the project only while it is this hook's
+    // own worktree root. Otherwise take the root from the installed runtime, so
+    // rows and markers never land in another repository, and judge only
+    // outside writes. Nothing is observed when neither route verifies a root.
+    let root: string | undefined;
+    let moved: unknown;
+    try {
+      const candidate = harnessRoot(input.cwd);
+      const runtime = join(candidate, config.runtime.snapshot ?? ".");
+      if (
+        !existsSync(runtime) ||
+        realpathSync(runtime) !==
+          realpathSync(fileURLToPath(new URL("../../../../", import.meta.url)))
+      )
+        throw new Error("Hook and worktree roots disagree");
+      root = candidate;
+    } catch (error) {
+      moved = error;
+      try {
+        root = installedHarnessRoot(config.runtime.snapshot);
+      } catch {
+        throw error;
+      }
+    }
     observed = { root, input };
-    const installedRoot = realpathSync(
-      fileURLToPath(new URL("../../../../", import.meta.url)),
-    );
-    if (
-      installedRoot !== realpathSync(join(root, config.runtime.snapshot ?? "."))
-    )
-      throw new Error("Hook and worktree roots disagree");
-    response = await evaluateHarnessHook(config, input, root, boundary);
+    response = await evaluateHarnessHook(config, input, root, boundary, moved);
   } catch (error) {
     reasonClass =
       error instanceof HarnessObserverInput
