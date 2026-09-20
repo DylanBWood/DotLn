@@ -77,6 +77,20 @@ export interface HarnessProfile {
     }[];
   };
 }
+/** Harness target authority; deliberately outside the loadout-v1/kernel IR. */
+export type OutsideWriteGrant = {
+  readonly source: string;
+} & (
+  | { readonly kind: "system-temp" | "session-scratch" | "main-intake" }
+  | { readonly kind: "operator-root"; readonly root: string }
+);
+export interface RoleOutsideWriteGrants {
+  readonly role: string;
+  readonly grants: readonly (OutsideWriteGrant & {
+    readonly originId: string;
+    readonly authorityGrantId: string;
+  })[];
+}
 export interface HarnessRole {
   readonly facetId: string;
   readonly name: string;
@@ -84,6 +98,7 @@ export interface HarnessRole {
   readonly intents: readonly string[];
   readonly procedure: readonly string[];
   readonly feedbackHandlers: readonly FeedbackHandler[];
+  readonly outsideWriteGrants?: readonly OutsideWriteGrant[];
 }
 export type HarnessFacet =
   | {
@@ -103,6 +118,7 @@ export type HarnessFacet =
       readonly facetId: string;
       readonly kind: "role-procedure";
       readonly text: string;
+      readonly outsideWriteGrants?: readonly OutsideWriteGrant[];
     } & (
       | { readonly roleName: string; readonly roleNames?: never }
       | { readonly roleNames: readonly string[]; readonly roleName?: never }
@@ -149,6 +165,7 @@ export interface HarnessBundle {
     readonly compilerPackageVersion: string;
     readonly feedbackPolicyHash: string;
     readonly grants: readonly AuthorityGrant[];
+    readonly outsideWriteGrants?: readonly RoleOutsideWriteGrants[];
     readonly authorityGrantRegistryHash: string | null;
     readonly profile: HarnessProfile;
     readonly loadout: {
@@ -173,6 +190,81 @@ export interface HarnessBundle {
 const ensure: (ok: unknown, reason: string) => asserts ok = (ok, reason) => {
   if (!ok) throw new Error(`harness contract: ${reason}`);
 };
+
+export function assertOutsideWriteGrants(
+  value: unknown,
+): asserts value is readonly OutsideWriteGrant[] {
+  ensure(Array.isArray(value), "outside-write grants must be an array");
+  for (const grant of value) {
+    ensure(
+      grant &&
+        typeof grant === "object" &&
+        typeof grant.source === "string" &&
+        verificationLine(grant.source) &&
+        [
+          "system-temp",
+          "session-scratch",
+          "main-intake",
+          "operator-root",
+        ].includes(grant.kind) &&
+        (grant.kind === "operator-root"
+          ? typeof grant.root === "string" &&
+            /^\//.test(grant.root) &&
+            !/[\u0000-\u001f\u007f]/.test(grant.root)
+          : !Object.hasOwn(grant, "root")),
+      "outside-write grant needs a closed kind, source and operator absolute root",
+    );
+  }
+}
+
+/** Exact effects keep the existing envelope's GRANTS projection authoritative. */
+export const outsideWriteEffect = (grant: OutsideWriteGrant): string =>
+  `outside.write:${grant.kind}${grant.kind === "operator-root" ? `:${encodeURIComponent(grant.root).replaceAll("*", "%2A")}` : ""}`;
+
+function outsideWriteGrantsFor(
+  program: HarnessProgram,
+): RoleOutsideWriteGrants[] {
+  return program.roles.map((role) => ({
+    role: role.name,
+    grants: [
+      ...(role.outsideWriteGrants ?? []).map((grant) => ({
+        ...grant,
+        originId: role.facetId,
+      })),
+      ...program.facets.flatMap((facet) =>
+        facet.kind === "role-procedure" &&
+        procedureRoles(facet).includes(role.name)
+          ? (facet.outsideWriteGrants ?? []).map((grant) => ({
+              ...grant,
+              originId: facet.facetId,
+            }))
+          : [],
+      ),
+    ].map((grant) => {
+      const effect = outsideWriteEffect(grant);
+      const authority = program.loadout.grants?.find((candidate) =>
+        candidate.effects.includes(effect),
+      );
+      const envelope = program.loadout.authorityEnvelope;
+      ensure(
+        authority &&
+          program.loadout.trace.authorityGrants?.registryHash &&
+          program.loadout.trace.authorityGrants.applied.some(
+            (entry) =>
+              canonicalStringify(entry) === canonicalStringify(authority),
+          ) &&
+          envelope.allowedEffects.includes(effect) &&
+          !envelope.deniedEffects.some(
+            (denied) =>
+              denied === effect ||
+              (denied.endsWith("*") && effect.startsWith(denied.slice(0, -1))),
+          ),
+        "outside-write root requires an admitted provenance-bearing grant in the effective envelope",
+      );
+      return { ...grant, authorityGrantId: authority.grantId };
+    }),
+  }));
+}
 const id = (value: string) => /^[a-z][a-z0-9.-]{0,99}$/.test(value);
 const hash = (text: string) => `fnv1a64:${fnv1a64(text)}`;
 const json = (value: unknown) => JSON.stringify(value, null, 2) + "\n";
@@ -383,6 +475,7 @@ export function lowerToHarness(
         "deny matchers must name a denied build effect and the observed Bash shape",
       );
     if (facet.kind === "role-procedure") {
+      assertOutsideWriteGrants(facet.outsideWriteGrants ?? []);
       const targets = procedureRoles(facet);
       const component = program.loadout.componentManifest.find(
         (entry) => entry.componentId === facet.facetId,
@@ -408,6 +501,7 @@ export function lowerToHarness(
     }
   }
   for (const role of program.roles) {
+    assertOutsideWriteGrants(role.outsideWriteGrants ?? []);
     ensure(
       id(role.name) &&
         verificationLine(role.description) &&
@@ -431,6 +525,7 @@ export function lowerToHarness(
     semanticHash: semantic,
   });
   const targetHash = hash(canonicalStringify(program));
+  const outsideWriteGrants = outsideWriteGrantsFor(program);
   if (profile.kind === "target-worker-v1")
     return lowerTargetWorker(
       program,
@@ -476,16 +571,26 @@ export function lowerToHarness(
     rung: number,
   ) => {
     const path = `${hookRoot}/${name}.mjs`;
-    const header = `// Origin: ${canonicalStringify(origin(names))}\n`;
+    const origins = [
+      ...names,
+      ...outsideWriteGrants.flatMap((row) =>
+        row.grants.map((grant) => grant.originId),
+      ),
+    ];
+    const header = `// Origin: ${canonicalStringify(origin(origins))}\n`;
     // The same session file handles startup diagnostics and prompt dispatch.
     const eventExpression =
       name === "session"
         ? `(input?.hook_event_name === "SessionStart" ? "SessionStart" : "UserPromptSubmit")`
         : JSON.stringify(event);
+    // WO-144: the fallback's root is this hook's own project, two levels above
+    // its file. The session's directory may be a subdirectory or another
+    // repository, and a marker or journal row must never land there.
     const fallback = `const fs = await import("node:fs");
 const { join } = await import("node:path");
 const { createHash } = await import("node:crypto");
-const root = typeof input?.cwd === "string" ? input.cwd : process.cwd();
+const { fileURLToPath } = await import("node:url");
+const root = fileURLToPath(new URL("../../", import.meta.url));
 const snapshot = ${JSON.stringify(profile.runtime.snapshot ?? null)};
 let cause = snapshot && !fs.existsSync(join(root, snapshot)) ? "snapshot-missing" : "runtime-unavailable";
 try {
@@ -529,8 +634,8 @@ process.stdout.write(JSON.stringify(response));`;
 
     emit(
       path,
-      `${header}let input;\ntry {\nconst { text } = await import("node:stream/consumers");\nconst rawInput = await text(process.stdin);\ntry { input = JSON.parse(rawInput); } catch {}\nconst event = ${eventExpression};\nconst recoveryInput = input !== null && typeof input === "object" && !Array.isArray(input) && (input.prompt === undefined || typeof input.prompt === "string") && (typeof input.session_id === "string" || (event === "UserPromptSubmit" && /^(analysis|operator override):(?:\\s|$)/i.test((input.prompt ?? "").trim())));\nconst control = recoveryInput ? await (${operatorControl.toString()})({ ...input, session_id: typeof input.session_id === "string" ? input.session_id : undefined }, event) : null;\nif (control) { process.stdout.write(JSON.stringify(control)); } else {\nconst { feedbackBoundary } = await import("../../${profile.runtime.snapshot ? `${profile.runtime.snapshot}/` : ""}packages/skeleton/dist/src/feedback-boundary.js");\nconst { runHarnessHook } = await import("../../${profile.runtime.snapshot ? `${profile.runtime.snapshot}/` : ""}packages/skeleton/dist/src/harness-host.js");\nawait runHarnessHook(${json({ compilerPackageVersion: COMPILER_PACKAGE_VERSION, runtime: profile.runtime, event, tools: profile.tools, ...(config as object) }).trim()}, feedbackBoundary, input, rawInput);\n}\n} catch { ${fallback} }\n`,
-      names,
+      `${header}let input;\ntry {\nconst { text } = await import("node:stream/consumers");\nconst rawInput = await text(process.stdin);\ntry { input = JSON.parse(rawInput); } catch {}\nconst event = ${eventExpression};\nconst recoveryInput = input !== null && typeof input === "object" && !Array.isArray(input) && (input.prompt === undefined || typeof input.prompt === "string") && (typeof input.session_id === "string" || (event === "UserPromptSubmit" && /^(analysis|operator override):(?:\\s|$)/i.test((input.prompt ?? "").trim())));\nconst control = recoveryInput ? await (${operatorControl.toString()})({ ...input, session_id: typeof input.session_id === "string" ? input.session_id : undefined }, event) : null;\nif (control) { process.stdout.write(JSON.stringify(control)); } else {\nconst { feedbackBoundary } = await import("../../${profile.runtime.snapshot ? `${profile.runtime.snapshot}/` : ""}packages/skeleton/dist/src/feedback-boundary.js");\nconst { runHarnessHook } = await import("../../${profile.runtime.snapshot ? `${profile.runtime.snapshot}/` : ""}packages/skeleton/dist/src/harness-host.js");\nawait runHarnessHook(${json({ compilerPackageVersion: COMPILER_PACKAGE_VERSION, runtime: profile.runtime, event, tools: profile.tools, envelope, grants: program.loadout.grants ?? [], outsideWriteGrants, ...(config as object) }).trim()}, feedbackBoundary, input, rawInput);\n}\n} catch { ${fallback} }\n`,
+      origins,
       rung,
     );
     hookPaths.set(event, [...(hookPaths.get(event) ?? []), path]);
@@ -741,6 +846,17 @@ process.stdout.write(JSON.stringify(response));`;
       "",
       ...role.procedure,
       "",
+      `Outside-write grants for ${role.name}: ${
+        outsideWriteGrants
+          .find((row) => row.role === role.name)!
+          .grants.map((grant) =>
+            grant.kind === "operator-root"
+              ? `${grant.kind} ${grant.root}`
+              : grant.kind,
+          )
+          .join(", ") || "none"
+      }; system-temp is os.tmpdir(); use the DotLn scratch path printed at role dispatch (Codex: node scripts/harness.mjs scratch). Native scratch and /tmp need a separate grant when outside system-temp. Sources are in the manifest. Literal /dev/null redirects discard output; other device mutations need grants.`,
+      "",
       HARNESS_BOUNDARIES,
       "",
       ...units.map((unit) => `${unit.unitId}: ${unit.desiredBehavior}`),
@@ -874,6 +990,7 @@ process.stdout.write(JSON.stringify(response));`;
     compilerPackageVersion: COMPILER_PACKAGE_VERSION,
     feedbackPolicyHash: feedback.policyHash,
     grants: program.loadout.grants ?? [],
+    outsideWriteGrants,
     authorityGrantRegistryHash:
       program.loadout.trace.authorityGrants?.registryHash ?? null,
     profile: JSON.parse(canonicalStringify(profile)) as HarnessProfile,
@@ -913,9 +1030,9 @@ export function verifyHarnessBundle(bundle: HarnessBundle): boolean {
   );
 }
 
-/** WO-139 adds observable subagent admission to WO-135's three refusals. */
+/** WO-144 adds declared outside-write roots to the existing four refusals. */
 const HARNESS_BOUNDARIES =
-  "DotLn has four refusals (WO-135, WO-139): it reserves one writer per worktree on any branch, including main; refuses writes to gate inputs or the success record during a live npm test; on planning/ branches refuses repository writes outside docs/ and root Markdown while admitting external paths; and refuses observable subagent admissions beyond docs/control/budgets.json subagentCap (default 20; null disables). Descendants count at their first attributable tool call; unresolved direct/child overlap is a reported minimum, and unobserved agents remain unknown. Inspect the writer with node scripts/harness.mjs writer --show; stop this session's gate with node scripts/harness.mjs evidence --stop; use operator override: for authorized recovery. Claude hooks enforce these four refusals at observed boundaries; Codex carries the duties and cap as role text without automatic enforcement. Other tool and completion judgments are advisory and host permissions decide. The separate Codex compaction adapter restores an owned unfinished task and permits one continuation after premature stopping; it never dispatches a role or changes writer ownership.";
+  "DotLn has five refusals (WO-135, WO-139, WO-144): it reserves one writer per worktree on any branch, including main; refuses writes to gate inputs or the success record during a live npm test; on planning/ branches refuses repository writes outside docs/ and root Markdown; refuses observable subagent admissions beyond docs/control/budgets.json subagentCap (default 20; null disables); and refuses known outside-project write destinations without a containing root granted by the active role or equipped support. Literal redirects are judged on any program; expansions such as $PWD and a program's own effects remain unobserved under host permissions; grant failures admit with one advisory and preserve the other refusals. Descendants count at their first attributable tool call; unresolved direct/child overlap is a reported minimum, and unobserved agents remain unknown. Inspect the writer with node scripts/harness.mjs writer --show; stop this session's gate with node scripts/harness.mjs evidence --stop; use operator override: for authorized recovery. Claude hooks enforce these five refusals at observed boundaries; Codex carries the duties and grants as role text without automatic enforcement. Other tool and completion judgments are advisory and host permissions decide. The separate Codex compaction adapter restores an owned unfinished task and permits one continuation after premature stopping; it never dispatches a role or changes writer ownership.";
 
 /** The shared instruction symlink contains all profile-qualified residue. */
 export function mergeHarnessFragments(

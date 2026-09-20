@@ -1,6 +1,8 @@
 import {
   compileLoadout,
   requireCompiled,
+  outsideWriteEffect,
+  type AuthorityGrant,
   type AuthorityEnvelope,
   type CompiledProgram,
   type HarnessFacet,
@@ -22,6 +24,21 @@ import { goalAlignment } from "./goal-alignment.js";
 import { HARNESS_HOST_VERSION } from "../version.js";
 
 const sharedSupports = [processCost, goalAlignment];
+/** Operator-authorized policy input; never inferred from a submitted support. */
+export const contributorOutsideAuthority: readonly AuthorityGrant[] = [
+  {
+    grantId: "contributor.outside-temporary",
+    version: 1,
+    grantedBy: "operator",
+    effects: [
+      outsideWriteEffect({ kind: "system-temp", source: "WO-144-D001" }),
+      outsideWriteEffect({ kind: "session-scratch", source: "WO-144-D001" }),
+    ],
+    repo: "project",
+    reason:
+      "WO-144-D001: temporary work and operator-selected DotLn session scratch",
+  },
+];
 const sharedIds = sharedSupports.map((support) => support.supportFacetId);
 const contributorSupports = [...executorSupports, ...sharedSupports];
 export const defaultContributorSupportIds = [
@@ -171,6 +188,16 @@ export const contributorRoles: readonly HarnessRole[] = [
   },
 ].map((role) => ({
   ...role,
+  outsideWriteGrants: [
+    {
+      kind: "system-temp" as const,
+      source: "WO-144-D001: contributor temporary work",
+    },
+    {
+      kind: "session-scratch" as const,
+      source: "WO-144-D001: operator-selected DotLn session scratch",
+    },
+  ],
   procedure: [operatorControls, ...role.procedure],
 }));
 
@@ -501,13 +528,20 @@ export const contributorProgram = (
   supportIds: readonly string[] = defaultContributorSupportIds,
 ): HarnessProgram => {
   const loadout = requireCompiled(
-    compileLoadout(contributorWithSupports(supportIds), {
-      environmentId: "contributor.project",
-      version: 1,
-      capabilities: [],
-      repo: "project",
-      baseCommit: "0".repeat(40),
-    }),
+    compileLoadout(
+      {
+        ...contributorWithSupports(supportIds),
+        authorityGrants: contributorOutsideAuthority,
+      },
+      {
+        environmentId: "contributor.project",
+        version: 1,
+        capabilities: [],
+        repo: "project",
+        baseCommit: "0".repeat(40),
+        authorityGrantRegistry: contributorOutsideAuthority,
+      },
+    ),
   );
   return {
     contractVersion: "harness-v1",

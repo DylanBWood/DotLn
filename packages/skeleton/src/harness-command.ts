@@ -414,61 +414,92 @@ function readCommand(program: string, args: readonly string[]): boolean {
   return true;
 }
 
-export function shellWriteTargets(source: string):
-  | readonly {
-      path: string;
-      followFinalSymlink: boolean;
-    }[]
-  | null {
+interface ShellWriteTarget {
+  path: string;
+  followFinalSymlink: boolean;
+  redirect?: true;
+}
+const writeCommandFlags: Record<string, RegExp> = {
+  touch: /^-(?:[acmh]+|-)/,
+  mkdir: /^-(?:p|-)/,
+  tee: /^-(?:[ai]+|-)/,
+  rm: /^-(?:[rf]+|-)/,
+};
+
+/** One invocation's literal output redirects and its remaining command words.
+ * null means a redirect this adapter cannot name. `strict` keeps the rule of
+ * shellWriteTargets that any expanded or wildcard word makes the invocation
+ * opaque; the redirect accessor asks that only of the redirect words.
+ */
+function invocationRedirects(
+  words: readonly ShellWord[],
+  strict: boolean,
+): { command: string[]; redirects: ShellWriteTarget[] } | null {
+  const command: string[] = [];
+  const redirects: ShellWriteTarget[] = [];
+  for (let index = 0; index < words.length; index++) {
+    const word = words[index]!;
+    // Whole-word quotation does not prove every character was quoted.
+    // Mixed/escaped wildcard forms stay opaque to this bounded adapter.
+    if (word.dynamic || /[*?\[\]{}~]/.test(word.value)) {
+      if (strict || /[<>]/.test(word.value)) return null;
+      command.push(word.value);
+      continue;
+    }
+    if (/^(?:\d*[<>]&\d+)$/.test(word.value) && !word.quoted) continue;
+    // Only `>&` treats a number or `-` as descriptor duplication/closure.
+    // zsh's `>>&` opens an append file even for those literal names.
+    // A spaced operand is the next word, as for `>` and `>>`.
+    const ampersandRedirect = /^\d*(>>?)&(.*)$/.exec(word.value);
+    if (ampersandRedirect && !word.quoted) {
+      const operand = ampersandRedirect[2]
+        ? { ...word, value: ampersandRedirect[2] }
+        : words[++index];
+      if (!literalRedirectOperand(operand)) return null;
+      if (ampersandRedirect[1] === ">" && /^(?:\d+|-)$/.test(operand.value))
+        continue;
+      redirects.push({
+        path: operand.value,
+        followFinalSymlink: true,
+        redirect: true,
+      });
+      continue;
+    }
+    const redirect = /^(?:\d*>>?|&>>?)(.*)$/.exec(word.value);
+    if (redirect && !word.quoted) {
+      const target = redirect[1]
+        ? { ...word, value: redirect[1] }
+        : words[++index];
+      if (!literalRedirectOperand(target)) return null;
+      redirects.push({
+        path: target.value,
+        followFinalSymlink: true,
+        redirect: true,
+      });
+    } else {
+      // Mixed quoted/unquoted redirects and embedded redirects are opaque.
+      if (/[<>]/.test(word.value)) return null;
+      command.push(word.value);
+    }
+  }
+  return { command, redirects };
+}
+
+export function shellWriteTargets(
+  source: string,
+): readonly ShellWriteTarget[] | null {
   try {
-    const paths: { path: string; followFinalSymlink: boolean }[] = [];
+    const paths: ShellWriteTarget[] = [];
     for (const invocation of shellWords(source)) {
       if (invocation.stdin.length) return null;
-      const words = invocation.words;
-      const command: string[] = [];
-      for (let index = 0; index < words.length; index++) {
-        const word = words[index]!;
-        // Whole-word quotation does not prove every character was quoted.
-        // Mixed/escaped wildcard forms stay opaque to this bounded adapter.
-        if (word.dynamic || /[*?\[\]{}~]/.test(word.value)) return null;
-        if (/^(?:\d*[<>]&\d+)$/.test(word.value) && !word.quoted) continue;
-        // Only `>&` treats a number or `-` as descriptor duplication/closure.
-        // zsh's `>>&` opens an append file even for those literal names.
-        // A spaced operand is the next word, as for `>` and `>>`.
-        const ampersandRedirect = /^\d*(>>?)&(.*)$/.exec(word.value);
-        if (ampersandRedirect && !word.quoted) {
-          const operand = ampersandRedirect[2]
-            ? { ...word, value: ampersandRedirect[2] }
-            : words[++index];
-          if (!literalRedirectOperand(operand)) return null;
-          if (ampersandRedirect[1] === ">" && /^(?:\d+|-)$/.test(operand.value))
-            continue;
-          paths.push({ path: operand.value, followFinalSymlink: true });
-          continue;
-        }
-        const redirect = /^(?:\d*>>?|&>>?)(.*)$/.exec(word.value);
-        if (redirect && !word.quoted) {
-          const target = redirect[1]
-            ? { ...word, value: redirect[1] }
-            : words[++index];
-          if (!literalRedirectOperand(target)) return null;
-          paths.push({ path: target.value, followFinalSymlink: true });
-        } else {
-          // Mixed quoted/unquoted redirects and embedded redirects are opaque.
-          if (/[<>]/.test(word.value)) return null;
-          command.push(word.value);
-        }
-      }
-      const [program, ...args] = command;
+      const scan = invocationRedirects(invocation.words, true);
+      if (!scan) return null;
+      paths.push(...scan.redirects);
+      const [program, ...args] = scan.command;
       if (!program) continue;
       if (readCommand(program, args)) continue;
-      const flags: Record<string, RegExp> = {
-        touch: /^-(?:[acmh]+|-)/,
-        mkdir: /^-(?:p|-)/,
-        tee: /^-(?:[ai]+|-)/,
-        rm: /^-(?:[rf]+|-)/,
-      };
-      if (!flags[program]) return null;
+      const flags = writeCommandFlags;
+      if (!Object.hasOwn(flags, program)) return null;
       const optionEnd = args.indexOf("--");
       const touchNoFollow =
         program === "touch" &&
@@ -490,6 +521,39 @@ export function shellWriteTargets(source: string):
             followFinalSymlink: program !== "rm" && !touchNoFollow,
           });
       }
+    }
+    return paths;
+  } catch {
+    return null;
+  }
+}
+
+/** WO-144: the shell, not the program, opens a redirect, so a literal redirect
+ * is a known destination on any program. This accessor names only those; the
+ * program's own effects stay opaque, and shellWriteTargets keeps its contract
+ * that null means opaque for the live-gate refusal that depends on it. A
+ * relative destination is named only while no earlier program outside the
+ * bounded vocabulary (cd, a function, a script) could have moved the shell.
+ */
+export function shellRedirectTargets(
+  source: string,
+): readonly ShellWriteTarget[] | null {
+  try {
+    const paths: ShellWriteTarget[] = [];
+    let moved = false;
+    for (const invocation of shellWords(source)) {
+      const scan = invocationRedirects(invocation.words, false);
+      if (!scan) return null;
+      if (moved && scan.redirects.some(({ path }) => !path.startsWith("/")))
+        return null;
+      paths.push(...scan.redirects);
+      const [program, ...args] = scan.command;
+      if (
+        program &&
+        !readCommand(program, args) &&
+        !Object.hasOwn(writeCommandFlags, program)
+      )
+        moved = true;
     }
     return paths;
   } catch {
