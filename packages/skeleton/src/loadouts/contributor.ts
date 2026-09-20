@@ -10,6 +10,8 @@ import {
   type HarnessProgram,
   type HarnessRole,
   type LoadoutGraph,
+  type PresencePolicy,
+  PRESENCE_AXES,
 } from "@dotln/compiler";
 import { personalFeedbackUnits } from "./feedback.js";
 import { harnessToolEffects } from "../harness-command.js";
@@ -241,6 +243,45 @@ const permissions: HarnessFacet = {
     { effect: "package.publish", deny: "Bash(npm publish *)" },
   ],
 };
+/** The Contributor build's absence policy is one read-only pulse: while the
+ * operator is away, ask whether the running work is still inside its contract
+ * and on the vision's theses. It changes nothing; a drift holds the rest.
+ * The surface and both ceilings are zero because the judge only reads. */
+export const CONTRIBUTOR_MISSION_POLICY = "contributor.mission-check";
+export const CONTRIBUTOR_MISSION_PHASE = "mission-check";
+export const CONTRIBUTOR_MISSION_SURFACE = "contributor.mission";
+export const contributorPresence: readonly PresencePolicy[] = [
+  {
+    policyId: CONTRIBUTOR_MISSION_POLICY,
+    version: 1,
+    axes: [...PRESENCE_AXES],
+    curve: "progressive",
+    returnRule: "cancel-on-return",
+    // No policy activity for an hour expires the phase; a recorded return and
+    // a fresh absence rearm it. Repeated absence cannot replenish it.
+    decay: { idleMs: 3_600_000, expires: "phase" },
+    phases: [
+      {
+        phaseId: CONTRIBUTOR_MISSION_PHASE,
+        entry: { cadence: { kind: "Every", intervalMs: 900_000 } },
+        attentionPriority: 1,
+        scope: {
+          surfaces: [CONTRIBUTOR_MISSION_SURFACE],
+          changeSize: { files: 0, lines: 0 },
+          budget: {},
+        },
+        envelope: {
+          allowedEffects: ["repo.read"],
+          resourceLimits: { writers: 0 },
+        },
+        requiredCapabilities: ["actor.cli-worker"],
+        discretionary: true,
+        inFlightOnReturn: "kill",
+      },
+    ],
+  },
+];
+
 export const contributorLoadout: LoadoutGraph = {
   schemaVersion: 1,
   loadoutId: "contributor",
@@ -391,7 +432,20 @@ export const contributorLoadout: LoadoutGraph = {
     reservations: [],
   },
   polarAxes: [],
+  presence: contributorPresence,
 };
+/** The saved Contributor graph at WO-042's authority baseline: the current
+ * graph without WO-099's mission-check cadence, which is the only presence
+ * policy it declares. D009 accepts a new identity for the current build; the
+ * historical build keeps its own, and the receipts filed under it are never
+ * edited to match a later one. `authority-evidence` compiles both in one run. */
+export const contributorLoadoutBeforeMissionCheck: LoadoutGraph = (() => {
+  const graph: { presence?: readonly PresencePolicy[] } = {
+    ...contributorLoadout,
+  };
+  delete graph.presence;
+  return graph as LoadoutGraph;
+})();
 /** Keep the original saved build intact; equipment creates a new build. */
 export function contributorWithSupports(
   supportIds: readonly string[] = defaultContributorSupportIds,

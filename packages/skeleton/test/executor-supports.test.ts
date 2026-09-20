@@ -14,6 +14,7 @@ import {
   contributorConfiguredProgram,
   defaultContributorSupportIds,
   contributorLoadout,
+  contributorLoadoutBeforeMissionCheck,
   contributorOutsideAuthority,
   contributorProfiles,
   contributorProgram,
@@ -191,9 +192,24 @@ test("WO-042 atomic support switches compose independently and removal restores 
     );
   }
   assert.equal(hashes.size, combinations.length);
+  // WO-099 added the build's own absence policy (one read-only mission-check
+  // phase), so the saved build is a new reviewed version with a new identity.
+  // WO-042's `fnv1a64:06245f5c581212f1` remains the identity of the build at
+  // that date and in every receipt filed before this change.
   assert.equal(
     semanticHash(
       requireCompiled(compileLoadout(contributorLoadout, environment)),
+    ),
+    "fnv1a64:87aa6e1263d6d74d",
+  );
+  // Both identities in one run (WO-099 D013): the graph as it stood at WO-042's
+  // date still compiles to the hash its filed receipts carry, so no historical
+  // evidence is edited to match a later build.
+  assert.equal(
+    semanticHash(
+      requireCompiled(
+        compileLoadout(contributorLoadoutBeforeMissionCheck, environment),
+      ),
     ),
     "fnv1a64:06245f5c581212f1",
   );

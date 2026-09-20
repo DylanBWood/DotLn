@@ -2,6 +2,11 @@
 // IPC and kills that group; the next resident records the unobserved episode lost.
 import { startCliEpisode, type CliActorContext } from "./cli-actor.js";
 import { assertCliActorSpec, type CliActorSpec } from "./cli-actor-contract.js";
+import {
+  assertMissionSource,
+  isMissionCheckRequest,
+  type MissionSource,
+} from "./mission-check-protocol.js";
 let active: ReturnType<typeof startCliEpisode> | undefined;
 process.on("disconnect", () => {
   if (active) active.kill();
@@ -13,6 +18,7 @@ process.on(
     kill?: boolean;
     spec: CliActorSpec;
     context: CliActorContext;
+    missionSource?: MissionSource;
   }) => {
     if (message.kill) {
       active?.kill();
@@ -20,7 +26,15 @@ process.on(
     }
     if (active) return;
     assertCliActorSpec(message.spec);
-    active = startCliEpisode(message.spec, message.context);
+    if (isMissionCheckRequest(message.spec.request))
+      assertMissionSource(message.missionSource);
+    active = startCliEpisode(
+      message.spec,
+      message.context,
+      undefined,
+      undefined,
+      message.missionSource,
+    );
     void active.completed.then((result) => {
       if (process.connected)
         process.send!(result, () => {

@@ -1,4 +1,13 @@
 import {
+  assertMissionSubjectExtends,
+  isMissionCheckRequest,
+  validateMissionCheckRequest,
+  validateMissionCheckResult,
+  type MissionCheckObserved,
+  type MissionCheckRequest,
+  type MissionCheckSubject,
+} from "./mission-check-protocol.js";
+import {
   isWriterRequest,
   validateRequest,
   validateWriterRequest,
@@ -13,7 +22,7 @@ import {
 export type CliTransport = "claude-cli-print" | "codex-cli-exec";
 export interface CliActorSpec {
   transport: CliTransport;
-  request: WorkerRequest | WriterRequest;
+  request: WorkerRequest | WriterRequest | MissionCheckRequest;
 }
 export const DETACHED_LAUNCH_ROWS = {
   "claude-cli-print": {
@@ -39,8 +48,11 @@ export interface CliLaunchClaims {
 }
 export interface CliActorObservation {
   launch: CliLaunchClaims;
-  result?: WorkerResult | WriterResult;
+  result?: WorkerResult | WriterResult | MissionCheckObserved;
   failure?: string;
+  /** Only a mission check: the capsule this episode actually judged, which
+   * completes the pinned one with a dispatch-time observation. */
+  subject?: MissionCheckSubject;
 }
 export function assertCliActorSpec(
   value: unknown,
@@ -55,9 +67,12 @@ export function assertCliActorSpec(
     !v.request
   )
     throw new Error("invalid CLI actor declaration");
-  if (isWriterRequest(v.request)) validateWriterRequest(v.request);
+  if (isMissionCheckRequest(v.request)) validateMissionCheckRequest(v.request);
+  else if (isWriterRequest(v.request)) validateWriterRequest(v.request);
   else validateRequest(v.request);
 }
+/** A mission check is rebuilt around its dispatch-time capsule by the episode
+ * host, because its authorization is bound to the subject hash. */
 export function cliActorRequest(spec: CliActorSpec, episodeId: string) {
   return { ...spec.request, episodeId };
 }
@@ -71,7 +86,9 @@ export function assertCliObservation(
   if (
     !v ||
     !launch ||
-    Object.keys(v).some((k) => !["launch", "result", "failure"].includes(k)) ||
+    Object.keys(v).some(
+      (k) => !["launch", "result", "failure", "subject"].includes(k),
+    ) ||
     Object.keys(launch).some(
       (k) =>
         ![
@@ -111,9 +128,24 @@ export function assertCliObservation(
     ].includes(v.failure)
   )
     throw new Error("invalid CLI failure code");
-  const request = cliActorRequest(spec, episodeId);
+  if (isMissionCheckRequest(spec.request)) {
+    // The pinned capsule may be completed by a dispatch-time observation; it
+    // may never be replaced, and the judgment is validated against what ran.
+    // A launch that failed before observing carries no capsule and no result.
+    if (v.subject === undefined) {
+      if (v.result !== undefined)
+        throw new Error("mission judgment without its observed capsule");
+      return;
+    }
+    assertMissionSubjectExtends(spec.request.subject, v.subject);
+    if (v.result !== undefined) validateMissionCheckResult(v.result, v.subject);
+    return;
+  }
+  if (v.subject !== undefined)
+    throw new Error("mission capsule on another CLI actor");
+  const request = { ...spec.request, episodeId };
   if (v.result !== undefined) {
     if (isWriterRequest(request)) parseStoredWriterResult(v.result, request);
-    else parseWorkerResult(v.result, request);
+    else parseWorkerResult(v.result, request as WorkerRequest);
   }
 }

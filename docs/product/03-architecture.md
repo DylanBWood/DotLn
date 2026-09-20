@@ -1868,6 +1868,134 @@ its existing kill/finish rule. Foreground tasks retain their own authority.
 Live observation time is monotone even if the wall clock moves backward;
 stale replayed human observations cannot undo newer intent.
 
+**Mission check and the dispatch hold (WO-099, 2026-09-20).** The Contributor
+build's own presence policy is one read-only phase, `mission-check`, on a
+900-second gated cadence with zero file and line ceilings, `repo.read` as its
+only effect and `kill` on return: while the operator is away, the resident asks
+whether the running work is still inside the contract it was given and still on
+the vision's theses. Its actor is a CLI worker whose capsule is pinned when the
+actor is declared and completed at dispatch from the declared `MissionSource`,
+so each pulse judges the diff and the decisions as they now read; the pinned
+part cannot be rewritten by the observation. The capsule carries the contract
+clauses, an optional story contract, the diff against the base, the last N
+structured decisions and the vision theses and exclusions, hashed like a
+verification capsule. The implementer's narrative never enters it, and the
+episode runs in an empty scratch working directory with no model tools. What
+the capsule cannot carry is named rather than dropped: a changed path whose
+text did not fit is listed as omitted, and a decision history that exists but
+cannot be read inside the capsule's boundary — past its size bound, resolving
+outside the worktree, not a regular file — is named as omitted with the
+reason, while a history that does not exist yet is an empty window and a zero
+window reads nothing. An ignored entry added, removed or metadata-changed after
+the pin is also named, by an opaque path hash and outside-surface classification
+only; its name and bytes never cross the model boundary. No pass is certified
+over any of these omissions; the verdict is `unknown`, which holds unless the
+host can prove drift (WO-099 VER-003 and VER-004 repairs).
+
+The verdict is `on-mission`, `drift` or `unknown`, and the host decides it from
+supported findings rather than from the worker's claim. Every finding must name
+a supplied clause, thesis or exclusion and supplied evidence — a changed path,
+a decision id or the observed contract hash — and an unsupported finding
+refuses the whole result, which is recorded as `unknown`. Two drifts are
+derived from the capsule itself and survive any claimed pass: a changed path
+outside the declared surfaces, and a contract clause whose bytes differ from
+the pinned capsule, which is how a contract edited mid-episode is observed
+rather than assumed away. A third structural case covers an ignored entry that
+changed after the pin and sits outside the declared surfaces; its evidence is
+the opaque path hash, and its reason states that the path and bytes were
+redacted. The judge may add at most a hundred findings beyond the host's own;
+the host's findings are bounded only by the capsule's path and clause bounds,
+and each is one admitted line, so the normalized result passes the same
+validation again at admission and on replay. If the judge repeats the exact
+key of a host finding, the host's entry and reason win while the original
+structural-first order stays fixed. A judgment the actor contract refuses is
+recorded as the failed episode it is, with the capsule the
+episode observed, so the hold the capsule proves is never lost to a
+representational failure (WO-099 VER-003 repair).
+
+A verdict other than `on-mission` sets `dispatchHeld { reason }` in the
+resident slice. While it is held, every phase actor is refused with that
+reason and the refusal is recorded as the ordinary NoOp; the check itself stays
+armed, because it is the supervision rather than the work it holds. A `drift`
+additionally appends the `MissionDriftObserved` correction event (02
+§Feedback). Two clearances exist: an explicit human answer, which a resident
+actor cannot append, and a fresh judgment that returns `on-mission` over a
+capsule whose hash differs from the held one. Re-judging the same bytes cannot
+retire a finding, and the implementer cannot clear its own hold. A verifier
+that never returns a usable judgment is an honest `unknown` that holds without
+a correction event — unless the capsule that episode already observed proves a
+structural finding on its own, in which case the fold normalizes the absent
+judgment exactly as an `unknown` model result and the drift, its finding and
+its correction survive the failure, with the hold's reason naming both the
+finding and the missing judgment (WO-099 VER-002 repair). A restart that loses
+an episode remains `ScriptEpisodeLost` and does not hold.
+The saved Contributor build declares no runtime capability, so the compiled
+phase is a NoOp naming `actor.cli-worker` until a host supplies it. Nothing
+here repairs a drift: WO-055 and WO-100 compose that separately.
+
+A judgment is worth no more than the capsule behind it, so the observation is
+complete or it refuses (WO-099 VER-001 repair). Each pulse rebuilds the
+episode's authorization around the capsule it just observed, because that
+authorization is bound to the subject hash; an episode still carrying the
+capsule declared with the actor could never judge changed work, which is the
+cadence's only purpose. `changedPaths` names every tracked and ordinary
+untracked path Git can compare with the base — branch commits are forbidden
+here before final review, so new work is ordinarily untracked during the very
+interval the check supervises. Git's ordinary diff cannot name ignored work.
+At the pin, the host therefore collects Git's directory-collapsed ignored
+inventory and retains only a SHA-256 path id keyed by a random per-pin salt, a
+hash of bounded `lstat` metadata and the path's inside/outside-surface
+classification. Which metadata depends on the entry's kind, because Git
+collapses an excluded directory into a single entry. A file, symlink or other
+entry is hashed with its kind, mode, size and mtime, so its bytes moving is
+observed as work. A collapsed directory is hashed with its kind and mode alone,
+because creating or removing a direct child moves a directory's own mtime and
+an ordinary rebuild does exactly that: the build stages a directory directly
+under `.runtime/` and publishes files into each `dist/`. Since the pin is fixed
+when the actor is declared, a directory hashed with its mtime would leave its
+baseline after the first build and hold every later pulse over the tooling's
+own residue, which neither a human answer nor a verified repair could retire
+(WO-099 VER-005 F1). Existing ignored build and runtime trees therefore stay on
+the baseline: they drift when they appear, disappear, change kind or change
+mode, not when they are rebuilt. Each pulse compares the same bounded
+inventory. New, removed or metadata-changed entries enter `ignoredEntries` by
+opaque id; no ignored file content is read, and neither the private path, its
+bytes nor the salt are sent to the judge; the pin persists only the salt,
+salted ids and metadata hashes. A changed ignored entry inside the surfaces
+prevents a pass as `unknown`; one outside them is a host-derived drift naming
+`contract:surfaces`. Directory collapsing bounds what this observes: work
+added, removed or rewritten under a collapsed ignored root stays invisible,
+which is the price of not holding on the build. This is a local supervision
+boundary, not a hostile filesystem monitor, and evidence that such a change
+matters reopens the design toward a local provenance source rather than toward
+reading ignored bytes.
+
+An observation past the combined path and ignored-entry bound refuses rather
+than listing a prefix, which holds as `unknown`. The diff text is assembled a
+path at a time: one whose text does not fit is named in `omittedPaths` instead
+of being cut out of the middle, and while any path is listed there the host
+cannot record `on-mission`, because a judge cannot certify work it was never
+shown. A contract clause longer than the clause bound is carried in parts
+rather than truncated, so a contract edited past that bound still differs from
+its pin. Decisions, theses and exclusions are context rather than compared
+bytes, and where one is cut the cut is written into the text the judge reads.
+The fresh judgment that clears a hold is appended by the resident itself as
+`MissionHoldCleared { origin: "verified-repair" }` once an admitted
+`on-mission` covers a capsule the held judgment did not, so a repair retires
+its own hold without waiting for a human.
+
+The capsule is bounded by the worktree as well as by its size (WO-099 VER-002
+repair). Every file the observation reads must resolve to a regular file inside
+the canonical worktree, and its size is read before its bytes are, so an
+oversized or special file is named rather than allocated. An untracked symlink
+is carried as the link Git itself records — mode `120000` with the target as
+its content — and never followed: a repository-relative name is not proof that
+the bytes behind it belong to the repository, and following one would put a
+host file the worktree does not contain in front of the judge under a capsule
+that could still be certified `on-mission`. A contained link is ordinary here,
+so containment of the resolved bytes is what is checked rather than the
+spelling of the path.
+
 Actor liveness uses resident configuration `heartbeatBudgetMs` (default 30000).
 Clock samples and late heartbeat admission retain missed deadlines separately
 from presence and task progress. Stop is activity, not proof of episode

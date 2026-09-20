@@ -93,7 +93,7 @@ intent → task-scoped build → bounded WorkOrder → disposable executor
 -->
 <!-- DOTLN-RELEASE-BEGIN -->
 
-This source prepares DotLn `v0.36.0`.
+This source prepares DotLn `v0.37.0`.
 
 **The core.** A local-first compiler turns a loadout graph into a bounded
 program and authority envelope that the kernel checks on every decision.
@@ -103,6 +103,12 @@ compiler preserves presence policy across three editable views.
 **What you can run.** The offline resident drives that policy from recorded
 time, explicit away/back edges and actor observations, dispatching declared
 scripts, CLI workers or human handoffs and recovering without duplicate episodes.
+On its own absence cadence it also asks whether the work it is running is still
+inside the contract it was given and still on the vision's theses: a read-only
+mission check receives a hashed capsule of that contract, the current diff and
+the last decisions, and a verdict other than `on-mission` holds every further
+unattended dispatch until a human answers or a fresh judgment passes over
+changed work.
 The [skeleton runbook](packages/skeleton/README.md#resident-host) documents
 `dotln resident`, `dotln presence` and their limits; the
 [actor board](packages/console/README.md), mutation corpus, inspection workers,

@@ -1900,6 +1900,30 @@ export function planRefutationAuthorization(
   );
 }
 
+/** The mission check reads a pinned capsule and returns one judgment. The same
+ * grant is re-checked at completion, so an expired episode cannot report. */
+export function missionCheckAuthorization(
+  authority: AuthorityEnvelope,
+  subjectHash: string,
+  episodeId: string,
+  at: number,
+) {
+  return authorize(
+    { kind: "Act", effect: "repo.read", payload: { subjectHash } },
+    authority,
+    {
+      now: at,
+      actorId: "mission-check",
+      workstreamId: "ws_mission_check",
+      episodeId,
+      decisionIndex: 0,
+      intentIndex: 0,
+      evidence: [],
+      revokedBy: [],
+    },
+  );
+}
+
 /** Source-change hosts keep kernel decisions in the pure reactor boundary. */
 export function sourceChangeAuthorization(
   ...args: Parameters<typeof authorize>

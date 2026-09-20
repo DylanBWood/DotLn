@@ -34,7 +34,9 @@ import {
 } from "../packages/compiler/dist/test/authority-fixture.js";
 import { entropyReducerLoadout } from "../packages/skeleton/dist/src/loadouts/entropy-reducer.js";
 import {
+  CONTRIBUTOR_MISSION_POLICY,
   contributorLoadout,
+  contributorLoadoutBeforeMissionCheck,
   contributorProgram,
 } from "../packages/skeleton/dist/src/loadouts/contributor.js";
 import {
@@ -197,11 +199,46 @@ const oldPlan = compileLoadout(
   baseline.fixtures.planRefuter.artifactIdentity.compilationEnvironment,
 );
 assert.equal(oldPlan.ok, true, "historical plan-refuter compilation");
+// WO-099 gave the Contributor build its own presence policy, which is a new
+// reviewed identity (WO-099 D009). The build saved at WO-042's date declared no
+// presence policy, so its identity is reproduced from that graph here rather
+// than by editing a filed receipt. Both compile in this one run.
+assert.equal(
+  contributorLoadoutBeforeMissionCheck.presence,
+  undefined,
+  "the historical Contributor graph declares no presence policy",
+);
+assert.deepEqual(
+  contributorLoadout.presence.map((policy) => policy.policyId),
+  [CONTRIBUTOR_MISSION_POLICY],
+  "the current Contributor graph adds only the mission-check policy",
+);
+assert.deepEqual(
+  { ...contributorLoadout, presence: null },
+  { ...contributorLoadoutBeforeMissionCheck, presence: null },
+  "the two Contributor graphs differ only by that policy",
+);
+const oldContributor = compileLoadout(
+  contributorLoadoutBeforeMissionCheck,
+  baseline.fixtures.contributor.artifactIdentity.compilationEnvironment,
+);
+assert.equal(oldContributor.ok, true, "historical Contributor compilation");
+assert.notEqual(
+  results.contributor.semanticHash,
+  oldContributor.semanticHash,
+  "the current build carries its own reviewed identity",
+);
 const compatibility = Object.entries(results).map(([name, result]) => {
   assert.equal(result.ok, true, name);
   const before = baseline.fixtures[name];
   const historical =
-    name === "planRefuter" ? oldPlan : name === "entropy" ? oldEntropy : result;
+    name === "planRefuter"
+      ? oldPlan
+      : name === "entropy"
+        ? oldEntropy
+        : name === "contributor"
+          ? oldContributor
+          : result;
   assert.equal(
     historical.semanticHash,
     before.semanticHash,
@@ -342,7 +379,12 @@ const compatibility = Object.entries(results).map(([name, result]) => {
     changedArtifactIdentityFields,
     ["planRefuter", "entropy"].includes(name)
       ? ["compilerPackageVersion", "semanticHash", "componentDefinitions"]
-      : ["compilerPackageVersion"],
+      : // WO-099 D009: the Contributor build gained its own presence policy, so
+        // the live build carries a new reviewed identity while the historical
+        // graph compiled above still reproduces the saved one exactly.
+        name === "contributor"
+        ? ["compilerPackageVersion", "semanticHash"]
+        : ["compilerPackageVersion"],
   );
   return {
     fixture: name,
