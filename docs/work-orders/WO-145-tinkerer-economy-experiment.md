@@ -1,4 +1,4 @@
-# WO-145 — Tinkerer, first experiment: an optional support has the executor state and run at most one small economy experiment per order, three trial orders record what it cost and what it changed, and the record decides whether it stays equipped (version assigned at activation)
+# WO-145 — Tinkerer, first experiment: an optional support has the executor state and run at most one small economy experiment per order, three trial orders record what it cost and what it changed, and the record decides whether it stays equipped (v0.34.0)
 
 **Model:** any. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
