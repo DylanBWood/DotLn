@@ -250,7 +250,10 @@ export function canonicalWorkerArgs(
     process.stderr.write(
       `DotLn advisory: requested worker effort ${JSON.stringify(request.effort)} is unrecorded; the host will evaluate it.\n`,
     );
-  if (name === "fake") throw new WorkerFailure("profile-refused");
+  // Only the two CLI adapters build argv; the local-model transport is an
+  // HTTP request shape and the fake never launches a process.
+  if (name === "fake" || name === "local-model-http")
+    throw new WorkerFailure("profile-refused");
   if (isWriterRequest(request)) {
     try {
       validateSourceChangeEnvironment(
@@ -359,7 +362,7 @@ export function canonicalWorkerArgs(
  * Existing inspection arguments above intentionally retain their exact bytes.
  */
 function sourceChangeArgs(
-  name: Exclude<WorkerTransportName, "fake">,
+  name: Exclude<WorkerTransportName, "fake" | "local-model-http">,
   request: WriterRequest,
   schemaPath: string,
   effort: string,

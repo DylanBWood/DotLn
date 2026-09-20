@@ -26,8 +26,8 @@ launchpad log, records every wall-clock sample and explicit presence change as
 an event, and drives the compiled presence statechart through the interpreter
 it now shares with the WO-067 fixtures. When a phase allows it, the host
 dispatches one bounded `script` episode through the actor catalog; `cli-worker`,
-`human-handoff` and `local-model` stay unavailable with their reasons and never
-fall back to another kind. `dotln resident` and `dotln presence` are the two new
+`human-handoff` and `local-model` report their own reasons when unavailable and
+never fall back to another kind. `dotln resident` and `dotln presence` are the two new
 commands, `--once` runs one complete cycle for an outside scheduler, and a
 restart records an unobserved episode lost rather than dispatching its identity
 twice. The runbook is [Resident host](#resident-host).
@@ -294,7 +294,15 @@ a fresh store. Retain the old store for inspection. The store records paths and
 commands supplied by its owner; use appropriate local storage. Resource
 reservations and effect declarations are checked before execution; this adapter
 does not measure actual file/line edits or replace source-change verification.
-`local-model` yields its unavailable reason.
+For `kind: "local-model"`, add `local: { endpoint, request }`: the endpoint is an
+explicit `http://127.0.0.1:<port>` origin and the request is the existing
+inspection `WorkerRequest`, whose effect must match the actor. Availability is
+WO-110's declared `L-U1` row rather than a live probe, so an unavailable
+endpoint yields a reasoned NoOp without contacting the operator's machine; the
+shipped row is `unavailable`. One episode is one bounded HTTP request with no
+child process and no supervisor, so cancellation ends it with the resident.
+Writing and evidence requests are refused, and a local completion claim is never
+independent verification. See the [availability row](../../docs/discovery/local-model-transport-2026-09-20.md).
 The [fixtures](test/resident.test.ts) cover fake-clock replay and real local
 process/network boundaries.
 

@@ -47,7 +47,13 @@ try {
 } catch (failure) {
   error = String(failure);
 }
-write(`${input.control}.result`, JSON.stringify({ acquired, claims, error }));
+// Publish atomically: a reader polling for this path must never observe the
+// file between creation and its contents landing.
+write(
+  `${input.control}.result.part`,
+  JSON.stringify({ acquired, claims, error }),
+);
+fs.renameSync(`${input.control}.result.part`, `${input.control}.result`);
 process.on("message", () => {
   store.release();
   process.exit(0);

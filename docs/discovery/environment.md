@@ -596,3 +596,19 @@ The [writing-worker record](writing-worker-smoke-2026-09-14.md) and its [index](
 | LM Studio 0.4.24+1 / CLI ff50809 / llama.cpp 2.38.0; Qwen3.6 27B Q4_K_M | observed | [Packet](local-runner-2026-09-18.md) and [JSON](local-runner-2026-09-18.json): loopback start/load, n=3 byte-identical outputs, schema, tool round trip, cancellation, timeout and recovery; no downloaded model. |
 | Two-minute staged load | observed | Nine completed 128-token requests; tenth deadline-cancelled; 130 native health samples nominal thermal / normal memory pressure / zero swap growth; model unloaded and server stopped afterward. This is a short bounded observation, not maximum capacity or hardware safety. |
 | Overall readiness / no-egress boundary | ambiguous | `inconclusive`: successful inference does not establish the absent attributable runner egress restriction or all effective settings and interrupted-case metrics. Historical WO-027 observations remain time-indexed. |
+
+## WO-110 local-model transport addendum (2026-09-20)
+
+| Observation | Label | Evidence and limit |
+| --- | --- | --- |
+| Installed runner unchanged since WO-137: LM Studio `0.4.24+1`, CLI `ff50809` | observed | Read from the installed bundle and `lms --version`. No launch, load, download or setting change. |
+| No endpoint listening on `127.0.0.1:1234` or `:1235` at 18:10 UTC | not found | `lsof -nP -iTCP:<port> -sTCP:LISTEN` empty; `curl` exit 7; the transport smoke's own probe reported `ECONNREFUSED`. A point observation, not a claim that the runner is broken. |
+| Third `WorkOrderTransport` over the local endpoint | observed | [Availability row](local-model-transport-2026-09-20.md) and its [JSON packet](local-model-transport-2026-09-20.json). The transport's wire shape is taken from WO-137's protocol rows; it is exercised against real loopback doubles, never a stubbed client. |
+| Criterion 2 live smoke at 18:10 UTC | unavailable | Nothing was listening; the smoke recorded an `unavailable` row. Retained and time-indexed in [the 18:10 packet](local-model-transport-2026-09-20.json). |
+| Criterion 2 live smoke at 18:38 UTC | observed | After the operator started the endpoint, one dispatch returned a validated six-field envelope in 14,558.64 ms: status completed, `beaconClaim` inspection-completed, 161-character summary, one candidate with 3 evidence. [Live packet](local-model-transport-live-2026-09-20.json). n=1; no qualification, determinism or quality claim. |
+| Requested model honored by the endpoint | not found | The wire carried `model: "required-model"` while `dotln-local` was loaded, and the endpoint served the episode regardless. The transport cannot establish which model answered, and cannot rely on the endpoint refusing an unknown model name. |
+| Overall readiness after the live run | unavailable | Unchanged: no attributable non-local-egress boundary, and WO-137 grades the runner `inconclusive`. Working inference does not discharge that contract. |
+
+Earlier observations above remain time-indexed and unchanged. Requested model
+and effort are launch selectors, not effective-session readback; the local
+transport sends no effort value on the wire at all.

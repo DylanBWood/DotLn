@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-110",
+  "kind": "local-model-transport-smoke",
+  "observedAt": "2026-09-20T18:38:40.327Z",
+  "endpoint": "http://127.0.0.1:1234",
+  "declaredRow": {
+    "row": "L-U1",
+    "label": "unavailable",
+    "observedAt": "2026-09-20",
+    "reason": "local-model endpoint unavailable: WO-137 graded overall local-runner readiness inconclusive and WO-110 observed no loopback listener on 2026-09-20; the operator starts the endpoint explicitly"
+  },
+  "probe": {
+    "label": "observed",
+    "httpStatus": 200,
+    "latencyMs": 21.08175,
+    "reason": "endpoint answered its model listing"
+  },
+  "row": {
+    "transport": "local-model-http",
+    "endpoint": "http://127.0.0.1:1234",
+    "harnessVersion": "unknown",
+    "model": "required-model",
+    "effort": "high",
+    "profileId": "fixture-inspection-v1",
+    "startedAt": "2026-09-20T18:38:25.768Z",
+    "outcome": "envelope",
+    "label": "observed",
+    "shape": {
+      "envelopeFields": [
+        "episodeId",
+        "requiresHuman",
+        "resultId",
+        "status",
+        "summary",
+        "workOrderId"
+      ],
+      "status": "completed",
+      "requiresHuman": "boolean",
+      "summaryCharacters": 161,
+      "workOrderIdMatches": true,
+      "episodeIdMatches": true,
+      "resultIdMatches": true,
+      "beaconClaim": "inspection-completed",
+      "candidateCount": 1,
+      "candidateEvidenceCounts": [
+        3
+      ]
+    },
+    "latencyMs": 14558.643667
+  },
+  "outcome": "envelope",
+  "projection": "shapes only: field names, types, lengths, counts, failure codes and latency; no model-authored text",
+  "boundary": "host-permitted loopback client; this probe starts no server, loads no model and establishes no runner egress boundary"
+}

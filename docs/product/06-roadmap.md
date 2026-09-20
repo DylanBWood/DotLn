@@ -20,6 +20,8 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-110 collision retiming (2026-09-20):** unpublished target `v0.35.1` is superseded by `v0.36.0` under the existing minor classification because the observed release baseline is `v0.35.1`. Scope, acceptance, component versions, and published tags are unchanged by this retiming.
+
 **WO-090 activation completion (2026-09-20):** assigned application `v0.35.1`
 under the declared patch classification above local `v0.35.0`. Documentation
 relocation with a measurement: product 07 keeps the executor's operating

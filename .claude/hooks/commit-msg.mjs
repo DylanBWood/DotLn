@@ -1,10 +1,10 @@
 // Origin: {"ids":["no-attribution"],"loadoutId":"contributor","semanticHash":"fnv1a64:55b87ceca766bc72"}
-const { runCommitMessageHook } = await import("../../.runtime/harness/723ca3cd51f8b638/packages/skeleton/dist/src/harness-host.js");
-const { feedbackBoundary } = await import("../../.runtime/harness/723ca3cd51f8b638/packages/skeleton/dist/src/feedback-boundary.js");
+const { runCommitMessageHook } = await import("../../.runtime/harness/3618ed978eed1706/packages/skeleton/dist/src/harness-host.js");
+const { feedbackBoundary } = await import("../../.runtime/harness/3618ed978eed1706/packages/skeleton/dist/src/feedback-boundary.js");
 await runCommitMessageHook({
   "compilerPackageVersion": "0.17.0",
   "runtime": {
-    "skeletonVersion": "0.31.0",
+    "skeletonVersion": "0.32.0",
     "boundaryContract": "feedback-v1",
     "files": [
       {
@@ -61,7 +61,7 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/version.js",
-        "hash": "fnv1a64:49b61309babd7e83"
+        "hash": "fnv1a64:d540410a63b0ce34"
       },
       {
         "path": "packages/skeleton/dist/src/harness-command.js",
@@ -129,11 +129,11 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/actor-catalog.js",
-        "hash": "fnv1a64:d538797ba6444ccd"
+        "hash": "fnv1a64:534505c23d5f05c4"
       },
       {
         "path": "packages/skeleton/dist/src/actor-contract.js",
-        "hash": "fnv1a64:22aeca349f7a8c36"
+        "hash": "fnv1a64:c357c7c038943251"
       },
       {
         "path": "packages/skeleton/dist/src/cli-actor-contract.js",
@@ -168,7 +168,7 @@ await runCommitMessageHook({
         "hash": "fnv1a64:5ad495017c40b9b2"
       }
     ],
-    "snapshot": ".runtime/harness/723ca3cd51f8b638"
+    "snapshot": ".runtime/harness/3618ed978eed1706"
   },
   "policy": {
     "contractVersion": "feedback-v1",

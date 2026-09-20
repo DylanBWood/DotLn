@@ -12,7 +12,7 @@ import type { FixtureInspectionProfile } from "./execution-environment.js";
 import type { SourceChangeProfile } from "./execution-environment.js";
 
 export type WorkerTransportName =
-  "claude-cli-print" | "codex-cli-exec" | "fake";
+  "claude-cli-print" | "codex-cli-exec" | "local-model-http" | "fake";
 /** A requested selector is a log value, not a discovery-registry gate. */
 export type WorkerEffort = string;
 export interface WorkerEffortSelection {
