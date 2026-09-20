@@ -834,7 +834,8 @@ observations; implementer evidence strings, summaries and log prose are not
 inputs. [WO-010](../evidence/WO-010/README.md) subsequently established the
 verification port and local subprocess protocols;
 [WO-054](../evidence/WO-054/implementation.md) added confined worktree-test
-witnesses. Live model verification remains the separate WO-056 proof.
+witnesses. [WO-056](../evidence/WO-056/README.md) then evidenced live model
+verification across this boundary, once per harness.
 
 A profile needs inspectable facts rather than one “stronger isolation” score:
 substrate and provider versions; pinned image, root filesystem, guest kernel, or
@@ -1695,8 +1696,9 @@ text, never the default channel for state you own in structured form.
   `source: live`; the worker result cannot supply them. Missing confinement stays
   unavailable. [WO-055](../evidence/WO-055/implementation.md) now supplies
   bounded source repair and original-contract re-verification, with doubles
-  establishing exhaustion and interruption recovery; WO-056 still owns the
-  live verifier proof.
+  establishing exhaustion and interruption recovery;
+  [WO-056](../evidence/WO-056/README.md) then ran that loop live, once per
+  harness, on one synthetic repository.
 
 - `DeliveryAdapter`: PR/patch/report generation _from artifacts, not narrative_
   — the deliverable body is generated from the StoryContract, the actual diff,

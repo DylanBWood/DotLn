@@ -1,4 +1,4 @@
-# WO-056 — Live blinded verification and repair: a planted defect in a real repository is caught by a live verifier, repaired by a fresh worker, and re-verified from the original contract, recorded from an outside terminal (version assigned at activation)
+# WO-056 — Live blinded verification and repair: a planted defect in a real repository is caught by a live verifier, repaired by a fresh worker, and re-verified from the original contract, recorded from an outside terminal (v0.33.2)
 
 **Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
 
@@ -91,3 +91,36 @@ any runtime fix.
 
 1. The operator runs the episodes outside the sandbox and files the receipt.
 2. A run that fails records its receipt under this order's evidence and does not close the order; dependents wait for an observed success, and the operator may withdraw the order with a dated note.
+
+## Operator scope expansion — 2026-09-20
+
+After four failed live attempts the executor offered two routes: a separate
+bounded order, or a scope expansion here. The operator replied on 2026-09-20
+with the second, quoted in full in
+`docs/evidence/WO-056/decisions.md#wo-056-d008`. It adds two bounded runtime
+repairs, the defects recorded in `#wo-056-d007`:
+
+1. The live verifier is told the finding contract the host already enforces:
+   a finding's observed and expected restate a referenced adverse host
+   witness, and in the `worktree-snapshot` profile each reproduction step is a
+   witness's step or an exact named command. The verifier's output
+   instructions state it and its result schema constrains it. The admission
+   and derivation rules, the finding shape and the event schema keep their
+   bytes.
+2. The Codex verifier launches in the files-only `worktree-snapshot` read
+   mount. Every existing inspection, writer and `verification-snapshot-v1`
+   argument vector keeps its exact bytes.
+
+For these two surfaces only, this supersedes criterion 6's "no runtime
+source" clause, the non-goal "any runtime fix" and the classification's "no
+runtime capability change". Because runtime source changes, criterion 6 also
+takes the duty WO-054 and WO-055 carried: regenerated bundle pins and fresh
+evidence editions, including the live repository feedback audit. Write-backs
+extend to 02 §Independent verification v1 and the skeleton README where they
+describe the verifier's contract and launch. The release stays a patch: a
+defect repair with no new capability.
+
+It does not authorize a change to the admission rule, host retention of
+refusal details, a dependency, generated configuration beyond the regenerated
+pins, or publication. Criteria 1–5 are unchanged and still require an observed
+live success.

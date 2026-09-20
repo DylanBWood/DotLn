@@ -20,6 +20,20 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-056 activation completion (2026-09-20):** assigned application `v0.33.2`
+under the declared patch classification above local `v0.33.1`. The order was
+an evidence record until the operator's 2026-09-20 scope expansion added two
+runtime repairs its live attempts found. Skeleton `0.29.2` states the existing
+finding contract to the verifier, in its output instructions and result
+schema, and launches the Codex verifier in the files-only snapshot mount;
+admission and derivation rules, the finding shape and the event schema are
+unchanged. Kernel `0.6.0`, compiler `0.16.0` and console `0.1.7` are unchanged;
+the console pin follows skeleton. No dependency or publication authority is
+added. The [live receipts](../evidence/WO-056/README.md) and
+[executor decisions](../evidence/WO-056/decisions.md) record six attempts, the
+two defects, the integration of `main` at `37a729ca` during execution and the
+reopening conditions.
+
 **WO-140 activation completion (2026-09-19):** assigned application `v0.33.1`
 under the declared patch classification above local `v0.33.0`. Skeleton
 `0.29.1` rejects a partial gate row under any identity and prints the session
@@ -1607,8 +1621,17 @@ and independent confined host-test witnesses, including a contract failure
 when the worker's superficial test passes.
 [WO-055](../evidence/WO-055/implementation.md) adds bounded source repair and
 original-contract re-verification; doubles establish green completion, exhaustion
-and interruption recovery. WO-056 still owns the live model verification and
-repair-loop proof. The remaining personal-flavor vertical is planned: GitHub Issue → SourceBundle →
+and interruption recovery. Blinded verification and repair are now
+[live-evidenced](../evidence/WO-056/README.md): on 2026-09-20 Claude and Codex
+each failed the violated clause of a planted change whose superficial test
+passed, a fresh worker of the same harness repaired only the blamed module,
+and a different verifier episode passed every original criterion from the
+unchanged contract; the Claude run's published log replays negative against
+injected implementer events. The first four attempts failed and found two
+runtime defects, repaired in that order: the verifier had never been told the
+finding contract the host enforces, and Codex could not launch in the
+files-only snapshot. This is one synthetic two-clause repository, as executor
+evidence awaiting independent verification. The remaining personal-flavor vertical is planned: GitHub Issue → SourceBundle →
 StoryContract → RepoProfile + ImpactMap → **Live Witness baseline** (reproduce
 before changing; preserve baseline evidence) → implementation episode → blinded
 behavior verification **and** independent code review (two separate episodes) →

@@ -1,0 +1,298 @@
+{
+  "schemaVersion": 1,
+  "kind": "wo056-live-verification-repair",
+  "episode": "claude-live-2",
+  "recordedAt": "2026-09-20T04:24:30.417Z",
+  "launch": {
+    "epistemic": "launch-claim",
+    "value": {
+      "harness": "claude",
+      "version": "2.1.278",
+      "model": "claude-fable-5",
+      "effort": "xhigh"
+    },
+    "effectiveReadback": "unknown"
+  },
+  "fixture": {
+    "epistemic": "observed",
+    "value": {
+      "target": "<scratch-repository>",
+      "launchpad": "<selected-dotln-worktree>",
+      "store": "<episode-store>",
+      "repo": "wo056-scratch-target",
+      "baseCommit": "a80c789083eb9be53f2b1b30b5c3542226f8193d",
+      "loadoutHash": "e53a58de4d90a817fea61e7ebdce3a6540cc7396c720bc2e22189dde311703e0",
+      "semanticHash": "fnv1a64:4b068384d0cd6b8c",
+      "allowedEffects": [
+        "repo.read",
+        "repo.write",
+        "git.local",
+        "shell.run"
+      ],
+      "grants": [],
+      "commandStyle": "bare",
+      "contract": {
+        "workOrderId": "wo056_claude_live_2",
+        "objective": "Make add in sum.mjs return the numeric sum of its two arguments for every sign of argument. Read README.md and sum.mjs; change only sum.mjs; run the exact host-supplied test command, read the diff, then stage and commit with the exact host command.",
+        "acceptanceCriteria": [
+          "add(left, right) returns the numeric sum when both arguments are zero or positive.",
+          "add(left, right) returns the numeric sum when either argument is negative."
+        ],
+        "constraints": [
+          "Change only sum.mjs; never change a test, the README, governance, settings or the commit message",
+          "Use only the declared test and exact add/commit commands for effectful shell operations; bounded read-only inspection follows the transport instructions"
+        ],
+        "nonGoals": [
+          "Remote effects",
+          "Other repositories",
+          "Additional commits"
+        ],
+        "requiredEvidence": [
+          "node focused-test.mjs",
+          "node contract-test.mjs"
+        ]
+      },
+      "contractHash": "fnv1a64:64daf87e26601c8f",
+      "criteria": [
+        {
+          "criterionId": "AC-positive",
+          "description": "add(left, right) returns the numeric sum when both arguments are zero or positive.",
+          "claimType": "behavior",
+          "evidenceSource": "live",
+          "codeSurfaces": [
+            "sum.mjs"
+          ],
+          "requiredChecks": [
+            "superficial"
+          ]
+        },
+        {
+          "criterionId": "AC-signed",
+          "description": "add(left, right) returns the numeric sum when either argument is negative.",
+          "claimType": "behavior",
+          "evidenceSource": "live",
+          "codeSurfaces": [
+            "sum.mjs"
+          ],
+          "requiredChecks": [
+            "contract"
+          ]
+        }
+      ],
+      "tests": [
+        {
+          "criterionId": "AC-positive",
+          "checkId": "superficial",
+          "command": "node focused-test.mjs"
+        },
+        {
+          "criterionId": "AC-signed",
+          "checkId": "contract",
+          "command": "node contract-test.mjs"
+        }
+      ],
+      "surfaces": [
+        "sum.mjs"
+      ],
+      "roundLimit": 2
+    }
+  },
+  "planted": {
+    "epistemic": "observed",
+    "value": {
+      "implementer": "process-double",
+      "commit": "f5836c37cbcacf980ecba3e2f43e83d0d4b213db",
+      "changedPaths": [
+        "sum.mjs"
+      ],
+      "superficialTest": {
+        "command": "node focused-test.mjs",
+        "beforeExitCode": 1,
+        "afterExitCode": 0
+      },
+      "implementerEnvelopeStatus": "completed"
+    }
+  },
+  "boundary": {
+    "epistemic": "observed",
+    "value": {
+      "before": {
+        "launchpad": {
+          "head": "295766dd11b12d0cd819161a7c4f9ec58a82d7f2",
+          "tree": "7824b9598d102d0c2192798b502dc032c45151c8",
+          "workingBytes": "5eb3b04891e1ca323d88dc002822b3ca7f14dbc7838efd573e42eec9dddae15f",
+          "index": "e510a7765b1794d7c0ec6c023111c582694732d2a0c0e4c9ccee40f3e5b74b90",
+          "status": "eedab52eae4f5833c04136fe1f4b533fac80913d48743c3c9b99908d885ffc68"
+        },
+        "targetMain": {
+          "head": "a80c789083eb9be53f2b1b30b5c3542226f8193d",
+          "tree": "2352934664a9de0164955049ccec3c8031822084",
+          "workingBytes": "6decbb0c062ea7cdf3860659663087f73a9930626ed0abb3f9b6636dee8dd05c",
+          "index": "383b7acb53875d97aa067112069e1b6cae44905c1a6c12e45441f07cfcae480f",
+          "status": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "sentinel": "bcd3da55be1de6334ae0748e93729d562805b5594baa3aae713690fa759e556a"
+      },
+      "after": {
+        "launchpad": {
+          "head": "295766dd11b12d0cd819161a7c4f9ec58a82d7f2",
+          "tree": "7824b9598d102d0c2192798b502dc032c45151c8",
+          "workingBytes": "5eb3b04891e1ca323d88dc002822b3ca7f14dbc7838efd573e42eec9dddae15f",
+          "index": "e510a7765b1794d7c0ec6c023111c582694732d2a0c0e4c9ccee40f3e5b74b90",
+          "status": "eedab52eae4f5833c04136fe1f4b533fac80913d48743c3c9b99908d885ffc68"
+        },
+        "targetMain": {
+          "head": "a80c789083eb9be53f2b1b30b5c3542226f8193d",
+          "tree": "2352934664a9de0164955049ccec3c8031822084",
+          "workingBytes": "6decbb0c062ea7cdf3860659663087f73a9930626ed0abb3f9b6636dee8dd05c",
+          "index": "383b7acb53875d97aa067112069e1b6cae44905c1a6c12e45441f07cfcae480f",
+          "status": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "sentinel": "bcd3da55be1de6334ae0748e93729d562805b5594baa3aae713690fa759e556a"
+      },
+      "unchanged": true
+    }
+  },
+  "finding": {
+    "epistemic": "observed",
+    "value": {
+      "verifierEpisodeId": null,
+      "summary": null,
+      "witnesses": [
+        {
+          "evidenceId": "f5836c37cbcacf980ecba3e2f43e83d0d4b213db:host-test:0",
+          "criterionId": "AC-positive",
+          "checkId": "superficial",
+          "command": "node focused-test.mjs",
+          "exitCode": 0,
+          "signal": null,
+          "outcome": "pass",
+          "observed": "exit 0",
+          "expected": "exit 0"
+        },
+        {
+          "evidenceId": "f5836c37cbcacf980ecba3e2f43e83d0d4b213db:host-test:1",
+          "criterionId": "AC-signed",
+          "checkId": "contract",
+          "command": "node contract-test.mjs",
+          "exitCode": 1,
+          "signal": null,
+          "outcome": "fail",
+          "observed": "exit 1",
+          "expected": "exit 0"
+        }
+      ],
+      "rows": [
+        {
+          "criterionId": "AC-positive",
+          "status": "incomplete"
+        },
+        {
+          "criterionId": "AC-signed",
+          "status": "incomplete"
+        }
+      ],
+      "finding": null,
+      "openFindings": [],
+      "clause": null
+    }
+  },
+  "repair": {
+    "epistemic": "unknown",
+    "value": null,
+    "reason": "No first-round repair commit was observed"
+  },
+  "reverification": {
+    "epistemic": "unknown",
+    "value": null,
+    "reason": "No re-verification matrix was recorded"
+  },
+  "loop": {
+    "epistemic": "unknown",
+    "value": null,
+    "reason": "The repair host did not reach a recorded state"
+  },
+  "eventLog": {
+    "epistemic": "unknown",
+    "value": null,
+    "reason": "No first verification result was recorded"
+  },
+  "foldReplay": {
+    "epistemic": "unknown",
+    "value": null,
+    "reason": "No first verification result was recorded"
+  },
+  "episodes": {
+    "epistemic": "observed",
+    "value": [
+      {
+        "role": "verifier",
+        "ordinal": 0,
+        "durationMs": 20843,
+        "exitCode": 0,
+        "wire": {
+          "lines": 1,
+          "invalidLines": 0,
+          "terminals": 1,
+          "terminalSuccess": true,
+          "denialArrayPresent": true,
+          "resultFormat": "json",
+          "containsEnvelope": true,
+          "structuredEnvelopePresent": true
+        },
+        "failure": null,
+        "refusal": {
+          "code": "invalid-result",
+          "detail": "finding observed versus expected"
+        },
+        "usage": {
+          "activity": {
+            "stepCount": null,
+            "commandsRun": null,
+            "source": "unavailable"
+          },
+          "source": "claude-result-envelope",
+          "scope": "dispatch",
+          "observedAt": null,
+          "usage": {
+            "inputTokens": 2,
+            "cachedInputTokens": 0,
+            "cacheWriteInputTokens": 8234,
+            "outputTokens": 1882,
+            "reasoningOutputTokens": null,
+            "totalTokens": 10118,
+            "costUsd": 0.25880000000000003
+          },
+          "context": null
+        }
+      }
+    ]
+  },
+  "host": {
+    "epistemic": "observed",
+    "value": {
+      "exitCode": 1,
+      "signal": null,
+      "durationMs": 24940,
+      "stderrBytes": 0
+    }
+  },
+  "failure": {
+    "epistemic": "observed",
+    "value": {
+      "code": "invalid-result",
+      "detail": null
+    }
+  },
+  "result": {
+    "epistemic": "observed",
+    "value": {
+      "findingPass": false,
+      "repairPass": false,
+      "reverificationPass": false,
+      "foldPass": false,
+      "containmentPass": true,
+      "startedAt": "2026-09-20T04:24:05.043Z"
+    }
+  }
+}

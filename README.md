@@ -93,7 +93,7 @@ intent → task-scoped build → bounded WorkOrder → disposable executor
 -->
 <!-- DOTLN-RELEASE-BEGIN -->
 
-This source prepares DotLn `v0.33.1`.
+This source prepares DotLn `v0.33.2`.
 
 **The core.** A local-first compiler turns a loadout graph into a bounded
 program and authority envelope that the kernel checks on every decision.
@@ -114,6 +114,12 @@ Worktree verification seals the contract, diff and source snapshot and supplies
 independent confined host-test witnesses; the
 [bounded repair loop](docs/evidence/WO-055/implementation.md) re-verifies the
 original contract after each repair, with doubles establishing recovery and exhaustion.
+[Live verification evidence](docs/evidence/WO-056/README.md) shows a Claude and a
+Codex verifier, given no tools and nothing from the implementer, each failing the
+violated clause of a planted change whose own test passed; a fresh worker
+repaired only the blamed module and a second verifier passed the original
+contract. The Claude run's event log is published and replays negative against
+injected implementer events.
 
 **How this repository builds itself.** Independent implementation, verification
 and final review record their own evidence, and publication consumes the

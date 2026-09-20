@@ -671,6 +671,22 @@ sharing it. Copies remain available for inspection; no automatic cleanup or
 hostile-process containment is claimed. Source-writing repair and live model
 verification remain WO-055/WO-056.
 
+WO-056 states the finding contract to the verifier without changing it.
+`evidenceResultSchema` limits a finding's `observed` and `expected` to the
+strings of the adverse (`fail`) host witnesses and, in this profile, its
+`reproductionSteps` to those witnesses' steps and the exact named commands. The
+verifier's output instructions say the same and send its own diagnosis to the
+envelope summary. `parseEvidenceResult` and `deriveRepairOrder` keep their
+rules: before this, a live verifier's correct but descriptive finding was
+refused as `finding observed versus expected`, because only a double that
+copies the host's strings could know them. With no adverse witness the fields
+stay free text, and the `verification-snapshot-v1` profile's steps are never
+constrained. The Codex transport adds `--skip-git-repo-check` for this profile
+only: its read mount is a files-only copy without Git metadata, which Codex
+otherwise refuses before any model call. Inspection, writer and
+`verification-snapshot-v1` launches keep their argument vectors. See the
+[WO-056 evidence](../../docs/evidence/WO-056/README.md).
+
 Evidence can be reproduced and checked mechanically:
 
 ```sh
