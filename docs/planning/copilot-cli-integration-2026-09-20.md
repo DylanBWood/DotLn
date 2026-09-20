@@ -145,8 +145,7 @@ the other three and an anchor.
   `operator-attested` on 99) and the observed `session.model_change` rows,
   including `auto` with a null effort. It is the selected value, not an
   effective-effort claim. Reopen: the CLI exposes an effective value.
-- **D5. "Enforced" needs a live denial and a fixture, and says whether it
-  holds under `--allow-all-tools`.** Source: the operator's direction, and
+- **D5. "Enforced" needs a live denial and a fixture, and says whether it holds with allow-all permissions on.** Source: the operator's direction, and
   product 03's record that a sandbox flag or a documented feature did not
   establish containment. Reopen: none.
 - **D6. No repository file sets a Copilot permission, trust, sandbox, memory
@@ -170,6 +169,7 @@ the other three and an anchor.
 - **D10. Placement: own slot after WO-140 and WO-056, before WO-145 and
   WO-090.** Source: §7. Reopen: WO-140 is deferred, in which case WO-146 may
   go first and WO-140 integrates main.
+- **D11. The operator enters bare `copilot`; nothing DotLn needs depends on a launch argument.** Source: the operator's correction of 2026-09-20, after this pass's first handoff; `claude` and `codex` are entered bare today. Whatever the CLI must know comes from the repository surfaces it reads, an in-session command or a proposed personal setting; flags appear only where a script launches the CLI. Recorded as WO-146-D001 and bound to receipt 020 by the amendment route. Reopen: a DotLn control that cannot work without a launch argument, which would be stated as unsupported rather than solved with a flag.
 
 ## 7. One order, and where it goes
 
@@ -202,19 +202,41 @@ consume most sessions, and one removed unknown. No existing pair is recut.
 
 ## 8. The operator workflow afterward
 
-Exact where this pass observed the flag or command; the two places the probe
-decides are marked.
+The operator enters `copilot` with no arguments, as `claude` and `codex` are
+entered today. Corrected the same day: the first draft of this section gave a
+launch line with `--model`, `--reasoning-effort`, `--disable-builtin-mcps` and
+optional flags, and put two of them into WO-146's criteria. That was wrong.
+The other two harnesses need no arguments because everything DotLn needs comes
+from the repository and from persisted settings, and the same holds here. The
+operator's correction is captured in ignored intake and recorded as
+[WO-146-D001](../evidence/WO-146/decisions.md#wo-146-d001).
 
 ```text
-# once per worktree: accept the folder-trust prompt at first launch
-cd <worktree root>                      # cwd must equal the Git root
-copilot --model <id> --reasoning-effort <level> --disable-builtin-mcps \
-        [--allow-all-tools] [--no-auto-update]
+cd <worktree root>        # cwd must equal the Git root
+copilot                   # accept the folder-trust prompt the first time in a new worktree
 
-> resume: next                          # executor; or: resume: fix
+> resume: next            # executor; or: resume: fix
 ```
 
-A fresh `copilot` session, started the same way, takes `resume: verify`.
+A fresh `copilot` session, entered the same way, takes `resume: verify`.
+
+What the flags did, and where each now lives:
+
+- Model: the `/model` command in the session, or the operator's persisted
+  default. DotLn does not choose it.
+- Effort: the operator's `effortLevel` setting, observed as `xhigh`; a bare
+  session already resolved `xhigh` from it on 2026-09-20.
+- Approvals: the in-session allow-all toggle, which the operator's earlier
+  sessions used, or the `defaultPermissionMode` setting.
+- The built-in GitHub MCP server: named in the documents as a channel DotLn
+  does not govern. A persisted way to turn it off, if the CLI has one, goes on
+  the proposed-settings list.
+- A credit limit: `/limits set max-ai-credits <n>` in the session, if wanted.
+- Auto-update: left alone; a CLI version outside the recorded line warns at
+  session entry.
+
+Then, exact where this pass observed the command and marked where the probe
+decides:
 
 1. The CLI loads `AGENTS.md + CLAUDE.md`, which map the phrase to the
    `dotln-executor` or `dotln-verifier` skill. Probe-decided: under Branch A
@@ -224,7 +246,8 @@ A fresh `copilot` session, started the same way, takes `resume: verify`.
    `node scripts/harness.mjs begin <session> <role>`.
 2. The role works under whichever controls the table marks enforced; the rest
    are duties in the role text.
-3. `npm test`, then completion with the actor flags:
+3. `npm test`, then completion with the actor flags, which the model runs, not
+   the operator:
 
 ```text
 npm run resume -- implementation-ready \
@@ -239,9 +262,9 @@ operator supplied them; `unknown` for a value nobody supplied.
 
 4. `resume: final review` and `resume: release close` stay on Claude or Codex.
 
-`--allow-all-tools` and sandbox-off are the operator's choice. With them, the
-only pre-effect controls are the rows the table marks enforced and says hold
-under `--allow-all-tools`; shell effects are unconfined, as they are in the
+Allow-all permissions and sandbox-off are the operator's choice. With them,
+the only pre-effect controls are the rows the table marks enforced and says
+hold with allow-all on; shell effects are unconfined, as they are in the
 trusted-unconfined mode product 03 already describes for the other two.
 
 ## 9. Proposed operator settings (none applied by this pass)
@@ -385,9 +408,7 @@ the document gate early, and that it waited and repeated the read.
 WO-146's eleven known issues are carried into the map's catalog row for the
 executor's decisions. The ones that change how the order should be run: an
 erroring handler denies every call under a fail-closed host, so the handler's
-behavior on an undecodable payload needs its own decision and fixture; a cell
-may say "holds under `--allow-all-tools`" only from a launch that carried the
-flag; labels are dated to the probed version and need a stated reading when
+behavior on an undecodable payload needs its own decision and fixture; a cell may say it holds with allow-all permissions on only from a session that had them on; labels are dated to the probed version and need a stated reading when
 the installed version moves; a Copilot row must not fail a check for orders
 that do not touch Copilot; and if the probe selects a native registration or
 leaves most rows unsupported or untested, the additions are restated before

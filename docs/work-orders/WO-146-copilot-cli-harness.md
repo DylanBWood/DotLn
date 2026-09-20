@@ -20,8 +20,7 @@ sentences), counted against the cold-start ceilings; the executor reports the
 new totals. Adds generated residue lines to `CLAUDE.md` in proportion to what
 the probe finds unavailable: none if every event is observed, up to the eight
 Codex carries today if none is. The live probe and the qualification spend the
-operator's AI credits; the amount is unknown until run and each launch carries
-`--max-ai-credits`. Removes the operator's hand translation of the role
+operator's AI credits; the amount is unknown until run and each scripted probe launch carries a credit limit. Removes the operator's hand translation of the role
 procedure into a third CLI, and removes an unknown that exists today: the
 installed CLI reads `.claude/settings.json` as a repository configuration
 source and denies a tool call when a pre-tool hook errors (its bundled
@@ -96,8 +95,7 @@ checklist this order completes) and §DotLn hook boundary;
 `scripts/lib/harness.mjs` (`allowed`, `walkOwned`); `scripts/discover.mjs`;
 `docs/discovery/harness-smoke-2026-09-07.md` (the record shape to follow).
 
-**Objective:** An operator launches Copilot CLI at a DotLn worktree root,
-types `resume: next`, `resume: fix` or `resume: verify`, and gets the same
+**Objective:** An operator enters `copilot` with no arguments at a DotLn worktree root, as `claude` and `codex` are entered today, types `resume: next`, `resume: fix` or `resume: verify`, and gets the same
 compiled role, the same skill text and the same plain-command lifecycle as in
 Claude and Codex. The record names `copilot-cli` as the harness separately
 from whichever model was selected, says which model and effort values were
@@ -170,8 +168,7 @@ live denial and a deterministic fixture did not both show.
   - H4 the tool names delivered for shell, read, edit, create, skill and
     sub-agent spawn;
   - H5 whether `hookSpecificOutput.permissionDecision: "deny"` stops the call,
-    whether a hook error stops it, and whether either still holds under
-    `--allow-all-tools`;
+    whether a hook error stops it, and whether either still holds with allow-all permissions on;
   - H6 whether prompt-submit `additionalContext` reaches the model;
   - H7 whether a stop-hook `systemMessage` surfaces;
   - H8 whether a sub-agent's tool calls fire hooks, and with what child
@@ -183,6 +180,7 @@ live denial and a deterministic fixture did not both show.
     liveness;
   - H12 what the event log records for a named model, for `auto`, and after a
     mid-session model change.
+- **Entry is bare `copilot`.** The operator enters the CLI with no arguments, as with the other two. Nothing DotLn needs may depend on a launch argument: what the CLI must know comes from the repository surfaces it already reads, from an in-session command, or from a personal setting on the proposed list. Launch flags appear only where a script launches the CLI, in the probe's `-p` rows. The changelog says `-p` loads repository hooks under different conditions than an interactive session, so the rows that decide the operator's workflow (H1, H5 and H12) are also observed in a bare interactive session.
 - **Reuse the one hook set; the branch is decided by the record.**
   - Branch A, reuse: a control whose Claude-form registration fires with the
     fields it needs rides the existing generated hooks. No second registration
@@ -227,10 +225,7 @@ live denial and a deterministic fixture did not both show.
   verifies against the worktree.
 - **Sandbox and approvals stay the operator's.** No repository file sets a
   Copilot permission, trust, sandbox, memory or attribution value, because a
-  private setting is not the source of a guarantee. The documents say what
-  sandbox-off and `--allow-all-tools` remove (confinement of shell effects;
-  approval prompts) and which rows of the control table still hold under
-  them, from H5. Proposed personal settings are a list the operator applies.
+  private setting is not the source of a guarantee. The documents say what sandbox-off and allow-all permissions remove (confinement of shell effects; approval prompts), however the operator turned them on (the in-session toggle or a personal setting), and which rows of the control table still hold under them, from H5. Proposed personal settings are a list the operator applies.
 - **Target workers stay two.** The target-worker derivation excludes the new
   profile explicitly; resident-launched Copilot is a non-goal.
 - **Declined alternatives, recorded:** a Copilot plugin bundling skills and
@@ -253,9 +248,9 @@ the qualification record.
 
 1. `node scripts/harness-probe.mjs copilot` refuses without
    `DOTLN_LIVE_HARNESS=1`, runs only in a system-temporary scratch repository,
-   passes `--max-ai-credits` on every launch, makes at most twelve launches,
+   sets a credit limit on every scripted launch, makes at most twelve scripted launches,
    and writes one retained dated record under `docs/discovery/` answering H1
-   to H12 with anchors, shapes only. The `claude`, `claude-bare` and `codex`
+   to H12 with anchors, shapes only. H1, H5 and H12 each also carry a row the operator observed in an interactive session entered as bare `copilot`. The `claude`, `claude-bare` and `codex`
    modes and their retained records are byte-unchanged.
    `scripts/test-harness-probe.mjs` drives the new mode through a stub
    executable and asserts the shape reduction keeps key names and drops
@@ -291,7 +286,7 @@ the qualification record.
    stop judgment, the lifecycle-evidence command, writer release at handoff);
    compaction continuation; `analysis:` and `operator override:`. Each row
    says enforced, advisory, unsupported or untested, names its probe anchor or
-   fixture, and says whether it holds under `--allow-all-tools`. A row says
+   fixture, and says whether it holds with allow-all permissions on. A row says
    enforced only with both a live denial and a fixture. `HARNESS_BOUNDARIES`
    states Copilot's observed position once, in the sentence form used for
    Codex.
@@ -324,8 +319,7 @@ the qualification record.
    executor session takes `resume: next` to `implementation-ready`; a fresh
    session takes `resume: verify` against a planted defect and files a failing
    report; a session takes `resume: fix` to `repair-complete`; a fresh session
-   verifies to a pass. At most four episodes and two retries, each with
-   `--max-ai-credits`. The record gives, per episode: harness id, CLI version,
+   verifies to a pass. Every episode is entered as bare `copilot`; the model, effort and permission mode are whatever the operator's settings and in-session choices make them, and are recorded. At most four episodes and two retries; a credit limit, if the operator wants one, is set in-session. The record gives, per episode: harness id, CLI version,
    model, effort and their source; hook invocations by event; every denial and
    its cause; approval prompts, or `unknown` if not observable; AI credits and
    wall-clock. It extends `scripts/harness-live-suite.mjs` or the probe rather
@@ -341,8 +335,7 @@ the qualification record.
     roles read `untested` in `docs/PLAYBOOK.md` and the operator keeps them on
     a qualified harness. The CLI's built-in GitHub MCP server, `/delegate`,
     `--remote`, `--fleet` and autopilot are outward or autonomous channels
-    DotLn's helpers do not govern; the documented launch line disables the
-    built-in MCP server and the others are named as outside this order.
+    DotLn's helpers do not govern; all are named in the documents as outside this order, none is handled by a launch argument, and a persisted way to turn the built-in server off, if the CLI has one, goes on the proposed-settings list.
     Verifier independence remains a fresh session the operator starts, as in
     both existing harnesses; the CLI's cross-session memory is named as the
     one channel that can carry implementer context into a verifier.
@@ -382,14 +375,14 @@ candidate by this pass); any change to personal settings.
 **Operator-review assumptions**
 
 1. `copilot-cli` is the harness id, beside `claude-code` and `codex-cli`.
-2. The probe and the qualification spend the operator's AI credits, bounded
-   per launch; the operator runs the interactive rows and the four episodes.
-3. Folder trust for a DotLn worktree is a personal setting the operator
+2. The operator enters `copilot` with no arguments, always; model, effort, permission mode and any credit limit come from personal settings or in-session commands, never from a documented launch line.
+3. The probe and the qualification spend the operator's AI credits; scripted probe launches are credit-limited and the operator's episodes are bounded by count; the operator runs the interactive rows and the four episodes.
+4. Folder trust for a DotLn worktree is a personal setting the operator
    accepts at first launch; repository hooks do not load without it.
-4. The CLI updates itself; the profile records the probed version, and a later
+5. The CLI updates itself; the profile records the probed version, and a later
    version warns rather than refuses.
-5. If the probe lands on Branch C, Copilot is supported at Codex's width,
+6. If the probe lands on Branch C, Copilot is supported at Codex's width,
    duties as role text and plain commands, and that is an acceptable first
    milestone.
-6. Final review and release close stay on Claude or Codex until a later
+7. Final review and release close stay on Claude or Codex until a later
    qualification.
