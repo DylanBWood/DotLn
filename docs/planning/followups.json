@@ -2007,6 +2007,13 @@
           "title": "Candidate — isolated execution environments",
           "summary": "## Candidate — isolated execution environments DotLn may eventually select and attest an execution boundary per episode: the current worktree plus harness sandbox, a hardened container runner (Docker is one possible provider), a disposable VM or microVM, or another environment proved by discovery. `ExecutionEnvironmentProfile` is a working name for the selection record, not a pinned schema. It remains orthogonal to `RuntimePrimitiveCatalog`, `WorkOrderTransport`, and `AuthorityEnvelope`. WO-022 adds the bounded `beacon-perception-v1` specialization beside WO-009's `fixture-inspection-v1`. Both are explicit `ExecutionEnvironmentProfile` variants. A Beacon profile grants a finite set of indivi",
           "missing": false
+        },
+        {
+          "hash": "cbfd99d72df11bc07e74daba16fd99ae7aa641fc9c004a461b3d1b96c7a2627b",
+          "ref": "docs/product/03-architecture.md#candidate--isolated-execution-environments",
+          "title": "Candidate — isolated execution environments",
+          "summary": "## Candidate — isolated execution environments DotLn may eventually select and attest an execution boundary per episode: the current worktree plus harness sandbox, a hardened container runner (Docker is one possible provider), a disposable VM or microVM, or another environment proved by discovery. `ExecutionEnvironmentProfile` is a working name for the selection record, not a pinned schema. It remains orthogonal to `RuntimePrimitiveCatalog`, `WorkOrderTransport`, and `AuthorityEnvelope`. WO-022 adds the bounded `beacon-perception-v1` specialization beside WO-009's `fixture-inspection-v1`. Both are explicit `ExecutionEnvironmentProfile` variants. A Beacon profile grants a finite set of indivi",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -11377,6 +11384,81 @@
           "ref": "docs/evidence/WO-140/decisions.md#wo-140-d008--repair-the-stored-stream-test-that-a-long-live-verifier-episode-pushed-past-the-engines-string-limit",
           "title": "WO-140-D008: Planner: replayed decisions for a verification workstream each carry the full pinned capsule, so a stored live stream costs about 1.7 MB per event to replay and compare; 330 events is 1.1",
           "summary": "{ \"id\": \"WO-140-D008\", \"date\": \"2026-09-19\", \"dispatch\": \"resume: next\", \"decision\": \"The first npm test -- --review failed one suite, skeleton, in 'WO-047 complete Decision bytes match across stored skeleton streams', subtest 'feedback verifier', with RangeError: Invalid string length. The test replays the current feedback edition's stored verifier stream, which this order had to re-record because it changes four pinned feedback sources. The live claude-cli-print verifier ran 324 s and the stream holds 320 WorkerHeartbeat events against 34 in WO-144's; every replayed decision carries the 1.7 MB pinned capsule, so the decisions array serializes to 1,126,723,411 bytes, past the engine's singl",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-71a27b368d93f135",
+      "key": "decision:docs/evidence/WO-056/decisions.md#wo-056-d002",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "0dbd810e370217ec928163970c88fe889d98432293ee3a3e284d94846ab1f19f",
+          "ref": "docs/evidence/WO-056/decisions.md#wo-056-d002--keep-the-capsule-public-safe-by-construction-never-edit-hashed-bytes",
+          "title": "WO-056-D002: Planner: nominate a bounded order that lets a source-change worker run a path-free named test under the Codex writer profile (for example an admitted PATH entry for the host's Node direct",
+          "summary": "{ \"id\": \"WO-056-D002\", \"date\": \"2026-09-19\", \"dispatch\": \"resume: next\", \"decision\": \"Criterion 3 needs the receipt's raw event log, and replay recompiles the capsule and refuses any byte drift, so the log cannot be sanitized after the fact. The fixture therefore keeps private bytes out of the capsule: a logical repo label, bare `node <file>` test commands, and tests that print bounded messages instead of stacks. Where a harness needs an absolute Node path (the Codex writer shell inherits no PATH), the collector withholds the log and the fold claim rather than publishing edited bytes.\", \"evidence\": [ \"packages/compiler/src/verification.ts (inputHash covers the whole capsule, including comman",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-5d191eb1b77b3431",
+      "key": "decision:docs/evidence/WO-056/decisions.md#wo-056-d005",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "a15e30af9ccb5c1f01f81a28b4c7e3168f1beb39c62bfb0b7e278412e3eb4a78",
+          "ref": "docs/evidence/WO-056/decisions.md#wo-056-d005--adversarial-pass-bind-facts-to-the-log-make-the-replay-guard-sensitive-always-file",
+          "title": "WO-056-D005: Planner: weigh one bounded order over the verification and repair hosts. (a) Record RepairSnapshotPrepared without a physical path, or outside the verification child log, so a re-verifica",
+          "summary": "{ \"id\": \"WO-056-D005\", \"date\": \"2026-09-19\", \"dispatch\": \"resume: next; operator steering: use 1 subagent to do some adversarial testing\", \"decision\": \"One read-only subagent attacked the validator, replay, regression fixture and collector. Accepted and fixed: (1) a process double relabelled `claude` validated and counted as live; (2) pass flags held over facts bound to neither the log nor each other; (3) the criterion-3 replay reported the negative retained with the fold's actor and episode guards removed; (4) the privacy screen missed common path and credential shapes and nested shapes were open; (5) the collector could throw instead of filing a failed run; (6) the log's stated compiler ve",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-afdf152fce824580",
+      "key": "decision:docs/evidence/WO-056/decisions.md#wo-056-d006",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "70691467d40ecd03d8b691d5a42572b11e40ce743a871e2fa8b80da06d7cce90",
+          "ref": "docs/evidence/WO-056/decisions.md#wo-056-d006--after-two-failed-live-attempts-capture-the-refusal-before-changing-anything",
+          "title": "WO-056-D006: Operator decision after the diagnostic rerun: if the live verifier's result is refused by an admission rule the verifier is never told (for example that a finding's observed and expected ",
+          "summary": "{ \"id\": \"WO-056-D006\", \"date\": \"2026-09-20\", \"dispatch\": \"resume: next (after the operator's first live attempts)\", \"decision\": \"Both first live attempts failed at the first verifier episode and are filed unchanged. The hosts keep only a failure code, so neither cause is known. The fixture now records each dispatch's transport refusal (code and host-authored detail, at most 160 characters, inside the screened receipt) and keeps two local-only diagnostics in the ignored episode directory: the CLI's stderr tail and a verifier's schema result. No runtime source, prompt or admission rule changed.\", \"evidence\": [ \"docs/evidence/WO-056/claude-live.json (verifier exit 0 after 19,866 ms with a struc",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-93195fa5e06b82a2",
+      "key": "decision:docs/evidence/WO-056/decisions.md#wo-056-d007",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "3268ce992fba595f776884db1d46df546e2008224e794beca2e1c28683d79d3f",
+          "ref": "docs/evidence/WO-056/decisions.md#wo-056-d007--the-live-proof-found-two-runtime-defects-file-them-and-leave-the-order-open",
+          "title": "WO-056-D007: Operator: choose scope expand: on WO-056 or a planner-cut bounded order (recommended: a separate order, because the fix changes runtime source and release classification). Its scope: (a) ",
+          "summary": "{ \"id\": \"WO-056-D007\", \"date\": \"2026-09-20\", \"dispatch\": \"resume: next (after the diagnostic reruns)\", \"decision\": \"Record both causes and change no runtime source. (1) A live Claude verifier produced a substantively correct blocking finding on the violated clause and the host refused it as `finding observed versus expected`: admission requires a finding's observed and expected to equal an adverse witness's strings exactly, and derivation requires each reproduction step to be a witness step or an exact named command, but neither the verifier's output instructions nor its result schema says so. Only doubles that copy the witness fields pass. (2) Codex CLI 0.155.1 refuses to launch a verifier ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-06da3d34e379e3c1",
+      "key": "decision:docs/evidence/WO-056/decisions.md#wo-056-d008",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "f0d42ea7e6a23b3dfa614fac5c3ae7e3dfbeab0cd9eeb0588fbe8bbf7946264d",
+          "ref": "docs/evidence/WO-056/decisions.md#wo-056-d008--operator-scope-expansion-repair-both-runtime-defects-in-this-order",
+          "title": "WO-056-D008: Planner: the verifier's own diagnosis has no durable field. claude-live-2's refused result named the cause precisely and the repair worker would never have seen it. Weigh an analysis fiel",
+          "summary": "{ \"id\": \"WO-056-D008\", \"date\": \"2026-09-20\", \"dispatch\": \"scope expand: (operator, 2026-09-20)\", \"decision\": \"Authorization. The executor offered two routes after D007 and recommended a separate order. The operator's whole reply was the second option pasted back: \\\"scope expand: on WO-056. I fix both here. That's faster, but it turns an evidence-only patch into a runtime change, with the extra regeneration and release work that brings.\\\" The executor reads this as the operator's `scope expand:` selecting that option, said so before acting, and proceeded. Bounded scope: (1) state the existing finding contract to the verifier through its output instructions and result schema; (2) add the Codex",
           "missing": false
         }
       ],
