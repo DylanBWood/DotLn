@@ -1,0 +1,131 @@
+{
+  "schemaVersion": 1,
+  "loadoutId": "live-verification-proof.v1",
+  "identity": {
+    "identityId": "live-verification-proof",
+    "version": 1,
+    "name": "Scratch source worker",
+    "dispositions": ["bounded", "evidence-bound"],
+    "invariants": ["Only synthetic source; one writer in the assigned worktree"],
+    "updateLaws": ["Review source changes before publication"],
+    "lineage": ["WO-053", "WO-056"]
+  },
+  "role": {
+    "roleId": "scratch-source-worker",
+    "version": 1,
+    "name": "Scratch source worker",
+    "obligations": ["Change the module, run the declared test and commit"],
+    "permissions": [],
+    "objectives": ["One bounded source change"],
+    "policyDeltas": []
+  },
+  "containers": [
+    {
+      "containerId": "scratch-worktree",
+      "version": 1,
+      "name": "Scratch worktree",
+      "kind": "workspace",
+      "socketBudget": 0,
+      "activeMechanicIds": ["source-change"],
+      "supportFacetIds": []
+    }
+  ],
+  "activeMechanics": [
+    {
+      "activeMechanicId": "source-change",
+      "version": 1,
+      "name": "Bounded source change",
+      "tags": ["mutate"],
+      "requiredCapabilities": [],
+      "semantics": ["One source change and local commit"],
+      "authorityEnvelope": {
+        "authorityEnvelopeId": "scratch-source-base",
+        "allowedEffects": ["repo.read", "repo.write", "git.local", "shell.run"],
+        "deniedEffects": [
+          "repo.push",
+          "remote.*",
+          "credentials.*",
+          "settings.*",
+          "sandbox.*",
+          "transport.*",
+          "package.publish"
+        ],
+        "resourceLimits": {
+          "writers": 1
+        },
+        "requiredEvidence": [],
+        "expiresAt": 1792454400000,
+        "revocationEventTypes": []
+      },
+      "workOrder": {
+        "workOrderId": "wo056_scratch",
+        "objective": "Make add in sum.mjs return the numeric sum of its two arguments for every sign of argument. Read README.md and sum.mjs; change only sum.mjs; run the exact host-supplied test command, read the diff, then stage and commit with the exact host command.",
+        "acceptanceCriteria": [
+          "add(left, right) returns the numeric sum when both arguments are zero or positive.",
+          "add(left, right) returns the numeric sum when either argument is negative."
+        ],
+        "knownFacts": [
+          "This is a synthetic repository",
+          "Each test prints the source diff when Git metadata is available"
+        ],
+        "decisions": [
+          "Authority is supplied only by this base; no explicit grants"
+        ],
+        "constraints": [
+          "Change only sum.mjs; never change a test, the README, governance, settings or the commit message",
+          "Use only the declared test and exact add/commit commands for effectful shell operations; bounded read-only inspection follows the transport instructions"
+        ],
+        "nonGoals": ["Remote effects", "Other repositories", "Additional commits"],
+        "allowedOperations": ["repo.read", "repo.write", "git.local", "shell.run"],
+        "prohibitedOperations": [
+          "repo.push",
+          "remote.*",
+          "credentials.*",
+          "settings.*",
+          "sandbox.*",
+          "transport.*",
+          "package.publish"
+        ],
+        "requiredEvidence": ["node focused-test.mjs", "node contract-test.mjs"],
+        "outputContract": {
+          "type": "source-change-envelope",
+          "required": [
+            "workOrderId",
+            "episodeId",
+            "status",
+            "resultId",
+            "summary",
+            "requiresHuman"
+          ]
+        }
+      },
+      "inspection": {
+        "originalTerm": "Source change",
+        "translation": "Source change",
+        "kanji": "",
+        "rpgTitle": "Scratch worker",
+        "grants": [],
+        "restrictions": [],
+        "obligations": [],
+        "passive": [],
+        "pulse": [],
+        "interrupt": []
+      }
+    }
+  ],
+  "supportFacets": [],
+  "links": [],
+  "linkGroups": [],
+  "explicitPipelines": [],
+  "ambientEffects": [],
+  "authorityGrants": [],
+  "resourceModel": {
+    "resourceModelId": "scratch-resources",
+    "version": 1,
+    "capacities": {
+      "writers": 1
+    },
+    "reservations": []
+  },
+  "polarAxes": []
+}

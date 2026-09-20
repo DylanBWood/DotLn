@@ -154,7 +154,7 @@ console.log("Focused addition contract passed");
   return root;
 }
 
-function treeDigest(root) {
+export function treeDigest(root) {
   const rows = [];
   function visit(path, prefix = "") {
     for (const name of readdirSync(path).sort()) {
@@ -172,7 +172,7 @@ function treeDigest(root) {
   return hash(JSON.stringify(rows));
 }
 
-function checkoutSnapshot(root) {
+export function checkoutSnapshot(root) {
   const paths = execFileSync(
     "git",
     ["ls-files", "-z", "--cached", "--others", "--exclude-standard"],
