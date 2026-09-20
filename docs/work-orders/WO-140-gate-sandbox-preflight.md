@@ -1,4 +1,4 @@
-# WO-140 — Gate sandbox preflight and usage readback: `npm test` refuses inside a harness sandbox when a declared suite needs the outside, the briefing prints the session id and the usage command, and every new receipt's cost line carries counters or a cause code (version assigned at activation)
+# WO-140 — Gate sandbox preflight and usage readback: `npm test` refuses inside a harness sandbox when a declared suite needs the outside, the briefing prints the session id and the usage command, and every new receipt's cost line carries counters or a cause code (v0.33.1)
 
 **Model:** any. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).

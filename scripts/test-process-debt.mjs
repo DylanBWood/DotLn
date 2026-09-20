@@ -5713,7 +5713,14 @@ test("WO-131 prompt submission stays open while dispatches retain the ordinary c
   const briefingOf = (context, session) => {
     const scratch = `/dotln/${actor(session)}/scratch. `;
     assert.ok(context.includes(scratch), `${session} is given its own scratch`);
+    // WO-140 prints each session's own id and exact usage command.
+    const usage = `\nDotLn session: ${session}. Usage readback: node scripts/harness.mjs usage ${session}`;
+    assert.ok(
+      context.includes(`${usage}\n`) || context.endsWith(usage),
+      `${session} is given its own usage readback`,
+    );
     return context
+      .replace(usage, "\nDotLn session: <session>. Usage readback: <command>")
       .slice(context.indexOf("\nRepair docs/"))
       .split("\nObserved facts at ", 1)[0]
       .replace(
@@ -5861,4 +5868,277 @@ test("WO-142 Beacon staging residue is disposable only at the named staging shap
     "docs/intake/.dotln-beacon-stage-abc123/value",
   ])
     assert.equal(classifyIgnoredMaterial(path).disposable, false, path);
+});
+
+test("WO-140 a newly allocated receipt needs counters with their source or one cause code; earlier receipts pass", async (t) => {
+  const {
+    COST_LINE_PREFIX,
+    COST_LINE_REQUIRED,
+    checkReceiptCostLines,
+    costLineBriefing,
+    judgeCostLine,
+    usageCauseCodes,
+  } = await import("./lib/receipt-cost.mjs");
+  assert.deepEqual(Object.keys(usageCauseCodes), [
+    "hooks-fallback",
+    "no-session",
+    "harness-no-readback",
+  ]);
+  for (const code of Object.keys(usageCauseCodes))
+    assert.ok(costLineBriefing.includes(code), code);
+  const line = (body) => `# Report\n\n${COST_LINE_PREFIX} ${body}\n`;
+  for (const admitted of [
+    "entry 120,412 tokens; handoff 388,019 tokens; source transcript message usage",
+    "entry 0 tokens; handoff 17 tokens; source: codex-thread",
+    "unknown; cause no-session",
+    "unknown; cause `hooks-fallback`",
+    "entry 120,412 tokens; handoff unknown; cause harness-no-readback",
+  ])
+    assert.equal(judgeCostLine(line(admitted)), null, admitted);
+  for (const [refused, reason] of [
+    ["unknown", /neither the entry and handoff counters/],
+    ["unknown (counter-unavailable)", /neither the entry and handoff counters/],
+    ["entry 120,412 tokens; handoff 388,019 tokens", /neither/],
+    ["entry unknown; handoff unknown; source unavailable", /neither/],
+    [
+      "entry unknown as of 2026-09-19; handoff unknown at 02:50; source none",
+      /neither/,
+    ],
+    ["entry 10 tokens; handoff 20 tokens; source unknown", /neither/],
+    ["unknown; cause no-session-yet", /neither/],
+    ["unknown; cause no-session and hooks-fallback", /names 2 cause codes/],
+    [
+      "entry 1 tokens; handoff 2 tokens; source transcript; cause no-session",
+      /one or the other/,
+    ],
+  ])
+    assert.match(judgeCostLine(line(refused)), reason, refused);
+  assert.match(judgeCostLine("# Report\n\nUsage unknown.\n"), /found 0/);
+  assert.match(
+    judgeCostLine(line("unknown; cause no-session") + line("unknown")),
+    /found 2/,
+  );
+
+  const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-receipt-cost-")));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  execFileSync("git", ["init", "-q"], { cwd: root });
+  const write = (path, text) => {
+    mkdirSync(dirname(join(root, path)), { recursive: true });
+    writeFileSync(join(root, path), text);
+  };
+  const requested = (id, stamped) => ({
+    schemaVersion: 1,
+    recordedAt: `2026-09-20T00:00:0${id}.000Z`,
+    type: id === 4 ? "FinalReviewRequested" : "VerificationRequested",
+    workOrderId: "WO-999",
+    reportPath:
+      id === 4
+        ? "docs/final-reviews/WO-999/FINAL-001.md"
+        : `docs/verifications/WO-999/VER-00${id}.md`,
+    ...(stamped ? { costLine: COST_LINE_REQUIRED } : {}),
+  });
+  const segment = (events) =>
+    write(
+      "docs/control/orders/WO-999.jsonl",
+      [
+        {
+          schemaVersion: 1,
+          recordedAt: "2026-09-20T00:00:00.000Z",
+          type: "WorkOrderActivated",
+          workOrderId: "WO-999",
+          workOrderPath: "docs/work-orders/WO-999-fixture.md",
+        },
+        ...events,
+      ]
+        .map(JSON.stringify)
+        .join("\n") + "\n",
+    );
+  // An earlier receipt: no stamp, a bare unknown, and it still passes.
+  segment([requested(1, false), requested(2, true), requested(3, true)]);
+  write(
+    "docs/verifications/WO-999/VER-001.md",
+    "# VER-001\n\nUsage unknown.\n",
+  );
+  // VER-002 is allocated and not written yet; VER-003 is a bare unknown.
+  write("docs/verifications/WO-999/VER-003.md", line("unknown"));
+  assert.throws(
+    () => checkReceiptCostLines(root),
+    (error) => {
+      assert.match(error.message, /VER-003\.md: cost line records neither/);
+      assert.doesNotMatch(error.message, /VER-001|VER-002/);
+      return true;
+    },
+  );
+  write(
+    "docs/verifications/WO-999/VER-003.md",
+    line("unknown; cause no-session"),
+  );
+  assert.deepEqual(checkReceiptCostLines(root), []);
+  segment([requested(1, false), requested(3, true), requested(4, true)]);
+  write("docs/final-reviews/WO-999/FINAL-001.md", "# FINAL-001\n");
+  assert.throws(
+    () => checkReceiptCostLines(root),
+    /FINAL-001\.md: cost line expected exactly one/,
+  );
+  write(
+    "docs/final-reviews/WO-999/FINAL-001.md",
+    line("entry 10 tokens; handoff 20 tokens; source transcript message usage"),
+  );
+  assert.deepEqual(checkReceiptCostLines(root), []);
+  // Every receipt in this repository predates the stamp or satisfies it.
+  assert.deepEqual(
+    checkReceiptCostLines(resolve(import.meta.dirname, "..")),
+    [],
+  );
+});
+
+test("WO-140 the briefing names the session and the exact usage command the usage guard admits", async (t) => {
+  const { usageReadbackCommand, usageReadbackLine } =
+    await import("../packages/skeleton/src/usage-observation.mjs");
+  assert.equal(
+    usageReadbackLine("93de90d8-5649-4449-bcd6-fbbf78bb137b"),
+    "DotLn session: 93de90d8-5649-4449-bcd6-fbbf78bb137b. Usage readback: node scripts/harness.mjs usage 93de90d8-5649-4449-bcd6-fbbf78bb137b",
+  );
+  assert.equal(
+    usageReadbackCommand("it's odd"),
+    "node scripts/harness.mjs usage 'it'\\''s odd'",
+  );
+  const { codexSessionReport } = await import("./lib/harness-runtime.mjs");
+  const thread = process.env.CODEX_THREAD_ID;
+  t.after(() => {
+    if (thread === undefined) delete process.env.CODEX_THREAD_ID;
+    else process.env.CODEX_THREAD_ID = thread;
+  });
+  process.env.CODEX_THREAD_ID = "fixture-thread";
+  assert.ok(
+    (await codexSessionReport("/unused")).text.endsWith(
+      "\nDotLn session: fixture-thread. Usage readback: node scripts/harness.mjs usage fixture-thread",
+    ),
+  );
+  delete process.env.CODEX_THREAD_ID;
+  assert.doesNotMatch(
+    (await codexSessionReport("/unused")).text,
+    /Usage readback/,
+  );
+  // The role text and the document check share one closed list.
+  const { usageCauseCodes } = await import("./lib/receipt-cost.mjs");
+  const project = resolve(import.meta.dirname, "..");
+  for (const role of ["verifier", "reviewer"])
+    for (const skills of [".claude/skills", ".agents/skills"]) {
+      const skill = readFileSync(
+        join(project, skills, `dotln-${role}/SKILL.md`),
+        "utf8",
+      );
+      for (const code of Object.keys(usageCauseCodes))
+        assert.ok(skill.includes(`\`${code}\``), `${skills} ${role} ${code}`);
+      assert.match(skill, /outside the harness sandbox from the start/);
+      assert.match(
+        skill,
+        /resident-launched verification runs `npm test -- --inside-sandbox` and records its excluded suites as a partial result/,
+      );
+    }
+});
+
+test("WO-140 the cost line is a record and not a mention, and meta --check is wired to refuse it", async (t) => {
+  const {
+    COST_LINE_PREFIX,
+    COST_LINE_REQUIRED,
+    judgeCostLine,
+    requiredCostReceipts,
+    requireReceiptCostLine,
+  } = await import("./lib/receipt-cost.mjs");
+  const line = (body, lead = "") =>
+    `# Report\n\n${lead}${COST_LINE_PREFIX} ${body}\n`;
+  const counters = "entry 1 tokens; handoff 2 tokens; source";
+  for (const [admitted, lead] of [
+    ["unknown; cause no-session", "- "],
+    ["unknown; cause no-session", "  * "],
+    ["unknown; cause: `harness-no-readback`", ""],
+    ["entry=10 tokens; handoff=20 tokens; source=codex-thread", ""],
+    ['entry 1 token; handoff 1,234,567 tokens; source "harness usage"', ""],
+    [`${counters} claude-transcript-message-usage\r`, ""],
+  ])
+    assert.equal(judgeCostLine(line(admitted, lead)), null, admitted);
+  for (const refused of [
+    `${counters} \`unknown\``,
+    `${counters} is unknown`,
+    `${counters} n/a`,
+    `${counters} tbd`,
+    `${counters} not available`,
+    "unknown; not hooks-fallback, cause not determined",
+    "unknown (maybe no-session? unsure)",
+    "unknown; cause no-session2",
+    "unknown; cause x.no-session",
+    "unknown; cause notes_no-session_draft",
+    "entry 1,,..__ tokens; handoff 2 tokens; source transcript",
+    "re-entry 5 tokens; handoff 2 tokens; source transcript",
+    "unknown; cause NO-SESSION",
+  ])
+    assert.notEqual(judgeCostLine(line(refused)), null, refused);
+  // A quoted form inside a code fence is an example, never the line.
+  assert.equal(
+    judgeCostLine(
+      `# Report\n\n\`\`\`text\n${COST_LINE_PREFIX} unknown\n\`\`\`\n\n${COST_LINE_PREFIX} unknown; cause hooks-fallback\n`,
+    ),
+    null,
+  );
+
+  const root = realpathSync(
+    mkdtempSync(join(tmpdir(), "dotln-receipt-wiring-")),
+  );
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  execFileSync("git", ["init", "-q"], { cwd: root });
+  const write = (path, text) => {
+    mkdirSync(dirname(join(root, path)), { recursive: true });
+    writeFileSync(join(root, path), text);
+  };
+  const event = (reportPath, index) => ({
+    schemaVersion: 1,
+    recordedAt: `2026-09-20T00:00:0${index}.000Z`,
+    type: "VerificationRequested",
+    workOrderId: "WO-999",
+    reportPath,
+    costLine: COST_LINE_REQUIRED,
+  });
+  const receipt = "docs/verifications/WO-999/VER-001.md";
+  write(
+    "docs/control/orders/WO-999.jsonl",
+    [
+      {
+        schemaVersion: 1,
+        recordedAt: "2026-09-20T00:00:00.000Z",
+        type: "WorkOrderActivated",
+        workOrderId: "WO-999",
+        workOrderPath: "docs/work-orders/WO-999-fixture.md",
+      },
+      event(receipt, 1),
+      // A stamped path outside the receipt directories is never read.
+      event("../outside.md", 2),
+      event("docs/verifications", 3),
+    ]
+      .map(JSON.stringify)
+      .join("\n") + "\n",
+  );
+  assert.deepEqual(requiredCostReceipts(root), [receipt]);
+  write(receipt, line("unknown"));
+  assert.throws(
+    () => requireReceiptCostLine(root, receipt),
+    /VER-001\.md: cost line records neither/,
+  );
+  // An unstamped path is not this rule's subject.
+  requireReceiptCostLine(root, "docs/verifications/WO-998/VER-001.md");
+  const { metaMain } = await import("./meta.mjs");
+  const log = console.log;
+  console.log = () => {};
+  t.after(() => (console.log = log));
+  await assert.rejects(
+    metaMain(["--check"], root),
+    /Receipt cost lines refused:\ndocs\/verifications\/WO-999\/VER-001\.md/,
+  );
+  write(receipt, line("unknown; cause no-session", "- "));
+  requireReceiptCostLine(root, receipt);
+  // With the receipt repaired, whatever else this bare root lacks is not a cost-line refusal.
+  await metaMain(["--check"], root).catch((error) =>
+    assert.doesNotMatch(error.message, /Receipt cost lines refused/),
+  );
 });

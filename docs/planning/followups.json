@@ -11336,6 +11336,51 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-0e424834e4030880",
+      "key": "decision:docs/evidence/WO-140/decisions.md#wo-140-d001",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "f1e8fa6ae25c034ff762c191242cde4a68dba13ef49314ac08dcdfd2021ae372",
+          "ref": "docs/evidence/WO-140/decisions.md#wo-140-d001--declare-from-the-receipts-skeleton-only-the-hooks-denial-is-the-probe-not-a-suite-cause",
+          "title": "WO-140-D001: Planner: WO-140's cost paragraph and criterion 3 say one of WO-121 VER-001's in-sandbox suite failures was the .claude/hooks/ denial; the receipt shows skeleton's nested sandbox-exec, and",
+          "summary": "{ \"id\": \"WO-140-D001\", \"date\": \"2026-09-19\", \"dispatch\": \"resume: next\", \"decision\": \"Only skeleton declares needs: outside-sandbox. release does not. No suite is declared for the .claude/hooks/** denial, because no receipt shows a suite failing on it; that denial is used as the Claude Code probe path instead. The order's cost paragraph and criterion 3 attribute one of WO-121 VER-001's two in-sandbox suite failures to the hooks denial; the receipt shows otherwise, and this decision records the difference instead of declaring a suite to match the sentence.\", \"evidence\": [ \"docs/verifications/WO-121/VER-001.md Executed checks: the two failing suites were skeleton cases 129/130, 'sandbox-exec r",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-156ca538f603194a",
+      "key": "decision:docs/evidence/WO-140/decisions.md#wo-140-d007",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "1ea8f7f08cc6b12cab7318254b994eac84317a17a5df388f4f6423408247b5b1",
+          "ref": "docs/evidence/WO-140/decisions.md#wo-140-d007--judge-the-cost-line-at-the-result-transition-and-repair-what-one-adversarial-pass-reproduced",
+          "title": "WO-140-D007: Planner: packages/skeleton/src/observed-facts.ts:327 matches a hedged quantity to a gate row with part.includes(gate.checkId); 'npm test -- --inside-sandbox' contains 'npm test', so a hed",
+          "summary": "{ \"id\": \"WO-140-D007\", \"date\": \"2026-09-19\", \"dispatch\": \"resume: next\", \"decision\": \"The operator asked for one subagent to test the change adversarially; it ran read-only against the worktree, in scratch. It reproduced no blocking defect and eleven smaller ones. Repaired here: a probe file the host will not remove is reported as written-unremoved instead of thrown, and detection as a whole never throws; every present marker is probed, so a Codex sandbox that inherits CLAUDECODE no longer fails open; the refusal prints the inside command for the same selection and omits it when nothing would remain; --list honours --inside-sandbox; partialGateCheck reads any non-false partial value or any n",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-a91115fda9b70272",
+      "key": "decision:docs/evidence/WO-140/decisions.md#wo-140-d008",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "5e70ba198cf8bee4b925f5b6f7332c6eefe4f985374149fc3cbc1a6ebe75ed0b",
+          "ref": "docs/evidence/WO-140/decisions.md#wo-140-d008--repair-the-stored-stream-test-that-a-long-live-verifier-episode-pushed-past-the-engines-string-limit",
+          "title": "WO-140-D008: Planner: replayed decisions for a verification workstream each carry the full pinned capsule, so a stored live stream costs about 1.7 MB per event to replay and compare; 330 events is 1.1",
+          "summary": "{ \"id\": \"WO-140-D008\", \"date\": \"2026-09-19\", \"dispatch\": \"resume: next\", \"decision\": \"The first npm test -- --review failed one suite, skeleton, in 'WO-047 complete Decision bytes match across stored skeleton streams', subtest 'feedback verifier', with RangeError: Invalid string length. The test replays the current feedback edition's stored verifier stream, which this order had to re-record because it changes four pinned feedback sources. The live claude-cli-print verifier ran 324 s and the stream holds 320 WorkerHeartbeat events against 34 in WO-144's; every replayed decision carries the 1.7 MB pinned capsule, so the decisions array serializes to 1,126,723,411 bytes, past the engine's singl",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

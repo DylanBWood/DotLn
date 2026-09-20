@@ -26,6 +26,13 @@ import {
   releaseCases,
 } from "./lib/release-fixtures.mjs";
 import { completeCoverage, suiteEnvironment } from "./lib/suite-evidence.mjs";
+import {
+  INSIDE_SANDBOX_CHECK,
+  OUTSIDE_SANDBOX,
+  detectGateSandbox,
+  outsideOnly,
+  sandboxRefusal,
+} from "./lib/gate-sandbox.mjs";
 
 import { evidenceSources } from "./lib/evidence-sources.mjs";
 
@@ -139,6 +146,7 @@ const machinerySources = {
     "scripts/lib/gate-timeline.mjs",
     "scripts/measure-gates.mjs",
     "scripts/lib/gate-evidence.mjs",
+    "scripts/lib/gate-sandbox.mjs",
     "scripts/test-runner.mjs",
     "packages/skeleton/src/evidence-editions.mjs",
     "scripts/test-runner.test.mjs",
@@ -164,6 +172,7 @@ const machinerySources = {
     "scripts/test-codex-session.mjs",
     "scripts/lib/harness-runtime.mjs",
     "scripts/lib/lifecycle-evidence.mjs",
+    "scripts/lib/receipt-cost.mjs",
     "scripts/lib/process-budget.mjs",
     "packages/skeleton/src/harness-host.ts",
     "packages/skeleton/src/version.ts",
@@ -183,6 +192,7 @@ const machinerySources = {
     "packages/skeleton/src/usage-observation.mjs",
     "scripts/meta.mjs",
     "scripts/lib/meta.mjs",
+    "scripts/lib/receipt-cost.mjs",
     "scripts/lib/process-budget.mjs",
   ],
 };
@@ -393,6 +403,9 @@ export const suites = [
               "scripts/reactor-identity.mjs",
               "scripts/fixtures/historical-compiler-loader.mjs",
             ],
+            // Its native script cases nest `sandbox-exec`, which an outer
+            // Seatbelt sandbox refuses (WO-068 FINAL-001 O4).
+            needs: OUTSIDE_SANDBOX,
           }
         : {}),
       ...(["skeleton", "console"].includes(name)
@@ -531,6 +544,9 @@ export function validateSuites(table) {
         row.loadSlots > 4)
     )
       throw new Error(`Invalid scheduler lane reservation: ${row.name}`);
+  for (const row of table)
+    if (row.needs !== undefined && row.needs !== OUTSIDE_SANDBOX)
+      throw new Error(`Unknown suite need: ${row.name} needs ${row.needs}`);
 }
 
 const explicitlyIsolated = (row) =>
@@ -1005,12 +1021,17 @@ export async function runGate(
   }
 }
 
-async function runGateChecks(args, repo, { stopRequested = () => false } = {}) {
+async function runGateChecks(
+  args,
+  repo,
+  { stopRequested = () => false, sandbox: sandboxOptions, table = suites } = {},
+) {
   let document = false,
     machinery = false,
     review = false,
     serial = false,
     list = false,
+    insideSandbox = false,
     only;
   for (let index = 0; index < args.length; index++) {
     const arg = args[index];
@@ -1019,17 +1040,18 @@ async function runGateChecks(args, repo, { stopRequested = () => false } = {}) {
     else if (arg === "--review" || arg === "--full") review = true;
     else if (arg === "--serial") serial = true;
     else if (arg === "--list") list = true;
+    else if (arg === "--inside-sandbox") insideSandbox = true;
     else if (arg === "--fresh") {
       /* Every invocation is fresh. */
     } else if (arg === "--only" && !only) only = args[++index];
     else
       throw new Error(
-        "usage: test-runner [--document|--machinery|--review] [--only <suite>] [--serial] [--list]",
+        "usage: test-runner [--document|--machinery|--review] [--only <suite>] [--inside-sandbox] [--serial] [--list]",
       );
   }
-  if (only && !suites.some((row) => row.name === only))
+  if (only && !table.some((row) => row.name === only))
     throw new Error(`Unknown suite: ${only}`);
-  let selected = suites.filter((row) =>
+  let selected = table.filter((row) =>
     only
       ? row.name === only
       : document
@@ -1039,11 +1061,50 @@ async function runGateChecks(args, repo, { stopRequested = () => false } = {}) {
           : row.product,
   );
   if (review && !only && !document && !machinery)
-    selected = [...new Set([...selected, ...changedMachinery(repo)])];
+    selected = [...new Set([...selected, ...changedMachinery(repo, table)])];
   if (list) {
-    for (const row of selected)
-      console.log(`${row.name} — protects: ${row.protects}`);
+    for (const row of insideSandbox
+      ? selected.filter((row) => !row.needs)
+      : selected)
+      console.log(
+        `${row.name} — protects: ${row.protects}${row.needs ? ` — needs: ${row.needs}` : ""}`,
+      );
     return { exitCode: 0 };
+  }
+  // The preflight precedes the build, the diagnostics directory and every
+  // suite. Outside a sandbox in force the selection and identity are unchanged.
+  const excluded = outsideOnly(selected);
+  // Only a selection that needs the outside pays for the probe write.
+  const sandbox = excluded.length
+    ? detectGateSandbox(repo, sandboxOptions)
+    : { marker: null, inForce: false };
+  if (insideSandbox) {
+    selected = selected.filter((row) => !excluded.includes(row));
+    if (!selected.length)
+      throw new Error(
+        `Nothing remains to run inside the sandbox: ${excluded.map((row) => row.name).join(", ")} ${excluded.length === 1 ? "needs" : "need"} the outside`,
+      );
+  } else if (sandbox.inForce && excluded.length) {
+    const base = document
+      ? "npm run test:docs"
+      : machinery
+        ? "npm run test:machinery"
+        : "npm test";
+    const rest = args.filter(
+      (arg) => !["--document", "--machinery"].includes(arg),
+    );
+    const command = (flags) =>
+      `${base}${flags.length ? ` -- ${flags.join(" ")}` : ""}`;
+    throw new Error(
+      sandboxRefusal(
+        sandbox,
+        excluded,
+        command(rest),
+        excluded.length < selected.length
+          ? command([...rest, "--inside-sandbox"])
+          : undefined,
+      ),
+    );
   }
   const checkId = only
     ? `suite:${only}`
@@ -1051,14 +1112,16 @@ async function runGateChecks(args, repo, { stopRequested = () => false } = {}) {
       ? "npm run test:docs"
       : machinery
         ? "npm run test:machinery"
-        : "npm test";
+        : insideSandbox
+          ? INSIDE_SANDBOX_CHECK
+          : "npm test";
   const treeHash = gateTreeHash(repo),
     codeIdentity = gateCodeIdentity(repo),
     started = Date.now();
   const needsBuild = selected.some((row) => row.needsBuild || row.build);
   selected = [
     needsBuild
-      ? suites.find((row) => row.build)
+      ? table.find((row) => row.build)
       : { name: "document-barrier", build: true, command: [] },
     ...selected.filter((row) => !row.build),
   ];
@@ -1139,6 +1202,11 @@ async function runGateChecks(args, repo, { stopRequested = () => false } = {}) {
       freshSuites: taskRows.filter((row) => row.executed).length,
       reusedSuites: 0,
       requiredSuites: selected.map((row) => row.name),
+      // A partial row names what it left out; no product-gate consumer reads it.
+      ...(insideSandbox
+        ? { partial: true, excludedSuites: excluded.map((row) => row.name) }
+        : {}),
+      ...(sandbox.marker ? { sandbox } : {}),
       cases: rows,
       loadClass: {
         sharedCap: concurrency,
@@ -1169,7 +1237,7 @@ async function runGateChecks(args, repo, { stopRequested = () => false } = {}) {
     }
     if (!only && !document && !machinery) recordGateChecks(repo, [check]);
     console.log(
-      `${checkId}: ${rows.filter((row) => row.exitCode === 0).length} passed; ${rows.filter((row) => row.exitCode !== 0).length} failed; ${(check.durationMs / 1000).toFixed(2)} s; ${check.freshSuites} fresh tasks${unchanged ? "" : "; code changed"}`,
+      `${checkId}: ${rows.filter((row) => row.exitCode === 0).length} passed; ${rows.filter((row) => row.exitCode !== 0).length} failed; ${(check.durationMs / 1000).toFixed(2)} s; ${check.freshSuites} fresh tasks${unchanged ? "" : "; code changed"}${insideSandbox ? `; partial, not product-gate evidence: excluded ${check.excludedSuites.join(", ") || "none"}` : ""}`,
     );
     return check;
   } finally {

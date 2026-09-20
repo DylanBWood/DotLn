@@ -438,6 +438,14 @@ export function currentCodexSession(root, options = {}) {
   }
 }
 
+/** The exact command a session runs to read back its own counters (WO-140).
+ * @param {string} sessionId
+ */
+export const usageReadbackCommand = (sessionId) =>
+  `node scripts/harness.mjs usage ${/^[a-zA-Z0-9][a-zA-Z0-9._-]{0,127}$/.test(sessionId) ? sessionId : `'${sessionId.replaceAll("'", `'\\''`)}'`}`;
+/** @param {string} sessionId */
+export const usageReadbackLine = (sessionId) =>
+  `DotLn session: ${sessionId}. Usage readback: ${usageReadbackCommand(sessionId)}`;
 /** @param {ReturnType<typeof currentCodexSession>} session */
 export function renderCodexSession(session) {
   if (!session.available)

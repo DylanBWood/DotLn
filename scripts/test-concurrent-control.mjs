@@ -143,7 +143,7 @@ await test("test-concurrent-control", async (t) => {
         write(
           root,
           `docs/${kind === "VER" ? "verifications" : "final-reviews"}/${id}/${kind}-001.md`,
-          `# ${kind}-001 fixture\n\n**Actor attestation:** ${JSON.stringify(actor)}\n`,
+          `# ${kind}-001 fixture\n\n**Actor attestation:** ${JSON.stringify(actor)}\n\n**Process cost:** unknown; cause no-session\n`,
         );
 
       closeOrder = (root, id, version) => {

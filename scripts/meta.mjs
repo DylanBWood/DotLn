@@ -18,6 +18,7 @@ import {
 } from "../packages/skeleton/src/usage-observation.mjs";
 import { refreshExecutorIndex } from "./lib/executor-handoff.mjs";
 import { syncFollowups } from "./lib/planning-followups.mjs";
+import { checkReceiptCostLines } from "./lib/receipt-cost.mjs";
 
 const root = resolve(fileURLToPath(new URL("../", import.meta.url)));
 export async function metaMain(args = process.argv.slice(2), repo = root) {
@@ -88,6 +89,7 @@ export async function metaMain(args = process.argv.slice(2), repo = root) {
       observation,
     });
   }
+  if (options["--check"]) checkReceiptCostLines(repo);
   writeDecisionsIndex(repo, { check: Boolean(options["--check"]) });
   syncFollowups(repo, { check: Boolean(options["--check"]) });
   if (!options["--check"]) await refreshExecutorIndex(repo);

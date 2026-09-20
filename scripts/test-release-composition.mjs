@@ -123,7 +123,7 @@ console.log(output);
   resume("verify");
   write(
     `docs/verifications/${workOrder}/VER-001.md`,
-    `# Verification\n\n**Actor attestation:** ${JSON.stringify(actor)}\n\nThe product fixture is ready for review.\n`,
+    `# Verification\n\n**Actor attestation:** ${JSON.stringify(actor)}\n\n**Process cost:** unknown; cause no-session\n\nThe product fixture is ready for review.\n`,
   );
   resume("verification-result", "pass", ...flags);
   resume("final-review");
@@ -135,7 +135,7 @@ console.log(output);
   );
   write(
     `docs/final-reviews/${workOrder}/FINAL-001.md`,
-    `# Final review\n\n**Actor attestation:** ${JSON.stringify(actor)}\n\nOne npm test run passed before these report bytes.\n`,
+    `# Final review\n\n**Actor attestation:** ${JSON.stringify(actor)}\n\n**Process cost:** unknown; cause no-session\n\nOne npm test run passed before these report bytes.\n`,
   );
   resume("final-review-result", "pass", ...flags);
   run("git", ["add", "."]);

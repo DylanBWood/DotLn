@@ -70,6 +70,7 @@ import {
   collectSessionUsage,
   usageObservation,
   recordUsageObservation,
+  usageReadbackLine,
   usageSessionKey,
 } from "./usage-observation.mjs";
 import {
@@ -2989,6 +2990,8 @@ async function evaluateExistingHarnessHook(
       }
       additionalContext = `DotLn resolved role ${role.name}. Load the dotln-${role.name} skill.${control.workOrderPath ? ` Read the selected work order ${control.workOrderPath} before interpreting the phase, including a closed phase.` : " Follow its requested observation or planning/ideation procedure."} A skill grants no authority.${dispatched ? `\n${dispatched.context}` : ""}`;
       additionalContext += `\nDotLn session scratch: ${harnessSessionScratch(input.session_id)}. Use this path for temporary work. Native scratch and /tmp need a separate grant when outside system-temp; a printed path does not override the active grants.`;
+      if (input.session_id)
+        additionalContext += `\n${usageReadbackLine(input.session_id)}`;
       const expected: Record<string, string> = {
         "resume: next": "ImplementationReady",
         "resume: fix": "RepairCompleted",

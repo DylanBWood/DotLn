@@ -251,25 +251,30 @@ assert_refusal 'verification report must contain exactly one machine-readable ac
 printf '%s\n' \
   '# fail' \
   '' \
+  '**Process cost:** unknown; cause no-session' \
   '**Actor attestation:** {"harness":"codex-cli","harnessVersion":"fixture-2","model":"fixture.model/beta","effort":"custom-selector","source":"self-reported"}' \
+  '**Process cost:** unknown; cause no-session' \
   '**Actor attestation:** {"harness":"codex-cli","harnessVersion":"fixture-2","model":"fixture.model/beta","effort":"custom-selector","source":"self-reported"}' >"$fixture_repo/docs/verifications/WO-099/VER-002.md"
 assert_refusal 'verification report must contain exactly one machine-readable actor header' verification-result fail \
   --harness codex-cli --harness-version fixture-2 --model fixture.model/beta --effort custom-selector --source self-reported
 printf '%s\n' \
   '# fail' \
   '' \
+  '**Process cost:** unknown; cause no-session' \
   '**Actor attestation:** {not-json}' >"$fixture_repo/docs/verifications/WO-099/VER-002.md"
 assert_refusal 'verification report has malformed actor header' verification-result fail \
   --harness codex-cli --harness-version fixture-2 --model fixture.model/beta --effort custom-selector --source self-reported
 printf '%s\n' \
   '# fail' \
   '' \
+  '**Process cost:** unknown; cause no-session' \
   '**Actor attestation:** {"harness":"spoof","harness":"codex-cli","harnessVersion":"fixture-2","model":"fixture.model/beta","effort":"custom-selector","source":"self-reported"}' >"$fixture_repo/docs/verifications/WO-099/VER-002.md"
 assert_refusal 'verification report actor header does not match the completion actor' verification-result fail \
   --harness codex-cli --harness-version fixture-2 --model fixture.model/beta --effort custom-selector --source self-reported
 printf '%s\n' \
   '# fail' \
   '' \
+  '**Process cost:** unknown; cause no-session' \
   '**Actor attestation:** {"harness":"codex-cli","harnessVersion":"fixture-2","model":"fixture.model/beta","effort":"custom-selector","source":"self-reported"}' >"$fixture_repo/docs/verifications/WO-099/VER-002.md"
 assert_refusal 'verification report actor header does not match the completion actor' verification-result fail \
   --harness codex-cli --harness-version fixture-2 --model fixture.model/beta --effort xhigh --source self-reported
@@ -311,6 +316,7 @@ grep -q 'VER-003.md' "$fixture_repo/docs/control/current.md"
 printf '%s\n' \
   '# pass' \
   '' \
+  '**Process cost:** unknown; cause no-session' \
   '**Actor attestation:** {"harness":"codex-cli","harnessVersion":"fixture-2","model":"fixture.model/beta","effort":"custom-selector","source":"self-reported"}' >"$fixture_repo/docs/verifications/WO-099/VER-003.md"
 run_with_actor verification-result custom-selector pass
 test "$(grep -F 'Effort drift:' "$fixture_repo/docs/control/current.md")" = '- Effort drift: xhigh -> custom-selector -> high'
@@ -324,6 +330,7 @@ assert_refusal 'final-review report must contain exactly one machine-readable ac
 printf '%s\n' \
   '# failed final' \
   '' \
+  '**Process cost:** unknown; cause no-session' \
   '**Actor attestation:** {"harness":"codex-cli","harnessVersion":"fixture-2","model":"fixture.model/beta","effort":"xhigh","source":"self-reported"}' >"$fixture_repo/docs/final-reviews/WO-099/FINAL-002.md"
 assert_refusal 'usage: resume final-review-result pass|fail' final-review-result fail
 run_with_actor final-review-result xhigh fail
@@ -363,6 +370,7 @@ grep -q 'VER-004.md' "$fixture_repo/docs/control/current.md"
 printf '%s\n' \
   '# repaired pass' \
   '' \
+  '**Process cost:** unknown; cause no-session' \
   '**Actor attestation:** {"harness":"codex-cli","harnessVersion":"fixture-2","model":"fixture.model/beta","effort":"custom-selector-2","source":"self-reported"}' >"$fixture_repo/docs/verifications/WO-099/VER-004.md"
 run_with_actor verification-result custom-selector-2 pass
 grep -Fq 'Effort drift: xhigh -> custom-selector -> high -> custom-selector-2' "$fixture_repo/docs/control/current.md"
@@ -371,6 +379,7 @@ grep -q 'FINAL-003.md' "$fixture_repo/docs/control/current.md"
 printf '%s\n' \
   '# pass' \
   '' \
+  '**Process cost:** unknown; cause no-session' \
   '**Actor attestation:** {"harness":"human","harnessVersion":"not-applicable","model":"human","effort":"unknown","source":"operator-attested"}' >"$fixture_repo/docs/final-reviews/WO-099/FINAL-003.md"
 assert_refusal 'final-review report actor header does not match the completion actor' final-review-result pass \
   --harness codex-cli --harness-version fixture-2 --model fixture.model/beta --effort xhigh --source self-reported
@@ -585,7 +594,7 @@ const call = async (args) => {
 const report = (kind, number) => {
   const directory = join(root, "docs", kind === "VER" ? "verifications" : "final-reviews", "WO-087");
   mkdirSync(directory, { recursive: true });
-  writeFileSync(join(directory, `${kind}-${number}.md`), `# fixture\n\n**Actor attestation:** ${JSON.stringify(actor)}\n`);
+  writeFileSync(join(directory, `${kind}-${number}.md`), `# fixture\n\n**Actor attestation:** ${JSON.stringify(actor)}\n\n**Process cost:** unknown; cause no-session\n`);
 };
 
 // Every event kind is appended by the actual command dispatcher in one process.
@@ -602,15 +611,26 @@ try {
 } finally { globalThis.Date = RealDate; }
 assert.deepEqual([readFileSync(log), readFileSync(current)], beforeBadClock);
 await call(["implementation-ready", ...actorArgs]);
-await call(["verify"]);
-report("VER", "001");
+const costForms = "Put exactly one physical cost line in the report: `**Process cost:** entry <total> tokens; handoff <total> tokens; source <source>` or `**Process cost:** unknown; cause <hooks-fallback|no-session|harness-no-readback>`. The result transition and npm run test:docs refuse a bare unknown.";
+assert.ok((await call(["verify"])).includes(`VER-001.md. ${costForms}\n`), "the verify briefing prints the admitted cost-line forms");
+// WO-140: the result transition judges the stamped cost line while the author
+// can still edit the report, before it becomes an immutable receipt.
+const bareUnknown = join(root, "docs/verifications/WO-087/VER-001.md");
+mkdirSync(join(bareUnknown, ".."), { recursive: true });
+for (const body of ["", "\n**Process cost:** unknown\n", "\n- **Process cost:** entry unknown as of 2026-09-19; handoff unknown; source none\n"]) {
+  writeFileSync(bareUnknown, `# fixture\n\n**Actor attestation:** ${JSON.stringify(actor)}\n${body}`);
+  const beforeRefusal = readFileSync(log);
+  await assert.rejects(() => call(["verification-result", "fail", ...actorArgs]), /Receipt cost lines refused:\ndocs\/verifications\/WO-087\/VER-001\.md: cost line /);
+  assert.deepEqual(readFileSync(log), beforeRefusal, "a refused cost line appends no event");
+}
+writeFileSync(bareUnknown, `# fixture\n\n**Actor attestation:** ${JSON.stringify(actor)}\n\n- **Process cost:** entry 120,412 tokens; handoff 388,019 tokens; source claude-transcript-message-usage\n`);
 await call(["verification-result", "fail", ...actorArgs]);
 await call(["fix"]);
 await call(["repair-complete", ...actorArgs]);
 await call(["verify"]);
 report("VER", "002");
 await call(["verification-result", "pass", ...actorArgs]);
-await call(["final-review"]);
+assert.ok((await call(["final-review"])).includes(`FINAL-001.md. ${costForms}\n`), "the final-review briefing prints the admitted cost-line forms");
 report("FINAL", "001");
 await call(["final-review-result", "pass", ...actorArgs]);
 const afterSequence = Date.now();
@@ -627,6 +647,11 @@ appended.forEach((event, index) => {
   assert.ok(time >= beforeSequence && time <= afterSequence);
   if (index) assert.ok(time >= Date.parse(appended[index - 1].recordedAt));
 });
+// WO-140: only the receipts this lifecycle allocates carry the cost-line duty.
+assert.deepEqual(
+  appended.filter((event) => event.costLine !== undefined).map((event) => [event.type, event.reportPath.split("/").at(-1), event.costLine]),
+  [["VerificationRequested", "VER-001.md", "required"], ["VerificationRequested", "VER-002.md", "required"], ["FinalReviewRequested", "FINAL-001.md", "required"]],
+);
 console.log(`time append: ${appended.length} events, all 8 types, valid host times and non-decreasing order in one process; invalid append preserved bytes`);
 
 const seconds = [0, 1, 2, 4, 6, 9, 11, 15, 16, 21];
@@ -898,7 +923,7 @@ const report = async (field, attestation) => {
   const status = JSON.parse(await selectedCall(["status", "--json"]));
   const file = join(root, status[field]);
   fs.mkdirSync(join(file, ".."), { recursive: true });
-  fs.writeFileSync(file, `# Fixture\n\n**Actor attestation:** ${JSON.stringify(attestation)}\n`);
+  fs.writeFileSync(file, `# Fixture\n\n**Actor attestation:** ${JSON.stringify(attestation)}\n\n**Process cost:** unknown; cause no-session\n`);
 };
 await report("verificationPath", actor);
 const beforeReport = snapshot();
