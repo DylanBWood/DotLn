@@ -62,3 +62,18 @@ path.
   `--once` under the operator's own scheduler stays the launch mode.
 - Automatic repair of a drift remains WO-055 and WO-100 composing later.
 - The unattended hour remains WO-111; nothing here claims endurance.
+
+## Disposed 2026-09-21 (standard planning pass)
+
+Allocated to [WO-148](../work-orders/WO-148-resident-binding.md), which
+answers the six concerns above in its design: an explicit operator command
+owns the binding and reads canonical state; a store follows one binding of one
+order and a rebind writes a new store; surfaces are declared at bind time and
+never derived here (WO-124 derives them); one store per order with the
+mission-only policy, so absence-work serialization stays WO-100 and WO-111's
+question; the stage session exports the printed store binding by hand; a stale
+binding is named by `--check` and refused a launch line, while a running
+resident keeps judging its declared subject as the recorded limit. The record
+is [the standard-pass planning document](standard-pass-2026-09-21.md) §4.
+Reopen: WO-148 closing without the live row its criterion 4 names, or WO-111's
+first unattended hour meeting a store this command could not have written.

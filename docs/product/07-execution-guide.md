@@ -1084,6 +1084,21 @@ whole register by batch instead. That pass disposed the pending rows, so the
 next planning pass is the first that can judge the feed; this candidate
 stays open until that measurement.
 
+**Measured 2026-09-21 (standard pass).** The first page showed six
+invalidated dispositions and the two open items, of 149 pending; the pass
+selected nothing from it and read the whole register by script, because the
+67 rows that mattered were untriaged and the page orders them last. It also
+read canonical status, the sequence, the two 2026-09-20 planning documents
+and receipt 021, the decision files of the eleven orders whose rows were
+untriaged, the map's two candidate sections, the cost table and the budgets
+file before choosing anything. The feed carried real nominations for the
+first time (WO-142 row B17's boarded defects), so its content is now right
+and its ordering is the remaining friction: untriaged rows should precede
+invalidated dispositions when a pass opens, and a pass needs the count of
+rows per source order, not a first page of eight. No order is allocated;
+reopen at the next pass with that ordering tried, or when the first page
+again shows nothing the pass acts on.
+
 ## Candidate — recurring review of implementation alternatives
 
 The operator's 2026-09-09 ideation during WO-126 asks for useful alternatives
@@ -1196,6 +1211,16 @@ gate, so the same day's second pass unset the ceiling in
 `docs/control/budgets.json`. Nothing is allocated: an order that shortens the
 gate needs the per-suite breakdown first, and none is recorded.
 
+**Re-measured 2026-09-21 (standard pass).** The thirteen final-review product
+gates recorded from 2026-09-19 to 2026-09-21 (WO-142 to WO-069) ran 256 to
+536 s, median 483 s; eleven exceeded six minutes. The `FinalReviewCompleted`
+gate row still carries `durationMs`, a code identity and an exit code and no
+per-suite durations, so the same reason holds: nothing is allocated until a
+breakdown is recorded. The meter's drift signal flagged the gate's step count
+rising 65, 72, 73, 74, 80 across WO-090 to WO-069 as a reopen candidate; each
+order added suites or cases, so the count is planning input for this
+candidate, not a hold. The candidate stays open.
+
 ## Candidate — refutation pass worth its cost
 
 The 2026-09-12 planning pass paid three direct-session refutations of one
@@ -1283,6 +1308,27 @@ before/after observations are recorded in
 [decisions](../evidence/WO-142/decisions.md). The next planning pass's feed
 size and untriaged count are the reopening observations; the fifty-row
 threshold above stays in force.
+
+**Reopening observation recorded 2026-09-21 (standard pass).** 486 entries,
+149 pending, 67 untriaged after WO-142 closed: 65 decision rows from
+eleven orders closed on 2026-09-19 to 2026-09-21 and two planning candidates.
+The threshold fired for a different reason than the migration refill it was
+written against: the rows are B17's boarded defects and the collector is
+doing what WO-142 made it do. Inside them, 16 are in-order repair directives
+(a verifier's `followup` beginning "In resume: fix" or "Repair ... VER-001
+F<n>") that the order's own repair cycle discharged before it closed, two are
+decisions reopened by those repairs, and four are final-review routings the
+review discharged; all 22 were settled by this pass with the closing evidence
+named. The remaining 45 were settled, allocated, deferred or left open one by one
+([the standard-pass planning document](../planning/standard-pass-2026-09-21.md)
+§3). The `followup` field therefore carries two things the feed cannot tell
+apart: routing inside an order and a nomination that outlives it. No
+collector change is allocated; the smallest fix is role text (a verifier
+names in-order routing in the decision and the report, and reserves
+`followup` for what outlives the order), which is a bundle regeneration for
+the next order that edits the verifier role. Reopen when the next planning
+pass counts more than ten discharged in-order directives in its untriaged
+rows, or when untriaged rows again pass fifty.
 
 ## Candidate — local lane retention
 

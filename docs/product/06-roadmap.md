@@ -1252,6 +1252,16 @@ observations into closed sets with checkable citations, the shape of WO-138's
 third task; bulk read-only triage is the next local role to test once the
 pilot's packet exists.
 
+Standard planning pass, 2026-09-21: WO-138's amended preflight is met. WO-137
+recorded successful live inference on the pinned artifact (the schema and tool
+round trip, the determinism triple and the cancel), and WO-110's 2026-09-20 live
+row completed one inspection episode against the same runner in 14.6 s with a
+schema-valid envelope (WO-110 D007). Two WO-110 decisions are carried into
+WO-138's activation preflight in the planning map: the runner does not echo the
+requested model, so the pilot must obtain the answering model's identity from
+the runner rather than the request (D007), and the transport's null-body case is
+guarded by the next order that edits it, WO-138 if it comes first (D012).
+
 Operator direction, 2026-09-16: the next planning pass should give local LLM
 experiments more attention, starting with concrete runner readiness and any
 operator setup needed in LM Studio. Current readiness is unknown; the dated

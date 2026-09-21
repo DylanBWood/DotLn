@@ -2024,6 +2024,14 @@
           "reopenWhen": "a worker that needs one (the pass's suggestion)",
           "targets": [],
           "at": "2026-09-19T01:19:50.066Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "deferred",
+          "reason": "Re-recorded by the 2026-09-21 standard planning pass at the new source revision: no worker needs a boundary beyond a worktree and the native sandbox; the 2026-09-19 reason stands.",
+          "reopenWhen": "a worker that needs an execution boundary beyond a worktree and the native sandbox",
+          "targets": [],
+          "at": "2026-09-21T06:59:09.407Z"
         }
       ]
     },
@@ -2847,6 +2855,13 @@
           "title": "Candidate — planner startup context",
           "summary": "## Candidate — planner startup context Operator steering during WO-126 identifies excessive context needed to learn the repository's purpose and choose the next work. First measure what the bounded follow-up feed removes. Compare the remaining required reads, context bytes, commands and wall-clock with a short purpose brief and scoped retrieval of candidate authorities. The feed may discharge the candidate-selection part; do not duplicate that implementation or assume it solves orientation to the product. Preserve scope, sources and rejection reasons while reducing reading. Reopen in a planning pass if observed startup still requires broad document loads; settle this candidate with measured ",
           "missing": false
+        },
+        {
+          "hash": "c01af873b5a7aa3c474889e0af54ee553d1c426f50763a42f52e13c44a3a32e5",
+          "ref": "docs/product/07-execution-guide.md#candidate--planner-startup-context",
+          "title": "Candidate — planner startup context",
+          "summary": "## Candidate — planner startup context Operator steering during WO-126 identifies excessive context needed to learn the repository's purpose and choose the next work. First measure what the bounded follow-up feed removes. Compare the remaining required reads, context bytes, commands and wall-clock with a short purpose brief and scoped retrieval of candidate authorities. The feed may discharge the candidate-selection part; do not duplicate that implementation or assume it solves orientation to the product. Preserve scope, sources and rejection reasons while reducing reading. Reopen in a planning pass if observed startup still requires broad document loads; settle this candidate with measured ",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -2881,6 +2896,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-19T01:20:02.124Z"
+        },
+        {
+          "sourceRevision": 5,
+          "status": "open",
+          "reason": "Measured by the 2026-09-21 standard planning pass (product 07 §Candidate — planner startup context, the 2026-09-21 paragraph): the first page showed six invalidated dispositions and two open items of 149 pending and the pass selected nothing from it, reading the register by script because the 67 rows that mattered were untriaged and paged last; orientation still needed status, the sequence, two planning documents, receipt 021, eleven decision files, the map's candidate sections, the cost table and the budgets file. The feed's content is now right; its ordering is the friction. Stays open.",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-21T06:59:07.822Z"
         }
       ]
     },
@@ -3587,6 +3610,20 @@
           "title": "Candidate — Tinkerer / Scientist",
           "summary": "## Candidate — Tinkerer / Scientist **Near-term planning request, 2026-09-11:** the operator asks to prioritize this candidate soon, including its adaptive bad-luck protection based on time since the last demonstrated application improvement. It remains unimplemented and unallocated. The operator explicitly excludes implementing it in the current WO-043 repair. Carry the request through existing `FUP-fc4158d3207e495d`; the next planning pass should select a bounded experiment and allocation, preserving the budget, evidence and reset distinctions below. Source: the [WO-043 breakout](../evidence/WO-043/ideation-commands-and-usage.md). **Allocated 2026-09-19 (second planning pass of that day).*",
           "missing": false
+        },
+        {
+          "hash": "8ea503eb52aa3dd41361ae18fa947157628519f726e71ff6f7fd47861b999449",
+          "ref": "docs/product/05-pattern-library.md#candidate--tinkerer--scientist",
+          "title": "Candidate — Tinkerer / Scientist",
+          "summary": "## Candidate — Tinkerer / Scientist **Near-term planning request, 2026-09-11:** the operator asks to prioritize this candidate soon, including its adaptive bad-luck protection based on time since the last demonstrated application improvement. It remains unimplemented and unallocated. The operator explicitly excludes implementing it in the current WO-043 repair. Carry the request through existing `FUP-fc4158d3207e495d`; the next planning pass should select a bounded experiment and allocation, preserving the budget, evidence and reset distinctions below. Source: the [WO-043 breakout](../evidence/WO-043/ideation-commands-and-usage.md). **Allocated 2026-09-19 (second planning pass of that day).*",
+          "missing": false
+        },
+        {
+          "hash": "93ab0d5fbd4b60e748f3ba02193764d79c98504e2e6294faa0b97c7f24de60f3",
+          "ref": "docs/product/05-pattern-library.md#candidate--tinkerer--scientist",
+          "title": "Candidate — Tinkerer / Scientist",
+          "summary": "## Candidate — Tinkerer / Scientist **Near-term planning request, 2026-09-11:** the operator asks to prioritize this candidate soon, including its adaptive bad-luck protection based on time since the last demonstrated application improvement. It remains unimplemented and unallocated. The operator explicitly excludes implementing it in the current WO-043 repair. Carry the request through existing `FUP-fc4158d3207e495d`; the next planning pass should select a bounded experiment and allocation, preserving the budget, evidence and reset distinctions below. Source: the [WO-043 breakout](../evidence/WO-043/ideation-commands-and-usage.md). **Allocated 2026-09-19 (second planning pass of that day).*",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -3617,6 +3654,24 @@
             "WO-145"
           ],
           "at": "2026-09-19T03:55:32.624Z"
+        },
+        {
+          "sourceRevision": 7,
+          "status": "open",
+          "reason": "Read by the 2026-09-21 standard planning pass against the pre-registered rule (product 05 §Candidate — Tinkerer / Scientist, the 2026-09-21 paragraph): all three trials adopted a method with regression false; recorded trial cost 253 s wall-clock, tokens known for one trial; the WO-110 saving (238.4 s per iteration) exceeds the whole recorded wall-clock cost after two iterations in the next ten orders, so the record proposes default equipment, qualified by the third trial running unequipped and by the adopted methods being development loops an executor keeps without the support. The proposal is the operator's to accept; equipping by default is a loadout change that needs an order.",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-21T06:59:07.561Z"
+        },
+        {
+          "sourceRevision": 8,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-09-21 second planning pass (operator answer) to WO-150, filed for it: the economy support equipped by default with a per-order opt-out, after the three-trial reading's condition was met and the operator accepted the proposal; no legitimate reason against it was found (equipped executor cold start 24,327 bytes against 24,576; at most 900 s per order, declinable; no regression recorded). The adaptive modifier stays a candidate.",
+          "reopenWhen": "WO-150 closes, or the first order dispatched under the default records neither an experiment nor a kept-current decline, or a record of experiments since the last adopted improvement is long enough to read an adaptive pressure from",
+          "targets": [
+            "WO-150"
+          ],
+          "at": "2026-09-21T07:22:35.381Z"
         }
       ]
     },
@@ -4996,6 +5051,20 @@
           "title": "Candidate — cold-gate structural cuts",
           "summary": "## Candidate — cold-gate structural cuts The 2026-09-12 planning pass declined to allocate the structural cuts that the relayed proof-carrying-gates plan proposed for the one fresh full gate, because their benefit is unmeasured until the gate's critical path is recorded. The 2026-09-12T16:08Z fresh gate ran 475 s of wall-clock over 1,229 s of task time: the two exclusive suites held it at concurrency one for 206 s, and perfect packing over the cap of four would take 307 s. WO-128 records each task's concurrent peers in the gate row; that trace is the entry evidence for this candidate. WO-128's [first accepted shared row](../evidence/WO-128/shared-series-002.json) now supplies that evidence: ",
           "missing": false
+        },
+        {
+          "hash": "b067b79f38bed8d55f36166b4e3f43cc119d58477b3bc44166041fed2e1403f5",
+          "ref": "docs/product/07-execution-guide.md#candidate--cold-gate-structural-cuts",
+          "title": "Candidate — cold-gate structural cuts",
+          "summary": "## Candidate — cold-gate structural cuts The 2026-09-12 planning pass declined to allocate the structural cuts that the relayed proof-carrying-gates plan proposed for the one fresh full gate, because their benefit is unmeasured until the gate's critical path is recorded. The 2026-09-12T16:08Z fresh gate ran 475 s of wall-clock over 1,229 s of task time: the two exclusive suites held it at concurrency one for 206 s, and perfect packing over the cap of four would take 307 s. WO-128 records each task's concurrent peers in the gate row; that trace is the entry evidence for this candidate. WO-128's [first accepted shared row](../evidence/WO-128/shared-series-002.json) now supplies that evidence: ",
+          "missing": false
+        },
+        {
+          "hash": "355d0ce10d32d510d0bc30159346375f57c60e81b31fc968a2b5e325b111135a",
+          "ref": "docs/product/07-execution-guide.md#candidate--cold-gate-structural-cuts",
+          "title": "Candidate — cold-gate structural cuts",
+          "summary": "## Candidate — cold-gate structural cuts The 2026-09-12 planning pass declined to allocate the structural cuts that the relayed proof-carrying-gates plan proposed for the one fresh full gate, because their benefit is unmeasured until the gate's critical path is recorded. The 2026-09-12T16:08Z fresh gate ran 475 s of wall-clock over 1,229 s of task time: the two exclusive suites held it at concurrency one for 206 s, and perfect packing over the cap of four would take 307 s. WO-128 records each task's concurrent peers in the gate row; that trace is the entry evidence for this candidate. WO-128's [first accepted shared row](../evidence/WO-128/shared-series-002.json) now supplies that evidence: ",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -5030,6 +5099,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-19T03:42:33.599Z"
+        },
+        {
+          "sourceRevision": 7,
+          "status": "open",
+          "reason": "Re-measured by the 2026-09-21 standard planning pass: thirteen final-review gates from 2026-09-19 to 2026-09-21 ran 256 to 536 s, median 483 s, eleven above six minutes; the gate row still carries no per-suite durations; the meter flagged the gate step count rising 65 to 80 across WO-090 to WO-069 as a drift reopen candidate, recorded as planning input for this candidate. Nothing allocated; stays open.",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-21T06:59:08.077Z"
         }
       ]
     },
@@ -7736,6 +7813,13 @@
           "title": "Candidate — follow-up register settlement",
           "summary": "## Candidate — follow-up register settlement The register holds 297 entries with 283 untriaged (2026-09-16). Two mechanisms fill it: the migration harvested every historical candidate heading and NoOp bullet as a pending row, and every per-order decision record is harvested as a follow-up although a decision with a `reopenWhen` observation is a record, not an action. Three planning passes have selected nothing from the feed. A later pass may spend one session settling the migration rows as historical, and may change the collector so a decision record enters the feed only when its reopening observation has been recorded. No order is allocated; reopen at a planning pass that has the session to",
           "missing": false
+        },
+        {
+          "hash": "e5784f4786043571b7c754d4cfe9b8bf243874ff463cfee03a7260bb7d80c942",
+          "ref": "docs/product/07-execution-guide.md#candidate--follow-up-register-settlement",
+          "title": "Candidate — follow-up register settlement",
+          "summary": "## Candidate — follow-up register settlement The register holds 297 entries with 283 untriaged (2026-09-16). Two mechanisms fill it: the migration harvested every historical candidate heading and NoOp bullet as a pending row, and every per-order decision record is harvested as a follow-up although a decision with a `reopenWhen` observation is a record, not an action. Three planning passes have selected nothing from the feed. A later pass may spend one session settling the migration rows as historical, and may change the collector so a decision record enters the feed only when its reopening observation has been recorded. No order is allocated; reopen at a planning pass that has the session to",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -7758,6 +7842,14 @@
             "WO-142"
           ],
           "at": "2026-09-19T01:21:03.022Z"
+        },
+        {
+          "sourceRevision": 6,
+          "status": "deferred",
+          "reason": "Reopening observation recorded by the 2026-09-21 standard planning pass (product 07 §Candidate — follow-up register settlement, the 2026-09-21 paragraph): 67 untriaged rows after WO-142 closed, of which 22 were in-order repair directives, reopened decisions and review routings already discharged; the collector works as WO-142 made it; the smallest fix is verifier role text, for the next order that edits the verifier role. No collector change allocated.",
+          "reopenWhen": "the next planning pass counts more than ten discharged in-order directives among its untriaged rows, or untriaged rows again pass fifty",
+          "targets": [],
+          "at": "2026-09-21T06:59:08.332Z"
         }
       ]
     },
@@ -7798,6 +7890,14 @@
             "WO-142"
           ],
           "at": "2026-09-19T01:19:40.885Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "settled",
+          "reason": "Settled by the 2026-09-21 standard planning pass: WO-142 shipped the on-demand prune (row D1) and closed; the candidate's 2026-09-19 allocation is discharged and its text records the command.",
+          "reopenWhen": "disk pressure, or an observed retained candidate that the documented ownership and publication rules cannot explain",
+          "targets": [],
+          "at": "2026-09-21T06:59:08.589Z"
         }
       ]
     },
@@ -8670,6 +8770,13 @@
           "title": "Candidate — local-model usefulness experiments",
           "summary": "### Candidate — local-model usefulness experiments **WO-137 observation (2026-09-18):** the [readiness packet](../discovery/local-runner-2026-09-18.md) records LM Studio `0.4.24+1`, llama.cpp runtime `2.38.0` and an existing pinned Qwen3.6 27B Q4_K_M artifact. Explicit CLI start and load now work; the fixed three-request smoke is byte-identical, schema and tool round trip pass, HTTP cancellation is observed to become idle within five seconds, timeout occurs and recovery succeeds. The operator-expanded two-minute sequential load run completed nine capped requests and deadline-cancelled the tenth with nominal thermal observations, normal memory pressure and no swap growth. Overall outcome rema",
           "missing": false
+        },
+        {
+          "hash": "20446b1b9a7d2d74252cd077f93b918ec98865e84af8ab887758b3f0773cf97c",
+          "ref": "docs/product/06-roadmap.md#candidate--local-model-usefulness-experiments",
+          "title": "Candidate — local-model usefulness experiments",
+          "summary": "### Candidate — local-model usefulness experiments **WO-137 observation (2026-09-18):** the [readiness packet](../discovery/local-runner-2026-09-18.md) records LM Studio `0.4.24+1`, llama.cpp runtime `2.38.0` and an existing pinned Qwen3.6 27B Q4_K_M artifact. Explicit CLI start and load now work; the fixed three-request smoke is byte-identical, schema and tool round trip pass, HTTP cancellation is observed to become idle within five seconds, timeout occurs and recovery succeeds. The operator-expanded two-minute sequential load run completed nine capped requests and deadline-cancelled the tenth with nominal thermal observations, normal memory pressure and no swap growth. Overall outcome rema",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -8707,6 +8814,16 @@
             "WO-138"
           ],
           "at": "2026-09-19T03:42:33.902Z"
+        },
+        {
+          "sourceRevision": 6,
+          "status": "allocated",
+          "reason": "Re-recorded by the 2026-09-21 standard planning pass at the new source revision (the 2026-09-21 paragraph in product 06): WO-138's amended preflight is met by WO-137's live inference rows and WO-110 D007's envelope; two WO-110 decisions are carried into its activation preflight; the pilot stays allocated to WO-138.",
+          "reopenWhen": "WO-138's packet, or a local role that would read private material, which needs the no-egress experiment first",
+          "targets": [
+            "WO-138"
+          ],
+          "at": "2026-09-21T06:59:09.666Z"
         }
       ]
     },
@@ -9139,6 +9256,14 @@
             "WO-144"
           ],
           "at": "2026-09-19T03:42:34.207Z"
+        },
+        {
+          "sourceRevision": 13,
+          "status": "deferred",
+          "reason": "Re-recorded by the 2026-09-21 standard planning pass after WO-144's close: the fifth refusal (outside-project writes) shipped; the candidate's remaining ask, a mode with the native sandboxes disabled under an adversarial suite, follows WO-136's matrix at R2 as the 2026-09-17 pass decided (its decision 6).",
+          "reopenWhen": "R2, or an outside write the journal shows admitted without a grant",
+          "targets": [],
+          "at": "2026-09-21T06:59:08.887Z"
         }
       ]
     },
@@ -9615,6 +9740,14 @@
             "WO-139"
           ],
           "at": "2026-09-19T01:19:40.323Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "deferred",
+          "reason": "Re-recorded by the 2026-09-21 standard planning pass at the new source revision: WO-139 shipped the observable cap; the guaranteed total across every spawn path stays open under the candidate's own reopening text; this pass planned one refuter against the cap of twenty.",
+          "reopenWhen": "the harness documents a pre-creation admission hook or a total-cap setting, or a session exceeds the cap on a path WO-139 reports as uncounted",
+          "targets": [],
+          "at": "2026-09-21T06:59:09.151Z"
         }
       ]
     },
@@ -11033,7 +11166,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-09-21 standard planning pass: in force; WO-084 closed and the ledger index check runs in npm run test:docs.",
+          "reopenWhen": "a new ledger entry format or lifecycle distinction cannot be expressed by the declared tags, or the index no longer makes a needed historical section discoverable",
+          "targets": [],
+          "at": "2026-09-21T06:58:56.549Z"
+        }
+      ]
     },
     {
       "id": "FUP-4f8cd7989607ad3f",
@@ -11048,7 +11190,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-09-21 standard planning pass: a replay-sensitive change to resident NoOp identity with no live row showing an under-recorded same-reason refusal; kept out of WO-147, which is the lock seam only.",
+          "reopenWhen": "the next order that changes resident-host.ts or resident-state.ts with a fresh feedback edition, or a live row that shows a same-reason refusal after re-arm under-recorded",
+          "targets": [],
+          "at": "2026-09-21T06:59:00.126Z"
+        }
+      ]
     },
     {
       "id": "FUP-75563edf56be23b5",
@@ -11063,7 +11214,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-09-21 standard planning pass: no consumer needs the payload-admission or returned-value change; adjacent-0001 stays deferred to it.",
+          "reopenWhen": "a separately judged order authorizes the payload-admission or returned-value change with its live/replay and historical-log equivalence checks",
+          "targets": [],
+          "at": "2026-09-21T06:59:00.381Z"
+        }
+      ]
     },
     {
       "id": "FUP-cac1cb0418587c98",
@@ -11102,7 +11262,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-09-21 standard planning pass: an evidence reproduction path no gate runs; regenerating it re-keys retained WO-042 evidence for no consumer.",
+          "reopenWhen": "the WO-042 reproduction command passes again, or it is marked historical beside its evidence",
+          "targets": [],
+          "at": "2026-09-21T06:59:00.632Z"
+        }
+      ]
     },
     {
       "id": "FUP-4475529d727a4d25",
@@ -11117,7 +11286,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-09-21 standard planning pass: neither script is invoked through a symlink today.",
+          "reopenWhen": "either script is invoked through a symlinked path, or the next order that edits either file",
+          "targets": [],
+          "at": "2026-09-21T06:59:00.892Z"
+        }
+      ]
     },
     {
       "id": "FUP-9e2be6bfac0708fe",
@@ -11139,7 +11317,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-09-21 standard planning pass to the gathered map candidate it names: admitted Git metadata commands that refresh the index or run a configured program; no order is allocated (docs/planning/standard-pass-2026-09-21.md §4).",
+          "reopenWhen": "a second refused read containing a quoted glob or an input redirect in a live gate, an admitted redirect that reaches an ungranted outside destination, or a gate input observed changed by an admitted metadata command (map candidate: shell destination adapter width, 2026-09-21)",
+          "targets": [],
+          "at": "2026-09-21T06:59:01.149Z"
+        }
+      ]
     },
     {
       "id": "FUP-151541120435fd15",
@@ -11154,7 +11341,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-09-21 standard planning pass: no optional-chained reserved-state read exists in kernel source today.",
+          "reopenWhen": "a reserved-state read is added to kernel source in any form, or the next order that edits the AC3 coupling check",
+          "targets": [],
+          "at": "2026-09-21T06:59:01.401Z"
+        }
+      ]
     },
     {
       "id": "FUP-e821aa2ced3aa111",
@@ -11169,7 +11365,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-09-21 standard planning pass: presentation, compatibility and capacity observations with no failing case.",
+          "reopenWhen": "an order next opens these consumers, a supported input exceeds the batch limit, or a real source-change workload reproduces the reported parser or progress cost",
+          "targets": [],
+          "at": "2026-09-21T06:59:01.656Z"
+        }
+      ]
     },
     {
       "id": "FUP-a310804514162e1f",
@@ -11184,7 +11389,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-09-21 standard planning pass to the gathered map candidate it names: quoted glob characters and read-only input redirects refused during a live gate; no order is allocated (docs/planning/standard-pass-2026-09-21.md §4).",
+          "reopenWhen": "a second refused read containing a quoted glob or an input redirect in a live gate, an admitted redirect that reaches an ungranted outside destination, or a gate input observed changed by an admitted metadata command (map candidate: shell destination adapter width, 2026-09-21)",
+          "targets": [],
+          "at": "2026-09-21T06:59:01.912Z"
+        }
+      ]
     },
     {
       "id": "FUP-526d14d44ee178b3",
@@ -11199,7 +11413,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-09-21 standard planning pass to the gathered map candidate it names: release prepare's write reporting; no order is allocated (docs/planning/standard-pass-2026-09-21.md §4).",
+          "reopenWhen": "the next order that edits scripts/lib/meta.mjs, observed-facts.ts or release preparation, or another repair that meets the no-files-changed message beside a changed draft (map candidate: meter and closeout residue, 2026-09-21)",
+          "targets": [],
+          "at": "2026-09-21T06:59:02.170Z"
+        }
+      ]
     },
     {
       "id": "FUP-6aafd40115ac97fd",
@@ -11214,7 +11437,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-09-21 standard planning pass: the prune's per-candidate replanning and the gate-written target lane are recorded limits with no observed failure; WO-148's bound stores add a retained directory class the prune should learn to list, noted in that order's non-goals.",
+          "reopenWhen": "the post-close apply runs materially longer than twenty minutes, stops with 'Prune subject changed' or meets a rate limit, or a worktree's snapshots pass product 07's retention threshold because of gate-written receipts",
+          "targets": [],
+          "at": "2026-09-21T06:59:02.421Z"
+        }
+      ]
     },
     {
       "id": "FUP-c787bb9b32bafcf8",
@@ -11229,7 +11461,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-09-21 standard planning pass: (a) this pass's refutation ran as a background worker, not a CLI launch, so schema acceptance at launch was not observable; (b) the stranded comment goes with the shell destination adapter candidate.",
+          "reopenWhen": "a planning refutation runs through a CLI transport (record whether each CLI accepts the result schema), or the adapter candidate reopens",
+          "targets": [],
+          "at": "2026-09-21T06:59:02.673Z"
+        }
+      ]
     },
     {
       "id": "FUP-ee21001048f41183",
@@ -11244,7 +11485,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-09-21 standard planning pass: discharged at WO-143 final review (FINAL-001 item 3: the README entry, the resident runbook and product 03 corrected; both publication locks refreshed).",
+          "reopenWhen": "the CLI starts surfacing store refusals verbatim, or an operator reports being unable to locate the refusing guard",
+          "targets": [],
+          "at": "2026-09-21T06:58:55.031Z"
+        }
+      ]
     },
     {
       "id": "FUP-6afe08b5f6cab3e0",
@@ -11259,7 +11509,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-09-21 standard planning pass to WO-147, filed for it: re-inspection under the held guard on a vanished host.lock, the retirement ENOTEMPTY probe, placed before WO-111 as the decision asked.",
+          "reopenWhen": "WO-147 closes without the two-process fixture, or WO-111's first unattended hour records a resident exit from a lock error",
+          "targets": [
+            "WO-147"
+          ],
+          "at": "2026-09-21T06:58:57.823Z"
+        }
+      ]
     },
     {
       "id": "FUP-c729ccfa6eac4394",
@@ -11274,7 +11535,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-09-21 standard planning pass: discharged at WO-143 final review (FINAL-001 item 2: the host.lock content and inode assertion added and shown to fail VER-001's mutant M3).",
+          "reopenWhen": "any change to acquireGuard's claim path, or a mutation run that again leaves the recheck unguarded",
+          "targets": [],
+          "at": "2026-09-21T06:58:55.286Z"
+        }
+      ]
     },
     {
       "id": "FUP-76e02136ac324240",
@@ -11289,7 +11559,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-09-21 standard planning pass to the gathered map candidate it names: measured six stand-down rows against 80 working-directory classifications in the retained journals; no order is allocated (docs/planning/standard-pass-2026-09-21.md §4).",
+          "reopenWhen": "the journals' stand-down rows pass fifty, or a journal shows a call admitted off-root that one of the four root-bound refusals would have refused from the worktree root (map candidate, 2026-09-21)",
+          "targets": [],
+          "at": "2026-09-21T06:59:02.927Z"
+        }
+      ]
     },
     {
       "id": "FUP-64a7f9adb355d94e",
@@ -11311,7 +11590,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-09-21 standard planning pass to the gathered map candidate it names: the fifth refusal already judges from any directory; the other four stand down six times in the retained journals; no order is allocated (docs/planning/standard-pass-2026-09-21.md §4).",
+          "reopenWhen": "the journals' stand-down rows pass fifty, or a journal shows a call admitted off-root that one of the four root-bound refusals would have refused from the worktree root (map candidate, 2026-09-21)",
+          "targets": [],
+          "at": "2026-09-21T06:59:03.189Z"
+        }
+      ]
     },
     {
       "id": "FUP-6004455b998fa646",
@@ -11326,7 +11614,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-09-21 standard planning pass to the gathered map candidate it names: expansion-spelled redirects and the reviewer cold-start remark; no order is allocated (docs/planning/standard-pass-2026-09-21.md §4).",
+          "reopenWhen": "a second refused read containing a quoted glob or an input redirect in a live gate, an admitted redirect that reaches an ungranted outside destination, or a gate input observed changed by an admitted metadata command (map candidate: shell destination adapter width, 2026-09-21)",
+          "targets": [],
+          "at": "2026-09-21T06:59:03.443Z"
+        }
+      ]
     },
     {
       "id": "FUP-04ec9fa011f39d93",
@@ -11341,7 +11638,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-09-21 standard planning pass: part 1 to the machinery-suite-selection candidate, part 2 to the shell destination adapter candidate (map, 2026-09-21); no order allocated.",
+          "reopenWhen": "a final-review gate again meets a deterministic failure in a suite no earlier run selected (map candidate: machinery suite selection before final review, 2026-09-21); or a second refused read containing a quoted glob or an input redirect in a live gate, an admitted redirect that reaches an ungranted outside destination, or a gate input observed changed by an admitted metadata command (map candidate: shell destination adapter width, 2026-09-21)",
+          "targets": [],
+          "at": "2026-09-21T06:59:03.695Z"
+        }
+      ]
     },
     {
       "id": "FUP-16adc40db1da7959",
@@ -11356,7 +11662,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Left open by the 2026-09-21 standard planning pass: whether pasted text may dispatch a role is the operator's judgment; this pass's typed dispatch resolved normally, so there is no second observation. Recommendation recorded without deciding it: the advisory option, one printed line when a known phrase follows a paste wrapper so the operator retypes the phrase.",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-21T06:59:07.298Z"
+        }
+      ]
     },
     {
       "id": "FUP-0e424834e4030880",
@@ -11371,7 +11686,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-09-21 standard planning pass: the sentence in the closed order is not edited, because D001 is the correction of record and changing judged text re-keys a receipt for a sentence; the WO-068 native-case skip question waits for the next order that edits those cases (meter and closeout residue candidate).",
+          "reopenWhen": "a receipt names a suite that cannot pass inside a harness sandbox for an environmental cause, release fails inside on temporary roots reproducibly, or the next order edits the WO-068 native cases",
+          "targets": [],
+          "at": "2026-09-21T06:59:03.951Z"
+        }
+      ]
     },
     {
       "id": "FUP-156ca538f603194a",
@@ -11386,7 +11710,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-09-21 standard planning pass to the gathered map candidate it names: the hedge-to-gate-row substring match, advisory only; no order is allocated (docs/planning/standard-pass-2026-09-21.md §4).",
+          "reopenWhen": "the next order that edits scripts/lib/meta.mjs, observed-facts.ts or release preparation, or another repair that meets the no-files-changed message beside a changed draft (map candidate: meter and closeout residue, 2026-09-21)",
+          "targets": [],
+          "at": "2026-09-21T06:59:04.211Z"
+        }
+      ]
     },
     {
       "id": "FUP-a91115fda9b70272",
@@ -11401,7 +11734,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-09-21 standard planning pass to the gathered map candidate it names: replayed decisions embedding the whole capsule per event; no order is allocated (docs/planning/standard-pass-2026-09-21.md §4).",
+          "reopenWhen": "a live Claude worker cannot resolve bare node; any verification authority declares a revocation event type; a live verifier still cannot satisfy the stated finding contract; or a stored stream again fails or dominates the skeleton suite (map candidate: verification and repair host residue, 2026-09-21)",
+          "targets": [],
+          "at": "2026-09-21T06:59:04.471Z"
+        }
+      ]
     },
     {
       "id": "FUP-71a27b368d93f135",
@@ -11416,7 +11758,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-09-21 standard planning pass to the gathered map candidate it names: a path-free named test under the Codex writer profile; no order is allocated (docs/planning/standard-pass-2026-09-21.md §4).",
+          "reopenWhen": "a live Claude worker cannot resolve bare node; any verification authority declares a revocation event type; a live verifier still cannot satisfy the stated finding contract; or a stored stream again fails or dominates the skeleton suite (map candidate: verification and repair host residue, 2026-09-21)",
+          "targets": [],
+          "at": "2026-09-21T06:59:04.723Z"
+        }
+      ]
     },
     {
       "id": "FUP-5d191eb1b77b3431",
@@ -11431,7 +11782,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-09-21 standard planning pass to the gathered map candidate it names: the physical path in RepairSnapshotPrepared, the revocation-before-filter order, the failing-closed projection; no order is allocated (docs/planning/standard-pass-2026-09-21.md §4).",
+          "reopenWhen": "a live Claude worker cannot resolve bare node; any verification authority declares a revocation event type; a live verifier still cannot satisfy the stated finding contract; or a stored stream again fails or dominates the skeleton suite (map candidate: verification and repair host residue, 2026-09-21)",
+          "targets": [],
+          "at": "2026-09-21T06:59:04.983Z"
+        }
+      ]
     },
     {
       "id": "FUP-afdf152fce824580",
@@ -11446,7 +11806,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-09-21 standard planning pass: the diagnostic reruns recorded both causes (D007) and the operator's scope expansion (D008) repaired both runtime defects inside WO-056; its live episodes then passed and the order closed.",
+          "reopenWhen": "a live receipt records a refusal that no stated contract or launch shape explains",
+          "targets": [],
+          "at": "2026-09-21T06:58:55.539Z"
+        }
+      ]
     },
     {
       "id": "FUP-93195fa5e06b82a2",
@@ -11461,7 +11830,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-09-21 standard planning pass: the operator chose scope expand: on WO-056 (D008); the finding contract was stated to the verifier and the Codex launch shape repaired; the live episodes were rerun and the order closed.",
+          "reopenWhen": "the operator withdraws the recorded scope expansion with a dated note",
+          "targets": [],
+          "at": "2026-09-21T06:58:55.792Z"
+        }
+      ]
     },
     {
       "id": "FUP-06da3d34e379e3c1",
@@ -11476,7 +11854,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-09-21 standard planning pass to the gathered map candidate it names: a durable field for the verifier's own diagnosis; no order is allocated (docs/planning/standard-pass-2026-09-21.md §4).",
+          "reopenWhen": "a live Claude worker cannot resolve bare node; any verification authority declares a revocation event type; a live verifier still cannot satisfy the stated finding contract; or a stored stream again fails or dominates the skeleton suite (map candidate: verification and repair host residue, 2026-09-21)",
+          "targets": [],
+          "at": "2026-09-21T06:59:05.237Z"
+        }
+      ]
     },
     {
       "id": "FUP-d76bf8f9d6b59c36",
@@ -11491,7 +11878,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-09-21 standard planning pass: the decision's outcome field records completion on 2026-09-20 with no remaining implementation follow-up; WO-146 closed (PR #101).",
+          "reopenWhen": "a source conflict or failing check reveals a behavioral interaction, or another worker-profile field changes",
+          "targets": [],
+          "at": "2026-09-21T06:58:56.048Z"
+        }
+      ]
     },
     {
       "id": "FUP-e1ef0e7c41336dbd",
@@ -11520,7 +11916,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 3,
+          "status": "settled",
+          "reason": "Settled by the 2026-09-21 standard planning pass: the decision's outcome field records completion on 2026-09-20 with no remaining follow-up; WO-146 closed (PR #101).",
+          "reopenWhen": "the CLI changes the credit unit or counter schema, or a fixture shows incorrect cutoff selection or credit-only collection",
+          "targets": [],
+          "at": "2026-09-21T06:58:56.299Z"
+        }
+      ]
     },
     {
       "id": "FUP-ac9c2b1271e1dc05",
@@ -11573,7 +11978,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-09-21 standard planning pass: one occurrence, handled by operator-authorized local commits and receipt 021; a route is designed on the second occurrence rather than from one.",
+          "reopenWhen": "another execution order needs to edit the bound goal standard, or the committed subject differs from the reviewed bytes at final review",
+          "targets": [],
+          "at": "2026-09-21T06:59:05.496Z"
+        }
+      ]
     },
     {
       "id": "FUP-73ae8355ce4eff85",
@@ -11588,7 +12002,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-09-21 standard planning pass to WO-085, whose purpose already includes a docs check with a link checker, as a catalog carry-in: anchors resolved against headings, hand-written links covered, the 41 historical anchors declared exceptions.",
+          "reopenWhen": "a new closed report adds unresolved anchors before WO-085 lands, or WO-085 is rewritten without the check",
+          "targets": [
+            "WO-085"
+          ],
+          "at": "2026-09-21T06:58:59.608Z"
+        }
+      ]
     },
     {
       "id": "FUP-e320a3e9fa4bae1e",
@@ -11603,7 +12028,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-09-21 standard planning pass: the operator started the endpoint and the envelope row was recorded on 2026-09-20 (WO-110 D007).",
+          "reopenWhen": "a later order establishes the attributable runner egress boundary and promotes the row to ready, or a live run contradicts the n=1 envelope",
+          "targets": [],
+          "at": "2026-09-21T06:58:57.310Z"
+        }
+      ]
     },
     {
       "id": "FUP-326526e7c6af3fe0",
@@ -11618,7 +12052,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-09-21 standard planning pass as a WO-138 activation carry-in (planning map catalog row and product 06): the pilot takes the answering model's identity from the runner, never from the request.",
+          "reopenWhen": "a runner version honors or echoes the requested model, or a later live run contradicts the n=1 observation",
+          "targets": [
+            "WO-138"
+          ],
+          "at": "2026-09-21T06:58:58.328Z"
+        }
+      ]
     },
     {
       "id": "FUP-5e2f4ce16f9e8be1",
@@ -11633,7 +12078,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-09-21 standard planning pass: a repository-wide prune of unselected editions is a cleanup-order item, not a per-order one.",
+          "reopenWhen": "the next cleanup order, or a declared source changes again and a third unselected edition accumulates",
+          "targets": [],
+          "at": "2026-09-21T06:59:05.755Z"
+        }
+      ]
     },
     {
       "id": "FUP-f929731b5d6ac843",
@@ -11648,7 +12102,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-09-21 standard planning pass: VER-002 re-derived the base comparison and resolved the classification (its WO-110-D010 row reads Resolved).",
+          "reopenWhen": "the component-version rule changes what revision it compares, or a release retiming changes the skeleton component baseline",
+          "targets": [],
+          "at": "2026-09-21T06:58:57.569Z"
+        }
+      ]
     },
     {
       "id": "FUP-cac3eb0abfdc73b9",
@@ -11663,7 +12126,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-09-21 standard planning pass as a WO-138 carry-in: guard the transport's bare-null body if WO-138 edits local-model-transport.ts first; otherwise the next order that does.",
+          "reopenWhen": "a runner is observed returning a bare null body before WO-138 runs",
+          "targets": [
+            "WO-138"
+          ],
+          "at": "2026-09-21T06:58:58.591Z"
+        }
+      ]
     },
     {
       "id": "FUP-b66c5b4726dc9262",
@@ -11678,7 +12152,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-09-21 standard planning pass to the gathered map candidate it names: the reviewer's release-prepare ordering against the renderer; no order is allocated (docs/planning/standard-pass-2026-09-21.md §4).",
+          "reopenWhen": "the next order that edits scripts/lib/meta.mjs, observed-facts.ts or release preparation, or another repair that meets the no-files-changed message beside a changed draft (map candidate: meter and closeout residue, 2026-09-21)",
+          "targets": [],
+          "at": "2026-09-21T06:59:06.011Z"
+        }
+      ]
     },
     {
       "id": "FUP-abcc64ad8f8c79b9",
@@ -11700,7 +12183,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Settled by the 2026-09-21 standard planning pass: the live row was recorded (docs/evidence/WO-099/live.json) and the capability row carries the live-evidenced level.",
+          "reopenWhen": "a later live row contradicts the recorded verdict shape or launch",
+          "targets": [],
+          "at": "2026-09-21T06:58:57.056Z"
+        }
+      ]
     },
     {
       "id": "FUP-2f0974e3d5d5063a",
@@ -11722,7 +12214,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-09-21 standard planning pass: the three-trial reading is recorded in product 05 §Candidate — Tinkerer / Scientist; this trial ran with the support unequipped, which the reading carries as a qualification.",
+          "reopenWhen": "the next Tinkerer trial dispatch, which must equip the support explicitly or record that the operator chose not to",
+          "targets": [],
+          "at": "2026-09-21T06:59:06.270Z"
+        }
+      ]
     },
     {
       "id": "FUP-6c22a74a648a3b56",
@@ -11735,9 +12236,27 @@
           "title": "Binding a resident to the active work — candidate",
           "summary": "# Binding a resident to the active work — candidate **Planning observation:** 2026-09-20 during WO-099, raised by the operator while reading the mission-check implementation. The mechanism the resident needs to watch an order now exists; the path from \"I opened a worktree for WO-NNN\" to \"a resident is watching it\" does not. Nothing here is a defect in WO-068, WO-099 or the operator's workflow. They were built to different boundaries and the boundary between them is empty. ## What is observed - `dotln resident --store <dir> --policy <id> [--tick <ms> | --once]` is operator-started and, in the skeleton runbook's own words, \"independent of Contributor stages\". One process per launchpad, under a",
           "missing": false
+        },
+        {
+          "hash": "4ab38d6c7c32f5a0958d1b03f97ae08e95047b40f89951c895509adf6e461eb0",
+          "ref": "docs/planning/resident-binding-to-active-work-2026-09-20.md#binding-a-resident-to-the-active-work--candidate",
+          "title": "Binding a resident to the active work — candidate",
+          "summary": "# Binding a resident to the active work — candidate **Planning observation:** 2026-09-20 during WO-099, raised by the operator while reading the mission-check implementation. The mechanism the resident needs to watch an order now exists; the path from \"I opened a worktree for WO-NNN\" to \"a resident is watching it\" does not. Nothing here is a defect in WO-068, WO-099 or the operator's workflow. They were built to different boundaries and the boundary between them is empty. ## What is observed - `dotln resident --store <dir> --policy <id> [--tick <ms> | --once]` is operator-started and, in the skeleton runbook's own words, \"independent of Contributor stages\". One process per launchpad, under a",
+          "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-09-21 standard planning pass to WO-148, filed for it: an explicit command binds a resident's mission check to the active order from canonical state; the six decisions the candidate asked for are answered in the order's design and docs/planning/standard-pass-2026-09-21.md §4.",
+          "reopenWhen": "WO-148 closes without the live row its criterion 4 names, or WO-111's first unattended hour meets a store the command could not have written",
+          "targets": [
+            "WO-148"
+          ],
+          "at": "2026-09-21T06:59:07.042Z"
+        }
+      ]
     },
     {
       "id": "FUP-2718b4763489318d",
@@ -11752,7 +12271,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-09-21 standard planning pass: an in-order repair directive that WO-099's own repair cycle discharged before the order closed (repairs one to five; VER-003 pass; FINAL-001 pass; closed at v0.37.0). The register cannot tell in-order routing from a nomination; recorded in product 07 §Candidate — follow-up register settlement and docs/planning/standard-pass-2026-09-21.md §3.",
+          "reopenWhen": "a later verification or live row reproduces the finding this directive repaired",
+          "targets": [],
+          "at": "2026-09-21T06:58:50.395Z"
+        }
+      ]
     },
     {
       "id": "FUP-cc537d41c4565aac",
@@ -11767,7 +12295,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-09-21 standard planning pass: an in-order repair directive that WO-099's own repair cycle discharged before the order closed (repairs one to five; VER-003 pass; FINAL-001 pass; closed at v0.37.0). The register cannot tell in-order routing from a nomination; recorded in product 07 §Candidate — follow-up register settlement and docs/planning/standard-pass-2026-09-21.md §3.",
+          "reopenWhen": "a later verification or live row reproduces the finding this directive repaired",
+          "targets": [],
+          "at": "2026-09-21T06:58:50.648Z"
+        }
+      ]
     },
     {
       "id": "FUP-a7e28c732475c124",
@@ -11782,7 +12319,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-09-21 standard planning pass: an in-order repair directive that WO-099's own repair cycle discharged before the order closed (repairs one to five; VER-003 pass; FINAL-001 pass; closed at v0.37.0). The register cannot tell in-order routing from a nomination; recorded in product 07 §Candidate — follow-up register settlement and docs/planning/standard-pass-2026-09-21.md §3.",
+          "reopenWhen": "a later verification or live row reproduces the finding this directive repaired",
+          "targets": [],
+          "at": "2026-09-21T06:58:50.899Z"
+        }
+      ]
     },
     {
       "id": "FUP-8ababf9798853099",
@@ -11797,7 +12343,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-09-21 standard planning pass: an in-order repair directive that WO-099's own repair cycle discharged before the order closed (repairs one to five; VER-003 pass; FINAL-001 pass; closed at v0.37.0). The register cannot tell in-order routing from a nomination; recorded in product 07 §Candidate — follow-up register settlement and docs/planning/standard-pass-2026-09-21.md §3.",
+          "reopenWhen": "a later verification or live row reproduces the finding this directive repaired",
+          "targets": [],
+          "at": "2026-09-21T06:58:51.163Z"
+        }
+      ]
     },
     {
       "id": "FUP-d830f01f9cb40278",
@@ -11812,7 +12367,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-09-21 standard planning pass: in force; the hold and its two clearance paths shipped, were verified (VER-003) and were exercised by the live row.",
+          "reopenWhen": "a recorded run wedges because the only clearance path is unavailable, or a hold is cleared without a human answer or changed work",
+          "targets": [],
+          "at": "2026-09-21T06:58:56.800Z"
+        }
+      ]
     },
     {
       "id": "FUP-06abc143a1c52367",
@@ -11827,7 +12391,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-09-21 standard planning pass on its own reopening observation; WO-148's bound real worktree is the first place the signal can appear and WO-111's catalog row notes it.",
+          "reopenWhen": "a recorded run holds as unknown on an ordinary session because generated evidence crowds the capsule",
+          "targets": [],
+          "at": "2026-09-21T06:59:06.533Z"
+        }
+      ]
     },
     {
       "id": "FUP-4e6d18b9bdc9d3a1",
@@ -11842,7 +12415,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-09-21 standard planning pass: an in-order repair directive that WO-099's own repair cycle discharged before the order closed (repairs one to five; VER-003 pass; FINAL-001 pass; closed at v0.37.0). The register cannot tell in-order routing from a nomination; recorded in product 07 §Candidate — follow-up register settlement and docs/planning/standard-pass-2026-09-21.md §3.",
+          "reopenWhen": "a later verification or live row reproduces the finding this directive repaired",
+          "targets": [],
+          "at": "2026-09-21T06:58:51.411Z"
+        }
+      ]
     },
     {
       "id": "FUP-47b512d993631d66",
@@ -11857,7 +12439,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-09-21 standard planning pass: an in-order repair directive that WO-099's own repair cycle discharged before the order closed (repairs one to five; VER-003 pass; FINAL-001 pass; closed at v0.37.0). The register cannot tell in-order routing from a nomination; recorded in product 07 §Candidate — follow-up register settlement and docs/planning/standard-pass-2026-09-21.md §3.",
+          "reopenWhen": "a later verification or live row reproduces the finding this directive repaired",
+          "targets": [],
+          "at": "2026-09-21T06:58:51.660Z"
+        }
+      ]
     },
     {
       "id": "FUP-5476dd8c3bcd2472",
@@ -11872,7 +12463,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-09-21 standard planning pass: an in-order repair directive that WO-099's own repair cycle discharged before the order closed (repairs one to five; VER-003 pass; FINAL-001 pass; closed at v0.37.0). The register cannot tell in-order routing from a nomination; recorded in product 07 §Candidate — follow-up register settlement and docs/planning/standard-pass-2026-09-21.md §3.",
+          "reopenWhen": "a later verification or live row reproduces the finding this directive repaired",
+          "targets": [],
+          "at": "2026-09-21T06:58:51.913Z"
+        }
+      ]
     },
     {
       "id": "FUP-72bff07566fb6cd3",
@@ -11887,7 +12487,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-09-21 standard planning pass: an in-order repair directive that WO-099's own repair cycle discharged before the order closed (repairs one to five; VER-003 pass; FINAL-001 pass; closed at v0.37.0). The register cannot tell in-order routing from a nomination; recorded in product 07 §Candidate — follow-up register settlement and docs/planning/standard-pass-2026-09-21.md §3.",
+          "reopenWhen": "a later verification or live row reproduces the finding this directive repaired",
+          "targets": [],
+          "at": "2026-09-21T06:58:52.159Z"
+        }
+      ]
     },
     {
       "id": "FUP-56b599e15f97e666",
@@ -11902,7 +12511,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-09-21 standard planning pass: a wording change bound to the next resident-state.ts change with a feedback edition.",
+          "reopenWhen": "the next order that changes resident-state.ts and records a feedback edition, or an operator reads a misleading verifier-unavailable hold over an incomplete capsule",
+          "targets": [],
+          "at": "2026-09-21T06:59:06.786Z"
+        }
+      ]
     },
     {
       "id": "FUP-af2093088ebe1586",
@@ -11917,7 +12535,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-09-21 standard planning pass: an in-order repair directive that WO-099's own repair cycle discharged before the order closed (repairs one to five; VER-003 pass; FINAL-001 pass; closed at v0.37.0). The register cannot tell in-order routing from a nomination; recorded in product 07 §Candidate — follow-up register settlement and docs/planning/standard-pass-2026-09-21.md §3.",
+          "reopenWhen": "a later verification or live row reproduces the finding this directive repaired",
+          "targets": [],
+          "at": "2026-09-21T06:58:52.407Z"
+        }
+      ]
     },
     {
       "id": "FUP-ae8e4b2b6ebbecf6",
@@ -11932,7 +12559,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-09-21 standard planning pass: an in-order repair directive that WO-099's own repair cycle discharged before the order closed (repairs one to five; VER-003 pass; FINAL-001 pass; closed at v0.37.0). The register cannot tell in-order routing from a nomination; recorded in product 07 §Candidate — follow-up register settlement and docs/planning/standard-pass-2026-09-21.md §3.",
+          "reopenWhen": "a later verification or live row reproduces the finding this directive repaired",
+          "targets": [],
+          "at": "2026-09-21T06:58:52.668Z"
+        }
+      ]
     },
     {
       "id": "FUP-e6be99dffc483430",
@@ -11947,7 +12583,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-09-21 standard planning pass: an in-order repair directive that WO-099's own repair cycle discharged before the order closed (repairs one to five; VER-003 pass; FINAL-001 pass; closed at v0.37.0). The register cannot tell in-order routing from a nomination; recorded in product 07 §Candidate — follow-up register settlement and docs/planning/standard-pass-2026-09-21.md §3.",
+          "reopenWhen": "a later verification or live row reproduces the finding this directive repaired",
+          "targets": [],
+          "at": "2026-09-21T06:58:52.952Z"
+        }
+      ]
     },
     {
       "id": "FUP-c4a88b6c0d0a150c",
@@ -11962,7 +12607,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-09-21 standard planning pass to WO-149, filed for it: a Codex-launched dispatch begins its harness session once per thread before usage is read.",
+          "reopenWhen": "Codex gains an automatic session-begin hook, or the counter source stops needing a begun session",
+          "targets": [
+            "WO-149"
+          ],
+          "at": "2026-09-21T06:58:59.873Z"
+        }
+      ]
     },
     {
       "id": "FUP-a7175a13eca745f2",
@@ -11977,7 +12633,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-09-21 standard planning pass to WO-070 as a catalog carry-in, where the decision's own text sends it: the packages' ignored local lane follows the launchpad once the plane/kit module identity is settled.",
+          "reopenWhen": "a launchpad cannot tolerate an ignored default-rooted local lane before WO-070 lands",
+          "targets": [
+            "WO-070"
+          ],
+          "at": "2026-09-21T06:58:58.843Z"
+        }
+      ]
     },
     {
       "id": "FUP-db845f6776faa381",
@@ -11992,7 +12659,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-09-21 standard planning pass: entered the feed as a decision reopened by VER-001's observation (D011); the reopening was repaired in the same cycle and VER-002 passed; the decision stands in force.",
+          "reopenWhen": "a literal root reaches a released surface through a file the guard does not read, or a prose exemption smuggles a real resolution",
+          "targets": [],
+          "at": "2026-09-21T06:58:54.512Z"
+        }
+      ]
     },
     {
       "id": "FUP-eaf686827c417f57",
@@ -12007,7 +12683,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-09-21 standard planning pass: entered the feed as a decision reopened by VER-001's observation (D009); the reopening was repaired in the same cycle and VER-002 passed; the decision stands in force.",
+          "reopenWhen": "a default-layout constant is found on a path that a configured launchpad must move; the fixture launchpad test is the detector",
+          "targets": [],
+          "at": "2026-09-21T06:58:54.775Z"
+        }
+      ]
     },
     {
       "id": "FUP-ab610a0fcfa29acd",
@@ -12022,7 +12707,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-09-21 standard planning pass: an in-order repair directive that WO-069's own repair cycle discharged before the order closed (VER-001 F1 to F5 repaired in repair-001; VER-002 pass; FINAL-001 pass; closed at v0.37.2). The register cannot tell in-order routing from a nomination; recorded in product 07 §Candidate — follow-up register settlement and docs/planning/standard-pass-2026-09-21.md §3.",
+          "reopenWhen": "a later verification or live row reproduces the finding this directive repaired",
+          "targets": [],
+          "at": "2026-09-21T06:58:53.204Z"
+        }
+      ]
     },
     {
       "id": "FUP-f8e9e2285ede1831",
@@ -12037,7 +12731,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-09-21 standard planning pass: an in-order repair directive that WO-069's own repair cycle discharged before the order closed (VER-001 F1 to F5 repaired in repair-001; VER-002 pass; FINAL-001 pass; closed at v0.37.2). The register cannot tell in-order routing from a nomination; recorded in product 07 §Candidate — follow-up register settlement and docs/planning/standard-pass-2026-09-21.md §3.",
+          "reopenWhen": "a later verification or live row reproduces the finding this directive repaired",
+          "targets": [],
+          "at": "2026-09-21T06:58:53.455Z"
+        }
+      ]
     },
     {
       "id": "FUP-3eb6a77f3681523d",
@@ -12052,7 +12755,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-09-21 standard planning pass: an in-order repair directive that WO-069's own repair cycle discharged before the order closed (VER-001 F1 to F5 repaired in repair-001; VER-002 pass; FINAL-001 pass; closed at v0.37.2). The register cannot tell in-order routing from a nomination; recorded in product 07 §Candidate — follow-up register settlement and docs/planning/standard-pass-2026-09-21.md §3.",
+          "reopenWhen": "a later verification or live row reproduces the finding this directive repaired",
+          "targets": [],
+          "at": "2026-09-21T06:58:53.715Z"
+        }
+      ]
     },
     {
       "id": "FUP-6a367d8b65df7295",
@@ -12067,7 +12779,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-09-21 standard planning pass: an in-order repair directive that WO-069's own repair cycle discharged before the order closed (VER-001 F1 to F5 repaired in repair-001; VER-002 pass; FINAL-001 pass; closed at v0.37.2). The register cannot tell in-order routing from a nomination; recorded in product 07 §Candidate — follow-up register settlement and docs/planning/standard-pass-2026-09-21.md §3.",
+          "reopenWhen": "a later verification or live row reproduces the finding this directive repaired",
+          "targets": [],
+          "at": "2026-09-21T06:58:54.004Z"
+        }
+      ]
     },
     {
       "id": "FUP-dfe3b5533a6cb790",
@@ -12082,7 +12803,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-09-21 standard planning pass: an in-order repair directive that WO-069's own repair cycle discharged before the order closed (VER-001 F1 to F5 repaired in repair-001; VER-002 pass; FINAL-001 pass; closed at v0.37.2). The register cannot tell in-order routing from a nomination; recorded in product 07 §Candidate — follow-up register settlement and docs/planning/standard-pass-2026-09-21.md §3.",
+          "reopenWhen": "a later verification or live row reproduces the finding this directive repaired",
+          "targets": [],
+          "at": "2026-09-21T06:58:54.257Z"
+        }
+      ]
     },
     {
       "id": "FUP-42bd32c65a200381",
@@ -12097,7 +12827,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-09-21 standard planning pass to WO-147 criterion 3: each WO-143 boundary fixture takes its dead pid at use and asserts deadness; the named case runs ten times under the gate and ten alone, recorded.",
+          "reopenWhen": "the failure reproduces with a freshly observed dead pid per fixture, or appears when the named case runs alone",
+          "targets": [
+            "WO-147"
+          ],
+          "at": "2026-09-21T06:58:58.073Z"
+        }
+      ]
     },
     {
       "id": "FUP-ec23fc47b2aabafe",
@@ -12112,7 +12853,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-09-21 standard planning pass to WO-070 as a catalog carry-in: the measuring scripts take an explicit tool root for kit inputs while outputs keep the launchpad.",
+          "reopenWhen": "a launchpad separate from the scripts' checkout has to run one of the named scripts before WO-070 lands",
+          "targets": [
+            "WO-070"
+          ],
+          "at": "2026-09-21T06:58:59.097Z"
+        }
+      ]
     },
     {
       "id": "FUP-99ec03a092896aa7",
@@ -12127,7 +12879,138 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-09-21 standard planning pass to WO-070 as a catalog carry-in: the qualification fixture builder's cross-root relative names.",
+          "reopenWhen": "a launchpad ships a dotln.config.json whose control root is not docs/control before WO-070 lands",
+          "targets": [
+            "WO-070"
+          ],
+          "at": "2026-09-21T06:58:59.354Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-2f928f36d9bf5f4f",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-recorded-2026-09-21::4b69bd9aaa0aecae31aa32ff1396a089b14d65ddcf96374b6c0d78fae36c6332",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "124fde3b67204c976c6089f28e51db33b25d879e1b4e47871ba12503052d7db3",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-recorded-2026-09-21",
+          "title": "Verification and repair host residue.",
+          "summary": "4. **Verification and repair host residue.** A source-change worker under the Codex writer profile cannot run a path-free named test because that shell inherits no PATH (WO-056 D002); `RepairSnapshotPrepared` records a physical path, so a re-verification log cannot be published and replayed (WO-056 D005 a); the fold records an authority's revocation-typed events before its actor filter, unreachable while the lists are empty (D005 b); an implementer-actor `SourceChangeObserved` on a verification workstream fails closed (D005 c); a verifier's own diagnosis has no durable field the repair capsule could carry (WO-056 D008); replayed decisions embed the whole 1.7 MB capsule per event, 1.1 GB of s",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Recorded by the 2026-09-21 standard planning pass as a gathered seam over the verification and repair hosts; no order allocated.",
+          "reopenWhen": "a live Claude worker cannot resolve bare node; any verification authority declares a revocation event type; a live verifier still cannot satisfy the stated finding contract; or a stored stream again fails or dominates the skeleton suite (map candidate: verification and repair host residue, 2026-09-21)",
+          "targets": [],
+          "at": "2026-09-21T06:59:10.704Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-95ef7481d56718e3",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-recorded-2026-09-21::7ff31c2eb0d34cf0d292df5d87d282d1e264d31fb45478edc7e9ec91ae996df1",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "7343682a894f47f62a91cde31d7bbf72d4e77eb23020050f82216a3c46b1d522",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-recorded-2026-09-21",
+          "title": "The root-cwd precondition for the four root-bound refusals.",
+          "summary": "2. **The root-cwd precondition for the four root-bound refusals.** WO-144 D007 and D008 ask the planner whether the writer, live-gate, planning-branch and subagent refusals should judge when the session's working directory is a descendant of, or outside, the worktree root; the fifth refusal already does, and every hook now journals its stand-down. Measured 2026-09-21 over the retained hook journals: six rows name the unverified-root precondition, against 80 working-directory classifications and thousands of judged calls. Deferred on that count. Reopen: the stand-down rows pass fifty, or a journal shows a call admitted off-root that one of the four refusals would have refused from the root.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Recorded by the 2026-09-21 standard planning pass on a measurement: six stand-down rows in the retained hook journals against 80 working-directory classifications; no order allocated.",
+          "reopenWhen": "the journals' stand-down rows pass fifty, or a journal shows a call admitted off-root that one of the four root-bound refusals would have refused from the worktree root (map candidate, 2026-09-21)",
+          "targets": [],
+          "at": "2026-09-21T06:59:10.185Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-ebf4ab0c8e372692",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-recorded-2026-09-21::9d4a41bda3c83510b72338a297e1f7b1adc3b656db8e1d0bdd70a15683904520",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "800a3cc6418af818ba89180b82b67074391e340abd5ea35e7bf3b7f2996b68a1",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-recorded-2026-09-21",
+          "title": "Shell destination adapter width.",
+          "summary": "1. **Shell destination adapter width.** Five rows name the one adapter that reads a command for the live-gate, planning-branch and outside-write refusals: quoted glob characters and read-only input redirects refused during a live gate although they cannot expand (WO-142 D018, observed on both builds during VER-003); admitted Git metadata commands whose prefix protected `status` in a Git 2.55.0 fixture while `diff` still refreshed the index and ran a clean filter and `log.showSignature` invoked the signature program (WO-142 D012); a literal redirect beside an expansion-spelled one, or a quoted program argument containing `<` or `>`, un-naming the literal (WO-144 D009 and D010, part 2); the co",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Recorded by the 2026-09-21 standard planning pass as a gathered seam (five rows over the one adapter); no order allocated.",
+          "reopenWhen": "a second refused read containing a quoted glob or an input redirect in a live gate, an admitted redirect that reaches an ungranted outside destination, or a gate input observed changed by an admitted metadata command (map candidate: shell destination adapter width, 2026-09-21)",
+          "targets": [],
+          "at": "2026-09-21T06:59:09.920Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-fa028783f3f6b17f",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-recorded-2026-09-21::a9a33bf0eac29fd463aeb32b308b2c82af8f3325b0d71fabfd0e0fb26751cbed",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "2d306f1f316346efbfae9bd73400dda97811bee02e37fc87fe5f5fafb89e88b9",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-recorded-2026-09-21",
+          "title": "Meter and closeout residue.",
+          "summary": "5. **Meter and closeout residue.** The reviewer procedure runs `release prepare` before the result or the renderer keeps the published order's dispatch rows (WO-110 D013); `observed-facts.ts` matches a hedged quantity to a gate row by substring and should prefer the longest matching identity (WO-140 D007); `release prepare` printed \"no files changed\" while refreshing the meter block (WO-142 D020); WO-140's cost paragraph attributes one WO-121 in-sandbox failure to the hooks denial where the receipt shows the nested `sandbox-exec`, recorded as the difference in WO-140 D001 and not edited in the closed order. Reopen: the next order that edits `scripts/lib/meta.mjs`, `observed-facts.ts` or rele",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Recorded by the 2026-09-21 standard planning pass as a gathered seam over the meter and closeout; no order allocated.",
+          "reopenWhen": "the next order that edits scripts/lib/meta.mjs, observed-facts.ts or release preparation, or another repair that meets the no-files-changed message beside a changed draft (map candidate: meter and closeout residue, 2026-09-21)",
+          "targets": [],
+          "at": "2026-09-21T06:59:10.959Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-ca485137e32985fb",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-recorded-2026-09-21::c95660307065e0943b0b8e8895b4ee665e4a8f3c31b3286f060b08b7aeff3a1e",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "01cef695a73c1c1c3b49ef7d652e4855b090264ba7c48b23a14e93f398abf5ae",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-recorded-2026-09-21",
+          "title": "Machinery suite selection before final review.",
+          "summary": "3. **Machinery suite selection before final review.** WO-144 D010, part 1: `npm test` omits the machinery suites whose declared sources an order changed, so a deterministic process-debt failure passed one implementation, two repairs and three verifications before the final-review gate met it. Options: the executor and verifier procedure names `npm test -- --review`, or the runner selects machinery suites by changed declared sources. Reopen: a final-review gate again meets a deterministic failure in a suite no earlier run selected.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Recorded by the 2026-09-21 standard planning pass from WO-144 D010 part 1; no order allocated.",
+          "reopenWhen": "a final-review gate again meets a deterministic failure in a suite no earlier run selected (map candidate: machinery suite selection before final review, 2026-09-21)",
+          "targets": [],
+          "at": "2026-09-21T06:59:10.442Z"
+        }
+      ]
     }
   ]
 }
