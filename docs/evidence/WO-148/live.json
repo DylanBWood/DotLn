@@ -1,0 +1,63 @@
+{
+  "workOrder": "WO-148",
+  "recordedAt": "2026-09-21T18:55:06.723Z",
+  "label": "observed",
+  "blockedReason": null,
+  "launch": "detached Node parent with no terminal → bind → dotln presence away → dotln resident --once → supervised CLI mission-check-v1",
+  "onceRuns": [
+    {
+      "attempt": 1,
+      "exitCode": 0
+    }
+  ],
+  "transport": "codex-cli-exec",
+  "model": "gpt-6-astra",
+  "effort": "xhigh",
+  "harnessVersion": "0.155.1",
+  "origin": "actor",
+  "profile": "mission-check-v1",
+  "operatorAwayBeforeAndAfter": true,
+  "binding": {
+    "phaseAtBind": "active",
+    "storeUnderControlLane": true,
+    "storeIndex": 4,
+    "baseSource": "merge-base",
+    "baseRef": "origin/main",
+    "contractPath": "docs/work-orders/WO-148-resident-binding.md",
+    "decisionsDeclared": true,
+    "declaredSurfaceCount": 15,
+    "capsuleRootIsBoundWorktree": true,
+    "capsuleContractIsTheOrder": true
+  },
+  "capsulePaths": {
+    "changed": 20,
+    "insideDeclaredSurfaces": 20,
+    "outsideDeclaredSurfaces": 0,
+    "omitted": 0,
+    "ignoredEntriesChanged": 0,
+    "baseCommitMatchesBinding": true
+  },
+  "verdict": "drift",
+  "findingReferences": [
+    "contract-clause:contract:criterion:3",
+    "contract-clause:contract:criterion:4"
+  ],
+  "hostDerivedFindings": [],
+  "failure": null,
+  "hostChecks": {
+    "holdRaised": true,
+    "holdVerdict": "drift",
+    "correctionRecorded": 1,
+    "dispatched": 1,
+    "phaseAfterPulse": "mission-check"
+  },
+  "durationMs": 981173,
+  "limits": [
+    "One bind of one real in-flight order and one real launch; the row proves aim, not the work",
+    "Real clock throughout: the collector waits the 900 s Contributor cadence out and then runs the shipped dotln resident --once until one cycle dispatches; no clock is injected and no host is driven in process",
+    "A judgment is an observation about this diff, not verification of the work; any verdict is an admissible row",
+    "Authentication lifetime unknown; no raw transcript, capsule text, physical path or session identity is filed",
+    "Changed paths are counted and classified, never named",
+    "The capsule is pinned when the store is bound, so it judges the worktree as it read at that moment, not as it reads when this row is filed"
+  ]
+}

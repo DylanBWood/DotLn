@@ -93,7 +93,7 @@ intent → task-scoped build → bounded WorkOrder → disposable executor
 -->
 <!-- DOTLN-RELEASE-BEGIN -->
 
-This source prepares DotLn `v0.39.0`.
+This source prepares DotLn `v0.40.0`.
 
 **The core.** A local-first compiler turns a loadout graph into a bounded
 program and authority envelope that the kernel checks on every decision.
@@ -127,10 +127,11 @@ repaired only the blamed module and a second verifier passed the original
 contract. The Claude run's event log is published and replays negative against
 injected implementer events.
 
-**How this repository builds itself.** An optional executor support asks for one
-bounded economy experiment per order, with measured cost and effect; it stays
-off by default while the [three-order trial](docs/evidence/WO-145/decisions.md)
-establishes whether its savings justify its cost.
+**How this repository builds itself.** Every executor dispatch asks for one
+bounded economy experiment per order, with measured cost and effect, unless the
+order opts out: the [three-order trial](docs/evidence/WO-145/decisions.md) found
+an adopted method with no regression, and [WO-150](docs/evidence/WO-150/decisions.md)
+made the support default equipment.
 Independent implementation, verification
 and final review record their own evidence, and publication consumes the
 reviewer's successful code-identity gate row.

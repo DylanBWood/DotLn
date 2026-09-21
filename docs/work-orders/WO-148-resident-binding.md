@@ -1,4 +1,4 @@
-# WO-148 — Bind a resident to the active order: one command turns the canonical active order and its worktree into a resident store whose mission check watches that work, refuses a stale binding by name, and prints the launch and presence lines, so watching an order no longer means hand-writing a store (version assigned at activation)
+# WO-148 — Bind a resident to the active order: one command turns the canonical active order and its worktree into a resident store whose mission check watches that work, refuses a stale binding by name, and prints the launch and presence lines, so watching an order no longer means hand-writing a store (v0.40.0)
 
 **Model:** any. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
