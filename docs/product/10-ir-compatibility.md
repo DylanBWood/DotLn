@@ -183,6 +183,17 @@ edition under `docs/evidence/WO-042/`; historical editions remain unchanged.
 This acceptance narrowing under contract `"1"` is an explicit compatibility
 decision for review, not a migration of historical compiled artifacts.
 
+WO-069 adds a **launchpad configuration schema axis**: `dotln.config.json`
+declares `version: 1`, and that number is independent of the application
+release, the IR schema, the artifact/configuration identity, the compiler
+package and every doctrine or capability version above. A launchpad may move
+its document roots without touching any of them, and a future root or section
+added to the schema advances this axis alone. The file's absence is the same
+contract as `version: 1` with no declarations: today's layout, byte for byte,
+so no recorded program, manifest or semantic hash changes because the schema
+exists. `repositories`, `build` and `release` are validated here and consumed
+by later orders; their own contents are not a version axis of this schema.
+
 ## Transformation graph
 
 Schema and component changes form a directed graph of named, versioned
