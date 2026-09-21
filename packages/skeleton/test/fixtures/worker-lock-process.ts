@@ -5,6 +5,7 @@ const input = JSON.parse(process.argv[2]!) as {
   directory: string;
   control: string;
   points: { op: string; match?: string; when?: "before" | "after" }[];
+  operation?: "acquire" | "transaction";
 };
 const write = fs.writeFileSync;
 const exists = fs.existsSync;
@@ -25,7 +26,14 @@ function pause(op: string, path = "", when = "after") {
     Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 10);
 }
 const native = fs as unknown as Record<string, (...args: unknown[]) => unknown>;
-for (const op of ["linkSync", "unlinkSync", "readlinkSync"]) {
+for (const op of [
+  "linkSync",
+  "unlinkSync",
+  "readlinkSync",
+  "lstatSync",
+  "readFileSync",
+  "rmSync",
+]) {
   const original = native[op]!;
   native[op] = (...args) => {
     const path = String(op === "linkSync" ? args[1] : args[0]);
@@ -37,12 +45,19 @@ for (const op of ["linkSync", "unlinkSync", "readlinkSync"]) {
   };
 }
 syncBuiltinESMExports();
-const { WorkerStore } = await import("../../src/worker-store.js");
-const store = new WorkerStore(input.directory);
+let release = () => {};
 let acquired = false;
 let error = "";
 try {
-  store.acquire(() => pause("preflight"));
+  if (input.operation === "transaction") {
+    const { ResidentStore } = await import("../../src/resident-store.js");
+    await new ResidentStore(input.directory).transaction(() => {});
+  } else {
+    const { WorkerStore } = await import("../../src/worker-store.js");
+    const store = new WorkerStore(input.directory);
+    store.acquire(() => pause("preflight"));
+    release = () => store.release();
+  }
   acquired = true;
 } catch (failure) {
   error = String(failure);
@@ -55,6 +70,6 @@ write(
 );
 fs.renameSync(`${input.control}.result.part`, `${input.control}.result`);
 process.on("message", () => {
-  store.release();
+  release();
   process.exit(0);
 });

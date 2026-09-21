@@ -654,8 +654,11 @@ type LockStep = {
 function deadPid() {
   const child = spawnSync(process.execPath, ["-e", ""], { encoding: "utf8" });
   assert.equal(child.status, 0);
-  assert.throws(() => process.kill(child.pid, 0), { code: "ESRCH" });
+  assertDeadPid(child.pid);
   return child.pid;
+}
+function assertDeadPid(pid: number) {
+  assert.throws(() => process.kill(pid, 0), { code: "ESRCH" });
 }
 function abandonedGuard(directory: string, pid: number) {
   const token = randomUUID();
@@ -779,7 +782,6 @@ test(
     mkdirSync(template);
     await seedFlight(template);
     const prefix = readFileSync(join(template, "events.jsonl"), "utf8");
-    const pid = deadPid();
     for (const mode of ["once", "loop"] as const)
       for (const scope of ["lifetime", "append"] as const)
         for (const reclaim of [false, true]) {
@@ -790,16 +792,18 @@ test(
               scope === "append"
                 ? join(directory, ".resident-append")
                 : directory;
+            const pid = deadPid();
             for (const path of [directory, join(directory, ".resident-append")])
               writeFileSync(join(path, "host.lock"), JSON.stringify({ pid }));
             if (reclaim) abandonedGuard(target, pid);
-            return { directory, target };
+            return { directory, target, pid };
           };
           const label = `${mode}-${scope}-${reclaim ? "reclaim" : "fresh"}`;
           const discovery = make(`${label}-discovery`);
           const steps = runLockProcess(
             crashInput(discovery.directory, discovery.target, mode, "discover"),
           );
+          assertDeadPid(discovery.pid);
           assert.ok(steps.some((step) => step.op === "symlinkSync"));
           assert.ok(
             steps.some(
@@ -825,7 +829,7 @@ test(
             );
           let publishedKills = 0;
           for (const step of steps) {
-            const { directory, target } = make(`${label}-${step.index}`);
+            const { directory, target, pid } = make(`${label}-${step.index}`);
             const actual = await killLockProcess(
               crashInput(directory, target, mode, "kill", step.index),
             );
@@ -846,6 +850,7 @@ test(
             assert.ok(store.read().startsWith(continued));
             assert.equal(events(store, "ScriptEpisodeLost").length, 1);
             assert.equal(existsSync(join(target, "host-lock-recovery")), false);
+            assertDeadPid(pid);
           }
           assert.ok(publishedKills > 0);
           t.diagnostic(
@@ -937,7 +942,6 @@ function storeSnapshot(directory: string): Record<string, string> {
 test("WO-143 live, unreadable and legacy guards refuse unchanged; released locks remain compatible", async (t) => {
   const root = mkdtempSync(join(tmpdir(), "dotln-guard-refusal-"));
   t.after(() => rmSync(root, { recursive: true, force: true }));
-  const pid = deadPid();
   for (const fault of [
     "live",
     "missing",
@@ -950,10 +954,8 @@ test("WO-143 live, unreadable and legacy guards refuse unchanged; released locks
   ] as const) {
     const directory = join(root, fault);
     mkdirSync(directory);
-    const prepared = abandonedGuard(
-      directory,
-      fault === "live" ? process.pid : pid,
-    );
+    const pid = fault === "live" ? process.pid : deadPid();
+    const prepared = abandonedGuard(directory, pid);
     const owner = join(prepared.target, "owner.json");
     if (fault === "missing") unlinkSync(owner);
     if (fault === "partial") writeFileSync(owner, '{"pid":');
@@ -987,6 +989,7 @@ test("WO-143 live, unreadable and legacy guards refuse unchanged; released locks
       },
     );
     assert.deepEqual(storeSnapshot(directory), before, fault);
+    if (fault !== "live") assertDeadPid(pid);
   }
   for (const hasLock of [false, true]) {
     const directory = join(root, `released-${hasLock}`);
@@ -998,7 +1001,8 @@ test("WO-143 live, unreadable and legacy guards refuse unchanged; released locks
       "utf8",
     );
     writeFileSync(join(directory, "events.jsonl"), released);
-    if (hasLock)
+    const pid = hasLock ? deadPid() : undefined;
+    if (pid !== undefined)
       writeFileSync(join(directory, "host.lock"), JSON.stringify({ pid }));
     const store = new WorkerStore(directory);
     store.acquire();
@@ -1009,6 +1013,7 @@ test("WO-143 live, unreadable and legacy guards refuse unchanged; released locks
     );
     store.release();
     assert.deepEqual(readdirSync(directory), ["events.jsonl"]);
+    if (pid !== undefined) assertDeadPid(pid);
   }
   const live = join(root, "live-lock");
   mkdirSync(live);
@@ -1043,6 +1048,7 @@ test("WO-143 malformed resident state preserves dead append guard and lock befor
     /invalid.*event log/u,
   );
   assert.deepEqual(storeSnapshot(root), before);
+  assertDeadPid(pid);
 });
 
 test("WO-143 killed actors drain without further polling lock acquisitions", async (t) => {
@@ -1116,7 +1122,8 @@ test("WO-143 concurrent dead-guard starts publish exactly one reclaim claim", as
   t.after(() => rmSync(root, { recursive: true, force: true }));
   const directory = join(root, "store");
   mkdirSync(directory);
-  const old = abandonedGuard(directory, deadPid());
+  const pid = deadPid();
+  const old = abandonedGuard(directory, pid);
   const processes = ["a", "b"].map((name) =>
     workerPeer(directory, join(root, name), [
       { op: "linkSync", match: `next-${old.token}.json`, when: "before" },
@@ -1135,6 +1142,7 @@ test("WO-143 concurrent dead-guard starts publish exactly one reclaim claim", as
   );
   assert.equal(existsSync(old.guard), false);
   assert.throws(() => new WorkerStore(directory).acquire(), /live host/u);
+  assertDeadPid(pid);
   t.diagnostic(
     "two starts held before the same exclusive claim: one claim, one writer, one refusal",
   );
@@ -1144,6 +1152,7 @@ function workerPeer(
   directory: string,
   control: string,
   points: { op: string; match?: string; when?: "before" | "after" }[],
+  operation: "acquire" | "transaction" = "acquire",
 ) {
   const child = spawn(
     process.execPath,
@@ -1151,7 +1160,7 @@ function workerPeer(
       fileURLToPath(
         new URL("./fixtures/worker-lock-process.js", import.meta.url),
       ),
-      JSON.stringify({ directory, control, points }),
+      JSON.stringify({ directory, control, points, operation }),
     ],
     { stdio: ["ignore", "ignore", "pipe", "ipc"] },
   );
@@ -1180,6 +1189,11 @@ function workerPeer(
         error: string;
       };
     },
+    async release() {
+      if (child.exitCode === null && child.signalCode === null)
+        child.send("release");
+      await exited;
+    },
     async stop() {
       if (child.exitCode === null && child.signalCode === null)
         child.kill("SIGKILL");
@@ -1187,6 +1201,115 @@ function workerPeer(
     },
   };
 }
+
+test("WO-147 a lock released between observation and read is re-inspected under the guard", async (t) => {
+  const root = mkdtempSync(join(tmpdir(), "dotln-lock-contention-"));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  const peers: ReturnType<typeof workerPeer>[] = [];
+  t.after(async () => {
+    await Promise.all(peers.map((peer) => peer.stop()));
+  });
+  for (const operation of ["acquire", "transaction"] as const) {
+    const directory = join(root, operation);
+    mkdirSync(directory);
+    if (operation === "transaction") await seedFlight(directory);
+    const lockDirectory =
+      operation === "transaction"
+        ? join(directory, ".resident-append")
+        : directory;
+    const holder = workerPeer(
+      lockDirectory,
+      join(root, `${operation}-holder`),
+      [],
+    );
+    peers.push(holder);
+    assert.equal((await holder.result()).acquired, true);
+    const before = readFileSync(join(directory, "events.jsonl"), "utf8");
+    const contender = workerPeer(
+      directory,
+      join(root, `${operation}-contender`),
+      [{ op: "lstatSync", match: "host.lock", when: "after" }],
+      operation,
+    );
+    peers.push(contender);
+    await contender.ready(0);
+    await holder.release();
+    contender.go(0);
+    const outcome = await contender.result();
+    assert.equal(outcome.acquired, true, outcome.error);
+    assert.equal(outcome.error, "");
+    assert.equal(readFileSync(join(directory, "events.jsonl"), "utf8"), before);
+    await contender.release();
+  }
+  t.diagnostic(
+    "direct acquisition and resident transaction both survive holder release after observed host.lock; prior event bytes unchanged",
+  );
+});
+
+test("WO-147 retirement probe tolerates a delayed claim present when recursive cleanup begins", async (t) => {
+  const root = mkdtempSync(join(tmpdir(), "dotln-lock-retirement-probe-"));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  const attempts = 20;
+  let reproduced = 0;
+  for (let attempt = 0; attempt < attempts; attempt++) {
+    const directory = join(root, String(attempt));
+    mkdirSync(directory);
+    const peers: ReturnType<typeof workerPeer>[] = [];
+    const original = workerPeer(directory, join(directory, "original"), [
+      { op: "preflight" },
+      { op: "rmSync", when: "before" },
+    ]);
+    peers.push(original);
+    await original.ready(0);
+    const guard = join(directory, "host-lock-recovery");
+    const targetName = readlinkSync(guard);
+    const target = join(directory, targetName);
+    const ownerPath = join(target, "owner.json");
+    const owner = JSON.parse(readFileSync(ownerPath, "utf8")) as {
+      pid: number;
+      token: string;
+    };
+    const pid = deadPid();
+    writeFileSync(ownerPath, JSON.stringify({ ...owner, pid }) + "\n");
+    const next = `next-${owner.token}.json`;
+    const delayed = workerPeer(directory, join(directory, "delayed"), [
+      { op: "linkSync", match: next, when: "before" },
+      { op: "linkSync", match: next, when: "after" },
+    ]);
+    peers.push(delayed);
+    try {
+      await delayed.ready(0);
+      original.go(0);
+      await original.ready(1);
+      assert.deepEqual(
+        JSON.parse(readFileSync(join(directory, "host.lock"), "utf8")),
+        { pid: original.child.pid },
+      );
+      delayed.go(0);
+      await delayed.ready(1);
+      assert.ok(existsSync(join(target, next)));
+      original.go(1);
+      const outcome = await original.result();
+      if (!outcome.acquired) reproduced++;
+      else await original.release();
+      delayed.go(1);
+      const refused = await delayed.result();
+      assert.equal(refused.acquired, false);
+      await delayed.release();
+      assertDeadPid(pid);
+    } finally {
+      await Promise.all(peers.map((peer) => peer.stop()));
+    }
+  }
+  assert.equal(
+    reproduced,
+    0,
+    "retirement must not fail after publishing host.lock when a delayed claim is present",
+  );
+  t.diagnostic(
+    `${attempts} attempts paused retirement before rmSync with a delayed successor claim present; ENOTEMPTY inference not reproduced`,
+  );
+});
 
 test("WO-143 a delayed claimant cannot unlink a successor through a retired target", async (t) => {
   const root = mkdtempSync(join(tmpdir(), "dotln-guard-generation-"));

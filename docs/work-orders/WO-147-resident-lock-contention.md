@@ -1,4 +1,4 @@
-# WO-147 — Resident lock contention: a host lock that vanishes between a contender's check and its read is treated as absent or contended and retried, never thrown, so a presence command or a resident transaction under live contention waits instead of failing (version assigned at activation)
+# WO-147 — Resident lock contention: a host lock that vanishes between a contender's check and its read is treated as absent or contended and retried, never thrown, so a presence command or a resident transaction under live contention waits instead of failing (v0.40.1)
 
 **Model:** any. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
