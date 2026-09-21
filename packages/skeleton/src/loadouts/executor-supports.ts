@@ -86,7 +86,7 @@ export const executorSupportDefaults = {
   "communication-observation": false,
   "communication-recommendation": false,
   "communication-intent": true,
-  "tinkerer-economy": false,
+  "tinkerer-economy": true,
 } as const;
 export const defaultExecutorSupportIds: readonly string[] = Object.entries(
   executorSupportDefaults,

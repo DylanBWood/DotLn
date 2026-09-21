@@ -1,4 +1,4 @@
-# WO-150 — Tinkerer economy on by default: the executor's economy experiment is equipped unless an order opts out, its role-text cost is measured against the cold-start ceiling, and the three-trial history is carried forward, because the trials adopted a method with no regression and the operator accepted the pre-registered proposal (version assigned at activation)
+# WO-150 — Tinkerer economy on by default: the executor's economy experiment is equipped unless an order opts out, its role-text cost is measured against the cold-start ceiling, and the three-trial history is carried forward, because the trials adopted a method with no regression and the operator accepted the pre-registered proposal (v0.39.0)
 
 **Model:** any. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).

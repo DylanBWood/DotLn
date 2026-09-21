@@ -33,6 +33,10 @@ export function executorEntryBriefing(root, workOrder) {
     lines.push(
       "Operator Check-In is equipped: at a safe boundary, process available steering and reread the queue before the next item.",
     );
+  if (ids.includes("tinkerer-economy"))
+    lines.push(
+      "Tinkerer — Economy is equipped: before implementation, name at most one economy opportunity for this order, with its question, credible alternatives, deciding observation and a budget of at most 900 s; run it within that budget or decline with a reason, and record the one experiment decision either way.",
+    );
   if (ids.includes("follow-up-queue")) {
     const queue = readAdjacentQueue(root, workOrder);
     const running = queue.items.find((item) => item.status === "running");
