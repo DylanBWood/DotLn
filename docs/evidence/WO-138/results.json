@@ -1,0 +1,308 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-138",
+  "evaluatedAt": "2026-09-21T15:15:49.525Z",
+  "outcome": "inconclusive",
+  "blocker": "Only T2 met every pre-registered floor",
+  "qualifyingTasks": [
+    "T2"
+  ],
+  "noPrivateInputQualification": true,
+  "noCapabilityLevelPromotion": true,
+  "implementationOrVerificationQualified": false,
+  "operatorRanking": {
+    "elapsedSeconds": 60,
+    "requestedAt": "2026-09-21T13:04:26.410Z",
+    "completedAt": "2026-09-21T13:09:14.000Z"
+  },
+  "tasks": {
+    "T1": {
+      "threshold": 0.9,
+      "local": {
+        "episodes": 5,
+        "modelResponses": 5,
+        "schemaValid": 5,
+        "schemaValidRate": 1,
+        "oracleAgreement": [
+          0.1,
+          0.1,
+          0.1,
+          0.1,
+          0.1
+        ],
+        "medianOracleAgreement": 0.1,
+        "minOracleAgreement": 0.1,
+        "maxOracleAgreement": 0.1,
+        "medianLatencyMs": 11152.439,
+        "medianTokensPerSecond": 17.897,
+        "actualOperatorInterventions": 0,
+        "requestedHumanInterventions": 0,
+        "typedFailures": 0
+      },
+      "remote": {
+        "episodes": 5,
+        "modelResponses": 5,
+        "schemaValid": 5,
+        "schemaValidRate": 1,
+        "oracleAgreement": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "medianOracleAgreement": 1,
+        "minOracleAgreement": 1,
+        "maxOracleAgreement": 1,
+        "medianLatencyMs": 9154.829,
+        "medianTokensPerSecond": 31.022,
+        "actualOperatorInterventions": 0,
+        "requestedHumanInterventions": 0,
+        "typedFailures": 0
+      },
+      "comparatorAvailable": true,
+      "localMinusRemote": -0.9,
+      "floor": {
+        "schemaFiveOfFive": true,
+        "agreement": false,
+        "withinTenPointsOfRemote": false,
+        "medianLatencyAtMost120Seconds": true,
+        "noEpisodeIntervention": true
+      },
+      "qualifies": false
+    },
+    "T2": {
+      "threshold": 0.7,
+      "local": {
+        "episodes": 5,
+        "modelResponses": 5,
+        "schemaValid": 5,
+        "schemaValidRate": 1,
+        "oracleAgreement": [
+          0.828571,
+          0.828571,
+          0.828571,
+          0.828571,
+          0.828571
+        ],
+        "medianOracleAgreement": 0.828571,
+        "minOracleAgreement": 0.828571,
+        "maxOracleAgreement": 0.828571,
+        "medianLatencyMs": 12075.799,
+        "medianTokensPerSecond": 18.135,
+        "actualOperatorInterventions": 0,
+        "requestedHumanInterventions": 0,
+        "typedFailures": 0
+      },
+      "remote": {
+        "episodes": 5,
+        "modelResponses": 5,
+        "schemaValid": 5,
+        "schemaValidRate": 1,
+        "oracleAgreement": [
+          1,
+          0.828571,
+          0.828571,
+          0.828571,
+          0.828571
+        ],
+        "medianOracleAgreement": 0.828571,
+        "minOracleAgreement": 0.828571,
+        "maxOracleAgreement": 1,
+        "medianLatencyMs": 16596.313,
+        "medianTokensPerSecond": 30.586,
+        "actualOperatorInterventions": 0,
+        "requestedHumanInterventions": 0,
+        "typedFailures": 0
+      },
+      "comparatorAvailable": true,
+      "localMinusRemote": 0,
+      "floor": {
+        "schemaFiveOfFive": true,
+        "agreement": true,
+        "withinTenPointsOfRemote": true,
+        "medianLatencyAtMost120Seconds": true,
+        "noEpisodeIntervention": true
+      },
+      "qualifies": true
+    },
+    "T3": {
+      "threshold": 0.9,
+      "local": {
+        "episodes": 5,
+        "modelResponses": 5,
+        "schemaValid": 5,
+        "schemaValidRate": 1,
+        "oracleAgreement": [
+          0.833333,
+          0.833333,
+          0.833333,
+          0.833333,
+          0.833333
+        ],
+        "medianOracleAgreement": 0.833333,
+        "minOracleAgreement": 0.833333,
+        "maxOracleAgreement": 0.833333,
+        "medianLatencyMs": 25131.474,
+        "medianTokensPerSecond": 15.28,
+        "actualOperatorInterventions": 0,
+        "requestedHumanInterventions": 0,
+        "typedFailures": 0
+      },
+      "remote": {
+        "episodes": 5,
+        "modelResponses": 5,
+        "schemaValid": 5,
+        "schemaValidRate": 1,
+        "oracleAgreement": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "medianOracleAgreement": 1,
+        "minOracleAgreement": 1,
+        "maxOracleAgreement": 1,
+        "medianLatencyMs": 14227.731,
+        "medianTokensPerSecond": 32.753,
+        "actualOperatorInterventions": 0,
+        "requestedHumanInterventions": 0,
+        "typedFailures": 0
+      },
+      "comparatorAvailable": true,
+      "localMinusRemote": -0.166667,
+      "floor": {
+        "schemaFiveOfFive": true,
+        "agreement": false,
+        "withinTenPointsOfRemote": false,
+        "medianLatencyAtMost120Seconds": true,
+        "noEpisodeIntervention": true
+      },
+      "qualifies": false
+    }
+  },
+  "oneFactorCells": [
+    {
+      "episodeId": "factor-local-T1-t1-field-map",
+      "taskId": "T1",
+      "transport": "local",
+      "variant": "t1-field-map",
+      "factor": {
+        "name": "receipt-field-support",
+        "text": "Treat 'candidate findings' as the number raised, 'repair findings' as the number routed to repair, and 'new dependencies' as additions reported by the Dependencies row."
+      },
+      "cellBuildHash": "85f4325a803ee9eaa05500fba15781c133c22232d6fa95c167341066a8ad5885",
+      "baselineBuildHash": "a8d76bf38c8891151a30f1fdeee44f3d5d63a71f4e7b6ff88ee3c37fa6b8cbdf",
+      "agreement": 0.1,
+      "baselineMedianAgreement": 0.1,
+      "delta": 0
+    },
+    {
+      "episodeId": "factor-local-T2-t2-triage-rubric",
+      "taskId": "T2",
+      "transport": "local",
+      "variant": "t2-triage-rubric",
+      "factor": {
+        "name": "triage-rubric-support",
+        "text": "Prefer directly failing checks and repeated regressions over placement cleanup; prefer executable correctness risk over documentation organization, while still ranking every candidate."
+      },
+      "cellBuildHash": "dfa8a43224f3ceb68463da6049209334442d8a1794c1335ca0c516393fef9d75",
+      "baselineBuildHash": "44f0ce49d7bd60266cf205b9e2747429a502de37313a83408e3c1790bd820bd3",
+      "agreement": 0.771429,
+      "baselineMedianAgreement": 0.828571,
+      "delta": -0.057142
+    },
+    {
+      "episodeId": "factor-local-T3-t3-label-definitions",
+      "taskId": "T3",
+      "transport": "local",
+      "variant": "t3-label-definitions",
+      "factor": {
+        "name": "closed-label-definition-support",
+        "text": "Use the supplied labelDefinitions as the authoritative meaning of each label."
+      },
+      "cellBuildHash": "4755bce621ce40cec69b1cc43e0600d2cd301ace0065a5107b8e480bf97c2042",
+      "baselineBuildHash": "f93ecfe4f2741b827f07f1d4cc238e82ee980f0afa2960df9ce9d02f69c5ec44",
+      "agreement": 1,
+      "baselineMedianAgreement": 0.833333,
+      "delta": 0.166667
+    },
+    {
+      "episodeId": "factor-codex-T2-t2-triage-rubric",
+      "taskId": "T2",
+      "transport": "codex",
+      "variant": "t2-triage-rubric",
+      "factor": {
+        "name": "triage-rubric-support",
+        "text": "Prefer directly failing checks and repeated regressions over placement cleanup; prefer executable correctness risk over documentation organization, while still ranking every candidate."
+      },
+      "cellBuildHash": "dfa8a43224f3ceb68463da6049209334442d8a1794c1335ca0c516393fef9d75",
+      "baselineBuildHash": "44f0ce49d7bd60266cf205b9e2747429a502de37313a83408e3c1790bd820bd3",
+      "agreement": 0.885714,
+      "baselineMedianAgreement": 0.828571,
+      "delta": 0.057143
+    },
+    {
+      "episodeId": "factor-codex-T3-t3-label-definitions",
+      "taskId": "T3",
+      "transport": "codex",
+      "variant": "t3-label-definitions",
+      "factor": {
+        "name": "closed-label-definition-support",
+        "text": "Use the supplied labelDefinitions as the authoritative meaning of each label."
+      },
+      "cellBuildHash": "4755bce621ce40cec69b1cc43e0600d2cd301ace0065a5107b8e480bf97c2042",
+      "baselineBuildHash": "f93ecfe4f2741b827f07f1d4cc238e82ee980f0afa2960df9ce9d02f69c5ec44",
+      "agreement": 1,
+      "baselineMedianAgreement": 1,
+      "delta": 0
+    }
+  ],
+  "toolFailureCells": [
+    {
+      "episodeId": "failure-local-T1-unexpected-input",
+      "taskId": "T1",
+      "outcome": "typed-failure",
+      "schemaValid": false,
+      "status": "failed",
+      "requestedHuman": null,
+      "actualOperatorInterventions": 0,
+      "failure": {
+        "code": "invalid-result",
+        "detail": "invalid T1 criteriaMet"
+      }
+    },
+    {
+      "episodeId": "failure-local-T2-unexpected-input",
+      "taskId": "T2",
+      "outcome": "validated-envelope",
+      "schemaValid": true,
+      "status": "blocked",
+      "requestedHuman": true,
+      "actualOperatorInterventions": 0,
+      "failure": null
+    },
+    {
+      "episodeId": "failure-local-T3-unexpected-input",
+      "taskId": "T3",
+      "outcome": "typed-failure",
+      "schemaValid": false,
+      "status": "failed",
+      "requestedHuman": null,
+      "actualOperatorInterventions": 0,
+      "failure": {
+        "code": "invalid-result",
+        "detail": "unexpected input was not blocked"
+      }
+    }
+  ],
+  "episodeCount": 38,
+  "baselineEpisodeCount": 30,
+  "limits": [
+    "Five repeats estimate only this fixed prompt/task/build cell; they do not establish a population reliability rate.",
+    "The comparator is one remote model over one existing inspection transport.",
+    "Every input is committed public material or a seeded scratch repository; no no-egress claim is made.",
+    "The result qualifies neither private-input use, source writing, implementation nor independent verification."
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-138",
+  "episodeId": "factor-codex-T2-t2-triage-rubric",
+  "cell": {
+    "episodeId": "factor-codex-T2-t2-triage-rubric",
+    "kind": "one-factor",
+    "transport": "codex",
+    "taskId": "T2",
+    "repeat": 1,
+    "variant": "t2-triage-rubric",
+    "injected": false
+  },
+  "model": "gpt-5.6-sol",
+  "harnessVersion": "codex-cli 0.155.1",
+  "modelIdentity": {
+    "source": "requested remote transport model",
+    "model": "gpt-5.6-sol"
+  },
+  "harnessBuildHash": "3d9d6aa05c47bc6561e6850ea49c236611a3b462486f8311e4119953411f6907",
+  "cellBuildHash": "dfa8a43224f3ceb68463da6049209334442d8a1794c1335ca0c516393fef9d75",
+  "promptHash": "4dc44a92ec0aa47e25fa4337ddd332aef76b6796eb9482bd2ed5b900950447b2",
+  "schemaHash": "1d5667a2404733b53eb2410857b01159c1e31e16a3d82e3ef336137eaa95c5f7",
+  "inputHash": "65fafa395f4a7aa4342623528f903234c5c58a17f2f42ff053eddd18f27f9561",
+  "sourcePaths": [
+    "packages/skeleton/fixtures/wo119-discovery/repository.json"
+  ],
+  "startedAt": "2026-09-21T15:15:15.548Z",
+  "finishedAt": "2026-09-21T15:15:32.254Z",
+  "actualOperatorInterventions": 0,
+  "boundary": "existing codex-cli-exec inspection shape; tools and model-side network disabled",
+  "outcome": "validated-envelope",
+  "schemaValid": true,
+  "status": "completed",
+  "requiresHuman": false,
+  "answer": {
+    "taskId": "T2",
+    "status": "completed",
+    "requiresHuman": false,
+    "result": {
+      "ranking": [
+        "failing-test:src/main.js",
+        "repeated-repair:src/main.js:34c32817ea5437e8",
+        "failing-lint:src/main.js",
+        "misplaced-file:loose/helper.js",
+        "stale-generated:generated/obsolete.txt",
+        "misplaced-file:loose/guide.md"
+      ],
+      "rationale": "The failing test is the clearest immediate executable-correctness signal, followed by the repeated src/main.js regression and then the failing lint check. The misplaced JavaScript file ranks above cleanup-only candidates because it concerns executable source placement. The unreferenced stale generated artifact follows,"
+    }
+  },
+  "oracleAgreement": null,
+  "latencyMs": 16705.652000000002,
+  "usage": {
+    "inputTokens": 10042,
+    "cachedInputTokens": 0,
+    "outputTokens": 509,
+    "totalTokens": null
+  },
+  "tokensPerSecond": 30.46872998431908,
+  "responseModel": "gpt-5.6-sol",
+  "finishReason": "turn.completed"
+}

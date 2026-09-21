@@ -1,0 +1,162 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-138",
+  "t1": {
+    "source": "docs/verifications/WO-052/VER-001.md",
+    "oracle": {
+      "verdict": "pass",
+      "criteriaMet": "6",
+      "criteriaTotal": "6",
+      "candidateFindings": "5",
+      "repairFindings": "0",
+      "advisoryObservations": "7",
+      "gatePassedSuites": "19",
+      "gateFailedSuites": "0",
+      "gateDurationSeconds": "515.40",
+      "newDependencies": "0"
+    }
+  },
+  "t2": {
+    "source": "packages/skeleton/fixtures/wo119-discovery/repository.json",
+    "rankingCriterion": "Rank the candidates by the order in which the operator would want a read-only triage role to surface them for attention. Rank every candidate exactly once."
+  },
+  "t3": {
+    "source": "scripts/fixtures/harness-probe-hook.mjs",
+    "labels": [
+      "dispatch",
+      "read",
+      "write",
+      "gate",
+      "subagent",
+      "finish"
+    ],
+    "definitions": {
+      "dispatch": "an operator prompt enters the session",
+      "read": "a tool inspects state without changing it",
+      "write": "a tool proposes or records a state change",
+      "gate": "a product check or its result is observed",
+      "subagent": "a child-agent admission is observed",
+      "finish": "the session attempts to stop"
+    },
+    "rows": [
+      {
+        "rowId": "J01",
+        "row": {
+          "hook_event_name": "UserPromptSubmit",
+          "promptShape": "resume phrase"
+        },
+        "label": "dispatch"
+      },
+      {
+        "rowId": "J02",
+        "row": {
+          "hook_event_name": "PreToolUse",
+          "tool_name": "Read",
+          "tool_input": {
+            "file_path": "docs/work-orders/WO-138-local-model-role-qualification.md"
+          }
+        },
+        "label": "read"
+      },
+      {
+        "rowId": "J03",
+        "row": {
+          "hook_event_name": "PostToolUse",
+          "tool_name": "Read",
+          "tool_result": {
+            "bytes": 4812
+          }
+        },
+        "label": "read"
+      },
+      {
+        "rowId": "J04",
+        "row": {
+          "hook_event_name": "PreToolUse",
+          "tool_name": "Bash",
+          "tool_input": {
+            "command": "git status --short"
+          }
+        },
+        "label": "read"
+      },
+      {
+        "rowId": "J05",
+        "row": {
+          "hook_event_name": "PreToolUse",
+          "tool_name": "Edit",
+          "tool_input": {
+            "path": "scripts/probes/example.mjs"
+          }
+        },
+        "label": "write"
+      },
+      {
+        "rowId": "J06",
+        "row": {
+          "hook_event_name": "PostToolUse",
+          "tool_name": "Edit",
+          "tool_result": {
+            "changed": true
+          }
+        },
+        "label": "write"
+      },
+      {
+        "rowId": "J07",
+        "row": {
+          "hook_event_name": "PreToolUse",
+          "tool_name": "Bash",
+          "tool_input": {
+            "command": "npm test"
+          }
+        },
+        "label": "gate"
+      },
+      {
+        "rowId": "J08",
+        "row": {
+          "hook_event_name": "PostToolUse",
+          "tool_name": "Bash",
+          "tool_result": {
+            "command": "npm test",
+            "exitCode": 0
+          }
+        },
+        "label": "gate"
+      },
+      {
+        "rowId": "J09",
+        "row": {
+          "hook_event_name": "SubagentStart",
+          "agent_type": "reviewer"
+        },
+        "label": "subagent"
+      },
+      {
+        "rowId": "J10",
+        "row": {
+          "hook_event_name": "SubagentStart",
+          "agent_type": "researcher"
+        },
+        "label": "subagent"
+      },
+      {
+        "rowId": "J11",
+        "row": {
+          "hook_event_name": "Stop",
+          "stop_hook_active": false
+        },
+        "label": "finish"
+      },
+      {
+        "rowId": "J12",
+        "row": {
+          "hook_event_name": "Stop",
+          "stop_hook_active": true
+        },
+        "label": "finish"
+      }
+    ]
+  }
+}

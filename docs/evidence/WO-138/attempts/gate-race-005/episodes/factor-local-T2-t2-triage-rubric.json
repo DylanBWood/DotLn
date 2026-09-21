@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-138",
+  "episodeId": "factor-local-T2-t2-triage-rubric",
+  "cell": {
+    "episodeId": "factor-local-T2-t2-triage-rubric",
+    "kind": "one-factor",
+    "transport": "local",
+    "taskId": "T2",
+    "repeat": 1,
+    "variant": "t2-triage-rubric",
+    "injected": false
+  },
+  "model": "dotln-local",
+  "harnessVersion": "0.4.24+1",
+  "modelIdentity": {
+    "source": "lms ps --json after load; never the request model field",
+    "identifier": "dotln-local",
+    "artifactMatch": true,
+    "artifactFile": "Qwen3.6-27B-Q4_K_M.gguf",
+    "artifactSha256": "33625d8dc3a5dd8d88c324d47db58561b11f7072816287078bfe58b4c55782f9",
+    "observedKeys": [
+      "architecture",
+      "contextLength",
+      "deviceIdentifier",
+      "displayName",
+      "format",
+      "identifier",
+      "indexedModelIdentifier",
+      "lastUsedTime",
+      "maxContextLength",
+      "modelKey",
+      "parallel",
+      "paramsString",
+      "path",
+      "publisher",
+      "quantization",
+      "queued",
+      "selectedVariant",
+      "sizeBytes",
+      "status",
+      "trainedForToolUse",
+      "ttlMs",
+      "type",
+      "variants",
+      "vision"
+    ],
+    "status": "idle",
+    "queued": 0
+  },
+  "harnessBuildHash": "fdc4b0a5395aca78c60a94e637691eac9b1045d4c05f4fe249d78eb312644fb5",
+  "cellBuildHash": "65b1f875d261739d6e006fccd1f18d4c4284c0c3a1ee07a4e563487d9c37c67a",
+  "promptHash": "8f1dd3ffcc2eecaa8c90ce70b7456ba06cd961b9be5ad617db46a1f0bc6bf585",
+  "schemaHash": "e9a19c4ab4141ffd9761e10dae4a7eca7c723dcbf2920a50aa492b3989fe1ee3",
+  "inputHash": "5d17fb21bc4d0abb6710fd5a835ac7605febefefad068806fa87fabca3750c7a",
+  "sourcePaths": [
+    "packages/skeleton/fixtures/wo119-discovery/repository.json"
+  ],
+  "startedAt": "2026-09-21T13:28:43.247Z",
+  "finishedAt": "2026-09-21T13:29:02.961Z",
+  "actualOperatorInterventions": 0,
+  "boundary": "loopback client; all inputs committed public material; no no-egress claim",
+  "outcome": "validated-envelope",
+  "schemaValid": true,
+  "status": "completed",
+  "requiresHuman": false,
+  "answer": {
+    "taskId": "T2",
+    "status": "completed",
+    "requiresHuman": false,
+    "result": {
+      "ranking": [
+        "failing-test:src/main.js",
+        "failing-lint:src/main.js",
+        "repeated-repair:src/main.js:34c32817ea5437e8",
+        "misplaced-file:loose/helper.js",
+        "misplaced-file:loose/guide.md",
+        "stale-generated:generated/obsolete.txt"
+      ],
+      "rationale": "Ranked by triage priority: 1. Failing test (executable correctness risk). 2. Failing lint (build integrity). 3. Repeated repair (regression risk). 4. Misplaced source file (code organization). 5. Misplaced documentation (lower priority). 6. Stale generated file (cleanup)."
+    }
+  },
+  "oracleAgreement": null,
+  "latencyMs": 19713.242874999996,
+  "usage": {
+    "inputTokens": 1446,
+    "cachedInputTokens": null,
+    "outputTokens": 215,
+    "totalTokens": 1661
+  },
+  "tokensPerSecond": 18.34762018505718,
+  "responseModel": "dotln-local",
+  "finishReason": "stop"
+}

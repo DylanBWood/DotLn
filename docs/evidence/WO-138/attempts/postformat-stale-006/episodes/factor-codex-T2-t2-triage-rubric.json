@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-138",
+  "episodeId": "factor-codex-T2-t2-triage-rubric",
+  "cell": {
+    "episodeId": "factor-codex-T2-t2-triage-rubric",
+    "kind": "one-factor",
+    "transport": "codex",
+    "taskId": "T2",
+    "repeat": 1,
+    "variant": "t2-triage-rubric",
+    "injected": false
+  },
+  "model": "gpt-5.6-sol",
+  "harnessVersion": "codex-cli 0.155.1",
+  "modelIdentity": {
+    "source": "requested remote transport model",
+    "model": "gpt-5.6-sol"
+  },
+  "harnessBuildHash": "da3c8b1ab9af6aa2d4bda1f7e078e4cd0954479a9e800df0060e5fc842cdddf9",
+  "cellBuildHash": "435710639822087589892c1bd4cec2d4a42d571fa865956003d934c3ee2ebad2",
+  "promptHash": "163638eaee65183f355c1dc5214fdf50d2c2f5ebd677b8519e5b703295e91acc",
+  "schemaHash": "e9a19c4ab4141ffd9761e10dae4a7eca7c723dcbf2920a50aa492b3989fe1ee3",
+  "inputHash": "f184114087333e31e79ecfc355d9ad690a2803068eaeb0bd307ac60b96c48954",
+  "sourcePaths": [
+    "packages/skeleton/fixtures/wo119-discovery/repository.json"
+  ],
+  "startedAt": "2026-09-21T14:05:42.098Z",
+  "finishedAt": "2026-09-21T14:05:43.793Z",
+  "actualOperatorInterventions": 0,
+  "outcome": "typed-failure",
+  "schemaValid": false,
+  "status": "failed",
+  "requiresHuman": null,
+  "oracleAgreement": 0,
+  "latencyMs": 1693.9917090000235,
+  "usage": null,
+  "tokensPerSecond": null,
+  "failure": {
+    "code": "transport-failed",
+    "detail": ""
+  },
+  "boundary": "existing codex-cli-exec inspection shape; tools and model-side network disabled"
+}

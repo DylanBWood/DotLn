@@ -453,6 +453,18 @@ The CLI rejects an answer from an explicitly stamped resident process.
 it reports the dated `L-U1` row, whose `unavailable` label makes the resident
 record a reasoned NoOp, and runs a bounded inspection episode when a `ready`
 row is supplied. A local completion claim is never independent verification.
+**Observed 2026-09-21 — WO-138 role qualification after repair.** For committed
+public inputs only, the local kind is qualified to rank T2's six discovery
+candidates under its fixed read-only contract with host-validated coverage.
+The final 38-cell matrix binds both transports to one retained input snapshot
+and probe build. All five T2 repeats on each transport were schema-valid;
+both median Spearman agreements were 0.828571. Local median latency was
+12,075.799 ms with no in-episode operator intervention. T1 and T3 remain
+unqualified. The rejected and unmatched earlier matrices are retained unscored
+in the [packet](../evidence/WO-138/decision-packet.md). This role row does not change `L-U1` availability, establish
+no-egress, promote a capability level, or qualify private inputs, writing,
+implementation or independent verification. Reopen on a changed task, schema,
+artifact or boundary, or a separately registered requalification.
 The catalog never substitutes another kind. Reopen these launch claims when a new discovery row
 contradicts the dated C-U1/X-U1 observations (WO-122-D001).
 

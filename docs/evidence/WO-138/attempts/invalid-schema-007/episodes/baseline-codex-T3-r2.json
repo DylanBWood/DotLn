@@ -1,0 +1,105 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-138",
+  "episodeId": "baseline-codex-T3-r2",
+  "cell": {
+    "episodeId": "baseline-codex-T3-r2",
+    "kind": "baseline",
+    "transport": "codex",
+    "taskId": "T3",
+    "repeat": 2,
+    "variant": "baseline",
+    "injected": false
+  },
+  "model": "gpt-5.6-sol",
+  "harnessVersion": "codex-cli 0.155.1",
+  "modelIdentity": {
+    "source": "requested remote transport model",
+    "model": "gpt-5.6-sol"
+  },
+  "harnessBuildHash": "29d874bd99ac741c9da31e4a8c4321a3bf7b562bb23187b7bb585a330c22b8b4",
+  "cellBuildHash": "ea047a59f8a65c95ad1b38f2705deab1da1846d3f419d2038e2315e605a33edd",
+  "promptHash": "870057bc2d1b90cc21faeccb7f00373857531bbee90d61cf78568fa8b4d6e8e7",
+  "schemaHash": "666186e0c5385b580ec68ee7215e4743f7064c3ab58b91e495a601f8c00d61e4",
+  "inputHash": "8234c1f33d9553f39fe90f4752ee3f5f731cde2a4fda8b42ee63f101a2016c73",
+  "sourcePaths": [
+    "scripts/fixtures/harness-probe-hook.mjs"
+  ],
+  "startedAt": "2026-09-21T14:19:56.141Z",
+  "finishedAt": "2026-09-21T14:20:07.294Z",
+  "actualOperatorInterventions": 0,
+  "boundary": "existing codex-cli-exec inspection shape; tools and model-side network disabled",
+  "outcome": "validated-envelope",
+  "schemaValid": true,
+  "status": "completed",
+  "requiresHuman": false,
+  "answer": {
+    "taskId": "T3",
+    "status": "completed",
+    "requiresHuman": false,
+    "result": {
+      "classifications": [
+        {
+          "rowId": "J01",
+          "label": "dispatch"
+        },
+        {
+          "rowId": "J02",
+          "label": "read"
+        },
+        {
+          "rowId": "J03",
+          "label": "read"
+        },
+        {
+          "rowId": "J04",
+          "label": "read"
+        },
+        {
+          "rowId": "J05",
+          "label": "write"
+        },
+        {
+          "rowId": "J06",
+          "label": "write"
+        },
+        {
+          "rowId": "J07",
+          "label": "gate"
+        },
+        {
+          "rowId": "J08",
+          "label": "gate"
+        },
+        {
+          "rowId": "J09",
+          "label": "subagent"
+        },
+        {
+          "rowId": "J10",
+          "label": "subagent"
+        },
+        {
+          "rowId": "J11",
+          "label": "finish"
+        },
+        {
+          "rowId": "J12",
+          "label": "finish"
+        }
+      ],
+      "reason": "All journal rows map unambiguously to exactly one supplied label based on hook event and tool intent."
+    }
+  },
+  "oracleAgreement": 1,
+  "latencyMs": 11150.987042000008,
+  "usage": {
+    "inputTokens": 9320,
+    "cachedInputTokens": 0,
+    "outputTokens": 467,
+    "totalTokens": null
+  },
+  "tokensPerSecond": 41.87970071537634,
+  "responseModel": "gpt-5.6-sol",
+  "finishReason": "turn.completed"
+}

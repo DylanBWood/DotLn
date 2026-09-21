@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-138",
+  "episodeId": "baseline-codex-T2-r2",
+  "cell": {
+    "episodeId": "baseline-codex-T2-r2",
+    "kind": "baseline",
+    "transport": "codex",
+    "taskId": "T2",
+    "repeat": 2,
+    "variant": "baseline",
+    "injected": false
+  },
+  "model": "gpt-5.6-sol",
+  "harnessVersion": "codex-cli 0.155.1",
+  "modelIdentity": {
+    "source": "requested remote transport model",
+    "model": "gpt-5.6-sol"
+  },
+  "harnessBuildHash": "3d9d6aa05c47bc6561e6850ea49c236611a3b462486f8311e4119953411f6907",
+  "cellBuildHash": "44f0ce49d7bd60266cf205b9e2747429a502de37313a83408e3c1790bd820bd3",
+  "promptHash": "92aea68a9f3cf620de4e979fad784961859db64ef0918cd8d35c3779617ecd96",
+  "schemaHash": "1d5667a2404733b53eb2410857b01159c1e31e16a3d82e3ef336137eaa95c5f7",
+  "inputHash": "65fafa395f4a7aa4342623528f903234c5c58a17f2f42ff053eddd18f27f9561",
+  "sourcePaths": [
+    "packages/skeleton/fixtures/wo119-discovery/repository.json"
+  ],
+  "startedAt": "2026-09-21T15:12:47.411Z",
+  "finishedAt": "2026-09-21T15:13:11.304Z",
+  "actualOperatorInterventions": 0,
+  "boundary": "existing codex-cli-exec inspection shape; tools and model-side network disabled",
+  "outcome": "validated-envelope",
+  "schemaValid": true,
+  "status": "completed",
+  "requiresHuman": false,
+  "answer": {
+    "taskId": "T2",
+    "status": "completed",
+    "requiresHuman": false,
+    "result": {
+      "ranking": [
+        "failing-test:src/main.js",
+        "failing-lint:src/main.js",
+        "repeated-repair:src/main.js:34c32817ea5437e8",
+        "misplaced-file:loose/helper.js",
+        "misplaced-file:loose/guide.md",
+        "stale-generated:generated/obsolete.txt"
+      ],
+      "rationale": "Surface active failures first: the test failure has non-empty stderr evidence, followed by the lint failure. The repeated repair is next because two recorded occurrences indicate recurrence on the same source file. Misplaced source code precedes misplaced documentation because it is more likely to affect implementation"
+    }
+  },
+  "oracleAgreement": null,
+  "latencyMs": 23892.424874999997,
+  "usage": {
+    "inputTokens": 10001,
+    "cachedInputTokens": 0,
+    "outputTokens": 807,
+    "totalTokens": null
+  },
+  "tokensPerSecond": 33.77639583349323,
+  "responseModel": "gpt-5.6-sol",
+  "finishReason": "turn.completed"
+}

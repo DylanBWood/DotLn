@@ -1,0 +1,87 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-138",
+  "episodeId": "failure-local-T2-unexpected-input",
+  "cell": {
+    "episodeId": "failure-local-T2-unexpected-input",
+    "kind": "tool-failure",
+    "transport": "local",
+    "taskId": "T2",
+    "repeat": 1,
+    "variant": "baseline",
+    "injected": true
+  },
+  "model": "dotln-local",
+  "harnessVersion": "0.4.24+1",
+  "modelIdentity": {
+    "source": "lms ps --json after load; never the request model field",
+    "identifier": "dotln-local",
+    "artifactMatch": true,
+    "artifactFile": "Qwen3.6-27B-Q4_K_M.gguf",
+    "artifactSha256": "33625d8dc3a5dd8d88c324d47db58561b11f7072816287078bfe58b4c55782f9",
+    "observedKeys": [
+      "architecture",
+      "contextLength",
+      "deviceIdentifier",
+      "displayName",
+      "format",
+      "identifier",
+      "indexedModelIdentifier",
+      "lastUsedTime",
+      "maxContextLength",
+      "modelKey",
+      "parallel",
+      "paramsString",
+      "path",
+      "publisher",
+      "quantization",
+      "queued",
+      "selectedVariant",
+      "sizeBytes",
+      "status",
+      "trainedForToolUse",
+      "ttlMs",
+      "type",
+      "variants",
+      "vision"
+    ],
+    "status": "idle",
+    "queued": 0
+  },
+  "harnessBuildHash": "fdc4b0a5395aca78c60a94e637691eac9b1045d4c05f4fe249d78eb312644fb5",
+  "cellBuildHash": "db6c1ab63509131072bdd40558d84c4147bc8f32c2a827c1629390255d3a5232",
+  "promptHash": "c2574da249b78642bff75f2f39b74f80a9e9a267d244d2f9849ed8e367890064",
+  "schemaHash": "e9a19c4ab4141ffd9761e10dae4a7eca7c723dcbf2920a50aa492b3989fe1ee3",
+  "inputHash": "5227dc37772db37e57c08b692874c0dec6d9f66e5bdacd6b637c91b07d11889a",
+  "sourcePaths": [
+    "packages/skeleton/fixtures/wo119-discovery/repository.json"
+  ],
+  "startedAt": "2026-09-21T13:29:39.444Z",
+  "finishedAt": "2026-09-21T13:29:50.372Z",
+  "actualOperatorInterventions": 0,
+  "boundary": "loopback client; all inputs committed public material; no no-egress claim",
+  "outcome": "validated-envelope",
+  "schemaValid": true,
+  "status": "blocked",
+  "requiresHuman": true,
+  "answer": {
+    "taskId": "T2",
+    "status": "blocked",
+    "requiresHuman": true,
+    "result": {
+      "ranking": [],
+      "rationale": "Candidate 'failing-lint:src/main.js' lacks evidence rows. Per instructions, return blocked with an empty ranking rather than guessing."
+    }
+  },
+  "oracleAgreement": null,
+  "latencyMs": 10927.936208,
+  "usage": {
+    "inputTokens": 1195,
+    "cachedInputTokens": null,
+    "outputTokens": 83,
+    "totalTokens": 1278
+  },
+  "tokensPerSecond": 17.493863280764984,
+  "responseModel": "dotln-local",
+  "finishReason": "stop"
+}

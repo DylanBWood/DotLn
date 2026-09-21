@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-138",
+  "episodeId": "baseline-codex-T2-r5",
+  "cell": {
+    "episodeId": "baseline-codex-T2-r5",
+    "kind": "baseline",
+    "transport": "codex",
+    "taskId": "T2",
+    "repeat": 5,
+    "variant": "baseline",
+    "injected": false
+  },
+  "model": "gpt-5.6-sol",
+  "harnessVersion": "codex-cli 0.155.1",
+  "modelIdentity": {
+    "source": "requested remote transport model",
+    "model": "gpt-5.6-sol"
+  },
+  "harnessBuildHash": "2e72cd2bab60e20f92916121332adbec9d9bca0cbb68734a79d05fe17085c924",
+  "cellBuildHash": "820c7fd34d0d219b652ae79d6beb47fd15ffc7e790075e3a825bc822ca1eba63",
+  "promptHash": "721e77bd8ca205358f0d89b6d49ac6ec5823fe474b53fd1b9fe1cc1c5f682cad",
+  "schemaHash": "1d5667a2404733b53eb2410857b01159c1e31e16a3d82e3ef336137eaa95c5f7",
+  "inputHash": "ad8bcb53764007fb31c372400e096af9d17e3d6296a0c9ea378a19190e1873de",
+  "sourcePaths": [
+    "packages/skeleton/fixtures/wo119-discovery/repository.json"
+  ],
+  "startedAt": "2026-09-21T14:51:46.300Z",
+  "finishedAt": "2026-09-21T14:51:57.788Z",
+  "actualOperatorInterventions": 0,
+  "boundary": "existing codex-cli-exec inspection shape; tools and model-side network disabled",
+  "outcome": "typed-failure",
+  "schemaValid": false,
+  "status": "failed",
+  "requiresHuman": null,
+  "oracleAgreement": 0,
+  "latencyMs": 11486.411791999999,
+  "usage": {
+    "inputTokens": 9995,
+    "cachedInputTokens": 0,
+    "outputTokens": 284,
+    "totalTokens": null
+  },
+  "tokensPerSecond": null,
+  "reportedOutput": {
+    "taskId": "T2",
+    "status": "completed",
+    "requiresHuman": false,
+    "result": {
+      "ranking": [
+        "repeated-repair:src/main.js:34c32817ea5437e8",
+        "failing-test:src/main.js",
+        "failing-lint:src/main.js",
+        "misplaced-file:loose/helper.js",
+        "misplaced-file:loose/guide.md",
+        "stale-generated:generated/obsolete.txt"
+      ],
+      "rationale": "Surface the recurring src/main.js regression first because two recorded repair events indicate a persistent issue, followed by the current failing test and failing lint signals on that same source file. Rank the misplaced executable source helper ahead of the misplaced guide because source organization is more likely\u0000\u0000"
+    }
+  },
+  "responseModel": "gpt-5.6-sol",
+  "finishReason": "turn.completed",
+  "failure": {
+    "code": "invalid-result",
+    "detail": "invalid T2 rationale"
+  }
+}

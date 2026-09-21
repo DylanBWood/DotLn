@@ -1,0 +1,161 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-138",
+  "requestedAt": "2026-09-21T13:04:26.410Z",
+  "source": "packages/skeleton/fixtures/wo119-discovery/repository.json",
+  "rankingCriterion": "Rank the candidates by the order in which the operator would want a read-only triage role to surface them for attention. Rank every candidate exactly once.",
+  "candidates": [
+    {
+      "candidateId": "failing-lint:src/main.js",
+      "kind": "failing-lint",
+      "paths": [
+        "src/main.js"
+      ],
+      "evidence": [
+        {
+          "evidenceId": "failing-lint:src/main.js",
+          "source": ".dotln/discovery.json",
+          "facts": {
+            "exitCode": 1,
+            "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "commandSha256": "ca15cb642180b6c567db2fcab088618cea0ea9576dfc2386de1a667a3b47d645"
+          }
+        }
+      ],
+      "size": {
+        "files": 1
+      }
+    },
+    {
+      "candidateId": "failing-test:src/main.js",
+      "kind": "failing-test",
+      "paths": [
+        "src/main.js"
+      ],
+      "evidence": [
+        {
+          "evidenceId": "failing-test:src/main.js",
+          "source": ".dotln/discovery.json",
+          "facts": {
+            "exitCode": 1,
+            "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderrSha256": "52703cecc8269f0f372ff64f9916ebe5737da9bd950e554c357e18c9bc4a4c1f",
+            "commandSha256": "dbaa7ed2d721a7aa47969eac510ffeed02a9a692c8e37883bfba0371cf8f6d24"
+          }
+        }
+      ],
+      "size": {
+        "files": 1
+      }
+    },
+    {
+      "candidateId": "misplaced-file:loose/guide.md",
+      "kind": "misplaced-file",
+      "paths": [
+        "loose/guide.md"
+      ],
+      "proposedHome": "docs/guide.md",
+      "evidence": [
+        {
+          "evidenceId": "misplaced-file:loose/guide.md",
+          "source": ".dotln/discovery.json",
+          "facts": {
+            "observedPath": "loose/guide.md",
+            "declaredHome": "docs/guide.md",
+            "contentSha256": "b0b11c73f6a502f1e2ce35542457c842ac8e597b6e378616911a4183b14ed5ed"
+          }
+        }
+      ],
+      "size": {
+        "files": 1
+      }
+    },
+    {
+      "candidateId": "misplaced-file:loose/helper.js",
+      "kind": "misplaced-file",
+      "paths": [
+        "loose/helper.js"
+      ],
+      "proposedHome": "src/helper.js",
+      "evidence": [
+        {
+          "evidenceId": "misplaced-file:loose/helper.js",
+          "source": ".dotln/discovery.json",
+          "facts": {
+            "observedPath": "loose/helper.js",
+            "declaredHome": "src/helper.js",
+            "contentSha256": "0178ebe33198629bc345d7410d644ab4991518d537db5fd04912d281df792928"
+          }
+        }
+      ],
+      "size": {
+        "files": 1
+      }
+    },
+    {
+      "candidateId": "stale-generated:generated/obsolete.txt",
+      "kind": "stale-generated",
+      "paths": [
+        "generated/obsolete.txt"
+      ],
+      "evidence": [
+        {
+          "evidenceId": "stale-generated:generated/obsolete.txt",
+          "source": ".dotln/discovery.json",
+          "facts": {
+            "classification": "generated-stale",
+            "references": "none in bounded literal-token corpus",
+            "scannedFiles": 6,
+            "corpusSha256": "d8fde719c2df1b1c3f62f606b3ff2077b391cfd078fb593c1a968d0803a4f3a8",
+            "contentSha256": "57219edc91fa81f0705678314312e70688dbec31f1141843ae6ee0d677995fc5",
+            "referenceTokens": [
+              "generated/obsolete.txt",
+              "obsolete.txt"
+            ]
+          }
+        }
+      ],
+      "size": {
+        "files": 1
+      }
+    },
+    {
+      "candidateId": "repeated-repair:src/main.js:34c32817ea5437e8",
+      "kind": "repeated-repair",
+      "paths": [
+        "src/main.js"
+      ],
+      "evidence": [
+        {
+          "evidenceId": "repeated-repair:src/main.js:34c32817ea5437e8",
+          "source": ".dotln/discovery.json",
+          "facts": {
+            "repairKey": "main-regression:[\"src/main.js\"]",
+            "occurrences": 2,
+            "eventIds": [
+              "repair-1",
+              "repair-2"
+            ],
+            "historyPath": ".dotln/repairs.jsonl",
+            "historySha256": "ad9d6666f9d76e6592f7c6eb61e242fe3a474b13aafa12b15e92b6018bdaf3a6"
+          }
+        }
+      ],
+      "size": {
+        "files": 1
+      }
+    }
+  ],
+  "responseContract": {
+    "ranking": [
+      "failing-lint:src/main.js",
+      "failing-test:src/main.js",
+      "misplaced-file:loose/guide.md",
+      "misplaced-file:loose/helper.js",
+      "stale-generated:generated/obsolete.txt",
+      "repeated-repair:src/main.js:34c32817ea5437e8"
+    ],
+    "instruction": "Return these six candidate IDs once each, reordered from highest to lowest priority. The executor records elapsed operator time from this request to the reply."
+  }
+}
