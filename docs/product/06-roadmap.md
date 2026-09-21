@@ -20,6 +20,16 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-147 activation completion (2026-09-21):** assigned application `v0.39.1`,
+the next patch above the observed local annotated `v0.39.0` tag, under the
+declared patch classification. The worker-store acquisition path, its resident
+fixtures and their pause-point peer change; skeleton moves to `0.34.1` and the
+console's exact pin follows it. No kernel, compiler, event, envelope, schema,
+predicate, guard record or third-party dependency changes. Independent
+verification, final review and publication remain separate lifecycle actions.
+
+**WO-147 collision retiming (2026-09-21):** unpublished target `v0.39.1` is superseded by `v0.40.1` under the existing patch classification because the observed release baseline is `v0.40.0`. Scope, acceptance, component versions, and published tags are unchanged by this retiming.
+
 **WO-150 activation completion (2026-09-21):** assigned application `v0.39.0`,
 the next minor above the observed local annotated `v0.38.1` tag, under the
 declared minor classification. The compiled Contributor loadout equips the

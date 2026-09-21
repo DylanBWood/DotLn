@@ -13202,6 +13202,50 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-2f74e76fb7212925",
+      "key": "decision:docs/evidence/WO-147/decisions.md#wo-147-d008",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "dfef33a637989585dd34ae5eeb7dda47b36fc430cafb3b232419d80f80b07de4",
+          "ref": "docs/evidence/WO-147/decisions.md#wo-147-d008--verifier-correction-ver-001-passed-a-subject-whose-evidence-editions-are-stale",
+          "title": "WO-147-D008: WO-147 repair before final review: re-mint the authority and feedback evidence editions for WO-147 and repoint docs/evidence/current.json at them, as WO-150-D006 did for the same class of",
+          "summary": "{ \"id\": \"WO-147-D008\", \"date\": \"2026-09-21\", \"dispatch\": \"resume: verify, then operator override: authorized recovery after the pass was recorded\", \"decision\": \"Record that VER-001's pass verdict was recorded before the document gate ran and is wrong on the delivered work, and board the defect it missed for repair. WO-147 changes packages/skeleton/src/worker-store.ts, packages/skeleton/package.json and package-lock.json, all declared authority and feedback evidence sources, without re-minting those editions, so npm run test:docs fails and the review selection's authority-evidence and feedback-evidence rows are red. The verifier makes no implementation change and leaves VER-001's recorded byt",
+          "missing": false
+        },
+        {
+          "hash": "29f0350e12a39369819b95251fb6ef8a6ce644111d16fdbf6e53eb58288f381d",
+          "ref": "docs/evidence/WO-147/decisions.md#wo-147-d008--verifier-correction-ver-001-passed-a-subject-whose-evidence-editions-are-stale",
+          "title": "WO-147-D008: WO-147 repair before final review: re-mint the authority and feedback evidence editions as WO-147 revision 001 and repoint docs/evidence/current.json at them, as WO-150-D006 did for the s",
+          "summary": "{ \"id\": \"WO-147-D008\", \"date\": \"2026-09-21\", \"dispatch\": \"resume: verify, then operator override: authorized recovery after the pass was recorded\", \"decision\": \"Record that VER-001's pass verdict was recorded before the document gate ran and is wrong on the delivered work, and board the defect it missed for repair. WO-147 changes packages/skeleton/src/worker-store.ts, packages/skeleton/package.json and package-lock.json, all declared authority and feedback evidence sources, without re-minting those editions, so npm run test:docs fails and the review selection's authority-evidence and feedback-evidence rows are red. The verifier makes no implementation change and leaves VER-001's recorded byt",
+          "missing": false
+        },
+        {
+          "hash": "14d9718de67863fc5136902424156b0b97a732240e960d8dc30ccafe2db39fa9",
+          "ref": "docs/evidence/WO-147/decisions.md#wo-147-d008--verifier-correction-ver-001-passed-a-subject-whose-evidence-editions-are-stale",
+          "title": "WO-147-D008: WO-147 repair, routed through final review: from the recorded pass the only legal path to repair is resume: final review, whose fail records needs-fix (scripts/lib/control.mjs FinalReview",
+          "summary": "{ \"id\": \"WO-147-D008\", \"date\": \"2026-09-21\", \"dispatch\": \"resume: verify, then operator override: authorized recovery after the pass was recorded\", \"decision\": \"Record that VER-001's pass verdict was recorded before the document gate ran and is wrong on the delivered work, and board the defect it missed for repair. WO-147 changes packages/skeleton/src/worker-store.ts, packages/skeleton/package.json and package-lock.json, all declared authority and feedback evidence sources, without re-minting those editions, so npm run test:docs fails and the review selection's authority-evidence and feedback-evidence rows are red. The verifier makes no implementation change and leaves VER-001's recorded byt",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-a0f22832bb1a84ea",
+      "key": "decision:docs/evidence/WO-147/decisions.md#wo-147-d010",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "84ecdf18d60f1272c0027c6d973a6605a05252ab06740653bbf22b051eb7e1a8",
+          "ref": "docs/evidence/WO-147/decisions.md#wo-147-d010--final-review-re-mint-the-stale-authority-and-feedback-editions-inside-this-review-instead-of-failing-the-order-into-repair",
+          "title": "WO-147-D010: Planner: an order that edits packages/skeleton/src/worker-store.ts or any other registered evidence source (scripts/lib/evidence-sources.mjs) carries one live feedback self-host episode i",
+          "summary": "{ \"id\": \"WO-147-D010\", \"date\": \"2026-09-21\", \"dispatch\": \"resume: final review; D008's boarded defect\", \"decision\": \"Discharge D008's follow-up inside this review: mint the authority and feedback evidence editions as WO-147 revision 001 on the integrated tree, record one live claude-cli-print self-host audit, repoint docs/evidence/current.json at both, re-pin the console's self-host case, and run the review gate on the result; leave VER-001's recorded verdict and D008's text as written. Route nothing to repair: the code is unchanged since verification, the authority edition is deterministic, and the feedback edition differs from WO-150's in exactly one field, the subject hash.\", \"evidence\": ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

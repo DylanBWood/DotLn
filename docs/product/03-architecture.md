@@ -1836,9 +1836,16 @@ guard's unique directory. A claimant confirms that the canonical guard still
 names that directory before touching shared state, so a delayed claimant cannot
 remove its successor. Live or unreadable owners and legacy ownerless guards
 refuse with a store error that names the inspection path; the `dotln` commands
-print only their redacted refusal. Append recovery positively replays the actual
-resident log after excluding its prior writer; interrupted private preparation
-or cleanup does not block the next start. PID reuse still refuses conservatively.
+print only their redacted refusal. While the guard excludes new writers, a
+`host.lock` that vanishes between presence observation and stat or read is
+inspected once more; absence proceeds, while a present owner receives the same
+live, dead and shape judgments as before. Other missing or malformed state still
+refuses. Append recovery positively replays the actual resident log after
+excluding its prior writer; interrupted private preparation or cleanup does not
+block the next start. Boundary fixtures allocate a just-exited process at each
+dead-owner use and assert it remains dead before and after the boundary, so PID
+reuse is observed rather than assumed; runtime PID reuse still refuses
+conservatively.
 The polling loop stops acquiring the append lock after issuing a kill, then
 records the final outcome in its ordinary transaction.
 On restart, outstanding episodes become lost and the policy rearms without
