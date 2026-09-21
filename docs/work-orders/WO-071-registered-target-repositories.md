@@ -1,4 +1,4 @@
-# WO-071 — Registered target repositories: a work order may declare a repository and base, the configuration registers each repository with an authority profile, and the compiled WorkOrder inherits that profile through the monotone floor (version assigned at activation)
+# WO-071 — Registered target repositories: a work order may declare a repository and base, the configuration registers each repository with an authority profile, and the compiled WorkOrder inherits that profile through the monotone floor (v0.38.0)
 
 **Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
 
