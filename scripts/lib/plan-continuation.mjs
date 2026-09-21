@@ -1,3 +1,4 @@
+import { docRelative } from "./config.mjs";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import {
@@ -10,7 +11,8 @@ import { containedRegularFile } from "./paths.mjs";
 import { LEGACY_COST_HEADER } from "./legacy-cost.mjs";
 import { dependencyMigration } from "./plan-dependency-migration.mjs";
 
-const capabilityPath = "docs/planning/capability-table.md";
+const capabilityTable = (root) =>
+  docRelative(root, "planning", "capability-table.md");
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 const requireSamePlan = (condition, reason) => {
   if (!condition)
@@ -225,7 +227,7 @@ export function checkPlanContinuation(
   const updates = adoptsCost
     ? [
         {
-          path: "docs/planning/cost-table.json",
+          path: docRelative(root, "planning", "cost-table.json"),
           kind: "cost-contract-adoption",
           source: "WO-126 criterion 16",
           missingData:
@@ -235,10 +237,10 @@ export function checkPlanContinuation(
     : [];
   if (judged.goalReview && !same(judged.costTable, current.costTable))
     updates.push({
-      path: "docs/planning/cost-table.json",
+      path: docRelative(root, "planning", "cost-table.json"),
       kind: "cost-observation-metadata",
     });
-  const migrateDependencies = dependencyMigration(judged, original, read);
+  const migrateDependencies = dependencyMigration(root, judged, original, read);
   for (const { path, workOrderId } of judged.orders) {
     let before = original.read(path);
     let after = read(path);
@@ -406,29 +408,29 @@ export function checkPlanContinuation(
   const capabilityInputs = (subject) =>
     subject.inputs.filter(({ name }) => name.startsWith("capability:"));
   if (!same(capabilityInputs(judged), capabilityInputs(current))) {
-    const before = original.read(capabilityPath);
-    const after = read(capabilityPath);
+    const before = original.read(capabilityTable(root));
+    const after = read(capabilityTable(root));
     let capabilityUpdates;
     try {
       capabilityUpdates = reassessments(before, after, judged);
     } catch (error) {
       if (workspace || !allowCapabilityHistoryRepair) throw error;
       requireSamePlan(
-        containedRegularFile(join(root, capabilityPath), root),
+        containedRegularFile(join(root, capabilityTable(root)), root),
         "capability history repair is not a contained regular file",
       );
       capabilityUpdates = [
         capabilityHistoryRepair(
           before,
           after,
-          readFileSync(join(root, capabilityPath), "utf8"),
+          readFileSync(join(root, capabilityTable(root)), "utf8"),
           judged,
         ),
       ];
     }
     updates.push(
       ...capabilityUpdates.map((update) => ({
-        path: capabilityPath,
+        path: capabilityTable(root),
         ...update,
       })),
     );

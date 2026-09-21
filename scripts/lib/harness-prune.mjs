@@ -1,3 +1,4 @@
+import { docRelative } from "./config.mjs";
 import { createHash } from "node:crypto";
 import { spawnSync } from "node:child_process";
 import {
@@ -163,7 +164,10 @@ export function planHarnessPrune(root, options = {}) {
     process.env.CLAUDE_CODE_SESSION_ID ??
     process.env.CLAUDE_SESSION_ID;
   const currentKey = current ? digest(current) : null;
-  const directory = safeChild(root, "docs/control/local/harness");
+  const directory = safeChild(
+    root,
+    docRelative(root, "control", "local/harness"),
+  );
   const writer = harnessWriterView(root);
   const protectedSessions = new Set([
     currentKey,
@@ -254,7 +258,7 @@ export function planHarnessPrune(root, options = {}) {
       const launchpad = realpathSync(tree.worktree);
       const targets = safeChild(
         launchpad,
-        "docs/control/local/harness/targets",
+        docRelative(launchpad, "control", "local/harness/targets"),
       );
       if (!stat(targets)) continue;
       if (!stat(targets).isDirectory())
@@ -262,7 +266,11 @@ export function planHarnessPrune(root, options = {}) {
       for (const name of readdirSync(targets)) {
         const path = safeChild(
           launchpad,
-          `docs/control/local/harness/targets/${name}/installation.json`,
+          docRelative(
+            launchpad,
+            "control",
+            `local/harness/targets/${name}/installation.json`,
+          ),
         );
         if (!stat(path)) continue; // Uninstalled target lanes may remain.
         if (!stat(path).isFile() || stat(path).isSymbolicLink())
@@ -368,7 +376,12 @@ export function planHarnessPrune(root, options = {}) {
       } catch {
         reason = "legacy or unreadable marker ownership";
       }
-      consider("advisory", path, `docs/control/local/harness/${name}`, reason);
+      consider(
+        "advisory",
+        path,
+        docRelative(root, "control", `local/harness/${name}`),
+        reason,
+      );
     }
   const common = realpathSync(
     resolve(root, runGit(root, ["rev-parse", "--git-common-dir"])),
@@ -381,7 +394,7 @@ export function planHarnessPrune(root, options = {}) {
       "git-common/dotln/suite-success",
       gateLive ? "a registered worktree has a live gate" : null,
     );
-  const lanes = safeChild(root, "docs/control/local/retained");
+  const lanes = safeChild(root, docRelative(root, "control", "local/retained"));
   let releases;
   if (stat(lanes)?.isDirectory())
     for (const order of readdirSync(lanes)
@@ -408,7 +421,7 @@ export function planHarnessPrune(root, options = {}) {
       consider(
         "retained-lane",
         path,
-        `docs/control/local/retained/${order}`,
+        docRelative(root, "control", `local/retained/${order}`),
         registered
           ? "order still has a registered worktree"
           : !release

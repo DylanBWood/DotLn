@@ -1,3 +1,4 @@
+import { docRelative } from "./config.mjs";
 import { spawnSync } from "node:child_process";
 import {
   existsSync,
@@ -16,15 +17,17 @@ import { createCheckpoint } from "./checkpoint.mjs";
 import { runGit, runGitPathList, shellQuote } from "./git.mjs";
 import { containedRegularFile } from "./paths.mjs";
 import { readControl } from "./control-store.mjs";
-import { FOLLOWUPS, unionFollowups } from "./planning-followups.mjs";
+import { followupsPath, unionFollowups } from "./planning-followups.mjs";
 import { strictVersionsIn } from "./release-records.mjs";
 import { refreshControlProjection } from "../resume.mjs";
 
-const receiptPath = "docs/control/local/integration.json";
+const receiptFile = (root) =>
+  docRelative(root, "control", "local/integration.json");
 const manifest = ".claude/harness-manifest.json";
-const editions = ["everyday-ai-user-toc.md", "software-engineer-toc.md"].map(
-  (name) => `docs/publication/${name}`,
-);
+const editionPages = (root) =>
+  ["everyday-ai-user-toc.md", "software-engineer-toc.md"].map((name) =>
+    docRelative(root, "publication", name),
+  );
 const json = (value) => JSON.stringify(value, null, 2) + "\n";
 const conflicts = (root) =>
   runGitPathList(root, ["diff", "--name-only", "--diff-filter=U", "-z"]);
@@ -83,12 +86,12 @@ function unrestoredUntracked(root, stash) {
     }
   });
 }
-const pureProjection = (path) =>
+const pureProjection = (root, path) =>
   [
     manifest,
-    "docs/control/current.md",
-    "docs/work-orders/README.md",
-    "docs/lineage/decisions-index.md",
+    docRelative(root, "control", "current.md"),
+    docRelative(root, "workOrders", "README.md"),
+    docRelative(root, "lineage", "decisions-index.md"),
     ".claude/settings.json",
     ".codex/config.toml",
     ".codex/hooks.json",
@@ -107,7 +110,7 @@ function mixedProjection(root, path) {
             /<!-- dotln-harness:start -->[\s\S]*?<!-- dotln-harness:end -->/g,
             "<!-- dotln-harness:start -->\n<!-- dotln-harness:end -->",
           )
-      : editions.includes(path)
+      : editionPages(root).includes(path)
         ? (s) =>
             s.replace(
               /^Source lock:.*$/gm,
@@ -175,7 +178,7 @@ function mixedProjection(root, path) {
 function resolveProjections(root, receipt) {
   for (const path of conflicts(root)) {
     let resolved = false;
-    if (path === FOLLOWUPS) {
+    if (path === followupsPath(root)) {
       try {
         put(
           root,
@@ -184,6 +187,7 @@ function resolveProjections(root, receipt) {
             unionFollowups(
               JSON.parse(blob(root, ":2", path)),
               JSON.parse(blob(root, ":3", path)),
+              root,
             ),
           ),
         );
@@ -191,7 +195,7 @@ function resolveProjections(root, receipt) {
       } catch (error) {
         console.log(`Authored register conflict: ${error.message}`);
       }
-    } else if (pureProjection(path)) {
+    } else if (pureProjection(root, path)) {
       const seed = blob(root, ":2", path) ?? blob(root, ":3", path);
       if (seed !== null) {
         put(root, path, seed);
@@ -215,7 +219,7 @@ function verifyIntake(root, backup) {
     "--ignored",
     "--exclude-standard",
     "--",
-    "docs/intake/",
+    `${docRelative(root, "intake")}/`,
   ]).filter((path) => !path.endsWith("/.DS_Store"));
   if (!intake.length) return;
   if (!backup || !existsSync(backup) || !lstatSync(backup).isFile())
@@ -258,7 +262,11 @@ function command(root, program, args) {
 }
 
 function decisionStub(root, receipt) {
-  const path = `docs/evidence/${receipt.workOrder}/decisions.md`;
+  const path = docRelative(
+    root,
+    "evidence",
+    `${receipt.workOrder}/decisions.md`,
+  );
   if (conflicts(root).includes(path))
     throw new Error("decisions record has an authored conflict");
   const before = existsSync(join(root, path))
@@ -332,7 +340,7 @@ function regenerate(root, receipt) {
   run("work-order index", () => node("scripts/work-orders.mjs", "index"));
   run("publication locks", () => {
     const output = node("scripts/check-publication.mjs", "--print-locks");
-    for (const path of editions) {
+    for (const path of editionPages(root)) {
       const name = path.split("/").at(-1);
       const hash = output
         .split("\n")
@@ -394,6 +402,7 @@ export async function integrateWorktree(root, workOrder, args = []) {
     runGit(root, ["branch", "--show-current"]) !== workOrder.toLowerCase()
   )
     throw new Error("integrate requires the matching wo-NNN worktree root");
+  const receiptPath = receiptFile(root);
   const file = join(root, receiptPath);
   const previous = existsSync(file)
     ? JSON.parse(readFileSync(file, "utf8"))

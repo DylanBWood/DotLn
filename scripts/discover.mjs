@@ -1,9 +1,9 @@
 #!/usr/bin/env node
+import { docPath, findLaunchpad } from "./lib/config.mjs";
 import { isMainModule } from "./lib/paths.mjs";
 import { observedSpawnSync as spawnSync } from "../packages/skeleton/src/gate-deadlines.mjs";
 import { readFileSync, writeFileSync, realpathSync } from "node:fs";
-import { dirname, join, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+import { join } from "node:path";
 
 export function probeHarness(name, execute = spawnSync, env = process.env) {
   const fallback = {
@@ -70,7 +70,7 @@ export function discoverHarness(root, name, probe = probeHarness) {
     )
   )
     throw new Error("Discovery requires the Git root");
-  const path = join(root, "docs/discovery/environment.json");
+  const path = docPath(root, "discovery", "environment.json");
   const document = JSON.parse(readFileSync(path, "utf8"));
   const row = probe(name);
   const record = document.effortReadbackProbe.harnesses[name];
@@ -116,14 +116,7 @@ if (isMainModule(import.meta.url)) {
           ? "claude-code"
           : "codex-cli");
     console.log(
-      JSON.stringify(
-        discoverHarness(
-          resolve(dirname(fileURLToPath(import.meta.url)), ".."),
-          name,
-        ),
-        null,
-        2,
-      ),
+      JSON.stringify(discoverHarness(findLaunchpad(), name), null, 2),
     );
   } catch (error) {
     console.error(error.message);

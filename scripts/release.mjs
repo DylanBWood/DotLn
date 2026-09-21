@@ -3,6 +3,7 @@ import {
   harnessRuntimeCause,
   refreshHarnessRuntime,
 } from "./lib/harness-runtime.mjs";
+import { docPath, docRelative, findLaunchpad } from "./lib/config.mjs";
 import { createHash } from "node:crypto";
 import {
   existsSync,
@@ -16,7 +17,7 @@ import {
 } from "node:fs";
 import { release as osRelease, tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
-import { fileURLToPath, pathToFileURL } from "node:url";
+import { pathToFileURL } from "node:url";
 import { spawnSync } from "node:child_process";
 import {
   parseReleaseNotes,
@@ -71,7 +72,7 @@ import {
   tagAnnotation,
 } from "./lib/release-records.mjs";
 
-const toolRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+const toolRoot = findLaunchpad();
 // Dry-run reads the prospective merge revision while leaving main in place.
 let sourceRevision = "HEAD";
 let previewRuntimeRoot;
@@ -549,8 +550,8 @@ const componentVersionRules = (root, latest, local, remote, revision) => {
 
 const githubBodyRule = (root, state, revision) => {
   const candidates = [
-    `docs/final-reviews/${state.workOrderId}/PR.md`,
-    releaseNotesPathFor(state.workOrderId),
+    docRelative(root, "finalReviews", `${state.workOrderId}/PR.md`),
+    releaseNotesPathFor(state.workOrderId, root),
   ];
   const bodies = candidates.flatMap((path) => {
     if (!revision) {
@@ -563,7 +564,7 @@ const githubBodyRule = (root, state, revision) => {
   });
   try {
     for (const { path, source } of bodies) {
-      if (path === releaseNotesPathFor(state.workOrderId))
+      if (path === releaseNotesPathFor(state.workOrderId, root))
         parseReleaseNotes(source, path);
       assertGitHubBodyProfile(source, path);
     }
@@ -814,7 +815,10 @@ const changedFiles = (root, previousRelease) => {
   return runGitPathList(root, args).sort();
 };
 const reviewArtifacts = (root, workOrderId) =>
-  ["docs/verifications", "docs/final-reviews"].flatMap((parent) =>
+  [
+    docRelative(root, "verifications"),
+    docRelative(root, "finalReviews"),
+  ].flatMap((parent) =>
     runGitPathList(root, [
       "ls-tree",
       "-r",
@@ -853,7 +857,7 @@ const changedReleaseNotesAt = (root, parent, commit) => {
         parent,
         commit,
         "--",
-        "docs/final-reviews",
+        docRelative(root, "finalReviews"),
       ])
     : runGitPathList(root, [
         "diff-tree",
@@ -865,11 +869,14 @@ const changedReleaseNotesAt = (root, parent, commit) => {
         "-r",
         commit,
         "--",
-        "docs/final-reviews",
+        docRelative(root, "finalReviews"),
       ]);
+  const reviews = docRelative(root, "finalReviews");
   return paths
     .map((path) =>
-      /^docs\/final-reviews\/(WO-\d{3})\/RELEASE-NOTES\.md$/.exec(path),
+      new RegExp(
+        `^${reviews.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}/(WO-\\d{3})/RELEASE-NOTES\\.md$`,
+      ).exec(path),
     )
     .filter(Boolean)
     .map((match) => ({ id: match[1], path: match[0] }))
@@ -983,7 +990,7 @@ const releaseNoteEntries = (root, previousRelease) => {
   });
 
   return entries.map((entry) => {
-    const path = releaseNotesPathFor(entry.id);
+    const path = releaseNotesPathFor(entry.id, toolRoot);
     const activationIndex = records.findIndex(
       ({ events }, index) =>
         index <= entry.lastRelevantIndex &&
@@ -1062,13 +1069,14 @@ const baseManifest = (
   evidence,
   recordedToolchain,
 ) => {
-  const templatePath = join(root, "docs/releases/tag-manifest.template.json");
+  const templateRelative = docRelative(
+    root,
+    "releases",
+    "tag-manifest.template.json",
+  );
+  const templatePath = join(root, templateRelative);
   const template = JSON.parse(
-    repositoryFile(
-      root,
-      "docs/releases/tag-manifest.template.json",
-      sourceRevision,
-    ),
+    repositoryFile(root, templateRelative, sourceRevision),
   );
   if (template.schemaVersion !== 1)
     throw new Error(`unsupported release manifest template: ${templatePath}`);
@@ -1935,7 +1943,7 @@ const listPublishedReleases = () => {
       item.name,
     );
     if (workOrders.length === 0)
-      workOrders.push(...manifestWorkOrders(manifest));
+      workOrders.push(...manifestWorkOrders(manifest, toolRoot));
     if (workOrders.length === 0)
       workOrders.push(...historicalWorkOrders(toolRoot, item.name));
     return {
@@ -2013,12 +2021,14 @@ const main = async () => {
       new Date().toISOString().slice(0, 10),
     );
     applyReleasePreparation(plan);
-    if (existsSync(join(toolRoot, "docs/control/budgets.json"))) {
+    if (existsSync(docPath(toolRoot, "control", "budgets.json"))) {
       const { collectMeta, renderMetaTable } = await import("./lib/meta.mjs");
       const meta = await collectMeta(toolRoot);
-      const path = join(
+      const path = docPath(
         toolRoot,
-        `docs/final-reviews/${state.workOrderId}/PR.md`,
+        "finalReviews",
+        state.workOrderId,
+        "PR.md",
       );
       const begin = "<!-- dotln-process-meter:start -->",
         end = "<!-- dotln-process-meter:end -->";

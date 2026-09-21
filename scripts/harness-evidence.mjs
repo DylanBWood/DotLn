@@ -1,9 +1,10 @@
+import { docPath, docRelative, findLaunchpad } from "./lib/config.mjs";
 import { isMainModule } from "./lib/paths.mjs";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
-import { fileURLToPath } from "node:url";
+
 import { checkHarness, harnessInstallation } from "./lib/harness.mjs";
 import {
   compareObservedReads,
@@ -38,11 +39,11 @@ export function checkHarnessEvidence(root) {
   );
   const context = JSON.parse(
     readFileSync(
-      join(root, "docs/evidence/WO-042/harness-context.json"),
+      docPath(root, "evidence", "WO-042/harness-context.json"),
       "utf8",
     ),
   );
-  const directory = "docs/evidence/WO-042/harness-live";
+  const directory = docRelative(root, "evidence", "WO-042/harness-live");
   const entries = readdirSync(join(root, directory));
   const names = entries
     .filter((name) =>
@@ -214,10 +215,14 @@ export function checkHarnessEvidence(root) {
     writers.push({ scenario, path, ownerSources: reservation.ownerSources });
   }
   const discovery = [
-    "docs/discovery/harness-smoke-2026-09-07.md",
-    "docs/discovery/harness-smoke-2026-09-07.json",
-    ...["claude", "claude-bare", "codex"].map(
-      (profile) => `docs/discovery/harness-smoke-2026-09-07/${profile}.json`,
+    docRelative(root, "discovery", "harness-smoke-2026-09-07.md"),
+    docRelative(root, "discovery", "harness-smoke-2026-09-07.json"),
+    ...["claude", "claude-bare", "codex"].map((profile) =>
+      docRelative(
+        root,
+        "discovery",
+        `harness-smoke-2026-09-07/${profile}.json`,
+      ),
     ),
   ];
   const surfaces = [
@@ -226,7 +231,7 @@ export function checkHarnessEvidence(root) {
     ...discovery,
     ...names.map((name) => `${directory}/${name}`),
     ...writerNames.map((name) => `${directory}/${name}`),
-    "docs/evidence/WO-042/harness-context.json",
+    docRelative(root, "evidence", "WO-042/harness-context.json"),
   ];
   const localTerms = termsCheck(root, surfaces);
   return {
@@ -240,9 +245,7 @@ export function checkHarnessEvidence(root) {
   };
 }
 if (isMainModule(import.meta.url)) {
-  const result = checkHarnessEvidence(
-    fileURLToPath(new URL("../", import.meta.url)),
-  );
+  const result = checkHarnessEvidence(findLaunchpad());
   console.log(
     `Harness evidence: ${result.roles.length} historical live role smokes and ${result.writers.length} historical writer smokes at ${result.liveEdition}; ${result.installedSurfaces} current generated surfaces; local-terms list: ${result.localTerms.status} (${result.checkedSurfaces} surfaces checked).`,
   );

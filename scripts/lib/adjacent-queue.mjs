@@ -1,3 +1,4 @@
+import { defaultDocRelative, docRelative } from "./config.mjs";
 import {
   appendFileSync,
   lstatSync,
@@ -8,7 +9,14 @@ import {
 } from "node:fs";
 import { join } from "node:path";
 
-export const ADJACENT_QUEUE = "docs/control/local/adjacent-work.jsonl";
+// The default-layout name peers and fixtures use; `queuePath` resolves the
+// same record under a launchpad's configured control root.
+export const ADJACENT_QUEUE = defaultDocRelative(
+  "control",
+  "local/adjacent-work.jsonl",
+);
+const queuePath = (root) =>
+  docRelative(root, "control", "local/adjacent-work.jsonl");
 const requireQueue = (condition, reason) => {
   if (!condition) throw new Error(`adjacent queue: ${reason}`);
 };
@@ -285,7 +293,7 @@ const stat = (path) => {
 };
 const directory = (root, create) => {
   let path = realpathSync(root);
-  for (const part of ["docs", "control", "local"]) {
+  for (const part of docRelative(root, "control", "local").split("/")) {
     path = join(path, part);
     if (!stat(path) && create) mkdirSync(path);
     const info = stat(path);
@@ -298,7 +306,7 @@ const directory = (root, create) => {
 };
 const readEvents = (root) => {
   directory(root, false);
-  const path = join(root, ADJACENT_QUEUE);
+  const path = join(root, queuePath(root));
   const info = stat(path);
   if (!info) return [];
   requireQueue(
@@ -355,7 +363,7 @@ export function applyAdjacentCommand(
       action: command.action,
     };
     const next = foldAdjacentQueue([...events, event], workOrderId);
-    appendFileSync(join(root, ADJACENT_QUEUE), JSON.stringify(event) + "\n", {
+    appendFileSync(join(root, queuePath(root)), JSON.stringify(event) + "\n", {
       mode: 0o600,
     });
     return next;

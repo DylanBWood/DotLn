@@ -1,3 +1,4 @@
+import { defaultDocRelative, docRelative } from "./config.mjs";
 import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { compileLoadout, normalizeAuthorityGrants } from "@dotln/compiler";
@@ -7,8 +8,10 @@ import { containedRegularFile } from "./paths.mjs";
 // The caller owns root; neither registry path is read from submitted graph text.
 export const COMMITTED_AUTHORITY_GRANTS =
   "packages/skeleton/loadouts/grants.json";
-export const LOCAL_AUTHORITY_GRANTS =
-  "docs/control/local/authority-grants.json";
+export const LOCAL_AUTHORITY_GRANTS = defaultDocRelative(
+  "control",
+  "local/authority-grants.json",
+);
 
 export function readAuthorityGrantRegistry(root) {
   const read = (name, optional, origins) => {
@@ -33,7 +36,9 @@ export function readAuthorityGrantRegistry(root) {
       "operator",
       "registered-repository",
     ]),
-    ...read(LOCAL_AUTHORITY_GRANTS, true, ["host-policy"]),
+    ...read(docRelative(root, "control", "local/authority-grants.json"), true, [
+      "host-policy",
+    ]),
   ]);
 }
 

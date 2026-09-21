@@ -1,3 +1,4 @@
+import { docRelative } from "./config.mjs";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { runGit } from "./git.mjs";
@@ -5,7 +6,7 @@ import {
   buildPlanSubject,
   planOrderHash,
   carriedOrderHashMatches,
-  PLAN_LEDGER,
+  planPaths,
   planningPasses,
   sha256,
 } from "./plan-subject.mjs";
@@ -13,18 +14,18 @@ import {
   readReceipts,
   writePlanReceipt,
   checkPlanGate,
-  RECEIPTS,
   requireChangedPlanEvidence,
   planningPassScope,
 } from "./plan-receipts.mjs";
 import { containedRegularFile } from "./paths.mjs";
 
-const local = "docs/control/local/plan";
+const localPlan = (root) => docRelative(root, "control", "local/plan");
 export async function latestPlanningPass(root, history) {
   const enforced = planningPassScope(root).passes;
+  const { ledger } = planPaths(root);
   const passes = enforced.length
     ? enforced
-    : planningPasses(readFileSync(join(root, PLAN_LEDGER), "utf8"));
+    : planningPasses(readFileSync(join(root, ledger), "utf8"));
   const date = passes
     .map((pass) => pass.date)
     .sort()
@@ -55,6 +56,7 @@ export async function planJudgmentScope(root, subject, pass, scope = "pass") {
   const history = await readReceipts(root);
   let changed = new Set(subject.orders.map((row) => row.workOrderId));
   if (scope === "pass") {
+    const { ledger } = planPaths(root);
     const introduced = runGit(root, [
       "log",
       "--reverse",
@@ -62,7 +64,7 @@ export async function planJudgmentScope(root, subject, pass, scope = "pass") {
       `-S## ${pass.heading}`,
       "HEAD",
       "--",
-      PLAN_LEDGER,
+      ledger,
     ])
       .split("\n")
       .find(Boolean);
@@ -203,7 +205,7 @@ export async function beginDirectRefutation(
   )
     throw new Error("same subject cannot be re-rolled");
   const review = await planJudgmentScope(root, subject, pass, scope);
-  const path = `${local}/direct-${subject.hash.slice(7)}-${pass.id}-${scope}.json`;
+  const path = `${localPlan(root)}/direct-${subject.hash.slice(7)}-${pass.id}-${scope}.json`;
   const pending = existsSync(join(root, path))
     ? JSON.parse(readFileSync(join(root, path), "utf8"))
     : {
@@ -222,13 +224,13 @@ export async function beginDirectRefutation(
     throw new Error(
       "Pending direct refutation differs from current subject; retain its evidence",
     );
-  mkdirSync(join(root, local), { recursive: true });
+  mkdirSync(join(root, localPlan(root)), { recursive: true });
   if (!existsSync(join(root, path)))
     writeFileSync(join(root, path), JSON.stringify(pending, null, 2) + "\n", {
       flag: "wx",
     });
   writeFileSync(
-    join(root, local, "current-direct.json"),
+    join(root, localPlan(root), "current-direct.json"),
     JSON.stringify({ path }) + "\n",
   );
   const { compilePlanRefuter } =
@@ -267,11 +269,11 @@ export async function fileDirectRefutation(
         "Direct result and statement must be contained regular files",
       );
   const pointer = JSON.parse(
-    readFileSync(join(root, local, "current-direct.json"), "utf8"),
+    readFileSync(join(root, localPlan(root), "current-direct.json"), "utf8"),
   );
   if (
     !new RegExp(
-      `^${local}/direct-[a-f0-9]{64}-(?:planning-[a-f0-9]{16}-)?(?:pass|full)\\.json$`,
+      `^${localPlan(root)}/direct-[a-f0-9]{64}-(?:planning-[a-f0-9]{16}-)?(?:pass|full)\\.json$`,
     ).test(pointer.path)
   )
     throw new Error("Invalid direct refutation pointer");
@@ -328,9 +330,10 @@ export async function fileDirectRefutation(
     episode,
     dispositions,
   });
+  const receipts = docRelative(root, "refutations");
   if (commit) {
     const paths = ["json", "md"].map(
-      (ext) => `${RECEIPTS}/${receipt.receiptId}.${ext}`,
+      (ext) => `${receipts}/${receipt.receiptId}.${ext}`,
     );
     runGit(root, ["add", "--", ...paths]);
     runGit(root, [
@@ -343,7 +346,7 @@ export async function fileDirectRefutation(
   }
   const gate = await checkPlanGate(root);
   return {
-    receipt: `${RECEIPTS}/${receipt.receiptId}.md`,
+    receipt: `${receipts}/${receipt.receiptId}.md`,
     scope: pending.review.scope,
     durationMs,
     verdict: receipt.result.planVerdict,

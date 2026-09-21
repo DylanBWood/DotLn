@@ -1,8 +1,9 @@
 #!/usr/bin/env node
+import { docRelative, findLaunchpad } from "./lib/config.mjs";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import {
   currentEvidence,
   sameEvidenceSourceContent,
@@ -41,14 +42,16 @@ if (mode.length !== 1 || !["--write", "--check"].includes(mode[0])) {
   );
   process.exit(2);
 }
-const root = new URL("../", import.meta.url);
+const root = pathToFileURL(`${findLaunchpad()}/`);
 const evidenceDirectory = currentEvidence(
   fileURLToPath(root),
   "artifact-identity",
 ).directory;
 const read = (path) => readFileSync(new URL(path, root), "utf8");
 const json = (value) => JSON.stringify(value, null, 2) + "\n";
-const baseline = JSON.parse(read("docs/evidence/WO-029/baseline.json"));
+const baseline = JSON.parse(
+  read(docRelative(fileURLToPath(root), "evidence", "WO-029/baseline.json")),
+);
 const oracleHash = createHash("sha256")
   .update(read("packages/skeleton/fixtures/wo003-decision-traces.json"))
   .digest("hex");
@@ -363,7 +366,7 @@ const preserved =
   sameEvidenceSourceContent(
     fileURLToPath(root),
     [...files.keys()].map((name) => `${evidenceDirectory}/${name}`),
-    evidenceSources["artifact-identity"],
+    evidenceSources(fileURLToPath(root))["artifact-identity"],
   );
 for (const [name, bytes] of files) {
   const path = `${evidenceDirectory}/${name}`;

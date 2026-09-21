@@ -10,7 +10,7 @@ import {
 } from "node:fs";
 import { createCheckpoint } from "./lib/checkpoint.mjs";
 import { dirname, join, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+
 import {
   reportHarnessRuntime,
   currentHarnessSessionReport,
@@ -53,13 +53,14 @@ import {
   readJsonFile,
   workOrderAuthorityPath,
 } from "./lib/paths.mjs";
+import { docPath, docRelative, findLaunchpad } from "./lib/config.mjs";
 
 import {
   CONTROL_LOG_SCHEMA_VERSION,
+  DEFAULT_CONTROL_PATHS,
+  controlPaths,
   fold,
   parseControlEvents,
-  LEGACY_CONTROL_PATH,
-  orderSegmentPath,
 } from "./lib/control.mjs";
 import {
   readControl,
@@ -77,9 +78,10 @@ export {
   parseControlEvents,
 } from "./lib/control.mjs";
 
-const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const currentPath = join(repoRoot, "docs/control/current.md");
-const environmentPath = join(repoRoot, "docs/discovery/environment.json");
+const repoRoot = findLaunchpad();
+const storage = controlPaths(repoRoot);
+const currentPath = docPath(repoRoot, "control", "current.md");
+const environmentPath = docPath(repoRoot, "discovery", "environment.json");
 const effortLevels = ["low", "medium", "high", "xhigh", "max"];
 const effortDeclarations = new Set([
   "any",
@@ -119,7 +121,7 @@ const nextVerification = (state) => {
     )
     .map((event) => Number(event.verificationId.slice(4)))
     .filter(Number.isInteger);
-  const directory = join(repoRoot, "docs/verifications", state.workOrderId);
+  const directory = docPath(repoRoot, "verifications", state.workOrderId);
   if (existsSync(directory))
     used.push(
       ...readdirSync(directory)
@@ -139,7 +141,7 @@ const nextFinalReview = (state) => {
     )
     .map((event) => Number(event.finalReviewId.slice(6)))
     .filter(Number.isInteger);
-  const directory = join(repoRoot, "docs/final-reviews", state.workOrderId);
+  const directory = docPath(repoRoot, "finalReviews", state.workOrderId);
   if (existsSync(directory))
     used.push(
       ...readdirSync(directory)
@@ -214,7 +216,7 @@ const appendTransition = (action, event) => {
   const control = readControl(repoRoot);
   const segment =
     control.locations.get(event.workOrderId) ??
-    orderSegmentPath(event.workOrderId);
+    storage.segment(event.workOrderId);
   const recorded = append(
     { ...event, ...checkpoint(action, event.workOrderId) },
     segment,
@@ -606,7 +608,9 @@ const projectOrder = (state, events) => {
 export const statusProjection = (input, workOrder, dependencies = null) => {
   const control = Array.isArray(input)
     ? controlFromSources(
-        new Map([[LEGACY_CONTROL_PATH, input.map(JSON.stringify).join("\n")]]),
+        new Map([
+          [DEFAULT_CONTROL_PATHS.legacy, input.map(JSON.stringify).join("\n")],
+        ]),
       )
     : input;
   const id = selectWorkOrder(control, {
@@ -629,7 +633,7 @@ export const statusProjection = (input, workOrder, dependencies = null) => {
   };
 };
 
-const render = (control, latestClosed) => {
+const render = (control, latestClosed, segments = storage) => {
   const ids = [...openOrders(control), ...(latestClosed ? [latestClosed] : [])];
   const bodies = ids.length
     ? ids.map(
@@ -637,7 +641,7 @@ const render = (control, latestClosed) => {
           `## ${id}\n\n${renderOrder(control.orders.get(id).state, controlTimeProjection(eventsForOrder(control, id)))}`,
       )
     : [renderOrder(fold([]), controlTimeProjection([]))];
-  return `# Current control state\n\n${bodies.join("\n")}\nGenerated from the append-only \`docs/control/resume.jsonl\` and \`docs/control/orders/WO-NNN.jsonl\` segments; do not edit this projection manually.\n`;
+  return `# Current control state\n\n${bodies.join("\n")}\nGenerated from the append-only \`${segments.legacy}\` and \`${segments.segment("WO-NNN")}\` segments; do not edit this projection manually.\n`;
 };
 
 // Integration reuses the canonical projection without dispatching a role or
@@ -647,8 +651,9 @@ export function refreshControlProjection(root) {
   const body = render(
     control,
     latestClosedOrder(control, root, "HEAD", branchWorkOrder(root)),
+    controlPaths(root),
   );
-  const path = join(root, "docs/control/current.md");
+  const path = docPath(root, "control", "current.md");
   mkdirSync(dirname(path), { recursive: true });
   writeFileSync(path, body);
 }
@@ -662,7 +667,7 @@ const warnIfProjectionDisagrees = (rendered) => {
   }
   if (current !== rendered)
     process.stderr.write(
-      "warning: docs/control/current.md disagrees with the canonical fold of control segments; status is read-only and did not rewrite the projection\n",
+      `warning: ${docRelative(repoRoot, "control", "current.md")} disagrees with the canonical fold of control segments; status is read-only and did not rewrite the projection\n`,
     );
 };
 
@@ -786,7 +791,7 @@ export const main = async (argv = process.argv.slice(2)) => {
           : rendered;
       if (
         args[0] !== "--json" &&
-        existsSync(join(repoRoot, "docs/control/budgets.json"))
+        existsSync(docPath(repoRoot, "control", "budgets.json"))
       ) {
         const { collectMeta, metaHealth } = await import("./lib/meta.mjs");
         message += `\n${metaHealth(await collectMeta(repoRoot))}\n`;
@@ -802,7 +807,7 @@ export const main = async (argv = process.argv.slice(2)) => {
           for (const [index, event] of entries.entries()) {
             events.push(event);
             locations.push(
-              segment === LEGACY_CONTROL_PATH
+              segment === storage.legacy
                 ? undefined
                 : { segment, ordinal: index + 1 },
             );
@@ -872,7 +877,11 @@ export const main = async (argv = process.argv.slice(2)) => {
     case "verify": {
       requirePhase(state, "ready-to-verify");
       const verificationId = nextVerification(state);
-      const reportPath = `docs/verifications/${state.workOrderId}/${verificationId}.md`;
+      const reportPath = docRelative(
+        repoRoot,
+        "verifications",
+        `${state.workOrderId}/${verificationId}.md`,
+      );
       appendTransition(action, {
         type: "VerificationRequested",
         workOrderId: state.workOrderId,
@@ -895,9 +904,9 @@ export const main = async (argv = process.argv.slice(2)) => {
         "verifier",
         "pass|fail",
       );
-      const verificationRoot = join(
+      const verificationRoot = docPath(
         repoRoot,
-        "docs/verifications",
+        "verifications",
         state.workOrderId,
       );
       if (
@@ -976,7 +985,11 @@ export const main = async (argv = process.argv.slice(2)) => {
     case "final-review": {
       requirePhase(state, "verified");
       const finalReviewId = nextFinalReview(state);
-      const reportPath = `docs/final-reviews/${state.workOrderId}/${finalReviewId}.md`;
+      const reportPath = docRelative(
+        repoRoot,
+        "finalReviews",
+        `${state.workOrderId}/${finalReviewId}.md`,
+      );
       appendTransition(action, {
         type: "FinalReviewRequested",
         workOrderId: state.workOrderId,
@@ -1000,9 +1013,9 @@ export const main = async (argv = process.argv.slice(2)) => {
         "reviewer",
         "pass|fail",
       );
-      const finalReviewRoot = join(
+      const finalReviewRoot = docPath(
         repoRoot,
-        "docs/final-reviews",
+        "finalReviews",
         state.workOrderId,
       );
       if (

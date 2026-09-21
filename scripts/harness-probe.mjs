@@ -1,3 +1,4 @@
+import { docRelative, findLaunchpad } from "./lib/config.mjs";
 import assert from "node:assert/strict";
 import { tmpdir } from "node:os";
 import { spawnSync } from "node:child_process";
@@ -11,9 +12,8 @@ import {
   writeFileSync,
 } from "node:fs";
 import { dirname, join, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
 
-const root = fileURLToPath(new URL("../", import.meta.url));
+const root = findLaunchpad();
 assert.equal(
   realpathSync(process.cwd()),
   realpathSync(root),
@@ -270,7 +270,7 @@ function phaseZero(mode) {
   };
   const target = resolve(
     root,
-    `docs/discovery/harness-smoke-2026-09-07/${mode}.json`,
+    docRelative(root, "discovery", `harness-smoke-2026-09-07/${mode}.json`),
   );
   mkdirSync(dirname(target), { recursive: true });
   assert.ok(

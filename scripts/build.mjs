@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { TOOL_ROOT } from "./lib/config.mjs";
 import { isMainModule } from "./lib/paths.mjs";
 import { spawnSync } from "node:child_process";
 import {
@@ -14,10 +15,9 @@ import {
   symlinkSync,
   unlinkSync,
 } from "node:fs";
-import { dirname, join, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+import { dirname, join } from "node:path";
 
-const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+const root = TOOL_ROOT;
 
 /** Enumerate before publication so a stale output or symlink cannot redirect a
  * write outside the build tree. TypeScript emits only regular files/directories.

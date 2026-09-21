@@ -1,9 +1,10 @@
 #!/usr/bin/env node
+import { docRelative, findLaunchpad } from "./lib/config.mjs";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { fileURLToPath } from "node:url";
+import { pathToFileURL } from "node:url";
 import { join } from "node:path";
 import {
   evidenceArgs,
@@ -49,7 +50,7 @@ import {
 } from "../packages/skeleton/dist/src/loadouts/plan-refuter.js";
 import { checkHarness, harnessInstallation } from "./lib/harness.mjs";
 
-const root = fileURLToPath(new URL("../", import.meta.url));
+const root = findLaunchpad();
 const { args, selection } = evidenceArgs(
   root,
   "authority",
@@ -61,10 +62,10 @@ assert.ok(
   "usage: authority-evidence.mjs --write|--check [--edition WO-NNN] [--revision NNN] (build and emit the bundle first)",
 );
 const editionLabel = selection.label;
-const directory = new URL(`../${selection.directory}/`, import.meta.url);
+const directory = pathToFileURL(`${join(root, selection.directory)}/`);
 const read = (path) => readFileSync(join(root, path), "utf8");
 const baseline = JSON.parse(
-  read("docs/evidence/WO-042/authority-baseline.json"),
+  read(docRelative(root, "evidence", "WO-042/authority-baseline.json")),
 );
 const digest = (contents) =>
   `sha256:${createHash("sha256").update(contents).digest("hex")}`;
@@ -395,7 +396,11 @@ const compatibility = Object.entries(results).map(([name, result]) => {
     ...(name === "entropy"
       ? {
           migration: {
-            source: "docs/work-orders/WO-142-outstanding-cleanup.md",
+            source: docRelative(
+              root,
+              "workOrders",
+              "WO-142-outstanding-cleanup.md",
+            ),
             criterion: "B9",
             historicalFixture: `${baseline.sourceRevision}:${entropyFixturePath}`,
             previousSemanticHash: before.semanticHash,
@@ -419,7 +424,11 @@ const compatibility = Object.entries(results).map(([name, result]) => {
     ...(name === "planRefuter"
       ? {
           migration: {
-            source: "docs/work-orders/WO-132-machinery-stand-down.md",
+            source: docRelative(
+              root,
+              "workOrders",
+              "WO-132-machinery-stand-down.md",
+            ),
             criterion: "AC11",
             previousSemanticHash: before.semanticHash,
             changedProgramFields: [
@@ -667,7 +676,7 @@ const historicalEvidence = [
   "verification/stale-status.json",
   "verification/stale-status.txt",
 ].map((name) => {
-  const path = `docs/evidence/WO-042/${name}`;
+  const path = docRelative(root, "evidence", `WO-042/${name}`);
   assert.equal(read(path), git("show", `v0.16.0:${path}`), path);
   return { path, hash: digest(read(path)), unchanged: true };
 });
@@ -852,7 +861,7 @@ const preserved =
   sameEvidenceSourceContent(
     root,
     [...files.keys()].map((name) => `${selection.directory}/${name}`),
-    evidenceSources.authority,
+    evidenceSources(root).authority,
   );
 for (const [name, contents] of files) {
   const path = new URL(name, directory);

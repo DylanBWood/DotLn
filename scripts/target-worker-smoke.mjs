@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 // Operator-approved outside-sandbox smoke. Retain only bounded derived facts.
+import { docPath, findLaunchpad } from "./lib/config.mjs";
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import {
@@ -13,7 +14,7 @@ import {
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+
 import {
   emitTargetHarness,
   checkTargetHarness,
@@ -21,7 +22,7 @@ import {
 } from "./lib/harness.mjs";
 import { runProcess } from "./lib/writing-worker-probe.mjs";
 
-const root = realpathSync(fileURLToPath(new URL("../", import.meta.url)));
+const root = realpathSync(findLaunchpad());
 const [harness] = process.argv.slice(2);
 if (process.argv.length !== 3 || !["claude", "codex"].includes(harness))
   throw new Error("usage: target-worker-smoke.mjs claude|codex");
@@ -36,7 +37,7 @@ if (
   realpathSync(git(root, "rev-parse", "--show-toplevel")) !== root
 )
   throw new Error("run from launchpad Git root");
-const output = join(root, "docs/evidence/WO-049", `live-${harness}.json`);
+const output = docPath(root, "evidence", "WO-049", `live-${harness}.json`);
 if (existsSync(output))
   throw new Error(
     "live result already exists; preserve it before recording another attempt",
@@ -56,7 +57,7 @@ git(
   "Synthetic smoke base",
 );
 const id = createHash("sha256").update(target).digest("hex");
-const lane = join(root, "docs/control/local/harness/targets", id);
+const lane = docPath(root, "control", "local/harness/targets", id);
 const options = { runtimeRoot: root, profile: `target-worker-${harness}` };
 emitTargetHarness(target, options);
 checkTargetHarness(target, options);
@@ -217,7 +218,7 @@ const record = {
 checkTargetHarness(target, options);
 removeTargetHarness(target, options);
 record.bundleRemoved = true;
-mkdirSync(join(root, "docs/evidence/WO-049"), { recursive: true });
+mkdirSync(docPath(root, "evidence", "WO-049"), { recursive: true });
 writeFileSync(output, JSON.stringify(record, null, 2) + "\n");
 // Preserve the synthetic tree and its local state for review; expose only a shape.
 console.log(JSON.stringify(record));

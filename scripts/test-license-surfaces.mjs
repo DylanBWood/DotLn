@@ -171,6 +171,20 @@ test("every license file is byte-pinned; missing files, symlinks, and legal-reco
       failures(licenseSurfaceRules(root)),
       /docs\/LEGAL.md LICENSE pin: observed 00000000/,
     );
+    writeFileSync(join(root, "docs/LEGAL.md"), legal);
+    rmSync(join(root, "docs/LEGAL.md"));
+    assert.match(
+      failures(licenseSurfaceRules(root)),
+      /docs\/LEGAL.md pins: observed docs\/LEGAL.md is missing or is not a contained regular file/,
+    );
+    writeFileSync(
+      join(root, "dotln.config.json"),
+      '{"version":1,"roots":{"docs":"records"}}\n',
+    );
+    assert.match(
+      failures(licenseSurfaceRules(root)),
+      /records\/LEGAL.md pins: observed records\/LEGAL.md is missing or is not a contained regular file/,
+    );
   }));
 
 test("new workspaces are checked and unsupported workspace layouts fail closed", () =>

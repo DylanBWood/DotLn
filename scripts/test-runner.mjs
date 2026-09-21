@@ -35,6 +35,9 @@ import {
 } from "./lib/gate-sandbox.mjs";
 
 import { evidenceSources } from "./lib/evidence-sources.mjs";
+import { findLaunchpad } from "./lib/config.mjs";
+
+const recordedSources = evidenceSources(findLaunchpad());
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const node = (name, file, options = {}) => ({
@@ -128,13 +131,23 @@ const machinerySources = {
     "packages/compiler/src/harness.ts",
     "packages/skeleton/src/loadouts/",
   ],
+  "configuration-root": [
+    "scripts/lib/config.mjs",
+    "scripts/test-configuration-root.mjs",
+    "scripts/resume.mjs",
+    "scripts/work-orders.mjs",
+    "scripts/worktree.mjs",
+    "scripts/lib/control.mjs",
+    "scripts/lib/control-store.mjs",
+    "scripts/lib/paths.mjs",
+  ],
   "harness-context": [
     "scripts/lib/process-budget.mjs",
     "scripts/lib/harness.mjs",
     "scripts/harness-context.mjs",
     "scripts/lib/harness-context.mjs",
   ],
-  "harness-evidence": evidenceSources["harness"],
+  "harness-evidence": recordedSources["harness"],
   "plan-refutation": [
     "packages/skeleton/src/plan-refutation-host.ts",
     "packages/skeleton/src/plan-refutation-fake.ts",
@@ -183,10 +196,10 @@ const machinerySources = {
     "packages/skeleton/src/gate-evidence.mjs",
   ],
   mutation: ["corpus/mutation/"],
-  "authority-evidence": evidenceSources["authority"],
-  "artifact-evidence": evidenceSources["artifact-identity"],
-  "verification-evidence": evidenceSources["verification"],
-  "feedback-evidence": evidenceSources["feedback"],
+  "authority-evidence": recordedSources["authority"],
+  "artifact-evidence": recordedSources["artifact-identity"],
+  "verification-evidence": recordedSources["verification"],
+  "feedback-evidence": recordedSources["feedback"],
   meta: [
     "packages/skeleton/src/correction-observation.mjs",
     "scripts/lib/control-store.mjs",
@@ -436,6 +449,10 @@ export const suites = [
     }),
   ),
   nodeTests("adjacent-queue", "scripts/test-adjacent-queue.mjs"),
+  nodeTests("configuration-root", "scripts/test-configuration-root.mjs", {
+    protects:
+      "an absent dotln.config.json reproduces today's layout, a declared launchpad moves every document root and root derivation, and a malformed configuration refuses by path",
+  }),
   nodeTests("codex-continuation", "scripts/test-codex-continuation.mjs"),
   nodeTests("harness-probe", "scripts/test-harness-probe.mjs", {
     command: [

@@ -1,8 +1,9 @@
 #!/usr/bin/env node
+import { TOOL_ROOT } from "./lib/config.mjs";
 import { isMainModule } from "./lib/paths.mjs";
 import { existsSync, realpathSync } from "node:fs";
-import { dirname, join, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+import { join } from "node:path";
+
 import { spawnSync } from "node:child_process";
 
 /** This entry point must never import dependencies or a built adapter. */
@@ -36,10 +37,7 @@ export function bootstrapWorktree(root, run = spawnSync) {
 if (isMainModule(import.meta.url)) {
   try {
     const root = realpathSync(process.cwd());
-    if (
-      root !==
-      realpathSync(resolve(dirname(fileURLToPath(import.meta.url)), ".."))
-    )
+    if (root !== realpathSync(TOOL_ROOT))
       throw new Error("Run node scripts/bootstrap.mjs from its own worktree");
     console.log(
       `Worktree ready for Claude or Codex (${bootstrapWorktree(root)} preparation steps).`,

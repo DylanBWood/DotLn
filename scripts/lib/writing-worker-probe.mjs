@@ -7,6 +7,7 @@
 // the run files. Rows derive their observed/blocked/unavailable/ambiguous
 // label from the run files, and the report renders every row with the
 // command shape it ran.
+import { TOOL_ROOT, docPath, docRelative, findLaunchpad } from "./config.mjs";
 import { spawn, spawnSync } from "node:child_process";
 import {
   closeSync,
@@ -23,11 +24,8 @@ import {
   writeFileSync,
 } from "node:fs";
 import { homedir, tmpdir } from "node:os";
-import { basename, dirname, join, resolve } from "node:path";
-import { fileURLToPath, pathToFileURL } from "node:url";
-
-const here = fileURLToPath(new URL("./", import.meta.url));
-const repositoryRoot = resolve(here, "../..");
+import { basename, dirname, join } from "node:path";
+import { pathToFileURL } from "node:url";
 
 export const MARKERS = [
   "INSTRUCTION_MARKER_ROOT",
@@ -168,7 +166,7 @@ export function createScratchWorktree({ base = tmpdir() } = {}) {
   });
   if (git.status !== 0) throw new Error("scratch git init failed");
   copyFileSync(
-    join(repositoryRoot, "scripts/fixtures/writing-worker-runtime.mjs"),
+    join(TOOL_ROOT, "scripts/fixtures/writing-worker-runtime.mjs"),
     join(runtimeDirectory, "probe-runtime.mjs"),
   );
   const runtimeUrl = pathToFileURL(
@@ -1067,7 +1065,7 @@ function sessionDirectoryEncoded(path) {
 }
 export async function runWritingWorker({
   harness,
-  out = repositoryRoot,
+  out = findLaunchpad(),
   date = new Date().toISOString().slice(0, 10),
   launches = null,
   env = process.env,
@@ -1091,7 +1089,10 @@ export async function runWritingWorker({
     ((versionRun.stdout ?? "").trim().split("\n")[0] ?? "").match(
       /\d+\.\d+\.\d+/,
     )?.[0] ?? "";
-  const directory = join(out, `docs/discovery/writing-worker-smoke-${date}`);
+  const directory = join(
+    out,
+    docRelative(out, "discovery", `writing-worker-smoke-${date}`),
+  );
   mkdirSync(directory, { recursive: true });
   const written = [];
   // Enumerate launch names against placeholders; every launch that runs gets
@@ -1758,8 +1759,11 @@ const commandShape = (record) =>
       : record?.surface
         ? `${record.harness} --help`
         : "not run";
-export function renderReport({ out = repositoryRoot, date }) {
-  const directory = join(out, `docs/discovery/writing-worker-smoke-${date}`);
+export function renderReport({ out = findLaunchpad(), date }) {
+  const directory = join(
+    out,
+    docRelative(out, "discovery", `writing-worker-smoke-${date}`),
+  );
   const files = existsSync(directory)
     ? readdirSync(directory)
         .filter((n) => n.endsWith(".json"))
@@ -1843,15 +1847,15 @@ export function renderReport({ out = repositoryRoot, date }) {
     "",
   ].join("\n");
   writeFileSync(
-    join(out, `docs/discovery/writing-worker-smoke-${date}.md`),
+    join(out, docRelative(out, "discovery", `writing-worker-smoke-${date}.md`)),
     md,
   );
   const index = {
     schemaVersion: 1,
     workOrder: "WO-044",
-    record: `docs/discovery/writing-worker-smoke-${date}.md`,
-    runs: files.map(
-      (name) => `docs/discovery/writing-worker-smoke-${date}/${name}`,
+    record: docRelative(out, "discovery", `writing-worker-smoke-${date}.md`),
+    runs: files.map((name) =>
+      docRelative(out, "discovery", `writing-worker-smoke-${date}/${name}`),
     ),
     rows: rows.map(({ id, harness, label, run, supportingRun }) => ({
       id,
@@ -1863,11 +1867,14 @@ export function renderReport({ out = repositoryRoot, date }) {
     counts,
   };
   writeFileSync(
-    join(out, `docs/discovery/writing-worker-smoke-${date}.json`),
+    join(
+      out,
+      docRelative(out, "discovery", `writing-worker-smoke-${date}.json`),
+    ),
     JSON.stringify(index, null, 2) + "\n",
   );
   // Dated addendum in environment.md, replaced idempotently between markers.
-  const environmentPath = join(out, "docs/discovery/environment.md");
+  const environmentPath = docPath(out, "discovery", "environment.md");
   if (existsSync(environmentPath)) {
     const start = "<!-- dotln-wo044-addendum:start -->";
     const end = "<!-- dotln-wo044-addendum:end -->";
@@ -1885,7 +1892,7 @@ export function renderReport({ out = repositoryRoot, date }) {
     if (next !== text) writeFileSync(environmentPath, next);
   }
   // One-line disposition answering the planning map's checkpoint note.
-  const mapPath = join(out, "docs/planning/work-order-map.md");
+  const mapPath = docPath(out, "planning", "work-order-map.md");
   if (existsSync(mapPath)) {
     const marker = "<!-- dotln-wo044-disposition -->";
     const line = `${marker} **WO-044 checkpoint disposition (${date}):** the writing-worker record is filed at [writing-worker-smoke-${date}.md](../discovery/writing-worker-smoke-${date}.md) with ${LABELS.map((l) => `${counts[l]} ${l}`).join(", ")} rows; the first mandatory replan checkpoint is now open for the next planning pass, which designs WO-049, WO-051 and WO-068 from those labels.`;

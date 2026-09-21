@@ -441,6 +441,55 @@ path; ruleset-aware API preflight remains a separate hardening candidate.
 The operator's own copy of this loop lives in `docs/PLAYBOOK.md`; this section
 is the executor's half of the same contract.
 
+### Where the control plane finds its documents
+
+**Added by WO-069 (2026-09-21).** Every command above resolves its document
+roots and its repository root through one loader, `scripts/lib/config.mjs`.
+Nothing else in `scripts/` holds a literal `docs/...` root or derives the
+repository from its own module URL, and `scripts/test-configuration-root.mjs`
+refuses both.
+
+The **launchpad** is the directory whose documents a session owns. It is found
+in this order:
+
+1. `DOTLN_LAUNCHPAD`, resolved against the working directory. It must name an
+   existing directory; this is how a session running inside a target worktree
+   names the launchpad it writes into.
+2. Walking up from the running `scripts/` checkout to the first directory that
+   contains `dotln.config.json` or is a Git top level.
+3. The scripts' own checkout, when that ascent reaches neither.
+
+The working directory never selects a launchpad. A copied script tree is
+routinely driven from an unrelated directory, and a working-directory ascent
+would let one checkout's session write into another checkout's documents.
+
+`dotln.config.json` at the launchpad root declares schema `version: 1` and the
+optional sections `roots`, `repositories`, `build` and `release`. **Its absence
+means today's layout, byte for byte**, so this repository ships no such file and
+`status --json`, `current.md`, the generated index, `times`, `usage` and a
+release manifest derived over the real log are unchanged by its introduction.
+
+`roots` maps a root name to a relative POSIX path inside the launchpad. The
+names are `docs` (the document base), `control`, `orders`, `workOrders`,
+`verifications`, `finalReviews`, `evidence`, `releases`, `planning`,
+`refutations`, `publication`, `intake`, `workstreams`, `lineage`, `product`,
+`discovery`, `observations` and `decisions`. An undeclared root defaults under
+the document base — `orders` under `control` and `refutations` under `planning`
+— so moving a parent moves its children unless the launchpad moves them too.
+`repositories` is an object keyed by repository id whose contents this schema
+only requires to be objects; WO-071 owns their meaning. `build` carries the
+launchpad's saved `loadout`, `profile` and instance `overlay`, and `release`
+carries the surface toggles `readmeBlock`, `componentVersions`, `corpus` and
+`publicationCheck`. Version 1 validates and exposes both sections; the orders
+that own them consume them.
+
+Validation is positive and unknown keys refuse. A malformed file names its own
+path in the refusal, and a root that is absolute, escapes the launchpad, or uses
+`.` or `..` is refused by name. One scope limit is recorded rather than
+implied: the compiled packages under `packages/` still resolve their own
+Git-ignored local harness lane (`docs/control/local/...`) and are not part of
+this loader's subject; WO-070 owns the kit's side of that dependency.
+
 ## Independent workflows and integration
 
 **Operator correction (2026-09-07, WO-041 breakout):** each work order's implementation and verification progress independently of every other order's phase. Do not require another lane to finish, verify, merge, or release before these transitions. A published dependency needed to implement a feature is still a real input dependency; paired-wave barriers and a verifier-reserve rule tied to the number of waiting orders are not. Actual available actors and one writer per worktree bound resource use.

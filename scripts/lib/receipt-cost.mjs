@@ -1,3 +1,4 @@
+import { rootPattern } from "./config.mjs";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { readControl } from "./control-store.mjs";
@@ -17,8 +18,10 @@ export const COST_LINE_REQUIRED = "required";
 export const costLineForms = `${COST_LINE_PREFIX} entry <total> tokens; handoff <total> tokens; source <source>\` or \`${COST_LINE_PREFIX} unknown; cause <${Object.keys(usageCauseCodes).join("|")}>`;
 export const costLineBriefing = `Put exactly one physical cost line in the report: \`${costLineForms}\`. The result transition and npm run test:docs refuse a bare unknown.`;
 
-const receiptPath =
-  /^docs\/(?:verifications\/WO-\d{3}\/VER|final-reviews\/WO-\d{3}\/FINAL)-\d{3}\.md$/;
+const receiptPath = (root) =>
+  new RegExp(
+    `^(?:${rootPattern(root, "verifications")}/WO-\\d{3}/VER|${rootPattern(root, "finalReviews")}/WO-\\d{3}/FINAL)-\\d{3}\\.md$`,
+  );
 // The line may be indented or a list item; a fenced example is not the line.
 const costLine = /^\s*(?:[-*]\s+)?\*\*Process cost:\*\*(.*)$/;
 const costLines = (report) => {
@@ -81,6 +84,7 @@ export function judgeCostLine(report) {
  * receipt allocated before it integrated this rule, carry no stamp and pass.
  */
 export function requiredCostReceipts(root) {
+  const allocated = receiptPath(root);
   return [...readControl(root).eventSegments.values()]
     .flat()
     .filter(
@@ -90,7 +94,7 @@ export function requiredCostReceipts(root) {
         ) &&
         event.costLine === COST_LINE_REQUIRED &&
         typeof event.reportPath === "string" &&
-        receiptPath.test(event.reportPath),
+        allocated.test(event.reportPath),
     )
     .map((event) => event.reportPath);
 }

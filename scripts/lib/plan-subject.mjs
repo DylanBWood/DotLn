@@ -4,9 +4,16 @@ import { join } from "node:path";
 import { parseHeader, parseSequence } from "../work-orders.mjs";
 import { runGit } from "./git.mjs";
 import { containedRegularFile } from "./paths.mjs";
+import { defaultDocRelative, docRelative, rootPattern } from "./config.mjs";
 
-export const PLAN_MAP = "docs/planning/sequence.md";
-export const PLAN_LEDGER = "docs/lineage/idea-ledger.md";
+// Default-layout names for peers that hold no launchpad; `planPaths` resolves
+// the same documents under a launchpad's configured roots.
+export const PLAN_MAP = defaultDocRelative("planning", "sequence.md");
+export const PLAN_LEDGER = defaultDocRelative("lineage", "idea-ledger.md");
+export const planPaths = (root) => ({
+  map: docRelative(root, "planning", "sequence.md"),
+  ledger: docRelative(root, "lineage", "idea-ledger.md"),
+});
 export const THESIS_HEADINGS = [
   ["the-one-paragraph-story", "The one-paragraph story"],
   ["the-core-bet", "The core bet"],
@@ -275,19 +282,20 @@ export function buildPlanSubject(
     : committed.read;
   // Historical receipt identities retain the source path present at their
   // revision. Workspace checks see a newly introduced sequence immediately.
+  const planMap = planPaths(root).map;
   const sequencePath = (
     workspace
-      ? containedRegularFile(join(root, PLAN_MAP), root)
-      : committed.paths.includes(PLAN_MAP)
+      ? containedRegularFile(join(root, planMap), root)
+      : committed.paths.includes(planMap)
   )
-    ? PLAN_MAP
-    : "docs/planning/work-order-map.md";
+    ? planMap
+    : docRelative(root, "planning", "work-order-map.md");
   const map = read(sequencePath);
   const has = (path) =>
     workspace
       ? containedRegularFile(join(root, path), root)
       : committed.paths.includes(path);
-  const budgetPath = "docs/control/budgets.json";
+  const budgetPath = docRelative(root, "control", "budgets.json");
   const includeCost = has(budgetPath);
   const sequence = parseSequence(map);
   if (!sequence.length || sequence.length > 100)
@@ -299,7 +307,10 @@ export function buildPlanSubject(
   const parts = [["sequence", block]];
   const orderPaths = sequence.map(({ id }) => {
     const paths = committed.paths.filter((path) =>
-      new RegExp(`^docs/work-orders/${id}-[^/]+\\.md$`, "u").test(path),
+      new RegExp(
+        `^${rootPattern(root, "workOrders")}/${id}-[^/]+\\.md$`,
+        "u",
+      ).test(path),
     );
     // Workspace observation also notices drafts that have not been committed.
     if (paths.length !== 1)
@@ -309,12 +320,12 @@ export function buildPlanSubject(
   if (!workspace)
     committed.readMany([
       ...orderPaths,
-      "docs/product/00-vision.md",
-      "docs/product/13-uifa-roles.md",
-      "docs/planning/capability-table.md",
+      docRelative(root, "product", "00-vision.md"),
+      docRelative(root, "product", "13-uifa-roles.md"),
+      docRelative(root, "planning", "capability-table.md"),
       ...(includeCost ? [budgetPath] : []),
-      ...(includeCost && has("docs/planning/cost-table.json")
-        ? ["docs/planning/cost-table.json"]
+      ...(includeCost && has(docRelative(root, "planning", "cost-table.json"))
+        ? [docRelative(root, "planning", "cost-table.json")]
         : []),
     ]);
   const orders = sequence.map(({ id }, index) => {
@@ -323,7 +334,7 @@ export function buildPlanSubject(
     parts.push([path, source]);
     return parsePlanOrder(source, path, id, { includeCost });
   });
-  const vision = read("docs/product/00-vision.md");
+  const vision = read(docRelative(root, "product", "00-vision.md"));
   const theses = THESIS_HEADINGS.map(([id, title]) => {
     const text = section(vision, title);
     parts.push([`vision:${id}`, text]);
@@ -339,7 +350,7 @@ export function buildPlanSubject(
   }));
   if (!exclusions.length) throw new Error("vision exclusions missing");
   const rolesText = section(
-    read("docs/product/13-uifa-roles.md"),
+    read(docRelative(root, "product", "13-uifa-roles.md")),
     "The five roles",
   ).split(/^### /m)[0];
   const rolesTable = rolesText
@@ -354,7 +365,9 @@ export function buildPlanSubject(
   // Preserve CRLF as well as spaces in the judged table.
   const rolesBytes = rolesText.match(/^\|[^\n]*(?:\n|$)/gm)?.join("") ?? "";
   parts.push(["roles", rolesBytes]);
-  const capabilities = read("docs/planning/capability-table.md")
+  const capabilities = read(
+    docRelative(root, "planning", "capability-table.md"),
+  )
     .split(/\r?\n/)
     .filter((line) => line.startsWith("|"))
     .flatMap((line) => {
@@ -403,7 +416,7 @@ export function buildPlanSubject(
       ),
     ]);
     if (costTable) {
-      const path = "docs/planning/cost-table.json";
+      const path = docRelative(root, "planning", "cost-table.json");
       if (!has(path))
         throw new Error(
           "Planning cost table missing; run npm run meta -- --plan-cost after measuring the subject",
@@ -496,7 +509,7 @@ function buildGoalSubject(root, revision, { workspace }) {
       ? readFileSync(join(root, path), "utf8")
       : committed.read(path);
   };
-  const guide = read("docs/product/07-execution-guide.md");
+  const guide = read(docRelative(root, "product", "07-execution-guide.md"));
   const platformStandard = guide.match(
     /the point is to create a platform,[\s\S]*?before a later pass pays it again\./u,
   )?.[0];
@@ -504,10 +517,10 @@ function buildGoalSubject(root, revision, { workspace }) {
     throw new Error("product 07 platform-first standard missing");
   const goalStandard = section(guide, "Goal-aligned decisions");
   const criticalPath = section(
-    read("docs/planning/critical-path-2026-09-08.md"),
+    read(docRelative(root, "planning", "critical-path-2026-09-08.md")),
     "The critical path",
   );
-  const path = "docs/planning/cost-table.json";
+  const path = docRelative(root, "planning", "cost-table.json");
   const costs = has(path) ? JSON.parse(read(path)) : null;
   const costEvidenceStatus = costs
     ? costs.subjectSourceHash === subject.costTable?.subjectSourceHash

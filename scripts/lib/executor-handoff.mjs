@@ -1,3 +1,4 @@
+import { docPath } from "./config.mjs";
 import { createHash } from "node:crypto";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
@@ -12,7 +13,7 @@ export async function executorWriterRelease(
 ) {
   if (!sessionId) return () => {};
   const runtime = join(root, "packages/skeleton/dist/src/harness-host.js");
-  const directory = join(root, "docs/control/local/harness");
+  const directory = docPath(root, "control", "local/harness");
   if (!existsSync(runtime)) {
     if (
       existsSync(join(directory, "writer")) ||

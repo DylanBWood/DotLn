@@ -1,3 +1,4 @@
+import { docRelative } from "./config.mjs";
 // Source files imported by the evidence tools plus their fixed data/build inputs.
 // Generated harness output and selected edition output are deliberately absent.
 // Package indexes load their complete export graphs; these are explicit files.
@@ -67,19 +68,27 @@ const commonSources = [
   "tsconfig.json",
 ];
 
-export const authoritySources = [
+const authoritySources = (root) => [
   ...commonSources,
-  "docs/evidence/WO-042/artifact-identity/audit.json",
-  "docs/evidence/WO-042/artifact-identity/negative-transcripts.json",
-  "docs/evidence/WO-042/artifact-identity/scenario.jsonl",
-  "docs/evidence/WO-042/artifact-identity/semantic-hash-inventory.json",
-  "docs/evidence/WO-042/authority-baseline.json",
-  "docs/evidence/WO-042/authority.json",
-  "docs/evidence/WO-042/bundle-diff.json",
-  "docs/evidence/WO-042/verification/events.jsonl",
-  "docs/evidence/WO-042/verification/matrix.json",
-  "docs/evidence/WO-042/verification/stale-status.json",
-  "docs/evidence/WO-042/verification/stale-status.txt",
+  docRelative(root, "evidence", "WO-042/artifact-identity/audit.json"),
+  docRelative(
+    root,
+    "evidence",
+    "WO-042/artifact-identity/negative-transcripts.json",
+  ),
+  docRelative(root, "evidence", "WO-042/artifact-identity/scenario.jsonl"),
+  docRelative(
+    root,
+    "evidence",
+    "WO-042/artifact-identity/semantic-hash-inventory.json",
+  ),
+  docRelative(root, "evidence", "WO-042/authority-baseline.json"),
+  docRelative(root, "evidence", "WO-042/authority.json"),
+  docRelative(root, "evidence", "WO-042/bundle-diff.json"),
+  docRelative(root, "evidence", "WO-042/verification/events.jsonl"),
+  docRelative(root, "evidence", "WO-042/verification/matrix.json"),
+  docRelative(root, "evidence", "WO-042/verification/stale-status.json"),
+  docRelative(root, "evidence", "WO-042/verification/stale-status.txt"),
   "packages/compiler/fixtures/wo029-entropy-reducer.json",
   "packages/compiler/fixtures/wo029-identities.json",
   "packages/compiler/test/authority-fixture.ts",
@@ -115,13 +124,13 @@ export const authoritySources = [
   "scripts/lib/terms.mjs",
 ];
 
-export const artifactIdentitySources = [
+const artifactIdentitySources = (root) => [
   ...commonSources,
   "packages/compiler/fixtures/wo029-entropy-reducer.json",
   "packages/compiler/fixtures/wo029-identities.json",
   "corpus/harness/id-corpus-lib.mjs",
   "corpus/harness/wo101-support.mjs",
-  "docs/evidence/WO-029/baseline.json",
+  docRelative(root, "evidence", "WO-029/baseline.json"),
   "packages/kernel/src/core.ts",
   "packages/kernel/src/index.ts",
   "packages/kernel/src/store.ts",
@@ -146,7 +155,7 @@ export const artifactIdentitySources = [
   "scripts/artifact-identity-evidence.mjs",
 ];
 
-export const verificationSources = [
+const verificationSources = (root) => [
   ...commonSources,
   "packages/kernel/src/core.ts",
   "packages/kernel/src/index.ts",
@@ -172,9 +181,9 @@ export const verificationSources = [
   "scripts/verification-evidence.mjs",
 ];
 
-export const feedbackSources = [
+const feedbackSources = (root) => [
   ...commonSources,
-  "docs/discovery/environment.json",
+  docRelative(root, "discovery", "environment.json"),
   "packages/kernel/src/core.ts",
   "packages/kernel/src/index.ts",
   "packages/kernel/src/store.ts",
@@ -218,29 +227,45 @@ export const feedbackSources = [
   "scripts/feedback-evidence.mjs",
 ];
 
-export const harnessSources = [
+const harnessSources = (root) => [
   ...commonSources,
-  "docs/control/budgets.json",
-  "docs/discovery/harness-smoke-2026-09-07.json",
-  "docs/discovery/harness-smoke-2026-09-07.md",
-  "docs/discovery/harness-smoke-2026-09-07/claude-bare.json",
-  "docs/discovery/harness-smoke-2026-09-07/claude.json",
-  "docs/discovery/harness-smoke-2026-09-07/codex.json",
-  "docs/evidence/WO-042/harness-context.json",
-  "docs/evidence/WO-042/harness-live/executor-001.json",
-  "docs/evidence/WO-042/harness-live/executor-002.json",
-  "docs/evidence/WO-042/harness-live/executor-003.json",
-  "docs/evidence/WO-042/harness-live/release-close-001.json",
-  "docs/evidence/WO-042/harness-live/release-close-002.json",
-  "docs/evidence/WO-042/harness-live/reviewer-001.json",
-  "docs/evidence/WO-042/harness-live/reviewer-002.json",
-  "docs/evidence/WO-042/harness-live/reviewer-003.json",
-  "docs/evidence/WO-042/harness-live/verifier-001.json",
-  "docs/evidence/WO-042/harness-live/verifier-002.json",
-  "docs/evidence/WO-042/harness-live/writer-foreign-dead-001.json",
-  "docs/evidence/WO-042/harness-live/writer-foreign-dead-002.json",
-  "docs/evidence/WO-042/harness-live/writer-foreign-live-001.json",
-  "docs/evidence/WO-042/harness-live/writer-foreign-live-002.json",
+  docRelative(root, "control", "budgets.json"),
+  docRelative(root, "discovery", "harness-smoke-2026-09-07.json"),
+  docRelative(root, "discovery", "harness-smoke-2026-09-07.md"),
+  docRelative(root, "discovery", "harness-smoke-2026-09-07/claude-bare.json"),
+  docRelative(root, "discovery", "harness-smoke-2026-09-07/claude.json"),
+  docRelative(root, "discovery", "harness-smoke-2026-09-07/codex.json"),
+  docRelative(root, "evidence", "WO-042/harness-context.json"),
+  docRelative(root, "evidence", "WO-042/harness-live/executor-001.json"),
+  docRelative(root, "evidence", "WO-042/harness-live/executor-002.json"),
+  docRelative(root, "evidence", "WO-042/harness-live/executor-003.json"),
+  docRelative(root, "evidence", "WO-042/harness-live/release-close-001.json"),
+  docRelative(root, "evidence", "WO-042/harness-live/release-close-002.json"),
+  docRelative(root, "evidence", "WO-042/harness-live/reviewer-001.json"),
+  docRelative(root, "evidence", "WO-042/harness-live/reviewer-002.json"),
+  docRelative(root, "evidence", "WO-042/harness-live/reviewer-003.json"),
+  docRelative(root, "evidence", "WO-042/harness-live/verifier-001.json"),
+  docRelative(root, "evidence", "WO-042/harness-live/verifier-002.json"),
+  docRelative(
+    root,
+    "evidence",
+    "WO-042/harness-live/writer-foreign-dead-001.json",
+  ),
+  docRelative(
+    root,
+    "evidence",
+    "WO-042/harness-live/writer-foreign-dead-002.json",
+  ),
+  docRelative(
+    root,
+    "evidence",
+    "WO-042/harness-live/writer-foreign-live-001.json",
+  ),
+  docRelative(
+    root,
+    "evidence",
+    "WO-042/harness-live/writer-foreign-live-002.json",
+  ),
   "packages/skeleton/src/feedback-boundary.ts",
   "packages/skeleton/src/feedback-source-comments.ts",
   "packages/skeleton/src/gate-deadlines.mjs",
@@ -268,10 +293,12 @@ export const harnessSources = [
   "scripts/terms.mjs",
 ];
 
-export const evidenceSources = {
-  authority: authoritySources,
-  "artifact-identity": artifactIdentitySources,
-  verification: verificationSources,
-  feedback: feedbackSources,
-  harness: harnessSources,
-};
+/** The recorded source inventory for one launchpad: kit files keep their
+ * repository-relative names and document inputs follow the configured roots. */
+export const evidenceSources = (root) => ({
+  authority: authoritySources(root),
+  "artifact-identity": artifactIdentitySources(root),
+  verification: verificationSources(root),
+  feedback: feedbackSources(root),
+  harness: harnessSources(root),
+});

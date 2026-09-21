@@ -1,5 +1,6 @@
 import { validateRecordedAt } from "./control-time.mjs";
 import { validateAccountLabel } from "./control-actor.mjs";
+import { defaultRoots, docRelative } from "./config.mjs";
 
 const attestedEventTypes = new Set([
   "ImplementationReady",
@@ -196,13 +197,34 @@ export const foldWorkOrders = (events) => {
   return { current, orders };
 };
 
-export const LEGACY_CONTROL_PATH = "docs/control/resume.jsonl";
-export const CONTROL_ORDERS_PATH = "docs/control/orders";
+/** Control storage under one launchpad's configured roots. */
+export const controlPaths = (root) => {
+  const orders = docRelative(root, "orders");
+  return {
+    legacy: docRelative(root, "control", "resume.jsonl"),
+    orders,
+    segment: (id) => `${orders}/${id}.jsonl`,
+  };
+};
+
+// The default layout, for peers that hold no launchpad: the plane itself
+// resolves storage through `controlPaths` so a configured root moves it.
+export const LEGACY_CONTROL_PATH = `${defaultRoots().control}/resume.jsonl`;
+export const CONTROL_ORDERS_PATH = defaultRoots().orders;
 export const orderSegmentPath = (id) => `${CONTROL_ORDERS_PATH}/${id}.jsonl`;
+export const DEFAULT_CONTROL_PATHS = {
+  legacy: LEGACY_CONTROL_PATH,
+  orders: CONTROL_ORDERS_PATH,
+  segment: orderSegmentPath,
+};
 
 // Direct support for the old log: no event moves and its ordinals stay global.
 // New segments have local ordinals. The layout is storage, not event schema.
-export const foldSegments = (legacy, segments = new Map()) => {
+export const foldSegments = (
+  legacy,
+  segments = new Map(),
+  { legacyPath = LEGACY_CONTROL_PATH, ordersPath = CONTROL_ORDERS_PATH } = {},
+) => {
   const at = (path, events) => {
     try {
       return foldWorkOrders(events);
@@ -210,14 +232,14 @@ export const foldSegments = (legacy, segments = new Map()) => {
       throw new Error(`${path}: ${error.message}`);
     }
   };
-  const { current: legacyState, orders } = at(LEGACY_CONTROL_PATH, legacy);
-  const locations = new Map(
-    [...orders.keys()].map((id) => [id, LEGACY_CONTROL_PATH]),
-  );
+  const { current: legacyState, orders } = at(legacyPath, legacy);
+  const locations = new Map([...orders.keys()].map((id) => [id, legacyPath]));
   for (const [path, events] of [...segments].sort(([a], [b]) =>
     a < b ? -1 : a > b ? 1 : 0,
   )) {
-    const id = /^docs\/control\/orders\/(WO-\d{3})\.jsonl$/.exec(path)?.[1];
+    const id = new RegExp(
+      `^${ordersPath.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}/(WO-\\d{3})\\.jsonl$`,
+    ).exec(path)?.[1];
     if (!id)
       throw new Error(`${path}: invalid control segment name at ordinal 1`);
     if (events.length === 0)

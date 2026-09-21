@@ -158,14 +158,13 @@ function fixture(t, { reviewed = false, third = "active" } = {}) {
     ["maintenance.auto", "false"],
   ])
     git(main, "config", key, value);
-  for (const path of [
-    "scripts/worktree.mjs",
-    "scripts/resume.mjs",
-    "scripts/lib/checkpoint.mjs",
-    "scripts/lib/worktree-integration.mjs",
-    "scripts/lib/planning-followups.mjs",
-  ])
+  for (const path of ["scripts/worktree.mjs", "scripts/resume.mjs"])
     cpSync(join(source, path), join(main, path));
+  // The overlay carries the whole shared library so a working-tree module and
+  // its peers never split across the clone's committed copies.
+  cpSync(join(source, "scripts/lib"), join(main, "scripts/lib"), {
+    recursive: true,
+  });
   for (const id of ["WO-997", "WO-998", "WO-999"]) {
     const path = `docs/work-orders/${id}-fixture.md`;
     put(

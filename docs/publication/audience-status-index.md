@@ -214,6 +214,7 @@ as a current blocked verdict.
 | [Read order for a cold start](../product/07-execution-guide.md#read-order-for-a-cold-start)                                                                  | software-engineer                   | implemented |
 | [Goal-aligned decisions](../product/07-execution-guide.md#goal-aligned-decisions)                                                                            | software-engineer                   | specified   |
 | [Operator resume phrases — how you get dispatched](../product/07-execution-guide.md#operator-resume-phrases--how-you-get-dispatched)                         | software-engineer                   | implemented |
+| [Where the control plane finds its documents](../product/07-execution-guide.md#where-the-control-plane-finds-its-documents)                                  | software-engineer                   | implemented |
 | [Independent workflows and integration](../product/07-execution-guide.md#independent-workflows-and-integration)                                              | software-engineer                   | implemented |
 | [Operator-opened ideation mode](../product/07-execution-guide.md#operator-opened-ideation-mode)                                                              | software-engineer                   | specified   |
 | [Operator recovery controls](../product/07-execution-guide.md#operator-recovery-controls)                                                                  | software-engineer                   | specified   |

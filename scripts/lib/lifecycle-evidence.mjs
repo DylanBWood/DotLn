@@ -1,3 +1,4 @@
+import { docPath } from "./config.mjs";
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
@@ -52,7 +53,7 @@ export async function requireLifecycleEvidence(
       advise(error.message);
     }
   }
-  const directory = join(root, "docs/control/local/harness");
+  const directory = docPath(root, "control", "local/harness");
   const role = {
     "implementation-ready": "executor",
     "repair-complete": "executor",

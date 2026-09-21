@@ -1,6 +1,8 @@
+import { docRelative } from "./config.mjs";
 import { parseDependencies } from "./dependencies.mjs";
 
-const seedPath = "docs/planning/critical-path-2026-09-08.json";
+const seedFile = (root) =>
+  docRelative(root, "planning", "critical-path-2026-09-08.json");
 const corpusRelations = {
   "WO-102": [
     ["WO-004", "satisfied-by-close"],
@@ -34,7 +36,8 @@ const canonical = (entries, reasons) =>
 
 // This one-time continuation only transcribes the reviewed WO-043 migration.
 // It cannot change an existing typed block or authorize a later relation edit.
-export function dependencyMigration(judged, original, read) {
+export function dependencyMigration(root, judged, original, read) {
+  const seedPath = seedFile(root);
   const authority = judged.orders.find(
     ({ workOrderId, criteria }) =>
       workOrderId === "WO-043" &&

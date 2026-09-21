@@ -1,3 +1,4 @@
+import { docRelative, findLaunchpad } from "./config.mjs";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import {
@@ -13,7 +14,7 @@ import {
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
-import { dirname, join, resolve, sep } from "node:path";
+import { dirname, join, sep } from "node:path";
 import { pathToFileURL } from "node:url";
 import { copilotShape } from "../fixtures/copilot-probe-hook.mjs";
 import { runProcess } from "./writing-worker-probe.mjs";
@@ -23,7 +24,7 @@ import {
   usageObservation,
 } from "../../packages/skeleton/src/usage-observation.mjs";
 
-const repository = resolve(import.meta.dirname, "../..");
+const repository = findLaunchpad();
 const events = {
   SessionStart: "sessionStart",
   UserPromptSubmit: "userPromptSubmitted",
@@ -515,8 +516,14 @@ export async function runCopilotProbe({
     "explicit live harness probe required",
   );
   assert.match(date, /^\d{4}-\d{2}-\d{2}$/);
-  const target = join(out, `docs/discovery/copilot-cli-${date}.json`);
-  const markdown = join(out, `docs/discovery/copilot-cli-${date}.md`);
+  const target = join(
+    out,
+    docRelative(out, "discovery", `copilot-cli-${date}.json`),
+  );
+  const markdown = join(
+    out,
+    docRelative(out, "discovery", `copilot-cli-${date}.md`),
+  );
   const previousRecord = correctTrust
     ? JSON.parse(readFileSync(target, "utf8"))
     : null;
@@ -736,7 +743,10 @@ export function prepareCopilotInteractive({
   date = new Date().toISOString().slice(0, 10),
   base = tmpdir(),
 } = {}) {
-  const path = join(out, `docs/discovery/copilot-cli-${date}.json`);
+  const path = join(
+    out,
+    docRelative(out, "discovery", `copilot-cli-${date}.json`),
+  );
   const record = JSON.parse(readFileSync(path, "utf8"));
   const interactive = (record.interactive ??= []);
   assert.ok(
@@ -761,7 +771,7 @@ export function prepareCopilotInteractive({
   interactive.push({ id, status: "reserved", trustRequested: trust });
   writeFileSync(path, json(record));
   writeFileSync(
-    join(out, `docs/discovery/copilot-cli-${date}.md`),
+    join(out, docRelative(out, "discovery", `copilot-cli-${date}.md`)),
     renderCopilotProbe(record),
   );
   return {
@@ -800,7 +810,10 @@ export function collectCopilotInteractive(
   const reservation = JSON.parse(
     readFileSync(join(root, "interactive-reservation.json"), "utf8"),
   );
-  const path = join(out, `docs/discovery/copilot-cli-${reservation.date}.json`);
+  const path = join(
+    out,
+    docRelative(out, "discovery", `copilot-cli-${reservation.date}.json`),
+  );
   const record = JSON.parse(readFileSync(path, "utf8"));
   const index = record.interactive.findIndex(
     (row) => row.id === reservation.id,
@@ -828,7 +841,10 @@ export function collectCopilotInteractive(
     };
     writeFileSync(path, json(record));
     writeFileSync(
-      join(out, `docs/discovery/copilot-cli-${reservation.date}.md`),
+      join(
+        out,
+        docRelative(out, "discovery", `copilot-cli-${reservation.date}.md`),
+      ),
       renderCopilotProbe(record),
     );
     return record.interactive[index];
@@ -868,7 +884,10 @@ export function collectCopilotInteractive(
   };
   writeFileSync(path, json(record));
   writeFileSync(
-    join(out, `docs/discovery/copilot-cli-${reservation.date}.md`),
+    join(
+      out,
+      docRelative(out, "discovery", `copilot-cli-${reservation.date}.md`),
+    ),
     renderCopilotProbe(record),
   );
   return record.interactive[index];

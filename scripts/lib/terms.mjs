@@ -1,3 +1,4 @@
+import { docPath } from "./config.mjs";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { containedRegularFile } from "./paths.mjs";
@@ -10,7 +11,7 @@ const tokens = (text) =>
 
 // The local list and matches never leave this process, including as hashes.
 export function checkLocalTerms(root, surfaces) {
-  const path = join(root, "docs/control/local/terms.txt");
+  const path = docPath(root, "control", "local/terms.txt");
   if (!existsSync(path)) return { status: "unavailable" };
   if (!containedRegularFile(path, root))
     throw new Error("local-terms list is not a contained regular file");

@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 import { refreshHarnessRuntime } from "./lib/harness-runtime.mjs";
+import { findLaunchpad } from "./lib/config.mjs";
 import { existsSync, lstatSync, realpathSync } from "node:fs";
 import { basename, dirname, join, relative, resolve, sep } from "node:path";
-import { fileURLToPath } from "node:url";
+
 import { spawnSync } from "node:child_process";
 import { assertGitHubBodyProfile, withTemporaryBody } from "./github-body.mjs";
 import { parseReleaseNotes, releaseNotesPathFor } from "./release-notes.mjs";
@@ -33,7 +34,7 @@ import {
   productGateBody,
 } from "./lib/release-records.mjs";
 
-const toolRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+const toolRoot = findLaunchpad();
 const executeGh = (cwd, args) =>
   spawnSync("gh", args, {
     cwd,
@@ -374,7 +375,7 @@ const main = async () => {
       throw new Error(
         "PR title or body contains AI attribution or a session trailer/URL",
       );
-    const releaseNotesPath = releaseNotesPathFor(workOrderId);
+    const releaseNotesPath = releaseNotesPathFor(workOrderId, subject);
     const releaseNotesFile = resolve(subject, releaseNotesPath);
     if (!existsSync(releaseNotesFile))
       throw new Error(`${releaseNotesPath}: release-notes file is missing`);

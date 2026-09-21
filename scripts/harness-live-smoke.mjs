@@ -1,3 +1,4 @@
+import { docPath, docRelative, findLaunchpad } from "./lib/config.mjs";
 import assert from "node:assert/strict";
 import { execFileSync, spawn, spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
@@ -14,7 +15,7 @@ import {
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
+
 import { emitHarness, harnessInstallation } from "./lib/harness.mjs";
 import {
   harnessWriterView,
@@ -28,7 +29,7 @@ import {
 import { fixtureSelectors, fixtureTree, roles } from "./harness-context.mjs";
 import { installBeaconFixture } from "./test-beacon-fixture.mjs";
 
-const root = realpathSync(fileURLToPath(new URL("../", import.meta.url)));
+const root = realpathSync(findLaunchpad());
 assert.equal(realpathSync(process.cwd()), root);
 const git = (directory, ...args) =>
   execFileSync("git", args, {
@@ -56,7 +57,7 @@ const recordName = scenario
   : `${role}-${attempt}`;
 const destination = join(
   root,
-  `docs/evidence/WO-042/harness-live/${recordName}.json`,
+  docRelative(root, "evidence", `WO-042/harness-live/${recordName}.json`),
 );
 assert.ok(
   !existsSync(destination),
@@ -103,7 +104,7 @@ symlinkSync(
 );
 write(
   ".gitignore",
-  "node_modules/\n**/dist/\ndocs/control/local/\n.control-beacons/\n",
+  `node_modules/\n**/dist/\n${docRelative(scratch, "control", "local")}/\n.control-beacons/\n`,
 );
 write(
   "package.json",
@@ -119,9 +120,9 @@ write(
     2,
   ) + "\n",
 );
-const publication = "docs/product/08-publication-compiler.md";
+const publication = docRelative(root, "product", "08-publication-compiler.md");
 write(publication, readFileSync(join(root, publication), "utf8"));
-write("docs/discovery/environment.json", "{}\n");
+write(docRelative(scratch, "discovery", "environment.json"), "{}\n");
 const workOrder = "WO-999";
 const event = (type, fields = {}) => ({
   schemaVersion: 1,
@@ -133,29 +134,29 @@ const event = (type, fields = {}) => ({
 // Synthetic closed input, folded by the real lifecycle reader. These are not
 // claimed live transitions and never touch the repository's control segments.
 write(
-  "docs/control/orders/WO-999.jsonl",
+  docRelative(scratch, "orders", "WO-999.jsonl"),
   [
     event("WorkOrderActivated", {
-      workOrderPath: "docs/work-orders/WO-999-fixture.md",
+      workOrderPath: docRelative(scratch, "workOrders", "WO-999-fixture.md"),
       effortDeclarationValidated: true,
     }),
     event("ImplementationReady"),
     event("VerificationRequested", {
       verificationId: "VER-001",
-      reportPath: "docs/verifications/WO-999/VER-001.md",
+      reportPath: docRelative(scratch, "verifications", "WO-999/VER-001.md"),
     }),
     event("VerificationCompleted", {
       verificationId: "VER-001",
-      reportPath: "docs/verifications/WO-999/VER-001.md",
+      reportPath: docRelative(scratch, "verifications", "WO-999/VER-001.md"),
       verdict: "pass",
     }),
     event("FinalReviewRequested", {
       finalReviewId: "FINAL-001",
-      reportPath: "docs/final-reviews/WO-999/FINAL-001.md",
+      reportPath: docRelative(scratch, "finalReviews", "WO-999/FINAL-001.md"),
     }),
     event("FinalReviewCompleted", {
       finalReviewId: "FINAL-001",
-      reportPath: "docs/final-reviews/WO-999/FINAL-001.md",
+      reportPath: docRelative(scratch, "finalReviews", "WO-999/FINAL-001.md"),
       verdict: "pass",
     }),
   ]
@@ -211,7 +212,7 @@ const commands = [
   ]),
 ];
 write(
-  "docs/control/local/harness/read-scope.json",
+  docRelative(scratch, "control", "local/harness/read-scope.json"),
   JSON.stringify({
     role,
     skill: `dotln-${role}`,
@@ -312,7 +313,7 @@ const messages = output.split("\n").flatMap((line) => {
     return [];
   }
 });
-const observationDir = join(scratch, "docs/control/local/harness");
+const observationDir = docPath(scratch, "control", "local/harness");
 const observations = readdirSync(observationDir)
   .filter((name) => name.endsWith(".jsonl") && name !== "writer-events.jsonl")
   .flatMap((name) =>

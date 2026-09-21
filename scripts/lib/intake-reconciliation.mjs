@@ -1,3 +1,4 @@
+import { docRelative } from "./config.mjs";
 import {
   constants,
   copyFileSync,
@@ -14,7 +15,7 @@ import { classifyIgnoredMaterial, inspectNestedRepository } from "./paths.mjs";
 
 const digest = (bytes) => createHash("sha256").update(bytes).digest("hex");
 const stat = (path) => lstatSync(path, { throwIfNoEntry: false });
-const controlRoot = "docs/control/local";
+const controlRoot = (root) => docRelative(root, "control", "local");
 const preservationProofs = new WeakMap();
 
 // Inspect every component, including dangling and in-checkout symlinks.
@@ -36,7 +37,10 @@ function contained(root, path) {
 }
 
 function inventory(source, retainedControl) {
-  const roots = ["docs/intake", ...(retainedControl ? [controlRoot] : [])];
+  const roots = [
+    docRelative(source, "intake"),
+    ...(retainedControl ? [controlRoot(source)] : []),
+  ];
   const ignored = new Set(
     runGitPathList(source, [
       "ls-files",
@@ -76,7 +80,8 @@ function inventory(source, retainedControl) {
     } else file(path, lane, absolute, item);
   };
   const walk = (path, lane) => {
-    if (lane === "control" && classifyIgnoredMaterial(path).disposable) return;
+    if (lane === "control" && classifyIgnoredMaterial(path, source).disposable)
+      return;
     const absolute = contained(source, path),
       item = stat(absolute);
     if (!item) return;
@@ -109,13 +114,13 @@ function inventory(source, retainedControl) {
       // scaffolding is archived as an empty directory.
       if (
         result.length === start + 1 &&
-        (path === controlRoot || discarded > discardedBefore)
+        (path === controlRoot(source) || discarded > discardedBefore)
       )
         result.pop();
     } else if (ignored.has(path)) file(path, lane, absolute, item);
   };
   for (const path of roots)
-    walk(path, path === controlRoot ? "control" : "intake");
+    walk(path, path === controlRoot(source) ? "control" : "intake");
   return { entries: result, nestedRepositories };
 }
 const entries = (source, retainedControl) =>
@@ -155,7 +160,7 @@ function plan(source, main, workOrder, retainedControl) {
     const initial = parent
       ? `${parent}/${entry.source.slice(dirname(entry.source).length + 1)}`
       : entry.lane === "control"
-        ? `${controlRoot}/retained/${workOrder}`
+        ? `${controlRoot(main)}/retained/${workOrder}`
         : entry.source;
     let destination = initial,
       ordinal = 0;

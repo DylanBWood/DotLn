@@ -1,3 +1,4 @@
+import { defaultDocRelative } from "./config.mjs";
 import { dirname } from "node:path";
 
 export const HARNESS_CONTEXT_BASE = "8b55eca3b3427146e98d34c68f67f679dc59bea5";
@@ -7,10 +8,11 @@ const normalized = (text) =>
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, " ")
     .trim();
-const safePath = (path) =>
+// Directed reads name launchpad-relative documents; ignored intake is refused.
+const safePath = (path, intake = defaultDocRelative("intake")) =>
   /^(?:[.a-zA-Z0-9_-]+\/)*[.a-zA-Z0-9_-]+$/.test(path) &&
   !path.split("/").some((part) => part === "..") &&
-  !path.startsWith("docs/intake/");
+  !path.startsWith(`${intake}/`);
 
 export function sectionRange(text, anchor) {
   const lines = lineParts(text);
@@ -87,9 +89,12 @@ export function citedSelectors(text, paths, read) {
     if (/^ADR-/.test(path))
       path =
         paths.find((candidate) =>
-          candidate.startsWith(`docs/decisions/${path.slice(4)}-`),
+          candidate.startsWith(
+            `${defaultDocRelative("decisions")}/${path.slice(4)}-`,
+          ),
         ) ?? "";
-    else if (/^\d\d-.*\.md$/.test(path)) path = `docs/product/${path}`;
+    else if (/^\d\d-.*\.md$/.test(path))
+      path = defaultDocRelative("product", path);
     else if (
       !paths.includes(path) &&
       sourceDirectory &&
@@ -257,14 +262,15 @@ export function legacyDirectedReads(instruction, guide, role, selectors, read) {
   )?.[1];
   if (
     !floor ||
-    !floor.includes("docs/product/07-execution-guide.md") ||
+    // The frozen activation bytes carry the default layout by construction.
+    !floor.includes(defaultDocRelative("product", "07-execution-guide.md")) ||
     !floor.includes("your work order") ||
     !floor.includes("sections it cites")
   )
     throw new Error("Unrecognized activation read order");
   const selected = [
     "CLAUDE.md",
-    "docs/product/07-execution-guide.md",
+    defaultDocRelative("product", "07-execution-guide.md"),
     ...selectors["@work-order"],
     ...selectors["@citations"],
   ];

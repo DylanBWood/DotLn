@@ -1,8 +1,9 @@
 #!/usr/bin/env node
+import { docPath, findLaunchpad, rootPattern } from "./lib/config.mjs";
 import { isMainModule } from "./lib/paths.mjs";
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
-import { dirname, join, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+import { dirname, join } from "node:path";
+
 import {
   collectMeta,
   renderMeta,
@@ -20,7 +21,7 @@ import { refreshExecutorIndex } from "./lib/executor-handoff.mjs";
 import { syncFollowups } from "./lib/planning-followups.mjs";
 import { checkReceiptCostLines } from "./lib/receipt-cost.mjs";
 
-const root = resolve(fileURLToPath(new URL("../", import.meta.url)));
+const root = findLaunchpad();
 export async function metaMain(args = process.argv.slice(2), repo = root) {
   const options = {};
   for (let index = 0; index < args.length; index++) {
@@ -120,11 +121,15 @@ export async function metaMain(args = process.argv.slice(2), repo = root) {
       throw new Error(
         "Planning cost table exceeds 64 KB; select the bounded subject rows",
       );
-    writeFileSync(join(repo, "docs/planning/cost-table.json"), text);
+    writeFileSync(docPath(repo, "planning", "cost-table.json"), text);
   }
   if (options["--write"]) {
     const path = options["--write"];
-    if (!/^docs\/evidence\/WO-\d{3}\/meta(?:-baseline)?\.json$/.test(path))
+    if (
+      !new RegExp(
+        `^${rootPattern(repo, "evidence")}/WO-\\d{3}/meta(?:-baseline)?\\.json$`,
+      ).test(path)
+    )
       throw new Error(
         "Meter snapshot must be the selected order's evidence file",
       );

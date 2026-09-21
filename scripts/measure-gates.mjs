@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { docPath, findLaunchpad } from "./lib/config.mjs";
 import { isMainModule } from "./lib/paths.mjs";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
@@ -14,12 +15,12 @@ import {
 } from "node:fs";
 import { availableParallelism } from "node:os";
 import { dirname, join, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+
 import { readGateChecks } from "./lib/gate-evidence.mjs";
 import { gateCriticalPath } from "./lib/gate-timeline.mjs";
 import { suites } from "./test-runner.mjs";
 
-const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+const root = findLaunchpad();
 
 export function summarizeDeadlines(records) {
   const groups = new Map();
@@ -125,7 +126,7 @@ function measure(output) {
     "run from the worktree root",
   );
   assert.ok(
-    output.startsWith(join(root, "docs/evidence/")),
+    output.startsWith(`${docPath(root, "evidence")}/`),
     "measurement output must be evidence in this worktree",
   );
   assert.ok(
@@ -149,10 +150,10 @@ function measure(output) {
       : "shared",
     runs: [],
   };
-  const local = join(root, "docs/control/local/wo128-series", `${Date.now()}`);
+  const local = docPath(root, "control", "local/wo128-series", `${Date.now()}`);
   mkdirSync(local, { recursive: true });
   mkdirSync(dirname(output), { recursive: true });
-  const diagnosticRoot = join(root, "docs/control/local/harness/deadlines");
+  const diagnosticRoot = docPath(root, "control", "local/harness/deadlines");
   for (let ordinal = 1; ordinal <= 5; ordinal++) {
     const previousLogs = new Set(
       existsSync(diagnosticRoot) ? readdirSync(diagnosticRoot) : [],

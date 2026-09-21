@@ -1,6 +1,12 @@
 #!/usr/bin/env node
 import { isMainModule } from "./lib/paths.mjs";
 import {
+  defaultDocRelative,
+  docPath,
+  docRelative,
+  findLaunchpad,
+} from "./lib/config.mjs";
+import {
   existsSync,
   readFileSync,
   readdirSync,
@@ -8,9 +14,9 @@ import {
   renameSync,
   writeFileSync,
 } from "node:fs";
-import { basename, dirname, join, resolve, sep } from "node:path";
-import { fileURLToPath } from "node:url";
-import { LEGACY_CONTROL_PATH } from "./lib/control.mjs";
+import { basename, join, sep } from "node:path";
+
+import { DEFAULT_CONTROL_PATHS, controlPaths } from "./lib/control.mjs";
 import { readControl, readControls } from "./lib/control-store.mjs";
 import { renderAttestation } from "./lib/control-actor.mjs";
 import {
@@ -36,9 +42,16 @@ import {
   strictVersionsIn,
 } from "./lib/release-records.mjs";
 
-const toolRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const indexPath = "docs/work-orders/README.md";
-const planningPath = "docs/planning/sequence.md";
+const toolRoot = findLaunchpad();
+const indexPath = defaultDocRelative("workOrders", "README.md");
+const planningPath = defaultDocRelative("planning", "sequence.md");
+// The default-layout storage names the generated index cites when a caller
+// hands it rows without the launchpad they were read from.
+const DEFAULT_INDEX_PATHS = {
+  legacy: DEFAULT_CONTROL_PATHS.legacy,
+  orders: DEFAULT_CONTROL_PATHS.segment("WO-NNN"),
+  legacyRelease: defaultDocRelative("releases", "v0.2.0.md"),
+};
 const snapshotPrefix = "<!-- dotln-work-order-tags: ";
 const historicalIds = historicalDependencyIds;
 const compare = (left, right) => (left < right ? -1 : left > right ? 1 : 0);
@@ -98,14 +111,14 @@ const readContained = (root, path) => {
 
 // Only this explicit operator-authored block selects the proposed order.
 // References elsewhere in the map or a Depends on paragraph cannot select it.
-export const parseSequenceGroups = (markdown) => {
+export const parseSequenceGroups = (markdown, source = planningPath) => {
   const lines = markdown.split(/\r?\n/);
   const positions = (marker) =>
     lines.flatMap((line, index) => (line.trim() === marker ? [index] : []));
   const starts = positions("<!-- dotln-work-order-sequence:start -->");
   const ends = positions("<!-- dotln-work-order-sequence:end -->");
   if (starts.length !== 1 || ends.length !== 1 || starts[0] >= ends[0])
-    throw new Error(`${planningPath}: expected one marked proposed sequence`);
+    throw new Error(`${source}: expected one marked proposed sequence`);
   const seen = new Set();
   const groups = [];
   let group = [];
@@ -116,10 +129,10 @@ export const parseSequenceGroups = (markdown) => {
     } else {
       const match = /^- (WO-\d{3}) — (\S(?:.*\S)?)$/u.exec(line);
       if (!match)
-        throw new Error(`${planningPath}: expected '- WO-NNN — short label'`);
+        throw new Error(`${source}: expected '- WO-NNN — short label'`);
       const [, id, label] = match;
       if (seen.has(id))
-        throw new Error(`${planningPath}: duplicate proposed order ${id}`);
+        throw new Error(`${source}: duplicate proposed order ${id}`);
       seen.add(id);
       group.push({ id, label });
     }
@@ -128,10 +141,14 @@ export const parseSequenceGroups = (markdown) => {
   return groups;
 };
 
-export const parseSequence = (markdown) => parseSequenceGroups(markdown).flat();
+export const parseSequence = (markdown, source = planningPath) =>
+  parseSequenceGroups(markdown, source).flat();
 
 /** Check current planning topology without changing historical receipt subjects. */
-export const checkSequenceTopology = ({ rows, sequence, groups }) => {
+export const checkSequenceTopology = (
+  { rows, sequence, groups },
+  source = planningPath,
+) => {
   const positions = new Map(sequence.map(({ id }, index) => [id, index]));
   const pairs = groups.filter((group) => group.length === 2);
   const failures = [];
@@ -154,20 +171,22 @@ export const checkSequenceTopology = ({ rows, sequence, groups }) => {
         failures.push(`${label}: blocking edge inside a two-entry pair`);
     }
   }
-  if (failures.length)
-    throw new Error(`${planningPath}: ${failures.join("; ")}`);
+  if (failures.length) throw new Error(`${source}: ${failures.join("; ")}`);
 };
 
 export const readIndex = (root, releases = localReleaseRecords(root)) => {
+  const authorityRoot = docRelative(root, "workOrders");
+  const planningSource = docRelative(root, "planning", "sequence.md");
   if (
-    !realpathSync(join(root, "docs/work-orders")).startsWith(
+    !realpathSync(join(root, authorityRoot)).startsWith(
       `${realpathSync(root)}${sep}`,
     )
   )
     throw new Error(
-      "docs/work-orders: directory must remain inside the repository",
+      `${authorityRoot}: directory must remain inside the repository`,
     );
   const control = readControl(root);
+  const storage = controlPaths(root);
   const { orders, locations } = control;
   const tagLogs = readControls(
     root,
@@ -237,7 +256,7 @@ export const readIndex = (root, releases = localReleaseRecords(root)) => {
           return false;
         const prior = tagLogs.get(`refs/tags/${name}`);
         return (
-          (segment !== LEGACY_CONTROL_PATH || prior.sources.has(segment)) &&
+          (segment !== storage.legacy || prior.sources.has(segment)) &&
           (prior.eventSegments.get(segment)?.length ?? 0) <
             evidence.closeOrdinal &&
           prefixMatches(prior)
@@ -246,11 +265,11 @@ export const readIndex = (root, releases = localReleaseRecords(root)) => {
       .at(-1);
   };
   const ids = new Set();
-  const rows = readdirSync(join(root, "docs/work-orders"))
+  const rows = readdirSync(join(root, authorityRoot))
     .filter((name) => /^WO-.*\.md$/.test(name))
     .map((name) => {
       const id = /^(WO-\d{3})-/.exec(name)?.[1];
-      const path = `docs/work-orders/${name}`;
+      const path = `${authorityRoot}/${name}`;
       workOrderAuthorityPath(root, id, path);
       if (ids.has(id))
         throw new Error(`duplicate work-order id ${id}: ${path}`);
@@ -307,7 +326,7 @@ export const readIndex = (root, releases = localReleaseRecords(root)) => {
         id,
         ...header,
         hasDecisions: existsSync(
-          join(root, `docs/evidence/${id}/decisions.md`),
+          join(root, docRelative(root, "evidence", `${id}/decisions.md`)),
         ),
         section,
         phase,
@@ -327,16 +346,27 @@ export const readIndex = (root, releases = localReleaseRecords(root)) => {
   const groups = parseSequenceGroups(
     readContained(
       root,
-      existsSync(join(root, planningPath))
-        ? planningPath
-        : "docs/planning/work-order-map.md",
+      existsSync(join(root, planningSource))
+        ? planningSource
+        : docRelative(root, "planning", "work-order-map.md"),
     ),
+    planningSource,
   );
   const sequence = groups.flat();
   for (const { id } of sequence)
     if (!ids.has(id))
-      throw new Error(`${planningPath}: unknown proposed order ${id}`);
-  return { rows, releases, sequence, groups };
+      throw new Error(`${planningSource}: unknown proposed order ${id}`);
+  return {
+    rows,
+    releases,
+    sequence,
+    groups,
+    paths: {
+      legacy: storage.legacy,
+      orders: storage.segment("WO-NNN"),
+      legacyRelease: docRelative(root, "releases", "v0.2.0.md"),
+    },
+  };
 };
 
 const cell = (value) =>
@@ -358,7 +388,12 @@ const report = (id, verdict, path) =>
     ? `${path ? link(id, `../../${path}`) : cell(id)} (${cell(verdict ?? "pending")})`
     : "none recorded";
 
-export const renderIndex = ({ rows, releases, sequence }) => {
+export const renderIndex = ({
+  rows,
+  releases,
+  sequence,
+  paths = DEFAULT_INDEX_PATHS,
+}) => {
   const byId = new Map(rows.map((row) => [row.id, row]));
   const active = rows.filter((row) => row.section === "Active");
   const lines = [
@@ -448,20 +483,20 @@ export const renderIndex = ({ rows, releases, sequence }) => {
       );
     }
   }
-  lines.push(...renderSources(releases));
+  lines.push(...renderSources(releases, paths));
   for (const row of rows)
     lines.push(`[${row.id}]: ${encodeURIComponent(basename(row.path))}`);
   return `${lines.join("\n").trimEnd()}\n`;
 };
 
-const renderSources = (releases) => {
+const renderSources = (releases, paths) => {
   const lines = [
     "## Sources and limits",
     "",
     "- **Header observation:** each authority's H1, sole strict application version, Model, Effort, and leading typed dependency block (or legacy Depends on paragraph). Invalid typed declarations refuse with the authority path and offending entry; other unknown metadata is attributed by the Authority link.",
     "- **Proposed sequence:** the marked block in planning/sequence.md, in operator-selected order. Historical fixtures without that file use the map. Missing/malformed blocks, duplicate IDs, and IDs without an authority refuse. This is not a scheduler or proof of dependency eligibility.",
-    "- **Control evidence:** the shared fold of legacy `docs/control/resume.jsonl` plus `docs/control/orders/WO-NNN.jsonl`, reduced independently per work order in segment append order. Closed means a passing final review; it does not independently prove merge or publication. Report verdicts come from events, not inferred report contents.",
-    "- **Local release evidence:** the earliest numeric annotated DotLn tag whose manifest names the order or a changed final-review path. The manifest-free v0.2.0 exception uses `docs/releases/v0.2.0.md`. Other tags are not release evidence. Remote publication is not checked.",
+    `- **Control evidence:** the shared fold of legacy \`${paths.legacy}\` plus \`${paths.orders}\`, reduced independently per work order in segment append order. Closed means a passing final review; it does not independently prove merge or publication. Report verdicts come from events, not inferred report contents.`,
+    `- **Local release evidence:** the earliest numeric annotated DotLn tag whose manifest names the order or a changed final-review path. The manifest-free v0.2.0 exception uses \`${paths.legacyRelease}\`. Other tags are not release evidence. Remote publication is not checked.`,
     "- **Derived dependency status:** the authority's typed block is projected by scripts/lib/dependencies.mjs, also used by status --json and activation. Hard and satisfied-by-close entries require control closure with a passing final-review verdict. Satisfied-by-release requires the named local annotated DotLn release in HEAD's ancestry. Planning-deferral waits for its named order's closure or remains unmet for a candidate label; a dated waiver replaces it. Historical evidence, references, waivers and supersessions never block. Without a typed block, distinct Depends on tokens retain a labeled conservative view and never block activation. Closed and historical rows do not imply reactivation work.",
     "- **Inferred no-release close:** only an unmatched closed order with a strict H1 version below a local release whose per-segment tagged control prefix precedes its close and whose tag time is no later than the close observation. That observation is recordedAt, or the first committed close prefix for legacy events (second precision, not recovered append time). Absent evidence stays unreleased. Release inclusion can follow a no-release close; local tags do not prove their remote publication time.",
     "- **Time-indexed history:** WO-001 and WO-002 are explicit pre-control cases, never completed merely because events are absent. They do not enter the control-closed dependency set.",
@@ -480,17 +515,21 @@ const renderSources = (releases) => {
   return lines;
 };
 
-export const readTagSnapshot = (source) => {
+export const readTagSnapshot = (
+  source,
+  storage = DEFAULT_CONTROL_PATHS,
+  displayPath = indexPath,
+) => {
   const records = source
     .split("\n")
     .filter((line) => line.startsWith(snapshotPrefix));
   if (records.length !== 1 || !records[0].endsWith(" -->"))
     throw new Error(
-      `${indexPath}: missing or malformed tag snapshot; run npm run work-orders -- index`,
+      `${displayPath}: missing or malformed tag snapshot; run npm run work-orders -- index`,
     );
   const snapshot = parseJson(
     records[0].slice(snapshotPrefix.length, -4),
-    `${indexPath} tag snapshot`,
+    `${displayPath} tag snapshot`,
   );
   if (
     !Array.isArray(snapshot) ||
@@ -507,24 +546,26 @@ export const readTagSnapshot = (source) => {
           (!Array.isArray(tag.controlSegments) ||
             tag.controlSegments.some(
               (path) =>
-                path !== LEGACY_CONTROL_PATH &&
-                !/^docs\/control\/orders\/WO-\d{3}\.jsonl$/.test(path),
+                path !== storage.legacy &&
+                !new RegExp(
+                  `^${storage.orders.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}/WO-\\d{3}\\.jsonl$`,
+                ).test(path),
             ) ||
             new Set(tag.controlSegments).size !== tag.controlSegments.length)),
     ) ||
     new Set(snapshot.map(({ name }) => name)).size !== snapshot.length
   )
-    throw new Error(`${indexPath}: invalid tag snapshot`);
+    throw new Error(`${displayPath}: invalid tag snapshot`);
   return snapshot;
 };
 
-export const checkIndex = (expected, actual) => {
+export const checkIndex = (expected, actual, displayPath = indexPath) => {
   if (expected === actual) return;
   const before = actual?.split("\n") ?? [];
   const after = expected.split("\n");
   const line = after.findIndex((value, index) => value !== before[index]);
   throw new Error(
-    `${indexPath} is stale at line ${line < 0 ? after.length + 1 : line + 1}; run npm run work-orders -- index`,
+    `${displayPath} is stale at line ${line < 0 ? after.length + 1 : line + 1}; run npm run work-orders -- index`,
   );
 };
 
@@ -535,26 +576,31 @@ export const main = (args = process.argv.slice(2), root = toolRoot) => {
     (args.length === 2 && args[1] !== "--check")
   )
     throw new Error("usage: work-orders index [--check]");
-  const destination = join(root, indexPath);
+  const catalog = docRelative(root, "workOrders", "README.md");
+  const planningSource = docRelative(root, "planning", "sequence.md");
+  const destination = join(root, catalog);
   if (existsSync(destination) && !containedRegularFile(destination, root))
-    throw new Error(`${indexPath}: expected a contained regular file`);
+    throw new Error(`${catalog}: expected a contained regular file`);
   if (args.includes("--check")) {
     if (!existsSync(destination))
       throw new Error(
-        `${indexPath} is stale at line 1; run npm run work-orders -- index`,
+        `${catalog} is stale at line 1; run npm run work-orders -- index`,
       );
     const actual = readFileSync(destination, "utf8");
-    const releases = localReleaseRecords(root, readTagSnapshot(actual));
+    const releases = localReleaseRecords(
+      root,
+      readTagSnapshot(actual, controlPaths(root), catalog),
+    );
     const index = readIndex(root, releases);
-    checkSequenceTopology(index);
-    checkIndex(renderIndex(index), actual);
+    checkSequenceTopology(index, planningSource);
+    checkIndex(renderIndex(index), actual, catalog);
     const names = new Set(releases.map(({ name }) => name));
     const newer = localReleaseTags(root).filter(({ name }) => !names.has(name));
     if (newer.length)
       process.stdout.write(
         `NEWER local release evidence: ${newer.map(({ name }) => name).join(", ")}; additional manifests are not validated by --check; run npm run work-orders -- index to refresh the tag observation\n`,
       );
-    process.stdout.write(`PASS ${indexPath} is current\n`);
+    process.stdout.write(`PASS ${catalog} is current\n`);
   } else {
     const expected = renderIndex(readIndex(root));
     if (
@@ -572,7 +618,7 @@ export const main = (args = process.argv.slice(2), root = toolRoot) => {
         throw error;
       }
       renameSync(temporary, destination);
-      process.stdout.write(`Generated ${indexPath}\n`);
+      process.stdout.write(`Generated ${catalog}\n`);
     }
   }
 };

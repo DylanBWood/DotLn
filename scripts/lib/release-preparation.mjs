@@ -1,3 +1,4 @@
+import { docPath } from "./config.mjs";
 import { readFileSync, realpathSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { runGit } from "./git.mjs";
@@ -48,7 +49,7 @@ export function planReleasePreparation(root, state, latest, date) {
   const paths = [
     authorityPath,
     join(root, "README.md"),
-    join(root, "docs/product/06-roadmap.md"),
+    docPath(root, "product", "06-roadmap.md"),
   ];
   for (const path of paths)
     if (!containedRegularFile(path, root) || realpathSync(path) !== path)
