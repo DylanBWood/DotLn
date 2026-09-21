@@ -20,6 +20,16 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-150 activation completion (2026-09-21):** assigned application `v0.39.0`,
+the next minor above the observed local annotated `v0.38.1` tag, under the
+declared minor classification. The compiled Contributor loadout equips the
+executor's `tinkerer-economy` support by default, with the per-order opt-out
+switch retained, so the generated executor role text and the regenerated
+bundle change; the skeleton moves to `0.34.0` and the console pin follows it.
+No kernel, compiler, schema, gate, hook or authority change, and the support's
+own paragraph is unchanged. Independent verification, final review and
+publication remain separate lifecycle actions.
+
 **WO-138 activation completion (2026-09-21):** assigned application `v0.38.1`
 under the declared patch classification above the observed local `v0.38.0`
 tag. The release is evidence-only: the qualification probe, deterministic

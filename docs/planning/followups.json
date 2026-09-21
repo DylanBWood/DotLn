@@ -3631,6 +3631,20 @@
           "title": "Candidate — Tinkerer / Scientist",
           "summary": "## Candidate — Tinkerer / Scientist **Near-term planning request, 2026-09-11:** the operator asks to prioritize this candidate soon, including its adaptive bad-luck protection based on time since the last demonstrated application improvement. It remains unimplemented and unallocated. The operator explicitly excludes implementing it in the current WO-043 repair. Carry the request through existing `FUP-fc4158d3207e495d`; the next planning pass should select a bounded experiment and allocation, preserving the budget, evidence and reset distinctions below. Source: the [WO-043 breakout](../evidence/WO-043/ideation-commands-and-usage.md). **Allocated 2026-09-19 (second planning pass of that day).*",
           "missing": false
+        },
+        {
+          "hash": "695ad4e5ebb4b5cfaa31fc6faddb740fe44e8e40dbdd1eb3c95b5343686e8431",
+          "ref": "docs/product/05-pattern-library.md#candidate--tinkerer--scientist",
+          "title": "Candidate — Tinkerer / Scientist",
+          "summary": "## Candidate — Tinkerer / Scientist **Near-term planning request, 2026-09-11:** the operator asks to prioritize this candidate soon, including its adaptive bad-luck protection based on time since the last demonstrated application improvement. It remains unimplemented and unallocated. The operator explicitly excludes implementing it in the current WO-043 repair. Carry the request through existing `FUP-fc4158d3207e495d`; the next planning pass should select a bounded experiment and allocation, preserving the budget, evidence and reset distinctions below. Source: the [WO-043 breakout](../evidence/WO-043/ideation-commands-and-usage.md). **Allocated 2026-09-19 (second planning pass of that day).*",
+          "missing": false
+        },
+        {
+          "hash": "3a1ff6c6d84fdf2d79a9f753a052f4e35e9be54cbea26d092dc045a17ead6c71",
+          "ref": "docs/product/05-pattern-library.md#candidate--tinkerer--scientist",
+          "title": "Candidate — Tinkerer / Scientist",
+          "summary": "## Candidate — Tinkerer / Scientist **Near-term planning request, 2026-09-11:** the operator asks to prioritize this candidate soon, including its adaptive bad-luck protection based on time since the last demonstrated application improvement. It remains unimplemented and unallocated. The operator explicitly excludes implementing it in the current WO-043 repair. Carry the request through existing `FUP-fc4158d3207e495d`; the next planning pass should select a bounded experiment and allocation, preserving the budget, evidence and reset distinctions below. Source: the [WO-043 breakout](../evidence/WO-043/ideation-commands-and-usage.md). **Allocated 2026-09-19 (second planning pass of that day).*",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -13087,6 +13101,21 @@
           "ref": "docs/evidence/WO-138/decisions.md#wo-138-d012--board-up-the-undeclared-t1-minimum-bound-named-by-ver-002-a1",
           "title": "WO-138-D012: In the next order that recollects a T1 matrix, declare minLength 1 on the ten T1 receipt fields in the emitted schema, keeping summary at 320, so the published contract equals the host va",
           "summary": "{ \"id\": \"WO-138-D012\", \"date\": \"2026-09-21\", \"dispatch\": \"resume: final review\", \"decision\": \"Record VER-002 A1′ as a defect met and not fixed: the emitted T1 schema declares the host's 40-character maximum but not its one-character minimum, and the retained cell failure-local-T1-unexpected-input was rejected on that undeclared bound after the model blocked correctly. The closed 38-cell matrix is not recollected for it; the correction is named for the next order that recollects a T1 matrix.\", \"evidence\": [ \"docs/verifications/WO-138/VER-002.md#advisory-observations\", \"docs/evidence/WO-138/episodes/failure-local-T1-unexpected-input.json: status blocked, requiresHuman true, ten empty strings, ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-3dffdb16d0efea2b",
+      "key": "decision:docs/evidence/WO-150/decisions.md#wo-150-d008",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "83861903d1385f52cf2a88bd037e9310cb4d45e7e701cff59ef49bb059049732",
+          "ref": "docs/evidence/WO-150/decisions.md#wo-150-d008",
+          "title": "WO-150-D008: Account a support's briefing-line bytes beside its role-text bytes when a Cost line states the per-dispatch cost of equipping it; the per-dispatch cost is both.",
+          "summary": "{ \"id\": \"WO-150-D008\", \"date\": \"2026-09-21\", \"dispatch\": \"resume: final review; the per-dispatch cost of D007's briefing line, measured\", \"decision\": \"Record the briefing line's size beside the role text rather than leaving the order's Cost line as the only account: D007's Executor entry duties line is 306 UTF-8 bytes, so a non-opted-out executor dispatch carries 1,479 bytes for this support, 1,173 of compiled role text and 306 of briefing output. Change no code and move no ceiling: briefing output is not a cold-start instruction file, so criterion 2's executor measurement of 24,327 against 24,576 and its 249-byte margin stand as recorded in D003.\", \"evidence\": [ \"scripts/lib/executor-readin",
           "missing": false
         }
       ],

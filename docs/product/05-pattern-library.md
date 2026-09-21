@@ -1158,6 +1158,33 @@ cold start measured, and the three trials' history carried as the starting
 record. Until it merges the support stays opt-in per order. The adaptive
 modifier is unchanged in status.
 
+**Equipped by default, 2026-09-21 (WO-150, application `v0.39.0`).** The default
+flipped to on; an order opts out with `{ "tinkerer-economy": false }`, and the
+executor may still decline any single experiment with a reason. Measured at the
+flip in both generated skill roots: the support adds 1,173 bytes of executor
+role text, taking the executor cold start from 23,154 to 24,327 bytes against
+the 24,576-byte ceiling, within by 249 bytes, so no ceiling moved and no dated
+acceptance was recorded; no other role changed. The opt-out reproduces the
+previous default byte for byte. Final review measured a second, smaller
+increment the cost line does not name: the matching `Executor entry duties`
+briefing line adds 306 bytes of dispatch output, so a non-opted-out dispatch
+carries 1,479 bytes in total; briefing output is not a cold-start instruction
+file, so the ceiling measurement and its margin are unchanged
+([WO-150-D008](../evidence/WO-150/decisions.md)). The
+[WO-150 decisions](../evidence/WO-150/decisions.md) carry the three trials as
+the starting history every later experiment record reads —
+`lastAdoptedImprovementAt` 2026-09-20 and `experimentsSinceAdoption` 0, with no
+regression, two trials equipped and WO-099 unequipped — and state that on the
+equipped-only subset the pre-registered rule still passes as written. The
+outcome this serves is the operator-flow outcome in [the vision](00-vision.md),
+not a typed gate: the order unblocks nothing on the critical path, and its claim
+is that a standing prompt with a recorded answer replaces an operator reminder
+and the per-trial equipment step that let the third trial run unequipped. The
+reopening observation is behavioral, not configurational: ten equipped executor
+dispatches after merge, each recording an experiment or a kept-current decline,
+and fewer than half doing either reconsiders the flip. The adaptive modifier and
+the broken-window pressure signal remain unimplemented.
+
 
 
 Operator ideation during WO-126 proposes a support that biases a linked mechanic
