@@ -12292,6 +12292,13 @@
           "title": "Binding a resident to the active work — candidate",
           "summary": "# Binding a resident to the active work — candidate **Planning observation:** 2026-09-20 during WO-099, raised by the operator while reading the mission-check implementation. The mechanism the resident needs to watch an order now exists; the path from \"I opened a worktree for WO-NNN\" to \"a resident is watching it\" does not. Nothing here is a defect in WO-068, WO-099 or the operator's workflow. They were built to different boundaries and the boundary between them is empty. ## What is observed - `dotln resident --store <dir> --policy <id> [--tick <ms> | --once]` is operator-started and, in the skeleton runbook's own words, \"independent of Contributor stages\". One process per launchpad, under a",
           "missing": false
+        },
+        {
+          "hash": "15b6fffdf26b619a4286cbc951c7bbd1338db1a76ec98b60bc3d3a916f864dec",
+          "ref": "docs/planning/resident-binding-to-active-work-2026-09-20.md#binding-a-resident-to-the-active-work--candidate",
+          "title": "Binding a resident to the active work — candidate",
+          "summary": "# Binding a resident to the active work — candidate **Planning observation:** 2026-09-20 during WO-099, raised by the operator while reading the mission-check implementation. The mechanism the resident needs to watch an order now exists; the path from \"I opened a worktree for WO-NNN\" to \"a resident is watching it\" does not. Nothing here is a defect in WO-068, WO-099 or the operator's workflow. They were built to different boundaries and the boundary between them is empty. ## What is observed - `dotln resident --store <dir> --policy <id> [--tick <ms> | --once]` is operator-started and, in the skeleton runbook's own words, \"independent of Contributor stages\". One process per launchpad, under a",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -13116,6 +13123,81 @@
           "ref": "docs/evidence/WO-150/decisions.md#wo-150-d008",
           "title": "WO-150-D008: Account a support's briefing-line bytes beside its role-text bytes when a Cost line states the per-dispatch cost of equipping it; the per-dispatch cost is both.",
           "summary": "{ \"id\": \"WO-150-D008\", \"date\": \"2026-09-21\", \"dispatch\": \"resume: final review; the per-dispatch cost of D007's briefing line, measured\", \"decision\": \"Record the briefing line's size beside the role text rather than leaving the order's Cost line as the only account: D007's Executor entry duties line is 306 UTF-8 bytes, so a non-opted-out executor dispatch carries 1,479 bytes for this support, 1,173 of compiled role text and 306 of briefing output. Change no code and move no ceiling: briefing output is not a cold-start instruction file, so criterion 2's executor measurement of 24,327 against 24,576 and its 249-byte margin stand as recorded in D003.\", \"evidence\": [ \"scripts/lib/executor-readin",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-866699c54128edc1",
+      "key": "decision:docs/evidence/WO-148/decisions.md#wo-148-d002",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "65b3357462c643c515326e8a6677459df5979dcb3e339be8bc82889c4a2b360b",
+          "ref": "docs/evidence/WO-148/decisions.md#wo-148-d002",
+          "title": "WO-148-D002: Not repaired here: when the operator runs the bind from inside the bound worktree rather than the main checkout, the store lands in that worktree's ignored control lane, and worktree fini",
+          "summary": "{ \"id\": \"WO-148-D002\", \"date\": \"2026-09-21\", \"dispatch\": \"resume: next; WO-148 operator-review assumption 1 and design §Store lifetime\", \"decision\": \"A store is `<launchpad>/<control root>/local/resident/WO-NNN-<n>/`, holding `resident.json` and `binding.json` at mode 0600 under a 0700 directory, where `<n>` is the next unused index for that order. The launchpad is the one `findLaunchpad()` resolves. A rebind writes the next index and never touches an existing store.\", \"evidence\": [ \"packages/skeleton/src/resident-state.ts `decodeResidentConfiguration` and packages/skeleton/README.md §Resident host: configuration is immutable within a store and the old store is retained for inspection\", \"scr",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-e2877e300cc8813a",
+      "key": "decision:docs/evidence/WO-148/decisions.md#wo-148-d009",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "9f096b76bb129b344e598605f537e6167f5963abb5c418e0d9cff598e6113592",
+          "ref": "docs/evidence/WO-148/decisions.md#wo-148-d009",
+          "title": "WO-148-D009: Deferred to a separate work order (queue item adjacent-0002): deduplicate the contract-clause reference ids, preserving first-seen order, at the schema site or inside missionReferenceIds,",
+          "summary": "{ \"id\": \"WO-148-D009\", \"date\": \"2026-09-21\", \"dispatch\": \"resume: next; Adjacent Repair, queue item adjacent-0002 (deferred)\", \"decision\": \"Record, but do not repair here, a reproducible defect that makes every `claude-cli-print` mission check fail before any model call: `missionReferenceIds` emits duplicate `contract-clause` reference ids, and the Claude CLI refuses the resulting JSON Schema. WO-148's live row is collected on `codex-cli-exec`, which is unaffected.\", \"evidence\": [ \"packages/skeleton/src/mission-check-protocol.ts:645-649 `missionReferenceIds` concatenates `subject.contract.clauses` with `subject.observation.contract.clauses`; when the contract has not changed mid-episode — th",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-19fe4b2a025da724",
+      "key": "decision:docs/evidence/WO-148/decisions.md#wo-148-d012",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "3d0e13262127689ba36c7418b140a126122e00ac4c782bd6d60e0b6f2332d062",
+          "ref": "docs/evidence/WO-148/decisions.md#wo-148-d012",
+          "title": "WO-148-D012: Repair VER-001 F1 in resume: fix: decode resident.json, compare decisionsPath, decisionLimit, visionPath and thesisHeadings as well as the existing source fields, compare surface arrays s",
+          "summary": "{ \"id\": \"WO-148-D012\", \"date\": \"2026-09-21\", \"dispatch\": \"resume: verify; VER-001 F1\", \"decision\": \"Fail verification until `--check` compares the complete stored `MissionSource` with its binding record instead of accepting a store that has been retargeted through an unchecked source field.\", \"evidence\": [ \"scripts/resident-bind.mjs `bindingMismatches`: the store comparison names only `root`, `contractPath`, `baseCommit` and a comma-joined `declaredSurfaces` value\", \"Executed disposable probe: changing only `decisionsPath`, `visionPath`, `thesisHeadings` and `decisionLimit` returned an empty mismatch list\", \"packages/skeleton/src/cli-actor.ts `startCliEpisode`: each pulse calls `observeMissi",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-5eae48519a10c61c",
+      "key": "decision:docs/evidence/WO-148/decisions.md#wo-148-d013",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "a7f62c2e8fcc736939c55c8a5fdc6cead7aaf85ba71fe875ebe79222ef3c3dfa",
+          "ref": "docs/evidence/WO-148/decisions.md#wo-148-d013",
+          "title": "WO-148-D013: Repair VER-001 F2 in resume: fix: carry the resolved checked directory through checkBinding, use it for every emitted command and the success heading, retain the original path only as bin",
+          "summary": "{ \"id\": \"WO-148-D013\", \"date\": \"2026-09-21\", \"dispatch\": \"resume: verify; VER-001 F2\", \"decision\": \"Fail verification until a successful check of a relocated retained store prints launch, presence, status, export and recheck lines for the directory supplied to `--check`, not for the absent directory recorded when the store was first bound.\", \"evidence\": [ \"scripts/resident-bind.mjs `readBinding` resolves and returns the checked directory, but `checkBinding` discards it and `main` calls `launchLines(binding.store)`\", \"scripts/test-resident-bind.mjs accepts a moved store as fresh but does not assert the paths in the printed commands\", \"Executed disposable probe: `--check` on the relocated dire",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-ef8bbcede2cd0bb2",
+      "key": "decision:docs/evidence/WO-148/decisions.md#wo-148-d014",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "89951a00150f32540c3e1efdec47305f144b8cc85e16e002e092f4b8315242d6",
+          "ref": "docs/evidence/WO-148/decisions.md#wo-148-d014",
+          "title": "WO-148-D014: Repair VER-001 F3 in resume: fix: before creating a store, use Git's ignore query against the resolved lane and refuse by path when the lane is not ignored; add configured-root fixtures f",
+          "summary": "{ \"id\": \"WO-148-D014\", \"date\": \"2026-09-21\", \"dispatch\": \"resume: verify; VER-001 F3\", \"decision\": \"Fail verification until bind proves that the resolved configured control lane is ignored before it writes either path-bearing file. A configured control root does not by itself create a Git ignore rule.\", \"evidence\": [ \"scripts/lib/config.mjs permits a configured `roots.control`; `scripts/resident-bind.mjs` follows it through `docPath` and writes without an ignore check\", \"The shipped `.gitignore` ignores only the default `/docs/control/local/` lane\", \"Executed real-Git disposable probe: with `roots.control` set to `records/state` and no matching ignore rule, bind exited 0 and `git status --po",
           "missing": false
         }
       ],

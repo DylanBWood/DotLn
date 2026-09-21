@@ -220,6 +220,23 @@ derive or select work orders. The native script adapter requires macOS `sandbox-
 refuses execution when that no-network boundary cannot start. No system daemon
 or scheduler is installed.
 
+For an in-flight work order the ordinary path is one command, not a
+hand-written store: `node scripts/resident-bind.mjs WO-NNN --surface <path>...
+--transport <claude-cli-print|codex-cli-exec> --model <model> --effort <level>`
+reads the canonical control state and the worktree the order is being worked
+in, writes a store under the launchpad's ignored control lane whose
+`mission-check` actor is aimed at that worktree, and prints the launch,
+presence, status and `DOTLN_RESIDENT_STORE` lines for it.
+`node scripts/resident-bind.mjs --check <store>` compares that store's binding
+record with canonical state and with every field of the store's own declared
+mission source, names every mismatch and refuses a launch line for a stale one;
+a check of a store that has been moved prints its lines for the directory that
+was checked. A rebind writes a new store and retains the old. The lane has to be
+ignored: bind asks Git before it writes, and refuses by name when the resolved
+lane — the default one or a configured control root's — is not, because the
+store and its binding record carry physical paths. The hand-written shape below
+stays the reference for every other policy.
+
 Create a dedicated store directory and its `resident.json` containing:
 
 ```json

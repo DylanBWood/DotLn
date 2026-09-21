@@ -77,3 +77,22 @@ resident keeps judging its declared subject as the recorded limit. The record
 is [the standard-pass planning document](standard-pass-2026-09-21.md) §4.
 Reopen: WO-148 closing without the live row its criterion 4 names, or WO-111's
 first unattended hour meeting a store this command could not have written.
+
+## Delivered 2026-09-21 (WO-148)
+
+`scripts/resident-bind.mjs` closes the empty boundary this candidate named. One
+command reads canonical control state for an order, locates its worktree, and
+writes a store whose `mission-check` actor carries a `MissionSource` built from
+that worktree, the order's authority file, the merge-base commit and exactly
+the surfaces typed on the command line; `--check` compares a store's binding
+with canonical state and refuses a launch line for a stale one. Each of the six
+concerns is answered in [product 03 §Operator-presence
+policy](../product/03-architecture.md#operator-presence-policy) and in
+[WO-148's decisions](../evidence/WO-148/decisions.md). Two are answered by
+deferral rather than by mechanism, and stay open where the candidate put them:
+whether absence work serializes across in-flight orders (WO-100, WO-111) and
+whether a running resident should refuse its own stale subject, which is a
+resident-host change WO-148 did not make. Surface derivation stays WO-124's.
+
+Reopen: the candidate's own condition still holds — WO-111's first unattended
+hour meeting a store this command could not have written.
