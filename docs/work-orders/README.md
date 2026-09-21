@@ -50,7 +50,7 @@
 - [x] [WO-079] — Worktree integrate · **final-reviewed**
 - [x] [WO-069] — Configuration root · **final-reviewed**
 - [ ] [WO-138] — Local-model role qualification pilot · **queued**
-- [ ] [WO-071] — Registered target repositories · **queued**
+- [x] [WO-071] — Registered target repositories · **final-reviewed**
 - [ ] [WO-150] — Tinkerer economy on by default · **queued**
 - [ ] [WO-147] — Resident lock contention · **queued**
 - [ ] [WO-148] — Resident binding · **queued**
@@ -439,31 +439,14 @@ None.
 - Inherited ledger duty: discharge with this order's decisions file when recorded and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
 - Authority: [docs/work-orders/WO-070-beacon-portability.md](WO-070-beacon-portability.md)
 
-### WO-071
-
-[WO-071 — Registered target repositories: a work order may declare a repository and base, the configuration registers each repository with an authority profile, and the compiled WorkOrder inherits that profile through the monotone floor (version assigned at activation)](WO-071-registered-target-repositories.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-069: hard (met) — the repositories section of the configuration; WO-042: hard (met) — the registered-repository grant provenance.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh+; verifier xhigh+; reviewer any.
-- Cost: Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
-- Inherited ledger duty: discharge with this order's decisions file when recorded and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
-- Authority: [docs/work-orders/WO-071-registered-target-repositories.md](WO-071-registered-target-repositories.md)
-
 ### WO-072
 
 [WO-072 — Target worktree lifecycle: &#96;worktree start&#96; for a registered target creates the worktree from the declared base, emits the governed bundle into it, and &#96;resume&#96; commands run from that worktree select the order through the launchpad (version assigned at activation)](WO-072-target-worktree-lifecycle.md)
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-071.
-- References: WO-071: hard (unmet) — the registration it starts worktrees from; WO-049: hard (met) — the emit into the target worktree; WO-030: satisfied-by-release (met) v0.7.0 — per-order segments.
+- Dependencies: typed; dependency-ready.
+- References: WO-071: hard (met) — the registration it starts worktrees from; WO-049: hard (met) — the emit into the target worktree; WO-030: satisfied-by-release (met) v0.7.0 — per-order segments.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -479,8 +462,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-071.
-- References: WO-071: hard (unmet) — the registration the class and profile attach to.
+- Dependencies: typed; dependency-ready.
+- References: WO-071: hard (met) — the registration the class and profile attach to.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -581,8 +564,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-071.
-- References: WO-071: hard (unmet) — member orders name registered repositories.
+- Dependencies: typed; dependency-ready.
+- References: WO-071: hard (met) — member orders name registered repositories.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -2101,6 +2084,24 @@ None.
 - Inherited ledger duty: discharge with [this order's decisions](../evidence/WO-069/decisions.md) and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
 - Latest attestation: harness claude-code; version 2.1.278; model claude-opus-5&#91;1m&#93;; effort xhigh; source claude-hook-readback; account not-applicable.
 - Authority: [docs/work-orders/WO-069-configuration-root.md](WO-069-configuration-root.md)
+
+### WO-071
+
+[WO-071 — Registered target repositories: a work order may declare a repository and base, the configuration registers each repository with an authority profile, and the compiled WorkOrder inherits that profile through the monotone floor (v0.38.0)](WO-071-registered-target-repositories.md)
+
+- State: closed.
+- Application target: v0.38.0.
+- Dependencies: typed; activation not applicable.
+- References: WO-069: hard (met) — the repositories section of the configuration; WO-042: hard (met) — the registered-repository grant provenance.
+- Verification: [VER-001](../../docs/verifications/WO-071/VER-001.md) (pass).
+- Final review: [FINAL-001](../../docs/final-reviews/WO-071/FINAL-001.md) (pass).
+- Release: unreleased.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Cost: Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
+- Inherited ledger duty: discharge with [this order's decisions](../evidence/WO-071/decisions.md) and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
+- Latest attestation: harness claude-code; version 2.1.278; model claude-opus-5&#91;1m&#93;; effort xhigh; source harness-readback; account not-applicable.
+- Authority: [docs/work-orders/WO-071-registered-target-repositories.md](WO-071-registered-target-repositories.md)
 
 ### WO-079
 
