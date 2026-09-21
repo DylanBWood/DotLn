@@ -2,7 +2,7 @@
 
 Source base revision: `f2a4b232e1868691398964433c7e373fca4b84bb`
 
-Source lock: `sha256:fbf7286ba713b5491e0e57996745b0d0046934d40faa8dfb8f6888d72a04a73c`
+Source lock: `sha256:ef5b250960268a376c620c5bf1c08bc08ce67da33061e54e53a6ffe30392bea6`
 
 The base revision identifies where this edition's source set was selected; every
 link must resolve there. The lock pins the exact current bytes of the linked
@@ -125,7 +125,9 @@ implementation-deep, lossy projection of the same
 15. **Evidence gates and workflow control**
     - dispatch, immutable verification, checkpoints, review, and release
       boundaries; executor-owned factual documentation and independent checks;
-      typed dependency projection and activation refusals; planned per-order
+      typed dependency projection and activation refusals; registered target
+      metadata, immutable bases, and authority profiles compiled through the
+      monotone floor with conflicting grants refused; planned per-order
       workflows, concurrent progress, and release attribution
     - sources:
       [Operator resume phrases](../product/07-execution-guide.md#operator-resume-phrases--how-you-get-dispatched),

@@ -26,6 +26,8 @@ export const parseControlEvents = (source) =>
 const emptyState = () => ({
   workOrderId: undefined,
   workOrderPath: undefined,
+  repositoryId: undefined,
+  baseCommit: undefined,
   phase: "none",
   latestVerificationId: undefined,
   latestVerificationPath: undefined,
@@ -55,9 +57,22 @@ const scanControl = (events, visit) => {
     state = states.get(event?.workOrderId) ?? emptyState();
     switch (event?.type) {
       case "WorkOrderActivated":
+        if (
+          (event.repositoryId === undefined) !==
+            (event.baseCommit === undefined) ||
+          (event.repositoryId !== undefined &&
+            (event.repositoryId === "self" ||
+              !/^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$/u.test(event.repositoryId) ||
+              !/^(?:[0-9a-f]{40}|[0-9a-f]{64})$/u.test(event.baseCommit)))
+        )
+          throw new Error(
+            `invalid registered repository identity at line ${index + 1}`,
+          );
         Object.assign(state, {
           workOrderId: event.workOrderId,
           workOrderPath: event.workOrderPath,
+          repositoryId: event.repositoryId,
+          baseCommit: event.baseCommit,
           phase: "active",
           latestVerificationId: undefined,
           latestVerificationPath: undefined,

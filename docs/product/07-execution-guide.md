@@ -476,12 +476,38 @@ names are `docs` (the document base), `control`, `orders`, `workOrders`,
 `discovery`, `observations` and `decisions`. An undeclared root defaults under
 the document base — `orders` under `control` and `refutations` under `planning`
 — so moving a parent moves its children unless the launchpad moves them too.
-`repositories` is an object keyed by repository id whose contents this schema
-only requires to be objects; WO-071 owns their meaning. `build` carries the
-launchpad's saved `loadout`, `profile` and instance `overlay`, and `release`
-carries the surface toggles `readmeBlock`, `componentVersions`, `corpus` and
-`publicationCheck`. Version 1 validates and exposes both sections; the orders
-that own them consume them.
+`repositories` is an object keyed by a public repository id. `self` is implicit
+and cannot be registered. Each target value declares `baseBranch`, a relative
+POSIX `worktreeParent`, an opaque `repositoryClass`, and a complete
+`authorityProfile` in the domain model's `AuthorityEnvelope` shape. The loaded
+entry carries its key as `id`; no absolute repository or worktree path belongs
+in committed registration. Unknown entry or envelope fields and malformed
+effect patterns, limits, expiry or revocation predicates refuse with the
+configuration path. `build` carries the launchpad's saved `loadout`, `profile`
+and instance `overlay`, and `release` carries the surface toggles `readmeBlock`,
+`componentVersions`, `corpus` and `publicationCheck`. Version 1 validates and
+exposes all four sections; the orders that own `build` and `release` consume
+them.
+
+A target work order adds exactly one leading metadata line,
+`**Repository:** <id> @ <base-commit>`, where the base is a full 40- or 64-hex
+object id. Absence remains the byte-compatible `self` case. Activation resolves
+the id through the launchpad configuration and records only `repositoryId` and
+`baseCommit`; the current-state Markdown, JSON status (including its orders
+list), and generated work-order index project the same pair. The configured
+worktree parent and every other physical path stay out of those records. An
+unknown id, missing base, malformed object id or malformed registered profile
+refuses before the activation event.
+
+The host compiles a registered profile through the existing monotone authority
+floor. Profile denials and its expiry, resource, evidence and revocation
+constraints narrow the active base. Exact profile allowances outside either
+the base envelope or the base WorkOrder operation lists enter through one
+retained `registered-repository` grant; applying the same widening without that
+exact grant refuses with `AUTHORITY WIDENING`. Wildcard widening remains
+unsupported rather than silently broadening the active definition. An existing
+grant that would override a profile denial also refuses instead of weakening
+the registered restriction.
 
 Validation is positive and unknown keys refuse. A malformed file names its own
 path in the refusal, and a root that is absolute, escapes the launchpad, or uses

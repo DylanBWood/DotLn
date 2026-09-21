@@ -138,6 +138,17 @@ bounded work order names its repository bases and scope; the workstream view
 relates those results without collapsing them into one repository or one long
 model session.
 
+**Registered-target field (WO-071, 2026-09-21).** A bounded target order names
+that boundary in leading metadata as `**Repository:** <id> @ <base-commit>`.
+The launchpad's version-1 configuration resolves the id to its declared base
+branch, relative worktree parent, opaque class and authority profile; absence of
+the field means `self`. Activation retains only the public id and immutable base
+commit in control state and projections, never the physical target or worktree
+path. The profile narrows the compiled base, and any allowance beyond it is an
+explicit `registered-repository` grant with retained provenance. This gives the
+next target-worktree lifecycle a repository/revision/authority interface it can
+consume without restating or silently widening the order.
+
 Synthetic example: add a new optional response field in a service repository,
 consume it in a client repository, and explain it in a documentation repository.
 The operator starts one outcome and sees the dependency and compatibility plan.

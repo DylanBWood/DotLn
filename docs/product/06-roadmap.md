@@ -20,6 +20,14 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-071 activation completion (2026-09-21):** application `v0.38.0` is the
+next minor above the observed local annotated `v0.37.2` baseline. The control
+plane adds registered target identity and immutable base revision to work-order
+activation, validates the committed repository profile, and compiles its
+authority through the existing monotone floor. Component versions and
+third-party dependencies are unchanged; verification, final review and
+publication remain separate lifecycle actions.
+
 **WO-069 collision retiming (2026-09-21):** unpublished target `v0.37.1` is superseded by `v0.37.2` under the existing patch classification because the observed release baseline is `v0.37.1`. Scope, acceptance, component versions, and published tags are unchanged by this retiming.
 
 **WO-079 activation completion (2026-09-20):** Assigned `v0.37.1` under

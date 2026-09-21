@@ -2,7 +2,7 @@
 
 Source base revision: `f2a4b232e1868691398964433c7e373fca4b84bb`
 
-Source lock: `sha256:7304e7004d97359f69ffa94066748a729de24a4969263b33d44be02ca3ab2982`
+Source lock: `sha256:2d9dc1b40897304546bd8f628f5ed1b310d83a3a4630a4d3d44ac270d87a35f7`
 
 The base revision identifies where this edition's source set was selected; every
 link must resolve there. The lock pins the exact current bytes of the linked
@@ -94,7 +94,8 @@ route through the [base outline](base-outline.md); mechanics stay one link away.
 11. **What the reference build actually supports**
     - the implemented baseline, bounded inspection workers, the blinded verification/repair loop with bounded live model evidence and optional mounted Beacon perception; evidence strength, known gaps, and a readable
       proposed work sequence with progress derived from evidence and dependency
-      readiness from declared relations; candidate
+      readiness from declared relations; registered target identity, base
+      revision and authority profiles; candidate
       concurrent workflows, early completion batches, and release traceability
     - sources:
       [v0.2.2 — Capability table v1](../product/06-roadmap.md#v022--capability-table-v1---wo-005),
