@@ -64,6 +64,25 @@ const declared = (config) => {
   return config.root;
 };
 
+const authorityProfile = (overrides = {}) => ({
+  authorityEnvelopeId: "fixture.registered",
+  allowedEffects: ["repo.read"],
+  deniedEffects: ["repo.delete"],
+  resourceLimits: {},
+  requiredEvidence: ["registered-target"],
+  expiresAt: Number.MAX_SAFE_INTEGER,
+  revocationEventTypes: [],
+  ...overrides,
+});
+
+const registeredRepository = (overrides = {}) => ({
+  baseBranch: "main",
+  worktreeParent: "../target-worktrees",
+  repositoryClass: "fixture-class",
+  authorityProfile: authorityProfile(),
+  ...overrides,
+});
+
 // Every file in the launchpad that is not repository plumbing or kit source.
 const documents = (root, directory = "") => {
   const here = join(root, directory);
@@ -155,6 +174,32 @@ await test("configuration root", async (t) => {
     });
   });
 
+  await t.test(
+    "registered repositories expose a validated public profile",
+    () => {
+      temporary("config-repositories", (root) => {
+        declared({
+          root,
+          body: {
+            version: 1,
+            repositories: { target: registeredRepository() },
+          },
+        });
+        assert.deepEqual(loadConfig(root).repositories.target, {
+          id: "target",
+          ...registeredRepository(),
+        });
+        assert.equal(
+          Object.values(loadConfig(root).repositories.target).some(
+            (value) => typeof value === "string" && value.startsWith("/Users/"),
+          ),
+          false,
+          "registration carries no absolute local path",
+        );
+      });
+    },
+  );
+
   await t.test("a malformed configuration refuses with its path", () => {
     temporary("config-invalid", (root) => {
       const path = join(root, CONFIG_FILENAME);
@@ -195,8 +240,67 @@ await test("configuration root", async (t) => {
       refuses({ version: 1, roots: { control: "" } }, /non-empty string/);
       refuses({ version: 1, repositories: [] }, /repositories must be/);
       refuses(
-        { version: 1, repositories: { self: 1 } },
-        /repositories\.self must be an object/,
+        { version: 1, repositories: { target: 1 } },
+        /repositories\.target must be an object/,
+      );
+      refuses(
+        { version: 1, repositories: { self: registeredRepository() } },
+        /repositories\.self is implicit/,
+      );
+      refuses(
+        { version: 1, repositories: { target: {} } },
+        /baseBranch must be a non-empty valid string/,
+      );
+      refuses(
+        {
+          version: 1,
+          repositories: {
+            target: registeredRepository({ worktreeParent: "/private/path" }),
+          },
+        },
+        /worktreeParent must be a relative normalized POSIX path/,
+      );
+      refuses(
+        {
+          version: 1,
+          repositories: {
+            target: registeredRepository({
+              worktreeParent: "targets/../worktrees",
+            }),
+          },
+        },
+        /worktreeParent must be a relative normalized POSIX path/,
+      );
+      refuses(
+        {
+          version: 1,
+          repositories: {
+            target: registeredRepository({
+              authorityProfile: authorityProfile({ allowedEffects: ["*"] }),
+            }),
+          },
+        },
+        /allowedEffects must be an array of exact ids/,
+      );
+      refuses(
+        {
+          version: 1,
+          repositories: {
+            target: registeredRepository({
+              authorityProfile: authorityProfile({ expiresAt: "later" }),
+            }),
+          },
+        },
+        /expiresAt must be a non-negative safe integer/,
+      );
+      refuses(
+        {
+          version: 1,
+          repositories: {
+            target: registeredRepository({ unknown: true }),
+          },
+        },
+        /unknown repositories\.target key/,
       );
       refuses({ version: 1, build: { loadout: 1 } }, /build\.loadout/);
       refuses({ version: 1, build: { other: "x" } }, /unknown build key/);
@@ -456,7 +560,15 @@ await test("configuration root", async (t) => {
           finalReviews: "records/reviews",
           evidence: "records/proof",
         };
-        declared({ root, body: { version: 1, roots } });
+        const baseCommit = "a".repeat(40);
+        declared({
+          root,
+          body: {
+            version: 1,
+            roots,
+            repositories: { target: registeredRepository() },
+          },
+        });
         mkdirSync(join(root, "scripts"), { recursive: true });
         cpSync(
           join(scriptRoot, "resume.mjs"),
@@ -474,7 +586,7 @@ await test("configuration root", async (t) => {
         write(
           root,
           order,
-          "# WO-999 — configuration-root fixture\n\n**Model:** any.\n**Effort:** executor any; verifier any; reviewer any.\n",
+          `# WO-999 — configuration-root fixture\n\n**Model:** any.\n**Effort:** executor any; verifier any; reviewer any.\n**Repository:** target @ ${baseCommit}\n`,
         );
         const actor = [
           "--harness",
@@ -495,12 +607,14 @@ await test("configuration root", async (t) => {
           effort: "unknown",
           source: "operator-attested",
         };
-        const run = (...args) => {
-          const result = spawnSync(
+        const call = (...args) =>
+          spawnSync(
             process.execPath,
             [join(root, "scripts/resume.mjs"), ...args],
             { encoding: "utf8", cwd: root },
           );
+        const run = (...args) => {
+          const result = call(...args);
           assert.equal(
             result.status,
             0,
@@ -509,6 +623,53 @@ await test("configuration root", async (t) => {
           return result.stdout;
         };
 
+        write(
+          root,
+          order,
+          "# WO-999 — configuration-root fixture\n\n**Model:** any.\n**Effort:** executor any; verifier any; reviewer any.\n**Repository:** target @\n",
+        );
+        assert.match(
+          call("activate", "WO-999", order).stderr,
+          /malformed \*\*Repository:\*\* line/,
+        );
+        write(
+          root,
+          order,
+          `# WO-999 — configuration-root fixture\n\n**Model:** any.\n**Effort:** executor any; verifier any; reviewer any.\n**Repository:** unknown @ ${baseCommit}\n`,
+        );
+        assert.match(
+          call("activate", "WO-999", order).stderr,
+          /unknown repository id "unknown"/,
+        );
+        declared({
+          root,
+          body: {
+            version: 1,
+            roots,
+            repositories: {
+              target: registeredRepository({
+                authorityProfile: authorityProfile({ allowedEffects: ["*"] }),
+              }),
+            },
+          },
+        });
+        write(
+          root,
+          order,
+          `# WO-999 — configuration-root fixture\n\n**Model:** any.\n**Effort:** executor any; verifier any; reviewer any.\n**Repository:** target @ ${baseCommit}\n`,
+        );
+        assert.match(
+          call("activate", "WO-999", order).stderr,
+          /dotln\.config\.json: repositories\.target\.authorityProfile\.allowedEffects/,
+        );
+        declared({
+          root,
+          body: {
+            version: 1,
+            roots,
+            repositories: { target: registeredRepository() },
+          },
+        });
         run("activate", "WO-999", order, ...actor);
         assert.ok(
           existsSync(join(root, `${roots.orders}/WO-999.jsonl`)),
@@ -537,13 +698,32 @@ await test("configuration root", async (t) => {
         const status = JSON.parse(run("status", "--json"));
         assert.equal(status.phase, "closed");
         assert.equal(status.workOrderPath, order);
+        assert.equal(status.repositoryId, "target");
+        assert.equal(status.baseCommit, baseCommit);
+        assert.equal(status.orders[0].repositoryId, "target");
+        assert.equal(status.orders[0].baseCommit, baseCommit);
         assert.equal(status.verificationPath, verification);
         assert.equal(status.finalReviewPath, finalReview);
+        const activation = JSON.parse(
+          readFileSync(join(root, `${roots.orders}/WO-999.jsonl`), "utf8")
+            .trim()
+            .split("\n")[0],
+        );
+        assert.equal(activation.repositoryId, "target");
+        assert.equal(activation.baseCommit, baseCommit);
+        assert.equal(
+          JSON.stringify(activation).includes("target-worktrees"),
+          false,
+          "the activation event carries no worktree path",
+        );
+        const current = readFileSync(
+          join(root, `${roots.control}/current.md`),
+          "utf8",
+        );
+        assert.match(current, new RegExp(`Repository: target @ ${baseCommit}`));
+        assert.doesNotMatch(current, /target-worktrees/);
         assert.ok(
-          readFileSync(
-            join(root, `${roots.control}/current.md`),
-            "utf8",
-          ).includes(`${roots.control}/resume.jsonl`),
+          current.includes(`${roots.control}/resume.jsonl`),
           "the projection cites its own configured storage",
         );
 

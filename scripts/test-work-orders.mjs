@@ -647,6 +647,90 @@ await check(
 );
 
 await check(
+  "registered repository identity is parsed and projected without a path",
+  () => {
+    const fixture = makeRepo("registered-repository-index");
+    const baseCommit = "c".repeat(40);
+    const source = header("WO-901", "unassigned").replace(
+      "**Depends on:** nothing",
+      `**Repository:** target @ ${baseCommit}\n**Depends on:** nothing`,
+    );
+    write(fixture, authorityPath("WO-901"), source);
+    writeLog(fixture, [
+      {
+        ...activation("WO-901"),
+        repositoryId: "target",
+        baseCommit,
+      },
+    ]);
+    commit(fixture, "registered repository fixture");
+    assert.deepEqual(parseHeader(source, authorityPath("WO-901")).repository, {
+      id: "target",
+      baseCommit,
+    });
+    const rendered = renderIndex(readIndex(fixture));
+    assert.match(rendered, new RegExp(`Repository: target @ ${baseCommit}`));
+    assert.doesNotMatch(rendered, /target-worktrees|\/Users\//u);
+
+    writeLog(fixture, [
+      {
+        ...activation("WO-901"),
+        repositoryId: "self",
+        baseCommit,
+      },
+    ]);
+    assert.throws(
+      () => readIndex(fixture),
+      /invalid registered repository identity/u,
+    );
+    writeLog(fixture, [activation("WO-901")]);
+    assert.throws(
+      () => readIndex(fixture),
+      /control repository identity differs/u,
+    );
+    writeLog(fixture, [
+      {
+        ...activation("WO-901"),
+        repositoryId: "target",
+        baseCommit,
+      },
+    ]);
+    write(
+      fixture,
+      authorityPath("WO-901"),
+      source.replace(baseCommit, "d".repeat(40)),
+    );
+    assert.throws(
+      () => readIndex(fixture),
+      /control repository identity differs/u,
+    );
+    write(fixture, authorityPath("WO-901"), source);
+    assert.throws(
+      () =>
+        parseHeader(
+          source.replace(
+            `**Repository:** target @ ${baseCommit}`,
+            "**Repository:** target @ main",
+          ),
+          authorityPath("WO-901"),
+        ),
+      /malformed \*\*Repository:\*\* line/u,
+    );
+    assert.throws(
+      () =>
+        parseHeader(
+          source.replace(
+            `**Repository:** target @ ${baseCommit}`,
+            `**Repository:**target @ ${baseCommit}`,
+          ),
+          authorityPath("WO-901"),
+        ),
+      /malformed \*\*Repository:\*\* line/u,
+    );
+  },
+);
+
+await check(
   "lifecycle dispatch refreshes its index and stale temporary files name recovery",
   () => {
     const fixture = makeRepo("dispatch-index");

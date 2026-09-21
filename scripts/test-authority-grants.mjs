@@ -35,9 +35,12 @@ import { personalFeedback } from "../packages/skeleton/dist/src/loadouts/feedbac
 import {
   COMMITTED_AUTHORITY_GRANTS,
   LOCAL_AUTHORITY_GRANTS,
+  applyRegisteredRepositoryProfile,
+  compileRegisteredRepositoryLoadout,
   readAuthorityGrantRegistry,
   compileRegisteredLoadout,
 } from "./lib/authority-grants.mjs";
+import { CONFIG_FILENAME, loadConfig } from "./lib/config.mjs";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 const write = (dir, path, grants) => {
@@ -132,6 +135,124 @@ test("WO-042 AC3 host admits only matching grants from the committed and ignored
     assert.throws(
       () => readAuthorityGrantRegistry(fixture),
       /contained regular file/u,
+    );
+  } finally {
+    rmSync(fixture, { recursive: true, force: true });
+  }
+});
+
+test("WO-071 registered profiles narrow the WorkOrder and widen only through retained grant provenance", () => {
+  const fixture = mkdtempSync(join(tmpdir(), "dotln-registered-repository-"));
+  try {
+    write(fixture, COMMITTED_AUTHORITY_GRANTS, []);
+    write(fixture, CONFIG_FILENAME, {
+      version: 1,
+      repositories: {
+        target: {
+          baseBranch: "main",
+          worktreeParent: "../target-worktrees",
+          repositoryClass: "fixture-class",
+          authorityProfile: {
+            authorityEnvelopeId: "target.profile",
+            allowedEffects: ["repo.delete", "repo.inspect"],
+            deniedEffects: ["repo.inspect"],
+            resourceLimits: {},
+            requiredEvidence: ["target-registration"],
+            expiresAt: Number.MAX_SAFE_INTEGER,
+            revocationEventTypes: ["TargetAuthorityRevoked"],
+          },
+        },
+      },
+    });
+    const graph = authorityFixture();
+    const registration = loadConfig(fixture).repositories.target;
+    assert.throws(
+      () =>
+        applyRegisteredRepositoryProfile(
+          {
+            ...graph,
+            authorityGrants: [
+              {
+                ...authorityGrant,
+                grantId: "operator.inspect",
+                effects: ["repo.inspect"],
+                operations: ["repo.inspect"],
+              },
+            ],
+          },
+          {
+            ...registration,
+            authorityProfile: {
+              ...registration.authorityProfile,
+              allowedEffects: [],
+            },
+          },
+        ),
+      /AUTHORITY WIDENING: existing grant "operator\.inspect".*profile denial "repo\.inspect"/u,
+    );
+    assert.throws(
+      () => applyRegisteredRepositoryProfile(graph, registration),
+      /AUTHORITY WIDENING.*without its exact registered-repository grant/u,
+    );
+    const baseCommit = "b".repeat(40);
+    const result = compileRegisteredRepositoryLoadout(
+      graph,
+      seiriEnvironment(baseCommit),
+      fixture,
+      "target",
+    );
+    assert.equal(result.ok, true, JSON.stringify(result.diagnostics));
+    const program = requireCompiled(result);
+    assert.equal(program.workOrder.repo, "target");
+    assert.equal(program.workOrder.baseCommit, baseCommit);
+    assert.deepEqual(program.workOrder.allowedOperations, [
+      "repo.read",
+      "repo.delete",
+    ]);
+    assert.deepEqual(program.workOrder.prohibitedOperations, [
+      "repo.write",
+      "repo.inspect",
+    ]);
+    assert.deepEqual(program.grants, [
+      {
+        grantId: "registered-repository.target.profile",
+        version: 1,
+        grantedBy: "registered-repository",
+        effects: ["repo.delete"],
+        operations: ["repo.delete"],
+        repo: "target",
+        reason: "Authority profile registered for repository target",
+      },
+    ]);
+    assert.ok(
+      program.authorityEnvelope.requiredEvidence.includes(
+        "target-registration",
+      ),
+    );
+    assert.ok(
+      program.authorityEnvelope.revocationEventTypes.includes(
+        "TargetAuthorityRevoked",
+      ),
+    );
+    assert.throws(
+      () =>
+        compileRegisteredRepositoryLoadout(
+          graph,
+          seiriEnvironment(baseCommit),
+          fixture,
+          "absent",
+        ),
+      /unknown registered repository id "absent"/u,
+    );
+    assert.throws(
+      () =>
+        compileRegisteredRepositoryLoadout(
+          graph,
+          seiriEnvironment(baseCommit),
+          fixture,
+          "toString",
+        ),
+      /unknown registered repository id "toString"/u,
     );
   } finally {
     rmSync(fixture, { recursive: true, force: true });

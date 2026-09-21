@@ -1,5 +1,5 @@
 import { existsSync, readFileSync, statSync } from "node:fs";
-import { dirname, join, resolve } from "node:path";
+import { dirname, join, posix, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 export const CONFIG_FILENAME = "dotln.config.json";
@@ -56,6 +56,23 @@ const RELEASE_KEYS = [
   "corpus",
   "publicationCheck",
 ];
+const REPOSITORY_KEYS = [
+  "baseBranch",
+  "worktreeParent",
+  "repositoryClass",
+  "authorityProfile",
+];
+const AUTHORITY_PROFILE_KEYS = [
+  "authorityEnvelopeId",
+  "allowedEffects",
+  "deniedEffects",
+  "resourceLimits",
+  "requiredEvidence",
+  "expiresAt",
+  "revocationEventTypes",
+  "revocationConditions",
+];
+const PREDICATE_REF_KEYS = ["registryId", "version", "params"];
 const SECTION_KEYS = ["version", "roots", "repositories", "build", "release"];
 
 /** Today's layout, byte for byte: the defaults an absent configuration means. */
@@ -88,6 +105,136 @@ const requireKnownKeys = (path, value, known, label) => {
         path,
         `unknown ${label} key ${JSON.stringify(key)}; known keys: ${known.join(", ")}`,
       );
+};
+
+const requireText = (path, value, label, pattern) => {
+  if (
+    typeof value !== "string" ||
+    !value ||
+    /[\u0000-\u001f\u007f\u2028\u2029]/u.test(value) ||
+    (pattern && !pattern.test(value))
+  )
+    throw refuse(path, `${label} must be a non-empty valid string`);
+  return value;
+};
+
+const validateEffectPatterns = (path, value, label) => {
+  if (
+    !Array.isArray(value) ||
+    value.some(
+      (entry) =>
+        typeof entry !== "string" ||
+        !entry ||
+        /[\s\u0000-\u001f\u007f]/u.test(entry) ||
+        entry === "*" ||
+        (entry.includes("*") && !/^[^*]+\*$/u.test(entry)),
+    )
+  )
+    throw refuse(
+      path,
+      `${label} must be an array of exact ids or non-empty terminal-prefix patterns`,
+    );
+  return [...new Set(value)];
+};
+
+const validateStringSet = (path, value, label) => {
+  if (
+    !Array.isArray(value) ||
+    value.some(
+      (entry) =>
+        typeof entry !== "string" ||
+        !entry ||
+        /[\u0000-\u001f\u007f\u2028\u2029]/u.test(entry),
+    )
+  )
+    throw refuse(path, `${label} must be an array of non-empty strings`);
+  return [...new Set(value)];
+};
+
+const validatePredicateRef = (path, value, label) => {
+  requireObject(path, value, label);
+  requireKnownKeys(path, value, PREDICATE_REF_KEYS, label);
+  const registryId = requireText(path, value.registryId, `${label}.registryId`);
+  if (!Number.isSafeInteger(value.version) || value.version < 1)
+    throw refuse(path, `${label}.version must be a positive safe integer`);
+  if (value.params !== undefined)
+    requireObject(path, value.params, `${label}.params`);
+  return {
+    registryId,
+    version: value.version,
+    ...(value.params === undefined
+      ? {}
+      : { params: structuredClone(value.params) }),
+  };
+};
+
+const validateAuthorityProfile = (path, id, value) => {
+  const label = `repositories.${id}.authorityProfile`;
+  requireObject(path, value, label);
+  requireKnownKeys(path, value, AUTHORITY_PROFILE_KEYS, label);
+  const resourceLimits = requireObject(
+    path,
+    value.resourceLimits,
+    `${label}.resourceLimits`,
+  );
+  for (const [resource, limit] of Object.entries(resourceLimits)) {
+    requireText(path, resource, `${label}.resourceLimits key`);
+    if (!Number.isSafeInteger(limit) || limit < 0)
+      throw refuse(
+        path,
+        `${label}.resourceLimits.${resource} must be a non-negative safe integer`,
+      );
+  }
+  if (!Number.isSafeInteger(value.expiresAt) || value.expiresAt < 0)
+    throw refuse(
+      path,
+      `${label}.expiresAt must be a non-negative safe integer`,
+    );
+  if (
+    value.revocationConditions !== undefined &&
+    !Array.isArray(value.revocationConditions)
+  )
+    throw refuse(path, `${label}.revocationConditions must be an array`);
+  return {
+    authorityEnvelopeId: requireText(
+      path,
+      value.authorityEnvelopeId,
+      `${label}.authorityEnvelopeId`,
+    ),
+    allowedEffects: validateEffectPatterns(
+      path,
+      value.allowedEffects,
+      `${label}.allowedEffects`,
+    ),
+    deniedEffects: validateEffectPatterns(
+      path,
+      value.deniedEffects,
+      `${label}.deniedEffects`,
+    ),
+    resourceLimits: { ...resourceLimits },
+    requiredEvidence: validateStringSet(
+      path,
+      value.requiredEvidence,
+      `${label}.requiredEvidence`,
+    ),
+    expiresAt: value.expiresAt,
+    revocationEventTypes: validateStringSet(
+      path,
+      value.revocationEventTypes,
+      `${label}.revocationEventTypes`,
+    ),
+    ...(value.revocationConditions === undefined
+      ? {}
+      : {
+          revocationConditions: value.revocationConditions.map((entry, index) =>
+            validatePredicateRef(
+              path,
+              entry,
+              `${label}.revocationConditions[${index}]`,
+            ),
+          ),
+        }),
+  };
 };
 
 // A root is a relative POSIX path inside the launchpad. Absolute paths,
@@ -150,14 +297,62 @@ const validateRelease = (path, declared) => {
   return release;
 };
 
-// `repositories` is opaque here: WO-071 owns its semantics, so version 1 only
-// establishes that the section is an object keyed by repository id.
 const validateRepositories = (path, declared) => {
   requireObject(path, declared, "repositories");
-  for (const [id, value] of Object.entries(declared))
-    if (!isPlainObject(value))
-      throw refuse(path, `repositories.${id} must be an object`);
-  return declared;
+  const repositories = {};
+  for (const [id, value] of Object.entries(declared)) {
+    requireText(
+      path,
+      id,
+      "repository id",
+      /^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$/u,
+    );
+    if (id === "self")
+      throw refuse(
+        path,
+        "repositories.self is implicit and cannot be declared",
+      );
+    requireObject(path, value, `repositories.${id}`);
+    requireKnownKeys(path, value, REPOSITORY_KEYS, `repositories.${id}`);
+    const baseBranch = requireText(
+      path,
+      value.baseBranch,
+      `repositories.${id}.baseBranch`,
+      /^\S+$/u,
+    );
+    const worktreeParent = requireText(
+      path,
+      value.worktreeParent,
+      `repositories.${id}.worktreeParent`,
+    );
+    if (
+      worktreeParent.startsWith("/") ||
+      worktreeParent.includes("\\") ||
+      posix.normalize(worktreeParent) !== worktreeParent ||
+      worktreeParent.split("/").some((segment) => !segment || segment === ".")
+    )
+      throw refuse(
+        path,
+        `repositories.${id}.worktreeParent must be a relative normalized POSIX path`,
+      );
+    repositories[id] = {
+      id,
+      baseBranch,
+      worktreeParent,
+      repositoryClass: requireText(
+        path,
+        value.repositoryClass,
+        `repositories.${id}.repositoryClass`,
+        /^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$/u,
+      ),
+      authorityProfile: validateAuthorityProfile(
+        path,
+        id,
+        value.authorityProfile,
+      ),
+    };
+  }
+  return repositories;
 };
 
 const validateConfig = (path, source) => {

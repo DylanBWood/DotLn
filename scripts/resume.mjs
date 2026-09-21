@@ -53,7 +53,13 @@ import {
   readJsonFile,
   workOrderAuthorityPath,
 } from "./lib/paths.mjs";
-import { docPath, docRelative, findLaunchpad } from "./lib/config.mjs";
+import {
+  docPath,
+  docRelative,
+  findLaunchpad,
+  loadConfig,
+} from "./lib/config.mjs";
+import { parseRepositoryDeclaration } from "./lib/work-order-repository.mjs";
 
 import {
   CONTROL_LOG_SCHEMA_VERSION,
@@ -242,9 +248,9 @@ const workOrderDeclaration = (
     workOrderPath,
   );
 
-  const lines = readFileSync(authorityPath, "utf8")
-    .replace(/^\uFEFF/, "")
-    .split(/\r?\n/);
+  const source = readFileSync(authorityPath, "utf8").replace(/^\uFEFF/, "");
+  const repository = parseRepositoryDeclaration(source, workOrderPath);
+  const lines = source.split(/\r?\n/);
   const fieldIndexes = (label) => {
     const prefix = `**${label}:**`;
     const pattern = new RegExp(`^\\*\\*${label}:\\*\\*(?:\\s|$)`);
@@ -312,6 +318,7 @@ const workOrderDeclaration = (
       effortSource:
         "**Effort:** unavailable for this pre-WO-019 activation; executor any; verifier any; reviewer any.",
       efforts: { executor: "any", verifier: "any", reviewer: "any" },
+      repository,
     };
   let headerCursor = model.nextIndex;
   while (lines[headerCursor]?.trim() === "") headerCursor += 1;
@@ -342,6 +349,7 @@ const workOrderDeclaration = (
       verifier: match[2],
       reviewer: match[3],
     },
+    repository,
   };
 };
 
@@ -562,7 +570,7 @@ const renderOrder = (
   timing,
 ) => `- Work order: ${state.workOrderId ?? "none"}
 - Work-order path: ${state.workOrderPath ?? "none"}
-- Phase: ${state.phase}
+${state.repositoryId ? `- Repository: ${state.repositoryId} @ ${state.baseCommit}\n` : ""}- Phase: ${state.phase}
 - Latest verification: ${state.latestVerificationId ?? "none"}
 - Verification path: ${state.latestVerificationPath ?? "none"}
 - Latest verdict: ${state.latestVerdict ?? "none"}
@@ -579,6 +587,12 @@ const projectOrder = (state, events) => {
   return {
     workOrder: state.workOrderId ?? null,
     workOrderPath: state.workOrderPath ?? null,
+    ...(state.repositoryId
+      ? {
+          repositoryId: state.repositoryId,
+          baseCommit: state.baseCommit,
+        }
+      : {}),
     phase: state.phase,
     latestVerification: state.latestVerificationId ?? null,
     verificationPath: state.latestVerificationPath ?? null,
@@ -626,6 +640,12 @@ export const statusProjection = (input, workOrder, dependencies = null) => {
     dependencies,
     orders: [...control.orders].map(([order, row]) => ({
       workOrder: order,
+      ...(row.state.repositoryId
+        ? {
+            repositoryId: row.state.repositoryId,
+            baseCommit: row.state.baseCommit,
+          }
+        : {}),
       phase: row.state.phase,
       latestVerdict: row.state.latestVerdict ?? null,
       ...controlTimeProjection(eventsForOrder(control, order)),
@@ -838,7 +858,15 @@ export const main = async (argv = process.argv.slice(2)) => {
         throw new Error(
           "usage: resume activate WO-NNN docs/work-orders/<file>.md",
         );
-      workOrderDeclaration(workOrderPath, { workOrderId });
+      const declaration = workOrderDeclaration(workOrderPath, { workOrderId });
+      const repository = declaration.repository;
+      if (
+        repository &&
+        !Object.hasOwn(loadConfig(repoRoot).repositories, repository.id)
+      )
+        throw new Error(
+          `${workOrderPath}: unknown repository id ${JSON.stringify(repository.id)} in dotln.config.json`,
+        );
       const dependencies = readDependencies(
         repoRoot,
         { workOrderId, workOrderPath },
@@ -851,6 +879,12 @@ export const main = async (argv = process.argv.slice(2)) => {
         workOrderId,
         workOrderPath,
         effortDeclarationValidated: true,
+        ...(repository
+          ? {
+              repositoryId: repository.id,
+              baseCommit: repository.baseCommit,
+            }
+          : {}),
       });
       message = `Activated ${workOrderId}.`;
       break;

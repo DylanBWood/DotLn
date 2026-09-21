@@ -41,6 +41,7 @@ import {
   semver,
   strictVersionsIn,
 } from "./lib/release-records.mjs";
+import { parseRepositoryDeclaration } from "./lib/work-order-repository.mjs";
 
 const toolRoot = findLaunchpad();
 const indexPath = defaultDocRelative("workOrders", "README.md");
@@ -97,6 +98,7 @@ export const parseHeader = (markdown, path) => {
     model: field("Model") ?? "unknown",
     effort: field("Effort") ?? "unknown",
     cost: field("Cost") ?? "unavailable",
+    repository: parseRepositoryDeclaration(markdown, path),
     ledgerSubstitution: inheritedLedgerDuty(markdown),
     dependencies: parseDependencies(markdown, path),
   };
@@ -279,6 +281,14 @@ export const readIndex = (root, releases = localReleaseRecords(root)) => {
       if (evidence && evidence.state.workOrderPath !== path)
         throw new Error(`${id}: control authority path differs from ${path}`);
       const state = evidence?.state;
+      if (
+        state &&
+        (state.repositoryId !== header.repository?.id ||
+          state.baseCommit !== header.repository?.baseCommit)
+      )
+        throw new Error(
+          `${id}: control repository identity differs from ${path}`,
+        );
       const historical = !state && historicalIds.has(id);
       const active = state && state.phase !== "closed";
       const phase =
@@ -333,6 +343,10 @@ export const readIndex = (root, releases = localReleaseRecords(root)) => {
         dependencies,
         dependencyState,
         state,
+        repository:
+          state?.repositoryId === undefined
+            ? header.repository
+            : { id: state.repositoryId, baseCommit: state.baseCommit },
         finalReviewVerdict: evidence?.finalReviewVerdict,
         disposition,
       };
@@ -459,6 +473,11 @@ export const renderIndex = ({
         link(row.title, basename(row.path)),
         "",
         `- State: ${cell(row.phase)}.`,
+        ...(row.repository
+          ? [
+              `- Repository: ${cell(row.repository.id)} @ ${cell(row.repository.baseCommit)}.`,
+            ]
+          : []),
         `- Application target: ${cell(row.version)}.`,
         `- Dependencies: ${cell(row.dependencyState)}.`,
         `- References: ${cell(row.dependencies.entries.map((entry) => `${entry.workOrderId}: ${entry.relation ? `${entry.relation} (${entry.state})` : entry.state}${entry.release ? ` ${entry.release}` : ""}${entry.until ? ` until ${entry.until}` : ""}${entry.by ? ` by ${entry.by}` : ""}${entry.date ? ` dated ${entry.date}` : ""}${entry.reason ? ` — ${entry.reason}` : ""}`).join("; ") || "none declared")}.`,
