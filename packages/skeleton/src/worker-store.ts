@@ -49,15 +49,20 @@ function exact(value: Record<string, unknown>, keys: readonly string[]): void {
   if (Object.keys(value).sort().join(",") !== [...keys].sort().join(","))
     throw new Error(`expected exactly ${keys.join(", ")}`);
 }
-class StorePathError extends Error {}
+class StorePathError extends Error {
+  code?: string;
+}
 function atPath<T>(path: string, shape: string, decode: () => T): T {
   try {
     return decode();
   } catch (error) {
     if (error instanceof StorePathError) throw error;
-    throw new StorePathError(
+    const wrapped = new StorePathError(
       `${path}: invalid ${shape}: ${error instanceof Error ? error.message : String(error)}`,
     );
+    const code = (error as NodeJS.ErrnoException).code;
+    if (code) wrapped.code = code;
+    throw wrapped;
   }
 }
 function commandKey(value: unknown): asserts value is string {
@@ -271,8 +276,8 @@ export class WorkerStore {
       const lock = join(this.directory, "host.lock");
       // Exclude a current writer before inspecting its mutable log. The guard
       // prevents any new writer from arriving after this dead/absent check.
-      const abandonedLock = present(lock);
-      if (abandonedLock) {
+      const inspectLock = () => {
+        if (!present(lock)) return false;
         regularFile(lock);
         const owner = atPath(lock, "host lock", () => {
           const value = object(JSON.parse(readFileSync(lock, "utf8")));
@@ -289,6 +294,14 @@ export class WorkerStore {
         } catch (error) {
           if ((error as NodeJS.ErrnoException).code !== "ESRCH") throw error;
         }
+        return true;
+      };
+      let abandonedLock: boolean;
+      try {
+        abandonedLock = inspectLock();
+      } catch (error) {
+        if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
+        abandonedLock = inspectLock();
       }
       const receiptPaths: string[] = [];
       const events = decodeLog(this.read());
