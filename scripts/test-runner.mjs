@@ -255,6 +255,8 @@ const protection = {
   resume: "work-order transitions preserve reports and legal phase order",
   checkpoint: "pending work can be recovered from named checkpoints",
   worktree: "isolated work and intake survive publish and close",
+  "worktree-integration":
+    "integration preserves recovery, both histories and authored conflicts without lifecycle events",
   release: "reviewed releases publish idempotently from merged main",
   kernel: "domain events and human judgment contracts replay consistently",
   compiler: "supports compile to the intended constraints and harness behavior",
@@ -374,6 +376,7 @@ export const suites = [
   shell("resume", "scripts/test-resume.sh"),
   shell("checkpoint", "scripts/test-checkpoint.sh"),
   shell("worktree", "scripts/test-worktree.sh"),
+  nodeTests("worktree-integration", "scripts/test-worktree-integration.mjs"),
   shell("release", "scripts/test-release.sh"),
   shell("work-orders-fixtures", "scripts/test-work-orders.sh"),
   node("publication", "scripts/check-publication.mjs", {

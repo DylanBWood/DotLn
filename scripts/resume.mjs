@@ -3,14 +3,12 @@ import { isMainModule } from "./lib/paths.mjs";
 import {
   existsSync,
   mkdirSync,
-  mkdtempSync,
   readFileSync,
   readdirSync,
   renameSync,
-  rmSync,
   writeFileSync,
 } from "node:fs";
-import { tmpdir } from "node:os";
+import { createCheckpoint } from "./lib/checkpoint.mjs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
@@ -207,40 +205,7 @@ const checkpoint = (action, workOrderId) => {
   try {
     if (runGit(repoRoot, ["rev-parse", "--is-inside-work-tree"]) !== "true")
       return warn(`${repoRoot} is not a git work tree`);
-    const prefix = `refs/dotln/checkpoint/${workOrderId}/`;
-    const used = runGit(repoRoot, [
-      "for-each-ref",
-      "--format=%(refname)",
-      prefix,
-    ])
-      .split("\n")
-      .filter(Boolean)
-      .map((ref) => Number(ref.slice(prefix.length)))
-      .filter(Number.isInteger);
-    const checkpointRef = `${prefix}${Math.max(0, ...used) + 1}`;
-    const temporaryRoot = mkdtempSync(join(tmpdir(), "dotln-checkpoint-"));
-    try {
-      const indexPath = join(temporaryRoot, "index");
-      const checkpointEnv = { ...process.env, GIT_INDEX_FILE: indexPath };
-      runGit(repoRoot, ["add", "-A"], { env: checkpointEnv });
-      const tree = runGit(repoRoot, ["write-tree"], { env: checkpointEnv });
-      const checkpointSha = runGit(
-        repoRoot,
-        [
-          "commit-tree",
-          tree,
-          "-p",
-          "HEAD",
-          "-m",
-          `dotln checkpoint: ${action} ${workOrderId}`,
-        ],
-        { env: checkpointEnv },
-      );
-      runGit(repoRoot, ["update-ref", checkpointRef, checkpointSha]);
-      return { checkpointSha, checkpointRef };
-    } finally {
-      rmSync(temporaryRoot, { recursive: true, force: true });
-    }
+    return createCheckpoint(repoRoot, action, workOrderId);
   } catch (error) {
     return warn(error instanceof Error ? error.message : String(error));
   }
@@ -674,6 +639,19 @@ const render = (control, latestClosed) => {
     : [renderOrder(fold([]), controlTimeProjection([]))];
   return `# Current control state\n\n${bodies.join("\n")}\nGenerated from the append-only \`docs/control/resume.jsonl\` and \`docs/control/orders/WO-NNN.jsonl\` segments; do not edit this projection manually.\n`;
 };
+
+// Integration reuses the canonical projection without dispatching a role or
+// changing any segment. Ordinary status remains read-only.
+export function refreshControlProjection(root) {
+  const control = readControl(root);
+  const body = render(
+    control,
+    latestClosedOrder(control, root, "HEAD", branchWorkOrder(root)),
+  );
+  const path = join(root, "docs/control/current.md");
+  mkdirSync(dirname(path), { recursive: true });
+  writeFileSync(path, body);
+}
 
 const warnIfProjectionDisagrees = (rendered) => {
   let current;

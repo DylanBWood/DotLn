@@ -331,6 +331,39 @@ export function readFollowups(root) {
   requireAllocationTargets(root, state);
   return state;
 }
+
+// Entry identities, not line positions, define the register union. Histories
+// must be compatible prefixes; divergent edits to the same history require
+// an explicit disposition rather than renumbering past source revisions.
+export function unionFollowups(primary, secondary) {
+  const result = structuredClone(validate(primary));
+  validate(secondary);
+  const longer = (a, b, id) => {
+    const length = Math.min(a.length, b.length);
+    requireFollowup(
+      encode(a.slice(0, length)) === encode(b.slice(0, length)),
+      `${id}: divergent history needs authored resolution`,
+    );
+    return structuredClone(a.length >= b.length ? a : b);
+  };
+  for (const entry of secondary.entries) {
+    const prior = result.entries.find((row) => row.id === entry.id);
+    if (!prior) result.entries.push(structuredClone(entry));
+    else {
+      requireFollowup(
+        prior.key === entry.key && prior.kind === entry.kind,
+        `${entry.id}: incompatible identity`,
+      );
+      prior.revisions = longer(prior.revisions, entry.revisions, entry.id);
+      prior.dispositions = longer(
+        prior.dispositions,
+        entry.dispositions,
+        entry.id,
+      );
+    }
+  }
+  return validate(result);
+}
 function requireAllocationTargets(root, state) {
   for (const entry of state.entries.filter(
     (entry) => followupStatus(entry) === "allocated",
