@@ -40,6 +40,40 @@ are now declared above. The [decision record](../evidence/WO-084/decisions.md)
 records the legacy ledger write-back; `node scripts/lineage.mjs index` generates
 the index and `index --check` enforces this rule in `npm run test:docs`.
 
+## 2026-09-21 — Planning pass: operator answer (WO-150; the Tinkerer's economy support on by default)
+
+Source: the operator's answer to the standard pass's handoff, captured
+verbatim in ignored intake
+(`docs/intake/notes/2026-09-21-standard-planning-pass-operator-answers.md`,
+SHA-256 `5daf75e62dfc3a2248114c0b59bc8429c5757bef24df346be392e0b9338205a7`):
+push, open the pull request, and make the Tinkerer on by default unless there
+was a legitimate reason not to. Shape-First Synthesis; the clean-room screen
+found no stop condition. The record is
+[the planning document](../planning/standard-pass-2026-09-21.md) §12.
+
+- **The economy support is equipped by default; an order opts out
+  (WO-150)** `adopted`
+  - The pre-registered reading's condition was met and the operator accepted
+    the proposal. The check for a legitimate reason against it found none:
+    the equipped executor cold start is 24,327 bytes against a 24,576 ceiling
+    (within by 249, with the standing route for a breach), the per-order cost
+    is at most 900 s and declinable, no regression is recorded, and WO-145
+    D001's own reason for rejecting default-on ("defaults await the
+    three-trial reading") is discharged by the reading. A loadout default is
+    a code change, so a planning pass files it as an order rather than
+    editing the loadout. Provenance: the capture; product 05 §Candidate —
+    Tinkerer / Scientist; WO-145 D001 and D003; WO-090's cold-start
+    measurement; the planning document §12. Reopen: the first order
+    dispatched under the default records neither an experiment nor a
+    kept-current decline, or a cold-start breach is trimmed instead of
+    raised.
+- **The adaptive pressure modifier stays a candidate** `preserved`
+  - The default creates the fixed-cadence baseline the modifier needs; the
+    operator's 2026-09-11 bad-luck protection is unchanged in status.
+    Provenance: product 05 §Candidate — Tinkerer / Scientist. Reopen: a
+    record of experiments since the last adopted improvement long enough to
+    read a pressure from.
+
 ## 2026-09-21 — Planning pass: standard pass after WO-069 (WO-147 to WO-149; the register judged)
 
 Source: the operator's bare dispatch `planning: standard planning pass`,

@@ -435,3 +435,57 @@ The order texts stand as judged; none of the twelve issues is a hold, and a
 criterion edit after the receipt would re-key the subject for wording the
 catalog rows now carry. `npm run test:docs` after the receipt: recorded in
 the handoff.
+
+## 12. Second pass, same day — the operator's answer
+
+After the handoff the operator answered in one line, captured verbatim in
+ignored intake (`docs/intake/notes/2026-09-21-standard-planning-pass-operator-answers.md`,
+SHA-256 `5daf75e62dfc3a2248114c0b59bc8429c5757bef24df346be392e0b9338205a7`):
+push, open the pull request, and make the Tinkerer on by default unless
+there was a legitimate reason not to. The branch was pushed and the pull
+request opened as directed (#107). The Tinkerer answer is planned here as a
+second pass on the same branch, with its own ledger heading and receipt,
+because a loadout default is a code change and a planning pass files an
+order for it rather than editing the loadout.
+
+**Was there a legitimate reason not to?** Checked, and none found:
+
+- Cold start: the executor's default reads 23,154 bytes against the
+  24,576-byte ceiling (WO-090's after-measurement) and the support adds
+  1,173 (WO-145 D003), so the equipped figure is 24,327, within by 249. A
+  later reviewed rule that breaches the ceiling is raised by one 4 KB step
+  under the standing 2026-09-17 route, never trimmed.
+- Per-order cost: at most one experiment inside 900 s, declinable with a
+  reason; the support grants no authority, gate, agent or schedule.
+- Regression: none recorded in the three trial records.
+- The reasons WO-145 D001 gave for rejecting default-on at the time,
+  "method choices belong to the executor; defaults await the three-trial
+  reading", are discharged: the reading is done and the executor keeps the
+  choice through the opt-out and the decline path.
+- The two qualifications on the evidence (the third trial ran unequipped;
+  the adopted methods are development loops an executor keeps without the
+  support) weaken the measured benefit, not the case against harm, and the
+  pre-registered rule did not condition on them.
+
+**Filed: WO-150, Tinkerer economy on by default.** The default flips, the
+per-order opt-out stays, both skill roots are regenerated and measured
+against the ceilings, the WO-145 baseline case is re-baselined with the
+opt-out comparison retained, and the decisions file carries the three
+trials' history as the starting record for later experiments. No adaptive
+modifier. Minor release. Placement: a one-entry slot directly after WO-138
+and WO-071, before WO-147 and WO-148, as the operator's priority; it may run
+beside whichever of that pair is still open and must not make WO-147 or
+WO-148 wait; sequential with WO-149 because both regenerate the bundle.
+
+NoOp: the support stays opt-in per order and the next trial again has to
+say whether it was equipped. Declined: editing the loadout on the planning
+branch (refused by the planning-branch rule and outside a document-only
+pass); folding the flip into WO-149 (a judged order; a scope change needs
+its own authorization at execution, and the flip is a separate seam); the
+adaptive modifier now (a separate candidate). Goal alignment: operator flow
+(the recurring explicit-equipment step is removed), bounded commons cost
+(1,173 bytes and at most 900 s per order, both reported), no new gate or
+process, rule beating countered by the re-baselined fixture and the measured
+cold start rather than a stated default.
+
+**Independent review.** Filled after the second receipt is filed.

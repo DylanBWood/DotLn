@@ -3617,6 +3617,13 @@
           "title": "Candidate — Tinkerer / Scientist",
           "summary": "## Candidate — Tinkerer / Scientist **Near-term planning request, 2026-09-11:** the operator asks to prioritize this candidate soon, including its adaptive bad-luck protection based on time since the last demonstrated application improvement. It remains unimplemented and unallocated. The operator explicitly excludes implementing it in the current WO-043 repair. Carry the request through existing `FUP-fc4158d3207e495d`; the next planning pass should select a bounded experiment and allocation, preserving the budget, evidence and reset distinctions below. Source: the [WO-043 breakout](../evidence/WO-043/ideation-commands-and-usage.md). **Allocated 2026-09-19 (second planning pass of that day).*",
           "missing": false
+        },
+        {
+          "hash": "93ab0d5fbd4b60e748f3ba02193764d79c98504e2e6294faa0b97c7f24de60f3",
+          "ref": "docs/product/05-pattern-library.md#candidate--tinkerer--scientist",
+          "title": "Candidate — Tinkerer / Scientist",
+          "summary": "## Candidate — Tinkerer / Scientist **Near-term planning request, 2026-09-11:** the operator asks to prioritize this candidate soon, including its adaptive bad-luck protection based on time since the last demonstrated application improvement. It remains unimplemented and unallocated. The operator explicitly excludes implementing it in the current WO-043 repair. Carry the request through existing `FUP-fc4158d3207e495d`; the next planning pass should select a bounded experiment and allocation, preserving the budget, evidence and reset distinctions below. Source: the [WO-043 breakout](../evidence/WO-043/ideation-commands-and-usage.md). **Allocated 2026-09-19 (second planning pass of that day).*",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -3655,6 +3662,16 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-21T06:59:07.561Z"
+        },
+        {
+          "sourceRevision": 8,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-09-21 second planning pass (operator answer) to WO-150, filed for it: the economy support equipped by default with a per-order opt-out, after the three-trial reading's condition was met and the operator accepted the proposal; no legitimate reason against it was found (equipped executor cold start 24,327 bytes against 24,576; at most 900 s per order, declinable; no regression recorded). The adaptive modifier stays a candidate.",
+          "reopenWhen": "WO-150 closes, or the first order dispatched under the default records neither an experiment nor a kept-current decline, or a record of experiments since the last adopted improvement is long enough to read an adaptive pressure from",
+          "targets": [
+            "WO-150"
+          ],
+          "at": "2026-09-21T07:22:35.381Z"
         }
       ]
     },

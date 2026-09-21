@@ -49,6 +49,15 @@ may run beside whichever of the pair is still open and must not make WO-120
 or WO-063 wait. No existing pair is recut. The evidence is in
 [the standard-pass planning document](standard-pass-2026-09-21.md) §5 and §6.
 
+Operator answer (2026-09-21, second pass): WO-150 takes a one-entry slot
+directly after WO-138 and WO-071 and before WO-147 and WO-148, from the
+operator's acceptance of the Tinkerer three-trial reading (the economy
+support on by default). It edits the loadouts and regenerates the bundle,
+as WO-149 does, so the two stay sequential; it may run beside whichever of
+WO-138 and WO-071 is still open and must not make WO-147 or WO-148 wait.
+The evidence is in
+[the standard-pass planning document](standard-pass-2026-09-21.md) §12.
+
 <!-- dotln-work-order-sequence:start -->
 
 - WO-132 — Machinery stand-down
@@ -110,6 +119,8 @@ or WO-063 wait. No existing pair is recut. The evidence is in
 
 - WO-138 — Local-model role qualification pilot
 - WO-071 — Registered target repositories
+
+- WO-150 — Tinkerer economy on by default
 
 - WO-147 — Resident lock contention
 - WO-148 — Resident binding

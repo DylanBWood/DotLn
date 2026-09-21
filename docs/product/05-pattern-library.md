@@ -1144,6 +1144,21 @@ the support. The proposal is the operator's to accept; the register row is
 left open on it, and equipping by default is a loadout change for an order.
 The adaptive modifier stays unimplemented.
 
+**Accepted 2026-09-21 (operator answer, second planning pass).** The operator
+accepted the proposal: on by default unless there was a legitimate reason not
+to. None was found: the equipped executor cold start is 24,327 bytes against
+the 24,576-byte ceiling (WO-090's 23,154 default plus WO-145's 1,173), with
+the standing route for a breach; the per-order cost is at most 900 s and the
+executor may decline with a reason; no regression is recorded; and WO-145
+D001's reason for rejecting default-on at the time, that defaults await the
+three-trial reading, is discharged by the reading. The change is
+[WO-150](../work-orders/WO-150-tinkerer-economy-default.md): the default
+flipped, the per-order opt-out kept, the WO-145 baseline re-baselined, the
+cold start measured, and the three trials' history carried as the starting
+record. Until it merges the support stays opt-in per order. The adaptive
+modifier is unchanged in status.
+
+
 
 Operator ideation during WO-126 proposes a support that biases a linked mechanic
 toward a small experiment on a relevant question, input, proposed answer or

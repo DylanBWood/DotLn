@@ -51,6 +51,7 @@
 - [x] [WO-069] — Configuration root · **final-reviewed**
 - [ ] [WO-138] — Local-model role qualification pilot · **queued**
 - [ ] [WO-071] — Registered target repositories · **queued**
+- [ ] [WO-150] — Tinkerer economy on by default · **queued**
 - [ ] [WO-147] — Resident lock contention · **queued**
 - [ ] [WO-148] — Resident binding · **queued**
 - [ ] [WO-149] — Codex sessions begin · **queued**
@@ -1198,6 +1199,23 @@ None.
 - Cost: adds one idempotent call inside the existing dispatch command when &#96;CODEX_THREAD_ID&#96; is set and no session record exists, one fixture, and no new command, hook, gate or receipt; role text changes by one sentence, reported against the cold-start ceilings. Removes a structural unknown measured repository-wide by WO-099 FINAL-001: &#96;claude-code&#96; 13 real readings and 0 unknown, &#96;codex-cli&#96; 0 real readings and 8 unknown, so every Codex receipt's cost line reads &#96;unknown; cause no-session&#96; and the meter's per-harness comparison has no Codex column. Removes the operator rescue the role text currently offers instead (running &#96;harness begin&#96; by hand). Wall-clock, tokens and context bytes of the order itself are unknown until run.
 - Inherited ledger duty: discharge with this order's decisions file when recorded and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
 - Authority: [docs/work-orders/WO-149-codex-sessions-begin.md](WO-149-codex-sessions-begin.md)
+
+### WO-150
+
+[WO-150 — Tinkerer economy on by default: the executor's economy experiment is equipped unless an order opts out, its role-text cost is measured against the cold-start ceiling, and the three-trial history is carried forward, because the trials adopted a method with no regression and the operator accepted the pre-registered proposal (version assigned at activation)](WO-150-tinkerer-economy-default.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; dependency-ready.
+- References: WO-145: satisfied-by-close (met) — the support, its immutable switches and the three-trial record.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Cost: adds, to every executor dispatch that does not opt out, one paragraph of role text (1,173 bytes by WO-145 D003's measurement: 23,347 equipped against 22,174 default at v0.33.2) and at most one experiment per order inside 900 s, declinable with a reason. On 2026-09-21 the executor's default cold start reads 23,154 bytes against the 24,576-byte ceiling (WO-090's after-measurement), so the equipped figure is 24,327 and within by 249 bytes; a breach follows the standing route. Removes the explicit per-trial equipment step and the ambiguity it produced (WO-099 D008: the third trial ran unequipped). Names no new saving in advance beyond the three recorded per-iteration savings (58.7 s, 238.4 s, and 0.21 s with one command removed). The dated acceptance for adding cost without a measured removal is the operator's direction of 2026-09-21, captured verbatim in ignored intake, on the pre-registered rule's condition being met. Wall-clock, tokens and context bytes of the order itself are unknown until run.
+- Inherited ledger duty: discharge with this order's decisions file when recorded and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
+- Authority: [docs/work-orders/WO-150-tinkerer-economy-default.md](WO-150-tinkerer-economy-default.md)
 
 ## Closed
 
@@ -2850,3 +2868,4 @@ See [the human planning map](../planning/work-order-map.md) for recommendation, 
 [WO-147]: WO-147-resident-lock-contention.md
 [WO-148]: WO-148-resident-binding.md
 [WO-149]: WO-149-codex-sessions-begin.md
+[WO-150]: WO-150-tinkerer-economy-default.md
