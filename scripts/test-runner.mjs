@@ -477,9 +477,10 @@ export const suites = [
         "scripts/probes/local-runner-smoke.test.mjs",
         "scripts/probes/local-runner-load.test.mjs",
         "scripts/probes/local-model-transport-smoke.test.mjs",
+        "scripts/probes/local-model-role-qualification.test.mjs",
       ],
       protects:
-        "local runner research and WO-110's transport smoke preserve failures, validate responses, keep model text out of recorded shapes and observe cancellation using loopback doubles only",
+        "local runner research, WO-110's transport smoke and WO-138's role qualification preserve failures, validate responses and recorded envelopes, keep live inference out of the gate, and observe cancellation using loopback doubles only",
     },
   ),
   node("authority-evidence", "scripts/authority-evidence.mjs", {
