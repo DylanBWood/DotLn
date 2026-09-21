@@ -8784,6 +8784,34 @@
           "title": "Candidate — local-model usefulness experiments",
           "summary": "### Candidate — local-model usefulness experiments **WO-137 observation (2026-09-18):** the [readiness packet](../discovery/local-runner-2026-09-18.md) records LM Studio `0.4.24+1`, llama.cpp runtime `2.38.0` and an existing pinned Qwen3.6 27B Q4_K_M artifact. Explicit CLI start and load now work; the fixed three-request smoke is byte-identical, schema and tool round trip pass, HTTP cancellation is observed to become idle within five seconds, timeout occurs and recovery succeeds. The operator-expanded two-minute sequential load run completed nine capped requests and deadline-cancelled the tenth with nominal thermal observations, normal memory pressure and no swap growth. Overall outcome rema",
           "missing": false
+        },
+        {
+          "hash": "b2f621322b020a56bd95c4c46df7fecda82f5b651977c2d540f52e3f3842a88b",
+          "ref": "docs/product/06-roadmap.md#candidate--local-model-usefulness-experiments",
+          "title": "Candidate — local-model usefulness experiments",
+          "summary": "### Candidate — local-model usefulness experiments **WO-137 observation (2026-09-18):** the [readiness packet](../discovery/local-runner-2026-09-18.md) records LM Studio `0.4.24+1`, llama.cpp runtime `2.38.0` and an existing pinned Qwen3.6 27B Q4_K_M artifact. Explicit CLI start and load now work; the fixed three-request smoke is byte-identical, schema and tool round trip pass, HTTP cancellation is observed to become idle within five seconds, timeout occurs and recovery succeeds. The operator-expanded two-minute sequential load run completed nine capped requests and deadline-cancelled the tenth with nominal thermal observations, normal memory pressure and no swap growth. Overall outcome rema",
+          "missing": false
+        },
+        {
+          "hash": "ce2c164d48d9379192bb71b958c56c62aa49f99608fa3cce1b8fa947b3f9212e",
+          "ref": "docs/product/06-roadmap.md#candidate--local-model-usefulness-experiments",
+          "title": "Candidate — local-model usefulness experiments",
+          "summary": "### Candidate — local-model usefulness experiments **WO-137 observation (2026-09-18):** the [readiness packet](../discovery/local-runner-2026-09-18.md) records LM Studio `0.4.24+1`, llama.cpp runtime `2.38.0` and an existing pinned Qwen3.6 27B Q4_K_M artifact. Explicit CLI start and load now work; the fixed three-request smoke is byte-identical, schema and tool round trip pass, HTTP cancellation is observed to become idle within five seconds, timeout occurs and recovery succeeds. The operator-expanded two-minute sequential load run completed nine capped requests and deadline-cancelled the tenth with nominal thermal observations, normal memory pressure and no swap growth. Overall outcome rema",
+          "missing": false
+        },
+        {
+          "hash": "b50df73fa26f8bb5813cc0ac63012fdaa9f49f92141de00ba69b1636229fffa4",
+          "ref": "docs/product/06-roadmap.md#candidate--local-model-usefulness-experiments",
+          "title": "Candidate — local-model usefulness experiments",
+          "summary": "### Candidate — local-model usefulness experiments **WO-137 observation (2026-09-18):** the [readiness packet](../discovery/local-runner-2026-09-18.md) records LM Studio `0.4.24+1`, llama.cpp runtime `2.38.0` and an existing pinned Qwen3.6 27B Q4_K_M artifact. Explicit CLI start and load now work; the fixed three-request smoke is byte-identical, schema and tool round trip pass, HTTP cancellation is observed to become idle within five seconds, timeout occurs and recovery succeeds. The operator-expanded two-minute sequential load run completed nine capped requests and deadline-cancelled the tenth with nominal thermal observations, normal memory pressure and no swap growth. Overall outcome rema",
+          "missing": false
+        },
+        {
+          "hash": "074486482407225ecc16689d96652fa7f29837c9b680e5652982100a0d6d39df",
+          "ref": "docs/product/06-roadmap.md#candidate--local-model-usefulness-experiments",
+          "title": "Candidate — local-model usefulness experiments",
+          "summary": "### Candidate — local-model usefulness experiments **WO-137 observation (2026-09-18):** the [readiness packet](../discovery/local-runner-2026-09-18.md) records LM Studio `0.4.24+1`, llama.cpp runtime `2.38.0` and an existing pinned Qwen3.6 27B Q4_K_M artifact. Explicit CLI start and load now work; the fixed three-request smoke is byte-identical, schema and tool round trip pass, HTTP cancellation is observed to become idle within five seconds, timeout occurs and recovery succeeds. The operator-expanded two-minute sequential load run completed nine capped requests and deadline-cancelled the tenth with nominal thermal observations, normal memory pressure and no swap growth. Overall outcome rema",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -13018,6 +13046,51 @@
           "at": "2026-09-21T06:59:10.442Z"
         }
       ]
+    },
+    {
+      "id": "FUP-8f9d0bedcbe00d79",
+      "key": "decision:docs/evidence/WO-138/decisions.md#wo-138-d007",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "b78ff96d5e894f8823dc1b448f694ea254ae718907988fabaf3a4e3501c32799",
+          "ref": "docs/evidence/WO-138/decisions.md#wo-138-d007--publish-t1s-existing-field-limits-before-recollection",
+          "title": "WO-138-D007: Apply adjacent-0001: add maxLength 40 to the ten T1 receipt fields in the response schema, retaining summary maxLength 320 and the unchanged host validator. Run both transports against th",
+          "summary": "{ \"id\": \"WO-138-D007\", \"date\": \"2026-09-21\", \"dispatch\": \"resume: fix\", \"decision\": \"Apply adjacent-0001: add maxLength 40 to the ten T1 receipt fields in the response schema, retaining summary maxLength 320 and the unchanged host validator. Run both transports against that same corrected schema in D006's replacement matrix.\", \"evidence\": [ \"docs/verifications/WO-138/VER-001.md#advisory-observations\", \"scripts/probes/local-model-role-qualification.mjs: taskSchema and validateAnswer\", \"The original remote T1/T3 runs accepted maxLength 320 in their schemas\" ], \"rejected\": [ { \"option\": \"NoOp and retain the schema/validator mismatch\", \"reason\": \"A model can satisfy the emitted length contract a",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-c3f5fff27ea981b8",
+      "key": "decision:docs/evidence/WO-138/decisions.md#wo-138-d011",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "59d31591863f882635d7f69bdfa64dea22d6c78488eedb27b2f1e6e57c0e7068",
+          "ref": "docs/evidence/WO-138/decisions.md#wo-138-d011--integrate-main-at-87393bf6-and-keep-the-staged-v0381-target",
+          "title": "WO-138-D011: First real use of worktree integrate (WO-079): the helper set its stage to applied after the stash apply and ran every regeneration step, printing Regenerated lines, while docs/product/06",
+          "summary": "{ \"id\": \"WO-138-D011\", \"date\": \"2026-09-21\", \"dispatch\": \"resume: final review (npm run worktree -- integrate WO-138)\", \"decision\": \"Integrate main at 87393bf6 (WO-071 merged as PR #108 and published v0.38.0) into the uncommitted wo-138 worktree by fast-forward, keep the staged v0.38.1 target under its existing patch classification because release preparation observed it still above the baseline, resolve the one authored conflict (the roadmap's release-boundary section) as a union of both dated paragraphs with v0.38.1 above v0.38.0, and carry every acceptance claim forward with its original evidence because no subject source, evidence, report or product write-back byte changed.\", \"evidence\":",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-349058ac0342247d",
+      "key": "decision:docs/evidence/WO-138/decisions.md#wo-138-d012",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "4bede0dde39871f2b9ffb26d896cb47f89cabbe74bacc16bf7ed45c56d230772",
+          "ref": "docs/evidence/WO-138/decisions.md#wo-138-d012--board-up-the-undeclared-t1-minimum-bound-named-by-ver-002-a1",
+          "title": "WO-138-D012: In the next order that recollects a T1 matrix, declare minLength 1 on the ten T1 receipt fields in the emitted schema, keeping summary at 320, so the published contract equals the host va",
+          "summary": "{ \"id\": \"WO-138-D012\", \"date\": \"2026-09-21\", \"dispatch\": \"resume: final review\", \"decision\": \"Record VER-002 A1′ as a defect met and not fixed: the emitted T1 schema declares the host's 40-character maximum but not its one-character minimum, and the retained cell failure-local-T1-unexpected-input was rejected on that undeclared bound after the model blocked correctly. The closed 38-cell matrix is not recollected for it; the correction is named for the next order that recollects a T1 matrix.\", \"evidence\": [ \"docs/verifications/WO-138/VER-002.md#advisory-observations\", \"docs/evidence/WO-138/episodes/failure-local-T1-unexpected-input.json: status blocked, requiresHuman true, ten empty strings, ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

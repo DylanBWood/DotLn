@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-138",
+  "episodeId": "baseline-local-T1-r2",
+  "cell": {
+    "episodeId": "baseline-local-T1-r2",
+    "kind": "baseline",
+    "transport": "local",
+    "taskId": "T1",
+    "repeat": 2,
+    "variant": "baseline",
+    "injected": false
+  },
+  "model": "dotln-local",
+  "harnessVersion": "0.4.24+1",
+  "modelIdentity": {
+    "source": "lms ps --json after load; never the request model field",
+    "identifier": "dotln-local",
+    "artifactMatch": true,
+    "artifactFile": "Qwen3.6-27B-Q4_K_M.gguf",
+    "artifactSha256": "33625d8dc3a5dd8d88c324d47db58561b11f7072816287078bfe58b4c55782f9",
+    "observedKeys": [
+      "architecture",
+      "contextLength",
+      "deviceIdentifier",
+      "displayName",
+      "format",
+      "identifier",
+      "indexedModelIdentifier",
+      "lastUsedTime",
+      "maxContextLength",
+      "modelKey",
+      "parallel",
+      "paramsString",
+      "path",
+      "publisher",
+      "quantization",
+      "queued",
+      "selectedVariant",
+      "sizeBytes",
+      "status",
+      "trainedForToolUse",
+      "ttlMs",
+      "type",
+      "variants",
+      "vision"
+    ],
+    "status": "idle",
+    "queued": 0
+  },
+  "harnessBuildHash": "da3c8b1ab9af6aa2d4bda1f7e078e4cd0954479a9e800df0060e5fc842cdddf9",
+  "cellBuildHash": "326fb065abccbd94a0402fffceb545933db83be5c6c892174fbf2909c55f4d14",
+  "promptHash": "2b53d23332bf61f920f252a1a1e4c0ea7b7ee70b1779b223de44314c98ba10a6",
+  "schemaHash": "dd29d826ab526c9c0d954eb1d0b05f1bd3fd3bda480f16e2c5f850e179ca662f",
+  "inputHash": "a26fbcef6ff7553eafdfb125f8dce2716e83cf7a7f7cd4f90027835c02f91d87",
+  "sourcePaths": [
+    "docs/verifications/WO-052/VER-001.md"
+  ],
+  "startedAt": "2026-09-21T13:42:57.835Z",
+  "finishedAt": "2026-09-21T13:43:17.070Z",
+  "actualOperatorInterventions": 0,
+  "boundary": "loopback client; all inputs committed public material; no no-egress claim",
+  "outcome": "typed-failure",
+  "schemaValid": false,
+  "status": "failed",
+  "requiresHuman": null,
+  "oracleAgreement": 0,
+  "latencyMs": 19234.293500000003,
+  "usage": {
+    "inputTokens": 510,
+    "cachedInputTokens": null,
+    "outputTokens": 338,
+    "totalTokens": 848
+  },
+  "tokensPerSecond": null,
+  "reportedOutput": {
+    "taskId": "T1",
+    "status": "completed",
+    "requiresHuman": false,
+    "result": {
+      "verdict": "pass",
+      "criteriaMet": "All six acceptance criteria of `docs/work-orders/WO-052-source-change-host.md` are met by the current subject.",
+      "criteriaTotal": "[\"AC1\", \"AC2\", \"AC3\", \"AC4\", \"AC5\", \"AC6\"]",
+      "candidateFindings": "[\"Five candidate findings were raised and all five were refuted as test-coverage preferences rather than defects in the delivered work.\"]",
+      "repairFindings": "[\"No finding routes to repair.\"]",
+      "advisoryObservations": "[\"Seven advisory observations are recorded below for the reviewer.\"]",
+      "gatePassedSuites": "[\"npm test (outside the macOS sandbox)\"]",
+      "gateFailedSuites": "[\"none\"]",
+      "gateDurationSeconds": "[\"515.40\"]",
+      "newDependencies": "[\"none\"]",
+      "summary": "[\"All six acceptance criteria of `docs/work-orders/WO-052-source-change-host.md` are met by the current subject. Five candidate findings were raised and all five were refuted as test-coverage preferences rather than defects in the delivered work. No finding routes to repair. Seven advisory observations are recorded for"
+    }
+  },
+  "responseModel": "dotln-local",
+  "finishReason": "stop",
+  "failure": {
+    "code": "invalid-result",
+    "detail": "invalid T1 criteriaMet"
+  }
+}

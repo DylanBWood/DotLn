@@ -2,7 +2,7 @@
 
 Source base revision: `f2a4b232e1868691398964433c7e373fca4b84bb`
 
-Source lock: `sha256:2d9dc1b40897304546bd8f628f5ed1b310d83a3a4630a4d3d44ac270d87a35f7`
+Source lock: `sha256:3e6e64ce5394e4cb43cba55ed840aaa5f5a8acef479ed5f92dcb077b0a4decd1`
 
 The base revision identifies where this edition's source set was selected; every
 link must resolve there. The lock pins the exact current bytes of the linked

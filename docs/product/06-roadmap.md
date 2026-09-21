@@ -20,6 +20,13 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-138 activation completion (2026-09-21):** assigned application `v0.38.1`
+under the declared patch classification above the observed local `v0.38.0`
+tag. The release is evidence-only: the qualification probe, deterministic
+tests, retained episode records and catalog write-backs change no component
+version, dependency, runtime authority or publication control. Independent
+verification, main integration, final review and publication remain separate.
+
 **WO-071 activation completion (2026-09-21):** application `v0.38.0` is the
 next minor above the observed local annotated `v0.37.2` baseline. The control
 plane adds registered target identity and immutable base revision to work-order
@@ -1269,6 +1276,22 @@ WO-138's activation preflight in the planning map: the runner does not echo the
 requested model, so the pilot must obtain the answering model's identity from
 the runner rather than the request (D007), and the transport's null-body case is
 guarded by the next order that edits it, WO-138 if it comes first (D012).
+
+**WO-138 disposition after repair (2026-09-21): `inconclusive`.** The final
+38-cell matrix uses one retained input snapshot and one matching probe build.
+Only T2 qualifies: 5/5 schema-valid local rankings, median Spearman 0.828571,
+the same measured remote median, local median latency 12.076 s and zero
+in-episode interventions. Every remote baseline reached the model and passed
+validation. T1 is now 5/5 schema-valid but its agreement is only 0.1; T3 is 5/5
+valid at 0.833333, below its 0.9 floor and outside the ten-point remote floor.
+T3's single label-definition cell reached 1.0 and remains a candidate for a
+separately registered repeated qualification. T1 needs a fresh fixed-schema
+accuracy qualification. The rejected-schema and unmatched-input matrices are
+retained unscored; the [packet](../evidence/WO-138/decision-packet.md) records
+the corrected method and distributions. No private-input, no-egress,
+implementation or independent-verification qualification follows. Reopen when
+the task, schema, artifact or boundary changes, or a new qualification is
+registered.
 
 Operator direction, 2026-09-16: the next planning pass should give local LLM
 experiments more attention, starting with concrete runner readiness and any

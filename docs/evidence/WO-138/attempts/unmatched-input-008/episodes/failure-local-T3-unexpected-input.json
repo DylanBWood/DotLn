@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-138",
+  "episodeId": "failure-local-T3-unexpected-input",
+  "cell": {
+    "episodeId": "failure-local-T3-unexpected-input",
+    "kind": "tool-failure",
+    "transport": "local",
+    "taskId": "T3",
+    "repeat": 1,
+    "variant": "baseline",
+    "injected": true
+  },
+  "model": "dotln-local",
+  "harnessVersion": "0.4.24+1",
+  "modelIdentity": {
+    "source": "lms ps --json after load; never the request model field",
+    "identifier": "dotln-local",
+    "artifactMatch": true,
+    "artifactFile": "Qwen3.6-27B-Q4_K_M.gguf",
+    "artifactSha256": "33625d8dc3a5dd8d88c324d47db58561b11f7072816287078bfe58b4c55782f9",
+    "observedKeys": [
+      "architecture",
+      "contextLength",
+      "deviceIdentifier",
+      "displayName",
+      "format",
+      "identifier",
+      "indexedModelIdentifier",
+      "lastUsedTime",
+      "maxContextLength",
+      "modelKey",
+      "parallel",
+      "paramsString",
+      "path",
+      "publisher",
+      "quantization",
+      "queued",
+      "selectedVariant",
+      "sizeBytes",
+      "status",
+      "trainedForToolUse",
+      "ttlMs",
+      "type",
+      "variants",
+      "vision"
+    ],
+    "status": "idle",
+    "queued": 0
+  },
+  "harnessBuildHash": "2e72cd2bab60e20f92916121332adbec9d9bca0cbb68734a79d05fe17085c924",
+  "cellBuildHash": "d0e119444fb6edc5090bc810b553a7d6cdbbba2c717bd3c7e1ba890a7f461141",
+  "promptHash": "3ed60e140676e2f3e50bdc049a42cf5a92b453c98be01db0a636cda3dfdaa1bb",
+  "schemaHash": "666186e0c5385b580ec68ee7215e4743f7064c3ab58b91e495a601f8c00d61e4",
+  "inputHash": "fabc615f0b0c9a255dd9662756c42ba634a6891367ce08754eac67d00a0227a5",
+  "sourcePaths": [
+    "scripts/fixtures/harness-probe-hook.mjs"
+  ],
+  "startedAt": "2026-09-21T14:59:22.916Z",
+  "finishedAt": "2026-09-21T14:59:57.777Z",
+  "actualOperatorInterventions": 0,
+  "boundary": "loopback client; all inputs committed public material; no no-egress claim",
+  "outcome": "typed-failure",
+  "schemaValid": false,
+  "status": "failed",
+  "requiresHuman": null,
+  "oracleAgreement": 0,
+  "latencyMs": 34859.565249999985,
+  "usage": {
+    "inputTokens": 550,
+    "cachedInputTokens": null,
+    "outputTokens": 478,
+    "totalTokens": 1028
+  },
+  "tokensPerSecond": null,
+  "reportedOutput": {
+    "taskId": "T3",
+    "status": "completed",
+    "requiresHuman": false,
+    "result": {
+      "classifications": [
+        {
+          "rowId": "J01",
+          "label": "dispatch"
+        },
+        {
+          "rowId": "J02",
+          "label": "read"
+        },
+        {
+          "rowId": "J03",
+          "label": "read"
+        },
+        {
+          "rowId": "J04",
+          "label": "gate"
+        },
+        {
+          "rowId": "J05",
+          "label": "write"
+        },
+        {
+          "rowId": "J06",
+          "label": "write"
+        },
+        {
+          "rowId": "J07",
+          "label": "gate"
+        },
+        {
+          "rowId": "J08",
+          "label": "gate"
+        },
+        {
+          "rowId": "J09",
+          "label": "subagent"
+        },
+        {
+          "rowId": "J10",
+          "label": "subagent"
+        },
+        {
+          "rowId": "J11",
+          "label": "finish"
+        },
+        {
+          "rowId": "J12",
+          "label": "finish"
+        },
+        {
+          "rowId": "JX",
+          "label": "dispatch"
+        }
+      ],
+      "reason": "All rows were successfully classified into the closed label set. J01 is the initial dispatch. J02-J03 are read operations. J04, J07, J08 are gate operations (Bash). J05-J06 are write operations (Edit). J09-J10 are subagent operations. J11-J12 are finish operations. JX, being an unknown future event, defaults to the 'un"
+    }
+  },
+  "responseModel": "dotln-local",
+  "finishReason": "stop",
+  "failure": {
+    "code": "invalid-result",
+    "detail": "unexpected input was not blocked"
+  }
+}

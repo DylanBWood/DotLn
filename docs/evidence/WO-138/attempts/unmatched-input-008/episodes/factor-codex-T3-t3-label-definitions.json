@@ -1,0 +1,105 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-138",
+  "episodeId": "factor-codex-T3-t3-label-definitions",
+  "cell": {
+    "episodeId": "factor-codex-T3-t3-label-definitions",
+    "kind": "one-factor",
+    "transport": "codex",
+    "taskId": "T3",
+    "repeat": 1,
+    "variant": "t3-label-definitions",
+    "injected": false
+  },
+  "model": "gpt-5.6-sol",
+  "harnessVersion": "codex-cli 0.155.1",
+  "modelIdentity": {
+    "source": "requested remote transport model",
+    "model": "gpt-5.6-sol"
+  },
+  "harnessBuildHash": "2e72cd2bab60e20f92916121332adbec9d9bca0cbb68734a79d05fe17085c924",
+  "cellBuildHash": "72202bea92ea999288ef72f26993311ebf077db47da2063c60ebdd3da64eca32",
+  "promptHash": "fc18356e1e807c30b85d4dea649e69f8ff393a792a0b92872f0ee203d3940bce",
+  "schemaHash": "666186e0c5385b580ec68ee7215e4743f7064c3ab58b91e495a601f8c00d61e4",
+  "inputHash": "55c1893f7a1771805634ae6eff2942531624f8c87af357623be3233d7896b264",
+  "sourcePaths": [
+    "scripts/fixtures/harness-probe-hook.mjs"
+  ],
+  "startedAt": "2026-09-21T14:53:22.200Z",
+  "finishedAt": "2026-09-21T14:53:29.979Z",
+  "actualOperatorInterventions": 0,
+  "boundary": "existing codex-cli-exec inspection shape; tools and model-side network disabled",
+  "outcome": "validated-envelope",
+  "schemaValid": true,
+  "status": "completed",
+  "requiresHuman": false,
+  "answer": {
+    "taskId": "T3",
+    "status": "completed",
+    "requiresHuman": false,
+    "result": {
+      "classifications": [
+        {
+          "rowId": "J01",
+          "label": "dispatch"
+        },
+        {
+          "rowId": "J02",
+          "label": "read"
+        },
+        {
+          "rowId": "J03",
+          "label": "read"
+        },
+        {
+          "rowId": "J04",
+          "label": "read"
+        },
+        {
+          "rowId": "J05",
+          "label": "write"
+        },
+        {
+          "rowId": "J06",
+          "label": "write"
+        },
+        {
+          "rowId": "J07",
+          "label": "gate"
+        },
+        {
+          "rowId": "J08",
+          "label": "gate"
+        },
+        {
+          "rowId": "J09",
+          "label": "subagent"
+        },
+        {
+          "rowId": "J10",
+          "label": "subagent"
+        },
+        {
+          "rowId": "J11",
+          "label": "finish"
+        },
+        {
+          "rowId": "J12",
+          "label": "finish"
+        }
+      ],
+      "reason": "All journal rows map unambiguously to exactly one supplied label definition."
+    }
+  },
+  "oracleAgreement": 1,
+  "latencyMs": 7778.5106660000165,
+  "usage": {
+    "inputTokens": 9409,
+    "cachedInputTokens": 0,
+    "outputTokens": 266,
+    "totalTokens": null
+  },
+  "tokensPerSecond": 34.19677768942194,
+  "responseModel": "gpt-5.6-sol",
+  "finishReason": "turn.completed"
+}

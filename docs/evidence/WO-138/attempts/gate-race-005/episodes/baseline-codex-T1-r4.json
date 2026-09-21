@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-138",
+  "episodeId": "baseline-codex-T1-r4",
+  "cell": {
+    "episodeId": "baseline-codex-T1-r4",
+    "kind": "baseline",
+    "transport": "codex",
+    "taskId": "T1",
+    "repeat": 4,
+    "variant": "baseline",
+    "injected": false
+  },
+  "model": "gpt-5.6-sol",
+  "harnessVersion": "codex-cli 0.155.1",
+  "modelIdentity": {
+    "source": "requested remote transport model",
+    "model": "gpt-5.6-sol"
+  },
+  "harnessBuildHash": "fdc4b0a5395aca78c60a94e637691eac9b1045d4c05f4fe249d78eb312644fb5",
+  "cellBuildHash": "ba02f09259293a19a5ba4d3cd995380c0d9e07c5bfb948a4065935f7e885d10b",
+  "promptHash": "2b53d23332bf61f920f252a1a1e4c0ea7b7ee70b1779b223de44314c98ba10a6",
+  "schemaHash": "dd29d826ab526c9c0d954eb1d0b05f1bd3fd3bda480f16e2c5f850e179ca662f",
+  "inputHash": "a26fbcef6ff7553eafdfb125f8dce2716e83cf7a7f7cd4f90027835c02f91d87",
+  "sourcePaths": [
+    "docs/verifications/WO-052/VER-001.md"
+  ],
+  "startedAt": "2026-09-21T13:31:09.642Z",
+  "finishedAt": "2026-09-21T13:31:19.792Z",
+  "actualOperatorInterventions": 0,
+  "boundary": "existing codex-cli-exec inspection shape; tools and model-side network disabled",
+  "outcome": "validated-envelope",
+  "schemaValid": true,
+  "status": "completed",
+  "requiresHuman": false,
+  "answer": {
+    "taskId": "T1",
+    "status": "completed",
+    "requiresHuman": false,
+    "result": {
+      "verdict": "pass",
+      "criteriaMet": "6",
+      "criteriaTotal": "6",
+      "candidateFindings": "5",
+      "repairFindings": "0",
+      "advisoryObservations": "7",
+      "gatePassedSuites": "19",
+      "gateFailedSuites": "0",
+      "gateDurationSeconds": "515.40",
+      "newDependencies": "0",
+      "summary": "All six acceptance criteria are met. Five candidate findings were refuted and none route to repair. The canonical gate exited 0 with 19 passed, 0 failed, in 515.40 seconds. Seven advisory observations were recorded, and no dependency entry was added."
+    }
+  },
+  "oracleAgreement": 1,
+  "latencyMs": 10148.610083,
+  "usage": {
+    "inputTokens": 9350,
+    "cachedInputTokens": 0,
+    "outputTokens": 268,
+    "totalTokens": null
+  },
+  "tokensPerSecond": 26.40755707512386,
+  "responseModel": "gpt-5.6-sol",
+  "finishReason": "turn.completed"
+}

@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-138",
+  "episodeId": "factor-local-T1-t1-field-map",
+  "cell": {
+    "episodeId": "factor-local-T1-t1-field-map",
+    "kind": "one-factor",
+    "transport": "local",
+    "taskId": "T1",
+    "repeat": 1,
+    "variant": "t1-field-map",
+    "injected": false
+  },
+  "model": "dotln-local",
+  "harnessVersion": "0.4.24+1",
+  "modelIdentity": {
+    "source": "lms ps --json after load; never the request model field",
+    "identifier": "dotln-local",
+    "artifactMatch": true,
+    "artifactFile": "Qwen3.6-27B-Q4_K_M.gguf",
+    "artifactSha256": "33625d8dc3a5dd8d88c324d47db58561b11f7072816287078bfe58b4c55782f9",
+    "observedKeys": [
+      "architecture",
+      "contextLength",
+      "deviceIdentifier",
+      "displayName",
+      "format",
+      "identifier",
+      "indexedModelIdentifier",
+      "lastUsedTime",
+      "maxContextLength",
+      "modelKey",
+      "parallel",
+      "paramsString",
+      "path",
+      "publisher",
+      "quantization",
+      "queued",
+      "selectedVariant",
+      "sizeBytes",
+      "status",
+      "trainedForToolUse",
+      "ttlMs",
+      "type",
+      "variants",
+      "vision"
+    ],
+    "status": "idle",
+    "queued": 0
+  },
+  "harnessBuildHash": "29d874bd99ac741c9da31e4a8c4321a3bf7b562bb23187b7bb585a330c22b8b4",
+  "cellBuildHash": "0202595378d765190fa4e5522b5ebb484701f28cc596229b7850ffd5197eee2e",
+  "promptHash": "f5c86617ded81e369df3d5d47030e55774208a4b4fce85424b97df3c0226de0b",
+  "schemaHash": "dd29d826ab526c9c0d954eb1d0b05f1bd3fd3bda480f16e2c5f850e179ca662f",
+  "inputHash": "a26fbcef6ff7553eafdfb125f8dce2716e83cf7a7f7cd4f90027835c02f91d87",
+  "sourcePaths": [
+    "docs/verifications/WO-052/VER-001.md"
+  ],
+  "startedAt": "2026-09-21T14:16:07.039Z",
+  "finishedAt": "2026-09-21T14:16:28.901Z",
+  "actualOperatorInterventions": 0,
+  "boundary": "loopback client; all inputs committed public material; no no-egress claim",
+  "outcome": "typed-failure",
+  "schemaValid": false,
+  "status": "failed",
+  "requiresHuman": null,
+  "oracleAgreement": 0,
+  "latencyMs": 21860.826166999992,
+  "usage": {
+    "inputTokens": 556,
+    "cachedInputTokens": null,
+    "outputTokens": 273,
+    "totalTokens": 829
+  },
+  "tokensPerSecond": null,
+  "reportedOutput": {
+    "taskId": "T1",
+    "status": "completed",
+    "requiresHuman": false,
+    "result": {
+      "verdict": "pass",
+      "criteriaMet": "All six acceptance criteria of `docs/work-orders/WO-052-source-change-host.md` are met by the current subject.",
+      "criteriaTotal": "All six acceptance criteria of `docs/work-orders/WO-052-source-change-host.md` are met by the current subject.",
+      "candidateFindings": "FIVE",
+      "repairFindings": "ZERO",
+      "advisoryObservations": "SEVEN",
+      "gatePassedSuites": "19",
+      "gateFailedSuites": "0",
+      "gateDurationSeconds": "515.40",
+      "newDependencies": "ZERO",
+      "summary": "The verification receipt confirms a pass verdict. All six acceptance criteria are met. Five candidate findings were raised but refuted as test-coverage preferences, resulting in zero repair findings. Seven advisory observations are recorded. The canonical gate `npm test` passed with 19 suites, 0 failures, and a runtime"
+    }
+  },
+  "responseModel": "dotln-local",
+  "finishReason": "stop",
+  "failure": {
+    "code": "invalid-result",
+    "detail": "invalid T1 criteriaMet"
+  }
+}

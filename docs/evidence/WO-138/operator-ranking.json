@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-138",
+  "source": "operator",
+  "requestedAt": "2026-09-21T13:04:26.410Z",
+  "completedAt": "2026-09-21T13:09:14.000Z",
+  "elapsedSeconds": 60,
+  "ranking": [
+    "failing-test:src/main.js",
+    "failing-lint:src/main.js",
+    "repeated-repair:src/main.js:34c32817ea5437e8",
+    "stale-generated:generated/obsolete.txt",
+    "misplaced-file:loose/helper.js",
+    "misplaced-file:loose/guide.md"
+  ]
+}

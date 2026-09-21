@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-138",
+  "episodeId": "factor-codex-T2-t2-triage-rubric",
+  "cell": {
+    "episodeId": "factor-codex-T2-t2-triage-rubric",
+    "kind": "one-factor",
+    "transport": "codex",
+    "taskId": "T2",
+    "repeat": 1,
+    "variant": "t2-triage-rubric",
+    "injected": false
+  },
+  "model": "gpt-5.6-sol",
+  "harnessVersion": "codex-cli 0.155.1",
+  "modelIdentity": {
+    "source": "requested remote transport model",
+    "model": "gpt-5.6-sol"
+  },
+  "harnessBuildHash": "2e72cd2bab60e20f92916121332adbec9d9bca0cbb68734a79d05fe17085c924",
+  "cellBuildHash": "69bfeb831abba89b97dceaf84ee1c9e98f1c7f57b6ab0ac001707142694d8bfd",
+  "promptHash": "8fa2dd22e9d24021181b4496edcc0afc6d38299a07ac32baed799c4dfb1dc4fe",
+  "schemaHash": "1d5667a2404733b53eb2410857b01159c1e31e16a3d82e3ef336137eaa95c5f7",
+  "inputHash": "ad8bcb53764007fb31c372400e096af9d17e3d6296a0c9ea378a19190e1873de",
+  "sourcePaths": [
+    "packages/skeleton/fixtures/wo119-discovery/repository.json"
+  ],
+  "startedAt": "2026-09-21T14:53:08.721Z",
+  "finishedAt": "2026-09-21T14:53:22.167Z",
+  "actualOperatorInterventions": 0,
+  "boundary": "existing codex-cli-exec inspection shape; tools and model-side network disabled",
+  "outcome": "validated-envelope",
+  "schemaValid": true,
+  "status": "completed",
+  "requiresHuman": false,
+  "answer": {
+    "taskId": "T2",
+    "status": "completed",
+    "requiresHuman": false,
+    "result": {
+      "ranking": [
+        "repeated-repair:src/main.js:34c32817ea5437e8",
+        "failing-test:src/main.js",
+        "failing-lint:src/main.js",
+        "misplaced-file:loose/helper.js",
+        "stale-generated:generated/obsolete.txt",
+        "misplaced-file:loose/guide.md"
+      ],
+      "rationale": "The repeated regression ranks first because it shows recurring executable risk across two repair events. The failing test follows as a direct correctness failure, then the failing lint check as another direct check failure with less demonstrated runtime risk. The misplaced JavaScript helper ranks above non-executable,低"
+    }
+  },
+  "oracleAgreement": null,
+  "latencyMs": 13445.58937500001,
+  "usage": {
+    "inputTokens": 10037,
+    "cachedInputTokens": 0,
+    "outputTokens": 431,
+    "totalTokens": null
+  },
+  "tokensPerSecond": 32.05512142155536,
+  "responseModel": "gpt-5.6-sol",
+  "finishReason": "turn.completed"
+}

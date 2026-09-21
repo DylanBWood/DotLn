@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-138",
+  "episodeId": "failure-local-T1-unexpected-input",
+  "cell": {
+    "episodeId": "failure-local-T1-unexpected-input",
+    "kind": "tool-failure",
+    "transport": "local",
+    "taskId": "T1",
+    "repeat": 1,
+    "variant": "baseline",
+    "injected": true
+  },
+  "model": "dotln-local",
+  "harnessVersion": "0.4.24+1",
+  "modelIdentity": {
+    "source": "lms ps --json after load; never the request model field",
+    "identifier": "dotln-local",
+    "artifactMatch": true,
+    "artifactFile": "Qwen3.6-27B-Q4_K_M.gguf",
+    "artifactSha256": "33625d8dc3a5dd8d88c324d47db58561b11f7072816287078bfe58b4c55782f9",
+    "observedKeys": [
+      "architecture",
+      "contextLength",
+      "deviceIdentifier",
+      "displayName",
+      "format",
+      "identifier",
+      "indexedModelIdentifier",
+      "lastUsedTime",
+      "maxContextLength",
+      "modelKey",
+      "parallel",
+      "paramsString",
+      "path",
+      "publisher",
+      "quantization",
+      "queued",
+      "selectedVariant",
+      "sizeBytes",
+      "status",
+      "trainedForToolUse",
+      "ttlMs",
+      "type",
+      "variants",
+      "vision"
+    ],
+    "status": "idle",
+    "queued": 0
+  },
+  "harnessBuildHash": "da3c8b1ab9af6aa2d4bda1f7e078e4cd0954479a9e800df0060e5fc842cdddf9",
+  "cellBuildHash": "326fb065abccbd94a0402fffceb545933db83be5c6c892174fbf2909c55f4d14",
+  "promptHash": "2019358284a3a0e3d5d5c2074d8c980a642b8496cf30e6d65e0dce6a845fedbb",
+  "schemaHash": "dd29d826ab526c9c0d954eb1d0b05f1bd3fd3bda480f16e2c5f850e179ca662f",
+  "inputHash": "a3752cf219003e3b28a43c3a9ababf60637dcae9d6f0f569242106595b04ed03",
+  "sourcePaths": [
+    "docs/verifications/WO-052/VER-001.md"
+  ],
+  "startedAt": "2026-09-21T14:01:00.647Z",
+  "finishedAt": "2026-09-21T14:01:12.576Z",
+  "actualOperatorInterventions": 0,
+  "boundary": "loopback client; all inputs committed public material; no no-egress claim",
+  "outcome": "typed-failure",
+  "schemaValid": false,
+  "status": "failed",
+  "requiresHuman": null,
+  "oracleAgreement": 0,
+  "latencyMs": 11928.706374999998,
+  "usage": {
+    "inputTokens": 506,
+    "cachedInputTokens": null,
+    "outputTokens": 164,
+    "totalTokens": 670
+  },
+  "tokensPerSecond": null,
+  "reportedOutput": {
+    "taskId": "T1",
+    "status": "blocked",
+    "requiresHuman": true,
+    "result": {
+      "verdict": "unknown",
+      "criteriaMet": "",
+      "criteriaTotal": "",
+      "candidateFindings": "",
+      "repairFindings": "",
+      "advisoryObservations": "",
+      "gatePassedSuites": "",
+      "gateFailedSuites": "",
+      "gateDurationSeconds": "",
+      "newDependencies": "",
+      "summary": "The receipt reader failed to return the verdict row. Required labeled row 'receipt-verdict' is missing. Returning blocked with unknown values for unavailable fields."
+    }
+  },
+  "responseModel": "dotln-local",
+  "finishReason": "stop",
+  "failure": {
+    "code": "invalid-result",
+    "detail": "invalid T1 criteriaMet"
+  }
+}

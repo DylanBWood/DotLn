@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-138",
+  "episodeId": "baseline-codex-T2-r5",
+  "cell": {
+    "episodeId": "baseline-codex-T2-r5",
+    "kind": "baseline",
+    "transport": "codex",
+    "taskId": "T2",
+    "repeat": 5,
+    "variant": "baseline",
+    "injected": false
+  },
+  "model": "gpt-5.6-sol",
+  "harnessVersion": "codex-cli 0.155.1",
+  "modelIdentity": {
+    "source": "requested remote transport model",
+    "model": "gpt-5.6-sol"
+  },
+  "harnessBuildHash": "da3c8b1ab9af6aa2d4bda1f7e078e4cd0954479a9e800df0060e5fc842cdddf9",
+  "cellBuildHash": "df0bdaf600bf4ccd29eefeb8206a497e4155c98c69aacd7438d35eaa2e82cb10",
+  "promptHash": "001e34e9c81b62f2d55cabd15e1b562446346d8dfc5cd401dc2368c3c0ad8b8a",
+  "schemaHash": "e9a19c4ab4141ffd9761e10dae4a7eca7c723dcbf2920a50aa492b3989fe1ee3",
+  "inputHash": "f184114087333e31e79ecfc355d9ad690a2803068eaeb0bd307ac60b96c48954",
+  "sourcePaths": [
+    "packages/skeleton/fixtures/wo119-discovery/repository.json"
+  ],
+  "startedAt": "2026-09-21T14:04:02.684Z",
+  "finishedAt": "2026-09-21T14:04:05.004Z",
+  "actualOperatorInterventions": 0,
+  "outcome": "typed-failure",
+  "schemaValid": false,
+  "status": "failed",
+  "requiresHuman": null,
+  "oracleAgreement": 0,
+  "latencyMs": 2319.4644169999956,
+  "usage": null,
+  "tokensPerSecond": null,
+  "failure": {
+    "code": "transport-failed",
+    "detail": ""
+  },
+  "boundary": "existing codex-cli-exec inspection shape; tools and model-side network disabled"
+}

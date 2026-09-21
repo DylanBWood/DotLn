@@ -1,10 +1,10 @@
-# WO-138 — Local-model role qualification pilot: three representative read-only DotLn tasks with independently checked outputs, run locally and remotely with repeats, decide which inspection roles a local model may fill and at what reliability and cost (version assigned at activation)
+# WO-138 — Local-model role qualification pilot: three representative read-only DotLn tasks with independently checked outputs, run locally and remotely with repeats, decide which inspection roles a local model may fill and at what reliability and cost (v0.38.1)
 
 **Model:** the pinned local artifact from WO-137's packet and one existing
 remote inspection transport; any capable model for the agent. State the
 model and effort actually run (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.
-**Release classification:** patch, evidence-only. An evaluation harness
+**Release classification:** patch. Evidence-only. An evaluation harness
 under `scripts/probes/` with deterministic oracles and an evidence
 directory; nothing under `packages/` beyond a catalog write-back sentence.
 Assigned at activation under the standing opt-out default.
