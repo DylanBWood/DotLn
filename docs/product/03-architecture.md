@@ -2018,6 +2018,64 @@ human/actor deadline rather than every poll. Existing execution timeouts remain
 independent. [WO-121 decisions](../evidence/WO-121/decisions.md) record the
 alternatives and reopening conditions.
 
+**Binding a resident to the active work (WO-148, 2026-09-21).** A store is
+bound by one explicit operator command, `node scripts/resident-bind.mjs WO-NNN
+--surface <path>... --transport <claude-cli-print|codex-cli-exec> --model
+<model> --effort <level> [--base <commit>]`, and not by activation: activation
+runs inside `worktree start` before the worktree is prepared, so a failing bind
+there would fail activation, and the transport, model and effort are the
+operator's choice at launch. The command reads the canonical control state for
+the order in that order's own worktree, locates the worktree through
+`git worktree list` by the branch the order names, takes the base commit as the
+merge base with the `main` the branch was created from, and writes
+`<control lane>/local/resident/WO-NNN-<n>/`. That store holds the Contributor
+build's graph and environment, the mission-only presence policy above and one
+`mission-check` actor whose `MissionSource` names that worktree, the order's
+authority file as its contract, its decisions file when one exists, the vision
+document and exactly the surfaces typed on the command line. The store's
+environment declares the `actor.cli-worker` capability, because the compiled
+phase is otherwise the NoOp named above and the cadence would never dispatch;
+the saved build still declares none.
+
+Nothing there is derived. Surfaces are hand-declared until WO-124 derives them,
+and a bind without one refuses, because the out-of-surface rule is only ever as
+good as the declaration. A store follows one binding of one order:
+configuration is immutable within a store, so a rebind after a phase, base or
+worktree change writes a new store and leaves the old one byte-identical rather
+than editing it. Prune eligibility of retained bound stores is not decided
+here. One store per bound order; the per-store lock already lets several
+residents coexist and the mission-only policy has no discretionary work phase,
+so whether absence work serializes across in-flight orders remains WO-100 and
+WO-111's question.
+
+`node scripts/resident-bind.mjs --check <store>` compares the binding record
+written beside the store — the order's phase, its worktree, the base commit and
+the contract bytes the capsule pinned — with canonical state, and compares the
+store's own declared source field by field with that record: the worktree root,
+the contract, the decisions window and its limit, the base commit, the declared
+surfaces, the vision document and its theses, with arrays compared element by
+element and a field the store declares and the record does not named as well.
+The store must also still decode as a configuration the runtime accepts, since a
+launch line is an instruction to run it. Each of those fields selects part of
+the subject the resident re-reads at every dispatch, so a check that passed
+while one of them had been retargeted would have proved the wrong thing. Every
+mismatch is named, the check exits non-zero and a stale binding is printed no
+launch line. A retained store may be moved: a successful check prints its
+launch, presence, status, export and recheck lines for the directory that was
+checked, keeping the path it was bound at as provenance, because the operator
+acts on what those lines say. A resident already running keeps judging the
+subject it was declared with, which is the recorded limit: refusing inside the
+resident is a resident-host change this order does not make. Session presence
+stays opt-in and manual, as above; the command prints the
+`export DOTLN_RESIDENT_STORE=<store>` line and the operator's stage session
+exports it, and a missing binding stays inert. The store and its binding record
+carry physical paths and live only in an ignored lane: because a configured
+control root moves that lane without carrying an ignore rule with it, bind asks
+Git whether the resolved lane is ignored and refuses by name before writing
+either file rather than trusting the configuration.
+[WO-148 decisions](../evidence/WO-148/decisions.md) record the alternatives and
+reopening conditions.
+
 ### Candidate — progressive absence authority and return readiness
 
 The author's candidate profile keeps foreground intent first while present and

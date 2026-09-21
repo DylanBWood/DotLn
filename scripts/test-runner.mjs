@@ -278,6 +278,8 @@ const protection = {
   "work-orders-fixtures":
     "work-order lookup and dependencies identify executable work",
   "adjacent-queue": "operator steering controls the next bounded repair",
+  "resident-bind":
+    "binding a resident to the active order reads canonical state, names every stale subject before a launch line, and keeps physical paths in the ignored lane",
   "codex-continuation":
     "Codex restores only its owned unfinished task after compaction, continues once and yields to recovery controls",
   "authority-grants": "workers cannot grant themselves additional authority",
@@ -449,6 +451,7 @@ export const suites = [
     }),
   ),
   nodeTests("adjacent-queue", "scripts/test-adjacent-queue.mjs"),
+  nodeTests("resident-bind", "scripts/test-resident-bind.mjs"),
   nodeTests("configuration-root", "scripts/test-configuration-root.mjs", {
     protects:
       "an absent dotln.config.json reproduces today's layout, a declared launchpad moves every document root and root derivation, and a malformed configuration refuses by path",
