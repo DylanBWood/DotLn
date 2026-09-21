@@ -20,6 +20,8 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-069 collision retiming (2026-09-21):** unpublished target `v0.37.1` is superseded by `v0.37.2` under the existing patch classification because the observed release baseline is `v0.37.1`. Scope, acceptance, component versions, and published tags are unchanged by this retiming.
+
 **WO-079 activation completion (2026-09-20):** Assigned `v0.37.1` under
 the existing patch classification above the observed `v0.37.0` release.
 The worktree integration helper and reviewer instruction are compatible

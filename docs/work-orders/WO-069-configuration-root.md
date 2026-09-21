@@ -1,4 +1,4 @@
-# WO-069 — Configuration root: every control-plane script resolves its document roots and repository root through one `dotln.config.json` loader whose absence reproduces today's layout byte for byte (version assigned at activation)
+# WO-069 — Configuration root: every control-plane script resolves its document roots and repository root through one `dotln.config.json` loader whose absence reproduces today's layout byte for byte (v0.37.2)
 
 **Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
 
