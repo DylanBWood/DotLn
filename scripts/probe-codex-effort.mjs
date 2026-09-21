@@ -1,3 +1,4 @@
+import { findLaunchpad } from "./lib/config.mjs";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import {
@@ -9,8 +10,8 @@ import {
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
-import { dirname, join, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+import { join, resolve } from "node:path";
+
 import { canonicalWorkerArgs } from "../packages/skeleton/dist/src/worker-transport.js";
 import {
   LiveReactorDriver,
@@ -27,9 +28,7 @@ import {
 
 // Live, operator-approved discovery only. Raw CLI output stays in memory;
 // positive projections exclude credentials, provider ids and private paths.
-const root = realpathSync(
-  resolve(dirname(fileURLToPath(import.meta.url)), ".."),
-);
+const root = realpathSync(findLaunchpad());
 const [flag, output, ...extra] = process.argv.slice(2);
 assert.equal(
   flag,

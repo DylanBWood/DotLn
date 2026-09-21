@@ -1,3 +1,4 @@
+import { TOOL_ROOT, docRelative, findLaunchpad } from "./config.mjs";
 import {
   cpSync,
   existsSync,
@@ -13,7 +14,7 @@ import {
   writeFileSync,
 } from "node:fs";
 import { dirname, join, relative, resolve, sep } from "node:path";
-import { fileURLToPath } from "node:url";
+
 import { createHash } from "node:crypto";
 import { execFileSync, spawnSync } from "node:child_process";
 import {
@@ -82,8 +83,7 @@ export function harnessInstallation(options = {}) {
   const program =
     options.program ?? contributorConfiguredProgram(options.supports);
   const feedback = options.feedback ?? personalFeedback();
-  const sourceRoot =
-    options.runtimeRoot ?? fileURLToPath(new URL("../../", import.meta.url));
+  const sourceRoot = options.runtimeRoot ?? TOOL_ROOT;
   const runtimeFiles = [
     // Admission compares this module's compiler version. A compiler-only
     // release must install a fresh snapshot even when hook handlers are equal.
@@ -326,9 +326,7 @@ export function preserveHarnessRuntime(
         );
     return;
   }
-  const source =
-    installation.sourceRoot ??
-    fileURLToPath(new URL("../../", import.meta.url));
+  const source = installation.sourceRoot ?? TOOL_ROOT;
   const staging = `${destination}.preparing-${process.pid}`;
   mkdirSync(join(staging, "node_modules/@dotln"), { recursive: true });
   for (const name of readdirSync(join(source, "packages"))) {
@@ -472,9 +470,7 @@ function targetContext(target, options = {}) {
   const root = realpathSync(target);
   if (realpathSync(targetGit(root, "rev-parse", "--show-toplevel")) !== root)
     throw new Error("target requires the physical Git worktree root");
-  const launchpad = realpathSync(
-    options.runtimeRoot ?? fileURLToPath(new URL("../../", import.meta.url)),
-  );
+  const launchpad = realpathSync(options.runtimeRoot ?? findLaunchpad());
   if (
     root === launchpad ||
     root.startsWith(`${launchpad}${sep}`) ||
@@ -484,7 +480,7 @@ function targetContext(target, options = {}) {
   const id = targetDigest(root);
   const lane = safeLocalDirectory(
     launchpad,
-    `docs/control/local/harness/targets/${id}`,
+    docRelative(launchpad, "control", `local/harness/targets/${id}`),
   );
   const receiptPath = join(lane, "installation.json");
   if (
@@ -511,7 +507,7 @@ function targetContext(target, options = {}) {
   const excludeKey = targetDigest(exclude);
   const registryDir = safeLocalDirectory(
     launchpad,
-    "docs/control/local/harness/excludes",
+    docRelative(launchpad, "control", "local/harness/excludes"),
   );
   const registryPath = join(registryDir, `${excludeKey}.json`);
   if (

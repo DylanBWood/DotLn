@@ -1,7 +1,8 @@
 #!/usr/bin/env node
+import { docRelative, findLaunchpad } from "./lib/config.mjs";
 import assert from "node:assert/strict";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { fileURLToPath } from "node:url";
+
 import { join } from "node:path";
 import {
   evidenceArgs,
@@ -23,7 +24,7 @@ import {
 } from "../packages/skeleton/dist/src/reactor.js";
 import { projectAcceptanceEvidenceMatrices } from "../packages/skeleton/dist/src/verification.js";
 
-const root = fileURLToPath(new URL("../", import.meta.url));
+const root = findLaunchpad();
 const { args, selection } = evidenceArgs(
   root,
   "feedback",
@@ -91,7 +92,8 @@ function validateSelfhost(auditLog, verifierLog) {
     (event) => event.type === "VerificationOpened",
   )?.payload;
   const report = opening?.subject.files.find(
-    (file) => file.path === "docs/evidence/WO-011/feedback.json",
+    (file) =>
+      file.path === docRelative(root, "evidence", "WO-011/feedback.json"),
   );
   assert.equal(
     report?.contents,
@@ -140,7 +142,7 @@ if (mode === "--record-selfhost") {
           "selfhost-audit.jsonl",
           "selfhost-verification.jsonl",
         ].map((name) => `${selection.directory}/${name}`),
-        evidenceSources.feedback,
+        evidenceSources(root).feedback,
       );
     if (preserved) {
       // The old compiler/package identities remain in the historical live logs.

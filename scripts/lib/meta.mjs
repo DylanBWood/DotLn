@@ -1,3 +1,4 @@
+import { docPath, docRelative } from "./config.mjs";
 import { createHash } from "node:crypto";
 import {
   existsSync,
@@ -145,7 +146,7 @@ function checkExperiment(entry, path) {
 }
 
 export function readDecisions(root, { workOrder } = {}) {
-  const directory = join(root, "docs/evidence");
+  const directory = docPath(root, "evidence");
   const decisions = [];
   if (!existsSync(directory)) return decisions;
   for (const name of readdirSync(directory)
@@ -153,7 +154,7 @@ export function readDecisions(root, { workOrder } = {}) {
     .filter(
       (name) => /^WO-\d{3}$/.test(name) && (!workOrder || name === workOrder),
     )) {
-    const path = `docs/evidence/${name}/decisions.md`;
+    const path = docRelative(root, "evidence", `${name}/decisions.md`);
     if (!existsSync(join(root, path))) continue;
     const source = readFileSync(join(root, path), "utf8");
     const headings = markdownHeadings(source);
@@ -256,7 +257,7 @@ export function renderDecisionsIndex(decisions) {
 }
 export function writeDecisionsIndex(root, { check = false } = {}) {
   const decisions = readDecisions(root);
-  const path = join(root, "docs/lineage/decisions-index.md");
+  const path = docPath(root, "lineage", "decisions-index.md");
   const expected = renderDecisionsIndex(decisions);
   if (check) {
     for (const row of decisions) {
@@ -343,18 +344,18 @@ export function codeDiffBytes(root, revision) {
 }
 
 function hookObservations(root, workOrder) {
-  const directory = join(root, "docs/control/local/harness");
+  const directory = docPath(root, "control", "local/harness");
   if (!existsSync(directory)) return [];
   return readdirSync(directory)
     .filter((name) => /^[a-f0-9]{64}\.jsonl$/.test(name))
     .flatMap((name) => {
       const state = json(
         root,
-        `docs/control/local/harness/${name.slice(0, -1)}`,
+        docRelative(root, "control", `local/harness/${name.slice(0, -1)}`),
         {},
       );
       let role;
-      return jsonl(root, `docs/control/local/harness/${name}`)
+      return jsonl(root, docRelative(root, "control", `local/harness/${name}`))
         .filter(
           (row) =>
             (Object.hasOwn(row, "workOrder")
@@ -374,9 +375,10 @@ function hookObservations(root, workOrder) {
     });
 }
 function usageRows(root, workOrder) {
-  const rows = jsonl(root, "docs/control/local/process/usage.jsonl").filter(
-    (row) => row.workOrder === workOrder,
-  );
+  const rows = jsonl(
+    root,
+    docRelative(root, "control", "local/process/usage.jsonl"),
+  ).filter((row) => row.workOrder === workOrder);
   const latest = new Map();
   const superseded = new Set(rows.flatMap((row) => row.supersedes ?? []));
   for (const row of rows.filter(
@@ -589,11 +591,12 @@ export async function collectMeta(
     ...[...control.orders].filter(([, row]) => row.state.phase !== "closed"),
   ];
   const coldStart = measureColdStarts(root, previousEdition);
+  const sequencePath = docRelative(root, "planning", "sequence.md");
   const sizePaths = [
-    "docs/planning/sequence.md",
-    "docs/planning/work-order-map.md",
-    "docs/work-orders/README.md",
-    "docs/lineage/idea-ledger.md",
+    sequencePath,
+    docRelative(root, "planning", "work-order-map.md"),
+    docRelative(root, "workOrders", "README.md"),
+    docRelative(root, "lineage", "idea-ledger.md"),
     "CLAUDE.md",
     ...coldStart.profiles.map((row) => row.path),
   ];
@@ -643,15 +646,18 @@ export async function collectMeta(
       elapsedMs: attempt.elapsedMs === "unknown" ? null : attempt.elapsedMs,
     }));
     const snapshot =
-      json(root, `docs/evidence/${workOrder}/meta.json`) ??
-      json(root, `docs/evidence/${workOrder}/meta-baseline.json`);
+      json(root, docRelative(root, "evidence", `${workOrder}/meta.json`)) ??
+      json(
+        root,
+        docRelative(root, "evidence", `${workOrder}/meta-baseline.json`),
+      );
     const prior = snapshot?.orders?.find(
       (entry) => entry.workOrder === workOrder,
     );
     const active = row.state.phase !== "closed";
     const contextEdition = json(
       root,
-      `docs/evidence/${workOrder}/harness-context.json`,
+      docRelative(root, "evidence", `${workOrder}/harness-context.json`),
     );
     const historicCold = contextEdition?.profiles?.map((profile) => ({
       role: profile.role,
@@ -828,7 +834,7 @@ export async function collectMeta(
       ...authorshipCost(hook),
       ...hookCost(hook),
       prBodyBytes:
-        bytes(root, `docs/final-reviews/${workOrder}/PR.md`) ??
+        bytes(root, docRelative(root, "finalReviews", `${workOrder}/PR.md`)) ??
         prior?.metrics.prBodyBytes ??
         null,
     };
@@ -938,11 +944,7 @@ export async function collectMeta(
     verdict: row.verdict,
   }));
   for (const [metric, value, ceiling] of [
-    [
-      "sequenceBytes",
-      sizes["docs/planning/sequence.md"],
-      budgets?.limits.sequenceBytes,
-    ],
+    ["sequenceBytes", sizes[sequencePath], budgets?.limits.sequenceBytes],
   ])
     budgetRows.push({
       metric,
@@ -1044,8 +1046,11 @@ export async function collectMeta(
           .trim() ?? "";
       const current = reconcileCost(workOrder, cost, checks, now);
       const snapshot =
-        json(root, `docs/evidence/${workOrder}/meta.json`) ??
-        json(root, `docs/evidence/${workOrder}/meta-baseline.json`);
+        json(root, docRelative(root, "evidence", `${workOrder}/meta.json`)) ??
+        json(
+          root,
+          docRelative(root, "evidence", `${workOrder}/meta-baseline.json`),
+        );
       const prior = snapshot?.orders?.find(
         (entry) => entry.workOrder === workOrder,
       );
@@ -1053,7 +1058,11 @@ export async function collectMeta(
         ...current,
         historicalMetrics: prior
           ? {
-              source: `docs/evidence/${workOrder}/meta${existsSync(join(root, `docs/evidence/${workOrder}/meta.json`)) ? "" : "-baseline"}.json`,
+              source: docRelative(
+                root,
+                "evidence",
+                `${workOrder}/meta${existsSync(docPath(root, "evidence", `${workOrder}/meta.json`)) ? "" : "-baseline"}.json`,
+              ),
               cutoff: snapshot.observedAt,
               metrics: prior.metrics,
             }

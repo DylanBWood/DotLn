@@ -1,19 +1,20 @@
 #!/usr/bin/env node
 
+import { docPath, docRelative, findLaunchpad } from "./lib/config.mjs";
 import { createHash } from "node:crypto";
 import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+
 import { runGit } from "./lib/git.mjs";
 
-const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const productDirectory = path.join(root, "docs/product");
-const indexPath = path.join(root, "docs/publication/audience-status-index.md");
-const baseOutlinePath = path.join(root, "docs/publication/base-outline.md");
-const dualVoicePath = path.join(root, "docs/publication/dual-voice-sample.md");
+const root = findLaunchpad();
+const productDirectory = docPath(root, "product");
+const indexPath = docPath(root, "publication", "audience-status-index.md");
+const baseOutlinePath = docPath(root, "publication", "base-outline.md");
+const dualVoicePath = docPath(root, "publication", "dual-voice-sample.md");
 const editionPaths = [
-  path.join(root, "docs/publication/everyday-ai-user-toc.md"),
-  path.join(root, "docs/publication/software-engineer-toc.md"),
+  docPath(root, "publication", "everyday-ai-user-toc.md"),
+  docPath(root, "publication", "software-engineer-toc.md"),
 ];
 const statuses = new Set([
   "vision",
@@ -364,9 +365,13 @@ function sourceAtRevision(revision, file) {
   if (!revisionCache.has(key)) {
     revisionCache.set(
       key,
-      runGit(root, ["show", `${revision}:docs/product/${file}`], {
-        trim: false,
-      }),
+      runGit(
+        root,
+        ["show", `${revision}:${docRelative(root, "product", file)}`],
+        {
+          trim: false,
+        },
+      ),
     );
   }
   return revisionCache.get(key);

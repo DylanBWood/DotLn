@@ -1,3 +1,4 @@
+import { defaultDocRelative, docRelative, rootPattern } from "./config.mjs";
 import {
   appendFileSync,
   existsSync,
@@ -14,7 +15,7 @@ import {
   committedReader,
   hashParts,
   carriedOrderHashMatches,
-  PLAN_LEDGER,
+  planPaths,
   planningPasses,
   planCostDeclaration,
   sha256,
@@ -30,8 +31,16 @@ import {
 import { readDecisions } from "./meta.mjs";
 import { checkSequenceTopology, readIndex } from "../work-orders.mjs";
 
-export const RECEIPTS = "docs/planning/refutations";
-export const OVERRIDES = "docs/control/plan-refutations.jsonl";
+// Default-layout names for peers and fixtures; the reader and writer below
+// resolve the same evidence under a launchpad's configured roots.
+export const RECEIPTS = defaultDocRelative("refutations");
+export const OVERRIDES = defaultDocRelative(
+  "control",
+  "plan-refutations.jsonl",
+);
+const receiptsRoot = (root) => docRelative(root, "refutations");
+const overridesPath = (root) =>
+  docRelative(root, "control", "plan-refutations.jsonl");
 const receiptSchema = "plan-refutation-receipt-v1";
 const validReceiptId = (value) =>
   typeof value === "string" &&
@@ -623,22 +632,26 @@ export async function readReceipts(root) {
   const committed = committedReader(root);
   for (const path of committed.paths.filter(
     (path) =>
-      path.startsWith(`${RECEIPTS}/`) &&
+      path.startsWith(`${receiptsRoot(root)}/`) &&
       validReceiptId(
-        path.slice(RECEIPTS.length + 1).replace(/\.(?:md|json)$/u, ""),
+        path
+          .slice(receiptsRoot(root).length + 1)
+          .replace(/\.(?:md|json)$/u, ""),
       ) &&
-      !manual.test(path.slice(RECEIPTS.length + 1).replace(/\.md$/u, ".json")),
+      !manual.test(
+        path.slice(receiptsRoot(root).length + 1).replace(/\.md$/u, ".json"),
+      ),
   ))
     read(root, path); // Deleting committed evidence cannot reset the attempt count.
-  if (!existsSync(join(root, RECEIPTS))) return [];
+  if (!existsSync(join(root, receiptsRoot(root)))) return [];
   const receipts = [];
-  for (const name of readdirSync(join(root, RECEIPTS)).sort()) {
+  for (const name of readdirSync(join(root, receiptsRoot(root))).sort()) {
     if (!name.endsWith(".json") || manual.test(name)) continue;
-    const path = `${RECEIPTS}/${name}`;
+    const path = `${receiptsRoot(root)}/${name}`;
     const source = read(root, path);
     const receipt = await validateReceipt(root, json(source, path));
     check(name === `${receipt.receiptId}.json`, "receipt filename mismatch");
-    const mdPath = `${RECEIPTS}/${receipt.receiptId}.md`;
+    const mdPath = `${receiptsRoot(root)}/${receipt.receiptId}.md`;
     const markdown = read(root, mdPath);
     check(
       markdown === renderPlanReceipt(receipt),
@@ -677,8 +690,8 @@ const ensureDirectory = (root, path) => {
   }
 };
 const locked = async (root, run) => {
-  ensureDirectory(root, RECEIPTS);
-  const lock = join(root, RECEIPTS, ".writer-lock");
+  ensureDirectory(root, receiptsRoot(root));
+  const lock = join(root, receiptsRoot(root), ".writer-lock");
   try {
     mkdirSync(lock);
   } catch {
@@ -761,15 +774,15 @@ export async function writePlanReceipt(
     ]);
     for (const ext of ["json", "md"])
       check(
-        !existsSync(join(root, RECEIPTS, `${receiptId}.${ext}`)),
+        !existsSync(join(root, receiptsRoot(root), `${receiptId}.${ext}`)),
         "receipt address already exists",
       );
     writeFileSync(
-      join(root, RECEIPTS, `${receiptId}.json`),
+      join(root, receiptsRoot(root), `${receiptId}.json`),
       `${JSON.stringify(receipt, null, 2)}\n`,
       { flag: "wx", mode: 0o644 },
     );
-    writeFileSync(join(root, RECEIPTS, `${receiptId}.md`), md, {
+    writeFileSync(join(root, receiptsRoot(root), `${receiptId}.md`), md, {
       flag: "wx",
       mode: 0o644,
     });
@@ -807,21 +820,21 @@ const actorValid = (actor) => {
 };
 export function readOverrides(root) {
   const committed = committedReader(root);
-  if (!existsSync(join(root, OVERRIDES))) {
+  if (!existsSync(join(root, overridesPath(root)))) {
     check(
-      !committed.paths.includes(OVERRIDES),
+      !committed.paths.includes(overridesPath(root)),
       "committed planning control log is missing",
     );
     return [];
   }
-  const source = read(root, OVERRIDES);
+  const source = read(root, overridesPath(root));
   check(
     source === "" || source.endsWith("\n"),
     "partial override control event",
   );
-  if (committed.paths.includes(OVERRIDES))
+  if (committed.paths.includes(overridesPath(root)))
     check(
-      source.startsWith(committed.read(OVERRIDES)),
+      source.startsWith(committed.read(overridesPath(root))),
       "planning control log is not append-only",
     );
   return source
@@ -963,9 +976,10 @@ export async function overridePlanHold(
     );
     check(
       typeof capture === "string" &&
-        /^docs\/intake\/(?:[a-zA-Z0-9._-]+\/)*[a-zA-Z0-9._-]+$/u.test(
-          capture,
-        ) &&
+        new RegExp(
+          `^${rootPattern(root, "intake")}/(?:[a-zA-Z0-9._-]+/)*[a-zA-Z0-9._-]+$`,
+          "u",
+        ).test(capture) &&
         !capture.split("/").includes(".."),
       "override requires an ignored intake capture",
     );
@@ -1042,10 +1056,14 @@ export async function overridePlanHold(
     checkLocalTerms(root, [
       { name: "override-event", text: JSON.stringify(event) },
     ]);
-    ensureDirectory(root, "docs/control");
-    appendFileSync(join(root, OVERRIDES), `${JSON.stringify(event)}\n`, {
-      mode: 0o644,
-    });
+    ensureDirectory(root, docRelative(root, "control"));
+    appendFileSync(
+      join(root, overridesPath(root)),
+      `${JSON.stringify(event)}\n`,
+      {
+        mode: 0o644,
+      },
+    );
     return event;
   });
 }
@@ -1093,17 +1111,21 @@ export async function disposePlanHold(
     checkLocalTerms(root, [
       { name: "disposition-event", text: JSON.stringify(event) },
     ]);
-    ensureDirectory(root, "docs/control");
-    appendFileSync(join(root, OVERRIDES), `${JSON.stringify(event)}\n`, {
-      mode: 0o644,
-    });
+    ensureDirectory(root, docRelative(root, "control"));
+    appendFileSync(
+      join(root, overridesPath(root)),
+      `${JSON.stringify(event)}\n`,
+      {
+        mode: 0o644,
+      },
+    );
     return event;
   });
 }
 
 const amendmentDecision = (root, decisionId) => {
   const workOrderId = decisionId.slice(0, 6);
-  const path = `docs/evidence/${workOrderId}/decisions.md`;
+  const path = docRelative(root, "evidence", `${workOrderId}/decisions.md`);
   check(
     containedRegularFile(join(root, path), root),
     "execution amendment decision must be a contained regular file",
@@ -1205,10 +1227,14 @@ export async function amendPlanOrder(
     checkLocalTerms(root, [
       { name: "execution-amendment-event", text: JSON.stringify(event) },
     ]);
-    ensureDirectory(root, "docs/control");
-    appendFileSync(join(root, OVERRIDES), `${JSON.stringify(event)}\n`, {
-      mode: 0o644,
-    });
+    ensureDirectory(root, docRelative(root, "control"));
+    appendFileSync(
+      join(root, overridesPath(root)),
+      `${JSON.stringify(event)}\n`,
+      {
+        mode: 0o644,
+      },
+    );
     return event;
   });
 }
@@ -1265,16 +1291,15 @@ export function planningPassScope(root) {
     .find(Boolean);
   if (!introduction) return { passes: [], enforcement: null };
   const [revision, at] = introduction.split(" ");
+  const { ledger } = planPaths(root);
   let old = [];
   try {
-    old = planningPasses(
-      committedReader(root, `${revision}^`).read(PLAN_LEDGER),
-    );
+    old = planningPasses(committedReader(root, `${revision}^`).read(ledger));
   } catch {
     /* fixture root commit */
   }
   const exempt = new Set(old.map(({ heading }) => heading));
-  const passes = planningPasses(read(root, PLAN_LEDGER)).filter(
+  const passes = planningPasses(read(root, ledger)).filter(
     ({ date, heading }) => date >= at.slice(0, 10) && !exempt.has(heading),
   );
   return { passes, enforcement: at.slice(0, 10) };

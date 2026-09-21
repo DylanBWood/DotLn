@@ -1,3 +1,4 @@
+import { docPath, docRelative } from "./config.mjs";
 import {
   existsSync,
   lstatSync,
@@ -14,13 +15,13 @@ import { readJsonFile } from "./paths.mjs";
 export const agentConstellation = async (root, requestFile, logFile) => {
   const path = resolve(root, logFile);
   if (
-    !path.startsWith(`${join(root, "docs/observations")}${sep}`) ||
+    !path.startsWith(`${docPath(root, "observations")}${sep}`) ||
     !path.endsWith(".jsonl") ||
     canonicalDestination(path) !== path ||
     (existsSync(path) && !lstatSync(path).isFile())
   )
     throw new Error(
-      "sweep log must be a regular JSONL file under docs/observations",
+      `sweep log must be a regular JSONL file under ${docRelative(root, "observations")}`,
     );
   let runtime;
   try {

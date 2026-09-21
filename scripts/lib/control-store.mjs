@@ -1,15 +1,18 @@
 import { existsSync, lstatSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import {
-  CONTROL_ORDERS_PATH,
-  LEGACY_CONTROL_PATH,
+  DEFAULT_CONTROL_PATHS,
+  controlPaths,
   foldSegments,
   parseControlEvents,
 } from "./control.mjs";
 import { readGitObjects, runGit } from "./git.mjs";
 import { containedRegularFile, disposableBasename } from "./paths.mjs";
 
-export const controlFromSources = (sources) => {
+export const controlFromSources = (
+  sources,
+  storage = DEFAULT_CONTROL_PATHS,
+) => {
   const eventSegments = new Map();
   for (const [path, source] of sources) {
     try {
@@ -18,24 +21,24 @@ export const controlFromSources = (sources) => {
       throw new Error(`${path}: ${error.message}`);
     }
   }
-  const legacy = eventSegments.get(LEGACY_CONTROL_PATH) ?? [];
+  const legacy = eventSegments.get(storage.legacy) ?? [];
   const segments = new Map(eventSegments);
-  segments.delete(LEGACY_CONTROL_PATH);
-  return { sources, eventSegments, ...foldSegments(legacy, segments) };
+  segments.delete(storage.legacy);
+  return {
+    sources,
+    eventSegments,
+    ...foldSegments(legacy, segments, {
+      legacyPath: storage.legacy,
+      ordersPath: storage.orders,
+    }),
+  };
 };
 
 const committedControlBlobs = (root, revision) => {
+  const storage = controlPaths(root);
   const entries = runGit(
     root,
-    [
-      "ls-tree",
-      "-r",
-      "-z",
-      revision,
-      "--",
-      LEGACY_CONTROL_PATH,
-      CONTROL_ORDERS_PATH,
-    ],
+    ["ls-tree", "-r", "-z", revision, "--", storage.legacy, storage.orders],
     { trim: false },
   )
     .split("\0")
@@ -54,18 +57,10 @@ const committedControlBlobs = (root, revision) => {
 };
 
 // Keep the legacy segment first and every other segment in code-unit order.
-const sortedSources = (sources) =>
+const sortedSources = (sources, legacyPath) =>
   new Map(
     [...sources].sort(([a], [b]) =>
-      a === LEGACY_CONTROL_PATH
-        ? -1
-        : b === LEGACY_CONTROL_PATH
-          ? 1
-          : a < b
-            ? -1
-            : a > b
-              ? 1
-              : 0,
+      a === legacyPath ? -1 : b === legacyPath ? 1 : a < b ? -1 : a > b ? 1 : 0,
     ),
   );
 
@@ -80,6 +75,7 @@ export const readControls = (root, revisions) => {
     views.flatMap(([, blobs]) => blobs.map(({ object }) => object)),
     "blob",
   );
+  const storage = controlPaths(root);
   return new Map(
     views.map(([revision, blobs]) => [
       revision,
@@ -91,7 +87,9 @@ export const readControls = (root, revisions) => {
               objects.get(object).toString("utf8"),
             ]),
           ),
+          storage.legacy,
         ),
+        storage,
       ),
     ]),
   );
@@ -100,6 +98,7 @@ export const readControls = (root, revisions) => {
 // The same reader owns workspace, commit, and tag views. Git reads use blobs,
 // never a working-tree projection or a symlink's target.
 export const readControl = (root, revision) => {
+  const storage = controlPaths(root);
   const sources = new Map();
   if (revision) {
     return readControls(root, [revision]).get(revision);
@@ -111,22 +110,22 @@ export const readControl = (root, revision) => {
         );
       sources.set(path, readFileSync(join(root, path), "utf8"));
     };
-    if (existsSync(join(root, LEGACY_CONTROL_PATH))) read(LEGACY_CONTROL_PATH);
-    const directory = join(root, CONTROL_ORDERS_PATH);
+    if (existsSync(join(root, storage.legacy))) read(storage.legacy);
+    const directory = join(root, storage.orders);
     if (existsSync(directory)) {
       if (
         !lstatSync(directory).isDirectory() ||
         lstatSync(directory).isSymbolicLink()
       )
         throw new Error(
-          `${CONTROL_ORDERS_PATH}: expected a regular control directory`,
+          `${storage.orders}: expected a regular control directory`,
         );
       for (const name of readdirSync(directory).sort())
-        if (!disposableBasename(name)) read(`${CONTROL_ORDERS_PATH}/${name}`);
+        if (!disposableBasename(name)) read(`${storage.orders}/${name}`);
     }
   }
   // Legacy first; lexicographic segment order is display order, not chronology.
-  return controlFromSources(sortedSources(sources));
+  return controlFromSources(sortedSources(sources, storage.legacy), storage);
 };
 
 export const eventsForOrder = (control, id) =>
@@ -180,6 +179,7 @@ export const latestClosedOrder = (
       .sort(([, a], [, b]) => a.closeOrdinal - b.closeOrdinal)
       .at(-1)?.[0];
   try {
+    const storage = controlPaths(root);
     const paths = runGit(root, [
       "log",
       "--first-parent",
@@ -187,8 +187,8 @@ export const latestClosedOrder = (
       "--name-only",
       revision,
       "--",
-      LEGACY_CONTROL_PATH,
-      CONTROL_ORDERS_PATH,
+      storage.legacy,
+      storage.orders,
     ]);
     for (const path of paths.split("\n")) {
       const id = atPath(path);

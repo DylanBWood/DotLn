@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { docRelative, findLaunchpad } from "./lib/config.mjs";
 import { readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
@@ -22,9 +23,6 @@ const provenance = [
   "operator-directed",
   "operator-authorized",
 ];
-const ledgerPath = "docs/lineage/idea-ledger.md";
-const indexPath = "docs/lineage/README.md";
-
 export function inspectLedger(source) {
   const lines = source.split("\n");
   const sections = [];
@@ -197,16 +195,15 @@ export function renderIndex(ledger) {
   ].join("\n");
 }
 
-export function main(
-  args = process.argv.slice(2),
-  root = resolve(import.meta.dirname, ".."),
-) {
+export function main(args = process.argv.slice(2), root = findLaunchpad()) {
   if (
     args[0] !== "index" ||
     args.length > 2 ||
     (args[1] && args[1] !== "--check")
   )
     throw new Error("usage: lineage index [--check]");
+  const ledgerPath = docRelative(root, "lineage", "idea-ledger.md");
+  const indexPath = docRelative(root, "lineage", "README.md");
   const ledger = inspectLedger(readFileSync(resolve(root, ledgerPath), "utf8"));
   if (ledger.errors.length) throw new Error(ledger.errors.join("\n"));
   const rendered = renderIndex(ledger);

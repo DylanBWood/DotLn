@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { docRelative, findLaunchpad } from "./lib/config.mjs";
 import { isMainModule } from "./lib/paths.mjs";
 import { createHash } from "node:crypto";
 import { observedSpawnSync as spawnSync } from "../packages/skeleton/src/gate-deadlines.mjs";
@@ -13,8 +14,8 @@ import {
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
-import { dirname, join, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+import { dirname, join } from "node:path";
+
 import { runGit, runGitPathList } from "./lib/git.mjs";
 import { containedRegularFile } from "./lib/paths.mjs";
 
@@ -214,8 +215,9 @@ export const licenseSurfaceRules = (root, revision) => {
       rules.push(rule(path, error.message, `sha256:${hash}`, false));
     }
   }
+  const legalPath = docRelative(root, "docs", "LEGAL.md");
   try {
-    const legal = sourceFile(root, "docs/LEGAL.md", revision).toString("utf8");
+    const legal = sourceFile(root, legalPath, revision).toString("utf8");
     for (const [path, hash] of Object.entries(licenseHashes)) {
       const pins = [
         ...legal.matchAll(
@@ -224,7 +226,7 @@ export const licenseSurfaceRules = (root, revision) => {
       ];
       rules.push(
         rule(
-          `docs/LEGAL.md ${path} pin`,
+          `${legalPath} ${path} pin`,
           pins.map((pin) => pin[1]).join(", ") || "missing",
           hash,
         ),
@@ -233,7 +235,7 @@ export const licenseSurfaceRules = (root, revision) => {
   } catch (error) {
     rules.push(
       rule(
-        "docs/LEGAL.md pins",
+        `${legalPath} pins`,
         error.message,
         "the three decided SHA-256 pins",
         false,
@@ -258,7 +260,7 @@ if (isMainModule(import.meta.url)) {
     const args = process.argv.slice(2);
     if (args.length > 1 || (args.length === 1 && args[0] !== "--committed"))
       throw new Error("usage: license-surfaces [--committed]");
-    const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+    const root = findLaunchpad();
     const rules = licenseSurfaceRules(root, args.length ? "HEAD" : undefined);
     process.stdout.write(`${rules.map(({ line }) => line).join("\n")}\n`);
     if (rules.some(({ pass }) => !pass)) process.exitCode = 1;

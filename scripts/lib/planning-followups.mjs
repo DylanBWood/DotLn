@@ -1,3 +1,4 @@
+import { defaultDocRelative, docRelative, rootPattern } from "./config.mjs";
 import {
   existsSync,
   lstatSync,
@@ -15,7 +16,11 @@ import { readDecisions } from "./meta.mjs";
 import { readAdjacentQueue } from "./adjacent-queue.mjs";
 import { checkLocalTerms } from "./terms.mjs";
 
-export const FOLLOWUPS = "docs/planning/followups.json";
+// The default-layout name peers and fixtures use; `followupsPath` resolves the
+// same record under a launchpad's configured planning root.
+export const FOLLOWUPS = defaultDocRelative("planning", "followups.json");
+export const followupsPath = (root) =>
+  docRelative(root, "planning", "followups.json");
 const closed = new Set(["allocated", "declined", "duplicate", "settled"]);
 const statuses = new Set(["open", "deferred", ...closed]);
 const encode = (value) => JSON.stringify(value, null, 2) + "\n";
@@ -110,8 +115,8 @@ export function collectFollowupSources(root) {
     });
   };
   const files = [
-    ...markdownFiles(root, "docs/product"),
-    ...markdownFiles(root, "docs/planning"),
+    ...markdownFiles(root, docRelative(root, "product")),
+    ...markdownFiles(root, docRelative(root, "planning")),
   ];
   for (const path of files) {
     const body = readFileSync(safePath(root, path), "utf8");
@@ -167,12 +172,12 @@ export function collectFollowupSources(root) {
       add("candidate", path, locator, label, section);
     }
   }
-  const evidence = safePath(root, "docs/evidence");
+  const evidence = safePath(root, docRelative(root, "evidence"));
   if (existsSync(evidence))
     for (const name of readdirSync(evidence).filter((name) =>
       /^WO-\d{3}$/.test(name),
     ))
-      safePath(root, `docs/evidence/${name}/decisions.md`);
+      safePath(root, docRelative(root, "evidence", `${name}/decisions.md`));
   const decisions = readDecisions(root);
   for (const row of decisions.filter((row) => row.reopens))
     requireFollowup(
@@ -210,7 +215,7 @@ export function followupStatus(entry) {
       ? "needs-review"
       : "untriaged";
 }
-function validate(state) {
+function validate(state, root) {
   requireFollowup(
     exact(state, ["schemaVersion", "entries"]) &&
       state.schemaVersion === 1 &&
@@ -242,7 +247,13 @@ function validate(state) {
             ? rev.missing === true
             : /^[a-f0-9]{64}$/.test(rev.hash)) &&
           text(rev.ref) &&
-          /^docs\/(?:product|planning|evidence)\/.+\.md#/.test(rev.ref) &&
+          new RegExp(
+            `^(?:${["product", "planning", "evidence"]
+              .map((key) =>
+                root ? rootPattern(root, key) : defaultDocRelative(key),
+              )
+              .join("|")})/.+\\.md#`,
+          ).test(rev.ref) &&
           text(rev.title, 200) &&
           text(rev.summary, 700) &&
           typeof rev.missing === "boolean",
@@ -300,12 +311,14 @@ function validate(state) {
   return state;
 }
 function committedState(root) {
-  const result = spawnSync("git", ["show", `HEAD:${FOLLOWUPS}`], {
+  const result = spawnSync("git", ["show", `HEAD:${followupsPath(root)}`], {
     cwd: root,
     encoding: "utf8",
     maxBuffer: 32 * 1024 * 1024,
   });
-  return result.status === 0 ? validate(JSON.parse(result.stdout)) : empty();
+  return result.status === 0
+    ? validate(JSON.parse(result.stdout), root)
+    : empty();
 }
 function retained(previous, current) {
   for (const before of previous.entries) {
@@ -323,9 +336,9 @@ function retained(previous, current) {
   }
 }
 export function readFollowups(root) {
-  const path = safePath(root, FOLLOWUPS);
+  const path = safePath(root, followupsPath(root));
   const state = existsSync(path)
-    ? validate(JSON.parse(readFileSync(path, "utf8")))
+    ? validate(JSON.parse(readFileSync(path, "utf8")), root)
     : empty();
   retained(committedState(root), state);
   requireAllocationTargets(root, state);
@@ -335,9 +348,9 @@ export function readFollowups(root) {
 // Entry identities, not line positions, define the register union. Histories
 // must be compatible prefixes; divergent edits to the same history require
 // an explicit disposition rather than renumbering past source revisions.
-export function unionFollowups(primary, secondary) {
-  const result = structuredClone(validate(primary));
-  validate(secondary);
+export function unionFollowups(primary, secondary, root) {
+  const result = structuredClone(validate(primary, root));
+  validate(secondary, root);
   const longer = (a, b, id) => {
     const length = Math.min(a.length, b.length);
     requireFollowup(
@@ -362,21 +375,23 @@ export function unionFollowups(primary, secondary) {
       );
     }
   }
-  return validate(result);
+  return validate(result, root);
 }
 function requireAllocationTargets(root, state) {
   for (const entry of state.entries.filter(
     (entry) => followupStatus(entry) === "allocated",
   ))
     for (const target of entry.dispositions.at(-1).targets) {
-      const directory = safePath(root, "docs/work-orders");
+      const directory = safePath(root, docRelative(root, "workOrders"));
       requireFollowup(
         existsSync(directory) &&
           readdirSync(directory).some(
             (name) =>
               name.startsWith(`${target}-`) &&
               name.endsWith(".md") &&
-              lstatSync(safePath(root, `docs/work-orders/${name}`)).isFile(),
+              lstatSync(
+                safePath(root, docRelative(root, "workOrders", `${name}`)),
+              ).isFile(),
           ),
         `allocation target ${target} has no filed work order`,
       );
@@ -416,19 +431,19 @@ function projected(root) {
         hash: null,
         missing: true,
       });
-  return validate(state);
+  return validate(state, root);
 }
 function persist(root, state) {
-  const path = safePath(root, FOLLOWUPS),
-    temporary = safePath(root, `${FOLLOWUPS}.tmp`);
-  checkLocalTerms(root, [{ name: FOLLOWUPS, text: encode(state) }]);
+  const path = safePath(root, followupsPath(root)),
+    temporary = safePath(root, `${followupsPath(root)}.tmp`);
+  checkLocalTerms(root, [{ name: followupsPath(root), text: encode(state) }]);
   writeFileSync(temporary, encode(state), { flag: "wx" });
   renameSync(temporary, path);
 }
 function withLock(root, fn) {
-  const directory = safePath(root, "docs/planning");
+  const directory = safePath(root, docRelative(root, "planning"));
   mkdirSync(directory, { recursive: true });
-  const lock = safePath(root, `${FOLLOWUPS}.lock`);
+  const lock = safePath(root, `${followupsPath(root)}.lock`);
   try {
     mkdirSync(lock);
   } catch {
@@ -445,7 +460,7 @@ function withLock(root, fn) {
 export function syncFollowups(root, { check = false } = {}) {
   const run = () => {
     const state = projected(root),
-      path = safePath(root, FOLLOWUPS);
+      path = safePath(root, followupsPath(root));
     if (
       !existsSync(path) &&
       !state.entries.length &&
@@ -485,7 +500,7 @@ export function disposeFollowup(root, request) {
     );
     const { expectedRevision, id, ...disposition } = request;
     entry.dispositions.push({ ...disposition, at: new Date().toISOString() });
-    validate(state);
+    validate(state, root);
     requireAllocationTargets(root, state);
     persist(root, state);
     return {

@@ -1,8 +1,9 @@
 #!/usr/bin/env node
+import { docPath, docRelative, findLaunchpad } from "./lib/config.mjs";
 import { isMainModule } from "./lib/paths.mjs";
 import { readFileSync } from "node:fs";
-import { dirname, join, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+import { resolve } from "node:path";
+
 import { buildPlanSubject } from "./lib/plan-subject.mjs";
 import {
   checkPlanGate,
@@ -29,7 +30,7 @@ import {
   readFollowups,
 } from "./lib/planning-followups.mjs";
 
-const toolRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+const toolRoot = findLaunchpad();
 const usage =
   "plan subject | check | refute [--direct] [--scope pass|full] | refute --transport claude-cli-print|codex-cli-exec|fake [--slug <label>] [--model <model>] [--effort <level>] [--dispositions <file>] [--evidence-only] | dispose <receipt-id> <hold-id> <reason> | amend-order <WO-NNN> <WO-NNN-DNNN> <operator-authorization reason> | override <receipt-id> <hold-id> <reason> --capture <ignored-intake-file> --capture-hash sha256:<digest> [actor-flags]";
 const options = (args, allowed) => {
@@ -273,7 +274,7 @@ export async function main(args = process.argv.slice(2), root = toolRoot) {
     model,
     effort,
     Date.now,
-    join(root, "docs/control/local/refutations"),
+    docPath(root, "control", "local/refutations"),
   );
   const receipt = await writePlanReceipt(root, {
     pass,
@@ -283,7 +284,7 @@ export async function main(args = process.argv.slice(2), root = toolRoot) {
     dispositions,
   });
   return {
-    receipt: `docs/planning/refutations/${receipt.receiptId}.md`,
+    receipt: docRelative(root, "refutations", `${receipt.receiptId}.md`),
     subjectHash: subject.hash,
     verdict: receipt.result.planVerdict,
     holds: receipt.holds.map(({ id, workOrderId, criterionId }) => ({

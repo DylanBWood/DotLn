@@ -1,3 +1,4 @@
+import { TOOL_ROOT } from "./config.mjs";
 import assert from "node:assert/strict";
 import { spawn, spawnSync } from "node:child_process";
 import { randomBytes, randomUUID } from "node:crypto";
@@ -13,9 +14,8 @@ import {
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
 
-const repository = fileURLToPath(new URL("../../", import.meta.url));
+const repository = TOOL_ROOT;
 export async function subagentProbe(args) {
   assert.equal(
     process.env.DOTLN_LIVE_HARNESS,

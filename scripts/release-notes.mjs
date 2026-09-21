@@ -1,3 +1,4 @@
+import { docRelative, findLaunchpad } from "./lib/config.mjs";
 export const releaseNoteHeadings = Object.freeze([
   "Release overview",
   "Read before upgrading",
@@ -6,8 +7,8 @@ export const releaseNoteHeadings = Object.freeze([
   "Evidence and compatibility",
 ]);
 
-export const releaseNotesPathFor = (workOrderId) =>
-  `docs/final-reviews/${workOrderId}/RELEASE-NOTES.md`;
+export const releaseNotesPathFor = (workOrderId, root = findLaunchpad()) =>
+  docRelative(root, "finalReviews", `${workOrderId}/RELEASE-NOTES.md`);
 
 const quotedContent = (line) => {
   let content = line;

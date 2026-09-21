@@ -1,9 +1,10 @@
+import { docPath, docRelative, findLaunchpad } from "./lib/config.mjs";
 import { isMainModule } from "./lib/paths.mjs";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { fileURLToPath } from "node:url";
+
 import {
   harnessInstallation,
   harnessInstructionBlock,
@@ -17,11 +18,11 @@ import {
 } from "./lib/harness-context.mjs";
 import { measureColdStarts, requireBudgets } from "./lib/process-budget.mjs";
 
-const root = fileURLToPath(new URL("../", import.meta.url));
+const root = findLaunchpad();
 export const fixtureTree = join(root, "scripts/fixtures/harness-context/tree");
 export const roles = ["executor", "verifier", "reviewer", "release-close"];
 export function fixtureSelectors(read) {
-  const workOrder = "docs/work-orders/WO-999-fixture.md";
+  const workOrder = docRelative(root, "workOrders", "WO-999-fixture.md");
   const inputs = [
     "fixture/source.ts",
     "fixture/source.test.mjs",
@@ -31,12 +32,16 @@ export function fixtureSelectors(read) {
     "@work-order": [workOrder],
     "@citations": citedSelectors(read(workOrder), inputs, read),
     "@subject-files": inputs,
-    "@failure-report": ["docs/verifications/WO-999/VER-001.md"],
-    "@verification-reports": ["docs/verifications/WO-999/VER-001.md"],
+    "@failure-report": [
+      docRelative(root, "verifications", "WO-999/VER-001.md"),
+    ],
+    "@verification-reports": [
+      docRelative(root, "verifications", "WO-999/VER-001.md"),
+    ],
     "@final-review": [
-      "docs/final-reviews/WO-999/FINAL-001.md",
-      "docs/final-reviews/WO-999/PR.md",
-      "docs/final-reviews/WO-999/RELEASE-NOTES.md",
+      docRelative(root, "finalReviews", "WO-999/FINAL-001.md"),
+      docRelative(root, "finalReviews", "WO-999/PR.md"),
+      docRelative(root, "finalReviews", "WO-999/RELEASE-NOTES.md"),
     ],
   };
 }
@@ -78,11 +83,12 @@ export function measureHarnessContext(overrides = new Map()) {
       : readFileSync(join(root, path), "utf8");
   const selectors = fixtureSelectors(taskRead);
   const oldInstruction = snapshot.read("CLAUDE.md");
-  const oldGuide = snapshot.read("docs/product/07-execution-guide.md");
+  const guidePath = docRelative(root, "product", "07-execution-guide.md");
+  const oldGuide = snapshot.read(guidePath);
   const beforeRead = (path) =>
     path === "CLAUDE.md"
       ? oldInstruction
-      : path === "docs/product/07-execution-guide.md"
+      : path === guidePath
         ? oldGuide
         : taskRead(path);
   const afterRead = (path) =>
@@ -170,10 +176,10 @@ export function checkContextMeasurement(measurement) {
 if (isMainModule(import.meta.url)) {
   const result = measureColdStarts(root);
   requireBudgets(result.profiles);
-  const destination = join(root, "docs/evidence/WO-126/harness-context.json");
+  const destination = docPath(root, "evidence", "WO-126/harness-context.json");
   const text = JSON.stringify(result, null, 2) + "\n";
   if (process.argv.includes("--write")) {
-    mkdirSync(join(root, "docs/evidence/WO-126"), { recursive: true });
+    mkdirSync(docPath(root, "evidence", "WO-126"), { recursive: true });
     writeFileSync(destination, text);
   }
   console.log(text.trimEnd());

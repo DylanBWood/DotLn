@@ -1,5 +1,6 @@
+import { defaultDocRelative, docPath, rootPattern } from "./config.mjs";
 import { existsSync, readFileSync } from "node:fs";
-import { join } from "node:path";
+
 import { readGitObjects, runGit } from "./git.mjs";
 import { parseJson } from "./paths.mjs";
 import { readControl } from "./control-store.mjs";
@@ -96,7 +97,7 @@ export const manifestFromTag = (root, tag) =>
   manifestFromAnnotation(tagAnnotation(root, tag), tag);
 export const historicalWorkOrders = (root, tag) => {
   if (tag !== "v0.2.0") return [];
-  const path = join(root, "docs/releases/v0.2.0.md");
+  const path = docPath(root, "releases", "v0.2.0.md");
   if (!existsSync(path)) return [];
   return [
     ...new Set(
@@ -109,17 +110,23 @@ export const historicalWorkOrders = (root, tag) => {
 
 // Shared attribution for manifest-bearing releases. Preserve manifest order;
 // consumers may sort their own presentation without inventing another parser.
-export const manifestWorkOrders = (manifest) => [
-  ...new Set([
-    ...(/^WO-\d{3}$/.test(manifest?.workOrder?.id)
-      ? [manifest.workOrder.id]
-      : []),
-    ...(manifest?.notes?.changedFiles ?? []).flatMap((path) => {
-      const match = /^docs\/final-reviews\/(WO-\d{3})\//.exec(path);
-      return match ? [match[1]] : [];
-    }),
-  ]),
-];
+export const manifestWorkOrders = (manifest, root) => {
+  const reviews = root
+    ? rootPattern(root, "finalReviews")
+    : defaultDocRelative("finalReviews");
+  const attributed = new RegExp(`^${reviews}/(WO-\\d{3})/`);
+  return [
+    ...new Set([
+      ...(/^WO-\d{3}$/.test(manifest?.workOrder?.id)
+        ? [manifest.workOrder.id]
+        : []),
+      ...(manifest?.notes?.changedFiles ?? []).flatMap((path) => {
+        const match = attributed.exec(path);
+        return match ? [match[1]] : [];
+      }),
+    ]),
+  ];
+};
 
 // Immutable tag objects are read together: release history must not add several
 // subprocesses per tag to the harness's timed lifecycle dispatch.
@@ -192,7 +199,7 @@ export const localReleaseRecords = (root, snapshot) => {
       throw new Error(`${tag.name} contains malformed release attribution`);
     const workOrders = historical
       ? historicalWorkOrders(root, tag.name)
-      : manifestWorkOrders(manifest);
+      : manifestWorkOrders(manifest, root);
     if (historical && workOrders.length === 0)
       throw new Error(
         "v0.2.0 requires docs/releases/v0.2.0.md historical attribution",

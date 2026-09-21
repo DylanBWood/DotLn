@@ -1,9 +1,10 @@
 #!/usr/bin/env node
+import { findLaunchpad } from "./lib/config.mjs";
 import assert from "node:assert/strict";
 import { mkdtempSync, readFileSync, realpathSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import {
   currentEvidence,
   sameEvidenceSourceContent,
@@ -24,7 +25,7 @@ if (mode.length !== 1 || !["--write", "--check"].includes(mode[0]))
   throw new Error(
     "usage: verification-evidence.mjs --write|--check (build first)",
   );
-const repository = new URL("../", import.meta.url);
+const repository = pathToFileURL(`${findLaunchpad()}/`);
 const selection = currentEvidence(fileURLToPath(repository), "verification");
 const root = new URL(`${selection.directory}/`, repository);
 const directory = realpathSync(
@@ -71,7 +72,7 @@ try {
     sameEvidenceSourceContent(
       fileURLToPath(repository),
       [...files.keys()].map((name) => `${selection.directory}/${name}`),
-      evidenceSources.verification,
+      evidenceSources(fileURLToPath(repository)).verification,
     );
   for (const [name, contents] of files) {
     const path = new URL(name, root);

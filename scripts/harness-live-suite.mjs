@@ -1,12 +1,12 @@
+import { docPath, findLaunchpad } from "./lib/config.mjs";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import { mkdirSync, readdirSync, realpathSync } from "node:fs";
-import { join } from "node:path";
-import { fileURLToPath } from "node:url";
+
 import { roles } from "./harness-context.mjs";
 import { writerScenarios } from "./harness-evidence.mjs";
 
-const root = realpathSync(fileURLToPath(new URL("../", import.meta.url)));
+const root = realpathSync(findLaunchpad());
 assert.equal(realpathSync(process.cwd()), root);
 assert.equal(
   process.env.DOTLN_LIVE_HARNESS,
@@ -19,7 +19,7 @@ const git = spawnSync("git", ["rev-parse", "--show-toplevel"], {
 });
 assert.equal(git.status, 0);
 assert.equal(realpathSync(git.stdout.trim()), root);
-const directory = join(root, "docs/evidence/WO-042/harness-live");
+const directory = docPath(root, "evidence", "WO-042/harness-live");
 mkdirSync(directory, { recursive: true });
 // Four role entries, then the two writer-reservation scenarios that the
 // evidence gate requires alongside them.

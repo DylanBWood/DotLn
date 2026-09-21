@@ -1,3 +1,4 @@
+import { docPath } from "./config.mjs";
 import { existsSync, lstatSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { containedRegularFile } from "./paths.mjs";
@@ -101,7 +102,7 @@ export async function currentHarnessSessionReport(root, options = {}) {
       await import("../../packages/skeleton/src/usage-observation.mjs");
     const session = currentCopilotSession(root, options);
     let warning = "";
-    const discovery = join(root, "docs/discovery/environment.json");
+    const discovery = docPath(root, "discovery", "environment.json");
     if (session.harnessVersion && existsSync(discovery)) {
       const record = JSON.parse(readFileSync(discovery, "utf8"))
         .effortReadbackProbe?.harnesses?.["copilot-cli"];

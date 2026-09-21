@@ -1,3 +1,4 @@
+import { defaultDocRelative, docPath, docRelative } from "./config.mjs";
 import { spawnSync } from "node:child_process";
 import {
   existsSync,
@@ -42,7 +43,7 @@ export const workOrderAuthorityPath = (
   workOrderPath,
   { requireFile = true } = {},
 ) => {
-  const authorityRoot = join(root, "docs/work-orders");
+  const authorityRoot = docPath(root, "workOrders");
   const authorityPath = resolve(root, workOrderPath ?? "");
   if (
     !/^WO-\d{3}$/.test(workOrderId ?? "") ||
@@ -57,8 +58,18 @@ export const workOrderAuthorityPath = (
   return authorityPath;
 };
 
-const protectedIntake = (candidate) =>
-  candidate === "docs/intake" || candidate.startsWith("docs/intake/");
+// Ignored-material classification reads launchpad-relative names, so each
+// lane is anchored at its configured root; without a launchpad it is today's.
+const lanes = (root) => ({
+  intake: root ? docRelative(root, "intake") : defaultDocRelative("intake"),
+  controlLocal: root
+    ? docRelative(root, "control", "local")
+    : defaultDocRelative("control", "local"),
+});
+const anchored = (candidate, prefix) =>
+  candidate === prefix || candidate.startsWith(`${prefix}/`);
+const protectedIntake = (candidate, root) =>
+  anchored(candidate, lanes(root).intake);
 const anchoredBuildOutput = (candidate) =>
   /^(?:node_modules|dist)(?:\/|$)/.test(candidate) ||
   /^packages\/[^/]+\/(?:node_modules|dist)(?:\/|$)/.test(candidate);
@@ -67,13 +78,15 @@ export const disposableBasename = (candidate) =>
   basename(candidate) === ".DS_Store" ||
   basename(candidate).endsWith(".tsbuildinfo");
 
-export const classifyIgnoredMaterial = (candidate) => {
-  const intake = protectedIntake(candidate);
+export const classifyIgnoredMaterial = (candidate, root) => {
+  const { intake: intakeRoot, controlLocal } = lanes(root);
+  const intake = anchored(candidate, intakeRoot);
   const disposable =
     !intake &&
     (anchoredBuildOutput(candidate) ||
-      /^(?:\.runtime|docs\/control\/local\/harness)(?:\/|$)/.test(candidate) ||
-      /^(?:\.control-beacons)(?:\/|$)/.test(candidate) ||
+      anchored(candidate, ".runtime") ||
+      anchored(candidate, `${controlLocal}/harness`) ||
+      anchored(candidate, ".control-beacons") ||
       /(?:^|\/)\.dotln-beacon-stage-[A-Za-z0-9]{6}(?:\/|$)/.test(candidate) ||
       disposableBasename(candidate));
   return {
@@ -81,16 +94,16 @@ export const classifyIgnoredMaterial = (candidate) => {
     releaseEvidenceAllowed:
       intake ||
       disposable ||
-      /^(?:docs\/control\/local)(?:\/|$)/.test(candidate) ||
+      anchored(candidate, controlLocal) ||
       candidate === ".claude/settings.local.json",
   };
 };
 
 /** The lane an ignored path belongs to; each lane names its own remedy. */
-export const ignoredLane = (candidate) =>
-  protectedIntake(candidate)
+export const ignoredLane = (candidate, root) =>
+  protectedIntake(candidate, root)
     ? "intake"
-    : /^docs\/control\/local(?:\/|$)/.test(candidate)
+    : anchored(candidate, lanes(root).controlLocal)
       ? "control"
       : candidate === ".claude/settings.local.json"
         ? "settings"
@@ -152,22 +165,21 @@ export function inspectNestedRepository(root, candidate) {
   }
 }
 
-const remedies = {
+const remedies = (root) => ({
   intake:
     "archive it with npm run backup:intake or move it outside the checkout from an operator terminal, then retry",
-  control:
-    "docs/control/local records are preserved into main's ignored retained/WO-NNN lane automatically; this entry cannot be preserved as a regular file or directory unit, so move or delete it from an operator terminal",
+  control: `${lanes(root).controlLocal} records are preserved into main's ignored retained/WO-NNN lane automatically; this entry cannot be preserved as a regular file or directory unit, so move or delete it from an operator terminal`,
   settings:
     "the operator-owned settings file is never deleted here; move it out of the worktree from an operator terminal",
   other:
     "move it outside the checkout or delete it from an operator terminal; nothing in the release close deletes ignored material",
-};
+});
 
 /** One classified row per ignored entry: what it is, which lane owns it,
  * whether removal may discard it, and the remedy that applies to that lane. */
 export function describeIgnoredMaterial(root, candidate) {
-  const lane = ignoredLane(candidate);
-  const base = classifyIgnoredMaterial(candidate.replace(/\/$/, ""));
+  const lane = ignoredLane(candidate, root);
+  const base = classifyIgnoredMaterial(candidate.replace(/\/$/, ""), root);
   if (!isNestedRepositoryEntry(candidate))
     return {
       path: candidate,
@@ -175,7 +187,7 @@ export function describeIgnoredMaterial(root, candidate) {
       lane,
       ...base,
       classification: `${lane} lane: ignored file`,
-      remedy: remedies[lane],
+      remedy: remedies(root)[lane],
     };
   const nested = inspectNestedRepository(root, candidate);
   if (!nested.repository)
@@ -185,7 +197,7 @@ export function describeIgnoredMaterial(root, candidate) {
       lane,
       ...base,
       classification: `${lane} lane: ignored directory`,
-      remedy: remedies[lane],
+      remedy: remedies(root)[lane],
     };
   if (nested.empty && lane !== "intake")
     return {

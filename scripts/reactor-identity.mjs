@@ -1,3 +1,4 @@
+import { docRelative, findLaunchpad } from "./lib/config.mjs";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
@@ -232,19 +233,23 @@ async function capture(directory) {
   save("feedback-correction", log);
 }
 
-export function identityCases() {
+export function identityCases(root = findLaunchpad()) {
   return [
     ...readdirSync(fixtures)
       .filter((name) => name.endsWith(".jsonl"))
       .map((name) => `${fixtures}/${name}`),
     "packages/skeleton/fixtures/wo029-legacy-scenario.jsonl",
-    "docs/evidence/WO-010/events.jsonl",
-    "docs/evidence/WO-011/verification/events.jsonl",
-    "docs/evidence/WO-011/selfhost-audit.jsonl",
-    "docs/evidence/WO-011/selfhost-verification.jsonl",
-    "docs/evidence/WO-048/verification/events.jsonl",
-    "docs/evidence/WO-048/feedback-002/selfhost-audit.jsonl",
-    "docs/evidence/WO-048/feedback-002/selfhost-verification.jsonl",
+    docRelative(root, "evidence", "WO-010/events.jsonl"),
+    docRelative(root, "evidence", "WO-011/verification/events.jsonl"),
+    docRelative(root, "evidence", "WO-011/selfhost-audit.jsonl"),
+    docRelative(root, "evidence", "WO-011/selfhost-verification.jsonl"),
+    docRelative(root, "evidence", "WO-048/verification/events.jsonl"),
+    docRelative(root, "evidence", "WO-048/feedback-002/selfhost-audit.jsonl"),
+    docRelative(
+      root,
+      "evidence",
+      "WO-048/feedback-002/selfhost-verification.jsonl",
+    ),
   ];
 }
 export function identityObservation(path) {

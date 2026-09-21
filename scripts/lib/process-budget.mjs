@@ -1,3 +1,4 @@
+import { docPath } from "./config.mjs";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
@@ -11,7 +12,7 @@ export const dispatchKinds = [
   "refuter",
 ];
 export function readBudgets(root) {
-  const path = join(root, "docs/control/budgets.json");
+  const path = docPath(root, "control", "budgets.json");
   if (!existsSync(path)) return null;
   const value = JSON.parse(readFileSync(path, "utf8"));
   if (

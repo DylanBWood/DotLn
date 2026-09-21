@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { findLaunchpad } from "./lib/config.mjs";
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import {
@@ -11,8 +12,8 @@ import {
   writeFileSync,
 } from "node:fs";
 import { arch, platform, tmpdir } from "node:os";
-import { dirname, join, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+import { join } from "node:path";
+
 import { publishBuildTree } from "./build.mjs";
 
 // Optional historical comparator, never imported or invoked by the build.
@@ -31,7 +32,7 @@ if rename(cwd, os.fsencode(sys.argv[1]), cwd, os.fsencode(sys.argv[2]), 2):
     error = ctypes.get_errno()
     raise OSError(error, os.strerror(error))
 `;
-const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+const root = findLaunchpad();
 const args = process.argv.slice(2);
 const comparePython = args.includes("--compare-python");
 if (args.some((arg) => arg !== "--compare-python") || args.length > 1)

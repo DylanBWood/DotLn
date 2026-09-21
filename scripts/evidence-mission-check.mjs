@@ -3,10 +3,11 @@
 // cadence, a real harness judges a session with a planted drift, and the drift
 // holds the next dispatch. Raw transport output stays ephemeral; the filed row
 // carries shapes and explicit observations only.
+import { docPath, findLaunchpad } from "./lib/config.mjs";
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
 import { closeSync, mkdirSync, openSync, writeFileSync } from "node:fs";
-import { dirname, join, resolve } from "node:path";
+import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { decodeLog } from "@dotln/kernel";
 import { ResidentHost } from "../packages/skeleton/dist/src/resident-host.js";
@@ -18,9 +19,9 @@ import {
 import { structuralMissionFindings } from "../packages/skeleton/dist/src/mission-check-protocol.js";
 import { missionFixture } from "../packages/skeleton/dist/test/mission-check.fixture.js";
 
-const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const local = join(root, "docs/control/local/wo099-live");
-const output = join(root, "docs/evidence/WO-099/live.json");
+const root = findLaunchpad();
+const local = docPath(root, "control", "local/wo099-live");
+const output = docPath(root, "evidence", "WO-099/live.json");
 const flag = (name, fallback) => {
   const index = process.argv.indexOf(`--${name}`);
   return index > 0 ? process.argv[index + 1] : fallback;

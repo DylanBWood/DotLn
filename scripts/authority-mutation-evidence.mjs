@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { docPath, findLaunchpad } from "./lib/config.mjs";
 import assert from "node:assert/strict";
 import { tmpdir } from "node:os";
 import { execFileSync } from "node:child_process";
@@ -13,7 +14,7 @@ import {
   writeFileSync,
 } from "node:fs";
 import { dirname, isAbsolute, join, relative, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+
 import {
   cleanEnvironment,
   cleanupScratch,
@@ -27,7 +28,7 @@ assert.ok(
   ["--write", "--check"].includes(mode) && !extra.length,
   "usage: authority-mutation-evidence.mjs --write|--check",
 );
-const root = realpathSync(fileURLToPath(new URL("../", import.meta.url)));
+const root = realpathSync(findLaunchpad());
 const git = (cwd, args, options = {}) =>
   execFileSync("git", args, {
     cwd,
@@ -57,7 +58,7 @@ const subjectFiles = subjectPaths.map((path) => ({
   path,
   sha256: sha256(readFileSync(join(root, path))),
 }));
-const destination = join(root, "docs/evidence/WO-042/mutations");
+const destination = docPath(root, "evidence", "WO-042/mutations");
 const check = () => {
   const summary = JSON.parse(
     readFileSync(join(destination, "summary.json"), "utf8"),
@@ -133,7 +134,7 @@ if (mode === "--write") {
     const tree = git(scratch, ["write-tree"]).trim();
     const activation = JSON.parse(
       readFileSync(
-        join(root, "docs/evidence/WO-042/authority-baseline.json"),
+        docPath(root, "evidence", "WO-042/authority-baseline.json"),
         "utf8",
       ),
     ).sourceRevision;

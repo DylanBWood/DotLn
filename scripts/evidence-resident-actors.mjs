@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 // One explicit, detached live row; raw transport output stays ephemeral.
+import { docPath, findLaunchpad } from "./lib/config.mjs";
 import assert from "node:assert/strict";
 import { spawn, execFileSync } from "node:child_process";
 import {
@@ -9,7 +10,7 @@ import {
   readFileSync,
   writeFileSync,
 } from "node:fs";
-import { dirname, join, resolve } from "node:path";
+import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { decodeLog } from "@dotln/kernel";
 import { ResidentHost } from "../packages/skeleton/dist/src/resident-host.js";
@@ -19,9 +20,9 @@ import {
 } from "../packages/skeleton/dist/src/resident-store.js";
 import { actorFixture } from "../packages/skeleton/dist/test/resident-actors.fixture.js";
 
-const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const local = join(root, "docs/control/local/wo122-live");
-const output = join(root, "docs/evidence/WO-122/live.json");
+const root = findLaunchpad();
+const local = docPath(root, "control", "local/wo122-live");
+const output = docPath(root, "evidence", "WO-122/live.json");
 if (process.argv[2] === "--child") {
   const f = actorFixture();
   // Keep the scratch worktree for inspection; only this ignored local record

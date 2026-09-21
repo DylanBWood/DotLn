@@ -1,3 +1,4 @@
+import { docPath, docRelative, findLaunchpad, rootPattern } from "./config.mjs";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import {
@@ -11,7 +12,7 @@ import {
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
-import { dirname, join, resolve, sep } from "node:path";
+import { dirname, join, sep } from "node:path";
 import { emitHarness, checkHarness } from "./harness.mjs";
 import {
   currentCopilotSession,
@@ -21,7 +22,7 @@ import {
 } from "../../packages/skeleton/src/usage-observation.mjs";
 import { harnessWriterView } from "../../packages/skeleton/dist/src/harness-host.js";
 
-const repository = resolve(import.meta.dirname, "../..");
+const repository = findLaunchpad();
 const statePath = ".copilot-qualification/state.json";
 const sourcePath = "fixture/add.mjs";
 const defect = 'throw new Error("WO-146 planted fixture defect");';
@@ -123,10 +124,14 @@ function publish(out, state) {
       .filter((attempt) => attempt.observation)
       .map((attempt) => attempt.observation),
   };
-  write(out, "docs/evidence/WO-146/qualification.json", json(record));
   write(
     out,
-    "docs/evidence/WO-146/qualification.md",
+    docRelative(out, "evidence", "WO-146/qualification.json"),
+    json(record),
+  );
+  write(
+    out,
+    docRelative(out, "evidence", "WO-146/qualification.md"),
     [
       "# WO-146 Copilot operator qualification",
       "",
@@ -155,7 +160,7 @@ export function prepareCopilotQualification({
   base = tmpdir(),
 } = {}) {
   assert.ok(
-    !existsSync(join(out, "docs/evidence/WO-146/qualification.json")),
+    !existsSync(docPath(out, "evidence", "WO-146/qualification.json")),
     "preserve the existing qualification and its attempt budget",
   );
   const parent = realpathSync(base);
@@ -167,17 +172,17 @@ export function prepareCopilotQualification({
     mkdtempSync(join(parent, "dotln-copilot-qualification-")),
   );
   git(root, "init", "--quiet", "-b", "wo-999");
-  for (const directory of ["scripts", "docs/product"])
+  for (const directory of ["scripts", docRelative(repository, "product")])
     cpSync(join(repository, directory), join(root, directory), {
       recursive: true,
     });
   for (const path of [
     "CLAUDE.md",
     "LICENSE",
-    "docs/AI-HARNESS-SECURITY.md",
-    "docs/PLAYBOOK.md",
-    "docs/control/budgets.json",
-    "docs/discovery/environment.json",
+    docRelative(repository, "docs", "AI-HARNESS-SECURITY.md"),
+    docRelative(repository, "docs", "PLAYBOOK.md"),
+    docRelative(repository, "control", "budgets.json"),
+    docRelative(repository, "discovery", "environment.json"),
   ])
     write(root, path, readFileSync(join(repository, path), "utf8"));
   for (const name of ["compiler", "skeleton", "kernel"]) {
@@ -206,7 +211,7 @@ export function prepareCopilotQualification({
   write(
     root,
     ".gitignore",
-    "node_modules/\n**/dist/\n.runtime/\ndocs/control/local/\n.control-beacons/\n.copilot-qualification/\n",
+    `node_modules/\n**/dist/\n.runtime/\n${docRelative(root, "control", "local")}/\n.control-beacons/\n.copilot-qualification/\n`,
   );
   write(
     root,
@@ -235,7 +240,7 @@ export function prepareCopilotQualification({
   );
   write(
     root,
-    "docs/work-orders/WO-999-fixture.md",
+    docRelative(root, "workOrders", "WO-999-fixture.md"),
     [
       "# WO-999 - Isolated Copilot workflow qualification",
       "",
@@ -253,19 +258,19 @@ export function prepareCopilotQualification({
   );
   write(
     root,
-    "docs/control/orders/WO-999.jsonl",
+    docRelative(root, "orders", "WO-999.jsonl"),
     JSON.stringify({
       schemaVersion: 1,
       type: "WorkOrderActivated",
       workOrderId: "WO-999",
-      workOrderPath: "docs/work-orders/WO-999-fixture.md",
+      workOrderPath: docRelative(root, "workOrders", "WO-999-fixture.md"),
       recordedAt: new Date().toISOString(),
       effortDeclarationValidated: true,
     }) + "\n",
   );
   write(
     root,
-    "docs/planning/work-order-map.md",
+    docRelative(root, "planning", "work-order-map.md"),
     "<!-- dotln-work-order-sequence:start -->\n<!-- dotln-work-order-sequence:end -->\n",
   );
   const state = {
@@ -395,7 +400,7 @@ export function collectCopilotQualification(
   const current = status(root);
   const episode = episodes[state.nextEpisode];
   const control = decodeUsageSource(
-    readFileSync(join(root, "docs/control/orders/WO-999.jsonl"), "utf8"),
+    readFileSync(docPath(root, "orders", "WO-999.jsonl"), "utf8"),
   );
   const completion = control
     .filter(
@@ -406,7 +411,9 @@ export function collectCopilotQualification(
     .at(-1);
   const report =
     completion?.reportPath &&
-    /^docs\/verifications\/WO-999\/VER-\d{3}\.md$/.test(completion.reportPath)
+    new RegExp(
+      `^${rootPattern(root, "verifications")}/WO-999/VER-\\d{3}\\.md$`,
+    ).test(completion.reportPath)
       ? readFileSync(join(root, completion.reportPath), "utf8")
       : "";
   const checked = run(root, process.execPath, ["fixture/add.test.mjs"]);
