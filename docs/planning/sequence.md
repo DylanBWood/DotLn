@@ -40,6 +40,15 @@ WO-140 has closed. It is operator tooling, not critical path, and no pair is
 recut. The evidence is in
 [the Copilot CLI planning document](copilot-cli-integration-2026-09-20.md) §7.
 
+Standard pass (2026-09-21): after the WO-069 close, WO-147 and WO-148 form
+a new pair directly after WO-138 and WO-071 (the resident's lock under live
+contention, which WO-143 boarded for the planner ahead of WO-111, and the
+operator-raised binding of a resident to the active order; disjoint surfaces,
+no hard edge). WO-149 takes a one-entry slot after them, as WO-146 did: it
+may run beside whichever of the pair is still open and must not make WO-120
+or WO-063 wait. No existing pair is recut. The evidence is in
+[the standard-pass planning document](standard-pass-2026-09-21.md) §5 and §6.
+
 <!-- dotln-work-order-sequence:start -->
 
 - WO-132 — Machinery stand-down
@@ -101,6 +110,11 @@ recut. The evidence is in
 
 - WO-138 — Local-model role qualification pilot
 - WO-071 — Registered target repositories
+
+- WO-147 — Resident lock contention
+- WO-148 — Resident binding
+
+- WO-149 — Codex sessions begin
 
 - WO-120 — Derived work identity
 - WO-063 — Outward-artifact lint

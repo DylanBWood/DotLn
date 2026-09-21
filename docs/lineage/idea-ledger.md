@@ -40,6 +40,94 @@ are now declared above. The [decision record](../evidence/WO-084/decisions.md)
 records the legacy ledger write-back; `node scripts/lineage.mjs index` generates
 the index and `index --check` enforces this rule in `npm run test:docs`.
 
+## 2026-09-21 — Planning pass: standard pass after WO-069 (WO-147 to WO-149; the register judged)
+
+Source: the operator's bare dispatch `planning: standard planning pass`,
+captured verbatim in ignored intake
+(`docs/intake/notes/2026-09-21-standard-planning-pass.md`, SHA-256
+`acdab88941228bca9089f0d8a9cd544eda4185ab0fffadb7b58fdfdbe3e1701d`), and the
+records the eleven orders closed since 2026-09-19 left behind: their decision
+files, the WO-099 candidate document, and the 67 untriaged follow-up rows.
+Shape-First Synthesis over repository records only; the clean-room screen found
+no stop condition (no path or identifier outside the repository enters a
+committed surface). The record is
+[the planning document](../planning/standard-pass-2026-09-21.md).
+
+- **The resident's lock under live contention is repaired before the first
+  unattended hour (WO-147)** `adopted`
+  - A holder releasing `host.lock` between a contender's check and its read
+    ends the contender's transaction with a raw `ENOENT`; WO-143's verifier
+    reproduced it on the working tree and on the released version and boarded
+    it for the planner ahead of WO-111, and WO-069's gate met the same suite's
+    load sensitivity once. Re-inspect under the guard already held; test the
+    dead-pid hypothesis rather than assume it. Provenance: WO-143 D004 and
+    FINAL-001; WO-069 D015; the planning document §5. Reopen: WO-111's first
+    unattended hour records a resident exit from a lock error.
+- **A resident is bound to the active order by one command that reads
+  canonical state, and nothing is derived that the mission check leans on
+  (WO-148)** `adopted`
+  - The operator's 2026-09-20 observation: the mechanism to watch an order
+    exists and the path from an opened worktree to a watching resident does
+    not. The six decisions the candidate asked for are answered: an explicit
+    command owns the binding; a store follows one binding of one order;
+    surfaces are declared at bind time (WO-124 derives them); one store per
+    order under the mission-only policy; the stage session exports the
+    printed binding; a stale binding is named and refused a launch line.
+    Provenance: the candidate document; product 03 §Operator-presence
+    policy; the planning document §4. Reopen: WO-148's live row, or WO-111
+    meeting a store the command could not have written.
+- **A Codex dispatch begins its harness session, so a Codex receipt carries
+  counters (WO-149)** `adopted`
+  - WO-099's final review measured the split exactly: 13 real readings and 0
+    unknown under Claude, 0 real and 8 unknown under Codex, because no Codex
+    path calls `harness begin`. Begin inside the dispatch command, once per
+    thread; keep the graceful-unknown branch for Copilot only. Provenance:
+    WO-099 D035 and FINAL-001; the planning document §5. Reopen: Codex gains
+    a session-begin hook, or the counter source stops needing a begun
+    session.
+- **The follow-up feed now carries nominations, and two kinds of them**
+  `adopted`
+  - 67 untriaged rows after WO-142 closed tripped the settlement candidate's
+    threshold for a new reason: B17's boarded defects. Sixteen were a
+    verifier's in-order repair directives already discharged by the order's
+    repair cycle, six more were reopened decisions and final-review routings
+    likewise discharged; the rest were real nominations, disposed one by one.
+    The `followup` field carries both kinds and the feed cannot tell them
+    apart; the smallest fix is verifier role text, not a collector change.
+    Provenance: product 07 §Candidate — follow-up register settlement (the
+    2026-09-21 observation); the planning document §3. Reopen: more than ten
+    discharged in-order directives among the next pass's untriaged rows.
+- **The four root-bound refusals stay as they are while sessions rarely
+  leave the root** `deferred`
+  - WO-144 D007 and D008 asked the planner to decide whether the writer,
+    live-gate, planning-branch and subagent refusals should judge away from
+    the worktree root. The retained hook journals hold six rows that name
+    the unverified-root precondition against 80 working-directory
+    classifications and thousands of judged calls; the fifth refusal already
+    judges from any directory. Provenance: the journals under the local
+    control lane (counts, not text); WO-144 D008; the planning document §4.
+    Reopen: the journals show a refused-from-root call admitted off-root, or
+    the stand-down count passes fifty.
+- **A pasted dispatch does not resolve a role** `open`
+  - Carried from the 2026-09-20 pass unchanged: whether pasted text may
+    dispatch a role is the operator's judgment. This pass's typed dispatch
+    resolved normally, so no second observation exists. The recommendation
+    recorded for the operator is the advisory option: print one line when a
+    known phrase follows a paste wrapper and let the operator retype it.
+    Provenance: the Copilot planning document §12; the planning document §4.
+    Reopen: the operator's answer, or a second session that loses its role.
+- **The shell destination adapter's width is one seam, recorded as one
+  candidate** `candidate`
+  - Five boarded items from WO-142 and WO-144 name the same adapter: quoted
+    glob characters and input redirects refused during a live gate, admitted
+    Git metadata commands that refresh the index or run a configured
+    program, expansion-spelled redirects that un-name literal ones beside
+    them, and a stranded comment. Gathered as one candidate in the map so the
+    next order that opens the adapter takes them together. Provenance:
+    WO-142 D012, D018, D023; WO-144 D009, D010; the map's 2026-09-21
+    candidates. Reopen: a second refused read in a live gate, or an admitted
+    redirect that reaches an outside destination.
+
 ## 2026-09-20 — Planning pass: Copilot CLI as a third harness (WO-146)
 
 Source: the operator's planning dispatch, captured verbatim in ignored intake

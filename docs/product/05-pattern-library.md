@@ -1119,6 +1119,32 @@ proportion and depth. Economy is first; each other aspect needs a measure
 before selection. The adaptive modifier and broken-window pressure signal
 remain open, with the third trial's record as the reopening observation.
 
+**Three-trial reading, 2026-09-21 (standard planning pass).** All three
+trials ran and adopted a method
+([WO-145 D002](../evidence/WO-145/decisions.md#wo-145-d002),
+[WO-110 D001](../evidence/WO-110/decisions.md#wo-110-d001),
+[WO-099 D008](../evidence/WO-099/decisions.md#wo-099-d008)), each with
+`regression: false`. Trial cost, as recorded: 163.5 s and 497,138
+broad-scope tokens (WO-145), 87 s and unknown tokens (WO-110), 2.73 s of
+timed runs with preparation unmetered and unknown tokens (WO-099); 253 s in
+all, tokens known for one trial. Adopted recurring savings per iteration:
+58.7 s for a decision-record edit (a focused test selection against the
+59.0 s file, WO-145); 238.4 s for a skeleton test iteration (a build plus one
+compiled file against the 252.6 s gate, WO-110); 0.21 s and one command per
+test iteration (WO-099). No trial counted its iterations, so no per-order
+total exists and none is estimated. Applying the pre-registered rule as
+written: the WO-110 saving exceeds the whole recorded trial cost in
+wall-clock after two iterations in the next ten orders, the token side
+cannot be compared, and no regression is recorded, so the record proposes
+default equipment. Two qualifications travel with the proposal: the third
+trial ran with the support unequipped (WO-099 D008's own follow-up), so the
+support's elicitation is evidenced in two trials of three; and the adopted
+methods are development loops whose value the executor already keeps without
+the support. The proposal is the operator's to accept; the register row is
+left open on it, and equipping by default is a loadout change for an order.
+The adaptive modifier stays unimplemented.
+
+
 Operator ideation during WO-126 proposes a support that biases a linked mechanic
 toward a small experiment on a relevant question, input, proposed answer or
 response. The names Tinkerer and Scientist remain alternatives. The motivating
