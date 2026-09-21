@@ -488,4 +488,32 @@ adaptive modifier now (a separate candidate). Goal alignment: operator flow
 process, rule beating countered by the re-baselined fixture and the measured
 cold start rather than a stated default.
 
-**Independent review.** Filled after the second receipt is filed.
+**Independent review.** Receipt
+[2026-09-21-planning-1457ac11ba15715d-023](refutations/2026-09-21-planning-1457ac11ba15715d-023.md):
+a second fresh background reviewer, given only the canonical prompt (124,430
+bytes, read in nine contiguous slices by its own statement), judged the
+committed subject at `f9e9e7c8`. Pass scope: WO-150 and the sequence; 97
+verdicts carried by hash. Verdict `aligned-with-findings` for the order and
+the plan; no hold; six known issues, zero observed failures, zero vision
+contradictions. Dispatch to file took 419 s, observed. The reviewer made no
+repository or Git writes and spawned no agents; two subagents of the
+twenty-agent cap were spent on the day's two passes.
+
+The reviewer's removal-balance answer is no, and the order says so itself:
+the named removal is procedural and the acceptance for adding cost is the
+operator's direction, whose capture lives in ignored intake with its hash on
+the committed ledger, as every operator direction in this repository does.
+The six issues are carried into WO-150's catalog row for the executor's
+decisions. The ones that change how the order should be run: whether the
+support applies to runtime-derived and unattended orders, which run through
+worker transports rather than an executor session, must be decided and
+written into product 05; the fixture proves configuration rather than
+behavior, so the decisions history must record equipped dispatches against
+experiments run and declines, and that count is the reopening observation;
+the 249-byte margin is re-measured in both roots after WO-090's
+restructuring and a breach is recorded as the ratchet it is; experiment
+time's place in the meter's machinery share is stated; the carried history
+labels each adopted method with its equipped or unequipped provenance and
+says whether the equipped-only subset still meets the rule; and the product
+05 write-back names the outcome the executor economy serves, since the order
+unblocks no typed gate. The order's text stands as judged.
