@@ -1,0 +1,40 @@
+# WO-150
+
+The executor's economy experiment is now default equipment. Every executor dispatch arrives with one paragraph asking it to name at most one economy opportunity for the order — its question, credible alternatives, deciding observation and a wall-clock budget of at most 900 s — and to record one experiment decision either way. Running it is optional; declining with a reason and keeping the current method is a valid, recorded outcome. An order that does not want it writes `{ "tinkerer-economy": false }` and gets exactly the previous build back, byte for byte.
+
+**Why now.** WO-145 pre-registered the rule before the trials ran: propose default equipment only if at least one adopted saving over the next ten orders exceeds the whole trial experiment cost, with no recorded regression. The three trials cost 253.276 s in total and all three adopted a method with `regression: false`. WO-110's adopted method saves a measured 238.436 s per eligible skeleton test iteration, so two iterations in ten orders clear the whole trial cost — the rule passes on that trial alone. The operator accepted the proposal on 2026-09-21. The flip also removes the step that made the third trial run unequipped: equipment was a separate manual action, so WO-099's trial had to record that it ran without the support.
+
+**What it costs, measured.** A non-opted-out executor dispatch carries 1,479 bytes: 1,173 of compiled role text plus the 306-byte `Executor entry duties` briefing line that names the equipped support at dispatch. The role text takes the executor cold start from 23,154 to 24,327 bytes against its 24,576-byte ceiling — within by 249 bytes, the thinnest margin of any bounded role in either generated skill root. No ceiling moved and no dated acceptance was recorded, because nothing breached one. The other five roles are unchanged on both sides of the switch, and briefing output is not a cold-start instruction file, so it does not enter that measurement. Final review measured the briefing line and recorded it as [D008](docs/evidence/WO-150/decisions.md), because the order's cost line accounts only the role text.
+
+**What a reviewer should know before merging.** The passing fixtures prove configuration, not behavior: they establish that the support is equipped by default, removable per order and isolated to the executor, not that any executor will find an economy worth testing. That gap is deliberate and is the reason the reopening observation is behavioral — ten equipped executor dispatches after merge, each recording an experiment or an explicit kept-current decline, and fewer than half doing either reconsiders the flip. The 249-byte executor margin means the next reviewed executor rule of any size triggers the standing 4 KB ceiling route. No trial counted its iterations, so no per-order saving is claimed, and the token side of the reading stays uncomparable because only one trial recorded a token count and that count is a broad-scope transcript counter.
+
+**The change itself.** One boolean in `packages/skeleton/src/loadouts/executor-supports.ts`; one `ids.includes("tinkerer-economy")` branch in `scripts/lib/executor-readiness.mjs` so the briefing names the support as it already names each of the other seven; two test cases re-baselined to assert the new default, the opt-out and that no other support moves; and a new `wo150-role-baseline.json` fixture holding this release's default-on bytes. The previous oracle stays in place as the bytes the opt-out must still reproduce, and the immutable v0.33.2 snapshot is untouched — the case now walks the whole fixture chain and asserts every recorded hash rather than one. Everything else in the diff is the regenerated bundle, the skeleton `0.34.0` version and its console pin, the re-minted authority and feedback evidence editions, and the document projections.
+
+**Validation.** `npm test -- --review` passed **28 suites, 0 failed, 497.64 s, 72 fresh tasks, exit 0** at code identity `d1c9a281` on the reviewed, staged tree. `harness check` reports 31 generated surfaces; `publication:check` reports 273/273 headings and both editions current; `release check-surfaces --local`, `release prepare --local`, `plan check`, `format:check` and `work-orders index --check` pass; `git diff --check` is clean in the working tree and the index. No dependency changes: the manifest and lockfile move only the internal `@dotln/skeleton` pin. `main` did not move while this order was in flight, so no integration was needed.
+
+Evidence: [FINAL-001](docs/final-reviews/WO-150/FINAL-001.md), [VER-001](docs/verifications/WO-150/VER-001.md), [decisions D001 to D008](docs/evidence/WO-150/decisions.md), [cold-start measurement](docs/evidence/WO-150/cold-start.json), [implementation record](docs/evidence/WO-150/implementation.md), [release notes](docs/final-reviews/WO-150/RELEASE-NOTES.md), [the order](docs/work-orders/WO-150-tinkerer-economy-default.md).
+
+<!-- dotln-process-meter:start -->
+
+Observation cutoff: 2026-09-21T17:04:40.831Z; source: canonical control events and the recorded gate, usage and harness observations collected by npm run meta.
+
+| Work | Phase ms / attempts | Gate ms | Read files / bytes | Observed tokens / USD | Declared prompt tokens | Corrections |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| WO-099 | 16,656,405 (Δ unavailable) / 13 | unavailable (Δ unavailable) | unavailable (Δ unavailable) / unavailable (Δ unavailable) | unavailable (Δ unavailable) / unavailable (Δ unavailable) | unavailable (Δ unavailable) | 0 (Δ unavailable) |
+| WO-079 | 4,418,943 (Δ -12,237,462) / 3 | unavailable (Δ unavailable) | unavailable (Δ unavailable) / unavailable (Δ unavailable) | unavailable (Δ unavailable) / unavailable (Δ unavailable) | unavailable (Δ unavailable) | 0 (Δ 0) |
+| WO-069 | 8,532,758 (Δ 4,113,815) / 5 | unavailable (Δ unavailable) | unavailable (Δ unavailable) / unavailable (Δ unavailable) | unavailable (Δ unavailable) / unavailable (Δ unavailable) | unavailable (Δ unavailable) | 0 (Δ 0) |
+| WO-071 | 4,477,821 (Δ -4,054,937) / 3 | unavailable (Δ unavailable) | unavailable (Δ unavailable) / unavailable (Δ unavailable) | unavailable (Δ unavailable) / unavailable (Δ unavailable) | unavailable (Δ unavailable) | 0 (Δ 0) |
+| WO-138 | 11,806,162 (Δ 7,328,341) / 5 | unavailable (Δ unavailable) | unavailable (Δ unavailable) / unavailable (Δ unavailable) | unavailable (Δ unavailable) / unavailable (Δ unavailable) | unavailable (Δ unavailable) | 0 (Δ 0) |
+| WO-150 | 2,128,452 (Δ -9,677,710) / 2 | 1,033,136 (Δ unavailable) | 18 (Δ unavailable) / 139,577 (Δ unavailable) | 35,458,063 (Δ unavailable) / unavailable (Δ unavailable) | 958 (Δ unavailable) | 1 (Δ 1) |
+
+Unavailable observations are not zero; unset ceilings are not approvals of a future limit.
+
+| Dispatch | Wall ms (Δ) | Context bytes (Δ) | Commands (Δ) | Tokens (Δ) | Steps (Δ) | USD (Δ) / declared prompt tokens |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| WO-150/executor | 1,146,140 (-8,111,362) | 49,336 (unavailable) | 173 (unavailable) | 34,670,210 (unavailable) | 189 (unavailable) | unavailable (unavailable) / 958 |
+| WO-150/verifier | 982,312 (123,996) | unavailable (unavailable) | unavailable (unavailable) | 588,789 (unavailable) | unavailable (unavailable) | 1.503 (unavailable) / unavailable |
+| WO-150/reviewer | 12,631 (-1,677,713) | unavailable (unavailable) | 53 (unavailable) | 199,064 (unavailable) | 54 (unavailable) | unavailable (unavailable) / unavailable |
+| WO-150/release-close | unavailable (unavailable) | unavailable (unavailable) | unavailable (unavailable) | unavailable (unavailable) | unavailable (unavailable) | unavailable (unavailable) / unavailable |
+| WO-150/planner | unavailable (unavailable) | unavailable (unavailable) | unavailable (unavailable) | unavailable (unavailable) | unavailable (unavailable) | unavailable (unavailable) / unavailable |
+| WO-150/refuter | unavailable (unavailable) | unavailable (unavailable) | unavailable (unavailable) | unavailable (unavailable) | unavailable (unavailable) | unavailable (unavailable) / unavailable |
+<!-- dotln-process-meter:end -->
