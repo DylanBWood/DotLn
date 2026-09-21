@@ -1,0 +1,21 @@
+{
+  "workOrder": "WO-079",
+  "historicalBaseline": "wo146-role-baseline.json",
+  "historicalSha256": "195026201a0d15351404657c117ec3640e1f26bab3afce3bbcde9c2a18925467",
+  "method": "SHA-256 of generated default/off roles after the authorized reviewer integration instruction; both earlier role snapshots remain unchanged.",
+  "decision": "docs/evidence/WO-079/decisions.md#wo-079-d004",
+  "roles": {
+    ".agents/skills/dotln-executor/SKILL.md": "087d5f78b5af93bfb2347a7c0714c2c46651994a1d6e7786494f5d4eddbb4a4e",
+    ".agents/skills/dotln-planner/SKILL.md": "3abfeb2ca3ce09d3bbfc36944ab1b69d32253d2ac6900d61d7954a2457616189",
+    ".agents/skills/dotln-refuter/SKILL.md": "b3aaa49547807fe88a052c63abc8501b7c45fcce56232ffe05d0da9e6b59262a",
+    ".agents/skills/dotln-release-close/SKILL.md": "f631e5f4e9fa27a1635e51d8928a15bb602095dd4faa77ddfc3724ec4c4e2011",
+    ".agents/skills/dotln-reviewer/SKILL.md": "18af69d96cb6c8c0ac357d30116d7eff1664e26a6c6def8f04725d943562969c",
+    ".agents/skills/dotln-verifier/SKILL.md": "95b00f6345b6471af02fc466022f63aa39686ff6addcaeb64a574f5bcf812422",
+    ".claude/skills/dotln-executor/SKILL.md": "087d5f78b5af93bfb2347a7c0714c2c46651994a1d6e7786494f5d4eddbb4a4e",
+    ".claude/skills/dotln-planner/SKILL.md": "3abfeb2ca3ce09d3bbfc36944ab1b69d32253d2ac6900d61d7954a2457616189",
+    ".claude/skills/dotln-refuter/SKILL.md": "b3aaa49547807fe88a052c63abc8501b7c45fcce56232ffe05d0da9e6b59262a",
+    ".claude/skills/dotln-release-close/SKILL.md": "f631e5f4e9fa27a1635e51d8928a15bb602095dd4faa77ddfc3724ec4c4e2011",
+    ".claude/skills/dotln-reviewer/SKILL.md": "18af69d96cb6c8c0ac357d30116d7eff1664e26a6c6def8f04725d943562969c",
+    ".claude/skills/dotln-verifier/SKILL.md": "95b00f6345b6471af02fc466022f63aa39686ff6addcaeb64a574f5bcf812422"
+  }
+}
