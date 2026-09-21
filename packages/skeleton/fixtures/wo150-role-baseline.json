@@ -1,0 +1,21 @@
+{
+  "workOrder": "WO-150",
+  "historicalBaseline": "wo079-role-baseline.json",
+  "historicalSha256": "27c5fa7d42edb6079e8c042cb8db56823e42727f0f98ac470e914aec9731d8d4",
+  "method": "SHA-256 of generated default roles after tinkerer-economy became default-on; the per-order opt-out reproduces the historical baseline's bytes exactly, and the WO-145 release snapshot stays separately checked.",
+  "decision": "docs/evidence/WO-150/decisions.md#wo-150-d001",
+  "roles": {
+    ".agents/skills/dotln-executor/SKILL.md": "32260a75b0492473b686b03ce7308196ae5d1a6282c0eb5fe11f8034d0754119",
+    ".agents/skills/dotln-planner/SKILL.md": "2bc9e77e4175b0ae0cef2d52686689577ecbd490679b89834049a5203521827b",
+    ".agents/skills/dotln-refuter/SKILL.md": "bcfbf28e03b33aeff4be70db47bf136c8ff896a09a723ae30719326331b4721f",
+    ".agents/skills/dotln-release-close/SKILL.md": "f1f71b023cc84eb7ece17be37a40a07374ad3b2d67ec983c042506e6cb7a031b",
+    ".agents/skills/dotln-reviewer/SKILL.md": "ad79e1948a2ee58a51788a5f73f93186ab93f6c3fa2e113a4074ec8d11d3c0cc",
+    ".agents/skills/dotln-verifier/SKILL.md": "2eb7172545f78cd36423c67ae21540c77011a5929ae5c6a1e5fc291a9d780315",
+    ".claude/skills/dotln-executor/SKILL.md": "32260a75b0492473b686b03ce7308196ae5d1a6282c0eb5fe11f8034d0754119",
+    ".claude/skills/dotln-planner/SKILL.md": "2bc9e77e4175b0ae0cef2d52686689577ecbd490679b89834049a5203521827b",
+    ".claude/skills/dotln-refuter/SKILL.md": "bcfbf28e03b33aeff4be70db47bf136c8ff896a09a723ae30719326331b4721f",
+    ".claude/skills/dotln-release-close/SKILL.md": "f1f71b023cc84eb7ece17be37a40a07374ad3b2d67ec983c042506e6cb7a031b",
+    ".claude/skills/dotln-reviewer/SKILL.md": "ad79e1948a2ee58a51788a5f73f93186ab93f6c3fa2e113a4074ec8d11d3c0cc",
+    ".claude/skills/dotln-verifier/SKILL.md": "2eb7172545f78cd36423c67ae21540c77011a5929ae5c6a1e5fc291a9d780315"
+  }
+}

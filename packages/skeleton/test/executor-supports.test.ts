@@ -94,8 +94,10 @@ const combinations = Array.from(
 const baselineEnvelope = contributorProgram([]).loadout.authorityEnvelope;
 
 test("WO-145 economy equipment adds only executor guidance and no authority or host checks", () => {
-  const off = contributorConfiguredProgram();
-  const on = contributorConfiguredProgram({ "tinkerer-economy": true });
+  // WO-150 flipped the default to on, so the per-order opt-out is the off case
+  // and the equipped build is what an ordinary dispatch compiles.
+  const on = contributorConfiguredProgram({});
+  const off = contributorConfiguredProgram({ "tinkerer-economy": false });
   assert.deepEqual(on.loadout.authorityEnvelope, off.loadout.authorityEnvelope);
   assert.deepEqual(on.loadout.workOrder, off.loadout.workOrder);
   assert.deepEqual(
@@ -107,13 +109,34 @@ test("WO-145 economy equipment adds only executor guidance and no authority or h
       on.roles.find((row) => row.name === role.name),
       role,
     );
-  assert.equal(executorSupportDefaults["tinkerer-economy"], false);
-  assert.ok(!defaultExecutorSupportIds.includes("tinkerer-economy"));
+  assert.equal(executorSupportDefaults["tinkerer-economy"], true);
+  assert.ok(defaultExecutorSupportIds.includes("tinkerer-economy"));
   assert.ok(
     on.loadout.componentManifest.some(
       (entry) => entry.componentId === "tinkerer-economy",
     ),
   );
+  assert.ok(
+    !off.loadout.componentManifest.some(
+      (entry) => entry.componentId === "tinkerer-economy",
+    ),
+  );
+  // The opt-out removes this support alone; every other default stays equipped.
+  assert.deepEqual(
+    executorSupportIds({ "tinkerer-economy": false }),
+    defaultExecutorSupportIds.filter((id) => id !== "tinkerer-economy"),
+  );
+  const executorProcedure = (program: typeof on) =>
+    program.roles.find((row) => row.name === "executor")!.procedure;
+  assert.ok(executorProcedure(on).includes(text("tinkerer-economy")));
+  assert.ok(!executorProcedure(off).includes(text("tinkerer-economy")));
+  for (const support of executorSupports.filter(
+    (row) => row.supportFacetId !== "tinkerer-economy",
+  ))
+    assert.equal(
+      executorProcedure(off).includes(text(support.supportFacetId)),
+      executorProcedure(on).includes(text(support.supportFacetId)),
+    );
 });
 
 test("WO-042 atomic support switches compose independently and removal restores the saved build", () => {

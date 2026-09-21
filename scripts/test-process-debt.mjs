@@ -4290,36 +4290,50 @@ test("WO-145 optional economy support preserves historical snapshots through WO-
     ),
   );
   // Authorized role edits get a separate oracle; never rewrite a historical
-  // snapshot to make the current generated instruction check pass.
+  // snapshot to make the current generated instruction check pass. WO-150 put
+  // the support on by default, so the current-bytes oracle is the WO-150
+  // baseline and its predecessor holds the bytes the per-order opt-out must
+  // still reproduce.
   const baseline = JSON.parse(
     readFileSync(
-      join(source, "packages/skeleton/fixtures/wo079-role-baseline.json"),
+      join(source, "packages/skeleton/fixtures/wo150-role-baseline.json"),
       "utf8",
     ),
   );
-  assert.equal(
-    createHash("sha256")
-      .update(
-        readFileSync(
-          join(
-            source,
-            "packages/skeleton/fixtures",
-            baseline.historicalBaseline,
-          ),
-        ),
-      )
-      .digest("hex"),
-    baseline.historicalSha256,
-    "the WO-146 snapshot remains byte-exact",
+  const previous = JSON.parse(
+    readFileSync(
+      join(source, "packages/skeleton/fixtures", baseline.historicalBaseline),
+      "utf8",
+    ),
   );
-  const off = harnessInstallation();
-  const explicitOff = harnessInstallation({
+  for (const snapshot of [baseline, previous])
+    if (snapshot.historicalSha256)
+      assert.equal(
+        createHash("sha256")
+          .update(
+            readFileSync(
+              join(
+                source,
+                "packages/skeleton/fixtures",
+                snapshot.historicalBaseline,
+              ),
+            ),
+          )
+          .digest("hex"),
+        snapshot.historicalSha256,
+        `${snapshot.historicalBaseline} remains byte-exact`,
+      );
+  const on = harnessInstallation();
+  const explicitOn = harnessInstallation({
+    supports: { "tinkerer-economy": true },
+  });
+  const off = harnessInstallation({
     supports: { "tinkerer-economy": false },
   });
-  const on = harnessInstallation({ supports: { "tinkerer-economy": true } });
   const withoutOrigin = (text) => text.replace(/^<!-- Origin: .* -->\n/m, "");
-  const roles = off.files.filter((file) => file.path.endsWith("/SKILL.md"));
+  const roles = on.files.filter((file) => file.path.endsWith("/SKILL.md"));
   assert.equal(roles.length, Object.keys(baseline.roles).length);
+  assert.equal(roles.length, Object.keys(previous.roles).length);
   for (const file of roles) {
     const released = execFileSync(
       "git",
@@ -4336,33 +4350,44 @@ test("WO-145 optional economy support preserves historical snapshots through WO-
       file.path,
     );
     assert.equal(
-      explicitOff.files.find((row) => row.path === file.path).contents,
+      explicitOn.files.find((row) => row.path === file.path).contents,
       file.contents,
     );
-    const equipped = on.files.find((row) => row.path === file.path);
+    // The opt-out equips exactly what the previous default equipped, so it
+    // reproduces those bytes including the Origin comment.
+    const optedOut = off.files.find((row) => row.path === file.path);
+    assert.equal(
+      createHash("sha256").update(optedOut.contents).digest("hex"),
+      previous.roles[file.path],
+      file.path,
+    );
+    const twin = on.files.find(
+      (row) =>
+        row.path ===
+        (file.path.startsWith(".claude/skills/")
+          ? file.path.replace(".claude/skills/", ".agents/skills/")
+          : file.path.replace(".agents/skills/", ".claude/skills/")),
+    );
+    assert.equal(twin.contents, file.contents, `${file.path} both roots`);
     if (file.path.endsWith("dotln-executor/SKILL.md")) {
+      assert.match(file.contents, /Tinkerer — Economy: Before implementation/);
       assert.match(
-        equipped.contents,
-        /Tinkerer — Economy: Before implementation/,
-      );
-      assert.match(
-        equipped.contents,
+        file.contents,
         /at most 900 s including preparation and recording/,
       );
-      assert.match(equipped.contents, /decline with a reason/);
-      assert.match(equipped.contents, /do not start a second one/);
-      assert.equal(
-        equipped.contents.split("Tinkerer — Economy:").length - 1,
-        1,
-      );
+      assert.match(file.contents, /decline with a reason/);
+      assert.match(file.contents, /do not start a second one/);
+      assert.equal(file.contents.split("Tinkerer — Economy:").length - 1, 1);
+      assert.ok(!optedOut.contents.includes("Tinkerer — Economy:"));
     } else {
       // Origin identifies the whole equipped loadout in the existing compiler;
       // changing equipment must change that hash even for untouched role prose.
       assert.equal(
-        withoutOrigin(equipped.contents),
+        withoutOrigin(optedOut.contents),
         withoutOrigin(file.contents),
         file.path,
       );
+      assert.notEqual(optedOut.contents, file.contents, file.path);
     }
   }
   for (const [index, bundle] of on.bundles.entries()) {
@@ -5272,6 +5297,11 @@ test("bare executor next/fix project installed defaults and completion advises a
   assert.equal(next.status, 0, next.stderr);
   assert.match(next.stdout, /Adjacent Repair is equipped/);
   assert.match(next.stdout, /Intent to Act is equipped.*'I intend to'/);
+  // WO-150: the support is default equipment, so the briefing names it too.
+  assert.match(
+    next.stdout,
+    /Tinkerer — Economy is equipped: before implementation/,
+  );
   assert.match(next.stdout, /running none; next none/);
   const before = snapshot(root);
   const status = call("status", "--json");
@@ -5279,13 +5309,17 @@ test("bare executor next/fix project installed defaults and completion advises a
   assert.doesNotMatch(status.stdout, /Executor entry duties/);
   assert.deepEqual(snapshot(root), before, "status remains read-only");
   emitHarness(root, {
-    supports: { "adjacent-repair": false, "communication-intent": false },
+    supports: {
+      "adjacent-repair": false,
+      "communication-intent": false,
+      "tinkerer-economy": false,
+    },
   });
   const off = call("next");
   assert.equal(off.status, 0, off.stderr);
   assert.doesNotMatch(
     off.stdout,
-    /Adjacent Repair is equipped|Intent to Act is equipped/,
+    /Adjacent Repair is equipped|Intent to Act is equipped|Tinkerer — Economy is equipped/,
   );
   assert.match(off.stdout, /Follow-up Queue is equipped/);
   emitHarness(root);
