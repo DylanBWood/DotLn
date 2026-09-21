@@ -453,9 +453,37 @@ Run the affected executable checks and release/publication preflights on the int
 
 The existing resume phrases remain the operator interface. The actor performing a handoff completes authorized integration chores within that session. `npm run release -- prepare` handles a colliding target, the README claim, and a dated roadmap note under the recorded release classification. It uses origin's tag observation; `--local` deliberately uses only the fetched local tag snapshot. It never publishes, alters component versions, or appends control events. A missing component bump against the verified branch baseline remains an executor defect. A component bump that was valid at verification may be retimed during integration if upstream consumed the same version, preserving its already-declared compatibility impact and recording that evidence; this is distinct from omitting the original bump. `npm test` runs `check-surfaces --local` before expensive suites against annotated local releases in the subject's own `HEAD` ancestry. Worktrees share tag refs, so an unintegrated sibling's newer tag is excluded from this verification baseline. `worktree publish` / `release close` retain the authoritative remote check on the integrated result. No command acquires authority from a sibling's phase.
 
-The fuller `worktree integrate` automation belongs to
-[WO-079](../work-orders/WO-079-worktree-sync.md), the successor to
-WO-033's former sync proposal. Until it ships, the integrating actor runs the existing preserve → fetch/merge → apply → regenerate procedure and records the evidence-impact assessment. That manual seam is explicit; it is not a rule that workflows restart when their bases differ. The [breakout receipt](../evidence/WO-041/ideation.md) records the measured failure that prompted this correction.
+Run `npm run worktree -- integrate WO-NNN` inside the matching worktree
+([WO-079](../work-orders/WO-079-worktree-sync.md), the successor to WO-033's
+sync proposal). It checkpoints current work without a lifecycle event,
+keeps a named include-untracked stash, fetches main and tags, fast-forwards
+an uncommitted branch or starts a non-rewriting merge, applies the stash,
+and regenerates the projections below. Ignored intake requires
+`--intake-backup <archive.zip>` naming an external archive whose bytes match
+the current intake; `npm run backup:intake -- <authorized-directory>` creates
+one. The helper never reads a sibling's phase as admission authority.
+
+The command lists authored conflicts and exits nonzero while work remains.
+Resolve those paths explicitly, stage those resolutions, then use
+`npm run worktree -- integrate WO-NNN --continue`. The ignored integration
+receipt keeps the original bases, checkpoint and stash across this boundary;
+neither stash pop/drop nor a branch commit is performed. A reviewed branch's
+authored merge conflict can delay stash application until that continuation.
+Generated fragments in mixed documents are re-merged separately from their
+authored content. The follow-up register unions entries by id and retains
+compatible history prefixes; divergent histories for one id need authored
+resolution, because renumbering source revisions would change past meaning.
+
+The helper invokes existing build, harness, index, meta, release-preparation
+and publication-lock producers. Console expected outputs are regenerated when
+their inputs changed, preserving the authored fixture manifest's selection.
+It writes a dated draft integration decision naming both bases and resolved
+paths. The reviewer completes carried-forward claims, checks component-version
+collisions and evidence-edition changes, runs the printed affected checks,
+and owns any merge commit. The helper runs no product gate and records no
+repair, verification or acceptance event. A new base is not itself a finding.
+The [breakout receipt](../evidence/WO-041/ideation.md) records the measured
+failure that prompted this correction.
 
 **Operator decision (2026-09-16, R1 replan pass): two lanes are the normal
 workflow.** Two work orders run in parallel worktrees as a matter of
@@ -467,7 +495,8 @@ the stand-down met a sibling at final review and each integration was
 handled a little differently (a verifier read a sibling's publication as a
 defect; retimes at final review; union merges of the follow-up register;
 regenerated bundles and editions), the integrating final review runs this
-list and nothing else counts as a finding: preserve the branch's work and
+list, now implemented by `npm run worktree -- integrate WO-NNN`, and nothing
+else counts as a finding: preserve the branch's work and
 intake; merge main; regenerate the harness bundle and manifest, the
 work-order index, `npm run meta` and the publication locks; union the
 follow-up register by entry id; retime an unpublished release under its
@@ -490,8 +519,8 @@ worst case. Two rules follow. The second lane is by preference an
 evidence-only or machinery order that touches surfaces the delivery order
 does not, so its integration has no release retime and no source merge;
 two operator-assisted orders never share a pair. The checklist above becomes
-one command, `worktree integrate` (WO-079, rewritten), which runs it and
-prints the affected checks; until it lands the list stands as written. A
+one command, `worktree integrate` (WO-079), which runs its mechanical steps and
+prints the affected checks; the list remains its definition. A
 final review records a merge blocker only with the command and line that
 enforces it; a sentence nothing checks is a documented condition, not a
 gate. The capture is `docs/intake/notes/2026-09-17-vision-into-use-planning.md`
