@@ -1,4 +1,4 @@
-# WO-079 — Worktree integrate: `worktree integrate WO-NNN` runs the second lane's integration checklist as one command — checkpoint, named stash, merge main, regenerate every generated surface, union the follow-up register, retime a colliding unpublished release with a dated decision stub — and reports the checks the integrated tree needs (version assigned at activation)
+# WO-079 — Worktree integrate: `worktree integrate WO-NNN` runs the second lane's integration checklist as one command — checkpoint, named stash, merge main, regenerate every generated surface, union the follow-up register, retime a colliding unpublished release with a dated decision stub — and reports the checks the integrated tree needs (v0.37.1)
 
 **Model:** any capable model. State the model and effort actually run in the
 result (07-execution-guide.md §Model-specific notes).
