@@ -455,8 +455,8 @@ For concurrent work:
 
 1. Recheck the [lane rules](planning/concurrent-work-orders-plan.md#lane-rules-the-showrunner-can-apply-by-hand), dependencies, write surfaces, actor capacity, and each release target. Start each authorized order from clean main with `npm run worktree -- start WO-NNN docs/work-orders/WO-NNN-name.md`, then use a separate session in each emitted worktree.
 2. Use the ordinary resume phrases there; the `wo-NNN` branch selects the order. On main, use `npm run resume -- status` for the overview and `npm run resume --silent -- status --json --work-order WO-NNN` for a selected order. Explicit selection overrides a worktree's branch too.
-3. Integrate reviewed PRs one at a time. Keep both histories byte-exact if shared generated projections conflict. Regenerate those projections with `npm run resume -- next --work-order <closed-order-id>` and `npm run work-orders -- index`; the former can refresh from any known closed order and reports the remaining in-flight orders. Never union-merge, rewrite, or move control events.
-4. Within its final-review window, the integrating actor incorporates current upstream and assesses affected acceptance claims. Regenerate projections and use `npm run release -- prepare` for collision retiming; rerun the affected executable checks. An unrelated merge, additive documentation, independent manifest fields, or release-only metadata does not automatically fail review or restart verification. Preserve the earlier report as evidence for its actual subject and record integration evidence in the current review. An actual behavior-changing resolution or acceptance defect needs bounded repair and independent evidence for the affected claims.
+3. Integrate reviewed PRs one at a time. In the order's worktree run `npm run worktree -- integrate WO-NNN`, naming `--intake-backup <archive.zip>` when ignored intake is present. The helper keeps a checkpoint and named stash, updates the base, regenerates projections and unions the follow-up register. Never union-merge, rewrite, or move control events.
+4. Within its final-review window, the integrating actor resolves listed authored conflicts, stages those resolutions and runs `npm run worktree -- integrate WO-NNN --continue`. Complete the helper's dated decision stub, assess affected acceptance claims and run its printed checks. An unrelated merge, additive documentation, independent manifest fields, or release-only metadata does not automatically fail review or restart verification. Preserve the earlier report as evidence for its actual subject and record integration evidence in the current review. An actual behavior-changing resolution or acceptance defect needs bounded repair and independent evidence for the affected claims.
 5. After each authorized merge, use that order's printed release-close handoff. Finish and release select the named order from committed control, so a sibling can remain open. Only an empty in-flight set means between work orders.
 
 The [feasibility fixture](../scripts/test-concurrent-control.mjs) exercises two
@@ -466,21 +466,14 @@ integration costs are recorded in the phase-two plan; lane generation and
 per-order workflow variation remain deferred. Main stays clean for the
 operator and planning session.
 
-The sync step for the lane whose sibling merged first is spelled out in the
-[phase-two plan](planning/phase-two-plan-2026-09-06.md#concurrency-what-is-safe-what-is-untested-and-the-procedure):
-confirm containment, `git stash push --include-untracked -m 'WO-NNN sync <date>'`,
-fast-forward an uncommitted branch (merge, never rebase, a branch with reviewed
-commits), `git stash apply` and keep the stash, regenerate `current.md`, the
-index, and the publication locks rather than hand-merging them, retime the
-release target with a dated note if the sibling took the version, rerun the
-affected checks, and record which claims retained or needed new evidence. A
-new base is not itself a repair finding. The planned [WO-079](work-orders/WO-079-worktree-sync.md)
-`npm run worktree -- integrate WO-NNN` helper owns these mechanical steps and
-the evidence-impact handoff; until it ships, use the manual procedure above. Expect textual conflicts by construction in the README
-release block, `package.json`, the ledger head, the map's recommendation
-section, and the edition lock lines; none is a reason to union-merge or rewrite
-a control segment. Available actors and one writer per worktree bound resources;
-do not impose a phase-count admission rule on independent orders.
+The [integration checklist](product/07-execution-guide.md#independent-workflows-and-integration)
+defines the helper's scope. It never drops the recovery stash, rewrites reviewed
+commits, runs the product gate or decides acceptance. Conflicting authored
+content stays for explicit resolution; generated lock lines and harness
+fragments are regenerated without replacing the surrounding prose. Component
+retiming and evidence-edition judgment remain with the reviewer. Available
+actors and one writer per worktree bound resources; do not impose a phase-count
+admission rule on independent orders.
 
 ## When things break
 

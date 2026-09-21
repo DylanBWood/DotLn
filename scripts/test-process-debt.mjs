@@ -4282,20 +4282,35 @@ test("meter diff bytes include newly authored untracked source", (t) => {
   );
 });
 
-test("WO-145 optional economy support preserves historical and WO-146 role snapshots and changes only executor instructions on", () => {
+test("WO-145 optional economy support preserves historical snapshots through WO-079 and changes only executor instructions on", () => {
   const historical = JSON.parse(
     readFileSync(
       join(source, "packages/skeleton/fixtures/wo145-role-baseline.json"),
       "utf8",
     ),
   );
-  // WO-146 deliberately changes shared role prose. Preserve the released oracle
-  // and bind the authorized new bytes separately; do not erase either baseline.
+  // Authorized role edits get a separate oracle; never rewrite a historical
+  // snapshot to make the current generated instruction check pass.
   const baseline = JSON.parse(
     readFileSync(
-      join(source, "packages/skeleton/fixtures/wo146-role-baseline.json"),
+      join(source, "packages/skeleton/fixtures/wo079-role-baseline.json"),
       "utf8",
     ),
+  );
+  assert.equal(
+    createHash("sha256")
+      .update(
+        readFileSync(
+          join(
+            source,
+            "packages/skeleton/fixtures",
+            baseline.historicalBaseline,
+          ),
+        ),
+      )
+      .digest("hex"),
+    baseline.historicalSha256,
+    "the WO-146 snapshot remains byte-exact",
   );
   const off = harnessInstallation();
   const explicitOff = harnessInstallation({

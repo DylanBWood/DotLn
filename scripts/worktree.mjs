@@ -223,6 +223,17 @@ const reconcileDerivedWorktrees = (
 };
 const main = async () => {
   const [action, workOrderId, ...actionArgs] = process.argv.slice(2);
+  if (action === "integrate") {
+    const { integrateWorktree } =
+      await import("./lib/worktree-integration.mjs");
+    const result = await integrateWorktree(
+      resolve(process.cwd()),
+      workOrderId,
+      actionArgs,
+    );
+    if (!result.complete) process.exitCode = 1;
+    return;
+  }
   const repoRoot = ["finish", "settle"].includes(action)
     ? resolve(process.cwd())
     : toolRoot;
@@ -568,7 +579,7 @@ const main = async () => {
     );
   } else {
     throw new Error(
-      "usage: worktree start WO-NNN <work-order-path> | worktree publish WO-NNN --title <title> --body-file <path> | worktree finish WO-NNN [--dry-run] | worktree settle WO-NNN [--dry-run]",
+      "usage: worktree start WO-NNN <work-order-path> | worktree integrate WO-NNN [--intake-backup <archive.zip>] [--continue] | worktree publish WO-NNN --title <title> --body-file <path> | worktree finish WO-NNN [--dry-run] | worktree settle WO-NNN [--dry-run]",
     );
   }
 };
