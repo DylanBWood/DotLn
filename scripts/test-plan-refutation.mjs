@@ -2417,13 +2417,25 @@ else {
       },
     );
     await check(
-      "WO-135 admits only the exact evidence-only release-header format correction",
+      "WO-135/WO-138 admit only equivalent evidence-only release-header formatting",
       async () => {
-        for (const axis of ["patch", "minor", "major"]) {
-          const repo = makeRepo(parent, `release-header-${axis}`);
+        for (const [axis, article, presentation] of [
+          ["patch", "A", ": a"],
+          ["minor", "A", ": a"],
+          ["major", "A", ": a"],
+          ["patch", "An", ". An"],
+          ["minor", "An", ": an"],
+          ["major", "A", ". A"],
+        ]) {
+          const repo = makeRepo(
+            parent,
+            `release-header-${axis}-${article}-${presentation[0] === ":" ? "colon" : "sentence"}`,
+          );
           const path = orderPath("WO-901");
-          const legacy = `**Release classification:** ${axis}, evidence-only. A probe extension under the existing contract.`;
-          const canonical = `**Release classification:** ${axis}. Evidence-only: a probe extension under the existing contract.`;
+          const description =
+            article === "An" ? "evaluation harness" : "probe extension";
+          const legacy = `**Release classification:** ${axis}, evidence-only. ${article} ${description} under the existing contract.`;
+          const canonical = `**Release classification:** ${axis}. Evidence-only${presentation} ${description} under the existing contract.`;
           const source = read(repo, path).replace(
             "# WO-901 — Fixture\n",
             `# WO-901 — Fixture (version assigned at activation)\n\n${legacy}\n`,
@@ -2447,12 +2459,19 @@ else {
           );
           for (const invalid of [
             corrected.replace(
-              `${axis}. Evidence-only:`,
-              `${axis === "patch" ? "minor" : "patch"}. Evidence-only:`,
+              `${axis}. Evidence-only`,
+              `${axis === "patch" ? "minor" : "patch"}. Evidence-only`,
             ),
             corrected.replace("the existing contract", "a changed contract"),
-            corrected.replace("Evidence-only: a", "A"),
-            corrected.replace("Evidence-only: a", "Evidence-only: another"),
+            corrected.replace(`Evidence-only${presentation}`, article),
+            corrected.replace(
+              `Evidence-only${presentation}`,
+              "Evidence-only: another",
+            ),
+            corrected.replace(
+              `Evidence-only${presentation}`,
+              article === "An" ? "Evidence-only: a" : "Evidence-only: an",
+            ),
           ]) {
             write(repo, path, invalid);
             await assert.rejects(

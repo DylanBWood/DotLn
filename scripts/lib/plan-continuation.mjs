@@ -360,15 +360,20 @@ export function checkPlanContinuation(
     }
     // Release preparation requires "patch." rather than the older
     // "patch, evidence-only." spelling. Admit only this exact presentation
-    // correction; the axis and every following description byte stay judged.
+    // correction, including A/An and colon/sentence presentation; the axis,
+    // article identity and every following description byte stay judged.
     const legacyClassification = before.match(
-      /^\*\*Release classification:\*\* (patch|minor|major), evidence-only\. A /m,
+      /^\*\*Release classification:\*\* (patch|minor|major), evidence-only\. (An?) /m,
     );
     if (legacyClassification) {
       const canonical = after.match(
-        /^\*\*Release classification:\*\* (patch|minor|major)\. Evidence-only: a /m,
+        /^\*\*Release classification:\*\* (patch|minor|major)\. Evidence-only(?:: (an?) |\. (An?) )/m,
       );
-      if (canonical?.[1] === legacyClassification[1]) {
+      if (
+        canonical?.[1] === legacyClassification[1] &&
+        (canonical[2] ?? canonical[3]).toLowerCase() ===
+          legacyClassification[2].toLowerCase()
+      ) {
         after =
           after.slice(0, canonical.index) +
           legacyClassification[0] +
