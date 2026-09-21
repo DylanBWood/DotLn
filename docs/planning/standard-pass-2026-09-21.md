@@ -395,4 +395,43 @@ except the ignored intake capture and the granted scratch directory.
 
 ## 11. Independent review
 
-Filled after the receipt is filed.
+Receipt
+[2026-09-21-planning-9d2888b45f687bc6-022](refutations/2026-09-21-planning-9d2888b45f687bc6-022.md):
+one fresh background reviewer, given only the canonical prompt (133,140
+bytes, read in nine contiguous slices by its own statement), judged the
+committed subject at `3a6aa592`. Pass scope: WO-147, WO-148, WO-149 and the
+sequence; 94 verdicts carried by hash. Verdict `aligned-with-findings` for
+all three orders and the plan; no hold; twelve known issues, zero observed
+failures, zero vision contradictions. Dispatch to file took 762 s, observed,
+with no pass-budget refusal. The reviewer made no repository or Git writes
+and spawned no agents; one subagent of the twenty-agent cap was spent on this
+pass.
+
+The known issues are carried into each order's catalog row for the
+executor's decisions. The ones that change how the orders should be run:
+WO-147's single re-inspection is not closed under a second vanish of the
+lock between re-inspection and read, so the fixed point is a read that
+treats `ENOENT` as absent-then-re-inspect, bounded by the existing contended
+wait, with a two-vanish fixture; its criterion 3 means ten runs of the named
+case within the runner's concurrent load, not ten canonical gates, which the
+reviewer priced at about 8.4 hours if read that way, and the decisions file
+records the run shape and its wall-clock. WO-148 must treat a merge base
+moved by `worktree integrate` as a `--check` mismatch and say what the
+capsule diffs against; its stale-binding refusal lives only in the command,
+so an outside scheduler keeps judging a finished order's worktree, a limit
+the Cost line's second removal must be read against; and the command
+hard-wires the Contributor build until a second build needs a selector.
+WO-149's begin call is advisory inside the dispatch, never a refusal of a
+lifecycle command, under WO-132's stand-down; a Codex refuter or planning
+dispatch stays outside its five dispatches unless the set is widened; the
+two harnesses' entry counters may read different windows and the record must
+say which; the fixture transcript is bound to the pinned Codex version, so
+the live row is the only live check; and no criterion binds the cost table's
+`tokens` metric. Both source-changing orders must place their one fixture in
+a named existing suite and report its effect on the gate step count the
+meter already flags.
+
+The order texts stand as judged; none of the twelve issues is a hold, and a
+criterion edit after the receipt would re-key the subject for wording the
+catalog rows now carry. `npm run test:docs` after the receipt: recorded in
+the handoff.
