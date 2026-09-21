@@ -11963,6 +11963,171 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-a7175a13eca745f2",
+      "key": "decision:docs/evidence/WO-069/decisions.md#wo-069-d005",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "4890c0aee982b3d5d2f90467cb0385ef3bc8660a740330aad331d14585e3ee76",
+          "ref": "docs/evidence/WO-069/decisions.md#wo-069-d005",
+          "title": "WO-069-D005: WO-070 carries the kit's own root resolution: the packages' docs/control/local lane should follow the launchpad configuration once the plane/kit module identity is settled. Until then a c",
+          "summary": "{ \"id\": \"WO-069-D005\", \"date\": \"2026-09-21\", \"dispatch\": \"resume: next\", \"decision\": \"Leave the compiled packages under `packages/` resolving their own Git-ignored local harness lane (`docs/control/local/...`) on the default path, and state the limit in product 07, in the fixture test and here.\", \"evidence\": [ \"packages/skeleton/src/gate-evidence.mjs\", \"packages/skeleton/src/usage-observation.mjs\", \"packages/skeleton/src/writer-teardown.mjs\", \"packages/compiler/src/codex-continuation.mjs\", \"docs/work-orders/WO-033-compiled-starter-export.md\", \"scripts/test-configuration-root.mjs\" ], \"rejected\": [ { \"option\": \"Import `scripts/lib/config.mjs` from the packages\", \"reason\": \"It inverts the kit/p",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-db845f6776faa381",
+      "key": "decision:docs/evidence/WO-069/decisions.md#wo-069-d004",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "e501db3bdb33b3f43a2c0309d998e381545c1f2c876b87d03c7ba173cb3d7845",
+          "ref": "docs/evidence/WO-069/decisions.md#wo-069-d004",
+          "title": "WO-069-D004: The criterion 3 guard covers every non-test .mjs file under scripts/, excluding scripts/lib/config.mjs itself. Test files keep their literal default-layout paths. A literal is judged path",
+          "summary": "{ \"id\": \"WO-069-D004\", \"date\": \"2026-09-21\", \"dispatch\": \"resume: next\", \"decision\": \"The criterion 3 guard covers every non-test `.mjs` file under `scripts/`, excluding `scripts/lib/config.mjs` itself. Test files keep their literal default-layout paths. A literal is judged path-shaped: a `docs/...` string or template with no whitespace, or a `docs\\\\/` fragment inside a regular expression. A second root derivation is any `import.meta.url` or `import.meta.dirname` combined with a parent-directory traversal.\", \"evidence\": [ \"scripts/test-configuration-root.mjs\", \"scripts/test-resume.sh\", \"scripts/test-control-segments.mjs\" ], \"rejected\": [ { \"option\": \"Refuse literal roots in the test files to",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-eaf686827c417f57",
+      "key": "decision:docs/evidence/WO-069/decisions.md#wo-069-d006",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "5424361de1c6c2acf67add840e361420f44a903f0b9b6d945db4186e861dcdcf",
+          "ref": "docs/evidence/WO-069/decisions.md#wo-069-d006",
+          "title": "WO-069-D006: Keep the exported default-layout constants (LEGACY_CONTROL_PATH, CONTROL_ORDERS_PATH, orderSegmentPath, RECEIPTS, OVERRIDES, ADJACENT_QUEUE, FOLLOWUPS, LOCAL_AUTHORITY_GRANTS, PLAN_MAP, P",
+          "summary": "{ \"id\": \"WO-069-D006\", \"date\": \"2026-09-21\", \"dispatch\": \"resume: next\", \"decision\": \"Keep the exported default-layout constants (`LEGACY_CONTROL_PATH`, `CONTROL_ORDERS_PATH`, `orderSegmentPath`, `RECEIPTS`, `OVERRIDES`, `ADJACENT_QUEUE`, `FOLLOWUPS`, `LOCAL_AUTHORITY_GRANTS`, `PLAN_MAP`, `PLAN_LEDGER`) computed from the loader's defaults, and add root-aware accessors that the plane itself uses.\", \"evidence\": [ \"scripts/lib/control.mjs\", \"scripts/lib/plan-receipts.mjs\", \"scripts/lib/planning-followups.mjs\", \"scripts/lib/adjacent-queue.mjs\" ], \"rejected\": [ { \"option\": \"Replace the constants with functions everywhere\", \"reason\": \"It would rewrite several hundred call sites in the suites witho",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-ab610a0fcfa29acd",
+      "key": "decision:docs/evidence/WO-069/decisions.md#wo-069-d009",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "a8aa80a776944faaa8fad134acd35838704daad66870a28a48001cae8a4ad502",
+          "ref": "docs/evidence/WO-069/decisions.md#wo-069-d009",
+          "title": "WO-069-D009: Repair WO-069 VER-001 F1: use root-aware paths for live lineage and planning consumers, audit remaining default constants, and add configured-root behavioral coverage.",
+          "summary": "{ \"id\": \"WO-069-D009\", \"decision\": \"Fail verification finding F1: the lineage command and planning-pass readers still resolve the default lineage root after a valid launchpad moves it. Keep the implementation unchanged for the executor to repair.\", \"evidence\": [ \"docs/verifications/WO-069/VER-001.md\", \"scripts/lineage.mjs\", \"scripts/lib/plan-direct.mjs\", \"scripts/lib/plan-receipts.mjs\" ], \"reopens\": { \"decisionId\": \"WO-069-D006\", \"observation\": \"Matched default and configured fixtures show live consumers of PLAN_LEDGER and defaultDocRelative: default succeeds, configured lineage is read from docs/lineage and fails ENOENT.\" }, \"followup\": \"Repair WO-069 VER-001 F1: use root-aware paths for li",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-f8e9e2285ede1831",
+      "key": "decision:docs/evidence/WO-069/decisions.md#wo-069-d010",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "daa1ad09ad7b66a69cdbda76fa50996fb05bc3169c286500f5f12eaf8a61441a",
+          "ref": "docs/evidence/WO-069/decisions.md#wo-069-d010",
+          "title": "WO-069-D010: Repair WO-069 VER-001 F2: carry the launchpad through follow-up validation and test plan followups --sync with a moved product/planning/evidence root.",
+          "summary": "{ \"id\": \"WO-069-D010\", \"decision\": \"Fail verification finding F2: projected(root) collects configured follow-up references but calls validate(state) without the root, rejecting a valid configured candidate.\", \"evidence\": [ \"docs/verifications/WO-069/VER-001.md\", \"scripts/lib/planning-followups.mjs\" ], \"followup\": \"Repair WO-069 VER-001 F2: carry the launchpad through follow-up validation and test plan followups --sync with a moved product/planning/evidence root.\", \"date\": \"2026-09-21\", \"dispatch\": \"resume: verify\", \"rejected\": [ { \"option\": \"Change the implementation during independent verification\", \"reason\": \"The verifier records defects against the current subject; the executor owns repai",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-3eb6a77f3681523d",
+      "key": "decision:docs/evidence/WO-069/decisions.md#wo-069-d011",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "a5a90ce4a23ea90a0e1b4784d1c6b6ff9c401f16605a6c1bdfd34c4313cb585c",
+          "ref": "docs/evidence/WO-069/decisions.md#wo-069-d011",
+          "title": "WO-069-D011: Repair WO-069 VER-001 F3: centralize the remaining derivation, separate kit fixture inputs from launchpad outputs, and make the guard detect the demonstrated two-step form.",
+          "summary": "{ \"id\": \"WO-069-D011\", \"decision\": \"Fail verification finding F3: the guard misses the existing two-step module-URL root derivation in writing-worker-probe.mjs, whose report default writes into the tool checkout despite DOTLN_LAUNCHPAD.\", \"evidence\": [ \"docs/verifications/WO-069/VER-001.md\", \"scripts/lib/writing-worker-probe.mjs\", \"scripts/test-configuration-root.mjs\" ], \"reopens\": { \"decisionId\": \"WO-069-D004\", \"observation\": \"The guard passes while renderReport({date}) writes the report under the copied tool checkout instead of the separately configured launchpad. The remaining derivation stores the module directory in here before resolving ../.. .\" }, \"followup\": \"Repair WO-069 VER-001 F3",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-6a367d8b65df7295",
+      "key": "decision:docs/evidence/WO-069/decisions.md#wo-069-d012",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "338c432250bd412ba5097c09a968bdfa564c8c47e6129410cb55afb4b99d378c",
+          "ref": "docs/evidence/WO-069/decisions.md#wo-069-d012",
+          "title": "WO-069-D012: Repair WO-069 VER-001 F4: keep the resolved legal path available to the error handler and cover missing or unreadable legal-document failures in default and configured layouts.",
+          "summary": "{ \"id\": \"WO-069-D012\", \"decision\": \"Fail verification finding F4: the license-surface error handler now references block-scoped legalPath outside its scope, replacing the activation-base structured failure with ReferenceError when LEGAL.md is absent.\", \"evidence\": [ \"docs/verifications/WO-069/VER-001.md\", \"scripts/license-surfaces.mjs\", \"scripts/test-license-surfaces.mjs\" ], \"followup\": \"Repair WO-069 VER-001 F4: keep the resolved legal path available to the error handler and cover missing or unreadable legal-document failures in default and configured layouts.\", \"date\": \"2026-09-21\", \"dispatch\": \"resume: verify\", \"rejected\": [ { \"option\": \"Change the implementation during independent verifi",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-dfe3b5533a6cb790",
+      "key": "decision:docs/evidence/WO-069/decisions.md#wo-069-d013",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "1a124210f43311e8818cd72537969f868b4680dd39ffdff7ba69b704970332a1",
+          "ref": "docs/evidence/WO-069/decisions.md#wo-069-d013",
+          "title": "WO-069-D013: Repair WO-069 VER-001 F5: make the harness fixtures carry the complete required dependency set; rerun the failing existing harness cases (57, 79, 82, 87), diagnose the operator-release ba",
+          "summary": "{ \"id\": \"WO-069-D013\", \"decision\": \"Fail verification finding F5: the unchanged harness fixture copies newly dependent helper modules without config.mjs, so existing executable cases fail with ERR_MODULE_NOT_FOUND even though the product-only npm test passes.\", \"evidence\": [ \"docs/verifications/WO-069/VER-001.md\", \"scripts/test-harness.mjs\", \"scripts/lib/harness.mjs\" ], \"followup\": \"Repair WO-069 VER-001 F5: make the harness fixtures carry the complete required dependency set; rerun the failing existing harness cases (57, 79, 82, 87), diagnose the operator-release barrier timeout, and pass the machinery gate without weakening assertions.\", \"date\": \"2026-09-21\", \"dispatch\": \"resume: verify\", ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-42bd32c65a200381",
+      "key": "decision:docs/evidence/WO-069/decisions.md#wo-069-d015",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "0b0706ab844c896911896de2d4cc6e2e68beb309ca91909309ba39244bb41e37",
+          "ref": "docs/evidence/WO-069/decisions.md#wo-069-d015",
+          "title": "WO-069-D015: WO-143 follow-up: test whether allocating a freshly observed dead PID inside each filesystem-boundary fixture removes the concurrency-sensitive live-host failure; paths packages/skeleton/",
+          "summary": "{ \"id\": \"WO-069-D015\", \"date\": \"2026-09-21\", \"dispatch\": \"resume: fix\", \"decision\": \"Record, but do not fold into WO-069, the adjacent concurrency-sensitive failure of WO-143's filesystem-boundary matrix. The canonical WO-069 gate observed one synthetic abandoned host PID as live; the identical compiled test then passed alone across all 344 boundaries. Package sources are unchanged by WO-069, and the failure's cause is not established.\", \"evidence\": [ \"docs/evidence/WO-069/configuration-root.md\", \"packages/skeleton/test/resident.test.ts\", \"docs/control/local/harness/checks.json\" ], \"followup\": \"WO-143 follow-up: test whether allocating a freshly observed dead PID inside each filesystem-bound",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-ec23fc47b2aabafe",
+      "key": "decision:docs/evidence/WO-069/decisions.md#wo-069-d016",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "6e468e71361fe1c87c052249b0376415e52efc5a73dd26b51127f54c7341adfb",
+          "ref": "docs/evidence/WO-069/decisions.md#wo-069-d016",
+          "title": "WO-069-D016: WO-070 follow-up: give the scripts that measure or benchmark this checkout an explicit TOOL_ROOT for kit inputs while their outputs keep the launchpad, as WO-069 VER-001 F3 settled for wr",
+          "summary": "{ \"id\": \"WO-069-D016\", \"decision\": \"Record, and do not route to repair, the residual kit/launchpad conflation in the self-measurement and benchmark scripts: they bind one root to findLaunchpad() and then read kit paths under it, so a launchpad that is not the running scripts' checkout resolves tool fixtures where they do not exist. Observed: with DOTLN_LAUNCHPAD naming a separate launchpad, scripts/harness-context.mjs exports fixtureTree at <launchpad>/scripts/fixtures/harness-context/tree, which is absent, while its evidence output correctly follows the launchpad. No acceptance criterion names these scripts, the default layout keeps the two roots identical, and the failure is a loud missing",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-99ec03a092896aa7",
+      "key": "decision:docs/evidence/WO-069/decisions.md#wo-069-d017",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "d76acd678fa77283ab6b46991cfb9706d725ce8d628c007d733053701fedc49e",
+          "ref": "docs/evidence/WO-069/decisions.md#wo-069-d017",
+          "title": "WO-069-D017: Reviewer follow-up: the same cross-root shape survives in fixture construction, where scripts/lib/copilot-qualification.mjs computes relative names with docRelative(repository, ...) and w",
+          "summary": "{ \"id\": \"WO-069-D017\", \"decision\": \"Resolve the target-lane receipt under the worktree it belongs to. planHarnessPrune resolved the target receipt directory with docRelative(launchpad, ...) but its installation.json with docRelative(root, ...) inside the same loop, so one worktree's configured control root was used to name a path under another worktree. Changed root to launchpad in scripts/lib/harness-prune.mjs. Default layouts resolve both identically, so this is a no-op for today's repository, which ships no dotln.config.json; under a launchpad that declares a different control root the mismatch silently skipped every target lane rather than failing loudly. Taken as a bounded reviewer clea",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }
