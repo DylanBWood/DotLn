@@ -13246,6 +13246,52 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-f219d99187db98b7",
+      "key": "decision:docs/evidence/WO-149/decisions.md#wo-149-d003",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "a7886c4908f6a3385a641ceef102a322ebf443dafb9c1227ff86554a9b1a5dbf",
+          "ref": "docs/evidence/WO-149/decisions.md#wo-149-d003",
+          "title": "WO-149-D003: File a dedicated work order to reconcile the local-model role qualification probe with the single TOOL_ROOT derivation. It must either rerun and independently validate the full immutable ",
+          "summary": "{ \"id\": \"WO-149-D003\", \"date\": \"2026-09-21\", \"dispatch\": \"resume: next; Adjacent Repair item adjacent-0001\", \"decision\": \"Do not repair the configured-root failure inside WO-149. Restore scripts/probes/local-model-role-qualification.mjs byte-for-byte after the concrete TOOL_ROOT repair made the configuration-root suite pass but invalidated the committed WO-138 episode bindings. Dispose adjacent-0001 as a known issue and leave both guards honest.\", \"evidence\": [ \"npm test -- --only configuration-root on the unmodified probe: failure at scripts/test-configuration-root.mjs because the probe independently derives ../.. from import.meta.url\", \"Bounded probe: importing TOOL_ROOT and setting ROOT =",
+          "missing": false
+        },
+        {
+          "hash": "9f78997ff4cb71ce04486acb79123bd6aefe6b6ad9c77fea45d6321c0ebb7bb8",
+          "ref": "docs/evidence/WO-149/decisions.md#wo-149-d003",
+          "title": "WO-149-D003: File a dedicated work order to reconcile the local-model role qualification probe with the single TOOL_ROOT derivation. It must either rerun and independently validate the full immutable ",
+          "summary": "{ \"id\": \"WO-149-D003\", \"date\": \"2026-09-21\", \"dispatch\": \"resume: next; Adjacent Repair item adjacent-0001\", \"decision\": \"Do not repair the configured-root failure inside WO-149. Restore scripts/probes/local-model-role-qualification.mjs byte-for-byte after the concrete TOOL_ROOT repair made the configuration-root suite pass but invalidated the committed WO-138 episode bindings. Dispose adjacent-0001 as a known issue and leave both guards honest.\", \"evidence\": [ \"npm test -- --only configuration-root on the unmodified probe: failure at scripts/test-configuration-root.mjs because the probe independently derives ../.. from import.meta.url\", \"Bounded probe: importing TOOL_ROOT and setting ROOT =",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-149-D007 and repair.md complete the versioned-source branch: current runs use TOOL_ROOT, all 38 historical records bind the unchanged retained source, current-build validation remains strict, historical replay and the original audit pass, and configuration-root passes standalone and in the full review run.",
+          "reopenWhen": "The retained source or any episode binding changes, current-build evaluation accepts a historical build without explicit selection, or configuration-root regresses.",
+          "targets": [],
+          "at": "2026-09-21T23:04:57.575Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-97f4f0f32ef29007",
+      "key": "decision:docs/evidence/WO-149/decisions.md#wo-149-d009",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "86189e0e9ad41799b9510679b5d9117f7d133f816576f129939374d94722515a",
+          "ref": "docs/evidence/WO-149/decisions.md#wo-149-d009",
+          "title": "WO-149-D009: File a work order that makes Codex dispatch session entry advisory rather than refusing: catch every begin failure in scripts/resume.mjs, write a named stderr advisory in the form the unb",
+          "summary": "{ \"id\": \"WO-149-D009\", \"date\": \"2026-09-21\", \"dispatch\": \"resume: final review\", \"decision\": \"Record, without repairing it inside this review, that a Codex lifecycle dispatch whose session begin throws for any reason other than the already-began refusal fails the whole command after its transition is already appended. Pass the order on its acceptance criteria and leave D001's visible-failure design standing; carry the residual risk as a named follow-up rather than reversing a judged executor decision at final review.\", \"evidence\": [ \"packages/skeleton/src/harness-host.ts:1578-1600: beginHarnessSessionOnce absorbs only the exact string 'Session already began; do not erase its observations' an",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }
