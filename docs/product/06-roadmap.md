@@ -20,6 +20,13 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-063 activation completion (2026-09-22):** assigned application `v0.40.3`,
+the next patch above the observed local `v0.40.2` tag, under the declared patch
+classification; the outward-artifact lint, public vocabulary, fixtures and
+documentation change no runtime component, dependency, schema or publication
+control, and independent verification, final review and publication remain
+separate lifecycle actions.
+
 **WO-149 activation completion (2026-09-21):** assigned application `v0.40.2`,
 the next patch above the observed local annotated `v0.40.1` tag, under the
 declared patch classification. Codex lifecycle dispatches begin their harness

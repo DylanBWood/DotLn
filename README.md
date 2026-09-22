@@ -93,7 +93,7 @@ intent → task-scoped build → bounded WorkOrder → disposable executor
 -->
 <!-- DOTLN-RELEASE-BEGIN -->
 
-This source prepares DotLn `v0.40.2`.
+This source prepares DotLn `v0.40.3`.
 
 **The core.** A local-first compiler turns a loadout graph into a bounded
 program and authority envelope that the kernel checks on every decision.
@@ -132,6 +132,10 @@ bounded economy experiment per order, with measured cost and effect, unless the
 order opts out: the [three-order trial](docs/evidence/WO-145/decisions.md) found
 an adopted method with no regression, and [WO-150](docs/evidence/WO-150/decisions.md)
 made the support default equipment.
+The [outward-artifact lint](docs/evidence/WO-063/implementation.md) checks
+conventional branch and subject shapes plus public and local vocabulary;
+missing local coverage is reported as unavailable, and publication integration
+remains the next slice.
 Independent implementation, verification
 and final review record their own evidence, and publication consumes the
 reviewer's successful code-identity gate row.
