@@ -253,6 +253,18 @@ export function missionFixture(
         ),
       ),
     restoreContract: () => writeFileSync(join(work, contractPath), CONTRACT),
+    /** A mid-episode edit that moves the clause ids themselves rather than one
+     * clause's text: the second acceptance criterion is renumbered, so the
+     * observed contract drops `contract:criterion:2` and adds
+     * `contract:criterion:3` while the pin still carries the old id. */
+    renumberContract: () =>
+      writeFileSync(
+        join(work, contractPath),
+        CONTRACT.replace(
+          "2. The fixture records what it observed.",
+          "3. The fixture records what it observed.",
+        ),
+      ),
     /** Undo an `outsideSurface` edit: the work returns inside its contract. */
     restoreVision: () =>
       writeFileSync(join(work, "docs/product/00-vision.md"), VISION),

@@ -642,10 +642,17 @@ export function missionReferenceIds(
   if (kind === "thesis") return subject.theses.map((thesis) => thesis.id);
   if (kind === "exclusion")
     return subject.exclusions.map((exclusion) => exclusion.id);
+  // The pinned, story and observed contracts project the same clause ids
+  // whenever the contract has not changed mid-episode, which is the ordinary
+  // case. One first-seen-order list still names both the old and the new id
+  // when it has changed, and keeps the emitted schema's `reference` enum free
+  // of the duplicate items a CLI refuses outright (WO-148 D009).
   return [
-    ...subject.contract.clauses.map((clause) => clause.id),
-    ...(subject.storyContract?.clauses.map((clause) => clause.id) ?? []),
-    ...subject.observation.contract.clauses.map((clause) => clause.id),
+    ...new Set([
+      ...subject.contract.clauses.map((clause) => clause.id),
+      ...(subject.storyContract?.clauses.map((clause) => clause.id) ?? []),
+      ...subject.observation.contract.clauses.map((clause) => clause.id),
+    ]),
   ];
 }
 

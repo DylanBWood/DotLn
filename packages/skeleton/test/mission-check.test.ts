@@ -28,8 +28,10 @@ import {
   MISSION_CAPSULE_BOUNDS,
   MISSION_SURFACE_CLAUSE,
   missionCheckPrompt,
+  missionCheckResultSchema,
   missionContractEvidence,
   missionPin,
+  missionReferenceIds,
   missionSubject,
   validateMissionCheckRequest,
   validateMissionCheckResult,
@@ -1568,5 +1570,161 @@ test("WO-099 VER-003 F2: the resident holds a claimed pass over a history it cou
   assert.equal(events(host, "MissionDriftObserved").length, 0);
   t.diagnostic(
     "claimed pass over an uncarried history recorded as unknown and held, with no correction",
+  );
+});
+
+test("WO-152 the emitted schema carries no duplicate enum item, and a mid-episode clause change still names the old and the new id", (t) => {
+  const fixture = missionFixture();
+  t.after(() => fixture.dispose());
+
+  /** Every `enum` the emitted schema carries, by its path, so the assertion
+   * covers the three `reference` enums and `evidence` without naming them. */
+  const schemaEnums = (
+    node: unknown,
+    path = "$",
+  ): readonly (readonly [string, readonly unknown[]])[] => {
+    if (Array.isArray(node))
+      return node.flatMap((item, index) =>
+        schemaEnums(item, `${path}[${index}]`),
+      );
+    if (node && typeof node === "object")
+      return Object.entries(node).flatMap(([key, value]) =>
+        key === "enum" && Array.isArray(value)
+          ? [[`${path}.enum`, value] as const]
+          : schemaEnums(value, `${path}.${key}`),
+      );
+    return [];
+  };
+  const repeated = (subject: MissionCheckSubject) =>
+    schemaEnums(missionCheckResultSchema(subject)).flatMap(([path, items]) => {
+      const duplicates = [
+        ...new Set(items.filter((item, at) => items.indexOf(item) !== at)),
+      ];
+      return duplicates.length ? [[path, duplicates] as const] : [];
+    });
+  const enumPaths = schemaEnums(missionCheckResultSchema(fixture.subject)).map(
+    ([path]) => path,
+  );
+  // The walk is worth nothing if it reaches no enum: one `reference` and one
+  // `evidence` per finding kind, plus the verdict, is what this schema
+  // declares — three, three and one.
+  assert.equal(enumPaths.length, 7, enumPaths.join(", "));
+
+  // The ordinary case: the contract has not changed since the pin, so the
+  // pinned and observed clause lists are identical. Concatenating them put
+  // every clause id into the `reference` enum twice, and the Claude CLI
+  // refuses a `--json-schema` whose enum repeats an item, which ended every
+  // `claude-cli-print` mission check before any model call (WO-148 D009).
+  assert.deepEqual(missionReferenceIds(fixture.subject, "contract-clause"), [
+    MISSION_SURFACE_CLAUSE,
+    "contract:objective",
+    "contract:criterion:1",
+    "contract:criterion:2",
+    "contract:non-goals",
+    "contract:evidence-gate",
+  ]);
+  assert.deepEqual(repeated(fixture.subject), []);
+
+  // The other two kinds are unchanged: they project one list each and never
+  // concatenated anything.
+  assert.deepEqual(missionReferenceIds(fixture.subject, "thesis"), [
+    "the-core-bet",
+  ]);
+  assert.deepEqual(missionReferenceIds(fixture.subject, "exclusion"), [
+    "what-dotln-is-not:1",
+    "what-dotln-is-not:2",
+  ]);
+
+  // A contract edited after the pin in a way that moves the ids: the observed
+  // contract drops `contract:criterion:2` and adds `contract:criterion:3`.
+  // Both must stay nameable, each once, the pinned ids first.
+  fixture.renumberContract();
+  const changed = observeMissionSubject(fixture.source, fixture.pin);
+  assert.deepEqual(
+    changed.observation.contract.clauses.map((clause) => clause.id),
+    [
+      MISSION_SURFACE_CLAUSE,
+      "contract:objective",
+      "contract:criterion:1",
+      "contract:criterion:3",
+      "contract:non-goals",
+      "contract:evidence-gate",
+    ],
+  );
+  assert.deepEqual(missionReferenceIds(changed, "contract-clause"), [
+    MISSION_SURFACE_CLAUSE,
+    "contract:objective",
+    "contract:criterion:1",
+    "contract:criterion:2",
+    "contract:non-goals",
+    "contract:evidence-gate",
+    "contract:criterion:3",
+  ]);
+  assert.deepEqual(repeated(changed), []);
+
+  // The third reference source is the optional story contract, which
+  // `missionReferenceIds` reads between the pinned and the observed one.
+  // `storyOf` builds it from a second document through the same structural
+  // clause ids, so it mostly repeats the contract's and may carry one of its
+  // own; deduplication must keep that one and repeat none of the others.
+  const story: MissionCheckSubject = {
+    ...changed,
+    storyContract: {
+      storyId: "docs/product/00-vision.md",
+      clauses: [
+        ...changed.contract.clauses.slice(0, 2),
+        {
+          id: "contract:criterion:4",
+          kind: "criterion",
+          text: "A clause only the story contract carries.",
+        },
+      ],
+    },
+  };
+  assert.deepEqual(missionReferenceIds(story, "contract-clause"), [
+    MISSION_SURFACE_CLAUSE,
+    "contract:objective",
+    "contract:criterion:1",
+    "contract:criterion:2",
+    "contract:non-goals",
+    "contract:evidence-gate",
+    "contract:criterion:4",
+    "contract:criterion:3",
+  ]);
+  assert.deepEqual(repeated(story), []);
+
+  // The validator tests membership with `includes`, which deduplication does
+  // not change: the clause the observed contract dropped is still nameable,
+  // and an id no contract supplies is still refused.
+  const claim = (reference: string) => ({
+    schemaVersion: "mission-check-v1",
+    verdict: "drift",
+    findings: [
+      {
+        kind: "contract-clause",
+        reference,
+        evidence: "packages/fixture/src/judge.ts",
+        reason: "Named to exercise the membership check.",
+      },
+    ],
+  });
+  assert.ok(
+    validateMissionCheckResult(
+      claim("contract:criterion:2"),
+      changed,
+    ).findings.some(
+      (finding) =>
+        finding.reference === "contract:criterion:2" &&
+        finding.evidence === "packages/fixture/src/judge.ts",
+    ),
+    "a pinned-only clause id is still a supported reference",
+  );
+  assert.throws(
+    () => validateMissionCheckResult(claim("contract:criterion:9"), changed),
+    /no supplied clause/u,
+  );
+
+  t.diagnostic(
+    `no duplicate item across ${enumPaths.length} emitted enums, unchanged, renumbered and story contracts`,
   );
 });

@@ -13566,6 +13566,88 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-81651a93f657301a",
+      "key": "decision:docs/evidence/WO-152/decisions.md#wo-152-d004",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "75ef9333e28c0faeeeaed1589782d5b81a11e66aa2ab1baa29fee95d6db22b7d",
+          "ref": "docs/evidence/WO-152/decisions.md#wo-152-d004",
+          "title": "WO-152-D004: Planner: WO-147 D010's follow-up tells a later order to carry one live feedback self-host episode whenever it edits a registered evidence source. That is too broad — evidenceSourceContent",
+          "summary": "{ \"id\": \"WO-152-D004\", \"date\": \"2026-09-22\", \"dispatch\": \"resume: next; WO-152 acceptance criterion 4 and Cost line\", \"decision\": \"Do not re-mint the authority and feedback evidence editions and do not run a live feedback self-host episode. This order's only edits to registered evidence sources are component release labels, which `evidenceSourceContent` normalizes away by design, so neither edition is stale and a re-mint would file an edition whose behavior record is byte-identical to the one it replaced. This is a recorded deviation from the letter of acceptance criterion 4 and from the order's Cost line, both of which assume WO-147 D010's duty applies to any diff that touches a registered ",
+          "missing": false
+        },
+        {
+          "hash": "31b97a1c231fc69e8ecac8c23d0e0b628d16982ec7a7f34aa9f93da74b4ad884",
+          "ref": "docs/evidence/WO-152/decisions.md#wo-152-d004",
+          "title": "WO-152-D004: Planner: WO-147 D010's follow-up tells a later order to carry one live feedback self-host episode whenever it edits a registered evidence source. That is too broad — evidenceSourceContent",
+          "summary": "{ \"id\": \"WO-152-D004\", \"date\": \"2026-09-22\", \"dispatch\": \"resume: next; WO-152 acceptance criterion 4 and Cost line\", \"decision\": \"Do not re-mint the authority and feedback evidence editions and do not run a live feedback self-host episode. This order's only edits to registered evidence sources are component release labels, which `evidenceSourceContent` normalizes away by design, so neither edition is stale and a re-mint would file an edition whose behavior record is byte-identical to the one it replaced. This is a recorded deviation from the letter of acceptance criterion 4 and from the order's Cost line, both of which assume WO-147 D010's duty applies to any diff that touches a registered ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-a7e1c112b83a67ba",
+      "key": "decision:docs/evidence/WO-152/decisions.md#wo-152-d007",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "f4305bdab6abe7c8451363c80ea8e824b82b9a5f86fa1ef472af8cbc39cde908",
+          "ref": "docs/evidence/WO-152/decisions.md#wo-152-d007",
+          "title": "WO-152-D007: Executor on resume: fix: satisfy WO-152 acceptance criterion 4 as written by re-minting the authority and feedback editions with one live self-host episode, record why each edition change",
+          "summary": "{ \"id\": \"WO-152-D007\", \"date\": \"2026-09-22\", \"dispatch\": \"resume: verify; VER-001 F1\", \"decision\": \"Verification fails the current subject because acceptance criterion 4 is explicitly required and remains unmet: the authority and feedback editions were not re-minted and the required live self-host episode was not run. The passing edition checks establish that the retained editions are behaviorally current after release-label normalization, but they do not replace the order's required re-mint and live episode. The verifier has no authority to waive or rewrite that criterion.\", \"evidence\": [ \"docs/work-orders/WO-152-mission-check-schema-ids.md marks all acceptance criteria required and criteri",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-ed431cc1c8ca9a52",
+      "key": "decision:docs/evidence/WO-152/decisions.md#wo-152-d009",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "fa3b1b6af88c7ac7da5c470f9823bfbb55a54f5851ce0712f0027775e34cbbd0",
+          "ref": "docs/evidence/WO-152/decisions.md#wo-152-d009",
+          "title": "WO-152-D009: Planner: an invalid-result worker refusal records only the code, so a refused live episode leaves nothing to diagnose. packages/skeleton/src/worker-transport.ts and verification-protocol.",
+          "summary": "{ \"id\": \"WO-152-D009\", \"date\": \"2026-09-22\", \"dispatch\": \"resume: fix; two refused live self-host episodes before the accepted one\", \"decision\": \"Record all three live verifier attempts rather than only the accepted one, keep the append-only store that retains the two refusals, and board the diagnosability gap they exposed as deferred queue item adjacent-0002 instead of repairing the transport inside this order. The two refusals are model-output variance against a strict typed contract, not a schema rejection, so this order's own reopening condition for another request kind's schema is not triggered.\", \"evidence\": [ \"Store .runtime/feedback-audit-wo152-r001, one command cmd_3b843b5108e71409 ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-2f3b263bf7099dee",
+      "key": "decision:docs/evidence/WO-152/decisions.md#wo-152-d011",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "9c37d9f74b8ee1f594e8fd804a4cfc8d89be319cecd2abaa765067deefa24acb",
+          "ref": "docs/evidence/WO-152/decisions.md#wo-152-d011",
+          "title": "WO-152-D011: Executor of the next order that reaches the active phase: re-dispose WO-152 adjacent-0001 onto FUP-81651a93f657301a and adjacent-0002 onto FUP-ed431cc1c8ca9a52 so the deferred rows carry ",
+          "summary": "{ \"id\": \"WO-152-D011\", \"date\": \"2026-09-22\", \"dispatch\": \"resume: final review; the carried adjacent-queue advisory in the repair receipt\", \"decision\": \"Leave adjacent-0001 and adjacent-0002 disposed with the literal target `planning` and carry the advisory forward rather than retarget them at final review. Both public follow-up identifiers exist and are synced; only the link is missing, and the queue refuses the link in this phase.\", \"evidence\": [ \"scripts/adjacent-work.mjs lines 29-37: `apply --file` throws 'adjacent queue: mutation requires the selected executor/fixer phase' unless the selected order's phase is `active` or `repairing`. The canonical phase at this dispatch is `final-review",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-378d407e1adbe85b",
+      "key": "decision:docs/evidence/WO-152/decisions.md#wo-152-d012",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "8fa56c87f182f8788663502858a50778480d2c0b17c3d1035567c07c5997df77",
+          "ref": "docs/evidence/WO-152/decisions.md#wo-152-d012",
+          "title": "WO-152-D012: Executor or planner: docs/discovery/environment.json records claude-code effectiveEffortReadback as not found with harnessReadbackEligible: false, last observed at CLI 2.1.263. At 2.1.278",
+          "summary": "{ \"id\": \"WO-152-D012\", \"date\": \"2026-09-22\", \"dispatch\": \"resume: final review; operator correction of the recorded reviewer effort\", \"decision\": \"Record the reviewer's effort error as a correction instead of repairing the record: the `final-review-result` event and the effort-drift row it produced carry `effort unknown`, which is wrong — the observed effort for this dispatch is `xhigh`. The report keeps the attestation header that matches the recorded flags and carries the correction beside it. `docs/discovery/environment.json` is not edited here.\", \"evidence\": [ \"Observed in this session after the operator challenged the claim: `env` carries `CLAUDE_EFFORT=xhigh`, and `~/.claude/settings.j",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }
