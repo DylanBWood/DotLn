@@ -40,6 +40,53 @@ are now declared above. The [decision record](../evidence/WO-084/decisions.md)
 records the legacy ledger write-back; `node scripts/lineage.mjs index` generates
 the index and `index --check` enforces this rule in `npm run test:docs`.
 
+## 2026-09-22 — Planning pass: operator answer (closed entries leave the sequence; WO-153 to WO-156 filed)
+
+Source: the operator's two messages and answered question during the
+REVIEW-002 pass, captured verbatim in ignored intake
+(`docs/intake/notes/2026-09-22-entropy-review-002-planning-operator-answer-2.md`,
+SHA-256 `cd8859a89ee2fd7959fcf03e6551031101913310e230d7f5a3e2292f6bb65da3`),
+and the record of the rule they questioned: the archived planning map of
+2026-09-04, the sequence file's creation on 2026-09-10, the 100-entry guard's
+introducing commit of 2026-09-07, and the readers of the sequence block.
+Clean-room screen: no stop condition. The record is
+[the planning document](../planning/entropy-review-002-2026-09-22.md) §12.
+
+- **Closed entries leave the sequence at each planning pass** `adopted`
+  `operator-directed`
+  - The sentence keeping them was written on 2026-09-04 as a convenience for
+    a hand-maintained checklist ("the generator marks them rather than
+    asking the operator to cross them off") and carried into the sequence
+    file on 2026-09-10; the 100-entry guard arrived with the refuter on
+    2026-09-07 with no recorded reason; the 100-order horizon followed on
+    2026-09-08; nobody re-judged the three together, and two passes deferred
+    filing to an operator decision the sentence implied. The index keeps
+    closed orders in its Closed section with their marks; the plan subject
+    hashes only sequenced orders; no check refuses the change. Provenance:
+    the archived map's sentence; commits `500225ad`, `0d92b1ca` and
+    `1f2693e4`; the operator's answer. Reopen: a reader of the sequence is
+    found to need a closed entry.
+- **The reducer's findings become orders, not deferrals** `adopted`
+  `operator-directed`
+  - Three rounds (the dispatch pass, the review inside WO-151, this pass)
+    had produced no entropy-reducing order, and the operator named that.
+    Filed: WO-154 (ER2-001 and ER2-002), WO-155 (ER2-003's emission and
+    metric), WO-156 (ER2-004) and WO-153 from the earlier withdrawn draft;
+    the same day's boy-scout nominations are withdrawn. Provenance: the
+    planning document §4 and §12. Reopen: an accepted finding is again left
+    without an order for any reason other than the operator's own decline.
+- **The pass's own error, corrected** `adopted`
+  - The pass treated the preamble sentence as an operator-only rule and
+    deferred the order it had designed instead of judging the sentence
+    against its record; the correction is the rule change, the four
+    filings and a fresh refutation on the same branch. Provenance: the
+    planning document §12. Reopen: never; the record stands.
+- **The sequence-limit row is settled** `adopted`
+  - FUP-7f13b0e220950f10 closes on the rule change: 55 closed entries are
+    retired, 49 remain, and the 100-entry guard is no longer the binding
+    constraint. Provenance: this section. Reopen: the queued sequence
+    approaches 100 entries again.
+
 ## 2026-09-22 — Planning pass: REVIEW-002 consumed (four findings accepted; nothing filed at the sequence limit)
 
 Source: the operator's bare dispatch `planning: entropy reducer`, captured

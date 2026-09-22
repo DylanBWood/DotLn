@@ -390,3 +390,109 @@ ignored intake
 SHA-256 `b39ddef91c5216fe9d3d5601bfa05c26645ccb073b33542b79bad7aa791000b1`),
 that the pass push the branch and open the pull request when done.
 `npm run test:docs` after the receipt: recorded in the handoff.
+
+## 12. Operator answer: closed entries leave the sequence, and the findings become orders
+
+After PR #119 was opened the operator sent two messages, captured verbatim
+in ignored intake
+(`docs/intake/notes/2026-09-22-entropy-review-002-planning-operator-answer-2.md`,
+SHA-256 `cd8859a89ee2fd7959fcf03e6551031101913310e230d7f5a3e2292f6bb65da3`).
+The first asked whether orders that could have been filed from this pass
+must wait for the queue to drain. The second asked why the operator should
+have to intervene to remove closed orders from the planning subject, and why
+they are in it at all. A third, after the pass had already begun the change,
+named the outcome plainly: three Entropy Reducer rounds and not one work
+order that reduces the repository's entropy. The operator then chose, from a
+question this pass put, that closed entries leave the sequence and the
+waiting orders be filed in this same session.
+
+**What the record showed (observed).**
+
+- The sentence "Closed entries remain here until the operator changes the
+  planning horizon" was first written on 2026-09-04 in the planning map
+  (commit `500225ad`, now `docs/planning/archive/work-order-map-2026-09-09.md`
+  line 78), with its reason on the next line: "the generator marks them
+  rather than asking the operator to cross them off." The marked list was
+  then a checklist the operator restated by hand. The sentence was carried
+  into `docs/planning/sequence.md` when that file was created on 2026-09-10
+  (commit `0d92b1ca`, the WO-126 write-back) and restated as "Closed entries
+  stay" on 2026-09-17 with no reason.
+- The guard `plan sequence must contain 1–100 orders` arrived with the plan
+  refuter on 2026-09-07 (commit `1f2693e4`). Neither its commit message nor
+  any planning document records a reason. The 100-order horizon was set on
+  2026-09-08, a day later.
+- Nothing that reads the sequence block needs a closed entry: the generated
+  work-order index renders the block under "Proposed order" and keeps every
+  order in its Active, Open, Closed or Historical section regardless; the
+  plan subject hashes only sequenced orders; the one fixture that mentions
+  closed orders asserts that a deferral may not name one. No check refuses
+  a closed order leaving the sequence. This was by reading; the gate ran
+  after the change and is recorded below.
+
+**The specific error.** This pass read "until the operator changes the
+horizon" as a rule it could not touch, deferred the evidence-editions order
+it had already designed, routed two more findings as contingent boy-scout
+nominations, and left the horizon as an open register row, as the earlier
+pass had. The checked evidence above shows a convenience sentence for a
+hand-maintained checklist, written before the horizon and before the guard,
+that nobody re-judged once the three met. Product 07 asks that an
+unsupported premise be checked before a decision depends on it; the pass
+checked the sentence only when the operator asked. The correction is the
+rule change and the four filings below, on the same branch under a fresh
+refutation, not a wording change.
+
+**What changed.**
+
+- The sequence preamble now reads: closed entries leave the sequence at the
+  next planning pass (operator direction, 2026-09-22); the generated index's
+  Closed section is their record, and the map and archive keep their
+  rationale. Product 03 §Corpus policy carries the same sentence beside the
+  sequence's byte bound. The 55 closed entries (every order through WO-152
+  in the proposed order) are retired; 45 queued entries remain and four are
+  added, 49 in all; the file measures 7,347 bytes against the 8,192-byte
+  ceiling, so the earlier dated acceptance is no longer needed and is left
+  as history.
+- Four orders are filed. WO-153 (Codex session entry advisory) from the
+  draft the earlier pass withdrew, with its placement updated and nothing
+  else changed in its design. WO-154 (evidence editions keyed by behavior
+  and recorded by reference) from ER2-001 and ER2-002, as designed in the
+  map's REVIEW-002 section, with the receipt subject as a second criterion
+  group the executor may split. WO-155 (single-source floor and a cold-start
+  trend) from ER2-003: the completeness check first, the paragraph emitted
+  once and referred to, the per-role delta reported; no reviewed rule
+  trimmed, no ceiling or acceptance changed, the route itself still the
+  operator's reserved pass. WO-156 (`plan check` in the sub-second band)
+  from ER2-004: the hoist, byte-identical output, under 2 s, measured before
+  and after.
+- Placement: WO-153 pairs with WO-154 and WO-155 with WO-156, both pairs
+  directly after WO-100 and WO-064 and before WO-111 and WO-114. Inside each
+  pair the surfaces are disjoint, neither order depends on the other, and
+  exactly one order re-mints the evidence editions, so a pair pays one live
+  episode and the second final review's integration re-mint is the only
+  extra. The critical path's next pair is delayed by two slots; the operator
+  can move the pairs behind WO-111 and WO-114 by editing the sequence, and
+  the pass records that choice as the operator's.
+- The same day's boy-scout nominations on WO-064 and WO-100 are withdrawn
+  and their catalog rows say where the work went. The map's REVIEW-002
+  section carries a supersession note; its design and NoOp register stand as
+  the record of what was weighed.
+- The register: the four accepted-finding rows are allocated (ER2-001 and
+  ER2-002 to WO-154, ER2-003 to WO-155, ER2-004 to WO-156); FUP-0051 is
+  allocated to WO-154; the WO-149 D009 row is allocated to WO-153; the
+  sequence-limit row is settled by the rule change.
+
+**Goal alignment of the change, briefly.** Mission: the reducer exists to
+turn measured entropy into removed entropy; three rounds without an order
+was process activity mistaken for progress, the trap product 07 names
+first. NoOp: the four findings stay register rows and the repository keeps
+growing about 80 MB a week while every close pays a live episode to record
+a hash. Escalation and rule beating: the rule change removes a step (an
+operator decision each time the list fills) instead of adding one, and the
+100-entry guard stays as a real bound on a queue that is now 49 long.
+Shifting the burden: the sentence had made the operator the mechanism that
+frees room; the pass's own error was to keep it that way. Commons: the
+second refutation is the cost of correcting in the same branch, one more
+subagent of the twenty.
+
+**Independent review of the third pass.** Recorded in section 13 after the
+receipt.

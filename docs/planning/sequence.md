@@ -2,8 +2,10 @@
 
 The operator-authored sequence below is the single editable input to the index
 and refutation subject. It grants no activation authority. For rationale see
-[the planning map](work-order-map.md). Closed entries remain until the operator
-changes the horizon.
+[the planning map](work-order-map.md). Closed entries leave the sequence at the next
+planning pass (operator direction, 2026-09-22); the generated work-order
+index's Closed section is their record, and the map and archive keep their
+rationale.
 
 Planning entry returns the pending [follow-up register](followups.json) in
 bounded pages. Use `npm run plan -- followups` for its current counts, source
@@ -71,83 +73,25 @@ WO-100 and WO-064 when the horizon opens) and two findings ride as boy-scout
 items on WO-064 and WO-100. Evidence:
 [the REVIEW-002 planning document](entropy-review-002-2026-09-22.md) §5.
 
+Operator answer (2026-09-22, third pass): closed entries leave the sequence;
+55 are retired here and the index keeps them. Four orders are filed into the
+room, as two pairs directly after WO-100 and WO-064 and before WO-111 and
+WO-114: WO-153 with WO-154 (the withdrawn Codex session-entry draft; evidence
+editions keyed by behavior and recorded by reference), and WO-155 with WO-156
+(the refusals paragraph emitted once with a cold-start delta; `plan check`
+under 2 s). Disjoint surfaces, no hard edge, one re-minting order per pair.
+Evidence: [the REVIEW-002 planning document](entropy-review-002-2026-09-22.md) §12.
+
 <!-- dotln-work-order-sequence:start -->
-
-- WO-132 — Machinery stand-down
-- WO-126 — Process debt
-- WO-042 — Authority provenance and monotone envelopes
-- WO-043 — Typed dependency truth
-- WO-125 — Codex effort selection
-- WO-128 — Fresh gates pass first time
-- WO-129 — Suite evidence keyed by declared inputs
-- WO-130 — Suites execute in a replica of declared inputs
-- WO-131 — Remaining suites declared under replica execution
-- WO-044 — Writing-worker and unattended-launch harness truth
-- WO-067 — PresencePolicy compiled
-- WO-045 — Event-log and hook-input decoders
-- WO-046 — Executable program grammar as a type
-- WO-047 — Replay environment projector
-- WO-048 — Worker and verification hosts decode on-disk state
-- WO-050 — Reactor typed state slices
-- WO-133 — Stand-down residue
-- WO-068 — Resident host
-- WO-049 — Target-worktree harness bundle
-- WO-051 — Source-change writer request and transport profile
-- WO-121 — Presence signals with origin
-- WO-119 — Executable discovery producer
-- WO-052 — Source-change host and commit receipt
-- WO-122 — Actor catalog: cli-worker and human-handoff
-
-- WO-141 — No guessing, enforced
-- WO-136 — Authority enforcement boundary
-
-- WO-135 — Planning-gate corrections
-- WO-053 — The first external source change
-
-- WO-139 — Subagent admission cap
-- WO-054 — Verification over a real worktree
-
-- WO-137 — Local runner readiness
-- WO-055 — Repair continuation
-
-- WO-142 — Outstanding cleanup
-- WO-084 — Ledger order and index
-
-- WO-143 — Resident lock recovery
-- WO-144 — Outside-project write grant
-
-- WO-140 — Gate sandbox preflight and usage readback
-- WO-056 — Live blinded verification and repair
-
-- WO-146 — Copilot CLI harness
-
-- WO-145 — Tinkerer economy experiment
-- WO-090 — Shorter cold start
-
-- WO-110 — Local-model transport
-- WO-099 — Mission check
-
-- WO-079 — Worktree integrate
-- WO-069 — Configuration root
-
-- WO-138 — Local-model role qualification pilot
-- WO-071 — Registered target repositories
-
-- WO-150 — Tinkerer economy on by default
-
-- WO-147 — Resident lock contention
-- WO-148 — Resident binding
-
-- WO-149 — Codex sessions begin
-
-- WO-120 — Derived work identity
-- WO-063 — Outward-artifact lint
-
-- WO-151 — Entropy Reducer dispatch
-- WO-152 — Mission-check schema without duplicate ids
 
 - WO-100 — Preauthorized portfolio and work derivation
 - WO-064 — Target publish
+
+- WO-153 — Codex session entry advisory
+- WO-154 — Evidence editions keyed by behavior and recorded by reference
+
+- WO-155 — Single-source floor and a cold-start trend
+- WO-156 — plan check in the sub-second band
 
 - WO-111 — The unattended hour
 - WO-114 — Runtime status projection

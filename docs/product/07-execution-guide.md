@@ -860,14 +860,17 @@ input among others.
 **First consumption (2026-09-22).** The second pass of that day opened with
 `subject`, which named REVIEW-002 under REFUTATION-003, consumed it and paid
 for no episode. It re-measured every finding on the current `main` before
-disposing it, accepted all four and filed all three packets. Three routes
-carried the accepted findings at a sequence already holding the subject's
-limit of 100 orders: an order designed in the map and deferred until the
-horizon has room; a named boy-scout item on the catalog row of the next
-activation, host-reviewed under the bounded boy-scout rule and never an
-order-text edit, so the judged order is not re-keyed; and a finding half that
-a standing operator direction reserves for the operator's own pass, recorded
-against that direction rather than overruled. The record is
+disposing it, accepted all four and filed all three packets. Its first draft
+routed the findings around a sequence holding the subject's limit of 100
+entries, 55 of them closed; the operator asked why closed entries occupy the
+planning subject at all, and the record held only a 2026-09-04 convenience
+sentence written for a hand-maintained checklist. Under that direction closed
+entries now leave the sequence at each planning pass (the generated index's
+Closed section is their record), and the accepted findings were filed as
+WO-154, WO-155 and WO-156, with WO-153 from the earlier withdrawn draft. A
+finding half that a standing operator direction reserves for the operator's
+own pass (the cold-start ceiling route, WO-054 D006) stays recorded against
+that direction rather than overruled. The record is
 [the REVIEW-002 planning document](../planning/entropy-review-002-2026-09-22.md).
 
 Preconditions and inputs:

@@ -1278,6 +1278,16 @@
           "reopenWhen": "the evidence-editions order closes, to judge whether a wider assessment is still needed, or the operator's horizon answer",
           "targets": [],
           "at": "2026-09-22T16:44:36.521Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "The reopening observation occurred (the REVIEW-002 measurement) and the bounded assessment is now filed as WO-154 by the third pass of 2026-09-22. Coverage: the evidence logs and the receipt subject; the wider assessment of documentation and derived views stays conditional and reopens on its own observation.",
+          "reopenWhen": "a demonstrated reading or upkeep problem outside the evidence editions, or WO-154 closing with the growth unchanged",
+          "targets": [
+            "WO-154"
+          ],
+          "at": "2026-09-22T17:11:41.947Z"
         }
       ]
     },
@@ -13485,6 +13495,16 @@
           "reopenWhen": "the operator changes the horizon (retires closed entries or moves the limit), or a Codex dispatch is observed exiting non-zero from the entry call",
           "targets": [],
           "at": "2026-09-22T00:41:39.896Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Filed as WO-153 by the third pass of 2026-09-22 from the draft the earlier pass withdrew at the 100-order limit; the design is unchanged (one catch around the begin call, a named stderr advisory with the cause and no-session, a fixture over the five dispatches). Coverage: the whole follow-up.",
+          "reopenWhen": "WO-153 closes without covering all five Codex dispatches, or a Codex dispatch is observed exiting non-zero from the entry call before it lands",
+          "targets": [
+            "WO-153"
+          ],
+          "at": "2026-09-22T17:11:42.954Z"
         }
       ]
     },
@@ -13565,6 +13585,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-22T16:44:37.040Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the third pass of 2026-09-22 at the operator's direction: closed entries leave the sequence at each planning pass (the sequence preamble and product 03 §Corpus policy), 55 closed entries are retired, 49 remain, and the 100-entry guard is no longer the binding constraint. The record and the rule's origin are in the REVIEW-002 planning document §12.",
+          "reopenWhen": "the queued sequence approaches 100 entries again, or a reader of the sequence is found to need a closed entry",
+          "targets": [],
+          "at": "2026-09-22T17:11:42.452Z"
         }
       ]
     },
@@ -13874,6 +13902,16 @@
             "WO-064"
           ],
           "at": "2026-09-22T16:44:36.020Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Filed by the 2026-09-22 REVIEW-002 pass's third pass; the same day's boy-scout nomination on WO-064 is withdrawn. WO-156 builds the work-order path pattern once per call and measures plan check under 2 s with byte-identical output. Coverage: the whole finding.",
+          "reopenWhen": "WO-156 closes with plan check still above 2 s on the operator's host",
+          "targets": [
+            "WO-156"
+          ],
+          "at": "2026-09-22T17:11:41.447Z"
         }
       ]
     },
@@ -13898,6 +13936,16 @@
           "reopenWhen": "the operator's horizon answer (FUP-7f13b0e220950f10) or a planning pass with room in the sequence, which files the order from the map's design",
           "targets": [],
           "at": "2026-09-22T16:44:35.016Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Filed by the 2026-09-22 REVIEW-002 pass's third pass: WO-154 keys staleness on a behavioral identity with the version pins as metadata, re-mints a pins-only change without a live episode, and keeps WO-147 D010's rejection as a regression. Coverage: the whole finding.",
+          "reopenWhen": "WO-154 closes with the live episode still required for a pins-only change",
+          "targets": [
+            "WO-154"
+          ],
+          "at": "2026-09-22T17:11:40.439Z"
         }
       ]
     },
@@ -13922,6 +13970,16 @@
           "reopenWhen": "the operator's horizon answer (FUP-7f13b0e220950f10) or a planning pass with room in the sequence, which files the order from the map's design",
           "targets": [],
           "at": "2026-09-22T16:44:34.512Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Filed by the 2026-09-22 REVIEW-002 pass's third pass at the operator's direction that closed entries leave the sequence: WO-154 records subject and baseline files by blob identity, resolves bodies from Git, keeps every existing edition byte-identical and carries the receipt subject as a second criterion group. Coverage: the whole finding.",
+          "reopenWhen": "WO-154 closes without the by-reference shape, or its executor splits the receipt-subject group into an order the next pass must file",
+          "targets": [
+            "WO-154"
+          ],
+          "at": "2026-09-22T17:11:39.934Z"
         }
       ]
     },
@@ -13948,6 +14006,16 @@
             "WO-100"
           ],
           "at": "2026-09-22T16:44:35.518Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Filed by the 2026-09-22 REVIEW-002 pass's third pass; the same day's boy-scout nomination on WO-100 is withdrawn. WO-155 emits the refusals paragraph once after a recorded completeness check and reports each role's delta since the previous edition and the last acceptance. Coverage: the emission and the metric; the ceiling-plus-acceptance route stays the operator's reserved efficiency pass (WO-054 D006).",
+          "reopenWhen": "WO-155's completeness check finds a supported path that loads a skill alone, or the operator opens the efficiency pass",
+          "targets": [
+            "WO-155"
+          ],
+          "at": "2026-09-22T17:11:40.944Z"
         }
       ]
     }

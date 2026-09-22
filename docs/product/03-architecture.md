@@ -2198,7 +2198,9 @@ The current planning sequence is `docs/planning/sequence.md`, bounded at 8 KB.
 Dated map rationale older than the newest two revisions is retained byte for
 byte in `docs/planning/archive/work-order-map-2026-09-09.md`, with a link
 concordance. The map retains current rationale and navigation; the planner's
-startup input is the sequence rather than the archive or whole map.
+startup input is the sequence rather than the archive or whole map. Closed
+entries leave the sequence at each planning pass (operator direction,
+2026-09-22); the generated work-order index's Closed section is their record.
 
 **Evidence growth, measured 2026-09-22.** The REVIEW-002 Entropy Reducer
 review, re-measured by the planning pass that consumed it, found the tracked
@@ -2207,10 +2209,10 @@ whose two largest record types copy the registered source bodies by value,
 twice per edition, and whose editions re-mint on version-only bumps; growth
 was about 80 MB a week at the current order cadence. This is the demonstrated
 upkeep problem the artifact-growth candidate waits for. The rule above stands
-(link an authority rather than copy it); the bounded assessment is the
-evidence-editions order designed in the planning map, which records inputs by
-blob identity and keys staleness on audited behavior while every existing
-edition stays byte-identical.
+(link an authority rather than copy it); the bounded assessment is
+[WO-154](../work-orders/WO-154-evidence-editions-by-reference.md), which
+records inputs by blob identity and keys staleness on audited behavior while
+every existing edition stays byte-identical.
 
 Storage reconciliation and semantic reconciliation are different. Moving raw
 bytes into the surviving store does not update the ledger or blueprint. The

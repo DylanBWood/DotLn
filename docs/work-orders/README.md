@@ -4,63 +4,12 @@
 
 ## Proposed order
 
-- [x] [WO-132] — Machinery stand-down · **final-reviewed**
-- [x] [WO-126] — Process debt · **final-reviewed**
-- [x] [WO-042] — Authority provenance and monotone envelopes · **final-reviewed**
-- [x] [WO-043] — Typed dependency truth · **final-reviewed**
-- [x] [WO-125] — Codex effort selection · **final-reviewed**
-- [x] [WO-128] — Fresh gates pass first time · **final-reviewed**
-- [x] [WO-129] — Suite evidence keyed by declared inputs · **final-reviewed**
-- [x] [WO-130] — Suites execute in a replica of declared inputs · **final-reviewed**
-- [x] [WO-131] — Remaining suites declared under replica execution · **final-reviewed**
-- [x] [WO-044] — Writing-worker and unattended-launch harness truth · **final-reviewed**
-- [x] [WO-067] — PresencePolicy compiled · **final-reviewed**
-- [x] [WO-045] — Event-log and hook-input decoders · **final-reviewed**
-- [x] [WO-046] — Executable program grammar as a type · **final-reviewed**
-- [x] [WO-047] — Replay environment projector · **final-reviewed**
-- [x] [WO-048] — Worker and verification hosts decode on-disk state · **final-reviewed**
-- [x] [WO-050] — Reactor typed state slices · **final-reviewed**
-- [x] [WO-133] — Stand-down residue · **final-reviewed**
-- [x] [WO-068] — Resident host · **final-reviewed**
-- [x] [WO-049] — Target-worktree harness bundle · **final-reviewed**
-- [x] [WO-051] — Source-change writer request and transport profile · **final-reviewed**
-- [x] [WO-121] — Presence signals with origin · **final-reviewed**
-- [x] [WO-119] — Executable discovery producer · **final-reviewed**
-- [x] [WO-052] — Source-change host and commit receipt · **final-reviewed**
-- [x] [WO-122] — Actor catalog: cli-worker and human-handoff · **final-reviewed**
-- [x] [WO-141] — No guessing, enforced · **final-reviewed**
-- [x] [WO-136] — Authority enforcement boundary · **final-reviewed**
-- [x] [WO-135] — Planning-gate corrections · **final-reviewed**
-- [x] [WO-053] — The first external source change · **final-reviewed**
-- [x] [WO-139] — Subagent admission cap · **final-reviewed**
-- [x] [WO-054] — Verification over a real worktree · **final-reviewed**
-- [x] [WO-137] — Local runner readiness · **final-reviewed**
-- [x] [WO-055] — Repair continuation · **final-reviewed**
-- [x] [WO-142] — Outstanding cleanup · **final-reviewed**
-- [x] [WO-084] — Ledger order and index · **final-reviewed**
-- [x] [WO-143] — Resident lock recovery · **final-reviewed**
-- [x] [WO-144] — Outside-project write grant · **final-reviewed**
-- [x] [WO-140] — Gate sandbox preflight and usage readback · **final-reviewed**
-- [x] [WO-056] — Live blinded verification and repair · **final-reviewed**
-- [x] [WO-146] — Copilot CLI harness · **final-reviewed**
-- [x] [WO-145] — Tinkerer economy experiment · **final-reviewed**
-- [x] [WO-090] — Shorter cold start · **final-reviewed**
-- [x] [WO-110] — Local-model transport · **final-reviewed**
-- [x] [WO-099] — Mission check · **final-reviewed**
-- [x] [WO-079] — Worktree integrate · **final-reviewed**
-- [x] [WO-069] — Configuration root · **final-reviewed**
-- [x] [WO-138] — Local-model role qualification pilot · **final-reviewed**
-- [x] [WO-071] — Registered target repositories · **final-reviewed**
-- [x] [WO-150] — Tinkerer economy on by default · **final-reviewed**
-- [x] [WO-147] — Resident lock contention · **final-reviewed**
-- [x] [WO-148] — Resident binding · **final-reviewed**
-- [x] [WO-149] — Codex sessions begin · **final-reviewed**
-- [x] [WO-120] — Derived work identity · **final-reviewed**
-- [x] [WO-063] — Outward-artifact lint · **final-reviewed**
-- [x] [WO-151] — Entropy Reducer dispatch · **final-reviewed**
-- [x] [WO-152] — Mission-check schema without duplicate ids · **final-reviewed**
 - [ ] [WO-100] — Preauthorized portfolio and work derivation · **queued**
 - [ ] [WO-064] — Target publish · **queued**
+- [ ] [WO-153] — Codex session entry advisory · **queued**
+- [ ] [WO-154] — Evidence editions keyed by behavior and recorded by reference · **queued**
+- [ ] [WO-155] — Single-source floor and a cold-start trend · **queued**
+- [ ] [WO-156] — plan check in the sub-second band · **queued**
 - [ ] [WO-111] — The unattended hour · **queued**
 - [ ] [WO-114] — Runtime status projection · **queued**
 - [ ] [WO-070] — Beacon portability · **queued**
@@ -1082,6 +1031,74 @@ None.
 - Cost: Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
 - Inherited ledger duty: discharge with this order's decisions file when recorded and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
 - Authority: [docs/work-orders/WO-124-impact-surfaces-derivation.md](WO-124-impact-surfaces-derivation.md)
+
+### WO-153
+
+[WO-153 — Codex session entry advisory: a Codex lifecycle dispatch whose harness session cannot begin prints a named advisory with the cause and still delivers its briefing and exit code, so a measurement concern never withholds an allocated report path after the control log has recorded the transition (version assigned at activation)](WO-153-codex-session-entry-advisory.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; dependency-ready.
+- References: WO-149: satisfied-by-close (met) — the Codex session-begin call inside the dispatch command that this order guards.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Cost: adds one catch around the session-begin call in &#96;scripts/resume.mjs&#96;, a named stderr advisory in the form the unbuilt-runtime branch already prints, and one fixture beside the two WO-149 cases in &#96;scripts/test-process-debt.mjs&#96;. Removes the recorded path in which a Codex &#96;next&#96;, &#96;fix&#96;, &#96;verify&#96;, &#96;final-review&#96; or &#96;release-close&#96; whose session begin throws for any reason other than the already-began refusal exits 1 after its transition has been appended, suppressing the briefing that carries the allocated report path, which the role text then forbids repeating (WO-149 D009; reproduced by probe with an invalid role, not yet observed in a live dispatch). Wall-clock, tokens and context bytes of the order itself are unknown until run.
+- Inherited ledger duty: discharge with this order's decisions file when recorded and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
+- Authority: [docs/work-orders/WO-153-codex-session-entry-advisory.md](WO-153-codex-session-entry-advisory.md)
+
+### WO-154
+
+[WO-154 — Evidence editions keyed by behavior and recorded by reference: a feedback self-host edition records its subject and baseline files as blob references resolved from Git, staleness follows a behavioral identity with the version pins as metadata, a pins-only change re-mints without a live episode, and every existing edition stays byte-identical (version assigned at activation)](WO-154-evidence-editions-by-reference.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; dependency-ready.
+- References: WO-147: satisfied-by-close (met) — D010: the staleness rule this order re-keys and the rejection of bypassing it that this order keeps as a regression.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. The one live row is the re-mint's self-host episode under today's rule. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Cost: adds a blob-reference projection in the recorder, a behavioral identity beside the subject hash, a resolver in &#96;feedback-evidence --check&#96;, an edition schema version bump, regressions in the feedback suite, and, because &#96;packages/skeleton/src/feedback-selfhost.ts&#96; and &#96;scripts/lib/evidence-sources.mjs&#96; are registered evidence sources, one edition re-mint with one live feedback self-host episode (WO-147 D010; that episode ran 320.6 s under WO-147), the last re-mint paid under today's rule. Removes, measured on 2026-09-22 at &#96;4bf626f4&#96;: about 1.2 MB of the 1.26 MB each feedback edition adds (82 tracked self-host logs hold 104,786,967 of 184,846,333 tracked bytes; 97% of those bytes are the registered source bodies copied twice per edition as &#96;payload.subject.files&#96; and &#96;payload.baseline.files&#96;; the non-copy records are about 40 KB per edition), and one live episode of about 320 s for every order whose registered-source change is version pins only (59 editions for 34 orders in the seven days to 2026-09-21, most from component bumps that release assignment makes routine). At the current cadence that is about 80 MB a week of repository growth that stops. Wall-clock, tokens and context bytes of the order itself are unknown until run.
+- Inherited ledger duty: discharge with this order's decisions file when recorded and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
+- Authority: [docs/work-orders/WO-154-evidence-editions-by-reference.md](WO-154-evidence-editions-by-reference.md)
+
+### WO-155
+
+[WO-155 — Single-source floor and a cold-start trend: the shared refusals paragraph is emitted once in the floor and each generated skill refers to it, harness-context reports every role's delta since the previous edition beside its ceiling, and no reviewed rule is trimmed (version assigned at activation)](WO-155-single-source-floor.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; dependency-ready.
+- References: WO-144: satisfied-by-close (met) — the five-refusals paragraph this order emits once, and the generator that writes it; WO-150: satisfied-by-close (met) — the latest bundle regeneration and the role-baseline oracle the regression extends.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Cost: adds one conditional in the contributor bundle generator, one reference sentence per generated skill, a per-role delta beside the ceiling in &#96;harness-context --check&#96; and the meter's drift row, the completeness check that criterion 1 records, one regression, and, because &#96;packages/skeleton/src/loadouts/contributor.ts&#96; and &#96;scripts/lib/harness-context.mjs&#96; are registered evidence sources, one edition re-mint with one live feedback self-host episode (WO-147 D010). Removes 1,667 bytes from every role's cold start (measured 2026-09-22 at &#96;4bf626f4&#96;: the paragraph beginning "DotLn has five refusals" is in &#96;CLAUDE.md&#96; and once more in each of the six generated skills; for the executor that is 6.8% of 24,412 bytes against a 24,576 ceiling, 164 bytes of headroom), and the next acceptance record the next reviewed rule would otherwise force. Wall-clock, tokens and context bytes of the order itself are unknown until run.
+- Inherited ledger duty: discharge with this order's decisions file when recorded and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
+- Authority: [docs/work-orders/WO-155-single-source-floor.md](WO-155-single-source-floor.md)
+
+### WO-156
+
+[WO-156 — plan check in the sub-second band: the work-order path pattern is built once per call instead of once per committed path per sequence order, the planning subject is byte-identical, and the two plan tasks in &#96;test:docs&#96; stop costing about 25 s each (version assigned at activation)](WO-156-plan-check-sub-second.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; dependency-ready.
+- References: WO-135: satisfied-by-close (met) — the planning-gate corrections that shaped the subject builder this order speeds up.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Cost: adds nothing recurring: one pattern built per call in the subject builder and one regression bounding the file-system calls the fixture sequence may make. Removes, measured on 2026-09-22 at &#96;4bf626f4&#96;: 16.46 s of &#96;node scripts/refute-plan.mjs check&#96; (20.54 s at the review, 19.66 s at the refutation; 3,879,656 &#96;statSync&#96; calls and 212 spawns), paid twice in every &#96;npm run test:docs&#96; (&#96;plan&#96; 23.49 s and &#96;plan-refutation-current&#96; 23.60 s on 2026-09-22 against a 28 to 33 s gate), which every planning pass and every final review runs. Wall-clock, tokens and context bytes of the order itself are unknown until run.
+- Inherited ledger duty: discharge with this order's decisions file when recorded and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
+- Authority: [docs/work-orders/WO-156-plan-check-sub-second.md](WO-156-plan-check-sub-second.md)
 
 ## Closed
 
@@ -2917,3 +2934,7 @@ See [the human planning map](../planning/work-order-map.md) for recommendation, 
 [WO-150]: WO-150-tinkerer-economy-default.md
 [WO-151]: WO-151-entropy-reducer-dispatch.md
 [WO-152]: WO-152-mission-check-schema-ids.md
+[WO-153]: WO-153-codex-session-entry-advisory.md
+[WO-154]: WO-154-evidence-editions-by-reference.md
+[WO-155]: WO-155-single-source-floor.md
+[WO-156]: WO-156-plan-check-sub-second.md
