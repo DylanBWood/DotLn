@@ -496,3 +496,79 @@ subagent of the twenty.
 
 **Independent review of the third pass.** Recorded in section 13 after the
 receipt.
+
+## 13. Independent review of the third pass
+
+Receipt
+[2026-09-22-planning-162d093b92c13201-026](refutations/2026-09-22-planning-162d093b92c13201-026.md):
+one fresh background reviewer, given only the canonical prompt (134,685
+bytes, 2,296 lines, read whole in eleven contiguous slices by its own
+statement), judged the committed subject at `33acc94f`. Pass scope: WO-153,
+WO-154, WO-155 and WO-156 plus the 49-entry sequence; 45 verdicts carried by
+hash. Verdict `aligned-with-findings` for each order and for the plan; no
+hold; eight known issues, zero observed failures, zero vision contradictions.
+Dispatch to file took 714 s as the helper observed it; the worker finished in
+662 s over 32 tool uses and 145,813 tokens by the harness's task
+notification. It was the pass's second and last subagent of the twenty-agent
+cap. It made no repository or Git writes and spawned no agents; its only
+writes were its result and a schema validator in the granted scratch
+directory. It verified each order's observed gap read-only at the base
+commit (its statement lists the files and lines) and corroborated WO-154's
+figures one close later: 81 logs under `feedback*/` at 103.5 MB of 186.1 MB
+tracked, against this pass's 82 logs at 104.8 MB counted over all of
+`docs/evidence` (the review's own pattern); the difference is one log outside
+a `feedback*/` directory and the planning documents this branch adds.
+
+The reviewer's answers, in short. None of the four orders sits on a
+critical-path gate row; WO-154 and WO-156 serve every gate at once (bytes
+every clone and integrating review pays; seconds every `test:docs` pays),
+WO-155 serves every role session, WO-153 the Codex dispatch path. Removal
+balance: yes and measured for WO-154's edition half, WO-155 and WO-156;
+plausibly positive and unknown for WO-153 (a latent path no live dispatch
+has shown); unquantified for WO-154's receipt half. Failure behavior:
+degrading for WO-153, WO-155 (declining criterion 2 keeps today's text) and
+WO-156; partly for WO-154, where an unresolvable blob is a refusal.
+
+The eight known issues and what this pass makes of them, each carried to
+its order's catalog row for the executor's decisions:
+
+1. _WO-153, criterion 1._ The catch covers only the begin call; the sibling
+   post-transition calls in the same `try` keep the exit-1 path. Carried:
+   the executor decides whether the sibling calls are the same seam and
+   records it.
+2. _WO-153, criterion 3._ The advisory reuses `no-session`, so a begin
+   failure on a built runtime is indistinguishable in receipts from a
+   missing build. Carried: the advisory's message names the fault; a new
+   cause code is product 07's route if the executor finds the distinction
+   load-bearing.
+3. _WO-154, criterion 2._ The behavioral identity's enumeration is
+   deferred to the decisions, and a lockfile change that alters a resolved
+   dependency is behavioral although the file is "pins". Carried: the
+   enumeration classifies lockfile resolution changes as behavioral unless
+   the executor shows the audit's dependency set unchanged.
+4. _WO-154, criterion 1._ An unresolvable blob is a refusal, so a shallow
+   or blob-filtered clone with an unchanged tree makes every edition stale.
+   Carried: the check names the clone shapes it supports and the message
+   says so.
+5. _WO-154, criterion 6._ The receipt-subject half has no itemized balance
+   and an "or split" escape. Carried: the split decision, if taken,
+   records the balance; receipt 024's 814,036 bytes is the reopening
+   figure.
+6. _WO-155, criterion 1._ The completeness table is one-time; a later
+   skill-loading path (WO-072, WO-075, WO-076, a harness reading
+   `.agents/skills` alone) could load a skill without the floor and lose
+   the refusals silently. Carried: the reference sentence names the floor
+   file it relies on, and the three named orders inherit the row as a
+   preflight. The reviewer also corrected the order's named edit site: the
+   paragraph is emitted from the `HARNESS_BOUNDARIES` constant in
+   `packages/compiler/src/harness.ts`, itself a registered source, not from
+   the loadout file the Cost line names; the re-mint count is unchanged.
+   The order text stands as judged; the catalog row carries the correction.
+7. _WO-156, criterion 2._ The 2 s criterion is bound to one host and leaves
+   the 212 spawns. Carried: the timing records host and sequence length.
+8. _WO-156, criterion 3._ A `statSync` count tests the mechanism, not the
+   behavior. Carried: the executor may add a wall-clock bound on the
+   fixture beside the count.
+
+`npm run test:docs` after the receipt: recorded in the handoff and the pull
+request.
