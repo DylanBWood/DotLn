@@ -323,4 +323,70 @@ in section 1; handoff counters are in the response and the ignored receipt.
 
 ## 11. Independent review
 
-Recorded after the receipt is filed.
+Receipt
+[2026-09-22-planning-72c46910a176d62e-025](refutations/2026-09-22-planning-72c46910a176d62e-025.md):
+one fresh background reviewer, given only the canonical prompt (175,517
+bytes as pretty-printed JSON, read whole in ten contiguous line slices by
+its own statement) and nothing else, judged the committed subject at
+`02375ac4`. Pass scope: WO-151, the one order whose file changed since
+receipt 024 (by its appended execution record), plus the sequence; 99
+verdicts carried by hash. The helper selected that scope; this pass changed
+no order text. Verdict `aligned-with-findings` for WO-151 and for the plan;
+no hold; six known issues, zero observed failures, zero vision
+contradictions. Dispatch to file took 557 s as the helper observed it; the
+worker itself finished in 444 s over 35 tool uses and 143,053 tokens by the
+harness's task notification. It was the pass's single spent subagent of the
+twenty-agent cap. The worker made no repository or Git writes and spawned no
+agents; its only writes were its result, its statement and a small schema
+validator in the granted scratch directory.
+
+The reviewer's answers to the four questions, in short. WO-151 sits on no
+critical-path gate row and names no blocked outcome it enables; its NoOp
+cost before the order was the hand-performed host steps and REVIEW-001's
+measured-versus-inspection loss, none of it a number in the meter, and after
+the order NoOp costs nothing further. Removal balance: no, by every measured
+ledger (six subcommands, a control log, one gate step, a generated document
+per disposed review, an edition re-mint and a live episode added; procedural
+removals unmeasured). Failure behavior: mostly degrading, with one refusing
+edge, the `entropy` document check failing every later order's gate on a
+chain-breaking receipt, constructible and not observed.
+
+The six known issues and what this pass makes of them:
+
+1. _Criterion 7, rule beating._ A filed pair satisfies the live-row
+   criterion even if the reviewer measured nothing. The reopening
+   observation (REVIEW-002's receipt records denied tools above zero or
+   fewer than half its findings measured) is already answered by the
+   record the reviewer could not see: REVIEW-002 records zero denied tool
+   calls and four of four findings measured (WO-151's recorded limits).
+   Not met; nothing to do.
+2. _Criterion 6, policy resistance._ The `entropy` check inside
+   `test:docs` turns a hand-edited or chain-breaking receipt into a gate
+   refusal for unrelated orders. Constructible; WO-151's own decisions
+   record the interrupted-filing tolerance and the same edge. Carried to
+   WO-151's catalog row with its reopening observation.
+3. _Criterion 5, the wrong goal._ The order names no critical-path outcome;
+   its route into the product is the register. Reopens when an accepted
+   Entropy Reducer finding is sequenced as, or amends, an order on a
+   critical-path gate row. This pass's accepted findings are repository
+   health and gate time, not gate rows, so the observation stands open.
+4. _Criterion 2, attestation._ The pinned route records model and effort
+   from the invocation's flags, not from a readback of the session that
+   ran. Already recorded as WO-151's first known limit; the reopening
+   observation (an attested model differing from a usage readback) has no
+   readback to compare against today.
+5. _Criterion 8, gate step count._ 78 at WO-151, the series high, with the
+   meter's worsening list empty. The Cost line named the added step; the
+   next observed row decides it.
+6. _Criterion 8, the Cost line reads "unknown until run" beside an observed
+   row._ By product 07 §Process budget the Cost line is the promise and the
+   cost table is the observation the meter compares it with; the pairing
+   is the design, not a stale claim. Recorded here so the next reviewer
+   reading a closed order's Cost line has the pointer.
+
+After the receipt the operator directed, in one line captured verbatim in
+ignored intake
+(`docs/intake/notes/2026-09-22-entropy-review-002-planning-operator-answer.md`,
+SHA-256 `b39ddef91c5216fe9d3d5601bfa05c26645ccb073b33542b79bad7aa791000b1`),
+that the pass push the branch and open the pull request when done.
+`npm run test:docs` after the receipt: recorded in the handoff.
