@@ -283,7 +283,7 @@ its writer without publication grants (WO-064 D002). Fix: admit the optional
 identity through `LiveReactorDriver.equip` and dispatch it to a
 `SourceChangeHost`; no `ArtifactCompilationRefused`; a malformed registry
 still refuses. Verifier: run the skeleton suite; read product 02; confirm
-the artifact-identity edition was re-minted (item 16).
+the artifact-identity edition was re-minted (criterion 16).
 
 ### Group C — the resident's binding
 
@@ -343,7 +343,7 @@ returns an invalid result with a named reason; the stored event and the CLI
 line carry it; an unknown detail string is refused by the recorder.
 Verifier: run the verification and skeleton suites; run one fake-transport
 refusal through `dotln` and read the line; confirm the feedback edition was
-re-minted (item 16).
+re-minted (criterion 16).
 
 **Item 9 — the confinement witness says what it observes (WO-151 D020).**
 Observed: `scripts/lib/entropy-review.mjs` renders "Tracked status
@@ -406,7 +406,7 @@ variable it records `operator-attested`; a supplied value never becomes
 `unknown`. Verifier: run the resume suite; dispatch a read-only status in a
 session with the variable set and read the attestation line; read the
 regenerated role text; confirm the feedback edition re-mint carried the probe
-file (item 16).
+file (criterion 16).
 
 ### Group E — registries and the fold
 
