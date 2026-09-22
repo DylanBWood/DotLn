@@ -1360,6 +1360,127 @@ that reopens it.
    pass files nothing new until R2. Open for the operator; reopen at the
    next planning pass or the operator's answer.
 
+## Candidates — returns from the WO-064 and WO-100 closes (recorded 2026-09-22)
+
+Boarded by the orders closed on 2026-09-22 (WO-063, WO-120, WO-152, WO-151,
+WO-064 and WO-100) and read by the closeout follow-ups pass from the
+follow-up register; gathered here by seam. **All eleven are allocated to
+[WO-157](../work-orders/WO-157-closeout-followups.md)**, one order carrying
+every defect, at the operator's mid-pass correction ("take everything and
+put it in a single work order, one time, authorized by me"); the pass's
+first draft had allocated only the first and deferred the rest, and that
+error and its correction are recorded in the planning document §12. Each
+item keeps its sources and the observation that reopens it after WO-157
+closes; WO-151 D007 (item 11) is the one non-defect, kept as a record and
+outside WO-157's criteria. This section grants no activation authority.
+
+1. **Closeout helper residue.** `worktree integrate` strands itself on an
+   intent-to-add entry (WO-100 D017; WO-157 criterion 1). The adjacent
+   queue's deferred items keep a literal target because the executor
+   disposes them before `plan followups --sync` mints the public identifier,
+   and a later order cannot retarget a closed order's retained queue: the
+   queue is addressed from the selected order's branch and refuses mutation
+   outside that order's `active` and `repairing` phases
+   (`scripts/adjacent-work.mjs`; WO-064 D011, WO-152 D011). Product 07
+   §Retained planning follow-ups now says sync before dispose; WO-157
+   criterion 2 puts the sentence in the executor's rule and admits the
+   reviewer-phase retarget; the retained rows keep their literal targets.
+   Reopen: a third order's queue carries a literal target after WO-157
+   closes.
+2. **Target publication runs the target's hooks.** `publishTargetOrder`
+   pushes from the target's Git root with no hook override, so a `pre-push`
+   or `reference-transaction` hook in the target's common Git directory runs
+   in the operator's process with the operator's credentials after every
+   refusal has passed; whether a sandboxed target writer can plant one is not
+   established (WO-064 D010). Due before the first target publication of a
+   model-written episode: WO-066 is the first sequenced order that pushes a
+   worker's repaired head under the grant, then WO-112 and WO-118. Shape:
+   probe both writer profiles against the common Git directory first; until
+   disproved, push with hooks disabled or refuse when the hooks directory,
+   `core.hooksPath` or hook-relevant configuration differs from a snapshot
+   taken before the writer ran, with a fixture that plants a `pre-push` hook
+   and observes it does not run (WO-157 criterion 4). Reopen: a target
+   operator requiring its hook to run, or a probe result WO-157's guard does
+   not cover.
+3. **The skeleton refuses a grant-bearing identity.** `compileLoadout` keeps
+   an optional `authorityGrantRegistry` in the compilation environment and
+   `isCompilationEnvironment` admits exactly five keys, so every identity
+   compiled with a registry is refused at equip and at the source-change
+   host (WO-064 D006; WO-064 avoided the path by compiling its writer without
+   publication grants). No order on the near horizon equips one: WO-111's
+   portfolio carries no remote grant (WO-157 criterion 5). Reopen: a
+   resident receipt recording `ArtifactCompilationRefused` after WO-157
+   closes.
+4. **Derived-order ceilings the source-change host does not count.** WO-052
+   checks each changed path only by surface prefix; nothing counts a Shine
+   or Standardize change's files against the envelope's `files` limit, and
+   a deletion or a file turned into a directory passes without `repo.delete`
+   (WO-100 D016; `portfolio.ts` line 43 still says "Host-counted"). Due
+   before a portfolio runs unattended on an operator repository; WO-111 runs
+   on a scratch repository and forbids runtime fixes, so the first exposure
+   is the operator's own portfolio after WO-111 or WO-118's starter
+   instance (WO-157 criterion 3). Reopen: a verifier shows a derived order's
+   change exceeding its declared size after WO-157 closes.
+5. **The resident's production binding.** The portfolio binding's authority
+   profile check runs in the configuration loader and not for a hand-written
+   `resident.json` (WO-100 D006), and no default model exists for always-on
+   agents (WO-100 D007; product 06 records the candidate values). Both were
+   routed to WO-111, whose criterion 6 and non-goals forbid runtime changes;
+   WO-111 declares its portfolio through the loader and binds with explicit
+   `--model` and `--effort`, so the proof needs neither; WO-157 criteria 6
+   and 7 land both ahead of it. Reopen: Sonnet 5.5 arrives (the Sonnet tier
+   moves), a selected model is withdrawn, or the operator changes a role
+   default.
+6. **Live-episode diagnosability.** An `invalid-result` worker refusal
+   records only the code, so a refused live episode leaves nothing to
+   diagnose (WO-152 D009: two refused verifier episodes at USD 2.72 with no
+   cause); `worker-transport.ts`, `verification-protocol.ts` and
+   `dotln.ts` are registered feedback sources, so the carry re-mints. The
+   refutation statement carries the attempts payload instead of prose
+   (WO-151 D017); the confinement witness's summary overstates what
+   `trackedStatus()` and a net scratch count observe (WO-151 D020). WO-157
+   criteria 8, 9 and 10. Reopen: a refused live episode with no diagnosable
+   cause, or a receipt whose zero scratch delta hides a moved inventory
+   hash, after WO-157 closes.
+7. **Selected-effort readback for Claude Code.** `docs/discovery/environment.json`
+   records claude-code `effectiveEffortReadback` as not found at 2.1.263 and
+   carries no selected-session readback, while this pass observed
+   `CLAUDE_EFFORT=xhigh` exported at 2.1.280 and WO-152's reviewer recorded
+   `unknown` for a supplied value; WO-100's status projection reports the
+   same drift (WO-152 D012). The probe file is a registered feedback source.
+   WO-157 criterion 11 adds a selected-session readback row for claude-code
+   (the variable and the persisted `effortLevel`; selected, not effective)
+   and an observed selected-effort attestation source. Reopen: a Claude Code
+   attestation disagrees with the variable after WO-157 closes.
+8. **Registries that follow the import graph.** Protocol files change the
+   compiled behaviour of registered sources without being registered
+   (WO-151 D001); a new committed JSONL stream or document suite owes a
+   registration that nothing checks until it is selected (WO-151 D021).
+   WO-157 criteria 12 and 13. Reopen: an edition check passes over a changed
+   protocol, or an unclassified committed JSONL or unstubbed suite reaches a
+   gate, after WO-157 closes.
+9. **Gate-sandbox fixture teardown.** The WO-140 fixture's teardown can fail
+   the runner-fixtures suite with `ENOTEMPTY` after its assertions passed,
+   a failure with no owner (WO-063 D005). Observed once, at WO-063's first
+   review gate; this pass found one abandoned `dotln-gate-sandbox-*` root
+   dated 2026-09-21 22:00 in the temporary directory and none of the four
+   product gates since (WO-120, WO-151, WO-064, WO-100) failed this way.
+   WO-157 criterion 15. Reopen: an `ENOTEMPTY` teardown in any gate, or an
+   abandoned root after a completed `npm test`, after WO-157 closes.
+10. **Allocation events bound to the section constant.** Folding the control
+    log re-validates every `WorkOrderIdentityAllocated` event against the
+    section list in `scripts/lib/derived-contract.mjs`, so a list change can
+    make historical events unfoldable repository-wide (WO-120 D007). No
+    derived order lives in a control plane kept across releases yet. WO-157
+    criterion 14, with a dated note on WO-113's catalog row. Reopen: the
+    section list changes after WO-157 closes and an allocation event fails
+    to fold.
+11. **The reviewer's phrase depends on the operator.** `planning: entropy
+    reducer` is the only thing that invokes the reviewer (WO-151 D007); two
+    orders have closed since WO-151 merged and the phrase has been used once.
+    Reopen: ten closed orders without the phrase after WO-151, or two passes
+    that open with it and still carry findings undecided.
+
 ## REVIEW-002 consumed — dispositions, routes and the order design waiting for room (2026-09-22)
 
 Recorded by the second planning pass of 2026-09-22, which consumed
@@ -1695,7 +1816,7 @@ Retained dependency wording is dated planning context, not a second state source
 | [WO-110](../work-orders/WO-110-local-model-transport.md)              | worker transport — a third transport over the local inference endpoint for the inspection profile                                                                                                                                                                                              | no open input (WO-068 recommended first); activation does not wait for WO-137's outcome: doubles plus a `ready` or `unavailable` live row, no qualification claimed; assign version at activation (minor); operator runs the smoke Cleanup pass 2026-09-19 carry-ins: remove the "until WO-110" string at `packages/skeleton/src/actor-catalog.ts:84`; fix the two recorded probe-client defects before reusing `scripts/probes/local-runner-*.mjs` (WO-137 FINAL-001 O1 to O3). | skeleton implementer, then independent verifier                                                           | the operator's local endpoint                                                                                                                                         | `packages/skeleton/src/worker-transport.ts`, the actor catalog, `environment.md`                                                                                                                                 |
 | [WO-111](../work-orders/WO-111-unattended-live-proof.md)              | live proof — the unattended hour: 5S work derived, executed, verified and stopped on return                                                                                                                                                                                                    | WO-100, WO-099, WO-053 and WO-054 merged; the operator runs the window; assign version at activation (patch); R2 follows WO-144 carry-in (2026-09-19): name any outside destination root and equip its provenance-bearing operator grant on the executing role/support; order contracts do not yet supply active grants automatically. 2026-09-21: WO-147 precedes it (the contention race stated as a limit in the `runtime.resident` row); a real bound worktree (WO-148) is where WO-099 D016's selection-policy signal, an `unknown` hold because generated evidence crowds the capsule, would first show. | operator-run window; independent verifier reads the receipt                                               | the actual harnesses; a seeded scratch repository                                                                                                                     | `docs/evidence/WO-111/`, a seed generator                                                                                                                                                                        |
 | [WO-112](../work-orders/WO-112-core-run-loop-proof.md)                | live proof — WO-123's composition run once against a scratch issue and target, the representative scenario fully resolved and a control scenario proving legitimate escalation                                                                                                                 | every primitive gate merged (see the order); the operator witnesses; assign version at activation (minor); R3 follows WO-144 carry-in (2026-09-19): name any outside destination root and equip its provenance-bearing operator grant on the executing role/support; order contracts do not yet supply active grants automatically. | operator-witnessed composition; independent verifier reads the receipt                                    | the actual harnesses; a scratch target and issue in a personal public repository                                                                                      | the `dotln vertical` command, `docs/evidence/WO-112/`, products 06 and 12                                                                                                                                        |
-| [WO-113](../work-orders/WO-113-work-order-files-stable-contracts.md)  | control plane — the five-surface separation checked forward from a cutoff; open orders' dated notes migrated                                                                                                                                                                                   | WO-043 merged; assign version at activation (patch)                                                                                                                                                                        | tooling implementer, then independent verifier                                                            | repository-wide checks                                                                                                                                                | `scripts/work-orders.mjs`, open order files, evidence READMEs, product 07                                                                                                                                        |
+| [WO-113](../work-orders/WO-113-work-order-files-stable-contracts.md)  | control plane — the five-surface separation checked forward from a cutoff; open orders' dated notes migrated                                                                                                                                                                                   | WO-043 merged; assign version at activation (patch)                                                                                                                                                                       ; 2026-09-22: WO-157 criterion 14 versions the WorkOrderIdentityAllocated authority check ahead of this order's section contract (WO-120 D007) | tooling implementer, then independent verifier                                                            | repository-wide checks                                                                                                                                                | `scripts/work-orders.mjs`, open order files, evidence READMEs, product 07                                                                                                                                        |
 | [WO-114](../work-orders/WO-114-runtime-status-projection.md)          | console — `runtime-status-v1` written by the resident and rendered by the text host                                                                                                                                                                                                            | WO-068 merged; assign version at activation (minor)                                                                                                                                                                        | runtime/console implementer, then independent verifier                                                    | a fixture resident with a fake clock                                                                                                                                  | the contract module, the resident's writer, `packages/console`, product 04                                                                                                                                       |
 | [WO-115](../work-orders/WO-115-console-parity-contract.md)            | console — every UI command is the terminal's command over a local loopback surface, no second authority                                                                                                                                                                                        | WO-068 and WO-114 merged; assign version at activation (minor)                                                                                                                                                             | runtime/console implementer, then independent verifier                                                    | loopback fixtures                                                                                                                                                     | the resident's loopback server, `packages/console` client, products 04 and 07                                                                                                                                    |
 | [WO-116](../work-orders/WO-116-audit-projection-served.md)            | console — the canonical audit projections served through the parity surface                                                                                                                                                                                                                    | WO-115 merged; assign version at activation (minor)                                                                                                                                                                        | runtime/console implementer, then independent verifier                                                    | fixture logs                                                                                                                                                          | the resident's read commands, `packages/console`, product 09                                                                                                                                                     |
@@ -1736,6 +1857,7 @@ Retained dependency wording is dated planning context, not a second state source
 | [WO-154](../work-orders/WO-154-evidence-editions-by-reference.md) | evidence machinery — feedback self-host editions record inputs by blob identity, key staleness on a behavioral identity with pins as metadata, re-mint pins-only changes without a live episode, and keep every existing edition byte-identical; the receipt subject by reference as a second group | WO-147 (v0.40.1) closed; paired with WO-153; assign version at activation (minor); two registered sources edited, so one edition re-mint with one live self-host episode (WO-147 D010), the last under today's rule; the before figures (1.26 MB per edition, 104.8 MB of 184.8 MB tracked, 59 editions in seven days) are in the order and REVIEW-002. Receipt 026 known issues to carry into the executor's decisions: the behavioral identity's enumeration classifies a lockfile change that alters a resolved dependency as behavioral unless the audit's dependency set is shown unchanged; an unresolvable blob is a refusal, so the check names the clone shapes it supports (a shallow or blob-filtered clone stales every edition); the receipt-subject group's split decision, if taken, records its balance against receipt 024's 814,036 bytes | skeleton and control-plane implementer, then independent verifier | one live self-host episode; the feedback suite fixtures; a Git checkout for body resolution | `packages/skeleton/src/feedback-selfhost.ts`, `scripts/feedback-evidence.mjs`, `scripts/lib/evidence-sources.mjs`, the edition schema, `scripts/lib/plan-receipts.mjs`, the re-minted editions, the console's pinned self-host case |
 | [WO-155](../work-orders/WO-155-single-source-floor.md) | harness bundle patch — the five-refusals paragraph emitted once in the floor with each skill referring to it, after a recorded completeness check per skill-loading path; harness-context and meta report each role's delta since the previous edition and the last acceptance; no rule trimmed, no ceiling or acceptance changed | WO-144 (v0.33.0) and WO-150 (v0.39.0) closed; paired with WO-156 directly after WO-153 and WO-154; assign version at activation (patch); the generator and harness-context are registered sources, so one edition re-mint with one live self-host episode; if the completeness check finds a supported path that loads a skill alone, the emission criterion is declined with the observation and the metric half still closes the order. Receipt 026 known issue and correction to carry into the executor's decisions: the paragraph is emitted from the `HARNESS_BOUNDARIES` constant in `packages/compiler/src/harness.ts` (a registered source) rather than the loadout file the Cost line names, with the re-mint count unchanged; the completeness table is one-time, so each skill's reference sentence names the floor file it relies on and WO-072, WO-075 and WO-076 inherit the row as a preflight | skeleton and control-plane implementer, then independent verifier | one live self-host episode; the three harnesses' skill-loading paths observed; the WO-150 role-baseline oracle | `packages/skeleton/src/loadouts/contributor.ts`, `.claude/skills/*/SKILL.md`, `.agents/skills/*/SKILL.md`, the `CLAUDE.md` harness block, `scripts/lib/harness-context.mjs`, `scripts/harness-context.mjs`, the meter's drift row |
 | [WO-156](../work-orders/WO-156-plan-check-sub-second.md) | control-plane patch — the work-order path pattern built once per call in the planning subject builder; `plan check` under 2 s with byte-identical output; the two plan tasks in `test:docs` measured before and after | WO-135 (v0.29.4) closed; paired with WO-155; assign version at activation (patch); no live row; re-mints nothing (`plan-subject.mjs` is not a registered source). Receipt 026 known issues to carry into the executor's decisions: the 2 s criterion is host-bound and leaves the 212 Git spawns, so the timing records host and sequence length; a `statSync` count tests the mechanism, so a wall-clock bound on the fixture may sit beside it | control-plane implementer, then independent verifier | the plan-refutation fixture sequence with `statSync` counted; the operator's host for the timing | `scripts/lib/plan-subject.mjs`, `scripts/test-plan-refutation.mjs` |
+| [WO-157](../work-orders/WO-157-closeout-followups.md) | closeout follow-ups, one order — the sixteen defects boarded up by the orders closed on 2026-09-22, across the integrate helper, the adjacent queue, the source-change and publication hosts, the skeleton's identity validator, the resident's binding and default model, the worker refusal record, the receipt witnesses, the discovery probe, the evidence registries, the control fold and the gate-sandbox fixture | WO-100 (v0.44.0), WO-064 (v0.43.0), WO-151 (v0.42.0), WO-152 (v0.41.1), WO-120 (v0.41.0) and WO-063 (v0.40.3) closed; a one-entry slot at the head of the sequence before WO-153 and WO-154, solo, under the operator's mid-pass authorization for one cross-seam order (the 2026-09-22 closeout follow-ups pass); assign version at activation (minor); one edition re-mint with one live self-host episode; group commits by seam; criterion 4's probe first; criterion 15 may end in a recorded diagnosis. Receipt 027 known issues to carry into the executor's decisions: a fixture's base failure must be the item's assertion, not a missing symbol (criterion 17); the diagnosis route on criterion 15 leaves the race unfixed and must say so; record the resolved Sonnet model id, not the alias (criterion 7); an untyped invalid-result detail must still be recorded, never refused into silence (criterion 8); specify `--check` when no registered profile is readable (criterion 6); a legitimate Sort deletion must not be refused by criterion 3's guard, or the derivation is narrowed and recorded; a cold-start raise under criterion 19 is recorded with the measured bytes, not assumed; each item's decision names the gate or order it unblocks (WO-111 for items 3, 6, 7 and 11; WO-066 for item 4; WO-113 for item 14; every final review for items 1 and 2) (criterion 18); `claude-session-readback` is a readback only when the host exports the variable, and the probe row says who sets it (criterion 11) | skeleton and control-plane implementer, then independent verifier | a scratch worktree with a `git add -N` entry; a scratch target with a planted `pre-push` hook; the live feedback verifier for the re-mint; Git 2.55.0 and Claude Code 2.1.280 on the operator's host | `scripts/lib/worktree-integration.mjs`, `scripts/adjacent-work.mjs`, `packages/skeleton/src/loadouts/contributor.ts`, `packages/skeleton/src/portfolio.ts`, the source-change and target-publication hosts, the skeleton's compilation-environment validator, the resident binding, `packages/skeleton/src/worker-transport.ts`, the entropy receipt host, `docs/discovery/environment.json`, `scripts/lib/evidence-sources.mjs`, `scripts/lib/derived-contract.mjs`, `scripts/test-runner.test.mjs`, products 02, 06 and 07 |
 | [WO-101](../work-orders/WO-101-program-and-hash-corpus.md)            | evidence/corpus — Program and identity regression floor                                                                                                                                                                                                                                        | not applicable                                                                                                                                                                                                             | deterministic corpus executor                                                                             | offline harness                                                                                                                                                       | `corpus/harness/`, fixtures, manifests                                                                                                                                                                           |
 | [WO-102](../work-orders/WO-102-cadence-corpus.md)                     | evidence/corpus — cadence boundary sweep                                                                                                                                                                                                                                                       | assign version and close disposition; pin suitable base/deps and governed closeout path                                                                                                                                    | deterministic corpus executor                                                                             | offline harness                                                                                                                                                       | cadence fixtures and manifests                                                                                                                                                                                   |
 | [WO-103](../work-orders/WO-103-authority-outbox-corpus.md)            | evidence/corpus — authority/outbox decision table                                                                                                                                                                                                                                              | assign version and close disposition; pin the landed WO-017 base and governed closeout path Cleanup pass 2026-09-19 carry-in: the audit under-links a caller-error refusal and this oracle has no such cell (WO-017 FINAL-001 adjudication 8). | deterministic corpus executor                                                                             | offline harness                                                                                                                                                       | authority/outbox fixtures and manifests                                                                                                                                                                          |

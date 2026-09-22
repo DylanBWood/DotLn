@@ -2156,6 +2156,14 @@
             "WO-100"
           ],
           "at": "2026-09-19T01:19:39.494Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "settled",
+          "reason": "Settled by the 2026-09-22 closeout follow-ups pass: WO-100 closed with the write-back; FINAL-002 criterion 4 records that product 03 states the progressive-authority status (v0.44.0).",
+          "reopenWhen": "a resident receipt contradicts the progressive-authority status product 03 states",
+          "targets": [],
+          "at": "2026-09-22T22:02:08.824Z"
         }
       ]
     },
@@ -2778,6 +2786,14 @@
           "reopenWhen": "WO-100's activation",
           "targets": [],
           "at": "2026-09-19T01:19:57.930Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by the 2026-09-22 closeout follow-ups pass: the 2026-09-19 reopening (WO-100's activation) occurred, but the observation that decision waited for has not: the portfolio ranks candidates by phase inside one resident and the operator still dispatches every order by hand, so queue age and completion rate have no consumer.",
+          "reopenWhen": "WO-111 closes with an observed unattended run, or a second lane runs unattended",
+          "targets": [],
+          "at": "2026-09-22T22:02:09.787Z"
         }
       ]
     },
@@ -2826,6 +2842,16 @@
             "WO-111"
           ],
           "at": "2026-09-19T01:19:39.771Z"
+        },
+        {
+          "sourceRevision": 4,
+          "status": "allocated",
+          "reason": "Re-allocated by the 2026-09-22 closeout follow-ups pass: WO-100 closed (v0.44.0) and the candidate paragraph records what shipped and what stays candidate; the live unattended hour is WO-111, queued; activation policy beyond the curve, slots, ranking, replenishment and the return view stay candidate in the section.",
+          "reopenWhen": "WO-111 is withdrawn",
+          "targets": [
+            "WO-111"
+          ],
+          "at": "2026-09-22T22:02:09.065Z"
         }
       ]
     },
@@ -2916,6 +2942,14 @@
           "reopenWhen": "the reversal condition of that NoOp",
           "targets": [],
           "at": "2026-09-19T01:19:36.244Z"
+        },
+        {
+          "sourceRevision": 7,
+          "status": "settled",
+          "reason": "Re-settled by the 2026-09-22 closeout follow-ups pass at revision 7: revisions 4 to 7 are the WO-120 derived-work and WO-100 portfolio write-backs into the section; the 2026-09-19 decision (the evidence view in WO-026, typed dependency status in WO-043, the topology check in WO-135; the scheduler declined as NoOp 11 of 2026-09-17) is unchanged.",
+          "reopenWhen": "the reversal condition of that NoOp",
+          "targets": [],
+          "at": "2026-09-22T22:02:09.304Z"
         }
       ]
     },
@@ -2954,6 +2988,13 @@
         },
         {
           "hash": "c01af873b5a7aa3c474889e0af54ee553d1c426f50763a42f52e13c44a3a32e5",
+          "ref": "docs/product/07-execution-guide.md#candidate--planner-startup-context",
+          "title": "Candidate — planner startup context",
+          "summary": "## Candidate — planner startup context Operator steering during WO-126 identifies excessive context needed to learn the repository's purpose and choose the next work. First measure what the bounded follow-up feed removes. Compare the remaining required reads, context bytes, commands and wall-clock with a short purpose brief and scoped retrieval of candidate authorities. The feed may discharge the candidate-selection part; do not duplicate that implementation or assume it solves orientation to the product. Preserve scope, sources and rejection reasons while reducing reading. Reopen in a planning pass if observed startup still requires broad document loads; settle this candidate with measured ",
+          "missing": false
+        },
+        {
+          "hash": "2fa4011c566b31c0f955ffee25440cc42d8faee3abb277d4fe82d014934f9b5a",
           "ref": "docs/product/07-execution-guide.md#candidate--planner-startup-context",
           "title": "Candidate — planner startup context",
           "summary": "## Candidate — planner startup context Operator steering during WO-126 identifies excessive context needed to learn the repository's purpose and choose the next work. First measure what the bounded follow-up feed removes. Compare the remaining required reads, context bytes, commands and wall-clock with a short purpose brief and scoped retrieval of candidate authorities. The feed may discharge the candidate-selection part; do not duplicate that implementation or assume it solves orientation to the product. Preserve scope, sources and rejection reasons while reducing reading. Reopen in a planning pass if observed startup still requires broad document loads; settle this candidate with measured ",
@@ -3000,6 +3041,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-21T06:59:07.822Z"
+        },
+        {
+          "sourceRevision": 6,
+          "status": "open",
+          "reason": "Measured by the 2026-09-22 closeout follow-ups pass (product 07 §Candidate — planner startup context, the 2026-09-22 paragraph): the first page showed three invalidated dispositions, three open items and two deferrals of 150 pending; the pass selected nothing from it and read the register by script because the 29 untriaged rows were paged last; orientation still needed status, the sequence, three planning documents, six decision files, two final reviews, the map's candidate sections, the queued orders' headers, the budgets file and the integrate helper's source. One further ask recorded: the first page should say which closed orders contributed the untriaged rows. Stays open.",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-22T22:02:09.545Z"
         }
       ]
     },
@@ -13665,7 +13714,26 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-09-22 closeout follow-ups pass to the map's WO-064 and WO-100 closes section, item 9: one ENOTEMPTY at WO-063's first review gate, one abandoned dotln-gate-sandbox-* root dated 2026-09-21 22:00 observed in the temporary directory, and no repeat in the four product gates since (WO-120, WO-151, WO-064, WO-100); a diagnosis-shaped order is not filed on one occurrence.",
+          "reopenWhen": "a second ENOTEMPTY teardown in any gate, or a second abandoned dotln-gate-sandbox-* root after a completed npm test",
+          "targets": [],
+          "at": "2026-09-22T22:02:10.030Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Re-allocated by the 2026-09-22 closeout follow-ups pass after the operator's correction (planning document §12) to WO-157, the one operator-authorized order carrying every defect the 2026-09-22 closes boarded up: WO-063 D005 is WO-157 item 15, stated there with its observed cause, paths, fix, fixture and verifier checks. The pass's earlier deferral of this row is retained as history.",
+          "reopenWhen": "WO-157 closes without the item's criterion, or the item's reopening observation in the map's 2026-09-22 closes section occurs after WO-157 closes",
+          "targets": [
+            "WO-157"
+          ],
+          "at": "2026-09-22T22:20:30.962Z"
+        }
+      ]
     },
     {
       "id": "FUP-a4ae3aeac59d5f9d",
@@ -13680,7 +13748,26 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-09-22 closeout follow-ups pass to the map's closes section, item 10: no derived order lives in a control plane kept across releases (WO-100's are fixtures; WO-111's is a scratch repository).",
+          "reopenWhen": "the section list in derived-contract.mjs changes, WO-113 activates, or a derived order is recorded in a control plane that must keep folding across releases",
+          "targets": [],
+          "at": "2026-09-22T22:02:10.267Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Re-allocated by the 2026-09-22 closeout follow-ups pass after the operator's correction (planning document §12) to WO-157, the one operator-authorized order carrying every defect the 2026-09-22 closes boarded up: WO-120 D007 is WO-157 item 14, stated there with its observed cause, paths, fix, fixture and verifier checks. The pass's earlier deferral of this row is retained as history.",
+          "reopenWhen": "WO-157 closes without the item's criterion, or the item's reopening observation in the map's 2026-09-22 closes section occurs after WO-157 closes",
+          "targets": [
+            "WO-157"
+          ],
+          "at": "2026-09-22T22:20:31.199Z"
+        }
+      ]
     },
     {
       "id": "FUP-81651a93f657301a",
@@ -13702,7 +13789,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Settled by the 2026-09-22 closeout follow-ups pass: product 07 §Operator-opened planning pass, the planning-artifacts list, now reads 'a registered evidence source other than a component release label' with the reason (evidenceSourceContent normalizes the labels); the duty had one home.",
+          "reopenWhen": "an edition check fails after a version-only bump of a registered manifest, or the duty is generated into role text elsewhere",
+          "targets": [],
+          "at": "2026-09-22T22:02:10.503Z"
+        }
+      ]
     },
     {
       "id": "FUP-a7e1c112b83a67ba",
@@ -13717,7 +13813,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-09-22 closeout follow-ups pass: an in-order repair directive discharged before the order closed; WO-152 D009 records the accepted live self-host episode and the re-minted editions, VER-002 passed and the order closed at v0.41.1.",
+          "reopenWhen": "the record's own reopening observation",
+          "targets": [],
+          "at": "2026-09-22T22:02:10.748Z"
+        }
+      ]
     },
     {
       "id": "FUP-ed431cc1c8ca9a52",
@@ -13732,7 +13837,26 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-09-22 closeout follow-ups pass to the map's closes section, item 6: worker-transport.ts, verification-protocol.ts and dotln.ts are registered feedback sources, so the carry re-mints, and no order on the near horizon opens that seam (WO-154 changes the recorder, WO-155 the bundle).",
+          "reopenWhen": "the next order that edits worker-transport.ts or verification-protocol.ts with a feedback edition, or a second refused live episode with no diagnosable cause",
+          "targets": [],
+          "at": "2026-09-22T22:02:10.990Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Re-allocated by the 2026-09-22 closeout follow-ups pass after the operator's correction (planning document §12) to WO-157, the one operator-authorized order carrying every defect the 2026-09-22 closes boarded up: WO-152 D009 is WO-157 item 8, stated there with its observed cause, paths, fix, fixture and verifier checks. The pass's earlier deferral of this row is retained as history.",
+          "reopenWhen": "WO-157 closes without the item's criterion, or the item's reopening observation in the map's 2026-09-22 closes section occurs after WO-157 closes",
+          "targets": [
+            "WO-157"
+          ],
+          "at": "2026-09-22T22:20:31.439Z"
+        }
+      ]
     },
     {
       "id": "FUP-2f3b263bf7099dee",
@@ -13747,7 +13871,26 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-09-22 closeout follow-ups pass to the map's closes section, item 1: the queue is addressed from the selected order's branch and refuses mutation outside that order's active and repairing phases (scripts/adjacent-work.mjs lines 24–36), so a later order's executor cannot retarget WO-152's retained queue as the record asks; product 07 §Retained planning follow-ups now says to sync before disposing; the retained rows keep their literal target.",
+          "reopenWhen": "a third order's queue carries a literal target after that sentence, the target check becomes blocking, or the queue admits a reviewer-phase retarget",
+          "targets": [],
+          "at": "2026-09-22T22:02:11.226Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Re-allocated by the 2026-09-22 closeout follow-ups pass after the operator's correction (planning document §12) to WO-157, the one operator-authorized order carrying every defect the 2026-09-22 closes boarded up: WO-152 D011 is WO-157 item 2, stated there with its observed cause, paths, fix, fixture and verifier checks. The pass's earlier deferral of this row is retained as history.",
+          "reopenWhen": "WO-157 closes without the item's criterion, or the item's reopening observation in the map's 2026-09-22 closes section occurs after WO-157 closes",
+          "targets": [
+            "WO-157"
+          ],
+          "at": "2026-09-22T22:20:31.680Z"
+        }
+      ]
     },
     {
       "id": "FUP-378d407e1adbe85b",
@@ -13762,7 +13905,26 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-09-22 closeout follow-ups pass to the map's closes section, item 7, with a boy-scout nomination on WO-154's catalog row: reproduced this pass (CLAUDE_EFFORT=xhigh exported at Claude Code 2.1.280; the probe records no readback at 2.1.263; WO-100's status projection reports effort drift xhigh -> unknown); the probe file is a registered feedback source and WO-154 re-mints anyway; the attestation-source decision belongs to the implementing order.",
+          "reopenWhen": "WO-154's executor declines the item, or a third Claude Code attestation disagrees with CLAUDE_EFFORT",
+          "targets": [],
+          "at": "2026-09-22T22:02:11.473Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Re-allocated by the 2026-09-22 closeout follow-ups pass after the operator's correction (planning document §12) to WO-157, the one operator-authorized order carrying every defect the 2026-09-22 closes boarded up: WO-152 D012 is WO-157 item 11, stated there with its observed cause, paths, fix, fixture and verifier checks. The pass's earlier deferral of this row is retained as history.",
+          "reopenWhen": "WO-157 closes without the item's criterion, or the item's reopening observation in the map's 2026-09-22 closes section occurs after WO-157 closes",
+          "targets": [
+            "WO-157"
+          ],
+          "at": "2026-09-22T22:20:31.916Z"
+        }
+      ]
     },
     {
       "id": "FUP-6c43f082cad02026",
@@ -13777,7 +13939,26 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-09-22 closeout follow-ups pass to the map's closes section, item 8: low priority; no edition has yet passed over a changed protocol.",
+          "reopenWhen": "an edition check passes over a changed entropy or mission-check protocol, or a third unregistered protocol file is added",
+          "targets": [],
+          "at": "2026-09-22T22:02:11.716Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Re-allocated by the 2026-09-22 closeout follow-ups pass after the operator's correction (planning document §12) to WO-157, the one operator-authorized order carrying every defect the 2026-09-22 closes boarded up: WO-151 D001 is WO-157 item 12, stated there with its observed cause, paths, fix, fixture and verifier checks. The pass's earlier deferral of this row is retained as history.",
+          "reopenWhen": "WO-157 closes without the item's criterion, or the item's reopening observation in the map's 2026-09-22 closes section occurs after WO-157 closes",
+          "targets": [
+            "WO-157"
+          ],
+          "at": "2026-09-22T22:20:32.163Z"
+        }
+      ]
     },
     {
       "id": "FUP-abfdb650f125a77f",
@@ -13792,7 +13973,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-09-22 closeout follow-ups pass to the map's closes section, item 11: two orders have closed since WO-151 merged (WO-064, WO-100) and the phrase has been used once (the REVIEW-002 pass).",
+          "reopenWhen": "ten closed orders without the phrase after WO-151, or two passes that open with it and still carry findings undecided",
+          "targets": [],
+          "at": "2026-09-22T22:02:11.958Z"
+        }
+      ]
     },
     {
       "id": "FUP-54c6a7f984545fda",
@@ -13807,7 +13997,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-09-22 closeout follow-ups pass: in-order routing to the verifier and reviewer; WO-151's VER-002 and FINAL-001 (pass, all nine criteria) judged the explicit-route adaptation; closed at v0.42.0.",
+          "reopenWhen": "a receipt whose reviewed commit cannot be resolved from its frozen copy, or the operator rules the explicit route must freeze the working tree",
+          "targets": [],
+          "at": "2026-09-22T22:02:12.205Z"
+        }
+      ]
     },
     {
       "id": "FUP-87e39bb015b6236a",
@@ -13822,7 +14021,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-09-22 closeout follow-ups pass: an in-order note; REVIEW-002's rendered line is immutable, its JSON carries USD 9.4975, and every later receipt renders the corrected form; nothing outstanding.",
+          "reopenWhen": "a cost line names a cause code beside a counter the same object records",
+          "targets": [],
+          "at": "2026-09-22T22:02:12.447Z"
+        }
+      ]
     },
     {
       "id": "FUP-a1e5f194c7cf9a04",
@@ -13844,7 +14052,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Settled by the 2026-09-22 closeout follow-ups pass: an in-order repair directive discharged by WO-151's repair before FINAL-001 passed (v0.42.0).",
+          "reopenWhen": "the record's own reopening observation",
+          "targets": [],
+          "at": "2026-09-22T22:02:12.683Z"
+        }
+      ]
     },
     {
       "id": "FUP-227579bc1610eefa",
@@ -13866,7 +14083,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Settled by the 2026-09-22 closeout follow-ups pass: an in-order repair directive discharged by WO-151's repair (the authority revision re-minted) before FINAL-001 passed (v0.42.0).",
+          "reopenWhen": "the record's own reopening observation",
+          "targets": [],
+          "at": "2026-09-22T22:02:12.930Z"
+        }
+      ]
     },
     {
       "id": "FUP-c8b407b8fe13b12c",
@@ -13888,7 +14114,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Settled by the 2026-09-22 closeout follow-ups pass: an in-order repair directive discharged by WO-151's repair; D017 records REFUTATION-003 filed at the repaired receipt shape and FINAL-001 passed (v0.42.0).",
+          "reopenWhen": "the record's own reopening observation",
+          "targets": [],
+          "at": "2026-09-22T22:02:13.173Z"
+        }
+      ]
     },
     {
       "id": "FUP-1a8e99466c708b2a",
@@ -13903,7 +14138,26 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-09-22 closeout follow-ups pass to the map's closes section, item 6: low priority; the typed report already carries reasons and evidence references.",
+          "reopenWhen": "a live refutation filed whose confinement lacks the after-state, or a planning pass consumes a refutation that is not the latest bound to its review",
+          "targets": [],
+          "at": "2026-09-22T22:02:13.414Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Re-allocated by the 2026-09-22 closeout follow-ups pass after the operator's correction (planning document §12) to WO-157, the one operator-authorized order carrying every defect the 2026-09-22 closes boarded up: WO-151 D017 is WO-157 item 10, stated there with its observed cause, paths, fix, fixture and verifier checks. The pass's earlier deferral of this row is retained as history.",
+          "reopenWhen": "WO-157 closes without the item's criterion, or the item's reopening observation in the map's 2026-09-22 closes section occurs after WO-157 closes",
+          "targets": [
+            "WO-157"
+          ],
+          "at": "2026-09-22T22:20:32.404Z"
+        }
+      ]
     },
     {
       "id": "FUP-ab346bcd9381b174",
@@ -13918,7 +14172,26 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-09-22 closeout follow-ups pass to the map's closes section, item 6: low priority; both hashes are in the receipt and only the summary line overstates.",
+          "reopenWhen": "a receipt reports a zero scratch delta for a frozen copy whose inventory hash moved, or an episode writes into the source repository without moving its tracked status",
+          "targets": [],
+          "at": "2026-09-22T22:02:13.659Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Re-allocated by the 2026-09-22 closeout follow-ups pass after the operator's correction (planning document §12) to WO-157, the one operator-authorized order carrying every defect the 2026-09-22 closes boarded up: WO-151 D020 is WO-157 item 9, stated there with its observed cause, paths, fix, fixture and verifier checks. The pass's earlier deferral of this row is retained as history.",
+          "reopenWhen": "WO-157 closes without the item's criterion, or the item's reopening observation in the map's 2026-09-22 closes section occurs after WO-157 closes",
+          "targets": [
+            "WO-157"
+          ],
+          "at": "2026-09-22T22:20:32.644Z"
+        }
+      ]
     },
     {
       "id": "FUP-0e7a7d9bc0b34393",
@@ -13933,7 +14206,26 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-09-22 closeout follow-ups pass to the map's closes section, item 8: low priority; WO-151 D021 registered both inputs at review.",
+          "reopenWhen": "a committed JSONL stream no registry classifies, or a document suite whose script the runner's CLI-selection fixture does not stub",
+          "targets": [],
+          "at": "2026-09-22T22:02:13.906Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Re-allocated by the 2026-09-22 closeout follow-ups pass after the operator's correction (planning document §12) to WO-157, the one operator-authorized order carrying every defect the 2026-09-22 closes boarded up: WO-151 D021 is WO-157 item 13, stated there with its observed cause, paths, fix, fixture and verifier checks. The pass's earlier deferral of this row is retained as history.",
+          "reopenWhen": "WO-157 closes without the item's criterion, or the item's reopening observation in the map's 2026-09-22 closes section occurs after WO-157 closes",
+          "targets": [
+            "WO-157"
+          ],
+          "at": "2026-09-22T22:20:32.886Z"
+        }
+      ]
     },
     {
       "id": "FUP-6d5c7d5568191609",
@@ -14088,7 +14380,26 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-09-22 closeout follow-ups pass to the map's closes section, item 3: no order on the near horizon equips a grant-bearing loadout to a source-change host; WO-064 D002 avoided the path and WO-111's portfolio carries no remote grant.",
+          "reopenWhen": "WO-072 activation, a resident receipt recording ArtifactCompilationRefused, or any order that must dispatch a grant-bearing loadout to a source-change host",
+          "targets": [],
+          "at": "2026-09-22T22:02:14.145Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Re-allocated by the 2026-09-22 closeout follow-ups pass after the operator's correction (planning document §12) to WO-157, the one operator-authorized order carrying every defect the 2026-09-22 closes boarded up: WO-064 D006 is WO-157 item 5, stated there with its observed cause, paths, fix, fixture and verifier checks. The pass's earlier deferral of this row is retained as history.",
+          "reopenWhen": "WO-157 closes without the item's criterion, or the item's reopening observation in the map's 2026-09-22 closes section occurs after WO-157 closes",
+          "targets": [
+            "WO-157"
+          ],
+          "at": "2026-09-22T22:20:33.125Z"
+        }
+      ]
     },
     {
       "id": "FUP-add763228bfb173c",
@@ -14110,7 +14421,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Settled by the 2026-09-22 closeout follow-ups pass: an in-order directive; the D009 repair bound the matrix to the compiled order, VER-002 passed and FINAL-001 passed (v0.43.0).",
+          "reopenWhen": "the record's own reopening observation",
+          "targets": [],
+          "at": "2026-09-22T22:02:14.394Z"
+        }
+      ]
     },
     {
       "id": "FUP-df9179fc4e1447a6",
@@ -14125,7 +14445,26 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-09-22 closeout follow-ups pass to the map's closes section, item 2: due before the first model-written target publication; WO-066 is the first sequenced order that pushes a worker's repaired head under the grant, then WO-112 and WO-118; gathered with a probe-first shape so the activating pass takes it into that order.",
+          "reopenWhen": "WO-066 or WO-112 activation, a probe showing neither writer profile can write the target's common Git directory, or a target operator requiring its pre-push hook to run",
+          "targets": [],
+          "at": "2026-09-22T22:02:14.636Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Re-allocated by the 2026-09-22 closeout follow-ups pass after the operator's correction (planning document §12) to WO-157, the one operator-authorized order carrying every defect the 2026-09-22 closes boarded up: WO-064 D010 is WO-157 item 4, stated there with its observed cause, paths, fix, fixture and verifier checks. The pass's earlier deferral of this row is retained as history.",
+          "reopenWhen": "WO-157 closes without the item's criterion, or the item's reopening observation in the map's 2026-09-22 closes section occurs after WO-157 closes",
+          "targets": [
+            "WO-157"
+          ],
+          "at": "2026-09-22T22:20:33.369Z"
+        }
+      ]
     },
     {
       "id": "FUP-52d01dfc6cdad453",
@@ -14140,7 +14479,26 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-09-22 closeout follow-ups pass to the map's closes section, item 1: the queue is addressed from the selected order's branch and refuses mutation outside that order's active and repairing phases (scripts/adjacent-work.mjs lines 24–36), so a later order's executor cannot retarget WO-064's retained queue as the record asks; product 07 §Retained planning follow-ups now says to sync before disposing; the retained row keeps its prose target.",
+          "reopenWhen": "a third order's queue carries a literal target after that sentence, the target check becomes blocking, or the queue admits a reviewer-phase retarget",
+          "targets": [],
+          "at": "2026-09-22T22:02:14.878Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Re-allocated by the 2026-09-22 closeout follow-ups pass after the operator's correction (planning document §12) to WO-157, the one operator-authorized order carrying every defect the 2026-09-22 closes boarded up: WO-064 D011 is WO-157 item 2, stated there with its observed cause, paths, fix, fixture and verifier checks. The pass's earlier deferral of this row is retained as history.",
+          "reopenWhen": "WO-157 closes without the item's criterion, or the item's reopening observation in the map's 2026-09-22 closes section occurs after WO-157 closes",
+          "targets": [
+            "WO-157"
+          ],
+          "at": "2026-09-22T22:20:33.618Z"
+        }
+      ]
     },
     {
       "id": "FUP-74671509591ec69d",
@@ -14155,7 +14513,26 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-09-22 closeout follow-ups pass to the map's closes section, item 5: WO-111's criterion 6 and non-goals forbid runtime changes, and it declares its portfolio through the configuration loader where the profile check already runs; a hand-written resident.json is outside its proof.",
+          "reopenWhen": "a resident binding is created outside the configuration loader, or the first production-binding order is planned after WO-111",
+          "targets": [],
+          "at": "2026-09-22T22:02:15.126Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Re-allocated by the 2026-09-22 closeout follow-ups pass after the operator's correction (planning document §12) to WO-157, the one operator-authorized order carrying every defect the 2026-09-22 closes boarded up: WO-100 D006 is WO-157 item 6, stated there with its observed cause, paths, fix, fixture and verifier checks. The pass's earlier deferral of this row is retained as history.",
+          "reopenWhen": "WO-157 closes without the item's criterion, or the item's reopening observation in the map's 2026-09-22 closes section occurs after WO-157 closes",
+          "targets": [
+            "WO-157"
+          ],
+          "at": "2026-09-22T22:20:33.858Z"
+        }
+      ]
     },
     {
       "id": "FUP-d46383b60cca3c0b",
@@ -14170,7 +14547,26 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-09-22 closeout follow-ups pass to the map's closes section, item 5: a default is a runtime change WO-111 forbids; resident-bind requires --model and --effort, so the proof adopts the candidate values through its bind flags, which is how product 06's 'owns adopting it' is read.",
+          "reopenWhen": "an operator asks for a default, Claude Sonnet 5.5 becomes available, a selected model is withdrawn, or the first production-binding order is planned after WO-111",
+          "targets": [],
+          "at": "2026-09-22T22:02:15.369Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Re-allocated by the 2026-09-22 closeout follow-ups pass after the operator's correction (planning document §12) to WO-157, the one operator-authorized order carrying every defect the 2026-09-22 closes boarded up: WO-100 D007 is WO-157 item 7, stated there with its observed cause, paths, fix, fixture and verifier checks. The pass's earlier deferral of this row is retained as history.",
+          "reopenWhen": "WO-157 closes without the item's criterion, or the item's reopening observation in the map's 2026-09-22 closes section occurs after WO-157 closes",
+          "targets": [
+            "WO-157"
+          ],
+          "at": "2026-09-22T22:20:34.099Z"
+        }
+      ]
     },
     {
       "id": "FUP-92a530526a872dff",
@@ -14199,7 +14595,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 3,
+          "status": "settled",
+          "reason": "Settled by the 2026-09-22 closeout follow-ups pass: an in-order repair directive discharged by WO-100's repair; VER-004 passed and FINAL-002 passed (v0.44.0).",
+          "reopenWhen": "the record's own reopening observation",
+          "targets": [],
+          "at": "2026-09-22T22:02:15.615Z"
+        }
+      ]
     },
     {
       "id": "FUP-d2d4e90bfe2491a6",
@@ -14221,7 +14626,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Settled by the 2026-09-22 closeout follow-ups pass: an in-order repair directive discharged by WO-100's repair; VER-004 passed and FINAL-002 passed (v0.44.0).",
+          "reopenWhen": "the record's own reopening observation",
+          "targets": [],
+          "at": "2026-09-22T22:02:15.866Z"
+        }
+      ]
     },
     {
       "id": "FUP-80e77acc45e4ec75",
@@ -14257,7 +14671,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 4,
+          "status": "settled",
+          "reason": "Settled by the 2026-09-22 closeout follow-ups pass: the FINAL-001 F1 routing discharged by repair-003; VER-004 passed and FINAL-002 passed (v0.44.0).",
+          "reopenWhen": "the record's own reopening observation",
+          "targets": [],
+          "at": "2026-09-22T22:02:16.108Z"
+        }
+      ]
     },
     {
       "id": "FUP-27da6527b3696f80",
@@ -14279,7 +14702,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Settled by the 2026-09-22 closeout follow-ups pass: the FINAL-001 F2 to F4 routing discharged by repair-003; VER-004 passed and FINAL-002 passed (v0.44.0).",
+          "reopenWhen": "the record's own reopening observation",
+          "targets": [],
+          "at": "2026-09-22T22:02:16.350Z"
+        }
+      ]
     },
     {
       "id": "FUP-a05fb27e0e8f9bcf",
@@ -14294,7 +14726,26 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-09-22 closeout follow-ups pass to the map's closes section, item 4: due before a portfolio runs unattended on an operator repository; WO-111 runs on a scratch repository and forbids runtime fixes, so the first exposure is the operator's own portfolio after WO-111 or WO-118's starter instance.",
+          "reopenWhen": "WO-111 closes (the next pass files or allocates the ceiling before any operator-repository portfolio), or a verifier shows a derived order's change exceeding its declared size",
+          "targets": [],
+          "at": "2026-09-22T22:02:16.597Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Re-allocated by the 2026-09-22 closeout follow-ups pass after the operator's correction (planning document §12) to WO-157, the one operator-authorized order carrying every defect the 2026-09-22 closes boarded up: WO-100 D016 is WO-157 item 3, stated there with its observed cause, paths, fix, fixture and verifier checks. The pass's earlier deferral of this row is retained as history.",
+          "reopenWhen": "WO-157 closes without the item's criterion, or the item's reopening observation in the map's 2026-09-22 closes section occurs after WO-157 closes",
+          "targets": [
+            "WO-157"
+          ],
+          "at": "2026-09-22T22:20:34.342Z"
+        }
+      ]
     },
     {
       "id": "FUP-bed0e3123bc66fa8",
@@ -14309,7 +14760,454 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-09-22 closeout follow-ups pass to WO-157, filed at the head of the sequence: the helper refuses or stages intent-to-add entries before minting a pending receipt, a stash failure leaves no stranded receipt, and a fixture proves both; reproduced by the pass on Git 2.55.0.",
+          "reopenWhen": "WO-157 is withdrawn or closes without its criterion 1",
+          "targets": [
+            "WO-157"
+          ],
+          "at": "2026-09-22T22:02:16.841Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-d52a9643d7d2d1e3",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-wo-064-and-wo-100-closes-recorded-2026-09-22::476f6351891e9f93bfc229edc0b3cc070ffa978ea2af4bcff9e3a5b60b559df6",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "9bce5657c9a485d9c50cb482d4d3b75fd99c9214d2fe09aa9409e15cc3e5c79b",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-wo-064-and-wo-100-closes-recorded-2026-09-22",
+          "title": "Derived-order ceilings the source-change host does not count.",
+          "summary": "4. **Derived-order ceilings the source-change host does not count.** WO-052 checks each changed path only by surface prefix; nothing counts a Shine or Standardize change's files against the envelope's `files` limit, and a deletion or a file turned into a directory passes without `repo.delete` (WO-100 D016; `portfolio.ts` line 43 still says \"Host-counted\"). Due before a portfolio runs unattended on an operator repository; WO-111 runs on a scratch repository and forbids runtime fixes, so the first exposure is the operator's own portfolio after WO-111 or WO-118's starter instance. Reopen: WO-111 closes (the next pass files or allocates the ceiling before any operator-repository portfolio), or a",
+          "missing": false
+        },
+        {
+          "hash": "b9e25b9b29ce32b7a5b3398e9fa6c108264478e4f7bfe43dc8fd40bfe41189d3",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-wo-064-and-wo-100-closes-recorded-2026-09-22",
+          "title": "Derived-order ceilings the source-change host does not count.",
+          "summary": "4. **Derived-order ceilings the source-change host does not count.** WO-052 checks each changed path only by surface prefix; nothing counts a Shine or Standardize change's files against the envelope's `files` limit, and a deletion or a file turned into a directory passes without `repo.delete` (WO-100 D016; `portfolio.ts` line 43 still says \"Host-counted\"). Due before a portfolio runs unattended on an operator repository; WO-111 runs on a scratch repository and forbids runtime fixes, so the first exposure is the operator's own portfolio after WO-111 or WO-118's starter instance (WO-157 criterion 3). Reopen: a verifier shows a derived order's change exceeding its declared size after WO-157 clo",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Recorded by the 2026-09-22 closeout follow-ups pass as a gathered seam over the source-change host's uncounted ceilings (WO-100 D016); no order allocated.",
+          "reopenWhen": "WO-111 closes (the next pass files or allocates the ceiling before any operator-repository portfolio), or a verifier shows a derived order's change exceeding its declared size",
+          "targets": [],
+          "at": "2026-09-22T22:02:17.813Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Re-allocated by the 2026-09-22 closeout follow-ups pass after the operator's correction (planning document §12) to WO-157, the one operator-authorized order carrying every defect the 2026-09-22 closes boarded up: the uncounted-ceilings seam is WO-157 item 3, stated there with its observed cause, paths, fix, fixture and verifier checks. The pass's earlier deferral of this row is retained as history.",
+          "reopenWhen": "WO-157 closes without the item's criterion, or the item's reopening observation in the map's 2026-09-22 closes section occurs after WO-157 closes",
+          "targets": [
+            "WO-157"
+          ],
+          "at": "2026-09-22T22:20:35.315Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-ed1e5a20dd399c01",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-wo-064-and-wo-100-closes-recorded-2026-09-22::54bffa10de65f956abd81900a1f736b137e0394b967e0faa9a8166568a8d5fce",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "94263ba8dfc9dc9ce86bd17558be29097f794b159fdb647cf5eb5aa0260111b9",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-wo-064-and-wo-100-closes-recorded-2026-09-22",
+          "title": "Live-episode diagnosability.",
+          "summary": "6. **Live-episode diagnosability.** An `invalid-result` worker refusal records only the code, so a refused live episode leaves nothing to diagnose (WO-152 D009: two refused verifier episodes at USD 2.72 with no cause); `worker-transport.ts`, `verification-protocol.ts` and `dotln.ts` are registered feedback sources, so the carry re-mints. The refutation statement carries the attempts payload instead of prose (WO-151 D017); the confinement witness's summary overstates what `trackedStatus()` and a net scratch count observe (WO-151 D020). Reopen: the next order that edits the transport or protocol with a feedback edition, a second refused live episode with no diagnosable cause, or a receipt whos",
+          "missing": false
+        },
+        {
+          "hash": "643f7b819bc8b6af38dca5a4402a8271bc2309f825e0f70348957fc017a032a4",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-wo-064-and-wo-100-closes-recorded-2026-09-22",
+          "title": "Live-episode diagnosability.",
+          "summary": "6. **Live-episode diagnosability.** An `invalid-result` worker refusal records only the code, so a refused live episode leaves nothing to diagnose (WO-152 D009: two refused verifier episodes at USD 2.72 with no cause); `worker-transport.ts`, `verification-protocol.ts` and `dotln.ts` are registered feedback sources, so the carry re-mints. The refutation statement carries the attempts payload instead of prose (WO-151 D017); the confinement witness's summary overstates what `trackedStatus()` and a net scratch count observe (WO-151 D020). WO-157 criteria 8, 9 and 10. Reopen: a refused live episode with no diagnosable cause, or a receipt whose zero scratch delta hides a moved inventory hash, afte",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Recorded by the 2026-09-22 closeout follow-ups pass as a gathered seam over live-episode diagnosability (WO-152 D009; WO-151 D017, D020); no order allocated.",
+          "reopenWhen": "the next order that edits the transport or protocol with a feedback edition, a second refused live episode with no diagnosable cause, or a receipt whose zero scratch delta hides a moved inventory hash",
+          "targets": [],
+          "at": "2026-09-22T22:02:18.300Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Re-allocated by the 2026-09-22 closeout follow-ups pass after the operator's correction (planning document §12) to WO-157, the one operator-authorized order carrying every defect the 2026-09-22 closes boarded up: the live-episode diagnosability seam is WO-157 item 8, 9 and 10, stated there with its observed cause, paths, fix, fixture and verifier checks. The pass's earlier deferral of this row is retained as history.",
+          "reopenWhen": "WO-157 closes without the item's criterion, or the item's reopening observation in the map's 2026-09-22 closes section occurs after WO-157 closes",
+          "targets": [
+            "WO-157"
+          ],
+          "at": "2026-09-22T22:20:35.811Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-ba35c0b5ae47cfb8",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-wo-064-and-wo-100-closes-recorded-2026-09-22::7742e65c1751685e8010fe0bff6b6a9906d29557c8b13b2b4c5d0f1bc9a8d88e",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "f4f0e45bd75ccceb20ead9f7d0dd18fa5466c451405163a5246c873f9e34aea4",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-wo-064-and-wo-100-closes-recorded-2026-09-22",
+          "title": "The reviewer's phrase depends on the operator.",
+          "summary": "11. **The reviewer's phrase depends on the operator.** `planning: entropy reducer` is the only thing that invokes the reviewer (WO-151 D007); two orders have closed since WO-151 merged and the phrase has been used once. Reopen: ten closed orders without the phrase after WO-151, or two passes that open with it and still carry findings undecided.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Recorded by the 2026-09-22 closeout follow-ups pass as a gathered seam over the reviewer's dependence on the operator's phrase (WO-151 D007); no order allocated.",
+          "reopenWhen": "ten closed orders without the phrase after WO-151, or two passes that open with it and still carry findings undecided",
+          "targets": [],
+          "at": "2026-09-22T22:02:19.539Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-ba0543bee5b0895c",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-wo-064-and-wo-100-closes-recorded-2026-09-22::81397dc2ece0a120e275d45d202351d3640589c55e6fdd794428c303e0909d5e",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "43c05fdf72fe63f11f4ff0249526cb1b32d96599b969d67fec9b279d5cda283a",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-wo-064-and-wo-100-closes-recorded-2026-09-22",
+          "title": "Selected-effort readback for Claude Code.",
+          "summary": "7. **Selected-effort readback for Claude Code.** `docs/discovery/environment.json` records claude-code `effectiveEffortReadback` as not found at 2.1.263 and carries no selected-session readback, while this pass observed `CLAUDE_EFFORT=xhigh` exported at 2.1.280 and WO-152's reviewer recorded `unknown` for a supplied value; WO-100's status projection reports the same drift (WO-152 D012). The probe file is a registered feedback source. A selected-session readback row for claude-code (the variable and the persisted `effortLevel`; selected, not effective) is nominated as a boy-scout item on WO-154's catalog row, which re-mints the editions anyway; whether an attestation may cite it as its source",
+          "missing": false
+        },
+        {
+          "hash": "178aff6257dec25b472565430deb83d7c7f29167fe0940b1fac014ce43514be6",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-wo-064-and-wo-100-closes-recorded-2026-09-22",
+          "title": "Selected-effort readback for Claude Code.",
+          "summary": "7. **Selected-effort readback for Claude Code.** `docs/discovery/environment.json` records claude-code `effectiveEffortReadback` as not found at 2.1.263 and carries no selected-session readback, while this pass observed `CLAUDE_EFFORT=xhigh` exported at 2.1.280 and WO-152's reviewer recorded `unknown` for a supplied value; WO-100's status projection reports the same drift (WO-152 D012). The probe file is a registered feedback source. WO-157 criterion 11 adds a selected-session readback row for claude-code (the variable and the persisted `effortLevel`; selected, not effective) and an observed selected-effort attestation source. Reopen: a Claude Code attestation disagrees with the variable aft",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Recorded by the 2026-09-22 closeout follow-ups pass as a gathered seam over Claude Code's selected-effort readback (WO-152 D012), reproduced this pass; a boy-scout nomination on WO-154's catalog row; no order allocated.",
+          "reopenWhen": "WO-154's executor declines the item, or a third Claude Code attestation disagrees with CLAUDE_EFFORT",
+          "targets": [],
+          "at": "2026-09-22T22:02:18.543Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Re-allocated by the 2026-09-22 closeout follow-ups pass after the operator's correction (planning document §12) to WO-157, the one operator-authorized order carrying every defect the 2026-09-22 closes boarded up: the selected-effort readback seam is WO-157 item 11, stated there with its observed cause, paths, fix, fixture and verifier checks. The pass's earlier deferral of this row is retained as history.",
+          "reopenWhen": "WO-157 closes without the item's criterion, or the item's reopening observation in the map's 2026-09-22 closes section occurs after WO-157 closes",
+          "targets": [
+            "WO-157"
+          ],
+          "at": "2026-09-22T22:20:36.054Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-15b1feee6f379ac9",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-wo-064-and-wo-100-closes-recorded-2026-09-22::9597650e556137328bc116f9a54ebf1bda7d0516c5967b9415f2d58925d4cf04",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "d2f5896ef50039994abb19861052afe08f4778da68f306737dbbd83ec2f88276",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-wo-064-and-wo-100-closes-recorded-2026-09-22",
+          "title": "The skeleton refuses a grant-bearing identity.",
+          "summary": "3. **The skeleton refuses a grant-bearing identity.** `compileLoadout` keeps an optional `authorityGrantRegistry` in the compilation environment and `isCompilationEnvironment` admits exactly five keys, so every identity compiled with a registry is refused at equip and at the source-change host (WO-064 D006; WO-064 avoided the path by compiling its writer without publication grants). No order on the near horizon equips one: WO-111's portfolio carries no remote grant. Reopen: WO-072 activation, a resident receipt recording `ArtifactCompilationRefused`, or any order that must dispatch a grant-bearing loadout to a source-change host.",
+          "missing": false
+        },
+        {
+          "hash": "ef257669e793a71625ec03a84485093a4da0b9d7670acdc66f06f151c2198daf",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-wo-064-and-wo-100-closes-recorded-2026-09-22",
+          "title": "The skeleton refuses a grant-bearing identity.",
+          "summary": "3. **The skeleton refuses a grant-bearing identity.** `compileLoadout` keeps an optional `authorityGrantRegistry` in the compilation environment and `isCompilationEnvironment` admits exactly five keys, so every identity compiled with a registry is refused at equip and at the source-change host (WO-064 D006; WO-064 avoided the path by compiling its writer without publication grants). No order on the near horizon equips one: WO-111's portfolio carries no remote grant (WO-157 criterion 5). Reopen: a resident receipt recording `ArtifactCompilationRefused` after WO-157 closes.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Recorded by the 2026-09-22 closeout follow-ups pass as a gathered seam over the skeleton's compilation-environment validator (WO-064 D006); no order allocated.",
+          "reopenWhen": "WO-072 activation, a resident receipt recording ArtifactCompilationRefused, or any order that must dispatch a grant-bearing loadout to a source-change host",
+          "targets": [],
+          "at": "2026-09-22T22:02:17.568Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Re-allocated by the 2026-09-22 closeout follow-ups pass after the operator's correction (planning document §12) to WO-157, the one operator-authorized order carrying every defect the 2026-09-22 closes boarded up: the grant-bearing identity seam is WO-157 item 5, stated there with its observed cause, paths, fix, fixture and verifier checks. The pass's earlier deferral of this row is retained as history.",
+          "reopenWhen": "WO-157 closes without the item's criterion, or the item's reopening observation in the map's 2026-09-22 closes section occurs after WO-157 closes",
+          "targets": [
+            "WO-157"
+          ],
+          "at": "2026-09-22T22:20:35.075Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-d17dae9f766d1d3b",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-wo-064-and-wo-100-closes-recorded-2026-09-22::9c950890f60c25cb290e9270b23cdb4e4a0d79ca0a65bd2d8e5ff9a573cb5b30",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "5fb0d05c760836ab08bce0f6949ad849dd84d2f03dd598f7004d9f06f2b62336",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-wo-064-and-wo-100-closes-recorded-2026-09-22",
+          "title": "Gate-sandbox fixture teardown.",
+          "summary": "9. **Gate-sandbox fixture teardown.** The WO-140 fixture's teardown can fail the runner-fixtures suite with `ENOTEMPTY` after its assertions passed, a failure with no owner (WO-063 D005). Observed once, at WO-063's first review gate; this pass found one abandoned `dotln-gate-sandbox-*` root dated 2026-09-21 22:00 in the temporary directory and none of the four product gates since (WO-120, WO-151, WO-064, WO-100) failed this way. Reopen: a second `ENOTEMPTY` teardown in any gate, or a second abandoned root after a completed `npm test`.",
+          "missing": false
+        },
+        {
+          "hash": "ad202c93a52a616c4316e8045ad395891f3d01d65f4c08adb075c856fac25335",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-wo-064-and-wo-100-closes-recorded-2026-09-22",
+          "title": "Gate-sandbox fixture teardown.",
+          "summary": "9. **Gate-sandbox fixture teardown.** The WO-140 fixture's teardown can fail the runner-fixtures suite with `ENOTEMPTY` after its assertions passed, a failure with no owner (WO-063 D005). Observed once, at WO-063's first review gate; this pass found one abandoned `dotln-gate-sandbox-*` root dated 2026-09-21 22:00 in the temporary directory and none of the four product gates since (WO-120, WO-151, WO-064, WO-100) failed this way. WO-157 criterion 15. Reopen: an `ENOTEMPTY` teardown in any gate, or an abandoned root after a completed `npm test`, after WO-157 closes.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Recorded by the 2026-09-22 closeout follow-ups pass as a gathered seam over the gate-sandbox fixture teardown (WO-063 D005); observed once; no order allocated.",
+          "reopenWhen": "a second ENOTEMPTY teardown in any gate, or a second abandoned dotln-gate-sandbox-* root after a completed npm test",
+          "targets": [],
+          "at": "2026-09-22T22:02:19.041Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Re-allocated by the 2026-09-22 closeout follow-ups pass after the operator's correction (planning document §12) to WO-157, the one operator-authorized order carrying every defect the 2026-09-22 closes boarded up: the gate-sandbox teardown seam is WO-157 item 15, stated there with its observed cause, paths, fix, fixture and verifier checks. The pass's earlier deferral of this row is retained as history.",
+          "reopenWhen": "WO-157 closes without the item's criterion, or the item's reopening observation in the map's 2026-09-22 closes section occurs after WO-157 closes",
+          "targets": [
+            "WO-157"
+          ],
+          "at": "2026-09-22T22:20:36.545Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-e56bfe53c05d5195",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-wo-064-and-wo-100-closes-recorded-2026-09-22::9f9a9347ca02c894630801154bc971d0b6503ac9b31419d3640faecc1570f042",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "e3400c11e1b44e746a0aa7d3abf03cd3ab2c242b16b97e448071edbea7bd0ab2",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-wo-064-and-wo-100-closes-recorded-2026-09-22",
+          "title": "Closeout helper residue.",
+          "summary": "1. **Closeout helper residue.** `worktree integrate` strands itself on an intent-to-add entry (WO-100 D017; allocated to [WO-157](../work-orders/WO-157-integrate-intent-to-add.md)). The adjacent queue's deferred items keep a literal target because the executor disposes them before `plan followups --sync` mints the public identifier, and a later order cannot retarget a closed order's retained queue: the queue is addressed from the selected order's branch and refuses mutation outside that order's `active` and `repairing` phases (`scripts/adjacent-work.mjs`; WO-064 D011, WO-152 D011). Product 07 §Retained planning follow-ups now says sync before dispose; the retained rows keep their literal tar",
+          "missing": false
+        },
+        {
+          "hash": "daf791d6cc83186d2bc4d39b5b8347e8b735645d3e01b2ee92828a62a06c3371",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-wo-064-and-wo-100-closes-recorded-2026-09-22",
+          "title": "Closeout helper residue.",
+          "summary": "1. **Closeout helper residue.** `worktree integrate` strands itself on an intent-to-add entry (WO-100 D017; WO-157 criterion 1). The adjacent queue's deferred items keep a literal target because the executor disposes them before `plan followups --sync` mints the public identifier, and a later order cannot retarget a closed order's retained queue: the queue is addressed from the selected order's branch and refuses mutation outside that order's `active` and `repairing` phases (`scripts/adjacent-work.mjs`; WO-064 D011, WO-152 D011). Product 07 §Retained planning follow-ups now says sync before dispose; WO-157 criterion 2 puts the sentence in the executor's rule and admits the reviewer-phase ret",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-09-22 closeout follow-ups pass that recorded it: the intent-to-add half is WO-157; the retarget half is closed by the sync-before-dispose sentence in product 07 and the retained rows keep their literal targets.",
+          "reopenWhen": "WO-157 closes without its criterion 1, a third order's queue carries a literal target after the sentence, or the target check becomes blocking",
+          "targets": [
+            "WO-157"
+          ],
+          "at": "2026-09-22T22:02:17.080Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Re-allocated by the 2026-09-22 closeout follow-ups pass after the operator's correction (planning document §12) to WO-157, the one operator-authorized order carrying every defect the 2026-09-22 closes boarded up: the closeout helper seam is WO-157 item 1 and 2, stated there with its observed cause, paths, fix, fixture and verifier checks. The pass's earlier deferral of this row is retained as history.",
+          "reopenWhen": "WO-157 closes without the item's criterion, or the item's reopening observation in the map's 2026-09-22 closes section occurs after WO-157 closes",
+          "targets": [
+            "WO-157"
+          ],
+          "at": "2026-09-22T22:20:34.583Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-b727e87dbb0cf56e",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-wo-064-and-wo-100-closes-recorded-2026-09-22::b1c0309c0c4d2150fa2ccb82db5e32a8c9215e104ac96b84cc96d50c7234e6ad",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "792537da3fcc4aeaa0665bef04b2beb34229bb70497a578d9a098735cb52765e",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-wo-064-and-wo-100-closes-recorded-2026-09-22",
+          "title": "Allocation events bound to the section constant.",
+          "summary": "10. **Allocation events bound to the section constant.** Folding the control log re-validates every `WorkOrderIdentityAllocated` event against the section list in `scripts/lib/derived-contract.mjs`, so a list change can make historical events unfoldable repository-wide (WO-120 D007). No derived order lives in a control plane kept across releases yet. Reopen: the section list changes, WO-113 activates, or a derived order is recorded in a control plane that must keep folding across releases.",
+          "missing": false
+        },
+        {
+          "hash": "617a6b8dd374ffbcda977b96768f8e1a986a6b0f1ac6efbd274a24e99f3cf1ed",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-wo-064-and-wo-100-closes-recorded-2026-09-22",
+          "title": "Allocation events bound to the section constant.",
+          "summary": "10. **Allocation events bound to the section constant.** Folding the control log re-validates every `WorkOrderIdentityAllocated` event against the section list in `scripts/lib/derived-contract.mjs`, so a list change can make historical events unfoldable repository-wide (WO-120 D007). No derived order lives in a control plane kept across releases yet. WO-157 criterion 14, with a dated note on WO-113's catalog row. Reopen: the section list changes after WO-157 closes and an allocation event fails to fold.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Recorded by the 2026-09-22 closeout follow-ups pass as a gathered seam over allocation events bound to the section constant (WO-120 D007); no order allocated.",
+          "reopenWhen": "the section list in derived-contract.mjs changes, WO-113 activates, or a derived order is recorded in a control plane that must keep folding across releases",
+          "targets": [],
+          "at": "2026-09-22T22:02:19.289Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Re-allocated by the 2026-09-22 closeout follow-ups pass after the operator's correction (planning document §12) to WO-157, the one operator-authorized order carrying every defect the 2026-09-22 closes boarded up: the allocation-events seam is WO-157 item 14, stated there with its observed cause, paths, fix, fixture and verifier checks. The pass's earlier deferral of this row is retained as history.",
+          "reopenWhen": "WO-157 closes without the item's criterion, or the item's reopening observation in the map's 2026-09-22 closes section occurs after WO-157 closes",
+          "targets": [
+            "WO-157"
+          ],
+          "at": "2026-09-22T22:20:36.793Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-6a033e264185da07",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-wo-064-and-wo-100-closes-recorded-2026-09-22::b8ffbbcf6c62392091da721d74e8a86f5fd1f5287e102bddb9df9e8395db976c",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "86c6ebef8cf233bf1cc7a742438e7245f6740f1909fd1cf2c84b70fe5b24aa68",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-wo-064-and-wo-100-closes-recorded-2026-09-22",
+          "title": "The resident's production binding.",
+          "summary": "5. **The resident's production binding.** The portfolio binding's authority profile check runs in the configuration loader and not for a hand-written `resident.json` (WO-100 D006), and no default model exists for always-on agents (WO-100 D007; product 06 records the candidate values). Both were routed to WO-111, whose criterion 6 and non-goals forbid runtime changes; WO-111 declares its portfolio through the loader and binds with explicit `--model` and `--effort`, so the proof needs neither. Reopen: a binding is created outside the loader, an operator asks for a default, Sonnet 5.5 arrives, or the first production-binding order is planned after WO-111.",
+          "missing": false
+        },
+        {
+          "hash": "3c8061751c8d2df4ac5d59aaf5bc8e58ccdce452224833cb2e3193408f970017",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-wo-064-and-wo-100-closes-recorded-2026-09-22",
+          "title": "The resident's production binding.",
+          "summary": "5. **The resident's production binding.** The portfolio binding's authority profile check runs in the configuration loader and not for a hand-written `resident.json` (WO-100 D006), and no default model exists for always-on agents (WO-100 D007; product 06 records the candidate values). Both were routed to WO-111, whose criterion 6 and non-goals forbid runtime changes; WO-111 declares its portfolio through the loader and binds with explicit `--model` and `--effort`, so the proof needs neither; WO-157 criteria 6 and 7 land both ahead of it. Reopen: Sonnet 5.5 arrives (the Sonnet tier moves), a selected model is withdrawn, or the operator changes a role default.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Recorded by the 2026-09-22 closeout follow-ups pass as a gathered seam over the resident's production binding (WO-100 D006, D007); no order allocated, and WO-111 cannot carry it.",
+          "reopenWhen": "a binding is created outside the configuration loader, an operator asks for a default, Claude Sonnet 5.5 becomes available, or the first production-binding order is planned after WO-111",
+          "targets": [],
+          "at": "2026-09-22T22:02:18.061Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Re-allocated by the 2026-09-22 closeout follow-ups pass after the operator's correction (planning document §12) to WO-157, the one operator-authorized order carrying every defect the 2026-09-22 closes boarded up: the resident binding seam is WO-157 item 6 and 7, stated there with its observed cause, paths, fix, fixture and verifier checks. The pass's earlier deferral of this row is retained as history.",
+          "reopenWhen": "WO-157 closes without the item's criterion, or the item's reopening observation in the map's 2026-09-22 closes section occurs after WO-157 closes",
+          "targets": [
+            "WO-157"
+          ],
+          "at": "2026-09-22T22:20:35.553Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-59ce347cb2ccc608",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-wo-064-and-wo-100-closes-recorded-2026-09-22::c9a20568091ee3ff3d4dcada8842c27aabdfe74af77b96909ba2eb8c24297930",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "cc8509c92f4f832fca7c9c0de6765475b3131c5addfe69aa5c9ca7a1af248f47",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-wo-064-and-wo-100-closes-recorded-2026-09-22",
+          "title": "Target publication runs the target's hooks.",
+          "summary": "2. **Target publication runs the target's hooks.** `publishTargetOrder` pushes from the target's Git root with no hook override, so a `pre-push` or `reference-transaction` hook in the target's common Git directory runs in the operator's process with the operator's credentials after every refusal has passed; whether a sandboxed target writer can plant one is not established (WO-064 D010). Due before the first target publication of a model-written episode: WO-066 is the first sequenced order that pushes a worker's repaired head under the grant, then WO-112 and WO-118. Shape: probe both writer profiles against the common Git directory first; until disproved, push with hooks disabled or refuse w",
+          "missing": false
+        },
+        {
+          "hash": "13d9dc24bbc7325435073e9976ff28a3804039b4926b52cc785b220bd8c5de5b",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-wo-064-and-wo-100-closes-recorded-2026-09-22",
+          "title": "Target publication runs the target's hooks.",
+          "summary": "2. **Target publication runs the target's hooks.** `publishTargetOrder` pushes from the target's Git root with no hook override, so a `pre-push` or `reference-transaction` hook in the target's common Git directory runs in the operator's process with the operator's credentials after every refusal has passed; whether a sandboxed target writer can plant one is not established (WO-064 D010). Due before the first target publication of a model-written episode: WO-066 is the first sequenced order that pushes a worker's repaired head under the grant, then WO-112 and WO-118. Shape: probe both writer profiles against the common Git directory first; until disproved, push with hooks disabled or refuse w",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Recorded by the 2026-09-22 closeout follow-ups pass as a gathered seam over target publication's hooks (WO-064 D010); no order allocated, due before WO-066 or WO-112.",
+          "reopenWhen": "WO-066 or WO-112 activation, a probe showing neither writer profile can write the target's common Git directory, or a target operator requiring its pre-push hook to run",
+          "targets": [],
+          "at": "2026-09-22T22:02:17.324Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Re-allocated by the 2026-09-22 closeout follow-ups pass after the operator's correction (planning document §12) to WO-157, the one operator-authorized order carrying every defect the 2026-09-22 closes boarded up: the target-hooks seam is WO-157 item 4, stated there with its observed cause, paths, fix, fixture and verifier checks. The pass's earlier deferral of this row is retained as history.",
+          "reopenWhen": "WO-157 closes without the item's criterion, or the item's reopening observation in the map's 2026-09-22 closes section occurs after WO-157 closes",
+          "targets": [
+            "WO-157"
+          ],
+          "at": "2026-09-22T22:20:34.828Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-9345b65422bb073f",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-wo-064-and-wo-100-closes-recorded-2026-09-22::cca6df0a5d10dff4afc38010417cd36a2415980cefe5cde001df5c5c1ed6ffcc",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "fd14b5c626f4c80fe47db9ea3667d1780a990da461500982378587f612349610",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-wo-064-and-wo-100-closes-recorded-2026-09-22",
+          "title": "Registries that follow the import graph.",
+          "summary": "8. **Registries that follow the import graph.** Protocol files change the compiled behaviour of registered sources without being registered (WO-151 D001); a new committed JSONL stream or document suite owes a registration that nothing checks until it is selected (WO-151 D021). Reopen: an edition check passes over a changed protocol, a third unregistered protocol file, an unclassified committed JSONL, or a suite whose script the runner's CLI-selection fixture does not stub.",
+          "missing": false
+        },
+        {
+          "hash": "f520deca67f3862547af821340baa98a07cf470b6cff8b42c0cbced163012efa",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-wo-064-and-wo-100-closes-recorded-2026-09-22",
+          "title": "Registries that follow the import graph.",
+          "summary": "8. **Registries that follow the import graph.** Protocol files change the compiled behaviour of registered sources without being registered (WO-151 D001); a new committed JSONL stream or document suite owes a registration that nothing checks until it is selected (WO-151 D021). WO-157 criteria 12 and 13. Reopen: an edition check passes over a changed protocol, or an unclassified committed JSONL or unstubbed suite reaches a gate, after WO-157 closes.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Recorded by the 2026-09-22 closeout follow-ups pass as a gathered seam over registries that follow the import graph (WO-151 D001, D021); no order allocated.",
+          "reopenWhen": "an edition check passes over a changed protocol, a third unregistered protocol file, an unclassified committed JSONL, or a suite whose script the runner's CLI-selection fixture does not stub",
+          "targets": [],
+          "at": "2026-09-22T22:02:18.795Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Re-allocated by the 2026-09-22 closeout follow-ups pass after the operator's correction (planning document §12) to WO-157, the one operator-authorized order carrying every defect the 2026-09-22 closes boarded up: the registries seam is WO-157 item 12 and 13, stated there with its observed cause, paths, fix, fixture and verifier checks. The pass's earlier deferral of this row is retained as history.",
+          "reopenWhen": "WO-157 closes without the item's criterion, or the item's reopening observation in the map's 2026-09-22 closes section occurs after WO-157 closes",
+          "targets": [
+            "WO-157"
+          ],
+          "at": "2026-09-22T22:20:36.298Z"
+        }
+      ]
     }
   ]
 }
