@@ -259,6 +259,8 @@ const protection = {
   "release-preparation":
     "release preparation preserves source and chooses the classified target",
   "github-body": "published descriptions preserve reviewed content",
+  "outward-lint":
+    "outward artifacts have conventional shape and redacted vocabulary checks",
   "license-fixtures":
     "source-only publication preserves license and package privacy",
   "license-surfaces": "shipped license and private-package pins remain valid",
@@ -381,6 +383,9 @@ export const suites = [
   }),
   nodeTests("release-preparation", "scripts/test-release-preparation.mjs"),
   nodeTests("github-body", "scripts/test-github-body.mjs"),
+  nodeTests("outward-lint", "scripts/test-outward-lint.mjs", {
+    needsBuild: false,
+  }),
   nodeTests("license-fixtures", "scripts/test-license-surfaces.mjs"),
   node("license-surfaces", "scripts/license-surfaces.mjs", {
     preflight: true,

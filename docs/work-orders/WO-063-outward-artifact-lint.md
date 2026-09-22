@@ -1,4 +1,4 @@
-# WO-063 — Outward-artifact lint: branch names, commit messages and pull-request text must have the conventional-commit shape and carry no launchpad vocabulary or local term before any remote effect (version assigned at activation)
+# WO-063 — Outward-artifact lint: branch names, commit messages and pull-request text must have the conventional-commit shape and carry no launchpad vocabulary or local term before any remote effect (v0.40.3)
 
 **Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
 

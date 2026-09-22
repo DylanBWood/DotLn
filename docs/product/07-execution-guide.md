@@ -1537,6 +1537,8 @@ claim evidence or releases it does not have.
 
 ## Discipline
 
+- **Outward artifacts (WO-063).** The [pure lint and stdin CLI](../evidence/WO-063/implementation.md) check conventional commit subjects, PR titles and branch names plus the configured public vocabulary and redacted local-term check, report absent local coverage as `unavailable`, and leave publication integration to WO-064.
+
 - **Compose adjacent repair with decision evidence (operator default,
   2026-09-08).** The executor/fixer equips [Adjacent Repair and Decision
   Receipts](05-pattern-library.md#executor-supports-adjacent-repair-and-decision-receipts)
