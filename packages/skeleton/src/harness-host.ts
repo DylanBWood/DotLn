@@ -1578,6 +1578,26 @@ export function beginHarnessSession(
   };
 }
 
+/** Lifecycle dispatches use the existing session without rewriting its entry
+ * observation when a Codex thread repeats the same dispatch.
+ */
+export function beginHarnessSessionOnce(
+  root: string,
+  sessionId: string,
+  role: string,
+) {
+  try {
+    return beginHarnessSession(root, sessionId, role);
+  } catch (error) {
+    if (
+      error instanceof Error &&
+      error.message === "Session already began; do not erase its observations"
+    )
+      return null;
+    throw error;
+  }
+}
+
 /** Collection serves explicit sessions and hooks; missing counters are an
  * observation, never a completion refusal. Transcript contents stay private. */
 export function measureHarnessSessionUsage(

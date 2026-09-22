@@ -90,6 +90,7 @@ import {
 } from "./lib/harness.mjs";
 import {
   beginHarnessSession,
+  measureHarnessUsage,
   harnessOutputObligations,
   dispatchAdmissionPolicy,
   evaluateHarnessHook,
@@ -4282,7 +4283,7 @@ test("meter diff bytes include newly authored untracked source", (t) => {
   );
 });
 
-test("WO-145 optional economy support preserves historical snapshots through WO-079 and changes only executor instructions on", () => {
+test("WO-145 optional economy support preserves historical snapshots through WO-149 and changes only executor instructions on", () => {
   const historical = JSON.parse(
     readFileSync(
       join(source, "packages/skeleton/fixtures/wo145-role-baseline.json"),
@@ -4290,39 +4291,27 @@ test("WO-145 optional economy support preserves historical snapshots through WO-
     ),
   );
   // Authorized role edits get a separate oracle; never rewrite a historical
-  // snapshot to make the current generated instruction check pass. WO-150 put
-  // the support on by default, so the current-bytes oracle is the WO-150
-  // baseline and its predecessor holds the bytes the per-order opt-out must
-  // still reproduce.
+  // snapshot to make the current generated instruction check pass. WO-149's
+  // common role edits affect both settings, so pin contemporaneous default and
+  // opt-out bytes separately and preserve the complete historical chain.
   const baseline = JSON.parse(
     readFileSync(
-      join(source, "packages/skeleton/fixtures/wo150-role-baseline.json"),
+      join(source, "packages/skeleton/fixtures/wo149-role-baseline.json"),
       "utf8",
     ),
   );
-  const previous = JSON.parse(
-    readFileSync(
-      join(source, "packages/skeleton/fixtures", baseline.historicalBaseline),
-      "utf8",
-    ),
-  );
-  for (const snapshot of [baseline, previous])
+  for (let snapshot = baseline; snapshot.historicalBaseline;) {
+    const previousBytes = readFileSync(
+      join(source, "packages/skeleton/fixtures", snapshot.historicalBaseline),
+    );
     if (snapshot.historicalSha256)
       assert.equal(
-        createHash("sha256")
-          .update(
-            readFileSync(
-              join(
-                source,
-                "packages/skeleton/fixtures",
-                snapshot.historicalBaseline,
-              ),
-            ),
-          )
-          .digest("hex"),
+        createHash("sha256").update(previousBytes).digest("hex"),
         snapshot.historicalSha256,
         `${snapshot.historicalBaseline} remains byte-exact`,
       );
+    snapshot = JSON.parse(previousBytes);
+  }
   const on = harnessInstallation();
   const explicitOn = harnessInstallation({
     supports: { "tinkerer-economy": true },
@@ -4333,7 +4322,7 @@ test("WO-145 optional economy support preserves historical snapshots through WO-
   const withoutOrigin = (text) => text.replace(/^<!-- Origin: .* -->\n/m, "");
   const roles = on.files.filter((file) => file.path.endsWith("/SKILL.md"));
   assert.equal(roles.length, Object.keys(baseline.roles).length);
-  assert.equal(roles.length, Object.keys(previous.roles).length);
+  assert.equal(roles.length, Object.keys(baseline.optOutRoles).length);
   for (const file of roles) {
     const released = execFileSync(
       "git",
@@ -4353,12 +4342,12 @@ test("WO-145 optional economy support preserves historical snapshots through WO-
       explicitOn.files.find((row) => row.path === file.path).contents,
       file.contents,
     );
-    // The opt-out equips exactly what the previous default equipped, so it
-    // reproduces those bytes including the Origin comment.
+    // Shared role edits belong to both settings; only the economy support is
+    // removed, not later authorized Codex entry or verifier instructions.
     const optedOut = off.files.find((row) => row.path === file.path);
     assert.equal(
       createHash("sha256").update(optedOut.contents).digest("hex"),
-      previous.roles[file.path],
+      baseline.optOutRoles[file.path],
       file.path,
     );
     const twin = on.files.find(
@@ -4379,6 +4368,14 @@ test("WO-145 optional economy support preserves historical snapshots through WO-
       assert.match(file.contents, /do not start a second one/);
       assert.equal(file.contents.split("Tinkerer — Economy:").length - 1, 1);
       assert.ok(!optedOut.contents.includes("Tinkerer — Economy:"));
+      assert.equal(
+        withoutOrigin(file.contents)
+          .split("\n")
+          .filter((line) => !line.startsWith("Tinkerer — Economy:"))
+          .join("\n"),
+        withoutOrigin(optedOut.contents),
+        "opt-out removes only the executor economy paragraph",
+      );
     } else {
       // Origin identifies the whole equipped loadout in the existing compiler;
       // changing equipment must change that hash even for untouched role prose.
@@ -5415,6 +5412,183 @@ test("bare executor next/fix project installed defaults and completion advises a
     target: null,
   });
   assert.deepEqual(requirePlanningHandoffs(root, "WO-999"), []);
+});
+
+test("WO-149 a Codex lifecycle dispatch begins one measurable session and preserves it on repeat", async (t) => {
+  const root = repo(t, { runtime: true });
+  cpSync(join(source, "scripts/lib"), join(root, "scripts/lib"), {
+    recursive: true,
+  });
+  cpSync(join(source, "scripts/resume.mjs"), join(root, "scripts/resume.mjs"));
+  cpSync(
+    join(source, "scripts/harness.mjs"),
+    join(root, "scripts/harness.mjs"),
+  );
+  installBeaconFixture(root);
+  write(
+    root,
+    "docs/work-orders/WO-999-fixture.md",
+    "# WO-999 — fixture\n\n**Model:** any capable model.\n**Effort:** executor any; verifier any; reviewer any.\n\n<!-- dotln-dependencies:start -->\n[]\n<!-- dotln-dependencies:end -->\n",
+  );
+  const thread = "00000000-0000-0000-0000-000000000149";
+  const codexHome = join(root, ".runtime/codex-home");
+  const observedAt = "2030-01-01T00:00:02.000Z";
+  write(
+    root,
+    `.runtime/codex-home/sessions/${thread}.jsonl`,
+    [
+      {
+        type: "session_meta",
+        timestamp: "2030-01-01T00:00:00.000Z",
+        payload: { id: thread, cwd: root, cli_version: "0.155.1" },
+      },
+      {
+        type: "turn_context",
+        timestamp: "2030-01-01T00:00:01.000Z",
+        payload: { model: "fixture-model", effort: "xhigh", cwd: root },
+      },
+      {
+        type: "event_msg",
+        timestamp: observedAt,
+        payload: {
+          type: "token_count",
+          info: {
+            total_token_usage: {
+              input_tokens: 11,
+              cached_input_tokens: 7,
+              output_tokens: 5,
+              total_tokens: 16,
+            },
+          },
+        },
+      },
+    ]
+      .map(JSON.stringify)
+      .join("\n") + "\n",
+  );
+  const env = {
+    ...process.env,
+    CODEX_HOME: codexHome,
+    CODEX_THREAD_ID: thread,
+    COPILOT_AGENT_SESSION_ID: "",
+  };
+  const call = (dispatchEnv = env) =>
+    spawnSync(process.execPath, [join(root, "scripts/resume.mjs"), "next"], {
+      cwd: root,
+      encoding: "utf8",
+      env: dispatchEnv,
+    });
+  const key = usageSessionKey(thread);
+  const path = join(root, `docs/control/local/harness/${key}.json`);
+  const before = Date.now();
+  const first = call();
+  const after = Date.now();
+  assert.equal(first.status, 0, first.stderr);
+  const firstBytes = readFileSync(path, "utf8");
+  const session = JSON.parse(firstBytes);
+  assert.equal(session.role, "executor");
+  assert.equal(session.workOrder, "WO-999");
+  assert.equal(session.expectedEvent, "ImplementationReady");
+  assert.deepEqual(session.authoredPaths, []);
+  assert.ok(Date.parse(session.startedAt) >= before);
+  assert.ok(Date.parse(session.startedAt) <= after);
+
+  const second = call();
+  assert.equal(second.status, 0, second.stderr);
+  assert.equal(readFileSync(path, "utf8"), firstBytes);
+
+  const prior = {
+    CODEX_HOME: process.env.CODEX_HOME,
+    CODEX_THREAD_ID: process.env.CODEX_THREAD_ID,
+  };
+  process.env.CODEX_HOME = codexHome;
+  process.env.CODEX_THREAD_ID = thread;
+  let usage;
+  try {
+    usage = measureHarnessUsage(root, thread);
+  } finally {
+    for (const [name, value] of Object.entries(prior)) {
+      if (value === undefined) delete process.env[name];
+      else process.env[name] = value;
+    }
+  }
+  assert.equal(usage.usage.totalTokens, 16);
+  assert.equal(usage.source, "codex-transcript-counter");
+  assert.equal(usage.observedAt, observedAt);
+  const { COST_LINE_PREFIX, judgeCostLine } =
+    await import("./lib/receipt-cost.mjs");
+  assert.equal(
+    judgeCostLine(
+      `# Fixture\n\n${COST_LINE_PREFIX} entry ${usage.usage.totalTokens} tokens; handoff ${usage.usage.totalTokens} tokens; source ${usage.source}\n`,
+    ),
+    null,
+  );
+
+  const recordsBefore = readdirSync(
+    join(root, "docs/control/local/harness"),
+  ).filter((name) => /^[a-f0-9]{64}\.json$/.test(name));
+  const withoutThread = call({
+    ...env,
+    CODEX_THREAD_ID: "",
+  });
+  assert.equal(withoutThread.status, 0, withoutThread.stderr);
+  const noSession = spawnSync(
+    process.execPath,
+    [join(root, "scripts/harness.mjs"), "usage", "absent-session"],
+    { cwd: root, encoding: "utf8", env: { ...env, CODEX_THREAD_ID: "" } },
+  );
+  assert.equal(noSession.status, 0, noSession.stderr);
+  assert.match(noSession.stderr, /unknown; cause no-session/);
+  const unknown = JSON.parse(noSession.stdout);
+  assert.equal(unknown.source, "unavailable");
+  assert.equal(unknown.cause, "no-session");
+  assert.equal(unknown.usage.totalTokens, null);
+  assert.deepEqual(
+    readdirSync(join(root, "docs/control/local/harness")).filter((name) =>
+      /^[a-f0-9]{64}\.json$/.test(name),
+    ),
+    recordsBefore,
+  );
+  assert.equal(
+    judgeCostLine(
+      `# Fixture\n\n${COST_LINE_PREFIX} unknown; cause ${unknown.cause}\n`,
+    ),
+    null,
+  );
+});
+
+test("WO-149 an unbuilt Codex dispatch reports the missing runtime without blocking the lifecycle", (t) => {
+  const root = repo(t);
+  cpSync(join(source, "scripts/lib"), join(root, "scripts/lib"), {
+    recursive: true,
+  });
+  cpSync(join(source, "scripts/resume.mjs"), join(root, "scripts/resume.mjs"));
+  installBeaconFixture(root);
+  write(
+    root,
+    "docs/work-orders/WO-999-fixture.md",
+    "# WO-999 — fixture\n\n**Model:** any.\n**Effort:** executor any; verifier any; reviewer any.\n",
+  );
+  const dispatch = (thread) =>
+    spawnSync(process.execPath, [join(root, "scripts/resume.mjs"), "next"], {
+      cwd: root,
+      encoding: "utf8",
+      env: {
+        ...process.env,
+        CODEX_THREAD_ID: thread,
+        COPILOT_AGENT_SESSION_ID: "",
+      },
+    });
+  const result = dispatch("unbuilt-codex-fixture");
+  assert.equal(result.status, 0, result.stderr);
+  assert.match(
+    result.stderr,
+    /Codex session entry unavailable.*runtime is not built.*npm run build.*cause no-session/,
+  );
+  assert.equal(existsSync(statePath(root, "unbuilt-codex-fixture")), false);
+  const withoutThread = dispatch("");
+  assert.equal(withoutThread.status, 0, withoutThread.stderr);
+  assert.doesNotMatch(withoutThread.stderr, /Codex session entry unavailable/);
 });
 
 test("WO-132 caller usage avoids a writer reservation and other main writes reserve normally", async (t) => {

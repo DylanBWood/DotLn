@@ -1,4 +1,4 @@
-# WO-149 — Codex sessions begin: a Codex-launched dispatch records its harness session before any usage is measured, so a Codex verification or review receipt carries real token counters instead of `unknown; cause no-session` (version assigned at activation)
+# WO-149 — Codex sessions begin: a Codex-launched dispatch records its harness session before any usage is measured, so a Codex verification or review receipt carries real token counters instead of `unknown; cause no-session` (v0.40.2)
 
 **Model:** any for the executor; the live row is one real Codex session.
 State the model and effort actually run (07-execution-guide.md

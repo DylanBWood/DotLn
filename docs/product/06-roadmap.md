@@ -20,6 +20,15 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-149 activation completion (2026-09-21):** assigned application `v0.40.2`,
+the next patch above the observed local annotated `v0.40.1` tag, under the
+declared patch classification. Codex lifecycle dispatches begin their harness
+session from the thread identity and dispatch role before usage is read; the
+skeleton moves to `0.34.2` and the console's exact pin follows it. No compiler,
+kernel, schema, counter format, hook, gate or third-party dependency changes.
+Independent verification, final review and publication remain separate
+lifecycle actions.
+
 **WO-147 activation completion (2026-09-21):** assigned application `v0.39.1`,
 the next patch above the observed local annotated `v0.39.0` tag, under the
 declared patch classification. The worker-store acquisition path, its resident

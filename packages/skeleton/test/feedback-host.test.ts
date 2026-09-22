@@ -79,7 +79,7 @@ test("WO-011 selfhost executes the real repository audit, recovers its saved res
       JSON.parse(args[args.indexOf("--settings") + 1]!).attribution,
       { commit: "", pr: "", sessionUrl: false },
     );
-    assert.equal(args[args.indexOf("--max-budget-usd") + 1], "3.00");
+    assert.equal(args[args.indexOf("--max-budget-usd") + 1], "5.00");
     let timeout = 0;
     const refused = new ClaudeCliPrintWorkOrderTransport((launch) => {
       timeout = launch.timeoutMs;

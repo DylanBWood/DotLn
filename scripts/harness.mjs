@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { mkdirSync, readFileSync, realpathSync } from "node:fs";
 import { resolve } from "node:path";
+import { usageObservation } from "../packages/skeleton/dist/src/usage-observation.mjs";
 import {
   emitHarness,
   checkHarness,
@@ -94,9 +95,20 @@ try {
     );
   } else if (action === "usage") {
     if (args.length !== 1) throw new Error("usage: harness usage <session>");
+    let observation;
+    try {
+      observation = measureHarnessUsage(root, args[0]);
+    } catch (error) {
+      if (error.message !== "Begin the harness session before measuring usage")
+        throw error;
+      process.stderr.write(
+        "DotLn advisory: process cost unknown; cause no-session.\n",
+      );
+      observation = { ...usageObservation([]), cause: "no-session" };
+    }
     console.log(
       JSON.stringify({
-        ...measureHarnessUsage(root, args[0]),
+        ...observation,
         ...(process.env.CODEX_THREAD_ID || process.env.COPILOT_AGENT_SESSION_ID
           ? { currentSession: await optionalCurrentSession(root, args[0]) }
           : {}),

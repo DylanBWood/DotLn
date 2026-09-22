@@ -50,7 +50,7 @@ import {
 /** Fixed bound for the source-heavy feedback audit; other profiles keep WO-009 limits. */
 export const FEEDBACK_VERIFIER_LIMITS = {
   timeoutMs: 600_000,
-  maxBudgetUsd: "3.00",
+  maxBudgetUsd: "5.00",
 } as const;
 
 export interface EvidenceWorkerRequest {

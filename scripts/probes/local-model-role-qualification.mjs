@@ -19,8 +19,9 @@ import { basename, dirname, join, resolve } from "node:path";
 import { performance } from "node:perf_hooks";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { isMainModule } from "../lib/paths.mjs";
+import { TOOL_ROOT } from "../lib/config.mjs";
 
-export const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
+export const ROOT = TOOL_ROOT;
 export const FIXTURE_PATH = join(
   ROOT,
   "scripts/fixtures/wo138-local-role-qualification.json",
@@ -1669,8 +1670,14 @@ export function evaluateRecords(records, operatorRanking) {
   };
 }
 
-export function validateRecordInputs(records, inputs) {
-  const build = sha256(readFileSync(fileURLToPath(import.meta.url)));
+// New evaluations bind the current build. Historical evaluations must supply
+// the actual retained source bytes, never a replacement hash or an allowlist.
+export function validateRecordInputs(
+  records,
+  inputs,
+  harnessSource = readFileSync(fileURLToPath(import.meta.url)),
+) {
+  const build = sha256(harnessSource);
   for (const record of records) {
     const cell = record.cell;
     const baseInput = inputs[cell.taskId];
@@ -1756,9 +1763,24 @@ async function main() {
     const episodes = option(args, "--episodes");
     const rankingPath = option(args, "--operator-ranking");
     const out = option(args, "--out");
-    if (!episodes || !rankingPath || !out || args.length !== 6)
+    const harnessSource = option(args, "--harness-source");
+    const allowed = new Set([
+      "--episodes",
+      "--operator-ranking",
+      "--out",
+      "--harness-source",
+    ]);
+    const flags = args.filter((_, index) => index % 2 === 0);
+    if (
+      !episodes ||
+      !rankingPath ||
+      !out ||
+      args.length % 2 !== 0 ||
+      flags.some((flag) => !allowed.has(flag)) ||
+      new Set(flags).size !== flags.length
+    )
       throw new Error(
-        "usage: local-model-role-qualification.mjs evaluate --episodes <directory> --operator-ranking <json> --out <new-json-path>",
+        "usage: local-model-role-qualification.mjs evaluate --episodes <directory> --operator-ranking <json> --out <new-json-path> [--harness-source <retained-source-file>]",
       );
     const inputs = JSON.parse(
       readFileSync(join(dirname(resolve(episodes)), "inputs.json"), "utf8"),
@@ -1772,7 +1794,11 @@ async function main() {
       candidateIds,
     );
     const records = readEpisodes(resolve(episodes));
-    validateRecordInputs(records, inputs);
+    validateRecordInputs(
+      records,
+      inputs,
+      harnessSource ? readFileSync(resolve(harnessSource)) : undefined,
+    );
     const result = evaluateRecords(records, ranking);
     atomicJson(resolve(out), result);
     process.stdout.write(
