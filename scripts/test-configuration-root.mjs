@@ -437,7 +437,20 @@ await test("configuration root", async (t) => {
         git(root, "config", "user.email", "fixture@example.invalid");
         git(root, "config", "user.name", "Fixture");
         git(root, "add", ".");
-        git(root, "commit", "-q", "-m", "configured planning fixture");
+        // Date the introduction on the ledger heading's day, not the wall
+        // clock: planningPassScope admits passes from the introduction on.
+        const committed = spawnSync(
+          "git",
+          ["-C", root, "commit", "-q", "-m", "configured planning fixture"],
+          {
+            encoding: "utf8",
+            env: {
+              ...process.env,
+              GIT_COMMITTER_DATE: "2026-09-21T12:00:00+00:00",
+            },
+          },
+        );
+        assert.equal(committed.status, 0, committed.stderr);
 
         lineageMain(["index"], root);
         assert.ok(existsSync(join(root, "records/lineage/README.md")));

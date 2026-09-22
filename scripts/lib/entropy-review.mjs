@@ -1559,7 +1559,7 @@ const candidateHeading = (reviewReceiptId, date) =>
   `## Candidates — accepted Entropy Reducer findings, review ${reviewReceiptId} (recorded ${date})`;
 
 /** The follow-up collector harvests formal candidate headings and their
- * top-level list items from `docs/planning/`; an accepted finding becomes one
+ * top-level list items from the planning root; an accepted finding becomes one
  * such item, and `npm run meta` then lists it as a register row. Promotion to
  * a work order stays a planning act. */
 function appendCandidate(root, reviewReceiptId, finding, reason, date) {
