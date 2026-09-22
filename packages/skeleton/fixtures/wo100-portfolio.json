@@ -1,0 +1,313 @@
+{
+  "graph": {
+    "schemaVersion": 1,
+    "loadoutId": "fixture.presence.wo100",
+    "identity": {
+      "identityId": "repo-gardener",
+      "version": 1,
+      "name": "Repo Gardener",
+      "dispositions": [
+        "patient",
+        "evidence-bound",
+        "propose-don't-destroy"
+      ],
+      "invariants": [
+        "no deletion authority at base rank",
+        "every candidate carries evidence"
+      ],
+      "updateLaws": [
+        "identity updates require a new version"
+      ],
+      "lineage": [
+        "founding Repo Gardener"
+      ]
+    },
+    "role": {
+      "roleId": "fixture-maintainer",
+      "version": 1,
+      "name": "Fixture maintainer",
+      "obligations": [
+        "inspect the bounded fixture"
+      ],
+      "permissions": [
+        "repo.inspect"
+      ],
+      "objectives": [
+        "propose safe deletion candidates"
+      ],
+      "policyDeltas": [
+        {
+          "key": "maintenance",
+          "value": "absent-only"
+        }
+      ]
+    },
+    "containers": [
+      {
+        "containerId": "repo-gardener.gloves",
+        "version": 1,
+        "name": "Repo Gardener gloves",
+        "kind": "equipment",
+        "socketBudget": 6,
+        "activeMechanicIds": [
+          "seiri"
+        ],
+        "supportFacetIds": []
+      }
+    ],
+    "activeMechanics": [
+      {
+        "activeMechanicId": "seiri",
+        "version": 1,
+        "name": "Seiri",
+        "tags": [
+          "observe",
+          "plan",
+          "verify",
+          "schedule"
+        ],
+        "requiredCapabilities": [],
+        "semantics": [
+          "inventory",
+          "classify",
+          "analyze references",
+          "propose deletion candidates"
+        ],
+        "workOrder": {
+          "workOrderId": "wo_repo_inspection_1",
+          "objective": "Inspect the bounded fixture repository and propose safe deletion candidates.",
+          "acceptanceCriteria": [
+            "Inventory every fixture path",
+            "Classify every path"
+          ],
+          "knownFacts": [
+            "The repository is a deterministic fixture",
+            "The operator is absent at dispatch"
+          ],
+          "decisions": [
+            "Repo Gardener uses Seiri"
+          ],
+          "constraints": [],
+          "nonGoals": [],
+          "allowedOperations": [
+            "git.local",
+            "repo.inspect",
+            "repo.read",
+            "repo.write",
+            "shell.run"
+          ],
+          "prohibitedOperations": [
+            "repo.delete"
+          ],
+          "requiredEvidence": [],
+          "outputContract": {
+            "type": "CommandResult",
+            "result": "candidates",
+            "candidateFields": []
+          }
+        },
+        "authorityEnvelope": {
+          "authorityEnvelopeId": "fixture.portfolio.base",
+          "allowedEffects": [
+            "git.local",
+            "repo.inspect",
+            "repo.read",
+            "repo.write",
+            "shell.run"
+          ],
+          "deniedEffects": [
+            "repo.delete"
+          ],
+          "resourceLimits": {
+            "files": 8,
+            "lines": 200,
+            "tokens": 1000,
+            "writers": 1
+          },
+          "requiredEvidence": [
+            "verified-input"
+          ],
+          "expiresAt": 100000,
+          "revocationEventTypes": [
+            "AuthorityRevoked"
+          ]
+        },
+        "inspection": {
+          "originalTerm": "Seiri",
+          "translation": "Sort",
+          "kanji": "整理",
+          "rpgTitle": "The Evidence-Bound Sort",
+          "grants": [],
+          "restrictions": [],
+          "obligations": [],
+          "passive": [],
+          "pulse": [],
+          "interrupt": []
+        }
+      }
+    ],
+    "supportFacets": [],
+    "links": [],
+    "linkGroups": [],
+    "explicitPipelines": [],
+    "ambientEffects": [],
+    "resourceModel": {
+      "resourceModelId": "seiri.fixture-resources",
+      "version": 1,
+      "capacities": {
+        "inspections": 1
+      },
+      "reservations": []
+    },
+    "polarAxes": [],
+    "presence": [
+      {
+        "policyId": "fixture.portfolio",
+        "version": 1,
+        "axes": [
+          "attention",
+          "work-scope",
+          "effect-authority",
+          "external-capability"
+        ],
+        "curve": "progressive",
+        "returnRule": "cancel-on-return",
+        "decay": {
+          "idleMs": 100,
+          "expires": "phase"
+        },
+        "phases": [
+          {
+            "phaseId": "probe",
+            "entry": {
+              "cadence": {
+                "kind": "After",
+                "delayMs": 10
+              }
+            },
+            "attentionPriority": 1,
+            "scope": {
+              "surfaces": [
+                "fixture.source"
+              ],
+              "changeSize": {
+                "files": 1,
+                "lines": 20
+              },
+              "budget": {
+                "tokens": 200
+              }
+            },
+            "envelope": {
+              "allowedEffects": [
+                "repo.inspect"
+              ],
+              "resourceLimits": {
+                "files": 1,
+                "lines": 20,
+                "tokens": 200
+              }
+            },
+            "requiredCapabilities": [
+              "adapter.fixture"
+            ],
+            "discretionary": true,
+            "inFlightOnReturn": "kill"
+          },
+          {
+            "phaseId": "widen",
+            "entry": {
+              "cadence": {
+                "kind": "After",
+                "delayMs": 10
+              }
+            },
+            "attentionPriority": 2,
+            "scope": {
+              "surfaces": [
+                "fixture.source"
+              ],
+              "changeSize": {
+                "files": 3,
+                "lines": 80
+              },
+              "budget": {
+                "tokens": 400
+              }
+            },
+            "envelope": {
+              "allowedEffects": [
+                "git.local",
+                "repo.inspect",
+                "repo.read",
+                "repo.write",
+                "shell.run"
+              ],
+              "resourceLimits": {
+                "files": 3,
+                "lines": 80,
+                "tokens": 400
+              }
+            },
+            "requiredCapabilities": [
+              "adapter.fixture"
+            ],
+            "discretionary": true,
+            "inFlightOnReturn": "finish"
+          },
+          {
+            "phaseId": "peak",
+            "entry": {
+              "cadence": {
+                "kind": "After",
+                "delayMs": 10
+              }
+            },
+            "attentionPriority": 3,
+            "scope": {
+              "surfaces": [
+                "fixture.source",
+                "fixture.docs"
+              ],
+              "changeSize": {
+                "files": 8,
+                "lines": 200
+              },
+              "budget": {
+                "tokens": 600
+              }
+            },
+            "envelope": {
+              "allowedEffects": [
+                "git.local",
+                "repo.inspect",
+                "repo.read",
+                "repo.write",
+                "shell.run"
+              ],
+              "resourceLimits": {
+                "files": 8,
+                "lines": 200,
+                "tokens": 600
+              }
+            },
+            "requiredCapabilities": [
+              "adapter.fixture"
+            ],
+            "discretionary": true,
+            "inFlightOnReturn": "finish"
+          }
+        ]
+      }
+    ]
+  },
+  "environment": {
+    "environmentId": "skeleton.fixture",
+    "version": 1,
+    "capabilities": [
+      "adapter.fixture"
+    ],
+    "repo": "packages/skeleton/fixtures/repo-tree.json",
+    "baseCommit": "fixture-base"
+  }
+}
