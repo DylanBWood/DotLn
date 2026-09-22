@@ -1,4 +1,4 @@
-# WO-152 — Mission-check schema without duplicate ids: `missionReferenceIds` lists each clause id once, the emitted result schema carries no duplicate enum item, and a `claude-cli-print` mission check returns a judgment against a real bound store instead of failing before any model call (version assigned at activation)
+# WO-152 — Mission-check schema without duplicate ids: `missionReferenceIds` lists each clause id once, the emitted result schema carries no duplicate enum item, and a `claude-cli-print` mission check returns a judgment against a real bound store instead of failing before any model call (v0.41.1)
 
 **Model:** any. The live row is one real `claude-cli-print` mission check.
 State the model and effort actually run (07-execution-guide.md
