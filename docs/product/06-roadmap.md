@@ -20,6 +20,15 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-120 activation completion (2026-09-22):** assigned application `v0.41.0`
+under the order's minor classification, the next minor above the observed
+local `v0.40.3` tag that this final review integrated.
+Skeleton `0.35.0` adds draft intent filing and the derived-order runtime status
+projection; the console's exact dependency pin follows it. Compiler, kernel,
+compiler semantic hashing and external dependency sets are unchanged. The
+allocation event extends the document control plane; it does not change the
+kernel event envelope. Publication remains a separate dispatch.
+
 **WO-063 activation completion (2026-09-22):** assigned application `v0.40.3`,
 the next patch above the observed local `v0.40.2` tag, under the declared patch
 classification; the outward-artifact lint, public vocabulary, fixtures and
@@ -617,7 +626,28 @@ priority, roadmap position, or family, and numeric gaps carry no meaning. The
 completed/drafted WO-10x orders therefore remain addressable under their current
 IDs; mainline work never has to “catch up,” and activated or historically cited
 orders are not renumbered. Future grouping belongs in explicit metadata and
-views, not reserved number ranges.
+views. WO-120 reserves a configurable allocation pool (`WO-900`–`WO-999`
+by default) for machine-filed identities inside this same family; it carries
+no priority or product track. Existing authorities in the pool are skipped,
+never renumbered or overwritten.
+
+**Derived work (WO-120).** `WorkOrderIdentityAllocated` starts a per-order
+control segment before the generated authority appears. It records the stable
+public provenance key, assigned compiled `workOrderId`, contract snapshot and
+authority path. A retry with the same key and input recovers that identity;
+changed input under that key refuses. The index scans both configured authority
+roots, retains correct relative links and distinguishes allocated drafts from
+active work. Activation is the ordinary dependency-checked `resume activate`.
+`dotln intent` files only a draft, with review placeholders where prose supplies
+no executable contract. Generated files use stable sections and typed dependency
+blocks; WO-113 still owns the broader historical-file migration.
+
+The allocator reuses the inspected worker lock at the shared launchpad. Its
+collision guarantee applies to callers using that launchpad, not independent
+or disconnected checkouts. Allocation replay, two-process contention, range
+exhaustion and a fixture resident restart are covered by
+`scripts/test-derived-orders.mjs`. Automatic work derivation and UI filing
+remain WO-100/WO-115 consumers of this interface.
 
 A provisional planning row should be able to show:
 

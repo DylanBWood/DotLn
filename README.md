@@ -93,7 +93,7 @@ intent → task-scoped build → bounded WorkOrder → disposable executor
 -->
 <!-- DOTLN-RELEASE-BEGIN -->
 
-This source prepares DotLn `v0.40.3`.
+This source prepares DotLn `v0.41.0`.
 
 **The core.** A local-first compiler turns a loadout graph into a bounded
 program and authority envelope that the kernel checks on every decision.
@@ -126,6 +126,12 @@ violated clause of a planted change whose own test passed; a fresh worker
 repaired only the blamed module and a second verifier passed the original
 contract. The Claude run's event log is published and replays negative against
 injected implementer events.
+
+Derived work shares the same `WO-NNN` identity and lifecycle as authored work.
+`npm run dotln -- intent "Describe the work"` files a draft for review; compiled
+orders can materialize through the documented API, with replayable allocation
+and restart fixtures. [The execution guide](docs/product/07-execution-guide.md#derived-work-and-intent)
+describes the shared launchpad boundary.
 
 **How this repository builds itself.** Every executor dispatch asks for one
 bounded economy experiment per order, with measured cost and effect, unless the
