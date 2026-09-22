@@ -25,12 +25,19 @@ import {
   type LocalModelActorSpec,
   type LocalModelObservation,
 } from "./local-model-contract.js";
+import {
+  assertPortfolioObservation,
+  portfolioObservationVerified,
+  type PortfolioActivation,
+  type PortfolioObservation,
+} from "./portfolio.js";
 /** Pure actor declarations and persisted-result validation; no process access. */
 export const ACTOR_KINDS = [
   "script",
   "cli-worker",
   "human-handoff",
   "local-model",
+  "portfolio",
 ] as const;
 export type ActorKind = (typeof ACTOR_KINDS)[number];
 export type ActorSpec = {
@@ -54,6 +61,7 @@ export interface ActorResult {
   worker?: CliActorObservation;
   local?: LocalModelObservation;
   discovery?: DiscoveryReport;
+  portfolio?: PortfolioObservation;
   exitCode: number | null;
   signal: string | null;
   stdoutSha256: string;
@@ -73,6 +81,7 @@ export function assertActorResult(
     throw new Error("invalid script observation");
   const v = value as ActorResult;
   if (v.discovery !== undefined) decodeDiscoveryReport(v.discovery);
+  if (v.portfolio !== undefined) assertPortfolioObservation(v.portfolio);
   if (
     (v.exitCode !== null &&
       (!Number.isSafeInteger(v.exitCode) || v.exitCode < 0)) ||
@@ -93,7 +102,12 @@ export interface ActorAdapter {
   available(spec?: ActorSpec): string | null;
   run(
     spec: ActorSpec,
-    context?: { residentStore: string; episodeId: string },
+    context?: {
+      residentStore: string;
+      episodeId: string;
+      /** Only a portfolio episode: the activation the resident recorded. */
+      portfolio?: PortfolioActivation;
+    },
   ): ActorRun;
 }
 export const SCRIPT_SANDBOX = "(version 1)(allow default)(deny network*)";
@@ -167,6 +181,20 @@ export function assertActorSpec(value: unknown): asserts value is ActorSpec {
     }
   } else if (v.local !== undefined)
     throw new Error("local endpoint request on another actor kind");
+  // A portfolio episode's work comes from the resident's derivation, never
+  // from a declared command; it writes only through the source-change host.
+  if (
+    v.kind === "portfolio" &&
+    (v.effect !== "repo.write" ||
+      [
+        "command",
+        "cwd",
+        "timeoutMs",
+        "expectedStdoutSha256",
+        "outputContract",
+      ].some((key) => v[key] !== undefined))
+  )
+    throw new Error("portfolio actor declares repo.write and no command");
   if (
     v.kind === "script" &&
     (!Array.isArray(v.command) ||
@@ -224,6 +252,17 @@ export function scriptResultVerified(
   }
   if (result.local !== undefined)
     throw new Error("local-model result on another actor kind");
+  if (spec.kind === "portfolio") {
+    if (result.discovery !== undefined)
+      throw new Error("discovery result on a portfolio actor");
+    // The admitted WO-054 verdict, not the writer's completion, decides.
+    return (
+      result.portfolio !== undefined &&
+      portfolioObservationVerified(result.portfolio)
+    );
+  }
+  if (result.portfolio !== undefined)
+    throw new Error("portfolio result on another actor kind");
   if (spec.kind !== "script") return false;
   if (spec.outputContract === "work-candidates-v1") {
     if (result.discovery === undefined) return false;

@@ -215,6 +215,7 @@ as a current blocked verdict.
 | [Goal-aligned decisions](../product/07-execution-guide.md#goal-aligned-decisions)                                                                            | software-engineer                   | specified   |
 | [Operator resume phrases — how you get dispatched](../product/07-execution-guide.md#operator-resume-phrases--how-you-get-dispatched)                         | software-engineer                   | implemented |
 | [Derived work and intent](../product/07-execution-guide.md#derived-work-and-intent) | everyday-ai-user, software-engineer | implemented |
+| [Declaring a portfolio](../product/07-execution-guide.md#declaring-a-portfolio) | software-engineer | implemented |
 | [Where the control plane finds its documents](../product/07-execution-guide.md#where-the-control-plane-finds-its-documents)                                  | software-engineer                   | implemented |
 | [Independent workflows and integration](../product/07-execution-guide.md#independent-workflows-and-integration)                                              | software-engineer                   | implemented |
 | [Operator-opened ideation mode](../product/07-execution-guide.md#operator-opened-ideation-mode)                                                              | software-engineer                   | specified   |

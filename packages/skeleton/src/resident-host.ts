@@ -16,9 +16,12 @@ import {
   type ActorSpec,
 } from "./actor-contract.js";
 import { actorFailure } from "./cli-actor.js";
+import { portfolioAdapter, type PortfolioPorts } from "./portfolio-actor.js";
+import type { PortfolioActivation } from "./portfolio.js";
 import {
   decodeResidentConfiguration,
   isMissionActor,
+  portfolioSelection,
   residentEpisodeId,
   residentMachine,
   residentRefusal,
@@ -86,6 +89,8 @@ export interface ResidentHostOptions {
   catalog?: Readonly<Record<ActorKind, ActorAdapter>>;
   predicates?: PredicateRegistry;
   capabilities?: () => readonly string[];
+  /** WO-100: the WO-120, WO-052 and WO-054 hosts a portfolio actor runs through. */
+  portfolio?: PortfolioPorts;
 }
 export class ResidentHost {
   readonly store: ResidentStore;
@@ -96,7 +101,11 @@ export class ResidentHost {
   constructor(private readonly options: ResidentHostOptions) {
     this.store = new ResidentStore(options.directory, options.predicates);
     this.now = options.now ?? Date.now;
-    this.catalog = options.catalog ?? actorCatalog;
+    this.catalog =
+      options.catalog ??
+      (options.portfolio
+        ? { ...actorCatalog, portfolio: portfolioAdapter(options.portfolio) }
+        : actorCatalog);
   }
   async start() {
     if (this.started) throw new Error("resident is already started");
@@ -209,10 +218,24 @@ export class ResidentHost {
           effect: spec.effect,
           authorityEnvelopeId: phase.effectiveEnvelope.authorityEnvelopeId,
         });
+        // WO-100: the activation, with its host-policy grant, is durable before
+        // any identity is allocated or any source changes.
+        let portfolio: PortfolioActivation | undefined;
+        if (spec.kind === "portfolio") {
+          const selection = portfolioSelection(tx.resident!, phase);
+          if (!("activation" in selection))
+            throw new Error("portfolio selection changed within its dispatch");
+          portfolio = selection.activation;
+          tx.append("PortfolioOrderActivated", {
+            episodeId: id,
+            activation: portfolio,
+          });
+        }
         // Append/fsync precedes spawn; the same short lock orders presence against both.
         const run = adapter.run(spec, {
           residentStore: resolve(this.options.directory),
           episodeId: id,
+          ...(portfolio ? { portfolio } : {}),
         });
         if (spec.kind === "human-handoff") {
           if (!run.handoff)
@@ -261,7 +284,9 @@ export class ResidentHost {
       tx.append(
         spec.kind === "cli-worker"
           ? "CliWorkerObserved"
-          : "ScriptEpisodeObserved",
+          : spec.kind === "portfolio"
+            ? "PortfolioOrderObserved"
+            : "ScriptEpisodeObserved",
         {
           episodeId: dispatched.id,
           ...result,

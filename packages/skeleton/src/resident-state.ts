@@ -3,6 +3,7 @@ import {
   compileLoadout,
   requireCompiled,
   type CompilationEnvironment,
+  type CompiledPresencePhase,
   type CompiledPresencePolicy,
   type LoadoutGraph,
 } from "@dotln/compiler";
@@ -36,6 +37,15 @@ import {
   type MissionCheckObserved,
 } from "./mission-check-protocol.js";
 import { isWriterRequest } from "./worker-protocol.js";
+import type { DiscoveryReport } from "./work-candidate.js";
+import {
+  admitPortfolio,
+  decodePortfolioBinding,
+  deriveWorkOrders,
+  summarizeDerivations,
+  type PortfolioActivation,
+  type PortfolioBinding,
+} from "./portfolio.js";
 
 export interface ResidentConfiguration {
   graph: LoadoutGraph;
@@ -44,6 +54,8 @@ export interface ResidentConfiguration {
   actors: Record<string, ActorSpec>;
   evidence: string[];
   heartbeatBudgetMs?: number;
+  /** WO-100: the preauthorized portfolio its `portfolio` actors derive from. */
+  portfolio?: PortfolioBinding;
 }
 /** A mission check that did not come back `on-mission` holds unattended
  * dispatch. The check itself stays armed; nothing else runs until a human
@@ -92,6 +104,16 @@ export interface ResidentState {
     { subjectHash: string | null; verdict: MissionCheckObserved["verdict"] }
   >;
   dispatchHeld: MissionHold | null;
+  /** The latest verified WO-119 observation a portfolio derives from. */
+  discovery: { episodeId: string; report: DiscoveryReport } | null;
+  portfolio: {
+    activations: Record<string, PortfolioActivation & { at: number }>;
+    /** WO-120 provenance keys already activated: one attempt per candidate. */
+    sources: string[];
+    episodes: number;
+    wallMs: number;
+    tokens: number;
+  };
 }
 export function decodeResidentConfiguration(
   value: unknown,
@@ -109,6 +131,7 @@ export function decodeResidentConfiguration(
           "actors",
           "evidence",
           "heartbeatBudgetMs",
+          "portfolio",
         ].includes(key),
     ) ||
     typeof v.policyId !== "string" ||
@@ -129,12 +152,37 @@ export function decodeResidentConfiguration(
   if (!policy) throw new Error("resident policy is not compiled");
   if (Object.keys(v.actors).length !== policy.phases.length)
     throw new Error("resident requires one actor per phase");
+  const portfolio =
+    v.portfolio === undefined
+      ? undefined
+      : admitBinding(v.portfolio, policy, program.authorityEnvelope);
   for (const phase of policy.phases) {
     if (!Object.hasOwn(v.actors, phase.phaseId))
       throw new Error("resident phase actor is missing");
     assertActorSpec(v.actors[phase.phaseId]);
+    const actor = v.actors[phase.phaseId]!;
+    if (actor.kind !== "portfolio") continue;
+    const ceiling = portfolio?.definition.phases[phase.phaseId];
+    if (!ceiling)
+      throw new Error(
+        "resident portfolio actor needs a portfolio ceiling for its phase",
+      );
+    // The actor's reservation, which the phase admits, bounds every order.
+    if ((actor.resources["files"] ?? 0) < ceiling.files)
+      throw new Error(
+        "resident portfolio actor reserves fewer files than its phase ceiling",
+      );
   }
-  return structuredClone(v);
+  return structuredClone({ ...v, ...(portfolio ? { portfolio } : {}) });
+}
+function admitBinding(
+  value: unknown,
+  policy: CompiledPresencePolicy,
+  floor: Parameters<typeof admitPortfolio>[2],
+): PortfolioBinding {
+  const binding = decodePortfolioBinding(value);
+  admitPortfolio(binding.definition, policy, floor);
+  return binding;
 }
 export const emptyResidentState = (): ResidentState => ({
   configuration: null,
@@ -153,6 +201,14 @@ export const emptyResidentState = (): ResidentState => ({
   handoffs: {},
   missionChecks: {},
   dispatchHeld: null,
+  discovery: null,
+  portfolio: {
+    activations: {},
+    sources: [],
+    episodes: 0,
+    wallMs: 0,
+    tokens: 0,
+  },
 });
 export function residentMachine(
   state: ResidentState,
@@ -197,6 +253,8 @@ export const residentEventTypes = [
   "CliWorkerObserved",
   "MissionDriftObserved",
   "MissionHoldCleared",
+  "PortfolioOrderActivated",
+  "PortfolioOrderObserved",
 ] as const;
 
 /** What the capsule proves on its own, with no model judgment at all. A
@@ -269,6 +327,60 @@ function expireActorHeartbeats(state: ResidentState) {
 /** The read-only judge of running work, declared as a CLI worker actor. */
 export const isMissionActor = (spec: ActorSpec): boolean =>
   spec.kind === "cli-worker" && isMissionCheckRequest(spec.worker!.request);
+
+/** WO-100: the one order a portfolio phase may activate now, or the NoOp
+ * reason. Pure over recorded state, so the fold recomputes what the host
+ * recorded; the budget is checked first, and nothing dispatches past it. */
+export function portfolioSelection(
+  state: ResidentState,
+  phase: CompiledPresencePhase,
+): { activation: PortfolioActivation } | { refusal: string } {
+  const binding = state.configuration?.portfolio;
+  if (!binding) return { refusal: "resident declares no portfolio" };
+  const { definition } = binding;
+  const used = state.portfolio;
+  const name = `portfolio ${definition.portfolioId} v${definition.version}`;
+  const budget = definition.budget;
+  if (used.episodes >= budget.episodes)
+    return {
+      refusal: `${name} budget exhausted: ${used.episodes} of ${budget.episodes} episodes`,
+    };
+  if (used.wallMs >= budget.wallMs)
+    return {
+      refusal: `${name} budget exhausted: ${used.wallMs} of ${budget.wallMs} ms wall time`,
+    };
+  if (budget.tokens !== undefined && used.tokens >= budget.tokens)
+    return {
+      refusal: `${name} budget exhausted: ${used.tokens} of ${budget.tokens} reported tokens`,
+    };
+  if (!state.discovery)
+    return { refusal: `${name} has no verified discovery observation` };
+  const derivations = deriveWorkOrders(
+    state.discovery.report.candidates,
+    definition,
+    phase,
+    binding,
+  );
+  const outcomes = summarizeDerivations(derivations);
+  const selected = derivations.find(
+    (d) => d.kind === "order" && !used.sources.includes(d.order.sourceId),
+  );
+  if (selected?.kind !== "order")
+    return {
+      refusal: `${name} phase ${phase.phaseId}: no candidate left to derive (${outcomes.orders.length} already activated or none derived, ${outcomes.suggestions.length} suggestions, ${outcomes.needsHuman.length} needing a human, ${outcomes.deferred.length} deferred)`,
+    };
+  return {
+    activation: {
+      portfolioId: definition.portfolioId,
+      version: definition.version,
+      phaseId: phase.phaseId,
+      discoveryEpisodeId: state.discovery.episodeId,
+      order: selected.order,
+      provenance: { kind: "runtime", sourceId: selected.order.sourceId },
+      outcomes,
+    },
+  };
+}
 
 export function residentRefusal(
   state: ResidentState,
@@ -373,7 +485,12 @@ export function residentRefusal(
       }
     }
   }
-  return authorization.authorized ? null : authorization.refusal.payload.reason;
+  if (!authorization.authorized) return authorization.refusal.payload.reason;
+  if (spec.kind === "portfolio") {
+    const selection = portfolioSelection(state, phase);
+    if ("refusal" in selection) return selection.refusal;
+  }
+  return null;
 }
 
 export function foldResidentEvent(
@@ -541,6 +658,31 @@ export function foldResidentEvent(
     machine.dispatch(id);
     state.lastNoOp = null;
   }
+  if (event.type === "PortfolioOrderActivated") {
+    const id = payload["episodeId"];
+    const phaseId =
+      typeof id === "string" ? state.episodePhases[id] : undefined;
+    const phase = state.policy!.phases.find((p) => p.phaseId === phaseId);
+    const selection = phase ? portfolioSelection(state, phase) : undefined;
+    if (
+      typeof id !== "string" ||
+      Object.keys(payload).sort().join(",") !== "activation,episodeId" ||
+      state.episodes[id] !== "dispatched" ||
+      machine.current?.id !== id ||
+      state.configuration!.actors[phaseId!]?.kind !== "portfolio" ||
+      Object.hasOwn(state.portfolio.activations, id) ||
+      !selection ||
+      !("activation" in selection) ||
+      canonicalStringify(payload["activation"]) !==
+        canonicalStringify(selection.activation)
+    )
+      throw new Error(
+        "portfolio activation differs from the recorded derivation",
+      );
+    state.portfolio.activations[id] = { ...selection.activation, at: state.at };
+    state.portfolio.sources.push(selection.activation.provenance.sourceId);
+    state.portfolio.episodes += 1;
+  }
   if (event.type === "HandoffRequested") {
     const packet = payload["packet"];
     assertHandoffPacket(packet);
@@ -601,6 +743,7 @@ export function foldResidentEvent(
     [
       "ScriptEpisodeObserved",
       "CliWorkerObserved",
+      "PortfolioOrderObserved",
       "ScriptEpisodeLost",
     ].includes(event.type)
   ) {
@@ -613,8 +756,16 @@ export function foldResidentEvent(
     if (!lost) {
       assertActorResult(payload);
       const spec = state.configuration!.actors[state.episodePhases[id]!]!;
-      if ((event.type === "CliWorkerObserved") !== (spec.kind === "cli-worker"))
+      const expected =
+        spec.kind === "cli-worker"
+          ? "CliWorkerObserved"
+          : spec.kind === "portfolio"
+            ? "PortfolioOrderObserved"
+            : "ScriptEpisodeObserved";
+      if (event.type !== expected)
         throw new Error("actor observation kind differs from dispatch");
+      if (spec.kind === "portfolio" && !state.portfolio.activations[id])
+        throw new Error("portfolio observation has no recorded activation");
       const verified = scriptResultVerified(spec, payload, id);
       if (payload.verified !== verified)
         throw new Error("script verification contradicts recorded output");
@@ -622,6 +773,21 @@ export function foldResidentEvent(
     if (!lost) {
       const spec = state.configuration!.actors[state.episodePhases[id]!]!;
       if (isMissionActor(spec)) foldMissionJudgment(state, id, payload);
+      if (
+        spec.outputContract === "work-candidates-v1" &&
+        payload["verified"] === true
+      )
+        state.discovery = {
+          episodeId: id,
+          report: payload["discovery"] as unknown as DiscoveryReport,
+        };
+    }
+    // Charged when the episode ends: resident-clock wall time and reported tokens.
+    const activation = state.portfolio.activations[id];
+    if (activation) {
+      state.portfolio.wallMs += Math.max(0, state.at - activation.at);
+      const portfolio = payload["portfolio"] as { tokens?: number } | undefined;
+      if (!lost) state.portfolio.tokens += portfolio?.tokens ?? 0;
     }
     state.episodes[id] = lost ? "lost" : "observed";
     const actor = state.actors[`episode:${id}`];

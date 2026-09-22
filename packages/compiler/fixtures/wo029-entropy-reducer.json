@@ -82,7 +82,7 @@
   "activeMechanics": [
     {
       "activeMechanicId": "seiso-shine",
-      "version": 1,
+      "version": 2,
       "name": "Seisō (Shine)",
       "tags": [
         "observe",
@@ -110,7 +110,7 @@
           "The repository product docs are durable shared memory",
           "The reviewer has no authority to implement or promote its own suggestions",
           "The kernel does not yet evaluate Program.All, so this review is dispatched manually",
-          "The compiled reviewer is claude-fable-5-1 at max effort; a substitution is a different attested actor"
+          "The compiled reviewer is claude-opus-5-5 at xhigh effort; a substitution is a different attested actor"
         ],
         "decisions": [
           "Entropy Reducer uses Shine linked to Standardize",

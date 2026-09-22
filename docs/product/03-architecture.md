@@ -1225,7 +1225,8 @@ an additional source of effect authority.
 ### First live Entropy Reducer use
 
 The current [operator guide](../instance/entropy-reducer/README.md) dispatches
-this compiled loadout through a separate Fable 5.1 `max` session. It names
+this compiled loadout through a separate Opus 5.5 `xhigh` session (Fable 5.1
+`max` through `v0.43.0`; moved by WO-100). It names
 subject freezing, per-operation authority, new receipt IDs, output validation,
 blinded refutation, and operator disposition as manual host duties. No resume
 action or automatic launcher is implied. WO-142 implements the operator's
@@ -2140,6 +2141,18 @@ larger orders enter only through explicit preauthorization and remain optional
 when capacity permits. The portfolio policy, not silence, defines activation,
 slot count, ordering, stop, pause, return, and replenishment behavior. Selecting
 an order is still distinct from authorizing its effects.
+
+**Status 2026-09-22 (WO-100).** The work-order-scale paragraph has a first
+implementation on WO-067's progressive curve. A portfolio's per-phase ceilings
+are admitted only inside the compiled floor and each phase's effective
+envelope, so scope and effect authority grow by recorded stage and never past
+the declared ceiling. Each derived order's envelope is that intersection, its
+grant source is `host-policy` recorded on the activation, the curve advances
+only when WO-054 passes the portfolio's named verification commands without
+escalation (and, for a Sort move, the host confirms the exact relocation), a
+failed or refused order resets it, and a spent budget stops dispatch. Criteria
+the named commands do not test are the portfolio author's to cover. Open: the utility ranking, the Blackjack +3
+rules, loops that replenish, retry, and the four-track inspector.
 
 ## Corpus policy
 

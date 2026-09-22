@@ -9,10 +9,10 @@ until it's muscle memory; edit it when reality disagrees.
 | Actor                           | Effort source                                                                                                 | Use for                                                                                                         | Don't use for                                                                                                      |
 | ------------------------------- | ------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
 | **Fable 5**                     | planning assignment; the work order's `reviewer` declaration when closing                                     | Plan and refine work orders; perform the end-of-work-order blueprint/lineage check                              | Implementation or acceptance verification                                                                          |
-| **Entropy Reducer** (Fable 5.1) | `npm run entropy -- review --transport claude-cli-print` passes the compiled WO-023 model and `max` effort on the command line and records them from the invocation; any other route is labelled `substitute reviewer` in the receipt | Whole-repository entropy review, reproducible findings, and non-authoritative ProductSuggestion packet payloads | Implementing, filing, promoting, or verifying its own suggestions; changing tracked/control/remote/settings state  |
+| **Entropy Reducer** (Opus 5.5) | `npm run entropy -- review --transport claude-cli-print` passes the compiled WO-023 model (Claude Opus 5.5 since WO-100) and `xhigh` effort on the command line and records them from the invocation; any other route is labelled `substitute reviewer` in the receipt | Whole-repository entropy review, reproducible findings, and non-authoritative ProductSuggestion packet payloads | Implementing, filing, promoting, or verifying its own suggestions; changing tracked/control/remote/settings state  |
 | **Opus 5** (1M)                 | the active work order's `verifier` declaration                                                                | Blinded verification of Codex-built work orders                                                                 | Implementing or repairing the work it verifies                                                                     |
 | **Sonnet 5**                    | the active work order's declaration for the role it occupies                                                  | Bounded mechanical work: test scaffolds, renames, formatting, running fixtures, small fan-outs                  | Anything requiring judgment about the blueprint                                                                    |
-| **Codex** (GPT-6 Astra)         | operator-selected `max` default; record the actual model and effort; order declarations are recommendations   | Execute and repair work orders                                                                                  | Acceptance verification of its own work — it reads `AGENTS.md` (symlinked to CLAUDE.md), so the same rules bind it |
+| **Codex** (GPT-6 Sol)           | operator-selected `xhigh` default; record the actual model and effort; order declarations are recommendations   | Execute and repair work orders                                                                                  | Acceptance verification of its own work — it reads `AGENTS.md` (symlinked to CLAUDE.md), so the same rules bind it |
 | **Copilot CLI** (operator-selected model) | actual CLI-selected readback or operator attestation, separately from harness identity | Executor, fixer and fresh verifier qualified on CLI 1.0.86 / Claude Sonnet 5 / xhigh | Final review and release close: **untested**; keep those on a qualified harness |
 
 Copilot entry is bare `copilot` from the worktree root, with no required launch
@@ -46,12 +46,13 @@ The human roles around this table are the five
 and UIFA showrunner; the planning step is the showrunner's, whichever model
 assists it.
 
-The operator's 2026-09-04 default is GPT-6 Astra with `max` effort for all Codex
-steps unless explicitly changed. Record that selection as operator-attested
+The operator's 2026-09-22 default is GPT-6 Sol with `xhigh` effort for all
+Codex steps unless explicitly changed (GPT-6 Astra with `max` from 2026-09-04;
+changed by the WO-100 scope expansion). Record that selection as operator-attested
 when no effective-session readback exists; do not relabel a persisted selector
 as readback. State any change from the recommended assignment. The
 [Entropy Reducer guide](instance/entropy-reducer/README.md) supplies its
-`npm run entropy` dispatch of the Fable 5.1/max reviewer, the fresh blinded
+`npm run entropy` dispatch of the Opus 5.5/xhigh reviewer, the fresh blinded
 refutation step and the disposition that lands accepted findings in the
 follow-up register.
 

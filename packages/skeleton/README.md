@@ -380,7 +380,7 @@ pending. The following stores live under the gitignored `/.runtime/` root:
 
 ```sh
 DOTLN_LIVE_WORKERS=1 npm run dotln --silent -- demo --store .runtime/claude --transport claude-cli-print --model claude-sonnet-5 --effort high --beacons
-DOTLN_LIVE_WORKERS=1 npm run dotln --silent -- demo --store .runtime/codex --transport codex-cli-exec --model gpt-6-astra --effort unknown --beacons
+DOTLN_LIVE_WORKERS=1 npm run dotln --silent -- demo --store .runtime/codex --transport codex-cli-exec --model gpt-6-sol --effort xhigh --beacons
 ```
 
 Successful stdout is one six-field JSON envelope. Raw harness output is bounded
@@ -422,7 +422,7 @@ capability probe are reproducible commands:
 
 ```sh
 npm run probe:workers -- --sandbox
-DOTLN_LIVE_WORKERS=1 npm run test:workers:live -- --claude-model claude-sonnet-5 --codex-model gpt-6-astra --evidence .runtime/live-evidence.json --kill-first
+DOTLN_LIVE_WORKERS=1 npm run test:workers:live -- --claude-model claude-sonnet-5 --codex-model gpt-6-sol --evidence .runtime/live-evidence.json --kill-first
 ```
 
 Create `.runtime` before using the live gate's evidence path if no demo has done
@@ -1061,3 +1061,69 @@ independent verification of repairs or permission to execute them. The trusted
 repo-command boundary does not claim isolation from hostile same-user processes
 or a deliberately detached descendant; the outer script supervisor retains its
 existing process-group deadline/return/death handling.
+
+## Preauthorized portfolio (WO-100)
+
+A portfolio is the operator's reviewed text for unattended work: the compiled
+5S mechanics it allows (`sort`, `shine`, `standardize`), the repository-relative
+surfaces an order may touch, an effect and file ceiling per presence phase, a
+budget of `episodes`, `wallMs` and optional reported `tokens`, and the exact
+verification commands for each candidate kind. Declare it under `portfolios`
+in `dotln.config.json` (product 07, §Declaring a portfolio); the loader
+refuses a ceiling that widens its registered repository's authority profile.
+
+`deriveWorkOrders(candidates, portfolio, phase, { baseCommit })` in
+`portfolio.ts` is pure. Each WO-119 candidate becomes one of:
+
+- an `order`: surfaces are the candidate's files (plus a declared home), size
+  is their count, the envelope is the phase ceiling intersected with the
+  compiled phase and never carries an effect WO-052 refuses, the grant is
+  `host-policy`, and the compiled contract is phase-free; its WO-120
+  provenance key names the portfolio, version, bound base and candidate;
+- a `ProductSuggestion`: its mechanic is not preauthorized or a path lies
+  outside the surfaces;
+- `NeedsHuman`: its obligation needs an effect no source-change order carries
+  (deletion of a stale generated file), no verification command is declared,
+  or no phase ceiling admits it;
+- `deferred`: a later phase's ceiling admits it.
+
+The resident carries the portfolio as a `portfolio: { definition, baseCommit }`
+binding (a full commit id), admitted under the compiled floor and every named
+phase's effective envelope, which must grant a `writers` unit. An actor of kind
+`portfolio` (effect `repo.write`, no command, reserving at least its phase
+ceiling's files) derives from the latest verified discovery observation. The resident appends
+`ScriptEpisodeDispatched`, then `PortfolioOrderActivated` with the order, its
+grant and its WO-120 provenance key, before anything runs; the fold recomputes
+that activation from the recorded discovery, binding, phase and budget. The
+episode materializes the order through WO-120, changes source through one
+`SourceChangeHost` and verifies it through one `VerificationHost`
+(`portfolioExecution` in `portfolio-host.ts` composes them, as `RepairHost`
+does). For a Sort move the host first checks the exact relocation (the old
+path removed, the home added with the same blob) and dispatches no verifier if
+it fails. WO-054 judges one criterion, the portfolio's named commands, over the
+order's paths present in both trees and the files those commands run, or, when
+none is in both (a Sort move checked by `npm test`), over every file both trees
+hold; a pass needs every evaluation passing, no finding and no human escalation.
+`PortfolioOrderObserved.verified` is true only for such a pass over an observed
+change, so the compiled presence curve advances only then; a failed, refused or
+host-failed episode resets it. A kill after the change still records the commit
+WO-052 observed and marks verification not run. A candidate is activated at most once per
+portfolio version and store. When the episode, wall-time or reported-token
+budget is spent, the next portfolio dispatch is a `ScriptEpisodeRefused` NoOp
+naming it. A resident started without execution hosts reports the actor
+unavailable; binding live transports is WO-111's unattended hour.
+
+`scripts/test-portfolio.mjs` runs the WO-119 fixture through WO-120 and the
+real WO-052/WO-054 hosts with a doubled writer and verifier;
+`test/portfolio.test.ts` covers the derivation, admission, replay and budget.
+Limits: the budget is charged when an episode ends, so the last admitted
+episode can overrun the remaining wall time or tokens, and an episode lost to a
+restart is charged the downtime before the loss was recorded. No current host
+reports tokens, so a token budget has no effect until one does. WO-054 judges
+only the portfolio's named commands and WO-052 enforces the surfaces; other
+stated criteria guide the writer, so the named commands must test them. The
+host directory is the durable WO-052/WO-054 store per WO-120 identity: a
+repeated identity recovers its saved outcome instead of dispatching again.
+The configuration loader, not the resident, checks a ceiling against its
+repository's registered profile; binding a resident from the loaded portfolio
+and a profile-compiled environment is WO-111's.

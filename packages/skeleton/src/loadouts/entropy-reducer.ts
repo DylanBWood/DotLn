@@ -25,8 +25,8 @@ export const ENTROPY_REDUCER_REFERENCE_EPISODE_ID =
   "ep_entropy_reducer_reference";
 export const ENTROPY_REDUCER_REFERENCE_DISPATCH_AT = 0;
 export const ENTROPY_REDUCER_REFERENCE_EPISODE_ENDS_AT = 86_400_000;
-export const ENTROPY_REDUCER_REVIEWER_MODEL = "claude-fable-5-1";
-export const ENTROPY_REDUCER_REVIEWER_EFFORT = "max";
+export const ENTROPY_REDUCER_REVIEWER_MODEL = "claude-opus-5-5";
+export const ENTROPY_REDUCER_REVIEWER_EFFORT = "xhigh";
 
 export const ENTROPY_REDUCER_ALLOWED_EFFECTS = [
   "repo.read*",
@@ -914,7 +914,8 @@ export function entropyReducerLoadout(episodeEndsAt: number): LoadoutGraph {
     activeMechanics: [
       {
         activeMechanicId: "seiso-shine",
-        version: 1,
+        // v2 (WO-100): the compiled reviewer moved to claude-opus-5-5 at xhigh.
+        version: 2,
         name: "Seisō (Shine)",
         tags: ["observe", "research", "plan", "verify", "delegate", "narrate"],
         requiredCapabilities: [],
@@ -1034,16 +1035,16 @@ export interface ReviewerCompileOptions {
 
 export interface ReviewerRequirement {
   readonly harness: "claude-code";
-  readonly model: "claude-fable-5-1";
-  readonly displayModel: "Claude Fable 5.1";
-  readonly effort: "max";
+  readonly model: "claude-opus-5-5";
+  readonly displayModel: "Claude Opus 5.5";
+  readonly effort: "xhigh";
   readonly substitutionPolicy: "different-reviewer-and-must-be-attested";
 }
 
 export const entropyReducerReviewerRequirement = {
   harness: "claude-code",
   model: ENTROPY_REDUCER_REVIEWER_MODEL,
-  displayModel: "Claude Fable 5.1",
+  displayModel: "Claude Opus 5.5",
   effort: ENTROPY_REDUCER_REVIEWER_EFFORT,
   substitutionPolicy: "different-reviewer-and-must-be-attested",
 } as const satisfies ReviewerRequirement;

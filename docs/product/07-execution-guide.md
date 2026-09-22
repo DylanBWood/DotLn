@@ -483,6 +483,64 @@ including provenance and current lifecycle phase. The resident fixture persists
 and recompiles the returned identity across an actual host restart. This order
 does not derive new work automatically or implement UI filing.
 
+### Declaring a portfolio
+
+**Added by WO-100 (2026-09-22).** Unattended work is preauthorized by editing
+reviewed text, not by a phrase. Declare a portfolio under `portfolios` in the
+launchpad's `dotln.config.json`, keyed by its id:
+
+```json
+{
+  "version": 1,
+  "portfolios": {
+    "gardener-5s": {
+      "version": 1,
+      "repo": "scratch",
+      "mechanics": ["shine", "sort"],
+      "surfaces": ["docs", "loose/guide.md", "src"],
+      "phases": {
+        "widen": {
+          "effects": ["git.local", "repo.read", "repo.write", "shell.run"],
+          "files": 1
+        },
+        "peak": {
+          "effects": ["git.local", "repo.read", "repo.write", "shell.run"],
+          "files": 2
+        }
+      },
+      "budget": { "episodes": 2, "wallMs": 600000 },
+      "verification": {
+        "failing-lint": ["node checks/lint.cjs"],
+        "failing-test": ["node checks/test.cjs"]
+      }
+    }
+  }
+}
+```
+
+`mechanics` names the 5S pieces that compile today; `surfaces` are
+repository-relative files or directories; `phases` keys are the resident
+policy's compiled presence phases, each with the exact effects and file count
+an order may carry there; `verification` gives the exact commands WO-054 runs
+for each candidate kind. `repo` is `self` or a repository registered under
+`repositories` (`scratch` in the example), and a
+ceiling outside that repository's `authorityProfile` refuses by path. A
+resident binds the loaded portfolio with the target's full 40-hex base commit
+id, the only form WO-054 prepares, as its `portfolio` configuration field and runs `portfolio` actors, each reserving
+at least its phase ceiling's files, in the phases it names; the resident admits
+the binding only inside the compiled floor and each phase's effective envelope,
+which must grant a source-change writer. Name commands that test what each
+kind promises: WO-054 judges exactly those commands, and the host itself checks
+only a Sort move's relocation and every order's surfaces. Every derived order is a WO-120 record
+(`provenance.kind: "runtime"`) in the ordinary index and lifecycle; its
+authority names the `host-policy` grant. Its provenance key names the
+portfolio, version, bound base and candidate, so a new version or a new base
+starts a fresh attempt set; the operator's own repositories join only by an
+explicit portfolio edit. No
+resume phrase changes, and the manual one-slot protocol remains authoritative
+for hand-written orders. The skeleton README's portfolio section is the
+runbook.
+
 ### Where the control plane finds its documents
 
 **Added by WO-069 (2026-09-21).** Every command above resolves its document
@@ -506,7 +564,7 @@ routinely driven from an unrelated directory, and a working-directory ascent
 would let one checkout's session write into another checkout's documents.
 
 `dotln.config.json` at the launchpad root declares schema `version: 1` and the
-optional sections `roots`, `repositories`, `build`, `release` and `derivedOrders`. **Its absence
+optional sections `roots`, `repositories`, `build`, `release`, `derivedOrders` and `portfolios` (§Declaring a portfolio). **Its absence
 means today's layout, byte for byte**, so this repository ships no such file and
 `status --json`, `current.md`, the generated index, `times`, `usage` and a
 release manifest derived over the real log are unchanged by its introduction.
@@ -2097,7 +2155,10 @@ claim evidence or releases it does not have.
   pass inside a harness sandbox; a failure inside one is never by itself a
   reason to declare. `skeleton` carries the declaration: its native script
   cases nest `sandbox-exec`, which an outer Seatbelt sandbox refuses, in every
-  receipt that ran the gate inside one. `release` does not: WO-121's F1 was a
+  receipt that ran the gate inside one. `portfolio` carries it too (WO-100,
+  2026-09-22): its WO-119 discovery checks and WO-054 witness launch
+  `sandbox-exec`, and inside an outer Seatbelt profile both end-to-end tests
+  stop at the refused discovery launch. `release` does not: WO-121's F1 was a
   defect, and its one temporary-root failure inside the sandbox passed inside
   in every other receipt. A recognized marker (`CLAUDECODE`, or Codex's
   `CODEX_SANDBOX`) names the harness and establishes nothing alone, because a

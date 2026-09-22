@@ -473,6 +473,14 @@ export const suites = [
     protects:
       "derived work identity, activation, draft filing, allocation recovery and resident restart remain one control contract",
   }),
+  nodeTests("portfolio", "scripts/test-portfolio.mjs", {
+    product: true,
+    // Its discovery checks and WO-054 witness nest `sandbox-exec`, which an
+    // outer Seatbelt sandbox refuses (WO-100-D018).
+    needs: OUTSIDE_SANDBOX,
+    protects:
+      "a preauthorized portfolio derives bounded orders from WO-119 candidates, materializes them through WO-120 and advances the presence curve only after WO-052 changes and WO-054 verifies them",
+  }),
   nodeTests("configuration-root", "scripts/test-configuration-root.mjs", {
     protects:
       "an absent dotln.config.json reproduces today's layout, a declared launchpad moves every document root and root derivation, and a malformed configuration refuses by path",

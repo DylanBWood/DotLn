@@ -1,6 +1,6 @@
 # Entropy Reducer refutation plan v1
 
-This plan governs the fresh Contra-Auguste episode that challenges an Entropy Reducer review. It is a verification plan, not permission to fix findings or promote suggestions. The episode uses Claude Code with Claude Fable 5.1 at `max`; its harness version, selected model, effort, and evidence source are recorded beside the run. A substitute is identified as a different reviewer.
+This plan governs the fresh Contra-Auguste episode that challenges an Entropy Reducer review. It is a verification plan, not permission to fix findings or promote suggestions. The episode uses Claude Code with Claude Opus 5.5 at `xhigh` (Claude Fable 5.1 at `max` before WO-100); its harness version, selected model, effort, and evidence source are recorded beside the run. A substitute is identified as a different reviewer.
 
 ## Blinding and inputs
 

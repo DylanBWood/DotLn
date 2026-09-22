@@ -254,13 +254,15 @@ export const SOURCE_CHANGE_DENIED = [
   "transport.*",
   "package.publish",
 ] as const;
-const writerAllowed = new Set([
+/** Every effect a source-change writer may carry; nothing else reaches WO-052. */
+export const SOURCE_CHANGE_ALLOWED = [
   "repo.read",
   "repo.inspect",
   "repo.write",
   "git.local",
   "shell.run",
-]);
+] as const;
+const writerAllowed = new Set<string>(SOURCE_CHANGE_ALLOWED);
 const matchesEffect = (pattern: string, effect: string): boolean =>
   pattern.endsWith("*")
     ? effect.startsWith(pattern.slice(0, -1))

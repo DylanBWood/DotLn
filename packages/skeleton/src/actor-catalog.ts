@@ -3,6 +3,7 @@ import { fileURLToPath } from "node:url";
 import { cliWorkerAdapter } from "./cli-actor.js";
 import { humanHandoffAdapter } from "./handoff-actor.js";
 import { localModelAdapter } from "./local-model-actor.js";
+import { portfolioAdapter } from "./portfolio-actor.js";
 import {
   assertActorSpec,
   SCRIPT_SANDBOX,
@@ -76,4 +77,7 @@ export const actorCatalog: Readonly<Record<ActorKind, ActorAdapter>> = {
   // WO-110's transport is implemented; its declared row still reports the
   // endpoint unavailable, so the resident records a reasoned NoOp.
   "local-model": localModelAdapter(),
+  // WO-100: no execution hosts are bound by default, so a portfolio phase
+  // records a reasoned NoOp until a host supplies them (WO-111).
+  portfolio: portfolioAdapter(),
 };

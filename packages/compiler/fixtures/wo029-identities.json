@@ -63,7 +63,7 @@
     "schemaVersion": 1,
     "compilerContractVersion": "1",
     "compilerPackageVersion": "0.15.0",
-    "semanticHash": "fnv1a64:04b7ff37e73a6cd0",
+    "semanticHash": "fnv1a64:79151d7baebc5262",
     "compilationEnvironment": {
       "baseCommit": "fixture-base",
       "capabilities": [],
@@ -76,9 +76,9 @@
       {
         "componentKind": "active-mechanic",
         "componentId": "seiso-shine",
-        "version": 1,
+        "version": 2,
         "hashScheme": "dotln-component-definition-fnv1a64-v1",
-        "definitionHash": "fnv1a64:7672ecc90c8b284d"
+        "definitionHash": "fnv1a64:b544de110971af1d"
       },
       {
         "componentKind": "support-facet",

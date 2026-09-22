@@ -63,7 +63,7 @@ emitTargetHarness(target, options);
 checkTargetHarness(target, options);
 const instruction = readFileSync(join(target, "CLAUDE.local.md"), "utf8");
 const sibling = resolve(target, "../", `denied-${id}.txt`);
-const model = harness === "claude" ? "claude-fable-5" : "gpt-6-astra";
+const model = harness === "claude" ? "claude-fable-5" : "gpt-6-sol";
 const effort = "xhigh";
 const prompt =
   harness === "claude"

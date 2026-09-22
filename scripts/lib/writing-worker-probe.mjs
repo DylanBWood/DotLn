@@ -42,7 +42,7 @@ export const MARKERS = [
 export const LABELS = ["observed", "blocked", "unavailable", "ambiguous"];
 const SELECTORS = {
   claude: { model: "claude-fable-5", effort: "xhigh" },
-  codex: { model: "gpt-6-astra", effort: "max" },
+  codex: { model: "gpt-6-sol", effort: "xhigh" },
 };
 
 /* ------------------------------------------------------------------------ */

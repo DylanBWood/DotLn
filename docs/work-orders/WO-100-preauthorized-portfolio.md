@@ -1,4 +1,4 @@
-# WO-100 — Preauthorized portfolio and work derivation: the operator preauthorizes classes of unattended work with surfaces, effect ceilings per phase and a budget, and the resident derives bounded work orders from the Gardener's candidates inside it, never outside (version assigned at activation)
+# WO-100 — Preauthorized portfolio and work derivation: the operator preauthorizes classes of unattended work with surfaces, effect ceilings per phase and a budget, and the resident derives bounded work orders from the Gardener's candidates inside it, never outside (v0.44.0)
 
 **Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
 
@@ -135,6 +135,22 @@ edition.
 resident; publishing (no remote grant in the first portfolio); the full 5S
 set (WO-091 to WO-095 extend the candidates); the `intent` admission class
 and the remote grants it needs (WO-123).
+
+**Operator scope expansion (2026-09-22, authorized during `resume: next`).**
+Opus 5.5, GPT-6 Sol and GPT-6 Luna became available on 2026-09-22. The
+operator directed that every external CLI call selecting Claude Fable 5.1
+select Claude Opus 5.5 at `xhigh` instead, and every one selecting GPT-6
+Astra select GPT-6 Sol (at `xhigh` where Astra ran at `max` or `xhigh`), and
+that always-on agents may default to GPT-6 Luna or the latest Claude Sonnet
+at `xhigh`, recorded as a candidate where no default exists yet. The operator
+chose to move the Entropy Reducer's compiled reviewer pin inside this order.
+This is bounded to active selections: the compiled Entropy Reducer pin and
+its evidence migration, the entropy and planning-refutation command
+defaults, the probe and evidence scripts, the documents that state those
+defaults, and the always-on candidate note. Historical receipts, recorded
+evidence and observed-session fixtures keep their bytes, and Claude Fable 5
+selections are not Fable 5.1 and are unchanged. Authorization and reasoning:
+`docs/evidence/WO-100/decisions.md#wo-100-d007`.
 
 **Operator-review assumptions**
 

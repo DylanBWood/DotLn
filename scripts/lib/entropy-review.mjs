@@ -322,13 +322,13 @@ export function discardDispatch(root, kind) {
 
 export const TRANSPORT_DEFAULTS = {
   "claude-cli-print": {
-    model: "claude-fable-5-1",
-    effort: "max",
+    model: "claude-opus-5-5",
+    effort: "xhigh",
     harness: "claude-code",
   },
   "codex-cli-exec": {
-    model: "gpt-6-astra",
-    effort: "unknown",
+    model: "gpt-6-sol",
+    effort: "xhigh",
     harness: "codex-cli",
   },
   fake: { model: "fixture", effort: "max", harness: "other:fixture" },

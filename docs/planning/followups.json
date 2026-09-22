@@ -2129,6 +2129,20 @@
           "title": "Candidate — progressive absence authority and return readiness",
           "summary": "### Candidate — progressive absence authority and return readiness The author's candidate profile keeps foreground intent first while present and favors bounded housekeeping during absence because low-disruption cleanup can reduce return-time reorientation. Per-action `U(a,t) = Benefit − Risk − Disruption − OpportunityCost`, the sow/reap ratio, and Double Dutch windows can rank eligible work without silently granting it. Separately, the owner may preauthorize a progressive scope and effect-authority schedule that grows by recorded stage, peaks within a declared ceiling, and stops, resets, or loops on selected events. **Blackjack +3** is the working lens for a candidate explicit progressive-s",
           "missing": false
+        },
+        {
+          "hash": "dcd79e0b62cdda24befc3784c28deb3b07604d94f38319756da85a5066bc7503",
+          "ref": "docs/product/03-architecture.md#candidate--progressive-absence-authority-and-return-readiness",
+          "title": "Candidate — progressive absence authority and return readiness",
+          "summary": "### Candidate — progressive absence authority and return readiness The author's candidate profile keeps foreground intent first while present and favors bounded housekeeping during absence because low-disruption cleanup can reduce return-time reorientation. Per-action `U(a,t) = Benefit − Risk − Disruption − OpportunityCost`, the sow/reap ratio, and Double Dutch windows can rank eligible work without silently granting it. Separately, the owner may preauthorize a progressive scope and effect-authority schedule that grows by recorded stage, peaks within a declared ceiling, and stops, resets, or loops on selected events. **Blackjack +3** is the working lens for a candidate explicit progressive-s",
+          "missing": false
+        },
+        {
+          "hash": "356f8bda43f00d092ace0ee9cbb5e2374391ae47477acf391f95e3489f43e97b",
+          "ref": "docs/product/03-architecture.md#candidate--progressive-absence-authority-and-return-readiness",
+          "title": "Candidate — progressive absence authority and return readiness",
+          "summary": "### Candidate — progressive absence authority and return readiness The author's candidate profile keeps foreground intent first while present and favors bounded housekeeping during absence because low-disruption cleanup can reduce return-time reorientation. Per-action `U(a,t) = Benefit − Risk − Disruption − OpportunityCost`, the sow/reap ratio, and Double Dutch windows can rank eligible work without silently granting it. Separately, the owner may preauthorize a progressive scope and effect-authority schedule that grows by recorded stage, peaks within a declared ceiling, and stops, resets, or loops on selected events. **Blackjack +3** is the working lens for a candidate explicit progressive-s",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -2778,6 +2792,27 @@
           "title": "Candidate — unattended work-order portfolio",
           "summary": "### Candidate — unattended work-order portfolio The earlier operator-away scheduler was partly a workaround for supervising one prompt-bound agent and arranging recurring maintenance timers by hand. Once the work-order processor can close one order and select another, unattended autonomy should operate primarily over bounded WorkOrders rather than recreate a permanent prompt session. An opted-in portfolio has two candidate lanes. First are small eligible orders already covered by standing authority and requiring no new material decision; housekeeping often fits because it can reduce return-time reorientation. Second is a bounded set of larger-authority orders the operator explicitly preautho",
           "missing": false
+        },
+        {
+          "hash": "336fbdd7fa9840ca03bf60a91299149b5b76b2233b41d30be648b7cdcc37687f",
+          "ref": "docs/product/06-roadmap.md#candidate--unattended-work-order-portfolio",
+          "title": "Candidate — unattended work-order portfolio",
+          "summary": "### Candidate — unattended work-order portfolio The earlier operator-away scheduler was partly a workaround for supervising one prompt-bound agent and arranging recurring maintenance timers by hand. Once the work-order processor can close one order and select another, unattended autonomy should operate primarily over bounded WorkOrders rather than recreate a permanent prompt session. An opted-in portfolio has two candidate lanes. First are small eligible orders already covered by standing authority and requiring no new material decision; housekeeping often fits because it can reduce return-time reorientation. Second is a bounded set of larger-authority orders the operator explicitly preautho",
+          "missing": false
+        },
+        {
+          "hash": "eb6a98c55936e22887db2fb8a768a5ce6fceb82f1e87667230f7f133de444d69",
+          "ref": "docs/product/06-roadmap.md#candidate--unattended-work-order-portfolio",
+          "title": "Candidate — unattended work-order portfolio",
+          "summary": "### Candidate — unattended work-order portfolio The earlier operator-away scheduler was partly a workaround for supervising one prompt-bound agent and arranging recurring maintenance timers by hand. Once the work-order processor can close one order and select another, unattended autonomy should operate primarily over bounded WorkOrders rather than recreate a permanent prompt session. An opted-in portfolio has two candidate lanes. First are small eligible orders already covered by standing authority and requiring no new material decision; housekeeping often fits because it can reduce return-time reorientation. Second is a bounded set of larger-authority orders the operator explicitly preautho",
+          "missing": false
+        },
+        {
+          "hash": "226eb523c15b9f214cb7e5ebf48031bb650c416405cd1a1356f909d180faa0e2",
+          "ref": "docs/product/06-roadmap.md#candidate--unattended-work-order-portfolio",
+          "title": "Candidate — unattended work-order portfolio",
+          "summary": "### Candidate — unattended work-order portfolio The earlier operator-away scheduler was partly a workaround for supervising one prompt-bound agent and arranging recurring maintenance timers by hand. Once the work-order processor can close one order and select another, unattended autonomy should operate primarily over bounded WorkOrders rather than recreate a permanent prompt session. An opted-in portfolio has two candidate lanes. First are small eligible orders already covered by standing authority and requiring no new material decision; housekeeping often fits because it can reduce return-time reorientation. Second is a bounded set of larger-authority orders the operator explicitly preautho",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -2846,6 +2881,27 @@
         },
         {
           "hash": "6e63a87452b8fe38512c366f892bff01c13fa1b0fd94f4797082582aba32f723",
+          "ref": "docs/product/06-roadmap.md#work-order-navigation-and-identity-candidate",
+          "title": "Work-order navigation and identity (candidate)",
+          "summary": "## Work-order navigation and identity (candidate) The current control projection answers one narrow question: given a selected work order and its independently folded phase, which lifecycle transitions are legal now? It does not answer which backlog order should be activated after close. The release ladder, hard dependency graph, adjacent evidence/corpus work, and operator preference are distinct planning inputs and must not be collapsed into the next integer. Keep three answers visible: 1. **Workflow legal next:** the transition allowed for the selected order, such as verify, repair, or final review. 2. **Eligible now:** every candidate whose hard dependencies, activation prerequisites, aut",
+          "missing": false
+        },
+        {
+          "hash": "9626ce54ebb9ae965a5ad94b91bc04a704ed04aad995aa80d6fc03cd1d054632",
+          "ref": "docs/product/06-roadmap.md#work-order-navigation-and-identity-candidate",
+          "title": "Work-order navigation and identity (candidate)",
+          "summary": "## Work-order navigation and identity (candidate) The current control projection answers one narrow question: given a selected work order and its independently folded phase, which lifecycle transitions are legal now? It does not answer which backlog order should be activated after close. The release ladder, hard dependency graph, adjacent evidence/corpus work, and operator preference are distinct planning inputs and must not be collapsed into the next integer. Keep three answers visible: 1. **Workflow legal next:** the transition allowed for the selected order, such as verify, repair, or final review. 2. **Eligible now:** every candidate whose hard dependencies, activation prerequisites, aut",
+          "missing": false
+        },
+        {
+          "hash": "6bc1d3e96f662eed80c2198828dde98ac9dbfa9cf5b6d78b797a830bd7acff69",
+          "ref": "docs/product/06-roadmap.md#work-order-navigation-and-identity-candidate",
+          "title": "Work-order navigation and identity (candidate)",
+          "summary": "## Work-order navigation and identity (candidate) The current control projection answers one narrow question: given a selected work order and its independently folded phase, which lifecycle transitions are legal now? It does not answer which backlog order should be activated after close. The release ladder, hard dependency graph, adjacent evidence/corpus work, and operator preference are distinct planning inputs and must not be collapsed into the next integer. Keep three answers visible: 1. **Workflow legal next:** the transition allowed for the selected order, such as verify, repair, or final review. 2. **Eligible now:** every candidate whose hard dependencies, activation prerequisites, aut",
+          "missing": false
+        },
+        {
+          "hash": "91ab3cba085d6a0e76e89342e4d752c961cc38fcf1572cd07eae7a93d762efb8",
           "ref": "docs/product/06-roadmap.md#work-order-navigation-and-identity-candidate",
           "title": "Work-order navigation and identity (candidate)",
           "summary": "## Work-order navigation and identity (candidate) The current control projection answers one narrow question: given a selected work order and its independently folded phase, which lifecycle transitions are legal now? It does not answer which backlog order should be activated after close. The release ladder, hard dependency graph, adjacent evidence/corpus work, and operator preference are distinct planning inputs and must not be collapsed into the next integer. Keep three answers visible: 1. **Workflow legal next:** the transition allowed for the selected order, such as verify, repair, or final review. 2. **Eligible now:** every candidate whose hard dependencies, activation prerequisites, aut",
@@ -14081,6 +14137,175 @@
           "ref": "docs/evidence/WO-064/decisions.md#wo-064-d011--the-deferred-adjacent-item-still-targets-prose-instead-of-its-public-follow-up",
           "title": "WO-064-D011: The advisory has now recurred in a second order (WO-152, WO-064) because the executor disposes a deferred adjacent item before plan followups --sync has minted the decision's public ident",
           "summary": "{ \"id\": \"WO-064-D011\", \"date\": \"2026-09-22\", \"dispatch\": \"resume: final review; the adjacent-queue advisory carried on ImplementationReady and RepairCompleted\", \"decision\": \"Leave WO-064 adjacent-0001 disposed as deferred with its prose target and carry the advisory forward rather than retarget it at final review. Its public follow-up already exists as FUP-a829a8799711b2ea, keyed to WO-064-D006; only the link from the queue item is missing, and the queue refuses mutation outside the executor and fixer phases.\", \"evidence\": [ \"docs/control/orders/WO-064.jsonl: ImplementationReady and RepairCompleted each carry the advisory 'Planning follow-ups: adjacent-0001: deferred work needs a current pub",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-74671509591ec69d",
+      "key": "decision:docs/evidence/WO-100/decisions.md#wo-100-d006",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "578f3a6424e170795a0aa605543de070f48767d419bc162367ae28889385f417",
+          "ref": "docs/evidence/WO-100/decisions.md#wo-100-d006",
+          "title": "WO-100-D006: WO-111: build the resident's portfolio binding from the loaded portfolios entry and compile its environment under the bound repository's registered authorityProfile, so the profile check ",
+          "summary": "{ \"id\": \"WO-100-D006\", \"date\": \"2026-09-22\", \"dispatch\": \"resume: next; one read-only review subagent over the uncommitted diff\", \"decision\": \"Dispose the executor-requested review's ten findings, each re-checked against the code: fix eight (a host-checked Sort relocation before WO-054 and claims scoped to the named commands; RepairHost's no-escalation pass rule; the bound base in the WO-120 provenance key; a kill after the change records the observed commit; a full commit id for the bound base; an actor reservation covering its phase ceiling; a writer unit required in each named phase; consistent Sort wording), document the accounting limits, and defer the resident-side profile check to WO-",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-d46383b60cca3c0b",
+      "key": "decision:docs/evidence/WO-100/decisions.md#wo-100-d007",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "984385de4bb09497290c89965886ac562724d2b13825fa2ea24a458f05149ef9",
+          "ref": "docs/evidence/WO-100/decisions.md#wo-100-d007",
+          "title": "WO-100-D007: WO-111: when the resident binds live transports, default always-on agents to gpt-6-luna or the latest Claude Sonnet at xhigh, per the candidate note in product 06.",
+          "summary": "{ \"id\": \"WO-100-D007\", \"date\": \"2026-09-22\", \"dispatch\": \"scope expand: during resume: next — four operator messages on 2026-09-22 and one answered question (move the Entropy Reducer pin inside WO-100)\", \"decision\": \"Replace every active external-CLI selection of Claude Fable 5.1 with Claude Opus 5.5 at xhigh and of GPT-6 Astra with GPT-6 Sol (xhigh where Astra ran at max or xhigh; model only where the Codex effort is deliberately unrecorded as `unknown`, so the CLI's configured effort applies). This includes the compiled Entropy Reducer reviewer pin with a recorded evidence migration. Record, as a candidate, that always-on agents may default to GPT-6 Luna or the latest Claude Sonnet at xhig",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-92a530526a872dff",
+      "key": "decision:docs/evidence/WO-100/decisions.md#wo-100-d009",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "d39ea1b78dd1d89defe890aa084149e475d2e3586ed2a0efa4001796fe39ab47",
+          "ref": "docs/evidence/WO-100/decisions.md#wo-100-d009",
+          "title": "WO-100-D009: resume: fix WO-100 VER-001 F1: make a correct Sort relocation verifiable with an admitted check such as npm test that names no path common to both snapshots, preserving WO-054's requireme",
+          "summary": "{ \"id\": \"WO-100-D009\", \"date\": \"2026-09-22\", \"dispatch\": \"resume: verify\", \"decision\": \"Record VER-001 F1 for repair: a valid portfolio verification command that names no shared tree path cannot verify an otherwise correct Sort move.\", \"evidence\": [ \"packages/skeleton/src/portfolio.ts: decodePortfolio accepts `npm test` as a verification command for `misplaced-file`\", \"packages/skeleton/src/portfolio-host.ts: verificationSurfaces selects only order paths present in both snapshots or command tokens that are paths in both; verify throws on an empty result before dispatching WO-054\", \"Verifier's system-temp scratch Git reproduction: moving loose/guide.md to docs/guide.md with unchanged blob ret",
+          "missing": false
+        },
+        {
+          "hash": "dfc55c59617988ae223ee9a11ab95270742d0d7700dc8b9eeba86cfd2dd389e9",
+          "ref": "docs/evidence/WO-100/decisions.md#wo-100-d009",
+          "title": "WO-100-D009: resume: fix WO-100 VER-001 F1: make a correct Sort relocation verifiable with an admitted check such as npm test that names no path common to both snapshots, preserving WO-054's requireme",
+          "summary": "{ \"id\": \"WO-100-D009\", \"date\": \"2026-09-22\", \"dispatch\": \"resume: verify\", \"decision\": \"Record VER-001 F1 for repair: a valid portfolio verification command that names no shared tree path cannot verify an otherwise correct Sort move.\", \"evidence\": [ \"packages/skeleton/src/portfolio.ts: decodePortfolio accepts `npm test` as a verification command for `misplaced-file`\", \"packages/skeleton/src/portfolio-host.ts: verificationSurfaces selects only order paths present in both snapshots or command tokens that are paths in both; verify throws on an empty result before dispatching WO-054\", \"Verifier's system-temp scratch Git reproduction: moving loose/guide.md to docs/guide.md with unchanged blob ret",
+          "missing": false
+        },
+        {
+          "hash": "76fd325354188bc4ed39a955c2524452fe60caa67aedc84c6abf23833f3a48ef",
+          "ref": "docs/evidence/WO-100/decisions.md#wo-100-d009",
+          "title": "WO-100-D009: resume: fix WO-100 VER-001 F1: make a correct Sort relocation verifiable with an admitted check such as npm test that names no path common to both snapshots, preserving WO-054's requireme",
+          "summary": "{ \"id\": \"WO-100-D009\", \"date\": \"2026-09-22\", \"dispatch\": \"resume: verify\", \"decision\": \"Record VER-001 F1 for repair: a valid portfolio verification command that names no shared tree path cannot verify an otherwise correct Sort move.\", \"evidence\": [ \"packages/skeleton/src/portfolio.ts: decodePortfolio accepts `npm test` as a verification command for `misplaced-file`\", \"packages/skeleton/src/portfolio-host.ts: verificationSurfaces selects only order paths present in both snapshots or command tokens that are paths in both; verify throws on an empty result before dispatching WO-054\", \"Verifier's system-temp scratch Git reproduction: moving loose/guide.md to docs/guide.md with unchanged blob ret",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-d2d4e90bfe2491a6",
+      "key": "decision:docs/evidence/WO-100/decisions.md#wo-100-d011",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "6b3127e6166792e7b0dde1a6551c4ae826554eef2401e38f91d4cd0f540f2380",
+          "ref": "docs/evidence/WO-100/decisions.md#wo-100-d011",
+          "title": "WO-100-D011: resume: fix WO-100 VER-002 F1: correct docs/planning/refutations/README.md §Execution and preservation to state the current Claude Opus 5.5 and GPT-6 Sol xhigh defaults; preserve the guid",
+          "summary": "{ \"id\": \"WO-100-D011\", \"date\": \"2026-09-22\", \"dispatch\": \"resume: verify; VER-002\", \"decision\": \"Record VER-002 F1 for repair: the active planning-refutation guide still states the pre-migration external CLI model and effort defaults, although this order changed those defaults and explicitly included documents that state them.\", \"evidence\": [ \"docs/work-orders/WO-100-preauthorized-portfolio.md: the authorized scope expansion includes the planning-refutation command defaults and documents that state those defaults\", \"scripts/refute-plan.mjs: the active claude-cli-print default is claude-opus-5-5 at xhigh and the codex-cli-exec default is gpt-6-sol at xhigh\", \"docs/planning/refutations/README.",
+          "missing": false
+        },
+        {
+          "hash": "3dccdd9802790eb2c2b8f22db7561edbf4ba4b4c66586c2fafcef3249bfe5132",
+          "ref": "docs/evidence/WO-100/decisions.md#wo-100-d011",
+          "title": "WO-100-D011: resume: fix WO-100 VER-002 F1: correct docs/planning/refutations/README.md §Execution and preservation to state the current Claude Opus 5.5 and GPT-6 Sol xhigh defaults; preserve the guid",
+          "summary": "{ \"id\": \"WO-100-D011\", \"date\": \"2026-09-22\", \"dispatch\": \"resume: verify; VER-002\", \"decision\": \"Record VER-002 F1 for repair: the active planning-refutation guide still states the pre-migration external CLI model and effort defaults, although this order changed those defaults and explicitly included documents that state them.\", \"evidence\": [ \"docs/work-orders/WO-100-preauthorized-portfolio.md: the authorized scope expansion includes the planning-refutation command defaults and documents that state those defaults\", \"scripts/refute-plan.mjs: the active claude-cli-print default is claude-opus-5-5 at xhigh and the codex-cli-exec default is gpt-6-sol at xhigh\", \"docs/planning/refutations/README.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-80e77acc45e4ec75",
+      "key": "decision:docs/evidence/WO-100/decisions.md#wo-100-d014",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "790f779936a41febc8181e4c27e9abd668729072ef7d35f3c5dd470fa2c9021f",
+          "ref": "docs/evidence/WO-100/decisions.md#wo-100-d014",
+          "title": "WO-100-D014: resume: fix WO-100 FINAL-001 F1: decide the portfolio suite's needs: outside-sandbox from evidence. Either record the environmental cause with a receipt (an in-sandbox run of the portfoli",
+          "summary": "{ \"id\": \"WO-100-D014\", \"date\": \"2026-09-22\", \"dispatch\": \"resume: final review; the operator chose to fail to repair\", \"decision\": \"Fail FINAL-001 on F1. WO-100's new `portfolio` suite declares `needs: outside-sandbox` in scripts/test-runner.mjs. No decision records the environmental cause WO-140-D001 requires, and the inventory test that encodes WO-140's rule, product 07 §Gate sandbox preflight and WO-140-D001 were not updated. The reviewer gate selects runner-fixtures because WO-100 edits scripts/test-runner.mjs, and its test 41 fails. The declaration is probably right in substance: an outer Seatbelt sandbox refuses a nested sandbox-exec, and the portfolio suite nests one through WO-119 di",
+          "missing": false
+        },
+        {
+          "hash": "d0f102fc626b525b67404eb2e519d40cfd56f983b59cc46a9fb46827e570e5c5",
+          "ref": "docs/evidence/WO-100/decisions.md#wo-100-d014",
+          "title": "WO-100-D014: resume: fix WO-100 FINAL-001 F1: decide the portfolio suite's needs: outside-sandbox from evidence. Either record the environmental cause with a receipt (an in-sandbox run of the portfoli",
+          "summary": "{ \"id\": \"WO-100-D014\", \"date\": \"2026-09-22\", \"dispatch\": \"resume: final review; the operator chose to fail to repair\", \"decision\": \"Fail FINAL-001 on F1. WO-100's new `portfolio` suite declares `needs: outside-sandbox` in scripts/test-runner.mjs. No decision records the environmental cause WO-140-D001 requires, and the inventory test that encodes WO-140's rule, product 07 §Gate sandbox preflight and WO-140-D001 were not updated. The reviewer gate selects runner-fixtures because WO-100 edits scripts/test-runner.mjs, and its test 41 fails. The declaration is probably right in substance: an outer Seatbelt sandbox refuses a nested sandbox-exec, and the portfolio suite nests one through WO-119 di",
+          "missing": false
+        },
+        {
+          "hash": "0886bdfdb3b30fa05586f98c4936733d5c04ad9f700bdcafa7a7d31d4b045e2d",
+          "ref": "docs/evidence/WO-100/decisions.md#wo-100-d014",
+          "title": "WO-100-D014: resume: fix WO-100 FINAL-001 F1: decide the portfolio suite's needs: outside-sandbox from evidence. Either record the environmental cause with a receipt (an in-sandbox run of the portfoli",
+          "summary": "{ \"id\": \"WO-100-D014\", \"date\": \"2026-09-22\", \"dispatch\": \"resume: final review; the operator chose to fail to repair\", \"decision\": \"Fail FINAL-001 on F1. WO-100's new `portfolio` suite declares `needs: outside-sandbox` in scripts/test-runner.mjs. No decision records the environmental cause WO-140-D001 requires, and the inventory test that encodes WO-140's rule, product 07 §Gate sandbox preflight and WO-140-D001 were not updated. The reviewer gate selects runner-fixtures because WO-100 edits scripts/test-runner.mjs, and its test 41 fails. The declaration is probably right in substance: an outer Seatbelt sandbox refuses a nested sandbox-exec, and the portfolio suite nests one through WO-119 di",
+          "missing": false
+        },
+        {
+          "hash": "8d4922c6f43cf2b8730f373fb4aef05aa1752100f81580590fdbd714fcd476ea",
+          "ref": "docs/evidence/WO-100/decisions.md#wo-100-d014",
+          "title": "WO-100-D014: resume: fix WO-100 FINAL-001 F1: decide the portfolio suite's needs: outside-sandbox from evidence. Either record the environmental cause with a receipt (an in-sandbox run of the portfoli",
+          "summary": "{ \"id\": \"WO-100-D014\", \"date\": \"2026-09-22\", \"dispatch\": \"resume: final review; the operator chose to fail to repair\", \"decision\": \"Fail FINAL-001 on F1. WO-100's new `portfolio` suite declares `needs: outside-sandbox` in scripts/test-runner.mjs. No decision records the environmental cause WO-140-D001 requires, and the inventory test that encodes WO-140's rule, product 07 §Gate sandbox preflight and WO-140-D001 were not updated. The reviewer gate selects runner-fixtures because WO-100 edits scripts/test-runner.mjs, and its test 41 fails. The declaration is probably right in substance: an outer Seatbelt sandbox refuses a nested sandbox-exec, and the portfolio suite nests one through WO-119 di",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-27da6527b3696f80",
+      "key": "decision:docs/evidence/WO-100/decisions.md#wo-100-d015",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "fc1feab0cfbf56dc06ca850551d5123303fc79ed9895808a9a97352f839909b7",
+          "ref": "docs/evidence/WO-100/decisions.md#wo-100-d015",
+          "title": "WO-100-D015: resume: fix WO-100 FINAL-001 F2-F4: say 'through v0.43.0' (or 'before WO-100') in docs/instance/entropy-reducer/README.md and product 03 §First live Entropy Reducer use; record a correcti",
+          "summary": "{ \"id\": \"WO-100-D015\", \"date\": \"2026-09-22\", \"dispatch\": \"resume: final review\", \"decision\": \"Route three minor FINAL-001 findings to the same repair, because they are cheap once a repair is open. F2: two active documents label the Entropy Reducer's Fable 5.1 pin as lasting 'through `v0.42.0`', but v0.43.0 (WO-064) also shipped it, and the retime moved WO-100 to v0.44.0. F3: WO-100-D011 and WO-100-D012 (and the immutable VER-002) cite 'docs/AI-HARNESS-SECURITY.md §Planning refutation', a section that does not exist. The defaults they compare are in that document's 'Entropy Reducer launch line (WO-151, 2026-09-22)' paragraph, which states the same values, so the substance holds. F4: the curve",
+          "missing": false
+        },
+        {
+          "hash": "00c50e300c8503f12c3c12fc514e3cef5e3bb08f39be7d5db184267740b4b707",
+          "ref": "docs/evidence/WO-100/decisions.md#wo-100-d015",
+          "title": "WO-100-D015: resume: fix WO-100 FINAL-001 F2-F4: say 'through v0.43.0' (or 'before WO-100') in docs/instance/entropy-reducer/README.md and product 03 §First live Entropy Reducer use; record a correcti",
+          "summary": "{ \"id\": \"WO-100-D015\", \"date\": \"2026-09-22\", \"dispatch\": \"resume: final review\", \"decision\": \"Route three minor FINAL-001 findings to the same repair, because they are cheap once a repair is open. F2: two active documents label the Entropy Reducer's Fable 5.1 pin as lasting 'through `v0.42.0`', but v0.43.0 (WO-064) also shipped it, and the retime moved WO-100 to v0.44.0. F3: WO-100-D011 and WO-100-D012 (and the immutable VER-002) cite 'docs/AI-HARNESS-SECURITY.md §Planning refutation', a section that does not exist. The defaults they compare are in that document's 'Entropy Reducer launch line (WO-151, 2026-09-22)' paragraph, which states the same values, so the substance holds. F4: the curve",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-a05fb27e0e8f9bcf",
+      "key": "decision:docs/evidence/WO-100/decisions.md#wo-100-d016",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "1a957ca9a42e8844ab5a74c4c87b16f475f4fbd1d397b14ccd1b09a86b07290c",
+          "ref": "docs/evidence/WO-100/decisions.md#wo-100-d016",
+          "title": "WO-100-D016: Before WO-111 runs a portfolio unattended on an operator repository: make the source-change host refuse a committed change whose path count exceeds the envelope's files limit, or that del",
+          "summary": "{ \"id\": \"WO-100-D016\", \"date\": \"2026-09-22\", \"dispatch\": \"resume: final review\", \"decision\": \"Board up rather than repair: nothing counts a derived order's committed change against its `files` ceiling. WO-052 checks each changed path only by surface prefix, and it does not refuse a deletion or a file that becomes a directory. A Shine or Standardize writer could therefore replace `src/main.js` with a directory of any number of files, all inside the surface, and WO-054 would judge only the named commands. Sort is not affected, because the host requires exactly the move. This is WO-052's existing behaviour, not a WO-100 regression. WO-100 relies on it, though, and portfolio.ts's comment 'Host-c",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-bed0e3123bc66fa8",
+      "key": "decision:docs/evidence/WO-100/decisions.md#wo-100-d017",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "e7fe0a1f122d57e3281aff79dfe4973a669f6cdcbca7a716bbac8ad71b968abe",
+          "ref": "docs/evidence/WO-100/decisions.md#wo-100-d017",
+          "title": "WO-100-D017: Planning: make worktree integrate refuse intent-to-add index entries (or stage them) before it saves a receipt, and make any failure before the stash leave either no pending receipt or on",
+          "summary": "{ \"id\": \"WO-100-D017\", \"date\": \"2026-09-22\", \"dispatch\": \"resume: final review; operator authorized the recovery ('Recover and re-run')\", \"decision\": \"Record a machinery defect met at integration and the operator-authorized recovery. `worktree integrate` saves a pending receipt (stage `preserved`) and then runs `git stash push --include-untracked`. The executor had marked WO-100's seven new files intent-to-add, and the stash push failed with \\\"Entry 'docs/evidence/WO-100/decisions.md' not uptodate. Cannot merge.\\\" Nothing was stashed or merged, and HEAD was unchanged. A fresh run then refuses as pending, and --continue cannot move past `preserved`, so the helper strands itself. At the operat",
           "missing": false
         }
       ],

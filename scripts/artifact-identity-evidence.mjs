@@ -88,7 +88,7 @@ const inventory = baseline.fixtures.map((fixture) => {
     assert.equal(
       compiled.semanticHash,
       currentIdentities[fixture.name].semanticHash,
-      "Shape-First v2 must match its recorded current identity",
+      "the current Entropy Reducer must match its recorded current identity",
     );
     assert.equal(
       graph.supportFacets.find(
@@ -124,7 +124,7 @@ const inventory = baseline.fixtures.map((fixture) => {
     ...(fixture.name === "entropy-reducer"
       ? {
           change:
-            "WO-142 versions Shape-First relationship-first support to v2; historical baseline remains unchanged",
+            "WO-142 versions Shape-First relationship-first support to v2 and WO-100 versions Seisō to v2 with the compiled reviewer claude-opus-5-5 at xhigh (WO-100-D007); historical baseline remains unchanged",
           currentIdentityRef:
             "packages/compiler/fixtures/wo029-identities.json#entropy-reducer",
         }

@@ -358,8 +358,9 @@ for it with `--transport claude-cli-print` or `--transport codex-cli-exec`;
 without a transport the command prints the canonical prompt and closed schema
 for a background worker the session spawns, and the parent remains the sole
 repository writer. A background-worker failure never triggers an automatic
-external fallback. Claude defaults to `claude-fable-5-1` at `max` and Codex to
-`gpt-6-astra` with effort `unknown`; both are recorded from the invocation as
+external fallback. Claude defaults to `claude-opus-5-5` at `xhigh` and Codex to
+`gpt-6-sol` at `xhigh` (WO-100; previously `claude-fable-5-1` at `max` and
+`gpt-6-astra` with effort `unknown`); both are recorded from the invocation as
 `command-line-readback-and-invocation`, and effective model and effort stay
 `unknown` because no harness reports them. The receipt reads
 `entropy-reducer@1` only when a launched `claude-cli-print` episode carried the

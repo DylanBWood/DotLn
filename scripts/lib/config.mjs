@@ -81,6 +81,26 @@ const SECTION_KEYS = [
   "build",
   "release",
   "derivedOrders",
+  "portfolios",
+];
+// WO-100: the reviewed text of a preauthorized portfolio. The skeleton's
+// `decodePortfolio` re-validates the same shape and admits it under the floor.
+const PORTFOLIO_KEYS = [
+  "version",
+  "repo",
+  "mechanics",
+  "surfaces",
+  "phases",
+  "budget",
+  "verification",
+];
+const PORTFOLIO_MECHANICS = ["sort", "shine", "standardize"];
+const CANDIDATE_KINDS = [
+  "failing-lint",
+  "failing-test",
+  "misplaced-file",
+  "stale-generated",
+  "repeated-repair",
 ];
 
 /** Today's layout, byte for byte: the defaults an absent configuration means. */
@@ -378,6 +398,170 @@ const validateDerivedOrders = (path, declared = {}) => {
   return { first, last };
 };
 
+const distinctList = (path, value, label, valid) => {
+  if (
+    !Array.isArray(value) ||
+    !value.length ||
+    value.length > 64 ||
+    !value.every(valid) ||
+    new Set(value).size !== value.length
+  )
+    throw refuse(
+      path,
+      `${label} must be a non-empty list of distinct valid values`,
+    );
+  return [...value].sort();
+};
+const positiveInteger = (path, value, label, max = Number.MAX_SAFE_INTEGER) => {
+  if (!Number.isSafeInteger(value) || value < 1 || value > max)
+    throw refuse(path, `${label} must be an integer from 1 to ${max}`);
+  return value;
+};
+const containedPath = (value) =>
+  typeof value === "string" &&
+  value.length <= 240 &&
+  !/[\\\x00-\x1f:]/u.test(value) &&
+  !value.startsWith("/") &&
+  value
+    .split("/")
+    .every((part) => part && part !== "." && part !== ".." && part !== ".git");
+const covered = (patterns, effect) =>
+  patterns.some(
+    (pattern) =>
+      pattern === effect ||
+      (pattern.endsWith("*") && effect.startsWith(pattern.slice(0, -1))),
+  );
+
+const validatePortfolios = (path, declared, repositories) => {
+  requireObject(path, declared, "portfolios");
+  const portfolios = {};
+  for (const [id, value] of Object.entries(declared)) {
+    requireText(path, id, "portfolio id", /^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$/u);
+    const label = `portfolios.${id}`;
+    requireObject(path, value, label);
+    requireKnownKeys(path, value, PORTFOLIO_KEYS, label);
+    for (const key of PORTFOLIO_KEYS)
+      if (value[key] === undefined && key !== "verification")
+        throw refuse(path, `${label}.${key} is required`);
+    const repo = requireText(path, value.repo, `${label}.repo`);
+    const profile =
+      repo === "self" ? undefined : repositories[repo]?.authorityProfile;
+    if (repo !== "self" && !profile)
+      throw refuse(path, `${label}.repo names no registered repository`);
+    requireObject(path, value.phases, `${label}.phases`);
+    const phaseIds = Object.keys(value.phases);
+    if (!phaseIds.length || phaseIds.length > 16)
+      throw refuse(path, `${label}.phases must name 1 to 16 presence phases`);
+    const phases = {};
+    for (const phaseId of phaseIds) {
+      requireText(path, phaseId, `${label}.phases key`);
+      const phaseLabel = `${label}.phases.${phaseId}`;
+      const ceiling = requireObject(path, value.phases[phaseId], phaseLabel);
+      requireKnownKeys(path, ceiling, ["effects", "files"], phaseLabel);
+      const effects = distinctList(
+        path,
+        ceiling.effects,
+        `${phaseLabel}.effects`,
+        (effect) =>
+          typeof effect === "string" &&
+          /^[a-z][a-z0-9-]*(?:\.[a-zA-Z0-9-]+)+$/u.test(effect),
+      );
+      const files = positiveInteger(
+        path,
+        ceiling.files,
+        `${phaseLabel}.files`,
+        1024,
+      );
+      // A registered repository's profile is part of the floor for its orders.
+      if (profile) {
+        const outside = effects.find(
+          (effect) =>
+            !covered(profile.allowedEffects, effect) ||
+            covered(profile.deniedEffects, effect),
+        );
+        if (outside)
+          throw refuse(
+            path,
+            `${phaseLabel}.effects widens repositories.${repo}.authorityProfile with ${outside}`,
+          );
+        if (files > (profile.resourceLimits.files ?? Infinity))
+          throw refuse(
+            path,
+            `${phaseLabel}.files exceeds repositories.${repo}.authorityProfile.resourceLimits.files`,
+          );
+      }
+      phases[phaseId] = { effects, files };
+    }
+    const budget = requireObject(path, value.budget, `${label}.budget`);
+    requireKnownKeys(
+      path,
+      budget,
+      ["episodes", "wallMs", "tokens"],
+      `${label}.budget`,
+    );
+    const verification =
+      value.verification === undefined
+        ? {}
+        : requireObject(path, value.verification, `${label}.verification`);
+    requireKnownKeys(
+      path,
+      verification,
+      CANDIDATE_KINDS,
+      `${label}.verification`,
+    );
+    portfolios[id] = {
+      portfolioId: id,
+      version: positiveInteger(path, value.version, `${label}.version`),
+      repo,
+      mechanics: distinctList(
+        path,
+        value.mechanics,
+        `${label}.mechanics`,
+        (m) => PORTFOLIO_MECHANICS.includes(m),
+      ),
+      surfaces: distinctList(
+        path,
+        value.surfaces,
+        `${label}.surfaces`,
+        containedPath,
+      ),
+      phases,
+      budget: {
+        episodes: positiveInteger(
+          path,
+          budget.episodes,
+          `${label}.budget.episodes`,
+        ),
+        wallMs: positiveInteger(path, budget.wallMs, `${label}.budget.wallMs`),
+        ...(budget.tokens === undefined
+          ? {}
+          : {
+              tokens: positiveInteger(
+                path,
+                budget.tokens,
+                `${label}.budget.tokens`,
+              ),
+            }),
+      },
+      verification: Object.fromEntries(
+        Object.entries(verification).map(([kind, commands]) => [
+          kind,
+          distinctList(
+            path,
+            commands,
+            `${label}.verification.${kind}`,
+            (command) =>
+              typeof command === "string" &&
+              command.length <= 320 &&
+              /^[a-zA-Z0-9_./-]+(?: [a-zA-Z0-9_./=-]+)*$/u.test(command),
+          ),
+        ]),
+      ),
+    };
+  }
+  return portfolios;
+};
+
 const validateConfig = (path, source) => {
   let parsed;
   try {
@@ -392,6 +576,10 @@ const validateConfig = (path, source) => {
       path,
       `version must be ${CONFIG_SCHEMA_VERSION}; found ${JSON.stringify(declared.version ?? null)}`,
     );
+  const repositories =
+    declared.repositories === undefined
+      ? {}
+      : validateRepositories(path, declared.repositories);
   return {
     version: CONFIG_SCHEMA_VERSION,
     roots: resolveRoots(
@@ -400,10 +588,11 @@ const validateConfig = (path, source) => {
         : validateDeclaredRoots(path, declared.roots),
     ),
     derivedOrders: validateDerivedOrders(path, declared.derivedOrders),
-    repositories:
-      declared.repositories === undefined
+    repositories,
+    portfolios:
+      declared.portfolios === undefined
         ? {}
-        : validateRepositories(path, declared.repositories),
+        : validatePortfolios(path, declared.portfolios, repositories),
     build:
       declared.build === undefined
         ? validateBuild(path, {})
@@ -419,6 +608,7 @@ const absentConfig = () => ({
   version: CONFIG_SCHEMA_VERSION,
   roots: defaultRoots(),
   repositories: {},
+  portfolios: {},
   derivedOrders: { first: "WO-900", last: "WO-999" },
   build: { loadout: null, profile: null, overlay: null },
   release: Object.fromEntries(RELEASE_KEYS.map((key) => [key, true])),

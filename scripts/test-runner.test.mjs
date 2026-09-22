@@ -1366,10 +1366,16 @@ const sandboxFixture = (t) => {
   };
 };
 
-test("WO-140 the real inventory declares only the suite with an environmental outside-only cause", () => {
+test("WO-140 the real inventory declares only the suites with an environmental outside-only cause", () => {
+  // Each nests `sandbox-exec`, which an outer Seatbelt sandbox refuses:
+  // skeleton's native cases (WO-140-D001) and portfolio's discovery checks
+  // and verification witness (WO-100-D018).
   assert.deepEqual(
     suites.filter((row) => row.needs).map((row) => [row.name, row.needs]),
-    [["skeleton", OUTSIDE_SANDBOX]],
+    [
+      ["skeleton", OUTSIDE_SANDBOX],
+      ["portfolio", OUTSIDE_SANDBOX],
+    ],
   );
   // WO-121 F1 was a defect in a release case, never a reason to declare.
   assert.equal(suites.find((row) => row.name === "release").needs, undefined);

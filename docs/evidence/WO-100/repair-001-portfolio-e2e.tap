@@ -1,0 +1,30 @@
+TAP version 13
+# Subtest: the configuration section is the reviewed portfolio text, validated under its registered repository
+ok 1 - the configuration section is the reviewed portfolio text, validated under its registered repository
+  ---
+  duration_ms: 79.550959
+  type: 'test'
+  ...
+# \# {"identities":["WO-900","WO-901","WO-902"],"activations":["failing-lint:src/main.js","failing-test:src/main.js"],"verdicts":["pass","fail"],"states":["widen","peak","probe"],"noOp":"portfolio gardener-5s v1 budget exhausted: 2 of 2 episodes"}
+# \# {"identities":["WO-900","WO-901","WO-902","WO-903","WO-904"],"moved":{"verdict":"pass","criteria":2,"passed":2,"findings":0},"copied":{"verdict":"fail","criteria":2,"passed":0,"findings":1},"escalated":{"verdict":"fail","criteria":1,"passed":1,"findings":0},"pathless":{"verdict":"pass","criteria":2,"passed":2,"findings":0},"failing":{"verdict":"fail","criteria":2,"passed":1,"findings":1}}
+# Subtest: WO-100 criteria 1-3: derived orders materialize as indexed records, activate with host-policy provenance, change through WO-052, verify through WO-054, advance on a pass, reset on a failure and stop at the budget
+ok 2 - WO-100 criteria 1-3: derived orders materialize as indexed records, activate with host-policy provenance, change through WO-052, verify through WO-054, advance on a pass, reset on a failure and stop at the budget
+  ---
+  duration_ms: 4127.624541
+  type: 'test'
+  ...
+# Subtest: a Sort move passes only when the host sees the exact relocation and its named check passes, also for a check naming no path in both trees; a copy fails before any verifier runs, and a verifier's human escalation fails the order
+ok 3 - a Sort move passes only when the host sees the exact relocation and its named check passes, also for a check naming no path in both trees; a copy fails before any verifier runs, and a verifier's human escalation fails the order
+  ---
+  duration_ms: 8852.430708
+  type: 'test'
+  ...
+1..3
+# tests 3
+# suites 0
+# pass 3
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 13121.787834
