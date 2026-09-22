@@ -436,4 +436,57 @@ except the ignored intake capture and the granted scratch directory.
 
 ## 11. Independent review
 
-Filled after the receipt.
+Receipt
+[2026-09-22-planning-9244f56be13bcb2f-024](refutations/2026-09-22-planning-9244f56be13bcb2f-024.md):
+one fresh background reviewer, given only the canonical prompt (136,126
+bytes, read in six contiguous byte slices by its own statement), judged the
+committed subject at `7dc14bd3`. Its first run stopped on a server-side
+overload (HTTP 529) before writing anything and was resumed from its own
+transcript with the same prompt; it remained the pass's single spent
+subagent of the twenty-agent cap. Pass scope: WO-151, WO-152 and the
+sequence; 98 verdicts carried by hash. Verdict `aligned-with-findings` for
+both orders and the plan; no hold; seven known issues, zero observed
+failures, zero vision contradictions. Dispatch to file took 1,611 s,
+observed, with no pass-budget refusal. The reviewer made no repository or
+Git writes and spawned no agents; one of its scratchpad writes was refused
+by the outside-write hook and it built its result through stdin instead,
+which is the fifth refusal working as designed.
+
+The reviewer's answers to the four questions, in short. WO-151 unblocks no
+critical-path gate and names no blocked outcome; its NoOp cost is the hand
+route's unmeasured operator time plus per-cycle model spend the command does
+not change. Its removal balance is no: the five hand steps, the prompt and
+the hand-written receipts are removed, but the guide keeps them as the
+recorded fallback and the recovered measured evidence is expected, not
+measured. Its failure behavior is mixed: rejected results and failed live
+runs degrade to receipts, while a crash between filing a receipt pair and
+appending its control event would fail the shared document gate for later
+orders. WO-152 names gate R's outcome (WO-100 and WO-111's mission checks on
+the print transport); its removal balance is yes in effect, a whole
+transport restored for one function's deduplication; and its failure
+behavior degrades to today's refusal.
+
+The known issues are carried into each order's catalog row for the
+executor's decisions. The ones that change how the orders should be run:
+WO-151's decisions must name the gated order or outcome its accepted
+findings serve; REVIEW-002's receipt must record its restricted flag, the
+count of denied commands and the measured-versus-inspection split of its
+findings against REVIEW-001's one of seven, because the Cost line's
+principal benefit is checked by no criterion; a live row labeled substitute
+reviewer or effort `unknown` does not satisfy criterion 7 as the pinned
+route; filing a receipt pair and its control event must be atomic, or the
+check must tolerate the gap, so the entropy lane never exports a refusal
+into the shared gate; and the document check's gate step is reported against
+the drift signal the meter already flags. WO-152's regression must walk the
+`evidence` enum too, since `missionEvidenceIds` is untouched by the named
+change, and its fixture must carry a story contract so the third reference
+source is proven kept; another CLI-refused schema reopens the generic check
+the non-goals decline. The order texts stand as judged; none of the seven
+issues is a hold, and a criterion edit after the receipt would re-key the
+subject for wording the catalog rows now carry.
+
+After the receipt the operator directed, in one line captured verbatim in
+ignored intake (`docs/intake/notes/2026-09-22-entropy-reducer-planning-operator-answer.md`,
+SHA-256 `8eb879ee92bf9ff753c02f65c0ad6db352b57084d86c79e9ae94df9c7e51727b`),
+that the pass push the branch and open the pull request at the end.
+`npm run test:docs` after the receipt: recorded in the handoff.
