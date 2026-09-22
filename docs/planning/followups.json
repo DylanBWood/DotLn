@@ -14018,6 +14018,73 @@
           "at": "2026-09-22T17:11:40.944Z"
         }
       ]
+    },
+    {
+      "id": "FUP-a829a8799711b2ea",
+      "key": "decision:docs/evidence/WO-064/decisions.md#wo-064-d006",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "21a5c450e31284244d95dd97eae1bb09b3bd6c7ebdc2d0a302bc6e40e0bd8278",
+          "ref": "docs/evidence/WO-064/decisions.md#wo-064-d006--board-up-a-grant-bearing-artifact-identity-is-refused-by-the-skeleton",
+          "title": "WO-064-D006: Admit the optional authorityGrantRegistry in the skeleton's isCompilationEnvironment (validated by normalizeAuthorityGrants), add a grant-bearing equip and SourceChangeHost fixture, docum",
+          "summary": "{ \"id\": \"WO-064-D006\", \"date\": \"2026-09-22\", \"dispatch\": \"resume: next\", \"decision\": \"Record and do not repair here. compileLoadout keeps the whole host environment, including an optional authorityGrantRegistry, in ArtifactIdentityV1.compilationEnvironment, and the reactor recompiles from that field on equip. The skeleton's isCompilationEnvironment admits exactly five keys, so every identity compiled with a registry is refused: SourceChangeHost throws 'compiled artifact identity is invalid' and LiveReactorDriver.equip records ArtifactCompilationRefused. WO-064 avoids the path (D002). The repair is to admit the optional registry in isCompilationEnvironment, validated with normalizeAuthorityGr",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-add763228bfb173c",
+      "key": "decision:docs/evidence/WO-064/decisions.md#wo-064-d008",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "db2f365b59ce9dc43cd093fd9f2b41d9e59a6da6e02896fe67b3ca095313b663",
+          "ref": "docs/evidence/WO-064/decisions.md#wo-064-d008--verification-finding-bind-the-acceptance-matrix-to-the-published-workorder",
+          "title": "WO-064-D008: On resume: fix, require a replayed acceptance matrix to correspond to the current compiled WorkOrder's acceptance criteria before using its statuses; refuse before the first remote call o",
+          "summary": "{ \"id\": \"WO-064-D008\", \"date\": \"2026-09-22\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-001 fails the acceptance-body claim. Target publication selects a replayed acceptance matrix only by subjectRevision equal to the observed commit, then copies its row descriptions and statuses into the pull-request generator. The generator accepts a matrix with the same revision but criteria unrelated to the compiled WorkOrder, and can label that unrelated criterion verified in the target pull request. Do not change implementation during independent verification; return the finding for repair.\", \"evidence\": [ \"scripts/lib/target-publish.mjs acceptanceMatrix: filters only by subjectRevision and forward",
+          "missing": false
+        },
+        {
+          "hash": "cb4ba86c5efa0579583eb885462ef489ab680ae8c21d90d5eb28d4d4fa62ee14",
+          "ref": "docs/evidence/WO-064/decisions.md#wo-064-d008--verification-finding-bind-the-acceptance-matrix-to-the-published-workorder",
+          "title": "WO-064-D008: On resume: fix, require a replayed acceptance matrix to correspond to the current compiled WorkOrder's acceptance criteria before using its statuses; refuse before the first remote call o",
+          "summary": "{ \"id\": \"WO-064-D008\", \"date\": \"2026-09-22\", \"dispatch\": \"resume: verify\", \"decision\": \"VER-001 fails the acceptance-body claim. Target publication selects a replayed acceptance matrix only by subjectRevision equal to the observed commit, then copies its row descriptions and statuses into the pull-request generator. The generator accepts a matrix with the same revision but criteria unrelated to the compiled WorkOrder, and can label that unrelated criterion verified in the target pull request. Do not change implementation during independent verification; return the finding for repair.\", \"evidence\": [ \"scripts/lib/target-publish.mjs acceptanceMatrix: filters only by subjectRevision and forward",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-df9179fc4e1447a6",
+      "key": "decision:docs/evidence/WO-064/decisions.md#wo-064-d010",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "6eef1c956f2ccc1bb91a12a4f29233316efb48a08d518000ce7c6477cc71287c",
+          "ref": "docs/evidence/WO-064/decisions.md#wo-064-d010--board-up-the-publish-push-runs-the-target-repositorys-git-hooks-with-the-operators-credentials",
+          "title": "WO-064-D010: Establish by probe whether a sandboxed target writer (Claude and Codex writer profiles) can create or change files in the target's common Git directory outside its worktree, specifically ",
+          "summary": "{ \"id\": \"WO-064-D010\", \"date\": \"2026-09-22\", \"dispatch\": \"resume: final review\", \"decision\": \"Record and do not repair in review. publishTargetOrder pushes with `git -C <repo> push --no-follow-tags origin <commit>:refs/heads/<branch>` from the target's Git root with no hook override, so Git runs any `pre-push` (and `reference-transaction`) hook in the target's common Git directory, in the operator's process, with the operator's Git and gh credentials, after every refusal has passed. No host step between the writer's exit and this push executes a target hook, so publish is the first host-privileged step to do so. Whether a target writer can create such a hook is not established: the writer ru",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-52d01dfc6cdad453",
+      "key": "decision:docs/evidence/WO-064/decisions.md#wo-064-d011",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "30b5490bfc400930b27f09942722a3e25e47622b48240b9883eb4abf430dd4bf",
+          "ref": "docs/evidence/WO-064/decisions.md#wo-064-d011--the-deferred-adjacent-item-still-targets-prose-instead-of-its-public-follow-up",
+          "title": "WO-064-D011: The advisory has now recurred in a second order (WO-152, WO-064) because the executor disposes a deferred adjacent item before plan followups --sync has minted the decision's public ident",
+          "summary": "{ \"id\": \"WO-064-D011\", \"date\": \"2026-09-22\", \"dispatch\": \"resume: final review; the adjacent-queue advisory carried on ImplementationReady and RepairCompleted\", \"decision\": \"Leave WO-064 adjacent-0001 disposed as deferred with its prose target and carry the advisory forward rather than retarget it at final review. Its public follow-up already exists as FUP-a829a8799711b2ea, keyed to WO-064-D006; only the link from the queue item is missing, and the queue refuses mutation outside the executor and fixer phases.\", \"evidence\": [ \"docs/control/orders/WO-064.jsonl: ImplementationReady and RepairCompleted each carry the advisory 'Planning follow-ups: adjacent-0001: deferred work needs a current pub",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

@@ -8,7 +8,8 @@ import { spawnSync } from "node:child_process";
 import { assertGitHubBodyProfile, withTemporaryBody } from "./github-body.mjs";
 import { parseReleaseNotes, releaseNotesPathFor } from "./release-notes.mjs";
 import {
-  environmentWithoutGhRepo,
+  ensureGh,
+  executeGh,
   resolveGitHubPushTarget,
 } from "./github-repository.mjs";
 import {
@@ -35,31 +36,6 @@ import {
 } from "./lib/release-records.mjs";
 
 const toolRoot = findLaunchpad();
-const executeGh = (cwd, args) =>
-  spawnSync("gh", args, {
-    cwd,
-    encoding: "utf8",
-    env: environmentWithoutGhRepo(),
-  });
-const ensureGh = (path) => {
-  const repository = resolveGitHubPushTarget(path);
-  const available = executeGh(path, ["--version"]);
-  if (available.status !== 0)
-    throw new Error(
-      "gh is required before any remote mutation; install and authenticate GitHub CLI, then retry publish",
-    );
-  const authenticated = executeGh(path, [
-    "auth",
-    "status",
-    "--hostname",
-    repository.host,
-  ]);
-  if (authenticated.status !== 0)
-    throw new Error(
-      "gh authentication is required before any remote mutation; authenticate GitHub CLI, then retry publish",
-    );
-  return repository;
-};
 const readTrackedTextAtHead = (root, path, displayPath) => {
   const tree = spawnSync(
     "git",
@@ -317,6 +293,23 @@ const main = async () => {
     process.stdout.write(
       `Created ${target} on ${branch}.\n${activated.stdout}Phase: active.\nNext (run manually):\n  cd ${shellQuote(target)}\n  codex\n  enter: resume: next\n`,
     );
+  } else if (action === "publish" && actionArgs[0] === "--target") {
+    // A target order publishes its source-change episode in the target
+    // repository under an operator grant (WO-064); no launchpad branch moves.
+    if (actionArgs.length !== 2 || !actionArgs[1])
+      throw new Error(
+        "usage: worktree publish WO-NNN --target <target-publish-request.json>",
+      );
+    const { publishTargetOrder, readTargetPublishRequest } =
+      await import("./lib/target-publish.mjs");
+    const { readAuthorityGrantRegistry } =
+      await import("./lib/authority-grants.mjs");
+    publishTargetOrder({
+      launchpad: toolRoot,
+      workOrderId,
+      request: readTargetPublishRequest(actionArgs[1]),
+      registry: readAuthorityGrantRegistry(toolRoot),
+    });
   } else if (action === "publish") {
     if (
       actionArgs.length !== 4 ||
@@ -580,7 +573,7 @@ const main = async () => {
     );
   } else {
     throw new Error(
-      "usage: worktree start WO-NNN <work-order-path> | worktree integrate WO-NNN [--intake-backup <archive.zip>] [--continue] | worktree publish WO-NNN --title <title> --body-file <path> | worktree finish WO-NNN [--dry-run] | worktree settle WO-NNN [--dry-run]",
+      "usage: worktree start WO-NNN <work-order-path> | worktree integrate WO-NNN [--intake-backup <archive.zip>] [--continue] | worktree publish WO-NNN --title <title> --body-file <path> | worktree publish WO-NNN --target <request.json> | worktree finish WO-NNN [--dry-run] | worktree settle WO-NNN [--dry-run]",
     );
   }
 };

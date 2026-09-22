@@ -1,4 +1,4 @@
-# WO-064 — Target publish: push a source-change branch and open its pull request on the target repository under an explicit remote grant with operator provenance, with a title and body generated from the contract, diff and evidence, never from narrative (version assigned at activation)
+# WO-064 — Target publish: push a source-change branch and open its pull request on the target repository under an explicit remote grant with operator provenance, with a title and body generated from the contract, diff and evidence, never from narrative (v0.43.0)
 
 **Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
 

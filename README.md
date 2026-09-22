@@ -93,7 +93,7 @@ intent → task-scoped build → bounded WorkOrder → disposable executor
 -->
 <!-- DOTLN-RELEASE-BEGIN -->
 
-This source prepares DotLn `v0.42.0`.
+This source prepares DotLn `v0.43.0`.
 
 **The core.** A local-first compiler turns a loadout graph into a bounded
 program and authority envelope that the kernel checks on every decision.
@@ -126,6 +126,13 @@ violated clause of a planted change whose own test passed; a fresh worker
 repaired only the blamed module and a second verifier passed the original
 contract. The Claude run's event log is published and replays negative against
 injected implementer events.
+`worktree publish WO-NNN --target` then opens a pull request for such a change
+on its target repository. It pushes only the observed commit, only under an
+operator-provenance grant for `repo.push` and `pr.open`, and only after the
+[outward-artifact lint](docs/evidence/WO-063/implementation.md) passes the
+branch, commits, title and a body generated from the contract, acceptance
+status, host test outcomes and diff; missing local-term coverage refuses. The
+[publish decisions](docs/evidence/WO-064/decisions.md) record its limits.
 
 Derived work shares the same `WO-NNN` identity and lifecycle as authored work.
 `npm run dotln -- intent "Describe the work"` files a draft for review; compiled
@@ -138,10 +145,6 @@ bounded economy experiment per order, with measured cost and effect, unless the
 order opts out: the [three-order trial](docs/evidence/WO-145/decisions.md) found
 an adopted method with no regression, and [WO-150](docs/evidence/WO-150/decisions.md)
 made the support default equipment.
-The [outward-artifact lint](docs/evidence/WO-063/implementation.md) checks
-conventional branch and subject shapes plus public and local vocabulary;
-missing local coverage is reported as unavailable, and publication integration
-remains the next slice.
 Independent implementation, verification
 and final review record their own evidence, and publication consumes the
 reviewer's successful code-identity gate row.

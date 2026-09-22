@@ -205,6 +205,154 @@ export const githubBodyProfileFailures = (markdown) => {
   return failures;
 };
 
+// Contract text is data: one physical line, with Markdown, mentions and issue
+// references neutralized so it renders literally.
+const literal = (value) =>
+  String(value)
+    .replace(/\s+/gu, " ")
+    .trim()
+    .replace(/[&<>\\*#\[\]`|_~@]/gu, (c) => `&#${c.codePointAt(0)};`);
+const commitId = /^(?:[0-9a-f]{40}|[0-9a-f]{64})$/u;
+const contractLines = (value, label) => {
+  if (
+    !Array.isArray(value) ||
+    value.some((item) => typeof item !== "string" || !item.trim())
+  )
+    throw new Error(`target pull request: ${label} must be nonempty strings`);
+  return value;
+};
+const outcome = (test, label) => {
+  if (Number.isSafeInteger(test?.exitCode)) return `exit ${test.exitCode}`;
+  if (typeof test?.signal === "string" && test.signal)
+    return `signal ${literal(test.signal)}`;
+  throw new Error(`target pull request: ${label} test outcome is missing`);
+};
+const matrixStatuses = new Set(["verified", "failed", "stale", "incomplete"]);
+
+/** A matrix speaks for a contract only when its criterion descriptions are
+ * exactly the contract's acceptance criteria, the compiler's snapshot coverage
+ * rule; a matching Git revision identifies bytes, not the criteria a verifier
+ * was given (WO-064-D009). Returns each criterion's status in contract order,
+ * or null when the two sets differ. */
+export const acceptanceStatuses = (criteria, rows) => {
+  if (rows.length !== criteria.length) return null;
+  const unused = [...rows];
+  const statuses = [];
+  for (const criterion of criteria) {
+    const index = unused.findIndex((row) => row.description === criterion);
+    if (index < 0) return null;
+    statuses.push(unused.splice(index, 1)[0].status);
+  }
+  return statuses;
+};
+
+/** Pure over artifacts: the host commit message, the WorkOrder contract, the
+ * host's test observations, the Git diff summary and, when supplied, the
+ * acceptance matrix for the published head and this contract's criteria.
+ * There is no free-text input. */
+export const generateTargetPullRequest = ({
+  commitMessage,
+  workOrder,
+  tests,
+  diff,
+  matrix = null,
+}) => {
+  const title =
+    typeof commitMessage === "string"
+      ? commitMessage.split("\n")[0].trim()
+      : "";
+  if (!title) throw new Error("target pull request: commit subject is empty");
+  if (typeof workOrder?.objective !== "string" || !workOrder.objective.trim())
+    throw new Error("target pull request: objective is empty");
+  const criteria = contractLines(
+    workOrder.acceptanceCriteria,
+    "acceptance criteria",
+  );
+  const nonGoals = contractLines(workOrder.nonGoals, "non-goals");
+  if (
+    !commitId.test(diff?.baseCommit ?? "") ||
+    !commitId.test(diff?.headCommit ?? "") ||
+    !Array.isArray(diff.files) ||
+    !diff.files.length ||
+    diff.files.some(
+      (file) =>
+        typeof file?.path !== "string" ||
+        !file.path ||
+        [file.added, file.deleted].some(
+          (count) => count !== null && !Number.isSafeInteger(count),
+        ),
+    )
+  )
+    throw new Error("target pull request: invalid diff summary");
+  let rows;
+  let verification;
+  if (matrix === null) {
+    rows = criteria.map((criterion) => [
+      criterion,
+      "not independently verified",
+    ]);
+    verification =
+      "Independent verification: no acceptance matrix was supplied for this head.";
+  } else {
+    if (
+      matrix.subjectRevision !== diff.headCommit ||
+      !Array.isArray(matrix.rows) ||
+      !matrix.rows.length ||
+      matrix.rows.some(
+        (row) =>
+          typeof row?.description !== "string" ||
+          !row.description.trim() ||
+          !matrixStatuses.has(row.status),
+      )
+    )
+      throw new Error(
+        "target pull request: the acceptance matrix must describe the published head",
+      );
+    const statuses = acceptanceStatuses(criteria, matrix.rows);
+    if (statuses === null)
+      throw new Error(
+        "target pull request: the acceptance matrix criteria must be the WorkOrder's acceptance criteria",
+      );
+    rows = criteria.map((criterion, index) => [criterion, statuses[index]]);
+    const count = (status) =>
+      matrix.rows.filter((row) => row.status === status).length;
+    verification = `Independent verification: acceptance matrix for ${diff.headCommit}: ${[...matrixStatuses].map((status) => `${count(status)} ${status}`).join(", ")}.`;
+  }
+  const count = (value) => (value === null ? "binary" : String(value));
+  const body = [
+    "## Contract",
+    "",
+    `**Objective:** ${literal(workOrder.objective)}`,
+    "",
+    `**Non-goals:** ${nonGoals.length ? nonGoals.map(literal).join("; ") : "none declared"}`,
+    "",
+    "## Acceptance",
+    "",
+    "| Criterion | Status |",
+    "| --- | --- |",
+    ...rows.map(
+      ([criterion, status]) => `| ${literal(criterion)} | ${status} |`,
+    ),
+    "",
+    verification,
+    "",
+    `Focused test observed by the host: ${outcome(tests?.before, "before")} before the change, ${outcome(tests?.after, "after")} after it.`,
+    "",
+    "## Change",
+    "",
+    "| Path | Added | Removed |",
+    "| --- | ---: | ---: |",
+    ...diff.files.map(
+      (file) =>
+        `| ${literal(file.path)} | ${count(file.added)} | ${count(file.deleted)} |`,
+    ),
+    "",
+    `${diff.files.length} ${diff.files.length === 1 ? "file" : "files"} changed from base ${diff.baseCommit} to head ${diff.headCommit}.`,
+    "",
+  ].join("\n");
+  return { title, body };
+};
+
 export const assertGitHubBodyProfile = (markdown, displayPath) => {
   const failures = githubBodyProfileFailures(markdown);
   if (failures.length === 0) return;

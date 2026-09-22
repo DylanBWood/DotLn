@@ -158,7 +158,14 @@ function fixture(t, { reviewed = false, third = "active" } = {}) {
     ["maintenance.auto", "false"],
   ])
     git(main, "config", key, value);
-  for (const path of ["scripts/worktree.mjs", "scripts/resume.mjs"])
+  // The two entry points and the root-level peers they import statically.
+  for (const path of [
+    "scripts/worktree.mjs",
+    "scripts/resume.mjs",
+    "scripts/github-body.mjs",
+    "scripts/github-repository.mjs",
+    "scripts/release-notes.mjs",
+  ])
     cpSync(join(source, path), join(main, path));
   // The overlay carries the whole shared library so a working-tree module and
   // its peers never split across the clone's committed copies.
