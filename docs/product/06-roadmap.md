@@ -20,6 +20,20 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-151 activation completion (2026-09-22):** assigned application `v0.42.0`
+under the order's minor classification, the next minor above the observed
+local `v0.41.1` tag this final review integrated. The Entropy Reducer's
+dispatch becomes a command family (`npm run entropy`) with an append-only
+control log, numbered immutable receipts and operator dispositions that land
+accepted findings in the follow-up register. Skeleton `0.36.0` adds the
+`entropy-review` and `entropy-refutation` request kinds, their closed result
+contracts and the fixture transport; the console's exact dependency pin follows it. The compiled
+loadout, its residue, actor pin, authority envelope and Program are unchanged
+and its semantic hash is unmoved, so no compiler, kernel or schema change
+follows; `Program.All` remains deferred. Compatibility impact: additive only —
+every existing transport request shape, argv and result contract keeps its
+bytes. Publication remains a separate dispatch.
+
 **WO-120 activation completion (2026-09-22):** assigned application `v0.41.0`
 under the order's minor classification, the next minor above the observed
 local `v0.40.3` tag that this final review integrated.

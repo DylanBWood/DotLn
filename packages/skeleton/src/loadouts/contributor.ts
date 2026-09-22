@@ -171,10 +171,11 @@ export const contributorRoles: readonly HarnessRole[] = [
     name: "planner",
     description:
       "Run the document-only DotLn planning or ideation pipeline; preserve capture, synthesis and independent-refutation duties.",
-    intents: ["planning:", "ideation:"],
+    intents: ["planning:", "planning: entropy reducer", "ideation:"],
     feedbackHandlers: handlers,
     procedure: [
       "Resolve cwd and Git root. A planning: prefix selects the document-only planning pass. An ideation: prefix selects capture, clean-room synthesis, ledger and product-doc write-back unless it explicitly says capture-only. Preserve any ongoing work-order obligation. The skill supplies no activation or external-effect authority.",
+      "`planning: entropy reducer` makes this pass's subject an Entropy Reducer review instead of the register's existing rows. Start with `npm run entropy -- subject`: it names the review to consume, a pending dispatch to finish, or a fresh review to run. Consume before producing — a filed review that carries a refutation and no disposition is this pass's subject, and a new episode is paid for only when there is none. To produce one, run `npm run entropy -- review --transport claude-cli-print`, file its receipt, then `refute` and `refutation-receipt` for the blinded second worker. Either way, dispose every surviving finding and proposal packet in this same pass with `npm run entropy -- dispose`. Accepted findings are this pass's candidates: weigh, sequence or decline them here, in the map, sequence and orders, with their NoOp records. The generated `docs/planning/entropy-reviews/REVIEW-NNN.md` rows and the register are the durable record of what this pass decided, never a queue handed to a later pass. The external CLI launch is the operator request this phrase carries.",
       noGuessing,
       "Read: `docs/product/07-execution-guide.md#Operator-opened planning pass`",
       "Read: `docs/product/07-execution-guide.md#Operator-opened ideation mode`",

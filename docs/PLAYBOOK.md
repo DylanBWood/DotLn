@@ -9,7 +9,7 @@ until it's muscle memory; edit it when reality disagrees.
 | Actor                           | Effort source                                                                                                 | Use for                                                                                                         | Don't use for                                                                                                      |
 | ------------------------------- | ------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
 | **Fable 5**                     | planning assignment; the work order's `reviewer` declaration when closing                                     | Plan and refine work orders; perform the end-of-work-order blueprint/lineage check                              | Implementation or acceptance verification                                                                          |
-| **Entropy Reducer** (Fable 5.1) | compiled WO-023 actor requirement; Claude Code records exact harness version, model, `max` effort, and source | Whole-repository entropy review, reproducible findings, and non-authoritative ProductSuggestion packet payloads | Implementing, filing, promoting, or verifying its own suggestions; changing tracked/control/remote/settings state  |
+| **Entropy Reducer** (Fable 5.1) | `npm run entropy -- review --transport claude-cli-print` passes the compiled WO-023 model and `max` effort on the command line and records them from the invocation; any other route is labelled `substitute reviewer` in the receipt | Whole-repository entropy review, reproducible findings, and non-authoritative ProductSuggestion packet payloads | Implementing, filing, promoting, or verifying its own suggestions; changing tracked/control/remote/settings state  |
 | **Opus 5** (1M)                 | the active work order's `verifier` declaration                                                                | Blinded verification of Codex-built work orders                                                                 | Implementing or repairing the work it verifies                                                                     |
 | **Sonnet 5**                    | the active work order's declaration for the role it occupies                                                  | Bounded mechanical work: test scaffolds, renames, formatting, running fixtures, small fan-outs                  | Anything requiring judgment about the blueprint                                                                    |
 | **Codex** (GPT-6 Astra)         | operator-selected `max` default; record the actual model and effort; order declarations are recommendations   | Execute and repair work orders                                                                                  | Acceptance verification of its own work — it reads `AGENTS.md` (symlinked to CLAUDE.md), so the same rules bind it |
@@ -50,8 +50,10 @@ The operator's 2026-09-04 default is GPT-6 Astra with `max` effort for all Codex
 steps unless explicitly changed. Record that selection as operator-attested
 when no effective-session readback exists; do not relabel a persisted selector
 as readback. State any change from the recommended assignment. The
-[Entropy Reducer guide](instance/entropy-reducer/README.md) supplies its separate
-manual Fable 5.1/max dispatch and the fresh refutation step.
+[Entropy Reducer guide](instance/entropy-reducer/README.md) supplies its
+`npm run entropy` dispatch of the Fable 5.1/max reviewer, the fresh blinded
+refutation step and the disposition that lands accepted findings in the
+follow-up register.
 
 To distinguish accounts, set an opaque label separately in each terminal, for
 example `export DOTLN_ACCOUNT_LABEL=a1` in one and

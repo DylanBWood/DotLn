@@ -20,6 +20,24 @@ import {
   type PlanRefutationResult,
 } from "./plan-refutation-protocol.js";
 import {
+  validateReviewerOutput,
+  type ReviewerOutput,
+} from "./loadouts/entropy-reducer.js";
+import {
+  entropyRefutationPrompt,
+  entropyRefutationResultSchema,
+  entropyReviewPrompt,
+  entropyReviewResultSchema,
+  isEntropyRefutationRequest,
+  isEntropyReviewRequest,
+  validateEntropyRefutationRequest,
+  validateEntropyRefutationResult,
+  validateEntropyReviewRequest,
+  type EntropyRefutationRequest,
+  type EntropyRefutationResult,
+  type EntropyReviewRequest,
+} from "./entropy-review-protocol.js";
+import {
   isMissionCheckRequest,
   missionCheckPrompt,
   missionCheckResultSchema,
@@ -91,23 +109,31 @@ export type TransportRequest =
   | WriterRequest
   | EvidenceWorkerRequest
   | PlanRefutationRequest
-  | MissionCheckRequest;
+  | MissionCheckRequest
+  | EntropyReviewRequest
+  | EntropyRefutationRequest;
 export type TransportResult =
   | WorkerResult
   | WriterResult
   | EvidenceWorkerResult
   | PlanRefutationResult
-  | MissionCheckObserved;
+  | MissionCheckObserved
+  | ReviewerOutput
+  | EntropyRefutationResult;
 export type TransportResultFor<R extends TransportRequest> =
-  R extends MissionCheckRequest
-    ? MissionCheckObserved
-    : R extends PlanRefutationRequest
-      ? PlanRefutationResult
-      : R extends EvidenceWorkerRequest
-        ? EvidenceWorkerResult
-        : R extends WriterRequest
-          ? WriterResult
-          : WorkerResult;
+  R extends EntropyReviewRequest
+    ? ReviewerOutput
+    : R extends EntropyRefutationRequest
+      ? EntropyRefutationResult
+      : R extends MissionCheckRequest
+        ? MissionCheckObserved
+        : R extends PlanRefutationRequest
+          ? PlanRefutationResult
+          : R extends EvidenceWorkerRequest
+            ? EvidenceWorkerResult
+            : R extends WriterRequest
+              ? WriterResult
+              : WorkerResult;
 
 export const isPlanRequest = (
   request: TransportRequest,
@@ -455,6 +481,10 @@ export function evidenceResultSchema(request: EvidenceWorkerRequest): object {
 }
 
 export function validateTransportRequest(request: TransportRequest): void {
+  if (isEntropyReviewRequest(request))
+    return validateEntropyReviewRequest(request);
+  if (isEntropyRefutationRequest(request))
+    return validateEntropyRefutationRequest(request);
   if (isWriterRequest(request)) return validateWriterRequest(request);
   if (isMissionCheckRequest(request))
     return validateMissionCheckRequest(request);
@@ -491,6 +521,9 @@ export function validateTransportRequest(request: TransportRequest): void {
   }
 }
 export function transportResultSchema(request: TransportRequest): object {
+  if (isEntropyReviewRequest(request)) return entropyReviewResultSchema();
+  if (isEntropyRefutationRequest(request))
+    return entropyRefutationResultSchema(request);
   if (isWriterRequest(request)) return writerResultSchema(request);
   if (isMissionCheckRequest(request))
     return missionCheckResultSchema(request.subject);
@@ -504,18 +537,28 @@ export function parseTransportResult<R extends TransportRequest>(
   request: R,
 ): TransportResultFor<R> {
   return (
-    isMissionCheckRequest(request)
-      ? validateMissionCheckResult(value, request.subject)
-      : isWriterRequest(request)
-        ? parseStoredWriterResult(value, request)
-        : isPlanRequest(request)
-          ? validatePlanResult(value, request.subject)
-          : isEvidenceRequest(request)
-            ? parseEvidenceResult(value, request)
-            : parseWorkerResult(value, request)
+    isEntropyReviewRequest(request)
+      ? validateReviewerOutput(value, {
+          workOrderId: request.workOrder.workOrderId,
+          episodeId: request.episodeId,
+        })
+      : isEntropyRefutationRequest(request)
+        ? validateEntropyRefutationResult(value, request)
+        : isMissionCheckRequest(request)
+          ? validateMissionCheckResult(value, request.subject)
+          : isWriterRequest(request)
+            ? parseStoredWriterResult(value, request)
+            : isPlanRequest(request)
+              ? validatePlanResult(value, request.subject)
+              : isEvidenceRequest(request)
+                ? parseEvidenceResult(value, request)
+                : parseWorkerResult(value, request)
   ) as TransportResultFor<R>;
 }
 export function transportPrompt(request: TransportRequest): string {
+  if (isEntropyReviewRequest(request)) return entropyReviewPrompt(request);
+  if (isEntropyRefutationRequest(request))
+    return entropyRefutationPrompt(request);
   if (isWriterRequest(request)) return writerPrompt(request);
   if (isMissionCheckRequest(request)) return missionCheckPrompt(request);
   if (isPlanRequest(request)) {

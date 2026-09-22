@@ -831,8 +831,31 @@ things an operator might reach for: the Entropy Reducer is a compiled review
 loadout dispatched separately against a frozen subject, which returns findings
 and non-authoritative suggestions, goes through blinded refutation, and stops at
 operator disposition without planning or fixing; the Repo Gardener is the
-walking skeleton's founding identity, not a session. A planning pass may
-consume an Entropy Reducer's surviving findings as input.
+walking skeleton's founding identity, not a session.
+
+**`planning: entropy reducer`.** This exact phrase makes the pass's subject an
+Entropy Reducer review rather than the register's existing rows. The pass opens
+with `npm run entropy -- subject`, which names one of three things: a review to
+consume, a pending dispatch to finish, or a fresh review to run. **It consumes
+before it produces.** A review already filed with a bound refutation and no
+disposition is this pass's subject; a new episode — about 993 s and USD 9.50 at
+the pinned actor by the REVIEW-002 observation — is paid for only when no such
+review exists. To produce one the pass runs
+`npm run entropy -- review --transport claude-cli-print` against the committed
+subject, files its receipt, and runs `refute` and `refutation-receipt` for the
+blinded second worker. Either way it then disposes every surviving finding and
+proposal packet **in this same pass**. Accepted findings are this pass's
+candidates: they are weighed, sequenced or declined here — in the map, the
+sequence and the orders, each decline carrying its `NoOpIntent` record — not
+queued for a later pass to read. The generated
+`docs/planning/entropy-reviews/REVIEW-NNN.md` rows and the follow-up register
+are the durable record of what this pass decided; an item left undecided there
+is an ordinary unresolved register row, not a second planning pass waiting to
+happen. The phrase is itself the operator request that authorizes the external
+CLI launch of the pinned reviewer and its refuter, and it adds no scheduler:
+nothing runs a review unless the operator opens a pass this way. A pass opened
+any other way may still consume an earlier review's surviving findings as one
+input among others.
 
 Preconditions and inputs:
 

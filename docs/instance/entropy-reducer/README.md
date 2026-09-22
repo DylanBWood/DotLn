@@ -1,41 +1,153 @@
 # Using the Entropy Reducer
 
-The Entropy Reducer, first shipped in `v0.5.0`, is a compiled review loadout used through a
-manual model session. Its shipped actor is **Claude Fable 5.1 at `max` in
-Claude Code**. There is no `npm run entropy-reducer` or `resume: entropy`
-command. `npm run skeleton` runs the deterministic Repo Gardener demonstration.
-The operator's GPT-6 Astra/max default for Codex steps does not silently replace
-this loadout's different actor requirement.
+The Entropy Reducer, first shipped in `v0.5.0`, is a compiled review loadout.
+Its shipped actor is **Claude Fable 5.1 at `max` in Claude Code**. Since
+`v0.42.0` (WO-151) one command family dispatches it:
 
-Open a separate session with the required actor against the repository, and
-dispatch a bounded review, for example:
-
-```text
-Run one manual Entropy Reducer review using
-docs/instance/entropy-reducer/README.md and RESIDUE.md.
-Prepare and identify a frozen subject from the current tracked repository,
-including the active work order and its cited product/decision surfaces.
-Use the compiled Claude Fable 5.1/max actor requirement and record the actual
-harness version, model, effort, and evidence source.
-Keep the subject and control plane read-only. Confine probes to an explicitly
-named scratch copy and respect the compiled operation and resource limits.
-Return validated findings and non-authoritative suggestion payloads, then stop
-for operator disposition. Do not fix, file proposals, activate work, or advance
-the resume lifecycle. For analogies, extract the intended relationship first;
-evaluate a literal detail only if a claim depends on it, as the compiled
-Shape-First v2 support requires.
+```sh
+npm run entropy -- subject | review | receipt | refute | refutation-receipt | dispose | check
 ```
 
-Name any specific concern in the dispatch, such as accumulated startup context,
-fold cost, workflow handoffs, or change fan-out. A concern is a hypothesis to
-inspect, not a required finding. A whole-repository census inventories tracked
-paths; it does not require putting every file, event, or old report into model
-context. A committed subject uses its exact commit. A subject with uncommitted
-tracked changes also needs a frozen snapshot and an inventory/hash of those
-bytes; its base commit alone does not identify what was reviewed. Raw intake,
-settings, credentials, and unrelated untracked files are not review inputs.
+`planning: entropy reducer` opens a planning pass whose subject is a review:
+the pass consumes an undisposed one or runs a fresh episode, then decides its
+surviving findings **in that same pass**. There is no `resume:` phrase, no
+role and no role skill, and no scheduler — nothing runs a review unless the
+operator opens a pass or a session runs the command, and every one of them
+stops at operator disposition. `npm run skeleton` runs the deterministic Repo Gardener
+demonstration, which is a different thing. The operator's GPT-6 Astra/`max`
+default for Codex steps does not silently replace this loadout's different
+actor requirement.
 
-The dispatching host and reviewer perform these existing manual steps:
+## The loop
+
+```sh
+# 0. Ask what this pass should do. It consumes before it produces: a filed
+#    review that carries a refutation and no disposition is a subject, not
+#    a reason to pay for another episode.
+npm run entropy -- subject
+
+# 1. Freeze HEAD, compile the reviewer for that subject, launch the pinned
+#    actor inside the frozen copy.
+npm run entropy -- review --transport claude-cli-print
+
+# 2. Bind the return and file REVIEW-NNN.
+npm run entropy -- receipt <result.json> --statement <statement.txt>
+
+# 3. Hand the blinded subjects to a second, fresh worker and bind its attempts.
+npm run entropy -- refute REVIEW-NNN --transport claude-cli-print
+npm run entropy -- refutation-receipt <attempts.json> --statement <statement.txt>
+
+# 4. Decide, per surviving finding and per proposal packet.
+npm run entropy -- dispose REVIEW-NNN <id> accept|defer|dismiss '<reason>'
+
+# 5. Prove the chain and the immutability of every filed pair.
+npm run entropy -- check
+```
+
+`npm run entropy -- subject` answers one of three things: `consume` with the
+review to work from, `finish-pending-dispatch` with the episode to file or
+discard, or `review` when no filed review is both refuted and undisposed and a
+fresh episode therefore earns its cost. `planning: entropy reducer` opens with
+it, so a pass never pays for a review whose predecessor nobody decided.
+
+`--concern '<hypothesis>'` names a specific worry for the review — accumulated
+startup context, fold cost, workflow handoffs, change fan-out. A concern is a
+hypothesis to inspect, not a required finding. `entropy discard review` or
+`entropy discard refutation` abandons a pending dispatch and removes its frozen
+copy; `entropy show <receipt-id>` prints a filed receipt.
+
+## The subject
+
+`review` copies `HEAD` — a copy, never a link or a shared worktree, under the
+granted system-temp lane — and records the tracked-status hash and a scratch
+inventory before and after the episode. A **dirty tree is refused**: the
+working tree's bytes are not a subject anyone can name later. Commit them, or
+name the committed subject explicitly with `npm run entropy -- review <commit>`,
+which is admitted while the tree moves and records `workingTreeDirtyAtDispatch`
+in the receipt so the receipt cannot be read as a review of the working tree.
+A second `review`, or a second `refute`, while a dispatch of that kind is
+pending is refused whatever subject it names: the command keeps one current
+pointer per kind, and replacing it would leave the first episode and its frozen
+copy unreachable by `receipt` or `discard`. The refusal names the open episode
+and both recovery commands, and it precedes the copy, so it costs no clone.
+
+`receipt` binds the subject before it files. On the default `HEAD` route the
+tree was clean at dispatch, so any tracked change during the episode refuses
+the result. On the explicit-commit route the subject is the named commit,
+which the working tree cannot move: the binding is that the commit still
+resolves to the tree the frozen copy was reviewed from, and the working tree's
+own drift is recorded as `trackedStatusByteIdentical: false` rather than
+refused. A rejected return is retained with its statement under
+`docs/control/local/entropy/rejected/`. Raw intake, settings, credentials and
+unrelated untracked files are never review inputs, and the reviewer is told not
+to read `docs/intake/**`.
+
+## Who reviewed, as a fact
+
+The receipt's identity line reads `entropy-reducer@1` **only** when the pinned
+route passed the compiled model and effort on the command line and the harness
+matches. Everything else — the background route, another transport, another
+model or effort — reads `substitute reviewer` with the recorded values and the
+reason. Effective model and effort are recorded as `unknown`, because no
+harness reports them; a launch selection is not a readback. `--source
+operator-attested` records an effort the operator supplies on the background
+route, and that is still a substitute: it is an attestation, not an invocation
+readback. No default silently selects another model.
+
+Without `--transport`, `review` and `refute` print the canonical prompt and the
+closed result schema for a fresh worker the session spawns, retaining the
+pending dispatch; the parent stays the sole repository writer. The `fake`
+transport drives the executable fixtures only and cannot produce a live
+receipt.
+
+## What the reviewer may run
+
+Unlike this repository's other inspection profiles, the review profile admits
+commands, because a reviewer that cannot run anything labels findings `by
+inspection` and measures almost nothing (`runs/REVIEW-001.json` recorded seven
+denied shell calls and one measured finding of seven). Claude confines the file
+tools to the frozen copy with `--restricted`, pre-approves only the named
+tools, and denies anything else without a prompt; Codex adds a real
+workspace-write sandbox rooted at the copy. **Claude does not path-confine a
+shell command**, so confinement there is instructed and then checked: the
+review and the refutation receipt alike record the tracked-status hash on
+either side of their episode, the frozen copy's inventory before and after with
+the delta, and the observed count of denied tool calls, and on the default
+`HEAD` route `receipt` refuses a return whose subject moved. The receipt names
+which of the two confinements applied. REVIEW-002 measured the difference this profile
+buys: 0 denied tool calls and 4 of 4 findings measured, against REVIEW-001's
+7 denials and 1 measured of 7.
+
+## Receipts, dispositions and the register
+
+Receipts are numbered from the next unused `NNN`, never overwritten, and bound
+by SHA-256 in [`docs/control/entropy-reducer.jsonl`](../../control/entropy-reducer.jsonl)
+(`EntropyReviewFiled`, `EntropyRefutationFiled`, `EntropyFindingDisposed`,
+`EntropyPacketFiled`). The rendered `.md` is a projection of the `.json`.
+`REVIEW-001*` and `REFUTATION-001*` are pre-mechanism evidence of 2026-09-04:
+their bytes are read and never re-bound, and they carry no control event.
+
+`accept` on a finding requires that it **survived** its blinded refutation; a
+refuted, blocked, unselected or unknown identifier is refused, and every one of
+those stays visible in the refutation report. An acceptance appends a list item
+under a formal `## Candidates — accepted Entropy Reducer findings` heading in
+`docs/planning/entropy-reviews/REVIEW-NNN.md`, which the follow-up collector
+harvests and `npm run meta` lists as a register row. `accept` on a proposal
+packet files it at `docs/proposals/<suggestionId>/packet.json`. Filing is not
+promotion: turning a candidate into a work order remains an operator-authorized
+planning act.
+
+`entropy check` runs in `npm run test:docs`. It fails on a hand-edited receipt,
+on a rendering that is not its JSON's projection, on a filed pair with no
+control event, and on a committed fixture receipt. A control event whose pair
+never landed — a crash between the two writes — is reported as an interrupted
+filing to complete, not as a gate failure for unrelated work.
+
+## The manual path, retained
+
+The command family replaces these five host steps, which remain the recorded
+fallback when a session cannot run the commands. They are retained, not
+removed:
 
 1. Read the execution guide and subject authority, then compile
    `compileReviewerWorkOrder()` from
@@ -66,12 +178,17 @@ The dispatching host and reviewer perform these existing manual steps:
    or a separately authorized implementation/planning step. The reviewer stops
    at disposition. Suggestion output does not file or activate its own work.
 
+The command family performs exactly these steps through the same typed APIs;
+it adds numbering, immutability, an attestation and a disposition record, and
+it changes neither the loadout nor its authority.
+
 [RESIDUE.md](RESIDUE.md) is generated from the typed loadout, not an editable
 skill or the entry point of an automatic scheduler. The
 [first run](runs/REVIEW-001.json) and
-[refutation](runs/REFUTATION-001.md) demonstrate the manual workflow. Sustain,
-recurring observation, a dedicated launcher, and automatic review dispatch are
-future capabilities.
+[refutation](runs/REFUTATION-001.md) demonstrate the manual workflow that
+preceded the command. Sustain, recurring observation and automatic review
+dispatch during operator absence remain future capabilities and are explicit
+non-goals of WO-151.
 
 **Shape-First v2 (WO-142, 2026-09-19):** the typed support now extracts the
 intended relationship first and evaluates literal details only when a claim

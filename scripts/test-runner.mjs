@@ -157,6 +157,12 @@ const machinerySources = {
     "scripts/lib/plan-",
     "packages/skeleton/src/plan-refutation-protocol.ts",
     "packages/skeleton/src/loadouts/plan-refuter.ts",
+    "packages/skeleton/src/entropy-review-protocol.ts",
+    "packages/skeleton/src/entropy-review-fake.ts",
+    "packages/skeleton/src/loadouts/entropy-reducer.ts",
+    "scripts/test-entropy-review.mjs",
+    "scripts/entropy.mjs",
+    "scripts/lib/entropy-review.mjs",
   ],
   "runner-fixtures": [
     "scripts/lib/gate-timeline.mjs",
@@ -236,6 +242,8 @@ const protection = {
     "harness claim evidence matches the current bundle and observations",
   "plan-refutation":
     "planning receipts preserve judgments, amendments and carried orders",
+  entropy:
+    "the Entropy Reducer's receipt chain, filed pairs and disposed findings remain immutable and bound",
   "plan-refutation-current":
     "the current planning horizon retains its admitted receipt chain",
   "artifact-evidence":
@@ -524,6 +532,8 @@ export const suites = [
   node("plan-refutation", "scripts/test-plan-refutation.mjs", {
     args: ["--fixtures-only"],
     needsBuild: true,
+    protects:
+      "planning receipts and Entropy Reducer receipts preserve judgments, blinding, immutability and carried orders",
   }),
   node("plan-refutation-current", "scripts/test-plan-refutation.mjs", {
     args: ["--check-only"],
@@ -557,6 +567,7 @@ export const suites = [
     preflight: true,
   }),
   node("plan", "scripts/refute-plan.mjs", { args: ["check"], document: true }),
+  node("entropy", "scripts/entropy.mjs", { args: ["check"], document: true }),
 ].map(classifySuite);
 
 export function validateSuites(table) {

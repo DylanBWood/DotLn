@@ -1,4 +1,4 @@
-# WO-151 — Entropy Reducer dispatch: one command freezes a subject, compiles the reviewer, hands the review and its blinded refutation to fresh workers through the existing transports, files numbered immutable receipts, and records operator dispositions that land accepted findings in the follow-up register; the loadout, its actor pin and its authority are unchanged (version assigned at activation)
+# WO-151 — Entropy Reducer dispatch: one command freezes a subject, compiles the reviewer, hands the review and its blinded refutation to fresh workers through the existing transports, files numbered immutable receipts, and records operator dispositions that land accepted findings in the follow-up register; the loadout, its actor pin and its authority are unchanged (v0.42.0)
 
 **Model:** any for the implementation. The live episodes use the loadout's
 pinned actor, Claude Fable 5.1 at `max` through the print transport with model
@@ -326,11 +326,23 @@ rows from REVIEW-002's dispositions is the first consumption.
 decisions file; the ledger is reserved for planning synthesis.
 
 **Non-goals:** a Sustain cadence, automatic dispatch during absence or any
-scheduler; `Program.All` in the kernel; a new dispatch phrase, role or role
-skill; a meter dispatch column for the reviewer; `lifecycle.run`
-classification; editing the loadout, residue, actor pin, authority or
-program; promoting proposals or findings to work orders; running the reviewer
-inside `npm test`; a review of a dirty tree.
+scheduler; `Program.All` in the kernel; a new role or role skill; a meter
+dispatch column for the reviewer; `lifecycle.run` classification; editing the
+loadout, residue, actor pin, authority or program; promoting proposals or
+findings to work orders; running the reviewer inside `npm test`; a review of a
+dirty tree.
+
+**Operator scope expansion (2026-09-22, authorized during `resume: next`).**
+The operator directed that `planning: entropy reducer` make *that* planning
+pass one whose subject is the Entropy Reducer's results, with the surviving
+findings disposed and decided inside the same pass rather than queued for a
+second one. This adds the dispatch phrase the original non-goals and declined
+alternatives excluded, and it is bounded to: the phrase clause in the existing
+planner role text, the matching paragraph in product 07 §Operator-opened
+planning pass, and the decision record. No role, role skill, scheduler,
+cadence or lifecycle classification is added, and the phrase still runs
+nothing unless the operator types it. Authorization and reasoning:
+`docs/evidence/WO-151/decisions.md#wo-151-d007`.
 
 **Operator-review assumptions**
 

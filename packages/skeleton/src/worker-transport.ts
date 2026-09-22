@@ -4,6 +4,7 @@ import { startDeadline } from "./gate-deadlines.mjs";
 import {
   closeSync,
   fstatSync,
+  mkdirSync,
   mkdtempSync,
   openSync,
   readFileSync,
@@ -18,6 +19,15 @@ import {
   MISSION_CHECK_LIMITS,
   isMissionCheckRequest,
 } from "./mission-check-protocol.js";
+import {
+  ENTROPY_REFUTATION_LIMITS,
+  ENTROPY_REVIEW_LIMITS,
+  isEntropyRefutationRequest,
+  isEntropyRequest,
+  isEntropyReviewRequest,
+  type EntropyRefutationRequest,
+  type EntropyReviewRequest,
+} from "./entropy-review-protocol.js";
 import { decodeUsageSource, usageObservation } from "./usage-observation.mjs";
 import {
   WorkerFailure,
@@ -258,6 +268,8 @@ export function canonicalWorkerArgs(
   // HTTP request shape and the fake never launches a process.
   if (name === "fake" || name === "local-model-http")
     throw new WorkerFailure("profile-refused");
+  if (isEntropyRequest(request))
+    return entropyArgs(name, request, schemaPath, selection.effort);
   if (isWriterRequest(request)) {
     try {
       validateSourceChangeEnvironment(
@@ -360,6 +372,106 @@ export function canonicalWorkerArgs(
     ...(selection.effort === "unknown"
       ? []
       : ["-c", `model_reasoning_effort=${JSON.stringify(selection.effort)}`]),
+    "-",
+  ];
+}
+
+/** The Entropy Reducer's own two shapes. Unlike every other inspection
+ * profile here the reviewer and its refuter are given commands, because
+ * REVIEW-001 measured one of seven findings after seven denied shell calls.
+ * The tools are named, not opened: Claude confines the file tools to the
+ * working directory with `--restricted` and pre-approves only the named
+ * tools, so anything else is denied without a prompt; Codex adds a real
+ * workspace sandbox. Claude does not path-confine a shell command, so the
+ * host, not this argv, proves the frozen subject never moved. */
+function entropyArgs(
+  name: Exclude<WorkerTransportName, "fake" | "local-model-http">,
+  request: EntropyReviewRequest | EntropyRefutationRequest,
+  schemaPath: string,
+  effort: string,
+): readonly string[] {
+  const limits = isEntropyReviewRequest(request)
+    ? ENTROPY_REVIEW_LIMITS
+    : ENTROPY_REFUTATION_LIMITS;
+  const tools = [...request.profile.modelTools].join(",");
+  if (name === "claude-cli-print")
+    return [
+      "--print",
+      "--model",
+      request.model,
+      ...(effort === "unknown" ? [] : ["--effort", effort]),
+      "--output-format",
+      "json",
+      "--json-schema",
+      JSON.stringify(transportResultSchema(request)),
+      "--no-session-persistence",
+      // The frozen copy carries the project's own CLAUDE.md, hooks and
+      // skills; neither may steer the review of that same project.
+      "--safe-mode",
+      "--restricted",
+      "--settings",
+      '{"autoMemoryEnabled":false}',
+      "--disable-slash-commands",
+      "--strict-mcp-config",
+      "--mcp-config",
+      '{"mcpServers":{}}',
+      "--no-chrome",
+      "--tools",
+      tools,
+      "--allowedTools",
+      tools,
+      "--permission-prompts",
+      "none",
+      "--max-budget-usd",
+      limits.maxBudgetUsd,
+    ];
+  return [
+    "-a",
+    "never",
+    "exec",
+    "--ephemeral",
+    "--ignore-user-config",
+    // Perturbations belong in the frozen copy: the mutation drill asks for
+    // them and the sandbox root is that copy.
+    "--sandbox",
+    "workspace-write",
+    "--strict-config",
+    "--model",
+    request.model,
+    "--cd",
+    request.cwd,
+    "--json",
+    "--output-schema",
+    schemaPath,
+    "-c",
+    'default_permissions="dotln-entropy"',
+    "-c",
+    'permissions.dotln-entropy.filesystem={":minimal"="read",":workspace_roots"="write"}',
+    "-c",
+    "permissions.dotln-entropy.network.enabled=false",
+    "-c",
+    'approval_policy="never"',
+    "-c",
+    'web_search="disabled"',
+    "-c",
+    "project_doc_max_bytes=0",
+    "-c",
+    "mcp_servers={}",
+    "-c",
+    "memories.use_memories=false",
+    "-c",
+    "memories.generate_memories=false",
+    "-c",
+    'shell_environment_policy.inherit="none"',
+    ...codexDisabled
+      .filter(
+        (feature) =>
+          !["shell_tool", "unified_exec", "code_mode_host"].includes(feature),
+      )
+      .flatMap((feature) => ["--disable", feature]),
+    ...(effort === "unknown"
+      ? []
+      : ["-c", `model_reasoning_effort=${JSON.stringify(effort)}`]),
     "-",
   ];
 }
@@ -554,6 +666,14 @@ function decodeResult<R extends TransportRequest>(
   request: R,
   before?: string,
 ): TransportResultFor<R> {
+  // The entropy capture lane sits outside the frozen copy so a retained
+  // return never counts as a scratch delta.
+  if (isEntropyRequest(request)) {
+    mkdirSync(request.capture, { recursive: true, mode: 0o700 });
+    writeFileSync(join(request.capture, "wire.jsonl"), output.stdout, {
+      mode: 0o600,
+    });
+  }
   if (isPlanRequest(request)) {
     writeFileSync(join(request.cwd, "wire.jsonl"), output.stdout, {
       mode: 0o600,
@@ -629,6 +749,18 @@ function decodeResult<R extends TransportRequest>(
             mode: 0o600,
           });
       }
+      if (isEntropyRequest(request)) {
+        writeFileSync(
+          join(request.capture, "result.json"),
+          JSON.stringify(result.structured_output ?? null) + "\n",
+          { mode: 0o600 },
+        );
+        writeFileSync(
+          join(request.capture, "statement.txt"),
+          typeof result.result === "string" ? result.result : "",
+          { mode: 0o600 },
+        );
+      }
       return parseTransportResult(result.structured_output, request);
     }
     const events = output.stdout
@@ -659,6 +791,14 @@ function decodeResult<R extends TransportRequest>(
     if (isPlanRequest(request)) {
       writeFileSync(join(request.cwd, "result.json"), text, { mode: 0o600 });
       writeFileSync(join(request.cwd, "statement.txt"), text, { mode: 0o600 });
+    }
+    if (isEntropyRequest(request)) {
+      writeFileSync(join(request.capture, "result.json"), text, {
+        mode: 0o600,
+      });
+      writeFileSync(join(request.capture, "statement.txt"), text, {
+        mode: 0o600,
+      });
     }
     return parseTransportResult(JSON.parse(text), request);
   } catch (error) {
@@ -728,13 +868,17 @@ abstract class CliWorkOrderTransport implements WorkOrderTransport {
         args,
         cwd: request.cwd,
         input: transportPrompt(request),
-        timeoutMs: isMissionCheckRequest(request)
-          ? MISSION_CHECK_LIMITS.timeoutMs
-          : isPlanRequest(request)
-            ? PLAN_REFUTATION_LIMITS.timeoutMs
-            : "feedback" in request && request.feedback
-              ? FEEDBACK_VERIFIER_LIMITS.timeoutMs
-              : WORKER_TIMEOUT_MS,
+        timeoutMs: isEntropyReviewRequest(request)
+          ? ENTROPY_REVIEW_LIMITS.timeoutMs
+          : isEntropyRefutationRequest(request)
+            ? ENTROPY_REFUTATION_LIMITS.timeoutMs
+            : isMissionCheckRequest(request)
+              ? MISSION_CHECK_LIMITS.timeoutMs
+              : isPlanRequest(request)
+                ? PLAN_REFUTATION_LIMITS.timeoutMs
+                : "feedback" in request && request.feedback
+                  ? FEEDBACK_VERIFIER_LIMITS.timeoutMs
+                  : WORKER_TIMEOUT_MS,
       });
       const receipt = process.accepted.then(() => ({
         commandId: request.command.commandId,

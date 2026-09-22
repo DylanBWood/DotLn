@@ -13648,6 +13648,177 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-6c43f082cad02026",
+      "key": "decision:docs/evidence/WO-151/decisions.md#wo-151-d001",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "531239dc93348ed8bbb43603e72e97d2d270bd0a616b82b9582f32884021f85d",
+          "ref": "docs/evidence/WO-151/decisions.md#wo-151-d001",
+          "title": "WO-151-D001: Planner: entropy-review-protocol.ts and mission-check-protocol.ts change the compiled behaviour of registered sources (verification-protocol.ts, worker-transport.ts) without being registe",
+          "summary": "{ \"id\": \"WO-151-D001\", \"date\": \"2026-09-22\", \"dispatch\": \"resume: next; WO-151 design first bullet and criterion 2\", \"decision\": \"Add two request kinds, entropy-review and entropy-refutation, in a new packages/skeleton/src/entropy-review-protocol.ts, wire them into the existing TransportRequest union in verification-protocol.ts and give them their own argv branch in worker-transport.ts. Bump the skeleton component to 0.36.0 and the console's exact pin to match. Do not register the new protocol file in scripts/lib/evidence-sources.mjs.\", \"evidence\": [ \"packages/skeleton/src/verification-protocol.ts: validateTransportRequest, transportResultSchema, parseTransportResult and transportPrompt all ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-abfdb650f125a77f",
+      "key": "decision:docs/evidence/WO-151/decisions.md#wo-151-d007",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "f3708bed870605f8dd17999cd19b979d7efd0460daa7693baf4156ee1ded2ee4",
+          "ref": "docs/evidence/WO-151/decisions.md#wo-151-d007",
+          "title": "WO-151-D007: Planner: the phrase is the only thing that invokes the reviewer, so it still depends on the operator remembering it. If reviews stay rare after this order, the next candidate is a registe",
+          "summary": "{ \"id\": \"WO-151-D007\", \"date\": \"2026-09-22\", \"dispatch\": \"scope expand: during resume: next — the operator directed that `planning: entropy reducer` change that planning pass to be one based on the Entropy Reducer's results, with follow-ups decided from the current pass and explicitly not a second planning pass\", \"decision\": \"Add the `planning: entropy reducer` phrase as a clause of the existing planner role: the pass runs the review and its blinded refutation, disposes every surviving finding and packet in that same pass, and weighs, sequences or declines the accepted ones there, in the map, sequence and orders. The generated review rows and the follow-up register become the record of what ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-54c6a7f984545fda",
+      "key": "decision:docs/evidence/WO-151/decisions.md#wo-151-d009",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "90710fc5c8bcfb078bac6a46969a52df59c81642b05e2caa4d2c2a3446b2bbfb",
+          "ref": "docs/evidence/WO-151/decisions.md#wo-151-d009",
+          "title": "WO-151-D009: Verifier and reviewer: criterion 3's literal text — 'refuses a result whose tracked status after the episode differs from before' — is met on the default route and adapted on the explicit",
+          "summary": "{ \"id\": \"WO-151-D009\", \"date\": \"2026-09-22\", \"dispatch\": \"resume: next; criterion 3 met against the live row of criterion 7\", \"decision\": \"Make the subject guard route-conditional, following D002. On the default HEAD route the tree was clean at dispatch, so any tracked change refuses the receipt, exactly as criterion 3 states. On the explicit-commit route the subject is the named commit, which the working tree cannot move; the binding there is that the commit still resolves in both the repository and the frozen copy to the tree the review was performed against, and the working tree's own drift is recorded as trackedStatusByteIdentical false rather than refused.\", \"evidence\": [ \"Observed 2026",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-87e39bb015b6236a",
+      "key": "decision:docs/evidence/WO-151/decisions.md#wo-151-d010",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "60d1b104bda87d5bdfbe504a707324d8fac139445e2001e8b5ddea83a5d59c00",
+          "ref": "docs/evidence/WO-151/decisions.md#wo-151-d010",
+          "title": "WO-151-D010: Verifier: REVIEW-002's rendered cost line says unknown where its JSON records USD 9.4975; the figure is in the receipt, the decisions and the executor's report. REFUTATION-002 and every l",
+          "summary": "{ \"id\": \"WO-151-D010\", \"date\": \"2026-09-22\", \"dispatch\": \"resume: next; accuracy defect observed in REVIEW-002's own cost line\", \"decision\": \"Never write `unknown` on a cost line beside a counter that was observed. The WO-140 cause code now names only what the harness did not expose, and every counter it did expose — wall clock, turns, dollars — is stated on the same line. REVIEW-002 keeps the line it was filed with, because a filed receipt and its rendering are immutable.\", \"evidence\": [ \"docs/instance/entropy-reducer/runs/REVIEW-002.json cost: line reads 'unknown; cause harness-no-readback (episode wall clock 993 s, 64 turns)' while the same object records costUsd 9.497524499999999, turns ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-a1e5f194c7cf9a04",
+      "key": "decision:docs/evidence/WO-151/decisions.md#wo-151-d012",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "7ac20cac5b1e6217f21a334f3e4c827eebb77f5de6ab2a16fa1ab597b25c7ff4",
+          "ref": "docs/evidence/WO-151/decisions.md#wo-151-d012",
+          "title": "WO-151-D012: Executor: make review dispatch admission preserve the existing pending result—prefer refusing any new review while current-review exists, or implement an explicitly addressable multi-disp",
+          "summary": "{ \"id\": \"WO-151-D012\", \"date\": \"2026-09-22\", \"dispatch\": \"resume: verify; independent VER-001 finding against criterion 1\", \"decision\": \"Route the explicit-commit pending-dispatch overwrite to repair. A review already pending for a commit must remain reachable until receipt or discard; a later tracked-status hash for the same commit must not replace the sole current-review pointer. The verifier records the defect and does not edit implementation to turn its own verdict green.\", \"evidence\": [ \"docs/work-orders/WO-151-entropy-reducer-dispatch.md criterion 1 requires a second review while a dispatch is pending for the same subject to be refused by path with the reason\", \"scripts/lib/entropy-rev",
+          "missing": false
+        },
+        {
+          "hash": "83cc817806ba95e2be965f6742cab37fa3f1ef9551e37bb2469194b3a0fb339b",
+          "ref": "docs/evidence/WO-151/decisions.md#wo-151-d012",
+          "title": "WO-151-D012: Executor: make review dispatch admission preserve the existing pending result—prefer refusing any new review while current-review exists, or implement an explicitly addressable multi-disp",
+          "summary": "{ \"id\": \"WO-151-D012\", \"date\": \"2026-09-22\", \"dispatch\": \"resume: verify; independent VER-001 finding against criterion 1\", \"decision\": \"Route the explicit-commit pending-dispatch overwrite to repair. A review already pending for a commit must remain reachable until receipt or discard; a later tracked-status hash for the same commit must not replace the sole current-review pointer. The verifier records the defect and does not edit implementation to turn its own verdict green.\", \"evidence\": [ \"docs/work-orders/WO-151-entropy-reducer-dispatch.md criterion 1 requires a second review while a dispatch is pending for the same subject to be refused by path with the reason\", \"scripts/lib/entropy-rev",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-227579bc1610eefa",
+      "key": "decision:docs/evidence/WO-151/decisions.md#wo-151-d013",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "be08f79e64030e20c35d5c7a07a40e6cef5b35e9d15eb6902a357b6594938c86",
+          "ref": "docs/evidence/WO-151/decisions.md#wo-151-d013",
+          "title": "WO-151-D013: Executor: after all repair and planner-procedure bytes settle, mint the next immutable WO-151 authority revision, repoint the current selector if required, and run authority-evidence plus",
+          "summary": "{ \"id\": \"WO-151-D013\", \"date\": \"2026-09-22\", \"dispatch\": \"resume: verify; independent VER-001 finding against criteria 6 and 8\", \"decision\": \"Route the stale WO-151 authority edition to repair. Revision 001 was minted before the final planner procedure and generated bundle bytes settled, so it does not describe the current subject and the document gate is red. Feedback evidence and artifact identity remain separately passing; this finding is limited to authority evidence and the suites blocked behind its preflight.\", \"evidence\": [ \"node scripts/authority-evidence.mjs --check fails: stale WO-151 revision 001 evidence: bundle-diff.json\", \"The recorded planner-skill hash for both generated root",
+          "missing": false
+        },
+        {
+          "hash": "10b6cc80415df0182301ac3197756e32c163aec234001d4036fb97abd5a1c24b",
+          "ref": "docs/evidence/WO-151/decisions.md#wo-151-d013",
+          "title": "WO-151-D013: Executor: after all repair and planner-procedure bytes settle, mint the next immutable WO-151 authority revision, repoint the current selector if required, and run authority-evidence plus",
+          "summary": "{ \"id\": \"WO-151-D013\", \"date\": \"2026-09-22\", \"dispatch\": \"resume: verify; independent VER-001 finding against criteria 6 and 8\", \"decision\": \"Route the stale WO-151 authority edition to repair. Revision 001 was minted before the final planner procedure and generated bundle bytes settled, so it does not describe the current subject and the document gate is red. Feedback evidence and artifact identity remain separately passing; this finding is limited to authority evidence and the suites blocked behind its preflight.\", \"evidence\": [ \"node scripts/authority-evidence.mjs --check fails: stale WO-151 revision 001 evidence: bundle-diff.json\", \"The recorded planner-skill hash for both generated root",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-c8b407b8fe13b12c",
+      "key": "decision:docs/evidence/WO-151/decisions.md#wo-151-d014",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "1095728598e45585dd7fc82e4ffe78ff4d9dd1f07236788e26835286f45c8399",
+          "ref": "docs/evidence/WO-151/decisions.md#wo-151-d014",
+          "title": "WO-151-D014: Executor: capture and bind post-refutation tracked status and scratch inventory/delta, render them in the immutable receipt, add a fixture that mutates the refutation scratch copy and pro",
+          "summary": "{ \"id\": \"WO-151-D014\", \"date\": \"2026-09-22\", \"dispatch\": \"resume: verify; independent VER-001 finding against criterion 7\", \"decision\": \"Route the live refutation's missing post-episode confinement evidence to repair. The explicit-commit adaptation in D009 gives REVIEW-002 an equivalent commit-tree binding despite tracked working-tree drift, but REFUTATION-002 records neither a post-episode tracked-status observation nor an after-inventory or scratch delta, so criterion 7's evidence for each episode is absent rather than adapted.\", \"evidence\": [ \"docs/work-orders/WO-151-entropy-reducer-dispatch.md criterion 7 requires tracked status before and after each episode and the scratch delta invento",
+          "missing": false
+        },
+        {
+          "hash": "6b56d8fac71979f7a1cdf720c7ea713ad895d749fb4ec7082da43918620b0030",
+          "ref": "docs/evidence/WO-151/decisions.md#wo-151-d014",
+          "title": "WO-151-D014: Executor: capture and bind post-refutation tracked status and scratch inventory/delta, render them in the immutable receipt, add a fixture that mutates the refutation scratch copy and pro",
+          "summary": "{ \"id\": \"WO-151-D014\", \"date\": \"2026-09-22\", \"dispatch\": \"resume: verify; independent VER-001 finding against criterion 7\", \"decision\": \"Route the live refutation's missing post-episode confinement evidence to repair. The explicit-commit adaptation in D009 gives REVIEW-002 an equivalent commit-tree binding despite tracked working-tree drift, but REFUTATION-002 records neither a post-episode tracked-status observation nor an after-inventory or scratch delta, so criterion 7's evidence for each episode is absent rather than adapted.\", \"evidence\": [ \"docs/work-orders/WO-151-entropy-reducer-dispatch.md criterion 7 requires tracked status before and after each episode and the scratch delta invento",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-1a8e99466c708b2a",
+      "key": "decision:docs/evidence/WO-151/decisions.md#wo-151-d017",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "ea12e7f294a24eaf56f2fc3b9fc56224ffe811b1b7cff36e3c6d50d55e3cd252",
+          "ref": "docs/evidence/WO-151/decisions.md#wo-151-d017",
+          "title": "WO-151-D017: Met and not fixed: both live refuters returned their attempts payload as the public session statement rather than prose naming what they read and ran, so the statement adds no evidence th",
+          "summary": "{ \"id\": \"WO-151-D017\", \"date\": \"2026-09-22\", \"dispatch\": \"resume: fix; VER-001 finding 3, live half; adjacent-0003\", \"decision\": \"Run one more pinned-route refutation of the already filed REVIEW-002 and file it as REFUTATION-003, so the acceptance criterion's live confinement evidence exists at the repaired receipt shape. REFUTATION-002 keeps its bytes and stays the first live refutation; REFUTATION-003 is the one a planning pass reads, because the disposition path resolves the latest refutation for a review. No new review episode was bought: the subject is the review already filed.\", \"evidence\": [ \"REFUTATION-002 is immutable and its frozen copy was removed at filing, so the missing after-s",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-ab346bcd9381b174",
+      "key": "decision:docs/evidence/WO-151/decisions.md#wo-151-d020",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "1b38462b1891c41904c383e7c19f8d24e3c47ee2fee19eb05dc61f831f63ba4f",
+          "ref": "docs/evidence/WO-151/decisions.md#wo-151-d020",
+          "title": "WO-151-D020: Executor: make the confinement witness match what the receipt claims. Either narrow the claim — say the witness observes tracked-path status and the frozen copy's path-and-size inventory ",
+          "summary": "{ \"id\": \"WO-151-D020\", \"date\": \"2026-09-22\", \"dispatch\": \"resume: final review; defect met and not fixed\", \"decision\": \"Record, and do not repair here, that the episode confinement witness is coarser than the receipt's own wording. `trackedStatus()` runs `git status --porcelain --untracked-files=no`, so a shell command that creates a new untracked file in the source repository, or edits an ignored one, leaves `trackedStatusByteIdentical` true; and `scratchDelta.deltaCount` is `Math.abs(after.count - before.count)`, a net path count, so a frozen copy that gains and loses the same number of paths reads as a zero delta. Both inventory hashes and both status hashes are in the receipt, so the evi",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0e7a7d9bc0b34393",
+      "key": "decision:docs/evidence/WO-151/decisions.md#wo-151-d021",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "7c5c94a47d0cc2b36c8cb64c63cc93d1574d123241db8b31163faa31566651b9",
+          "ref": "docs/evidence/WO-151/decisions.md#wo-151-d021",
+          "title": "WO-151-D021: Planner: both defects are the same shape — a new committed artifact or a new suite owes a registration to a check that enumerates them, and nothing fails until the artifact is tracked or ",
+          "summary": "{ \"id\": \"WO-151-D021\", \"date\": \"2026-09-22\", \"dispatch\": \"resume: final review; two product-gate failures met on the integrated, staged subject; Adjacent Repair\", \"decision\": \"Register this order's two new shared-check inputs and re-gate, rather than routing two one-line registry additions through a repair cycle. `docs/control/entropy-reducer.jsonl` is declared in the kernel's committed-JSONL protocol registry as `Entropy Reducer receipt control`, beside the planning refutation control log it mirrors; and `entropy.mjs` joins the stub script list the runner's own CLI-selection fixture writes before it runs the document gate in a temporary launchpad. Neither touches the dispatch host, the load",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

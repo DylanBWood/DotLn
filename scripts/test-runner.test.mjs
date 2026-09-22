@@ -618,6 +618,7 @@ test("only and document CLI selection execute their declared checks with the pro
       "test-lineage.mjs",
       "refute-plan.mjs",
       "test-plan-refutation.mjs",
+      "entropy.mjs",
       "release.mjs",
       "authority-evidence.mjs",
       "artifact-identity-evidence.mjs",

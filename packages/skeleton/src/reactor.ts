@@ -1924,6 +1924,46 @@ export function missionCheckAuthorization(
   );
 }
 
+/** The Entropy Reducer's dispatch host asks for the census read first and the
+ * report emission after the return, so an episode whose window closed during
+ * the review cannot file. The refuter asks for the scratch probe instead: it
+ * runs reproductions rather than a census. */
+export function entropyReviewAuthorization(
+  authority: AuthorityEnvelope,
+  subjectHash: string,
+  episodeId: string,
+  phase: "census" | "probe" | "report",
+  at: number,
+) {
+  return authorize(
+    phase === "census"
+      ? {
+          kind: "Act",
+          effect: "repo.read.census",
+          payload: { subjectHash },
+        }
+      : phase === "probe"
+        ? {
+            kind: "Act",
+            effect: "probe.run:scratch.review",
+            resource: "probes",
+            payload: { subjectHash },
+          }
+        : { kind: "Act", effect: "report.emit", payload: {} },
+    authority,
+    {
+      now: at,
+      actorId: "entropy-reducer",
+      workstreamId: "ws_entropy_reducer",
+      episodeId,
+      decisionIndex: 0,
+      intentIndex: phase === "report" ? 1 : 0,
+      evidence: [],
+      revokedBy: [],
+    },
+  );
+}
+
 /** Source-change hosts keep kernel decisions in the pure reactor boundary. */
 export function sourceChangeAuthorization(
   ...args: Parameters<typeof authorize>

@@ -59,19 +59,23 @@ with bounded scratch and intake-capture writes, one-shot cadence, manual
 Program, output guard, and generated residue; Sustain remains a candidate until
 an observed cadence justifies it.
 
-The current operator entry point is the
-[manual review guide](../instance/entropy-reducer/README.md): a separate
-Fable 5.1 `max` review, validated output, and a fresh blinded refutation before
-operator disposition. The guide distinguishes compiled data from the manual
-host duties. WO-142 advances the compiled Shape-First support to version 2,
-implementing the operator's relationship-first correction: literal details are
-evaluated only when a claim depends on them. The generated residue and current
-fixtures reflect v2; historical review and refutation receipts retain their bytes.
-WO-151 (planned 2026-09-22) makes the guide's host steps a command with
-numbered immutable receipts and operator dispositions that land accepted
-findings in the follow-up register; the actor pin is satisfied by invocation
-readback or a labeled substitute. Sustain stays a candidate (the planning
-map's section dated 2026-09-22).
+The operator entry point is the
+[review guide](../instance/entropy-reducer/README.md) and its command family,
+`npm run entropy`: a frozen subject, a Fable 5.1 `max` review, host-validated
+output, and a fresh blinded refutation before operator disposition. The guide
+distinguishes compiled data from the host duties and keeps the five manual
+steps as the recorded fallback. WO-142 advances the compiled Shape-First
+support to version 2, implementing the operator's relationship-first
+correction: literal details are evaluated only when a claim depends on them.
+The generated residue and current fixtures reflect v2; historical review and
+refutation receipts retain their bytes. WO-151 (`v0.42.0`, 2026-09-22) makes
+the guide's host steps that command, with numbered immutable receipts, a
+control log and operator dispositions that land accepted findings in the
+follow-up register as candidates; the actor pin is satisfied by invocation
+readback, and every other route is a labelled substitute reviewer carrying its
+recorded model, effort and reason. Sustain stays a candidate (the planning
+map's section dated 2026-09-22), and no scheduler, dispatch phrase or role was
+added.
 
 **Executable discovery (WO-119).** Sort and Shine also have a deterministic,
 bounded producer in `packages/skeleton/src/discovery.ts`. Its kernel-stepped
