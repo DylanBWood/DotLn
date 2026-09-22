@@ -1253,6 +1253,13 @@
           "title": "Artifact growth and maintenance:",
           "summary": "- **Artifact growth and maintenance:** if a reading or upkeep problem is demonstrated, a bounded assessment can apply the [corpus policy](../product/03-architecture.md#corpus-policy) to documentation, logs, and derived views. Consider clearer organization, explicit archives, or consolidation while preserving links and required immutable history. A healthy structure needs no change. No file quota, mandatory cleanup, selected layout, order number, or activation is assigned.",
           "missing": false
+        },
+        {
+          "hash": "67152878b79b03c4e5bd895159de13ac111de1aea27869f0cf4065f7872cd086",
+          "ref": "docs/planning/work-order-map.md#preserved-unallocated-candidates",
+          "title": "Artifact growth and maintenance:",
+          "summary": "- **Artifact growth and maintenance:** if a reading or upkeep problem is demonstrated, a bounded assessment can apply the [corpus policy](../product/03-architecture.md#corpus-policy) to documentation, logs, and derived views. Consider clearer organization, explicit archives, or consolidation while preserving links and required immutable history. A healthy structure needs no change. No file quota, mandatory cleanup, selected layout, order number, or activation is assigned. Reopened 2026-09-22: the REVIEW-002 pass measured the upkeep problem (82 self-host evidence logs, 104.8 MB of 184.8 MB tracked, growing about 80 MB a week by copied source bodies); the bounded assessment is the evidence-edi",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -1263,6 +1270,14 @@
           "reopenWhen": "a demonstrated reading or upkeep problem",
           "targets": [],
           "at": "2026-09-19T01:19:46.721Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Reopening observation occurred: the 2026-09-22 REVIEW-002 pass measured the upkeep problem (82 self-host evidence logs, 104.8 MB of 184.8 MB tracked, growing about 80 MB a week by copied source bodies). The bounded assessment is the evidence-editions order designed in the map's REVIEW-002 section; deferred with it until the sequence has room. The wider assessment of documentation and derived views stays conditional.",
+          "reopenWhen": "the evidence-editions order closes, to judge whether a wider assessment is still needed, or the operator's horizon answer",
+          "targets": [],
+          "at": "2026-09-22T16:44:36.521Z"
         }
       ]
     },
@@ -5164,6 +5179,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-21T06:59:08.077Z"
+        },
+        {
+          "sourceRevision": 7,
+          "status": "open",
+          "reason": "Observation added by the 2026-09-22 REVIEW-002 pass: plan check runs 16.5 s on the current main (20.5 s at the review) from 3.9 million statSync calls under loadConfig inside plan-subject.mjs's per-path filter, and test:docs runs it as two tasks of about 25 s; ER2-004's hoist is nominated as a boy-scout item on WO-064. This is the first per-task duration the row carries; the gate rows themselves still record no per-suite durations. Nothing else allocated; stays open.",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-22T16:44:37.546Z"
         }
       ]
     },
@@ -13534,6 +13557,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-22T00:41:40.527Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Kept open by the 2026-09-22 REVIEW-002 pass: the sequence still holds exactly 100 orders and the horizon decision is the operator's; four items now wait for room (the evidence-editions order from ER2-001 and ER2-002, the WO-153 draft, and the two boy-scout items on WO-064 and WO-100 if their executors decline them).",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-22T16:44:37.040Z"
         }
       ]
     },
@@ -13819,6 +13850,106 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-6d5c7d5568191609",
+      "key": "candidate:docs/planning/entropy-reviews/REVIEW-002.md#candidates--accepted-entropy-reducer-findings-review-review-002-recorded-2026-09-22::d5938c8223b112ac2d589d04ede75133adca835731438b6b5d75e39aa12b58b3",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "e183eccf0dc3c538628e17ac1bef9a0643ab64cd7fe654a27f34034803044a94",
+          "ref": "docs/planning/entropy-reviews/REVIEW-002.md#candidates--accepted-entropy-reducer-findings-review-review-002-recorded-2026-09-22",
+          "title": "ER2-004 — Recurring procedure is automated so it costs less than the failure it prevents, and a document check's cost is part of the gate it joins (docs/product/07-execut",
+          "summary": "- **ER2-004 — Recurring procedure is automated so it costs less than the failure it prevents, and a document check's cost is part of the gate it joins (docs/product/07-execut** Surface `scripts/refute-plan.mjs; scripts/lib/plan-subject.mjs; scripts/lib/config.mjs (loadConfig); scripts/test-runner.mjs document selection`, severity minor, altitude 9, evidence measured. Observed: node scripts/refute-plan.mjs check takes 20.54 s real on the frozen subject, against 0.88 s for work-orders index --check, 0.55 s for meta --check and 0.14 s for check-publication. During that run fs.statSync is called 3,879,656 times and spawnSync 212 times; the CPU profile puts 56.5% of self time in statSync/stat, 9.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Accepted by the 2026-09-22 REVIEW-002 pass. Coverage: the hoist of the work-order path pattern out of the per-path filter in scripts/lib/plan-subject.mjs lines 309-314 is nominated as a host-reviewed boy-scout item on WO-064's catalog row; the check is plan check under 2 s with the plan-refutation suite green.",
+          "reopenWhen": "WO-064's executor declines the item, or plan check still exceeds 2 s after WO-064 closes",
+          "targets": [
+            "WO-064"
+          ],
+          "at": "2026-09-22T16:44:36.020Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-a99d57328d1b2046",
+      "key": "candidate:docs/planning/entropy-reviews/REVIEW-002.md#candidates--accepted-entropy-reducer-findings-review-review-002-recorded-2026-09-22::e071b14bbad3c13f3e07666f4a077175682e084de0744288c7c29c5afc04bafa",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "910809be8c306d77d0ab068f9d8bb4e080edd214b19f5133eb4895f8c9f9b83b",
+          "ref": "docs/planning/entropy-reviews/REVIEW-002.md#candidates--accepted-entropy-reducer-findings-review-review-002-recorded-2026-09-22",
+          "title": "ER2-002 — A mechanism is added only with the removal it pays for, and process activity is not progress by itself (docs/product/07-execution-guide.md §Goal-aligned decisio",
+          "summary": "- **ER2-002 — A mechanism is added only with the removal it pays for, and process activity is not progress by itself (docs/product/07-execution-guide.md §Goal-aligned decisio** Surface `scripts/lib/evidence-sources.mjs; packages/skeleton/src/feedback-selfhost.ts (validateSelfhost subject comparison, lines 172-189, 212); scripts/feedback-evidence.mjs; docs/evidence/current.json`, severity major, altitude 5, evidence measured. Observed: scripts/lib/evidence-sources.mjs registers package.json, package-lock.json and every workspace package.json among commonSources (lines 6-8, 28, 31), so any component-version bump makes the authority and feedback editions stale. Release assignment is opt-out by ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Accepted by the 2026-09-22 REVIEW-002 pass; carried by the same evidence-editions order as ER2-001 (one recorder), with WO-147 D010's rejection kept as a regression criterion so a behavioral change never inherits an older live audit; waits for room in the sequence.",
+          "reopenWhen": "the operator's horizon answer (FUP-7f13b0e220950f10) or a planning pass with room in the sequence, which files the order from the map's design",
+          "targets": [],
+          "at": "2026-09-22T16:44:35.016Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-f61e2c709645a72c",
+      "key": "candidate:docs/planning/entropy-reviews/REVIEW-002.md#candidates--accepted-entropy-reducer-findings-review-review-002-recorded-2026-09-22::e88f011f1e6809c5d795cddfdb969d4230917a1e89922b305a86d97ae05182df",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "84d77f2aadf3362eed78cdf7161fc5f0748197d4aecc7a0453be2ed14525bea8",
+          "ref": "docs/planning/entropy-reviews/REVIEW-002.md#candidates--accepted-entropy-reducer-findings-review-review-002-recorded-2026-09-22",
+          "title": "ER2-001 — Retained evidence links canonical, content-addressed inputs instead of copying them (docs/product/03-architecture.md §Corpus policy, lines 2196-2200: prefer upd",
+          "summary": "- **ER2-001 — Retained evidence links canonical, content-addressed inputs instead of copying them (docs/product/03-architecture.md §Corpus policy, lines 2196-2200: prefer upd** Surface `docs/evidence/**/feedback*/selfhost-verification.jsonl; packages/skeleton/src/feedback-selfhost.ts; scripts/feedback-evidence.mjs; docs/planning/refutations/*.json; scripts/lib/plan-receipts.mjs`, severity major, altitude 6, evidence measured. Observed: 80 tracked docs/evidence/**/feedback*/selfhost-verification.jsonl files total 100,882,272 bytes, 56% of the 179,844,991 tracked bytes. 96.8% of those bytes sit in two record types per log: VerificationOpened (63.4%) and CommandPersisted (33.4%), whose payload ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Accepted by the 2026-09-22 REVIEW-002 pass (planning document §4 and §5): the evidence-editions order is designed in the map's REVIEW-002 section and waits for room; the sequence holds the subject's limit of 100 orders and a planner does not change the horizon.",
+          "reopenWhen": "the operator's horizon answer (FUP-7f13b0e220950f10) or a planning pass with room in the sequence, which files the order from the map's design",
+          "targets": [],
+          "at": "2026-09-22T16:44:34.512Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-3f2d555810d131fe",
+      "key": "candidate:docs/planning/entropy-reviews/REVIEW-002.md#candidates--accepted-entropy-reducer-findings-review-review-002-recorded-2026-09-22::eb25dadd4cafcbae87752b98dcf21f164421fe9ce7e71707b2c606c7bb4f1267",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "fa4b4d1a79c330e5e8e33b2e4430f20bbdaf3f0d18ef05b725dbac8b8f469db9",
+          "ref": "docs/planning/entropy-reviews/REVIEW-002.md#candidates--accepted-entropy-reducer-findings-review-review-002-recorded-2026-09-22",
+          "title": "ER2-003 — Cold-start ceilings in docs/control/budgets.json bound installed CLAUDE.md plus the role skill per role (docs/product/07-execution-guide.md §Discipline, Process",
+          "summary": "- **ER2-003 — Cold-start ceilings in docs/control/budgets.json bound installed CLAUDE.md plus the role skill per role (docs/product/07-execution-guide.md §Discipline, Process** Surface `docs/control/budgets.json; packages/skeleton/src/loadouts/contributor.ts (generator of CLAUDE.md harness block and skills); .claude/skills/*/SKILL.md; .agents/skills/*/SKILL.md; scripts/lib/harness-context.mjs`, severity minor, altitude 6, evidence measured. Observed: node scripts/harness-context.mjs --check reports, against comparison edition v0.16.0 (tagged 2026-09-09): executor 24,412 bytes of a 24,576 ceiling (164 bytes of headroom) from 10,847; verifier 21,365 of 25,151 from 8,232; reviewer 22,543 of 24,",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Accepted by the 2026-09-22 REVIEW-002 pass. Coverage: the single-source emission of the shared refusals paragraph is nominated as a host-reviewed boy-scout item on WO-100's catalog row, since WO-100 regenerates the bundle and re-mints the editions in its criterion 5; the trend metric and the ceiling route's retirement are not covered here and wait for the operator's reserved efficiency pass (WO-054 D006).",
+          "reopenWhen": "WO-100's executor declines the item because a skill read without the floor must stay complete, or the operator opens the efficiency pass",
+          "targets": [
+            "WO-100"
+          ],
+          "at": "2026-09-22T16:44:35.518Z"
+        }
+      ]
     }
   ]
 }

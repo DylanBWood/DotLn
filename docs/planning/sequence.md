@@ -64,6 +64,13 @@ mission-check schema ids, fixed before WO-100 needs the print transport).
 Disjoint surfaces, no hard edge; the sequence is at its 100-order limit.
 Evidence: [the planning document](entropy-reducer-dispatch-2026-09-22.md) §6.
 
+Entropy review pass (2026-09-22, second): REVIEW-002 consumed, four findings
+accepted, no entry changed. The sequence stays at the subject's limit, so the
+evidence-editions order it designs waits for room (a one-entry slot after
+WO-100 and WO-064 when the horizon opens) and two findings ride as boy-scout
+items on WO-064 and WO-100. Evidence:
+[the REVIEW-002 planning document](entropy-review-002-2026-09-22.md) §5.
+
 <!-- dotln-work-order-sequence:start -->
 
 - WO-132 — Machinery stand-down
