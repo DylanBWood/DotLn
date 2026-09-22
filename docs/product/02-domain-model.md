@@ -119,6 +119,15 @@ is durable before dispatch. An observed commit is an effect, not independent
 verification or a worker's completion claim; even a failing after-test remains
 an observation for the later verifier.
 
+WO-064 adds `PullRequestOpened { repositoryId, number, headSha }` under schema
+1, recorded by `target-publish-host` in the episode store's separate
+`publication/` log with the source-change workstream and command as
+correlation. `repositoryId` is the validated `HOST/OWNER/REPO` push target; no
+URL is kept. The event follows a push of exactly the observed commit under an
+operator-provenance grant for `repo.push` and `pr.open`. It is a host effect
+observation, not a review or merge state; no reactor slice folds it yet, and
+WO-065 owns the first reader.
+
 The source host accepts a compiled WorkOrder, artifact identity and supplied
 authority, with already-established authority evidence separate from required
 evidence. It authorizes local writing, Git and test execution, emits the target

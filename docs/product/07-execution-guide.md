@@ -1583,6 +1583,31 @@ vX.Y.Z` and `npm run release -- list` inspect local annotated records without
 network. Historical backfill remains separately authorized through
 `release publish-notes`; old tag manifests retain their original contracts.
 
+**Target publish (WO-064).** `worktree publish WO-NNN --target <request.json>`
+publishes a target order's source-change episode in the target repository; no
+launchpad branch moves and none of the self-publication records apply. The
+host-owned request names the loadout, its compilation environment (never a
+grant registry), the episode store, the pull-request base branch and an
+optional verification store. The writer ran the loadout without its
+`repo.push`/`pr.open` grants; publish recompiles both forms and requires the
+episode's persisted identity, WorkOrder and envelope to equal the writer form,
+the target branch to still name the observed commit, and the binary diff
+digest to match the receipt. Each of `repo.push` and `pr.open` must be allowed
+by the effective envelope and WorkOrder, pass the kernel guard, and be named
+by an admitted grant whose `grantedBy` is `operator`. The branch, every pushed
+commit message, the title (the host commit subject) and the generated body
+(contract, acceptance matrix or its stated absence, host test outcomes, diff
+summary) must pass the outward lint, and absent local terms refuse. A supplied
+verification store must hold one acceptance matrix for the published head whose
+criteria are exactly the WorkOrder's acceptance criteria; a matching revision
+alone does not make another contract's verdicts this one's. Every
+refusal precedes the first remote call. The host then pushes only the observed
+commit without tags or upstream configuration, opens the pull request through
+the existing `gh` helper and appends `PullRequestOpened` to
+`<store>/publication/`. A rerun for the same head reports the recorded pull
+request and pushes nothing. Merging and releasing on the target stay with the
+operator; [decisions](../evidence/WO-064/decisions.md) record the limits.
+
 ## Documentation freshness and ownership
 
 The executor owns current factual documentation for its change. Before declaring
