@@ -40,6 +40,111 @@ are now declared above. The [decision record](../evidence/WO-084/decisions.md)
 records the legacy ledger write-back; `node scripts/lineage.mjs index` generates
 the index and `index --check` enforces this rule in `npm run test:docs`.
 
+## 2026-09-22 — Planning pass: the Entropy Reducer's dispatch (WO-151; WO-152 from the register)
+
+Source: the operator's bare dispatch `planning: entropy reducer`, captured
+verbatim in ignored intake
+(`docs/intake/notes/2026-09-22-entropy-reducer-planning.md`, SHA-256
+`ec4a8735b1d8c3343d391f84317cbefd2dcfc7dda92d37e9110f404a4403f2bc`), and the
+repository's own record of the compiled reviewer: the operator guide, the two
+2026-09-04 run receipts, the loadout module and its callers, the planning
+refuter's host and receipt helpers, and the twelve untriaged and four
+invalidated follow-up rows the orders closed since 2026-09-21 left behind.
+Shape-First Synthesis over repository records only; the clean-room screen
+found no stop condition (no path or identifier outside the repository enters
+a committed surface). The record is
+[the planning document](../planning/entropy-reducer-dispatch-2026-09-22.md).
+
+- **The Entropy Reducer's dispatch becomes a command that mirrors the
+  planning refuter's (WO-151)** `adopted`
+  - The reviewer shipped at v0.5.0 and ran once, on 2026-09-04 against its
+    own pre-repair subject; its guide lists five host steps a separate
+    session performs by hand with APIs no script calls, its one proposal
+    packet was never filed, and no route carries a surviving finding into
+    the follow-up register, while the refuter compiled from the same
+    identity has a command, transports with model and effort on the command
+    line, and an immutable receipt helper. The command family freezes `HEAD`
+    into a granted scratch copy, compiles the reviewer for that subject,
+    prints the canonical prompt and closed schema for one fresh worker (or
+    runs the pinned actor through the print transport with readback from the
+    invocation), validates the return with the loadout's own validators,
+    files numbered immutable receipts bound in a control log, hands only the
+    blinded subjects to a second fresh worker, and records operator
+    dispositions that land accepted findings as register candidates through
+    a generated planning document. A reviewer that does not match the pin by
+    readback is named a substitute; the loadout, residue, pin, authority and
+    program are unchanged and `Program.All` stays deferred. Provenance: the
+    operator guide; `runs/REVIEW-001.json` and `REFUTATION-001.json`;
+    `plan-refutation-host.ts`, `plan-direct.mjs`, `plan-receipts.mjs`;
+    product 07 §Goal-aligned decisions (the platform lens); the planning
+    document §3 to §5. Reopen: REVIEW-002's dispositions produce no register
+    row a planning pass uses, or a second run's cost exceeds what the
+    operator accepts.
+- **The reviewer stays on demand; Sustain stays a candidate** `deferred`
+  - WO-023's candidate cadence (after each release close during absence) is
+    recorded again with what would decide it: the observed cost per cycle
+    (USD 17 and 29 minutes at the pinned actor) against what a scheduled
+    review finds that the order lifecycle missed, and whether a cadence can
+    be declared in the build rather than by a scheduler, which the 2026-09-08
+    NoOp register declined. Provenance: WO-023; product 05 §5S; FUP-0009 and
+    FUP-0016; the map's section dated 2026-09-22. Reopen: WO-111's hour
+    closes and the operator asks for a cadence, or two on-demand reviews
+    show findings the lifecycle missed at an accepted cost.
+- **Every print-transport mission check fails before a model call, and the
+  fix is a patch order (WO-152)** `adopted`
+  - WO-148 D009 reproduced it against a real bound store: the reference enum
+    carries every clause id twice for an unchanged contract and the Claude
+    CLI refuses the schema; the Codex transport is unaffected; the order was
+    not fixed in flight because the schema is shared and needs a component
+    bump. Deduplicate inside the function, add the regression, bump the
+    component with the edition duty, and record one live print-transport
+    mission check. Placed before WO-100, whose resident runs the check on
+    the transport chosen at launch. Provenance: WO-148 D009; the planning
+    document §5. Reopen: another request kind's schema is refused by a CLI.
+- **A Codex dispatch whose session begin throws must not withhold its
+  briefing after recording the transition; drafted as WO-153 and withdrawn
+  at the sequence limit** `deferred`
+  - WO-149 D009 recorded the path and both planning receipts named the
+    failure behavior; WO-149 D001 had rejected a catch because it would hide
+    causes, so the advisory carries the error's message and the `no-session`
+    cause code, in the form the unbuilt-runtime branch already uses. The
+    draft was withdrawn before commit because the sequence would hold 101
+    orders against the subject's limit of 100; it is retained in the local
+    control lane and its design is in the planning document §5. Provenance:
+    WO-149 D001 and D009; receipts 022 and 023; `plan-subject.mjs`. Reopen:
+    the operator changes the horizon, or a Codex dispatch is observed
+    exiting non-zero from the entry call.
+- **The sequence holds the subject's limit of 100 orders, 51 of them
+  closed** `open`
+  - Closed entries remain until the operator changes the horizon, by the
+    sequence's own rule; the subject refuses more than 100. Whether closed
+    entries retire into the archive, the limit moves by an order, or the
+    next pass files nothing new until R2 is the operator's decision.
+    Provenance: `scripts/lib/plan-subject.mjs`; the sequence preamble; the
+    map's section dated 2026-09-22. Reopen: the next planning pass or the
+    operator's answer.
+- **An order that edits a registered evidence source declares its edition
+  duty at planning time** `adopted`
+  - WO-147 D010 asked the planner to carry the rule: one edition re-mint and
+    one live feedback self-host episode in the Cost line and dispatch
+    dimensions. Product 07's planning section now states it, and WO-151 and
+    WO-152 carry it (root `package.json`; the skeleton package). Provenance:
+    WO-147 D010; product 07 §Operator-opened planning pass. Reopen: an order
+    changes a registered source without the duty in its text.
+- **The register's twelve untriaged rows were read and disposed** `adopted`
+  - Seven were in-order directives and decisions in force (WO-138 D007;
+    WO-148 D012 to D014; WO-147 D008 and D010; WO-150 D008), one was the
+    nomination filed as WO-152, one the nomination drafted as WO-153 and
+    deferred at the sequence limit, and three were boarded limits deferred
+    on their own reopening observations (WO-138 D011's note on
+    `worktree integrate`'s provisional first pass; WO-138 D012; WO-148
+    D002). The four invalidated dispositions were re-recorded at their new
+    source revisions: the workstream application stays allocated to WO-080
+    to WO-083; the local-model candidate is deferred after WO-138's close;
+    the resident-binding and Tinkerer candidates are settled by WO-148 and
+    WO-150. The Shape-First wording row is settled by WO-142's v2.
+    Provenance: the planning document §4.
+
 ## 2026-09-21 — Planning pass: operator answer (WO-150; the Tinkerer's economy support on by default)
 
 Source: the operator's answer to the standard pass's handoff, captured

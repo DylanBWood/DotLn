@@ -935,7 +935,10 @@ Standard artifacts, all doc-only:
   three-role `Effort:` lines, a `Cost:` header naming additions and removals in
   wall-clock, context bytes, commands, tokens and steps, provenance, a dated
   observed gap, acceptance
-  criteria, evidence, non-goals, and operator-review assumptions;
+  criteria, evidence, non-goals, and operator-review assumptions; an order
+  that edits a registered evidence source (`scripts/lib/evidence-sources.mjs`)
+  names the edition re-mint and one live feedback self-host episode in its
+  Cost line and dispatch dimensions (WO-147 D010);
 - product-doc write-back for durable understanding, with the publication
   index and edition locks repaired in the same pass;
 - `npm run meta -- --plan-cost` refreshes the bounded, subject-hashed cost
