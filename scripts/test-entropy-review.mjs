@@ -854,16 +854,16 @@ export async function entropyFixtures() {
     await test("the attestation labels a substitute reviewer and never invents readback", () => {
       const requirement = {
         harness: "claude-code",
-        model: "claude-fable-5-1",
-        displayModel: "Claude Fable 5.1",
-        effort: "max",
+        model: "claude-opus-5-5",
+        displayModel: "Claude Opus 5.5",
+        effort: "xhigh",
         substitutionPolicy: "different-reviewer-and-must-be-attested",
       };
       const pinned = buildAttestation(
         {
           transport: "claude-cli-print",
-          model: "claude-fable-5-1",
-          effort: "max",
+          model: "claude-opus-5-5",
+          effort: "xhigh",
           harness: "claude-code",
           harnessVersion: "2.1.278",
           tools: ["Bash"],
@@ -891,8 +891,8 @@ export async function entropyFixtures() {
       const attested = buildAttestation(
         {
           transport: null,
-          model: "claude-fable-5-1",
-          effort: "max",
+          model: "claude-opus-5-5",
+          effort: "xhigh",
           source: "operator-attested",
           harness: "claude-code",
         },
@@ -903,13 +903,13 @@ export async function entropyFixtures() {
         "substitute reviewer",
         "an operator attestation records the effort but is not invocation readback",
       );
-      assert.equal(attested.effort, "max");
+      assert.equal(attested.effort, "xhigh");
 
       const other = buildAttestation(
         {
           transport: "codex-cli-exec",
-          model: "gpt-6-astra",
-          effort: "unknown",
+          model: "gpt-6-sol",
+          effort: "xhigh",
           harness: "codex-cli",
           harnessVersion: "0.154.0",
         },
@@ -918,7 +918,7 @@ export async function entropyFixtures() {
       assert.equal(other.identity, "substitute reviewer");
       assert.match(
         other.substitutionReason,
-        /does not match Claude Fable 5\.1/u,
+        /does not match Claude Opus 5\.5/u,
       );
     });
 

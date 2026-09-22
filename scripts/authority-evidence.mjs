@@ -98,8 +98,37 @@ const oldShapeFirst = oldEntropyGraph.supportFacets.find(
   (support) => support.supportFacetId === shapeFirstId,
 );
 assert.equal(oldShapeFirst.version, 1);
+// WO-100 (operator scope expansion, WO-100-D007): the compiled reviewer moved
+// from Claude Fable 5.1 at max to Claude Opus 5.5 at xhigh, versioning Seisō.
+const seisoId = "seiso-shine";
+const oldReviewerFact =
+  "The compiled reviewer is claude-fable-5-1 at max effort; a substitution is a different attested actor";
+const newReviewerFact =
+  "The compiled reviewer is claude-opus-5-5 at xhigh effort; a substitution is a different attested actor";
+const migrateReviewer = (workOrder) => {
+  assert.equal(
+    workOrder.knownFacts.filter((fact) => fact === oldReviewerFact).length,
+    1,
+    "historical entropy reviewer fact",
+  );
+  return {
+    ...workOrder,
+    knownFacts: workOrder.knownFacts.map((fact) =>
+      fact === oldReviewerFact ? newReviewerFact : fact,
+    ),
+  };
+};
 const migratedEntropyGraph = {
   ...oldEntropyGraph,
+  activeMechanics: oldEntropyGraph.activeMechanics.map((active) =>
+    active.activeMechanicId !== seisoId
+      ? active
+      : {
+          ...active,
+          version: 2,
+          workOrder: migrateReviewer(active.workOrder),
+        },
+  ),
   supportFacets: oldEntropyGraph.supportFacets.map((support) =>
     support.supportFacetId !== shapeFirstId
       ? support
@@ -129,7 +158,7 @@ const migratedEntropyGraph = {
 assert.equal(
   canonicalStringify(entropyReducerLoadout(11000)),
   canonicalStringify(migratedEntropyGraph),
-  "WO-142 changes only Shape-First version, semantic phrase, prompt fragment and inspection obligation",
+  "WO-142 changes only Shape-First version, semantic phrase, prompt fragment and inspection obligation; WO-100 only the compiled reviewer fact and Seisō's version",
 );
 assert.equal(
   canonicalStringify(JSON.parse(read(entropyFixturePath))),
@@ -325,7 +354,7 @@ const compatibility = Object.entries(results).map(([name, result]) => {
         ...currentEntropyIdentity,
         compilerPackageVersion: COMPILER_PACKAGE_VERSION,
       },
-      "current entropy matches its explicitly recorded v2 identity",
+      "current entropy matches its explicitly recorded identity",
     );
     for (const field of ["authorityEnvelope", "ambientEffects"])
       assert.deepEqual(
@@ -335,17 +364,30 @@ const compatibility = Object.entries(results).map(([name, result]) => {
       );
     assert.deepEqual(
       result.program.workOrder,
-      oldEntropy.program.workOrder,
-      "entropy work order, allowed and prohibited operations are unchanged",
+      migrateReviewer(oldEntropy.program.workOrder),
+      "entropy work order, allowed and prohibited operations change only in the compiled reviewer fact",
     );
     const definitions = result.artifactIdentity.componentDefinitions;
+    const migrated = [shapeFirstId, seisoId];
     assert.deepEqual(
-      definitions.filter((entry) => entry.componentId !== shapeFirstId),
+      definitions.filter((entry) => !migrated.includes(entry.componentId)),
       before.artifactIdentity.componentDefinitions.filter(
-        (entry) => entry.componentId !== shapeFirstId,
+        (entry) => !migrated.includes(entry.componentId),
       ),
       "all other entropy component definitions remain unchanged",
     );
+    const previousSeiso = before.artifactIdentity.componentDefinitions.find(
+      (entry) => entry.componentId === seisoId,
+    );
+    const currentSeiso = definitions.find(
+      (entry) => entry.componentId === seisoId,
+    );
+    assert.deepEqual(currentSeiso, {
+      ...previousSeiso,
+      version: 2,
+      definitionHash: currentSeiso.definitionHash,
+    });
+    assert.notEqual(currentSeiso.definitionHash, previousSeiso.definitionHash);
     const previous = before.artifactIdentity.componentDefinitions.find(
       (entry) => entry.componentId === shapeFirstId,
     );
@@ -366,7 +408,7 @@ const compatibility = Object.entries(results).map(([name, result]) => {
         semanticHash: result.semanticHash,
         componentDefinitions: definitions,
       },
-      "entropy identity changes only release, semantic and one versioned component definition",
+      "entropy identity changes only release, semantic and two versioned component definitions",
     );
   }
   const changedArtifactIdentityFields = Object.keys(
@@ -419,6 +461,20 @@ const compatibility = Object.entries(results).map(([name, result]) => {
             authorityUnchanged: true,
             effectsUnchanged: true,
           },
+          reviewerMigration: {
+            source: docRelative(
+              root,
+              "workOrders",
+              "WO-100-preauthorized-portfolio.md",
+            ),
+            decision: "WO-100-D007",
+            previousReviewer: "claude-fable-5-1 at max",
+            reviewer: "claude-opus-5-5 at xhigh",
+            changedActiveFields: ["version", "workOrder.knownFacts[3]"],
+            changedProgramFields: ["componentManifest", "workOrder.knownFacts"],
+            authorityUnchanged: true,
+            effectsUnchanged: true,
+          },
         }
       : {}),
     ...(name === "planRefuter"
@@ -467,7 +523,7 @@ const frozen = [
       hash: digest(read(path)),
       unchanged: false,
       migration:
-        "WO-142 B9 Shape-First v2; historical bytes verified through oldEntropy",
+        "WO-142 B9 Shape-First v2 and WO-100-D007 reviewer claude-opus-5-5 at xhigh (Seisō v2); historical bytes verified through oldEntropy",
     };
   }
   assert.equal(read(path), prior(path), `${path} frozen bytes`);
@@ -880,5 +936,5 @@ if (preserved)
     "Retained immutable authority evidence: behavior source is unchanged apart from component release labels.",
   );
 console.log(
-  `${mode === "--write" ? "Recorded" : "Verified"} two unchanged programs, the WO-132 plan-refuter and WO-142 Shape-First migrations, four widening rejections, nine runtime denials, admitted/reverted grants and ${comparisonPaths.length} bundle comparisons (including additions and removals).`,
+  `${mode === "--write" ? "Recorded" : "Verified"} two unchanged programs, the WO-132 plan-refuter, WO-142 Shape-First and WO-100 reviewer migrations, four widening rejections, nine runtime denials, admitted/reverted grants and ${comparisonPaths.length} bundle comparisons (including additions and removals).`,
 );

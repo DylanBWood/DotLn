@@ -262,12 +262,13 @@ export async function main(args = process.argv.slice(2), root = toolRoot) {
   const model =
     opt["--model"] ??
     (name === "claude-cli-print"
-      ? "claude-fable-5-1"
+      ? "claude-opus-5-5"
       : name === "codex-cli-exec"
-        ? "gpt-6-astra"
+        ? "gpt-6-sol"
         : "fixture");
-  const effort =
-    opt["--effort"] ?? (name === "codex-cli-exec" ? "unknown" : "max");
+  // Codex launches ignore user configuration, so an unrecorded effort would
+  // run at the model's own default rather than the selected xhigh.
+  const effort = opt["--effort"] ?? (name === "fake" ? "max" : "xhigh");
   const episode = await runPlanRefutation(
     subject,
     transport,

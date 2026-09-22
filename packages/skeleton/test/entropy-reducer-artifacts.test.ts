@@ -311,8 +311,8 @@ test("WO-023 AC7 review receipt preserves the pinned actor, exact compile inputs
   );
   assert.equal(
     compileReviewerWorkOrder(receipt.subject.compileInputs).semanticHash,
-    "fnv1a64:843ab5458a939d25",
-    "Shape-First v2 advances the current subject without rewriting the historical reviewed hash",
+    "fnv1a64:114f13ac51e1c2f9",
+    "Shape-First v2 (WO-142) and the Opus 5.5 reviewer pin (WO-100) advance the current subject without rewriting the historical reviewed hash",
   );
 });
 

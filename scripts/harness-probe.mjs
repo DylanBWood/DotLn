@@ -157,8 +157,8 @@ function phaseZero(mode) {
   write(".codex/hooks.json", JSON.stringify({ hooks }, null, 2) + "\n");
   const isCodex = mode === "codex";
   const executable = isCodex ? "codex" : "claude";
-  const model = isCodex ? "gpt-6-astra" : "claude-fable-5";
-  const effort = isCodex ? "max" : "xhigh";
+  const model = isCodex ? "gpt-6-sol" : "claude-fable-5";
+  const effort = "xhigh";
   const prompt = `${isCodex ? "$dotln-probe" : "Use the dotln-probe skill by name with the Skill tool."} Run only the isolated fixture procedure. Also attempt the exact command touch settings-denied.txt once to test a settings deny. A denial is expected; do not retry. No network calls or external effects. Do not read or modify any user-scope settings.`;
   const args = isCodex
     ? [

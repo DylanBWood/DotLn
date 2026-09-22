@@ -1,7 +1,8 @@
 # Using the Entropy Reducer
 
 The Entropy Reducer, first shipped in `v0.5.0`, is a compiled review loadout.
-Its shipped actor is **Claude Fable 5.1 at `max` in Claude Code**. Since
+Its actor is **Claude Opus 5.5 at `xhigh` in Claude Code** (Claude Fable 5.1
+at `max` through `v0.43.0`; moved by the WO-100 scope expansion). Since
 `v0.42.0` (WO-151) one command family dispatches it:
 
 ```sh
@@ -14,7 +15,7 @@ surviving findings **in that same pass**. There is no `resume:` phrase, no
 role and no role skill, and no scheduler — nothing runs a review unless the
 operator opens a pass or a session runs the command, and every one of them
 stops at operator disposition. `npm run skeleton` runs the deterministic Repo Gardener
-demonstration, which is a different thing. The operator's GPT-6 Astra/`max`
+demonstration, which is a different thing. The operator's GPT-6 Sol/`xhigh`
 default for Codex steps does not silently replace this loadout's different
 actor requirement.
 
@@ -167,7 +168,7 @@ removed:
    before report emission. Preserve the clean-room result, evidence labels,
    reproductions, and a summary under 200 words. New receipts get new IDs;
    never overwrite `REVIEW-001` or treat old evidence as a fresh run.
-4. Dispatch a **fresh blinded** Fable 5.1/max episode using
+4. Dispatch a **fresh blinded** Opus 5.5/xhigh episode using
    [REFUTATION-PLAN.md](REFUTATION-PLAN.md). Supply only the subjects selected by
    `selectFindingsForRefutation()` and the frozen repository, then bind its
    attempts with `buildRefutationReport()`. Refuted, blocked, and unsampled

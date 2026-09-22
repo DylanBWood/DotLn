@@ -69,7 +69,7 @@ try {
     workOrder: workOrderFromState(driver.state),
     artifactIdentity: driver.state.artifactIdentity,
     episodeId: "effort_probe",
-    model: "gpt-6-astra",
+    model: "gpt-6-sol",
     effort: "unknown",
     cwd,
     fixture: JSON.parse(
@@ -208,7 +208,7 @@ try {
         completedAt: new Date().toISOString(),
         harness: "codex-cli",
         harnessVersion: version,
-        model: "gpt-6-astra",
+        model: "gpt-6-sol",
         scope:
           "five operator-approved synthetic CLI launches outside the parent sandbox; no effective-effort claim",
         prompt: 'Return exactly {"ok":true}. Do not use tools.',

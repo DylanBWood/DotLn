@@ -33,7 +33,7 @@ if (process.argv[2] === "--child") {
       "\n",
     { mode: 0o600 },
   );
-  f.request.model = "gpt-6-astra";
+  f.request.model = "gpt-6-sol";
   f.request.effort = "xhigh";
   // decodeResidentConfiguration clones declarations, so update each actual input.
   for (const spec of Object.values(f.configuration.actors)) {
@@ -90,7 +90,7 @@ if (process.argv[2] === "--child") {
       sourceRow: "X-U1",
       launch:
         "detached Node parent → resident → supervised Codex source-change-v1; no terminal",
-      model: "gpt-6-astra",
+      model: "gpt-6-sol",
       effort: "xhigh",
       harnessVersion: worker?.launch.harnessVersion ?? "unknown",
       operatorAwayBeforeAndAfter: state.present === false,

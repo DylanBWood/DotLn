@@ -269,9 +269,9 @@ test("WO-023 AC1 compiles the complete reviewer definition through the real comp
   assert.equal(compiled.compiledProgram.compilerVersion, "1");
   assert.deepEqual(compiled.reviewerRequirement, {
     harness: "claude-code",
-    model: "claude-fable-5-1",
-    displayModel: "Claude Fable 5.1",
-    effort: "max",
+    model: "claude-opus-5-5",
+    displayModel: "Claude Opus 5.5",
+    effort: "xhigh",
     substitutionPolicy: "different-reviewer-and-must-be-attested",
   });
   assert.deepEqual(compiled.executionBoundary, {
@@ -295,7 +295,7 @@ test("WO-023 AC1 compiles the complete reviewer definition through the real comp
   );
   assert.ok(
     compiled.workOrder.knownFacts.includes(
-      "The compiled reviewer is claude-fable-5-1 at max effort; a substitution is a different attested actor",
+      "The compiled reviewer is claude-opus-5-5 at xhigh effort; a substitution is a different attested actor",
     ),
   );
 });

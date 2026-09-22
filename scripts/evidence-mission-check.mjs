@@ -27,7 +27,7 @@ const flag = (name, fallback) => {
   return index > 0 ? process.argv[index + 1] : fallback;
 };
 const transport = flag("transport", "codex-cli-exec");
-const model = flag("model", "gpt-6-astra");
+const model = flag("model", "gpt-6-sol");
 const effort = flag("effort", "xhigh");
 if (!["codex-cli-exec", "claude-cli-print"].includes(transport))
   throw new Error("transport must be codex-cli-exec or claude-cli-print");

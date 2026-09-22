@@ -48,6 +48,9 @@ export function planRefuterLoadout(expiresAt: number): LoadoutGraph {
     activeMechanics: [
       {
         ...active,
+        // Its own version: WO-100 versioned Seisō for the entropy reviewer pin,
+        // a known fact this active overrides, so the refuter is unchanged.
+        version: 1,
         semantics: [
           "one blinded plan refutation; findings confer no decision authority",
         ],
