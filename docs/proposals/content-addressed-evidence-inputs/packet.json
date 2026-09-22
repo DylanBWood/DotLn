@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "kind": "FiledProductSuggestionPacket",
+  "filedAt": "2026-09-22T16:36:18.710Z",
+  "sourceReceiptId": "REVIEW-002",
+  "sourceReceiptPath": "docs/instance/entropy-reducer/runs/REVIEW-002.md",
+  "operatorReason": "Filed as the design record for the evidence-editions candidate; filing is not promotion. The order decides the shape (blob references resolved from Git, or an alternative the packet lists) and must handle a blob recorded from the working tree before its commit exists. Existing editions and receipts stay byte-identical. Priority: the self-host logs (100 of 105 MB) before the refutation receipts (11 MB).",
+  "promotion": "Filing records the packet. Promotion to a work order remains an operator-authorized planning act.",
+  "packet": {
+    "schemaVersion": 1,
+    "kind": "ProductSuggestionPacket",
+    "proposedPath": "docs/proposals/content-addressed-evidence-inputs/",
+    "sourceEpisodeId": "ep_entropy_cf4db2192813b445",
+    "provenance": [
+      "Entropy Reducer review of frozen subject 5b4b99cab19eacaeb3d09775480c7ad2fa6dff5e (subjectHash cf4db2192813b44582feeef466489d5125d70c5aa655d4ad3c8d3737c6960dc6), finding ER2-001",
+      "Measured in the frozen copy with the ER2-001 reproduction command and the byte census commands listed in its evidenceRefs",
+      "Reviewer: entropy-reducer@1 as claude-fable-5-1 at max effort in Claude Code; no delegate lens used"
+    ],
+    "corroboratingEvidenceRefs": [
+      "docs/evidence/WO-149/feedback-002/selfhost-verification.jsonl line 2 (payload.subject.files and payload.baseline.files carry {path, contents})",
+      "packages/skeleton/src/feedback-selfhost.ts:214-254",
+      "docs/planning/refutations/2026-09-22-planning-9244f56be13bcb2f-024.json (subject 447,370 bytes embedding 100 orders' text beside subject.hash and sequenceHash)",
+      "docs/product/03-architecture.md:2196-2200 (artifact growth: intervene when a problem is evidenced; link an authority rather than copy)",
+      "git ls-files byte census: 100,882,272 of 179,844,991 tracked bytes in 80 self-host logs; 83,201,033 bytes added since 2026-09-15"
+    ],
+    "dissentingEvidenceRefs": [
+      "docs/evidence/WO-147/decisions.md:388-390 (WO-147-D010 rejected copying an older self-host log because the old log records a different subject hash; a by-reference edition must still bind its own subject)",
+      "docs/planning/refutations/README.md (receipts are filed as an immutable pair with a plain subject so a reader needs no other file; by-reference receipts trade that self-containment for size)",
+      "docs/product/03-architecture.md:2131-2142 (verbatim-with-scrubbing is the author's personal-profile default for retained transcripts)"
+    ],
+    "suggestion": {
+      "suggestionId": "content-addressed-evidence-inputs",
+      "submittedBy": "entropy-reducer@1 (claude-fable-5-1, max, claude-code) — non-authoritative",
+      "problemOrOpportunity": "Feedback self-host editions and planning refutation receipts copy committed inputs by value. The 80 self-host logs are 56% of all tracked bytes and 97% of their content is the full text of registered source files stored twice per edition; the 24 refutation receipts embed every sequenced order's text and grow linearly with the sequence. The repository gained 83 MB of such copies in the seven days before the base commit, which every clone, fetch, integrating final review and stranger to the session pays for while the same bytes already exist in Git under a hash the edition records.",
+      "scope": "The recorder in packages/skeleton/src/feedback-selfhost.ts and scripts/feedback-evidence.mjs projects subject and baseline files as {path, blobHash} resolved from the committed tree, and validateSelfhost and feedback-evidence --check resolve bodies from Git when they need them; scripts/lib/plan-receipts.mjs stores the subject by revision and hash with the order text resolvable from the committed subject at that revision. Existing editions and receipts stay byte-identical; only new ones change shape, with the edition schema version bumped.",
+      "evidenceRefs": [
+        "ER2-001 reproduction command and observed output",
+        "docs/evidence/WO-149/feedback-002/selfhost-verification.jsonl",
+        "packages/skeleton/src/feedback-selfhost.ts:101-133,214-254",
+        "docs/planning/refutations/2026-09-22-planning-9244f56be13bcb2f-024.json",
+        "git ls-files byte census commands in ER2-001 evidenceRefs"
+      ],
+      "affectedUsers": [
+        "the operator (clone, fetch and worktree creation time; PR diff size at integrating final reviews)",
+        "final reviewers and verifiers reading evidence diffs",
+        "planning refuters reading receipts",
+        "strangers to the session who fork or clone the repository"
+      ],
+      "affectedSystems": [
+        "docs/evidence/**/feedback*/",
+        "docs/planning/refutations/",
+        "packages/skeleton/src/feedback-selfhost.ts",
+        "scripts/feedback-evidence.mjs",
+        "scripts/lib/plan-receipts.mjs",
+        "npm run test:docs (feedback-evidence and plan checks)"
+      ],
+      "expectedValue": "About 1.2 MB less per feedback edition and about 0.4 MB less per refutation receipt, which at the observed rate (59 editions and 3 receipts per week) stops roughly 80 MB of weekly repository growth while preserving every existing immutable record and the subject hashes that bind them.",
+      "altitude": 6,
+      "uncertainty": "Whether any consumer of validateSelfhost or of a receipt needs the file bodies without a Git checkout (for example a rendered receipt read on GitHub) is not measured; the current recorder's reason for copying baseline and subject is inferred from the code, not from a decision record.",
+      "risks": [
+        "A by-reference edition is not self-contained outside the repository; a reader without the Git objects cannot reconstruct the audited bytes",
+        "A future history rewrite would strand references, which the repository's immutability rules already forbid",
+        "The edition schema change re-mints the current editions once and needs the usual evidence-source edition duty"
+      ],
+      "alternatives": [
+        "Keep the shape and move the two copy-carrying record types to Git LFS or a release asset",
+        "Compress the embedded contents in place (roughly 5 to 10 times smaller, still by value)",
+        "Retain only the latest edition per family and archive older ones outside the tracked tree",
+        "Accept the growth and record the decision with a size budget in docs/control/budgets.json"
+      ],
+      "duplicationHints": [
+        "docs/product/07-execution-guide.md §Candidate — local lane retention (ignored lanes, not tracked evidence)",
+        "docs/product/03-architecture.md §Corpus policy artifact-growth discussion (2026-09-06)",
+        "REVIEW-001 packet reference-and-status-integrity-lint (different subject: cross-reference integrity)"
+      ],
+      "urgencyRationale": "Growth is 83 MB per week at the current order cadence and the evidence class already exceeds half of the tracked bytes; each further order re-mints at least once, so the cost compounds with every close until the recorder changes."
+    }
+  }
+}

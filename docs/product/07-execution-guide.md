@@ -857,6 +857,22 @@ nothing runs a review unless the operator opens a pass this way. A pass opened
 any other way may still consume an earlier review's surviving findings as one
 input among others.
 
+**First consumption (2026-09-22).** The second pass of that day opened with
+`subject`, which named REVIEW-002 under REFUTATION-003, consumed it and paid
+for no episode. It re-measured every finding on the current `main` before
+disposing it, accepted all four and filed all three packets. Its first draft
+routed the findings around a sequence holding the subject's limit of 100
+entries, 55 of them closed; the operator asked why closed entries occupy the
+planning subject at all, and the record held only a 2026-09-04 convenience
+sentence written for a hand-maintained checklist. Under that direction closed
+entries now leave the sequence at each planning pass (the generated index's
+Closed section is their record), and the accepted findings were filed as
+WO-154, WO-155 and WO-156, with WO-153 from the earlier withdrawn draft. A
+finding half that a standing operator direction reserves for the operator's
+own pass (the cold-start ceiling route, WO-054 D006) stays recorded against
+that direction rather than overruled. The record is
+[the REVIEW-002 planning document](../planning/entropy-review-002-2026-09-22.md).
+
 Preconditions and inputs:
 
 1. Run on the clean main checkout. Between work orders is the normal case; an

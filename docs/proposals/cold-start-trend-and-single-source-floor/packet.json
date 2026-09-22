@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "kind": "FiledProductSuggestionPacket",
+  "filedAt": "2026-09-22T16:36:18.951Z",
+  "sourceReceiptId": "REVIEW-002",
+  "sourceReceiptPath": "docs/instance/entropy-reducer/runs/REVIEW-002.md",
+  "operatorReason": "Filed as the design record; filing is not promotion. The single-source emission half is nominated to WO-100 as a boy-scout item conditional on the completeness check; the trend-metric and ceiling-retirement half is the operator's reserved efficiency pass (WO-054 D006), and the 2026-09-17 raise-by-4-KB route stands until the operator opens it. Reviewed rules are not trimmed either way.",
+  "promotion": "Filing records the packet. Promotion to a work order remains an operator-authorized planning act.",
+  "packet": {
+    "schemaVersion": 1,
+    "kind": "ProductSuggestionPacket",
+    "proposedPath": "docs/proposals/cold-start-trend-and-single-source-floor/",
+    "sourceEpisodeId": "ep_entropy_cf4db2192813b445",
+    "provenance": [
+      "Entropy Reducer review of frozen subject 5b4b99cab19eacaeb3d09775480c7ad2fa6dff5e, finding ER2-003",
+      "Measured with node scripts/harness-context.mjs --check after node scripts/build.mjs in the frozen copy, and grep -c -F of the CLAUDE.md paragraph across .claude/skills/*/SKILL.md",
+      "Reviewer: entropy-reducer@1 as claude-fable-5-1 at max effort in Claude Code"
+    ],
+    "corroboratingEvidenceRefs": [
+      "harness-context --check output: executor 24,412 of 24,576 (previous 10,847); verifier 21,365 of 25,151 (8,232); reviewer 22,543 of 24,576 (8,665); planner 15,033 (5,455); release-close 13,967 (6,107); comparison edition v0.16.0 tagged 2026-09-09",
+      "docs/control/budgets.json acceptances dated 2026-09-17 (reviewer, release-close), 2026-09-18 (executor, release-close, verifier), 2026-09-19 (reviewer), 2026-09-20 (verifier)",
+      "CLAUDE.md:62 and .claude/skills/dotln-executor/SKILL.md:48 (identical 1,666-byte paragraph; present once in each of the six skills)",
+      "README.md:64-66 (a build, not a biography)"
+    ],
+    "dissentingEvidenceRefs": [
+      "docs/control/budgets.json source field and docs/product/07-execution-guide.md:1858-1868 (operator direction 2026-09-17: a breached ceiling is raised by one 4 KB step with the rule named, never trimmed around; WO-044 decision that caps yield to needed rules)",
+      "docs/evidence/WO-054/decisions.md WO-054-D006 (operator directed incrementing budgets now and reviewing efficiency later)",
+      "docs/product/07-execution-guide.md:8-9 and 60-73 of CLAUDE.md (the harness block is generated residue so both harnesses read the refusals in the floor; skills may repeat it so a skill read alone is complete)"
+    ],
+    "suggestion": {
+      "suggestionId": "cold-start-trend-and-single-source-floor",
+      "submittedBy": "entropy-reducer@1 (claude-fable-5-1, max, claude-code) — non-authoritative",
+      "problemOrOpportunity": "Cold-start bytes per role have grown between 125% and 176% since v0.16.0 (thirteen days), the executor sits 164 bytes under its ceiling, and the ceiling route has produced six acceptance records in four days without ever refusing anything, so it now costs a record per breach while reporting no trend. One 1,666-byte paragraph of the floor is repeated verbatim in each of the six generated skills, so every role loads it twice.",
+      "scope": "In the contributor bundle generator, emit the shared refusal paragraph once in the floor and have each skill reference it by name; in scripts/lib/harness-context.mjs and npm run meta, report the per-role delta since the previous edition and the fraction of the skill that is shared floor text as the cold-start metric, and retire the ceiling-plus-acceptance route for that metric under the operator's existing decision that needed rules outrank caps. The reviewed rules themselves are not trimmed.",
+      "evidenceRefs": [
+        "ER2-003 reproduction command and its output",
+        "docs/control/budgets.json",
+        "CLAUDE.md:62; .claude/skills/dotln-executor/SKILL.md:48",
+        "docs/product/07-execution-guide.md:1858-1874"
+      ],
+      "affectedUsers": [
+        "every model session that cold-starts a role (executor, verifier, reviewer, release-close, planner, refuter)",
+        "the operator who records acceptances and reads npm run meta",
+        "the planner who reads the meter's drift signals"
+      ],
+      "affectedSystems": [
+        "packages/skeleton/src/loadouts/contributor.ts (bundle generator)",
+        "CLAUDE.md harness block and AGENTS.md symlink",
+        ".claude/skills/*/SKILL.md and .agents/skills/*/SKILL.md",
+        "scripts/lib/harness-context.mjs and docs/control/budgets.json",
+        "npm run meta drift-to-low-performance row"
+      ],
+      "expectedValue": "About 1.7 KB less per role per cold start immediately (6.8% for the executor), no further acceptance records for a metric that cannot bind, and a trend the meter can actually flag; the Codex profile benefits identically because it loads the same generated bodies.",
+      "altitude": 6,
+      "uncertainty": "Whether a skill must remain complete when read without the floor (for example by a harness that loads only the skill) is not established; if it must, the dedup is not available and only the metric change applies. Token cost is not measured; bytes are the recorded metric.",
+      "risks": [
+        "A skill that references the floor instead of restating it depends on the floor being loaded first in every supported harness",
+        "Retiring the ceiling removes a documented, if never-binding, refusal surface that some receipts cite"
+      ],
+      "alternatives": [
+        "Keep the ceiling but raise it once to a value with real margin and stop recording per-breach acceptances",
+        "Trim reviewed rules, which the operator's 2026-09-17 direction forbids",
+        "Leave as is and accept one acceptance record per breach"
+      ],
+      "duplicationHints": [
+        "docs/product/07-execution-guide.md §Candidate — planner startup context (planner reads, not floor bytes)",
+        "docs/evidence/WO-054/decisions.md WO-054-D006 (efficiency review deferred to a later pass)",
+        "docs/evidence/WO-146/decisions.md WO-146-D008 and WO-140-D005 (prior acceptances)"
+      ],
+      "urgencyRationale": "The executor is 164 bytes from its ceiling, so the next reviewed rule that touches the shared floor triggers another acceptance record; the trend is monotonic and the mechanism produces cost without information."
+    }
+  }
+}

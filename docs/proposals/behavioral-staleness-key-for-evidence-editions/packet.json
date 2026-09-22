@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "kind": "FiledProductSuggestionPacket",
+  "filedAt": "2026-09-22T16:36:18.831Z",
+  "sourceReceiptId": "REVIEW-002",
+  "sourceReceiptPath": "docs/instance/entropy-reducer/runs/REVIEW-002.md",
+  "operatorReason": "Filed as the design record beside content-addressed-evidence-inputs; filing is not promotion. Constraint carried: WO-147 D010's rejection of bypassing the check stands, so a behavioral change never inherits an older live audit; the smallest probe is the packet's second alternative, skipping the live episode only when the generated feedback.json differs from the previous edition solely in its subject field, the comparison D010 made by hand.",
+  "promotion": "Filing records the packet. Promotion to a work order remains an operator-authorized planning act.",
+  "packet": {
+    "schemaVersion": 1,
+    "kind": "ProductSuggestionPacket",
+    "proposedPath": "docs/proposals/behavioral-staleness-key-for-evidence-editions/",
+    "sourceEpisodeId": "ep_entropy_cf4db2192813b445",
+    "provenance": [
+      "Entropy Reducer review of frozen subject 5b4b99cab19eacaeb3d09775480c7ad2fa6dff5e, finding ER2-002",
+      "Measured with git log over docs/evidence feedback editions and the control segments' FinalReviewCompleted events in the frozen copy",
+      "Reviewer: entropy-reducer@1 as claude-fable-5-1 at max effort in Claude Code"
+    ],
+    "corroboratingEvidenceRefs": [
+      "scripts/lib/evidence-sources.mjs:5-8,28,31 (package.json, package-lock.json and workspace package.json files are registered sources of every edition family)",
+      "docs/evidence/WO-147/decisions.md:364-398 (WO-147-D010: the re-minted feedback edition differs in exactly one field, the subject hash; live episode 320.6 s; followup prices the episode into every registered-source order)",
+      "docs/PLAYBOOK.md:256-260 (release assignment is opt-out, so nearly every order bumps a component)",
+      "git log --since=2026-09-15 --diff-filter=A: 59 feedback editions for 34 orders against 49 final reviews"
+    ],
+    "dissentingEvidenceRefs": [
+      "docs/evidence/WO-147/decisions.md:388-390 (WO-147-D010 rejected relaxing or bypassing the staleness check because it stops a source change from inheriting an older live audit)",
+      "docs/evidence/WO-147/decisions.md:396 (D010 followup treats the live episode as a cost to declare, not a defect to remove)",
+      "docs/product/07-execution-guide.md:2017-2028 (write once, run once: new source bytes require a new product gate; the same instinct argues for re-auditing on any source change)"
+    ],
+    "suggestion": {
+      "suggestionId": "behavioral-staleness-key-for-evidence-editions",
+      "submittedBy": "entropy-reducer@1 (claude-fable-5-1, max, claude-code) — non-authoritative",
+      "problemOrOpportunity": "The edition re-mint rule fires on any byte change to any registered source, and the registered list includes package.json, package-lock.json and every workspace package.json. Because release assignment is opt-out, nearly every order bumps a version and therefore re-mints the authority and feedback editions and spends one live model episode of about 320 s to record an edition that differs from its predecessor only in the subject hash, as WO-147-D010 documents. In the seven days before the base commit that produced 59 feedback editions for 34 orders.",
+      "scope": "Split the edition subject into a behavioral key (policy hash, fixtures, the audited compiler and skeleton modules) and a pins record (versions, lock file). Staleness and the live self-host requirement follow the behavioral key; a pins-only change updates the pins record deterministically without a live episode. WO-147-D010's rejection of bypassing the check is preserved: a behavioral change still cannot inherit an older live audit.",
+      "evidenceRefs": [
+        "ER2-002 reproduction command and observed count 59",
+        "scripts/lib/evidence-sources.mjs:5-8,28,31",
+        "docs/evidence/WO-147/decisions.md:364-398",
+        "docs/PLAYBOOK.md:256-260"
+      ],
+      "affectedUsers": [
+        "executors and final reviewers who currently re-mint editions and run the live self-host episode",
+        "the operator paying model spend and wall-clock for hash-only editions",
+        "planners who must price the episode into every registered-source order (D010 followup)"
+      ],
+      "affectedSystems": [
+        "scripts/lib/evidence-sources.mjs",
+        "packages/skeleton/src/feedback-selfhost.ts (validateSelfhost subject comparison)",
+        "scripts/feedback-evidence.mjs and scripts/authority-evidence.mjs",
+        "docs/evidence/current.json",
+        "npm run test:docs feedback-evidence and authority-evidence checks"
+      ],
+      "expectedValue": "Removes one live model episode (about 320 s and its unknown token cost) and about 1.3 MB of evidence from most orders, leaving re-mints only where the audited behavior changed; combined with content-addressed inputs it removes the dominant per-order evidence cost.",
+      "altitude": 5,
+      "uncertainty": "Which registered sources actually bear on the feedback audit's outcome is inferred from D010's field-by-field comparison and the recorder's code, not from a documented input model; the authority edition is deterministic and may already be cheap enough to leave keyed as it is.",
+      "risks": [
+        "A behavioral key that omits a real input would let a behavior change inherit a stale live audit, the exact failure D010 guards against",
+        "The split adds a second identity to reason about in receipts and reviews",
+        "Historical Cost lines that priced the episode into orders become non-comparable with later ones"
+      ],
+      "alternatives": [
+        "Keep the rule and only remove package-lock.json and the workspace package.json files from commonSources",
+        "Keep the rule and make the live episode optional when the newly generated feedback.json differs from the previous edition only in the subject field (a mechanical comparison D010 already performed by hand)",
+        "Accept the cost and continue pricing it into every order as D010's followup directs"
+      ],
+      "duplicationHints": [
+        "docs/evidence/WO-147/decisions.md WO-147-D010 followup (planner prices the episode; does not change the trigger)",
+        "docs/evidence/WO-143/decisions.md WO-143-D002 and docs/evidence/WO-150/decisions.md WO-150-D006 (executor-side re-mints of the same class)",
+        "docs/planning/followups.json rows harvested from those decisions"
+      ],
+      "urgencyRationale": "The rule fires on most orders at the current cadence, so each close adds a live episode and a megabyte of evidence; the cost is recurring and grows with the sequence, not with any single order."
+    }
+  }
+}
