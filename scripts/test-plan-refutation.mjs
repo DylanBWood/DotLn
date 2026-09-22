@@ -3677,7 +3677,13 @@ else {
 
 if (isMainModule(import.meta.url)) {
   try {
-    if (!process.argv.includes("--check-only")) await fixtures();
+    if (!process.argv.includes("--check-only")) {
+      await fixtures();
+      // WO-151's dispatch host is compiled from the same identity and files
+      // the same shape of immutable receipt; it is judged in this suite.
+      const { entropyFixtures } = await import("./test-entropy-review.mjs");
+      await entropyFixtures();
+    }
     if (!process.argv.includes("--fixtures-only"))
       process.stdout.write(
         `Plan gate: ${JSON.stringify(await checkPlanGate(root))}\n`,
