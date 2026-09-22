@@ -28,6 +28,7 @@
     "prepublishOnly": "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\"",
     "license-surfaces": "node scripts/license-surfaces.mjs",
     "plan": "node scripts/refute-plan.mjs",
+    "entropy": "node scripts/entropy.mjs",
     "console": "npm run build --silent && node packages/console/dist/src/cli.js",
     "test:console": "npm run build --silent && node --test packages/console/dist/test/*.test.js",
     "evidence:console": "npm run build --silent && node scripts/console-fixtures.mjs",

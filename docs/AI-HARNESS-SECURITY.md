@@ -352,6 +352,42 @@ harness runtime leaves the dispatch admitted and emits an advisory naming
 Claude's hook entry and
 Copilot's `active-dispatch-unavailable` branch are unchanged.
 
+**Entropy Reducer launch line (WO-151, 2026-09-22).** `npm run entropy --
+review` and `refute` launch the pinned reviewer only when the operator asks
+for it with `--transport claude-cli-print` or `--transport codex-cli-exec`;
+without a transport the command prints the canonical prompt and closed schema
+for a background worker the session spawns, and the parent remains the sole
+repository writer. A background-worker failure never triggers an automatic
+external fallback. Claude defaults to `claude-fable-5-1` at `max` and Codex to
+`gpt-6-astra` with effort `unknown`; both are recorded from the invocation as
+`command-line-readback-and-invocation`, and effective model and effort stay
+`unknown` because no harness reports them. The receipt reads
+`entropy-reducer@1` only when a launched `claude-cli-print` episode carried the
+compiled model, effort and harness; every other route, including a background
+worker whose effort the operator supplies with `--source operator-attested`,
+reads `substitute reviewer` with its recorded values and the reason. The
+`fake` transport drives executable fixtures only: it is refused outside a
+fixture run and a fixture receipt can never be committed as a run.
+
+This profile is the one inspection profile in this repository that admits
+command execution to a model. The worker's working directory is a copy of the
+subject commit under the granted system-temp lane, never the tracked tree.
+Claude runs it with `--safe-mode --restricted`, which ignores the copy's own
+settings, hooks, skills and `CLAUDE.md`, confines the file tools to that
+working directory, and denies without prompting anything outside the named
+tools; Codex runs it under `--sandbox workspace-write` rooted at the same copy
+with network disabled. Claude does not path-confine a shell command, so that
+half of the boundary is instructed and then checked rather than enforced: the
+host records the subject's tracked-status hash and the frozen copy's inventory
+before and after each episode, the review and the blinded refutation alike, and
+states in the receipt which of the two confinements applied with the delta it
+observed. On the default clean-`HEAD` review route a moved tracked status
+refuses the return; an explicitly named commit, which is also the refutation's
+subject, is bound by its tree object instead and the working tree's own drift
+is recorded as `trackedStatusByteIdentical: false` rather than hidden. The receipt
+also records the observed count of denied tool calls when the transport
+exposes one, and `unobserved` when it does not.
+
 **Version-line attestation (WO-126).** `npm run discover -- harness` appends
 a bounded observation of the running CLI's major.minor line and newest patch,
 plus whether Claude's effort readback channel exists. WO-132 supersedes

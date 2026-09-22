@@ -1250,22 +1250,35 @@ explicitly authorized a direct draft during WO-023. That direct-to-work-order
 path is a recorded bootstrap exception, not reviewer self-promotion and not the
 normal proposal pipeline.
 
-**Planned 2026-09-22 (WO-151).** The manual host duties above become one
-command family: a frozen copy of `HEAD` under the granted scratch lane, the
-compiled reviewer for that subject, one fresh review and one fresh blinded
-refutation handed to workers through the transports the planning refuter
-already uses, numbered immutable receipts bound in a control log, and
-operator dispositions that land accepted findings as follow-up register
-candidates through a generated planning document and accepted packets under
-`docs/proposals/`. The loadout, residue, actor pin, authority envelope and
-program are not edited and `Program.All` stays deferred; the host drives the
-compiled manual plan as the refutation host drives its one-shot order. The
-pinned route satisfies the actor requirement by invocation readback; a
-background worker is a session-attested substitute unless the operator
-attests its effort, and the receipt names which. Promotion of a finding or
-packet to a work order remains a planning act. The
+**Shipped 2026-09-22 (WO-151, `v0.42.0`).** The manual host duties above are
+one command family, `npm run entropy -- review | receipt | refute |
+refutation-receipt | dispose | check`: a frozen copy of the subject commit
+under the granted scratch lane, the compiled reviewer for that subject, one
+fresh review and one fresh blinded refutation handed to workers through the
+transports the planning refuter already uses, numbered immutable receipts
+bound in `docs/control/entropy-reducer.jsonl`, and operator dispositions that
+land accepted findings as follow-up register candidates through a generated
+planning document and accepted packets under `docs/proposals/`. The loadout,
+residue, actor pin, authority envelope and program are not edited and
+`Program.All` stays deferred; the host drives the compiled manual plan as the
+refutation host drives its one-shot order, and the guide retains the five
+manual steps as the recorded fallback. The receipt's identity line reads
+`entropy-reducer@1` only when the pinned route passed the compiled model and
+effort on the command line and the harness matches; every other route,
+including a background worker whose effort the operator attests, reads
+`substitute reviewer` with its recorded values and the reason, because an
+attestation is not an invocation readback and no harness reports effective
+model or effort. Unlike the repository's other inspection profiles the review
+profile admits commands inside the frozen copy, so findings can be measured
+rather than inferred; Codex confines them with a workspace sandbox, Claude
+confines the file tools and the host checks the subject's tracked-status hash
+and the frozen copy's inventory on either side of each episode, the review and
+its blinded refutation alike. An accepted finding must have survived its
+blinded refutation, and promotion of a finding or packet to a work order
+remains a planning act. The
 [planning document](../planning/entropy-reducer-dispatch-2026-09-22.md)
-records the decision and its alternatives.
+records the decision and its alternatives; the
+[operator guide](../instance/entropy-reducer/README.md) is the entry point.
 
 The candidate Snooping Footprint Reducer is one recurring producer for this
 pipeline. It inventories observation and retention structurally, emits
