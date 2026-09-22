@@ -1,4 +1,4 @@
-# WO-120 — Derived work identity: a runtime-derived or UI-filed order becomes a durable work-order record with the same identity, authority file, lifecycle, index row and status as a hand-written one, and `dotln intent` files a draft the same way (version assigned at activation)
+# WO-120 — Derived work identity: a runtime-derived or UI-filed order becomes a durable work-order record with the same identity, authority file, lifecycle, index row and status as a hand-written one, and `dotln intent` files a draft the same way (v0.41.0)
 
 **Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
 

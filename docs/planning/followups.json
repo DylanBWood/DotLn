@@ -2818,6 +2818,13 @@
           "title": "Work-order navigation and identity (candidate)",
           "summary": "## Work-order navigation and identity (candidate) The current control projection answers one narrow question: given a selected work order and its independently folded phase, which lifecycle transitions are legal now? It does not answer which backlog order should be activated after close. The release ladder, hard dependency graph, adjacent evidence/corpus work, and operator preference are distinct planning inputs and must not be collapsed into the next integer. Keep three answers visible: 1. **Workflow legal next:** the transition allowed for the selected order, such as verify, repair, or final review. 2. **Eligible now:** every candidate whose hard dependencies, activation prerequisites, aut",
           "missing": false
+        },
+        {
+          "hash": "6e63a87452b8fe38512c366f892bff01c13fa1b0fd94f4797082582aba32f723",
+          "ref": "docs/product/06-roadmap.md#work-order-navigation-and-identity-candidate",
+          "title": "Work-order navigation and identity (candidate)",
+          "summary": "## Work-order navigation and identity (candidate) The current control projection answers one narrow question: given a selected work order and its independently folded phase, which lifecycle transitions are legal now? It does not answer which backlog order should be activated after close. The release ladder, hard dependency graph, adjacent evidence/corpus work, and operator preference are distinct planning inputs and must not be collapsed into the next integer. Keep three answers visible: 1. **Workflow legal next:** the transition allowed for the selected order, such as verify, repair, or final review. 2. **Eligible now:** every candidate whose hard dependencies, activation prerequisites, aut",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -13540,6 +13547,21 @@
           "ref": "docs/evidence/WO-063/decisions.md#wo-063-d005",
           "title": "WO-063-D005: Planner: cut a bounded order over the WO-140 gate-sandbox fixture teardown in scripts/test-runner.test.mjs. Scope: identify which process repopulates or holds <fixture>/.git/objects/pack ",
           "summary": "{ \"id\": \"WO-063-D005\", \"date\": \"2026-09-22\", \"dispatch\": \"resume: final review\", \"decision\": \"Record, without repairing it inside this review, that the WO-140 gate-sandbox fixture's teardown in scripts/test-runner.test.mjs can fail the whole runner-fixtures suite with ENOTEMPTY after its assertions have already passed. It failed the reviewer's first product gate at this order's code identity and did not recur; pass WO-063 on its own acceptance criteria against the second gate at the same identity, and carry the teardown race as a named follow-up rather than patching a shared fixture this review would then certify.\", \"evidence\": [ \"Reviewer gate 1, recorded 2026-09-22T02:03:23.082Z at codeIde",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-a4ae3aeac59d5f9d",
+      "key": "decision:docs/evidence/WO-120/decisions.md#wo-120-d007",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "1c3bc62f3e5b8b3dc04e4eb71f9ea6fdd912a273370d8d7589a7cf592aa83e12",
+          "ref": "docs/evidence/WO-120/decisions.md#wo-120-d007",
+          "title": "WO-120-D007: Planner: cut a bounded order that decouples historical WorkOrderIdentityAllocated events from the current section constant, coordinated with WO-113's ownership of the work-order section c",
+          "summary": "{ \"id\": \"WO-120-D007\", \"date\": \"2026-09-22\", \"dispatch\": \"resume: final review\", \"decision\": \"Record, without repairing it here, that folding the control log re-validates every WorkOrderIdentityAllocated event's embedded authority against the section list hard-coded in scripts/lib/derived-contract.mjs, so a future change to that list can make historical allocation events unfoldable and refuse every control read repository-wide. Carry it as a named follow-up rather than inventing a versioned section contract inside a final review.\", \"evidence\": [ \"scripts/lib/control.mjs:60-70: scanControl calls validateAllocation(event) for every WorkOrderIdentityAllocated event it folds.\", \"scripts/lib/deri",
           "missing": false
         }
       ],

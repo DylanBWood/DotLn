@@ -1,0 +1,19 @@
+✔ compiled order materializes, activates and shares index, status and lifecycle (1303.247458ms)
+✔ allocation replay, interrupted authority recovery and retry preserve one identity (352.6095ms)
+✔ configured roots and range allocate deterministically and refuse exhaustion (215.594542ms)
+✔ intent CLI files a reviewable draft without activation, including hostile Markdown (250.656291ms)
+✔ typed blockers retain a recoverable allocation and ordinary activation refusal (112.4375ms)
+✔ two processes serialize allocations, including the same retry key (455.336541ms)
+✔ generated shape and provenance refuse malformed edits and symlink destinations (167.894333ms)
+✔ invalid configured ranges refuse with the configuration path (0.619583ms)
+✔ a resident restarts with a derived compiled identity and unchanged control provenance (463.958375ms)
+✔ existing handwritten identities are preserved, UI filing shares the catalog, and active recovery does not restore a stale draft (223.729917ms)
+✔ direct activation refuses a derived authority root redirected outside the launchpad (70.263125ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3672.191458
