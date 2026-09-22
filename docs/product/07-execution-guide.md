@@ -2069,6 +2069,11 @@ that contract, the actor-attestation header rule and the `ultra` spelling
 normalization. The per-harness observations that lived here moved on
 2026-09-20 (WO-090), each to one home, and this section keeps the pointers:
 
+Independent verifiers use `xhigh` rather than `max`. A verifier launch may cap
+provider spend at USD 5 when the selected transport exposes a hard dollar-cap
+control. A recorded budget on a transport without that control is a limit
+declaration, not an enforced cap, and must be reported that way.
+
 - Required attestation fields, `unknown`, Codex thread readback, the
   `--account-label` grammar, the Codex 0.154.0 effort probes and the WO-126
   CLI version-line observation with its session-detection channels are in
