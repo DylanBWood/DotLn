@@ -507,7 +507,7 @@ the temporary directory afterwards; run the fixture; read the diagnosis.
 5. Report per group: wall-clock, commands and, where the harness exposes
    them, tokens; unavailable counters are unknown.
 
-## Acceptance criteria (all required)
+**Acceptance criteria (all required)**
 
 1. Item 1 holds: the fixture with an intent-to-add entry fails against the
    current source and passes after; a refusal leaves receipt, stash, HEAD
