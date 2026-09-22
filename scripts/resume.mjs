@@ -10,6 +10,7 @@ import {
 } from "node:fs";
 import { createCheckpoint } from "./lib/checkpoint.mjs";
 import { dirname, join, resolve } from "node:path";
+import { pathToFileURL } from "node:url";
 
 import {
   reportHarnessRuntime,
@@ -97,6 +98,13 @@ const effortDeclarations = new Set([
 const actorFlagUsage =
   "--harness <harness> --harness-version <version> --model <model> --effort <level> --source <source> [--account-label <label>]";
 const actorHeaderPrefix = "**Actor attestation:**";
+const codexDispatchRoles = {
+  next: "executor",
+  fix: "executor",
+  verify: "verifier",
+  "final-review": "reviewer",
+  "release-close": "release-close",
+};
 
 const readEvents = () =>
   [...readControl(repoRoot).eventSegments.values()].flat();
@@ -1144,6 +1152,27 @@ export const main = async (argv = process.argv.slice(2)) => {
       project(render(control, latestClosed));
       if (!["next", "release-close"].includes(action))
         await refreshExecutorIndex(repoRoot);
+    }
+    const codexDispatchRole = codexDispatchRoles[action];
+    const harnessHostPath = join(
+      repoRoot,
+      "packages/skeleton/dist/src/harness-host.js",
+    );
+    if (process.env.CODEX_THREAD_ID && codexDispatchRole) {
+      if (existsSync(harnessHostPath)) {
+        const { beginHarnessSessionOnce } = await import(
+          pathToFileURL(harnessHostPath)
+        );
+        beginHarnessSessionOnce(
+          repoRoot,
+          process.env.CODEX_THREAD_ID,
+          codexDispatchRole,
+        );
+      } else {
+        process.stderr.write(
+          "DotLn advisory: Codex session entry unavailable; harness runtime is not built. Run npm run build before the next dispatch; process cost remains unknown; cause no-session.\n",
+        );
+      }
     }
     // Informational readback, independent of token-counter availability and phase gates.
     if (

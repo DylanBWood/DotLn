@@ -339,6 +339,19 @@ matching completion flags. The control log preserves all earlier actor values;
 historical evidence is not rewritten to the new grammar. Values are single-line
 data and missing required fields remain a syntax error.
 
+**Codex dispatch session entry (WO-149, 2026-09-21).** When
+`CODEX_THREAD_ID` is present, the `next`, `fix`, `verify`, `final-review` and
+`release-close` lifecycle commands begin a harness session with that thread and
+the dispatch's role after the command is admitted and before current-session or
+usage observations are read. The begin is idempotent: a repeated dispatch in
+the same thread preserves the original session record byte-for-byte. Without a
+thread identity the command writes no session record; `harness usage` returns
+unknown counters with cause `no-session` without creating one. An unbuilt
+harness runtime leaves the dispatch admitted and emits an advisory naming
+`npm run build` and the missing session; it does not silently claim a begin.
+Claude's hook entry and
+Copilot's `active-dispatch-unavailable` branch are unchanged.
+
 **Version-line attestation (WO-126).** `npm run discover -- harness` appends
 a bounded observation of the running CLI's major.minor line and newest patch,
 plus whether Claude's effort readback channel exists. WO-132 supersedes
