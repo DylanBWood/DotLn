@@ -56,7 +56,7 @@
 - [x] [WO-148] — Resident binding · **final-reviewed**
 - [x] [WO-149] — Codex sessions begin · **final-reviewed**
 - [ ] [WO-120] — Derived work identity · **queued**
-- [ ] [WO-063] — Outward-artifact lint · **queued**
+- [x] [WO-063] — Outward-artifact lint · **final-reviewed**
 - [ ] [WO-151] — Entropy Reducer dispatch · **queued**
 - [ ] [WO-152] — Mission-check schema without duplicate ids · **queued**
 - [ ] [WO-100] — Preauthorized portfolio and work derivation · **queued**
@@ -356,31 +356,14 @@ None.
 - Inherited ledger duty: discharge with this order's decisions file when recorded and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
 - Authority: [docs/work-orders/WO-062-github-issue-source-adapter.md](WO-062-github-issue-source-adapter.md)
 
-### WO-063
-
-[WO-063 — Outward-artifact lint: branch names, commit messages and pull-request text must have the conventional-commit shape and carry no launchpad vocabulary or local term before any remote effect (version assigned at activation)](WO-063-outward-artifact-lint.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-039: satisfied-by-close (met) — the local-terms check it reuses.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh+; verifier xhigh+; reviewer any.
-- Cost: Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
-- Inherited ledger duty: discharge with this order's decisions file when recorded and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
-- Authority: [docs/work-orders/WO-063-outward-artifact-lint.md](WO-063-outward-artifact-lint.md)
-
 ### WO-064
 
 [WO-064 — Target publish: push a source-change branch and open its pull request on the target repository under an explicit remote grant with operator provenance, with a title and body generated from the contract, diff and evidence, never from narrative (version assigned at activation)](WO-064-target-publish.md)
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-063.
-- References: WO-052: hard (met) — a branch to publish exists only after a source-change episode; WO-063: hard (unmet) — every outward artifact passes the lint before the remote effect; WO-042: hard (met) — the remote effect runs under an explicit grant with operator provenance; WO-053: reference-only (non-blocking) — the live branch it first publishes.
+- Dependencies: typed; dependency-ready.
+- References: WO-052: hard (met) — a branch to publish exists only after a source-change episode; WO-063: hard (met) — every outward artifact passes the lint before the remote effect; WO-042: hard (met) — the remote effect runs under an explicit grant with operator provenance; WO-053: reference-only (non-blocking) — the live branch it first publishes.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -1981,6 +1964,24 @@ None.
 - Inherited ledger duty: discharge with [this order's decisions](../evidence/WO-056/decisions.md) and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
 - Latest attestation: harness claude-code; version 2.1.278; model claude-opus-5&#91;1m&#93;; effort xhigh; source operator-attested; account not-applicable.
 - Authority: [docs/work-orders/WO-056-live-verification-and-repair.md](WO-056-live-verification-and-repair.md)
+
+### WO-063
+
+[WO-063 — Outward-artifact lint: branch names, commit messages and pull-request text must have the conventional-commit shape and carry no launchpad vocabulary or local term before any remote effect (v0.40.3)](WO-063-outward-artifact-lint.md)
+
+- State: closed.
+- Application target: v0.40.3.
+- Dependencies: typed; activation not applicable.
+- References: WO-039: satisfied-by-close (met) — the local-terms check it reuses.
+- Verification: [VER-001](../../docs/verifications/WO-063/VER-001.md) (pass).
+- Final review: [FINAL-001](../../docs/final-reviews/WO-063/FINAL-001.md) (pass).
+- Release: unreleased.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Cost: Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
+- Inherited ledger duty: discharge with [this order's decisions](../evidence/WO-063/decisions.md) and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
+- Latest attestation: harness claude-code; version 2.1.263; model claude-opus-5&#91;1m&#93;; effort xhigh; source operator-attested; account not-applicable.
+- Authority: [docs/work-orders/WO-063-outward-artifact-lint.md](WO-063-outward-artifact-lint.md)
 
 ### WO-067
 

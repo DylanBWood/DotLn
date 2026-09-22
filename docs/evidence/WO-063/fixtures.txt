@@ -1,0 +1,35 @@
+✔ conforming subject (1.208042ms)
+✔ breaking subject and body (0.147417ms)
+✔ missing type (0.470208ms)
+✔ unknown type (0.093041ms)
+✔ 72-character subject (0.082334ms)
+✔ overlength subject (0.075125ms)
+✔ missing blank line (0.05975ms)
+✔ blank separator is empty (0.048333ms)
+✔ empty summary (0.066875ms)
+✔ conforming branch (0.113959ms)
+✔ nonconforming branch (0.095167ms)
+✔ unknown branch type (0.060333ms)
+✔ branch newline is not content (0.045292ms)
+✔ ref traversal refused (0.039667ms)
+✔ conforming PR title (0.033791ms)
+✔ PR title shape (0.042542ms)
+✔ PR title multiline (0.040166ms)
+✔ body prose and code (0.036209ms)
+✔ control character (0.039334ms)
+✔ public vocabulary reports named terms and exact original spans in every artifact (0.249375ms)
+✔ pure calls are deterministic, leave inputs intact, and never imply local coverage (0.162792ms)
+✔ existing local checker refuses synthetic terms without exposing the term or matched text (2.81575ms)
+✔ missing local list is unavailable while committed vocabulary still runs (1.052292ms)
+✔ empty and uncontained local lists refuse without raw errors, and public checks still run (2.248291ms)
+✔ configured control root owns both lists and editable type set (1.710917ms)
+✔ copied CLI runs with relocated documents and no default document tree (30.978959ms)
+✔ CLI stdin, redacted JSON, framing, and distinct pass/refused/unavailable/error exit codes (214.08425ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 27
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 294.94075

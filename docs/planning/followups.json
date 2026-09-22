@@ -13529,6 +13529,21 @@
           "at": "2026-09-22T00:41:40.527Z"
         }
       ]
+    },
+    {
+      "id": "FUP-55dcf55b5ee7f557",
+      "key": "decision:docs/evidence/WO-063/decisions.md#wo-063-d005",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "15b9ec86457f4d074feee1acff0fcbe35f05b5e7bd60adb6572244473d6737ca",
+          "ref": "docs/evidence/WO-063/decisions.md#wo-063-d005",
+          "title": "WO-063-D005: Planner: cut a bounded order over the WO-140 gate-sandbox fixture teardown in scripts/test-runner.test.mjs. Scope: identify which process repopulates or holds <fixture>/.git/objects/pack ",
+          "summary": "{ \"id\": \"WO-063-D005\", \"date\": \"2026-09-22\", \"dispatch\": \"resume: final review\", \"decision\": \"Record, without repairing it inside this review, that the WO-140 gate-sandbox fixture's teardown in scripts/test-runner.test.mjs can fail the whole runner-fixtures suite with ENOTEMPTY after its assertions have already passed. It failed the reviewer's first product gate at this order's code identity and did not recur; pass WO-063 on its own acceptance criteria against the second gate at the same identity, and carry the teardown race as a named follow-up rather than patching a shared fixture this review would then certify.\", \"evidence\": [ \"Reviewer gate 1, recorded 2026-09-22T02:03:23.082Z at codeIde",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }
