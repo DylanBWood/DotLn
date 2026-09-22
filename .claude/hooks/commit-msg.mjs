@@ -1,6 +1,6 @@
 // Origin: {"ids":["no-attribution"],"loadoutId":"contributor","semanticHash":"fnv1a64:950a384c819aa265"}
-const { runCommitMessageHook } = await import("../../.runtime/harness/0f7b7a128b5726e4/packages/skeleton/dist/src/harness-host.js");
-const { feedbackBoundary } = await import("../../.runtime/harness/0f7b7a128b5726e4/packages/skeleton/dist/src/feedback-boundary.js");
+const { runCommitMessageHook } = await import("../../.runtime/harness/0860cf5ecf83b26b/packages/skeleton/dist/src/harness-host.js");
+const { feedbackBoundary } = await import("../../.runtime/harness/0860cf5ecf83b26b/packages/skeleton/dist/src/feedback-boundary.js");
 await runCommitMessageHook({
   "compilerPackageVersion": "0.17.0",
   "runtime": {
@@ -93,7 +93,7 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/resident-state.js",
-        "hash": "fnv1a64:a47145a0d511e411"
+        "hash": "fnv1a64:aca7749a358698cf"
       },
       {
         "path": "packages/skeleton/dist/src/presence-signals.js",
@@ -121,7 +121,7 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/worker-protocol.js",
-        "hash": "fnv1a64:d1bc17b3a4f73071"
+        "hash": "fnv1a64:bef918c37be71732"
       },
       {
         "path": "packages/skeleton/dist/src/presence-machine.js",
@@ -129,11 +129,11 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/actor-catalog.js",
-        "hash": "fnv1a64:534505c23d5f05c4"
+        "hash": "fnv1a64:50911f5ff72a4f8a"
       },
       {
         "path": "packages/skeleton/dist/src/actor-contract.js",
-        "hash": "fnv1a64:72acc860645b2f86"
+        "hash": "fnv1a64:ca5ebec3f7b6fe43"
       },
       {
         "path": "packages/skeleton/dist/src/cli-actor-contract.js",
@@ -168,7 +168,7 @@ await runCommitMessageHook({
         "hash": "fnv1a64:5ad495017c40b9b2"
       }
     ],
-    "snapshot": ".runtime/harness/0f7b7a128b5726e4"
+    "snapshot": ".runtime/harness/0860cf5ecf83b26b"
   },
   "policy": {
     "contractVersion": "feedback-v1",

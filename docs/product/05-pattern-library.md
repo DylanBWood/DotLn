@@ -61,7 +61,8 @@ an observed cadence justifies it.
 
 The operator entry point is the
 [review guide](../instance/entropy-reducer/README.md) and its command family,
-`npm run entropy`: a frozen subject, a Fable 5.1 `max` review, host-validated
+`npm run entropy`: a frozen subject, an Opus 5.5 `xhigh` review (Fable 5.1
+`max` before WO-100), host-validated
 output, and a fresh blinded refutation before operator disposition. The guide
 distinguishes compiled data from the host duties and keeps the five manual
 steps as the recorded fallback. WO-142 advances the compiled Shape-First
@@ -94,9 +95,17 @@ report in `ScriptEpisodeObserved`; no operator await is present. The six-candida
 fixture and scratch Git row exercise real commands, confinement and replay.
 Reference absence is scoped to the declared tokens and bounded non-dependency
 corpus, not a language-complete proof of unreachability. The candidate's file
-count is observed scope, not repair effort. WO-100 consumes this typed input
-later; derivation and autonomous repair are not implemented here. Evidence,
-alternatives and reopening conditions: [WO-119 decisions](../evidence/WO-119/decisions.md).
+count is observed scope, not repair effort. Evidence, alternatives and
+reopening conditions: [WO-119 decisions](../evidence/WO-119/decisions.md).
+
+**Preauthorized portfolio (WO-100).** WO-100 consumes that typed input. Each
+producer kind belongs to a compiled piece: failing lint and test to Shine,
+placement and stale generated files to Sort, recurring repairs to Standardize.
+A portfolio names which pieces run unattended; a candidate of another piece is
+a product suggestion. Sort keeps its first-authority rule: a stale generated
+file's removal needs deletion, which no derived order carries, so it asks a
+human. Seiton and the remaining pieces join the vocabulary as WO-093 compiles
+them. Evidence: [WO-100 decisions](../evidence/WO-100/decisions.md).
 
 ## Leadership & autonomy — Marquet
 

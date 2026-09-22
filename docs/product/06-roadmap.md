@@ -20,6 +20,30 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-100 activation completion (2026-09-22):** assigned application `v0.43.0`
+under the order's minor classification, the next minor above the observed
+local `v0.42.0` tag. A preauthorized portfolio becomes reviewed configuration
+(`portfolios` in `dotln.config.json`) and a resident binding admitted under the
+compiled floor; `deriveWorkOrders` turns WO-119 candidates into bounded orders,
+product suggestions, human questions or deferrals; and a `portfolio` actor
+activates one order with a `host-policy` grant, materializes it through WO-120,
+changes source through WO-052 and advances the presence curve only after WO-054
+verifies it. Skeleton `0.37.0` adds the contract, the actor kind, the host
+composition and two resident event types under schema 1; the console's exact
+dependency pin follows it. Compiler, kernel, semantic hashing and the external
+dependency set are unchanged and no package is added. Under the operator's
+scope expansion (WO-100-D007) the Entropy Reducer's compiled reviewer moves
+from `claude-fable-5-1` at `max` to `claude-opus-5-5` at `xhigh` (Seisō v2, a new
+semantic hash; filed receipts keep theirs), and the entropy and
+planning-refutation commands default Codex to `gpt-6-sol` at `xhigh`.
+Compatibility impact: the portfolio is additive — an absent `portfolios`
+section and a resident without a `portfolio` binding behave byte for byte as
+before, and existing resident logs replay unchanged; the default reviewer and
+refuter models change, and an explicit `--model`/`--effort` still selects any
+other. Publication remains a separate dispatch.
+
+**WO-100 collision retiming (2026-09-22):** unpublished target `v0.43.0` is superseded by `v0.44.0` under the existing minor classification because the observed release baseline is `v0.43.0`. Scope, acceptance, component versions, and published tags are unchanged by this retiming.
+
 **WO-151 activation completion (2026-09-22):** assigned application `v0.42.0`
 under the order's minor classification, the next minor above the observed
 local `v0.41.1` tag this final review integrated. The Entropy Reducer's
@@ -845,6 +869,32 @@ changes and unresolved decisions.
 The current one-slot resume protocol remains manual and authoritative. No
 automatic allocator, approval phrase, queue schema, or concurrency model is
 selected by this candidate.
+
+**Allocated to WO-100 (2026-09-22).** The preauthorized lane now exists at
+resident scale. A portfolio declared under `portfolios` in `dotln.config.json`
+names the compiled 5S mechanics, repository surfaces, an effect and file
+ceiling per presence phase, a budget of episodes, wall time and reported
+tokens, and per-kind verification commands. The resident derives one bounded
+order per WO-119 candidate, records its activation with a `host-policy` grant,
+materializes it through WO-120 into the ordinary index, and advances its
+presence curve only after WO-052 changes it and WO-054 passes the portfolio's
+named verification commands (a Sort move is also checked by the host); out-of-portfolio
+candidates become product suggestions or `NeedsHuman`, and a spent budget is a
+reasoned NoOp ([WO-100 decisions](../evidence/WO-100/decisions.md)). Still
+candidate here: activation policy beyond the compiled presence curve, slots and
+ranking across orders, replenishment, retry and the return view. The live
+unattended hour is WO-111; the first lane (small orders under standing
+authority) is not implemented.
+
+**Always-on agent model default (candidate, operator direction 2026-09-22).**
+Always-on agents — the resident's workers and judges, and the portfolio's live
+execution hosts — may default to GPT-6 Luna or the latest Claude Sonnet
+(Sonnet 5 until Sonnet 5.5 is available) at `xhigh`. No such default exists
+yet: `resident-bind` requires `--model` and `--effort`, and portfolio hosts are
+unbound until WO-111, which owns adopting it
+([WO-100-D007](../evidence/WO-100/decisions.md#wo-100-d007)). External calls
+that name a model today use Opus 5.5 `xhigh` in place of Fable 5.1 and GPT-6
+Sol in place of GPT-6 Astra.
 
 ### Candidate — budget-window work-order ladders
 
