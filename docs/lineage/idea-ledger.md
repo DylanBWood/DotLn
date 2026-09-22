@@ -40,6 +40,72 @@ are now declared above. The [decision record](../evidence/WO-084/decisions.md)
 records the legacy ledger write-back; `node scripts/lineage.mjs index` generates
 the index and `index --check` enforces this rule in `npm run test:docs`.
 
+## 2026-09-22 — Planning pass: closeout follow-ups after WO-100 and WO-064 (WO-157, one operator-authorized order; 35 register rows judged)
+
+Source: the operator's dispatch and two mid-pass corrections, captured
+verbatim in ignored intake
+(`docs/intake/notes/2026-09-22-closeout-followups-planning.md`, SHA-256
+`a664688747a33959ac18e55c4b67975c93ee068d4b5e8e7989df9b3027d68558` after
+the corrections were appended): at most one order, run next and solo,
+carrying whatever is useful before any future order; then "take everything
+and put it in a single work order, one time, authorized by me"; then be
+clear enough for the executor and give the verifier enough acceptance
+criteria. Inputs: the follow-up register's 35 pending rows that were not
+deferred, the decision files of the six orders closed on 2026-09-22, the
+two final reviews of the closed pair, the source lines each defect names,
+and a scratch reproduction. Clean-room screen: no stop condition. The
+record is [the planning document](../planning/closeout-followups-2026-09-22.md).
+
+- **One order carries every boarded-up defect** `adopted`
+  `operator-authorized`
+  - The pass's first draft filed one narrow order (the integrate helper's
+    intent-to-add refusal) and deferred fifteen other defects to register
+    rows and map candidates; the operator corrected it. WO-157 now carries
+    all sixteen decision records as fifteen items across six seam groups,
+    each with its observed cause, paths, fix, fixture and verifier checks,
+    an executor procedure for the single edition re-mint and bundle
+    regeneration, and nineteen acceptance criteria. The one-seam convention
+    is set aside for this order by the operator's authorization. Provenance:
+    the planning document §4 and §12; the sixteen records. Reopen: an item's
+    reopening observation after WO-157 closes, each recorded on the map's
+    2026-09-22 closes section.
+- **The pass's own error, corrected** `adopted`
+  - "0 or 1 work orders" was read with the one-seam convention as "one small
+    order"; the dispatch's "anything really that would be useful" and the
+    correction show the category was the whole set. The register rows first
+    disposed as deferred are re-disposed as allocated to WO-157 with their
+    history retained. Provenance: the planning document §12. Reopen: never;
+    the record stands.
+- **Closed entries leave; the pair retires** `adopted`
+  - WO-100 (v0.44.0) and WO-064 (v0.43.0) leave the sequence under the
+    2026-09-22 rule; WO-157 takes the head slot, solo; 49 queued entries.
+    Provenance: the sequence preamble. Reopen: a reader of the sequence is
+    found to need a closed entry.
+- **What WO-111 cannot carry lands first** `adopted`
+  - Three WO-100 follow-ups were routed to WO-111 (the resident's binding
+    under the loader's profile check, a default model for always-on agents,
+    the file ceiling and deletions the source-change host does not count),
+    but WO-111's criterion 6 and non-goals forbid runtime changes; WO-157
+    items 3, 6 and 7 land them ahead of the proof. Provenance: WO-100 D006,
+    D007, D016; WO-111's text. Reopen: WO-111's receipt contradicts one.
+- **Sync before dispose** `adopted`
+  - The adjacent queue's deferred items keep a literal target because the
+    executor disposes them before the collector mints the identifier, and a
+    later order cannot retarget a closed order's retained queue; product 07
+    §Retained planning follow-ups now says to sync first, and WO-157 item 2
+    puts the sentence in the executor's support text and admits a
+    reviewer-phase retarget. The registered-source duty is narrowed to
+    exclude component release labels (WO-152 D004). Provenance: WO-064 D011,
+    WO-152 D011, WO-152 D004; `scripts/adjacent-work.mjs`. Reopen: a third
+    order repeats the advisory after WO-157 closes.
+- **Selected-effort readback for Claude Code** `adopted`
+  - `CLAUDE_EFFORT=xhigh` is exported in this session at Claude Code 2.1.280
+    while the discovery probe records no readback and WO-152's reviewer
+    wrote `unknown` for a supplied value; WO-157 item 11 adds the probe row
+    and an observed attestation source. Provenance: WO-152 D012; this
+    session's environment. Reopen: an attestation disagrees with the
+    variable after WO-157 closes.
+
 ## 2026-09-22 — Planning pass: operator answer (closed entries leave the sequence; WO-153 to WO-156 filed)
 
 Source: the operator's two messages and answered question during the

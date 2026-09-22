@@ -82,10 +82,18 @@ editions keyed by behavior and recorded by reference), and WO-155 with WO-156
 under 2 s). Disjoint surfaces, no hard edge, one re-minting order per pair.
 Evidence: [the REVIEW-002 planning document](entropy-review-002-2026-09-22.md) §12.
 
+Closeout follow-ups pass (2026-09-22, fourth): WO-100 and WO-064 are closed
+(v0.44.0, v0.43.0) and leave the sequence. WO-157 takes a one-entry slot at
+the head, before WO-153 and WO-154, solo, at the operator's direction: one
+operator-authorized order carrying every defect the orders closed on
+2026-09-22 boarded up (sixteen decision records, eleven seams). It edits
+registered sources and re-mints the editions once, so it does not run
+beside WO-154 or WO-155. No pair is recut. Evidence:
+[the closeout follow-ups planning document](closeout-followups-2026-09-22.md) §4 and §5.
+
 <!-- dotln-work-order-sequence:start -->
 
-- WO-100 — Preauthorized portfolio and work derivation
-- WO-064 — Target publish
+- WO-157 — Closeout follow-ups, one order
 
 - WO-153 — Codex session entry advisory
 - WO-154 — Evidence editions keyed by behavior and recorded by reference

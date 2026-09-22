@@ -640,6 +640,11 @@ and regenerates the projections below. Ignored intake requires
 `--intake-backup <archive.zip>` naming an external archive whose bytes match
 the current intake; `npm run backup:intake -- <authorized-directory>` creates
 one. The helper never reads a sibling's phase as admission authority.
+Until [WO-157](../work-orders/WO-157-closeout-followups.md) lands,
+stage intent-to-add entries fully before integrating: an entry left by
+`git add -N` makes the include-untracked stash fail after the pending
+receipt is written, and the helper then refuses as pending until an operator
+recovers it by hand (WO-100 D017).
 
 The command lists authored conflicts and exits nonzero while work remains.
 Resolve those paths explicitly, stage those resolutions, then use
@@ -1079,8 +1084,11 @@ Standard artifacts, all doc-only:
   observed gap, acceptance
   criteria, evidence, non-goals, and operator-review assumptions; an order
   that edits a registered evidence source (`scripts/lib/evidence-sources.mjs`)
-  names the edition re-mint and one live feedback self-host episode in its
-  Cost line and dispatch dimensions (WO-147 D010);
+  other than a component release label names the edition re-mint and one
+  live feedback self-host episode in its Cost line and dispatch dimensions
+  (WO-147 D010; the release-label exclusion is WO-152 D004, because
+  `evidenceSourceContent` normalizes those labels away and a version-only
+  bump never makes an edition stale);
 - product-doc write-back for durable understanding, with the publication
   index and edition locks repaired in the same pass;
 - `npm run meta -- --plan-cost` refreshes the bounded, subject-hashed cost
@@ -1112,7 +1120,11 @@ or sourced decision records and sync in the same pass with `npm run meta`.
 
 Read the [follow-up procedure](../planning/followups.md) when recording a
 choice or reconciling a source change. The metadata and document gates check
-freshness; executor deferrals need a checked public FUP destination. Neither the
+freshness; executor deferrals need a checked public FUP destination. Because
+the identifier is minted by the collector, run `npm run plan -- followups
+--sync` after recording the decision and before disposing the queue item onto
+it; WO-064 D011 and WO-152 D011 record the advisory that disposing first
+leaves. Neither the
 feed nor a disposition grants work-order activation authority.
 
 ## Research and guided-operator work orders
@@ -1269,6 +1281,19 @@ invalidated dispositions when a pass opens, and a pass needs the count of
 rows per source order, not a first page of eight. No order is allocated;
 reopen at the next pass with that ordering tried, or when the first page
 again shows nothing the pass acts on.
+
+**Measured 2026-09-22 (closeout follow-ups pass).** The first page showed
+three invalidated dispositions, three open items and two deferrals of 150
+pending; the pass selected nothing from it and read the register by script
+because the 29 untriaged rows (decision records from WO-063, WO-064,
+WO-100, WO-120, WO-151 and WO-152) were paged last. Orientation also read
+canonical status, the sequence, this guide's planning and ideation sections,
+the three same-day planning documents' route and answer sections, the
+decision files of six orders, two final reviews, the map's three latest
+candidate sections, the queued orders' headers, the budgets file and the
+integrate helper's source. The ordering friction stands as recorded above;
+one further ask: the first page should say which closed orders contributed
+the untriaged rows. Stays open.
 
 ## Candidate — recurring review of implementation alternatives
 
