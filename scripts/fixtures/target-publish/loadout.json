@@ -1,0 +1,178 @@
+{
+  "schemaVersion": 1,
+  "loadoutId": "target-publish-fixture.v1",
+  "identity": {
+    "identityId": "target-publish-fixture",
+    "version": 1,
+    "name": "Synthetic target worker",
+    "dispositions": [
+      "bounded",
+      "evidence-bound"
+    ],
+    "invariants": [
+      "Only synthetic source; one writer in the assigned worktree"
+    ],
+    "updateLaws": [
+      "Publish only under the operator grant"
+    ],
+    "lineage": [
+      "WO-064"
+    ]
+  },
+  "role": {
+    "roleId": "synthetic-target-worker",
+    "version": 1,
+    "name": "Synthetic target worker",
+    "obligations": [
+      "Change the fixture text, run the test and commit"
+    ],
+    "permissions": [],
+    "objectives": [
+      "One bounded source change ready for review"
+    ],
+    "policyDeltas": []
+  },
+  "containers": [
+    {
+      "containerId": "synthetic-worktree",
+      "version": 1,
+      "name": "Synthetic worktree",
+      "kind": "workspace",
+      "socketBudget": 0,
+      "activeMechanicIds": [
+        "source-change"
+      ],
+      "supportFacetIds": []
+    }
+  ],
+  "activeMechanics": [
+    {
+      "activeMechanicId": "source-change",
+      "version": 1,
+      "name": "Bounded target change",
+      "tags": [
+        "mutate"
+      ],
+      "requiredCapabilities": [],
+      "semantics": [
+        "One source change, one local commit, publication under an operator grant"
+      ],
+      "authorityEnvelope": {
+        "authorityEnvelopeId": "synthetic-target-base",
+        "allowedEffects": [
+          "repo.read",
+          "repo.write",
+          "git.local",
+          "shell.run"
+        ],
+        "deniedEffects": [
+          "repo.push",
+          "remote.*",
+          "credentials.*",
+          "settings.*",
+          "sandbox.*",
+          "transport.*",
+          "package.publish"
+        ],
+        "resourceLimits": {
+          "writers": 1
+        },
+        "requiredEvidence": [],
+        "expiresAt": 4102444800000,
+        "revocationEventTypes": []
+      },
+      "workOrder": {
+        "workOrderId": "WO-064",
+        "objective": "Replace the baseline line in fixture.txt with the synthetic worker line so the focused fixture test passes.",
+        "acceptanceCriteria": [
+          "Only fixture.txt changes",
+          "The focused fixture test passes after the change",
+          "Exactly one commit above the base"
+        ],
+        "knownFacts": [
+          "This is a synthetic repository"
+        ],
+        "decisions": [
+          "Publication authority comes only from the operator grant"
+        ],
+        "constraints": [
+          "Do not change the test or the host commit message"
+        ],
+        "nonGoals": [
+          "Merging the pull request",
+          "Other repositories"
+        ],
+        "allowedOperations": [
+          "repo.read",
+          "repo.write",
+          "git.local",
+          "shell.run"
+        ],
+        "prohibitedOperations": [
+          "repo.push",
+          "remote.*",
+          "credentials.*",
+          "settings.*",
+          "sandbox.*",
+          "transport.*",
+          "package.publish"
+        ],
+        "requiredEvidence": [],
+        "outputContract": {
+          "type": "source-change-envelope",
+          "required": [
+            "workOrderId",
+            "episodeId",
+            "status",
+            "resultId",
+            "summary",
+            "requiresHuman"
+          ]
+        }
+      },
+      "inspection": {
+        "originalTerm": "Source change",
+        "translation": "Source change",
+        "kanji": "",
+        "rpgTitle": "Synthetic worker",
+        "grants": [],
+        "restrictions": [],
+        "obligations": [],
+        "passive": [],
+        "pulse": [],
+        "interrupt": []
+      }
+    }
+  ],
+  "supportFacets": [],
+  "links": [],
+  "linkGroups": [],
+  "explicitPipelines": [],
+  "ambientEffects": [],
+  "authorityGrants": [
+    {
+      "grantId": "operator.target-publish",
+      "version": 1,
+      "grantedBy": "operator",
+      "effects": [
+        "repo.push",
+        "pr.open"
+      ],
+      "operations": [
+        "repo.push",
+        "pr.open"
+      ],
+      "repo": "<target-repository>",
+      "reason": "Operator grant to publish the synthetic target branch"
+    }
+  ],
+  "resourceModel": {
+    "resourceModelId": "scratch-resources",
+    "version": 1,
+    "capacities": {
+      "writers": 1
+    },
+    "reservations": []
+  },
+  "polarAxes": []
+}

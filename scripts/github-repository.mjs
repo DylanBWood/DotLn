@@ -82,3 +82,31 @@ export const environmentWithoutGhRepo = (environment = process.env) => {
   delete clean.GH_HOST;
   return clean;
 };
+
+export const executeGh = (cwd, args) =>
+  spawnSync("gh", args, {
+    cwd,
+    encoding: "utf8",
+    env: environmentWithoutGhRepo(),
+  });
+
+// Every remote mutation first proves the push target, gh and its login.
+export const ensureGh = (path) => {
+  const repository = resolveGitHubPushTarget(path);
+  const available = executeGh(path, ["--version"]);
+  if (available.status !== 0)
+    throw new Error(
+      "gh is required before any remote mutation; install and authenticate GitHub CLI, then retry publish",
+    );
+  const authenticated = executeGh(path, [
+    "auth",
+    "status",
+    "--hostname",
+    repository.host,
+  ]);
+  if (authenticated.status !== 0)
+    throw new Error(
+      "gh authentication is required before any remote mutation; authenticate GitHub CLI, then retry publish",
+    );
+  return repository;
+};

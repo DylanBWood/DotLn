@@ -269,6 +269,8 @@ const protection = {
   "github-body": "published descriptions preserve reviewed content",
   "outward-lint":
     "outward artifacts have conventional shape and redacted vocabulary checks",
+  "target-publish":
+    "a target branch reaches its remote only from a bound episode, under an operator grant and after the outward lint",
   "license-fixtures":
     "source-only publication preserves license and package privacy",
   "license-surfaces": "shipped license and private-package pins remain valid",
@@ -394,6 +396,7 @@ export const suites = [
   nodeTests("outward-lint", "scripts/test-outward-lint.mjs", {
     needsBuild: false,
   }),
+  nodeTests("target-publish", "scripts/test-target-publish.mjs"),
   nodeTests("license-fixtures", "scripts/test-license-surfaces.mjs"),
   node("license-surfaces", "scripts/license-surfaces.mjs", {
     preflight: true,
