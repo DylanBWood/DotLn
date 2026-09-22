@@ -58,6 +58,12 @@ WO-138 and WO-071 is still open and must not make WO-147 or WO-148 wait.
 The evidence is in
 [the standard-pass planning document](standard-pass-2026-09-21.md) §12.
 
+Entropy Reducer pass (2026-09-22): WO-151 and WO-152 pair directly after
+WO-120 and WO-063 (the reviewer's dispatch as a command; the duplicate
+mission-check schema ids, fixed before WO-100 needs the print transport).
+Disjoint surfaces, no hard edge; the sequence is at its 100-order limit.
+Evidence: [the planning document](entropy-reducer-dispatch-2026-09-22.md) §6.
+
 <!-- dotln-work-order-sequence:start -->
 
 - WO-132 — Machinery stand-down
@@ -129,6 +135,9 @@ The evidence is in
 
 - WO-120 — Derived work identity
 - WO-063 — Outward-artifact lint
+
+- WO-151 — Entropy Reducer dispatch
+- WO-152 — Mission-check schema without duplicate ids
 
 - WO-100 — Preauthorized portfolio and work derivation
 - WO-064 — Target publish

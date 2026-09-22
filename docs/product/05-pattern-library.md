@@ -67,6 +67,11 @@ host duties. WO-142 advances the compiled Shape-First support to version 2,
 implementing the operator's relationship-first correction: literal details are
 evaluated only when a claim depends on them. The generated residue and current
 fixtures reflect v2; historical review and refutation receipts retain their bytes.
+WO-151 (planned 2026-09-22) makes the guide's host steps a command with
+numbered immutable receipts and operator dispositions that land accepted
+findings in the follow-up register; the actor pin is satisfied by invocation
+readback or a labeled substitute. Sustain stays a candidate (the planning
+map's section dated 2026-09-22).
 
 **Executable discovery (WO-119).** Sort and Shine also have a deterministic,
 bounded producer in `packages/skeleton/src/discovery.ts`. Its kernel-stepped

@@ -1582,6 +1582,14 @@
             "WO-142"
           ],
           "at": "2026-09-19T01:19:41.443Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-09-22 Entropy Reducer pass: WO-142 (v0.32.0) shipped Shape-First support v2 and regenerated the residue, compiler fixture and console input; the operator guide and product 03 and 05 record it.",
+          "reopenWhen": "the generated residue and the typed support disagree again",
+          "targets": [],
+          "at": "2026-09-22T00:34:50.934Z"
         }
       ]
     },
@@ -3286,6 +3294,19 @@
             "WO-083"
           ],
           "at": "2026-09-19T01:19:40.044Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Re-recorded by the 2026-09-22 Entropy Reducer pass at the new source revision: the workstream application is still WO-080 to WO-083, queued.",
+          "reopenWhen": "one of those orders is withdrawn",
+          "targets": [
+            "WO-080",
+            "WO-081",
+            "WO-082",
+            "WO-083"
+          ],
+          "at": "2026-09-22T00:34:49.395Z"
         }
       ]
     },
@@ -3693,6 +3714,14 @@
             "WO-150"
           ],
           "at": "2026-09-21T07:22:35.381Z"
+        },
+        {
+          "sourceRevision": 10,
+          "status": "settled",
+          "reason": "Settled by the 2026-09-22 Entropy Reducer pass: WO-150 closed at v0.39.0 with the economy support on by default and the per-order opt-out kept.",
+          "reopenWhen": "the first order dispatched under the default records neither an experiment nor a kept-current decline, or the record of experiments since the last adopted improvement is long enough to read an adaptive pressure",
+          "targets": [],
+          "at": "2026-09-22T00:34:50.559Z"
         }
       ]
     },
@@ -8873,6 +8902,14 @@
             "WO-138"
           ],
           "at": "2026-09-21T06:59:09.666Z"
+        },
+        {
+          "sourceRevision": 10,
+          "status": "deferred",
+          "reason": "Re-recorded by the 2026-09-22 Entropy Reducer pass at the new source revision: WO-137, WO-110 and WO-138 closed; WO-138's disposition after repair is inconclusive (only T2 qualifies, a local model for one read-only role ranking discovery candidates; T1 needs a fresh fixed-schema accuracy qualification; T3 is below its floor), and no private-input, no-egress, implementation or verification qualification follows without its own registered experiment.",
+          "reopenWhen": "the task, schema, artifact or boundary changes, a new qualification is registered, or a local role that would read private material is proposed, which needs the no-egress experiment first",
+          "targets": [],
+          "at": "2026-09-22T00:34:49.771Z"
         }
       ]
     },
@@ -12311,6 +12348,14 @@
             "WO-148"
           ],
           "at": "2026-09-21T06:59:07.042Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "settled",
+          "reason": "Settled by the 2026-09-22 Entropy Reducer pass: delivered by WO-148 (v0.40.0; the live row collected on codex-cli-exec); the candidate's two deferrals stay with WO-100, WO-111 and WO-124 as its delivered section records.",
+          "reopenWhen": "WO-111's first unattended hour meets a store the bind command could not have written",
+          "targets": [],
+          "at": "2026-09-22T00:34:50.174Z"
         }
       ]
     },
@@ -13081,7 +13126,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-09-22 Entropy Reducer pass: an in-order directive discharged by WO-138's own repair cycle (VER-002 pass, FINAL-001 pass, v0.38.1); the corrected schema ran in D006's replacement matrix.",
+          "reopenWhen": "a T1 receipt schema and its host validator disagree again",
+          "targets": [],
+          "at": "2026-09-22T00:34:44.087Z"
+        }
+      ]
     },
     {
       "id": "FUP-c3f5fff27ea981b8",
@@ -13096,7 +13150,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-09-22 Entropy Reducer pass: the integration decision is in force (v0.38.1 published); the note that worktree integrate set its stage to applied while a roadmap conflict remained, and the doubled period in the receipt string, is a boarded limit of WO-079's helper with one observation and no allocated order.",
+          "reopenWhen": "a second integration meets an authored conflict, or a regenerated projection carries a conflict byte",
+          "targets": [],
+          "at": "2026-09-22T00:34:44.464Z"
+        }
+      ]
     },
     {
       "id": "FUP-349058ac0342247d",
@@ -13111,7 +13174,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-09-22 Entropy Reducer pass: the minLength correction is named for the next order that recollects a T1 matrix, and no queued order does.",
+          "reopenWhen": "an order recollects a T1 matrix",
+          "targets": [],
+          "at": "2026-09-22T00:34:44.840Z"
+        }
+      ]
     },
     {
       "id": "FUP-3dffdb16d0efea2b",
@@ -13126,7 +13198,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-09-22 Entropy Reducer pass: a rule for Cost lines in force; no order filed by this pass equips a support, so no briefing-line bytes are stated.",
+          "reopenWhen": "a Cost line states a support's per-dispatch cost without its briefing-line bytes",
+          "targets": [],
+          "at": "2026-09-22T00:34:45.217Z"
+        }
+      ]
     },
     {
       "id": "FUP-866699c54128edc1",
@@ -13141,7 +13222,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-09-22 Entropy Reducer pass on the decision's own reopening observation; prune eligibility of retained bound stores follows WO-142 D022's prune follow-up.",
+          "reopenWhen": "a retained store is needed after its worktree is removed and the preserved copy cannot be read, or the prune follow-up decides bound-store eligibility",
+          "targets": [],
+          "at": "2026-09-22T00:34:45.605Z"
+        }
+      ]
     },
     {
       "id": "FUP-e2877e300cc8813a",
@@ -13156,7 +13246,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-09-22 Entropy Reducer pass to WO-152, filed for it: missionReferenceIds deduplicated in first-seen order, a regression over every enum of the emitted schema, a skeleton component bump with the edition duty, and one live claude-cli-print mission check against a real bound store.",
+          "reopenWhen": "WO-152 is withdrawn, or closes without its live row",
+          "targets": [
+            "WO-152"
+          ],
+          "at": "2026-09-22T00:34:45.992Z"
+        }
+      ]
     },
     {
       "id": "FUP-19fe4b2a025da724",
@@ -13171,7 +13272,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-09-22 Entropy Reducer pass: an in-order repair directive discharged by WO-148's repair cycle (VER-002 pass, FINAL-001 pass, v0.40.0).",
+          "reopenWhen": "--check accepts a store retargeted through an uncompared source field again",
+          "targets": [],
+          "at": "2026-09-22T00:34:46.370Z"
+        }
+      ]
     },
     {
       "id": "FUP-5eae48519a10c61c",
@@ -13186,7 +13296,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-09-22 Entropy Reducer pass: an in-order repair directive discharged by WO-148's repair cycle (VER-002 pass, FINAL-001 pass, v0.40.0).",
+          "reopenWhen": "--check on a relocated store prints a command naming the missing original directory again",
+          "targets": [],
+          "at": "2026-09-22T00:34:46.741Z"
+        }
+      ]
     },
     {
       "id": "FUP-ef8bbcede2cd0bb2",
@@ -13201,7 +13320,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-09-22 Entropy Reducer pass: an in-order repair directive discharged by WO-148's repair cycle (VER-002 pass, FINAL-001 pass, v0.40.0).",
+          "reopenWhen": "bind writes a store into a configured lane that Git does not ignore",
+          "targets": [],
+          "at": "2026-09-22T00:34:47.122Z"
+        }
+      ]
     },
     {
       "id": "FUP-2f74e76fb7212925",
@@ -13230,7 +13358,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 3,
+          "status": "settled",
+          "reason": "Settled by the 2026-09-22 Entropy Reducer pass: discharged inside WO-147's final review by D010 (the authority and feedback editions re-minted with one live self-host audit; FINAL-001 pass, v0.40.1).",
+          "reopenWhen": "a verifier again records a pass before the document gate ran on the delivered work",
+          "targets": [],
+          "at": "2026-09-22T00:34:47.513Z"
+        }
+      ]
     },
     {
       "id": "FUP-a0f22832bb1a84ea",
@@ -13245,7 +13382,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-09-22 Entropy Reducer pass: the planner rule is written into product 07 §Operator-opened planning pass (the drafts bullet) and applied to WO-151 (root package.json) and WO-152 (the skeleton package).",
+          "reopenWhen": "an order changes a registered evidence source without the edition duty in its text",
+          "targets": [],
+          "at": "2026-09-22T00:34:47.890Z"
+        }
+      ]
     },
     {
       "id": "FUP-f219d99187db98b7",
@@ -13291,7 +13437,98 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-09-22 Entropy Reducer pass to WO-153, filed for it: a catch around the begin call with a named advisory carrying the cause and the no-session code, exit 0 with the briefing, and a fixture over the five Codex dispatches.",
+          "reopenWhen": "WO-153 is withdrawn, or a Codex dispatch is observed exiting non-zero from the entry call after it closes",
+          "targets": [
+            "WO-153"
+          ],
+          "at": "2026-09-22T00:34:48.258Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-09-22 Entropy Reducer pass: drafted as WO-153 (a catch around the begin call with a named advisory carrying the cause and the no-session code, exit 0 with the briefing, a fixture over the five Codex dispatches) and withdrawn before commit because the sequence would hold 101 orders against the planning subject's limit of 100 (scripts/lib/plan-subject.mjs); closed entries remain until the operator changes the horizon. The draft is retained in the local control lane and its design is in the planning document §5.",
+          "reopenWhen": "the operator changes the horizon (retires closed entries or moves the limit), or a Codex dispatch is observed exiting non-zero from the entry call",
+          "targets": [],
+          "at": "2026-09-22T00:41:39.896Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-895692b9939c8181",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-entropy-reducer-pass-recorded-2026-09-22::9926790e0fdbf0db7e8cf63bb7c644d9531d838c761742d919e36e5f6a4d9503",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "00eefcb8f17a669da602b339e8dff1d055388c6cef3438bbfeceae8f2de3e037",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-entropy-reducer-pass-recorded-2026-09-22",
+          "title": "A meter column for the reviewer's dispatches.",
+          "summary": "2. **A meter column for the reviewer's dispatches.** WO-151 records each episode's cost in its receipt and adds no dispatch kind to `docs/control/budgets.json` or the usage observer, because the observer is a registered evidence source and the reviewer runs on demand. Reopen: the reviewer runs more than once per release and the operator wants its cost beside the roles' in the cost table, or a receipt's cost cannot be read from the transport's harness result.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-09-22 Entropy Reducer pass that recorded it: WO-151 keeps the reviewer's cost in its receipt; the usage observer is a registered evidence source and the reviewer runs on demand.",
+          "reopenWhen": "the reviewer runs more than once per release and the operator wants its cost in the cost table, or a receipt's cost cannot be read from the transport's harness result",
+          "targets": [],
+          "at": "2026-09-22T00:34:48.643Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-c7f181269a96c4c5",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-entropy-reducer-pass-recorded-2026-09-22::fa1b153aeb7a2434607dd24c9f5a8fbd875e8aebe5be54119362094a7b5b8317",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "eea513920d61d62a46dad2620f2e1c47a8f96241d91e13f44753e78c38cfd7ab",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-entropy-reducer-pass-recorded-2026-09-22",
+          "title": "Sustain: the reviewer on a cadence during operator absence.",
+          "summary": "1. **Sustain: the reviewer on a cadence during operator absence.** WO-023 named the candidate cadence (gated on operator absence after each release close, the 5S organism's Sustain) and product 05 keeps Sustain a candidate until an observed cadence justifies it; the 2026-09-08 NoOp register declined a general scheduler (FUP-0009) and the harness's own cron (FUP-0016), and WO-100's portfolio consumes only WO-119's candidates, so the reviewer is not absence work today. What would decide it: the cost per cycle (USD 17 and 29 minutes at the pinned actor, from the one observed run) against what a scheduled review finds that verifiers inside orders missed, and whether a cadence can be declared in ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-09-22 Entropy Reducer pass that recorded it: the reviewer stays on demand; a general scheduler and the harness cron were declined on 2026-09-08 and the portfolio consumes only WO-119's candidates.",
+          "reopenWhen": "WO-111's first unattended hour closes and the operator asks for a review on a cadence, or two on-demand reviews show findings the order lifecycle missed at an accepted cost",
+          "targets": [],
+          "at": "2026-09-22T00:34:49.027Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-7f13b0e220950f10",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-entropy-reducer-pass-recorded-2026-09-22::e97f85141546a0c8015066fb7d8a6017764c505306e3a4ad48996afbd35fae9b",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "a4faefc9811a93baed7b7531b05b89e2f5a4bfcc4a0a1b61e29d7aae7c42c966",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-entropy-reducer-pass-recorded-2026-09-22",
+          "title": "The sequence at the subject's limit of 100 orders.",
+          "summary": "3. **The sequence at the subject's limit of 100 orders.** The planning subject refuses a sequence of more than 100 orders (`scripts/lib/plan-subject.mjs`); after this pass the sequence holds exactly 100, 51 of them closed, and the sequence's own rule keeps closed entries until the operator changes the horizon. WO-149 D009's nomination was drafted as WO-153 (a Codex dispatch whose session begin throws prints a named advisory with the cause and still delivers its briefing and exit 0) and withdrawn for that reason; the draft is retained in the local control lane (`docs/control/local/plan/`) and its design is in the planning document §5. The operator decides whether closed entries retire into th",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Left open by the 2026-09-22 Entropy Reducer pass that recorded it: whether closed entries retire into the archive, the limit moves by an order, or the next pass files nothing new until R2 is the operator's decision; the sequence holds exactly 100 orders after this pass, 51 closed.",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-22T00:41:40.527Z"
+        }
+      ]
     }
   ]
 }

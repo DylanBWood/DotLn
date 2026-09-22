@@ -1250,6 +1250,23 @@ explicitly authorized a direct draft during WO-023. That direct-to-work-order
 path is a recorded bootstrap exception, not reviewer self-promotion and not the
 normal proposal pipeline.
 
+**Planned 2026-09-22 (WO-151).** The manual host duties above become one
+command family: a frozen copy of `HEAD` under the granted scratch lane, the
+compiled reviewer for that subject, one fresh review and one fresh blinded
+refutation handed to workers through the transports the planning refuter
+already uses, numbered immutable receipts bound in a control log, and
+operator dispositions that land accepted findings as follow-up register
+candidates through a generated planning document and accepted packets under
+`docs/proposals/`. The loadout, residue, actor pin, authority envelope and
+program are not edited and `Program.All` stays deferred; the host drives the
+compiled manual plan as the refutation host drives its one-shot order. The
+pinned route satisfies the actor requirement by invocation readback; a
+background worker is a session-attested substitute unless the operator
+attests its effort, and the receipt names which. Promotion of a finding or
+packet to a work order remains a planning act. The
+[planning document](../planning/entropy-reducer-dispatch-2026-09-22.md)
+records the decision and its alternatives.
+
 The candidate Snooping Footprint Reducer is one recurring producer for this
 pipeline. It inventories observation and retention structurally, emits
 minimization suggestions, and may attach a reviewed but non-authoritative

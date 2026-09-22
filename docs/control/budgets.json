@@ -45,6 +45,14 @@
   },
   "acceptances": [
     {
+      "date": "2026-09-22",
+      "metric": "sequenceBytes",
+      "scope": null,
+      "dispatch": "planner",
+      "ceiling": 12369,
+      "reason": "The 2026-09-22 Entropy Reducer planning pass measured docs/planning/sequence.md at 8,273 bytes against 8,192 after adding its one dated rationale paragraph, the shortest that still names the pair, its reason and its evidence; the preamble carries one such paragraph per pass by product 07's planning procedure (the sequence revision and scoped rationale), eight passes since 2026-09-16, and this pass does not edit earlier passes' paragraphs. Under the standing 2026-09-17 route a breach is raised to the measured bytes plus one 4,096-byte step with the rule named, never trimmed around or left advisory across orders. The sequence also holds the subject's limit of 100 orders; the operator's horizon decision (the planning map's candidate dated 2026-09-22) is the structural answer to both. Reassess when the horizon changes."
+    },
+    {
       "date": "2026-09-20",
       "metric": "coldStartBytes.verifier",
       "scope": null,
