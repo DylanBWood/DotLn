@@ -546,7 +546,7 @@ test("WO-138 evaluation applies the pre-registered floors without promoting capa
   );
 });
 
-test("WO-138 committed episode records, when present, cover the immutable matrix and final build", async (t) => {
+test("WO-138 committed episodes bind their retained historical build; current and altered builds are rejected", async (t) => {
   const directory = join(ROOT, "docs/evidence/WO-138/episodes");
   const first = join(directory, `${evaluationMatrix()[0].episodeId}.json`);
   if (!existsSync(first)) {
@@ -557,11 +557,48 @@ test("WO-138 committed episode records, when present, cover the immutable matrix
   const inputs = JSON.parse(
     readFileSync(join(ROOT, "docs/evidence/WO-138/inputs.json"), "utf8"),
   );
-  const finalBuild = sha256(
-    readFileSync(
-      join(ROOT, "scripts/probes/local-model-role-qualification.mjs"),
-    ),
+  const historicalSource = readFileSync(
+    join(ROOT, "docs/evidence/WO-149/wo138-probe-source.mjs.txt"),
   );
+  const finalBuild = sha256(historicalSource);
+  assert.equal(
+    finalBuild,
+    "3d9d6aa05c47bc6561e6850ea49c236611a3b462486f8311e4119953411f6907",
+  );
+  const records = matrix.map((cell) =>
+    JSON.parse(readFileSync(join(directory, `${cell.episodeId}.json`), "utf8")),
+  );
+  assert.doesNotThrow(() =>
+    validateRecordInputs(records, inputs, historicalSource),
+  );
+  assert.throws(
+    () => validateRecordInputs(records, inputs),
+    /binding differs/u,
+  );
+  assert.throws(
+    () =>
+      validateRecordInputs(
+        records,
+        inputs,
+        Buffer.concat([historicalSource, Buffer.from("\n")]),
+      ),
+    /binding differs/u,
+  );
+  for (const key of [
+    "inputHash",
+    "promptHash",
+    "schemaHash",
+    "harnessBuildHash",
+  ])
+    assert.throws(
+      () =>
+        validateRecordInputs(
+          [{ ...records[0], [key]: sha256("changed") }],
+          inputs,
+          historicalSource,
+        ),
+      /binding differs/u,
+    );
   for (const cell of matrix) {
     const path = join(directory, `${cell.episodeId}.json`);
     assert.ok(existsSync(path), cell.episodeId);
