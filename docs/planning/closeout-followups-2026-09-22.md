@@ -264,7 +264,49 @@ counters are in the response and the ignored receipt.
 
 ## 11. Independent review
 
-Recorded after the refutation receipt is filed.
+One fresh background refuter (Entropy Reducer, Contra-Auguste mask,
+architecture-and-semantics lens; the second of two spawned, the first
+stopped before judging when the pass corrected three cross-references in the
+order and regenerated the prompt) judged the committed subject at
+`f1a9fd6d` under
+[receipt 027](refutations/2026-09-22-planning-12a29b8b07c6265d-027.md):
+scope pass, WO-157 and the sequence judged, 47 verdicts carried by hash,
+dispatch-to-file 600 s, verdict **aligned-with-findings** for WO-157 and the
+plan, no hold. The briefing carried the canonical prompt, the schema and the
+operator's atomicity direction (section 12) and nothing else; the worker
+read only the prompt files, ran nothing against the repository and reported
+model `claude-fable-5-1` with `CLAUDE_EFFORT=xhigh` observed in its
+environment. Nine known issues, each with a reopening observation, none a
+hold:
+
+- criterion 17: the fail-then-pass rule can be met by a base failure that
+  is a missing symbol rather than the item's assertion;
+- criterion 15: the title says "deterministic" while the criterion admits a
+  recorded diagnosis with the race unfixed;
+- criterion 7: "the latest Claude Sonnet" is an alias; the resolved model id
+  must be what the binding records;
+- criterion 8: "an unknown detail is refused" could refuse the recording of
+  a refusal and return the episode to the undiagnosable class;
+- criterion 6: `--check` is unspecified when no registered
+  `authorityProfile` is readable;
+- criterion 3: the deletion refusal may collide with a legitimate Sort
+  deletion in WO-111 or WO-118;
+- criterion 19: a pre-authorized cold-start raise repeats a route the
+  acceptances record seven times since 2026-09-17;
+- criterion 18: the order names removals by decision id but no gate or
+  order each item unblocks, and the register read "allocated" before
+  judgment;
+- criterion 11: `claude-session-readback` is a readback only if the host,
+  not DotLn's dispatcher, exports the variable.
+
+Disposition: all nine are carried as known issues for the executor's
+decisions, written on WO-157's catalog row; none changes the order's text
+in this pass. The pass records one disagreement without manufacturing
+dissent: the criterion 18 finding is right that no item names a gate, and
+the planning document's section 4 supplies it (items 3, 6, 7 and 11 precede
+WO-111; item 4 precedes WO-066; item 14 precedes WO-113; items 1 and 2
+serve every final review); the executor's decisions carry that mapping per
+item.
 
 ## 12. Operator corrections: everything in one order, stated for its executor and verifier
 
