@@ -138,8 +138,8 @@ a one-entry slot at the head, before WO-153 and WO-154, solo, at the
 operator's direction; it edits registered sources and re-mints the
 editions, so it must not run beside WO-154 or WO-155. No other entry moves.
 The sequence measures 7,890 bytes against the 8,192 ceiling; the dated
-12,369-byte acceptance is not needed and stays as history. 49 queued
-entries.
+12,369-byte acceptance is not needed and stays as history. 48 queued
+entries (the pass's first draft said 49; corrected here).
 
 ## 6. Seams recorded in the map
 
@@ -306,3 +306,13 @@ record's evidence: seeking the wrong goal, and shifting the burden of
 fifteen rediscoveries to later passes. One order with one re-mint is the
 smaller total cost. The correction is the rewrite and this record, not a
 wording change.
+
+**Third direction, before the refutation.** The operator sent: "tell the
+refuter that the atomicity requirement needs to be relaxed for this work
+order" (captured verbatim in the same intake note; SHA-256
+`4ee79b0df30d18530fd904eff225b12320f2d193c7b157e4c72524f90ac8347d`). The
+refuter's briefing therefore carries, beside the canonical prompt and
+schema, that one operator-authorized line: WO-157's cross-seam scope is
+authorized and the one-seam (atomicity) convention is not a criterion for
+this order, so multi-seam scope alone is neither a finding nor a hold. The
+direction adds no other input to the worker.

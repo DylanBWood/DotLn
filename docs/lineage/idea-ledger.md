@@ -78,7 +78,7 @@ record is [the planning document](../planning/closeout-followups-2026-09-22.md).
     the record stands.
 - **Closed entries leave; the pair retires** `adopted`
   - WO-100 (v0.44.0) and WO-064 (v0.43.0) leave the sequence under the
-    2026-09-22 rule; WO-157 takes the head slot, solo; 49 queued entries.
+    2026-09-22 rule; WO-157 takes the head slot, solo; 48 queued entries.
     Provenance: the sequence preamble. Reopen: a reader of the sequence is
     found to need a closed entry.
 - **What WO-111 cannot carry lands first** `adopted`
