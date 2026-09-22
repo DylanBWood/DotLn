@@ -120,6 +120,7 @@ await test("configuration root", async (t) => {
         observations: "docs/observations",
         decisions: "docs/decisions",
         orders: "docs/control/orders",
+        derivedWorkOrders: "docs/work-orders/derived",
         refutations: "docs/planning/refutations",
       });
       assert.deepEqual(config.repositories, {});

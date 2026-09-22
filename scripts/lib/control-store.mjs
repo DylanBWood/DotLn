@@ -157,7 +157,7 @@ export const branchWorkOrder = (root) => {
 
 export const openOrders = (control) =>
   [...control.orders]
-    .filter(([, row]) => row.state.phase !== "closed")
+    .filter(([, row]) => !["closed", "none"].includes(row.state.phase))
     .map(([id]) => id);
 
 // Across segments, "latest" means Git integration order, never wall-clock order.

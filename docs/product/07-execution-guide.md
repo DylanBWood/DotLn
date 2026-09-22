@@ -441,6 +441,48 @@ path; ruleset-aware API preflight remains a separate hardening candidate.
 The operator's own copy of this loop lives in `docs/PLAYBOOK.md`; this section
 is the executor's half of the same contract.
 
+### Derived work and intent
+
+`npm run dotln -- intent "Describe the work"` files a draft authority in the
+configured derived root and prints its identity and path. It does not activate
+or execute it. Review the objective, replace placeholder acceptance criteria,
+fill in surfaces, dependencies and release classification, then use the printed
+identity/path with the ordinary `resume activate` or `worktree start` command.
+The same draft is visible in the work-order index. `resume status --json
+--work-order WO-NNN` exposes its allocation provenance and phase `none`; the
+index and runtime status label that phase `draft`.
+
+Runtime and future UI consumers import `materializeOrder` from
+`scripts/lib/derived-orders.mjs`. Pass a complete compiler `WorkOrder`, public
+provenance `{ kind: "runtime" | "ui", sourceId: "stable-request-key" }`, and
+options `{ root, dependencies, surfaces, releaseClassification, activate }`.
+`root` defaults to the selected launchpad, typed dependencies and surfaces to
+empty arrays, release classification to `minor`, and activation to `true`.
+The result carries `{ workOrderId, workOrderPath, provenance, workOrder, phase }`.
+The input is unchanged; the returned work order carries the allocated identity.
+Use that identity when compiling downstream graphs or configuring resident
+actors. Do not replace a hashed `CompiledProgram`'s identity after compilation.
+`repo` must be `self` or a configured public repository id with its full base
+commit; committed authority/control records must contain public material only.
+
+An allocation is an append-only `WorkOrderIdentityAllocated` event in the usual
+per-order segment. It retains the initial authority and compiled contract so a
+retry can restore a missing file after interruption. Existing files are never
+overwritten. The same provenance key with changed inputs refuses; use a new key
+for different work. The same key with identical inputs reuses the identity and
+never reactivates an already activated order. An edited draft requires explicit
+human-reviewed activation. A missing file for an already activated order refuses
+rather than restoring an obsolete draft over potentially reviewed work.
+
+All materializers in one shared launchpad use the existing inspected worker
+lock; independent checkouts are not a distributed allocator. Range exhaustion
+refuses with the configured bounds. Existing handwritten/control identities
+are skipped. `dotln status --store <directory> --json` adds `derivedOrders` from
+the same selected launchpad control fold (use `DOTLN_LAUNCHPAD` when needed),
+including provenance and current lifecycle phase. The resident fixture persists
+and recompiles the returned identity across an actual host restart. This order
+does not derive new work automatically or implement UI filing.
+
 ### Where the control plane finds its documents
 
 **Added by WO-069 (2026-09-21).** Every command above resolves its document
@@ -464,7 +506,7 @@ routinely driven from an unrelated directory, and a working-directory ascent
 would let one checkout's session write into another checkout's documents.
 
 `dotln.config.json` at the launchpad root declares schema `version: 1` and the
-optional sections `roots`, `repositories`, `build` and `release`. **Its absence
+optional sections `roots`, `repositories`, `build`, `release` and `derivedOrders`. **Its absence
 means today's layout, byte for byte**, so this repository ships no such file and
 `status --json`, `current.md`, the generated index, `times`, `usage` and a
 release manifest derived over the real log are unchanged by its introduction.
@@ -472,10 +514,13 @@ release manifest derived over the real log are unchanged by its introduction.
 `roots` maps a root name to a relative POSIX path inside the launchpad. The
 names are `docs` (the document base), `control`, `orders`, `workOrders`,
 `verifications`, `finalReviews`, `evidence`, `releases`, `planning`,
-`refutations`, `publication`, `intake`, `workstreams`, `lineage`, `product`,
+`refutations`, `derivedWorkOrders`, `publication`, `intake`, `workstreams`, `lineage`, `product`,
 `discovery`, `observations` and `decisions`. An undeclared root defaults under
 the document base — `orders` under `control` and `refutations` under `planning`
-— so moving a parent moves its children unless the launchpad moves them too.
+— with `derivedWorkOrders` under `workOrders/derived`, so moving a parent moves
+its children unless the launchpad moves them too. `derivedOrders` declares
+`first` and `last` as inclusive `WO-NNN` bounds, defaulting to `WO-900` and
+`WO-999`; reversed or malformed ranges refuse.
 `repositories` is an object keyed by a public repository id. `self` is implicit
 and cannot be registered. Each target value declares `baseBranch`, a relative
 POSIX `worktreeParent`, an opaque `repositoryClass`, and a complete
@@ -486,7 +531,7 @@ effect patterns, limits, expiry or revocation predicates refuse with the
 configuration path. `build` carries the launchpad's saved `loadout`, `profile`
 and instance `overlay`, and `release` carries the surface toggles `readmeBlock`,
 `componentVersions`, `corpus` and `publicationCheck`. Version 1 validates and
-exposes all four sections; the orders that own `build` and `release` consume
+exposes these sections; the orders that own `build` and `release` consume
 them.
 
 A target work order adds exactly one leading metadata line,

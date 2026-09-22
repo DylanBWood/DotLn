@@ -9,12 +9,11 @@ import {
 import {
   existsSync,
   readFileSync,
-  readdirSync,
   realpathSync,
   renameSync,
   writeFileSync,
 } from "node:fs";
-import { basename, join, sep } from "node:path";
+import { basename, join, posix, sep } from "node:path";
 
 import { DEFAULT_CONTROL_PATHS, controlPaths } from "./lib/control.mjs";
 import { readControl, readControls } from "./lib/control-store.mjs";
@@ -33,6 +32,7 @@ import {
   containedRegularFile,
   parseJson,
   workOrderAuthorityPath,
+  workOrderAuthorityFiles,
 } from "./lib/paths.mjs";
 import {
   compareVersions,
@@ -41,6 +41,10 @@ import {
   semver,
   strictVersionsIn,
 } from "./lib/release-records.mjs";
+import {
+  parseDerivedProvenance,
+  checkGeneratedSections,
+} from "./lib/derived-contract.mjs";
 import { parseRepositoryDeclaration } from "./lib/work-order-repository.mjs";
 
 const toolRoot = findLaunchpad();
@@ -99,6 +103,7 @@ export const parseHeader = (markdown, path) => {
     effort: field("Effort") ?? "unknown",
     cost: field("Cost") ?? "unavailable",
     repository: parseRepositoryDeclaration(markdown, path),
+    provenance: parseDerivedProvenance(markdown, path),
     ledgerSubstitution: inheritedLedgerDuty(markdown),
     dependencies: parseDependencies(markdown, path),
   };
@@ -267,22 +272,23 @@ export const readIndex = (root, releases = localReleaseRecords(root)) => {
       .at(-1);
   };
   const ids = new Set();
-  const rows = readdirSync(join(root, authorityRoot))
-    .filter((name) => /^WO-.*\.md$/.test(name))
-    .map((name) => {
-      const id = /^(WO-\d{3})-/.exec(name)?.[1];
-      const path = `${authorityRoot}/${name}`;
+  const rows = workOrderAuthorityFiles(root)
+    .map((path) => {
+      const id = /^(WO-\d{3})-/.exec(basename(path))?.[1];
       workOrderAuthorityPath(root, id, path);
       if (ids.has(id))
         throw new Error(`duplicate work-order id ${id}: ${path}`);
       ids.add(id);
-      const header = parseHeader(readContained(root, path), path);
+      const source = readContained(root, path);
+      const header = parseHeader(source, path);
+      if (header.provenance) checkGeneratedSections(source, path);
       const evidence = orders.get(id);
       if (evidence && evidence.state.workOrderPath !== path)
         throw new Error(`${id}: control authority path differs from ${path}`);
       const state = evidence?.state;
       if (
         state &&
+        state.phase !== "none" &&
         (state.repositoryId !== header.repository?.id ||
           state.baseCommit !== header.repository?.baseCommit)
       )
@@ -290,9 +296,18 @@ export const readIndex = (root, releases = localReleaseRecords(root)) => {
           `${id}: control repository identity differs from ${path}`,
         );
       const historical = !state && historicalIds.has(id);
-      const active = state && state.phase !== "closed";
+      if (
+        state?.allocation &&
+        JSON.stringify(state.provenance) !== JSON.stringify(header.provenance)
+      )
+        throw new Error(`${id}: control provenance differs from ${path}`);
+      const active = state && !["closed", "none"].includes(state.phase);
       const phase =
-        state?.phase ?? (historical ? "historical (time-indexed)" : "draft");
+        state?.phase && state.phase !== "none"
+          ? state.phase
+          : historical
+            ? "historical (time-indexed)"
+            : "draft";
       const section = active
         ? "Active"
         : phase === "closed"
@@ -335,6 +350,7 @@ export const readIndex = (root, releases = localReleaseRecords(root)) => {
       return {
         id,
         ...header,
+        authorityLink: posix.relative(authorityRoot, path),
         hasDecisions: existsSync(
           join(root, docRelative(root, "evidence", `${id}/decisions.md`)),
         ),
@@ -470,9 +486,12 @@ export const renderIndex = ({
       lines.push(
         `### ${row.id}`,
         "",
-        link(row.title, basename(row.path)),
+        link(row.title, row.authorityLink ?? basename(row.path)),
         "",
         `- State: ${cell(row.phase)}.`,
+        ...(row.provenance
+          ? [`- Provenance: ${cell(JSON.stringify(row.provenance))}.`]
+          : []),
         ...(row.repository
           ? [
               `- Repository: ${cell(row.repository.id)} @ ${cell(row.repository.baseCommit)}.`,
@@ -497,14 +516,16 @@ export const renderIndex = ({
               `- Latest attestation: ${cell(renderAttestation(state.latestAttestation))}.`,
             ]
           : []),
-        `- Authority: ${link(row.path, basename(row.path))}`,
+        `- Authority: ${link(row.path, row.authorityLink ?? basename(row.path))}`,
         "",
       );
     }
   }
   lines.push(...renderSources(releases, paths));
   for (const row of rows)
-    lines.push(`[${row.id}]: ${encodeURIComponent(basename(row.path))}`);
+    lines.push(
+      `[${row.id}]: ${(row.authorityLink ?? basename(row.path)).split("/").map(encodeURIComponent).join("/")}`,
+    );
   return `${lines.join("\n").trimEnd()}\n`;
 };
 
