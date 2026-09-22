@@ -38,6 +38,7 @@ const ROOT_SEGMENTS = {
 // moves the child unless the launchpad declares the child separately.
 const NESTED_SEGMENTS = {
   orders: ["control", "orders"],
+  derivedWorkOrders: ["workOrders", "derived"],
   refutations: ["planning", "refutations"],
 };
 
@@ -73,7 +74,14 @@ const AUTHORITY_PROFILE_KEYS = [
   "revocationConditions",
 ];
 const PREDICATE_REF_KEYS = ["registryId", "version", "params"];
-const SECTION_KEYS = ["version", "roots", "repositories", "build", "release"];
+const SECTION_KEYS = [
+  "version",
+  "roots",
+  "repositories",
+  "build",
+  "release",
+  "derivedOrders",
+];
 
 /** Today's layout, byte for byte: the defaults an absent configuration means. */
 export const defaultRoots = () => resolveRoots({});
@@ -355,6 +363,21 @@ const validateRepositories = (path, declared) => {
   return repositories;
 };
 
+const validateDerivedOrders = (path, declared = {}) => {
+  requireObject(path, declared, "derivedOrders");
+  requireKnownKeys(path, declared, ["first", "last"], "derivedOrders");
+  const first = declared.first ?? "WO-900";
+  const last = declared.last ?? "WO-999";
+  for (const [key, value] of Object.entries({ first, last }))
+    requireText(path, value, `derivedOrders.${key}`, /^WO-\d{3}$/u);
+  if (first > last)
+    throw refuse(
+      path,
+      "derivedOrders.first must not exceed derivedOrders.last",
+    );
+  return { first, last };
+};
+
 const validateConfig = (path, source) => {
   let parsed;
   try {
@@ -376,6 +399,7 @@ const validateConfig = (path, source) => {
         ? {}
         : validateDeclaredRoots(path, declared.roots),
     ),
+    derivedOrders: validateDerivedOrders(path, declared.derivedOrders),
     repositories:
       declared.repositories === undefined
         ? {}
@@ -395,6 +419,7 @@ const absentConfig = () => ({
   version: CONFIG_SCHEMA_VERSION,
   roots: defaultRoots(),
   repositories: {},
+  derivedOrders: { first: "WO-900", last: "WO-999" },
   build: { loadout: null, profile: null, overlay: null },
   release: Object.fromEntries(RELEASE_KEYS.map((key) => [key, true])),
 });

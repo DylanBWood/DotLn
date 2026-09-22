@@ -43,19 +43,48 @@ export const workOrderAuthorityPath = (
   workOrderPath,
   { requireFile = true } = {},
 ) => {
-  const authorityRoot = docPath(root, "workOrders");
+  const authorityRoots = [
+    docPath(root, "workOrders"),
+    docPath(root, "derivedWorkOrders"),
+  ];
+  const authorityRoot = authorityRoots.find((directory) =>
+    resolve(root, workOrderPath ?? "").startsWith(`${directory}${sep}`),
+  );
   const authorityPath = resolve(root, workOrderPath ?? "");
   if (
     !/^WO-\d{3}$/.test(workOrderId ?? "") ||
     !workOrderPath ||
-    !authorityPath.startsWith(`${authorityRoot}${sep}`) ||
+    !authorityRoot ||
     !basename(authorityPath).startsWith(`${workOrderId}-`) ||
-    (requireFile && !containedRegularFile(authorityPath, authorityRoot))
+    (requireFile &&
+      (!containedRegularFile(authorityPath, authorityRoot) ||
+        !containedRegularFile(authorityPath, root)))
   )
     throw new Error(
       `invalid work-order authority path for ${workOrderId ?? "none"}: ${workOrderPath ?? "none"}`,
     );
   return authorityPath;
+};
+
+/** Both catalog roots share the existing WO-NNN namespace. Never follow a
+ * symlink while discovering authority files. The derived child is scanned once. */
+export const workOrderAuthorityFiles = (root) => {
+  const files = new Set();
+  for (const key of ["workOrders", "derivedWorkOrders"]) {
+    const directory = docPath(root, key);
+    if (!existsSync(directory)) continue;
+    if (
+      !lstatSync(directory).isDirectory() ||
+      !realpathSync(directory).startsWith(`${realpathSync(root)}${sep}`)
+    )
+      throw new Error(
+        `${docRelative(root, key)}: directory must remain inside the repository`,
+      );
+    for (const name of readdirSync(directory))
+      if (/^WO-.*\.md$/.test(name))
+        files.add(`${docRelative(root, key)}/${name}`);
+  }
+  return [...files].sort();
 };
 
 // Ignored-material classification reads launchpad-relative names, so each

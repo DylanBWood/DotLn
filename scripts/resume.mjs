@@ -60,6 +60,10 @@ import {
   findLaunchpad,
   loadConfig,
 } from "./lib/config.mjs";
+import {
+  parseDerivedProvenance,
+  checkGeneratedSections,
+} from "./lib/derived-contract.mjs";
 import { parseRepositoryDeclaration } from "./lib/work-order-repository.mjs";
 
 import {
@@ -578,7 +582,7 @@ const renderOrder = (
   timing,
 ) => `- Work order: ${state.workOrderId ?? "none"}
 - Work-order path: ${state.workOrderPath ?? "none"}
-${state.repositoryId ? `- Repository: ${state.repositoryId} @ ${state.baseCommit}\n` : ""}- Phase: ${state.phase}
+${state.provenance ? `- Provenance: ${JSON.stringify(state.provenance)}\n` : ""}${state.repositoryId ? `- Repository: ${state.repositoryId} @ ${state.baseCommit}\n` : ""}- Phase: ${state.phase}
 - Latest verification: ${state.latestVerificationId ?? "none"}
 - Verification path: ${state.latestVerificationPath ?? "none"}
 - Latest verdict: ${state.latestVerdict ?? "none"}
@@ -601,6 +605,7 @@ const projectOrder = (state, events) => {
           baseCommit: state.baseCommit,
         }
       : {}),
+    ...(state.provenance ? { provenance: state.provenance } : {}),
     phase: state.phase,
     latestVerification: state.latestVerificationId ?? null,
     verificationPath: state.latestVerificationPath ?? null,
@@ -654,6 +659,7 @@ export const statusProjection = (input, workOrder, dependencies = null) => {
             baseCommit: row.state.baseCommit,
           }
         : {}),
+      ...(row.state.provenance ? { provenance: row.state.provenance } : {}),
       phase: row.state.phase,
       latestVerdict: row.state.latestVerdict ?? null,
       ...controlTimeProjection(eventsForOrder(control, order)),
@@ -867,6 +873,20 @@ export const main = async (argv = process.argv.slice(2)) => {
           "usage: resume activate WO-NNN docs/work-orders/<file>.md",
         );
       const declaration = workOrderDeclaration(workOrderPath, { workOrderId });
+      if (state.allocation) {
+        if (workOrderPath !== state.workOrderPath)
+          throw new Error("allocated authority path differs from activation");
+        const source = readFileSync(
+          workOrderAuthorityPath(repoRoot, workOrderId, workOrderPath),
+          "utf8",
+        );
+        checkGeneratedSections(source, workOrderPath);
+        if (
+          JSON.stringify(parseDerivedProvenance(source, workOrderPath)) !==
+          JSON.stringify(state.provenance)
+        )
+          throw new Error("allocated provenance differs from authority");
+      }
       const repository = declaration.repository;
       if (
         repository &&

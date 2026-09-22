@@ -457,6 +457,11 @@ export const suites = [
   ),
   nodeTests("adjacent-queue", "scripts/test-adjacent-queue.mjs"),
   nodeTests("resident-bind", "scripts/test-resident-bind.mjs"),
+  nodeTests("derived-orders", "scripts/test-derived-orders.mjs", {
+    product: true,
+    protects:
+      "derived work identity, activation, draft filing, allocation recovery and resident restart remain one control contract",
+  }),
   nodeTests("configuration-root", "scripts/test-configuration-root.mjs", {
     protects:
       "an absent dotln.config.json reproduces today's layout, a declared launchpad moves every document root and root derivation, and a malformed configuration refuses by path",

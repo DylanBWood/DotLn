@@ -1,3 +1,4 @@
+import { validateAllocation, canonical } from "./derived-contract.mjs";
 import { validateRecordedAt } from "./control-time.mjs";
 import { validateAccountLabel } from "./control-actor.mjs";
 import { defaultRoots, docRelative } from "./config.mjs";
@@ -56,7 +57,22 @@ const scanControl = (events, visit) => {
     }
     state = states.get(event?.workOrderId) ?? emptyState();
     switch (event?.type) {
+      case "WorkOrderIdentityAllocated":
+        validateAllocation(event);
+        if (state.workOrderId)
+          throw new Error(`duplicate identity allocation at line ${index + 1}`);
+        Object.assign(state, {
+          workOrderId: event.workOrderId,
+          workOrderPath: event.workOrderPath,
+          allocation: event,
+          provenance: event.provenance,
+        });
+        break;
       case "WorkOrderActivated":
+        if (state.allocation && state.workOrderPath !== event.workOrderPath)
+          throw new Error(
+            `allocated authority path differs at line ${index + 1}`,
+          );
         if (
           (event.repositoryId === undefined) !==
             (event.baseCommit === undefined) ||
@@ -264,7 +280,12 @@ export const foldSegments = (
         throw new Error(
           `${path}: foreign workOrderId at ordinal ${index + 1}; expected ${id}`,
         );
-      if (index === 0 && event.type !== "WorkOrderActivated")
+      if (
+        index === 0 &&
+        !["WorkOrderActivated", "WorkOrderIdentityAllocated"].includes(
+          event.type,
+        )
+      )
         throw new Error(`${path}: expected activation at ordinal 1`);
     }
     if (locations.has(id))
@@ -275,5 +296,15 @@ export const foldSegments = (
     orders.set(id, folded.orders.get(id));
     locations.set(id, path);
   }
+  const allocationKeys = new Set();
+  for (const { state } of orders.values())
+    if (state.allocation) {
+      const key = canonical(state.provenance);
+      if (allocationKeys.has(key))
+        throw new Error(
+          "duplicate derived provenance key across control segments",
+        );
+      allocationKeys.add(key);
+    }
   return { legacy: legacyState, orders, locations };
 };

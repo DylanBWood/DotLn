@@ -24,6 +24,13 @@ import {
 
 const args = process.argv.slice(2);
 const command = args.shift();
+// This kit-owned bridge locates scripts from the installed CLI, never cwd.
+// The control loader alone selects the launchpad (including DOTLN_LAUNCHPAD).
+const derivedOrders = () =>
+  import(
+    new URL("../../../../scripts/lib/derived-orders.mjs", import.meta.url).href
+  );
+const intentProse = command === "intent" ? args.shift() : undefined;
 const presenceAction = command === "presence" ? args.shift() : undefined;
 const handoffAction = command === "handoff" ? args.shift() : undefined;
 const options = new Map<string, string>();
@@ -56,12 +63,17 @@ try {
       options.set(key, value);
     }
   }
-  const directory = options.get("--store");
-  if (!directory)
+  const directory = options.get("--store") ?? "";
+  if (!directory && command !== "intent")
     throw new Error(
-      "usage: dotln resident --store <directory> --policy <id> [--tick <ms> | --once] | dotln presence away|back --store <directory> | dotln status --store <directory> [--json] | dotln demo --store <directory> --transport <claude-cli-print|codex-cli-exec> --model <model> --effort <level> [--beacons] | dotln <verify-demo|feedback-audit> --store <directory> [--transport fake|claude-cli-print|codex-cli-exec --model <model> --effort <level>]",
+      'usage: dotln intent "<prose>" | dotln resident --store <directory> --policy <id> [--tick <ms> | --once] | dotln presence away|back --store <directory> | dotln status --store <directory> [--json] | dotln demo --store <directory> --transport <claude-cli-print|codex-cli-exec> --model <model> --effort <level> [--beacons] | dotln <verify-demo|feedback-audit> --store <directory> [--transport fake|claude-cli-print|codex-cli-exec --model <model> --effort <level>]',
     );
-  if (command === "presence") {
+  if (command === "intent") {
+    if (!intentProse || options.size || switches.size)
+      throw new Error('usage: dotln intent "<prose>"');
+    const result = await (await derivedOrders()).fileIntent(intentProse);
+    console.log(`Filed draft ${result.workOrderId}: ${result.workOrderPath}`);
+  } else if (command === "presence") {
     if (
       options.size !== 1 ||
       switches.size ||
@@ -125,6 +137,7 @@ try {
       throw new Error("status accepts only --store and --json");
     const status = projectWorkerStatus(
       decodeLog(new WorkerStore(directory).read()),
+      (await derivedOrders()).projectDerivedOrders(),
     );
     console.log(
       switches.has("--json")
@@ -252,7 +265,7 @@ try {
     if (result.envelope.status !== "completed") process.exitCode = 1;
   } else
     throw new Error(
-      "expected resident, presence, status, demo, verify-demo or feedback-audit",
+      "expected intent, resident, presence, status, demo, verify-demo or feedback-audit",
     );
 } catch (error) {
   // Unexpected external diagnostics may contain paths or auth details.
@@ -260,7 +273,7 @@ try {
     error instanceof WorkerFailure
       ? `worker refused: ${error.code}; pending work is retained`
       : error instanceof Error &&
-          /^(usage:|live demo requires|demo requires|expected |status accepts|unknown or duplicate|missing option|duplicate option)/u.test(
+          /^(derived order:|usage:|live demo requires|demo requires|expected |status accepts|unknown or duplicate|missing option|duplicate option)/u.test(
             error.message,
           )
         ? error.message

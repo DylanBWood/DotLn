@@ -22,7 +22,17 @@ export interface WorkerEpisodeStatus {
   readonly lastHeartbeatAt: number;
   readonly leaseExpiresAt: number;
 }
+export interface DerivedWorkOrderStatus {
+  readonly workOrderId: string;
+  readonly workOrderPath: string;
+  readonly phase: string;
+  readonly provenance: Readonly<{
+    kind: "runtime" | "ui" | "intent";
+    sourceId: string;
+  }>;
+}
 export interface WorkerStatus {
+  readonly derivedOrders?: readonly DerivedWorkOrderStatus[];
   readonly acceptanceEvidenceMatrices: readonly AcceptanceEvidenceMatrix[];
   readonly episodes: readonly WorkerEpisodeStatus[];
   readonly runningEpisodes: readonly string[];
@@ -35,7 +45,10 @@ export interface WorkerStatus {
 }
 
 /** No clock, filesystem, transport, mutation or synthesized lifecycle state. */
-export function projectWorkerStatus(events: readonly Event[]): WorkerStatus {
+export function projectWorkerStatus(
+  events: readonly Event[],
+  derivedOrders: readonly DerivedWorkOrderStatus[] = [],
+): WorkerStatus {
   const episodes = new Map<string, WorkerEpisodeStatus>();
   for (const event of events) {
     const payload = event.payload as unknown as {
@@ -94,6 +107,7 @@ export function projectWorkerStatus(events: readonly Event[]): WorkerStatus {
     }
   }
   return {
+    ...(derivedOrders.length ? { derivedOrders } : {}),
     acceptanceEvidenceMatrices: projectAcceptanceEvidenceMatrices(events),
     episodes: [...episodes.values()],
     runningEpisodes: [...episodes.values()]
@@ -123,6 +137,10 @@ export function renderWorkerStatus(status: WorkerStatus): string {
           `  ${row.criterion.criterionId} ${row.criterion.claimType} ${row.status} source=${row.criterion.evidenceSource} evidence=${row.evaluations.at(-1)?.evidenceRefs.join(",") || "none"}`,
       ),
     ]),
+    ...(status.derivedOrders ?? []).map(
+      (order) =>
+        `${order.workOrderId} ${order.phase} ${order.workOrderPath} provenance=${JSON.stringify(order.provenance)}`,
+    ),
     "recent events:",
     ...status.recentEvents.map(
       (event) => `  ${event.eventId} ${event.type} ${event.occurredAt}`,
