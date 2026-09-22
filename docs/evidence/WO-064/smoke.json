@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-09-22T18:16:32.186Z",
+  "runner": "operator terminal",
+  "node": "v26.9.0",
+  "gh": "2.98.0",
+  "gitProtocol": "https",
+  "writer": "deterministic source-change double; no model invocation",
+  "target": {
+    "repository": "github.com/<owner>/<scratch-repository>",
+    "emptyBeforeSmoke": true
+  },
+  "pushedBranch": {
+    "name": "fix/fixture-text",
+    "headSha": "sha1-hex-40",
+    "remoteHeadEqualsObservedCommit": true,
+    "baseSha": "sha1-hex-40"
+  },
+  "pullRequest": {
+    "number": "positive-integer",
+    "numberEqualsEvent": true,
+    "state": "OPEN",
+    "baseRefName": "main",
+    "headRefNameEqualsBranch": true,
+    "headRefOidEqualsPushed": true,
+    "titleEqualsCommitSubject": true,
+    "bodyEqualsPinnedFixture": true
+  },
+  "event": {
+    "count": 1,
+    "type": "PullRequestOpened",
+    "actorId": "target-publish-host",
+    "payloadKeys": [
+      "headSha",
+      "number",
+      "repositoryId"
+    ],
+    "repositoryIdShape": "github.com/<owner>/<repository>",
+    "headShaEqualsPushed": true
+  }
+}

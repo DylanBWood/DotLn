@@ -5,7 +5,7 @@
 ## Proposed order
 
 - [ ] [WO-100] — Preauthorized portfolio and work derivation · **queued**
-- [ ] [WO-064] — Target publish · **queued**
+- [x] [WO-064] — Target publish · **final-reviewed**
 - [ ] [WO-153] — Codex session entry advisory · **queued**
 - [ ] [WO-154] — Evidence editions keyed by behavior and recorded by reference · **queued**
 - [ ] [WO-155] — Single-source floor and a cold-start trend · **queued**
@@ -305,31 +305,14 @@ None.
 - Inherited ledger duty: discharge with this order's decisions file when recorded and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
 - Authority: [docs/work-orders/WO-062-github-issue-source-adapter.md](WO-062-github-issue-source-adapter.md)
 
-### WO-064
-
-[WO-064 — Target publish: push a source-change branch and open its pull request on the target repository under an explicit remote grant with operator provenance, with a title and body generated from the contract, diff and evidence, never from narrative (version assigned at activation)](WO-064-target-publish.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-052: hard (met) — a branch to publish exists only after a source-change episode; WO-063: hard (met) — every outward artifact passes the lint before the remote effect; WO-042: hard (met) — the remote effect runs under an explicit grant with operator provenance; WO-053: reference-only (non-blocking) — the live branch it first publishes.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model; the live smoke is operator-run against a scratch remote. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh+; verifier xhigh+; reviewer any.
-- Cost: Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
-- Inherited ledger duty: discharge with this order's decisions file when recorded and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
-- Authority: [docs/work-orders/WO-064-target-publish.md](WO-064-target-publish.md)
-
 ### WO-065
 
 [WO-065 — Pull-request state observation: a read-only adapter projects a pull request's checks and review comments into typed, classified events on demand (version assigned at activation)](WO-065-pull-request-state-observation.md)
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-064, WO-060.
-- References: WO-064: hard (unmet) — a pull request to observe; WO-060: hard (unmet) — the screen every stored comment passes; WO-068: reference-only (non-blocking) — the resident's cadence is the ordinary invoker once it exists.
+- Dependencies: typed; blocked on WO-060.
+- References: WO-064: hard (met) — a pull request to observe; WO-060: hard (unmet) — the screen every stored comment passes; WO-068: reference-only (non-blocking) — the resident's cadence is the ordinary invoker once it exists.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -345,8 +328,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-065, WO-064.
-- References: WO-065: hard (unmet) — the observed comments and checks it resolves; WO-055: hard (met) — the repair derivation and round limit it reuses; WO-054: hard (met) — verification of each repaired head before a push; WO-064: hard (unmet) — the grant under which the push and the disposition run.
+- Dependencies: typed; blocked on WO-065.
+- References: WO-065: hard (unmet) — the observed comments and checks it resolves; WO-055: hard (met) — the repair derivation and round limit it reuses; WO-054: hard (met) — verification of each repaired head before a push; WO-064: hard (met) — the grant under which the push and the disposition run.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -1004,8 +987,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-059, WO-061, WO-062, WO-124, WO-064, WO-065, WO-066, WO-100.
-- References: WO-052: hard (met) — the source-change host; WO-054: hard (met) — verification over the worktree; WO-055: hard (met) — the repair continuation; WO-059: hard (unmet) — browser witnesses; WO-061: hard (unmet) — the contract from an issue; WO-062: hard (unmet) — the issue adapter; WO-124: hard (unmet) — surfaces from the contract; WO-064: hard (unmet) — publish; WO-065: hard (unmet) — observation; WO-066: hard (unmet) — resolution; WO-068: hard (met) — the resident that admits the intent and dispatches the first step; WO-120: hard (met) — the filed intent and the derived order's durable identity; WO-100: hard (unmet) — the portfolio contract the intent class extends; WO-042: hard (met) — admitted grants and the effective envelope the run is bound to.
+- Dependencies: typed; blocked on WO-059, WO-061, WO-062, WO-124, WO-065, WO-066, WO-100.
+- References: WO-052: hard (met) — the source-change host; WO-054: hard (met) — verification over the worktree; WO-055: hard (met) — the repair continuation; WO-059: hard (unmet) — browser witnesses; WO-061: hard (unmet) — the contract from an issue; WO-062: hard (unmet) — the issue adapter; WO-124: hard (unmet) — surfaces from the contract; WO-064: hard (met) — publish; WO-065: hard (unmet) — observation; WO-066: hard (unmet) — resolution; WO-068: hard (met) — the resident that admits the intent and dispatches the first step; WO-120: hard (met) — the filed intent and the derived order's durable identity; WO-100: hard (unmet) — the portfolio contract the intent class extends; WO-042: hard (met) — admitted grants and the effective envelope the run is bound to.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -1948,6 +1931,24 @@ None.
 - Inherited ledger duty: discharge with [this order's decisions](../evidence/WO-063/decisions.md) and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
 - Latest attestation: harness claude-code; version 2.1.263; model claude-opus-5&#91;1m&#93;; effort xhigh; source operator-attested; account not-applicable.
 - Authority: [docs/work-orders/WO-063-outward-artifact-lint.md](WO-063-outward-artifact-lint.md)
+
+### WO-064
+
+[WO-064 — Target publish: push a source-change branch and open its pull request on the target repository under an explicit remote grant with operator provenance, with a title and body generated from the contract, diff and evidence, never from narrative (v0.43.0)](WO-064-target-publish.md)
+
+- State: closed.
+- Application target: v0.43.0.
+- Dependencies: typed; activation not applicable.
+- References: WO-052: hard (met) — a branch to publish exists only after a source-change episode; WO-063: hard (met) — every outward artifact passes the lint before the remote effect; WO-042: hard (met) — the remote effect runs under an explicit grant with operator provenance; WO-053: reference-only (non-blocking) — the live branch it first publishes.
+- Verification: [VER-002](../../docs/verifications/WO-064/VER-002.md) (pass).
+- Final review: [FINAL-001](../../docs/final-reviews/WO-064/FINAL-001.md) (pass).
+- Release: unreleased.
+- Model: any capable model; the live smoke is operator-run against a scratch remote. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Cost: Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
+- Inherited ledger duty: discharge with [this order's decisions](../evidence/WO-064/decisions.md) and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
+- Latest attestation: harness claude-code; version 2.1.280; model claude-opus-5-5&#91;1m&#93;; effort xhigh; source operator-attested; account not-applicable.
+- Authority: [docs/work-orders/WO-064-target-publish.md](WO-064-target-publish.md)
 
 ### WO-067
 
