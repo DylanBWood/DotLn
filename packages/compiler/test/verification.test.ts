@@ -3,10 +3,13 @@ import assert from "node:assert/strict";
 import {
   affectedVerificationCriteria,
   assertVerificationTask,
+  canonicalStringify,
   changedVerificationSurfaces,
   compileVerificationTask,
+  fnv1a64,
   type AcceptanceCriterion,
   type VerificationSubject,
+  type VerificationTask,
 } from "../src/index.js";
 
 const criteria: readonly AcceptanceCriterion[] = [
@@ -161,4 +164,54 @@ test("WO-010 AC4 repair radius follows changed dependency surfaces and fails clo
     ["state", "behavior", "other"],
   );
   assert.deepEqual(affectedVerificationCriteria(criteria, []), []);
+});
+
+// WO-154 VER-001: a stream recorded before a release-only compiler bump
+// replays. The earlier release's capsule is this lowering under its own label,
+// with the input hash that label derives.
+test("WO-154 a recorded capsule keeps its compiler release; any other drift still fails", () => {
+  const capsule = compileVerificationTask("test", criteria, subject);
+  const recorded = (
+    release: unknown,
+    change: Partial<VerificationTask> = {},
+  ): VerificationTask => {
+    const body = {
+      contractVersion: capsule.contractVersion,
+      compilerPackageVersion: release as string,
+      role: capsule.role,
+      workOrder: capsule.workOrder,
+      criteria: capsule.criteria,
+      subject: capsule.subject,
+      finding: capsule.finding,
+      ...change,
+    };
+    return {
+      ...body,
+      inputHash: `fnv1a64:${fnv1a64(canonicalStringify(body))}`,
+    };
+  };
+  const earlier = recorded("0.0.1");
+  assert.notEqual(earlier.inputHash, capsule.inputHash);
+  assertVerificationTask(earlier);
+  assert.throws(
+    () => assertVerificationTask({ ...earlier, inputHash: capsule.inputHash }),
+    /capsule drift/u,
+  );
+  assert.throws(
+    () =>
+      assertVerificationTask(
+        recorded("0.0.1", {
+          workOrder: {
+            ...capsule.workOrder,
+            objective: "changed after compilation",
+          },
+        }),
+      ),
+    /capsule drift/u,
+  );
+  for (const release of ["", "latest", "0.17", 17, null])
+    assert.throws(
+      () => assertVerificationTask(recorded(release)),
+      /capsule release/u,
+    );
 });

@@ -13,7 +13,10 @@ import { tmpdir } from "node:os";
 import { delimiter, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
+  COMPILER_PACKAGE_VERSION,
+  canonicalStringify,
   compileVerificationTask,
+  fnv1a64,
   type VerificationTask,
 } from "@dotln/compiler";
 import {
@@ -1097,4 +1100,131 @@ test("WO-157 item 8: the host's own receipt check records its typed detail", asy
     (interrupted?.payload as Record<string, JsonValue>)["detail"],
     "receipt-command",
   );
+});
+
+// WO-154 VER-001: the WO-157 verification edition was recorded under
+// compiler 0.17.0. It replays to its recorded matrix under a later release,
+// while a persisted capsule that differs in anything but that label is
+// still refused.
+test("WO-154 a verification stream recorded under an earlier compiler release replays; other persisted drift is refused", () => {
+  const edition = new URL(
+    "../../../../docs/evidence/WO-157/verification/001/",
+    import.meta.url,
+  );
+  const events = decodeLog(
+    readFileSync(new URL("events.jsonl", edition), "utf8"),
+  );
+  const capsuleOf = (event: Event) =>
+    (
+      event.payload as unknown as {
+        command: { intent: { payload: { capsule: VerificationTask } } };
+      }
+    ).command.intent.payload.capsule;
+  const persisted = events.filter((event) => event.type === "CommandPersisted");
+  assert.deepEqual(
+    [
+      ...new Set(
+        persisted.map((event) => capsuleOf(event).compilerPackageVersion),
+      ),
+    ],
+    ["0.17.0"],
+  );
+  assert.notEqual(COMPILER_PACKAGE_VERSION, "0.17.0");
+  assert.equal(
+    canonicalStringify(projectAcceptanceEvidenceMatrices(events)[0]),
+    canonicalStringify(
+      JSON.parse(readFileSync(new URL("matrix.json", edition), "utf8")),
+    ),
+  );
+  const tampered = (change: (capsule: VerificationTask) => VerificationTask) =>
+    events.map((event) =>
+      event.eventId === persisted[0]!.eventId
+        ? (JSON.parse(
+            JSON.stringify(event, (key, value) =>
+              key === "capsule" ? change(value as VerificationTask) : value,
+            ),
+          ) as Event)
+        : event,
+    );
+  const rehash = (capsule: VerificationTask): VerificationTask => {
+    const { inputHash, ...contents } = capsule;
+    void inputHash;
+    return {
+      ...contents,
+      inputHash: `fnv1a64:${fnv1a64(canonicalStringify(contents))}`,
+    };
+  };
+  for (const change of [
+    // A changed subject with the hash its own label derives.
+    (capsule: VerificationTask) =>
+      rehash({
+        ...capsule,
+        subject: { ...capsule.subject, diff: "changed after compilation" },
+      }),
+    // Another label without the hash that label derives.
+    (capsule: VerificationTask) => ({
+      ...capsule,
+      compilerPackageVersion: "0.0.1",
+    }),
+  ])
+    assert.throws(
+      () => projectAcceptanceEvidenceMatrices(tampered(change)),
+      /persisted compilation drift/u,
+    );
+  // Another well-formed label is adopted with its capsule, so the recorded
+  // attempt, which names the original input hash, no longer binds to it.
+  assert.throws(
+    () =>
+      projectAcceptanceEvidenceMatrices(
+        tampered((capsule) =>
+          rehash({ ...capsule, compilerPackageVersion: "0.0.1" }),
+        ),
+      ),
+    /fresh physical episode/u,
+  );
+});
+
+// WO-154 D014: the verification streams WO-050's oracle froze as refusals,
+// recorded under compilers 0.5.0 and 0.6.0, replay to complete. The WO-011
+// self-host verifier leaves that byte oracle (its 1,600 prefix projections
+// cost about 100 s), so its replay is asserted here.
+test("WO-154 historical verification streams recorded under compilers 0.5.0 and 0.6.0 replay to complete", () => {
+  for (const [path, release] of [
+    ["WO-010/events.jsonl", "0.5.0"],
+    ["WO-011/verification/events.jsonl", "0.6.0"],
+    ["WO-011/selfhost-verification.jsonl", "0.6.0"],
+  ] as const) {
+    const events = decodeLog(
+      readFileSync(
+        new URL(`../../../../docs/evidence/${path}`, import.meta.url),
+        "utf8",
+      ),
+    );
+    assert.deepEqual(
+      [
+        ...new Set(
+          events
+            .filter((event) => event.type === "CommandPersisted")
+            .map(
+              (event) =>
+                (
+                  event.payload as unknown as {
+                    command: {
+                      intent: { payload: { capsule: VerificationTask } };
+                    };
+                  }
+                ).command.intent.payload.capsule.compilerPackageVersion,
+            ),
+        ),
+      ],
+      [release],
+      path,
+    );
+    const [matrix] = projectAcceptanceEvidenceMatrices(events);
+    assert.equal(matrix!.phase, "complete", path);
+    assert.ok(
+      matrix!.rows.every((row) => row.status === "verified"),
+      path,
+    );
+  }
 });
