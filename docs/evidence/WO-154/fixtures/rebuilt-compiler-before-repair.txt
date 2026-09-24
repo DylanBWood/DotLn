@@ -1,0 +1,15 @@
+WO-154 VER-001-F1 regression run against refs/dotln/checkpoint/WO-154/5 (pre-repair source) with only scripts/test-evidence-sources.mjs from the repair, 2026-09-24:
+node --test --test-name-pattern='rebuilt compiler release' scripts/test-evidence-sources.mjs (exit 1)
+
+✖ WO-154 a rebuilt compiler release needs only the deterministic carry; the recorded streams replay and a judged change is refused (6673.396208ms)
+ℹ tests 1
+ℹ pass 0
+ℹ fail 1
+Error: feedback contract: compiled policy drift
+  at requireFeedback
+  at assertCompiledFeedback
+  at feedbackDecision
+  at seiriReactor
+  at replay
+  at validateSelfhostEdition
+  at checkFeedbackEdition

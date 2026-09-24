@@ -20,6 +20,24 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-154 activation completion (2026-09-24):** assigned application `v0.46.0`,
+the next minor above the observed local `v0.45.0` tag, under the declared minor
+classification. A new feedback evidence edition (schema 2) commits its verifier
+stream with every judged file body replaced by a Git blob reference that
+`feedback-evidence --check` rebuilds byte for byte, and records a behavioral
+identity over the judged files with component release labels normalized plus a
+pins record; staleness and the live self-host episode follow the behavioral
+identity and the regenerated report, a pins-only change keeps or carries the
+live audit without a new episode, and a judged change still cannot inherit an
+older one. Existing editions and receipts keep their bytes; the refutation
+receipt subject is split to its own order. The VER-001 repair moves
+`@dotln/compiler` to 0.18.0. A program or capsule recorded under an earlier
+compiler release now replays when nothing else differs, so a compiler bump
+carries the audit deterministically instead of paying a live episode. That
+change settles the compatibility question WO-050 and WO-133 left open.
+Independent verification, final review and publication remain separate
+lifecycle actions.
+
 **WO-153 activation completion (2026-09-24):** assigned application `v0.45.1`,
 the next patch above the observed local `v0.45.0` tag, under the declared patch
 classification. A Codex lifecycle dispatch whose harness session cannot begin

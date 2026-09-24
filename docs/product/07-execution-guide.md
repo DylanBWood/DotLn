@@ -1107,12 +1107,20 @@ Standard artifacts, all doc-only:
   wall-clock, context bytes, commands, tokens and steps, provenance, a dated
   observed gap, acceptance
   criteria, evidence, non-goals, and operator-review assumptions; an order
-  that edits a registered evidence source (`scripts/lib/evidence-sources.mjs`)
-  other than a component release label names the edition re-mint and one
-  live feedback self-host episode in its Cost line and dispatch dimensions
-  (WO-147 D010; the release-label exclusion is WO-152 D004, because
-  `evidenceSourceContent` normalizes those labels away and a version-only
-  bump never makes an edition stale);
+  that changes a file the feedback verifier judges (`FEEDBACK_SOURCE_PATHS`
+  in `packages/skeleton/src/feedback-audit.ts`) beyond a component release
+  label, or changes the regenerated feedback report, names the feedback
+  re-mint and one live feedback self-host episode in its Cost line and
+  dispatch dimensions (WO-147 D010; WO-154 D001 keys schema 2 feedback
+  editions on that judged behavior, so a registered-source edit that leaves
+  both unchanged needs no live episode; a compiler release moves only the
+  policy hash the console binds, so it owes the deterministic
+  `feedback-evidence --carry` and a console re-pin, never a live episode,
+  WO-154 D011); an order that edits any other
+  registered evidence source (`scripts/lib/evidence-sources.mjs`) names the
+  deterministic re-mint of each edition whose check it stales (WO-152 D004:
+  `evidenceSourceContent` normalizes component release labels away, so a
+  version-only bump never makes an edition stale);
 - product-doc write-back for durable understanding, with the publication
   index and edition locks repaired in the same pass;
 - `npm run meta -- --plan-cost` refreshes the bounded, subject-hashed cost

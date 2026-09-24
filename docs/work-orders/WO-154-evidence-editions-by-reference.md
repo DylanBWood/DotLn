@@ -1,4 +1,4 @@
-# WO-154 — Evidence editions keyed by behavior and recorded by reference: a feedback self-host edition records its subject and baseline files as blob references resolved from Git, staleness follows a behavioral identity with the version pins as metadata, a pins-only change re-mints without a live episode, and every existing edition stays byte-identical (version assigned at activation)
+# WO-154 — Evidence editions keyed by behavior and recorded by reference: a feedback self-host edition records its subject and baseline files as blob references resolved from Git, staleness follows a behavioral identity with the version pins as metadata, a pins-only change re-mints without a live episode, and every existing edition stays byte-identical (v0.46.0)
 
 **Model:** any capable model. The one live row is the re-mint's self-host
 episode under today's rule. State the model and effort actually run
@@ -204,3 +204,43 @@ verdict rules.
    the Git objects is not a supported consumer.
 2. Activating this order authorizes one live self-host episode for the
    re-mint.
+
+## Operator authorization — 2026-09-24
+
+During `resume: fix` after VER-001, the operator authorized one more live
+feedback self-host episode for this repair and folded in `FUP-0c86ada82f559914`
+([WO-154-D011](../evidence/WO-154/decisions.md#wo-154-d011--ver-001-f1-repair-a-compiler-release-is-recorded-metadata-at-every-replay-layer)).
+
+**Repair — VER-001-F1.** A rebuilt compiler release-label change stopped both
+`--check` and `--carry`, because every layer that replays a recorded stream
+recompiled it at the current label. The feedback slice's
+`assertCompiledFeedback` did this, and so did the verification slice when
+comparing a persisted command. `assertCompiledFeedback` and
+`assertVerificationTask` now compare a recorded program or capsule with this
+compiler's lowering at the release label it records. Any other difference
+still fails. The verification slice adopts a persisted command whose capsule
+differs from the dispatched one only in that label. A compiler release moves
+`policyHash`, which the console binds to the current compiled policy, so
+`feedback-evidence --check` then names the deterministic `--carry` (no live
+episode). A change to component labels that leaves `policyHash` unchanged
+still keeps the live audit with no action.
+
+**Folded follow-up — `FUP-0c86ada82f559914` (D007).** The resolver takes the
+live audit's `pins/` files as working-tree candidates, so recording no longer
+writes the snapshot into the object database.
+
+**Re-mint.** The repair edits files the live verifier judges, so feedback is
+re-minted as WO-154 revision 002 with this one live episode, after the last
+judged-file edit. Every other edition whose check the repair stales is
+re-minted deterministically. Revision 001 stays on disk as the record
+VER-001 judged.
+
+8. Regression: after a compiler release-label change is built, `--check`
+   names the carry and exits nonzero. `--carry` then mints an edition with no
+   live episode. The carried edition checks, and the stored-stream replay
+   passes for the carried feedback streams and the verification edition. A
+   judged-file change is still refused by check and carry. Programs and
+   capsules recorded at another release are admitted only when the rest is
+   the current lowering, and the verification slice refuses any other
+   persisted drift. The pins snapshot resolves from the working tree with
+   no object write.
