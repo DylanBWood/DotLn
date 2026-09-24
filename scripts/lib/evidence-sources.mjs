@@ -355,6 +355,8 @@ export const evidenceImportExclusions = {
       "The resident mission-check actor's host, reached through cli-actor.ts; no edition dispatches a mission check. Its request protocol is registered because the registered transports validate it.",
     "packages/skeleton/src/mission-check-source.ts":
       "The resident mission-check actor's source reader, reached through cli-actor.ts; no edition dispatches a mission check.",
+    "packages/skeleton/src/runtime-status.ts":
+      "The resident writes this disposable read-only UI projection after a durable event. The evidence editions judge worker, verification and feedback behavior from the log and do not consume the status file; its compiler-independent view contract is checked by WO-114 fixtures.",
   },
   authority: {},
   "artifact-identity": {

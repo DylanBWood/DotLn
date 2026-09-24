@@ -84,6 +84,7 @@ function observationDeadline(state: ResidentState) {
 export interface ResidentHostOptions {
   directory: string;
   policyId: string;
+  workOrderIndexPath?: string;
   configuration?: ResidentConfiguration;
   now?: () => number;
   catalog?: Readonly<Record<ActorKind, ActorAdapter>>;
@@ -99,7 +100,11 @@ export class ResidentHost {
   private firstTick = true;
   private started = false;
   constructor(private readonly options: ResidentHostOptions) {
-    this.store = new ResidentStore(options.directory, options.predicates);
+    this.store = new ResidentStore(
+      options.directory,
+      options.predicates,
+      options.workOrderIndexPath,
+    );
     this.now = options.now ?? Date.now;
     this.catalog =
       options.catalog ??

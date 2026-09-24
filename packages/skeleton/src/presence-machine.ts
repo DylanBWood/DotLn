@@ -164,6 +164,17 @@ export class PresenceMachine {
   waitForInput(episode: string) {
     if (this.current?.id === episode) this.current = null;
   }
+  /** Read-only cadence projection for hosts; all cadence evaluation remains
+   * with the policy interpreter. This does not advance the machine. */
+  nextCadenceAt(): number | null {
+    const phase = this.phase();
+    if (!phase) return null;
+    return evaluateCadence(phase.cadence, this.projected(), {
+      now: this.armedAt,
+      rngState: 0,
+      predicates: this.predicates,
+    }).dueAt;
+  }
   due(at: number): number | null {
     this.now = at;
     this.transition("idle-expired");
@@ -172,12 +183,8 @@ export class PresenceMachine {
       this.transcript.push(`NoOp:${this.state}`);
       return null;
     }
-    const evaluation = evaluateCadence(phase.cadence, this.projected(), {
-      now: this.armedAt,
-      rngState: 0,
-      predicates: this.predicates,
-    });
-    if (evaluation.dueAt === null || at < evaluation.dueAt) {
+    const dueAt = this.nextCadenceAt();
+    if (dueAt === null || at < dueAt) {
       this.transcript.push("NoOp:gate-or-cadence");
       return null;
     }
@@ -185,7 +192,7 @@ export class PresenceMachine {
       this.transcript.push(`NoOp:${phase.availability.reason}`);
       return null;
     }
-    return evaluation.dueAt;
+    return dueAt;
   }
   dispatch(id: string) {
     const phase = this.phase();
