@@ -1,0 +1,129 @@
+WO-157 fail-before sweep, 2026-09-22. A shared clone of the base commit 64ab40de (the
+activation base) with only the final fixture files copied in (13 test files and the
+writer-cli.mjs process double), node_modules linked with @dotln/* pointing at the
+clone's own packages, and the clone built with scripts/build.mjs. Each command ran
+from the clone with DOTLN_LAUNCHPAD unset. First lines of each failure follow.
+
+Note: the first item 1 run failed in fixture setup because the clone had no local
+main branch (its bare-clone fixture checks out main); after 'git branch main
+origin/main' the rerun below fails on the item's assertion. Item 15's first case
+passes here because its fix is in the same test file's fixture helper, which the
+sweep copies; its fail-before is fixtures/item-15-before.tap, recorded before the
+helper changed.
+
+=== item 1 :: node --test --test-reporter=tap --test-name-pattern intent-to-add entry is refused scripts/test-worktree-integration.mjs
+exit 1
+not ok 1 - an intent-to-add entry is refused before any write, and a failed stash leaves no pending receipt
+# pass 0
+# fail 1
+  error: |-
+    128 !== 0
+=== item 2 :: node --test --test-reporter=tap --test-name-pattern WO-157 retarget scripts/test-adjacent-queue.mjs
+exit 1
+not ok 1 - WO-157 retarget moves only a deferred item's target onto an existing FUP, also at final review
+# pass 0
+# fail 1
+  error: |-
+    The input did not match the regular expression /FUP identifier/u. Input:
+  error: 'adjacent queue: mutation requires the selected executor/fixer phase'
+=== item 3 :: node --test --test-reporter=tap --test-name-pattern WO-157 the host counts packages/skeleton/dist/test/source-change-host.test.js
+exit 1
+not ok 1 - WO-157 the host counts committed paths against the files ceiling and refuses a removal without repo.delete, except a declared Sort move
+# pass 0
+# fail 1
+  error: |-
+=== item 4 :: node --test --test-reporter=tap --test-name-pattern WO-157 scripts/test-target-publish.mjs
+exit 1
+not ok 1 - WO-157: publication runs no hook the target repository holds
+# pass 0
+# fail 1
+  error: |-
+    true !== false
+=== item 5 :: node --test --test-reporter=tap --test-name-pattern WO-157 a grant-bearing packages/skeleton/dist/test/source-change-host.test.js
+exit 1
+not ok 1 - WO-157 a grant-bearing artifact identity equips and runs through the source-change host; a malformed registry still refuses
+# pass 0
+# fail 1
+  error: |-
+    Expected values to be strictly deep-equal:
+=== items 6-7 :: node --test --test-reporter=tap --test-name-pattern WO-157 scripts/test-resident-bind.mjs
+exit 1
+not ok 1 - WO-157 a bind without --model and --effort records the transport's default judge
+not ok 2 - WO-157 a bind with --model and --effort records the operator's choice
+not ok 3 - WO-157 --check refuses a hand-written portfolio binding whose compiled floor departs from its registered profile, naming the repository and profile
+not ok 4 - WO-157 --check refuses a portfolio binding whose registered profile cannot be read, naming why
+not ok 5 - WO-157 a loader-built portfolio binding compiles under its registered profile and passes --check
+# pass 0
+# fail 5
+  error: |-
+    error: --model is required; usage: resident-bind WO-NNN --surface <path>... --transport <claude-cli-print|codex-cli-exec> --model <model> --effort <level> [--base <commit>] | resident-bind --check <store>
+    1 !== 0
+=== item 8 :: node --test --test-reporter=tap --test-name-pattern WO-157 item 8 packages/skeleton/dist/test/verification.test.js
+exit 1
+not ok 1 - WO-157 item 8 claude-cli-print: an invalid-result refusal records and rethrows its typed detail
+not ok 2 - WO-157 item 8 codex-cli-exec: an invalid-result refusal records and rethrows its typed detail
+not ok 3 - WO-157 item 8: a detail outside the closed vocabulary is recorded as unclassified, never verbatim
+not ok 4 - WO-157 item 8: dotln prints the typed refusal detail
+# pass 0
+# fail 4
+  error: |-
+    The validation function is expected to return "true". Received false
+  error: |-
+=== items 9-10 :: node --test --test-reporter=tap --test-name-pattern WO-157 item (9|10) scripts/test-entropy-review.mjs --fixtures-only
+exit 1
+not ok 1 - WO-157 item 9: the witness records added and removed scratch paths and the source repository's untracked listing
+not ok 2 - WO-157 item 10: a refutation receipt renders the typed reasons in place of a worker statement
+# pass 0
+# fail 2
+  error: |-
+    Expected values to be strictly deep-equal:
+  error: |-
+=== item 11 resume :: bash scripts/test-resume.sh
+exit 1
+AssertionError [ERR_ASSERTION]: Missing expected exception.
+=== item 11 discovery :: node --test --test-reporter=tap --test-name-pattern discovery uses a bounded observed probe scripts/test-process-debt.mjs
+exit 1
+not ok 1 - discovery uses a bounded observed probe and session warns once off the version line
+# pass 0
+# fail 1
+  error: |-
+    Expected values to be strictly equal:
+=== item 12 :: node --test --test-reporter=tap --test-name-pattern WO-157 a moved entropy scripts/test-evidence-sources.mjs
+exit 1
+not ok 1 - WO-157 a moved entropy review protocol stales the feedback edition; an excluded import does not
+# pass 0
+# fail 1
+  error: 'an edition check passed over a changed entropy review protocol (WO-151 D001)'
+=== item 13 :: node --test --test-reporter=tap --test-name-pattern WO-157 the document gate scripts/test-runner.test.mjs
+exit 1
+not ok 1 - WO-157 the document gate refuses an unregistered docs JSONL and an unstubbed document suite
+# pass 0
+# fail 1
+  error: 'test:docs carries the registration row (WO-151 D021)'
+=== item 14 :: node --test --test-reporter=tap --test-name-pattern WO-157 scripts/test-derived-orders.mjs
+exit 1
+not ok 1 - WO-157 an allocation written under a superseded section set folds after the list changes
+not ok 2 - WO-157 a corrupt allocation authority refuses only its own order
+# pass 0
+# fail 2
+  error: |-
+    Got unwanted exception: a historical allocation folds after the section list changes
+  error: 'docs/control/orders/WO-900.jsonl: docs/work-orders/derived/WO-900-derived.md: generated authority requires stable sections: Objective, Design, Acceptance criteria, Non-goals, Surfaces, Operator-review assumptions, Evidence'
+=== item 15 :: node --test --test-reporter=tap --test-name-pattern WO-157 (the gate-sandbox|a gate whose) scripts/test-runner.test.mjs
+exit 1
+ok 1 - WO-157 the gate-sandbox fixture's commits start no background Git maintenance that could race its teardown
+not ok 2 - WO-157 a gate whose suites leave a gate-sandbox fixture root behind fails and names it, and another run's root does not fail it
+# pass 1
+# fail 1
+  error: |-
+    0 !== 1
+
+=== item 1 rerun with a local main branch
+not ok 1 - an intent-to-add entry is refused before any write, and a failed stash leaves no pending receipt
+# pass 0
+# fail 1
+  error: |-
+    The input did not match the regular expression /intent-to-add/. Input:
+
+    "error: error: Entry 'intent to add.md' not uptodate. Cannot merge.\n" +
+      'Cannot save the current worktree state\n'

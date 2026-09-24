@@ -1,0 +1,88 @@
+TAP version 13
+# Subtest: compiled order materializes, activates and shares index, status and lifecycle
+ok 1 - compiled order materializes, activates and shares index, status and lifecycle
+  ---
+  duration_ms: 1297.246916
+  type: 'test'
+  ...
+# Subtest: allocation replay, interrupted authority recovery and retry preserve one identity
+ok 2 - allocation replay, interrupted authority recovery and retry preserve one identity
+  ---
+  duration_ms: 346.822666
+  type: 'test'
+  ...
+# Subtest: configured roots and range allocate deterministically and refuse exhaustion
+ok 3 - configured roots and range allocate deterministically and refuse exhaustion
+  ---
+  duration_ms: 219.784083
+  type: 'test'
+  ...
+# Subtest: intent CLI files a reviewable draft without activation, including hostile Markdown
+ok 4 - intent CLI files a reviewable draft without activation, including hostile Markdown
+  ---
+  duration_ms: 248.882875
+  type: 'test'
+  ...
+# Subtest: typed blockers retain a recoverable allocation and ordinary activation refusal
+ok 5 - typed blockers retain a recoverable allocation and ordinary activation refusal
+  ---
+  duration_ms: 115.005125
+  type: 'test'
+  ...
+# Subtest: two processes serialize allocations, including the same retry key
+ok 6 - two processes serialize allocations, including the same retry key
+  ---
+  duration_ms: 487.195916
+  type: 'test'
+  ...
+# Subtest: generated shape and provenance refuse malformed edits and symlink destinations
+ok 7 - generated shape and provenance refuse malformed edits and symlink destinations
+  ---
+  duration_ms: 179.948208
+  type: 'test'
+  ...
+# Subtest: invalid configured ranges refuse with the configuration path
+ok 8 - invalid configured ranges refuse with the configuration path
+  ---
+  duration_ms: 0.489708
+  type: 'test'
+  ...
+# Subtest: a resident restarts with a derived compiled identity and unchanged control provenance
+ok 9 - a resident restarts with a derived compiled identity and unchanged control provenance
+  ---
+  duration_ms: 457.041417
+  type: 'test'
+  ...
+# Subtest: existing handwritten identities are preserved, UI filing shares the catalog, and active recovery does not restore a stale draft
+ok 10 - existing handwritten identities are preserved, UI filing shares the catalog, and active recovery does not restore a stale draft
+  ---
+  duration_ms: 215.763042
+  type: 'test'
+  ...
+# Subtest: direct activation refuses a derived authority root redirected outside the launchpad
+ok 11 - direct activation refuses a derived authority root redirected outside the launchpad
+  ---
+  duration_ms: 71.296584
+  type: 'test'
+  ...
+# Subtest: WO-157 an allocation written under a superseded section set folds after the list changes
+ok 12 - WO-157 an allocation written under a superseded section set folds after the list changes
+  ---
+  duration_ms: 126.8555
+  type: 'test'
+  ...
+# Subtest: WO-157 a corrupt allocation authority refuses only its own order
+ok 13 - WO-157 a corrupt allocation authority refuses only its own order
+  ---
+  duration_ms: 417.280125
+  type: 'test'
+  ...
+1..13
+# tests 13
+# suites 0
+# pass 13
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4242.415959

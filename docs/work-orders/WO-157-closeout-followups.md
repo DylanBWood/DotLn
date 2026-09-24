@@ -1,4 +1,4 @@
-# WO-157 — Closeout follow-ups, one order: every defect boarded up by the orders closed on 2026-09-22 is fixed in one operator-authorized order — the integrate helper survives intent-to-add, deferred queue items get public targets, the source-change host counts files and refuses deletions, target publication runs no target hook, the skeleton admits a grant-bearing identity, the resident's binding is compiled under its registered profile with a default model, refused live episodes carry their reason, receipts say what their witnesses observe, Claude Code attestations read the selected effort, registries follow the import graph, allocation events fold across section changes, and the gate-sandbox teardown is deterministic (version assigned at activation)
+# WO-157 — Closeout follow-ups, one order: every defect boarded up by the orders closed on 2026-09-22 is fixed in one operator-authorized order — the integrate helper survives intent-to-add, deferred queue items get public targets, the source-change host counts files and refuses deletions, target publication runs no target hook, the skeleton admits a grant-bearing identity, the resident's binding is compiled under its registered profile with a default model, refused live episodes carry their reason, receipts say what their witnesses observe, Claude Code attestations read the selected effort, registries follow the import graph, allocation events fold across section changes, and the gate-sandbox teardown is deterministic (v0.45.0)
 
 **Model:** any capable model. The one live row is the re-mint's feedback
 self-host episode. State the model and effort actually run
@@ -607,3 +607,52 @@ WO-111's proof or the sequence; new request kinds or transports.
    under load; the abandoned-root check still lands.
 4. Item 7's Claude default is `claude-sonnet-5` until Sonnet 5.5 is
    available; the executor records the model id actually bound.
+
+## Operator scope expansion — 2026-09-23
+
+During `resume: fix` after VER-001, the operator directed that a fix this
+order deferred only to avoid another re-mint be done now, and authorized a fix
+deferred for larger reasons to stay deferred
+([WO-157-D030](../evidence/WO-157/decisions.md#wo-157-d030)). Applied to the
+two deferrals:
+
+**Item 16 — the verifier's output schema admits only admissible findings
+(WO-157 D024, adjacent-0002, FUP-c31c7bcab9270f49).** Observed: when a
+subject carries no failing witness, `evidenceResultSchema`
+(`packages/skeleton/src/verification-protocol.ts`) gives a finding's
+`observed`, `expected` and `reproductionSteps` as free strings and arrays with
+no bounds, although admission (`copyFinding` in
+`packages/compiler/src/verification.ts`, then the finding checks in the same
+protocol file) can accept no finding there; `claude-cli-print` constrains the
+model only to that schema, and D023's first live attempt was refused as
+`invalid-result (finding shape)`. Fix: the schema states admission's field
+rules with the keywords the live transports already accept (`enum`,
+`minItems`, `maxItems`, `minLength`, `maxLength`): with no failing witness,
+`findings` admits no entry and an evaluation's verdict cannot be `fail`;
+otherwise a finding's strings are 1–2,000 characters, its
+`reproductionSteps`, `evidenceRefs` and `likelySurface` hold 1–100 entries,
+its `criterionId` names a criterion with a failing witness and its
+`likelySurface` names only the criteria's code surfaces. Rules those keywords
+cannot state (no control characters, unique entries, agreement across fields)
+stay with admission and are named in the decision. Fixture: for a subject
+with and without a failing witness, each finding shape `copyFinding` refuses
+is invalid under the emitted schema, and an admissible finding is valid.
+Verifier: run the skeleton verification suite; read the emitted schema for
+the feedback self-host subject; confirm the re-mint's live episode ran under it.
+
+**adjacent-0001 (WO-157 D005, FUP-92fd86e53b44fa39) stays deferred** by the
+operator's authorization: an OS sandbox for writer-controlled test code is a
+new containment mechanism outside this order's items.
+
+**Re-mint.** VER-001's repairs and item 16 edit registered sources after the
+first re-mint, so criterion 16 is met by minting every edition the registry
+selects once more after the repair's last registered-source edit, as new
+revisions, with one new live feedback self-host episode. The first WO-157
+revisions stay as the record VER-001 judged.
+
+20. Item 16 holds: for a subject with no failing witness the emitted schema
+    admits no finding and no `fail` verdict; for a subject with one, every
+    finding shape the fixture lists as refused by `copyFinding` is
+    schema-invalid and an admissible finding is schema-valid; the re-mint's
+    live self-host episode ran under the tightened schema; the decision names
+    the rules left to admission.

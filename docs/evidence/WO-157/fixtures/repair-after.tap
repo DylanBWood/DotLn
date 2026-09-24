@@ -1,0 +1,28 @@
+# WO-157 repair pass-after transcripts (VER-001 F1-F4 and item 16), 2026-09-24T14:08:07Z, on the repaired working tree; CLAUDE_EFFORT unset except where the suite sets it.
+# F1 (criterion 3): node --test --test-name-pattern 'WO-157 the host counts' packages/skeleton/dist/test/source-change-host.test.js
+ok 1 - WO-157 the host counts committed paths against the files ceiling and refuses a removal without repo.delete, except a declared Sort move
+# tests 1
+# pass 1
+# fail 0
+# F2 (criterion 9): node --test --test-name-pattern 'VER-001 F2|item 9' scripts/test-entropy-review.mjs
+ok 1 - WO-157 item 9: the witness records added and removed scratch paths and the source repository's untracked listing
+ok 2 - WO-157 VER-001 F2: a changed untracked listing whose paths carry newlines or edge whitespace is never recorded as unchanged
+# tests 2
+# pass 2
+# fail 0
+# F3 (criterion 11): bash scripts/test-resume.sh
+resume tests passed
+# F4 (criterion 12, parser): node --test --test-name-pattern 'relative imports|F4' scripts/test-evidence-sources.mjs
+ok 1 - WO-157 relative imports resolve compiled and type-only forms as the check reads them
+ok 2 - WO-157 VER-001 F4: every legal runtime import form is read, and only type imports are skipped
+# tests 2
+# pass 2
+# fail 0
+# Item 16 (criterion 20) and the changed schema expectations: node --test packages/skeleton/dist/test/verification.test.js packages/skeleton/dist/test/verification-worktree.test.js
+ok 9 - WO-056 verifier schema, instructions and admission agree on the finding contract
+ok 10 - WO-056 Codex launches a verifier in the files-only snapshot and every other shape keeps its bytes
+ok 26 - WO-056 the legacy verification profile launches Codex inside its Git worktree, without the repository-check skip
+ok 27 - WO-157 item 16 (D024): the verifier schema admits only findings admission can accept
+# tests 33
+# pass 33
+# fail 0

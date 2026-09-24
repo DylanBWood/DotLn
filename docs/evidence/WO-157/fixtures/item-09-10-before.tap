@@ -1,0 +1,63 @@
+TAP version 13
+# Entropy gate: {"receipts":["REVIEW-002","REFUTATION-002","REFUTATION-003"],"preMechanism":["REFUTATION-001","REVIEW-001"],"dispositions":7,"packets":3,"interruptedFilings":[],"status":"ok"}
+# Subtest: WO-157 item 9: the witness records added and removed scratch paths and the source repository's untracked listing
+not ok 1 - WO-157 item 9: the witness records added and removed scratch paths and the source repository's untracked listing
+  ---
+  duration_ms: 144.99025
+  type: 'test'
+  location: '~/Projects/DotLn-wo157/scripts/test-entropy-review.mjs:991:11'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+
+    + undefined
+    - [
+    -   'probe-output.txt'
+    - ]
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'probe-output.txt'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file://~/Projects/DotLn-wo157/scripts/test-entropy-review.mjs:1019:14)
+    async Test.run (node:internal/test_runner/test:1409:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+    async entropyFixtures (file://~/Projects/DotLn-wo157/scripts/test-entropy-review.mjs:991:5)
+    async file://~/Projects/DotLn-wo157/scripts/test-entropy-review.mjs:1128:49
+  ...
+# Subtest: WO-157 item 10: a refutation receipt renders the typed reasons in place of a worker statement
+not ok 2 - WO-157 item 10: a refutation receipt renders the typed reasons in place of a worker statement
+  ---
+  duration_ms: 190.015
+  type: 'test'
+  location: '~/Projects/DotLn-wo157/scripts/test-entropy-review.mjs:1052:11'
+  failureType: 'testCodeFailure'
+  error: |-
+    the refutation route records no separate statement
+
+    true !== false
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file://~/Projects/DotLn-wo157/scripts/test-entropy-review.mjs:1085:14)
+    async Test.run (node:internal/test_runner/test:1409:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+    async entropyFixtures (file://~/Projects/DotLn-wo157/scripts/test-entropy-review.mjs:1052:5)
+    async file://~/Projects/DotLn-wo157/scripts/test-entropy-review.mjs:1128:49
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 442.571375

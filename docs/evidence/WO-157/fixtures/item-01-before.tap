@@ -1,0 +1,38 @@
+TAP version 13
+# Subtest: an intent-to-add entry is refused before any write, and a failed stash leaves no pending receipt
+not ok 1 - an intent-to-add entry is refused before any write, and a failed stash leaves no pending receipt
+  ---
+  duration_ms: 3255.403458
+  type: 'test'
+  location: '~/Projects/DotLn-wo157/scripts/test-worktree-integration.mjs:510:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /intent-to-add/. Input:
+
+    "error: error: Entry 'intent to add.md' not uptodate. Cannot merge.\n" +
+      'Cannot save the current worktree state\n'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: |-
+    error: error: Entry 'intent to add.md' not uptodate. Cannot merge.
+    Cannot save the current worktree state
+
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (file://~/Projects/DotLn-wo157/scripts/test-worktree-integration.mjs:532:10)
+    Test.runInAsyncScope (node:async_hooks:226:14)
+    Test.run (node:internal/test_runner/test:1402:25)
+    Test.start (node:internal/test_runner/test:1262:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3303.071125

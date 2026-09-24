@@ -1,0 +1,52 @@
+TAP version 13
+# Subtest: WO-042 queued fixes require diagnosis, announcement, steering checkpoint and current priority
+ok 1 - WO-042 queued fixes require diagnosis, announcement, steering checkpoint and current priority
+  ---
+  duration_ms: 10.183333
+  type: 'test'
+  ...
+# Subtest: WO-042 operator steering supersedes queued intent without erasing history
+ok 2 - WO-042 operator steering supersedes queued intent without erasing history
+  ---
+  duration_ms: 7.34575
+  type: 'test'
+  ...
+# Subtest: WO-042 a recommendation waits for attributed operator direction and fresh check-in
+ok 3 - WO-042 a recommendation waits for attributed operator direction and fresh check-in
+  ---
+  duration_ms: 3.388875
+  type: 'test'
+  ...
+# Subtest: WO-042 queue persistence refuses escape, truncation, stale writers and foreign work
+ok 4 - WO-042 queue persistence refuses escape, truncation, stale writers and foreign work
+  ---
+  duration_ms: 1.909416
+  type: 'test'
+  ...
+# Subtest: WO-042 actual queue CLI uses the selected work order and read-only listing
+ok 5 - WO-042 actual queue CLI uses the selected work order and read-only listing
+  ---
+  duration_ms: 51.736333
+  type: 'test'
+  ...
+# Subtest: WO-157 retarget moves only a deferred item's target onto an existing FUP, also at final review
+ok 6 - WO-157 retarget moves only a deferred item's target onto an existing FUP, also at final review
+  ---
+  duration_ms: 85.660709
+  type: 'test'
+  ...
+# Subtest: WO-157 the fold admits a reviewer actor only for retarget, below the CLI's phase gate
+ok 7 - WO-157 the fold admits a reviewer actor only for retarget, below the CLI's phase gate
+  ---
+  duration_ms: 2.122209
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 208.936

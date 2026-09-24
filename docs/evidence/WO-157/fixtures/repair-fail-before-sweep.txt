@@ -1,0 +1,64 @@
+# WO-157 repair fail-before sweep (VER-001 F1-F4 and item 16), 2026-09-24T14:09:29Z, with the final fixture files
+# A shared clone of refs/dotln/checkpoint/WO-157/5 with its own @dotln package links; only the final fixture files copied in; built from its own sources; CLAUDE_EFFORT unset. Lines filtered to results and assertion diagnostics.
+
+sweep base: 319dbe367faab6c6416e966c96fdeb7bf77cc5aa (refs/dotln/checkpoint/WO-157/5, the tree VER-001 judged)
+copied final fixture: packages/skeleton/test/source-change-host.test.ts
+copied final fixture: scripts/test-entropy-review.mjs
+copied final fixture: scripts/test-resume.sh
+copied final fixture: scripts/test-evidence-sources.mjs
+copied final fixture: packages/skeleton/test/verification.test.ts
+copied final fixture: packages/skeleton/test/verification-worktree.test.ts
+clone built from its own sources
+
+=== F1 (criterion 3): node --test --test-reporter=tap --test-name-pattern WO-157 the host counts packages/skeleton/dist/test/source-change-host.test.js
+not ok 1 - WO-157 the host counts committed paths against the files ceiling and refuses a removal without repo.delete, except a declared Sort move
+  error: |-
+  name: 'AssertionError'
+  expected:
+  actual: 'source-change diff removes or changes the type of paths without repo.delete: D fixture.txt'
+# pass 0
+# fail 1
+exit 1
+
+=== F2 (criterion 9): node --test --test-reporter=tap --test-name-pattern VER-001 F2 scripts/test-entropy-review.mjs
+not ok 1 - WO-157 VER-001 F2: a changed untracked listing whose paths carry newlines or edge whitespace is never recorded as unchanged
+  error: |-
+  name: 'AssertionError'
+  expected: 'ea7fb08b7a2dc4619ffb7c7bb38d95a2047935fa165d71b12efd3852a2e6d0cc'
+  actual: 'ea7fb08b7a2dc4619ffb7c7bb38d95a2047935fa165d71b12efd3852a2e6d0cc'
+# pass 0
+# fail 1
+exit 1
+
+=== F3 (criterion 11): bash scripts/test-resume.sh
+AssertionError [ERR_ASSERTION]: Missing expected exception.
+  actual: undefined,
+  expected: /exports CLAUDE_EFFORT=xhigh; attest --effort xhigh --source claude-session-readback rather than high with source operator-attested/,
+exit 1
+
+=== F4 (criterion 12): node --test --test-reporter=tap scripts/test-evidence-sources.mjs
+not ok 1 - WO-157 a moved entropy review protocol stales the feedback edition; an excluded import does not
+  error: `admitted "\\nvoid import('./wo157-unregistered.js').then(() => {});\\n"`
+  name: 'AssertionError'
+  expected: 0
+  actual: 0
+ok 2 - WO-157 relative imports resolve compiled and type-only forms as the check reads them
+not ok 3 - WO-157 VER-001 F4: every legal runtime import form is read, and only type imports are skipped
+  error: |-
+  name: 'AssertionError'
+  expected:
+  actual:
+# pass 1
+# fail 2
+exit 1
+
+=== item 16 (criterion 20): node --test --test-reporter=tap --test-name-pattern item 16 packages/skeleton/dist/test/verification.test.js
+# Subtest: WO-157 item 16 (D024): the verifier schema admits only findings admission can accept
+not ok 1 - WO-157 item 16 (D024): the verifier schema admits only findings admission can accept
+  error: 'schema admits empty finding id'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+# pass 0
+# fail 1
+exit 1

@@ -2829,6 +2829,13 @@
           "title": "Candidate — unattended work-order portfolio",
           "summary": "### Candidate — unattended work-order portfolio The earlier operator-away scheduler was partly a workaround for supervising one prompt-bound agent and arranging recurring maintenance timers by hand. Once the work-order processor can close one order and select another, unattended autonomy should operate primarily over bounded WorkOrders rather than recreate a permanent prompt session. An opted-in portfolio has two candidate lanes. First are small eligible orders already covered by standing authority and requiring no new material decision; housekeeping often fits because it can reduce return-time reorientation. Second is a bounded set of larger-authority orders the operator explicitly preautho",
           "missing": false
+        },
+        {
+          "hash": "ac72a5505e4639ef56d1a8c85fca64dbc71d9bf4536b53da42be9522efc3c746",
+          "ref": "docs/product/06-roadmap.md#candidate--unattended-work-order-portfolio",
+          "title": "Candidate — unattended work-order portfolio",
+          "summary": "### Candidate — unattended work-order portfolio The earlier operator-away scheduler was partly a workaround for supervising one prompt-bound agent and arranging recurring maintenance timers by hand. Once the work-order processor can close one order and select another, unattended autonomy should operate primarily over bounded WorkOrders rather than recreate a permanent prompt session. An opted-in portfolio has two candidate lanes. First are small eligible orders already covered by standing authority and requiring no new material decision; housekeeping often fits because it can reduce return-time reorientation. Second is a bounded set of larger-authority orders the operator explicitly preautho",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -2928,6 +2935,13 @@
         },
         {
           "hash": "91ab3cba085d6a0e76e89342e4d752c961cc38fcf1572cd07eae7a93d762efb8",
+          "ref": "docs/product/06-roadmap.md#work-order-navigation-and-identity-candidate",
+          "title": "Work-order navigation and identity (candidate)",
+          "summary": "## Work-order navigation and identity (candidate) The current control projection answers one narrow question: given a selected work order and its independently folded phase, which lifecycle transitions are legal now? It does not answer which backlog order should be activated after close. The release ladder, hard dependency graph, adjacent evidence/corpus work, and operator preference are distinct planning inputs and must not be collapsed into the next integer. Keep three answers visible: 1. **Workflow legal next:** the transition allowed for the selected order, such as verify, repair, or final review. 2. **Eligible now:** every candidate whose hard dependencies, activation prerequisites, aut",
+          "missing": false
+        },
+        {
+          "hash": "84083fd04d0c9f2948b6844d12e4e1ce2feb585c19e56916bc8f3e40bf31148d",
           "ref": "docs/product/06-roadmap.md#work-order-navigation-and-identity-candidate",
           "title": "Work-order navigation and identity (candidate)",
           "summary": "## Work-order navigation and identity (candidate) The current control projection answers one narrow question: given a selected work order and its independently folded phase, which lifecycle transitions are legal now? It does not answer which backlog order should be activated after close. The release ladder, hard dependency graph, adjacent evidence/corpus work, and operator preference are distinct planning inputs and must not be collapsed into the next integer. Keep three answers visible: 1. **Workflow legal next:** the transition allowed for the selected order, such as verify, repair, or final review. 2. **Eligible now:** every candidate whose hard dependencies, activation prerequisites, aut",
@@ -15208,6 +15222,148 @@
           "at": "2026-09-22T22:20:36.298Z"
         }
       ]
+    },
+    {
+      "id": "FUP-92fd86e53b44fa39",
+      "key": "decision:docs/evidence/WO-157/decisions.md#wo-157-d005",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "80efafdb4dcf3e03aabba65bc3e5377936164cba6fcbd25a1c73401e21557687",
+          "ref": "docs/evidence/WO-157/decisions.md#wo-157-d005",
+          "title": "WO-157-D005: Before the first target publication of a model-written episode (WO-066): run the source-change host's focused test run, and the Claude writer's admitted test command, under an OS sandbox ",
+          "summary": "{ \"id\": \"WO-157-D005\", \"date\": \"2026-09-22\", \"dispatch\": \"resume: next; WO-157 item 4 (WO-064 D010), criterion 4; the WO-157 review's findings on item 4\", \"decision\": \"Probe both writer profiles, then land a guard wider than hooks. Target publication pushes the observed commit from a host-created bare repository: it fetches the writer's branch from the target, verifies the observed commit, and pushes it to origin's configured push URL with hooks and fsmonitor off. Neither the target's hooks nor its repository configuration (core.sshCommand, include.path, remote.<name>.receivepack, credential helpers, URL rewrites) runs in the operator's publish process; only the operator's global and system ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-c31c7bcab9270f49",
+      "key": "decision:docs/evidence/WO-157/decisions.md#wo-157-d024",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "3cdf0cbff4f49449d40d4f5c6b106704940d4988a6918302e49ac78b9ef532f4",
+          "ref": "docs/evidence/WO-157/decisions.md#wo-157-d024",
+          "title": "WO-157-D024: Tighten evidenceResultSchema to copyFinding's rules: findings maxItems 0 when the subject has no failing witness, and otherwise minItems 1 on reproductionSteps, evidenceRefs and likelySur",
+          "summary": "{ \"id\": \"WO-157-D024\", \"date\": \"2026-09-23\", \"dispatch\": \"resume: next; the first live attempt of D023 refused with invalid-result (finding shape)\", \"decision\": \"Board up, not fix in this order: the verifier's output schema admits findings the admission validator can never accept. When a subject carries no failing witness (as every feedback self-host does), `findingContract` is empty, so `evidenceResultSchema` gives observed, expected and reproductionSteps as free strings and arrays with no minItems, maxLength or control-character rule, and any finding at all is inadmissible there (a finding needs a failing evaluation, which needs a failing witness). Claude's `--json-schema` constrains the m",
+          "missing": false
+        },
+        {
+          "hash": "ed7e7042a9d8486c7e91226c7288d08903d2e165778ae4e889161619a1977ea2",
+          "ref": "docs/evidence/WO-157/decisions.md#wo-157-d024",
+          "title": "WO-157-D024: Tighten evidenceResultSchema to copyFinding's rules: findings maxItems 0 when the subject has no failing witness, and otherwise minItems 1 on reproductionSteps, evidenceRefs and likelySur",
+          "summary": "{ \"id\": \"WO-157-D024\", \"date\": \"2026-09-23\", \"dispatch\": \"resume: next; the first live attempt of D023 refused with invalid-result (finding shape)\", \"decision\": \"Board up, not fix in this order: the verifier's output schema admits findings the admission validator can never accept. When a subject carries no failing witness (as every feedback self-host does), `findingContract` is empty, so `evidenceResultSchema` gives observed, expected and reproductionSteps as free strings and arrays with no minItems, maxLength or control-character rule, and any finding at all is inadmissible there (a finding needs a failing evaluation, which needs a failing witness). Claude's `--json-schema` constrains the m",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-5026a20c81945f73",
+      "key": "decision:docs/evidence/WO-157/decisions.md#wo-157-d025",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "679b202ba341ded87e12bdf2168896ee315fc952869d79e5b1a5120ed2ea4bda",
+          "ref": "docs/evidence/WO-157/decisions.md#wo-157-d025",
+          "title": "WO-157-D025: resume: fix WO-157 VER-001 F1: keep the file-to-directory refusal and path, add the configured files ceiling to its diagnostic, assert both in the fixture, and rerun the affected source-c",
+          "summary": "{ \"id\": \"WO-157-D025\", \"date\": \"2026-09-23\", \"dispatch\": \"resume: verify; VER-001 F1, WO-157 criterion 3\", \"decision\": \"Return the file-to-directory refusal's missing ceiling to repair. The authority boundary works, but criterion 3 requires both the path and ceiling in that diagnostic; D004's claim that both refusals name the ceiling was too broad.\", \"evidence\": [ \"packages/skeleton/src/source-change-worktree.ts emits 'source-change diff removes or changes the type of paths without repo.delete: D fixture.txt' for the directory replacement, without the configured files ceiling\", \"packages/skeleton/test/source-change-host.test.ts supplies files: 3 and anchors the expected message at D fixture.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-fa3d7a30469ac20d",
+      "key": "decision:docs/evidence/WO-157/decisions.md#wo-157-d026",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "aa2e597d8a8fbc701408ebb08fd869aca3082cc9999b748c153cdf9022b704d5",
+          "ref": "docs/evidence/WO-157/decisions.md#wo-157-d026",
+          "title": "WO-157-D026: resume: fix WO-157 VER-001 F2: hash an unambiguous representation of the NUL-delimited untracked paths, add a delimiter-containing filename fixture that must record identical: false, and ",
+          "summary": "{ \"id\": \"WO-157-D026\", \"date\": \"2026-09-23\", \"dispatch\": \"resume: verify; VER-001 F2, WO-157 criterion 9\", \"decision\": \"Return the untracked-path witness's ambiguous hash framing to repair. The ordinary add/remove fixture passes, but two different legal filename lists can render 'untracked listing unchanged', so the summary exceeds the observation.\", \"evidence\": [ \"scripts/lib/entropy-review.mjs untrackedListing reads NUL-delimited Git paths but hashes paths.join('\\\\n'); widenedWitness compares only the resulting hashes\", \"In-memory execution of the current functions with NUL-delimited Git outputs gave before ['a\\\\nb','c'] and after ['a','b\\\\nc'], each count 2 and SHA-256 ea7fb08b7a2dc4619ff",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-eba6a79fc106bd28",
+      "key": "decision:docs/evidence/WO-157/decisions.md#wo-157-d027",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "7417be77f87e302301dbef2ec9d96be91a1a87f265ab6f9c7a3da251ba3c3f27",
+          "ref": "docs/evidence/WO-157/decisions.md#wo-157-d027",
+          "title": "WO-157-D027: resume: fix WO-157 VER-001 F3: refuse a same-session Claude Code completion whose effort or source disagrees with a readable CLAUDE_EFFORT, assert the negative lifecycle case without an a",
+          "summary": "{ \"id\": \"WO-157-D027\", \"date\": \"2026-09-23\", \"dispatch\": \"resume: verify; VER-001 F3, WO-157 criterion 11\", \"decision\": \"Return the same-session effort mismatch to repair. D012's advisory-only interpretation does not satisfy the order's instruction to refuse a disagreeing operator-selected value or criterion 11's source and value under CLAUDE_EFFORT; the lifecycle event has no separate-session provenance that would identify its stated exception.\", \"evidence\": [ \"parseActor('verification-result', claude-code 2.1.280, effort high, source operator-attested, env CLAUDE_EFFORT=xhigh) returns high/operator-attested with only an advisory; no event was written in this reproduction\", \"scripts/resume.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-8a36e4b4ae3bbe5b",
+      "key": "decision:docs/evidence/WO-157/decisions.md#wo-157-d028",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "0f940c3d783402bd57e5508f31f51548294f3320779fa44c9e257105006cbf67",
+          "ref": "docs/evidence/WO-157/decisions.md#wo-157-d028",
+          "title": "WO-157-D028: resume: fix WO-157 VER-001 F4: recognize legal chained dynamic imports and semicolonless static imports while excluding only type imports, add both negative-control fixtures, then re-mint",
+          "summary": "{ \"id\": \"WO-157-D028\", \"date\": \"2026-09-23\", \"dispatch\": \"resume: verify; VER-001 F4, WO-157 item 12 and criterion 12\", \"decision\": \"Return the import-closure check's missed runtime forms to repair. The named changed-protocol and excluded-import fixtures pass, but the promised refusal for an unregistered imported sibling does not hold for legal chained dynamic imports or semicolonless static imports.\", \"evidence\": [ \"scripts/lib/evidence-sources.mjs IMPORT_PATTERN requires a semicolon on static imports and rejects every import() followed by a dot to avoid TypeScript/JSDoc import types\", \"With a process-local readFileSync shim over registered verification.ts, import './unregistered.mjs'; is c",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0a47198c1e076d4d",
+      "key": "decision:docs/evidence/WO-157/decisions.md#wo-157-d038",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "32524c97f1c827787c417e2485e2518aada45625d1ceaaca68f320a01c11cbf8",
+          "ref": "docs/evidence/WO-157/decisions.md#wo-157-d038",
+          "title": "WO-157-D038: Before WO-066's first target publication: make every host Git read in the target's root immune to its repository configuration, by adding log.showSignature=false (and neutralising gpg.pro",
+          "summary": "{ \"id\": \"WO-157-D038\", \"date\": \"2026-09-24\", \"dispatch\": \"resume: final review; item 4 and criterion 4; the review's reproduction of D005's claim\", \"decision\": \"Board up, not fix at review: target publication still runs one Git read in the target's own root that honours repository-level configuration a writer-controlled test can plant. `observeTarget` reads each branch commit's message with `git log -1 --format=%B <sha>` under the host's `core.hooksPath` and `core.fsmonitor` overrides only, so `log.showSignature=true` with `gpg.program=<path>` in the target's configuration makes that read execute the named program with the operator's privileges, after every refusal has passed and before the ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-fd5f7c2b91095343",
+      "key": "decision:docs/evidence/WO-157/decisions.md#wo-157-d039",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "7ca1885d7ca0f70abeab0ea275e72b9d2e28855931881b33e6190f02c79d54a8",
+          "ref": "docs/evidence/WO-157/decisions.md#wo-157-d039",
+          "title": "WO-157-D039: Make worktree integrate --continue adopt the integration's own stash entry (its stash name and base commit, as ownStash identifies it) when the tree is clean and the preserved receipt rec",
+          "summary": "{ \"id\": \"WO-157-D039\", \"date\": \"2026-09-24\", \"dispatch\": \"resume: final review; item 1 and criterion 1; the review's reading of D002\", \"decision\": \"Board up a crash window outside criterion 1's stated cases. After `git stash push` succeeds, the receipt on disk still reads stage `preserved` with `stash: null` until the next save; a process killed in that window leaves a clean tree and a named stash, and `--continue` then finds nothing dirty, merges and completes without applying the stash, which stays retained under the integration's name. The pre-stash cases the order names hold, and a stored-then-failed stash resumes as D002 says; D002's sentence that saving the receipt first keeps every cr",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-4a1d1fc3611506a1",
+      "key": "decision:docs/evidence/WO-157/decisions.md#wo-157-d040",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "3eb0932604465dcb6b91768a6eee31173db03d0b3d13f52e9d596e9c65f9f11f",
+          "ref": "docs/evidence/WO-157/decisions.md#wo-157-d040",
+          "title": "WO-157-D040: In the next order that edits scripts/resident-bind.mjs: make --check compare the binding record's profileId with the registered profile's authorityEnvelopeId and name a mismatch, with a f",
+          "summary": "{ \"id\": \"WO-157-D040\", \"date\": \"2026-09-24\", \"dispatch\": \"resume: final review; items 6, 11, 12 and 15; the review's rechecks of D007, D016, D033 and D034\", \"decision\": \"Record four minor limits the review found, one with a follow-up. (1) `resident-bind --check` compiles a portfolio store under the bound repository's registered profile but never compares the binding record's `profileId` with that profile's `authorityEnvelopeId`, so a store whose record names a stale or hand-edited profile id passes and the check prints that name; criterion 6 holds because the compiled check is against the real profile. (2) The item 11 refusal keys on the literal harness name `claude-code`; another spelling u",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

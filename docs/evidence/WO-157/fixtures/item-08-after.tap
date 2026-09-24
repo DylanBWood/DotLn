@@ -1,0 +1,142 @@
+TAP version 13
+# Subtest: WO-010 AC1/2/3/5 claude-cli-print dispatch → finding → fresh focused repair → re-verification uses the kernel loop
+ok 1 - WO-010 AC1/2/3/5 claude-cli-print dispatch → finding → fresh focused repair → re-verification uses the kernel loop
+  ---
+  duration_ms: 951.518958
+  type: 'test'
+  ...
+# Subtest: WO-010 AC1/2/3/5 codex-cli-exec dispatch → finding → fresh focused repair → re-verification uses the kernel loop
+ok 2 - WO-010 AC1/2/3/5 codex-cli-exec dispatch → finding → fresh focused repair → re-verification uses the kernel loop
+  ---
+  duration_ms: 871.518917
+  type: 'test'
+  ...
+# Subtest: WO-010 AC2 implementer-emitted events and repair results cannot certify acceptance
+ok 3 - WO-010 AC2 implementer-emitted events and repair results cannot certify acceptance
+  ---
+  duration_ms: 3.19875
+  type: 'test'
+  ...
+# Subtest: WO-010 AC2/3 claim types, evidence sources, observations, subject and result shape are host-checked
+ok 4 - WO-010 AC2/3 claim types, evidence sources, observations, subject and result shape are host-checked
+  ---
+  duration_ms: 1.629834
+  type: 'test'
+  ...
+# Subtest: WO-010 AC3 each blocking finding has its own compiled repair; repair limits stop without greenwashing
+ok 5 - WO-010 AC3 each blocking finding has its own compiled repair; repair limits stop without greenwashing
+  ---
+  duration_ms: 339.016209
+  type: 'test'
+  ...
+# Subtest: WO-010 AC4/5 dotln status exposes stale evidence mid-workstream and is read-only
+ok 6 - WO-010 AC4/5 dotln status exposes stale evidence mid-workstream and is read-only
+  ---
+  duration_ms: 906.132375
+  type: 'test'
+  ...
+# Subtest: WO-010 completed-result crash recovery retains the producing verifier and invokes no duplicate effect
+ok 7 - WO-010 completed-result crash recovery retains the producing verifier and invokes no duplicate effect
+  ---
+  duration_ms: 927.1085
+  type: 'test'
+  ...
+# Subtest: WO-010 a committed repair recovers before its event without repeating the write
+ok 8 - WO-010 a committed repair recovers before its event without repeating the write
+  ---
+  duration_ms: 826.204916
+  type: 'test'
+  ...
+# Subtest: WO-010 an admitted-result prefix recovers completion status and its continuation exactly once
+ok 9 - WO-010 an admitted-result prefix recovers completion status and its continuation exactly once
+  ---
+  duration_ms: 851.068125
+  type: 'test'
+  ...
+# Subtest: WO-010 explicit human disposition holds a completed repair proposal before application
+ok 10 - WO-010 explicit human disposition holds a completed repair proposal before application
+  ---
+  duration_ms: 1.623791
+  type: 'test'
+  ...
+# Subtest: WO-010 claude-cli-print killed verifier retains its command and recovers in a fresh leased episode
+ok 11 - WO-010 claude-cli-print killed verifier retains its command and recovers in a fresh leased episode
+  ---
+  duration_ms: 1055.941541
+  type: 'test'
+  ...
+# Subtest: WO-010 claude-cli-print model refusal and forged passes retain pending work
+ok 12 - WO-010 claude-cli-print model refusal and forged passes retain pending work
+  ---
+  duration_ms: 909.375667
+  type: 'test'
+  ...
+# Subtest: WO-010 codex-cli-exec killed verifier retains its command and recovers in a fresh leased episode
+ok 13 - WO-010 codex-cli-exec killed verifier retains its command and recovers in a fresh leased episode
+  ---
+  duration_ms: 1079.379583
+  type: 'test'
+  ...
+# Subtest: WO-010 codex-cli-exec model refusal and forged passes retain pending work
+ok 14 - WO-010 codex-cli-exec model refusal and forged passes retain pending work
+  ---
+  duration_ms: 913.227375
+  type: 'test'
+  ...
+# Subtest: WO-010 expired authority or lease quarantines acceptance and replay remains pure
+ok 15 - WO-010 expired authority or lease quarantines acceptance and replay remains pure
+  ---
+  duration_ms: 328.905291
+  type: 'test'
+  ...
+# Subtest: WO-056 the legacy verification profile launches Codex inside its Git worktree, without the repository-check skip
+ok 16 - WO-056 the legacy verification profile launches Codex inside its Git worktree, without the repository-check skip
+  ---
+  duration_ms: 0.86775
+  type: 'test'
+  ...
+# Subtest: WO-142 B7 result schema, prompt and bounded rejection agree on summary length
+ok 17 - WO-142 B7 result schema, prompt and bounded rejection agree on summary length
+  ---
+  duration_ms: 0.942
+  type: 'test'
+  ...
+# Subtest: WO-157 item 8 claude-cli-print: an invalid-result refusal records and rethrows its typed detail
+ok 18 - WO-157 item 8 claude-cli-print: an invalid-result refusal records and rethrows its typed detail
+  ---
+  duration_ms: 302.790375
+  type: 'test'
+  ...
+# Subtest: WO-157 item 8 codex-cli-exec: an invalid-result refusal records and rethrows its typed detail
+ok 19 - WO-157 item 8 codex-cli-exec: an invalid-result refusal records and rethrows its typed detail
+  ---
+  duration_ms: 301.988
+  type: 'test'
+  ...
+# Subtest: WO-157 item 8: a detail outside the closed vocabulary is recorded as unclassified, never verbatim
+ok 20 - WO-157 item 8: a detail outside the closed vocabulary is recorded as unclassified, never verbatim
+  ---
+  duration_ms: 267.966458
+  type: 'test'
+  ...
+# Subtest: WO-157 item 8: dotln prints the typed refusal detail
+ok 21 - WO-157 item 8: dotln prints the typed refusal detail
+  ---
+  duration_ms: 515.978709
+  type: 'test'
+  ...
+# Subtest: WO-157 item 8: the host's own receipt check records its typed detail
+ok 22 - WO-157 item 8: the host's own receipt check records its typed detail
+  ---
+  duration_ms: 265.841041
+  type: 'test'
+  ...
+1..22
+# tests 22
+# suites 0
+# pass 22
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 12479.917916

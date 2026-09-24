@@ -222,8 +222,8 @@ or scheduler is installed.
 
 For an in-flight work order the ordinary path is one command, not a
 hand-written store: `node scripts/resident-bind.mjs WO-NNN --surface <path>...
---transport <claude-cli-print|codex-cli-exec> --model <model> --effort <level>`
-reads the canonical control state and the worktree the order is being worked
+--transport <claude-cli-print|codex-cli-exec> [--model <model>] [--effort <level>]`
+(the model and effort default per transport; product 06) reads the canonical control state and the worktree the order is being worked
 in, writes a store under the launchpad's ignored control lane whose
 `mission-check` actor is aimed at that worktree, and prints the launch,
 presence, status and `DOTLN_RESIDENT_STORE` lines for it.
@@ -1120,10 +1120,16 @@ Limits: the budget is charged when an episode ends, so the last admitted
 episode can overrun the remaining wall time or tokens, and an episode lost to a
 restart is charged the downtime before the loss was recorded. No current host
 reports tokens, so a token budget has no effect until one does. WO-054 judges
-only the portfolio's named commands and WO-052 enforces the surfaces; other
+only the portfolio's named commands and WO-052 enforces the surfaces, the
+envelope's `files` count and the removal rule (only a declared Sort move may
+remove a path without `repo.delete`); other
 stated criteria guide the writer, so the named commands must test them. The
 host directory is the durable WO-052/WO-054 store per WO-120 identity: a
 repeated identity recovers its saved outcome instead of dispatching again.
-The configuration loader, not the resident, checks a ceiling against its
-repository's registered profile; binding a resident from the loaded portfolio
-and a profile-compiled environment is WO-111's.
+The configuration loader checks a ceiling against its repository's registered
+profile, and `node scripts/resident-bind.mjs --portfolio <id> --template
+<resident.json> --base <commit>` binds a resident from the loaded portfolio with
+its graph and environment compiled under that profile; `--check <store>`
+refuses a store that departs from the profile or whose profile cannot be read
+(WO-157). The runtime itself still admits whatever store it is given
+(WO-100 D006).

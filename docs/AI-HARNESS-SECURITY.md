@@ -333,6 +333,23 @@ effort and CLI version from its local session metadata. This readback is
 independent of token-counter freshness and adds no admission check. Missing or
 incomplete metadata is reported without substituting a model default. Explicit
 operator-supplied values remain operator-attested when readback is unavailable.
+
+Claude Code (observed at 2.1.278 and 2.1.280) exports its session's selected
+effort as `CLAUDE_EFFORT` to the commands it runs, and persists a per-model
+`effortLevel` in its settings; DotLn never sets the variable. Briefings and
+status print it as `Current Claude Code session: effort <level>; source
+claude-session-readback`, which is selected, not effective, effort and names no
+model. A completion may record `--source claude-session-readback` only when the
+variable is present and equals the attested effort. While it is readable, a
+claude-code attestation must be exactly that effort from that source: any other
+effort or source, `unknown` included, is refused with no event appended,
+because nothing in the record would say which other session a differing value
+describes (WO-157 VER-001 F3; WO-152 D012). The variable is process-wide: the
+WO-157 review observed it in an in-process subagent's shell, where it names the
+root session's selection, so the root session records lifecycle completions.
+Whether a nested `claude -p` session inherits the parent's
+value is unprobed.
+
 Optional `--account-label` retains its public opaque-label grammar; no private
 account meaning is inferred. Reports carry exactly one normalized actor header
 matching completion flags. The control log preserves all earlier actor values;
@@ -379,10 +396,16 @@ working directory, and denies without prompting anything outside the named
 tools; Codex runs it under `--sandbox workspace-write` rooted at the same copy
 with network disabled. Claude does not path-confine a shell command, so that
 half of the boundary is instructed and then checked rather than enforced: the
-host records the subject's tracked-status hash and the frozen copy's inventory
-before and after each episode, the review and the blinded refutation alike, and
-states in the receipt which of the two confinements applied with the delta it
-observed. On the default clean-`HEAD` review route a moved tracked status
+host records the source repository's tracked-path status hash and its
+untracked, non-ignored path listing hash, and the frozen copy's path-and-size
+inventory, before and after each episode, the review and the blinded refutation
+alike; the receipt names the frozen copy's added, removed and resized paths and
+which of the two confinements applied. Ignored paths and file contents are not
+observed, and the untracked listing is recorded rather than refused because the
+dispatching session writes untracked evidence during an episode (WO-157; WO-151
+D020). A refutation receipt records no separate worker statement: it renders
+each attempt's reason and evidence references from the typed report (WO-157;
+WO-151 D017). On the default clean-`HEAD` review route a moved tracked status
 refuses the return; an explicitly named commit, which is also the refutation's
 subject, is bound by its tree object instead and the working tree's own drift
 is recorded as `trackedStatusByteIdentical: false` rather than hidden. The receipt
@@ -391,7 +414,8 @@ exposes one, and `unobserved` when it does not.
 
 **Version-line attestation (WO-126).** `npm run discover -- harness` appends
 a bounded observation of the running CLI's major.minor line and newest patch,
-plus whether Claude's effort readback channel exists. WO-132 supersedes
+plus Claude Code's selected-session readback (`CLAUDE_EFFORT`, recorded as
+`selectedSessionReadback`, not effective effort). WO-132 supersedes
 its effort admission rule: all supplied labels are preserved, including
 unknown versions and efforts. Session entry warns once when the observed CLI
 leaves the recorded line. WO-042's unknown attestation remains unchanged.

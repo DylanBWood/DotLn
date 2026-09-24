@@ -1,0 +1,15 @@
+WO-157 item 15 race probe, 2026-09-22, Git 2.55.0, Node 26.9.0, this worktree.
+Command: node <session-scratch>/wo157-race/race.mjs 200 10 <UNFIX>, which runs
+`node --test --test-name-pattern='WO-140 a partial inside-sandbox row'
+scripts/test-runner.test.mjs` 200 times, 10 at a time, with TMPDIR redirected
+to the session scratch. An in-memory loader (nothing on disk changes) plants two
+loose blobs whose ids start with "17" before the test's final commit, and with
+UNFIX=1 also removes the landed `git config maintenance.auto false` line.
+
+{"arm":"unfixed","runs":200,"concurrency":10,"failed":172,"enotempty":172,"leftRoots":172,"seconds":20.998}
+{"arm":"fixed (as landed)","runs":200,"concurrency":10,"failed":0,"enotempty":0,"leftRoots":0,"seconds":18.745}
+
+Re-run from the committed opt-in probe (scripts/probes/gate-sandbox-race/race.mjs,
+with its loader beside it), 60 runs at 10 concurrent each:
+{"arm":"unfixed","runs":60,"concurrency":10,"failed":52,"enotempty":52,"leftRoots":52,"seconds":6.392}
+{"arm":"fixed (as landed)","runs":60,"concurrency":10,"failed":0,"enotempty":0,"leftRoots":0,"seconds":5.757}

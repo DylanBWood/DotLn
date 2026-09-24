@@ -1,0 +1,78 @@
+TAP version 13
+# PROGRESS [build] 0.0 s started
+# Subtest: WO-157 the gate-sandbox fixture's commits start no background Git maintenance that could race its teardown
+not ok 1 - WO-157 the gate-sandbox fixture's commits start no background Git maintenance that could race its teardown
+  ---
+  duration_ms: 98.210083
+  type: 'test'
+  location: '~/Projects/DotLn-wo157/scripts/test-runner.test.mjs:1856:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    a fixture commit started background maintenance that writes .git/objects/pack
+    + actual - expected
+
+    + [
+    +   'git maintenance run --auto --quiet --detach'
+    + ]
+    - []
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'git maintenance run --auto --quiet --detach'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file://~/Projects/DotLn-wo157/scripts/test-runner.test.mjs:1909:10)
+    Test.runInAsyncScope (node:async_hooks:226:14)
+    Test.run (node:internal/test_runner/test:1402:25)
+    Test.start (node:internal/test_runner/test:1262:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)
+  ...
+# PASS build 0.03 s
+# PROGRESS [alpha] 0.0 s started
+# PASS alpha 0.02 s
+# PROGRESS [outside] 0.0 s started
+# PASS outside 0.02 s
+# npm test: 3 passed; 0 failed; 0.08 s; 3 fresh tasks
+# PROGRESS [build] 0.0 s started
+# PASS build 0.03 s
+# PROGRESS [alpha] 0.0 s started
+# PASS alpha 0.02 s
+# PROGRESS [outside] 0.0 s started
+# PASS outside 0.02 s
+# PROGRESS [abandon] 0.0 s started
+# PASS abandon 0.02 s
+# npm test: 4 passed; 0 failed; 0.11 s; 4 fresh tasks
+# Subtest: WO-157 a gate whose suites leave a gate-sandbox fixture root behind fails and names it, and another run's root does not fail it
+not ok 2 - WO-157 a gate whose suites leave a gate-sandbox fixture root behind fails and names it, and another run's root does not fail it
+  ---
+  duration_ms: 303.231834
+  type: 'test'
+  location: '~/Projects/DotLn-wo157/scripts/test-runner.test.mjs:1916:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    a gate whose suites left a dotln-gate-sandbox root behind must fail
+
+    0 !== 1
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file://~/Projects/DotLn-wo157/scripts/test-runner.test.mjs:1950:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1409:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 441.207417

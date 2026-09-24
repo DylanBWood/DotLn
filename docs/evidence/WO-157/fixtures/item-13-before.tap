@@ -1,0 +1,29 @@
+TAP version 13
+# Subtest: WO-157 the document gate refuses an unregistered docs JSONL and an unstubbed document suite
+not ok 1 - WO-157 the document gate refuses an unregistered docs JSONL and an unstubbed document suite
+  ---
+  duration_ms: 0.784042
+  type: 'test'
+  location: '~/Projects/DotLn-wo157/scripts/test-runner.test.mjs:678:1'
+  failureType: 'testCodeFailure'
+  error: 'test:docs carries the registration row (WO-151 D021)'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file://~/Projects/DotLn-wo157/scripts/test-runner.test.mjs:680:10)
+    Test.runInAsyncScope (node:async_hooks:226:14)
+    Test.run (node:internal/test_runner/test:1402:25)
+    Test.start (node:internal/test_runner/test:1262:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 44.31125

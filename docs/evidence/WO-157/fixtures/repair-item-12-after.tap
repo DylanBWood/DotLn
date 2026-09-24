@@ -1,0 +1,7 @@
+# WO-157 item 12 and VER-001 F4 after the repair's re-mint, 2026-09-24T14:11:47Z: node --test --test-reporter=tap scripts/test-evidence-sources.mjs
+ok 1 - WO-157 a moved entropy review protocol stales the feedback edition; an excluded import does not
+ok 2 - WO-157 relative imports resolve compiled and type-only forms as the check reads them
+ok 3 - WO-157 VER-001 F4: every legal runtime import form is read, and only type imports are skipped
+# tests 3
+# pass 3
+# fail 0

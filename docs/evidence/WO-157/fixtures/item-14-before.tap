@@ -1,0 +1,74 @@
+TAP version 13
+# Subtest: WO-157 an allocation written under a superseded section set folds after the list changes
+not ok 1 - WO-157 an allocation written under a superseded section set folds after the list changes
+  ---
+  duration_ms: 133.433042
+  type: 'test'
+  location: '~/Projects/DotLn-wo157/scripts/test-derived-orders.mjs:632:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Got unwanted exception: a historical allocation folds after the section list changes
+    Actual message: "docs/control/orders/WO-900.jsonl: docs/work-orders/derived/WO-900-derived.md: generated authority requires stable sections: Objective, Design, Acceptance criteria, Non-goals, Surfaces, Operator-review assumptions, Evidence"
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  actual:
+  error: 'docs/control/orders/WO-900.jsonl: docs/work-orders/derived/WO-900-derived.md: generated authority requires stable sections: Objective, Design, Acceptance criteria, Non-goals, Surfaces, Operator-review assumptions, Evidence'
+  stack: |-
+    at (file://<tmpdir>/dotln-sections-cwve9G/scripts/lib/control.mjs:263:13)
+    foldSegments (file://<tmpdir>/dotln-sections-cwve9G/scripts/lib/control.mjs:295:20)
+    controlFromSources (file://<tmpdir>/dotln-sections-cwve9G/scripts/lib/control-store.mjs:30:8)
+    Module.readControl (file://<tmpdir>/dotln-sections-cwve9G/scripts/lib/control-store.mjs:128:10)
+    file://~/Projects/DotLn-wo157/scripts/test-derived-orders.mjs:659:25
+    getActual (node:assert:580:5)
+    strict.doesNotThrow (node:assert:748:32)
+    file://~/Projects/DotLn-wo157/scripts/test-derived-orders.mjs:658:14
+    async fixture (file://~/Projects/DotLn-wo157/scripts/test-derived-orders.mjs:117:12)
+    async Test.run (node:internal/test_runner/test:1409:7)
+  operator: 'doesNotThrow'
+  stack: |-
+    file://~/Projects/DotLn-wo157/scripts/test-derived-orders.mjs:658:14
+    async fixture (file://~/Projects/DotLn-wo157/scripts/test-derived-orders.mjs:117:12)
+    async Test.run (node:internal/test_runner/test:1409:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+# Subtest: WO-157 a corrupt allocation authority refuses only its own order
+not ok 2 - WO-157 a corrupt allocation authority refuses only its own order
+  ---
+  duration_ms: 282.549958
+  type: 'test'
+  location: '~/Projects/DotLn-wo157/scripts/test-derived-orders.mjs:685:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Got unwanted exception: one corrupt allocation leaves every other control read available
+    Actual message: "docs/control/orders/WO-900.jsonl: docs/work-orders/derived/WO-900-derived.md: generated authority requires stable sections: Objective, Design, Acceptance criteria, Non-goals, Surfaces, Operator-review assumptions"
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  actual:
+  error: 'docs/control/orders/WO-900.jsonl: docs/work-orders/derived/WO-900-derived.md: generated authority requires stable sections: Objective, Design, Acceptance criteria, Non-goals, Surfaces, Operator-review assumptions'
+  stack: |-
+    at (file://~/Projects/DotLn-wo157/scripts/lib/control.mjs:263:13)
+    foldSegments (file://~/Projects/DotLn-wo157/scripts/lib/control.mjs:295:20)
+    controlFromSources (file://~/Projects/DotLn-wo157/scripts/lib/control-store.mjs:30:8)
+    readControl (file://~/Projects/DotLn-wo157/scripts/lib/control-store.mjs:128:10)
+    file://~/Projects/DotLn-wo157/scripts/test-derived-orders.mjs:714:17
+    getActual (node:assert:580:5)
+    strict.doesNotThrow (node:assert:748:32)
+    file://~/Projects/DotLn-wo157/scripts/test-derived-orders.mjs:713:12
+    async fixture (file://~/Projects/DotLn-wo157/scripts/test-derived-orders.mjs:117:12)
+    async Test.run (node:internal/test_runner/test:1409:7)
+  operator: 'doesNotThrow'
+  stack: |-
+    file://~/Projects/DotLn-wo157/scripts/test-derived-orders.mjs:713:12
+    async fixture (file://~/Projects/DotLn-wo157/scripts/test-derived-orders.mjs:117:12)
+    async Test.run (node:internal/test_runner/test:1409:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 473.128792
