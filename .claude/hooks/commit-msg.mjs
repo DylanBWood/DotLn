@@ -1,6 +1,6 @@
 // Origin: {"ids":["no-attribution"],"loadoutId":"contributor","semanticHash":"fnv1a64:41aa929faf455544"}
-const { runCommitMessageHook } = await import("../../.runtime/harness/2bb2e9829a58dfa1/packages/skeleton/dist/src/harness-host.js");
-const { feedbackBoundary } = await import("../../.runtime/harness/2bb2e9829a58dfa1/packages/skeleton/dist/src/feedback-boundary.js");
+const { runCommitMessageHook } = await import("../../.runtime/harness/c07fee7fdc83d9ee/packages/skeleton/dist/src/harness-host.js");
+const { feedbackBoundary } = await import("../../.runtime/harness/c07fee7fdc83d9ee/packages/skeleton/dist/src/feedback-boundary.js");
 await runCommitMessageHook({
   "compilerPackageVersion": "0.18.0",
   "runtime": {
@@ -105,7 +105,7 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/resident-store.js",
-        "hash": "fnv1a64:506070aa3fc95a8c"
+        "hash": "fnv1a64:c7a986b52d3b8641"
       },
       {
         "path": "packages/skeleton/dist/src/worker-store.js",
@@ -125,7 +125,7 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/presence-machine.js",
-        "hash": "fnv1a64:c85105aa1cd0ca7d"
+        "hash": "fnv1a64:8c293a04a096332e"
       },
       {
         "path": "packages/skeleton/dist/src/actor-catalog.js",
@@ -168,7 +168,7 @@ await runCommitMessageHook({
         "hash": "fnv1a64:5ad495017c40b9b2"
       }
     ],
-    "snapshot": ".runtime/harness/2bb2e9829a58dfa1"
+    "snapshot": ".runtime/harness/c07fee7fdc83d9ee"
   },
   "policy": {
     "contractVersion": "feedback-v1",
