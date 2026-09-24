@@ -1,15 +1,16 @@
-# WO-156 — plan check in the sub-second band: the work-order path pattern is built once per call instead of once per committed path per sequence order, the planning subject is byte-identical, and the two plan tasks in `test:docs` stop costing about 25 s each (version assigned at activation)
+# WO-156 — plan check in the sub-second band: the work-order path pattern is built once per call instead of once per committed path per sequence order, the planning subject is byte-identical, and the two plan tasks in `test:docs` stop costing about 25 s each (v0.46.2)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.
-**Release classification:** patch. One hoist in a document check and one
-regression; no contract, schema, gate step or role-text change.
+**Release classification:** patch. A path-pattern hoist and fewer Git launches in the planning check, plus bounded text-normalization reuse in receipt comparisons, with
+regressions; no contract, schema, gate step or role-text change.
 `scripts/lib/plan-subject.mjs` is not a registered evidence source, so no
 edition re-mints. Assigned at activation under the standing opt-out default.
-**Cost:** adds nothing recurring: one pattern built per call in the subject
-builder and one regression bounding the file-system calls the fixture
-sequence may make. Removes, measured on 2026-09-22 at `4bf626f4`: 16.46 s
+**Cost:** one pattern built per call, existing bounded immutable Git caches
+and batch reads reused, a normalization cache capped at 512 entries and
+1 MiB of string storage, and regressions bounding file-system calls and Git
+launches. No new runner task or dependency. Removes, measured on 2026-09-22 at `4bf626f4`: 16.46 s
 of `node scripts/refute-plan.mjs check` (20.54 s at the review, 19.66 s at
 the refutation; 3,879,656 `statSync` calls and 212 spawns), paid twice in
 every `npm run test:docs` (`plan` 23.49 s and `plan-refutation-current`
@@ -79,11 +80,24 @@ inner loop; the two plan tasks in `test:docs` show the reduction.
 - `test:docs` on 2026-09-22 ran `plan` 23.49 s and `plan-refutation-current`
   23.60 s inside a 28.34 s gate.
 
+**Operator scope expansion (2026-09-24):** Add the Git-launch reduction to
+WO-156, bind this amendment with `npm run plan -- amend-order`, then repair
+and re-verify. Authorization and bounded paths are recorded in WO-156-D005.
+A second operator authorization adds a bounded cache for the unchanged pure
+NFKC/whitespace normalization in receipt comparisons (WO-156-D006).
+
 **Design (scope discipline):**
 
 - Build the work-order path pattern once per call of the subject builder
   (or once per sequence id, outside the filter) and reuse it inside the
-  filter; touch nothing else in the builder and nothing in `loadConfig`,
+  filter. Reduce repeated Git launches in `scripts/lib/plan-subject.mjs` and
+  `scripts/lib/plan-receipts.mjs` by batching committed reads and reusing
+  successfully resolved immutable commit identities. Preserve validation,
+  workspace observations, mutable revision freshness, and existing cache
+  bounds. Cache repeated receipt normalization by the exact input string,
+  preserving NFKC, whitespace folding and missing-value behavior; bound entry
+  count and retained string bytes, and bypass oversized inputs. Change nothing
+  in `loadConfig`,
   whose per-call stat is a recorded design choice for a process that may
   gain or lose its configuration mid-run.
 - The regression drives the fixture sequence through the subject builder
@@ -92,16 +106,16 @@ inner loop; the two plan tasks in `test:docs` show the reduction.
   with margin); a second assertion compares the subject JSON before and
   after on the fixture tree.
 - Record the after timing of `plan check` and of the two `test:docs` tasks
-  on the operator's host in the decisions; if `plan check` still exceeds
-  2 s, profile once more and record the next hotspot (the 212 spawns are
-  the candidate) as a follow-up rather than widening this order.
+  on the operator's host in the decisions. The authorized Git-launch
+  reduction must bring `plan check` under 2 s; record launch counts and
+  regressions that fail on the prior implementation.
 - **Declined alternatives, recorded:** memoizing `loadConfig` without its
   stat (removes the honesty the comment names); batching the Git spawns
-  here (a different hotspot, unmeasured after the hoist); a boy-scout
+  was initially deferred, then authorized after VER-001 measured 240 launches; a boy-scout
   nomination on WO-064 (withdrawn the same day at the operator's direction
   that findings become orders).
 
-**Deliverables:** the hoist; the regression; the timing record; the
+**Deliverables:** the hoist; the Git-launch reduction; the regressions; the timing record; the
 write-backs in criterion 4.
 
 **Acceptance criteria (all required)**
@@ -114,7 +128,11 @@ write-backs in criterion 4.
    `plan-refutation-current` task durations in `test:docs` are recorded
    before and after.
 3. The regression bounds the `statSync` calls the fixture sequence makes
-   and fails against the current source.
+   and fails against the original source. A Git-launch regression fails
+   against the pre-repair source and covers fresh mutable revisions, immutable
+   content reuse, and committed receipt tampering. Normalization regressions
+   preserve Unicode/whitespace results and exercise cache hits, eviction,
+   changed inputs and the oversized-input bypass.
 4. The decisions record sources, the measured figures and the reopening
    condition; the cold-gate candidate in product 07 gains the after figure.
 5. `npm test` green; `git diff --check` clean; no new dependency; the
@@ -127,8 +145,9 @@ once at final review. No live row.
 decisions file; product 07's cold-gate candidate gains the measurement; the
 ledger is reserved for planning synthesis.
 
-**Non-goals:** the configuration cache's design; batching or caching Git
-reads; the test runner's task selection or parallelism; any other document
+**Non-goals:** the configuration cache's design; Git writes or changes to
+Git reads outside the planning subject/receipt path; the test runner's task
+selection or parallelism; any other document
 check.
 
 **Operator-review assumptions**

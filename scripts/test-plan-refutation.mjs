@@ -2,6 +2,9 @@
 import { isMainModule } from "./lib/paths.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
+import fs from "node:fs";
+import childProcess from "node:child_process";
+import { syncBuiltinESMExports } from "node:module";
 import {
   existsSync,
   mkdtempSync,
@@ -36,6 +39,7 @@ import {
 import {
   buildPlanSubject,
   committedReader,
+  prefetchCommittedSources,
   PLAN_MAP,
   PLAN_LEDGER,
   planningPasses,
@@ -52,6 +56,7 @@ import {
   disposePlanHold,
   amendPlanOrder,
   criterionDispositions,
+  criterionHash,
   readOverrides,
   readReceipts,
   RECEIPTS,
@@ -273,6 +278,333 @@ export async function fixtures() {
   );
   const check = (label, run) => test(label, run);
   try {
+    await check(
+      "WO-156 normalization cache preserves exact semantics and bounds retained inputs",
+      (t) => {
+        const original = String.prototype.normalize;
+        let calls = 0;
+        try {
+          String.prototype.normalize = function (...args) {
+            calls++;
+            return original.apply(this, args);
+          };
+          const first = "  WO-156 cache: Ａ\u00a0café\r\n e\u0301 \t";
+          const expected = sha256("WO-156 cache: A café é");
+          const start = calls;
+          for (let i = 0; i < 12; i++)
+            assert.equal(criterionHash(first), expected);
+          assert.equal(calls - start, 1, "repeated text was normalized again");
+          assert.equal(criterionHash(undefined), sha256(""));
+          assert.equal(criterionHash(null), sha256(""));
+          assert.equal(criterionHash(""), sha256(""));
+          assert.notEqual(criterionHash(first + "changed"), expected);
+          for (let i = 0; i < 513; i++) criterionHash(`WO-156 eviction ${i}`);
+          const evicted = calls;
+          assert.equal(criterionHash(first), expected);
+          assert.equal(
+            calls - evicted,
+            1,
+            "entry bound did not evict old text",
+          );
+          const oversized = "x".repeat(300_000);
+          const bypass = calls;
+          assert.equal(criterionHash(oversized), sha256(oversized));
+          assert.equal(criterionHash(oversized), sha256(oversized));
+          assert.equal(calls - bypass, 2, "oversized text was retained");
+          const large = "y".repeat(100_000);
+          criterionHash(large + "first");
+          criterionHash(large + "second");
+          criterionHash(large + "third");
+          const byteEvicted = calls;
+          criterionHash(large + "first");
+          assert.equal(
+            calls - byteEvicted,
+            1,
+            "string byte bound did not evict",
+          );
+          t.diagnostic(
+            "normalization reused; entry/byte eviction and oversized bypass passed",
+          );
+        } finally {
+          String.prototype.normalize = original;
+        }
+      },
+    );
+    await check(
+      "WO-156 immutable readers avoid repeat launches while mutable revisions stay fresh",
+      (t) => {
+        const repo = makeRepo(parent, "wo156-reader-launches");
+        const path = orderPath("WO-901");
+        const initial = committedReader(repo);
+        const bytes = initial.read(path);
+        const original = childProcess.spawnSync;
+        let launches = 0;
+        try {
+          childProcess.spawnSync = function (...args) {
+            if (args[0] === "git") launches++;
+            return original.apply(this, args);
+          };
+          syncBuiltinESMExports();
+          for (let i = 0; i < 12; i++)
+            assert.equal(
+              committedReader(repo, initial.revision).read(path),
+              bytes,
+            );
+        } finally {
+          childProcess.spawnSync = original;
+          syncBuiltinESMExports();
+        }
+        assert.equal(launches, 0, "cached immutable readers launched Git");
+        t.diagnostic(`repeat immutable reader Git launches: ${launches}`);
+        const branch = runGit(repo, ["branch", "--show-current"]);
+        const tagged = "wo156-moving-tag";
+        runGit(repo, ["tag", tagged]);
+        assert.equal(committedReader(repo, branch).read(path), bytes);
+        assert.equal(committedReader(repo, tagged).read(path), bytes);
+        const changed = bytes.replace(
+          "Move the shape.",
+          "Move the next shape. café 🧭",
+        );
+        write(repo, path, changed);
+        commit(repo, "move mutable revisions");
+        runGit(repo, ["tag", "-f", tagged]);
+        for (const revision of ["HEAD", branch, tagged])
+          assert.equal(committedReader(repo, revision).read(path), changed);
+        assert.equal(committedReader(repo, initial.revision).read(path), bytes);
+        runGit(repo, [
+          "-c",
+          "user.name=Plan Fixture",
+          "-c",
+          "user.email=fixture@example.invalid",
+          "tag",
+          "-a",
+          "wo156-annotated",
+          "-m",
+          "Annotated fixture",
+        ]);
+        const tagObject = runGit(repo, ["rev-parse", "wo156-annotated"]);
+        assert.equal(
+          committedReader(repo, tagObject).revision,
+          runGit(repo, ["rev-parse", "HEAD"]),
+        );
+        for (const object of ["HEAD^{tree}", `HEAD:${path}`])
+          assert.throws(
+            () => committedReader(repo, runGit(repo, ["rev-parse", object])),
+            /commit|object|revision/,
+          );
+        assert.throws(
+          () => committedReader(repo, "f".repeat(40)),
+          /revision|object|single/,
+        );
+        const other = makeRepo(parent, "wo156-other-reader");
+        assert.throws(
+          () => committedReader(other, runGit(repo, ["rev-parse", "HEAD"])),
+          /revision|object|single/,
+        );
+        assert.throws(
+          () => initial.read("absent.md"),
+          /committed regular file/,
+        );
+      },
+    );
+    await check(
+      "WO-156 committed receipts batch blob reads and still reject tampering after cache reuse",
+      async (t) => {
+        const repo = makeRepo(parent, "wo156-receipt-launches");
+        const expected = [];
+        for (let i = 0; i < 4; i++) {
+          const subject = buildPlanSubject(repo);
+          expected.push(
+            await writePlanReceipt(repo, {
+              pass: {
+                id: `evidence-wo156-${i}`,
+                kind: "evidence",
+                heading: null,
+              },
+              slug: `wo156-${i}`,
+              subject,
+              episode: await episode(subject, passResult),
+            }),
+          );
+        }
+        commit(repo, "commit four receipts");
+        const original = childProcess.spawnSync;
+        let launches = 0;
+        try {
+          childProcess.spawnSync = function (...args) {
+            if (args[0] === "git") launches++;
+            return original.apply(this, args);
+          };
+          syncBuiltinESMExports();
+          assert.deepEqual(await readReceipts(repo), expected);
+        } finally {
+          childProcess.spawnSync = original;
+          syncBuiltinESMExports();
+        }
+        assert.ok(
+          launches <= 5,
+          `four committed receipts launched Git ${launches} times`,
+        );
+        t.diagnostic(`four committed receipt Git launches: ${launches}`);
+        const changed = structuredClone(expected[0]);
+        changed.result.orders[0].reason = "Changed valid judgment bytes.";
+        const modified = rehash(changed);
+        write(
+          repo,
+          `${RECEIPTS}/${modified.receiptId}.json`,
+          JSON.stringify(modified, null, 2) + "\n",
+        );
+        write(
+          repo,
+          `${RECEIPTS}/${modified.receiptId}.md`,
+          renderPlanReceipt(modified),
+        );
+        await assert.rejects(
+          readReceipts(repo),
+          /committed receipt was edited/,
+        );
+      },
+    );
+    await check(
+      "WO-156 optional prefetch preserves unused legacy symlinks and required-file refusals",
+      async () => {
+        const repo = makeRepo(parent, "wo156-optional-hints");
+        symlinkSync(
+          "sequence.md",
+          join(repo, "docs/planning/work-order-map.md"),
+        );
+        commit(repo, "unused legacy symlink");
+        const receipt = await writeDirectReceipt(repo);
+        commit(repo, "valid receipt with unused legacy symlink");
+        assert.deepEqual(await readReceipts(repo), [receipt]);
+        assert.throws(
+          () => committedReader(repo).read("docs/planning/work-order-map.md"),
+          /requires a committed regular file/,
+        );
+      },
+    );
+    await check(
+      "WO-156 aggregate receipt batches preserve individually readable large receipts",
+      async () => {
+        const repo = makeRepo(parent, "wo156-large-receipts");
+        const vision = "docs/product/00-vision.md";
+        write(
+          repo,
+          vision,
+          read(repo, vision).replace(
+            "Evidence describes the shape.",
+            "x".repeat(3 * 1024 * 1024),
+          ),
+        );
+        commit(repo, "large valid thesis");
+        const subject = buildPlanSubject(repo);
+        const expected = [];
+        for (let i = 0; i < 6; i++)
+          expected.push(
+            await writePlanReceipt(repo, {
+              pass: {
+                id: `evidence-large-${i}`,
+                kind: "evidence",
+                heading: null,
+              },
+              slug: `large-${i}`,
+              subject,
+              episode: await episode(subject, passResult),
+            }),
+          );
+        commit(repo, "six individually readable receipts");
+        try {
+          assert.deepEqual(await readReceipts(repo), expected);
+        } catch (error) {
+          assert.fail(
+            `large receipt batch failed: ${error.message.slice(0, 160)}`,
+          );
+        }
+      },
+    );
+    await check(
+      "WO-156 cross-revision prefetch preserves aggregate capacity and optional hints",
+      () => {
+        const repo = makeRepo(parent, "wo156-large-prefetch");
+        const path = "docs/large.txt";
+        const before = "a".repeat(9 * 1024 * 1024);
+        write(repo, path, before);
+        commit(repo, "large first revision");
+        const first = runGit(repo, ["rev-parse", "HEAD"]);
+        const after = "b".repeat(9 * 1024 * 1024);
+        write(repo, path, after);
+        commit(repo, "large second revision");
+        const second = runGit(repo, ["rev-parse", "HEAD"]);
+        try {
+          prefetchCommittedSources(
+            repo,
+            [first, second].map((revision) => ({ revision, paths: [path] })),
+          );
+        } catch (error) {
+          assert.fail(
+            `cross-revision batch failed: ${error.message.slice(0, 160)}`,
+          );
+        }
+        assert.equal(committedReader(repo, first).read(path), before);
+        assert.equal(committedReader(repo, second).read(path), after);
+        symlinkSync("large.txt", join(repo, "docs/optional.txt"));
+        write(repo, "docs/oversized.txt", "c".repeat(17 * 1024 * 1024));
+        commit(repo, "unusable optional hints");
+        assert.doesNotThrow(() =>
+          prefetchCommittedSources(repo, [
+            {
+              revision: "HEAD",
+              paths: [
+                "docs/missing.txt",
+                "docs/optional.txt",
+                "docs/oversized.txt",
+              ],
+            },
+          ]),
+        );
+        assert.throws(
+          () => committedReader(repo).read("docs/optional.txt"),
+          /requires a committed regular file/,
+        );
+        // A singleton failure must still reach an actual consumer.
+        let refused = false;
+        try {
+          committedReader(repo).read("docs/oversized.txt");
+        } catch {
+          refused = true;
+        }
+        assert.equal(refused, true);
+      },
+    );
+    await check(
+      "WO-156 fixture sequence resolves its order-path pattern outside the committed-path loop",
+      (t) => {
+        const repo = makeRepo(parent, "wo156-path-pattern");
+        for (let index = 0; index < 256; index++)
+          write(repo, `docs/noise/${index}.txt`, "unrelated\n");
+        commit(repo, "unrelated committed paths");
+        const original = fs.statSync;
+        let calls = 0;
+        let subject;
+        try {
+          fs.statSync = function (...args) {
+            calls++;
+            return original.apply(this, args);
+          };
+          syncBuiltinESMExports();
+          subject = buildPlanSubject(repo);
+        } finally {
+          fs.statSync = original;
+          syncBuiltinESMExports();
+        }
+        assert.equal(
+          sha256(JSON.stringify(subject)),
+          "sha256:85f125dae6144d26d6f714021665654645a8a5c985292f04083a135be42f87ef",
+        );
+        assert.ok(calls < 100, `subject builder made ${calls} statSync calls`);
+        t.diagnostic(`subject builder statSync calls: ${calls}`);
+      },
+    );
     await check(
       "WO-134 both refutation paths select the gate's missing same-day pass independent of ledger order",
       async () => {
