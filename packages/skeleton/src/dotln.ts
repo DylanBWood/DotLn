@@ -121,9 +121,13 @@ try {
     process.once("SIGINT", stop);
     process.once("SIGTERM", stop);
     try {
+      const { findLaunchpad, docPath } = await import(
+        new URL("../../../../scripts/lib/config.mjs", import.meta.url).href
+      );
       await new ResidentHost({
         directory,
         policyId: options.get("--policy")!,
+        workOrderIndexPath: docPath(findLaunchpad(), "workOrders", "README.md"),
       }).run({
         once: switches.has("--once"),
         tickMs: Number(options.get("--tick") ?? 1000),

@@ -1,4 +1,4 @@
-# WO-114 — Runtime status projection: the resident writes a `runtime-status-v1` view model of live actors, episodes, presence phase, cadences, holds, budget and work-order statuses on every tick, and the text console renders it (version assigned at activation)
+# WO-114 — Runtime status projection: the resident writes a `runtime-status-v1` view model of live actors, episodes, presence phase, cadences, holds, budget and work-order statuses on every tick, and the text console renders it (v0.47.0)
 
 **Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
 

@@ -1,0 +1,137 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "runtime-status-v1.schema.json",
+  "title": "DotLn runtime status v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["viewModelVersion", "observedAt", "actors", "liveEpisodes", "presence", "holds", "budget", "workOrders"],
+  "properties": {
+    "viewModelVersion": { "const": "runtime-status-v1" },
+    "observedAt": { "$ref": "#/$defs/time" },
+    "actors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["phase", "kind", "availability", "lastEpisode"],
+        "properties": {
+          "phase": { "type": "string" },
+          "kind": { "type": "string" },
+          "availability": { "enum": ["available", "unavailable", "unknown"] },
+          "lastEpisode": { "$ref": "#/$defs/nullableString" }
+        }
+      }
+    },
+    "liveEpisodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["episodeId", "order", "actor", "transport", "phase", "startedAt", "elapsedMs", "launchClaims"],
+        "properties": {
+          "episodeId": { "type": "string" },
+          "order": { "$ref": "#/$defs/nullableOrder" },
+          "actor": { "type": "string" },
+          "transport": { "type": "string" },
+          "phase": { "type": "string" },
+          "startedAt": { "$ref": "#/$defs/time" },
+          "elapsedMs": { "$ref": "#/$defs/time" },
+          "launchClaims": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["source", "model", "effort"],
+            "properties": {
+              "source": { "enum": ["request", "none"] },
+              "model": { "$ref": "#/$defs/nullableString" },
+              "effort": { "$ref": "#/$defs/nullableString" }
+            }
+          }
+        }
+      }
+    },
+    "presence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["signal", "present", "phase", "cadences"],
+      "properties": {
+        "signal": { "enum": ["away", "back", "progress", "heartbeat", "unknown"] },
+        "present": { "type": "boolean" },
+        "phase": { "$ref": "#/$defs/nullableString" },
+        "cadences": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["phase", "nextFireAt"],
+            "properties": {
+              "phase": { "type": "string" },
+              "nextFireAt": { "$ref": "#/$defs/nullableTime" }
+            }
+          }
+        }
+      }
+    },
+    "holds": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["kind", "reason", "order"],
+        "properties": {
+          "kind": { "enum": ["mission", "handoff", "dispatch"] },
+          "reason": { "type": "string" },
+          "order": { "$ref": "#/$defs/nullableOrder" }
+        }
+      }
+    },
+    "budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "episodes", "wallMs", "tokens"],
+      "properties": {
+        "status": { "enum": ["configured", "unavailable"] },
+        "episodes": { "$ref": "#/$defs/quantity" },
+        "wallMs": { "$ref": "#/$defs/quantity" },
+        "tokens": { "$ref": "#/$defs/quantity" }
+      }
+    },
+    "workOrders": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "items"],
+      "properties": {
+        "status": { "enum": ["available", "unavailable"] },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["order", "phase", "dependency", "verdict"],
+            "properties": {
+              "order": { "$ref": "#/$defs/order" },
+              "phase": { "type": "string" },
+              "dependency": { "enum": ["ready", "blocked", "unknown"] },
+              "verdict": { "enum": ["pass", "fail", null] }
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "time": { "type": "number", "minimum": 0 },
+    "nullableTime": { "type": ["number", "null"], "minimum": 0 },
+    "nullableString": { "type": ["string", "null"] },
+    "order": { "type": "string", "pattern": "^WO-[0-9]{3}$" },
+    "nullableOrder": { "anyOf": [{ "$ref": "#/$defs/order" }, { "type": "null" }] },
+    "quantity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["consumed", "remaining"],
+      "properties": {
+        "consumed": { "$ref": "#/$defs/time" },
+        "remaining": { "$ref": "#/$defs/nullableTime" }
+      }
+    }
+  }
+}

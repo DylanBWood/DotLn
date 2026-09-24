@@ -1,6 +1,9 @@
 # Actor board
 
-Component `0.1.6` prepares application `v0.18.0`: the board reads goal-review verdicts and findings, and the current selfhost fixture records the WO-132 writer-v2 evidence. Historical fixture snapshots remain unchanged.
+Component `0.2.0` prepares application `v0.47.0`: the console adds a live
+`runtime-status-v1` text host while preserving the actor board and its pinned
+fixtures. The board's historical selfhost fixture records the WO-132 writer-v2
+evidence.
 
 UIFA v0 is a read-only board over recorded actors, builds, mechanisms, work,
 and blueprint evidence. It shipped in application `v0.14.0` as console
@@ -41,6 +44,39 @@ display-width rule for the documented text/CJK glyphs. It is not a universal
 terminal grapheme emulator. HTML is one self-contained file with inline CSS,
 no script, no external references, no forms, and only in-document links. The
 command creates a new `.html` file and refuses to overwrite an existing path.
+
+## Live runtime status
+
+The resident writes `runtime-status-v1.json` inside its `--store` directory by
+atomic replacement after each event and tick. The text console reads that
+file or watches for replacements:
+
+```sh
+npm run console -- status --store .runtime/launchpad
+npm run console -- status --store .runtime/launchpad --json
+npm run console -- status --store .runtime/launchpad --watch
+```
+
+The [versioned schema](runtime-status-v1.schema.json) is available by file path.
+`@dotln/console` re-exports the `RuntimeStatusV1` type and `decodeRuntimeStatus`
+decoder defined in skeleton; these define the shared consumer contract.
+The view contains configured actors, live episodes, presence and next cadence
+times, coded holds, portfolio budget, and every Active or Open order in the
+generated index. `unknown` and `unavailable` are explicit; a missing index
+never creates a second order truth. The resident CLI selects the launchpad's
+configured work-order index, including `DOTLN_LAUNCHPAD`, and binds its path in
+private store metadata. All helper and harness writers use that binding. Library
+hosts supply `workOrderIndexPath` on first start; without a binding, orders are
+unavailable. Elapsed time uses the resident's recorded clock, so rebuilding from
+the same log and index reproduces the same bytes. This file is
+read-only to hosts and grants no action. The resident keeps raw actor
+declarations and event payloads out of it because they can contain local paths
+or endpoint details. Status writes use atomic replacement without durability
+syncs; event-log durability is unchanged. A publication failure leaves the
+previous file until a later event, tick or restart rebuilds it and cannot abort
+resident work. `--watch` renders each changed valid view once, shows a generic
+unavailable message for missing or invalid files, and resumes on a valid update.
+`--json` emits one snapshot for another local host.
 
 ## Contract for another UI host
 

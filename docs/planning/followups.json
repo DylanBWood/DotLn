@@ -15612,6 +15612,84 @@
           "at": "2026-09-24T20:23:22.583Z"
         }
       ]
+    },
+    {
+      "id": "FUP-d200e3c90ff5fd43",
+      "key": "decision:docs/evidence/WO-114/decisions.md#wo-114-d002",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "38a8b1ed15e4b0480a165376a4eef4e33f8677b8a537146aa939010e4ad0f747",
+          "ref": "docs/evidence/WO-114/decisions.md#wo-114-d002",
+          "title": "WO-114-D002: Keep the current method; decline a separate economy experiment before implementation.",
+          "summary": "{ \"id\": \"WO-114-D002\", \"kind\": \"experiment\", \"date\": \"2026-09-24\", \"dispatch\": \"resume: next; equipped Tinkerer — Economy\", \"decision\": \"Keep the current method; decline a separate economy experiment before implementation.\", \"question\": \"Would a small timing probe choose a cheaper event-publication method for WO-114?\", \"alternatives\": [ \"Write the required per-event projection under the existing append lock\", \"Probe transaction-end-only writing or a separate watcher\" ], \"observation\": \"The order requires publication on each event as well as each tick; transaction-end-only writing can omit intermediate event states, and a separate watcher adds another process. The required fixture and npm tes",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-114 repair addressed the measured cost reopening and VER-001-F1 through F6; repair.md and D012 record passing focused tests and the 27-suite product gate. Independent verification is the next lifecycle dispatch.",
+          "reopenWhen": "Independent verification reproduces a VER-001 defect or the original recovery timeout fails on the repaired subject.",
+          "targets": [],
+          "at": "2026-09-24T23:00:15.332Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-eadab6653d53ce3a",
+      "key": "decision:docs/evidence/WO-114/decisions.md#wo-114-d008",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "edddee5e78fb3e45fe59a1cfcb9cdd69cd3c0595ed73e92b3e400d6522dc2bd7",
+          "ref": "docs/evidence/WO-114/decisions.md#wo-114-d008--ver-001-the-gate-the-order-section-and-projection-failure-isolation-need-repair",
+          "title": "WO-114-D008: WO-114 executor on resume: fix: resolve VER-001-F1 to F6. Restore the product gate's margin by reducing per-event publication cost without weakening the WO-143 test or dropping per-event ",
+          "summary": "{ \"id\": \"WO-114-D008\", \"date\": \"2026-09-24\", \"dispatch\": \"resume: verify\", \"decision\": \"Record VER-001 as a failed verification and route WO-114 to repair. F1 (major, criterion 5): the product gate failed in one of two verifier runs because per-event status publication pushed the existing WO-143 thirty-round restart test past its 60 s timeout. F2 (major, objective and criteria 1 and 4): the work-order section depends on which writer published last, because the default index path is relative to the installed module and only the host accepts an override. F3 (major, design): a projection failure aborts the resident's authoritative operation after its event is durable. F4-F6 (minor): console wat",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-114 repair addressed the measured cost reopening and VER-001-F1 through F6; repair.md and D012 record passing focused tests and the 27-suite product gate. Independent verification is the next lifecycle dispatch.",
+          "reopenWhen": "Independent verification reproduces a VER-001 defect or the original recovery timeout fails on the repaired subject.",
+          "targets": [],
+          "at": "2026-09-24T23:00:15.809Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-76652a110068a684",
+      "key": "decision:docs/evidence/WO-114/decisions.md#wo-114-d010",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "0f0cb1f01e2e09f5cf2765d3e3b5deef27ce49d3b02211fa5199b22e9435a95c",
+          "ref": "docs/evidence/WO-114/decisions.md#wo-114-d010--repair-publication-and-consumer-boundaries",
+          "title": "WO-114-D010: Keep per-event atomic replacement but omit durability syncs for the disposable status file. Bind the selected launchpad index in private store metadata so all helper and snapshot writers ",
+          "summary": "{ \"id\": \"WO-114-D010\", \"date\": \"2026-09-24\", \"dispatch\": \"resume: fix; VER-001-F1 through F6\", \"decision\": \"Keep per-event atomic replacement but omit durability syncs for the disposable status file. Bind the selected launchpad index in private store metadata so all helper and snapshot writers read the same source. Contain projection I/O failures outside the durable event operation, and recover console watching with deduplicated valid renders and a generic unavailable state. Align decoder order validation with the schema and sanitize display controls.\", \"evidence\": [ \"VER-001 measured 777 publications in the unchanged WO-143 restart test, with 9–14 ms per synced publication and an intermitte",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-4656197433cb8b3d",
+      "key": "decision:docs/evidence/WO-114/decisions.md#wo-114-d013",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "5f0c9d9206fc0a48bbf6dae336954908a86bf46896620db46bb52143d3ed9108",
+          "ref": "docs/evidence/WO-114/decisions.md#wo-114-d013--ver-002-pass-two-minor-index-source-hardening-defects-boarded-up",
+          "title": "WO-114-D013: Resident index-source hardening, for the planner to place (low priority; a bounded fix beside WO-115 or the next resident-host order): resolve the dotln resident CLI's launchpad and index",
+          "summary": "{ \"id\": \"WO-114-D013\", \"date\": \"2026-09-24\", \"dispatch\": \"resume: verify\", \"decision\": \"Record VER-002 as a passing verification of the repaired WO-114 subject. VER-001-F1 to F6 are resolved and criteria 1-5 are met. Board up two minor defects the independent review found and this verifier reproduced, without routing the order back to repair: VER-002-N1, dotln resident now refuses to start when the launchpad or its configuration cannot be resolved, a precondition the repair introduced to select the projection's index and that 04 and the console README do not state; VER-002-N2, a bound index path that is a FIFO or other blocking special file hangs the resident's first transaction while it hol",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

@@ -6,8 +6,12 @@ import {
   existsSync,
   lstatSync,
   statSync,
+  readFileSync,
+  renameSync,
+  unlinkSync,
 } from "node:fs";
-import { join } from "node:path";
+import { randomUUID } from "node:crypto";
+import { isAbsolute, join, resolve } from "node:path";
 import { setTimeout as delay } from "node:timers/promises";
 import {
   decodeLog,
@@ -24,6 +28,7 @@ import {
 } from "./reactor.js";
 import { type ResidentState } from "./resident-state.js";
 import { WorkerStore } from "./worker-store.js";
+import { projectRuntimeStatus } from "./runtime-status.js";
 import {
   classifyPresenceSignal,
   decodePresenceObservation,
@@ -46,9 +51,11 @@ export function replayResident(
 export class ResidentTransaction {
   readonly events: Event[];
   state: RuntimeState;
+  published = false;
   constructor(
     private readonly store: WorkerStore,
     readonly predicates: PredicateRegistry,
+    private readonly publish: (tx: ResidentTransaction) => void,
   ) {
     const log = store.read();
     this.events = [...decodeLog(log)];
@@ -93,6 +100,8 @@ export class ResidentTransaction {
     }
     this.events.push(event);
     this.state = decision.state;
+    this.publish(this);
+    this.published = true;
   }
   sample(at: number) {
     this.append("ClockSampled", { at }, at);
@@ -108,9 +117,80 @@ export class ResidentStore {
   constructor(
     directory: string,
     private readonly predicates: PredicateRegistry = {},
+    private readonly indexPath?: string,
   ) {
     this.store = new WorkerStore(directory);
     this.appendStore = new WorkerStore(join(directory, ".resident-append"));
+  }
+  private get sourcePath() {
+    return join(this.store.directory, ".runtime-status-source.json");
+  }
+  private readIndex(): string | null {
+    try {
+      const source = JSON.parse(readFileSync(this.sourcePath, "utf8"));
+      if (
+        source.version !== 1 ||
+        typeof source.indexPath !== "string" ||
+        !isAbsolute(source.indexPath)
+      )
+        return null;
+      return readFileSync(source.indexPath, "utf8");
+    } catch {
+      return null;
+    }
+  }
+  /** Only the lifetime owner selects the source. Helpers, including installed
+   * harness snapshots, read this private binding instead of their own checkout. */
+  private bindIndex() {
+    if (this.indexPath === undefined) return;
+    const bytes =
+      JSON.stringify({ version: 1, indexPath: resolve(this.indexPath) }) + "\n";
+    try {
+      if (
+        existsSync(this.sourcePath) &&
+        readFileSync(this.sourcePath, "utf8") === bytes
+      )
+        return;
+      this.replaceProjection(this.sourcePath, bytes);
+    } catch {
+      // Projection configuration cannot abort authoritative resident work.
+    }
+  }
+  /** Readers see the old complete file or the new complete file. The log is
+   * authoritative; an interrupted projection write is rebuilt next transaction. */
+  private publish(tx: ResidentTransaction) {
+    try {
+      const view = projectRuntimeStatus(
+        tx.resident,
+        tx.events,
+        this.readIndex(),
+        this.predicates,
+      );
+      this.replaceProjection(
+        join(this.store.directory, "runtime-status-v1.json"),
+        JSON.stringify(view, null, 2) + "\n",
+      );
+    } catch {
+      // The durable append already succeeded. A later event or tick rebuilds
+      // the disposable file; a UI failure must never prevent actor dispatch.
+    }
+  }
+  private replaceProjection(target: string, bytes: string) {
+    const temporary = join(
+      this.store.directory,
+      `.runtime-status-${randomUUID()}.tmp`,
+    );
+    const fd = openSync(temporary, "wx", 0o600);
+    try {
+      try {
+        writeFileSync(fd, bytes);
+      } finally {
+        closeSync(fd);
+      }
+      renameSync(temporary, target);
+    } finally {
+      if (existsSync(temporary)) unlinkSync(temporary);
+    }
   }
   async transaction<T>(operation: (tx: ResidentTransaction) => T): Promise<T> {
     if (
@@ -124,7 +204,11 @@ export class ResidentStore {
         this.appendStore.acquire(() => {
           // The append lock protects the resident log, not just its auxiliary
           // store. Validate that actual state before reclaiming either owner.
-          inspected = new ResidentTransaction(this.store, this.predicates);
+          inspected = new ResidentTransaction(
+            this.store,
+            this.predicates,
+            (tx) => this.publish(tx),
+          );
         });
         break;
       } catch (error) {
@@ -139,6 +223,7 @@ export class ResidentStore {
     }
     try {
       const result = operation(inspected!);
+      if (!inspected!.published) this.publish(inspected!);
       this.observedBytes = existsSync(this.store.logPath)
         ? statSync(this.store.logPath).size
         : 0;
@@ -148,12 +233,15 @@ export class ResidentStore {
     }
   }
   async acquire() {
-    await this.transaction(() =>
+    await this.transaction(() => {
       this.store.acquire(() => {
         // Positive replay inspection occurs before dead-owner reclaim.
-        new ResidentTransaction(this.store, this.predicates);
-      }),
-    );
+        new ResidentTransaction(this.store, this.predicates, (tx) =>
+          this.publish(tx),
+        );
+      });
+      this.bindIndex();
+    });
   }
   release() {
     this.store.release();
