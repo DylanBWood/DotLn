@@ -8,6 +8,11 @@ import { decodeLog } from "@dotln/kernel";
 import { projectWorkerStatus } from "@dotln/skeleton/dist/src/worker-status.js";
 import { projectAuditLog } from "@dotln/skeleton/dist/src/audit.js";
 import { currentEvidence } from "@dotln/skeleton/dist/src/evidence-editions.mjs";
+import {
+  editionBodies,
+  resolveEditionLog,
+} from "@dotln/skeleton/dist/src/feedback-selfhost.js";
+import { feedbackEditionLog } from "@dotln/skeleton/dist/src/feedback-edition-log.js";
 import type {
   BoardSources,
   DocumentSource,
@@ -32,6 +37,17 @@ function readFile(path: string): string {
   if (!lstatSync(path).isFile() || lstatSync(path).isSymbolicLink())
     throw new Error("expected regular file");
   return readFileSync(path, "utf8");
+}
+/** A recorded stream by value. A schema 2 feedback edition commits its
+ * verifier stream by reference (WO-154), which projections cannot read; it
+ * is rebuilt from Git first, `candidates` supplying the judged report. A
+ * stream without references is returned unchanged. */
+export function editionStream(
+  root: string,
+  text: string,
+  candidates: readonly string[] = [],
+): string {
+  return resolveEditionLog(text, editionBodies(root, candidates).resolve);
 }
 const lines = (text: string): readonly unknown[] =>
   text.trim()
@@ -164,18 +180,29 @@ export async function collectSources(
   const feedback = attempt("docs/evidence/current.json#feedback", () =>
     currentEvidence(root, "feedback"),
   );
-  const selfhostStores = ["audit", "verifier"].map((role): StoreSource => {
-    const id = `selfhost-${role}`;
-    if (feedback.status === "unavailable")
-      return storeFromLog(id, `Self-hosted ${role}`, feedback);
-    const name =
-      role === "audit" ? "selfhost-audit.jsonl" : "selfhost-verification.jsonl";
-    return storeFromLog(
-      id,
-      `${feedback.value.workOrder} self-hosted ${role === "audit" ? "executor" : "verifier"}`,
-      text(`${feedback.value.directory}/${name}`),
-    );
-  });
+  const selfhostStores = (["audit", "verifier"] as const).map(
+    (role): StoreSource => {
+      const id = `selfhost-${role}`;
+      if (feedback.status === "unavailable")
+        return storeFromLog(id, `Self-hosted ${role}`, feedback);
+      const name =
+        role === "audit"
+          ? "selfhost-audit.jsonl"
+          : "selfhost-verification.jsonl";
+      const read = attempt(`${feedback.value.directory}/${name}`, () =>
+        feedbackEditionLog(root, feedback.value.directory, role),
+      );
+      const log: Source<string> =
+        read.status === "available"
+          ? available(read.value.ref, read.value.value)
+          : read;
+      return storeFromLog(
+        id,
+        `${feedback.value.workOrder} self-hosted ${role === "audit" ? "executor" : "verifier"}`,
+        log,
+      );
+    },
+  );
   const defaultStores = [
     [
       "wo009-demo",

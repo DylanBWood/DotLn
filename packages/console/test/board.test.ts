@@ -11,7 +11,7 @@ import {
   rmSync,
   writeFileSync,
 } from "node:fs";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
 import { tmpdir } from "node:os";
 import {
   compileFeedbackUnits,
@@ -32,7 +32,7 @@ import type {
   BoardView,
 } from "../src/types.js";
 import { exportedLoadouts, observationsFromReport } from "../src/builds.js";
-import { collectSources, storeFromLog } from "../src/collect.js";
+import { collectSources, editionStream, storeFromLog } from "../src/collect.js";
 import { available, object, unavailable } from "../src/values.js";
 import { displayWidth, TERMINAL_WIDTH } from "../src/render.js";
 import {
@@ -331,10 +331,11 @@ test("WO-032 AC2 executor, verifier attempts, authority, hashes and actual accep
   assert.ok(prior, "fixture needs the accepted completed attempt");
   // Keep the live recording immutable and add a distinct expired attempt only
   // to this fixture-local log, independent of the edition's retry count.
-  let log = readFileSync(
-    join(root, manifest.inputs["selfhostVerifier"]!.path),
-    "utf8",
-  );
+  // A schema 2 edition pins the stream by reference (WO-154).
+  const pinned = manifest.inputs["selfhostVerifier"]!.path;
+  let log = editionStream(root, readFileSync(join(root, pinned), "utf8"), [
+    join(dirname(pinned), "feedback.json"),
+  ]);
   for (const [type, occurredAt] of [
     ["WorkerAttemptStarted", prior.startedAt],
     ["WorkerLeaseExpired", prior.leaseExpiresAt],

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { currentEvidence } from "../packages/skeleton/src/evidence-editions.mjs";
 import {
@@ -26,12 +26,22 @@ if (
   );
 if (mode === "--record-current-selfhost") {
   const selected = currentEvidence(root, "feedback");
-  for (const [key, name] of [
-    ["selfhostAudit", "selfhost-audit.jsonl"],
-    ["selfhostVerifier", "selfhost-verification.jsonl"],
+  // A schema 2 edition names its live audit, which a carried edition keeps
+  // in another directory (WO-154).
+  const record = join(root, selected.directory, "edition.json");
+  const live = existsSync(record)
+    ? JSON.parse(readFileSync(record, "utf8")).liveAudit
+    : null;
+  for (const [key, name, recorded] of [
+    ["selfhostAudit", "selfhost-audit.jsonl", live?.audit.path],
+    [
+      "selfhostVerifier",
+      "selfhost-verification.jsonl",
+      live?.verification.path,
+    ],
     ["maturity", "feedback.json"],
   ]) {
-    const path = `${selected.directory}/${name}`;
+    const path = recorded ?? `${selected.directory}/${name}`;
     manifest.inputs[key] = {
       ...manifest.inputs[key],
       path,

@@ -2,9 +2,9 @@ import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
 import type { BoardSources, StoreSource } from "../src/types.js";
-import { storeFromLog } from "../src/collect.js";
+import { editionStream, storeFromLog } from "../src/collect.js";
 import { available } from "../src/values.js";
 
 export const root = fileURLToPath(new URL("../../../../", import.meta.url));
@@ -58,10 +58,17 @@ export function loadFixture(name: string): BoardSources {
         fixture.stores!.map((store): StoreSource => {
           const input = read(store.input);
           assert.equal(typeof input.value, "string");
+          // A schema 2 edition's pinned bytes carry references (WO-154).
+          const path = manifest.inputs[store.input]!.path;
           return storeFromLog(
             store.id,
             store.label,
-            available(input.ref, input.value as string),
+            available(
+              input.ref,
+              editionStream(root, input.value as string, [
+                join(dirname(path), "feedback.json"),
+              ]),
+            ),
           );
         }),
       ]);

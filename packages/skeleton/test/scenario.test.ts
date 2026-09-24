@@ -19,6 +19,7 @@ import {
 } from "@dotln/kernel";
 import { withLinkedSupports } from "@dotln/compiler";
 import { currentEvidence } from "../src/evidence-editions.mjs";
+import { feedbackEditionLog } from "../src/feedback-edition-log.js";
 import {
   compileLoadoutProgram,
   compileWorkOrder,
@@ -896,16 +897,18 @@ test("WO-047 complete Decision bytes match across stored skeleton streams", asyn
       `${evidence("verification")}/events.jsonl`,
       "ws_independent_verification",
     ],
-    ["feedback audit", `${evidence("feedback")}/selfhost-audit.jsonl`, null],
-    [
-      "feedback verifier",
-      `${evidence("feedback")}/selfhost-verification.jsonl`,
-      "ws_feedback_audit_verification",
-    ],
+    ["feedback audit", "audit", null],
+    ["feedback verifier", "verifier", "ws_feedback_audit_verification"],
   ] as const;
   for (const [name, path, workstream] of fixtures)
     await t.test(name, async (subtest) => {
-      const log = await readFile(new URL(path, root), "utf8");
+      // A schema 2 feedback edition names its live audit and commits the
+      // verifier stream by reference; replay needs the bodies (WO-154).
+      const log =
+        path === "audit" || path === "verifier"
+          ? feedbackEditionLog(fileURLToPath(root), evidence("feedback"), path)
+              .value
+          : await readFile(new URL(path, root), "utf8");
       const replayed = assertProjectionIdentity(
         log,
         workstream === null
