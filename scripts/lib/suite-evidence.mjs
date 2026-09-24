@@ -60,6 +60,9 @@ export function suiteEnvironment(env = process.env, gateContext) {
     if (gateContext.peerFile) child.DOTLN_GATE_PEER_FILE = gateContext.peerFile;
     if (gateContext.deadlineLog)
       child.DOTLN_GATE_DEADLINE_LOG = gateContext.deadlineLog;
+    // A nested gate's own tag overrides an inherited one (WO-157 item 15).
+    if (gateContext.fixtureTag)
+      child.DOTLN_GATE_FIXTURE_TAG = gateContext.fixtureTag;
   }
   return child;
 }

@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 import { isMainModule } from "./lib/paths.mjs";
 import { spawn, spawnSync } from "node:child_process";
-import { availableParallelism } from "node:os";
+import { availableParallelism, tmpdir } from "node:os";
+import { randomUUID } from "node:crypto";
 import {
   existsSync,
   mkdirSync,
@@ -172,6 +173,8 @@ const machinerySources = {
     "scripts/test-runner.mjs",
     "packages/skeleton/src/evidence-editions.mjs",
     "scripts/test-runner.test.mjs",
+    "scripts/lib/document-gate-stubs.mjs",
+    "scripts/check-registrations.mjs",
     "scripts/test-gate-deadlines.mjs",
     "scripts/test-release-fixtures.mjs",
     "scripts/test-release.sh",
@@ -202,6 +205,23 @@ const machinerySources = {
     "packages/skeleton/src/gate-evidence.mjs",
   ],
   mutation: ["corpus/mutation/"],
+  // WO-157 item 12: the inventories and the import closure they must follow.
+  "evidence-sources": [
+    "scripts/lib/evidence-sources.mjs",
+    "scripts/test-evidence-sources.mjs",
+    "scripts/feedback-evidence.mjs",
+    "packages/skeleton/src/feedback-audit.ts",
+    "packages/skeleton/src/evidence-editions.mjs",
+  ],
+  // WO-157 item 13: any changed docs path, stub list or registry re-runs the
+  // registration check under --review, not only under test:docs.
+  registrations: [
+    "docs/",
+    "scripts/check-registrations.mjs",
+    "scripts/lib/document-gate-stubs.mjs",
+    "scripts/test-runner.mjs",
+    "packages/kernel/test/fixtures/jsonl-protocols.json",
+  ],
   "authority-evidence": recordedSources["authority"],
   "artifact-evidence": recordedSources["artifact-identity"],
   "verification-evidence": recordedSources["verification"],
@@ -259,6 +279,10 @@ const protection = {
   "process-debt":
     "process observations, follow-ups and lifecycle handoffs retain their sources",
   meta: "decision indexes and process records match their current public sources",
+  "evidence-sources":
+    "a registered evidence source imports only registered or reasoned-excluded siblings, and a moved request protocol stales the feedback edition",
+  registrations:
+    "every JSONL under docs/ is an EventEnvelope stream or a classified protocol, and every document-gate script has a runner-fixture stub",
   plan: "planning authority, dependencies and follow-up records remain consistent",
 
   build: "source compiles into runnable packages",
@@ -467,6 +491,7 @@ export const suites = [
     }),
   ),
   nodeTests("adjacent-queue", "scripts/test-adjacent-queue.mjs"),
+  nodeTests("evidence-sources", "scripts/test-evidence-sources.mjs"),
   nodeTests("resident-bind", "scripts/test-resident-bind.mjs"),
   nodeTests("derived-orders", "scripts/test-derived-orders.mjs", {
     product: true,
@@ -576,6 +601,10 @@ export const suites = [
     args: ["--check"],
     fast: true,
     preflight: true,
+  }),
+  node("registrations", "scripts/check-registrations.mjs", {
+    document: true,
+    needsBuild: true,
   }),
   node("plan", "scripts/refute-plan.mjs", { args: ["check"], document: true }),
   node("entropy", "scripts/entropy.mjs", { args: ["check"], document: true }),
@@ -1193,6 +1222,10 @@ async function runGateChecks(
   const peerFile = join(diagnosticRoot, "active.json"),
     deadlineLog = join(diagnosticRoot, "deadlines.jsonl");
   writeFileSync(deadlineLog, "");
+  // Gate-sandbox fixture roots this run's suites create carry this tag, so
+  // the gate judges only its own leftovers in the shared temporary directory
+  // (WO-157 item 15, WO-063 D005).
+  const fixtureTag = randomUUID().slice(0, 8);
   const concurrency = serial
     ? 1
     : Math.max(1, Math.min(4, Math.floor(availableParallelism() / 2)));
@@ -1208,7 +1241,7 @@ async function runGateChecks(
       repo,
       concurrency,
       stopRequested: stopping,
-      diagnosticContext: { peerFile, deadlineLog },
+      diagnosticContext: { peerFile, deadlineLog, fixtureTag },
       onActiveChange(names) {
         writeFileSync(`${peerFile}.tmp`, JSON.stringify({ tasks: names }));
         renameSync(`${peerFile}.tmp`, peerFile);
@@ -1248,13 +1281,22 @@ async function runGateChecks(
       );
     const rows = aggregateSuiteRows(selected, tasks, taskRows);
     const unchanged = gateCodeIdentity(repo) === codeIdentity;
+    // A root that survives every suite's own teardown is a failed gate; the
+    // check names it and removes nothing, so the leftover stays diagnosable.
+    const abandoned = readdirSync(tmpdir())
+      .filter((name) => name.startsWith(`dotln-gate-sandbox-${fixtureTag}-`))
+      .map((name) => join(tmpdir(), name))
+      .sort();
     const check = {
       checkId,
       treeHash,
       codeIdentity,
       subject: treeHash,
       durationMs: Date.now() - started,
-      exitCode: completeCoverage(tasks, taskRows) && unchanged ? 0 : 1,
+      exitCode:
+        completeCoverage(tasks, taskRows) && unchanged && !abandoned.length
+          ? 0
+          : 1,
       executed: true,
       evidenceRef: `host-gate:${codeIdentity}:${only ?? checkId}`,
       recordedAt: new Date().toISOString(),
@@ -1267,6 +1309,7 @@ async function runGateChecks(
         ? { partial: true, excludedSuites: excluded.map((row) => row.name) }
         : {}),
       ...(sandbox.marker ? { sandbox } : {}),
+      ...(abandoned.length ? { abandonedRoots: abandoned } : {}),
       cases: rows,
       loadClass: {
         sharedCap: concurrency,
@@ -1297,7 +1340,7 @@ async function runGateChecks(
     }
     if (!only && !document && !machinery) recordGateChecks(repo, [check]);
     console.log(
-      `${checkId}: ${rows.filter((row) => row.exitCode === 0).length} passed; ${rows.filter((row) => row.exitCode !== 0).length} failed; ${(check.durationMs / 1000).toFixed(2)} s; ${check.freshSuites} fresh tasks${unchanged ? "" : "; code changed"}${insideSandbox ? `; partial, not product-gate evidence: excluded ${check.excludedSuites.join(", ") || "none"}` : ""}`,
+      `${checkId}: ${rows.filter((row) => row.exitCode === 0).length} passed; ${rows.filter((row) => row.exitCode !== 0).length} failed; ${(check.durationMs / 1000).toFixed(2)} s; ${check.freshSuites} fresh tasks${unchanged ? "" : "; code changed"}${abandoned.length ? `; abandoned fixture roots: ${abandoned.join(", ")}` : ""}${insideSandbox ? `; partial, not product-gate evidence: excluded ${check.excludedSuites.join(", ") || "none"}` : ""}`,
     );
     return check;
   } finally {
