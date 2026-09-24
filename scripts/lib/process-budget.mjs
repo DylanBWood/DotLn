@@ -1,7 +1,7 @@
-import { docPath } from "./config.mjs";
+import { docPath, docRelative } from "./config.mjs";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { spawnSync } from "node:child_process";
+import { coldStartHistory } from "./harness-context.mjs";
 
 export const dispatchKinds = [
   "executor",
@@ -84,23 +84,30 @@ export function requireBudgets(rows) {
     );
 }
 
-export function measureColdStarts(root, previous = "v0.16.0") {
+export function measureColdStarts(root, previous) {
   const budgets = readBudgets(root);
+  const roots = [".claude/skills", ".agents/skills"];
+  const paths = [
+    "CLAUDE.md",
+    ...roots.flatMap((skillsRoot) =>
+      dispatchKinds.map((role) => `${skillsRoot}/dotln-${role}/SKILL.md`),
+    ),
+  ];
+  const history = coldStartHistory(root, {
+    previous,
+    budgetPath: docRelative(root, "control", "budgets.json"),
+    acceptances: budgets?.acceptances ?? [],
+    paths,
+  });
   const bytes = (path) =>
     existsSync(join(root, path)) ? readFileSync(join(root, path)).length : null;
-  const oldBytes = (path) => {
-    const run = spawnSync("git", ["show", `${previous}:${path}`], {
-      cwd: root,
-      maxBuffer: 2 * 1024 * 1024,
-    });
-    return run.status === 0 ? run.stdout.length : null;
-  };
+  const oldBytes = (path) => history.previous.get(path) ?? null;
   const instruction = {
     path: "CLAUDE.md",
     bytes: bytes("CLAUDE.md"),
     previousBytes: oldBytes("CLAUDE.md"),
   };
-  const profiles = [".claude/skills", ".agents/skills"].flatMap((skillsRoot) =>
+  const profiles = roots.flatMap((skillsRoot) =>
     dispatchKinds.map((role) => {
       const path = `${skillsRoot}/dotln-${role}/SKILL.md`;
       const skillBytes = bytes(path),
@@ -114,6 +121,14 @@ export function measureColdStarts(root, previous = "v0.16.0") {
           ? null
           : previousSkillBytes + instruction.previousBytes;
       const ceiling = budgets?.limits.coldStartBytes[role] ?? null;
+      const metric = `coldStartBytes.${role}`;
+      const acceptance = history.accepted.get(metric);
+      const acceptedSkillBytes = acceptance?.sizes.get(path) ?? null;
+      const acceptedFloorBytes = acceptance?.sizes.get("CLAUDE.md") ?? null;
+      const acceptanceBytes =
+        acceptedSkillBytes === null || acceptedFloorBytes === null
+          ? null
+          : acceptedSkillBytes + acceptedFloorBytes;
       return {
         role,
         skillsRoot,
@@ -121,12 +136,31 @@ export function measureColdStarts(root, previous = "v0.16.0") {
         skillBytes,
         bytes: value,
         previousBytes,
+        previousCause:
+          previousBytes === null ? "edition-snapshot-unavailable" : null,
         delta:
           value === null || previousBytes === null
             ? null
             : value - previousBytes,
         ceiling,
-        metric: `coldStartBytes.${role}`,
+        lastAcceptance: {
+          date: acceptance?.date ?? null,
+          ceiling: acceptance?.ceiling ?? null,
+          revision: acceptance?.revision ?? null,
+          source: acceptance?.source ?? null,
+          bytes: acceptanceBytes,
+          delta:
+            value === null || acceptanceBytes === null
+              ? null
+              : value - acceptanceBytes,
+          cause: !acceptance
+            ? "no-acceptance"
+            : (acceptance.cause ??
+              (acceptanceBytes === null
+                ? "acceptance-files-unavailable"
+                : null)),
+        },
+        metric,
         verdict: budgetVerdict(
           budgets,
           `coldStartBytes.${role}`,
@@ -137,10 +171,10 @@ export function measureColdStarts(root, previous = "v0.16.0") {
     }),
   );
   return {
-    schemaVersion: 2,
-    comparisonEdition: previous,
+    schemaVersion: 3,
+    comparisonEdition: history.edition,
     method:
-      "Installed CLAUDE.md plus the installed role skill only; source bytes, no task documents or estimated tokens.",
+      "Installed CLAUDE.md plus the installed role skill only; UTF-8 source bytes, no task documents or estimated tokens. Previous edition is the highest reachable local vX.Y.Z release tag (or explicit comparison). Last acceptance uses the first committed snapshot on HEAD's first-parent history containing the role's latest global acceptance (date, then record order); it does not infer a measurement from the ceiling or reason prose. Missing history or files are null with a cause.",
     instruction,
     profiles,
   };

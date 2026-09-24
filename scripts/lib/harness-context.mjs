@@ -1,5 +1,158 @@
 import { defaultDocRelative } from "./config.mjs";
 import { dirname } from "node:path";
+import { spawnSync } from "node:child_process";
+
+const historyGit = (root, args, input) => {
+  const result = spawnSync("git", args, {
+    cwd: root,
+    input,
+    maxBuffer: 16 * 1024 * 1024,
+  });
+  return result.status === 0 ? result.stdout : null;
+};
+
+/** One query counts every requested blob in a snapshot, including UTF-8 bytes. */
+export function coldStartSnapshot(root, revision, paths) {
+  if (!revision) return new Map();
+  const output = historyGit(root, [
+    "ls-tree",
+    "-rlz",
+    revision,
+    "--",
+    ...paths,
+  ]);
+  return new Map(
+    (output?.toString("utf8").split("\0") ?? []).flatMap((line) => {
+      const match = /^\d+ blob [a-f0-9]+\s+(\d+)\t(.+)$/s.exec(line);
+      return match ? [[match[2], Number(match[1])]] : [];
+    }),
+  );
+}
+
+// Read the budget snapshots together; missing blobs remain absent. Framing uses
+// byte lengths, not character offsets, because reasons can contain Unicode.
+function budgetSnapshots(root, revisions, path) {
+  if (!revisions.length) return new Map();
+  const expressions = revisions.map((revision) => `${revision}:${path}`);
+  const output = historyGit(
+    root,
+    ["cat-file", "--batch"],
+    expressions.join("\n") + "\n",
+  );
+  const snapshots = new Map();
+  if (!output) return snapshots;
+  let offset = 0;
+  for (const [index, expression] of expressions.entries()) {
+    const end = output.indexOf(10, offset);
+    if (end < offset) return new Map();
+    const header = output.subarray(offset, end).toString("utf8");
+    offset = end + 1;
+    if (header === `${expression} missing`) continue;
+    const match = /^[a-f0-9]+ blob (\d+)$/.exec(header);
+    const length = Number(match?.[1]);
+    if (
+      !match ||
+      !Number.isSafeInteger(length) ||
+      output[offset + length] !== 10
+    )
+      return new Map();
+    try {
+      snapshots.set(
+        revisions[index],
+        JSON.parse(output.subarray(offset, offset + length)),
+      );
+    } catch {
+      return new Map();
+    }
+    offset += length + 1;
+  }
+  return offset === output.length ? snapshots : new Map();
+}
+
+const acceptanceKey = (entry) =>
+  JSON.stringify([
+    entry.date,
+    entry.metric,
+    entry.scope ?? null,
+    entry.dispatch,
+    entry.ceiling,
+    entry.reason,
+  ]);
+
+/** Baselines are repository observations, never numbers extracted from prose. */
+export function coldStartHistory(
+  root,
+  { previous, budgetPath, acceptances, paths },
+) {
+  const tags = historyGit(root, [
+    "for-each-ref",
+    "--merged=HEAD",
+    "--sort=-version:refname",
+    "--format=%(refname:strip=2)",
+    "refs/tags",
+  ]);
+  const edition =
+    previous ??
+    tags
+      ?.toString("utf8")
+      .split("\n")
+      .find((tag) => /^v\d+\.\d+\.\d+$/.test(tag)) ??
+    null;
+  const snapshots = new Map();
+  const snapshot = (revision) => {
+    if (!snapshots.has(revision))
+      snapshots.set(revision, coldStartSnapshot(root, revision, paths));
+    return snapshots.get(revision);
+  };
+  const latest = new Map();
+  for (const entry of acceptances) {
+    if (entry.scope || !entry.metric.startsWith("coldStartBytes.")) continue;
+    if (
+      !latest.has(entry.metric) ||
+      entry.date >= latest.get(entry.metric).date
+    )
+      latest.set(entry.metric, entry);
+  }
+  const shallow = historyGit(root, ["rev-parse", "--is-shallow-repository"]);
+  const log =
+    latest.size && shallow?.toString().trim() === "false"
+      ? historyGit(root, [
+          "log",
+          "--first-parent",
+          "--reverse",
+          "--format=%H",
+          "HEAD",
+          "--",
+          budgetPath,
+        ])
+      : null;
+  const revisions = log?.toString().trim().split(/\s+/).filter(Boolean) ?? [];
+  const budgets = budgetSnapshots(root, revisions, budgetPath);
+  const accepted = new Map(
+    [...latest].map(([metric, entry]) => {
+      const revision =
+        revisions.find((ref) =>
+          budgets
+            .get(ref)
+            ?.acceptances?.some(
+              (candidate) => acceptanceKey(candidate) === acceptanceKey(entry),
+            ),
+        ) ?? null;
+      return [
+        metric,
+        {
+          date: entry.date,
+          ceiling: entry.ceiling,
+          revision,
+          source: revision ? `${revision}:${budgetPath}` : null,
+          cause: revision ? null : "acceptance-history-unavailable",
+          sizes: snapshot(revision),
+        },
+      ];
+    }),
+  );
+  return { edition, previous: snapshot(edition), accepted };
+}
 
 export const HARNESS_CONTEXT_BASE = "8b55eca3b3427146e98d34c68f67f679dc59bea5";
 const lineParts = (text) => text.match(/[^\n]*\n|[^\n]+$/g) ?? [];

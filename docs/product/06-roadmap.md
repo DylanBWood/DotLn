@@ -20,6 +20,17 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-155 activation completion (2026-09-24):** assigned application `v0.46.1`,
+the next patch above the observed local `v0.46.0` tag, under the declared patch
+classification. Cold-start measurements show the released baseline and the
+last acceptance snapshot for every role beside the existing ceiling. Fresh Claude
+Explore and Copilot task workers received their refusals paragraph only through the skill,
+so the order's completeness fallback retains that paragraph in every skill.
+Skeleton `0.39.1` carries the order's declared edition duty; its consumer pin
+follows it. The reviewed rules, ceilings and acceptance route retain their
+existing behavior. Independent verification, final review and publication
+remain separate lifecycle actions.
+
 **WO-154 activation completion (2026-09-24):** assigned application `v0.46.0`,
 the next minor above the observed local `v0.45.0` tag, under the declared minor
 classification. A new feedback evidence edition (schema 2) commits its verifier

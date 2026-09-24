@@ -3817,6 +3817,185 @@ test("closeout refuses source and destination symlinks and unignored archive pat
   );
 });
 
+test("WO-155 cold-start trends share edition and acceptance evidence across the CLI and meter", async (t) => {
+  const root = repo(t);
+  const budgetPath = "docs/control/budgets.json";
+  const budgets = JSON.parse(readFileSync(join(source, budgetPath), "utf8"));
+  budgets.acceptances = [];
+  write(root, budgetPath, json(budgets));
+  const paths = [".claude/skills", ".agents/skills"].flatMap((prefix) =>
+    [
+      "executor",
+      "verifier",
+      "reviewer",
+      "release-close",
+      "planner",
+      "refuter",
+    ].map((role) => `${prefix}/dotln-${role}/SKILL.md`),
+  );
+  for (const path of paths) write(root, path, "Règle\n");
+  git(root, "add", ".");
+  git(root, "commit", "-qm", "First release fixture");
+  git(root, "tag", "v1.0.0");
+  const first = measureColdStarts(root);
+  assert.equal(first.comparisonEdition, "v1.0.0");
+  assert.equal(first.profiles[0].delta, 0);
+  assert.equal(first.profiles[0].skillBytes, Buffer.byteLength("Règle\n"));
+  assert.equal(first.profiles[0].lastAcceptance.cause, "no-acceptance");
+  const acceptance = {
+    date: "2026-09-20",
+    metric: "coldStartBytes.executor",
+    scope: null,
+    dispatch: "executor",
+    ceiling: 30000,
+    reason: "Measured prose is not the baseline — 999 bytes.",
+  };
+  budgets.acceptances = [acceptance];
+  write(root, budgetPath, json(budgets));
+  write(
+    root,
+    "CLAUDE.md",
+    readFileSync(join(root, "CLAUDE.md"), "utf8") + "accepted\n",
+  );
+  git(root, "add", ".");
+  git(root, "commit", "-qm", "Accept executor fixture");
+  const acceptedRevision = git(root, "rev-parse", "HEAD");
+  const acceptedBytes = measureColdStarts(root).profiles[0].bytes;
+  // An older entry appended later, and a newer scoped entry, cannot replace
+  // the latest global acceptance. The record's ceiling is not its byte count.
+  budgets.acceptances.push({ ...acceptance, date: "2026-09-10" });
+  budgets.acceptances.push({
+    ...acceptance,
+    date: "2026-09-21",
+    scope: "another-order",
+  });
+  write(root, budgetPath, json(budgets));
+  for (const path of paths) write(root, path, "Règle\nmore\n");
+  git(root, "add", ".");
+  git(root, "commit", "-qm", "Next release fixture");
+  git(root, "tag", "v1.1.0");
+  // A sibling worktree can publish a greater version without changing HEAD.
+  git(root, "checkout", "-qb", "sibling");
+  git(root, "commit", "--allow-empty", "-qm", "Sibling release fixture");
+  git(root, "tag", "v9.0.0");
+  git(root, "checkout", "-q", "wo-999");
+  write(root, paths[0], "Règle\nmore\nnow\n");
+  const beforeBudget = readFileSync(join(root, budgetPath));
+  const measured = measureColdStarts(root);
+  const row = measured.profiles[0];
+  assert.equal(measured.comparisonEdition, "v1.1.0");
+  assert.equal(row.delta, 4);
+  assert.equal(row.lastAcceptance.date, acceptance.date);
+  assert.equal(row.lastAcceptance.revision, acceptedRevision);
+  assert.equal(row.lastAcceptance.bytes, acceptedBytes);
+  assert.equal(row.lastAcceptance.delta, 9);
+  assert.equal(row.lastAcceptance.cause, null);
+  assert.equal(measureColdStarts(root, "v1.0.0").profiles[0].delta, 18);
+  const cli = JSON.parse(
+    execFileSync(
+      process.execPath,
+      [join(source, "scripts/harness-context.mjs"), "--check"],
+      {
+        cwd: root,
+        encoding: "utf8",
+        env: { ...process.env, DOTLN_LAUNCHPAD: root },
+      },
+    ),
+  );
+  assert.deepEqual(cli, measured);
+  const meta = await collectMeta(root);
+  assert.deepEqual(meta.coldStart, measured);
+  assert.deepEqual(
+    meta.traps.find((entry) => entry.id === "drift-to-low-performance")
+      .coldStart.profiles,
+    measured.profiles,
+  );
+  assert.match(
+    renderMeta(meta),
+    /ceiling [\d,]+; previous \d+; Δ edition 4; last acceptance 2026-09-20: \d+ bytes, Δ 9/,
+  );
+  assert.deepEqual(readFileSync(join(root, budgetPath)), beforeBudget);
+  const invalid = spawnSync(
+    process.execPath,
+    [join(source, "scripts/harness-context.mjs"), "--bogus"],
+    {
+      cwd: root,
+      encoding: "utf8",
+      env: { ...process.env, DOTLN_LAUNCHPAD: root },
+    },
+  );
+  assert.equal(invalid.status, 1);
+  assert.match(invalid.stderr, /usage:/);
+  write(root, ".git/shallow", git(root, "rev-parse", "HEAD") + "\n");
+  const shallow = measureColdStarts(root).profiles[0].lastAcceptance;
+  assert.equal(shallow.bytes, null);
+  assert.equal(shallow.cause, "acceptance-history-unavailable");
+});
+
+test("WO-155 missing history and missing role files are explicit unknowns; check remains advisory", (t) => {
+  const root = repo(t);
+  const budgets = JSON.parse(
+    readFileSync(join(source, "docs/control/budgets.json"), "utf8"),
+  );
+  budgets.acceptances = [
+    {
+      date: "2026-09-20",
+      metric: "coldStartBytes.executor",
+      dispatch: "executor",
+      ceiling: 1,
+      reason: "Uncommitted acceptance",
+    },
+  ];
+  budgets.limits.coldStartBytes.executor = 1;
+  write(root, "docs/control/budgets.json", json(budgets));
+  write(root, ".claude/skills/dotln-executor/SKILL.md", "rule\n");
+  const observed = measureColdStarts(root);
+  assert.equal(observed.comparisonEdition, null);
+  assert.equal(observed.profiles[0].delta, null);
+  assert.equal(
+    observed.profiles[0].previousCause,
+    "edition-snapshot-unavailable",
+  );
+  assert.equal(
+    observed.profiles[0].lastAcceptance.cause,
+    "acceptance-history-unavailable",
+  );
+  assert.equal(observed.profiles[1].bytes, null);
+  assert.equal(observed.profiles[1].lastAcceptance.delta, null);
+  const script = join(source, "scripts/harness-context.mjs");
+  const unchecked = spawnSync(process.execPath, [script], {
+    cwd: root,
+    encoding: "utf8",
+    env: { ...process.env, DOTLN_LAUNCHPAD: root },
+  });
+  const checked = spawnSync(process.execPath, [script, "--check"], {
+    cwd: root,
+    encoding: "utf8",
+    env: { ...process.env, DOTLN_LAUNCHPAD: root },
+  });
+  assert.equal(unchecked.status, 0);
+  assert.equal(checked.status, 0);
+  assert.equal(unchecked.stderr, "");
+  assert.match(checked.stderr, /Advisory: process budget exceeded/);
+  assert.deepEqual(JSON.parse(unchecked.stdout), JSON.parse(checked.stdout));
+  git(root, "tag", "v0.1.0");
+  const missingHistoricalFile = measureColdStarts(root).profiles[0];
+  assert.equal(missingHistoricalFile.previousBytes, null);
+  assert.equal(
+    missingHistoricalFile.previousCause,
+    "edition-snapshot-unavailable",
+  );
+  rmSync(join(root, "CLAUDE.md"));
+  assert.ok(
+    measureColdStarts(root).profiles.every(
+      (row) =>
+        row.bytes === null &&
+        row.delta === null &&
+        row.lastAcceptance.delta === null,
+    ),
+  );
+});
+
 test("budgets keep unselected caps unset and cold-start measurement ignores product prose", (t) => {
   const root = repo(t);
   write(

@@ -174,13 +174,27 @@ export function checkContextMeasurement(measurement) {
       );
 }
 if (isMainModule(import.meta.url)) {
-  const result = measureColdStarts(root);
-  requireBudgets(result.profiles);
-  const destination = docPath(root, "evidence", "WO-126/harness-context.json");
-  const text = JSON.stringify(result, null, 2) + "\n";
-  if (process.argv.includes("--write")) {
-    mkdirSync(docPath(root, "evidence", "WO-126"), { recursive: true });
-    writeFileSync(destination, text);
+  const args = process.argv.slice(2);
+  if (args.includes("--help")) {
+    console.log(
+      "usage: harness-context.mjs [--check] [--write]\nMeasures installed cold-start bytes and historical deltas as JSON. --check evaluates budgets and prints advisory breaches; budget observations never refuse. --write refreshes the legacy WO-126 measurement path.",
+    );
+  } else if (args.some((arg) => !["--check", "--write"].includes(arg))) {
+    console.error("usage: harness-context.mjs [--check] [--write]");
+    process.exitCode = 1;
+  } else {
+    const result = measureColdStarts(root);
+    if (args.includes("--check")) requireBudgets(result.profiles);
+    const destination = docPath(
+      root,
+      "evidence",
+      "WO-126/harness-context.json",
+    );
+    const text = JSON.stringify(result, null, 2) + "\n";
+    if (process.argv.includes("--write")) {
+      mkdirSync(docPath(root, "evidence", "WO-126"), { recursive: true });
+      writeFileSync(destination, text);
+    }
+    console.log(text.trimEnd());
   }
-  console.log(text.trimEnd());
 }
