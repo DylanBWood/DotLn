@@ -1,4 +1,4 @@
-# WO-155 — Single-source floor and a cold-start trend: the shared refusals paragraph is emitted once in the floor and each generated skill refers to it, harness-context reports every role's delta since the previous edition beside its ceiling, and no reviewed rule is trimmed (version assigned at activation)
+# WO-155 — Single-source floor and a cold-start trend: the shared refusals paragraph is emitted once in the floor and each generated skill refers to it, harness-context reports every role's delta since the previous edition beside its ceiling, and no reviewed rule is trimmed (v0.46.1)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).

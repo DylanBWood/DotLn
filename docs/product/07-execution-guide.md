@@ -36,6 +36,19 @@ not alter the cold-start comparison or require a new evidence edition. The
 historical [WO-039 measurement](../evidence/WO-039/harness-context.json) retains
 its original broader method.
 
+WO-155's measurement compares with the highest reachable local release tag
+(`vX.Y.Z`) and reports each role's bytes and delta beside its ceiling. The last
+acceptance comparison uses the first committed snapshot on the current
+branch's first-parent history containing that role's latest global acceptance
+(date, then record order). Its source and measured bytes are recorded; the
+ceiling and numbers in historical reason prose are not byte measurements.
+Missing history or files produce an unavailable delta with a cause.
+`--check` evaluates and prints budget advisories without refusing; no flag
+prints the measurement alone. `npm run meta` includes the same per-role rows
+in its drift signal. The [loading observations](../evidence/WO-155/skill-loading.json)
+found fresh Claude Explore and Copilot task workers without the floor in their initial context,
+so the full refusals paragraph remains in each skill under WO-155's fallback.
+
 This guide is the operating contract. Harness-specific observations (version,
 model and effort readback, Codex sandbox approval) live in
 `docs/AI-HARNESS-SECURITY.md` and the playbook, with a pointer where each
