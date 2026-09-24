@@ -15504,6 +15504,21 @@
           "at": "2026-09-24T18:35:34.207Z"
         }
       ]
+    },
+    {
+      "id": "FUP-e5a6ca7dbe6270ea",
+      "key": "decision:docs/evidence/WO-155/decisions.md#wo-155-d006",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "ee132bfc3fe10f1d1a311d9d389f50a4dd8117d8943e62440088299aae168785",
+          "ref": "docs/evidence/WO-155/decisions.md#wo-155-d006",
+          "title": "WO-155-D006: Render an unset cold-start ceiling in the meter's drift rows as 'ceiling unset', matching the budget rows and legend, and assert it for an unset role in the process-debt render test. Prio",
+          "summary": "{ \"id\": \"WO-155-D006\", \"date\": \"2026-09-24\", \"dispatch\": \"resume: verify; VER-001 N1\", \"decision\": \"Board up a minor presentation defect found in verification. The new drift-to-low-performance rows in renderMeta print an unset (null) cold-start ceiling as 'ceiling unavailable'. The meter's legend and its budget rows keep unset ceilings ('ceiling unset') separate from unavailable observations. The JSON (ceiling null, verdict unset) is correct, and no verdict depends on the label.\", \"evidence\": [ \"scripts/lib/meta.mjs renderMeta drift rows format the ceiling with display(row.ceiling), which renders null as 'unavailable'.\", \"npm run meta -- --check on 2026-09-24 at product-code identity 46fe97a",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

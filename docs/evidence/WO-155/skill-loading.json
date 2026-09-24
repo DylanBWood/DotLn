@@ -1,0 +1,45 @@
+{
+  "observedAt": "2026-09-24",
+  "method": "Read-only actor observations of delivered context before skill reads. Raw transcripts remain ignored. Loading the skill as data avoids executing role transitions.",
+  "observations": [
+    {
+      "path": "Codex root through AGENTS.md",
+      "floorBeforeSkill": true,
+      "source": "Current operator-supplied AGENTS.md block preceded first executor skill read at entry.",
+      "scope": "Observed in this session; symlink target confirmed by filesystem."
+    },
+    {
+      "path": "Codex fresh background refuter worker (fork_turns none)",
+      "floorBeforeSkill": true,
+      "source": "floor_probe initial-context observation and read-only .agents/skills/dotln-refuter/SKILL.md read.",
+      "scope": "Worker attestation, returned to parent before implementation."
+    },
+    {
+      "path": "Claude root before generated refuter skill",
+      "floorBeforeSkill": true,
+      "source": "Bounded claude print probe, 18:56:44.890Z–18:58:14.058Z; skill read as data, no lifecycle dispatch.",
+      "scope": "Context delivery reported by the live parent. Exact role-dispatch hook behavior is covered by existing role fixtures, not re-dispatched here."
+    },
+    {
+      "path": "Claude fresh Explore background worker before generated refuter skill",
+      "floorBeforeSkill": false,
+      "source": "Same live Claude probe: fresh Explore child reported no floor in initial context; its first refusals paragraph came from line 23 of the skill.",
+      "scope": "Live child observation relayed by its parent, not inferred from loader documentation."
+    },
+    {
+      "path": "Copilot root before generated refuter skill",
+      "floorBeforeSkill": true,
+      "source": "Bounded copilot prompt probe, 18:56:44.893Z–18:56:59.672Z; initial custom_instruction floor reported before the view call.",
+      "scope": "Live assistant messages and view event; complements WO-146 bare-interactive workflow evidence, does not repeat it."
+    },
+    {
+      "path": "Copilot fresh explore task worker before generated refuter skill",
+      "floorBeforeSkill": false,
+      "source": "Second bounded Copilot probe, 19:15:16.479Z–19:15:38.936Z: the fresh worker reported no full floor or refusals paragraph before reading the skill; its parent relayed the observation.",
+      "scope": "Initial worker message and subsequent read/hand-back in the live JSON event stream. One worker, no descendants or writes."
+    }
+  ],
+  "criterion2": "declined",
+  "limitation": "These observations establish delivered presence/order only, not exactly-once loading of the floor across turns or compaction. Reduced target-worker bundles do not contain generated Contributor skills; protocol-only feedback/entropy workers receive capsules and do not load these skills.",
+  "reopenWhen": "Fresh Claude and Copilot workers demonstrably receive the complete floor before any Contributor skill, with floor-before-skill observations on every supported loading path."
+}
