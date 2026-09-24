@@ -1564,13 +1564,20 @@ export function beginHarnessSession(
   );
   if (counterWarning)
     process.stderr.write(`DotLn advisory: subagent ${counterWarning}.\n`);
-  record(root, input, {
-    role,
-    source: adopted.length
-      ? "actor-attested-upgrade-authorship"
-      : "explicit-session-entry",
-    adoptedPaths: adopted,
-  });
+  try {
+    record(root, input, {
+      role,
+      source: adopted.length
+        ? "actor-attested-upgrade-authorship"
+        : "explicit-session-entry",
+      adoptedPaths: adopted,
+    });
+  } catch (error) {
+    // An entry that cannot record its observation leaves no session behind, so
+    // a readback says no-session and the entry can be retried (WO-153).
+    unlinkIfPresent(statePath(root, input));
+    throw error;
+  }
   return {
     session: sessionKey(input),
     scratch: harnessSessionScratch(sessionId),

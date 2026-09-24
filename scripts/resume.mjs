@@ -1204,14 +1204,22 @@ export const main = async (argv = process.argv.slice(2)) => {
     );
     if (process.env.CODEX_THREAD_ID && codexDispatchRole) {
       if (existsSync(harnessHostPath)) {
-        const { beginHarnessSessionOnce } = await import(
-          pathToFileURL(harnessHostPath)
-        );
-        beginHarnessSessionOnce(
-          repoRoot,
-          process.env.CODEX_THREAD_ID,
-          codexDispatchRole,
-        );
+        // The transition may already be recorded: a measurement failure is named
+        // and admitted, never allowed to withhold the briefing (WO-153).
+        try {
+          const { beginHarnessSessionOnce } = await import(
+            pathToFileURL(harnessHostPath)
+          );
+          beginHarnessSessionOnce(
+            repoRoot,
+            process.env.CODEX_THREAD_ID,
+            codexDispatchRole,
+          );
+        } catch (error) {
+          process.stderr.write(
+            `DotLn advisory: Codex session entry failed (${error instanceof Error ? error.message : String(error)}); process cost remains unknown; cause no-session.\n`,
+          );
+        }
       } else {
         process.stderr.write(
           "DotLn advisory: Codex session entry unavailable; harness runtime is not built. Run npm run build before the next dispatch; process cost remains unknown; cause no-session.\n",

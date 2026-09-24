@@ -5601,6 +5601,213 @@ test("WO-149 an unbuilt Codex dispatch reports the missing runtime without block
   assert.doesNotMatch(withoutThread.stderr, /Codex session entry unavailable/);
 });
 
+test("WO-153 a Codex dispatch whose session entry fails names the cause and still delivers its briefing", async (t) => {
+  const root = repo(t, { runtime: true });
+  cpSync(join(source, "scripts/lib"), join(root, "scripts/lib"), {
+    recursive: true,
+  });
+  cpSync(
+    join(source, "scripts/harness.mjs"),
+    join(root, "scripts/harness.mjs"),
+  );
+  const resume = readFileSync(join(source, "scripts/resume.mjs"), "utf8");
+  const table = /const codexDispatchRoles = \{[^}]*\};/;
+  assert.equal(resume.match(table)?.[0].match(/: "[a-z-]+"/g)?.length, 5);
+  const failures = [
+    {
+      // The host refuses a role outside its list before writing a record;
+      // inject one through the copied dispatch table.
+      script: resume.replace(table, (block) =>
+        block.replace(/: "[a-z-]+"/g, ': "fixture-invalid-role"'),
+      ),
+      prepare: () => {},
+      advisory:
+        /^DotLn advisory: Codex session entry failed \(Invalid harness session\); process cost remains unknown; cause no-session\.$/m,
+    },
+    {
+      // A partial begin (VER-001 F1): the host writes the session record, then
+      // refuses an observation log that is not a regular file.
+      script: resume,
+      prepare: (thread) =>
+        mkdirSync(statePath(root, thread).replace(/\.json$/, ".jsonl"), {
+          recursive: true,
+        }),
+      advisory:
+        /^DotLn advisory: Codex session entry failed \(Host observation log is not a regular file\); process cost remains unknown; cause no-session\.$/m,
+    },
+  ];
+  installBeaconFixture(root);
+  write(
+    root,
+    "docs/work-orders/WO-999-fixture.md",
+    "# WO-999 — fixture\n\n**Model:** any.\n**Effort:** executor any; verifier any; reviewer any.\n\n<!-- dotln-dependencies:start -->\n[]\n<!-- dotln-dependencies:end -->\n",
+  );
+  const segment = "docs/control/orders/WO-999.jsonl";
+  const activated = readFileSync(join(root, segment), "utf8");
+  const events = (...rows) =>
+    rows
+      .map(
+        (event) =>
+          JSON.stringify({
+            schemaVersion: 1,
+            workOrderId: "WO-999",
+            recordedAt: "2026-09-09T00:01:00.000Z",
+            ...event,
+          }) + "\n",
+      )
+      .join("");
+  const ready = { type: "ImplementationReady" };
+  const requested = {
+    type: "VerificationRequested",
+    verificationId: "VER-001",
+    reportPath: "docs/verifications/WO-999/VER-001.md",
+  };
+  const verified = (verdict) => ({
+    type: "VerificationCompleted",
+    verificationId: "VER-001",
+    reportPath: "docs/verifications/WO-999/VER-001.md",
+    verdict,
+  });
+  const reviewed = [
+    {
+      type: "FinalReviewRequested",
+      finalReviewId: "FINAL-001",
+      throughVerificationId: "VER-001",
+      reportPath: "docs/final-reviews/WO-999/FINAL-001.md",
+    },
+    {
+      type: "FinalReviewCompleted",
+      finalReviewId: "FINAL-001",
+      verdict: "pass",
+    },
+  ];
+  const cases = [
+    {
+      action: "next",
+      seed: "",
+      briefing: /^Execute docs\/work-orders\/WO-999-fixture\.md\.$/m,
+      transition: null,
+    },
+    {
+      action: "verify",
+      seed: events(ready),
+      briefing:
+        /Verify docs\/work-orders\/WO-999-fixture\.md; write the immutable report to (\S+\/VER-001\.md)\./,
+      transition: "VerificationRequested",
+    },
+    {
+      action: "fix",
+      seed: events(ready, requested, verified("fail")),
+      briefing:
+        /Repair docs\/work-orders\/WO-999-fixture\.md using docs\/verifications\/WO-999\/VER-001\.md; read both artifacts\./,
+      transition: "RepairRequested",
+    },
+    {
+      action: "final-review",
+      seed: events(ready, requested, verified("pass")),
+      briefing:
+        /Final-review docs\/work-orders\/WO-999-fixture\.md, the complete verification sequence, and ideation receipt; write (\S+\/FINAL-001\.md)\./,
+      transition: "FinalReviewRequested",
+    },
+    {
+      action: "release-close",
+      seed: events(ready, requested, verified("pass"), ...reviewed),
+      briefing: /After the operator merges the PR, .* close WO-999 --publish\./,
+      transition: null,
+    },
+  ];
+  const codexHome = join(root, ".runtime/codex-home");
+  mkdirSync(join(codexHome, "sessions"), { recursive: true });
+  const env = {
+    ...process.env,
+    CODEX_HOME: codexHome,
+    COPILOT_AGENT_SESSION_ID: "",
+  };
+  const run = (script, args, thread) =>
+    spawnSync(process.execPath, [join(root, script), ...args], {
+      cwd: root,
+      encoding: "utf8",
+      env: { ...env, CODEX_THREAD_ID: thread },
+    });
+  const { COST_LINE_PREFIX, judgeCostLine } =
+    await import("./lib/receipt-cost.mjs");
+  for (const [kind, failure] of failures.entries()) {
+    write(root, "scripts/resume.mjs", failure.script);
+    for (const { action, seed, briefing, transition } of cases) {
+      write(root, segment, activated + seed);
+      const thread = `wo153-${kind}-${action}`;
+      failure.prepare(thread);
+      const result = run("scripts/resume.mjs", [action], thread);
+      assert.equal(result.status, 0, `${action}: ${result.stderr}`);
+      const printed = result.stdout.match(briefing);
+      assert.ok(printed, `${action} briefing:\n${result.stdout}`);
+      assert.match(result.stderr, failure.advisory);
+      const log = readFileSync(join(root, segment), "utf8");
+      assert.ok(log.startsWith(activated + seed), `${action} kept its log`);
+      const appended = log
+        .slice((activated + seed).length)
+        .split("\n")
+        .filter(Boolean)
+        .map((line) => JSON.parse(line));
+      assert.deepEqual(
+        appended.map((event) => event.type),
+        transition ? [transition] : [],
+      );
+      if (printed[1]) assert.equal(printed[1], appended[0].reportPath);
+      assert.equal(existsSync(statePath(root, thread)), false);
+      const usage = run("scripts/harness.mjs", ["usage", thread], "");
+      assert.equal(usage.status, 0, usage.stderr);
+      assert.match(usage.stderr, /unknown; cause no-session/);
+      const observed = JSON.parse(usage.stdout);
+      assert.equal(observed.cause, "no-session");
+      assert.equal(observed.usage.totalTokens, null);
+      assert.equal(
+        judgeCostLine(
+          `# Fixture\n\n${COST_LINE_PREFIX} unknown; cause ${observed.cause}\n`,
+        ),
+        null,
+      );
+      if (action !== "next") continue;
+      // A repeat finds no session to treat as begun and names the failure again.
+      const repeat = run("scripts/resume.mjs", [action], thread);
+      assert.equal(repeat.status, 0, repeat.stderr);
+      assert.match(repeat.stderr, failure.advisory);
+      assert.equal(existsSync(statePath(root, thread)), false);
+    }
+  }
+  // With the obstruction gone, the withdrawn entry begins on the next dispatch.
+  const partial = statePath(root, "wo153-1-next");
+  rmSync(partial.replace(/\.json$/, ".jsonl"), { recursive: true });
+  write(root, segment, activated);
+  const retried = run("scripts/resume.mjs", ["next"], "wo153-1-next");
+  assert.equal(retried.status, 0, retried.stderr);
+  assert.doesNotMatch(retried.stderr, /Codex session entry/);
+  assert.equal(JSON.parse(readFileSync(partial, "utf8")).role, "executor");
+
+  // The real table: a successful begin and its repeat stay silent, and a
+  // dispatch without a thread identity writes nothing.
+  cpSync(join(source, "scripts/resume.mjs"), join(root, "scripts/resume.mjs"));
+  write(root, segment, activated);
+  const records = () =>
+    readdirSync(join(root, "docs/control/local/harness")).filter((name) =>
+      /^[a-f0-9]{64}\.json$/.test(name),
+    );
+  const begun = run("scripts/resume.mjs", ["next"], "wo153-valid");
+  assert.equal(begun.status, 0, begun.stderr);
+  assert.doesNotMatch(begun.stderr, /Codex session entry/);
+  const bytes = readFileSync(statePath(root, "wo153-valid"), "utf8");
+  assert.equal(JSON.parse(bytes).role, "executor");
+  const repeat = run("scripts/resume.mjs", ["next"], "wo153-valid");
+  assert.equal(repeat.status, 0, repeat.stderr);
+  assert.doesNotMatch(repeat.stderr, /Codex session entry/);
+  assert.equal(readFileSync(statePath(root, "wo153-valid"), "utf8"), bytes);
+  const before = records();
+  const threadless = run("scripts/resume.mjs", ["next"], "");
+  assert.equal(threadless.status, 0, threadless.stderr);
+  assert.doesNotMatch(threadless.stderr, /Codex session entry/);
+  assert.deepEqual(records(), before);
+});
+
 test("WO-132 caller usage avoids a writer reservation and other main writes reserve normally", async (t) => {
   const root = repo(t, { runtime: true });
   emitHarness(root);
