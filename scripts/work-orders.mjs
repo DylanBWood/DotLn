@@ -43,6 +43,7 @@ import {
 } from "./lib/release-records.mjs";
 import {
   parseDerivedProvenance,
+  allocationSections,
   checkGeneratedSections,
 } from "./lib/derived-contract.mjs";
 import { parseRepositoryDeclaration } from "./lib/work-order-repository.mjs";
@@ -281,8 +282,17 @@ export const readIndex = (root, releases = localReleaseRecords(root)) => {
       ids.add(id);
       const source = readContained(root, path);
       const header = parseHeader(source, path);
-      if (header.provenance) checkGeneratedSections(source, path);
       const evidence = orders.get(id);
+      // A derived authority is judged by the section set its allocation was
+      // written under (WO-157 item 14).
+      if (header.provenance)
+        checkGeneratedSections(
+          source,
+          path,
+          evidence?.state.allocation
+            ? allocationSections(evidence.state.allocation)
+            : undefined,
+        );
       if (evidence && evidence.state.workOrderPath !== path)
         throw new Error(`${id}: control authority path differs from ${path}`);
       const state = evidence?.state;
@@ -301,9 +311,13 @@ export const readIndex = (root, releases = localReleaseRecords(root)) => {
         JSON.stringify(state.provenance) !== JSON.stringify(header.provenance)
       )
         throw new Error(`${id}: control provenance differs from ${path}`);
-      const active = state && !["closed", "none"].includes(state.phase);
-      const phase =
-        state?.phase && state.phase !== "none"
+      // An order whose allocation no longer folds stays visible (WO-157).
+      const unreadable = control.unreadable?.has(id);
+      const active =
+        unreadable || (state && !["closed", "none"].includes(state.phase));
+      const phase = unreadable
+        ? "unreadable"
+        : state?.phase && state.phase !== "none"
           ? state.phase
           : historical
             ? "historical (time-indexed)"

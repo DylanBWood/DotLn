@@ -1,0 +1,76 @@
+Advisory: attestation recorded as supplied; made-up unobserved effort medium has no matching discovery observation.
+Advisory: attestation recorded as supplied; made-up unobserved effort max has no matching discovery observation.
+Advisory: attestation recorded as supplied; made-up unobserved effort unknown has no matching discovery observation.
+Advisory: attestation recorded as supplied; made-up unobserved effort constructor has no matching discovery observation.
+Advisory: attestation recorded as supplied; made-up unobserved effort toString has no matching discovery observation.
+Advisory: attestation recorded as supplied; made-up unobserved effort __proto__ has no matching discovery observation.
+Advisory: attestation recorded as supplied; made-up unobserved effort malformed has no matching discovery observation.
+Advisory: attestation recorded as supplied; made-up unobserved effort custom-selector has no matching discovery observation.
+Advisory: attestation recorded as supplied; unknown unknown effort ultra has no matching discovery observation.
+Advisory: attestation recorded as supplied; unknown unknown effort ultra code has no matching discovery observation.
+Advisory: attestation recorded as supplied; unknown unknown effort ultracode has no matching discovery observation.
+Advisory: attestation recorded as supplied; unknown unknown effort UltraCode has no matching discovery observation.
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Missing expected exception.
+    at file://~/Projects/DotLn-wo157/[eval1]:5:30
+    at withEnv (file://~/Projects/DotLn-wo157/[eval1]:4:133)
+    at file://~/Projects/DotLn-wo157/[eval1]:5:1
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: undefined,
+  expected: /claude-session-readback requires the Claude Code host's CLAUDE_EFFORT to equal the attested effort: CLAUDE_EFFORT absent/,
+  operator: 'throws',
+  diff: 'simple'
+}
+
+Node.js v26.9.0
+TAP version 13
+# Subtest: discovery uses a bounded observed probe and session warns once off the version line
+not ok 1 - discovery uses a bounded observed probe and session warns once off the version line
+  ---
+  duration_ms: 156.522458
+  type: 'test'
+  location: '~/Projects/DotLn-wo157/scripts/test-process-debt.mjs:1682:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + {
+    +   channel: 'CLAUDE_EFFORT',
+    +   classification: 'observed',
+    +   harnessReadbackEligible: true,
+    +   observedAt: '2026-09-22T23:26:00.914Z',
+    +   value: 'max'
+    + }
+    - undefined
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  actual:
+    classification: 'observed'
+    channel: 'CLAUDE_EFFORT'
+    harnessReadbackEligible: true
+    value: 'max'
+    observedAt: '2026-09-22T23:26:00.914Z'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file://~/Projects/DotLn-wo157/scripts/test-process-debt.mjs:1759:10)
+    Test.runInAsyncScope (node:async_hooks:226:14)
+    Test.run (node:internal/test_runner/test:1402:25)
+    Test.start (node:internal/test_runner/test:1262:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 227.100917

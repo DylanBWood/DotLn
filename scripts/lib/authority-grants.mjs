@@ -203,8 +203,10 @@ export function applyRegisteredRepositoryProfile(
   };
 }
 
-/** Compile against committed repository registration as host authority input. */
-export function compileRegisteredRepositoryLoadout(
+/** The graph and environment a registered repository's profile compiles:
+ * the profile applied to the one active mechanic, the repository id as the
+ * environment's repo and the launchpad registry plus the exact profile grant. */
+export function registeredRepositoryInputs(
   source,
   environment,
   root,
@@ -222,9 +224,117 @@ export function compileRegisteredRepositoryLoadout(
     ...readAuthorityGrantRegistry(root),
     ...(grant ? [grant] : []),
   ]);
-  return compileLoadout(graph, {
-    ...environment,
-    repo: repository.id,
-    authorityGrantRegistry: registry,
-  });
+  return {
+    repository,
+    graph,
+    environment: {
+      ...environment,
+      repo: repository.id,
+      authorityGrantRegistry: registry,
+    },
+  };
+}
+
+/** Compile against committed repository registration as host authority input. */
+export function compileRegisteredRepositoryLoadout(
+  source,
+  environment,
+  root,
+  repositoryId,
+) {
+  const inputs = registeredRepositoryInputs(
+    source,
+    environment,
+    root,
+    repositoryId,
+  );
+  return compileLoadout(inputs.graph, inputs.environment);
+}
+
+/** Every way a compiled floor departs from what its registered repository's
+ * profile would compile (WO-157, WO-100 D006), for a store written by hand.
+ * The rules are applyRegisteredRepositoryProfile's, read in reverse; grants
+ * are admitted only from the launchpad's registry or as the exact profile
+ * grant, never from the store's own registry. Empty means compiled under it. */
+export function registeredProfileMismatches({
+  program,
+  environment,
+  repository,
+  registry,
+}) {
+  const profile = repository.authorityProfile;
+  const named = `repositories.${repository.id}.authorityProfile (${profile.authorityEnvelopeId})`;
+  const floor = program.authorityEnvelope;
+  const at = `the compiled floor ${floor.authorityEnvelopeId}`;
+  const lines = [];
+  if (environment.repo !== repository.id)
+    lines.push(
+      `resident.json environment.repo is ${JSON.stringify(environment.repo)}; ${named} compiles it as ${JSON.stringify(repository.id)}`,
+    );
+  for (const denial of profile.deniedEffects) {
+    if (!floor.deniedEffects.includes(denial))
+      lines.push(`${named} denies ${denial}; ${at} does not`);
+    for (const effect of floor.allowedEffects.filter((effect) =>
+      matches(denial, effect),
+    ))
+      lines.push(`${named} denies ${denial}; ${at} allows ${effect}`);
+  }
+  for (const [resource, limit] of Object.entries(profile.resourceLimits)) {
+    const value = floor.resourceLimits[resource];
+    if (!(Number.isSafeInteger(value) && value <= limit))
+      lines.push(
+        `${named} limits ${resource} to ${limit}; ${at} allows ${value ?? "no limit"}`,
+      );
+  }
+  if (floor.expiresAt > profile.expiresAt)
+    lines.push(
+      `${named} expires at ${profile.expiresAt}; ${at} expires at ${floor.expiresAt}`,
+    );
+  for (const evidence of profile.requiredEvidence)
+    if (!floor.requiredEvidence.includes(evidence))
+      lines.push(`${named} requires evidence ${evidence}; ${at} does not`);
+  for (const type of profile.revocationEventTypes)
+    if (!floor.revocationEventTypes.includes(type))
+      lines.push(`${named} revokes on ${type}; ${at} does not`);
+  const conditions = (floor.revocationConditions ?? []).map(canonicalStringify);
+  for (const condition of profile.revocationConditions ?? [])
+    if (!conditions.includes(canonicalStringify(condition)))
+      lines.push(
+        `${named} revokes on ${canonicalStringify(condition)}; ${at} does not`,
+      );
+  // Admission ignores a grant's reason, exactly as the compiler admits one.
+  const key = ({ reason: _reason, ...grant }) => canonicalStringify(grant);
+  const admitted = new Set(registry.map(key));
+  // The forward compile narrows the WorkOrder's operations as it narrows the
+  // envelope's effects (applyRegisteredRepositoryProfile).
+  const workOrder = program.workOrder;
+  for (const denial of profile.deniedEffects) {
+    if (!workOrder.prohibitedOperations.includes(denial))
+      lines.push(
+        `${named} denies ${denial}; the compiled WorkOrder does not prohibit it`,
+      );
+    for (const operation of workOrder.allowedOperations.filter((value) =>
+      matches(denial, value),
+    ))
+      lines.push(
+        `${named} denies ${denial}; the compiled WorkOrder allows ${operation}`,
+      );
+  }
+  const profileAllows = (value) =>
+    profile.allowedEffects.some((pattern) => matches(pattern, value)) &&
+    !profile.deniedEffects.some((pattern) => matches(pattern, value));
+  for (const grant of program.grants ?? [])
+    if (
+      !admitted.has(key(grant)) &&
+      !(
+        grant.grantId === `registered-repository.${repository.id}.profile` &&
+        grant.grantedBy === "registered-repository" &&
+        grant.repo === repository.id &&
+        [...grant.effects, ...(grant.operations ?? [])].every(profileAllows)
+      )
+    )
+      lines.push(
+        `resident.json grants ${grant.grantId}, which neither the launchpad's authority registry nor ${named} provides`,
+      );
+  return lines.map((line) => `profile: ${line}`);
 }

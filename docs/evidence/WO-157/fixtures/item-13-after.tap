@@ -1,0 +1,117 @@
+TAP version 13
+# PROGRESS [format] 0.0 s started
+# PASS format 0.10 s
+# suite:format: 2 passed; 0 failed; 0.11 s; 2 fresh tasks
+# PROGRESS [build] 0.0 s started
+# PASS build 0.02 s
+# PROGRESS [format] 0.0 s started
+# PASS format 0.10 s
+# PROGRESS [release-surfaces] 0.0 s started
+# PASS release-surfaces 0.03 s
+# PROGRESS [publication] 0.0 s started
+# PASS publication 0.03 s
+# PROGRESS [index] 0.0 s started
+# PASS index 0.03 s
+# PROGRESS [lineage] 0.0 s started
+# PASS lineage 0.02 s
+# PROGRESS [authority-evidence] 0.0 s started
+# PASS authority-evidence 0.03 s
+# PROGRESS [harness] 0.0 s started
+# PASS harness 0.03 s
+# PROGRESS [harness-context] 0.0 s started
+# PASS harness-context 0.02 s
+# PROGRESS [harness-evidence] 0.0 s started
+# PASS harness-evidence 0.02 s
+# PROGRESS [artifact-evidence] 0.0 s started
+# PASS artifact-evidence 0.02 s
+# PROGRESS [verification-evidence] 0.0 s started
+# PASS verification-evidence 0.03 s
+# PROGRESS [feedback-evidence] 0.0 s started
+# PASS feedback-evidence 0.02 s
+# PROGRESS [meta] 0.0 s started
+# PASS meta 0.02 s
+# PROGRESS [lineage-fixtures] 0.0 s started
+# PROGRESS [lineage-fixtures] 0.1 s \# Subtest: scripts/test-lineage.mjs
+# PASS lineage-fixtures 0.05 s
+# PROGRESS [skeleton-docs] 0.0 s started
+# PROGRESS [skeleton-docs] 0.1 s \# Subtest: packages/skeleton/dist/test/fixture.test.js
+# PASS skeleton-docs 0.06 s
+# PROGRESS [console-docs] 0.0 s started
+# PROGRESS [console-docs] 0.1 s \# Subtest: packages/console/dist/test/fixture.test.js
+# PASS console-docs 0.05 s
+# PROGRESS [plan-refutation-current] 0.0 s started
+# PASS plan-refutation-current 0.02 s
+# PROGRESS [registrations] 0.0 s started
+# PASS registrations 0.03 s
+# PROGRESS [plan] 0.0 s started
+# PASS plan 0.03 s
+# PROGRESS [entropy] 0.0 s started
+# PASS entropy 0.02 s
+# npm run test:docs: 21 passed; 0 failed; 0.70 s; 21 fresh tasks
+# PROGRESS [build] 0.0 s started
+# PASS build 0.02 s
+# PROGRESS [format] 0.0 s started
+# PASS format 0.10 s
+# PROGRESS [release-surfaces] 0.0 s started
+# PASS release-surfaces 0.03 s
+# PROGRESS [publication] 0.0 s started
+# PASS publication 0.02 s
+# PROGRESS [index] 0.0 s started
+# PASS index 0.03 s
+# PROGRESS [lineage] 0.0 s started
+# PASS lineage 0.02 s
+# PROGRESS [authority-evidence] 0.0 s started
+# PASS authority-evidence 0.02 s
+# PROGRESS [harness] 0.0 s started
+# PASS harness 0.02 s
+# PROGRESS [harness-context] 0.0 s started
+# PASS harness-context 0.02 s
+# PROGRESS [harness-evidence] 0.0 s started
+# PASS harness-evidence 0.02 s
+# PROGRESS [artifact-evidence] 0.0 s started
+# PASS artifact-evidence 0.02 s
+# PROGRESS [verification-evidence] 0.0 s started
+# PASS verification-evidence 0.03 s
+# PROGRESS [feedback-evidence] 0.0 s started
+# PASS feedback-evidence 0.03 s
+# PROGRESS [meta] 0.0 s started
+# PASS meta 0.02 s
+# PROGRESS [lineage-fixtures] 0.0 s started
+# PROGRESS [lineage-fixtures] 0.1 s \# Subtest: scripts/test-lineage.mjs
+# PASS lineage-fixtures 0.05 s
+# PROGRESS [skeleton-docs] 0.0 s started
+# PROGRESS [skeleton-docs] 0.1 s \# Subtest: packages/skeleton/dist/test/fixture.test.js
+# PASS skeleton-docs 0.05 s
+# PROGRESS [console-docs] 0.0 s started
+# PROGRESS [console-docs] 0.1 s \# Subtest: packages/console/dist/test/fixture.test.js
+# PASS console-docs 0.05 s
+# PROGRESS [plan-refutation-current] 0.0 s started
+# PASS plan-refutation-current 0.02 s
+# PROGRESS [registrations] 0.0 s started
+# PASS registrations 0.02 s
+# PROGRESS [plan] 0.0 s started
+# PASS plan 0.03 s
+# PROGRESS [entropy] 0.0 s started
+# PASS entropy 0.02 s
+# npm run test:docs: 21 passed; 0 failed; 0.68 s; 21 fresh tasks
+# Subtest: only and document CLI selection execute their declared checks with the projection build
+ok 1 - only and document CLI selection execute their declared checks with the projection build
+  ---
+  duration_ms: 1648.45425
+  type: 'test'
+  ...
+# Subtest: WO-157 the document gate refuses an unregistered docs JSONL and an unstubbed document suite
+ok 2 - WO-157 the document gate refuses an unregistered docs JSONL and an unstubbed document suite
+  ---
+  duration_ms: 1976.32775
+  type: 'test'
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3665.806167

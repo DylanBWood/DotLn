@@ -1,0 +1,50 @@
+TAP version 13
+# Subtest: WO-064 AC1: publish refuses without an operator grant before any remote call
+ok 1 - WO-064 AC1: publish refuses without an operator grant before any remote call
+  ---
+  duration_ms: 1720.153709
+  type: 'test'
+  ...
+# Subtest: WO-064 AC1: a host-policy grant is not operator provenance
+ok 2 - WO-064 AC1: a host-policy grant is not operator provenance
+  ---
+  duration_ms: 1495.527583
+  type: 'test'
+  ...
+# target publish gh stub transcript (temporary path normalized):
+# --version
+# auth status --hostname github.com
+# pr create --repo github.com/dotln-fixture/target --head fix/fixture-text --base main --title fix: record the synthetic worker line --body-file <generated-PR-body>
+# Subtest: WO-064 AC1/AC2: lint and target refusals name their rule; the granted publish pushes and opens the pull request with the pinned body
+ok 3 - WO-064 AC1/AC2: lint and target refusals name their rule; the granted publish pushes and opens the pull request with the pinned body
+  ---
+  duration_ms: 3035.251709
+  type: 'test'
+  ...
+# Subtest: WO-064 AC1 (VER-001 F1): a same-head acceptance matrix must verify this WorkOrder's criteria
+ok 4 - WO-064 AC1 (VER-001 F1): a same-head acceptance matrix must verify this WorkOrder's criteria
+  ---
+  duration_ms: 2550.500666
+  type: 'test'
+  ...
+# Subtest: WO-157: publication runs no hook or repository configuration the target holds
+ok 5 - WO-157: publication runs no hook or repository configuration the target holds
+  ---
+  duration_ms: 1999.840458
+  type: 'test'
+  ...
+# Subtest: WO-064: the CLI names its usage for a malformed target request
+ok 6 - WO-064: the CLI names its usage for a malformed target request
+  ---
+  duration_ms: 38.952167
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 10901.567959

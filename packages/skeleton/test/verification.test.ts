@@ -1,15 +1,16 @@
 import test, { before, after } from "node:test";
 import assert from "node:assert/strict";
-import { execFileSync } from "node:child_process";
+import { execFileSync, spawnSync } from "node:child_process";
 import {
   mkdtempSync,
   readFileSync,
   readdirSync,
   realpathSync,
   rmSync,
+  writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { delimiter, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   compileVerificationTask,
@@ -788,12 +789,136 @@ test("WO-056 the legacy verification profile launches Codex inside its Git workt
   );
   assert.deepEqual(codex.slice(0, 2), ["exec", "--ephemeral"]);
   assert.ok(!codex.includes("--skip-git-repo-check"));
-  // Its reproduction steps are not host commands and stay free text.
+  // Its reproduction steps are not host commands and stay free text, bounded
+  // as admission bounds them (WO-157 item 16).
   assert.deepEqual(
     (evidenceResultSchema(request) as any).properties.findings.items.properties
       .reproductionSteps.items,
-    { type: "string" },
+    { type: "string", minLength: 1, maxLength: 2000 },
   );
+});
+
+/** The JSON Schema keywords the evidence schema uses, checked as a transport's
+ * structured output would check them. */
+function schemaAdmits(schema: any, value: unknown): boolean {
+  if (schema.enum && !schema.enum.includes(value)) return false;
+  switch (schema.type) {
+    case "string":
+      return (
+        typeof value === "string" &&
+        value.length >= (schema.minLength ?? 0) &&
+        value.length <= (schema.maxLength ?? Infinity)
+      );
+    case "boolean":
+      return typeof value === "boolean";
+    case "array":
+      return (
+        Array.isArray(value) &&
+        value.length >= (schema.minItems ?? 0) &&
+        value.length <= (schema.maxItems ?? Infinity) &&
+        value.every((item) => schemaAdmits(schema.items, item))
+      );
+    case "object":
+      return (
+        typeof value === "object" &&
+        value !== null &&
+        !Array.isArray(value) &&
+        schema.required.every((key: string) => Object.hasOwn(value, key)) &&
+        Object.entries(value).every(
+          ([key, item]) =>
+            Object.hasOwn(schema.properties, key) &&
+            schemaAdmits(schema.properties[key], item),
+        )
+      );
+    default:
+      throw new Error(`unchecked schema type ${schema.type}`);
+  }
+}
+
+test("WO-157 item 16 (D024): the verifier schema admits only findings admission can accept", () => {
+  const refusedByAdmission = (value: unknown, request: EvidenceWorkerRequest) =>
+    assert.throws(
+      () => parseEvidenceResult(value, request),
+      (error: unknown) =>
+        error instanceof WorkerFailure && error.code === "invalid-result",
+    );
+  // A subject with a failing witness: the admitted result stays schema-valid.
+  const request = requestFor();
+  const schema = evidenceResultSchema(request) as any;
+  const good = structuredClone((resultEvent().payload as any).value);
+  parseEvidenceResult(good, request);
+  assert.equal(good.findings.length, 1);
+  assert.ok(schemaAdmits(schema, good), "an admissible result is schema-valid");
+  const finding = good.findings[0];
+  const surfaces = request.capsule.criteria.flatMap(
+    (criterion) => criterion.codeSurfaces,
+  );
+  const mutations: Record<string, (value: any) => void> = {
+    "empty finding id": (value) => (value.findings[0].findingId = ""),
+    "over-long finding id": (value) =>
+      (value.findings[0].findingId = "f".repeat(2001)),
+    "no reproduction step": (value) =>
+      (value.findings[0].reproductionSteps = []),
+    "101 reproduction steps": (value) =>
+      (value.findings[0].reproductionSteps = Array.from(
+        { length: 101 },
+        () => finding.reproductionSteps[0],
+      )),
+    "no evidence reference": (value) => (value.findings[0].evidenceRefs = []),
+    "an unknown evidence reference": (value) =>
+      (value.findings[0].evidenceRefs = ["EV-unknown"]),
+    "no likely surface": (value) => (value.findings[0].likelySurface = []),
+    "a surface outside the criteria": (value) =>
+      (value.findings[0].likelySurface = ["outside/surface.ts"]),
+    "an absolute surface": (value) =>
+      (value.findings[0].likelySurface = ["/etc/passwd"]),
+    "an unknown criterion": (value) =>
+      (value.findings[0].criterionId = "AC-unknown"),
+    "a paraphrased observation": (value) =>
+      (value.findings[0].observed = "The policy looked wrong."),
+    "an exemplar reference": (value) =>
+      (value.evaluations[0].exemplarRefs = [finding.evidenceRefs[0]]),
+  };
+  for (const [name, mutate] of Object.entries(mutations)) {
+    const value = structuredClone(good);
+    mutate(value);
+    assert.ok(!schemaAdmits(schema, value), `schema admits ${name}`);
+    refusedByAdmission(value, request);
+  }
+  assert.ok(!surfaces.includes("outside/surface.ts"));
+  // Left to admission, named in the decision: control characters and
+  // duplicate entries, which these keywords cannot state.
+  for (const mutate of [
+    (value: any) => (value.findings[0].findingId = "F\u0007bell"),
+    (value: any) =>
+      (value.findings[0].evidenceRefs = [
+        finding.evidenceRefs[0],
+        finding.evidenceRefs[0],
+      ]),
+  ]) {
+    const value = structuredClone(good);
+    mutate(value);
+    assert.ok(schemaAdmits(schema, value));
+    refusedByAdmission(value, request);
+  }
+
+  // A subject with no failing witness (every feedback self-host): no finding
+  // and no fail verdict are admissible, so the schema admits neither.
+  const clean = structuredClone(request);
+  for (const entry of clean.capsule.subject.evidence as any[])
+    entry.outcome = "pass";
+  const cleanSchema = evidenceResultSchema(clean) as any;
+  assert.equal(cleanSchema.properties.findings.maxItems, 0);
+  assert.deepEqual(
+    cleanSchema.properties.evaluations.items.properties.verdict.enum,
+    ["pass", "unverified"],
+  );
+  assert.ok(!schemaAdmits(cleanSchema, good));
+  refusedByAdmission(good, clean);
+  const passing = structuredClone(good);
+  passing.findings = [];
+  for (const evaluation of passing.evaluations) evaluation.verdict = "pass";
+  assert.ok(schemaAdmits(cleanSchema, passing));
 });
 
 test("WO-142 B7 result schema, prompt and bounded rejection agree on summary length", () => {
@@ -817,5 +942,159 @@ test("WO-142 B7 result schema, prompt and bounded rejection agree on summary len
       assert.ok(!error.message.includes(good.envelope.summary));
       return true;
     },
+  );
+});
+
+// WO-157 item 8 (WO-152 D009): a refused live episode keeps its typed reason.
+for (const name of ["claude-cli-print", "codex-cli-exec"] as const)
+  test(`WO-157 item 8 ${name}: an invalid-result refusal records and rethrows its typed detail`, async () => {
+    const directory = temporary();
+    await assert.rejects(
+      runVerificationDemo({
+        directory,
+        transport: transport(name, "forge-pass"),
+        model: "required-model",
+        effort: effort(name),
+      }),
+      (error: unknown) =>
+        error instanceof WorkerFailure &&
+        error.code === "invalid-result" &&
+        error.detail === "unsupported pass",
+    );
+    const interrupted = decodeLog(new WorkerStore(directory).read()).filter(
+      (event) => event.type === "WorkerInterrupted",
+    );
+    assert.equal(interrupted.length, 1);
+    const payload = interrupted[0]!.payload as Record<string, JsonValue>;
+    assert.deepEqual(Object.keys(payload).sort(), [
+      "commandId",
+      "detail",
+      "reason",
+      "workerEpisodeId",
+    ]);
+    assert.equal(payload["reason"], "invalid-result");
+    assert.equal(payload["detail"], "unsupported pass");
+  });
+
+test("WO-157 item 8: a detail outside the closed vocabulary is recorded as unclassified, never verbatim", async () => {
+  const leaky = {
+    name: "fake" as const,
+    harnessVersion: "not-applicable",
+    dispatch: (request: EvidenceWorkerRequest, now: () => number) => {
+      const completed = Promise.reject(
+        new WorkerFailure("invalid-result", "model said /private/path token=x"),
+      );
+      completed.catch(() => {});
+      return {
+        receipt: Promise.resolve({
+          commandId: request.command.commandId,
+          transport: "fake" as const,
+          acceptedAt: now(),
+        }),
+        completed,
+        alive: () => false,
+        kill: () => {},
+      };
+    },
+  } as unknown as FakeVerificationTransport;
+  const directory = temporary();
+  await assert.rejects(
+    runVerificationDemo({
+      directory,
+      transport: leaky,
+      model: "required-model",
+      effort: "unknown",
+    }),
+    (error: unknown) =>
+      error instanceof WorkerFailure &&
+      error.code === "invalid-result" &&
+      error.detail === "unclassified",
+  );
+  const stored = new WorkerStore(directory).read();
+  const interrupted = decodeLog(stored).find(
+    (event) => event.type === "WorkerInterrupted",
+  );
+  assert.equal(
+    (interrupted?.payload as Record<string, JsonValue>)["detail"],
+    "unclassified",
+  );
+  assert.doesNotMatch(stored, /model said|private\/path/u);
+});
+
+test("WO-157 item 8: dotln prints the typed refusal detail", () => {
+  const bin = temporary();
+  writeFileSync(
+    join(bin, "claude"),
+    `#!/bin/sh\nif [ "$1" = "--version" ]; then echo "2.1.280 (Claude Code)"; exit 0; fi\nexec "${process.execPath}" "${fixtureCli}" claude-cli-print forge-pass "$@"\n`,
+    { mode: 0o755 },
+  );
+  const refused = spawnSync(
+    process.execPath,
+    [
+      statusCli,
+      "verify-demo",
+      "--store",
+      temporary(),
+      "--transport",
+      "claude-cli-print",
+      "--model",
+      "required-model",
+      "--effort",
+      "high",
+    ],
+    {
+      encoding: "utf8",
+      env: {
+        ...process.env,
+        DOTLN_LIVE_WORKERS: "1",
+        PATH: `${bin}${delimiter}${process.env.PATH}`,
+      },
+    },
+  );
+  assert.equal(refused.status, 1, refused.stdout + refused.stderr);
+  assert.match(
+    refused.stderr,
+    /^worker refused: invalid-result \(unsupported pass\); pending work is retained$/mu,
+  );
+  assert.doesNotMatch(refused.stderr, /"verdict"/u);
+});
+
+test("WO-157 item 8: the host's own receipt check records its typed detail", async () => {
+  const directory = temporary();
+  const misdirected = {
+    name: "fake" as const,
+    harnessVersion: "not-applicable",
+    dispatch: (request: EvidenceWorkerRequest, now: () => number) => {
+      const completed = new Promise<never>(() => {});
+      return {
+        receipt: Promise.resolve({
+          commandId: `${request.command.commandId}_other`,
+          transport: "fake" as const,
+          acceptedAt: now(),
+        }),
+        completed,
+        alive: () => false,
+        kill: () => {},
+      };
+    },
+  } as unknown as FakeVerificationTransport;
+  await assert.rejects(
+    runVerificationDemo({
+      directory,
+      transport: misdirected,
+      model: "required-model",
+      effort: "unknown",
+    }),
+    (error: unknown) =>
+      error instanceof WorkerFailure &&
+      error.code === "invalid-result" &&
+      error.detail === "receipt-command",
+  );
+  const interrupted = decodeLog(new WorkerStore(directory).read()).find(
+    (event) => event.type === "WorkerInterrupted",
+  );
+  assert.equal(
+    (interrupted?.payload as Record<string, JsonValue>)["detail"],
+    "receipt-command",
   );
 });

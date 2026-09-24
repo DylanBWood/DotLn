@@ -94,6 +94,32 @@ export async function codexSessionReport(root) {
   }
 }
 
+/** Claude Code's host exports the session's selected effort (WO-157 item 11,
+ * WO-152 D012). DotLn never sets the variable. It is selected, not effective,
+ * effort, and it names no model. */
+export const CLAUDE_SELECTED_EFFORTS = [
+  "low",
+  "medium",
+  "high",
+  "xhigh",
+  "max",
+];
+export function claudeSessionReport(env = process.env) {
+  const effort = env.CLAUDE_EFFORT;
+  if (!CLAUDE_SELECTED_EFFORTS.includes(effort)) return null;
+  return {
+    session: {
+      available: true,
+      harness: "claude-code",
+      effort,
+      channel: "CLAUDE_EFFORT",
+      source: "claude-session-readback",
+      scope: "selected, not effective",
+    },
+    text: `Current Claude Code session: effort ${effort}; source claude-session-readback; host-selected (CLAUDE_EFFORT), not effective effort.`,
+  };
+}
+
 export async function currentHarnessSessionReport(root, options = {}) {
   if (process.env.CODEX_THREAD_ID || !process.env.COPILOT_AGENT_SESSION_ID)
     return codexSessionReport(root);

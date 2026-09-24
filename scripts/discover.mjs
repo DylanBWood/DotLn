@@ -90,12 +90,17 @@ export function discoverHarness(root, name, probe = probeHarness) {
       control: "--effort",
       values: ["low", "medium", "high", "xhigh", "max"],
     };
+  // CLAUDE_EFFORT is the effort the Claude Code host selected for its own
+  // session, not an effective-effort readback (WO-157 item 11, WO-152 D012).
   if (row.probe.readbackChannelPresent)
-    record.effectiveEffortReadback = {
+    record.selectedSessionReadback = {
       classification: "observed",
       channel: "CLAUDE_EFFORT",
-      harnessReadbackEligible: true,
+      setBy:
+        "the Claude Code host for its own session; DotLn never sets it (its transports pass the parent environment through and select effort with --effort)",
+      scope: "selected, not effective",
       value: row.observedEffort,
+      harnessVersion: row.value,
       observedAt: row.observedAt,
     };
   writeFileSync(path, JSON.stringify(document, null, 2) + "\n");

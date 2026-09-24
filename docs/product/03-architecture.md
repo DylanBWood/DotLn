@@ -1272,9 +1272,11 @@ attestation is not an invocation readback and no harness reports effective
 model or effort. Unlike the repository's other inspection profiles the review
 profile admits commands inside the frozen copy, so findings can be measured
 rather than inferred; Codex confines them with a workspace sandbox, Claude
-confines the file tools and the host checks the subject's tracked-status hash
-and the frozen copy's inventory on either side of each episode, the review and
-its blinded refutation alike. An accepted finding must have survived its
+confines the file tools and the host checks the source repository's
+tracked-path status, records its untracked listing, and records the frozen
+copy's added, removed and resized paths on either side of each episode, the
+review and its blinded refutation alike; ignored paths and file contents are not
+observed (WO-157). An accepted finding must have survived its
 blinded refutation, and promotion of a finding or packet to a work order
 remains a planning act. The
 [planning document](../planning/entropy-reducer-dispatch-2026-09-22.md)
@@ -2058,11 +2060,12 @@ alternatives and reopening conditions.
 
 **Binding a resident to the active work (WO-148, 2026-09-21).** A store is
 bound by one explicit operator command, `node scripts/resident-bind.mjs WO-NNN
---surface <path>... --transport <claude-cli-print|codex-cli-exec> --model
-<model> --effort <level> [--base <commit>]`, and not by activation: activation
+--surface <path>... --transport <claude-cli-print|codex-cli-exec> [--model
+<model>] [--effort <level>] [--base <commit>]`, and not by activation: activation
 runs inside `worktree start` before the worktree is prepared, so a failing bind
-there would fail activation, and the transport, model and effort are the
-operator's choice at launch. The command reads the canonical control state for
+there would fail activation, and the transport is the operator's choice at
+launch; the model and effort default per transport (product 06, WO-157) unless
+the operator names them, and the binding record says which. The command reads the canonical control state for
 the order in that order's own worktree, locates the worktree through
 `git worktree list` by the branch the order names, takes the base commit as the
 merge base with the `main` the branch was created from, and writes

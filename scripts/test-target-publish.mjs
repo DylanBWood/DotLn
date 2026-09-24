@@ -118,6 +118,13 @@ async function scenario(t, { grantedBy = "operator" } = {}) {
   fixtureGit(target, "remote", "add", "origin", GITHUB);
   fixtureGit(target, "config", `url.${origin}.insteadOf`, GITHUB);
   fixtureGit(target, "push", "--quiet", "origin", "main");
+  // Publication pushes from a host lane that reads only the operator's global
+  // and system configuration (WO-157), so the fixture's rewrite lives there.
+  const globalConfig = join(root, "global.gitconfig");
+  writeFileSync(
+    globalConfig,
+    `[url "${origin}"]\n\tinsteadOf = ${GITHUB}\n[user]\n\tname = Fixture\n\temail = fixture@example.invalid\n`,
+  );
 
   const launchpad = join(root, "launchpad");
   mkdirSync(launchpad);
@@ -198,6 +205,7 @@ async function scenario(t, { grantedBy = "operator" } = {}) {
           DOTLN_LAUNCHPAD: launchpad,
           DOTLN_GH_LOG: ghLog,
           DOTLN_GH_BODY: body,
+          GIT_CONFIG_GLOBAL: globalConfig,
           GH_REPO: "wrong/target",
           GH_HOST: "wrong.example",
         },
@@ -486,6 +494,74 @@ Independent verification: acceptance matrix for ${commit}: 0 verified, 0 failed,
     "pass",
   );
   assert.equal(subject.remoteBranch(), commit);
+});
+
+await test("WO-157: publication runs no hook or repository configuration the target holds", async (t) => {
+  const subject = await scenario(t);
+  const sentinel = join(subject.root, "target-hook-ran");
+  for (const hook of ["pre-push", "reference-transaction"]) {
+    const path = join(subject.target, ".git/hooks", hook);
+    write(path, `#!/bin/sh\necho ${hook} >> '${sentinel}'\n`);
+    chmodSync(path, 0o755);
+  }
+  // The planted hooks are live for an ordinary push from the target.
+  execFileSync(
+    "git",
+    [
+      "-C",
+      subject.target,
+      "push",
+      "--quiet",
+      "origin",
+      "HEAD:refs/heads/probe",
+    ],
+    { stdio: "pipe" },
+  );
+  assert.match(readFileSync(sentinel, "utf8"), /pre-push/u);
+  rmSync(sentinel);
+  // Repository configuration a writer could also plant runs code during a
+  // push from the target: a receive-pack override for the origin remote, an
+  // SSH command, and an include of a file the writer controls.
+  const logger = (label) => {
+    const path = join(subject.root, `${label}.sh`);
+    write(
+      path,
+      `#!/bin/sh\necho ${label} >> '${sentinel}'\nexec git-receive-pack "$@"\n`,
+    );
+    chmodSync(path, 0o755);
+    return path;
+  };
+  execFileSync("git", [
+    "-C",
+    subject.target,
+    "config",
+    "remote.origin.receivepack",
+    logger("receivepack"),
+  ]);
+  execFileSync("git", [
+    "-C",
+    subject.target,
+    "config",
+    "core.sshCommand",
+    logger("sshcommand"),
+  ]);
+  const included = join(subject.root, "included.gitconfig");
+  write(included, `[core]\n\tfsmonitor = ${logger("fsmonitor")}\n`);
+  execFileSync("git", [
+    "-C",
+    subject.target,
+    "config",
+    "include.path",
+    included,
+  ]);
+  const published = subject.publish();
+  assert.equal(published.status, 0, published.stderr);
+  assert.equal(subject.remoteBranch(), subject.observation.commit);
+  assert.equal(
+    existsSync(sentinel),
+    false,
+    existsSync(sentinel) ? readFileSync(sentinel, "utf8") : "",
+  );
 });
 
 await test("WO-064: the CLI names its usage for a malformed target request", () => {

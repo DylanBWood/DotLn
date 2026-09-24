@@ -19,11 +19,18 @@ import {
 } from "node:fs";
 import { join, resolve } from "node:path";
 import {
+  CONFIG_FILENAME,
   TOOL_ROOT,
   docPath,
   docRelative,
   findLaunchpad,
+  loadConfig,
 } from "./lib/config.mjs";
+import {
+  readAuthorityGrantRegistry,
+  registeredProfileMismatches,
+  registeredRepositoryInputs,
+} from "./lib/authority-grants.mjs";
 import { failureOf, parseWorktrees, runGit, shellQuote } from "./lib/git.mjs";
 import { eventsForOrder, readControl } from "./lib/control-store.mjs";
 import { isMainModule, workOrderAuthorityPath } from "./lib/paths.mjs";
@@ -41,9 +48,37 @@ import {
 } from "../packages/skeleton/dist/src/mission-check-source.js";
 import { missionPath } from "../packages/skeleton/dist/src/mission-check-protocol.js";
 import { decodeResidentConfiguration } from "../packages/skeleton/dist/src/resident-state.js";
+import {
+  canonicalStringify,
+  compileLoadout,
+  requireCompiled,
+} from "../packages/compiler/dist/src/index.js";
 
 export const BINDING_SCHEMA_VERSION = "resident-binding-v1";
 export const TRANSPORTS = ["claude-cli-print", "codex-cli-exec"];
+/** The always-on judge's default per transport, at `xhigh` (WO-157 item 7,
+ * WO-100 D007): the model id the CLI itself reports, never an alias. Reopen
+ * when Claude Sonnet 5.5 is available (the Claude default moves to it), a
+ * default model is withdrawn, or the operator changes a role default. */
+export const DEFAULT_JUDGE = Object.freeze({
+  "claude-cli-print": Object.freeze({
+    model: "claude-sonnet-5",
+    effort: "xhigh",
+  }),
+  "codex-cli-exec": Object.freeze({ model: "gpt-6-luna", effort: "xhigh" }),
+});
+/** The judge a bind records, with whether each value was chosen or defaulted. */
+export function judgeSelection({ transport, model, effort }) {
+  if (!Object.hasOwn(DEFAULT_JUDGE, transport))
+    refuse(`--transport must be one of ${TRANSPORTS.join(", ")}`);
+  const fallback = DEFAULT_JUDGE[transport];
+  return {
+    model: model ?? fallback.model,
+    modelSource: model === undefined ? "default" : "operator",
+    effort: effort ?? fallback.effort,
+    effortSource: effort === undefined ? "default" : "operator",
+  };
+}
 /** The lane a bound store lives in, under the launchpad's ignored control
  * root. Assumption 1 of the order: not a `.runtime/` directory in the
  * worktree, so a retained store outlives the worktree it judged. */
@@ -88,12 +123,19 @@ const BASE_REFS = ["origin/main", "main"];
 
 export const USAGE =
   "usage: resident-bind WO-NNN --surface <path>... " +
-  "--transport <claude-cli-print|codex-cli-exec> --model <model> " +
-  "--effort <level> [--base <commit>] | resident-bind --check <store>";
+  "--transport <claude-cli-print|codex-cli-exec> [--model <model>] " +
+  "[--effort <level>] [--base <commit>] | resident-bind --portfolio <id> " +
+  "--template <resident.json> --base <40-hex commit> | resident-bind --check <store>";
 
-const refuse = (detail) => {
+function refuse(detail) {
   throw new Error(detail);
-};
+}
+/** An identifier printed into a command line: bare when it is one, quoted
+ * when a hand-written record makes it anything else. */
+const word = (value) =>
+  /^[A-Za-z0-9][A-Za-z0-9._-]*$/u.test(String(value))
+    ? String(value)
+    : shellQuote(String(value));
 const sha256 = (bytes) => createHash("sha256").update(bytes).digest("hex");
 const regularFile = (path) =>
   existsSync(path) &&
@@ -129,6 +171,8 @@ const OPTIONS = new Set([
   "--effort",
   "--base",
   "--check",
+  "--portfolio",
+  "--template",
 ]);
 
 /** Literal arguments only: repeated `--surface` and several paths after one
@@ -168,6 +212,35 @@ export function parseArguments(argv) {
       refuse(`--check takes a store directory and nothing else; ${USAGE}`);
     return { action: "check", store: taken.get("--check") };
   }
+  if (taken.has("--portfolio")) {
+    if (
+      workOrder !== undefined ||
+      surfaces.length ||
+      ["--transport", "--model", "--effort"].some((key) => taken.has(key))
+    )
+      refuse(
+        `--portfolio takes --template and --base and nothing else; ${USAGE}`,
+      );
+    const portfolioId = taken.get("--portfolio");
+    if (!/^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$/u.test(portfolioId))
+      refuse(`portfolio id is not a declared identifier: ${portfolioId}`);
+    if (!taken.has("--template"))
+      refuse(`--portfolio needs --template <resident.json>; ${USAGE}`);
+    // A portfolio has no worktree to derive a merge base from, and WO-054
+    // prepares only a full commit id (decodePortfolioBinding).
+    if (!/^[a-f0-9]{40}$/u.test(taken.get("--base") ?? ""))
+      refuse(
+        "--base must be the target's full 40-hex commit id for a portfolio binding",
+      );
+    return {
+      action: "portfolio",
+      portfolioId,
+      template: taken.get("--template"),
+      base: taken.get("--base"),
+    };
+  }
+  if (taken.has("--template"))
+    refuse(`--template belongs to a portfolio bind; ${USAGE}`);
   if (!/^WO-\d{3}$/.test(workOrder ?? ""))
     refuse(`work order id must look like WO-148; ${USAGE}`);
   if (!surfaces.length)
@@ -185,8 +258,11 @@ export function parseArguments(argv) {
   const transport = taken.get("--transport");
   if (!TRANSPORTS.includes(transport))
     refuse(`--transport must be one of ${TRANSPORTS.join(", ")}`);
+  // Absent --model or --effort take the transport's default at bind time;
+  // one given blank is refused, not defaulted.
   for (const key of ["--model", "--effort"])
-    if (!taken.get(key)) refuse(`${key} is required; ${USAGE}`);
+    if (taken.has(key) && !taken.get(key).trim())
+      refuse(`${key} needs a value; omit it to take the transport default`);
   return {
     action: "bind",
     workOrder,
@@ -364,7 +440,8 @@ export function missionActor(source, workOrderId, request, at = Date.now()) {
  * configuration is immutable within one, and the old one is retained. */
 export function nextStore(launchpad, workOrderId) {
   const lane = docPath(launchpad, "control", RESIDENT_LANE);
-  const pattern = new RegExp(`^${workOrderId}-(\\d+)$`, "u");
+  const prefix = workOrderId.replace(/[.*+?^${}()|[\]\\]/gu, "\\$&");
+  const pattern = new RegExp(`^${prefix}-(\\d+)$`, "u");
   const used = existsSync(lane)
     ? readdirSync(lane)
         .map((name) => pattern.exec(name)?.[1])
@@ -410,9 +487,9 @@ const bind = join(TOOL_ROOT, "scripts/resident-bind.mjs");
 /** The lines a stage session and an outside terminal need, named for one
  * store. They are printed only for a binding that canonical state still
  * matches. */
-export function launchLines(store) {
+export function launchLines(store, selected = CONTRIBUTOR_MISSION_POLICY) {
   const at = shellQuote(store);
-  const policy = CONTRIBUTOR_MISSION_POLICY;
+  const policy = word(selected);
   return [
     "Launch (an outside terminal, with the operator marked away):",
     `  node ${shellQuote(dotln)} resident --store ${at} --policy ${policy} --once`,
@@ -442,13 +519,15 @@ export function describeBinding(binding) {
     `  decisions  ${binding.decisionsPath ?? "none yet"}`,
     `  surfaces   ${binding.declaredSurfaces.join(", ")}`,
     `  vision     ${binding.visionPath}`,
-    `  judge      ${binding.transport}; model ${binding.model}; effort ${binding.effort}`,
+    `  judge      ${binding.transport}; model ${binding.model} (${binding.modelSource ?? "source not recorded"}); effort ${binding.effort} (${binding.effortSource ?? "source not recorded"})`,
     `  canonical  ${binding.canonical.controlPath} (sha256 ${binding.canonical.sha256}; ${binding.canonical.events} ${binding.canonical.events === 1 ? "event" : "events"})`,
   ];
   return lines;
 }
 
 export function bindOrder(launchpad, request, now = () => new Date()) {
+  const judge = judgeSelection(request);
+  request = { ...request, model: judge.model, effort: judge.effort };
   const inputs = readBindingInputs(launchpad, request);
   const { lane, index, store } = nextStore(launchpad, request.workOrder);
   assertIgnoredStore(launchpad, store);
@@ -482,10 +561,17 @@ export function bindOrder(launchpad, request, now = () => new Date()) {
     policyId: CONTRIBUTOR_MISSION_POLICY,
     phaseId: CONTRIBUTOR_MISSION_PHASE,
     transport: request.transport,
-    model: request.model,
-    effort: request.effort,
+    model: judge.model,
+    modelSource: judge.modelSource,
+    effort: judge.effort,
+    effortSource: judge.effortSource,
     canonical: inputs.control.canonical,
   };
+  writeStore(lane, store, configuration, binding);
+  return { binding, configuration, absentSurfaces: inputs.absentSurfaces };
+}
+
+function writeStore(lane, store, configuration, binding) {
   mkdirSync(lane, { recursive: true, mode: 0o700 });
   if (existsSync(store)) refuse(`store already exists: ${store}`);
   mkdirSync(store, { mode: 0o700 });
@@ -499,7 +585,178 @@ export function bindOrder(launchpad, request, now = () => new Date()) {
     `${JSON.stringify(binding, null, 2)}\n`,
     { mode: 0o600 },
   );
-  return { binding, configuration, absentSurfaces: inputs.absentSurfaces };
+}
+
+/** WO-157 item 6 (WO-100 D006): a resident bound to a declared portfolio is
+ * built from the loaded `portfolios` entry, and its graph and environment are
+ * compiled under the bound repository's registered `authorityProfile`, so the
+ * profile check the configuration loader performs also holds for the store. */
+export function bindPortfolio(launchpad, request, now = () => new Date()) {
+  const config = loadConfig(launchpad);
+  const id = request.portfolioId;
+  if (!Object.hasOwn(config.portfolios, id))
+    refuse(
+      `no portfolio ${id} is declared under portfolios in ${config.path ?? join(launchpad, CONFIG_FILENAME)}`,
+    );
+  const definition = config.portfolios[id];
+  if (definition.repo === "self")
+    refuse(
+      `portfolio ${id} binds self, which carries no registered authorityProfile to compile under; register the repository under repositories and name it in the portfolio`,
+    );
+  const template = readJson(resolve(request.template), "resident template");
+  if (
+    template === null ||
+    typeof template !== "object" ||
+    Array.isArray(template) ||
+    Object.hasOwn(template, "portfolio")
+  )
+    refuse(
+      "the resident template must be a resident configuration without a portfolio; bind takes the portfolio from the launchpad configuration only",
+    );
+  const { graph, environment, repository } = registeredRepositoryInputs(
+    template.graph,
+    template.environment,
+    launchpad,
+    definition.repo,
+  );
+  // The runtime's own admission, under the profile-narrowed floor.
+  const configuration = decodeResidentConfiguration({
+    ...template,
+    graph,
+    environment,
+    portfolio: { definition, baseCommit: request.base },
+  });
+  // A store this bind writes must pass its own --check.
+  const departures = registeredProfileMismatches({
+    program: requireCompiled(
+      compileLoadout(configuration.graph, configuration.environment),
+    ),
+    environment: configuration.environment,
+    repository,
+    registry: readAuthorityGrantRegistry(launchpad),
+  });
+  if (departures.length)
+    refuse(
+      `the template does not compile under repositories.${repository.id}.authorityProfile: ${departures.join("; ")}`,
+    );
+  const { lane, index, store } = nextStore(launchpad, `portfolio-${id}`);
+  assertIgnoredStore(launchpad, store);
+  const binding = {
+    schemaVersion: BINDING_SCHEMA_VERSION,
+    kind: "portfolio",
+    portfolioId: id,
+    portfolioVersion: definition.version,
+    repo: repository.id,
+    profileId: repository.authorityProfile.authorityEnvelopeId,
+    baseCommit: request.base,
+    policyId: configuration.policyId,
+    templatePath: resolve(request.template),
+    boundAt: now().toISOString(),
+    store,
+    storeIndex: index,
+  };
+  writeStore(lane, store, configuration, binding);
+  return { binding, configuration };
+}
+
+export function describePortfolioBinding(binding) {
+  return [
+    `  portfolio  ${binding.portfolioId} v${binding.portfolioVersion} (repository ${binding.repo})`,
+    `  profile    ${binding.profileId} (repositories.${binding.repo}.authorityProfile)`,
+    `  base       ${binding.baseCommit} (operator-supplied)`,
+    `  policy     ${binding.policyId}`,
+    "  note       dotln resident binds no WO-120, WO-052 or WO-054 hosts, so its portfolio phases report the actor unavailable until a caller binds them",
+  ];
+}
+
+/** Every way a store's portfolio departs from the launchpad's declaration and
+ * from its repository's registered profile. A profile that cannot be read is
+ * named too: a store whose profile was never checked gets no launch line. */
+export function portfolioMismatches(
+  launchpad,
+  declared,
+  configuration,
+  binding,
+) {
+  const portfolio = configuration?.portfolio ?? declared?.portfolio;
+  const definition = portfolio?.definition;
+  const id = binding.portfolioId ?? definition?.portfolioId;
+  const mismatches = [];
+  if (!definition)
+    return [
+      `store: resident.json declares no portfolio; the binding record names portfolio ${id}`,
+    ];
+  if (binding.kind === "portfolio") {
+    if (definition.portfolioId !== binding.portfolioId)
+      mismatches.push(
+        `portfolio: resident.json binds ${definition.portfolioId}; the binding record says ${binding.portfolioId}`,
+      );
+    if (definition.repo !== binding.repo)
+      mismatches.push(
+        `portfolio: resident.json binds repository ${definition.repo}; the binding record says ${binding.repo}`,
+      );
+    if (portfolio.baseCommit !== binding.baseCommit)
+      mismatches.push(
+        `portfolio: resident.json binds base ${portfolio.baseCommit}; the binding record says ${binding.baseCommit}`,
+      );
+  }
+  const unreadable = (reason) => [
+    ...mismatches,
+    `profile: no registered authorityProfile is readable for repository ${definition.repo}: ${reason}`,
+  ];
+  let config;
+  try {
+    config = loadConfig(launchpad);
+  } catch (error) {
+    return unreadable(error instanceof Error ? error.message : String(error));
+  }
+  if (config.path === null)
+    return unreadable(`the launchpad declares no ${CONFIG_FILENAME}`);
+  const loaded = Object.hasOwn(config.portfolios, definition.portfolioId)
+    ? config.portfolios[definition.portfolioId]
+    : undefined;
+  if (!loaded)
+    mismatches.push(
+      `portfolio: portfolios.${definition.portfolioId} is not declared in ${config.path}`,
+    );
+  else if (canonicalStringify(loaded) !== canonicalStringify(definition))
+    mismatches.push(
+      `portfolio: resident.json binds a portfolio ${definition.portfolioId} v${definition.version} that differs from portfolios.${definition.portfolioId} in ${config.path}`,
+    );
+  if (definition.repo === "self")
+    return [
+      ...mismatches,
+      `profile: portfolio ${definition.portfolioId} binds self, which carries no registered authorityProfile to compile under`,
+    ];
+  const repository = Object.hasOwn(config.repositories, definition.repo)
+    ? config.repositories[definition.repo]
+    : undefined;
+  if (!repository)
+    return [
+      ...mismatches,
+      `profile: repository ${definition.repo} has no registered authorityProfile under repositories in ${config.path}`,
+    ];
+  let registry;
+  try {
+    registry = readAuthorityGrantRegistry(launchpad);
+  } catch (error) {
+    return unreadable(
+      `the launchpad's authority registry cannot be read: ${error instanceof Error ? error.message : String(error)}`,
+    );
+  }
+  // An undecodable store is already named; its floor cannot be compiled.
+  if (configuration === declared) return mismatches;
+  return [
+    ...mismatches,
+    ...registeredProfileMismatches({
+      program: requireCompiled(
+        compileLoadout(configuration.graph, configuration.environment),
+      ),
+      environment: configuration.environment,
+      repository,
+      registry,
+    }),
+  ];
 }
 
 const readJson = (path, label) => {
@@ -647,8 +904,41 @@ export function checkBinding(launchpad, store) {
   } catch (error) {
     undecodable = error instanceof Error ? error.message : String(error);
   }
+  if (binding.kind === "portfolio") {
+    const mismatches = portfolioMismatches(
+      launchpad,
+      declared,
+      undecodable ? declared : configuration,
+      binding,
+    );
+    if (!undecodable && configuration.policyId !== binding.policyId)
+      mismatches.push(
+        `store: resident.json selects policy ${configuration.policyId}; the binding record says ${binding.policyId}`,
+      );
+    if (undecodable)
+      mismatches.unshift(
+        `store: resident.json is no longer a resident configuration the runtime accepts: ${undecodable}`,
+      );
+    return {
+      directory,
+      binding,
+      mismatches,
+      notes: [],
+      policyId: configuration.policyId,
+    };
+  }
   const observed = observeBinding(launchpad, binding);
   const mismatches = bindingMismatches(binding, observed, configuration);
+  // A mission-shaped record cannot carry a portfolio past the profile rule.
+  if (declared?.portfolio !== undefined)
+    mismatches.push(
+      ...portfolioMismatches(
+        launchpad,
+        declared,
+        undecodable ? declared : configuration,
+        binding,
+      ),
+    );
   if (undecodable)
     mismatches.unshift(
       `store: resident.json is no longer a resident configuration the runtime accepts: ${undecodable}`,
@@ -661,14 +951,20 @@ export function checkBinding(launchpad, store) {
           `  note       the order's control segment gained events since the bind (${binding.canonical.events} → ${observed.canonical.events}) without changing the phase`,
         ]
       : [];
-  return { directory, binding, mismatches, notes };
+  return {
+    directory,
+    binding,
+    mismatches,
+    notes,
+    policyId: configuration?.policyId ?? CONTRIBUTOR_MISSION_POLICY,
+  };
 }
 
 export function main(argv, write = (text) => process.stdout.write(text)) {
   const request = parseArguments(argv);
   const launchpad = findLaunchpad();
   if (request.action === "check") {
-    const { directory, binding, mismatches, notes } = checkBinding(
+    const { directory, binding, mismatches, notes, policyId } = checkBinding(
       launchpad,
       request.store,
     );
@@ -680,22 +976,41 @@ export function main(argv, write = (text) => process.stdout.write(text)) {
       : [
           `  bound as   ${binding.store} (the store has moved; the lines below name the checked directory)`,
         ];
+    const portfolio = binding.kind === "portfolio";
+    const subject = portfolio
+      ? `portfolio ${binding.portfolioId}`
+      : binding.workOrder;
     if (mismatches.length) {
+      // A default-sourced model or effort is left to the rebind's default,
+      // so a later default change is not recorded as the operator's choice.
+      const chosen = (flag, value, source) =>
+        source === "default" ? "" : ` ${flag} ${value}`;
+      const rebind = portfolio
+        ? `node ${shellQuote(bind)} --portfolio ${word(binding.portfolioId)} --template ${shellQuote(binding.templatePath ?? "<resident.json>")} --base ${word(binding.baseCommit)}`
+        : `node ${shellQuote(bind)} ${binding.workOrder} --surface ${binding.declaredSurfaces.map(shellQuote).join(" ")} --transport ${binding.transport}${chosen("--model", binding.model, binding.modelSource)}${chosen("--effort", binding.effort, binding.effortSource)}`;
       write(
-        `Stale binding for ${binding.workOrder}: ${directory}\n` +
+        `Stale binding for ${subject}: ${directory}\n` +
           `${[
             ...provenance,
             ...mismatches.map((line) => `  mismatch   ${line}`),
           ].join("\n")}\n` +
-          "No launch line is printed for a stale binding. Rebind with " +
-          `node ${shellQuote(bind)} ${binding.workOrder} --surface ${binding.declaredSurfaces.map(shellQuote).join(" ")} --transport ${binding.transport} --model ${binding.model} --effort ${binding.effort}\n`,
+          `No launch line is printed for a stale binding. Rebind with ${rebind}\n`,
       );
       return 1;
     }
     write(
-      `Binding for ${binding.workOrder} matches canonical state: ${directory}\n` +
-        `${[...describeBinding(binding), ...provenance, ...notes].join("\n")}\n` +
-        `${launchLines(directory).join("\n")}\n`,
+      `Binding for ${subject} matches canonical state: ${directory}\n` +
+        `${[...(portfolio ? describePortfolioBinding(binding) : describeBinding(binding)), ...provenance, ...notes].join("\n")}\n` +
+        `${launchLines(directory, policyId).join("\n")}\n`,
+    );
+    return 0;
+  }
+  if (request.action === "portfolio") {
+    const { binding } = bindPortfolio(launchpad, request);
+    write(
+      `Bound portfolio ${binding.portfolioId} to ${binding.store}\n` +
+        `${describePortfolioBinding(binding).join("\n")}\n` +
+        `${launchLines(binding.store, binding.policyId).join("\n")}\n`,
     );
     return 0;
   }

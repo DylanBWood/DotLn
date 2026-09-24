@@ -91,8 +91,31 @@ const sections = [
   "Surfaces",
   "Operator-review assumptions",
 ];
+// WO-157 item 14 (WO-120 D007): an allocation event names the section set it
+// was written under by digest, so a later change to `sections` above leaves
+// historical events foldable. A change keeps each superseded set in this
+// table; an event without a digest was written under the WO-120 set.
+const WO120_SECTIONS = [
+  "Objective",
+  "Design",
+  "Acceptance criteria",
+  "Non-goals",
+  "Surfaces",
+  "Operator-review assumptions",
+];
+const LEGACY_SECTIONS_HASH =
+  "7613f5411a35ad4de06d32e30ceab8d117b15d129e147a63db6bf9c3ba806793";
+const SECTION_SETS = new Map(
+  [WO120_SECTIONS, sections].map((set) => [contractDigest(set), set]),
+);
+export const SECTIONS_HASH = contractDigest(sections);
+export function allocationSections(event) {
+  const set = SECTION_SETS.get(event.sectionsHash ?? LEGACY_SECTIONS_HASH);
+  if (!set) refuse(`unknown generated section set ${event.sectionsHash}`);
+  return set;
+}
 /** WO-113 owns global migration. Only generated authorities opt in here. */
-export function checkGeneratedSections(markdown, path) {
+export function checkGeneratedSections(markdown, path, expected = sections) {
   if (!parseDerivedProvenance(markdown, path))
     throw new Error(`${path}: missing derived provenance`);
   const visibleHeadings = [...markdown.matchAll(/^(#{1,6}) (.+)$/gm)];
@@ -100,11 +123,11 @@ export function checkGeneratedSections(markdown, path) {
   const headings = bodyHeadings.map((match) => match[2]);
   if (
     bodyHeadings.some((match) => match[1] !== "##") ||
-    canonical(headings) !== canonical(sections) ||
+    canonical(headings) !== canonical(expected) ||
     /^\*\*[^*\n]*\b\d{4}-\d{2}-\d{2}[^*\n]*\*\*/m.test(markdown)
   )
     throw new Error(
-      `${path}: generated authority requires stable sections: ${sections.join(", ")}`,
+      `${path}: generated authority requires stable sections: ${expected.join(", ")}`,
     );
   const dependencies = parseDependencies(markdown, path);
   if (dependencies.source !== "typed")
@@ -119,6 +142,10 @@ export function validateAllocation(event) {
     typeof event.workOrderPath !== "string" ||
     !event.workOrderPath.endsWith(`/${event.workOrderId}-derived.md`) ||
     !/^[a-f0-9]{64}$/.test(event.requestHash ?? "") ||
+    !(
+      event.sectionsHash === undefined ||
+      /^[a-f0-9]{64}$/.test(event.sectionsHash)
+    ) ||
     typeof event.authority !== "string"
   )
     refuse("malformed identity allocation event");
@@ -126,7 +153,11 @@ export function validateAllocation(event) {
   validateCompiled(event.compiled);
   if (event.compiled.workOrderId !== event.workOrderId)
     refuse("compiled identity differs from allocation");
-  checkGeneratedSections(event.authority, event.workOrderPath);
+  checkGeneratedSections(
+    event.authority,
+    event.workOrderPath,
+    allocationSections(event),
+  );
   if (
     canonical(parseDerivedProvenance(event.authority, event.workOrderPath)) !==
     canonical(event.provenance)

@@ -8,11 +8,16 @@ import {
   evidenceArgs,
   sameEvidenceSourceContent,
 } from "../packages/skeleton/src/evidence-editions.mjs";
-import { evidenceSources } from "./lib/evidence-sources.mjs";
+import {
+  checkEvidenceImports,
+  evidenceSources,
+  relativeImports,
+} from "./lib/evidence-sources.mjs";
 import { canonicalStringify } from "@dotln/compiler";
 import { decodeLog, replay } from "@dotln/kernel";
 import { personalFeedback } from "../packages/skeleton/dist/src/loadouts/feedback.js";
 import {
+  FEEDBACK_SOURCE_PATHS,
   readFeedbackSource,
   runFeedbackRegressions,
 } from "../packages/skeleton/dist/src/feedback-audit.js";
@@ -38,6 +43,24 @@ if (!(
 ))
   throw new Error(
     "usage: feedback-evidence.mjs --write|--check|--record-selfhost <store> [--edition WO-NNN [--revision NNN]] (build first; run --write before --record-selfhost)",
+  );
+checkEvidenceImports(root, "feedback");
+// A request protocol a subject file imports changes what the subject's
+// transports accept, so it is part of the subject too (WO-157 item 12).
+const unsubjected = FEEDBACK_SOURCE_PATHS.flatMap((path) =>
+  /\.(?:ts|mjs|js)$/u.test(path)
+    ? relativeImports(root, path)
+        .filter(
+          (target) =>
+            target.endsWith("-protocol.ts") &&
+            !FEEDBACK_SOURCE_PATHS.includes(target),
+        )
+        .map((target) => `${path} imports ${target}`)
+    : [],
+);
+if (unsubjected.length)
+  throw new Error(
+    `feedback subject omits an imported request protocol: ${unsubjected.join("; ")}; add it to FEEDBACK_SOURCE_PATHS`,
   );
 const json = (value) => JSON.stringify(value, null, 2) + "\n";
 function immutableWrite(name, source) {

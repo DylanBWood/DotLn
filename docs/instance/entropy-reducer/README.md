@@ -36,7 +36,7 @@ npm run entropy -- receipt <result.json> --statement <statement.txt>
 
 # 3. Hand the blinded subjects to a second, fresh worker and bind its attempts.
 npm run entropy -- refute REVIEW-NNN --transport claude-cli-print
-npm run entropy -- refutation-receipt <attempts.json> --statement <statement.txt>
+npm run entropy -- refutation-receipt <attempts.json>
 
 # 4. Decide, per surviving finding and per proposal packet.
 npm run entropy -- dispose REVIEW-NNN <id> accept|defer|dismiss '<reason>'
@@ -60,8 +60,9 @@ copy; `entropy show <receipt-id>` prints a filed receipt.
 ## The subject
 
 `review` copies `HEAD` — a copy, never a link or a shared worktree, under the
-granted system-temp lane — and records the tracked-status hash and a scratch
-inventory before and after the episode. A **dirty tree is refused**: the
+granted system-temp lane — and records the tracked-path status hash, the
+untracked-listing hash and a path-and-size scratch inventory before and after
+the episode. A **dirty tree is refused**: the
 working tree's bytes are not a subject anyone can name later. Commit them, or
 name the committed subject explicitly with `npm run entropy -- review <commit>`,
 which is admitted while the tree moves and records `workingTreeDirtyAtDispatch`
@@ -78,7 +79,8 @@ the result. On the explicit-commit route the subject is the named commit,
 which the working tree cannot move: the binding is that the commit still
 resolves to the tree the frozen copy was reviewed from, and the working tree's
 own drift is recorded as `trackedStatusByteIdentical: false` rather than
-refused. A rejected return is retained with its statement under
+refused. A rejected return is retained with its statement, when one was
+supplied, under
 `docs/control/local/entropy/rejected/`. Raw intake, settings, credentials and
 unrelated untracked files are never review inputs, and the reviewer is told not
 to read `docs/intake/**`.
@@ -111,9 +113,10 @@ tools to the frozen copy with `--restricted`, pre-approves only the named
 tools, and denies anything else without a prompt; Codex adds a real
 workspace-write sandbox rooted at the copy. **Claude does not path-confine a
 shell command**, so confinement there is instructed and then checked: the
-review and the refutation receipt alike record the tracked-status hash on
-either side of their episode, the frozen copy's inventory before and after with
-the delta, and the observed count of denied tool calls, and on the default
+review and the refutation receipt alike record the tracked-path status hash and
+the untracked, non-ignored listing hash on either side of their episode, the
+frozen copy's inventory before and after with its added, removed and resized
+paths (WO-157), and the observed count of denied tool calls, and on the default
 `HEAD` route `receipt` refuses a return whose subject moved. The receipt names
 which of the two confinements applied. REVIEW-002 measured the difference this profile
 buys: 0 denied tool calls and 4 of 4 findings measured, against REVIEW-001's
@@ -126,7 +129,11 @@ by SHA-256 in [`docs/control/entropy-reducer.jsonl`](../../control/entropy-reduc
 (`EntropyReviewFiled`, `EntropyRefutationFiled`, `EntropyFindingDisposed`,
 `EntropyPacketFiled`). The rendered `.md` is a projection of the `.json`.
 `REVIEW-001*` and `REFUTATION-001*` are pre-mechanism evidence of 2026-09-04:
-their bytes are read and never re-bound, and they carry no control event.
+their bytes are read and never re-bound, and they carry no control event. A
+refutation filed since WO-157 records no separate worker statement: its receipt
+renders each attempt's reason and evidence references from the bound report,
+and `--statement` is accepted but not recorded; earlier refutations keep their
+statement and its rendering.
 
 `accept` on a finding requires that it **survived** its blinded refutation; a
 refuted, blocked, unselected or unknown identifier is refused, and every one of

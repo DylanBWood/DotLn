@@ -1,0 +1,48 @@
+TAP version 13
+# Subtest: WO-157 retarget moves only a deferred item's target onto an existing FUP, also at final review
+not ok 1 - WO-157 retarget moves only a deferred item's target onto an existing FUP, also at final review
+  ---
+  duration_ms: 31.229125
+  type: 'test'
+  location: '~/Projects/DotLn-wo157/scripts/test-adjacent-queue.mjs:318:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /FUP identifier/u. Input:
+
+    'Error: adjacent queue: mutation requires the selected executor/fixer phase'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+  error: 'adjacent queue: mutation requires the selected executor/fixer phase'
+  stack: |-
+    main (file://~/Projects/DotLn-wo157/scripts/adjacent-work.mjs:35:13)
+    send (file://~/Projects/DotLn-wo157/scripts/test-adjacent-queue.mjs:380:14)
+    file://~/Projects/DotLn-wo157/scripts/test-adjacent-queue.mjs:384:13
+    getActual (node:assert:580:5)
+    strict.throws (node:assert:728:24)
+    file://~/Projects/DotLn-wo157/scripts/test-adjacent-queue.mjs:383:12
+    fixture (file://~/Projects/DotLn-wo157/scripts/test-adjacent-queue.mjs:37:12)
+    TestContext.<anonymous> (file://~/Projects/DotLn-wo157/scripts/test-adjacent-queue.mjs:319:3)
+    Test.runInAsyncScope (node:async_hooks:226:14)
+    Test.run (node:internal/test_runner/test:1402:25)
+  operator: 'throws'
+  stack: |-
+    file://~/Projects/DotLn-wo157/scripts/test-adjacent-queue.mjs:383:12
+    fixture (file://~/Projects/DotLn-wo157/scripts/test-adjacent-queue.mjs:37:12)
+    TestContext.<anonymous> (file://~/Projects/DotLn-wo157/scripts/test-adjacent-queue.mjs:319:3)
+    Test.runInAsyncScope (node:async_hooks:226:14)
+    Test.run (node:internal/test_runner/test:1402:25)
+    Test.start (node:internal/test_runner/test:1262:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 76.637042

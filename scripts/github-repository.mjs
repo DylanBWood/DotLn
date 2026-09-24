@@ -25,7 +25,7 @@ const remoteUrls = (root, push) => {
   return urls[0];
 };
 
-const parseGitHubTarget = (remote) => {
+export const parseGitHubTarget = (remote) => {
   let host;
   let pathname;
   const scp = /^(?:([^@/:]+)@)?([^/:]+):(.+)$/.exec(remote);

@@ -28,6 +28,7 @@ import type {
 } from "./worker-transport.js";
 import {
   FEEDBACK_VERIFIER_LIMITS,
+  invalidResultDetail,
   parseEvidenceResult,
   validateTransportRequest,
   type EvidenceWorkerRequest,
@@ -318,7 +319,7 @@ export class VerificationHost {
         dispatch = transport.dispatch(request, now);
         const receipt = await dispatch.receipt;
         if (receipt.commandId !== pending.command.commandId)
-          throw new WorkerFailure("invalid-result");
+          throw new WorkerFailure("invalid-result", "receipt-command");
         driver.record(
           "CommandReceipt",
           now(),
@@ -357,6 +358,14 @@ export class VerificationHost {
         dispatch?.kill();
         const code =
           error instanceof WorkerFailure ? error.code : "transport-failed";
+        // Only an invalid-result refusal carries a detail, and only from the
+        // closed vocabulary; other codes' details may hold diagnostics.
+        const detail =
+          code === "invalid-result"
+            ? invalidResultDetail(
+                error instanceof WorkerFailure ? error.detail : undefined,
+              )
+            : undefined;
         driver.record(
           "WorkerInterrupted",
           now(),
@@ -364,10 +373,11 @@ export class VerificationHost {
             commandId: pending.command.commandId,
             workerEpisodeId: episodeId,
             reason: code,
+            ...(detail ? { detail } : {}),
           },
           pending.command.commandId,
         );
-        throw new WorkerFailure(code);
+        throw new WorkerFailure(code, detail);
       } finally {
         if (timer) clearInterval(timer);
       }

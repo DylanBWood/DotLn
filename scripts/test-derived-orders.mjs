@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { spawn, spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import {
+  cpSync,
   existsSync,
   mkdirSync,
   mkdtempSync,
@@ -28,6 +29,7 @@ import {
   readControl,
   eventsForOrder,
   openOrders,
+  selectWorkOrder,
 } from "./lib/control-store.mjs";
 import { controlFromSources } from "./lib/control-store.mjs";
 import { parseDependencies } from "./lib/dependencies.mjs";
@@ -623,4 +625,154 @@ test("direct activation refuses a derived authority root redirected outside the 
     } finally {
       rmSync(outside, { recursive: true, force: true });
     }
+  }));
+
+// WO-157 item 14 (WO-120 D007): an allocation event keeps folding after the
+// generated section list changes, and a corrupt one refuses only its order.
+test("WO-157 an allocation written under a superseded section set folds after the list changes", async () =>
+  fixture(async (root) => {
+    const kept = await materializeOrder(compiled(), provenance("superseded"), {
+      root,
+      activate: false,
+    });
+    const tool = realpathSync(mkdtempSync(join(tmpdir(), "dotln-sections-")));
+    try {
+      mkdirSync(join(tool, "scripts"));
+      cpSync(join(TOOL_ROOT, "scripts/lib"), join(tool, "scripts/lib"), {
+        recursive: true,
+      });
+      symlinkSync(join(TOOL_ROOT, "packages"), join(tool, "packages"));
+      symlinkSync(join(TOOL_ROOT, "node_modules"), join(tool, "node_modules"));
+      const contract = join(tool, "scripts/lib/derived-contract.mjs");
+      const before = readFileSync(contract, "utf8");
+      const after = before.replace(
+        /(const sections = \[[^\]]*)\];/u,
+        '$1  "Evidence",\n];',
+      );
+      assert.notEqual(after, before, "the fixture changes the section list");
+      writeFileSync(contract, after);
+      cpSync(
+        join(TOOL_ROOT, "scripts/work-orders.mjs"),
+        join(tool, "scripts/work-orders.mjs"),
+      );
+      const later = await import(
+        pathToFileURL(join(tool, "scripts/lib/control-store.mjs")).href
+      );
+      const laterIndex = await import(
+        pathToFileURL(join(tool, "scripts/work-orders.mjs")).href
+      );
+      let control;
+      assert.doesNotThrow(() => {
+        control = later.readControl(root);
+      }, "a historical allocation folds after the section list changes");
+      assert.equal(
+        control.orders.get(kept.workOrderId).state.allocation.workOrderId,
+        kept.workOrderId,
+      );
+      // The index judges the derived file by its allocation's section set.
+      assert.equal(
+        laterIndex
+          .readIndex(root)
+          .rows.find((row) => row.id === kept.workOrderId)?.phase,
+        "draft",
+      );
+      // The pre-WO-157 shape carries no digest and folds as the WO-120 set.
+      const segment = join(
+        root,
+        docRelative(root, "orders", `${kept.workOrderId}.jsonl`),
+      );
+      const events = readFileSync(segment, "utf8")
+        .trim()
+        .split("\n")
+        .map((line) => JSON.parse(line));
+      delete events[0].sectionsHash;
+      writeFileSync(
+        segment,
+        events.map((event) => `${JSON.stringify(event)}\n`).join(""),
+      );
+      assert.doesNotThrow(() => later.readControl(root));
+    } finally {
+      rmSync(tool, { recursive: true, force: true });
+    }
+  }));
+
+test("WO-157 a corrupt allocation authority refuses only its own order", async () =>
+  fixture(async (root) => {
+    const corrupt = await materializeOrder(compiled(), provenance("corrupt"), {
+      root,
+      activate: false,
+    });
+    const readable = await materializeOrder(
+      compiled(),
+      provenance("readable"),
+      { root },
+    );
+    const segment = join(
+      root,
+      docRelative(root, "orders", `${corrupt.workOrderId}.jsonl`),
+    );
+    const events = readFileSync(segment, "utf8")
+      .trim()
+      .split("\n")
+      .map((line) => JSON.parse(line));
+    events[0].authority = events[0].authority.replace(
+      "## Surfaces",
+      "## Surfaces edited",
+    );
+    writeFileSync(
+      segment,
+      events.map((event) => `${JSON.stringify(event)}\n`).join(""),
+    );
+    let control;
+    assert.doesNotThrow(() => {
+      control = readControl(root);
+    }, "one corrupt allocation leaves every other control read available");
+    assert.equal(
+      control.orders.get(readable.workOrderId).state.phase,
+      "active",
+    );
+    assert.throws(
+      () => selectWorkOrder(control, { workOrder: corrupt.workOrderId }),
+      new RegExp(
+        `unreadable work order ${corrupt.workOrderId}: .*${corrupt.workOrderId}\\.jsonl: .*requires stable sections`,
+        "u",
+      ),
+    );
+    run(root, "scripts/resume.mjs", [
+      "status",
+      "--work-order",
+      readable.workOrderId,
+    ]);
+    const refused = run(
+      root,
+      "scripts/resume.mjs",
+      ["status", "--work-order", corrupt.workOrderId],
+      false,
+    );
+    assert.notEqual(refused.status, 0);
+    assert.match(refused.stderr, new RegExp(`${corrupt.workOrderId}\\.jsonl`));
+    // Without an explicit selection the unreadable order is named, never
+    // passed over, and the index keeps it visible.
+    const unselected = run(root, "scripts/resume.mjs", ["status"], false);
+    assert.notEqual(unselected.status, 0);
+    assert.match(
+      unselected.stderr,
+      new RegExp(`unreadable work order ${corrupt.workOrderId}: `, "u"),
+    );
+    const row = readIndex(root).rows.find(
+      (candidate) => candidate.id === corrupt.workOrderId,
+    );
+    assert.equal(row?.phase, "unreadable");
+    // Reads are scoped; the derived-order write path still refuses while a
+    // retained allocation is corrupt, naming it, rather than allocating past it.
+    await assert.rejects(
+      materializeOrder(compiled(), provenance("after"), {
+        root,
+        activate: false,
+      }),
+      new RegExp(
+        `${corrupt.workOrderId}-derived\\.md: generated authority requires stable sections`,
+        "u",
+      ),
+    );
   }));

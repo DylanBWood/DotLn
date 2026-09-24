@@ -10,6 +10,8 @@ const attestedEventTypes = new Set([
   "FinalReviewCompleted",
 ]);
 export const CONTROL_LOG_SCHEMA_VERSION = 1;
+/** The code a failed allocation validation carries (WO-157 item 14). */
+export const ALLOCATION_REFUSED = "DOTLN_ALLOCATION_REFUSED";
 
 export const parseControlEvents = (source) =>
   source
@@ -58,7 +60,12 @@ const scanControl = (events, visit) => {
     state = states.get(event?.workOrderId) ?? emptyState();
     switch (event?.type) {
       case "WorkOrderIdentityAllocated":
-        validateAllocation(event);
+        try {
+          validateAllocation(event);
+        } catch (error) {
+          // Scoped to its own segment by foldSegments (WO-157 item 14).
+          throw Object.assign(error, { code: ALLOCATION_REFUSED });
+        }
         if (state.workOrderId)
           throw new Error(`duplicate identity allocation at line ${index + 1}`);
         Object.assign(state, {
@@ -260,9 +267,14 @@ export const foldSegments = (
     try {
       return foldWorkOrders(events);
     } catch (error) {
-      throw new Error(`${path}: ${error.message}`);
+      throw Object.assign(new Error(`${path}: ${error.message}`), {
+        code: error.code,
+      });
     }
   };
+  // An allocation whose retained authority no longer validates makes only its
+  // own order unreadable; storage-integrity errors still refuse every read.
+  const unreadable = new Map();
   const { current: legacyState, orders } = at(legacyPath, legacy);
   const locations = new Map([...orders.keys()].map((id) => [id, legacyPath]));
   for (const [path, events] of [...segments].sort(([a], [b]) =>
@@ -292,7 +304,15 @@ export const foldSegments = (
       throw new Error(
         `${path}: ${id} already belongs to ${locations.get(id)} at ordinal 1`,
       );
-    const folded = at(path, events);
+    let folded;
+    try {
+      folded = at(path, events);
+    } catch (error) {
+      if (error.code !== ALLOCATION_REFUSED) throw error;
+      unreadable.set(id, { path, message: error.message });
+      locations.set(id, path);
+      continue;
+    }
     orders.set(id, folded.orders.get(id));
     locations.set(id, path);
   }
@@ -306,5 +326,5 @@ export const foldSegments = (
         );
       allocationKeys.add(key);
     }
-  return { legacy: legacyState, orders, locations };
+  return { legacy: legacyState, orders, locations, unreadable };
 };

@@ -215,6 +215,11 @@ export const selectWorkOrder = (
   const open = openOrders(control);
   const detail = `open orders: ${open.join(", ") || "none"}; use --work-order WO-NNN`;
   if (selected !== undefined) {
+    // Only this order's allocation failed to fold; name it (WO-157 item 14).
+    if (control.unreadable?.has(selected))
+      throw new Error(
+        `unreadable work order ${selected}: ${control.unreadable.get(selected).message}`,
+      );
     if (
       !/^WO-\d{3}$/.test(selected) ||
       (!control.orders.has(selected) && !allowNew)
@@ -222,6 +227,12 @@ export const selectWorkOrder = (
       throw new Error(`unknown work order ${selected}; ${detail}`);
     return selected;
   }
+  // An order whose allocation no longer folds is never passed over silently
+  // (WO-157 item 14): without an explicit selection, name it.
+  if (control.unreadable?.size)
+    throw new Error(
+      `unreadable work order ${[...control.unreadable].map(([id, { message }]) => `${id}: ${message}`).join("; ")}; repair its control segment, or select another order with --work-order WO-NNN`,
+    );
   if (open.length === 1) return open[0];
   if (open.length === 0 && latestClosed) return latestClosed;
   if (control.orders.size === 0 || allowAmbiguous) return undefined;

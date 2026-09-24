@@ -30,7 +30,7 @@ export const decisionReceipts = promptSupport(
 export const followUpQueue = promptSupport(
   "follow-up-queue",
   "Follow-up Queue",
-  "Follow-up Queue: After diagnosing an adjacent bug and identifying a concrete fix, add its cause, intended fix, paths, checks and priority to the worktree queue through `npm run adjacent -- apply --file <request.json>`; use `npm run adjacent -- list` for its current revision and order. Finish the current item or reach a safe boundary before starting the next. Apply operator vetoes, reprioritization, scope changes, known-issue dispositions and deferrals to another work order or planning session; a scope change requires a fresh announcement.",
+  "Follow-up Queue: After diagnosing an adjacent bug and identifying a concrete fix, add its cause, intended fix, paths, checks and priority to the worktree queue through `npm run adjacent -- apply --file <request.json>`; use `npm run adjacent -- list` for its current revision and order. Finish the current item or reach a safe boundary before starting the next. Apply operator vetoes, reprioritization, scope changes, known-issue dispositions and deferrals to another work order or planning session; a scope change requires a fresh announcement. After recording a decision that names a `followup`, run `npm run plan -- followups --sync` and dispose the deferred item onto the minted `FUP-` identifier, never onto prose; a `retarget` action links an earlier deferral, also at final review.",
 );
 
 export const operatorCheckIn = promptSupport(

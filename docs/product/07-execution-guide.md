@@ -467,7 +467,13 @@ commit; committed authority/control records must contain public material only.
 
 An allocation is an append-only `WorkOrderIdentityAllocated` event in the usual
 per-order segment. It retains the initial authority and compiled contract so a
-retry can restore a missing file after interruption. Existing files are never
+retry can restore a missing file after interruption. It also records
+`sectionsHash`, the digest of the generated section set it was written under,
+and the fold validates the retained authority against that set (an event
+without one uses the WO-120 set), so a later section change leaves it foldable.
+A corrupt retained authority makes only its own order unreadable: other control
+reads continue, selecting that order names its segment, and the derived-order
+write path refuses until it is repaired (WO-157; WO-120 D007). Existing files are never
 overwritten. The same provenance key with changed inputs refuses; use a new key
 for different work. The same key with identical inputs reuses the identity and
 never reactivates an already activated order. An edited draft requires explicit
@@ -529,9 +535,19 @@ resident binds the loaded portfolio with the target's full 40-hex base commit
 id, the only form WO-054 prepares, as its `portfolio` configuration field and runs `portfolio` actors, each reserving
 at least its phase ceiling's files, in the phases it names; the resident admits
 the binding only inside the compiled floor and each phase's effective envelope,
-which must grant a source-change writer. Name commands that test what each
-kind promises: WO-054 judges exactly those commands, and the host itself checks
-only a Sort move's relocation and every order's surfaces. Every derived order is a WO-120 record
+which must grant a source-change writer. `node scripts/resident-bind.mjs
+--portfolio <id> --template <resident.json> --base <commit>` builds that
+binding from the loaded entry and compiles the template's graph and
+environment under the bound repository's registered `authorityProfile` (a
+`self` portfolio has no profile and is refused); `--check <store>` refuses a
+store whose portfolio differs from the loaded entry, whose compiled floor
+departs from that profile (naming the repository, the profile and each
+constraint), or whose profile cannot be read (WO-157). Name commands that test
+what each kind promises: WO-054 judges exactly those commands, and the host
+itself checks a Sort move's relocation, every order's surfaces and, since
+WO-157, the committed path count against the envelope's `files` and any
+removal or type change, which only a declared Sort move may make without
+`repo.delete`. Every derived order is a WO-120 record
 (`provenance.kind: "runtime"`) in the ordinary index and lifecycle; its
 authority names the `host-policy` grant. Its provenance key names the
 portfolio, version, bound base and candidate, so a new version or a new base
@@ -640,11 +656,19 @@ and regenerates the projections below. Ignored intake requires
 `--intake-backup <archive.zip>` naming an external archive whose bytes match
 the current intake; `npm run backup:intake -- <authorized-directory>` creates
 one. The helper never reads a sibling's phase as admission authority.
-Until [WO-157](../work-orders/WO-157-closeout-followups.md) lands,
-stage intent-to-add entries fully before integrating: an entry left by
-`git add -N` makes the include-untracked stash fail after the pending
-receipt is written, and the helper then refuses as pending until an operator
-recovers it by hand (WO-100 D017).
+The helper refuses an intent-to-add entry (left by `git add -N`) before it
+writes anything, and again at `--continue`, naming each path and the remedy
+`git add -- <paths>`, because the include-untracked stash can neither save nor
+re-apply one (WO-100 D017). A stash push that fails for any other reason with
+nothing stashed removes the pending receipt (or restores the completed receipt
+it replaced) and prints Git's error, so a fresh run proceeds once the cause is
+fixed. When Git stores the stash and then fails (for example cleaning a file it
+cannot remove), nothing is merged, the receipt records the stash at stage
+`preserved`, and `--continue` resumes at the merge once the tree is clean,
+because the stash holds its content; `git stash apply <sha>` and removing the
+receipt starts again instead. Only a new stash entry carrying this
+integration's name and base commit counts as its own, since the stash stack is
+shared by every worktree ([WO-157](../work-orders/WO-157-closeout-followups.md)).
 
 The command lists authored conflicts and exits nonzero while work remains.
 Resolve those paths explicitly, stage those resolutions, then use
@@ -1685,7 +1709,13 @@ verification store must hold one acceptance matrix for the published head whose
 criteria are exactly the WorkOrder's acceptance criteria; a matching revision
 alone does not make another contract's verdicts this one's. Every
 refusal precedes the first remote call. The host then pushes only the observed
-commit without tags or upstream configuration, opens the pull request through
+commit without tags or upstream configuration, from a host-created bare
+repository with hooks off, so neither the target's hooks nor its repository
+configuration (an SSH command, an include, a receive-pack override, a
+repository-scoped credential helper or URL rewrite, or an operator's pre-push
+check such as a Git LFS upload) runs in the operator's publish process; the
+push URL is origin's configured URL before any rewrite and must name the
+repository the `gh` check resolved (WO-157; WO-064 D010). It opens the pull request through
 the existing `gh` helper and appends `PullRequestOpened` to
 `<store>/publication/`. A rerun for the same head reports the recorded pull
 request and pushes nothing. Merging and releasing on the target stay with the
@@ -2207,6 +2237,14 @@ claim evidence or releases it does not have.
   product gate outside from the start; a resident-launched verification runs
   the inside selection and reports its exclusions as a partial result. See the
   [WO-140 decisions](../evidence/WO-140/decisions.md).
+  The runner's gate-sandbox fixture disables Git's automatic maintenance
+  before its first commit (WO-157, from WO-063 D005): Git 2.55 estimates loose
+  objects from `objects/17` alone, so two loose objects there made a fixture
+  commit start a detached geometric repack still writing `.git/objects/pack`
+  when the teardown removed the tree (`ENOTEMPTY`). Each gate tags the
+  `dotln-gate-sandbox-*` roots its suites create and fails, naming them, when
+  one survives its suites; another run's roots and untagged roots are never
+  judged, and the check removes nothing.
   Live gates still protect source, installed inputs and the success record
   from concurrent writes. One registered writer owns the worktree. Other hook
   judgments advise and delegate to host permissions. `node scripts/harness.mjs
@@ -2278,6 +2316,8 @@ declaration, not an enforced cap, and must be reported that way.
   `--account-label` grammar, the Codex 0.154.0 effort probes and the WO-126
   CLI version-line observation with its session-detection channels are in
   [`docs/AI-HARNESS-SECURITY.md` §Harness version, model and effort readback](../AI-HARNESS-SECURITY.md#harness-version-model-and-effort-readback).
+- Claude Code's selected-session readback (`CLAUDE_EFFORT`, source
+  `claude-session-readback`, WO-157) is in the same section.
 - Copilot selected-session readback, its completion line and its counters
   are in [§Copilot CLI](../AI-HARNESS-SECURITY.md#selected-session-readback-completion-and-counters).
 - Control-event timing (WO-028) and the separate dispatch usage channel

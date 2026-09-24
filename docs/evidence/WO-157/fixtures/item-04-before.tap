@@ -1,0 +1,38 @@
+TAP version 13
+# Subtest: WO-157: publication runs no hook the target repository holds
+not ok 1 - WO-157: publication runs no hook the target repository holds
+  ---
+  duration_ms: 2221.4565
+  type: 'test'
+  location: '~/Projects/DotLn-wo157/scripts/test-target-publish.mjs:491:7'
+  failureType: 'testCodeFailure'
+  error: |-
+    pre-push
+    reference-transaction
+    reference-transaction
+    reference-transaction
+
+
+    true !== false
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file://~/Projects/DotLn-wo157/scripts/test-target-publish.mjs:517:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1409:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+    async file://~/Projects/DotLn-wo157/scripts/test-target-publish.mjs:491:1
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2284.419125

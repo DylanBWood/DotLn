@@ -1,8 +1,10 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { execFileSync, spawn, spawnSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import {
   chmodSync,
+  cpSync,
   existsSync,
   linkSync,
   mkdtempSync,
@@ -16,7 +18,7 @@ import {
   symlinkSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
-import { join, resolve } from "node:path";
+import { dirname, join, resolve } from "node:path";
 import {
   suites,
   validateSuites,
@@ -610,26 +612,10 @@ test("only and document CLI selection execute their declared checks with the pro
     mkdirSync(join(repo, "scripts"));
     const observer =
       'require("node:fs").appendFileSync("observed.jsonl", JSON.stringify(process.argv.slice(1))+"\\n");';
-    for (const file of [
-      "format.cjs",
-      "check-publication.mjs",
-      "work-orders.mjs",
-      "lineage.mjs",
-      "test-lineage.mjs",
-      "refute-plan.mjs",
-      "test-plan-refutation.mjs",
-      "entropy.mjs",
-      "release.mjs",
-      "authority-evidence.mjs",
-      "artifact-identity-evidence.mjs",
-      "verification-evidence.mjs",
-      "feedback-evidence.mjs",
-      "harness.mjs",
-      "harness-context.mjs",
-      "harness-evidence.mjs",
-      "meta.mjs",
-      "build.mjs",
-    ])
+    // The stub list is the registration check's own input (WO-157 item 13).
+    const { DOCUMENT_GATE_STUBS } =
+      await import("./lib/document-gate-stubs.mjs");
+    for (const file of DOCUMENT_GATE_STUBS)
       writeFileSync(
         join(repo, "scripts", file),
         file.endsWith(".mjs")
@@ -686,6 +672,69 @@ test("only and document CLI selection execute their declared checks with the pro
   } finally {
     rmSync(repo, { recursive: true, force: true });
   }
+});
+
+// WO-157 item 13 (WO-151 D021): an unclassified docs JSONL and an unstubbed
+// document suite fail the document gate, not only the suite that enumerates them.
+test("WO-157 the document gate refuses an unregistered docs JSONL and an unstubbed document suite", (t) => {
+  const row = suites.find((candidate) => candidate.name === "registrations");
+  assert.ok(
+    row?.document,
+    "test:docs carries the registration row (WO-151 D021)",
+  );
+  const parent = realpathSync(
+    mkdtempSync(join(tmpdir(), "dotln-registrations-")),
+  );
+  t.after(() => rmSync(parent, { recursive: true, force: true }));
+  const copy = join(parent, "repository");
+  execFileSync("git", ["clone", "--quiet", "--shared", root, copy]);
+  const listed = (...args) =>
+    execFileSync("git", ["-C", root, ...args], { encoding: "utf8" })
+      .split("\0")
+      .filter(Boolean);
+  for (const path of [
+    ...listed("diff", "-z", "--name-only", "HEAD"),
+    ...listed("ls-files", "-z", "--others", "--exclude-standard"),
+  ])
+    if (existsSync(join(root, path))) {
+      mkdirSync(dirname(join(copy, path)), { recursive: true });
+      cpSync(join(root, path), join(copy, path));
+    } else rmSync(join(copy, path), { force: true });
+  symlinkSync(join(root, "node_modules"), join(copy, "node_modules"));
+  const env = Object.fromEntries(
+    Object.entries(process.env).filter(([key]) => key !== "DOTLN_LAUNCHPAD"),
+  );
+  const check = () =>
+    spawnSync(process.execPath, [row.command[1]], {
+      cwd: copy,
+      encoding: "utf8",
+      env,
+    });
+  const clean = check();
+  assert.equal(clean.status, 0, clean.stdout + clean.stderr);
+  // Untracked, as entropy-reducer.jsonl was during WO-151's own runs.
+  writeFileSync(
+    join(copy, "docs/evidence/wo157-planted.jsonl"),
+    '{"planted":true}\n',
+  );
+  const planted = check();
+  assert.equal(planted.status, 1);
+  assert.match(
+    planted.stderr,
+    /unregistered JSONL: docs\/evidence\/wo157-planted\.jsonl is not an EventEnvelope stream/u,
+  );
+  rmSync(join(copy, "docs/evidence/wo157-planted.jsonl"));
+  const stubs = join(copy, "scripts/lib/document-gate-stubs.mjs");
+  writeFileSync(
+    stubs,
+    readFileSync(stubs, "utf8").replace(/^\s*"entropy\.mjs",\n/mu, ""),
+  );
+  const unstubbed = check();
+  assert.equal(unstubbed.status, 1);
+  assert.match(
+    unstubbed.stderr,
+    /unstubbed document suite: entropy runs scripts\/entropy\.mjs/u,
+  );
 });
 
 test("WO-125 nested gate markers remain independent and local to their worktree", (t) => {
@@ -1302,7 +1351,12 @@ test("code identity follows tracked source and dependency bytes across processes
 // WO-140: a fake marker and an owned denied directory stand in for a harness
 // sandbox, so the preflight runs the same in and outside a real one.
 const sandboxFixture = (t) => {
-  const repo = mkdtempSync(join(tmpdir(), "dotln-gate-sandbox-"));
+  // Under a gate the root carries the run's tag, which the gate's own
+  // abandoned-root check judges (WO-157 item 15).
+  const tag = process.env.DOTLN_GATE_FIXTURE_TAG;
+  const repo = mkdtempSync(
+    join(tmpdir(), tag ? `dotln-gate-sandbox-${tag}-` : "dotln-gate-sandbox-"),
+  );
   const denied = join(repo, "denied");
   t.after(() => {
     chmodSync(denied, 0o755);
@@ -1315,6 +1369,12 @@ const sandboxFixture = (t) => {
       stdio: ["ignore", "pipe", "pipe"],
     });
   git("init", "-q");
+  // Every commit otherwise starts Git's detached automatic maintenance. Git
+  // 2.55 estimates loose objects from objects/17 alone, so two there made a
+  // fixture commit start a geometric repack still writing .git/objects/pack
+  // when the teardown removed the tree (ENOTEMPTY; WO-063 D005, WO-157). The
+  // fixture has no maintenance to exercise.
+  git("config", "maintenance.auto", "false");
   git("config", "user.name", "Fixture");
   git("config", "user.email", "fixture@example.invalid");
   writeFileSync(
@@ -1799,4 +1859,110 @@ test("WO-140 any partial flag or exclusion shape disqualifies a row under the np
     lines.map((line) => line.split(" — ")[0]),
     ["build", "alpha"],
   );
+});
+
+// WO-157 item 15 (WO-063 D005): a fixture commit started Git's detached
+// automatic maintenance, whose geometric repack could still be writing
+// .git/objects/pack when the teardown removed the tree (ENOTEMPTY).
+test("WO-157 the gate-sandbox fixture's commits start no background Git maintenance that could race its teardown", (t) => {
+  const { repo } = sandboxFixture(t);
+  const git = (args, options = {}) =>
+    execFileSync("git", args, {
+      cwd: repo,
+      encoding: "utf8",
+      stdio: ["pipe", "pipe", "pipe"],
+      ...options,
+    });
+  const format = git(["rev-parse", "--show-object-format"]).trim();
+  // Git 2.55 estimates loose objects from objects/17 alone; two there make a
+  // repository's automatic maintenance repack.
+  let planted = 0;
+  for (let index = 0; planted < 2; index++) {
+    const text = `teardown probe ${index}\n`;
+    const id = createHash(format)
+      .update(`blob ${Buffer.byteLength(text)}\0${text}`)
+      .digest("hex");
+    if (!id.startsWith("17")) continue;
+    git(["hash-object", "-w", "--stdin"], { input: text });
+    planted += 1;
+  }
+  const needed = spawnSync("git", ["maintenance", "is-needed", "--auto"], {
+    cwd: repo,
+  });
+  if (needed.status !== 129)
+    assert.equal(
+      needed.status,
+      0,
+      "two loose objects under objects/17 are a state automatic maintenance acts on",
+    );
+  const traces = mkdtempSync(join(tmpdir(), "dotln-maintenance-trace-"));
+  t.after(() => rmSync(traces, { recursive: true, force: true }));
+  writeFileSync(join(repo, "teardown.txt"), "teardown probe\n");
+  git(["add", "teardown.txt"]);
+  git(["commit", "-qm", "Teardown probe"], {
+    env: { ...process.env, GIT_TRACE2_EVENT: join(traces, "commit.jsonl") },
+  });
+  const started = readFileSync(join(traces, "commit.jsonl"), "utf8")
+    .trim()
+    .split("\n")
+    .map((line) => JSON.parse(line))
+    .filter(
+      (event) =>
+        event.event === "child_start" && event.argv?.includes("maintenance"),
+    )
+    .map((event) => event.argv.join(" "));
+  // A failing run waits for the detached child, so it reports this assertion
+  // and not the teardown race it would otherwise cause.
+  const lock = join(repo, ".git/objects/maintenance.lock");
+  const until = Date.now() + 10_000;
+  while (existsSync(lock) && Date.now() < until)
+    Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 20);
+  assert.deepEqual(
+    started,
+    [],
+    "a fixture commit started background maintenance that writes .git/objects/pack",
+  );
+});
+
+test("WO-157 a gate whose suites leave a gate-sandbox fixture root behind fails and names it, and another run's root does not fail it", async (t) => {
+  const fixture = sandboxFixture(t);
+  const planted = [];
+  t.after(() => {
+    for (const path of planted) rmSync(path, { recursive: true, force: true });
+  });
+  // Another run's root in the shared temporary directory is never judged.
+  const foreign = mkdtempSync(join(tmpdir(), "dotln-gate-sandbox-foreign-"));
+  planted.push(foreign);
+  writeFileSync(
+    join(fixture.repo, "scripts/abandon.mjs"),
+    'import fs from "node:fs";\nimport os from "node:os";\nimport path from "node:path";\nconst root = fs.mkdtempSync(path.join(os.tmpdir(), `dotln-gate-sandbox-${process.env.DOTLN_GATE_FIXTURE_TAG}-`));\nfs.appendFileSync("observed.jsonl", `abandoned ${root}\\n`);\n',
+  );
+  const options = fixture.options(0o755);
+  const clean = await runGate(["--serial"], fixture.repo, options);
+  assert.equal(clean.exitCode, 0, "another run's root is not this gate's");
+  assert.equal(clean.abandonedRoots, undefined);
+  const leaky = await runGate(["--serial"], fixture.repo, {
+    ...options,
+    table: [
+      ...options.table,
+      {
+        name: "abandon",
+        command: [process.execPath, "scripts/abandon.mjs"],
+        product: true,
+      },
+    ],
+  });
+  const left = fixture
+    .observed()
+    .filter((line) => line.startsWith("abandoned "))
+    .map((line) => line.slice("abandoned ".length));
+  planted.push(...left);
+  assert.equal(left.length, 1);
+  assert.equal(
+    leaky.exitCode,
+    1,
+    "a gate whose suites left a dotln-gate-sandbox root behind must fail",
+  );
+  assert.deepEqual(leaky.abandonedRoots, left);
+  assert.ok(existsSync(foreign), "the check removes nothing");
 });

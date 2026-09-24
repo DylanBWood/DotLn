@@ -11,6 +11,7 @@ import {
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import {
   FEEDBACK_SOURCE_PATHS,
   readFeedbackSource,
@@ -141,9 +142,15 @@ test("WO-142 discovery entry point participates in both evidence source inventor
     import.meta.url,
   );
   const { evidenceSources } = (await import(sourceUrl.href)) as {
-    evidenceSources: Record<string, readonly string[]>;
+    evidenceSources: (root: string) => Record<string, readonly string[]>;
   };
-  for (const [kind, sources] of Object.entries(evidenceSources))
+  // evidenceSources is a function of the launchpad root; entries of the
+  // function itself are empty, which left this loop vacuous (WO-157).
+  const inventories = Object.entries(
+    evidenceSources(fileURLToPath(new URL("../../../../", import.meta.url))),
+  );
+  assert.equal(inventories.length, 5);
+  for (const [kind, sources] of inventories)
     assert.ok(sources.includes(path), kind);
 });
 

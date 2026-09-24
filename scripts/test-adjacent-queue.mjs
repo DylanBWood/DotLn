@@ -19,6 +19,7 @@ import {
 } from "./lib/adjacent-queue.mjs";
 import { main } from "./adjacent-work.mjs";
 import { runGit } from "./lib/git.mjs";
+import { syncFollowups } from "./lib/planning-followups.mjs";
 
 const workOrder = "WO-999";
 const at = "2030-01-02T12:00:00.000Z";
@@ -312,4 +313,161 @@ test("WO-042 actual queue CLI uses the selected work order and read-only listing
       /executor\/fixer phase/u,
     );
     assert.equal(main(["list"], root).items.length, 1);
+  }));
+
+test("WO-157 retarget moves only a deferred item's target onto an existing FUP, also at final review", () =>
+  fixture((root) => {
+    runGit(root, ["init", "-q", "-b", "wo-999"]);
+    mkdirSync(join(root, "docs/control/orders"), { recursive: true });
+    mkdirSync(join(root, "docs/product"), { recursive: true });
+    writeFileSync(
+      join(root, "docs/product/ideas.md"),
+      "## Candidate — Public follow-up\nReviewed public synthesis.\n",
+    );
+    const followup = syncFollowups(root).entries[0].id;
+    const controlPath = join(root, "docs/control/orders/WO-999.jsonl");
+    const event = (type, extra = {}) =>
+      JSON.stringify({
+        schemaVersion: 1,
+        type,
+        workOrderId: workOrder,
+        recordedAt: at,
+        ...extra,
+      }) + "\n";
+    writeFileSync(
+      controlPath,
+      event("WorkOrderActivated", {
+        workOrderPath: "docs/work-orders/WO-999-fixture.md",
+      }),
+    );
+    apply(root, { kind: "queue", item: spec("deferred candidate") });
+    apply(root, {
+      kind: "dispose",
+      ...item(root),
+      status: "deferred",
+      reason: "Later planning",
+      target: "planning",
+    });
+    apply(root, { kind: "queue", item: spec("still queued") });
+    writeFileSync(
+      controlPath,
+      readFileSync(controlPath, "utf8") +
+        event("ImplementationReady") +
+        event("VerificationRequested", {
+          verificationId: "VER-001",
+          reportPath: "docs/verifications/WO-999/VER-001.md",
+        }) +
+        event("VerificationCompleted", {
+          verificationId: "VER-001",
+          reportPath: "docs/verifications/WO-999/VER-001.md",
+          verdict: "pass",
+        }) +
+        event("FinalReviewRequested", {
+          finalReviewId: "FINAL-001",
+          reportPath: "docs/final-reviews/WO-999/FINAL-001.md",
+        }),
+    );
+    const request = join(root, "request.json");
+    const send = (action, actor = "reviewer") => {
+      writeFileSync(
+        request,
+        JSON.stringify({
+          expectedRevision: readAdjacentQueue(root, workOrder).revision,
+          actor,
+          action,
+        }),
+      );
+      return main(["apply", "--file", request], root);
+    };
+    const source = readFileSync(join(root, ADJACENT_QUEUE), "utf8");
+    assert.throws(
+      () => send({ kind: "retarget", ...item(root), target: "planning" }),
+      /FUP identifier/u,
+    );
+    assert.throws(
+      () =>
+        send({
+          kind: "retarget",
+          ...item(root),
+          target: "FUP-0123456789abcdef",
+        }),
+      /current public FUP/u,
+    );
+    assert.throws(
+      () =>
+        send({
+          kind: "retarget",
+          ...item(root),
+          target: followup,
+          status: "known-issue",
+        }),
+      /retarget changes only/u,
+    );
+    assert.throws(
+      () => send({ kind: "retarget", ...item(root, 1), target: followup }),
+      /only a deferred item/u,
+    );
+    assert.throws(
+      () => send({ kind: "queue", item: spec("late") }, "executor"),
+      /executor\/fixer phase/u,
+    );
+    assert.throws(
+      () =>
+        send({
+          kind: "dispose",
+          ...item(root, 1),
+          status: "known-issue",
+          reason: "Reviewer cannot dispose",
+          target: null,
+        }),
+      /executor\/fixer phase/u,
+    );
+    assert.equal(readFileSync(join(root, ADJACENT_QUEUE), "utf8"), source);
+    const state = send({ kind: "retarget", ...item(root), target: followup });
+    assert.deepEqual(state.items[0].disposition, {
+      reason: "Later planning",
+      target: followup,
+      actor: "executor",
+    });
+    assert.equal(state.items[0].status, "deferred");
+    assert.equal(state.items[0].revision, 1);
+    assert.equal(state.items[1].status, "queued");
+  }));
+
+test("WO-157 the fold admits a reviewer actor only for retarget, below the CLI's phase gate", () =>
+  fixture((root) => {
+    assert.throws(
+      () => apply(root, { kind: "queue", item: spec("reviewer") }, "reviewer"),
+      /actor or work-order mismatch/u,
+    );
+    apply(root, { kind: "queue", item: spec("deferred") });
+    assert.throws(
+      () =>
+        apply(
+          root,
+          {
+            kind: "dispose",
+            ...item(root),
+            status: "deferred",
+            reason: "Reviewer cannot dispose",
+            target: "FUP-0123456789abcdef",
+          },
+          "reviewer",
+        ),
+      /actor or work-order mismatch/u,
+    );
+    apply(root, {
+      kind: "dispose",
+      ...item(root),
+      status: "deferred",
+      reason: "Later planning",
+      target: "planning",
+    });
+    const state = apply(
+      root,
+      { kind: "retarget", ...item(root), target: "FUP-0123456789abcdef" },
+      "reviewer",
+    );
+    assert.equal(state.items[0].disposition.target, "FUP-0123456789abcdef");
+    assert.equal(state.items[0].disposition.actor, "executor");
   }));

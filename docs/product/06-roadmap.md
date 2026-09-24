@@ -20,6 +20,34 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-157 activation completion (2026-09-22):** assigned application `v0.45.0`
+under the order's minor classification, the next minor above the observed local
+and remote `v0.44.0` tag. One operator-authorized order fixes the fifteen
+defects the orders closed on 2026-09-22 boarded up: `worktree integrate`
+refuses intent-to-add entries before any write and leaves no stranded receipt;
+a `retarget` queue action links a deferral to its public follow-up, also at
+final review; the source-change host counts committed paths against the
+envelope's `files` and refuses a removal or type change except a declared Sort
+move; target publication pushes with hooks disabled; the skeleton admits a
+grant-bearing artifact identity; `resident-bind` binds a declared portfolio
+under its repository's registered profile, checks hand-written stores against
+it, and defaults always-on judges per transport; a refused live episode keeps
+its typed reason; the Entropy Reducer's witness and refutation receipt say what
+they observe; Claude Code attestations read `CLAUDE_EFFORT`; the evidence
+inventories follow the import graph; a document-gate row owes registrations;
+allocation events fold across section changes; and the gate-sandbox teardown
+is deterministic with a run-tagged abandoned-root check. Skeleton `0.38.0`
+carries the runtime changes; the console's exact dependency pin follows it.
+Compiler, kernel, semantic hashing and the external dependency set are
+unchanged and no package is added. Compatibility impact: behaviour-changing
+for a source-change writer that removes a path (now refused unless it is a
+declared Sort move), for a Claude Code completion that attests `unknown` or a
+readback source the session contradicts, and for a refutation receipt, which
+no longer records a worker statement; additive elsewhere — existing resident
+stores, allocation events without a section digest, filed Entropy Reducer
+receipts and binding records keep their bytes and meaning. Publication remains
+a separate dispatch.
+
 **WO-100 activation completion (2026-09-22):** assigned application `v0.43.0`
 under the order's minor classification, the next minor above the observed
 local `v0.42.0` tag. A preauthorized portfolio becomes reviewed configuration
@@ -886,15 +914,20 @@ ranking across orders, replenishment, retry and the return view. The live
 unattended hour is WO-111; the first lane (small orders under standing
 authority) is not implemented.
 
-**Always-on agent model default (candidate, operator direction 2026-09-22).**
-Always-on agents — the resident's workers and judges, and the portfolio's live
-execution hosts — may default to GPT-6 Luna or the latest Claude Sonnet
-(Sonnet 5 until Sonnet 5.5 is available) at `xhigh`. No such default exists
-yet: `resident-bind` requires `--model` and `--effort`, and portfolio hosts are
-unbound until WO-111, which owns adopting it
-([WO-100-D007](../evidence/WO-100/decisions.md#wo-100-d007)). External calls
-that name a model today use Opus 5.5 `xhigh` in place of Fable 5.1 and GPT-6
-Sol in place of GPT-6 Astra.
+**Always-on agent model default (shipped by WO-157 on 2026-09-22, operator
+direction).** A resident bound without `--model` or `--effort` takes its
+transport's default: `gpt-6-luna` for `codex-cli-exec` and the latest Claude
+Sonnet for `claude-cli-print`, recorded as the id the CLI reports
+(`claude-sonnet-5` until Sonnet 5.5 is available), both at `xhigh`. The
+binding record's `modelSource` and `effortSource` say `default` or
+`operator`, so a receipt can tell a default from a choice
+([WO-100-D007](../evidence/WO-100/decisions.md#wo-100-d007);
+[WO-157 decisions](../evidence/WO-157/decisions.md)). Portfolio execution
+hosts are bound in process by their caller and take no default from this
+command. Reopen when Claude Sonnet 5.5 is available (the Claude default moves
+to it), a default model is withdrawn, or the operator changes a role default.
+External calls that name a model today use Opus 5.5 `xhigh` in place of
+Fable 5.1 and GPT-6 Sol in place of GPT-6 Astra.
 
 ### Candidate — budget-window work-order ladders
 

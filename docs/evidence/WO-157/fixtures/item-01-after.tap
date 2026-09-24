@@ -1,0 +1,66 @@
+TAP version 13
+# {"case":"fast-forward","checkpoint":"refs/dotln/checkpoint/WO-998/1","retainedStash":"17461f4761fbdff7ea826f9b9269e0e562bde3dc","retimed":"v9000.0.2","unchangedControl":true,"realGenerators":true}
+# {"case":"reviewed merge","checkpoint":"refs/dotln/checkpoint/WO-998/1","retainedStash":"24a54f36d15630c91ad943b28c5167fb3dae840a","retimed":"v9000.0.2","unchangedControl":true,"realGenerators":true}
+# Subtest: real Git fast-forward preserves recovery, histories and authored conflicts with real generators
+ok 1 - real Git fast-forward preserves recovery, histories and authored conflicts with real generators
+  ---
+  duration_ms: 13315.358
+  type: 'test'
+  ...
+# Subtest: real Git reviewed merge preserves recovery, histories and authored conflicts with real generators
+ok 2 - real Git reviewed merge preserves recovery, histories and authored conflicts with real generators
+  ---
+  duration_ms: 8921.624208
+  type: 'test'
+  ...
+# Subtest: three required refusals leave the tree, index, HEAD and recovery refs unchanged
+ok 3 - three required refusals leave the tree, index, HEAD and recovery refs unchanged
+  ---
+  duration_ms: 8452.902625
+  type: 'test'
+  ...
+# Subtest: an intent-to-add entry is refused before any write, and a failed stash leaves no pending receipt
+ok 4 - an intent-to-add entry is refused before any write, and a failed stash leaves no pending receipt
+  ---
+  duration_ms: 9052.875833
+  type: 'test'
+  ...
+# Subtest: a stash Git stores and then fails to finish resumes with --continue; --continue refuses intent-to-add entries
+ok 5 - a stash Git stores and then fails to finish resumes with --continue; --continue refuses intent-to-add entries
+  ---
+  duration_ms: 8046.861333
+  type: 'test'
+  ...
+# Subtest: a later stash failure with nothing stashed restores the completed receipt it replaced
+ok 6 - a later stash failure with nothing stashed restores the completed receipt it replaced
+  ---
+  duration_ms: 13009.821542
+  type: 'test'
+  ...
+# Subtest: follow-up union preserves compatible histories and refuses divergent same-entry histories
+ok 7 - follow-up union preserves compatible histories and refuses divergent same-entry histories
+  ---
+  duration_ms: 0.991875
+  type: 'test'
+  ...
+# Subtest: untracked stash collision remains explicit and recoverable until continuation
+ok 8 - untracked stash collision remains explicit and recoverable until continuation
+  ---
+  duration_ms: 12208.87775
+  type: 'test'
+  ...
+# Subtest: printed checks use the runner's declared machinery sources, including package code
+ok 9 - printed checks use the runner's declared machinery sources, including package code
+  ---
+  duration_ms: 54.453375
+  type: 'test'
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 73114.753084

@@ -1,0 +1,30 @@
+time-blind current.md cmp: backwards passed
+usage fixture: {"attempts":10,"elapsedMs":11000,"unknown":1}; 6 exact actor/phase groups; all three work-order groups and text numbers match
+usage privacy: every instrumented filesystem call avoided docs/control/local; ambient label ignored; stale projection and every segment preserved
+usage cmp: current.md, legacy log and both order segments byte-identical after both output forms and refused arguments
+usage source boundary: no subprocess or Git discovery; CLI and direct dispatcher reports agree
+account labels: 11 invalid forms, missing/duplicate flags and invalid env refused before append; a1/claude-2 accepted; env default and flag override checked through all four completion commands
+account projections: optional field stays absent in stored history; status/current render not-applicable; labelled status/current/index and report-header parity checked
+docs/control/local/account-labels.md
+usage cmp: legacy and every original order segment unchanged; local mapping ignored
+▶ test-control-segments
+  ✔ synthetic interleaving: WO-901 ready-to-verify; WO-902 active (21.814292ms)
+  ✔ activation owns storage: legacy appends remain legacy; new orders never span segments (305.966792ms)
+  ✔ disposable control basenames are skipped; every other stray refuses (80.446459ms)
+  ✔ malformed actor labels and failed checkpoint reads name their ordinal (4.004875ms)
+  ✔ corrupt segments: path and ordinal reported; all observed commands preserve every control byte (1794.506833ms)
+  ✔ per-segment byte-prefix proof: sibling additions pass; deletions and equivalent-JSON rewrites refuse (0.594667ms)
+  ✔ named-order reactivation retains its segment while a sibling is open; active reactivation refuses (682.400416ms)
+  ✔ legacy comparison: observed events, unchanged bytes and v0.6.0 per-order states (1.14025ms)
+  ✔ legacy times: byte-identical observation, observed named local refs, original global ordinals and source labels (2996.601083ms)
+✔ test-control-segments (5888.567542ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5890.93125
+beacons: every lifecycle transition matches phase/verdict/effort/time; status and next preserve inode/ctime/size/mtime
+resume tests passed

@@ -12,6 +12,7 @@ import {
 import { WorkerFailure, type WorkerEffort } from "./worker-protocol.js";
 import type { FixtureTree } from "./scenario.js";
 import { runVerificationDemo } from "./verification-demo.js";
+import { invalidResultDetail } from "./verification-protocol.js";
 import { FakeVerificationTransport } from "./verification-fake.js";
 import { runFeedbackSelfhost } from "./feedback-selfhost.js";
 import { harnessControl } from "./harness-host.js";
@@ -271,7 +272,7 @@ try {
   // Unexpected external diagnostics may contain paths or auth details.
   console.error(
     error instanceof WorkerFailure
-      ? `worker refused: ${error.code}; pending work is retained`
+      ? `worker refused: ${error.code}${error.code === "invalid-result" ? ` (${invalidResultDetail(error.detail)})` : ""}; pending work is retained`
       : error instanceof Error &&
           /^(derived order:|usage:|live demo requires|demo requires|expected |status accepts|unknown or duplicate|missing option|duplicate option)/u.test(
             error.message,

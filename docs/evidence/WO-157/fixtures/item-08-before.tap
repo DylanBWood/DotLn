@@ -1,0 +1,99 @@
+TAP version 13
+# Subtest: WO-157 item 8 claude-cli-print: an invalid-result refusal records and rethrows its typed detail
+not ok 1 - WO-157 item 8 claude-cli-print: an invalid-result refusal records and rethrows its typed detail
+  ---
+  duration_ms: 382.954833
+  type: 'test'
+  location: '~/Projects/DotLn-wo157/packages/skeleton/dist/test/verification.test.js:532:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    The validation function is expected to return "true". Received false
+
+    Caught error:
+
+    Error: invalid-result
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async TestContext.<anonymous> (file://~/Projects/DotLn-wo157/packages/skeleton/dist/test/verification.test.js:534:9)
+    async Test.run (node:internal/test_runner/test:1409:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+# Subtest: WO-157 item 8 codex-cli-exec: an invalid-result refusal records and rethrows its typed detail
+not ok 2 - WO-157 item 8 codex-cli-exec: an invalid-result refusal records and rethrows its typed detail
+  ---
+  duration_ms: 304.301708
+  type: 'test'
+  location: '~/Projects/DotLn-wo157/packages/skeleton/dist/test/verification.test.js:532:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    The validation function is expected to return "true". Received false
+
+    Caught error:
+
+    Error: invalid-result
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async TestContext.<anonymous> (file://~/Projects/DotLn-wo157/packages/skeleton/dist/test/verification.test.js:534:9)
+    async Test.run (node:internal/test_runner/test:1409:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  ...
+# Subtest: WO-157 item 8: a detail outside the closed vocabulary is recorded as unclassified, never verbatim
+not ok 3 - WO-157 item 8: a detail outside the closed vocabulary is recorded as unclassified, never verbatim
+  ---
+  duration_ms: 283.999834
+  type: 'test'
+  location: '~/Projects/DotLn-wo157/packages/skeleton/dist/test/verification.test.js:554:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The validation function is expected to return "true". Received false
+
+    Caught error:
+
+    Error: invalid-result
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async TestContext.<anonymous> (file://~/Projects/DotLn-wo157/packages/skeleton/dist/test/verification.test.js:574:5)
+    async Test.run (node:internal/test_runner/test:1409:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  ...
+# Subtest: WO-157 item 8: dotln prints the typed refusal detail
+not ok 4 - WO-157 item 8: dotln prints the typed refusal detail
+  ---
+  duration_ms: 502.843291
+  type: 'test'
+  location: '~/Projects/DotLn-wo157/packages/skeleton/dist/test/verification.test.js:587:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /^worker refused: invalid-result \(unsupported pass\); pending work is retained$/mu. Input:
+
+    'worker refused: invalid-result; pending work is retained\n'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: |-
+    worker refused: invalid-result; pending work is retained
+
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (file://~/Projects/DotLn-wo157/packages/skeleton/dist/test/verification.test.js:610:12)
+    Test.runInAsyncScope (node:async_hooks:226:14)
+    Test.run (node:internal/test_runner/test:1402:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 0
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2243.797042

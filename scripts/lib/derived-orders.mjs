@@ -32,6 +32,7 @@ import {
   validateProvenance,
   validateAllocation,
   renderDerivedAuthority,
+  SECTIONS_HASH,
 } from "./derived-contract.mjs";
 
 /** Containment applies before mkdir/open too, including every existing parent. */
@@ -233,6 +234,7 @@ export async function materializeOrder(
         workOrderPath,
         provenance,
         requestHash,
+        sectionsHash: SECTIONS_HASH,
         compiled: workOrder,
         authority,
       };

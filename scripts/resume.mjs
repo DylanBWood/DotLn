@@ -13,6 +13,8 @@ import { dirname, join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 
 import {
+  CLAUDE_SELECTED_EFFORTS,
+  claudeSessionReport,
   reportHarnessRuntime,
   currentHarnessSessionReport,
   observedFactsReport,
@@ -62,6 +64,7 @@ import {
 } from "./lib/config.mjs";
 import {
   parseDerivedProvenance,
+  allocationSections,
   checkGeneratedSections,
 } from "./lib/derived-contract.mjs";
 import { parseRepositoryDeclaration } from "./lib/work-order-repository.mjs";
@@ -420,7 +423,10 @@ const hasRecordedEffortValue = (harness, harnessVersion, effort) => {
   const sessionSelector = evidence.sessionEffortSelector;
   const persistedSelector = evidence.persistedEffortSelector;
   const effectiveReadback = evidence.effectiveEffortReadback;
+  const selectedReadback = evidence.selectedSessionReadback;
   return (
+    (selectedReadback?.classification === "observed" &&
+      selectedReadback.value === effort) ||
     (selectorClassifications.has(sessionSelector?.classification) &&
       Array.isArray(sessionSelector.values) &&
       sessionSelector.values.includes(effort)) ||
@@ -433,21 +439,12 @@ const hasRecordedEffortValue = (harness, harnessVersion, effort) => {
   );
 };
 
-const hasObservedEffortReadbackValue = (harness, harnessVersion, effort) => {
-  const readback = effortHarnessEvidence(
-    harness,
-    harnessVersion,
-  )?.effectiveEffortReadback;
-  return (
-    readback?.classification === "observed" &&
-    (readback.channel !== "CLAUDE_EFFORT" ||
-      process.env.CLAUDE_EFFORT === effort) &&
-    (readback.value === effort ||
-      (Array.isArray(readback.values) && readback.values.includes(effort)))
-  );
-};
-
-export const parseActor = (action, args, positional = "") => {
+export const parseActor = (
+  action,
+  args,
+  positional = "",
+  env = process.env,
+) => {
   const requiredFlags = [
     "--harness",
     "--harness-version",
@@ -504,6 +501,29 @@ export const parseActor = (action, args, positional = "") => {
     ...(subagents ? { mode: "subagents", raw: suppliedEffort } : {}),
     source,
   };
+  // WO-157 item 11 (WO-152 D012): the Claude Code host exports the session's
+  // selected effort. A readback source must match it, and while it is
+  // readable a claude-code attestation records exactly that value and source:
+  // nothing records which other session a differing value would describe
+  // (VER-001 F3).
+  const selected = CLAUDE_SELECTED_EFFORTS.includes(env.CLAUDE_EFFORT)
+    ? env.CLAUDE_EFFORT
+    : undefined;
+  if (
+    source === "claude-session-readback" &&
+    (harness !== "claude-code" || actor.effort !== selected)
+  )
+    throw new Error(
+      `claude-session-readback requires the Claude Code host's CLAUDE_EFFORT to equal the attested effort: CLAUDE_EFFORT ${selected ?? "absent"}, attested ${harness} effort ${actor.effort}. ${harness === "claude-code" && selected ? `Attest --effort ${selected}.` : "Attest the operator-selected value with --source operator-attested instead."}`,
+    );
+  if (
+    harness === "claude-code" &&
+    selected &&
+    source !== "claude-session-readback"
+  )
+    throw new Error(
+      `this Claude Code session exports CLAUDE_EFFORT=${selected}; attest --effort ${selected} --source claude-session-readback rather than ${suppliedEffort} with source ${suppliedSource}. A claude-code attestation from this session records the host's selection; another session's effort is attested from that session.`,
+    );
   const accountLabel = values.has("--account-label")
     ? values.get("--account-label")
     : process.env.DOTLN_ACCOUNT_LABEL;
@@ -880,7 +900,11 @@ export const main = async (argv = process.argv.slice(2)) => {
           workOrderAuthorityPath(repoRoot, workOrderId, workOrderPath),
           "utf8",
         );
-        checkGeneratedSections(source, workOrderPath);
+        checkGeneratedSections(
+          source,
+          workOrderPath,
+          allocationSections(state.allocation),
+        );
         if (
           JSON.stringify(parseDerivedProvenance(source, workOrderPath)) !==
           JSON.stringify(state.provenance)
@@ -1195,8 +1219,14 @@ export const main = async (argv = process.argv.slice(2)) => {
       }
     }
     // Informational readback, independent of token-counter availability and phase gates.
+    const claudeReport =
+      process.env.CODEX_THREAD_ID || process.env.COPILOT_AGENT_SESSION_ID
+        ? null
+        : claudeSessionReport();
     if (
-      (process.env.CODEX_THREAD_ID || process.env.COPILOT_AGENT_SESSION_ID) &&
+      (process.env.CODEX_THREAD_ID ||
+        process.env.COPILOT_AGENT_SESSION_ID ||
+        claudeReport) &&
       [
         "status",
         "next",
@@ -1210,7 +1240,8 @@ export const main = async (argv = process.argv.slice(2)) => {
         "final-review-result",
       ].includes(action)
     ) {
-      const report = await currentHarnessSessionReport(repoRoot);
+      const report =
+        claudeReport ?? (await currentHarnessSessionReport(repoRoot));
       message =
         action === "status" && args.includes("--json")
           ? JSON.stringify(

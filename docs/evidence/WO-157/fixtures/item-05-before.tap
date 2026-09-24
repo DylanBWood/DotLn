@@ -1,0 +1,39 @@
+TAP version 13
+# Subtest: WO-157 a grant-bearing artifact identity equips and runs through the source-change host; a malformed registry still refuses
+not ok 1 - WO-157 a grant-bearing artifact identity equips and runs through the source-change host; a malformed registry still refuses
+  ---
+  duration_ms: 2.052125
+  type: 'test'
+  location: '~/Projects/DotLn-wo157/packages/skeleton/dist/test/source-change-host.test.js:399:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+
+    + [
+    +   'ArtifactCompilationRefused'
+    + ]
+    - []
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'ArtifactCompilationRefused'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file://~/Projects/DotLn-wo157/packages/skeleton/dist/test/source-change-host.test.js:424:12)
+    Test.runInAsyncScope (node:async_hooks:226:14)
+    Test.run (node:internal/test_runner/test:1402:25)
+    Test.start (node:internal/test_runner/test:1262:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 62.118083
