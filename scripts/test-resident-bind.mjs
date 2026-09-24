@@ -32,6 +32,11 @@ import {
 import { missionPinFromSource } from "../packages/skeleton/dist/src/mission-check-source.js";
 import { missionPin } from "../packages/skeleton/dist/src/mission-check-protocol.js";
 import { decodeResidentConfiguration } from "../packages/skeleton/dist/src/resident-state.js";
+import {
+  compileLoadout,
+  requireCompiled,
+} from "../packages/compiler/dist/src/index.js";
+import { loadConfig } from "./lib/config.mjs";
 
 const scriptRoot = dirname(fileURLToPath(import.meta.url));
 const sourceRoot = join(scriptRoot, "..");
@@ -747,6 +752,28 @@ test("argument parsing keeps the declaration literal", () => {
       base: undefined,
     },
   );
+  // WO-157 item 7: an absent --model or --effort is left for the bind's
+  // per-transport default (it was a refusal before).
+  assert.deepEqual(
+    parseArguments([
+      "WO-148",
+      "--surface",
+      "a",
+      "--transport",
+      "codex-cli-exec",
+      "--effort",
+      "x",
+    ]),
+    {
+      action: "bind",
+      workOrder: "WO-148",
+      surfaces: ["a"],
+      transport: "codex-cli-exec",
+      model: undefined,
+      effort: "x",
+      base: undefined,
+    },
+  );
   assert.deepEqual(parseArguments(["--check", "/tmp/store"]), {
     action: "check",
     store: "/tmp/store",
@@ -785,6 +812,7 @@ test("argument parsing keeps the declaration literal", () => {
       ],
       /duplicate option --model/u,
     ],
+    [["WO-148", "--nope"], /unknown option --nope/u],
     [
       [
         "WO-148",
@@ -793,11 +821,10 @@ test("argument parsing keeps the declaration literal", () => {
         "--transport",
         "codex-cli-exec",
         "--effort",
-        "x",
+        " ",
       ],
-      /--model is required/u,
+      /--effort needs a value; omit it to take the transport default/u,
     ],
-    [["WO-148", "--nope"], /unknown option --nope/u],
   ])
     assert.throws(() => parseArguments(argv), expected, JSON.stringify(argv));
 });
@@ -972,4 +999,569 @@ test("a merge base moved by integrating main is named before any launch line", (
       git(context.launchpad, "rev-parse", "main"),
     );
     assert.notEqual(binding.baseCommit, context.baseCommit);
+  }));
+
+// WO-157 item 7 (WO-100 D007): the always-on judge's default per transport.
+test("WO-157 a bind without --model and --effort records the transport's default judge", () =>
+  withFixture({}, (context) => {
+    for (const [transport, model] of [
+      ["codex-cli-exec", "gpt-6-luna"],
+      ["claude-cli-print", "claude-sonnet-5"],
+    ]) {
+      const result = run(
+        context.launchpad,
+        "WO-999",
+        "--surface",
+        "packages/fixture",
+        "--transport",
+        transport,
+      );
+      assert.equal(result.status, 0, result.stderr);
+      const store = storeOf(result.stdout);
+      const binding = JSON.parse(
+        readFileSync(join(store, "binding.json"), "utf8"),
+      );
+      assert.equal(binding.model, model);
+      assert.equal(binding.effort, "xhigh");
+      assert.equal(binding.modelSource, "default");
+      assert.equal(binding.effortSource, "default");
+      const configuration = decodeResidentConfiguration(
+        JSON.parse(readFileSync(join(store, "resident.json"), "utf8")),
+      );
+      const worker = configuration.actors["mission-check"].worker;
+      assert.equal(worker.transport, transport);
+      assert.equal(worker.request.model, model);
+      assert.equal(worker.request.effort, "xhigh");
+      assert.match(
+        result.stdout,
+        new RegExp(
+          `judge {6}${transport}; model ${model} \\(default\\); effort xhigh \\(default\\)`,
+          "u",
+        ),
+      );
+      assert.equal(run(context.launchpad, "--check", store).status, 0);
+    }
+    const unknown = run(
+      context.launchpad,
+      "WO-999",
+      "--surface",
+      "packages/fixture",
+      "--transport",
+      "telepathy",
+    );
+    assert.equal(unknown.status, 1);
+    assert.match(
+      unknown.stderr,
+      /--transport must be one of claude-cli-print, codex-cli-exec/u,
+    );
+    context.close("WO-999");
+  }));
+
+test("WO-157 a bind with --model and --effort records the operator's choice", () =>
+  withFixture({}, (context) => {
+    const result = bind(context.launchpad);
+    assert.equal(result.status, 0, result.stderr);
+    const binding = JSON.parse(
+      readFileSync(join(storeOf(result.stdout), "binding.json"), "utf8"),
+    );
+    assert.equal(binding.modelSource, "operator");
+    assert.equal(binding.effortSource, "operator");
+    assert.equal(binding.model, "fixture-model");
+    const partial = run(
+      context.launchpad,
+      "WO-999",
+      "--surface",
+      "packages/fixture",
+      "--transport",
+      "codex-cli-exec",
+      "--model",
+      "gpt-6-sol",
+    );
+    assert.equal(partial.status, 0, partial.stderr);
+    const chosen = JSON.parse(
+      readFileSync(join(storeOf(partial.stdout), "binding.json"), "utf8"),
+    );
+    assert.deepEqual(
+      [chosen.model, chosen.modelSource, chosen.effort, chosen.effortSource],
+      ["gpt-6-sol", "operator", "xhigh", "default"],
+    );
+    // A stale default-sourced binding is rebound without freezing the default.
+    context.close("WO-999");
+    const stale = run(context.launchpad, "--check", storeOf(partial.stdout));
+    assert.equal(stale.status, 1);
+    assert.match(
+      stale.stdout,
+      /Rebind with .* --transport codex-cli-exec --model gpt-6-sol$/mu,
+    );
+    assert.doesNotMatch(stale.stdout, /--effort xhigh/u);
+  }));
+
+// WO-157 item 6 (WO-100 D006): a portfolio binding compiled under its
+// repository's registered authorityProfile, and --check refusing a store that
+// was not.
+const PORTFOLIO_WRITE = ["git.local", "repo.read", "repo.write", "shell.run"];
+const PORTFOLIO = {
+  version: 1,
+  repo: "scratch",
+  mechanics: ["shine", "sort"],
+  surfaces: ["docs", "generated", "loose/guide.md", "src"],
+  phases: {
+    widen: { effects: PORTFOLIO_WRITE, files: 1 },
+    peak: { effects: PORTFOLIO_WRITE, files: 2 },
+  },
+  budget: { episodes: 2, wallMs: 600000 },
+  verification: {
+    "failing-lint": ["node checks/lint.cjs"],
+    "failing-test": ["node checks/test.cjs"],
+    "misplaced-file": ["node checks/test.cjs"],
+  },
+};
+function portfolioFixture() {
+  const root = realpathSync(
+    mkdtempSync(join(tmpdir(), "dotln-resident-bind-portfolio-")),
+  );
+  const launchpad = join(root, "launchpad");
+  mkdirSync(launchpad);
+  git(launchpad, "init", "--initial-branch=main");
+  write(launchpad, ".gitignore", "/docs/control/local/\n");
+  write(launchpad, "packages/skeleton/loadouts/grants.json", "[]\n");
+  const config = {
+    version: 1,
+    repositories: {
+      scratch: {
+        baseBranch: "main",
+        worktreeParent: "../scratch-worktrees",
+        repositoryClass: "scratch",
+        authorityProfile: {
+          authorityEnvelopeId: "fixture.scratch",
+          allowedEffects: [...PORTFOLIO_WRITE, "repo.inspect"],
+          deniedEffects: ["repo.delete"],
+          resourceLimits: { files: 8 },
+          requiredEvidence: [],
+          expiresAt: Number.MAX_SAFE_INTEGER,
+          revocationEventTypes: [],
+        },
+      },
+    },
+    portfolios: {
+      "gardener-5s": PORTFOLIO,
+      "self-5s": { ...PORTFOLIO, repo: "self" },
+    },
+  };
+  write(launchpad, "dotln.config.json", `${JSON.stringify(config, null, 2)}\n`);
+  git(launchpad, "add", "-A");
+  git(launchpad, "commit", "-m", "fixture launchpad");
+  const presence = JSON.parse(
+    readFileSync(
+      join(sourceRoot, "packages/skeleton/fixtures/wo100-portfolio.json"),
+      "utf8",
+    ),
+  );
+  const template = {
+    ...presence,
+    policyId: "fixture.portfolio",
+    actors: {
+      probe: {
+        kind: "script",
+        effect: "repo.inspect",
+        surface: "fixture.source",
+        resources: { files: 1, lines: 0, tokens: 0 },
+        command: [process.execPath, "-e", "0"],
+        cwd: root,
+        timeoutMs: 20000,
+        outputContract: "work-candidates-v1",
+      },
+      widen: {
+        kind: "portfolio",
+        effect: "repo.write",
+        surface: "fixture.source",
+        resources: { files: 1, lines: 0, tokens: 0 },
+      },
+      peak: {
+        kind: "portfolio",
+        effect: "repo.write",
+        surface: "fixture.source",
+        resources: { files: 2, lines: 0, tokens: 0 },
+      },
+    },
+    evidence: ["verified-input"],
+  };
+  const templatePath = join(root, "template.json");
+  writeFileSync(templatePath, `${JSON.stringify(template, null, 2)}\n`);
+  let stores = 0;
+  return {
+    root,
+    launchpad,
+    template,
+    templatePath,
+    base: "a".repeat(40),
+    /** A resident.json written by hand, with a binding record naming it. */
+    handStore(resident, binding = {}) {
+      const store = join(root, `hand-${(stores += 1)}`);
+      mkdirSync(store);
+      writeFileSync(join(store, "resident.json"), JSON.stringify(resident));
+      writeFileSync(
+        join(store, "binding.json"),
+        JSON.stringify({
+          schemaVersion: BINDING_SCHEMA_VERSION,
+          kind: "portfolio",
+          portfolioId: "gardener-5s",
+          portfolioVersion: 1,
+          repo: "scratch",
+          baseCommit: "a".repeat(40),
+          policyId: "fixture.portfolio",
+          store,
+          ...binding,
+        }),
+      );
+      return store;
+    },
+    dispose: () => rmSync(root, { recursive: true, force: true }),
+  };
+}
+const withPortfolio = (body) => {
+  const context = portfolioFixture();
+  try {
+    return body(context);
+  } finally {
+    context.dispose();
+  }
+};
+const noLaunchLine = (result) => {
+  assert.doesNotMatch(result.stdout, /--policy fixture\.portfolio --once/u);
+  assert.doesNotMatch(result.stdout, /DOTLN_RESIDENT_STORE/u);
+};
+
+test("WO-157 --check refuses a hand-written portfolio binding whose compiled floor departs from its registered profile, naming the repository and profile", () =>
+  withPortfolio((context) => {
+    const definition = loadConfig(context.launchpad).portfolios["gardener-5s"];
+    // Widen the hand-written floor past the profile: allow repo.delete, drop
+    // the denial, and raise the files limit the profile narrows to 8.
+    const widened = structuredClone(context.template);
+    const active = widened.graph.activeMechanics[0];
+    active.authorityEnvelope.deniedEffects = [];
+    active.authorityEnvelope.allowedEffects.push("repo.delete");
+    active.authorityEnvelope.resourceLimits.files = 16;
+    for (const phase of widened.graph.presence[0].phases) {
+      phase.scope.changeSize.files = 16;
+      phase.envelope.resourceLimits.files = 16;
+    }
+    const store = context.handStore({
+      ...widened,
+      portfolio: { definition, baseCommit: context.base },
+    });
+    const checked = run(context.launchpad, "--check", store);
+    const profile =
+      "repositories\\.scratch\\.authorityProfile \\(fixture\\.scratch\\)";
+    assert.match(
+      checked.stdout,
+      new RegExp(
+        `mismatch {3}profile: ${profile} denies repo\\.delete; the compiled floor fixture\\.portfolio\\.base allows repo\\.delete`,
+        "u",
+      ),
+    );
+    assert.match(
+      checked.stdout,
+      new RegExp(
+        `mismatch {3}profile: ${profile} limits files to 8; the compiled floor fixture\\.portfolio\\.base allows 16`,
+        "u",
+      ),
+    );
+    assert.match(
+      checked.stdout,
+      new RegExp(
+        `mismatch {3}profile: resident\\.json environment\\.repo is "packages/skeleton/fixtures/repo-tree\\.json"; ${profile} compiles it as "scratch"`,
+        "u",
+      ),
+    );
+    assert.equal(checked.status, 1);
+    noLaunchLine(checked);
+    // A definition that differs from the loaded portfolio is named too.
+    const drifted = structuredClone(definition);
+    drifted.phases.peak.files = 9;
+    const edited = run(
+      context.launchpad,
+      "--check",
+      context.handStore({
+        ...context.template,
+        portfolio: { definition: drifted, baseCommit: context.base },
+      }),
+    );
+    assert.equal(edited.status, 1);
+    assert.match(
+      edited.stdout,
+      /mismatch {3}portfolio: resident\.json binds a portfolio gardener-5s v1 that differs from portfolios\.gardener-5s in .*dotln\.config\.json/u,
+    );
+    noLaunchLine(edited);
+  }));
+
+test("WO-157 --check refuses a portfolio binding whose registered profile cannot be read, naming why", () =>
+  withPortfolio((context) => {
+    const config = join(context.launchpad, "dotln.config.json");
+    const loaded = readFileSync(config, "utf8");
+    const definition = loadConfig(context.launchpad).portfolios["gardener-5s"];
+    const store = context.handStore({
+      ...context.template,
+      portfolio: { definition, baseCommit: context.base },
+    });
+    writeFileSync(config, "{");
+    const invalid = run(context.launchpad, "--check", store);
+    assert.equal(invalid.status, 1);
+    assert.match(
+      invalid.stdout,
+      /mismatch {3}profile: no registered authorityProfile is readable for repository scratch: /u,
+    );
+    noLaunchLine(invalid);
+    rmSync(config);
+    const absent = run(context.launchpad, "--check", store);
+    assert.equal(absent.status, 1);
+    assert.match(
+      absent.stdout,
+      /no registered authorityProfile is readable for repository scratch: the launchpad declares no dotln\.config\.json/u,
+    );
+    noLaunchLine(absent);
+    writeFileSync(config, loaded);
+    const self = run(
+      context.launchpad,
+      "--check",
+      context.handStore(
+        {
+          ...context.template,
+          portfolio: {
+            definition: loadConfig(context.launchpad).portfolios["self-5s"],
+            baseCommit: context.base,
+          },
+        },
+        { portfolioId: "self-5s", repo: "self" },
+      ),
+    );
+    assert.equal(self.status, 1);
+    assert.match(
+      self.stdout,
+      /mismatch {3}profile: portfolio self-5s binds self, which carries no registered authorityProfile/u,
+    );
+    noLaunchLine(self);
+  }));
+
+test("WO-157 a loader-built portfolio binding compiles under its registered profile and passes --check", () =>
+  withPortfolio((context) => {
+    const bound = run(
+      context.launchpad,
+      "--portfolio",
+      "gardener-5s",
+      "--template",
+      context.templatePath,
+      "--base",
+      context.base,
+    );
+    assert.equal(bound.status, 0, bound.stderr);
+    const store = /^Bound portfolio gardener-5s to (.+)$/mu.exec(
+      bound.stdout,
+    )?.[1];
+    assert.ok(store, bound.stdout);
+    const declared = JSON.parse(
+      readFileSync(join(store, "resident.json"), "utf8"),
+    );
+    const configuration = decodeResidentConfiguration(declared);
+    assert.equal(configuration.environment.repo, "scratch");
+    assert.deepEqual(
+      configuration.portfolio.definition,
+      loadConfig(context.launchpad).portfolios["gardener-5s"],
+    );
+    assert.equal(
+      requireCompiled(
+        compileLoadout(configuration.graph, configuration.environment),
+      ).authorityEnvelope.authorityEnvelopeId,
+      "fixture.portfolio.base+registered:scratch:fixture.scratch",
+    );
+    const binding = JSON.parse(
+      readFileSync(join(store, "binding.json"), "utf8"),
+    );
+    assert.deepEqual(
+      [binding.kind, binding.repo, binding.profileId],
+      ["portfolio", "scratch", "fixture.scratch"],
+    );
+    const checked = run(context.launchpad, "--check", store);
+    assert.equal(checked.status, 0, checked.stdout + checked.stderr);
+    assert.match(
+      checked.stdout,
+      /Binding for portfolio gardener-5s matches canonical state/u,
+    );
+    assert.match(checked.stdout, /--policy fixture\.portfolio --once/u);
+    // The same store with its environment edited by hand is refused.
+    writeFileSync(
+      join(store, "resident.json"),
+      JSON.stringify({
+        ...declared,
+        environment: {
+          ...declared.environment,
+          repo: "packages/skeleton/fixtures/repo-tree.json",
+        },
+      }),
+    );
+    const edited = run(context.launchpad, "--check", store);
+    assert.equal(edited.status, 1);
+    assert.match(
+      edited.stdout,
+      /mismatch {3}profile: resident\.json environment\.repo is "packages\/skeleton\/fixtures\/repo-tree\.json"/u,
+    );
+    noLaunchLine(edited);
+    for (const [args, expected] of [
+      [
+        ["--portfolio", "missing"],
+        /no portfolio missing is declared under portfolios/u,
+      ],
+      [["--portfolio", "self-5s"], /binds self/u],
+    ]) {
+      const refused = run(
+        context.launchpad,
+        ...args,
+        "--template",
+        context.templatePath,
+        "--base",
+        context.base,
+      );
+      assert.equal(refused.status, 1);
+      assert.match(refused.stderr, expected);
+    }
+    const shortBase = run(
+      context.launchpad,
+      "--portfolio",
+      "gardener-5s",
+      "--template",
+      context.templatePath,
+      "--base",
+      "abc",
+    );
+    assert.match(
+      shortBase.stderr,
+      /full 40-hex commit id for a portfolio binding/u,
+    );
+    writeFileSync(
+      context.templatePath,
+      JSON.stringify({
+        ...context.template,
+        portfolio: {
+          definition: loadConfig(context.launchpad).portfolios["gardener-5s"],
+          baseCommit: context.base,
+        },
+      }),
+    );
+    const carried = run(
+      context.launchpad,
+      "--portfolio",
+      "gardener-5s",
+      "--template",
+      context.templatePath,
+      "--base",
+      context.base,
+    );
+    assert.match(carried.stderr, /without a portfolio/u);
+  }));
+
+test("WO-157 --check names WorkOrder operations the profile denies, a policy the store does not select and an unregistered prototype-key repository", () =>
+  withPortfolio((context) => {
+    const bound = run(
+      context.launchpad,
+      "--portfolio",
+      "gardener-5s",
+      "--template",
+      context.templatePath,
+      "--base",
+      context.base,
+    );
+    assert.equal(bound.status, 0, bound.stderr);
+    const store = /^Bound portfolio gardener-5s to (.+)$/mu.exec(
+      bound.stdout,
+    )?.[1];
+    const declared = JSON.parse(
+      readFileSync(join(store, "resident.json"), "utf8"),
+    );
+    const binding = JSON.parse(
+      readFileSync(join(store, "binding.json"), "utf8"),
+    );
+    // WorkOrder operations: the forward compile prohibits repo.delete.
+    const widened = structuredClone(declared);
+    const order = widened.graph.activeMechanics[0].workOrder;
+    order.allowedOperations.push("repo.delete");
+    order.prohibitedOperations = order.prohibitedOperations.filter(
+      (value) => value !== "repo.delete",
+    );
+    const operations = run(
+      context.launchpad,
+      "--check",
+      context.handStore(widened, binding),
+    );
+    assert.equal(operations.status, 1);
+    assert.match(
+      operations.stdout,
+      /profile: repositories\.scratch\.authorityProfile \(fixture\.scratch\) denies repo\.delete; the compiled WorkOrder allows repo\.delete/u,
+    );
+    noLaunchLine(operations);
+    // A binding record naming another policy than the store selects.
+    const policy = run(
+      context.launchpad,
+      "--check",
+      context.handStore(declared, {
+        ...binding,
+        policyId: "fixture.portfolio;touch${IFS}/tmp/wo157",
+      }),
+    );
+    assert.equal(policy.status, 1);
+    assert.match(
+      policy.stdout,
+      /store: resident\.json selects policy fixture\.portfolio; the binding record says fixture\.portfolio;touch/u,
+    );
+    noLaunchLine(policy);
+    // A repository named like an Object.prototype key is simply unregistered.
+    const prototypeKey = structuredClone(declared);
+    prototypeKey.portfolio.definition.repo = "constructor";
+    const unregistered = run(
+      context.launchpad,
+      "--check",
+      context.handStore(prototypeKey, { ...binding, repo: "constructor" }),
+    );
+    assert.equal(unregistered.status, 1);
+    assert.match(
+      unregistered.stdout,
+      /profile: repository constructor has no registered authorityProfile/u,
+    );
+    noLaunchLine(unregistered);
+  }));
+
+test("WO-157 a template grant that differs from its registry entry only in reason binds and passes --check", () =>
+  withPortfolio((context) => {
+    const grant = {
+      grantId: "operator.scratch.inspect",
+      version: 1,
+      grantedBy: "operator",
+      effects: ["net.fetch"],
+      repo: "scratch",
+    };
+    write(
+      context.launchpad,
+      "packages/skeleton/loadouts/grants.json",
+      `${JSON.stringify([{ ...grant, reason: "registry reason" }])}\n`,
+    );
+    const template = structuredClone(context.template);
+    template.graph.authorityGrants = [
+      ...(template.graph.authorityGrants ?? []),
+      { ...grant, reason: "template reason" },
+    ];
+    writeFileSync(context.templatePath, JSON.stringify(template));
+    const bound = run(
+      context.launchpad,
+      "--portfolio",
+      "gardener-5s",
+      "--template",
+      context.templatePath,
+      "--base",
+      context.base,
+    );
+    assert.equal(bound.status, 0, bound.stderr);
+    const store = /^Bound portfolio gardener-5s to (.+)$/mu.exec(
+      bound.stdout,
+    )?.[1];
+    const checked = run(context.launchpad, "--check", store);
+    assert.equal(checked.status, 0, checked.stdout + checked.stderr);
   }));
