@@ -45,6 +45,11 @@ export const FEEDBACK_SOURCE_PATHS = [
   "packages/skeleton/src/discovery-cli.ts",
   "packages/skeleton/src/discovery.ts",
   "packages/skeleton/src/verification-protocol.ts",
+  // The request protocols verification-protocol.ts and worker-transport.ts
+  // import, so a moved protocol stales the subject (WO-157 item 12).
+  "packages/skeleton/src/entropy-review-protocol.ts",
+  "packages/skeleton/src/mission-check-protocol.ts",
+  "packages/skeleton/src/plan-refutation-protocol.ts",
   "packages/skeleton/src/verification-host.ts",
   "packages/skeleton/src/verification-worktree.ts",
   "packages/skeleton/src/worker-transport.ts",

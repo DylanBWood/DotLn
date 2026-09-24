@@ -10,7 +10,10 @@ import {
   evidenceArgs,
   sameEvidenceSourceContent,
 } from "../packages/skeleton/src/evidence-editions.mjs";
-import { evidenceSources } from "./lib/evidence-sources.mjs";
+import {
+  checkEvidenceImports,
+  evidenceSources,
+} from "./lib/evidence-sources.mjs";
 import {
   COMPOSITION_PRECEDENCE,
   COMPILER_PACKAGE_VERSION,
@@ -61,6 +64,7 @@ assert.ok(
   args.length === 1 && ["--write", "--check"].includes(mode),
   "usage: authority-evidence.mjs --write|--check [--edition WO-NNN] [--revision NNN] (build and emit the bundle first)",
 );
+checkEvidenceImports(root, "authority");
 const editionLabel = selection.label;
 const directory = pathToFileURL(`${join(root, selection.directory)}/`);
 const read = (path) => readFileSync(join(root, path), "utf8");

@@ -1,4 +1,5 @@
 import { docPath, docRelative, findLaunchpad } from "./lib/config.mjs";
+import { checkEvidenceImports } from "./lib/evidence-sources.mjs";
 import { isMainModule } from "./lib/paths.mjs";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
@@ -21,6 +22,7 @@ import { measureColdStarts, requireBudgets } from "./lib/process-budget.mjs";
 export const writerScenarios = ["foreign-dead", "foreign-live"];
 
 export function checkHarnessEvidence(root) {
+  checkEvidenceImports(root, "harness");
   const installed = checkHarness(root);
   const expected = harnessInstallation();
   const coldStart = measureColdStarts(root);

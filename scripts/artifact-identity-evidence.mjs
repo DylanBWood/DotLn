@@ -9,7 +9,10 @@ import {
   sameEvidenceSourceContent,
   writeEvidenceFile,
 } from "../packages/skeleton/src/evidence-editions.mjs";
-import { evidenceSources } from "./lib/evidence-sources.mjs";
+import {
+  checkEvidenceImports,
+  evidenceSources,
+} from "./lib/evidence-sources.mjs";
 import {
   canonicalStringify,
   compileLoadout,
@@ -43,6 +46,7 @@ if (mode.length !== 1 || !["--write", "--check"].includes(mode[0])) {
   process.exit(2);
 }
 const root = pathToFileURL(`${findLaunchpad()}/`);
+checkEvidenceImports(fileURLToPath(root), "artifact-identity");
 const evidenceDirectory = currentEvidence(
   fileURLToPath(root),
   "artifact-identity",

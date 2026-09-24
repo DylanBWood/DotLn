@@ -10,7 +10,10 @@ import {
   sameEvidenceSourceContent,
   writeEvidenceFile,
 } from "../packages/skeleton/src/evidence-editions.mjs";
-import { evidenceSources } from "./lib/evidence-sources.mjs";
+import {
+  checkEvidenceImports,
+  evidenceSources,
+} from "./lib/evidence-sources.mjs";
 import { decodeLog, pendingCommands, replayOutbox } from "@dotln/kernel";
 import { runVerificationDemo } from "../packages/skeleton/dist/src/verification-demo.js";
 import { FakeVerificationTransport } from "../packages/skeleton/dist/src/verification-fake.js";
@@ -26,6 +29,7 @@ if (mode.length !== 1 || !["--write", "--check"].includes(mode[0]))
     "usage: verification-evidence.mjs --write|--check (build first)",
   );
 const repository = pathToFileURL(`${findLaunchpad()}/`);
+checkEvidenceImports(fileURLToPath(repository), "verification");
 const selection = currentEvidence(fileURLToPath(repository), "verification");
 const root = new URL(`${selection.directory}/`, repository);
 const directory = realpathSync(
