@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { parseHeader, parseSequence } from "../work-orders.mjs";
-import { runGit } from "./git.mjs";
+import { readGitObjects, runGit } from "./git.mjs";
 import { containedRegularFile } from "./paths.mjs";
 import { defaultDocRelative, docRelative, rootPattern } from "./config.mjs";
 
@@ -78,52 +78,38 @@ const retain = (cache, key, value, limit) => {
   return value;
 };
 const readBlobBatch = (root, oids) => {
-  const output = runGit(root, ["cat-file", "--batch"], {
-    encoding: "latin1",
-    input: `${oids.join("\n")}\n`,
-    trim: false,
-  });
-  const sources = new Map();
-  let offset = 0;
-  for (const oid of oids) {
-    const headerEnd = output.indexOf("\n", offset);
-    if (headerEnd < 0)
-      throw new Error("git cat-file batch returned a truncated header");
-    const [actual, type, sizeText, ...extra] = output
-      .slice(offset, headerEnd)
-      .split(" ");
-    const size = Number(sizeText);
-    if (
-      actual !== oid ||
-      type !== "blob" ||
-      extra.length ||
-      !Number.isSafeInteger(size) ||
-      size < 0
-    )
-      throw new Error(`git cat-file batch returned an invalid blob: ${oid}`);
-    const start = headerEnd + 1;
-    const end = start + size;
-    if (end >= output.length || output[end] !== "\n")
-      throw new Error(`git cat-file batch returned truncated bytes: ${oid}`);
-    sources.set(
-      oid,
-      Buffer.from(output.slice(start, end), "latin1").toString("utf8"),
+  try {
+    return new Map(
+      [...readGitObjects(root, oids, "blob")].map(([oid, bytes]) => [
+        oid,
+        bytes.toString("utf8"),
+      ]),
     );
-    offset = end + 1;
+  } catch (error) {
+    // Combined payloads can exceed Git's fixed output buffer even when each
+    // object fits. Retry smaller batches; singleton failures still propagate.
+    if (oids.length <= 1) throw error;
+    const middle = Math.ceil(oids.length / 2);
+    return new Map([
+      ...readBlobBatch(root, oids.slice(0, middle)),
+      ...readBlobBatch(root, oids.slice(middle)),
+    ]);
   }
-  if (offset !== output.length)
-    throw new Error("git cat-file batch returned trailing bytes");
-  return sources;
 };
 
-export const committedReader = (root, revision = "HEAD") => {
-  const commit = runGit(root, [
-    "rev-parse",
-    "--verify",
-    `${revision}^{commit}`,
-  ]);
+const committedTree = (root, revision) => {
+  // Reuse only full ids already resolved as commits in this root. An unseen
+  // full id can name an annotated tag and must still be peeled to its commit.
+  // HEAD, branches, tags and revision expressions resolve afresh.
+  const knownTree = /^[0-9a-f]{40}(?:[0-9a-f]{24})?$/u.test(revision)
+    ? cached(treeCache, `${root}\0${revision}`)
+    : undefined;
+  const commit = knownTree
+    ? revision
+    : runGit(root, ["rev-parse", "--verify", `${revision}^{commit}`]);
   const treeKey = `${root}\0${commit}`;
   const entries =
+    knownTree ??
     cached(treeCache, treeKey) ??
     retain(
       treeCache,
@@ -140,43 +126,50 @@ export const committedReader = (root, revision = "HEAD") => {
       ),
       TREE_CACHE_LIMIT,
     );
-  const requireBlob = (path) => {
-    const entry = entries.get(path);
-    if (
-      !entry ||
-      entry.type !== "blob" ||
-      !["100644", "100755"].includes(entry.mode)
-    )
-      throw new Error(
-        `plan subject requires a committed regular file: ${path}`,
-      );
-    return entry;
-  };
+  return { commit, entries };
+};
+const requireBlob = (entries, path) => {
+  const entry = entries.get(path);
+  if (
+    !entry ||
+    entry.type !== "blob" ||
+    !["100644", "100755"].includes(entry.mode)
+  )
+    throw new Error(`plan subject requires a committed regular file: ${path}`);
+  return entry.oid;
+};
+const readBlobs = (root, requested) => {
+  const sources = new Map();
+  const misses = new Map();
+  for (const oid of new Set(requested)) {
+    const key = `${root}\0${oid}`;
+    const source = cached(blobCache, key);
+    if (source === undefined) misses.set(oid, key);
+    else sources.set(oid, source);
+  }
+  const oids = [...misses.keys()];
+  for (let offset = 0; offset < oids.length; offset += BLOB_BATCH_LIMIT) {
+    const batch = oids.slice(offset, offset + BLOB_BATCH_LIMIT);
+    for (const [oid, source] of readBlobBatch(root, batch)) {
+      sources.set(oid, source);
+      retain(blobCache, misses.get(oid), source, BLOB_CACHE_LIMIT);
+    }
+  }
+  return sources;
+};
+
+export const committedReader = (root, revision = "HEAD") => {
+  const { commit, entries } = committedTree(root, revision);
   const readMany = (paths) => {
-    const requested = [...new Set(paths)];
-    const sources = new Map();
-    const misses = new Map();
-    for (const path of requested) {
-      const { oid } = requireBlob(path);
-      const key = `${root}\0${oid}`;
-      const source = cached(blobCache, key);
-      if (source === undefined) misses.set(oid, key);
-      else sources.set(oid, source);
-    }
-    const oids = [...misses.keys()];
-    for (let offset = 0; offset < oids.length; offset += BLOB_BATCH_LIMIT) {
-      const batch = oids.slice(offset, offset + BLOB_BATCH_LIMIT);
-      for (const [oid, source] of readBlobBatch(root, batch)) {
-        sources.set(oid, source);
-        retain(blobCache, misses.get(oid), source, BLOB_CACHE_LIMIT);
-      }
-    }
-    return new Map(
-      requested.map((path) => {
-        const { oid } = requireBlob(path);
-        return [path, sources.get(oid)];
-      }),
+    const requested = [...new Set(paths)].map((path) => [
+      path,
+      requireBlob(entries, path),
+    ]);
+    const sources = readBlobs(
+      root,
+      requested.map(([, oid]) => oid),
     );
+    return new Map(requested.map(([path, oid]) => [path, sources.get(oid)]));
   };
   return {
     revision: commit,
@@ -186,6 +179,27 @@ export const committedReader = (root, revision = "HEAD") => {
       return readMany([path]).get(path);
     },
   };
+};
+
+// Hints populate only the existing bounded immutable cache. They grant no
+// validity: callers must still construct and compare the canonical subjects.
+export const prefetchCommittedSources = (root, requests) => {
+  try {
+    const oids = requests.flatMap(({ revision, paths }) => {
+      const { entries } = committedTree(root, revision);
+      return paths.flatMap((path) => {
+        const entry = entries.get(path);
+        return entry?.type === "blob" &&
+          ["100644", "100755"].includes(entry.mode)
+          ? [entry.oid]
+          : [];
+      });
+    });
+    readBlobs(root, oids);
+  } catch {
+    // Hints may be stale, malformed or unreadable. Canonical consumers still
+    // read and validate required sources, preserving their original refusals.
+  }
 };
 
 const section = (source, heading) => {
@@ -305,13 +319,10 @@ export function buildPlanSubject(
   )?.[0];
   if (!block) throw new Error("expected a byte-addressable sequence block");
   const parts = [["sequence", block]];
+  const orderRoot = rootPattern(root, "workOrders");
   const orderPaths = sequence.map(({ id }) => {
-    const paths = committed.paths.filter((path) =>
-      new RegExp(
-        `^${rootPattern(root, "workOrders")}/${id}-[^/]+\\.md$`,
-        "u",
-      ).test(path),
-    );
+    const pattern = new RegExp(`^${orderRoot}/${id}-[^/]+\\.md$`, "u");
+    const paths = committed.paths.filter((path) => pattern.test(path));
     // Workspace observation also notices drafts that have not been committed.
     if (paths.length !== 1)
       throw new Error(`expected one committed order file for ${id}`);
@@ -500,6 +511,13 @@ function buildGoalSubject(root, revision, { workspace }) {
     workspace
       ? containedRegularFile(join(root, path), root)
       : committed.paths.includes(path);
+  if (!workspace)
+    committed.readMany(
+      [
+        docRelative(root, "product", "07-execution-guide.md"),
+        docRelative(root, "planning", "critical-path-2026-09-08.md"),
+      ].filter(has),
+    );
   const read = (path) => {
     if (!has(path))
       throw new Error(

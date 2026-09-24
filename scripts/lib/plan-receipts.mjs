@@ -13,6 +13,7 @@ import { join } from "node:path";
 import {
   buildPlanSubject,
   committedReader,
+  prefetchCommittedSources,
   hashParts,
   carriedOrderHashMatches,
   planPaths,
@@ -153,6 +154,29 @@ export const renderPlanReceipt = (receipt) =>
     `Receipt hash: \`${receipt.receiptHash}\`.`,
     "",
   ].join("\n");
+
+const subjectPrefetch = (root, subject) => ({
+  revision: subject.revision,
+  paths: [
+    planPaths(root).map,
+    ...(subject.orders ?? []).map((order) => order.path),
+    docRelative(root, "product", "00-vision.md"),
+    docRelative(root, "product", "13-uifa-roles.md"),
+    docRelative(root, "planning", "capability-table.md"),
+    ...(subject.costTable
+      ? [
+          docRelative(root, "control", "budgets.json"),
+          docRelative(root, "planning", "cost-table.json"),
+        ]
+      : []),
+    ...(subject.goalReview
+      ? [
+          docRelative(root, "product", "07-execution-guide.md"),
+          docRelative(root, "planning", "critical-path-2026-09-08.md"),
+        ]
+      : []),
+  ],
+});
 
 export async function validateReceipt(root, receipt) {
   check(
@@ -373,8 +397,36 @@ const criterion = (subject, hold) =>
   subject.orders
     .find(({ workOrderId }) => workOrderId === hold.workOrderId)
     ?.criteria.find(({ id }) => id === hold.criterionId)?.text;
-const meaningful = (value) =>
-  value?.normalize("NFKC").replace(/\s+/gu, " ").trim();
+const MEANINGFUL_CACHE_ENTRIES = 512;
+const MEANINGFUL_CACHE_BYTES = 1024 * 1024;
+const meaningfulCache = new Map();
+let meaningfulCacheBytes = 0;
+const meaningful = (value) => {
+  const prior = meaningfulCache.get(value);
+  if (prior !== undefined) {
+    meaningfulCache.delete(value);
+    meaningfulCache.set(value, prior);
+    return prior;
+  }
+  const normalized = value?.normalize("NFKC").replace(/\s+/gu, " ").trim();
+  if (typeof value !== "string") return normalized;
+  // Count both strings as UTF-16 storage; oversized inputs never enter the
+  // cache. Missing values retain the original optional-chaining behavior.
+  const bytes = 2 * (value.length + normalized.length);
+  if (bytes <= MEANINGFUL_CACHE_BYTES) {
+    while (
+      meaningfulCache.size >= MEANINGFUL_CACHE_ENTRIES ||
+      meaningfulCacheBytes + bytes > MEANINGFUL_CACHE_BYTES
+    ) {
+      const [old, result] = meaningfulCache.entries().next().value;
+      meaningfulCache.delete(old);
+      meaningfulCacheBytes -= 2 * (old.length + result.length);
+    }
+    meaningfulCache.set(value, normalized);
+    meaningfulCacheBytes += bytes;
+  }
+  return normalized;
+};
 export const criterionHash = (value) => sha256(meaningful(value) ?? "");
 export const isGoalReview = (receipt) =>
   receipt.result.schemaVersion === "plan-goal-review-v1";
@@ -630,7 +682,7 @@ export function admitReceipt(receipt, history, overrides = []) {
 
 export async function readReceipts(root) {
   const committed = committedReader(root);
-  for (const path of committed.paths.filter(
+  const committedPaths = committed.paths.filter(
     (path) =>
       path.startsWith(`${receiptsRoot(root)}/`) &&
       validReceiptId(
@@ -641,15 +693,35 @@ export async function readReceipts(root) {
       !manual.test(
         path.slice(receiptsRoot(root).length + 1).replace(/\.md$/u, ".json"),
       ),
-  ))
-    read(root, path); // Deleting committed evidence cannot reset the attempt count.
+  );
+  for (const path of committedPaths) read(root, path); // Deleting committed evidence cannot reset the attempt count.
   if (!existsSync(join(root, receiptsRoot(root)))) return [];
+  // Read immutable receipt bytes in bounded batches, then compare every
+  // workspace file as before. Keep this result even if subject reads evict
+  // entries from the shared blob cache while receipts are validated.
+  const committedSources = committed.readMany(committedPaths);
+  const inputs = readdirSync(join(root, receiptsRoot(root)))
+    .sort()
+    .filter((name) => name.endsWith(".json") && !manual.test(name))
+    .map((name) => {
+      const path = `${receiptsRoot(root)}/${name}`;
+      const source = read(root, path);
+      return { name, path, source, receipt: json(source, path) };
+    });
+  prefetchCommittedSources(
+    root,
+    inputs.flatMap(({ receipt }) => {
+      const subject = receipt?.subject;
+      return subject &&
+        Array.isArray(subject.orders) &&
+        subject.orders.every((order) => order && typeof order.path === "string")
+        ? [subjectPrefetch(root, subject)]
+        : [];
+    }),
+  );
   const receipts = [];
-  for (const name of readdirSync(join(root, receiptsRoot(root))).sort()) {
-    if (!name.endsWith(".json") || manual.test(name)) continue;
-    const path = `${receiptsRoot(root)}/${name}`;
-    const source = read(root, path);
-    const receipt = await validateReceipt(root, json(source, path));
+  for (const { name, path, source, receipt: input } of inputs) {
+    const receipt = await validateReceipt(root, input);
     check(name === `${receipt.receiptId}.json`, "receipt filename mismatch");
     const mdPath = `${receiptsRoot(root)}/${receipt.receiptId}.md`;
     const markdown = read(root, mdPath);
@@ -663,7 +735,7 @@ export async function readReceipts(root) {
     ])
       if (committed.paths.includes(file))
         check(
-          bytes === committed.read(file),
+          bytes === committedSources.get(file),
           "committed receipt was edited; append a new receipt",
         );
     receipts.push(receipt);

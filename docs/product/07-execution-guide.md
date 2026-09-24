@@ -1462,6 +1462,26 @@ rising 65, 72, 73, 74, 80 across WO-090 to WO-069 as a reopen candidate; each
 order added suites or cases, so the count is planning input for this
 candidate, not a hold. The candidate stays open.
 
+**WO-156 planning-check cut (2026-09-24, executor measurement).** Resolving the
+work-order root pattern once per subject call reduced the fixture's `statSync`
+calls from 543 to 10 while preserving its subject JSON. On this host,
+`node scripts/refute-plan.mjs check` fell from 17.86 s to 2.85 s and the
+`test:docs` `plan` and `plan-refutation-current` tasks fell from 25.27 s and
+25.20 s to 3.25 s and 3.19 s; the full document gate fell from 30.80 s to
+24.41 s because other tasks still run concurrently. Those initial figures
+missed the 2 s bound and led to VER-001 and the operator-authorized repair.
+The repair batches immutable Git reads and caches unchanged normalization
+within 512 entries and 1 MiB of string storage. The first repair measured
+1.799–1.823 s versus 3.121–3.177 s with the pre-repair sources, with identical
+stdout and 98 Git launches versus 242. VER-002 then found optional-prefetch
+and aggregate-buffer regressions. Their correction measured 1.657–1.667 s
+versus 2.792–2.824 s on the same tree, with identical stdout and 104 launches;
+the six additional historical fallback reads preserve accepted inputs. Its
+`test:docs` plan tasks took 1.90 s and 1.81 s. The [WO-156 decisions](../evidence/WO-156/decisions.md)
+and [repair evidence](../evidence/WO-156/repair.md) preserve the comparisons,
+refusal checks and reopening conditions. This local measurement does not
+assign a new structural cut to the broader product gate.
+
 ## Candidate — refutation pass worth its cost
 
 The 2026-09-12 planning pass paid three direct-session refutations of one

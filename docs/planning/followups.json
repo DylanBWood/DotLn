@@ -5266,6 +5266,27 @@
           "title": "Candidate — cold-gate structural cuts",
           "summary": "## Candidate — cold-gate structural cuts The 2026-09-12 planning pass declined to allocate the structural cuts that the relayed proof-carrying-gates plan proposed for the one fresh full gate, because their benefit is unmeasured until the gate's critical path is recorded. The 2026-09-12T16:08Z fresh gate ran 475 s of wall-clock over 1,229 s of task time: the two exclusive suites held it at concurrency one for 206 s, and perfect packing over the cap of four would take 307 s. WO-128 records each task's concurrent peers in the gate row; that trace is the entry evidence for this candidate. WO-128's [first accepted shared row](../evidence/WO-128/shared-series-002.json) now supplies that evidence: ",
           "missing": false
+        },
+        {
+          "hash": "7746be2ac14c921c64be585b7c675c9a7f54903b844b9f3b5f2d01eca285d7e9",
+          "ref": "docs/product/07-execution-guide.md#candidate--cold-gate-structural-cuts",
+          "title": "Candidate — cold-gate structural cuts",
+          "summary": "## Candidate — cold-gate structural cuts The 2026-09-12 planning pass declined to allocate the structural cuts that the relayed proof-carrying-gates plan proposed for the one fresh full gate, because their benefit is unmeasured until the gate's critical path is recorded. The 2026-09-12T16:08Z fresh gate ran 475 s of wall-clock over 1,229 s of task time: the two exclusive suites held it at concurrency one for 206 s, and perfect packing over the cap of four would take 307 s. WO-128 records each task's concurrent peers in the gate row; that trace is the entry evidence for this candidate. WO-128's [first accepted shared row](../evidence/WO-128/shared-series-002.json) now supplies that evidence: ",
+          "missing": false
+        },
+        {
+          "hash": "e8f14d8a3fc7ce4ad55fcfd653597f023fa15a8abb7f5c1d25bfbed12b4eeca5",
+          "ref": "docs/product/07-execution-guide.md#candidate--cold-gate-structural-cuts",
+          "title": "Candidate — cold-gate structural cuts",
+          "summary": "## Candidate — cold-gate structural cuts The 2026-09-12 planning pass declined to allocate the structural cuts that the relayed proof-carrying-gates plan proposed for the one fresh full gate, because their benefit is unmeasured until the gate's critical path is recorded. The 2026-09-12T16:08Z fresh gate ran 475 s of wall-clock over 1,229 s of task time: the two exclusive suites held it at concurrency one for 206 s, and perfect packing over the cap of four would take 307 s. WO-128 records each task's concurrent peers in the gate row; that trace is the entry evidence for this candidate. WO-128's [first accepted shared row](../evidence/WO-128/shared-series-002.json) now supplies that evidence: ",
+          "missing": false
+        },
+        {
+          "hash": "e51cc6fd266e08b4da3f11eb34a184285dceb99f4cd9702b10f9e485f4402b92",
+          "ref": "docs/product/07-execution-guide.md#candidate--cold-gate-structural-cuts",
+          "title": "Candidate — cold-gate structural cuts",
+          "summary": "## Candidate — cold-gate structural cuts The 2026-09-12 planning pass declined to allocate the structural cuts that the relayed proof-carrying-gates plan proposed for the one fresh full gate, because their benefit is unmeasured until the gate's critical path is recorded. The 2026-09-12T16:08Z fresh gate ran 475 s of wall-clock over 1,229 s of task time: the two exclusive suites held it at concurrency one for 206 s, and perfect packing over the cap of four would take 307 s. WO-128 records each task's concurrent peers in the gate row; that trace is the entry evidence for this candidate. WO-128's [first accepted shared row](../evidence/WO-128/shared-series-002.json) now supplies that evidence: ",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -15519,6 +15540,78 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-3dc0266d6b87b939",
+      "key": "decision:docs/evidence/WO-156/decisions.md#wo-156-d003",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "24a919bfec4ed83e4fa18fb24a540a568f939cc0439a07d1b9444dbdfbd0a712",
+          "ref": "docs/evidence/WO-156/decisions.md#wo-156-d003",
+          "title": "WO-156-D003: Planner: cut a bounded order to profile and reduce synchronous Git spawning on the plan check path after WO-156. Start with scripts/lib/plan-receipts.mjs, scripts/lib/plan-subject.mjs and",
+          "summary": "{ \"id\": \"WO-156-D003\", \"date\": \"2026-09-24\", \"dispatch\": \"resume: next; WO-156 criterion 2 and explicit over-2-second follow-up rule\", \"decision\": \"Preserve the measured hoist and file the remaining plan-check latency for a separate bounded order; the 2 s objective is not met on this host.\", \"evidence\": [ \"Assigned-tree before: plan check 17.86 s; after: 2.85 s, both exit 0. The order's 2026-09-22 comparator was 16.46 s.\", \"test:docs before: plan 25.27 s, plan-refutation-current 25.20 s, gate 30.80 s, 21 passed; after: plan 3.25 s, plan-refutation-current 3.19 s, gate 24.41 s, 21 passed. Other concurrent tasks limit the gate-wall reduction.\", \"A single post-hoist CPU profile sampled spawnSyn",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Implemented in WO-156 under operator amendments D005/D006: Git launches fell from 242 to 98, check output is byte-identical, and repeated checks finish in 1.795–1.823 s. D008 and repair.md record passing regression and gate evidence.",
+          "reopenWhen": "A new check exceeds 2 s or changes subject bytes, mutable-ref freshness or receipt validation.",
+          "targets": [],
+          "at": "2026-09-24T20:02:05.315Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-5827640154a48b7b",
+      "key": "decision:docs/evidence/WO-156/decisions.md#wo-156-d004",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "dcff2f8e60ac89a9a423ca4c4c75ce7ab393fcddc1e091f3d1533ebdb06f79c8",
+          "ref": "docs/evidence/WO-156/decisions.md#wo-156-d004",
+          "title": "WO-156-D004: resume: fix WO-156 VER-001 F1 after an operator decision the verifier cannot make: either an operator scope expansion that admits the plan-check Git-spawn reduction (now FUP-3dc0266d6b87b",
+          "summary": "{ \"id\": \"WO-156-D004\", \"date\": \"2026-09-24\", \"dispatch\": \"resume: verify; VER-001 F1, WO-156 criterion 2\", \"decision\": \"Return criterion 2 to repair: node scripts/refute-plan.mjs check still takes over 2 s wall-clock on the operator's host. The hoist, byte identity, regression and timing record hold, but the order lists all five criteria as required, and its design clause that routes the residual cost to a follow-up does not waive the 2 s bound. On the current text a repair has no in-scope route to the bound, because the remaining dominant cost, synchronous Git spawning, is a stated non-goal.\", \"evidence\": [ \"VER-001: three runs of /usr/bin/time -p node scripts/refute-plan.mjs check on the c",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Operator chose the Git-launch reduction, then bounded normalization caching, recorded in D005/D006 and bound by plan amend-order. D008 and repair.md establish the retained under-2-second criterion with byte-identical output and passing fixtures, document gate and product gate; re-verification is separately dispatched.",
+          "reopenWhen": "Re-verification finds an unmet criterion or a subsequent host check exceeds the bound.",
+          "targets": [],
+          "at": "2026-09-24T20:02:05.852Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-ab1746dc9c595d95",
+      "key": "decision:docs/evidence/WO-156/decisions.md#wo-156-d009",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "fdbeec0a784f5738e40a596ef9764ff3a046da72b717a4a53197db2718734bc1",
+          "ref": "docs/evidence/WO-156/decisions.md#wo-156-d009",
+          "title": "WO-156-D009: Repair WO-156 VER-002 F1/F2 in scripts/lib/plan-subject.mjs and scripts/lib/plan-receipts.mjs: ignore unusable optional prefetch hints and split failed multi-blob batches so valid individ",
+          "summary": "{ \"id\": \"WO-156-D009\", \"date\": \"2026-09-24\", \"dispatch\": \"resume: verify; VER-002 F1/F2; continuing operator adjacent-repair authority in D007\", \"decision\": \"Return the Git batching repair for two accepted-input regressions. Preserve the successful speed measurements and correct optional prefetch validation and aggregate buffer overflow before re-verification.\", \"evidence\": [ \"Independent verifier: canonical sequence plus an unused legacy work-order-map.md symlink passes original readReceipts but current prefetch rejects it; buildPlanSubject and validateReceipt still succeed.\", \"Independent verifier: six valid committed receipts of approximately 3,152,367 bytes each pass the original reader ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "VER-002 F1/F2 repaired under D007 authority: optional hints preserve canonical reads; failed batches split. D010 records red/green fixtures, 68 passing cases, byte-identical checks under 2 s, and full npm test passed 27 suites / 71 tasks.",
+          "reopenWhen": "Either independent accepted-input probe fails, canonical validation weakens, output differs, or host check exceeds 2 s.",
+          "targets": [],
+          "at": "2026-09-24T20:23:22.583Z"
+        }
+      ]
     }
   ]
 }
