@@ -1,22 +1,23 @@
 # Current control state
 
-## WO-155
+## WO-156
 
-- Work order: WO-155
-- Work-order path: docs/work-orders/WO-155-single-source-floor.md
+- Work order: WO-156
+- Work-order path: docs/work-orders/WO-156-plan-check-sub-second.md
 - Phase: closed
-- Latest verification: VER-001
-- Verification path: docs/verifications/WO-155/VER-001.md
+- Latest verification: VER-003
+- Verification path: docs/verifications/WO-156/VER-003.md
 - Latest verdict: pass
 - Final review: FINAL-001
-- Final-review path: docs/final-reviews/WO-155/FINAL-001.md
-- Latest attestation: harness claude-code; version 2.1.282; model claude-opus-5-5[1m]; effort xhigh; source claude-session-readback; account not-applicable
+- Final-review path: docs/final-reviews/WO-156/FINAL-001.md
+- Latest attestation: harness claude-code; version 2.1.282; model claude-fable-5-1; effort xhigh; source claude-session-readback; account not-applicable
 - Effort drift: none
-- Latest recordedAt: 2026-09-24T19:57:53.018Z
-- Elapsed implementation: 1748954 ms
-- Elapsed verification: 732034 ms
-- Elapsed finalReview: 1192197 ms
-- Latest checkpoint: f193fd4eb444b161f1165bbbf7dac88c25e20f17 (restore: `git checkout refs/dotln/checkpoint/WO-155/6 -- .`)
+- Latest recordedAt: 2026-09-24T20:53:54.609Z
+- Elapsed implementation: 1184154 ms
+- Elapsed verification: 384286 ms
+- Elapsed repair: 663363 ms
+- Elapsed finalReview: 1148557 ms
+- Latest checkpoint: bc2e9a408b04195506223443778bea945f673d76 (restore: `git checkout refs/dotln/checkpoint/WO-156/15 -- .`)
 - Legal next actions: release-close, next, activate
 
 Generated from the append-only `docs/control/resume.jsonl` and `docs/control/orders/WO-NNN.jsonl` segments; do not edit this projection manually.
