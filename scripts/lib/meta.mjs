@@ -576,7 +576,7 @@ export function reconcileCost(workOrder, cost, gateRows, observedAt) {
 
 export async function collectMeta(
   root,
-  { now = new Date().toISOString(), previousEdition = "v0.16.0" } = {},
+  { now = new Date().toISOString(), previousEdition } = {},
 ) {
   const control = readControl(root),
     budgets = readBudgets(root),
@@ -996,6 +996,10 @@ export async function collectMeta(
       }
   }
   const traps = trapRows(orders);
+  traps.find((row) => row.id === "drift-to-low-performance").coldStart = {
+    comparisonEdition: coldStart.comparisonEdition,
+    profiles: coldStart.profiles,
+  };
   const reopenCandidates = decisions
     .filter((decision) => {
       const condition = decision.reopenWhen;
@@ -1156,10 +1160,10 @@ export function renderMeta(meta) {
         `Unassigned planning ${row.dispatch}/${row.role}: ${display(row.observation.usage.totalTokens)} tokens; USD ${display(row.observation.usage.costUsd)}; ${row.observation.source}`,
     ),
     "",
-    "Installed cold start:",
+    `Drift-to-low-performance — installed cold start (previous edition ${meta.coldStart.comparisonEdition ?? "unknown"}):`,
     ...meta.coldStart.profiles.map(
       (row) =>
-        `${row.skillsRoot}/${row.role}: ${display(row.bytes)} bytes; Δ ${display(row.delta)}; ${row.verdict}`,
+        `${row.skillsRoot}/${row.role}: ${display(row.bytes)} bytes; ceiling ${display(row.ceiling)}; previous ${display(row.previousBytes)}; Δ edition ${display(row.delta)}; last acceptance ${row.lastAcceptance?.date ?? "unknown"}: ${display(row.lastAcceptance?.bytes)} bytes, Δ ${display(row.lastAcceptance?.delta)}${row.lastAcceptance?.cause ? ` (${row.lastAcceptance.cause})` : ""}; ${row.verdict}`,
     ),
     "",
     `Declared supports=${display(meta.declared.supports)}, units=${display(meta.declared.units)}, hooks=${display(meta.declared.hooks)}`,
