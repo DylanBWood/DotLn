@@ -1,0 +1,97 @@
+# WO-153 FINAL-001 — final review
+
+**Verdict:** pass. The delivered subject meets all five acceptance criteria. A Codex lifecycle dispatch whose session entry fails now names the host's error on stderr with `cause no-session`, prints its briefing with any allocated report path, and exits 0. The host no longer leaves a half-made session behind, so that cause agrees with the usage readback and a retry. VER-002 reproduced each criterion; I re-ran the order's own fixture and its one final-review `npm test`, which passes at the reviewed bytes. `main` has not moved since activation, so nothing was integrated and the `v0.45.1` patch target stands. The package change, the evidence re-mint and the regenerated surfaces go beyond the order's cost line. The operator's scope expansion recorded in D006 and D007 covers them, and the order's own text was not changed to absorb them. This review boards up nothing new.
+
+**Subject:** [`docs/work-orders/WO-153-codex-session-entry-advisory.md`](../../work-orders/WO-153-codex-session-entry-advisory.md) on branch `wo-153`, uncommitted at dispatch, judged at checkpoint `refs/dotln/checkpoint/WO-153/9` (`e1646983`), the tree VER-002 passed plus the projections the final-review dispatch regenerated. The base is `75743fd64031e83bb13c3873411fd5ca56cda1c1` (`v0.45.0`); `git fetch origin main` on 2026-09-24 returned the same commit and the remote's newest `v0.45*` tag is `v0.45.0`. The reviewer's gate ran on the working tree at tree `2d76c0ec8557385d634ca50081bb0ca8ebe7f9d9`, code identity `529919eb8d7cc42b2218c6126510a1c7e494e84919935bf5d5b7f901b12d129e`, the same code identity as the executor's post-repair row, because no tracked code changed after it. The identity excludes `docs/`, `.claude/` and root Markdown, so staging this order's records does not move it. The changed sources hash as VER-002 recorded them: `scripts/resume.mjs` `7fda4bd8…`, `scripts/test-process-debt.mjs` `7a5999ed…`, `packages/skeleton/src/harness-host.ts` `576b9c39…`. Nothing was committed, pushed or published before the result transition.
+
+**Actor attestation:** {"harness":"claude-code","harnessVersion":"2.1.281","model":"claude-opus-5-5[1m]","effort":"xhigh","source":"claude-session-readback"}
+
+Human actor: the operator dispatched `resume: final review` in a Claude Code session and made no choice during the review; the session ran under the reviewer's authority, which covers committing the reviewed state, pushing the WO branch and opening its PR, and never covers merging, pushing `main` or publishing a release. The harness version is `claude --version` (2.1.281). The model is the session's selected model. Effort `xhigh` is the value the host exports as `CLAUDE_EFFORT`, read by this session and recorded from `claude-session-readback`: it is selected, not effective. The order asks for `reviewer any`. The fan-out plan, made before any work, was zero subagents against the cap of 20: the diff is three source files and one fixture, which one reader can judge whole. None was spawned.
+
+**Process cost:** entry 81598 tokens; handoff 10593248 tokens; source claude-transcript-message-usage
+
+Both readings are `dispatch` scope from `node scripts/harness.mjs usage aeb3f939-11f1-45d8-a066-5e83bbed3e2a`, observed at 2026-09-24T16:48:44.453Z and 2026-09-24T17:03:13.136Z; the handoff reading was taken before this report's last edits, so the closing turns are outside it. Most of the handoff total is cached input (10,327,819 tokens). Reasoning tokens and dollar cost are unavailable from this counter, which means unknown, not zero. Subagents: 0 of the cap of 20, exact-observed, with the unobserved remainder unknown. The largest single wait was the reviewer's product gate (542,453 ms). An earlier launch of the same gate never started: its log redirect named a scratch directory that did not yet exist, so the shell failed before `npm test` ran and no check was recorded. Final counters remain in ignored receipts and the handoff response.
+
+## Goal-aligned judgment
+
+WO-153 is process tooling on the operator-flow path. It is not on the source-to-deliverable critical path and claims no product progress. It removes one way a lifecycle dispatch can strand an operator: a recorded transition whose report path was never printed and whose dispatch the role text forbids repeating. The review compared three acts: passing on the delivered bytes, failing back to repair, and editing at review. *Rule beating* was the main lens. A green fixture that forced only a pre-write failure had already been shown by VER-001 to miss the partial begin. I therefore checked that the repaired fixture drives both failures through the real dispatch table and asserts the readback, and did not accept exit 0 alone. *Policy resistance*: the catch widens the class treated as a measurement concern from "runtime not built" to "anything but already-began". It keeps D001's visibility requirement by carrying the error's own message, and the operator's review assumption 1 accepts that trade. *Drift to low performance*: `unknown; cause no-session` could become normal on Codex-held orders without anyone seeing it. Refutation 026's reopening observation carries that risk; the order adds no advisory count. *Escalation* and *success to the successful*: the scope grew from one catch to a host rollback, a component bump and a live re-mint. That happened by the operator's recorded choice after being shown the re-mint cost, not by default. The host fix is smaller than the caller-side rollback it replaced and covers `harness begin` too. *Tragedy of the commons*: the fixture adds no product-gate suite or fresh task, and the live episode spent 967,008 tokens and USD 1.53 once. *Shifting the burden to the intervenor*: the operator no longer re-derives a withheld report path. *Seeking the wrong goal*: the goal is an admitted dispatch whose measurement gap is named truthfully, and that is what the readback assertion checks. *Naive Interventionism* argued against changing anything at review: the delivered bytes were independently verified, and a reviewer edit would ship unjudged behavior. *NoOp*, meaning passing without re-running the gate, would leave the release manifest without the reviewer's product-gate row that the order and publication require.
+
+## Authority: the order text against its activated text
+
+`git diff refs/dotln/checkpoint/WO-153/1 -- docs/work-orders/WO-153-codex-session-entry-advisory.md` shows one change: the H1's `(version assigned at activation)` became `(v0.45.1)` ([D004](../../evidence/WO-153/decisions.md#wo-153-d004)). Every objective sentence, design bullet, criterion, non-goal and dependency is unchanged. `npm run plan -- check` exits 0. Its only workspace update for WO-153 is a `release-assignment` of `v0.45.1`, the kind `plan check` reports for a version assigned at activation.
+
+Three things travel beyond the order's cost line, which named one catch and one fixture with "no hook, gate, schema, role-text or counter change":
+
+- **The host rollback and skeleton `0.38.1`** ([D006](../../evidence/WO-153/decisions.md#wo-153-d006)). The executor's record says the operator expanded scope during the repair so that the partial begin would be fixed rather than deferred. The only callers of `beginHarnessSession` are `scripts/harness.mjs begin` and, through `beginHarnessSessionOnce`, `scripts/resume.mjs` (reviewer's `git grep`). The change therefore touches no Claude hook or Copilot path, alters neither when a session begins nor the set of dispatches that begin one, and adds no retry. It only removes the record a failed entry wrote. `record()` is a single `appendFileSync` after a regular-file check, and `initializeSubagentCounter` is idempotent on a later begin, so the rollback leaves nothing a retry would misread (reviewer's read of `harness-host.ts`, `subagent-budget.ts`).
+- **The authority and feedback re-mint** ([D007](../../evidence/WO-153/decisions.md#wo-153-d007)). `harness-host.ts` is a registered source of both editions, so the gate refused the subject until they matched. The operator chose to keep the host fix after being shown that cost.
+- **The 31 regenerated harness surfaces.** "Role text or the bundle" is one of the order's non-goals. The surfaces were regenerated because `harness-host.js` is a pinned runtime file. Every changed line in `.claude/` is a snapshot path (`43f5266ccaf001a2` → `a2fc955825e0b962`), the `harness-host.js` hash, or a manifest hash of those files (reviewer's filtered `git diff -U0 .claude/`). No role skill changed. I judge this a mechanical consequence of the authorized host change, not a change to role text or bundle content.
+
+I did not observe the operator's directions. They reach this review through the executor's decision records and implementation receipt. VER-002 judged the subject with them in place. The order's text was not edited to absorb the expansion, so no `PlanExecutionAmended` binding applies; the reviewer skill requires one only when an expansion changes a judged order's text.
+
+## The verification sequence
+
+[VER-001](../../verifications/WO-153/VER-001.md) failed the order correctly. Its finding F1 was substantive, not procedural: the implementation fixture injected an invalid role, which fails before the session record is written. An isolated probe that precreated the observation log as a directory showed the host throwing after the write. It left a record whose usage readback reported `session-counters-unavailable`, a cause outside the closed list, while the new advisory would have said `no-session`. D001 had inferred this case and set it aside as out of scope. The verifier turned the inference into an observation and routed it to repair through D005 and its follow-up, which is the right call under criterion 1's readback clause.
+
+[VER-002](../../verifications/WO-153/VER-002.md) passed all five criteria and closed F1 by reproduction. The fixture now forces the partial begin through the real dispatch table for all five actions and observes both the `no-session` readback and a non-silent retry. VER-002 recorded that `scripts/resume.mjs` is byte-identical to VER-001's subject, so the repair's whole effect is in the host. For criterion 5 it reused the executor's `npm test -- --review` row at the current code identity instead of running its own, which the role procedure permits (executor and verifier choose when `npm test` is useful); this review supplies the order's own final-review run. Implementation and repair ran on Claude Code 2.1.281 with `claude-opus-5-5[1m]` at `xhigh`. Both verifications ran on Codex CLI 0.156.1 with `gpt-6-sol` at `xhigh`, read back from the session, so verification was independent in harness and model. This review ran on the implementation's model.
+
+I found no disagreement with either verdict and no VER-002 claim that did not reproduce.
+
+## Criteria 1 to 5
+
+| Criterion | Judgment | Evidence at this subject |
+| --- | --- | --- |
+| 1 — forced failure, five dispatches | Pass | The WO-153 case runs `next`, `verify`, `fix`, `final-review` and `release-close` under an invalid role and under a partial begin. For each it asserts exit 0, the briefing (with the report path equal to the appended event's `reportPath` where one is allocated), the exact advisory naming the host's message and `cause no-session`, the seed plus exactly the expected transition, no session record, and a `harness usage` readback of `no-session` with null tokens. Reviewer re-run: 3 of 3 pass (WO-153 case 2,542 ms). The catch at `scripts/resume.mjs:1207-1222` covers the import and the begin only. |
+| 2 — silent, unchanged paths | Pass | With the real table, a successful begin and its repeat write no advisory and keep the session bytes identical; a threadless dispatch adds no record and no advisory. After a partial begin a repeat names the failure again, and once the obstruction is removed the next dispatch begins silently. The two WO-149 cases are byte-unchanged (the diff adds one hunk after them) and pass (458 ms, 164 ms). |
+| 3 — closed cause code | Pass | `judgeCostLine` admits `**Process cost:** unknown; cause no-session` built from the observed readback's `cause`; `no-session` is in `scripts/lib/receipt-cost.mjs`'s closed list. |
+| 4 — write-backs | Pass | D001 to D008 carry sources, alternatives and reopening conditions. D005's follow-up is settled by D006 in the register, and D008's is open as `FUP-87ed701db7d7209e`. `npm run meta` has indexed all eight. `git diff --quiet -- docs/evidence/WO-149/decisions.md` exits 0. |
+| 5 — gate, whitespace, dependencies, step count | Pass | `npm test -- --review` at the reviewed bytes: **35 suites, 0 failed, 542.45 s, 79 fresh tasks, exit 0**, tree `2d76c0ec`, code identity `529919eb`, recorded 2026-09-24T17:00:31.651Z, sandbox not in force. `git diff --check` is clean in the working tree and the index. The lockfile moves only `@dotln/skeleton` 0.38.0 → 0.38.1 and the console's exact pin; no dependency is added. Effect on the gate step count: none. The case is one `test()` in the existing `process-debt` machinery suite, which `--review` selects when its sources change; `npm test -- --list` still enumerates 27 product suites. |
+
+## Refutation 026's known issues
+
+The ideation clause of the dispatch resolves to [planning refutation 026](../../planning/refutations/2026-09-22-planning-162d093b92c13201-026.md), which judged WO-153 aligned-with-findings with two known issues and no hold. [Refutation 027](../../planning/refutations/2026-09-22-planning-12a29b8b07c6265d-027.md) carried that verdict by hash, and the [REVIEW-002 pass](../../planning/entropy-review-002-2026-09-22.md) filed the order. I checked each reopening observation against the landed bytes:
+
+- **Criterion 1 (sibling calls in the same `try`): not met.** The readbacks after the begin, `codexSessionReport` through `currentHarnessSessionReport` and `observedFactsReport`, each catch their own failure and return an unknown line (`scripts/lib/harness-runtime.mjs` lines 75-95 and 167-190, reviewer's read). D001 records the same finding. The post-transition steps still outside any catch are the control projection and the executor-index refresh that precede the begin. Those are control operations, not measurement, and they are outside this order. No dispatch has been observed exiting there, which is the receipt's reopening observation.
+- **Criterion 3 (one cause for two faults): not met, carried.** The receipt line reads `unknown; cause no-session` for both a failed begin and an unbuilt runtime; only the stderr advisory tells them apart. This order is the first to land the advisory, so no closed order's row after it exists yet, and no live advisory has been observed; `docs/planning/cost-table.json` holds no `no-session` value today. The order's operator-review assumption 1 accepts a named advisory as the visibility this needs.
+
+The receipt's commons note expected the fixture to add one gate step. It adds none to the product gate, because it sits in a machinery suite.
+
+## Checks run by the reviewer
+
+- `npm test -- --review` on the working tree, outside the harness sandbox: **35 suites, 0 failed, 542.45 s, 79 fresh tasks, exit 0**, recorded 2026-09-24T17:00:31.651Z. No `dotln-gate-sandbox-*` root remained in the temporary directory afterwards.
+- `node --test --test-reporter=spec --test-name-pattern='WO-149|WO-153' scripts/test-process-debt.mjs`: 3 passed, 0 failed, 3,241 ms.
+- `shasum -a 256` of `scripts/resume.mjs`, `scripts/test-process-debt.mjs` and `packages/skeleton/src/harness-host.ts` equals VER-002's recorded values.
+- `git diff --check` clean in the working tree and, after staging, in the index. `git diff --quiet -- docs/evidence/WO-149/decisions.md` exits 0.
+- `node scripts/authority-evidence.mjs --check`, `node scripts/feedback-evidence.mjs --check`, `npm run evidence:verification -- --check`, `npm run evidence:artifact -- --check` and `node scripts/console-fixtures.mjs --check`: all exit 0.
+- `node scripts/harness.mjs check --loadout contributor`: 31 generated surfaces. `node scripts/harness-context.mjs --check`: exit 0. `node scripts/check-registrations.mjs`: 320 JSONL under `docs/`, 21 document-gate tasks stubbed.
+- `npm run plan -- check`: exit 0. `npm run publication:check`: 275/275 headings, both editions current. `npm run release -- prepare --local`: `v0.45.1` remains current; meter block refreshed. `npm run release -- check-surfaces --local`: 44 PASS. `npm run work-orders -- index --check`: current. `npm run format:check`: clean.
+- `git fetch origin main` and `git ls-remote --tags origin`: `main` at the base; no `v0.45.1` tag on the remote.
+- Clean-room screen of every new WO-153 record for credentials, personal paths, private hostnames and per-user temporary directories: none. The only matches, all in the live self-host stream, are quoted repository source (the redaction pattern and the no-attribution fixture's `Co-Authored-By` string) and the system path `/private/var/db/dyld`. WO-157's committed stream carries the same three.
+- `npm run test:docs` on the final documents: **21 passed; 0 failed; 21 fresh tasks**, run before and again after this line was written.
+
+## Limits
+
+- I re-ran the focused fixture and the gate but did not re-derive every assertion VER-002 reproduced. For criteria 1 to 3 I relied on the fixture's assertions, which I read in full, and on its passing run.
+- No live Codex dispatch has failed at session entry. The order names none as evidence, and a live dispatch exiting non-zero at entry is its reopening observation.
+- An unlink that fails during the host's rollback would replace the original error with its own and leave the record. D006 records this as unexercised, with reopening condition "a failed rollback is observed".
+- The subagent counter a failed begin initialized stays on disk. A later begin reuses it and preserves its counts (`initializeSubagentCounter`), so I found no consequence, but no fixture asserts it.
+- The operator's scope expansion and re-mint choice are known here only through the executor's records.
+- Effort `xhigh` is the host-selected `CLAUDE_EFFORT` value, not effective effort. This review used the same model as the implementation.
+
+## Handoff
+
+The result is `final-review-result pass`. After the transition the reviewer refreshes the index, rereads the updated outputs and commits the reviewed state in three commits: the dispatch catch with the host rollback and the fixture; the skeleton bump with the re-minted editions and regenerated surfaces; and the record. The reviewer then runs `npm run worktree -- publish WO-153` with the committed [PR body](PR.md) and the [release notes](RELEASE-NOTES.md) beside this report, and returns the helper's post-merge release-close handoff to the operator verbatim. No new follow-up is filed by this review; `FUP-87ed701db7d7209e` (D008) remains for the next planning pass.
+
+## Reproduction
+
+From `/Users/dylanwood/Projects/DotLn-wo153` on branch `wo-153`:
+
+```text
+node --test --test-reporter=spec --test-name-pattern='WO-149|WO-153' scripts/test-process-debt.mjs
+npm test -- --review
+git diff refs/dotln/checkpoint/WO-153/1 -- docs/work-orders/WO-153-codex-session-entry-advisory.md
+git diff -U0 .claude/
+git grep -n beginHarnessSession -- 'packages/*/src/*' 'scripts/*.mjs' 'scripts/lib/*.mjs'
+npm run plan -- check
+npm run publication:check
+npm run release -- check-surfaces --local
+```

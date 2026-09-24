@@ -1,4 +1,4 @@
-# WO-153 — Codex session entry advisory: a Codex lifecycle dispatch whose harness session cannot begin prints a named advisory with the cause and still delivers its briefing and exit code, so a measurement concern never withholds an allocated report path after the control log has recorded the transition (version assigned at activation)
+# WO-153 — Codex session entry advisory: a Codex lifecycle dispatch whose harness session cannot begin prints a named advisory with the cause and still delivers its briefing and exit code, so a measurement concern never withholds an allocated report path after the control log has recorded the transition (v0.45.1)
 
 **Model:** any. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).

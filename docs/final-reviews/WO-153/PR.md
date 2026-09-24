@@ -1,0 +1,38 @@
+# WO-153
+
+A Codex-launched `next`, `fix`, `verify`, `final-review` or `release-close` whose harness session cannot begin now writes one stderr advisory naming the host's error, ending `process cost remains unknown; cause no-session`, and then prints its briefing and exits 0. Before, any begin failure other than the already-began refusal exited 1 after `verify`, `fix` or `final-review` had already recorded its transition, which withheld the briefing carrying the allocated report path for a transition the role text forbids repeating ([WO-149 D009](docs/evidence/WO-149/decisions.md#wo-149-d009)). The failure stays visible, because the advisory carries the error's own message, which is what [WO-149 D001](docs/evidence/WO-149/decisions.md#wo-149-d001) required of any catch. Nothing is retried.
+
+**A failed begin now leaves no half-made session.** [VER-001](docs/verifications/WO-153/VER-001.md) found that the host writes the session record before appending its entry observation. When that append failed, the advisory said `no-session` while a later usage readback found the record, and a repeat dispatch stayed silent. `beginHarnessSession` now removes the record it wrote when the append fails and rethrows the original error. The advisory, the usage readback and a retry therefore agree, for the dispatch and for `node scripts/harness.mjs begin` alike. This package change was made under an operator scope expansion recorded in [D006](docs/evidence/WO-153/decisions.md#wo-153-d006) and moves skeleton to `0.38.1`, with the console's exact pin following.
+
+**Why it is safe to merge.** A successful begin, the already-began repeat, the unbuilt-runtime advisory and a dispatch without a thread identity take the same path as before, and the two WO-149 fixtures pass unedited. No hook behavior, gate, schema, role text, counter format or dependency changes. The 31 regenerated harness surfaces differ only in the pinned runtime snapshot path and the `harness-host.js` hash. The authority and feedback evidence editions were re-minted as WO-153 revision 001 because `harness-host.ts` is a registered source of both. The feedback edition carries one live `claude-cli-print` self-host episode (967,008 tokens, USD 1.53; [D007](docs/evidence/WO-153/decisions.md#wo-153-d007)).
+
+**What a reviewer should know.** No live Codex dispatch has failed at session entry. One fixture covers the failure path: it forces two host-reported failures, an invalid role and a partial begin, through the real dispatch table for all five actions. For each it asserts exit 0, the briefing and its report path, the exact advisory, the appended transition, no leftover session record, a `no-session` usage readback and receipt-line admission. The receipt line `unknown; cause no-session` reads the same for a failed begin and for an unbuilt runtime, and only the stderr advisory tells them apart; planning refutation 026 records the observation that would reopen this. An unlink that fails during the host's rollback would replace the original error; that path is unexercised (D006). Operator chat that was copied word for word into older decision records is a planning follow-up ([D008](docs/evidence/WO-153/decisions.md#wo-153-d008)).
+
+**Validation.** `npm test -- --review` passed **35 suites, 0 failed, 542.45 s, 79 fresh tasks, exit 0** at code identity `529919eb` (tree `2d76c0ec`), recorded 2026-09-24T17:00:31.651Z outside the harness sandbox; `npm run test:docs` reported **21 passed; 0 failed; 21 fresh tasks** on the final documents. The WO-149 and WO-153 fixtures pass 3 of 3. `harness check` reports 31 generated surfaces; `publication:check` passes with both editions current; `plan check`, `release check-surfaces --local` (44 PASS), `format:check`, `work-orders index --check` and the authority, feedback, verification, artifact-identity and console-fixture checks pass; `git diff --check` is clean in the working tree and the index. No dependency changes: the manifest and lockfile move only the internal `@dotln/skeleton` pin. `main` did not move while the order was in flight, so no integration or retime was needed.
+
+Evidence: [FINAL-001](docs/final-reviews/WO-153/FINAL-001.md), [VER-001](docs/verifications/WO-153/VER-001.md), [VER-002](docs/verifications/WO-153/VER-002.md), [decisions D001 to D008](docs/evidence/WO-153/decisions.md), [implementation receipt](docs/evidence/WO-153/implementation.md), [release notes](docs/final-reviews/WO-153/RELEASE-NOTES.md), [the order](docs/work-orders/WO-153-codex-session-entry-advisory.md).
+
+<!-- dotln-process-meter:start -->
+
+Observation cutoff: 2026-09-24T17:01:36.736Z; source: canonical control events and the recorded gate, usage and harness observations collected by npm run meta.
+
+| Work | Phase ms / attempts | Gate ms | Read files / bytes | Observed tokens / USD | Declared prompt tokens | Corrections |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| WO-152 | 6,758,102 (Δ unavailable) / 5 | unavailable (Δ unavailable) | unavailable (Δ unavailable) / unavailable (Δ unavailable) | unavailable (Δ unavailable) / unavailable (Δ unavailable) | unavailable (Δ unavailable) | 0 (Δ unavailable) |
+| WO-151 | 12,140,558 (Δ 5,382,456) / 5 | unavailable (Δ unavailable) | unavailable (Δ unavailable) / unavailable (Δ unavailable) | unavailable (Δ unavailable) / unavailable (Δ unavailable) | unavailable (Δ unavailable) | 0 (Δ 0) |
+| WO-064 | 6,636,805 (Δ -5,503,753) / 5 | unavailable (Δ unavailable) | unavailable (Δ unavailable) / unavailable (Δ unavailable) | unavailable (Δ unavailable) / unavailable (Δ unavailable) | unavailable (Δ unavailable) | 0 (Δ 0) |
+| WO-100 | 13,389,878 (Δ 6,753,073) / 10 | unavailable (Δ unavailable) | unavailable (Δ unavailable) / unavailable (Δ unavailable) | unavailable (Δ unavailable) / unavailable (Δ unavailable) | unavailable (Δ unavailable) | 0 (Δ 0) |
+| WO-157 | 145,433,860 (Δ 132,043,982) / 5 | unavailable (Δ unavailable) | unavailable (Δ unavailable) / unavailable (Δ unavailable) | unavailable (Δ unavailable) / unavailable (Δ unavailable) | unavailable (Δ unavailable) | 0 (Δ 0) |
+| WO-153 | 4,009,005 (Δ -141,424,855) / 4 | 1,469,623 (Δ unavailable) | 0 (Δ unavailable) / 0 (Δ unavailable) | 50,794,925 (Δ unavailable) / unavailable (Δ unavailable) | 1,019 (Δ unavailable) | 4 (Δ 4) |
+
+Unavailable observations are not zero; unset ceilings are not approvals of a future limit.
+
+| Dispatch | Wall ms (Δ) | Context bytes (Δ) | Commands (Δ) | Tokens (Δ) | Steps (Δ) | USD (Δ) / declared prompt tokens |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| WO-153/executor | 3,399,294 (-138,207,071) | 69,069 (unavailable) | 207 (unavailable) | 38,434,330 (unavailable) | 262 (unavailable) | unavailable (unavailable) / 1,019 |
+| WO-153/verifier | 609,711 (-969,858) | unavailable (unavailable) | unavailable (unavailable) | 5,214,329 (unavailable) | unavailable (unavailable) | unavailable (unavailable) / unavailable |
+| WO-153/reviewer | 412,632 (-1,835,294) | 73,441 (unavailable) | 50 (unavailable) | 7,146,266 (unavailable) | 69 (unavailable) | unavailable (unavailable) / unavailable |
+| WO-153/release-close | unavailable (unavailable) | unavailable (unavailable) | unavailable (unavailable) | unavailable (unavailable) | unavailable (unavailable) | unavailable (unavailable) / unavailable |
+| WO-153/planner | unavailable (unavailable) | unavailable (unavailable) | unavailable (unavailable) | unavailable (unavailable) | unavailable (unavailable) | unavailable (unavailable) / unavailable |
+| WO-153/refuter | unavailable (unavailable) | unavailable (unavailable) | unavailable (unavailable) | unavailable (unavailable) | unavailable (unavailable) | unavailable (unavailable) / unavailable |
+<!-- dotln-process-meter:end -->

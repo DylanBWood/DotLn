@@ -20,6 +20,21 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-153 activation completion (2026-09-24):** assigned application `v0.45.1`,
+the next patch above the observed local `v0.45.0` tag, under the declared patch
+classification. A Codex lifecycle dispatch whose harness session cannot begin
+now names the cause in one stderr advisory ending `process cost remains
+unknown; cause no-session`, and still prints its briefing and exits 0, so an
+allocated report path is never withheld after the control log has recorded the
+transition. On repair (VER-001, operator scope expansion WO-153-D006), a
+session begin whose entry observation fails withdraws the record it wrote, so
+the advisory's `no-session` agrees with the usage readback and both the next
+dispatch and `harness begin` can retry. Skeleton `0.38.1` carries that runtime
+change and the console's exact dependency pin follows it; compatibility impact:
+bug fix only. No hook, gate, schema, role text, counter format or external
+dependency changes. Independent verification, final review and publication
+remain separate lifecycle actions.
+
 **WO-157 activation completion (2026-09-22):** assigned application `v0.45.0`
 under the order's minor classification, the next minor above the observed local
 and remote `v0.44.0` tag. One operator-authorized order fixes the fifteen

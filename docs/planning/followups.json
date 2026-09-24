@@ -15364,6 +15364,45 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-c02d54c7d663b508",
+      "key": "decision:docs/evidence/WO-153/decisions.md#wo-153-d005",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "6ef973f1bf45fe52b108d7a9cef31d158771fde8160dfbe0d806695a7544259c",
+          "ref": "docs/evidence/WO-153/decisions.md#wo-153-d005",
+          "title": "WO-153-D005: On resume: fix, make a post-write session-entry failure report a truthful closed cause consistent with the subsequent usage readback, or recover the incomplete record so no-session is tru",
+          "summary": "{ \"id\": \"WO-153-D005\", \"date\": \"2026-09-24\", \"dispatch\": \"resume: verify; VER-001\", \"decision\": \"Record the independently reproduced partial-begin failure as a criterion 1 defect for repair. The new catch admits the dispatch and prints its briefing, but says cause no-session after the host has written a session JSON and then fails to append its observation row; the later usage readback reports a different cause.\", \"evidence\": [ \"At the current subject, packages/skeleton/src/harness-host.ts writes statePath(root, input) before record(root, input). record refuses a non-file observation path with 'Host observation log is not a regular file'.\", \"Verifier isolated probe 2026-09-24: in a temporary",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Fixed on resume: fix by WO-153-D006: harness-host beginHarnessSession withdraws its session record when the entry observation fails, so the dispatch advisory's cause no-session agrees with the usage readback and a repeat dispatch or harness begin retries; the WO-153 fixture forces the partial begin for all five dispatches.",
+          "reopenWhen": "A usage readback after a failed session begin reports a cause other than no-session, or a repeat dispatch after a failed begin is silent.",
+          "targets": [],
+          "at": "2026-09-24T16:22:13.204Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-87ed701db7d7209e",
+      "key": "decision:docs/evidence/WO-153/decisions.md#wo-153-d008",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "137f34b6b287f6c4090a84260a0fdf7b1262df3cec8a9f46eccc571c0156af69",
+          "ref": "docs/evidence/WO-153/decisions.md#wo-153-d008",
+          "title": "WO-153-D008: Sweep committed docs outside docs/intake for operator chat recorded word for word and paraphrase each occurrence; add a role-text rule that decision dispatch fields name the control prefi",
+          "summary": "{ \"id\": \"WO-153-D008\", \"date\": \"2026-09-24\", \"dispatch\": \"resume: fix; operator correction during the repair about operator chat copied word for word into committed records, and the operator's choice of a separate follow-up\", \"decision\": \"Correct this order's record and defer the wider cleanup. D006's dispatch field had copied the operator's scope-expansion message word for word; it now paraphrases it, and the regenerated decisions index carries no copy. The earlier committed occurrences, and the instruction gap that produces them, go to planning as a follow-up, as the operator chose.\", \"evidence\": [ \"What was misread: the executor procedure's duty to name the operator dispatch in decision r",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }
