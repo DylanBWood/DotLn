@@ -40,7 +40,10 @@ export const CANDIDATE_MECHANIC: Readonly<
 export interface PortfolioCeiling {
   /** Exact effects a derived order may carry in this presence phase. */
   readonly effects: readonly string[];
-  /** Host-counted files the order may touch, including a proposed home. */
+  /** Files the order may touch, including a proposed home. The phase's
+   * envelope carries it as `resourceLimits.files`; the source-change host
+   * counts the committed paths against it and refuses a removal or type
+   * change without `repo.delete`, except a Sort move's declared source. */
   readonly files: number;
 }
 export interface PortfolioBudget {

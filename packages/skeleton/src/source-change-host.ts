@@ -58,6 +58,9 @@ export interface SourceChangeHostOptions {
   readonly artifactIdentity: ArtifactIdentityV1;
   readonly branch: string;
   readonly surfaces: readonly string[];
+  /** A Sort move: the one removal a portfolio order may make without
+   * `repo.delete`, because the host checks the exact relocation. */
+  readonly relocation?: { readonly from: string; readonly to: string };
   readonly worktreeParent: string;
   readonly launchpadCheckout: string;
   readonly testCommand: string;
@@ -144,6 +147,14 @@ export class SourceChangeHost {
       parent: options.worktreeParent,
       launchpad: options.launchpadCheckout,
       commitMessage: options.commitMessage,
+      change: {
+        ...(Number.isFinite(options.authorityEnvelope.resourceLimits["files"])
+          ? { files: options.authorityEnvelope.resourceLimits["files"] }
+          : {}),
+        deletion:
+          options.authorityEnvelope.allowedEffects.includes("repo.delete"),
+        ...(options.relocation ? { relocation: options.relocation } : {}),
+      },
       bundleProfile:
         options.transport.name === "claude-cli-print"
           ? "target-worker-claude"
@@ -350,10 +361,10 @@ export class SourceChangeHost {
   }
   private observe(testBefore: FocusedTestResult): SourceChangeOutcome {
     this.checkAuthority();
-    const effect = this.tree.effect();
+    const effect = this.tree.effect(true);
     if (!effect) throw new Error("source-change effect disappeared");
     const testAfter = runFocusedTest(this.tree.path, this.options.testCommand);
-    const after = this.tree.effect();
+    const after = this.tree.effect(true);
     if (!sameSourceValue(effect, after))
       throw new Error("source-change test changed the commit or diff");
     this.checkAuthority();

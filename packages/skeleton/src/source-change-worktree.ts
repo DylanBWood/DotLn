@@ -24,8 +24,18 @@ import {
 
 export const sourceDigest = (value: string | Buffer): string =>
   createHash("sha256").update(value).digest("hex");
+// A writer, or the focused test the host runs after it, can write the target's
+// common Git directory, so the host's own Git calls run no hook (a planted
+// post-checkout would run on the next `worktree add`) and no fsmonitor
+// (WO-157).
+export const HOST_GIT = [
+  "-c",
+  "core.hooksPath=/dev/null",
+  "-c",
+  "core.fsmonitor=false",
+] as const;
 export const sourceGit = (cwd: string, ...args: string[]): string =>
-  execFileSync("git", args, {
+  execFileSync("git", [...HOST_GIT, ...args], {
     cwd,
     encoding: "utf8",
     stdio: ["ignore", "pipe", "pipe"],
@@ -53,6 +63,16 @@ export interface SourceWorktreeOptions {
   readonly launchpad: string;
   readonly bundleProfile: "target-worker-claude" | "target-worker-codex";
   readonly commitMessage: string;
+  /** What the envelope admits of the committed change (WO-100 D016). */
+  readonly change?: SourceChangeLimits;
+}
+export interface SourceChangeLimits {
+  /** The envelope's `resourceLimits.files`; absent means uncounted. */
+  readonly files?: number;
+  /** True when the envelope allows `repo.delete`. */
+  readonly deletion: boolean;
+  /** A Sort move's declared relocation: its source may be removed. */
+  readonly relocation?: { readonly from: string; readonly to: string };
 }
 
 /** Branch-specific lifecycle; inspection's detached worktree contract is unchanged. */
@@ -117,6 +137,7 @@ export class SourceChangeWorktree {
     const result = spawnSync(
       "git",
       [
+        ...HOST_GIT,
         "show-ref",
         "--verify",
         "--quiet",
@@ -233,7 +254,10 @@ export class SourceChangeWorktree {
         "source-change committed tree is dirty; preserve for inspection",
       );
   }
-  effect(): { commit: string; diffHash: string } | undefined {
+  /** The committed change, re-verified; `admit` also applies the envelope's
+   * change limits, which judge a change once, when it is first observed, so a
+   * receipt saved before WO-157 still finishes and recovers. */
+  effect(admit = false): { commit: string; diffHash: string } | undefined {
     const commit = this.verify();
     if (commit === this.options.requested.baseCommit) return undefined;
     this.clean();
@@ -243,6 +267,7 @@ export class SourceChangeWorktree {
     const paths = execFileSync(
       "git",
       [
+        ...HOST_GIT,
         "diff",
         "--no-ext-diff",
         "--no-textconv",
@@ -274,9 +299,11 @@ export class SourceChangeWorktree {
       throw new Error(
         "source-change diff is empty or outside the declared surfaces",
       );
+    if (admit) this.checkChangeLimits(baseCommit, commit);
     const diff = execFileSync(
       "git",
       [
+        ...HOST_GIT,
         "diff",
         "--binary",
         "--no-ext-diff",
@@ -289,6 +316,49 @@ export class SourceChangeWorktree {
       { cwd: this.path, timeout: 15_000, maxBuffer: 8 * 1024 * 1024 },
     );
     return { commit, diffHash: sourceDigest(diff) };
+  }
+  /** Counts committed paths against the envelope's files ceiling and refuses
+   * a removal or type change the envelope does not allow. With renames off, a
+   * file replaced by a directory shows as the file's deletion. */
+  private checkChangeLimits(baseCommit: string, commit: string): void {
+    const limits = this.options.change;
+    if (!limits) return;
+    const fields = execFileSync(
+      "git",
+      [
+        ...HOST_GIT,
+        "diff",
+        "--no-ext-diff",
+        "--no-renames",
+        "--name-status",
+        "-z",
+        baseCommit,
+        commit,
+        "--",
+      ],
+      { cwd: this.path, timeout: 15_000, maxBuffer: 8 * 1024 * 1024 },
+    )
+      .toString()
+      .split("\0")
+      .filter(Boolean);
+    const changes: { status: string; path: string }[] = [];
+    for (let i = 0; i + 1 < fields.length; i += 2)
+      changes.push({ status: fields[i]!, path: fields[i + 1]! });
+    if (limits.files !== undefined && changes.length > limits.files)
+      throw new Error(
+        `source-change diff touches ${changes.length} paths, above the envelope's files ceiling of ${limits.files}: ${changes.map(({ path }) => path).join(", ")}`,
+      );
+    const removed = changes
+      .filter(
+        ({ status, path }) =>
+          (status === "D" || status === "T") &&
+          !(status === "D" && path === limits.relocation?.from),
+      )
+      .map(({ status, path }) => `${status} ${path}`);
+    if (removed.length && !limits.deletion)
+      throw new Error(
+        `source-change diff removes or changes the type of paths without repo.delete (${changes.length} paths against ${limits.files === undefined ? "no files ceiling" : `the envelope's files ceiling of ${limits.files}`}): ${removed.join(", ")}`,
+      );
   }
   finish(commit: string, diffHash: string): void {
     const effect = this.effect();
@@ -306,7 +376,14 @@ export class SourceChangeWorktree {
     ]);
     const ignored = execFileSync(
       "git",
-      ["ls-files", "--others", "--ignored", "--exclude-standard", "-z"],
+      [
+        ...HOST_GIT,
+        "ls-files",
+        "--others",
+        "--ignored",
+        "--exclude-standard",
+        "-z",
+      ],
       { cwd: this.path, timeout: 15_000 },
     )
       .toString()

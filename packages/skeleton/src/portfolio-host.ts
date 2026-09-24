@@ -203,6 +203,7 @@ export function portfolioExecution(
       authorityEnvelope: order.authorityEnvelope,
       branch: `dotln-portfolio-${key(identity)}`,
       surfaces: order.surfaces,
+      ...(order.relocation ? { relocation: order.relocation } : {}),
       testCommand: order.tests[0]!,
       commitMessage: `${identity.workOrderId}: ${order.workOrder.objective}\n`,
       now,

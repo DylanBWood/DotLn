@@ -3,7 +3,9 @@ import {
   COMPONENT_DEFINITION_HASH_SCHEME,
   canonicalStringify,
   compileLoadout,
+  normalizeAuthorityGrants,
   type ArtifactIdentityV1,
+  type AuthorityGrant,
   type CompilationEnvironment,
   type CompileDiagnostic,
   type CompileResult,
@@ -58,13 +60,25 @@ const text = (value: unknown): value is string =>
 const hash = (value: unknown): value is string =>
   typeof value === "string" && /^fnv1a64:[0-9a-f]{16}$/u.test(value);
 
+// The host-owned grant registry is optional; when present it must normalize
+// exactly as the compiler admitted it (WO-064 D006).
+const grantRegistry = (value: unknown): boolean => {
+  try {
+    normalizeAuthorityGrants(value as readonly AuthorityGrant[]);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
 export const isCompilationEnvironment = (
   value: unknown,
 ): value is CompilationEnvironment => {
   const candidate = object(value);
+  if (candidate === undefined) return false;
+  const { authorityGrantRegistry, ...required } = candidate;
   return (
-    candidate !== undefined &&
-    exactKeys(candidate, [
+    exactKeys(required, [
       "environmentId",
       "version",
       "capabilities",
@@ -76,7 +90,9 @@ export const isCompilationEnvironment = (
     Array.isArray(candidate.capabilities) &&
     candidate.capabilities.every(text) &&
     text(candidate.repo) &&
-    text(candidate.baseCommit)
+    text(candidate.baseCommit) &&
+    (authorityGrantRegistry === undefined ||
+      grantRegistry(authorityGrantRegistry))
   );
 };
 

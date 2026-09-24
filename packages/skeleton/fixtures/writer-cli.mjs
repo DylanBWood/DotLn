@@ -1,11 +1,28 @@
 // Process double only: never invokes a vendor or authenticates.
 import { execFileSync } from "node:child_process";
-import { readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 const [transport, behavior] = process.argv.slice(2);
 const input = JSON.parse(readFileSync(0, "utf8"));
-writeFileSync("fixture.txt", "changed by synthetic worker\n");
-execFileSync(process.execPath, ["fixture-test.mjs"], { stdio: "pipe" });
-if (behavior === "commit") {
+// WO-157 shapes of a committed change the host counts: a Sort move keeps the
+// bytes, a file becomes a directory of files, or one more surface path.
+if (behavior === "commit-move") {
+  mkdirSync("sorted");
+  execFileSync("git", ["mv", "fixture.txt", "sorted/fixture.txt"], {
+    stdio: "pipe",
+  });
+} else {
+  writeFileSync("fixture.txt", "changed by synthetic worker\n");
+  execFileSync(process.execPath, ["fixture-test.mjs"], { stdio: "pipe" });
+}
+if (behavior === "commit-directory") {
+  rmSync("fixture.txt");
+  mkdirSync("fixture.txt");
+  for (const name of ["a.txt", "b.txt"])
+    writeFileSync(`fixture.txt/${name}`, `${name} inside the surface\n`);
+}
+if (behavior === "commit-wide")
+  writeFileSync("fixture-extra.txt", "one more surface path\n");
+if (behavior === "commit" || behavior.startsWith("commit-")) {
   execFileSync("git", ["add", "-A"], { stdio: "pipe" });
   execFileSync(
     "git",

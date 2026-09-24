@@ -10,6 +10,16 @@ import {
 } from "node:fs";
 import { join } from "node:path";
 import { decodeLog, replay, type Event } from "@dotln/kernel";
+import {
+  outsideWriteEffect,
+  seiriEnvironment,
+  seiriLoadout,
+} from "@dotln/compiler";
+import {
+  isArtifactIdentityV1,
+  isArtifactRefusalType,
+} from "../src/artifact-identity.js";
+import { LiveReactorDriver } from "../src/scenario.js";
 import { SourceChangeHost } from "../src/source-change-host.js";
 import {
   initialState,
@@ -627,4 +637,158 @@ test("WO-052 a second interrupted attempt exhausts recovery; no third dispatch",
   } finally {
     dispose(root);
   }
+});
+
+test("WO-157 a grant-bearing artifact identity equips and runs through the source-change host; a malformed registry still refuses", async () => {
+  const grant = {
+    grantId: "fixture.outside",
+    version: 1,
+    grantedBy: "operator" as const,
+    effects: [
+      outsideWriteEffect({
+        kind: "operator-root",
+        root: "/fixture/authorized",
+        source: "Fixture operator direction",
+      }),
+    ],
+    repo: seiriEnvironment().repo,
+    reason: "Fixture operator direction",
+  };
+  const graph = { ...seiriLoadout, authorityGrants: [grant] };
+  const environment = {
+    ...seiriEnvironment(),
+    authorityGrantRegistry: [grant],
+  };
+  const driver = new LiveReactorDriver();
+  driver.equip(graph, environment);
+  const refusals = (log: string) =>
+    decodeLog(log)
+      .map((event) => event.type)
+      .filter((type) => isArtifactRefusalType(type));
+  assert.deepEqual(refusals(driver.log), []);
+  const identity: unknown = driver.state.artifactIdentity;
+  if (!isArtifactIdentityV1(identity))
+    assert.fail("the equip pinned no artifact identity");
+  assert.deepEqual(identity.compilationEnvironment.authorityGrantRegistry, [
+    grant,
+  ]);
+  const root = createSourceFixture();
+  try {
+    const result = await new SourceChangeHost({
+      ...sourceFixtureOptions(root, () => 10),
+      artifactIdentity: identity,
+    }).run();
+    assert.equal(result.status, "observed");
+    assert.equal(launches(root), 1);
+    assert.throws(
+      () =>
+        new SourceChangeHost({
+          ...sourceFixtureOptions(root, () => 10),
+          artifactIdentity: {
+            ...identity,
+            compilationEnvironment: {
+              ...identity.compilationEnvironment,
+              authorityGrantRegistry: "not a registry",
+            },
+          } as unknown as typeof identity,
+        }),
+      /compiled artifact identity is invalid/u,
+    );
+  } finally {
+    dispose(root);
+  }
+  const malformed = new LiveReactorDriver();
+  malformed.equip(graph, {
+    ...environment,
+    authorityGrantRegistry: [{ ...grant, grantedBy: "worker" as "operator" }],
+  });
+  assert.deepEqual(refusals(malformed.log), ["ArtifactCompilationRefused"]);
+  assert.equal(
+    isArtifactIdentityV1({
+      ...identity,
+      compilationEnvironment: {
+        ...identity.compilationEnvironment,
+        authorityGrantRegistry: [{ ...grant, version: 0 }],
+      },
+    }),
+    false,
+  );
+});
+
+test("WO-157 the host counts committed paths against the files ceiling and refuses a removal without repo.delete, except a declared Sort move", async () => {
+  const run = async (
+    behavior: string,
+    surfaces: string[],
+    change: { files?: number; relocation?: { from: string; to: string } },
+  ) => {
+    const root = createSourceFixture();
+    try {
+      const base = sourceFixtureOptions(root, () => 10, behavior);
+      const envelope = base.authorityEnvelope;
+      const outcome = await new SourceChangeHost({
+        ...base,
+        surfaces,
+        authorityEnvelope: {
+          ...envelope,
+          resourceLimits: {
+            ...envelope.resourceLimits,
+            ...(change.files === undefined ? {} : { files: change.files }),
+          },
+        },
+        ...(change.relocation ? { relocation: change.relocation } : {}),
+      })
+        .run()
+        .then(
+          (result) => ({ status: result.status, error: "" }),
+          (error: Error) => ({ status: "thrown", error: error.message }),
+        );
+      return { ...outcome, launches: launches(root) };
+    } finally {
+      dispose(root);
+    }
+  };
+  const refused = (
+    outcome: { status: string; error: string },
+    pattern: RegExp,
+  ) => {
+    assert.equal(outcome.status, "thrown", JSON.stringify(outcome));
+    assert.match(outcome.error, pattern);
+  };
+  // Shine: the writer turns a file surface into a directory of files, all of
+  // them inside the surface and within the ceiling.
+  // The refusal names the removed path and the configured ceiling (VER-001 F1).
+  refused(
+    await run("commit-directory", ["fixture.txt"], { files: 3 }),
+    /removes or changes the type of paths without repo\.delete \(3 paths against the envelope's files ceiling of 3\): D fixture\.txt$/u,
+  );
+  refused(
+    await run("commit-directory", ["fixture.txt"], {}),
+    /without repo\.delete \(3 paths against no files ceiling\): D fixture\.txt$/u,
+  );
+  refused(
+    await run("commit-wide", ["fixture.txt", "fixture-extra.txt"], {
+      files: 1,
+    }),
+    /touches 2 paths, above the envelope's files ceiling of 1: fixture-extra\.txt, fixture\.txt$/u,
+  );
+  // Standardize within its ceiling, and the declared Sort move, still pass.
+  // No writer envelope can carry repo.delete (validateWriterRequest admits
+  // only repo.write, git.local and shell.run), so a removal is always refused.
+  assert.deepEqual(await run("commit", ["fixture.txt"], { files: 1 }), {
+    status: "observed",
+    error: "",
+    launches: 1,
+  });
+  const move = { from: "fixture.txt", to: "sorted/fixture.txt" };
+  assert.deepEqual(
+    await run("commit-move", [move.from, move.to], {
+      files: 2,
+      relocation: move,
+    }),
+    { status: "observed", error: "", launches: 1 },
+  );
+  refused(
+    await run("commit-move", [move.from, move.to], { files: 2 }),
+    /without repo\.delete \(2 paths against the envelope's files ceiling of 2\): D fixture\.txt$/u,
+  );
 });
