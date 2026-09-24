@@ -20,6 +20,12 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-114 activation completion (2026-09-24):** assigned application `v0.47.0`,
+the next minor above the observed local `v0.46.2` tag, under the declared minor
+classification. The resident's runtime status file and the console text host
+share a versioned projection; independent verification, final review and
+publication remain separate actions.
+
 **WO-156 activation completion (2026-09-24):** assigned application `v0.46.1`,
 the next patch above the observed local `v0.46.0` tag, under the declared patch
 classification. Plan subject construction resolves the work-order path pattern

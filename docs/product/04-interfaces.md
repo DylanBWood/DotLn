@@ -296,6 +296,27 @@ semantic hashes, and any history or authority projections the selected profile
 declares. An absent capability stays visibly unavailable; no UI host may grow a
 second workflow state machine or domain truth.
 
+The resident publishes `runtime-status-v1` as an atomic local JSON file after
+each recorded event and on each tick; a restart rebuilds the same view from its
+event log and the current selected index. The [console contract](../../packages/console/runtime-status-v1.schema.json)
+selects configured actors and their availability and last episode, live
+episodes with order, transport, phase, elapsed recorded time and declared launch
+claims, presence signal and armed cadences, coded hold reasons, portfolio budget
+consumption and remaining allowance, and every Active or Open order's phase,
+dependency state and latest verification verdict from the generated work-order
+index. Derived orders use their ordinary `WO-NNN` identity. The file is a
+disposable projection, never a command or authority source. It omits raw event
+payloads, physical paths, endpoints, session identifiers and host details;
+missing, unreadable or malformed index data is visibly unavailable. The resident
+CLI binds the selected launchpad's configured index in private store metadata;
+all helpers and installed harness writers read that same binding. Library hosts
+supply the index path on first start; an absent binding is unavailable. Atomic
+status replacement omits durability syncs, while the event log retains its
+durability. A projection failure cannot abort resident work and a later event,
+tick or restart retries publication. The console's text host reads and watches
+this file, deduplicates unchanged views, and recovers after missing or invalid
+files. A later loopback consumer can carry the same versioned model.
+
 Framework selection remains local to the projection and is decided when the
 corresponding UI work order has representative evidence. If Angular is chosen,
 the operator-fluent evaluation baseline is Angular with Prettier, NgRx, RxJS,
