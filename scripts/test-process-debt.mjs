@@ -1751,6 +1751,15 @@ test("discovery uses a bounded observed probe and session warns once off the ver
     /version probe failed/,
   );
   discoverHarness(root, "claude-code", () => probe);
+  // WO-157 item 11: CLAUDE_EFFORT is the host's selected effort, recorded as a
+  // selected-session readback and never as an effective one.
+  const stored = JSON.parse(
+    readFileSync(join(root, "docs/discovery/environment.json"), "utf8"),
+  ).effortReadbackProbe.harnesses["claude-code"];
+  assert.equal(stored.effectiveEffortReadback, undefined);
+  assert.equal(stored.selectedSessionReadback.channel, "CLAUDE_EFFORT");
+  assert.equal(stored.selectedSessionReadback.value, "max");
+  assert.equal(stored.selectedSessionReadback.scope, "selected, not effective");
   emitHarness(root);
   const call = (version) =>
     evaluateHarnessHook(
@@ -4283,7 +4292,7 @@ test("meter diff bytes include newly authored untracked source", (t) => {
   );
 });
 
-test("WO-145 optional economy support preserves historical snapshots through WO-149 and changes only executor instructions on", () => {
+test("WO-145 optional economy support preserves historical snapshots through WO-157 and changes only executor instructions on", () => {
   const historical = JSON.parse(
     readFileSync(
       join(source, "packages/skeleton/fixtures/wo145-role-baseline.json"),
@@ -4294,9 +4303,10 @@ test("WO-145 optional economy support preserves historical snapshots through WO-
   // snapshot to make the current generated instruction check pass. WO-149's
   // common role edits affect both settings, so pin contemporaneous default and
   // opt-out bytes separately and preserve the complete historical chain.
+  // WO-157's shared role edits follow the same route.
   const baseline = JSON.parse(
     readFileSync(
-      join(source, "packages/skeleton/fixtures/wo149-role-baseline.json"),
+      join(source, "packages/skeleton/fixtures/wo157-role-baseline.json"),
       "utf8",
     ),
   );

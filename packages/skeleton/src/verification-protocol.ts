@@ -153,10 +153,55 @@ const exact = (
   expected: readonly string[],
 ): boolean =>
   Object.keys(value).sort().join(",") === [...expected].sort().join(",");
-const check: (valid: unknown, reason: string) => asserts valid = (
-  valid,
-  reason,
-) => {
+/** Every contract reason an evidence result can be refused for. The list is
+ * closed: `check` accepts nothing else, so a new reason is added here first. */
+export const EVIDENCE_RESULT_REFUSALS = [
+  "episode result shape",
+  "episode envelope.summary must be a string of at most 320 characters",
+  "episode envelope",
+  "episode role or subject",
+  "repair replacements",
+  "repair outside focused surface",
+  "repair has no substantive change",
+  "criterion coverage",
+  "evaluation shape",
+  "evaluation criterion",
+  "claim-typed evidence",
+  "unsupported pass",
+  "contradictory witness",
+  "unsupported failure",
+  "finding shape",
+  "finding shape or duplicate",
+  "finding criterion or evidence",
+  "finding observed versus expected",
+  "failed criterion lacks finding",
+] as const;
+export type EvidenceResultRefusal = (typeof EVIDENCE_RESULT_REFUSALS)[number];
+/** What an `invalid-result` refusal may record and print (WO-157 item 8,
+ * WO-152 D009): the contract reasons, the transport's parse phases, the
+ * host's receipt check and `unclassified`. Raw model output is never among
+ * them. */
+export const INVALID_RESULT_DETAILS = [
+  ...EVIDENCE_RESULT_REFUSALS,
+  "wire-json",
+  "final-message-absent",
+  "final-message-json",
+  "receipt-command",
+  "unclassified",
+] as const;
+export type InvalidResultDetail = (typeof INVALID_RESULT_DETAILS)[number];
+/** A detail outside the vocabulary is refused verbatim and recorded as
+ * `unclassified`, so the refusal itself is never lost. */
+export const invalidResultDetail = (
+  detail: string | undefined,
+): InvalidResultDetail =>
+  (INVALID_RESULT_DETAILS as readonly string[]).includes(detail ?? "")
+    ? (detail as InvalidResultDetail)
+    : "unclassified";
+const check: (
+  valid: unknown,
+  reason: EvidenceResultRefusal,
+) => asserts valid = (valid, reason) => {
   if (!valid) throw new WorkerFailure("invalid-result", reason);
 };
 const refs = (value: unknown): value is string[] =>
@@ -338,7 +383,10 @@ export function parseEvidenceResult(
     try {
       finding = copyFinding(value as VerificationFinding);
     } catch {
-      throw new WorkerFailure("invalid-result", "finding shape");
+      throw new WorkerFailure(
+        "invalid-result",
+        "finding shape" satisfies EvidenceResultRefusal,
+      );
     }
     check(
       canonicalStringify(finding) === canonicalStringify(value) &&
@@ -396,17 +444,35 @@ const schemaObject = (properties: Record<string, unknown>): object => ({
 });
 const schemaText = { type: "string" };
 const schemaTexts = { type: "array", items: schemaText };
+/** A verificationLine as far as schema keywords the live transports accept can
+ * say it; control characters stay with admission (WO-157 item 16). */
+const schemaLine = { ...schemaText, minLength: 1, maxLength: 2_000 };
 const schemaOneOf = (values: readonly string[]): object =>
   values.length > 0
     ? { ...schemaText, enum: [...new Set(values)] }
-    : schemaText;
+    : schemaLine;
+/** copyFinding's `lines`: 1-100 entries; uniqueness stays with admission. */
+const schemaLines = (items: object): object => ({
+  type: "array",
+  minItems: 1,
+  maxItems: 100,
+  items,
+});
 
 /** The strings admission and repair derivation already require of a finding.
  * A live verifier cannot guess them, so its schema and instructions state them. */
 function findingContract(request: EvidenceWorkerRequest) {
   const { evidence, snapshot } = request.capsule.subject;
   const adverse = evidence.filter((entry) => entry.outcome === "fail");
+  // A finding needs a failing evaluation, which needs a failing witness of
+  // its criterion; without one, admission can accept no finding (WO-157 D024).
+  const failing = request.capsule.criteria.filter((criterion) =>
+    adverse.some((entry) => entry.criterionId === criterion.criterionId),
+  );
   return {
+    criterionIds: failing.map((criterion) => criterion.criterionId),
+    likelySurface: failing.flatMap((criterion) => criterion.codeSurfaces),
+    evidenceIds: evidence.map((entry) => entry.evidenceId),
     observed: adverse.map((entry) => entry.observed),
     expected: adverse.map((entry) => entry.expected),
     // Only the worktree-snapshot profile turns steps into host-run commands.
@@ -452,28 +518,42 @@ export function evidenceResultSchema(request: EvidenceWorkerRequest): object {
           evaluations: {
             type: "array",
             items: schemaObject({
-              criterionId: schemaText,
+              criterionId: schemaOneOf(
+                request.capsule.criteria.map(
+                  (criterion) => criterion.criterionId,
+                ),
+              ),
               claimType: { ...schemaText, enum: ["state", "behavior"] },
-              verdict: { ...schemaText, enum: ["pass", "fail", "unverified"] },
-              evidenceRefs: schemaTexts,
-              exemplarRefs: schemaTexts,
-              dissentRefs: schemaTexts,
+              verdict: {
+                ...schemaText,
+                enum: contract.criterionIds.length
+                  ? ["pass", "fail", "unverified"]
+                  : ["pass", "unverified"],
+              },
+              evidenceRefs: {
+                type: "array",
+                maxItems: 100,
+                items: schemaOneOf(contract.evidenceIds),
+              },
+              // Admission requires both empty.
+              exemplarRefs: { ...schemaTexts, maxItems: 0 },
+              dissentRefs: { ...schemaTexts, maxItems: 0 },
             }),
           },
           findings: {
             type: "array",
+            maxItems: contract.criterionIds.length ? 100 : 0,
             items: schemaObject({
-              findingId: schemaText,
-              criterionId: schemaText,
+              findingId: schemaLine,
+              criterionId: schemaOneOf(contract.criterionIds),
               severity: { ...schemaText, enum: ["blocking", "major", "minor"] },
               observed: schemaOneOf(contract.observed),
               expected: schemaOneOf(contract.expected),
-              reproductionSteps: {
-                type: "array",
-                items: schemaOneOf(contract.reproductionSteps),
-              },
-              evidenceRefs: schemaTexts,
-              likelySurface: schemaTexts,
+              reproductionSteps: schemaLines(
+                schemaOneOf(contract.reproductionSteps),
+              ),
+              evidenceRefs: schemaLines(schemaOneOf(contract.evidenceIds)),
+              likelySurface: schemaLines(schemaOneOf(contract.likelySurface)),
             }),
           },
         },

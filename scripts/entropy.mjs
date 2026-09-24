@@ -19,7 +19,7 @@ const usage = [
   "entropy review [<commit>] [--transport claude-cli-print|codex-cli-exec|fake] [--model <model>] [--effort <level>] [--source <source>] [--account-label <label>] [--concern '<hypothesis>']",
   "entropy receipt <result.json> --statement <statement.txt>",
   "entropy refute <REVIEW-NNN> [--transport <name>] [--model <model>] [--effort <level>] [--source <source>] [--account-label <label>]",
-  "entropy refutation-receipt <attempts.json> --statement <statement.txt>",
+  "entropy refutation-receipt <attempts.json> [--statement <statement.txt> (accepted, not recorded)]",
   "entropy dispose <REVIEW-NNN> <id> accept|defer|dismiss '<reason>'",
   "entropy subject",
   "entropy discard review|refutation",
@@ -94,11 +94,11 @@ export async function main(args = process.argv.slice(2), root = toolRoot) {
   if (command === "refutation-receipt") {
     const [attempts, ...flags] = rest;
     const opt = options(flags, ["--statement"]);
-    if (!attempts || !opt["--statement"])
+    if (!attempts)
       throw new Error(
-        "usage: entropy refutation-receipt <attempts.json> --statement <statement.txt>",
+        "usage: entropy refutation-receipt <attempts.json> [--statement <statement.txt> (accepted, not recorded)]",
       );
-    return fileEntropyRefutation(root, attempts, opt["--statement"]);
+    return fileEntropyRefutation(root, attempts, opt["--statement"] ?? null);
   }
 
   if (command === "dispose") {

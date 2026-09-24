@@ -562,11 +562,28 @@ export async function entropyFixtures() {
         confinement.scratchInventoryAfter.sha256,
         confinement.scratchInventoryBefore.sha256,
       );
-      assert.deepEqual(confinement.scratchDelta, {
-        deltaCount: 1,
-        observed: true,
+      // WO-157 item 9: the delta is the added, removed and resized path sets.
+      assert.deepEqual(
+        {
+          observed: confinement.scratchDelta.observed,
+          added: confinement.scratchDelta.added,
+          removed: confinement.scratchDelta.removed,
+          resized: confinement.scratchDelta.resized,
+          counts: confinement.scratchDelta.counts,
+        },
+        {
+          observed: true,
+          added: ["probe-output.txt"],
+          removed: [],
+          resized: [],
+          counts: { added: 1, removed: 0, resized: 0 },
+        },
+      );
+      assert.deepEqual(bound.confinement.scratchDelta, {
+        added: 1,
+        removed: 0,
+        resized: 0,
       });
-      assert.equal(bound.confinement.scratchDelta, 1);
       const rendered = readFileSync(
         join(repo, runsRoot(repo), "REFUTATION-001.md"),
         "utf8",
@@ -576,7 +593,7 @@ export async function entropyFixtures() {
         renderReceipt(receipt),
         "the rendered after-state is a projection of the JSON",
       );
-      assert.match(rendered, /scratch delta 1 path\(s\)/u);
+      assert.match(rendered, /1 path\(s\) added, 0 removed, 0 resized/u);
       assert.equal(checkEntropyReceipts(repo).status, "ok");
 
       // A pair filed before this observation existed keeps its bytes, and the
@@ -591,6 +608,7 @@ export async function entropyFixtures() {
         "scratchInventoryBefore",
         "scratchInventoryAfter",
         "scratchDelta",
+        "untrackedListing",
         "excludedFromManifest",
         "deniedTools",
       ])
@@ -986,6 +1004,211 @@ export async function entropyFixtures() {
         "the original repository path never crosses the boundary",
       );
       await entropy(["discard", "review"], repo);
+    });
+
+    await test("WO-157 item 9: the witness records added and removed scratch paths and the source repository's untracked listing", async () => {
+      const repo = fixtureRepository(parent);
+      await entropy(["review", "--transport", "fake"], repo);
+      const pending = currentDispatch(repo, "review");
+      // One path gained and one lost: the net count stays the same, which is
+      // exactly what a net delta could not see (WO-151 D020).
+      write(
+        pending.subject.scratchRepository,
+        "probe-output.txt",
+        "perturbation\n",
+      );
+      rmSync(join(pending.subject.scratchRepository, "src/module.mjs"));
+      // An untracked write in the source repository leaves tracked status
+      // unchanged; the witness now observes it, without refusing it.
+      write(repo, "escaped-untracked.txt", "outside the frozen copy\n");
+      await entropy(
+        [
+          "receipt",
+          join(pending.capture, "result.json"),
+          "--statement",
+          join(pending.capture, "statement.txt"),
+        ],
+        repo,
+      );
+      const receipt = JSON.parse(
+        readFileSync(join(repo, runsRoot(repo), "REVIEW-001.json"), "utf8"),
+      );
+      const confinement = receipt.confinement;
+      assert.deepEqual(confinement.scratchDelta.added, ["probe-output.txt"]);
+      assert.deepEqual(confinement.scratchDelta.removed, ["src/module.mjs"]);
+      assert.deepEqual(confinement.scratchDelta.resized, []);
+      assert.equal(confinement.scratchDelta.observed, true);
+      assert.equal(
+        confinement.scratchInventoryAfter.count,
+        confinement.scratchInventoryBefore.count,
+      );
+      assert.equal(confinement.trackedStatusByteIdentical, true);
+      assert.equal(confinement.untrackedListing.identical, false);
+      assert.equal(
+        confinement.untrackedListing.after.count,
+        confinement.untrackedListing.before.count + 1,
+      );
+      assert.doesNotMatch(
+        JSON.stringify(confinement.untrackedListing),
+        /escaped-untracked/u,
+        "the listing is recorded by count and hash, never by name",
+      );
+      const rendered = readFileSync(
+        join(repo, runsRoot(repo), "REVIEW-001.md"),
+        "utf8",
+      );
+      assert.equal(rendered, renderReceipt(receipt));
+      assert.match(rendered, /1 path\(s\) added, 1 removed, 0 resized/u);
+      assert.match(
+        rendered,
+        /untracked, non-ignored path listing unchanged: \*\*false\*\*/u,
+      );
+      assert.doesNotMatch(rendered, /Tracked status byte-identical/u);
+      assert.equal(checkEntropyReceipts(repo).status, "ok");
+      // Each set is listed up to a bound and bound whole by count and hash.
+      const { scratchPathDelta } = await import("./lib/entropy-review.mjs");
+      const many = Array.from({ length: 150 }, (_, index) => [
+        `build/${String(index).padStart(3, "0")}.js`,
+        "1",
+      ]);
+      const capped = scratchPathDelta([], many);
+      assert.equal(capped.added.length, capped.listedPerSet);
+      assert.equal(capped.counts.added, 150);
+      assert.match(capped.sha256.added, /^[0-9a-f]{64}$/u);
+    });
+
+    await test("WO-157 VER-001 F2: a changed untracked listing whose paths carry newlines or edge whitespace is never recorded as unchanged", async () => {
+      // Git admits a newline in a path; joined with newlines, the first pair
+      // hashes the same bytes although no path is shared. The second pair
+      // matched once the first path's leading space was trimmed (the repair
+      // review).
+      for (const [before, after] of [
+        [
+          ["a\nb", "c"],
+          ["a", "b\nc"],
+        ],
+        [
+          [" a", "b"],
+          ["a", "b"],
+        ],
+      ]) {
+        const repo = fixtureRepository(parent);
+        for (const path of before) write(repo, path, "before\n");
+        await entropy(["review", "--transport", "fake"], repo);
+        const pending = currentDispatch(repo, "review");
+        for (const path of before) rmSync(join(repo, path));
+        for (const path of after) write(repo, path, "after\n");
+        await entropy(
+          [
+            "receipt",
+            join(pending.capture, "result.json"),
+            "--statement",
+            join(pending.capture, "statement.txt"),
+          ],
+          repo,
+        );
+        const { untrackedListing } = JSON.parse(
+          readFileSync(join(repo, runsRoot(repo), "REVIEW-001.json"), "utf8"),
+        ).confinement;
+        assert.equal(
+          untrackedListing.after.count,
+          untrackedListing.before.count,
+        );
+        assert.notEqual(
+          untrackedListing.after.sha256,
+          untrackedListing.before.sha256,
+        );
+        assert.equal(untrackedListing.identical, false);
+        assert.match(
+          readFileSync(join(repo, runsRoot(repo), "REVIEW-001.md"), "utf8"),
+          /untracked, non-ignored path listing unchanged: \*\*false\*\*/u,
+        );
+      }
+      // The scratch path sets are bound by the same framing.
+      const { scratchPathDelta } = await import("./lib/entropy-review.mjs");
+      assert.notEqual(
+        scratchPathDelta(
+          [],
+          [
+            ["a\nb", "1"],
+            ["c", "1"],
+          ],
+        ).sha256.added,
+        scratchPathDelta(
+          [],
+          [
+            ["a", "1"],
+            ["b\nc", "1"],
+          ],
+        ).sha256.added,
+      );
+    });
+
+    await test("WO-157 item 10: a refutation receipt renders the typed reasons in place of a worker statement", async () => {
+      const repo = fixtureRepository(parent);
+      await entropy(["review", "--transport", "fake"], repo);
+      const reviewPending = currentDispatch(repo, "review");
+      await entropy(
+        [
+          "receipt",
+          join(reviewPending.capture, "result.json"),
+          "--statement",
+          join(reviewPending.capture, "statement.txt"),
+        ],
+        repo,
+      );
+      await entropy(["refute", "REVIEW-001", "--transport", "fake"], repo);
+      const pending = currentDispatch(repo, "refutation");
+      // What both live refuters returned as their statement: the attempts
+      // payload itself (WO-151 D017).
+      writeFileSync(
+        join(pending.capture, "statement.txt"),
+        readFileSync(join(pending.capture, "result.json"), "utf8"),
+      );
+      await entropy(
+        [
+          "refutation-receipt",
+          join(pending.capture, "result.json"),
+          "--statement",
+          join(pending.capture, "statement.txt"),
+        ],
+        repo,
+      );
+      const receipt = JSON.parse(
+        readFileSync(join(repo, runsRoot(repo), "REFUTATION-001.json"), "utf8"),
+      );
+      assert.equal(
+        "statement" in receipt,
+        false,
+        "the refutation route records no separate statement",
+      );
+      const rendered = readFileSync(
+        join(repo, runsRoot(repo), "REFUTATION-001.md"),
+        "utf8",
+      );
+      assert.equal(rendered, renderReceipt(receipt));
+      assert.doesNotMatch(rendered, /^## Worker statement$/mu);
+      assert.match(rendered, /^## Attempt reasons$/mu);
+      assert.ok(receipt.report.attempts.length > 0);
+      for (const attempt of receipt.report.attempts)
+        assert.ok(
+          rendered.includes(`\`${attempt.findingId}\` ${attempt.result}: `),
+          attempt.findingId,
+        );
+      // A filed receipt that carries a statement still projects to itself.
+      assert.match(
+        renderReceipt({ ...receipt, statement: "Earlier." }),
+        /^## Worker statement$/mu,
+      );
+      assert.equal(checkEntropyReceipts(repo).status, "ok");
+      // --statement is no longer required on the refutation route.
+      await entropy(["refute", "REVIEW-001", "--transport", "fake"], repo);
+      const second = currentDispatch(repo, "refutation");
+      const bound = await entropy(
+        ["refutation-receipt", join(second.capture, "result.json")],
+        repo,
+      );
+      assert.equal(bound.receiptId, "REFUTATION-002");
     });
   } finally {
     delete process.env.DOTLN_ENTROPY_FIXTURE;

@@ -665,15 +665,33 @@
             "observedAt": "2026-09-05T23:42:11-04:00",
             "workOrder": "WO-022",
             "note": "installed CLI version reported by claude --version during WO-022 verification; no readback, selector, or settings content observed"
+          },
+          {
+            "classification": "observed",
+            "value": "2.1.280",
+            "observedAt": "2026-09-22T23:26:15.824Z",
+            "line": "2.1",
+            "probe": {
+              "versionChannel": "CLAUDE_CODE_EXECPATH",
+              "versionExitCode": 0,
+              "helpExitCode": 0,
+              "effortSelectorPresent": true,
+              "configSelectorPresent": false,
+              "readbackChannel": "CLAUDE_EFFORT",
+              "readbackChannelPresent": true
+            },
+            "observedEffort": "xhigh"
           }
         ],
         "persistedEffortSelector": {
-          "classification": "not found",
+          "classification": "observed",
           "key": "effortLevel",
-          "value": "unknown"
+          "location": "~/.claude/settings.json modelSettings.<model>.effortLevel",
+          "observedAt": "2026-09-22T23:26:15.824Z",
+          "note": "WO-157 item 11: the key is present for three models at Claude Code 2.1.280; values were not copied into this record, so the row claims no value."
         },
         "sessionEffortSelector": {
-          "classification": "documented locally",
+          "classification": "observed",
           "control": "--effort",
           "values": [
             "low",
@@ -704,8 +722,27 @@
             "line": "2.1",
             "newestPatch": "2.1.263",
             "source": "existing bounded version observations; WO-126 version-line policy"
+          },
+          {
+            "classification": "observed",
+            "line": "2.1",
+            "newestPatch": "2.1.280",
+            "observedAt": "2026-09-22T23:26:15.824Z",
+            "source": "bounded-cli-probe:CLAUDE_CODE_EXECPATH"
           }
-        ]
+        ],
+        "selectedSessionReadback": {
+          "classification": "observed",
+          "channel": "CLAUDE_EFFORT",
+          "setBy": "the Claude Code host for its own session; DotLn never sets it (its transports pass the parent environment through and select effort with --effort)",
+          "scope": "selected, not effective",
+          "value": "xhigh",
+          "harnessVersion": "2.1.280",
+          "observedAt": "2026-09-22T23:26:15.824Z",
+          "persistedChannel": "~/.claude/settings.json modelSettings.<model>.effortLevel (key presence observed 2026-09-22; values not copied)",
+          "source": "docs/evidence/WO-157/decisions.md#wo-157-d012; WO-152 D012",
+          "note": "WO-157 item 11: an attestation may cite this as source claude-session-readback only when the host exports CLAUDE_EFFORT and it equals the attested effort. The variable is process-wide: the WO-157 review observed it in an in-process subagent's shell, where it reports the root session's selection rather than the subagent's; a nested `claude -p` session's inheritance is unprobed."
+        }
       },
       "copilot-cli": {
         "versions": [

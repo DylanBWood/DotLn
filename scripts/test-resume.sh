@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 unset DOTLN_ACCOUNT_LABEL # Fixtures declare their own labels.
+unset CLAUDE_EFFORT # The host's selected effort is declared per fixture (WO-157 item 11).
 
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
 source "$script_dir/test-temp-root.sh"
@@ -216,21 +217,56 @@ for (const raw of ["ultra","ultra code","ultracode","UltraCode"]) {
   assert.deepEqual(actor,{harness:"unknown",harnessVersion:"unknown",model:"unknown",effort:"xhigh",mode:"subagents",raw,source:"unknown"});
 }
 NODE
-node "$fixture_repo/scripts/resume.mjs" implementation-ready \
+# WO-157 item 11 (WO-152 D012): Claude Code's host exports the session's
+# selected effort as CLAUDE_EFFORT. A readback source is admitted only when it
+# is present and equal to the attested effort, and a readable value is never
+# attested as unknown.
+node --input-type=module - "$fixture_repo/scripts/resume.mjs" <<'NODE'
+import assert from "node:assert/strict";
+const {parseActor}=await import(process.argv[2]);
+const flags=(effort,source,harness="claude-code")=>["--harness",harness,"--harness-version","fixture-1","--model","fixture.model/alpha","--effort",effort,"--source",source];
+const withEnv=(value,fn)=>{if(value===undefined) delete process.env.CLAUDE_EFFORT; else process.env.CLAUDE_EFFORT=value; try{return fn();} finally{delete process.env.CLAUDE_EFFORT;}};
+withEnv(undefined,()=>assert.throws(()=>parseActor("fixture",flags("xhigh","claude-session-readback")),/claude-session-readback requires the Claude Code host's CLAUDE_EFFORT to equal the attested effort: CLAUDE_EFFORT absent/));
+withEnv(undefined,()=>assert.deepEqual(parseActor("fixture",flags("xhigh","operator-attested")),{harness:"claude-code",harnessVersion:"fixture-1",model:"fixture.model/alpha",effort:"xhigh",source:"operator-attested"}));
+withEnv("xhigh",()=>assert.deepEqual(parseActor("fixture",flags("xhigh","claude-session-readback")),{harness:"claude-code",harnessVersion:"fixture-1",model:"fixture.model/alpha",effort:"xhigh",source:"claude-session-readback"}));
+withEnv("xhigh",()=>assert.throws(()=>parseActor("fixture",flags("max","claude-session-readback")),/CLAUDE_EFFORT xhigh, attested claude-code effort max/));
+withEnv("xhigh",()=>assert.throws(()=>parseActor("fixture",flags("xhigh","claude-session-readback","codex-cli")),/CLAUDE_EFFORT xhigh, attested codex-cli effort xhigh/));
+withEnv("xhigh",()=>assert.throws(()=>parseActor("fixture",flags("unknown","operator-attested")),/exports CLAUDE_EFFORT=xhigh; attest --effort xhigh --source claude-session-readback rather than unknown/));
+withEnv("xhigh",()=>assert.equal(parseActor("fixture",flags("ultracode","claude-session-readback")).effort,"xhigh"));
+// VER-001 F3: under a readable CLAUDE_EFFORT a claude-code attestation records
+// that value from the readback; another effort or source is refused.
+withEnv("xhigh",()=>assert.throws(()=>parseActor("fixture",flags("high","operator-attested")),/exports CLAUDE_EFFORT=xhigh; attest --effort xhigh --source claude-session-readback rather than high with source operator-attested/));
+withEnv("xhigh",()=>assert.throws(()=>parseActor("fixture",flags("xhigh","operator-attested")),/rather than xhigh with source operator-attested/));
+withEnv("xhigh",()=>assert.throws(()=>parseActor("fixture",flags("xhigh","operator-selected-model-effective-effort-unavailable")),/rather than xhigh with source operator-selected-model-effective-effort-unavailable\./));
+withEnv("xhigh",()=>assert.throws(()=>parseActor("fixture",flags("max","claude-session-readback")),/Attest --effort xhigh\./));
+withEnv("xhigh",()=>assert.equal(parseActor("fixture",flags("high","operator-attested","codex-cli")).effort,"high"));
+withEnv("not-a-level",()=>assert.equal(parseActor("fixture",flags("unknown","operator-attested")).effort,"unknown"));
+NODE
+assert_refusal 'claude-session-readback requires' implementation-ready \
+  --harness claude-code --harness-version fixture-0 --model fixture.model/alpha --effort xhigh --source claude-session-readback
+# VER-001 F3: a same-session completion whose effort disagrees is refused and
+# appends nothing.
+export CLAUDE_EFFORT=xhigh
+assert_refusal 'exports CLAUDE_EFFORT=xhigh; attest --effort xhigh --source claude-session-readback rather than high with source operator-attested' implementation-ready \
+  --harness claude-code --harness-version fixture-0 --model fixture.model/alpha --effort high --source operator-attested
+unset CLAUDE_EFFORT
+CLAUDE_EFFORT=xhigh node "$fixture_repo/scripts/resume.mjs" status | grep -Fq 'Current Claude Code session: effort xhigh; source claude-session-readback; host-selected (CLAUDE_EFFORT), not effective effort.'
+if node "$fixture_repo/scripts/resume.mjs" status | grep -Fq 'Current Claude Code session'; then printf 'error: a Claude session line without CLAUDE_EFFORT\n' >&2; exit 1; fi
+CLAUDE_EFFORT=xhigh node "$fixture_repo/scripts/resume.mjs" implementation-ready \
   --harness claude-code \
   --harness-version fixture-0 \
   --model fixture.model/alpha \
   --effort xhigh \
-  --source harness-readback >/dev/null 2>/dev/null
+  --source claude-session-readback >/dev/null 2>/dev/null
 assert_status_read_only
 node - "$active_log" <<'NODE'
 const fs = require("node:fs");
 const events = fs.readFileSync(process.argv[2], "utf8").trim().split("\n").map(JSON.parse);
 const actor = events.at(-1).actor;
-const expected = { harness: "claude-code", harnessVersion: "fixture-0", model: "fixture.model/alpha", effort: "xhigh", source: "harness-readback" };
+const expected = { harness: "claude-code", harnessVersion: "fixture-0", model: "fixture.model/alpha", effort: "xhigh", source: "claude-session-readback" };
 if (JSON.stringify(actor) !== JSON.stringify(expected)) throw new Error(`recognized actor changed: ${JSON.stringify(actor)}`);
 NODE
-grep -Fq 'Latest attestation: harness claude-code; version fixture-0; model fixture.model/alpha; effort xhigh; source harness-readback' "$fixture_repo/docs/control/current.md"
+grep -Fq 'Latest attestation: harness claude-code; version fixture-0; model fixture.model/alpha; effort xhigh; source claude-session-readback' "$fixture_repo/docs/control/current.md"
 grep -Fq 'Effort drift: none' "$fixture_repo/docs/control/current.md"
 refuse_next
 before_unfounded_fix="$(event_count)"

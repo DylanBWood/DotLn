@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 unset DOTLN_ACCOUNT_LABEL # Fixtures declare their own actors.
+unset CLAUDE_EFFORT # Fixtures attest their own sessions; the host's selected effort would refuse them (WO-157 VER-001 F3).
 
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
 source "$script_dir/test-temp-root.sh"

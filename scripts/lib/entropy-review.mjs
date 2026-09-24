@@ -18,7 +18,7 @@ import { join, resolve, sep } from "node:path";
 import { containedRegularFile } from "./paths.mjs";
 import { committedReader, sha256 } from "./plan-subject.mjs";
 import { checkLocalTerms } from "./terms.mjs";
-import { runGit } from "./git.mjs";
+import { runGit, runGitPathList } from "./git.mjs";
 import { validateAccountLabel } from "./control-actor.mjs";
 
 /**
@@ -166,8 +166,103 @@ export function scratchInventory(directory) {
     count: rows.length,
     sha256: hex(rows.join("\n")),
     paths: rows.map((row) => row.split("\u0000")[0]),
+    entries: rows.map((row) => row.split("\u0000")),
   };
 }
+
+/** SHA-256 of a sorted path list with each path NUL-terminated. A path may
+ * contain a newline but never NUL, so distinct lists never share the hashed
+ * bytes (WO-157 VER-001 F2: newline joining mapped ['a\nb', 'c'] and
+ * ['a', 'b\nc'] to one hash). */
+export const pathListDigest = (paths) =>
+  hex(paths.map((path) => `${path}\u0000`).join(""));
+
+/** The frozen copy's path-and-size inventory compared as sets (WO-157 item 9,
+ * WO-151 D020): a net count cannot see one path gained and another lost. */
+export const SCRATCH_DELTA_LISTED = 100;
+export function scratchPathDelta(before, after) {
+  const was = new Map(before);
+  const now = new Map(after);
+  const sets = {
+    added: [...now.keys()].filter((path) => !was.has(path)).sort(),
+    removed: [...was.keys()].filter((path) => !now.has(path)).sort(),
+    resized: [...now.keys()]
+      .filter((path) => was.has(path) && was.get(path) !== now.get(path))
+      .sort(),
+  };
+  // A worker names these paths and a build can add hundreds, so a committed
+  // receipt lists the first entries of each set and binds the whole set by
+  // count and SHA-256 of its sorted paths.
+  const listed = Object.fromEntries(
+    Object.entries(sets).map(([name, paths]) => [
+      name,
+      paths.slice(0, SCRATCH_DELTA_LISTED),
+    ]),
+  );
+  return {
+    ...listed,
+    counts: Object.fromEntries(
+      Object.entries(sets).map(([name, paths]) => [name, paths.length]),
+    ),
+    sha256: Object.fromEntries(
+      Object.entries(sets).map(([name, paths]) => [
+        name,
+        pathListDigest(paths),
+      ]),
+    ),
+    listedPerSet: SCRATCH_DELTA_LISTED,
+  };
+}
+
+/** The source repository's untracked, non-ignored paths, by count and hash
+ * only. It is an observation, never part of the subject and never a refusal:
+ * the dispatching session writes untracked evidence during an episode. */
+const untrackedListing = (root) => {
+  // Untrimmed: a path may begin or end with whitespace (WO-157 repair review).
+  const paths = runGitPathList(root, [
+    "ls-files",
+    "--others",
+    "--exclude-standard",
+    "-z",
+  ]).sort();
+  return { count: paths.length, sha256: pathListDigest(paths) };
+};
+
+/** The widened witness for a dispatch that recorded its before-state, or null
+ * for one pending from before WO-157, which keeps the earlier shape. */
+const widenedWitness = (root, pending, inventoryAfter) => {
+  if (!pending.scratchInventoryBeforeEntries || !pending.untrackedListingBefore)
+    return null;
+  const after = untrackedListing(root);
+  return {
+    untrackedListing: {
+      before: pending.untrackedListingBefore,
+      after,
+      identical: after.sha256 === pending.untrackedListingBefore.sha256,
+    },
+    scratchDelta: inventoryAfter
+      ? {
+          observed: true,
+          ...scratchPathDelta(
+            pending.scratchInventoryBeforeEntries,
+            inventoryAfter.entries,
+          ),
+        }
+      : { observed: false, ...scratchPathDelta([], []) },
+  };
+};
+const CLAUDE_WITNESS_EXECUTION =
+  "file tools confined to the frozen copy by --restricted; shell commands instructed to stay inside it and checked by the tracked-status hash on either side of the episode";
+const CLAUDE_WIDENED_EXECUTION =
+  "file tools confined to the frozen copy by --restricted; shell commands instructed to stay inside it and checked by the tracked-path status and untracked-listing hashes on either side of the episode";
+/** The witness sentence for a receipt that carries the widened observation;
+ * earlier receipts render their original line byte for byte. */
+const witnessSentence = (confinement) => {
+  const { untrackedListing: listing, scratchDelta: delta } = confinement;
+  return `Source repository: tracked-path status unchanged across the episode: **${confinement.trackedStatusByteIdentical}**; untracked, non-ignored path listing unchanged: **${listing.identical}** (${listing.before.count} before, ${listing.after.count} after; recorded, never a refusal condition). Ignored paths and file contents are not observed. Frozen copy path-and-size inventory: ${delta.counts.added} path(s) added, ${delta.counts.removed} removed, ${delta.counts.resized} resized${delta.observed ? "" : " (not observed)"}.`;
+};
+const scratchDeltaSummary = (delta) =>
+  "deltaCount" in delta ? delta.deltaCount : { ...delta.counts };
 
 /**
  * One lane per launchpad, so an abandoned dispatch can be swept without
@@ -305,7 +400,7 @@ const requireNoPending = (root, kind) => {
   const open = currentDispatch(root, kind);
   check(
     !open,
-    `an entropy ${kind} dispatch is already pending (episode ${open?.episodeId}, subject ${open?.subjectHash.slice(0, 16)}, frozen copy ${open?.scratchParent}); file it with npm run entropy -- ${kind === "review" ? "receipt" : "refutation-receipt"} <result.json> --statement <statement.txt>, or release it with npm run entropy -- discard ${kind}`,
+    `an entropy ${kind} dispatch is already pending (episode ${open?.episodeId}, subject ${open?.subjectHash.slice(0, 16)}, frozen copy ${open?.scratchParent}); file it with npm run entropy -- ${kind === "review" ? "receipt <result.json> --statement <statement.txt>" : "refutation-receipt <attempts.json>"}, or release it with npm run entropy -- discard ${kind}`,
   );
 };
 
@@ -543,7 +638,9 @@ export function renderReviewReceipt(receipt) {
     "",
     `Findings: ${counts.total} — ${counts.measured} measured, ${counts.byInspection} by inspection; ${counts.blocking} blocking, ${counts.major} major, ${counts.minor} minor. Proposal packets: ${counts.proposalPackets}.`,
     "",
-    `Subject binding: ${confinement.subjectBinding}. Tracked status byte-identical across the episode: **${confinement.trackedStatusByteIdentical}**. Scratch delta: ${confinement.scratchDelta.deltaCount} path(s)${confinement.scratchDelta.observed ? "" : " (not observed)"}. Installed dependencies: ${confinement.dependencies}. Command execution: ${confinement.commandExecution}. Denied tool calls: ${confinement.permissionDenials}.`,
+    confinement.untrackedListing === undefined
+      ? `Subject binding: ${confinement.subjectBinding}. Tracked status byte-identical across the episode: **${confinement.trackedStatusByteIdentical}**. Scratch delta: ${confinement.scratchDelta.deltaCount} path(s)${confinement.scratchDelta.observed ? "" : " (not observed)"}. Installed dependencies: ${confinement.dependencies}. Command execution: ${confinement.commandExecution}. Denied tool calls: ${confinement.permissionDenials}.`
+      : `Subject binding: ${confinement.subjectBinding}. ${witnessSentence(confinement)} Installed dependencies: ${confinement.dependencies}. Command execution: ${confinement.commandExecution}. Denied tool calls: ${confinement.permissionDenials}.`,
     "",
     `**Process cost:** ${receipt.cost.line}`,
     "",
@@ -581,12 +678,38 @@ export function renderRefutationReceipt(receipt) {
   // A receipt filed before the after-state was recorded (VER-001 finding 3)
   // keeps its bytes, so this line renders only for a receipt that carries the
   // observation. An immutable pair must still project to itself.
-  const afterState = confinement.scratchInventoryBefore
-    ? [
-        `Subject binding: ${confinement.subjectBinding}. Tracked status byte-identical across the episode: **${confinement.trackedStatusByteIdentical}**. Frozen copy inventoried at ${confinement.scratchInventoryBefore.count} path(s) before and ${confinement.scratchInventoryAfter?.count ?? "unobserved"} after; scratch delta ${confinement.scratchDelta.deltaCount} path(s)${confinement.scratchDelta.observed ? "" : " (not observed)"}.`,
-        "",
-      ]
-    : [];
+  const afterState =
+    confinement.untrackedListing !== undefined
+      ? [
+          `Subject binding: ${confinement.subjectBinding}. ${witnessSentence(confinement)} Frozen copy inventoried at ${confinement.scratchInventoryBefore.count} path(s) before and ${confinement.scratchInventoryAfter?.count ?? "unobserved"} after.`,
+          "",
+        ]
+      : confinement.scratchInventoryBefore
+        ? [
+            `Subject binding: ${confinement.subjectBinding}. Tracked status byte-identical across the episode: **${confinement.trackedStatusByteIdentical}**. Frozen copy inventoried at ${confinement.scratchInventoryBefore.count} path(s) before and ${confinement.scratchInventoryAfter?.count ?? "unobserved"} after; scratch delta ${confinement.scratchDelta.deltaCount} path(s)${confinement.scratchDelta.observed ? "" : " (not observed)"}.`,
+            "",
+          ]
+        : [];
+  // A refutation filed since WO-157 records no separate worker statement: the
+  // typed report's reasons and evidence references are its evidence (WO-151
+  // D017). Earlier receipts carry the key and keep their rendering.
+  const statementSection =
+    "statement" in receipt
+      ? [
+          "## Worker statement",
+          "",
+          paragraph(receipt.statement, 4000) || "(none returned)",
+          "",
+        ]
+      : [
+          "## Attempt reasons",
+          "",
+          ...receipt.report.attempts.map(
+            (attempt) =>
+              `- \`${attempt.findingId}\` ${attempt.result}: ${paragraph(attempt.reason, 2000)} Evidence: ${attempt.evidenceRefs.map((ref) => paragraph(ref, 500)).join("; ") || "none"}.`,
+          ),
+          "",
+        ];
   return [
     `# Entropy Reducer refutation — ${receipt.receiptId}`,
     "",
@@ -607,10 +730,7 @@ export function renderRefutationReceipt(receipt) {
     ...afterState,
     `**Process cost:** ${receipt.cost.line}`,
     "",
-    "## Worker statement",
-    "",
-    paragraph(receipt.statement, 4000) || "(none returned)",
-    "",
+    ...statementSection,
     "## Bound report",
     "",
     "```json",
@@ -897,6 +1017,7 @@ export async function beginEntropyReview(
     `entropy review refuses a dirty tree: ${trackedStatus(root).split("\n").filter(Boolean).length} tracked path(s) differ from ${revision}. Commit them, or name the committed subject explicitly (npm run entropy -- review <commit>) so the receipt cannot be read as a review of the working tree.`,
   );
   requireNoPending(root, "review");
+  const untrackedAtDispatch = untrackedListing(root);
   const { parent, repository, dependencies } = freezeSubject(
     root,
     state.baseCommit,
@@ -961,6 +1082,8 @@ export async function beginEntropyReview(
       subjectHash: subject.hash,
       subject,
       workingTreeDirtyAtDispatch: state.workingTreeDirty,
+      untrackedListingBefore: untrackedAtDispatch,
+      scratchInventoryBeforeEntries: inventory.entries,
       namedRevision: revision,
       scratchParent: parent,
       capture,
@@ -1094,6 +1217,7 @@ export async function fileEntropyReview(
   const inventoryAfter = existsSync(pending.subject.scratchRepository)
     ? scratchInventory(pending.subject.scratchRepository)
     : null;
+  const widened = widenedWitness(root, pending, inventoryAfter);
   const episode = pending.episode ?? null;
   const attestation = buildAttestation(
     {
@@ -1160,21 +1284,28 @@ export async function fileEntropyReview(
         scratchInventoryAfter: inventoryAfter
           ? { count: inventoryAfter.count, sha256: inventoryAfter.sha256 }
           : null,
-        scratchDelta: inventoryAfter
-          ? {
-              deltaCount: Math.abs(
-                inventoryAfter.count - pending.subject.scratchInventoryCount,
-              ),
-              observed: true,
-            }
-          : { deltaCount: 0, observed: false },
+        ...(widened
+          ? widened
+          : {
+              scratchDelta: inventoryAfter
+                ? {
+                    deltaCount: Math.abs(
+                      inventoryAfter.count -
+                        pending.subject.scratchInventoryCount,
+                    ),
+                    observed: true,
+                  }
+                : { deltaCount: 0, observed: false },
+            }),
         excludedFromManifest: SCRATCH_EXCLUDED,
         dependencies: pending.dependencies ?? "unobserved",
         commandExecution:
           pending.transport === "codex-cli-exec"
             ? "host-enforced workspace sandbox rooted at the frozen copy"
             : pending.transport === "claude-cli-print"
-              ? "file tools confined to the frozen copy by --restricted; shell commands instructed to stay inside it and checked by the tracked-status hash on either side of the episode"
+              ? widened
+                ? CLAUDE_WIDENED_EXECUTION
+                : CLAUDE_WITNESS_EXECUTION
               : "session-attested; this host enforced no boundary on a worker it did not launch",
         permissionDenials: episode?.wire?.permissionDenials ?? "unobserved",
         deniedTools: episode?.wire?.deniedTools ?? [],
@@ -1217,7 +1348,7 @@ export async function fileEntropyReview(
     },
     confinement: {
       subjectBinding: receipt.confinement.subjectBinding,
-      scratchDelta: receipt.confinement.scratchDelta.deltaCount,
+      scratchDelta: scratchDeltaSummary(receipt.confinement.scratchDelta),
       permissionDenials: receipt.confinement.permissionDenials,
     },
     cost: receipt.cost.line,
@@ -1262,6 +1393,7 @@ export async function beginEntropyRefutation(
   // witness the review records: the source repository's tracked status here,
   // and the frozen copy's inventory on either side of the episode.
   const statusAtDispatch = trackedStatus(root);
+  const untrackedAtDispatch = untrackedListing(root);
   const { parent, repository, dependencies } = freezeSubject(
     root,
     review.subject.baseCommit,
@@ -1329,6 +1461,8 @@ export async function beginEntropyRefutation(
       subjectHash: subject.hash,
       subject,
       trackedStatusBeforeSha256: hex(statusAtDispatch),
+      untrackedListingBefore: untrackedAtDispatch,
+      scratchInventoryBeforeEntries: inventory.entries,
       reviewReceiptId,
       reviewReceiptHash: review.receiptHash,
       scratchParent: parent,
@@ -1369,8 +1503,8 @@ export async function beginEntropyRefutation(
         prompt: JSON.parse(transportPrompt(request)),
         resultSchema: transportResultSchema(request),
         workerInstructions:
-          "Run this refutation as one fresh worker that has seen no part of the review it challenges. Its working directory is the frozen subject path. Return the schema object plus a truthful public session statement of at most 4000 characters. Return both to the parent; do not edit the repository or file a receipt.",
-        file: "npm run entropy -- refutation-receipt <attempts.json> --statement <statement.txt>",
+          "Run this refutation as one fresh worker that has seen no part of the review it challenges. Its working directory is the frozen subject path. Return only the schema object to the parent; its reasons and evidence references are the receipt's evidence, so no separate statement is asked for. Do not edit the repository or file a receipt.",
+        file: "npm run entropy -- refutation-receipt <attempts.json>",
       };
     const episode = await runEpisode(root, request, pending, "refuter");
     writePending(root, "refutation", { ...pending, episode });
@@ -1382,7 +1516,7 @@ export async function beginEntropyRefutation(
       transport: episode.transport,
       harnessVersion: episode.harnessVersion,
       durationMs: episode.durationMs,
-      file: `npm run entropy -- refutation-receipt ${episode.resultPath} --statement ${episode.statementPath}`,
+      file: `npm run entropy -- refutation-receipt ${episode.resultPath}`,
     };
   } catch (error) {
     if (!retained) rmSync(parent, { recursive: true, force: true });
@@ -1395,15 +1529,21 @@ export async function beginEntropyRefutation(
 export async function fileEntropyRefutation(
   root,
   attemptsPath,
-  statementPath,
+  statementPath = null,
   { now = () => new Date().toISOString(), keepScratch = false } = {},
 ) {
   const pending = currentDispatch(root, "refutation");
   check(pending !== null, "no entropy refutation dispatch is pending");
   const attemptsFile = namedInput(root, pending.scratchParent, attemptsPath);
-  const statementFile = namedInput(root, pending.scratchParent, statementPath);
+  // A statement is accepted from a dispatch made under the earlier instruction
+  // and kept only beside a rejected return; the receipt does not record it.
+  const statement = statementPath
+    ? readFileSync(
+        namedInput(root, pending.scratchParent, statementPath),
+        "utf8",
+      ).trim()
+    : null;
   const returned = readJson(attemptsFile, attemptsPath);
-  const statement = readFileSync(statementFile, "utf8").trim();
   const review = readReceipt(root, pending.reviewReceiptId);
   check(
     review.receiptHash === pending.reviewReceiptHash,
@@ -1423,9 +1563,10 @@ export async function fileEntropyRefutation(
     writeFileSync(join(lane, "result.json"), readFileSync(attemptsFile), {
       mode: 0o600,
     });
-    writeFileSync(join(lane, "statement.txt"), statement, { mode: 0o600 });
+    if (statement !== null)
+      writeFileSync(join(lane, "statement.txt"), statement, { mode: 0o600 });
     throw new Error(
-      `entropy refutation result rejected: ${error instanceof Error ? error.message : "invalid attempts"}; rejected result and statement retained at ${lane}`,
+      `entropy refutation result rejected: ${error instanceof Error ? error.message : "invalid attempts"}; rejected result${statement !== null ? " and statement" : ""} retained at ${lane}`,
     );
   }
   // The subject of a refutation is the review's named commit, which the
@@ -1439,6 +1580,7 @@ export async function fileEntropyRefutation(
   const inventoryAfter = existsSync(pending.subject.scratchRepository)
     ? scratchInventory(pending.subject.scratchRepository)
     : null;
+  const widened = widenedWitness(root, pending, inventoryAfter);
   const episode = pending.episode ?? null;
   const attestation = buildAttestation(
     {
@@ -1479,21 +1621,28 @@ export async function fileEntropyRefutation(
         scratchInventoryAfter: inventoryAfter
           ? { count: inventoryAfter.count, sha256: inventoryAfter.sha256 }
           : null,
-        scratchDelta: inventoryAfter
-          ? {
-              deltaCount: Math.abs(
-                inventoryAfter.count - pending.subject.scratchInventoryCount,
-              ),
-              observed: true,
-            }
-          : { deltaCount: 0, observed: false },
+        ...(widened
+          ? widened
+          : {
+              scratchDelta: inventoryAfter
+                ? {
+                    deltaCount: Math.abs(
+                      inventoryAfter.count -
+                        pending.subject.scratchInventoryCount,
+                    ),
+                    observed: true,
+                  }
+                : { deltaCount: 0, observed: false },
+            }),
         excludedFromManifest: SCRATCH_EXCLUDED,
         dependencies: pending.dependencies ?? "unobserved",
         commandExecution:
           pending.transport === "codex-cli-exec"
             ? "host-enforced workspace sandbox rooted at the frozen copy"
             : pending.transport === "claude-cli-print"
-              ? "file tools confined to the frozen copy by --restricted; shell commands instructed to stay inside it and checked by the tracked-status hash on either side of the episode"
+              ? widened
+                ? CLAUDE_WIDENED_EXECUTION
+                : CLAUDE_WITNESS_EXECUTION
               : "session-attested; this host enforced no boundary on a worker it did not launch",
         permissionDenials: episode?.wire?.permissionDenials ?? "unobserved",
         deniedTools: episode?.wire?.deniedTools ?? [],
@@ -1516,7 +1665,6 @@ export async function fileEntropyRefutation(
         episode?.durationMs ?? 0,
         episode?.wire,
       ),
-      statement,
       liveness: pending.fixture ? "fixture" : "live",
     },
   });
@@ -1537,7 +1685,7 @@ export async function fileEntropyRefutation(
     unselected: report.unselectedFindingIds,
     trackedStatusByteIdentical,
     confinement: {
-      scratchDelta: receipt.confinement.scratchDelta.deltaCount,
+      scratchDelta: scratchDeltaSummary(receipt.confinement.scratchDelta),
       permissionDenials: receipt.confinement.permissionDenials,
     },
     cost: receipt.cost.line,

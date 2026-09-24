@@ -580,12 +580,14 @@ test("WO-056 verifier schema, instructions and admission agree on the finding co
     for (const entry of clean.capsule.subject.evidence) entry.outcome = "pass";
     assert.deepEqual(properties(evidenceResultSchema(clean)).observed, {
       type: "string",
+      minLength: 1,
+      maxLength: 2000,
     });
     const legacy = structuredClone(request) as any;
     delete legacy.capsule.subject.snapshot;
     assert.deepEqual(
       properties(evidenceResultSchema(legacy)).reproductionSteps.items,
-      { type: "string" },
+      { type: "string", minLength: 1, maxLength: 2000 },
     );
     assert.deepEqual(properties(evidenceResultSchema(legacy)).observed.enum, [
       "exit 1",

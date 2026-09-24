@@ -70,7 +70,7 @@ test("WO-133 every generated role preserves supplied actor values and checks edi
     for (const role of roles) {
       assert.match(
         role.contents,
-        /Without effective readback, keep the operator-selected model and effort with `--source operator-attested`/,
+        /Without a session readback, keep the operator-selected model and effort with `--source operator-attested`; Claude Code roles read `CLAUDE_EFFORT` first/,
       );
       assert.match(role.contents, /unknown` only for a value nobody supplied/);
       assert.match(
