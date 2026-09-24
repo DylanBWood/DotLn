@@ -2230,6 +2230,31 @@ upkeep problem the artifact-growth candidate waits for. The rule above stands
 records inputs by blob identity and keys staleness on audited behavior while
 every existing edition stays byte-identical.
 
+**After, measured 2026-09-24 (WO-154).** A schema 2 feedback edition commits
+its verifier stream with every judged body replaced by a Git blob reference
+that `feedback-evidence --check` rebuilds byte for byte, plus a small
+content-addressed snapshot of the pin-bearing files: WO-154 revision 001 is
+177,857 bytes against 2,231,901 for the same live episode by value (92%
+smaller) and a mean of 1,361,748 across the 84 editions before it; heartbeats
+are now its largest record type. One correction to the paragraph above:
+editions did not re-mint on version-only bumps, which the release-label
+projection already admitted (WO-152 D004). In 16 of 81 re-mints the judged
+files changed only in release labels; the 12 since that projection landed on
+2026-09-15 were owed because an edit to a registered source the verifier
+never judged coincided. Staleness and the live episode
+now follow the judged files with release labels normalized and the
+regenerated report
+([WO-154 D001](../evidence/WO-154/decisions.md#wo-154-d001--goal-alignment-a-corrected-premise-and-the-design),
+[D009](../evidence/WO-154/decisions.md#wo-154-d009--bytes-before-and-after-and-the-live-episode-rule)).
+After the VER-001 repair, revision 002 is 189,014 bytes against 2,250,286 by
+value. A compiler release no longer owes a live episode. Every replay layer
+treats the recorded release as metadata, and the deterministic carry refreshes
+the policy hash the console binds
+([D011](../evidence/WO-154/decisions.md#wo-154-d011--ver-001-f1-repair-a-compiler-release-is-recorded-metadata-at-every-replay-layer),
+[D013](../evidence/WO-154/decisions.md#wo-154-d013--re-mint-after-the-repair-one-live-episode-and-why-each-edition-changed)).
+The refutation receipts keep their by-value subject until their own order
+([D003](../evidence/WO-154/decisions.md#wo-154-d003--the-receipt-subject-group-becomes-its-own-patch-order)).
+
 Storage reconciliation and semantic reconciliation are different. Moving raw
 bytes into the surviving store does not update the ledger or blueprint. The
 `ideation:` pipeline and its receipt record that interpretation; a later raw

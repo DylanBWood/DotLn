@@ -1,6 +1,10 @@
 import { COMPILER_PACKAGE_VERSION } from "./artifact-identity.js";
 import { canonicalStringify, fnv1a64 } from "./normalize.js";
-import { repositoryPath, verificationLine } from "./verification.js";
+import {
+  isCompilerRelease,
+  repositoryPath,
+  verificationLine,
+} from "./verification.js";
 import type { WorkOrder } from "./types.js";
 
 /** Closed v1 handler vocabulary. Personal units live in the host's loadout. */
@@ -88,6 +92,12 @@ const text = (value: string, name: string): string => {
 /** Lower declared corrections to executable handlers, with no prompt emission. */
 export function compileFeedbackUnits(
   input: readonly FeedbackUnit[],
+): CompiledFeedback {
+  return lowerFeedbackUnits(input, COMPILER_PACKAGE_VERSION);
+}
+function lowerFeedbackUnits(
+  input: readonly FeedbackUnit[],
+  compilerPackageVersion: string,
 ): CompiledFeedback {
   requireFeedback(
     Array.isArray(input) && input.length <= 10,
@@ -194,7 +204,7 @@ export function compileFeedbackUnits(
     );
   const contents = {
     contractVersion: "feedback-v1" as const,
-    compilerPackageVersion: COMPILER_PACKAGE_VERSION,
+    compilerPackageVersion,
     units,
     mechanisms: units.map((unit) => ({
       unitId: unit.unitId,
@@ -209,10 +219,16 @@ export function compileFeedbackUnits(
     policyHash: `fnv1a64:${fnv1a64(canonicalStringify(contents))}`,
   };
 }
+/** A recorded program keeps the compiler release it names; everything else
+ * must be this compiler's lowering of its units, so a log recorded before a
+ * release-only bump still replays and any policy drift fails (WO-154). */
 export function assertCompiledFeedback(program: CompiledFeedback): void {
   requireFeedback(
-    canonicalStringify(program) ===
-      canonicalStringify(compileFeedbackUnits(program.units)),
+    isCompilerRelease(program.compilerPackageVersion) &&
+      canonicalStringify(program) ===
+        canonicalStringify(
+          lowerFeedbackUnits(program.units, program.compilerPackageVersion),
+        ),
     "compiled policy drift",
   );
 }

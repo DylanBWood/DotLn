@@ -1,0 +1,16 @@
+TAP version 13
+# Subtest: WO-154 a pins-only change keeps or carries the live audit; a judged change and an unresolvable reference are stale by path
+ok 1 - WO-154 a pins-only change keeps or carries the live audit; a judged change and an unresolvable reference are stale by path
+  ---
+  duration_ms: 21805.776042
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 21845.172791

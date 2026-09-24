@@ -1,0 +1,18 @@
+TAP version 13
+# (node:96000) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+# (Use `node --trace-deprecation ...` to show where the warning was created)
+# Subtest: WO-050 full pre-refactor Decision bytes and every retained semantic projection stay identical
+ok 1 - WO-050 full pre-refactor Decision bytes and every retained semantic projection stay identical
+  ---
+  duration_ms: 1751.600167
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1802.507791

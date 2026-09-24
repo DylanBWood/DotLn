@@ -1988,6 +1988,55 @@ export function harnessAuthorization(
   });
 }
 
+function verificationContinuation(command: Command) {
+  return Program.Invoke(command.commandId, command.intent, {
+    completed: Program.Emit(
+      {
+        schemaVersion: 1,
+        type: "VerificationContinuation",
+        actorId: VERIFICATION_HOST,
+        workstreamId: command.workstreamId!,
+        occurredAt: 0,
+        correlationId: command.commandId,
+        payload: { commandId: command.commandId },
+      },
+      Program.Done(),
+    ),
+  });
+}
+/** The pending command the host persisted: the dispatched one, or one whose
+ * capsule differs only in the compiler release it names (a stream recorded
+ * before a release-only compiler bump, WO-154), adopted with that capsule;
+ * null for any other difference. */
+function persistedCompilation(
+  command: Command | undefined,
+  pending: VerificationPending,
+): VerificationPending | null {
+  if (same(command, pending.command)) return pending;
+  const capsule = (command?.intent as { payload?: { capsule?: unknown } })
+    ?.payload?.capsule as VerificationTask | undefined;
+  const release = (task: VerificationTask | undefined) => ({
+    ...task,
+    compilerPackageVersion: null,
+    inputHash: null,
+  });
+  if (
+    !capsule ||
+    capsule.compilerPackageVersion === pending.capsule.compilerPackageVersion ||
+    !same(release(capsule), release(pending.capsule)) ||
+    !same(command, {
+      ...pending.command,
+      intent: { ...pending.command.intent, payload: json({ capsule }) },
+    })
+  )
+    return null;
+  try {
+    assertVerificationTask(capsule);
+  } catch {
+    return null;
+  }
+  return { ...pending, capsule, command: command! };
+}
 function dispatch(state: VerificationState): VerificationState {
   requireState(
     !state.pending &&
@@ -2030,20 +2079,7 @@ function dispatch(state: VerificationState): VerificationState {
       payload: json({ capsule }),
     },
   };
-  const continuation = Program.Invoke(command.commandId, command.intent, {
-    completed: Program.Emit(
-      {
-        schemaVersion: 1,
-        type: "VerificationContinuation",
-        actorId: VERIFICATION_HOST,
-        workstreamId: state.workstreamId,
-        occurredAt: 0,
-        correlationId: command.commandId,
-        payload: { commandId: command.commandId },
-      },
-      Program.Done(),
-    ),
-  });
+  const continuation = verificationContinuation(command);
   // The kernel emits the dispatch intent. The host persists it before invoking a transport.
   const decision = decideProgram(continuation, json(state), env(0));
   requireState(decision.intents.length === 1, "kernel dispatch intent");
@@ -2138,15 +2174,20 @@ function foldVerificationEvent(
       const pending = state.pending;
       if (!pending || value.command?.commandId !== pending.command.commandId)
         return state;
+      const persisted = persistedCompilation(value.command, pending);
+      requireState(persisted, "persisted compilation drift");
+      const next = {
+        ...state,
+        ...(persisted === pending
+          ? {}
+          : { continuation: verificationContinuation(persisted!.command) }),
+        pending: { ...persisted!, persisted: true },
+      };
       requireState(
-        same(value.command, pending.command),
-        "persisted compilation drift",
-      );
-      requireState(
-        verificationAuthorization(state, event.occurredAt).authorized,
+        verificationAuthorization(next, event.occurredAt).authorized,
         "persist without authority",
       );
-      return { ...state, pending: { ...pending, persisted: true } };
+      return next;
     }
     case "WorkerAttemptStarted": {
       const pending = state.pending;

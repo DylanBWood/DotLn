@@ -7,6 +7,9 @@ import {
   applyFeedbackCorrection,
   feedbackMaturity,
   hasAiAttribution,
+  canonicalStringify,
+  fnv1a64,
+  type CompiledFeedback,
   type FeedbackUnit,
   type FeedbackHandler,
 } from "../src/index.js";
@@ -227,4 +230,53 @@ test("WO-011 maturity separates controlled fixtures from live use and refuses in
     () => feedbackMaturity(program, [{ ...record, falseActivation: true }]),
     /observation/,
   );
+});
+
+// WO-154 VER-001: a log recorded before a release-only compiler bump replays.
+// The earlier release's program is this lowering under its own label, with
+// the policy hash that label derives.
+test("WO-154 a recorded program keeps its compiler release; any other drift still fails", () => {
+  const compiled = compileFeedbackUnits([source()]);
+  const recorded = (
+    release: unknown,
+    change: Partial<CompiledFeedback> = {},
+  ): CompiledFeedback => {
+    const body = {
+      contractVersion: compiled.contractVersion,
+      compilerPackageVersion: release as string,
+      units: compiled.units,
+      mechanisms: compiled.mechanisms,
+      ...change,
+    };
+    return {
+      ...body,
+      policyHash: `fnv1a64:${fnv1a64(canonicalStringify(body))}`,
+    };
+  };
+  const earlier = recorded("0.0.1");
+  assert.notEqual(earlier.policyHash, compiled.policyHash);
+  assertCompiledFeedback(earlier);
+  assert.equal(
+    feedbackMaturity(earlier, []).length,
+    feedbackMaturity(compiled, []).length,
+  );
+  assert.throws(
+    () =>
+      assertCompiledFeedback({ ...earlier, policyHash: compiled.policyHash }),
+    /compiled policy drift/u,
+  );
+  assert.throws(
+    () =>
+      assertCompiledFeedback(
+        recorded("0.0.1", {
+          mechanisms: [{ ...compiled.mechanisms[0]!, rung: 2 }],
+        }),
+      ),
+    /compiled policy drift/u,
+  );
+  for (const release of ["", "latest", "0.17", 17, null])
+    assert.throws(
+      () => assertCompiledFeedback(recorded(release)),
+      /compiled policy drift/u,
+    );
 });

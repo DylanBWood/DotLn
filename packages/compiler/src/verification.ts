@@ -535,6 +535,21 @@ export function compileVerificationTask(
   subjectInput: VerificationSubject,
   findingInput: VerificationFinding | null = null,
 ): VerificationTask {
+  return lowerVerificationTask(
+    workOrderId,
+    criteriaInput,
+    subjectInput,
+    findingInput,
+    COMPILER_PACKAGE_VERSION,
+  );
+}
+function lowerVerificationTask(
+  workOrderId: string,
+  criteriaInput: readonly AcceptanceCriterion[],
+  subjectInput: VerificationSubject,
+  findingInput: VerificationFinding | null,
+  compilerPackageVersion: string,
+): VerificationTask {
   requireValue(verificationLine(workOrderId), "work order id");
   requireValue(
     Array.isArray(criteriaInput) &&
@@ -682,7 +697,7 @@ export function compileVerificationTask(
   };
   const contents: Omit<VerificationTask, "inputHash"> = {
     contractVersion: "verification-v1" as const,
-    compilerPackageVersion: COMPILER_PACKAGE_VERSION,
+    compilerPackageVersion,
     role,
     workOrder,
     criteria,
@@ -695,12 +710,25 @@ export function compileVerificationTask(
   };
 }
 
+/** A compiler release label, as a recorded program or capsule names it. */
+export const isCompilerRelease = (value: unknown): value is string =>
+  typeof value === "string" &&
+  /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/u.test(value);
+
+/** A recorded capsule keeps the compiler release it names; everything else
+ * must be this compiler's lowering, so a stream recorded before a
+ * release-only bump still replays and any other drift fails (WO-154). */
 export function assertVerificationTask(task: VerificationTask): void {
-  const expected = compileVerificationTask(
+  requireValue(
+    isCompilerRelease(task.compilerPackageVersion),
+    "compiled capsule release",
+  );
+  const expected = lowerVerificationTask(
     task.workOrder.workOrderId,
     task.criteria,
     task.subject,
     task.finding,
+    task.compilerPackageVersion,
   );
   requireValue(
     canonicalStringify(task) === canonicalStringify(expected),

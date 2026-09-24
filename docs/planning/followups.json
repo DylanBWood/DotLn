@@ -7752,6 +7752,13 @@
           "title": "WO-050-D002: Capture synthetic worker fixtures once before refactoring; compare complete Decisions and projections on fixed input bytes, retaining historical refusal identities separately.",
           "summary": "{ \"id\": \"WO-050-D002\", \"date\": \"2026-09-16\", \"dispatch\": \"resume: next\", \"decision\": \"Capture synthetic worker fixtures once before refactoring; compare complete Decisions and projections on fixed input bytes, retaining historical refusal identities separately.\", \"evidence\": [ \"packages/skeleton/fixtures/wo050-identity.json\", \"scripts/reactor-identity.mjs\" ], \"rejected\": [ { \"option\": \"Compare only trace fields or normalize Decision state\", \"reason\": \"Would hide state differences and fail the operator-selected full identity boundary.\" }, { \"option\": \"Claim original WO-009 raw logs or successful old WO-010/011 replay\", \"reason\": \"Those worker logs were not retained and the old compiled-artifa",
           "missing": false
+        },
+        {
+          "hash": "f1eef01155c27c930b5c5ded6bc518a9567626c78ab083a95654aa8bbe219186",
+          "ref": "docs/evidence/WO-050/decisions.md#wo-050-d002",
+          "title": "WO-050-D002: Capture synthetic worker fixtures once before refactoring; compare complete Decisions and projections on fixed input bytes, retaining historical refusal identities separately.",
+          "summary": "{ \"id\": \"WO-050-D002\", \"date\": \"2026-09-16\", \"dispatch\": \"resume: next\", \"decision\": \"Capture synthetic worker fixtures once before refactoring; compare complete Decisions and projections on fixed input bytes, retaining historical refusal identities separately.\", \"evidence\": [ \"packages/skeleton/fixtures/wo050-identity.json\", \"scripts/reactor-identity.mjs\" ], \"rejected\": [ { \"option\": \"Compare only trace fields or normalize Decision state\", \"reason\": \"Would hide state differences and fail the operator-selected full identity boundary.\" }, { \"option\": \"Claim original WO-009 raw logs or successful old WO-010/011 replay\", \"reason\": \"Those worker logs were not retained and the old compiled-artifa",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -7762,6 +7769,16 @@
           "reopenWhen": "A retained fixture changes or obsolete compiled artifact replay receives its own compatibility scope.",
           "targets": [],
           "at": "2026-09-19T01:18:36.569Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Reopened and decided by WO-154-D014: WO-154 is the compatibility scope for replaying artifacts recorded under an earlier compiler release; the frozen oracle keeps its bytes and gains the successor wo154-identity.json chained by hash.",
+          "reopenWhen": "The admission of a recorded compiler release is narrowed or withdrawn, or a replay it admits differs in behavior from its recording.",
+          "targets": [
+            "WO-154"
+          ],
+          "at": "2026-09-24T17:56:32.115Z"
         }
       ]
     },
@@ -8224,6 +8241,13 @@
           "title": "WO-133-D004: Keep compiler purity and production artifact validation intact; isolate the historical compiler identity in the WO-050 oracle child and use current compiled inputs in other tests.",
           "summary": "{ \"id\": \"WO-133-D004\", \"date\": \"2026-09-16\", \"dispatch\": \"resume: next\", \"decision\": \"Keep compiler purity and production artifact validation intact; isolate the historical compiler identity in the WO-050 oracle child and use current compiled inputs in other tests.\", \"evidence\": [ \"packages/compiler/test/purity.test.ts\", \"docs/evidence/WO-050/decisions.md\", \"packages/skeleton/fixtures/wo050/README.md\", \"scripts/reactor-identity.mjs\", \"scripts/fixtures/historical-compiler-loader.mjs\" ], \"rejected\": [ { \"option\": \"Change production validation to accept obsolete artifacts\", \"reason\": \"WO-050 D002 reserves that compatibility decision for separate scope; this order changes no artifact contract.\" ",
           "missing": false
+        },
+        {
+          "hash": "34f4e88c180b3c4d0208d099063adad223761dca25fe31e28c89b2ffeacf7a9e",
+          "ref": "docs/evidence/WO-133/decisions.md#wo-133-d004--keep-historical-compiler-identity-explicit-in-test-oracles",
+          "title": "WO-133-D004: Keep compiler purity and production artifact validation intact; isolate the historical compiler identity in the WO-050 oracle child and use current compiled inputs in other tests.",
+          "summary": "{ \"id\": \"WO-133-D004\", \"date\": \"2026-09-16\", \"dispatch\": \"resume: next\", \"decision\": \"Keep compiler purity and production artifact validation intact; isolate the historical compiler identity in the WO-050 oracle child and use current compiled inputs in other tests.\", \"evidence\": [ \"packages/compiler/test/purity.test.ts\", \"docs/evidence/WO-050/decisions.md\", \"packages/skeleton/fixtures/wo050/README.md\", \"scripts/reactor-identity.mjs\", \"scripts/fixtures/historical-compiler-loader.mjs\" ], \"rejected\": [ { \"option\": \"Change production validation to accept obsolete artifacts\", \"reason\": \"WO-050 D002 reserves that compatibility decision for separate scope; this order changes no artifact contract.\" ",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -8234,6 +8258,16 @@
           "reopenWhen": "Compiler behavior changes beyond its release identity, the frozen oracle differs, or obsolete artifact compatibility receives separate scope.",
           "targets": [],
           "at": "2026-09-19T01:19:13.853Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Reopened by WO-154-D015: production validation now admits a program or capsule recorded under another compiler release when everything else is the current lowering; D004's purity and loader choices stand.",
+          "reopenWhen": "The admission of a recorded compiler release is narrowed or withdrawn, or a replay it admits differs in behavior from its recording.",
+          "targets": [
+            "WO-154"
+          ],
+          "at": "2026-09-24T17:56:32.670Z"
         }
       ]
     },
@@ -15403,6 +15437,73 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-beb13d8d099d2917",
+      "key": "decision:docs/evidence/WO-154/decisions.md#wo-154-d003",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "81b7474a18d66396663f42755cb4166ab415cff5fadd77badea375c4232607fc",
+          "ref": "docs/evidence/WO-154/decisions.md#wo-154-d003--the-receipt-subject-group-becomes-its-own-patch-order",
+          "title": "WO-154-D003: Planner: file the receipt-subject group of WO-154 as its own patch order: scripts/lib/plan-receipts.mjs stores each sequenced order by identity and hash, rebuilt from the committed subjec",
+          "summary": "{ \"id\": \"WO-154-D003\", \"date\": \"2026-09-24\", \"dispatch\": \"resume: next; WO-154 design §Second criterion group and criterion 6\", \"decision\": \"Record the split the order allows: storing each sequenced order by identity and hash in planning refutation receipts is a different seam, so it becomes a patch order of its own and this order delivers the feedback recorder. No receipt, plan-receipts.mjs or plan-subject.mjs byte changes here.\", \"evidence\": [ \"scripts/lib/plan-receipts.mjs reads `receipt.subject` by value at 40 sites (git grep -c), among them `criterion(subject, hold)` behind every hold disposition's criterionHash, `isDisposed`, `requireChangedPlanEvidence`, `checkPlanContinuation` and th",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0c86ada82f559914",
+      "key": "decision:docs/evidence/WO-154/decisions.md#wo-154-d007",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "1c0723a052804573a60aeb509c2ff485a8a8d97e4249faecf6de20ff7db33f72",
+          "ref": "docs/evidence/WO-154/decisions.md#wo-154-d007--a-pins-snapshot-keeps-a-pins-only-change-from-stranding-a-reference",
+          "title": "WO-154-D007: Executor of the next order that changes packages/skeleton/src/feedback-selfhost.ts and pays a live feedback self-host episode anyway: add the edition's pins/ files to editionBodies' candi",
+          "summary": "{ \"id\": \"WO-154-D007\", \"date\": \"2026-09-24\", \"dispatch\": \"resume: next; WO-154 criteria 1 and 2; a defect this order's first recording met\", \"decision\": \"`--record-selfhost` (and a new `--pins` mode for an existing edition) writes `<edition>/pins/<blobHash>`: the raw bytes behind every judged file that carries a component release label (the repository blob each `.feedback-source/` projection derives from, and packages/compiler/src/artifact-identity.ts), and stores each with `git hash-object -w`. Committed with the edition, the snapshot makes those blobs reachable whatever later commits do to the files; the object write covers the window before the first commit. Revision 001 was repaired in p",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Done in WO-154's VER-001 repair under the operator's authorization (WO-154-D011): liveAuditCandidates gives the resolver the live audit's pins/ files as working-tree candidates, and --record-selfhost no longer writes objects; regression in packages/skeleton/test/feedback-edition.test.ts.",
+          "reopenWhen": "A committed schema 2 edition fails --check with an unresolvable pin-bearing reference while its pins/ snapshot is present.",
+          "targets": [
+            "WO-154"
+          ],
+          "at": "2026-09-24T17:36:18.605Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-ccaad908fd4c4376",
+      "key": "decision:docs/evidence/WO-154/decisions.md#wo-154-d010",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "1fe2eed93ed1c4bdc5ca729061725db9a5e937d0c3c6860dc4a18a510bba8bf8",
+          "ref": "docs/evidence/WO-154/decisions.md#wo-154-d010--ver-001-rebuilt-compiler-labels-prevent-audit-retention",
+          "title": "WO-154-D010: WO-154 executor on resume: fix: resolve VER-001-F1 so a rebuilt compiler release-label-only change can check and deterministically carry the historical live audit without a new episode. E",
+          "summary": "{ \"id\": \"WO-154-D010\", \"date\": \"2026-09-24\", \"dispatch\": \"resume: verify\", \"decision\": \"Record VER-001-F1 as a major failure of criterion 2 and route the order to repair. The schema 2 check and carry reject an older live audit after a compiler release-label change is built, even though the behavioral identity is unchanged. The verifier changes no implementation or immutable edition.\", \"evidence\": [ \"Independent fixture fetched only refs/dotln/checkpoint/WO-154/3 and its ancestors into a new repository with no object alternates; its packages, scripts, manifests and WO-154 evidence matched the working subject byte for byte. Baseline build and feedback-evidence --check passed, and its reference",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Done in WO-154's VER-001 repair (WO-154-D011): assertCompiledFeedback and assertVerificationTask compare at the recorded compiler release, the verification slice adopts a persisted capsule that differs only in that label, feedback-evidence --check names the deterministic --carry, and the rebuilt-compiler regression in scripts/test-evidence-sources.mjs exercises check, carry, stored-stream replay and the judged-change refusal. VER-002 criterion 8 passed on the repaired subject; disposed at final review (FINAL-001).",
+          "reopenWhen": "A compiler release-label-only change, once built, again fails feedback-evidence --check or --carry without a judged-file or compiled-policy change.",
+          "targets": [
+            "WO-154"
+          ],
+          "at": "2026-09-24T18:35:34.207Z"
+        }
+      ]
     }
   ]
 }

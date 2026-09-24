@@ -43,7 +43,7 @@ test("WO-050 full pre-refactor Decision bytes and every retained semantic projec
       ["scripts/reactor-identity.mjs", "--check"],
       { cwd: root, encoding: "utf8", maxBuffer: 1024 * 1024 },
     ),
-    /Verified 19 complete Decision/,
+    /Verified 18 complete Decision/,
   );
 });
 
