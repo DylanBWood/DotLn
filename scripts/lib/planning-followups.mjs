@@ -602,22 +602,27 @@ export function requirePlanningHandoffs(root, workOrder) {
   if (!deferred.length) return [];
   const state = syncFollowups(root, { check: true });
   return deferred.map((item) => {
-    const entry = state.entries.find(
-      (row) => row.id === item.disposition?.target,
-    );
-    let destination = entry;
-    while (destination && followupStatus(destination) === "duplicate")
-      destination = state.entries.find(
-        (row) => row.id === destination.dispositions.at(-1).targets[0],
-      );
     requireFollowup(
-      entry &&
-        destination &&
-        !entry.revisions.at(-1).missing &&
-        !destination.revisions.at(-1).missing &&
-        !["settled", "declined"].includes(followupStatus(destination)),
-      `${item.id}: deferred work needs a current public FUP identifier as its target; synthesize a public candidate or decision, sync, then link it without copying local prose`,
+      currentFollowupTarget(state, item.disposition?.target),
+      `${item.id}: deferred work needs a current public FUP identifier as its target; synthesize a public candidate or decision, sync, then link it (a retarget action, also at final review) without copying local prose`,
     );
-    return { item: item.id, followup: entry.id };
+    return { item: item.id, followup: item.disposition.target };
   });
+}
+// A deferral's public destination: present, live and not closed, following
+// duplicate dispositions to the row that carries the work.
+export function currentFollowupTarget(state, id) {
+  const entry = state.entries.find((row) => row.id === id);
+  let destination = entry;
+  while (destination && followupStatus(destination) === "duplicate")
+    destination = state.entries.find(
+      (row) => row.id === destination.dispositions.at(-1).targets[0],
+    );
+  return Boolean(
+    entry &&
+    destination &&
+    !entry.revisions.at(-1).missing &&
+    !destination.revisions.at(-1).missing &&
+    !["settled", "declined"].includes(followupStatus(destination)),
+  );
 }

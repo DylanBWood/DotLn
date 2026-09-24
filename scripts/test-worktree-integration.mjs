@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import {
+  chmodSync,
   cpSync,
   existsSync,
   mkdirSync,
@@ -505,6 +506,148 @@ test("three required refusals leave the tree, index, HEAD and recovery refs unch
     text(f.subject, "docs/intake/fixture.md"),
     "private fixture intake\n",
   );
+});
+
+test("an intent-to-add entry is refused before any write, and a failed stash leaves no pending receipt", (t) => {
+  const f = fixture(t);
+  const receiptPath = join(f.subject, "docs/control/local/integration.json");
+  const snapshot = () => ({
+    head: git(f.subject, "rev-parse", "HEAD"),
+    stage: git(f.subject, "ls-files", "--stage"),
+    status: git(f.subject, "status", "--porcelain", "--untracked-files=all"),
+    refs: git(
+      f.subject,
+      "for-each-ref",
+      "--format=%(refname) %(objectname)",
+      "refs/dotln",
+      "refs/stash",
+    ),
+    stashes: git(f.subject, "stash", "list"),
+    receipt: existsSync(receiptPath),
+  });
+  put(f.subject, "intent to add.md", "marked with git add -N\n");
+  git(f.subject, "add", "-N", "intent to add.md");
+  const original = snapshot();
+  const refused = f.invoke();
+  assert.notEqual(refused.status, 0, refused.stdout + refused.stderr);
+  assert.match(refused.stderr, /intent-to-add/);
+  assert.match(refused.stderr, /'intent to add\.md'/);
+  assert.match(refused.stderr, /git add -- 'intent to add\.md'/);
+  assert.deepEqual(snapshot(), original);
+  assert.equal(original.receipt, false);
+  assert.equal(original.stashes, "");
+  git(f.subject, "add", "--", "intent to add.md");
+  // Any other failure of the stash push (here a held index lock) happens after
+  // the checkpoint; nothing is stashed, so no pending receipt may remain.
+  const lock = resolve(
+    f.subject,
+    git(f.subject, "rev-parse", "--git-path", "index.lock"),
+  );
+  writeFileSync(lock, "");
+  const staged = snapshot();
+  const failed = f.invoke();
+  rmSync(lock);
+  assert.notEqual(failed.status, 0, failed.stdout + failed.stderr);
+  assert.match(failed.stderr, /index\.lock/);
+  assert.equal(existsSync(receiptPath), false);
+  assert.equal(git(f.subject, "stash", "list"), "");
+  assert.equal(git(f.subject, "rev-parse", "HEAD"), staged.head);
+  assert.equal(git(f.subject, "ls-files", "--stage"), staged.stage);
+  const fresh = f.invoke();
+  assert.equal(fresh.status, 1, fresh.stdout + fresh.stderr);
+  assert.match(fresh.stdout, /Authored conflicts: 'authored-fixture.md'/);
+  assert.equal(text(f.subject, "intent to add.md"), "marked with git add -N\n");
+});
+
+test("a stash Git stores and then fails to finish resumes with --continue; --continue refuses intent-to-add entries", (t) => {
+  const f = fixture(t);
+  const receiptPath = join(f.subject, "docs/control/local/integration.json");
+  // Git stores the stash and then cannot remove an untracked file inside a
+  // read-only directory, so the push exits non-zero after moving the work.
+  put(f.subject, "locked/untracked.md", "locked untracked bytes\n");
+  chmodSync(join(f.subject, "locked"), 0o555);
+  t.after(() => {
+    if (existsSync(join(f.subject, "locked")))
+      chmodSync(join(f.subject, "locked"), 0o755);
+  });
+  const head = git(f.subject, "rev-parse", "HEAD");
+  const failed = f.invoke();
+  assert.notEqual(failed.status, 0, failed.stdout + failed.stderr);
+  assert.match(
+    failed.stderr,
+    /stash push stored ([0-9a-f]{40}) and then failed; nothing was merged/,
+  );
+  const retained = /stash push stored ([0-9a-f]{40})/.exec(failed.stderr)[1];
+  assert.match(failed.stderr, /--continue once the tree is clean/);
+  const pending = JSON.parse(readFileSync(receiptPath, "utf8"));
+  assert.equal(pending.stage, "preserved");
+  assert.equal(pending.stash, retained);
+  assert.equal(git(f.subject, "rev-parse", "HEAD"), head);
+  assert.equal(
+    git(f.subject, "show", `${retained}^3:locked/untracked.md`),
+    "locked untracked bytes",
+  );
+  // A dirty tree cannot resume: the retained stash already holds the work.
+  chmodSync(join(f.subject, "locked"), 0o755);
+  const dirty = f.invoke("--continue");
+  assert.notEqual(dirty.status, 0);
+  assert.match(
+    dirty.stderr,
+    /holds this integration's work but the tree is not clean/,
+  );
+  git(f.subject, "reset", "-q", "--hard", "HEAD");
+  git(f.subject, "clean", "-q", "-f", "-d");
+  // An intent-to-add entry is refused at --continue before anything moves.
+  put(f.subject, "late.md", "marked late\n");
+  git(f.subject, "add", "-N", "late.md");
+  const receiptBytes = readFileSync(receiptPath);
+  const marked = f.invoke("--continue");
+  assert.notEqual(marked.status, 0);
+  assert.match(
+    marked.stderr,
+    /refuses intent-to-add entries.*'late\.md'.*--continue again/,
+  );
+  assert.deepEqual(readFileSync(receiptPath), receiptBytes);
+  git(f.subject, "rm", "-q", "--cached", "late.md");
+  rmSync(join(f.subject, "late.md"));
+  const resumed = f.invoke("--continue");
+  assert.equal(resumed.status, 1, resumed.stdout + resumed.stderr);
+  assert.match(resumed.stdout, /Authored conflicts: 'authored-fixture.md'/);
+  const merged = JSON.parse(readFileSync(receiptPath, "utf8"));
+  assert.equal(merged.stash, retained);
+  assert.notEqual(merged.stage, "preserved");
+});
+
+test("a later stash failure with nothing stashed restores the completed receipt it replaced", (t) => {
+  const f = fixture(t);
+  const receiptPath = join(f.subject, "docs/control/local/integration.json");
+  const first = f.invoke();
+  assert.equal(first.status, 1, first.stdout + first.stderr);
+  put(
+    f.subject,
+    "untracked-fixture.md",
+    readFileSync(join(f.subject, "untracked-fixture.md"), "utf8"),
+  );
+  put(f.subject, "authored-fixture.md", "explicitly combined intent\n");
+  git(f.subject, "add", "authored-fixture.md");
+  const done = f.invoke("--continue");
+  assert.equal(done.status, 0, done.stdout + done.stderr);
+  const completed = readFileSync(receiptPath);
+  assert.equal(JSON.parse(completed).complete, true);
+  put(f.subject, "authored-fixture.md", "work after integration\n");
+  const lock = resolve(
+    f.subject,
+    git(f.subject, "rev-parse", "--git-path", "index.lock"),
+  );
+  writeFileSync(lock, "");
+  const failed = f.invoke();
+  rmSync(lock);
+  assert.notEqual(failed.status, 0);
+  assert.match(
+    failed.stderr,
+    /nothing was stashed and no pending receipt remains/,
+  );
+  assert.deepEqual(readFileSync(receiptPath), completed);
 });
 
 test("follow-up union preserves compatible histories and refuses divergent same-entry histories", () => {

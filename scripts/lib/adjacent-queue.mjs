@@ -15,6 +15,8 @@ export const ADJACENT_QUEUE = defaultDocRelative(
   "control",
   "local/adjacent-work.jsonl",
 );
+// The register mints `FUP-` plus 16 hex digits, or a 4-digit migration row.
+export const FOLLOWUP_ID = /^FUP-(?:[0-9a-f]{16}|\d{4})$/u;
 const queuePath = (root) =>
   docRelative(root, "control", "local/adjacent-work.jsonl");
 const requireQueue = (condition, reason) => {
@@ -81,7 +83,8 @@ export function foldAdjacentQueue(events, workOrderId) {
         event.schemaVersion === 1 &&
         event.seq === state.revision + 1 &&
         event.workOrderId === workOrderId &&
-        ["executor", "operator"].includes(event.actor) &&
+        (["executor", "operator"].includes(event.actor) ||
+          (event.actor === "reviewer" && event.action?.kind === "retarget")) &&
         typeof event.at === "string" &&
         /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/u.test(event.at) &&
         Number.isFinite(Date.parse(event.at)),
@@ -186,6 +189,25 @@ export function foldAdjacentQueue(events, workOrderId) {
           target: a.target,
           actor: event.actor,
         };
+        break;
+      }
+      case "retarget": {
+        // Links a deferral to the public identifier minted after it was
+        // disposed (WO-064 D011, WO-152 D011); nothing else about it changes.
+        requireQueue(
+          exact(a, ["kind", "itemId", "itemRevision", "target"]),
+          "retarget changes only a deferred item's target",
+        );
+        requireQueue(
+          typeof a.target === "string" && FOLLOWUP_ID.test(a.target),
+          "retarget requires a FUP identifier",
+        );
+        const item = selected(state, a);
+        requireQueue(
+          item.status === "deferred",
+          "only a deferred item can be retargeted",
+        );
+        item.disposition = { ...item.disposition, target: a.target };
         break;
       }
       case "direct": {

@@ -14,7 +14,7 @@ import {
 import { tmpdir } from "node:os";
 import { dirname, join, resolve, sep } from "node:path";
 import { createCheckpoint } from "./checkpoint.mjs";
-import { runGit, runGitPathList, shellQuote } from "./git.mjs";
+import { failureOf, runGit, runGitPathList, shellQuote } from "./git.mjs";
 import { containedRegularFile } from "./paths.mjs";
 import { readControl } from "./control-store.mjs";
 import { followupsPath, unionFollowups } from "./planning-followups.mjs";
@@ -31,6 +31,21 @@ const editionPages = (root) =>
 const json = (value) => JSON.stringify(value, null, 2) + "\n";
 const conflicts = (root) =>
   runGitPathList(root, ["diff", "--name-only", "--diff-filter=U", "-z"]);
+// `git add -N` entries: an include-untracked stash cannot save or re-apply
+// them (WO-100 D017). Porcelain v2 reports only intent-to-add as a
+// worktree-side `A`; no optional lock lets the refusal path rewrite the index.
+const intentToAdd = (root) =>
+  runGit(root, [
+    "--no-optional-locks",
+    "status",
+    "--porcelain=v2",
+    "-z",
+    "--no-renames",
+    "--untracked-files=no",
+  ])
+    .split("\0")
+    .filter((row) => row.startsWith("1 ") && row[3] === "A")
+    .map((row) => row.split(" ").slice(8).join(" "));
 const gitResult = (root, args) =>
   spawnSync("git", ["-C", root, ...args], {
     encoding: "utf8",
@@ -404,8 +419,9 @@ export async function integrateWorktree(root, workOrder, args = []) {
     throw new Error("integrate requires the matching wo-NNN worktree root");
   const receiptPath = receiptFile(root);
   const file = join(root, receiptPath);
-  const previous = existsSync(file)
-    ? JSON.parse(readFileSync(file, "utf8"))
+  const previousBytes = existsSync(file) ? readFileSync(file) : null;
+  const previous = previousBytes
+    ? JSON.parse(previousBytes.toString("utf8"))
     : null;
   if (previous && !previous.complete && !continuation)
     throw new Error(
@@ -427,7 +443,105 @@ export async function integrateWorktree(root, workOrder, args = []) {
     throw new Error("integration receipt must be ignored by Git");
   let receipt;
   const save = () => put(root, receiptPath, json(receipt));
+  const refuseIntentToAdd = () => {
+    const marked = intentToAdd(root);
+    if (marked.length)
+      throw new Error(
+        `integration refuses intent-to-add entries, which its include-untracked stash cannot preserve: ${marked.map(shellQuote).join(", ")}; stage them fully with git add -- ${marked.map(shellQuote).join(" ")}, then run npm run worktree -- integrate ${workOrder}${continuation ? " --continue" : ""} again`,
+      );
+  };
+  // The stash stack is shared by every worktree and session, so only a new
+  // entry carrying this integration's name and first parent is its own.
+  const stashEntries = () =>
+    gitResult(root, ["log", "-g", "--format=%H%x00%gs", "refs/stash", "--"])
+      .stdout.split("\n")
+      .filter(Boolean)
+      .map((line) => line.split("\0"));
+  const ownStash = (seen) =>
+    stashEntries().find(
+      ([sha, subject]) =>
+        !seen.has(sha) &&
+        subject.endsWith(`: ${receipt.stashName}`) &&
+        gitResult(root, [
+          "rev-parse",
+          "--verify",
+          "--quiet",
+          `${sha}^1`,
+        ]).stdout.trim() === receipt.before,
+    )?.[0] ?? null;
+  const recovery = () =>
+    `npm run worktree -- integrate ${workOrder} --continue once the tree is clean (the stash holds its content), or git stash apply ${receipt.stash} and remove ${receiptPath} to start again`;
+  // Stash the work (unless a retained stash already holds it), then merge.
+  // A fresh run and a --continue from stage `preserved` share this step.
+  const preserveAndMerge = () => {
+    const dirty = runGit(root, [
+      "status",
+      "--porcelain",
+      "--untracked-files=all",
+    ]);
+    if (dirty && receipt.stash)
+      throw new Error(
+        `the retained stash ${receipt.stash} holds this integration's work but the tree is not clean; run ${recovery()}`,
+      );
+    if (dirty) {
+      const seen = new Set(stashEntries().map(([sha]) => sha));
+      const stashed = gitResult(root, [
+        "stash",
+        "push",
+        "--include-untracked",
+        "-m",
+        receipt.stashName,
+      ]);
+      const created = ownStash(seen);
+      if (stashed.status !== 0) {
+        if (!created) {
+          // Nothing moved: a fresh run drops its pending receipt (restoring a
+          // completed predecessor) so the next run proceeds; a continuation
+          // keeps its receipt at `preserved`, which --continue resumes.
+          if (!continuation)
+            if (previousBytes) writeFileSync(file, previousBytes);
+            else rmSync(file);
+          throw new Error(
+            `stash push failed; nothing was stashed and ${continuation ? "the pending receipt still resumes with --continue" : "no pending receipt remains"}; checkpoint ${receipt.checkpointRef} retained: ${failureOf(stashed, "git stash push failed")}`,
+          );
+        }
+        // Git stored the stash and then failed (for example cleaning a file
+        // it could not remove); nothing was merged.
+        receipt.stash = created;
+        save();
+        throw new Error(
+          `stash push stored ${created} and then failed; nothing was merged; checkpoint ${receipt.checkpointRef} retained: ${failureOf(stashed, "git stash push failed")}; run ${recovery()}`,
+        );
+      }
+      if (!created)
+        throw new Error(
+          `stash push succeeded but no stash entry named ${receipt.stashName} on ${receipt.before} was found; inspect git stash list before continuing`,
+        );
+      receipt.stash = created;
+      console.log(`Retained stash: ${receipt.stashName} (${receipt.stash})`);
+    }
+    receipt.stage = "merging";
+    save();
+    const fastForward =
+      gitResult(root, [
+        "merge-base",
+        "--is-ancestor",
+        receipt.before,
+        receipt.upstream,
+      ]).status === 0;
+    const merged = gitResult(root, [
+      "merge",
+      ...(fastForward ? ["--ff-only"] : ["--no-commit", "--no-ff"]),
+      receipt.upstream,
+    ]);
+    if (merged.status !== 0 && !conflicts(root).length)
+      throw new Error(
+        `merge failed; checkpoint and stash retained: ${merged.stderr || merged.stdout}`,
+      );
+  };
   if (continuation) {
+    // Stash application meets the same entry the push cannot save.
+    refuseIntentToAdd();
     receipt = previous;
     // --continue is the actor's explicit resolution boundary for a collision
     // that Git cannot express as unmerged stages (untracked stash content).
@@ -444,6 +558,8 @@ export async function integrateWorktree(root, workOrder, args = []) {
       }
       receipt.untrackedConflicts = [];
     }
+    // A receipt left at `preserved` resumes at the stash and merge step.
+    if (receipt.stage === "preserved") preserveAndMerge();
   } else {
     if (
       conflicts(root).length ||
@@ -452,6 +568,7 @@ export async function integrateWorktree(root, workOrder, args = []) {
       )
     )
       throw new Error("finish the existing merge before starting integration");
+    refuseIntentToAdd();
     // Resolve upstream before minting recovery refs or moving any work.
     runGit(root, ["ls-remote", "--exit-code", "origin", "refs/heads/main"]);
     runGit(root, [
@@ -505,36 +622,7 @@ export async function integrateWorktree(root, workOrder, args = []) {
     };
     console.log(`Checkpoint: ${receipt.checkpointRef}`);
     save();
-    const dirty = runGit(root, [
-      "status",
-      "--porcelain",
-      "--untracked-files=all",
-    ]);
-    if (dirty) {
-      runGit(root, [
-        "stash",
-        "push",
-        "--include-untracked",
-        "-m",
-        receipt.stashName,
-      ]);
-      receipt.stash = runGit(root, ["rev-parse", "refs/stash"]);
-      console.log(`Retained stash: ${receipt.stashName} (${receipt.stash})`);
-    }
-    receipt.stage = "merging";
-    save();
-    const fastForward =
-      gitResult(root, ["merge-base", "--is-ancestor", before, upstream])
-        .status === 0;
-    const merged = gitResult(root, [
-      "merge",
-      ...(fastForward ? ["--ff-only"] : ["--no-commit", "--no-ff"]),
-      upstream,
-    ]);
-    if (merged.status !== 0 && !conflicts(root).length)
-      throw new Error(
-        `merge failed; checkpoint and stash retained: ${merged.stderr || merged.stdout}`,
-      );
+    preserveAndMerge();
   }
   resolveProjections(root, receipt);
   if (receipt.stage === "merging" && conflicts(root).length === 0) {
