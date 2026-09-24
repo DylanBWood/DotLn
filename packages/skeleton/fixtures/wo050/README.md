@@ -21,3 +21,12 @@ runtime code and all input/output hashes stay unchanged. This checks the
 refactor's byte identity without claiming production compatibility with old
 compiled artifacts. Current-version behavior uses fresh compilation and the
 selected evidence editions in the ordinary scenario and ownership tests.
+
+Since WO-154 (D014), the compiler accepts a program or capsule recorded under
+an earlier compiler release when everything else is its current lowering. The
+four historical refusal cases now replay. `../wo154-identity.json` succeeds
+this manifest and names it by hash. It also gives the reason for each row it
+changes or removes, and this manifest keeps its bytes. The WO-011 self-host
+verifier left the byte oracle, because its full replay's 1,600 prefix
+projections cost about 100 s. `packages/skeleton/test/verification.test.ts`
+asserts that it replays to complete.

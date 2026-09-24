@@ -1,0 +1,161 @@
+{
+  "previous": {
+    "path": "packages/skeleton/fixtures/wo050-identity.json",
+    "sha256": "2e0dd8a33ecd410e524338d133bed45705be118151b648099c4a02877bee9d9e"
+  },
+  "compilerIdentity": "0.11.1",
+  "changed": {
+    "docs/evidence/WO-010/events.jsonl": "WO-154 D014: recorded under compiler 0.5.0; now that the compiler accepts a recorded release, its replay reaches its recorded result instead of refusing, so the frozen refusal identity no longer holds.",
+    "docs/evidence/WO-011/verification/events.jsonl": "WO-154 D014: recorded under compiler 0.6.0; now that the compiler accepts a recorded release, its replay reaches its recorded result instead of refusing, so the frozen refusal identity no longer holds.",
+    "docs/evidence/WO-011/selfhost-audit.jsonl": "WO-154 D014: recorded under compiler 0.6.0; now that the compiler accepts a recorded release, its replay reaches its recorded result instead of refusing, so the frozen refusal identity no longer holds."
+  },
+  "removed": {
+    "docs/evidence/WO-011/selfhost-verification.jsonl": "WO-154 D014: its frozen identity was a refusal after 3 decisions. A full replay is 1,600 decisions whose 1,600 prefix projections take about 100 s per gate (1,578 of the events are heartbeats). packages/skeleton/test/verification.test.ts asserts instead that the stream replays to complete."
+  },
+  "rows": [
+    {
+      "path": "packages/skeleton/fixtures/wo050/feedback-correction.jsonl",
+      "inputSha256": "60adc8d43cfcaf6d242eaf6bb3cd9de0499e9a0f7c2e595b1345166f2771dcc5",
+      "bytes": 270080,
+      "sha256": "3b9695d1b62d5883b0c3f9380cb50baecb3a8d7dfe59d588c9be87ad4740a04d",
+      "decisions": 9,
+      "refusal": null
+    },
+    {
+      "path": "packages/skeleton/fixtures/wo050/scenario-recovery.jsonl",
+      "inputSha256": "b6fe69773eb97cd1d41970328f503ef66f1e6383ca9f949aed20675b23ddf4c8",
+      "bytes": 1024014,
+      "sha256": "5eed8832262a70f513006d4eb1312ca86c1c966ba480a593b318aaef3ea3a4b5",
+      "decisions": 31,
+      "refusal": null
+    },
+    {
+      "path": "packages/skeleton/fixtures/wo050/scenario.jsonl",
+      "inputSha256": "cf29b5811bcb35367713a707000630025f72ce5305bdceed0c9e43c572a64663",
+      "bytes": 917782,
+      "sha256": "199c6571e0fb00a536013d504ea55d17d2531abda08137858913fc488347534b",
+      "decisions": 28,
+      "refusal": null
+    },
+    {
+      "path": "packages/skeleton/fixtures/wo050/verification.jsonl",
+      "inputSha256": "937b00f6dfc976329c307d3e89aeddc5a7fcd9e383ab3541fba7b99bd98ac7f8",
+      "bytes": 1259213,
+      "sha256": "c0fa176b9f66428679743ad019f84c8c014d0c793ed53e680e7973087ac2990d",
+      "decisions": 31,
+      "refusal": null
+    },
+    {
+      "path": "packages/skeleton/fixtures/wo050/worker-claude.jsonl",
+      "inputSha256": "7ea17739a8015421ae5463931e53164172faa45a802b8968a622536a3a455402",
+      "bytes": 1254224,
+      "sha256": "e9ca058b87eabd3b92ebb3aaa1a31b8837dcd25a1fe4683bd97702ba93370eb3",
+      "decisions": 37,
+      "refusal": null
+    },
+    {
+      "path": "packages/skeleton/fixtures/wo050/worker-codex.jsonl",
+      "inputSha256": "8528b173634344d78b8261f0ecaad6f31e9d9685ced8c32b717166e46b56aa77",
+      "bytes": 1253944,
+      "sha256": "1b4482cfa8d466d7f9d8dc62131b7a6ab74e4efc03b9eb6d059e30c36093d270",
+      "decisions": 37,
+      "refusal": null
+    },
+    {
+      "path": "packages/skeleton/fixtures/wo050/worker-row2-interrupted.jsonl",
+      "inputSha256": "5504e2441e919c7ba92558f0bafcbe90a335d1943a0033e25b9f13e039225040",
+      "bytes": 469285,
+      "sha256": "95e09fd0ebdff899dc83db97fdba26f616fb6252fc963bb81b39391486b2bbe4",
+      "decisions": 16,
+      "refusal": null
+    },
+    {
+      "path": "packages/skeleton/fixtures/wo050/worker-row2-recovered.jsonl",
+      "inputSha256": "56dc000b986421ed5a3380e041da1a23d626c7cb6837bb16948ef2fc90095d8b",
+      "bytes": 1448162,
+      "sha256": "2aafcda14b637b09e322095c525e98ac351b8be0f6f6d7c97fcef934e923bcce",
+      "decisions": 42,
+      "refusal": null
+    },
+    {
+      "path": "packages/skeleton/fixtures/wo050/worker-row4-quarantined.jsonl",
+      "inputSha256": "82cc7d0719b15cfc740c6ec75ce77fff40680306023ae37d30be612ad1f5118e",
+      "bytes": 598790,
+      "sha256": "0315cc2faf1614b98b287e571d83697d4b8b54763cd064eb2a6842c903c1b309",
+      "decisions": 19,
+      "refusal": null
+    },
+    {
+      "path": "packages/skeleton/fixtures/wo050/worker-row6-interrupted.jsonl",
+      "inputSha256": "0c13121a926470a22c7b1fde938315534571d57d194a43b9d389bd672bb004b3",
+      "bytes": 505052,
+      "sha256": "8d55b4aa7bc6a1d9ee7c7d8ecc4b366a35b2fb462988d16b7d85fa7cd8438b30",
+      "decisions": 17,
+      "refusal": null
+    },
+    {
+      "path": "packages/skeleton/fixtures/wo050/worker-row6-recovered.jsonl",
+      "inputSha256": "8209c699af2e01d939904447a8c5331e0cba54615ddd8e0130352e36bd70302b",
+      "bytes": 1483197,
+      "sha256": "34bf218d6048203c53059add6fdaef9164ec87559b9beef390c1f8c9ad343813",
+      "decisions": 43,
+      "refusal": null
+    },
+    {
+      "path": "packages/skeleton/fixtures/wo029-legacy-scenario.jsonl",
+      "inputSha256": "9827759ee0a126e8c6f1aa14d2e3abc10cef23d9702e0b0e570157179af64829",
+      "bytes": 650412,
+      "sha256": "d32951510fb8488afcce47883de8525b60b70b98c456d3d560602b4dbfb1dbc4",
+      "decisions": 21,
+      "refusal": null
+    },
+    {
+      "path": "docs/evidence/WO-010/events.jsonl",
+      "inputSha256": "edfd6847b0d051ae4aebf706f8b84282ae4ed1f08357d6d763807320257eae70",
+      "bytes": 1259112,
+      "sha256": "549f37466f19d190b85ef620b7856505c653a38187c3fa9625784052d7f957fa",
+      "decisions": 31,
+      "refusal": null
+    },
+    {
+      "path": "docs/evidence/WO-011/verification/events.jsonl",
+      "inputSha256": "e17d408268457e9244845c5f17b74a0362d57f5177b79a689e874d6dd4667c03",
+      "bytes": 1259112,
+      "sha256": "99d33ab7f0889e76e485e559962a10b7c51c153f575e5512dbd489ca3c6a557e",
+      "decisions": 31,
+      "refusal": null
+    },
+    {
+      "path": "docs/evidence/WO-011/selfhost-audit.jsonl",
+      "inputSha256": "f6b558ef1ac8ddf275580ac0ac1b3b8dd6f7270d530967c0d481e68dbb29c93e",
+      "bytes": 213713,
+      "sha256": "ba04d58f297f3ec3f065872563255a0ae2cfbf9e509f4ad7f9983d2fa72213ca",
+      "decisions": 5,
+      "refusal": null
+    },
+    {
+      "path": "docs/evidence/WO-048/verification/events.jsonl",
+      "inputSha256": "937b00f6dfc976329c307d3e89aeddc5a7fcd9e383ab3541fba7b99bd98ac7f8",
+      "bytes": 1259213,
+      "sha256": "c0fa176b9f66428679743ad019f84c8c014d0c793ed53e680e7973087ac2990d",
+      "decisions": 31,
+      "refusal": null
+    },
+    {
+      "path": "docs/evidence/WO-048/feedback-002/selfhost-audit.jsonl",
+      "inputSha256": "51e6d73a351cc5dd16c87585e41bd36e1a6344bdb4fec7c48c74457be361d3e5",
+      "bytes": 218084,
+      "sha256": "1dbd8947e5da25bdd9c5464f45af9ded3164852ee82dcb64ba90360d0bebf0c7",
+      "decisions": 5,
+      "refusal": null
+    },
+    {
+      "path": "docs/evidence/WO-048/feedback-002/selfhost-verification.jsonl",
+      "inputSha256": "e8c066b65b75b8cf540e5a166b21bec8ac339700a29228caed4d5db1b284f79a",
+      "bytes": 124549082,
+      "sha256": "0f6ee4c2825dd9a40cb2c4e1790f3a6f27c1bac5881a3ef397931970ed28f8cf",
+      "decisions": 54,
+      "refusal": null
+    }
+  ]
+}

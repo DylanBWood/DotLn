@@ -242,7 +242,6 @@ export function identityCases(root = findLaunchpad()) {
     docRelative(root, "evidence", "WO-010/events.jsonl"),
     docRelative(root, "evidence", "WO-011/verification/events.jsonl"),
     docRelative(root, "evidence", "WO-011/selfhost-audit.jsonl"),
-    docRelative(root, "evidence", "WO-011/selfhost-verification.jsonl"),
     docRelative(root, "evidence", "WO-048/verification/events.jsonl"),
     docRelative(root, "evidence", "WO-048/feedback-002/selfhost-audit.jsonl"),
     docRelative(
@@ -299,12 +298,47 @@ export function identityObservation(path) {
           outbox: replayOutbox(prefix),
         };
       });
-  return (
-    canonicalStringify({ decisions, projections, prefixes, refusal }) + "\n"
-  );
+  // The bytes of canonicalStringify({ decisions, prefixes, projections,
+  // refusal }) + "\n", hashed a member at a time: a full replay of a large
+  // historical stream exceeds the longest string the runtime can build
+  // (WO-154 D014).
+  const hash = createHash("sha256");
+  let bytes = 0;
+  const write = (text) => {
+    hash.update(text);
+    bytes += Buffer.byteLength(text);
+  };
+  const list = (items) => {
+    if (items === null) return write("null");
+    write("[");
+    items.forEach((item, index) => {
+      if (index) write(",");
+      write(canonicalStringify(item));
+    });
+    write("]");
+  };
+  write('{"decisions":');
+  list(decisions);
+  write(',"prefixes":');
+  list(prefixes);
+  write(`,"projections":${canonicalStringify(projections)}`);
+  write(`,"refusal":${canonicalStringify(refusal)}}\n`);
+  return {
+    bytes,
+    sha256: hash.digest("hex"),
+    decisions: decisions.length,
+    refusal,
+  };
 }
 export const identityDigest = (bytes) =>
   createHash("sha256").update(bytes).digest("hex");
+/** The frozen WO-050 manifest and its successors, each naming the previous
+ * one by hash and the rows it changed or removed, with the reason; no
+ * manifest is ever rewritten (WO-154 D014). */
+const IDENTITY_MANIFESTS = [
+  "packages/skeleton/fixtures/wo050-identity.json",
+  "packages/skeleton/fixtures/wo154-identity.json",
+];
 const [mode, destination] = process.argv.slice(2);
 if (mode === "--capture") await capture(destination);
 if (mode === "--check") {
@@ -329,9 +363,40 @@ if (mode === "--check-historical") {
     "0.11.1",
     "WO-050 historical compiler identity",
   );
-  const manifest = JSON.parse(
-    readFileSync("packages/skeleton/fixtures/wo050-identity.json", "utf8"),
-  );
+  let manifest = JSON.parse(readFileSync(IDENTITY_MANIFESTS[0], "utf8"));
+  for (const [index, path] of IDENTITY_MANIFESTS.entries()) {
+    if (index === 0) continue;
+    const successor = JSON.parse(readFileSync(path, "utf8"));
+    const previous = IDENTITY_MANIFESTS[index - 1];
+    assert.deepEqual(
+      successor.previous,
+      { path: previous, sha256: identityDigest(readFileSync(previous)) },
+      `${path}: chains to ${previous} by hash`,
+    );
+    const reason = (value) => typeof value === "string" && value.length > 0;
+    assert.ok(
+      Object.values(successor.removed).every(reason),
+      `${path}: every removal has a reason`,
+    );
+    const kept = manifest.filter((row) => !(row.path in successor.removed));
+    assert.equal(
+      kept.length + Object.keys(successor.removed).length,
+      manifest.length,
+      `${path}: removes only earlier cases`,
+    );
+    assert.deepEqual(
+      successor.rows.map((row) => row.path),
+      kept.map((row) => row.path),
+      `${path}: same remaining cases`,
+    );
+    for (const [i, row] of successor.rows.entries())
+      assert.equal(
+        canonicalStringify(row) !== canonicalStringify(kept[i]),
+        reason(successor.changed[row.path]),
+        `${path}: ${row.path} changes exactly when a reason names it`,
+      );
+    manifest = successor.rows;
+  }
   assert.deepEqual(
     identityCases(),
     manifest.map((row) => row.path),
@@ -342,16 +407,21 @@ if (mode === "--check-historical") {
       row.inputSha256,
       `${row.path}: fixed input drift`,
     );
-    const bytes = identityObservation(row.path);
+    const observed = identityObservation(row.path);
     assert.equal(
-      Buffer.byteLength(bytes),
+      observed.bytes,
       row.bytes,
       `${row.path}: full observation length`,
     );
     assert.equal(
-      identityDigest(bytes),
+      observed.sha256,
       row.sha256,
       `${row.path}: full Decision/projection identity`,
+    );
+    assert.deepEqual(
+      { decisions: observed.decisions, refusal: observed.refusal },
+      { decisions: row.decisions, refusal: row.refusal },
+      `${row.path}: decision count and refusal`,
     );
   }
   console.log(
