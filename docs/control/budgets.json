@@ -30,7 +30,7 @@
   },
   "limits": {
     "coldStartBytes": {
-      "executor": 24576,
+      "executor": 29246,
       "verifier": 25151,
       "reviewer": 24576,
       "release-close": 16384,
@@ -44,6 +44,14 @@
     "passRefutationMs": 120000
   },
   "acceptances": [
+    {
+      "date": "2026-09-22",
+      "metric": "coldStartBytes.executor",
+      "scope": null,
+      "dispatch": "executor",
+      "ceiling": 29246,
+      "reason": "WO-157 measured 25,150 bytes in each existing skill root against 24,576, 738 over base 64ab40de's 24,412, after two reviewed rules entered the executor role text: item 2's follow-up disposition sentence (sync the register, dispose onto the minted FUP- identifier, retarget at final review) and item 11's Claude selected-session readback sentences (read CLAUDE_EFFORT, the claude-session-readback refusal, a subagent's operator-attested effort). Under product 07's standing 2026-09-17 route, preserve the reviewed rules and set this ceiling to the measured 25,150 plus one 4,096-byte step, 29,246. The other bounded roles remain within their ceilings; refuter remains unset. Reassess when another reviewed rule needs more. Decision: docs/evidence/WO-157/decisions.md#wo-157-d021."
+    },
     {
       "date": "2026-09-22",
       "metric": "sequenceBytes",
