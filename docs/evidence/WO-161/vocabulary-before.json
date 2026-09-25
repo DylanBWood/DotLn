@@ -1,0 +1,131 @@
+{
+  "recordedAt": "2026-09-25T16:35:40.424Z",
+  "measurement": "UTF-8 bytes of whole lines containing sandbox, case insensitive; cold start is CLAUDE.md plus role SKILL.md",
+  "floor": {
+    "path": "CLAUDE.md",
+    "totalBytes": 6113,
+    "sandboxLineBytes": 150,
+    "sandboxLines": [
+      "codex-cli-0.153.4: contributor.permissions: Pre-effect envelope checks unavailable in this harness; native sandbox and approval remain host controls."
+    ]
+  },
+  "roles": [
+    {
+      "path": ".agents/skills/dotln-executor/SKILL.md",
+      "totalBytes": 19706,
+      "sandboxLineBytes": 1200,
+      "sandboxLines": [
+        "State-changing resume commands require one-invocation outside-sandbox approval in Codex; inspect the exact command, package mapping, and lifecycle-script diff first. `status`, `times`, `briefing`, and `next` need no Git escalation. In Claude Code the session hook records the dispatch named by the operator's phrase (`next`, `fix`, `verify`, `final-review`) before this procedure loads, delivers that command's briefing, passes a phrase whose dispatch is already recorded with the same briefing and receipt projected read-only by `npm run resume -- briefing` (a resumed Codex session runs that command itself), and reports a dispatch that is not legal in the current phase without rejecting the prompt. Prompt submission always remains open: setup, runtime and state failures are advisory, never a reason to deny access to Claude or Codex. It admits the dispatch exactly as the ordinary command: a live evidence gate or another session's writer reservation refuses it before any lifecycle change, and the terminal shows a one-line receipt naming the recorded dispatch and the equipped supports. Run no dispatch the harness recorded. Never repeat a recorded transition to repair a checkpoint warning."
+      ],
+      "coldStartBytes": 25819,
+      "coldStartSandboxLineBytes": 1350
+    },
+    {
+      "path": ".agents/skills/dotln-planner/SKILL.md",
+      "totalBytes": 10684,
+      "sandboxLineBytes": 0,
+      "sandboxLines": [],
+      "coldStartBytes": 16797,
+      "coldStartSandboxLineBytes": 150
+    },
+    {
+      "path": ".agents/skills/dotln-refuter/SKILL.md",
+      "totalBytes": 10259,
+      "sandboxLineBytes": 0,
+      "sandboxLines": [],
+      "coldStartBytes": 16372,
+      "coldStartSandboxLineBytes": 150
+    },
+    {
+      "path": ".agents/skills/dotln-release-close/SKILL.md",
+      "totalBytes": 8536,
+      "sandboxLineBytes": 0,
+      "sandboxLines": [],
+      "coldStartBytes": 14649,
+      "coldStartSandboxLineBytes": 150
+    },
+    {
+      "path": ".agents/skills/dotln-reviewer/SKILL.md",
+      "totalBytes": 17667,
+      "sandboxLineBytes": 1661,
+      "sandboxLines": [
+        "State-changing resume commands require one-invocation outside-sandbox approval in Codex; inspect the exact command, package mapping, and lifecycle-script diff first. `status`, `times`, `briefing`, and `next` need no Git escalation. In Claude Code the session hook records the dispatch named by the operator's phrase (`next`, `fix`, `verify`, `final-review`) before this procedure loads, delivers that command's briefing, passes a phrase whose dispatch is already recorded with the same briefing and receipt projected read-only by `npm run resume -- briefing` (a resumed Codex session runs that command itself), and reports a dispatch that is not legal in the current phase without rejecting the prompt. Prompt submission always remains open: setup, runtime and state failures are advisory, never a reason to deny access to Claude or Codex. It admits the dispatch exactly as the ordinary command: a live evidence gate or another session's writer reservation refuses it before any lifecycle change, and the terminal shows a one-line receipt naming the recorded dispatch and the equipped supports. Run no dispatch the harness recorded. Never repeat a recorded transition to repair a checkpoint warning.",
+        "In an operator-attended session run the product gate outside the harness sandbox from the start: inside one, `npm test` refuses before any suite when a selected suite declares `needs: outside-sandbox` and prints the outside command; running unsandboxed is the operator's approval, never automatic. A resident-launched verification runs `npm test -- --inside-sandbox` and records its excluded suites as a partial result; that row is never product-gate evidence."
+      ],
+      "coldStartBytes": 23780,
+      "coldStartSandboxLineBytes": 1811
+    },
+    {
+      "path": ".agents/skills/dotln-verifier/SKILL.md",
+      "totalBytes": 16585,
+      "sandboxLineBytes": 1661,
+      "sandboxLines": [
+        "State-changing resume commands require one-invocation outside-sandbox approval in Codex; inspect the exact command, package mapping, and lifecycle-script diff first. `status`, `times`, `briefing`, and `next` need no Git escalation. In Claude Code the session hook records the dispatch named by the operator's phrase (`next`, `fix`, `verify`, `final-review`) before this procedure loads, delivers that command's briefing, passes a phrase whose dispatch is already recorded with the same briefing and receipt projected read-only by `npm run resume -- briefing` (a resumed Codex session runs that command itself), and reports a dispatch that is not legal in the current phase without rejecting the prompt. Prompt submission always remains open: setup, runtime and state failures are advisory, never a reason to deny access to Claude or Codex. It admits the dispatch exactly as the ordinary command: a live evidence gate or another session's writer reservation refuses it before any lifecycle change, and the terminal shows a one-line receipt naming the recorded dispatch and the equipped supports. Run no dispatch the harness recorded. Never repeat a recorded transition to repair a checkpoint warning.",
+        "In an operator-attended session run the product gate outside the harness sandbox from the start: inside one, `npm test` refuses before any suite when a selected suite declares `needs: outside-sandbox` and prints the outside command; running unsandboxed is the operator's approval, never automatic. A resident-launched verification runs `npm test -- --inside-sandbox` and records its excluded suites as a partial result; that row is never product-gate evidence."
+      ],
+      "coldStartBytes": 22698,
+      "coldStartSandboxLineBytes": 1811
+    },
+    {
+      "path": ".claude/skills/dotln-executor/SKILL.md",
+      "totalBytes": 19706,
+      "sandboxLineBytes": 1200,
+      "sandboxLines": [
+        "State-changing resume commands require one-invocation outside-sandbox approval in Codex; inspect the exact command, package mapping, and lifecycle-script diff first. `status`, `times`, `briefing`, and `next` need no Git escalation. In Claude Code the session hook records the dispatch named by the operator's phrase (`next`, `fix`, `verify`, `final-review`) before this procedure loads, delivers that command's briefing, passes a phrase whose dispatch is already recorded with the same briefing and receipt projected read-only by `npm run resume -- briefing` (a resumed Codex session runs that command itself), and reports a dispatch that is not legal in the current phase without rejecting the prompt. Prompt submission always remains open: setup, runtime and state failures are advisory, never a reason to deny access to Claude or Codex. It admits the dispatch exactly as the ordinary command: a live evidence gate or another session's writer reservation refuses it before any lifecycle change, and the terminal shows a one-line receipt naming the recorded dispatch and the equipped supports. Run no dispatch the harness recorded. Never repeat a recorded transition to repair a checkpoint warning."
+      ],
+      "coldStartBytes": 25819,
+      "coldStartSandboxLineBytes": 1350
+    },
+    {
+      "path": ".claude/skills/dotln-planner/SKILL.md",
+      "totalBytes": 10684,
+      "sandboxLineBytes": 0,
+      "sandboxLines": [],
+      "coldStartBytes": 16797,
+      "coldStartSandboxLineBytes": 150
+    },
+    {
+      "path": ".claude/skills/dotln-refuter/SKILL.md",
+      "totalBytes": 10259,
+      "sandboxLineBytes": 0,
+      "sandboxLines": [],
+      "coldStartBytes": 16372,
+      "coldStartSandboxLineBytes": 150
+    },
+    {
+      "path": ".claude/skills/dotln-release-close/SKILL.md",
+      "totalBytes": 8536,
+      "sandboxLineBytes": 0,
+      "sandboxLines": [],
+      "coldStartBytes": 14649,
+      "coldStartSandboxLineBytes": 150
+    },
+    {
+      "path": ".claude/skills/dotln-reviewer/SKILL.md",
+      "totalBytes": 17667,
+      "sandboxLineBytes": 1661,
+      "sandboxLines": [
+        "State-changing resume commands require one-invocation outside-sandbox approval in Codex; inspect the exact command, package mapping, and lifecycle-script diff first. `status`, `times`, `briefing`, and `next` need no Git escalation. In Claude Code the session hook records the dispatch named by the operator's phrase (`next`, `fix`, `verify`, `final-review`) before this procedure loads, delivers that command's briefing, passes a phrase whose dispatch is already recorded with the same briefing and receipt projected read-only by `npm run resume -- briefing` (a resumed Codex session runs that command itself), and reports a dispatch that is not legal in the current phase without rejecting the prompt. Prompt submission always remains open: setup, runtime and state failures are advisory, never a reason to deny access to Claude or Codex. It admits the dispatch exactly as the ordinary command: a live evidence gate or another session's writer reservation refuses it before any lifecycle change, and the terminal shows a one-line receipt naming the recorded dispatch and the equipped supports. Run no dispatch the harness recorded. Never repeat a recorded transition to repair a checkpoint warning.",
+        "In an operator-attended session run the product gate outside the harness sandbox from the start: inside one, `npm test` refuses before any suite when a selected suite declares `needs: outside-sandbox` and prints the outside command; running unsandboxed is the operator's approval, never automatic. A resident-launched verification runs `npm test -- --inside-sandbox` and records its excluded suites as a partial result; that row is never product-gate evidence."
+      ],
+      "coldStartBytes": 23780,
+      "coldStartSandboxLineBytes": 1811
+    },
+    {
+      "path": ".claude/skills/dotln-verifier/SKILL.md",
+      "totalBytes": 16585,
+      "sandboxLineBytes": 1661,
+      "sandboxLines": [
+        "State-changing resume commands require one-invocation outside-sandbox approval in Codex; inspect the exact command, package mapping, and lifecycle-script diff first. `status`, `times`, `briefing`, and `next` need no Git escalation. In Claude Code the session hook records the dispatch named by the operator's phrase (`next`, `fix`, `verify`, `final-review`) before this procedure loads, delivers that command's briefing, passes a phrase whose dispatch is already recorded with the same briefing and receipt projected read-only by `npm run resume -- briefing` (a resumed Codex session runs that command itself), and reports a dispatch that is not legal in the current phase without rejecting the prompt. Prompt submission always remains open: setup, runtime and state failures are advisory, never a reason to deny access to Claude or Codex. It admits the dispatch exactly as the ordinary command: a live evidence gate or another session's writer reservation refuses it before any lifecycle change, and the terminal shows a one-line receipt naming the recorded dispatch and the equipped supports. Run no dispatch the harness recorded. Never repeat a recorded transition to repair a checkpoint warning.",
+        "In an operator-attended session run the product gate outside the harness sandbox from the start: inside one, `npm test` refuses before any suite when a selected suite declares `needs: outside-sandbox` and prints the outside command; running unsandboxed is the operator's approval, never automatic. A resident-launched verification runs `npm test -- --inside-sandbox` and records its excluded suites as a partial result; that row is never product-gate evidence."
+      ],
+      "coldStartBytes": 22698,
+      "coldStartSandboxLineBytes": 1811
+    }
+  ],
+  "historicalAuthorityCount": 129,
+  "hostConfinement": {
+    "marker": null,
+    "inForce": false
+  }
+}

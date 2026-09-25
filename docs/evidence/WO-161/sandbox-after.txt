@@ -1,0 +1,4 @@
+Command: git grep -n -i sandbox -- CLAUDE.md .claude/skills .agents/skills
+Exit: 1 (no matches)
+Stdout: empty
+Stderr: empty

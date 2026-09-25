@@ -7,7 +7,7 @@
 docs/intake/       raw, local-only (gitignored) — the founding dump lives here
 docs/PLAYBOOK.md   the operator's canonical loop (models, worktrees, verify)
 docs/AI-HARNESS-SECURITY.md
-                   dated personal Claude/Codex sandbox setup and rollback guide
+                   dated Claude/Codex/Copilot host posture and retained setup references
 docs/LEGAL.md      decided licenses, contribution rule, and remaining distribution gates
 CONTRIBUTING.md    outbound licenses, DCO sign-offs, clean-room boundary, and review route
 docs/product/      the blueprint: vision, principles, domain model,
@@ -58,6 +58,17 @@ dispatches the doc-only planning pass described in the same guide.
 After ideation intake during an active work order, execution continues through
 the evidence gate to ready to verify unless the operator explicitly requests a
 pause or capture only.
+
+## Host-posture correction — 2026-09-25
+
+[WO-161](work-orders/WO-161-sandbox-vocabulary.md) aligns generated Contributor
+instructions, the [playbook](PLAYBOOK.md#harness-safety-baseline), and the
+[execution guide](product/07-execution-guide.md) with the operator's standing
+choice: no host sandbox in Claude Code, Codex or Copilot. The
+[ADR-0003 amendment](decisions/0003-personal-ai-harness-security.md#amendments)
+records that direction; the [security note](AI-HARNESS-SECURITY.md) retains
+mode-specific setup references. `host-confinement.mjs` detects restrictions;
+it does not create a sandbox. Historical evidence keeps its original labels.
 
 ## Why intake is gitignored
 
@@ -178,6 +189,9 @@ in `docs/PLAYBOOK.md`.
 
 One line per `.claude/` or CLAUDE.md change (see execution guide):
 
+- 2026-09-25: WO-161 regenerates the role skills, hook bundle and `CLAUDE.md`
+  residue to describe the operator's sandbox-off host posture; DotLn refusals
+  and host permission settings remain the boundary. Personal settings are unchanged.
 - 2026-09-19: WO-144 regenerates the fifth known-destination refusal, active-role root declarations bound to admitted authority grants, manifest provenance and both harnesses' role text; personal settings are unchanged.
 
 - 2026-09-16: WO-133 regenerates per-session advisory suppression, registers the existing session handler for SessionStart under explicit operator direction, and preserves operator-supplied attestations in all six roles.

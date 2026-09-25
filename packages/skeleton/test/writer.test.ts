@@ -44,6 +44,32 @@ import {
   validateTransportRequest,
 } from "../src/verification-protocol.js";
 
+import { contributorProgram } from "../src/loadouts/contributor.js";
+
+test("WO-161 the bounded Contributor label retains the writer's authority limits", () => {
+  const { authorityEnvelope } = contributorProgram().loadout;
+  assert.equal(authorityEnvelope.authorityEnvelopeId, "contributor.bounded");
+  assert.deepEqual(authorityEnvelope.allowedEffects, [
+    "repo.read",
+    "repo.write",
+    "shell.run",
+    "git.local",
+    "lifecycle.run",
+    "outside.write:host-scratchpad",
+    "outside.write:session-scratch",
+    "outside.write:system-temp",
+  ]);
+  assert.deepEqual(authorityEnvelope.deniedEffects, [
+    "credentials.access",
+    "transport.ssh",
+    "settings.user",
+    "sandbox.disable",
+    "remote.unapproved",
+    "package.publish",
+  ]);
+  assert.deepEqual(authorityEnvelope.resourceLimits, { writers: 1 });
+});
+
 const baseline = JSON.parse(
   readFileSync(
     new URL("../../fixtures/wo051-inspection-baseline.json", import.meta.url),

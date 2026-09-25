@@ -4,9 +4,10 @@ import { isAbsolute, join, resolve } from "node:path";
 import { randomUUID } from "node:crypto";
 
 /** The suite declaration an environmental, outside-only cause carries. */
-export const OUTSIDE_SANDBOX = "outside-sandbox";
-/** A partial run never shares the product gate's identity. */
-export const INSIDE_SANDBOX_CHECK = "npm test -- --inside-sandbox";
+export const OUTSIDE_CONFINEMENT = "outside-sandbox";
+/** Historical row identities stay byte-identical; this value is not a CLI flag.
+ * A partial run never shares the product gate's identity. */
+export const CONFINED_PARTIAL_CHECK = "npm test -- --inside-sandbox";
 
 const gitDirectory = (repo) => {
   const run = spawnSync("git", ["rev-parse", "--git-dir"], {
@@ -21,7 +22,7 @@ const gitDirectory = (repo) => {
 // sandboxed and unsandboxed commands alike and `CODEX_SANDBOX` marks a
 // Seatbelt-spawned process, so neither establishes a sandbox in force by
 // itself: the denied write to the path each sandbox protects decides.
-export const sandboxMarkers = [
+export const confinementMarkers = [
   {
     id: "claude-code",
     env: "CLAUDECODE",
@@ -44,7 +45,7 @@ export const deniedWriteCode = (code) =>
  */
 export function probeDeniedWrite(directory, { open = openSync } = {}) {
   if (!directory) return { path: null, denied: false, code: "no-path" };
-  const path = join(directory, `.dotln-sandbox-probe-${randomUUID()}`);
+  const path = join(directory, `.dotln-confinement-probe-${randomUUID()}`);
   try {
     closeSync(open(path, "wx", 0o600));
   } catch (error) {
@@ -68,14 +69,14 @@ export function probeDeniedWrite(directory, { open = openSync } = {}) {
 }
 
 /**
- * An unrecognized sandbox fails open: no marker, a missing probe directory, a
- * write that succeeds and a probe that throws all report a sandbox that is not
+ * Unrecognized host confinement fails open: no marker, a missing probe directory, a
+ * write that succeeds and a probe that throws all report confinement that is not
  * in force. Every marker present is probed, because one harness can inherit
  * another's marker; the first denied probe is the one reported.
  */
-export function detectGateSandbox(
+export function detectHostConfinement(
   repo,
-  { env = process.env, markers = sandboxMarkers } = {},
+  { env = process.env, markers = confinementMarkers } = {},
 ) {
   try {
     const probes = markers
@@ -97,10 +98,15 @@ export function detectGateSandbox(
 }
 
 export const outsideOnly = (selected) =>
-  selected.filter((row) => row.needs === OUTSIDE_SANDBOX);
+  selected.filter((row) => row.needs === OUTSIDE_CONFINEMENT);
 
-/** `insideCommand` is omitted when the selection leaves nothing to run inside. */
-export function sandboxRefusal(sandbox, suites, outsideCommand, insideCommand) {
+/** `partialCommand` is omitted when the selection leaves nothing to run while confined. */
+export function confinementRefusal(
+  confinement,
+  suites,
+  outsideCommand,
+  partialCommand,
+) {
   const names = suites.map((row) => row.name).join(", ");
-  return `Refused before any suite ran: this run carries the ${sandbox.marker} marker and a write to ${sandbox.probe.path} is denied (${sandbox.probe.code}), so it is inside a harness sandbox, and ${names} ${suites.length === 1 ? "needs" : "need"} the outside (needs: ${OUTSIDE_SANDBOX}). Run outside the sandbox: ${outsideCommand}.${insideCommand ? ` To run only the remaining suites here as a partial result that is never product-gate evidence: ${insideCommand}` : ""}`;
+  return `Refused before any suite ran: this run carries the ${confinement.marker} marker and a write to ${confinement.probe.path} is denied (${confinement.probe.code}), so it is confined by the host, and ${names} ${suites.length === 1 ? "needs" : "need"} the outside (needs: ${OUTSIDE_CONFINEMENT}). Run outside host confinement: ${outsideCommand}.${partialCommand ? ` To run only the remaining suites here as a partial result that is never product-gate evidence: ${partialCommand}` : ""}`;
 }

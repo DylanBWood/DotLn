@@ -17,6 +17,7 @@ import {
   contributorLoadoutBeforeMissionCheck,
   contributorOutsideAuthority,
   contributorProfiles,
+  contributorPresence,
   contributorProgram,
   contributorRolesFor,
   contributorWithSupports,
@@ -215,26 +216,43 @@ test("WO-042 atomic support switches compose independently and removal restores 
     );
   }
   assert.equal(hashes.size, combinations.length);
-  // WO-099 added the build's own absence policy (one read-only mission-check
-  // phase), so the saved build is a new reviewed version with a new identity.
-  // WO-042's `fnv1a64:06245f5c581212f1` remains the identity of the build at
-  // that date and in every receipt filed before this change.
+  // WO-161 gives the current vocabulary its own identity. WO-099's presence
+  // policy and WO-042's earlier graph keep their original hashes below.
   assert.equal(
     semanticHash(
       requireCompiled(compileLoadout(contributorLoadout, environment)),
     ),
-    "fnv1a64:87aa6e1263d6d74d",
+    "fnv1a64:fcf61a6d699e7ffd",
   );
-  // Both identities in one run (WO-099 D013): the graph as it stood at WO-042's
-  // date still compiles to the hash its filed receipts carry, so no historical
-  // evidence is edited to match a later build.
+  const historical = structuredClone(contributorLoadoutBeforeMissionCheck);
+  Object.assign(historical.activeMechanics[0]!.authorityEnvelope!, {
+    authorityEnvelopeId: "contributor.sandboxed",
+  });
+  Object.assign(historical.activeMechanics[0]!.workOrder!, {
+    constraints: [
+      "Locked Clean Room floor",
+      "Sandbox and human approval boundaries remain in force",
+    ],
+  });
+  Object.assign(historical.supportFacets[0]!, {
+    name: "Sandboxed contributor authority",
+  });
+  // Restoring only those three labels reproduces both historical identities;
+  // no filed snapshot or old expected hash changes to match the current build.
+  assert.equal(
+    semanticHash(requireCompiled(compileLoadout(historical, environment))),
+    "fnv1a64:06245f5c581212f1",
+  );
   assert.equal(
     semanticHash(
       requireCompiled(
-        compileLoadout(contributorLoadoutBeforeMissionCheck, environment),
+        compileLoadout(
+          { ...historical, presence: contributorPresence },
+          environment,
+        ),
       ),
     ),
-    "fnv1a64:06245f5c581212f1",
+    "fnv1a64:87aa6e1263d6d74d",
   );
   assert.equal(contributorWithSupports([]), contributorLoadout);
   assert.deepEqual(

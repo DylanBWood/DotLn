@@ -67,7 +67,7 @@ const common = [
   "Read: `@work-order`",
   "Read: `@citations`",
   "Read source and existing tests relevant to the order before changes. Scope those reads to `@subject-files`; unresolved paths remain a named input requirement.",
-  "State-changing resume commands require one-invocation outside-sandbox approval in Codex; inspect the exact command, package mapping, and lifecycle-script diff first. `status`, `times`, `briefing`, and `next` need no Git escalation. In Claude Code the session hook records the dispatch named by the operator's phrase (`next`, `fix`, `verify`, `final-review`) before this procedure loads, delivers that command's briefing, passes a phrase whose dispatch is already recorded with the same briefing and receipt projected read-only by `npm run resume -- briefing` (a resumed Codex session runs that command itself), and reports a dispatch that is not legal in the current phase without rejecting the prompt. Prompt submission always remains open: setup, runtime and state failures are advisory, never a reason to deny access to Claude or Codex. It admits the dispatch exactly as the ordinary command: a live evidence gate or another session's writer reservation refuses it before any lifecycle change, and the terminal shows a one-line receipt naming the recorded dispatch and the equipped supports. Run no dispatch the harness recorded. Never repeat a recorded transition to repair a checkpoint warning.",
+  "Host permission settings decide execution; inspect the exact command, package mapping, and lifecycle-script diff before a state-changing resume command. In Claude Code the session hook records the dispatch named by the operator's phrase (`next`, `fix`, `verify`, `final-review`) before this procedure loads, delivers that command's briefing, passes a phrase whose dispatch is already recorded with the same briefing and receipt projected read-only by `npm run resume -- briefing` (a resumed Codex session runs that command itself), and reports a dispatch that is not legal in the current phase without rejecting the prompt. Prompt submission always remains open: setup, runtime and state failures are advisory, never a reason to deny access to Claude or Codex. It admits the dispatch exactly as the ordinary command: a live evidence gate or another session's writer reservation refuses it before any lifecycle change, and the terminal shows a one-line receipt naming the recorded dispatch and the equipped supports. Run no dispatch the harness recorded. Never repeat a recorded transition to repair a checkpoint warning.",
   "No branch commits before final review. Never reset, restore, clean, drop a stash, or discard intake. Preserve work through the canonical checkpoint and named recovery procedure if rollback is needed.",
   "Read: `@subject-files`",
   "Read: `package.json`",
@@ -78,8 +78,8 @@ const actor =
   "Completion flags: `--harness <harness> --harness-version <version> --model <model> --effort <level> --source <source>`. Supply each field; unknown is admitted. Versions, models and effort are logged, never refused, except that while Claude Code's `CLAUDE_EFFORT` is readable a claude-code attestation must be `--effort <that value> --source claude-session-readback`, and that source is refused anywhere else. `ultra` and `ultra code` record xhigh, mode subagents and raw spelling. Never invent effective-session readback. Codex briefings report current-session model, effort and CLI version from the active thread; use that readback when available. Claude Code exports the root session's selected effort as `CLAUDE_EFFORT`: the root session reads it and records that effort with `--source claude-session-readback` (selected, not effective); a subagent's shell carries the root's value, so the root session records lifecycle completions. Copilot readback reports CLI-selected values, not effective effort; retain supplied operator attestations and never derive the harness from the model.";
 const evidence =
   "Run checks that establish the work order's claims. Executor and verifier choose when npm test is useful; lifecycle transitions never require a test gate. Completion runs git diff --check inline and validates report/attestation presence; missing gate rows, output-read observations, usage and planning handoffs advise. Review current authored outputs and record evidence with source and cutoff. Reports, indexes and release text may be completed after a passing gate without invalidating code identity. One registered writer owns a worktree on any branch. Never write gate inputs or its success record during a live npm test; stop your own gate with `node scripts/harness.mjs evidence --stop` when necessary. Every other permission judgment delegates to the host. Read current authored outputs; generated or oversized outputs use their generation/check evidence. Codex lifecycle dispatches begin their harness session automatically before usage is read; Codex and Copilot can use explicit observe/delivered and `node scripts/harness.mjs read-output <path> --offset 0 --length 8192`, without claiming automatic read receipts. Copilot: inspect canonical status, run `npm run resume -- briefing` after an already-recorded dispatch, otherwise run the legal dispatch once; prompt-context delivery is unobserved. Completion releases its writer; explicit `scripts/operator-control.mjs` recovery remains available. Usage is recorded when available and unknown otherwise; it never blocks handoff.";
-const outsideGate =
-  "In an operator-attended session run the product gate outside the harness sandbox from the start: inside one, `npm test` refuses before any suite when a selected suite declares `needs: outside-sandbox` and prints the outside command; running unsandboxed is the operator's approval, never automatic. A resident-launched verification runs `npm test -- --inside-sandbox` and records its excluded suites as a partial result; that row is never product-gate evidence.";
+const productGate =
+  "Run the product gate with `npm test`; if the runner reports that the host confines the process, run the printed outside command under the host permission settings and existing authority. A resident-launched verification unable to run the full selection uses `npm test -- --confined-partial` and records its excluded suites as a partial result; that row is never product-gate evidence.";
 const costLine =
   "Put exactly one physical `**Process cost:**` line in the report: `entry <total> tokens; handoff <total> tokens; source <source>`, or `unknown; cause <code>` with exactly one of `hooks-fallback`, `no-session`, `harness-no-readback`. The briefing prints the session id and the exact usage command. The result transition and `npm run test:docs` refuse a bare unknown in a receipt allocated under this rule.";
 const boardedDefect =
@@ -118,7 +118,7 @@ export const contributorRoles: readonly HarnessRole[] = [
       "Read: `@verification-reports`",
       "Independent verifiers use `xhigh`, not `max`. A verifier launch may cap provider spend at USD 5 when its transport exposes a hard dollar-cap control; otherwise report the limit as unenforced rather than claiming a cap.",
       evidence,
-      outsideGate,
+      productGate,
       costLine,
       boardedDefect,
       actor,
@@ -139,7 +139,7 @@ export const contributorRoles: readonly HarnessRole[] = [
       "Read: `@verification-reports`",
       "Read: `docs/product/08-publication-compiler.md#PRs and commits`",
       evidence,
-      outsideGate,
+      productGate,
       costLine,
       boardedDefect,
       "After the last source edit and intended new source files are staged, run `npm test -- --review` once. This runs the product suites and machinery suites whose own declared sources changed since the base. The passing npm test row is keyed by tracked non-generated code; final-review-result carries it in the control event, worktree publish cites it in the PR, and release close consumes it without running a suite. Source changes require affected checks and a new final product gate; report/control/generated-document changes do not.",
@@ -219,7 +219,7 @@ export const contributorRoles: readonly HarnessRole[] = [
 }));
 
 export const contributorEnvelope: AuthorityEnvelope = {
-  authorityEnvelopeId: "contributor.sandboxed",
+  authorityEnvelopeId: "contributor.bounded",
   allowedEffects: [
     "repo.read",
     "repo.write",
@@ -351,7 +351,7 @@ export const contributorLoadout: LoadoutGraph = {
         decisions: ["Four resume-phase roles plus a separate planner skill"],
         constraints: [
           "Locked Clean Room floor",
-          "Sandbox and human approval boundaries remain in force",
+          "DotLn refusals and host permission settings define the boundary",
         ],
         nonGoals: ["User-scope installation", "Lifecycle legality changes"],
         allowedOperations: [...contributorEnvelope.allowedEffects],
@@ -384,7 +384,7 @@ export const contributorLoadout: LoadoutGraph = {
     {
       supportFacetId: "contributor.permissions",
       version: 1,
-      name: "Sandboxed contributor authority",
+      name: "Bounded contributor authority",
       supportedTags: ["mutate"],
       requiredCapabilities: [],
       semanticsAdded: ["Keep ADR-0003 through ADR-0005 posture"],
@@ -441,11 +441,10 @@ export const contributorLoadout: LoadoutGraph = {
   polarAxes: [],
   presence: contributorPresence,
 };
-/** The saved Contributor graph at WO-042's authority baseline: the current
- * graph without WO-099's mission-check cadence, which is the only presence
- * policy it declares. D009 accepts a new identity for the current build; the
- * historical build keeps its own, and the receipts filed under it are never
- * edited to match a later one. `authority-evidence` compiles both in one run. */
+/** The current Contributor graph without WO-099's mission-check cadence.
+ * The authority evidence tool restores historical vocabulary before comparing
+ * the frozen WO-042 identity; filed receipts are never edited to match a later
+ * build. Both graphs compile in that one evidence run. */
 export const contributorLoadoutBeforeMissionCheck: LoadoutGraph = (() => {
   const graph: { presence?: readonly PresencePolicy[] } = {
     ...contributorLoadout,

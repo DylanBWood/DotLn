@@ -1,11 +1,11 @@
 {
   "contractVersion": "harness-v1",
-  "compilerPackageVersion": "0.19.0",
+  "compilerPackageVersion": "0.19.1",
   "profiles": [
     {
       "contractVersion": "harness-v1",
-      "compilerPackageVersion": "0.19.0",
-      "feedbackPolicyHash": "fnv1a64:3ad2a3b06260b383",
+      "compilerPackageVersion": "0.19.1",
+      "feedbackPolicyHash": "fnv1a64:ebab285a1a93c2e8",
       "grants": [
         {
           "effects": [
@@ -193,11 +193,11 @@
           "boundaryContract": "feedback-v1",
           "files": [
             {
-              "hash": "fnv1a64:5625526922dbf369",
+              "hash": "fnv1a64:af413c5056afbab4",
               "path": "packages/compiler/dist/src/artifact-identity.js"
             },
             {
-              "hash": "fnv1a64:1475ef58e02b189c",
+              "hash": "fnv1a64:ad444e8ed4d3944e",
               "path": "packages/compiler/dist/src/harness.js"
             },
             {
@@ -354,7 +354,7 @@
             }
           ],
           "skeletonVersion": "0.34.0",
-          "snapshot": ".runtime/harness/41853b351d9f5602"
+          "snapshot": ".runtime/harness/556ae6585327b3cb"
         },
         "settings": {
           "allow": false,
@@ -403,25 +403,25 @@
       },
       "loadout": {
         "id": "contributor",
-        "semanticHash": "fnv1a64:c020dc62ca7cc8eb",
-        "targetHash": "fnv1a64:8e691cdb3debb647"
+        "semanticHash": "fnv1a64:3fda088a97df0f55",
+        "targetHash": "fnv1a64:58b32087788be526"
       },
       "files": [
         {
           "path": ".claude/hooks/commit-msg.mjs",
-          "hash": "fnv1a64:0bcda59cf74193d2",
+          "hash": "fnv1a64:e6e7afb8082e454f",
           "origin": {
             "ids": [
               "no-attribution"
             ],
             "loadoutId": "contributor",
-            "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+            "semanticHash": "fnv1a64:3fda088a97df0f55"
           },
           "rung": 1
         },
         {
           "path": ".claude/hooks/concurrent-work-requires-worktrees.mjs",
-          "hash": "fnv1a64:9b0c6c22f29f94b3",
+          "hash": "fnv1a64:74de8f39c7e1843c",
           "origin": {
             "ids": [
               "concurrent-work-requires-worktrees",
@@ -433,13 +433,13 @@
               "contributor.verifier"
             ],
             "loadoutId": "contributor",
-            "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+            "semanticHash": "fnv1a64:3fda088a97df0f55"
           },
           "rung": 2
         },
         {
           "path": ".claude/hooks/finish.mjs",
-          "hash": "fnv1a64:a598266916aabe93",
+          "hash": "fnv1a64:22c09a5b797ceee5",
           "origin": {
             "ids": [
               "anti-oscillation",
@@ -460,13 +460,13 @@
               "verify-app-before-done"
             ],
             "loadoutId": "contributor",
-            "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+            "semanticHash": "fnv1a64:3fda088a97df0f55"
           },
           "rung": 6
         },
         {
           "path": ".claude/hooks/no-attribution.mjs",
-          "hash": "fnv1a64:3f939b4c1f3752ee",
+          "hash": "fnv1a64:5948972b0a7cc919",
           "origin": {
             "ids": [
               "contributor.executor",
@@ -478,13 +478,13 @@
               "no-attribution"
             ],
             "loadoutId": "contributor",
-            "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+            "semanticHash": "fnv1a64:3fda088a97df0f55"
           },
           "rung": 2
         },
         {
           "path": ".claude/hooks/no-lint-type-disables-as-fixes.mjs",
-          "hash": "fnv1a64:adf9d3b4ec23fab1",
+          "hash": "fnv1a64:efb147ad49fefed0",
           "origin": {
             "ids": [
               "contributor.executor",
@@ -496,13 +496,13 @@
               "no-lint-type-disables-as-fixes"
             ],
             "loadoutId": "contributor",
-            "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+            "semanticHash": "fnv1a64:3fda088a97df0f55"
           },
           "rung": 1
         },
         {
           "path": ".claude/hooks/permissions.mjs",
-          "hash": "fnv1a64:8657d3538c6f091d",
+          "hash": "fnv1a64:91c2f03c9557b9b6",
           "origin": {
             "ids": [
               "contributor.executor",
@@ -514,53 +514,53 @@
               "contributor.verifier"
             ],
             "loadoutId": "contributor",
-            "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+            "semanticHash": "fnv1a64:3fda088a97df0f55"
           },
           "rung": 2
         },
         {
           "path": ".claude/hooks/presence-posttooluse.mjs",
-          "hash": "fnv1a64:4e45d8468584c0d5",
+          "hash": "fnv1a64:a673e6e07c7a2acc",
           "origin": {
             "ids": [],
             "loadoutId": "contributor",
-            "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+            "semanticHash": "fnv1a64:3fda088a97df0f55"
           },
           "rung": 1
         },
         {
           "path": ".claude/hooks/presence-pretooluse.mjs",
-          "hash": "fnv1a64:1cd2bb94c1ff6c26",
+          "hash": "fnv1a64:ae65a1a2ba13e535",
           "origin": {
             "ids": [],
             "loadoutId": "contributor",
-            "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+            "semanticHash": "fnv1a64:3fda088a97df0f55"
           },
           "rung": 1
         },
         {
           "path": ".claude/hooks/presence-stop.mjs",
-          "hash": "fnv1a64:e0f2607ef2bd6218",
+          "hash": "fnv1a64:315fe1a33c548c93",
           "origin": {
             "ids": [],
             "loadoutId": "contributor",
-            "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+            "semanticHash": "fnv1a64:3fda088a97df0f55"
           },
           "rung": 1
         },
         {
           "path": ".claude/hooks/presence-userpromptsubmit.mjs",
-          "hash": "fnv1a64:fddefe4a58c5d4cb",
+          "hash": "fnv1a64:004054c87c8d7644",
           "origin": {
             "ids": [],
             "loadoutId": "contributor",
-            "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+            "semanticHash": "fnv1a64:3fda088a97df0f55"
           },
           "rung": 1
         },
         {
           "path": ".claude/hooks/read-observer.mjs",
-          "hash": "fnv1a64:8eebc1fa38864bbc",
+          "hash": "fnv1a64:ca80089ad5303697",
           "origin": {
             "ids": [
               "contributor.executor",
@@ -573,13 +573,13 @@
               "verify-app-before-done"
             ],
             "loadoutId": "contributor",
-            "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+            "semanticHash": "fnv1a64:3fda088a97df0f55"
           },
           "rung": 1
         },
         {
           "path": ".claude/hooks/session.mjs",
-          "hash": "fnv1a64:975bb338a43f90c9",
+          "hash": "fnv1a64:4cc2bcca9dff1cc4",
           "origin": {
             "ids": [
               "contributor.executor",
@@ -590,13 +590,13 @@
               "contributor.verifier"
             ],
             "loadoutId": "contributor",
-            "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+            "semanticHash": "fnv1a64:3fda088a97df0f55"
           },
           "rung": 1
         },
         {
           "path": ".claude/hooks/write-observer.mjs",
-          "hash": "fnv1a64:f8861333b20690b4",
+          "hash": "fnv1a64:f491cad3823b425b",
           "origin": {
             "ids": [
               "contributor.executor",
@@ -608,7 +608,7 @@
               "read-your-own-output"
             ],
             "loadoutId": "contributor",
-            "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+            "semanticHash": "fnv1a64:3fda088a97df0f55"
           },
           "rung": 1
         },
@@ -645,13 +645,13 @@
               "verify-app-before-done"
             ],
             "loadoutId": "contributor",
-            "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+            "semanticHash": "fnv1a64:3fda088a97df0f55"
           },
           "rung": 2
         },
         {
           "path": ".claude/skills/dotln-executor/SKILL.md",
-          "hash": "fnv1a64:07c6cb89928c313b",
+          "hash": "fnv1a64:5c41d9070051c037",
           "origin": {
             "ids": [
               "adjacent-repair",
@@ -675,13 +675,13 @@
               "verify-app-before-done"
             ],
             "loadoutId": "contributor",
-            "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+            "semanticHash": "fnv1a64:3fda088a97df0f55"
           },
           "rung": 7
         },
         {
           "path": ".claude/skills/dotln-planner/SKILL.md",
-          "hash": "fnv1a64:feb1f887866ef10d",
+          "hash": "fnv1a64:440bc8e04892388e",
           "origin": {
             "ids": [
               "anti-oscillation",
@@ -699,13 +699,13 @@
               "verify-app-before-done"
             ],
             "loadoutId": "contributor",
-            "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+            "semanticHash": "fnv1a64:3fda088a97df0f55"
           },
           "rung": 7
         },
         {
           "path": ".claude/skills/dotln-refuter/SKILL.md",
-          "hash": "fnv1a64:34e6e8068fd93050",
+          "hash": "fnv1a64:707b14f8cec8f3bb",
           "origin": {
             "ids": [
               "anti-oscillation",
@@ -723,13 +723,13 @@
               "verify-app-before-done"
             ],
             "loadoutId": "contributor",
-            "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+            "semanticHash": "fnv1a64:3fda088a97df0f55"
           },
           "rung": 7
         },
         {
           "path": ".claude/skills/dotln-release-close/SKILL.md",
-          "hash": "fnv1a64:ec73af9e45e37cf0",
+          "hash": "fnv1a64:64ce44ff03bc28bb",
           "origin": {
             "ids": [
               "anti-oscillation",
@@ -747,13 +747,13 @@
               "verify-app-before-done"
             ],
             "loadoutId": "contributor",
-            "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+            "semanticHash": "fnv1a64:3fda088a97df0f55"
           },
           "rung": 7
         },
         {
           "path": ".claude/skills/dotln-reviewer/SKILL.md",
-          "hash": "fnv1a64:26a18fb2259125a5",
+          "hash": "fnv1a64:d9f369de46f3ff92",
           "origin": {
             "ids": [
               "anti-oscillation",
@@ -771,13 +771,13 @@
               "verify-app-before-done"
             ],
             "loadoutId": "contributor",
-            "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+            "semanticHash": "fnv1a64:3fda088a97df0f55"
           },
           "rung": 7
         },
         {
           "path": ".claude/skills/dotln-verifier/SKILL.md",
-          "hash": "fnv1a64:9b27c924e0432cff",
+          "hash": "fnv1a64:52912a15993272f2",
           "origin": {
             "ids": [
               "anti-oscillation",
@@ -795,19 +795,19 @@
               "verify-app-before-done"
             ],
             "loadoutId": "contributor",
-            "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+            "semanticHash": "fnv1a64:3fda088a97df0f55"
           },
           "rung": 7
         },
         {
           "path": "CLAUDE.md",
-          "hash": "fnv1a64:a89d82bdc7324002",
+          "hash": "fnv1a64:9724b4844ad1a64d",
           "origin": {
             "ids": [
               "clean-room"
             ],
             "loadoutId": "contributor",
-            "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+            "semanticHash": "fnv1a64:3fda088a97df0f55"
           },
           "rung": 8
         }
@@ -842,13 +842,13 @@
           "verify-app-before-done"
         ],
         "loadoutId": "contributor",
-        "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+        "semanticHash": "fnv1a64:3fda088a97df0f55"
       }
     },
     {
       "contractVersion": "harness-v1",
-      "compilerPackageVersion": "0.19.0",
-      "feedbackPolicyHash": "fnv1a64:3ad2a3b06260b383",
+      "compilerPackageVersion": "0.19.1",
+      "feedbackPolicyHash": "fnv1a64:ebab285a1a93c2e8",
       "grants": [
         {
           "effects": [
@@ -1045,11 +1045,11 @@
           "boundaryContract": "feedback-v1",
           "files": [
             {
-              "hash": "fnv1a64:5625526922dbf369",
+              "hash": "fnv1a64:af413c5056afbab4",
               "path": "packages/compiler/dist/src/artifact-identity.js"
             },
             {
-              "hash": "fnv1a64:1475ef58e02b189c",
+              "hash": "fnv1a64:ad444e8ed4d3944e",
               "path": "packages/compiler/dist/src/harness.js"
             },
             {
@@ -1206,7 +1206,7 @@
             }
           ],
           "skeletonVersion": "0.34.0",
-          "snapshot": ".runtime/harness/41853b351d9f5602"
+          "snapshot": ".runtime/harness/556ae6585327b3cb"
         },
         "settings": {
           "allow": false,
@@ -1256,13 +1256,13 @@
       },
       "loadout": {
         "id": "contributor",
-        "semanticHash": "fnv1a64:c020dc62ca7cc8eb",
-        "targetHash": "fnv1a64:8e691cdb3debb647"
+        "semanticHash": "fnv1a64:3fda088a97df0f55",
+        "targetHash": "fnv1a64:58b32087788be526"
       },
       "files": [
         {
           "path": ".agents/skills/dotln-executor/SKILL.md",
-          "hash": "fnv1a64:07c6cb89928c313b",
+          "hash": "fnv1a64:5c41d9070051c037",
           "origin": {
             "ids": [
               "adjacent-repair",
@@ -1286,13 +1286,13 @@
               "verify-app-before-done"
             ],
             "loadoutId": "contributor",
-            "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+            "semanticHash": "fnv1a64:3fda088a97df0f55"
           },
           "rung": 7
         },
         {
           "path": ".agents/skills/dotln-planner/SKILL.md",
-          "hash": "fnv1a64:feb1f887866ef10d",
+          "hash": "fnv1a64:440bc8e04892388e",
           "origin": {
             "ids": [
               "anti-oscillation",
@@ -1310,13 +1310,13 @@
               "verify-app-before-done"
             ],
             "loadoutId": "contributor",
-            "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+            "semanticHash": "fnv1a64:3fda088a97df0f55"
           },
           "rung": 7
         },
         {
           "path": ".agents/skills/dotln-refuter/SKILL.md",
-          "hash": "fnv1a64:34e6e8068fd93050",
+          "hash": "fnv1a64:707b14f8cec8f3bb",
           "origin": {
             "ids": [
               "anti-oscillation",
@@ -1334,13 +1334,13 @@
               "verify-app-before-done"
             ],
             "loadoutId": "contributor",
-            "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+            "semanticHash": "fnv1a64:3fda088a97df0f55"
           },
           "rung": 7
         },
         {
           "path": ".agents/skills/dotln-release-close/SKILL.md",
-          "hash": "fnv1a64:ec73af9e45e37cf0",
+          "hash": "fnv1a64:64ce44ff03bc28bb",
           "origin": {
             "ids": [
               "anti-oscillation",
@@ -1358,13 +1358,13 @@
               "verify-app-before-done"
             ],
             "loadoutId": "contributor",
-            "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+            "semanticHash": "fnv1a64:3fda088a97df0f55"
           },
           "rung": 7
         },
         {
           "path": ".agents/skills/dotln-reviewer/SKILL.md",
-          "hash": "fnv1a64:26a18fb2259125a5",
+          "hash": "fnv1a64:d9f369de46f3ff92",
           "origin": {
             "ids": [
               "anti-oscillation",
@@ -1382,13 +1382,13 @@
               "verify-app-before-done"
             ],
             "loadoutId": "contributor",
-            "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+            "semanticHash": "fnv1a64:3fda088a97df0f55"
           },
           "rung": 7
         },
         {
           "path": ".agents/skills/dotln-verifier/SKILL.md",
-          "hash": "fnv1a64:9b27c924e0432cff",
+          "hash": "fnv1a64:52912a15993272f2",
           "origin": {
             "ids": [
               "anti-oscillation",
@@ -1406,7 +1406,7 @@
               "verify-app-before-done"
             ],
             "loadoutId": "contributor",
-            "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+            "semanticHash": "fnv1a64:3fda088a97df0f55"
           },
           "rung": 7
         },
@@ -1423,7 +1423,7 @@
               "contributor.verifier"
             ],
             "loadoutId": "contributor",
-            "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+            "semanticHash": "fnv1a64:3fda088a97df0f55"
           },
           "rung": 1
         },
@@ -1440,13 +1440,13 @@
               "contributor.verifier"
             ],
             "loadoutId": "contributor",
-            "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+            "semanticHash": "fnv1a64:3fda088a97df0f55"
           },
           "rung": 1
         },
         {
           "path": ".codex/hooks/continuation.mjs",
-          "hash": "fnv1a64:484e73db028f4530",
+          "hash": "fnv1a64:b17d93e10964b453",
           "origin": {
             "ids": [
               "contributor.executor",
@@ -1457,13 +1457,13 @@
               "contributor.verifier"
             ],
             "loadoutId": "contributor",
-            "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+            "semanticHash": "fnv1a64:3fda088a97df0f55"
           },
           "rung": 1
         },
         {
           "path": "AGENTS.md",
-          "hash": "fnv1a64:f5bca3774b51be2f",
+          "hash": "fnv1a64:1bc1eeda364c1902",
           "origin": {
             "ids": [
               "clean-room",
@@ -1476,7 +1476,7 @@
               "verify-app-before-done"
             ],
             "loadoutId": "contributor",
-            "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+            "semanticHash": "fnv1a64:3fda088a97df0f55"
           },
           "rung": 8
         }
@@ -1511,13 +1511,13 @@
           "verify-app-before-done"
         ],
         "loadoutId": "contributor",
-        "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+        "semanticHash": "fnv1a64:3fda088a97df0f55"
       }
     },
     {
       "contractVersion": "harness-v1",
-      "compilerPackageVersion": "0.19.0",
-      "feedbackPolicyHash": "fnv1a64:3ad2a3b06260b383",
+      "compilerPackageVersion": "0.19.1",
+      "feedbackPolicyHash": "fnv1a64:ebab285a1a93c2e8",
       "grants": [
         {
           "effects": [
@@ -1707,11 +1707,11 @@
           "boundaryContract": "feedback-v1",
           "files": [
             {
-              "hash": "fnv1a64:5625526922dbf369",
+              "hash": "fnv1a64:af413c5056afbab4",
               "path": "packages/compiler/dist/src/artifact-identity.js"
             },
             {
-              "hash": "fnv1a64:1475ef58e02b189c",
+              "hash": "fnv1a64:ad444e8ed4d3944e",
               "path": "packages/compiler/dist/src/harness.js"
             },
             {
@@ -1868,7 +1868,7 @@
             }
           ],
           "skeletonVersion": "0.34.0",
-          "snapshot": ".runtime/harness/41853b351d9f5602"
+          "snapshot": ".runtime/harness/556ae6585327b3cb"
         },
         "settings": {
           "allow": false,
@@ -1917,13 +1917,13 @@
       },
       "loadout": {
         "id": "contributor",
-        "semanticHash": "fnv1a64:c020dc62ca7cc8eb",
-        "targetHash": "fnv1a64:8e691cdb3debb647"
+        "semanticHash": "fnv1a64:3fda088a97df0f55",
+        "targetHash": "fnv1a64:58b32087788be526"
       },
       "files": [
         {
           "path": ".agents/skills/dotln-executor/SKILL.md",
-          "hash": "fnv1a64:07c6cb89928c313b",
+          "hash": "fnv1a64:5c41d9070051c037",
           "origin": {
             "ids": [
               "adjacent-repair",
@@ -1947,13 +1947,13 @@
               "verify-app-before-done"
             ],
             "loadoutId": "contributor",
-            "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+            "semanticHash": "fnv1a64:3fda088a97df0f55"
           },
           "rung": 7
         },
         {
           "path": ".agents/skills/dotln-planner/SKILL.md",
-          "hash": "fnv1a64:feb1f887866ef10d",
+          "hash": "fnv1a64:440bc8e04892388e",
           "origin": {
             "ids": [
               "anti-oscillation",
@@ -1971,13 +1971,13 @@
               "verify-app-before-done"
             ],
             "loadoutId": "contributor",
-            "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+            "semanticHash": "fnv1a64:3fda088a97df0f55"
           },
           "rung": 7
         },
         {
           "path": ".agents/skills/dotln-refuter/SKILL.md",
-          "hash": "fnv1a64:34e6e8068fd93050",
+          "hash": "fnv1a64:707b14f8cec8f3bb",
           "origin": {
             "ids": [
               "anti-oscillation",
@@ -1995,13 +1995,13 @@
               "verify-app-before-done"
             ],
             "loadoutId": "contributor",
-            "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+            "semanticHash": "fnv1a64:3fda088a97df0f55"
           },
           "rung": 7
         },
         {
           "path": ".agents/skills/dotln-release-close/SKILL.md",
-          "hash": "fnv1a64:ec73af9e45e37cf0",
+          "hash": "fnv1a64:64ce44ff03bc28bb",
           "origin": {
             "ids": [
               "anti-oscillation",
@@ -2019,13 +2019,13 @@
               "verify-app-before-done"
             ],
             "loadoutId": "contributor",
-            "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+            "semanticHash": "fnv1a64:3fda088a97df0f55"
           },
           "rung": 7
         },
         {
           "path": ".agents/skills/dotln-reviewer/SKILL.md",
-          "hash": "fnv1a64:26a18fb2259125a5",
+          "hash": "fnv1a64:d9f369de46f3ff92",
           "origin": {
             "ids": [
               "anti-oscillation",
@@ -2043,13 +2043,13 @@
               "verify-app-before-done"
             ],
             "loadoutId": "contributor",
-            "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+            "semanticHash": "fnv1a64:3fda088a97df0f55"
           },
           "rung": 7
         },
         {
           "path": ".agents/skills/dotln-verifier/SKILL.md",
-          "hash": "fnv1a64:9b27c924e0432cff",
+          "hash": "fnv1a64:52912a15993272f2",
           "origin": {
             "ids": [
               "anti-oscillation",
@@ -2067,25 +2067,25 @@
               "verify-app-before-done"
             ],
             "loadoutId": "contributor",
-            "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+            "semanticHash": "fnv1a64:3fda088a97df0f55"
           },
           "rung": 7
         },
         {
           "path": ".claude/hooks/commit-msg.mjs",
-          "hash": "fnv1a64:0bcda59cf74193d2",
+          "hash": "fnv1a64:e6e7afb8082e454f",
           "origin": {
             "ids": [
               "no-attribution"
             ],
             "loadoutId": "contributor",
-            "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+            "semanticHash": "fnv1a64:3fda088a97df0f55"
           },
           "rung": 1
         },
         {
           "path": ".claude/hooks/concurrent-work-requires-worktrees.mjs",
-          "hash": "fnv1a64:9b0c6c22f29f94b3",
+          "hash": "fnv1a64:74de8f39c7e1843c",
           "origin": {
             "ids": [
               "concurrent-work-requires-worktrees",
@@ -2097,13 +2097,13 @@
               "contributor.verifier"
             ],
             "loadoutId": "contributor",
-            "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+            "semanticHash": "fnv1a64:3fda088a97df0f55"
           },
           "rung": 2
         },
         {
           "path": ".claude/hooks/finish.mjs",
-          "hash": "fnv1a64:a598266916aabe93",
+          "hash": "fnv1a64:22c09a5b797ceee5",
           "origin": {
             "ids": [
               "anti-oscillation",
@@ -2124,13 +2124,13 @@
               "verify-app-before-done"
             ],
             "loadoutId": "contributor",
-            "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+            "semanticHash": "fnv1a64:3fda088a97df0f55"
           },
           "rung": 6
         },
         {
           "path": ".claude/hooks/no-attribution.mjs",
-          "hash": "fnv1a64:3f939b4c1f3752ee",
+          "hash": "fnv1a64:5948972b0a7cc919",
           "origin": {
             "ids": [
               "contributor.executor",
@@ -2142,13 +2142,13 @@
               "no-attribution"
             ],
             "loadoutId": "contributor",
-            "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+            "semanticHash": "fnv1a64:3fda088a97df0f55"
           },
           "rung": 2
         },
         {
           "path": ".claude/hooks/no-lint-type-disables-as-fixes.mjs",
-          "hash": "fnv1a64:adf9d3b4ec23fab1",
+          "hash": "fnv1a64:efb147ad49fefed0",
           "origin": {
             "ids": [
               "contributor.executor",
@@ -2160,13 +2160,13 @@
               "no-lint-type-disables-as-fixes"
             ],
             "loadoutId": "contributor",
-            "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+            "semanticHash": "fnv1a64:3fda088a97df0f55"
           },
           "rung": 1
         },
         {
           "path": ".claude/hooks/permissions.mjs",
-          "hash": "fnv1a64:8657d3538c6f091d",
+          "hash": "fnv1a64:91c2f03c9557b9b6",
           "origin": {
             "ids": [
               "contributor.executor",
@@ -2178,53 +2178,53 @@
               "contributor.verifier"
             ],
             "loadoutId": "contributor",
-            "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+            "semanticHash": "fnv1a64:3fda088a97df0f55"
           },
           "rung": 2
         },
         {
           "path": ".claude/hooks/presence-posttooluse.mjs",
-          "hash": "fnv1a64:4e45d8468584c0d5",
+          "hash": "fnv1a64:a673e6e07c7a2acc",
           "origin": {
             "ids": [],
             "loadoutId": "contributor",
-            "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+            "semanticHash": "fnv1a64:3fda088a97df0f55"
           },
           "rung": 1
         },
         {
           "path": ".claude/hooks/presence-pretooluse.mjs",
-          "hash": "fnv1a64:1cd2bb94c1ff6c26",
+          "hash": "fnv1a64:ae65a1a2ba13e535",
           "origin": {
             "ids": [],
             "loadoutId": "contributor",
-            "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+            "semanticHash": "fnv1a64:3fda088a97df0f55"
           },
           "rung": 1
         },
         {
           "path": ".claude/hooks/presence-stop.mjs",
-          "hash": "fnv1a64:e0f2607ef2bd6218",
+          "hash": "fnv1a64:315fe1a33c548c93",
           "origin": {
             "ids": [],
             "loadoutId": "contributor",
-            "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+            "semanticHash": "fnv1a64:3fda088a97df0f55"
           },
           "rung": 1
         },
         {
           "path": ".claude/hooks/presence-userpromptsubmit.mjs",
-          "hash": "fnv1a64:fddefe4a58c5d4cb",
+          "hash": "fnv1a64:004054c87c8d7644",
           "origin": {
             "ids": [],
             "loadoutId": "contributor",
-            "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+            "semanticHash": "fnv1a64:3fda088a97df0f55"
           },
           "rung": 1
         },
         {
           "path": ".claude/hooks/read-observer.mjs",
-          "hash": "fnv1a64:8eebc1fa38864bbc",
+          "hash": "fnv1a64:ca80089ad5303697",
           "origin": {
             "ids": [
               "contributor.executor",
@@ -2237,13 +2237,13 @@
               "verify-app-before-done"
             ],
             "loadoutId": "contributor",
-            "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+            "semanticHash": "fnv1a64:3fda088a97df0f55"
           },
           "rung": 1
         },
         {
           "path": ".claude/hooks/session.mjs",
-          "hash": "fnv1a64:975bb338a43f90c9",
+          "hash": "fnv1a64:4cc2bcca9dff1cc4",
           "origin": {
             "ids": [
               "contributor.executor",
@@ -2254,13 +2254,13 @@
               "contributor.verifier"
             ],
             "loadoutId": "contributor",
-            "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+            "semanticHash": "fnv1a64:3fda088a97df0f55"
           },
           "rung": 1
         },
         {
           "path": ".claude/hooks/write-observer.mjs",
-          "hash": "fnv1a64:f8861333b20690b4",
+          "hash": "fnv1a64:f491cad3823b425b",
           "origin": {
             "ids": [
               "contributor.executor",
@@ -2272,7 +2272,7 @@
               "read-your-own-output"
             ],
             "loadoutId": "contributor",
-            "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+            "semanticHash": "fnv1a64:3fda088a97df0f55"
           },
           "rung": 1
         },
@@ -2309,19 +2309,19 @@
               "verify-app-before-done"
             ],
             "loadoutId": "contributor",
-            "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+            "semanticHash": "fnv1a64:3fda088a97df0f55"
           },
           "rung": 2
         },
         {
           "path": "AGENTS.md",
-          "hash": "fnv1a64:a89d82bdc7324002",
+          "hash": "fnv1a64:9724b4844ad1a64d",
           "origin": {
             "ids": [
               "clean-room"
             ],
             "loadoutId": "contributor",
-            "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+            "semanticHash": "fnv1a64:3fda088a97df0f55"
           },
           "rung": 8
         }
@@ -2356,14 +2356,14 @@
           "verify-app-before-done"
         ],
         "loadoutId": "contributor",
-        "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+        "semanticHash": "fnv1a64:3fda088a97df0f55"
       }
     }
   ],
   "installed": [
     {
       "path": ".agents/skills/dotln-executor/SKILL.md",
-      "hash": "fnv1a64:07c6cb89928c313b",
+      "hash": "fnv1a64:5c41d9070051c037",
       "hashScope": "whole-file",
       "origin": {
         "ids": [
@@ -2388,13 +2388,13 @@
           "verify-app-before-done"
         ],
         "loadoutId": "contributor",
-        "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+        "semanticHash": "fnv1a64:3fda088a97df0f55"
       },
       "rung": 7
     },
     {
       "path": ".agents/skills/dotln-planner/SKILL.md",
-      "hash": "fnv1a64:feb1f887866ef10d",
+      "hash": "fnv1a64:440bc8e04892388e",
       "hashScope": "whole-file",
       "origin": {
         "ids": [
@@ -2413,13 +2413,13 @@
           "verify-app-before-done"
         ],
         "loadoutId": "contributor",
-        "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+        "semanticHash": "fnv1a64:3fda088a97df0f55"
       },
       "rung": 7
     },
     {
       "path": ".agents/skills/dotln-refuter/SKILL.md",
-      "hash": "fnv1a64:34e6e8068fd93050",
+      "hash": "fnv1a64:707b14f8cec8f3bb",
       "hashScope": "whole-file",
       "origin": {
         "ids": [
@@ -2438,13 +2438,13 @@
           "verify-app-before-done"
         ],
         "loadoutId": "contributor",
-        "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+        "semanticHash": "fnv1a64:3fda088a97df0f55"
       },
       "rung": 7
     },
     {
       "path": ".agents/skills/dotln-release-close/SKILL.md",
-      "hash": "fnv1a64:ec73af9e45e37cf0",
+      "hash": "fnv1a64:64ce44ff03bc28bb",
       "hashScope": "whole-file",
       "origin": {
         "ids": [
@@ -2463,13 +2463,13 @@
           "verify-app-before-done"
         ],
         "loadoutId": "contributor",
-        "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+        "semanticHash": "fnv1a64:3fda088a97df0f55"
       },
       "rung": 7
     },
     {
       "path": ".agents/skills/dotln-reviewer/SKILL.md",
-      "hash": "fnv1a64:26a18fb2259125a5",
+      "hash": "fnv1a64:d9f369de46f3ff92",
       "hashScope": "whole-file",
       "origin": {
         "ids": [
@@ -2488,13 +2488,13 @@
           "verify-app-before-done"
         ],
         "loadoutId": "contributor",
-        "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+        "semanticHash": "fnv1a64:3fda088a97df0f55"
       },
       "rung": 7
     },
     {
       "path": ".agents/skills/dotln-verifier/SKILL.md",
-      "hash": "fnv1a64:9b27c924e0432cff",
+      "hash": "fnv1a64:52912a15993272f2",
       "hashScope": "whole-file",
       "origin": {
         "ids": [
@@ -2513,26 +2513,26 @@
           "verify-app-before-done"
         ],
         "loadoutId": "contributor",
-        "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+        "semanticHash": "fnv1a64:3fda088a97df0f55"
       },
       "rung": 7
     },
     {
       "path": ".claude/hooks/commit-msg.mjs",
-      "hash": "fnv1a64:0bcda59cf74193d2",
+      "hash": "fnv1a64:e6e7afb8082e454f",
       "hashScope": "whole-file",
       "origin": {
         "ids": [
           "no-attribution"
         ],
         "loadoutId": "contributor",
-        "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+        "semanticHash": "fnv1a64:3fda088a97df0f55"
       },
       "rung": 1
     },
     {
       "path": ".claude/hooks/concurrent-work-requires-worktrees.mjs",
-      "hash": "fnv1a64:9b0c6c22f29f94b3",
+      "hash": "fnv1a64:74de8f39c7e1843c",
       "hashScope": "whole-file",
       "origin": {
         "ids": [
@@ -2545,13 +2545,13 @@
           "contributor.verifier"
         ],
         "loadoutId": "contributor",
-        "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+        "semanticHash": "fnv1a64:3fda088a97df0f55"
       },
       "rung": 2
     },
     {
       "path": ".claude/hooks/finish.mjs",
-      "hash": "fnv1a64:a598266916aabe93",
+      "hash": "fnv1a64:22c09a5b797ceee5",
       "hashScope": "whole-file",
       "origin": {
         "ids": [
@@ -2573,13 +2573,13 @@
           "verify-app-before-done"
         ],
         "loadoutId": "contributor",
-        "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+        "semanticHash": "fnv1a64:3fda088a97df0f55"
       },
       "rung": 6
     },
     {
       "path": ".claude/hooks/no-attribution.mjs",
-      "hash": "fnv1a64:3f939b4c1f3752ee",
+      "hash": "fnv1a64:5948972b0a7cc919",
       "hashScope": "whole-file",
       "origin": {
         "ids": [
@@ -2592,13 +2592,13 @@
           "no-attribution"
         ],
         "loadoutId": "contributor",
-        "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+        "semanticHash": "fnv1a64:3fda088a97df0f55"
       },
       "rung": 2
     },
     {
       "path": ".claude/hooks/no-lint-type-disables-as-fixes.mjs",
-      "hash": "fnv1a64:adf9d3b4ec23fab1",
+      "hash": "fnv1a64:efb147ad49fefed0",
       "hashScope": "whole-file",
       "origin": {
         "ids": [
@@ -2611,13 +2611,13 @@
           "no-lint-type-disables-as-fixes"
         ],
         "loadoutId": "contributor",
-        "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+        "semanticHash": "fnv1a64:3fda088a97df0f55"
       },
       "rung": 1
     },
     {
       "path": ".claude/hooks/permissions.mjs",
-      "hash": "fnv1a64:8657d3538c6f091d",
+      "hash": "fnv1a64:91c2f03c9557b9b6",
       "hashScope": "whole-file",
       "origin": {
         "ids": [
@@ -2630,57 +2630,57 @@
           "contributor.verifier"
         ],
         "loadoutId": "contributor",
-        "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+        "semanticHash": "fnv1a64:3fda088a97df0f55"
       },
       "rung": 2
     },
     {
       "path": ".claude/hooks/presence-posttooluse.mjs",
-      "hash": "fnv1a64:4e45d8468584c0d5",
+      "hash": "fnv1a64:a673e6e07c7a2acc",
       "hashScope": "whole-file",
       "origin": {
         "ids": [],
         "loadoutId": "contributor",
-        "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+        "semanticHash": "fnv1a64:3fda088a97df0f55"
       },
       "rung": 1
     },
     {
       "path": ".claude/hooks/presence-pretooluse.mjs",
-      "hash": "fnv1a64:1cd2bb94c1ff6c26",
+      "hash": "fnv1a64:ae65a1a2ba13e535",
       "hashScope": "whole-file",
       "origin": {
         "ids": [],
         "loadoutId": "contributor",
-        "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+        "semanticHash": "fnv1a64:3fda088a97df0f55"
       },
       "rung": 1
     },
     {
       "path": ".claude/hooks/presence-stop.mjs",
-      "hash": "fnv1a64:e0f2607ef2bd6218",
+      "hash": "fnv1a64:315fe1a33c548c93",
       "hashScope": "whole-file",
       "origin": {
         "ids": [],
         "loadoutId": "contributor",
-        "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+        "semanticHash": "fnv1a64:3fda088a97df0f55"
       },
       "rung": 1
     },
     {
       "path": ".claude/hooks/presence-userpromptsubmit.mjs",
-      "hash": "fnv1a64:fddefe4a58c5d4cb",
+      "hash": "fnv1a64:004054c87c8d7644",
       "hashScope": "whole-file",
       "origin": {
         "ids": [],
         "loadoutId": "contributor",
-        "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+        "semanticHash": "fnv1a64:3fda088a97df0f55"
       },
       "rung": 1
     },
     {
       "path": ".claude/hooks/read-observer.mjs",
-      "hash": "fnv1a64:8eebc1fa38864bbc",
+      "hash": "fnv1a64:ca80089ad5303697",
       "hashScope": "whole-file",
       "origin": {
         "ids": [
@@ -2694,13 +2694,13 @@
           "verify-app-before-done"
         ],
         "loadoutId": "contributor",
-        "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+        "semanticHash": "fnv1a64:3fda088a97df0f55"
       },
       "rung": 1
     },
     {
       "path": ".claude/hooks/session.mjs",
-      "hash": "fnv1a64:975bb338a43f90c9",
+      "hash": "fnv1a64:4cc2bcca9dff1cc4",
       "hashScope": "whole-file",
       "origin": {
         "ids": [
@@ -2712,13 +2712,13 @@
           "contributor.verifier"
         ],
         "loadoutId": "contributor",
-        "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+        "semanticHash": "fnv1a64:3fda088a97df0f55"
       },
       "rung": 1
     },
     {
       "path": ".claude/hooks/write-observer.mjs",
-      "hash": "fnv1a64:f8861333b20690b4",
+      "hash": "fnv1a64:f491cad3823b425b",
       "hashScope": "whole-file",
       "origin": {
         "ids": [
@@ -2731,7 +2731,7 @@
           "read-your-own-output"
         ],
         "loadoutId": "contributor",
-        "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+        "semanticHash": "fnv1a64:3fda088a97df0f55"
       },
       "rung": 1
     },
@@ -2769,13 +2769,13 @@
           "verify-app-before-done"
         ],
         "loadoutId": "contributor",
-        "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+        "semanticHash": "fnv1a64:3fda088a97df0f55"
       },
       "rung": 2
     },
     {
       "path": ".claude/skills/dotln-executor/SKILL.md",
-      "hash": "fnv1a64:07c6cb89928c313b",
+      "hash": "fnv1a64:5c41d9070051c037",
       "hashScope": "whole-file",
       "origin": {
         "ids": [
@@ -2800,13 +2800,13 @@
           "verify-app-before-done"
         ],
         "loadoutId": "contributor",
-        "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+        "semanticHash": "fnv1a64:3fda088a97df0f55"
       },
       "rung": 7
     },
     {
       "path": ".claude/skills/dotln-planner/SKILL.md",
-      "hash": "fnv1a64:feb1f887866ef10d",
+      "hash": "fnv1a64:440bc8e04892388e",
       "hashScope": "whole-file",
       "origin": {
         "ids": [
@@ -2825,13 +2825,13 @@
           "verify-app-before-done"
         ],
         "loadoutId": "contributor",
-        "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+        "semanticHash": "fnv1a64:3fda088a97df0f55"
       },
       "rung": 7
     },
     {
       "path": ".claude/skills/dotln-refuter/SKILL.md",
-      "hash": "fnv1a64:34e6e8068fd93050",
+      "hash": "fnv1a64:707b14f8cec8f3bb",
       "hashScope": "whole-file",
       "origin": {
         "ids": [
@@ -2850,13 +2850,13 @@
           "verify-app-before-done"
         ],
         "loadoutId": "contributor",
-        "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+        "semanticHash": "fnv1a64:3fda088a97df0f55"
       },
       "rung": 7
     },
     {
       "path": ".claude/skills/dotln-release-close/SKILL.md",
-      "hash": "fnv1a64:ec73af9e45e37cf0",
+      "hash": "fnv1a64:64ce44ff03bc28bb",
       "hashScope": "whole-file",
       "origin": {
         "ids": [
@@ -2875,13 +2875,13 @@
           "verify-app-before-done"
         ],
         "loadoutId": "contributor",
-        "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+        "semanticHash": "fnv1a64:3fda088a97df0f55"
       },
       "rung": 7
     },
     {
       "path": ".claude/skills/dotln-reviewer/SKILL.md",
-      "hash": "fnv1a64:26a18fb2259125a5",
+      "hash": "fnv1a64:d9f369de46f3ff92",
       "hashScope": "whole-file",
       "origin": {
         "ids": [
@@ -2900,13 +2900,13 @@
           "verify-app-before-done"
         ],
         "loadoutId": "contributor",
-        "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+        "semanticHash": "fnv1a64:3fda088a97df0f55"
       },
       "rung": 7
     },
     {
       "path": ".claude/skills/dotln-verifier/SKILL.md",
-      "hash": "fnv1a64:9b27c924e0432cff",
+      "hash": "fnv1a64:52912a15993272f2",
       "hashScope": "whole-file",
       "origin": {
         "ids": [
@@ -2925,7 +2925,7 @@
           "verify-app-before-done"
         ],
         "loadoutId": "contributor",
-        "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+        "semanticHash": "fnv1a64:3fda088a97df0f55"
       },
       "rung": 7
     },
@@ -2943,7 +2943,7 @@
           "contributor.verifier"
         ],
         "loadoutId": "contributor",
-        "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+        "semanticHash": "fnv1a64:3fda088a97df0f55"
       },
       "rung": 1
     },
@@ -2961,13 +2961,13 @@
           "contributor.verifier"
         ],
         "loadoutId": "contributor",
-        "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+        "semanticHash": "fnv1a64:3fda088a97df0f55"
       },
       "rung": 1
     },
     {
       "path": ".codex/hooks/continuation.mjs",
-      "hash": "fnv1a64:484e73db028f4530",
+      "hash": "fnv1a64:b17d93e10964b453",
       "hashScope": "whole-file",
       "origin": {
         "ids": [
@@ -2979,13 +2979,13 @@
           "contributor.verifier"
         ],
         "loadoutId": "contributor",
-        "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+        "semanticHash": "fnv1a64:3fda088a97df0f55"
       },
       "rung": 1
     },
     {
       "path": "CLAUDE.md",
-      "hash": "fnv1a64:3c916ead34c6eb7e",
+      "hash": "fnv1a64:ef7120aa775c3a92",
       "hashScope": "marked-block",
       "origin": {
         "ids": [
@@ -2999,7 +2999,7 @@
           "verify-app-before-done"
         ],
         "loadoutId": "contributor",
-        "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+        "semanticHash": "fnv1a64:3fda088a97df0f55"
       },
       "rung": 8
     }
@@ -3065,7 +3065,7 @@
         },
         {
           "originId": "contributor.permissions",
-          "reason": "Pre-effect envelope checks unavailable in this harness; native sandbox and approval remain host controls.",
+          "reason": "Pre-effect envelope checks unavailable in this harness; host permission settings decide.",
           "missingCapabilities": [
             "hooks.PreToolUse",
             "settings.permissions"
@@ -3125,6 +3125,6 @@
       "verify-app-before-done"
     ],
     "loadoutId": "contributor",
-    "semanticHash": "fnv1a64:c020dc62ca7cc8eb"
+    "semanticHash": "fnv1a64:3fda088a97df0f55"
   }
 }

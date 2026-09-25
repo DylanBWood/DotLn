@@ -67,7 +67,7 @@ codex-cli-0.153.4: no-lint-type-disables-as-fixes: No project hook fired in the 
 codex-cli-0.153.4: no-partial-completion: No project hook fired in the bounded Codex probe; the role skill carries the remaining duty.
 codex-cli-0.153.4: read-your-own-output: No project hook fired in the bounded Codex probe; the role skill carries the remaining duty.
 codex-cli-0.153.4: verify-app-before-done: No project hook fired in the bounded Codex probe; the role skill carries the remaining duty.
-codex-cli-0.153.4: contributor.permissions: Pre-effect envelope checks unavailable in this harness; native sandbox and approval remain host controls.
+codex-cli-0.153.4: contributor.permissions: Pre-effect envelope checks unavailable in this harness; host permission settings decide.
 codex-cli-0.153.4: clean-room: Source provenance needs operator judgment; the hand-written Clean Room floor stays locked.
 copilot-cli-1.0.86: clean-room: Source provenance needs operator judgment; the hand-written Clean Room floor stays locked.
 <!-- dotln-harness:end -->

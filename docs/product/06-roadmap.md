@@ -20,6 +20,13 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-161 activation completion (2026-09-25):** assigned application `v0.50.0`,
+the next minor above the observed local `v0.49.0` tag, under the declared minor
+classification. Compiler `0.19.1` carries corrected emitted wording and
+skeleton `0.43.0` carries the new Contributor authority label; dependent
+workspace pins follow. Independent verification, final review and publication
+remain separate actions.
+
 **WO-158 activation completion (2026-09-25):** assigned application `v0.48.0`,
 the next minor above the observed local `v0.47.1` tag, under the declared minor
 classification. The lifecycle gains four typed off-ramps (a criterion waiver, a

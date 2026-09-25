@@ -90,9 +90,13 @@ harnesses; they inherit Claude's effective settings. The same distinction
 applies to model names inside Codex or Copilot.
 
 The standing security invariant is that a discovered credential, host, open
-port, connector, or capable tool is not authority to use it. Keep untrusted
-execution inside the enabled shell sandbox and route boundary-crossing requests
-through the host's approval mechanism. Re-check effective settings after upgrades.
+port, connector, or capable tool is not authority to use it. The operator's
+standing posture, reaffirmed on 2026-09-25, is no host sandbox
+in Claude Code, Codex or Copilot. DotLn's refusals and the host permission mode
+are the boundary; tool availability still grants no authority. See the
+[security note](AI-HARNESS-SECURITY.md#current-mode-choices-and-settings-locations--2026-09-17)
+and [ADR-0003 amendment](decisions/0003-personal-ai-harness-security.md#amendments).
+Re-check effective settings after upgrades.
 DotLn hooks refuse five conditions: a second writer in one worktree; a write to
 gate inputs or the success record during any live `npm test`; a repository
 write outside `docs/` and root Markdown on a `planning/` branch; and an
@@ -106,8 +110,12 @@ the control table's field, identity and bare-session limits. Other judgments
 advise and defer to host permissions.
 A registered writer may plan, build, bootstrap and close a release on main.
 
-At the 2026-09-01 Codex baseline, `.git` and a linked worktree's resolved Git
-directory remain protected even under `workspace-write`. A Codex session must
+The following retained checkpoint procedure applies only to Codex
+`workspace-write` with `on-request`. Full-access sessions use the host settings
+and existing authorization, with no outside-approval path. At the 2026-09-01
+Codex baseline, `.git` and a linked worktree's resolved Git
+directory remain protected even under `workspace-write`. A session in that
+retained mode must
 therefore request outside-sandbox approval on the **first invocation** of every
 state-changing `npm run resume -- ...` command so its recovery checkpoint can be
 created. `status`, `times` and `briefing` are read-only; `next` appends no event
@@ -118,7 +126,7 @@ sandboxed and then retry it: the transition records even when the optional
 checkpoint does not. The approval unsandboxes the whole project-controlled `npm`
 process, so first inspect the exact command, `package.json` mapping, and current
 `scripts/resume.mjs` diff, then request a one-invocation approval—never a
-persistent allow rule. The harness guide explains the warning, current Claude
+persistent allow rule. The harness guide explains the warning, retained Claude
 asymmetry, verification steps, and rollback. This paragraph is the rule's home;
 product 07 §Operator resume phrases points here since WO-090 (2026-09-20).
 
