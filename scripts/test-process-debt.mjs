@@ -252,11 +252,19 @@ const snapshot = (root) => {
   return result;
 };
 const writableOwnedTree = (path) => {
-  const info = lstatSync(path);
-  if (info.isSymbolicLink()) return;
-  chmodSync(path, (info.mode & 0o777) | (info.isDirectory() ? 0o700 : 0o200));
-  if (info.isDirectory())
-    for (const entry of readdirSync(path)) writableOwnedTree(join(path, entry));
+  // Git's background maintenance removes its own lock files (for example
+  // .git/objects/maintenance.lock) while this walk runs; an entry that has
+  // vanished needs no permission repair (WO-158-D016).
+  try {
+    const info = lstatSync(path);
+    if (info.isSymbolicLink()) return;
+    chmodSync(path, (info.mode & 0o777) | (info.isDirectory() ? 0o700 : 0o200));
+    if (info.isDirectory())
+      for (const entry of readdirSync(path))
+        writableOwnedTree(join(path, entry));
+  } catch (error) {
+    if (error?.code !== "ENOENT") throw error;
+  }
 };
 function repo(t, { runtime = false } = {}) {
   const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-debt-")));
@@ -860,7 +868,7 @@ const input = (root, event, session = "fixture", extra = {}) => ({
 const config = (root, name) =>
   JSON.parse(
     readFileSync(join(root, `.claude/hooks/${name}.mjs`), "utf8").match(
-      /await runHarnessHook\(([\s\S]*), feedbackBoundary(?:, input(?:, rawInput)?)?\);/,
+      /await runHarnessHook\(([\s\S]*), feedbackBoundary(?:, input(?:, rawInput(?:, control)?)?)?\);/,
     )[1],
   );
 const statePath = (root, session = "fixture") =>
@@ -4471,7 +4479,7 @@ test("meter diff bytes include newly authored untracked source", (t) => {
   );
 });
 
-test("WO-145 optional economy support preserves historical snapshots through WO-157 and changes only executor instructions on", () => {
+test("WO-145 optional economy support preserves historical snapshots through WO-158 and changes only executor instructions on", () => {
   const historical = JSON.parse(
     readFileSync(
       join(source, "packages/skeleton/fixtures/wo145-role-baseline.json"),
@@ -4482,10 +4490,10 @@ test("WO-145 optional economy support preserves historical snapshots through WO-
   // snapshot to make the current generated instruction check pass. WO-149's
   // common role edits affect both settings, so pin contemporaneous default and
   // opt-out bytes separately and preserve the complete historical chain.
-  // WO-157's shared role edits follow the same route.
+  // WO-157's and WO-158's shared role edits follow the same route.
   const baseline = JSON.parse(
     readFileSync(
-      join(source, "packages/skeleton/fixtures/wo157-role-baseline.json"),
+      join(source, "packages/skeleton/fixtures/wo158-role-baseline.json"),
       "utf8",
     ),
   );

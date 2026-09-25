@@ -1336,7 +1336,7 @@ async function runGateChecks(
     try {
       const { readControl } = await import("./lib/control-store.mjs");
       const active = [...readControl(repo).orders].filter(
-        ([, row]) => row.state.phase !== "closed",
+        ([, row]) => !["closed", "withdrawn"].includes(row.state.phase),
       );
       if (active.length === 1) check.workOrder = active[0][0];
     } catch {

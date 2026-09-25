@@ -20,6 +20,25 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-158 activation completion (2026-09-25):** assigned application `v0.48.0`,
+the next minor above the observed local `v0.47.1` tag, under the declared minor
+classification. The lifecycle gains four typed off-ramps (a criterion waiver, a
+withdrawal to the terminal phase `withdrawn`, a record correction and an
+override record), each a `resume` route that projects in status, and a live
+gate admits a fixed read-only list. Compiler `0.19.0` and skeleton `0.41.0`
+carry the changed hook generator, operator control, command classifier, host
+and role text; their consumer pins follow. Independent verification, final
+review and publication remain separate actions.
+
+**WO-158 collision retiming (2026-09-25):** unpublished target `v0.48.0` is superseded by `v0.49.0` under the existing minor classification because the observed release baseline is `v0.48.0`. Scope, acceptance, component versions, and published tags are unchanged by this retiming.
+
+**WO-158 final-review integration (2026-09-25):** `main` published `v0.48.0`
+(WO-159) with `@dotln/skeleton` `0.41.0`, the label this order had staged, so
+the skeleton bump is retimed to `0.42.0` under its declared additive minor
+impact, with the console pin and the lockfile following. Compiler `0.19.0` is
+free (`main` holds `0.18.0`); kernel and console versions are unchanged. Scope,
+acceptance and published tags are unchanged by this retiming.
+
 **WO-159 activation completion (2026-09-25):** assigned application `v0.48.0`,
 the next minor above the observed local `v0.47.1` tag, under the declared minor
 classification (WO-159-D011). Every DotLn-launched Codex worker, verifier and

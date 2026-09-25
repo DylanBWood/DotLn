@@ -26,6 +26,7 @@ import {
   inheritedLedgerDuty,
   parseDependencies,
   projectDependencies,
+  withdrawnDependencySet,
 } from "./lib/dependencies.mjs";
 import { runGit, runGitPathList } from "./lib/git.mjs";
 import {
@@ -165,7 +166,9 @@ export const checkSequenceTopology = (
     for (const edge of dependencies.blocking) {
       const target =
         edge.relation === "planning-deferral" ? edge.until : edge.workOrderId;
-      if (!positions.has(target)) continue;
+      // A withdrawn target is a settled entry, as a closed one is (WO-158):
+      // the edge still refuses activation but orders nothing in the sequence.
+      if (!positions.has(target) || edge.detail === "withdrawn") continue;
       const label = `${id} -> ${target} (${edge.relation})`;
       if (positions.get(id) < positions.get(target))
         failures.push(`${label}: dependency follows its dependent`);
@@ -215,6 +218,7 @@ export const readIndex = (root, releases = localReleaseRecords(root)) => {
     return { ...release, controlSegments };
   });
   const closed = closedDependencySet(control);
+  const withdrawn = withdrawnDependencySet(control);
   let dependencyReleases;
   const commitLogs = new Map();
   const prefixMatches = (prior) =>
@@ -314,7 +318,8 @@ export const readIndex = (root, releases = localReleaseRecords(root)) => {
       // An order whose allocation no longer folds stays visible (WO-157).
       const unreadable = control.unreadable?.has(id);
       const active =
-        unreadable || (state && !["closed", "none"].includes(state.phase));
+        unreadable ||
+        (state && !["closed", "none", "withdrawn"].includes(state.phase));
       const phase = unreadable
         ? "unreadable"
         : state?.phase && state.phase !== "none"
@@ -324,7 +329,7 @@ export const readIndex = (root, releases = localReleaseRecords(root)) => {
             : "draft";
       const section = active
         ? "Active"
-        : phase === "closed"
+        : phase === "closed" || phase === "withdrawn"
           ? "Closed"
           : historical
             ? "Historical"
@@ -337,11 +342,12 @@ export const readIndex = (root, releases = localReleaseRecords(root)) => {
         )
           ? (dependencyReleases ??= dependencyReleaseSet(root))
           : new Set(),
+        withdrawn,
       );
       const dependencyState =
         dependencies.source === "conservative-tokens"
           ? "conservative token view; does not block"
-          : phase === "closed" || historical
+          : phase === "closed" || phase === "withdrawn" || historical
             ? "typed; activation not applicable"
             : dependencies.blocking.length
               ? `typed; blocked on ${dependencies.blocking.map((entry) => entry.workOrderId).join(", ")}`
@@ -452,14 +458,17 @@ export const renderIndex = ({
   ];
   for (const { id, label } of sequence) {
     const row = byId.get(id);
-    const done = row.section === "Closed";
+    // Withdrawn entries are settled but unchecked: a check means a pass.
+    const done = row.section === "Closed" && row.phase === "closed";
     const status = done
       ? "final-reviewed"
-      : row.section === "Active"
-        ? row.phase
-        : row.section === "Historical"
-          ? "historical"
-          : "queued";
+      : row.phase === "withdrawn"
+        ? `withdrawn: ${row.state.withdrawal?.disposition ?? "unknown"}`
+        : row.section === "Active"
+          ? row.phase
+          : row.section === "Historical"
+            ? "historical"
+            : "queued";
     lines.push(
       `- [${done ? "x" : " "}] [${id}] — ${cell(label)} · **${cell(status)}**`,
     );
@@ -503,6 +512,7 @@ export const renderIndex = ({
         link(row.title, row.authorityLink ?? basename(row.path)),
         "",
         `- State: ${cell(row.phase)}.`,
+        ...offRampLines(state),
         ...(row.provenance
           ? [`- Provenance: ${cell(JSON.stringify(row.provenance))}.`]
           : []),
@@ -513,7 +523,7 @@ export const renderIndex = ({
           : []),
         `- Application target: ${cell(row.version)}.`,
         `- Dependencies: ${cell(row.dependencyState)}.`,
-        `- References: ${cell(row.dependencies.entries.map((entry) => `${entry.workOrderId}: ${entry.relation ? `${entry.relation} (${entry.state})` : entry.state}${entry.release ? ` ${entry.release}` : ""}${entry.until ? ` until ${entry.until}` : ""}${entry.by ? ` by ${entry.by}` : ""}${entry.date ? ` dated ${entry.date}` : ""}${entry.reason ? ` — ${entry.reason}` : ""}`).join("; ") || "none declared")}.`,
+        `- References: ${cell(row.dependencies.entries.map((entry) => `${entry.workOrderId}: ${entry.relation ? `${entry.relation} (${entry.state}${entry.detail ? `: ${entry.detail}` : ""})` : `${entry.state}${entry.detail ? `: ${entry.detail}` : ""}`}${entry.release ? ` ${entry.release}` : ""}${entry.until ? ` until ${entry.until}` : ""}${entry.by ? ` by ${entry.by}` : ""}${entry.date ? ` dated ${entry.date}` : ""}${entry.reason ? ` — ${entry.reason}` : ""}`).join("; ") || "none declared")}.`,
         `- Verification: ${report(state?.latestVerificationId, state?.latestVerdict, state?.latestVerificationPath)}.`,
         `- Final review: ${report(state?.finalReviewId, row.finalReviewVerdict, state?.finalReviewPath)}.`,
         `- Release: ${cell(row.disposition)}.`,
@@ -543,15 +553,39 @@ export const renderIndex = ({
   return `${lines.join("\n").trimEnd()}\n`;
 };
 
+// WO-158: the order's off-ramp events, shown only when recorded.
+const offRampLines = (state) => [
+  ...(state?.withdrawal
+    ? [
+        `- Withdrawal: ${cell(`${state.withdrawal.disposition} at ordinal ${state.withdrawal.ordinal} — ${state.withdrawal.reason}`)}.`,
+      ]
+    : []),
+  ...(state?.waivedCriteria?.length
+    ? [
+        `- Waived criteria: ${cell(state.waivedCriteria.map((waiver) => `${waiver.criterionId} by ordinal ${waiver.ordinal}`).join(", "))}.`,
+      ]
+    : []),
+  ...(state?.corrections?.length
+    ? [
+        `- Record corrections: ${cell(state.corrections.map((correction) => `ordinal ${correction.ordinal} corrects ordinal ${correction.subject.ordinal} (${Object.keys(correction.fields).join(", ")})`).join("; "))}.`,
+      ]
+    : []),
+  ...(state?.overrideRecords?.length
+    ? [
+        `- Override records: ${cell(state.overrideRecords.map((record) => `ordinal ${record.ordinal}`).join(", "))}.`,
+      ]
+    : []),
+];
+
 const renderSources = (releases, paths) => {
   const lines = [
     "## Sources and limits",
     "",
     "- **Header observation:** each authority's H1, sole strict application version, Model, Effort, and leading typed dependency block (or legacy Depends on paragraph). Invalid typed declarations refuse with the authority path and offending entry; other unknown metadata is attributed by the Authority link.",
     "- **Proposed sequence:** the marked block in planning/sequence.md, in operator-selected order. Historical fixtures without that file use the map. Missing/malformed blocks, duplicate IDs, and IDs without an authority refuse. This is not a scheduler or proof of dependency eligibility.",
-    `- **Control evidence:** the shared fold of legacy \`${paths.legacy}\` plus \`${paths.orders}\`, reduced independently per work order in segment append order. Closed means a passing final review; it does not independently prove merge or publication. Report verdicts come from events, not inferred report contents.`,
+    `- **Control evidence:** the shared fold of legacy \`${paths.legacy}\` plus \`${paths.orders}\`, reduced independently per work order in segment append order. Closed means a passing final review; it does not independently prove merge or publication. A withdrawn order is listed with the closed ones under its recorded disposition, unchecked in the proposed order, and never counts as a pass. Report verdicts come from events, not inferred report contents.`,
     `- **Local release evidence:** the earliest numeric annotated DotLn tag whose manifest names the order or a changed final-review path. The manifest-free v0.2.0 exception uses \`${paths.legacyRelease}\`. Other tags are not release evidence. Remote publication is not checked.`,
-    "- **Derived dependency status:** the authority's typed block is projected by scripts/lib/dependencies.mjs, also used by status --json and activation. Hard and satisfied-by-close entries require control closure with a passing final-review verdict. Satisfied-by-release requires the named local annotated DotLn release in HEAD's ancestry. Planning-deferral waits for its named order's closure or remains unmet for a candidate label; a dated waiver replaces it. Historical evidence, references, waivers and supersessions never block. Without a typed block, distinct Depends on tokens retain a labeled conservative view and never block activation. Closed and historical rows do not imply reactivation work.",
+    "- **Derived dependency status:** the authority's typed block is projected by scripts/lib/dependencies.mjs, also used by status --json and activation. Hard and satisfied-by-close entries require control closure with a passing final-review verdict; an entry over a withdrawn order reads unmet: withdrawn. Satisfied-by-release requires the named local annotated DotLn release in HEAD's ancestry. Planning-deferral waits for its named order's closure or remains unmet for a candidate label; a dated waiver replaces it. Historical evidence, references, waivers and supersessions never block. Without a typed block, distinct Depends on tokens retain a labeled conservative view and never block activation. Closed and historical rows do not imply reactivation work.",
     "- **Inferred no-release close:** only an unmatched closed order with a strict H1 version below a local release whose per-segment tagged control prefix precedes its close and whose tag time is no later than the close observation. That observation is recordedAt, or the first committed close prefix for legacy events (second precision, not recovered append time). Absent evidence stays unreleased. Release inclusion can follow a no-release close; local tags do not prove their remote publication time.",
     "- **Time-indexed history:** WO-001 and WO-002 are explicit pre-control cases, never completed merely because events are absent. They do not enter the control-closed dependency set.",
     "",

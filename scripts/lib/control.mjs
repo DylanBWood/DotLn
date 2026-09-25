@@ -13,6 +13,92 @@ export const CONTROL_LOG_SCHEMA_VERSION = 1;
 /** The code a failed allocation validation carries (WO-157 item 14). */
 export const ALLOCATION_REFUSED = "DOTLN_ALLOCATION_REFUSED";
 
+// WO-158 off-ramps. Each is a typed event with its own `resume` route; the
+// fold validates their shape here and `resume` judges their legality.
+export const WITHDRAWAL_DISPOSITIONS = ["failed", "superseded", "abandoned"];
+export const CORRECTABLE_ATTESTATION_FIELDS = [
+  "model",
+  "effort",
+  "source",
+  "harnessVersion",
+];
+export const CORRECTABLE_FIELDS = [
+  ...CORRECTABLE_ATTESTATION_FIELDS,
+  "reportPath",
+  "checkpointRef",
+  "checkpointSha",
+];
+export const CRITERION_ID = /^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$/u;
+const SHA256_DIGEST = /^sha256:[0-9a-f]{64}$/u;
+const offRampText = (value) =>
+  typeof value === "string" &&
+  value.trim() !== "" &&
+  !/[\u0000-\u001F\u007F-\u009F\u2028\u2029]/u.test(value);
+const completeActor = (actor) =>
+  actor &&
+  typeof actor === "object" &&
+  ["harness", "harnessVersion", "model", "effort", "source"].every((key) =>
+    offRampText(actor[key]),
+  );
+const offRampEvent = (event, at) => {
+  const refuse = (detail) => {
+    throw new Error(`invalid ${event.type} ${detail} at line ${at}`);
+  };
+  if (!completeActor(event.actor)) refuse("actor attestation");
+  if (!offRampText(event.reason)) refuse("reason");
+  const capture = () => {
+    if (!offRampText(event.capture) || !SHA256_DIGEST.test(event.captureHash))
+      refuse("operator capture");
+  };
+  switch (event.type) {
+    case "CriterionWaived":
+      if (!CRITERION_ID.test(event.criterionId ?? "")) refuse("criterionId");
+      capture();
+      break;
+    case "WorkOrderWithdrawn":
+      if (!WITHDRAWAL_DISPOSITIONS.includes(event.disposition))
+        refuse("disposition");
+      if (!SHA256_DIGEST.test(event.orderHash ?? "")) refuse("orderHash");
+      if (
+        event.reactivationNotes !== undefined &&
+        (!Array.isArray(event.reactivationNotes) ||
+          !event.reactivationNotes.every((note) => SHA256_DIGEST.test(note)))
+      )
+        refuse("reactivationNotes");
+      capture();
+      break;
+    case "RecordCorrected": {
+      const fields = event.fields;
+      if (
+        !Number.isSafeInteger(event.subject?.ordinal) ||
+        event.subject.ordinal < 1 ||
+        event.subject.ordinal >= at
+      )
+        refuse("subject ordinal");
+      if (
+        !fields ||
+        typeof fields !== "object" ||
+        Array.isArray(fields) ||
+        Object.keys(fields).length === 0
+      )
+        refuse("fields");
+      // A verdict is never corrected: a later VER-NNN or a failing final
+      // review is its route, and report bytes are never rewritten.
+      for (const [name, value] of Object.entries(fields))
+        if (!CORRECTABLE_FIELDS.includes(name) || !offRampText(value))
+          refuse(`field ${name}`);
+      break;
+    }
+    case "OperatorOverrideRecorded":
+      for (const list of [event.bypassed, event.effects])
+        if (!Array.isArray(list) || !list.length || !list.every(offRampText))
+          refuse("bypassed or effects list");
+      if (event.capture !== undefined || event.captureHash !== undefined)
+        capture();
+      break;
+  }
+};
+
 export const parseControlEvents = (source) =>
   source
     .trim()
@@ -45,10 +131,35 @@ const emptyState = () => ({
   latestAttestation: undefined,
   effortPairs: [],
   effortDeclarationValidated: false,
+  // WO-158 projections stay undefined until their event appears, so folds of
+  // histories without off-ramps keep their recorded shape.
+  waivedCriteria: undefined,
+  withdrawal: undefined,
+  corrections: undefined,
+  overrideRecords: undefined,
 });
+
+const effortPair = (actor) => ({
+  effort: actor.effort,
+  ...(actor.mode ? { mode: actor.mode } : {}),
+  raw: typeof actor.raw === "string" ? actor.raw : undefined,
+});
+const addEffortPair = (pairs, pair) => {
+  if (
+    !pairs.some(
+      (existing) =>
+        existing.effort === pair.effort &&
+        (existing.raw ?? null) === (pair.raw ?? null),
+    )
+  )
+    pairs.push(pair);
+};
 
 const scanControl = (events, visit) => {
   const states = new Map();
+  // Attested completions of each order's current activation by ordinal, so a
+  // RecordCorrected event can project the corrected attestation.
+  const attested = new Map();
   let state = emptyState();
   for (const [index, event] of events.entries()) {
     validateRecordedAt(event, `at line ${index + 1}`);
@@ -110,7 +221,12 @@ const scanControl = (events, visit) => {
           latestAttestation: undefined,
           effortPairs: [],
           effortDeclarationValidated: event.effortDeclarationValidated === true,
+          waivedCriteria: undefined,
+          withdrawal: undefined,
+          corrections: undefined,
+          overrideRecords: undefined,
         });
+        attested.set(event.workOrderId, []);
         break;
       case "ImplementationReady":
         state.phase = "ready-to-verify";
@@ -157,6 +273,110 @@ const scanControl = (events, visit) => {
             event.verdict === "fail" ? event.reportPath : undefined,
         });
         break;
+      // WO-158: none of these changes the phase except the withdrawal, and
+      // none is an attested completion of the order's own work.
+      case "CriterionWaived":
+        offRampEvent(event, index + 1);
+        state.waivedCriteria = [
+          ...(state.waivedCriteria ?? []),
+          {
+            criterionId: event.criterionId,
+            ordinal: index + 1,
+            reason: event.reason,
+            captureHash: event.captureHash,
+            recordedAt: event.recordedAt,
+          },
+        ];
+        break;
+      case "WorkOrderWithdrawn":
+        offRampEvent(event, index + 1);
+        Object.assign(state, {
+          phase: "withdrawn",
+          withdrawal: {
+            disposition: event.disposition,
+            reason: event.reason,
+            ordinal: index + 1,
+            orderHash: event.orderHash,
+            ...(event.reactivationNotes
+              ? { reactivationNotes: event.reactivationNotes }
+              : {}),
+            captureHash: event.captureHash,
+            recordedAt: event.recordedAt,
+          },
+        });
+        break;
+      case "RecordCorrected": {
+        offRampEvent(event, index + 1);
+        const subject = events[event.subject.ordinal - 1];
+        if (subject?.workOrderId !== event.workOrderId)
+          throw new Error(
+            `invalid RecordCorrected subject ordinal at line ${index + 1}`,
+          );
+        const fields = event.fields;
+        const rows = attested.get(event.workOrderId) ?? [];
+        const row = rows.find(
+          (entry) => entry.ordinal === event.subject.ordinal,
+        );
+        if (row) {
+          row.actor = {
+            ...row.actor,
+            correctedBy: [...(row.actor.correctedBy ?? []), index + 1],
+          };
+          for (const name of CORRECTABLE_ATTESTATION_FIELDS)
+            if (fields[name] !== undefined) row.actor[name] = fields[name];
+          // A corrected effort is the recorded value; the supplied spelling
+          // and mode described the value it replaces.
+          if (fields.effort !== undefined) {
+            delete row.actor.mode;
+            delete row.actor.raw;
+          }
+          state.latestAttestation = rows.at(-1).actor;
+          state.effortPairs = [];
+          for (const entry of rows)
+            addEffortPair(state.effortPairs, effortPair(entry.actor));
+        }
+        if (fields.reportPath !== undefined) {
+          if (
+            subject.verificationId !== undefined &&
+            subject.verificationId === state.latestVerificationId
+          )
+            state.latestVerificationPath = fields.reportPath;
+          if (
+            subject.finalReviewId !== undefined &&
+            subject.finalReviewId === state.finalReviewId
+          )
+            state.finalReviewPath = fields.reportPath;
+          const reportId = subject.verificationId ?? subject.finalReviewId;
+          if (reportId !== undefined && reportId === state.failureSourceId)
+            state.failureSourcePath = fields.reportPath;
+        }
+        state.corrections = [
+          ...(state.corrections ?? []),
+          {
+            ordinal: index + 1,
+            subject: event.subject,
+            fields,
+            previous: event.previous,
+            reason: event.reason,
+            recordedAt: event.recordedAt,
+          },
+        ];
+        break;
+      }
+      case "OperatorOverrideRecorded":
+        offRampEvent(event, index + 1);
+        state.overrideRecords = [
+          ...(state.overrideRecords ?? []),
+          {
+            ordinal: index + 1,
+            bypassed: event.bypassed,
+            effects: event.effects,
+            reason: event.reason,
+            ...(event.captureHash ? { captureHash: event.captureHash } : {}),
+            recordedAt: event.recordedAt,
+          },
+        ];
+        break;
       default:
         throw new Error(
           `unknown control event type at line ${index + 1}: ${event?.type ?? "missing"}`,
@@ -173,19 +393,11 @@ const scanControl = (events, visit) => {
       typeof event.actor.source === "string"
     ) {
       state.latestAttestation = event.actor;
-      const pair = {
-        effort: event.actor.effort,
-        ...(event.actor.mode ? { mode: event.actor.mode } : {}),
-        raw: typeof event.actor.raw === "string" ? event.actor.raw : undefined,
-      };
-      if (
-        !state.effortPairs.some(
-          (existing) =>
-            existing.effort === pair.effort &&
-            (existing.raw ?? null) === (pair.raw ?? null),
-        )
-      )
-        state.effortPairs.push(pair);
+      addEffortPair(state.effortPairs, effortPair(event.actor));
+      if (!attested.has(event.workOrderId)) attested.set(event.workOrderId, []);
+      attested
+        .get(event.workOrderId)
+        .push({ ordinal: index + 1, actor: event.actor });
     }
     if (
       typeof event.checkpointSha === "string" &&

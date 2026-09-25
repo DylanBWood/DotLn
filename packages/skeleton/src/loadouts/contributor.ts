@@ -35,10 +35,11 @@ export const contributorOutsideAuthority: readonly AuthorityGrant[] = [
     effects: [
       outsideWriteEffect({ kind: "system-temp", source: "WO-144-D001" }),
       outsideWriteEffect({ kind: "session-scratch", source: "WO-144-D001" }),
+      outsideWriteEffect({ kind: "host-scratchpad", source: "WO-158-D010" }),
     ],
     repo: "project",
     reason:
-      "WO-144-D001: temporary work and operator-selected DotLn session scratch",
+      "WO-144-D001: temporary work and operator-selected DotLn session scratch; WO-158-D010: the session's host-printed scratchpad",
   },
 ];
 const sharedIds = sharedSupports.map((support) => support.supportFacetId);
@@ -121,7 +122,7 @@ export const contributorRoles: readonly HarnessRole[] = [
       costLine,
       boardedDefect,
       actor,
-      "Put exactly one `**Actor attestation:** {<normalized actor JSON>}` line beside the human actor prose in the allocated report; its bytes must agree with the completion flags. Report criterion, observed/expected, reproduction, evidence, severity and limits. Disclose any instrument under verification that also recorded this work.",
+      "Put exactly one `**Actor attestation:** {<normalized actor JSON>}` line beside the human actor prose in the allocated report; its bytes must agree with the completion flags. Report criterion, observed/expected, reproduction, evidence, severity and limits. Judge each criterion on a `**Criterion <id>:** met` or `unmet` line; a waived one reads `unmet, waived by <ordinal>`, and a pass over an unwaived unmet line is refused. Disclose any instrument under verification that also recorded this work.",
       "Record `npm run resume -- verification-result pass|fail <actor-flags>` only after the report and evidence exist; refresh the index and reread updated outputs in `@subject-files`. Never replace an older VER or edit implementation to turn your own verdict green.",
     ],
   },
@@ -144,7 +145,7 @@ export const contributorRoles: readonly HarnessRole[] = [
       "After the last source edit and intended new source files are staged, run `npm test -- --review` once. This runs the product suites and machinery suites whose own declared sources changed since the base. The passing npm test row is keyed by tracked non-generated code; final-review-result carries it in the control event, worktree publish cites it in the PR, and release close consumes it without running a suite. Source changes require affected checks and a new final product gate; report/control/generated-document changes do not.",
       actor,
       "Prepare the contained PR.md and five-section RELEASE-NOTES.md beside the report, using the current publication contract; use one physical line per prose paragraph. Write the PR title as a headline: one clause saying what changed for the reader and why it matters, the lede first, sized by its content and never by the previous title, with no implementation inventory, version list or repeated work-order prose. A relevant gitmoji shortcode belongs in the PR title; commit subjects stay plain and contain no AI attribution.",
-      "Use exactly one `**Actor attestation:** {<normalized actor JSON>}` header matching the flags, then record `npm run resume -- final-review-result pass|fail <actor-flags>`, refresh the index and reread updated outputs in `@subject-files`. On failure, stop with findings. On pass, inspect each staged diff and commit coherent reviewed changes, then run `npm run worktree -- publish <id> --title <reviewed-title> --body-file <contained-committed-PR.md>`.",
+      "Criterion lines take the verifier's form (`unmet, waived by <ordinal>`). Use exactly one `**Actor attestation:** {<normalized actor JSON>}` header matching the flags, then record `npm run resume -- final-review-result pass|fail <actor-flags>`, refresh the index and reread updated outputs in `@subject-files`. On failure, stop with findings. On pass, inspect each staged diff and commit coherent reviewed changes, then run `npm run worktree -- publish <id> --title <reviewed-title> --body-file <contained-committed-PR.md>`.",
       "The operator's final-review phrase authorizes only committing reviewed state, pushing its WO branch, and opening its PR. Never merge, push main, publish a release, change account settings, or publish packages. Return the helper's exact post-merge release-close handoff.",
     ],
   },
@@ -208,6 +209,10 @@ export const contributorRoles: readonly HarnessRole[] = [
     {
       kind: "session-scratch" as const,
       source: "WO-144-D001: operator-selected DotLn session scratch",
+    },
+    {
+      kind: "host-scratchpad" as const,
+      source: "WO-158-D010: the scratchpad Claude Code prints for this session",
     },
   ],
   procedure: [operatorControls, ...role.procedure],
@@ -494,6 +499,10 @@ export function contributorWithSupports(
 // Keep the saved loadout-v1 policy deltas intact when adapting that target.
 const sessionCommands =
   "`scope expand:` adds scope and receipt; `conversation only:` answers without pausing work. Keep effect limits; only explicit pause/stop interrupts. Neither appends an event.";
+// WO-158: the designated routes replace the improvised handling its catalog
+// found; every role in both harnesses names them.
+const offRamps =
+  "Off-ramps (WO-158): an operator-accepted unmet criterion is `npm run resume -- waive <criterion>` (never by the order's own executor) and a terminal failed, superseded or abandoned order is `withdraw`, both naming the operator's captured words; a wrong attestation, report path or checkpoint is `correct`, never a verdict or report bytes; override use is `override-record`, appended by Claude's hook at `operator override: off` and run from the printed command in Codex. Never edit a filed report, amend a criterion to pass or waive in prose.";
 const targetRoles: readonly HarnessRole[] = contributorRoles.map((role) => {
   const procedure =
     role.name === "release-close"
@@ -519,6 +528,7 @@ const targetRoles: readonly HarnessRole[] = contributorRoles.map((role) => {
     procedure: [
       procedure[0]!,
       sessionCommands,
+      offRamps,
       "When an explicit operator scope expansion changes a judged order's text, record its authorization in that order's structured decisions and run `npm run plan -- amend-order WO-NNN WO-NNN-DNNN \"operator authorization and bounded scope\"`. This binds the approved bytes in the existing planning log; it neither grants scope nor discharges a refutation hold. Run the planning check and repair encountered failures within authority instead of repeatedly carrying an inherited failure into review.",
       "Plan fan-out against the root session's remaining `docs/control/budgets.json` `subagentCap` budget (default 20; null disables) before the first spawn and state that plan in the response. Count descendants in the same plan. Batch review and refutation over groups of items: one agent judges several items, never one agent per item per pass. Check `harness usage <session>` for observed counts and unknown remainder; Codex has no spawn hook, so keep an explicit session count and apply this rule as role text. Reuse agents before spawning more; unknown coverage is not a fresh budget.",
       "Without a session readback, keep the operator-selected model and effort with `--source operator-attested`; Claude Code roles read `CLAUDE_EFFORT` first. Use `unknown` only for a value nobody supplied. Codex briefings automatically report the active thread model, effort and CLI version, independently of token-counter availability. Never replace a supplied value with unknown or invent effective readback.",

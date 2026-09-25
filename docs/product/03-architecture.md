@@ -2278,6 +2278,8 @@ concordance. The map retains current rationale and navigation; the planner's
 startup input is the sequence rather than the archive or whole map. Closed
 entries leave the sequence at each planning pass (operator direction,
 2026-09-22); the generated work-order index's Closed section is their record.
+A withdrawn entry (WO-158) leaves the same way and is listed there under its
+disposition.
 
 **Evidence growth, measured 2026-09-22.** The REVIEW-002 Entropy Reducer
 review, re-measured by the planning pass that consumed it, found the tracked

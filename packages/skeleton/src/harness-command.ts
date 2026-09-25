@@ -52,6 +52,8 @@ interface ShellWord {
   readonly value: string;
   readonly dynamic: boolean;
   readonly quoted: boolean;
+  /** WO-158: an unquoted, unescaped `*?[]{}~` the shell may expand. */
+  readonly expands?: boolean;
 }
 interface ShellInvocation {
   readonly words: ShellWord[];
@@ -100,7 +102,8 @@ function shellWords(source: string): ShellInvocation[] {
     quote = "",
     inWord = false,
     dynamic = false,
-    quoted = false;
+    quoted = false,
+    expands = false;
   let heredocs: { delimiter: string; words: ShellWord[] }[] = [];
   let needsDelimiter = false;
   const flush = () => {
@@ -118,11 +121,12 @@ function shellWords(source: string): ShellInvocation[] {
       throw new HarnessCommandRefused(
         "Shell control syntax requires an explicit effect adapter",
       );
-    } else current.push({ value: word, dynamic, quoted });
+    } else current.push({ value: word, dynamic, quoted, expands });
     word = "";
     inWord = false;
     dynamic = false;
     quoted = false;
+    expands = false;
   };
   const finish = (piped = false) => {
     flush();
@@ -254,6 +258,7 @@ function shellWords(source: string): ShellInvocation[] {
         continue;
       }
       inWord = true;
+      if (/[*?\[\]{}~]/.test(char)) expands = true;
       word += char;
     }
     if (continued) {
@@ -606,6 +611,130 @@ export function shellRedirectTargets(
 }
 export function shellWritePaths(source: string): readonly string[] | null {
   return shellWriteTargets(source)?.map(({ path }) => path) ?? null;
+}
+
+/** The fixed read-only list a live gate admits (WO-158 criterion 6). Adding a
+ * program is a later order, not a session decision. */
+export const LIVE_GATE_READ_LIST =
+  "cat, head, tail, wc, ls, grep, sed -n with a print-only script, git --no-pager diff|log|show|status|stash list, node scripts/harness.mjs writer --show and npm run resume --silent -- status";
+
+// A sed script whose every command prints: numeric, `$` or /regex/ addresses.
+const sedAddress = String.raw`(?:\d+|\$|/(?:[^/\\;]|\\.)*/[IM]*)`;
+const sedPrintOnly = new RegExp(
+  `^\\s*(?:${sedAddress}(?:\\s*,\\s*${sedAddress})?)?\\s*p\\s*$`,
+);
+const liveGateSed = (args: readonly string[]): boolean => {
+  let quiet = false;
+  let explicit = false;
+  const scripts: string[] = [];
+  for (let index = 0; index < args.length; index++) {
+    const arg = args[index]!;
+    if (["-n", "--quiet", "--silent"].includes(arg)) quiet = true;
+    else if (["-E", "-r", "--regexp-extended"].includes(arg)) continue;
+    else if (/^-[nEr]+$/.test(arg)) quiet ||= arg.includes("n");
+    else if (arg === "-e" || arg === "--expression") {
+      const script = args[++index];
+      if (script === undefined) return false;
+      scripts.push(script);
+      explicit = true;
+    } else if (arg.startsWith("-")) return false;
+    else if (!explicit && scripts.length === 0) scripts.push(arg);
+  }
+  return (
+    quiet &&
+    scripts.length > 0 &&
+    scripts.every((script) =>
+      script
+        .split(/[;\n]/)
+        .filter((command) => command.trim())
+        .every((command) => sedPrintOnly.test(command)),
+    )
+  );
+};
+// Git reads that name an output file or enable an external program are not
+// on the list; configured programs are the host's to judge (harness-host).
+const liveGateGit = (args: readonly string[]): boolean => {
+  let index = 0;
+  let unpaged = false;
+  while (["--no-pager", "-P", "--no-optional-locks"].includes(args[index]!))
+    if (args[index++] !== "--no-optional-locks") unpaged = true;
+  // A paged read runs the configured or default pager, an unlisted program,
+  // whenever its output is a terminal; --no-pager also sets GIT_PAGER=cat for
+  // the reads a stash list delegates (VER-001 F4).
+  if (!unpaged) return false;
+  const subcommand = args[index++];
+  let rest = args.slice(index);
+  if (subcommand === "stash") {
+    if (rest[0] !== "list") return false;
+    rest = rest.slice(1);
+  } else if (!["diff", "log", "show", "status"].includes(subcommand ?? ""))
+    return false;
+  // A `%G` format placeholder verifies signatures, which runs the configured
+  // signature program just as --show-signature does.
+  return rest.every(
+    (arg) =>
+      !/^(?:--output(?:=|$)|--ext-diff$|--textconv$|--show-signature$|--exec(?:=|$))/.test(
+        arg,
+      ) && !arg.includes("%G"),
+  );
+};
+const liveGateRead = ([program, ...args]: readonly string[]): boolean => {
+  switch (program) {
+    // No option of these writes a file or runs a program.
+    case "cat":
+    case "head":
+    case "tail":
+    case "wc":
+    case "ls":
+    case "grep":
+      return true;
+    case "sed":
+      return liveGateSed(args);
+    case "git":
+      return liveGateGit(args);
+    case "node":
+      return args.join(" ") === "scripts/harness.mjs writer --show";
+    case "npm":
+      return /^run resume (?:--silent )?-- status(?: --json)?(?: --work-order WO-\d{3})?$/.test(
+        args.join(" "),
+      );
+    default:
+      return false;
+  }
+};
+
+/** Every stage of every pipeline and list must be on the list, with no
+ * redirect operand, heredoc, expansion or environment prefix: a listed reader
+ * piped into an unlisted writer is refused (receipt 028, criterion 6). Only
+ * descriptor duplication such as 2>&1 passes, because it opens no file.
+ * null means not admitted; `git` says whether a Git read needs the host's
+ * configured-program check, and `helper` whether a repository script runs,
+ * which is reviewed only at the root. */
+export function liveGateReads(
+  source: string,
+): { readonly git: boolean; readonly helper: boolean } | null {
+  try {
+    const invocations = shellWords(source);
+    if (!invocations.length) return null;
+    let git = false;
+    let helper = false;
+    for (const { words, stdin } of invocations) {
+      if (stdin.length) return null;
+      const values: string[] = [];
+      for (const word of words) {
+        if (word.dynamic || word.expands) return null;
+        if (!word.quoted && /^\d*[<>]&\d+$/.test(word.value)) continue;
+        if (/[<>]/.test(word.value)) return null;
+        values.push(word.value);
+      }
+      if (!liveGateRead(values)) return null;
+      git ||= values[0] === "git";
+      helper ||= values[0] === "node" || values[0] === "npm";
+    }
+    return { git, helper };
+  } catch {
+    return null;
+  }
 }
 const requireLiteral = (word: ShellWord | undefined, position: string) => {
   if (!word || word.dynamic)

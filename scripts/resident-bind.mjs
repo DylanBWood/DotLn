@@ -352,9 +352,9 @@ export function readBindingInputs(launchpad, request) {
   const { workOrder: workOrderId, surfaces } = request;
   const { branch, worktree } = orderWorktree(launchpad, workOrderId);
   const control = orderControl(worktree, workOrderId);
-  if (control.phase === "closed")
+  if (control.phase === "closed" || control.phase === "withdrawn")
     refuse(
-      `${workOrderId} is closed; a resident binds work in flight, and a closed order's store would keep judging a worktree nobody works in`,
+      `${workOrderId} is ${control.phase}; a resident binds work in flight, and a ${control.phase} order's store would keep judging a worktree nobody works in`,
     );
   const contractPath = control.workOrderPath;
   workOrderAuthorityPath(worktree, workOrderId, contractPath);

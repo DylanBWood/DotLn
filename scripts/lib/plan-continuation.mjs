@@ -21,17 +21,22 @@ const requireSamePlan = (condition, reason) => {
     );
 };
 
+const releaseLabel = /\(v(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\)$/u;
 const releaseAssignment = (before, after) => {
   const oldTitle = before.match(/^# [^\r\n]+/u)?.[0];
   const newTitle = after.match(/^# [^\r\n]+/u)?.[0];
   const placeholder = "(version assigned at activation)";
-  if (
-    !oldTitle?.endsWith(placeholder) ||
-    !newTitle?.startsWith(oldTitle.slice(0, -placeholder.length))
-  )
+  // A title filed without the placeholder (the 2026-09-25 pass, WO-158-D017)
+  // admits the same single label, appended after one space.
+  const stem = oldTitle?.endsWith(placeholder)
+    ? oldTitle.slice(0, -placeholder.length)
+    : oldTitle && !/\(v[^()]*\)$/u.test(oldTitle)
+      ? `${oldTitle} `
+      : undefined;
+  if (stem === undefined || !newTitle?.startsWith(stem))
     return { source: after, version: null };
-  const version = newTitle.slice(oldTitle.length - placeholder.length);
-  if (!/^\(v(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\)$/u.test(version))
+  const version = newTitle.slice(stem.length);
+  if (!new RegExp(`^${releaseLabel.source}`, "u").test(version))
     return { source: after, version: null };
   return {
     source: oldTitle + after.slice(newTitle.length),
@@ -61,12 +66,24 @@ const executionAppendix = (before, after) => {
 };
 
 /** Bind the entire approved order, including existing execution records;
- * only the admitted release label is normalized. Later appendices are checked separately.
+ * only the admitted release label is normalized. Later appendices are checked
+ * separately. Given the filed source, a label appended to a title filed with
+ * neither placeholder nor label (WO-158-D017) normalizes back to that title.
  */
-export const executionAmendmentSource = (source) => {
+export const executionAmendmentSource = (source, filed) => {
+  const filedTitle = filed?.match(/^# [^\r\n]+/u)?.[0];
+  const unlabelled =
+    filedTitle !== undefined &&
+    !filedTitle.endsWith("(version assigned at activation)") &&
+    !/\(v[^()]*\)$/u.test(filedTitle);
   const normalized = source.replace(
-    /^(# [^\r\n]+)\(v(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\)(?=\r?\n|$)/u,
-    "$1(version assigned at activation)",
+    /^(# [^\r\n]+?)( ?)\(v(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\)(?=\r?\n|$)/u,
+    (whole, title, space) =>
+      unlabelled
+        ? title === filedTitle && space === " "
+          ? title
+          : whole
+        : `${title}${space}(version assigned at activation)`,
   );
   return normalized.trimEnd();
 };
@@ -249,10 +266,12 @@ export function checkPlanContinuation(
         row.workOrderId === workOrderId &&
         row.sourceOrderHash === sha256(executionAmendmentSource(before)) &&
         row.orderHash ===
-          sha256(executionAmendmentSource(after).slice(0, row.orderLength)),
+          sha256(
+            executionAmendmentSource(after, before).slice(0, row.orderLength),
+          ),
     );
     if (amendment) {
-      const normalized = executionAmendmentSource(after);
+      const normalized = executionAmendmentSource(after, before);
       requireSamePlan(
         amendment.orderLength <= normalized.length,
         "execution amendment approved length exceeds the current order source",

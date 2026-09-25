@@ -36,7 +36,7 @@ import {
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, isAbsolute, join } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import {
   compileFeedbackUnits,
   applyFeedbackCorrection,
@@ -459,7 +459,7 @@ const configFor = (root, name) => {
       join(root, `.claude/hooks/${hookName(name)}.mjs`),
       "utf8",
     ).match(
-      /await runHarnessHook\(([\s\S]*), feedbackBoundary(?:, input(?:, rawInput)?)?\);/,
+      /await runHarnessHook\(([\s\S]*), feedbackBoundary(?:, input(?:, rawInput(?:, control)?)?)?\);/,
     )[1],
   );
   if (stopUnits.has(name)) {
@@ -480,8 +480,8 @@ function invoke(root, name, payload, removed = false, environment = {}) {
     writeFileSync(
       path,
       source.replace(
-        /await runHarnessHook\([\s\S]*, feedbackBoundary(?:, input(?:, rawInput)?)?\);/,
-        `await runHarnessHook(${json(config).trim()}, feedbackBoundary, input, rawInput);`,
+        /await runHarnessHook\([\s\S]*, feedbackBoundary(?:, input(?:, rawInput(?:, control)?)?)?\);/,
+        `await runHarnessHook(${json(config).trim()}, feedbackBoundary, input, rawInput, control);`,
       ),
     );
   }
@@ -4006,6 +4006,595 @@ test("WO-132 only the live product gate refuses input and success-record writes,
   }
 });
 
+test("WO-158 a live gate admits the fixed read-only list stage by stage and names it in its refusal", () => {
+  const root = fixture();
+  try {
+    const payload = (command) =>
+      input(root, "PreToolUse", { tool_name: "Bash", tool_input: { command } });
+    const reads = [
+      "git --no-pager status",
+      "git --no-pager status --short",
+      "git --no-pager diff",
+      "git --no-pager diff --stat",
+      "git --no-pager log --oneline -3",
+      "git -P log --oneline -3",
+      "git --no-optional-locks --no-pager show --stat HEAD",
+      "git --no-pager stash list",
+      "git --no-pager log --oneline -3 | head -1",
+      "git --no-pager diff HEAD 2>&1 | head -5",
+      "tail -n 2 fixture.ts",
+      "wc -l fixture.ts",
+      "sed -n '/value/p' fixture.ts",
+      "sed -n -e 1p fixture.ts",
+      'grep -n "val.*e" fixture.ts',
+      "cat fixture.ts | wc -l",
+      "cat fixture.ts",
+      "head -n 1 fixture.ts",
+      "ls",
+      "ls -la scripts",
+      "node scripts/harness.mjs writer --show",
+      "npm run resume --silent -- status",
+    ];
+    // Receipt 028 (criterion 6): a listed reader piped into a writer, a
+    // redirect onto a gate input and an unlisted program stay refused.
+    const refused = [
+      "sed -n '1w fixture.ts' fixture.ts",
+      "sed -n 1p fixture.ts > fixture.ts",
+      "git --no-pager log --oneline | tee fixture.ts",
+      "git --no-pager diff --output=fixture.ts",
+      "git --no-pager stash",
+      "git -c core.pager=cat log",
+      // VER-001 F4: a paged read runs the configured or default pager, an
+      // unlisted program, whenever its output is a terminal.
+      "git log -1",
+      "git status",
+      "git diff --stat",
+      "git show --stat HEAD",
+      "git stash list",
+      "git --no-optional-locks log -1",
+      "git log --oneline -3 | head -1",
+      "cat fixture.ts | sort",
+      "rg value fixture.ts",
+      "grep -n val* fixture.ts",
+      "ls > fixture.ts",
+      // A %G placeholder verifies signatures with the signature program.
+      "git --no-pager log --format=%GG -1",
+      "git --no-pager show -s --pretty=format:%GS HEAD",
+    ];
+    const listed =
+      /Read-only commands stay admitted while it runs: cat, head, tail, wc, ls, grep, sed -n with a print-only script, git --no-pager diff\|log\|show\|status\|stash list, node scripts\/harness\.mjs writer --show and npm run resume --silent -- status, each stage without a redirect operand, heredoc or unquoted glob; a Git read carries --no-pager/;
+    const active = beginGateRun(root, "npm test");
+    try {
+      for (const hook of [
+        "permissions",
+        "concurrent-work-requires-worktrees",
+        "write-observer",
+      ]) {
+        for (const command of reads)
+          assert.equal(
+            allowed(invoke(root, hook, payload(command))),
+            true,
+            `${hook}: ${command}`,
+          );
+        for (const command of refused) {
+          const result = invoke(root, hook, payload(command));
+          assert.equal(
+            result.hookSpecificOutput?.permissionDecision,
+            "deny",
+            `${hook}: ${command}`,
+          );
+          assert.match(
+            result.hookSpecificOutput.permissionDecisionReason,
+            listed,
+          );
+        }
+      }
+      // WO-142-D012: a Git read runs the programs the repository configures,
+      // so the list admits one only while none is configured.
+      // `git --no-pager status` is the WO-142 activation read vocabulary, a
+      // boarded metadata exception (N7, FUP-9e2be6bfac0708fe) judged before
+      // this list, so the fsmonitor row uses a diff, which refreshes the index.
+      for (const [key, value, command] of [
+        ["core.fsmonitor", "true", "git --no-pager diff --stat"],
+        ["diff.fixture.textconv", "cat", "git --no-pager diff"],
+        ["diff.external", "cat", "git --no-pager diff --stat"],
+        // `git status --short` stays a boarded metadata exception (WO-142 N7).
+        ["filter.fixture.clean", "cat", "git --no-pager show --stat HEAD"],
+        ["log.showSignature", "true", "git --no-pager log -1"],
+        ["gpg.program", "false", "git --no-pager log -1"],
+        ["gpg.ssh.program", "false", "git --no-pager show --stat HEAD"],
+      ]) {
+        git(root, "config", key, value);
+        try {
+          assert.equal(
+            invoke(root, "permissions", payload(command)).hookSpecificOutput
+              ?.permissionDecision,
+            "deny",
+            `${key}: ${command}`,
+          );
+        } finally {
+          git(root, "config", "--unset", key);
+        }
+      }
+      git(root, "config", "core.fsmonitor", "false");
+      assert.equal(
+        allowed(invoke(root, "permissions", payload("git --no-pager status"))),
+        true,
+      );
+    } finally {
+      active.release();
+    }
+  } finally {
+    removeFixture(root, { recursive: true });
+  }
+});
+
+test("WO-158 FINAL-001 F1: Git prefix orders terminate and chained writes remain refused during a live gate", () => {
+  const prefixes = [
+    "--no-pager --no-optional-locks",
+    "--no-optional-locks --no-pager",
+    "-P --no-pager",
+    "--no-pager -P",
+    "--no-pager --no-pager",
+    "--no-optional-locks -P --no-optional-locks",
+  ];
+  const cases = prefixes.flatMap((prefix) => [
+    ...["diff", "log", "show", "status", "stash list"].map((read) => [
+      `git ${prefix} ${read}`,
+      { git: true, helper: false },
+    ]),
+    [`git ${prefix}`, null],
+    [`git ${prefix} log; echo x > fixture.ts`, null],
+  ]);
+  cases.push(
+    ["git --no-optional-locks --no-optional-locks log", null],
+    // The host's existing WO-142 metadata vocabulary admits this spelling;
+    // the fixed live-gate list itself still excludes -c.
+    [
+      "git --no-pager --no-optional-locks -c core.fsmonitor=false status --short",
+      null,
+    ],
+  );
+  // A synchronous classifier loop would also block a node:test timeout.
+  // Isolate it in a child so this regression fails within five seconds.
+  const probe = spawnSync(
+    process.execPath,
+    [
+      "--input-type=module",
+      "-e",
+      `import assert from 'node:assert/strict';
+       import {readFileSync} from 'node:fs';
+       import {liveGateReads} from './packages/skeleton/dist/src/harness-command.js';
+       for (const [command, expected] of JSON.parse(readFileSync(0, 'utf8')))
+         assert.deepEqual(liveGateReads(command), expected, command);`,
+    ],
+    {
+      cwd: sourceRoot,
+      input: JSON.stringify(cases),
+      encoding: "utf8",
+      timeout: deadlineLimit(1000, 5000),
+    },
+  );
+  assert.equal(
+    probe.status,
+    0,
+    JSON.stringify({
+      error: probe.error?.code,
+      signal: probe.signal,
+      stderr: probe.stderr,
+    }),
+  );
+
+  const root = fixture();
+  try {
+    const reads = [
+      ...prefixes.map((prefix) => `git ${prefix} log -1`),
+      "git --no-pager --no-optional-locks status",
+      "git --no-pager --no-optional-locks -c core.fsmonitor=false status --short",
+    ];
+    const active = beginGateRun(root, "npm test");
+    try {
+      for (const hook of [
+        "permissions",
+        "concurrent-work-requires-worktrees",
+        "write-observer",
+      ]) {
+        for (const command of reads) {
+          const payload = (text) =>
+            input(root, "PreToolUse", {
+              tool_name: "Bash",
+              tool_input: { command: text },
+            });
+          assert.equal(
+            allowed(invoke(root, hook, payload(command))),
+            true,
+            `${hook}: ${command}`,
+          );
+          const denied = invoke(
+            root,
+            hook,
+            payload(`${command}; echo x > fixture.ts`),
+          );
+          assert.equal(
+            denied.hookSpecificOutput?.permissionDecision,
+            "deny",
+            `${hook}: ${command}; echo x > fixture.ts`,
+          );
+          assert.match(
+            denied.hookSpecificOutput.permissionDecisionReason,
+            /write may change gate inputs during active gate/,
+          );
+          assert.match(
+            denied.hookSpecificOutput.permissionDecisionReason,
+            /Read-only commands stay admitted while it runs/,
+          );
+        }
+      }
+    } finally {
+      active.release();
+    }
+  } finally {
+    removeFixture(root, { recursive: true });
+  }
+});
+
+test("WO-158 the session's host-printed scratchpad is a granted root; another session's and /tmp are not", () => {
+  const root = fixture();
+  const session = "7a1b2c3d-wo158-scratchpad";
+  const project = "-fixture-projects-wo158";
+  const transcript = `/fixture-home/.claude/projects/${project}/${session}.jsonl`;
+  const base = `/tmp/claude-${process.getuid()}`;
+  const scratchpad = `${base}/${project}/${session}/scratchpad`;
+  const request = (tool, args, extra = {}) =>
+    input(root, "PreToolUse", {
+      session_id: session,
+      transcript_path: transcript,
+      tool_name: tool,
+      tool_input: args,
+      ...extra,
+    });
+  const calls = (path, extra) => [
+    request("Write", { file_path: path }, extra),
+    request("Bash", { command: `printf x > '${path}'` }, extra),
+  ];
+  try {
+    invoke(
+      root,
+      "session",
+      input(root, "UserPromptSubmit", {
+        session_id: session,
+        transcript_path: transcript,
+        prompt: "resume: next",
+      }),
+    );
+    for (const hook of [
+      "permissions",
+      "concurrent-work-requires-worktrees",
+      "write-observer",
+    ])
+      for (const call of [
+        ...calls(`${scratchpad}/notes.md`),
+        // A subagent's transcript sits below the same session directory.
+        ...calls(`${scratchpad}/agent.md`, {
+          transcript_path: `/fixture-home/.claude/projects/${project}/${session}/subagents/agent-1.jsonl`,
+        }),
+      ])
+        assert.equal(
+          allowed(invoke(root, hook, call)),
+          true,
+          `${hook}: ${JSON.stringify(call.tool_input)}`,
+        );
+    for (const [path, extra] of [
+      [`${base}/${project}/another-session/scratchpad/x.md`],
+      [`${base}/-another-project/${session}/scratchpad/x.md`],
+      [`${base}/${project}/x.md`],
+      ["/tmp/x.md"],
+      [`${scratchpad}/no-transcript.md`, { transcript_path: undefined }],
+      [
+        `${scratchpad}/traversal.md`,
+        {
+          transcript_path: `/fixture-home/.claude/projects/../${session}.jsonl`,
+        },
+      ],
+    ])
+      for (const call of calls(path, extra))
+        assert.equal(
+          allowed(invoke(root, "permissions", call)),
+          false,
+          JSON.stringify(call.tool_input),
+        );
+    for (const call of calls(`${scratchpad}/copilot.md`))
+      assert.equal(
+        allowed(
+          invoke(root, "permissions", call, false, {
+            COPILOT_AGENT_SESSION_ID: session,
+          }),
+        ),
+        false,
+        "only a Claude Code session derives the host scratchpad",
+      );
+  } finally {
+    removeFixture(root, { recursive: true });
+  }
+});
+
+test("WO-158 operator override: off appends OperatorOverrideRecorded with the operator's words, and prints the exact command when the runtime cannot", () => {
+  const root = fixture();
+  const session = "wo158-override-off";
+  try {
+    for (const path of [
+      "scripts/resume.mjs",
+      "scripts/work-orders.mjs",
+      "scripts/lib",
+      "packages/skeleton/src",
+    ])
+      cpSync(join(sourceRoot, path), join(root, path), { recursive: true });
+    rmSync(join(root, "docs/control/orders/WO-999.jsonl"));
+    write(
+      root,
+      "docs/work-orders/WO-999-fixture.md",
+      "# WO-999 — Fixture\n\n**Model:** fixture.\n**Effort:** executor any; verifier any; reviewer any.\n**Objective:** exercise the override record.\n",
+    );
+    write(
+      root,
+      "docs/planning/sequence.md",
+      "<!-- dotln-work-order-sequence:start -->\n- WO-999 — Fixture\n<!-- dotln-work-order-sequence:end -->\n",
+    );
+    write(
+      root,
+      ".gitignore",
+      "node_modules/\n**/dist/\ndocs/control/local/\ndocs/intake/**\n",
+    );
+    const pkg = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
+    pkg.scripts["work-orders"] = "node scripts/work-orders.mjs";
+    write(root, "package.json", json(pkg));
+    git(root, "add", ".");
+    git(
+      root,
+      "-c",
+      "user.name=Fixture",
+      "-c",
+      "user.email=fixture@example.invalid",
+      "-c",
+      "commit.gpgsign=false",
+      "commit",
+      "-qm",
+      "Real lifecycle",
+    );
+    const activated = spawnSync(
+      process.execPath,
+      [
+        "scripts/resume.mjs",
+        "activate",
+        "WO-999",
+        "docs/work-orders/WO-999-fixture.md",
+      ],
+      { cwd: root, encoding: "utf8" },
+    );
+    assert.equal(activated.status, 0, activated.stderr);
+    const segment = join(root, "docs/control/orders/WO-999.jsonl");
+    const events = () =>
+      readFileSync(segment, "utf8").trim().split("\n").map(JSON.parse);
+    const prompt = (text) =>
+      invoke(
+        root,
+        "session",
+        input(root, "UserPromptSubmit", { session_id: session, prompt: text }),
+        false,
+        { CLAUDE_EFFORT: "high" },
+      );
+    assert.match(
+      prompt("operator override: restore the stale writer reservation")
+        .systemMessage,
+      /operator-control override/,
+    );
+    prompt("remove docs/control/local/harness/writer/stale.json");
+    const exited = prompt("operator override: off");
+    assert.match(
+      exited.systemMessage,
+      /operator-control exited; ordinary workflow checks resume/,
+    );
+    assert.match(
+      exited.systemMessage,
+      /Recorded OperatorOverrideRecorded for WO-999 at ordinal 2/,
+    );
+    const record = events().at(-1);
+    assert.equal(record.type, "OperatorOverrideRecorded");
+    assert.deepEqual(record.bypassed, ["dotln-hook-enforcement"]);
+    assert.deepEqual(record.effects, ["unobserved"]);
+    assert.match(
+      record.reason,
+      /recorded by the session hook at operator override: off/,
+    );
+    assert.deepEqual(
+      [record.actor.harness, record.actor.effort, record.actor.source],
+      ["claude-code", "high", "claude-session-readback"],
+    );
+    assert.match(record.capture, /^docs\/intake\/operator-override\//);
+    const words = readFileSync(join(root, record.capture));
+    assert.equal(
+      record.captureHash,
+      `sha256:${createHash("sha256").update(words).digest("hex")}`,
+    );
+    assert.match(
+      String(words),
+      /operator override: restore the stale writer reservation/,
+    );
+    assert.match(
+      String(words),
+      /remove docs\/control\/local\/harness\/writer\/stale\.json/,
+    );
+    const recorded = events().length;
+    // Leaving analysis records nothing: it was never an override.
+    prompt("analysis: explain the lock");
+    assert.doesNotMatch(
+      prompt("analysis: off").systemMessage ?? "",
+      /OperatorOverrideRecorded/,
+    );
+    assert.equal(events().length, recorded);
+    // A runtime that cannot load prints the exact command, never withholds the exit.
+    prompt("operator override: second recovery");
+    const hook = join(root, ".claude/hooks/session.mjs");
+    const original = readFileSync(hook, "utf8");
+    writeFileSync(
+      hook,
+      original.replaceAll(
+        "packages/skeleton/dist/src/",
+        "packages/skeleton/dist/missing/",
+      ),
+    );
+    try {
+      const advisory = prompt("operator override: off");
+      assert.match(advisory.systemMessage, /operator-control exited/);
+      assert.match(
+        advisory.systemMessage,
+        /OperatorOverrideRecorded was not appended/,
+      );
+      assert.match(
+        advisory.hookSpecificOutput.additionalContext,
+        /npm run resume -- override-record --bypassed dotln-hook-enforcement --effects <what the recovery changed, or none> --reason 'operator override from /,
+      );
+    } finally {
+      writeFileSync(hook, original);
+    }
+    assert.equal(events().length, recorded);
+  } finally {
+    removeFixture(root, { recursive: true });
+  }
+});
+
+test("WO-158 VER-001 F3: two override exits in one second keep two captures, each naming the words its digest stored", () => {
+  const root = fixture();
+  const session = "wo158-override-same-second";
+  // A preload pins every hook process of this case to one instant, so both
+  // exits form the same capture name; it drops NODE_OPTIONS so the lifecycle
+  // the hook spawns keeps a real clock.
+  const preload = join(dirname(root), `${session}-freeze-clock.mjs`);
+  try {
+    for (const path of [
+      "scripts/resume.mjs",
+      "scripts/work-orders.mjs",
+      "scripts/lib",
+      "packages/skeleton/src",
+    ])
+      cpSync(join(sourceRoot, path), join(root, path), { recursive: true });
+    rmSync(join(root, "docs/control/orders/WO-999.jsonl"));
+    write(
+      root,
+      "docs/work-orders/WO-999-fixture.md",
+      "# WO-999 — Fixture\n\n**Model:** fixture.\n**Effort:** executor any; verifier any; reviewer any.\n**Objective:** exercise same-second override records.\n",
+    );
+    write(
+      root,
+      "docs/planning/sequence.md",
+      "<!-- dotln-work-order-sequence:start -->\n- WO-999 — Fixture\n<!-- dotln-work-order-sequence:end -->\n",
+    );
+    write(
+      root,
+      ".gitignore",
+      "node_modules/\n**/dist/\ndocs/control/local/\ndocs/intake/**\n",
+    );
+    const pkg = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
+    pkg.scripts["work-orders"] = "node scripts/work-orders.mjs";
+    write(root, "package.json", json(pkg));
+    git(root, "add", ".");
+    git(
+      root,
+      "-c",
+      "user.name=Fixture",
+      "-c",
+      "user.email=fixture@example.invalid",
+      "-c",
+      "commit.gpgsign=false",
+      "commit",
+      "-qm",
+      "Real lifecycle",
+    );
+    const activated = spawnSync(
+      process.execPath,
+      [
+        "scripts/resume.mjs",
+        "activate",
+        "WO-999",
+        "docs/work-orders/WO-999-fixture.md",
+      ],
+      { cwd: root, encoding: "utf8" },
+    );
+    assert.equal(activated.status, 0, activated.stderr);
+    writeFileSync(
+      preload,
+      [
+        "const frozen = Number(process.env.DOTLN_FIXTURE_FROZEN_MS);",
+        "const Real = Date;",
+        "globalThis.Date = class FrozenDate extends Real {",
+        "  constructor(...args) { super(...(args.length ? args : [frozen])); }",
+        "  static now() { return frozen; }",
+        "};",
+        "delete process.env.NODE_OPTIONS;",
+        "",
+      ].join("\n"),
+    );
+    const frozen = String(Date.now());
+    const events = () =>
+      readFileSync(join(root, "docs/control/orders/WO-999.jsonl"), "utf8")
+        .trim()
+        .split("\n")
+        .map(JSON.parse);
+    const prompt = (text) =>
+      invoke(
+        root,
+        "session",
+        input(root, "UserPromptSubmit", { session_id: session, prompt: text }),
+        false,
+        {
+          CLAUDE_EFFORT: "high",
+          DOTLN_FIXTURE_FROZEN_MS: frozen,
+          NODE_OPTIONS: `--import ${pathToFileURL(preload).href}`,
+        },
+      );
+    for (const [cycle, ordinal] of [
+      ["first", 2],
+      ["second", 3],
+    ]) {
+      assert.match(
+        prompt(`operator override: ${cycle} recovery`).systemMessage,
+        /operator-control override/,
+      );
+      prompt(`${cycle} words`);
+      assert.match(
+        prompt("operator override: off").systemMessage,
+        new RegExp(
+          `Recorded OperatorOverrideRecorded for WO-999 at ordinal ${ordinal}`,
+        ),
+      );
+    }
+    const records = events().filter(
+      (event) => event.type === "OperatorOverrideRecorded",
+    );
+    assert.equal(records.length, 2);
+    const exitOf = (record) => /to (\S+); recorded/.exec(record.reason)?.[1];
+    assert.ok(exitOf(records[0]));
+    assert.equal(exitOf(records[0]), exitOf(records[1]), "one exit instant");
+    assert.notEqual(records[0].capture, records[1].capture);
+    assert.equal(`${records[0].capture.slice(0, -3)}-2.md`, records[1].capture);
+    for (const [record, own, other] of [
+      [records[0], /first words/, /second words/],
+      [records[1], /second words/, /first words/],
+    ]) {
+      const bytes = readFileSync(join(root, record.capture));
+      assert.equal(
+        record.captureHash,
+        `sha256:${createHash("sha256").update(bytes).digest("hex")}`,
+      );
+      assert.match(String(bytes), own);
+      assert.doesNotMatch(String(bytes), other);
+    }
+  } finally {
+    rmSync(preload, { force: true });
+    removeFixture(root, { recursive: true });
+  }
+});
+
 test("WO-135 generated planning hooks refuse repository code paths and preserve documents, scratch and override", () => {
   const root = fixture();
   const scratch = realpathSync(
@@ -4648,8 +5237,8 @@ test("WO-144 unreadable grants advise once and preserve all four existing refusa
       writeFileSync(
         path,
         readFileSync(path, "utf8").replace(
-          /await runHarnessHook\([\s\S]*, feedbackBoundary(?:, input(?:, rawInput)?)?\);/,
-          `await runHarnessHook(${json(config).trim()}, feedbackBoundary, input, rawInput);`,
+          /await runHarnessHook\([\s\S]*, feedbackBoundary(?:, input(?:, rawInput(?:, control)?)?)?\);/,
+          `await runHarnessHook(${json(config).trim()}, feedbackBoundary, input, rawInput, control);`,
         ),
       );
     }

@@ -3321,6 +3321,57 @@ else {
       },
     );
     await check(
+      "WO-158 continuation admits one release label appended to a title filed without the placeholder, and nothing else",
+      async () => {
+        const repo = makeRepo(parent, "unlabelled-release-assignment");
+        await writeDirectReceipt(repo);
+        commit(repo, "record reviewed plan");
+        const path = orderPath("WO-901");
+        const original = read(repo, path);
+        assert.ok(original.startsWith("# WO-901 — Fixture\n"));
+        write(
+          repo,
+          path,
+          original.replace("# WO-901 — Fixture", "# WO-901 — Fixture (v1.2.3)"),
+        );
+        const assigned = await checkPlanGate(repo);
+        assert.deepEqual(
+          assigned.continuation.workspaceUpdates.map(({ kind, version }) => [
+            kind,
+            version,
+          ]),
+          [["release-assignment", "v1.2.3"]],
+        );
+        for (const title of [
+          "# WO-901 — Fixture(v1.2.3)",
+          "# WO-901 — Fixture (v01.2.3)",
+          "# WO-901 — Fixture (v1.2.3) (v1.2.4)",
+          "# WO-901 — Fixture renamed (v1.2.3)",
+        ]) {
+          write(repo, path, original.replace("# WO-901 — Fixture", title));
+          await assert.rejects(
+            checkPlanGate(repo),
+            /matching the current subject/u,
+            title,
+          );
+        }
+        write(repo, path, original);
+        // amend-order sees a label-only change as no amendment (review finding).
+        const { executionAmendmentSource } =
+          await import("./lib/plan-continuation.mjs");
+        assert.equal(
+          executionAmendmentSource(
+            original.replace(
+              "# WO-901 — Fixture",
+              "# WO-901 — Fixture (v1.2.3)",
+            ),
+            original,
+          ),
+          executionAmendmentSource(original),
+        );
+      },
+    );
+    await check(
       "WO-042 continuation rejects planning edits and forged execution classifications in both HEAD and the workspace",
       async () => {
         const repo = makeRepo(parent, "continuation-refusals");

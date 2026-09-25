@@ -352,6 +352,63 @@ test("intent CLI files a reviewable draft without activation, including hostile 
     assert.equal(readControl(root).orders.get(row.id).state.phase, "active");
   }));
 
+test("WO-158 an allocated order never activated is withdrawn from phase none", async () =>
+  fixture(async (root) => {
+    await materializeOrder(compiled(), provenance("withdrawn-draft"), {
+      root,
+      activate: false,
+    });
+    assert.equal(readControl(root).orders.get("WO-900").state.phase, "none");
+    write(
+      root,
+      ".gitignore",
+      `${readFileSync(join(root, ".gitignore"), "utf8")}${docRelative(root, "intake")}/**\n`,
+    );
+    const capture = docRelative(root, "intake", "notes/withdraw.md");
+    const words = "Operator: abandon the draft.\n";
+    write(root, capture, words);
+    const status = () =>
+      JSON.parse(
+        run(root, "scripts/resume.mjs", [
+          "status",
+          "--json",
+          "--work-order",
+          "WO-900",
+        ]).stdout,
+      );
+    assert.deepEqual(status().legalOffRamps, ["withdraw"]);
+    run(root, "scripts/resume.mjs", [
+      "withdraw",
+      "--work-order",
+      "WO-900",
+      "--disposition",
+      "abandoned",
+      "--reason",
+      "the draft is no longer wanted",
+      "--capture",
+      capture,
+      "--capture-hash",
+      `sha256:${createHash("sha256").update(words).digest("hex")}`,
+      "--harness",
+      "human",
+      "--harness-version",
+      "not-applicable",
+      "--model",
+      "human",
+      "--effort",
+      "unknown",
+      "--source",
+      "operator-attested",
+    ]);
+    assert.equal(status().phase, "withdrawn");
+    assert.equal(status().withdrawal.disposition, "abandoned");
+    assert.deepEqual(
+      eventsForOrder(readControl(root), "WO-900").map((event) => event.type),
+      ["WorkOrderIdentityAllocated", "WorkOrderWithdrawn"],
+    );
+    assert.equal(readIndex(root, []).rows[0].section, "Closed");
+  }));
+
 test("typed blockers retain a recoverable allocation and ordinary activation refusal", async () =>
   fixture(async (root) => {
     await assert.rejects(

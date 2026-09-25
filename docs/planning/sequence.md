@@ -5,7 +5,8 @@ and refutation subject. It grants no activation authority. For rationale see
 [the planning map](work-order-map.md). Closed entries leave the sequence at the next
 planning pass (operator direction, 2026-09-22); the generated work-order
 index's Closed section is their record, and the map and archive keep their
-rationale.
+rationale. A withdrawn entry (WO-158) is settled the same way and listed in
+that section under its disposition.
 
 Planning entry returns the pending [follow-up register](followups.json) in
 bounded pages. Use `npm run plan -- followups` for its current counts, source

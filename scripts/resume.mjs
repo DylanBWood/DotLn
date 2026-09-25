@@ -9,7 +9,7 @@ import {
   writeFileSync,
 } from "node:fs";
 import { createCheckpoint } from "./lib/checkpoint.mjs";
-import { dirname, join, resolve } from "node:path";
+import { dirname, join, posix, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 
 import {
@@ -71,11 +71,23 @@ import { parseRepositoryDeclaration } from "./lib/work-order-repository.mjs";
 
 import {
   CONTROL_LOG_SCHEMA_VERSION,
+  CORRECTABLE_ATTESTATION_FIELDS,
+  CORRECTABLE_FIELDS,
+  CRITERION_ID,
   DEFAULT_CONTROL_PATHS,
+  WITHDRAWAL_DISPOSITIONS,
   controlPaths,
   fold,
   parseControlEvents,
 } from "./lib/control.mjs";
+import {
+  captureTiming,
+  executorOf,
+  recordingSession,
+  requireCriterionLines,
+  requireOperatorCapture,
+  sha256Bytes,
+} from "./lib/off-ramps.mjs";
 import {
   readControl,
   controlFromSources,
@@ -185,6 +197,8 @@ const legalActions = (state) => {
       verified: ["final-review"],
       "final-review": ["final-review-result"],
       closed: ["release-close", "next", "activate"],
+      // Terminal: only a reactivation of a changed revision leaves it.
+      withdrawn: ["activate"],
     }[state.phase] ?? [];
   return state.phase === "ready-to-verify" &&
     state.failureSourceId &&
@@ -193,8 +207,41 @@ const legalActions = (state) => {
     : actions;
 };
 
+// WO-158 off-ramps sit beside the lifecycle's next actions: each records a
+// typed event in the phases listed and changes no phase except `withdraw`.
+const openPhases = [
+  "active",
+  "ready-to-verify",
+  "verifying",
+  "needs-fix",
+  "repairing",
+  "verified",
+  "final-review",
+];
+export const OFF_RAMP_PHASES = {
+  waive: ["verifying", "needs-fix", "repairing", "verified", "final-review"],
+  // Every phase but closed and withdrawn; `none` only for an order the log
+  // knows (an allocated derived order never activated).
+  withdraw: ["none", ...openPhases],
+  correct: openPhases,
+  "override-record": openPhases,
+};
+const legalOffRamps = (state) =>
+  state.workOrderId
+    ? Object.keys(OFF_RAMP_PHASES).filter((route) =>
+        OFF_RAMP_PHASES[route].includes(state.phase),
+      )
+    : [];
+
 const actorCommand = (action, positional = "") =>
   `npm run resume -- ${action}${positional ? ` ${positional}` : ""} ${actorFlagUsage}`;
+const captureUsage = "--capture <path> --capture-hash sha256:<digest>";
+const offRampPositional = {
+  waive: `<criterion> --reason <text> ${captureUsage}`,
+  withdraw: `--disposition ${WITHDRAWAL_DISPOSITIONS.join("|")} --reason <text> ${captureUsage}`,
+  correct: `<ordinal|report-path> --set <field>=<value> [--set <field>=<value>] --reason <text>`,
+  "override-record": `--bypassed <item[,item]> --effects <item[,item]> --reason <text> [${captureUsage}]`,
+};
 
 const commandFor = (action, workOrderId) => {
   const command =
@@ -210,11 +257,28 @@ const commandFor = (action, workOrderId) => {
       "final-review": "npm run resume -- final-review",
       "final-review-result": actorCommand("final-review-result", "pass|fail"),
       "release-close": "npm run release -- close WO-NNN --publish",
+      ...Object.fromEntries(
+        Object.entries(offRampPositional).map(([route, positional]) => [
+          route,
+          actorCommand(route, positional),
+        ]),
+      ),
     }[action] ?? `npm run resume -- ${action}`;
   return workOrderId && !["activate", "release-close"].includes(action)
     ? `${command} --work-order ${workOrderId}`
     : command;
 };
+
+// A withdrawn order's worktree already exists, so its one legal action is the
+// in-place activation of a changed revision, not a new worktree.
+const legalCommands = (state) =>
+  state.phase === "withdrawn"
+    ? [
+        `npm run resume -- activate ${state.workOrderId} ${state.workOrderPath} (after the changed authority gains a new **Reactivation (YYYY-MM-DD):** note)`,
+      ]
+    : legalActions(state).map((action) =>
+        commandFor(action, state.workOrderId),
+      );
 
 const checkpoint = (action, workOrderId) => {
   const warn = (detail) => {
@@ -242,15 +306,21 @@ const appendTransition = (action, event) => {
     { ...event, ...checkpoint(action, event.workOrderId) },
     segment,
   );
+  let ordinal;
   try {
-    const state = readControl(repoRoot).orders.get(event.workOrderId).state;
-    projectControlBeacon(repoRoot, state, recorded.recordedAt);
+    const after = readControl(repoRoot);
+    ordinal = after.eventSegments.get(segment)?.length;
+    const state = after.orders.get(event.workOrderId).state;
+    // The v2 codebook has no withdrawn phase (WO-158-D006): the previous
+    // beacon ages to stale rather than projecting a phase it cannot encode.
+    if (state.phase !== "withdrawn")
+      projectControlBeacon(repoRoot, state, recorded.recordedAt);
   } catch {
     process.stderr.write(
       "warning: host beacon projection unavailable; transition recorded, do not retry the transition\n",
     );
   }
-  return recorded;
+  return { record: recorded, ordinal };
 };
 
 const workOrderDeclaration = (
@@ -560,6 +630,11 @@ const completionActor = (action, args, state, role, positional = "") => {
 const renderDrift = (pairs) =>
   pairs.length <= 1 ? "none" : pairs.map(renderEffort).join(" -> ");
 
+// A recorded result names the bytes it judged, so a later path correction can
+// bind to the same report and never to another (WO-158 VER-001 F2).
+const reportDigest = (reportPath) =>
+  sha256Bytes(readFileSync(join(repoRoot, reportPath)));
+
 const requireReportActor = (reportPath, actor, reportKind) => {
   const lines = readFileSync(reportPath, "utf8")
     .split(/\r?\n/)
@@ -613,7 +688,36 @@ ${state.provenance ? `- Provenance: ${JSON.stringify(state.provenance)}\n` : ""}
 - Latest recordedAt: ${timing.recordedAt ?? "unknown"}
 ${renderElapsed(timing.elapsed)}- Latest checkpoint: ${state.latestCheckpointRef ? `${state.latestCheckpointSha} (restore: \`git checkout ${state.latestCheckpointRef} -- .\`)` : state.checkpointUnavailable ? "unavailable for the latest transition; do not use an older checkpoint" : "none"}
 - Legal next actions: ${legalActions(state).join(", ") || "none"}
-`;
+- Legal off-ramps: ${legalOffRamps(state).join(", ") || "none"}
+${renderOffRamps(state)}`;
+
+// Present only when recorded, so an order without off-ramps reads as before.
+const renderOffRamps = (state) =>
+  [
+    state.withdrawal &&
+      `- Withdrawal: ${state.withdrawal.disposition} at ordinal ${state.withdrawal.ordinal} — ${state.withdrawal.reason}`,
+    state.waivedCriteria?.length &&
+      `- Waived criteria: ${state.waivedCriteria.map((waiver) => `${waiver.criterionId} (ordinal ${waiver.ordinal})`).join(", ")}`,
+    state.corrections?.length &&
+      `- Corrections: ${state.corrections
+        .map(
+          (correction) =>
+            `ordinal ${correction.ordinal} corrects ordinal ${correction.subject.ordinal} (${Object.entries(
+              correction.fields,
+            )
+              .map(
+                ([name, value]) =>
+                  `${name} ${correction.previous?.[name] ?? "unrecorded"} -> ${value}`,
+              )
+              .join("; ")})`,
+        )
+        .join(", ")}`,
+    state.overrideRecords?.length &&
+      `- Override records: ${state.overrideRecords.map((record) => `ordinal ${record.ordinal} (bypassed ${record.bypassed.join(", ")}; effects ${record.effects.join(", ")})`).join(", ")}`,
+  ]
+    .filter(Boolean)
+    .map((line) => `${line}\n`)
+    .join("");
 
 const projectOrder = (state, events) => {
   return {
@@ -649,6 +753,11 @@ const projectOrder = (state, events) => {
         ? { unavailable: true }
         : null,
     legalNextActions: legalActions(state),
+    legalOffRamps: legalOffRamps(state),
+    waivedCriteria: state.waivedCriteria ?? [],
+    withdrawal: state.withdrawal ?? null,
+    corrections: state.corrections ?? [],
+    overrideRecords: state.overrideRecords ?? [],
   };
 };
 
@@ -682,13 +791,25 @@ export const statusProjection = (input, workOrder, dependencies = null) => {
       ...(row.state.provenance ? { provenance: row.state.provenance } : {}),
       phase: row.state.phase,
       latestVerdict: row.state.latestVerdict ?? null,
+      ...(row.state.withdrawal
+        ? { withdrawal: row.state.withdrawal.disposition }
+        : {}),
       ...controlTimeProjection(eventsForOrder(control, order)),
     })),
   };
 };
 
-const render = (control, latestClosed, segments = storage) => {
-  const ids = [...openOrders(control), ...(latestClosed ? [latestClosed] : [])];
+// A withdrawn order is not open, yet its own worktree's projection names it.
+const render = (control, latestClosed, segments = storage, preferred) => {
+  const withdrawn =
+    preferred && control.orders.get(preferred)?.state.phase === "withdrawn"
+      ? [preferred]
+      : [];
+  const ids = [
+    ...openOrders(control),
+    ...withdrawn,
+    ...(latestClosed ? [latestClosed] : []),
+  ];
   const bodies = ids.length
     ? ids.map(
         (id) =>
@@ -702,10 +823,12 @@ const render = (control, latestClosed, segments = storage) => {
 // changing any segment. Ordinary status remains read-only.
 export function refreshControlProjection(root) {
   const control = readControl(root);
+  const branch = branchWorkOrder(root);
   const body = render(
     control,
-    latestClosedOrder(control, root, "HEAD", branchWorkOrder(root)),
+    latestClosedOrder(control, root, "HEAD", branch),
     controlPaths(root),
+    branch,
   );
   const path = docPath(root, "control", "current.md");
   mkdirSync(dirname(path), { recursive: true });
@@ -749,12 +872,146 @@ const selectionArgs = (args) => {
 
 const requirePhase = (state, ...phases) => {
   if (phases.includes(state.phase)) return;
-  const commands = legalActions(state).map((action) =>
-    commandFor(action, state.workOrderId),
-  );
+  const commands = legalCommands(state);
   throw new Error(
     `cannot perform action in phase ${state.phase}; run: ${commands.join(" or ") || "no command is currently legal"}`,
   );
+};
+
+const requireOffRamp = (state, route) => {
+  if (legalOffRamps(state).includes(route)) return;
+  const commands = legalCommands(state);
+  throw new Error(
+    `${route} is not legal in phase ${state.phase}; it is legal in ${OFF_RAMP_PHASES[route].join(", ")}. Legal off-ramps here: ${legalOffRamps(state).join(", ") || "none"}; run: ${commands.join(" or ") || "no command is currently legal"}`,
+  );
+};
+
+// Route flags beside the actor flags; everything unrecognized is left for
+// parseActor, whose refusal prints the route's full usage.
+const routeArgs = (route, args, spec) => {
+  const usage = () => new Error(`usage: ${commandFor(route)}`);
+  const values = new Map();
+  const actorArgs = [];
+  for (let index = 0; index < args.length; index += 1) {
+    const flag = args[index];
+    if (!Object.hasOwn(spec, flag)) {
+      actorArgs.push(flag);
+      continue;
+    }
+    const value = args[index + 1];
+    index += 1;
+    if (
+      typeof value !== "string" ||
+      !value.trim() ||
+      value.startsWith("--") ||
+      /[\u0000-\u001F\u007F-\u009F\u2028\u2029]/u.test(value)
+    )
+      throw usage();
+    if (spec[flag] === "many")
+      values.set(flag, [...(values.get(flag) ?? []), value]);
+    else if (values.has(flag)) throw usage();
+    else values.set(flag, value);
+  }
+  for (const [flag, kind] of Object.entries(spec))
+    if (kind !== "optional" && kind !== "many" && !values.has(flag))
+      throw usage();
+  return { values, actorArgs };
+};
+
+const routeActor = (route, actorArgs) =>
+  parseActor(route, actorArgs, offRampPositional[route]);
+
+const routeCapture = (route, values) => {
+  try {
+    return requireOperatorCapture(
+      repoRoot,
+      values.get("--capture"),
+      values.get("--capture-hash"),
+    );
+  } catch (error) {
+    throw new Error(`${route} ${error.message}`);
+  }
+};
+
+const authorityHash = (state, workOrderPath = state.workOrderPath) =>
+  sha256Bytes(
+    readFileSync(
+      workOrderAuthorityPath(repoRoot, state.workOrderId, workOrderPath),
+    ),
+  );
+
+// A note's date is a calendar date; the digit shape alone admitted 9999-99-99
+// (WO-158 VER-001 F1).
+const calendarDate = (date) => {
+  const parsed = new Date(`${date}T00:00:00.000Z`);
+  return (
+    !Number.isNaN(parsed.getTime()) &&
+    parsed.toISOString().slice(0, 10) === date
+  );
+};
+const reactivationNotes = (text) =>
+  [
+    ...text.matchAll(
+      /^\*\*Reactivation \((\d{4}-\d{2}-\d{2})\):\*\*[ \t]+\S[^\r\n]*/gmu,
+    ),
+  ].map((match) => ({
+    date: match[1],
+    valid: calendarDate(match[1]),
+    digest: sha256Bytes(match[0]),
+  }));
+
+// `withdrawn` is left only by a changed revision that says why: a reactivation
+// note the withdrawn revision did not hold, dated on or after the withdrawal
+// (WO-158 criterion 3).
+const requireReactivation = (state, workOrderPath) => {
+  const {
+    disposition,
+    ordinal,
+    orderHash,
+    recordedAt,
+    reactivationNotes: held,
+  } = state.withdrawal;
+  const path = workOrderAuthorityPath(
+    repoRoot,
+    state.workOrderId,
+    workOrderPath,
+  );
+  const since = recordedAt.slice(0, 10);
+  const refusal = `${state.workOrderId} is withdrawn (${disposition}) at ordinal ${ordinal}; activate requires a changed order revision carrying a new reactivation note (**Reactivation (YYYY-MM-DD):** <why>) dated ${since} or later`;
+  if (authorityHash(state, workOrderPath) === orderHash)
+    throw new Error(`${refusal}; ${workOrderPath} is unchanged`);
+  const notes = reactivationNotes(readFileSync(path, "utf8")).filter(
+    ({ digest }) => !(held ?? []).includes(digest),
+  );
+  const impossible = notes.find(({ valid }) => !valid);
+  if (impossible)
+    throw new Error(
+      `${refusal}; ${workOrderPath} dates a new note ${impossible.date}, which is not a calendar date`,
+    );
+  if (!notes.some(({ date }) => date >= since))
+    throw new Error(
+      `${refusal}; ${workOrderPath} has ${notes.length ? `new notes dated only before ${since}` : "no new note"}`,
+    );
+};
+
+// The numbered acceptance criteria an order declares, or null when its
+// authority has no such list to check against.
+const declaredCriteria = (state) => {
+  const text = readFileSync(
+    workOrderAuthorityPath(repoRoot, state.workOrderId, state.workOrderPath),
+    "utf8",
+  );
+  const start = text.search(
+    /^(?:\*\*Acceptance criteria\b[^\n]*|#{2,4} Acceptance criteria\b[^\n]*)$/imu,
+  );
+  if (start < 0) return null;
+  const ids = [];
+  for (const line of text.slice(start).split(/\r?\n/u).slice(1)) {
+    if (/^(?:#{1,4} |\*\*[^*]+(?::\*\*|\*\*$))/u.test(line)) break;
+    const item = /^(\d{1,4})\.\s/u.exec(line);
+    if (item) ids.push(item[1]);
+  }
+  return ids.length ? ids : null;
 };
 
 /**
@@ -829,7 +1086,7 @@ export const main = async (argv = process.argv.slice(2)) => {
     case "status": {
       if (args.length > 1 || (args.length === 1 && args[0] !== "--json"))
         throw new Error("usage: resume status [--json]");
-      const rendered = render(control, latestClosed);
+      const rendered = render(control, latestClosed, storage, branch);
       warnIfProjectionDisagrees(rendered);
       message =
         args[0] === "--json"
@@ -877,21 +1134,21 @@ export const main = async (argv = process.argv.slice(2)) => {
       if (!recorded)
         throw new Error(
           `no dispatch is recorded in phase ${state.phase}; run: ${
-            legalActions(state)
-              .map((action) => commandFor(action, state.workOrderId))
-              .join(" or ") || "no command is currently legal"
+            legalCommands(state).join(" or ") || "no command is currently legal"
           }`,
         );
       message = recorded(state);
       break;
     }
     case "activate": {
-      requirePhase(state, "none", "closed");
+      requirePhase(state, "none", "closed", "withdrawn");
       const [workOrderId, workOrderPath] = args;
       if (!/^WO-\d{3}$/.test(workOrderId ?? "") || !workOrderPath)
         throw new Error(
           "usage: resume activate WO-NNN docs/work-orders/<file>.md",
         );
+      if (state.phase === "withdrawn")
+        requireReactivation(state, workOrderPath);
       const declaration = workOrderDeclaration(workOrderPath, { workOrderId });
       if (state.allocation) {
         if (workOrderPath !== state.workOrderPath)
@@ -1011,6 +1268,12 @@ export const main = async (argv = process.argv.slice(2)) => {
         "verification",
       );
       requireReceiptCostLine(repoRoot, state.latestVerificationPath);
+      requireCriterionLines(
+        repoRoot,
+        state.latestVerificationPath,
+        state,
+        verdict,
+      );
       const evidence = await requireLifecycleEvidence(
         repoRoot,
         action,
@@ -1023,6 +1286,7 @@ export const main = async (argv = process.argv.slice(2)) => {
         workOrderId: state.workOrderId,
         verificationId: state.latestVerificationId,
         reportPath: state.latestVerificationPath,
+        reportHash: reportDigest(state.latestVerificationPath),
         verdict,
         actor,
       });
@@ -1120,6 +1384,7 @@ export const main = async (argv = process.argv.slice(2)) => {
         "final-review",
       );
       requireReceiptCostLine(repoRoot, state.finalReviewPath);
+      requireCriterionLines(repoRoot, state.finalReviewPath, state, verdict);
       const evidence = await requireLifecycleEvidence(
         repoRoot,
         action,
@@ -1132,6 +1397,7 @@ export const main = async (argv = process.argv.slice(2)) => {
         workOrderId: state.workOrderId,
         finalReviewId: state.finalReviewId,
         reportPath: state.finalReviewPath,
+        reportHash: reportDigest(state.finalReviewPath),
         verdict,
         actor,
       });
@@ -1139,6 +1405,363 @@ export const main = async (argv = process.argv.slice(2)) => {
         verdict === "pass"
           ? `Recorded final review pass; commit the reviewed state, then run npm run worktree -- publish ${state.workOrderId} --title "<title>" --body-file <contained-reviewed-body-path>.`
           : "Recorded final review failure; return to bounded repair.";
+      break;
+    }
+    case "waive": {
+      requireOffRamp(state, action);
+      const [criterionId, ...rest] = args;
+      if (!CRITERION_ID.test(criterionId ?? ""))
+        throw new Error(`usage: ${commandFor(action)}`);
+      const { values, actorArgs } = routeArgs(action, rest, {
+        "--reason": "one",
+        "--capture": "one",
+        "--capture-hash": "one",
+      });
+      const actor = routeActor(action, actorArgs);
+      const declared = declaredCriteria(state);
+      if (declared && !declared.includes(criterionId))
+        throw new Error(
+          `waive refused: ${state.workOrderPath} declares acceptance criteria ${declared.join(", ")}, not ${criterionId}`,
+        );
+      const prior = state.waivedCriteria?.find(
+        (waiver) => waiver.criterionId === criterionId,
+      );
+      if (prior)
+        throw new Error(
+          `criterion ${criterionId} of ${state.workOrderId} is already waived by ordinal ${prior.ordinal}`,
+        );
+      // A waiver is the operator's act on an order's standard; the session
+      // that executes the order never records one for it (WO-158 criterion 2).
+      const executor = executorOf(repoRoot, state.workOrderId);
+      if (executor)
+        throw new Error(
+          `waive refused: ${executor}, and the executor cannot record a waiver of its own order's criterion. The operator's words are recorded from the operator's terminal, a verifier or a reviewer session.`,
+        );
+      const session = recordingSession(repoRoot);
+      const { capture, captureHash } = routeCapture(action, values);
+      const { ordinal } = appendTransition(action, {
+        type: "CriterionWaived",
+        workOrderId: state.workOrderId,
+        criterionId,
+        reason: values.get("--reason"),
+        capture,
+        captureHash,
+        recordingSession: {
+          role: session.role,
+          capture: captureTiming(repoRoot, capture, session),
+        },
+        actor,
+      });
+      message = `Recorded CriterionWaived for ${state.workOrderId} criterion ${criterionId} at ordinal ${ordinal}. The waiver neither passes nor fails the criterion: a report judging it records \`**Criterion ${criterionId}:** unmet, waived by ${ordinal}\`.`;
+      break;
+    }
+    case "withdraw": {
+      requireOffRamp(state, action);
+      const { values, actorArgs } = routeArgs(action, args, {
+        "--disposition": "one",
+        "--reason": "one",
+        "--capture": "one",
+        "--capture-hash": "one",
+      });
+      const disposition = values.get("--disposition");
+      if (!WITHDRAWAL_DISPOSITIONS.includes(disposition))
+        throw new Error(`usage: ${commandFor(action)}`);
+      const actor = routeActor(action, actorArgs);
+      const { capture, captureHash } = routeCapture(action, values);
+      const session = recordingSession(repoRoot);
+      const { ordinal } = appendTransition(action, {
+        type: "WorkOrderWithdrawn",
+        workOrderId: state.workOrderId,
+        disposition,
+        reason: values.get("--reason"),
+        capture,
+        captureHash,
+        orderHash: authorityHash(state),
+        reactivationNotes: reactivationNotes(
+          readFileSync(
+            workOrderAuthorityPath(
+              repoRoot,
+              state.workOrderId,
+              state.workOrderPath,
+            ),
+            "utf8",
+          ),
+        ).map(({ digest }) => digest),
+        recordingSession: {
+          role: session.role,
+          capture: captureTiming(repoRoot, capture, session),
+        },
+        actor,
+      });
+      message = `Recorded WorkOrderWithdrawn for ${state.workOrderId} (${disposition}) at ordinal ${ordinal}. Phase withdrawn is terminal: it claims no success, a typed dependency on it is unmet, and only activate of a changed revision with a dated reactivation note leaves it.`;
+      break;
+    }
+    case "correct": {
+      requireOffRamp(state, action);
+      const [subjectArg, ...rest] = args;
+      if (!subjectArg || subjectArg.startsWith("--"))
+        throw new Error(`usage: ${commandFor(action)}`);
+      const { values, actorArgs } = routeArgs(action, rest, {
+        "--set": "many",
+        "--reason": "one",
+      });
+      const fields = {};
+      for (const assignment of values.get("--set") ?? []) {
+        const split = assignment.indexOf("=");
+        const name = split > 0 ? assignment.slice(0, split) : assignment;
+        const value = split > 0 ? assignment.slice(split + 1) : "";
+        if (name === "verdict")
+          throw new Error(
+            "correct refused: a verdict is never corrected. A wrong verification verdict takes a later VER-NNN; a wrong final-review verdict takes a failing final review.",
+          );
+        if (!CORRECTABLE_FIELDS.includes(name))
+          throw new Error(
+            `correct refused: ${name} is not a correctable field (${CORRECTABLE_FIELDS.join(", ")}); report bytes never change, and a report is superseded only by a later report.`,
+          );
+        if (!value.trim() || Object.hasOwn(fields, name))
+          throw new Error(`usage: ${commandFor(action)}`);
+        if (
+          name === "effort" &&
+          ["ultra", "ultra code", "ultracode"].includes(value.toLowerCase())
+        )
+          throw new Error(
+            `correct refused: ${value} is a supplied spelling, not a recorded effort; correct to the recorded level (xhigh)`,
+          );
+        fields[name] = value;
+      }
+      if (!Object.keys(fields).length)
+        throw new Error(`usage: ${commandFor(action)}`);
+      const actor = routeActor(action, actorArgs);
+      const segment = control.locations.get(state.workOrderId);
+      const segmentEvents = control.eventSegments.get(segment) ?? [];
+      const own = (event) => event?.workOrderId === state.workOrderId;
+      let ordinal;
+      if (/^[1-9]\d*$/u.test(subjectArg)) {
+        ordinal = Number(subjectArg);
+        if (!own(segmentEvents[ordinal - 1]))
+          throw new Error(
+            `correct refused: ordinal ${subjectArg} is not an event of ${state.workOrderId} in ${segment}`,
+          );
+      } else {
+        // A report path names the event whose current (corrected) path it is.
+        const effectivePath = (event, index) =>
+          (state.corrections ?? [])
+            .filter(
+              (correction) =>
+                correction.subject.ordinal === index + 1 &&
+                correction.fields.reportPath !== undefined,
+            )
+            .at(-1)?.fields.reportPath ?? event.reportPath;
+        const matches = segmentEvents
+          .map((event, index) => ({ event, ordinal: index + 1, index }))
+          .filter(
+            ({ event, index }) =>
+              own(event) && effectivePath(event, index) === subjectArg,
+          );
+        ordinal = (
+          matches.filter(({ event }) => event.actor).at(-1) ?? matches.at(-1)
+        )?.ordinal;
+        if (ordinal === undefined)
+          throw new Error(
+            `correct refused: no event of ${state.workOrderId} records report ${subjectArg}`,
+          );
+      }
+      const activation = segmentEvents.findLastIndex(
+        (event) => own(event) && event.type === "WorkOrderActivated",
+      );
+      if (ordinal <= activation)
+        throw new Error(
+          `correct refused: ordinal ${ordinal} precedes ${state.workOrderId}'s current activation at ordinal ${activation + 1}`,
+        );
+      const subject = segmentEvents[ordinal - 1];
+      const effective = (name) => {
+        const latest = (state.corrections ?? [])
+          .filter(
+            (correction) =>
+              correction.subject.ordinal === ordinal &&
+              correction.fields[name] !== undefined,
+          )
+          .at(-1);
+        if (latest) return latest.fields[name];
+        return CORRECTABLE_ATTESTATION_FIELDS.includes(name)
+          ? subject.actor?.[name]
+          : subject[name];
+      };
+      const previous = {};
+      for (const [name, value] of Object.entries(fields)) {
+        const current = effective(name);
+        if (current === undefined)
+          throw new Error(
+            `correct refused: ordinal ${ordinal} (${subject.type}) records no ${name}`,
+          );
+        if (current === value)
+          throw new Error(
+            `correct refused: ordinal ${ordinal} already records ${name} ${value}`,
+          );
+        previous[name] = current;
+      }
+      let judgedReportHash;
+      if (fields.reportPath !== undefined) {
+        // Only where a recorded result's own report lives changes: never which
+        // report a verdict rests on, and never a pending allocation, whose
+        // cost line and criterion lines are judged at its result.
+        const reportId = subject.verificationId ?? subject.finalReviewId;
+        const kind =
+          subject.finalReviewId !== undefined
+            ? "finalReviews"
+            : "verifications";
+        if (
+          !["VerificationCompleted", "FinalReviewCompleted"].includes(
+            subject.type,
+          )
+        )
+          throw new Error(
+            `correct refused: a report path is corrected only on a recorded result, not on ${subject.type}`,
+          );
+        if (
+          posix.normalize(fields.reportPath) !== fields.reportPath ||
+          posix.basename(fields.reportPath) !== `${reportId}.md`
+        )
+          throw new Error(
+            `correct refused: ${fields.reportPath} must be a normalized path to ${reportId}.md; a verdict never moves to another report`,
+          );
+        if (
+          !containedRegularFile(
+            join(repoRoot, fields.reportPath),
+            docPath(repoRoot, kind, state.workOrderId),
+          )
+        )
+          throw new Error(
+            `correct refused: ${fields.reportPath} is not a contained report under ${docRelative(repoRoot, kind, state.workOrderId)}`,
+          );
+        // The bytes the verdict judged: the result's recorded digest, or for a
+        // result recorded before digests, the report at its current path. A
+        // different report takes its own judgment (VER-001 F2).
+        const candidateHash = reportDigest(fields.reportPath);
+        let judgedFrom = `ordinal ${ordinal}'s recorded report digest`;
+        judgedReportHash = subject.reportHash;
+        if (judgedReportHash === undefined) {
+          const currentPath = effective("reportPath");
+          if (
+            !containedRegularFile(
+              join(repoRoot, currentPath),
+              docPath(repoRoot, kind, state.workOrderId),
+            )
+          )
+            throw new Error(
+              `correct refused: ordinal ${ordinal} records no report digest and ${currentPath} is absent, so the bytes its verdict judged cannot be established; a report path moves only to the same bytes`,
+            );
+          judgedReportHash = reportDigest(currentPath);
+          judgedFrom = currentPath;
+        }
+        if (candidateHash !== judgedReportHash)
+          throw new Error(
+            `correct refused: ${fields.reportPath} (${candidateHash}) holds different bytes from the report ordinal ${ordinal} judged (${judgedReportHash}, ${judgedFrom}); a verdict never rests on another report, and a different report takes its own judgment`,
+          );
+      }
+      if (
+        fields.checkpointRef !== undefined &&
+        !new RegExp(
+          `^refs/dotln/checkpoint/${state.workOrderId}/\\d+$`,
+          "u",
+        ).test(fields.checkpointRef)
+      )
+        throw new Error(
+          `correct refused: ${fields.checkpointRef} is not a ${state.workOrderId} checkpoint reference`,
+        );
+      if (
+        fields.checkpointSha !== undefined &&
+        !/^(?:[0-9a-f]{40}|[0-9a-f]{64})$/u.test(fields.checkpointSha)
+      )
+        throw new Error(
+          `correct refused: ${fields.checkpointSha} is not a commit id`,
+        );
+      if (
+        fields.checkpointRef !== undefined ||
+        fields.checkpointSha !== undefined
+      ) {
+        const ref = fields.checkpointRef ?? effective("checkpointRef");
+        const sha = fields.checkpointSha ?? effective("checkpointSha");
+        let resolved;
+        try {
+          resolved = runGit(repoRoot, [
+            "rev-parse",
+            "--verify",
+            `${ref}^{commit}`,
+          ]);
+        } catch {
+          resolved = undefined;
+        }
+        if (resolved !== sha)
+          throw new Error(
+            `correct refused: checkpoint ${ref} resolves to ${resolved ?? "nothing"}, not ${sha}`,
+          );
+      }
+      // The readback source keeps its WO-157 meaning: only the session that
+      // appended the event read its CLAUDE_EFFORT, so no correction asserts
+      // one (WO-157 VER-001 F3).
+      if (
+        (fields.source ?? effective("source")) === "claude-session-readback" &&
+        (fields.source !== undefined || fields.effort !== undefined)
+      )
+        throw new Error(
+          "correct refused: a correction never records a claude-session-readback; only the session that appended the event read its CLAUDE_EFFORT. Correct the effort together with --set source=operator-attested.",
+        );
+      const { ordinal: correctionOrdinal } = appendTransition(action, {
+        type: "RecordCorrected",
+        workOrderId: state.workOrderId,
+        subject: {
+          ordinal,
+          type: subject.type,
+          ...(subject.reportPath ? { reportPath: subject.reportPath } : {}),
+          ...(judgedReportHash ? { reportHash: judgedReportHash } : {}),
+        },
+        fields,
+        previous,
+        reason: values.get("--reason"),
+        actor,
+      });
+      message = `Recorded RecordCorrected for ${state.workOrderId} at ordinal ${correctionOrdinal}: ordinal ${ordinal} (${subject.type}) ${Object.entries(
+        fields,
+      )
+        .map(([name, value]) => `${name} ${previous[name]} -> ${value}`)
+        .join("; ")}. No verdict or report byte changed.`;
+      break;
+    }
+    case "override-record": {
+      requireOffRamp(state, action);
+      const { values, actorArgs } = routeArgs(action, args, {
+        "--bypassed": "one",
+        "--effects": "one",
+        "--reason": "one",
+        "--capture": "optional",
+        "--capture-hash": "optional",
+      });
+      const list = (flag) =>
+        values
+          .get(flag)
+          .split(",")
+          .map((item) => item.trim())
+          .filter(Boolean);
+      const bypassed = list("--bypassed");
+      const effects = list("--effects");
+      if (!bypassed.length || !effects.length)
+        throw new Error(`usage: ${commandFor(action)}`);
+      const actor = routeActor(action, actorArgs);
+      const captured =
+        values.has("--capture") || values.has("--capture-hash")
+          ? routeCapture(action, values)
+          : {};
+      const { ordinal } = appendTransition(action, {
+        type: "OperatorOverrideRecorded",
+        workOrderId: state.workOrderId,
+        bypassed,
+        effects,
+        reason: values.get("--reason"),
+        ...captured,
+        actor,
+      });
+      message = `Recorded OperatorOverrideRecorded for ${state.workOrderId} at ordinal ${ordinal}. The record is never a precondition for entering or leaving override.`;
       break;
     }
     case "next": {
@@ -1193,7 +1816,7 @@ export const main = async (argv = process.argv.slice(2)) => {
         "HEAD",
         branch ?? selected,
       );
-      project(render(control, latestClosed));
+      project(render(control, latestClosed, storage, branch));
       if (!["next", "release-close"].includes(action))
         await refreshExecutorIndex(repoRoot);
     }

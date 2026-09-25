@@ -49,8 +49,10 @@ import { harnessAuthorization } from "./reactor.js";
 import { personalFeedback } from "./loadouts/feedback.js";
 import {
   HarnessCommandRefused,
+  LIVE_GATE_READ_LIST,
   harnessToolEffects,
   invocationEffects,
+  liveGateReads,
   patchWriteTargets,
   shellRedirectTargets,
   shellWritePaths,
@@ -1547,7 +1549,7 @@ export function beginHarnessSession(
   const session: HarnessSession = {
     role,
     ...(control.workOrder ? { workOrder: control.workOrder } : {}),
-    ...(expected && control.phase !== "closed"
+    ...(expected && !["closed", "withdrawn"].includes(control.phase)
       ? { expectedEvent: expected }
       : {}),
     startedAt: new Date().toISOString(),
@@ -2129,6 +2131,9 @@ export function harnessFeedbackFacts(
   }
   if (input.hook_event_name !== "Stop" || !session.expectedEvent) return [];
   const control = harnessControl(root);
+  // WO-158: a withdrawal ends the order's completion and evidence duties; the
+  // session still reads what it wrote.
+  if (control.phase === "withdrawn" && handler !== "output-review") return [];
   if (handler === "complete-scope") {
     const events = localEvents(root, control.workOrder).slice(
       session.startingEventCount,
@@ -2673,6 +2678,40 @@ function planningWriteRefusal(
 export const harnessSessionScratch = (sessionId: string) =>
   join(tmpdir(), "dotln", digest(sessionId), "scratch");
 
+/**
+ * WO-158-D010 (FUP-9ac70adcd20de223): the scratchpad Claude Code prints at
+ * session start, /tmp/claude-<uid>/<project key>/<session id>/scratchpad.
+ * The project key is the transcript directory the host itself named, the
+ * segment before `<session id>.jsonl` or the session's subagent directory,
+ * so no sanitizing rule is guessed. null admits nothing.
+ */
+export function claudeHostScratchpad(
+  input: Pick<HarnessInput, "cwd" | "session_id" | "transcript_path">,
+): string | null {
+  const segments = input.transcript_path?.split("/") ?? [];
+  const at = segments.findIndex(
+    (segment) =>
+      segment === input.session_id || segment === `${input.session_id}.jsonl`,
+  );
+  const project = at > 0 ? segments[at - 1] : undefined;
+  if (
+    harnessInputHarness(input) !== "claude-code" ||
+    typeof process.getuid !== "function" ||
+    !/^[A-Za-z0-9-]{1,128}$/.test(input.session_id) ||
+    !project ||
+    !/^[A-Za-z0-9._-]{1,255}$/.test(project) ||
+    /^\.+$/.test(project)
+  )
+    return null;
+  return join(
+    "/tmp",
+    `claude-${process.getuid()}`,
+    project,
+    input.session_id,
+    "scratchpad",
+  );
+}
+
 function outsideWriteResponse(
   config: HookConfig,
   input: HarnessInput,
@@ -2748,7 +2787,7 @@ function outsideWriteResponse(
           ) && harnessAuthorization(envelope, effect, Date.now()).authorized
         );
       })
-      .map((grant) => {
+      .flatMap((grant) => {
         let path: string;
         switch (grant.kind) {
           case "system-temp":
@@ -2757,6 +2796,12 @@ function outsideWriteResponse(
           case "session-scratch":
             path = harnessSessionScratch(input.session_id);
             break;
+          case "host-scratchpad": {
+            const scratchpad = claudeHostScratchpad(input);
+            if (!scratchpad) return [];
+            path = scratchpad;
+            break;
+          }
           case "operator-root":
             path = grant.root;
             break;
@@ -2778,7 +2823,7 @@ function outsideWriteResponse(
             break;
           }
         }
-        return { ...grant, physical: prospectiveRealpath(path) };
+        return [{ ...grant, physical: prospectiveRealpath(path) }];
       });
     const grant = roots.find((candidate) =>
       withinRoot(candidate.physical, destination.physical),
@@ -2811,6 +2856,32 @@ function outsideWriteResponse(
   if (known.partial) unobserved();
   return effect ? { effect } : {};
 }
+
+/** WO-158 (WO-142-D012): a plain Git read runs programs the repository
+ * configures. The live-gate list admits one only while none is configured;
+ * the index stat refresh a status may take is the recorded residual. */
+function configuredGitPrograms(directory: string): boolean {
+  const configured = git(
+    directory,
+    [
+      "config",
+      "--get-regexp",
+      String.raw`^(core\.fsmonitor|diff\.external|diff\..+\.(command|textconv)|filter\..+\.(clean|smudge|process)|log\.showsignature|gpg\.program|gpg\..+\.program)$`,
+    ],
+    true,
+  );
+  return configured
+    .split("\n")
+    .filter(Boolean)
+    .some((line) => {
+      const [key, ...value] = line.split(" ");
+      return !(
+        ["core.fsmonitor", "log.showsignature"].includes(key!) &&
+        ["false", "no", "off", "0", ""].includes(value.join(" ").toLowerCase())
+      );
+    });
+}
+const LIVE_GATE_READ_TEXT = `Read-only commands stay admitted while it runs: ${LIVE_GATE_READ_LIST}, each stage without a redirect operand, heredoc or unquoted glob; a Git read carries --no-pager, names no %G signature placeholder and needs a repository that configures no fsmonitor, external diff, textconv, filter or signature program.`;
 
 /** All generated pre-tool boundaries share this guard. There is no agent-
  * supplied gate-child bypass; gate-owned subprocess writes do not dispatch tools.
@@ -2859,6 +2930,18 @@ function activeGateWriteRefusal(
         (managedUsageCommand(input, session) || gateStopCommand(command))
       )
         return null;
+      // WO-158 criterion 6: the fixed read-only list, judged stage by stage.
+      const reads =
+        directory && typeof command === "string"
+          ? liveGateReads(command)
+          : null;
+      if (
+        directory &&
+        reads &&
+        (!reads.helper || directory === root) &&
+        (!reads.git || !configuredGitPrograms(directory))
+      )
+        return null;
       if (
         directory &&
         permissionEffect(input, root, tools) === "repo.read" &&
@@ -2889,7 +2972,7 @@ function activeGateWriteRefusal(
     )
       return null;
   }
-  return `DOTLN_HARNESS_REFUSED: write may change gate inputs during active gate ${runs.map((run) => `${run.command} (run ${run.runId}, pid ${run.pid})`).join("; ")}. ${GATE_STOP_TEXT}`;
+  return `DOTLN_HARNESS_REFUSED: write may change gate inputs during active gate ${runs.map((run) => `${run.command} (run ${run.runId}, pid ${run.pid})`).join("; ")}. ${GATE_STOP_TEXT} ${LIVE_GATE_READ_TEXT}`;
 }
 
 function assertHarnessRuntime(
@@ -3142,7 +3225,10 @@ async function evaluateExistingHarnessHook(
         session.usageSessionKey = sessionKey(input);
         session.beforeOutputs ??= outputSnapshot(root);
         session.authoredPaths ??= [];
-        if (expected[intent] && control.phase !== "closed")
+        if (
+          expected[intent] &&
+          !["closed", "withdrawn"].includes(control.phase)
+        )
           session.expectedEvent = expected[intent]!;
         else delete session.expectedEvent;
       }
@@ -3502,12 +3588,205 @@ async function evaluateExistingHarnessHook(
   }
 }
 
+/** What the embedded operator control returns when an override closes. */
+interface OperatorOverrideExit {
+  readonly systemMessage: string;
+  readonly overrideExit: {
+    readonly enteredAt: string;
+    readonly exitedAt: string;
+    readonly words: readonly string[];
+    readonly advisory: string;
+  };
+}
+const operatorOverrideExit = (value: unknown): OperatorOverrideExit | null => {
+  const exit = (value as { overrideExit?: Record<string, unknown> } | null)
+    ?.overrideExit;
+  return exit &&
+    typeof (value as { systemMessage?: unknown }).systemMessage === "string" &&
+    typeof exit.enteredAt === "string" &&
+    typeof exit.exitedAt === "string" &&
+    typeof exit.advisory === "string" &&
+    Array.isArray(exit.words) &&
+    exit.words.every((word) => typeof word === "string")
+    ? (value as OperatorOverrideExit)
+    : null;
+};
+const overrideAdvisory = (exit: OperatorOverrideExit, reason: string) => {
+  const advisory = `DotLn advisory: OperatorOverrideRecorded was not appended (${reason}). ${exit.overrideExit.advisory}`;
+  return {
+    systemMessage: `${exit.systemMessage} ${advisory}`,
+    hookSpecificOutput: {
+      hookEventName: "UserPromptSubmit",
+      additionalContext: advisory,
+    },
+  };
+};
+/** The attestation a hook can observe for itself, never a claimed value. */
+function hookActorFlags(
+  input: HarnessInput,
+  session: HarnessSession,
+): string[] {
+  const harness = harnessInputHarness(input);
+  const levels = ["low", "medium", "high", "xhigh", "max"];
+  const selected =
+    harness === "claude-code" &&
+    levels.includes(process.env.CLAUDE_EFFORT ?? "")
+      ? process.env.CLAUDE_EFFORT!
+      : undefined;
+  const [effort, source] = selected
+    ? [selected, "claude-session-readback"]
+    : levels.includes(input.effort?.level ?? "")
+      ? [input.effort!.level!, "hook-input"]
+      : ["unknown", "unobserved"];
+  return [
+    "--harness",
+    harness,
+    "--harness-version",
+    input.harness_version ?? session.versionObservation?.value ?? "unknown",
+    "--model",
+    "unknown",
+    "--effort",
+    effort!,
+    "--source",
+    source!,
+  ];
+}
+/**
+ * WO-158 criterion 5: at `operator override: off` the session hook appends
+ * OperatorOverrideRecorded for the selected open order, naming the operator's
+ * retained override words as an ignored intake capture. It is admitted
+ * exactly as the equivalent `npm run resume -- override-record` tool call.
+ * Anything that stops it prints the exact command instead; nothing here can
+ * withhold the exit.
+ */
+function recordOperatorOverride(
+  config: HookConfig,
+  input: HarnessInput,
+  root: string,
+  boundary: typeof feedbackBoundary,
+  exit: OperatorOverrideExit,
+): Record<string, unknown> {
+  assertHarnessRuntime(config, root);
+  const control = harnessControl(root) as ControlView & {
+    legalOffRamps?: readonly string[];
+  };
+  if (
+    !control.workOrder ||
+    !Array.isArray(control.legalOffRamps) ||
+    !control.legalOffRamps.includes("override-record")
+  )
+    return overrideAdvisory(
+      exit,
+      `no selected open order records it (phase ${control.phase}); record the override and what it changed in the order's decisions instead`,
+    );
+  const session = readJson(statePath(root, input), initialSession(), true);
+  const invocation: HarnessInput = {
+    ...input,
+    hook_event_name: "PreToolUse",
+    tool_name: "Bash",
+    tool_input: { command: "npm run resume -- override-record" },
+  };
+  if (activeGateWriteRefusal(invocation, root, config.tools, session))
+    return overrideAdvisory(
+      exit,
+      "a live evidence gate refuses control writes",
+    );
+  const { enteredAt, exitedAt, words } = exit.overrideExit;
+  const captureStem = words.length
+    ? `docs/intake/operator-override/${exitedAt.slice(0, 10)}-${sessionKey(input).slice(0, 12)}-${exitedAt.slice(11, 19).replaceAll(":", "")}`
+    : undefined;
+  // Every record keeps naming the words whose digest it stored: a second exit
+  // in the same second takes the next free name, never the first capture's
+  // (VER-001 F3). Exclusive creation is the guard; the suffix is the route.
+  const writeCapture = (stem: string, bytes: string): string => {
+    for (let attempt = 1; attempt <= 1000; attempt++) {
+      const capture = attempt === 1 ? `${stem}.md` : `${stem}-${attempt}.md`;
+      const path = contained(root, capture);
+      mkdirSync(dirname(path), { recursive: true, mode: 0o700 });
+      try {
+        writeFileSync(path, bytes, { mode: 0o600, flag: "wx" });
+        return capture;
+      } catch (error) {
+        if (errorCode(error) !== "EEXIST") throw error;
+      }
+    }
+    throw new Error(`no free operator-override capture name under ${stem}`);
+  };
+  const lifecycle = () => {
+    let captured: string[] = [];
+    if (captureStem) {
+      const bytes = `# Operator override words\n\nCaptured by the DotLn session hook at operator override: off. Entered ${enteredAt}; exited ${exitedAt}. Each operator prompt of the override follows verbatim.\n\n${words.join("\n\n---\n\n")}\n`;
+      const capture = writeCapture(captureStem, bytes);
+      // Only an ignored capture is named; otherwise the words stay local.
+      if (git(root, ["check-ignore", "--", capture], true).trim())
+        captured = [
+          "--capture",
+          capture,
+          "--capture-hash",
+          `sha256:${createHash("sha256").update(bytes).digest("hex")}`,
+        ];
+      else rmSync(contained(root, capture), { force: true });
+    }
+    return spawnSync(
+      process.execPath,
+      [
+        join(root, "scripts/resume.mjs"),
+        "override-record",
+        "--bypassed",
+        "dotln-hook-enforcement",
+        "--effects",
+        "unobserved",
+        "--reason",
+        `operator override from ${enteredAt} to ${exitedAt}; recorded by the session hook at operator override: off`,
+        ...captured,
+        "--work-order",
+        control.workOrder!,
+        ...hookActorFlags(input, session),
+      ],
+      {
+        cwd: root,
+        encoding: "utf8",
+        timeout: 12_000,
+        maxBuffer: 4 * 1024 * 1024,
+      },
+    );
+  };
+  const policy = dispatchAdmissionPolicy(root);
+  const facts = policy
+    ? writerIsolationFacts(root, invocation, session, input)
+    : null;
+  let run: ReturnType<typeof lifecycle>;
+  try {
+    run = policy && facts ? boundary(policy, facts, lifecycle) : lifecycle();
+  } catch (error) {
+    if (!(error instanceof FeedbackRefused) || !facts) throw error;
+    return overrideAdvisory(exit, "the writer reservation refuses it");
+  }
+  const output = `${run.stdout ?? ""}${run.stderr ?? ""}`.trim();
+  record(root, input, { overrideRecord: { recorded: run.status === 0 } });
+  if (run.status !== 0)
+    return overrideAdvisory(
+      exit,
+      `resume refused it: ${output.slice(0, 400) || run.error?.message || "lifecycle unavailable"}`,
+    );
+  const receipt = `DotLn: ${output.split("\n").find((line) => line.startsWith("Recorded OperatorOverrideRecorded")) ?? "recorded OperatorOverrideRecorded"}`;
+  return {
+    systemMessage: `${exit.systemMessage}\n${receipt}`,
+    hookSpecificOutput: {
+      hookEventName: "UserPromptSubmit",
+      additionalContext: `${receipt} Its effects read "unobserved": record what the override changed in the order's decisions.`,
+    },
+  };
+}
+
 export async function runHarnessHook(
   config: HookConfig,
   boundary: typeof feedbackBoundary,
   decodedInput?: unknown,
   inputText?: string,
+  operatorControl?: unknown,
 ): Promise<void> {
+  const overrideExit = operatorOverrideExit(operatorControl);
   let observed: { root: string; input: HarnessInput } | undefined;
   let response: Record<string, unknown> = {};
   let reasonClass: string =
@@ -3574,7 +3853,14 @@ export async function runHarnessHook(
       }
     }
     observed = { root, input };
-    response = await evaluateHarnessHook(config, input, root, boundary, moved);
+    response = overrideExit
+      ? moved !== undefined
+        ? overrideAdvisory(
+            overrideExit,
+            "the session's directory is not this hook's worktree",
+          )
+        : recordOperatorOverride(config, input, root, boundary, overrideExit)
+      : await evaluateHarnessHook(config, input, root, boundary, moved);
   } catch (error) {
     reasonClass =
       error instanceof HarnessObserverInput
@@ -3593,15 +3879,18 @@ export async function runHarnessHook(
       error instanceof Error
         ? `${error.constructor.name}: ${error.message.replace(/[\u0000-\u001f\u007f]+/g, " ").slice(0, 120)}`
         : "non-error failure";
-    response = protocolAdvisory(
+    const reason =
       error instanceof HarnessObserverInput
         ? `observer input unavailable: ${error.message}`
         : error instanceof HarnessCommandRefused
           ? `command classification: ${error.message}`
           : error instanceof HarnessStateUnreadable
             ? error.message
-            : `${reasonClass}: host facts or pinned runtime unavailable (${failure}); run node scripts/bootstrap.mjs to prepare this worktree`,
-    );
+            : `${reasonClass}: host facts or pinned runtime unavailable (${failure}); run node scripts/bootstrap.mjs to prepare this worktree`;
+    // An override's exit is never withheld; its record degrades to the command.
+    response = overrideExit
+      ? overrideAdvisory(overrideExit, reason)
+      : protocolAdvisory(reason);
   } finally {
     if (observed) {
       try {

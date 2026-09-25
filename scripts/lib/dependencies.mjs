@@ -145,6 +145,15 @@ export const closedDependencySet = (control) =>
       .map(([id, row]) => [id, row.finalReviewVerdict]),
   );
 
+// WO-158: a withdrawn order never closes, so every edge over it is unmet with
+// the reason named; the disposition says which terminal outcome it recorded.
+export const withdrawnDependencySet = (control) =>
+  new Map(
+    [...control.orders]
+      .filter(([, row]) => row.state.phase === "withdrawn")
+      .map(([id, row]) => [id, row.state.withdrawal?.disposition ?? "unknown"]),
+  );
+
 // Only local annotated DotLn releases reachable from HEAD satisfy a release edge.
 export function dependencyReleaseSet(root) {
   const tags = localReleaseTags(root);
@@ -157,14 +166,25 @@ export function dependencyReleaseSet(root) {
   );
 }
 
-export function projectDependencies(order, closedSet, releases = new Set()) {
+export function projectDependencies(
+  order,
+  closedSet,
+  releases = new Set(),
+  withdrawnSet = new Map(),
+) {
   const entries = order.entries.map((entry) => {
+    const target =
+      entry.relation === "planning-deferral" ? entry.until : entry.workOrderId;
+    const withdrawn = withdrawnSet.has(target)
+      ? { detail: "withdrawn", disposition: withdrawnSet.get(target) }
+      : {};
     if (order.source === "conservative-tokens")
       return {
         ...entry,
         state: closedSet.has(entry.workOrderId)
           ? "control-closed"
           : "not-control-closed",
+        ...withdrawn,
       };
     let met;
     if (["hard", "satisfied-by-close"].includes(entry.relation))
@@ -173,9 +193,14 @@ export function projectDependencies(order, closedSet, releases = new Set()) {
       met = releases.has(entry.release);
     else if (entry.relation === "planning-deferral")
       met = idPattern.test(entry.until) && closedSet.has(entry.until);
+    // A release edge is met by its release, never by the order closing, so
+    // it keeps its own remedy.
     return {
       ...entry,
       state: met === undefined ? "non-blocking" : met ? "met" : "unmet",
+      ...(met === false && entry.relation !== "satisfied-by-release"
+        ? withdrawn
+        : {}),
     };
   });
   return {
@@ -203,20 +228,27 @@ export function readDependencies(root, state, control) {
     order.entries.some((entry) => entry.relation === "satisfied-by-release")
       ? dependencyReleaseSet(root)
       : new Set(),
+    withdrawnDependencySet(control),
   );
 }
 
 export function dependencyRefusal(path, projection) {
   return `${path}: activation refused; ${projection.blocking
     .map((entry) => {
+      const target =
+        entry.relation === "planning-deferral"
+          ? entry.until
+          : entry.workOrderId;
       const action =
-        entry.relation === "satisfied-by-release"
-          ? `make annotated DotLn release ${entry.release} available in HEAD's ancestry`
-          : entry.relation === "planning-deferral"
-            ? idPattern.test(entry.until)
-              ? `close ${entry.until}`
-              : `resolve ${entry.until}`
-            : `close ${entry.workOrderId} with a passing final review`;
+        entry.detail === "withdrawn"
+          ? `${target} is withdrawn (${entry.disposition}) and cannot close as filed; reactivate a changed revision of ${target}`
+          : entry.relation === "satisfied-by-release"
+            ? `make annotated DotLn release ${entry.release} available in HEAD's ancestry`
+            : entry.relation === "planning-deferral"
+              ? idPattern.test(entry.until)
+                ? `close ${entry.until}`
+                : `resolve ${entry.until}`
+              : `close ${entry.workOrderId} with a passing final review`;
       return `${entry.workOrderId} (${entry.relation}): ${entry.reason}; ${action}, or change the relation in this authority file with a dated reviewed note`;
     })
     .join("; ")}`;
