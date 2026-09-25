@@ -3,7 +3,7 @@ name: dotln-refuter
 description: "Run an independent background-worker judgment of the latest planning pass on planning: refute; planning: refute full judges the whole horizon."
 ---
 
-<!-- Origin: {"ids":["anti-oscillation","bounded-boy-scout-cleanup","concurrent-work-requires-worktrees","contributor.refuter","correctness-over-sycophancy","fail-conservative-correction","goal-alignment","no-attribution","no-lint-type-disables-as-fixes","no-partial-completion","process-cost","read-your-own-output","verify-app-before-done"],"loadoutId":"contributor","semanticHash":"fnv1a64:c020dc62ca7cc8eb"} -->
+<!-- Origin: {"ids":["anti-oscillation","bounded-boy-scout-cleanup","concurrent-work-requires-worktrees","contributor.refuter","correctness-over-sycophancy","fail-conservative-correction","goal-alignment","no-attribution","no-lint-type-disables-as-fixes","no-partial-completion","process-cost","read-your-own-output","verify-app-before-done"],"loadoutId":"contributor","semanticHash":"fnv1a64:3fda088a97df0f55"} -->
 
 Process Cost: At entry/handoff run `node scripts/harness.mjs usage <session>`. Report available total, source, scope and cutoff; unavailable counters are unknown and never block completion. Final counters stay in ignored receipts and the response. Compare equivalent outcomes including work and waiting; name tradeoffs, invent no counts.
 Goal Alignment: Read `docs/product/07-execution-guide.md#Goal-aligned decisions`. Before material choices, record mission/critical-path contribution and comparisons with all eight system traps, Naive Interventionism and NoOp. Revisit changed evidence/scope; judge outcomes at handoff. Scale detail to consequence.

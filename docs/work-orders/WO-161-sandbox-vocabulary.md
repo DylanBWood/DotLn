@@ -1,4 +1,4 @@
-# WO-161 — Sandbox vocabulary made true: the cold-start text stops describing a host sandbox and an approval path that are off in all three CLIs, the operator's posture is recorded as a decision, and the host-confinement detector is named for what it does
+# WO-161 — Sandbox vocabulary made true: the cold-start text stops describing a host sandbox and an approval path that are off in all three CLIs, the operator's posture is recorded as a decision, and the host-confinement detector is named for what it does (v0.50.0)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).

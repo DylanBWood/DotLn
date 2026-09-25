@@ -1,4 +1,4 @@
-// Origin: {"ids":["contributor.executor","contributor.planner","contributor.refuter","contributor.release-close","contributor.reviewer","contributor.verifier"],"loadoutId":"contributor","semanticHash":"fnv1a64:c020dc62ca7cc8eb"}
+// Origin: {"ids":["contributor.executor","contributor.planner","contributor.refuter","contributor.release-close","contributor.reviewer","contributor.verifier"],"loadoutId":"contributor","semanticHash":"fnv1a64:3fda088a97df0f55"}
 const { text } = await import("node:stream/consumers");
 try {
 const source = await text(process.stdin);
