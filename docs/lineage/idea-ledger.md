@@ -40,6 +40,76 @@ are now declared above. The [decision record](../evidence/WO-084/decisions.md)
 records the legacy ledger write-back; `node scripts/lineage.mjs index` generates
 the index and `index --check` enforces this rule in `npm run test:docs`.
 
+## 2026-09-25 — Planning pass: the operator's four items (WO-166, WO-167; WO-085 to WO-087 rewritten)
+
+Source: the operator's dispatch and three mid-turn messages, captured
+verbatim in ignored intake
+(`docs/intake/notes/2026-09-25-standard-pass-four-items-planning.md`,
+SHA-256 `0bf01a6570392d4255674d9a8c1da18b0ed70eb380df6457ec4ccfca67b50ae7`):
+a standard planning pass, plus four items — a Claude session's monitor
+built on `tail -f` that never exited; Codex writer reservation issues
+(recent; the session finds mid-phase that no writer was requested and
+requests it then; whether every time is unclear); release retiming phrases
+everywhere in the documents, which discourage parallel work orders; and
+the product documents ballooning by addition. The mid-turn question
+whether planning passes are aware of Naive Interventionism is answered by
+product 07 §Operator-opened planning pass precondition 3 and the NoOp
+register below. Inputs: the harness sources and the three Codex reports
+that met the writer gap; the roadmap, product 07, CLAUDE.md and the
+register for the retiming vocabulary; Git history of `docs/product/`
+since 2026-09-01; the five held documentation orders and the 2026-09-19
+hold table; the register's 36 untriaged rows. Clean-room screen: no stop
+condition. The record is
+[the planning document](../planning/standard-pass-2026-09-25.md).
+
+- **A Codex dispatch reserves the writer its completion releases** `adopted`
+  - Only the Claude hook path reserves; `beginHarnessSessionOnce`, which
+    every Codex lifecycle dispatch calls, reserves nothing, while the role
+    text describes a reservation that completion releases. WO-156's repair
+    and WO-161's implementation reserved by hand mid-phase through the
+    Claude adapter; WO-161's repair handed off unreserved. WO-166 reserves
+    at dispatch for the five Codex roles, releases at every Codex
+    completion (today only two do), and names the holder's age on a
+    refusal. Frequency stays unknown: worktree journals leave with the
+    worktree (map candidate 3). Provenance: operator-directed.
+- **Wait for a live gate with a command that exits** `adopted`
+  - No repository rule said how to wait; the gate already publishes a
+    marker per run (`activeGateRuns`) and `evidence --stop` polls it.
+    WO-166 adds `evidence --wait`, returning with the recorded row, and
+    the role sentence that an open-ended follower is never the wait.
+- **The release history is generated; the roadmap takes no prose** `adopted`
+  - 545 lines of the roadmap are machine-written assignment and collision
+    notes, two per order; the operator reads them as the cost of a second
+    lane. WO-086 (reopened: WO-079 landed 2026-09-20) renders the table
+    from tags, keeps the notes verbatim in one receipt, and has
+    `release prepare` write the integration decision and nothing else.
+    CLAUDE.md's shared-memory line and product 07's sentence lose the word.
+- **Version assigned at publication** `candidate`
+  - The collision exists because both orders of a pair claim the next
+    version at activation. Assigning at final review removes it, at the
+    cost of the activation event, the heading rule, `check-surfaces` and
+    every role text. Recorded in the map with its reopening observation;
+    WO-086 is the smaller probe.
+- **Product documents get a byte ceiling and an edit-in-place rule** `adopted`
+  - `docs/product/` grew from 296,483 to 1,048,121 bytes in 24 days
+    (13,033 lines added, 2,827 removed); 183 dated paragraphs and 64
+    candidate headings; WO-090's cut of the guide regrew 598 lines in five
+    days. WO-085 (rewritten from its 2026-09-19 hold) adds the docs check
+    with per-document ceilings, refuses new dated receipts and candidate
+    headings under `docs/product/` and a decision dispatch without a
+    control prefix, and carries WO-090's anchor rules; product 07's
+    freshness rule now says to edit the sentence, not append a paragraph.
+- **Candidates live in the planning map, not in product documents** `adopted`
+  - WO-087's destination changes from a new numbered product document to
+    this map; the register reconciles renamed sources as duplicates.
+- **The execution guide is folded** `adopted`
+  - WO-167 folds the guide's 32 dated amendments into their sentences with
+    citations and moves its nine candidates; every skill-cited heading
+    stays. One document per order so the verifier reads the whole diff;
+    03, 02 and 05 follow as map candidate 2.
+- **Retain each session's journal summary at release close** `candidate`
+  - Map candidate 3; reopen on a second unanswerable session question.
+
 ## 2026-09-25 — Planning pass: off ramps, 5S, the Entropy Reducer and the machinery WO-111 exposed (WO-158 to WO-165; REVIEW-003 consumed)
 
 Source: the operator's dispatch and one mid-turn message, captured verbatim

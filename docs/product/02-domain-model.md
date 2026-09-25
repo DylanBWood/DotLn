@@ -911,8 +911,8 @@ because a refused Stop does not end the session. Bounded status/index commands,
 direct output reads and the writer view do not reserve a coding writer; the
 exact managed release-close helper delegates to the existing guarded host from
 fresh `main` only after canonical closure. The hook adapter recognizes bounded direct command forms;
-arbitrary interpreters and shell indirection remain native sandbox/approval
-and operator responsibilities. A hook, permission rule or skill grants no new
+arbitrary interpreters and shell indirection remain the host's permission
+settings and operator responsibilities (ADR-0003, amended 2026-09-25). A hook, permission rule or skill grants no new
 external-effect authority.
 
 Role skills carry the input contract, procedure, artifacts, evidence and stop

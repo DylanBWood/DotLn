@@ -1,4 +1,4 @@
-# WO-163 — 5S on the launchpad, Sort and Set in order: three import-only scripts move into the library, a library file loses its command block, three one-shot planning inputs retire, the generated register file is marked generated, and the two docs-only evidence tools get their recorded disposition
+# WO-163 — 5S on the launchpad, Sort and Set in order: three import-only scripts move into the library, a library file loses its command block, three one-shot planning inputs retire, the generated register file is marked generated, and the two docs-only evidence tools get their recorded disposition (version assigned at activation)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).

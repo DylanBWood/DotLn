@@ -1779,8 +1779,15 @@ WO-139's commit `3ea00e50` releases the executor's writer at completion
 (`scripts/lib/executor-handoff.mjs`; `scripts/resume.mjs`
 `executorWriterRelease`), and the hook admits
 `node scripts/harness.mjs writer --show` among its repository commands
-(`packages/skeleton/src/harness-host.ts`). The holder's age on every refusal
-was not checked by that pass. Reopen on a second observed stale reservation.
+(`packages/skeleton/src/harness-host.ts`). The reopening condition was met the
+other way round: three Codex sessions after WO-155 (WO-156's repair, WO-161's
+implementation and repair) found no reservation at dispatch, because
+`beginHarnessSessionOnce` reserves nothing while the role text describes a
+reservation completion releases; two reserved by hand mid-phase and one handed
+off unreserved. Frequency is unknown (worktree journals are discarded at
+teardown). Allocated to WO-166: the Codex dispatch reserves, every Codex
+completion releases, and a refusal names the holder's age
+([2026-09-25 standard pass](../planning/standard-pass-2026-09-25.md) §3).
 
 ## Candidate — total subagent cap across every spawn path
 
@@ -1899,9 +1906,13 @@ implementation ready, update affected blueprint facts and their reader entry
 points in the same pass: examples, names and paths, component/source claims,
 capability limitations, runbook instructions, planning recommendations, and
 publication links where the change reaches them. Use the diff and inbound
-references to bound the check. Record the affected surfaces and evidence in the
-existing work-order outcome or breakout receipt; do not create a new ceremony
-or rewrite unrelated historical artifacts. A README “What runs today”
+references to bound the check. Write back by editing the sentence that is now
+wrong and citing the evidence; a dated paragraph appended under a product
+heading is a receipt and belongs in the order's evidence README, and a
+candidate belongs in the planning map (operator direction, 2026-09-25; WO-085
+binds the check and a byte ceiling per document). Record the affected surfaces
+and evidence in the existing work-order outcome or breakout receipt; do not
+create a new ceremony or rewrite unrelated historical artifacts. A README “What runs today”
 write-back rewrites the existing release block rather than appending another
 release sentence, keeping it within fifteen sentences and moving per-order
 detail into release notes ([WO-068-D004](../evidence/WO-068/decisions.md#wo-068-d004)).
