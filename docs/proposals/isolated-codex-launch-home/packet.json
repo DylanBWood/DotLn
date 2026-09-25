@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "kind": "FiledProductSuggestionPacket",
+  "filedAt": "2026-09-25T01:44:53.404Z",
+  "sourceReceiptId": "REVIEW-003",
+  "sourceReceiptPath": "docs/instance/entropy-reducer/runs/REVIEW-003.md",
+  "operatorReason": "Filed as the design record for WO-159: one launcher for the transport and the six probe and smoke sites, a per-episode home seeded for authentication only, digest pairs of the user-level configuration and its trust table as protected receipt surfaces; the stale entries stay the operator to remove.",
+  "promotion": "Filing records the packet. Promotion to a work order remains an operator-authorized planning act.",
+  "packet": {
+    "schemaVersion": 1,
+    "kind": "ProductSuggestionPacket",
+    "proposedPath": "docs/proposals/isolated-codex-launch-home/",
+    "sourceEpisodeId": "ep_entropy_fd64d7151c3a1794",
+    "provenance": [
+      "Entropy Reducer review of frozen subject fa9957f18939492a6eae08b63f6ba256fd76d33d (subjectHash fd64d7151c3a17948d4706642d9273eef1fbe9b40023646bdc5b370ffe718a23), finding ER3-001",
+      "Code facts measured in the frozen copy with the ER3-001 reproduction; user Codex configuration not read; trust counts cited from the tracked count-only diagnosis",
+      "Reviewer: entropy-reducer@1 compiled for claude-opus-5-5 at xhigh; no delegate lens available on this route"
+    ],
+    "corroboratingEvidenceRefs": [
+      "docs/evidence/WO-111/codex-trust-diagnosis.md (36 of 43 trusted entries in DotLn families; launch code inherits process.env)",
+      "docs/verifications/WO-111/VER-003.md criterion 2 (clause not met; waived)",
+      "docs/evidence/WO-111/decisions.md WO-111-D011 and the D012 reopening (the follow-up must cover shared launch paths)",
+      "docs/final-reviews/WO-111/RELEASE-NOTES.md Read before upgrading",
+      "packages/skeleton/src/worker-transport.ts:96-103"
+    ],
+    "dissentingEvidenceRefs": [
+      "docs/evidence/WO-111/decisions.md WO-111-D020 (the operator accepted the deviation for the synthetic proof)",
+      "docs/evidence/WO-111/codex-trust-diagnosis.md ('An isolated home is a candidate to validate, not a tested fix'; authentication still uses the Codex home under --ignore-user-config; 'The present evidence does not show harmful execution or data exposure'; per-entry attribution is inference)"
+    ],
+    "suggestion": {
+      "suggestionId": "isolated-codex-launch-home",
+      "submittedBy": "entropy-reducer@1 (compiled for claude-opus-5-5 at xhigh, claude-cli-print) - non-authoritative",
+      "problemOrOpportunity": "DotLn's Codex launches inherit the operator's Codex home. That covers the product worker transport and six probe scripts. The tracked diagnosis attributes 36 of 43 user-level trust entries to ten DotLn scratch and probe families. WO-111 closed only on an operator waiver of its outside-portfolio clause, and WO-111-D011 asks that no further live Codex worker proof run before an isolation order. No executable check enforces that. The next critical-path step puts live Codex workers on owner repositories, where a trust entry also admits project-local configuration, hooks and rules.",
+      "scope": "Build one shared Codex launcher, used by worker-transport.ts and the six probe scripts. For each episode it supplies an isolated Codex home, with authentication available and no credentials copied into evidence. It digests the user Codex configuration before and after the launch, refuses or reports on change, and records the digest among the receipt's protected surfaces. A test fails when a Codex exec argv is built outside the launcher. Removing existing stale entries stays a separate owner-authorized act.",
+      "evidenceRefs": [
+        "ER3-001 reproduction command and output",
+        "docs/evidence/WO-111/codex-trust-diagnosis.md",
+        "docs/verifications/WO-111/VER-003.md",
+        "docs/evidence/WO-111/decisions.md WO-111-D011, D016, D020",
+        "packages/skeleton/src/worker-transport.ts:96-103,330-376"
+      ],
+      "affectedUsers": [
+        "the operator (user-level Codex configuration and trust state for later sessions)",
+        "executors and verifiers running live Codex proofs or probes",
+        "planners sequencing the owner-repository portfolio"
+      ],
+      "affectedSystems": [
+        "packages/skeleton/src/worker-transport.ts",
+        "scripts/lib/authority-probe.mjs",
+        "scripts/lib/writing-worker-probe.mjs",
+        "scripts/harness-probe.mjs",
+        "scripts/probe-worker-hosts.mjs",
+        "scripts/target-worker-smoke.mjs",
+        "scripts/probes/local-model-role-qualification.mjs",
+        "resident portfolio and source-change receipts"
+      ],
+      "expectedValue": "Live Codex proofs could satisfy an outside-portfolio clause by measurement instead of by waiver. D011's precondition would be enforced at the one place launches happen. With one argv instead of seven copies, later launch-policy changes land once.",
+      "altitude": 5,
+      "uncertainty": "It is untested whether Codex authenticates, and keeps its trust writes confined, inside an isolated home without copying credentials; the diagnosis calls this a candidate to validate. Attribution of each historical entry to a specific launch is inference. Analogous user-level writes by the Claude or Copilot launches were not measured in this review.",
+      "risks": [
+        "An isolated home may break authentication or drop user-level Codex settings the workers rely on",
+        "A refusing guard blocks live proofs until the launcher is validated",
+        "Consolidating seven launch sites touches probes that carry their own recorded qualification evidence"
+      ],
+      "alternatives": [
+        "A per-launch trust override for the scratch path, if Codex supports one, instead of an isolated home",
+        "Keep inheriting the home but add the before/after digest and report changes (detection without prevention)",
+        "Operator-authorized periodic cleanup of DotLn-family entries (treats the symptom; the diagnosis says it does not prevent recurrence)"
+      ],
+      "duplicationHints": [
+        "FUP-3c34a8ffbf61376f (WO-111-D011 and its D012 reopening): the runtime isolation follow-up this packet would inform",
+        "WO-111-D016: the caller-supplied isolated-home rerun route, later superseded",
+        "docs/evidence/WO-111/codex-trust-diagnosis.md"
+      ],
+      "urgencyRationale": "D011 blocks any further live Codex worker proof on this work, and the owner-repository portfolio after WO-111 needs live Codex workers on real repositories. Meanwhile, every live probe run can add another entry."
+    }
+  }
+}

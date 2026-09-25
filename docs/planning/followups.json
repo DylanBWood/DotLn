@@ -2192,6 +2192,14 @@
           "reopenWhen": "a resident receipt contradicts the progressive-authority status product 03 states",
           "targets": [],
           "at": "2026-09-22T22:02:08.824Z"
+        },
+        {
+          "sourceRevision": 7,
+          "status": "settled",
+          "reason": "Re-settled by the 2026-09-25 off-ramps planning pass at the current revision: the intervening revisions are WO-111's presence-curve correction write-backs (D004 to D009, the Blackjack +3 shape) and WO-114's status projection; WO-111 FINAL-001 records the section's state.",
+          "reopenWhen": "a resident receipt contradicts the progressive-authority status product 03 states",
+          "targets": [],
+          "at": "2026-09-25T01:51:13.515Z"
         }
       ]
     },
@@ -2922,6 +2930,14 @@
             "WO-111"
           ],
           "at": "2026-09-22T22:02:09.065Z"
+        },
+        {
+          "sourceRevision": 10,
+          "status": "settled",
+          "reason": "Re-settled by the 2026-09-25 off-ramps planning pass at the current revision: WO-111 closed (v0.47.1) with the live unattended proof; the paragraph's remaining content (activation policy beyond the curve, slots, ranking) stays candidate. Its earlier reopening condition, WO-111 withdrawn, is expressible once WO-158's WorkOrderWithdrawn exists and did not occur.",
+          "reopenWhen": "a resident run on an operator-owned repository contradicts the paragraph, or WO-111 is withdrawn through WO-158's route",
+          "targets": [],
+          "at": "2026-09-25T01:51:12.897Z"
         }
       ]
     },
@@ -3062,6 +3078,14 @@
           "reopenWhen": "the reversal condition of that NoOp",
           "targets": [],
           "at": "2026-09-22T22:02:09.304Z"
+        },
+        {
+          "sourceRevision": 13,
+          "status": "settled",
+          "reason": "Re-settled by the 2026-09-25 off-ramps planning pass at the current revision: the intervening revisions are the WO-111 and WO-114 write-backs into the section (the unattended hour's evidence view and the runtime status projection); the 2026-09-19 NoOp stands.",
+          "reopenWhen": "the reversal condition of that NoOp",
+          "targets": [],
+          "at": "2026-09-25T01:51:14.143Z"
         }
       ]
     },
@@ -5385,6 +5409,13 @@
           "title": "Candidate — cold-gate structural cuts",
           "summary": "## Candidate — cold-gate structural cuts The 2026-09-12 planning pass declined to allocate the structural cuts that the relayed proof-carrying-gates plan proposed for the one fresh full gate, because their benefit is unmeasured until the gate's critical path is recorded. The 2026-09-12T16:08Z fresh gate ran 475 s of wall-clock over 1,229 s of task time: the two exclusive suites held it at concurrency one for 206 s, and perfect packing over the cap of four would take 307 s. WO-128 records each task's concurrent peers in the gate row; that trace is the entry evidence for this candidate. WO-128's [first accepted shared row](../evidence/WO-128/shared-series-002.json) now supplies that evidence: ",
           "missing": false
+        },
+        {
+          "hash": "85f34e6245ff06793417355e5d134a11933ddf5552976d4638c5ad561cbb7235",
+          "ref": "docs/product/07-execution-guide.md#candidate--cold-gate-structural-cuts",
+          "title": "Candidate — cold-gate structural cuts",
+          "summary": "## Candidate — cold-gate structural cuts The 2026-09-12 planning pass declined to allocate the structural cuts that the relayed proof-carrying-gates plan proposed for the one fresh full gate, because their benefit is unmeasured until the gate's critical path is recorded. The 2026-09-12T16:08Z fresh gate ran 475 s of wall-clock over 1,229 s of task time: the two exclusive suites held it at concurrency one for 206 s, and perfect packing over the cap of four would take 307 s. WO-128 records each task's concurrent peers in the gate row; that trace is the entry evidence for this candidate. WO-128's [first accepted shared row](../evidence/WO-128/shared-series-002.json) now supplies that evidence: ",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -5435,6 +5466,16 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-22T16:44:37.546Z"
+        },
+        {
+          "sourceRevision": 11,
+          "status": "allocated",
+          "reason": "Re-allocated by the 2026-09-25 off-ramps planning pass: WO-156 closed the plan-check cut (plan tasks 1.90 s and 1.81 s); the 2026-09-25 paragraph records REVIEW-003 ER3-002's measurement that console collection is now the gate's critical path and allocates it to WO-164.",
+          "reopenWhen": "the document gate's critical path exceeds ten seconds after WO-164 closes",
+          "targets": [
+            "WO-164"
+          ],
+          "at": "2026-09-25T01:51:14.789Z"
         }
       ]
     },
@@ -11380,6 +11421,16 @@
           "reopenWhen": "a measured work-orders index or console collection above ten seconds",
           "targets": [],
           "at": "2026-09-19T01:20:06.120Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Reopened and allocated by the 2026-09-25 off-ramps planning pass: the recorded observation occurred (REVIEW-003 ER3-002: collectSources 18.4 to 19.1 s from 101 status forks and a 5.2 to 5.6 s release list; console-docs 20.06 s of a 24.81 s test:docs). WO-164 batches the status fold and caches the release listing per tag.",
+          "reopenWhen": "collectSources above 3 s after WO-164 closes, or work-orders index above ten seconds",
+          "targets": [
+            "WO-164"
+          ],
+          "at": "2026-09-25T01:51:11.650Z"
         }
       ]
     },
@@ -11668,6 +11719,16 @@
           "reopenWhen": "the WO-042 reproduction command passes again, or it is marked historical beside its evidence",
           "targets": [],
           "at": "2026-09-21T06:59:00.632Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-09-25 off-ramps planning pass to WO-163: regenerate authority-mutation-evidence.mjs --check against current source or mark the WO-042 reproduction historical beside its evidence, with the reason recorded.",
+          "reopenWhen": "the WO-042 reproduction fails again after WO-163's disposition",
+          "targets": [
+            "WO-163"
+          ],
+          "at": "2026-09-25T01:51:12.276Z"
         }
       ]
     },
@@ -15456,7 +15517,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-09-25 off-ramps planning pass to WO-158: a completion whose --effort disagrees with the CLAUDE_EFFORT readback is refused with the readback value, and RecordCorrected is the route for a record already wrong.",
+          "reopenWhen": "a completion records an effort that disagrees with the readback after WO-158 closes",
+          "targets": [
+            "WO-158"
+          ],
+          "at": "2026-09-25T01:51:10.386Z"
+        }
+      ]
     },
     {
       "id": "FUP-8a36e4b4ae3bbe5b",
@@ -15501,7 +15573,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-09-25 off-ramps planning pass to WO-160 item 5: --continue on a clean tree adopts the stash named for this integration; the helper also makes its own hookless commits and records its phase.",
+          "reopenWhen": "--continue on a clean tree still cannot adopt the stash after WO-160 closes",
+          "targets": [
+            "WO-160"
+          ],
+          "at": "2026-09-25T01:51:11.028Z"
+        }
+      ]
     },
     {
       "id": "FUP-4a1d1fc3611506a1",
@@ -15866,7 +15949,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 5,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-09-25 off-ramps planning pass to WO-159: one Codex launcher with a per-episode home seeded for authentication only and before/after digests of the user-level configuration as protected receipt surfaces; REVIEW-003 ER3-001 widened the observation to seven argv builders.",
+          "reopenWhen": "an isolated launch still changes the user-level Codex configuration, or WO-159 closes without its live row",
+          "targets": [
+            "WO-159"
+          ],
+          "at": "2026-09-25T01:51:07.250Z"
+        }
+      ]
     },
     {
       "id": "FUP-7dbf4e832a8fb124",
@@ -15888,7 +15982,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Settled by the 2026-09-25 off-ramps planning pass: D018 records the enumeration correction without revising the historical planning file; the second-window snapshot-list defect stays disclosed in FINAL-001 until a WO-111 rerun warrants a truthful receipt edition.",
+          "reopenWhen": "a WO-111 rerun, or a reader needs the per-window snapshot list",
+          "targets": [],
+          "at": "2026-09-25T01:51:09.756Z"
+        }
+      ]
     },
     {
       "id": "FUP-f3281eb085ad87a7",
@@ -15903,7 +16006,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "duplicate",
+          "reason": "Duplicate of FUP-3c34a8ffbf61376f, recorded by the 2026-09-25 off-ramps planning pass: D016's caller-side isolated home was tried and declined as unauthenticated; the runtime launcher in WO-159 is the one route.",
+          "reopenWhen": "WO-159's launcher cannot authenticate an isolated home without secrets reaching evidence",
+          "targets": [
+            "FUP-3c34a8ffbf61376f"
+          ],
+          "at": "2026-09-25T01:51:07.874Z"
+        }
+      ]
     },
     {
       "id": "FUP-dcadda81305b4fb7",
@@ -15918,7 +16032,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined by the 2026-09-25 off-ramps planning pass: D017's criterion amendment was superseded by D019 at the operator's direction and is a recorded mistake, not work; the withdrawal of its orphaned PlanExecutionAmended row (plan-refutations.jsonl line 22) is WO-160 item 1. NoOp evidence: the planning document §2.",
+          "reopenWhen": "WO-160 closes with row 22 still unwithdrawn",
+          "targets": [],
+          "at": "2026-09-25T01:51:08.497Z"
+        }
+      ]
     },
     {
       "id": "FUP-e468ee64ac00c70a",
@@ -15933,7 +16056,339 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-09-25 off-ramps planning pass to WO-158 (a terminal disposition that does not claim success: WorkOrderWithdrawn with failed | superseded | abandoned, and CriterionWaived for the accepted deviation) and WO-160 (the amendment-row withdrawal D019 asked for).",
+          "reopenWhen": "WO-158 closes without a terminal route, or WO-160 closes with row 22 unwithdrawn",
+          "targets": [
+            "WO-158",
+            "WO-160"
+          ],
+          "at": "2026-09-25T01:51:09.126Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-71a1af0dd6d630fd",
+      "key": "candidate:docs/planning/entropy-reviews/REVIEW-003.md#candidates--accepted-entropy-reducer-findings-review-review-003-recorded-2026-09-25::a6fc3b08c12f17b3dbd78b8bc98f03266918dcf260f68173786080af87690de0",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "217911c9174e2d155b266d331b1536744ab17aca0a8ada5972e7ca06061a6370",
+          "ref": "docs/planning/entropy-reviews/REVIEW-003.md#candidates--accepted-entropy-reducer-findings-review-review-003-recorded-2026-09-25",
+          "title": "ER3-002 — A deferred follow-up is reopened when its recorded observation occurs. FUP-7f9a27e6ed6c44b3 (docs/planning/work-order-map.md:1171-1176) reopens on 'a measured w",
+          "summary": "- **ER3-002 — A deferred follow-up is reopened when its recorded observation occurs. FUP-7f9a27e6ed6c44b3 (docs/planning/work-order-map.md:1171-1176) reopens on 'a measured w** Surface `packages/console/src/collect.ts (collectSources controlStatus and command runner); scripts/resume.mjs (status); scripts/release.mjs (list); packages/console/test/board.test.ts:992; scripts/test-runner.mjs console-docs task`, severity major, altitude 10, evidence measured. Observed: On the frozen subject, collectSources measures 18.4-19.1 s, and the console board --json CLI takes 19.73 s. Most of that is 101 sequential `node scripts/resume.mjs status --json --work-order` forks, one per work order ever seen in ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-09-25 off-ramps planning pass to WO-164 (ER3-002, major, measured, survived REFUTATION-004); the packet constant-process-console-collection is its design record; FUP-7f9a27e6ed6c44b3 reopened on the same measurement.",
+          "reopenWhen": "collectSources above 3 s after WO-164 closes",
+          "targets": [
+            "WO-164"
+          ],
+          "at": "2026-09-25T01:51:16.047Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-8d71e62f42967b0e",
+      "key": "candidate:docs/planning/entropy-reviews/REVIEW-003.md#candidates--accepted-entropy-reducer-findings-review-review-003-recorded-2026-09-25::b5c4105d15ea8b50f475f0ae1085589c4d48117076c23fbf0365f18cad06ebd4",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "f2698bf425e94d32bac8827c133f9c378f82b3c34aa6603834ad19561f903c3a",
+          "ref": "docs/planning/entropy-reviews/REVIEW-003.md#candidates--accepted-entropy-reducer-findings-review-review-003-recorded-2026-09-25",
+          "title": "ER3-003 — A compiled grant and its runtime route agree. The loadout should not compile an authority or cost that the pinned transport cannot exercise, and the residue and",
+          "summary": "- **ER3-003 — A compiled grant and its runtime route agree. The loadout should not compile an authority or cost that the pinned transport cannot exercise, and the residue and** Surface `packages/skeleton/src/entropy-review-protocol.ts (ENTROPY_REVIEW_TOOLS); packages/skeleton/src/worker-transport.ts (entropyArgs); packages/skeleton/src/loadouts/entropy-reducer.ts (fan-out-lens support, delegates resource)`, severity minor, altitude 6, evidence measured. Observed: The compiled reviewer grants delegate.readonly with resourceLimits {delegates: 4} (packages/skeleton/src/loadouts/entropy-reducer.ts:35, 969, 1020, 1133) and throws 'compiled authority lacks the delegates resource' without it (:1257",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-09-25 off-ramps planning pass to WO-165 (ER3-003, minor, measured, survived REFUTATION-004); the packet entropy-review-delegate-route-agreement is its design record, second option preferred.",
+          "reopenWhen": "a receipt describes a capability the episode lacked after WO-165 closes",
+          "targets": [
+            "WO-165"
+          ],
+          "at": "2026-09-25T01:51:16.677Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-01c7e1eb534b6440",
+      "key": "candidate:docs/planning/entropy-reviews/REVIEW-003.md#candidates--accepted-entropy-reducer-findings-review-review-003-recorded-2026-09-25::f6ebe5fd126ced5c773cbf8c74a0c6b32004a1f07f2147d1d5d7c3fda072e1c5",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "3f4d96284b42e70ce2c9adb2163cf5a65613ac44891996c9a8169cda25ad54b2",
+          "ref": "docs/planning/entropy-reviews/REVIEW-003.md#candidates--accepted-entropy-reducer-findings-review-review-003-recorded-2026-09-25",
+          "title": "ER3-001 — Worker launches keep host-side effects inside the declared portfolio and scratch roots, and a recorded precondition that gates further live runs is enforced whe",
+          "summary": "- **ER3-001 — Worker launches keep host-side effects inside the declared portfolio and scratch roots, and a recorded precondition that gates further live runs is enforced whe** Surface `packages/skeleton/src/worker-transport.ts (runWorkerProcess, Codex argv builders); scripts/lib/authority-probe.mjs; scripts/lib/writing-worker-probe.mjs; scripts/harness-probe.mjs; scripts/probe-worker-hosts.mjs; scripts/target-worker-smoke.mjs; scripts/probes/local-model-role-qualification.mjs`, severity major, altitude 5, evidence measured. Observed: Seven tracked files build a Codex exec argv: packages/skeleton/src/worker-transport.ts, scripts/harness-probe.mjs, scripts/lib/authority-probe.mjs, scripts/lib",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-09-25 off-ramps planning pass to WO-159 (ER3-001, major, measured, survived REFUTATION-004); the packet isolated-codex-launch-home is its design record.",
+          "reopenWhen": "an isolated launch still changes the user-level Codex configuration",
+          "targets": [
+            "WO-159"
+          ],
+          "at": "2026-09-25T01:51:15.417Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-4647139484dccbd4",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-off-ramps-pass-recorded-2026-09-25::380243eb5ee451938b19c7f378add9dadd0747615cd37182f4b2feeadfc77a22",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "d0a5da605320ad8e6707b4105e6f0648b8753977bfcbe316956e8392d34d18b5",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-off-ramps-pass-recorded-2026-09-25",
+          "title": "Archiving consumed planning passes.",
+          "summary": "4. **Archiving consumed planning passes.** Five dated passes are fully consumed but carry 3 to 11 live inbound links each; `docs/planning/archive/` holds one file and no written rule. NoOp: 27 link updates buy nothing a reader needs today; the operator decides the rule. Reopen: the planning directory exceeds forty documents or a reader is misled by a consumed pass.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-09-25 off-ramps planning pass: 27 live links buy nothing a reader needs today; the archive rule is the operator's to write. NoOp evidence: the planning document §12.",
+          "reopenWhen": "the planning directory exceeds forty documents, or a reader is misled by a consumed pass",
+          "targets": [],
+          "at": "2026-09-25T01:51:19.242Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-60eff31012712921",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-off-ramps-pass-recorded-2026-09-25::3f514cdba082dac11acdab578729ab08e1860e6da973c9c5667f409e9e7ed61b",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "6bb58ddb6aac7c74b7204c1e1a29e2a2db51ef8e7927acd1183d1aa5b051ecae",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-off-ramps-pass-recorded-2026-09-25",
+          "title": "Control-character contracts differ under one name.",
+          "summary": "2. **Control-character contracts differ under one name.** `line`/`text` validators use three control-character classes across the skeleton protocols and four across `scripts/lib` (planning document §8); a value the handoff contract accepts can be rejected by the mission check. WO-162 records a decision per divergence and names any latent defect; the contract choice itself is a bounded order when a failing case is observed. Reopen: a value refused late across two surfaces.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-09-25 off-ramps planning pass: WO-162 records a decision per divergence and names any latent defect; the contract choice is a bounded order when a value is observed refused late across two surfaces.",
+          "reopenWhen": "a value accepted by one surface is refused by another",
+          "targets": [],
+          "at": "2026-09-25T01:51:17.969Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-be1103fbfdd14653",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-off-ramps-pass-recorded-2026-09-25::6272ca0d365e8ec4a7b80d2c83a7f385cebc7caaf8b6045d445fe9107604d36d",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "17b35744389ef566ac2fe7750c0d211a4346ce723410f4059976c25eaa06a5e7",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-off-ramps-pass-recorded-2026-09-25",
+          "title": "Tracked evidence bytes.",
+          "summary": "5. **Tracked evidence bytes.** 148,788 KB of 202,792 KB tracked is `docs/evidence` (73%); since WO-154 a new self-host log is about 72 KB against 1.4 to 2.1 MB before. NoOp on a ceiling: the growth is cut and a ceiling would be a mechanism with no removal. Reopen: a week adds more than 10 MB of tracked evidence.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-09-25 off-ramps planning pass: WO-154 cut a new self-host log to about 72 KB; a ceiling would be a mechanism with no removal. NoOp evidence: the planning document §12.",
+          "reopenWhen": "a week adds more than 10 MB of tracked evidence",
+          "targets": [],
+          "at": "2026-09-25T01:51:19.869Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-069721aeed24fe6d",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-off-ramps-pass-recorded-2026-09-25::88da8a4817101550251c1a4db4f8ca3d35297dfd1ac7b153a92124e63fd88b3f",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "a87d5214d9ab99b366e968030b1a6b85bf53f904a355cb197e268300267b41b3",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-off-ramps-pass-recorded-2026-09-25",
+          "title": "Stale trust entries in the operator's Codex configuration.",
+          "summary": "9. **Stale trust entries in the operator's Codex configuration.** 36 of 43 trusted project entries are DotLn scratch and probe families, 34 for paths that no longer exist (WO-111 `codex-trust-diagnosis.md`). WO-159 stops the accumulation; removing the existing entries is the operator's action outside the repository. Reopen: never from here; the operator records it if they wish.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the 2026-09-25 off-ramps planning pass: WO-159 stops the accumulation; removing the 36 existing entries is the operator's action outside the repository and needs no order.",
+          "reopenWhen": "the operator asks for the census to be recorded before and after removal",
+          "targets": [],
+          "at": "2026-09-25T01:51:22.391Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-48c3d9e896d960fd",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-off-ramps-pass-recorded-2026-09-25::a13da53663472ffe2ae77bc09a5daac0ea53254396e8698f375ba2d9a2583874",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "1436c597b718f0da1da5df2da28a08518d355fb065b19147d4fdf01e7a46c909",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-off-ramps-pass-recorded-2026-09-25",
+          "title": "Integration stashes and git stash list.",
+          "summary": "10. **Integration stashes and `git stash list`.** Eighteen entries on 2026-09-25, ten named for published orders. Allocated to WO-160 item 7. Reopen: the count exceeds thirty before WO-160 closes.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-09-25 off-ramps planning pass to WO-160 item 7: harness prune lists and, under --apply, drops integration stashes whose order's release is published, with the bytes inventory written first.",
+          "reopenWhen": "the stash count exceeds thirty before WO-160 closes",
+          "targets": [
+            "WO-160"
+          ],
+          "at": "2026-09-25T01:51:23.026Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-5c5a7b2b9e761803",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-off-ramps-pass-recorded-2026-09-25::b34f90d40c16492f604af1e87e42b864807a9db99edda825f9e6e525657bb377",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "fc75e3f617c7bd45c8093639d1f40f33f1614112289decb0ae5c9ebd68e07e18",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-off-ramps-pass-recorded-2026-09-25",
+          "title": "The Claude Code auto-mode classifier denied a verifier's instrument run.",
+          "summary": "8. **The Claude Code auto-mode classifier denied a verifier's instrument run.** WO-111 VER-002 lines 59 to 66: the operator ran the check with `!` and the verifier cited output whose exit code it could not see. A host behavior, not DotLn's. NoOp. Reopen: a second verification cites operator-run output for a required check.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined by the 2026-09-25 off-ramps planning pass: a host classifier behavior outside DotLn; the verifier disclosed the operator-run output and the unseen exit code. NoOp evidence: the planning document §12.",
+          "reopenWhen": "a second verification cites operator-run output for a required check",
+          "targets": [],
+          "at": "2026-09-25T01:51:21.765Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-005a8af5234cb3f3",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-off-ramps-pass-recorded-2026-09-25::b9a6859142a5afe764a60db8b68f31d6bba0b5e714a68df08b3961d89c9e6da8",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "514b0c2060d24a6eb8bb5d71e903478e2aa261d05c0940c5a8a401f480ad52d6",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-off-ramps-pass-recorded-2026-09-25",
+          "title": "Skeleton protocol validator kit.",
+          "summary": "1. **Skeleton protocol validator kit.** `object`, `exact` and `check` are byte-identical across `entropy-review-protocol.ts`, `verification-protocol.ts`, `worker-protocol.ts`, `mission-check-protocol.ts` and `plan-refutation-protocol.ts`; every one is a feedback source, so WO-162 excludes them. Rides as a boy-scout item on the next order that pays a live feedback episode and touches two of the five. Reopen: that order's activation.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-09-25 off-ramps planning pass: the five protocol files are feedback sources, so the byte-identical object, exact and check consolidation would spend a live self-host episode for a refactor; it rides as a boy-scout item on the next order that pays that episode and touches two of the five.",
+          "reopenWhen": "an order that pays a live feedback episode and touches two of the five protocol files activates",
+          "targets": [],
+          "at": "2026-09-25T01:51:17.312Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-9ac70adcd20de223",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-off-ramps-pass-recorded-2026-09-25::bd6d694cfcb04cbd972c770533c3cbb52f0cd8080c2768805efa9ac03bbe8884",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "4ae2a99e8cd2379f86093fa7a4d547c8cdf64ff39bfaeba643dd41d2363e6544",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-off-ramps-pass-recorded-2026-09-25",
+          "title": "The host-printed scratchpad is not a granted root.",
+          "summary": "3. **The host-printed scratchpad is not a granted root.** Two research agents and the planner met `DOTLN_HARNESS_REFUSED: outside-project write` when following the host's own scratchpad instruction, because WO-144 grants system-temp and the DotLn scratch path only. Each refusal costs a turn. A grant for the root the host prints at dispatch is a WO-144 decision for the operator. Reopen: a third role text or a verification records the same refusal.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Left open by the 2026-09-25 off-ramps planning pass: whether the root the host prints at dispatch joins the WO-144 grant is the operator's decision; three refusals in this session cost a turn each.",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-25T01:51:18.596Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-2f7416d76899846c",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-off-ramps-pass-recorded-2026-09-25::d4b45975da2a311a168eb762dfed3500294ebb8308434ee3c3b4076f4f177513",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "9f5490e0997d94f2380869df851815dcbb5a41b0dac4792d26664b320ece44b1",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-off-ramps-pass-recorded-2026-09-25",
+          "title": "Sustaining checks for orphan scripts and the docs index map.",
+          "summary": "6. **Sustaining checks for orphan scripts and the docs index map.** The inventory found zero orphan scripts and five missing index rows (added by this pass). NoOp: a check that guards a zero. Reopen: a second inventory finds three or more orphans or five or more missing rows.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-09-25 off-ramps planning pass: the inventory found zero orphan scripts and five missing index rows (added by the pass); a check would guard a zero. NoOp evidence: the planning document §12.",
+          "reopenWhen": "a second inventory finds three or more orphan scripts or five or more missing index rows",
+          "targets": [],
+          "at": "2026-09-25T01:51:20.506Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-db606a4b857737ff",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-off-ramps-pass-recorded-2026-09-25::d715f30376a531ac906953aae3bd01acc917a0afd04c816e2c90338f8790dd2c",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "5b3c0be812dfec3e10a1caed575e5993c0a575186d6d51c3241c9ad2cc3a069d",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-off-ramps-pass-recorded-2026-09-25",
+          "title": "UTC and local dates in records.",
+          "summary": "7. **UTC and local dates in records.** Decisions, the integration stash name, the roadmap note and VER-003 say 2026-09-25 for work done on the evening of 2026-09-24 local; commits carry `-0400`. NoOp: every generator uses UTC consistently and the ambiguity is a reader's, not a check's. Reopen: two records disagree on the order of two events.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined by the 2026-09-25 off-ramps planning pass: every generator uses UTC consistently; the ambiguity is a reader's, not a check's. NoOp evidence: the planning document §12.",
+          "reopenWhen": "two records disagree on the order of two events",
+          "targets": [],
+          "at": "2026-09-25T01:51:21.140Z"
+        }
+      ]
     }
   ]
 }

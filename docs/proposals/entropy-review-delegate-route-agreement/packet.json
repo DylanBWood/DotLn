@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "kind": "FiledProductSuggestionPacket",
+  "filedAt": "2026-09-25T01:44:53.640Z",
+  "sourceReceiptId": "REVIEW-003",
+  "sourceReceiptPath": "docs/instance/entropy-reducer/runs/REVIEW-003.md",
+  "operatorReason": "Filed as the design record for WO-165 with the second option preferred: fan-out-lens is not compiled for a route without a delegate tool and the lens briefs render as the reviewer checklist, so the envelope, residue and receipt describe the episode that ran; the first option is kept as the alternative if the protocol must change.",
+  "promotion": "Filing records the packet. Promotion to a work order remains an operator-authorized planning act.",
+  "packet": {
+    "schemaVersion": 1,
+    "kind": "ProductSuggestionPacket",
+    "proposedPath": "docs/proposals/entropy-review-delegate-route-agreement/",
+    "sourceEpisodeId": "ep_entropy_fd64d7151c3a1794",
+    "provenance": [
+      "Entropy Reducer review of frozen subject fa9957f18939492a6eae08b63f6ba256fd76d33d (subjectHash fd64d7151c3a17948d4706642d9273eef1fbe9b40023646bdc5b370ffe718a23), finding ER3-003",
+      "Measured by the ER3-003 reproduction and this episode's own tool set",
+      "Reviewer: entropy-reducer@1 compiled for claude-opus-5-5 at xhigh on claude-cli-print"
+    ],
+    "corroboratingEvidenceRefs": [
+      "docs/instance/entropy-reducer/runs/REVIEW-002.md summary ('Zero of four lens delegates used (no delegate tool in this session)')",
+      "packages/skeleton/src/entropy-review-protocol.ts:31,238",
+      "packages/skeleton/src/loadouts/entropy-reducer.ts:35,969,1020,1133,1257"
+    ],
+    "dissentingEvidenceRefs": [
+      "docs/instance/entropy-reducer/README.md ('The four-delegate and 32-probe ceilings are maxima, not required usage')"
+    ],
+    "suggestion": {
+      "suggestionId": "entropy-review-delegate-route-agreement",
+      "submittedBy": "entropy-reducer@1 (compiled for claude-opus-5-5 at xhigh, claude-cli-print) - non-authoritative",
+      "problemOrOpportunity": "The compiled Entropy Reducer grants four read-only delegate lenses and will not compile without the delegates resource. Both pinned review routes deny delegation, however. Every review and refutation therefore carries, and describes, a fan-out it cannot perform, and it works the lens briefs serially.",
+      "scope": "Make the compiler, the transport profile and the receipt agree by choosing one route. Either admit a read-only delegate tool on the claude-cli-print review route under the same --restricted confinement and record delegates used, or stop compiling fan-out-lens for routes without a delegate tool and render the lens briefs as the reviewer's checklist. In both cases, add a fixture test that every effect family the compiled envelope grants maps to something the pinned transport admits.",
+      "evidenceRefs": [
+        "ER3-003 reproduction command and output",
+        "docs/instance/entropy-reducer/runs/REVIEW-002.md",
+        "packages/skeleton/src/worker-transport.ts entropyArgs"
+      ],
+      "affectedUsers": [
+        "the operator reading Entropy Reducer receipts",
+        "the reviewer actor following the compiled Program",
+        "maintainers of the loadout and transport profiles"
+      ],
+      "affectedSystems": [
+        "packages/skeleton/src/loadouts/entropy-reducer.ts",
+        "packages/skeleton/src/entropy-review-protocol.ts",
+        "packages/skeleton/src/worker-transport.ts",
+        "docs/instance/entropy-reducer/RESIDUE.md"
+      ],
+      "expectedValue": "The residue and receipts would describe the episode that actually ran. If delegation is admitted, census breadth can run in parallel within the existing four-delegate ceiling. The test would catch later drift between grants and routes.",
+      "altitude": 6,
+      "uncertainty": "It has not been probed whether a delegate tool can be admitted under --restricted without widening file access. Whether serial lens work loses coverage compared with delegates is unmeasured.",
+      "risks": [
+        "Admitting delegation adds cost and a second confinement surface to check",
+        "Dropping the support changes the compiled semantic hash and regenerates the residue and fixtures"
+      ],
+      "alternatives": [
+        "Keep the current routes and record 'delegates: 0 of 4, route denies' as a receipt field",
+        "Keep the support but mark it route-conditional in the residue"
+      ],
+      "duplicationHints": [
+        "REVIEW-002 result envelope noted the same absence without a finding"
+      ],
+      "urgencyRationale": "Low: it misdescribes each review and refutation episode but blocks nothing. It is cheapest to settle the next time the loadout is regenerated."
+    }
+  }
+}

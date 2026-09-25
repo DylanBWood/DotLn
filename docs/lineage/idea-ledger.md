@@ -40,6 +40,98 @@ are now declared above. The [decision record](../evidence/WO-084/decisions.md)
 records the legacy ledger write-back; `node scripts/lineage.mjs index` generates
 the index and `index --check` enforces this rule in `npm run test:docs`.
 
+## 2026-09-25 — Planning pass: off ramps, 5S, the Entropy Reducer and the machinery WO-111 exposed (WO-158 to WO-165; REVIEW-003 consumed)
+
+Source: the operator's dispatch and one mid-turn message, captured verbatim
+in ignored intake
+(`docs/intake/notes/2026-09-25-off-ramps-5s-entropy-planning.md`, SHA-256
+`c89fe7ace14a2008561acd744e7d854864a0349cea7621db1d004d293a38861a`): a
+standard pass plus 5S repo management plus the Entropy Reducer; fix what
+went wrong in WO-111 with the machinery; designed off ramps for the
+nonstandard work-order states that keep being handled ad hoc, researched
+across more than WO-111; the sandbox vocabulary is wrong for a host that
+runs none of the three CLIs in a sandbox; files within a unit should not
+each redefine standard pure functions, without a new shared-utility
+dependency, "DRY for the sake of improving the codebase"; then "i expect a
+pushed branch and pr when you're done. take your time". Inputs: five
+read-only research reports over WO-111's evidence, every order's decisions
+and reports, every tracked `sandbox` line, the helper declarations of
+every code unit and the repository inventory; REVIEW-003 and
+REFUTATION-004; the register. Clean-room screen: no stop condition; the
+operator's host settings are described by posture, never copied. The
+record is [the planning document](../planning/off-ramps-5s-entropy-2026-09-25.md).
+
+- **Off ramps are typed events, not prose allowances** `adopted`
+  - The catalog of 101 orders found seven records corrected after their
+    event, seven override uses with no record, four operator-owned steps
+    waived in prose and no terminal state short of a pass; WO-111's D017 →
+    D019 → D020 chain is the sharpest case. WO-158 files
+    `CriterionWaived`, `WorkOrderWithdrawn`, `RecordCorrected` and
+    `OperatorOverrideRecorded` with their `resume` commands, the
+    `withdrawn` phase, and read-only admission during a live gate.
+    Provenance: the planning document §3 and §4. Reopen: a session records
+    a decision naming a situation none of the four routes covers.
+- **The only blocking failure in WO-111 was DotLn's own transport**
+  `adopted`
+  - Codex launches inherit the operator's Codex home and wrote trust
+    entries for scratch targets into the user-level configuration; the
+    order's fence forbade the fix; REVIEW-003 ER3-001 found seven argv
+    builders and no isolated home. WO-159 builds one launcher with a
+    per-episode home and digest pairs as protected receipt surfaces, and
+    must close before any Codex worker touches an operator-owned
+    repository. Provenance: §2, §9. Reopen: an isolated launch still
+    changes the user-level configuration.
+- **The machinery WO-111 exposed is one order, by the operator's direction**
+  `adopted` `operator-authorized`
+  - Nine seams (the orphaned amendment row, the `entropy subject` defect
+    this pass met, the false "no files changed", the kernel-fixture edit
+    for evidence JSONL, hookless and repair-phase integration, inherited
+    gate failures, integration stashes, the own-write advisory, the
+    `test:docs` advisory) are WO-160 in the WO-157 shape. Provenance: §2,
+    §5. Reopen: an item's seam proves larger than its fixture.
+- **Sandbox vocabulary is corrected at the generators, not in history**
+  `adopted`
+  - 3,853 tracked lines carry the word in six senses; the wrong ones are
+    the cold-start residue clause, two loadout sentences, the playbook
+    paragraph and three ADRs; the "gate sandbox" is a fail-open detector,
+    not a sandbox. WO-161 rewrites the generators, records the posture in
+    an ADR amendment and renames the detector; historical evidence keeps
+    its bytes. Provenance: §6. Reopen: the operator enables a host sandbox.
+- **DRY inside a unit, never across units** `adopted`
+  - Seventeen local Git wrappers beside an unused library `runGit`,
+    twenty copies of the fixture writer, a cloned receipt-helper block and
+    a same-name digest with two outputs are WO-162; the skeleton's
+    protocol validator kit is excluded because every file is a feedback
+    source and the refactor would buy a live episode; the divergences
+    found (`inside` ×3, `same`, four control-character classes) are
+    decided, not merged. Provenance: §8. Reopen: a later order pays the
+    feedback episode and touches two of the five protocol files.
+- **5S on the launchpad starts with Sort and Set in order** `adopted`
+  - The inventory found no orphan scripts, no unwired tests and no
+    orphan evidence; what remains is three import-only scripts at the top
+    level, a command block in the library, three one-shot planning inputs,
+    an unmarked generated file and two docs-only evidence tools without a
+    disposition (WO-163). Sustain checks and an evidence byte ceiling are
+    declined with reopening conditions; local residue (147 MB the prune
+    command already lists) is the operator's. Provenance: §7. Reopen: a
+    second inventory finds orphans.
+- **REVIEW-003 paid for, consumed in the same pass** `adopted`
+  - `entropy subject` named the pre-mechanism REVIEW-001 with undefined
+    paths (a defect, WO-160 item 2); the pass judged that pair discharged
+    by WO-023's repairs and ran a fresh episode against the explicit HEAD
+    commit. Three measured findings survived the blinded refutation:
+    ER3-001 (WO-159), ER3-002 (console collection is the document gate's
+    critical path; WO-164; the deferred row's reopening observation
+    occurred), ER3-003 (the reducer's route disagrees with its compiled
+    authority; WO-165). Provenance: §9. Reopen: a finding's order closes
+    without its measured removal.
+- **Machinery ahead of delivery, once more, with the reason stated**
+  `adopted`
+  - Two pairs go to the head because every later order pays their absence;
+    WO-070 and WO-115 keep the next slot; the REVIEW-003 pair and the
+    maintenance pair follow them. Provenance: §10 and §13 (the drift lens
+    named). Reopen: the operator moves the delivery pair up.
+
 ## Presence-curve clarification — 2026-09-24
 
 **Source and scope:** The operator clarified the Blackjack +3 example during

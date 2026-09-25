@@ -1607,6 +1607,93 @@ row reopens for the efficiency pass.
 - _Spend survey agents._ Four findings and their sources fit one session's
   reading; the pass spent no subagent before the refutation. Declined.
 
+## Candidates — returns from the off-ramps pass (recorded 2026-09-25)
+
+Found by the 2026-09-25 planning pass's five research streams (the WO-111
+reconstruction, the cross-order catalog, the sandbox audit, the helper
+inventory and the 5S inventory) and not allocated to WO-158 to WO-165.
+Each keeps its source and the observation that reopens it. This section
+grants no activation authority.
+
+1. **Skeleton protocol validator kit.** `object`, `exact` and `check`
+   are byte-identical across `entropy-review-protocol.ts`,
+   `verification-protocol.ts`, `worker-protocol.ts`,
+   `mission-check-protocol.ts` and `plan-refutation-protocol.ts`; every
+   one is a feedback source, so WO-162 excludes them. Rides as a boy-scout
+   item on the next order that pays a live feedback episode and touches
+   two of the five. Reopen: that order's activation.
+2. **Control-character contracts differ under one name.** `line`/`text`
+   validators use three control-character classes across the skeleton
+   protocols and four across `scripts/lib` (planning document §8); a
+   value the handoff contract accepts can be rejected by the mission
+   check. WO-162 records a decision per divergence and names any latent
+   defect; the contract choice itself is a bounded order when a failing
+   case is observed. Reopen: a value refused late across two surfaces.
+3. **The host-printed scratchpad is not a granted root.** Two research
+   agents and the planner met `DOTLN_HARNESS_REFUSED: outside-project
+   write` when following the host's own scratchpad instruction, because
+   WO-144 grants system-temp and the DotLn scratch path only. Each refusal
+   costs a turn. A grant for the root the host prints at dispatch is a
+   WO-144 decision for the operator. Reopen: a third role text or a
+   verification records the same refusal.
+4. **Archiving consumed planning passes.** Five dated passes are fully
+   consumed but carry 3 to 11 live inbound links each; `docs/planning/archive/`
+   holds one file and no written rule. NoOp: 27 link updates buy nothing
+   a reader needs today; the operator decides the rule. Reopen: the
+   planning directory exceeds forty documents or a reader is misled by a
+   consumed pass.
+5. **Tracked evidence bytes.** 148,788 KB of 202,792 KB tracked is
+   `docs/evidence` (73%); since WO-154 a new self-host log is about
+   72 KB against 1.4 to 2.1 MB before. NoOp on a ceiling: the growth is
+   cut and a ceiling would be a mechanism with no removal. Reopen: a
+   week adds more than 10 MB of tracked evidence.
+6. **Sustaining checks for orphan scripts and the docs index map.** The
+   inventory found zero orphan scripts and five missing index rows (added
+   by this pass). NoOp: a check that guards a zero. Reopen: a second
+   inventory finds three or more orphans or five or more missing rows.
+7. **UTC and local dates in records.** Decisions, the integration stash
+   name, the roadmap note and VER-003 say 2026-09-25 for work done on the
+   evening of 2026-09-24 local; commits carry `-0400`. NoOp: every
+   generator uses UTC consistently and the ambiguity is a reader's, not a
+   check's. Reopen: two records disagree on the order of two events.
+8. **The Claude Code auto-mode classifier denied a verifier's instrument
+   run.** WO-111 VER-002 lines 59 to 66: the operator ran the check with
+   `!` and the verifier cited output whose exit code it could not see.
+   A host behavior, not DotLn's. NoOp. Reopen: a second verification
+   cites operator-run output for a required check.
+9. **Stale trust entries in the operator's Codex configuration.** 36 of
+   43 trusted project entries are DotLn scratch and probe families, 34 for
+   paths that no longer exist (WO-111 `codex-trust-diagnosis.md`). WO-159
+   stops the accumulation; removing the existing entries is the operator's
+   action outside the repository. Reopen: never from here; the operator
+   records it if they wish.
+10. **Integration stashes and `git stash list`.** Eighteen entries on
+    2026-09-25, ten named for published orders. Allocated to WO-160 item 7.
+    Reopen: the count exceeds thirty before WO-160 closes.
+
+## REVIEW-003 consumed — dispositions and routes (2026-09-25)
+
+Recorded by the 2026-09-25 planning pass, which paid for
+[REVIEW-003](../instance/entropy-reducer/runs/REVIEW-003.md) (1,089 s,
+USD 6.99, claude-opus-5-5 at xhigh through `claude-cli-print`, zero
+permission denials) and
+[REFUTATION-004](../instance/entropy-reducer/runs/REFUTATION-004.md)
+(178 s, USD 0.80) because `npm run entropy -- subject` named the
+pre-mechanism REVIEW-001 with undefined paths (the defect is WO-160 item
+2) and that pair was discharged inside WO-023 on 2026-09-04. The accepted
+findings are register rows through the
+[generated review document](entropy-reviews/REVIEW-003.md); this section
+is the planning decision over them and grants no activation authority.
+
+| Item                                                                                | Disposition     | Route                                                                        | Reopen                                                          |
+| ----------------------------------------------------------------------------------- | --------------- | ---------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| ER3-001 — Codex launches inherit the operator's home; seven argv builders (major)   | accepted        | WO-159, paired with WO-158 at the head                                       | an isolated launch still changes the user-level configuration   |
+| ER3-002 — console collection forks 101 status processes; the gate's critical path (major) | accepted  | WO-164, paired with WO-165 after WO-070 and WO-115; FUP-7f9a27e6ed6c44b3 reopened | `collectSources` above 3 s after WO-164 closes               |
+| ER3-003 — the reducer compiles a fan-out neither route can run (minor)              | accepted        | WO-165, the second option preferred                                          | a receipt describes a capability the episode lacked             |
+| Packet `isolated-codex-launch-home`                                               | accepted, filed | design record for WO-159                                                     | the order's decisions                                           |
+| Packet `constant-process-console-collection`                                      | accepted, filed | design record for WO-164                                                     | the order's decisions                                           |
+| Packet `entropy-review-delegate-route-agreement`                                  | accepted, filed | design record for WO-165                                                     | the order's decisions                                           |
+
 ## Direct-draft provenance for the 2026-09-02 batch
 
 WO-016 through WO-022 were supplied by the operator as complete public drafts

@@ -1,0 +1,333 @@
+{
+  "schemaVersion": "entropy-review-receipt-v1",
+  "receiptId": "REFUTATION-004",
+  "ordinal": 5,
+  "previousReceiptHash": "sha256:e41246c7f35b567775b6b3023df24c73987b283f32530d1b741dd9cbfbd947a7",
+  "kind": "EntropyReducerRefutationRun",
+  "episodeId": "ep_entropy_ref_fd64d7151c3a",
+  "startedAt": "2026-09-25T01:35:19.173Z",
+  "endedAt": "2026-09-25T01:38:16.690Z",
+  "subject": {
+    "schemaVersion": "entropy-review-v1",
+    "baseCommit": "fa9957f18939492a6eae08b63f6ba256fd76d33d",
+    "repository": "/Users/dylanwood/Projects/DotLn",
+    "scratchRepository": "/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-entropy/cff9570ebfdf6d3e/review-Fx5dS9/repo",
+    "trackedStatusSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "scratchInventorySha256": "153ae049cec4f755c132257e823f571651a0be02d6f3010db7bbc55ab6d9afeb",
+    "scratchInventoryCount": 3292,
+    "hash": "fd64d7151c3a17948d4706642d9273eef1fbe9b40023646bdc5b370ffe718a23"
+  },
+  "reviewReceiptId": "REVIEW-003",
+  "reviewReceiptHash": "sha256:e41246c7f35b567775b6b3023df24c73987b283f32530d1b741dd9cbfbd947a7",
+  "actorAttestation": {
+    "route": "launched",
+    "transport": "claude-cli-print",
+    "harness": "claude-code",
+    "harnessVersion": "2.1.282",
+    "model": "claude-opus-5-5",
+    "effort": "xhigh",
+    "source": "command-line-readback-and-invocation",
+    "accountLabel": null,
+    "tools": [
+      "Bash",
+      "Read",
+      "Glob",
+      "Grep"
+    ],
+    "effectiveModel": "unknown",
+    "effectiveEffort": "unknown",
+    "identity": "entropy-reducer@1",
+    "substitutionReason": null,
+    "substitutionPolicy": "different-reviewer-and-must-be-attested"
+  },
+  "confinement": {
+    "subjectBinding": "the commit the challenged review receipt names, re-frozen for this episode; the working tree's own drift is recorded rather than refused",
+    "trackedStatusBeforeSha256": "13a582ab89859e6a65b8d2a0965c7466c64909dd26dcee5407dfd3ca264e347d",
+    "trackedStatusAfterSha256": "13a582ab89859e6a65b8d2a0965c7466c64909dd26dcee5407dfd3ca264e347d",
+    "trackedStatusByteIdentical": true,
+    "scratchInventoryBefore": {
+      "count": 3292,
+      "sha256": "153ae049cec4f755c132257e823f571651a0be02d6f3010db7bbc55ab6d9afeb"
+    },
+    "scratchInventoryAfter": {
+      "count": 4184,
+      "sha256": "9a9aa4e4f8219c0084b1076c1421db5f19e6787e69bcc3fb3794f7931ff8a23d"
+    },
+    "untrackedListing": {
+      "before": {
+        "count": 2,
+        "sha256": "fdcb2b1b01ffb7b91536a52b09f99d971286807d9253f91df0a9586ab51a3c99"
+      },
+      "after": {
+        "count": 8,
+        "sha256": "6381ced5a55e776730428e4bbf68648207ee244bcdb08b17e01d68b7bbbe4ae9"
+      },
+      "identical": false
+    },
+    "scratchDelta": {
+      "observed": true,
+      "added": [
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/src/artifact-identity.d.ts",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/src/artifact-identity.js",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/src/attribution.d.mts",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/src/attribution.mjs",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/src/authority.d.ts",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/src/authority.js",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/src/codex-continuation.d.mts",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/src/codex-continuation.mjs",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/src/compile.d.ts",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/src/compile.js",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/src/feedback.d.ts",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/src/feedback.js",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/src/harness.d.ts",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/src/harness.js",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/src/index.d.ts",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/src/index.js",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/src/normalize.d.ts",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/src/normalize.js",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/src/operator-control.d.mts",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/src/operator-control.mjs",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/src/presence-schema.d.ts",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/src/presence-schema.js",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/src/presence.d.ts",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/src/presence.js",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/src/render.d.ts",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/src/render.js",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/src/seiri.d.ts",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/src/seiri.js",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/src/senses.d.ts",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/src/senses.js",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/src/types.d.ts",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/src/types.js",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/src/verification.d.ts",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/src/verification.js",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/src/views.d.ts",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/src/views.js",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/test/artifact-identity.test.d.ts",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/test/artifact-identity.test.js",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/test/authority-fixture.d.ts",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/test/authority-fixture.js",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/test/authority.test.d.ts",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/test/authority.test.js",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/test/compiler.test.d.ts",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/test/compiler.test.js",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/test/feedback.test.d.ts",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/test/feedback.test.js",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/test/harness.test.d.ts",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/test/harness.test.js",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/test/presence.test.d.ts",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/test/presence.test.js",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/test/public-api.test.d.ts",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/test/public-api.test.js",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/test/purity.test.d.ts",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/test/purity.test.js",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/test/senses.test.d.ts",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/test/senses.test.js",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/test/tooltip.test.d.ts",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/test/tooltip.test.js",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/test/verification.test.d.ts",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/test/verification.test.js",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/test/views.test.d.ts",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/test/views.test.js",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/dist/tsconfig.tsbuildinfo",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/compiler/package.json",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/console/dist/src/actors.d.ts",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/console/dist/src/actors.js",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/console/dist/src/blueprint.d.ts",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/console/dist/src/blueprint.js",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/console/dist/src/board.d.ts",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/console/dist/src/board.js",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/console/dist/src/builds.d.ts",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/console/dist/src/builds.js",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/console/dist/src/cli.d.ts",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/console/dist/src/cli.js",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/console/dist/src/collect.d.ts",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/console/dist/src/collect.js",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/console/dist/src/context.d.ts",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/console/dist/src/context.js",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/console/dist/src/index.d.ts",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/console/dist/src/index.js",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/console/dist/src/render.d.ts",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/console/dist/src/render.js",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/console/dist/src/runtime-status.d.ts",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/console/dist/src/runtime-status.js",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/console/dist/src/text-sources.d.ts",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/console/dist/src/text-sources.js",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/console/dist/src/types.d.ts",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/console/dist/src/types.js",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/console/dist/src/values.d.ts",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/console/dist/src/values.js",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/console/dist/src/work.d.ts",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/console/dist/src/work.js",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/console/dist/test/board.test.d.ts",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/console/dist/test/board.test.js",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/console/dist/test/fixtures.d.ts",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/console/dist/test/fixtures.js",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/console/dist/test/runtime-status.test.d.ts",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/console/dist/test/runtime-status.test.js",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/console/dist/tsconfig.tsbuildinfo",
+        ".runtime/harness/c07fee7fdc83d9ee/packages/console/package.json"
+      ],
+      "removed": [],
+      "resized": [],
+      "counts": {
+        "added": 892,
+        "removed": 0,
+        "resized": 0
+      },
+      "sha256": {
+        "added": "e8f4c266c663a4c8a25ece4b590191f02439138e6c0f5319072ef429b04c06fd",
+        "removed": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "resized": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "listedPerSet": 100
+    },
+    "excludedFromManifest": [
+      ".git/**",
+      "**/node_modules/**"
+    ],
+    "dependencies": "copied",
+    "commandExecution": "file tools confined to the frozen copy by --restricted; shell commands instructed to stay inside it and checked by the tracked-path status and untracked-listing hashes on either side of the episode",
+    "permissionDenials": 0,
+    "deniedTools": []
+  },
+  "blinding": {
+    "supplied": "typed selection subjects only",
+    "withheld": [
+      "reviewer narrative",
+      "observed-versus-expected conclusion",
+      "severity argument",
+      "proposal packets",
+      "target survival count"
+    ],
+    "measuredSubjects": 3,
+    "inspectionSubjects": 0
+  },
+  "report": {
+    "schemaVersion": 1,
+    "selection": {
+      "measuredDenominator": 3,
+      "measuredStatus": "selected",
+      "inspectionDenominator": 0,
+      "inspectionStatus": "not-applicable",
+      "inspectionSampleSize": 0,
+      "selectionRule": "every measured finding and every by-inspection finding",
+      "measuredSubjects": [
+        {
+          "findingId": "ER3-002",
+          "command": "cd <frozenSubjectPath> && mkdir -p .runtime/tmp && export TMPDIR=$PWD/.runtime/tmp && node scripts/build.mjs >/dev/null && node --input-type=module -e 'import cp from \"node:child_process\";import {syncBuiltinESMExports} from \"node:module\";const o=cp.execFileSync;const t=new Map();cp.execFileSync=function(f,a){const k=[f.split(\"/\").pop(),...(a||[]).slice(0,2).map(x=>x.split(\"/\").pop())].join(\" \");const s=performance.now();try{return o.apply(this,arguments)}finally{const e=t.get(k)||{n:0,ms:0};e.n++;e.ms+=performance.now()-s;t.set(k,e)}};syncBuiltinESMExports();const {collectSources}=await import(process.cwd()+\"/packages/console/dist/src/collect.js\");const s=performance.now();await collectSources(process.cwd(),[]);for(const [k,v] of t)console.log(v.n,Math.round(v.ms)+\"ms\",k);console.log(\"total\",Math.round(performance.now()-s)+\"ms\")'"
+        },
+        {
+          "findingId": "ER3-003",
+          "command": "cd <frozenSubjectPath> && grep -n 'ENTROPY_REVIEW_TOOLS =' packages/skeleton/src/entropy-review-protocol.ts; grep -n '\"delegate.readonly\"\\|delegates: 4\\|compiled authority lacks the delegates' packages/skeleton/src/loadouts/entropy-reducer.ts; grep -n 'lensBriefs.length > 0' packages/skeleton/src/entropy-review-protocol.ts; grep -n '\"multi_agent\",' packages/skeleton/src/worker-transport.ts; grep -c 'Zero of four lens delegates used' docs/instance/entropy-reducer/runs/REVIEW-002.json"
+        },
+        {
+          "findingId": "ER3-001",
+          "command": "cd <frozenSubjectPath> && echo 'Codex launch files:' && git grep -l -e '\"--ephemeral\"' -- 'packages/*/src/*.ts' 'scripts/*.mjs' 'scripts/lib/*.mjs' 'scripts/probes/*.mjs' && echo \"mention CODEX_HOME: $(git grep -l -e '\"--ephemeral\"' -- 'packages/*/src/*.ts' 'scripts/*.mjs' 'scripts/lib/*.mjs' 'scripts/probes/*.mjs' | xargs grep -l CODEX_HOME | wc -l)\" && echo \"argv copies outside the transport: $(git grep -l -e '\"--ignore-user-config\"' -- 'scripts/*.mjs' 'scripts/lib/*.mjs' 'scripts/probes/*.mjs' ':!scripts/test-*.mjs' | wc -l)\" && sed -n 96,103p packages/skeleton/src/worker-transport.ts"
+        }
+      ],
+      "inspectionSubjects": [],
+      "selectedFindingIds": [
+        "ER3-002",
+        "ER3-003",
+        "ER3-001"
+      ]
+    },
+    "attempts": [
+      {
+        "findingId": "ER3-002",
+        "result": "survived",
+        "reason": "I ran the reproduction as given, inside the frozen copy. The build succeeded and `git status --porcelain` stayed empty afterwards. The instrumented collectSources call made 101 `node resume.mjs status` spawns that took 12624 ms in total, plus one `release.mjs list` at 5082 ms, one `resume.mjs usage` at 105 ms and one `worktree.mjs constellation` at 40 ms. Overall it took 18028 ms. The source matches this measurement. packages/console/src/collect.ts:117-139 collects the distinct workOrderIds from resume.jsonl and every docs/control/orders/WO-NNN.jsonl, then spawns one `resume.mjs status --json --work-order <id>` process for each id. That gives 101 ids from 79 order files plus the resume log. The spawns go through observedExecFileSync, and the probe's execFileSync patch captured them, so the count and timing are measured, not inferred. The CLI has no batch path: resume.mjs:809 rejects ambiguous `status --json` without --work-order. That explains the design but does not undercut the measurement.",
+        "evidenceRefs": [
+          "reproduction output: 101 12624ms node resume.mjs status; 1 5082ms node release.mjs list; total 18028ms",
+          "packages/console/src/collect.ts:117-139",
+          "packages/console/src/collect.ts:89-99",
+          "packages/console/src/collect.ts:242",
+          "scripts/resume.mjs:809",
+          "docs/control/orders/ (79 WO-NNN.jsonl files)",
+          "git status --porcelain after build: 0 lines"
+        ],
+        "evidenceLabel": "measured",
+        "severity": "major",
+        "surface": "packages/console/src/collect.ts (collectSources controlStatus and command runner); scripts/resume.mjs (status); scripts/release.mjs (list); packages/console/test/board.test.ts:992; scripts/test-runner.mjs console-docs task",
+        "reproduction": {
+          "kind": "command",
+          "command": "cd <frozenSubjectPath> && mkdir -p .runtime/tmp && export TMPDIR=$PWD/.runtime/tmp && node scripts/build.mjs >/dev/null && node --input-type=module -e 'import cp from \"node:child_process\";import {syncBuiltinESMExports} from \"node:module\";const o=cp.execFileSync;const t=new Map();cp.execFileSync=function(f,a){const k=[f.split(\"/\").pop(),...(a||[]).slice(0,2).map(x=>x.split(\"/\").pop())].join(\" \");const s=performance.now();try{return o.apply(this,arguments)}finally{const e=t.get(k)||{n:0,ms:0};e.n++;e.ms+=performance.now()-s;t.set(k,e)}};syncBuiltinESMExports();const {collectSources}=await import(process.cwd()+\"/packages/console/dist/src/collect.js\");const s=performance.now();await collectSources(process.cwd(),[]);for(const [k,v] of t)console.log(v.n,Math.round(v.ms)+\"ms\",k);console.log(\"total\",Math.round(performance.now()-s)+\"ms\")'"
+        }
+      },
+      {
+        "findingId": "ER3-003",
+        "result": "survived",
+        "reason": "Every grep returned the line it targets. The Entropy Reducer loadout grants `delegate.readonly` (entropy-reducer.ts:35, 1133) with `delegates: 4` (969, 1020). It also refuses to compile without that resource (1257). The review request validator requires at least one lens brief (entropy-review-protocol.ts:238). However, neither transport gives a delegation tool. On Claude, entropyArgs passes `--tools` from profile.modelTools, and the validator at entropy-review-protocol.ts:227-229 limits that list to ENTROPY_REVIEW_TOOLS = Bash, Read, Glob, Grep (line 31). There is no Task or Agent tool. On Codex, entropyArgs at worker-transport.ts:465-472 disables all of codexDisabled except shell_tool, unified_exec and code_mode_host, so `multi_agent` and `multi_agent_v2` (lines 209-210) are always disabled. The subagents exemption at line 369 exists only in the evidence-args path, and line 272 returns entropyArgs before that path is reached. REVIEW-002.json contains the recorded outcome twice: 'Zero of four lens delegates used (no delegate tool in this session)'. One caveat: the work order's knownFacts already say the kernel does not evaluate Program.All. That covers why this review is dispatched manually, but not the missing tool surface, so the reproduction still shows its claim.",
+        "evidenceRefs": [
+          "packages/skeleton/src/entropy-review-protocol.ts:31",
+          "packages/skeleton/src/entropy-review-protocol.ts:227-229",
+          "packages/skeleton/src/entropy-review-protocol.ts:238-239",
+          "packages/skeleton/src/loadouts/entropy-reducer.ts:35",
+          "packages/skeleton/src/loadouts/entropy-reducer.ts:969",
+          "packages/skeleton/src/loadouts/entropy-reducer.ts:1020",
+          "packages/skeleton/src/loadouts/entropy-reducer.ts:1128-1137",
+          "packages/skeleton/src/loadouts/entropy-reducer.ts:1257",
+          "packages/skeleton/src/worker-transport.ts:209-210",
+          "packages/skeleton/src/worker-transport.ts:272",
+          "packages/skeleton/src/worker-transport.ts:369",
+          "packages/skeleton/src/worker-transport.ts:465-472",
+          "docs/instance/entropy-reducer/runs/REVIEW-002.json (grep -c = 2)"
+        ],
+        "evidenceLabel": "measured",
+        "severity": "minor",
+        "surface": "packages/skeleton/src/entropy-review-protocol.ts (ENTROPY_REVIEW_TOOLS); packages/skeleton/src/worker-transport.ts (entropyArgs); packages/skeleton/src/loadouts/entropy-reducer.ts (fan-out-lens support, delegates resource)",
+        "reproduction": {
+          "kind": "command",
+          "command": "cd <frozenSubjectPath> && grep -n 'ENTROPY_REVIEW_TOOLS =' packages/skeleton/src/entropy-review-protocol.ts; grep -n '\"delegate.readonly\"\\|delegates: 4\\|compiled authority lacks the delegates' packages/skeleton/src/loadouts/entropy-reducer.ts; grep -n 'lensBriefs.length > 0' packages/skeleton/src/entropy-review-protocol.ts; grep -n '\"multi_agent\",' packages/skeleton/src/worker-transport.ts; grep -c 'Zero of four lens delegates used' docs/instance/entropy-reducer/runs/REVIEW-002.json"
+        }
+      },
+      {
+        "findingId": "ER3-001",
+        "result": "survived",
+        "reason": "The command reported 7 files containing '\"--ephemeral\"', 0 of them mentioning CODEX_HOME, and 6 non-test script files containing '\"--ignore-user-config\"'. It also printed worker-transport.ts:96-103, which passes process.env, or process.env plus the resident variables, to the spawned CLI. Those parts hold. The launch environment inherits whatever CODEX_HOME the operator has, and no launch file sets or scopes it. The counts are inflated by one, though. scripts/probe-worker-hosts.mjs only runs `codex exec --help` and `--version`, and its '--ephemeral' and '--ignore-user-config' strings are a checklist of help-text flags (lines 45-67), not launch arguments. So there are 6 real launch files, not 7, and 5 argument copies outside the transport, not 6: harness-probe, authority-probe, writing-worker-probe codexBase, local-model-role-qualification and target-worker-smoke. Those 5 do differ from the transport's hardened shapes. For example, target-worker-smoke and harness-probe lack --strict-config and shell_environment_policy.inherit=\"none\". Separately, the transport comment at lines 95-96 says CLI-resolved auth is deliberate. The reproduction shows only that CODEX_HOME is never mentioned, not that the inheritance causes any leak. The qualitative claim stands, but the counts need correcting to 6 and 5.",
+        "evidenceRefs": [
+          "reproduction output: 7 launch files, mention CODEX_HOME 0, argv copies outside the transport 6",
+          "scripts/probe-worker-hosts.mjs:45-67 (help-text flag checklist, not a launch)",
+          "packages/skeleton/src/worker-transport.ts:95-103",
+          "packages/skeleton/src/worker-transport.ts:327-365",
+          "packages/skeleton/src/worker-transport.ts:428-465",
+          "packages/skeleton/src/worker-transport.ts:516-550",
+          "scripts/harness-probe.mjs:163-176",
+          "scripts/lib/authority-probe.mjs:271-298",
+          "scripts/lib/writing-worker-probe.mjs:613-632",
+          "scripts/probes/local-model-role-qualification.mjs:760-790",
+          "scripts/target-worker-smoke.mjs:101-117"
+        ],
+        "evidenceLabel": "measured",
+        "severity": "major",
+        "surface": "packages/skeleton/src/worker-transport.ts (runWorkerProcess, Codex argv builders); scripts/lib/authority-probe.mjs; scripts/lib/writing-worker-probe.mjs; scripts/harness-probe.mjs; scripts/probe-worker-hosts.mjs; scripts/target-worker-smoke.mjs; scripts/probes/local-model-role-qualification.mjs",
+        "reproduction": {
+          "kind": "command",
+          "command": "cd <frozenSubjectPath> && echo 'Codex launch files:' && git grep -l -e '\"--ephemeral\"' -- 'packages/*/src/*.ts' 'scripts/*.mjs' 'scripts/lib/*.mjs' 'scripts/probes/*.mjs' && echo \"mention CODEX_HOME: $(git grep -l -e '\"--ephemeral\"' -- 'packages/*/src/*.ts' 'scripts/*.mjs' 'scripts/lib/*.mjs' 'scripts/probes/*.mjs' | xargs grep -l CODEX_HOME | wc -l)\" && echo \"argv copies outside the transport: $(git grep -l -e '\"--ignore-user-config\"' -- 'scripts/*.mjs' 'scripts/lib/*.mjs' 'scripts/probes/*.mjs' ':!scripts/test-*.mjs' | wc -l)\" && sed -n 96,103p packages/skeleton/src/worker-transport.ts"
+        }
+      }
+    ],
+    "promotedFindingIds": [
+      "ER3-002",
+      "ER3-003",
+      "ER3-001"
+    ],
+    "refutedFindingIds": [],
+    "blockedFindingIds": [],
+    "unselectedFindingIds": []
+  },
+  "cost": {
+    "line": "tokens unknown; cause harness-no-readback; observed episode wall clock 178 s, 20 turns, USD 0.8009128000000001; source claude-result-envelope",
+    "tokens": null,
+    "costUsd": 0.8009128000000001,
+    "durationMs": 177517,
+    "turns": 20,
+    "source": "claude-result-envelope"
+  },
+  "liveness": "live",
+  "localTerms": {
+    "status": "present"
+  },
+  "receiptHash": "sha256:3643dad063a3681369bcc349021104c71244280b96c7214af9a10ba80a28de45"
+}
