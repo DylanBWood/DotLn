@@ -16572,6 +16572,238 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-3a0c4ea52f8d6d08",
+      "key": "decision:docs/evidence/WO-158/decisions.md#wo-158-d005",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "4155d2b1f96d889c23e7d9b90c48b793463346705dd84b1537634f87d35394f9",
+          "ref": "docs/evidence/WO-158/decisions.md#wo-158-d005",
+          "title": "WO-158-D005: Next order that touches worktree lifecycle (WO-160 is the nearest): give a withdrawn order a publication and teardown route; worktree finish and publish require a closed order today, so a",
+          "summary": "{ \"id\": \"WO-158-D005\", \"date\": \"2026-09-25\", \"dispatch\": \"resume: next; WO-158 criteria 1 and 3, operator-review assumption 2\", \"decision\": \"`withdrawn` is settled like `closed` wherever a consumer asks 'is this order in flight': openOrders, meta's selected and active sets and budget rows, the test runner's gate attribution, resident binding, and the session hook's expected completion event and Stop completion/evidence obligations (reading your own output still applies). The index lists a withdrawn order in its Closed section with a `- Withdrawal:` line, and in the proposed order unchecked as `withdrawn: <disposition>`, because a check means a passing final review. A typed dependency on it i",
+          "missing": false
+        },
+        {
+          "hash": "790cf7ac3815ef92882188c4814c6ffd21f524bc2f9fc661c4a1d59fcb00f9e4",
+          "ref": "docs/evidence/WO-158/decisions.md#wo-158-d005",
+          "title": "WO-158-D005: Next order that touches worktree lifecycle (WO-160 is the nearest): give a withdrawn order a publication and teardown route; worktree finish and publish require a closed order today, so a",
+          "summary": "{ \"id\": \"WO-158-D005\", \"date\": \"2026-09-25\", \"dispatch\": \"resume: next; WO-158 criteria 1 and 3, operator-review assumption 2\", \"decision\": \"`withdraw` is legal from every phase except closed and withdrawn, and from `none` only for an order the log already knows (an allocated derived order never activated). `withdrawn` is settled like `closed` wherever a consumer asks 'is this order in flight': openOrders, meta's selected and active sets and budget rows, the test runner's gate attribution, resident binding, and the session hook's expected completion event and Stop completion/evidence obligations (reading your own output still applies). The index lists a withdrawn order in its Closed section ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-09a2fb517f0ffbc4",
+      "key": "decision:docs/evidence/WO-158/decisions.md#wo-158-d006",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "273f318fb7a5e8eb9b648237d0dfab7cbe71ff34c7616a13c5c56fdd16103aa3",
+          "ref": "docs/evidence/WO-158/decisions.md#wo-158-d006",
+          "title": "WO-158-D006: Next beacon codebook revision: add a withdrawn phase (or an explicit settled state) so a withdrawn order's beacon is current rather than stale.",
+          "summary": "{ \"id\": \"WO-158-D006\", \"date\": \"2026-09-25\", \"dispatch\": \"resume: next; WO-158 criterion 3\", \"decision\": \"Do not project a control beacon for a withdrawn order: the v2 codebook encodes exactly eight phases in its file-size code, so the previous beacon remains and ages to stale after BEACON_STALE_AFTER_MS (20 minutes). resume skips the projection for phase withdrawn instead of printing the projection-unavailable warning.\", \"evidence\": [ \"packages/skeleton/src/control-codebook.mjs: phases active..closed, phaseRadix 8, MAX_V2_CODE and MAX_GROUP_CODE derived from them\", \"The codebook, beacon-v3-codebook and control-beacon.ts are registered in every evidence edition's commonSources\" ], \"rejected\"",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-acfe4bfda716d8fb",
+      "key": "decision:docs/evidence/WO-158/decisions.md#wo-158-d008",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "8175bd2e55f02848bd1eadea14b00e920b395635bd77d1130172174bd7b14ad7",
+          "ref": "docs/evidence/WO-158/decisions.md#wo-158-d008",
+          "title": "WO-158-D008: Next order that touches usage or meta attribution: decide whether resume usage, meta and the console board apply RecordCorrected values; today only status, current.md and the index do.",
+          "summary": "{ \"id\": \"WO-158-D008\", \"date\": \"2026-09-25\", \"dispatch\": \"resume: next; WO-158 criterion 4 and FUP-eba6a79fc106bd28\", \"decision\": \"`correct <ordinal|report-path>` corrects model, effort, source, harnessVersion, reportPath, checkpointRef or checkpointSha of an event in the order's current activation. A report path resolves to the latest event carrying it with an actor, else the latest carrying it. `verdict` is refused by name with its routes (a later VER-NNN, a failing final review), and any other field is refused as not correctable; the command writes no report. Each field must exist on the subject and change; the event records `previous` from the effective value (chaining earlier correction",
+          "missing": false
+        },
+        {
+          "hash": "03209ad2f53e93d54c104c0945e3e7bcadac3061072997e9cca49e536f1919a0",
+          "ref": "docs/evidence/WO-158/decisions.md#wo-158-d008",
+          "title": "WO-158-D008: Next order that touches usage or meta attribution: decide whether resume usage, meta and the console board apply RecordCorrected values; today only status, current.md and the index do.",
+          "summary": "{ \"id\": \"WO-158-D008\", \"date\": \"2026-09-25\", \"dispatch\": \"resume: next; WO-158 criterion 4 and FUP-eba6a79fc106bd28\", \"decision\": \"`correct <ordinal|report-path>` corrects model, effort, source, harnessVersion, reportPath, checkpointRef or checkpointSha of an event in the order's current activation. A report path resolves against each event's effective (corrected) path, to the latest such event with an actor, else the latest. `verdict` is refused by name with its routes (a later VER-NNN, a failing final review), and any other field is refused as not correctable; the command writes no report. Each field must exist on the subject and change; the event records `previous` from the effective valu",
+          "missing": false
+        },
+        {
+          "hash": "928797f50c7f037984328aa929665a9304fb30a7a759f6de427e339febf57272",
+          "ref": "docs/evidence/WO-158/decisions.md#wo-158-d008",
+          "title": "WO-158-D008: Next order that touches usage or meta attribution: decide whether resume usage, meta and the console board apply RecordCorrected values; today only status, current.md and the index do.",
+          "summary": "{ \"id\": \"WO-158-D008\", \"date\": \"2026-09-25\", \"dispatch\": \"resume: next; WO-158 criterion 4 and FUP-eba6a79fc106bd28\", \"decision\": \"`correct <ordinal|report-path>` corrects model, effort, source, harnessVersion, reportPath, checkpointRef or checkpointSha of an event in the order's current activation. A report path resolves against each event's effective (corrected) path, to the latest such event with an actor, else the latest. `verdict` is refused by name with its routes (a later VER-NNN, a failing final review), and any other field is refused as not correctable; the command writes no report. Each field must exist on the subject and change; the event records `previous` from the effective valu",
+          "missing": false
+        },
+        {
+          "hash": "4b0d18aef1abf70378d260feaa4e7ebf023926918ee45edd0a2729b8fea74511",
+          "ref": "docs/evidence/WO-158/decisions.md#wo-158-d008",
+          "title": "WO-158-D008: Next order that touches usage or meta attribution: decide whether resume usage, meta and the console board apply RecordCorrected values; today only status, current.md and the index do.",
+          "summary": "{ \"id\": \"WO-158-D008\", \"date\": \"2026-09-25\", \"dispatch\": \"resume: next; WO-158 criterion 4 and FUP-eba6a79fc106bd28\", \"decision\": \"`correct <ordinal|report-path>` corrects model, effort, source, harnessVersion, reportPath, checkpointRef or checkpointSha of an event in the order's current activation. A report path resolves against each event's effective (corrected) path, to the latest such event with an actor, else the latest. `verdict` is refused by name with its routes (a later VER-NNN, a failing final review), and any other field is refused as not correctable; the command writes no report. Each field must exist on the subject and change; the event records `previous` from the effective valu",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-a0d6b960702fb9a4",
+      "key": "decision:docs/evidence/WO-158/decisions.md#wo-158-d012",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "058225b728a65b5f10bf146e15fc2d5028a613254cdef5bf94b40a2cbc0bd283",
+          "ref": "docs/evidence/WO-158/decisions.md#wo-158-d012",
+          "title": "WO-158-D012: Next order that touches operator control: a session that ends without operator override: off still appends nothing; surface an open override at the next session start for the same worktre",
+          "summary": "{ \"id\": \"WO-158-D012\", \"date\": \"2026-09-25\", \"dispatch\": \"resume: next; WO-158 criterion 5 and receipt 028 known issue on criterion 5\", \"decision\": \"The embedded operator control keeps the operator's own prompts while an override is open (the entry prompt and each later prompt, 64 KiB, in its session-local 0600 state outside the repository; an analysis pause carries them) and, at an explicit off that closes an override, returns `overrideExit` with the entry and exit times, the words and the exact advisory command. The generated hook then imports the pinned runtime instead of printing the exit alone; recordOperatorOverride checks the pins, requires an open selected order whose legalOffRamps i",
+          "missing": false
+        },
+        {
+          "hash": "90481b2f1f81a4bc3aab932789241bf3bf5fda20a906792ba4980d25f768a8d1",
+          "ref": "docs/evidence/WO-158/decisions.md#wo-158-d012",
+          "title": "WO-158-D012: Next order that touches operator control: a session that ends without operator override: off still appends nothing; surface an open override at the next session start for the same worktre",
+          "summary": "{ \"id\": \"WO-158-D012\", \"date\": \"2026-09-25\", \"dispatch\": \"resume: next; WO-158 criterion 5 and receipt 028 known issue on criterion 5\", \"decision\": \"The embedded operator control keeps the operator's own prompts while an override is open (the entry prompt and each later prompt, 64 KiB, in its session-local 0600 state outside the repository; an analysis pause carries them) and, at an explicit off that closes an override, returns `overrideExit` with the entry and exit times, the words and the exact advisory command. The generated hook then imports the pinned runtime instead of printing the exit alone; recordOperatorOverride checks the pins, requires an open selected order whose legalOffRamps i",
+          "missing": false
+        },
+        {
+          "hash": "7e582feb860cb15e880fa7f3c193542dbbb6cc9fc1607cd6cad92e3ed466e004",
+          "ref": "docs/evidence/WO-158/decisions.md#wo-158-d012",
+          "title": "WO-158-D012: Next order that touches operator control: a session that ends without operator override: off still appends nothing; surface an open override at the next session start for the same worktre",
+          "summary": "{ \"id\": \"WO-158-D012\", \"date\": \"2026-09-25\", \"dispatch\": \"resume: next; WO-158 criterion 5 and receipt 028 known issue on criterion 5\", \"decision\": \"The embedded operator control keeps the operator's own prompts while an override is open (the entry prompt and each later prompt, 64 KiB, in its session-local 0600 state outside the repository; an analysis pause carries them) and, at an explicit off that closes an override, returns `overrideExit` with the entry and exit times, the words and the exact advisory command. The generated hook then imports the pinned runtime instead of printing the exit alone; recordOperatorOverride checks the pins, requires an open selected order whose legalOffRamps i",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-578f547e187f41c9",
+      "key": "decision:docs/evidence/WO-158/decisions.md#wo-158-d021",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "8f8cd0591f000afc86a461ac4ca5754e88bc3646ec737006856255d8ccabd6cb",
+          "ref": "docs/evidence/WO-158/decisions.md#wo-158-d021",
+          "title": "WO-158-D021: WO-158 resume: fix — reject impossible reactivation dates; bind a corrected report path to the same validated report content and verdict; mint non-colliding exclusive override captures; r",
+          "summary": "{ \"id\": \"WO-158-D021\", \"date\": \"2026-09-25\", \"dispatch\": \"resume: verify; independent VER-001\", \"decision\": \"Fail the current subject and route four reproduced defects through WO-158 repair. A verifier does not change the implementation it judges. The defects reopen D007 (reactivation), D008 (report-path correction), D011 (live-gate Git reads) and D012 (override capture). The full product gate's one WO-143 timeout is recorded separately: a prior 27-suite pass has the same code identity, and that unchanged case passed alone in 161.67 s; the timeout does not explain or excuse the four defects.\", \"evidence\": [ \"A disposable WO-099 lifecycle fixture admitted activation with **Reactivation (9999-",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-84d238b6f4768e11",
+      "key": "decision:docs/evidence/WO-158/decisions.md#wo-158-d007",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "b8645e9e024d099cf4fd9aa746b10d851b278e593c325c76e8a64583f6eb2c29",
+          "ref": "docs/evidence/WO-158/decisions.md#wo-158-d007",
+          "title": "WO-158-D007: WorkOrderWithdrawn records the authority's SHA-256 as orderHash and the SHA-256 of each Reactivation (YYYY-MM-DD): <why> line it already holds. activate from withdrawn refuses an unchange",
+          "summary": "{ \"id\": \"WO-158-D007\", \"date\": \"2026-09-25\", \"dispatch\": \"resume: next; WO-158 design ('activate from withdrawn requires a changed order revision with a dated note') and criterion 3\", \"decision\": \"WorkOrderWithdrawn records the authority's SHA-256 as orderHash and the SHA-256 of each `**Reactivation (YYYY-MM-DD):** <why>` line it already holds. `activate` from withdrawn refuses an unchanged authority, and refuses a changed one unless some reactivation line absent from the withdrawn revision is dated on or after the withdrawal's recordedAt date; every note is read, not only the first. Activation resets every off-ramp projection, so a reactivated order leaves withdrawn in status, current.md an",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-162ba83028c7a43b",
+      "key": "decision:docs/evidence/WO-158/decisions.md#wo-158-d011",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "8952938a45dde5c0ccd79ee5d5f96b8a1459e2cac8900bb5ff2da21ebf190adb",
+          "ref": "docs/evidence/WO-158/decisions.md#wo-158-d011",
+          "title": "WO-158-D011: A live gate admits the fixed read-only list through liveGateReads in harness-command.ts, judged for every stage of every pipeline and command list: cat, head, tail, wc, ls, grep, sed -n w",
+          "summary": "{ \"id\": \"WO-158-D011\", \"date\": \"2026-09-25\", \"dispatch\": \"resume: next; WO-158 criterion 6 and receipt 028 known issue on criterion 6\", \"decision\": \"A live gate admits the fixed read-only list through `liveGateReads` in harness-command.ts, judged for every stage of every pipeline and command list: cat, head, tail, wc, ls, grep, `sed -n` with a script whose every command prints, `git diff|log|show|status|stash list` without an output or external-program option, and, at the worktree root only, `node scripts/harness.mjs writer --show` and `npm run resume --silent -- status`. A stage with a redirect operand, heredoc, environment prefix or wrapper, parameter expansion or unquoted glob character i",
+          "missing": false
+        },
+        {
+          "hash": "5694554a60b9d07e754fdc19035804bc5fcd10126e87b571e49e256d34a71853",
+          "ref": "docs/evidence/WO-158/decisions.md#wo-158-d011",
+          "title": "WO-158-D011: A live gate admits the fixed read-only list through liveGateReads in harness-command.ts, judged for every stage of every pipeline and command list: cat, head, tail, wc, ls, grep, sed -n w",
+          "summary": "{ \"id\": \"WO-158-D011\", \"date\": \"2026-09-25\", \"dispatch\": \"resume: next; WO-158 criterion 6 and receipt 028 known issue on criterion 6\", \"decision\": \"A live gate admits the fixed read-only list through `liveGateReads` in harness-command.ts, judged for every stage of every pipeline and command list: cat, head, tail, wc, ls, grep, `sed -n` with a script whose every command prints, `git diff|log|show|status|stash list` without an output or external-program option, and, at the worktree root only, `node scripts/harness.mjs writer --show` and `npm run resume --silent -- status`. A stage with a redirect operand, heredoc, environment prefix or wrapper, parameter expansion or unquoted glob character i",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-03d160c6765db9fa",
+      "key": "decision:docs/evidence/WO-158/decisions.md#wo-158-d025",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "9c53b84b6a54a2caeb61a3d4016684941c67fd44fee6aa766a7728d780bbd3af",
+          "ref": "docs/evidence/WO-158/decisions.md#wo-158-d025",
+          "title": "WO-158-D025: A Git read is on the live-gate list only when it carries --no-pager or -P (--no-optional-locks alone is not enough): liveGateGit in packages/skeleton/src/harness-command.ts refuses a page",
+          "summary": "{ \"id\": \"WO-158-D025\", \"date\": \"2026-09-25\", \"dispatch\": \"resume: fix; VER-001 F4 (criterion 6)\", \"decision\": \"A Git read is on the live-gate list only when it carries `--no-pager` or `-P` (`--no-optional-locks` alone is not enough): `liveGateGit` in packages/skeleton/src/harness-command.ts refuses a paged read, because a paged read runs the configured or default pager, an unlisted program, whenever its output is a terminal, and `--no-pager` also sets GIT_PAGER=cat for the log a stash list delegates. LIVE_GATE_READ_LIST, the harness-host refusal text, product 07 §Operator recovery controls and docs/AI-HARNESS-SECURITY.md spell the entry `git --no-pager diff|log|show|status|stash list`. The c",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-25e1b23c7b844eb1",
+      "key": "decision:docs/evidence/WO-158/decisions.md#wo-158-d027",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "2c9f88329724645323b7db02d01fee409827706b13225811dc857b5c1535f8fb",
+          "ref": "docs/evidence/WO-158/decisions.md#wo-158-d027",
+          "title": "WO-158-D027: WO-158 resume: fix — make liveGateGit advance past every prefix token in any order (for example if (args[index++] !== \"--no-optional-locks\") unpaged = true;), with a regression that judge",
+          "summary": "{ \"id\": \"WO-158-D027\", \"date\": \"2026-09-25\", \"dispatch\": \"resume: final review; FINAL-001\", \"decision\": \"Fail FINAL-001 on criterion 6 and return one bounded finding to repair. `liveGateGit` in packages/skeleton/src/harness-command.ts advances its prefix index only inside `unpaged ||= args[index++] !== \\\"--no-optional-locks\\\"`; once `unpaged` is true the right side is not evaluated, so a prefix token after `--no-pager` or `-P` never advances and the loop never ends. While a gate is live every shell command reaches `liveGateReads`, so a Git stage spelled `git --no-pager --no-optional-locks ...` (the WO-142 prefix product 07 documents), `git -P --no-pager ...` or `git --no-pager --no-pager ...",
+          "missing": false
+        },
+        {
+          "hash": "f5b08f01118fe836b10c9259003a848f1870c565c7ec8655364f7f82a8b2d9cd",
+          "ref": "docs/evidence/WO-158/decisions.md#wo-158-d027",
+          "title": "WO-158-D027: WO-158 resume: fix — make liveGateGit advance past every prefix token in any order (for example if (args[index++] !== \"--no-optional-locks\") unpaged = true;), with a regression that judge",
+          "summary": "{ \"id\": \"WO-158-D027\", \"date\": \"2026-09-25\", \"dispatch\": \"resume: final review; FINAL-001\", \"decision\": \"Fail FINAL-001 on criterion 6 and return one bounded finding to repair. `liveGateGit` in packages/skeleton/src/harness-command.ts advances its prefix index only inside `unpaged ||= args[index++] !== \\\"--no-optional-locks\\\"`; once `unpaged` is true the right side is not evaluated, so a prefix token after `--no-pager` or `-P` never advances and the loop never ends. While a gate is live every shell command reaches `liveGateReads`, so a Git stage spelled `git --no-pager --no-optional-locks ...` (the WO-142 prefix product 07 documents), `git -P --no-pager ...` or `git --no-pager --no-pager ...",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "FINAL-001 F1 is repaired by WO-158-D030 and repair-002: the bounded regression reproduced the hang before the fix and passes after it; the product gate and full harness fixture suite pass. Fresh independent verification and final review remain the order's next dispatches.",
+          "reopenWhen": "The fresh verification rejects the repair or a recognized prefix sequence again hangs a live-gate hook.",
+          "targets": [
+            "WO-158"
+          ],
+          "at": "2026-09-25T15:42:13.859Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-6996e331536d4389",
+      "key": "decision:docs/evidence/WO-158/decisions.md#wo-158-d028",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "31c8e1f3f6d73b75340c89e04a7bdb29a37a5d7eb9c78033c9ff826ae7ed08a1",
+          "ref": "docs/evidence/WO-158/decisions.md#wo-158-d028",
+          "title": "WO-158-D028: Next order that touches harness-host outside-write grants or the live-gate list: (a) require a granted root to be a real directory owned by the session user, not a symlink, for session-sc",
+          "summary": "{ \"id\": \"WO-158-D028\", \"date\": \"2026-09-25\", \"dispatch\": \"resume: final review; FINAL-001 observations on the hook and grant seam\", \"decision\": \"Board the observations the read-only review of the hook and grant seam met besides D027. None fails an acceptance criterion, and this review requires none of them for acceptance. (a) Medium: the outside-write guard resolves each granted root with prospectiveRealpath when it judges, so a granted root replaced by a symlink (`rm -rf <root> && ln -s <target> <root>`, or `ln -sfn`) carries the grant to the target; WO-144's session-scratch has this class, and WO-158's host-scratchpad root (D010) resolves the same way. (b) Low: the configured-program check",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-7b4b41e2875f852d",
+      "key": "decision:docs/evidence/WO-158/decisions.md#wo-158-d029",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "8bc9a18dc88f3d482639cb45c341bd4b07744791e8f8447d7925bef38496ee3b",
+          "ref": "docs/evidence/WO-158/decisions.md#wo-158-d029",
+          "title": "WO-158-D029: Next order that touches the off-ramp routes or actor attestation: (a) bind waive's executor refusal to an observation a Codex command's environment cannot remove, or record why none exist",
+          "summary": "{ \"id\": \"WO-158-D029\", \"date\": \"2026-09-25\", \"dispatch\": \"resume: final review; FINAL-001 observations on the control-plane seam\", \"decision\": \"Board the control-plane observations the read-only review met. None fails an acceptance criterion as written. (a) Medium: under Codex, which has no hook-made writer reservation, the executor refusal for `waive` rests on the command's session variables, so `env -u CODEX_THREAD_ID npm run resume -- waive ...` records the waiver with `recordingSession.role: unobserved`. Under Claude Code the live writer reservation, keyed by the hook's session id, still refuses it. The executor-refusal claim holds for every session DotLn observes, and Codex carries enfo",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }
