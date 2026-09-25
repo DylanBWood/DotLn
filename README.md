@@ -93,7 +93,7 @@ intent → task-scoped build → bounded WorkOrder → disposable executor
 -->
 <!-- DOTLN-RELEASE-BEGIN -->
 
-This source prepares DotLn `v0.47.0`.
+This source prepares DotLn `v0.47.1`.
 
 **The core.** A local-first compiler turns a loadout graph into a bounded
 program and authority envelope that the kernel checks on every decision.
@@ -109,6 +109,19 @@ mission check receives a hashed capsule of that contract, the current diff and
 the last decisions, and a verdict other than `on-mission` holds every further
 unattended dispatch until a human answers or a fresh judgment passes over
 changed work.
+In a [live synthetic portfolio window](docs/evidence/WO-111/receipt-v2.json), the
+resident discovered six 5S candidates, derived three bounded source changes,
+and advanced probe → widen → peak after each independent verification passed.
+A separate mission resident judged the DotLn worktree and recorded drift; it
+did not supervise the scratch portfolio. A [second live return window](docs/evidence/WO-111/return-receipt-v2.json)
+shows an eligible fourth candidate and spare episode budget before the human
+`back` edge, with cancellation established by retained-log replay against a
+no-return control. Both runs added scratch trust entries to the user Codex
+configuration. The operator [accepted that disclosed deviation for this
+synthetic proof](docs/evidence/WO-111/decisions.md#wo-111-d020) and kept its
+prevention in an independent runtime follow-up; the literal outside-portfolio
+clause was not observed. These scratch
+observations establish neither an installed service nor a measured net-value curve.
 The [skeleton runbook](packages/skeleton/README.md#resident-host) documents
 `dotln resident`, `dotln presence` and their limits; the
 [actor board](packages/console/README.md), mutation corpus, inspection workers,
@@ -167,9 +180,9 @@ executor/failing-verifier/fixer/passing-verifier episodes are qualified on CLI
 1.0.86 with Claude Sonnet 5 / xhigh. No Copilot resident worker or publication
 workflow is qualified.
 
-**Not yet.** A live model actor, automatic work
-derivation, general source-writing workers and portable starter export remain
-later work.
+**Not yet.** General source-writing workers, a portfolio in the operator's
+repositories, a measured absence payoff curve and portable starter export
+remain later work.
 The [goal review](docs/planning/refutations/README.md) retains reopening
 observations; [CONTRIBUTING.md](CONTRIBUTING.md) covers package publication, and
 published source records are on the [GitHub Releases page](https://github.com/DylanBWood/DotLn/releases).
@@ -409,13 +422,24 @@ before-and-after. Candidate first world: a basketball squad. See
   `CommandRefused`, and code that depended on the denied effect quietly
   succeeding will not get it.
 - **Presence is policy, not a one-way brake.** An owner may preauthorize
-  time-conditioned shrinkage or growth, including progressive stakes and a
-  reset or loop. The author's candidate profile favors bounded housekeeping so
-  the changes remain easy to understand on return; the current skeleton proves
-  only one conservative return/cancellation branch. Availability of a powerful
-  adapter remains separate from permission to use it. At work-order scale, an
-  opted-in unattended portfolio can run small already-authorized orders first,
-  then treat larger preauthorized orders as capacity-permitting options.
+  time-conditioned shrinkage or growth, a peak, and a reset or loop. The
+  idea grew from predecessor `v1`, where a prompt-bound agent waited for the
+  operator's next interaction and a recurring cron trigger offered an early
+  escape from idle time. An active DotLn work order can already progress while
+  the operator is away; this curve is for future automatic selection and
+  advancement of further eligible orders. The author's Blackjack +3 analogy
+  is a side bet on the player's two cards and
+  dealer's upcard: raising the stake after losses makes profit on the eventual
+  first win rise, peak, then decline while still profitable before a later
+  break-even cutoff and restart. For workers, continued operator absence can
+  enable larger useful work up to a peak, then progressively smaller useful
+  work on the downswing, eventually returning to the smallest chunk and
+  resetting the cycle. The losing streak corresponds only to time away; the
+  analogy says nothing about whether an agent succeeds or fails. The scratch
+  [WO-111 return receipt](docs/evidence/WO-111/return-receipt-v2.json) records phase advancement
+  and replayed return cancellation, but its immediate peak reset skips the downswing.
+  It does not measure net value or an optimal absence length. Adapter
+  availability remains separate from permission to use it.
 - **Index cards are a planned frontend.** They worked once; a physical-card
   importer is specified to map them to the IR. The ambient end state is a
   magnetic LED whiteboard, and its digital form is a living index card that can

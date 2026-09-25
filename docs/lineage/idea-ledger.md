@@ -40,6 +40,61 @@ are now declared above. The [decision record](../evidence/WO-084/decisions.md)
 records the legacy ledger write-back; `node scripts/lineage.mjs index` generates
 the index and `index --check` enforces this rule in `npm run test:docs`.
 
+## Presence-curve clarification — 2026-09-24
+
+**Source and scope:** The operator clarified the Blackjack +3 example during
+WO-111's live scratch proof and explicitly authorized correcting repository
+references. This is a synthesis of that message, not a direct-filed draft.
+Earlier ledger entries, ADR-0007 item 6, WO-016's closed contract, and retained
+planning snapshots remain historical; [ADR-0007's dated amendment](../decisions/0007-presence-is-a-policy-input.md#amendments)
+and [the current architecture candidate](../product/03-architecture.md#candidate--progressive-absence-authority-and-return-readiness)
+carry the corrected interpretation.
+
+**The game shape:** Blackjack +3 is a side wager formed from the player's two
+cards and dealer's upcard. The operator's illustrative $5 starting wager offers
+at most $45 profit on an immediate win. With a flat $5 wager, each loss lowers
+the net result of a later first win linearly. Raising the next wager by $5 after
+each loss instead makes that net result rise, peak after a recalled streak of
+about twelve losses, then decline while still profitable toward break-even
+around eighteen. The bettor continues through the positive downswing and
+restarts at $5 only at the later cutoff. The recalled chance and thresholds
+are not a verified model of the game's rules; both halves of the upside-down
+payoff curve and the reset are the reusable idea.
+
+**The worker analogy and test duty:** In predecessor `v1`, the operator's
+interaction cadence was the bottleneck. Continued absence can let bounded
+workers produce more independently verified
+useful work, with greater available scope or attention, before accumulated
+resource cost, risk, disruption or review burden makes further unattended work
+less valuable. The owner must declare a ceiling and a cutoff rather than let
+silence grant unlimited authority. Each loss in the game corresponds to more
+time away; the analogy makes no statement about an agent's success or failure.
+WO-111's live trace demonstrates three verified stages, an immediate peak
+reset and human-return cancellation with one candidate and one budget episode
+still available. That fixture skips the useful descending half. It does not
+measure an upside-down *net-value* curve or locate an optimal absence duration.
+A later payoff test needs explicit benefit and cost measures across absence
+windows, plus phase, ceiling, budget and return checks.
+
+**Further operator refinement, same day:** Five, ten, forty-five and fifty
+minutes, with quick refactor discovery, implementation/testing and broader
+refactoring, were examples of the rising half and peak. The further 45–90
+minute example supplies the previously omitted downswing: while the operator
+remains away, the resident can keep doing useful but progressively smaller
+updates until it returns to the smallest chunk, resets and repeats. The
+operator did not select those timings or work classes. Tests and experiments
+must determine them; the analogy fixes the full up-and-down shape, not a
+literal schedule.
+
+**Placement clarification, same day:** The motivating predecessor `v1`
+required the operator to drive a prompt-bound agent each interaction, so an
+absence left it idle; a recurring cron trigger was an early unattended-work
+mechanism. DotLn's current work-order/status workflow already lets a
+dispatched order progress while the operator is away. The proposed full curve
+applies when future automatic agents select and advance further eligible work
+orders. WO-111's scratch portfolio is a limited precursor, not evidence that
+the full automatic work-order layer exists today.
+
 ## 2026-09-22 — Planning pass: closeout follow-ups after WO-100 and WO-064 (WO-157, one operator-authorized order; 35 register rows judged)
 
 Source: the operator's dispatch and two mid-pass corrections, captured

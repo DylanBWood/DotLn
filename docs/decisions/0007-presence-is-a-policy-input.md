@@ -104,6 +104,39 @@ doctrine.
 
 ## Amendments
 
+2026-09-24 — **Operator clarification supersedes decision item 6's
+"successful or otherwise qualifying rounds can advance a progressive stake"
+description.** Blackjack +3 is a side wager using the player's two cards and
+the dealer's upcard. In the operator's example a $5 starting stake offers at
+most $45 profit on an immediate win; a flat $5 stake loses $5 of net result per
+preceding loss. Increasing the next wager by $5 *after each loss* makes profit
+on the first subsequent win follow an upside-down curve: an illustrative peak
+around twelve losses, then a still-profitable descending half until roughly
+break-even around eighteen. The bettor continues during the downswing and
+restarts at $5 only after reaching the later cutoff. The figures are the operator's recalled
+illustration, not verified odds or payout mathematics. For DotLn, elapsed
+operator absence is the opportunity to complete more verified work while
+cost, risk and return-time burden accumulate. The losing streak maps to time
+away only; no agent success or failure is part of the analogy.
+The owner still declares the cap, cutoff and reset. WO-111 tests bounded phase
+and return behavior, not positive net benefit or a maximizing absence time.
+The operator's five-, ten-, forty-five-, fifty- and ninety-minute examples
+illustrate quick discovery, implementation, a broad peak, progressively smaller
+but still useful work on the downswing, then the smallest chunk and a reset;
+return may interrupt at any stage. None of those times or work classes is a
+selected policy. Experiments must find the useful tranches, peak, descending
+half and reset point. WO-111's three-phase fixture jumps straight from peak to
+probe and thus omits the downswing. See [the current interpretation](../product/03-architecture.md#candidate--progressive-absence-authority-and-return-readiness).
+
+**Placement clarification, same day:** The idea arose when predecessor `v1`
+needed the operator to drive a prompt-bound agent interaction by interaction;
+a recurring cron trigger kept some work moving during absence. DotLn's
+dispatched work orders already advance through explicit phases and status
+while the operator is away. The proposed full absence curve belongs to a
+future automatic selector and mover of eligible work orders, not to the basic
+continuation of an active order. WO-111's scratch portfolio tests a bounded
+precursor, not that future allocator in the operator's repository.
+
 2026-09-16 — WO-121 separates human presence, actor liveness and task progress
 in `OperatorPresenceObserved`. Activity and stamped prompts never imply human
 return; the currently observed harness profiles require explicit away/back

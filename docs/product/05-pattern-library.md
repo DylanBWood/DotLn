@@ -515,17 +515,40 @@ implement this candidate.
 
 ## Rhythm patterns
 
+The absence curve addresses a future automatic work-order dispatch layer.
+The predecessor `v1` needed operator-driven interactions and used a recurring
+cron trigger to avoid idling; DotLn's current dispatched orders already
+progress by their recorded status while the operator is away. The curve is
+therefore about choosing and pacing further eligible work, not making an
+active order continue.
+
 Double Dutch (guarded opportunity window: watch → detect opening → prepare →
 bounded action window → exit before interference → resume watching) · sow/reap
 tension (~1/3 research fan-out, bounded execution, with every behavior paired to
 its opposite via PolarAxes) · presence-conditioned utility per candidate action
 (peak, break-even, negative) for ranking, kept separate from a declared work-
 scope or effect-authority schedule. A `PresencePolicy` may hold, shrink, grow,
-peak, stop, reset, or loop those axes independently. **Blackjack +3** is the
-operator's working lens for a candidate explicit progressive-stakes subgame:
-qualifying rounds may advance a stake and a declared boundary or event resets
-or loops it without ratcheting past its ceiling. Exact rules remain open under
-ADR-0007.
+peak, stop, reset, or loop those axes independently. **Blackjack +3** is a
+side bet on the player's two cards and dealer's upcard. The operator's example
+starts at a $5 stake and at most $45 profit on a win. A flat stake loses $5 of
+net profit per preceding loss; increasing the next stake by $5 *after each
+loss* instead makes profit on the first later win rise to an illustrative peak
+near twelve losses, then decline while still profitable toward break-even near
+eighteen; only at that later cutoff does the bettor restart at $5. The numerical
+thresholds are unverified recollections; the rising half, useful descending
+half and eventual reset are the point. In the worker analogy, each additional
+loss means more operator time away, with no reference to an agent's success or
+failure. Work may grow to a peak, then become progressively smaller while
+remaining useful, reach the smallest chunk and reset into another cycle if
+absence continues. See
+[the architecture candidate](03-architecture.md#candidate--progressive-absence-authority-and-return-readiness)
+and ADR-0007's 2026-09-24 clarification. WO-111 records live phase transitions and
+return cancellation by retained-log replay against a no-return control, but its
+immediate peak reset skips the descending half. The caller stopped before the
+next due time; no live in-flight return was exercised.
+Quick refactors, later implementation, a broader peak and progressively
+smaller updates on the downswing are illustrative tranches; their timing and
+work types are experimental choices, not Blackjack-derived constants.
 
 ## Candidate — temporal interaction interpretation
 

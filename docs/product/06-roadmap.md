@@ -20,6 +20,19 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-111 activation completion (2026-09-24):** assigned application `v0.46.3`,
+the next patch above the observed local `v0.46.2` tag, under the declared patch
+classification. The scratch live receipts show three verified derived orders,
+a separate mission-store verdict and return cancellation established by replay
+of the second window against a no-return control. VER-001 failed; its containment
+finding remains open because scratch trust entries changed user Codex settings.
+Documentation corrects the Blackjack +3 curve and locates its full-cycle
+experiment in future automatic work-order selection. No runtime component,
+dependency or generated configuration changes. Independent verification,
+final review and publication remain separate actions.
+
+**WO-111 collision retiming (2026-09-25):** unpublished target `v0.46.3` is superseded by `v0.47.1` under the existing patch classification because the observed release baseline is `v0.47.0`. Scope, acceptance, component versions, and published tags are unchanged by this retiming.
+
 **WO-114 activation completion (2026-09-24):** assigned application `v0.47.0`,
 the next minor above the observed local `v0.46.2` tag, under the declared minor
 classification. The resident's runtime status file and the console text host
@@ -928,11 +941,14 @@ invisibility guarantee. The operator comparison above remains outstanding.
 
 ### Candidate — unattended work-order portfolio
 
-The earlier operator-away scheduler was partly a workaround for supervising one
-prompt-bound agent and arranging recurring maintenance timers by hand. Once the
-work-order processor can close one order and select another, unattended
-autonomy should operate primarily over bounded WorkOrders rather than recreate a
-permanent prompt session.
+The predecessor `v1` needed the operator to drive each interaction with one
+prompt-bound agent. A recurring cron trigger was an early way to avoid idle
+time during absence. DotLn now gives a dispatched work order explicit phases
+and status, so its work can progress during the operator's absence under the
+current workflow. The remaining opportunity is automatic selection and
+advancement of *subsequent* eligible work orders without a new human dispatch.
+An absence curve should govern that future portfolio choice and pace, rather
+than serve as the mechanism that keeps an already-dispatched order running.
 
 An opted-in portfolio has two candidate lanes. First are small eligible orders
 already covered by standing authority and requiring no new material decision;
@@ -968,9 +984,30 @@ named verification commands (a Sort move is also checked by the host); out-of-po
 candidates become product suggestions or `NeedsHuman`, and a spent budget is a
 reasoned NoOp ([WO-100 decisions](../evidence/WO-100/decisions.md)). Still
 candidate here: activation policy beyond the compiled presence curve, slots and
-ranking across orders, replenishment, retry and the return view. The live
-unattended hour is WO-111; the first lane (small orders under standing
-authority) is not implemented.
+ranking across orders, replenishment, retry and the return view. The first
+lane (small orders under standing authority) is not implemented.
+
+**WO-111 live rung observation (2026-09-24).** In a scratch target with no Git
+remote, one human-marked [window](../evidence/WO-111/receipt-v2.json) discovered six
+imperfections and completed three derived, independently verified source
+changes through probe, widen and peak. A separate mission resident judged the
+DotLn worktree and correctly recorded `contract:surfaces` drift; its hold did
+not affect the portfolio. A [second window](../evidence/WO-111/return-receipt-v2.json)
+left a fourth candidate eligible and one episode unspent before human return
+cancelled its future dispatch in retained-log replay; the caller itself stopped
+before the due time. No live in-flight return was exercised. Both windows
+changed the user Codex configuration by adding scratch trust entries. The
+operator [accepted this disclosed deviation for the synthetic proof](../evidence/WO-111/decisions.md#wo-111-d020)
+and retained an independent runtime isolation follow-up; literal
+outside-portfolio containment was not observed. The two windows show bounded progression,
+peak reset and return behavior, not a full hour requirement or the whole
+Blackjack +3 curve. This fixture skips the useful descending half: the
+operator's intended shape narrows work after the peak until it reaches the
+smallest chunk, then resets and repeats while absence continues. The timing,
+work types and net-benefit curve across longer windows remain experimental.
+The full-curve test and an owner-repository portfolio remain later work.
+The current manual resume protocol and this scratch portfolio do not establish
+the future automatic work-order allocator.
 
 **Always-on agent model default (shipped by WO-157 on 2026-09-22, operator
 direction).** A resident bound without `--model` or `--effort` takes its
