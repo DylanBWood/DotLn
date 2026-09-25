@@ -16231,6 +16231,13 @@
           "title": "Stale trust entries in the operator's Codex configuration.",
           "summary": "9. **Stale trust entries in the operator's Codex configuration.** 36 of 43 trusted project entries are DotLn scratch and probe families, 34 for paths that no longer exist (WO-111 `codex-trust-diagnosis.md`). WO-159 stops the accumulation; removing the existing entries is the operator's action outside the repository. Reopen: never from here; the operator records it if they wish.",
           "missing": false
+        },
+        {
+          "hash": "b39a38a7cc71d156b52ca222b0b2a22e52b1a67b1dd75f6bf276d535c3988c32",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-off-ramps-pass-recorded-2026-09-25",
+          "title": "Stale trust entries in the operator's Codex configuration.",
+          "summary": "9. **Stale trust entries in the operator's Codex configuration.** 36 of 43 trusted project entries are DotLn scratch and probe families, 34 for paths that no longer exist (WO-111 `codex-trust-diagnosis.md`). WO-159 stops the accumulation; removing the existing entries is the operator's action outside the repository. **Done 2026-09-25:** the operator removed every entry but the DotLn project's, so the count is one; WO-159's executor records that baseline, not WO-111's 43. Reopen: the count rises before WO-159 closes.",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -16241,6 +16248,14 @@
           "reopenWhen": "the operator asks for the census to be recorded before and after removal",
           "targets": [],
           "at": "2026-09-25T01:51:22.391Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Re-settled by the 2026-09-25 off-ramps pass at the revision that records the operator's removal: every user-level trust entry but the DotLn project's is gone, the count is one, and WO-159's executor records that baseline; WO-159 stops the accumulation.",
+          "reopenWhen": "the count rises before WO-159 closes",
+          "targets": [],
+          "at": "2026-09-25T02:19:49.451Z"
         }
       ]
     },
@@ -16329,6 +16344,13 @@
           "title": "The host-printed scratchpad is not a granted root.",
           "summary": "3. **The host-printed scratchpad is not a granted root.** Two research agents and the planner met `DOTLN_HARNESS_REFUSED: outside-project write` when following the host's own scratchpad instruction, because WO-144 grants system-temp and the DotLn scratch path only. Each refusal costs a turn. A grant for the root the host prints at dispatch is a WO-144 decision for the operator. Reopen: a third role text or a verification records the same refusal.",
           "missing": false
+        },
+        {
+          "hash": "43e4a54c39a006df7d4e55eb7d47f7c7f4802767c0612a1c2f8a34a03e80fc8b",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-off-ramps-pass-recorded-2026-09-25",
+          "title": "The host-printed scratchpad is not a granted root.",
+          "summary": "3. **The host-printed scratchpad is not a granted root.** Two research agents and the planner met `DOTLN_HARNESS_REFUSED: outside-project write` when following the host's own scratchpad instruction, because WO-144 grants system-temp and the DotLn scratch path only. Each refusal costs a turn. **Decided 2026-09-25 (operator direction that this pass decides its own questions):** the root is granted. It is derivable from the session id and the project path the hook already knows, so the grant admits that one directory and not `/private/tmp`. Allocated as an operator-directed boy-scout item on WO-158's catalog row, which edits the same classifier. Reopen: the item is declined at WO-158's activati",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -16349,6 +16371,16 @@
             "WO-158"
           ],
           "at": "2026-09-25T02:18:21.167Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Re-allocated by the 2026-09-25 off-ramps pass at the revision that records the decision: the scratchpad root Claude Code prints at session start is granted, derived from the session id and project path, as an operator-directed boy-scout item on WO-158, which edits the same classifier.",
+          "reopenWhen": "the item is declined at WO-158's activation, or a refusal for the host-printed root recurs after WO-158 closes",
+          "targets": [
+            "WO-158"
+          ],
+          "at": "2026-09-25T02:19:48.751Z"
         }
       ]
     },
