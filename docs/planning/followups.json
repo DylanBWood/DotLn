@@ -16431,6 +16431,32 @@
           "at": "2026-09-25T01:51:21.140Z"
         }
       ]
+    },
+    {
+      "id": "FUP-01e0a992343a791a",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-off-ramps-pass-recorded-2026-09-25::d02b0af0c424e2fb0d06aeb4e3223a0686c8b5c19fa69ca967bb53cf79d37252",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "782cf3f5b6142fb47d57bc857125dfdca6bff2e2137e46389a83f1131ad3720e",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-off-ramps-pass-recorded-2026-09-25",
+          "title": "harness prune spends its time on the network.",
+          "summary": "11. **`harness prune` spends its time on the network.** Its publication check makes two blocking calls (`gh release view`, then `git ls-remote` for the tag) for every release row whose manifest names a lane's order, newest first, across 65 retained lanes: up to 364 rows by text match, up to 728 calls at about 3 s a pair. The operator's run (2026-09-25) walked 36 minutes and was then refused because a gate run had changed a snapshot; the planner's re-run was killed at 54 minutes; neither removed a byte. **Operator direction, same night:** rewrite the check. Allocated to WO-160 item 7 (already the prune seam): one `gh release list --json tagName,isDraft` and one `git ls-remote --refs --tags or",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-09-25 off-ramps pass at the operator's direction after two prune runs (36 and 54 minutes) removed nothing: WO-160 item 7 rewrites the publication check to two batched network calls per run with in-memory matching, hashes only candidates not retained by rule, re-observes only the candidate set on apply, and prints one reason on a network timeout.",
+          "reopenWhen": "a prune run exceeds 60 s on the operator's host after WO-160 closes",
+          "targets": [
+            "WO-160"
+          ],
+          "at": "2026-09-25T03:16:01.872Z"
+        }
+      ]
     }
   ]
 }
