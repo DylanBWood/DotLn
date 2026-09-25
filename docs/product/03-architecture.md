@@ -2119,6 +2119,17 @@ reopening conditions.
 
 ### Candidate — progressive absence authority and return readiness
 
+This candidate originated in the predecessor `v1` workflow: one prompt-bound
+agent needed the operator to drive each interaction, so it sat idle during
+absence. A recurring cron trigger was an early way to restart useful work.
+DotLn now has explicit work orders and phase/status transitions; a dispatched
+order can keep moving while the operator is away without this payoff curve.
+The curve is for the later automatic work-order dispatch layer, where agents
+select and advance eligible orders without a human initiating each next order.
+WO-111 exercises a preauthorized scratch portfolio as a bounded precursor; it
+does not show that broader automatic allocator running in the operator's
+repository.
+
 The author's candidate profile keeps foreground intent first while present and
 favors bounded housekeeping during absence because low-disruption cleanup can
 reduce return-time reorientation. Per-action
@@ -2127,9 +2138,44 @@ and Double Dutch windows can rank eligible work without silently granting it.
 
 Separately, the owner may preauthorize a progressive scope and effect-authority
 schedule that grows by recorded stage, peaks within a declared ceiling, and
-stops, resets, or loops on selected events. **Blackjack +3** is the working lens
-for a candidate explicit progressive-stakes subgame rather than a decorative
-metaphor; its deal, `+3`, stake, loss, unlock, cap, and reset rules remain open.
+stops, resets, or loops on selected events. **Blackjack +3** is the operator's
+concrete shape example. It is a side bet using the player's two cards and the
+dealer's upcard as a three-card hand. In the operator's illustrative recollection,
+a flat $5 stake yields at most $45 profit on a win, then loses $5 of net profit
+for each preceding loss. Raising the next stake by $5 after each loss instead
+makes net profit on the *first subsequent win* rise, reach an upside-down-curve
+peak around twelve losses, then fall while still profitable toward break-even
+around eighteen losses. The bettor keeps playing through the positive
+downswing and only at the later cutoff restarts at $5. These counts
+and odds are examples of the shape, not validated blackjack mathematics.
+
+In the worker analogy, each additional loss corresponds to more *time away*
+from the operator. It has no mapping to an agent's success or failure. More
+time without the operator can permit useful work to grow toward a peak. The
+**downswing still contains useful work**: as net value declines but remains
+positive, the chosen work can become progressively smaller until it reaches
+the smallest chunk, then resets and repeats if absence continues. Risk,
+disruption, resource cost and return-time review burden help determine the
+peak and later cutoff. The Blackjack payoff analogy asks for a
+benefit-and-cost curve; it does not supply one from a phase trace alone.
+WO-111 observes phase advancement, an immediate peak reset, budget and return
+cancellation in a scratch repository. Its three-phase fixture therefore
+skips the descending half and does not measure net value or an optimal absence
+duration.
+
+The operator's illustrative worker scenario starts with looking for quick
+refactors after a short absence, moves to implementing and testing them after
+more time, may consider broader refactors after a much longer absence, then
+progressively narrows its work while still doing useful updates until it
+reaches the smallest class and starts another cycle. Return interrupts the
+unattended cycle according to the selected return rule. A peak near forty-five
+minutes and a downswing lasting toward ninety minutes were examples of the
+shape, not selected deadlines; the earlier five-, ten- and fifty-minute
+examples are illustrative too. All these times and work classes must be
+chosen by tests and experiments. The current compiled curve is driven by
+completed episodes as well as recorded cadences, and WO-111's live trace does
+not test the full time-conditioned payoff curve.
+
 The inspector must show attention, work scope, effect authority, and external
 capability as four tracks, including the current tranche and grant source.
 
@@ -2137,6 +2183,13 @@ Representative fixtures must distinguish a ranking-only change, a larger work
 budget with unchanged effect set, a staged authority grant, a return/reset
 race, a loop that replenishes without ratcheting past its cap, and an authorized
 high-impact effect whose adapter remains unavailable or externally denied.
+Selecting an absence-payoff profile additionally needs experiments across
+different absence durations and eligible work classes, with explicit useful
+outcomes, resource cost, risk, mission drift and return-time review burden.
+The test must distinguish a rising region, a peak, a **positive descending
+region with progressively smaller work still being done**, and the later
+smallest-chunk reset and repeat, without assuming illustrative timings or work
+types in advance.
 
 At work-order scale, the same policy may activate an opted-in unattended
 portfolio. Small eligible orders inside standing authority can rank first;
@@ -2154,7 +2207,8 @@ grant source is `host-policy` recorded on the activation, the curve advances
 only when WO-054 passes the portfolio's named verification commands without
 escalation (and, for a Sort move, the host confirms the exact relocation), a
 failed or refused order resets it, and a spent budget stops dispatch. Criteria
-the named commands do not test are the portfolio author's to cover. Open: the utility ranking, the Blackjack +3
+the named commands do not test are the portfolio author's to cover. Open: the
+utility ranking and measured payoff curve, explicit Blackjack +3 side-game
 rules, loops that replenish, retry, and the four-track inspector.
 
 ## Corpus policy

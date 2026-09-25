@@ -2143,6 +2143,34 @@
           "title": "Candidate — progressive absence authority and return readiness",
           "summary": "### Candidate — progressive absence authority and return readiness The author's candidate profile keeps foreground intent first while present and favors bounded housekeeping during absence because low-disruption cleanup can reduce return-time reorientation. Per-action `U(a,t) = Benefit − Risk − Disruption − OpportunityCost`, the sow/reap ratio, and Double Dutch windows can rank eligible work without silently granting it. Separately, the owner may preauthorize a progressive scope and effect-authority schedule that grows by recorded stage, peaks within a declared ceiling, and stops, resets, or loops on selected events. **Blackjack +3** is the working lens for a candidate explicit progressive-s",
           "missing": false
+        },
+        {
+          "hash": "a987718a4c4ee2906a5e1ff107cc09dbdd3ca28666ca468bdeb98d32fd673578",
+          "ref": "docs/product/03-architecture.md#candidate--progressive-absence-authority-and-return-readiness",
+          "title": "Candidate — progressive absence authority and return readiness",
+          "summary": "### Candidate — progressive absence authority and return readiness The author's candidate profile keeps foreground intent first while present and favors bounded housekeeping during absence because low-disruption cleanup can reduce return-time reorientation. Per-action `U(a,t) = Benefit − Risk − Disruption − OpportunityCost`, the sow/reap ratio, and Double Dutch windows can rank eligible work without silently granting it. Separately, the owner may preauthorize a progressive scope and effect-authority schedule that grows by recorded stage, peaks within a declared ceiling, and stops, resets, or loops on selected events. **Blackjack +3** is the operator's concrete shape example. It is a side bet",
+          "missing": false
+        },
+        {
+          "hash": "d8fb295a928c87ea029c1e2c47ead19c7f8567f0b1a143e761707c7eab38c2ad",
+          "ref": "docs/product/03-architecture.md#candidate--progressive-absence-authority-and-return-readiness",
+          "title": "Candidate — progressive absence authority and return readiness",
+          "summary": "### Candidate — progressive absence authority and return readiness The author's candidate profile keeps foreground intent first while present and favors bounded housekeeping during absence because low-disruption cleanup can reduce return-time reorientation. Per-action `U(a,t) = Benefit − Risk − Disruption − OpportunityCost`, the sow/reap ratio, and Double Dutch windows can rank eligible work without silently granting it. Separately, the owner may preauthorize a progressive scope and effect-authority schedule that grows by recorded stage, peaks within a declared ceiling, and stops, resets, or loops on selected events. **Blackjack +3** is the operator's concrete shape example. It is a side bet",
+          "missing": false
+        },
+        {
+          "hash": "696871360d12f2308b02a392d47cf1e8c78759c4232adb0ec6a6d7038b0612dc",
+          "ref": "docs/product/03-architecture.md#candidate--progressive-absence-authority-and-return-readiness",
+          "title": "Candidate — progressive absence authority and return readiness",
+          "summary": "### Candidate — progressive absence authority and return readiness The author's candidate profile keeps foreground intent first while present and favors bounded housekeeping during absence because low-disruption cleanup can reduce return-time reorientation. Per-action `U(a,t) = Benefit − Risk − Disruption − OpportunityCost`, the sow/reap ratio, and Double Dutch windows can rank eligible work without silently granting it. Separately, the owner may preauthorize a progressive scope and effect-authority schedule that grows by recorded stage, peaks within a declared ceiling, and stops, resets, or loops on selected events. **Blackjack +3** is the operator's concrete shape example. It is a side bet",
+          "missing": false
+        },
+        {
+          "hash": "69ba5002d62eee35e1a02e253179c8a08d39ea2a70c7660a2e8a9ebc0c2b28a3",
+          "ref": "docs/product/03-architecture.md#candidate--progressive-absence-authority-and-return-readiness",
+          "title": "Candidate — progressive absence authority and return readiness",
+          "summary": "### Candidate — progressive absence authority and return readiness This candidate originated in the predecessor `v1` workflow: one prompt-bound agent needed the operator to drive each interaction, so it sat idle during absence. A recurring cron trigger was an early way to restart useful work. DotLn now has explicit work orders and phase/status transitions; a dispatched order can keep moving while the operator is away without this payoff curve. The curve is for the later automatic work-order dispatch layer, where agents select and advance eligible orders without a human initiating each next order. WO-111 exercises a preauthorized scratch portfolio as a bounded precursor; it does not show that",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -2836,6 +2864,41 @@
           "title": "Candidate — unattended work-order portfolio",
           "summary": "### Candidate — unattended work-order portfolio The earlier operator-away scheduler was partly a workaround for supervising one prompt-bound agent and arranging recurring maintenance timers by hand. Once the work-order processor can close one order and select another, unattended autonomy should operate primarily over bounded WorkOrders rather than recreate a permanent prompt session. An opted-in portfolio has two candidate lanes. First are small eligible orders already covered by standing authority and requiring no new material decision; housekeeping often fits because it can reduce return-time reorientation. Second is a bounded set of larger-authority orders the operator explicitly preautho",
           "missing": false
+        },
+        {
+          "hash": "ef8cd11c8eb286a996bb92d28cc2b406c65832865c17de9507af0263b93ec261",
+          "ref": "docs/product/06-roadmap.md#candidate--unattended-work-order-portfolio",
+          "title": "Candidate — unattended work-order portfolio",
+          "summary": "### Candidate — unattended work-order portfolio The earlier operator-away scheduler was partly a workaround for supervising one prompt-bound agent and arranging recurring maintenance timers by hand. Once the work-order processor can close one order and select another, unattended autonomy should operate primarily over bounded WorkOrders rather than recreate a permanent prompt session. An opted-in portfolio has two candidate lanes. First are small eligible orders already covered by standing authority and requiring no new material decision; housekeeping often fits because it can reduce return-time reorientation. Second is a bounded set of larger-authority orders the operator explicitly preautho",
+          "missing": false
+        },
+        {
+          "hash": "c6de08123c4b26304c0f4b1c9298ac0c3ab0b13590c5391d63c98e4c6fe87e48",
+          "ref": "docs/product/06-roadmap.md#candidate--unattended-work-order-portfolio",
+          "title": "Candidate — unattended work-order portfolio",
+          "summary": "### Candidate — unattended work-order portfolio The earlier operator-away scheduler was partly a workaround for supervising one prompt-bound agent and arranging recurring maintenance timers by hand. Once the work-order processor can close one order and select another, unattended autonomy should operate primarily over bounded WorkOrders rather than recreate a permanent prompt session. An opted-in portfolio has two candidate lanes. First are small eligible orders already covered by standing authority and requiring no new material decision; housekeeping often fits because it can reduce return-time reorientation. Second is a bounded set of larger-authority orders the operator explicitly preautho",
+          "missing": false
+        },
+        {
+          "hash": "7afe51a0c402374043e6a045d13b618c108430be946987e941bb435694aeeaba",
+          "ref": "docs/product/06-roadmap.md#candidate--unattended-work-order-portfolio",
+          "title": "Candidate — unattended work-order portfolio",
+          "summary": "### Candidate — unattended work-order portfolio The predecessor `v1` needed the operator to drive each interaction with one prompt-bound agent. A recurring cron trigger was an early way to avoid idle time during absence. DotLn now gives a dispatched work order explicit phases and status, so its work can progress during the operator's absence under the current workflow. The remaining opportunity is automatic selection and advancement of *subsequent* eligible work orders without a new human dispatch. An absence curve should govern that future portfolio choice and pace, rather than serve as the mechanism that keeps an already-dispatched order running. An opted-in portfolio has two candidate lan",
+          "missing": false
+        },
+        {
+          "hash": "be6f3237c3484b27a5dc73fb970f37b39742dc064cb6ff8ffbb058d5086bf3a1",
+          "ref": "docs/product/06-roadmap.md#candidate--unattended-work-order-portfolio",
+          "title": "Candidate — unattended work-order portfolio",
+          "summary": "### Candidate — unattended work-order portfolio The predecessor `v1` needed the operator to drive each interaction with one prompt-bound agent. A recurring cron trigger was an early way to avoid idle time during absence. DotLn now gives a dispatched work order explicit phases and status, so its work can progress during the operator's absence under the current workflow. The remaining opportunity is automatic selection and advancement of *subsequent* eligible work orders without a new human dispatch. An absence curve should govern that future portfolio choice and pace, rather than serve as the mechanism that keeps an already-dispatched order running. An opted-in portfolio has two candidate lan",
+          "missing": false
+        },
+        {
+          "hash": "461c1b96dcb1ff81a79f617b86d3bc106464c0736570bd285b9d17a0d6b08eed",
+          "ref": "docs/product/06-roadmap.md#candidate--unattended-work-order-portfolio",
+          "title": "Candidate — unattended work-order portfolio",
+          "summary": "### Candidate — unattended work-order portfolio The predecessor `v1` needed the operator to drive each interaction with one prompt-bound agent. A recurring cron trigger was an early way to avoid idle time during absence. DotLn now gives a dispatched work order explicit phases and status, so its work can progress during the operator's absence under the current workflow. The remaining opportunity is automatic selection and advancement of *subsequent* eligible work orders without a new human dispatch. An absence curve should govern that future portfolio choice and pace, rather than serve as the mechanism that keeps an already-dispatched order running. An opted-in portfolio has two candidate lan",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -2942,6 +3005,41 @@
         },
         {
           "hash": "84083fd04d0c9f2948b6844d12e4e1ce2feb585c19e56916bc8f3e40bf31148d",
+          "ref": "docs/product/06-roadmap.md#work-order-navigation-and-identity-candidate",
+          "title": "Work-order navigation and identity (candidate)",
+          "summary": "## Work-order navigation and identity (candidate) The current control projection answers one narrow question: given a selected work order and its independently folded phase, which lifecycle transitions are legal now? It does not answer which backlog order should be activated after close. The release ladder, hard dependency graph, adjacent evidence/corpus work, and operator preference are distinct planning inputs and must not be collapsed into the next integer. Keep three answers visible: 1. **Workflow legal next:** the transition allowed for the selected order, such as verify, repair, or final review. 2. **Eligible now:** every candidate whose hard dependencies, activation prerequisites, aut",
+          "missing": false
+        },
+        {
+          "hash": "4d01ede40e660a00d518734747d5851cd976cdd39c902d1daffe72714eda479f",
+          "ref": "docs/product/06-roadmap.md#work-order-navigation-and-identity-candidate",
+          "title": "Work-order navigation and identity (candidate)",
+          "summary": "## Work-order navigation and identity (candidate) The current control projection answers one narrow question: given a selected work order and its independently folded phase, which lifecycle transitions are legal now? It does not answer which backlog order should be activated after close. The release ladder, hard dependency graph, adjacent evidence/corpus work, and operator preference are distinct planning inputs and must not be collapsed into the next integer. Keep three answers visible: 1. **Workflow legal next:** the transition allowed for the selected order, such as verify, repair, or final review. 2. **Eligible now:** every candidate whose hard dependencies, activation prerequisites, aut",
+          "missing": false
+        },
+        {
+          "hash": "7d105bf8aeba00272d5f47338e93be83471aa2f3addca8518a9827cd68e5db29",
+          "ref": "docs/product/06-roadmap.md#work-order-navigation-and-identity-candidate",
+          "title": "Work-order navigation and identity (candidate)",
+          "summary": "## Work-order navigation and identity (candidate) The current control projection answers one narrow question: given a selected work order and its independently folded phase, which lifecycle transitions are legal now? It does not answer which backlog order should be activated after close. The release ladder, hard dependency graph, adjacent evidence/corpus work, and operator preference are distinct planning inputs and must not be collapsed into the next integer. Keep three answers visible: 1. **Workflow legal next:** the transition allowed for the selected order, such as verify, repair, or final review. 2. **Eligible now:** every candidate whose hard dependencies, activation prerequisites, aut",
+          "missing": false
+        },
+        {
+          "hash": "bf5eb728779475b1c060d8a9eded2b3914675247840b53efc9cb7b8e033ab994",
+          "ref": "docs/product/06-roadmap.md#work-order-navigation-and-identity-candidate",
+          "title": "Work-order navigation and identity (candidate)",
+          "summary": "## Work-order navigation and identity (candidate) The current control projection answers one narrow question: given a selected work order and its independently folded phase, which lifecycle transitions are legal now? It does not answer which backlog order should be activated after close. The release ladder, hard dependency graph, adjacent evidence/corpus work, and operator preference are distinct planning inputs and must not be collapsed into the next integer. Keep three answers visible: 1. **Workflow legal next:** the transition allowed for the selected order, such as verify, repair, or final review. 2. **Eligible now:** every candidate whose hard dependencies, activation prerequisites, aut",
+          "missing": false
+        },
+        {
+          "hash": "31fefc6c92a53d83a458fde37de07b5be89e5dbe990237c7c2b0a05ca522e073",
+          "ref": "docs/product/06-roadmap.md#work-order-navigation-and-identity-candidate",
+          "title": "Work-order navigation and identity (candidate)",
+          "summary": "## Work-order navigation and identity (candidate) The current control projection answers one narrow question: given a selected work order and its independently folded phase, which lifecycle transitions are legal now? It does not answer which backlog order should be activated after close. The release ladder, hard dependency graph, adjacent evidence/corpus work, and operator preference are distinct planning inputs and must not be collapsed into the next integer. Keep three answers visible: 1. **Workflow legal next:** the transition allowed for the selected order, such as verify, repair, or final review. 2. **Eligible now:** every candidate whose hard dependencies, activation prerequisites, aut",
+          "missing": false
+        },
+        {
+          "hash": "a5e1ef702cf945723cd77bf5d6be64a1f40a1d8c2a27967d7736f4bffd4d0539",
           "ref": "docs/product/06-roadmap.md#work-order-navigation-and-identity-candidate",
           "title": "Work-order navigation and identity (candidate)",
           "summary": "## Work-order navigation and identity (candidate) The current control projection answers one narrow question: given a selected work order and its independently folded phase, which lifecycle transitions are legal now? It does not answer which backlog order should be activated after close. The release ladder, hard dependency graph, adjacent evidence/corpus work, and operator preference are distinct planning inputs and must not be collapsed into the next integer. Keep three answers visible: 1. **Workflow legal next:** the transition allowed for the selected order, such as verify, repair, or final review. 2. **Eligible now:** every candidate whose hard dependencies, activation prerequisites, aut",
@@ -15686,6 +15784,152 @@
           "ref": "docs/evidence/WO-114/decisions.md#wo-114-d013--ver-002-pass-two-minor-index-source-hardening-defects-boarded-up",
           "title": "WO-114-D013: Resident index-source hardening, for the planner to place (low priority; a bounded fix beside WO-115 or the next resident-host order): resolve the dotln resident CLI's launchpad and index",
           "summary": "{ \"id\": \"WO-114-D013\", \"date\": \"2026-09-24\", \"dispatch\": \"resume: verify\", \"decision\": \"Record VER-002 as a passing verification of the repaired WO-114 subject. VER-001-F1 to F6 are resolved and criteria 1-5 are met. Board up two minor defects the independent review found and this verifier reproduced, without routing the order back to repair: VER-002-N1, dotln resident now refuses to start when the launchpad or its configuration cannot be resolved, a precondition the repair introduced to select the projection's index and that 04 and the console README do not state; VER-002-N2, a bound index path that is a FIFO or other blocking special file hangs the resident's first transaction while it hol",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-441469088613e52a",
+      "key": "candidate:docs/planning/full-absence-curve-experiment-2026-09-24.md#candidate--test-the-full-rising-and-descending-operator-absence-curve",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "ed24936bda4ad4a98f53e9cc5ed4271a358339dd9876946df97eb9d6d3756ac9",
+          "ref": "docs/planning/full-absence-curve-experiment-2026-09-24.md#candidate--test-the-full-rising-and-descending-operator-absence-curve",
+          "title": "Candidate — test the full rising and descending operator-absence curve",
+          "summary": "# Candidate — test the full rising and descending operator-absence curve **Source and status (2026-09-24):** Operator clarification during WO-111. This is a synthesized planning candidate, not a selected timing policy or a new acceptance condition on the active order. [ADR-0007's dated clarification](../decisions/0007-presence-is-a-policy-input.md#amendments) and [product 03's candidate](../product/03-architecture.md#candidate--progressive-absence-authority-and-return-readiness) hold the current meaning. The [WO-111 live receipts](../evidence/WO-111/receipt.json) show verified probe → widen → peak → immediate probe reset and a separate human-return cancellation with a candidate still eligibl",
+          "missing": false
+        },
+        {
+          "hash": "39f30827e5b9967e0eeaeebde0bcb23dcaf23bebba14aa8dfe5e4813e511e5bb",
+          "ref": "docs/planning/full-absence-curve-experiment-2026-09-24.md#candidate--test-the-full-rising-and-descending-operator-absence-curve",
+          "title": "Candidate — test the full rising and descending operator-absence curve",
+          "summary": "# Candidate — test the full rising and descending operator-absence curve **Source and status (2026-09-24):** Operator clarification during WO-111. This is a synthesized planning candidate, not a selected timing policy or a new acceptance condition on the active order. [ADR-0007's dated clarification](../decisions/0007-presence-is-a-policy-input.md#amendments) and [product 03's candidate](../product/03-architecture.md#candidate--progressive-absence-authority-and-return-readiness) hold the current meaning. The [WO-111 live receipts](../evidence/WO-111/receipt.json) show verified probe → widen → peak → immediate probe reset and a separate human-return cancellation with a candidate still eligibl",
+          "missing": false
+        },
+        {
+          "hash": "8d80e1a430b600e71ee52615a08d25366a907495be445c4fc346812cccc7bc52",
+          "ref": "docs/planning/full-absence-curve-experiment-2026-09-24.md#candidate--test-the-full-rising-and-descending-operator-absence-curve",
+          "title": "Candidate — test the full rising and descending operator-absence curve",
+          "summary": "# Candidate — test the full rising and descending operator-absence curve **Source and status (2026-09-24):** Operator clarification during WO-111. This is a synthesized planning candidate, not a selected timing policy or a new acceptance condition on the active order. [ADR-0007's dated clarification](../decisions/0007-presence-is-a-policy-input.md#amendments) and [product 03's candidate](../product/03-architecture.md#candidate--progressive-absence-authority-and-return-readiness) hold the current meaning. The [WO-111 return receipt](../evidence/WO-111/return-receipt-v2.json) show verified probe → widen → peak → immediate probe reset and a separate return cancellation by log replay against a n",
+          "missing": false
+        },
+        {
+          "hash": "a42626e220c9cdc9dfc205e0df2bca41306c234697c2b0f5519a74f43f843e25",
+          "ref": "docs/planning/full-absence-curve-experiment-2026-09-24.md#candidate--test-the-full-rising-and-descending-operator-absence-curve",
+          "title": "Candidate — test the full rising and descending operator-absence curve",
+          "summary": "# Candidate — test the full rising and descending operator-absence curve **Source and status (2026-09-24):** Operator clarification during WO-111. This is a synthesized planning candidate, not a selected timing policy or a new acceptance condition on the active order. [ADR-0007's dated clarification](../decisions/0007-presence-is-a-policy-input.md#amendments) and [product 03's candidate](../product/03-architecture.md#candidate--progressive-absence-authority-and-return-readiness) hold the current meaning. The [WO-111 return receipt](../evidence/WO-111/return-receipt-v2.json) shows verified probe → widen → peak → immediate probe reset and a separate return cancellation by log replay against a ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-3c34a8ffbf61376f",
+      "key": "decision:docs/evidence/WO-111/decisions.md#wo-111-d011",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "ab3e37da36d6224dc498472d5546ddb59a0a26d2d09f0716a2a4b4780d9ec4c2",
+          "ref": "docs/evidence/WO-111/decisions.md#wo-111-d011",
+          "title": "WO-111-D011: Planner: nominate a bounded runtime order before a WO-111 rerun or any further live Codex worker proof. Launch Codex source-change and verifier episodes so the user-level Codex configurat",
+          "summary": "{ \"id\": \"WO-111-D011\", \"date\": \"2026-09-24\", \"dispatch\": \"resume: verify\", \"decision\": \"Give an owner to a runtime side effect met during verification that WO-111 may not fix. The live Codex source-change worker launches leave project trust entries for the scratch targets in the operator's user-level Codex configuration, which lies outside the portfolio, the scratch roots and the worktree. WO-111 criterion 6 and its non-goals exclude runtime fixes, so this decision boards up the defect for a bounded order. VER-001 B1 records the criterion-2 judgment.\", \"evidence\": [ \"docs/verifications/WO-111/VER-001.md B1\", \"Verifier read of the operator's user-level Codex configuration on 2026-09-24: two t",
+          "missing": false
+        },
+        {
+          "hash": "74fd38d14f238ba9fa5e5387ba66b161cd40e32cc7ba61c87c330071bcc60b6e",
+          "ref": "docs/evidence/WO-111/decisions.md#wo-111-d011",
+          "title": "WO-111-D011: Planner: nominate a bounded runtime order before a WO-111 rerun or any further live Codex worker proof. Launch Codex source-change and verifier episodes so the user-level Codex configurat",
+          "summary": "{ \"id\": \"WO-111-D011\", \"date\": \"2026-09-24\", \"dispatch\": \"resume: verify\", \"decision\": \"Give an owner to a runtime side effect met during verification that WO-111 may not fix. The live Codex source-change worker launches leave project trust entries for the scratch targets in the operator's user-level Codex configuration, which lies outside the portfolio, the scratch roots and the worktree. WO-111 criterion 6 and its non-goals exclude runtime fixes, so this decision boards up the defect for a bounded order. VER-001 B1 records the criterion-2 judgment.\", \"evidence\": [ \"docs/verifications/WO-111/VER-001.md B1\", \"Verifier read of the operator's user-level Codex configuration on 2026-09-24: two t",
+          "missing": false
+        },
+        {
+          "hash": "e1ca1841606058f360b64f060ac555fe1105090f05c1aa9bfc4716eeac0d17a6",
+          "ref": "docs/evidence/WO-111/decisions.md#wo-111-d011",
+          "title": "WO-111-D011: Planner: nominate a bounded runtime order before a WO-111 rerun or any further live Codex worker proof. Launch Codex source-change and verifier episodes so the user-level Codex configurat",
+          "summary": "{ \"id\": \"WO-111-D011\", \"date\": \"2026-09-24\", \"dispatch\": \"resume: verify\", \"decision\": \"Give an owner to a runtime side effect met during verification that WO-111 may not fix. The live Codex source-change worker launches leave project trust entries for the scratch targets in the operator's user-level Codex configuration, which lies outside the portfolio, the scratch roots and the worktree. WO-111 criterion 6 and its non-goals exclude runtime fixes, so this decision boards up the defect for a bounded order. VER-001 B1 records the criterion-2 judgment.\", \"evidence\": [ \"docs/verifications/WO-111/VER-001.md B1\", \"Verifier read of the operator's user-level Codex configuration on 2026-09-24: two t",
+          "missing": false
+        },
+        {
+          "hash": "f556d78a809e910fde43d483e88254672ca12964e72e0a1ebabb5c43441e0ea2",
+          "ref": "docs/evidence/WO-111/decisions.md#wo-111-d011",
+          "title": "WO-111-D011: Planner: nominate a bounded runtime order before a WO-111 rerun or any further live Codex worker proof. Launch Codex source-change and verifier episodes so the user-level Codex configurat",
+          "summary": "{ \"id\": \"WO-111-D011\", \"date\": \"2026-09-24\", \"dispatch\": \"resume: verify\", \"decision\": \"Give an owner to a runtime side effect met during verification that WO-111 may not fix. The live Codex source-change worker launches leave project trust entries for the scratch targets in the operator's user-level Codex configuration, which lies outside the portfolio, the scratch roots and the worktree. WO-111 criterion 6 and its non-goals exclude runtime fixes, so this decision boards up the defect for a bounded order. VER-001 B1 records the criterion-2 judgment.\", \"evidence\": [ \"docs/verifications/WO-111/VER-001.md B1\", \"Verifier read of the operator's user-level Codex configuration on 2026-09-24: two t",
+          "missing": false
+        },
+        {
+          "hash": "aafc9cb0d158802d4acf76f2f0fd4b197a9b3cfc2494c5e13300535d65d9ba6a",
+          "ref": "docs/evidence/WO-111/decisions.md#wo-111-d011",
+          "title": "WO-111-D011: Planner: nominate a bounded runtime order before a WO-111 rerun or any further live Codex worker proof. Launch Codex source-change and verifier episodes so the user-level Codex configurat",
+          "summary": "{ \"id\": \"WO-111-D011\", \"date\": \"2026-09-24\", \"dispatch\": \"resume: verify\", \"decision\": \"Give an owner to a runtime side effect met during verification that WO-111 may not fix. The live Codex source-change worker launches leave project trust entries for the scratch targets in the operator's user-level Codex configuration, which lies outside the portfolio, the scratch roots and the worktree. WO-111 criterion 6 and its non-goals exclude runtime fixes, so this decision boards up the defect for a bounded order. VER-001 B1 records the criterion-2 judgment.\", \"evidence\": [ \"docs/verifications/WO-111/VER-001.md B1\", \"Verifier read of the operator's user-level Codex configuration on 2026-09-24: two t",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-7dbf4e832a8fb124",
+      "key": "decision:docs/evidence/WO-111/decisions.md#wo-111-d015",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "642df13b5168494b6ab3073cf553a9bb80528e001f4f9d1d2289c20b7788028e",
+          "ref": "docs/evidence/WO-111/decisions.md#wo-111-d015",
+          "title": "WO-111-D015: WO-111 repair, or the planner if the operator withdraws WO-111: state one enumeration at docs/planning/critical-path-2026-09-08.md:324 and its risk-register row, either recursive 46 to 10",
+          "summary": "{ \"id\": \"WO-111-D015\", \"date\": \"2026-09-24\", \"dispatch\": \"resume: verify\", \"decision\": \"Board up two documentary defects met during VER-002 that the verifier may not edit in the subject it judges. First, the R2 integration-package growth answer calls the audit's 46 skeleton files top-level and says the same enumeration now finds 93. The audit counted packages/skeleton/src recursively: 39 .ts files, 4 of them under loadouts/, plus 7 .mjs. That enumeration now gives 102: 89 .ts, 9 of them under loadouts/, plus 13 .mjs. A top-level count gives 42 then and 93 now. Second, return-receipt-v2.json lists the first window's mission store among the second window's excluded observed writes, because rep",
+          "missing": false
+        },
+        {
+          "hash": "a3b3f43e7b74c2457416aaefb487cfdb0c8acfe7548ec0f441bff009953ffc3a",
+          "ref": "docs/evidence/WO-111/decisions.md#wo-111-d015",
+          "title": "WO-111-D015: WO-111 repair, or the planner if the operator withdraws WO-111: state one enumeration at docs/planning/critical-path-2026-09-08.md:324 and its risk-register row, either recursive 46 to 10",
+          "summary": "{ \"id\": \"WO-111-D015\", \"date\": \"2026-09-24\", \"dispatch\": \"resume: verify\", \"decision\": \"Board up two documentary defects met during VER-002 that the verifier may not edit in the subject it judges. First, the R2 integration-package growth answer calls the audit's 46 skeleton files top-level and says the same enumeration now finds 93. The audit counted packages/skeleton/src recursively: 39 .ts files, 4 of them under loadouts/, plus 7 .mjs. That enumeration now gives 102: 89 .ts, 9 of them under loadouts/, plus 13 .mjs. A top-level count gives 42 then and 93 now. Second, return-receipt-v2.json lists the first window's mission store among the second window's excluded observed writes, because rep",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-f3281eb085ad87a7",
+      "key": "decision:docs/evidence/WO-111/decisions.md#wo-111-d016",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "23a619df2802a85c32f0c7a4dd1c68f470b2bc0e60c047d92447fcae759e0702",
+          "ref": "docs/evidence/WO-111/decisions.md#wo-111-d016",
+          "title": "WO-111-D016: Route VER-002 B1 to WO-111 repair. The repair reruns the live window with an isolated Codex home, supplied by the WO-111 caller, for every worker and verifier launch. It adds a before/aft",
+          "summary": "{ \"id\": \"WO-111-D016\", \"kind\": \"correction\", \"date\": \"2026-09-24\", \"dispatch\": \"resume: verify; operator correction: VER-002's routing is not a legitimate workflow; get the order to fix\", \"decision\": \"Route VER-002 B1 to WO-111 repair. The repair reruns the live window with an isolated Codex home, supplied by the WO-111 caller, for every worker and verifier launch. It adds a before/after digest of the user Codex configuration to the receipt's protected surfaces, fixes D015's two documentary defects, and returns to verification. This route needs no runtime source change, operator waiver or withdrawal.\", \"misread\": \"VER-002 said a documentary resume: fix could not close criterion 2. It routed ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-dcadda81305b4fb7",
+      "key": "decision:docs/evidence/WO-111/decisions.md#wo-111-d017",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "778869d7f1bba0a45cfb6b7533a9f5c824a435844d48430ce9d265a6aba17afa",
+          "ref": "docs/evidence/WO-111/decisions.md#wo-111-d017",
+          "title": "WO-111-D017: Amend criterion 2 for this synthetic proof: require unchanged main checkout and sentinel, absent scratch Git remotes, and explicit disclosure of outside-portfolio and unmeasured host effe",
+          "summary": "{ \"id\": \"WO-111-D017\", \"kind\": \"correction\", \"date\": \"2026-09-25\", \"dispatch\": \"resume: fix; operator directed a prompt decision to repair or drop criterion 2 rather than continue the failed proof loop\", \"decision\": \"Amend criterion 2 for this synthetic proof: require unchanged main checkout and sentinel, absent scratch Git remotes, and explicit disclosure of outside-portfolio and unmeasured host effects. The observed user Codex trust entries do not fail WO-111 acceptance under this amended criterion. Retain the two failed verification verdicts against the prior criterion and keep FUP-3c34a8ffbf61376f independent for runtime isolation across launch paths. Correct D015's two minor documentary",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-e468ee64ac00c70a",
+      "key": "decision:docs/evidence/WO-111/decisions.md#wo-111-d019",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "a2bf7dcf28698e30553e2a2e3da9b61c2a3462507f11eb64b2f5f7220e07c44a",
+          "ref": "docs/evidence/WO-111/decisions.md#wo-111-d019",
+          "title": "WO-111-D019: Restore WO-111's original criterion 2, withdraw the proposed v3 acceptance editions from public evidence, and keep the original v2 receipts and VER-001/VER-002 failures authoritative. Do ",
+          "summary": "{ \"id\": \"WO-111-D019\", \"kind\": \"correction\", \"date\": \"2026-09-25\", \"dispatch\": \"resume: fix; operator rejected rule beating and weakening the work order to pass\", \"decision\": \"Restore WO-111's original criterion 2, withdraw the proposed v3 acceptance editions from public evidence, and keep the original v2 receipts and VER-001/VER-002 failures authoritative. Do not record repair-complete from a changed acceptance interpretation. The D017 decision and its PlanExecutionAmended event remain in the append-only audit as a superseded mistake, not as a current scope grant. Pursue only evidence that the original criterion is actually met or an explicit terminal disposition that does not claim success",
           "missing": false
         }
       ],

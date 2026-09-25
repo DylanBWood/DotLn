@@ -1,0 +1,453 @@
+{
+  "schemaVersion": 2,
+  "workOrder": "WO-111",
+  "seed": {
+    "epistemic": "observed",
+    "value": {
+      "candidateKinds": [
+        {
+          "kind": "failing-lint",
+          "paths": [
+            "src/main.js"
+          ],
+          "evidenceRefs": 1
+        },
+        {
+          "kind": "failing-test",
+          "paths": [
+            "src/main.js"
+          ],
+          "evidenceRefs": 1
+        },
+        {
+          "kind": "misplaced-file",
+          "paths": [
+            "loose/guide.md"
+          ],
+          "evidenceRefs": 1
+        },
+        {
+          "kind": "misplaced-file",
+          "paths": [
+            "loose/helper.js"
+          ],
+          "evidenceRefs": 1
+        },
+        {
+          "kind": "stale-generated",
+          "paths": [
+            "generated/obsolete.txt"
+          ],
+          "evidenceRefs": 1
+        },
+        {
+          "kind": "repeated-repair",
+          "paths": [
+            "src/main.js"
+          ],
+          "evidenceRefs": 1
+        }
+      ],
+      "focusedCheckExitCodesAtAway": {
+        "lint": 1,
+        "test": 1,
+        "move": 1
+      },
+      "remoteCounts": {
+        "target": 0,
+        "launchpad": 0
+      }
+    }
+  },
+  "effectiveWorkerIdentity": {
+    "epistemic": "unknown",
+    "value": null,
+    "reason": "The CLI transport returns no effective model and effort readback for each episode."
+  },
+  "window": {
+    "epistemic": "observed",
+    "value": {
+      "awayAt": 1790284888735,
+      "backAt": 1790285537048,
+      "durationMs": 648313,
+      "missionAwayAt": 1790284888890,
+      "missionBackAt": 1790285537337,
+      "postBackDispatches": 0,
+      "postBackMissionDispatches": 0,
+      "runnerStoppedAfterBackMs": 1313,
+      "missionStoppedAfterBackMs": 1537
+    }
+  },
+  "progression": {
+    "epistemic": "observed",
+    "value": [
+      {
+        "phase": "probe",
+        "candidate": "failing-lint:src/main.js",
+        "surfaces": [
+          "src/main.js"
+        ],
+        "changedPaths": [
+          "src/main.js"
+        ],
+        "sourceChange": "observed",
+        "commit": "a4dcfbabcc0725eff67f930ada4add9e550c96b7",
+        "verification": {
+          "verdict": "pass",
+          "criteria": 1,
+          "passed": 1,
+          "findings": 0
+        },
+        "verified": true,
+        "atOffsetMs": 57159
+      },
+      {
+        "phase": "widen",
+        "candidate": "failing-test:src/main.js",
+        "surfaces": [
+          "src/main.js"
+        ],
+        "changedPaths": [
+          "src/main.js"
+        ],
+        "sourceChange": "observed",
+        "commit": "e8413d5c8153f77b14fbc1aeddd8594417a7b09f",
+        "verification": {
+          "verdict": "pass",
+          "criteria": 1,
+          "passed": 1,
+          "findings": 0
+        },
+        "verified": true,
+        "atOffsetMs": 122463
+      },
+      {
+        "phase": "peak",
+        "candidate": "misplaced-file:loose/guide.md",
+        "surfaces": [
+          "docs/guide.md",
+          "loose/guide.md"
+        ],
+        "changedPaths": [
+          "docs/guide.md",
+          "loose/guide.md"
+        ],
+        "sourceChange": "observed",
+        "commit": "eb046ebc406dc7ae2fcad65c5965c207dcb8e3ae",
+        "verification": {
+          "verdict": "pass",
+          "criteria": 2,
+          "passed": 2,
+          "findings": 0
+        },
+        "verified": true,
+        "atOffsetMs": 186720
+      }
+    ]
+  },
+  "mission": {
+    "epistemic": "observed",
+    "value": {
+      "dispatches": 1,
+      "verdicts": [
+        "drift"
+      ],
+      "findings": [
+        {
+          "kind": "contract-clause",
+          "reference": "contract:surfaces",
+          "reason": "The diff edits docs/lineage/decisions-index.md, which is outside the declared surfaces docs/control, docs/work-orders/README.md, docs/evidence/WO-111, README.md, docs/product/06-roadmap.md, docs/planning/capability-table.md, docs/planning/critical-path-2026-09-08.md, docs/planning/work-order-map.md."
+        }
+      ],
+      "holds": 1,
+      "subject": "WO-111 DotLn worktree, bound as WO-111-1; not the scratch portfolio orders",
+      "composition": "separate resident and store running alongside the portfolio",
+      "holdScope": "mission store only; no non-mission actor was bound there, so the hold refused no work",
+      "portfolioDispatchHeld": null,
+      "explanation": "Accurate contract:surfaces drift over docs/lineage/decisions-index.md; the declared surfaces omitted that changed path.",
+      "episodes": [
+        {
+          "launch": {
+            "epistemic": "launch-claim",
+            "value": {
+              "transport": "codex-cli-exec",
+              "version": "0.156.1",
+              "model": "gpt-6-sol",
+              "effort": "xhigh",
+              "profileId": "mission-check-v1"
+            }
+          },
+          "effectiveIdentity": {
+            "epistemic": "unknown",
+            "value": null,
+            "reason": "No effective mission-episode identity readback."
+          }
+        }
+      ]
+    }
+  },
+  "budget": {
+    "epistemic": "observed",
+    "value": {
+      "method": "resident replay; episodes count admitted portfolio outcomes; wallMs sums max(0, observation state.at - activation.at); tokens include only actor-reported values; ceiling is the recorded portfolio definition",
+      "consumed": {
+        "episodes": 3,
+        "wallMs": 182200,
+        "tokens": 0
+      },
+      "ceiling": {
+        "episodes": 3,
+        "wallMs": 3600000
+      }
+    }
+  },
+  "protectedSurfaces": {
+    "epistemic": "observed",
+    "value": {
+      "mainCheckoutUnchanged": true,
+      "selectedCheckoutUnchanged": true,
+      "targetMainUnchanged": true,
+      "sentinelUnchanged": true,
+      "templateUnchanged": true,
+      "zeroRemotesBeforeAndAfter": true,
+      "launchpadConfigurationUnchanged": true,
+      "mainHeadBefore": "4b6a19cc50e98a437d35b2adf2d392fbf5b12139",
+      "mainHeadAfter": "4b6a19cc50e98a437d35b2adf2d392fbf5b12139"
+    }
+  },
+  "eventStream": {
+    "epistemic": "observed",
+    "value": {
+      "path": "events-v2.json",
+      "rows": 1731,
+      "sha256": "30c903807972cb937eaa617ec1431e5485b29a7875170ba52ad3e985a1c56f65",
+      "fields": [
+        "stream",
+        "index",
+        "atOffsetMs",
+        "type",
+        "selected sanitized payload fields"
+      ],
+      "method": "All resident events in original order per store; portfolio offsets use awayAt, mission offsets use missionAwayAt, configured events use null because their timestamp is logical zero. Both streams use the same projection; refusals include reason."
+    }
+  },
+  "outsideHostFilesystem": {
+    "epistemic": "unknown",
+    "value": null,
+    "reason": "The Codex config change is reported separately as observed. Other unmeasured host paths and network endpoints remain unknown."
+  },
+  "actualEpisodeTokens": {
+    "epistemic": "unknown",
+    "value": null,
+    "reason": "The portfolio actors did not report token usage; zero reported tokens is not zero model usage."
+  },
+  "returnCausality": {
+    "epistemic": "unknown",
+    "value": null,
+    "reason": "The portfolio's three-episode budget was exhausted before back. The separate mission-store hold was not a cause of portfolio stopping."
+  },
+  "correction": {
+    "epistemic": "observed",
+    "value": {
+      "original": "receipt.json",
+      "originalSha256": "833b83af5556822a4409e6ec011d5c86337360032b702d04a0beff3e300bf2f0",
+      "source": "VER-001 and WO-111-D012; offline replay of retained raw stores, no live rerun"
+    }
+  },
+  "episodeLaunches": {
+    "epistemic": "observed",
+    "value": [
+      {
+        "order": "WO-900",
+        "role": "source",
+        "attempt": 1,
+        "launch": {
+          "epistemic": "launch-claim",
+          "value": {
+            "transport": "codex-cli-exec",
+            "version": "0.156.1",
+            "model": "gpt-6-sol",
+            "effort": "xhigh",
+            "mode": "fresh-cli"
+          }
+        },
+        "effectiveIdentity": {
+          "epistemic": "unknown",
+          "value": null,
+          "reason": "No effective per-episode model/effort readback; launch selectors are not effective identity."
+        }
+      },
+      {
+        "order": "WO-900",
+        "role": "verification",
+        "attempt": 1,
+        "launch": {
+          "epistemic": "launch-claim",
+          "value": {
+            "transport": "codex-cli-exec",
+            "version": "0.156.1",
+            "model": "gpt-6-sol",
+            "effort": "xhigh",
+            "mode": "fresh-transport"
+          }
+        },
+        "effectiveIdentity": {
+          "epistemic": "unknown",
+          "value": null,
+          "reason": "No effective per-episode model/effort readback; launch selectors are not effective identity."
+        }
+      },
+      {
+        "order": "WO-901",
+        "role": "source",
+        "attempt": 1,
+        "launch": {
+          "epistemic": "launch-claim",
+          "value": {
+            "transport": "codex-cli-exec",
+            "version": "0.156.1",
+            "model": "gpt-6-sol",
+            "effort": "xhigh",
+            "mode": "fresh-cli"
+          }
+        },
+        "effectiveIdentity": {
+          "epistemic": "unknown",
+          "value": null,
+          "reason": "No effective per-episode model/effort readback; launch selectors are not effective identity."
+        }
+      },
+      {
+        "order": "WO-901",
+        "role": "verification",
+        "attempt": 1,
+        "launch": {
+          "epistemic": "launch-claim",
+          "value": {
+            "transport": "codex-cli-exec",
+            "version": "0.156.1",
+            "model": "gpt-6-sol",
+            "effort": "xhigh",
+            "mode": "fresh-transport"
+          }
+        },
+        "effectiveIdentity": {
+          "epistemic": "unknown",
+          "value": null,
+          "reason": "No effective per-episode model/effort readback; launch selectors are not effective identity."
+        }
+      },
+      {
+        "order": "WO-902",
+        "role": "source",
+        "attempt": 1,
+        "launch": {
+          "epistemic": "launch-claim",
+          "value": {
+            "transport": "codex-cli-exec",
+            "version": "0.156.1",
+            "model": "gpt-6-sol",
+            "effort": "xhigh",
+            "mode": "fresh-cli"
+          }
+        },
+        "effectiveIdentity": {
+          "epistemic": "unknown",
+          "value": null,
+          "reason": "No effective per-episode model/effort readback; launch selectors are not effective identity."
+        }
+      },
+      {
+        "order": "WO-902",
+        "role": "verification",
+        "attempt": 1,
+        "launch": {
+          "epistemic": "launch-claim",
+          "value": {
+            "transport": "codex-cli-exec",
+            "version": "0.156.1",
+            "model": "gpt-6-sol",
+            "effort": "xhigh",
+            "mode": "fresh-transport"
+          }
+        },
+        "effectiveIdentity": {
+          "epistemic": "unknown",
+          "value": null,
+          "reason": "No effective per-episode model/effort readback; launch selectors are not effective identity."
+        }
+      }
+    ]
+  },
+  "presenceAuthorship": {
+    "epistemic": "launch-claim",
+    "value": {
+      "method": "Executor entered away/back in response to operator messages, as D003 records; the log classifier assigns human by signal kind and cannot authenticate the sender."
+    }
+  },
+  "inFlightReturn": {
+    "epistemic": "observed",
+    "value": {
+      "exercised": false,
+      "pendingEpisodeCount": 0,
+      "phaseRules": [
+        {
+          "phase": "discovery",
+          "inFlightOnReturn": "kill"
+        },
+        {
+          "phase": "probe",
+          "inFlightOnReturn": "finish"
+        },
+        {
+          "phase": "widen",
+          "inFlightOnReturn": "finish"
+        },
+        {
+          "phase": "peak",
+          "inFlightOnReturn": "finish"
+        }
+      ],
+      "fixture": "packages/skeleton/test/resident.test.ts: WO-068 in-flight kill and finish obey return precedence and reject stale advancement",
+      "limit": "Neither live return had an in-flight episode; the cited test uses fake actors, not live portfolio workers."
+    }
+  },
+  "snapshotCoverage": {
+    "epistemic": "observed",
+    "value": {
+      "method": "checkoutSnapshot from WO-053/fixture.mjs: HEAD, tracked and nonignored worktree bytes and index; ignored paths excluded",
+      "excludedObservedWrites": [
+        "harness installation/exclude records in the ignored DotLn control lane",
+        "mission store in the first window's ignored DotLn control lane",
+        "target .git/info/exclude worker blocks"
+      ],
+      "source": "VER-001 m3; those ignored writes are outside the checkout equality claim"
+    }
+  },
+  "outsidePortfolioChange": {
+    "epistemic": "observed",
+    "value": {
+      "checkedLocation": "user Codex home/config.toml",
+      "changed": true,
+      "effect": "project trust_level=trusted entry for this window's scratch target",
+      "source": "VER-001 B1; entries remain present in the repair's read-only inventory",
+      "attribution": "Inference: Codex launch persisted trust; supported by matching scratch keys, verifier-recorded timing and inherited Codex home. No writer-identifying log was found.",
+      "criterion2": "unmet; no operator exception recorded"
+    }
+  },
+  "runnerReturn": {
+    "epistemic": "observed",
+    "value": {
+      "source": "run.mjs one-second pulse calls AbortController.abort after it sees present",
+      "stoppedAfterBackMs": 1313,
+      "limit": "Zero later dispatches before caller shutdown cannot alone establish cancellation at the future due time."
+    }
+  },
+  "generatorProvenance": {
+    "epistemic": "observed",
+    "value": {
+      "source": "VER-001 m4",
+      "observation": "First-window seed/run/baseline/mission files were edited after launch; launchpad also had a manual synthetic grant-registry commit. The filed generators are not an exact reproduction of that window's preparation; raw stores preserve what ran."
+    }
+  }
+}
