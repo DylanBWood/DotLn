@@ -724,6 +724,45 @@ test("WO-157 the document gate refuses an unregistered docs JSONL and an unstubb
     /unregistered JSONL: docs\/evidence\/wo157-planted\.jsonl is not an EventEnvelope stream/u,
   );
   rmSync(join(copy, "docs/evidence/wo157-planted.jsonl"));
+  const registryBefore = readFileSync(
+    join(copy, "packages/kernel/test/fixtures/jsonl-protocols.json"),
+    "utf8",
+  );
+  mkdirSync(join(copy, "docs/evidence/WO-998"), { recursive: true });
+  writeFileSync(join(copy, "docs/evidence/WO-998/raw.jsonl"), '{"raw":true}\n');
+  const declaration = join(copy, "docs/evidence/WO-998/jsonl.json");
+  writeFileSync(
+    declaration,
+    JSON.stringify({
+      schemaVersion: 1,
+      nonEventPaths: {
+        "raw.jsonl": "Evidence projection, not an EventEnvelope",
+      },
+    }),
+  );
+  const declared = check();
+  assert.equal(declared.status, 0, declared.stderr);
+  assert.equal(
+    readFileSync(
+      join(copy, "packages/kernel/test/fixtures/jsonl-protocols.json"),
+      "utf8",
+    ),
+    registryBefore,
+  );
+  writeFileSync(
+    declaration,
+    JSON.stringify({
+      schemaVersion: 1,
+      nonEventPaths: { "../../control/orders/WO-160.jsonl": "escape" },
+    }),
+  );
+  assert.match(check().stderr, /Invalid evidence JSONL target/);
+  writeFileSync(
+    declaration,
+    JSON.stringify({ schemaVersion: 1, nonEventPaths: { "raw.jsonl": "" } }),
+  );
+  assert.match(check().stderr, /Invalid evidence JSONL target/);
+  rmSync(join(copy, "docs/evidence/WO-998"), { recursive: true });
   const stubs = join(copy, "scripts/lib/document-gate-stubs.mjs");
   writeFileSync(
     stubs,
@@ -1973,4 +2012,87 @@ test("WO-157 a gate whose suites leave a host-confinement fixture root behind fa
   );
   assert.deepEqual(leaky.abandonedRoots, left);
   assert.ok(existsSync(foreign), "the check removes nothing");
+});
+
+test("WO-160 document failures rerun at the base, retain red status and record introduced/inherited labels", async (t) => {
+  const repo = realpathSync(
+    mkdtempSync(join(tmpdir(), "dotln-document-label-")),
+  );
+  t.after(() => rmSync(repo, { recursive: true, force: true }));
+  const git = (...args) =>
+    execFileSync("git", args, { cwd: repo, encoding: "utf8" }).trim();
+  git("init", "-q", "-b", "main");
+  git("config", "user.name", "Fixture");
+  git("config", "user.email", "fixture@example.invalid");
+  mkdirSync(join(repo, "scripts"));
+  writeFileSync(join(repo, ".gitignore"), "docs/control/local/\n");
+  writeFileSync(join(repo, "scripts/inherited.mjs"), "process.exitCode = 1;\n");
+  writeFileSync(
+    join(repo, "scripts/introduced.mjs"),
+    "process.exitCode = 0;\n",
+  );
+  git("add", ".");
+  git("commit", "-qm", "base checks");
+  const base = git("rev-parse", "HEAD");
+  writeFileSync(
+    join(repo, "scripts/introduced.mjs"),
+    "process.exitCode = 1;\n",
+  );
+  const table = ["inherited", "introduced"].map((name) => ({
+    name,
+    document: true,
+    command: [process.execPath, `scripts/${name}.mjs`],
+  }));
+  const before = git("diff");
+  for (const flags of [["--against", base], []]) {
+    const result = await runGate(["--document", ...flags], repo, { table });
+    assert.equal(result.exitCode, 1);
+    assert.deepEqual(
+      result.failureComparisons
+        .map(({ name, classification }) => ({ name, classification }))
+        .sort((a, b) => a.name.localeCompare(b.name)),
+      [
+        { name: "inherited", classification: "inherited" },
+        { name: "introduced", classification: "introduced" },
+      ],
+    );
+    assert.ok(result.failureComparisons.every((row) => row.base === base));
+    assert.equal(git("diff"), before);
+    assert.equal(
+      readGateChecks(repo, gateTreeHash(repo)).at(-1).checkId,
+      "npm run test:docs",
+    );
+  }
+  const unknown = await runGate(
+    ["--document", "--against", "missing-base"],
+    repo,
+    { table },
+  );
+  assert.ok(
+    unknown.failureComparisons.every((row) => row.classification === "unknown"),
+  );
+  const unavailable = await runGate(["--document", "--against", base], repo, {
+    table: [
+      {
+        name: "unavailable",
+        document: true,
+        command: [join(repo, "nonexistent-program")],
+      },
+    ],
+  });
+  assert.equal(unavailable.failureComparisons[0].classification, "unknown");
+  const missingGlob = await runGate(["--document", "--against", base], repo, {
+    table: [
+      {
+        name: "missing-glob",
+        document: true,
+        command: [
+          process.execPath,
+          "--test",
+          "packages/missing/dist/test/*.test.js",
+        ],
+      },
+    ],
+  });
+  assert.equal(missingGlob.failureComparisons[0].classification, "unknown");
 });

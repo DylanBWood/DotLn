@@ -55,6 +55,7 @@ import {
   overridePlanHold,
   disposePlanHold,
   amendPlanOrder,
+  withdrawPlanAmendment,
   criterionDispositions,
   criterionHash,
   readOverrides,
@@ -2435,7 +2436,7 @@ else {
         );
         await assert.rejects(
           checkPlanGate(repo),
-          /work-order bytes changed|no text-bound disposition/,
+          /work-order bytes changed|no text-bound disposition|unmatched execution amendment/,
         );
         write(
           repo,
@@ -2537,7 +2538,7 @@ else {
         );
         await assert.rejects(
           checkPlanGate(repo),
-          /work-order bytes changed|no text-bound disposition/,
+          /work-order bytes changed|no text-bound disposition|unmatched execution amendment/,
         );
         write(
           repo,
@@ -2561,6 +2562,203 @@ else {
         write(repo, OVERRIDES, "");
         assert.throws(() => readOverrides(repo), /append-only/);
         write(repo, OVERRIDES, log);
+      },
+    );
+    await check(
+      "WO-160 unmatched amendments name their physical row and withdrawal preserves history",
+      async () => {
+        const repo = makeRepo(parent, "amendment-withdrawal");
+        const path = orderPath("WO-901");
+        await writeDirectReceipt(repo);
+        commit(repo, "judged plan");
+        const before = read(repo, path);
+        write(
+          repo,
+          "docs/evidence/WO-901/decisions.md",
+          "# Decisions\n\n```json\n" +
+            JSON.stringify({
+              id: "WO-901-D001",
+              date: "2030-01-02",
+              dispatch: "scope expand: fixture",
+              decision: "Approved fixture change",
+              evidence: ["operator"],
+              rejected: ["NoOp"],
+              reopenWhen: "New evidence",
+            }) +
+            "\n```\n",
+        );
+        write(
+          repo,
+          path,
+          before.replace("useful shape", "amended useful shape"),
+        );
+        const amended = await amendPlanOrder(repo, {
+          workOrderId: "WO-901",
+          decisionId: "WO-901-D001",
+          reason: "Authorized fixture",
+          now: () => "2030-01-02T13:00:00.000Z",
+        });
+        await checkPlanGate(repo); // uncommitted approved text is admitted
+        const history = read(repo, OVERRIDES);
+        write(repo, path, before);
+        await assert.rejects(
+          checkPlanGate(repo),
+          /unmatched execution amendment WO-901 row 1/,
+        );
+        await assert.rejects(
+          withdrawPlanAmendment(repo, {
+            workOrderId: "WO-902",
+            ordinal: 1,
+            reason: "wrong order",
+          }),
+          /named order/,
+        );
+        await assert.rejects(
+          withdrawPlanAmendment(repo, {
+            workOrderId: "WO-901",
+            ordinal: 99,
+            reason: "absent row",
+          }),
+          /named order/,
+        );
+        const withdrawal = await withdrawPlanAmendment(repo, {
+          workOrderId: "WO-901",
+          ordinal: 1,
+          reason: "Restore judged source",
+          now: () => "2030-01-02T14:00:00.000Z",
+        });
+        assert.equal(withdrawal.type, "PlanExecutionAmendmentWithdrawn");
+        assert.equal(withdrawal.orderHash, amended.orderHash);
+        assert.ok(read(repo, OVERRIDES).startsWith(history));
+        await checkPlanGate(repo);
+        const once = read(repo, OVERRIDES);
+        await plan(
+          ["amend-order", "WO-901", "--withdraw", "1", "Repeated"],
+          repo,
+        );
+        assert.equal(read(repo, OVERRIDES), once);
+        assert.deepEqual(criterionDispositions([], [withdrawal]), []);
+        write(
+          repo,
+          OVERRIDES,
+          history +
+            JSON.stringify({ ...withdrawal, orderHash: sha256("wrong") }) +
+            "\n",
+        );
+        assert.throws(() => readOverrides(repo), /withdrawal binding differs/);
+        write(repo, OVERRIDES, once);
+        write(
+          repo,
+          path,
+          before.replace("useful shape", "amended useful shape"),
+        );
+        const reauthorized = await amendPlanOrder(repo, {
+          workOrderId: "WO-901",
+          decisionId: "WO-901-D001",
+          reason: "Renewed authorization",
+          now: () => "2030-01-02T15:00:00.000Z",
+        });
+        assert.equal(reauthorized.recordedAt, "2030-01-02T15:00:00.000Z");
+        await checkPlanGate(repo);
+        const approvedA = read(repo, path);
+        write(
+          repo,
+          path,
+          before.replace("useful shape", "another useful shape"),
+        );
+        await amendPlanOrder(repo, {
+          workOrderId: "WO-901",
+          decisionId: "WO-901-D001",
+          reason: "Approve replacement B",
+          now: () => "2030-01-02T16:00:00.000Z",
+        });
+        await checkPlanGate(repo);
+        write(repo, path, approvedA);
+        await assert.rejects(
+          checkPlanGate(repo),
+          /unmatched execution amendment/,
+        );
+        const restoredA = await amendPlanOrder(repo, {
+          workOrderId: "WO-901",
+          decisionId: "WO-901-D001",
+          reason: "Reapprove A after B",
+          now: () => "2030-01-02T17:00:00.000Z",
+        });
+        assert.equal(restoredA.recordedAt, "2030-01-02T17:00:00.000Z");
+        await checkPlanGate(repo);
+        const currentLog = read(repo, OVERRIDES);
+        await amendPlanOrder(repo, {
+          workOrderId: "WO-901",
+          decisionId: "WO-901-D001",
+          reason: "Repeat current A",
+          now: () => "2030-01-02T18:00:00.000Z",
+        });
+        assert.equal(read(repo, OVERRIDES), currentLog);
+      },
+    );
+    await check(
+      "WO-160 legacy activation amendment admits a later execution appendix",
+      async () => {
+        const repo = makeRepo(parent, "legacy-activation-appendix");
+        const path = orderPath("WO-901");
+        await writeDirectReceipt(repo);
+        commit(repo, "judged plan");
+        const filed = read(repo, path);
+        write(
+          repo,
+          "docs/evidence/WO-901/decisions.md",
+          "# Decisions\n\n```json\n" +
+            JSON.stringify({
+              id: "WO-901-D001",
+              date: "2030-01-02",
+              dispatch: "scope expand: fixture",
+              decision: "Approve the version label",
+              evidence: ["operator"],
+              rejected: ["NoOp"],
+              reopenWhen: "New evidence",
+            }) +
+            "\n```\n",
+        );
+        write(
+          repo,
+          path,
+          filed.replace("useful shape", "amended useful shape"),
+        );
+        const event = await amendPlanOrder(repo, {
+          workOrderId: "WO-901",
+          decisionId: "WO-901-D001",
+          reason: "Fixture legacy activation row",
+          now: () => "2030-01-02T13:00:00.000Z",
+        });
+        const versioned = filed.replace(
+          "# WO-901 — Fixture",
+          "# WO-901 — Fixture (v1.2.3)",
+        );
+        const legacy = executionAmendmentSource(versioned);
+        write(
+          repo,
+          OVERRIDES,
+          JSON.stringify({
+            ...event,
+            orderHash: sha256(legacy),
+            orderLength: legacy.length,
+          }) + "\n",
+        );
+        const appendix = "\n## Execution record\n\nLater execution evidence.\n";
+        write(repo, path, versioned + appendix);
+        assert.equal(
+          (await checkPlanGate(repo)).continuation.workspaceUpdates[0].kind,
+          "authorized-execution-amendment",
+        );
+        write(
+          repo,
+          path,
+          versioned.replace("useful shape", "changed shape") + appendix,
+        );
+        await assert.rejects(
+          checkPlanGate(repo),
+          /unmatched execution amendment|work-order bytes changed/,
+        );
       },
     );
     await check(

@@ -93,7 +93,7 @@ intent → task-scoped build → bounded WorkOrder → disposable executor
 -->
 <!-- DOTLN-RELEASE-BEGIN -->
 
-This source prepares DotLn `v0.50.0`.
+This source prepares DotLn `v0.51.0`.
 
 **The core.** A local-first compiler turns a loadout graph into a bounded
 program and authority envelope that the kernel checks on every decision.
@@ -153,7 +153,13 @@ orders can materialize through the documented API, with replayable allocation
 and restart fixtures. [The execution guide](docs/product/07-execution-guide.md#derived-work-and-intent)
 describes the shared launchpad boundary.
 
-**How this repository builds itself.** Every executor dispatch asks for one
+**How this repository builds itself.** WO-160 adds explicit amendment
+withdrawal, evidence-local JSONL declarations, recoverable integration and
+published-stash pruning, accurate release-write messages, and document-failure
+comparisons. The observer credits its own writes at their observed bytes and
+retains read obligations after foreign edits.
+
+Every executor dispatch asks for one
 bounded economy experiment per order, with measured cost and effect, unless the
 order opts out: the [three-order trial](docs/evidence/WO-145/decisions.md) found
 an adopted method with no regression, and [WO-150](docs/evidence/WO-150/decisions.md)

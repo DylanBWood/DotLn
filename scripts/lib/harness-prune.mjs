@@ -21,7 +21,8 @@ import {
   resolve,
   sep,
 } from "node:path";
-import { runGit, parseWorktrees } from "./git.mjs";
+import { runGit, parseWorktrees, readGitObjects } from "./git.mjs";
+import { dropInventoriedStash } from "./stash-drop.mjs";
 import { localReleaseRecords } from "./release-records.mjs";
 import {
   environmentWithoutGhRepo,
@@ -159,6 +160,71 @@ function publishedRelease(root, order, releases) {
     }
   }
   return null;
+}
+
+function integrationStashes(root) {
+  const result = spawnSync(
+    "git",
+    ["log", "-g", "--format=%H%x00%gs", "refs/stash", "--"],
+    { cwd: root, encoding: "utf8" },
+  );
+  if (result.status !== 0) {
+    if (
+      spawnSync("git", ["rev-parse", "--verify", "--quiet", "refs/stash"], {
+        cwd: root,
+      }).status !== 0
+    )
+      return [];
+    throw new Error("stash inventory unavailable");
+  }
+  return result.stdout
+    .trimEnd()
+    .split("\n")
+    .filter(Boolean)
+    .map((line, index) => {
+      const [stash, subject] = line.split("\0");
+      return {
+        stash,
+        subject,
+        selector: `stash@{${index}}`,
+        workOrder: subject.match(
+          /^On [^:]+: (WO-\d{3}) integrate \d{4}-\d{2}-\d{2}$/u,
+        )?.[1],
+      };
+    });
+}
+
+function stashInventory(root, stash) {
+  const parents = runGit(root, ["show", "-s", "--format=%P", stash]).split(" ");
+  if (![2, 3].includes(parents.length))
+    throw new Error("unrecognized stash parents");
+  const blobs = new Map();
+  const inventory = [];
+  for (const [role, revision] of [
+    ["worktree", stash],
+    ["index", parents[1]],
+    ...(parents[2] ? [["untracked", parents[2]]] : []),
+  ]) {
+    const entries = runGit(root, ["ls-tree", "-r", "-z", revision])
+      .split("\0")
+      .filter(Boolean);
+    for (const entry of entries) {
+      const match = /^(\d+) blob ([a-f0-9]+)\t([\s\S]+)$/u.exec(entry);
+      if (!match || !["100644", "100755", "120000"].includes(match[1]))
+        throw new Error("unsupported stash entry retained");
+      const [, mode, object, path] = match;
+      inventory.push({ role, path, mode, object });
+    }
+  }
+  const objects = [...new Set(inventory.map((row) => row.object))];
+  for (let offset = 0; offset < objects.length; offset += 32)
+    for (const [object, bytes] of readGitObjects(
+      root,
+      objects.slice(offset, offset + 32),
+      "blob",
+    ))
+      blobs.set(object, { bytes: bytes.length, sha256: digest(bytes) });
+  return inventory.map((row) => ({ ...row, ...blobs.get(row.object) }));
 }
 
 /** Read-only by default. Injectable publication observation is for fixtures. */
@@ -439,6 +505,84 @@ export function planHarnessPrune(root, options = {}) {
         { workOrder: order, release },
       );
     }
+  const stashBackend = runGit(root, ["rev-parse", "--show-ref-format"]);
+  for (const stash of integrationStashes(root)) {
+    const label = `${stash.selector} ${stash.subject}`;
+    let reason = !stash.workOrder
+      ? "unnamed or unrecognized integration stash"
+      : stashBackend !== "files"
+        ? "unsupported Git ref backend"
+        : null;
+    if (
+      !reason &&
+      worktrees.some(
+        (tree) => tree.branch === `refs/heads/${stash.workOrder.toLowerCase()}`,
+      )
+    )
+      reason = "order still has a registered worktree";
+    if (!reason && gateLive) reason = "a registered worktree has a live gate";
+    if (!reason)
+      for (const tree of worktrees) {
+        const receipt = join(
+          tree.worktree,
+          docRelative(tree.worktree, "control", "local/integration.json"),
+        );
+        if (existsSync(receipt)) {
+          try {
+            const pending = json(receipt);
+            if (
+              !pending.complete &&
+              (pending.stash === stash.stash ||
+                pending.workOrder === stash.workOrder)
+            )
+              reason = "pending integration retains this stash";
+          } catch {
+            reason = "integration ownership unavailable";
+          }
+        }
+      }
+    let release = null;
+    if (!reason) {
+      try {
+        release = options.publishedRelease
+          ? options.publishedRelease(stash.workOrder)
+          : publishedRelease(
+              root,
+              stash.workOrder,
+              (releases ??= localReleaseRecords(root)),
+            );
+      } catch {
+        /* Unknown publication retains. */
+      }
+      if (!release) reason = "published release is not established";
+    }
+    if (!reason) {
+      try {
+        const inventory =
+          options.inventoryCache?.get(stash.stash) ??
+          stashInventory(root, stash.stash);
+        options.inventoryCache?.set(stash.stash, inventory);
+        candidates.push({
+          kind: "integration-stash",
+          path: label,
+          stash: stash.stash,
+          workOrder: stash.workOrder,
+          release,
+          inventory,
+          bytes: inventory.reduce((sum, row) => sum + row.bytes, 0),
+        });
+      } catch (error) {
+        reason = error.message;
+      }
+    }
+    if (reason)
+      retained.push({
+        kind: "integration-stash",
+        path: label,
+        stash: stash.stash,
+        reason,
+      });
+  }
   return {
     root,
     candidates,
@@ -448,11 +592,17 @@ export function planHarnessPrune(root, options = {}) {
 }
 
 export function pruneHarness(root, { apply = false, ...options } = {}) {
+  options = { ...options, inventoryCache: new Map() };
   const plan = planHarnessPrune(root, options);
   if (apply) {
     for (const row of plan.candidates) {
+      let proofCreated = false;
+      let proofPath;
       const fresh = planHarnessPrune(root, options).candidates.find(
-        (candidate) => candidate.absolute === row.absolute,
+        (candidate) =>
+          row.kind === "integration-stash"
+            ? candidate.kind === row.kind && candidate.stash === row.stash
+            : candidate.absolute === row.absolute,
       );
       if (
         !fresh ||
@@ -460,7 +610,7 @@ export function pruneHarness(root, { apply = false, ...options } = {}) {
         JSON.stringify(fresh.inventory) !== JSON.stringify(row.inventory)
       )
         throw new Error(`Prune subject changed; retained ${row.path}`);
-      if (row.kind === "retained-lane") {
+      if (["retained-lane", "integration-stash"].includes(row.kind)) {
         // Durable form of the existing preservation byte inventory, emitted
         // only by this operator command and kept outside the removed lane.
         const proof =
@@ -469,28 +619,66 @@ export function pruneHarness(root, { apply = false, ...options } = {}) {
               workOrder: row.workOrder,
               release: row.release,
               retainedControl: true,
+              ...(row.stash ? { stash: row.stash } : {}),
               bytes: row.bytes,
               files: row.inventory,
             },
             null,
             2,
           ) + "\n";
-        const proofPath = `${row.absolute}.bytes-${digest(proof).slice(0, 16)}.json`;
+        const proofBase =
+          row.kind === "integration-stash"
+            ? join(
+                plan.root,
+                docRelative(
+                  plan.root,
+                  "control",
+                  `local/retained/integration-stashes/${row.stash}`,
+                ),
+              )
+            : row.absolute;
+        proofPath = `${proofBase}.bytes-${digest(proof).slice(0, 16)}.json`;
         safeChild(plan.root, proofPath);
         mkdirSync(dirname(proofPath), { recursive: true, mode: 0o700 });
-        if (!existsSync(proofPath))
+        if (!existsSync(proofPath)) {
           writeFileSync(proofPath, proof, {
             flag: "wx",
             mode: 0o600,
             flush: true,
           });
+          proofCreated = true;
+        }
         if (readFileSync(proofPath, "utf8") !== proof)
           throw new Error(
             `Preservation byte proof differs; retained ${row.path}`,
           );
         row.byteProof = relative(plan.root, proofPath);
       }
-      rmSync(row.absolute, { recursive: true });
+      if (row.kind === "integration-stash") {
+        let recoveryPath;
+        try {
+          const entries = integrationStashes(plan.root).filter(
+            (entry) =>
+              entry.stash === row.stash && entry.workOrder === row.workOrder,
+          );
+          if (entries.length !== 1)
+            throw new Error(`Stash identity changed; retained ${row.path}`);
+          recoveryPath = safeChild(plan.root, `${row.byteProof}.recovery.json`);
+          dropInventoriedStash(
+            plan.root,
+            row.stash,
+            entries[0].subject,
+            recoveryPath,
+          );
+        } catch (error) {
+          // A precondition refusal changed no stash. Keep prior proofs and any
+          // recovery snapshot, but remove a proof created for this failed try.
+          if (proofCreated && (!recoveryPath || !existsSync(recoveryPath)))
+            rmSync(proofPath);
+          throw error;
+        }
+        row.recoveryProof = relative(plan.root, recoveryPath);
+      } else rmSync(row.absolute, { recursive: true });
     }
   }
   return {

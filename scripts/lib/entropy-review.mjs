@@ -1924,8 +1924,13 @@ export function unconsumedReview(root) {
       .filter((event) => event.type === "EntropyFindingDisposed")
       .map((event) => event.receiptId),
   );
+  const filed = new Set(
+    events
+      .filter((event) => event.type === "EntropyReviewFiled")
+      .map((event) => event.receiptId),
+  );
   const reviews = runNames(root)
-    .filter((name) => name.startsWith("REVIEW-"))
+    .filter((name) => filed.has(name))
     .map((name) => readReceipt(root, name))
     .filter((receipt) => receipt.kind === "EntropyReducerReviewRun");
   for (const review of reviews.reverse()) {
@@ -1976,6 +1981,10 @@ export function entropySubject(root) {
     };
   return {
     action: "review",
+    latestFiledReview:
+      readEntropyControl(root)
+        .filter((event) => event.type === "EntropyReviewFiled")
+        .at(-1)?.receiptId ?? null,
     reason:
       "no filed review is both refuted and undisposed, so a fresh episode earns its cost",
     command: "npm run entropy -- review --transport claude-cli-print",

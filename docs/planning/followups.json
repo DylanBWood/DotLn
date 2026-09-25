@@ -16865,6 +16865,111 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-6d1f439e743a53e7",
+      "key": "decision:docs/evidence/WO-160/decisions.md#wo-160-d012",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "23f54552f455f02ab5c86e6e80b3690fc9a597cfa297202ee68eb9abba4d2e16",
+          "ref": "docs/evidence/WO-160/decisions.md#wo-160-d012",
+          "title": "WO-160-D012: WO-160 resume: fix. F1: make integration-stash pruning work when refs/stash is packed, or retain such stashes with a reason so the preview never lists a candidate --apply cannot remove, a",
+          "summary": "{ \"id\": \"WO-160-D012\", \"date\": \"2026-09-25\", \"dispatch\": \"resume: verify; independent VER-001\", \"decision\": \"Fail the current subject and route four reproduced defects through WO-160 repair. F1 (criterion 7): integration-stash pruning cannot remove anything while refs/stash is packed, which is the real repository's current state, yet the preview lists those stashes as removable. F2 (criterion 8): the own-write read credit absorbs another writer's change made inside the session's tool window or between explicit observations. F3 (criterion 1 regression): the legacy match branch reports WO-159 row 23 unmatched after an admitted execution appendix. F4 (criterion 9 regression): an unreadable per-",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-dd20beb6b16ea86c",
+      "key": "decision:docs/evidence/WO-160/decisions.md#wo-160-d013",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "b65249eb3ffb29d3ceddd2ffbf26d5fb346125f0e7feeab73fd5b7157225696a",
+          "ref": "docs/evidence/WO-160/decisions.md#wo-160-d013",
+          "title": "WO-160-D013: WO-160 resume: fix may address O1-O19 inside the repaired seams within the boy-scout bound; each remaining item is nominated through the adjacent queue at close with its VER-001 observati",
+          "summary": "{ \"id\": \"WO-160-D013\", \"date\": \"2026-09-25\", \"dispatch\": \"resume: verify; independent VER-001\", \"decision\": \"Board the nineteen non-blocking observations in VER-001 (O1-O19) instead of leaving them as report prose. None makes a criterion unmet. The repair pass may address those inside its repaired seams within the boy-scout bound; every other one becomes a named follow-up at close.\", \"evidence\": [ \"VER-001 section 'Observations (non-blocking)' lists each observation with its criterion, severity and source (reproduced, reviewer reading or suspected).\", \"Reproduced directly: O2 (two successive local prepares in a disposable copy each rewrote PR.md; only the Observation cutoff line differed), O",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-630a55f990292fcf",
+      "key": "decision:docs/evidence/WO-160/decisions.md#wo-160-d016",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "520131f92492b629e13cda99663769302a602bbc0b4fd7579d80d55e5b94d3d3",
+          "ref": "docs/evidence/WO-160/decisions.md#wo-160-d016",
+          "title": "WO-160-D016: WO-160 resume: fix. F5: on the entries-remain path, leave the packed refs/stash row in place, as git reflog delete --updateref does, and remove the row only when the last entry is dropped",
+          "summary": "{ \"id\": \"WO-160-D016\", \"date\": \"2026-09-25\", \"dispatch\": \"resume: verify; independent VER-002\", \"decision\": \"Fail the repaired subject and route one reproduced regression through WO-160 repair. F5 (criterion 7): when entries remain, dropInventoriedStash writes a loose refs/stash and also removes the packed refs/stash row. A concurrent git pack-refs --all --prune has already packed and released packed-refs.lock but not yet pruned the loose ref. It then deletes that loose ref after the prune, so refs/stash stops resolving and every retained stash disappears from git stash list in every worktree. Git's own stash drop under the same interleaving keeps the packed row and the retained entries. VER",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-bc8bc91f29e2eab4",
+      "key": "decision:docs/evidence/WO-160/decisions.md#wo-160-d017",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "897efcebae13adfef153539165e8cf383e9ddd1665aaa0202c4a91176eac753a",
+          "ref": "docs/evidence/WO-160/decisions.md#wo-160-d017",
+          "title": "WO-160-D017: FUP-dd20beb6b16ea86c: at close, nominate O20-O28 through the adjacent queue with their VER-002 observation ids, unless the F5 repair resolves one inside the stash-drop seam.",
+          "summary": "{ \"id\": \"WO-160-D017\", \"date\": \"2026-09-25\", \"dispatch\": \"resume: verify; independent VER-002\", \"decision\": \"Board the nine non-blocking observations in VER-002 (O20-O28) instead of leaving them as report prose. None makes a criterion unmet. The next repair may address those inside the stash-drop seam within the boy-scout bound; every other one is nominated through the adjacent queue under the existing D013 follow-up at close, with its VER-002 observation id.\", \"evidence\": [ \"VER-002 section 'Observations (non-blocking)' lists each observation with its criterion, severity and source (reproduced, reading or suspected).\", \"Read-only reviewer pass over the repair diff (checkpoint 4 to 7), with ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-27a05a8a20a71d4c",
+      "key": "decision:docs/evidence/WO-160/decisions.md#wo-160-d014",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "dff8bb3168f28ab1ceadeeb9322f757df6c3e2df4280f81e23eec9156560d9a1",
+          "ref": "docs/evidence/WO-160/decisions.md#wo-160-d014",
+          "title": "WO-160-D014: Repair all four reproduced findings in the existing seams: prune files-backend packed stash refs under locks with recovery bytes and mode preservation; credit own-write reads only for cha",
+          "summary": "{ \"id\": \"WO-160-D014\", \"date\": \"2026-09-25\", \"dispatch\": \"resume: fix; VER-001 F1-F4\", \"decision\": \"Repair all four reproduced findings in the existing seams: prune files-backend packed stash refs under locks with recovery bytes and mode preservation; credit own-write reads only for changed destinations named by a tool with no explicit failure; admit a legacy-normalized amendment followed by a strict execution appendix; and turn an unreadable document-gate archive into one completion advisory.\", \"evidence\": [ \"VER-001 F1-F4 and WO-160-D012; real refs/stash is packed while the old preview named nine candidates\", \"Focused packed and loose stash fixtures pass, including last-entry removal, reta",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-35513f86c5ffd611",
+      "key": "decision:docs/evidence/WO-160/decisions.md#wo-160-d019",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "9e1609030e3a4fb2088e6d1ccb377279245a6c0343502c56fac529ea68f7e8f6",
+          "ref": "docs/evidence/WO-160/decisions.md#wo-160-d019",
+          "title": "WO-160-D019: FUP-dd20beb6b16ea86c: retain VER-002 O20-O21 and O23-O28 with their adjacent queue specifications; O22 is repaired within WO-160.",
+          "summary": "{ \"id\": \"WO-160-D019\", \"date\": \"2026-09-25\", \"dispatch\": \"resume: fix; VER-002 O20-O28\", \"decision\": \"Repair O22 in the same stash rewrite seam by starting the kept reflog with a null OID of the existing hash length. Nominate and defer O20-O21 and O23-O28 as adjacent-0020 through adjacent-0028, excluding repaired adjacent-0022, to the existing FUP-dd20beb6b16ea86c.\", \"evidence\": [ \"The O22 fixture compares a disposable repository with Git stash drop on an identical copy. Before repair the refs and stash lists agree but the reflog differs: Git starts with a null OID while the helper retains the old non-null predecessor.\", \"VER-002 marks O20-O21 and O23-O28 as non-blocking. The queue records t",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-264218b789d29348",
+      "key": "decision:docs/evidence/WO-160/decisions.md#wo-160-d021",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "58bb339af21e60760fe3a00aa76c46f365e860d63ac487a15d92494f0583f5f9",
+          "ref": "docs/evidence/WO-160/decisions.md#wo-160-d021",
+          "title": "WO-160-D021: FUP-dd20beb6b16ea86c: at close, nominate VER-003 O29 through the adjacent queue with adjacent-0020 (VER-002 O20), so the error-path rollback rewrites packed-refs only when this drop chang",
+          "summary": "{ \"id\": \"WO-160-D021\", \"date\": \"2026-09-25\", \"dispatch\": \"resume: verify; independent VER-003\", \"decision\": \"Pass the VER-002 repair. F5 and O22 are repaired and reproduce as fixed against real Git, and all ten criteria are met on the recorded subject. Board the one new non-blocking observation, VER-003 O29, beside O20 under FUP-dd20beb6b16ea86c instead of leaving it only in the report. O29: on the entries-remain path the repair no longer changes packed-refs, yet the error-path rollback still rewrites it in place with its unchanged bytes (scripts/lib/stash-drop.mjs:176-179), which is a needless non-atomic write.\", \"evidence\": [ \"Race probe, Git 2.55.0, 60,000 loose tags, no SIGSTOP: repaired",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

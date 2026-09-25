@@ -1,12 +1,12 @@
-# WO-160 — The machinery WO-111 exposed, fixed in one order: an amendment row can be withdrawn and an unmatched one is reported, `entropy subject` skips pre-mechanism receipts, `release prepare` says what it wrote, evidence JSONL registers beside its evidence, the integrate helper makes its own hookless commits and runs in a repair phase, a document-gate failure is labeled introduced or inherited, integration stashes are prunable, and an actor's own write counts as its read
+# WO-160 — The machinery WO-111 exposed, fixed in one order: an amendment row can be withdrawn and an unmatched one is reported, `entropy subject` skips pre-mechanism receipts, `release prepare` says what it wrote, evidence JSONL registers beside its evidence, the integrate helper makes its own hookless commits and runs in a repair phase, a document-gate failure is labeled introduced or inherited, integration stashes are prunable, and an actor's own write counts as its read (v0.51.0)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.
 **Release classification:** minor. The planning control log gains one
 event type, `plan`, `worktree`, `harness prune` and the document runner gain
-flags, and the registrations check reads a docs-side declaration; no
-package source changes and no edition re-mints. Assigned at activation
+flags, and the registrations check reads a docs-side declaration; the operator-authorized item-8 observer change in `harness-host.ts` and
+its affected generated/evidence refresh are the only package-source exception. Assigned at activation
 under the standing opt-out default.
 **Cost:** adds, across the nine items below, `PlanExecutionAmendmentWithdrawn`
 and `amend-order --withdraw`; a reported (not silent) unmatched amendment
@@ -29,9 +29,9 @@ integrations with no rule (WO-045, WO-099, WO-142); the seven "inherited,
 not a finding" judgments made by hand (WO-047, WO-052, WO-068, WO-110,
 WO-131, WO-135, WO-151); eighteen retained integration stashes on
 2026-09-25; the "outputs not read at current bytes" advisory on every
-completion event (WO-111 control events 4, 8, 12, 14). No registered
-evidence source changes (`scripts/lib/evidence-sources.mjs` lists only
-`scripts/build.mjs` and itself under `scripts/`). Wall-clock, tokens and
+completion event (WO-111 control events 4, 8, 12, 14). D011 authorizes
+the registered observer-source change and its affected authority evidence
+refresh. Wall-clock, tokens and
 context bytes of the order itself are unknown until run.
 **Nomination provenance:** the operator's 2026-09-25 dispatch ("fix
 whatever nonsense occurred in wo-111 with your machinery nonsense"),
@@ -52,8 +52,10 @@ WO-159. This order edits `scripts/lib/plan-receipts.mjs`,
 `check-registrations.mjs`, `worktree-integration.mjs`, `test-runner.mjs`,
 `harness-prune.mjs`, `lifecycle-evidence.mjs` and their fixtures; WO-161
 edits the loadout and hook generators, the playbook, the security note, an
-ADR and `test-process-debt.mjs`. Disjoint files; neither depends on the
-other; only WO-161 re-mints. A recommendation, not a dependency token.
+ADR and `test-process-debt.mjs`. D011 introduces shared generated/evidence
+surfaces and fixture overlap; integration must reconcile those independently
+validated subjects. Neither order depends on the other. A recommendation,
+not a dependency token.
 
 <!-- dotln-dependencies:start -->
 [
@@ -200,7 +202,8 @@ product 07 sentence; decisions per item.
 9. `implementation-ready` prints the `test:docs` advisory on a fixture
    with no passing row and stays silent with one.
 10. `npm test` and `npm run test:docs` green; `git diff --check` clean; no
-    new dependency; no package source changed.
+    new dependency; package source changes are limited to item 8's observer
+    and the required component-version/evidence refresh (WO-160-D011).
 
 **Evidence gate:** fixture transcripts; the row 22 withdrawal event;
 `npm test` at final review. No live row.
@@ -220,3 +223,10 @@ judges; deleting historical stashes without the inventory.
    follow-up order if a seam turns out larger than its fixture.
 2. Withdrawing row 22 is an authorized planning-log append under D019, not
    a new scope grant.
+
+## Execution record
+
+2026-09-25: the operator authorized the observer fix and required evidence
+refresh after reviewing the missing write-time hash evidence. WO-160-D011
+records this bounded exception to the package-source and edition fences; all
+nine behaviors remain required.

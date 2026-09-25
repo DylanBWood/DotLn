@@ -186,6 +186,26 @@ function fixture(t, { reviewed = false, third = "active" } = {}) {
       event(id, "WorkOrderActivated", { workOrderPath: path }),
     );
   }
+  put(
+    main,
+    "docs/control/orders/WO-998.jsonl",
+    text(main, "docs/control/orders/WO-998.jsonl") +
+      event("WO-998", "ImplementationReady") +
+      event("WO-998", "VerificationRequested", {
+        verificationId: "VER-001",
+        reportPath: "docs/verifications/WO-998/VER-001.md",
+      }) +
+      event("WO-998", "VerificationCompleted", {
+        verificationId: "VER-001",
+        verdict: reviewed ? "pass" : "fail",
+      }) +
+      (reviewed
+        ? event("WO-998", "FinalReviewRequested", {
+            finalReviewId: "FINAL-001",
+            reportPath: "docs/final-reviews/WO-998/FINAL-001.md",
+          })
+        : event("WO-998", "RepairRequested")),
+  );
   if (third === "verifying")
     put(
       main,
@@ -358,12 +378,28 @@ for (const reviewed of [false, true])
       "reviewer retained local and upstream intent\n",
     );
     git(f.subject, "add", "authored-fixture.md");
+    const hookDir = join(dirname(f.subject), "failing-hooks");
+    mkdirSync(hookDir, { recursive: true });
+    for (const name of ["pre-commit", "prepare-commit-msg", "post-commit"])
+      writeFileSync(
+        join(hookDir, name),
+        `#!/bin/sh\nprintf invoked > '${join(dirname(f.subject), "hook-called")}'\nexit 1\n`,
+        { mode: 0o755 },
+      );
+    git(f.subject, "config", "core.hooksPath", hookDir);
     const continued = f.invoke("--continue");
+    assert.ok(
+      !existsSync(join(dirname(f.subject), "hook-called")),
+      "helper disables all commit hooks",
+    );
+    git(f.subject, "config", "--unset", "core.hooksPath");
     assert.equal(continued.status, 0, continued.stdout + continued.stderr);
     const after = JSON.parse(
       text(f.subject, "docs/control/local/integration.json"),
     );
     assert.equal(after.complete, true);
+    assert.equal(after.phase, reviewed ? "final-review" : "repairing");
+    assert.equal(after.preservationCommit, after.checkpointSha);
     assert.equal(
       after.checkpointRef,
       receipt.checkpointRef,
@@ -407,10 +443,17 @@ for (const reviewed of [false, true])
     if (reviewed) {
       assert.equal(
         git(f.subject, "rev-parse", "HEAD"),
-        f.reviewedHead,
-        "no automatic merge commit",
+        after.mergeCommit,
+        "helper records its merge commit",
       );
-      assert.equal(git(f.subject, "rev-parse", "MERGE_HEAD"), f.upstream);
+      assert.equal(
+        git(f.subject, "show", "-s", "--format=%P", after.mergeCommit),
+        `${f.reviewedHead} ${f.upstream}`,
+      );
+      assert.notEqual(
+        run(f.subject, "git", ["rev-parse", "--verify", "MERGE_HEAD"]).status,
+        0,
+      );
     }
     // Both cases assert the retime and the stub here: in the reviewed case the
     // generators only run after the authored resolution, so the first invoke
@@ -610,6 +653,11 @@ test("a stash Git stores and then fails to finish resumes with --continue; --con
   assert.deepEqual(readFileSync(receiptPath), receiptBytes);
   git(f.subject, "rm", "-q", "--cached", "late.md");
   rmSync(join(f.subject, "late.md"));
+  // WO-160: simulate a crash after Git saved the named stash but before the
+  // helper recorded its SHA. The tree is clean and --continue must adopt it.
+  const stranded = JSON.parse(readFileSync(receiptPath, "utf8"));
+  stranded.stash = null;
+  writeFileSync(receiptPath, JSON.stringify(stranded));
   const resumed = f.invoke("--continue");
   assert.equal(resumed.status, 1, resumed.stdout + resumed.stderr);
   assert.match(resumed.stdout, /Authored conflicts: 'authored-fixture.md'/);
