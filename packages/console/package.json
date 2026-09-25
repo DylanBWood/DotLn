@@ -23,6 +23,6 @@
   "dependencies": {
     "@dotln/compiler": "0.19.1",
     "@dotln/kernel": "0.6.0",
-    "@dotln/skeleton": "0.43.0"
+    "@dotln/skeleton": "0.43.1"
   }
 }

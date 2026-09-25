@@ -20,6 +20,28 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-160 activation completion (2026-09-25):** assigned application `v0.50.0`,
+the next minor above the observed local `v0.49.0` tag. The nine machinery
+repairs preserve historical judgments and recovery material while replacing
+recurring manual work with commands and executable evidence. The operator's
+item-8 exception authorizes the observer fix and affected evidence refresh;
+`@dotln/skeleton` moves from `0.42.0` to `0.42.1` for that compatible bugfix,
+with its exact console pin and lockfile following. Compiler, kernel and console
+versions remain unchanged. Independent verification, final review and publication
+remain separate dispatches.
+
+**WO-160 collision retiming (2026-09-25):** unpublished target `v0.50.0` is superseded by `v0.51.0` under the existing minor classification because the observed release baseline is `v0.50.0`. Scope, acceptance, component versions, and published tags are unchanged by this retiming.
+
+**WO-160 final-review integration (2026-09-25):** `main` published `v0.50.0`
+(WO-161) with `@dotln/skeleton` `0.43.0` and `@dotln/compiler` `0.19.1`, past the
+`0.42.1` this order had staged, so the skeleton bump is retimed to `0.43.1` under
+its declared compatible-bugfix impact, with the console pin and the lockfile
+following. Compiler `0.19.1`, kernel `0.6.0` and console `0.2.0` are unchanged by
+this order. The authority edition is re-minted as `WO-160/002` on the integrated
+source; the artifact-identity, verification and feedback editions stay at
+`WO-161/001`. Application target `v0.51.0` remains current. Scope, acceptance and
+published tags are unchanged by this integration.
+
 **WO-161 activation completion (2026-09-25):** assigned application `v0.50.0`,
 the next minor above the observed local `v0.49.0` tag, under the declared minor
 classification. Compiler `0.19.1` carries corrected emitted wording and
