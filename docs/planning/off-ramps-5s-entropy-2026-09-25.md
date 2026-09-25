@@ -429,4 +429,69 @@ result is readable by a stranger through `resume status`.
 
 ## 16. Independent review
 
-Filled by the pass after the refutation receipt is filed.
+Receipt [2026-09-25-planning-cb4e4076b7ec0078-028](refutations/2026-09-25-planning-cb4e4076b7ec0078-028.md)
+judged the committed subject at `fdff4c03` (scope: the eight new orders
+plus the sequence; 41 orders carried by hash): `aligned-with-findings` for
+every order and for the plan, no hold, 24 known issues each with a
+reopening observation, 789 s from dispatch to file. The refuter was one
+fresh background worker given the canonical prompt and nothing else
+(140,283 tokens, 743 s, 12 tool uses, one file read, no repository
+command); its statement is in the receipt. Basis for no hold, in the
+refuter's words: every supplied trap observation reports no worsening and
+no reopen candidate, no order's text contradicts a supplied vision passage,
+and every order's own cost is unknown, which never holds.
+
+The known issues are carried on each order's catalog row for its executor
+and verifier; the pass weighs them here without editing the judged text
+(a text change after the receipt would move the subject).
+
+- **WO-158 (6).** A pipeline whose first program is listed and a later one
+  writes: the classifier already judges every program and literal redirect
+  in a command, and the fixture must show a piped writer refused. A
+  self-authored capture by a non-executor role: the same trust the
+  planning override's capture carries; the actor attestation names the
+  role and the fixture refuses the executor. The override record carries
+  no operator words: the hook cannot capture them at `off`; the record
+  names the bypassed effects and an optional capture path, and the
+  criterion says so. The effort refusal on an actor with no readback:
+  refuse only when a readback exists. Reviewer cold-start headroom of
+  1,505 bytes before WO-161's removal: measured at WO-158's close, raised
+  under the standing route if breached. `withdrawn` with one re-entry:
+  intended, and the wording says "closed-like with one legal re-entry".
+- **WO-159 (3).** The authentication copy after an abnormal end: the next
+  launch removes stale episode homes and `harness prune` lists them.
+  Approval and trust settings absent from the seeded home: the argv
+  already passes `-a never`, `--sandbox workspace-write` and its `-c`
+  overrides; the live row shows the episode neither prompts nor stalls.
+  A launch that cannot build the home refuses; it never falls back to the
+  user-level home.
+- **WO-160 (5).** Own-write-counts-as-read is bounded to the session's own
+  write with its bytes hashed at write time, never a generator's write on
+  its behalf. Hookless helper commits are bounded to the preservation and
+  merge commits the receipt names. An `inherited` label routes to a
+  register row through a decision's `followup`; two consecutive
+  `inherited` labels for one check is the reopening observation. The
+  `implementation-ready` advisory's cost is recorded by the executor as
+  the tenth item. The two `withdraw` verbs: the executor may name the
+  amendment one `--supersede`; the decision records the choice.
+- **WO-161 (2).** The posture compiled into role text reaches forks: the
+  sharpest catch of the review. The executor emits the confinement
+  sentence from the discovery probe's observed host posture, not from a
+  constant, so an exported instance describes its own host; the ADR
+  records this instance's decision. The residue rewrite states the
+  posture rather than swapping one reading for another.
+- **WO-164 (3).** A fold failure falls back to the per-order form and
+  records that it did. The cache lives in the ignored local lane and is
+  registered with `harness prune`. The title's "a second a day" is the
+  reviewer's extrapolation; the executor records two dated measurements on
+  the unmodified source and the decision states the observed rate.
+- **WO-165 (1).** The fixture asserts per pinned route; a new route must
+  declare whether it supplies a delegate tool before it is admitted.
+- **WO-162 (2).** Every null-on-failure caller keeps a thin wrapper over
+  `runGit` (the order names two; the executor greps for the rest before
+  converting any). No blocked outcome: recorded in §12 as maintenance.
+- **WO-163 (2).** Regenerating the `--check` is preferred; "historical"
+  only with the failing reason recorded beside the tool. The attribute
+  row is `dotln-generated` only, never a diff-disabling attribute.
+
+`npm run test:docs` after the receipt: recorded in the pull request.
