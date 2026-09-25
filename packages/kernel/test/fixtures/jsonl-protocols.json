@@ -14,7 +14,9 @@
     "corpus/mutation/sites-3dc19b7342ad03662172cf86663f406b96a43db4.jsonl": "Mutation records",
     "docs/control/resume.jsonl": "Lifecycle control",
     "docs/control/plan-refutations.jsonl": "Planning refutation control",
-    "docs/control/entropy-reducer.jsonl": "Entropy Reducer receipt control"
+    "docs/control/entropy-reducer.jsonl": "Entropy Reducer receipt control",
+    "docs/evidence/WO-111/events.jsonl": "WO-111 sanitized resident event projection (original receipt edition; not EventEnvelope)",
+    "docs/evidence/WO-111/return-events.jsonl": "WO-111 sanitized resident event projection (original receipt edition; not EventEnvelope)"
   },
   "controlSegmentPattern": "^docs/control/orders/WO-\\d{3}\\.jsonl$"
 }

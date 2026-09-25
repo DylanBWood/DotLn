@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-111",
+  "purpose": "Supplementary live return contrast; the first window is receipt.json.",
+  "window": {
+    "epistemic": "observed",
+    "value": {
+      "awayAt": 1790286024737,
+      "backAt": 1790286561302,
+      "durationMs": 536565,
+      "runnerStoppedAfterBackMs": 348
+    }
+  },
+  "curveShape": {
+    "epistemic": "observed",
+    "value": {
+      "phases": [
+        {
+          "phase": "probe",
+          "ceilingFiles": 1,
+          "changedFiles": 1,
+          "verified": true
+        },
+        {
+          "phase": "widen",
+          "ceilingFiles": 1,
+          "changedFiles": 1,
+          "verified": true
+        },
+        {
+          "phase": "peak",
+          "ceilingFiles": 2,
+          "changedFiles": 2,
+          "verified": true
+        }
+      ],
+      "phaseAfterPeakBeforeBack": "probe",
+      "nextCandidate": "repeated-repair:src/main.js:34c32817ea5437e8",
+      "episodesUsed": 3,
+      "episodesCeiling": 4,
+      "reportedWallMs": 183249,
+      "reportedTokens": 0
+    }
+  },
+  "returnCancellation": {
+    "epistemic": "observed",
+    "value": {
+      "preBackCandidateEligible": true,
+      "preBackInFlight": false,
+      "pendingDueAt": 1790286813701,
+      "backBeforeDueMs": 252399,
+      "stateAtBack": "present",
+      "postBackDispatches": 0,
+      "postBackActivations": 0,
+      "remainingEpisodeBudget": 1
+    }
+  },
+  "protectedSurfaces": {
+    "epistemic": "observed",
+    "value": {
+      "mainCheckoutUnchanged": true,
+      "selectedCheckoutUnchanged": true,
+      "targetMainUnchanged": true,
+      "sentinelUnchanged": true,
+      "templateUnchanged": true,
+      "zeroRemotesBeforeAndAfter": true,
+      "launchpadConfigurationUnchanged": true
+    }
+  },
+  "eventStream": {
+    "epistemic": "observed",
+    "value": {
+      "path": "return-events.jsonl",
+      "rows": 435,
+      "sha256": "367c42375bcf12398cd4b149aaa068bc35f476d5eb26a7f48783b8e02d96a924"
+    }
+  },
+  "netValueOfAbsence": {
+    "epistemic": "unknown",
+    "value": null,
+    "reason": "Verified changes and increasing phase ceilings are observed, but no benefit, risk, disruption or opportunity-cost measure was collected; no optimal absence length or positive net payoff is established."
+  },
+  "actualEpisodeTokens": {
+    "epistemic": "unknown",
+    "value": null,
+    "reason": "Portfolio actors did not report token usage; zero reported tokens is not zero model usage."
+  },
+  "outsideHostFilesystem": {
+    "epistemic": "unknown",
+    "value": null,
+    "reason": "The host checked named local surfaces and Git remotes, not every host path or network endpoint."
+  }
+}

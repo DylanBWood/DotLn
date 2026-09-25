@@ -1,0 +1,342 @@
+{
+  "schemaVersion": 2,
+  "workOrder": "WO-111",
+  "purpose": "Supplementary live return contrast; the first window is receipt.json.",
+  "window": {
+    "epistemic": "observed",
+    "value": {
+      "awayAt": 1790286024737,
+      "backAt": 1790286561302,
+      "durationMs": 536565,
+      "runnerStoppedAfterBackMs": 348
+    }
+  },
+  "curveShape": {
+    "epistemic": "observed",
+    "value": {
+      "phases": [
+        {
+          "phase": "probe",
+          "ceilingFiles": 1,
+          "changedFiles": 1,
+          "verified": true
+        },
+        {
+          "phase": "widen",
+          "ceilingFiles": 1,
+          "changedFiles": 1,
+          "verified": true
+        },
+        {
+          "phase": "peak",
+          "ceilingFiles": 2,
+          "changedFiles": 2,
+          "verified": true
+        }
+      ],
+      "phaseAfterPeakBeforeBack": "probe",
+      "nextCandidate": "repeated-repair:src/main.js:34c32817ea5437e8",
+      "episodesUsed": 3,
+      "episodesCeiling": 4,
+      "reportedWallMs": 183249,
+      "reportedTokens": 0,
+      "budgetMethod": "resident replay; episodes count admitted portfolio outcomes; wallMs sums max(0, observation state.at - activation.at); tokens include only actor-reported values; ceiling is the recorded portfolio definition"
+    }
+  },
+  "returnCancellation": {
+    "epistemic": "observed",
+    "value": {
+      "method": "Replay retained prefix immediately before and through back; portfolioSelection plus residentRefusal establish eligibility; compare due/dispatch with and without the edge using residentMachine, the runtime under examination",
+      "preBackCandidateEligible": true,
+      "preBackInFlight": false,
+      "pendingDueAt": 1790286813701,
+      "backBeforeDueMs": 252399,
+      "stateAtBack": "present",
+      "postBackDispatches": 0,
+      "postBackActivations": 0,
+      "remainingEpisodeBudget": 1,
+      "samples": [
+        {
+          "at": 1790286813700,
+          "withReturn": null,
+          "withoutReturn": null
+        },
+        {
+          "at": 1790286813701,
+          "withReturn": null,
+          "withoutReturn": 1790286813701
+        },
+        {
+          "at": 1790286814701,
+          "withReturn": null,
+          "withoutReturn": 1790286813701
+        }
+      ],
+      "controlDispatchAccepted": true,
+      "returnedDispatchRejected": true,
+      "limit": "Offline runtime replay, not an independent policy implementation or a live wait to due time."
+    }
+  },
+  "protectedSurfaces": {
+    "epistemic": "observed",
+    "value": {
+      "mainCheckoutUnchanged": true,
+      "selectedCheckoutUnchanged": true,
+      "targetMainUnchanged": true,
+      "sentinelUnchanged": true,
+      "templateUnchanged": true,
+      "zeroRemotesBeforeAndAfter": true,
+      "launchpadConfigurationUnchanged": true
+    }
+  },
+  "eventStream": {
+    "epistemic": "observed",
+    "value": {
+      "path": "return-events-v2.json",
+      "rows": 435,
+      "sha256": "eed8729e476bb1894214524101389644972e2cd35a1dbf2a9299c43c84a86b80",
+      "fields": [
+        "stream",
+        "index",
+        "atOffsetMs",
+        "type",
+        "selected sanitized payload fields"
+      ],
+      "method": "All resident events in original order per store; portfolio offsets use awayAt, mission offsets use missionAwayAt, configured events use null because their timestamp is logical zero. Both streams use the same projection; refusals include reason."
+    }
+  },
+  "netValueOfAbsence": {
+    "epistemic": "unknown",
+    "value": null,
+    "reason": "Verified changes and increasing phase ceilings are observed, but no benefit, risk, disruption or opportunity-cost measure was collected; no optimal absence length or positive net payoff is established."
+  },
+  "actualEpisodeTokens": {
+    "epistemic": "unknown",
+    "value": null,
+    "reason": "Portfolio actors did not report token usage; zero reported tokens is not zero model usage."
+  },
+  "outsideHostFilesystem": {
+    "epistemic": "unknown",
+    "value": null,
+    "reason": "The Codex config change is reported separately as observed. Other unmeasured host paths and network endpoints remain unknown."
+  },
+  "correction": {
+    "epistemic": "observed",
+    "value": {
+      "original": "return-receipt.json",
+      "originalSha256": "3b178d9a2ba81e788f578d42c9b2db5a6a4861437be67e1b346a6a17ef2db6df",
+      "source": "VER-001 and WO-111-D012; offline replay of retained raw stores, no live rerun"
+    }
+  },
+  "episodeLaunches": {
+    "epistemic": "observed",
+    "value": [
+      {
+        "order": "WO-900",
+        "role": "source",
+        "attempt": 1,
+        "launch": {
+          "epistemic": "launch-claim",
+          "value": {
+            "transport": "codex-cli-exec",
+            "version": "0.156.1",
+            "model": "gpt-6-sol",
+            "effort": "xhigh",
+            "mode": "fresh-cli"
+          }
+        },
+        "effectiveIdentity": {
+          "epistemic": "unknown",
+          "value": null,
+          "reason": "No effective per-episode model/effort readback; launch selectors are not effective identity."
+        }
+      },
+      {
+        "order": "WO-900",
+        "role": "verification",
+        "attempt": 1,
+        "launch": {
+          "epistemic": "launch-claim",
+          "value": {
+            "transport": "codex-cli-exec",
+            "version": "0.156.1",
+            "model": "gpt-6-sol",
+            "effort": "xhigh",
+            "mode": "fresh-transport"
+          }
+        },
+        "effectiveIdentity": {
+          "epistemic": "unknown",
+          "value": null,
+          "reason": "No effective per-episode model/effort readback; launch selectors are not effective identity."
+        }
+      },
+      {
+        "order": "WO-901",
+        "role": "source",
+        "attempt": 1,
+        "launch": {
+          "epistemic": "launch-claim",
+          "value": {
+            "transport": "codex-cli-exec",
+            "version": "0.156.1",
+            "model": "gpt-6-sol",
+            "effort": "xhigh",
+            "mode": "fresh-cli"
+          }
+        },
+        "effectiveIdentity": {
+          "epistemic": "unknown",
+          "value": null,
+          "reason": "No effective per-episode model/effort readback; launch selectors are not effective identity."
+        }
+      },
+      {
+        "order": "WO-901",
+        "role": "verification",
+        "attempt": 1,
+        "launch": {
+          "epistemic": "launch-claim",
+          "value": {
+            "transport": "codex-cli-exec",
+            "version": "0.156.1",
+            "model": "gpt-6-sol",
+            "effort": "xhigh",
+            "mode": "fresh-transport"
+          }
+        },
+        "effectiveIdentity": {
+          "epistemic": "unknown",
+          "value": null,
+          "reason": "No effective per-episode model/effort readback; launch selectors are not effective identity."
+        }
+      },
+      {
+        "order": "WO-902",
+        "role": "source",
+        "attempt": 1,
+        "launch": {
+          "epistemic": "launch-claim",
+          "value": {
+            "transport": "codex-cli-exec",
+            "version": "0.156.1",
+            "model": "gpt-6-sol",
+            "effort": "xhigh",
+            "mode": "fresh-cli"
+          }
+        },
+        "effectiveIdentity": {
+          "epistemic": "unknown",
+          "value": null,
+          "reason": "No effective per-episode model/effort readback; launch selectors are not effective identity."
+        }
+      },
+      {
+        "order": "WO-902",
+        "role": "verification",
+        "attempt": 1,
+        "launch": {
+          "epistemic": "launch-claim",
+          "value": {
+            "transport": "codex-cli-exec",
+            "version": "0.156.1",
+            "model": "gpt-6-sol",
+            "effort": "xhigh",
+            "mode": "fresh-transport"
+          }
+        },
+        "effectiveIdentity": {
+          "epistemic": "unknown",
+          "value": null,
+          "reason": "No effective per-episode model/effort readback; launch selectors are not effective identity."
+        }
+      }
+    ]
+  },
+  "presenceAuthorship": {
+    "epistemic": "launch-claim",
+    "value": {
+      "method": "Executor entered away/back in response to operator messages, as D003 records; the log classifier assigns human by signal kind and cannot authenticate the sender."
+    }
+  },
+  "inFlightReturn": {
+    "epistemic": "observed",
+    "value": {
+      "exercised": false,
+      "pendingEpisodeCount": 0,
+      "phaseRules": [
+        {
+          "phase": "discovery",
+          "inFlightOnReturn": "kill"
+        },
+        {
+          "phase": "probe",
+          "inFlightOnReturn": "finish"
+        },
+        {
+          "phase": "widen",
+          "inFlightOnReturn": "finish"
+        },
+        {
+          "phase": "peak",
+          "inFlightOnReturn": "finish"
+        }
+      ],
+      "fixture": "packages/skeleton/test/resident.test.ts: WO-068 in-flight kill and finish obey return precedence and reject stale advancement",
+      "limit": "Neither live return had an in-flight episode; the cited test uses fake actors, not live portfolio workers."
+    }
+  },
+  "budget": {
+    "epistemic": "observed",
+    "value": {
+      "method": "resident replay; episodes count admitted portfolio outcomes; wallMs sums max(0, observation state.at - activation.at); tokens include only actor-reported values; ceiling is the recorded portfolio definition",
+      "consumed": {
+        "episodes": 3,
+        "wallMs": 183249,
+        "tokens": 0
+      },
+      "ceiling": {
+        "episodes": 4,
+        "wallMs": 3600000
+      }
+    }
+  },
+  "snapshotCoverage": {
+    "epistemic": "observed",
+    "value": {
+      "method": "checkoutSnapshot from WO-053/fixture.mjs: HEAD, tracked and nonignored worktree bytes and index; ignored paths excluded",
+      "excludedObservedWrites": [
+        "harness installation/exclude records in the ignored DotLn control lane",
+        "mission store in the first window's ignored DotLn control lane",
+        "target .git/info/exclude worker blocks"
+      ],
+      "source": "VER-001 m3; those ignored writes are outside the checkout equality claim"
+    }
+  },
+  "outsidePortfolioChange": {
+    "epistemic": "observed",
+    "value": {
+      "checkedLocation": "user Codex home/config.toml",
+      "changed": true,
+      "effect": "project trust_level=trusted entry for this window's scratch target",
+      "source": "VER-001 B1; entries remain present in the repair's read-only inventory",
+      "attribution": "Inference: Codex launch persisted trust; supported by matching scratch keys, verifier-recorded timing and inherited Codex home. No writer-identifying log was found.",
+      "criterion2": "unmet; no operator exception recorded"
+    }
+  },
+  "runnerReturn": {
+    "epistemic": "observed",
+    "value": {
+      "source": "run.mjs one-second pulse calls AbortController.abort after it sees present",
+      "stoppedAfterBackMs": 348,
+      "limit": "Zero later dispatches before caller shutdown cannot alone establish cancellation at the future due time."
+    }
+  },
+  "generatorProvenance": {
+    "epistemic": "observed",
+    "value": {
+      "source": "VER-001 m4",
+      "observation": "Second window used the filed seed, run and baseline; bind/presence commands and location edits were not captured as a complete replayable shell transcript."
+    }
+  }
+}

@@ -1,0 +1,2699 @@
+[
+  {
+    "stream": "portfolio",
+    "index": 0,
+    "atOffsetMs": null,
+    "type": "ResidentConfigured",
+    "timeBasis": "configuration event has no wall-clock sample"
+  },
+  {
+    "stream": "portfolio",
+    "index": 1,
+    "atOffsetMs": -75014,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 2,
+    "atOffsetMs": -73971,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 3,
+    "atOffsetMs": -72931,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 4,
+    "atOffsetMs": -71895,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 5,
+    "atOffsetMs": -70868,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 6,
+    "atOffsetMs": -69841,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 7,
+    "atOffsetMs": -68806,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 8,
+    "atOffsetMs": -67776,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 9,
+    "atOffsetMs": -66727,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 10,
+    "atOffsetMs": -65691,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 11,
+    "atOffsetMs": -64658,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 12,
+    "atOffsetMs": -63620,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 13,
+    "atOffsetMs": -62577,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 14,
+    "atOffsetMs": -61528,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 15,
+    "atOffsetMs": -60499,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 16,
+    "atOffsetMs": -59471,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 17,
+    "atOffsetMs": -58444,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 18,
+    "atOffsetMs": -57406,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 19,
+    "atOffsetMs": -56358,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 20,
+    "atOffsetMs": -55307,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 21,
+    "atOffsetMs": -54269,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 22,
+    "atOffsetMs": -53241,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 23,
+    "atOffsetMs": -52202,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 24,
+    "atOffsetMs": -51150,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 25,
+    "atOffsetMs": -50117,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 26,
+    "atOffsetMs": -49088,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 27,
+    "atOffsetMs": -48051,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 28,
+    "atOffsetMs": -47005,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 29,
+    "atOffsetMs": -45972,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 30,
+    "atOffsetMs": -44938,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 31,
+    "atOffsetMs": -43900,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 32,
+    "atOffsetMs": -42865,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 33,
+    "atOffsetMs": -41835,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 34,
+    "atOffsetMs": -40800,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 35,
+    "atOffsetMs": -39769,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 36,
+    "atOffsetMs": -38724,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 37,
+    "atOffsetMs": -37687,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 38,
+    "atOffsetMs": -36649,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 39,
+    "atOffsetMs": -35618,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 40,
+    "atOffsetMs": -34585,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 41,
+    "atOffsetMs": -33550,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 42,
+    "atOffsetMs": -32518,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 43,
+    "atOffsetMs": -31484,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 44,
+    "atOffsetMs": -30452,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 45,
+    "atOffsetMs": -29421,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 46,
+    "atOffsetMs": -28387,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 47,
+    "atOffsetMs": -27355,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 48,
+    "atOffsetMs": -26322,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 49,
+    "atOffsetMs": -25289,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 50,
+    "atOffsetMs": -24256,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 51,
+    "atOffsetMs": -23224,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 52,
+    "atOffsetMs": -22191,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 53,
+    "atOffsetMs": -21158,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 54,
+    "atOffsetMs": -20121,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 55,
+    "atOffsetMs": -19088,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 56,
+    "atOffsetMs": -18055,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 57,
+    "atOffsetMs": -17021,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 58,
+    "atOffsetMs": -15987,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 59,
+    "atOffsetMs": -14952,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 60,
+    "atOffsetMs": -13920,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 61,
+    "atOffsetMs": -12887,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 62,
+    "atOffsetMs": -11853,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 63,
+    "atOffsetMs": -10816,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 64,
+    "atOffsetMs": -9780,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 65,
+    "atOffsetMs": -8746,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 66,
+    "atOffsetMs": -7708,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 67,
+    "atOffsetMs": -6673,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 68,
+    "atOffsetMs": -5639,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 69,
+    "atOffsetMs": -4603,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 70,
+    "atOffsetMs": -3567,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 71,
+    "atOffsetMs": -2530,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 72,
+    "atOffsetMs": -1492,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 73,
+    "atOffsetMs": -455,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 74,
+    "atOffsetMs": 0,
+    "type": "OperatorPresenceObserved",
+    "presence": {
+      "origin": "human",
+      "kind": "away"
+    }
+  },
+  {
+    "stream": "portfolio",
+    "index": 75,
+    "atOffsetMs": 0,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 76,
+    "atOffsetMs": 580,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 77,
+    "atOffsetMs": 1618,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 78,
+    "atOffsetMs": 1618,
+    "type": "ScriptEpisodeDispatched",
+    "dispatch": {
+      "phase": "discovery",
+      "kind": "script"
+    }
+  },
+  {
+    "stream": "portfolio",
+    "index": 79,
+    "atOffsetMs": 1793,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 80,
+    "atOffsetMs": 1793,
+    "type": "ScriptEpisodeObserved",
+    "discovery": {
+      "verified": true,
+      "candidates": 6
+    }
+  },
+  {
+    "stream": "portfolio",
+    "index": 81,
+    "atOffsetMs": 1793,
+    "type": "OperatorPresenceObserved",
+    "presence": {
+      "origin": "task",
+      "kind": "progress"
+    }
+  },
+  {
+    "stream": "portfolio",
+    "index": 82,
+    "atOffsetMs": 2844,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 83,
+    "atOffsetMs": 3882,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 84,
+    "atOffsetMs": 4922,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 85,
+    "atOffsetMs": 5960,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 86,
+    "atOffsetMs": 6999,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 87,
+    "atOffsetMs": 8039,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 88,
+    "atOffsetMs": 9077,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 89,
+    "atOffsetMs": 10117,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 90,
+    "atOffsetMs": 11153,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 91,
+    "atOffsetMs": 12192,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 92,
+    "atOffsetMs": 13229,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 93,
+    "atOffsetMs": 14270,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 94,
+    "atOffsetMs": 15309,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 95,
+    "atOffsetMs": 16355,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 96,
+    "atOffsetMs": 17396,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 97,
+    "atOffsetMs": 18434,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 98,
+    "atOffsetMs": 19474,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 99,
+    "atOffsetMs": 20511,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 100,
+    "atOffsetMs": 21549,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 101,
+    "atOffsetMs": 22599,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 102,
+    "atOffsetMs": 23640,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 103,
+    "atOffsetMs": 24681,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 104,
+    "atOffsetMs": 25720,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 105,
+    "atOffsetMs": 26759,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 106,
+    "atOffsetMs": 27818,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 107,
+    "atOffsetMs": 28862,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 108,
+    "atOffsetMs": 29902,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 109,
+    "atOffsetMs": 30941,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 110,
+    "atOffsetMs": 31981,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 111,
+    "atOffsetMs": 33022,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 112,
+    "atOffsetMs": 34062,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 113,
+    "atOffsetMs": 35102,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 114,
+    "atOffsetMs": 36142,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 115,
+    "atOffsetMs": 37183,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 116,
+    "atOffsetMs": 38224,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 117,
+    "atOffsetMs": 39273,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 118,
+    "atOffsetMs": 40312,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 119,
+    "atOffsetMs": 41352,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 120,
+    "atOffsetMs": 42392,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 121,
+    "atOffsetMs": 43434,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 122,
+    "atOffsetMs": 44476,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 123,
+    "atOffsetMs": 45516,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 124,
+    "atOffsetMs": 46558,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 125,
+    "atOffsetMs": 47600,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 126,
+    "atOffsetMs": 48642,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 127,
+    "atOffsetMs": 49682,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 128,
+    "atOffsetMs": 50724,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 129,
+    "atOffsetMs": 51768,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 130,
+    "atOffsetMs": 52811,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 131,
+    "atOffsetMs": 53854,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 132,
+    "atOffsetMs": 54896,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 133,
+    "atOffsetMs": 55938,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 134,
+    "atOffsetMs": 56981,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 135,
+    "atOffsetMs": 58025,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 136,
+    "atOffsetMs": 59067,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 137,
+    "atOffsetMs": 60109,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 138,
+    "atOffsetMs": 61150,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 139,
+    "atOffsetMs": 62192,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 140,
+    "atOffsetMs": 63236,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 141,
+    "atOffsetMs": 64278,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 142,
+    "atOffsetMs": 65318,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 143,
+    "atOffsetMs": 66362,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 144,
+    "atOffsetMs": 67406,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 145,
+    "atOffsetMs": 68449,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 146,
+    "atOffsetMs": 69493,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 147,
+    "atOffsetMs": 70535,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 148,
+    "atOffsetMs": 71579,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 149,
+    "atOffsetMs": 72623,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 150,
+    "atOffsetMs": 73673,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 151,
+    "atOffsetMs": 74716,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 152,
+    "atOffsetMs": 75760,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 153,
+    "atOffsetMs": 76805,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 154,
+    "atOffsetMs": 77850,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 155,
+    "atOffsetMs": 78894,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 156,
+    "atOffsetMs": 79938,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 157,
+    "atOffsetMs": 80982,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 158,
+    "atOffsetMs": 82026,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 159,
+    "atOffsetMs": 83072,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 160,
+    "atOffsetMs": 84121,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 161,
+    "atOffsetMs": 85166,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 162,
+    "atOffsetMs": 86211,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 163,
+    "atOffsetMs": 87256,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 164,
+    "atOffsetMs": 88306,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 165,
+    "atOffsetMs": 89352,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 166,
+    "atOffsetMs": 90397,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 167,
+    "atOffsetMs": 91441,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 168,
+    "atOffsetMs": 92486,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 169,
+    "atOffsetMs": 93530,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 170,
+    "atOffsetMs": 94575,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 171,
+    "atOffsetMs": 95620,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 172,
+    "atOffsetMs": 96669,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 173,
+    "atOffsetMs": 97714,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 174,
+    "atOffsetMs": 98763,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 175,
+    "atOffsetMs": 99812,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 176,
+    "atOffsetMs": 100858,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 177,
+    "atOffsetMs": 101907,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 178,
+    "atOffsetMs": 102956,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 179,
+    "atOffsetMs": 104006,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 180,
+    "atOffsetMs": 105055,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 181,
+    "atOffsetMs": 106105,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 182,
+    "atOffsetMs": 107154,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 183,
+    "atOffsetMs": 108202,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 184,
+    "atOffsetMs": 109252,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 185,
+    "atOffsetMs": 110300,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 186,
+    "atOffsetMs": 111346,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 187,
+    "atOffsetMs": 112396,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 188,
+    "atOffsetMs": 113446,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 189,
+    "atOffsetMs": 114494,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 190,
+    "atOffsetMs": 115541,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 191,
+    "atOffsetMs": 116592,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 192,
+    "atOffsetMs": 117642,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 193,
+    "atOffsetMs": 118693,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 194,
+    "atOffsetMs": 119742,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 195,
+    "atOffsetMs": 120792,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 196,
+    "atOffsetMs": 121842,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 197,
+    "atOffsetMs": 122893,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 198,
+    "atOffsetMs": 123943,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 199,
+    "atOffsetMs": 124994,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 200,
+    "atOffsetMs": 126045,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 201,
+    "atOffsetMs": 127095,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 202,
+    "atOffsetMs": 128146,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 203,
+    "atOffsetMs": 129201,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 204,
+    "atOffsetMs": 130253,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 205,
+    "atOffsetMs": 131304,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 206,
+    "atOffsetMs": 132358,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 207,
+    "atOffsetMs": 133413,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 208,
+    "atOffsetMs": 134465,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 209,
+    "atOffsetMs": 135524,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 210,
+    "atOffsetMs": 136577,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 211,
+    "atOffsetMs": 137629,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 212,
+    "atOffsetMs": 138683,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 213,
+    "atOffsetMs": 139738,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 214,
+    "atOffsetMs": 140792,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 215,
+    "atOffsetMs": 141846,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 216,
+    "atOffsetMs": 142898,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 217,
+    "atOffsetMs": 143954,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 218,
+    "atOffsetMs": 145007,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 219,
+    "atOffsetMs": 146060,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 220,
+    "atOffsetMs": 147115,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 221,
+    "atOffsetMs": 148170,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 222,
+    "atOffsetMs": 149222,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 223,
+    "atOffsetMs": 150278,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 224,
+    "atOffsetMs": 151332,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 225,
+    "atOffsetMs": 152384,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 226,
+    "atOffsetMs": 153437,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 227,
+    "atOffsetMs": 154492,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 228,
+    "atOffsetMs": 155547,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 229,
+    "atOffsetMs": 156601,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 230,
+    "atOffsetMs": 157654,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 231,
+    "atOffsetMs": 158708,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 232,
+    "atOffsetMs": 159764,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 233,
+    "atOffsetMs": 160819,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 234,
+    "atOffsetMs": 161877,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 235,
+    "atOffsetMs": 162943,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 236,
+    "atOffsetMs": 164014,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 237,
+    "atOffsetMs": 165089,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 238,
+    "atOffsetMs": 166162,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 239,
+    "atOffsetMs": 167229,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 240,
+    "atOffsetMs": 168301,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 241,
+    "atOffsetMs": 169371,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 242,
+    "atOffsetMs": 170452,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 243,
+    "atOffsetMs": 171520,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 244,
+    "atOffsetMs": 172590,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 245,
+    "atOffsetMs": 173661,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 246,
+    "atOffsetMs": 174742,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 247,
+    "atOffsetMs": 175831,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 248,
+    "atOffsetMs": 176901,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 249,
+    "atOffsetMs": 177975,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 250,
+    "atOffsetMs": 179074,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 251,
+    "atOffsetMs": 180179,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 252,
+    "atOffsetMs": 181261,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 253,
+    "atOffsetMs": 182335,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 254,
+    "atOffsetMs": 183424,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 255,
+    "atOffsetMs": 184520,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 256,
+    "atOffsetMs": 185610,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 257,
+    "atOffsetMs": 186710,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 258,
+    "atOffsetMs": 187800,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 259,
+    "atOffsetMs": 188866,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 260,
+    "atOffsetMs": 189942,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 261,
+    "atOffsetMs": 191034,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 262,
+    "atOffsetMs": 192115,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 263,
+    "atOffsetMs": 193200,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 264,
+    "atOffsetMs": 194282,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 265,
+    "atOffsetMs": 195387,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 266,
+    "atOffsetMs": 196462,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 267,
+    "atOffsetMs": 197534,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 268,
+    "atOffsetMs": 198615,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 269,
+    "atOffsetMs": 199701,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 270,
+    "atOffsetMs": 200808,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 271,
+    "atOffsetMs": 201891,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 272,
+    "atOffsetMs": 202976,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 273,
+    "atOffsetMs": 204075,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 274,
+    "atOffsetMs": 205154,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 275,
+    "atOffsetMs": 206221,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 276,
+    "atOffsetMs": 207303,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 277,
+    "atOffsetMs": 208377,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 278,
+    "atOffsetMs": 209445,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 279,
+    "atOffsetMs": 210516,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 280,
+    "atOffsetMs": 211602,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 281,
+    "atOffsetMs": 212671,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 282,
+    "atOffsetMs": 213745,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 283,
+    "atOffsetMs": 214832,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 284,
+    "atOffsetMs": 215913,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 285,
+    "atOffsetMs": 216995,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 286,
+    "atOffsetMs": 218073,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 287,
+    "atOffsetMs": 219155,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 288,
+    "atOffsetMs": 220230,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 289,
+    "atOffsetMs": 221305,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 290,
+    "atOffsetMs": 222387,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 291,
+    "atOffsetMs": 223461,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 292,
+    "atOffsetMs": 224550,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 293,
+    "atOffsetMs": 225648,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 294,
+    "atOffsetMs": 226730,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 295,
+    "atOffsetMs": 227803,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 296,
+    "atOffsetMs": 228882,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 297,
+    "atOffsetMs": 229966,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 298,
+    "atOffsetMs": 231054,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 299,
+    "atOffsetMs": 232134,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 300,
+    "atOffsetMs": 233224,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 301,
+    "atOffsetMs": 234312,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 302,
+    "atOffsetMs": 235395,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 303,
+    "atOffsetMs": 236475,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 304,
+    "atOffsetMs": 237562,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 305,
+    "atOffsetMs": 238657,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 306,
+    "atOffsetMs": 239732,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 307,
+    "atOffsetMs": 240830,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 308,
+    "atOffsetMs": 241905,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 309,
+    "atOffsetMs": 242991,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 310,
+    "atOffsetMs": 244067,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 311,
+    "atOffsetMs": 245154,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 312,
+    "atOffsetMs": 246230,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 313,
+    "atOffsetMs": 247317,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 314,
+    "atOffsetMs": 248400,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 315,
+    "atOffsetMs": 249479,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 316,
+    "atOffsetMs": 250582,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 317,
+    "atOffsetMs": 251670,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 318,
+    "atOffsetMs": 252754,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 319,
+    "atOffsetMs": 253854,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 320,
+    "atOffsetMs": 254934,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 321,
+    "atOffsetMs": 256016,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 322,
+    "atOffsetMs": 257095,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 323,
+    "atOffsetMs": 258171,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 324,
+    "atOffsetMs": 259250,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 325,
+    "atOffsetMs": 260346,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 326,
+    "atOffsetMs": 261431,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 327,
+    "atOffsetMs": 262528,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 328,
+    "atOffsetMs": 263619,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 329,
+    "atOffsetMs": 264718,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 330,
+    "atOffsetMs": 265815,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 331,
+    "atOffsetMs": 266899,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 332,
+    "atOffsetMs": 267981,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 333,
+    "atOffsetMs": 269090,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 334,
+    "atOffsetMs": 270183,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 335,
+    "atOffsetMs": 271268,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 336,
+    "atOffsetMs": 272369,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 337,
+    "atOffsetMs": 273476,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 338,
+    "atOffsetMs": 274578,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 339,
+    "atOffsetMs": 275678,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 340,
+    "atOffsetMs": 276769,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 341,
+    "atOffsetMs": 277869,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 342,
+    "atOffsetMs": 278963,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 343,
+    "atOffsetMs": 280047,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 344,
+    "atOffsetMs": 281136,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 345,
+    "atOffsetMs": 282244,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 346,
+    "atOffsetMs": 283356,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 347,
+    "atOffsetMs": 284468,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 348,
+    "atOffsetMs": 285576,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 349,
+    "atOffsetMs": 286690,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 350,
+    "atOffsetMs": 287792,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 351,
+    "atOffsetMs": 288877,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 352,
+    "atOffsetMs": 289974,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 353,
+    "atOffsetMs": 291069,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 354,
+    "atOffsetMs": 292168,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 355,
+    "atOffsetMs": 293290,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 356,
+    "atOffsetMs": 294398,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 357,
+    "atOffsetMs": 295507,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 358,
+    "atOffsetMs": 296615,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 359,
+    "atOffsetMs": 297729,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 360,
+    "atOffsetMs": 298840,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 361,
+    "atOffsetMs": 299956,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 362,
+    "atOffsetMs": 301054,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 363,
+    "atOffsetMs": 302167,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 364,
+    "atOffsetMs": 302167,
+    "type": "ScriptEpisodeDispatched",
+    "dispatch": {
+      "phase": "probe",
+      "kind": "portfolio"
+    }
+  },
+  {
+    "stream": "portfolio",
+    "index": 365,
+    "atOffsetMs": 302167,
+    "type": "PortfolioOrderActivated",
+    "activation": {
+      "phase": "probe",
+      "candidate": "failing-lint:src/main.js",
+      "sizeFiles": 1
+    }
+  },
+  {
+    "stream": "portfolio",
+    "index": 366,
+    "atOffsetMs": 332171,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 367,
+    "atOffsetMs": 355620,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 368,
+    "atOffsetMs": 355620,
+    "type": "PortfolioOrderObserved",
+    "outcome": {
+      "verified": true,
+      "change": "observed",
+      "verdict": "pass"
+    }
+  },
+  {
+    "stream": "portfolio",
+    "index": 369,
+    "atOffsetMs": 355620,
+    "type": "OperatorPresenceObserved",
+    "presence": {
+      "origin": "task",
+      "kind": "progress"
+    }
+  },
+  {
+    "stream": "portfolio",
+    "index": 370,
+    "atOffsetMs": 356719,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 371,
+    "atOffsetMs": 356719,
+    "type": "ScriptEpisodeDispatched",
+    "dispatch": {
+      "phase": "widen",
+      "kind": "portfolio"
+    }
+  },
+  {
+    "stream": "portfolio",
+    "index": 372,
+    "atOffsetMs": 356719,
+    "type": "PortfolioOrderActivated",
+    "activation": {
+      "phase": "widen",
+      "candidate": "failing-test:src/main.js",
+      "sizeFiles": 1
+    }
+  },
+  {
+    "stream": "portfolio",
+    "index": 373,
+    "atOffsetMs": 386731,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 374,
+    "atOffsetMs": 414835,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 375,
+    "atOffsetMs": 414835,
+    "type": "PortfolioOrderObserved",
+    "outcome": {
+      "verified": true,
+      "change": "observed",
+      "verdict": "pass"
+    }
+  },
+  {
+    "stream": "portfolio",
+    "index": 376,
+    "atOffsetMs": 414835,
+    "type": "OperatorPresenceObserved",
+    "presence": {
+      "origin": "task",
+      "kind": "progress"
+    }
+  },
+  {
+    "stream": "portfolio",
+    "index": 377,
+    "atOffsetMs": 415946,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 378,
+    "atOffsetMs": 415946,
+    "type": "ScriptEpisodeDispatched",
+    "dispatch": {
+      "phase": "peak",
+      "kind": "portfolio"
+    }
+  },
+  {
+    "stream": "portfolio",
+    "index": 379,
+    "atOffsetMs": 415946,
+    "type": "PortfolioOrderActivated",
+    "activation": {
+      "phase": "peak",
+      "candidate": "misplaced-file:loose/guide.md",
+      "sizeFiles": 2
+    }
+  },
+  {
+    "stream": "portfolio",
+    "index": 380,
+    "atOffsetMs": 445950,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 381,
+    "atOffsetMs": 487626,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 382,
+    "atOffsetMs": 487626,
+    "type": "PortfolioOrderObserved",
+    "outcome": {
+      "verified": true,
+      "change": "observed",
+      "verdict": "pass"
+    }
+  },
+  {
+    "stream": "portfolio",
+    "index": 383,
+    "atOffsetMs": 487626,
+    "type": "OperatorPresenceObserved",
+    "presence": {
+      "origin": "task",
+      "kind": "progress"
+    }
+  },
+  {
+    "stream": "portfolio",
+    "index": 384,
+    "atOffsetMs": 488725,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 385,
+    "atOffsetMs": 488725,
+    "type": "ScriptEpisodeDispatched",
+    "dispatch": {
+      "phase": "discovery",
+      "kind": "script"
+    }
+  },
+  {
+    "stream": "portfolio",
+    "index": 386,
+    "atOffsetMs": 488964,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 387,
+    "atOffsetMs": 488964,
+    "type": "ScriptEpisodeObserved",
+    "discovery": {
+      "verified": true,
+      "candidates": 6
+    }
+  },
+  {
+    "stream": "portfolio",
+    "index": 388,
+    "atOffsetMs": 488964,
+    "type": "OperatorPresenceObserved",
+    "presence": {
+      "origin": "task",
+      "kind": "progress"
+    }
+  },
+  {
+    "stream": "portfolio",
+    "index": 389,
+    "atOffsetMs": 490065,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 390,
+    "atOffsetMs": 491163,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 391,
+    "atOffsetMs": 492244,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 392,
+    "atOffsetMs": 493325,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 393,
+    "atOffsetMs": 494414,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 394,
+    "atOffsetMs": 495507,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 395,
+    "atOffsetMs": 496602,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 396,
+    "atOffsetMs": 497693,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 397,
+    "atOffsetMs": 498780,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 398,
+    "atOffsetMs": 499873,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 399,
+    "atOffsetMs": 500964,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 400,
+    "atOffsetMs": 502064,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 401,
+    "atOffsetMs": 503148,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 402,
+    "atOffsetMs": 504245,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 403,
+    "atOffsetMs": 505333,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 404,
+    "atOffsetMs": 506442,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 405,
+    "atOffsetMs": 507538,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 406,
+    "atOffsetMs": 508638,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 407,
+    "atOffsetMs": 509724,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 408,
+    "atOffsetMs": 510803,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 409,
+    "atOffsetMs": 511883,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 410,
+    "atOffsetMs": 512962,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 411,
+    "atOffsetMs": 514044,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 412,
+    "atOffsetMs": 515129,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 413,
+    "atOffsetMs": 516210,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 414,
+    "atOffsetMs": 517295,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 415,
+    "atOffsetMs": 518377,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 416,
+    "atOffsetMs": 519466,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 417,
+    "atOffsetMs": 520553,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 418,
+    "atOffsetMs": 521634,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 419,
+    "atOffsetMs": 522717,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 420,
+    "atOffsetMs": 523802,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 421,
+    "atOffsetMs": 524885,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 422,
+    "atOffsetMs": 525968,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 423,
+    "atOffsetMs": 527052,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 424,
+    "atOffsetMs": 528135,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 425,
+    "atOffsetMs": 529219,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 426,
+    "atOffsetMs": 530306,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 427,
+    "atOffsetMs": 531392,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 428,
+    "atOffsetMs": 532483,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 429,
+    "atOffsetMs": 533575,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 430,
+    "atOffsetMs": 534663,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 431,
+    "atOffsetMs": 535754,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 432,
+    "atOffsetMs": 536565,
+    "type": "OperatorPresenceObserved",
+    "presence": {
+      "origin": "human",
+      "kind": "back"
+    }
+  },
+  {
+    "stream": "portfolio",
+    "index": 433,
+    "atOffsetMs": 536565,
+    "type": "ClockSampled"
+  },
+  {
+    "stream": "portfolio",
+    "index": 434,
+    "atOffsetMs": 536843,
+    "type": "ClockSampled"
+  }
+]
