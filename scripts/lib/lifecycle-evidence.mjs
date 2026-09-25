@@ -16,8 +16,13 @@ export async function requireLifecycleEvidence(
   });
   if (diff.status !== 0)
     throw new Error(`git diff --check failed: ${diff.stdout}${diff.stderr}`);
-  const { gateTreeHash, findGateCheck, recordGateChecks } =
-    await import("./gate-evidence.mjs");
+  const {
+    gateTreeHash,
+    findGateCheck,
+    readGateChecks,
+    partialGateCheck,
+    recordGateChecks,
+  } = await import("./gate-evidence.mjs");
   const treeHash = gateTreeHash(root);
   recordGateChecks(root, [
     {
@@ -45,6 +50,32 @@ export async function requireLifecycleEvidence(
       "No passing product gate at this code identity; the reviewer runs npm test before publication.",
     );
   if (["implementation-ready", "repair-complete"].includes(action)) {
+    let documents;
+    let documentRowsUnavailable = false;
+    try {
+      documents = readGateChecks(root, treeHash)
+        .filter((row) => row.checkId === "npm run test:docs")
+        .at(-1);
+    } catch (error) {
+      documentRowsUnavailable = true;
+      advise(
+        `Latest npm run test:docs for current tree unavailable: ${error.message}`,
+      );
+    }
+    if (
+      !documentRowsUnavailable &&
+      (!documents ||
+        documents.exitCode !== 0 ||
+        documents.executed !== true ||
+        partialGateCheck(documents) ||
+        !Number.isFinite(documents.durationMs) ||
+        documents.durationMs < 0 ||
+        typeof documents.evidenceRef !== "string" ||
+        !documents.evidenceRef.trim())
+    )
+      advise(
+        `Latest npm run test:docs for current tree: ${documents ? `not passing (${documents.evidenceRef ?? "no reference"}, ${documents.recordedAt ?? "unknown cutoff"})` : "missing"}; run npm run test:docs before handoff.`,
+      );
     try {
       const { requirePlanningHandoffs } =
         await import("./planning-followups.mjs");

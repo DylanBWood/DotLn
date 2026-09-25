@@ -1487,6 +1487,36 @@ function observeAuthorship(
     session.authoredPaths = [
       ...new Set([...(session.authoredPaths ?? []), ...changed]),
     ];
+    // A snapshot delta establishes an output obligation, not who made the
+    // change. Credit a read only when this tool named the changed destination.
+    // Opaque commands and explicit observations still owe an actual read.
+    const namedWrites = new Set<string>();
+    try {
+      const known = knownWriteDestinations(input, root, undefined, {
+        directory: input.cwd,
+      });
+      for (const { physical } of known?.destinations ?? [])
+        if (withinRoot(root, physical))
+          namedWrites.add(relative(root, physical));
+    } catch {
+      // Unresolved destinations cannot prove this actor's authorship.
+    }
+    const toolFailed =
+      input.tool_response?.success === false ||
+      input.tool_response?.is_error === true;
+    for (const path of changed) {
+      if (toolFailed) continue;
+      if (!namedWrites.has(path)) continue;
+      const hash = snapshot[path]!;
+      if (
+        !session.reads.some((read) => read.path === path && read.hash === hash)
+      )
+        session.reads.push({
+          path,
+          hash,
+          evidenceRef: "host:observed-output-write",
+        });
+    }
     session.beforeOutputs = snapshot;
   }
   return {
@@ -1713,11 +1743,13 @@ export function observeHarnessSession(root: string, sessionId: string) {
   );
   if (!session)
     throw new Error("Begin the harness session before observing outputs");
+  const before = session.reads.length;
   const authorship = observeAuthorship(input, root, session);
   record(root, input, {
     role: session.role,
     source: "explicit-authorship-observation",
     authorship,
+    receipts: session.reads.slice(before),
   });
   writeJson(statePath(root, input), session);
   return harnessOutputObligations(root, session);
@@ -3335,6 +3367,7 @@ async function evaluateExistingHarnessHook(
       ["Agent", "Task"].includes(input.tool_name ?? "")
     )
       linkSubagentResult(harnessStateDirectory(root), input);
+    const before = session.reads.length;
     const authorship = observeAuthorship(input, root, session);
     if (input.hook_event_name === "PreToolUse") {
       record(root, input, {
@@ -3346,7 +3379,6 @@ async function evaluateExistingHarnessHook(
       writeJson(statePath(root, input), session);
       return {};
     }
-    const before = session.reads.length;
     const rangesBefore = session.byteReads?.length ?? 0;
     const paths = observeRead(input, root, session);
     const outside = scope

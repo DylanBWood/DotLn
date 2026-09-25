@@ -35,7 +35,7 @@ import {
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
-import { dirname, isAbsolute, join } from "node:path";
+import { dirname, isAbsolute, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import {
   compileFeedbackUnits,
@@ -1964,6 +1964,16 @@ test("WO-132 inherited outputs add no reads; invalid deliveries advise without c
       ),
       [own],
     );
+    // A foreign edit is still owed an explicit read, preserving range coverage.
+    write(root, own, "αβ🙂 synthetic edited ".repeat(2000));
+    invoke(
+      root,
+      "write-observer",
+      input(root, "PreToolUse", {
+        tool_name: "Bash",
+        tool_input: { command: "read output" },
+      }),
+    );
     let offset = 0;
     for (;;) {
       const chunk = readHarnessOutput(root, own, offset, 8192);
@@ -2805,7 +2815,7 @@ test("WO-039 completion tracks outputs across commits and auxiliary prompts reta
       ),
       ["fixture.ts"],
     );
-    assert.equal(readiness(root, "read-your-own-output"), false);
+    assert.equal(readiness(root, "read-your-own-output"), true);
     assert.equal(
       allowed(invoke(root, "read-observer", nativeRead(root, "fixture.ts"))),
       true,
@@ -7150,5 +7160,394 @@ test("VER-003 N1 generated prompt hook observes an idle notice before transcript
     assert.doesNotMatch(JSON.stringify(after), /idle-task|private-summary/);
   } finally {
     removeFixture(root, { recursive: true });
+  }
+});
+
+test("WO-160 prune removes a sole published stash with recovery bytes and permits the next stash", () => {
+  const root = realpathSync(
+    mkdtempSync(join(tmpdir(), "dotln-prune-last-stash-")),
+  );
+  try {
+    git(root, "init", "--quiet", "-b", "main");
+    git(root, "config", "user.name", "Fixture");
+    git(root, "config", "user.email", "fixture@example.invalid");
+    write(root, ".gitignore", "docs/control/local/\n");
+    write(root, "tracked.txt", "base\n");
+    git(root, "add", ".");
+    git(root, "commit", "-qm", "base");
+    write(root, "tracked.txt", "preserved\n");
+    git(root, "stash", "push", "-m", "WO-901 integrate 2030-01-01");
+    const ref = resolve(
+      root,
+      git(root, "rev-parse", "--git-path", "refs/stash").trim(),
+    );
+    const log = resolve(
+      root,
+      git(root, "rev-parse", "--git-path", "logs/refs/stash").trim(),
+    );
+    const before = {
+      ref: readFileSync(ref, "utf8"),
+      reflog: readFileSync(log, "utf8"),
+    };
+    const applied = pruneHarness(root, {
+      apply: true,
+      publishedRelease: () => "v1.0.0",
+    });
+    const row = applied.candidates.find(
+      (entry) => entry.kind === "integration-stash",
+    );
+    assert.ok(row.byteProof && row.recoveryProof);
+    const recovery = JSON.parse(
+      readFileSync(join(root, row.recoveryProof), "utf8"),
+    );
+    assert.equal(recovery.ref, before.ref);
+    assert.equal(recovery.reflog, before.reflog);
+    assert.equal(existsSync(ref), false);
+    assert.equal(existsSync(log), false);
+    assert.equal(git(root, "stash", "list").trim(), "");
+    assert.equal(
+      git(root, "show", `${recovery.stash}:tracked.txt`),
+      "preserved",
+    );
+    write(root, "tracked.txt", "next\n");
+    git(root, "stash", "push", "-m", "subsequent work");
+    assert.match(git(root, "stash", "list"), /subsequent work/);
+    assert.equal(git(root, "show", "refs/stash:tracked.txt"), "next");
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("WO-160 prune inventories only published integration stashes and resolves shifted selectors", () => {
+  const root = realpathSync(
+    mkdtempSync(join(tmpdir(), "dotln-prune-stashes-")),
+  );
+  try {
+    git(root, "init", "--quiet", "-b", "main");
+    git(root, "config", "user.name", "Fixture");
+    git(root, "config", "user.email", "fixture@example.invalid");
+    write(root, ".gitignore", "docs/control/local/\n");
+    write(root, "tracked.txt", "base\n");
+    git(root, "add", ".");
+    git(root, "commit", "-qm", "base");
+    const stash = (name, bytes) => {
+      write(root, "tracked.txt", bytes);
+      git(root, "add", "tracked.txt");
+      write(root, "untracked.txt", `untracked ${bytes}`);
+      git(root, "stash", "push", "-u", "-m", name);
+      return git(root, "rev-parse", "refs/stash").trim();
+    };
+    const first = stash("WO-901 integrate 2030-01-01", "first\n");
+    const second = stash("WO-902 integrate 2030-01-01", "second\n");
+    const unpublished = stash("WO-903 integrate 2030-01-01", "unpublished\n");
+    const unnamed = stash("ordinary saved work", "unnamed\n");
+    const options = {
+      publishedRelease: (order) =>
+        ["WO-901", "WO-902"].includes(order) ? "v1.0.0" : null,
+    };
+    const reflog = resolve(
+      root,
+      git(root, "rev-parse", "--git-path", "logs/refs/stash").trim(),
+    );
+    writeFileSync(reflog, readFileSync(reflog, "utf8").replace(/\n$/u, "  \n"));
+    const before = git(root, "stash", "list");
+    const preview = pruneHarness(root, options);
+    assert.equal(git(root, "stash", "list"), before);
+    assert.deepEqual(
+      new Set(
+        preview.candidates
+          .filter((row) => row.kind === "integration-stash")
+          .map((row) => row.stash),
+      ),
+      new Set([first, second]),
+    );
+    assert.ok(preview.candidates.every((row) => row.bytes > 0));
+    assert.ok(
+      preview.retained.some(
+        (row) => row.stash === unpublished && /published/.test(row.reason),
+      ),
+    );
+    assert.ok(
+      preview.retained.some(
+        (row) => row.stash === unnamed && /unrecognized/.test(row.reason),
+      ),
+    );
+    for (const name of ["refs/stash", "packed-refs"]) {
+      const lock =
+        resolve(root, git(root, "rev-parse", "--git-path", name).trim()) +
+        ".lock";
+      writeFileSync(lock, "other writer lock");
+      assert.throws(
+        () => pruneHarness(root, { ...options, apply: true }),
+        /EEXIST/,
+      );
+      assert.equal(readFileSync(lock, "utf8"), "other writer lock");
+      assert.equal(git(root, "stash", "list"), before);
+      const proofs = join(
+        root,
+        "docs/control/local/retained/integration-stashes",
+      );
+      assert.deepEqual(existsSync(proofs) ? readdirSync(proofs) : [], []);
+      rmSync(lock);
+    }
+    const originalLog = readFileSync(reflog);
+    writeFileSync(
+      reflog,
+      Buffer.concat([originalLog.subarray(0, -1), Buffer.from([255, 10])]),
+    );
+    assert.throws(
+      () => pruneHarness(root, { ...options, apply: true }),
+      /non-UTF-8/,
+    );
+    assert.deepEqual(
+      readFileSync(reflog),
+      Buffer.concat([originalLog.subarray(0, -1), Buffer.from([255, 10])]),
+    );
+    writeFileSync(reflog, originalLog);
+    const applied = pruneHarness(root, { ...options, apply: true });
+    assert.ok(readFileSync(reflog, "utf8").endsWith("ordinary saved work  \n"));
+    for (const row of applied.candidates.filter(
+      (row) => row.kind === "integration-stash",
+    )) {
+      const proof = JSON.parse(readFileSync(join(root, row.byteProof), "utf8"));
+      assert.equal(proof.stash, row.stash);
+      assert.equal(proof.bytes, row.bytes);
+      assert.ok(
+        proof.files.some(
+          (file) => file.role === "untracked" && file.path === "untracked.txt",
+        ),
+      );
+      assert.ok(
+        proof.files.some(
+          (file) => file.role === "index" && file.path === "tracked.txt",
+        ),
+      );
+      assert.equal(
+        proof.bytes,
+        proof.files.reduce((sum, file) => sum + file.bytes, 0),
+      );
+    }
+    const left = git(root, "log", "-g", "--format=%H", "refs/stash");
+    assert.ok(!left.includes(first) && !left.includes(second));
+    assert.ok(left.includes(unpublished) && left.includes(unnamed));
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("WO-160 prune removes packed stash refs without resurrecting entries", () => {
+  const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-prune-packed-")));
+  try {
+    git(root, "init", "--quiet", "-b", "main");
+    git(root, "config", "user.name", "Fixture");
+    git(root, "config", "user.email", "fixture@example.invalid");
+    write(root, ".gitignore", "docs/control/local/\n");
+    write(root, "tracked.txt", "base\n");
+    git(root, "add", ".");
+    git(root, "commit", "-qm", "base");
+    const stash = (name, contents) => {
+      write(root, "tracked.txt", contents);
+      git(root, "stash", "push", "-m", name);
+      return git(root, "rev-parse", "refs/stash").trim();
+    };
+    const first = stash("WO-901 integrate 2030-01-01", "first\n");
+    const second = stash("WO-902 integrate 2030-01-01", "second\n");
+    const ref = resolve(
+      root,
+      git(root, "rev-parse", "--git-path", "refs/stash").trim(),
+    );
+    const packed = resolve(
+      root,
+      git(root, "rev-parse", "--git-path", "packed-refs").trim(),
+    );
+    git(root, "pack-refs", "--all");
+    assert.equal(existsSync(ref), false);
+    const originalPacked = readFileSync(packed, "utf8");
+    const originalPackedMode = lstatSync(packed).mode & 0o777;
+    assert.match(originalPacked, / refs\/stash$/m);
+    const options = { publishedRelease: () => "v1.0.0" };
+    const preview = pruneHarness(root, options);
+    assert.deepEqual(
+      new Set(
+        preview.candidates
+          .filter((row) => row.kind === "integration-stash")
+          .map((row) => row.stash),
+      ),
+      new Set([first, second]),
+    );
+    const applied = pruneHarness(root, { ...options, apply: true });
+    assert.equal(git(root, "stash", "list").trim(), "");
+    assert.equal(existsSync(ref), false);
+    assert.doesNotMatch(readFileSync(packed, "utf8"), / refs\/stash$/m);
+    assert.equal(lstatSync(packed).mode & 0o777, originalPackedMode);
+    for (const row of applied.candidates.filter(
+      (entry) => entry.kind === "integration-stash",
+    )) {
+      const recovery = JSON.parse(
+        readFileSync(join(root, row.recoveryProof), "utf8"),
+      );
+      assert.equal(recovery.packedRefs, originalPacked);
+      assert.ok(row.byteProof && row.recoveryProof);
+    }
+    const retained = stash("ordinary saved work", "retained\n");
+    const published = stash("WO-901 integrate 2030-01-02", "published\n");
+    git(root, "pack-refs", "--all");
+    const beforeTopDrop = readFileSync(packed);
+    pruneHarness(root, { ...options, apply: true });
+    assert.equal(git(root, "rev-parse", "refs/stash").trim(), retained);
+    assert.ok(!git(root, "stash", "list").includes(published));
+    assert.deepEqual(readFileSync(packed), beforeTopDrop);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("WO-160 prune rewrites an expired reflog prefix like Git stash drop", () => {
+  const root = realpathSync(
+    mkdtempSync(join(tmpdir(), "dotln-prune-expired-")),
+  );
+  const control = realpathSync(
+    mkdtempSync(join(tmpdir(), "dotln-drop-expired-")),
+  );
+  try {
+    git(root, "init", "--quiet", "-b", "main");
+    git(root, "config", "user.name", "Fixture");
+    git(root, "config", "user.email", "fixture@example.invalid");
+    write(root, ".gitignore", "docs/control/local/\n");
+    write(root, "tracked.txt", "base\n");
+    git(root, "add", ".");
+    git(root, "commit", "-qm", "base");
+    for (const name of ["WO-901 integrate 2030-01-01", "ordinary saved work"]) {
+      write(root, "tracked.txt", `${name}\n`);
+      git(root, "stash", "push", "-m", name);
+    }
+    const log = join(root, ".git/logs/refs/stash");
+    // Expiring an older prefix can leave the oldest surviving old OID non-null.
+    writeFileSync(
+      log,
+      readFileSync(log, "utf8").replace(
+        /^[a-f0-9]+/u,
+        git(root, "rev-parse", "HEAD"),
+      ),
+    );
+    cpSync(root, control, { recursive: true });
+    git(control, "stash", "drop", "stash@{1}");
+    pruneHarness(root, { apply: true, publishedRelease: () => "v1.0.0" });
+    assert.equal(
+      git(root, "rev-parse", "refs/stash"),
+      git(control, "rev-parse", "refs/stash"),
+    );
+    assert.deepEqual(
+      readFileSync(log),
+      readFileSync(join(control, ".git/logs/refs/stash")),
+    );
+    assert.equal(git(root, "stash", "list"), git(control, "stash", "list"));
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+    rmSync(control, { recursive: true, force: true });
+  }
+});
+
+test("WO-160 non-top prune retains stashes during concurrent pack-refs pruning", async () => {
+  const root = realpathSync(
+    mkdtempSync(join(tmpdir(), "dotln-prune-pack-race-")),
+  );
+  let pack, exited;
+  try {
+    git(root, "init", "--quiet", "-b", "main");
+    git(root, "config", "user.name", "Fixture");
+    git(root, "config", "user.email", "fixture@example.invalid");
+    write(root, ".gitignore", "docs/control/local/\n");
+    write(root, "tracked.txt", "base\n");
+    git(root, "add", ".");
+    git(root, "commit", "-qm", "base");
+    const stashes = [];
+    for (const name of [
+      "WO-901 integrate 2030-01-01",
+      "WO-902 integrate 2030-01-01",
+      "ordinary saved work",
+    ]) {
+      write(root, "tracked.txt", `${name}\n`);
+      git(root, "stash", "push", "-m", name);
+      stashes.push(git(root, "rev-parse", "refs/stash"));
+    }
+    const ref = join(root, ".git/refs/stash");
+    const packed = join(root, ".git/packed-refs");
+    // Git prunes these tags before refs/stash. Widen its real post-pack
+    // window, then suspend that process so fixture speed cannot close it.
+    const head = git(root, "rev-parse", "HEAD");
+    for (let index = 0; index < 30_000; index++)
+      write(
+        root,
+        `.git/refs/tags/race-${String(index).padStart(5, "0")}`,
+        `${head}\n`,
+      );
+    pack = spawn("git", ["pack-refs", "--all", "--prune"], {
+      cwd: root,
+      stdio: ["ignore", "pipe", "pipe"],
+    });
+    let stderr = "";
+    pack.stderr.on("data", (bytes) => {
+      stderr += bytes;
+    });
+    exited = new Promise((resolveExit) => {
+      pack.once("error", (error) => resolveExit({ error }));
+      pack.once("close", (code, signal) => resolveExit({ code, signal }));
+    });
+    const deadline = Date.now() + 15_000;
+    while (!(existsSync(packed) && !existsSync(`${packed}.lock`))) {
+      assert.equal(
+        pack.exitCode,
+        null,
+        `pack-refs exited before the window: ${stderr}`,
+      );
+      assert.ok(
+        Date.now() < deadline,
+        "pack-refs did not reach its prune phase",
+      );
+      await new Promise((resolveWait) => setTimeout(resolveWait, 1));
+    }
+    assert.ok(pack.kill("SIGSTOP"));
+    while (
+      !/^T/u.test(
+        execFileSync("ps", ["-o", "stat=", "-p", String(pack.pid)], {
+          encoding: "utf8",
+        }).trim(),
+      )
+    ) {
+      assert.ok(Date.now() < deadline, "pack-refs did not suspend");
+      await new Promise((resolveWait) => setTimeout(resolveWait, 1));
+    }
+    assert.equal(existsSync(`${packed}.lock`), false);
+    assert.equal(readFileSync(ref, "utf8").trim(), stashes[2]);
+    const packedBefore = readFileSync(packed);
+    assert.ok(packedBefore.includes(`${stashes[2]} refs/stash\n`));
+    const applied = pruneHarness(root, {
+      apply: true,
+      publishedRelease: (order) => (order === "WO-901" ? "v1.0.0" : null),
+    });
+    assert.deepEqual(
+      applied.candidates.map((row) => row.stash),
+      [stashes[0]],
+    );
+    assert.ok(
+      applied.candidates[0].byteProof && applied.candidates[0].recoveryProof,
+    );
+    pack.kill("SIGCONT");
+    const result = await exited;
+    assert.deepEqual(result, { code: 0, signal: null }, stderr);
+    // The pack process really pruned the loose stash ref after our drop.
+    assert.equal(existsSync(ref), false);
+    assert.equal(git(root, "rev-parse", "--verify", "refs/stash"), stashes[2]);
+    assert.deepEqual(
+      git(root, "log", "-g", "--format=%H", "refs/stash").split("\n"),
+      stashes.slice(1).reverse(),
+    );
+    assert.deepEqual(readFileSync(packed), packedBefore);
+  } finally {
+    if (pack && pack.exitCode === null && pack.signalCode === null)
+      pack.kill("SIGKILL");
+    if (exited) await exited;
+    rmSync(root, { recursive: true, force: true });
   }
 });

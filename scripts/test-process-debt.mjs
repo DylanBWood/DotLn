@@ -90,6 +90,7 @@ import {
 } from "./lib/harness.mjs";
 import {
   beginHarnessSession,
+  observeHarnessSession,
   measureHarnessUsage,
   harnessOutputObligations,
   dispatchAdmissionPolicy,
@@ -7460,4 +7461,186 @@ test("WO-140 the cost line is a record and not a mention, and meta --check is wi
   await metaMain(["--check"], root).catch((error) =>
     assert.doesNotMatch(error.message, /Receipt cost lines refused/),
   );
+});
+
+test("WO-160 credits named own writes but not foreign writes in a tool window or explicit observation", async (t) => {
+  const root = repo(t, { runtime: true });
+  emitHarness(root);
+  beginHarnessSession(root, "fixture", "executor");
+  const observe = async (event, command) =>
+    evaluateHarnessHook(
+      config(root, event === "PreToolUse" ? "write-observer" : "read-observer"),
+      input(root, event, "fixture", {
+        tool_name: "Bash",
+        tool_input: { command },
+        tool_response: { success: true },
+      }),
+      root,
+      feedbackBoundary,
+    );
+  const ownCommand = "printf 'own bytes\\n' > own.txt";
+  await observe("PreToolUse", ownCommand);
+  write(root, "own.txt", "own bytes\n");
+  await observe("PostToolUse", ownCommand);
+  let result = await requireLifecycleEvidence(
+    root,
+    "implementation-ready",
+    "pass",
+    "WO-999",
+  );
+  assert.ok(
+    !result.advisories.some((message) => /Outputs not read/.test(message)),
+    JSON.stringify(result.advisories),
+  );
+  assert.ok(
+    state(root).reads.some(
+      (row) =>
+        row.path === "own.txt" &&
+        row.evidenceRef === "host:observed-output-write",
+    ),
+  );
+  const failed = (event) =>
+    evaluateHarnessHook(
+      config(root, event === "PreToolUse" ? "write-observer" : "read-observer"),
+      input(root, event, "fixture", {
+        tool_name: "Write",
+        tool_input: { file_path: join(root, "failed.txt") },
+        tool_response: { success: false },
+      }),
+      root,
+      feedbackBoundary,
+    );
+  await failed("PreToolUse");
+  write(root, "failed.txt", "foreign bytes during failed Write\n");
+  await failed("PostToolUse");
+  assert.ok(
+    !state(root).reads.some(
+      (row) =>
+        row.path === "failed.txt" &&
+        row.evidenceRef === "host:observed-output-write",
+    ),
+  );
+  await observe("PreToolUse", "pwd");
+  write(root, "own.txt", "another writer\n");
+  await observe("PostToolUse", "pwd");
+  result = await requireLifecycleEvidence(
+    root,
+    "implementation-ready",
+    "pass",
+    "WO-999",
+  );
+  assert.ok(
+    result.advisories.some((message) =>
+      /Outputs not read.*own.txt/.test(message),
+    ),
+  );
+  write(root, "foreign.txt", "another writer's new output\n");
+  observeHarnessSession(root, "fixture");
+  assert.ok(
+    !state(root).reads.some(
+      (row) =>
+        row.path === "foreign.txt" &&
+        row.evidenceRef === "host:observed-output-write",
+    ),
+  );
+  result = await requireLifecycleEvidence(
+    root,
+    "implementation-ready",
+    "pass",
+    "WO-999",
+  );
+  assert.ok(
+    result.advisories.some((message) =>
+      /Outputs not read.*foreign.txt/.test(message),
+    ),
+  );
+});
+
+test("WO-160 opaque shell output needs a delivered read", async (t) => {
+  const root = repo(t, { runtime: true });
+  emitHarness(root);
+  beginHarnessSession(root, "fixture", "executor");
+  for (const event of ["PreToolUse", "PostToolUse"]) {
+    if (event === "PostToolUse") write(root, "opaque.txt", "opaque output\n");
+    await evaluateHarnessHook(
+      config(root, event === "PreToolUse" ? "write-observer" : "read-observer"),
+      input(root, event, "fixture", {
+        tool_name: "Bash",
+        tool_input: { command: "node writer.mjs" },
+        tool_response: { success: true },
+      }),
+      root,
+      feedbackBoundary,
+    );
+  }
+  const completion = async () =>
+    requireLifecycleEvidence(root, "implementation-ready", "pass", "WO-999");
+  assert.ok(
+    (await completion()).advisories.some((message) =>
+      /Outputs not read.*opaque.txt/.test(message),
+    ),
+  );
+  observeHarnessDelivery(
+    root,
+    "fixture",
+    JSON.stringify(readHarnessOutput(root, "opaque.txt", 0, 8192)),
+  );
+  assert.ok(
+    !(await completion()).advisories.some((message) =>
+      /Outputs not read/.test(message),
+    ),
+  );
+});
+
+test("WO-160 completion observes the latest complete current-tree document gate without blocking", async (t) => {
+  const root = repo(t);
+  const completion = async () =>
+    (
+      await requireLifecycleEvidence(
+        root,
+        "implementation-ready",
+        "pass",
+        "WO-999",
+      )
+    ).advisories.filter((message) => /test:docs/.test(message));
+  assert.equal((await completion()).length, 1);
+  const current = {
+    ...gate(root, "npm run test:docs"),
+    recordedAt: "2030-01-01T00:00:00.000Z",
+  };
+  recordGateChecks(root, [{ ...current, treeHash: "a".repeat(40) }]);
+  assert.equal((await completion()).length, 1);
+  recordGateChecks(root, [current]);
+  assert.deepEqual(await completion(), []);
+  for (const [index, patch] of [
+    { exitCode: 1 },
+    { partial: true },
+    { executed: false },
+  ].entries()) {
+    recordGateChecks(root, [
+      {
+        ...current,
+        ...patch,
+        evidenceRef: `docs-negative-${index}`,
+        recordedAt: `2030-01-01T00:00:0${index + 1}.000Z`,
+      },
+    ]);
+    assert.equal((await completion()).length, 1);
+  }
+  const archive = `docs/control/local/harness/check-history/${gateTreeHash(root)}.json`;
+  write(root, archive, "{unreadable");
+  for (const action of ["implementation-ready", "repair-complete"]) {
+    const result = await requireLifecycleEvidence(
+      root,
+      action,
+      "pass",
+      "WO-999",
+    );
+    assert.deepEqual(
+      result.advisories
+        .filter((message) => /test:docs/.test(message))
+        .map((message) => /unavailable/.test(message)),
+      [true],
+    );
+  }
 });
