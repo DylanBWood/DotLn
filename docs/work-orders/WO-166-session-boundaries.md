@@ -11,9 +11,14 @@ under the standing opt-out default.
 five Codex dispatch roles (`next`, `fix`, `verify`, `final-review`,
 `release-close`; `scripts/resume.mjs` `codexDispatchRoles`), keyed by the
 actor id completion already releases (SHA-256 of `CODEX_THREAD_ID`) and
-owned by the dispatch's non-shell ancestor as the Claude path records it,
-with a live or unknown foreign holder refusing the dispatch before any
-event is appended; the release that `implementation-ready` and
+owned by the Codex host process, found by walking the dispatch's ancestors
+for the CLI's own command; when none is found the owner is recorded as
+`source: "thread"` with no pid and liveness unavailable, so the holder is
+never silently reclaimed as dead (the nearest non-shell ancestor of
+`npm run resume` is the npm or node process that exits with the command,
+which WO-161's implementation observed; receipt 029, WO-166 finding 1);
+a live or unknown foreign holder refuses the dispatch before any event is
+appended; the release that `implementation-ready` and
 `repair-complete` perform (WO-139 D005) at `verification-result`,
 `final-review-result` and `release-close` too; the holder's `reservedAt`
 age and the release command on every writer refusal;
@@ -21,7 +26,10 @@ age and the release command on every writer refusal;
 returns when `activeGateRuns` is empty and prints the newest `checks.json`
 row for the current tree (exit 0 on a recorded pass, 1 on a recorded
 failure, 2 at timeout or with no row); a session-start advisory naming an
-override entered and not exited in the same worktree (WO-158 D012); two
+override entered and not exited in the same worktree (WO-158 D012), which
+needs a worktree field in the operator-control state
+(`packages/compiler/src/operator-control.mjs` keys it by session id under
+the temp directory today; receipt 029, finding 3); two
 sentences of role text (under Codex the dispatch reserves and the
 completion releases, `writer --show` is the check and a hand-built hook
 payload is never the route; a live gate is awaited with a command that
@@ -30,8 +38,9 @@ mid-phase reservation two Codex sessions made by hand (WO-156 repair,
 WO-161 implementation) and the unreserved handoff a third recorded (WO-161
 repair), with the diagnosis turns each spent; the open-ended monitor a
 Claude session left running after WO-160's gate. Re-mints:
-`packages/skeleton/src/harness-host.ts`, `gate-evidence.mjs` and
-`loadouts/contributor.ts` are registered evidence sources
+`packages/skeleton/src/harness-host.ts`, `gate-evidence.mjs`,
+`loadouts/contributor.ts` and `packages/compiler/src/operator-control.mjs`
+are registered evidence sources
 (`scripts/lib/evidence-sources.mjs`), so the editions whose checks they
 stale re-mint deterministically (WO-152 D004); none is a feedback source
 path (`FEEDBACK_SOURCE_PATHS`), so no live episode (WO-147 D010). Boy-scout
@@ -125,12 +134,18 @@ a live gate with one command that exits with the recorded outcome.
 
 - Reserve at dispatch inside `beginHarnessSessionOnce` for the Codex roles
   only, through `reserveHarnessWriter` with the actor id
-  `executorWriterRelease` computes. A live or unknown foreign holder
-  refuses the dispatch with the holder's actor id, owner, `reservedAt` and
-  age, before `resume` appends any event; a dead holder is reclaimed and
-  journaled as today. Liveness of a Codex-owned reservation is recorded as
-  observed (`unavailable` is admitted for the session's own holder), never
-  invented.
+  `executorWriterRelease` computes, and an owner that outlives the
+  command: the Codex host process when an ancestor's command names it,
+  otherwise `source: "thread"` with no pid. A holder without a live pid
+  is never reclaimed as dead; it ends by its completion command or by the
+  operator's `writer --release`, and the refusal it causes names both. A
+  live or unknown foreign holder refuses the dispatch with the holder's
+  actor id, owner, `reservedAt` and age, before `resume` appends any
+  event; a dead pid-owned holder is reclaimed and journaled as today.
+  Liveness is recorded as observed, never invented. The abandoned Codex
+  session (killed before its completion) therefore still needs the
+  operator release; that is the WO-050 shape, now self-diagnosable, and
+  the order's non-goal to remove.
 - Release at every Codex completion command through the existing
   `executorWriterRelease` (generalized as the executor sees fit), keeping
   D005's order: the durable result first, then the release, then the
@@ -142,14 +157,24 @@ a live gate with one command that exits with the recorded outcome.
   `treeHash` matches the current tree, or `{"run":null}`; exit codes as in
   Cost. In Claude Code the command runs in the background so the harness
   re-invokes on exit; in Codex it blocks.
-- Session-start advisory: `beginHarnessSession` (Codex) and the Claude
-  session hook print one line when the worktree's operator-control state
+- Session-start advisory: the operator-control state gains the worktree
+  root it was opened in (`operator-control.mjs`, a registered common
+  source; its editions re-mint); `beginHarnessSession` (Codex) and the
+  Claude session hook print one line when a state for this worktree
   records an override entered and not exited, naming its entry time; no
-  event is appended.
-- Role text in `loadouts/contributor.ts`: the two sentences in Cost;
-  regenerate the bundle and skills; re-mint the stale editions.
+  event is appended; an override opened in another worktree prints
+  nothing.
+- Role text in `loadouts/contributor.ts`: the two sentences in Cost,
+  together at most 400 bytes, because they enter every cold-start profile
+  and the reviewer profile's `coldStartBytes` headroom is 932 bytes
+  (receipt 029, finding 4); regenerate the bundle and skills; re-mint the
+  stale editions; the drift observation is recorded before and after.
 - Fixtures: a Codex dispatch reserves and its completion releases for all
-  five roles; a live foreign holder refuses with age; `--wait` returns on
+  five roles; a real `npm run resume` ancestor chain is driven once and the
+  process the reservation names as owner is recorded (it must not be the
+  npm or node process that exits with the command); a live foreign holder
+  refuses with age; a pid-less holder is not reclaimed by a second
+  dispatch; `--wait` returns on
   an empty marker directory with the row, at timeout with exit 2, and keeps
   waiting while a marker with a live pid exists; the advisory prints once
   for an open override and not otherwise; the carried-edition test resolves
@@ -172,8 +197,11 @@ the fixtures; the carried-edition test fix.
 
 1. A fixture drives each of the five Codex dispatch roles: `writer --show`
    reports the session's reservation after the dispatch and
-   `reserved:false` after its completion command; a live foreign holder
-   refuses the dispatch with its age before any event is appended.
+   `reserved:false` after its completion command; the owner recorded for a
+   real `npm run resume` chain is the Codex host or `thread`, never a
+   process that exited with the command; a live foreign holder refuses
+   the dispatch with its age before any event is appended; a pid-less
+   holder survives a second dispatch's reclaim path.
 2. Every writer refusal names the holder's actor id, owner, `reservedAt`,
    age in seconds and the operator release command.
 3. `node scripts/harness.mjs evidence --wait` returns with the recorded row
@@ -181,9 +209,11 @@ the fixtures; the carried-edition test fix.
    `--timeout` with a live marker or with no row; a fixture covers each.
 4. A session start in a worktree whose operator-control state holds an open
    override prints the advisory once; none otherwise.
-5. The role text carries the two sentences in Cost; `node
-   scripts/harness.mjs check` passes; stale editions re-mint
-   deterministically with no live episode.
+5. The role text carries the two sentences in Cost within 400 bytes; every
+   profile's `coldStartBytes` verdict is unchanged before and after; `node
+   scripts/harness.mjs check` passes; stale editions (including
+   `operator-control.mjs`'s) re-mint deterministically with no live
+   episode.
 6. `scripts/test-evidence-sources.mjs` passes with a carried feedback
    edition current (FUP-be91067a3842b44a).
 7. Product 07's stale-writer candidate records the shipped behaviour in
@@ -199,7 +229,10 @@ Codex (its report, not a paid episode); `npm test` at final review.
 **Write-back duty:** product 07's candidate, edited in place; decisions; the
 register rows.
 
-**Non-goals:** the supervisor that leaves a detached Codex episode running
+**Non-goals:** removing the operator release for a Codex session killed
+before its completion (a pid-less holder has no liveness to observe; the
+refusal now names the age and the command); the supervisor that leaves a
+detached Codex episode running
 (WO-159 D010; deferred to the next order that edits `cli-actor.ts` or
 `cli-episode.ts`); background-task journaling in Claude Code (WO-142 F2); a
 total subagent cap; the outside-write grant checks (WO-158 D028); the

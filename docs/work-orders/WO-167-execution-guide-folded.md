@@ -84,7 +84,17 @@ it there.
   reconciles the register; inbound links updated.
 - Keep every `##` heading that a role skill's `Read:` line, a `Cites`
   line in a queued order, or the publication index names; the verifier
-  checks the anchor list before and after.
+  checks the anchor list before and after. The nine publication index
+  rows that cite the moved candidate headings (`docs/publication/`) are
+  removed or retargeted in the same change and both locks refreshed
+  (receipt 029, WO-167 finding 2).
+- The executor records a fold table: every dated paragraph, the sentence
+  that now carries its rule, and the citation; the verifier reads every
+  row, not a sample (receipt 029, finding 1).
+- Register reconciliation is nine `followups --apply` duplicate
+  dispositions written by the executor (`npm run meta` only marks the old
+  source missing); the executor's own deferrals name current public rows
+  before the move (receipt 029, finding 3).
 - Record the before and after line and byte counts and lower 07's ceiling
   to the after count.
 - **Declined alternatives, recorded:** a second cut of sections into other
@@ -99,15 +109,16 @@ reconciliation; the ceiling; the count record.
 **Acceptance criteria (all required)**
 
 1. Zero dated bold paragraphs and zero `Candidate —` headings remain in
-   product 07 (the WO-085 check's baseline for 07 is emptied); every rule
-   each removed paragraph stated is present in the sentence it governed
-   (the verifier samples at least ten paragraphs against the diff and
-   names them).
+   product 07 (the WO-085 check's baseline for 07 is emptied); the fold
+   table lists all 32 paragraphs, and the verifier checks every row's
+   rule against its sentence and records the count checked.
 2. Every heading cited by a role skill, a queued order's `Cites` line or
-   the publication index resolves after the fold; the docs check reports
-   zero broken anchors.
+   the publication index resolves after the fold; the nine index rows for
+   the moved candidates are gone or retargeted; `check-publication` and
+   the docs check report zero broken anchors.
 3. The register carries each moved candidate as a duplicate of its map
-   row with history retained; pending counts recorded before and after.
+   row with history retained, through nine recorded `--apply` requests;
+   pending counts recorded before and after.
 4. Product 07's byte count is recorded before and after and its ceiling
    lowered to the after count; the publication locks are refreshed.
 5. Write-backs land: ledger entry; `docs/README.md` where it points at a

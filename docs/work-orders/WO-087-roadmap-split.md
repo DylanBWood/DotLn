@@ -1,4 +1,4 @@
-# WO-087 — Candidates leave the roadmap: its candidate and policy sections move to the planning map's candidates sections with their slugs reconciled in the register, so the roadmap holds the ladder and the generated release history (version assigned at activation)
+# WO-087 — Candidates leave the roadmap: its candidate and policy sections (864 lines) move to the planning map's candidates sections with their slugs reconciled in the register, so the roadmap holds the ladder and the generated release history (version assigned at activation)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
@@ -11,9 +11,11 @@ identity, whole-or-split, beacon checkpoint, unattended portfolio, budget
 windows, capability progression policies and its three subsections,
 bounded baseline, counterfactual profiling, local-model experiments) with
 the slug of each heading preserved, and the register reconciliation of
-each renamed source as a duplicate of its new entry
-(`docs/planning/followups.md`); removes about 650 lines of candidate policy
-from 06 and their publication index rows and locks; lowers product 06's
+each renamed source as a duplicate of its new entry through seven
+`followups --apply` requests the executor writes (`npm run meta` only
+marks the old source missing; receipt 029, WO-087 finding 2); removes 864
+lines of candidate policy from 06 (lines 799–1662 at `9cc597d7`; receipt
+029, finding 1) and their publication index rows and locks; lowers product 06's
 ceiling in `doc-ceilings.json` to its new size. Re-mints: none. Wall-clock,
 tokens and context bytes are unknown until run.
 **Nomination provenance:** WO-035's roadmap-split item, cut into a bounded
@@ -58,9 +60,10 @@ across, and no link breaks.
 
 **Observed gap (dated 2026-09-25, `main` at `64f9326f`):**
 
-- 06 carries about 650 lines of candidate policy between its ladder rungs
-  (six `Candidate —` headings and the capability-progression policies); it
-  is 2,155 lines and 148,793 bytes, the third-largest product document.
+- 06 carries 864 lines of candidate policy between its ladder rungs
+  (lines 799–1662: six `Candidate —` headings and the
+  capability-progression policies); it is 2,155 lines and 148,793 bytes,
+  the third-largest product document.
 - The register collects candidate headings from product and planning
   documents alike (`docs/planning/followups.md`), so the move loses no
   identity; a renamed source is reconciled as a duplicate of its new entry.
@@ -83,12 +86,13 @@ reconciliation, the write-backs below.
 
 **Acceptance criteria (all required)**
 
-1. Every moved heading keeps its slug; `check-publication` passes with the
-   rows removed and both edition locks refreshed; the docs check reports
-   zero broken links and 06 under its lowered ceiling.
+1. Every moved heading keeps its slug; the removal is exactly the named
+   range, recorded as before and after line counts; `check-publication`
+   passes with the rows removed and both edition locks refreshed; the docs
+   check reports zero broken links and 06 under its lowered ceiling.
 2. The register shows each moved candidate's old row as a duplicate of its
-   map row with its history retained; no pending row is lost (counts
-   recorded before and after).
+   map row with its history retained, through seven recorded `--apply`
+   requests; no pending row is lost (counts recorded before and after).
 3. Write-backs land: `docs/README.md`, ledger entry.
 4. `npm test` and `npm run test:docs` green; `git diff --check` clean; no
    new dependency.

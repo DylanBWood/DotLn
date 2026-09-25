@@ -347,9 +347,11 @@ before any export.
 
 ## 11. Evidence and cost of this pass
 
-- Research: none delegated; the planner read the sources directly. Zero
-  of twenty subagent admissions used before the refuter; the refuter is
-  the first.
+- Research: none delegated; the planner read the sources directly. Two
+  of twenty subagent admissions used, both refuters (one per judgment).
+- Refutation 029: 1,234 s dispatch to file by the receipt; the worker
+  reported 244,538 tokens and 72 tool uses over 1,210 s (harness readback
+  of the agent task).
 - Session usage at the last hook readback before drafting: 81,427 total
   tokens (64,148 cached input) at 20:50 UTC, source
   claude-transcript-message-usage, scope dispatch; the handoff figure is
@@ -375,7 +377,48 @@ before any export.
 
 ## 13. Independent review
 
-The refutation receipt for this pass is filed under
-`docs/planning/refutations/` by `npm run plan -- refute` and the receipt
-helper; its judgment, holds and dispositions are recorded there and in
-the control log, not restated here.
+Receipt 029 (`2026-09-25-planning-8f567de659b31991-029`) judged the five
+orders aligned-with-findings with zero holds and twelve known issues,
+each with a reopening observation. §14 records which of them this pass
+repaired in the orders before any executor reads them, and the second
+receipt that judges the repaired subject.
+
+## 14. Second judgment, same day — the refuter's findings repaired, and three nominations
+
+Receipt 029's twelve known issues held no order, but six of them describe
+defects in the orders as written that an executor would meet at activation.
+Rather than carry them into execution, this pass repairs the order text and
+takes a second judgment on the repaired subject (the 2026-09-21 pass's §12
+precedent). The operator also asked for nominations ("yes please nominate
+whatever you feel is necessary") after observing that much stored data is
+unmeasured, unanalyzed and unacted on; those are the map's items 5 to 7.
+
+| Finding (receipt 029) | Repair |
+| --- | --- |
+| WO-085: product 07 §Discipline has every activation write a dated paragraph into 06 §Release boundary, so the check would refuse WO-164, WO-165, WO-162 and WO-163 until WO-086 lands; zero-headroom ceilings compound it; exempt text's treatment in the byte count unspecified | the whole of 06 §Release boundary is exempt until WO-086 retires it; exempt text is excluded from the count and printed separately; each ceiling is the non-exempt bytes at landing plus two per cent; a fixture activation paragraph passes while WO-086 is unmerged |
+| WO-166: the nearest non-shell ancestor of `npm run resume` is the npm or node process that exits with the command, so a Codex reservation would be silently reclaimed as dead by the next dispatch and the invariant would fail while the fixture passed | the owner is the Codex host process found by its command, else a pid-less `thread` holder that is never reclaimed as dead; a real ancestor chain is driven once and the owner recorded; a pid-less holder survives a second dispatch; the abandoned-session operator release is named as the order's non-goal |
+| WO-166: operator-control state is keyed by session id under the temp directory with no worktree field, so the open-override advisory needs a state change in a registered common source the Re-mints line did not name | `operator-control.mjs` gains the worktree root and is named in the edited files and Re-mints |
+| WO-166: two role sentences enter every cold-start profile; the reviewer's `coldStartBytes` headroom is 932 bytes | the two sentences are bounded to 400 bytes and every profile's verdict is checked unchanged |
+| WO-086: the collision path's failure when the integrate helper's decision stub meets an authored conflict was unspecified | `release prepare` refuses with the path and writes nothing; never a prose fallback; a fixture covers it |
+| WO-167 and WO-087: meaning preservation judged by a ten-of-32 sample; nine publication index rows cite the moved headings; register reconciliation is hand-built duplicate dispositions; "about 650 lines" measures as 864 | the executor's fold table covers all 32 and the verifier reads every row; the nine index rows are named write-backs; the nine and seven `--apply` requests are stated; 864 lines (799–1662 at `9cc597d7`) |
+
+The remaining known issues (WO-166's abandoned-session release, which the
+repair names as a non-goal; WO-167's executor deferrals; WO-087's exact
+range) keep their reopening observations in the receipt. The refuter also
+recorded that WO-053's segment holds no `ReleaseClosed` event (unknown, not
+a defect) and that the `tail -f` monitor has no committed observation (it
+rests on the operator's dispatch, captured in intake).
+
+The sequence is unchanged. The three nominations are the map's items 5
+(the babysitting rate, measured), 6 (the stored-data inventory) and 7
+(consume before produce for standard passes), each deferred in the
+register with its reopening observation. The operator's answer on order
+("keep the order the best order it should be delivered in"; three days of
+budget to drain the queue) and on balance ("50/50 between product and tech
+debt") are captured in the sibling intake note
+`2026-09-25-standard-pass-four-items-planning-followup.md`; the measured
+machinery share (0.476) already sits at that balance across the horizon,
+and the near-term order is nine debt entries to two product ones by the
+operator's choice.
+
+The second judgment's receipt is filed beside 029.

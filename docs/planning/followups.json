@@ -17447,6 +17447,78 @@
           "at": "2026-09-25T21:30:01.706Z"
         }
       ]
+    },
+    {
+      "id": "FUP-a33f893036882d16",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-recorded-2026-09-25-second::0fb3731b73ffb8e064fdb808772a6f292f18a913106331ae5abf64764f97dbc0",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "4ad700d499c46f41f2b2c2e822dcdcd6fe903ecdb788c19a72355b6fc8df649e",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-recorded-2026-09-25-second",
+          "title": "The babysitting rate, measured.",
+          "summary": "5. **The babysitting rate, measured.** The front page says working with agents drifts into babysitting; the meter's shifting-the-burden signal has an `operatorCorrections` counter that reads zero with an unavailable delta (WO-160 row). The sources exist: `scope expand:` dispatch fields in decision records, `OperatorOverrideRecorded`, `RecordCorrected` and `CriterionWaived` events, `analysis:` entries in the operator-control journal, and the count (never the text) of captured intake notes per pass. Candidate: fill the counter from them and plot directions and corrections per closed order per pass in the cost table. Nominated at the operator's direction, 2026-09-25 (\"yes please nominate whatev",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Map candidate 5 of this pass, nominated at the operator's direction: fill the meter's operatorCorrections signal from existing events and capture counts and plot it per closed order per pass. Left open for the operator: it is the number the front-page claim needs. [2026-09-25 standard planning pass, second judgment (docs/planning/standard-pass-2026-09-25.md §14)]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-25T21:58:45.144Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-0bdf39fe462c07f0",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-recorded-2026-09-25-second::c727494743e0c81d704317739518dc245d97a6e3c7c12b52fcbf46e46ecb35ae",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "5b812b62f67aa7192b57ff2fa55f0e9acd1391b4abe7699f8b2c15ec5fb83d00",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-recorded-2026-09-25-second",
+          "title": "The stored-data inventory: measured, analyzed, acted on.",
+          "summary": "6. **The stored-data inventory: measured, analyzed, acted on.** The operator observes that much data the app stores has not been measured, analyzed or acted on. Candidate: one generated table over every retained lane (control logs, harness journals, gate rows, usage observations, evidence editions, beacon caches, adjacent queues, refutation receipts, the register, meter rows, entropy reviews) with three columns: a counter reads it, a pass or review consumed it, a decision cites it. Lanes with none of the three are the work. 5S Sort applied to data; the natural first research stream of the next pass. Reopen: the next pass, as its opening inventory.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Map candidate 6 of this pass: the generated three-column inventory of every retained data lane; the next pass's opening inventory rather than an order now. [2026-09-25 standard planning pass, second judgment (docs/planning/standard-pass-2026-09-25.md §14)]",
+          "reopenWhen": "the next planning pass opens (it runs the inventory as its first research stream)",
+          "targets": [],
+          "at": "2026-09-25T21:58:45.431Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-304746d9f9c448c0",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-recorded-2026-09-25-second::ee95b7002c6a39eb4517e8dea94b4bf2ec86ab51572c933d530d77caf056f565",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "93fb38f3458d1287349deb1ac15bbd2d590b1cb7ee774ca5d5f785b86d6c431a",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-recorded-2026-09-25-second",
+          "title": "Consume before produce for standard passes.",
+          "summary": "7. **Consume before produce for standard passes.** The Entropy Reducer pass consumes before it produces (product 07 §Operator-opened planning pass); a standard pass files orders at will, and this month's passes filed almost only machinery (meter machinery share 0.476; sequence paragraphs 2026-09-16 to 2026-09-25). Candidate rule: a standard pass files an order only for a fired reopening condition or an operator direction and otherwise disposes rows as deferrals. A product 07 rule change, decided by the operator at a pass. Reopen: the operator's answer, or a pass that files more debt orders than the product orders it advances.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Map candidate 7 of this pass: a product 07 rule change (a standard pass files an order only for a fired reopening condition or an operator direction). The operator decides it at a pass; recorded open, not deferred, because it needs an answer, not an observation. [2026-09-25 standard planning pass, second judgment (docs/planning/standard-pass-2026-09-25.md §14)]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-25T21:58:45.715Z"
+        }
+      ]
     }
   ]
 }

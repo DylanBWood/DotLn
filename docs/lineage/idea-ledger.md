@@ -40,6 +40,42 @@ are now declared above. The [decision record](../evidence/WO-084/decisions.md)
 records the legacy ledger write-back; `node scripts/lineage.mjs index` generates
 the index and `index --check` enforces this rule in `npm run test:docs`.
 
+## 2026-09-25 — Planning pass: second judgment (receipt 029's findings repaired in the five orders; three nominations)
+
+Source: receipt 029 (`2026-09-25-planning-8f567de659b31991-029`, aligned
+with findings, zero holds, twelve known issues) and the operator's
+follow-up messages captured in the sibling intake note
+`docs/intake/notes/2026-09-25-standard-pass-four-items-planning-followup.md`
+(keep the order; three days of budget to drain the queue; 50/50 between
+product and tech debt; "yes please nominate whatever you feel is
+necessary"; much stored data is unmeasured, unanalyzed and unacted on).
+The record is [the planning document](../planning/standard-pass-2026-09-25.md)
+§14.
+
+- **Repair the orders before an executor meets the defect** `adopted`
+  - Six of the twelve findings were defects in the order text: WO-085's
+    check would have refused every activation until WO-086 (product 07
+    §Discipline writes a dated paragraph into 06 at activation); WO-166's
+    Codex owner would have been the npm process that exits with the
+    command, so the reservation would be reclaimed as dead and the
+    invariant fail silently; the open-override advisory needed a worktree
+    field in `operator-control.mjs`; WO-086's conflict path was
+    unspecified; WO-167's meaning check sampled ten of 32 and missed nine
+    publication rows; WO-087's line count was 864, not "about 650". Each
+    is repaired in the order and judged again.
+- **The babysitting rate, measured** `candidate`
+  - Map item 5: fill the meter's `operatorCorrections` signal from the
+    events and captures that already exist; plot per closed order per
+    pass. Provenance: operator-directed.
+- **The stored-data inventory** `candidate`
+  - Map item 6: every retained lane with three columns (measured,
+    analyzed, acted on); the next pass's opening inventory. Provenance:
+    operator-directed.
+- **Consume before produce for standard passes** `candidate`
+  - Map item 7: a standard pass files an order only for a fired reopening
+    condition or an operator direction; a product 07 rule change for the
+    operator to decide.
+
 ## 2026-09-25 — Planning pass: the operator's four items (WO-166, WO-167; WO-085 to WO-087 rewritten)
 
 Source: the operator's dispatch and three mid-turn messages, captured

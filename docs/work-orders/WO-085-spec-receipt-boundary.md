@@ -20,9 +20,13 @@ sentence in product 07 §Documentation freshness and ownership (written by
 the 2026-09-25 pass) and 08 §Freshness and ownership, each naming the
 check. Removes: the growth path the measurements below show, at its inflow;
 this order moves nothing. Exempt: generated blocks between markers; the
-roadmap's Release boundary section's machine-written notes by their exact
-shape until WO-086 retires them; `docs/planning/`, evidence, verifications
-and reviews. Re-mints: none (no registered evidence source is edited).
+whole of 06 §Release boundary until WO-086 retires it, because product 07
+§Discipline has every activation write a dated paragraph there and
+`release prepare` writes the collision note (receipt 029, WO-085 finding
+1); `docs/planning/`, evidence, verifications and reviews. Exempt text is
+excluded from a document's byte count, and each ceiling carries two per
+cent headroom above the non-exempt bytes at landing so an in-place edit
+fits (receipt 029, finding 2). Re-mints: none (no registered evidence source is edited).
 Wall-clock, tokens and context bytes are unknown until run.
 **Nomination provenance:** WO-035's spec/receipt item, cut into a bounded
 child at the operator's 2026-09-08 correction; held 2026-09-19 to be
@@ -97,9 +101,11 @@ a dated paragraph.
 **Design (scope discipline):**
 
 - Ceilings: `doc-ceilings.json` lists each product document, its ceiling
-  in bytes, the date and the decision that set it; a document over its
-  ceiling fails with the overage and the remedy; a document absent from
-  the file fails.
+  in bytes (non-exempt bytes at landing plus two per cent), the date and
+  the decision that set it; a document over its ceiling fails with the
+  overage and the remedy; a document absent from the file fails. Exempt
+  regions (marker blocks; 06 §Release boundary until WO-086) are excluded
+  from the count, and the check prints the exempt bytes separately.
 - Receipt shape: a paragraph beginning `**…(YYYY-MM-DD…):**` or
   `**…(operator direction…)**` under `docs/product/`; the baseline
   enumerates the existing ones by document and nearest heading; an addition
@@ -133,9 +139,10 @@ bound sentences; the write-backs below.
    dated receipt paragraph, a new candidate heading, a broken anchor, a
    missing file and a dispatch field without a control prefix; it passes on
    the current tree.
-2. `doc-ceilings.json` names every product document; its ceilings equal
-   each document's bytes at landing, and the check refuses a document the
-   file omits.
+2. `doc-ceilings.json` names every product document; each ceiling equals
+   the document's non-exempt bytes at landing plus two per cent, and the
+   check refuses a document the file omits; a fixture activation-style
+   paragraph under 06 §Release boundary passes while WO-086 is unmerged.
 3. Products 07 and 08 state the edit-in-place rule and name the check;
    `docs/README.md` points at it.
 4. Write-backs land: ledger entry; publication locks; register row

@@ -107,6 +107,11 @@ verbatim in one receipt.
   one-line pointer where the section stood.
 - Product 07 §Independent workflows: the sentence naming "a dated roadmap
   note" becomes "the integration decision"; the mechanism text stays.
+- Failure path: when the collision's decision cannot be appended (the
+  integrate helper's decision stub meets an authored conflict,
+  `worktree-integration.mjs`; receipt 029, WO-086 finding), `release
+  prepare` refuses with the path and the remedy and writes nothing; it
+  never falls back to a roadmap or README paragraph.
 - **Declined alternatives, recorded:** assigning the application version
   at publication instead of activation (removes the collision itself;
   touches the activation event, the heading rule, `check-surfaces` and
@@ -125,7 +130,8 @@ verbatim in one receipt.
    in the decisions).
 3. A fixture collision through `release prepare` appends the integration
    decision and changes no product document or README line beyond the
-   version claim.
+   version claim; a fixture with a conflicted decisions record refuses
+   with the path and writes nothing.
 4. Write-backs land: 06 and 10 (the markers and pointer), the README block,
    the product 07 sentence, ledger entry; publication locks; product 06's
    ceiling in `doc-ceilings.json` lowered to its new size.
