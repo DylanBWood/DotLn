@@ -2207,6 +2207,14 @@
           "reopenWhen": "a resident receipt contradicts the progressive-authority status product 03 states",
           "targets": [],
           "at": "2026-09-25T01:51:13.515Z"
+        },
+        {
+          "sourceRevision": 8,
+          "status": "settled",
+          "reason": "Re-settled at revision 8: the intervening revisions are the WO-160 and WO-161 write-backs to product 03 (commits 45781106 and b4339617, the Codex launch containment reassessment and the routes); the progressive-authority status product 03 states is unchanged. [2026-09-25 standard planning pass (docs/planning/standard-pass-2026-09-25.md §6)]",
+          "reopenWhen": "a resident receipt contradicts the progressive-authority status product 03 states",
+          "targets": [],
+          "at": "2026-09-25T21:29:55.675Z"
         }
       ]
     },
@@ -3192,6 +3200,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-22T22:02:09.545Z"
+        },
+        {
+          "sourceRevision": 6,
+          "status": "open",
+          "reason": "Measured by the 2026-09-25 standard planning pass (docs/planning/standard-pass-2026-09-25.md §6): the first page showed one needs-review, two open and five deferred of 159 pending; the pass read the 36 untriaged rows whole by script and allocated eight, settled nineteen and deferred the rest. Recorded here, not as a product-document paragraph.",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-25T21:30:02.874Z"
         }
       ]
     },
@@ -8312,6 +8328,13 @@
           "title": "Candidate — stale writer reservation self-diagnosis",
           "summary": "## Candidate — stale writer reservation self-diagnosis WO-050 VER-001 observed a Codex executor's reservation outliving its session with `liveness: unavailable`, refusing every shell command of the next session including `node scripts/harness.mjs writer --show`, until an operator released it from a terminal. The kept invariant is right; the diagnosis path is not. The candidate admits the writer inspection and release commands under a foreign reservation, reports the holder's age on every refusal, and has the Codex lifecycle completion release the reservation it holds. The stand-down declined a shell classifier; this candidate needs none. No order is allocated; reopen on a second observed occ",
           "missing": false
+        },
+        {
+          "hash": "fa5c9d1ad88afcfd5814ce013204205c978d0ad5a927cd1c0f60d44108cb2d24",
+          "ref": "docs/product/07-execution-guide.md#candidate--stale-writer-reservation-self-diagnosis",
+          "title": "Candidate — stale writer reservation self-diagnosis",
+          "summary": "## Candidate — stale writer reservation self-diagnosis WO-050 VER-001 observed a Codex executor's reservation outliving its session with `liveness: unavailable`, refusing every shell command of the next session including `node scripts/harness.mjs writer --show`, until an operator released it from a terminal. The kept invariant is right; the diagnosis path is not. The candidate admits the writer inspection and release commands under a foreign reservation, reports the holder's age on every refusal, and has the Codex lifecycle completion release the reservation it holds. The stand-down declined a shell classifier; this candidate needs none. No order is allocated; reopen on a second observed occ",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -8322,6 +8345,16 @@
           "reopenWhen": "a second observed stale writer reservation",
           "targets": [],
           "at": "2026-09-19T01:19:36.506Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "allocated",
+          "reason": "Re-read at revision 3 after this pass's in-place edit: the candidate records the three Codex sessions (WO-156 repair, WO-161 implementation and repair) and WO-166 lands the dispatch reservation, the completion releases and the holder's age on refusal. [2026-09-25 standard planning pass (docs/planning/standard-pass-2026-09-25.md §6)]",
+          "reopenWhen": "a Codex-owned reservation outlives its session twice after WO-166",
+          "targets": [
+            "WO-166"
+          ],
+          "at": "2026-09-25T21:29:55.961Z"
         }
       ]
     },
@@ -12136,6 +12169,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-21T06:59:07.298Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Second observation: this pass's dispatch was a typed planning: prefix with a pasted block and the hook resolved the planner normally, as the 2026-09-21 pass's did; no defect in two observations. [2026-09-25 standard planning pass (docs/planning/standard-pass-2026-09-25.md §6)]",
+          "reopenWhen": "a pasted-only message dispatches a role, or a typed prefix with pasted text fails to",
+          "targets": [],
+          "at": "2026-09-25T21:29:55.395Z"
         }
       ]
     },
@@ -15457,7 +15498,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Catalog carry-in on WO-066 (the map row): before its first target publication, the focused test run and the writer's test command run with no network and writes confined to the worktree as the host's permission settings allow; no OS sandbox exists on this host (WO-161). [2026-09-25 standard planning pass (docs/planning/standard-pass-2026-09-25.md §6)]",
+          "reopenWhen": "WO-066 activates without the carry-in",
+          "targets": [
+            "WO-066"
+          ],
+          "at": "2026-09-25T21:29:57.397Z"
+        }
+      ]
     },
     {
       "id": "FUP-c31c7bcab9270f49",
@@ -15479,7 +15531,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "No order on the horizon edits evidenceResultSchema; the tightening waits for the seam. [2026-09-25 standard planning pass (docs/planning/standard-pass-2026-09-25.md §6)]",
+          "reopenWhen": "the next order that edits evidenceResultSchema, or a malformed finding passes the schema",
+          "targets": [],
+          "at": "2026-09-25T21:29:58.263Z"
+        }
+      ]
     },
     {
       "id": "FUP-5026a20c81945f73",
@@ -15494,7 +15555,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "In-order repair directive discharged by WO-157's own repair cycle (VER-001 F1 repaired; VER-002 pass; WO-157 closed, final-reviewed in the index). [2026-09-25 standard planning pass (docs/planning/standard-pass-2026-09-25.md §6)]",
+          "reopenWhen": "a file-to-directory refusal without the files ceiling in its diagnostic is observed again",
+          "targets": [],
+          "at": "2026-09-25T21:29:50.493Z"
+        }
+      ]
     },
     {
       "id": "FUP-fa3d7a30469ac20d",
@@ -15509,7 +15579,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "In-order repair directive discharged by WO-157's own repair cycle (VER-001 F2 repaired; VER-002 pass; WO-157 closed). [2026-09-25 standard planning pass (docs/planning/standard-pass-2026-09-25.md §6)]",
+          "reopenWhen": "an untracked-path hash collision on a delimiter-containing filename is observed",
+          "targets": [],
+          "at": "2026-09-25T21:29:50.781Z"
+        }
+      ]
     },
     {
       "id": "FUP-eba6a79fc106bd28",
@@ -15550,7 +15629,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "In-order repair directive discharged by WO-157's own repair cycle (VER-001 F4 repaired; VER-002 pass; WO-157 closed). [2026-09-25 standard planning pass (docs/planning/standard-pass-2026-09-25.md §6)]",
+          "reopenWhen": "a legal import form is refused by the import check",
+          "targets": [],
+          "at": "2026-09-25T21:29:51.063Z"
+        }
+      ]
     },
     {
       "id": "FUP-0a47198c1e076d4d",
@@ -15565,7 +15653,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Catalog carry-in on WO-066 (the map row): host Git reads in the target's root made immune to its repository configuration before the first target publication. [2026-09-25 standard planning pass (docs/planning/standard-pass-2026-09-25.md §6)]",
+          "reopenWhen": "WO-066 activates without the carry-in",
+          "targets": [
+            "WO-066"
+          ],
+          "at": "2026-09-25T21:29:57.684Z"
+        }
+      ]
     },
     {
       "id": "FUP-fd5f7c2b91095343",
@@ -15606,7 +15705,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Bounded to the file it names; no queued order edits it. [2026-09-25 standard planning pass (docs/planning/standard-pass-2026-09-25.md §6)]",
+          "reopenWhen": "the next order that edits scripts/resident-bind.mjs",
+          "targets": [],
+          "at": "2026-09-25T21:29:58.544Z"
+        }
+      ]
     },
     {
       "id": "FUP-c02d54c7d663b508",
@@ -15645,7 +15753,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "The dispatch-prefix rule and its check are WO-085's (a control prefix and a paraphrase, existing records baselined); the sweep of existing records is not allocated and is named in WO-085's non-goals. [2026-09-25 standard planning pass (docs/planning/standard-pass-2026-09-25.md §6)]",
+          "reopenWhen": "a verbatim operator message is found in a decision record after WO-085 lands",
+          "targets": [
+            "WO-085"
+          ],
+          "at": "2026-09-25T21:29:57.109Z"
+        }
+      ]
     },
     {
       "id": "FUP-beb13d8d099d2917",
@@ -15660,7 +15779,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "The refutations directory is 16,140 KB across 69 receipts (newest 357,299 bytes) because each embeds its subject; the design by identity and hash is right and waits for room behind the operator's four items. [2026-09-25 standard planning pass (docs/planning/standard-pass-2026-09-25.md §6)]",
+          "reopenWhen": "docs/planning/refutations exceeds 32 MB, or a planning pass with room after WO-085 lands",
+          "targets": [],
+          "at": "2026-09-25T21:29:59.961Z"
+        }
+      ]
     },
     {
       "id": "FUP-0c86ada82f559914",
@@ -15727,7 +15855,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Low priority by its own record; rides with the next meter render edit. [2026-09-25 standard planning pass (docs/planning/standard-pass-2026-09-25.md §6)]",
+          "reopenWhen": "the next order that edits the meter's drift-row render",
+          "targets": [],
+          "at": "2026-09-25T21:29:58.825Z"
+        }
+      ]
     },
     {
       "id": "FUP-3dc0266d6b87b939",
@@ -15862,7 +15999,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "A decision in force with no outstanding action: WO-114 closed v0.47.0 with per-event atomic replacement and the bound launchpad index. [2026-09-25 standard planning pass (docs/planning/standard-pass-2026-09-25.md §6)]",
+          "reopenWhen": "a durability failure of the disposable status file is observed",
+          "targets": [],
+          "at": "2026-09-25T21:29:52.476Z"
+        }
+      ]
     },
     {
       "id": "FUP-4656197433cb8b3d",
@@ -15877,7 +16023,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Low priority by its own record; WO-115 is the next resident-host order and its executor decides the carry-in rather than this pass widening the delivery order. [2026-09-25 standard planning pass (docs/planning/standard-pass-2026-09-25.md §6)]",
+          "reopenWhen": "WO-115 or WO-117 activates",
+          "targets": [],
+          "at": "2026-09-25T21:29:59.104Z"
+        }
+      ]
     },
     {
       "id": "FUP-441469088613e52a",
@@ -15913,7 +16068,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 4,
+          "status": "deferred",
+          "reason": "The experiment needs the resident-owned loop; no order before WO-118 runs the curve. [2026-09-25 standard planning pass (docs/planning/standard-pass-2026-09-25.md §6)]",
+          "reopenWhen": "WO-118 activates, or a resident receipt contradicts the curve product 03 states",
+          "targets": [],
+          "at": "2026-09-25T21:30:01.418Z"
+        }
+      ]
     },
     {
       "id": "FUP-3c34a8ffbf61376f",
@@ -16478,7 +16642,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Catalog carry-in on WO-066 (the map row): one recorded reading of a Claude worker launch's effect on the operator's user-level Claude state before the first target publication. [2026-09-25 standard planning pass (docs/planning/standard-pass-2026-09-25.md §6)]",
+          "reopenWhen": "WO-066 activates without the carry-in",
+          "targets": [
+            "WO-066"
+          ],
+          "at": "2026-09-25T21:29:57.974Z"
+        }
+      ]
     },
     {
       "id": "FUP-35bc8736fb13c49a",
@@ -16493,7 +16668,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Kept out of WO-166: cli-actor.ts is a feedback source path, so the fix pays a live feedback episode; WO-159's age bound keeps an orphan's home. [2026-09-25 standard planning pass (docs/planning/standard-pass-2026-09-25.md §6)]",
+          "reopenWhen": "the next order that edits cli-actor.ts or cli-episode.ts, or an orphaned detached episode is observed",
+          "targets": [],
+          "at": "2026-09-25T21:29:59.384Z"
+        }
+      ]
     },
     {
       "id": "FUP-57741bfb0c1f7f35",
@@ -16508,7 +16692,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by this pass: the '(version assigned at activation)' placeholder is restored on the WO-162 to WO-165 headings and carried by WO-166 and WO-167. [2026-09-25 standard planning pass (docs/planning/standard-pass-2026-09-25.md §6)]",
+          "reopenWhen": "an order is filed without the placeholder",
+          "targets": [],
+          "at": "2026-09-25T21:29:54.827Z"
+        }
+      ]
     },
     {
       "id": "FUP-48329a515c2547af",
@@ -16571,7 +16764,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Low priority by its own record; one deadline hit under sibling load, rerun passed. [2026-09-25 standard planning pass (docs/planning/standard-pass-2026-09-25.md §6)]",
+          "reopenWhen": "a second deadline hit on the WO-143 matrix subtest with cause unestablished",
+          "targets": [],
+          "at": "2026-09-25T21:29:59.668Z"
+        }
+      ]
     },
     {
       "id": "FUP-3a0c4ea52f8d6d08",
@@ -16593,7 +16795,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "WO-160 closed without the route; no withdrawn order exists on a branch today. [2026-09-25 standard planning pass (docs/planning/standard-pass-2026-09-25.md §6)]",
+          "reopenWhen": "a withdrawn order exists on a branch and needs publication or teardown, or the next order that touches worktree lifecycle",
+          "targets": [],
+          "at": "2026-09-25T21:30:00.246Z"
+        }
+      ]
     },
     {
       "id": "FUP-09a2fb517f0ffbc4",
@@ -16608,7 +16819,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Waits for the next codebook revision; WO-070 may be it and its executor decides. [2026-09-25 standard planning pass (docs/planning/standard-pass-2026-09-25.md §6)]",
+          "reopenWhen": "the next beacon codebook revision",
+          "targets": [],
+          "at": "2026-09-25T21:30:00.530Z"
+        }
+      ]
     },
     {
       "id": "FUP-acfe4bfda716d8fb",
@@ -16644,7 +16864,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 4,
+          "status": "deferred",
+          "reason": "Waits for the seam; WO-164's byte-identical board criterion excludes it there. [2026-09-25 standard planning pass (docs/planning/standard-pass-2026-09-25.md §6)]",
+          "reopenWhen": "the next order that touches usage or meta attribution",
+          "targets": [],
+          "at": "2026-09-25T21:30:00.824Z"
+        }
+      ]
     },
     {
       "id": "FUP-a0d6b960702fb9a4",
@@ -16673,7 +16902,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 3,
+          "status": "allocated",
+          "reason": "WO-166 design and criterion 4: a session start in a worktree whose operator-control state holds an open override prints the advisory once. [2026-09-25 standard planning pass (docs/planning/standard-pass-2026-09-25.md §6)]",
+          "reopenWhen": "WO-166 declines the item at activation",
+          "targets": [
+            "WO-166"
+          ],
+          "at": "2026-09-25T21:29:56.246Z"
+        }
+      ]
     },
     {
       "id": "FUP-578f547e187f41c9",
@@ -16688,7 +16928,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "In-order repair directive discharged by WO-158's repair: VER-003 pass, FINAL-002 pass, closed v0.49.0. [2026-09-25 standard planning pass (docs/planning/standard-pass-2026-09-25.md §6)]",
+          "reopenWhen": "one of the listed WO-158 defects is observed again",
+          "targets": [],
+          "at": "2026-09-25T21:29:51.350Z"
+        }
+      ]
     },
     {
       "id": "FUP-84d238b6f4768e11",
@@ -16703,7 +16952,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "A decision in force: WorkOrderWithdrawn's hash binding shipped with WO-158 (closed v0.49.0). [2026-09-25 standard planning pass (docs/planning/standard-pass-2026-09-25.md §6)]",
+          "reopenWhen": "a withdrawal is recorded without its authority hash",
+          "targets": [],
+          "at": "2026-09-25T21:29:52.758Z"
+        }
+      ]
     },
     {
       "id": "FUP-162ba83028c7a43b",
@@ -16725,7 +16983,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "A decision in force: the live-gate read-only list shipped with WO-158 (closed v0.49.0); its later hardening is FUP-6996e331536d4389. [2026-09-25 standard planning pass (docs/planning/standard-pass-2026-09-25.md §6)]",
+          "reopenWhen": "a listed read-only form is refused during a live gate",
+          "targets": [],
+          "at": "2026-09-25T21:29:53.052Z"
+        }
+      ]
     },
     {
       "id": "FUP-03d160c6765db9fa",
@@ -16740,7 +17007,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "A decision in force: the --no-pager rule for live-gate Git reads shipped with WO-158 (closed v0.49.0). [2026-09-25 standard planning pass (docs/planning/standard-pass-2026-09-25.md §6)]",
+          "reopenWhen": "a Git read invokes a pager during a live gate",
+          "targets": [],
+          "at": "2026-09-25T21:29:53.340Z"
+        }
+      ]
     },
     {
       "id": "FUP-25e1b23c7b844eb1",
@@ -16788,7 +17064,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Waits for the seam; WO-166 edits the writer and session paths of harness-host.ts, not the grants or the live-gate list. [2026-09-25 standard planning pass (docs/planning/standard-pass-2026-09-25.md §6)]",
+          "reopenWhen": "the next order that touches harness-host outside-write grants or the live-gate list",
+          "targets": [],
+          "at": "2026-09-25T21:30:01.126Z"
+        }
+      ]
     },
     {
       "id": "FUP-7b4b41e2875f852d",
@@ -16803,7 +17088,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Item (a): once the Codex dispatch reserves, the waive refusal reads a live reservation under Codex too. Item (c), the CLAUDE_EFFORT disagreement for --harness claude, is not covered and is named in WO-166's non-goals. [2026-09-25 standard planning pass (docs/planning/standard-pass-2026-09-25.md §6)]",
+          "reopenWhen": "WO-166 closes without item (a), or item (c) is observed",
+          "targets": [
+            "WO-166"
+          ],
+          "at": "2026-09-25T21:29:56.534Z"
+        }
+      ]
     },
     {
       "id": "FUP-6f7834c355df7feb",
@@ -16849,7 +17145,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Boy-scout carry-in, WO-166 criterion 6: the pins-only test resolves the live audit through edition.liveAudit.edition, because WO-166's re-mint runs that selection. [2026-09-25 standard planning pass (docs/planning/standard-pass-2026-09-25.md §6)]",
+          "reopenWhen": "WO-166 declines the carry-in at activation",
+          "targets": [
+            "WO-166"
+          ],
+          "at": "2026-09-25T21:29:56.822Z"
+        }
+      ]
     },
     {
       "id": "FUP-422f1b3cdd4b7330",
@@ -16864,7 +17171,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by this pass's in-place edit of product 02: the sentence now names the host's permission settings and operator responsibilities (ADR-0003, amended 2026-09-25). [2026-09-25 standard planning pass (docs/planning/standard-pass-2026-09-25.md §6)]",
+          "reopenWhen": "product 02 names a native sandbox as a control again",
+          "targets": [],
+          "at": "2026-09-25T21:29:55.111Z"
+        }
+      ]
     },
     {
       "id": "FUP-6d1f439e743a53e7",
@@ -16879,7 +17195,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "In-order repair directive discharged by WO-160's repair: VER-003 pass, FINAL-001 pass, closed v0.51.0. [2026-09-25 standard planning pass (docs/planning/standard-pass-2026-09-25.md §6)]",
+          "reopenWhen": "integration-stash pruning fails on a packed refs/stash",
+          "targets": [],
+          "at": "2026-09-25T21:29:51.632Z"
+        }
+      ]
     },
     {
       "id": "FUP-dd20beb6b16ea86c",
@@ -16894,7 +17219,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-160's close performed the nomination: 59 rows retained under docs/control/local/retained/WO-160/adjacent-work.jsonl carry the VER observation ids and their dispositions; no public action outstanding. [2026-09-25 standard planning pass (docs/planning/standard-pass-2026-09-25.md §6)]",
+          "reopenWhen": "the integration stash-drop seam is next edited; its executor reads the retained queue",
+          "targets": [],
+          "at": "2026-09-25T21:29:53.649Z"
+        }
+      ]
     },
     {
       "id": "FUP-630a55f990292fcf",
@@ -16909,7 +17243,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "In-order repair directive discharged by WO-160's repair: VER-003 pass, FINAL-001 pass, closed v0.51.0. [2026-09-25 standard planning pass (docs/planning/standard-pass-2026-09-25.md §6)]",
+          "reopenWhen": "a packed refs/stash row is removed while entries remain",
+          "targets": [],
+          "at": "2026-09-25T21:29:52.195Z"
+        }
+      ]
     },
     {
       "id": "FUP-bc8bc91f29e2eab4",
@@ -16924,7 +17267,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-160's close performed the nomination (O20–O28 in the retained adjacent-work queue with their VER-002 observation ids). [2026-09-25 standard planning pass (docs/planning/standard-pass-2026-09-25.md §6)]",
+          "reopenWhen": "the integration stash-drop seam is next edited; its executor reads the retained queue",
+          "targets": [],
+          "at": "2026-09-25T21:29:53.932Z"
+        }
+      ]
     },
     {
       "id": "FUP-27a05a8a20a71d4c",
@@ -16939,7 +17291,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "In-order repair directive discharged by WO-160's repair: VER-003 pass, FINAL-001 pass, closed v0.51.0. [2026-09-25 standard planning pass (docs/planning/standard-pass-2026-09-25.md §6)]",
+          "reopenWhen": "one of the four VER-002 findings reproduces",
+          "targets": [],
+          "at": "2026-09-25T21:29:51.914Z"
+        }
+      ]
     },
     {
       "id": "FUP-35513f86c5ffd611",
@@ -16954,7 +17315,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-160's close retained O20–O21 and O23–O28 in the adjacent-work queue; O22 was repaired inside WO-160. [2026-09-25 standard planning pass (docs/planning/standard-pass-2026-09-25.md §6)]",
+          "reopenWhen": "the integration stash-drop seam is next edited; its executor reads the retained queue",
+          "targets": [],
+          "at": "2026-09-25T21:29:54.255Z"
+        }
+      ]
     },
     {
       "id": "FUP-264218b789d29348",
@@ -16969,7 +17339,186 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-160's close nominated VER-003 O29 through the retained adjacent-work queue beside adjacent-0020. [2026-09-25 standard planning pass (docs/planning/standard-pass-2026-09-25.md §6)]",
+          "reopenWhen": "the error-path rollback rewrites packed-refs when the drop did not change it",
+          "targets": [],
+          "at": "2026-09-25T21:29:54.541Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-7308cb30f71fb745",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-recorded-2026-09-25-second::1423fd3576c7ee165be1d184e21c643088b72f0503dab2e6048e40c14ebae28a",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "8ace8fc8e0fb57163d21d3af85db24b02bcc9f21baa3c8382390c0d9d69443f0",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-recorded-2026-09-25-second",
+          "title": "Per-document consolidation after the guide.",
+          "summary": "2. **Per-document consolidation after the guide.** Product 03 (171,984 bytes; 23 dated paragraphs; eight candidates), 02 (147,558 bytes) and 05 (133,283 bytes; 21 candidates, the pattern library's own material) carry the same accretion WO-167 folds out of 07. One order per document, in reader order, each lowering its ceiling. Reopen: WO-167 closes (its verifier's method is the template).",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Map candidate 2 of this pass: one consolidation order per document (03, 02, 05) after the guide's fold proves the method. [2026-09-25 standard planning pass (docs/planning/standard-pass-2026-09-25.md §6)]",
+          "reopenWhen": "WO-167 closes",
+          "targets": [],
+          "at": "2026-09-25T21:30:01.996Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-85562931791378d4",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-recorded-2026-09-25-second::6fc1affd2ae4a838570e8470f9905e381fde4f60078ff4ecc96aea32f64734ab",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "e52a9f105e7be9bbb372da56b4277ade325753e364cd215ea05d1aebad923118",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-recorded-2026-09-25-second",
+          "title": "Session journals are discarded at teardown, so a frequency question has no answer.",
+          "summary": "3. **Session journals are discarded at teardown, so a frequency question has no answer.** The operator asked whether the Codex writer gap happens every time; worktree-local `docs/control/local/harness/` journals leave with the worktree and main's 121 journals hold planner sessions only, so the answer is three observed cases and an unknown rate. Candidate: `release close` retains each session's journal summary (role, writer events, gate rows, usage) in the order's retained lane. Reopen: a second operator question about session behaviour that the record cannot answer.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Map candidate 3 of this pass: retain each session's journal summary at release close. [2026-09-25 standard planning pass (docs/planning/standard-pass-2026-09-25.md §6)]",
+          "reopenWhen": "a second operator question about session behaviour that the record cannot answer",
+          "targets": [],
+          "at": "2026-09-25T21:30:02.291Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-b2d25d3094d20672",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-recorded-2026-09-25-second::aab692a6f765ed3567445eeba5d619e61c68da42719b57bb14c43105bd79852a",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "981caf2b0c84866d9e37ca330f7ef77d3e110dc560a6b72b9578da39ac2a4121",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-recorded-2026-09-25-second",
+          "title": "Refutation receipts embed the subject.",
+          "summary": "4. **Refutation receipts embed the subject.** `docs/planning/refutations/` is 16,140 KB across 69 files (the newest receipt 357,299 bytes) because each receipt carries its subject's text; the register row FUP-beb13d8d099d2917 (WO-154 D003) already designs storage by identity and hash. Deferred there. Reopen: the directory passes 32 MB, or a planning pass with room after WO-085 lands.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "duplicate",
+          "reason": "Map candidate 4 of this pass restates the register row WO-154 D003 already carries; the row keeps the design. [2026-09-25 standard planning pass (docs/planning/standard-pass-2026-09-25.md §6)]",
+          "reopenWhen": "the row it duplicates reopens",
+          "targets": [
+            "FUP-beb13d8d099d2917"
+          ],
+          "at": "2026-09-25T21:30:02.585Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-38ced82ed597d07b",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-recorded-2026-09-25-second::aae5eec6bda8554945472bae60b4fd99adbed5cf4b60d5b615dbef3327b4171c",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "896bc3d438a955340d14225170202d40605c5826fe4394daf6afdc85b30395a0",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-recorded-2026-09-25-second",
+          "title": "Version assigned at publication, not at activation.",
+          "summary": "1. **Version assigned at publication, not at activation.** Every pair since 2026-09-16 has collided on the application target because both orders claim the next version at activation (`release prepare`; product 07 §Discipline, release assignment is opt-out). Assigning at final review from the observed baseline would remove the collision itself, not only its prose; it touches the activation event's target, the heading placeholder rule, `check-surfaces --local`, the README claim and every role text. WO-086 is the smaller probe: the collision stays and becomes a decision record with no prose. Reopen: after WO-086 closes, a collision still needs a hand step or produces a review finding, or the o",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Map candidate 1 of this pass: the structural fix for the version collision; WO-086 is the smaller probe and goes first. [2026-09-25 standard planning pass (docs/planning/standard-pass-2026-09-25.md §6)]",
+          "reopenWhen": "after WO-086 closes a collision still needs a hand step or produces a review finding, or the operator asks",
+          "targets": [],
+          "at": "2026-09-25T21:30:01.706Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-a33f893036882d16",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-recorded-2026-09-25-second::0fb3731b73ffb8e064fdb808772a6f292f18a913106331ae5abf64764f97dbc0",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "4ad700d499c46f41f2b2c2e822dcdcd6fe903ecdb788c19a72355b6fc8df649e",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-recorded-2026-09-25-second",
+          "title": "The babysitting rate, measured.",
+          "summary": "5. **The babysitting rate, measured.** The front page says working with agents drifts into babysitting; the meter's shifting-the-burden signal has an `operatorCorrections` counter that reads zero with an unavailable delta (WO-160 row). The sources exist: `scope expand:` dispatch fields in decision records, `OperatorOverrideRecorded`, `RecordCorrected` and `CriterionWaived` events, `analysis:` entries in the operator-control journal, and the count (never the text) of captured intake notes per pass. Candidate: fill the counter from them and plot directions and corrections per closed order per pass in the cost table. Nominated at the operator's direction, 2026-09-25 (\"yes please nominate whatev",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Map candidate 5 of this pass, nominated at the operator's direction: fill the meter's operatorCorrections signal from existing events and capture counts and plot it per closed order per pass. Left open for the operator: it is the number the front-page claim needs. [2026-09-25 standard planning pass, second judgment (docs/planning/standard-pass-2026-09-25.md §14)]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-25T21:58:45.144Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-0bdf39fe462c07f0",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-recorded-2026-09-25-second::c727494743e0c81d704317739518dc245d97a6e3c7c12b52fcbf46e46ecb35ae",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "5b812b62f67aa7192b57ff2fa55f0e9acd1391b4abe7699f8b2c15ec5fb83d00",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-recorded-2026-09-25-second",
+          "title": "The stored-data inventory: measured, analyzed, acted on.",
+          "summary": "6. **The stored-data inventory: measured, analyzed, acted on.** The operator observes that much data the app stores has not been measured, analyzed or acted on. Candidate: one generated table over every retained lane (control logs, harness journals, gate rows, usage observations, evidence editions, beacon caches, adjacent queues, refutation receipts, the register, meter rows, entropy reviews) with three columns: a counter reads it, a pass or review consumed it, a decision cites it. Lanes with none of the three are the work. 5S Sort applied to data; the natural first research stream of the next pass. Reopen: the next pass, as its opening inventory.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Map candidate 6 of this pass: the generated three-column inventory of every retained data lane; the next pass's opening inventory rather than an order now. [2026-09-25 standard planning pass, second judgment (docs/planning/standard-pass-2026-09-25.md §14)]",
+          "reopenWhen": "the next planning pass opens (it runs the inventory as its first research stream)",
+          "targets": [],
+          "at": "2026-09-25T21:58:45.431Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-304746d9f9c448c0",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-recorded-2026-09-25-second::ee95b7002c6a39eb4517e8dea94b4bf2ec86ab51572c933d530d77caf056f565",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "93fb38f3458d1287349deb1ac15bbd2d590b1cb7ee774ca5d5f785b86d6c431a",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-standard-pass-recorded-2026-09-25-second",
+          "title": "Consume before produce for standard passes.",
+          "summary": "7. **Consume before produce for standard passes.** The Entropy Reducer pass consumes before it produces (product 07 §Operator-opened planning pass); a standard pass files orders at will, and this month's passes filed almost only machinery (meter machinery share 0.476; sequence paragraphs 2026-09-16 to 2026-09-25). Candidate rule: a standard pass files an order only for a fired reopening condition or an operator direction and otherwise disposes rows as deferrals. A product 07 rule change, decided by the operator at a pass. Reopen: the operator's answer, or a pass that files more debt orders than the product orders it advances.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Map candidate 7 of this pass: a product 07 rule change (a standard pass files an order only for a fired reopening condition or an operator direction). The operator decides it at a pass; recorded open, not deferred, because it needs an answer, not an observation. [2026-09-25 standard planning pass, second judgment (docs/planning/standard-pass-2026-09-25.md §14)]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-25T21:58:45.715Z"
+        }
+      ]
     }
   ]
 }

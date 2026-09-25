@@ -33,8 +33,8 @@ Each order owns model/effort assignments. No branch commits before final review.
 Preserve work, intake and recovery refs; use canonical recovery.
 Verification judges its recorded subject: a sibling publishing the version an
 order staged is not a finding and never routes to repair. Final review
-integrates main and retimes under the existing classification (product 07
-§Independent workflows and integration).
+integrates main with `worktree integrate`; a version collision is bookkeeping
+the command records (product 07 §Independent workflows and integration).
 
 ## Start here
 

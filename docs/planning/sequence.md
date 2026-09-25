@@ -107,21 +107,42 @@ pair re-mint, the second integration re-mints once more deterministically.
 Evidence: [the off-ramps planning document](off-ramps-5s-entropy-2026-09-25.md)
 §10.
 
+Standard pass (2026-09-25, second): four closed entries leave (WO-158 to
+WO-161). The operator's four items are filed as two new orders and three
+rewritten held ones. WO-166 (session boundaries: the Codex dispatch reserves
+the writer its completion releases; a live gate is awaited with a command
+that exits) pairs with the rewritten WO-085 (a docs check with per-document
+byte ceilings that refuses new dated receipts and candidate headings under
+`docs/product/`) directly after WO-070 and WO-115; the delivery pair keeps
+the head. After WO-162 and WO-163 come the rewritten WO-086 (the roadmap's
+release history generated from tags; `release prepare` writes a decision,
+not prose) with WO-167 (the execution guide's 32 dated amendments folded in
+place and its nine candidates moved to the map), then the rewritten WO-087
+(the roadmap's candidates move to the map, not to a new product document)
+in a one-entry slot after WO-086 closes. WO-086 runs after WO-164 (both
+edit `release.mjs`); WO-167 after WO-085 (the check that keeps the fold);
+WO-087 after WO-086 (both edit 06). Disjoint surfaces inside each pair, no
+hard edge inside a pair; only WO-166 re-mints. WO-088 and WO-089 stay last
+under their 2026-09-19 holds. Evidence:
+[the standard-pass planning document](standard-pass-2026-09-25.md) §7 and §8.
+
 <!-- dotln-work-order-sequence:start -->
-- WO-158 — Lifecycle off-ramps
-- WO-159 — Codex episode isolation
-
-- WO-160 — WO-111 machinery follow-ups
-- WO-161 — Sandbox vocabulary made true
-
 - WO-070 — Beacon portability
 - WO-115 — Console parity contract
+
+- WO-166 — Session boundaries
+- WO-085 — Product documents stop accreting
 
 - WO-164 — Constant-process console collection
 - WO-165 — Entropy review route agreement
 
 - WO-162 — In-unit helper reuse
 - WO-163 — 5S Sort and Set in order
+
+- WO-086 — Generated release history
+- WO-167 — The execution guide folded
+
+- WO-087 — Candidates leave the roadmap
 
 - WO-060 — SourceBundle contract
 - WO-116 — Audit projection served
@@ -160,9 +181,6 @@ Evidence: [the off-ramps planning document](off-ramps-5s-entropy-2026-09-25.md)
 - WO-093 — The 5S mechanics as data
 - WO-094 — Set bonuses lowered
 - WO-095 — Full-set scenario and set tooltip render
-- WO-085 — Spec/receipt boundary and docs-check
-- WO-086 — Generated release history
-- WO-087 — Roadmap split
 - WO-088 — One source for the phrase table
 - WO-089 — Capability table fold
 

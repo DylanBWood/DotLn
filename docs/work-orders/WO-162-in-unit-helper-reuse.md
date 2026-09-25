@@ -1,4 +1,4 @@
-# WO-162 — Reduce, reuse, recycle inside the scripts unit: seventeen local Git wrappers become calls to the library's `runGit`, the fixture writer and pretty-JSON helpers get one home, the receipt helpers `entropy-review.mjs` cloned from `plan-receipts.mjs` are shared, the named JSON readers use `paths.mjs`, the bare-hex digest gets its own exported name, and the compiler exports the two normalizers `compile.ts` re-declares
+# WO-162 — Reduce, reuse, recycle inside the scripts unit: seventeen local Git wrappers become calls to the library's `runGit`, the fixture writer and pretty-JSON helpers get one home, the receipt helpers `entropy-review.mjs` cloned from `plan-receipts.mjs` are shared, the named JSON readers use `paths.mjs`, the bare-hex digest gets its own exported name, and the compiler exports the two normalizers `compile.ts` re-declares (version assigned at activation)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).

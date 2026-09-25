@@ -1,4 +1,4 @@
-# WO-165 — The Entropy Reducer's route and its compiled authority agree: a route that cannot delegate no longer compiles a four-delegate fan-out, the lens briefs are rendered as the reviewer's own checklist, and the receipt describes the episode that ran
+# WO-165 — The Entropy Reducer's route and its compiled authority agree: a route that cannot delegate no longer compiles a four-delegate fan-out, the lens briefs are rendered as the reviewer's own checklist, and the receipt describes the episode that ran (version assigned at activation)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).

@@ -1,4 +1,4 @@
-# WO-164 — Constant-process console collection: one status fold returns every order, `release list` caches per-tag results by tag object id, and the board and the document gate stop growing by a second a day
+# WO-164 — Constant-process console collection: one status fold returns every order, `release list` caches per-tag results by tag object id, and the board and the document gate stop growing by a second a day (version assigned at activation)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
