@@ -130,3 +130,27 @@ The suite is part of the default product gate. Installer and target-profile
 tests check configuration preservation and keep contributor recovery out of
 ordinary workers. Native capability evidence and deterministic policy tests
 support separate claims; neither is substituted for the other.
+
+## Correction (2026-09-25, WO-159)
+
+Two sentences above overstated what was observed. The Native probe says no
+persistent account settings were changed and that the probe trusted its
+scratch hooks only through launch arguments; Activation and verification says
+no user configuration or trust setting is changed by this implementation.
+Both describe the continuation bundle's own emission, which writes only the
+three owned `.codex/` files and still does. Neither held for DotLn's Codex
+launches. The user-level configuration held trusted project entries for
+DotLn scratch targets, including one each for the `dotln-codex-compact-probe`
+and `dotln-codex-compact-probe2` families this order's native probes used
+([WO-111 diagnosis](../WO-111/codex-trust-diagnosis.md); attribution by family
+name is an inference), and WO-111's live source-change launches added two more
+([VER-001 B1](../../verifications/WO-111/VER-001.md)).
+
+[WO-159](../WO-159/decisions.md) routes every DotLn-launched Codex worker,
+verifier and probe through one launcher with a per-episode `CODEX_HOME`. A
+live probe with WO-111's source-change launch prefix observed the Codex CLI
+0.156.1 writing a trust entry for its scratch target into that isolated home,
+while the user-level `config.toml` and its trust table stayed byte-identical
+([trust probe](../WO-159/trust-probe.json); [live row](../WO-159/live-codex.json)).
+The existing entries remain the operator's to remove. The bytes above are
+unchanged.

@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-159",
+  "question": "With WO-111's source-change launch prefix, does the Codex CLI write a project trust entry, and does the isolated home keep it out of the user-level configuration?",
+  "launch": {
+    "epistemic": "launch-claim",
+    "value": {
+      "shape": "-a never exec --ephemeral --ignore-user-config --sandbox workspace-write --model gpt-6-sol -c model_reasoning_effort=\"low\" --cd <scratch Git root> --json <one-word prompt>",
+      "harnessVersion": "0.156.1"
+    }
+  },
+  "episode": {
+    "epistemic": "observed",
+    "value": {
+      "exitCode": 0,
+      "timedOut": false,
+      "durationMs": 3999,
+      "replied": true,
+      "usage": {
+        "inputTokens": 14376,
+        "cachedInputTokens": 11776,
+        "outputTokens": 9
+      }
+    }
+  },
+  "isolatedTrust": {
+    "epistemic": "observed",
+    "value": {
+      "isolatedTrustEntries": 1,
+      "entryNamesTheScratchTarget": true
+    }
+  },
+  "isolation": {
+    "schemaVersion": 1,
+    "home": "sha256:d715d357779ddbbad1828d81ecdae095e4a4015a5ae599cf171a2b982c9e7610",
+    "authentication": "symlink",
+    "userConfig": {
+      "before": "sha256:fcdcf404e36563f64ad0793b86d0caaf60d28b0c1b096f9138c4fbb2fcb1938e",
+      "after": "sha256:fcdcf404e36563f64ad0793b86d0caaf60d28b0c1b096f9138c4fbb2fcb1938e"
+    },
+    "trustTable": {
+      "before": "sha256:b43094733eb57270ea31e709348acae11c7737163597fbd15fb46d9b42172d5e",
+      "after": "sha256:b43094733eb57270ea31e709348acae11c7737163597fbd15fb46d9b42172d5e"
+    },
+    "isolatedTrustEntries": 1,
+    "homeRemoved": true
+  },
+  "userConfiguration": {
+    "epistemic": "observed",
+    "value": {
+      "userConfigEqual": true,
+      "trustTableEqual": true,
+      "trustedEntriesBefore": 43,
+      "trustedEntriesAfter": 43
+    }
+  }
+}

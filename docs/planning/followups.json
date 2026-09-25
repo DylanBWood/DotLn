@@ -2171,6 +2171,13 @@
           "title": "Candidate — progressive absence authority and return readiness",
           "summary": "### Candidate — progressive absence authority and return readiness This candidate originated in the predecessor `v1` workflow: one prompt-bound agent needed the operator to drive each interaction, so it sat idle during absence. A recurring cron trigger was an early way to restart useful work. DotLn now has explicit work orders and phase/status transitions; a dispatched order can keep moving while the operator is away without this payoff curve. The curve is for the later automatic work-order dispatch layer, where agents select and advance eligible orders without a human initiating each next order. WO-111 exercises a preauthorized scratch portfolio as a bounded precursor; it does not show that",
           "missing": false
+        },
+        {
+          "hash": "f1b5ae618b4a187f9ad22dcf1f645ad112d10b4ef02729a24627b72f60f1d7d9",
+          "ref": "docs/product/03-architecture.md#candidate--progressive-absence-authority-and-return-readiness",
+          "title": "Candidate — progressive absence authority and return readiness",
+          "summary": "### Candidate — progressive absence authority and return readiness This candidate originated in the predecessor `v1` workflow: one prompt-bound agent needed the operator to drive each interaction, so it sat idle during absence. A recurring cron trigger was an early way to restart useful work. DotLn now has explicit work orders and phase/status transitions; a dispatched order can keep moving while the operator is away without this payoff curve. The curve is for the later automatic work-order dispatch layer, where agents select and advance eligible orders without a human initiating each next order. WO-111 exercises a preauthorized scratch portfolio as a bounded precursor; it does not show that",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -16457,6 +16464,114 @@
           "at": "2026-09-25T03:16:01.872Z"
         }
       ]
+    },
+    {
+      "id": "FUP-e398c79e1b32e94b",
+      "key": "decision:docs/evidence/WO-159/decisions.md#wo-159-d009",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "34352fd54731e3809b3185ed35146a5d3917209fe09630d8e194d77b106edcca",
+          "ref": "docs/evidence/WO-159/decisions.md#wo-159-d009",
+          "title": "WO-159-D009: Planner: decide whether to measure a claude-cli-print worker launch's effect on the operator's user-level Claude state (for example a before/after digest of the user settings and project ",
+          "summary": "{ \"id\": \"WO-159-D009\", \"date\": \"2026-09-25\", \"dispatch\": \"resume: next\", \"decision\": \"Hand D011's open question — whether the Claude transport leaves the same class of user-level state — to planning unexamined. WO-159's non-goals exclude Claude Code and Copilot worker isolation, and no write has been observed.\", \"evidence\": [ \"docs/evidence/WO-111/decisions.md WO-111-D011 followup: 'Check whether the Claude transport leaves the same class of user-level state; that is an open question, not an observation'\", \"docs/proposals/isolated-codex-launch-home/packet.json: analogous Claude or Copilot user-level writes were not measured\", \"WO-159 Non-goals: 'Claude Code or Copilot worker isolation (no ob",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-35bc8736fb13c49a",
+      "key": "decision:docs/evidence/WO-159/decisions.md#wo-159-d010",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "74ab971db7224a2fdd6f316966a7d431c161787e63c18589e325120b7ac1b886",
+          "ref": "docs/evidence/WO-159/decisions.md#wo-159-d010",
+          "title": "WO-159-D010: Planner: a resident CLI supervisor killed from its terminal leaves its detached Codex episode running unobserved. cli-actor.ts forks the cli-episode supervisor in the foreground process g",
+          "summary": "{ \"id\": \"WO-159-D010\", \"date\": \"2026-09-25\", \"dispatch\": \"resume: next\", \"decision\": \"Settle an independent read-only review of the implementation before any edition was minted. Three lenses (isolation safety, integration and coverage, receipt honesty) filed 17 findings; one batch verifier confirmed 11 and partly confirmed 6, refuting none; all are minor after verification. Fixed: ISO-1 (a home is stale only when its launcher has exited and it is older than twice the longest DotLn episode deadline, STALE_CODEX_HOME_MS, so a detached Codex that outlives a killed launcher keeps its home), ISO-2 (finish records homeRemoved false instead of throwing), ISO-3 (the trust-table projection covers inl",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-57741bfb0c1f7f35",
+      "key": "decision:docs/evidence/WO-159/decisions.md#wo-159-d011",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "d35b2c0f9a2a48e5a54c33ee5b8588b4e45f271e779e17a95019bb0482109fb6",
+          "ref": "docs/evidence/WO-159/decisions.md#wo-159-d011",
+          "title": "WO-159-D011: Planner: the 2026-09-25 off-ramps pass filed WO-158 and WO-160 to WO-165 without the '(version assigned at activation)' heading placeholder, so each executor must bind its release label t",
+          "summary": "{ \"id\": \"WO-159-D011\", \"date\": \"2026-09-25\", \"dispatch\": \"resume: next; standing release assignment (product 07 §Discipline, Release assignment is opt-out, operator default 2026-09-04)\", \"decision\": \"Complete the missing activation target: application v0.48.0, the next minor above the local tag v0.47.1 under the declared minor classification; @dotln/skeleton 0.40.0 to 0.41.0 (new launcher exports and optional record fields), with the console's exact pin and the lockfile following; compiler, kernel and console versions unchanged. Bind the heading label (v0.48.0) with `npm run plan -- amend-order`, because the 2026-09-25 planning pass filed WO-158 to WO-165 without the `(version assigned at ac",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-48329a515c2547af",
+      "key": "decision:docs/evidence/WO-159/decisions.md#wo-159-d016",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "ff2d15c5eae906cabd88190c144945f0a46e4f6e89edc8c29bd7cf7e95b9106e",
+          "ref": "docs/evidence/WO-159/decisions.md#wo-159-d016",
+          "title": "WO-159-D016: WO-159 VER-001 F1 repair: give each Codex exec in concurrent and fresh-recovery probe rows its own startCodexEpisode lifecycle, retain one digest record per launch, and add a fixture asse",
+          "summary": "{ \"id\": \"WO-159-D016\", \"date\": \"2026-09-25\", \"dispatch\": \"resume: verify; VER-001\", \"decision\": \"Fail independent verification and route the writing-worker probe's multi-process rows to repair. A Codex concurrent row launches three distinct exec processes under one CODEX_HOME, and its resident-kill row reuses the first process's home for a fresh recovery launch. One aggregate digest record cannot establish the order's per-launch claim.\", \"evidence\": [ \"docs/work-orders/WO-159-codex-episode-isolation.md heading and lines 106-122 require a fresh home and two digest pairs before and after each launch, including the six probe sites\", \"scripts/lib/writing-worker-probe.mjs lines 1128-1130 create o",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-159 repair of VER-001 F1 (WO-159-D018): each Codex invocation in a writing-worker probe row now runs in its own isolated episode and the row keeps one labelled digest record per invocation; the stub fixture observes 12 distinct homes for 12 invocations and binds every record to a real launch, and the same fixture fails on the pre-repair probe. Independent re-verification is the next lifecycle dispatch.",
+          "reopenWhen": "Independent verification finds a Codex probe invocation sharing a home or lacking its own digest record on the repaired subject.",
+          "targets": [],
+          "at": "2026-09-25T05:13:43.820Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-d73389529a67a11a",
+      "key": "decision:docs/evidence/WO-159/decisions.md#wo-159-d017",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "f9dd53f2dcd8dcb2aab8ce350e257a6672517d5f98a496d4509bb8c047f89da9",
+          "ref": "docs/evidence/WO-159/decisions.md#wo-159-d017",
+          "title": "WO-159-D017: WO-159 VER-001 F2 repair: bind receipt eventStream.sha256, row count and launch selection to the retained feedback verifier stream in --check, with a fixture that rejects a well-formed fa",
+          "summary": "{ \"id\": \"WO-159-D017\", \"date\": \"2026-09-25\", \"dispatch\": \"resume: verify; VER-001\", \"decision\": \"Record a bounded receipt-integrity defect without rejecting the current live episode: the committed stream agrees with its receipt, but the receipt check accepts a false well-formed eventStream.sha256 and does not compare the recorded row count or start event with the retained stream.\", \"evidence\": [ \"docs/evidence/WO-159/receipt.mjs lines 321-334 validate eventStream.sha256 syntax; lines 389-409 match only the terminal event's isolation record\", \"A read-only mutation of live-codex.json eventStream.value.sha256 to 64 zero hex digits made both validateReceipt and matchSharedStream return true\", \"R",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-159 repair of VER-001 F2 (WO-159-D019): receipt.mjs --check derives the whole live receipt from the retained feedback verifier stream, so a well-formed false digest, row count, terminal event, launch selection or episode fact is refused; the fixture and VER-001's 64-zero reproduction are refused and the committed receipt still derives. Independent re-verification is the next lifecycle dispatch.",
+          "reopenWhen": "The receipt check admits a stream-derived field the retained stream does not bear.",
+          "targets": [],
+          "at": "2026-09-25T05:13:44.465Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-1d57cbcb226d8f8a",
+      "key": "decision:docs/evidence/WO-159/decisions.md#wo-159-d020",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "8846732768361f03dc502b8700075221c879b76baebe953f62ca5e5c863093fd",
+          "ref": "docs/evidence/WO-159/decisions.md#wo-159-d020",
+          "title": "WO-159-D020: Planner: the WO-143 lock-boundary matrix subtest (packages/skeleton/test/resident.test.ts, 'once and loop restart at every acquisition filesystem boundary, including killed reclaimers') r",
+          "summary": "{ \"id\": \"WO-159-D020\", \"date\": \"2026-09-25\", \"dispatch\": \"resume: final review\", \"decision\": \"Pass final review without integration and record the reviewer's product gate as it happened. Local main, origin main and the worktree HEAD were the same commit (1f888509) at review, so no merge, retime or re-mint was needed, the integrate helper was not run, and every VER-002 claim is carried forward on unchanged source bytes. The first `npm test -- --review` failed one skeleton subtest this order does not touch, the WO-143 lock-boundary matrix, which exceeded its own 240 s budget while a sibling worktree's product gate shared the host; the second run, alone on the host, passed 37 suites with 0 fail",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

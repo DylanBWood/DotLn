@@ -23,6 +23,10 @@ import { createInterface } from "node:readline/promises";
 import { emitTargetHarness } from "./harness.mjs";
 import { installSourceChangeCommands } from "../../packages/skeleton/dist/src/source-change-command.js";
 import { activeGateRuns } from "../../packages/skeleton/dist/src/gate-evidence.mjs";
+import {
+  codexExecArgv,
+  startCodexEpisode,
+} from "../../packages/skeleton/dist/src/worker-transport.js";
 
 const repository = findLaunchpad();
 export const ROWS = [
@@ -269,34 +273,32 @@ export function authorityLaunch(cell, fixture) {
           "--include-hook-events",
           prompt,
         ]
-      : [
-          "-a",
-          "on-request",
-          "exec",
-          "--ephemeral",
-          "--ignore-user-config",
-          "--ignore-rules",
-          "--sandbox",
-          cell.mode === "on" ? "workspace-write" : "danger-full-access",
-          "--model",
-          actor.model,
-          "-c",
-          `model_reasoning_effort="${actor.effort}"`,
-          "--cd",
-          fixture.target,
-          "--json",
-          ...(cell.mode === "on"
-            ? [
-                "-c",
-                'default_permissions="dotln-authority"',
-                "-c",
-                'permissions.dotln-authority.filesystem={":minimal"="read",":workspace_roots"="write"}',
-                "-c",
-                "permissions.dotln-authority.network.enabled=false",
-              ]
-            : []),
-          prompt,
-        ];
+      : codexExecArgv({
+          approval: "on-request",
+          rest: [
+            "--ignore-rules",
+            "--sandbox",
+            cell.mode === "on" ? "workspace-write" : "danger-full-access",
+            "--model",
+            actor.model,
+            "-c",
+            `model_reasoning_effort="${actor.effort}"`,
+            "--cd",
+            fixture.target,
+            "--json",
+            ...(cell.mode === "on"
+              ? [
+                  "-c",
+                  'default_permissions="dotln-authority"',
+                  "-c",
+                  'permissions.dotln-authority.filesystem={":minimal"="read",":workspace_roots"="write"}',
+                  "-c",
+                  "permissions.dotln-authority.network.enabled=false",
+                ]
+              : []),
+            prompt,
+          ],
+        });
   const shape = args
     .slice(0, -1)
     .map((arg) =>
@@ -307,6 +309,8 @@ export function authorityLaunch(cell, fixture) {
   return {
     binary: cell.harness,
     args,
+    // WO-159: a Codex cell runs in its own isolated home.
+    isolated: cell.harness === "codex",
     actor,
     commandShape: [cell.harness, ...shape, `<fixture row ${cell.row}>`].join(
       " ",
@@ -506,9 +510,10 @@ export async function runAuthorityProcess(
   let overflow = false;
   let interrupted = false;
   let telemetryFailed = false;
+  const episode = launch.isolated ? startCodexEpisode(gitEnvironment()) : null;
   const child = spawn(launch.binary, launch.args, {
     cwd: fixture.target,
-    env: gitEnvironment(),
+    env: episode?.env ?? gitEnvironment(),
     stdio: ["ignore", "pipe", "pipe"],
     detached: true,
   });
@@ -591,6 +596,7 @@ export async function runAuthorityProcess(
     clearTimeout(timer);
     clearInterval(barrier);
     kill();
+    if (episode) result = { ...result, codexIsolation: episode.finish() };
     process.removeListener("SIGINT", interrupt);
     process.removeListener("SIGTERM", interrupt);
     signal?.removeEventListener("abort", interrupt);

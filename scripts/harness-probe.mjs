@@ -12,6 +12,11 @@ import {
   writeFileSync,
 } from "node:fs";
 import { dirname, join, resolve } from "node:path";
+import {
+  codexDigestPairEqual,
+  codexExecArgv,
+  startCodexEpisode,
+} from "../packages/skeleton/dist/src/worker-transport.js";
 
 const root = findLaunchpad();
 assert.equal(
@@ -93,6 +98,15 @@ function phaseZero(mode) {
     "explicit live harness probe required",
   );
   assert.ok(["claude", "claude-bare", "codex"].includes(mode));
+  // Refuse a retained observation before launching, not after (WO-159).
+  const target = resolve(
+    root,
+    docRelative(root, "discovery", `harness-smoke-2026-09-07/${mode}.json`),
+  );
+  assert.ok(
+    !existsSync(target),
+    "retain probe observations; choose a new evidence path for a new attempt",
+  );
   const directory = mkdtempSync(
     join(realpathSync(tmpdir()), "dotln-harness-probe-"),
   );
@@ -161,21 +175,19 @@ function phaseZero(mode) {
   const effort = "xhigh";
   const prompt = `${isCodex ? "$dotln-probe" : "Use the dotln-probe skill by name with the Skill tool."} Run only the isolated fixture procedure. Also attempt the exact command touch settings-denied.txt once to test a settings deny. A denial is expected; do not retry. No network calls or external effects. Do not read or modify any user-scope settings.`;
   const args = isCodex
-    ? [
-        "-a",
-        "on-request",
-        "exec",
-        "--ephemeral",
-        "--ignore-user-config",
-        "--sandbox",
-        "workspace-write",
-        "--model",
-        model,
-        "-c",
-        `model_reasoning_effort="${effort}"`,
-        "--json",
-        prompt,
-      ]
+    ? codexExecArgv({
+        approval: "on-request",
+        rest: [
+          "--sandbox",
+          "workspace-write",
+          "--model",
+          model,
+          "-c",
+          `model_reasoning_effort="${effort}"`,
+          "--json",
+          prompt,
+        ],
+      })
     : [
         "-p",
         "--model",
@@ -200,12 +212,21 @@ function phaseZero(mode) {
   const version = spawnSync(executable, ["--version"], {
     encoding: "utf8",
   }).stdout.trim();
-  const result = spawnSync(executable, args, {
-    cwd: directory,
-    encoding: "utf8",
-    timeout: 240_000,
-    maxBuffer: 16 * 1024 * 1024,
-  });
+  // WO-159: the Codex session runs in its own isolated home.
+  const episode = isCodex ? startCodexEpisode() : null;
+  let result;
+  let codexIsolation = null;
+  try {
+    result = spawnSync(executable, args, {
+      cwd: directory,
+      encoding: "utf8",
+      timeout: 240_000,
+      maxBuffer: 16 * 1024 * 1024,
+      env: episode?.env ?? process.env,
+    });
+  } finally {
+    codexIsolation = episode?.finish() ?? null;
+  }
   const output = result.stdout ?? "";
   const messages = output.split("\n").flatMap((line) => {
     try {
@@ -266,17 +287,13 @@ function phaseZero(mode) {
     eventTypes: [...new Set(messages.map((m) => m.type))],
     events,
     rawTranscriptRetained: false,
-    userScopeSettingsWritten: false,
+    // Observed for Codex from the isolation digests; Claude remains a claim.
+    userScopeSettingsWritten: codexIsolation
+      ? !codexDigestPairEqual(codexIsolation.userConfig)
+      : false,
+    codexIsolation,
   };
-  const target = resolve(
-    root,
-    docRelative(root, "discovery", `harness-smoke-2026-09-07/${mode}.json`),
-  );
   mkdirSync(dirname(target), { recursive: true });
-  assert.ok(
-    !existsSync(target),
-    "retain probe observations; choose a new evidence path for a new attempt",
-  );
   writeFileSync(target, JSON.stringify(record, null, 2) + "\n");
   console.log(
     JSON.stringify(

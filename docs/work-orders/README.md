@@ -5,7 +5,7 @@
 ## Proposed order
 
 - [ ] [WO-158] — Lifecycle off-ramps · **queued**
-- [ ] [WO-159] — Codex episode isolation · **queued**
+- [x] [WO-159] — Codex episode isolation · **final-reviewed**
 - [ ] [WO-160] — WO-111 machinery follow-ups · **queued**
 - [ ] [WO-161] — Sandbox vocabulary made true · **queued**
 - [ ] [WO-070] — Beacon portability · **queued**
@@ -979,22 +979,6 @@ None.
 - Effort: executor xhigh+; verifier xhigh+; reviewer any.
 - Cost: adds four typed events folded by &#96;scripts/lib/control.mjs&#96; (&#96;CriterionWaived&#96;, &#96;WorkOrderWithdrawn&#96;, &#96;RecordCorrected&#96;, &#96;OperatorOverrideRecorded&#96;), four &#96;resume&#96; dispatches (&#96;waive&#96;, &#96;withdraw&#96;, &#96;correct&#96;, &#96;override-record&#96;) carrying the actor flags and, for the two operator acts, an ignored-intake capture path and SHA-256 in the &#96;plan override --capture&#96; shape; the &#96;withdrawn&#96; phase in status, index and the closed-entries-leave rule; a read-only program list admitted during a live gate in &#96;packages/skeleton/src/harness-command.ts&#96;; the session hook's &#96;off&#96; handling; one fixture per route; one paragraph in product 07 §Operator recovery controls and one sentence per role skill. Removes the improvised handling the 2026-09-25 planning document §3 catalogues: seven records corrected after their event across six orders, seven &#96;operator override:&#96; uses across five orders with no record, four operator-owned steps waived in prose, WO-111's D017 → D019 → D020 chain with an orphaned amendment row and receipts still reading "no operator exception recorded", and read-only refusals during live gates in eight orders' verifications and in this planning session. Registered sources edited (&#96;scripts/lib/evidence-sources.mjs&#96;, checked 2026-09-25): &#96;packages/skeleton/src/harness-command.ts&#96;, &#96;packages/skeleton/src/loadouts/contributor.ts&#96;, &#96;packages/skeleton/src/loadouts/executor-supports.ts&#96;, &#96;packages/compiler/src/harness.ts&#96;; the harness and authority editions re-mint deterministically. None is a feedback source (&#96;FEEDBACK_SOURCE_PATHS&#96;), so no live episode (WO-154 D001). Wall-clock, tokens and context bytes of the order itself are unknown until run.
 - Authority: [docs/work-orders/WO-158-lifecycle-off-ramps.md](WO-158-lifecycle-off-ramps.md)
-
-### WO-159
-
-[WO-159 — Codex episode isolation: every DotLn-launched Codex worker, verifier and probe goes through one launcher that supplies a per-episode home seeded only with what authentication needs, the operator's user-level Codex configuration is byte-identical before and after each launch with the digests as protected receipt surfaces, and the WO-054 claim that continuation changes no user configuration is corrected](WO-159-codex-episode-isolation.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-111: satisfied-by-close (met) — the evidence and the boarded defect; WO-157: satisfied-by-close (met) — typed refusal reasons in the worker record.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: the actual local Codex harness for the live rows; any capable model for the code. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh+; verifier xhigh+; reviewer any.
-- Cost: adds one Codex launcher in &#96;packages/skeleton/src/worker-transport.ts&#96; used by the transport and by &#96;scripts/lib/authority-probe.mjs&#96;, &#96;scripts/lib/writing-worker-probe.mjs&#96;, &#96;scripts/harness-probe.mjs&#96;, &#96;scripts/probe-worker-hosts.mjs&#96;, &#96;scripts/target-worker-smoke.mjs&#96; and &#96;scripts/probes/local-model-role-qualification.mjs&#96;; a per-episode &#96;CODEX_HOME&#96; under system temp (0o700) seeded with the authentication file (0o600, removed at episode end, never in evidence); before/after SHA-256 of the user-level Codex configuration file and of its trust table in the episode record and in live receipts' protected surfaces; one fixture; one live Codex worker row; one dated correction note beside &#96;docs/evidence/WO-054/codex-continuation.md&#96;. Removes: the outside-portfolio write that failed WO-111 criterion 2 in VER-001, VER-002 and VER-003 and ended in an operator-accepted deviation (D020); the block on any WO-111 rerun and on any live Codex proof against an operator-owned repository (D011, FUP-3c34a8ffbf61376f, high, undisposed since 2026-09-24); six argv copies outside the canonical transport (REVIEW-003 ER3-001); and the 36 of 43 trusted project entries the diagnosis attributes to DotLn scratch and probe families, which stop accumulating. Registered sources edited: &#96;packages/skeleton/src/worker-transport.ts&#96; (authority and verification editions re-mint deterministically); it is also a feedback source (&#96;FEEDBACK_SOURCE_PATHS&#96;), so the feedback edition re-mints with one live feedback self-host episode after the source edits settle (WO-147 D010; WO-154 D001). Wall-clock, tokens and context bytes of the order itself are unknown until run; WO-147 D010 measured a self-host episode at 320.6 s.
-- Authority: [docs/work-orders/WO-159-codex-episode-isolation.md](WO-159-codex-episode-isolation.md)
 
 ### WO-160
 
@@ -2884,6 +2868,23 @@ None.
 - Inherited ledger duty: discharge with [this order's decisions](../evidence/WO-157/decisions.md) and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
 - Latest attestation: harness claude-code; version 2.1.281; model claude-fable-5-1; effort xhigh; source claude-session-readback; account not-applicable.
 - Authority: [docs/work-orders/WO-157-closeout-followups.md](WO-157-closeout-followups.md)
+
+### WO-159
+
+[WO-159 — Codex episode isolation: every DotLn-launched Codex worker, verifier and probe goes through one launcher that supplies a per-episode home seeded only with what authentication needs, the operator's user-level Codex configuration is byte-identical before and after each launch with the digests as protected receipt surfaces, and the WO-054 claim that continuation changes no user configuration is corrected (v0.48.0)](WO-159-codex-episode-isolation.md)
+
+- State: closed.
+- Application target: v0.48.0.
+- Dependencies: typed; activation not applicable.
+- References: WO-111: satisfied-by-close (met) — the evidence and the boarded defect; WO-157: satisfied-by-close (met) — typed refusal reasons in the worker record.
+- Verification: [VER-002](../../docs/verifications/WO-159/VER-002.md) (pass).
+- Final review: [FINAL-001](../../docs/final-reviews/WO-159/FINAL-001.md) (pass).
+- Release: unreleased.
+- Model: the actual local Codex harness for the live rows; any capable model for the code. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Cost: adds one Codex launcher in &#96;packages/skeleton/src/worker-transport.ts&#96; used by the transport and by &#96;scripts/lib/authority-probe.mjs&#96;, &#96;scripts/lib/writing-worker-probe.mjs&#96;, &#96;scripts/harness-probe.mjs&#96;, &#96;scripts/probe-worker-hosts.mjs&#96;, &#96;scripts/target-worker-smoke.mjs&#96; and &#96;scripts/probes/local-model-role-qualification.mjs&#96;; a per-episode &#96;CODEX_HOME&#96; under system temp (0o700) seeded with the authentication file (0o600, removed at episode end, never in evidence); before/after SHA-256 of the user-level Codex configuration file and of its trust table in the episode record and in live receipts' protected surfaces; one fixture; one live Codex worker row; one dated correction note beside &#96;docs/evidence/WO-054/codex-continuation.md&#96;. Removes: the outside-portfolio write that failed WO-111 criterion 2 in VER-001, VER-002 and VER-003 and ended in an operator-accepted deviation (D020); the block on any WO-111 rerun and on any live Codex proof against an operator-owned repository (D011, FUP-3c34a8ffbf61376f, high, undisposed since 2026-09-24); six argv copies outside the canonical transport (REVIEW-003 ER3-001); and the 36 of 43 trusted project entries the diagnosis attributes to DotLn scratch and probe families, which stop accumulating. Registered sources edited: &#96;packages/skeleton/src/worker-transport.ts&#96; (authority and verification editions re-mint deterministically); it is also a feedback source (&#96;FEEDBACK_SOURCE_PATHS&#96;), so the feedback edition re-mints with one live feedback self-host episode after the source edits settle (WO-147 D010; WO-154 D001). Wall-clock, tokens and context bytes of the order itself are unknown until run; WO-147 D010 measured a self-host episode at 320.6 s.
+- Latest attestation: harness claude-code; version 2.1.282; model claude-fable-5-1; effort xhigh; source claude-session-readback; account not-applicable.
+- Authority: [docs/work-orders/WO-159-codex-episode-isolation.md](WO-159-codex-episode-isolation.md)
 
 ## Historical
 

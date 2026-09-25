@@ -1,17 +1,23 @@
 import { spawn } from "node:child_process";
+import { createHash } from "node:crypto";
 import { observedExecFileSync as execFileSync } from "./gate-deadlines.mjs";
 import { startDeadline } from "./gate-deadlines.mjs";
 import {
+  chmodSync,
   closeSync,
+  existsSync,
   fstatSync,
+  lstatSync,
   mkdirSync,
   mkdtempSync,
   openSync,
+  readdirSync,
   readFileSync,
   rmSync,
+  symlinkSync,
   writeFileSync,
 } from "node:fs";
-import { tmpdir } from "node:os";
+import { homedir, tmpdir } from "node:os";
 import { join } from "node:path";
 import { feedbackClaudeSettings } from "./loadouts/feedback.js";
 import { PLAN_REFUTATION_LIMITS } from "./plan-refutation-protocol.js";
@@ -66,6 +72,8 @@ export interface WorkerLaunch {
   readonly cwd: string;
   readonly input: string;
   readonly timeoutMs: number;
+  /** The launch environment; the Codex launcher supplies an isolated home. */
+  readonly env?: NodeJS.ProcessEnv;
 }
 export interface ProcessResult {
   readonly stdout: string;
@@ -96,11 +104,11 @@ export const runWorkerProcess: ProcessRunner = (launch) => {
     // model tool environments separately in the canonical launch below.
     env: launch.resident
       ? {
-          ...process.env,
+          ...(launch.env ?? process.env),
           DOTLN_RESIDENT_STORE: launch.resident.store,
           DOTLN_RESIDENT_EPISODE_ID: launch.resident.episodeId,
         }
-      : process.env,
+      : (launch.env ?? process.env),
     ...(launch.resident ? { detached: true } : {}),
   });
   let live = false;
@@ -186,6 +194,8 @@ export interface TransportDispatch<T = WorkerResult> {
   readonly alive: () => boolean;
   readonly kill: () => void;
   readonly usage?: Promise<ReturnType<typeof usageObservation>>;
+  /** Codex only: the isolated episode's record once the process has ended. */
+  readonly isolation?: Promise<CodexEpisodeIsolation>;
 }
 export interface WorkOrderTransport<
   R extends TransportRequest = WorkerRequest,
@@ -223,6 +233,314 @@ const codexDisabled = [
   "shell_tool",
   "unified_exec",
 ];
+
+/* ------------------------------------------------------------------------ */
+/* The Codex launcher (WO-159). Every DotLn-launched Codex worker, verifier  */
+/* and probe builds its argv and environment here.                          */
+/* ------------------------------------------------------------------------ */
+
+/** The flags every Codex `exec` episode shares. They govern reading and
+ * session files only: `--ignore-user-config` does not stop the CLI writing a
+ * project trust entry into its home (WO-111 VER-001 B1), so the isolated home
+ * below, not these flags, keeps the operator's configuration unchanged. */
+export const CODEX_EXEC_SHARED_FLAGS = [
+  "--ephemeral",
+  "--ignore-user-config",
+] as const;
+
+export interface CodexExecShape {
+  /** Codex's global approval option; it precedes the subcommand. */
+  readonly approval?: string;
+  /** Options kept ahead of the shared flags, in their recorded position. */
+  readonly leading?: readonly string[];
+  /** Everything after the shared flags, ending with the prompt or `-`. */
+  readonly rest: readonly string[];
+}
+
+/** The one builder of a Codex `exec` argv. */
+export function codexExecArgv(shape: CodexExecShape): string[] {
+  return [
+    ...(shape.approval === undefined ? [] : ["-a", shape.approval]),
+    "exec",
+    ...(shape.leading ?? []),
+    ...CODEX_EXEC_SHARED_FLAGS,
+    ...shape.rest,
+  ];
+}
+
+export type CodexDigestPair = {
+  readonly before: string;
+  readonly after: string;
+};
+
+/** What one episode did to the operator's user-level Codex state. Digests and
+ * counts only: never the configuration, a project path or the auth file. */
+export type CodexEpisodeIsolation = {
+  readonly schemaVersion: 1;
+  /** SHA-256 of the isolated home's path; its contents are never recorded. */
+  readonly home: string;
+  /** How the CLI reached the operator's authentication. */
+  readonly authentication: "symlink" | "absent";
+  /** The user-level `config.toml`, before and after the episode. */
+  readonly userConfig: CodexDigestPair;
+  /** Its `[projects]` trust table, before and after the episode. */
+  readonly trustTable: CodexDigestPair;
+  /** Trusted project entries the CLI wrote into the isolated home, or null
+   * when it wrote no configuration there. Observed, not assumed. */
+  readonly isolatedTrustEntries: number | null;
+  readonly homeRemoved: boolean;
+};
+
+export interface CodexEpisode {
+  /** The launch environment: the caller's, with `CODEX_HOME` isolated. */
+  readonly env: NodeJS.ProcessEnv;
+  /** Digest again, remove the home and return the record. Idempotent. */
+  finish(): CodexEpisodeIsolation;
+}
+
+const sha256 = (bytes: string | Buffer) =>
+  `sha256:${createHash("sha256").update(bytes).digest("hex")}`;
+
+/** The operator's Codex home as the CLI would resolve it for this caller. */
+export function userCodexHome(env: NodeJS.ProcessEnv = process.env): string {
+  return env.CODEX_HOME?.trim()
+    ? env.CODEX_HOME
+    : join(env.HOME?.trim() ? env.HOME : homedir(), ".codex");
+}
+
+function readConfig(path: string): Buffer | "absent" | "unknown" {
+  try {
+    return readFileSync(path);
+  } catch (error) {
+    return (error as NodeJS.ErrnoException).code === "ENOENT"
+      ? "absent"
+      : "unknown";
+  }
+}
+
+/** The `[projects]` trust table as its own lines, in file order: `[projects]`
+ * and `[projects."<path>"]` tables (bare, basic or literal key) with their
+ * keys, and a root-level `projects` value, dotted or inline, including the
+ * lines a multi-line value continues onto. A line projection, not a TOML
+ * parser: strings and comments are blanked before brackets are counted, and
+ * multi-line strings are not modelled. The whole-file pair covers the rest. */
+export function codexTrustTable(config: string): string {
+  const lines: string[] = [];
+  let table: string | null = null; // null is the root table
+  let depth = 0; // brackets and braces a multi-line value left open
+  let rootValue = false; // that value is a root-level projects value
+  for (const line of config.split(/\r?\n/u)) {
+    const code = line
+      .replace(/"(?:[^"\\]|\\.)*"|'[^']*'/gu, '""')
+      .replace(/#.*$/u, "");
+    const header =
+      depth === 0 && /^\s*\[/u.test(code)
+        ? line.match(/^\s*\[\[?\s*(.*?)\s*\]\]?\s*(?:#.*)?$/u)
+        : null;
+    if (header) {
+      table = header[1]!;
+      rootValue = false;
+    } else if (depth === 0 && table === null)
+      rootValue = /^\s*(?:projects|"projects"|'projects')\s*[.=]/u.test(line);
+    if (
+      table === null
+        ? rootValue
+        : /^(?:projects|"projects"|'projects')\s*(?:\.|$)/u.test(table)
+    )
+      lines.push(line);
+    if (!header)
+      depth = Math.max(
+        0,
+        depth +
+          (code.match(/[[{]/gu)?.length ?? 0) -
+          (code.match(/[\]}]/gu)?.length ?? 0),
+      );
+  }
+  return lines.join("\n");
+}
+
+function configDigests(path: string): {
+  readonly file: string;
+  readonly trust: string;
+} {
+  const bytes = readConfig(path);
+  if (typeof bytes === "string") return { file: bytes, trust: bytes };
+  return {
+    file: sha256(bytes),
+    trust: sha256(codexTrustTable(bytes.toString("utf8"))),
+  };
+}
+
+/** A digest pair proves the file unchanged only when both sides were read,
+ * or both were absent. */
+export function codexDigestPairEqual(pair: CodexDigestPair): boolean {
+  return pair.before !== "unknown" && pair.before === pair.after;
+}
+
+/** The receipt check for live Codex episodes (WO-159): each record must be a
+ * well-formed isolation record whose home was removed and whose user-level
+ * configuration and trust-table pairs are equal. */
+export function assertCodexIsolationUnchanged(
+  records: readonly unknown[],
+): asserts records is readonly CodexEpisodeIsolation[] {
+  const digest = /^(?:sha256:[0-9a-f]{64}|absent|unknown)$/u;
+  const pair = (value: unknown): value is CodexDigestPair =>
+    !!value &&
+    typeof value === "object" &&
+    Object.keys(value).sort().join() === "after,before" &&
+    digest.test(String((value as CodexDigestPair).before)) &&
+    digest.test(String((value as CodexDigestPair).after));
+  if (records.length === 0)
+    throw new Error("Codex isolation: no episode record");
+  for (const record of records) {
+    const value = record as CodexEpisodeIsolation;
+    if (
+      !value ||
+      typeof value !== "object" ||
+      value.schemaVersion !== 1 ||
+      !/^sha256:[0-9a-f]{64}$/u.test(String(value.home)) ||
+      !["symlink", "absent"].includes(value.authentication) ||
+      !pair(value.userConfig) ||
+      !pair(value.trustTable)
+    )
+      throw new Error("Codex isolation: malformed episode record");
+    if (value.homeRemoved !== true)
+      throw new Error("Codex isolation: the episode home was not removed");
+    if (
+      !codexDigestPairEqual(value.userConfig) ||
+      !codexDigestPairEqual(value.trustTable)
+    )
+      throw new Error(
+        "Codex isolation: the user-level Codex configuration changed across the episode",
+      );
+  }
+}
+
+/** Episode homes are named for the launching process. */
+const CODEX_HOME_NAME = /^dotln-codex-home-(\d+)-[^/]+$/u;
+/** A detached Codex group can outlive a launcher killed from its terminal, so
+ * a home is also kept until it is older than twice the longest episode
+ * deadline any DotLn launch sets. */
+export const STALE_CODEX_HOME_MS =
+  2 *
+  Math.max(
+    WORKER_TIMEOUT_MS,
+    ENTROPY_REVIEW_LIMITS.timeoutMs,
+    ENTROPY_REFUTATION_LIMITS.timeoutMs,
+    MISSION_CHECK_LIMITS.timeoutMs,
+    PLAN_REFUTATION_LIMITS.timeoutMs,
+    FEEDBACK_VERIFIER_LIMITS.timeoutMs,
+  );
+
+/** Episode homes left behind by an abnormal end: their launching process has
+ * exited and the home is older than STALE_CODEX_HOME_MS. A live launcher's
+ * homes, including another lane's, are never stale. The next launch removes
+ * these and `harness prune` lists them. */
+export function staleCodexEpisodeHomes(
+  root: string = tmpdir(),
+  now: number = Date.now(),
+): string[] {
+  let names: string[];
+  try {
+    names = readdirSync(root);
+  } catch {
+    return [];
+  }
+  return names.flatMap((name) => {
+    const pid = Number(name.match(CODEX_HOME_NAME)?.[1]);
+    if (!Number.isSafeInteger(pid) || pid <= 1 || pid === process.pid)
+      return [];
+    const path = join(root, name);
+    const info = lstatSync(path, { throwIfNoEntry: false });
+    if (
+      !info?.isDirectory() ||
+      info.uid !== process.getuid?.() ||
+      now - info.mtimeMs <= STALE_CODEX_HOME_MS
+    )
+      return [];
+    try {
+      process.kill(pid, 0);
+      return [];
+    } catch (error) {
+      return (error as NodeJS.ErrnoException).code === "ESRCH" ? [path] : [];
+    }
+  });
+}
+
+/** Start one isolated Codex episode: a fresh `CODEX_HOME` under system temp
+ * (0o700) holding only a symlink to the operator's `auth.json`. The CLI's own
+ * file store opens that path for writing, so a token refresh reaches the
+ * operator's file instead of dying with a copy (rust-v0.156.1
+ * `FileAuthStorage::save`). Before and after the launch, `finish` digests the
+ * operator's `config.toml` and its trust table. A home that cannot be built
+ * refuses the launch; it never falls back to the operator's home. */
+export function startCodexEpisode(
+  env: NodeJS.ProcessEnv = process.env,
+): CodexEpisode {
+  const user = userCodexHome(env);
+  const config = join(user, "config.toml");
+  // Best effort: a stale home that resists removal is listed by prune again.
+  for (const stale of staleCodexEpisodeHomes())
+    try {
+      rmSync(stale, { recursive: true, force: true });
+    } catch {}
+  const before = configDigests(config);
+  let home: string;
+  try {
+    home = mkdtempSync(join(tmpdir(), `dotln-codex-home-${process.pid}-`));
+  } catch {
+    throw new WorkerFailure("profile-refused", "isolated Codex home");
+  }
+  let record: CodexEpisodeIsolation | undefined;
+  try {
+    chmodSync(home, 0o700);
+    const auth = join(user, "auth.json");
+    const authentication = existsSync(auth) ? "symlink" : "absent";
+    if (authentication === "symlink")
+      symlinkSync(auth, join(home, "auth.json"));
+    return {
+      env: { ...env, CODEX_HOME: home },
+      finish() {
+        if (record) return record;
+        const after = configDigests(config);
+        const isolated = readConfig(join(home, "config.toml"));
+        const isolatedTrustEntries =
+          typeof isolated === "string"
+            ? null
+            : codexTrustTable(isolated.toString("utf8"))
+                .split("\n")
+                .filter((line) =>
+                  /trust_level\s*=\s*["']trusted["']/u.test(line),
+                ).length;
+        try {
+          rmSync(home, { recursive: true, force: true });
+        } catch {
+          // Observed below as homeRemoved: false; the receipt check refuses it.
+        }
+        record = {
+          schemaVersion: 1,
+          home: sha256(home),
+          authentication,
+          userConfig: { before: before.file, after: after.file },
+          trustTable: { before: before.trust, after: after.trust },
+          isolatedTrustEntries,
+          homeRemoved: !existsSync(home),
+        };
+        if (
+          !codexDigestPairEqual(record.userConfig) ||
+          !codexDigestPairEqual(record.trustTable)
+        )
+          process.stderr.write(
+            "DotLn advisory: the user-level Codex configuration changed or could not be read across an isolated Codex episode.\n",
+          );
+        return record;
+      },
+    };
+  } catch {
+    rmSync(home, { recursive: true, force: true });
+    throw new WorkerFailure("profile-refused", "isolated Codex home");
+  }
+}
 
 export const OBSERVED_CLI_VERSIONS = {
   claude: "2.1.270",
@@ -324,56 +642,56 @@ export function canonicalWorkerArgs(
     process.stderr.write(
       `DotLn advisory: Codex CLI ${harnessVersion} is outside the recorded version observation ${OBSERVED_CLI_VERSIONS.codex}; launch continues.\n`,
     );
-  return [
-    "exec",
+  return codexExecArgv({
     // The worktree-snapshot read mount is a files-only copy without Git
     // metadata, which Codex refuses unless told to skip its repository check.
     // Every other shape runs inside a Git worktree and keeps its exact bytes.
-    ...(isEvidenceRequest(request) &&
-    request.profile.profileId === "worktree-snapshot"
-      ? ["--skip-git-repo-check"]
-      : []),
-    "--ephemeral",
-    "--ignore-user-config",
-    "--strict-config",
-    "--model",
-    request.model,
-    "--json",
-    "--output-schema",
-    schemaPath,
-    "--cd",
-    request.cwd,
-    "-c",
-    'default_permissions="dotln-worker"',
-    "-c",
-    'permissions.dotln-worker.filesystem={":minimal"="read",":workspace_roots"="read"}',
-    "-c",
-    "permissions.dotln-worker.network.enabled=false",
-    "-c",
-    'approval_policy="never"',
-    "-c",
-    'web_search="disabled"',
-    "-c",
-    "project_doc_max_bytes=0",
-    "-c",
-    "mcp_servers={}",
-    "-c",
-    "memories.use_memories=false",
-    "-c",
-    "memories.generate_memories=false",
-    "-c",
-    'shell_environment_policy.inherit="none"',
-    ...codexDisabled
-      .filter(
-        (feature) =>
-          !subagents || !["multi_agent", "multi_agent_v2"].includes(feature),
-      )
-      .flatMap((feature) => ["--disable", feature]),
-    ...(selection.effort === "unknown"
-      ? []
-      : ["-c", `model_reasoning_effort=${JSON.stringify(selection.effort)}`]),
-    "-",
-  ];
+    leading:
+      isEvidenceRequest(request) &&
+      request.profile.profileId === "worktree-snapshot"
+        ? ["--skip-git-repo-check"]
+        : [],
+    rest: [
+      "--strict-config",
+      "--model",
+      request.model,
+      "--json",
+      "--output-schema",
+      schemaPath,
+      "--cd",
+      request.cwd,
+      "-c",
+      'default_permissions="dotln-worker"',
+      "-c",
+      'permissions.dotln-worker.filesystem={":minimal"="read",":workspace_roots"="read"}',
+      "-c",
+      "permissions.dotln-worker.network.enabled=false",
+      "-c",
+      'approval_policy="never"',
+      "-c",
+      'web_search="disabled"',
+      "-c",
+      "project_doc_max_bytes=0",
+      "-c",
+      "mcp_servers={}",
+      "-c",
+      "memories.use_memories=false",
+      "-c",
+      "memories.generate_memories=false",
+      "-c",
+      'shell_environment_policy.inherit="none"',
+      ...codexDisabled
+        .filter(
+          (feature) =>
+            !subagents || !["multi_agent", "multi_agent_v2"].includes(feature),
+        )
+        .flatMap((feature) => ["--disable", feature]),
+      ...(selection.effort === "unknown"
+        ? []
+        : ["-c", `model_reasoning_effort=${JSON.stringify(selection.effort)}`]),
+      "-",
+    ],
+  });
 }
 
 /** The Entropy Reducer's own two shapes. Unlike every other inspection
@@ -425,55 +743,53 @@ function entropyArgs(
       "--max-budget-usd",
       limits.maxBudgetUsd,
     ];
-  return [
-    "-a",
-    "never",
-    "exec",
-    "--ephemeral",
-    "--ignore-user-config",
-    // Perturbations belong in the frozen copy: the mutation drill asks for
-    // them and the sandbox root is that copy.
-    "--sandbox",
-    "workspace-write",
-    "--strict-config",
-    "--model",
-    request.model,
-    "--cd",
-    request.cwd,
-    "--json",
-    "--output-schema",
-    schemaPath,
-    "-c",
-    'default_permissions="dotln-entropy"',
-    "-c",
-    'permissions.dotln-entropy.filesystem={":minimal"="read",":workspace_roots"="write"}',
-    "-c",
-    "permissions.dotln-entropy.network.enabled=false",
-    "-c",
-    'approval_policy="never"',
-    "-c",
-    'web_search="disabled"',
-    "-c",
-    "project_doc_max_bytes=0",
-    "-c",
-    "mcp_servers={}",
-    "-c",
-    "memories.use_memories=false",
-    "-c",
-    "memories.generate_memories=false",
-    "-c",
-    'shell_environment_policy.inherit="none"',
-    ...codexDisabled
-      .filter(
-        (feature) =>
-          !["shell_tool", "unified_exec", "code_mode_host"].includes(feature),
-      )
-      .flatMap((feature) => ["--disable", feature]),
-    ...(effort === "unknown"
-      ? []
-      : ["-c", `model_reasoning_effort=${JSON.stringify(effort)}`]),
-    "-",
-  ];
+  return codexExecArgv({
+    approval: "never",
+    rest: [
+      // Perturbations belong in the frozen copy: the mutation drill asks for
+      // them and the sandbox root is that copy.
+      "--sandbox",
+      "workspace-write",
+      "--strict-config",
+      "--model",
+      request.model,
+      "--cd",
+      request.cwd,
+      "--json",
+      "--output-schema",
+      schemaPath,
+      "-c",
+      'default_permissions="dotln-entropy"',
+      "-c",
+      'permissions.dotln-entropy.filesystem={":minimal"="read",":workspace_roots"="write"}',
+      "-c",
+      "permissions.dotln-entropy.network.enabled=false",
+      "-c",
+      'approval_policy="never"',
+      "-c",
+      'web_search="disabled"',
+      "-c",
+      "project_doc_max_bytes=0",
+      "-c",
+      "mcp_servers={}",
+      "-c",
+      "memories.use_memories=false",
+      "-c",
+      "memories.generate_memories=false",
+      "-c",
+      'shell_environment_policy.inherit="none"',
+      ...codexDisabled
+        .filter(
+          (feature) =>
+            !["shell_tool", "unified_exec", "code_mode_host"].includes(feature),
+        )
+        .flatMap((feature) => ["--disable", feature]),
+      ...(effort === "unknown"
+        ? []
+        : ["-c", `model_reasoning_effort=${JSON.stringify(effort)}`]),
+      "-",
+    ],
+  });
 }
 
 /** Two fixed shapes from writing-worker-smoke-2026-09-14, not a tool policy DSL.
@@ -513,54 +829,53 @@ function sourceChangeArgs(
       "--json-schema",
       JSON.stringify(transportResultSchema(request)),
     ];
-  return [
-    "-a",
-    "never",
-    "exec",
-    "--ephemeral",
-    "--ignore-user-config", // X-W1, X-U2
-    "--sandbox",
-    "workspace-write", // X-W1; not containment (X-W6)
-    "--strict-config",
-    "--model",
-    request.model,
-    "--cd",
-    request.cwd,
-    "--json", // X-W8
-    "--output-schema",
-    schemaPath, // Existing output-contract hardening
-    "-c",
-    'default_permissions="dotln-writer"', // X-W2
-    "-c",
-    'permissions.dotln-writer.filesystem={":minimal"="read",":workspace_roots"="write"}', // X-W2
-    "-c",
-    "permissions.dotln-writer.network.enabled=false", // X-W2
-    // Retained hardening; project instructions/hooks are not a Codex guarantee (X-W3).
-    "-c",
-    'web_search="disabled"',
-    "-c",
-    "project_doc_max_bytes=0",
-    "-c",
-    "mcp_servers={}",
-    "-c",
-    "memories.use_memories=false",
-    "-c",
-    "memories.generate_memories=false",
-    "-c",
-    'shell_environment_policy.inherit="none"',
-    // X-W1 needs native tools. WO-122's live row also requires the stable
-    // code-mode host: disabling it leaves model-exposed tools unable to run.
-    ...codexDisabled
-      .filter(
-        (feature) =>
-          !["shell_tool", "unified_exec", "code_mode_host"].includes(feature),
-      )
-      .flatMap((feature) => ["--disable", feature]),
-    ...(effort === "unknown"
-      ? []
-      : ["-c", `model_reasoning_effort=${JSON.stringify(effort)}`]),
-    "-",
-  ];
+  // The shared flags include --ignore-user-config (X-W1, X-U2).
+  return codexExecArgv({
+    approval: "never",
+    rest: [
+      "--sandbox",
+      "workspace-write", // X-W1; not containment (X-W6)
+      "--strict-config",
+      "--model",
+      request.model,
+      "--cd",
+      request.cwd,
+      "--json", // X-W8
+      "--output-schema",
+      schemaPath, // Existing output-contract hardening
+      "-c",
+      'default_permissions="dotln-writer"', // X-W2
+      "-c",
+      'permissions.dotln-writer.filesystem={":minimal"="read",":workspace_roots"="write"}', // X-W2
+      "-c",
+      "permissions.dotln-writer.network.enabled=false", // X-W2
+      // Retained hardening; project instructions/hooks are not a Codex guarantee (X-W3).
+      "-c",
+      'web_search="disabled"',
+      "-c",
+      "project_doc_max_bytes=0",
+      "-c",
+      "mcp_servers={}",
+      "-c",
+      "memories.use_memories=false",
+      "-c",
+      "memories.generate_memories=false",
+      "-c",
+      'shell_environment_policy.inherit="none"',
+      // X-W1 needs native tools. WO-122's live row also requires the stable
+      // code-mode host: disabling it leaves model-exposed tools unable to run.
+      ...codexDisabled
+        .filter(
+          (feature) =>
+            !["shell_tool", "unified_exec", "code_mode_host"].includes(feature),
+        )
+        .flatMap((feature) => ["--disable", feature]),
+      ...(effort === "unknown"
+        ? []
+        : ["-c", `model_reasoning_effort=${JSON.stringify(effort)}`]),
+      "-",
+    ],
+  });
 }
 
 function writerGit(cwd: string, args: readonly string[]): string {
@@ -818,6 +1133,8 @@ abstract class CliWorkOrderTransport implements WorkOrderTransport {
     private readonly onUsage?: (
       observation: ReturnType<typeof usageObservation>,
     ) => void,
+    /** The environment a Codex episode isolates; the caller's by default. */
+    private readonly launchEnv: NodeJS.ProcessEnv = process.env,
   ) {
     let installed = version;
     if (installed === undefined) {
@@ -845,6 +1162,7 @@ abstract class CliWorkOrderTransport implements WorkOrderTransport {
     now: () => number,
   ): TransportDispatch<TransportResultFor<R>> {
     const schemaDirectory = mkdtempSync(join(tmpdir(), "dotln-worker-schema-"));
+    let episode: CodexEpisode | undefined;
     try {
       const schemaPath = join(schemaDirectory, "result.json");
       const args = canonicalWorkerArgs(
@@ -863,11 +1181,16 @@ abstract class CliWorkOrderTransport implements WorkOrderTransport {
       const before = isWriterRequest(request)
         ? writerGit(request.cwd, ["rev-parse", "HEAD"])
         : undefined;
+      episode =
+        this.name === "codex-cli-exec"
+          ? startCodexEpisode(this.launchEnv)
+          : undefined;
       const process = this.runner({
         binary: this.binary,
         args,
         cwd: request.cwd,
         input: transportPrompt(request),
+        ...(episode ? { env: episode.env } : {}),
         timeoutMs: isEntropyReviewRequest(request)
           ? ENTROPY_REVIEW_LIMITS.timeoutMs
           : isEntropyRefutationRequest(request)
@@ -886,12 +1209,21 @@ abstract class CliWorkOrderTransport implements WorkOrderTransport {
         acceptedAt: now(),
       }));
       void receipt.catch(() => {});
+      // The home outlives the process, never the episode: it is removed and
+      // digested once the process has ended, whichever way it ended.
+      const started = episode;
+      const isolation = started
+        ? process.completed.then(
+            () => started.finish(),
+            () => started.finish(),
+          )
+        : undefined;
       const usage = process.completed.then((output) => {
         const observation = usageObservation(decodeUsageSource(output.stdout));
         this.onUsage?.(observation);
         return observation;
       });
-      const completed = Promise.all([process.completed, usage])
+      const completed = Promise.all([process.completed, usage, isolation])
         .then(([output]) => decodeResult(this.name, output, request, before))
         .finally(() => rmSync(schemaDirectory, { recursive: true }));
       void completed.catch(() => {});
@@ -902,8 +1234,10 @@ abstract class CliWorkOrderTransport implements WorkOrderTransport {
         alive: process.alive,
         kill: process.kill,
         usage,
+        ...(isolation ? { isolation } : {}),
       };
     } catch (error) {
+      episode?.finish();
       rmSync(schemaDirectory, { recursive: true });
       throw error;
     }
@@ -926,7 +1260,16 @@ export class CodexCliExecWorkOrderTransport extends CliWorkOrderTransport {
     runner?: ProcessRunner,
     version?: string,
     onUsage?: (observation: ReturnType<typeof usageObservation>) => void,
+    /** Whose Codex home an episode isolates; the caller's by default. */
+    launchEnv?: NodeJS.ProcessEnv,
   ) {
-    super("codex", OBSERVED_CLI_VERSIONS.codex, runner, version, onUsage);
+    super(
+      "codex",
+      OBSERVED_CLI_VERSIONS.codex,
+      runner,
+      version,
+      onUsage,
+      launchEnv,
+    );
   }
 }

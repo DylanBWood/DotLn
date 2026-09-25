@@ -1,4 +1,4 @@
-# WO-159 — Codex episode isolation: every DotLn-launched Codex worker, verifier and probe goes through one launcher that supplies a per-episode home seeded only with what authentication needs, the operator's user-level Codex configuration is byte-identical before and after each launch with the digests as protected receipt surfaces, and the WO-054 claim that continuation changes no user configuration is corrected
+# WO-159 — Codex episode isolation: every DotLn-launched Codex worker, verifier and probe goes through one launcher that supplies a per-episode home seeded only with what authentication needs, the operator's user-level Codex configuration is byte-identical before and after each launch with the digests as protected receipt surfaces, and the WO-054 claim that continuation changes no user configuration is corrected (v0.48.0)
 
 **Model:** the actual local Codex harness for the live rows; any capable
 model for the code. State the model and effort actually run

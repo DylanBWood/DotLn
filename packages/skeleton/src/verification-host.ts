@@ -23,6 +23,7 @@ import {
   type WorkerEffort,
 } from "./worker-protocol.js";
 import type {
+  CodexEpisodeIsolation,
   WorkOrderTransport,
   TransportDispatch,
 } from "./worker-transport.js";
@@ -299,6 +300,8 @@ export class VerificationHost {
       pending.command.commandId,
     );
     let result: EvidenceWorkerResult;
+    // WO-159: a Codex episode ends with its isolation record.
+    let codexIsolation: CodexEpisodeIsolation | undefined;
     if (cached) {
       result = cached;
       driver.record(
@@ -351,11 +354,14 @@ export class VerificationHost {
           }
         }, HEARTBEAT_MS);
         this.options.onRunning?.(dispatch);
-        result = parseEvidenceResult(await dispatch.completed, request);
+        const completed = await dispatch.completed;
+        codexIsolation = await dispatch.isolation;
+        result = parseEvidenceResult(completed, request);
         assertWorktreeSnapshot(request.capsule, cwd);
         if (heartbeatError) throw heartbeatError;
       } catch (error) {
         dispatch?.kill();
+        codexIsolation ??= await dispatch?.isolation?.catch(() => undefined);
         const code =
           error instanceof WorkerFailure ? error.code : "transport-failed";
         // Only an invalid-result refusal carries a detail, and only from the
@@ -374,6 +380,7 @@ export class VerificationHost {
             workerEpisodeId: episodeId,
             reason: code,
             ...(detail ? { detail } : {}),
+            ...(codexIsolation ? { codexIsolation } : {}),
           },
           pending.command.commandId,
         );
@@ -396,6 +403,7 @@ export class VerificationHost {
           workerEpisodeId: episodeId,
           reason: "worker-incomplete",
           result,
+          ...(codexIsolation ? { codexIsolation } : {}),
         },
         pending.command.commandId,
       );
@@ -434,6 +442,7 @@ export class VerificationHost {
           commandId: pending.command.commandId,
           workerEpisodeId: episodeId,
           resultEventId: observation.eventId,
+          ...(codexIsolation ? { codexIsolation } : {}),
         },
         pending.command.commandId,
       );
@@ -447,6 +456,7 @@ export class VerificationHost {
         workerEpisodeId: episodeId,
         envelope: result.envelope,
         resultEventId: accepted.eventId,
+        ...(codexIsolation ? { codexIsolation } : {}),
       },
       pending.command.commandId,
     );

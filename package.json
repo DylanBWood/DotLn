@@ -14,7 +14,7 @@
     "evidence:mutation": "node corpus/mutation/mutate.mjs",
     "skeleton": "npm run build --silent && node packages/skeleton/dist/src/cli.js",
     "dotln": "npm run build --silent && node packages/skeleton/dist/src/dotln.js",
-    "probe:workers": "node scripts/probe-worker-hosts.mjs",
+    "probe:workers": "npm run build --silent && node scripts/probe-worker-hosts.mjs",
     "test:workers:live": "npm run build --silent && node scripts/test-live-workers.mjs",
     "backup:intake": "bash scripts/backup-intake.sh",
     "format": "prettier --write . --ignore-unknown",

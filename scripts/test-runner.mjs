@@ -92,6 +92,8 @@ const machinerySources = {
     "scripts/lib/writing-worker-probe.mjs",
     "scripts/probe-worker-hosts.mjs",
     "scripts/test-harness-probe.mjs",
+    // WO-159: the probes build their Codex argv and home through the launcher.
+    "packages/skeleton/src/worker-transport.ts",
   ],
   "harness-fixtures": [
     "packages/skeleton/src/presence-heartbeat.ts",
@@ -104,6 +106,8 @@ const machinerySources = {
     "packages/skeleton/src/gate-evidence.mjs",
     "scripts/test-harness.mjs",
     "scripts/lib/harness-prune.mjs",
+    // WO-159: prune lists stale Codex episode homes through the launcher.
+    "packages/skeleton/src/worker-transport.ts",
     "scripts/test-observed-facts.mjs",
     "scripts/lib/executor-handoff.mjs",
     "scripts/resume.mjs",

@@ -608,28 +608,36 @@ const claudeStream = [
   "--verbose",
   "--include-hook-events",
 ];
+// WO-159: the one Codex launcher, loaded only when a Codex row runs, so a
+// copied tool root that only renders reports needs no build.
+let launcher = null;
+const loadCodexLauncher = async () =>
+  (launcher ??= await import(
+    pathToFileURL(
+      join(TOOL_ROOT, "packages/skeleton/dist/src/worker-transport.js"),
+    ).href
+  ));
 // `-a` is a global Codex option and precedes the subcommand (WO-039 shape).
 const codexBase = (
   selector,
   scratch,
   sandbox = "workspace-write",
   approval = "never",
-) => [
-  "-a",
-  approval,
-  "exec",
-  "--ephemeral",
-  "--ignore-user-config",
-  "--sandbox",
-  sandbox,
-  "--model",
-  selector.model,
-  "-c",
-  `model_reasoning_effort="${selector.effort}"`,
-  "--cd",
-  scratch,
-  "--json",
-];
+) =>
+  launcher.codexExecArgv({
+    approval,
+    rest: [
+      "--sandbox",
+      sandbox,
+      "--model",
+      selector.model,
+      "-c",
+      `model_reasoning_effort="${selector.effort}"`,
+      "--cd",
+      scratch,
+      "--json",
+    ],
+  });
 export function launchSelectors(harness, args) {
   const value = (flag) =>
     args.includes(flag) ? args[args.indexOf(flag) + 1] : null;
@@ -1068,7 +1076,7 @@ export async function runWritingWorker({
   out = findLaunchpad(),
   date = new Date().toISOString().slice(0, 10),
   launches = null,
-  env = process.env,
+  env: callerEnv = process.env,
   binary = harness === "claude" ? "claude" : "codex",
   base = tmpdir(),
   selector = SELECTORS[harness],
@@ -1079,11 +1087,18 @@ export async function runWritingWorker({
     throw new Error("writing-worker harness must be claude or codex");
   if (attempt !== null && !/^[a-z0-9-]+$/.test(attempt))
     throw new Error("Invalid attempt name");
-  const versionRun = spawnSync(binary, ["--version"], {
-    encoding: "utf8",
-    env,
-    timeout: 20_000,
-  });
+  const codex = harness === "codex" ? await loadCodexLauncher() : null;
+  const versionEpisode = codex?.startCodexEpisode(callerEnv) ?? null;
+  let versionRun;
+  try {
+    versionRun = spawnSync(binary, ["--version"], {
+      encoding: "utf8",
+      env: versionEpisode?.env ?? callerEnv,
+      timeout: 20_000,
+    });
+  } finally {
+    versionEpisode?.finish();
+  }
   // "2.1.270 (Claude Code)" and "codex-cli 0.154.0" reduce to the number.
   const version =
     ((versionRun.stdout ?? "").trim().split("\n")[0] ?? "").match(
@@ -1110,6 +1125,20 @@ export async function runWritingWorker({
       throw new Error(
         `retain probe observations; ${basename(target)} exists, choose a new date`,
       );
+    // WO-159: every Codex invocation in this row, including each concurrent
+    // session and a fresh recovery, runs in its own isolated home; the row
+    // keeps one labelled digest record per invocation, in launch order.
+    const codexEpisodes = [];
+    const isolated = async (label, launch) => {
+      const episode = codex?.startCodexEpisode(callerEnv) ?? null;
+      const slot = episode ? codexEpisodes.push(null) - 1 : -1;
+      try {
+        return await launch(episode?.env ?? callerEnv);
+      } finally {
+        if (episode)
+          codexEpisodes[slot] = { launch: label, ...episode.finish() };
+      }
+    };
     const tree = createScratchWorktree({ base });
     const launch = launchCatalog(harness, tree, selector)[name];
     if (launch.settingsDeny === false) {
@@ -1137,14 +1166,18 @@ export async function runWritingWorker({
       userScopeSettingsWritten: false,
     };
     if (launch.surface) {
-      Object.assign(record, { surface: helpSurface(binary, env) });
+      Object.assign(record, {
+        surface: await isolated("help", (env) => helpSurface(binary, env)),
+      });
     } else if (launch.background) {
+      // Claude only: the Codex catalog has no background launch, and its
+      // several invocations would otherwise share one home.
       Object.assign(record, {
         background: await backgroundSession(
           binary,
           tree,
           selector,
-          env,
+          callerEnv,
           aliases,
           timing,
         ),
@@ -1152,14 +1185,16 @@ export async function runWritingWorker({
       record.actor = { ...record.actor, model: selector.model, effort: "low" };
     } else if (launch.concurrent) {
       const runs = await Promise.all(
-        Array.from({ length: launch.concurrent }, () =>
-          runProcess({
-            binary,
-            args: launch.args,
-            cwd: tree.scratch,
-            env,
-            timeoutMs: 180_000,
-          }),
+        Array.from({ length: launch.concurrent }, (_, index) =>
+          isolated(`concurrent-${index + 1}`, (env) =>
+            runProcess({
+              binary,
+              args: launch.args,
+              cwd: tree.scratch,
+              env,
+              timeoutMs: 180_000,
+            }),
+          ),
         ),
       );
       Object.assign(record, {
@@ -1177,7 +1212,7 @@ export async function runWritingWorker({
     } else {
       const encoded = sessionDirectoryEncoded(tree.scratch);
       const sessionDirectory = join(
-        env.HOME ?? homedir(),
+        callerEnv.HOME ?? homedir(),
         ".claude",
         "projects",
         encoded,
@@ -1199,15 +1234,17 @@ export async function runWritingWorker({
             );
           }
         : null;
-      const run = await runProcess({
-        binary,
-        args: launch.args,
-        cwd: tree.scratch,
-        env,
-        timeoutMs: launch.timeoutMs ?? 300_000,
-        detached: Boolean(launch.detached),
-        killWhen,
-      });
+      const run = await isolated("exec", (env) =>
+        runProcess({
+          binary,
+          args: launch.args,
+          cwd: tree.scratch,
+          env,
+          timeoutMs: launch.timeoutMs ?? 300_000,
+          detached: Boolean(launch.detached),
+          killWhen,
+        }),
+      );
       const after = existsSync(sessionDirectory)
         ? readdirSync(sessionDirectory).length
         : 0;
@@ -1285,14 +1322,16 @@ export async function runWritingWorker({
           ...launch.args.slice(0, -1),
           "Read fixture.txt and report its current state, then finish the bounded edit to after if needed. Do not modify other files or settings. Reply RESUMED_OK.",
         ];
-        const recovered = await runProcess({
-          binary,
-          args: recoveryArgs,
-          cwd: tree.scratch,
-          env,
-          detached: true,
-          timeoutMs: 120_000,
-        });
+        const recovered = await isolated("recovery", (env) =>
+          runProcess({
+            binary,
+            args: recoveryArgs,
+            cwd: tree.scratch,
+            env,
+            detached: true,
+            timeoutMs: 120_000,
+          }),
+        );
         const afterRecovery = observeScratch(tree);
         record.recovery = {
           mode: "fresh-episode-on-preserved-worktree",
@@ -1315,6 +1354,14 @@ export async function runWritingWorker({
             "unavailable: launch profile disables session persistence; transport worker-store recovery not exercised",
         };
       }
+    }
+    if (codex) {
+      // Observed for Codex from each invocation's isolation digests; Claude
+      // remains a claim.
+      record.codexEpisodes = codexEpisodes;
+      record.userScopeSettingsWritten = codexEpisodes.some(
+        (episode) => !codex.codexDigestPairEqual(episode.userConfig),
+      );
     }
     writeFileSync(target, JSON.stringify(record, null, 2) + "\n");
     written.push(target);

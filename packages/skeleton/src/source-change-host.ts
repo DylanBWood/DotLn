@@ -25,6 +25,7 @@ import {
   type WriterResult,
 } from "./worker-protocol.js";
 import type {
+  CodexEpisodeIsolation,
   WorkOrderTransport,
   TransportDispatch,
 } from "./worker-transport.js";
@@ -457,6 +458,8 @@ export class SourceChangeHost {
       let timer: ReturnType<typeof setInterval> | undefined;
       let heartbeatError: unknown;
       let result: WriterResult;
+      // WO-159: a Codex episode ends with its isolation record.
+      let codexIsolation: CodexEpisodeIsolation | undefined;
       const revokeCommands = installSourceChangeCommands({
         launchpad: this.options.launchpadCheckout,
         target: this.tree.path,
@@ -513,17 +516,21 @@ export class SourceChangeHost {
           }
         }, HEARTBEAT_MS);
         this.options.onRunning?.(dispatch);
-        result = parseStoredWriterResult(await dispatch.completed, request);
+        const completed = await dispatch.completed;
+        codexIsolation = await dispatch.isolation;
+        result = parseStoredWriterResult(completed, request);
         if (heartbeatError) throw heartbeatError;
         if (this.now() >= this.attempts().at(-1)!.leaseExpiresAt)
           throw new WorkerFailure("interrupted", "source-change lease expired");
       } catch (error) {
         dispatch?.kill();
+        codexIsolation ??= await dispatch?.isolation?.catch(() => undefined);
         this.record("WorkerInterrupted", {
           workerEpisodeId: episodeId,
           commandId: this.command.commandId,
           reason:
             error instanceof WorkerFailure ? error.code : "transport-failed",
+          ...(codexIsolation ? { codexIsolation } : {}),
         });
         throw error;
       } finally {
@@ -535,6 +542,7 @@ export class SourceChangeHost {
         workerEpisodeId: episodeId,
         commandId: this.command.commandId,
         envelope: result.envelope,
+        ...(codexIsolation ? { codexIsolation } : {}),
       });
       const effect = this.tree.effect();
       if (!effect) return this.refuse("worker-returned-no-commit");

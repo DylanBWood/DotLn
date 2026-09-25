@@ -25,6 +25,7 @@ import {
   ClaudeCliPrintWorkOrderTransport,
   CodexCliExecWorkOrderTransport,
   runWorkerProcess,
+  type CodexEpisodeIsolation,
   type ProcessRunner,
 } from "./worker-transport.js";
 
@@ -82,7 +83,10 @@ export function startCliEpisode(
     if (scratch) rmSync(scratch, { recursive: true, force: true });
     scratch = undefined;
   };
-  const failed = (error: unknown): ActorResult => {
+  const failed = (
+    error: unknown,
+    isolation?: CodexEpisodeIsolation,
+  ): ActorResult => {
     release();
     return {
       ...actorFailure("worker-failed"),
@@ -91,6 +95,7 @@ export function startCliEpisode(
         failure:
           error instanceof WorkerFailure ? error.code : "transport-failed",
         ...(subject ? { subject } : {}),
+        ...(isolation ? { isolation } : {}),
       },
     };
   };
@@ -123,16 +128,27 @@ export function startCliEpisode(
     const dispatched = transport.dispatch(request, Date.now);
     return {
       kill: dispatched.kill,
-      completed: Promise.all([dispatched.receipt, dispatched.completed]).then(
-        ([, result]): ActorResult => {
+      completed: Promise.all([
+        dispatched.receipt,
+        dispatched.completed,
+        dispatched.isolation,
+      ]).then(
+        ([, result, isolation]): ActorResult => {
           release();
           return {
             ...actorFailure("worker-result"),
             exitCode: 0,
-            worker: { launch, result, ...(subject ? { subject } : {}) },
+            worker: {
+              launch,
+              result,
+              ...(subject ? { subject } : {}),
+              ...(isolation ? { isolation } : {}),
+            },
           };
         },
-        failed,
+        // The home is removed once the process ends, however it ended.
+        async (error) =>
+          failed(error, await dispatched.isolation?.catch(() => undefined)),
       ),
     };
   } catch (error) {

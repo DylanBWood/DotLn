@@ -30,6 +30,7 @@ import {
   type WorkerResult,
 } from "./worker-protocol.js";
 import type {
+  CodexEpisodeIsolation,
   WorkOrderTransport,
   TransportDispatch,
 } from "./worker-transport.js";
@@ -180,6 +181,8 @@ export class WorkerHost {
       gate.event,
     );
     let result: WorkerResult;
+    // WO-159: a Codex episode ends with its isolation record.
+    let codexIsolation: CodexEpisodeIsolation | undefined;
     if (cached) {
       result = cached;
       this.record(
@@ -230,9 +233,11 @@ export class WorkerHost {
         }, HEARTBEAT_MS);
         this.options.onRunning?.(dispatch);
         result = await dispatch.completed;
+        codexIsolation = await dispatch.isolation;
         if (heartbeatError) throw heartbeatError;
       } catch (error) {
         dispatch?.kill();
+        codexIsolation ??= await dispatch?.isolation?.catch(() => undefined);
         const code =
           error instanceof WorkerFailure ? error.code : "transport-failed";
         const detail =
@@ -244,6 +249,7 @@ export class WorkerHost {
             commandId: command.commandId,
             reason: code,
             ...(detail ? { detail } : {}),
+            ...(codexIsolation ? { codexIsolation } : {}),
           },
           started.event,
         );
@@ -281,6 +287,7 @@ export class WorkerHost {
           reason: "worker-incomplete",
           envelope: result.envelope,
           result,
+          ...(codexIsolation ? { codexIsolation } : {}),
         },
         started.event,
       );
@@ -312,6 +319,7 @@ export class WorkerHost {
           commandId: command.commandId,
           envelope: result.envelope,
           resultEventId: observation.event.eventId,
+          ...(codexIsolation ? { codexIsolation } : {}),
         },
         observation.event,
       );
@@ -332,6 +340,7 @@ export class WorkerHost {
         commandId: command.commandId,
         envelope: result.envelope,
         resultEventId: resultStep.event.eventId,
+        ...(codexIsolation ? { codexIsolation } : {}),
       },
       resultStep.event,
     );

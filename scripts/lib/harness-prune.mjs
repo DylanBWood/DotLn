@@ -12,7 +12,15 @@ import {
   rmSync,
   writeFileSync,
 } from "node:fs";
-import { dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
+import {
+  basename,
+  dirname,
+  isAbsolute,
+  join,
+  relative,
+  resolve,
+  sep,
+} from "node:path";
 import { runGit, parseWorktrees } from "./git.mjs";
 import { localReleaseRecords } from "./release-records.mjs";
 import {
@@ -24,6 +32,7 @@ import {
   harnessWriterView,
   harnessProcessAlive,
 } from "../../packages/skeleton/dist/src/harness-host.js";
+import { staleCodexEpisodeHomes } from "../../packages/skeleton/dist/src/worker-transport.js";
 
 const digest = (value) => createHash("sha256").update(value).digest("hex");
 const json = (path) => JSON.parse(readFileSync(path, "utf8"));
@@ -489,5 +498,9 @@ export function pruneHarness(root, { apply = false, ...options } = {}) {
     bytes: plan.bytes,
     candidates: plan.candidates.map(({ absolute, inventory, ...row }) => row),
     retained: plan.retained,
+    // WO-159: listed, not pruned here; the next Codex launch removes them.
+    staleCodexEpisodeHomes: staleCodexEpisodeHomes(options.codexHomeRoot).map(
+      (path) => basename(path),
+    ),
   };
 }

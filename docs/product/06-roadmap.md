@@ -20,6 +20,15 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-159 activation completion (2026-09-25):** assigned application `v0.48.0`,
+the next minor above the observed local `v0.47.1` tag, under the declared minor
+classification (WO-159-D011). Every DotLn-launched Codex worker, verifier and
+probe now runs through one launcher with a per-episode home holding only a link
+to the operator's authentication, and records before/after digests of the
+user-level Codex configuration and its trust table. `@dotln/skeleton` moves to
+`0.41.0`; compiler, kernel and console versions are unchanged. Independent
+verification, final review and publication remain separate dispatches.
+
 **WO-111 activation completion (2026-09-24):** assigned application `v0.46.3`,
 the next patch above the observed local `v0.46.2` tag, under the declared patch
 classification. The scratch live receipts show three verified derived orders,
