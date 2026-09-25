@@ -2211,6 +2211,13 @@ the named commands do not test are the portfolio author's to cover. Open: the
 utility ranking and measured payoff curve, explicit Blackjack +3 side-game
 rules, loops that replenish, retry, and the four-track inspector.
 
+**Status 2026-09-25 (WO-159).** The containment precondition for Codex
+workers on an operator-owned repository is met: every DotLn-launched Codex
+episode runs in its own isolated home and records before/after digests of the
+operator's user-level Codex configuration, which a live source-change-prefix
+probe left byte-identical while the CLI wrote its trust entry into the isolated
+home ([WO-159 decisions](../evidence/WO-159/decisions.md)).
+
 ## Corpus policy
 
 `docs/intake/` (gitignored) holds raw material; committed docs are synthesized.
