@@ -16339,6 +16339,16 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-25T01:51:18.596Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated by the 2026-09-25 off-ramps pass under the operator's direction that the pass decides its own questions: the scratchpad root Claude Code prints at session start is granted, derived from the session id and project path, as an operator-directed boy-scout item on WO-158, which edits the same classifier.",
+          "reopenWhen": "the item is declined at WO-158's activation, or a refusal for the host-printed root recurs after WO-158 closes",
+          "targets": [
+            "WO-158"
+          ],
+          "at": "2026-09-25T02:18:21.167Z"
         }
       ]
     },

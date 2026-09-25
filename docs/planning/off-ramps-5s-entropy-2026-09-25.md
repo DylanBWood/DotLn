@@ -150,7 +150,13 @@ one read-only admission:
   `operator override: off` when the runtime can run `resume`, printed as
   an advisory command when it cannot; never a precondition.
 - Read-only admission during a live gate (category K): a fixed list
-  without redirect operands.
+  without redirect operands. The same classifier admits the scratchpad
+  root Claude Code prints at session start as a granted root, derived
+  from the session id and project path: three agents in this session were
+  refused for following the host's own instruction, and the operator
+  directed that this pass decide such questions itself (an
+  operator-directed boy-scout item on WO-158's catalog row, since a
+  post-receipt edit to the order would move the judged subject).
 
 Category B, C and D routes are machinery of the integrate helper and the
 runner, so they are WO-160 (§5). Category E is a report convention over
@@ -178,7 +184,9 @@ observation to seven Codex argv builders, six of them copies outside the
 transport; the order builds one launcher with a per-episode home seeded
 for authentication only, records before/after digests of the user-level
 configuration and its trust table as protected receipt surfaces, and
-adopts the launcher at the six sites. The transport is a feedback source,
+adopts the launcher at the six sites. On 2026-09-25 the operator removed
+every user-level trust entry but the DotLn project's, so WO-159's baseline
+is one entry, not WO-111's 43. The transport is a feedback source,
 so the order pays one live feedback self-host episode after its edits
 settle. It must close before WO-066, WO-112 and WO-118.
 
