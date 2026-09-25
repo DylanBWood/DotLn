@@ -1,0 +1,7 @@
+{
+  "schemaVersion": 1,
+  "nonEventPaths": {
+    "events.jsonl": "WO-111 sanitized resident event projection (original receipt edition; not EventEnvelope)",
+    "return-events.jsonl": "WO-111 sanitized resident event projection (original receipt edition; not EventEnvelope)"
+  }
+}

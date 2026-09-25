@@ -12,6 +12,8 @@ import { decodeLog, encodeLog } from "@dotln/kernel";
 import { DOCUMENT_GATE_STUBS } from "./lib/document-gate-stubs.mjs";
 import { expandSuiteTasks, suites } from "./test-runner.mjs";
 
+import { evidenceJsonlDeclarations } from "./lib/evidence-jsonl.mjs";
+
 const REGISTRY = "packages/kernel/test/fixtures/jsonl-protocols.json";
 const STUBS = "scripts/lib/document-gate-stubs.mjs";
 
@@ -38,12 +40,19 @@ export function registrationFindings(root = findLaunchpad()) {
     { encoding: "utf8", maxBuffer: 64 * 1024 * 1024 },
   )
     .split("\0")
-    .filter((path) => path.endsWith(".jsonl") && existsSync(join(root, path)));
+    .filter((path) => existsSync(join(root, path)));
+  const evidence = evidenceJsonlDeclarations(root, files);
   const findings = [];
   let streams = 0;
   let classified = 0;
-  for (const path of [...new Set(files)].sort()) {
-    if (Object.hasOwn(registry.nonEventPaths, path) || segment.test(path)) {
+  for (const path of [...new Set(files)]
+    .filter((path) => path.endsWith(".jsonl"))
+    .sort()) {
+    if (
+      Object.hasOwn(registry.nonEventPaths, path) ||
+      evidence.has(path) ||
+      segment.test(path)
+    ) {
       classified += 1;
       continue;
     }
@@ -54,7 +63,7 @@ export function registrationFindings(root = findLaunchpad()) {
       streams += 1;
     } catch (error) {
       findings.push(
-        `unregistered JSONL: ${path} is not an EventEnvelope stream (${error instanceof Error ? error.message : String(error)}) and ${REGISTRY} does not classify it`,
+        `unregistered JSONL: ${path} is not an EventEnvelope stream (${error instanceof Error ? error.message : String(error)}) and neither ${REGISTRY} nor its order evidence declaration classifies it`,
       );
     }
   }

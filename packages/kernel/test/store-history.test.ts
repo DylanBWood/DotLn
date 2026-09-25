@@ -15,24 +15,43 @@ const protocols = JSON.parse(
   nonEventPaths: Record<string, string>;
   controlSegmentPattern: string;
 };
-test("WO-045 committed EventEnvelope streams decode and round-trip byte-identically", (t) => {
-  const paths = execFileSync(
+test("WO-045 committed EventEnvelope streams decode and round-trip byte-identically", async (t) => {
+  const allPaths = execFileSync(
     "git",
-    ["ls-files", "-z", "--", "docs", "packages", "corpus"],
+    [
+      "ls-files",
+      "-z",
+      "--cached",
+      "--others",
+      "--exclude-standard",
+      "--",
+      "docs",
+      "packages",
+      "corpus",
+    ],
     { cwd: root, encoding: "utf8" },
   )
     .split("\0")
-    .filter(
-      (path) =>
-        path.endsWith(".jsonl") &&
-        /^(docs\/|corpus\/|packages\/[^/]+\/fixtures\/)/.test(path),
-    );
+    .filter(Boolean);
+  const { evidenceJsonlDeclarations } = await import(
+    new URL("../../../../scripts/lib/evidence-jsonl.mjs", import.meta.url).href
+  );
+  const evidence = evidenceJsonlDeclarations(root, allPaths) as Map<
+    string,
+    string
+  >;
+  const paths = allPaths.filter(
+    (path) =>
+      path.endsWith(".jsonl") &&
+      /^(docs\/|corpus\/|packages\/[^/]+\/fixtures\/)/.test(path),
+  );
   let streams = 0,
     events = 0,
     otherProtocols = 0;
-  for (const path of paths) {
+  for (const path of new Set(paths)) {
     if (
       Object.hasOwn(protocols.nonEventPaths, path) ||
+      evidence.has(path) ||
       new RegExp(protocols.controlSegmentPattern).test(path)
     ) {
       otherProtocols++;

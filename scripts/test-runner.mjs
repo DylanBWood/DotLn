@@ -35,6 +35,7 @@ import {
   confinementRefusal,
 } from "./lib/host-confinement.mjs";
 
+import { classifyDocumentFailures } from "./lib/document-failures.mjs";
 import { evidenceSources } from "./lib/evidence-sources.mjs";
 import { findLaunchpad } from "./lib/config.mjs";
 
@@ -106,6 +107,7 @@ const machinerySources = {
     "packages/skeleton/src/gate-evidence.mjs",
     "scripts/test-harness.mjs",
     "scripts/lib/harness-prune.mjs",
+    "scripts/lib/stash-drop.mjs",
     // WO-159: prune lists stale Codex episode homes through the launcher.
     "packages/skeleton/src/worker-transport.ts",
     "scripts/test-observed-facts.mjs",
@@ -178,6 +180,8 @@ const machinerySources = {
     "packages/skeleton/src/evidence-editions.mjs",
     "scripts/test-runner.test.mjs",
     "scripts/lib/document-gate-stubs.mjs",
+    "scripts/lib/document-failures.mjs",
+    "scripts/lib/evidence-jsonl.mjs",
     "scripts/check-registrations.mjs",
     "scripts/test-gate-deadlines.mjs",
     "scripts/test-release-fixtures.mjs",
@@ -223,6 +227,8 @@ const machinerySources = {
     "docs/",
     "scripts/check-registrations.mjs",
     "scripts/lib/document-gate-stubs.mjs",
+    "scripts/lib/document-failures.mjs",
+    "scripts/lib/evidence-jsonl.mjs",
     "scripts/test-runner.mjs",
     "packages/kernel/test/fixtures/jsonl-protocols.json",
   ],
@@ -691,6 +697,7 @@ export function executeSuite(
       durationMs: Date.now() - started,
       output: error.message,
       executed: true,
+      failureKind: "setup",
     });
   }
   return new Promise((resolveRun) => {
@@ -802,6 +809,15 @@ export function executeSuite(
       resolveRun({
         name: row.name,
         durationMs,
+        ...(failure || timedOut || stopped
+          ? {
+              failureKind: failure
+                ? "launch"
+                : timedOut
+                  ? "timeout"
+                  : "stopped",
+            }
+          : {}),
         startedAt: new Date(started).toISOString(),
         finishedAt: new Date().toISOString(),
         exitCode: timedOut || stopped ? 1 : (code ?? 1),
@@ -1125,7 +1141,8 @@ async function runGateChecks(
     serial = false,
     list = false,
     confinedPartial = false,
-    only;
+    only,
+    against;
   for (let index = 0; index < args.length; index++) {
     const arg = args[index];
     if (arg === "--document") document = true;
@@ -1136,12 +1153,21 @@ async function runGateChecks(
     else if (arg === "--confined-partial") confinedPartial = true;
     else if (arg === "--fresh") {
       /* Every invocation is fresh. */
-    } else if (arg === "--only" && !only) only = args[++index];
+    } else if (
+      arg === "--against" &&
+      !against &&
+      args[index + 1] &&
+      !args[index + 1].startsWith("--")
+    )
+      against = args[++index];
+    else if (arg === "--only" && !only) only = args[++index];
     else
       throw new Error(
-        "usage: test-runner [--document|--machinery|--review] [--only <suite>] [--confined-partial] [--serial] [--list]",
+        "usage: test-runner [--document|--machinery|--review] [--only <suite>] [--against <rev>] [--confined-partial] [--serial] [--list]",
       );
   }
+  if (against && !document)
+    throw new Error("--against requires --document (npm run test:docs)");
   if (only && !table.some((row) => row.name === only))
     throw new Error(`Unknown suite: ${only}`);
   let selected = table.filter((row) =>
@@ -1283,6 +1309,20 @@ async function runGateChecks(
       throw new Error(
         `Gate stopped by request after ${((Date.now() - started) / 1000).toFixed(1)} s; no check recorded for tree ${treeHash}`,
       );
+    const failureComparisons = document
+      ? await classifyDocumentFailures(repo, tasks, taskRows, {
+          against,
+          signal: stop.signal,
+          execute: (row, cwd, signal) =>
+            executeSuite(row, cwd, 900_000, undefined, signal),
+        })
+      : [];
+    for (const observation of failureComparisons)
+      console.log(
+        `${observation.classification} ${observation.name} against ${observation.base ?? "unavailable"}${observation.reason ? `: ${observation.reason}` : ""}`,
+      );
+    if (stopping())
+      throw new Error("Gate stopped during base comparison; no check recorded");
     const rows = aggregateSuiteRows(selected, tasks, taskRows);
     const unchanged = gateCodeIdentity(repo) === codeIdentity;
     // A root that survives every suite's own teardown is a failed gate; the
@@ -1317,6 +1357,7 @@ async function runGateChecks(
       ...(sandbox.marker ? { sandbox } : {}),
       ...(abandoned.length ? { abandonedRoots: abandoned } : {}),
       cases: rows,
+      ...(document ? { failureComparisons } : {}),
       loadClass: {
         sharedCap: concurrency,
         factorPerSlot: 2,
@@ -1344,7 +1385,7 @@ async function runGateChecks(
     } catch {
       /* Standalone fixture. */
     }
-    if (!only && !document && !machinery) recordGateChecks(repo, [check]);
+    if (!only && !machinery) recordGateChecks(repo, [check]);
     console.log(
       `${checkId}: ${rows.filter((row) => row.exitCode === 0).length} passed; ${rows.filter((row) => row.exitCode !== 0).length} failed; ${(check.durationMs / 1000).toFixed(2)} s; ${check.freshSuites} fresh tasks${unchanged ? "" : "; code changed"}${abandoned.length ? `; abandoned fixture roots: ${abandoned.join(", ")}` : ""}${confinedPartial ? `; partial, not product-gate evidence: excluded ${check.excludedSuites.join(", ") || "none"}` : ""}`,
     );
