@@ -1,23 +1,23 @@
 # Current control state
 
-## WO-158
+## WO-161
 
-- Work order: WO-158
-- Work-order path: docs/work-orders/WO-158-lifecycle-off-ramps.md
+- Work order: WO-161
+- Work-order path: docs/work-orders/WO-161-sandbox-vocabulary.md
 - Phase: closed
-- Latest verification: VER-003
-- Verification path: docs/verifications/WO-158/VER-003.md
+- Latest verification: VER-002
+- Verification path: docs/verifications/WO-161/VER-002.md
 - Latest verdict: pass
-- Final review: FINAL-002
-- Final-review path: docs/final-reviews/WO-158/FINAL-002.md
-- Latest attestation: harness claude-code; version 2.1.282; model claude-opus-5-5; effort xhigh; source claude-session-readback; account not-applicable
-- Effort drift: xhigh -> xhigh (subagents) (raw: ultra)
-- Latest recordedAt: 2026-09-25T16:22:35.089Z
-- Elapsed implementation: 8383557 ms
-- Elapsed verification: 943500 ms
-- Elapsed repair: 930895 ms
-- Elapsed finalReview: 1127963 ms
-- Latest checkpoint: dde84847d03c75d66eed45eec08095f987a945cd (restore: `git checkout refs/dotln/checkpoint/WO-158/17 -- .`)
+- Final review: FINAL-001
+- Final-review path: docs/final-reviews/WO-161/FINAL-001.md
+- Latest attestation: harness claude-code; version 2.1.282; model claude-fable-5-1; effort xhigh; source claude-session-readback; account not-applicable
+- Effort drift: xhigh (subagents) (raw: ultra) -> xhigh
+- Latest recordedAt: 2026-09-25T18:48:00.750Z
+- Elapsed implementation: 2581154 ms
+- Elapsed verification: 983317 ms
+- Elapsed repair: 1470956 ms
+- Elapsed finalReview: 1238789 ms
+- Latest checkpoint: d031cd222fbc53d5e9b36f80fa1ccb46e3ded5e4 (restore: `git checkout refs/dotln/checkpoint/WO-161/10 -- .`)
 - Legal next actions: release-close, next, activate
 - Legal off-ramps: none
 

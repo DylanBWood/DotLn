@@ -16804,6 +16804,67 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-6f7834c355df7feb",
+      "key": "decision:docs/evidence/WO-161/decisions.md#wo-161-d006",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "cca2e214e20c8624ec1781d45b969d09f848d90f983fd63ac5b68aa1b8569ea2",
+          "ref": "docs/evidence/WO-161/decisions.md#wo-161-d006",
+          "title": "WO-161-D006: WO-161 VER-001 repair: F1 delete or scope contributor.ts:70's 'need no Git escalation' clause to the retained Codex workspace-write plus on-request mode and regenerate, re-pinning the WO-",
+          "summary": "{ \"id\": \"WO-161-D006\", \"date\": \"2026-09-25\", \"dispatch\": \"resume: verify; VER-001\", \"decision\": \"Fail independent verification and route eight reproduced, repairable defects to resume: fix. All six acceptance criteria are met on the current subject, but the cold-start text still carries the removed Codex approval path's 'need no Git escalation' clause (F1), two hand-written surfaces still state a current sandbox/approval posture (F2), and six smaller record and naming defects remain (F3 to F8). The operator accepted failing the order to repair them during this dispatch.\", \"evidence\": [ \"docs/verifications/WO-161/VER-001.md findings F1 to F8, each with its reproduction\", \"packages/skeleton/sr",
+          "missing": false
+        },
+        {
+          "hash": "71a1f054744f2cf3b81ce00f644bac5d5de23be814df4736c4ea8e216bd8ed4b",
+          "ref": "docs/evidence/WO-161/decisions.md#wo-161-d006",
+          "title": "WO-161-D006: WO-161 VER-001 repair: F1 delete or scope contributor.ts:70's 'need no Git escalation' clause to the retained Codex workspace-write plus on-request mode and regenerate, re-pinning the WO-",
+          "summary": "{ \"id\": \"WO-161-D006\", \"date\": \"2026-09-25\", \"dispatch\": \"resume: verify; VER-001\", \"decision\": \"Fail independent verification and route eight reproduced, repairable defects to resume: fix. All six acceptance criteria are met on the current subject, but the cold-start text still carries the removed Codex approval path's 'need no Git escalation' clause (F1), two hand-written surfaces still state a current sandbox/approval posture (F2), and six smaller record and naming defects remain (F3 to F8). The operator accepted failing the order to repair them during this dispatch.\", \"evidence\": [ \"docs/verifications/WO-161/VER-001.md findings F1 to F8, each with its reproduction\", \"packages/skeleton/sr",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "VER-001 F1-F8 repaired on WO-161; generated-role, confined-row, publication, documentation and full product checks passed at the repair subject.",
+          "reopenWhen": "A later independent verification reproduces any of VER-001 findings F1-F8 on the repaired subject.",
+          "targets": [],
+          "at": "2026-09-25T18:04:57.677Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-be91067a3842b44a",
+      "key": "decision:docs/evidence/WO-161/decisions.md#wo-161-d007",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "625188233f16c612a887b8b800e57dd37a816b25424cff082d4e67adc37375ae",
+          "ref": "docs/evidence/WO-161/decisions.md#wo-161-d007",
+          "title": "WO-161-D007: Planner: scripts/test-evidence-sources.mjs:266-269 fails whenever the current feedback edition is a carried edition (since WO-158 feedback-002): the WO-154 pins-only test should resolve t",
+          "summary": "{ \"id\": \"WO-161-D007\", \"date\": \"2026-09-25\", \"dispatch\": \"resume: verify; VER-001\", \"decision\": \"Board up the inherited evidence-sources machinery failure; do not route it to WO-161's repair. scripts/test-evidence-sources.mjs:266-269 asserts that the current feedback edition is itself its live audit, which has been false since WO-158 selected the carried edition WO-158/feedback-002. WO-161's carried WO-161/feedback-001 keeps the same shape.\", \"evidence\": [ \"npm run test:machinery on the current subject, 2026-09-25T17:27:14Z to 17:33:17Z: 18 passed, 1 failed; evidence-sources 'WO-154 a pins-only change keeps or carries the live audit' expected docs/evidence/WO-161/feedback-001, actual docs/ev",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-422f1b3cdd4b7330",
+      "key": "decision:docs/evidence/WO-161/decisions.md#wo-161-d008",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "395de7c6221b8ddd4502a4c99ade6e831dfdc5a755bfa9a721f9da22701795c0",
+          "ref": "docs/evidence/WO-161/decisions.md#wo-161-d008",
+          "title": "WO-161-D008: Planner: docs/product/02-domain-model.md:913-915 still names native sandbox/approval as the control for arbitrary interpreters and shell indirection; under the ADR-0003 2026-09-25 amendme",
+          "summary": "{ \"id\": \"WO-161-D008\", \"date\": \"2026-09-25\", \"dispatch\": \"resume: verify; VER-001\", \"decision\": \"Board up docs/product/02-domain-model.md:913-915, which assigns arbitrary interpreters and shell indirection to 'native sandbox/approval and operator responsibilities'. It is the same kind of claim WO-161 corrects, but it lies outside the order's named surfaces and its planning audit.\", \"evidence\": [ \"docs/product/02-domain-model.md:913-915 (unchanged from HEAD)\", \"docs/work-orders/WO-161-sandbox-vocabulary.md Design and criterion 2 name the playbook, README.md, product 07 and ADRs 0003 to 0005\", \"docs/planning/off-ramps-5s-entropy-2026-09-25.md §6 does not list the line\" ], \"rejected\": [ { \"opti",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

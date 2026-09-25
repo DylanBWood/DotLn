@@ -1,0 +1,114 @@
+{
+  "recordedAt": "2026-09-25T17:50:32.516Z",
+  "measurement": "UTF-8 bytes of whole lines containing sandbox, case insensitive; cold start is CLAUDE.md plus role SKILL.md",
+  "floor": {
+    "path": "CLAUDE.md",
+    "totalBytes": 6096,
+    "sandboxLineBytes": 0,
+    "sandboxLines": []
+  },
+  "roles": [
+    {
+      "path": ".agents/skills/dotln-executor/SKILL.md",
+      "totalBytes": 19627,
+      "sandboxLineBytes": 0,
+      "sandboxLines": [],
+      "coldStartBytes": 25723,
+      "coldStartSandboxLineBytes": 0
+    },
+    {
+      "path": ".agents/skills/dotln-planner/SKILL.md",
+      "totalBytes": 10684,
+      "sandboxLineBytes": 0,
+      "sandboxLines": [],
+      "coldStartBytes": 16780,
+      "coldStartSandboxLineBytes": 0
+    },
+    {
+      "path": ".agents/skills/dotln-refuter/SKILL.md",
+      "totalBytes": 10259,
+      "sandboxLineBytes": 0,
+      "sandboxLines": [],
+      "coldStartBytes": 16355,
+      "coldStartSandboxLineBytes": 0
+    },
+    {
+      "path": ".agents/skills/dotln-release-close/SKILL.md",
+      "totalBytes": 8536,
+      "sandboxLineBytes": 0,
+      "sandboxLines": [],
+      "coldStartBytes": 14632,
+      "coldStartSandboxLineBytes": 0
+    },
+    {
+      "path": ".agents/skills/dotln-reviewer/SKILL.md",
+      "totalBytes": 17512,
+      "sandboxLineBytes": 0,
+      "sandboxLines": [],
+      "coldStartBytes": 23608,
+      "coldStartSandboxLineBytes": 0
+    },
+    {
+      "path": ".agents/skills/dotln-verifier/SKILL.md",
+      "totalBytes": 16430,
+      "sandboxLineBytes": 0,
+      "sandboxLines": [],
+      "coldStartBytes": 22526,
+      "coldStartSandboxLineBytes": 0
+    },
+    {
+      "path": ".claude/skills/dotln-executor/SKILL.md",
+      "totalBytes": 19627,
+      "sandboxLineBytes": 0,
+      "sandboxLines": [],
+      "coldStartBytes": 25723,
+      "coldStartSandboxLineBytes": 0
+    },
+    {
+      "path": ".claude/skills/dotln-planner/SKILL.md",
+      "totalBytes": 10684,
+      "sandboxLineBytes": 0,
+      "sandboxLines": [],
+      "coldStartBytes": 16780,
+      "coldStartSandboxLineBytes": 0
+    },
+    {
+      "path": ".claude/skills/dotln-refuter/SKILL.md",
+      "totalBytes": 10259,
+      "sandboxLineBytes": 0,
+      "sandboxLines": [],
+      "coldStartBytes": 16355,
+      "coldStartSandboxLineBytes": 0
+    },
+    {
+      "path": ".claude/skills/dotln-release-close/SKILL.md",
+      "totalBytes": 8536,
+      "sandboxLineBytes": 0,
+      "sandboxLines": [],
+      "coldStartBytes": 14632,
+      "coldStartSandboxLineBytes": 0
+    },
+    {
+      "path": ".claude/skills/dotln-reviewer/SKILL.md",
+      "totalBytes": 17512,
+      "sandboxLineBytes": 0,
+      "sandboxLines": [],
+      "coldStartBytes": 23608,
+      "coldStartSandboxLineBytes": 0
+    },
+    {
+      "path": ".claude/skills/dotln-verifier/SKILL.md",
+      "totalBytes": 16430,
+      "sandboxLineBytes": 0,
+      "sandboxLines": [],
+      "coldStartBytes": 22526,
+      "coldStartSandboxLineBytes": 0
+    }
+  ],
+  "historicalAuthorityCount": 129,
+  "historicalAuthorityChanged": [],
+  "hostConfinement": {
+    "marker": null,
+    "inForce": false
+  }
+}

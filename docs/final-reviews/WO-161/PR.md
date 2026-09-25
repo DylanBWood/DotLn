@@ -1,0 +1,51 @@
+# WO-161
+
+Every DotLn session has been told at cold start that a host sandbox and a Codex approval path stand between it and the repository. Neither exists on the operator's host: Claude Code's Bash sandbox is off in this checkout, Codex runs full access with no approval, and Copilot has no sandbox setting. The operator said so on 2026-09-25, and the planning audit found the sentences that were wrong: the residue clause every role reads, two loadout sentences emitted into six generated skills, the playbook's instruction to keep execution inside the enabled shell sandbox, three ADRs still saying keep the sandbox on, and a detector named as if it were a sandbox.
+
+This pull request lands WO-161. The cold-start text now says only what is true of the host, the posture is recorded as a dated decision, and the detector is named for what it does.
+
+- **The generated role text and floor.** The residue line reads "Pre-effect envelope checks unavailable in this harness; host permission settings decide." The product-gate sentence is conditional on the runner's runtime probe ("if the runner reports that the host confines the process, run the printed outside command"), and the Codex approval sentence, with its "need no Git escalation" clause, is gone. `git grep -i sandbox` over `CLAUDE.md` and both skill roots returns nothing; at `main` it returns 11 lines. Every role's cold start is smaller: executor 25,819 → 25,723 bytes, verifier 22,698 → 22,526, reviewer 23,780 → 23,608.
+- **The posture as a decision.** ADR-0003 gains a dated amendment: host sandboxes off in Claude Code, Codex and Copilot at the operator's 2026-09-25 direction, DotLn's five refusals plus the host permission mode as the boundary, and a list of what it supersedes and what stays in force. ADR-0004 and ADR-0005 cross-reference it. The playbook, `README.md`, the security note, the docs index and product 07 state the same posture and confine the retained checkpoint approval procedure to Codex `workspace-write` with `on-request`.
+- **The detector.** `scripts/lib/gate-sandbox.mjs` is `scripts/lib/host-confinement.mjs`, `detectGateSandbox` is `detectHostConfinement`, and the runner flag is `npm test -- --confined-partial`. It probes whether the host denies a write and fails open; it creates nothing. The recorded identities are unchanged: a partial row still carries `checkId` `npm test -- --inside-sandbox`, a suite still declares `needs: outside-sandbox`, and the diagnostic field is still `sandbox`, so no historical gate row or consumer changes meaning.
+- **The authority label.** New Contributor compilations carry `contributor.bounded` with the constraint "DotLn refusals and host permission settings define the boundary"; the allowed and denied effects, the three outside-write grants and the one-writer limit are unchanged, and a new writer test pins them. All 129 historical `authority.json` files keep `contributor.sandboxed` byte for byte; the evidence tools reproduce the frozen WO-042 and WO-099 identities by restoring exactly the three old labels.
+
+**What a reviewer should know.**
+
+- **Only the CLI flag changed.** `npm test -- --inside-sandbox` is now a usage error; the same string remains the recorded identity of a confined partial row, which is still never product-gate evidence. The `needs: outside-sandbox` declaration keeps its name for the same reason.
+- **The ADR Status lines and `## Decision` headings were annotated in place,** beyond the Amendments-only mechanism product 07 admits, so a reader at the top of a sandbox-on title sees the current posture ([D009](docs/evidence/WO-161/decisions.md#wo-161-d009)). The decision bodies are byte-identical. The final review records this as an open question for the operator rather than a defect.
+- **Two out-of-scope sentences are boarded.** `scripts/test-evidence-sources.mjs` fails whenever the current feedback edition is a carried one, which has been so since WO-158; its declared sources are unchanged here, so the review selection does not run it ([D007](docs/evidence/WO-161/decisions.md#wo-161-d007), `FUP-be91067a3842b44a`). Product 02 still names "native sandbox/approval" as a control for arbitrary interpreters ([D008](docs/evidence/WO-161/decisions.md#wo-161-d008), `FUP-422f1b3cdd4b7330`).
+- **The user-level Claude setting is outside this repository** and untouched; the effective posture of a linked worktree rests on the operator's attestation, as the security note says. This session's gate probe found no confinement.
+- **Not exercised:** no genuinely confined host ran live. Confined behavior is shown by the runner fixture and the executable method script, both compared against `main`'s runner. No live feedback episode ran; the feedback edition carries WO-159's audit by reference.
+
+**How the review went.** [VER-001](docs/verifications/WO-161/VER-001.md) found all six criteria met and failed the order anyway: six generated skills still carried the removed approval path's "need no Git escalation" clause, two hand-written surfaces still stated a sandbox-on posture as current, and six record and naming defects remained. The [repair](docs/evidence/WO-161/repair.md) fixed all eight at the generator and on the named surfaces, added an assertion that forbids the escalation clause in every generated role, and made the confined-row method executable. [VER-002](docs/verifications/WO-161/VER-002.md) passed. [FINAL-001](docs/final-reviews/WO-161/FINAL-001.md) reproduced the grep, the byte table, the historical-authority immutability and the confined-row projection itself, re-ran every check and ran the product gate; it found no new defect, and `main` had not moved.
+
+**Validation.** The reviewer's `npm test -- --review` on the subject passed **37 suites, 0 failed, 602.12 s, 81 fresh tasks, exit 0**, with no confinement in force. It ran on tree `4e659995f41f24246fc2cfaddb0c7f8af48ef8cc` at code identity `17655ddca8c6450bac73e611c0d97632f3ac4eabb8e40bdb555cc4768381a590`, the identity the repair's and VER-002's gates recorded, and that row binds the released bytes. `harness check` (31 surfaces), the cold-start check (every ceiling held), `publication:check`, `plan check`, `release check-surfaces --local` (44 PASS) and the four edition checks all pass. `git diff --check` is clean. The lockfile changes only the two component versions and their pins, so no dependency was added.
+
+This prepares application `v0.50.0` as a minor release over `v0.49.0` (`852861d3`). `@dotln/compiler` moves `0.19.0` → `0.19.1` for the changed emitted wording and `@dotln/skeleton` `0.42.0` → `0.43.0` for the new Contributor label; kernel and console versions are unchanged. `docs/evidence/current.json` selects authority `WO-161/002`, artifact identity and verification `WO-161/001`, and feedback `WO-161/001`, which carries WO-159's live audit.
+
+Full evidence: [decisions D001 to D011](docs/evidence/WO-161/decisions.md), the [implementation](docs/evidence/WO-161/implementation.md) and [repair](docs/evidence/WO-161/repair.md) records, the two verification reports, the final review and [the order](docs/work-orders/WO-161-sandbox-vocabulary.md).
+
+<!-- dotln-process-meter:start -->
+
+Observation cutoff: 2026-09-25T18:45:27.216Z; source: canonical control events and the recorded gate, usage and harness observations collected by npm run meta.
+
+| Work | Phase ms / attempts | Gate ms | Read files / bytes | Observed tokens / USD | Declared prompt tokens | Corrections |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| WO-156 | 6,375,647 (Δ unavailable) / 7 | unavailable (Δ unavailable) | unavailable (Δ unavailable) / unavailable (Δ unavailable) | unavailable (Δ unavailable) / unavailable (Δ unavailable) | unavailable (Δ unavailable) | 0 (Δ unavailable) |
+| WO-114 | 9,819,246 (Δ 3,443,599) / 5 | unavailable (Δ unavailable) | unavailable (Δ unavailable) / unavailable (Δ unavailable) | unavailable (Δ unavailable) / unavailable (Δ unavailable) | unavailable (Δ unavailable) | 0 (Δ 0) |
+| WO-111 | 13,529,831 (Δ 3,710,585) / 7 | unavailable (Δ unavailable) | unavailable (Δ unavailable) / unavailable (Δ unavailable) | unavailable (Δ unavailable) / unavailable (Δ unavailable) | unavailable (Δ unavailable) | 0 (Δ 0) |
+| WO-159 | 9,710,838 (Δ -3,818,993) / 5 | unavailable (Δ unavailable) | unavailable (Δ unavailable) / unavailable (Δ unavailable) | unavailable (Δ unavailable) / unavailable (Δ unavailable) | unavailable (Δ unavailable) | 0 (Δ 0) |
+| WO-158 | 16,502,905 (Δ 6,792,067) / 8 | unavailable (Δ unavailable) | unavailable (Δ unavailable) / unavailable (Δ unavailable) | unavailable (Δ unavailable) / unavailable (Δ unavailable) | unavailable (Δ unavailable) | 0 (Δ 0) |
+| WO-161 | 6,580,027 (Δ -9,922,878) / 4 | 2,664,864 (Δ unavailable) | 3 (Δ unavailable) / 27,706 (Δ unavailable) | 66,357,473 (Δ unavailable) / unavailable (Δ unavailable) | 1,019 (Δ unavailable) | 2 (Δ 2) |
+
+Unavailable observations are not zero; unset ceilings are not approvals of a future limit.
+
+| Dispatch | Wall ms (Δ) | Context bytes (Δ) | Commands (Δ) | Tokens (Δ) | Steps (Δ) | USD (Δ) / declared prompt tokens |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| WO-161/executor | 4,052,110 (-7,055,722) | unavailable (unavailable) | unavailable (unavailable) | 27,358,600 (unavailable) | 187 (unavailable) | unavailable (unavailable) / 1,019 |
+| WO-161/verifier | 2,527,917 (21,291) | 337,143 (unavailable) | 518 (unavailable) | 35,153,323 (unavailable) | 596 (unavailable) | unavailable (unavailable) / unavailable |
+| WO-161/reviewer | 1,083,434 (-1,805,013) | unavailable (unavailable) | 76 (unavailable) | 3,845,550 (unavailable) | 84 (unavailable) | unavailable (unavailable) / unavailable |
+| WO-161/release-close | unavailable (unavailable) | unavailable (unavailable) | unavailable (unavailable) | unavailable (unavailable) | unavailable (unavailable) | unavailable (unavailable) / unavailable |
+| WO-161/planner | unavailable (unavailable) | unavailable (unavailable) | unavailable (unavailable) | unavailable (unavailable) | unavailable (unavailable) | unavailable (unavailable) / unavailable |
+| WO-161/refuter | unavailable (unavailable) | unavailable (unavailable) | unavailable (unavailable) | unavailable (unavailable) | unavailable (unavailable) | unavailable (unavailable) / unavailable |
+<!-- dotln-process-meter:end -->

@@ -1,0 +1,15 @@
+{
+  "checkId": "npm test -- --inside-sandbox",
+  "evidenceRefSuffix": "npm test -- --inside-sandbox",
+  "needs": "outside-sandbox",
+  "partial": true,
+  "excludedSuites": [
+    "outside"
+  ],
+  "requiredSuites": [
+    "document-barrier",
+    "alpha"
+  ],
+  "inForce": true,
+  "exitCode": 0
+}
