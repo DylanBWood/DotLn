@@ -586,9 +586,13 @@ export async function collectMeta(
     .sort(([, a], [, b]) =>
       (a.closeRecordedAt ?? "").localeCompare(b.closeRecordedAt ?? ""),
     );
+  // A withdrawn order is settled (WO-158): it is neither recent close
+  // evidence nor work in flight.
   const selected = [
     ...closed.slice(-5),
-    ...[...control.orders].filter(([, row]) => row.state.phase !== "closed"),
+    ...[...control.orders].filter(
+      ([, row]) => !["closed", "withdrawn"].includes(row.state.phase),
+    ),
   ];
   const coldStart = measureColdStarts(root, previousEdition);
   const sequencePath = docRelative(root, "planning", "sequence.md");
@@ -654,7 +658,7 @@ export async function collectMeta(
     const prior = snapshot?.orders?.find(
       (entry) => entry.workOrder === workOrder,
     );
-    const active = row.state.phase !== "closed";
+    const active = !["closed", "withdrawn"].includes(row.state.phase);
     const contextEdition = json(
       root,
       docRelative(root, "evidence", `${workOrder}/harness-context.json`),
@@ -952,7 +956,9 @@ export async function collectMeta(
       ceiling,
       verdict: budgetVerdict(budgets, metric, value, ceiling),
     });
-  for (const order of orders.filter((row) => row.phase !== "closed")) {
+  for (const order of orders.filter(
+    (row) => !["closed", "withdrawn"].includes(row.phase),
+  )) {
     for (const metric of ["fastGateMs", "prBodyBytes"])
       budgetRows.push({
         metric,
@@ -1109,7 +1115,7 @@ export function renderMetaTable(meta) {
     "| Dispatch | Wall ms (Δ) | Context bytes (Δ) | Commands (Δ) | Tokens (Δ) | Steps (Δ) | USD (Δ) / declared prompt tokens |",
     "| --- | ---: | ---: | ---: | ---: | ---: | ---: |",
     ...meta.orders
-      .filter((row) => row.phase !== "closed")
+      .filter((row) => !["closed", "withdrawn"].includes(row.phase))
       .flatMap((order) =>
         order.dispatches.map(
           (row) =>

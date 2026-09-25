@@ -266,6 +266,20 @@ await test("test-control-segments", async (t) => {
         ["final-review"],
         ["final-review-result", "pass", ...actorArgs],
         ["release-close"],
+        // WO-158 off-ramps read the same fold and refuse on the same damage.
+        ["waive", "2", "--reason", "fixture", ...actorArgs],
+        ["withdraw", "--disposition", "failed", ...actorArgs],
+        ["correct", "1", "--set", "model=fixture", ...actorArgs],
+        [
+          "override-record",
+          "--bypassed",
+          "fixture",
+          "--effects",
+          "none",
+          "--reason",
+          "fixture",
+          ...actorArgs,
+        ],
       ];
 
       for (const [bytes, expected] of mutations) {

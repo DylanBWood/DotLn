@@ -155,9 +155,12 @@ export const branchWorkOrder = (root) => {
   }
 };
 
+// A withdrawn order is settled like a closed one: nothing is in flight.
 export const openOrders = (control) =>
   [...control.orders]
-    .filter(([, row]) => !["closed", "none"].includes(row.state.phase))
+    .filter(
+      ([, row]) => !["closed", "none", "withdrawn"].includes(row.state.phase),
+    )
     .map(([id]) => id);
 
 // Across segments, "latest" means Git integration order, never wall-clock order.

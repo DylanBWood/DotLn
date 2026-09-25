@@ -31,5 +31,9 @@ export const renderAttestation = (actor) => {
     accountLabel,
   } = projectActor(actor);
   const effortText = renderEffort({ effort, raw, mode });
-  return `harness ${harness}; version ${harnessVersion}; model ${model}; effort ${effortText}; source ${source}; account ${accountLabel}`;
+  // WO-158: a RecordCorrected event names itself beside the values it set.
+  const corrected = Array.isArray(actor.correctedBy)
+    ? `; corrected by ordinal ${actor.correctedBy.join(", ")}`
+    : "";
+  return `harness ${harness}; version ${harnessVersion}; model ${model}; effort ${effortText}; source ${source}; account ${accountLabel}${corrected}`;
 };

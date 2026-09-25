@@ -1259,12 +1259,14 @@ export async function amendPlanOrder(
       new RegExp(`^${workOrderId}-D\\d{3}$`, "u").test(decisionId),
       "execution amendment decision must belong to the order",
     );
-    const sourceOrderHash = sha256(
-      executionAmendmentSource(
-        committedReader(root, receipt.subject.revision).read(order.path),
-      ),
+    const filed = committedReader(root, receipt.subject.revision).read(
+      order.path,
     );
-    const amendedSource = executionAmendmentSource(read(root, order.path));
+    const sourceOrderHash = sha256(executionAmendmentSource(filed));
+    const amendedSource = executionAmendmentSource(
+      read(root, order.path),
+      filed,
+    );
     const orderHash = sha256(amendedSource);
     check(
       sourceOrderHash !== orderHash,

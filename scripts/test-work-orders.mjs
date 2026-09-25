@@ -28,6 +28,7 @@ import {
 } from "./lib/release-records.mjs";
 import {
   checkIndex,
+  checkSequenceTopology,
   parseHeader,
   parseSequence,
   readIndex,
@@ -1239,6 +1240,106 @@ await check(
         ).blocking.length,
         release === "v1.0.0" ? 0 : 1,
       );
+  },
+);
+
+await check(
+  "WO-158 a withdrawn order is a settled Closed entry under its disposition, unmet: withdrawn for dependents and closed for the sequence",
+  () => {
+    const target = makeRepo("withdrawn-index");
+    const human = {
+      harness: "human",
+      harnessVersion: "not-applicable",
+      model: "human",
+      effort: "unknown",
+      source: "operator-attested",
+    };
+    const captured = {
+      capture: "docs/intake/notes/operator.md",
+      captureHash: `sha256:${"a".repeat(64)}`,
+      actor: human,
+    };
+    write(target, authorityPath("WO-030"), typedHeader("WO-030", []));
+    write(
+      target,
+      authorityPath("WO-099"),
+      typedHeader("WO-099", [dependency("WO-030", "hard")]),
+    );
+    write(
+      target,
+      planningPath,
+      sequenceSource([
+        ["WO-099", "dependent"],
+        ["WO-030", "prerequisite"],
+      ]),
+    );
+    writeLog(target, [activation("WO-030"), activation("WO-099")]);
+    assert.throws(
+      () => checkSequenceTopology(readIndex(target, [])),
+      /WO-099 -> WO-030 \(hard\): dependency follows its dependent/,
+    );
+    writeLog(target, [
+      activation("WO-030"),
+      {
+        type: "CriterionWaived",
+        workOrderId: "WO-030",
+        criterionId: "2",
+        reason: "accepted deviation",
+        ...captured,
+      },
+      {
+        type: "WorkOrderWithdrawn",
+        workOrderId: "WO-030",
+        disposition: "superseded",
+        reason: "replaced by WO-099",
+        orderHash: `sha256:${"b".repeat(64)}`,
+        ...captured,
+      },
+      activation("WO-099"),
+    ]);
+    const projection = readIndex(target, []);
+    const byId = new Map(projection.rows.map((row) => [row.id, row]));
+    assert.equal(byId.get("WO-030").section, "Closed");
+    assert.equal(byId.get("WO-030").phase, "withdrawn");
+    assert.equal(
+      byId.get("WO-030").dependencyState,
+      "typed; activation not applicable",
+    );
+    assert.equal(
+      byId.get("WO-099").dependencyState,
+      "typed; blocked on WO-030",
+    );
+    assert.doesNotThrow(() => checkSequenceTopology(projection));
+    const rendered = renderIndex(projection);
+    assert.match(rendered, /\*\*Now:\*\* \[WO-099\] — active\./);
+    assert.match(
+      rendered,
+      /^- \[ \] \[WO-030\] — prerequisite · \*\*withdrawn: superseded\*\*$/m,
+    );
+    const closed = rendered.split("## Closed\n")[1].split(/\n## /)[0];
+    assert.match(closed, /### WO-030/);
+    assert.match(closed, /- State: withdrawn\./);
+    assert.match(
+      closed,
+      /- Withdrawal: superseded at ordinal 3 — replaced by WO-099\./,
+    );
+    assert.match(closed, /- Waived criteria: 2 by ordinal 2\./);
+    assert.match(rendered, /WO-030: hard \(unmet: withdrawn\)/);
+    assert.match(rendered, /never counts as a pass/);
+    // A release edge is met by its release, so it keeps the release remedy.
+    const release = projectDependencies(
+      parseDependencies(
+        typedHeader("WO-099", [
+          dependency("WO-030", "satisfied-by-release", { release: "v9.9.9" }),
+        ]),
+        authorityPath("WO-099"),
+      ),
+      new Map(),
+      new Set(),
+      new Map([["WO-030", "superseded"]]),
+    );
+    assert.equal(release.entries[0].state, "unmet");
+    assert.equal(release.entries[0].detail, undefined);
   },
 );
 

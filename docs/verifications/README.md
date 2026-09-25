@@ -18,6 +18,17 @@ current subject, and relevant prior reports before appending the next report.
 The final reviewer reads the original work order and the complete ordered
 verification sequence so the code → verify → fix history remains visible.
 
+**Criterion lines (WO-158, 2026-09-25).** A report judges an acceptance
+criterion once, on one line outside code fences (as a paragraph, a bullet or
+numbered item, or a quotation): `**Criterion <id>:** met`,
+`**Criterion <id>:** unmet`, or, for a criterion the operator waived through
+`npm run resume -- waive`, `**Criterion <id>:** unmet, waived by <ordinal>`
+naming that `CriterionWaived` event's ordinal. A waiver neither passes nor
+fails the criterion. `verification-result` and `final-review-result` refuse a
+pass over an unwaived unmet line, a waiver the control log lacks, and an unmet
+line that omits the waiver the log holds. A wrong verdict takes a later report;
+`npm run resume -- correct` never changes a verdict or a report's bytes.
+
 **Current attestation contract (WO-132, 2026-09-15).** The verifier records
 its actual harness, version, model, effort and epistemic source. These fields
 are required as observations; discovery gaps, version minimums, effort
