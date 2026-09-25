@@ -1,6 +1,6 @@
 // Origin: {"ids":["no-attribution"],"loadoutId":"contributor","semanticHash":"fnv1a64:41aa929faf455544"}
-const { runCommitMessageHook } = await import("../../.runtime/harness/c07fee7fdc83d9ee/packages/skeleton/dist/src/harness-host.js");
-const { feedbackBoundary } = await import("../../.runtime/harness/c07fee7fdc83d9ee/packages/skeleton/dist/src/feedback-boundary.js");
+const { runCommitMessageHook } = await import("../../.runtime/harness/fa15c8d28a80773f/packages/skeleton/dist/src/harness-host.js");
+const { feedbackBoundary } = await import("../../.runtime/harness/fa15c8d28a80773f/packages/skeleton/dist/src/feedback-boundary.js");
 await runCommitMessageHook({
   "compilerPackageVersion": "0.18.0",
   "runtime": {
@@ -137,7 +137,7 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/cli-actor-contract.js",
-        "hash": "fnv1a64:acdbcdb6531ba63a"
+        "hash": "fnv1a64:872502f1ee6a8e10"
       },
       {
         "path": "packages/skeleton/dist/src/handoff-contract.js",
@@ -168,7 +168,7 @@ await runCommitMessageHook({
         "hash": "fnv1a64:5ad495017c40b9b2"
       }
     ],
-    "snapshot": ".runtime/harness/c07fee7fdc83d9ee"
+    "snapshot": ".runtime/harness/fa15c8d28a80773f"
   },
   "policy": {
     "contractVersion": "feedback-v1",
