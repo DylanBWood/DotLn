@@ -16,7 +16,7 @@ import {
   writeFileSync,
 } from "node:fs";
 import { release as osRelease, tmpdir } from "node:os";
-import { dirname, join, resolve } from "node:path";
+import { dirname, join, relative, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import { spawnSync } from "node:child_process";
 import {
@@ -2020,7 +2020,7 @@ const main = async () => {
       latest,
       new Date().toISOString().slice(0, 10),
     );
-    applyReleasePreparation(plan);
+    const written = applyReleasePreparation(plan);
     if (existsSync(docPath(toolRoot, "control", "budgets.json"))) {
       const { collectMeta, renderMetaTable } = await import("./lib/meta.mjs");
       const meta = await collectMeta(toolRoot);
@@ -2042,11 +2042,14 @@ const main = async () => {
             block,
           )
         : `${source.trimEnd()}\n\n${block}\n`;
-      mkdirSync(dirname(path), { recursive: true });
-      writeFileSync(path, next);
+      if (!existsSync(path) || next !== source) {
+        mkdirSync(dirname(path), { recursive: true });
+        writeFileSync(path, next);
+        written.push(path);
+      }
     }
     process.stdout.write(
-      `${plan.edits.length ? `Retimed ${state.workOrderId}: ${plan.previous} → ${plan.target}; updated its heading, README claim, and dated roadmap note.` : `${state.workOrderId} target ${plan.target} remains current; no files changed.`}\nTag observation: ${localOnly ? "local snapshot only" : "origin"}.\n`,
+      `${plan.edits.length ? `Retimed ${state.workOrderId}: ${plan.previous} → ${plan.target}.` : `${state.workOrderId} target ${plan.target} remains current.`}\n${written.length ? `Files changed:\n${written.map((path) => `  ${relative(toolRoot, path)}`).join("\n")}` : "no files changed."}\nTag observation: ${localOnly ? "local snapshot only" : "origin"}.\n`,
     );
     return;
   }

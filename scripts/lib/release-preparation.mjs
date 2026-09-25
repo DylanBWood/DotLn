@@ -166,4 +166,5 @@ export function applyReleasePreparation(plan, write = writeFileSync) {
     for (const edit of written.reverse()) writeFileSync(edit.path, edit.before);
     throw error;
   }
+  return written.map((edit) => edit.path);
 }

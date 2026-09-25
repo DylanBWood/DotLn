@@ -69,7 +69,10 @@ test("release preparation retimes only three source surfaces and is idempotent",
     const plan = f.plan();
     assert.equal(plan.target, "v0.13.3");
     assert.deepEqual(f.snapshot(), f.sources, "planning must not write");
-    applyReleasePreparation(plan);
+    assert.deepEqual(
+      applyReleasePreparation(plan),
+      plan.edits.map((edit) => edit.path),
+    );
     const after = f.snapshot();
     assert.equal(
       after[f.state.workOrderPath],

@@ -514,8 +514,19 @@ grep -Fq 'WO-099 collision retiming' "$main/docs/product/06-roadmap.md"
 diff -r "$main/docs/control" "$fixture/control-before"
 git -C "$main" for-each-ref >"$fixture/refs-after"
 cmp "$fixture/refs-before" "$fixture/refs-after"
+for written in docs/work-orders/WO-099-fixture.md README.md docs/product/06-roadmap.md; do
+  grep -Fxq "  $written" <<<"$prepared"
+done
 prepared_again="$(release_command prepare --local)"
 grep -Fq 'no files changed' <<<"$prepared_again"
+# WO-160: an unchanged version can still change the process meter.
+cp "$script_dir/../docs/control/budgets.json" "$main/docs/control/budgets.json"
+pr_only="$(release_command prepare --local)"
+grep -Fq 'target v0.2.1 remains current' <<<"$pr_only"
+grep -Fxq '  docs/final-reviews/WO-099/PR.md' <<<"$pr_only"
+if grep -Fq 'no files changed' <<<"$pr_only"; then exit 1; fi
+meter_again="$(release_command prepare --local)"
+grep -Fxq '  docs/final-reviews/WO-099/PR.md' <<<"$meter_again"
 release_command check-surfaces --local >/dev/null
 printf 'release preparation CLI preserved three independent control segments and all Git refs\n'
 }
