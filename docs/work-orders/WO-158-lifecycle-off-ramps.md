@@ -1,4 +1,4 @@
-# WO-158 — Lifecycle off-ramps: a criterion waiver, a withdrawal, a record correction and an override record are typed events with their own `resume` commands, `withdrawn` is a terminal phase every projection knows, and a live gate admits read-only commands
+# WO-158 — Lifecycle off-ramps: a criterion waiver, a withdrawal, a record correction and an override record are typed events with their own `resume` commands, `withdrawn` is a terminal phase every projection knows, and a live gate admits read-only commands (v0.49.0)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).

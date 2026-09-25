@@ -261,6 +261,10 @@ table includes the shared goal card and the refuter's separate subject boundary.
    | `resume: verify`        | `npm run resume -- verify`                                                                                                                                                                                                 | verify, writing the exact `VER-NNN` path it allocates                                                                                                                                                                                                                    |
    | `resume: final review`  | `npm run resume -- final-review`                                                                                                                                                                                           | review into the allocated `FINAL-NNN`; on pass, record it, commit the reviewed state, push only the WO branch, and open its PR                                                                                                                                           |
    | `resume: release close` | run the exact `cd <main> && node <main>/scripts/release.mjs close WO-NNN --publish` command projected by `resume release-close` or printed by `worktree publish`; after the subject is already removed, use main's copy | update main, consume the reviewer product gate, publish the validated tag and Release, then attempt worktree cleanup; if Release creation fails after tag push, rerun from updated main |
+   | the operator accepts criterion N unmet (words captured) | `npm run resume -- waive N --reason <text> --capture <intake file> --capture-hash sha256:<digest> <actor-flags>` from the operator's terminal, a verifier or a reviewer session (WO-158) | the report records `**Criterion N:** unmet, waived by <ordinal>`; the order's executor never records a waiver |
+   | the operator withdraws the order (words captured) | `npm run resume -- withdraw --disposition failed\|superseded\|abandoned --reason <text> --capture <intake file> --capture-hash sha256:<digest> <actor-flags>` (WO-158) | stop: `withdrawn` is terminal, and only `npm run resume -- activate` of a changed revision with a new dated `**Reactivation (YYYY-MM-DD):**` note leaves it |
+   | a recorded attestation, report path or checkpoint is wrong | `npm run resume -- correct <ordinal\|report-path> --set <field>=<value> --reason <text> <actor-flags>` (WO-158) | never correct a verdict or edit a filed report; a wrong verdict takes a later report |
+   | `operator override: off` | nothing in Claude, whose hook appends `OperatorOverrideRecorded`; otherwise the printed `npm run resume -- override-record ...` command (WO-158) | record what the override changed in the order's decisions |
 
    Codex sandbox approval for state-changing transitions is harness
    procedure, not lifecycle contract, and lives with the other harness
@@ -795,6 +799,85 @@ report, amend a criterion to pass, or type a hookless commit. The catalog
 and the design are in
 [the off-ramps planning document](../planning/off-ramps-5s-entropy-2026-09-25.md)
 §3 and §4.
+
+**Implemented in WO-158 (2026-09-25).** The recovery event shape is closed.
+Each route is a `resume` command that appends its typed event with the actor
+attestation and a recovery checkpoint, refuses outside its legal phases with
+those phases and the lifecycle's legal commands, and projects in
+`status --json` (`legalOffRamps`, `waivedCriteria`, `withdrawal`,
+`corrections`, `overrideRecords`), `current.md` and the work-order index. The
+fold validates each event's shape; the route judges its legality.
+
+- `npm run resume -- waive <criterion> --reason <text> --capture <path> --capture-hash sha256:<digest> <actor-flags>`
+  appends `CriterionWaived` in `verifying`, `needs-fix`, `repairing`,
+  `verified` or `final-review`. The capture is an ignored, untracked file under
+  the intake root holding the operator's words, checked against the stated
+  SHA-256 (the `plan override --capture` shape); the criterion must be one
+  the order's acceptance criteria number. The order's executor is refused:
+  any session variable of the command (`CODEX_THREAD_ID`,
+  `COPILOT_AGENT_SESSION_ID`, `CLAUDE_CODE_SESSION_ID`, `CLAUDE_SESSION_ID`)
+  naming an executor journal for the order, or a live writer reservation held
+  by one, which the command's environment cannot rename. The event records
+  the recording session's role and whether the capture file was created
+  during that session. A waiver changes no phase and neither passes nor
+  fails a criterion: a report judges it on a
+  `**Criterion <id>:** unmet, waived by <ordinal>` line, and
+  `verification-result` and `final-review-result` refuse a pass over an
+  unwaived `**Criterion <id>:** unmet` line, a waiver the log lacks, and an
+  `unmet` line that omits the waiver the log holds.
+- `withdraw --disposition failed|superseded|abandoned --reason <text> --capture <path> --capture-hash sha256:<digest> <actor-flags>`
+  appends `WorkOrderWithdrawn` from any phase but `closed` and `withdrawn`
+  (from `none` only for an allocated order) and records the authority's
+  SHA-256 and the digests of its existing reactivation notes. Phase
+  `withdrawn` claims no success and is terminal: its one legal action is
+  `npm run resume -- activate <id> <path>` in place, which requires a changed
+  authority carrying a new `**Reactivation (YYYY-MM-DD):**` note dated on or
+  after the withdrawal, on a calendar date (VER-001 F1 reactivated with
+  `9999-99-99`; the digit shape alone is not a date). A withdrawn order is settled like a closed one: it is not open,
+  carries no completion, gate-attribution, meta or resident-binding duty, is
+  listed unchecked under the index's Closed section with its disposition, and
+  the sequence topology check skips edges to it. A typed dependency on it is
+  `unmet` with `detail: withdrawn`, because it never closes as filed. The v2
+  control beacon has no withdrawn phase, so the order's previous beacon ages
+  to stale.
+- `correct <ordinal|report-path> --set <field>=<value> [--set ...] --reason <text> <actor-flags>`
+  appends `RecordCorrected` for `model`, `effort`, `source`, `harnessVersion`,
+  `reportPath`, `checkpointRef` or `checkpointSha` of an event in the current
+  activation. A verdict is never corrected (a later `VER-NNN` or a failing
+  final review is its route) and no report byte changes. A recorded result
+  carries `reportHash`, the SHA-256 of the report it judged; a report path
+  moves only on a recorded result, only to a normalized path of the same
+  report id, and only to a file holding those bytes (for a result recorded
+  before digests, the bytes at its current path), so a verdict never rests on
+  another report (VER-001 F2 rebound a pass to a different `VER-001.md`).
+  The correction records the digest it checked. A correction never records
+  `claude-session-readback`: only the session that appended the event read
+  its `CLAUDE_EFFORT`, so an effort correction on such an event also sets
+  `source operator-attested`; `ultra` spellings correct to `xhigh`. The fold
+  projects the corrected attestation with `correctedBy`, and a report path
+  names the event whose corrected path it is. A completion whose effort disagrees with a readable
+  `CLAUDE_EFFORT` is refused with the readback value
+  ([WO-157-D027](../evidence/WO-157/decisions.md#wo-157-d027)); an absent
+  readback refuses nothing.
+- `override-record --bypassed <items> --effects <items> --reason <text> [--capture <path> --capture-hash sha256:<digest>] <actor-flags>`
+  appends `OperatorOverrideRecorded` in any open phase. Claude's session hook
+  runs it at `operator override: off` with
+  `--bypassed dotln-hook-enforcement --effects unobserved` and a capture of
+  the operator's own prompts during the override, retained in the
+  session-local operator-control state. Each capture is created exclusively;
+  a second exit in the same second takes the next numbered name, so every
+  record keeps naming the words whose digest it stored (VER-001 F3). When the pinned runtime cannot load,
+  or a live gate or another writer refuses it, the hook prints the exact
+  command and the role's completion carries the duty; with no open order
+  (closed, withdrawn or none selected) the override and what it changed go to
+  the order's decisions instead. Codex's `node scripts/operator-control.mjs
+  off` prints the same advisory. The record is never a precondition for
+  entering or leaving override.
+
+Declined: a verdict-changing correction, one generic exception event, an
+override record as a precondition, and retroactive events for closed orders.
+Whether the operator waives WO-111's criterion 2 or withdraws WO-111 is the
+operator's call. See [the WO-158 decisions](../evidence/WO-158/decisions.md).
 
 ## Operator-opened ideation mode
 
@@ -2167,6 +2250,31 @@ claim evidence or releases it does not have.
   Shell-special prefixes such as `!` (zsh's clobber override) and `=` remain
   opaque and are refused during a live gate (VER-004 F1); the adapter does
   not pass their ambiguous spelling to the path classifier.
+  **WO-158 read-only list (2026-09-25).** Beside that adapter a live gate
+  admits a fixed list, judged stage by stage across every pipeline and
+  command list: `cat`, `head`, `tail`, `wc`, `ls`, `grep`, `sed -n` with a
+  script whose every command prints (numeric, `$` or `/regex/` addresses),
+  `git --no-pager diff|log|show|status|stash list`, and, at the worktree root only,
+  `node scripts/harness.mjs writer --show` and
+  `npm run resume --silent -- status`. A stage with a redirect operand, a
+  heredoc, an environment prefix or wrapper, an expansion or an unquoted glob
+  character is not on the list; descriptor duplication such as `2>&1` opens
+  no file and passes. A listed reader piped into an unlisted or writing stage
+  is refused (receipt 028's criterion 6 known issue). A Git read on the list
+  carries `--no-pager` (or `-P`): a paged read runs the configured or
+  default pager, an unlisted program, whenever its output is a terminal
+  (VER-001 F4 ran a configured `core.pager` from an admitted `git log`), and
+  `--no-pager` also sets `GIT_PAGER=cat` for the log a stash list delegates.
+  It names no output file, no `%G` signature placeholder and no
+  external-program option, and is admitted only while the repository configures no
+  `core.fsmonitor`, `diff.external`, diff `command` or `textconv` driver,
+  clean, smudge or process filter, `log.showSignature`, `gpg.program` or
+  `gpg.<format>.program`; a configured program returns the
+  [WO-142-D012](../evidence/WO-142/decisions.md#wo-142-d012--retain-existing-git-admission-with-an-explicit-effects-follow-up)
+  refusal. The index stat refresh a plain `git status` may take remains the
+  recorded residual of that follow-up. The refusal text names the list; a
+  program joins it only by a later order. The older metadata exception is
+  unchanged.
   `for` loops, substitutions and other opaque commands retain their conservative
   gate refusal; use the host's read tools for those reads. This does not change
   writer reservations or the host's permissions. See
