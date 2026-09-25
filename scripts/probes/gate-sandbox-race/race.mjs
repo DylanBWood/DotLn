@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // WO-157 item 15 (WO-063 D005), opt-in and outside every gate: reproduce the
-// gate-sandbox teardown race under load. Runs the WO-140 partial test many
+// host-confinement fixture teardown race under load. Runs the WO-140 partial test many
 // times at once with two loose objects planted under objects/17 before its
 // last commit (the state that makes Git 2.55 start a detached repack), with
 // TMPDIR redirected to a directory this script creates. `--unfix` removes the
@@ -33,7 +33,7 @@ const one = () =>
       process.execPath,
       [
         "--test",
-        "--test-name-pattern=WO-140 a partial inside-sandbox row",
+        "--test-name-pattern=WO-140 a confined partial row",
         "scripts/test-runner.test.mjs",
       ],
       {
@@ -67,7 +67,7 @@ const worker = async () => {
 };
 await Promise.all(Array.from({ length: width }, worker));
 const left = readdirSync(lane).filter((name) =>
-  name.startsWith("dotln-gate-sandbox-"),
+  name.startsWith("dotln-host-confinement-"),
 );
 console.log(
   JSON.stringify({

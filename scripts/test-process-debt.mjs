@@ -4479,7 +4479,7 @@ test("meter diff bytes include newly authored untracked source", (t) => {
   );
 });
 
-test("WO-145 optional economy support preserves historical snapshots through WO-158 and changes only executor instructions on", () => {
+test("WO-145 optional economy support preserves historical snapshots through WO-161 and changes only executor instructions on", () => {
   const historical = JSON.parse(
     readFileSync(
       join(source, "packages/skeleton/fixtures/wo145-role-baseline.json"),
@@ -4490,10 +4490,10 @@ test("WO-145 optional economy support preserves historical snapshots through WO-
   // snapshot to make the current generated instruction check pass. WO-149's
   // common role edits affect both settings, so pin contemporaneous default and
   // opt-out bytes separately and preserve the complete historical chain.
-  // WO-157's and WO-158's shared role edits follow the same route.
+  // WO-157, WO-158 and WO-161 shared role edits follow the same route.
   const baseline = JSON.parse(
     readFileSync(
-      join(source, "packages/skeleton/fixtures/wo158-role-baseline.json"),
+      join(source, "packages/skeleton/fixtures/wo161-role-baseline.json"),
       "utf8",
     ),
   );
@@ -4555,6 +4555,11 @@ test("WO-145 optional economy support preserves historical snapshots through WO-
           : file.path.replace(".agents/skills/", ".claude/skills/")),
     );
     assert.equal(twin.contents, file.contents, `${file.path} both roots`);
+    assert.doesNotMatch(
+      file.contents,
+      /need no Git escalation/,
+      `${file.path} must not imply an approval path in full-access mode`,
+    );
     if (file.path.endsWith("dotln-executor/SKILL.md")) {
       assert.match(file.contents, /Tinkerer — Economy: Before implementation/);
       assert.match(
@@ -7337,10 +7342,18 @@ test("WO-140 the briefing names the session and the exact usage command the usag
       );
       for (const code of Object.keys(usageCauseCodes))
         assert.ok(skill.includes(`\`${code}\``), `${skills} ${role} ${code}`);
-      assert.match(skill, /outside the harness sandbox from the start/);
+      assert.match(skill, /Run the product gate with `npm test`/);
       assert.match(
         skill,
-        /resident-launched verification runs `npm test -- --inside-sandbox` and records its excluded suites as a partial result/,
+        /if the runner reports that the host confines the process/,
+      );
+      assert.doesNotMatch(
+        skill,
+        /outside-sandbox approval|outside the harness sandbox/,
+      );
+      assert.match(
+        skill,
+        /resident-launched verification unable to run the full selection uses `npm test -- --confined-partial` and records its excluded suites as a partial result/,
       );
     }
 });

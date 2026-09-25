@@ -28,12 +28,12 @@ import {
 } from "./lib/release-fixtures.mjs";
 import { completeCoverage, suiteEnvironment } from "./lib/suite-evidence.mjs";
 import {
-  INSIDE_SANDBOX_CHECK,
-  OUTSIDE_SANDBOX,
-  detectGateSandbox,
+  CONFINED_PARTIAL_CHECK,
+  OUTSIDE_CONFINEMENT,
+  detectHostConfinement,
   outsideOnly,
-  sandboxRefusal,
-} from "./lib/gate-sandbox.mjs";
+  confinementRefusal,
+} from "./lib/host-confinement.mjs";
 
 import { evidenceSources } from "./lib/evidence-sources.mjs";
 import { findLaunchpad } from "./lib/config.mjs";
@@ -173,7 +173,7 @@ const machinerySources = {
     "scripts/lib/gate-timeline.mjs",
     "scripts/measure-gates.mjs",
     "scripts/lib/gate-evidence.mjs",
-    "scripts/lib/gate-sandbox.mjs",
+    "scripts/lib/host-confinement.mjs",
     "scripts/test-runner.mjs",
     "packages/skeleton/src/evidence-editions.mjs",
     "scripts/test-runner.test.mjs",
@@ -470,7 +470,7 @@ export const suites = [
             ],
             // Its native script cases nest `sandbox-exec`, which an outer
             // Seatbelt sandbox refuses (WO-068 FINAL-001 O4).
-            needs: OUTSIDE_SANDBOX,
+            needs: OUTSIDE_CONFINEMENT,
           }
         : {}),
       ...(["skeleton", "console"].includes(name)
@@ -506,7 +506,7 @@ export const suites = [
     product: true,
     // Its discovery checks and WO-054 witness nest `sandbox-exec`, which an
     // outer Seatbelt sandbox refuses (WO-100-D018).
-    needs: OUTSIDE_SANDBOX,
+    needs: OUTSIDE_CONFINEMENT,
     protects:
       "a preauthorized portfolio derives bounded orders from WO-119 candidates, materializes them through WO-120 and advances the presence curve only after WO-052 changes and WO-054 verifies them",
   }),
@@ -638,7 +638,7 @@ export function validateSuites(table) {
     )
       throw new Error(`Invalid scheduler lane reservation: ${row.name}`);
   for (const row of table)
-    if (row.needs !== undefined && row.needs !== OUTSIDE_SANDBOX)
+    if (row.needs !== undefined && row.needs !== OUTSIDE_CONFINEMENT)
       throw new Error(`Unknown suite need: ${row.name} needs ${row.needs}`);
 }
 
@@ -1124,7 +1124,7 @@ async function runGateChecks(
     review = false,
     serial = false,
     list = false,
-    insideSandbox = false,
+    confinedPartial = false,
     only;
   for (let index = 0; index < args.length; index++) {
     const arg = args[index];
@@ -1133,13 +1133,13 @@ async function runGateChecks(
     else if (arg === "--review" || arg === "--full") review = true;
     else if (arg === "--serial") serial = true;
     else if (arg === "--list") list = true;
-    else if (arg === "--inside-sandbox") insideSandbox = true;
+    else if (arg === "--confined-partial") confinedPartial = true;
     else if (arg === "--fresh") {
       /* Every invocation is fresh. */
     } else if (arg === "--only" && !only) only = args[++index];
     else
       throw new Error(
-        "usage: test-runner [--document|--machinery|--review] [--only <suite>] [--inside-sandbox] [--serial] [--list]",
+        "usage: test-runner [--document|--machinery|--review] [--only <suite>] [--confined-partial] [--serial] [--list]",
       );
   }
   if (only && !table.some((row) => row.name === only))
@@ -1156,7 +1156,7 @@ async function runGateChecks(
   if (review && !only && !document && !machinery)
     selected = [...new Set([...selected, ...changedMachinery(repo, table)])];
   if (list) {
-    for (const row of insideSandbox
+    for (const row of confinedPartial
       ? selected.filter((row) => !row.needs)
       : selected)
       console.log(
@@ -1169,13 +1169,13 @@ async function runGateChecks(
   const excluded = outsideOnly(selected);
   // Only a selection that needs the outside pays for the probe write.
   const sandbox = excluded.length
-    ? detectGateSandbox(repo, sandboxOptions)
+    ? detectHostConfinement(repo, sandboxOptions)
     : { marker: null, inForce: false };
-  if (insideSandbox) {
+  if (confinedPartial) {
     selected = selected.filter((row) => !excluded.includes(row));
     if (!selected.length)
       throw new Error(
-        `Nothing remains to run inside the sandbox: ${excluded.map((row) => row.name).join(", ")} ${excluded.length === 1 ? "needs" : "need"} the outside`,
+        `Nothing remains to run while confined: ${excluded.map((row) => row.name).join(", ")} ${excluded.length === 1 ? "needs" : "need"} the outside`,
       );
   } else if (sandbox.inForce && excluded.length) {
     const base = document
@@ -1189,12 +1189,12 @@ async function runGateChecks(
     const command = (flags) =>
       `${base}${flags.length ? ` -- ${flags.join(" ")}` : ""}`;
     throw new Error(
-      sandboxRefusal(
+      confinementRefusal(
         sandbox,
         excluded,
         command(rest),
         excluded.length < selected.length
-          ? command([...rest, "--inside-sandbox"])
+          ? command([...rest, "--confined-partial"])
           : undefined,
       ),
     );
@@ -1205,8 +1205,8 @@ async function runGateChecks(
       ? "npm run test:docs"
       : machinery
         ? "npm run test:machinery"
-        : insideSandbox
-          ? INSIDE_SANDBOX_CHECK
+        : confinedPartial
+          ? CONFINED_PARTIAL_CHECK
           : "npm test";
   const treeHash = gateTreeHash(repo),
     codeIdentity = gateCodeIdentity(repo),
@@ -1226,7 +1226,7 @@ async function runGateChecks(
   const peerFile = join(diagnosticRoot, "active.json"),
     deadlineLog = join(diagnosticRoot, "deadlines.jsonl");
   writeFileSync(deadlineLog, "");
-  // Gate-sandbox fixture roots this run's suites create carry this tag, so
+  // Host-confinement fixture roots this run's suites create carry this tag, so
   // the gate judges only its own leftovers in the shared temporary directory
   // (WO-157 item 15, WO-063 D005).
   const fixtureTag = randomUUID().slice(0, 8);
@@ -1288,7 +1288,9 @@ async function runGateChecks(
     // A root that survives every suite's own teardown is a failed gate; the
     // check names it and removes nothing, so the leftover stays diagnosable.
     const abandoned = readdirSync(tmpdir())
-      .filter((name) => name.startsWith(`dotln-gate-sandbox-${fixtureTag}-`))
+      .filter((name) =>
+        name.startsWith(`dotln-host-confinement-${fixtureTag}-`),
+      )
       .map((name) => join(tmpdir(), name))
       .sort();
     const check = {
@@ -1309,7 +1311,7 @@ async function runGateChecks(
       reusedSuites: 0,
       requiredSuites: selected.map((row) => row.name),
       // A partial row names what it left out; no product-gate consumer reads it.
-      ...(insideSandbox
+      ...(confinedPartial
         ? { partial: true, excludedSuites: excluded.map((row) => row.name) }
         : {}),
       ...(sandbox.marker ? { sandbox } : {}),
@@ -1344,7 +1346,7 @@ async function runGateChecks(
     }
     if (!only && !document && !machinery) recordGateChecks(repo, [check]);
     console.log(
-      `${checkId}: ${rows.filter((row) => row.exitCode === 0).length} passed; ${rows.filter((row) => row.exitCode !== 0).length} failed; ${(check.durationMs / 1000).toFixed(2)} s; ${check.freshSuites} fresh tasks${unchanged ? "" : "; code changed"}${abandoned.length ? `; abandoned fixture roots: ${abandoned.join(", ")}` : ""}${insideSandbox ? `; partial, not product-gate evidence: excluded ${check.excludedSuites.join(", ") || "none"}` : ""}`,
+      `${checkId}: ${rows.filter((row) => row.exitCode === 0).length} passed; ${rows.filter((row) => row.exitCode !== 0).length} failed; ${(check.durationMs / 1000).toFixed(2)} s; ${check.freshSuites} fresh tasks${unchanged ? "" : "; code changed"}${abandoned.length ? `; abandoned fixture roots: ${abandoned.join(", ")}` : ""}${confinedPartial ? `; partial, not product-gate evidence: excluded ${check.excludedSuites.join(", ") || "none"}` : ""}`,
     );
     return check;
   } finally {

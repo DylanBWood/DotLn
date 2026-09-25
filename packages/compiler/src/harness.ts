@@ -746,7 +746,7 @@ process.stdout.write(JSON.stringify(response));`;
         residue.push({
           originId: facet.facetId,
           reason:
-            "Pre-effect envelope checks unavailable in this harness; native sandbox and approval remain host controls.",
+            "Pre-effect envelope checks unavailable in this harness; host permission settings decide.",
           missingCapabilities: ["hooks.PreToolUse", "settings.permissions"],
         });
   }

@@ -46,13 +46,13 @@ import {
   requestGateStop,
 } from "./lib/gate-evidence.mjs";
 import {
-  INSIDE_SANDBOX_CHECK,
-  OUTSIDE_SANDBOX,
+  CONFINED_PARTIAL_CHECK,
+  OUTSIDE_CONFINEMENT,
   deniedWriteCode,
-  detectGateSandbox,
+  detectHostConfinement,
   probeDeniedWrite,
-  sandboxMarkers,
-} from "./lib/gate-sandbox.mjs";
+  confinementMarkers,
+} from "./lib/host-confinement.mjs";
 
 const root = resolve(import.meta.dirname, "..");
 const barrier = { name: "build", command: ["build"], build: true };
@@ -1350,12 +1350,15 @@ test("code identity follows tracked source and dependency bytes across processes
 
 // WO-140: a fake marker and an owned denied directory stand in for a harness
 // sandbox, so the preflight runs the same in and outside a real one.
-const sandboxFixture = (t) => {
+const confinementFixture = (t) => {
   // Under a gate the root carries the run's tag, which the gate's own
   // abandoned-root check judges (WO-157 item 15).
   const tag = process.env.DOTLN_GATE_FIXTURE_TAG;
   const repo = mkdtempSync(
-    join(tmpdir(), tag ? `dotln-gate-sandbox-${tag}-` : "dotln-gate-sandbox-"),
+    join(
+      tmpdir(),
+      tag ? `dotln-host-confinement-${tag}-` : "dotln-host-confinement-",
+    ),
   );
   const denied = join(repo, "denied");
   t.after(() => {
@@ -1389,7 +1392,7 @@ const sandboxFixture = (t) => {
       `import fs from "node:fs";\nfs.appendFileSync("observed.jsonl", ${JSON.stringify(`${name}\n`)});\n`,
     );
   git("add", ".");
-  git("commit", "-qm", "Sandbox preflight fixture");
+  git("commit", "-qm", "Host-confinement fixture");
   const row = (name, options = {}) => ({
     name,
     command: [process.execPath, `scripts/${name}.mjs`],
@@ -1404,7 +1407,7 @@ const sandboxFixture = (t) => {
         table: [
           row("build", { build: true }),
           row("alpha"),
-          row("outside", { needs: OUTSIDE_SANDBOX }),
+          row("outside", { needs: OUTSIDE_CONFINEMENT }),
         ],
         sandbox: {
           env: { DOTLN_FIXTURE_SANDBOX: "1" },
@@ -1433,8 +1436,8 @@ test("WO-140 the real inventory declares only the suites with an environmental o
   assert.deepEqual(
     suites.filter((row) => row.needs).map((row) => [row.name, row.needs]),
     [
-      ["skeleton", OUTSIDE_SANDBOX],
-      ["portfolio", OUTSIDE_SANDBOX],
+      ["skeleton", OUTSIDE_CONFINEMENT],
+      ["portfolio", OUTSIDE_CONFINEMENT],
     ],
   );
   // WO-121 F1 was a defect in a release case, never a reason to declare.
@@ -1444,14 +1447,14 @@ test("WO-140 the real inventory declares only the suites with an environmental o
       validateSuites([barrier, { name: "x", command: ["x"], needs: "gpu" }]),
     /Unknown suite need/,
   );
-  assert.deepEqual(detectGateSandbox(root, { env: {} }), {
+  assert.deepEqual(detectHostConfinement(root, { env: {} }), {
     marker: null,
     inForce: false,
   });
 });
 
 test("WO-140 a sandbox in force refuses before any suite runs and names the suites and the outside command", async (t) => {
-  const fixture = sandboxFixture(t);
+  const fixture = confinementFixture(t);
   const inForce = fixture.options(0o555);
   await assert.rejects(
     runGate(["--serial"], fixture.repo, inForce),
@@ -1459,27 +1462,27 @@ test("WO-140 a sandbox in force refuses before any suite runs and names the suit
       assert.match(error.message, /^Refused before any suite ran/);
       assert.match(
         error.message,
-        /carries the fixture-harness marker and a write to \S+denied is denied \(EACCES\), so it is inside a harness sandbox/,
+        /carries the fixture-harness marker and a write to \S+denied is denied \(EACCES\), so it is confined by the host/,
       );
       assert.match(error.message, /outside needs the outside/);
       assert.match(
         error.message,
-        /Run outside the sandbox: npm test -- --serial\./,
+        /Run outside host confinement: npm test -- --serial\./,
       );
       assert.match(
         error.message,
-        /evidence: npm test -- --serial --inside-sandbox$/,
+        /evidence: npm test -- --serial --confined-partial$/,
       );
       return true;
     },
   );
   await assert.rejects(
     runGate(["--only", "outside"], fixture.repo, inForce),
-    /Run outside the sandbox: npm test -- --only outside\.$/,
+    /Run outside host confinement: npm test -- --only outside\.$/,
   );
   await assert.rejects(
-    runGate(["--only", "outside", "--inside-sandbox"], fixture.repo, inForce),
-    /Nothing remains to run inside the sandbox: outside needs the outside/,
+    runGate(["--only", "outside", "--confined-partial"], fixture.repo, inForce),
+    /Nothing remains to run while confined: outside needs the outside/,
   );
   assert.deepEqual(fixture.observed(), [], "neither the build nor a suite ran");
   assert.deepEqual(
@@ -1500,7 +1503,7 @@ test("WO-140 a sandbox in force refuses before any suite runs and names the suit
 });
 
 test("WO-140 an inherited marker whose denied-write probe succeeds does not refuse and leaves no probe behind", async (t) => {
-  const fixture = sandboxFixture(t);
+  const fixture = confinementFixture(t);
   const check = await runGate(
     ["--serial"],
     fixture.repo,
@@ -1526,26 +1529,29 @@ test("WO-140 an inherited marker whose denied-write probe succeeds does not refu
   assert.equal(plain.sandbox, undefined);
 });
 
-test("WO-140 a partial inside-sandbox row is rejected by every product-gate consumer at the code identity where a full row is accepted", async (t) => {
-  const fixture = sandboxFixture(t);
+test("WO-140 a confined partial row is rejected by every product-gate consumer at the code identity where a full row is accepted", async (t) => {
+  const fixture = confinementFixture(t);
   const { repo } = fixture;
   const partial = await runGate(
-    ["--inside-sandbox", "--serial"],
+    ["--confined-partial", "--serial"],
     repo,
     fixture.options(0o555),
   );
   assert.equal(partial.exitCode, 0);
-  assert.equal(partial.checkId, INSIDE_SANDBOX_CHECK);
+  // WO-161: CLI spelling changes, recorded identities and selections do not.
+  assert.equal(CONFINED_PARTIAL_CHECK, "npm test -- --inside-sandbox");
+  assert.equal(OUTSIDE_CONFINEMENT, "outside-sandbox");
+  assert.equal(partial.checkId, CONFINED_PARTIAL_CHECK);
   assert.equal(partial.partial, true);
   assert.deepEqual(partial.excludedSuites, ["outside"]);
   assert.deepEqual(partial.requiredSuites, ["build", "alpha"]);
   assert.equal(partial.sandbox.inForce, true);
-  assert.equal(partial.evidenceRef.endsWith(INSIDE_SANDBOX_CHECK), true);
+  assert.equal(partial.evidenceRef.endsWith(CONFINED_PARTIAL_CHECK), true);
   assert.deepEqual(fixture.observed(), ["build", "alpha"]);
   const recorded = readGateChecks(repo);
   assert.deepEqual(
     recorded.map((row) => [row.checkId, row.excludedSuites]),
-    [[INSIDE_SANDBOX_CHECK, ["outside"]]],
+    [[CONFINED_PARTIAL_CHECK, ["outside"]]],
     "recorded under the distinct identity and never under npm test",
   );
   const code = gateCodeIdentity(repo);
@@ -1657,23 +1663,23 @@ test("WO-140 a partial inside-sandbox row is rejected by every product-gate cons
 
 test("WO-140 the recognized markers probe the path their sandbox protects and fail open without one", (t) => {
   assert.deepEqual(
-    sandboxMarkers.map((row) => [row.id, row.env]),
+    confinementMarkers.map((row) => [row.id, row.env]),
     [
       ["claude-code", "CLAUDECODE"],
       ["codex-cli", "CODEX_SANDBOX"],
     ],
   );
-  const repo = mkdtempSync(join(tmpdir(), "dotln-sandbox-markers-"));
+  const repo = mkdtempSync(join(tmpdir(), "dotln-confinement-markers-"));
   t.after(() => rmSync(repo, { recursive: true, force: true }));
   execFileSync("git", ["init", "-q"], { cwd: repo });
-  const [claude, codex] = sandboxMarkers;
+  const [claude, codex] = confinementMarkers;
   assert.equal(claude.deniedDirectory(repo), join(repo, ".claude/hooks"));
   assert.equal(
     realpathSync(codex.deniedDirectory(repo)),
     realpathSync(join(repo, ".git")),
   );
   // A fixture repository has no protected directory: the marker fails open.
-  const missing = detectGateSandbox(repo, { env: { CLAUDECODE: "1" } });
+  const missing = detectHostConfinement(repo, { env: { CLAUDECODE: "1" } });
   assert.equal(missing.marker, "claude-code");
   assert.equal(missing.inForce, false);
   assert.equal(missing.probe.code, "ENOENT");
@@ -1689,7 +1695,7 @@ test("WO-140 the probe classifies only a denied write as a sandbox, and every ot
     assert.equal(deniedWriteCode(code), true, code);
   for (const code of ["ENOENT", "ENOTDIR", "EEXIST", "ENOSPC", undefined])
     assert.equal(deniedWriteCode(code), false, String(code));
-  const directory = mkdtempSync(join(tmpdir(), "dotln-sandbox-probe-"));
+  const directory = mkdtempSync(join(tmpdir(), "dotln-confinement-probe-"));
   t.after(() => {
     chmodSync(directory, 0o755);
     if (existsSync(join(directory, "denied")))
@@ -1722,7 +1728,7 @@ test("WO-140 the probe classifies only a denied write as a sandbox, and every ot
   assert.equal(unremovable.denied, false);
   assert.equal(unremovable.code, "written-unremoved");
   assert.ok(
-    unremovable.left.startsWith(join(directory, ".dotln-sandbox-probe-")),
+    unremovable.left.startsWith(join(directory, ".dotln-confinement-probe-")),
   );
   chmodSync(directory, 0o755);
   rmSync(unremovable.left);
@@ -1737,7 +1743,7 @@ test("WO-140 the probe classifies only a denied write as a sandbox, and every ot
     { id: "first", env: "FIRST", deniedDirectory: () => open },
     { id: "second", env: "SECOND", deniedDirectory: () => denied },
   ];
-  const both = detectGateSandbox(directory, {
+  const both = detectHostConfinement(directory, {
     env: { FIRST: "1", SECOND: "1" },
     markers,
   });
@@ -1745,13 +1751,13 @@ test("WO-140 the probe classifies only a denied write as a sandbox, and every ot
   assert.equal(both.inForce, true);
   assert.equal(both.probe.code, "EACCES");
   assert.equal(
-    detectGateSandbox(directory, { env: { FIRST: "1" }, markers }).inForce,
+    detectHostConfinement(directory, { env: { FIRST: "1" }, markers }).inForce,
     false,
   );
   assert.deepEqual(readdirSync(open), [], "no probe file is left behind");
   // Detection never throws: a probe that cannot even name its path fails open.
   assert.deepEqual(
-    detectGateSandbox(directory, {
+    detectHostConfinement(directory, {
       env: { FIRST: "1" },
       markers: [
         {
@@ -1785,7 +1791,7 @@ test("WO-140 a real Seatbelt denial under the real marker reads EPERM and is in 
   t.after(() => rmSync(repo, { recursive: true, force: true }));
   const hooks = join(repo, ".claude/hooks");
   mkdirSync(hooks, { recursive: true });
-  const module = new URL("./lib/gate-sandbox.mjs", import.meta.url).href;
+  const module = new URL("./lib/host-confinement.mjs", import.meta.url).href;
   const run = spawnSync(
     "/usr/bin/sandbox-exec",
     [
@@ -1794,7 +1800,7 @@ test("WO-140 a real Seatbelt denial under the real marker reads EPERM and is in 
       process.execPath,
       "--input-type=module",
       "-e",
-      `import {detectGateSandbox} from ${JSON.stringify(module)}; console.log(JSON.stringify(detectGateSandbox(process.argv[1], {env: {CLAUDECODE: "1"}})));`,
+      `import {detectHostConfinement} from ${JSON.stringify(module)}; console.log(JSON.stringify(detectHostConfinement(process.argv[1], {env: {CLAUDECODE: "1"}})));`,
       repo,
     ],
     { encoding: "utf8" },
@@ -1821,7 +1827,7 @@ test("WO-140 any partial flag or exclusion shape disqualifies a row under the np
     assert.equal(partialGateCheck(shape), true, JSON.stringify(shape));
   for (const shape of [{}, { partial: false }, { excludedSuites: [] }])
     assert.equal(partialGateCheck(shape), false, JSON.stringify(shape));
-  const fixture = sandboxFixture(t);
+  const fixture = confinementFixture(t);
   const code = gateCodeIdentity(fixture.repo),
     tree = gateTreeHash(fixture.repo);
   const row = (extra) => ({
@@ -1836,7 +1842,7 @@ test("WO-140 any partial flag or exclusion shape disqualifies a row under the np
     recordedAt: new Date().toISOString(),
     ...extra,
   });
-  // The runner emits this shape for `--inside-sandbox --only <suite>`.
+  // The runner emits this shape for `--confined-partial --only <suite>`.
   recordGateChecks(fixture.repo, [row({ partial: true, excludedSuites: [] })]);
   assert.equal(findGateCheck(fixture.repo, "npm test", tree), undefined);
   recordGateChecks(fixture.repo, [row({ evidenceRef: "fixture:complete" })]);
@@ -1850,7 +1856,7 @@ test("WO-140 any partial flag or exclusion shape disqualifies a row under the np
   console.log = (line) => lines.push(line);
   t.after(() => (console.log = log));
   await runGate(
-    ["--list", "--inside-sandbox"],
+    ["--list", "--confined-partial"],
     fixture.repo,
     fixture.options(0o755),
   );
@@ -1864,8 +1870,8 @@ test("WO-140 any partial flag or exclusion shape disqualifies a row under the np
 // WO-157 item 15 (WO-063 D005): a fixture commit started Git's detached
 // automatic maintenance, whose geometric repack could still be writing
 // .git/objects/pack when the teardown removed the tree (ENOTEMPTY).
-test("WO-157 the gate-sandbox fixture's commits start no background Git maintenance that could race its teardown", (t) => {
-  const { repo } = sandboxFixture(t);
+test("WO-157 the host-confinement fixture's commits start no background Git maintenance that could race its teardown", (t) => {
+  const { repo } = confinementFixture(t);
   const git = (args, options = {}) =>
     execFileSync("git", args, {
       cwd: repo,
@@ -1924,18 +1930,20 @@ test("WO-157 the gate-sandbox fixture's commits start no background Git maintena
   );
 });
 
-test("WO-157 a gate whose suites leave a gate-sandbox fixture root behind fails and names it, and another run's root does not fail it", async (t) => {
-  const fixture = sandboxFixture(t);
+test("WO-157 a gate whose suites leave a host-confinement fixture root behind fails and names it, and another run's root does not fail it", async (t) => {
+  const fixture = confinementFixture(t);
   const planted = [];
   t.after(() => {
     for (const path of planted) rmSync(path, { recursive: true, force: true });
   });
   // Another run's root in the shared temporary directory is never judged.
-  const foreign = mkdtempSync(join(tmpdir(), "dotln-gate-sandbox-foreign-"));
+  const foreign = mkdtempSync(
+    join(tmpdir(), "dotln-host-confinement-foreign-"),
+  );
   planted.push(foreign);
   writeFileSync(
     join(fixture.repo, "scripts/abandon.mjs"),
-    'import fs from "node:fs";\nimport os from "node:os";\nimport path from "node:path";\nconst root = fs.mkdtempSync(path.join(os.tmpdir(), `dotln-gate-sandbox-${process.env.DOTLN_GATE_FIXTURE_TAG}-`));\nfs.appendFileSync("observed.jsonl", `abandoned ${root}\\n`);\n',
+    'import fs from "node:fs";\nimport os from "node:os";\nimport path from "node:path";\nconst root = fs.mkdtempSync(path.join(os.tmpdir(), `dotln-host-confinement-${process.env.DOTLN_GATE_FIXTURE_TAG}-`));\nfs.appendFileSync("observed.jsonl", `abandoned ${root}\\n`);\n',
   );
   const options = fixture.options(0o755);
   const clean = await runGate(["--serial"], fixture.repo, options);
@@ -1961,7 +1969,7 @@ test("WO-157 a gate whose suites leave a gate-sandbox fixture root behind fails 
   assert.equal(
     leaky.exitCode,
     1,
-    "a gate whose suites left a dotln-gate-sandbox root behind must fail",
+    "a gate whose suites left a dotln-host-confinement root behind must fail",
   );
   assert.deepEqual(leaky.abandonedRoots, left);
   assert.ok(existsSync(foreign), "the check removes nothing");

@@ -252,8 +252,18 @@ assert.deepEqual(
   { ...contributorLoadoutBeforeMissionCheck, presence: null },
   "the two Contributor graphs differ only by that policy",
 );
-const oldContributor = compileLoadout(
+// WO-161 changes only the current vocabulary. Reconstruct the three old
+// labels before judging the frozen WO-042 graph; never rewrite its evidence.
+const historicalContributor = structuredClone(
   contributorLoadoutBeforeMissionCheck,
+);
+historicalContributor.activeMechanics[0].authorityEnvelope.authorityEnvelopeId =
+  "contributor.sandboxed";
+historicalContributor.activeMechanics[0].workOrder.constraints[1] =
+  "Sandbox and human approval boundaries remain in force";
+historicalContributor.supportFacets[0].name = "Sandboxed contributor authority";
+const oldContributor = compileLoadout(
+  historicalContributor,
   baseline.fixtures.contributor.artifactIdentity.compilationEnvironment,
 );
 assert.equal(oldContributor.ok, true, "historical Contributor compilation");
@@ -426,11 +436,11 @@ const compatibility = Object.entries(results).map(([name, result]) => {
     changedArtifactIdentityFields,
     ["planRefuter", "entropy"].includes(name)
       ? ["compilerPackageVersion", "semanticHash", "componentDefinitions"]
-      : // WO-099 D009: the Contributor build gained its own presence policy, so
-        // the live build carries a new reviewed identity while the historical
-        // graph compiled above still reproduces the saved one exactly.
+      : // WO-099 D009 adds the Contributor presence policy; WO-161 relabels
+        // its authority envelope, capability constraint and permissions support.
+        // The historical graph above still reproduces the saved identity.
         name === "contributor"
-        ? ["compilerPackageVersion", "semanticHash"]
+        ? ["compilerPackageVersion", "semanticHash", "componentDefinitions"]
         : ["compilerPackageVersion"],
   );
   return {
