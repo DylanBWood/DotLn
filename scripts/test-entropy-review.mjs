@@ -83,6 +83,37 @@ export async function entropyFixtures() {
   const parent = mkdtempSync(join(tmpdir(), "dotln-entropy-fixtures-"));
   process.env.DOTLN_ENTROPY_FIXTURE = "1";
   try {
+    await test("WO-160 subject skips pre-mechanism receipts and check retains their bytes", async () => {
+      const repo = fixtureRepository(parent);
+      for (const name of ["REVIEW-001", "REFUTATION-001"]) {
+        write(
+          repo,
+          `${runsRoot(repo)}/${name}.json`,
+          JSON.stringify({
+            schemaVersion: 1,
+            kind: name.startsWith("REVIEW")
+              ? "EntropyReducerReviewRun"
+              : "EntropyReducerRefutationRun",
+          }) + "\n",
+        );
+        write(
+          repo,
+          `${runsRoot(repo)}/${name}.md`,
+          "Historical receipt bytes.\n",
+        );
+      }
+      commit(repo, "pre-mechanism pair");
+      const before = git(repo, ["status", "--porcelain"]);
+      const subject = await entropy(["subject"], repo);
+      assert.equal(subject.action, "review");
+      assert.ok(!JSON.stringify(subject).includes("undefined"));
+      assert.deepEqual(checkEntropyReceipts(repo).preMechanism, [
+        "REFUTATION-001",
+        "REVIEW-001",
+      ]);
+      assert.equal(git(repo, ["status", "--porcelain"]), before);
+    });
+
     await test("the fake transport drives review, receipt, refute, refutation-receipt and dispose end to end", async () => {
       const repo = fixtureRepository(parent);
 
