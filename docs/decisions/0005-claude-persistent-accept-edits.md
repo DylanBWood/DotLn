@@ -1,6 +1,9 @@
 # ADR-0005 — Claude starts in Accept Edits inside the fail-closed sandbox baseline
 
-**Status:** Accepted (2026-09-01)
+**Status:** Accepted (2026-09-01), current posture superseded by the
+[2026-09-25 ADR-0003 amendment](0003-personal-ai-harness-security.md#amendments):
+host sandboxes are off in Claude Code, Codex and Copilot. The original
+decisions below record the earlier posture.
 
 ## Context
 
@@ -22,7 +25,7 @@ reported startup regression remained. The operator's later correction is new
 decision evidence: the repair was expected to persist Accept Edits as part of
 the complete low-friction, contained posture.
 
-## Decision
+## Original decision — 2026-09-01
 
 1. Supersede ADR-0004 Decision 4 only. Persist
    `permissions.defaultMode: "acceptEdits"` in the user settings so new terminal
@@ -85,3 +88,9 @@ mode, sandbox switch or credential policy. ADR-0003 through ADR-0005 retain
 their personal permission posture. Missing harness capabilities are reported
 as unavailable. Regeneration and review replace manual project hook editing;
 a missing build or mismatched runtime bytes make the hooks refuse.
+
+**2026-09-25 — WO-161.** The [ADR-0003 amendment](0003-personal-ai-harness-security.md#amendments)
+records the operator's sandbox-off posture in all three CLIs and supersedes
+the earlier sandbox-on and permission-mode preferences above. DotLn refusals
+plus the host permission mode are the boundary; this cross-reference changes
+no personal setting.

@@ -54,6 +54,15 @@ user settings file unchanged. The active Codex session reports **approval
 the earlier operating preference below. Claude's mode is operator-attested here,
 not a fresh enforcement probe. The WO-136 experiment remains inconclusive.
 
+**2026-09-25 reaffirmation (WO-161).** The operator explicitly confirmed no
+host sandbox in Claude Code, Codex or Copilot. This standing choice is now
+recorded in the [ADR-0003 amendment](decisions/0003-personal-ai-harness-security.md#amendments).
+DotLn's five refusals plus the host permission mode are the boundary, with
+Codex carrying the duties as role text. The host-confinement detector creates
+no confinement and reports `inForce: false` in WO-161's executor session.
+DotLn's discovery `sandbox-exec` and the `--sandbox workspace-write` argument
+for spawned Codex workers remain separate, purpose-specific mechanisms.
+
 During WO-135 the operator separately authorized installing
 `~/.codex/rules/personal-remote-deny.rules`. That file now forbids matching
 SSH/SCP/SFTP commands. **No `config.toml` edit was needed or made**, and no
@@ -784,7 +793,8 @@ and not a reason to disable the whole sandbox. At this snapshot:
 
 A future lifecycle change may replace this operational workaround with a
 sandbox-independent checkpoint or a first-class backfill action. Until then, the
-first-invocation approval rule is part of the dispatch contract.
+first-invocation approval rule applies only to the retained mode described
+above; it is not an instruction to request approval in a full-access session.
 
 ## Adding another harness
 

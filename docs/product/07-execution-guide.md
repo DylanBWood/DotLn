@@ -50,7 +50,7 @@ found fresh Claude Explore and Copilot task workers without the floor in their i
 so the full refusals paragraph remains in each skill under WO-155's fallback.
 
 This guide is the operating contract. Harness-specific observations (version,
-model and effort readback, Codex sandbox approval) live in
+model and effort readback, host permission modes) live in
 `docs/AI-HARNESS-SECURITY.md` and the playbook, with a pointer where each
 left (WO-090, 2026-09-20). The [WO-090 measurement](../evidence/WO-090/README.md)
 by WO-039's method records that this guide enters the fixture's directed sets
@@ -266,14 +266,15 @@ table includes the shared goal card and the refuter's separate subject boundary.
    | a recorded attestation, report path or checkpoint is wrong | `npm run resume -- correct <ordinal\|report-path> --set <field>=<value> --reason <text> <actor-flags>` (WO-158) | never correct a verdict or edit a filed report; a wrong verdict takes a later report |
    | `operator override: off` | nothing in Claude, whose hook appends `OperatorOverrideRecorded`; otherwise the printed `npm run resume -- override-record ...` command (WO-158) | record what the override changed in the order's decisions |
 
-   Codex sandbox approval for state-changing transitions is harness
-   procedure, not lifecycle contract, and lives with the other harness
-   settings: the playbook's
-   [harness safety baseline](../PLAYBOOK.md#harness-safety-baseline) carries
-   the first-invocation approval rule, and
-   [`docs/AI-HARNESS-SECURITY.md`](../AI-HARNESS-SECURITY.md#why-recovery-checkpoints-warn-under-sandboxed-codex)
-   explains the checkpoint warning, the tested versions, Claude's behavior,
-   verification and rollback (relocated by WO-090, 2026-09-20).
+   The operator's standing posture, reaffirmed 2026-09-25 (WO-161), is no
+   host sandbox in Claude Code, Codex or Copilot. DotLn refusals plus the host
+   permission mode are the boundary. The playbook's
+   [harness safety baseline](../PLAYBOOK.md#harness-safety-baseline) and
+   [security note](../AI-HARNESS-SECURITY.md#why-recovery-checkpoints-warn-under-sandboxed-codex)
+   retain the checkpoint approval procedure only for Codex `workspace-write`
+   plus `on-request`; full-access sessions have no such approval path. This
+   is harness procedure, not lifecycle contract (relocated by WO-090,
+   2026-09-20; scoped to the actual posture by WO-161).
 
 3. Record your outcome when the deliverable, report and evidence exist.
    Completion runs `git diff --check` inline. Gate rows, session authorship,
@@ -2394,7 +2395,11 @@ claim evidence or releases it does not have.
   no machinery suite; a host behavior edit still selects its declared suites.
   Lifecycle transitions run only the inline whitespace check and record their
   reports/attestations without gate, read or usage prerequisites.
-- **Gate sandbox preflight (WO-140, 2026-09-19).** A suite declares
+- **Host-confinement preflight (WO-140, 2026-09-19; renamed by WO-161,
+  2026-09-25).** `scripts/lib/host-confinement.mjs` detects a host restriction;
+  it creates no sandbox. The operator's three CLI sessions currently run
+  without a host sandbox; the detector reports `inForce: false` here. A suite
+  declares
   `needs: outside-sandbox` only when an environmental cause means it cannot
   pass inside a harness sandbox; a failure inside one is never by itself a
   reason to declare. `skeleton` carries the declaration: its native script
@@ -2416,22 +2421,25 @@ claim evidence or releases it does not have.
   suite, names the suites and prints the command that runs the same selection
   outside. No marker, a missing probe directory, a permitted write or a probe
   that fails fails open and the gate runs as before; only a selection that
-  needs the outside pays for the probe. `npm test -- --inside-sandbox` runs
-  the remaining suites and records that same identity, with `partial` and
-  `excludedSuites`, never
-  `npm test`; `findGateCheck`, the lifecycle transitions, pull-request
+  needs the outside pays for the probe. `npm test -- --confined-partial` runs
+  the remaining suites. Its recorded identity stays
+  `npm test -- --inside-sandbox`, with `partial` and `excludedSuites`, never
+  `npm test`; the declaration `needs: outside-sandbox` and diagnostic field
+  `sandbox` also retain their historical names for existing records.
+  `findGateCheck`, the lifecycle transitions, pull-request
   publication and release close reject that row, and reject exclusions under
-  any identity. Running unsandboxed stays the operator's approval and is never
-  automatic. In an operator-attended session the verifier and reviewer run the
-  product gate outside from the start; a resident-launched verification runs
-  the inside selection and reports its exclusions as a partial result. See the
+  any identity. Run the product gate with `npm test`; if the runner reports
+  confinement, use the printed outside command under the host's permission
+  settings and existing authority. A resident-launched verification unable to
+  run the full selection uses `--confined-partial` and reports its exclusions.
+  A partial result is never product-gate evidence. See the
   [WO-140 decisions](../evidence/WO-140/decisions.md).
-  The runner's gate-sandbox fixture disables Git's automatic maintenance
+  The runner's host-confinement fixture disables Git's automatic maintenance
   before its first commit (WO-157, from WO-063 D005): Git 2.55 estimates loose
   objects from `objects/17` alone, so two loose objects there made a fixture
   commit start a detached geometric repack still writing `.git/objects/pack`
   when the teardown removed the tree (`ENOTEMPTY`). Each gate tags the
-  `dotln-gate-sandbox-*` roots its suites create and fails, naming them, when
+  `dotln-host-confinement-*` roots its suites create and fails, naming them, when
   one survives its suites; another run's roots and untagged roots are never
   judged, and the check removes nothing.
   Live gates still protect source, installed inputs and the success record

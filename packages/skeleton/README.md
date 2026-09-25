@@ -805,7 +805,7 @@ host, the existing execution guide remains the manual rule carrier.
 ## Contributor harness
 
 The [Contributor definition](src/loadouts/contributor.ts) equips the ten personal
-feedback units, Clean Room and the sandboxed authority envelope. Build first,
+feedback units, Clean Room and the bounded authority envelope. Build first,
 then emit or check its project configuration:
 
 ```sh
@@ -817,8 +817,8 @@ npm run terms -- check CLAUDE.md docs/discovery/harness-smoke-2026-09-07.md
 
 The default emits both observed profiles and one shared instruction block.
 It preserves the hand-written floor, validates contained destinations before
-writing, refuses unowned stale surfaces and never edits user settings. Native
-sandbox and approval remain in force. The CLI only accepts Contributor today;
+writing, refuses unowned stale surfaces and never edits user settings. Host
+permission settings decide execution; emission changes no host setting. The CLI only accepts Contributor today;
 new saved builds need explicit adapter declarations and observed profiles.
 
 The Codex contributor profile also emits `.codex/hooks.json`, a comment-only

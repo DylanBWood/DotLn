@@ -1,6 +1,9 @@
 # ADR-0004 — Claude sandboxed Bash may auto-allow inside fail-closed containment
 
-**Status:** Accepted (2026-09-01)
+**Status:** Accepted (2026-09-01), current posture superseded by the
+[2026-09-25 ADR-0003 amendment](0003-personal-ai-harness-security.md#amendments):
+host sandboxes are off in Claude Code, Codex and Copilot. The original
+decisions below record the earlier posture.
 
 ## Context
 
@@ -17,7 +20,7 @@ timing are preserved in
 [`VER-001`](../verifications/WO-006/VER-001.md); this decision does not rewrite
 that evidence or the earlier decision.
 
-## Decision
+## Original decision — 2026-09-01
 
 1. Partially supersede ADR-0003 Decision 2's requirement to route sandboxed
    Bash through `default` regular permissions, and its rejection of Claude's
@@ -74,4 +77,8 @@ sanitized local-drift count live in
 
 ## Amendments
 
-None.
+**2026-09-25 — WO-161.** The [ADR-0003 amendment](0003-personal-ai-harness-security.md#amendments)
+records the operator's sandbox-off posture in all three CLIs and supersedes
+the earlier sandbox-on and permission-mode preferences above. DotLn refusals
+plus the host permission mode are the boundary; this cross-reference changes
+no personal setting.

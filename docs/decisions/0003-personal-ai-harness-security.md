@@ -1,6 +1,8 @@
 # ADR-0003 — Personal AI harnesses stay sandboxed with human-reviewed boundaries
 
-**Status:** Accepted (2026-09-01)
+**Status:** Accepted (2026-09-01), amended 2026-09-25. The original
+sandbox-on decisions below are historical; the [amendment](#amendments) records
+the current posture: host sandboxes off in all three CLIs.
 
 ## Context
 
@@ -17,7 +19,7 @@ would add friction without improving the agent's underlying decision rule.
 The two vendors expose different controls and change them independently. A
 portable repository setting cannot truthfully make their sandboxes equivalent.
 
-## Decision
+## Original decision — 2026-09-01
 
 1. Keep the operating-system shell sandbox enabled in every current personal
    harness. Use the vendor's locally tested, human-reviewed permission path for
@@ -91,4 +93,31 @@ behavior.
 
 ## Amendments
 
-None.
+**2026-09-25 — WO-161: host sandboxes off in all three CLIs.** The operator
+reaffirmed the standing choice that Claude Code, Codex and Copilot run without
+host sandboxing. The 2026-09-17 security note already records Claude's sandbox
+off and Codex's `danger-full-access` plus `never`; the operator's 2026-09-25
+direction explicitly includes Copilot. This amendment records that direction
+under [WO-161](../work-orders/WO-161-sandbox-vocabulary.md); it does not change
+personal settings or claim a new enforcement probe for the other CLIs.
+
+This supersedes Decision 1's sandbox-on/default-review posture, Decision 2's
+required sandbox and fallback posture, Decision 3's required Codex mode, and
+Decision 7's unconditional approval procedure. It also supersedes the required
+sandbox-on posture and associated permission-mode preferences in ADR-0004 and
+ADR-0005. Their original decisions and consequences remain historical records.
+The authority invariant, personal-settings privacy, Clean Room floor and
+honest reporting of host differences remain in force.
+
+DotLn's refusals plus the host permission mode are the boundary. Claude enforces
+the five observed refusal conditions; Codex carries the same duties as role
+text; Copilot's supported boundaries and limits remain those in the
+[security note](../AI-HARNESS-SECURITY.md). These are not OS containment of
+arbitrary programs. Full-access Codex sessions do not use the retained
+`workspace-write` plus `on-request` escalation procedure. DotLn's discovery
+Seatbelt and spawned Codex workers' `--sandbox workspace-write` are separate
+mechanisms and retain their names and behavior.
+
+Reopen when the operator changes a host's posture or current executable evidence
+contradicts this description. Review and document such a change explicitly;
+never infer permission to alter personal settings from this amendment.
