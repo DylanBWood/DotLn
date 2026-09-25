@@ -12,10 +12,18 @@ import {
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import {
+  CODEX_EXEC_SHARED_FLAGS,
+  startCodexEpisode,
+} from "../packages/skeleton/dist/src/worker-transport.js";
 
 // Bounded local capability evidence: never print settings, prompt input, auth,
-// process identifiers, or raw CLI diagnostics. No model invocation.
+// process identifiers, or raw CLI diagnostics. No model invocation. Every
+// Codex invocation runs in its own isolated home (WO-159); only the digest
+// records are kept.
+const codexEpisodes = [];
 const run = (binary, args, cwd) => {
+  const episode = binary === "codex" ? startCodexEpisode() : null;
   // Claude's help can exit before its pipe flushes. A regular file captures
   // the complete bounded help rather than misclassifying a truncated pipe.
   const capture = mkdtempSync(join(tmpdir(), "dotln-worker-help-"));
@@ -28,11 +36,13 @@ const run = (binary, args, cwd) => {
       timeout: 15_000,
       maxBuffer: 1_000_000,
       stdio: ["ignore", fd, "pipe"],
+      env: episode?.env ?? process.env,
     });
     return { status: result.status, stdout: readFileSync(file, "utf8") };
   } finally {
     closeSync(fd);
     rmSync(capture, { recursive: true });
+    if (episode) codexEpisodes.push(episode.finish());
   }
 };
 const version = (binary) => {
@@ -58,8 +68,7 @@ const evidence = {
   claude: { version: version("claude"), effort: "high", flags: [] },
 };
 for (const flag of [
-  "--ephemeral",
-  "--ignore-user-config",
+  ...CODEX_EXEC_SHARED_FLAGS,
   "--output-schema",
   "--json",
   "--model",
@@ -143,4 +152,5 @@ if (process.argv.includes("--sandbox")) {
     rmSync(root, { recursive: true });
   }
 }
+evidence.codex.episodes = codexEpisodes;
 console.log(JSON.stringify(evidence, null, 2));

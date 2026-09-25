@@ -56,6 +56,7 @@ function admittedObservation(
         launch: worker.launch,
         failure: "invalid-result",
         ...(worker.subject ? { subject: worker.subject } : {}),
+        ...(worker.isolation ? { isolation: worker.isolation } : {}),
       },
     };
     assertActorResult(failed);

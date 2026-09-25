@@ -1,0 +1,114 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-159",
+  "claim": "One Codex worker episode through CodexCliExecWorkOrderTransport ran in an isolated per-episode CODEX_HOME holding only a link to the operator's auth file; codex login status succeeded under another such home; the user-level Codex configuration and its trust table were byte-identical before and after each launch.",
+  "launch": {
+    "epistemic": "launch-claim",
+    "value": {
+      "command": "dotln feedback-audit --transport codex-cli-exec --model gpt-6-sol --effort xhigh",
+      "transport": "codex-cli-exec",
+      "harnessVersion": "0.156.1",
+      "model": "gpt-6-sol",
+      "effort": "xhigh",
+      "selectionSource": "host-launch",
+      "approvalPolicy": "never"
+    }
+  },
+  "authentication": {
+    "epistemic": "observed",
+    "value": {
+      "command": "codex login status",
+      "exitCode": 0,
+      "loggedIn": true,
+      "method": "chatgpt",
+      "isolation": {
+        "schemaVersion": 1,
+        "home": "sha256:73f140abed068bf2e0a129457a13d50a2e5ebd779181bb48bd94411299e30995",
+        "authentication": "symlink",
+        "userConfig": {
+          "before": "sha256:fcdcf404e36563f64ad0793b86d0caaf60d28b0c1b096f9138c4fbb2fcb1938e",
+          "after": "sha256:fcdcf404e36563f64ad0793b86d0caaf60d28b0c1b096f9138c4fbb2fcb1938e"
+        },
+        "trustTable": {
+          "before": "sha256:b43094733eb57270ea31e709348acae11c7737163597fbd15fb46d9b42172d5e",
+          "after": "sha256:b43094733eb57270ea31e709348acae11c7737163597fbd15fb46d9b42172d5e"
+        },
+        "isolatedTrustEntries": null,
+        "homeRemoved": true
+      }
+    }
+  },
+  "episode": {
+    "epistemic": "observed",
+    "value": {
+      "terminal": "WorkerCompleted",
+      "commandExit": 0,
+      "heartbeats": 19,
+      "durationMs": 19490,
+      "timeoutMs": 600000,
+      "isolation": {
+        "schemaVersion": 1,
+        "home": "sha256:92f832eedf1e3faf89b2f845df1dd53533ca9543700f52daa80cb449a786e6c4",
+        "authentication": "symlink",
+        "userConfig": {
+          "before": "sha256:fcdcf404e36563f64ad0793b86d0caaf60d28b0c1b096f9138c4fbb2fcb1938e",
+          "after": "sha256:fcdcf404e36563f64ad0793b86d0caaf60d28b0c1b096f9138c4fbb2fcb1938e"
+        },
+        "trustTable": {
+          "before": "sha256:b43094733eb57270ea31e709348acae11c7737163597fbd15fb46d9b42172d5e",
+          "after": "sha256:b43094733eb57270ea31e709348acae11c7737163597fbd15fb46d9b42172d5e"
+        },
+        "isolatedTrustEntries": null,
+        "homeRemoved": true
+      }
+    }
+  },
+  "eventStream": {
+    "epistemic": "observed",
+    "value": {
+      "rows": 29,
+      "sha256": "sha256:8916ed6fd11232fd13da0d0b5b11bb55b776e5888dd41db2dd444a78998de6d4",
+      "workerEpisodeId": "ep_verifier_1_attempt_1",
+      "terminalEventId": "evt_28"
+    }
+  },
+  "protectedSurfaces": {
+    "epistemic": "observed",
+    "value": {
+      "codexUserConfiguration": [
+        {
+          "source": "codex-login-status",
+          "userConfig": {
+            "before": "sha256:fcdcf404e36563f64ad0793b86d0caaf60d28b0c1b096f9138c4fbb2fcb1938e",
+            "after": "sha256:fcdcf404e36563f64ad0793b86d0caaf60d28b0c1b096f9138c4fbb2fcb1938e"
+          },
+          "trustTable": {
+            "before": "sha256:b43094733eb57270ea31e709348acae11c7737163597fbd15fb46d9b42172d5e",
+            "after": "sha256:b43094733eb57270ea31e709348acae11c7737163597fbd15fb46d9b42172d5e"
+          }
+        },
+        {
+          "source": "worker-episode",
+          "userConfig": {
+            "before": "sha256:fcdcf404e36563f64ad0793b86d0caaf60d28b0c1b096f9138c4fbb2fcb1938e",
+            "after": "sha256:fcdcf404e36563f64ad0793b86d0caaf60d28b0c1b096f9138c4fbb2fcb1938e"
+          },
+          "trustTable": {
+            "before": "sha256:b43094733eb57270ea31e709348acae11c7737163597fbd15fb46d9b42172d5e",
+            "after": "sha256:b43094733eb57270ea31e709348acae11c7737163597fbd15fb46d9b42172d5e"
+          }
+        }
+      ],
+      "unchanged": true
+    }
+  },
+  "trustBaseline": {
+    "epistemic": "observed",
+    "value": {
+      "trustedEntriesBefore": 43,
+      "trustedEntriesAfter": 43,
+      "configBefore": "sha256:fcdcf404e36563f64ad0793b86d0caaf60d28b0c1b096f9138c4fbb2fcb1938e",
+      "configAfter": "sha256:fcdcf404e36563f64ad0793b86d0caaf60d28b0c1b096f9138c4fbb2fcb1938e"
+    }
+  }
+}

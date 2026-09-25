@@ -18,6 +18,7 @@ import {
   type WorkerResult,
   type WriterResult,
 } from "./worker-protocol.js";
+import type { CodexEpisodeIsolation } from "./worker-transport.js";
 
 export type CliTransport = "claude-cli-print" | "codex-cli-exec";
 export interface CliActorSpec {
@@ -53,6 +54,34 @@ export interface CliActorObservation {
   /** Only a mission check: the capsule this episode actually judged, which
    * completes the pinned one with a dispatch-time observation. */
   subject?: MissionCheckSubject;
+  /** Only a Codex episode: its isolated-home record (WO-159). */
+  isolation?: CodexEpisodeIsolation;
+}
+/** Shape only: an unequal digest pair is an observation, not a refusal. */
+function isolationShaped(value: unknown): boolean {
+  const v = value as CodexEpisodeIsolation;
+  const digest = /^(?:sha256:[0-9a-f]{64}|absent|unknown)$/u;
+  const pair = (p: unknown) =>
+    !!p &&
+    typeof p === "object" &&
+    Object.keys(p).sort().join() === "after,before" &&
+    digest.test(String((p as { before: unknown }).before)) &&
+    digest.test(String((p as { after: unknown }).after));
+  return (
+    !!v &&
+    typeof v === "object" &&
+    Object.keys(v).sort().join() ===
+      "authentication,home,homeRemoved,isolatedTrustEntries,schemaVersion,trustTable,userConfig" &&
+    v.schemaVersion === 1 &&
+    /^sha256:[0-9a-f]{64}$/u.test(String(v.home)) &&
+    ["symlink", "absent"].includes(v.authentication) &&
+    pair(v.userConfig) &&
+    pair(v.trustTable) &&
+    (v.isolatedTrustEntries === null ||
+      (Number.isSafeInteger(v.isolatedTrustEntries) &&
+        v.isolatedTrustEntries >= 0)) &&
+    typeof v.homeRemoved === "boolean"
+  );
 }
 export function assertCliActorSpec(
   value: unknown,
@@ -87,7 +116,8 @@ export function assertCliObservation(
     !v ||
     !launch ||
     Object.keys(v).some(
-      (k) => !["launch", "result", "failure", "subject"].includes(k),
+      (k) =>
+        !["launch", "result", "failure", "subject", "isolation"].includes(k),
     ) ||
     Object.keys(launch).some(
       (k) =>
@@ -111,7 +141,9 @@ export function assertCliObservation(
     launch.episodeId !== episodeId ||
     typeof launch.harnessVersion !== "string" ||
     !launch.harnessVersion ||
-    (v.result === undefined) === (v.failure === undefined)
+    (v.result === undefined) === (v.failure === undefined) ||
+    (v.isolation !== undefined &&
+      (spec.transport !== "codex-cli-exec" || !isolationShaped(v.isolation)))
   )
     throw new Error("invalid CLI actor observation");
   if (

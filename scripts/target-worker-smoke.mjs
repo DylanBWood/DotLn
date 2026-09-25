@@ -21,6 +21,10 @@ import {
   removeTargetHarness,
 } from "./lib/harness.mjs";
 import { runProcess } from "./lib/writing-worker-probe.mjs";
+import {
+  codexExecArgv,
+  startCodexEpisode,
+} from "../packages/skeleton/dist/src/worker-transport.js";
 
 const root = realpathSync(findLaunchpad());
 const [harness] = process.argv.slice(2);
@@ -98,23 +102,21 @@ const args =
         "--include-hook-events",
         prompt,
       ]
-    : [
-        "-a",
-        "never",
-        "exec",
-        "--ephemeral",
-        "--ignore-user-config",
-        "--sandbox",
-        "workspace-write",
-        "--model",
-        model,
-        "-c",
-        `model_reasoning_effort="${effort}"`,
-        "--cd",
-        target,
-        "--json",
-        prompt,
-      ];
+    : codexExecArgv({
+        approval: "never",
+        rest: [
+          "--sandbox",
+          "workspace-write",
+          "--model",
+          model,
+          "-c",
+          `model_reasoning_effort="${effort}"`,
+          "--cd",
+          target,
+          "--json",
+          prompt,
+        ],
+      });
 let version = "unknown";
 try {
   version =
@@ -125,12 +127,21 @@ try {
       .trim()
       .match(/\d+\.\d+\.\d+/)?.[0] ?? "unknown";
 } catch {}
-const run = await runProcess({
-  binary: harness,
-  args,
-  cwd: target,
-  timeoutMs: 180000,
-});
+// WO-159: a Codex launch gets its own home; Claude keeps the caller environment.
+const episode = harness === "codex" ? startCodexEpisode() : null;
+let isolation = null;
+let run;
+try {
+  run = await runProcess({
+    binary: harness,
+    args,
+    cwd: target,
+    timeoutMs: 180000,
+    ...(episode ? { env: episode.env } : {}),
+  });
+} finally {
+  isolation = episode?.finish() ?? null;
+}
 const messages = run.stdout.split("\n").flatMap((line) => {
   try {
     return [JSON.parse(line)];
@@ -213,6 +224,7 @@ const record = {
   allowedWrite,
   blockEcho,
   hookEvents: hooks,
+  isolation,
   passed,
 };
 checkTargetHarness(target, options);

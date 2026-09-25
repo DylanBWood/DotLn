@@ -31,6 +31,7 @@ import {
   realpathSync,
   rmSync,
   symlinkSync,
+  utimesSync,
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
@@ -5593,13 +5594,26 @@ test("WO-142 D1 prune previews without writes, preserves live files and keeps de
       "unpublished bytes",
     );
     write(root, ".git/dotln/suite-success/obsolete.json", "dead cache");
+    // WO-159: a Codex episode home whose launcher exited is listed, not pruned.
+    const codexHomeRoot = join(root, "system-temp");
+    const exited = spawnSync(process.execPath, ["-e", ""]).pid;
+    mkdirSync(join(codexHomeRoot, `dotln-codex-home-${exited}-abc123`), {
+      recursive: true,
+    });
+    // Older than any episode deadline: its launcher is gone and so is its use.
+    utimesSync(join(codexHomeRoot, `dotln-codex-home-${exited}-abc123`), 0, 0);
+    mkdirSync(join(codexHomeRoot, `dotln-codex-home-${process.pid}-live`));
     const options = {
       sessionId: "current",
       publishedRelease: (order) => (order === "WO-901" ? "v1.0.0" : null),
+      codexHomeRoot,
     };
     const roots = [".claude", ".runtime", "docs", ".git/dotln"];
     const before = roots.map((path) => pruneInventory(join(root, path)));
     const preview = pruneHarness(root, options);
+    assert.deepEqual(preview.staleCodexEpisodeHomes, [
+      `dotln-codex-home-${exited}-abc123`,
+    ]);
     assert.deepEqual(
       roots.map((path) => pruneInventory(join(root, path))),
       before,

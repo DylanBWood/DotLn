@@ -12,7 +12,10 @@ import {
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 
-import { canonicalWorkerArgs } from "../packages/skeleton/dist/src/worker-transport.js";
+import {
+  canonicalWorkerArgs,
+  startCodexEpisode,
+} from "../packages/skeleton/dist/src/worker-transport.js";
 import {
   LiveReactorDriver,
   startScenario,
@@ -38,14 +41,26 @@ assert.equal(
 assert.ok(output && !extra.length);
 const destination = resolve(root, output);
 assert.ok(destination.startsWith(root + "/") && !existsSync(destination));
-const run = (args, cwd, input) =>
-  spawnSync("codex", args, {
-    cwd,
-    input,
-    encoding: "utf8",
-    timeout: 90_000,
-    maxBuffer: 1_000_000,
-  });
+// WO-159: every Codex invocation runs in its own isolated home and returns
+// its digest record beside the result.
+const run = (args, cwd, input) => {
+  const episode = startCodexEpisode();
+  try {
+    return {
+      ...spawnSync("codex", args, {
+        cwd,
+        input,
+        encoding: "utf8",
+        timeout: 90_000,
+        maxBuffer: 1_000_000,
+        env: episode.env,
+      }),
+      codexIsolation: episode.finish(),
+    };
+  } finally {
+    episode.finish();
+  }
+};
 const versionRun = run(["--version"], root);
 assert.equal(versionRun.status, 0);
 const version = versionRun.stdout.match(/\b\d+\.\d+\.\d+\b/u)?.[0];
@@ -186,6 +201,7 @@ try {
       stderrPresent: Boolean(result.stderr),
       timedOut: result.error?.code === "ETIMEDOUT",
       usage: usageObservation(events).usage,
+      codexIsolation: result.codexIsolation,
     };
     rows.push(row);
     console.log(

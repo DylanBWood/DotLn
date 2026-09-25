@@ -969,7 +969,9 @@ for (const name of ["claude-cli-print", "codex-cli-exec"] as const)
     );
     assert.equal(interrupted.length, 1);
     const payload = interrupted[0]!.payload as Record<string, JsonValue>;
+    // WO-159: a Codex episode's record carries its isolated-home record.
     assert.deepEqual(Object.keys(payload).sort(), [
+      ...(name === "codex-cli-exec" ? ["codexIsolation"] : []),
       "commandId",
       "detail",
       "reason",
@@ -977,6 +979,13 @@ for (const name of ["claude-cli-print", "codex-cli-exec"] as const)
     ]);
     assert.equal(payload["reason"], "invalid-result");
     assert.equal(payload["detail"], "unsupported pass");
+    if (name === "codex-cli-exec") {
+      const isolation = payload["codexIsolation"] as Record<string, JsonValue>;
+      // Shape only: this run digests the host's own Codex home, which other
+      // programs may rewrite; equality is proven on a fixture home.
+      assert.equal(isolation["homeRemoved"], true);
+      assert.match(String(isolation["home"]), /^sha256:[0-9a-f]{64}$/u);
+    }
   });
 
 test("WO-157 item 8: a detail outside the closed vocabulary is recorded as unclassified, never verbatim", async () => {

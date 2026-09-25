@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import {
   chmodSync,
   existsSync,
@@ -656,6 +657,11 @@ const value = (flag) => { const i = args.indexOf(flag); return i >= 0 ? args[i +
 const sleep = (ms) => Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
 const out = (m) => process.stdout.write(JSON.stringify(m) + "\n");
 const step = Number(process.env.DOTLN_STUB_STEP_MS || 120);
+// WO-159: every DotLn Codex invocation runs in its own isolated home.
+const home = process.env.CODEX_HOME;
+if (!home || !/^dotln-codex-home-\d+-/.test(path.basename(home)) || fs.readdirSync(home).some((name) => name !== "auth.json")) throw new Error("non-isolated Codex home");
+// The home each invocation saw, so a fixture can prove no two launches share one.
+if (process.env.DOTLN_STUB_STATE) fs.appendFileSync(path.join(process.env.DOTLN_STUB_STATE, "codex-homes.jsonl"), JSON.stringify({ home, command: args.includes("exec") ? "exec" : args[0] }) + "\n");
 if (args[0] === "--version") { console.log("codex-cli 9.9.9 (stub)"); process.exit(0); }
 if (args[0] === "--help") {
   console.log(["Codex CLI", "Commands:", "  agents            Browse all agent sessions on the shared local app-server daemon", "  exec              Run Codex non-interactively", "  app-server        Run the app server", "  remote-control    Manage the app-server daemon"].join("\n"));
@@ -995,7 +1001,7 @@ test("WO-044 the scratch worktree is a committed foreign repository outside this
 });
 
 test("WO-044 the probe drives every Claude and Codex launch through stub harnesses, records shapes only, and renders the labeled record, addendum and disposition", async (t) => {
-  const { base, out, env, home } = stubEnvironment(t);
+  const { base, out, env, home, root } = stubEnvironment(t);
   const date = "2030-01-02";
   const claude = await runWritingWorker({
     harness: "claude",
@@ -1015,6 +1021,49 @@ test("WO-044 the probe drives every Claude and Codex launch through stub harness
     timing: { idleSampleMs: 50, settleMs: 50 },
   });
   assert.equal(codex.length, 8);
+  // WO-159 VER-001 F1: every Codex invocation, including each concurrent
+  // session and the fresh recovery, ran in its own home, and each row keeps
+  // one record per invocation naming the home that launch saw.
+  const invocations = readFileSync(
+    join(root, "state", "codex-homes.jsonl"),
+    "utf8",
+  )
+    .trim()
+    .split("\n")
+    .map((line) => JSON.parse(line));
+  const homes = invocations.map((invocation) => invocation.home);
+  assert.equal(
+    new Set(homes).size,
+    homes.length,
+    "no two launches share a home",
+  );
+  const launched = invocations
+    .filter((invocation) => invocation.command !== "--version")
+    .map(
+      ({ home }) => `sha256:${createHash("sha256").update(home).digest("hex")}`,
+    );
+  const recorded = [];
+  const expected = {
+    concurrent: ["concurrent-1", "concurrent-2", "concurrent-3"],
+    "resident-kill": ["exec", "recovery"],
+    surface: ["help"],
+  };
+  for (const path of codex) {
+    const row = JSON.parse(readFileSync(path, "utf8"));
+    assert.deepEqual(
+      row.codexEpisodes.map((episode) => episode.launch),
+      expected[row.launch] ?? ["exec"],
+      path,
+    );
+    for (const episode of row.codexEpisodes) {
+      assert.equal(episode.homeRemoved, true, path);
+      assert.equal(episode.userConfig.before, episode.userConfig.after, path);
+      assert.equal(episode.trustTable.before, episode.trustTable.after, path);
+      recorded.push(episode.home);
+    }
+    assert.equal(row.userScopeSettingsWritten, false, path);
+  }
+  assert.deepEqual(recorded.toSorted(), launched.toSorted());
   const directory = join(out, `docs/discovery/writing-worker-smoke-${date}`);
   const record = (name) =>
     JSON.parse(readFileSync(join(directory, `${name}.json`), "utf8"));

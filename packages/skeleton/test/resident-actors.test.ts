@@ -47,6 +47,8 @@ for (const kind of ["writer", "inspection"] as const)
               JSON.parse(launch.input).episodeId,
             );
             assert.notEqual(launch.resident?.episodeId, f.request.episodeId);
+            // WO-159: the resident Codex episode runs in an isolated home.
+            assert.match(launch.env?.CODEX_HOME ?? "", /dotln-codex-home-/u);
             assert.equal(state(host).present, false);
             assert.ok(
               launch.args.includes(
@@ -79,6 +81,8 @@ for (const kind of ["writer", "inspection"] as const)
     assert.equal(observed.worker.launch.row, "X-U1");
     assert.equal(observed.worker.result.envelope.status, "completed");
     assert.equal(observed.worker.result.envelope.episodeId, observed.episodeId);
+    // Shape only: this run digests the host's own Codex home.
+    assert.equal(observed.worker.isolation.homeRemoved, true);
     assert.equal(observed.verified, false);
     assert.equal(state(host).machine!.state, "probe");
     assert.equal(state(host).present, false);

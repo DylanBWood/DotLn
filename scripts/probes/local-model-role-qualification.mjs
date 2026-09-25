@@ -754,52 +754,57 @@ export async function runCodexEpisode({
   timeoutMs = EPISODE_TIMEOUT_MS,
   cwd = ROOT,
 }) {
+  // WO-159: the one Codex launcher builds the argv and isolates the home.
+  const launcher = await import(
+    pathToFileURL(join(ROOT, "packages/skeleton/dist/src/worker-transport.js"))
+      .href
+  );
   const scratch = mkdtempSync(join(tmpdir(), "dotln-wo138-schema-"));
   const schemaPath = join(scratch, "result.json");
   writeFileSync(schemaPath, JSON.stringify(schema), { mode: 0o600 });
-  const args = [
-    "exec",
-    "--ephemeral",
-    "--ignore-user-config",
-    "--strict-config",
-    "--model",
-    model,
-    "--json",
-    "--output-schema",
-    schemaPath,
-    "--cd",
-    cwd,
-    "-c",
-    'default_permissions="dotln-worker"',
-    "-c",
-    'permissions.dotln-worker.filesystem={":minimal"="read",":workspace_roots"="read"}',
-    "-c",
-    "permissions.dotln-worker.network.enabled=false",
-    "-c",
-    'approval_policy="never"',
-    "-c",
-    'web_search="disabled"',
-    "-c",
-    "project_doc_max_bytes=0",
-    "-c",
-    "mcp_servers={}",
-    "-c",
-    "memories.use_memories=false",
-    "-c",
-    "memories.generate_memories=false",
-    "-c",
-    'shell_environment_policy.inherit="none"',
-    ...CODEX_DISABLED.flatMap((feature) => ["--disable", feature]),
-    "-c",
-    'model_reasoning_effort="xhigh"',
-    "-",
-  ];
+  const args = launcher.codexExecArgv({
+    rest: [
+      "--strict-config",
+      "--model",
+      model,
+      "--json",
+      "--output-schema",
+      schemaPath,
+      "--cd",
+      cwd,
+      "-c",
+      'default_permissions="dotln-worker"',
+      "-c",
+      'permissions.dotln-worker.filesystem={":minimal"="read",":workspace_roots"="read"}',
+      "-c",
+      "permissions.dotln-worker.network.enabled=false",
+      "-c",
+      'approval_policy="never"',
+      "-c",
+      'web_search="disabled"',
+      "-c",
+      "project_doc_max_bytes=0",
+      "-c",
+      "mcp_servers={}",
+      "-c",
+      "memories.use_memories=false",
+      "-c",
+      "memories.generate_memories=false",
+      "-c",
+      'shell_environment_policy.inherit="none"',
+      ...CODEX_DISABLED.flatMap((feature) => ["--disable", feature]),
+      "-c",
+      'model_reasoning_effort="xhigh"',
+      "-",
+    ],
+  });
   const started = performance.now();
+  const episode = launcher.startCodexEpisode();
   try {
     const run = await new Promise((resolveRun) => {
       const child = spawn("codex", args, {
         cwd,
-        env: process.env,
+        env: episode.env,
         stdio: ["pipe", "pipe", "pipe"],
       });
       let stdout = "";
@@ -863,8 +868,15 @@ export async function runCodexEpisode({
       );
       child.stdin.end(prompt);
     });
-    return decodeCodexRun(run, performance.now() - started, model);
+    const latencyMs = performance.now() - started;
+    const codexIsolation = episode.finish();
+    try {
+      return { ...decodeCodexRun(run, latencyMs, model), codexIsolation };
+    } catch (error) {
+      throw Object.assign(error, { codexIsolation });
+    }
   } finally {
+    episode.finish();
     rmSync(scratch, { recursive: true, force: true });
   }
 }
@@ -1216,6 +1228,9 @@ function episodeRecord({
       cell.transport === "local"
         ? "loopback client; all inputs committed public material; no no-egress claim"
         : "existing codex-cli-exec inspection shape; tools and model-side network disabled",
+    ...(observed.codexIsolation
+      ? { codexIsolation: observed.codexIsolation }
+      : {}),
   };
   try {
     const answer = validateAnswer(
@@ -1355,6 +1370,9 @@ export async function runMatrix({
             code: error.code ?? "transport-failed",
             detail: sanitizeDetail(error.detail || error.message),
           },
+          ...(error.codexIsolation
+            ? { codexIsolation: error.codexIsolation }
+            : {}),
         };
       }
       let record;
@@ -1401,6 +1419,9 @@ export async function runMatrix({
           usage: null,
           tokensPerSecond: null,
           failure: observed.failure,
+          ...(observed.codexIsolation
+            ? { codexIsolation: observed.codexIsolation }
+            : {}),
           boundary:
             transport === "local"
               ? "loopback client; all inputs committed public material; no no-egress claim"
