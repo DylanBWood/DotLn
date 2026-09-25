@@ -88,6 +88,39 @@ export const executionAmendmentSource = (source, filed) => {
   return normalized.trimEnd();
 };
 
+function executionAmendmentMatch(before, after, row) {
+  if (row.sourceOrderHash !== sha256(executionAmendmentSource(before)))
+    return null;
+  const current = executionAmendmentSource(after, before);
+  if (
+    row.orderLength <= current.length &&
+    sha256(current.slice(0, row.orderLength)) === row.orderHash
+  )
+    return { source: current, kind: "current" };
+  // Historical activation rows normalized an appended label to a placeholder.
+  // The old binding may have a later, strictly appended execution record.
+  const legacy = executionAmendmentSource(after);
+  if (
+    row.orderLength > legacy.length ||
+    sha256(legacy.slice(0, row.orderLength)) !== row.orderHash
+  )
+    return null;
+  const filed = executionAmendmentSource(before);
+  if (!current.startsWith(filed)) return null;
+  try {
+    if (current.length !== filed.length) executionAppendix(filed, current);
+    if (legacy.length !== row.orderLength)
+      executionAppendix(legacy.slice(0, row.orderLength), legacy);
+  } catch {
+    return null;
+  }
+  return { source: legacy, kind: "legacy" };
+}
+
+export function matchesExecutionAmendment(before, after, row) {
+  return executionAmendmentMatch(before, after, row) !== null;
+}
+
 export const reassessments = (before, after, subject) => {
   const prefix = before.trimEnd();
   requireSamePlan(
@@ -264,14 +297,14 @@ export function checkPlanContinuation(
     const amendment = amendments.find(
       (row) =>
         row.workOrderId === workOrderId &&
-        row.sourceOrderHash === sha256(executionAmendmentSource(before)) &&
-        row.orderHash ===
-          sha256(
-            executionAmendmentSource(after, before).slice(0, row.orderLength),
-          ),
+        matchesExecutionAmendment(before, after, row),
     );
     if (amendment) {
-      const normalized = executionAmendmentSource(after, before);
+      const normalized = executionAmendmentMatch(
+        before,
+        after,
+        amendment,
+      ).source;
       requireSamePlan(
         amendment.orderLength <= normalized.length,
         "execution amendment approved length exceeds the current order source",

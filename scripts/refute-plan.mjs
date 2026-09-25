@@ -10,6 +10,7 @@ import {
   overridePlanHold,
   disposePlanHold,
   amendPlanOrder,
+  withdrawPlanAmendment,
   requireChangedPlanEvidence,
   readReceipts,
   writePlanReceipt,
@@ -32,7 +33,7 @@ import {
 
 const toolRoot = findLaunchpad();
 const usage =
-  "plan subject | check | refute [--direct] [--scope pass|full] | refute --transport claude-cli-print|codex-cli-exec|fake [--slug <label>] [--model <model>] [--effort <level>] [--dispositions <file>] [--evidence-only] | dispose <receipt-id> <hold-id> <reason> | amend-order <WO-NNN> <WO-NNN-DNNN> <operator-authorization reason> | override <receipt-id> <hold-id> <reason> --capture <ignored-intake-file> --capture-hash sha256:<digest> [actor-flags]";
+  "plan subject | check | refute [--direct] [--scope pass|full] | refute --transport claude-cli-print|codex-cli-exec|fake [--slug <label>] [--model <model>] [--effort <level>] [--dispositions <file>] [--evidence-only] | dispose <receipt-id> <hold-id> <reason> | amend-order <WO-NNN> <WO-NNN-DNNN> <operator-authorization reason> | amend-order <WO-NNN> --withdraw <row-ordinal> <reason> | override <receipt-id> <hold-id> <reason> --capture <ignored-intake-file> --capture-hash sha256:<digest> [actor-flags]";
 const options = (args, allowed) => {
   const out = {};
   for (let i = 0; i < args.length; i++) {
@@ -132,9 +133,19 @@ export async function main(args = process.argv.slice(2), root = toolRoot) {
     });
   }
   if (command === "amend-order") {
+    if (
+      rest.length === 4 &&
+      rest[1] === "--withdraw" &&
+      /^[1-9]\d*$/.test(rest[2])
+    )
+      return withdrawPlanAmendment(root, {
+        workOrderId: rest[0],
+        ordinal: Number(rest[2]),
+        reason: rest[3],
+      });
     if (rest.length !== 3)
       throw new Error(
-        "usage: plan amend-order <WO-NNN> <WO-NNN-DNNN> <operator-authorization reason>",
+        "usage: plan amend-order <WO-NNN> <WO-NNN-DNNN> <operator-authorization reason> | amend-order <WO-NNN> --withdraw <row-ordinal> <reason>",
       );
     return amendPlanOrder(root, {
       workOrderId: rest[0],
