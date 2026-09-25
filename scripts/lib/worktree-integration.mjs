@@ -436,8 +436,10 @@ export async function integrateWorktree(root, workOrder, args = []) {
   if (activeGateRuns(root).length)
     throw new Error("integration refuses during a live test gate");
   const state = readControl(root).orders.get(workOrder)?.state;
-  if (!state || state.phase === "closed")
-    throw new Error("integrate requires an unpublished selected order");
+  if (!state || !["repairing", "final-review"].includes(state.phase))
+    throw new Error(
+      "integrate requires the selected order in repairing or final-review",
+    );
   verifyIntake(root, backup ?? previous?.backup);
   if (gitResult(root, ["check-ignore", "-q", receiptPath]).status !== 0)
     throw new Error("integration receipt must be ignored by Git");
@@ -457,8 +459,8 @@ export async function integrateWorktree(root, workOrder, args = []) {
       .stdout.split("\n")
       .filter(Boolean)
       .map((line) => line.split("\0"));
-  const ownStash = (seen) =>
-    stashEntries().find(
+  const ownStash = (seen) => {
+    const matches = stashEntries().filter(
       ([sha, subject]) =>
         !seen.has(sha) &&
         subject.endsWith(`: ${receipt.stashName}`) &&
@@ -468,7 +470,13 @@ export async function integrateWorktree(root, workOrder, args = []) {
           "--quiet",
           `${sha}^1`,
         ]).stdout.trim() === receipt.before,
-    )?.[0] ?? null;
+    );
+    if (matches.length > 1)
+      throw new Error(
+        "ambiguous integration stash; recovery retained for explicit inspection",
+      );
+    return matches[0]?.[0] ?? null;
+  };
   const recovery = () =>
     `npm run worktree -- integrate ${workOrder} --continue once the tree is clean (the stash holds its content), or git stash apply ${receipt.stash} and remove ${receiptPath} to start again`;
   // Stash the work (unless a retained stash already holds it), then merge.
@@ -479,12 +487,18 @@ export async function integrateWorktree(root, workOrder, args = []) {
       "--porcelain",
       "--untracked-files=all",
     ]);
+    if (!dirty && !receipt.stash) {
+      receipt.stash = ownStash(new Set(receipt.stashesBefore ?? []));
+      if (receipt.stash) save();
+    }
     if (dirty && receipt.stash)
       throw new Error(
         `the retained stash ${receipt.stash} holds this integration's work but the tree is not clean; run ${recovery()}`,
       );
     if (dirty) {
       const seen = new Set(stashEntries().map(([sha]) => sha));
+      receipt.stashesBefore = [...seen];
+      save();
       const stashed = gitResult(root, [
         "stash",
         "push",
@@ -530,6 +544,8 @@ export async function integrateWorktree(root, workOrder, args = []) {
         receipt.upstream,
       ]).status === 0;
     const merged = gitResult(root, [
+      "-c",
+      "core.hooksPath=/dev/null",
       "merge",
       ...(fastForward ? ["--ff-only"] : ["--no-commit", "--no-ff"]),
       receipt.upstream,
@@ -593,7 +609,9 @@ export async function integrateWorktree(root, workOrder, args = []) {
       before,
       upstream,
     ]);
-    const checkpoint = createCheckpoint(root, "integrate", workOrder);
+    const checkpoint = createCheckpoint(root, "integrate", workOrder, {
+      hookless: true,
+    });
     const local = runGitPathList(root, [
       "diff",
       "--name-only",
@@ -603,6 +621,10 @@ export async function integrateWorktree(root, workOrder, args = []) {
     ]);
     receipt = {
       workOrder,
+      phase: state.phase,
+      preservationCommit: checkpoint.checkpointSha,
+      mergeCommit: null,
+      stashesBefore: stashEntries().map(([sha]) => sha),
       date,
       before,
       upstream,
@@ -635,6 +657,39 @@ export async function integrateWorktree(root, workOrder, args = []) {
       throw new Error(
         `recorded upstream is not integrated; complete the merge of ${receipt.upstream} before continuing; recovery is retained`,
       );
+    if (mergedHead.status === 0) {
+      if (
+        mergedHead.stdout.trim() !== receipt.upstream ||
+        runGit(root, ["rev-parse", "HEAD"]) !== receipt.before
+      )
+        throw new Error(
+          "pending merge does not match this integration's recorded parents; recovery retained",
+        );
+      runGit(root, [
+        "-c",
+        "core.hooksPath=/dev/null",
+        "-c",
+        "commit.gpgsign=false",
+        "commit",
+        "--no-verify",
+        "-m",
+        `Merge main for ${workOrder} integration`,
+      ]);
+      receipt.mergeCommit = runGit(root, ["rev-parse", "HEAD"]);
+      save();
+    } else if (!receipt.mergeCommit) {
+      const parents = runGit(root, ["show", "-s", "--format=%P", "HEAD"]).split(
+        " ",
+      );
+      if (
+        parents.length === 2 &&
+        parents[0] === receipt.before &&
+        parents[1] === receipt.upstream
+      ) {
+        receipt.mergeCommit = runGit(root, ["rev-parse", "HEAD"]);
+        save();
+      }
+    }
     receipt.stage = "applying";
     save();
     if (receipt.stash) {
@@ -698,7 +753,7 @@ export async function integrateWorktree(root, workOrder, args = []) {
     );
   else
     console.log(
-      "Integration mechanics complete. Recovery refs and stash retained; any merge commit remains the reviewer's action.",
+      "Integration mechanics complete. Preservation and merge identities are in the receipt; recovery refs and stash retained.",
     );
   return receipt;
 }

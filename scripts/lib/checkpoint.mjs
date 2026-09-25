@@ -5,7 +5,12 @@ import { runGit } from "./git.mjs";
 
 // A recovery object, never a branch commit or a lifecycle event. The real
 // index is untouched, and ignored intake deliberately remains outside Git.
-export function createCheckpoint(root, action, workOrderId) {
+export function createCheckpoint(
+  root,
+  action,
+  workOrderId,
+  { hookless = false } = {},
+) {
   if (!/^WO-\d{3}$/.test(workOrderId))
     throw new Error("invalid checkpoint order");
   const prefix = `refs/dotln/checkpoint/${workOrderId}/`;
@@ -23,6 +28,7 @@ export function createCheckpoint(root, action, workOrderId) {
     const checkpointSha = runGit(
       root,
       [
+        ...(hookless ? ["-c", "core.hooksPath=/dev/null"] : []),
         "commit-tree",
         tree,
         "-p",

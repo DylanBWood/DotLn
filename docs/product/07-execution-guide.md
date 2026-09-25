@@ -673,7 +673,10 @@ an uncommitted branch or starts a non-rewriting merge, applies the stash,
 and regenerates the projections below. Ignored intake requires
 `--intake-backup <archive.zip>` naming an external archive whose bytes match
 the current intake; `npm run backup:intake -- <authorized-directory>` creates
-one. The helper never reads a sibling's phase as admission authority.
+one. The helper is admitted in `repairing` and `final-review`, records that phase,
+makes its preservation recovery commit and any necessary merge commit with
+hooks disabled through invocation-local flags, and records both identities in
+the integration receipt. It never reads a sibling's phase as admission authority.
 The helper refuses an intent-to-add entry (left by `git add -N`) before it
 writes anything, and again at `--continue`, naming each path and the remedy
 `git add -- <paths>`, because the include-untracked stash can neither save nor
@@ -692,7 +695,10 @@ The command lists authored conflicts and exits nonzero while work remains.
 Resolve those paths explicitly, stage those resolutions, then use
 `npm run worktree -- integrate WO-NNN --continue`. The ignored integration
 receipt keeps the original bases, checkpoint and stash across this boundary;
-neither stash pop/drop nor a branch commit is performed. A reviewed branch's
+the stash is never popped or dropped. A clean-tree continuation adopts only
+the stash named for this integration and its original base; ambiguous matches
+require explicit inspection. The helper commits a resolved divergent merge
+before applying the stash, retaining uncommitted work for the current role. A reviewed branch's
 authored merge conflict can delay stash application until that continuation.
 Generated fragments in mixed documents are re-merged separately from their
 authored content. The follow-up register unions entries by id and retains
@@ -705,7 +711,7 @@ their inputs changed, preserving the authored fixture manifest's selection.
 It writes a dated draft integration decision naming both bases and resolved
 paths. The reviewer completes carried-forward claims, checks component-version
 collisions and evidence-edition changes, runs the printed affected checks,
-and owns any merge commit. The helper runs no product gate and records no
+and reviews the helper-recorded merge commit. The helper runs no product gate and records no
 repair, verification or acceptance event. A new base is not itself a finding.
 The [breakout receipt](../evidence/WO-041/ideation.md) records the measured
 failure that prompted this correction.
