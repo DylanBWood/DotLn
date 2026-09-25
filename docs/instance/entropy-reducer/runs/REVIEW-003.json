@@ -1,0 +1,486 @@
+{
+  "schemaVersion": "entropy-review-receipt-v1",
+  "receiptId": "REVIEW-003",
+  "ordinal": 4,
+  "previousReceiptHash": "sha256:9db330d6836efb4fc9dc592158abac86de9ae187bfd3de0e68c03d0bb8704c2c",
+  "kind": "EntropyReducerReviewRun",
+  "episodeId": "ep_entropy_fd64d7151c3a1794",
+  "startedAt": "2026-09-25T01:14:26.265Z",
+  "endedAt": "2026-09-25T01:32:35.112Z",
+  "subject": {
+    "schemaVersion": "entropy-review-v1",
+    "baseCommit": "fa9957f18939492a6eae08b63f6ba256fd76d33d",
+    "repository": "/Users/dylanwood/Projects/DotLn",
+    "scratchRepository": "/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-entropy/cff9570ebfdf6d3e/review-vVrFtU/repo",
+    "trackedStatusSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "scratchInventorySha256": "153ae049cec4f755c132257e823f571651a0be02d6f3010db7bbc55ab6d9afeb",
+    "scratchInventoryCount": 3292,
+    "hash": "fd64d7151c3a17948d4706642d9273eef1fbe9b40023646bdc5b370ffe718a23"
+  },
+  "workingTreeDirtyAtDispatch": false,
+  "namedRevision": "fa9957f18939492a6eae08b63f6ba256fd76d33d",
+  "actorAttestation": {
+    "route": "launched",
+    "transport": "claude-cli-print",
+    "harness": "claude-code",
+    "harnessVersion": "2.1.282",
+    "model": "claude-opus-5-5",
+    "effort": "xhigh",
+    "source": "command-line-readback-and-invocation",
+    "accountLabel": null,
+    "tools": [
+      "Bash",
+      "Read",
+      "Glob",
+      "Grep"
+    ],
+    "effectiveModel": "unknown",
+    "effectiveEffort": "unknown",
+    "identity": "entropy-reducer@1",
+    "substitutionReason": null,
+    "substitutionPolicy": "different-reviewer-and-must-be-attested"
+  },
+  "compilation": {
+    "semanticHash": "fnv1a64:9add8c569d86c3fe",
+    "compileInputs": {
+      "repo": "/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-entropy/cff9570ebfdf6d3e/review-vVrFtU/repo",
+      "baseCommit": "fa9957f18939492a6eae08b63f6ba256fd76d33d",
+      "episodeId": "ep_entropy_fd64d7151c3a1794",
+      "dispatchedAt": 1790298866240,
+      "episodeEndsAt": 1790385266240
+    },
+    "workOrderId": "wo_entropy_review_1",
+    "authorityEnvelopeId": "auth_entropy_reducer",
+    "reviewerRequirement": {
+      "harness": "claude-code",
+      "model": "claude-opus-5-5",
+      "displayModel": "Claude Opus 5.5",
+      "effort": "xhigh",
+      "substitutionPolicy": "different-reviewer-and-must-be-attested"
+    },
+    "executionBoundary": {
+      "mode": "operator-mediated-manual",
+      "deferredProgramKind": "All",
+      "commandIds": "symbolic-manual-plan",
+      "resultBinding": "host-validator",
+      "resourceEnforcement": "authorize-each-operation-and-thread-envelope"
+    }
+  },
+  "concern": null,
+  "reviewerOutput": {
+    "schemaVersion": 1,
+    "findings": [
+      {
+        "findingId": "ER3-001",
+        "criterion": "Worker launches keep host-side effects inside the declared portfolio and scratch roots, and a recorded precondition that gates further live runs is enforced where launches happen. WO-111-D011: nominate a bounded runtime order before a WO-111 rerun or any further live Codex worker proof (docs/evidence/WO-111/decisions.md D011). The diagnosis says the D011 follow-up must cover the shared launch paths and prove user configuration unchanged with a before/after check (docs/evidence/WO-111/codex-trust-diagnosis.md).",
+        "severity": "major",
+        "observed": "Seven tracked files build a Codex exec argv: packages/skeleton/src/worker-transport.ts, scripts/harness-probe.mjs, scripts/lib/authority-probe.mjs, scripts/lib/writing-worker-probe.mjs, scripts/probe-worker-hosts.mjs, scripts/probes/local-model-role-qualification.mjs and scripts/target-worker-smoke.mjs. None mentions CODEX_HOME. Six of them copy the argv (--ephemeral, --ignore-user-config) outside the canonical transport. runWorkerProcess passes process.env through unchanged (worker-transport.ts:96-103), and no launch argv sets a trust override. The tracked, count-only diagnosis attributes 36 of 43 trusted entries in the user Codex configuration to ten DotLn scratch/probe families, 18 of them from dotln-authority alone. That count was not re-measured here, because user settings are outside this review's read scope. VER-003 passes WO-111 only on the operator's D020 waiver of the outside-portfolio clause. FUP-3c34a8ffbf61376f (D011) has no recorded disposition. The only launch gates found are opt-in environment variables (DOTLN_LIVE_WORKERS at packages/skeleton/src/dotln.ts:172,235; DOTLN_LIVE_HARNESS in the probes), and none of them is tied to isolation. D011's precondition is therefore instruction-only. The next critical-path step puts live Codex workers on owner repositories, and the diagnosis notes that trust there also admits project-local config, hooks and rules.",
+        "expected": "Every Codex launch, the product transport and the probes alike, goes through one launcher. That launcher supplies an isolated Codex home, preserving authentication without copying credentials into evidence. It digests the user Codex configuration before and after each launch, and it refuses or reports when the digest changes. D011's precondition is then enforced at the launch site instead of being discovered by a later verifier.",
+        "evidenceRefs": [
+          "command output: 7 Codex launch files; mention CODEX_HOME: 0; argv copies outside the transport: 6",
+          "packages/skeleton/src/worker-transport.ts:96-103 (env: process.env, or process.env plus two resident variables)",
+          "packages/skeleton/src/worker-transport.ts:330-376 (writer argv: --ephemeral, --ignore-user-config, -c overrides, no trust or home override)",
+          "git grep CODEX_HOME in packages/*/src and scripts: only usage-observation.mjs:490 (reads sessions) and test fixtures set it",
+          "docs/evidence/WO-111/codex-trust-diagnosis.md (43 trusted entries, 36 in DotLn families, 10 families; launch code inherits process.env; 'isolation and evidence defect')",
+          "docs/verifications/WO-111/VER-003.md criterion 2 (outside-portfolio clause not met; waived by D020)",
+          "docs/evidence/WO-111/decisions.md WO-111-D011, D012 reopening, D020",
+          "npm run plan -- followups --show FUP-3c34a8ffbf61376f (revisions only; no disposition)",
+          "packages/skeleton/src/dotln.ts:172,235 (DOTLN_LIVE_WORKERS opt-in gate)",
+          "docs/final-reviews/WO-111/RELEASE-NOTES.md 'Read before upgrading' (until the follow-up lands, a live Codex worker proof will add such entries)"
+        ],
+        "surface": "packages/skeleton/src/worker-transport.ts (runWorkerProcess, Codex argv builders); scripts/lib/authority-probe.mjs; scripts/lib/writing-worker-probe.mjs; scripts/harness-probe.mjs; scripts/probe-worker-hosts.mjs; scripts/target-worker-smoke.mjs; scripts/probes/local-model-role-qualification.mjs",
+        "altitude": 5,
+        "standardization": {
+          "kind": "recurring",
+          "rung": "guard",
+          "rationale": "The escape recurs on every live Codex launch from seven hand-copied launch sites, and ten families of entries have already accumulated. The cheapest standard that holds is a guard in one shared launcher: an isolated home plus a user-configuration digest check that refuses on change. A test-level check should also fail when a Codex exec argv is built outside that launcher."
+        },
+        "evidenceLabel": "measured",
+        "reproduction": {
+          "kind": "command",
+          "command": "cd <frozenSubjectPath> && echo 'Codex launch files:' && git grep -l -e '\"--ephemeral\"' -- 'packages/*/src/*.ts' 'scripts/*.mjs' 'scripts/lib/*.mjs' 'scripts/probes/*.mjs' && echo \"mention CODEX_HOME: $(git grep -l -e '\"--ephemeral\"' -- 'packages/*/src/*.ts' 'scripts/*.mjs' 'scripts/lib/*.mjs' 'scripts/probes/*.mjs' | xargs grep -l CODEX_HOME | wc -l)\" && echo \"argv copies outside the transport: $(git grep -l -e '\"--ignore-user-config\"' -- 'scripts/*.mjs' 'scripts/lib/*.mjs' 'scripts/probes/*.mjs' ':!scripts/test-*.mjs' | wc -l)\" && sed -n 96,103p packages/skeleton/src/worker-transport.ts"
+        }
+      },
+      {
+        "findingId": "ER3-002",
+        "criterion": "A deferred follow-up is reopened when its recorded observation occurs. FUP-7f9a27e6ed6c44b3 (docs/planning/work-order-map.md:1171-1176) reopens on 'a measured work-orders index or console collection above ten seconds'. The cost of a recurring gate should also not grow with the number of orders and releases (product 07 §Discipline, recurring procedure costs less than the failure it prevents; the REVIEW-002 ER2-004 precedent).",
+        "severity": "major",
+        "observed": "On the frozen subject, collectSources measures 18.4-19.1 s, and the console board --json CLI takes 19.73 s. Most of that is 101 sequential `node scripts/resume.mjs status --json --work-order` forks, one per work order ever seen in the control log (packages/console/src/collect.ts:117-139, 934 events). They take 12.8-13.3 s at about 0.12 s each. One `release list` adds 5.2-5.6 s through 1,050 git spawns, about 11 per tag across 93 tags. In a scratch clone, release list scaled linearly with contiguous tag prefixes: 24 tags 1.48 s, 47 tags 3.04 s, 70 tags 4.40 s, 93 tags 5.63 s. The single [document] test wrapping this call (packages/console/test/board.test.ts:992) takes 19.65 s. As a result, console-docs runs 20.06 s of the 24.81 s `npm run test:docs`, starting after format (4.13 s). That makes it the gate's critical path now that WO-156 cut plan to 1.92 s. On 2026-09-19 the same task measured 11.55 s at 72 orders and 63 tags (WO-143). Orders and tags each arrive at about six a day. The map item was deferred on 2026-09-19 stating that none of these costs was measured. Yet the WO-128 work order already recorded the console test at 23-26 s alone. The map also records full gates of 2026-09-11/12 failing on this collector's per-command bound under load, and WO-128 answered with a finite load-derived deadline that left the per-order and per-tag structure in place. The reopen condition is met, and nothing reopened the item.",
+        "expected": "Console collection issues a constant number of processes regardless of order and release count. That means one batched status fold over all orders, plus a release listing whose per-tag results are cached by immutable tag object id. The board and the document gate then return to the few-second band as history grows, and FUP-7f9a27e6ed6c44b3 is reopened on this measurement.",
+        "evidenceRefs": [
+          "command output (run twice): 101 node resume.mjs status 13287ms/12791ms; 1 node release.mjs list 5446ms/5249ms; total 19065ms/18367ms",
+          "command: /usr/bin/time -p node packages/console/dist/src/cli.js board --json -> real 19.73",
+          "command: spawn attribution of node scripts/release.mjs list -> 1,050 git spawns (251 cat-file --batch, 259 ls-tree -r, 186 cat-file -p, 129 diff, 93 rev-list ...), 5,097 ms",
+          "scratch drill (shared clone under the copy's ignored .runtime/tmp, since removed): release list 5627/4396/3035/1481 ms at 93/70/47/24 contiguous tags",
+          "npm run test:docs: 21 passed; 0 failed; 24.81 s; PASS format 4.13 s then console-docs started; PASS console-docs 20.06 s; PASS plan 1.92 s",
+          "node --test --test-name-pattern='\\[document\\]' packages/console/dist/test/board.test.js: 'WO-032 host collection reads current sources...' 19652.04ms",
+          "packages/console/src/collect.ts:89-99 (per-command 60 s bound; WO-125 comment on release:list 17.2 s) and :117-139 (one status fork per work order)",
+          "scripts/test-runner.mjs:484-492 (console-docs document task)",
+          "docs/planning/work-order-map.md:1171-1176 (item 9, 'Unmeasured growth costs', reopen above ten seconds) and :815-826 (console host-collection budget under gate load)",
+          "npm run plan -- followups data: FUP-7f9a27e6ed6c44b3 status deferred 2026-09-19, reopenWhen 'a measured work-orders index or console collection above ten seconds'",
+          "docs/evidence/WO-143/fixture-transcripts.md:168 (PASS console-docs 11.55 s; subject b196215d had 72 control-log orders and 63 tags)",
+          "docs/work-orders/WO-128-fresh-gates-pass-first-time.md:106-110 (alone the command took 17 s and the test 23-26 s) and :238-243 (finite load-derived bound)",
+          "command: node scripts/work-orders.mjs index --check -> 0.78 s (the other half of the reopen condition is not met)"
+        ],
+        "surface": "packages/console/src/collect.ts (collectSources controlStatus and command runner); scripts/resume.mjs (status); scripts/release.mjs (list); packages/console/test/board.test.ts:992; scripts/test-runner.mjs console-docs task",
+        "altitude": 10,
+        "standardization": {
+          "kind": "recurring",
+          "rung": "test",
+          "rationale": "Each new order adds a fork, and each release adds about eleven git spawns, to every board render and every document gate. The standard is a spawn-count test on collectSources over fixtures with N and 2N orders and tags that fails when the process count grows with either. The existing test:docs timing row then shows the reduction without a new gate."
+        },
+        "evidenceLabel": "measured",
+        "reproduction": {
+          "kind": "command",
+          "command": "cd <frozenSubjectPath> && mkdir -p .runtime/tmp && export TMPDIR=$PWD/.runtime/tmp && node scripts/build.mjs >/dev/null && node --input-type=module -e 'import cp from \"node:child_process\";import {syncBuiltinESMExports} from \"node:module\";const o=cp.execFileSync;const t=new Map();cp.execFileSync=function(f,a){const k=[f.split(\"/\").pop(),...(a||[]).slice(0,2).map(x=>x.split(\"/\").pop())].join(\" \");const s=performance.now();try{return o.apply(this,arguments)}finally{const e=t.get(k)||{n:0,ms:0};e.n++;e.ms+=performance.now()-s;t.set(k,e)}};syncBuiltinESMExports();const {collectSources}=await import(process.cwd()+\"/packages/console/dist/src/collect.js\");const s=performance.now();await collectSources(process.cwd(),[]);for(const [k,v] of t)console.log(v.n,Math.round(v.ms)+\"ms\",k);console.log(\"total\",Math.round(performance.now()-s)+\"ms\")'"
+        }
+      },
+      {
+        "findingId": "ER3-003",
+        "criterion": "A compiled grant and its runtime route agree. The loadout should not compile an authority or cost that the pinned transport cannot exercise, and the residue and receipt should not describe an episode shape the route forbids. The Program says to follow census, then the bounded lens briefs, then probes, and the fan-out support exists to 'use bounded side routines for census breadth'. The instance README says the command family performs exactly the manual steps through the same typed APIs.",
+        "severity": "minor",
+        "observed": "The compiled reviewer grants delegate.readonly with resourceLimits {delegates: 4} (packages/skeleton/src/loadouts/entropy-reducer.ts:35, 969, 1020, 1133) and throws 'compiled authority lacks the delegates resource' without it (:1257). The dispatch protocol refuses a request without lens briefs (packages/skeleton/src/entropy-review-protocol.ts:238). However, the review profile names only Bash, Read, Glob and Grep (entropy-review-protocol.ts:31), and the claude-cli-print route passes exactly those as --tools and --allowedTools (worker-transport.ts entropyArgs). The Codex entropy route keeps multi_agent in its disabled features (worker-transport.ts:201-209, where the entropy filter re-enables only shell_tool, unified_exec and code_mode_host). No decision record selecting a delegate-free route was found in the WO-151 or WO-157 records or the dispatch planning documents. REVIEW-002 recorded 'Zero of four lens delegates used (no delegate tool in this session)'. This episode had the same four tools plus the structured return, so both pinned-route reviews worked the four lens briefs serially in the main reviewer.",
+        "expected": "There are two consistent options. The pinned route can admit a read-only delegate tool under the same confinement, with the receipt recording delegates used against the four-delegate maximum. Alternatively, the fan-out support is not compiled for a route that cannot delegate, and the lens briefs are presented as the reviewer's own checklist. Either way, the authority envelope, the residue and the receipt describe the same episode.",
+        "evidenceRefs": [
+          "command output: entropy-review-protocol.ts:31 ENTROPY_REVIEW_TOOLS = [\"Bash\",\"Read\",\"Glob\",\"Grep\"]; entropy-reducer.ts:35,1133 delegate.readonly; :969,1020 delegates: 4; :1257 lacks-the-delegates error; entropy-review-protocol.ts:238 lensBriefs.length > 0; worker-transport.ts:209 multi_agent disabled; REVIEW-002.json count 2",
+          "packages/skeleton/src/worker-transport.ts entropyArgs (claude-cli-print: --restricted, --tools and --allowedTools set to the profile tools; Codex: codexDisabled filtered to re-enable shell tools only)",
+          "docs/instance/entropy-reducer/RESIDUE.md Fan-Out Lens (delegate at most four read-only lenses; 4 delegates-maximum)",
+          "docs/instance/entropy-reducer/runs/REVIEW-002.md result envelope summary ('Zero of four lens delegates used (no delegate tool in this session)')",
+          "this episode's available tools: Bash, Read, Glob, Grep and the structured-output return"
+        ],
+        "surface": "packages/skeleton/src/entropy-review-protocol.ts (ENTROPY_REVIEW_TOOLS); packages/skeleton/src/worker-transport.ts (entropyArgs); packages/skeleton/src/loadouts/entropy-reducer.ts (fan-out-lens support, delegates resource)",
+        "altitude": 6,
+        "standardization": {
+          "kind": "recurring",
+          "rung": "test",
+          "rationale": "The mismatch recurs on every review and refutation dispatch. A compiler-fixture test asserting that every effect family the compiled envelope grants maps to a tool or feature the pinned transport admits (delegate.readonly to a delegate tool) catches this case and any later grant-and-route drift."
+        },
+        "evidenceLabel": "measured",
+        "reproduction": {
+          "kind": "command",
+          "command": "cd <frozenSubjectPath> && grep -n 'ENTROPY_REVIEW_TOOLS =' packages/skeleton/src/entropy-review-protocol.ts; grep -n '\"delegate.readonly\"\\|delegates: 4\\|compiled authority lacks the delegates' packages/skeleton/src/loadouts/entropy-reducer.ts; grep -n 'lensBriefs.length > 0' packages/skeleton/src/entropy-review-protocol.ts; grep -n '\"multi_agent\",' packages/skeleton/src/worker-transport.ts; grep -c 'Zero of four lens delegates used' docs/instance/entropy-reducer/runs/REVIEW-002.json"
+        }
+      }
+    ],
+    "proposalPackets": [
+      {
+        "schemaVersion": 1,
+        "kind": "ProductSuggestionPacket",
+        "proposedPath": "docs/proposals/isolated-codex-launch-home/",
+        "sourceEpisodeId": "ep_entropy_fd64d7151c3a1794",
+        "provenance": [
+          "Entropy Reducer review of frozen subject fa9957f18939492a6eae08b63f6ba256fd76d33d (subjectHash fd64d7151c3a17948d4706642d9273eef1fbe9b40023646bdc5b370ffe718a23), finding ER3-001",
+          "Code facts measured in the frozen copy with the ER3-001 reproduction; user Codex configuration not read; trust counts cited from the tracked count-only diagnosis",
+          "Reviewer: entropy-reducer@1 compiled for claude-opus-5-5 at xhigh; no delegate lens available on this route"
+        ],
+        "corroboratingEvidenceRefs": [
+          "docs/evidence/WO-111/codex-trust-diagnosis.md (36 of 43 trusted entries in DotLn families; launch code inherits process.env)",
+          "docs/verifications/WO-111/VER-003.md criterion 2 (clause not met; waived)",
+          "docs/evidence/WO-111/decisions.md WO-111-D011 and the D012 reopening (the follow-up must cover shared launch paths)",
+          "docs/final-reviews/WO-111/RELEASE-NOTES.md Read before upgrading",
+          "packages/skeleton/src/worker-transport.ts:96-103"
+        ],
+        "dissentingEvidenceRefs": [
+          "docs/evidence/WO-111/decisions.md WO-111-D020 (the operator accepted the deviation for the synthetic proof)",
+          "docs/evidence/WO-111/codex-trust-diagnosis.md ('An isolated home is a candidate to validate, not a tested fix'; authentication still uses the Codex home under --ignore-user-config; 'The present evidence does not show harmful execution or data exposure'; per-entry attribution is inference)"
+        ],
+        "suggestion": {
+          "suggestionId": "isolated-codex-launch-home",
+          "submittedBy": "entropy-reducer@1 (compiled for claude-opus-5-5 at xhigh, claude-cli-print) - non-authoritative",
+          "problemOrOpportunity": "DotLn's Codex launches inherit the operator's Codex home. That covers the product worker transport and six probe scripts. The tracked diagnosis attributes 36 of 43 user-level trust entries to ten DotLn scratch and probe families. WO-111 closed only on an operator waiver of its outside-portfolio clause, and WO-111-D011 asks that no further live Codex worker proof run before an isolation order. No executable check enforces that. The next critical-path step puts live Codex workers on owner repositories, where a trust entry also admits project-local configuration, hooks and rules.",
+          "scope": "Build one shared Codex launcher, used by worker-transport.ts and the six probe scripts. For each episode it supplies an isolated Codex home, with authentication available and no credentials copied into evidence. It digests the user Codex configuration before and after the launch, refuses or reports on change, and records the digest among the receipt's protected surfaces. A test fails when a Codex exec argv is built outside the launcher. Removing existing stale entries stays a separate owner-authorized act.",
+          "evidenceRefs": [
+            "ER3-001 reproduction command and output",
+            "docs/evidence/WO-111/codex-trust-diagnosis.md",
+            "docs/verifications/WO-111/VER-003.md",
+            "docs/evidence/WO-111/decisions.md WO-111-D011, D016, D020",
+            "packages/skeleton/src/worker-transport.ts:96-103,330-376"
+          ],
+          "affectedUsers": [
+            "the operator (user-level Codex configuration and trust state for later sessions)",
+            "executors and verifiers running live Codex proofs or probes",
+            "planners sequencing the owner-repository portfolio"
+          ],
+          "affectedSystems": [
+            "packages/skeleton/src/worker-transport.ts",
+            "scripts/lib/authority-probe.mjs",
+            "scripts/lib/writing-worker-probe.mjs",
+            "scripts/harness-probe.mjs",
+            "scripts/probe-worker-hosts.mjs",
+            "scripts/target-worker-smoke.mjs",
+            "scripts/probes/local-model-role-qualification.mjs",
+            "resident portfolio and source-change receipts"
+          ],
+          "expectedValue": "Live Codex proofs could satisfy an outside-portfolio clause by measurement instead of by waiver. D011's precondition would be enforced at the one place launches happen. With one argv instead of seven copies, later launch-policy changes land once.",
+          "altitude": 5,
+          "uncertainty": "It is untested whether Codex authenticates, and keeps its trust writes confined, inside an isolated home without copying credentials; the diagnosis calls this a candidate to validate. Attribution of each historical entry to a specific launch is inference. Analogous user-level writes by the Claude or Copilot launches were not measured in this review.",
+          "risks": [
+            "An isolated home may break authentication or drop user-level Codex settings the workers rely on",
+            "A refusing guard blocks live proofs until the launcher is validated",
+            "Consolidating seven launch sites touches probes that carry their own recorded qualification evidence"
+          ],
+          "alternatives": [
+            "A per-launch trust override for the scratch path, if Codex supports one, instead of an isolated home",
+            "Keep inheriting the home but add the before/after digest and report changes (detection without prevention)",
+            "Operator-authorized periodic cleanup of DotLn-family entries (treats the symptom; the diagnosis says it does not prevent recurrence)"
+          ],
+          "duplicationHints": [
+            "FUP-3c34a8ffbf61376f (WO-111-D011 and its D012 reopening): the runtime isolation follow-up this packet would inform",
+            "WO-111-D016: the caller-supplied isolated-home rerun route, later superseded",
+            "docs/evidence/WO-111/codex-trust-diagnosis.md"
+          ],
+          "urgencyRationale": "D011 blocks any further live Codex worker proof on this work, and the owner-repository portfolio after WO-111 needs live Codex workers on real repositories. Meanwhile, every live probe run can add another entry."
+        }
+      },
+      {
+        "schemaVersion": 1,
+        "kind": "ProductSuggestionPacket",
+        "proposedPath": "docs/proposals/constant-process-console-collection/",
+        "sourceEpisodeId": "ep_entropy_fd64d7151c3a1794",
+        "provenance": [
+          "Entropy Reducer review of frozen subject fa9957f18939492a6eae08b63f6ba256fd76d33d (subjectHash fd64d7151c3a17948d4706642d9273eef1fbe9b40023646bdc5b370ffe718a23), finding ER3-002",
+          "Measured in the frozen copy with the ER3-002 reproduction, the document gate run and a tag-prefix drill in a shared scratch clone under the copy's ignored .runtime/tmp (removed afterwards)",
+          "Reviewer: entropy-reducer@1 compiled for claude-opus-5-5 at xhigh; no delegate lens available on this route"
+        ],
+        "corroboratingEvidenceRefs": [
+          "docs/planning/work-order-map.md:1171-1176 (item 9 names the per-order status call and the ten-second reopen)",
+          "docs/planning/work-order-map.md:815-826 (full gates failed on this collector's bound under load)",
+          "docs/work-orders/WO-128-fresh-gates-pass-first-time.md:106-110 (test 23-26 s alone)",
+          "docs/evidence/WO-143/fixture-transcripts.md:168 (console-docs 11.55 s at 72 orders and 63 tags)",
+          "packages/console/src/collect.ts:117-139"
+        ],
+        "dissentingEvidenceRefs": [
+          "docs/work-orders/WO-128-fresh-gates-pass-first-time.md:238-243 (the selected repair was a finite load-derived bound, not a restructure)",
+          "packages/console/test/board.test.ts:992-1036 (the test exercises the live read-only commands on purpose, so a batched path must keep that read-only guarantee)",
+          "command: node scripts/work-orders.mjs index --check 0.78 s (the index half of the reopen condition is not met)"
+        ],
+        "suggestion": {
+          "suggestionId": "constant-process-console-collection",
+          "submittedBy": "entropy-reducer@1 (compiled for claude-opus-5-5 at xhigh, claude-cli-print) - non-authoritative",
+          "problemOrOpportunity": "The actor board's host collection forks one resume status process per work order and spends about eleven git spawns per release tag. At current counts the operator's board takes about 19 s, and the document gate's critical path is about 20 s. Both grow by roughly a second a day as orders and releases arrive. The deferred register row for this cost names this exact reopen observation (above ten seconds). The same path has already failed full gates under load, and that was answered with a deadline change.",
+          "scope": "Give resume status a single-process form that returns every order's full status from one fold. Have release list cache per-tag results keyed by immutable tag object id; the recorded snapshot rule already treats tags as immutable evidence. collectSources then calls each once. Board output stays byte-identical, checked by the existing [document] test. A spawn-count test holds the process count constant with respect to order and tag counts.",
+          "evidenceRefs": [
+            "ER3-002 reproduction command and output",
+            "npm run test:docs timing rows (console-docs 20.06 s of 24.81 s)",
+            "scratch tag-prefix drill: 1481/3035/4396/5627 ms at 24/47/70/93 tags",
+            "docs/planning/work-order-map.md:1171-1176",
+            "packages/console/src/collect.ts:89-139"
+          ],
+          "affectedUsers": [
+            "the operator watching the actor board",
+            "every planning pass, verification and final review that runs npm run test:docs",
+            "full-gate runs under load (the WO-125 and WO-128 history)"
+          ],
+          "affectedSystems": [
+            "packages/console/src/collect.ts",
+            "scripts/resume.mjs",
+            "scripts/release.mjs",
+            "packages/console/test/board.test.ts",
+            "scripts/test-runner.mjs (console-docs task)"
+          ],
+          "expectedValue": "Roughly 17-18 s off each board render and off the document gate at current counts (the gate moves from about 25 s toward about 7 s). The saving grows by about a second a day as orders and releases accrue, and the growth that previously produced gate failures under load is removed.",
+          "altitude": 10,
+          "uncertainty": "The estimate assumes a batched fold costs about one process start; the per-order call is 0.12 s, mostly start-up. The per-tag work in release list was profiled only by spawn count, so the cache's saving is inferred from the linear drill. Load behaviour inside the full gate was not re-measured.",
+          "risks": [
+            "A batched status mode must reproduce each per-order status byte for byte, including attestation and legal next actions",
+            "A tag-keyed cache must be invalidated if the recorded tag-object snapshot rule changes",
+            "The console output is a product surface; the [document] test must remain its guard"
+          ],
+          "alternatives": [
+            "Run the per-order forks in parallel (lower latency, same linear process count)",
+            "Scale the per-command deadline again (the WO-128 route; a parameter that leaves the growth in place)",
+            "Move the host-collection test from test:docs to the review gate (moves the cost rather than removing it)"
+          ],
+          "duplicationHints": [
+            "FUP-7f9a27e6ed6c44b3 (work-order-map item 9, deferred 2026-09-19; reopen condition met)",
+            "WO-128 criterion 2 (console host-collection budget under gate load)",
+            "ER2-004 and WO-156 (the previous document-gate critical path)"
+          ],
+          "urgencyRationale": "The recorded reopen condition has fired. The cost is paid on every document gate and board render, it grows daily, and the last time this path grew it broke full gates under load."
+        }
+      },
+      {
+        "schemaVersion": 1,
+        "kind": "ProductSuggestionPacket",
+        "proposedPath": "docs/proposals/entropy-review-delegate-route-agreement/",
+        "sourceEpisodeId": "ep_entropy_fd64d7151c3a1794",
+        "provenance": [
+          "Entropy Reducer review of frozen subject fa9957f18939492a6eae08b63f6ba256fd76d33d (subjectHash fd64d7151c3a17948d4706642d9273eef1fbe9b40023646bdc5b370ffe718a23), finding ER3-003",
+          "Measured by the ER3-003 reproduction and this episode's own tool set",
+          "Reviewer: entropy-reducer@1 compiled for claude-opus-5-5 at xhigh on claude-cli-print"
+        ],
+        "corroboratingEvidenceRefs": [
+          "docs/instance/entropy-reducer/runs/REVIEW-002.md summary ('Zero of four lens delegates used (no delegate tool in this session)')",
+          "packages/skeleton/src/entropy-review-protocol.ts:31,238",
+          "packages/skeleton/src/loadouts/entropy-reducer.ts:35,969,1020,1133,1257"
+        ],
+        "dissentingEvidenceRefs": [
+          "docs/instance/entropy-reducer/README.md ('The four-delegate and 32-probe ceilings are maxima, not required usage')"
+        ],
+        "suggestion": {
+          "suggestionId": "entropy-review-delegate-route-agreement",
+          "submittedBy": "entropy-reducer@1 (compiled for claude-opus-5-5 at xhigh, claude-cli-print) - non-authoritative",
+          "problemOrOpportunity": "The compiled Entropy Reducer grants four read-only delegate lenses and will not compile without the delegates resource. Both pinned review routes deny delegation, however. Every review and refutation therefore carries, and describes, a fan-out it cannot perform, and it works the lens briefs serially.",
+          "scope": "Make the compiler, the transport profile and the receipt agree by choosing one route. Either admit a read-only delegate tool on the claude-cli-print review route under the same --restricted confinement and record delegates used, or stop compiling fan-out-lens for routes without a delegate tool and render the lens briefs as the reviewer's checklist. In both cases, add a fixture test that every effect family the compiled envelope grants maps to something the pinned transport admits.",
+          "evidenceRefs": [
+            "ER3-003 reproduction command and output",
+            "docs/instance/entropy-reducer/runs/REVIEW-002.md",
+            "packages/skeleton/src/worker-transport.ts entropyArgs"
+          ],
+          "affectedUsers": [
+            "the operator reading Entropy Reducer receipts",
+            "the reviewer actor following the compiled Program",
+            "maintainers of the loadout and transport profiles"
+          ],
+          "affectedSystems": [
+            "packages/skeleton/src/loadouts/entropy-reducer.ts",
+            "packages/skeleton/src/entropy-review-protocol.ts",
+            "packages/skeleton/src/worker-transport.ts",
+            "docs/instance/entropy-reducer/RESIDUE.md"
+          ],
+          "expectedValue": "The residue and receipts would describe the episode that actually ran. If delegation is admitted, census breadth can run in parallel within the existing four-delegate ceiling. The test would catch later drift between grants and routes.",
+          "altitude": 6,
+          "uncertainty": "It has not been probed whether a delegate tool can be admitted under --restricted without widening file access. Whether serial lens work loses coverage compared with delegates is unmeasured.",
+          "risks": [
+            "Admitting delegation adds cost and a second confinement surface to check",
+            "Dropping the support changes the compiled semantic hash and regenerates the residue and fixtures"
+          ],
+          "alternatives": [
+            "Keep the current routes and record 'delegates: 0 of 4, route denies' as a receipt field",
+            "Keep the support but mark it route-conditional in the residue"
+          ],
+          "duplicationHints": [
+            "REVIEW-002 result envelope noted the same absence without a finding"
+          ],
+          "urgencyRationale": "Low: it misdescribes each review and refutation episode but blocks nothing. It is cheapest to settle the next time the loadout is regenerated."
+        }
+      }
+    ],
+    "resultEnvelope": {
+      "workOrderId": "wo_entropy_review_1",
+      "episodeId": "ep_entropy_fd64d7151c3a1794",
+      "status": "completed",
+      "resultId": "res_entropy_fd64d7151c3a1794",
+      "summary": "Frozen subject fa9957f1 reviewed in place: 3,292 tracked paths censused; docs/intake and user settings never read. REVIEW-002's four accepted findings are addressed at HEAD (feedback editions ~72 KB, plan check 1.92 s) and are not re-filed. No delegate tool was available, so the four lens briefs ran in the main reviewer. The evidenced constraint is launch isolation: seven Codex launch files inherit the user Codex home, none sets CODEX_HOME, and WO-111-D011's precondition on further live Codex proofs has no executable guard ahead of the owner-repository portfolio. Second, console collection takes 18.4-19.7 s: 101 per-order status forks (12.8-13.3 s) plus 1,050 release-list git spawns (5.2-5.6 s), linear in tags in a scratch drill; it is 20.06 s of the 24.81 s document gate, and deferred FUP-7f9a27e6ed6c44b3's ten-second reopen condition is met. Third, the compiled reviewer grants four read-only delegates that neither pinned transport admits. Three measured findings, three packets. Document gate passed 21/0. Probes ran inside the copy with TMPDIR redirected; episode-created ignored artifacts were removed and the tracked status hash matches the subject. Awaiting operator disposition.",
+      "requiresHuman": true
+    },
+    "cleanRoom": {
+      "status": "passed",
+      "stopConditionsFound": false,
+      "evidenceRefs": [
+        "Census and reads limited to paths named by git ls-files (3,292); docs/intake/** never read",
+        "User Codex configuration and other host settings never read; trust counts cited only from the tracked, count-only docs/evidence/WO-111/codex-trust-diagnosis.md",
+        "No employer material, credentials, private identifiers or internal service details found in files read or command output; none reproduced in this report",
+        "Tracked status sha256 after cleanup e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 equals the subject's trackedStatusSha256; HEAD fa9957f18939492a6eae08b63f6ba256fd76d33d",
+        "Scratch writes confined to the copy's ignored .runtime/tmp (TMPDIR redirected) and build outputs; all were removed before emission"
+      ]
+    }
+  },
+  "selection": {
+    "measuredDenominator": 3,
+    "measuredStatus": "selected",
+    "inspectionDenominator": 0,
+    "inspectionStatus": "not-applicable",
+    "inspectionSampleSize": 0,
+    "selectionRule": "every measured finding and every by-inspection finding",
+    "measuredSubjects": [
+      {
+        "findingId": "ER3-002",
+        "command": "cd <frozenSubjectPath> && mkdir -p .runtime/tmp && export TMPDIR=$PWD/.runtime/tmp && node scripts/build.mjs >/dev/null && node --input-type=module -e 'import cp from \"node:child_process\";import {syncBuiltinESMExports} from \"node:module\";const o=cp.execFileSync;const t=new Map();cp.execFileSync=function(f,a){const k=[f.split(\"/\").pop(),...(a||[]).slice(0,2).map(x=>x.split(\"/\").pop())].join(\" \");const s=performance.now();try{return o.apply(this,arguments)}finally{const e=t.get(k)||{n:0,ms:0};e.n++;e.ms+=performance.now()-s;t.set(k,e)}};syncBuiltinESMExports();const {collectSources}=await import(process.cwd()+\"/packages/console/dist/src/collect.js\");const s=performance.now();await collectSources(process.cwd(),[]);for(const [k,v] of t)console.log(v.n,Math.round(v.ms)+\"ms\",k);console.log(\"total\",Math.round(performance.now()-s)+\"ms\")'"
+      },
+      {
+        "findingId": "ER3-003",
+        "command": "cd <frozenSubjectPath> && grep -n 'ENTROPY_REVIEW_TOOLS =' packages/skeleton/src/entropy-review-protocol.ts; grep -n '\"delegate.readonly\"\\|delegates: 4\\|compiled authority lacks the delegates' packages/skeleton/src/loadouts/entropy-reducer.ts; grep -n 'lensBriefs.length > 0' packages/skeleton/src/entropy-review-protocol.ts; grep -n '\"multi_agent\",' packages/skeleton/src/worker-transport.ts; grep -c 'Zero of four lens delegates used' docs/instance/entropy-reducer/runs/REVIEW-002.json"
+      },
+      {
+        "findingId": "ER3-001",
+        "command": "cd <frozenSubjectPath> && echo 'Codex launch files:' && git grep -l -e '\"--ephemeral\"' -- 'packages/*/src/*.ts' 'scripts/*.mjs' 'scripts/lib/*.mjs' 'scripts/probes/*.mjs' && echo \"mention CODEX_HOME: $(git grep -l -e '\"--ephemeral\"' -- 'packages/*/src/*.ts' 'scripts/*.mjs' 'scripts/lib/*.mjs' 'scripts/probes/*.mjs' | xargs grep -l CODEX_HOME | wc -l)\" && echo \"argv copies outside the transport: $(git grep -l -e '\"--ignore-user-config\"' -- 'scripts/*.mjs' 'scripts/lib/*.mjs' 'scripts/probes/*.mjs' ':!scripts/test-*.mjs' | wc -l)\" && sed -n 96,103p packages/skeleton/src/worker-transport.ts"
+      }
+    ],
+    "inspectionSubjects": [],
+    "selectedFindingIds": [
+      "ER3-002",
+      "ER3-003",
+      "ER3-001"
+    ]
+  },
+  "findingSummary": {
+    "total": 3,
+    "measured": 3,
+    "byInspection": 0,
+    "blocking": 0,
+    "major": 2,
+    "minor": 1,
+    "proposalPackets": 3
+  },
+  "confinement": {
+    "subjectBinding": "an explicitly named commit; bound by its tree object, with the working tree's own drift recorded rather than refused",
+    "trackedStatusBeforeSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "trackedStatusAfterSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "trackedStatusByteIdentical": true,
+    "scratchInventoryBefore": {
+      "count": 3292,
+      "sha256": "153ae049cec4f755c132257e823f571651a0be02d6f3010db7bbc55ab6d9afeb"
+    },
+    "scratchInventoryAfter": {
+      "count": 3292,
+      "sha256": "153ae049cec4f755c132257e823f571651a0be02d6f3010db7bbc55ab6d9afeb"
+    },
+    "untrackedListing": {
+      "before": {
+        "count": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "after": {
+        "count": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "identical": true
+    },
+    "scratchDelta": {
+      "observed": true,
+      "added": [],
+      "removed": [],
+      "resized": [],
+      "counts": {
+        "added": 0,
+        "removed": 0,
+        "resized": 0
+      },
+      "sha256": {
+        "added": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "removed": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "resized": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "listedPerSet": 100
+    },
+    "excludedFromManifest": [
+      ".git/**",
+      "**/node_modules/**"
+    ],
+    "dependencies": "copied",
+    "commandExecution": "file tools confined to the frozen copy by --restricted; shell commands instructed to stay inside it and checked by the tracked-path status and untracked-listing hashes on either side of the episode",
+    "permissionDenials": 0,
+    "deniedTools": []
+  },
+  "cost": {
+    "line": "tokens unknown; cause harness-no-readback; observed episode wall clock 1089 s, 139 turns, USD 6.989347200000003; source claude-result-envelope",
+    "tokens": null,
+    "costUsd": 6.989347200000003,
+    "durationMs": 1088847,
+    "turns": 139,
+    "source": "claude-result-envelope"
+  },
+  "statement": "{\"schemaVersion\":1,\"findings\":[{\"findingId\":\"ER3-001\",\"criterion\":\"Worker launches keep host-side effects inside the declared portfolio and scratch roots, and a recorded precondition that gates further live runs is enforced where launches happen. WO-111-D011: nominate a bounded runtime order before a WO-111 rerun or any further live Codex worker proof (docs/evidence/WO-111/decisions.md D011). The diagnosis says the D011 follow-up must cover the shared launch paths and prove user configuration unchanged with a before/after check (docs/evidence/WO-111/codex-trust-diagnosis.md).\",\"severity\":\"major\",\"evidenceLabel\":\"measured\",\"observed\":\"Seven tracked files build a Codex exec argv: packages/skeleton/src/worker-transport.ts, scripts/harness-probe.mjs, scripts/lib/authority-probe.mjs, scripts/lib/writing-worker-probe.mjs, scripts/probe-worker-hosts.mjs, scripts/probes/local-model-role-qualification.mjs and scripts/target-worker-smoke.mjs. None mentions CODEX_HOME. Six of them copy the argv (--ephemeral, --ignore-user-config) outside the canonical transport. runWorkerProcess passes process.env through unchanged (worker-transport.ts:96-103), and no launch argv sets a trust override. The tracked, count-only diagnosis attributes 36 of 43 trusted entries in the user Codex configuration to ten DotLn scratch/probe families, 18 of them from dotln-authority alone. That count was not re-measured here, because user settings are outside this review's read scope. VER-003 passes WO-111 only on the operator's D020 waiver of the outside-portfolio clause. FUP-3c34a8ffbf61376f (D011) has no recorded disposition. The only launch gates found are opt-in environment variables (DOTLN_LIVE_WORKERS at packages/skeleton/src/dotln.ts:172,235; DOTLN_LIVE_HARNESS in the probes), and none of them is tied to isolation. D011's precondition is therefore instruction-only. The next critical-path step puts live Codex workers on owner repositories, and the diagnosis notes that trust there also admits project-local config, hooks and rules.\",\"expected\":\"Every Codex launch, the product transport and the probes alike, goes through one launcher. That launcher supplies an isolated Codex home, preserving authentication without copying credentials into evidence. It digests the user Codex configuration before and after each launch, and it refuses or reports when the digest changes. D011's precondition is then enforced at the launch site instead of being discovered by a later verifier.\",\"reproduction\":{\"kind\":\"command\",\"command\":\"cd <frozenSubjectPath> && echo 'Codex launch files:' && git grep -l -e '\\\"--ephemeral\\\"' -- 'packages/*/src/*.ts' 'scripts/*.mjs' 'scripts/lib/*.mjs' 'scripts/probes/*.mjs' && echo \\\"mention CODEX_HOME: $(git grep -l -e '\\\"--ephemeral\\\"' -- 'packages/*/src/*.ts' 'scripts/*.mjs' 'scripts/lib/*.mjs' 'scripts/probes/*.mjs' | xargs grep -l CODEX_HOME | wc -l)\\\" && echo \\\"argv copies outside the transport: $(git grep -l -e '\\\"--ignore-user-config\\\"' -- 'scripts/*.mjs' 'scripts/lib/*.mjs' 'scripts/probes/*.mjs' ':!scripts/test-*.mjs' | wc -l)\\\" && sed -n 96,103p packages/skeleton/src/worker-transport.ts\"},\"evidenceRefs\":[\"command output: 7 Codex launch files; mention CODEX_HOME: 0; argv copies outside the transport: 6\",\"packages/skeleton/src/worker-transport.ts:96-103 (env: process.env, or process.env plus two resident variables)\",\"packages/skeleton/src/worker-transport.ts:330-376 (writer argv: --ephemeral, --ignore-user-config, -c overrides, no trust or home override)\",\"git grep CODEX_HOME in packages/*/src and scripts: only usage-observation.mjs:490 (reads sessions) and test fixtures set it\",\"docs/evidence/WO-111/codex-trust-diagnosis.md (43 trusted entries, 36 in DotLn families, 10 families; launch code inherits process.env; 'isolation and evidence defect')\",\"docs/verifications/WO-111/VER-003.md criterion 2 (outside-portfolio clause not met; waived by D020)\",\"docs/evidence/WO-111/decisions.md WO-111-D011, D012 reopening, D020\",\"npm run plan -- followups --show FUP-3c34a8ffbf61376f (revisions only; no disposition)\",\"packages/skeleton/src/dotln.ts:172,235 (DOTLN_LIVE_WORKERS opt-in gate)\",\"docs/final-reviews/WO-111/RELEASE-NOTES.md 'Read before upgrading' (until the follow-up lands, a live Codex worker proof will add such entries)\"],\"surface\":\"packages/skeleton/src/worker-transport.ts (runWorkerProcess, Codex argv builders); scripts/lib/authority-probe.mjs; scripts/lib/writing-worker-probe.mjs; scripts/harness-probe.mjs; scripts/probe-worker-hosts.mjs; scripts/target-worker-smoke.mjs; scripts/probes/local-model-role-qualification.mjs\",\"altitude\":5,\"standardization\":{\"kind\":\"recurring\",\"rung\":\"guard\",\"rationale\":\"The escape recurs on every live Codex launch from seven hand-copied launch sites, and ten families of entries have already accumulated. The cheapest standard that holds is a guard in one shared launcher: an isolated home plus a user-configuration digest check that refuses on change. A test-level check should also fail when a Codex exec argv is built outside that launcher.\"}},{\"findingId\":\"ER3-002\",\"criterion\":\"A deferred follow-up is reopened when its recorded observation occurs. FUP-7f9a27e6ed6c44b3 (docs/planning/work-order-map.md:1171-1176) reopens on 'a measured work-orders index or console collection above ten seconds'. The cost of a recurring gate should also not grow with the number of orders and releases (product 07 §Discipline, recurring procedure costs less than the failure it prevents; the REVIEW-002 ER2-004 precedent).\",\"severity\":\"major\",\"evidenceLabel\":\"measured\",\"observed\":\"On the frozen subject, collectSources measures 18.4-19.1 s, and the console board --json CLI takes 19.73 s. Most of that is 101 sequential `node scripts/resume.mjs status --json --work-order` forks, one per work order ever seen in the control log (packages/console/src/collect.ts:117-139, 934 events). They take 12.8-13.3 s at about 0.12 s each. One `release list` adds 5.2-5.6 s through 1,050 git spawns, about 11 per tag across 93 tags. In a scratch clone, release list scaled linearly with contiguous tag prefixes: 24 tags 1.48 s, 47 tags 3.04 s, 70 tags 4.40 s, 93 tags 5.63 s. The single [document] test wrapping this call (packages/console/test/board.test.ts:992) takes 19.65 s. As a result, console-docs runs 20.06 s of the 24.81 s `npm run test:docs`, starting after format (4.13 s). That makes it the gate's critical path now that WO-156 cut plan to 1.92 s. On 2026-09-19 the same task measured 11.55 s at 72 orders and 63 tags (WO-143). Orders and tags each arrive at about six a day. The map item was deferred on 2026-09-19 stating that none of these costs was measured. Yet the WO-128 work order already recorded the console test at 23-26 s alone. The map also records full gates of 2026-09-11/12 failing on this collector's per-command bound under load, and WO-128 answered with a finite load-derived deadline that left the per-order and per-tag structure in place. The reopen condition is met, and nothing reopened the item.\",\"expected\":\"Console collection issues a constant number of processes regardless of order and release count. That means one batched status fold over all orders, plus a release listing whose per-tag results are cached by immutable tag object id. The board and the document gate then return to the few-second band as history grows, and FUP-7f9a27e6ed6c44b3 is reopened on this measurement.\",\"reproduction\":{\"kind\":\"command\",\"command\":\"cd <frozenSubjectPath> && mkdir -p .runtime/tmp && export TMPDIR=$PWD/.runtime/tmp && node scripts/build.mjs >/dev/null && node --input-type=module -e 'import cp from \\\"node:child_process\\\";import {syncBuiltinESMExports} from \\\"node:module\\\";const o=cp.execFileSync;const t=new Map();cp.execFileSync=function(f,a){const k=[f.split(\\\"/\\\").pop(),...(a||[]).slice(0,2).map(x=>x.split(\\\"/\\\").pop())].join(\\\" \\\");const s=performance.now();try{return o.apply(this,arguments)}finally{const e=t.get(k)||{n:0,ms:0};e.n++;e.ms+=performance.now()-s;t.set(k,e)}};syncBuiltinESMExports();const {collectSources}=await import(process.cwd()+\\\"/packages/console/dist/src/collect.js\\\");const s=performance.now();await collectSources(process.cwd(),[]);for(const [k,v] of t)console.log(v.n,Math.round(v.ms)+\\\"ms\\\",k);console.log(\\\"total\\\",Math.round(performance.now()-s)+\\\"ms\\\")'\"},\"evidenceRefs\":[\"command output (run twice): 101 node resume.mjs status 13287ms/12791ms; 1 node release.mjs list 5446ms/5249ms; total 19065ms/18367ms\",\"command: /usr/bin/time -p node packages/console/dist/src/cli.js board --json -> real 19.73\",\"command: spawn attribution of node scripts/release.mjs list -> 1,050 git spawns (251 cat-file --batch, 259 ls-tree -r, 186 cat-file -p, 129 diff, 93 rev-list ...), 5,097 ms\",\"scratch drill (shared clone under the copy's ignored .runtime/tmp, since removed): release list 5627/4396/3035/1481 ms at 93/70/47/24 contiguous tags\",\"npm run test:docs: 21 passed; 0 failed; 24.81 s; PASS format 4.13 s then console-docs started; PASS console-docs 20.06 s; PASS plan 1.92 s\",\"node --test --test-name-pattern='\\\\[document\\\\]' packages/console/dist/test/board.test.js: 'WO-032 host collection reads current sources...' 19652.04ms\",\"packages/console/src/collect.ts:89-99 (per-command 60 s bound; WO-125 comment on release:list 17.2 s) and :117-139 (one status fork per work order)\",\"scripts/test-runner.mjs:484-492 (console-docs document task)\",\"docs/planning/work-order-map.md:1171-1176 (item 9, 'Unmeasured growth costs', reopen above ten seconds) and :815-826 (console host-collection budget under gate load)\",\"npm run plan -- followups data: FUP-7f9a27e6ed6c44b3 status deferred 2026-09-19, reopenWhen 'a measured work-orders index or console collection above ten seconds'\",\"docs/evidence/WO-143/fixture-transcripts.md:168 (PASS console-docs 11.55 s; subject b196215d had 72 control-log orders and 63 tags)\",\"docs/work-orders/WO-128-fresh-gates-pass-first-time.md:106-110 (alone the command took 17 s and the test 23-26 s) and :238-243 (finite load-derived bound)\",\"command: node scripts/work-orders.mjs index --check -> 0.78 s (the other half of the reopen condition is not met)\"],\"surface\":\"packages/console/src/collect.ts (collectSources controlStatus and command runner); scripts/resume.mjs (status); scripts/release.mjs (list); packages/console/test/board.test.ts:992; scripts/test-runner.mjs console-docs task\",\"altitude\":10,\"standardization\":{\"kind\":\"recurring\",\"rung\":\"test\",\"rationale\":\"Each new order adds a fork, and each release adds about eleven git spawns, to every board render and every document gate. The standard is a spawn-count test on collectSources over fixtures with N and 2N orders and tags that fails when the process count grows with either. The existing test:docs timing row then shows the reduction without a new gate.\"}},{\"findingId\":\"ER3-003\",\"criterion\":\"A compiled grant and its runtime route agree. The loadout should not compile an authority or cost that the pinned transport cannot exercise, and the residue and receipt should not describe an episode shape the route forbids. The Program says to follow census, then the bounded lens briefs, then probes, and the fan-out support exists to 'use bounded side routines for census breadth'. The instance README says the command family performs exactly the manual steps through the same typed APIs.\",\"severity\":\"minor\",\"evidenceLabel\":\"measured\",\"observed\":\"The compiled reviewer grants delegate.readonly with resourceLimits {delegates: 4} (packages/skeleton/src/loadouts/entropy-reducer.ts:35, 969, 1020, 1133) and throws 'compiled authority lacks the delegates resource' without it (:1257). The dispatch protocol refuses a request without lens briefs (packages/skeleton/src/entropy-review-protocol.ts:238). However, the review profile names only Bash, Read, Glob and Grep (entropy-review-protocol.ts:31), and the claude-cli-print route passes exactly those as --tools and --allowedTools (worker-transport.ts entropyArgs). The Codex entropy route keeps multi_agent in its disabled features (worker-transport.ts:201-209, where the entropy filter re-enables only shell_tool, unified_exec and code_mode_host). No decision record selecting a delegate-free route was found in the WO-151 or WO-157 records or the dispatch planning documents. REVIEW-002 recorded 'Zero of four lens delegates used (no delegate tool in this session)'. This episode had the same four tools plus the structured return, so both pinned-route reviews worked the four lens briefs serially in the main reviewer.\",\"expected\":\"There are two consistent options. The pinned route can admit a read-only delegate tool under the same confinement, with the receipt recording delegates used against the four-delegate maximum. Alternatively, the fan-out support is not compiled for a route that cannot delegate, and the lens briefs are presented as the reviewer's own checklist. Either way, the authority envelope, the residue and the receipt describe the same episode.\",\"reproduction\":{\"kind\":\"command\",\"command\":\"cd <frozenSubjectPath> && grep -n 'ENTROPY_REVIEW_TOOLS =' packages/skeleton/src/entropy-review-protocol.ts; grep -n '\\\"delegate.readonly\\\"\\\\|delegates: 4\\\\|compiled authority lacks the delegates' packages/skeleton/src/loadouts/entropy-reducer.ts; grep -n 'lensBriefs.length > 0' packages/skeleton/src/entropy-review-protocol.ts; grep -n '\\\"multi_agent\\\",' packages/skeleton/src/worker-transport.ts; grep -c 'Zero of four lens delegates used' docs/instance/entropy-reducer/runs/REVIEW-002.json\"},\"evidenceRefs\":[\"command output: entropy-review-protocol.ts:31 ENTROPY_REVIEW_TOOLS = [\\\"Bash\\\",\\\"Read\\\",\\\"Glob\\\",\\\"Grep\\\"]; entropy-reducer.ts:35,1133 delegate.readonly; :969,1020 delegates: 4; :1257 lacks-the-delegates error; entropy-review-protocol.ts:238 lensBriefs.length > 0; worker-transport.ts:209 multi_agent disabled; REVIEW-002.json count 2\",\"packages/skeleton/src/worker-transport.ts entropyArgs (claude-cli-print: --restricted, --tools and --allowedTools set to the profile tools; Codex: codexDisabled filtered to re-enable shell tools only)\",\"docs/instance/entropy-reducer/RESIDUE.md Fan-Out Lens (delegate at most four read-only lenses; 4 delegates-maximum)\",\"docs/instance/entropy-reducer/runs/REVIEW-002.md result envelope summary ('Zero of four lens delegates used (no delegate tool in this session)')\",\"this episode's available tools: Bash, Read, Glob, Grep and the structured-output return\"],\"surface\":\"packages/skeleton/src/entropy-review-protocol.ts (ENTROPY_REVIEW_TOOLS); packages/skeleton/src/worker-transport.ts (entropyArgs); packages/skeleton/src/loadouts/entropy-reducer.ts (fan-out-lens support, delegates resource)\",\"altitude\":6,\"standardization\":{\"kind\":\"recurring\",\"rung\":\"test\",\"rationale\":\"The mismatch recurs on every review and refutation dispatch. A compiler-fixture test asserting that every effect family the compiled envelope grants maps to a tool or feature the pinned transport admits (delegate.readonly to a delegate tool) catches this case and any later grant-and-route drift.\"}}],\"proposalPackets\":[{\"schemaVersion\":1,\"kind\":\"ProductSuggestionPacket\",\"proposedPath\":\"docs/proposals/isolated-codex-launch-home/\",\"sourceEpisodeId\":\"ep_entropy_fd64d7151c3a1794\",\"provenance\":[\"Entropy Reducer review of frozen subject fa9957f18939492a6eae08b63f6ba256fd76d33d (subjectHash fd64d7151c3a17948d4706642d9273eef1fbe9b40023646bdc5b370ffe718a23), finding ER3-001\",\"Code facts measured in the frozen copy with the ER3-001 reproduction; user Codex configuration not read; trust counts cited from the tracked count-only diagnosis\",\"Reviewer: entropy-reducer@1 compiled for claude-opus-5-5 at xhigh; no delegate lens available on this route\"],\"corroboratingEvidenceRefs\":[\"docs/evidence/WO-111/codex-trust-diagnosis.md (36 of 43 trusted entries in DotLn families; launch code inherits process.env)\",\"docs/verifications/WO-111/VER-003.md criterion 2 (clause not met; waived)\",\"docs/evidence/WO-111/decisions.md WO-111-D011 and the D012 reopening (the follow-up must cover shared launch paths)\",\"docs/final-reviews/WO-111/RELEASE-NOTES.md Read before upgrading\",\"packages/skeleton/src/worker-transport.ts:96-103\"],\"dissentingEvidenceRefs\":[\"docs/evidence/WO-111/decisions.md WO-111-D020 (the operator accepted the deviation for the synthetic proof)\",\"docs/evidence/WO-111/codex-trust-diagnosis.md ('An isolated home is a candidate to validate, not a tested fix'; authentication still uses the Codex home under --ignore-user-config; 'The present evidence does not show harmful execution or data exposure'; per-entry attribution is inference)\"],\"suggestion\":{\"suggestionId\":\"isolated-codex-launch-home\",\"submittedBy\":\"entropy-reducer@1 (compiled for claude-opus-5-5 at xhigh, claude-cli-print) - non-authoritative\",\"problemOrOpportunity\":\"DotLn's Codex launches inherit the operator's Codex home. That covers the product worker transport and six probe scripts. The tracked diagnosis attributes 36 of 43 user-level trust entries to ten DotLn scratch and probe families. WO-111 closed only on an operator waiver of its outside-portfolio clause, and WO-111-D011 asks that no further live Codex worker proof run before an isolation order. No executable check enforces that. The next critical-path step puts live Codex workers on owner repositories, where a trust entry also admits project-local configuration, hooks and rules.\",\"scope\":\"Build one shared Codex launcher, used by worker-transport.ts and the six probe scripts. For each episode it supplies an isolated Codex home, with authentication available and no credentials copied into evidence. It digests the user Codex configuration before and after the launch, refuses or reports on change, and records the digest among the receipt's protected surfaces. A test fails when a Codex exec argv is built outside the launcher. Removing existing stale entries stays a separate owner-authorized act.\",\"evidenceRefs\":[\"ER3-001 reproduction command and output\",\"docs/evidence/WO-111/codex-trust-diagnosis.md\",\"docs/verifications/WO-111/VER-003.md\",\"docs/evidence/WO-111/decisions.md WO-111-D011, D016, D020\",\"packages/skeleton/src/worker-transport.ts:96-103,330-376\"],\"affectedUsers\":[\"the operator (user-level Codex configuration and trust state for later sessions)\",\"executors and verifiers running live Codex proofs or probes\",\"planners sequencing the owner-repository portfolio\"],\"affectedSystems\":[\"packages/skeleton/src/worker-transport.ts\",\"scripts/lib/authority-probe.mjs\",\"scripts/lib/writing-worker-probe.mjs\",\"scripts/harness-probe.mjs\",\"scripts/probe-worker-hosts.mjs\",\"scripts/target-worker-smoke.mjs\",\"scripts/probes/local-model-role-qualification.mjs\",\"resident portfolio and source-change receipts\"],\"expectedValue\":\"Live Codex proofs could satisfy an outside-portfolio clause by measurement instead of by waiver. D011's precondition would be enforced at the one place launches happen. With one argv instead of seven copies, later launch-policy changes land once.\",\"altitude\":5,\"uncertainty\":\"It is untested whether Codex authenticates, and keeps its trust writes confined, inside an isolated home without copying credentials; the diagnosis calls this a candidate to validate. Attribution of each historical entry to a specific launch is inference. Analogous user-level writes by the Claude or Copilot launches were not measured in this review.\",\"risks\":[\"An isolated home may break authentication or drop user-level Codex settings the workers rely on\",\"A refusing guard blocks live proofs until the launcher is validated\",\"Consolidating seven launch sites touches probes that carry their own recorded qualification evidence\"],\"alternatives\":[\"A per-launch trust override for the scratch path, if Codex supports one, instead of an isolated home\",\"Keep inheriting the home but add the before/after digest and report changes (detection without prevention)\",\"Operator-authorized periodic cleanup of DotLn-family entries (treats the symptom; the diagnosis says it does not prevent recurrence)\"],\"duplicationHints\":[\"FUP-3c34a8ffbf61376f (WO-111-D011 and its D012 reopening): the runtime isolation follow-up this packet would inform\",\"WO-111-D016: the caller-supplied isolated-home rerun route, later superseded\",\"docs/evidence/WO-111/codex-trust-diagnosis.md\"],\"urgencyRationale\":\"D011 blocks any further live Codex worker proof on this work, and the owner-repository portfolio after WO-111 needs live Codex workers on real repositories. Meanwhile, every live probe run can add another entry.\"}},{\"schemaVersion\":1,\"kind\":\"ProductSuggestionPacket\",\"proposedPath\":\"docs/proposals/constant-process-console-collection/\",\"sourceEpisodeId\":\"ep_entropy_fd64d7151c3a1794\",\"provenance\":[\"Entropy Reducer review of frozen subject fa9957f18939492a6eae08b63f6ba256fd76d33d (subjectHash fd64d7151c3a17948d4706642d9273eef1fbe9b40023646bdc5b370ffe718a23), finding ER3-002\",\"Measured in the frozen copy with the ER3-002 reproduction, the document gate run and a tag-prefix drill in a shared scratch clone under the copy's ignored .runtime/tmp (removed afterwards)\",\"Reviewer: entropy-reducer@1 compiled for claude-opus-5-5 at xhigh; no delegate lens available on this route\"],\"corroboratingEvidenceRefs\":[\"docs/planning/work-order-map.md:1171-1176 (item 9 names the per-order status call and the ten-second reopen)\",\"docs/planning/work-order-map.md:815-826 (full gates failed on this collector's bound under load)\",\"docs/work-orders/WO-128-fresh-gates-pass-first-time.md:106-110 (test 23-26 s alone)\",\"docs/evidence/WO-143/fixture-transcripts.md:168 (console-docs 11.55 s at 72 orders and 63 tags)\",\"packages/console/src/collect.ts:117-139\"],\"dissentingEvidenceRefs\":[\"docs/work-orders/WO-128-fresh-gates-pass-first-time.md:238-243 (the selected repair was a finite load-derived bound, not a restructure)\",\"packages/console/test/board.test.ts:992-1036 (the test exercises the live read-only commands on purpose, so a batched path must keep that read-only guarantee)\",\"command: node scripts/work-orders.mjs index --check 0.78 s (the index half of the reopen condition is not met)\"],\"suggestion\":{\"suggestionId\":\"constant-process-console-collection\",\"submittedBy\":\"entropy-reducer@1 (compiled for claude-opus-5-5 at xhigh, claude-cli-print) - non-authoritative\",\"problemOrOpportunity\":\"The actor board's host collection forks one resume status process per work order and spends about eleven git spawns per release tag. At current counts the operator's board takes about 19 s, and the document gate's critical path is about 20 s. Both grow by roughly a second a day as orders and releases arrive. The deferred register row for this cost names this exact reopen observation (above ten seconds). The same path has already failed full gates under load, and that was answered with a deadline change.\",\"scope\":\"Give resume status a single-process form that returns every order's full status from one fold. Have release list cache per-tag results keyed by immutable tag object id; the recorded snapshot rule already treats tags as immutable evidence. collectSources then calls each once. Board output stays byte-identical, checked by the existing [document] test. A spawn-count test holds the process count constant with respect to order and tag counts.\",\"evidenceRefs\":[\"ER3-002 reproduction command and output\",\"npm run test:docs timing rows (console-docs 20.06 s of 24.81 s)\",\"scratch tag-prefix drill: 1481/3035/4396/5627 ms at 24/47/70/93 tags\",\"docs/planning/work-order-map.md:1171-1176\",\"packages/console/src/collect.ts:89-139\"],\"affectedUsers\":[\"the operator watching the actor board\",\"every planning pass, verification and final review that runs npm run test:docs\",\"full-gate runs under load (the WO-125 and WO-128 history)\"],\"affectedSystems\":[\"packages/console/src/collect.ts\",\"scripts/resume.mjs\",\"scripts/release.mjs\",\"packages/console/test/board.test.ts\",\"scripts/test-runner.mjs (console-docs task)\"],\"expectedValue\":\"Roughly 17-18 s off each board render and off the document gate at current counts (the gate moves from about 25 s toward about 7 s). The saving grows by about a second a day as orders and releases accrue, and the growth that previously produced gate failures under load is removed.\",\"altitude\":10,\"uncertainty\":\"The estimate assumes a batched fold costs about one process start; the per-order call is 0.12 s, mostly start-up. The per-tag work in release list was profiled only by spawn count, so the cache's saving is inferred from the linear drill. Load behaviour inside the full gate was not re-measured.\",\"risks\":[\"A batched status mode must reproduce each per-order status byte for byte, including attestation and legal next actions\",\"A tag-keyed cache must be invalidated if the recorded tag-object snapshot rule changes\",\"The console output is a product surface; the [document] test must remain its guard\"],\"alternatives\":[\"Run the per-order forks in parallel (lower latency, same linear process count)\",\"Scale the per-command deadline again (the WO-128 route; a parameter that leaves the growth in place)\",\"Move the host-collection test from test:docs to the review gate (moves the cost rather than removing it)\"],\"duplicationHints\":[\"FUP-7f9a27e6ed6c44b3 (work-order-map item 9, deferred 2026-09-19; reopen condition met)\",\"WO-128 criterion 2 (console host-collection budget under gate load)\",\"ER2-004 and WO-156 (the previous document-gate critical path)\"],\"urgencyRationale\":\"The recorded reopen condition has fired. The cost is paid on every document gate and board render, it grows daily, and the last time this path grew it broke full gates under load.\"}},{\"schemaVersion\":1,\"kind\":\"ProductSuggestionPacket\",\"proposedPath\":\"docs/proposals/entropy-review-delegate-route-agreement/\",\"sourceEpisodeId\":\"ep_entropy_fd64d7151c3a1794\",\"provenance\":[\"Entropy Reducer review of frozen subject fa9957f18939492a6eae08b63f6ba256fd76d33d (subjectHash fd64d7151c3a17948d4706642d9273eef1fbe9b40023646bdc5b370ffe718a23), finding ER3-003\",\"Measured by the ER3-003 reproduction and this episode's own tool set\",\"Reviewer: entropy-reducer@1 compiled for claude-opus-5-5 at xhigh on claude-cli-print\"],\"corroboratingEvidenceRefs\":[\"docs/instance/entropy-reducer/runs/REVIEW-002.md summary ('Zero of four lens delegates used (no delegate tool in this session)')\",\"packages/skeleton/src/entropy-review-protocol.ts:31,238\",\"packages/skeleton/src/loadouts/entropy-reducer.ts:35,969,1020,1133,1257\"],\"dissentingEvidenceRefs\":[\"docs/instance/entropy-reducer/README.md ('The four-delegate and 32-probe ceilings are maxima, not required usage')\"],\"suggestion\":{\"suggestionId\":\"entropy-review-delegate-route-agreement\",\"submittedBy\":\"entropy-reducer@1 (compiled for claude-opus-5-5 at xhigh, claude-cli-print) - non-authoritative\",\"problemOrOpportunity\":\"The compiled Entropy Reducer grants four read-only delegate lenses and will not compile without the delegates resource. Both pinned review routes deny delegation, however. Every review and refutation therefore carries, and describes, a fan-out it cannot perform, and it works the lens briefs serially.\",\"scope\":\"Make the compiler, the transport profile and the receipt agree by choosing one route. Either admit a read-only delegate tool on the claude-cli-print review route under the same --restricted confinement and record delegates used, or stop compiling fan-out-lens for routes without a delegate tool and render the lens briefs as the reviewer's checklist. In both cases, add a fixture test that every effect family the compiled envelope grants maps to something the pinned transport admits.\",\"evidenceRefs\":[\"ER3-003 reproduction command and output\",\"docs/instance/entropy-reducer/runs/REVIEW-002.md\",\"packages/skeleton/src/worker-transport.ts entropyArgs\"],\"affectedUsers\":[\"the operator reading Entropy Reducer receipts\",\"the reviewer actor following the compiled Program\",\"maintainers of the loadout and transport profiles\"],\"affectedSystems\":[\"packages/skeleton/src/loadouts/entropy-reducer.ts\",\"packages/skeleton/src/entropy-review-protocol.ts\",\"packages/skeleton/src/worker-transport.ts\",\"docs/instance/entropy-reducer/RESIDUE.md\"],\"expectedValue\":\"The residue and receipts would describe the episode that actually ran. If delegation is admitted, census breadth can run in parallel within the existing four-delegate ceiling. The test would catch later drift between grants and routes.\",\"altitude\":6,\"uncertainty\":\"It has not been probed whether a delegate tool can be admitted under --restricted without widening file access. Whether serial lens work loses coverage compared with delegates is unmeasured.\",\"risks\":[\"Admitting delegation adds cost and a second confinement surface to check\",\"Dropping the support changes the compiled semantic hash and regenerates the residue and fixtures\"],\"alternatives\":[\"Keep the current routes and record 'delegates: 0 of 4, route denies' as a receipt field\",\"Keep the support but mark it route-conditional in the residue\"],\"duplicationHints\":[\"REVIEW-002 result envelope noted the same absence without a finding\"],\"urgencyRationale\":\"Low: it misdescribes each review and refutation episode but blocks nothing. It is cheapest to settle the next time the loadout is regenerated.\"}}],\"resultEnvelope\":{\"workOrderId\":\"wo_entropy_review_1\",\"episodeId\":\"ep_entropy_fd64d7151c3a1794\",\"status\":\"completed\",\"resultId\":\"res_entropy_fd64d7151c3a1794\",\"summary\":\"Frozen subject fa9957f1 reviewed in place: 3,292 tracked paths censused; docs/intake and user settings never read. REVIEW-002's four accepted findings are addressed at HEAD (feedback editions ~72 KB, plan check 1.92 s) and are not re-filed. No delegate tool was available, so the four lens briefs ran in the main reviewer. The evidenced constraint is launch isolation: seven Codex launch files inherit the user Codex home, none sets CODEX_HOME, and WO-111-D011's precondition on further live Codex proofs has no executable guard ahead of the owner-repository portfolio. Second, console collection takes 18.4-19.7 s: 101 per-order status forks (12.8-13.3 s) plus 1,050 release-list git spawns (5.2-5.6 s), linear in tags in a scratch drill; it is 20.06 s of the 24.81 s document gate, and deferred FUP-7f9a27e6ed6c44b3's ten-second reopen condition is met. Third, the compiled reviewer grants four read-only delegates that neither pinned transport admits. Three measured findings, three packets. Document gate passed 21/0. Probes ran inside the copy with TMPDIR redirected; episode-created ignored artifacts were removed and the tracked status hash matches the subject. Awaiting operator disposition.\",\"requiresHuman\":true},\"cleanRoom\":{\"status\":\"passed\",\"stopConditionsFound\":false,\"evidenceRefs\":[\"Census and reads limited to paths named by git ls-files (3,292); docs/intake/** never read\",\"User Codex configuration and other host settings never read; trust counts cited only from the tracked, count-only docs/evidence/WO-111/codex-trust-diagnosis.md\",\"No employer material, credentials, private identifiers or internal service details found in files read or command output; none reproduced in this report\",\"Tracked status sha256 after cleanup e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 equals the subject's trackedStatusSha256; HEAD fa9957f18939492a6eae08b63f6ba256fd76d33d\",\"Scratch writes confined to the copy's ignored .runtime/tmp (TMPDIR redirected) and build outputs; all were removed before emission\"]}}",
+  "disposition": {
+    "findingCount": 3,
+    "proposalPacketCount": 3,
+    "proposalFiling": "awaiting operator disposition; not filed",
+    "nextStep": "Fresh blinded refutation before any disposition."
+  },
+  "liveness": "live",
+  "localTerms": {
+    "status": "present"
+  },
+  "receiptHash": "sha256:e41246c7f35b567775b6b3023df24c73987b283f32530d1b741dd9cbfbd947a7"
+}

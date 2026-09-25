@@ -779,6 +779,23 @@ unconditional entry commands are WO-131 scope; this general helper is a
 preserved requirement, not a claim of implemented recovery for every corrupt
 repository. Source and review duties: [WO-131 ideation receipt](../evidence/WO-131/ideation.md).
 
+**Routes designed (2026-09-25 planning pass).** The recovery event shape
+this candidate left open, and the routes a catalog of 101 orders found
+missing (seven records corrected after their event, seven override uses
+with no record, four operator-owned steps waived in prose, WO-111's request
+for "an explicit terminal disposition that does not claim success"), are
+[WO-158](../work-orders/WO-158-lifecycle-off-ramps.md): `CriterionWaived`,
+`WorkOrderWithdrawn` (terminal phase `withdrawn`), `RecordCorrected` and
+`OperatorOverrideRecorded`, each a `resume` command that appends its event
+and projects in status, with the operator's captured words for the two
+operator acts, and a fixed read-only list admitted during a live gate.
+Until it closes, a session that meets one of these situations records a
+decision naming the route it would have used; it does not edit a filed
+report, amend a criterion to pass, or type a hookless commit. The catalog
+and the design are in
+[the off-ramps planning document](../planning/off-ramps-5s-entropy-2026-09-25.md)
+§3 and §4.
+
 ## Operator-opened ideation mode
 
 The operator may explicitly reopen ideation during work-order execution,
@@ -972,6 +989,21 @@ finding half that a standing operator direction reserves for the operator's
 own pass (the cold-start ceiling route, WO-054 D006) stays recorded against
 that direction rather than overruled. The record is
 [the REVIEW-002 planning document](../planning/entropy-review-002-2026-09-22.md).
+
+**Second consumption (2026-09-25).** `subject` named REVIEW-001 (2026-09-04,
+pre-mechanism, no `receiptId`) with `undefined` receipt and refutation
+paths; a disposal cannot clear it because the disposed set is keyed by the
+missing field. That is a defect (WO-160 item 2). The pass judged the
+pre-mechanism pair discharged by WO-023's recorded repairs, ran a fresh
+episode against the explicit HEAD commit so planning edits could proceed
+while it ran (1,089 s, USD 6.99), refuted it (178 s, USD 0.80), and
+disposed all three measured findings and three packets in the same pass:
+WO-159, WO-164 and WO-165. An order's final criterion now names both
+`npm test` and `npm run test:docs`, because WO-111's executor reached
+verification with a green product gate and a red document gate (VER-001
+B3). The record is
+[the off-ramps planning document](../planning/off-ramps-5s-entropy-2026-09-25.md)
+§9.
 
 Preconditions and inputs:
 
@@ -1481,6 +1513,14 @@ the six additional historical fallback reads preserve accepted inputs. Its
 and [repair evidence](../evidence/WO-156/repair.md) preserve the comparisons,
 refusal checks and reopening conditions. This local measurement does not
 assign a new structural cut to the broader product gate.
+
+**Console collection is the gate's critical path (2026-09-25, REVIEW-003
+ER3-002, reproduced by REFUTATION-004).** With the plan tasks under 2 s,
+`console-docs` runs 20.06 s of a 24.81 s `test:docs`: 101 sequential
+`resume status` forks (12.8 to 13.3 s) and one `release list` of 5.2 to
+5.6 s over 1,050 Git spawns, linear in tag count. Allocated to
+[WO-164](../work-orders/WO-164-constant-process-console-collection.md);
+the 2026-09-19 deferral's reopening observation has occurred.
 
 ## Candidate — refutation pass worth its cost
 

@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "kind": "FiledProductSuggestionPacket",
+  "filedAt": "2026-09-25T01:44:53.525Z",
+  "sourceReceiptId": "REVIEW-003",
+  "sourceReceiptPath": "docs/instance/entropy-reducer/runs/REVIEW-003.md",
+  "operatorReason": "Filed as the design record for WO-164: a single-process status fold for every order, a per-tag release-list cache keyed by tag object id, the collector calling both, regressions bounding spawns, byte-identical board output; the deferred row FUP-7f9a27e6ed6c44b3 is reopened on this measurement.",
+  "promotion": "Filing records the packet. Promotion to a work order remains an operator-authorized planning act.",
+  "packet": {
+    "schemaVersion": 1,
+    "kind": "ProductSuggestionPacket",
+    "proposedPath": "docs/proposals/constant-process-console-collection/",
+    "sourceEpisodeId": "ep_entropy_fd64d7151c3a1794",
+    "provenance": [
+      "Entropy Reducer review of frozen subject fa9957f18939492a6eae08b63f6ba256fd76d33d (subjectHash fd64d7151c3a17948d4706642d9273eef1fbe9b40023646bdc5b370ffe718a23), finding ER3-002",
+      "Measured in the frozen copy with the ER3-002 reproduction, the document gate run and a tag-prefix drill in a shared scratch clone under the copy's ignored .runtime/tmp (removed afterwards)",
+      "Reviewer: entropy-reducer@1 compiled for claude-opus-5-5 at xhigh; no delegate lens available on this route"
+    ],
+    "corroboratingEvidenceRefs": [
+      "docs/planning/work-order-map.md:1171-1176 (item 9 names the per-order status call and the ten-second reopen)",
+      "docs/planning/work-order-map.md:815-826 (full gates failed on this collector's bound under load)",
+      "docs/work-orders/WO-128-fresh-gates-pass-first-time.md:106-110 (test 23-26 s alone)",
+      "docs/evidence/WO-143/fixture-transcripts.md:168 (console-docs 11.55 s at 72 orders and 63 tags)",
+      "packages/console/src/collect.ts:117-139"
+    ],
+    "dissentingEvidenceRefs": [
+      "docs/work-orders/WO-128-fresh-gates-pass-first-time.md:238-243 (the selected repair was a finite load-derived bound, not a restructure)",
+      "packages/console/test/board.test.ts:992-1036 (the test exercises the live read-only commands on purpose, so a batched path must keep that read-only guarantee)",
+      "command: node scripts/work-orders.mjs index --check 0.78 s (the index half of the reopen condition is not met)"
+    ],
+    "suggestion": {
+      "suggestionId": "constant-process-console-collection",
+      "submittedBy": "entropy-reducer@1 (compiled for claude-opus-5-5 at xhigh, claude-cli-print) - non-authoritative",
+      "problemOrOpportunity": "The actor board's host collection forks one resume status process per work order and spends about eleven git spawns per release tag. At current counts the operator's board takes about 19 s, and the document gate's critical path is about 20 s. Both grow by roughly a second a day as orders and releases arrive. The deferred register row for this cost names this exact reopen observation (above ten seconds). The same path has already failed full gates under load, and that was answered with a deadline change.",
+      "scope": "Give resume status a single-process form that returns every order's full status from one fold. Have release list cache per-tag results keyed by immutable tag object id; the recorded snapshot rule already treats tags as immutable evidence. collectSources then calls each once. Board output stays byte-identical, checked by the existing [document] test. A spawn-count test holds the process count constant with respect to order and tag counts.",
+      "evidenceRefs": [
+        "ER3-002 reproduction command and output",
+        "npm run test:docs timing rows (console-docs 20.06 s of 24.81 s)",
+        "scratch tag-prefix drill: 1481/3035/4396/5627 ms at 24/47/70/93 tags",
+        "docs/planning/work-order-map.md:1171-1176",
+        "packages/console/src/collect.ts:89-139"
+      ],
+      "affectedUsers": [
+        "the operator watching the actor board",
+        "every planning pass, verification and final review that runs npm run test:docs",
+        "full-gate runs under load (the WO-125 and WO-128 history)"
+      ],
+      "affectedSystems": [
+        "packages/console/src/collect.ts",
+        "scripts/resume.mjs",
+        "scripts/release.mjs",
+        "packages/console/test/board.test.ts",
+        "scripts/test-runner.mjs (console-docs task)"
+      ],
+      "expectedValue": "Roughly 17-18 s off each board render and off the document gate at current counts (the gate moves from about 25 s toward about 7 s). The saving grows by about a second a day as orders and releases accrue, and the growth that previously produced gate failures under load is removed.",
+      "altitude": 10,
+      "uncertainty": "The estimate assumes a batched fold costs about one process start; the per-order call is 0.12 s, mostly start-up. The per-tag work in release list was profiled only by spawn count, so the cache's saving is inferred from the linear drill. Load behaviour inside the full gate was not re-measured.",
+      "risks": [
+        "A batched status mode must reproduce each per-order status byte for byte, including attestation and legal next actions",
+        "A tag-keyed cache must be invalidated if the recorded tag-object snapshot rule changes",
+        "The console output is a product surface; the [document] test must remain its guard"
+      ],
+      "alternatives": [
+        "Run the per-order forks in parallel (lower latency, same linear process count)",
+        "Scale the per-command deadline again (the WO-128 route; a parameter that leaves the growth in place)",
+        "Move the host-collection test from test:docs to the review gate (moves the cost rather than removing it)"
+      ],
+      "duplicationHints": [
+        "FUP-7f9a27e6ed6c44b3 (work-order-map item 9, deferred 2026-09-19; reopen condition met)",
+        "WO-128 criterion 2 (console host-collection budget under gate load)",
+        "ER2-004 and WO-156 (the previous document-gate critical path)"
+      ],
+      "urgencyRationale": "The recorded reopen condition has fired. The cost is paid on every document gate and board render, it grows daily, and the last time this path grew it broke full gates under load."
+    }
+  }
+}

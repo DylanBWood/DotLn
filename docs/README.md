@@ -21,11 +21,16 @@ docs/publication/  audience/status index, audience outlines, shared sample,
 docs/planning/     capability inventory, human recommendation/preflight map,
                    dated planning-pass plans, and immutable blinded refutation
                    receipts under refutations/ (npm run plan -- refute)
+                   entropy-reviews/ — generated accepted-finding rows per
+                   Entropy Reducer review; archive/ — retired planning snapshots
 docs/lineage/      idea-ledger.md — append-only idea history;
                    README.md — generated section/line and lifecycle index;
+                   decisions-index.md — generated per-order decision index;
+                   remining/ — bounded re-mining runs over the ledger;
                    resolutions.md — settled founding tensions;
                    inspirations.md — best-known public influence register
 docs/decisions/    ADRs — settled questions
+docs/proposals/    filed Entropy Reducer proposal packets (filing is not promotion)
 docs/work-orders/  stable scope addresses + generated README evidence index
 docs/verifications/ immutable numbered verifier reports, grouped by work order
 docs/final-reviews/ immutable numbered closeout reports and PR handoffs
@@ -272,3 +277,7 @@ One line per `.claude/` or CLAUDE.md change (see execution guide):
   and puts the session-prefix contract in all generated role targets. Generated
   release-close wording is compacted within its existing context budget;
   helper behavior, publication controls and user settings are unchanged (D014).
+- 2026-09-25: this index gains the rows the 5S inventory found missing
+  (docs/proposals/, docs/planning/entropy-reviews/ and archive/,
+  docs/lineage/remining/ and decisions-index.md). The off-ramps planning pass
+  records why in docs/planning/off-ramps-5s-entropy-2026-09-25.md §7.

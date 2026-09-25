@@ -91,21 +91,36 @@ registered sources and re-mints the editions once, so it does not run
 beside WO-154 or WO-155. No pair is recut. Evidence:
 [the closeout follow-ups planning document](closeout-followups-2026-09-22.md) §4 and §5.
 
+Off-ramps pass (2026-09-25): seven closed entries leave (WO-157, WO-153 to
+WO-156, WO-111, WO-114). Eight orders are filed. Two pairs go to the head:
+WO-158 with WO-159 (the lifecycle off-ramps the catalog of 101 orders found
+missing; the Codex launcher whose absence failed WO-111's criterion 2) and
+WO-160 with WO-161 (the machinery WO-111 exposed, bundled at the operator's
+direction; the sandbox vocabulary made true for a host that runs no
+sandbox). After WO-070 and WO-115 come WO-164 with WO-165 (REVIEW-003's two
+other findings: the console collection that is the document gate's critical
+path; the Entropy Reducer's route agreeing with its compiled authority) and
+then WO-162 with WO-163 (in-unit helper reuse; 5S Sort and Set in order).
+Disjoint surfaces inside each pair, no hard edge; where both orders of a
+pair re-mint, the second integration re-mints once more deterministically.
+Evidence: [the off-ramps planning document](off-ramps-5s-entropy-2026-09-25.md)
+§10.
+
 <!-- dotln-work-order-sequence:start -->
+- WO-158 — Lifecycle off-ramps
+- WO-159 — Codex episode isolation
 
-- WO-157 — Closeout follow-ups, one order
-
-- WO-153 — Codex session entry advisory
-- WO-154 — Evidence editions keyed by behavior and recorded by reference
-
-- WO-155 — Single-source floor and a cold-start trend
-- WO-156 — plan check in the sub-second band
-
-- WO-111 — The unattended hour
-- WO-114 — Runtime status projection
+- WO-160 — WO-111 machinery follow-ups
+- WO-161 — Sandbox vocabulary made true
 
 - WO-070 — Beacon portability
 - WO-115 — Console parity contract
+
+- WO-164 — Constant-process console collection
+- WO-165 — Entropy review route agreement
+
+- WO-162 — In-unit helper reuse
+- WO-163 — 5S Sort and Set in order
 
 - WO-060 — SourceBundle contract
 - WO-116 — Audit projection served
