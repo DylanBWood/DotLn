@@ -81,7 +81,10 @@ export interface HarnessProfile {
 export type OutsideWriteGrant = {
   readonly source: string;
 } & (
-  | { readonly kind: "system-temp" | "session-scratch" | "main-intake" }
+  | {
+      readonly kind:
+        "system-temp" | "session-scratch" | "host-scratchpad" | "main-intake";
+    }
   | { readonly kind: "operator-root"; readonly root: string }
 );
 export interface RoleOutsideWriteGrants {
@@ -204,6 +207,7 @@ export function assertOutsideWriteGrants(
         [
           "system-temp",
           "session-scratch",
+          "host-scratchpad",
           "main-intake",
           "operator-root",
         ].includes(grant.kind) &&
@@ -641,7 +645,7 @@ process.stdout.write(JSON.stringify(response));`;
 
     emit(
       path,
-      `${header}let input;\ntry {\nconst { text } = await import("node:stream/consumers");\nconst rawInput = await text(process.stdin);\ntry { input = JSON.parse(rawInput); } catch {}\nconst event = ${eventExpression};\nconst recoveryInput = input !== null && typeof input === "object" && !Array.isArray(input) && (input.prompt === undefined || typeof input.prompt === "string") && (typeof input.session_id === "string" || (event === "UserPromptSubmit" && /^(analysis|operator override):(?:\\s|$)/i.test((input.prompt ?? "").trim())));\nconst control = recoveryInput ? await (${operatorControl.toString()})({ ...input, session_id: typeof input.session_id === "string" ? input.session_id : undefined }, event) : null;\nif (control) { process.stdout.write(JSON.stringify(control)); } else {\nconst { feedbackBoundary } = await import("../../${profile.runtime.snapshot ? `${profile.runtime.snapshot}/` : ""}packages/skeleton/dist/src/feedback-boundary.js");\nconst { runHarnessHook } = await import("../../${profile.runtime.snapshot ? `${profile.runtime.snapshot}/` : ""}packages/skeleton/dist/src/harness-host.js");\nawait runHarnessHook(${json({ compilerPackageVersion: COMPILER_PACKAGE_VERSION, runtime: profile.runtime, event, tools: profile.tools, envelope, grants: program.loadout.grants ?? [], outsideWriteGrants, ...(config as object) }).trim()}, feedbackBoundary, input, rawInput);\n}\n} catch { ${fallback} }\n`,
+      `${header}let input, control;\ntry {\nconst { text } = await import("node:stream/consumers");\nconst rawInput = await text(process.stdin);\ntry { input = JSON.parse(rawInput); } catch {}\nconst event = ${eventExpression};\nconst recoveryInput = input !== null && typeof input === "object" && !Array.isArray(input) && (input.prompt === undefined || typeof input.prompt === "string") && (typeof input.session_id === "string" || (event === "UserPromptSubmit" && /^(analysis|operator override):(?:\\s|$)/i.test((input.prompt ?? "").trim())));\ncontrol = recoveryInput ? await (${operatorControl.toString()})({ ...input, session_id: typeof input.session_id === "string" ? input.session_id : undefined }, event) : null;\nif (control && !control.overrideExit) { process.stdout.write(JSON.stringify(control)); } else {\nconst { feedbackBoundary } = await import("../../${profile.runtime.snapshot ? `${profile.runtime.snapshot}/` : ""}packages/skeleton/dist/src/feedback-boundary.js");\nconst { runHarnessHook } = await import("../../${profile.runtime.snapshot ? `${profile.runtime.snapshot}/` : ""}packages/skeleton/dist/src/harness-host.js");\nawait runHarnessHook(${json({ compilerPackageVersion: COMPILER_PACKAGE_VERSION, runtime: profile.runtime, event, tools: profile.tools, envelope, grants: program.loadout.grants ?? [], outsideWriteGrants, ...(config as object) }).trim()}, feedbackBoundary, input, rawInput, control);\n}\n} catch { if (control?.overrideExit) { const { overrideExit, ...exited } = control; const advisory = "DotLn advisory: the pinned runtime is unavailable, so OperatorOverrideRecorded was not appended. " + overrideExit.advisory; process.stdout.write(JSON.stringify({ systemMessage: exited.systemMessage + " " + advisory, hookSpecificOutput: { hookEventName: "UserPromptSubmit", additionalContext: advisory } })); } else { ${fallback} } }\n`,
       origins,
       rung,
     );
@@ -862,7 +866,7 @@ process.stdout.write(JSON.stringify(response));`;
               : grant.kind,
           )
           .join(", ") || "none"
-      }; system-temp is os.tmpdir(); use the DotLn scratch path printed at role dispatch (Codex: node scripts/harness.mjs scratch). Native scratch and /tmp need a separate grant when outside system-temp. Sources are in the manifest. Literal /dev/null redirects discard output; other device mutations need grants.`,
+      }; system-temp is os.tmpdir(); host-scratchpad is only the scratchpad Claude Code prints for this session; use the DotLn scratch path printed at role dispatch (Codex: node scripts/harness.mjs scratch). Native scratch and /tmp need a separate grant when outside system-temp. Sources are in the manifest. Literal /dev/null redirects discard output; other device mutations need grants.`,
       "",
       HARNESS_BOUNDARIES,
       "",

@@ -266,6 +266,7 @@ test("WO-042 AC5/6 Contributor projection and grant bundle carry the enforced en
     ...contributor.loadout.authorityEnvelope.allowedEffects.filter(
       (effect) => !effect.startsWith("outside.write:"),
     ),
+    "outside.write:host-scratchpad (grant contributor.outside-temporary; operator)",
     "outside.write:session-scratch (grant contributor.outside-temporary; operator)",
     "outside.write:system-temp (grant contributor.outside-temporary; operator)",
   ]);

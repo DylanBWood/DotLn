@@ -30,9 +30,19 @@ if (
       { session_id: session, prompt },
       mode === "status" ? "Status" : "UserPromptSubmit",
     );
+    // WO-158: this adapter records nothing in the repository; leaving an
+    // override prints the exact route, and the role's completion carries it.
+    const { overrideExit, ...shown } = response ?? {
+      systemMessage: "DotLn: ordinary workflow mode.",
+    };
     process.stdout.write(
       JSON.stringify(
-        response ?? { systemMessage: "DotLn: ordinary workflow mode." },
+        overrideExit
+          ? {
+              ...shown,
+              systemMessage: `${shown.systemMessage} ${overrideExit.advisory}`,
+            }
+          : shown,
       ) + "\n",
     );
   }
