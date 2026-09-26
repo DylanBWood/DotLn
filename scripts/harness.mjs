@@ -10,7 +10,12 @@ import {
   removeTargetHarness,
 } from "./lib/harness.mjs";
 import {
+  activeGateRuns,
   beginGateRun,
+  gateTreeHash,
+  latestGateOutcome,
+  readGateChecks,
+  recordGateOutcome,
   requestGateStop,
 } from "../packages/skeleton/dist/src/gate-evidence.mjs";
 import {
@@ -42,7 +47,7 @@ async function optionalCurrentSession(root, sessionId) {
 }
 
 const usage =
-  "usage: harness emit|check [--loadout contributor] [--profile id] [--out dir] | harness emit|check|remove --target worktree [--runtime-root launchpad] [--profile target-worker-claude|target-worker-codex] | harness evidence [--stop|--fail] | harness usage <session> | harness read-output <path> [--offset <byte>] [--length <bytes>] | harness prune [--apply] | harness writer --show | harness writer --release [--force]";
+  "usage: harness emit|check [--loadout contributor] [--profile id] [--out dir] | harness emit|check|remove --target worktree [--runtime-root launchpad] [--profile target-worker-claude|target-worker-codex] | harness evidence [--stop|--fail|--wait [--timeout <seconds>]] | harness usage <session> | harness read-output <path> [--offset <byte>] [--length <bytes>] | harness prune [--apply] | harness writer --show | harness writer --release [--force]";
 try {
   const root = harnessRoot(process.cwd());
   const [action, ...args] = process.argv.slice(2);
@@ -149,6 +154,49 @@ try {
           : releaseHarnessWriterByOperator(root, force),
       ),
     );
+  } else if (action === "evidence" && args[0] === "--wait") {
+    if (args.length !== 1 && !(args.length === 3 && args[1] === "--timeout"))
+      throw new Error("usage: harness evidence --wait [--timeout <seconds>]");
+    const timeout = args.length === 3 ? Number(args[2]) : 1200;
+    if (!Number.isFinite(timeout) || timeout < 0 || timeout > 3600)
+      throw new Error("wait timeout must be between 0 and 3600 seconds");
+    const started = activeGateRuns(root);
+    const runIds = started.map((run) => run.runId);
+    const deadline = Date.now() + timeout * 1000;
+    let active = started;
+    while (active.length && Date.now() < deadline) {
+      Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 250);
+      active = activeGateRuns(root);
+    }
+    if (active.length) {
+      console.log(JSON.stringify({ run: null }));
+      process.exitCode = 2;
+    } else {
+      const treeHash = gateTreeHash(root);
+      const row = readGateChecks(root, treeHash).at(-1);
+      const outcome = latestGateOutcome(root, treeHash, runIds);
+      const observedAfterStart =
+        !runIds.length ||
+        (row &&
+          row.recordedAt >= started.map((run) => run.startedAt).sort()[0]);
+      const outcomeIsLatest =
+        outcome &&
+        row &&
+        (runIds.length || outcome.completedAt >= row.recordedAt);
+      const status = !row
+        ? "no-row"
+        : outcomeIsLatest
+          ? outcome.status
+          : !observedAfterStart
+            ? "no-row"
+            : row.exitCode === 0 && row.executed
+              ? "passed"
+              : "failed";
+      console.log(
+        JSON.stringify(status === "no-row" || !row ? { run: null } : row),
+      );
+      process.exitCode = status === "passed" ? 0 : status === "failed" ? 1 : 2;
+    }
   } else if (action === "evidence" && args[0] === "--stop") {
     // The session that started a gate ends it here, in Claude and Codex
     // alike, without an operator step: every live gate process in this
@@ -178,10 +226,13 @@ try {
           "harness evidence accepts no override other than --fail",
         );
       const active = beginGateRun(root, "node scripts/harness.mjs evidence");
+      let treeHash = gateTreeHash(root);
+      let outcome = "no-row";
       try {
         const { prepareHarnessEvidence } =
           await import("./lib/evidence-preparation.mjs");
         const preparation = prepareHarnessEvidence(root);
+        treeHash = gateTreeHash(root);
         console.log(
           `Prepared owned evidence projections in ${preparation.durationMs.toFixed(1)} ms`,
         );
@@ -191,14 +242,29 @@ try {
           );
         const checks = runHarnessEvidence(root, failOnly ? "fail" : undefined);
         console.log(JSON.stringify({ checks }));
-        if (checks.some((check) => check.exitCode !== 0 || !check.executed))
+        if (checks.some((check) => check.exitCode !== 0 || !check.executed)) {
+          outcome = "failed";
           process.exitCode = 1;
-        else
+        } else {
+          outcome = "passed";
           console.log(
             "Final evidence passed. Keep tracked reports at their stated measurement cutoff; gate results remain in docs/control/local/harness/checks.json and usage in docs/control/local/process/usage.jsonl. Read current outputs, record the lifecycle result, refresh its index once and hand off. Report final timings and counters in the response; do not edit reports or rerun generation and the gate solely to copy these results.",
           );
+        }
       } finally {
-        active.release();
+        try {
+          recordGateOutcome(root, {
+            runId: active.run.runId,
+            treeHash,
+            status: outcome,
+          });
+        } catch (error) {
+          console.error(
+            `Gate outcome observation unavailable: ${error.message}`,
+          );
+        } finally {
+          active.release();
+        }
       }
     } else {
       if (!["emit", "check", "remove"].includes(action)) throw new Error(usage);

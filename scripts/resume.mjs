@@ -1043,6 +1043,22 @@ const recordedBriefings = {
 export const main = async (argv = process.argv.slice(2)) => {
   const [action = "status", ...rawArgs] = argv;
   let releaseExecutorWriter;
+  const harnessHostPath = join(
+    repoRoot,
+    "packages/skeleton/dist/src/harness-host.js",
+  );
+  const reserveCodexDispatch = async (worktree = repoRoot) => {
+    if (!process.env.CODEX_THREAD_ID) return;
+    if (!existsSync(harnessHostPath)) {
+      throw new Error(
+        "Codex writer reservation unavailable; harness runtime is not built. Run npm run build before retrying this dispatch.",
+      );
+    }
+    const { reserveCodexDispatchWriter } = await import(
+      pathToFileURL(harnessHostPath)
+    );
+    reserveCodexDispatchWriter(worktree, process.env.CODEX_THREAD_ID);
+  };
   reportHarnessRuntime(repoRoot);
   const { args, workOrder } = selectionArgs(rawArgs);
   let control = readControl(repoRoot);
@@ -1221,6 +1237,7 @@ export const main = async (argv = process.argv.slice(2)) => {
     }
     case "verify": {
       requirePhase(state, "ready-to-verify");
+      await reserveCodexDispatch();
       const verificationId = nextVerification(state);
       const reportPath = docRelative(
         repoRoot,
@@ -1249,6 +1266,7 @@ export const main = async (argv = process.argv.slice(2)) => {
         "verifier",
         "pass|fail",
       );
+      releaseExecutorWriter = await executorWriterRelease(repoRoot);
       const verificationRoot = docPath(
         repoRoot,
         "verifications",
@@ -1305,6 +1323,7 @@ export const main = async (argv = process.argv.slice(2)) => {
         )
       )
         requirePhase(state, "needs-fix");
+      await reserveCodexDispatch();
       message = repairBriefing(state);
       appendTransition(action, {
         type: "RepairRequested",
@@ -1336,6 +1355,7 @@ export const main = async (argv = process.argv.slice(2)) => {
     }
     case "final-review": {
       requirePhase(state, "verified");
+      await reserveCodexDispatch();
       const finalReviewId = nextFinalReview(state);
       const reportPath = docRelative(
         repoRoot,
@@ -1365,6 +1385,7 @@ export const main = async (argv = process.argv.slice(2)) => {
         "reviewer",
         "pass|fail",
       );
+      releaseExecutorWriter = await executorWriterRelease(repoRoot);
       const finalReviewRoot = docPath(
         repoRoot,
         "finalReviews",
@@ -1861,6 +1882,7 @@ export const main = async (argv = process.argv.slice(2)) => {
           );
         restricted = `\n${restrictedBeaconBriefing(repoRoot, state.workOrderId, args[1])}`;
       }
+      if (state.phase === "active") await reserveCodexDispatch();
       message =
         state.phase === "active"
           ? `${executionBriefing(state)}${restricted}`
@@ -1875,15 +1897,16 @@ export const main = async (argv = process.argv.slice(2)) => {
       } catch {
         // A non-Git fixture can still exercise the command projection.
       }
+      const inMain = resolve(mainPath) === resolve(repoRoot);
+      if (inMain) await reserveCodexDispatch();
       // Main's copy of the helper is the reviewed one once the order is merged,
       // and it survives the removal of the subject worktree the helper performs.
       const helper = `${shellQuote(process.execPath)} ${shellQuote(join(mainPath, "scripts/release.mjs"))} close ${state.workOrderId} --publish`;
       const egress =
         "The helper needs network egress to the GitHub host for fetch, ls-remote, the tag push and the Release: run it in an authorized session with egress and host approval. --dry-run previews reachability and the publication manifest.";
-      message =
-        resolve(mainPath) === resolve(repoRoot)
-          ? `After the operator merges the PR, run the reviewed helper from this main checkout: ${helper}. This narrowly authorizes the annotated tag and its matching GitHub Release; never push main. ${egress}`
-          : `After the operator merges the PR, start a session in the main checkout and run the reviewed helper there: cd ${shellQuote(mainPath)} && ${helper}. This narrowly authorizes the annotated tag and its matching GitHub Release; never push main. ${egress}`;
+      message = inMain
+        ? `After the operator merges the PR, run the reviewed helper from this main checkout: ${helper}. This narrowly authorizes the annotated tag and its matching GitHub Release; never push main. ${egress}`
+        : `After the operator merges the PR, start a session in the main checkout (${shellQuote(mainPath)}) and run npm run resume -- release-close --work-order ${state.workOrderId} to reserve its writer and obtain the reviewed helper. Run that helper in the same main session. This narrowly authorizes the annotated tag and its matching GitHub Release; never push main. ${egress}`;
       break;
     }
     default:
@@ -1904,10 +1927,6 @@ export const main = async (argv = process.argv.slice(2)) => {
         await refreshExecutorIndex(repoRoot);
     }
     const codexDispatchRole = codexDispatchRoles[action];
-    const harnessHostPath = join(
-      repoRoot,
-      "packages/skeleton/dist/src/harness-host.js",
-    );
     if (process.env.CODEX_THREAD_ID && codexDispatchRole) {
       if (existsSync(harnessHostPath)) {
         // The transition may already be recorded: a measurement failure is named

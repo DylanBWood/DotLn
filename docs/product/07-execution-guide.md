@@ -1768,13 +1768,9 @@ cannot explain.
 WO-050 VER-001 observed a Codex executor's reservation outliving its
 session with `liveness: unavailable`, refusing every shell command of the
 next session including `node scripts/harness.mjs writer --show`, until an
-operator released it from a terminal. The kept invariant is right; the
-diagnosis path is not. The candidate admits the writer inspection and
-release commands under a foreign reservation, reports the holder's age on
-every refusal, and has the Codex lifecycle completion release the
-reservation it holds. The stand-down declined a shell classifier; this
-candidate needs none. No order is allocated; reopen on a second observed
-occurrence.
+operator released it from a terminal. The kept invariant was right; the
+diagnosis path was not. The stand-down declined a shell classifier. The
+original candidate awaited a second observed occurrence.
 
 **Substance shipped 2026-09-18 (recorded by the 2026-09-19 cleanup pass).**
 WO-139's commit `3ea00e50` releases the executor's writer at completion
@@ -1787,9 +1783,21 @@ implementation and repair) found no reservation at dispatch, because
 `beginHarnessSessionOnce` reserves nothing while the role text describes a
 reservation completion releases; two reserved by hand mid-phase and one handed
 off unreserved. Frequency is unknown (worktree journals are discarded at
-teardown). Allocated to WO-166: the Codex dispatch reserves, every Codex
-completion releases, and a refusal names the holder's age
+teardown). WO-166 makes the five Codex lifecycle dispatches reserve before a
+control event can be appended, using a verified Codex ancestor or a pid-less
+thread owner whose liveness remains unknown
 ([2026-09-25 standard pass](../planning/standard-pass-2026-09-25.md) §3).
+Executor, verifier, reviewer and release-close completion release only their own
+reservation after the durable result. A release-close handoff from the subject
+checkout directs the new main session to dispatch there, so the session that
+runs the helper owns and releases main's writer. Every foreign-writer refusal
+names the holder, owner, reservation time, age and operator release command,
+including `--force` for a live owner; `writer --show` remains available for
+diagnosis. An open operator override is reported once at the next session start
+in the same worktree. `node scripts/harness.mjs evidence --wait [--timeout <seconds>]`
+exits with the recorded gate outcome or a timeout; run it in the background under
+Claude Code. The killed Codex session still needs the operator release route when
+its owner cannot be proven dead.
 
 ## Candidate — total subagent cap across every spawn path
 

@@ -20,6 +20,16 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-166 activation completion (2026-09-26):** assigned application `v0.52.2`,
+the next patch above the observed local `v0.52.1` tag. The Codex dispatch
+reserves one writer through each role's completion, a gate can be waited on with
+a terminating command, and a later same-worktree session sees an open override.
+Compiler and skeleton receive compatible patch bumps for their changed source;
+the console's exact pins and lockfile follow. Independent verification, final
+review and publication remain separate dispatches.
+
+**WO-166 collision retiming (2026-09-26):** unpublished target `v0.52.2` is superseded by `v0.52.3` under the existing patch classification because the observed release baseline is `v0.52.2`. Scope, acceptance, component versions, and published tags are unchanged by this retiming.
+
 **WO-115 activation completion (2026-09-25):** assigned application `v0.52.0`,
 the next minor above the observed local `v0.51.0` tag. The resident adds the
 `console-commands-v1` loopback surface and replayable console-actor receipts;
