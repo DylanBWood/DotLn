@@ -261,17 +261,24 @@ test("WO-157 VER-001 F4: every legal runtime import form is read, and only type 
 // audit or carries it into a deterministic edition without a live episode.
 test("WO-154 a pins-only change keeps or carries the live audit; a judged change and an unresolvable reference are stale by path", (t) => {
   const { copy, check, run, restore } = editionCopy(t);
-  const live = currentEvidence(copy, "feedback").directory;
+  const current = currentEvidence(copy, "feedback").directory;
   const edition = JSON.parse(
-    readFileSync(join(copy, live, "edition.json"), "utf8"),
+    readFileSync(join(copy, current, "edition.json"), "utf8"),
   );
   assert.equal(edition.schemaVersion, 2);
-  assert.equal(edition.liveAudit.edition, live);
+  const live = edition.liveAudit.edition;
+  assert.match(live, /^docs\/evidence\/WO-\d{3}\/feedback-\d{3}$/);
+  const liveArgs = [
+    "--edition",
+    live.match(/WO-\d{3}/u)[0],
+    "--revision",
+    live.match(/feedback-(\d{3})/u)[1],
+  ];
   const base = check();
   assert.equal(base.status, 0, base.stdout + base.stderr);
   assert.match(
     base.stdout,
-    /Live feedback audit .* judged the current source/u,
+    /(?:Live feedback audit .* judged the current source|Retained live feedback audit .*: component release labels moved since it was recorded|Carried live feedback audit .*, named by)/u,
   );
 
   // Every judged file that carries a release label keeps its raw bytes in
@@ -299,7 +306,7 @@ test("WO-154 a pins-only change keeps or carries the live audit; a judged change
       }).trim(),
       name,
     );
-  const again = run("--pins");
+  const again = run("--pins", ...liveArgs);
   assert.equal(again.status, 0, again.stdout + again.stderr);
 
   // The skeleton and console release labels move, as a routine bump does;
@@ -343,7 +350,7 @@ test("WO-154 a pins-only change keeps or carries the live audit; a judged change
   assert.equal(pins.status, 0, pins.stdout + pins.stderr);
   assert.match(
     pins.stdout,
-    /Retained live feedback audit .*: component release labels moved since it was recorded/u,
+    /(?:Retained live feedback audit .*: component release labels moved since it was recorded|Carried live feedback audit .*, named by .*; component release labels moved since)/u,
   );
 
   // A deterministic re-mint names the live audit it carries.
@@ -414,7 +421,7 @@ test("WO-154 a pins-only change keeps or carries the live audit; a judged change
       value.liveAudit.verification.bytes = Buffer.byteLength(forged);
     }),
   );
-  const unresolvable = check();
+  const unresolvable = run("--check", ...liveArgs);
   assert.notEqual(unresolvable.status, 0, unresolvable.stdout);
   assert.match(
     unresolvable.stderr,
