@@ -9,9 +9,9 @@ import {
   sweepControlBeacons,
   readGroupBeacon,
   prepareBeaconDisposal,
-} from "../../packages/skeleton/src/control-beacon-fs.mjs";
-import { CONTROL_CODEBOOK } from "../../packages/skeleton/src/control-codebook.mjs";
-import { openBeaconKey } from "../../packages/skeleton/src/beacon-provenance.mjs";
+} from "../../packages/beacons/src/control-beacon-fs.mjs";
+import { CONTROL_CODEBOOK } from "../../packages/beacons/src/control-codebook.mjs";
+import { openBeaconKey } from "../../packages/beacons/src/beacon-provenance.mjs";
 
 export { restrictedBeaconBriefing, prepareBeaconDisposal };
 

@@ -39,8 +39,8 @@ export const MAX_GROUP_CODE = 3011928819n;
 export const MAX_GROUP_LOGICAL_BYTES = 192763452654n;
 export const BEACON_STALE_AFTER_MS = 20 * 60 * 1000;
 
-/** @typedef {import("./control-beacon.js").ControlBeaconState} ControlBeaconState */
-/** @typedef {import("./control-beacon.js").SignalDecode} SignalDecode */
+/** @typedef {import("./types.d.mts").ControlBeaconState} ControlBeaconState */
+/** @typedef {import("./types.d.mts").SignalDecode} SignalDecode */
 
 /** @param {readonly string[]} domain @param {string} value */
 const rank = (domain, value) => {
@@ -116,7 +116,7 @@ export function decodeLegacySignalSize(size) {
   return legacy;
 }
 
-/** @param {number | bigint} size @returns {import("./control-beacon.js").GroupDecode} */
+/** @param {number | bigint} size @returns {import("./types.d.mts").GroupDecode} */
 export function decodeGroupBeaconSize(size) {
   const framed = decodeBeaconSize(size);
   if (
@@ -140,7 +140,7 @@ export function decodeGroupBeaconSize(size) {
   return { status: "decoded", state: { groupCodebookVersion: 1, counts } };
 }
 
-/** @param {readonly import("./control-beacon.js").SignalObservation[]} observations */
+/** @param {readonly import("./types.d.mts").SignalObservation[]} observations */
 export function groupCounts(observations) {
   const counts = CONTROL_CODEBOOK.phases.map(() => 0);
   for (const { decoded } of observations) {

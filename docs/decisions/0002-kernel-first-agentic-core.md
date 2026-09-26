@@ -54,6 +54,15 @@ notes and tooling choices within the decided constraints.
   projection. This avoids duplicated codebooks and filesystem writers while
   retaining compiler checks and zero new dependencies. The typed reactor and
   recorded agent-sweep adapter remain TypeScript; kernel/compiler are unchanged.
+- 2026-09-25, WO-070 Beacon portability: those leaves, with
+  `beacon-provenance.mjs`, `beacon-v3-codebook.mjs` and `beacon-v3-fs.mjs`,
+  now live in the private build-free `@dotln/beacons` workspace
+  (`packages/beacons/src`). Lifecycle scripts still import that source before
+  `npm ci`; the skeleton imports it by package name, and the skeleton build
+  stages it under the same strict `checkJs` checks without emitting a copy, so
+  one module identity serves both and control Beacon emission needs no skeleton
+  source. No third-party dependency is added. Decision:
+  `docs/evidence/WO-070/decisions.md`.
 
 - WO-002 uses TypeScript 5.4.5 and `@types/node` 22.20.1 as exact dev
   dependencies, matching the compiler and Node 22 line observed by WO-001.

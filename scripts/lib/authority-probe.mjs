@@ -20,7 +20,7 @@ import { dirname, join } from "node:path";
 import { createServer } from "node:net";
 import { createInterface } from "node:readline/promises";
 
-import { emitTargetHarness } from "./harness.mjs";
+import { emitTargetHarness, runtimeModuleDirectory } from "./harness.mjs";
 import { installSourceChangeCommands } from "../../packages/skeleton/dist/src/source-change-command.js";
 import { activeGateRuns } from "../../packages/skeleton/dist/src/gate-evidence.mjs";
 import {
@@ -132,13 +132,14 @@ export function createAuthorityFixture(cell) {
     write(join(root, "credentials/sentinel.txt"), sentinel);
     for (const name of readdirSync(join(TOOL_ROOT, "packages"))) {
       const from = join(TOOL_ROOT, "packages", name);
-      if (!existsSync(join(from, "dist"))) continue;
+      const modules = runtimeModuleDirectory(from);
+      if (!modules) continue;
       mkdirSync(join(launchpad, "packages", name), { recursive: true });
       cpSync(
         join(from, "package.json"),
         join(launchpad, "packages", name, "package.json"),
       );
-      cpSync(join(from, "dist"), join(launchpad, "packages", name, "dist"), {
+      cpSync(join(from, modules), join(launchpad, "packages", name, modules), {
         recursive: true,
         dereference: true,
       });

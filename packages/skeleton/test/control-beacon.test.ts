@@ -23,7 +23,7 @@ import {
   decodeBeaconSize,
   encodeBeaconState,
 } from "../src/beacon.js";
-import { framedSize } from "../src/beacon-codebook.mjs";
+import { framedSize } from "@dotln/beacons/beacon-codebook.mjs";
 import {
   CONTROL_CODEBOOK,
   GROUP_CODEBOOK,
@@ -40,13 +40,13 @@ import {
   encodeControlBeacon,
   encodeGroupBeacon,
   groupCounts,
-} from "../src/control-codebook.mjs";
+} from "@dotln/beacons/control-codebook.mjs";
 import {
   exactHostSize,
   beaconMtimeMatches,
   probeBeaconStorage,
   writeBeaconFile,
-} from "../src/beacon-io.mjs";
+} from "@dotln/beacons/beacon-io.mjs";
 import {
   controlBeaconAddress,
   controlBeaconDirectory,
@@ -54,7 +54,7 @@ import {
   groupBeaconAddress,
   observeBeaconMetadata,
   sweepControlBeacons,
-} from "../src/control-beacon-fs.mjs";
+} from "@dotln/beacons/control-beacon-fs.mjs";
 import {
   observeBeaconSweep,
   replayBeaconSweep,

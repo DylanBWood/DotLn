@@ -1,5 +1,5 @@
 import type { BeaconDecode, BeaconState } from "./beacon.js";
-import type { CONTROL_CODEBOOK } from "./control-codebook.mjs";
+import type { CONTROL_CODEBOOK } from "@dotln/beacons/control-codebook.mjs";
 import type { AuthorityEnvelope, Event, ObserveIntent } from "@dotln/kernel";
 
 export type ControlBeaconState = Readonly<{
@@ -16,7 +16,7 @@ export type SignalDecode =
       state:
         | Readonly<{ [K in keyof BeaconState]: BeaconState[K] }>
         | ControlBeaconState
-        | import("./beacon-v3-codebook.mjs").BeaconV3State;
+        | import("@dotln/beacons/beacon-v3-codebook.mjs").BeaconV3State;
     }>;
 export type GroupDecode =
   | Readonly<{ status: "malformed" }>
@@ -30,7 +30,7 @@ export type SignalObservation = Readonly<{
   mtimeMs: number | null;
   mtimeNs?: string | null;
   decoded: SignalDecode | Readonly<{ status: "absent" }>;
-  provenanceCheck?: import("./beacon-provenance.mjs").ProvenanceCheck;
+  provenanceCheck?: import("@dotln/beacons/beacon-provenance.mjs").ProvenanceCheck;
   fineSpectrum?: "sensed" | "not-sensed";
 }>;
 export type BeaconAge =

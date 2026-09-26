@@ -22,7 +22,7 @@ import {
   validatePerception,
 } from "./beacon-perception.js";
 import { readMountedBeacons } from "./beacon-perception-fs.js";
-import type { BeaconProvenance } from "./beacon-provenance.mjs";
+import type { BeaconProvenance } from "@dotln/beacons/beacon-provenance.mjs";
 import { SENSE_IDS } from "@dotln/compiler";
 
 const sweepPayload = (request: BeaconSweepRequest, decisionIndex: number) => {

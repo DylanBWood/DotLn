@@ -246,6 +246,64 @@ test("evidence compares component release labels by content and preserves behavi
     );
 });
 
+test("WO-070 the build-free Beacon workspace is a component whose release labels compare by content", () => {
+  const beacons = {
+    name: "@dotln/beacons",
+    version: "0.1.0",
+    license: "Apache-2.0",
+    private: true,
+    type: "module",
+  };
+  const own = "packages/beacons/package.json";
+  assert.equal(
+    evidenceSourceContent(
+      own,
+      JSON.stringify({ ...beacons, version: "0.2.0" }),
+    ),
+    evidenceSourceContent(own, JSON.stringify(beacons)),
+  );
+  const skeleton = {
+    name: "@dotln/skeleton",
+    version: "0.43.2",
+    dependencies: { "@dotln/beacons": "0.1.0", typescript: "7.0.2" },
+  };
+  const path = "packages/skeleton/package.json";
+  const pinned = (pin: string) =>
+    evidenceSourceContent(
+      path,
+      JSON.stringify({
+        ...skeleton,
+        dependencies: { ...skeleton.dependencies, "@dotln/beacons": pin },
+      }),
+    );
+  assert.equal(pinned("0.2.0"), pinned("0.1.0"));
+  assert.notEqual(
+    evidenceSourceContent(
+      path,
+      JSON.stringify({ ...skeleton, dependencies: { typescript: "7.0.2" } }),
+    ),
+    pinned("0.1.0"),
+  );
+  const lock = (release: string) =>
+    evidenceSourceContent(
+      "package-lock.json",
+      JSON.stringify({
+        name: "dotln",
+        lockfileVersion: 3,
+        packages: {
+          "": { name: "dotln" },
+          "packages/beacons": { name: "@dotln/beacons", version: release },
+          "packages/skeleton": {
+            name: "@dotln/skeleton",
+            version: "0.43.2",
+            dependencies: { "@dotln/beacons": release },
+          },
+        },
+      }),
+    );
+  assert.equal(lock("0.2.0"), lock("0.1.0"));
+});
+
 test("immutable evidence admits a component-only bump while source, external dependency, and evidence changes invalidate", () => {
   const root = mkdtempSync(join(tmpdir(), "dotln-evidence-content-"));
   const git = (...args: string[]) =>

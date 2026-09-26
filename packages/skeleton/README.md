@@ -603,6 +603,13 @@ and [WO-022 evidence](../../docs/evidence/WO-022/README.md).
 
 ## Control-plane Beacons
 
+The seven build-free Beacon leaves live in `packages/beacons/src`. Control-plane
+scripts import that source directly before installation, while the skeleton
+imports `@dotln/beacons` by name; the build stages the workspace without
+compiling another copy. A lifecycle activation can therefore emit and decode
+its control Beacon with no `packages/skeleton/src` tree. The optional agent
+constellation still loads the typed skeleton reactor from its current build.
+
 Every appended resume transition writes a dense v2 projection, or sparse v3
 when the host explicitly supplies its external key, inside ignored
 `.control-beacons/public/` and `verifier/`, with canonical transition mtime.

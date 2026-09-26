@@ -16,18 +16,18 @@ import {
   controlBeaconAddress,
   controlBeaconDirectory,
   sweepControlBeacons,
-} from "../packages/skeleton/src/control-beacon-fs.mjs";
+} from "../packages/beacons/src/control-beacon-fs.mjs";
 import {
   CONTROL_CODEBOOK,
   decodeGroupBeaconSize,
   encodeControlBeacon,
   encodeGroupBeacon,
   groupCounts,
-} from "../packages/skeleton/src/control-codebook.mjs";
+} from "../packages/beacons/src/control-codebook.mjs";
 import {
   probeBeaconStorage,
   writeBeaconFile,
-} from "../packages/skeleton/src/beacon-io.mjs";
+} from "../packages/beacons/src/beacon-io.mjs";
 
 const args = process.argv.slice(2);
 if (args.length > 1 || (args.length === 1 && args[0] !== "--smoke"))

@@ -21,7 +21,7 @@ import { decodeLog } from "@dotln/kernel";
 import {
   controlBeaconAddress,
   controlBeaconDirectory,
-} from "../src/control-beacon-fs.mjs";
+} from "@dotln/beacons/control-beacon-fs.mjs";
 import { replayBeaconSweep } from "../src/beacon-observe.js";
 import type { BeaconSweepRequest } from "../src/control-beacon.js";
 
@@ -54,19 +54,17 @@ test("WO-021 agent constellation CLI persists permission/refusal and one metadat
     });
     symlinkSync(pkg, join(root, "node_modules/@dotln", name), "dir");
   }
-  // Source leaves are the bootstrap reader; dist supplies the typed reactor.
+  // Build-free source leaves serve both the bootstrap reader and typed reactor.
+  cpSync(join(repository, "packages/beacons"), join(root, "packages/beacons"), {
+    recursive: true,
+  });
+  symlinkSync(
+    join(root, "packages/beacons"),
+    join(root, "node_modules/@dotln/beacons"),
+    "dir",
+  );
   mkdirSync(join(root, "packages/skeleton/src"));
-  for (const name of [
-    "beacon-codebook.mjs",
-    "beacon-io.mjs",
-    "control-codebook.mjs",
-    "control-beacon-fs.mjs",
-    "beacon-v3-codebook.mjs",
-    "beacon-v3-fs.mjs",
-    "beacon-provenance.mjs",
-    "gate-deadlines.mjs",
-    "gate-evidence.mjs",
-  ])
+  for (const name of ["gate-deadlines.mjs", "gate-evidence.mjs"])
     cpSync(
       join(repository, "packages/skeleton/src", name),
       join(root, "packages/skeleton/src", name),

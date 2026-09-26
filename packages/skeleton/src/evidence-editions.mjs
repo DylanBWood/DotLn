@@ -92,7 +92,7 @@ export function evidenceArgs(root, kind, args) {
  * @param {string} contents
  */
 export function evidenceSourceContent(path, contents) {
-  const components = ["kernel", "compiler", "skeleton", "console"];
+  const components = ["kernel", "compiler", "skeleton", "console", "beacons"];
   const packagePaths = components.map(
     (name) => `packages/${name}/package.json`,
   );

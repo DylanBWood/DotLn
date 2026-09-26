@@ -35,7 +35,7 @@ export const framedSize = (code) =>
   ((code * BigInt(book.checkMultiplier) + BigInt(book.checkOffset)) %
     BigInt(book.stride));
 
-/** @param {import("./beacon.js").BeaconState} state */
+/** @param {import("./types.d.mts").BeaconState} state */
 export function encodeBeaconState(state) {
   const action = book.classes.findIndex(([name]) => name === state.actionClass);
   /** @type {readonly string[]} */
@@ -64,7 +64,7 @@ export function encodeBeaconState(state) {
 
 /**
  * @param {number | bigint} size
- * @returns {import("./beacon.js").BeaconDecode}
+ * @returns {import("./types.d.mts").BeaconDecode}
  */
 export function decodeBeaconSize(size) {
   const malformed = /** @type {const} */ ({ status: "malformed" });

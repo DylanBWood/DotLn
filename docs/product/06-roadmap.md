@@ -20,6 +20,15 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-070 activation completion (2026-09-25):** assigned application `v0.51.1`,
+the next patch above the observed local `v0.51.0` tag, under the declared patch
+classification. The seven build-free Beacon leaves move to the new private
+`@dotln/beacons` workspace at `0.1.0`; `@dotln/skeleton` advances from `0.43.1`
+to `0.43.2` for its compatible import change (compatibility impact: none for
+in-tree consumers; the seven leaf modules leave skeleton `src` and `dist` for
+`@dotln/beacons`), and the console's exact skeleton pin and lockfile follow. Compiler, kernel and console versions remain unchanged.
+Independent verification, final review and publication remain separate actions.
+
 **WO-160 activation completion (2026-09-25):** assigned application `v0.50.0`,
 the next minor above the observed local `v0.49.0` tag. The nine machinery
 repairs preserve historical judgments and recovery material while replacing

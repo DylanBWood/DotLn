@@ -22,15 +22,15 @@ import {
   controlBeaconAddress,
   controlBeaconDirectory,
   sweepControlBeacons,
-} from "../packages/skeleton/src/control-beacon-fs.mjs";
+} from "../packages/beacons/src/control-beacon-fs.mjs";
 import {
   CONTROL_CODEBOOK,
   encodeControlBeacon,
-} from "../packages/skeleton/src/control-codebook.mjs";
+} from "../packages/beacons/src/control-codebook.mjs";
 import {
   probeBeaconStorage,
   writeBeaconFile,
-} from "../packages/skeleton/src/beacon-io.mjs";
+} from "../packages/beacons/src/beacon-io.mjs";
 
 // One request returns every member's observation. Workers have independent JS
 // runtimes and share the filesystem cache; there are no writes in timed phases.

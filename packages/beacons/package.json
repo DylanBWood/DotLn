@@ -1,0 +1,23 @@
+{
+  "name": "@dotln/beacons",
+  "version": "0.1.0",
+  "private": true,
+  "license": "Apache-2.0",
+  "type": "module",
+  "scripts": {
+    "prepublishOnly": "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\""
+  },
+  "exports": {
+    "./types": "./src/types.d.mts",
+    "./beacon-codebook.mjs": "./src/beacon-codebook.mjs",
+    "./beacon-io.mjs": "./src/beacon-io.mjs",
+    "./beacon-provenance.mjs": "./src/beacon-provenance.mjs",
+    "./beacon-v3-codebook.mjs": "./src/beacon-v3-codebook.mjs",
+    "./beacon-v3-fs.mjs": "./src/beacon-v3-fs.mjs",
+    "./control-beacon-fs.mjs": "./src/control-beacon-fs.mjs",
+    "./control-codebook.mjs": "./src/control-codebook.mjs"
+  },
+  "engines": {
+    "node": ">=26.0.0 <27"
+  }
+}

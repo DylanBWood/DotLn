@@ -1,4 +1,4 @@
-# WO-070 — Beacon portability: the control plane emits control Beacons without the skeleton package, with one module identity for the build-free leaves and no file imported from both source and `dist/` (version assigned at activation)
+# WO-070 — Beacon portability: the control plane emits control Beacons without the skeleton package, with one module identity for the build-free leaves and no file imported from both source and `dist/` (v0.51.1)
 
 **Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
 
@@ -86,3 +86,28 @@ portability fixture, the write-backs below.
 
 1. Either home is acceptable if it yields one identity; the executor's
    recorded reason is reviewed.
+
+## Operator scope expansion — 2026-09-25
+
+During `resume: next`, after the Codex session that began this order stopped
+in a provider outage and Claude continued it
+([WO-070-D004](../evidence/WO-070/decisions.md#wo-070-d004)), the full gate
+showed that moving the leaves changes three files the feedback verifier judges
+(`FEEDBACK_SOURCE_PATHS`): `packages/skeleton/src/reactor.ts`,
+`package-lock.json` and `packages/skeleton/package.json`. Any design in which
+the skeleton imports `@dotln/beacons` by name moves them. This order predates
+product 07's rule that such an order names the feedback re-mint and one live
+feedback self-host episode in its Cost line, so it named neither. The operator
+authorized ([WO-070-D010](../evidence/WO-070/decisions.md#wo-070-d010)):
+
+- one live feedback self-host episode on the `claude-cli-print` transport with
+  `claude-sonnet-5` at `xhigh` (the WO-157 precedent; the Codex transport was
+  unavailable), recorded as the feedback edition `WO-070` revision `001`;
+- the deterministic re-mint, as `WO-070` revision `001`, of each other
+  selected edition whose check this order stales (observed: authority), with
+  `docs/evidence/current.json` repointed to them;
+- both once, after the order's last registered-source edit.
+
+Nothing else is added. If the episode is refused or fails, it is recorded and
+the operator decides whether to authorize another. Acceptance criterion 5
+(`npm test` green) is judged after the re-mint.

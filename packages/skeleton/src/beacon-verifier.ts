@@ -1,6 +1,6 @@
 import type { ObserveIntent } from "@dotln/kernel";
 import type { BeaconSweepRequest } from "./control-beacon.js";
-import type { BeaconProvenance } from "./beacon-provenance.mjs";
+import type { BeaconProvenance } from "@dotln/beacons/beacon-provenance.mjs";
 import { observeBeaconSweep } from "./beacon-observe.js";
 import type { PerceptionRead } from "./beacon-perception.js";
 import type {

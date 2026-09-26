@@ -7,10 +7,10 @@ import type { AuthorizationResult, Event } from "@dotln/kernel";
 import {
   decodeSignalSize,
   decodeGroupBeaconSize,
-} from "./control-codebook.mjs";
+} from "@dotln/beacons/control-codebook.mjs";
 import type { GroupObservation, SignalObservation } from "./control-beacon.js";
 import type { PerceptionDeclaration } from "./execution-environment.js";
-import type { ProvenanceCheck } from "./beacon-provenance.mjs";
+import type { ProvenanceCheck } from "@dotln/beacons/beacon-provenance.mjs";
 
 export function compilePerception(
   declaration: PerceptionDeclaration,

@@ -33,15 +33,21 @@ import {
   issueBeaconSession,
   prepareBeaconDisposal,
   restrictedBeaconBriefing,
-} from "../src/control-beacon-fs.mjs";
-import { createBeaconKey, openBeaconKey } from "../src/beacon-provenance.mjs";
+} from "@dotln/beacons/control-beacon-fs.mjs";
+import {
+  createBeaconKey,
+  openBeaconKey,
+} from "@dotln/beacons/beacon-provenance.mjs";
 import {
   encodeControlBeacon,
   encodeGroupBeacon,
-} from "../src/control-codebook.mjs";
-import { encodeBeaconState, framedSize } from "../src/beacon-codebook.mjs";
+} from "@dotln/beacons/control-codebook.mjs";
+import {
+  encodeBeaconState,
+  framedSize,
+} from "@dotln/beacons/beacon-codebook.mjs";
 import { initialState, seiriPredicates, seiriReactor } from "../src/reactor.js";
-import { writeBeaconFile } from "../src/beacon-io.mjs";
+import { writeBeaconFile } from "@dotln/beacons/beacon-io.mjs";
 import { createWorkerFixture } from "../src/worker-demo.js";
 import {
   LiveReactorDriver,

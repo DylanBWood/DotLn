@@ -30,6 +30,7 @@ silently inheriting the whole stack.
 ┌──────────────────────────────▼─────────────────────────────────┐
 │ Effect adapters                                                │
 │ model executors (claude / codex / fake) · human · shell · git  │
+│ Beacon metadata I/O (@dotln/beacons; build-free)               │
 │ browser/Playwright · test runners · source adapters (tickets)  │
 └──────────────────────────────┬─────────────────────────────────┘
                                │ typed result events (EventEnvelope)
@@ -44,6 +45,16 @@ silently inheriting the whole stack.
 │ terminal CLI · web console — both invoke the same commands     │
 └────────────────────────────────────────────────────────────────┘
 ```
+
+The build-free `@dotln/beacons` workspace owns the seven Beacon codebook and
+filesystem leaves. Its metadata reads and writes sit at the effect edge; its
+codebooks are pure encoders and decoders. Lifecycle scripts load those source
+modules directly during bootstrap and write the control projection right after
+an append, not through the kernel outbox; only agent perception sweeps pass
+through kernel authorization. The skeleton imports the same workspace by
+package name. Its build stages the package for type checking but does not emit
+another copy, so control Beacon emission can run without the skeleton source
+tree.
 
 The single skeleton reactor composes version-1 typed walking, worker, verification
 and feedback slices plus an empty source-change slot internally; exported selectors

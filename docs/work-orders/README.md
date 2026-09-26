@@ -4,7 +4,7 @@
 
 ## Proposed order
 
-- [ ] [WO-070] — Beacon portability · **queued**
+- [x] [WO-070] — Beacon portability · **final-reviewed**
 - [ ] [WO-115] — Console parity contract · **queued**
 - [ ] [WO-166] — Session boundaries · **queued**
 - [ ] [WO-085] — Product documents stop accreting · **queued**
@@ -337,23 +337,6 @@ None.
 - Inherited ledger duty: discharge with this order's decisions file when recorded and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
 - Authority: [docs/work-orders/WO-066-review-comment-resolution-loop.md](WO-066-review-comment-resolution-loop.md)
 
-### WO-070
-
-[WO-070 — Beacon portability: the control plane emits control Beacons without the skeleton package, with one module identity for the build-free leaves and no file imported from both source and &#96;dist/&#96; (version assigned at activation)](WO-070-beacon-portability.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-021: satisfied-by-release (met) v0.8.0 — per-worktree Beacon caches.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh+; verifier xhigh+; reviewer any.
-- Cost: Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
-- Inherited ledger duty: discharge with this order's decisions file when recorded and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
-- Authority: [docs/work-orders/WO-070-beacon-portability.md](WO-070-beacon-portability.md)
-
 ### WO-072
 
 [WO-072 — Target worktree lifecycle: &#96;worktree start&#96; for a registered target creates the worktree from the declared base, emits the governed bundle into it, and &#96;resume&#96; commands run from that worktree select the order through the launchpad (version assigned at activation)](WO-072-target-worktree-lifecycle.md)
@@ -394,8 +377,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-070.
-- References: WO-069: hard (met) — the configuration example and roots the kit carries; WO-070: hard (unmet) — Beacon emission without the skeleton package; WO-038: satisfied-by-release (met) v0.13.2 — license metadata and the default license files.
+- Dependencies: typed; dependency-ready.
+- References: WO-069: hard (met) — the configuration example and roots the kit carries; WO-070: hard (met) — Beacon emission without the skeleton package; WO-038: satisfied-by-release (met) v0.13.2 — license metadata and the default license files.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -1979,6 +1962,24 @@ None.
 - Inherited ledger duty: discharge with [this order's decisions](../evidence/WO-069/decisions.md) and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
 - Latest attestation: harness claude-code; version 2.1.278; model claude-opus-5&#91;1m&#93;; effort xhigh; source claude-hook-readback; account not-applicable.
 - Authority: [docs/work-orders/WO-069-configuration-root.md](WO-069-configuration-root.md)
+
+### WO-070
+
+[WO-070 — Beacon portability: the control plane emits control Beacons without the skeleton package, with one module identity for the build-free leaves and no file imported from both source and &#96;dist/&#96; (v0.51.1)](WO-070-beacon-portability.md)
+
+- State: closed.
+- Application target: v0.51.1.
+- Dependencies: typed; activation not applicable.
+- References: WO-021: satisfied-by-release (met) v0.8.0 — per-worktree Beacon caches.
+- Verification: [VER-001](../../docs/verifications/WO-070/VER-001.md) (pass).
+- Final review: [FINAL-001](../../docs/final-reviews/WO-070/FINAL-001.md) (pass).
+- Release: unreleased.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Cost: Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
+- Inherited ledger duty: discharge with [this order's decisions](../evidence/WO-070/decisions.md) and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
+- Latest attestation: harness claude-code; version 2.1.283; model claude-fable-5-1; effort xhigh; source claude-session-readback; account not-applicable.
+- Authority: [docs/work-orders/WO-070-beacon-portability.md](WO-070-beacon-portability.md)
 
 ### WO-071
 

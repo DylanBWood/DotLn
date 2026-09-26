@@ -342,6 +342,16 @@ function repo(t, { runtime = false } = {}) {
         join(root, `node_modules/@dotln/${name}`),
       );
     }
+    // Skeleton dist and the control-plane library import the build-free
+    // Beacon workspace, by package name and by path respectively (WO-070).
+    cpSync(join(source, "packages/beacons"), join(root, "packages/beacons"), {
+      recursive: true,
+    });
+    writableOwnedTree(join(root, "packages/beacons"));
+    symlinkSync(
+      "../../packages/beacons",
+      join(root, "node_modules/@dotln/beacons"),
+    );
     symlinkSync(
       join(source, "node_modules/typescript"),
       join(root, "node_modules/typescript"),

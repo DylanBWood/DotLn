@@ -203,6 +203,15 @@ export function prepareCopilotQualification({
       join(root, `node_modules/@dotln/${name}`),
     );
   }
+  // The skeleton and the control-plane library import the build-free Beacon
+  // workspace, by package name and by path respectively (WO-070).
+  cpSync(join(repository, "packages/beacons"), join(root, "packages/beacons"), {
+    recursive: true,
+  });
+  symlinkSync(
+    "../../packages/beacons",
+    join(root, "node_modules/@dotln/beacons"),
+  );
   symlinkSync(
     join(repository, "node_modules/typescript"),
     join(root, "node_modules/typescript"),

@@ -302,6 +302,17 @@ export function emitHarness(root, options = {}) {
   return { files: writes.length + 1, localTerms };
 }
 
+/** The module directory a package ships at runtime: built packages ship dist;
+ * build-free workspaces (package.json, no tsconfig.json) ship src. */
+export function runtimeModuleDirectory(packageRoot) {
+  if (existsSync(join(packageRoot, "dist"))) return "dist";
+  return existsSync(join(packageRoot, "package.json")) &&
+    !existsSync(join(packageRoot, "tsconfig.json")) &&
+    existsSync(join(packageRoot, "src"))
+    ? "src"
+    : null;
+}
+
 export function preserveHarnessRuntime(
   root,
   installation = harnessInstallation(),
@@ -330,14 +341,13 @@ export function preserveHarnessRuntime(
   const staging = `${destination}.preparing-${process.pid}`;
   mkdirSync(join(staging, "node_modules/@dotln"), { recursive: true });
   for (const name of readdirSync(join(source, "packages"))) {
-    if (!existsSync(join(source, "packages", name, "dist"))) continue;
+    const from = join(source, "packages", name);
+    const modules = runtimeModuleDirectory(from);
+    if (!modules) continue;
     const target = join(staging, "packages", name);
     mkdirSync(target, { recursive: true });
-    cpSync(
-      join(source, "packages", name, "package.json"),
-      join(target, "package.json"),
-    );
-    cpSync(join(source, "packages", name, "dist"), join(target, "dist"), {
+    cpSync(join(from, "package.json"), join(target, "package.json"));
+    cpSync(join(from, modules), join(target, modules), {
       recursive: true,
       // Installed roots may be replica mounts; snapshots own their bytes.
       dereference: true,

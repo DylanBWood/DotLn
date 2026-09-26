@@ -30,12 +30,12 @@ import {
   issueBeaconSession,
   prepareBeaconDisposal,
   sweepControlBeacons,
-} from "../packages/skeleton/src/control-beacon-fs.mjs";
+} from "../packages/beacons/src/control-beacon-fs.mjs";
 import {
   decodeGroupBeaconSize,
   groupCounts,
-} from "../packages/skeleton/src/control-codebook.mjs";
-import { validateBeaconDirectory } from "../packages/skeleton/src/beacon-io.mjs";
+} from "../packages/beacons/src/control-codebook.mjs";
+import { validateBeaconDirectory } from "../packages/beacons/src/beacon-io.mjs";
 await test("test-control-beacons", async (t) => {
   let owned,
     scripts,

@@ -20,7 +20,7 @@ import {
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { framedSize } from "../src/beacon-codebook.mjs";
+import { framedSize } from "@dotln/beacons/beacon-codebook.mjs";
 import {
   BEACON_V3_CODEBOOK,
   MAX_V3_ALLOCATED_BLOCKS,
@@ -29,24 +29,24 @@ import {
   decodeV3BeaconSize,
   encodeV3Beacon,
   type BeaconV3State,
-} from "../src/beacon-v3-codebook.mjs";
+} from "@dotln/beacons/beacon-v3-codebook.mjs";
 import {
   CONTROL_CODEBOOK,
   decodeSignalSize,
   encodeControlBeacon,
-} from "../src/control-codebook.mjs";
+} from "@dotln/beacons/control-codebook.mjs";
 import {
   createBeaconKey,
   openBeaconKey,
   rotateBeaconKey,
-} from "../src/beacon-provenance.mjs";
+} from "@dotln/beacons/beacon-provenance.mjs";
 import {
   emitV3Beacon,
   probeV3Storage,
   writeV3BeaconFile,
   type V3Storage,
-} from "../src/beacon-v3-fs.mjs";
-import { controlBeaconAddress } from "../src/control-beacon-fs.mjs";
+} from "@dotln/beacons/beacon-v3-fs.mjs";
+import { controlBeaconAddress } from "@dotln/beacons/control-beacon-fs.mjs";
 import type { ControlProjectionRecord } from "../src/control-beacon.js";
 
 const repository = fileURLToPath(new URL("../../../../", import.meta.url));

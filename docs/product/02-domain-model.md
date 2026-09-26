@@ -1095,7 +1095,8 @@ confined to the blamed module, and re-verification from the original contract.
 ### Beacon codebook v1
 
 The following JSON is normative data, mirrored and equality-tested against the
-pure skeleton codebook. Rows are class rank, followed by outcome ranks; unused
+pure `@dotln/beacons` codebook (`packages/beacons/src/beacon-codebook.mjs`,
+WO-070). Rows are class rank, followed by outcome ranks; unused
 outcome slots are malformed. Refusal `3` means at least three. The two reserved
 future-version tags are recognizable framing codewords, not v1 states.
 

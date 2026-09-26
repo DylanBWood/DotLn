@@ -2,10 +2,10 @@ import { lstatSync } from "node:fs";
 import { join, resolve } from "node:path";
 import type { BeaconPerceptionProfile } from "./execution-environment.js";
 import type { SenseId } from "@dotln/compiler";
-import { canonicalDestination } from "./beacon-io.mjs";
-import { observeBeaconMetadata } from "./control-beacon-fs.mjs";
-import { decodeGroupBeaconSize } from "./control-codebook.mjs";
-import type { BeaconProvenance } from "./beacon-provenance.mjs";
+import { canonicalDestination } from "@dotln/beacons/beacon-io.mjs";
+import { observeBeaconMetadata } from "@dotln/beacons/control-beacon-fs.mjs";
+import { decodeGroupBeaconSize } from "@dotln/beacons/control-codebook.mjs";
+import type { BeaconProvenance } from "@dotln/beacons/beacon-provenance.mjs";
 import type { PerceptionRead } from "./beacon-perception.js";
 import type { GroupObservation } from "./control-beacon.js";
 

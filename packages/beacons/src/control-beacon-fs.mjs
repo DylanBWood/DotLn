@@ -36,8 +36,8 @@ export const controlBeaconAddress = (id) => `${hash(`control:${id}`)}.beacon`;
 export const controlBeaconDirectory = (root, audience = "public") =>
   join(root, CONTROL_BEACON_ROOT, audience);
 
-/** @typedef {import("./control-beacon.js").SignalObservation} SignalObservation */
-/** @typedef {import("./control-beacon.js").BeaconWorktree} BeaconWorktree */
+/** @typedef {import("./types.d.mts").SignalObservation} SignalObservation */
+/** @typedef {import("./types.d.mts").BeaconWorktree} BeaconWorktree */
 
 /** @param {string} path */
 const safeDirectory = (path) => {
@@ -175,7 +175,7 @@ export function restrictedBeaconBriefing(root, workOrderId, token) {
 
 /** Trusted session provisioning only; never serialize this path in shared logs.
  * @param {string} root @param {string} workOrderId @param {string} token
- * @returns {import("./execution-environment.js").BeaconMount}
+ * @returns {import("./types.d.mts").BeaconMount}
  */
 export function beaconSessionMount(root, workOrderId, token) {
   try {
@@ -230,7 +230,7 @@ export function prepareBeaconDisposal(root) {
  * Called only with the canonical control fold by the shared lifecycle helper.
  * Per-file publication is atomic; a failed optional projection never rolls back
  * the already-appended transition or changes its legal result.
- * @param {string} root @param {import("./control-beacon.js").ControlProjectionRecord} record
+ * @param {string} root @param {import("./types.d.mts").ControlProjectionRecord} record
  * @param {{key?: import("./beacon-provenance.mjs").BeaconProvenance}} options
  */
 export function emitControlBeacon(root, record, options = {}) {
@@ -368,9 +368,7 @@ export function readGroupBeacon(worktrees, observations) {
             : decodeGroupBeaconSize(BigInt(metadata.size ?? 0)),
     };
   });
-  return /** @type {import("./control-beacon.js").GroupObservation[]} */ (
-    candidates
-  )
+  return /** @type {import("./types.d.mts").GroupObservation[]} */ (candidates)
     .filter(
       ({ decoded }) =>
         decoded.status === "decoded" &&
@@ -383,7 +381,7 @@ export function readGroupBeacon(worktrees, observations) {
     )[0];
 }
 
-/** @param {readonly SignalObservation[]} observations @param {number} now @param {number} threshold @param {import("./control-beacon.js").GroupObservation | undefined} group */
+/** @param {readonly SignalObservation[]} observations @param {number} now @param {number} threshold @param {import("./types.d.mts").GroupObservation | undefined} group */
 export function renderControlConstellation(
   observations,
   now,

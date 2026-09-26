@@ -95,7 +95,7 @@ import {
   beaconAge,
   decodeSignalSize,
   decodeLegacySignalSize,
-} from "./control-codebook.mjs";
+} from "@dotln/beacons/control-codebook.mjs";
 import {
   perceptionGate,
   refusePerception,
