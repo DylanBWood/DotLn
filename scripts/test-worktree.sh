@@ -558,7 +558,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 const root = process.argv[2];
-const host = await import(pathToFileURL(join(root, "packages/skeleton/src/control-beacon-fs.mjs")));
+const host = await import(pathToFileURL(join(root, "packages/beacons/src/control-beacon-fs.mjs")));
 host.issueBeaconSession(root, "WO-099");
 const record = JSON.parse(readFileSync(join(host.controlBeaconDirectory(root), host.controlBeaconAddress("WO-099")), "utf8"));
 host.emitControlBeacon(root, record);

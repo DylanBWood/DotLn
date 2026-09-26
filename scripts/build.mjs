@@ -80,6 +80,17 @@ export function atomicBuild(repo = root, observe = () => {}) {
         join(staging, "node_modules", dependency),
       );
     }
+    // Build-free workspaces provide source modules to staged TypeScript without
+    // creating compiled copies or another runtime module identity.
+    for (const name of readdirSync(join(repo, "packages")).filter(
+      (name) =>
+        existsSync(join(repo, "packages", name, "package.json")) &&
+        !existsSync(join(repo, "packages", name, "tsconfig.json")),
+    )) {
+      const destination = join(staging, "packages", name);
+      cpSync(join(repo, "packages", name), destination, { recursive: true });
+      symlinkSync(destination, join(staging, "node_modules/@dotln", name));
+    }
     for (const name of names) {
       const destination = join(staging, "packages", name);
       mkdirSync(destination, { recursive: true });

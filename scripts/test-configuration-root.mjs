@@ -744,7 +744,8 @@ await test("configuration root", async (t) => {
         // Every lifecycle document follows the configuration. The only
         // default-rooted writes left are the Git-ignored local harness lane
         // owned by packages/skeleton, which resolves its own paths until the
-        // kit carries this loader (WO-069-D005; WO-070 owns that dependency).
+        // kit carries this loader (WO-069-D005; deferred by WO-070-D009 to
+        // FUP-a058e82c0bbd9b6d).
         const outside = documents(root).filter(
           (path) =>
             !path.startsWith("records/") &&

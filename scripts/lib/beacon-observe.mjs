@@ -8,8 +8,8 @@ import {
 } from "node:fs";
 import { dirname, join, resolve, sep } from "node:path";
 import { pathToFileURL } from "node:url";
-import { canonicalDestination } from "../../packages/skeleton/src/beacon-io.mjs";
-import { openBeaconKey } from "../../packages/skeleton/src/beacon-provenance.mjs";
+import { canonicalDestination } from "../../packages/beacons/src/beacon-io.mjs";
+import { openBeaconKey } from "../../packages/beacons/src/beacon-provenance.mjs";
 import { readJsonFile } from "./paths.mjs";
 
 export const agentConstellation = async (root, requestFile, logFile) => {

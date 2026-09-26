@@ -5,12 +5,15 @@ import {
   type L0ReceiptEntry,
 } from "./audit.js";
 
-import { BEACON_CODEBOOK, encodeBeaconState } from "./beacon-codebook.mjs";
+import {
+  BEACON_CODEBOOK,
+  encodeBeaconState,
+} from "@dotln/beacons/beacon-codebook.mjs";
 export {
   BEACON_CODEBOOK,
   encodeBeaconState,
   decodeBeaconSize,
-} from "./beacon-codebook.mjs";
+} from "@dotln/beacons/beacon-codebook.mjs";
 
 export type BeaconProvenance = (typeof BEACON_CODEBOOK.provenances)[number];
 

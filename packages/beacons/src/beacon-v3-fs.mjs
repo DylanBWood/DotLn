@@ -112,7 +112,7 @@ export function writeV3BeaconFile(directory, address, encoded, storage) {
 }
 
 /** @param {string} directory @param {string} address
- * @param {import("./control-beacon.js").ControlProjectionRecord} record
+ * @param {import("./types.d.mts").ControlProjectionRecord} record
  * @param {import("./beacon-provenance.mjs").BeaconProvenance} key @param {V3Storage} storage
  */
 export function emitV3Beacon(directory, address, record, key, storage) {

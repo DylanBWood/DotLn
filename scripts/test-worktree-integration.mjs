@@ -173,6 +173,10 @@ function fixture(t, { reviewed = false, third = "active" } = {}) {
   cpSync(join(source, "scripts/lib"), join(main, "scripts/lib"), {
     recursive: true,
   });
+  // The library's build-free Beacon peers travel with it (WO-070).
+  cpSync(join(source, "packages/beacons"), join(main, "packages/beacons"), {
+    recursive: true,
+  });
   for (const id of ["WO-997", "WO-998", "WO-999"]) {
     const path = `docs/work-orders/${id}-fixture.md`;
     put(
@@ -248,6 +252,10 @@ function fixture(t, { reviewed = false, third = "active" } = {}) {
       { recursive: true },
     );
   }
+  symlinkSync(
+    join(subject, "packages/beacons"),
+    join(subject, "node_modules/@dotln/beacons"),
+  );
   const before = git(subject, "rev-parse", "HEAD");
   if (reviewed) {
     claim(subject, "v9000.0.1");

@@ -28,6 +28,7 @@ const commonSources = [
   "packages/compiler/src/verification.ts",
   "packages/compiler/src/views.ts",
   "packages/compiler/tsconfig.json",
+  "packages/beacons/package.json",
   "packages/kernel/package.json",
   "packages/kernel/src/continuation.ts",
   // The kernel package every host imports as `@dotln/kernel` (WO-157).
@@ -61,7 +62,7 @@ const commonSources = [
   // Runtime siblings the registered hosts and protocols import (WO-157).
   "packages/skeleton/src/artifact-identity.ts",
   "packages/skeleton/src/beacon-perception.ts",
-  "packages/skeleton/src/control-codebook.mjs",
+  "packages/beacons/src/control-codebook.mjs",
   "packages/skeleton/src/gate-deadlines.mjs",
   "packages/skeleton/src/loadouts/entropy-reducer.ts",
   "packages/skeleton/src/scenario.ts",
@@ -69,8 +70,8 @@ const commonSources = [
   "packages/skeleton/src/verification-worktree.ts",
   "packages/skeleton/src/worker-status.ts",
   "packages/skeleton/src/worker-transport.ts",
-  "packages/skeleton/src/beacon-codebook.mjs",
-  "packages/skeleton/src/beacon-v3-codebook.mjs",
+  "packages/beacons/src/beacon-codebook.mjs",
+  "packages/beacons/src/beacon-v3-codebook.mjs",
   "packages/skeleton/src/control-beacon.ts",
   "packages/skeleton/src/live-reactor-driver.ts",
   "packages/skeleton/src/loadouts/feedback.ts",
@@ -174,11 +175,11 @@ const artifactIdentitySources = (root) => [
   "packages/skeleton/src/artifact-audit.ts",
   "packages/skeleton/src/artifact-identity.ts",
   "packages/skeleton/src/audit.ts",
-  "packages/skeleton/src/beacon-codebook.mjs",
+  "packages/beacons/src/beacon-codebook.mjs",
   "packages/skeleton/src/beacon-perception.ts",
-  "packages/skeleton/src/beacon-v3-codebook.mjs",
+  "packages/beacons/src/beacon-v3-codebook.mjs",
   "packages/skeleton/src/control-beacon.ts",
-  "packages/skeleton/src/control-codebook.mjs",
+  "packages/beacons/src/control-codebook.mjs",
   "packages/skeleton/src/loadouts/entropy-reducer.ts",
   "packages/skeleton/src/plan-refutation-protocol.ts",
   "packages/skeleton/src/scenario.ts",
@@ -195,10 +196,10 @@ const verificationSources = (root) => [
   "packages/kernel/src/store.ts",
   "packages/kernel/src/types.ts",
   "packages/skeleton/src/artifact-identity.ts",
-  "packages/skeleton/src/beacon-codebook.mjs",
+  "packages/beacons/src/beacon-codebook.mjs",
   "packages/skeleton/src/beacon-perception.ts",
-  "packages/skeleton/src/beacon-v3-codebook.mjs",
-  "packages/skeleton/src/control-codebook.mjs",
+  "packages/beacons/src/beacon-v3-codebook.mjs",
+  "packages/beacons/src/control-codebook.mjs",
   "packages/skeleton/src/gate-deadlines.mjs",
   "packages/skeleton/src/plan-refutation-protocol.ts",
   "packages/skeleton/src/verification-demo.ts",
@@ -222,10 +223,10 @@ const feedbackSources = (root) => [
   "packages/kernel/src/store.ts",
   "packages/kernel/src/types.ts",
   "packages/skeleton/src/artifact-identity.ts",
-  "packages/skeleton/src/beacon-codebook.mjs",
+  "packages/beacons/src/beacon-codebook.mjs",
   "packages/skeleton/src/beacon-perception.ts",
-  "packages/skeleton/src/beacon-v3-codebook.mjs",
-  "packages/skeleton/src/control-codebook.mjs",
+  "packages/beacons/src/beacon-v3-codebook.mjs",
+  "packages/beacons/src/control-codebook.mjs",
   "packages/skeleton/src/feedback-audit.ts",
   "packages/skeleton/src/feedback-boundary.ts",
   "packages/skeleton/src/feedback-selfhost.ts",
@@ -557,17 +558,19 @@ function runtimeSpecifiers(text) {
   return found;
 }
 
-/** Repository paths a source imports at run time: relative imports, and a
- * bare `@dotln/<package>` import as that package's `src/index.ts`. A compiled
+/** Repository paths a source imports at run time: relative imports, and
+ * `@dotln/<package>` imports at the package's source entry or named leaf. A compiled
  * `dist/(src|test)/x.js` target names its source file; other bare packages
  * are dependencies outside the repository. */
 export function relativeImports(root, path) {
   const text = readFileSync(join(root, path), "utf8");
   const found = new Set();
   for (const spec of runtimeSpecifiers(text)) {
-    const workspace = /^@dotln\/([^/]+)$/u.exec(spec);
+    const workspace = /^@dotln\/([^/]+)(?:\/(.+))?$/u.exec(spec);
     if (workspace) {
-      const index = `packages/${workspace[1]}/src/index.ts`;
+      const index = workspace[2]
+        ? `packages/${workspace[1]}/src/${workspace[2]}`
+        : `packages/${workspace[1]}/src/index.ts`;
       if (existsSync(join(root, index))) found.add(index);
       continue;
     }

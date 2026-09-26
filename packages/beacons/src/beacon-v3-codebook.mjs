@@ -30,7 +30,7 @@ export const MAX_V3_CODE = 19327352831n;
 export const MAX_V3_LOGICAL_BYTES = 1236950589434n;
 export const MAX_V3_ALLOCATED_BLOCKS = 8n; // stat.blocks units are 512 bytes.
 
-/** @typedef {Omit<import("./control-beacon.js").ControlBeaconState, "codebookVersion"> & {codebookVersion: 3, keyEpoch: number, authenticator: number}} BeaconV3State */
+/** @typedef {Omit<import("./types.d.mts").ControlBeaconState, "codebookVersion"> & {codebookVersion: 3, keyEpoch: number, authenticator: number}} BeaconV3State */
 /** @typedef {{status: "decoded", state: BeaconV3State} | {status: "malformed"}} BeaconV3Decode */
 
 /** @param {number} value @param {number} radix */
@@ -40,7 +40,7 @@ const digit = (value, radix) => {
   return BigInt(value);
 };
 
-/** @param {Omit<import("./control-beacon.js").ControlBeaconState, "codebookVersion">} state */
+/** @param {Omit<import("./types.d.mts").ControlBeaconState, "codebookVersion">} state */
 export function v2Ordinal(state) {
   const size = encodeControlBeacon({ ...state, codebookVersion: 2 });
   return (size - 8192n) / 64n / 4n;

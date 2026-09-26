@@ -196,6 +196,15 @@ function fixture() {
       join(root, `node_modules/@dotln/${name}`),
     );
   }
+  // Skeleton dist imports the build-free Beacon workspace by package name.
+  cpSync(join(sourceRoot, "packages/beacons"), join(root, "packages/beacons"), {
+    recursive: true,
+  });
+  writableFixtureCopy(join(root, "packages/beacons"));
+  symlinkSync(
+    "../../packages/beacons",
+    join(root, "node_modules/@dotln/beacons"),
+  );
   symlinkSync(
     join(sourceRoot, "node_modules/typescript"),
     join(root, "node_modules/typescript"),
@@ -856,6 +865,44 @@ test("WO-139 cap-module-only changes refresh the runtime and snapshot damage is 
     }
   } finally {
     removeFixture(root, { recursive: true, force: true });
+  }
+});
+
+test("WO-070 runtime snapshots own the build-free Beacon workspace they import", async () => {
+  const root = fixture();
+  const outside = realpathSync(
+    mkdtempSync(join(tmpdir(), "dotln-harness-snapshot-")),
+  );
+  try {
+    const installed = join(
+      root,
+      configFor(root, "permissions").runtime.snapshot,
+    );
+    assert.equal(
+      realpathSync(join(installed, "node_modules/@dotln/beacons")),
+      join(installed, "packages/beacons"),
+    );
+    for (const name of readdirSync(join(sourceRoot, "packages/beacons/src")))
+      assert.equal(
+        readFileSync(join(installed, "packages/beacons/src", name), "utf8"),
+        readFileSync(join(sourceRoot, "packages/beacons/src", name), "utf8"),
+      );
+    // Away from every checkout's node_modules, the snapshot resolves itself.
+    cpSync(installed, join(outside, "snapshot"), {
+      recursive: true,
+      verbatimSymlinks: true,
+    });
+    const host = join(
+      outside,
+      "snapshot/packages/skeleton/dist/src/harness-host.js",
+    );
+    assert.equal(
+      typeof (await import(pathToFileURL(host).href)).runHarnessHook,
+      "function",
+    );
+  } finally {
+    removeFixture(root, { recursive: true, force: true });
+    removeFixture(outside, { recursive: true, force: true });
   }
 });
 

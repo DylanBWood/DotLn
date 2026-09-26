@@ -166,7 +166,7 @@ test("WO-016 AC1 one typed reactor and its pure helpers own kernel decisions", a
       "@dotln/kernel",
       "@dotln/compiler",
       "./artifact-identity.js",
-      "./control-codebook.mjs",
+      "@dotln/beacons/control-codebook.mjs",
       "./beacon-perception.js",
       "./execution-environment.js",
       "./control-beacon.js",

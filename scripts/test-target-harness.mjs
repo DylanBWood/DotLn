@@ -24,6 +24,7 @@ import {
   emitTargetHarness,
   checkTargetHarness,
   removeTargetHarness,
+  runtimeModuleDirectory,
 } from "./lib/harness.mjs";
 import { compileFeedbackUnits } from "../packages/compiler/dist/src/index.js";
 import { personalFeedbackUnits } from "../packages/skeleton/dist/src/loadouts/feedback.js";
@@ -84,15 +85,16 @@ function fixture(unrelated = false) {
     "Fixture base",
   );
   for (const name of readdirSync(join(source, "packages"))) {
-    if (!existsSync(join(source, "packages", name, "dist"))) continue;
+    const modules = runtimeModuleDirectory(join(source, "packages", name));
+    if (!modules) continue;
     mkdirSync(join(launchpad, "packages", name), { recursive: true });
     cpSync(
       join(source, "packages", name, "package.json"),
       join(launchpad, "packages", name, "package.json"),
     );
     symlinkSync(
-      join(source, "packages", name, "dist"),
-      join(launchpad, "packages", name, "dist"),
+      join(source, "packages", name, modules),
+      join(launchpad, "packages", name, modules),
     );
   }
   return {

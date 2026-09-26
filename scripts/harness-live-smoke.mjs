@@ -98,6 +98,11 @@ for (const name of ["compiler", "skeleton", "kernel"]) {
     join(scratch, `node_modules/@dotln/${name}`),
   );
 }
+// Skeleton dist imports the build-free Beacon workspace by package name.
+symlinkSync(
+  "../../packages/beacons",
+  join(scratch, "node_modules/@dotln/beacons"),
+);
 symlinkSync(
   join(root, "node_modules/typescript"),
   join(scratch, "node_modules/typescript"),

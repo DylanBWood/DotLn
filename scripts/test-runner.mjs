@@ -439,6 +439,13 @@ export const suites = [
   shell("publication-fixtures", "scripts/test-publication.sh"),
   shell("backup-intake", "scripts/test-backup-intake.sh"),
   shell("resume", "scripts/test-resume.sh"),
+  nodeTests("beacon-portability", "scripts/test-beacon-portability.mjs", {
+    fast: true,
+    // The absent skeleton dist copies are judged against a fresh build.
+    needsBuild: true,
+    protects:
+      "control Beacon leaves keep one build-free home that no script imports from skeleton source or dist, and a copied control plane without the skeleton emits a decodable control Beacon",
+  }),
   shell("checkpoint", "scripts/test-checkpoint.sh"),
   shell("worktree", "scripts/test-worktree.sh"),
   nodeTests("worktree-integration", "scripts/test-worktree-integration.mjs"),

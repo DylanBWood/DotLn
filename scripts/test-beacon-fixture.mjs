@@ -13,15 +13,17 @@ import { fileURLToPath } from "node:url";
 import {
   controlBeaconAddress,
   controlBeaconDirectory,
-} from "../packages/skeleton/src/control-beacon-fs.mjs";
-import { decodeSignalSize } from "../packages/skeleton/src/control-codebook.mjs";
+} from "../packages/beacons/src/control-beacon-fs.mjs";
+import { decodeSignalSize } from "../packages/beacons/src/control-codebook.mjs";
 
 const source = resolve(
   dirname(fileURLToPath(import.meta.url)),
   "../packages/skeleton/src",
 );
+const beaconPackage = resolve(source, "../../beacons");
 // Bootstrap fixtures intentionally have no dependencies or ignored built output.
 export const installBeaconFixture = (root) => {
+  cpSync(beaconPackage, join(root, "packages/beacons"), { recursive: true });
   mkdirSync(join(root, "packages/compiler/src"), { recursive: true });
   cpSync(
     join(source, "../../compiler/src/attribution.mjs"),
@@ -35,13 +37,6 @@ export const installBeaconFixture = (root) => {
     "writer-teardown.mjs",
     "usage-observation.mjs",
     "correction-observation.mjs",
-    "beacon-codebook.mjs",
-    "control-codebook.mjs",
-    "beacon-io.mjs",
-    "control-beacon-fs.mjs",
-    "beacon-v3-codebook.mjs",
-    "beacon-v3-fs.mjs",
-    "beacon-provenance.mjs",
   ])
     cpSync(join(source, name), join(destination, name));
 };

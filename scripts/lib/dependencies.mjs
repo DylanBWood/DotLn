@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { runGit } from "./git.mjs";
 import { workOrderAuthorityPath } from "./paths.mjs";
-import { localReleaseTags, semver } from "./release-records.mjs";
+import { localReleaseTags, semver } from "./release-tags.mjs";
 
 export const historicalDependencyIds = new Set(["WO-001", "WO-002"]);
 const startMarker = "<!-- dotln-dependencies:start -->";

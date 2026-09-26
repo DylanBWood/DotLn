@@ -1,8 +1,11 @@
 import { createHash } from "node:crypto";
 import { lstatSync, readdirSync } from "node:fs";
 import { join } from "node:path";
-import { validateBeaconDirectory, writeBeaconFile } from "./beacon-io.mjs";
-export { validateBeaconDirectory } from "./beacon-io.mjs";
+import {
+  validateBeaconDirectory,
+  writeBeaconFile,
+} from "@dotln/beacons/beacon-io.mjs";
+export { validateBeaconDirectory } from "@dotln/beacons/beacon-io.mjs";
 import type { Event } from "@dotln/kernel";
 import {
   beaconScope,

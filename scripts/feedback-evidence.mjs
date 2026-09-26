@@ -101,7 +101,7 @@ function readEdition(directory) {
 /** The pins record's readable half: each component's release label. */
 const components = () =>
   Object.fromEntries(
-    ["compiler", "console", "kernel", "skeleton"].map((name) => [
+    ["beacons", "compiler", "console", "kernel", "skeleton"].map((name) => [
       `@dotln/${name}`,
       JSON.parse(
         readFileSync(join(root, "packages", name, "package.json"), "utf8"),
