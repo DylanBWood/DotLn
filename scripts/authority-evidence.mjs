@@ -603,7 +603,11 @@ const compatibility = Object.entries(results).map(([name, result]) => {
             effectsUnchanged: true,
           },
           routeMigration: {
-            source: "docs/work-orders/WO-165-entropy-review-route-agreement.md",
+            source: docRelative(
+              root,
+              "workOrders",
+              "WO-165-entropy-review-route-agreement.md",
+            ),
             route: "claude-cli-print",
             previousSemanticHash: compileLoadout(
               priorEntropyGraph,
