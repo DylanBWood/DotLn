@@ -17519,6 +17519,36 @@
           "at": "2026-09-25T21:58:45.715Z"
         }
       ]
+    },
+    {
+      "id": "FUP-a058e82c0bbd9b6d",
+      "key": "decision:docs/evidence/WO-070/decisions.md#wo-070-d009",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "6b58d69bba35325d222101e6ddb182a4564674620415d817f1b15ca8a32a6366",
+          "ref": "docs/evidence/WO-070/decisions.md#wo-070-d009",
+          "title": "WO-070-D009: Plane/kit root resolution, carried from WO-069 D005, D016 and D017 (FUP-a7175a13eca745f2, FUP-ec23fc47b2aabafe, FUP-99ec03a092896aa7): settle one module identity for the remaining build-f",
+          "summary": "{ \"id\": \"WO-070-D009\", \"date\": \"2026-09-25\", \"dispatch\": \"resume: next; carry-ins on the WO-070 row of docs/planning/work-order-map.md\", \"decision\": \"At the operator's direction, dispose the four follow-ups allocated to WO-070 without code change. WO-069-D005 (FUP-a7175a13eca745f2), D016 (FUP-ec23fc47b2aabafe) and D017 (FUP-99ec03a092896aa7) are deferred together to the plane/kit root-resolution follow-up below; WO-158-D006 (FUP-09a2fb517f0ffbc4) stays deferred to the next Beacon codebook revision, which WO-070 is not.\", \"evidence\": [ \"Operator answer in this dispatch, 2026-09-25: 'Defer, as recommended (Recommended)' to the question naming all four carry-ins and the recommended disposition\"",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-04bdf07955e1e24f",
+      "key": "decision:docs/evidence/WO-070/decisions.md#wo-070-d011",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "65bab143c8181c834547360822a9cadd19e10dbe2eedc6ea0818f1b4216fd13b",
+          "ref": "docs/evidence/WO-070/decisions.md#wo-070-d011",
+          "title": "WO-070-D011: WO-154 evidence test: make scripts/test-evidence-sources.mjs 'a pins-only change keeps or carries the live audit' start from the live audit an edition names (edition.liveAudit.edition) ra",
+          "summary": "{ \"id\": \"WO-070-D011\", \"date\": \"2026-09-25\", \"dispatch\": \"resume: next; evidence-sources suite\", \"decision\": \"Board up, not fix here: scripts/test-evidence-sources.mjs test 'WO-154 a pins-only change keeps or carries the live audit' assumes the selected feedback edition is its own live audit, so it fails whenever the selection is a carried edition.\", \"evidence\": [ \"Failure: expected 'docs/evidence/WO-161/feedback-001', actual 'docs/evidence/WO-159/feedback-001' at test-evidence-sources.mjs:269\", \"docs/evidence/current.json at HEAD selects feedback WO-161 revision 001, whose edition.json liveAudit names docs/evidence/WO-159/feedback-001; WO-070 did not change either file, so the failure is pr",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }
