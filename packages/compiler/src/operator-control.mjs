@@ -8,7 +8,7 @@
  * session hook can append OperatorOverrideRecorded naming those words, or
  * print the exact command when it cannot. Neither is a condition of the exit.
  *
- * @param {{ session_id?: string, prompt?: string }} input
+ * @param {{ session_id?: string, prompt?: string, cwd?: string }} input
  * @param {string} event
  * @returns {Promise<null | { systemMessage: string, hookSpecificOutput?: { hookEventName: string, additionalContext: string }, overrideExit?: { enteredAt: string, exitedAt: string, words: string[], advisory: string } }>}
  */
@@ -71,7 +71,7 @@ export async function operatorControl(input, event) {
     return entered ? message(requested ?? "unavailable") : null;
   try {
     const fs = await import("node:fs");
-    const { join } = await import("node:path");
+    const { dirname, join } = await import("node:path");
     const { tmpdir } = await import("node:os");
     const { createHash, randomUUID } = await import("node:crypto");
     const directory = join(
@@ -121,12 +121,31 @@ export async function operatorControl(input, event) {
     let exited;
     if (requested) {
       let prior;
+      let priorState;
       try {
-        prior = overrideOf(read());
+        priorState = read();
+        prior = overrideOf(priorState);
       } catch {
         // An unreadable prior state never withholds a mode change.
       }
       const now = new Date().toISOString();
+      let worktree =
+        prior && typeof priorState?.worktree === "string"
+          ? priorState.worktree
+          : undefined;
+      if (!worktree && typeof input.cwd === "string") {
+        try {
+          let candidate = fs.realpathSync(input.cwd);
+          while (!fs.existsSync(join(candidate, ".git"))) {
+            const parent = dirname(candidate);
+            if (parent === candidate) break;
+            candidate = parent;
+          }
+          if (fs.existsSync(join(candidate, ".git"))) worktree = candidate;
+        } catch {
+          // Recovery stays available even when cwd cannot be resolved.
+        }
+      }
       // An override stays open across an analysis pause until an explicit off.
       const override =
         requested === "override"
@@ -141,6 +160,7 @@ export async function operatorControl(input, event) {
         version: 1,
         mode: requested,
         observedAt: now,
+        ...(worktree ? { worktree } : {}),
         ...(override ? { override } : {}),
       });
       if (requested === "normal" && prior) exited = { ...prior, exitedAt: now };

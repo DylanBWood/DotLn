@@ -560,6 +560,71 @@ export function gateTreeHash(root) {
 export const checksPath = (root) =>
   join(root, "docs/control/local/harness/checks.json");
 
+/** A wait needs the outcome of one evidence invocation, since that invocation
+ * can record a failing npm row followed by a passing diff row, or reuse cached
+ * rows. These ignored observations do not change any gate check or event. */
+/** @param {string} root */
+const gateOutcomesDirectory = (root) =>
+  join(root, "docs/control/local/harness/gate-outcomes");
+/** @param {string} root @param {{runId:string,treeHash:string,status:"passed"|"failed"|"no-row"}} outcome */
+export function recordGateOutcome(root, outcome) {
+  if (
+    !gateRunId.test(outcome.runId) ||
+    !/^[a-f0-9]{40,64}$/.test(outcome.treeHash)
+  )
+    throw new Error("Invalid gate outcome identity");
+  const directory = gateOutcomesDirectory(root);
+  mkdirSync(directory, { recursive: true, mode: 0o700 });
+  const path = join(directory, `${outcome.runId}.json`);
+  const prepared = `${path}.${randomUUID()}.prepare`;
+  writeFileSync(
+    prepared,
+    JSON.stringify({ ...outcome, completedAt: new Date().toISOString() }) +
+      "\n",
+    { flag: "wx", mode: 0o600 },
+  );
+  renameSync(prepared, path);
+}
+/** @param {string} root @param {string} treeHash @param {readonly string[]} [runIds] */
+export function latestGateOutcome(root, treeHash, runIds = []) {
+  let names;
+  try {
+    names = readdirSync(gateOutcomesDirectory(root));
+  } catch (error) {
+    if (/** @type {NodeJS.ErrnoException} */ (error).code === "ENOENT")
+      return null;
+    throw error;
+  }
+  const selected = names
+    .filter(
+      (name) =>
+        gateRunId.test(name.slice(0, -5)) &&
+        name.endsWith(".json") &&
+        (!runIds.length || runIds.includes(name.slice(0, -5))),
+    )
+    .flatMap((name) => {
+      try {
+        const row = JSON.parse(
+          readFileSync(join(gateOutcomesDirectory(root), name), "utf8"),
+        );
+        return row.runId === name.slice(0, -5) &&
+          row.treeHash === treeHash &&
+          ["passed", "failed", "no-row"].includes(row.status) &&
+          Number.isFinite(Date.parse(row.completedAt))
+          ? [row]
+          : [];
+      } catch {
+        // A malformed ignored observation cannot block a valid recorded row.
+        return [];
+      }
+    });
+  return (
+    selected
+      .sort((a, b) => a.completedAt.localeCompare(b.completedAt))
+      .at(-1) ?? null
+  );
+}
+
 /** Product evidence follows tracked source bytes, independent of reports,
  * documentation and generated projections. Stage new source files before the
  * reviewer's gate. A path Git marks `dotln-documentation` (the package

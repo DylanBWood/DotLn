@@ -616,7 +616,7 @@ export function shellWritePaths(source: string): readonly string[] | null {
 /** The fixed read-only list a live gate admits (WO-158 criterion 6). Adding a
  * program is a later order, not a session decision. */
 export const LIVE_GATE_READ_LIST =
-  "cat, head, tail, wc, ls, grep, sed -n with a print-only script, git --no-pager diff|log|show|status|stash list, node scripts/harness.mjs writer --show and npm run resume --silent -- status";
+  "cat, head, tail, wc, ls, grep, sed -n with a print-only script, git --no-pager diff|log|show|status|stash list, node scripts/harness.mjs writer --show|evidence --wait [--timeout seconds] and npm run resume --silent -- status";
 
 // A sed script whose every command prints: numeric, `$` or /regex/ addresses.
 const sedAddress = String.raw`(?:\d+|\$|/(?:[^/\\;]|\\.)*/[IM]*)`;
@@ -693,7 +693,12 @@ const liveGateRead = ([program, ...args]: readonly string[]): boolean => {
     case "git":
       return liveGateGit(args);
     case "node":
-      return args.join(" ") === "scripts/harness.mjs writer --show";
+      return (
+        args.join(" ") === "scripts/harness.mjs writer --show" ||
+        /^scripts\/harness\.mjs evidence --wait(?: --timeout (?:\d+(?:\.\d+)?))?$/.test(
+          args.join(" "),
+        )
+      );
     case "npm":
       return /^run resume (?:--silent )?-- status(?: --json)?(?: --work-order WO-\d{3})?$/.test(
         args.join(" "),

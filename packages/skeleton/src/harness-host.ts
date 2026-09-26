@@ -378,9 +378,10 @@ interface HarnessReadScope {
 }
 /** The harness process that owns a session's reservation, as the hook observed it. */
 export interface HarnessProcess {
-  readonly pid: number;
+  readonly pid?: number;
   readonly startedAt?: string;
-  readonly source: "CLAUDE_PID" | "ancestor" | "parent";
+  readonly source:
+    "CLAUDE_PID" | "ancestor" | "parent" | "codex-host" | "thread";
 }
 export interface HarnessWriter {
   readonly actorId: string;
@@ -948,6 +949,28 @@ export function harnessHostProcess(
     return { pid: declared, source: "CLAUDE_PID" };
   return { pid: parent, source: "parent" };
 }
+/** A Codex dispatch is a short-lived npm/node command. Only a verified Codex
+ * ancestor may own its reservation; an unreadable chain is a thread owner with
+ * unknown liveness, never the command process that exits at dispatch. */
+export function codexHostProcess(
+  parent = process.ppid,
+  table: readonly ProcessRow[] = processTable(),
+): HarnessProcess {
+  const rows = new Map(table.map((row) => [row.pid, row]));
+  const visited = new Set<number>();
+  for (
+    let pid = parent;
+    validPid(pid) && visited.size < 32 && !visited.has(pid);
+  ) {
+    visited.add(pid);
+    const row = rows.get(pid);
+    if (!row) break;
+    if (/^codex(?:-code-mode-host)?$/i.test(basename(row.command)))
+      return { pid: row.pid, startedAt: row.startedAt, source: "codex-host" };
+    pid = row.ppid;
+  }
+  return { source: "thread" };
+}
 /** Signal-zero existence, then a start-time comparison when the process table is readable. */
 export function harnessProcessAlive(owner: HarnessProcess): boolean {
   if (!validPid(owner.pid)) return false;
@@ -1168,7 +1191,9 @@ const writerView = (
   ...(writer.liveness ? { liveness: writer.liveness } : {}),
   ...(writer.reclaimed ? { reclaimed: writer.reclaimed } : {}),
   alive:
-    writer.owner && writer.liveness !== "unavailable"
+    writer.owner &&
+    validPid(writer.owner.pid) &&
+    writer.liveness !== "unavailable"
       ? harnessProcessAlive(writer.owner)
       : "unknown",
 });
@@ -1195,16 +1220,40 @@ export function harnessWriterView(root: string): HarnessWriterView {
 }
 const ownerDead = (writer: HarnessWriter) =>
   writer.owner !== undefined &&
+  validPid(writer.owner.pid) &&
   writer.liveness !== "unavailable" &&
   !harnessProcessAlive(writer.owner);
+const writerRefusal = (writer: HarnessWriter) => {
+  const age = writer.reservedAt ? Date.parse(writer.reservedAt) : Number.NaN;
+  const ageSeconds = Number.isFinite(age)
+    ? String(Math.max(0, Math.floor((Date.now() - age) / 1000)))
+    : "unknown";
+  const alive = writerView(writer).alive;
+  const liveness =
+    alive === true
+      ? "alive"
+      : alive === false
+        ? "not alive"
+        : "of unknown liveness";
+  const owner = validPid(writer.owner?.pid)
+    ? `host process ${writer.owner.pid}${writer.owner.startedAt ? ` started ${writer.owner.startedAt}` : ""} is ${liveness}`
+    : writer.owner?.source === "thread"
+      ? "thread owner is of unknown liveness"
+      : "host process is not recorded";
+  return `the worktree is reserved by another session (actor ${writer.actorId.slice(0, 12)}; ${owner}). Owner ${JSON.stringify(writer.owner ?? { source: "unknown" })}; reservedAt ${writer.reservedAt ?? "unknown"}; age ${ageSeconds} seconds. Inspect with node scripts/harness.mjs writer --show or release from an operator terminal with node scripts/harness.mjs writer --release${alive === true ? " --force" : ""}`;
+};
 function acquireHarnessWriter(
   root: string,
   input: HarnessInput,
   actorId: string,
-  options: { reclaimed?: HarnessWriter; liveness?: "unavailable" } = {},
+  options: {
+    reclaimed?: HarnessWriter;
+    liveness?: "unavailable";
+    owner?: HarnessProcess;
+  } = {},
 ): HarnessWriter | null {
   const at = new Date().toISOString();
-  const owner = harnessHostProcess();
+  const owner = options.owner ?? harnessHostProcess();
   const previous = options.reclaimed
     ? {
         actorId: options.reclaimed.actorId,
@@ -1282,15 +1331,17 @@ function reserveHarnessWriter(
   root: string,
   input: HarnessInput,
   actorId: string,
+  owner?: HarnessProcess,
 ): readonly HarnessWriter[] {
   return withWriterRegistration(root, () =>
-    reserveWriterWhileRegistered(root, input, actorId),
+    reserveWriterWhileRegistered(root, input, actorId, owner),
   );
 }
 function reserveWriterWhileRegistered(
   root: string,
   input: HarnessInput,
   actorId: string,
+  owner?: HarnessProcess,
 ): readonly HarnessWriter[] {
   mkdirSync(harnessStateDirectory(root), { recursive: true, mode: 0o700 });
   const legacy = migrateLegacyWriter(root, actorId);
@@ -1315,6 +1366,7 @@ function reserveWriterWhileRegistered(
       const fresh = acquireHarnessWriter(root, input, actorId, {
         ...(reclaimed ? { reclaimed } : {}),
         ...(liveness ? { liveness } : {}),
+        ...(owner ? { owner } : {}),
       });
       if (fresh) return [fresh];
       if (reclaimed) {
@@ -1339,7 +1391,7 @@ function reserveWriterWhileRegistered(
       if (!writer.owner) {
         updated = {
           ...writer,
-          owner: harnessHostProcess(),
+          owner: owner ?? harnessHostProcess(),
           reservedAt: writer.reservedAt ?? new Date().toISOString(),
         };
         event = { event: "owner-recorded", actorId, owner: updated.owner };
@@ -1369,6 +1421,7 @@ function reserveWriterWhileRegistered(
       const fresh = acquireHarnessWriter(root, input, actorId, {
         reclaimed: writer,
         ...(liveness ? { liveness } : {}),
+        ...(owner ? { owner } : {}),
       });
       if (fresh) return [fresh];
       appendWriterEvent(root, {
@@ -1381,6 +1434,29 @@ function reserveWriterWhileRegistered(
     return [writer];
   }
   throw new Error("Writer reservation recovery exceeded its retry budget");
+}
+/** Lifecycle dispatches reserve before they can append a control event. */
+export function reserveCodexDispatchWriter(
+  root: string,
+  sessionId: string,
+): HarnessWriterView {
+  if (!sessionId)
+    throw new Error("Codex session id is required for writer reservation");
+  const input: HarnessInput = {
+    cwd: root,
+    session_id: sessionId,
+    hook_event_name: "UserPromptSubmit",
+  };
+  const actorId = sessionKey(input);
+  const writers = reserveHarnessWriter(
+    root,
+    input,
+    actorId,
+    codexHostProcess(),
+  );
+  const foreign = writers.find((writer) => writer.actorId !== actorId);
+  if (foreign) throw new Error(writerRefusal(foreign));
+  return harnessWriterView(root);
 }
 export const harnessSubject = gateTreeHash;
 
@@ -1530,6 +1606,42 @@ function observeAuthorship(
 /** Explicit entry for harnesses without automatic hooks. Existing dirt is a
  * baseline, unless a mid-upgrade session explicitly adopts its current outputs.
  */
+export function openOverrideAdvisory(root: string): string | null {
+  const directory = join(
+    tmpdir(),
+    `dotln-operator-control-${process.getuid?.() ?? "user"}`,
+  );
+  let names: string[];
+  let worktree: string;
+  try {
+    names = readdirSync(directory);
+    worktree = realpathSync(root);
+  } catch {
+    return null;
+  }
+  const entries: string[] = [];
+  for (const name of names) {
+    if (!/^[a-f0-9]{64}\.json$/.test(name)) continue;
+    try {
+      const path = join(directory, name);
+      if (!lstatSync(path).isFile()) continue;
+      const saved = JSON.parse(readFileSync(path, "utf8"));
+      if (
+        saved.version === 1 &&
+        saved.worktree === worktree &&
+        ["analysis", "override"].includes(saved.mode) &&
+        typeof saved.override?.enteredAt === "string" &&
+        Number.isFinite(Date.parse(saved.override.enteredAt))
+      )
+        entries.push(saved.override.enteredAt);
+    } catch {
+      // An unreadable recovery record is not a new workflow gate.
+    }
+  }
+  if (!entries.length) return null;
+  entries.sort();
+  return `DotLn advisory: an operator override entered ${entries[0]} remains open in this worktree; inspect its session and exit with operator override: off when recovery is complete.`;
+}
 export function beginHarnessSession(
   root: string,
   sessionId: string,
@@ -1610,6 +1722,8 @@ export function beginHarnessSession(
     unlinkIfPresent(statePath(root, input));
     throw error;
   }
+  const override = openOverrideAdvisory(root);
+  if (override) process.stderr.write(`${override}\n`);
   return {
     session: sessionKey(input),
     scratch: harnessSessionScratch(sessionId),
@@ -2422,12 +2536,8 @@ function feedbackRefusalReason(
       (entry) => entry.actorId !== writer.actorId,
     );
     if (holder) {
-      const view = harnessWriterView(root);
-      const owner =
-        view.reserved && view.owner
-          ? `host process ${view.owner.pid}${view.owner.startedAt ? ` started ${view.owner.startedAt}` : ""} is ${view.alive === true ? "alive" : view.alive === false ? "not alive" : "of unknown liveness"}`
-          : "its host process is not recorded";
-      return `${error.message}; the worktree is reserved by another session (actor ${holder.actorId.slice(0, 12)}; ${owner}). Finish that session, inspect with node scripts/harness.mjs writer --show, or release from an operator terminal with node scripts/harness.mjs writer --release.`;
+      const observed = observeWriterHolder(root).writer;
+      return `${error.message}; ${writerRefusal(observed?.actorId === holder.actorId ? observed : holder)}.`;
     }
   }
   const review = facts.find((fact) => fact.kind === "output-review");
@@ -3126,9 +3236,12 @@ async function evaluateExistingHarnessHook(
           harnessStateDirectory(root),
           input.session_id,
         );
-    return warning
-      ? subagentAdvisory(protocolAdvisory(`subagent ${warning}`))
-      : {};
+    const override = input.agent_id ? null : openOverrideAdvisory(root);
+    if (warning && override)
+      return protocolAdvisory(`subagent ${warning}; ${override}`);
+    if (warning)
+      return subagentAdvisory(protocolAdvisory(`subagent ${warning}`));
+    return override ? { systemMessage: override } : {};
   }
   const session = readJson(statePath(root, input), initialSession(), true);
   const gateRefusal = activeGateWriteRefusal(
@@ -4091,7 +4204,7 @@ export function releaseHarnessWriterByOperator(root: string, force = false) {
     const view = writerView(writer);
     if (view.alive === true && !force)
       throw new Error(
-        "Writer reservation owner is alive; end that session or pass --force",
+        `Writer reservation owner is alive; end that session or use the forced operator release: ${writerRefusal(writer)}`,
       );
     const retired =
       observation.state === "held"

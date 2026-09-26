@@ -17,7 +17,7 @@ import {
   deadlineLimit,
   startDeadline,
 } from "../packages/skeleton/src/gate-deadlines.mjs";
-import { createHash } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import {
   cpSync,
   chmodSync,
@@ -64,9 +64,11 @@ import {
 } from "../packages/skeleton/dist/src/feedback-boundary.js";
 import {
   beginHarnessSession,
+  codexHostProcess,
   decodeHarnessInput,
   measureHarnessSessionUsage,
   measureHarnessUsage,
+  openOverrideAdvisory,
   harnessOutputObligations,
   harnessControl,
   harnessFeedbackFacts,
@@ -78,9 +80,12 @@ import {
   evaluateHarnessHook,
   readHarnessOutput,
   releaseHarnessWriter,
+  releaseHarnessWriterByOperator,
+  reserveCodexDispatchWriter,
   runHarnessEvidence,
   seedHarnessWriter,
 } from "../packages/skeleton/dist/src/harness-host.js";
+import { operatorControl } from "../packages/compiler/src/operator-control.mjs";
 import {
   checkHarness,
   emitHarness,
@@ -103,12 +108,16 @@ import {
   beginGateRun,
   gateInputPath,
   gateTreeHash,
+  readGateChecks,
+  recordGateChecks,
+  recordGateOutcome,
 } from "./lib/gate-evidence.mjs";
 
 import {
   shellRedirectTargets,
   shellWriteTargets,
   patchWriteTargets,
+  liveGateReads,
 } from "../packages/skeleton/dist/src/harness-command.js";
 
 const sourceRoot = fileURLToPath(new URL("../", import.meta.url));
@@ -307,6 +316,7 @@ test("WO-139 Codex executor and fix completion automatically release after the f
     );
     const pkg = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
     pkg.scripts["work-orders"] = "node scripts/work-orders.mjs";
+    pkg.scripts.resume = "node scripts/resume.mjs";
     write(root, "package.json", json(pkg));
     const sessionId = "synthetic-session";
     const actor = [
@@ -354,9 +364,26 @@ test("WO-139 Codex executor and fix completion automatically release after the f
         "the host remains alive through handoff",
       );
     };
-    acquire();
-    pass("next");
+    const npmEnv = { ...process.env, CODEX_THREAD_ID: sessionId };
+    delete npmEnv.CLAUDE_PID;
+    const npmDispatch = spawnSync("npm", ["run", "resume", "--", "next"], {
+      cwd: root,
+      encoding: "utf8",
+      env: npmEnv,
+    });
+    assert.equal(npmDispatch.status, 0, npmDispatch.stderr);
     assert.equal(harnessWriterView(root).reserved, true);
+    assert.ok(
+      ["codex-host", "thread"].includes(harnessWriterView(root).owner.source),
+      "the dispatch owner outlives npm/node or conservatively has no pid",
+    );
+    if (harnessWriterView(root).owner.source === "thread") {
+      assert.equal(harnessWriterView(root).owner.pid, undefined);
+      assert.equal(harnessWriterView(root).alive, "unknown");
+    } else {
+      assert.notEqual(harnessWriterView(root).owner.pid, npmDispatch.pid);
+      assert.equal(harnessWriterView(root).alive, true);
+    }
     assert.notEqual(resume("implementation-ready").status, 0);
     assert.equal(
       harnessWriterView(root).reserved,
@@ -383,6 +410,28 @@ test("WO-139 Codex executor and fix completion automatically release after the f
       { cwd: root, encoding: "utf8" },
     );
     assert.equal(indexCheck.status, 0, indexCheck.stderr);
+    const foreignSession = "wo166-foreign-verifier";
+    seedHarnessWriter(root, {
+      actorId: createHash("sha256").update(foreignSession).digest("hex"),
+      worktree: root,
+      owner: { pid: process.pid, source: "parent" },
+      reservedAt: "2026-09-07T00:00:00.000Z",
+    });
+    const beforeRefusal = readFileSync(
+      join(root, "docs/control/orders/WO-999.jsonl"),
+      "utf8",
+    );
+    const refusedDispatch = resume("verify");
+    assert.notEqual(refusedDispatch.status, 0);
+    assert.match(refusedDispatch.stderr, /age \d+ seconds.*writer --release/u);
+    assert.equal(
+      readFileSync(join(root, "docs/control/orders/WO-999.jsonl"), "utf8"),
+      beforeRefusal,
+    );
+    releaseHarnessWriter(
+      root,
+      input(root, "Stop", { session_id: foreignSession }),
+    );
     // A different verifier can acquire immediately without operator recovery.
     acquire("verifier-session");
     releaseHarnessWriter(
@@ -390,13 +439,14 @@ test("WO-139 Codex executor and fix completion automatically release after the f
       input(root, "Stop", { session_id: "verifier-session" }),
     );
     pass("verify");
+    assert.equal(harnessWriterView(root).reserved, true);
     write(
       root,
       "docs/verifications/WO-999/VER-001.md",
       '# Fixture finding\n\n**Actor attestation:** {"harness":"codex-cli","harnessVersion":"fixture","model":"fixture","effort":"high","source":"self-reported"}\n\n**Process cost:** unknown; cause no-session\n',
     );
     pass("verification-result", "fail", ...actor);
-    acquire();
+    assert.equal(harnessWriterView(root).reserved, false);
     pass("fix");
     assert.equal(
       harnessWriterView(root).reserved,
@@ -407,7 +457,6 @@ test("WO-139 Codex executor and fix completion automatically release after the f
     assert.equal(harnessWriterView(root).reserved, true);
     pass("repair-complete", ...actor);
     assert.equal(harnessWriterView(root).reserved, false);
-    acquire();
     pass("fix");
     write(root, "docs/work-orders/README.md", "stale index\n");
     write(
@@ -431,6 +480,27 @@ test("WO-139 Codex executor and fix completion automatically release after the f
       false,
       "a post-append projection failure cannot strand the writer",
     );
+    rmSync(join(root, "docs/work-orders/README.md.tmp"));
+    pass("verify");
+    assert.equal(harnessWriterView(root).reserved, true);
+    write(
+      root,
+      "docs/verifications/WO-999/VER-002.md",
+      '# Fixture pass\n\n**Actor attestation:** {"harness":"codex-cli","harnessVersion":"fixture","model":"fixture","effort":"high","source":"self-reported"}\n\n**Process cost:** unknown; cause no-session\n',
+    );
+    pass("verification-result", "pass", ...actor);
+    assert.equal(harnessWriterView(root).reserved, false);
+    pass("final-review");
+    assert.equal(harnessWriterView(root).reserved, true);
+    write(
+      root,
+      "docs/final-reviews/WO-999/FINAL-001.md",
+      '# Fixture final review\n\n**Actor attestation:** {"harness":"codex-cli","harnessVersion":"fixture","model":"fixture","effort":"high","source":"self-reported"}\n\n**Process cost:** unknown; cause no-session\n',
+    );
+    pass("final-review-result", "pass", ...actor);
+    assert.equal(harnessWriterView(root).reserved, false);
+    pass("release-close");
+    assert.equal(harnessWriterView(root).reserved, true);
     const release = await executorWriterRelease(root, sessionId);
     release();
     assert.equal(
@@ -438,6 +508,56 @@ test("WO-139 Codex executor and fix completion automatically release after the f
       false,
       "cleanup is idempotent",
     );
+    // A subject briefing hands off to a different main session. It must not
+    // reserve main under the subject actor that will never complete there.
+    git(root, "add", ".");
+    git(
+      root,
+      "-c",
+      "user.name=Fixture",
+      "-c",
+      "user.email=fixture@example.invalid",
+      "-c",
+      "commit.gpgsign=false",
+      "commit",
+      "-m",
+      "Closed fixture",
+    );
+    const main = join(root, "docs/control/local/linked-main");
+    git(root, "worktree", "add", "-b", "main", main);
+    for (const name of ["compiler", "skeleton", "kernel"])
+      cpSync(
+        join(root, `packages/${name}/dist`),
+        join(main, `packages/${name}/dist`),
+        { recursive: true },
+      );
+    symlinkSync(join(root, "node_modules"), join(main, "node_modules"));
+    const handoff = pass("release-close");
+    assert.match(
+      handoff.stdout,
+      /npm run resume -- release-close --work-order WO-999/,
+    );
+    assert.match(handoff.stdout, /same main session/);
+    assert.equal(harnessWriterView(main).reserved, false);
+    assert.equal(harnessWriterView(root).reserved, false);
+    const mainSession = "wo166-main-close-session";
+    const mainDispatch = spawnSync(
+      process.execPath,
+      ["scripts/resume.mjs", "release-close", "--work-order", "WO-999"],
+      {
+        cwd: main,
+        encoding: "utf8",
+        env: { ...process.env, CODEX_THREAD_ID: mainSession },
+      },
+    );
+    assert.equal(mainDispatch.status, 0, mainDispatch.stderr);
+    assert.equal(
+      harnessWriterView(main).actorId,
+      createHash("sha256").update(mainSession).digest("hex"),
+    );
+    (await executorWriterRelease(main, mainSession))();
+    assert.equal(harnessWriterView(main).reserved, false);
+    assert.equal(harnessWriterView(root).reserved, false);
     acquire("verifier-session");
     const foreign = harnessWriterView(root);
     release();
@@ -454,6 +574,422 @@ test("WO-139 Codex executor and fix completion automatically release after the f
     );
   } finally {
     removeFixture(root, { recursive: true });
+  }
+});
+test("WO-166 Codex dispatch refuses foreign holders before control events and preserves unknown liveness", () => {
+  const root = fixture();
+  try {
+    const table = [
+      { pid: 101, ppid: 102, startedAt: "fixture-node", command: "node" },
+      { pid: 102, ppid: 103, startedAt: "fixture-npm", command: "npm" },
+      { pid: 103, ppid: 1, startedAt: "fixture-host", command: "codex" },
+    ];
+    assert.deepEqual(codexHostProcess(101, table), {
+      pid: 103,
+      startedAt: "fixture-host",
+      source: "codex-host",
+    });
+    assert.deepEqual(codexHostProcess(101, table.slice(0, 2)), {
+      source: "thread",
+    });
+    const controlPath = join(root, "docs/control/orders/WO-999.jsonl");
+    const controlBefore = readFileSync(controlPath, "utf8");
+    const foreign = "foreign-wo166-session";
+    const foreignActor = createHash("sha256").update(foreign).digest("hex");
+    seedHarnessWriter(root, {
+      actorId: foreignActor,
+      worktree: root,
+      owner: { pid: process.pid, source: "parent" },
+      reservedAt: "2026-09-07T00:00:00.000Z",
+    });
+    assert.throws(
+      () => reserveCodexDispatchWriter(root, "new-wo166-session"),
+      /actor [0-9a-f]{12}; host process .*\).*reservedAt 2026-09-07T00:00:00.000Z; age \d+ seconds.*writer --release --force/,
+    );
+    assert.throws(
+      () => releaseHarnessWriterByOperator(root),
+      /owner is alive.*actor [0-9a-f]{12};.*Owner .*reservedAt 2026-09-07T00:00:00.000Z; age \d+ seconds.*writer --release --force/,
+    );
+    assert.equal(readFileSync(controlPath, "utf8"), controlBefore);
+    releaseHarnessWriter(root, input(root, "Stop", { session_id: foreign }));
+    const owned = reserveCodexDispatchWriter(root, "new-wo166-session");
+    assert.equal(owned.reserved, true);
+    assert.ok(["codex-host", "thread"].includes(owned.owner.source));
+    assert.equal(
+      reserveCodexDispatchWriter(root, "new-wo166-session").actorId,
+      owned.actorId,
+    );
+    releaseHarnessWriter(
+      root,
+      input(root, "Stop", { session_id: "new-wo166-session" }),
+    );
+    seedHarnessWriter(root, {
+      actorId: foreignActor,
+      worktree: root,
+      owner: { source: "thread" },
+      reservedAt: "2026-09-07T00:00:00.000Z",
+    });
+    assert.throws(
+      () => reserveCodexDispatchWriter(root, "new-wo166-session"),
+      /writer --release/,
+    );
+    assert.equal(harnessWriterView(root).actorId, foreignActor);
+    assert.equal(harnessWriterView(root).alive, "unknown");
+    assert.equal(readFileSync(controlPath, "utf8"), controlBefore);
+  } finally {
+    removeFixture(root, { recursive: true });
+  }
+});
+test("WO-166 evidence wait exits for pass, failure, timeout and absent row", async () => {
+  const root = fixture();
+  const empty = fixture();
+  try {
+    assert.deepEqual(
+      liveGateReads("node scripts/harness.mjs evidence --wait --timeout 3"),
+      {
+        git: false,
+        helper: true,
+      },
+    );
+    assert.equal(
+      liveGateReads(
+        "node scripts/harness.mjs evidence --wait --timeout 3 > output",
+      ),
+      null,
+    );
+    const wait = (at, ...args) =>
+      spawnSync(
+        process.execPath,
+        ["scripts/harness.mjs", "evidence", "--wait", ...args],
+        {
+          cwd: at,
+          encoding: "utf8",
+        },
+      );
+    assert.equal(wait(empty).status, 2);
+    assert.deepEqual(JSON.parse(wait(empty).stdout), { run: null });
+    const treeHash = gateTreeHash(root);
+    const row = (checkId, exitCode, recordedAt) => ({
+      checkId,
+      treeHash,
+      subject: treeHash,
+      durationMs: 1,
+      exitCode,
+      executed: true,
+      evidenceRef: `fixture:${checkId}:${recordedAt}`,
+      recordedAt,
+    });
+    const live = beginGateRun(root, "npm test");
+    try {
+      const timeout = wait(root, "--timeout", "0.05");
+      assert.equal(timeout.status, 2, timeout.stderr);
+      assert.deepEqual(JSON.parse(timeout.stdout), { run: null });
+      const waiter = spawn(
+        process.execPath,
+        ["scripts/harness.mjs", "evidence", "--wait", "--timeout", "3"],
+        {
+          cwd: root,
+          stdio: ["ignore", "pipe", "pipe"],
+        },
+      );
+      let stdout = "";
+      let stderr = "";
+      waiter.stdout.on("data", (chunk) => {
+        stdout += chunk;
+      });
+      waiter.stderr.on("data", (chunk) => {
+        stderr += chunk;
+      });
+      const completed = new Promise((resolve, reject) => {
+        waiter.once("error", reject);
+        waiter.once("close", resolve);
+      });
+      await new Promise((resolve) => setTimeout(resolve, 150));
+      assert.equal(
+        waiter.exitCode,
+        null,
+        "live marker keeps the waiter active",
+      );
+      const passed = row("npm test", 0, new Date().toISOString());
+      recordGateChecks(root, [passed]);
+      recordGateOutcome(root, {
+        runId: live.run.runId,
+        treeHash,
+        status: "passed",
+      });
+      live.release();
+      assert.equal(await completed, 0, stderr);
+      assert.equal(JSON.parse(stdout).checkId, "npm test");
+    } finally {
+      live.release();
+    }
+    const failed = beginGateRun(root, "node scripts/harness.mjs evidence");
+    recordGateChecks(root, [
+      row("npm test", 1, new Date(Date.now() - 2).toISOString()),
+      row("git diff --check", 0, new Date(Date.now() - 1).toISOString()),
+    ]);
+    recordGateOutcome(root, {
+      runId: failed.run.runId,
+      treeHash,
+      status: "failed",
+    });
+    failed.release();
+    const result = wait(root);
+    assert.equal(result.status, 1, result.stderr);
+    assert.equal(JSON.parse(result.stdout).checkId, "git diff --check");
+    const missingRows = fixture();
+    try {
+      recordGateOutcome(missingRows, {
+        runId: randomUUID(),
+        treeHash: gateTreeHash(missingRows),
+        status: "passed",
+      });
+      const absent = wait(missingRows);
+      assert.equal(absent.status, 2, absent.stderr);
+      assert.deepEqual(JSON.parse(absent.stdout), { run: null });
+    } finally {
+      removeFixture(missingRows, { recursive: true });
+    }
+    const drift = fixture();
+    try {
+      write(
+        drift,
+        "scripts/lib/evidence-preparation.mjs",
+        [
+          'import { writeFileSync } from "node:fs";',
+          'import { join } from "node:path";',
+          "export const prepareHarnessEvidence = (root) => {",
+          '  writeFileSync(join(root, "fixture.ts"), "export const value = 2;\\n");',
+          "  return { durationMs: 0 };",
+          "};",
+          "",
+        ].join("\n"),
+      );
+      const before = gateTreeHash(drift);
+      const invocation = spawnSync(
+        process.execPath,
+        ["scripts/harness.mjs", "evidence"],
+        {
+          cwd: drift,
+          encoding: "utf8",
+        },
+      );
+      assert.equal(invocation.status, 1, invocation.stdout + invocation.stderr);
+      assert.notEqual(gateTreeHash(drift), before);
+      const completed = wait(drift);
+      assert.equal(completed.status, 1, completed.stdout + completed.stderr);
+      assert.equal(JSON.parse(completed.stdout).checkId, "git diff --check");
+    } finally {
+      removeFixture(drift, { recursive: true });
+    }
+  } finally {
+    removeFixture(root, { recursive: true });
+    removeFixture(empty, { recursive: true });
+  }
+});
+test("WO-166 wait accepts cached invocation rows and outcome I/O cannot fail a gate", async () => {
+  const root = fixture();
+  try {
+    write(
+      root,
+      "scripts/lib/evidence-preparation.mjs",
+      [
+        'import { existsSync } from "node:fs";',
+        'import { join } from "node:path";',
+        "export const prepareHarnessEvidence = (root) => {",
+        "  const deadline = Date.now() + 10000;",
+        '  while (existsSync(join(root, "docs/control/local/hold-gate"))) {',
+        '    if (Date.now() >= deadline) throw new Error("fixture hold timed out");',
+        "    Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 25);",
+        "  }",
+        "  return { durationMs: 0 };",
+        "};",
+        "",
+      ].join("\n"),
+    );
+    const invoke = () =>
+      spawnSync(process.execPath, ["scripts/harness.mjs", "evidence"], {
+        cwd: root,
+        encoding: "utf8",
+      });
+    const first = invoke();
+    assert.equal(first.status, 0, first.stdout + first.stderr);
+    const rows = readGateChecks(root, gateTreeHash(root));
+    assert.equal(rows.length, 2);
+    write(root, "docs/control/local/hold-gate", "hold\n");
+    const start = (args) => {
+      const child = spawn(
+        process.execPath,
+        ["scripts/harness.mjs", "evidence", ...args],
+        { cwd: root, stdio: ["ignore", "pipe", "pipe"] },
+      );
+      let stdout = "",
+        stderr = "";
+      child.stdout.on("data", (chunk) => {
+        stdout += chunk;
+      });
+      child.stderr.on("data", (chunk) => {
+        stderr += chunk;
+      });
+      const done = new Promise((resolve, reject) => {
+        child.once("error", reject);
+        child.once("close", (status) => resolve({ status, stdout, stderr }));
+      });
+      return { child, done };
+    };
+    const invocation = start([]);
+    const deadline = Date.now() + 5000;
+    while (!activeGateRuns(root).length && Date.now() < deadline)
+      await new Promise((resolve) => setTimeout(resolve, 25));
+    assert.ok(
+      activeGateRuns(root).length,
+      "second invocation has a live marker",
+    );
+    const waiter = start(["--wait", "--timeout", "5"]);
+    await new Promise((resolve) => setTimeout(resolve, 150));
+    assert.equal(waiter.child.exitCode, null);
+    rmSync(join(root, "docs/control/local/hold-gate"));
+    const result = await invocation.done;
+    assert.equal(result.status, 0, result.stdout + result.stderr);
+    const waited = await waiter.done;
+    assert.equal(waited.status, 0, waited.stdout + waited.stderr);
+    assert.deepEqual(JSON.parse(waited.stdout), rows.at(-1));
+    assert.deepEqual(
+      readGateChecks(root, gateTreeHash(root)),
+      rows,
+      "invocation reused the original timestamps",
+    );
+
+    // A file where the observation directory belongs injects a real mkdir
+    // failure while leaving primary checks and marker cleanup writable.
+    rmSync(join(root, "docs/control/local/harness/gate-outcomes"), {
+      recursive: true,
+    });
+    write(root, "docs/control/local/harness/gate-outcomes", "unavailable\n");
+    const observationFailure = invoke();
+    assert.equal(observationFailure.status, 0, observationFailure.stderr);
+    assert.match(
+      observationFailure.stderr,
+      /Gate outcome observation unavailable/,
+    );
+    assert.equal(activeGateRuns(root).length, 0);
+    write(root, "fixture.ts", "export const value = 2;\n");
+    const failed = invoke();
+    assert.equal(failed.status, 1, failed.stdout + failed.stderr);
+    assert.match(failed.stderr, /Gate outcome observation unavailable/);
+    assert.equal(activeGateRuns(root).length, 0);
+  } finally {
+    removeFixture(root, { recursive: true });
+  }
+});
+test("WO-166 session start advises once for an unclosed same-worktree override", async () => {
+  const root = fixture();
+  const other = fixture();
+  const overrideSession = `wo166-open-${randomUUID()}`;
+  try {
+    await operatorControl(
+      {
+        session_id: overrideSession,
+        cwd: root,
+        prompt: "operator override: fixture recovery",
+      },
+      "UserPromptSubmit",
+    );
+    const advisory = openOverrideAdvisory(root);
+    assert.match(
+      advisory,
+      /operator override entered .* remains open in this worktree/,
+    );
+    assert.equal(openOverrideAdvisory(other), null);
+    await operatorControl(
+      { session_id: overrideSession, cwd: other, prompt: "analysis: inspect" },
+      "UserPromptSubmit",
+    );
+    assert.match(
+      openOverrideAdvisory(root),
+      /operator override entered .* remains open/,
+    );
+    assert.equal(openOverrideAdvisory(other), null);
+    const startId = `wo166-start-${randomUUID()}`;
+    const startup = invoke(
+      root,
+      "session",
+      input(root, "SessionStart", { session_id: startId }),
+    );
+    assert.match(
+      startup.systemMessage,
+      /operator override entered .* remains open/,
+    );
+    assert.deepEqual(
+      invoke(
+        root,
+        "session",
+        input(root, "SessionStart", { session_id: startId }),
+      ),
+      {},
+    );
+    const codex = spawnSync(
+      process.execPath,
+      [
+        "scripts/harness.mjs",
+        "begin",
+        `wo166-codex-${randomUUID()}`,
+        "executor",
+      ],
+      { cwd: root, encoding: "utf8" },
+    );
+    assert.equal(codex.status, 0, codex.stderr);
+    assert.match(codex.stderr, /operator override entered .* remains open/);
+    await operatorControl(
+      {
+        session_id: overrideSession,
+        cwd: root,
+        prompt: "operator override: off",
+      },
+      "UserPromptSubmit",
+    );
+    assert.equal(openOverrideAdvisory(root), null);
+    await operatorControl(
+      {
+        session_id: overrideSession,
+        cwd: join(root, "scripts"),
+        prompt: "operator override: subdirectory recovery",
+      },
+      "UserPromptSubmit",
+    );
+    assert.match(
+      openOverrideAdvisory(root),
+      /operator override entered .* remains open/,
+    );
+    await operatorControl(
+      {
+        session_id: overrideSession,
+        cwd: root,
+        prompt: "operator override: off",
+      },
+      "UserPromptSubmit",
+    );
+    assert.deepEqual(
+      invoke(
+        root,
+        "session",
+        input(root, "SessionStart", {
+          session_id: `wo166-after-${randomUUID()}`,
+        }),
+      ),
+      {},
+    );
+  } finally {
+    await operatorControl(
+      {
+        session_id: overrideSession,
+        cwd: root,
+        prompt: "operator override: off",
+      },
+      "UserPromptSubmit",
+    );
+    removeFixture(root, { recursive: true });
+    removeFixture(other, { recursive: true });
   }
 });
 const stopUnits = new Set([
@@ -3036,7 +3572,7 @@ test("WO-039 foreign writer reservations refuse while their owner lives, reclaim
     const refused = reason(edit);
     assert.match(
       refused,
-      /reserved by another session \(actor [0-9a-f]{12}; host process \d+ is alive\)/,
+      /reserved by another session \(actor [0-9a-f]{12}; host process .*\).*reservedAt 2026-09-07T00:00:00.000Z; age \d+ seconds/,
     );
     assert.ok(
       refused.includes(foreign.slice(0, 12)) &&
@@ -4090,6 +4626,7 @@ test("WO-158 a live gate admits the fixed read-only list stage by stage and name
       "ls",
       "ls -la scripts",
       "node scripts/harness.mjs writer --show",
+      "node scripts/harness.mjs evidence --wait --timeout 3",
       "npm run resume --silent -- status",
     ];
     // Receipt 028 (criterion 6): a listed reader piped into a writer, a
@@ -4119,7 +4656,7 @@ test("WO-158 a live gate admits the fixed read-only list stage by stage and name
       "git --no-pager show -s --pretty=format:%GS HEAD",
     ];
     const listed =
-      /Read-only commands stay admitted while it runs: cat, head, tail, wc, ls, grep, sed -n with a print-only script, git --no-pager diff\|log\|show\|status\|stash list, node scripts\/harness\.mjs writer --show and npm run resume --silent -- status, each stage without a redirect operand, heredoc or unquoted glob; a Git read carries --no-pager/;
+      /Read-only commands stay admitted while it runs: cat, head, tail, wc, ls, grep, sed -n with a print-only script, git --no-pager diff\|log\|show\|status\|stash list, node scripts\/harness\.mjs writer --show\|evidence --wait \[--timeout seconds\] and npm run resume --silent -- status, each stage without a redirect operand, heredoc or unquoted glob; a Git read carries --no-pager/;
     const active = beginGateRun(root, "npm test");
     try {
       for (const hook of [

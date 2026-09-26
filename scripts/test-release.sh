@@ -371,6 +371,29 @@ release_close() {
   (cd "$main" && PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" DOTLN_GH_LOG="$gh_log" DOTLN_GH_STATE="$gh_state" DOTLN_GH_ORIGIN="$origin" "$node_bin" "$main/scripts/release.mjs" close "$@")
 }
 
+seed_release_close_writer() {
+  local directory="$main/docs/control/local/harness"
+  mkdir -p "$directory"
+  printf '{"session":"fixture-close-session"}\n' >"$directory/writer.json"
+  cat >"$main/packages/skeleton/dist/src/harness-host.js" <<'JS'
+const { createHash } = require("node:crypto");
+const { existsSync, readFileSync, rmSync } = require("node:fs");
+const { join } = require("node:path");
+const marker = (root) => join(root, "docs/control/local/harness/writer.json");
+exports.releaseHarnessWriter = (root, input) => {
+  const path = marker(root);
+  if (existsSync(path) && JSON.parse(readFileSync(path, "utf8")).session === input.session_id)
+    rmSync(path);
+};
+exports.harnessWriterView = (root) => {
+  const path = marker(root);
+  return existsSync(path)
+    ? { reserved: true, actorId: createHash("sha256").update(JSON.parse(readFileSync(path, "utf8")).session).digest("hex") }
+    : { reserved: false };
+};
+JS
+}
+
 release_command() {
   (cd "$main" && PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" DOTLN_GH_LOG="$gh_log" DOTLN_GH_STATE="$gh_state" DOTLN_GH_ORIGIN="$origin" "$node_bin" "$main/scripts/release.mjs" "$@")
 }
@@ -632,15 +655,32 @@ git -C "$fixture/integrator" add README.md
 git -C "$fixture/integrator" commit --amend --no-edit >/dev/null
 git -C "$fixture/integrator" push origin main >/dev/null 2>&1
 test "$(git -C "$main" rev-parse HEAD)" != "$(git --git-dir="$origin" rev-parse refs/heads/main)"
-if close_surface_output="$(release_close WO-099 --publish 2>&1)"; then
+seed_release_close_writer
+rm "$main/packages/skeleton/dist/src/harness-host.js"
+if unbuilt_output="$(CODEX_THREAD_ID=fixture-close-session release_close WO-099 --publish 2>&1)"; then
+  printf 'error: release close accepted an unbuilt runtime with a reservation\n' >&2
+  exit 1
+fi
+grep -Fq "Release-close runtime is not built in $main; writer reservation retained. Run npm run build in the main checkout" <<<"$unbuilt_output"
+test -f "$main/docs/control/local/harness/writer.json"
+test ! -e "$npm_log"
+seed_release_close_writer
+if close_surface_output="$(CODEX_THREAD_ID=fixture-close-session release_close WO-099 --publish 2>&1)"; then
   printf 'error: release close accepted a stale release block\n' >&2
   exit 1
 fi
+test -f "$main/docs/control/local/harness/writer.json"
 test "$(git -C "$main" rev-parse HEAD)" = "$(git -C "$main" rev-parse origin/main)"
 test ! -e "$npm_log"
 assert_no_candidate_tag "$main" "$origin"
 assert_surface_failure 'FAIL release-block: observed v0.2.0; expected exactly one v0.2.1'
-test "$close_surface_output" = "$surface_failure_output"
+# Closing reports the deliberately retained writer; check-surfaces does not.
+# Preserve equality for the whole report, including that one known advisory.
+expected_close_output="$(printf 'Advisory: retained ignored material: docs/control/local/harness/writer.json\n%s' "$surface_failure_output")"
+if [[ "$close_surface_output" != "$expected_close_output" ]]; then
+  diff -u <(printf '%s\n' "$expected_close_output") <(printf '%s\n' "$close_surface_output") >&2
+  exit 1
+fi
 }
 
 release_case_surfaceclose_linked() {
@@ -742,11 +782,14 @@ derived_dirty="$fixture/project-wo099-measure-002"
 git -C "$main" worktree add --detach "$derived_clean" >/dev/null 2>&1
 git -C "$main" worktree add --detach "$derived_dirty" >/dev/null 2>&1
 printf 'unsaved\n' >"$derived_dirty/notes.txt"
-derived_preview="$(release_close WO-099 --dry-run)"
+seed_release_close_writer
+derived_preview="$(CODEX_THREAD_ID=fixture-close-session release_close WO-099 --dry-run)"
+test -f "$main/docs/control/local/harness/writer.json"
 grep -Fq "Derived worktree $derived_clean: would remove" <<<"$derived_preview"
 grep -Fq "Derived worktree $derived_dirty: kept (uncommitted changes)" <<<"$derived_preview"
 test -d "$derived_clean"
-derived_output="$(release_close WO-099 --publish)"
+derived_output="$(CODEX_THREAD_ID=fixture-close-session release_close WO-099 --publish)"
+test ! -e "$main/docs/control/local/harness/writer.json"
 grep -Fq "Derived worktree $derived_clean: removed" <<<"$derived_output"
 grep -Fq "Derived worktree $derived_dirty: kept (uncommitted changes)" <<<"$derived_output"
 grep -Fq 'below latest release v0.2.0' <<<"$derived_output"

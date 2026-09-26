@@ -97,6 +97,7 @@ import {
   evaluateHarnessHook,
   harnessWriterView,
   releaseHarnessWriter,
+  reserveCodexDispatchWriter,
   seedHarnessWriter,
   permissionEffect,
   observeHarnessDelivery,
@@ -4490,7 +4491,7 @@ test("meter diff bytes include newly authored untracked source", (t) => {
   );
 });
 
-test("WO-145 optional economy support preserves historical snapshots through WO-161 and changes only executor instructions on", () => {
+test("WO-145 optional economy support preserves historical snapshots through WO-166 and changes only executor instructions on", () => {
   const historical = JSON.parse(
     readFileSync(
       join(source, "packages/skeleton/fixtures/wo145-role-baseline.json"),
@@ -4501,10 +4502,10 @@ test("WO-145 optional economy support preserves historical snapshots through WO-
   // snapshot to make the current generated instruction check pass. WO-149's
   // common role edits affect both settings, so pin contemporaneous default and
   // opt-out bytes separately and preserve the complete historical chain.
-  // WO-157, WO-158 and WO-161 shared role edits follow the same route.
+  // WO-157, WO-158, WO-161 and WO-166 shared role edits follow the same route.
   const baseline = JSON.parse(
     readFileSync(
-      join(source, "packages/skeleton/fixtures/wo161-role-baseline.json"),
+      join(source, "packages/skeleton/fixtures/wo166-role-baseline.json"),
       "utf8",
     ),
   );
@@ -5770,7 +5771,7 @@ test("WO-149 a Codex lifecycle dispatch begins one measurable session and preser
   );
 });
 
-test("WO-149 an unbuilt Codex dispatch reports the missing runtime without blocking the lifecycle", (t) => {
+test("WO-166 an unbuilt Codex dispatch refuses before lifecycle writes and names the missing reservation runtime", (t) => {
   const root = repo(t);
   cpSync(join(source, "scripts/lib"), join(root, "scripts/lib"), {
     recursive: true,
@@ -5792,12 +5793,15 @@ test("WO-149 an unbuilt Codex dispatch reports the missing runtime without block
         COPILOT_AGENT_SESSION_ID: "",
       },
     });
+  const segment = join(root, "docs/control/orders/WO-999.jsonl");
+  const before = readFileSync(segment, "utf8");
   const result = dispatch("unbuilt-codex-fixture");
-  assert.equal(result.status, 0, result.stderr);
+  assert.equal(result.status, 1, result.stderr);
   assert.match(
     result.stderr,
-    /Codex session entry unavailable.*runtime is not built.*npm run build.*cause no-session/,
+    /Codex writer reservation unavailable.*runtime is not built.*npm run build/,
   );
+  assert.equal(readFileSync(segment, "utf8"), before);
   assert.equal(existsSync(statePath(root, "unbuilt-codex-fixture")), false);
   const withoutThread = dispatch("");
   assert.equal(withoutThread.status, 0, withoutThread.stderr);
@@ -5831,10 +5835,15 @@ test("WO-153 a Codex dispatch whose session entry fails names the cause and stil
       // A partial begin (VER-001 F1): the host writes the session record, then
       // refuses an observation log that is not a regular file.
       script: resume,
-      prepare: (thread) =>
+      prepare: (thread) => {
+        // Fail session observation after successful writer admission; a broken
+        // journal before reservation now correctly refuses the dispatch itself.
+        reserveCodexDispatchWriter(root, thread);
+        rmSync(statePath(root, thread).replace(/\.json$/, ".jsonl"));
         mkdirSync(statePath(root, thread).replace(/\.json$/, ".jsonl"), {
           recursive: true,
-        }),
+        });
+      },
       advisory:
         /^DotLn advisory: Codex session entry failed \(Host observation log is not a regular file\); process cost remains unknown; cause no-session\.$/m,
     },
@@ -5970,12 +5979,15 @@ test("WO-153 a Codex dispatch whose session entry fails names the cause and stil
         ),
         null,
       );
-      if (action !== "next") continue;
-      // A repeat finds no session to treat as begun and names the failure again.
-      const repeat = run("scripts/resume.mjs", [action], thread);
-      assert.equal(repeat.status, 0, repeat.stderr);
-      assert.match(repeat.stderr, failure.advisory);
-      assert.equal(existsSync(statePath(root, thread)), false);
+      if (action === "next") {
+        // A repeat finds no session to treat as begun and names the failure again.
+        const repeat = run("scripts/resume.mjs", [action], thread);
+        assert.equal(repeat.status, 0, repeat.stderr);
+        assert.match(repeat.stderr, failure.advisory);
+        assert.equal(existsSync(statePath(root, thread)), false);
+      }
+      releaseHarnessWriter(root, input(root, "Stop", thread));
+      assert.equal(harnessWriterView(root).reserved, false);
     }
   }
   // With the obstruction gone, the withdrawn entry begins on the next dispatch.
@@ -5986,6 +5998,7 @@ test("WO-153 a Codex dispatch whose session entry fails names the cause and stil
   assert.equal(retried.status, 0, retried.stderr);
   assert.doesNotMatch(retried.stderr, /Codex session entry/);
   assert.equal(JSON.parse(readFileSync(partial, "utf8")).role, "executor");
+  releaseHarnessWriter(root, input(root, "Stop", "wo153-1-next"));
 
   // The real table: a successful begin and its repeat stay silent, and a
   // dispatch without a thread identity writes nothing.
@@ -6772,6 +6785,11 @@ test("WO-131 prompt submission stays open while dispatches retain the ordinary c
         cwd: root,
         input: JSON.stringify(payload),
         encoding: "utf8",
+        env: {
+          ...process.env,
+          CODEX_THREAD_ID: "",
+          COPILOT_AGENT_SESSION_ID: "",
+        },
         timeout: 20_000,
       },
     );
@@ -6940,7 +6958,7 @@ test("WO-131 prompt submission stays open while dispatches retain the ordinary c
   );
   assert.match(
     contended.hookSpecificOutput.additionalContext,
-    /DOTLN_HARNESS_REFUSED: concurrent-work-requires-worktrees: write dispatch lacks a verified exclusive worktree; the worktree is reserved by another session \(actor [0-9a-f]{12}; host process \d+ is alive\)\. Finish that session/,
+    /DOTLN_HARNESS_REFUSED: concurrent-work-requires-worktrees: write dispatch lacks a verified exclusive worktree; the worktree is reserved by another session \(actor [0-9a-f]{12}; host process \d+ is alive\)\. Owner .*reservedAt 2026-09-13T00:00:00\.000Z; age \d+ seconds.*writer --release --force/,
   );
   assert.match(contended.systemMessage, /prompt accepted/);
   assert.deepEqual(lifecycle(), reserved);

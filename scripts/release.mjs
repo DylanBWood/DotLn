@@ -11,6 +11,7 @@ import {
   mkdtempSync,
   readFileSync,
   readdirSync,
+  realpathSync,
   rmSync,
   symlinkSync,
   writeFileSync,
@@ -57,6 +58,7 @@ import {
   branchWorkOrder,
   selectWorkOrder,
 } from "./lib/control-store.mjs";
+import { executorWriterRelease } from "./lib/executor-handoff.mjs";
 
 import {
   compareVersions,
@@ -2005,7 +2007,31 @@ const main = async () => {
   sourceRevision = "HEAD";
   previewRuntimeRoot = undefined;
   const [action, ...args] = process.argv.slice(2);
-  if (action === "close") return close(args[0], args.slice(1));
+  if (action === "close") {
+    // A release-close dispatch keeps the writer through publication. Only a
+    // successful, non-preview close is its completion and releases that actor.
+    const completing =
+      args.includes("--publish") && !args.includes("--dry-run");
+    let releaseWriter;
+    if (completing) {
+      const root = realpathSync(process.cwd());
+      try {
+        releaseWriter = await executorWriterRelease(root);
+      } catch (error) {
+        if (
+          !existsSync(join(root, "packages/skeleton/dist/src/harness-host.js"))
+        )
+          throw new Error(
+            `Release-close runtime is not built in ${root}; writer reservation retained. Run npm run build in the main checkout, then retry release close.`,
+            { cause: error },
+          );
+        throw error;
+      }
+    }
+    const result = close(args[0], args.slice(1));
+    if (!process.exitCode) releaseWriter?.();
+    return result;
+  }
   if (action === "prepare") {
     if (args.length > 1 || (args.length === 1 && args[0] !== "--local"))
       throw new Error("usage: release prepare [--local]");

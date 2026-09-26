@@ -54,6 +54,8 @@ export type ContributorSupportSwitches = ExecutorSupportSwitches &
 const handlers = personalFeedbackUnits.map((unit) => unit.trigger);
 const operatorControls =
   "Operator controls precede workflow: `analysis:` pauses for diagnosis/direction; `operator override:` suspends DotLn gates for authorized recovery, regardless of harness/repo state. Preserve pending work; invent no dispatch or passing check. Exit with either prefix plus `off`. Codex: `node scripts/operator-control.mjs analysis|override|off|status` needs no build or Git. Host permissions apply. Read product 07 §Operator recovery controls for the broader recovery candidate.";
+const sessionBoundaries =
+  "Under Codex, lifecycle dispatch reserves the writer and completion releases it; inspect with `node scripts/harness.mjs writer --show`, never a hand-built hook payload. Await a live gate with `node scripts/harness.mjs evidence --wait [--timeout <seconds>]` (in the background under Claude Code), which exits, instead of following its log indefinitely.";
 // Every role in both harnesses carries this line (operator direction,
 // 2026-09-14, WO-044): a guess presented as a finding is a defect.
 const noGuessing =
@@ -215,7 +217,7 @@ export const contributorRoles: readonly HarnessRole[] = [
       source: "WO-158-D010: the scratchpad Claude Code prints for this session",
     },
   ],
-  procedure: [operatorControls, ...role.procedure],
+  procedure: [operatorControls, sessionBoundaries, ...role.procedure],
 }));
 
 export const contributorEnvelope: AuthorityEnvelope = {
@@ -507,6 +509,7 @@ const targetRoles: readonly HarnessRole[] = contributorRoles.map((role) => {
     role.name === "release-close"
       ? [
           "Verify main's cwd/Git root; run `npm run resume --silent -- status --json`.",
+          sessionBoundaries,
           noGuessing,
           "Read: `@work-order`",
           "Read: `@citations`",

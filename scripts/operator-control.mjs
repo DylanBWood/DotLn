@@ -27,7 +27,7 @@ if (
           ? "operator override:"
           : `${mode}:`;
     const response = await operatorControl(
-      { session_id: session, prompt },
+      { session_id: session, prompt, cwd: process.cwd() },
       mode === "status" ? "Status" : "UserPromptSubmit",
     );
     // WO-158: this adapter records nothing in the repository; leaving an
