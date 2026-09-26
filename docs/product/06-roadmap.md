@@ -51,6 +51,15 @@ artifact-identity edition stays at `WO-165/002`, and verification and feedback
 stay at `WO-161/001` and `WO-070/001`. Application target `v0.52.1` is the
 retimed patch. Scope, acceptance and published tags are unchanged.
 
+**WO-085 activation completion (2026-09-26):** assigned application `v0.51.2`,
+the next patch above observed local tag `v0.51.1`. The document gate gains
+product byte ceilings, receipt/candidate and decision-dispatch checks, and
+local link resolution. Package components and compatibility contracts are
+unchanged; the scripts are repository tooling. Independent verification,
+final review and publication remain separate actions.
+
+**WO-085 collision retiming (2026-09-26):** unpublished target `v0.51.2` is superseded by `v0.52.2` under the existing patch classification because the observed release baseline is `v0.52.1`. Scope, acceptance, component versions, and published tags are unchanged by this retiming.
+
 **WO-070 activation completion (2026-09-25):** assigned application `v0.51.1`,
 the next patch above the observed local `v0.51.0` tag, under the declared patch
 classification. The seven build-free Beacon leaves move to the new private

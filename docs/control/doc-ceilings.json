@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "policy": "UTF-8 bytes excluding 06-roadmap.md Release boundary until WO-086 retires it. No product marker generator is registered; marker pairs alone grant no exemption. Initial ceiling is ceil(nonExemptBytesAtLanding * 1.02); consolidation lowers the ceiling in the same change. An increase after landing requires a resolving planning-document decision in the entry, including when restoring previously removed headroom.",
+  "documents": {
+    "00-vision.md": {
+      "nonExemptBytesAtLanding": 28025,
+      "ceiling": 28586,
+      "date": "2026-09-26",
+      "decision": "docs/evidence/WO-085/decisions.md#wo-085-d005"
+    },
+    "01-principles.md": {
+      "nonExemptBytesAtLanding": 9462,
+      "ceiling": 9652,
+      "date": "2026-09-26",
+      "decision": "docs/evidence/WO-085/decisions.md#wo-085-d005"
+    },
+    "02-domain-model.md": {
+      "nonExemptBytesAtLanding": 147657,
+      "ceiling": 150611,
+      "date": "2026-09-26",
+      "decision": "docs/evidence/WO-085/decisions.md#wo-085-d005"
+    },
+    "03-architecture.md": {
+      "nonExemptBytesAtLanding": 172678,
+      "ceiling": 176132,
+      "date": "2026-09-26",
+      "decision": "docs/evidence/WO-085/decisions.md#wo-085-d005"
+    },
+    "04-interfaces.md": {
+      "nonExemptBytesAtLanding": 59662,
+      "ceiling": 60856,
+      "date": "2026-09-26",
+      "decision": "docs/evidence/WO-085/decisions.md#wo-085-d012"
+    },
+    "05-pattern-library.md": {
+      "nonExemptBytesAtLanding": 133345,
+      "ceiling": 136012,
+      "date": "2026-09-26",
+      "decision": "docs/evidence/WO-085/decisions.md#wo-085-d005"
+    },
+    "06-roadmap.md": {
+      "nonExemptBytesAtLanding": 90074,
+      "ceiling": 91876,
+      "date": "2026-09-26",
+      "decision": "docs/evidence/WO-085/decisions.md#wo-085-d005"
+    },
+    "07-execution-guide.md": {
+      "nonExemptBytesAtLanding": 184704,
+      "ceiling": 188399,
+      "date": "2026-09-26",
+      "decision": "docs/evidence/WO-085/decisions.md#wo-085-d012"
+    },
+    "08-publication-compiler.md": {
+      "nonExemptBytesAtLanding": 22552,
+      "ceiling": 23004,
+      "date": "2026-09-26",
+      "decision": "docs/evidence/WO-085/decisions.md#wo-085-d005"
+    },
+    "09-audit-resilience-privacy.md": {
+      "nonExemptBytesAtLanding": 50759,
+      "ceiling": 51775,
+      "date": "2026-09-26",
+      "decision": "docs/evidence/WO-085/decisions.md#wo-085-d005"
+    },
+    "10-ir-compatibility.md": {
+      "nonExemptBytesAtLanding": 25318,
+      "ceiling": 25825,
+      "date": "2026-09-26",
+      "decision": "docs/evidence/WO-085/decisions.md#wo-085-d005"
+    },
+    "11-proteino.md": {
+      "nonExemptBytesAtLanding": 2058,
+      "ceiling": 2100,
+      "date": "2026-09-26",
+      "decision": "docs/evidence/WO-085/decisions.md#wo-085-d005"
+    },
+    "11-protino.md": {
+      "nonExemptBytesAtLanding": 30626,
+      "ceiling": 31239,
+      "date": "2026-09-26",
+      "decision": "docs/evidence/WO-085/decisions.md#wo-085-d005"
+    },
+    "12-workstream-application.md": {
+      "nonExemptBytesAtLanding": 17997,
+      "ceiling": 18357,
+      "date": "2026-09-26",
+      "decision": "docs/evidence/WO-085/decisions.md#wo-085-d005"
+    },
+    "13-uifa-roles.md": {
+      "nonExemptBytesAtLanding": 26948,
+      "ceiling": 27487,
+      "date": "2026-09-26",
+      "decision": "docs/evidence/WO-085/decisions.md#wo-085-d005"
+    }
+  }
+}

@@ -1163,7 +1163,7 @@ remain open, with the third trial's record as the reopening observation.
 **Three-trial reading, 2026-09-21 (standard planning pass).** All three
 trials ran and adopted a method
 ([WO-145 D002](../evidence/WO-145/decisions.md#wo-145-d002),
-[WO-110 D001](../evidence/WO-110/decisions.md#wo-110-d001),
+[WO-110 D001](../evidence/WO-110/decisions.md#wo-110-d001--tinkerer-economy-experiment-focused-skeleton-suite-iteration),
 [WO-099 D008](../evidence/WO-099/decisions.md#wo-099-d008)), each with
 `regression: false`. Trial cost, as recorded: 163.5 s and 497,138
 broad-scope tokens (WO-145), 87 s and unknown tokens (WO-110), 2.73 s of

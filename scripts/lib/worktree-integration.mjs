@@ -296,7 +296,7 @@ function decisionStub(root, receipt) {
   const row = {
     id,
     date: receipt.date,
-    dispatch: `worktree integrate ${receipt.workOrder}`,
+    dispatch: `resume: ${receipt.phase === "repairing" ? "fix" : "final review"}; worktree integrate ${receipt.workOrder}`,
     decision:
       "Draft integration record: preserve both bases and recovery material; reviewer must assess carried-forward claims and complete this record.",
     evidence: [

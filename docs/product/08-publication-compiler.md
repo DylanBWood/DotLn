@@ -176,7 +176,11 @@ facts, examples, naming, capability claims, and entry points. It follows the
 change's references to the relevant README, runbook, planning view, and
 publication source links; it does not reread or rewrite the entire corpus on
 every order. Its existing outcome or breakout receipt names those surfaces,
-their evidence, and any remaining stale derivative. A source hash detects
+their evidence, and any remaining stale derivative. Edit the sentence that
+changed in place; `scripts/docs-check.mjs` in `npm run test:docs` bounds product
+bytes, new receipt paragraphs and candidates, decision dispatches, and local
+links against the controls in `docs/control/doc-ceilings.json` and
+`docs/control/doc-baseline.json`. A source hash detects
 changed bytes; refreshing that hash alone does not establish factual agreement.
 
 Independent verification checks that documentation against the implemented

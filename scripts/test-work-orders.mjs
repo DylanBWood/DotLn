@@ -22,6 +22,7 @@ import {
 } from "./lib/dependencies.mjs";
 import { fold, foldWorkOrders } from "./lib/control.mjs";
 import { runGit, failureOf, readGitObjects } from "./lib/git.mjs";
+import { linkFailures } from "./docs-check.mjs";
 import {
   localReleaseRecords,
   manifestWorkOrders,
@@ -526,6 +527,10 @@ await check(
     });
     writeLog(repo, cycle);
     assert.equal(rows().get("WO-034").state.latestVerdict, undefined);
+    assert.match(
+      renderIndex(readIndex(repo)),
+      /^- Verification: VER-002 \(pending\)\.$/m,
+    );
     cycle.push({
       type: "VerificationCompleted",
       workOrderId: "WO-034",
@@ -541,7 +546,14 @@ await check(
     });
     writeLog(repo, cycle);
     assert.equal(rows().get("WO-034").finalReviewVerdict, undefined);
-    assert.match(renderIndex(readIndex(repo)), /FINAL-002.*\(pending\)/);
+    assert.match(
+      renderIndex(readIndex(repo)),
+      /^- Final review: FINAL-002 \(pending\)\.$/m,
+    );
+    assert.match(
+      renderIndex(readIndex(repo)),
+      /Verification: \[VER-002\]\(\.\.\/\.\.\/docs\/verifications\/WO-034\/VER-002\.md\) \(pass\)/,
+    );
     const projected = foldWorkOrders(cycle);
     assert.deepEqual(projected.current, fold(cycle));
     assert.equal(projected.orders.get("WO-030").state.phase, "closed");
@@ -1450,3 +1462,53 @@ test("WO-142 binary Git failures retain diagnostics and identify missing batch o
     new RegExp(`invalid framing for requested object ${missing}`),
   );
 });
+
+await check(
+  "generated pending report rows resolve and completed missing reports remain failures",
+  () => {
+    const target = makeRepo("pending-report-links");
+    write(target, authorityPath("WO-998"), header("WO-998", "v1.0.0"));
+    const cycle = completed("WO-998");
+    const indexPath = "docs/work-orders/report-links.md";
+    const renderReports = (length) => {
+      writeLog(target, cycle.slice(0, length));
+      const rendered = renderIndex(readIndex(target));
+      const reports = rendered
+        .split("\n")
+        .filter((line) => /^- (?:Verification|Final review):/.test(line))
+        .join("\n");
+      write(target, indexPath, reports);
+      return linkFailures(target, [indexPath]);
+    };
+    assert.deepEqual(
+      renderReports(3),
+      [],
+      "pending verification has no report destination",
+    );
+    assert.deepEqual(
+      renderReports(4).map((row) => row.reason),
+      ["missing file"],
+    );
+    write(target, "docs/verifications/WO-998/VER-001.md", "# Verification\n");
+    assert.deepEqual(
+      renderReports(4),
+      [],
+      "completed verification links its existing report",
+    );
+    assert.deepEqual(
+      renderReports(5),
+      [],
+      "pending final review has no report destination",
+    );
+    assert.deepEqual(
+      renderReports(6).map((row) => row.reason),
+      ["missing file"],
+    );
+    write(target, "docs/final-reviews/WO-998/FINAL-001.md", "# Final review\n");
+    assert.deepEqual(
+      renderReports(6),
+      [],
+      "completed final review links its existing report",
+    );
+  },
+);

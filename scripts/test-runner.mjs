@@ -456,6 +456,18 @@ export const suites = [
     document: true,
     preflight: true,
   }),
+  node("docs-check", "scripts/docs-check.mjs", {
+    document: true,
+    preflight: true,
+    protects:
+      "product byte ceilings, receipt and dispatch boundaries, and repository documentation links hold",
+  }),
+  nodeTests("docs-check-fixtures", "scripts/test-docs-check.mjs", {
+    document: true,
+    needsBuild: false,
+    protects:
+      "document checks reject new growth and broken navigation while preserving declared exceptions",
+  }),
   node("index", "scripts/work-orders.mjs", {
     args: ["index", "--check"],
     fast: true,

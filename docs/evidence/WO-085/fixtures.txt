@@ -1,0 +1,32 @@
+$ node --test scripts/test-docs-check.mjs
+✔ byte ceilings count UTF-8, report exact overage and refuse absent products (73.247ms)
+✔ receipt and candidate baselines admit only counted labels under their original heading (117.384708ms)
+✔ roadmap activation and generated marker blocks are byte and shape exemptions, not whole-document exemptions (73.001167ms)
+✔ code fences hide receipt, candidate and link examples; generated links still resolve (70.637458ms)
+✔ handwritten and generated full decision anchors pass; short-form anchors and missing files fail (61.92125ms)
+✔ references, balanced destinations, duplicate headings, HTML anchors, line URLs and PR publication context (35.338208ms)
+✔ historical link exceptions are source/destination/count specific (60.589125ms)
+✔ dispatch fingerprints exempt only existing bytes, and new dispatches obey prefix and length (88.25875ms)
+✔ configuration roots and nonignored new documents are used; private and package fixtures are excluded (158.139875ms)
+✔ document check and fixtures run only in the document selection (0.15425ms)
+✔ link extraction ignores remote navigation and escaped examples through resolution (0.587084ms)
+✔ render-equivalent indented receipts and live links around escaped backticks stay checked (85.789209ms)
+✔ only real HTML anchors resolve, setext headings resolve, and indented examples are not links (60.690542ms)
+✔ historical exception counts cannot become fractional or unlimited (14.745542ms)
+✔ list continuation indentation preserves live links and hides only actual list code (27.245291ms)
+✔ a ceiling increase requires an existing planning decision, including after a prior consolidation (138.477042ms)
+✔ Markdown titles, nested brackets and decoded entities retain live destinations (20.899041ms)
+✔ list and quoted fences hide examples without hiding later links or nested headings (20.861834ms)
+✔ only a visible canonical release boundary creates or terminates the roadmap exemption (1.328042ms)
+✔ marker examples in code, quotes and larger comments never exempt bytes (0.404916ms)
+✔ rendered list and quote paragraphs and candidate headings remain checked (0.446959ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 21
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1175.691708
+
+Exit: 0

@@ -3962,6 +3962,13 @@
           "title": "Candidate — Tinkerer / Scientist",
           "summary": "## Candidate — Tinkerer / Scientist **Near-term planning request, 2026-09-11:** the operator asks to prioritize this candidate soon, including its adaptive bad-luck protection based on time since the last demonstrated application improvement. It remains unimplemented and unallocated. The operator explicitly excludes implementing it in the current WO-043 repair. Carry the request through existing `FUP-fc4158d3207e495d`; the next planning pass should select a bounded experiment and allocation, preserving the budget, evidence and reset distinctions below. Source: the [WO-043 breakout](../evidence/WO-043/ideation-commands-and-usage.md). **Allocated 2026-09-19 (second planning pass of that day).*",
           "missing": false
+        },
+        {
+          "hash": "1d7656c04386eb58280ae7618719e7848e3105b738629afba527abfb915291ee",
+          "ref": "docs/product/05-pattern-library.md#candidate--tinkerer--scientist",
+          "title": "Candidate — Tinkerer / Scientist",
+          "summary": "## Candidate — Tinkerer / Scientist **Near-term planning request, 2026-09-11:** the operator asks to prioritize this candidate soon, including its adaptive bad-luck protection based on time since the last demonstrated application improvement. It remains unimplemented and unallocated. The operator explicitly excludes implementing it in the current WO-043 repair. Carry the request through existing `FUP-fc4158d3207e495d`; the next planning pass should select a bounded experiment and allocation, preserving the budget, evidence and reset distinctions below. Source: the [WO-043 breakout](../evidence/WO-043/ideation-commands-and-usage.md). **Allocated 2026-09-19 (second planning pass of that day).*",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -15763,6 +15770,16 @@
             "WO-085"
           ],
           "at": "2026-09-25T21:29:57.109Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "duplicate",
+          "reason": "The prospective check is delivered by WO-085. Retarget the remaining historical sweep and instruction question to WO-085 D004; that work remains deferred and is not settled.",
+          "reopenWhen": "Next document-maintenance planning pass or an observed new verbatim decision dispatch.",
+          "targets": [
+            "FUP-71fc2efc208f597a"
+          ],
+          "at": "2026-09-26T03:37:03.008Z"
         }
       ]
     },
@@ -17941,6 +17958,90 @@
           "ref": "docs/evidence/WO-165/decisions.md#wo-165-d006",
           "title": "WO-165-D006: WO-165 final review may, within the boy-scout bound, correct M1 (the ENTROPY_REDUCER_ROUTES comment states that the background worker's tool surface is unobserved and serial by compiled r",
           "summary": "{ \"id\": \"WO-165-D006\", \"date\": \"2026-09-26\", \"dispatch\": \"resume: verify; independent VER-001\", \"decision\": \"Pass VER-001 on met criteria 1-5 and board the two minor defects and the non-blocking notes it found, instead of routing a repair. M1: the ENTROPY_REDUCER_ROUTES comment and D001's first rejected-option reason assert, without evidence, that the background route lacks a delegate tool. No WO-165 record engages the planning refutation's known issue on unpinned routes. M2: the WO-165 fixture's residue negative control matches only the removed wording, not delegate language in general. Correction to D001: the background worker's tool surface is session-attested and unobserved, because no f",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-71fc2efc208f597a",
+      "key": "decision:docs/evidence/WO-085/decisions.md#wo-085-d004",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "771236f6127ecb06d224865e7c1f424f878197a0a61fbd8e48974048da609973",
+          "ref": "docs/evidence/WO-085/decisions.md#wo-085-d004",
+          "title": "WO-085-D004: Sweep committed public decision records for operator chat retained verbatim, using WO-153 D008 as provenance; decide the bounded correction route for closed records and the role-text para",
+          "summary": "{ \"id\": \"WO-085-D004\", \"date\": \"2026-09-26\", \"dispatch\": \"resume: next; carry-in FUP-87ed701db7d7209e\", \"decision\": \"Deliver the prospective lexical dispatch check here and retarget the remaining historical operator-chat sweep and role-text question to a separate follow-up. Existing dispatches are stored only as fingerprints, not copied into the baseline.\", \"evidence\": [ \"WO-085 criterion 4 requires the remaining sweep stay named outside this order.\", \"WO-153 D008 includes both the historical sweep and instruction gap; this order explicitly changes no role text.\", \"A control prefix and length bound cannot establish semantic paraphrase; review still judges that distinction.\" ], \"rejected\": [ ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-085 delivers the prospective prefix and length check. The historical operator-chat sweep and role-text instruction remain for the next document-maintenance planning pass under WO-085 D004.",
+          "reopenWhen": "Next document-maintenance planning pass or an observed new verbatim decision dispatch.",
+          "targets": [],
+          "at": "2026-09-26T03:37:02.496Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-7c271477efbc2c15",
+      "key": "decision:docs/evidence/WO-085/decisions.md#wo-085-d008",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "17282da69142f3923a7bde02c8d719d677f883ee88f90ff70727438127ab95e3",
+          "ref": "docs/evidence/WO-085/decisions.md#wo-085-d008",
+          "title": "WO-085-D008: WO-085 resume: fix. F1: judge links in final-review PR.md like any other file, or record a planning decision for a different rule; declare the existing 308 occurrences as counted historic",
+          "summary": "{ \"id\": \"WO-085-D008\", \"date\": \"2026-09-26\", \"dispatch\": \"resume: verify; independent VER-001\", \"decision\": \"Fail the recorded subject and route five reproduced findings through WO-085 repair. F1 (criterion 1): a docs/-prefixed link in any final-review PR.md is resolved from the repository root, so 308 links in 24 closed PR bodies that are broken in the repository view and on the GitHub PR page pass silently, outside the declared historical inventory, and a new one passes too. F2 (criterion 1): any author-written top-level <!-- name:start --> / <!-- name:end --> pair exempts its contents from the byte ceiling and from receipt and candidate detection, although no generator writes a marker blo",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-a6b9c4dc86ac8995",
+      "key": "decision:docs/evidence/WO-085/decisions.md#wo-085-d009",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "c7a8ddbc16deda9a56719cdef130463b912e7cbc19447caf7abfb5b1c1635a80",
+          "ref": "docs/evidence/WO-085/decisions.md#wo-085-d009",
+          "title": "WO-085-D009: Planning, next document-maintenance pass: decide whether the receipt and candidate shapes widen to the populations the order counted (O1, O2); add a duty to WO-086 or a register row to re",
+          "summary": "{ \"id\": \"WO-085-D009\", \"date\": \"2026-09-26\", \"dispatch\": \"resume: verify; independent VER-001\", \"decision\": \"Board the fourteen non-blocking observations in VER-001 (O1-O14) instead of leaving them as report prose. None makes a criterion unmet. O1 and O2 are gaps in the order's Design, not the implementation: the specified receipt shape matches 28 of 102 dated bold paragraphs outside roadmap Release boundary, and the specified candidate shape matches 59 of the 64 Candidate headings the order counted. O3: the Release boundary exemption has no retirement duty in WO-086. O4: the control-file guards are HEAD-relative or absent. The repair may address observations inside its repaired seams within",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-040634d583e2c517",
+      "key": "decision:docs/evidence/WO-085/decisions.md#wo-085-d015",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "9cb322d6dcda502b7b0221d76dccf583ef7bd99e3697eec0b0b362b136a22823",
+          "ref": "docs/evidence/WO-085/decisions.md#wo-085-d015",
+          "title": "WO-085-D015: Planning, next document-maintenance pass, together with D009's items: decide whether the receipt and candidate recognizers normalize invisible prefixes, inline HTML and internal whitespac",
+          "summary": "{ \"id\": \"WO-085-D015\", \"date\": \"2026-09-26\", \"dispatch\": \"resume: verify; independent VER-002\", \"decision\": \"Pass the repaired subject: all five criteria are met at checkpoint refs/dotln/checkpoint/WO-085/8, VER-001 F1-F5 reproduce as fixed on copies of the real documents with the real controls, and the document gate is green on a live verifying window before the report exists. Board the ten new non-blocking observations V1-V10 here instead of leaving them as report prose; none makes a criterion unmet, and each sits on a seam D009 already sends to planning or is a zero-occurrence variant of a boarded class. The verifier changed no implementation.\", \"evidence\": [ \"npm run test:docs on the ver",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-40f361277410f64f",
+      "key": "decision:docs/evidence/WO-085/decisions.md#wo-085-d016",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "31aa615530014035a1c4691c0de10b8f94af7eae1169239ba3fc41751205a445",
+          "ref": "docs/evidence/WO-085/decisions.md#wo-085-d016",
+          "title": "WO-085-D016: Planning, at WO-167 activation or the next document-maintenance pass: WO-167 criterion 2 relies on the docs check to prove the role skills' citations of product 07 headings survive the fo",
+          "summary": "{ \"id\": \"WO-085-D016\", \"date\": \"2026-09-26\", \"dispatch\": \"resume: final review; FINAL-001 judgment and one planning observation\", \"decision\": \"Pass the reviewed subject without correction: main is unchanged since the repair's D010 integration, so no integration ran; the review reproduced the control-file counts and ceilings, the docs check, the focused suite and both gates on the final-review window, and every VER-002 observation stays boarded in D015. Route one reopened planning observation: receipt 030's third known issue is met on its scope half, because the link scan covers root and configured-document Markdown only, so the generated skills' heading citations, written as inline code, are",
           "missing": false
         }
       ],
