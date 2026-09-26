@@ -1,0 +1,20 @@
+$ node scripts/docs-check.mjs
+Document | Bytes | Exempt bytes | Ceiling | Headroom
+docs/product/00-vision.md | 28025 | 0 | 28586 | 561
+docs/product/01-principles.md | 9462 | 0 | 9652 | 190
+docs/product/02-domain-model.md | 147657 | 0 | 150611 | 2954
+docs/product/03-architecture.md | 172678 | 0 | 176132 | 3454
+docs/product/04-interfaces.md | 51582 | 0 | 52614 | 1032
+docs/product/05-pattern-library.md | 133345 | 0 | 136012 | 2667
+docs/product/06-roadmap.md | 90074 | 59833 | 91876 | 1802
+docs/product/07-execution-guide.md | 182346 | 0 | 185993 | 3647
+docs/product/08-publication-compiler.md | 22552 | 0 | 23004 | 452
+docs/product/09-audit-resilience-privacy.md | 50759 | 0 | 51775 | 1016
+docs/product/10-ir-compatibility.md | 25318 | 0 | 25825 | 507
+docs/product/11-proteino.md | 2058 | 0 | 2100 | 42
+docs/product/11-protino.md | 30626 | 0 | 31239 | 613
+docs/product/12-workstream-application.md | 17997 | 0 | 18357 | 360
+docs/product/13-uifa-roles.md | 26948 | 0 | 27487 | 539
+PASS docs check: 15 product documents; 40 declared historical link occurrences; 0 failures
+
+Exit: 0
