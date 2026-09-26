@@ -58,43 +58,43 @@
       "path": ".agents/skills/dotln-executor/SKILL.md",
       "change": "changed",
       "before": "sha256:0ccd050c472284df4ebc8d93c2314b41ed18ed2127abe8d04345484c5ca67bfe",
-      "after": "sha256:f31b24372d0b226d23b1d01452e5985388184f6215ece5bf5258a6f6afc54835"
+      "after": "sha256:6643f4ad651b441ab40043b087199b98a78c37ec0c69a554bfb08157817caeca"
     },
     {
       "path": ".agents/skills/dotln-planner/SKILL.md",
       "change": "changed",
       "before": "sha256:c3ce28c88b59f7293757777ec15e1aad74e7b2ef9927b1eda7b1d5242c6815f5",
-      "after": "sha256:678e4884bcb1e4f239fca7f49b9df2c7449fb25291a62ae4f1c962acbc3810fd"
+      "after": "sha256:c00676cd0d747c4523e9feb9771e70cc62d36018a7c4e3288e1d3734a0a49d02"
     },
     {
       "path": ".agents/skills/dotln-refuter/SKILL.md",
       "change": "added",
       "before": null,
-      "after": "sha256:7707aa2adfeb1aff80a977ae64cf3a09a45dc76c1bb913b0556577f620cb95cc"
+      "after": "sha256:b282804038838213032d6423d989f5682475dd1b5c5ab9f7bdd8390b0eb8ecd4"
     },
     {
       "path": ".agents/skills/dotln-release-close/SKILL.md",
       "change": "changed",
       "before": "sha256:cfd5402f17517d6a2dba8481f91981ef631e70d9e800f0ec23ceeb90304ed1ef",
-      "after": "sha256:d597ca8644f1e88df0b6424d2e4108ebffcbfd4969b253955be18918e92f120f"
+      "after": "sha256:e3a1a826664673f04a40e85592090a1d1a480b7b382210e2d96a9e88ec9481d9"
     },
     {
       "path": ".agents/skills/dotln-reviewer/SKILL.md",
       "change": "changed",
       "before": "sha256:f1bc3fbc5b11230b9fd2b2de62cfc7befc2949692e91ef358543ee0c23bf0dfe",
-      "after": "sha256:df63279efc4e866f946431372a6e4c9f9667a6be285dad2812ee9438b83637ab"
+      "after": "sha256:b570ee4b72b48c3652fd3740d908c34a3bad3ea5668fc6ce520714ee55da41cb"
     },
     {
       "path": ".agents/skills/dotln-verifier/SKILL.md",
       "change": "changed",
       "before": "sha256:bbc52866dc1877e029ea73df81549e895c35b971c8b06b037f02b72b83ccdddc",
-      "after": "sha256:a6d22b67b8ed2fb7a83219053ea291b935cab9df6c512db37870050b3f559871"
+      "after": "sha256:9ad2f907c43e24d3b09a9c0b807cd7b0c6d0173dba2628111343d0385bb28e6c"
     },
     {
       "path": ".claude/harness-manifest.json",
       "change": "changed",
       "before": "sha256:ffe3c8d16eda25d7b95b0aef93ed9a8cdc3a45f1a7b91d8bfa2540ab2acb7ce6",
-      "after": "sha256:57d6af10e46103deba197d33ee1e0ccb06460a57fb3b8d6e1ac39ec61b52efa7"
+      "after": "sha256:b938575e9dc043290e87b91c12ae0d44174f5d73bc02e7a8ea5e8efc39c8e342"
     },
     {
       "path": ".claude/hooks/commit-msg.mjs",
@@ -202,37 +202,37 @@
       "path": ".claude/skills/dotln-executor/SKILL.md",
       "change": "changed",
       "before": "sha256:7022395edf278f7a0e3c6ccf9a74f9a6d13551ab31afd6a03ee0615350b1e173",
-      "after": "sha256:f31b24372d0b226d23b1d01452e5985388184f6215ece5bf5258a6f6afc54835"
+      "after": "sha256:6643f4ad651b441ab40043b087199b98a78c37ec0c69a554bfb08157817caeca"
     },
     {
       "path": ".claude/skills/dotln-planner/SKILL.md",
       "change": "changed",
       "before": "sha256:7546dc8e4925f5e8d7f5b37e6ae69911f3fb2b5ffd807f6dc90e7e4f07834dcd",
-      "after": "sha256:678e4884bcb1e4f239fca7f49b9df2c7449fb25291a62ae4f1c962acbc3810fd"
+      "after": "sha256:c00676cd0d747c4523e9feb9771e70cc62d36018a7c4e3288e1d3734a0a49d02"
     },
     {
       "path": ".claude/skills/dotln-refuter/SKILL.md",
       "change": "added",
       "before": null,
-      "after": "sha256:7707aa2adfeb1aff80a977ae64cf3a09a45dc76c1bb913b0556577f620cb95cc"
+      "after": "sha256:b282804038838213032d6423d989f5682475dd1b5c5ab9f7bdd8390b0eb8ecd4"
     },
     {
       "path": ".claude/skills/dotln-release-close/SKILL.md",
       "change": "changed",
       "before": "sha256:9b3cb4923bc2f0f89726cd948a4f0ed478fcd553b8a0825ac16eff9dfa87d29e",
-      "after": "sha256:d597ca8644f1e88df0b6424d2e4108ebffcbfd4969b253955be18918e92f120f"
+      "after": "sha256:e3a1a826664673f04a40e85592090a1d1a480b7b382210e2d96a9e88ec9481d9"
     },
     {
       "path": ".claude/skills/dotln-reviewer/SKILL.md",
       "change": "changed",
       "before": "sha256:8e284d04794f9f595238d85c15b8e015a17be3ddd2b87f217fc3a616f69ccee5",
-      "after": "sha256:df63279efc4e866f946431372a6e4c9f9667a6be285dad2812ee9438b83637ab"
+      "after": "sha256:b570ee4b72b48c3652fd3740d908c34a3bad3ea5668fc6ce520714ee55da41cb"
     },
     {
       "path": ".claude/skills/dotln-verifier/SKILL.md",
       "change": "changed",
       "before": "sha256:c49b9e6c020fa3aeb3932caf3bb8fc868a1144f5f0701a051719a464fb7f201e",
-      "after": "sha256:a6d22b67b8ed2fb7a83219053ea291b935cab9df6c512db37870050b3f559871"
+      "after": "sha256:9ad2f907c43e24d3b09a9c0b807cd7b0c6d0173dba2628111343d0385bb28e6c"
     },
     {
       "path": ".codex/config.toml",
@@ -278,44 +278,44 @@
       {
         "path": ".agents/skills/dotln-executor/SKILL.md",
         "change": "declared executor support fragments, repair modifier and build identity",
-        "before": "sha256:f31b24372d0b226d23b1d01452e5985388184f6215ece5bf5258a6f6afc54835",
-        "after": "sha256:3ae7ec275b301984266a72e3a67039f20a18fbadba6460f08ad055fa0ab478d2"
+        "before": "sha256:6643f4ad651b441ab40043b087199b98a78c37ec0c69a554bfb08157817caeca",
+        "after": "sha256:9afff28ec573d95af72d562ec19087188f1c7924f06e83026db51f6549b66866"
       },
       {
         "path": ".agents/skills/dotln-planner/SKILL.md",
         "change": "support origins and derived build/file identities only",
-        "before": "sha256:678e4884bcb1e4f239fca7f49b9df2c7449fb25291a62ae4f1c962acbc3810fd",
-        "after": "sha256:ef47bd025fafdef685cd43c14838918adad673f87f0f1d640a89ecef87cd91c6"
+        "before": "sha256:c00676cd0d747c4523e9feb9771e70cc62d36018a7c4e3288e1d3734a0a49d02",
+        "after": "sha256:471b82016f63c6eb946527975780f342d0aa0d057ad77921e2651a90009794ef"
       },
       {
         "path": ".agents/skills/dotln-refuter/SKILL.md",
         "change": "support origins and derived build/file identities only",
-        "before": "sha256:7707aa2adfeb1aff80a977ae64cf3a09a45dc76c1bb913b0556577f620cb95cc",
-        "after": "sha256:5d2192afcd554aa27f98a2724fb030c19a074a37b15d622b106914e8af485fed"
+        "before": "sha256:b282804038838213032d6423d989f5682475dd1b5c5ab9f7bdd8390b0eb8ecd4",
+        "after": "sha256:a0d4ce2b8dbba8a30c4b5adbea86cf610f15cbda55f6211b1b2cbbe35b31d7f1"
       },
       {
         "path": ".agents/skills/dotln-release-close/SKILL.md",
         "change": "support origins and derived build/file identities only",
-        "before": "sha256:d597ca8644f1e88df0b6424d2e4108ebffcbfd4969b253955be18918e92f120f",
-        "after": "sha256:d8083d30e123977814b735e121a954b88cf6a25a2a7d661558fd1876b92d92db"
+        "before": "sha256:e3a1a826664673f04a40e85592090a1d1a480b7b382210e2d96a9e88ec9481d9",
+        "after": "sha256:2151c72b8b05ef54435ed1c954a266c0b2f5cccff79c6764e6e9a850856c91d7"
       },
       {
         "path": ".agents/skills/dotln-reviewer/SKILL.md",
         "change": "support origins and derived build/file identities only",
-        "before": "sha256:df63279efc4e866f946431372a6e4c9f9667a6be285dad2812ee9438b83637ab",
-        "after": "sha256:831a7782bf2b3f0ae8037147a63554753b50c06c00174a185627a3df1f9f46c4"
+        "before": "sha256:b570ee4b72b48c3652fd3740d908c34a3bad3ea5668fc6ce520714ee55da41cb",
+        "after": "sha256:4a6edb422a3723fa1bb0d1313f19d5ac5030a51692a831e07c52cde071aea996"
       },
       {
         "path": ".agents/skills/dotln-verifier/SKILL.md",
         "change": "support origins and derived build/file identities only",
-        "before": "sha256:a6d22b67b8ed2fb7a83219053ea291b935cab9df6c512db37870050b3f559871",
-        "after": "sha256:a9efc33de512827a6aaee24813311dd973c96a1d8a67c3de0d1b491679e06592"
+        "before": "sha256:9ad2f907c43e24d3b09a9c0b807cd7b0c6d0173dba2628111343d0385bb28e6c",
+        "after": "sha256:08460862804838f7079e083cb1b1b5a16e81f1ed7cd8a8fa28acd0f4cd16c2ec"
       },
       {
         "path": ".claude/harness-manifest.json",
         "change": "support origins and derived build/file identities only",
-        "before": "sha256:57d6af10e46103deba197d33ee1e0ccb06460a57fb3b8d6e1ac39ec61b52efa7",
-        "after": "sha256:7221f05af75a017276d5bfd6c553934b6026b713a9af5b849fb8da432b3c5e16"
+        "before": "sha256:b938575e9dc043290e87b91c12ae0d44174f5d73bc02e7a8ea5e8efc39c8e342",
+        "after": "sha256:88f577ef6951e74f002717986b30843ba561886cfb78af214743600f45bf8d81"
       },
       {
         "path": ".claude/hooks/commit-msg.mjs",
@@ -404,38 +404,38 @@
       {
         "path": ".claude/skills/dotln-executor/SKILL.md",
         "change": "declared executor support fragments, repair modifier and build identity",
-        "before": "sha256:f31b24372d0b226d23b1d01452e5985388184f6215ece5bf5258a6f6afc54835",
-        "after": "sha256:3ae7ec275b301984266a72e3a67039f20a18fbadba6460f08ad055fa0ab478d2"
+        "before": "sha256:6643f4ad651b441ab40043b087199b98a78c37ec0c69a554bfb08157817caeca",
+        "after": "sha256:9afff28ec573d95af72d562ec19087188f1c7924f06e83026db51f6549b66866"
       },
       {
         "path": ".claude/skills/dotln-planner/SKILL.md",
         "change": "support origins and derived build/file identities only",
-        "before": "sha256:678e4884bcb1e4f239fca7f49b9df2c7449fb25291a62ae4f1c962acbc3810fd",
-        "after": "sha256:ef47bd025fafdef685cd43c14838918adad673f87f0f1d640a89ecef87cd91c6"
+        "before": "sha256:c00676cd0d747c4523e9feb9771e70cc62d36018a7c4e3288e1d3734a0a49d02",
+        "after": "sha256:471b82016f63c6eb946527975780f342d0aa0d057ad77921e2651a90009794ef"
       },
       {
         "path": ".claude/skills/dotln-refuter/SKILL.md",
         "change": "support origins and derived build/file identities only",
-        "before": "sha256:7707aa2adfeb1aff80a977ae64cf3a09a45dc76c1bb913b0556577f620cb95cc",
-        "after": "sha256:5d2192afcd554aa27f98a2724fb030c19a074a37b15d622b106914e8af485fed"
+        "before": "sha256:b282804038838213032d6423d989f5682475dd1b5c5ab9f7bdd8390b0eb8ecd4",
+        "after": "sha256:a0d4ce2b8dbba8a30c4b5adbea86cf610f15cbda55f6211b1b2cbbe35b31d7f1"
       },
       {
         "path": ".claude/skills/dotln-release-close/SKILL.md",
         "change": "support origins and derived build/file identities only",
-        "before": "sha256:d597ca8644f1e88df0b6424d2e4108ebffcbfd4969b253955be18918e92f120f",
-        "after": "sha256:d8083d30e123977814b735e121a954b88cf6a25a2a7d661558fd1876b92d92db"
+        "before": "sha256:e3a1a826664673f04a40e85592090a1d1a480b7b382210e2d96a9e88ec9481d9",
+        "after": "sha256:2151c72b8b05ef54435ed1c954a266c0b2f5cccff79c6764e6e9a850856c91d7"
       },
       {
         "path": ".claude/skills/dotln-reviewer/SKILL.md",
         "change": "support origins and derived build/file identities only",
-        "before": "sha256:df63279efc4e866f946431372a6e4c9f9667a6be285dad2812ee9438b83637ab",
-        "after": "sha256:831a7782bf2b3f0ae8037147a63554753b50c06c00174a185627a3df1f9f46c4"
+        "before": "sha256:b570ee4b72b48c3652fd3740d908c34a3bad3ea5668fc6ce520714ee55da41cb",
+        "after": "sha256:4a6edb422a3723fa1bb0d1313f19d5ac5030a51692a831e07c52cde071aea996"
       },
       {
         "path": ".claude/skills/dotln-verifier/SKILL.md",
         "change": "support origins and derived build/file identities only",
-        "before": "sha256:a6d22b67b8ed2fb7a83219053ea291b935cab9df6c512db37870050b3f559871",
-        "after": "sha256:a9efc33de512827a6aaee24813311dd973c96a1d8a67c3de0d1b491679e06592"
+        "before": "sha256:9ad2f907c43e24d3b09a9c0b807cd7b0c6d0173dba2628111343d0385bb28e6c",
+        "after": "sha256:08460862804838f7079e083cb1b1b5a16e81f1ed7cd8a8fa28acd0f4cd16c2ec"
       },
       {
         "path": ".codex/config.toml",

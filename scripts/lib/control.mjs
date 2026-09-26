@@ -2,7 +2,6 @@ import { validateAllocation, canonical } from "./derived-contract.mjs";
 import { validateRecordedAt } from "./control-time.mjs";
 import { validateAccountLabel } from "./control-actor.mjs";
 import { defaultRoots, docRelative } from "./config.mjs";
-import { partialGateCheck } from "./gate-evidence.mjs";
 
 const attestedEventTypes = new Set([
   "ImplementationReady",
@@ -35,6 +34,14 @@ export const CORRECTABLE_FIELDS = [
 ];
 const HEX_64 = /^[a-f0-9]{64}$/u;
 const TREE_HASH = /^(?:[a-f0-9]{40}|[a-f0-9]{64})$/u;
+/** The rule `partialGateCheck` applies in packages/skeleton/src/gate-evidence.mjs,
+ * restated here because the control fold runs in a copied control plane that
+ * carries no skeleton source (WO-070): any shape of either field other than
+ * absent, `false` or an empty list marks a partial row. */
+const partialRow = (row) =>
+  (row.partial !== undefined && row.partial !== false) ||
+  (row.excludedSuites !== undefined &&
+    !(Array.isArray(row.excludedSuites) && row.excludedSuites.length === 0));
 /** The bound gate row publication and release close consume from committed
  * control history, where the local gate rows may be absent. Partial rows are
  * judged by the same rule publication applies. */
@@ -45,7 +52,7 @@ export const validProductGate = (gate, evidenceRef) =>
   gate.checkId === "npm test" &&
   gate.executed === true &&
   gate.exitCode === 0 &&
-  !partialGateCheck(gate) &&
+  !partialRow(gate) &&
   HEX_64.test(gate.codeIdentity ?? "") &&
   TREE_HASH.test(gate.treeHash ?? "") &&
   Number.isFinite(gate.durationMs) &&

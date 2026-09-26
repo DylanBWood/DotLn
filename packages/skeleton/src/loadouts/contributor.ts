@@ -501,7 +501,7 @@ const sessionCommands =
 // WO-158: the designated routes replace the improvised handling its catalog
 // found; every role in both harnesses names them.
 const offRamps =
-  "Off-ramps (WO-158): an operator-accepted unmet criterion is `npm run resume -- waive <criterion>` (never by the order's own executor) and a terminal failed, superseded or abandoned order is `withdraw`, both naming the operator's captured words; a wrong attestation, report path or checkpoint is `correct`, never a verdict or report bytes, and a recorded passing final review that carries no product gate binds one in `closed` with `correct --set productGate=<evidenceRef>`, only a complete passing `npm test` row on the bytes the pass recorded; override use is `override-record`, appended by Claude's hook at `operator override: off` and run from the printed command in Codex. Never edit a filed report, amend a criterion to pass or waive in prose.";
+  "Off-ramps (WO-158): an operator-accepted unmet criterion is `npm run resume -- waive <criterion>` (never by the order's own executor) and a terminal failed, superseded or abandoned order is `withdraw`, both naming the operator's captured words; a wrong attestation, report path or checkpoint is `correct`, never a verdict or report bytes; override use is `override-record`, appended by Claude's hook at `operator override: off` and run from the printed command in Codex. Never edit a filed report, amend a criterion to pass or waive in prose.";
 const targetRoles: readonly HarnessRole[] = contributorRoles.map((role) => {
   const procedure =
     role.name === "release-close"
