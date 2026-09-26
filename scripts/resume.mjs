@@ -223,7 +223,9 @@ export const OFF_RAMP_PHASES = {
   // Every phase but closed and withdrawn; `none` only for an order the log
   // knows (an allocated derived order never activated).
   withdraw: ["none", ...openPhases],
-  correct: openPhases,
+  // A correction changes no phase, and a recorded passing final review's
+  // missing product gate is discovered by publication, after `closed`.
+  correct: [...openPhases, "closed"],
   "override-record": openPhases,
 };
 const legalOffRamps = (state) =>
@@ -1531,6 +1533,17 @@ export const main = async (argv = process.argv.slice(2)) => {
       }
       if (!Object.keys(fields).length)
         throw new Error(`usage: ${commandFor(action)}`);
+      // After closing, the only correction is binding the product gate a
+      // passing final review recorded without; attestations, report paths and
+      // checkpoints are corrected while the order is open, so a closed
+      // order's close ordinal, index row and meter window stay put.
+      if (
+        state.phase === "closed" &&
+        Object.keys(fields).some((name) => name !== "productGate")
+      )
+        throw new Error(
+          "correct refused: in closed a correction binds only a product gate (--set productGate=<evidenceRef>); attestations, report paths and checkpoints are corrected before the order closes",
+        );
       const actor = routeActor(action, actorArgs);
       const segment = control.locations.get(state.workOrderId);
       const segmentEvents = control.eventSegments.get(segment) ?? [];
@@ -1583,6 +1596,8 @@ export const main = async (argv = process.argv.slice(2)) => {
           )
           .at(-1);
         if (latest) return latest.fields[name];
+        if (name === "productGate")
+          return subject.evidence?.productGate?.evidenceRef;
         return CORRECTABLE_ATTESTATION_FIELDS.includes(name)
           ? subject.actor?.[name]
           : subject[name];
@@ -1590,7 +1605,9 @@ export const main = async (argv = process.argv.slice(2)) => {
       const previous = {};
       for (const [name, value] of Object.entries(fields)) {
         const current = effective(name);
-        if (current === undefined)
+        // A product gate is the one field a result may lack: binding one is
+        // the correction's purpose, so "none" is its recorded previous value.
+        if (current === undefined && name !== "productGate")
           throw new Error(
             `correct refused: ordinal ${ordinal} (${subject.type}) records no ${name}`,
           );
@@ -1598,7 +1615,72 @@ export const main = async (argv = process.argv.slice(2)) => {
           throw new Error(
             `correct refused: ordinal ${ordinal} already records ${name} ${value}`,
           );
-        previous[name] = current;
+        previous[name] = current ?? "none";
+      }
+      let boundGate;
+      if (fields.productGate !== undefined) {
+        // Publication and release close consume the reviewer's product gate
+        // from the committed FinalReviewCompleted event. A review recorded
+        // without one (the result transition only advises) binds a complete
+        // passing `npm test` row at the working tree's code identity, so the
+        // bound gate judged the bytes that publish (WO-115 D026).
+        if (
+          subject.type !== "FinalReviewCompleted" ||
+          subject.verdict !== "pass"
+        )
+          throw new Error(
+            `correct refused: a product gate is bound only to a recorded passing final review, not to ordinal ${ordinal} (${subject.type}${subject.verdict ? ` ${subject.verdict}` : ""})`,
+          );
+        // A verdict never moves to other bytes: a review that already carries
+        // a gate keeps it, and the bound row must have run on the bytes the
+        // pass recorded in its checkpoint, which must still be the working
+        // tree. Anything else takes a fresh final review.
+        const carried = effective("productGate");
+        if (carried !== undefined)
+          throw new Error(
+            `correct refused: ordinal ${ordinal} already records product gate ${carried}; a verdict never moves to other bytes, and a changed subject takes a fresh final review`,
+          );
+        if (!/^[0-9a-f]{40,64}$/u.test(subject.checkpointSha ?? ""))
+          throw new Error(
+            `correct refused: ordinal ${ordinal} records no checkpoint, so the bytes its verdict judged cannot be established`,
+          );
+        const { readGateChecks, gateCodeIdentity } =
+          await import("./lib/gate-evidence.mjs");
+        const { validProductGate } = await import("./lib/control.mjs");
+        const row = readGateChecks(repoRoot)
+          .filter(
+            (candidate) =>
+              candidate.checkId === "npm test" &&
+              candidate.evidenceRef === fields.productGate &&
+              validProductGate(candidate, fields.productGate),
+          )
+          .at(-1);
+        if (!row)
+          throw new Error(
+            `correct refused: no complete passing npm test row records ${fields.productGate}; run the product gate on the current source and name its evidence reference`,
+          );
+        const judged = gateCodeIdentity(repoRoot, subject.checkpointSha);
+        if (row.codeIdentity !== judged)
+          throw new Error(
+            `correct refused: ${fields.productGate} records code identity ${row.codeIdentity}, but ordinal ${ordinal} judged ${judged} (checkpoint ${subject.checkpointRef ?? subject.checkpointSha}); a bound gate must have run on the bytes the pass recorded`,
+          );
+        const identity = gateCodeIdentity(repoRoot);
+        if (identity !== judged)
+          throw new Error(
+            `correct refused: the working tree's code identity ${identity} differs from the ${judged} ordinal ${ordinal} judged; bind before changing source, or take a fresh final review of the changed subject`,
+          );
+        boundGate = Object.fromEntries(
+          [
+            "checkId",
+            "treeHash",
+            "codeIdentity",
+            "durationMs",
+            "evidenceRef",
+            "recordedAt",
+            "executed",
+            "exitCode",
+          ].map((name) => [name, row[name]]),
+        );
       }
       let judgedReportHash;
       if (fields.reportPath !== undefined) {
@@ -1719,6 +1801,7 @@ export const main = async (argv = process.argv.slice(2)) => {
         fields,
         previous,
         reason: values.get("--reason"),
+        ...(boundGate ? { evidence: { productGate: boundGate } } : {}),
         actor,
       });
       message = `Recorded RecordCorrected for ${state.workOrderId} at ordinal ${correctionOrdinal}: ordinal ${ordinal} (${subject.type}) ${Object.entries(

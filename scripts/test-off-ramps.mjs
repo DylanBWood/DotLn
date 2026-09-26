@@ -43,9 +43,12 @@ const baseEnv = {
   GIT_COMMITTER_EMAIL: "fixture@example.invalid",
 };
 // Checkpoints need a HEAD to parent their recovery commits, and the order's
-// own branch selects it as its worktree would.
+// own branch selects it as its worktree would. The fixture's scripts are
+// tracked so its code identity, like a real worktree's, is the same whether
+// read from the working tree or from a checkpoint (WO-115 D026).
 for (const args of [
-  ["commit", "-q", "--allow-empty", "-m", "fixture"],
+  ["add", "-A"],
+  ["commit", "-q", "-m", "fixture"],
   ["checkout", "-q", "-b", "wo-099"],
 ])
   assert.equal(
@@ -136,7 +139,9 @@ const legalIn = {
   repairing: ["waive", "withdraw", "correct", "override-record"],
   verified: ["waive", "withdraw", "correct", "override-record"],
   "final-review": ["waive", "withdraw", "correct", "override-record"],
-  closed: [],
+  // A correction changes no phase; a closed order's recorded pass may still
+  // need its product gate bound before publication (WO-115 D026).
+  closed: ["correct"],
   withdrawn: [],
 };
 const matrix = (id = "WO-099") => {
@@ -918,6 +923,117 @@ report("docs/final-reviews/WO-101/FINAL-001.md", ["**Criterion 2:** met."]);
 on101(["final-review-result", "pass", ...agentFlags]);
 assert.equal(matrix("WO-101"), "closed");
 
+// A recorded passing final review that carries no product gate (the result
+// transition only advises) is bound to one in `closed` by the row's evidence
+// reference. The row must be a complete passing npm test at the working
+// tree's code identity, and only a passing final review takes one; the
+// correction carries the whole row for the publication consumers
+// (WO-115 D026).
+const reviewOrdinal = events("WO-101").length;
+assert.equal(events("WO-101").at(-1).type, "FinalReviewCompleted");
+assert.equal(events("WO-101").at(-1).evidence?.productGate, undefined);
+const bindGate = (ordinal, reference) => [
+  "correct",
+  String(ordinal),
+  "--set",
+  `productGate=${reference}`,
+  "--reason",
+  "bind the gate the transition could not find",
+  ...operator,
+  "--work-order",
+  "WO-101",
+];
+// `refuse` counts WO-099's events; these refusals must leave WO-101's alone.
+const before101 = events("WO-101").length;
+refuse(
+  /no complete passing npm test row records host-gate:missing:npm test/,
+  bindGate(reviewOrdinal, "host-gate:missing:npm test"),
+);
+const { gateCodeIdentity, gateTreeHash, recordGateChecks } = await import(
+  pathToFileURL(join(root, "scripts/lib/gate-evidence.mjs"))
+);
+const gateRow = (evidenceRef, codeIdentity) => ({
+  checkId: "npm test",
+  codeIdentity,
+  treeHash: gateTreeHash(root),
+  subject: gateTreeHash(root),
+  durationMs: 1,
+  executed: true,
+  exitCode: 0,
+  evidenceRef,
+  recordedAt: new Date().toISOString(),
+});
+recordGateChecks(root, [
+  gateRow("host-gate:stale:npm test", "0".repeat(64)),
+  gateRow("host-gate:current:npm test", gateCodeIdentity(root)),
+]);
+refuse(
+  /records code identity 0{64}, but ordinal \d+ judged [a-f0-9]{64} \(checkpoint refs\/dotln\/checkpoint\/WO-101\/\d+\)/,
+  bindGate(reviewOrdinal, "host-gate:stale:npm test"),
+);
+refuse(
+  /a product gate is bound only to a recorded passing final review, not to ordinal \d+ \(FinalReviewRequested\)/,
+  bindGate(reviewOrdinal - 1, "host-gate:current:npm test"),
+);
+// In closed, nothing but a product gate is corrected.
+refuse(/in closed a correction binds only a product gate/, [
+  "correct",
+  String(reviewOrdinal),
+  "--set",
+  "effort=high",
+  "--set",
+  "source=operator-attested",
+  "--reason",
+  "late attestation",
+  ...operator,
+  "--work-order",
+  "WO-101",
+]);
+// A bound gate must have run on the bytes the pass recorded and the working
+// tree must still be those bytes.
+const ignoreBytes = readFileSync(join(root, ".gitignore"));
+writeFileSync(join(root, ".gitignore"), ignoreBytes + "# late edit\n");
+refuse(
+  /the working tree's code identity [a-f0-9]{64} differs from the [a-f0-9]{64} ordinal \d+ judged/,
+  bindGate(reviewOrdinal, "host-gate:current:npm test"),
+);
+writeFileSync(join(root, ".gitignore"), ignoreBytes);
+assert.equal(events("WO-101").length, before101);
+pass(bindGate(reviewOrdinal, "host-gate:current:npm test"));
+const boundGate = events("WO-101").at(-1);
+assert.equal(boundGate.type, "RecordCorrected");
+assert.deepEqual(boundGate.subject, {
+  ordinal: reviewOrdinal,
+  type: "FinalReviewCompleted",
+  reportPath: "docs/final-reviews/WO-101/FINAL-001.md",
+});
+assert.deepEqual(boundGate.fields, {
+  productGate: "host-gate:current:npm test",
+});
+assert.deepEqual(boundGate.previous, { productGate: "none" });
+assert.equal(
+  boundGate.evidence.productGate.codeIdentity,
+  gateCodeIdentity(root),
+);
+assert.equal(boundGate.evidence.productGate.exitCode, 0);
+assert.equal(matrix("WO-101"), "closed");
+assert.equal(
+  status("WO-101").corrections.at(-1).evidence.productGate.evidenceRef,
+  "host-gate:current:npm test",
+);
+refuse(
+  /already records productGate host-gate:current:npm test/,
+  bindGate(reviewOrdinal, "host-gate:current:npm test"),
+);
+// A verdict never moves to other bytes: a review with a gate keeps it.
+recordGateChecks(root, [
+  gateRow("host-gate:later:npm test", gateCodeIdentity(root)),
+]);
+refuse(
+  /already records product gate host-gate:current:npm test; a verdict never moves to other bytes/,
+  bindGate(reviewOrdinal, "host-gate:later:npm test"),
+);
+
 // The fold refuses a malformed off-ramp event even when hand-appended.
 const { fold } = await import(pathToFileURL(join(root, "scripts/resume.mjs")));
 const activation = {
@@ -963,4 +1079,45 @@ assert.throws(
     ]),
   /invalid CriterionWaived operator capture at line 2/,
 );
+// A hand-appended gate binding must name a final review and carry a valid
+// row whose reference matches the field (WO-115 D026).
+const validGate = gateRow("host-gate:hand:npm test", "0".repeat(64));
+for (const [label, subject, evidence, pattern] of [
+  [
+    "subject",
+    { ordinal: 1, type: "WorkOrderActivated" },
+    { productGate: validGate },
+    /invalid RecordCorrected productGate subject at line 2/,
+  ],
+  [
+    "reference",
+    { ordinal: 1, type: "FinalReviewCompleted" },
+    { productGate: { ...validGate, evidenceRef: "host-gate:other:npm test" } },
+    /invalid RecordCorrected productGate evidence at line 2/,
+  ],
+  [
+    "partial",
+    { ordinal: 1, type: "FinalReviewCompleted" },
+    { productGate: { ...validGate, partial: true } },
+    /invalid RecordCorrected productGate evidence at line 2/,
+  ],
+])
+  assert.throws(
+    () =>
+      fold([
+        activation,
+        {
+          ...activation,
+          type: "RecordCorrected",
+          subject,
+          fields: { productGate: "host-gate:hand:npm test" },
+          previous: { productGate: "none" },
+          reason: "hand edit",
+          evidence,
+          actor: human,
+        },
+      ]),
+    pattern,
+    label,
+  );
 process.stdout.write("off-ramp fixtures passed\n");

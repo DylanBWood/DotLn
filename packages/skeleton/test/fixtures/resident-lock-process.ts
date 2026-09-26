@@ -109,7 +109,18 @@ for (const op of [
 syncBuiltinESMExports();
 
 const { ResidentHost } = await import("../../src/resident-host.js");
+const { ConsoleLoopback } = await import("../../src/console-loopback.js");
 const { actorCatalog } = await import("../../src/actor-catalog.js");
+// This fixture enumerates the store's acquisition calls. The command socket is
+// exercised by the console suite; starting it for every killed/restarted child
+// adds unrelated listen, descriptor sync and teardown work to this matrix.
+ConsoleLoopback.prototype.start = async () => ({
+  version: 1,
+  host: "127.0.0.1",
+  port: 0,
+  token: "",
+});
+ConsoleLoopback.prototype.close = async () => {};
 const configuration = JSON.parse(
   fs.readFileSync(join(input.directory, "resident.json"), "utf8"),
 );

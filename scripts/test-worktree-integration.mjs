@@ -142,6 +142,15 @@ function fixture(t, { reviewed = false, third = "active" } = {}) {
   ]);
   git(origin, "config", "maintenance.auto", "false");
   git(origin, "config", "receive.autogc", "false");
+  // The fixture's main is the source's own committed revision, not its moving
+  // main, so the working-tree overlays below and the committed peers they
+  // import come from one revision (WO-115 D015).
+  git(
+    origin,
+    "update-ref",
+    "refs/heads/main",
+    git(source, "rev-parse", "HEAD"),
+  );
   checked(temporary, "git", [
     "-c",
     "maintenance.auto=false",

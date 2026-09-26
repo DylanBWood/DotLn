@@ -1,6 +1,7 @@
 # Actor board
 
-Component `0.2.0` prepares application `v0.47.0`: the console adds a live
+Component `0.3.0` prepares application `v0.52.0` with the resident command
+client. Component `0.2.0` prepared application `v0.47.0`: the console added a live
 `runtime-status-v1` text host while preserving the actor board and its pinned
 fixtures. The board's historical selfhost fixture records the WO-132 writer-v2
 evidence.
@@ -45,6 +46,52 @@ terminal grapheme emulator. HTML is one self-contained file with inline CSS,
 no script, no external references, no forms, and only in-document links. The
 command creates a new `.html` file and refuses to overwrite an existing path.
 
+## Resident command client
+
+While a resident runs, its store holds an owner-only `console/` directory with
+a mode-0600 connection descriptor, `console-loopback-v1.json`. The text host
+reads it to list the exact `console-commands-v1` vocabulary and to invoke a
+terminal command through the resident:
+
+```sh
+npm run console -- commands --store <bound-store>
+npm run console -- invoke --store <bound-store> skeleton.compiled-diff
+npm run console -- invoke --store <bound-store> resume.status --json
+```
+
+`invoke` writes the terminal's stdout and stderr bytes unchanged and exits
+with its code. The resident classifies the equivalent terminal command with
+the terminal permission hook's classifier and decider under its compiled
+envelope, then runs the same Node entrypoint and parser the terminal uses. A
+command outside the contract, an effect the envelope denies, or argument text
+the classifier cannot classify is refused before it runs, as one
+`error: <reason>` line with exit code 1; the hook would only advise and leave
+the decision to host permissions. A decoded request's response starts at once
+and stays open while it waits behind an earlier command and until its result,
+however long that takes; a caller that leaves before its command starts, or a
+request still waiting when the resident stops, is refused and keeps its
+receipts. When no resident
+console is reachable, the text host prints one `console refused:` line and
+exits 1. Each decoded request records `console`
+actor invocation and result receipts in the private resident log, with the
+result bytes content-addressed under `console/results/`; replay returns them
+without rerunning effects. The resident replaces a descriptor that an exited
+resident left behind and removes its own on orderly shutdown. Do not copy the
+token into a repository, URL or public status view.
+
+`invokeConsoleCommand(connection, request)` and
+`readConsoleContract(connection)` import no Node API. A browser shell imports
+them from `@dotln/console/client` and receives the connection from its local
+host. The Node text host obtains it with `readConsoleConnection(store)`,
+exported from `@dotln/console` with both client functions. The endpoint binds
+to `127.0.0.1`, requires the token, refuses a non-local browser `Origin` and
+admits a caller that sends none. The contract covers existing terminal
+commands, including derived-order activation, the release-close publish helper
+and selection of an already-declared portfolio. Saved-build selection, equip
+preview and runtime audit have no terminal command in this version; runtime
+audit follows WO-116. The command list, classification and refusal shapes are
+in product 04 §Console parity contract v1.
+
 ## Live runtime status
 
 The resident writes `runtime-status-v1.json` inside its `--store` directory by
@@ -56,6 +103,10 @@ npm run console -- status --store .runtime/launchpad
 npm run console -- status --store .runtime/launchpad --json
 npm run console -- status --store .runtime/launchpad --watch
 ```
+
+`--watch` also reads the file every 250 ms beside its directory watcher and
+stops that read when the watcher closes or errors, so a delayed or missed
+notification cannot leave the text host stale (WO-115 D019, D023).
 
 The [versioned schema](runtime-status-v1.schema.json) is available by file path.
 `@dotln/console` re-exports the `RuntimeStatusV1` type and `decodeRuntimeStatus`

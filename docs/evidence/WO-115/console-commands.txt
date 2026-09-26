@@ -1,0 +1,13 @@
+✔ WO-115 the console names terminal commands as typed and strips host-session identity (2.283ms)
+✔ WO-115 a bound resident serves terminal bytes and events under the terminal's compiled authority, refuses in terminal shape and replays its receipts (8311.049459ms)
+✔ WO-115 the compiled envelope admits or refuses each command by the terminal classifier's effect, through the terminal hooks' decider (2334.56ms)
+✔ WO-115 every contract command keeps its terminal parser, refusal bytes and events over loopback (5211.028375ms)
+✔ WO-115 console receipts leave the resident host's change baseline to the host (177.611167ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 16115.634

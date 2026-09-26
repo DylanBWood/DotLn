@@ -17549,6 +17549,387 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-85a17b1df99f353f",
+      "key": "decision:docs/evidence/WO-115/decisions.md#wo-115-d001",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "38ee1df7123543ad02bbe869f6e7dc8915786babe889d03bc4018acee7aeee92",
+          "ref": "docs/evidence/WO-115/decisions.md#wo-115-d001",
+          "title": "WO-115-D001: Expose only implemented terminal entrypoints through console-commands-v1. Bind each command ID to one fixed executable and argv prefix, authorize its declared effect against the resident'",
+          "summary": "{ \"id\": \"WO-115-D001\", \"date\": \"2026-09-25\", \"dispatch\": \"resume: next\", \"decision\": \"Expose only implemented terminal entrypoints through console-commands-v1. Bind each command ID to one fixed executable and argv prefix, authorize its declared effect against the resident's compiled effective envelope, then run the same CLI parser and guards. Serve the surface on 127.0.0.1 with a random connection token held in an owner-only resident store. The text console and browser-capable client use this one route.\", \"evidence\": [ \"packages/skeleton/src/cli.ts implements --compiled-diff but has no saved-build selection or equip-preview command\", \"packages/skeleton/src/dotln.ts implements intent and pres",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "D005–D007 and VER-003 establish the updated shared-authority, command-membership and private-storage choices.",
+          "reopenWhen": "Terminal vocabulary, authority inputs, local-user access requirements or parity change.",
+          "targets": [],
+          "at": "2026-09-26T04:07:11.126Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-5bd8ff1677d8fa2e",
+      "key": "decision:docs/evidence/WO-115/decisions.md#wo-115-d002",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "94f8644e816dc24e8e3e0078dea4a096d6ca925e36e9d58dca8264ef42478148",
+          "ref": "docs/evidence/WO-115/decisions.md#wo-115-d002",
+          "title": "WO-115-D002: Keep the terminal entrypoints as the command implementation and use a fixed-argv child invocation for parity; defer extracting common in-process handlers until a concrete performance or b",
+          "summary": "{ \"id\": \"WO-115-D002\", \"kind\": \"experiment\", \"date\": \"2026-09-25\", \"dispatch\": \"resume: next; equipped Tinkerer — Economy\", \"decision\": \"Keep the terminal entrypoints as the command implementation and use a fixed-argv child invocation for parity; defer extracting common in-process handlers until a concrete performance or behavior result warrants it.\", \"question\": \"Can the current terminal entrypoints provide console parity without first extracting shared in-process handlers?\", \"alternatives\": [ \"Dispatch the exact existing Node CLI entrypoints with a fixed prefix and captured result bytes\", \"Extract shared handler functions from each CLI and make both terminal and console call them\" ], \"obse",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "D009 corrects phase-dependent fixtures and evidence claims; VER-003 confirms the replacement refusal pairs and honest success-path limits.",
+          "reopenWhen": "Measured invocation cost harms flow, a stable shared handler appears, or successful execution diverges.",
+          "targets": [],
+          "at": "2026-09-26T04:07:11.322Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-5429452efd5b9541",
+      "key": "decision:docs/evidence/WO-115/decisions.md#wo-115-d003",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "9c169c94273c31442fdc0361c20215a4b0ade0ce23e40c181df38d9947f040c1",
+          "ref": "docs/evidence/WO-115/decisions.md#wo-115-d003",
+          "title": "WO-115-D003: Record ConsoleCommandInvoked and ConsoleCommandObserved in the resident's existing private event log with actor console. The invocation carries an argument hash rather than raw prose or o",
+          "summary": "{ \"id\": \"WO-115-D003\", \"date\": \"2026-09-25\", \"dispatch\": \"resume: next\", \"decision\": \"Record ConsoleCommandInvoked and ConsoleCommandObserved in the resident's existing private event log with actor console. The invocation carries an argument hash rather than raw prose or options; the outcome carries exact result bytes so replay returns the same result without repeating effects. Serialize socket requests and release the append lock while the terminal child runs.\", \"evidence\": [ \"packages/skeleton/src/resident-store.ts validates and syncs each append under its short lock; resident-host.ts releases it while an actor effect runs\", \"packages/skeleton/src/console-loopback.ts applies the same trans",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "D008 and VER-003 establish digest-checked private result blobs and incomplete replay without changing the resident fold.",
+          "reopenWhen": "Replay loses or corrupts results, fold compatibility changes, or a retention requirement arises.",
+          "targets": [],
+          "at": "2026-09-26T04:07:11.509Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-3d252777bf44462b",
+      "key": "decision:docs/evidence/WO-115/decisions.md#wo-115-d007",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "78f7ef554704b8ae12ca42f3612554f79beb390b7c372014741d6df0db029e49",
+          "ref": "docs/evidence/WO-115/decisions.md#wo-115-d007--local-transport-terminal-refusal-shape-and-lifecycle",
+          "title": "WO-115-D007: Keep the 127.0.0.1 bearer-token boundary, but hold the descriptor and result bytes in an owner-only <store>/console directory instead of requiring the whole store to be owner-only. Replac",
+          "summary": "{ \"id\": \"WO-115-D007\", \"date\": \"2026-09-25\", \"dispatch\": \"resume: next; operator takeover after the Codex session stopped\", \"reopens\": { \"decisionId\": \"WO-115-D001\", \"observation\": \"The owner-only store check refused ordinary 0755 stores (gate tests 223, 224, 232, 235), a descriptor left by SIGKILL refused every later start (gate test 222), caller refusals were HTTP JSON rather than a terminal refusal, names failing a regex were unrecorded 400s, and children inherited the launching agent session's identity.\" }, \"decision\": \"Keep the 127.0.0.1 bearer-token boundary, but hold the descriptor and result bytes in an owner-only <store>/console directory instead of requiring the whole store to be o",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "D010 and D013 resolve classification, timeout, baseline and shutdown issues; VER-003 retains the repaired behavior.",
+          "reopenWhen": "Classification, client transport needs, process-group support or session attribution changes.",
+          "targets": [],
+          "at": "2026-09-26T04:07:11.700Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-a56e081ed603fb27",
+      "key": "decision:docs/evidence/WO-115/decisions.md#wo-115-d010",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "cf1d453c18dbcfbdd2046ccdbf57c4e08669c80280402709d2c3a8a373d67175",
+          "ref": "docs/evidence/WO-115/decisions.md#wo-115-d010--second-independent-review-fail-closed-classification-a-transport-that-outlasts-client-timeouts-and-stronger-fixtures",
+          "title": "WO-115-D010: Keep refusing what the classifier cannot classify, because the console has no host-permission layer to defer to, and document it with the hook's own 'command classification:' wording. Ans",
+          "summary": "{ \"id\": \"WO-115-D010\", \"date\": \"2026-09-26\", \"dispatch\": \"resume: next; operator takeover after the Codex session stopped\", \"reopens\": { \"decisionId\": \"WO-115-D007\", \"observation\": \"A second independent review of the repair confirmed: classifier exceptions (argument prose naming git push, npm publish, gh pr create or ssh) became undocumented refusals where the hook only advises; Node's fetch abandons a response without headers after 300 s and would have interrupted long lifecycle commands; console receipt transactions advanced the tick's change baseline and could hide a served presence change; SIGKILL escalation followed the direct child only; admission continued until a running tick finishe",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "D013 resolves D012 queue loss; VER-002 independently checks two heartbeats, parity and replay; VER-003 retains resolution.",
+          "reopenWhen": "Ordinary queue waiting, cancellation or orderly shutdown loses liveness or receipts.",
+          "targets": [],
+          "at": "2026-09-26T04:07:11.893Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-abb3132ee4029133",
+      "key": "decision:docs/evidence/WO-115/decisions.md#wo-115-d012",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "8fdd46c02084a0afab1d4bc8debdd556a29ca46a37c31c14f03690ec53496fc7",
+          "ref": "docs/evidence/WO-115/decisions.md#wo-115-d012--verification-finds-queued-requests-lost-before-admission",
+          "title": "WO-115-D012: WO-115 repair, VER-001 F1: preserve queued request liveness and an invocation/result or explicit cancellation receipt; add a two-request regression behind a blocked command and independen",
+          "summary": "{ \"id\": \"WO-115-D012\", \"date\": \"2026-09-26\", \"dispatch\": \"resume: verify\", \"reopens\": { \"decisionId\": \"WO-115-D010\", \"observation\": \"The headers and keepalive added for a running command do not cover a decoded request waiting in the serial lane. A native Node v26.9.0 fetch for resume.times behind a FIFO-blocked console.status failed after 301246 ms with UND_ERR_HEADERS_TIMEOUT. After orderly shutdown, the log and replay contained only console.status; the queued invocation had no receipt. The same resume.times entrypoint completed directly with exit 0 in 757 ms.\" }, \"decision\": \"Fail independent verification for VER-001 F1. Preserve the implementation for repair: queued requests must retain a",
+          "missing": false
+        },
+        {
+          "hash": "448e345a15b85aa04c1960f39dcd4c8aa93a5b8086dd75964c543e0cb475c19c",
+          "ref": "docs/evidence/WO-115/decisions.md#wo-115-d012--verification-finds-queued-requests-lost-before-admission",
+          "title": "WO-115-D012: WO-115 repair, VER-001 F1: preserve queued request liveness and an invocation/result or explicit cancellation receipt; add a two-request regression behind a blocked command and independen",
+          "summary": "{ \"id\": \"WO-115-D012\", \"date\": \"2026-09-26\", \"dispatch\": \"resume: verify\", \"reopens\": { \"decisionId\": \"WO-115-D010\", \"observation\": \"The headers and keepalive added for a running command do not cover a decoded request waiting in the serial lane. A native Node v26.9.0 fetch for resume.times behind a FIFO-blocked console.status failed after 301246 ms with UND_ERR_HEADERS_TIMEOUT. After orderly shutdown, the log and replay contained only console.status; the queued invocation had no receipt. The same resume.times entrypoint completed directly with exit 0 in 757 ms.\" }, \"decision\": \"Fail independent verification for VER-001 F1. Preserve the implementation for repair: queued requests must retain a",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "VER-001 F1 is discharged by D013, the regression fixture, VER-002 independent socket evidence and VER-003.",
+          "reopenWhen": "The F1 ordinary queue, disconnect or shutdown behavior regresses.",
+          "targets": [],
+          "at": "2026-09-26T04:07:12.083Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-bc5d6c73db60e7c3",
+      "key": "decision:docs/evidence/WO-115/decisions.md#wo-115-d014",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "7c0637e428e2423ce5dd0b5ad5a08ac4be3877be7b2640325de6fe78c1d48f1a",
+          "ref": "docs/evidence/WO-115/decisions.md#wo-115-d014--reverification-resolves-f1-and-retains-the-full-gate-failure",
+          "title": "WO-115-D014: WO-115 gate follow-up G1: restore coherent source inputs for the worktree-integration test instrument and obtain fresh complete npm test evidence plus independent verification; preserve f",
+          "summary": "{ \"id\": \"WO-115-D014\", \"date\": \"2026-09-26\", \"dispatch\": \"resume: verify\", \"decision\": \"Mark VER-001 F1 resolved by the repaired fixture and an independent 60-second socket probe, but fail VER-002 solely on unwaived criterion 5: fresh npm test still fails in its mixed-revision worktree-integration fixture. Record the test-instrument follow-up without changing console implementation, acceptance text, main or earlier reports.\", \"evidence\": [ \"docs/verifications/WO-115/VER-002.md: all 23 parser/refusal pairs pass; queued headers arrived in 1 ms, whitespace at 30003 and 60003 ms, the eventual result matched terminal bytes, and replay contained both commands with incomplete []\", \"npm test: 26 sui",
+          "missing": false
+        },
+        {
+          "hash": "a57780c4d0a51d4285d44805c1b983e8b2cc89308a710f646f4f7afae96fbd36",
+          "ref": "docs/evidence/WO-115/decisions.md#wo-115-d014--reverification-resolves-f1-and-retains-the-full-gate-failure",
+          "title": "WO-115-D014: WO-115 gate follow-up G1: restore coherent source inputs for the worktree-integration test instrument and obtain fresh complete npm test evidence plus independent verification; preserve f",
+          "summary": "{ \"id\": \"WO-115-D014\", \"date\": \"2026-09-26\", \"dispatch\": \"resume: verify\", \"decision\": \"Mark VER-001 F1 resolved by the repaired fixture and an independent 60-second socket probe, but fail VER-002 solely on unwaived criterion 5: fresh npm test still fails in its mixed-revision worktree-integration fixture. Record the test-instrument follow-up without changing console implementation, acceptance text, main or earlier reports.\", \"evidence\": [ \"docs/verifications/WO-115/VER-002.md: all 23 parser/refusal pairs pass; queued headers arrived in 1 ms, whitespace at 30003 and 60003 ms, the eventual result matched terminal bytes, and replay contained both commands with incomplete []\", \"npm test: 26 sui",
+          "missing": false
+        },
+        {
+          "hash": "c55db01e67d01fa2f4a6fb82abff5966ea7b9caa3bacd220a968ce97da284e19",
+          "ref": "docs/evidence/WO-115/decisions.md#wo-115-d014--reverification-resolves-f1-and-retains-the-full-gate-failure",
+          "title": "WO-115-D014: WO-115 gate follow-up G1: restore coherent source inputs for the worktree-integration test instrument and obtain fresh complete npm test evidence plus independent verification; preserve f",
+          "summary": "{ \"id\": \"WO-115-D014\", \"date\": \"2026-09-26\", \"dispatch\": \"resume: verify\", \"decision\": \"Mark VER-001 F1 resolved by the repaired fixture and an independent 60-second socket probe, but fail VER-002 solely on unwaived criterion 5: fresh npm test still fails in its mixed-revision worktree-integration fixture. Record the test-instrument follow-up without changing console implementation, acceptance text, main or earlier reports.\", \"evidence\": [ \"docs/verifications/WO-115/VER-002.md: all 23 parser/refusal pairs pass; queued headers arrived in 1 ms, whitespace at 30003 and 60003 ms, the eventual result matched terminal bytes, and replay contained both commands with incomplete []\", \"npm test: 26 sui",
+          "missing": false
+        },
+        {
+          "hash": "7da750bdde0fe9d8adf51ab8d60afefba2f8e5c6003032e3c4452abe4cc90ceb",
+          "ref": "docs/evidence/WO-115/decisions.md#wo-115-d014--reverification-resolves-f1-and-retains-the-full-gate-failure",
+          "title": "WO-115-D014: WO-115 gate follow-up G1: restore coherent source inputs for the worktree-integration test instrument and obtain fresh complete npm test evidence plus independent verification; preserve f",
+          "summary": "{ \"id\": \"WO-115-D014\", \"date\": \"2026-09-26\", \"dispatch\": \"resume: verify\", \"decision\": \"Mark VER-001 F1 resolved by the repaired fixture and an independent 60-second socket probe, but fail VER-002 solely on unwaived criterion 5: fresh npm test still fails in its mixed-revision worktree-integration fixture. Record the test-instrument follow-up without changing console implementation, acceptance text, main or earlier reports.\", \"evidence\": [ \"docs/verifications/WO-115/VER-002.md: all 23 parser/refusal pairs pass; queued headers arrived in 1 ms, whitespace at 30003 and 60003 ms, the eventual result matched terminal bytes, and replay contained both commands with incomplete []\", \"npm test: 26 sui",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 4,
+          "status": "settled",
+          "reason": "VER-002 G1 is discharged by D015 and VER-003 complete passing gate; final review integrated the unchanged fixture and its expanded suite passed.",
+          "reopenWhen": "Mixed fixture revisions recur, especially changed uncommitted package-source imports, or its full-gate result regresses.",
+          "targets": [],
+          "at": "2026-09-26T04:07:12.279Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-47287cef595c25e5",
+      "key": "decision:docs/evidence/WO-115/decisions.md#wo-115-d017",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "8698df6b984a0f032e137d3762cb6f504eaac5cd1e3dbb7959320af7b5018e42",
+          "ref": "docs/evidence/WO-115/decisions.md#wo-115-d017--preserve-the-unchanged-watcher-timeout-and-obtain-fresh-product-evidence",
+          "title": "WO-115-D017: WO-114 watcher reliability follow-up: reproduce the atomic-replacement watch timeout observed during WO-115 final review, distinguish missed filesystem notification from scheduling or tes",
+          "summary": "{ \"id\": \"WO-115-D017\", \"date\": \"2026-09-26\", \"dispatch\": \"resume: final review\", \"decision\": \"Preserve the failed expanded gate and record the unchanged WO-114 atomic-replacement watcher timeout as a separate, nonblocking reliability follow-up for this console-command order. Run one fresh complete product selection on identical code before any passing verdict. Carry the passing expanded machinery suites from the first run, without converting that failed overall run into a pass.\", \"evidence\": [ \"npm test -- --review: 35 of 36 suites passed, 80 fresh tasks, 664821 ms, exit 1 at 2026-09-26T04:06:20.583Z; code identity 356a17786393d4a5e8bdfd3bc68a637b8553e10c244eb0f527c3b3e1f323f72d\", \"docs/cont",
+          "missing": false
+        },
+        {
+          "hash": "511cf034d96f20cd6cf02dcc813d10ea57e0b15fff3f83308f3cc09c7c7449d3",
+          "ref": "docs/evidence/WO-115/decisions.md#wo-115-d017--preserve-the-unchanged-watcher-timeout-and-obtain-fresh-product-evidence",
+          "title": "WO-115-D017: WO-114 watcher reliability follow-up: reproduce the atomic-replacement watch timeout observed during WO-115 final review, distinguish missed filesystem notification from scheduling or tes",
+          "summary": "{ \"id\": \"WO-115-D017\", \"date\": \"2026-09-26\", \"dispatch\": \"resume: final review\", \"decision\": \"Preserve the failed expanded gate and record the unchanged WO-114 atomic-replacement watcher timeout as a separate, nonblocking reliability follow-up for this console-command order. Run one fresh complete product selection on identical code before any passing verdict. Carry the passing expanded machinery suites from the first run, without converting that failed overall run into a pass.\", \"evidence\": [ \"npm test -- --review: 35 of 36 suites passed, 80 fresh tasks, 664821 ms, exit 1 at 2026-09-26T04:06:20.583Z; code identity 356a17786393d4a5e8bdfd3bc68a637b8553e10c244eb0f527c3b3e1f323f72d\", \"docs/cont",
+          "missing": false
+        },
+        {
+          "hash": "d191b341af61eec8bede1d2d90a448122ed5586dd357db589f75acd604fd7a44",
+          "ref": "docs/evidence/WO-115/decisions.md#wo-115-d017--preserve-the-unchanged-watcher-timeout-and-obtain-fresh-product-evidence",
+          "title": "WO-115-D017: WO-114 watcher reliability follow-up: reproduce the atomic-replacement watch timeout observed during WO-115 final review, distinguish missed filesystem notification from scheduling or tes",
+          "summary": "{ \"id\": \"WO-115-D017\", \"date\": \"2026-09-26\", \"dispatch\": \"resume: final review\", \"decision\": \"Preserve the failed expanded gate and record the unchanged WO-114 atomic-replacement watcher timeout as a separate, nonblocking reliability follow-up for this console-command order. Run one fresh complete product selection on identical code before any passing verdict. Carry the passing expanded machinery suites from the first run, without converting that failed overall run into a pass.\", \"evidence\": [ \"npm test -- --review: 35 of 36 suites passed, 80 fresh tasks, 664821 ms, exit 1 at 2026-09-26T04:06:20.583Z; code identity 356a17786393d4a5e8bdfd3bc68a637b8553e10c244eb0f527c3b3e1f323f72d\", \"docs/cont",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 3,
+          "status": "duplicate",
+          "reason": "The watcher observation is retained in D017 and incorporated into the required FINAL-001 F1 diagnosis recorded by D018.",
+          "reopenWhen": "Reopen separately if watcher work remains after the combined gate-reliability repair is independently verified.",
+          "targets": [
+            "FUP-db0a2c8b8a05d4ae"
+          ],
+          "at": "2026-09-26T04:17:07.859Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-db0a2c8b8a05d4ae",
+      "key": "decision:docs/evidence/WO-115/decisions.md#wo-115-d018",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "ccfbcac759013410b8676d49ea72e66cdc9fd5fda68778ee9b51d53f6a7d3ba1",
+          "ref": "docs/evidence/WO-115/decisions.md#wo-115-d018--final-review-fails-the-integrated-product-gate",
+          "title": "WO-115-D018: WO-115 final-review F1 repair: diagnose the recorded WO-114 atomic-replacement watcher timeout and WO-143 acquisition/restart matrix deadline on the integrated subject, separate actual no",
+          "summary": "{ \"id\": \"WO-115-D018\", \"date\": \"2026-09-26\", \"dispatch\": \"resume: final review\", \"reopens\": { \"decisionId\": \"WO-115-D017\", \"observation\": \"The fresh complete product retry also exits 1 at identical code identity: 27 of 28 suites pass, 72 fresh tasks, 418999 ms, 2026-09-26T04:14:11.764Z. Console and integration pass, but the WO-143 resident acquisition/restart matrix reaches its unchanged 240000 ms test deadline.\" }, \"decision\": \"Fail FINAL-001 on original criterion 5. Preserve both failed integrated gate rows, the passing WO-115 cases, the integrated tree, recovery checkpoint/stash and all earlier reports. Route the bounded gate-reliability diagnosis through repair and fresh independent veri",
+          "missing": false
+        },
+        {
+          "hash": "2fc6b5266bf2ce67c8d3dbae42eb23462536e15a3f15b69c1e9ba7d1520b05f9",
+          "ref": "docs/evidence/WO-115/decisions.md#wo-115-d018--final-review-fails-the-integrated-product-gate",
+          "title": "WO-115-D018: WO-115 final-review F1 repair: diagnose the recorded WO-114 atomic-replacement watcher timeout and WO-143 acquisition/restart matrix deadline on the integrated subject, separate actual no",
+          "summary": "{ \"id\": \"WO-115-D018\", \"date\": \"2026-09-26\", \"dispatch\": \"resume: final review\", \"reopens\": { \"decisionId\": \"WO-115-D017\", \"observation\": \"The fresh complete product retry also exits 1 at identical code identity: 27 of 28 suites pass, 72 fresh tasks, 418999 ms, 2026-09-26T04:14:11.764Z. Console and integration pass, but the WO-143 resident acquisition/restart matrix reaches its unchanged 240000 ms test deadline.\" }, \"decision\": \"Fail FINAL-001 on original criterion 5. Preserve both failed integrated gate rows, the passing WO-115 cases, the integrated tree, recovery checkpoint/stash and all earlier reports. Route the bounded gate-reliability diagnosis through repair and fresh independent veri",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "open",
+          "reason": "FINAL-001 F1 leaves original criterion 5 unmet after two integrated full-gate failures; bounded repair and independent verification are required.",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-26T04:17:07.686Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "FINAL-001 F1 is discharged: D019-D020 landed the bounded repair (status watcher read fallback with a silent-notification regression, crash-child fixture without console setup) and D022-D023 restored measured shared scheduling with the watcher error cleanup; VER-005 passed a fresh complete integrated gate at code identity bce54ec8 with the WO-143 acquisition matrix and the WO-114 watcher cases passing, and FINAL-002's review gate passed at the same identity.",
+          "reopenWhen": "A complete gate on this code identity repeats the WO-143 acquisition-matrix or WO-114 watcher deadline failure, or the watcher misses an atomic replacement despite the read fallback.",
+          "targets": [],
+          "at": "2026-09-26T15:25:56.593Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-2ed6d5d710c207da",
+      "key": "decision:docs/evidence/WO-115/decisions.md#wo-115-d020",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "7bc9b09b31e24d0f704a26dfc3d550fb474ed4d03b4a2ee9349dfdfb00b7362e",
+          "ref": "docs/evidence/WO-115/decisions.md#wo-115-d020--complete-the-bounded-repair-with-a-fresh-integrated-gate",
+          "title": "WO-115-D020: Keep all three bounded changes: the test-only console setup reduction, the shared status watch fallback, and exclusive skeleton scheduling. The original deadlines and assertions remain. R",
+          "summary": "{ \"id\": \"WO-115-D020\", \"date\": \"2026-09-26\", \"dispatch\": \"resume: fix; operator scope expand\", \"decision\": \"Keep all three bounded changes: the test-only console setup reduction, the shared status watch fallback, and exclusive skeleton scheduling. The original deadlines and assertions remain. Record the fresh complete passing product gate on the integrated source, then hand the subject to independent verification; keep the combined FUP-db0a2c8b8a05d4ae open until that judgment. Do not claim that the historical timing cause or a whole-gate speedup was proven.\", \"evidence\": [ \"docs/evidence/WO-115/repair-diagnostics.md: focused WO-143 matrix passes all 344 boundaries before and after the test-",
+          "missing": false
+        },
+        {
+          "hash": "071e4ea0f27d2e42e98ffc803d0990fa2d30f9d0a937b9501c264e72bdf83c05",
+          "ref": "docs/evidence/WO-115/decisions.md#wo-115-d020--complete-the-bounded-repair-with-a-fresh-integrated-gate",
+          "title": "WO-115-D020: Keep all three bounded changes: the test-only console setup reduction, the shared status watch fallback, and exclusive skeleton scheduling. The original deadlines and assertions remain. R",
+          "summary": "{ \"id\": \"WO-115-D020\", \"date\": \"2026-09-26\", \"dispatch\": \"resume: fix; operator scope expand\", \"decision\": \"Keep all three bounded changes: the test-only console setup reduction, the shared status watch fallback, and exclusive skeleton scheduling. The original deadlines and assertions remain. Record the fresh complete passing product gate on the integrated source, then hand the subject to independent verification; keep the combined FUP-db0a2c8b8a05d4ae open until that judgment. Do not claim that the historical timing cause or a whole-gate speedup was proven.\", \"evidence\": [ \"docs/evidence/WO-115/repair-diagnostics.md: focused WO-143 matrix passes all 344 boundaries before and after the test-",
+          "missing": false
+        },
+        {
+          "hash": "01cf433314045bce94f9f4b92b4efd360f748b5b202e1d988dc179f2f45f5c1a",
+          "ref": "docs/evidence/WO-115/decisions.md#wo-115-d020--complete-the-bounded-repair-with-a-fresh-integrated-gate",
+          "title": "WO-115-D020: Keep all three bounded changes: the test-only console setup reduction, the shared status watch fallback, and exclusive skeleton scheduling. The original deadlines and assertions remain. R",
+          "summary": "{ \"id\": \"WO-115-D020\", \"date\": \"2026-09-26\", \"dispatch\": \"resume: fix; operator scope expand\", \"decision\": \"Keep all three bounded changes: the test-only console setup reduction, the shared status watch fallback, and exclusive skeleton scheduling. The original deadlines and assertions remain. Record the fresh complete passing product gate on the integrated source, then hand the subject to independent verification; keep the combined FUP-db0a2c8b8a05d4ae open until that judgment. Do not claim that the historical timing cause or a whole-gate speedup was proven.\", \"evidence\": [ \"docs/evidence/WO-115/repair-diagnostics.md: focused WO-143 matrix passes all 344 boundaries before and after the test-",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 3,
+          "status": "settled",
+          "reason": "D021 reopened D020's exclusive skeleton scheduling and D023 restored main's shared scheduling after a same-source comparison (312.441 s shared, 430.952 s exclusive) while retaining the watcher fallback and the fixture stub; VER-005 reproduced the comparison's code identities and passed, and FINAL-002 judged the retained changes on its own gate and probe.",
+          "reopenWhen": "Repeated same-source measurements favor another skeleton scheduling configuration, or the retained fixture stub or watch fallback is shown to hide a resident or watcher defect.",
+          "targets": [],
+          "at": "2026-09-26T15:25:57.203Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-e495acc8ebaebf05",
+      "key": "decision:docs/evidence/WO-115/decisions.md#wo-115-d021",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "cf018db7be989fa97e5aa26a752752f9f43d41b33d586056ac4fbf52e48d02db",
+          "ref": "docs/evidence/WO-115/decisions.md#wo-115-d021--reverification-finds-an-unmeasured-gate-scheduling-change-and-a-poll-that-outlives-close",
+          "title": "WO-115-D021: WO-115 VER-004 repair: (F1) record a same-source before/after npm test comparison of skeleton shared versus exclusive scheduling on otherwise identical source, keep the configuration the ",
+          "summary": "{ \"id\": \"WO-115-D021\", \"date\": \"2026-09-26\", \"dispatch\": \"resume: verify\", \"reopens\": { \"decisionId\": \"WO-115-D020\", \"observation\": \"VER-004 reproduces the passing gate at code identity 5444501048f6ea4a2dc1df1c4dff94df8022b5bb9cbd7ff89febbf47236227dd, but the exclusive skeleton declaration has no same-source before/after row and product 07 still names only harness and process-debt fixtures as exclusive. After a watcher error, the new 250 ms status poll is not cleared by close().\" }, \"decision\": \"Fail VER-004 on F1: the repair's gate scheduling change lacks the same-source before/after comparison that product 07 and WO-132 criterion 4 require of any later scheduling change, and it leaves prod",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "VER-004 F1 and F2 are discharged: D022-D023 supplied the same-source rows, the product 07 gate-scheduling write-back and the error-path poll cleanup with a regression; VER-005 verified both, recomputing the comparison identities and rerunning the native FSWatcher error-path probe against a pre-fix control, and FINAL-002 passed.",
+          "reopenWhen": "A supported Node runtime delivers a callback after close() on the watcher error path, or a later scheduling change lands without a same-source comparison.",
+          "targets": [],
+          "at": "2026-09-26T15:25:57.822Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-9069237b88bdff3f",
+      "key": "decision:docs/evidence/WO-115/decisions.md#wo-115-d025",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "94997e966c5a6c35bde0228bbbb9a1efad434e12eff4c93cdb36e998cfb79268",
+          "ref": "docs/evidence/WO-115/decisions.md#wo-115-d025--final-review-passes-the-integrated-subject-and-settles-the-repair-rows",
+          "title": "WO-115-D025: Pass FINAL-002 on the integrated WO-115 subject at code identity bce54ec869793926a7d7db37d759d0e838daebe965ad1729a85982ea7b5b7949: the five original criteria are met on this review's own ",
+          "summary": "{ \"id\": \"WO-115-D025\", \"date\": \"2026-09-26\", \"dispatch\": \"resume: final review\", \"decision\": \"Pass FINAL-002 on the integrated WO-115 subject at code identity bce54ec869793926a7d7db37d759d0e838daebe965ad1729a85982ea7b5b7949: the five original criteria are met on this review's own gate, checks and real-binary probe, and VER-001 F1, VER-002 G1, FINAL-001 F1 and VER-004 F1 and F2 stay resolved. Settle FUP-db0a2c8b8a05d4ae, FUP-2ed6d5d710c207da and FUP-e495acc8ebaebf05 through the canonical follow-up API, each with its evidence and a reopening condition. Move D022 to its chronological place in this file and add one sentence on the status watcher's read fallback to the console README; neither cha",
+          "missing": false
+        },
+        {
+          "hash": "5087fba9aec1eb870abed1362e7e13930a6a8cabdba93c318919c938f885ef5d",
+          "ref": "docs/evidence/WO-115/decisions.md#wo-115-d025--final-review-passes-the-integrated-subject-and-settles-the-repair-rows",
+          "title": "WO-115-D025: Pass FINAL-002 on the integrated WO-115 subject at code identity bce54ec869793926a7d7db37d759d0e838daebe965ad1729a85982ea7b5b7949: the five original criteria are met on this review's own ",
+          "summary": "{ \"id\": \"WO-115-D025\", \"date\": \"2026-09-26\", \"dispatch\": \"resume: final review\", \"decision\": \"Pass FINAL-002 on the integrated WO-115 subject at code identity bce54ec869793926a7d7db37d759d0e838daebe965ad1729a85982ea7b5b7949: the five original criteria are met on this review's own gate, checks and real-binary probe, and VER-001 F1, VER-002 G1, FINAL-001 F1 and VER-004 F1 and F2 stay resolved. Settle FUP-db0a2c8b8a05d4ae, FUP-2ed6d5d710c207da and FUP-e495acc8ebaebf05 through the canonical follow-up API, each with its evidence and a reopening condition. Move D022 to its chronological place in this file and add one sentence on the status watcher's read fallback to the console README; neither cha",
+          "missing": false
+        },
+        {
+          "hash": "2167353951b60182b5424ad048cd3b0f30aa71cfe46e70570aa42e1678956ce9",
+          "ref": "docs/evidence/WO-115/decisions.md#wo-115-d025--final-review-passes-the-integrated-subject-and-settles-the-repair-rows",
+          "title": "WO-115-D025: Pass FINAL-002 on the integrated WO-115 subject at code identity bce54ec869793926a7d7db37d759d0e838daebe965ad1729a85982ea7b5b7949: the five original criteria are met on this review's own ",
+          "summary": "{ \"id\": \"WO-115-D025\", \"date\": \"2026-09-26\", \"dispatch\": \"resume: final review\", \"decision\": \"Pass FINAL-002 on the integrated WO-115 subject at code identity bce54ec869793926a7d7db37d759d0e838daebe965ad1729a85982ea7b5b7949: the five original criteria are met on this review's own gate, checks and real-binary probe, and VER-001 F1, VER-002 G1, FINAL-001 F1 and VER-004 F1 and F2 stay resolved. Settle FUP-db0a2c8b8a05d4ae, FUP-2ed6d5d710c207da and FUP-e495acc8ebaebf05 through the canonical follow-up API, each with its evidence and a reopening condition. Move D022 to its chronological place in this file and add one sentence on the status watcher's read fallback to the console README; neither cha",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-ca628adcc713c0b8",
+      "key": "decision:docs/evidence/WO-115/decisions.md#wo-115-d026",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "de69e0b937e78f447c194b855838cd14b9fb6130e65d61d1dd058ea944b6af48",
+          "ref": "docs/evidence/WO-115/decisions.md#wo-115-d026--repair-the-gate-identity-and-bind-a-product-gate-by-correction-at-the-operators-direction",
+          "title": "WO-115-D026: Control fold hardening, low, for the planner: the RecordCorrected fold checks a productGate binding's declared subject type but not the event at that ordinal, so a hand-appended binding d",
+          "summary": "{ \"id\": \"WO-115-D026\", \"date\": \"2026-09-26\", \"dispatch\": \"resume: final review; operator direction after the publish refusal\", \"reopens\": { \"decisionId\": \"WO-115-D025\", \"observation\": \"The README note added after the first review gate moved the code identity, so the FinalReviewCompleted event recorded no product gate; worktree publish refused with 'no recorded passing reviewer npm test row' before pushing anything, the correct route had no field for a gate, and the closed phase admitted no correction. The operator directed a permanent fix now, in this branch, that is neither rule beating nor a proxy for the gate, with no gotchas left for release close or a future order.\" }, \"decision\": \"Two ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

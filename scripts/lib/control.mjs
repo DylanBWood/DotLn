@@ -27,7 +27,40 @@ export const CORRECTABLE_FIELDS = [
   "reportPath",
   "checkpointRef",
   "checkpointSha",
+  // A recorded passing final review that carries no product gate is bound to
+  // one by the gate's evidence reference; the event carries the whole row
+  // (WO-115 D026).
+  "productGate",
 ];
+const HEX_64 = /^[a-f0-9]{64}$/u;
+const TREE_HASH = /^(?:[a-f0-9]{40}|[a-f0-9]{64})$/u;
+/** The rule `partialGateCheck` applies in packages/skeleton/src/gate-evidence.mjs,
+ * restated here because the control fold runs in a copied control plane that
+ * carries no skeleton source (WO-070): any shape of either field other than
+ * absent, `false` or an empty list marks a partial row. */
+const partialRow = (row) =>
+  (row.partial !== undefined && row.partial !== false) ||
+  (row.excludedSuites !== undefined &&
+    !(Array.isArray(row.excludedSuites) && row.excludedSuites.length === 0));
+/** The bound gate row publication and release close consume from committed
+ * control history, where the local gate rows may be absent. Partial rows are
+ * judged by the same rule publication applies. */
+export const validProductGate = (gate, evidenceRef) =>
+  Boolean(gate) &&
+  typeof gate === "object" &&
+  !Array.isArray(gate) &&
+  gate.checkId === "npm test" &&
+  gate.executed === true &&
+  gate.exitCode === 0 &&
+  !partialRow(gate) &&
+  HEX_64.test(gate.codeIdentity ?? "") &&
+  TREE_HASH.test(gate.treeHash ?? "") &&
+  Number.isFinite(gate.durationMs) &&
+  gate.durationMs >= 0 &&
+  typeof gate.evidenceRef === "string" &&
+  gate.evidenceRef.length > 0 &&
+  (evidenceRef === undefined || gate.evidenceRef === evidenceRef) &&
+  Number.isFinite(Date.parse(gate.recordedAt));
 export const CRITERION_ID = /^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$/u;
 const SHA256_DIGEST = /^sha256:[0-9a-f]{64}$/u;
 const offRampText = (value) =>
@@ -87,6 +120,18 @@ const offRampEvent = (event, at) => {
       for (const [name, value] of Object.entries(fields))
         if (!CORRECTABLE_FIELDS.includes(name) || !offRampText(value))
           refuse(`field ${name}`);
+      if (
+        fields.productGate !== undefined &&
+        !validProductGate(event.evidence?.productGate, fields.productGate)
+      )
+        refuse("productGate evidence");
+      // A gate binds to a recorded final review and nothing else, even when
+      // the event is hand-appended rather than written by `resume correct`.
+      if (
+        fields.productGate !== undefined &&
+        event.subject?.type !== "FinalReviewCompleted"
+      )
+        refuse("productGate subject");
       break;
     }
     case "OperatorOverrideRecorded":
@@ -359,6 +404,7 @@ const scanControl = (events, visit) => {
             previous: event.previous,
             reason: event.reason,
             recordedAt: event.recordedAt,
+            ...(event.evidence ? { evidence: event.evidence } : {}),
           },
         ];
         break;
@@ -440,8 +486,15 @@ export const foldWorkOrders = (events) => {
     orders.set(state.workOrderId, {
       state: structuredClone(state),
       finalReviewVerdict,
-      closeOrdinal: state.phase === "closed" ? ordinal : undefined,
-      closeRecordedAt: state.phase === "closed" ? event.recordedAt : undefined,
+      // The event that closed the order keeps the close ordinal; a later
+      // correction in `closed` (binding a product gate) does not reorder the
+      // closed orders (WO-115 D026).
+      closeOrdinal:
+        state.phase === "closed" ? (prior?.closeOrdinal ?? ordinal) : undefined,
+      closeRecordedAt:
+        state.phase === "closed"
+          ? (prior?.closeRecordedAt ?? event.recordedAt)
+          : undefined,
     });
   });
   return { current, orders };

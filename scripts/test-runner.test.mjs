@@ -473,6 +473,7 @@ test("product suites describe protection, machinery is separate and only release
   }
   const skeleton = suites.find((row) => row.name === "skeleton");
   assert.equal(skeleton.product, true);
+  assert.equal(Boolean(skeleton.exclusive), false);
   for (const path of [
     "scripts/reactor-identity.mjs",
     "scripts/fixtures/historical-compiler-loader.mjs",
@@ -488,7 +489,7 @@ test("product suites describe protection, machinery is separate and only release
   for (const name of ["harness-fixtures", "process-debt"])
     assert.equal(suites.find((row) => row.name === name).exclusive, true);
 });
-test("exclusive machinery runs alone and product suites overlap within lane capacity", async () => {
+test("exclusive suites run alone and shared suites use remaining lane capacity", async () => {
   const selected = suites.filter((row) =>
     [
       "build",
@@ -513,6 +514,7 @@ test("exclusive machinery runs alone and product suites overlap within lane capa
           4,
       );
       if (["harness-fixtures", "process-debt"].includes(row.name)) {
+        assert.equal(active.size, 0);
         assert.equal(row.gateContext.reservedSlots, 4);
         assert.equal(row.gateContext.concurrency, 1);
         assert.ok(
@@ -520,6 +522,12 @@ test("exclusive machinery runs alone and product suites overlap within lane capa
             active.has(name),
           ),
         );
+      }
+      if (row.name === "skeleton") {
+        assert.equal(row.priority, 80);
+        assert.equal(row.gateContext.reservedSlots, 1);
+        assert.equal(row.gateContext.concurrency, 4);
+        assert.equal(row.gateContext.loadFactor, 8);
       }
       active.set(row.name, row.gateContext.reservedSlots);
       if (active.has("harness-fixtures") && active.has("process-debt"))
@@ -1322,11 +1330,18 @@ test("code identity follows tracked source and dependency bytes across processes
     mkdirSync(join(repo, "docs"));
     writeFileSync(
       join(repo, ".gitattributes"),
-      "projection.js dotln-generated\n",
+      "projection.js dotln-generated\nlib/README.md dotln-documentation\n",
     );
     writeFileSync(join(repo, "source.js"), "export const result = 1;\n");
     writeFileSync(join(repo, "projection.js"), "generated one\n");
     writeFileSync(join(repo, "docs/report.md"), "report one\n");
+    // A README Git marks dotln-documentation is documentation; an unmarked
+    // README and a Markdown file a test could read as an input are not
+    // (WO-115 D026).
+    mkdirSync(join(repo, "lib/other"), { recursive: true });
+    writeFileSync(join(repo, "lib/README.md"), "readme one\n");
+    writeFileSync(join(repo, "lib/other/README.md"), "input readme one\n");
+    writeFileSync(join(repo, "lib/fixture.md"), "fixture one\n");
     writeFileSync(
       join(repo, "package.json"),
       '{"private":true,"dependencies":{"fixture":"1.0.0"}}\n',
@@ -1351,7 +1366,16 @@ test("code identity follows tracked source and dependency bytes across processes
     ]);
     writeFileSync(join(repo, "docs/report.md"), "report after gate\n");
     writeFileSync(join(repo, "projection.js"), "generated two\n");
+    writeFileSync(join(repo, "lib/README.md"), "readme after gate\n");
     assert.notEqual(gateTreeHash(repo), tree);
+    assert.equal(gateCodeIdentity(repo), code);
+    writeFileSync(join(repo, "lib/fixture.md"), "fixture two\n");
+    assert.notEqual(gateCodeIdentity(repo), code, "a Markdown input counts");
+    writeFileSync(join(repo, "lib/fixture.md"), "fixture one\n");
+    assert.equal(gateCodeIdentity(repo), code);
+    writeFileSync(join(repo, "lib/other/README.md"), "input readme two\n");
+    assert.notEqual(gateCodeIdentity(repo), code, "an unmarked README counts");
+    writeFileSync(join(repo, "lib/other/README.md"), "input readme one\n");
     assert.equal(gateCodeIdentity(repo), code);
     const module = new URL("./lib/gate-evidence.mjs", import.meta.url).href;
     const command = `import {gateCodeIdentity,findGateCheck} from ${JSON.stringify(module)}; const root=process.argv[1]; console.log(JSON.stringify({code:gateCodeIdentity(root),found:Boolean(findGateCheck(root,"npm test","different-tree"))}));`;
@@ -1697,6 +1721,59 @@ test("WO-140 a confined partial row is rejected by every product-gate consumer a
   assert.equal(
     reviewedProductGate(repo, "WO-999").evidenceRef,
     full.evidenceRef,
+  );
+
+  // A review recorded without a gate (the transition only advises) is bound
+  // to one by a later correction that carries the whole row, which both
+  // publication consumers read from committed control history; a bound row
+  // at another code identity is refused like any other (WO-115 D026).
+  review(undefined);
+  assert.throws(
+    () => reviewedProductGate(repo, "WO-999"),
+    /no recorded passing reviewer npm test row/,
+  );
+  const bind = (productGate, at) => {
+    writeFileSync(
+      join(repo, "docs/control/orders/WO-999.jsonl"),
+      JSON.stringify({
+        schemaVersion: 1,
+        workOrderId: "WO-999",
+        recordedAt: at,
+        type: "RecordCorrected",
+        subject: { ordinal: 2, type: "FinalReviewCompleted" },
+        fields: { productGate: productGate.evidenceRef },
+        previous: { productGate: "none" },
+        reason: "bind the gate",
+        evidence: { productGate },
+        actor: {
+          harness: "human",
+          harnessVersion: "not-applicable",
+          model: "human",
+          effort: "unknown",
+          source: "operator-attested",
+        },
+      }) + "\n",
+      { flag: "a" },
+    );
+    git("add", "docs/control/orders");
+    git("commit", "-qm", "Bind the reviewer gate");
+  };
+  bind(accepted.productGate, "2026-09-20T00:00:03.000Z");
+  assert.equal(
+    reviewedProductGate(repo, "WO-999").evidenceRef,
+    full.evidenceRef,
+  );
+  bind(
+    {
+      ...accepted.productGate,
+      codeIdentity: "0".repeat(64),
+      evidenceRef: "host-gate:elsewhere:npm test",
+    },
+    "2026-09-20T00:00:04.000Z",
+  );
+  assert.throws(
+    () => reviewedProductGate(repo, "WO-999"),
+    /reviewed code identity differs/,
   );
 });
 

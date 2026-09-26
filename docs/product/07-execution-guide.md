@@ -147,6 +147,8 @@ The operator's entire instruction to you may be a single phrase of the form
 do not ask which work order: the durable control state answers both, and the
 operator is deliberately not repeating themselves.
 
+The resident's `console-commands-v1` loopback surface serves these same terminal actions, including the release-close publish helper; the terminal permission hook's classifier and decider judge each one under the resident's compiled envelope and the console refuses what they deny or cannot classify, its terminal parser and lifecycle guards still apply, and console-actor receipts record it (product 04 §Console parity contract v1).
+
 Load the generated role skill named by the cold-start table. Its procedure is
 the session adapter to the detailed contract below. Claude's generated prompt
 hook resolves the exact phrase and reiterates the selected order path; Codex
@@ -263,7 +265,7 @@ table includes the shared goal card and the refuter's separate subject boundary.
    | `resume: release close` | run the exact `cd <main> && node <main>/scripts/release.mjs close WO-NNN --publish` command projected by `resume release-close` or printed by `worktree publish`; after the subject is already removed, use main's copy | update main, consume the reviewer product gate, publish the validated tag and Release, then attempt worktree cleanup; if Release creation fails after tag push, rerun from updated main |
    | the operator accepts criterion N unmet (words captured) | `npm run resume -- waive N --reason <text> --capture <intake file> --capture-hash sha256:<digest> <actor-flags>` from the operator's terminal, a verifier or a reviewer session (WO-158) | the report records `**Criterion N:** unmet, waived by <ordinal>`; the order's executor never records a waiver |
    | the operator withdraws the order (words captured) | `npm run resume -- withdraw --disposition failed\|superseded\|abandoned --reason <text> --capture <intake file> --capture-hash sha256:<digest> <actor-flags>` (WO-158) | stop: `withdrawn` is terminal, and only `npm run resume -- activate` of a changed revision with a new dated `**Reactivation (YYYY-MM-DD):**` note leaves it |
-   | a recorded attestation, report path or checkpoint is wrong | `npm run resume -- correct <ordinal\|report-path> --set <field>=<value> --reason <text> <actor-flags>` (WO-158) | never correct a verdict or edit a filed report; a wrong verdict takes a later report |
+   | a recorded attestation, report path or checkpoint is wrong, or a recorded passing final review carries no product gate | `npm run resume -- correct <ordinal\|report-path> --set <field>=<value> --reason <text> <actor-flags>` (WO-158); `--set productGate=<evidenceRef>` binds a complete passing `npm test` row whose code identity is the one the pass recorded in its checkpoint and still the working tree's, once, and is the only correction legal in `closed` (WO-115) | never correct a verdict or edit a filed report; a wrong verdict takes a later report; a changed subject takes a fresh final review; publication and release close read the bound gate from the committed correction |
    | `operator override: off` | nothing in Claude, whose hook appends `OperatorOverrideRecorded`; otherwise the printed `npm run resume -- override-record ...` command (WO-158) | record what the override changed in the order's decisions |
 
    The operator's standing posture, reaffirmed 2026-09-25 (WO-161), is no
@@ -2401,10 +2403,20 @@ claim evidence or releases it does not have.
 - **Write once, run once (WO-132).** The reviewer stages intended new source
   files and runs `npm test -- --review` once after the last source edit. The
   runner records `npm test` by tracked, non-generated code identity, excluding
-  `docs/`, `.claude/`, `.agents/`, root Markdown and Git's `dotln-generated`
-  paths. The exact tested tree remains beside that key. New source bytes
-  require a new final product gate; report/control/index/release-text edits do
-  not. Executor and verifier run product tests when useful to their evidence.
+  `docs/`, `.claude/`, `.agents/`, root Markdown and the paths Git marks
+  `dotln-generated` or `dotln-documentation`; the package READMEs no suite
+  reads carry the documentation mark in `.gitattributes`, while a README or
+  Markdown file a test reads as an input stays unmarked and counts (WO-115).
+  The exact tested tree remains beside that key. New source bytes
+  require a new final product gate; report/control/index/release-text and
+  marked-documentation edits do not. A passing final review recorded while no
+  gate row matched the identity carries no product gate; `resume correct
+  --set productGate=<evidenceRef>` binds one, once, from a passing gate whose
+  identity is the one the pass recorded in its checkpoint and still the
+  working tree's, and `worktree publish` and `release close` read the bound
+  row from the committed correction. A subject changed after the pass takes
+  a fresh final review (`activate` is legal from `closed`). Executor and
+  verifier run product tests when useful to their evidence.
   WO-133 keeps the host and both profiles' skeleton version in
   `packages/skeleton/src/version.ts`, outside machinery source declarations but
   inside runtime pins. Review selection uses the existing evidence content
@@ -2497,8 +2509,19 @@ claim evidence or releases it does not have.
   The scheduler retains load-derived deadlines, peer observations, a four-lane
   cap and bounded live progress. Harness fixtures and process-debt fixtures use
   exclusive scheduling, restoring the faster measured WO-128 D010 choice
-  (462 seconds exclusive versus 666 shared). Future scheduling changes require
-  a same-source comparison. The acceptance target is three consecutive fresh
+  (462 seconds exclusive versus 666 shared). Skeleton remains shared: WO-115's
+  [same-source comparison](../evidence/WO-115/scheduling-comparison.json) passed
+  all 28 suites in 312.441 seconds shared and 430.952 seconds exclusive, with
+  only its isolation declaration changed. Isolation shortened skeleton itself
+  from 309.511 to 286.508 seconds but added 118.511 seconds to the complete
+  gate. Shared skeleton has priority 80, reserves one of four lanes and uses
+  deadline load factor 8; exclusive skeleton would take priority 200 before
+  shared suites, reserve all four lanes and use factor 2. The acquisition
+  matrix's fixed 240-second deadline is unaffected. This single ordered pair
+  supports retaining shared scheduling; it does not establish the historical
+  timeout cause or reliability under all host loads. Future scheduling changes
+  require a same-source comparison. The acceptance target is three consecutive
+  fresh
   product gates below 360 seconds on the operator's host; their rows belong in
   WO-132 evidence. No product test is deleted; product-test removal still goes
   through the mutation corpus. The immutable WO-129–WO-131 records describe

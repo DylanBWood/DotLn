@@ -100,12 +100,19 @@ export function watchRuntimeStatus(
     if (filename && String(filename) !== RUNTIME_STATUS_FILE) return;
     refresh();
   });
+  // Directory notifications can be delayed or omitted. A bounded read keeps
+  // the text host current even when no change event reaches this watcher.
+  const poll = setInterval(refresh, 250);
+  poll.unref();
   watcher.on("error", () => {
+    // A watcher error can close its native handle without emitting "close".
+    clearInterval(poll);
     if (previous !== "unavailable") {
       previous = "unavailable";
       unavailable();
     }
   });
+  watcher.once("close", () => clearInterval(poll));
   // Subscribe before the initial read so a replacement cannot fall in a gap.
   refresh();
   return watcher;

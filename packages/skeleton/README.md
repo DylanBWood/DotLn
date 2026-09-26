@@ -290,8 +290,8 @@ node packages/skeleton/dist/src/dotln.js resident --store .runtime/my-resident -
 mode evaluates every tick after the previous episode drains. Return is observed
 while an episode runs: `kill` terminates it; `finish` drains it without advancing
 the reset policy. A new absence cannot overlap a finishing episode. Idle expiry
-needs a fresh back/away edge. `SIGINT`/`SIGTERM` stop the loop after the bounded
-cycle. SIGKILL leaves the log and worktree; restart inspects them, records an
+needs a fresh back/away edge. `SIGINT`, `SIGTERM` and `SIGHUP` stop the loop
+after the bounded cycle. SIGKILL leaves the log and worktree; restart inspects them, records an
 unobserved episode lost and never dispatches that id twice. A complete dead-owner
 lock-recovery guard is reclaimed after positive inspection. Torn logs, live or
 unreadable owners, and legacy ownerless guard directories still refuse for
@@ -305,6 +305,21 @@ grants no ownership and does not prevent reopening. A recycled PID can still
 look live and require inspection. This is local process-crash recovery, not a
 power-loss or hostile same-user isolation guarantee. After actor cancellation,
 polling takes no further append lock while waiting for the final outcome.
+
+While `dotln resident` runs, it also serves the console command surface
+(product 04 §Console parity contract v1). It creates an owner-only
+`<store>/console/` directory, writes the mode-0600 `console-loopback-v1.json`
+descriptor and the content-addressed console result bytes there, and removes
+the descriptor on orderly shutdown. The store itself may be an ordinary
+directory. The console starts under the lifetime lock, so the next start
+replaces a descriptor that a SIGKILL left behind. A pre-existing `console` path
+that is not an owner-only directory refuses the start with
+`console loopback requires an owner-only console directory in the resident store`,
+which `dotln` prints verbatim. The first stop request ends console admission at
+once, interrupts in-flight console commands and records their results, even
+while a tick is still finishing. Console receipts do not advance the change
+baseline a running tick polls, so a served presence change is seen as promptly
+as a terminal one.
 
 Configuration is immutable within a store; changing policy or scripts requires
 a fresh store. Retain the old store for inspection. The store records paths and

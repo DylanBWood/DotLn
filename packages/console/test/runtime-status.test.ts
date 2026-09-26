@@ -1,6 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { spawn, spawnSync } from "node:child_process";
+import { EventEmitter } from "node:events";
+import fs from "node:fs";
+import { syncBuiltinESMExports } from "node:module";
 import { setTimeout as delay } from "node:timers/promises";
 import {
   mkdtempSync,
@@ -77,6 +80,26 @@ const view: RuntimeStatusV1 = {
     ],
   },
 };
+
+async function observeWithin<T>(
+  result: Promise<T>,
+  timeoutMs: number,
+): Promise<T> {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  try {
+    return await Promise.race([
+      result,
+      new Promise<never>((_, reject) => {
+        timer = setTimeout(
+          () => reject(new Error("status watch timed out")),
+          timeoutMs,
+        );
+      }),
+    ]);
+  } finally {
+    clearTimeout(timer);
+  }
+}
 
 function schemaMatches(
   value: unknown,
@@ -208,14 +231,89 @@ test("WO-114 text host refreshes after atomic replacement", async (t) => {
   const temporary = join(directory, "new.tmp");
   writeFileSync(temporary, JSON.stringify(update));
   renameSync(temporary, target);
-  const observed = await Promise.race([
-    changed,
-    new Promise<never>((_, reject) =>
-      setTimeout(() => reject(new Error("status watch timed out")), 2000),
-    ),
-  ]);
+  const observed = await observeWithin(changed, 2000);
   assert.equal(observed.observedAt, 50);
   assert.deepEqual(observed.liveEpisodes, []);
+});
+
+test("WO-114 status watch recovers when notifications are absent", async (t) => {
+  const directory = mkdtempSync(join(tmpdir(), "dotln-console-watch-poll-"));
+  t.after(() => rmSync(directory, { recursive: true, force: true }));
+  const target = join(directory, "runtime-status-v1.json");
+  writeFileSync(target, JSON.stringify(view));
+  const silent = new EventEmitter() as EventEmitter & { close: () => void };
+  silent.close = () => silent.emit("close");
+  const originalWatch = fs.watch;
+  fs.watch = (() => silent) as unknown as typeof fs.watch;
+  syncBuiltinESMExports();
+  let resolve!: (value: RuntimeStatusV1) => void;
+  const changed = new Promise<RuntimeStatusV1>((done) => {
+    resolve = done;
+  });
+  let watcher: ReturnType<typeof watchRuntimeStatus>;
+  try {
+    watcher = watchRuntimeStatus(directory, (next) => {
+      if (next.observedAt === 50) resolve(next);
+    });
+  } finally {
+    fs.watch = originalWatch;
+    syncBuiltinESMExports();
+  }
+  t.after(() => watcher.close());
+  const update = { ...view, observedAt: 50, liveEpisodes: [] };
+  const temporary = join(directory, "new.tmp");
+  writeFileSync(temporary, JSON.stringify(update));
+  renameSync(temporary, target);
+  const observed = await observeWithin(changed, 2000);
+  assert.equal(observed.observedAt, 50);
+  assert.deepEqual(observed.liveEpisodes, []);
+});
+
+test("WO-114 status poll stops when a watcher error closes without a close event", async (t) => {
+  const directory = mkdtempSync(join(tmpdir(), "dotln-console-watch-error-"));
+  t.after(() => rmSync(directory, { recursive: true, force: true }));
+  const target = join(directory, "runtime-status-v1.json");
+  writeFileSync(target, JSON.stringify(view));
+  const failed = new EventEmitter() as EventEmitter & { close: () => void };
+  // FSWatcher errors end observation without promising a close event. Once
+  // its handle is gone, a subsequent close() can be a no-op.
+  failed.close = () => {};
+  const originalWatch = fs.watch;
+  fs.watch = (() => failed) as unknown as typeof fs.watch;
+  syncBuiltinESMExports();
+  const changed: number[] = [];
+  let unavailable = 0;
+  let watcher: ReturnType<typeof watchRuntimeStatus>;
+  try {
+    watcher = watchRuntimeStatus(
+      directory,
+      (next) => changed.push(next.observedAt),
+      () => unavailable++,
+    );
+  } finally {
+    fs.watch = originalWatch;
+    syncBuiltinESMExports();
+  }
+  // Always stop the test interval, including on the pre-repair implementation.
+  t.after(() => failed.emit("close"));
+  failed.emit("error", new Error("watch failed"));
+  assert.deepEqual(changed, [40]);
+  assert.equal(unavailable, 1);
+  watcher.close();
+  writeFileSync(
+    join(directory, "new.tmp"),
+    JSON.stringify({ ...view, observedAt: 50 }),
+  );
+  renameSync(join(directory, "new.tmp"), target);
+  await delay(300);
+  assert.deepEqual(
+    changed,
+    [40],
+    "no changed callback after the watcher fails and closes",
+  );
+  unlinkSync(target);
+  await delay(300);
+  assert.equal(unavailable, 1, "no unavailable callback after close");
 });
 
 test("WO-114 schema and decoder agree on all order fields", () => {

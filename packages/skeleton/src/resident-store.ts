@@ -70,7 +70,7 @@ export class ResidentTransaction {
     type: string,
     payload: object,
     occurredAt = this.resident?.at ?? 0,
-    actorId?: "operator" | "resident-host",
+    actorId?: "operator" | "resident-host" | "console",
   ) {
     const event: Event = {
       schemaVersion: 1,
@@ -192,7 +192,13 @@ export class ResidentStore {
       if (existsSync(temporary)) unlinkSync(temporary);
     }
   }
-  async transaction<T>(operation: (tx: ResidentTransaction) => T): Promise<T> {
+  /** `observe: false` leaves the host's change baseline alone, so another
+   * in-process writer (the console's receipts) cannot hide a concurrent
+   * append such as a served presence change from a running tick. */
+  async transaction<T>(
+    operation: (tx: ResidentTransaction) => T,
+    { observe = true }: { observe?: boolean } = {},
+  ): Promise<T> {
     if (
       existsSync(this.store.directory) &&
       lstatSync(this.store.directory).isSymbolicLink()
@@ -224,9 +230,10 @@ export class ResidentStore {
     try {
       const result = operation(inspected!);
       if (!inspected!.published) this.publish(inspected!);
-      this.observedBytes = existsSync(this.store.logPath)
-        ? statSync(this.store.logPath).size
-        : 0;
+      if (observe)
+        this.observedBytes = existsSync(this.store.logPath)
+          ? statSync(this.store.logPath).size
+          : 0;
       return result;
     } finally {
       this.appendStore.release();
