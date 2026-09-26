@@ -1,0 +1,1692 @@
+{
+  "sourceRevision": "4ead1d0ea1f1fea049f8369d99c852da602f9278",
+  "compilerPackageVersion": "0.19.1",
+  "compatibility": [
+    {
+      "fixture": "seiri",
+      "semanticHash": "fnv1a64:9ca8d0229c6bd8db",
+      "programHash": "sha256:e028ecd6d6c00fb91095679f9b85fcf7c7efdaaf6ed96d48a76e04acd9cc8e12",
+      "inspectionHash": "sha256:d6fd72e5f5afa675687f6c0b7578fcf5cc2284fb4860aa940738ae2b01f6e7cc",
+      "changedArtifactIdentityFields": [
+        "compilerPackageVersion"
+      ]
+    },
+    {
+      "fixture": "entropy",
+      "semanticHash": "fnv1a64:79151d7baebc5262",
+      "programHash": "sha256:46200af2568e86e4be2ac86040b55651dd4a1782ef8da1fef41540b649294b3d",
+      "inspectionHash": "sha256:57670d43613c943786e06652e6fa03c530cccee6981967445d665fa7c445eb60",
+      "changedArtifactIdentityFields": [
+        "compilerPackageVersion",
+        "semanticHash",
+        "componentDefinitions"
+      ],
+      "migration": {
+        "source": "docs/work-orders/WO-142-outstanding-cleanup.md",
+        "criterion": "B9",
+        "historicalFixture": "4ead1d0ea1f1fea049f8369d99c852da602f9278:packages/compiler/fixtures/wo029-entropy-reducer.json",
+        "previousSemanticHash": "fnv1a64:c5ddbca75f1c4cee",
+        "changedSupportFields": [
+          "version",
+          "semanticsAdded[0]",
+          "emissions[0].text",
+          "inspection.obligations[0]"
+        ],
+        "changedProgramFields": [
+          "componentManifest",
+          "phenotype.semantics",
+          "promptFragments",
+          "inspection.obligations"
+        ],
+        "authorityUnchanged": true,
+        "effectsUnchanged": true
+      },
+      "reviewerMigration": {
+        "source": "docs/work-orders/WO-100-preauthorized-portfolio.md",
+        "decision": "WO-100-D007",
+        "previousReviewer": "claude-fable-5-1 at max",
+        "reviewer": "claude-opus-5-5 at xhigh",
+        "changedActiveFields": [
+          "version",
+          "workOrder.knownFacts[3]"
+        ],
+        "changedProgramFields": [
+          "componentManifest",
+          "workOrder.knownFacts"
+        ],
+        "authorityUnchanged": true,
+        "effectsUnchanged": true
+      }
+    },
+    {
+      "fixture": "contributor",
+      "semanticHash": "fnv1a64:fcf61a6d699e7ffd",
+      "programHash": "sha256:a3c0a6b6a6ac78dd20487ff71dd8a35f67dfd7867820b8027c044191626f33bc",
+      "inspectionHash": "sha256:fb1d55d2bc46a8236b2741a4e580f5e774094471f3f6ca933c655f16f8df6da6",
+      "changedArtifactIdentityFields": [
+        "compilerPackageVersion",
+        "semanticHash",
+        "componentDefinitions"
+      ]
+    },
+    {
+      "fixture": "planRefuter",
+      "semanticHash": "fnv1a64:4c45aa92547659f9",
+      "programHash": "sha256:016b86cf2ef0ebcf33466e5ef8fa24e837c291e5f7b563ddc9960c52067efbee",
+      "inspectionHash": "sha256:5e5d2de60ef0641a2cfcfd675b0204f66fb072cbf2fda86d61faa47b56df8936",
+      "changedArtifactIdentityFields": [
+        "compilerPackageVersion",
+        "semanticHash",
+        "componentDefinitions"
+      ],
+      "migration": {
+        "source": "docs/work-orders/WO-132-machinery-stand-down.md",
+        "criterion": "AC11",
+        "previousSemanticHash": "fnv1a64:9e1fa511376ca7ce",
+        "changedProgramFields": [
+          "workOrder.acceptanceCriteria",
+          "workOrder.constraints[1]",
+          "workOrder.outputContract.schema"
+        ],
+        "changedComponentDefinitionFields": [
+          "componentDefinitions[0].definitionHash"
+        ],
+        "authorityUnchanged": true,
+        "effectsUnchanged": true
+      }
+    }
+  ],
+  "frozen": [
+    {
+      "path": "packages/skeleton/fixtures/wo003-decision-traces.json",
+      "hash": "sha256:ec53d1c841de5486cf656694228c83f67e8549993d0ac63c187d10728707a173",
+      "unchanged": true
+    },
+    {
+      "path": "packages/compiler/fixtures/wo029-entropy-reducer.json",
+      "previousHash": "sha256:0aee53a41288660b1f587727e3f53e5ed7fdeec338b547d6a9d5a242af3f7e27",
+      "hash": "sha256:b5d0830a9b9bb869ad91a0795827e8f39004e3b7a11f66342df116264d1c9c1c",
+      "unchanged": false,
+      "migration": "WO-142 B9 Shape-First v2 and WO-100-D007 reviewer claude-opus-5-5 at xhigh (Seisō v2); historical bytes verified through oldEntropy"
+    }
+  ],
+  "widening": [
+    {
+      "support": "f2",
+      "ok": false,
+      "diagnostics": [
+        {
+          "code": "AUTHORITY WIDENING",
+          "message": "AUTHORITY WIDENING: support \"f2\" claim \"f2.claim\" allows \"repo.delete\" outside active \"seiri\" base authorityEnvelope.allowedEffects (absent or base-denied).",
+          "missingCapabilities": [],
+          "corrections": [
+            {
+              "kind": "unequip-support",
+              "supportFacetId": "f2",
+              "linkGroupId": "fixture.authority"
+            },
+            {
+              "kind": "declare-authority-grant",
+              "effect": "repo.delete"
+            }
+          ],
+          "supportFacetId": "f2",
+          "activeMechanicId": "seiri",
+          "linkGroupId": "fixture.authority"
+        },
+        {
+          "code": "AUTHORITY WIDENING",
+          "message": "AUTHORITY WIDENING: support \"f2\" claim \"f2.claim\" allows \"repo.delete\" outside active \"seiri\" base workOrder.allowedOperations (absent or base-denied).",
+          "missingCapabilities": [],
+          "corrections": [
+            {
+              "kind": "unequip-support",
+              "supportFacetId": "f2",
+              "linkGroupId": "fixture.authority"
+            },
+            {
+              "kind": "declare-authority-grant",
+              "effect": "repo.delete"
+            }
+          ],
+          "supportFacetId": "f2",
+          "activeMechanicId": "seiri",
+          "linkGroupId": "fixture.authority"
+        }
+      ]
+    },
+    {
+      "support": "absent",
+      "ok": false,
+      "diagnostics": [
+        {
+          "code": "AUTHORITY WIDENING",
+          "message": "AUTHORITY WIDENING: support \"absent\" claim \"absent.claim\" allows \"remote.send\" outside active \"seiri\" base authorityEnvelope.allowedEffects (absent or base-denied).",
+          "missingCapabilities": [],
+          "corrections": [
+            {
+              "kind": "unequip-support",
+              "supportFacetId": "absent",
+              "linkGroupId": "fixture.authority"
+            },
+            {
+              "kind": "declare-authority-grant",
+              "effect": "remote.send"
+            }
+          ],
+          "supportFacetId": "absent",
+          "activeMechanicId": "seiri",
+          "linkGroupId": "fixture.authority"
+        },
+        {
+          "code": "AUTHORITY WIDENING",
+          "message": "AUTHORITY WIDENING: support \"absent\" claim \"absent.claim\" allows \"remote.send\" outside active \"seiri\" base workOrder.allowedOperations (absent or base-denied).",
+          "missingCapabilities": [],
+          "corrections": [
+            {
+              "kind": "unequip-support",
+              "supportFacetId": "absent",
+              "linkGroupId": "fixture.authority"
+            },
+            {
+              "kind": "declare-authority-grant",
+              "effect": "remote.send"
+            }
+          ],
+          "supportFacetId": "absent",
+          "activeMechanicId": "seiri",
+          "linkGroupId": "fixture.authority"
+        }
+      ]
+    },
+    {
+      "support": "emission",
+      "ok": false,
+      "diagnostics": [
+        {
+          "code": "AUTHORITY WIDENING",
+          "message": "AUTHORITY WIDENING: support \"emission\" emission \"permission.allowedEffects\" allows \"repo.delete\" outside active \"seiri\" base authorityEnvelope.allowedEffects (absent or base-denied).",
+          "missingCapabilities": [],
+          "corrections": [
+            {
+              "kind": "unequip-support",
+              "supportFacetId": "emission",
+              "linkGroupId": "fixture.authority"
+            },
+            {
+              "kind": "declare-authority-grant",
+              "effect": "repo.delete"
+            }
+          ],
+          "supportFacetId": "emission",
+          "activeMechanicId": "seiri",
+          "linkGroupId": "fixture.authority"
+        }
+      ]
+    },
+    {
+      "support": "emission",
+      "ok": false,
+      "diagnostics": [
+        {
+          "code": "AUTHORITY WIDENING",
+          "message": "AUTHORITY WIDENING: support \"emission\" emission \"permission.allowedOperations\" allows \"repo.delete\" outside active \"seiri\" base workOrder.allowedOperations (absent or base-denied).",
+          "missingCapabilities": [],
+          "corrections": [
+            {
+              "kind": "unequip-support",
+              "supportFacetId": "emission",
+              "linkGroupId": "fixture.authority"
+            },
+            {
+              "kind": "declare-authority-grant",
+              "effect": "repo.delete"
+            }
+          ],
+          "supportFacetId": "emission",
+          "activeMechanicId": "seiri",
+          "linkGroupId": "fixture.authority"
+        }
+      ]
+    }
+  ],
+  "narrowing": [
+    {
+      "layer": "safety-invariants",
+      "effects": {
+        "allowedEffects": [
+          "repo.read"
+        ],
+        "authorityEnvelopeId": "auth_seiri",
+        "deniedEffects": [
+          "repo.delete",
+          "repo.write",
+          "repo.inspect"
+        ],
+        "expiresAt": 2400000,
+        "requiredEvidence": [],
+        "resourceLimits": {
+          "inspections": 1
+        },
+        "revocationConditions": [],
+        "revocationEventTypes": []
+      },
+      "operations": {
+        "allowed": [
+          "repo.read"
+        ],
+        "denied": [
+          "repo.delete",
+          "repo.write",
+          "repo.inspect"
+        ]
+      },
+      "claims": [
+        {
+          "claimId": "deny.claim",
+          "hard": false,
+          "layer": "safety-invariants",
+          "supportFacetId": "deny",
+          "target": "authority.repo.inspect",
+          "value": "deny"
+        }
+      ],
+      "runtime": {
+        "denied": {
+          "authorized": false,
+          "refusal": {
+            "schemaVersion": 1,
+            "type": "CommandRefused",
+            "occurredAt": 1,
+            "actorId": "fixture",
+            "workstreamId": "fixture",
+            "payload": {
+              "intentIndex": 0,
+              "reason": "effect denied",
+              "authorityEnvelopeId": "auth_seiri"
+            }
+          },
+          "trace": {
+            "reactorId": "authority-guard",
+            "reactorVersion": "1",
+            "branchPath": [
+              "refused",
+              "effect denied"
+            ],
+            "envInputs": [
+              "now",
+              "authorityEnvelope",
+              "evidence",
+              "revocations"
+            ],
+            "cadenceEvaluations": []
+          }
+        },
+        "allowed": {
+          "authorized": true,
+          "command": {
+            "commandId": "cmd_d83feea4913a6418",
+            "workstreamId": "fixture",
+            "intent": {
+              "kind": "Act",
+              "effect": "repo.read",
+              "payload": {}
+            }
+          },
+          "authority": {
+            "allowedEffects": [
+              "repo.read"
+            ],
+            "authorityEnvelopeId": "auth_seiri",
+            "deniedEffects": [
+              "repo.delete",
+              "repo.write",
+              "repo.inspect"
+            ],
+            "expiresAt": 2400000,
+            "requiredEvidence": [],
+            "resourceLimits": {
+              "inspections": 1
+            },
+            "revocationConditions": [],
+            "revocationEventTypes": []
+          },
+          "trace": {
+            "reactorId": "authority-guard",
+            "reactorVersion": "1",
+            "branchPath": [
+              "authorized",
+              "repo.read"
+            ],
+            "envInputs": [
+              "now:1",
+              "authorityEnvelope:auth_seiri",
+              "evidence",
+              "revocations"
+            ],
+            "cadenceEvaluations": []
+          }
+        }
+      }
+    },
+    {
+      "layer": "hard-permissions",
+      "effects": {
+        "allowedEffects": [
+          "repo.read"
+        ],
+        "authorityEnvelopeId": "auth_seiri",
+        "deniedEffects": [
+          "repo.delete",
+          "repo.write",
+          "repo.inspect"
+        ],
+        "expiresAt": 2400000,
+        "requiredEvidence": [],
+        "resourceLimits": {
+          "inspections": 1
+        },
+        "revocationConditions": [],
+        "revocationEventTypes": []
+      },
+      "operations": {
+        "allowed": [
+          "repo.read"
+        ],
+        "denied": [
+          "repo.delete",
+          "repo.write",
+          "repo.inspect"
+        ]
+      },
+      "claims": [
+        {
+          "claimId": "deny.claim",
+          "hard": false,
+          "layer": "hard-permissions",
+          "supportFacetId": "deny",
+          "target": "authority.repo.inspect",
+          "value": "deny"
+        }
+      ],
+      "runtime": {
+        "denied": {
+          "authorized": false,
+          "refusal": {
+            "schemaVersion": 1,
+            "type": "CommandRefused",
+            "occurredAt": 1,
+            "actorId": "fixture",
+            "workstreamId": "fixture",
+            "payload": {
+              "intentIndex": 0,
+              "reason": "effect denied",
+              "authorityEnvelopeId": "auth_seiri"
+            }
+          },
+          "trace": {
+            "reactorId": "authority-guard",
+            "reactorVersion": "1",
+            "branchPath": [
+              "refused",
+              "effect denied"
+            ],
+            "envInputs": [
+              "now",
+              "authorityEnvelope",
+              "evidence",
+              "revocations"
+            ],
+            "cadenceEvaluations": []
+          }
+        },
+        "allowed": {
+          "authorized": true,
+          "command": {
+            "commandId": "cmd_d83feea4913a6418",
+            "workstreamId": "fixture",
+            "intent": {
+              "kind": "Act",
+              "effect": "repo.read",
+              "payload": {}
+            }
+          },
+          "authority": {
+            "allowedEffects": [
+              "repo.read"
+            ],
+            "authorityEnvelopeId": "auth_seiri",
+            "deniedEffects": [
+              "repo.delete",
+              "repo.write",
+              "repo.inspect"
+            ],
+            "expiresAt": 2400000,
+            "requiredEvidence": [],
+            "resourceLimits": {
+              "inspections": 1
+            },
+            "revocationConditions": [],
+            "revocationEventTypes": []
+          },
+          "trace": {
+            "reactorId": "authority-guard",
+            "reactorVersion": "1",
+            "branchPath": [
+              "authorized",
+              "repo.read"
+            ],
+            "envInputs": [
+              "now:1",
+              "authorityEnvelope:auth_seiri",
+              "evidence",
+              "revocations"
+            ],
+            "cadenceEvaluations": []
+          }
+        }
+      }
+    },
+    {
+      "layer": "statechart-guards",
+      "effects": {
+        "allowedEffects": [
+          "repo.read"
+        ],
+        "authorityEnvelopeId": "auth_seiri",
+        "deniedEffects": [
+          "repo.delete",
+          "repo.write",
+          "repo.inspect"
+        ],
+        "expiresAt": 2400000,
+        "requiredEvidence": [],
+        "resourceLimits": {
+          "inspections": 1
+        },
+        "revocationConditions": [],
+        "revocationEventTypes": []
+      },
+      "operations": {
+        "allowed": [
+          "repo.read"
+        ],
+        "denied": [
+          "repo.delete",
+          "repo.write",
+          "repo.inspect"
+        ]
+      },
+      "claims": [
+        {
+          "claimId": "deny.claim",
+          "hard": false,
+          "layer": "statechart-guards",
+          "supportFacetId": "deny",
+          "target": "authority.repo.inspect",
+          "value": "deny"
+        }
+      ],
+      "runtime": {
+        "denied": {
+          "authorized": false,
+          "refusal": {
+            "schemaVersion": 1,
+            "type": "CommandRefused",
+            "occurredAt": 1,
+            "actorId": "fixture",
+            "workstreamId": "fixture",
+            "payload": {
+              "intentIndex": 0,
+              "reason": "effect denied",
+              "authorityEnvelopeId": "auth_seiri"
+            }
+          },
+          "trace": {
+            "reactorId": "authority-guard",
+            "reactorVersion": "1",
+            "branchPath": [
+              "refused",
+              "effect denied"
+            ],
+            "envInputs": [
+              "now",
+              "authorityEnvelope",
+              "evidence",
+              "revocations"
+            ],
+            "cadenceEvaluations": []
+          }
+        },
+        "allowed": {
+          "authorized": true,
+          "command": {
+            "commandId": "cmd_d83feea4913a6418",
+            "workstreamId": "fixture",
+            "intent": {
+              "kind": "Act",
+              "effect": "repo.read",
+              "payload": {}
+            }
+          },
+          "authority": {
+            "allowedEffects": [
+              "repo.read"
+            ],
+            "authorityEnvelopeId": "auth_seiri",
+            "deniedEffects": [
+              "repo.delete",
+              "repo.write",
+              "repo.inspect"
+            ],
+            "expiresAt": 2400000,
+            "requiredEvidence": [],
+            "resourceLimits": {
+              "inspections": 1
+            },
+            "revocationConditions": [],
+            "revocationEventTypes": []
+          },
+          "trace": {
+            "reactorId": "authority-guard",
+            "reactorVersion": "1",
+            "branchPath": [
+              "authorized",
+              "repo.read"
+            ],
+            "envInputs": [
+              "now:1",
+              "authorityEnvelope:auth_seiri",
+              "evidence",
+              "revocations"
+            ],
+            "cadenceEvaluations": []
+          }
+        }
+      }
+    },
+    {
+      "layer": "work-order-obligations",
+      "effects": {
+        "allowedEffects": [
+          "repo.read"
+        ],
+        "authorityEnvelopeId": "auth_seiri",
+        "deniedEffects": [
+          "repo.delete",
+          "repo.write",
+          "repo.inspect"
+        ],
+        "expiresAt": 2400000,
+        "requiredEvidence": [],
+        "resourceLimits": {
+          "inspections": 1
+        },
+        "revocationConditions": [],
+        "revocationEventTypes": []
+      },
+      "operations": {
+        "allowed": [
+          "repo.read"
+        ],
+        "denied": [
+          "repo.delete",
+          "repo.write",
+          "repo.inspect"
+        ]
+      },
+      "claims": [
+        {
+          "claimId": "deny.claim",
+          "hard": false,
+          "layer": "work-order-obligations",
+          "supportFacetId": "deny",
+          "target": "authority.repo.inspect",
+          "value": "deny"
+        }
+      ],
+      "runtime": {
+        "denied": {
+          "authorized": false,
+          "refusal": {
+            "schemaVersion": 1,
+            "type": "CommandRefused",
+            "occurredAt": 1,
+            "actorId": "fixture",
+            "workstreamId": "fixture",
+            "payload": {
+              "intentIndex": 0,
+              "reason": "effect denied",
+              "authorityEnvelopeId": "auth_seiri"
+            }
+          },
+          "trace": {
+            "reactorId": "authority-guard",
+            "reactorVersion": "1",
+            "branchPath": [
+              "refused",
+              "effect denied"
+            ],
+            "envInputs": [
+              "now",
+              "authorityEnvelope",
+              "evidence",
+              "revocations"
+            ],
+            "cadenceEvaluations": []
+          }
+        },
+        "allowed": {
+          "authorized": true,
+          "command": {
+            "commandId": "cmd_d83feea4913a6418",
+            "workstreamId": "fixture",
+            "intent": {
+              "kind": "Act",
+              "effect": "repo.read",
+              "payload": {}
+            }
+          },
+          "authority": {
+            "allowedEffects": [
+              "repo.read"
+            ],
+            "authorityEnvelopeId": "auth_seiri",
+            "deniedEffects": [
+              "repo.delete",
+              "repo.write",
+              "repo.inspect"
+            ],
+            "expiresAt": 2400000,
+            "requiredEvidence": [],
+            "resourceLimits": {
+              "inspections": 1
+            },
+            "revocationConditions": [],
+            "revocationEventTypes": []
+          },
+          "trace": {
+            "reactorId": "authority-guard",
+            "reactorVersion": "1",
+            "branchPath": [
+              "authorized",
+              "repo.read"
+            ],
+            "envInputs": [
+              "now:1",
+              "authorityEnvelope:auth_seiri",
+              "evidence",
+              "revocations"
+            ],
+            "cadenceEvaluations": []
+          }
+        }
+      }
+    },
+    {
+      "layer": "resource-budgets",
+      "effects": {
+        "allowedEffects": [
+          "repo.read"
+        ],
+        "authorityEnvelopeId": "auth_seiri",
+        "deniedEffects": [
+          "repo.delete",
+          "repo.write",
+          "repo.inspect"
+        ],
+        "expiresAt": 2400000,
+        "requiredEvidence": [],
+        "resourceLimits": {
+          "inspections": 1
+        },
+        "revocationConditions": [],
+        "revocationEventTypes": []
+      },
+      "operations": {
+        "allowed": [
+          "repo.read"
+        ],
+        "denied": [
+          "repo.delete",
+          "repo.write",
+          "repo.inspect"
+        ]
+      },
+      "claims": [
+        {
+          "claimId": "deny.claim",
+          "hard": false,
+          "layer": "resource-budgets",
+          "supportFacetId": "deny",
+          "target": "authority.repo.inspect",
+          "value": "deny"
+        }
+      ],
+      "runtime": {
+        "denied": {
+          "authorized": false,
+          "refusal": {
+            "schemaVersion": 1,
+            "type": "CommandRefused",
+            "occurredAt": 1,
+            "actorId": "fixture",
+            "workstreamId": "fixture",
+            "payload": {
+              "intentIndex": 0,
+              "reason": "effect denied",
+              "authorityEnvelopeId": "auth_seiri"
+            }
+          },
+          "trace": {
+            "reactorId": "authority-guard",
+            "reactorVersion": "1",
+            "branchPath": [
+              "refused",
+              "effect denied"
+            ],
+            "envInputs": [
+              "now",
+              "authorityEnvelope",
+              "evidence",
+              "revocations"
+            ],
+            "cadenceEvaluations": []
+          }
+        },
+        "allowed": {
+          "authorized": true,
+          "command": {
+            "commandId": "cmd_d83feea4913a6418",
+            "workstreamId": "fixture",
+            "intent": {
+              "kind": "Act",
+              "effect": "repo.read",
+              "payload": {}
+            }
+          },
+          "authority": {
+            "allowedEffects": [
+              "repo.read"
+            ],
+            "authorityEnvelopeId": "auth_seiri",
+            "deniedEffects": [
+              "repo.delete",
+              "repo.write",
+              "repo.inspect"
+            ],
+            "expiresAt": 2400000,
+            "requiredEvidence": [],
+            "resourceLimits": {
+              "inspections": 1
+            },
+            "revocationConditions": [],
+            "revocationEventTypes": []
+          },
+          "trace": {
+            "reactorId": "authority-guard",
+            "reactorVersion": "1",
+            "branchPath": [
+              "authorized",
+              "repo.read"
+            ],
+            "envInputs": [
+              "now:1",
+              "authorityEnvelope:auth_seiri",
+              "evidence",
+              "revocations"
+            ],
+            "cadenceEvaluations": []
+          }
+        }
+      }
+    },
+    {
+      "layer": "policy-scores-tensions",
+      "effects": {
+        "allowedEffects": [
+          "repo.read"
+        ],
+        "authorityEnvelopeId": "auth_seiri",
+        "deniedEffects": [
+          "repo.delete",
+          "repo.write",
+          "repo.inspect"
+        ],
+        "expiresAt": 2400000,
+        "requiredEvidence": [],
+        "resourceLimits": {
+          "inspections": 1
+        },
+        "revocationConditions": [],
+        "revocationEventTypes": []
+      },
+      "operations": {
+        "allowed": [
+          "repo.read"
+        ],
+        "denied": [
+          "repo.delete",
+          "repo.write",
+          "repo.inspect"
+        ]
+      },
+      "claims": [
+        {
+          "claimId": "deny.claim",
+          "hard": false,
+          "layer": "policy-scores-tensions",
+          "supportFacetId": "deny",
+          "target": "authority.repo.inspect",
+          "value": "deny"
+        }
+      ],
+      "runtime": {
+        "denied": {
+          "authorized": false,
+          "refusal": {
+            "schemaVersion": 1,
+            "type": "CommandRefused",
+            "occurredAt": 1,
+            "actorId": "fixture",
+            "workstreamId": "fixture",
+            "payload": {
+              "intentIndex": 0,
+              "reason": "effect denied",
+              "authorityEnvelopeId": "auth_seiri"
+            }
+          },
+          "trace": {
+            "reactorId": "authority-guard",
+            "reactorVersion": "1",
+            "branchPath": [
+              "refused",
+              "effect denied"
+            ],
+            "envInputs": [
+              "now",
+              "authorityEnvelope",
+              "evidence",
+              "revocations"
+            ],
+            "cadenceEvaluations": []
+          }
+        },
+        "allowed": {
+          "authorized": true,
+          "command": {
+            "commandId": "cmd_d83feea4913a6418",
+            "workstreamId": "fixture",
+            "intent": {
+              "kind": "Act",
+              "effect": "repo.read",
+              "payload": {}
+            }
+          },
+          "authority": {
+            "allowedEffects": [
+              "repo.read"
+            ],
+            "authorityEnvelopeId": "auth_seiri",
+            "deniedEffects": [
+              "repo.delete",
+              "repo.write",
+              "repo.inspect"
+            ],
+            "expiresAt": 2400000,
+            "requiredEvidence": [],
+            "resourceLimits": {
+              "inspections": 1
+            },
+            "revocationConditions": [],
+            "revocationEventTypes": []
+          },
+          "trace": {
+            "reactorId": "authority-guard",
+            "reactorVersion": "1",
+            "branchPath": [
+              "authorized",
+              "repo.read"
+            ],
+            "envInputs": [
+              "now:1",
+              "authorityEnvelope:auth_seiri",
+              "evidence",
+              "revocations"
+            ],
+            "cadenceEvaluations": []
+          }
+        }
+      }
+    },
+    {
+      "layer": "cadence",
+      "effects": {
+        "allowedEffects": [
+          "repo.read"
+        ],
+        "authorityEnvelopeId": "auth_seiri",
+        "deniedEffects": [
+          "repo.delete",
+          "repo.write",
+          "repo.inspect"
+        ],
+        "expiresAt": 2400000,
+        "requiredEvidence": [],
+        "resourceLimits": {
+          "inspections": 1
+        },
+        "revocationConditions": [],
+        "revocationEventTypes": []
+      },
+      "operations": {
+        "allowed": [
+          "repo.read"
+        ],
+        "denied": [
+          "repo.delete",
+          "repo.write",
+          "repo.inspect"
+        ]
+      },
+      "claims": [
+        {
+          "claimId": "deny.claim",
+          "hard": false,
+          "layer": "cadence",
+          "supportFacetId": "deny",
+          "target": "authority.repo.inspect",
+          "value": "deny"
+        }
+      ],
+      "runtime": {
+        "denied": {
+          "authorized": false,
+          "refusal": {
+            "schemaVersion": 1,
+            "type": "CommandRefused",
+            "occurredAt": 1,
+            "actorId": "fixture",
+            "workstreamId": "fixture",
+            "payload": {
+              "intentIndex": 0,
+              "reason": "effect denied",
+              "authorityEnvelopeId": "auth_seiri"
+            }
+          },
+          "trace": {
+            "reactorId": "authority-guard",
+            "reactorVersion": "1",
+            "branchPath": [
+              "refused",
+              "effect denied"
+            ],
+            "envInputs": [
+              "now",
+              "authorityEnvelope",
+              "evidence",
+              "revocations"
+            ],
+            "cadenceEvaluations": []
+          }
+        },
+        "allowed": {
+          "authorized": true,
+          "command": {
+            "commandId": "cmd_d83feea4913a6418",
+            "workstreamId": "fixture",
+            "intent": {
+              "kind": "Act",
+              "effect": "repo.read",
+              "payload": {}
+            }
+          },
+          "authority": {
+            "allowedEffects": [
+              "repo.read"
+            ],
+            "authorityEnvelopeId": "auth_seiri",
+            "deniedEffects": [
+              "repo.delete",
+              "repo.write",
+              "repo.inspect"
+            ],
+            "expiresAt": 2400000,
+            "requiredEvidence": [],
+            "resourceLimits": {
+              "inspections": 1
+            },
+            "revocationConditions": [],
+            "revocationEventTypes": []
+          },
+          "trace": {
+            "reactorId": "authority-guard",
+            "reactorVersion": "1",
+            "branchPath": [
+              "authorized",
+              "repo.read"
+            ],
+            "envInputs": [
+              "now:1",
+              "authorityEnvelope:auth_seiri",
+              "evidence",
+              "revocations"
+            ],
+            "cadenceEvaluations": []
+          }
+        }
+      }
+    },
+    {
+      "layer": "voice",
+      "effects": {
+        "allowedEffects": [
+          "repo.read"
+        ],
+        "authorityEnvelopeId": "auth_seiri",
+        "deniedEffects": [
+          "repo.delete",
+          "repo.write",
+          "repo.inspect"
+        ],
+        "expiresAt": 2400000,
+        "requiredEvidence": [],
+        "resourceLimits": {
+          "inspections": 1
+        },
+        "revocationConditions": [],
+        "revocationEventTypes": []
+      },
+      "operations": {
+        "allowed": [
+          "repo.read"
+        ],
+        "denied": [
+          "repo.delete",
+          "repo.write",
+          "repo.inspect"
+        ]
+      },
+      "claims": [
+        {
+          "claimId": "deny.claim",
+          "hard": false,
+          "layer": "voice",
+          "supportFacetId": "deny",
+          "target": "authority.repo.inspect",
+          "value": "deny"
+        }
+      ],
+      "runtime": {
+        "denied": {
+          "authorized": false,
+          "refusal": {
+            "schemaVersion": 1,
+            "type": "CommandRefused",
+            "occurredAt": 1,
+            "actorId": "fixture",
+            "workstreamId": "fixture",
+            "payload": {
+              "intentIndex": 0,
+              "reason": "effect denied",
+              "authorityEnvelopeId": "auth_seiri"
+            }
+          },
+          "trace": {
+            "reactorId": "authority-guard",
+            "reactorVersion": "1",
+            "branchPath": [
+              "refused",
+              "effect denied"
+            ],
+            "envInputs": [
+              "now",
+              "authorityEnvelope",
+              "evidence",
+              "revocations"
+            ],
+            "cadenceEvaluations": []
+          }
+        },
+        "allowed": {
+          "authorized": true,
+          "command": {
+            "commandId": "cmd_d83feea4913a6418",
+            "workstreamId": "fixture",
+            "intent": {
+              "kind": "Act",
+              "effect": "repo.read",
+              "payload": {}
+            }
+          },
+          "authority": {
+            "allowedEffects": [
+              "repo.read"
+            ],
+            "authorityEnvelopeId": "auth_seiri",
+            "deniedEffects": [
+              "repo.delete",
+              "repo.write",
+              "repo.inspect"
+            ],
+            "expiresAt": 2400000,
+            "requiredEvidence": [],
+            "resourceLimits": {
+              "inspections": 1
+            },
+            "revocationConditions": [],
+            "revocationEventTypes": []
+          },
+          "trace": {
+            "reactorId": "authority-guard",
+            "reactorVersion": "1",
+            "branchPath": [
+              "authorized",
+              "repo.read"
+            ],
+            "envInputs": [
+              "now:1",
+              "authorityEnvelope:auth_seiri",
+              "evidence",
+              "revocations"
+            ],
+            "cadenceEvaluations": []
+          }
+        }
+      }
+    },
+    {
+      "layer": "visual-skin",
+      "effects": {
+        "allowedEffects": [
+          "repo.read"
+        ],
+        "authorityEnvelopeId": "auth_seiri",
+        "deniedEffects": [
+          "repo.delete",
+          "repo.write",
+          "repo.inspect"
+        ],
+        "expiresAt": 2400000,
+        "requiredEvidence": [],
+        "resourceLimits": {
+          "inspections": 1
+        },
+        "revocationConditions": [],
+        "revocationEventTypes": []
+      },
+      "operations": {
+        "allowed": [
+          "repo.read"
+        ],
+        "denied": [
+          "repo.delete",
+          "repo.write",
+          "repo.inspect"
+        ]
+      },
+      "claims": [
+        {
+          "claimId": "deny.claim",
+          "hard": false,
+          "layer": "visual-skin",
+          "supportFacetId": "deny",
+          "target": "authority.repo.inspect",
+          "value": "deny"
+        }
+      ],
+      "runtime": {
+        "denied": {
+          "authorized": false,
+          "refusal": {
+            "schemaVersion": 1,
+            "type": "CommandRefused",
+            "occurredAt": 1,
+            "actorId": "fixture",
+            "workstreamId": "fixture",
+            "payload": {
+              "intentIndex": 0,
+              "reason": "effect denied",
+              "authorityEnvelopeId": "auth_seiri"
+            }
+          },
+          "trace": {
+            "reactorId": "authority-guard",
+            "reactorVersion": "1",
+            "branchPath": [
+              "refused",
+              "effect denied"
+            ],
+            "envInputs": [
+              "now",
+              "authorityEnvelope",
+              "evidence",
+              "revocations"
+            ],
+            "cadenceEvaluations": []
+          }
+        },
+        "allowed": {
+          "authorized": true,
+          "command": {
+            "commandId": "cmd_d83feea4913a6418",
+            "workstreamId": "fixture",
+            "intent": {
+              "kind": "Act",
+              "effect": "repo.read",
+              "payload": {}
+            }
+          },
+          "authority": {
+            "allowedEffects": [
+              "repo.read"
+            ],
+            "authorityEnvelopeId": "auth_seiri",
+            "deniedEffects": [
+              "repo.delete",
+              "repo.write",
+              "repo.inspect"
+            ],
+            "expiresAt": 2400000,
+            "requiredEvidence": [],
+            "resourceLimits": {
+              "inspections": 1
+            },
+            "revocationConditions": [],
+            "revocationEventTypes": []
+          },
+          "trace": {
+            "reactorId": "authority-guard",
+            "reactorVersion": "1",
+            "branchPath": [
+              "authorized",
+              "repo.read"
+            ],
+            "envInputs": [
+              "now:1",
+              "authorityEnvelope:auth_seiri",
+              "evidence",
+              "revocations"
+            ],
+            "cadenceEvaluations": []
+          }
+        }
+      }
+    }
+  ],
+  "restoration": {
+    "trace": {
+      "conflictResolutions": [
+        {
+          "overridden": [
+            {
+              "claimId": "lower.claim",
+              "hard": false,
+              "layer": "visual-skin",
+              "supportFacetId": "lower",
+              "target": "authority.repo.inspect",
+              "value": "deny"
+            }
+          ],
+          "target": "authority.repo.inspect",
+          "winner": {
+            "claimId": "higher.claim",
+            "hard": false,
+            "layer": "safety-invariants",
+            "supportFacetId": "higher",
+            "target": "authority.repo.inspect",
+            "value": "allow"
+          }
+        }
+      ],
+      "precedence": [
+        "safety-invariants",
+        "hard-permissions",
+        "statechart-guards",
+        "work-order-obligations",
+        "resource-budgets",
+        "policy-scores-tensions",
+        "cadence",
+        "voice",
+        "visual-skin"
+      ],
+      "steps": [
+        "1 resolve phenotype",
+        "2 type-check links",
+        "3 resolve precedence and commutativity",
+        "4 emit program"
+      ]
+    },
+    "envelope": {
+      "allowedEffects": [
+        "repo.inspect",
+        "repo.read"
+      ],
+      "authorityEnvelopeId": "auth_seiri",
+      "deniedEffects": [
+        "repo.delete",
+        "repo.write"
+      ],
+      "expiresAt": 2400000,
+      "requiredEvidence": [],
+      "resourceLimits": {
+        "inspections": 1
+      },
+      "revocationConditions": [],
+      "revocationEventTypes": []
+    },
+    "runtime": {
+      "authorized": true,
+      "command": {
+        "commandId": "cmd_d83feea4913a6418",
+        "workstreamId": "fixture",
+        "intent": {
+          "kind": "Act",
+          "effect": "repo.inspect",
+          "payload": {}
+        }
+      },
+      "authority": {
+        "allowedEffects": [
+          "repo.inspect",
+          "repo.read"
+        ],
+        "authorityEnvelopeId": "auth_seiri",
+        "deniedEffects": [
+          "repo.delete",
+          "repo.write"
+        ],
+        "expiresAt": 2400000,
+        "requiredEvidence": [],
+        "resourceLimits": {
+          "inspections": 1
+        },
+        "revocationConditions": [],
+        "revocationEventTypes": []
+      },
+      "trace": {
+        "reactorId": "authority-guard",
+        "reactorVersion": "1",
+        "branchPath": [
+          "authorized",
+          "repo.inspect"
+        ],
+        "envInputs": [
+          "now:1",
+          "authorityEnvelope:auth_seiri",
+          "evidence",
+          "revocations"
+        ],
+        "cadenceEvaluations": []
+      }
+    }
+  },
+  "explicitGrant": {
+    "unadmitted": {
+      "ok": false,
+      "diagnostics": [
+        {
+          "code": "AUTHORITY GRANT UNADMITTED",
+          "message": "AUTHORITY GRANT UNADMITTED: grant \"fixture.delete\" has no matching host registry entry for grantId, version, grantedBy, effects, operations and repo.",
+          "missingCapabilities": [],
+          "corrections": []
+        }
+      ]
+    },
+    "applied": [
+      {
+        "effects": [
+          "repo.delete"
+        ],
+        "grantId": "fixture.delete",
+        "grantedBy": "operator",
+        "operations": [
+          "repo.delete"
+        ],
+        "reason": "Explicit deletion authority in an isolated fixture",
+        "repo": "packages/skeleton/fixtures/repo-tree.json",
+        "version": 1
+      }
+    ],
+    "trace": {
+      "authorityGrants": {
+        "applied": [
+          {
+            "effects": [
+              "repo.delete"
+            ],
+            "grantId": "fixture.delete",
+            "grantedBy": "operator",
+            "operations": [
+              "repo.delete"
+            ],
+            "reason": "Explicit deletion authority in an isolated fixture",
+            "repo": "packages/skeleton/fixtures/repo-tree.json",
+            "version": 1
+          }
+        ],
+        "registryHash": "fnv1a64:54ee347b5b9d9531"
+      },
+      "conflictResolutions": [],
+      "precedence": [
+        "safety-invariants",
+        "hard-permissions",
+        "statechart-guards",
+        "work-order-obligations",
+        "resource-budgets",
+        "policy-scores-tensions",
+        "cadence",
+        "voice",
+        "visual-skin"
+      ],
+      "steps": [
+        "1 resolve phenotype",
+        "2 type-check links",
+        "3 resolve precedence and commutativity",
+        "4 emit program"
+      ]
+    },
+    "envelope": {
+      "allowedEffects": [
+        "repo.inspect",
+        "repo.read",
+        "repo.delete"
+      ],
+      "authorityEnvelopeId": "auth_seiri",
+      "deniedEffects": [
+        "repo.write"
+      ],
+      "expiresAt": 2400000,
+      "requiredEvidence": [],
+      "resourceLimits": {
+        "inspections": 1
+      },
+      "revocationConditions": [],
+      "revocationEventTypes": []
+    },
+    "operations": [
+      "repo.inspect",
+      "repo.read",
+      "repo.delete"
+    ],
+    "runtime": {
+      "authorized": true,
+      "command": {
+        "commandId": "cmd_d83feea4913a6418",
+        "workstreamId": "fixture",
+        "intent": {
+          "kind": "Act",
+          "effect": "repo.delete",
+          "payload": {}
+        }
+      },
+      "authority": {
+        "allowedEffects": [
+          "repo.inspect",
+          "repo.read",
+          "repo.delete"
+        ],
+        "authorityEnvelopeId": "auth_seiri",
+        "deniedEffects": [
+          "repo.write"
+        ],
+        "expiresAt": 2400000,
+        "requiredEvidence": [],
+        "resourceLimits": {
+          "inspections": 1
+        },
+        "revocationConditions": [],
+        "revocationEventTypes": []
+      },
+      "trace": {
+        "reactorId": "authority-guard",
+        "reactorVersion": "1",
+        "branchPath": [
+          "authorized",
+          "repo.delete"
+        ],
+        "envInputs": [
+          "now:1",
+          "authorityEnvelope:auth_seiri",
+          "evidence",
+          "revocations"
+        ],
+        "cadenceEvaluations": []
+      }
+    },
+    "beforeHash": "fnv1a64:635bd6d7cb6c2ace",
+    "grantedHash": "fnv1a64:8c159d20896cd90a",
+    "revertedHash": "fnv1a64:635bd6d7cb6c2ace",
+    "views": [
+      {
+        "view": "code-dsl",
+        "semanticHash": "fnv1a64:8c159d20896cd90a"
+      },
+      {
+        "view": "function-table",
+        "semanticHash": "fnv1a64:8c159d20896cd90a"
+      },
+      {
+        "view": "statechart-json",
+        "semanticHash": "fnv1a64:8c159d20896cd90a"
+      }
+    ]
+  },
+  "projections": [
+    {
+      "fixture": "seiri",
+      "effective": {
+        "allowedEffects": [
+          "repo.inspect"
+        ],
+        "authorityEnvelopeId": "auth_seiri",
+        "deniedEffects": [
+          "repo.delete",
+          "repo.write"
+        ],
+        "expiresAt": 2400000,
+        "requiredEvidence": [],
+        "resourceLimits": {
+          "inspections": 1
+        },
+        "revocationConditions": [
+          {
+            "registryId": "operator.return-event",
+            "version": 1
+          }
+        ],
+        "revocationEventTypes": []
+      },
+      "projection": {
+        "grants": [
+          "repo.inspect"
+        ],
+        "restrictions": [
+          "repo.delete",
+          "repo.write"
+        ]
+      },
+      "rendered": "Seiri / Sort / 整理\nThe Evidence-Bound Sort — COMPILED DIFF\n\nGRANTS\n+ repo.inspect\n\nRESTRICTIONS\n+ repo.delete\n+ repo.write\n\nAUTHORED NOTES (non-enforcing)\nAuthored grants\n+ Inventory every fixture path\n+ Classify every fixture path\n+ Analyze references\n+ Propose deletion candidates\nAuthored restrictions\n+ Do not mutate repository contents\n+ Deletion remains operator-owned\n+ Inspect only the bounded fixture repository\n\nOBLIGATION\n+ Attach inventory, classification, and reference evidence to every candidate\n+ Independently verify proposed candidates\n\nPASSIVE\n+ Active only while the operator is absent\n\nPULSE\n+ Re-evaluate every 20 virtual minutes\n\nINTERRUPT\n+ Stop on operator return; queued pulses become a traced NoOp\n\nCOST\n+ seiri.absence-cadence — statechart-gate; prompt=0 tokens; runtime=2 predicate-evaluations-per-pulse; episodes=0\n+ seiri.evidence-capture — evidence-schema; prompt=0 tokens; runtime=1 schema-validations-per-result; episodes=0\n+ seiri.independent-verification — verifier-episode; prompt=0 tokens; runtime=1 verifier-dispatches; episodes=1\n+ seiri.read-only — permission-guard; prompt=0 tokens; runtime=1 guard-checks-per-effect; episodes=0\n+ seiri.repo-scope — work-order; prompt=0 tokens; runtime=0 operations; episodes=0\n\nSEMANTIC HASH\n  before=none\n  after=fnv1a64:9ca8d0229c6bd8db"
+    },
+    {
+      "fixture": "contributor",
+      "effective": {
+        "allowedEffects": [
+          "repo.read",
+          "repo.write",
+          "shell.run",
+          "git.local",
+          "lifecycle.run"
+        ],
+        "authorityEnvelopeId": "contributor.bounded",
+        "deniedEffects": [
+          "credentials.access",
+          "transport.ssh",
+          "settings.user",
+          "sandbox.disable",
+          "remote.unapproved",
+          "package.publish"
+        ],
+        "expiresAt": 9007199254740991,
+        "requiredEvidence": [
+          "resolved-worktree"
+        ],
+        "resourceLimits": {
+          "writers": 1
+        },
+        "revocationConditions": [],
+        "revocationEventTypes": []
+      },
+      "projection": {
+        "grants": [
+          "repo.read",
+          "repo.write",
+          "shell.run",
+          "git.local",
+          "lifecycle.run"
+        ],
+        "restrictions": [
+          "credentials.access",
+          "transport.ssh",
+          "settings.user",
+          "sandbox.disable",
+          "remote.unapproved",
+          "package.publish"
+        ]
+      },
+      "rendered": "Clean Room / Original personal work / \nContributor — COMPILED DIFF\n\nGRANTS\n+ repo.read\n+ repo.write\n+ shell.run\n+ git.local\n+ lifecycle.run\n\nRESTRICTIONS\n+ credentials.access\n+ transport.ssh\n+ settings.user\n+ sandbox.disable\n+ remote.unapproved\n+ package.publish\n\nAUTHORED NOTES (non-enforcing)\nAuthored grants\n  (no change)\nAuthored restrictions\n+ credentials.access\n+ transport.ssh\n+ settings.user\n+ sandbox.disable\n+ remote.unapproved\n+ package.publish\n+ credentials.access\n+ transport.ssh\n+ settings.user\n+ sandbox.disable\n+ remote.unapproved\n+ package.publish\n\nOBLIGATION\n+ Complete the selected role's evidence gate\n\nPASSIVE\n  (no change)\n\nPULSE\n+ Presence contributor.mission-check v1: progressive; absence → mission-check; verified success → next; failure or peak → mission-check; axes=attention, work-scope, effect-authority, external-capability; base=contributor.bounded; grants=base\n+ contributor.mission-check/mission-check: attention=1; scope=contributor.mission; host ceiling=0 files/0 lines; budget={}; authority={\"allowedEffects\":[\"repo.read\"],\"authorityEnvelopeId\":\"presence:[\\\"contributor.mission-check\\\",\\\"mission-check\\\",\\\"contributor.bounded\\\"]\",\"deniedEffects\":[\"credentials.access\",\"package.publish\",\"remote.unapproved\",\"sandbox.disable\",\"settings.user\",\"transport.ssh\"],\"expiresAt\":9007199254740991,\"requiredEvidence\":[\"resolved-worktree\"],\"resourceLimits\":{\"writers\":0},\"revocationConditions\":[],\"revocationEventTypes\":[]}; external capability={\"kind\":\"NoOp\",\"missingCapabilities\":[\"actor.cli-worker\"],\"reason\":\"Presence policy contributor.mission-check phase mission-check: unavailable external capability: actor.cli-worker\"}; entry={\"cadence\":{\"intervalMs\":900000,\"kind\":\"Every\"}}\n\nINTERRUPT\n+ Presence contributor.mission-check: cancel-on-return; return precedes dispatch/outcome; no new discretionary dispatch; requested foreground continues under its own authority; idle 3600000ms expires phase; fresh return/absence rearms\n+ contributor.mission-check/mission-check: discretionary in-flight kill; pending cadences cancel on return; stale outcomes cannot advance\n\nCOST\n+ contributor.permissions — permission-guard; prompt=0 tokens; runtime=1 pre-effect-check; episodes=0\n\nSEMANTIC HASH\n  before=none\n  after=fnv1a64:fcf61a6d699e7ffd"
+    },
+    {
+      "fixture": "grant",
+      "effective": {
+        "allowedEffects": [
+          "repo.inspect",
+          "repo.read",
+          "repo.delete"
+        ],
+        "authorityEnvelopeId": "auth_seiri",
+        "deniedEffects": [
+          "repo.write"
+        ],
+        "expiresAt": 2400000,
+        "requiredEvidence": [],
+        "resourceLimits": {
+          "inspections": 1
+        },
+        "revocationConditions": [],
+        "revocationEventTypes": []
+      },
+      "projection": {
+        "grants": [
+          "repo.inspect",
+          "repo.read",
+          "repo.delete (grant fixture.delete; operator)"
+        ],
+        "restrictions": [
+          "repo.write"
+        ]
+      },
+      "rendered": "Seiri / Sort / 整理\nThe Evidence-Bound Sort — COMPILED DIFF\n\nGRANTS\n+ repo.inspect\n+ repo.read\n+ repo.delete (grant fixture.delete; operator)\n\nRESTRICTIONS\n+ repo.write\n\nAUTHORED NOTES (non-enforcing)\nAuthored grants\n+ Inventory every fixture path\n+ Classify every fixture path\n+ Analyze references\n+ Propose deletion candidates\nAuthored restrictions\n  (no change)\n\nOBLIGATION\n  (no change)\n\nPASSIVE\n  (no change)\n\nPULSE\n  (no change)\n\nINTERRUPT\n  (no change)\n\nCOST\n  (no change)\n\nSEMANTIC HASH\n  before=none\n  after=fnv1a64:8c159d20896cd90a"
+    }
+  ]
+}
