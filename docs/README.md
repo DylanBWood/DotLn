@@ -59,6 +59,25 @@ After ideation intake during an active work order, execution continues through
 the evidence gate to ready to verify unless the operator explicitly requests a
 pause or capture only.
 
+The document gate (`npm run test:docs`) runs
+[`scripts/docs-check.mjs`](../scripts/docs-check.mjs): edit product facts in place;
+put receipts in the order's evidence README and candidates in the planning map.
+[Ceilings](control/doc-ceilings.json) count UTF-8 bytes with two per cent initial
+headroom, excluding roadmap §Release boundary until WO-086 retires its handwritten
+notes. No product marker generator is registered; marker pairs grant no exemption.
+A higher ceiling requires a cited planning
+decision. The [activation baseline](control/doc-baseline.json) identifies existing
+receipt labels, candidate headings, decision dispatch fingerprints and historical
+broken links; it is not regenerated to admit new violations. Decision dispatches
+use a control prefix and at most 240 characters of paraphrase; review still
+judges paraphrase. Links cover public root/configured-document Markdown,
+including generated indexes, full heading slugs, explicit anchors and GitHub
+line references; code examples, ignored private files and package fixtures are
+not document navigation. Relative links resolve from the Markdown source file,
+including stored PR and release bodies; this does not establish navigation on a
+published PR page. Pending report IDs in the generated work-order index become
+links only after a verdict is recorded; missing completed reports still fail.
+
 ## Host-posture correction — 2026-09-25
 
 [WO-161](work-orders/WO-161-sandbox-vocabulary.md) aligns generated Contributor
