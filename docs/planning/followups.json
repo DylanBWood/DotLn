@@ -8342,6 +8342,20 @@
           "title": "Candidate — stale writer reservation self-diagnosis",
           "summary": "## Candidate — stale writer reservation self-diagnosis WO-050 VER-001 observed a Codex executor's reservation outliving its session with `liveness: unavailable`, refusing every shell command of the next session including `node scripts/harness.mjs writer --show`, until an operator released it from a terminal. The kept invariant is right; the diagnosis path is not. The candidate admits the writer inspection and release commands under a foreign reservation, reports the holder's age on every refusal, and has the Codex lifecycle completion release the reservation it holds. The stand-down declined a shell classifier; this candidate needs none. No order is allocated; reopen on a second observed occ",
           "missing": false
+        },
+        {
+          "hash": "5bb6049ce8b3f22ca5a2daafa9ffe052457a59fd6d86adf2f0e084c66435c1ac",
+          "ref": "docs/product/07-execution-guide.md#candidate--stale-writer-reservation-self-diagnosis",
+          "title": "Candidate — stale writer reservation self-diagnosis",
+          "summary": "## Candidate — stale writer reservation self-diagnosis WO-050 VER-001 observed a Codex executor's reservation outliving its session with `liveness: unavailable`, refusing every shell command of the next session including `node scripts/harness.mjs writer --show`, until an operator released it from a terminal. The kept invariant was right; the diagnosis path was not. The stand-down declined a shell classifier. The original candidate awaited a second observed occurrence. **Substance shipped 2026-09-18 (recorded by the 2026-09-19 cleanup pass).** WO-139's commit `3ea00e50` releases the executor's writer at completion (`scripts/lib/executor-handoff.mjs`; `scripts/resume.mjs` `executorWriterReleas",
+          "missing": false
+        },
+        {
+          "hash": "b95a3bcbad5578ccf07de8f1251d8be36346884b56c36e6ca60cc8b974a38963",
+          "ref": "docs/product/07-execution-guide.md#candidate--stale-writer-reservation-self-diagnosis",
+          "title": "Candidate — stale writer reservation self-diagnosis",
+          "summary": "## Candidate — stale writer reservation self-diagnosis WO-050 VER-001 observed a Codex executor's reservation outliving its session with `liveness: unavailable`, refusing every shell command of the next session including `node scripts/harness.mjs writer --show`, until an operator released it from a terminal. The kept invariant was right; the diagnosis path was not. The stand-down declined a shell classifier. The original candidate awaited a second observed occurrence. **Substance shipped 2026-09-18 (recorded by the 2026-09-19 cleanup pass).** WO-139's commit `3ea00e50` releases the executor's writer at completion (`scripts/lib/executor-handoff.mjs`; `scripts/resume.mjs` `executorWriterReleas",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -18042,6 +18056,97 @@
           "ref": "docs/evidence/WO-085/decisions.md#wo-085-d016",
           "title": "WO-085-D016: Planning, at WO-167 activation or the next document-maintenance pass: WO-167 criterion 2 relies on the docs check to prove the role skills' citations of product 07 headings survive the fo",
           "summary": "{ \"id\": \"WO-085-D016\", \"date\": \"2026-09-26\", \"dispatch\": \"resume: final review; FINAL-001 judgment and one planning observation\", \"decision\": \"Pass the reviewed subject without correction: main is unchanged since the repair's D010 integration, so no integration ran; the review reproduced the control-file counts and ceilings, the docs check, the focused suite and both gates on the final-review window, and every VER-002 observation stays boarded in D015. Route one reopened planning observation: receipt 030's third known issue is met on its scope half, because the link scan covers root and configured-document Markdown only, so the generated skills' heading citations, written as inline code, are",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-a27067d36a3d6c91",
+      "key": "decision:docs/evidence/WO-166/decisions.md#wo-166-d007",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "53f916d1fb6b42d425dbe325373eb61e0a0b327d3eb7d6c3abe4f90e3dd21103",
+          "ref": "docs/evidence/WO-166/decisions.md#wo-166-d007",
+          "title": "WO-166-D007: WO-166 VER-001 repair: F1 in scripts/harness.mjs evidence --wait, when an outcome exists for one of the awaited runIds at the current tree hash, let its status decide before the recorded-",
+          "summary": "{ \"id\": \"WO-166-D007\", \"date\": \"2026-09-26\", \"dispatch\": \"resume: verify; VER-001\", \"decision\": \"Fail independent verification and route eight reproduced, repairable defects to resume: fix. Criterion 3 is unmet: node scripts/harness.mjs evidence --wait prints {\\\"run\\\":null} and exits 2 for a passed harness-evidence invocation that reused cached check rows while its marker was live at wait start, because scripts/harness.mjs evaluates the recorded-after-start guard before the runId-matched outcome (F1). The release-close dispatch requested from a merged subject reserves main under the subject session's actor and then prescribes a new main session whose completion cannot release it, which contr",
+          "missing": false
+        },
+        {
+          "hash": "fe0b4a6f41e4cfbe115963f1c8dc78d99e0cdbd7e49ae98d525aa7176050321c",
+          "ref": "docs/evidence/WO-166/decisions.md#wo-166-d007",
+          "title": "WO-166-D007: WO-166 VER-001 repair: F1 in scripts/harness.mjs evidence --wait, when an outcome exists for one of the awaited runIds at the current tree hash, let its status decide before the recorded-",
+          "summary": "{ \"id\": \"WO-166-D007\", \"date\": \"2026-09-26\", \"dispatch\": \"resume: verify; VER-001\", \"decision\": \"Fail independent verification and route eight reproduced, repairable defects to resume: fix. Criterion 3 is unmet: node scripts/harness.mjs evidence --wait prints {\\\"run\\\":null} and exits 2 for a passed harness-evidence invocation that reused cached check rows while its marker was live at wait start, because scripts/harness.mjs evaluates the recorded-after-start guard before the runId-matched outcome (F1). The release-close dispatch requested from a merged subject reserves main under the subject session's actor and then prescribes a new main session whose completion cannot release it, which contr",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-166 repair implements VER-001 F1-F8; five focused harness regressions, exact surfaceclose and the integrated full gate (40 suites, 0 failures) pass. D009-D013 and repair.md retain the changes and limits; independent re-verification is next.",
+          "reopenWhen": "Fresh verification reproduces F1-F8 or a completed release-close dispatch retains its own writer.",
+          "targets": [],
+          "at": "2026-09-26T22:52:07.268Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-8cfd3ff52146a016",
+      "key": "decision:docs/evidence/WO-166/decisions.md#wo-166-d008",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "29e166a749bcc86f18e7d90db057f8787e5bfa653c18caa96d7640096c6d7d78",
+          "ref": "docs/evidence/WO-166/decisions.md#wo-166-d008",
+          "title": "WO-166-D008: Planner: add a fixture that drives node scripts/release.mjs close --publish against the real harness-host runtime and the writer/ directory protocol in a linked subject/main pair, coverin",
+          "summary": "{ \"id\": \"WO-166-D008\", \"date\": \"2026-09-26\", \"dispatch\": \"resume: verify; VER-001\", \"decision\": \"Board up two limits met during verification without routing them to this repair: the release-close completion release is exercised only through a synthetic CommonJS adapter over the legacy writer.json layout in scripts/test-release.sh and a hand-called executorWriterRelease in scripts/test-harness.mjs, never through scripts/release.mjs against the real directory-instance writer protocol in a linked subject/main pair; and a main checkout still running the pre-WO-166 runtime judges a pid-less thread owner dead, because its ownerDead lacked the validPid guard, so a thread-owned reservation written i",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-b537eae489004287",
+      "key": "decision:docs/evidence/WO-166/decisions.md#wo-166-d014",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "0a522b3a7d5c6f89c6c3d0e6ea40434149af2ac6bdad3a23008a631fde33b310",
+          "ref": "docs/evidence/WO-166/decisions.md#wo-166-d014",
+          "title": "WO-166-D014: Planner: in the next order that edits scripts/resume.mjs or the release-close handoff, (a) make a Codex release-close dispatch in a main whose built runtime lacks reserveCodexDispatchWrit",
+          "summary": "{ \"id\": \"WO-166-D014\", \"date\": \"2026-09-26\", \"dispatch\": \"resume: verify; VER-002\", \"decision\": \"Pass independent verification of the repaired WO-166 subject: the eight VER-001 findings are repaired and all eight acceptance criteria are met. By the operator's selection, board three minor defects met during verification under one follow-up instead of another repair cycle. First, at the WO-166 close itself, a pulled main whose built runtime predates the merge lacks reserveCodexDispatchWriter, so a Codex release-close dispatch there would fail before any event with a TypeError after the pins-differ advisory (inference from code; not executed). Second, product 07's resume: release close row stil",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-a6c598371c7f86cf",
+      "key": "decision:docs/evidence/WO-166/decisions.md#wo-166-d015",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "38d6d108e0aafe5fc3dee734275d16a1dbf0bcf01646f6b94b007480ef97e554",
+          "ref": "docs/evidence/WO-166/decisions.md#wo-166-d015",
+          "title": "WO-166-D015: Planner, high priority, the next order: the harness creates the session scratch directory (mode 0700, a real directory owned by the session user, never a symlink) at every point it prints",
+          "summary": "{ \"id\": \"WO-166-D015\", \"date\": \"2026-09-26\", \"dispatch\": \"resume: final review; FINAL-001; the printed session scratch path is never created\", \"decision\": \"Board, at high priority, a defect this review met in use and WO-166 did not introduce: the harness tells every role session to use a DotLn session scratch path that nothing creates. harnessSessionScratch only computes <system-temp>/dotln/<session key>/scratch; the role-dispatch briefing, the Codex begin result, the session-scratch grant judgment and harness scratch print, return or judge that path, and none creates the directory. This review's first product-gate command redirected its log there; the redirect failed on the absent directory",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-465c6ce0f041b447",
+      "key": "decision:docs/evidence/WO-166/decisions.md#wo-166-d016",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "13321980319d6129f01e1c1c0b51823c51c0b84cb520fa83c2915d06bf446529",
+          "ref": "docs/evidence/WO-166/decisions.md#wo-166-d016",
+          "title": "WO-166-D016: Planner, low priority, with FUP-b537eae489004287 item (b) in the next order that edits the writer text or the release-close handoff: edit in place (a) the five-refusals sentence in packag",
+          "summary": "{ \"id\": \"WO-166-D016\", \"date\": \"2026-09-26\", \"dispatch\": \"resume: final review; FINAL-001; standing text silent about the Codex dispatch reservation\", \"decision\": \"Board three standing sentences outside the order's write-back duty that remain true for the path each describes and are silent or stale about the behaviour WO-166 ships. None fails a criterion: criterion 7 names product 07's stale-writer candidate, which records the behaviour in place, and criterion 5 names the two role sentences, which are present once in every skill. (a) The five-refusals paragraph generated from packages/compiler/src/harness.ts into CLAUDE.md and every role skill says Codex carries the duties as role text witho",
           "missing": false
         }
       ],
