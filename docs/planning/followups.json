@@ -17930,6 +17930,21 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-59f75a891ac4d0d0",
+      "key": "decision:docs/evidence/WO-165/decisions.md#wo-165-d006",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "c4bb995953c9741e430d71d8b60ddd25550b6ee782e118b4d101cbd1fc26b5ba",
+          "ref": "docs/evidence/WO-165/decisions.md#wo-165-d006",
+          "title": "WO-165-D006: WO-165 final review may, within the boy-scout bound, correct M1 (the ENTROPY_REDUCER_ROUTES comment states that the background worker's tool surface is unobserved and serial by compiled r",
+          "summary": "{ \"id\": \"WO-165-D006\", \"date\": \"2026-09-26\", \"dispatch\": \"resume: verify; independent VER-001\", \"decision\": \"Pass VER-001 on met criteria 1-5 and board the two minor defects and the non-blocking notes it found, instead of routing a repair. M1: the ENTROPY_REDUCER_ROUTES comment and D001's first rejected-option reason assert, without evidence, that the background route lacks a delegate tool. No WO-165 record engages the planning refutation's known issue on unpinned routes. M2: the WO-165 fixture's residue negative control matches only the removed wording, not delegate language in general. Correction to D001: the background worker's tool surface is session-attested and unobserved, because no f",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

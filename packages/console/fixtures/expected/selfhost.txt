@@ -112,7 +112,7 @@ Entropy Reducer [definition-67907a026f6b5653]
     A declared identity and role; not a claim that an episode is running
   Identity: entropy-reducer [evidence-2]
   Role: Planning reviewer [evidence-2]
-  Loadout semantic hash: fnv1a64:1a09929866810f71 [evidence-2]
+  Loadout semantic hash: fnv1a64:708557877ed6f589 [evidence-2]
   Episode phase: unknown [evidence-2]
     No episode is implied by a saved build
   -> Inspect saved build [build-2893c8f905fe3d13]
@@ -284,22 +284,22 @@ Entropy Reducer [build-2893c8f905fe3d13]
   Loadout: entropy-reducer.review.v1 [evidence-2]
   Identity: entropy-reducer [evidence-2]
   Role: Planning reviewer [evidence-2]
-  Loadout semantic hash: fnv1a64:1a09929866810f71 [evidence-2]
-  code-dsl hash: fnv1a64:1a09929866810f71 [evidence-2]
-  function-table hash: fnv1a64:1a09929866810f71 [evidence-2]
-  statechart-json hash: fnv1a64:1a09929866810f71 [evidence-2]
+  Loadout semantic hash: fnv1a64:708557877ed6f589 [evidence-2]
+  code-dsl hash: fnv1a64:708557877ed6f589 [evidence-2]
+  function-table hash: fnv1a64:708557877ed6f589 [evidence-2]
+  statechart-json hash: fnv1a64:708557877ed6f589 [evidence-2]
   Three views: equivalent [evidence-2]
   Inspection environment: skeleton.fixture [evidence-2]
     Saved build preview; its expiry is a fixed inspection input, not a live
 grant
   Equipped items: Seisō (Shine) (seiso-shine); Seiketsu (Standardize)
 (entropy-reducer.seiketsu-standardize); Verify-First
-(entropy-reducer.verify-first); Fan-Out Lens (entropy-reducer.fan-out-lens);
-Mutation Drill (entropy-reducer.mutation-drill); Shape-First
-(entropy-reducer.shape-first); Constraint-First Ordering
-(entropy-reducer.constraint-first-ordering); Altitude Tag
-(entropy-reducer.altitude-tag); Sparse Receipt (entropy-reducer.sparse-receipt)
-[evidence-2]
+(entropy-reducer.verify-first); Lens Checklist
+(entropy-reducer.lens-checklist); Mutation Drill
+(entropy-reducer.mutation-drill); Shape-First (entropy-reducer.shape-first);
+Constraint-First Ordering (entropy-reducer.constraint-first-ordering); Altitude
+Tag (entropy-reducer.altitude-tag); Sparse Receipt
+(entropy-reducer.sparse-receipt) [evidence-2]
   Mechanics and declared costs: Seisō / Shine / 清掃
 The Entropy-Reducing Shine — COMPILED DIFF
 
@@ -307,7 +307,6 @@ GRANTS
 + repo.read*
 + probe.run:scratch*
 + intake.capture
-+ delegate.readonly
 + report.emit
 
 RESTRICTIONS
@@ -321,12 +320,12 @@ AUTHORED NOTES (non-enforcing)
 Authored grants
 + Read repository evidence
 + Run bounded scratch probes
-+ Delegate up to four read-only lenses
++ Work up to four read-only lens checklist items serially
 + Emit a validated report
 Authored restrictions
 + Never mutate the tracked repository or control plane
 + Never change remotes, settings, or operator decisions
-+ At most four no-fix, read-only lens delegates
++ At most four no-fix, read-only lens checklist items
 + The result-envelope summary stays under 200 words
 
 OBLIGATION
@@ -355,8 +354,8 @@ COST
 effects; episodes=0
 + entropy-reducer.constraint-first-ordering — prompt-fragment; prompt=27
 tokens; runtime=0 effects; episodes=0
-+ entropy-reducer.fan-out-lens — work-order; prompt=38 tokens; runtime=4
-delegates-maximum; episodes=0
++ entropy-reducer.lens-checklist — work-order; prompt=38 tokens; runtime=4
+lens-checklist-items-maximum; episodes=0
 + entropy-reducer.mutation-drill — verifier-episode; prompt=28 tokens;
 runtime=32 scratch-probes-maximum; episodes=1
 + entropy-reducer.seiketsu-standardize — work-order; prompt=24 tokens;
@@ -370,7 +369,7 @@ validation-per-output; episodes=0
 
 SEMANTIC HASH
   before=none
-  after=fnv1a64:1a09929866810f71 [evidence-2]
+  after=fnv1a64:708557877ed6f589 [evidence-2]
     Compiler renderCompiledDiff(undefined, program); original terms remain
 primary
 

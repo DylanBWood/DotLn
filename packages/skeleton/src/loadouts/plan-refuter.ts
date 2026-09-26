@@ -34,6 +34,8 @@ export function planRefuterLoadout(expiresAt: number): LoadoutGraph {
     role: {
       ...base.role,
       roleId: "plan-refuter",
+      // This role keeps its own identity when the review route changes.
+      version: 1,
       name: "Plan refuter",
       permissions: [...PLAN_REFUTER_ALLOWED],
       obligations: [...PLAN_REFUTER_QUESTIONS],
@@ -51,6 +53,8 @@ export function planRefuterLoadout(expiresAt: number): LoadoutGraph {
         // Its own version: WO-100 versioned Seisō for the entropy reviewer pin,
         // a known fact this active overrides, so the refuter is unchanged.
         version: 1,
+        // Preserve this plan's vocabulary; it grants no delegate effects.
+        tags: ["observe", "research", "plan", "verify", "delegate", "narrate"],
         semantics: [
           "one blinded plan refutation; findings confer no decision authority",
         ],

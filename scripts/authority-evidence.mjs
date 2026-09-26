@@ -122,7 +122,7 @@ const migrateReviewer = (workOrder) => {
     ),
   };
 };
-const migratedEntropyGraph = {
+const priorEntropyGraph = {
   ...oldEntropyGraph,
   activeMechanics: oldEntropyGraph.activeMechanics.map((active) =>
     active.activeMechanicId !== seisoId
@@ -159,10 +159,107 @@ const migratedEntropyGraph = {
         },
   ),
 };
+// WO-165 migrates the existing template to the pinned serial route. Rebuild
+// only its authorized deltas so unrelated drift still fails this comparison.
+const withoutDelegate = (effects) =>
+  effects.filter((effect) => effect !== "delegate.readonly");
+const serialSupportId = "entropy-reducer.lens-checklist";
+const serialId = (id) =>
+  id === "entropy-reducer.fan-out-lens" ? serialSupportId : id;
+const migratedEntropyGraph = {
+  ...priorEntropyGraph,
+  role: {
+    ...priorEntropyGraph.role,
+    version: 2,
+    permissions: withoutDelegate(priorEntropyGraph.role.permissions),
+  },
+  containers: priorEntropyGraph.containers.map((container) => ({
+    ...container,
+    supportFacetIds: container.supportFacetIds.map(serialId),
+  })),
+  activeMechanics: priorEntropyGraph.activeMechanics.map((active) => ({
+    ...active,
+    version: 3,
+    tags: active.tags.filter((tag) => tag !== "delegate"),
+    workOrder: {
+      ...active.workOrder,
+      knownFacts: active.workOrder.knownFacts.map((fact) =>
+        fact ===
+        "The kernel does not yet evaluate Program.All, so this review is dispatched manually"
+          ? "Review route claude-cli-print: lenses worked serially by the reviewer; the host dispatches this manual plan"
+          : fact,
+      ),
+      allowedOperations: withoutDelegate(active.workOrder.allowedOperations),
+    },
+    authorityEnvelope: {
+      ...active.authorityEnvelope,
+      allowedEffects: withoutDelegate(active.authorityEnvelope.allowedEffects),
+      resourceLimits: { probes: 32 },
+    },
+    inspection: {
+      ...active.inspection,
+      grants: active.inspection.grants.map((grant) =>
+        grant === "Delegate up to four read-only lenses"
+          ? "Work up to four read-only lens checklist items serially"
+          : grant,
+      ),
+    },
+  })),
+  supportFacets: priorEntropyGraph.supportFacets.map((support) =>
+    support.supportFacetId !== "entropy-reducer.fan-out-lens"
+      ? support
+      : {
+          ...support,
+          supportFacetId: serialSupportId,
+          name: "Lens Checklist",
+          supportedTags: ["observe"],
+          semanticsAdded: [
+            "work at most four read-only lenses serially with fixed briefs and word budgets",
+          ],
+          authorityChanges: [],
+          emissions: support.emissions.map((emission) => ({
+            ...emission,
+            emissionId: emission.emissionId.replace(
+              "fan-out.",
+              "lens-checklist.",
+            ),
+            ...(emission.kind === "work-order"
+              ? {
+                  values: [
+                    "Work at most four read-only lenses serially as the reviewer; every checklist item declares files, questions, output shape, word budget, and no-fix",
+                  ],
+                }
+              : {}),
+            ...(emission.kind === "prompt-fragment"
+              ? {
+                  text: "Work the lens briefs as your own checklist, serially, and synthesize their evidence.",
+                }
+              : {}),
+          })),
+          cost: {
+            ...support.cost,
+            runtimeCost: { quantity: 4, unit: "lens-checklist-items-maximum" },
+          },
+          inspection: {
+            restrictions: [
+              "At most four no-fix, read-only lens checklist items",
+            ],
+          },
+        },
+  ),
+  links: priorEntropyGraph.links.map((link) => ({
+    ...link,
+    supportFacetId: serialId(link.supportFacetId),
+  })),
+  resourceModel: {
+    ...priorEntropyGraph.resourceModel,
+    capacities: { probes: 32 },
+  },
+};
 assert.equal(
   canonicalStringify(entropyReducerLoadout(11000)),
   canonicalStringify(migratedEntropyGraph),
-  "WO-142 changes only Shape-First version, semantic phrase, prompt fragment and inspection obligation; WO-100 only the compiled reviewer fact and Seisō's version",
+  "WO-142 Shape-First, WO-100 reviewer pin and WO-165 serial route are the only authorized entropy migrations",
 );
 assert.equal(
   canonicalStringify(JSON.parse(read(entropyFixturePath))),
@@ -370,19 +467,49 @@ const compatibility = Object.entries(results).map(([name, result]) => {
       },
       "current entropy matches its explicitly recorded identity",
     );
-    for (const field of ["authorityEnvelope", "ambientEffects"])
-      assert.deepEqual(
-        result.program[field],
-        oldEntropy.program[field],
-        `entropy ${field} is unchanged`,
-      );
+    assert.deepEqual(
+      result.program.ambientEffects,
+      oldEntropy.program.ambientEffects,
+    );
+    assert.deepEqual(
+      result.program.authorityEnvelope,
+      {
+        ...oldEntropy.program.authorityEnvelope,
+        allowedEffects: withoutDelegate(
+          oldEntropy.program.authorityEnvelope.allowedEffects,
+        ),
+        resourceLimits: { probes: 32 },
+      },
+      "serial authority removes only delegate effects and resources",
+    );
+    const priorWorkOrder = migrateReviewer(oldEntropy.program.workOrder);
     assert.deepEqual(
       result.program.workOrder,
-      migrateReviewer(oldEntropy.program.workOrder),
-      "entropy work order, allowed and prohibited operations change only in the compiled reviewer fact",
+      {
+        ...priorWorkOrder,
+        allowedOperations: withoutDelegate(priorWorkOrder.allowedOperations),
+        knownFacts: priorWorkOrder.knownFacts.map((fact) =>
+          fact ===
+          "The kernel does not yet evaluate Program.All, so this review is dispatched manually"
+            ? "Review route claude-cli-print: lenses worked serially by the reviewer; the host dispatches this manual plan"
+            : fact,
+        ),
+        constraints: priorWorkOrder.constraints.map((constraint) =>
+          constraint ===
+          "Delegate at most four read-only lenses; every brief declares files, questions, output shape, word budget, and no-fix"
+            ? "Work at most four read-only lenses serially as the reviewer; every checklist item declares files, questions, output shape, word budget, and no-fix"
+            : constraint,
+        ),
+      },
+      "serial work order preserves all non-delegate obligations",
     );
     const definitions = result.artifactIdentity.componentDefinitions;
-    const migrated = [shapeFirstId, seisoId];
+    const migrated = [
+      shapeFirstId,
+      seisoId,
+      "entropy-reducer.fan-out-lens",
+      serialSupportId,
+    ];
     assert.deepEqual(
       definitions.filter((entry) => !migrated.includes(entry.componentId)),
       before.artifactIdentity.componentDefinitions.filter(
@@ -398,7 +525,7 @@ const compatibility = Object.entries(results).map(([name, result]) => {
     );
     assert.deepEqual(currentSeiso, {
       ...previousSeiso,
-      version: 2,
+      version: 3,
       definitionHash: currentSeiso.definitionHash,
     });
     assert.notEqual(currentSeiso.definitionHash, previousSeiso.definitionHash);
@@ -422,7 +549,7 @@ const compatibility = Object.entries(results).map(([name, result]) => {
         semanticHash: result.semanticHash,
         componentDefinitions: definitions,
       },
-      "entropy identity changes only release, semantic and two versioned component definitions",
+      "entropy identity changes only release, semantic and the explicitly migrated component definitions",
     );
   }
   const changedArtifactIdentityFields = Object.keys(
@@ -474,6 +601,19 @@ const compatibility = Object.entries(results).map(([name, result]) => {
             ],
             authorityUnchanged: true,
             effectsUnchanged: true,
+          },
+          routeMigration: {
+            source: "docs/work-orders/WO-165-entropy-review-route-agreement.md",
+            route: "claude-cli-print",
+            previousSemanticHash: compileLoadout(
+              priorEntropyGraph,
+              before.artifactIdentity.compilationEnvironment,
+            ).semanticHash,
+            semanticHash: result.semanticHash,
+            removedEffects: ["delegate.readonly"],
+            removedResources: ["delegates"],
+            replacedSupport: ["entropy-reducer.fan-out-lens", serialSupportId],
+            lenses: "serial reviewer checklist",
           },
           reviewerMigration: {
             source: docRelative(
@@ -537,7 +677,7 @@ const frozen = [
       hash: digest(read(path)),
       unchanged: false,
       migration:
-        "WO-142 B9 Shape-First v2 and WO-100-D007 reviewer claude-opus-5-5 at xhigh (Seisō v2); historical bytes verified through oldEntropy",
+        "WO-142 B9 Shape-First v2, WO-100-D007 reviewer pin and WO-165 serial route (Seisō v3); historical bytes verified through oldEntropy",
     };
   }
   assert.equal(read(path), prior(path), `${path} frozen bytes`);
@@ -950,5 +1090,5 @@ if (preserved)
     "Retained immutable authority evidence: behavior source is unchanged apart from component release labels.",
   );
 console.log(
-  `${mode === "--write" ? "Recorded" : "Verified"} two unchanged programs, the WO-132 plan-refuter, WO-142 Shape-First and WO-100 reviewer migrations, four widening rejections, nine runtime denials, admitted/reverted grants and ${comparisonPaths.length} bundle comparisons (including additions and removals).`,
+  `${mode === "--write" ? "Recorded" : "Verified"} two unchanged programs, the WO-132 plan-refuter, WO-142 Shape-First, WO-100 reviewer and WO-165 serial-route migrations, four widening rejections, nine runtime denials, admitted/reverted grants and ${comparisonPaths.length} bundle comparisons (including additions and removals).`,
 );

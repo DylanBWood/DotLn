@@ -27,7 +27,7 @@ import { validateAccountLabel } from "./control-actor.mjs";
  * fresh worker, binding what comes back with the loadout's own validators,
  * numbering immutable receipts and recording the operator's disposition. The
  * loadout, its residue, actor pin, authority envelope and Program are inputs
- * here and are never edited; `Program.All` stays deferred and this host drives
+ * here and are never edited; this host selects the serial route and drives
  * the compiled manual plan, as the refutation host drives its one-shot order.
  */
 
@@ -634,7 +634,7 @@ export function renderReviewReceipt(receipt) {
       ? `This reviewer satisfies the compiled actor requirement by invocation readback. Substitution policy: ${actor.substitutionPolicy}.`
       : `**Substitute reviewer.** ${actor.substitutionReason}. Substitution policy: ${actor.substitutionPolicy}.`,
     "",
-    `Episode \`${receipt.episodeId}\` ran ${receipt.startedAt} to ${receipt.endedAt}. Compiled semantic hash \`${receipt.compilation.semanticHash}\`; work order \`${receipt.compilation.workOrderId}\`; authority \`${receipt.compilation.authorityEnvelopeId}\`. Execution boundary: ${receipt.compilation.executionBoundary.mode}, deferred Program kind ${receipt.compilation.executionBoundary.deferredProgramKind}.`,
+    `Episode \`${receipt.episodeId}\` ran ${receipt.startedAt} to ${receipt.endedAt}. Compiled semantic hash \`${receipt.compilation.semanticHash}\`; work order \`${receipt.compilation.workOrderId}\`; authority \`${receipt.compilation.authorityEnvelopeId}\`. Execution boundary: ${receipt.compilation.executionBoundary.mode}, ${receipt.compilation.executionBoundary.deferredProgramKind === null ? "no deferred Program kind" : `deferred Program kind ${receipt.compilation.executionBoundary.deferredProgramKind}`}.`,
     "",
     `Findings: ${counts.total} — ${counts.measured} measured, ${counts.byInspection} by inspection; ${counts.blocking} blocking, ${counts.major} major, ${counts.minor} minor. Proposal packets: ${counts.proposalPackets}.`,
     "",
@@ -642,6 +642,12 @@ export function renderReviewReceipt(receipt) {
       ? `Subject binding: ${confinement.subjectBinding}. Tracked status byte-identical across the episode: **${confinement.trackedStatusByteIdentical}**. Scratch delta: ${confinement.scratchDelta.deltaCount} path(s)${confinement.scratchDelta.observed ? "" : " (not observed)"}. Installed dependencies: ${confinement.dependencies}. Command execution: ${confinement.commandExecution}. Denied tool calls: ${confinement.permissionDenials}.`
       : `Subject binding: ${confinement.subjectBinding}. ${witnessSentence(confinement)} Installed dependencies: ${confinement.dependencies}. Command execution: ${confinement.commandExecution}. Denied tool calls: ${confinement.permissionDenials}.`,
     "",
+    ...(receipt.compilation?.compileInputs?.route
+      ? [
+          `Compiled review confinement (execution rule): lenses worked serially by the reviewer; no delegate grant or delegate resource limit. Checklist completion is not independently observed; worker result: ${receipt.reviewerOutput.resultEnvelope.status}.`,
+          "",
+        ]
+      : []),
     `**Process cost:** ${receipt.cost.line}`,
     "",
     "## Result envelope summary",
@@ -1038,6 +1044,7 @@ export async function beginEntropyReview(
       "loadouts/entropy-reducer",
     );
     const compiled = compileReviewerWorkOrder({
+      route: transport ?? "background",
       repo: repository,
       baseCommit: state.baseCommit,
       episodeId,
@@ -1413,6 +1420,7 @@ export async function beginEntropyRefutation(
       "loadouts/entropy-reducer",
     );
     const compiled = compileReviewerWorkOrder({
+      route: transport ?? "background",
       repo: repository,
       baseCommit: review.subject.baseCommit,
       episodeId,
@@ -1457,6 +1465,9 @@ export async function beginEntropyRefutation(
     const pending = {
       schemaVersion: 1,
       kind: "refutation",
+      compileInputs: compiled.compileInputs,
+      semanticHash: compiled.semanticHash,
+      executionBoundary: compiled.executionBoundary,
       episodeId,
       subjectHash: subject.hash,
       subject,
@@ -1601,6 +1612,15 @@ export async function fileEntropyRefutation(
     kind: "refutation",
     payload: {
       kind: "EntropyReducerRefutationRun",
+      ...(pending.compileInputs
+        ? {
+            compilation: {
+              compileInputs: pending.compileInputs,
+              semanticHash: pending.semanticHash,
+              executionBoundary: pending.executionBoundary,
+            },
+          }
+        : {}),
       episodeId: pending.episodeId,
       startedAt: episode?.startedAt ?? pending.dispatchedAt,
       endedAt: episode?.endedAt ?? now(),

@@ -1,0 +1,23 @@
+✔ WO-165 preserves both derived judges' compiled identities (4.235209ms)
+✔ WO-142 Shape-First v2 transfers the relationship before evaluating load-bearing literal details (6.393125ms)
+✔ WO-023 AC1 compiles the complete reviewer definition through the real compiler (9.834ms)
+✔ WO-023 AC1 assembles the full deferred Program and once cadence (4.943083ms)
+✔ WO-023 AC2 wildcard authority grants bounded reads and traces write refusals (31.844792ms)
+✔ WO-023 AC2 threads resource ceilings and enforces expiry, stop, and report emission (15.017583ms)
+✔ WO-023 AC2 validates findings and clean-room status before constructing report.emit (0.361042ms)
+✔ WO-165 multiline custom brief data cannot add checklist items (6.824792ms)
+✔ WO-165 rejects sparse lens and required-string arrays (22.014083ms)
+✔ WO-165 rejects non-array iterables before applying the lens ceiling (5.676ms)
+✔ WO-023 AC4 enforces every lens-brief field, no-fix, uniqueness, and the four-brief ceiling (5.925ms)
+✔ WO-023 AC5 validates ProductSuggestion packets and enforces a summary under 200 words (0.398ms)
+✔ WO-023 AC6 selects every measured finding and reports zero denominators as not-applicable (0.230959ms)
+✔ WO-023 AC6 examines all six-or-fewer inspection findings and deterministically stratifies larger sets (0.262375ms)
+✔ WO-023 AC6 keeps failed findings attributable but removes them from the promoted set (0.291459ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 167.210458

@@ -6,7 +6,7 @@ This plan governs the fresh Contra-Auguste episode that challenges an Entropy Re
 
 The refuter receives no original reviewer narrative, observed-versus-expected conclusion, severity argument, proposal, or desired survival count. For each `measured` finding it receives only the typed `{ findingId, command }` subject produced by `selectFindingsForRefutation()`. For each selected `by inspection` finding it receives only `{ findingId, steps }`. Repository state and the command or steps are the evidence source; finding IDs exist only for attribution.
 
-The subject repository, control plane, remotes, settings, and operator decisions remain read-only. Any perturbation runs in an isolated scratch copy. Every delegated or probe operation must be authorized separately while threading the returned resource envelope; a number inside an intent payload does not itself enforce a resource ceiling.
+The subject repository, control plane, remotes, settings, and operator decisions remain read-only. Any perturbation runs in an isolated scratch copy. Every read or probe operation must be authorized separately while threading the returned resource envelope; a number inside an intent payload does not itself enforce a resource ceiling.
 
 ## Deterministic selection
 
@@ -20,4 +20,4 @@ Each selected subject produces exactly one attempt with `findingId`, `result` (`
 
 A `refuted` finding leaves the promoted finding set but remains in the immutable report with reviewer and refuter attribution. Only a selected finding whose attempt `survived` remains eligible for operator consideration. A `blocked` attempt stays in `blockedFindingIds`, and an unsampled inspection finding stays in `unselectedFindingIds`; neither is laundered into a pass or called refuted. There is no survival quota and no vote: an all-refuted run is a valid result, while zero selected findings yields explicit `not-applicable` denominators.
 
-The typed `Program.All` node remains deferred in the current kernel. Therefore this plan is followed through an operator-mediated manual dispatch, and the host validator binds returned data before `report.emit`. That limitation must appear in the run receipt rather than being described as an automated workflow.
+The supported routes compile no delegate grant or `Program.All`. This plan is followed through an operator-mediated manual dispatch: one fresh refuter works the selected reproductions serially, and the host validator binds returned data before `report.emit`. A compiled plan does not itself launch workers; the run receipt records the actual dispatch route.

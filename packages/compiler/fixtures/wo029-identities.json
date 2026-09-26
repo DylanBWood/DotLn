@@ -62,8 +62,8 @@
   "entropy-reducer": {
     "schemaVersion": 1,
     "compilerContractVersion": "1",
-    "compilerPackageVersion": "0.15.0",
-    "semanticHash": "fnv1a64:79151d7baebc5262",
+    "compilerPackageVersion": "0.19.1",
+    "semanticHash": "fnv1a64:e3505eb7f111ba22",
     "compilationEnvironment": {
       "baseCommit": "fixture-base",
       "capabilities": [],
@@ -76,9 +76,9 @@
       {
         "componentKind": "active-mechanic",
         "componentId": "seiso-shine",
-        "version": 2,
+        "version": 3,
         "hashScheme": "dotln-component-definition-fnv1a64-v1",
-        "definitionHash": "fnv1a64:b544de110971af1d"
+        "definitionHash": "fnv1a64:32cd70d418bf8fb7"
       },
       {
         "componentKind": "support-facet",
@@ -96,10 +96,10 @@
       },
       {
         "componentKind": "support-facet",
-        "componentId": "entropy-reducer.fan-out-lens",
+        "componentId": "entropy-reducer.lens-checklist",
         "version": 1,
         "hashScheme": "dotln-component-definition-fnv1a64-v1",
-        "definitionHash": "fnv1a64:2b916efb51a9814b"
+        "definitionHash": "fnv1a64:079b46c6fba73c26"
       },
       {
         "componentKind": "support-facet",

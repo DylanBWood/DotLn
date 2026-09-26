@@ -32,7 +32,6 @@ export const ENTROPY_REDUCER_ALLOWED_EFFECTS = [
   "repo.read*",
   "probe.run:scratch*",
   "intake.capture",
-  "delegate.readonly",
   "report.emit",
 ] as const;
 
@@ -75,10 +74,10 @@ export const entropyReducerMasks = [
   },
   {
     mask: "Lazzi",
-    assignment: "bounded read-only side routines",
-    guardedFailureMode: "side-routine budget creep",
+    assignment: "bounded read-only lens checklist",
+    guardedFailureMode: "lens budget creep",
     guard:
-      "Use fixed briefs, word budgets, and the compiled four-delegate ceiling.",
+      "Work the fixed lens checklist serially, respecting every word budget and no-fix boundary.",
   },
 ] as const satisfies readonly EntropyReducerMask[];
 
@@ -639,45 +638,45 @@ export const entropyReducerSupports = {
       obligations: ["Every finding carries reproduction and evidence refs"],
     },
   },
-  fanOutLens: {
+  lensChecklist: {
     ...supportDefaults,
-    supportFacetId: "entropy-reducer.fan-out-lens",
-    name: "Fan-Out Lens",
-    supportedTags: ["delegate"],
+    supportFacetId: "entropy-reducer.lens-checklist",
+    name: "Lens Checklist",
+    supportedTags: ["observe"],
     semanticsAdded: [
-      "delegate at most four read-only lenses with fixed briefs and word budgets",
+      "work at most four read-only lenses serially with fixed briefs and word budgets",
     ],
-    authorityChanges: ["consume only delegate.readonly"],
+    authorityChanges: [],
     emissions: [
       {
         kind: "evidence-schema",
-        emissionId: "fan-out.lens-brief-schema",
+        emissionId: "lens-checklist.lens-brief-schema",
         schemaId: "dotln.entropy-reducer.lens-brief.v1",
         schema: lensBriefSchema,
       },
       {
         kind: "work-order",
-        emissionId: "fan-out.constraint",
+        emissionId: "lens-checklist.constraint",
         field: "constraints",
         values: [
-          "Delegate at most four read-only lenses; every brief declares files, questions, output shape, word budget, and no-fix",
+          "Work at most four read-only lenses serially as the reviewer; every checklist item declares files, questions, output shape, word budget, and no-fix",
         ],
         order: 20,
       },
       {
         kind: "prompt-fragment",
-        emissionId: "fan-out.residue",
-        text: "Use bounded side routines for census breadth; keep synthesis in the main reviewer.",
+        emissionId: "lens-checklist.residue",
+        text: "Work the lens briefs as your own checklist, serially, and synthesize their evidence.",
       },
     ],
     cost: {
       mechanismType: "work-order",
       promptTokens: 38,
-      runtimeCost: { quantity: 4, unit: "delegates-maximum" },
+      runtimeCost: { quantity: 4, unit: "lens-checklist-items-maximum" },
       extraEpisodes: 0,
     },
     inspection: {
-      restrictions: ["At most four no-fix, read-only lens delegates"],
+      restrictions: ["At most four no-fix, read-only lens checklist items"],
     },
   },
   mutationDrill: {
@@ -878,7 +877,7 @@ export const entropyReducerIdentity = {
 
 export const entropyReducerRole = {
   roleId: "planning-reviewer",
-  version: 1,
+  version: 2,
   name: "Planning reviewer",
   obligations: [
     "perform a whole-repository census",
@@ -892,7 +891,26 @@ export const entropyReducerRole = {
   policyDeltas: [{ key: "proposalOrdering", value: "constraint-first" }],
 } as const satisfies LoadoutGraph["role"];
 
-export function entropyReducerLoadout(episodeEndsAt: number): LoadoutGraph {
+/** Every admitted route compiles serial lenses by rule. The two pinned CLI
+ * routes are observed to pass no delegate tool (Claude admits only Bash, Read,
+ * Glob and Grep; Codex disables multi_agent); the background worker's tool
+ * surface is session-attested and unobserved, and the fake route is a fixture.
+ * A delegating route requires a separate capability decision; unknown routes
+ * never inherit authority. */
+export const ENTROPY_REDUCER_ROUTES = [
+  "claude-cli-print",
+  "codex-cli-exec",
+  "background",
+  "fake",
+] as const;
+export type EntropyReducerRoute = (typeof ENTROPY_REDUCER_ROUTES)[number];
+
+export function entropyReducerLoadout(
+  episodeEndsAt: number,
+  route: EntropyReducerRoute = "claude-cli-print",
+): LoadoutGraph {
+  if (!(ENTROPY_REDUCER_ROUTES as readonly string[]).includes(route))
+    throw new Error(`unsupported entropy review route ${route}`);
   if (!Number.isFinite(episodeEndsAt))
     throw new Error("episodeEndsAt must be a finite number");
   return {
@@ -914,10 +932,10 @@ export function entropyReducerLoadout(episodeEndsAt: number): LoadoutGraph {
     activeMechanics: [
       {
         activeMechanicId: "seiso-shine",
-        // v2 (WO-100): the compiled reviewer moved to claude-opus-5-5 at xhigh.
-        version: 2,
+        // v3 (WO-165): the admitted routes work lens briefs serially.
+        version: 3,
         name: "Seisō (Shine)",
-        tags: ["observe", "research", "plan", "verify", "delegate", "narrate"],
+        tags: ["observe", "research", "plan", "verify", "narrate"],
         requiredCapabilities: [],
         semantics: [
           "review makes inspection inseparable from cleanup",
@@ -936,7 +954,7 @@ export function entropyReducerLoadout(episodeEndsAt: number): LoadoutGraph {
           knownFacts: [
             "The repository product docs are durable shared memory",
             "The reviewer has no authority to implement or promote its own suggestions",
-            "The kernel does not yet evaluate Program.All, so this review is dispatched manually",
+            `Review route ${route}: lenses worked serially by the reviewer; the host dispatches this manual plan`,
             `The compiled reviewer is ${ENTROPY_REDUCER_REVIEWER_MODEL} at ${ENTROPY_REDUCER_REVIEWER_EFFORT} effort; a substitution is a different attested actor`,
           ],
           decisions: [
@@ -966,7 +984,7 @@ export function entropyReducerLoadout(episodeEndsAt: number): LoadoutGraph {
           authorityEnvelopeId: "auth_entropy_reducer",
           allowedEffects: [...ENTROPY_REDUCER_ALLOWED_EFFECTS],
           deniedEffects: [...ENTROPY_REDUCER_DENIED_EFFECTS],
-          resourceLimits: { delegates: 4, probes: 32 },
+          resourceLimits: { probes: 32 },
           requiredEvidence: [],
           expiresAt: episodeEndsAt,
           revocationEventTypes: ["OperatorStopRequested"],
@@ -980,7 +998,7 @@ export function entropyReducerLoadout(episodeEndsAt: number): LoadoutGraph {
           grants: [
             "Read repository evidence",
             "Run bounded scratch probes",
-            "Delegate up to four read-only lenses",
+            "Work up to four read-only lens checklist items serially",
             "Emit a validated report",
           ],
           restrictions: [
@@ -1017,7 +1035,7 @@ export function entropyReducerLoadout(episodeEndsAt: number): LoadoutGraph {
     resourceModel: {
       resourceModelId: "entropy-reducer.resources",
       version: 1,
-      capacities: { delegates: 4, probes: 32 },
+      capacities: { probes: 32 },
       reservations: [],
     },
     polarAxes: [],
@@ -1025,6 +1043,7 @@ export function entropyReducerLoadout(episodeEndsAt: number): LoadoutGraph {
 }
 
 export interface ReviewerCompileOptions {
+  readonly route?: EntropyReducerRoute;
   readonly repo: string;
   readonly baseCommit: string;
   readonly episodeId: string;
@@ -1051,7 +1070,7 @@ export const entropyReducerReviewerRequirement = {
 
 export interface ReviewerExecutionBoundary {
   readonly mode: "operator-mediated-manual";
-  readonly deferredProgramKind: "All";
+  readonly deferredProgramKind: null;
   readonly commandIds: "symbolic-manual-plan";
   readonly resultBinding: "host-validator";
   readonly resourceEnforcement: "authorize-each-operation-and-thread-envelope";
@@ -1059,7 +1078,7 @@ export interface ReviewerExecutionBoundary {
 
 export const entropyReducerExecutionBoundary = {
   mode: "operator-mediated-manual",
-  deferredProgramKind: "All",
+  deferredProgramKind: null,
   commandIds: "symbolic-manual-plan",
   resultBinding: "host-validator",
   resourceEnforcement: "authorize-each-operation-and-thread-envelope",
@@ -1126,13 +1145,12 @@ const reviewerProgram = (
       source: "git ls-files -z",
       exclude: ["docs/intake/**"],
     }),
-    Program.All(
+    Program.Sequence(
       lensBriefs.map((brief, index) =>
         invocation(
           `entropy-reducer.lens.${String(index + 1).padStart(2, "0")}`,
-          "delegate.readonly",
+          "repo.read.lens",
           brief as unknown as JsonValue,
-          "delegates",
         ),
       ),
     ),
@@ -1218,11 +1236,13 @@ export function validateLensBriefs(
   values: readonly unknown[],
   maximum = 4,
 ): readonly LensBrief[] {
+  if (!Array.isArray(values))
+    throw new OutputValidationError("lens briefs must be an array");
   if (values.length > maximum)
     throw new OutputValidationError(
-      `lens brief count ${values.length} exceeds compiled delegate limit ${maximum}`,
+      `lens brief count ${values.length} exceeds lens checklist limit ${maximum}`,
     );
-  const briefs = values.map(validateLensBrief);
+  const briefs = Array.from(values, validateLensBrief);
   if (new Set(briefs.map((brief) => brief.lensId)).size !== briefs.length)
     throw new OutputValidationError("lens brief ids must be unique");
   return briefs;
@@ -1238,7 +1258,8 @@ export function compileReviewerWorkOrder(
     options.episodeEndsAt <= options.dispatchedAt
   )
     throw new Error("episodeEndsAt must be finite and later than dispatchedAt");
-  const source = entropyReducerLoadout(options.episodeEndsAt);
+  const route = options.route ?? "claude-cli-print";
+  const source = entropyReducerLoadout(options.episodeEndsAt, route);
   const environment: CompilationEnvironment = {
     environmentId: "entropy-reducer.manual-review",
     version: 1,
@@ -1251,16 +1272,12 @@ export function compileReviewerWorkOrder(
     throw new Error(
       result.diagnostics.map((entry) => entry.message).join("\n"),
     );
-  const maximumDelegates =
-    result.program.authorityEnvelope.resourceLimits["delegates"];
-  if (maximumDelegates === undefined)
-    throw new Error("compiled authority lacks the delegates resource");
   const briefs = validateLensBriefs(
     options.lensBriefs ?? entropyReducerLensBriefs,
-    maximumDelegates,
   );
   return {
     compileInputs: {
+      route,
       repo: options.repo,
       baseCommit: options.baseCommit,
       episodeId: options.episodeId,
@@ -1286,7 +1303,7 @@ export function compileReviewerWorkOrder(
     executionBoundary: entropyReducerExecutionBoundary,
     lensBriefs: briefs,
     lensBriefSchema,
-    residue: renderEntropyReducerResidue(source),
+    residue: renderEntropyReducerResidue(source, briefs),
   };
 }
 
@@ -1326,7 +1343,7 @@ const requiredStringArray = (
   if (
     !Array.isArray(candidate) ||
     (!allowEmpty && candidate.length === 0) ||
-    !candidate.every(
+    !Array.from(candidate).every(
       (entry) => typeof entry === "string" && entry.trim().length > 0,
     )
   )
@@ -2073,7 +2090,18 @@ const supportParagraph = (support: SupportFacet): string => {
   return `**${support.name} (\`${support.supportFacetId}@${support.version}\`).** Supports ${list(support.supportedTags)}; requires capabilities ${list(support.requiredCapabilities)}; conflicts with ${list(support.conflictsWith)}. Adds ${list(support.semanticsAdded)}; modifies ${list(modified)}. Authority: ${list(support.authorityChanges)}. Evidence: ${list(support.evidenceRequirements)}. Emissions: ${list(emissions)}. Claims: ${list(claims)}. Cost: mechanism ${support.cost.mechanismType}, ${support.cost.promptTokens} prompt tokens, ${support.cost.runtimeCost.quantity} ${support.cost.runtimeCost.unit}, ${support.cost.extraEpisodes} extra episodes, resource multiplier ${support.resourceMultiplier}. Determinism: ${support.preservesDeterminism ? "preserved" : "not preserved"}; composition: ${support.commutativity}. Inspection: ${list(inspectionList(support))}.`;
 };
 
-export function renderEntropyReducerResidue(source: LoadoutGraph): string {
+// Custom brief text remains data on one checklist line; embedded newlines
+// must not manufacture additional items or headings in this projection.
+const checklistText = (value: string): string =>
+  JSON.stringify(value)
+    .slice(1, -1)
+    .replaceAll("\u2028", "\\u2028")
+    .replaceAll("\u2029", "\\u2029");
+
+export function renderEntropyReducerResidue(
+  source: LoadoutGraph,
+  briefs: readonly LensBrief[] = entropyReducerLensBriefs,
+): string {
   const graph = normalizeLoadoutGraph(source);
   const active = graph.activeMechanics[0];
   if (active === undefined)
@@ -2115,10 +2143,21 @@ export function renderEntropyReducerResidue(source: LoadoutGraph): string {
     "",
     "Read in order: the execution guide, the active work order, only its cited blueprint surfaces, then the implementation and executable evidence. Treat settled decisions as constraints. For an operator analogy, extract and transfer its intended relationship first; evaluate literal details only when the claim depends on them. Identify the evidenced constraint before ordering recommendations.",
     "",
-    "The clean-room floor is mandatory. Stop instead of incorporating employer material, credentials, private identifiers, internal service details, or any other inadmissible source. Census and delegate reads are limited to paths named by `git ls-files`; never inspect `docs/intake/**` during this review. The tracked repository, control plane, remotes, settings, and operator decisions stay read-only. The dispatch host must separately confine scratch probes and ignored intake capture to authorized roots; the compiled envelope names effect families and resource budgets, not filesystem roots.",
+    "The clean-room floor is mandatory. Stop instead of incorporating employer material, credentials, private identifiers, internal service details, or any other inadmissible source. Census and lens reads are limited to paths named by `git ls-files`; never inspect `docs/intake/**` during this review. The tracked repository, control plane, remotes, settings, and operator decisions stay read-only. The dispatch host must separately confine scratch probes and ignored intake capture to authorized roots; the compiled envelope names effect families and resource budgets, not filesystem roots.",
     "",
-    "Execution boundary: this typed Program is an operator-mediated manual plan while the kernel's `All` kind remains deferred. Its invocation ids are symbolic, result data is bound by the host validator, and each delegated or probe operation must be authorized separately while threading the returned resource envelope; a numeric maximum inside an intent payload is not kernel enforcement.",
+    "Execution boundary: this typed Program is an operator-mediated manual plan. Lenses are worked serially by the reviewer. Its invocation ids are symbolic, result data is bound by the host validator, and each read or probe operation must be authorized separately while threading the returned resource envelope; a numeric maximum inside an intent payload is not kernel enforcement.",
     "",
+    "## Reviewer lens checklist",
+    "",
+    "Work each item yourself, in order, before synthesis. Preserve its scope, output shape, word budget and no-fix boundary.",
+    "",
+    ...briefs.flatMap((brief) => [
+      `- [ ] ${checklistText(brief.lensId)}`,
+      `  Files: ${list(brief.files.map(checklistText))}.`,
+      `  Questions: ${list(brief.questions.map(checklistText))}.`,
+      `  Output shape: ${list(brief.outputShape.map(checklistText))}. Word budget: ${brief.wordBudget}. No-fix: ${brief.noFix}.`,
+      "",
+    ]),
     "## Masks and failure guards",
     "",
     ...maskLines,

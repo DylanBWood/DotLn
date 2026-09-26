@@ -29,6 +29,28 @@ Skeleton advances from `0.43.1` to `0.44.0` and console from `0.2.0` to
 lockfile following. Compiler `0.19.1` and kernel `0.6.0` are unchanged.
 Independent verification, final review and publication remain separate.
 
+**WO-165 activation completion (2026-09-26):** assigned application `v0.51.2`,
+the next patch above the observed local `v0.51.1` tag. The supported Entropy
+Reducer routes compile serial lens checklists and matching receipts, without
+delegate authority. `@dotln/skeleton` advances `0.43.2` to `0.43.3` for the
+bounded correction; its exact console pin and lockfile follow. The current
+compiled review identity changes; historical receipts retain their recorded
+subjects. Other component versions are unchanged. Independent verification,
+final review and publication remain separate dispatches.
+
+**WO-165 collision retiming (2026-09-26):** unpublished target `v0.51.2` is superseded by `v0.52.1` under the existing patch classification because the observed release baseline is `v0.52.0`. Scope, acceptance, component versions, and published tags are unchanged by this retiming.
+
+**WO-165 final-review integration (2026-09-26):** `main` published `v0.52.0`
+(WO-115) with `@dotln/skeleton` `0.44.0` and `@dotln/console` `0.3.0`, past the
+`0.43.3` this order had staged, so the skeleton bump is retimed to `0.44.1` under
+its declared bounded-correction impact, with the console pin and the lockfile
+following. Compiler `0.19.1`, kernel `0.6.0`, beacons `0.1.0` and console `0.3.0`
+are `main`'s values, unchanged by this order. The authority edition is re-minted
+on the integrated source where its check marks the staged edition stale; the
+artifact-identity edition stays at `WO-165/002`, and verification and feedback
+stay at `WO-161/001` and `WO-070/001`. Application target `v0.52.1` is the
+retimed patch. Scope, acceptance and published tags are unchanged.
+
 **WO-070 activation completion (2026-09-25):** assigned application `v0.51.1`,
 the next patch above the observed local `v0.51.0` tag, under the declared patch
 classification. The seven build-free Beacon leaves move to the new private

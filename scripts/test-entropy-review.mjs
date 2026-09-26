@@ -29,6 +29,14 @@ import {
 } from "./lib/entropy-review.mjs";
 import { main as entropy } from "./entropy.mjs";
 
+import { compileReviewerWorkOrder } from "../packages/skeleton/dist/src/loadouts/entropy-reducer.js";
+import {
+  entropyReviewPrompt,
+  ENTROPY_REVIEW_TOOLS,
+} from "../packages/skeleton/dist/src/entropy-review-protocol.js";
+import { entropyReviewAuthorization } from "../packages/skeleton/dist/src/reactor.js";
+import { canonicalWorkerArgs } from "../packages/skeleton/dist/src/worker-transport.js";
+
 const toolRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 
 const git = (repo, args) => {
@@ -165,6 +173,16 @@ export async function entropyFixtures() {
         receipt.subject.baseCommit,
         git(repo, ["rev-parse", "HEAD"]),
       );
+      assert.equal(receipt.compilation.compileInputs.route, "fake");
+      assert.equal(
+        receipt.compilation.executionBoundary.deferredProgramKind,
+        null,
+      );
+      assert.match(
+        renderReceipt(receipt),
+        /lenses worked serially by the reviewer/u,
+      );
+      assert.doesNotMatch(renderReceipt(receipt), /deferred Program kind All/u);
       assert.equal(receipt.liveness, "fixture");
       assert.equal(
         readFileSync(join(repo, runsRoot(repo), "REVIEW-001.md"), "utf8"),
@@ -183,6 +201,7 @@ export async function entropyFixtures() {
       );
       const refutationPending = currentDispatch(repo, "refutation");
       assert.equal(refutationPending.reviewReceiptId, "REVIEW-001");
+      assert.equal(refutationPending.compileInputs.route, "fake");
       await assert.rejects(
         entropy(["refute", "REVIEW-001", "--transport", "fake"], repo),
         /already pending \(episode/u,
@@ -388,6 +407,31 @@ export async function entropyFixtures() {
         "blocked",
         "the receipt records the run's own failure rather than discarding it",
       );
+      for (const status of ["blocked", "failed", "completed"]) {
+        const rendered = renderReceipt({
+          ...receipt,
+          reviewerOutput: {
+            ...receipt.reviewerOutput,
+            resultEnvelope: {
+              ...receipt.reviewerOutput.resultEnvelope,
+              status,
+            },
+          },
+        });
+        assert.match(
+          rendered,
+          /Compiled review confinement \(execution rule\): lenses worked serially by the reviewer/u,
+        );
+        assert.ok(
+          rendered.includes(
+            `Checklist completion is not independently observed; worker result: ${status}.`,
+          ),
+        );
+        assert.doesNotMatch(
+          rendered,
+          /(?:^|\n)Review confinement: lenses worked/gu,
+        );
+      }
       assert.equal(receipt.findingSummary.total, 0);
       assert.equal(checkEntropyReceipts(repo).status, "ok");
     });
@@ -1009,6 +1053,150 @@ export async function entropyFixtures() {
         /fixture evidence and must never be committed as a run/u,
         "a committed fixture receipt fails the check",
       );
+    });
+
+    await test("WO-165 pinned routes agree on authority, serial checklist, transport tools and receipt", async () => {
+      const repo = fixtureRepository(parent);
+      await entropy(["review", "--transport", "fake"], repo);
+      const pending = currentDispatch(repo, "review");
+      // File one real fake-transport receipt, then render each route's compiled
+      // metadata with it. Neither CLI route is launched by this fixture.
+      const routeCompilations = [];
+      for (const route of ["claude-cli-print", "codex-cli-exec"]) {
+        const compiled = compileReviewerWorkOrder({
+          ...pending.compileInputs,
+          route,
+        });
+        routeCompilations.push(compiled);
+        assert.deepEqual(compiled.authorityEnvelope.resourceLimits, {
+          probes: 32,
+        });
+        assert.ok(
+          !compiled.authorityEnvelope.allowedEffects.some((effect) =>
+            effect.startsWith("delegate"),
+          ),
+        );
+        assert.ok(
+          !compiled.workOrder.allowedOperations.some((effect) =>
+            effect.startsWith("delegate"),
+          ),
+        );
+        assert.doesNotMatch(
+          compiled.residue,
+          /delegat|fan-?out|Program\.All/iu,
+        );
+        assert.equal(compiled.program.programs[1].kind, "Sequence");
+        assert.ok(
+          compiled.program.programs[1].programs.every(
+            (item) =>
+              item.command.effect === "repo.read.lens" &&
+              item.command.resource === undefined,
+          ),
+        );
+        const grant = entropyReviewAuthorization(
+          compiled.authorityEnvelope,
+          pending.subject.hash,
+          pending.episodeId,
+          "census",
+          pending.compileInputs.dispatchedAt,
+        );
+        assert.equal(grant.authorized, true);
+        const request = {
+          kind: "entropy-review",
+          command: grant.command,
+          workOrder: compiled.workOrder,
+          subject: pending.subject,
+          episodeId: pending.episodeId,
+          model: "fixture-model",
+          effort: "xhigh",
+          cwd: pending.subject.scratchRepository,
+          capture: pending.capture,
+          residue: compiled.residue,
+          lensBriefs: compiled.lensBriefs,
+          concern: null,
+          profile: {
+            profileId: "entropy-review-v1",
+            modelTools: [...ENTROPY_REVIEW_TOOLS],
+          },
+        };
+        const prompt = JSON.parse(entropyReviewPrompt(request));
+        for (const brief of compiled.lensBriefs) {
+          assert.ok(prompt.residue.includes(`- [ ] ${brief.lensId}`));
+          for (const value of [
+            ...brief.files,
+            ...brief.questions,
+            ...brief.outputShape,
+          ])
+            assert.ok(prompt.residue.includes(value));
+          assert.ok(
+            prompt.residue.includes(
+              `Word budget: ${brief.wordBudget}. No-fix: true.`,
+            ),
+          );
+        }
+        assert.throws(
+          () => entropyReviewPrompt({ ...request, lensBriefs: [] }),
+          /lens briefs/u,
+        );
+        const args = canonicalWorkerArgs(
+          route,
+          request,
+          join(pending.capture, "schema.json"),
+        );
+        if (route === "claude-cli-print") {
+          assert.equal(
+            args[args.indexOf("--tools") + 1],
+            "Bash,Read,Glob,Grep",
+          );
+          assert.equal(
+            args[args.indexOf("--allowedTools") + 1],
+            "Bash,Read,Glob,Grep",
+          );
+        } else {
+          const disabled = args.flatMap((arg, index) =>
+            arg === "--disable" ? [args[index + 1]] : [],
+          );
+          assert.ok(disabled.includes("multi_agent"));
+          assert.ok(disabled.includes("multi_agent_v2"));
+        }
+      }
+      assert.throws(
+        () =>
+          compileReviewerWorkOrder({
+            ...pending.compileInputs,
+            route: "unknown-route",
+          }),
+        /unsupported entropy review route/u,
+      );
+      await entropy(
+        [
+          "receipt",
+          join(pending.capture, "result.json"),
+          "--statement",
+          join(pending.capture, "statement.txt"),
+        ],
+        repo,
+      );
+      const receipt = JSON.parse(
+        readFileSync(join(repo, runsRoot(repo), "REVIEW-001.json"), "utf8"),
+      );
+      for (const compiled of routeCompilations) {
+        const rendered = renderReceipt({
+          ...receipt,
+          compilation: {
+            ...receipt.compilation,
+            compileInputs: compiled.compileInputs,
+            semanticHash: compiled.semanticHash,
+            executionBoundary: compiled.executionBoundary,
+          },
+        });
+        assert.match(
+          rendered,
+          /lenses worked serially by the reviewer; no delegate grant or delegate resource limit/u,
+        );
+        assert.doesNotMatch(rendered, /deferred Program kind All/u);
+      }
+      assert.equal(checkEntropyReceipts(repo).status, "ok");
     });
 
     await test("the canonical prompt carries the residue, lens briefs, concern, subject path and schema", async () => {
