@@ -915,3 +915,73 @@ The filed FINAL-002 cites the first row and stays unedited. A second
 notes cite both rows. What was misread: a README sentence as a report-class
 change. What was meant: every edit under `packages/` needs a gate before the
 result transition. What changed: the second gate row and this note.
+
+## WO-115-D026 — Repair the gate identity and bind a product gate by correction, at the operator's direction
+
+```json
+{
+  "id": "WO-115-D026",
+  "date": "2026-09-26",
+  "dispatch": "resume: final review; operator direction after the publish refusal",
+  "reopens": {
+    "decisionId": "WO-115-D025",
+    "observation": "The README note added after the first review gate moved the code identity, so the FinalReviewCompleted event recorded no product gate; worktree publish refused with 'no recorded passing reviewer npm test row' before pushing anything, the correct route had no field for a gate, and the closed phase admitted no correction. The operator directed a permanent fix now, in this branch, that is neither rule beating nor a proxy for the gate, with no gotchas left for release close or a future order."
+  },
+  "decision": "Two lifecycle repairs, written by this reviewer at the operator's explicit direction and hardened after an adversarial read and an independent verification by a second model. First, gateCodeIdentity excludes the paths Git marks dotln-documentation, and .gitattributes marks the four package and corpus READMEs no suite reads: a README is documentation for a reader, never product code, so editing one leaves a passing gate's key intact, while packages/kernel/README.md, which the kernel suite reads as an input, stays unmarked and counts, as does any Markdown test input. Second, resume correct accepts --set productGate=<evidenceRef> on a recorded passing FinalReviewCompleted event and is the only correction legal in closed. It binds, once, a complete, executed, passing npm test row whose code identity is the identity of the checkpoint the pass recorded and still the working tree's; a review that already carries a gate keeps it; the RecordCorrected event carries the whole row, the fold validates the row and the subject, a correction in closed leaves the close ordinal where the closing event put it, and reviewedProductGate, which worktree publish and release close share, reads the latest bound row from committed control history and still refuses a row whose identity differs from the published revision. Product 07 records both; the generated role skill's off-ramp sentence is unchanged, because a shared role edit takes a new pinned role baseline (WO-145) that this repair does not add. WO-115's own publication cannot use the route: FINAL-002's checkpoint predates the fix, so binding a gate that includes the fix to that pass would tie a verdict to bytes it never judged. The order is re-activated from closed, which the lifecycle admits, and takes a fresh cycle over the fixed tree: implementation-ready, an independent VER-006, FINAL-003 with its gate found at the transition, then publication. FINAL-002 stays unedited.",
+  "evidence": [
+    "packages/skeleton/src/gate-evidence.mjs: the identity filter excluded docs/, .claude/, .agents/, root Markdown and dotln-generated paths only, so packages/console/README.md was inside it; the filter now also excludes paths Git marks dotln-documentation, and .gitattributes marks packages/compiler, packages/console, packages/skeleton and corpus READMEs",
+    "Adversarial read (claude-opus-5-5, xhigh): a first draft bound any passing row at the working tree's identity, so a pass could be tied to later source; the kernel suite reads packages/kernel/README.md as an input (packages/kernel/test/ac7-readme-map.test.ts), so a blanket README exclusion dropped a test input; closed admitted every correctable field and a trailing correction moved the close ordinal; the row lookup took the latest row for a shared evidence reference whether or not it passed; main's pre-fix fold refuses the new event in a stale release-close process until main is updated. Each is repaired here except the last, which no code can avoid and which the release notes state",
+    "Independent verification (claude-opus-5-5, xhigh): the runner test, the off-ramps fixture and its own fold and binding probes verified the exclusion, the binding refusals and the committed-history read; it found the fold accepted a hand-appended binding whose declared subject type was not a final review and that the fixture tracked no files, both repaired here; VER-006 then found the fold still trusts the declared type over the event at that ordinal, deferred as this decision's follow-up because resume correct cannot write such an event and publication ignores it",
+    "scripts/lib/lifecycle-evidence.mjs: final-review-result advises 'No passing product gate at this code identity' and records the pass without evidence.productGate; scripts/lib/release-records.mjs reviewedProductGate then throws 'no recorded passing reviewer npm test row'",
+    "scripts/lib/control.mjs CORRECTABLE_FIELDS held only attestation fields, reportPath, checkpointRef and checkpointSha; scripts/resume.mjs OFF_RAMP_PHASES admitted correct in open phases only",
+    "scripts/test-runner.test.mjs: the code identity test pins a marked README as excluded and an unmarked README and a Markdown input as counted; the publish-consumer test binds a gate by a RecordCorrected event and refuses a bound row at another identity; 41 of 41 pass",
+    "scripts/test-off-ramps.mjs: the fixture tracks its scripts so working-tree and checkpoint identities agree; on the closed WO-101 fixture, correct refuses a missing row, a row at another identity, a non-review subject, any field but productGate in closed, and a working tree changed since the pass, then binds the current row once with previous 'none' and the whole row in the event; a repeat and a re-point to a later row are refused; the fold refuses a binding aimed at a non-review event, a mismatched reference and a partial row",
+    "The operator's direction in this session: fix this permanently right now; spawn an adversarial reviewer and a verifier; a pull request ready to merge with no gotchas for release close or a future work order; not rule beating or chasing the wrong goal"
+  ],
+  "rejected": [
+    {"option": "Recover WO-115 by hand-editing the recorded event under the operator's recovery control", "reason": "The operator refused it; it would leave the next order to hit the same dead end."},
+    {"option": "Refuse final-review-result when no gate row matches", "reason": "Lifecycle transitions never require a test gate (product 07); a refusal there would block a reviewer whose gate is minutes away, while a correction route repairs the recorded state canonically and is checked again at publication."},
+    {"option": "Exclude every Markdown file or every README from the identity", "reason": "packages/kernel/README.md is a test input the kernel suite reads; the console fixture Markdown is already outside the identity as dotln-generated. Only the READMEs no suite reads are documentation, and the mark names them."},
+    {"option": "Let worktree publish read the local checks.json when the event lacks a gate", "reason": "Release close runs on main after the review worktree may be gone; the committed correction is the durable record both consumers share."},
+    {"option": "File a separate order for the machinery", "reason": "The operator directed the permanent fix now, in this branch; this decision records that scope expansion and its evidence."},
+    {"option": "Bind FINAL-002's pass to a gate on the tree that includes this fix", "reason": "That is the rule beating the operator forbade: the verdict would rest on seven source files the review never judged (adversarial finding 1). A fresh cycle over the fixed tree judges them."}
+  ],
+  "followup": "Control fold hardening, low, for the planner: the RecordCorrected fold checks a productGate binding's declared subject type but not the event at that ordinal, so a hand-appended binding declaring FinalReviewCompleted while pointing at an activation or a failing review folds (VER-006 finding 1); resume correct cannot write one and reviewedProductGate ignores it, so publication is unaffected. Require the event at the subject ordinal to be a passing FinalReviewCompleted, and consider refusing a second binding of one review (VER-006 O3).",
+  "reopenWhen": "A publish or release close refuses a reviewed order whose gate passed at the published code identity, a marked documentation edit changes a gate key, a bound gate is accepted at an identity other than the bytes its pass recorded, a suite starts reading a marked README as an input, or an independent verification of this repair finds a defect."
+}
+```
+
+Same-day correction: the first review gate over the repair, at commit
+`a659ab80` (code identity `e7625cc9…`, recorded 2026-09-26T16:42:19Z, exit 1),
+failed two suites of this reviewer's own making. `beacon-portability` failed
+because `scripts/lib/control.mjs` had gained a static import of
+`./gate-evidence.mjs`, which re-exports skeleton source that the WO-070 copied
+control plane does not carry; the fold now restates the partial-row rule
+locally. `process-debt` failed because the role-skill sentence moved the
+executor skill's bytes against the pinned WO-145 role baseline; the sentence
+returned to its committed text. Both are reverted in `13f09a1e`, and the
+second review gate at identity `81d0244c…` passed all thirty-nine suites. What
+was misread: a role-skill edit as free of a pinned baseline, and a helper
+import as free of the copied-plane boundary. What changed: the two reverts,
+this note, and VER-006 O1, which reproduced both failures and both fixes.
+
+Goal alignment: this removes a dead end on the critical path from a passing
+review to a merged pull request. Shifting the burden and policy resistance were
+the traps: an advisory at the transition and a hard refusal at publication with
+no canonical repair made the operator the only recovery. Rule beating is checked
+because the bound row must be a complete passing gate on the bytes the pass
+recorded in its checkpoint, still the working tree's, bound once, validated
+again by the fold and by both publication consumers, which still refuse a row
+that does not match the published revision; the adversarial read's first draft
+loophole is closed and WO-115 itself takes a fresh cycle rather than the
+shortcut. Drift and seeking the wrong goal: the product gate still binds the
+published bytes; only marked documentation leaves the key, and a README a suite
+reads stays inside it. Commons and escalation: one field, one filter
+clause, two regressions, one product paragraph, no new gate or approval.
+Success to the successful: the recovery control the machinery already had was
+rejected in favor of the durable route. Naive Interventionism: the transition's
+behavior, the report bytes and the verdict are untouched; a Markdown test input
+still counts. NoOp would leave every future order one README sentence away from
+the same refusal. Limit: this reviewer wrote and certifies a behavioral change
+in the same order, at the operator's direction, with regressions, a full review
+gate and an adversarial read by a second model, but no independent VER report.

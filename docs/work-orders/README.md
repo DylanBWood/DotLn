@@ -2184,8 +2184,8 @@ None.
 - Application target: v0.52.0.
 - Dependencies: typed; activation not applicable.
 - References: WO-068: hard (met) — the resident serves the surface; WO-114: hard (met) — the status projection the surface reads; WO-120: hard (met) — intent and derived-order activation exist as terminal commands; WO-100: hard (met) — declaring a portfolio exists as a terminal command.
-- Verification: [VER-005](../../docs/verifications/WO-115/VER-005.md) (pass).
-- Final review: [FINAL-002](../../docs/final-reviews/WO-115/FINAL-002.md) (pass).
+- Verification: [VER-006](../../docs/verifications/WO-115/VER-006.md) (pass).
+- Final review: [FINAL-003](../../docs/final-reviews/WO-115/FINAL-003.md) (pass).
 - Release: unreleased.
 - Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
 - Effort: executor xhigh+; verifier xhigh+; reviewer any.

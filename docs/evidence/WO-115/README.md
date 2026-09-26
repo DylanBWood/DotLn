@@ -244,3 +244,52 @@ token saving.
 Both filed repair targets have implementation and executable evidence. The
 existing follow-ups remain for the independent verifier's judgment; this
 executor does not amend any earlier verification or final-review report.
+
+## Lifecycle repair after FINAL-002, at the operator's direction
+
+Dispatch: the `resume: final review` session that filed FINAL-002 (Claude Code
+2.1.283, `claude-fable-5-1`, effort `xhigh` from the session's `CLAUDE_EFFORT`
+readback), continued at the operator's direction after `worktree publish`
+refused the reviewed branch, then a re-activation of the order from `closed`
+so the repair could take its own verification and final review. Three Opus 5.5
+subagents ran at the operator's direction: one adversarial read of the repair,
+one independent verification of its claims, and the VER-006 verifier.
+
+FINAL-002 recorded its pass while no `npm test` row matched the tree's code
+identity, because a one-sentence README note added after the review gate had
+moved that identity; the pass event therefore carried no product gate, and the
+publish helper refused. [D026](decisions.md#wo-115-d026--repair-the-gate-identity-and-bind-a-product-gate-by-correction-at-the-operators-direction)
+records the repair: the package and corpus READMEs no suite reads are marked
+`dotln-documentation` in `.gitattributes` and leave the identity, while the
+kernel README a suite reads stays unmarked; and `resume correct --set
+productGate=<evidenceRef>` binds, once, a complete passing `npm test` row on the
+bytes a passing final review recorded in its checkpoint, as the only correction
+legal in `closed`, with the whole row in the event, validated by the fold and
+read by `worktree publish` and `release close` from committed history.
+
+The adversarial read found that the first draft could bind a pass to later
+source, that a blanket README exclusion dropped the kernel test input, that
+`closed` admitted every correctable field and moved the close ordinal, and that
+the row lookup ignored whether the latest row passed; the verification found
+the fold accepted a binding aimed at a non-review event and that the off-ramps
+fixture tracked no files. All are repaired in the committed form, and product
+07 records the rules; the generated role skills are unchanged, because a shared
+role edit takes a new pinned role baseline (WO-145) this repair does not add.
+The first review gate over the repair also caught two of this reviewer's own
+slips: an import that pulled skeleton source into the control fold, which the
+copied control plane (WO-070) must not load, and that role-skill edit; both are
+reverted in the committed form.
+
+Checks at the repaired subject: `node --test scripts/test-runner.test.mjs` 41
+of 41; `npm test -- --only resume` 2 of 2, including the closed WO-101 binding
+fixture and the fold refusals; `node scripts/harness.mjs emit` and `check` (31
+surfaces) after the identity leaf changed the pinned runtime; authority edition
+`WO-115/003` recorded and verified; the feedback edition retained; `npm run
+publication:check` current. The review gate at the final identity is recorded
+in FINAL-003. No dependency was added and the `v0.52.0` minor target stands.
+
+Limit: this reviewer wrote the repair and, after the fresh cycle, certifies the
+tree that contains it; VER-006 is an Opus 5.5 subagent of the same session, not
+a separate operator-dispatched session. FINAL-002's pass could not be bound to
+this tree: doing so would have tied a verdict to bytes the review never judged,
+which is the rule the repair exists to enforce.

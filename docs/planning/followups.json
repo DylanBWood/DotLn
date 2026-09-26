@@ -17886,6 +17886,50 @@
           "at": "2026-09-26T15:25:57.822Z"
         }
       ]
+    },
+    {
+      "id": "FUP-9069237b88bdff3f",
+      "key": "decision:docs/evidence/WO-115/decisions.md#wo-115-d025",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "94997e966c5a6c35bde0228bbbb9a1efad434e12eff4c93cdb36e998cfb79268",
+          "ref": "docs/evidence/WO-115/decisions.md#wo-115-d025--final-review-passes-the-integrated-subject-and-settles-the-repair-rows",
+          "title": "WO-115-D025: Pass FINAL-002 on the integrated WO-115 subject at code identity bce54ec869793926a7d7db37d759d0e838daebe965ad1729a85982ea7b5b7949: the five original criteria are met on this review's own ",
+          "summary": "{ \"id\": \"WO-115-D025\", \"date\": \"2026-09-26\", \"dispatch\": \"resume: final review\", \"decision\": \"Pass FINAL-002 on the integrated WO-115 subject at code identity bce54ec869793926a7d7db37d759d0e838daebe965ad1729a85982ea7b5b7949: the five original criteria are met on this review's own gate, checks and real-binary probe, and VER-001 F1, VER-002 G1, FINAL-001 F1 and VER-004 F1 and F2 stay resolved. Settle FUP-db0a2c8b8a05d4ae, FUP-2ed6d5d710c207da and FUP-e495acc8ebaebf05 through the canonical follow-up API, each with its evidence and a reopening condition. Move D022 to its chronological place in this file and add one sentence on the status watcher's read fallback to the console README; neither cha",
+          "missing": false
+        },
+        {
+          "hash": "5087fba9aec1eb870abed1362e7e13930a6a8cabdba93c318919c938f885ef5d",
+          "ref": "docs/evidence/WO-115/decisions.md#wo-115-d025--final-review-passes-the-integrated-subject-and-settles-the-repair-rows",
+          "title": "WO-115-D025: Pass FINAL-002 on the integrated WO-115 subject at code identity bce54ec869793926a7d7db37d759d0e838daebe965ad1729a85982ea7b5b7949: the five original criteria are met on this review's own ",
+          "summary": "{ \"id\": \"WO-115-D025\", \"date\": \"2026-09-26\", \"dispatch\": \"resume: final review\", \"decision\": \"Pass FINAL-002 on the integrated WO-115 subject at code identity bce54ec869793926a7d7db37d759d0e838daebe965ad1729a85982ea7b5b7949: the five original criteria are met on this review's own gate, checks and real-binary probe, and VER-001 F1, VER-002 G1, FINAL-001 F1 and VER-004 F1 and F2 stay resolved. Settle FUP-db0a2c8b8a05d4ae, FUP-2ed6d5d710c207da and FUP-e495acc8ebaebf05 through the canonical follow-up API, each with its evidence and a reopening condition. Move D022 to its chronological place in this file and add one sentence on the status watcher's read fallback to the console README; neither cha",
+          "missing": false
+        },
+        {
+          "hash": "2167353951b60182b5424ad048cd3b0f30aa71cfe46e70570aa42e1678956ce9",
+          "ref": "docs/evidence/WO-115/decisions.md#wo-115-d025--final-review-passes-the-integrated-subject-and-settles-the-repair-rows",
+          "title": "WO-115-D025: Pass FINAL-002 on the integrated WO-115 subject at code identity bce54ec869793926a7d7db37d759d0e838daebe965ad1729a85982ea7b5b7949: the five original criteria are met on this review's own ",
+          "summary": "{ \"id\": \"WO-115-D025\", \"date\": \"2026-09-26\", \"dispatch\": \"resume: final review\", \"decision\": \"Pass FINAL-002 on the integrated WO-115 subject at code identity bce54ec869793926a7d7db37d759d0e838daebe965ad1729a85982ea7b5b7949: the five original criteria are met on this review's own gate, checks and real-binary probe, and VER-001 F1, VER-002 G1, FINAL-001 F1 and VER-004 F1 and F2 stay resolved. Settle FUP-db0a2c8b8a05d4ae, FUP-2ed6d5d710c207da and FUP-e495acc8ebaebf05 through the canonical follow-up API, each with its evidence and a reopening condition. Move D022 to its chronological place in this file and add one sentence on the status watcher's read fallback to the console README; neither cha",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-ca628adcc713c0b8",
+      "key": "decision:docs/evidence/WO-115/decisions.md#wo-115-d026",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "de69e0b937e78f447c194b855838cd14b9fb6130e65d61d1dd058ea944b6af48",
+          "ref": "docs/evidence/WO-115/decisions.md#wo-115-d026--repair-the-gate-identity-and-bind-a-product-gate-by-correction-at-the-operators-direction",
+          "title": "WO-115-D026: Control fold hardening, low, for the planner: the RecordCorrected fold checks a productGate binding's declared subject type but not the event at that ordinal, so a hand-appended binding d",
+          "summary": "{ \"id\": \"WO-115-D026\", \"date\": \"2026-09-26\", \"dispatch\": \"resume: final review; operator direction after the publish refusal\", \"reopens\": { \"decisionId\": \"WO-115-D025\", \"observation\": \"The README note added after the first review gate moved the code identity, so the FinalReviewCompleted event recorded no product gate; worktree publish refused with 'no recorded passing reviewer npm test row' before pushing anything, the correct route had no field for a gate, and the closed phase admitted no correction. The operator directed a permanent fix now, in this branch, that is neither rule beating nor a proxy for the gate, with no gotchas left for release close or a future order.\" }, \"decision\": \"Two ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }
