@@ -1,0 +1,155 @@
+{
+  "schemaVersion": 1,
+  "environment": {
+    "baseCommit": "fixture-base",
+    "capabilities": [],
+    "environmentId": "entropy-reducer.manual-review",
+    "repo": "/fixture/repository",
+    "version": 1
+  },
+  "episodeEndsAt": 11000,
+  "before": {
+    "semanticHash": "fnv1a64:79151d7baebc5262",
+    "authority": {
+      "allowedEffects": [
+        "repo.read*",
+        "probe.run:scratch*",
+        "intake.capture",
+        "delegate.readonly",
+        "report.emit"
+      ],
+      "authorityEnvelopeId": "auth_entropy_reducer",
+      "deniedEffects": [
+        "repo.write*",
+        "git.mutate*",
+        "remote.*",
+        "settings.*",
+        "decision.edit"
+      ],
+      "expiresAt": 11000,
+      "requiredEvidence": [],
+      "resourceLimits": {
+        "delegates": 4,
+        "probes": 32
+      },
+      "revocationConditions": [],
+      "revocationEventTypes": [
+        "OperatorStopRequested"
+      ]
+    }
+  },
+  "after": {
+    "claude-cli-print": {
+      "semanticHash": "fnv1a64:e3505eb7f111ba22",
+      "authority": {
+        "allowedEffects": [
+          "repo.read*",
+          "probe.run:scratch*",
+          "intake.capture",
+          "report.emit"
+        ],
+        "authorityEnvelopeId": "auth_entropy_reducer",
+        "deniedEffects": [
+          "repo.write*",
+          "git.mutate*",
+          "remote.*",
+          "settings.*",
+          "decision.edit"
+        ],
+        "expiresAt": 11000,
+        "requiredEvidence": [],
+        "resourceLimits": {
+          "probes": 32
+        },
+        "revocationConditions": [],
+        "revocationEventTypes": [
+          "OperatorStopRequested"
+        ]
+      }
+    },
+    "codex-cli-exec": {
+      "semanticHash": "fnv1a64:30c4e134587e445f",
+      "authority": {
+        "allowedEffects": [
+          "repo.read*",
+          "probe.run:scratch*",
+          "intake.capture",
+          "report.emit"
+        ],
+        "authorityEnvelopeId": "auth_entropy_reducer",
+        "deniedEffects": [
+          "repo.write*",
+          "git.mutate*",
+          "remote.*",
+          "settings.*",
+          "decision.edit"
+        ],
+        "expiresAt": 11000,
+        "requiredEvidence": [],
+        "resourceLimits": {
+          "probes": 32
+        },
+        "revocationConditions": [],
+        "revocationEventTypes": [
+          "OperatorStopRequested"
+        ]
+      }
+    },
+    "background": {
+      "semanticHash": "fnv1a64:e091eca53bad2e11",
+      "authority": {
+        "allowedEffects": [
+          "repo.read*",
+          "probe.run:scratch*",
+          "intake.capture",
+          "report.emit"
+        ],
+        "authorityEnvelopeId": "auth_entropy_reducer",
+        "deniedEffects": [
+          "repo.write*",
+          "git.mutate*",
+          "remote.*",
+          "settings.*",
+          "decision.edit"
+        ],
+        "expiresAt": 11000,
+        "requiredEvidence": [],
+        "resourceLimits": {
+          "probes": 32
+        },
+        "revocationConditions": [],
+        "revocationEventTypes": [
+          "OperatorStopRequested"
+        ]
+      }
+    },
+    "fake": {
+      "semanticHash": "fnv1a64:051216f1a90c7998",
+      "authority": {
+        "allowedEffects": [
+          "repo.read*",
+          "probe.run:scratch*",
+          "intake.capture",
+          "report.emit"
+        ],
+        "authorityEnvelopeId": "auth_entropy_reducer",
+        "deniedEffects": [
+          "repo.write*",
+          "git.mutate*",
+          "remote.*",
+          "settings.*",
+          "decision.edit"
+        ],
+        "expiresAt": 11000,
+        "requiredEvidence": [],
+        "resourceLimits": {
+          "probes": 32
+        },
+        "revocationConditions": [],
+        "revocationEventTypes": [
+          "OperatorStopRequested"
+        ]
+      }
+    }
+  }
+}

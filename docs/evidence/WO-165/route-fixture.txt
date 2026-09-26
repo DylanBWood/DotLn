@@ -1,0 +1,30 @@
+Entropy gate: {"receipts":["REVIEW-002","REFUTATION-002","REFUTATION-003","REVIEW-003","REFUTATION-004"],"preMechanism":["REFUTATION-001","REVIEW-001"],"dispositions":13,"packets":6,"interruptedFilings":[],"status":"ok"}
+✔ WO-160 subject skips pre-mechanism receipts and check retains their bytes (124.669583ms)
+✔ the fake transport drives review, receipt, refute, refutation-receipt and dispose end to end (273.965708ms)
+✔ the selection rule, its blinding and its denominators are the loadout's, not the host's (209.168625ms)
+✔ zero findings yield not-applicable denominators rather than a synthetic pass (142.272041ms)
+✔ a blocked run files its receipt with the failure and promotes nothing (150.492ms)
+✔ a dirty tree and a second pending dispatch are refused by path (176.299833ms)
+✔ a result whose tracked status moved during the episode is refused (114.827542ms)
+✔ the explicit route binds the named commit, not the working tree (246.776167ms)
+✔ the refutation records tracked status and the scratch delta on either side of its episode (310.352459ms)
+✔ an invalid return is rejected and retained with its statement (117.506667ms)
+✔ accepting a refuted, blocked, unselected or unknown identifier is refused (240.373584ms)
+✔ a pass consumes an undisposed review before paying for another (276.268625ms)
+✔ check fails on a hand-edited receipt, a missing control event and a fixture receipt (184.86275ms)
+✔ an interrupted filing is reported, never a shared-gate failure (147.91575ms)
+✔ the attestation labels a substitute reviewer and never invents readback (0.148208ms)
+✔ the fake transport cannot produce a live receipt (192.369291ms)
+✔ WO-165 pinned routes agree on authority, serial checklist, transport tools and receipt (154.962834ms)
+✔ the canonical prompt carries the residue, lens briefs, concern, subject path and schema (114.801166ms)
+✔ WO-157 item 9: the witness records added and removed scratch paths and the source repository's untracked listing (144.549375ms)
+✔ WO-157 VER-001 F2: a changed untracked listing whose paths carry newlines or edge whitespace is never recorded as unchanged (269.516125ms)
+✔ WO-157 item 10: a refutation receipt renders the typed reasons in place of a worker statement (304.275833ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 21
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4183.236542
