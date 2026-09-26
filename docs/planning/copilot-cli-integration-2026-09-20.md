@@ -209,7 +209,7 @@ optional flags, and put two of them into WO-146's criteria. That was wrong.
 The other two harnesses need no arguments because everything DotLn needs comes
 from the repository and from persisted settings, and the same holds here. The
 operator's correction is captured in ignored intake and recorded as
-[WO-146-D001](../evidence/WO-146/decisions.md#wo-146-d001).
+[WO-146-D001](../evidence/WO-146/decisions.md#wo-146-d001--operator-correction-the-operator-enters-bare-copilot-nothing-dotln-needs-depends-on-a-launch-argument).
 
 ```text
 cd <worktree root>        # cwd must equal the Git root

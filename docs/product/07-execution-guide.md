@@ -1912,7 +1912,8 @@ references to bound the check. Write back by editing the sentence that is now
 wrong and citing the evidence; a dated paragraph appended under a product
 heading is a receipt and belongs in the order's evidence README, and a
 candidate belongs in the planning map (operator direction, 2026-09-25; WO-085
-binds the check and a byte ceiling per document). Record the affected surfaces
+binds `scripts/docs-check.mjs` in `npm run test:docs` to the byte ceilings
+in `docs/control/doc-ceilings.json`). Record the affected surfaces
 and evidence in the existing work-order outcome or breakout receipt; do not
 create a new ceremony or rewrite unrelated historical artifacts. A README “What runs today”
 write-back rewrites the existing release block rather than appending another

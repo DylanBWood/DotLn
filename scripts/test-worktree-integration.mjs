@@ -416,6 +416,17 @@ for (const reviewed of [false, true])
     );
     assert.equal(after.complete, true);
     assert.equal(after.phase, reviewed ? "final-review" : "repairing");
+    const decision = [
+      ...text(f.subject, "docs/evidence/WO-998/decisions.md").matchAll(
+        /```json\n([\s\S]*?)\n```/g,
+      ),
+    ]
+      .map((match) => JSON.parse(match[1]))
+      .find((row) => row.evidence?.includes(after.checkpointRef));
+    assert.equal(
+      decision?.dispatch,
+      `resume: ${reviewed ? "final review" : "fix"}; worktree integrate WO-998`,
+    );
     assert.equal(after.preservationCommit, after.checkpointSha);
     assert.equal(
       after.checkpointRef,

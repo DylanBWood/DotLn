@@ -1,4 +1,4 @@
-# WO-085 — Product documents stop accreting: a docs check bounds each product document's bytes, refuses a new dated receipt paragraph or candidate heading under `docs/product/` and a quoted operator message in a decision record, resolves every in-repo link and anchor, and the write-back rule is edit-in-place (version assigned at activation)
+# WO-085 — Product documents stop accreting: a docs check bounds each product document's bytes, refuses a new dated receipt paragraph or candidate heading under `docs/product/` and a quoted operator message in a decision record, resolves every in-repo link and anchor, and the write-back rule is edit-in-place (v0.52.2)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).

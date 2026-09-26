@@ -5,6 +5,8 @@
 export const DOCUMENT_GATE_STUBS = [
   "format.cjs",
   "check-publication.mjs",
+  "docs-check.mjs",
+  "test-docs-check.mjs",
   "work-orders.mjs",
   "lineage.mjs",
   "test-lineage.mjs",
