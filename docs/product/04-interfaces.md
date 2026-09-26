@@ -157,6 +157,116 @@ current tranche, active window, ceiling, and stop/reset/replenishment behavior.
 A work-order portfolio separately shows which orders are eligible, optional,
 selected, active, or blocked; selection never masquerades as authorization.
 
+### Console parity contract v1
+
+`console-commands-v1` is the resident's local command vocabulary. Its typed
+source is `packages/skeleton/src/console-commands.ts`; `GET
+/console-commands-v1` returns that exact list to a client. A `POST
+/console-commands-v1/invoke` request names a command ID and a string argument
+array. Each ID fixes a Node entrypoint and its leading arguments; the remaining
+arguments go to that terminal parser, which owns every usage refusal. The
+response carries the terminal's exit code and exact stdout and stderr bytes as
+base64. The text console's `commands` and `invoke` actions and the
+browser-capable client use this one route.
+
+| Command IDs | Terminal command, from the kit root |
+| --- | --- |
+| `resume.next`, `resume.fix`, `resume.verify`, `resume.final-review`, `resume.release-close`, `resume.status`, `resume.times`, `resume.activate` | `node scripts/resume.mjs <action>` |
+| `release.close` | `node scripts/release.mjs close`, the publish helper the release-close phrase runs |
+| `worktree.start`, `worktree.integrate`, `worktree.publish`, `worktree.finish`, `worktree.settle` | `node scripts/worktree.mjs <action>` |
+| `harness.emit`, `harness.check` | `node scripts/harness.mjs emit` or `check`, without the rebuild `npm run harness` adds, because a running resident already uses the built packages |
+| `skeleton.compiled-diff` | `node packages/skeleton/dist/src/cli.js --compiled-diff`; that parser also accepts `--audit` and `--beacons <directory>` with it, served as the terminal runs them |
+| `dotln.intent`, `dotln.presence-away`, `dotln.presence-back`, `dotln.status` | `node packages/skeleton/dist/src/dotln.js` with `intent`, `presence away`, `presence back` or `status` |
+| `console.status` | `node packages/console/dist/src/cli.js status` |
+| `resident.bind-portfolio` | `node scripts/resident-bind.mjs --portfolio`, selecting an already-declared portfolio |
+
+The contract has no effect column, so it adds no second authority table. The
+resident writes each invocation as the terminal command an operator would type,
+classifies that text with the terminal permission hook's classifier, and judges
+the effect with the hooks' decider against the resident's compiled program
+envelope. For a store bound by `resident-bind WO-NNN`, that envelope is the
+Contributor build's, the same one the emitted permission hook applies. A store
+bound with `--portfolio` or configured by hand judges console commands under
+its own compiled program envelope. As in a hooked terminal, bare `status` or
+`status --json`, `times`, `release-close` and `next` classify as `repo.read`;
+with other arguments those resume actions, the other resume actions, activation,
+the worktree actions and `release close` classify as `lifecycle.run`, and the
+harness, skeleton, `dotln`, console and bind entrypoints as `shell.run`. The
+hook reports a denial or an unclassifiable command and leaves the decision to
+host permissions; the console has no host-permission layer, so it refuses both.
+The away phase's actor envelope governs the resident's own actors, not the
+operator's commands, so `presence back` is served while the operator is away.
+
+The server listens only on `127.0.0.1` and requires a random bearer token. The
+token lives in a mode-0600 descriptor, `console/console-loopback-v1.json`,
+inside an owner-only `console/` directory of the resident store; the store
+itself may be an ordinary directory. Another local user can reach the port but
+cannot read the token. A request with a non-local `Origin` is refused. Local
+browser origins receive CORS headers for a browser shell whose local host
+supplies the token, and a caller that sends no `Origin` is admitted with the
+token. This is local-user access; it adds no account system. No token enters
+the public contract, status view, or committed fixture. The resident starts the
+console while holding the store's lifetime lock, so it replaces a descriptor
+that an exited resident left behind; a SIGKILL cannot remove its own.
+
+A console-originated refusal has the lifecycle CLIs' refusal shape: exit code 1,
+empty stdout and one `error: <reason>` line on stderr. A missing or wrong token,
+a foreign origin, an unknown route, an invalid request and a body over 1 MiB
+are transport refusals with HTTP status 403, 404, 400 or 413 and that body. A
+decoded request naming a command outside the contract is refused with
+`unknown console command`. A denied effect is refused with the hook's wording,
+`compiled authority does not permit <effect>`. Argument text the classifier
+cannot classify, such as prose naming `git push`, `npm publish`, `gh pr create`
+or `ssh`, is refused with `command classification: <reason>`, the hook's
+wording for its advisory. A refusal by the terminal command itself is its own
+bytes unchanged, including the skeleton CLI's uncaught usage error.
+
+Each decoded request records `ConsoleCommandInvoked` with actor `console`. The
+receipt holds the command name (verbatim only within `[A-Za-z0-9._-]{1,64}`,
+otherwise its digest), an argument hash, the classified effect and the
+authorization outcome. `ConsoleCommandObserved` then records the exit code and
+the SHA-256 and length of the stdout and stderr bytes. The bytes are
+content-addressed under `console/results/` with mode 0600, so the resident's
+own log stays small. Replay reproduces every result from these receipts without
+rerunning an effect, and names an invocation whose result was never recorded.
+A terminal command's own effect events are its ordinary events in their
+ordinary logs; the console receipts are additional. Parity is judged against
+the store as it stands when the child starts, so a command reading this store's
+own log sees its invocation receipt.
+
+Caller, route and request checks answer on arrival; admission and execution
+run one command at a time, and the resident's append lock is free while a
+terminal child runs. A decoded request's response starts at once and carries a
+space every 30 s while it waits behind an earlier command and until its JSON
+result, so no client idle timeout interrupts a queued or long command. A
+request whose caller leaves before its command starts is refused with `the
+caller left before the command started`, and one still waiting when the
+resident stops with `the resident is stopping`; both keep their invocation and
+result receipts. The child receives the resident's environment without
+host-session identity (`CLAUDE*`, `CODEX_THREAD_ID`, `COPILOT_AGENT_SESSION_ID`)
+or resident-episode variables, so a served command never claims the agent
+session that launched the resident. A caller that disconnects interrupts its
+command's process group, as Ctrl-C would, and the group is killed if it is
+still running two seconds later. Five seconds after the command's own process
+exits, a descendant still holding its output no longer holds the result. The
+first stop request (`SIGINT`, `SIGTERM` or `SIGHUP` for `dotln resident`) ends
+admission, interrupts in-flight commands and records their results. A console
+result is one complete exit code and byte pair, so any `--watch` argument to
+`console.status` is refused before its parser runs; streaming remains a
+terminal command.
+
+There is no terminal command for saved-build selection, an equip preview, or
+declaring a portfolio: portfolio declaration is reviewed configuration text,
+and `resident.bind-portfolio` selects one already declared. Runtime audit is
+reserved for WO-116; the fixture-only skeleton `--audit` is not a runtime audit
+projection. Other terminal commands fall outside the categories this contract
+names: the resume role results and off-ramps (`implementation-ready`,
+`verification-result`, `repair-complete`, `final-review-result`, `waive`,
+`withdraw`, `correct`, `override-record`), `briefing` and `usage`, `worktree
+constellation`, `resident-bind WO-NNN` and `--check`, `dotln resident`,
+`demo`, `verify-demo`, `feedback-audit` and `handoff`, and `console board`.
+Adding a command ID requires a named order and a terminal implementation first.
+
 ### Candidate — workstream application
 
 The [end-user workflow candidate](12-workstream-application.md) makes this
@@ -427,8 +537,9 @@ Console v1 is the planned Angular shell in the operator's example
 consumer, built as the cross-repository pilot's first target change (WO-034)
 rendering that view model's actor panels; the framework decision above is
 taken with that evidence, not before it. Command invocation from a console
-waits for a parity contract with the terminal, so that no host grows a second
-workflow state machine. The plain-workspace default and the Nx caution above
+goes through §Console parity contract v1, and drag-equip authoring stays in the
+fork's shell over that contract, so no host grows a second workflow state
+machine. The plain-workspace default and the Nx caution above
 govern this repository; a consumer repository's stack is its owner's exemplar
 choice, judged here only for compatibility with the shared contracts.
 

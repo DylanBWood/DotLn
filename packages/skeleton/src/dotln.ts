@@ -120,6 +120,9 @@ try {
     const stop = () => abort.abort();
     process.once("SIGINT", stop);
     process.once("SIGTERM", stop);
+    // A closed terminal stops the resident in order, so it can interrupt the
+    // console commands it started in their own process groups.
+    process.once("SIGHUP", stop);
     try {
       const { findLaunchpad, docPath } = await import(
         new URL("../../../../scripts/lib/config.mjs", import.meta.url).href
@@ -127,6 +130,7 @@ try {
       await new ResidentHost({
         directory,
         policyId: options.get("--policy")!,
+        commandRoot: findLaunchpad(),
         workOrderIndexPath: docPath(findLaunchpad(), "workOrders", "README.md"),
       }).run({
         once: switches.has("--once"),
@@ -278,7 +282,7 @@ try {
     error instanceof WorkerFailure
       ? `worker refused: ${error.code}${error.code === "invalid-result" ? ` (${invalidResultDetail(error.detail)})` : ""}; pending work is retained`
       : error instanceof Error &&
-          /^(derived order:|usage:|live demo requires|demo requires|expected |status accepts|unknown or duplicate|missing option|duplicate option)/u.test(
+          /^(derived order:|usage:|live demo requires|demo requires|expected |status accepts|unknown or duplicate|missing option|duplicate option|console loopback)/u.test(
             error.message,
           )
         ? error.message

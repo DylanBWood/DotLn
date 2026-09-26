@@ -94,6 +94,7 @@ or `deprecated`. No row is derived from or links to gitignored intake.
 | [Interfaces — the isomorphic views](../product/04-interfaces.md#interfaces--the-isomorphic-views)                                                       | everyday-ai-user, software-engineer | planned     |
 | [Editable-view v1 normalization and semantic hash](../product/04-interfaces.md#editable-view-v1-normalization-and-semantic-hash)                        | software-engineer                   | implemented |
 | [Terminal first, console equal](../product/04-interfaces.md#terminal-first-console-equal)                                                               | everyday-ai-user, software-engineer | planned     |
+| [Console parity contract v1](../product/04-interfaces.md#console-parity-contract-v1)                                                                    | everyday-ai-user, software-engineer | implemented |
 | [Candidate — workstream application](../product/04-interfaces.md#candidate--workstream-application)                                                     | everyday-ai-user, software-engineer | vision      |
 | [Candidate — private exclusion-list management](../product/04-interfaces.md#candidate--private-exclusion-list-management)                               | everyday-ai-user, software-engineer | vision      |
 | [Candidate — exact operator command vocabulary](../product/04-interfaces.md#candidate--exact-operator-command-vocabulary)                               | everyday-ai-user, software-engineer | vision      |

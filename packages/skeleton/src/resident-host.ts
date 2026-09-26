@@ -29,6 +29,7 @@ import {
   type ResidentState,
 } from "./resident-state.js";
 import { ResidentStore } from "./resident-store.js";
+import { ConsoleLoopback } from "./console-loopback.js";
 
 /** A CLI observation the actor contract refuses is recorded as the failed
  * episode it is — `invalid-result`, with its launch and the capsule the episode
@@ -85,6 +86,7 @@ function observationDeadline(state: ResidentState) {
 export interface ResidentHostOptions {
   directory: string;
   policyId: string;
+  commandRoot?: string;
   workOrderIndexPath?: string;
   configuration?: ResidentConfiguration;
   now?: () => number;
@@ -96,6 +98,7 @@ export interface ResidentHostOptions {
 }
 export class ResidentHost {
   readonly store: ResidentStore;
+  private console: ConsoleLoopback | undefined;
   private readonly now: () => number;
   private readonly catalog: Readonly<Record<ActorKind, ActorAdapter>>;
   private firstTick = true;
@@ -347,6 +350,19 @@ export class ResidentHost {
       throw new Error("resident tick must be 1..3600000 ms");
     await this.start();
     try {
+      this.console = new ConsoleLoopback(
+        this.store,
+        this.options.commandRoot ?? process.cwd(),
+        this.now,
+      );
+      await this.console.start();
+      // A stop request ends console admission at once; a running tick finishes.
+      const loopback = this.console;
+      options.signal?.addEventListener(
+        "abort",
+        () => void loopback.close().catch(() => undefined),
+        { once: true },
+      );
       for (let cycle = 0; !options.signal?.aborted; cycle++) {
         await this.tick();
         if (
@@ -361,7 +377,12 @@ export class ResidentHost {
         );
       }
     } finally {
-      this.close();
+      try {
+        await this.console?.close();
+      } finally {
+        this.console = undefined;
+        this.close();
+      }
     }
   }
 }

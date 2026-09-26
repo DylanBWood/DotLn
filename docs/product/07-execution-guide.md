@@ -147,6 +147,8 @@ The operator's entire instruction to you may be a single phrase of the form
 do not ask which work order: the durable control state answers both, and the
 operator is deliberately not repeating themselves.
 
+The resident's `console-commands-v1` loopback surface serves these same terminal actions, including the release-close publish helper; the terminal permission hook's classifier and decider judge each one under the resident's compiled envelope and the console refuses what they deny or cannot classify, its terminal parser and lifecycle guards still apply, and console-actor receipts record it (product 04 §Console parity contract v1).
+
 Load the generated role skill named by the cold-start table. Its procedure is
 the session adapter to the detailed contract below. Claude's generated prompt
 hook resolves the exact phrase and reiterates the selected order path; Codex
@@ -2497,8 +2499,19 @@ claim evidence or releases it does not have.
   The scheduler retains load-derived deadlines, peer observations, a four-lane
   cap and bounded live progress. Harness fixtures and process-debt fixtures use
   exclusive scheduling, restoring the faster measured WO-128 D010 choice
-  (462 seconds exclusive versus 666 shared). Future scheduling changes require
-  a same-source comparison. The acceptance target is three consecutive fresh
+  (462 seconds exclusive versus 666 shared). Skeleton remains shared: WO-115's
+  [same-source comparison](../evidence/WO-115/scheduling-comparison.json) passed
+  all 28 suites in 312.441 seconds shared and 430.952 seconds exclusive, with
+  only its isolation declaration changed. Isolation shortened skeleton itself
+  from 309.511 to 286.508 seconds but added 118.511 seconds to the complete
+  gate. Shared skeleton has priority 80, reserves one of four lanes and uses
+  deadline load factor 8; exclusive skeleton would take priority 200 before
+  shared suites, reserve all four lanes and use factor 2. The acquisition
+  matrix's fixed 240-second deadline is unaffected. This single ordered pair
+  supports retaining shared scheduling; it does not establish the historical
+  timeout cause or reliability under all host loads. Future scheduling changes
+  require a same-source comparison. The acceptance target is three consecutive
+  fresh
   product gates below 360 seconds on the operator's host; their rows belong in
   WO-132 evidence. No product test is deleted; product-test removal still goes
   through the mutation corpus. The immutable WO-129–WO-131 records describe

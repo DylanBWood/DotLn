@@ -93,7 +93,7 @@ intent → task-scoped build → bounded WorkOrder → disposable executor
 -->
 <!-- DOTLN-RELEASE-BEGIN -->
 
-This source prepares DotLn `v0.51.1`.
+This source prepares DotLn `v0.52.0`.
 
 **The core.** A local-first compiler turns a loadout graph into a bounded
 program and authority envelope that the kernel checks on every decision.
@@ -152,6 +152,15 @@ Derived work shares the same `WO-NNN` identity and lifecycle as authored work.
 orders can materialize through the documented API, with replayable allocation
 and restart fixtures. [The execution guide](docs/product/07-execution-guide.md#derived-work-and-intent)
 describes the shared launchpad boundary.
+
+The resident's [console command contract](packages/console/README.md#resident-command-client)
+serves existing terminal actions over a local loopback connection whose token
+sits in an owner-only descriptor. The text console invokes them through that
+connection, and a browser shell can use the same client through its local host.
+The terminal permission hook's classifier and decider judge each action under
+the resident's compiled envelope, and each terminal parser still decides whether
+it runs. Invocation and result receipts name the console actor and replay
+without repeating effects.
 
 **How this repository builds itself.** WO-160 adds explicit amendment
 withdrawal, evidence-local JSONL declarations, recoverable integration and

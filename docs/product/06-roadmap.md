@@ -20,6 +20,15 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-115 activation completion (2026-09-25):** assigned application `v0.52.0`,
+the next minor above the observed local `v0.51.0` tag. The resident adds the
+`console-commands-v1` loopback surface and replayable console-actor receipts;
+the console adds a text-host command client and browser-capable transport API.
+Skeleton advances from `0.43.1` to `0.44.0` and console from `0.2.0` to
+`0.3.0` for these additive interfaces, with the console's skeleton pin and
+lockfile following. Compiler `0.19.1` and kernel `0.6.0` are unchanged.
+Independent verification, final review and publication remain separate.
+
 **WO-070 activation completion (2026-09-25):** assigned application `v0.51.1`,
 the next patch above the observed local `v0.51.0` tag, under the declared patch
 classification. The seven build-free Beacon leaves move to the new private

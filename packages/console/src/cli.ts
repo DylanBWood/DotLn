@@ -8,14 +8,52 @@ import { renderHtml, renderTerminal } from "./render.js";
 import type { BoardSources } from "./types.js";
 import { object } from "./values.js";
 import { statusCli } from "./runtime-status.js";
+import { readConsoleConnection } from "./console-client-node.js";
+import { invokeConsoleCommand, readConsoleContract } from "./console-client.js";
 
 const usage =
-  "usage: console board [--json | --html <new.html>] [--store <directory>] [--sources <recorded-sources.json>]";
+  "usage: console board [--json | --html <new.html>] [--store <directory>] [--sources <recorded-sources.json>] | console status --store <directory> [--json] [--watch] | console commands --store <directory> | console invoke --store <directory> <command> [args...]";
 try {
   const args = process.argv.slice(2);
   const action = args.shift();
   if (action === "status") {
     statusCli(args);
+  } else if (action === "commands" || action === "invoke") {
+    if (args.shift() !== "--store") throw new Error(usage);
+    const directory = args.shift();
+    if (!directory || directory.startsWith("--")) throw new Error(usage);
+    const command = action === "invoke" ? args.shift() : undefined;
+    if (action === "invoke" ? !command : args.length) throw new Error(usage);
+    try {
+      const connection = readConsoleConnection(directory);
+      if (command === undefined)
+        process.stdout.write(
+          JSON.stringify(await readConsoleContract(connection), null, 2) + "\n",
+        );
+      else {
+        const result = await invokeConsoleCommand(connection, {
+          version: 1,
+          command,
+          args,
+        });
+        process.stdout.write(Buffer.from(result.stdoutBase64, "base64"));
+        process.stderr.write(Buffer.from(result.stderrBase64, "base64"));
+        process.exitCode = result.exitCode;
+      }
+    } catch (error) {
+      // The client's own messages name no path or token; a failed fetch may.
+      process.stderr.write(
+        `console refused: ${
+          error instanceof Error &&
+          /^(?:no running resident console|console |invalid (?:local )?console )/u.test(
+            error.message,
+          )
+            ? error.message
+            : "the resident console is unreachable"
+        }\n`,
+      );
+      process.exitCode = 1;
+    }
   } else {
     if (action !== "board") throw new Error(usage);
     let mode: "terminal" | "json" | "html" = "terminal";
