@@ -80,7 +80,7 @@
 <article class="card" id="definition-67907a026f6b5653"><h4>Entropy Reducer</h4><dl><div class="fact known"><dt>Actor kind</dt><dd>saved definition<small>A declared identity and role; not a claim that an episode is running</small><span class="citations"><a href="#evidence-2">[1]</a></span></dd></div>
 <div class="fact known"><dt>Identity</dt><dd>entropy-reducer<span class="citations"><a href="#evidence-2">[1]</a></span></dd></div>
 <div class="fact known"><dt>Role</dt><dd>Planning reviewer<span class="citations"><a href="#evidence-2">[1]</a></span></dd></div>
-<div class="fact known"><dt>Loadout semantic hash</dt><dd>fnv1a64:1a09929866810f71<span class="citations"><a href="#evidence-2">[1]</a></span></dd></div>
+<div class="fact known"><dt>Loadout semantic hash</dt><dd>fnv1a64:708557877ed6f589<span class="citations"><a href="#evidence-2">[1]</a></span></dd></div>
 <div class="fact unknown"><dt>Episode phase</dt><dd>unknown<small>No episode is implied by a saved build</small><span class="citations"><a href="#evidence-2">[1]</a></span></dd></div></dl><nav class="card-links" aria-label="Inspect Entropy Reducer"><a href="#build-2893c8f905fe3d13">Inspect saved build</a></nav></article>
 <article class="card" id="definition-3521c64b13265db1"><h4>Entropy Reducer</h4><dl><div class="fact known"><dt>Actor kind</dt><dd>saved definition<small>A declared identity and role; not a claim that an episode is running</small><span class="citations"><a href="#evidence-3">[1]</a></span></dd></div>
 <div class="fact known"><dt>Identity</dt><dd>entropy-reducer<span class="citations"><a href="#evidence-3">[1]</a></span></dd></div>
@@ -192,13 +192,13 @@ SEMANTIC HASH
 <article class="card" id="build-2893c8f905fe3d13"><h4>Entropy Reducer</h4><dl><div class="fact known"><dt>Loadout</dt><dd>entropy-reducer.review.v1<span class="citations"><a href="#evidence-2">[1]</a></span></dd></div>
 <div class="fact known"><dt>Identity</dt><dd>entropy-reducer<span class="citations"><a href="#evidence-2">[1]</a></span></dd></div>
 <div class="fact known"><dt>Role</dt><dd>Planning reviewer<span class="citations"><a href="#evidence-2">[1]</a></span></dd></div>
-<div class="fact known"><dt>Loadout semantic hash</dt><dd>fnv1a64:1a09929866810f71<span class="citations"><a href="#evidence-2">[1]</a></span></dd></div>
-<div class="fact known"><dt>code-dsl hash</dt><dd>fnv1a64:1a09929866810f71<span class="citations"><a href="#evidence-2">[1]</a></span></dd></div>
-<div class="fact known"><dt>function-table hash</dt><dd>fnv1a64:1a09929866810f71<span class="citations"><a href="#evidence-2">[1]</a></span></dd></div>
-<div class="fact known"><dt>statechart-json hash</dt><dd>fnv1a64:1a09929866810f71<span class="citations"><a href="#evidence-2">[1]</a></span></dd></div>
+<div class="fact known"><dt>Loadout semantic hash</dt><dd>fnv1a64:708557877ed6f589<span class="citations"><a href="#evidence-2">[1]</a></span></dd></div>
+<div class="fact known"><dt>code-dsl hash</dt><dd>fnv1a64:708557877ed6f589<span class="citations"><a href="#evidence-2">[1]</a></span></dd></div>
+<div class="fact known"><dt>function-table hash</dt><dd>fnv1a64:708557877ed6f589<span class="citations"><a href="#evidence-2">[1]</a></span></dd></div>
+<div class="fact known"><dt>statechart-json hash</dt><dd>fnv1a64:708557877ed6f589<span class="citations"><a href="#evidence-2">[1]</a></span></dd></div>
 <div class="fact known"><dt>Three views</dt><dd>equivalent<span class="citations"><a href="#evidence-2">[1]</a></span></dd></div>
 <div class="fact known"><dt>Inspection environment</dt><dd>skeleton.fixture<small>Saved build preview; its expiry is a fixed inspection input, not a live grant</small><span class="citations"><a href="#evidence-2">[1]</a></span></dd></div>
-<div class="fact known"><dt>Equipped items</dt><dd>Seisō (Shine) (seiso-shine); Seiketsu (Standardize) (entropy-reducer.seiketsu-standardize); Verify-First (entropy-reducer.verify-first); Fan-Out Lens (entropy-reducer.fan-out-lens); Mutation Drill (entropy-reducer.mutation-drill); Shape-First (entropy-reducer.shape-first); Constraint-First Ordering (entropy-reducer.constraint-first-ordering); Altitude Tag (entropy-reducer.altitude-tag); Sparse Receipt (entropy-reducer.sparse-receipt)<span class="citations"><a href="#evidence-2">[1]</a></span></dd></div>
+<div class="fact known"><dt>Equipped items</dt><dd>Seisō (Shine) (seiso-shine); Seiketsu (Standardize) (entropy-reducer.seiketsu-standardize); Verify-First (entropy-reducer.verify-first); Lens Checklist (entropy-reducer.lens-checklist); Mutation Drill (entropy-reducer.mutation-drill); Shape-First (entropy-reducer.shape-first); Constraint-First Ordering (entropy-reducer.constraint-first-ordering); Altitude Tag (entropy-reducer.altitude-tag); Sparse Receipt (entropy-reducer.sparse-receipt)<span class="citations"><a href="#evidence-2">[1]</a></span></dd></div>
 <div class="fact known"><dt>Mechanics and declared costs</dt><dd><pre>Seisō / Shine / 清掃
 The Entropy-Reducing Shine — COMPILED DIFF
 
@@ -206,7 +206,6 @@ GRANTS
 + repo.read*
 + probe.run:scratch*
 + intake.capture
-+ delegate.readonly
 + report.emit
 
 RESTRICTIONS
@@ -220,12 +219,12 @@ AUTHORED NOTES (non-enforcing)
 Authored grants
 + Read repository evidence
 + Run bounded scratch probes
-+ Delegate up to four read-only lenses
++ Work up to four read-only lens checklist items serially
 + Emit a validated report
 Authored restrictions
 + Never mutate the tracked repository or control plane
 + Never change remotes, settings, or operator decisions
-+ At most four no-fix, read-only lens delegates
++ At most four no-fix, read-only lens checklist items
 + The result-envelope summary stays under 200 words
 
 OBLIGATION
@@ -251,7 +250,7 @@ INTERRUPT
 COST
 + entropy-reducer.altitude-tag — work-order; prompt=24 tokens; runtime=0 effects; episodes=0
 + entropy-reducer.constraint-first-ordering — prompt-fragment; prompt=27 tokens; runtime=0 effects; episodes=0
-+ entropy-reducer.fan-out-lens — work-order; prompt=38 tokens; runtime=4 delegates-maximum; episodes=0
++ entropy-reducer.lens-checklist — work-order; prompt=38 tokens; runtime=4 lens-checklist-items-maximum; episodes=0
 + entropy-reducer.mutation-drill — verifier-episode; prompt=28 tokens; runtime=32 scratch-probes-maximum; episodes=1
 + entropy-reducer.seiketsu-standardize — work-order; prompt=24 tokens; runtime=0 effects; episodes=0
 + entropy-reducer.shape-first — prompt-fragment; prompt=34 tokens; runtime=0 effects; episodes=0
@@ -260,7 +259,7 @@ COST
 
 SEMANTIC HASH
   before=none
-  after=fnv1a64:1a09929866810f71</pre><small>Compiler renderCompiledDiff(undefined, program); original terms remain primary</small><span class="citations"><a href="#evidence-2">[1]</a></span></dd></div></dl></article>
+  after=fnv1a64:708557877ed6f589</pre><small>Compiler renderCompiledDiff(undefined, program); original terms remain primary</small><span class="citations"><a href="#evidence-2">[1]</a></span></dd></div></dl></article>
 <article class="card" id="build-cd9657984091cc99"><h4>Entropy Reducer</h4><dl><div class="fact known"><dt>Loadout</dt><dd>plan-refuter.v1<span class="citations"><a href="#evidence-3">[1]</a></span></dd></div>
 <div class="fact known"><dt>Identity</dt><dd>entropy-reducer<span class="citations"><a href="#evidence-3">[1]</a></span></dd></div>
 <div class="fact known"><dt>Role</dt><dd>Plan refuter<span class="citations"><a href="#evidence-3">[1]</a></span></dd></div>

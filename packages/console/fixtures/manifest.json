@@ -6,7 +6,7 @@
       "path": "packages/console/fixtures/inputs/loadouts.json",
       "ref": "skeleton:loadout-exports",
       "format": "json",
-      "sha256": "2106dbb22ab28634e81473232bf17f2eeb6af9e3e36dfdfcd5ec5811e9b7649c"
+      "sha256": "99fe3c5537fd4020fb8e5ed8d723c4f7d2ee7dfaa89cd3e9c6ce9f6fef43047f"
     },
     "feedbackUnits": {
       "path": "packages/console/fixtures/inputs/feedbackUnits.json",

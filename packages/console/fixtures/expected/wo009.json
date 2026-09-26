@@ -595,7 +595,7 @@
                   "key": "semanticHash",
                   "label": "Loadout semantic hash",
                   "status": "known",
-                  "value": "fnv1a64:1a09929866810f71",
+                  "value": "fnv1a64:708557877ed6f589",
                   "explanation": null,
                   "evidence": [
                     "evidence-2"
@@ -1764,7 +1764,7 @@
                   "key": "semanticHash",
                   "label": "Loadout semantic hash",
                   "status": "known",
-                  "value": "fnv1a64:1a09929866810f71",
+                  "value": "fnv1a64:708557877ed6f589",
                   "explanation": null,
                   "evidence": [
                     "evidence-2"
@@ -1774,7 +1774,7 @@
                   "key": "hash.code-dsl",
                   "label": "code-dsl hash",
                   "status": "known",
-                  "value": "fnv1a64:1a09929866810f71",
+                  "value": "fnv1a64:708557877ed6f589",
                   "explanation": null,
                   "evidence": [
                     "evidence-2"
@@ -1784,7 +1784,7 @@
                   "key": "hash.function-table",
                   "label": "function-table hash",
                   "status": "known",
-                  "value": "fnv1a64:1a09929866810f71",
+                  "value": "fnv1a64:708557877ed6f589",
                   "explanation": null,
                   "evidence": [
                     "evidence-2"
@@ -1794,7 +1794,7 @@
                   "key": "hash.statechart-json",
                   "label": "statechart-json hash",
                   "status": "known",
-                  "value": "fnv1a64:1a09929866810f71",
+                  "value": "fnv1a64:708557877ed6f589",
                   "explanation": null,
                   "evidence": [
                     "evidence-2"
@@ -1828,7 +1828,7 @@
                     "Seisō (Shine) (seiso-shine)",
                     "Seiketsu (Standardize) (entropy-reducer.seiketsu-standardize)",
                     "Verify-First (entropy-reducer.verify-first)",
-                    "Fan-Out Lens (entropy-reducer.fan-out-lens)",
+                    "Lens Checklist (entropy-reducer.lens-checklist)",
                     "Mutation Drill (entropy-reducer.mutation-drill)",
                     "Shape-First (entropy-reducer.shape-first)",
                     "Constraint-First Ordering (entropy-reducer.constraint-first-ordering)",
@@ -1844,7 +1844,7 @@
                   "key": "tooltip",
                   "label": "Mechanics and declared costs",
                   "status": "known",
-                  "value": "Seisō / Shine / 清掃\nThe Entropy-Reducing Shine — COMPILED DIFF\n\nGRANTS\n+ repo.read*\n+ probe.run:scratch*\n+ intake.capture\n+ delegate.readonly\n+ report.emit\n\nRESTRICTIONS\n+ repo.write*\n+ git.mutate*\n+ remote.*\n+ settings.*\n+ decision.edit\n\nAUTHORED NOTES (non-enforcing)\nAuthored grants\n+ Read repository evidence\n+ Run bounded scratch probes\n+ Delegate up to four read-only lenses\n+ Emit a validated report\nAuthored restrictions\n+ Never mutate the tracked repository or control plane\n+ Never change remotes, settings, or operator decisions\n+ At most four no-fix, read-only lens delegates\n+ The result-envelope summary stays under 200 words\n\nOBLIGATION\n+ Reproduce every finding\n+ Apply the clean-room floor\n+ Await operator disposition\n+ Tag the likely surface and intervention altitude\n+ Refute independently before promoting findings\n+ Name the cheapest executable rung for every recurring finding\n+ Preserve the intended relationship first; examine literal details only when load-bearing\n+ Every finding carries reproduction and evidence refs\n\nPASSIVE\n+ Measure before assuming\n+ Constraint-first proposal ordering\n\nPULSE\n+ One review on explicit dispatch\n\nINTERRUPT\n+ Stop on OperatorStopRequested or episode expiry\n\nCOST\n+ entropy-reducer.altitude-tag — work-order; prompt=24 tokens; runtime=0 effects; episodes=0\n+ entropy-reducer.constraint-first-ordering — prompt-fragment; prompt=27 tokens; runtime=0 effects; episodes=0\n+ entropy-reducer.fan-out-lens — work-order; prompt=38 tokens; runtime=4 delegates-maximum; episodes=0\n+ entropy-reducer.mutation-drill — verifier-episode; prompt=28 tokens; runtime=32 scratch-probes-maximum; episodes=1\n+ entropy-reducer.seiketsu-standardize — work-order; prompt=24 tokens; runtime=0 effects; episodes=0\n+ entropy-reducer.shape-first — prompt-fragment; prompt=34 tokens; runtime=0 effects; episodes=0\n+ entropy-reducer.sparse-receipt — evidence-schema; prompt=31 tokens; runtime=1 validation-per-report; episodes=0\n+ entropy-reducer.verify-first — evidence-schema; prompt=42 tokens; runtime=1 validation-per-output; episodes=0\n\nSEMANTIC HASH\n  before=none\n  after=fnv1a64:1a09929866810f71",
+                  "value": "Seisō / Shine / 清掃\nThe Entropy-Reducing Shine — COMPILED DIFF\n\nGRANTS\n+ repo.read*\n+ probe.run:scratch*\n+ intake.capture\n+ report.emit\n\nRESTRICTIONS\n+ repo.write*\n+ git.mutate*\n+ remote.*\n+ settings.*\n+ decision.edit\n\nAUTHORED NOTES (non-enforcing)\nAuthored grants\n+ Read repository evidence\n+ Run bounded scratch probes\n+ Work up to four read-only lens checklist items serially\n+ Emit a validated report\nAuthored restrictions\n+ Never mutate the tracked repository or control plane\n+ Never change remotes, settings, or operator decisions\n+ At most four no-fix, read-only lens checklist items\n+ The result-envelope summary stays under 200 words\n\nOBLIGATION\n+ Reproduce every finding\n+ Apply the clean-room floor\n+ Await operator disposition\n+ Tag the likely surface and intervention altitude\n+ Refute independently before promoting findings\n+ Name the cheapest executable rung for every recurring finding\n+ Preserve the intended relationship first; examine literal details only when load-bearing\n+ Every finding carries reproduction and evidence refs\n\nPASSIVE\n+ Measure before assuming\n+ Constraint-first proposal ordering\n\nPULSE\n+ One review on explicit dispatch\n\nINTERRUPT\n+ Stop on OperatorStopRequested or episode expiry\n\nCOST\n+ entropy-reducer.altitude-tag — work-order; prompt=24 tokens; runtime=0 effects; episodes=0\n+ entropy-reducer.constraint-first-ordering — prompt-fragment; prompt=27 tokens; runtime=0 effects; episodes=0\n+ entropy-reducer.lens-checklist — work-order; prompt=38 tokens; runtime=4 lens-checklist-items-maximum; episodes=0\n+ entropy-reducer.mutation-drill — verifier-episode; prompt=28 tokens; runtime=32 scratch-probes-maximum; episodes=1\n+ entropy-reducer.seiketsu-standardize — work-order; prompt=24 tokens; runtime=0 effects; episodes=0\n+ entropy-reducer.shape-first — prompt-fragment; prompt=34 tokens; runtime=0 effects; episodes=0\n+ entropy-reducer.sparse-receipt — evidence-schema; prompt=31 tokens; runtime=1 validation-per-report; episodes=0\n+ entropy-reducer.verify-first — evidence-schema; prompt=42 tokens; runtime=1 validation-per-output; episodes=0\n\nSEMANTIC HASH\n  before=none\n  after=fnv1a64:708557877ed6f589",
                   "explanation": "Compiler renderCompiledDiff(undefined, program); original terms remain primary",
                   "evidence": [
                     "evidence-2"
