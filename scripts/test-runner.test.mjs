@@ -473,6 +473,7 @@ test("product suites describe protection, machinery is separate and only release
   }
   const skeleton = suites.find((row) => row.name === "skeleton");
   assert.equal(skeleton.product, true);
+  assert.equal(Boolean(skeleton.exclusive), false);
   for (const path of [
     "scripts/reactor-identity.mjs",
     "scripts/fixtures/historical-compiler-loader.mjs",
@@ -488,7 +489,7 @@ test("product suites describe protection, machinery is separate and only release
   for (const name of ["harness-fixtures", "process-debt"])
     assert.equal(suites.find((row) => row.name === name).exclusive, true);
 });
-test("exclusive machinery runs alone and product suites overlap within lane capacity", async () => {
+test("exclusive suites run alone and shared suites use remaining lane capacity", async () => {
   const selected = suites.filter((row) =>
     [
       "build",
@@ -513,6 +514,7 @@ test("exclusive machinery runs alone and product suites overlap within lane capa
           4,
       );
       if (["harness-fixtures", "process-debt"].includes(row.name)) {
+        assert.equal(active.size, 0);
         assert.equal(row.gateContext.reservedSlots, 4);
         assert.equal(row.gateContext.concurrency, 1);
         assert.ok(
@@ -520,6 +522,12 @@ test("exclusive machinery runs alone and product suites overlap within lane capa
             active.has(name),
           ),
         );
+      }
+      if (row.name === "skeleton") {
+        assert.equal(row.priority, 80);
+        assert.equal(row.gateContext.reservedSlots, 1);
+        assert.equal(row.gateContext.concurrency, 4);
+        assert.equal(row.gateContext.loadFactor, 8);
       }
       active.set(row.name, row.gateContext.reservedSlots);
       if (active.has("harness-fixtures") && active.has("process-debt"))
