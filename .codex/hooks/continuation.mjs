@@ -262,7 +262,7 @@ const output = await (async function codexContinuation(input, operatorControl) {
         return entered ? message(requested ?? "unavailable") : null;
     try {
         const fs = await import("node:fs");
-        const { join } = await import("node:path");
+        const { dirname, join } = await import("node:path");
         const { tmpdir } = await import("node:os");
         const { createHash, randomUUID } = await import("node:crypto");
         const directory = join(tmpdir(), `dotln-operator-control-${process.getuid?.() ?? "user"}`);
@@ -305,13 +305,34 @@ const output = await (async function codexContinuation(input, operatorControl) {
         let exited;
         if (requested) {
             let prior;
+            let priorState;
             try {
-                prior = overrideOf(read());
+                priorState = read();
+                prior = overrideOf(priorState);
             }
             catch {
                 // An unreadable prior state never withholds a mode change.
             }
             const now = new Date().toISOString();
+            let worktree = prior && typeof priorState?.worktree === "string"
+                ? priorState.worktree
+                : undefined;
+            if (!worktree && typeof input.cwd === "string") {
+                try {
+                    let candidate = fs.realpathSync(input.cwd);
+                    while (!fs.existsSync(join(candidate, ".git"))) {
+                        const parent = dirname(candidate);
+                        if (parent === candidate)
+                            break;
+                        candidate = parent;
+                    }
+                    if (fs.existsSync(join(candidate, ".git")))
+                        worktree = candidate;
+                }
+                catch {
+                    // Recovery stays available even when cwd cannot be resolved.
+                }
+            }
             // An override stays open across an analysis pause until an explicit off.
             const override = requested === "override"
                 ? {
@@ -325,6 +346,7 @@ const output = await (async function codexContinuation(input, operatorControl) {
                 version: 1,
                 mode: requested,
                 observedAt: now,
+                ...(worktree ? { worktree } : {}),
                 ...(override ? { override } : {}),
             });
             if (requested === "normal" && prior)
