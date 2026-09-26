@@ -1,4 +1,4 @@
-# WO-166 — Session boundaries: a Codex lifecycle dispatch reserves the writer its completion releases, every Codex completion releases, a writer refusal names the holder's age, an open override is surfaced at the next session start, and a live gate is waited on with a command that exits (version assigned at activation)
+# WO-166 — Session boundaries: a Codex lifecycle dispatch reserves the writer its completion releases, every Codex completion releases, a writer refusal names the holder's age, an open override is surfaced at the next session start, and a live gate is waited on with a command that exits (v0.52.3)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
