@@ -33,7 +33,7 @@
   },
   "role": {
     "roleId": "planning-reviewer",
-    "version": 1,
+    "version": 2,
     "name": "Planning reviewer",
     "obligations": [
       "perform a whole-repository census",
@@ -44,7 +44,6 @@
       "repo.read*",
       "probe.run:scratch*",
       "intake.capture",
-      "delegate.readonly",
       "report.emit"
     ],
     "objectives": [
@@ -70,7 +69,7 @@
       "supportFacetIds": [
         "entropy-reducer.seiketsu-standardize",
         "entropy-reducer.verify-first",
-        "entropy-reducer.fan-out-lens",
+        "entropy-reducer.lens-checklist",
         "entropy-reducer.mutation-drill",
         "entropy-reducer.shape-first",
         "entropy-reducer.constraint-first-ordering",
@@ -82,14 +81,13 @@
   "activeMechanics": [
     {
       "activeMechanicId": "seiso-shine",
-      "version": 2,
+      "version": 3,
       "name": "Seisō (Shine)",
       "tags": [
         "observe",
         "research",
         "plan",
         "verify",
-        "delegate",
         "narrate"
       ],
       "requiredCapabilities": [],
@@ -109,7 +107,7 @@
         "knownFacts": [
           "The repository product docs are durable shared memory",
           "The reviewer has no authority to implement or promote its own suggestions",
-          "The kernel does not yet evaluate Program.All, so this review is dispatched manually",
+          "Review route claude-cli-print: lenses worked serially by the reviewer; the host dispatches this manual plan",
           "The compiled reviewer is claude-opus-5-5 at xhigh effort; a substitution is a different attested actor"
         ],
         "decisions": [
@@ -134,7 +132,6 @@
           "repo.read*",
           "probe.run:scratch*",
           "intake.capture",
-          "delegate.readonly",
           "report.emit"
         ],
         "prohibitedOperations": [
@@ -599,7 +596,6 @@
           "repo.read*",
           "probe.run:scratch*",
           "intake.capture",
-          "delegate.readonly",
           "report.emit"
         ],
         "deniedEffects": [
@@ -610,7 +606,6 @@
           "decision.edit"
         ],
         "resourceLimits": {
-          "delegates": 4,
           "probes": 32
         },
         "requiredEvidence": [],
@@ -628,7 +623,7 @@
         "grants": [
           "Read repository evidence",
           "Run bounded scratch probes",
-          "Delegate up to four read-only lenses",
+          "Work up to four read-only lens checklist items serially",
           "Emit a validated report"
         ],
         "restrictions": [
@@ -959,27 +954,25 @@
       "version": 1,
       "requiredCapabilities": [],
       "semanticsModified": [],
-      "authorityChanges": [
-        "consume only delegate.readonly"
-      ],
+      "authorityChanges": [],
       "evidenceRequirements": [],
       "resourceMultiplier": 1,
       "conflictsWith": [],
       "preservesDeterminism": true,
       "commutativity": "commutative",
       "claims": [],
-      "supportFacetId": "entropy-reducer.fan-out-lens",
-      "name": "Fan-Out Lens",
+      "supportFacetId": "entropy-reducer.lens-checklist",
+      "name": "Lens Checklist",
       "supportedTags": [
-        "delegate"
+        "observe"
       ],
       "semanticsAdded": [
-        "delegate at most four read-only lenses with fixed briefs and word budgets"
+        "work at most four read-only lenses serially with fixed briefs and word budgets"
       ],
       "emissions": [
         {
           "kind": "evidence-schema",
-          "emissionId": "fan-out.lens-brief-schema",
+          "emissionId": "lens-checklist.lens-brief-schema",
           "schemaId": "dotln.entropy-reducer.lens-brief.v1",
           "schema": {
             "$id": "dotln.entropy-reducer.lens-brief.v1",
@@ -1035,17 +1028,17 @@
         },
         {
           "kind": "work-order",
-          "emissionId": "fan-out.constraint",
+          "emissionId": "lens-checklist.constraint",
           "field": "constraints",
           "values": [
-            "Delegate at most four read-only lenses; every brief declares files, questions, output shape, word budget, and no-fix"
+            "Work at most four read-only lenses serially as the reviewer; every checklist item declares files, questions, output shape, word budget, and no-fix"
           ],
           "order": 20
         },
         {
           "kind": "prompt-fragment",
-          "emissionId": "fan-out.residue",
-          "text": "Use bounded side routines for census breadth; keep synthesis in the main reviewer."
+          "emissionId": "lens-checklist.residue",
+          "text": "Work the lens briefs as your own checklist, serially, and synthesize their evidence."
         }
       ],
       "cost": {
@@ -1053,13 +1046,13 @@
         "promptTokens": 38,
         "runtimeCost": {
           "quantity": 4,
-          "unit": "delegates-maximum"
+          "unit": "lens-checklist-items-maximum"
         },
         "extraEpisodes": 0
       },
       "inspection": {
         "restrictions": [
-          "At most four no-fix, read-only lens delegates"
+          "At most four no-fix, read-only lens checklist items"
         ]
       }
     },
@@ -2207,7 +2200,7 @@
       "linkId": "entropy-reducer.link.03",
       "linkGroupId": "entropy-reducer.links",
       "activeMechanicId": "seiso-shine",
-      "supportFacetId": "entropy-reducer.fan-out-lens"
+      "supportFacetId": "entropy-reducer.lens-checklist"
     },
     {
       "linkId": "entropy-reducer.link.04",
@@ -2262,7 +2255,6 @@
     "resourceModelId": "entropy-reducer.resources",
     "version": 1,
     "capacities": {
-      "delegates": 4,
       "probes": 32
     },
     "reservations": []

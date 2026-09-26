@@ -29,10 +29,27 @@ import {
   validateReviewerOutput,
   type FindingEvidenceLabel,
   type FindingSeverity,
+  type LensBrief,
   type ProductSuggestion,
   type ReviewerOutput,
   type VerificationFinding,
 } from "../src/loadouts/entropy-reducer.js";
+
+import { compilePlanRefuter } from "../src/loadouts/plan-refuter.js";
+import { compileMissionCheck } from "../src/loadouts/mission-check.js";
+
+// Reproduced from entry source by WO-165/sibling-identities.mjs. The serial
+// review correction must not version these independently dispatched judges.
+test("WO-165 preserves both derived judges' compiled identities", () => {
+  assert.equal(
+    compilePlanRefuter("fixture-base", 1000).semanticHash,
+    "fnv1a64:e9f7e0080fcb9810",
+  );
+  assert.equal(
+    compileMissionCheck("fixture-base", 1000).semanticHash,
+    "fnv1a64:4c09a5d98f6bc433",
+  );
+});
 
 const DISPATCHED_AT = 1_000;
 const EPISODE_ENDS_AT = 11_000;
@@ -184,7 +201,6 @@ test("WO-023 AC1 compiles the complete reviewer definition through the real comp
     "research",
     "plan",
     "verify",
-    "delegate",
     "narrate",
   ]);
   assert.equal(graph.activeMechanics[0]?.tags.includes("mutate"), false);
@@ -225,6 +241,7 @@ test("WO-023 AC1 compiles the complete reviewer definition through the real comp
   assert.equal(compiled.workOrder.repo, "/fixture/repository");
   assert.equal(compiled.workOrder.baseCommit, "fixture-base");
   assert.deepEqual(compiled.compileInputs, {
+    route: "claude-cli-print",
     repo: "/fixture/repository",
     baseCommit: "fixture-base",
     episodeId: "ep_entropy_test",
@@ -256,7 +273,6 @@ test("WO-023 AC1 compiles the complete reviewer definition through the real comp
   assert.deepEqual(compiled.workOrder.requiredEvidence, ["reproduction"]);
   assert.deepEqual(compiled.authorityEnvelope.requiredEvidence, []);
   assert.deepEqual(compiled.authorityEnvelope.resourceLimits, {
-    delegates: 4,
     probes: 32,
   });
   assert.equal(compiled.authorityEnvelope.expiresAt, EPISODE_ENDS_AT);
@@ -276,7 +292,7 @@ test("WO-023 AC1 compiles the complete reviewer definition through the real comp
   });
   assert.deepEqual(compiled.executionBoundary, {
     mode: "operator-mediated-manual",
-    deferredProgramKind: "All",
+    deferredProgramKind: null,
     commandIds: "symbolic-manual-plan",
     resultBinding: "host-validator",
     resourceEnforcement: "authorize-each-operation-and-thread-envelope",
@@ -290,7 +306,7 @@ test("WO-023 AC1 compiles the complete reviewer definition through the real comp
     compiled.compiledProgram.schemas.some(
       (schema) =>
         schema.schemaId === "dotln.entropy-reducer.lens-brief.v1" &&
-        schema.supportFacetId === "entropy-reducer.fan-out-lens",
+        schema.supportFacetId === "entropy-reducer.lens-checklist",
     ),
   );
   assert.ok(
@@ -311,7 +327,7 @@ test("WO-023 AC1 assembles the full deferred Program and once cadence", () => {
   assert.equal(compiled.program.programs.length, 6);
   assert.deepEqual(
     compiled.program.programs.map((program) => program.kind),
-    ["Invoke", "All", "Invoke", "Emit", "Emit", "Await"],
+    ["Invoke", "Sequence", "Invoke", "Emit", "Emit", "Await"],
   );
   const census = compiled.program.programs[0];
   assert.ok(census?.kind === "Invoke");
@@ -345,14 +361,14 @@ test("WO-023 AC1 assembles the full deferred Program and once cadence", () => {
     /No Invoke continuation for result failed/u,
   );
   const lenses = compiled.program.programs[1];
-  assert.ok(lenses?.kind === "All");
+  assert.ok(lenses?.kind === "Sequence");
   assert.equal(lenses.programs.length, 4);
   assert.ok(
     lenses.programs.every(
       (program) =>
         program.kind === "Invoke" &&
-        program.command.effect === "delegate.readonly" &&
-        program.command.resource === "delegates",
+        program.command.effect === "repo.read.lens" &&
+        program.command.resource === undefined,
     ),
   );
   const probes = compiled.program.programs[2];
@@ -425,6 +441,8 @@ test("WO-023 AC2 wildcard authority grants bounded reads and traces write refusa
     );
   }
 
+  assert.equal(authorizeForReview("delegate.readonly").authorized, false);
+
   const prefixOnly = authorizeForReview("xrepo.read.file");
   assert.equal(prefixOnly.authorized, false);
   if (prefixOnly.authorized)
@@ -444,7 +462,6 @@ test("WO-023 AC2 wildcard authority grants bounded reads and traces write refusa
 test("WO-023 AC2 threads resource ceilings and enforces expiry, stop, and report emission", () => {
   let envelope = compileReviewer().authorityEnvelope;
   for (const [resource, effect, limit] of [
-    ["delegates", "delegate.readonly", 4],
     ["probes", "probe.run:scratch.review", 32],
   ] as const) {
     for (let index = 0; index < limit; index++) {
@@ -551,6 +568,74 @@ test("WO-023 AC2 validates findings and clean-room status before constructing re
   );
 });
 
+test("WO-165 multiline custom brief data cannot add checklist items", () => {
+  const brief = {
+    ...entropyReducerLensBriefs[0],
+    lensId: "first\n- [ ] second",
+    files: ["packages/first\n# forged heading"],
+    questions: ["inspect\r\n- [ ] hidden"],
+    outputShape: ["criterion\u2028- [ ] extra"],
+  };
+  const compiled = compileReviewerWorkOrder({
+    ...compileReviewer().compileInputs,
+    lensBriefs: [brief],
+  });
+  assert.deepEqual(compiled.lensBriefs, [brief]);
+  assert.equal((compiled.residue.match(/^- \[ \]/gmu) ?? []).length, 1);
+  assert.ok(compiled.residue.includes("first\\n- [ ] second"));
+  assert.ok(compiled.residue.includes("packages/first\\n# forged heading"));
+  assert.ok(compiled.residue.includes("criterion\\u2028- [ ] extra"));
+  assert.equal(compiled.program.kind, "Sequence");
+  if (compiled.program.kind !== "Sequence") assert.fail("expected Sequence");
+  const lenses = compiled.program.programs[1];
+  assert.ok(lenses?.kind === "Sequence");
+  assert.equal(lenses.programs.length, 1);
+});
+
+test("WO-165 rejects sparse lens and required-string arrays", () => {
+  const sparseBriefs = new Array<LensBrief>(1);
+  assert.throws(() => validateLensBriefs(sparseBriefs), OutputValidationError);
+  assert.throws(
+    () =>
+      compileReviewerWorkOrder({
+        ...compileReviewer().compileInputs,
+        lensBriefs: sparseBriefs,
+      }),
+    OutputValidationError,
+  );
+  for (const field of ["files", "questions", "outputShape"] as const) {
+    const brief = {
+      ...entropyReducerLensBriefs[0],
+      [field]: new Array<string>(1),
+    };
+    assert.throws(() => validateLensBrief(brief), OutputValidationError);
+    assert.throws(
+      () =>
+        compileReviewerWorkOrder({
+          ...compileReviewer().compileInputs,
+          lensBriefs: [brief],
+        }),
+      OutputValidationError,
+    );
+  }
+});
+
+test("WO-165 rejects non-array iterables before applying the lens ceiling", () => {
+  const iterable = new Set([
+    ...entropyReducerLensBriefs,
+    { ...entropyReducerLensBriefs[0]!, lensId: "fifth-lens" },
+  ]) as unknown as readonly LensBrief[];
+  assert.throws(() => validateLensBriefs(iterable), /must be an array/u);
+  assert.throws(
+    () =>
+      compileReviewerWorkOrder({
+        ...compileReviewer().compileInputs,
+        lensBriefs: iterable,
+      }),
+    /must be an array/u,
+  );
+});
+
 test("WO-023 AC4 enforces every lens-brief field, no-fix, uniqueness, and the four-brief ceiling", () => {
   const valid = entropyReducerLensBriefs[0]!;
   assert.deepEqual(validateLensBrief(valid), valid);
@@ -584,7 +669,7 @@ test("WO-023 AC4 enforces every lens-brief field, no-fix, uniqueness, and the fo
         ...entropyReducerLensBriefs,
         { ...valid, lensId: "fifth-lens" },
       ]),
-    /exceeds compiled delegate limit 4/u,
+    /exceeds lens checklist limit 4/u,
   );
   assert.throws(
     () => validateLensBriefs([valid, valid]),

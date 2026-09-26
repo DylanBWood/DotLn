@@ -38,6 +38,8 @@ export function missionCheckLoadout(expiresAt: number): LoadoutGraph {
     role: {
       ...base.role,
       roleId: "mission-check",
+      // This judge keeps its own identity when the review route changes.
+      version: 1,
       name: "Mission check",
       permissions: [...MISSION_CHECK_ALLOWED],
       obligations: [...MISSION_CHECK_QUESTIONS],
@@ -52,6 +54,9 @@ export function missionCheckLoadout(expiresAt: number): LoadoutGraph {
     activeMechanics: [
       {
         ...active,
+        // Preserve this judge's existing identity and vocabulary.
+        version: 2,
+        tags: ["observe", "research", "plan", "verify", "delegate", "narrate"],
         semantics: [
           "one read-only mission check; a drift finding holds unattended dispatch and decides nothing else",
         ],

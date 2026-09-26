@@ -105,6 +105,21 @@ receipt.
 
 ## What the reviewer may run
 
+The pinned `claude-cli-print` and `codex-cli-exec` routes compile the lens
+briefs as the reviewer's own checklist: **lenses worked serially by the
+reviewer**. Neither route supplies a delegate tool, so its envelope has no
+`delegate.readonly` grant or `delegates` resource limit, and its Program uses
+serial reads. Claude admits only Bash, Read, Glob and Grep; Codex disables
+multi-agent tools. The background and fixture routes use the same serial
+contract. A new delegating route requires a separate decision.
+
+`compileReviewerWorkOrder` records the selected `route` in its inputs and
+compiled identity; its default is `claude-cli-print`, and unknown routes
+are refused. The lens briefs remain required by the dispatch protocol, with
+their original file scopes, questions, output shapes, word budgets and no-fix
+boundaries. New review receipts state the serial confinement; historical
+receipts keep the rendering of the episode they recorded.
+
 Unlike this repository's other inspection profiles, the review profile admits
 commands, because a reviewer that cannot run anything labels findings `by
 inspection` and measures almost nothing (`runs/REVIEW-001.json` recorded seven
@@ -161,15 +176,16 @@ removed:
    `compileReviewerWorkOrder()` from
    [`entropy-reducer.ts`](../../../packages/skeleton/src/loadouts/entropy-reducer.ts)
    against the actual repository/base, a fresh episode ID, dispatch time, and
-   finite episode end. Retain its inputs, semantic hash, WorkOrder, authority
+   finite episode end, and the selected `route`. Retain its inputs, semantic hash, WorkOrder, authority
    envelope, Program, actor requirement, and residue with the new episode.
    The IDs and times in `runs/REVIEW-001-COMPILED-PROGRAM.json` belong to the
    historical example; they are not a reusable live grant.
 2. Follow the compiled manual Program: census, bounded lenses, isolated probes,
    findings, and suggestions. Authorize each operation and thread the returned
-   resource envelope. The four-delegate and 32-probe ceilings are maxima, not
-   required usage or blanket filesystem permissions. `Program.All` remains
-   deferred; a compiled plan does not launch models or enforce a shell sandbox.
+   resource envelope. The 32-probe ceiling is a maximum, not required usage or blanket filesystem
+   permission. Work the at-most-four lens checklist items serially; the plan
+   has no delegate grant or `Program.All`. A compiled plan does not launch
+   models or enforce a shell sandbox.
 3. Validate the output using `validateReviewerOutput()` or
    `prepareReportEmit()` with this episode's exact WorkOrder and episode IDs
    before report emission. Preserve the clean-room result, evidence labels,
@@ -188,7 +204,7 @@ removed:
 
 The command family performs exactly these steps through the same typed APIs;
 it adds numbering, immutability, an attestation and a disposition record, and
-it changes neither the loadout nor its authority.
+it selects the route at compilation and retains that route's authority.
 
 [RESIDUE.md](RESIDUE.md) is generated from the typed loadout, not an editable
 skill or the entry point of an automatic scheduler. The
