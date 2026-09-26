@@ -18,3 +18,8 @@
 /.codex/hooks/** dotln-generated dotln-check=suite:harness
 /.codex/hooks.json dotln-generated dotln-check=suite:harness
 /.codex/config.toml dotln-generated dotln-check=suite:harness
+# Documentation for a reader, outside the product gate code identity; a README a suite reads as an input stays unmarked (WO-115 D026).
+/packages/compiler/README.md dotln-documentation
+/packages/console/README.md dotln-documentation
+/packages/skeleton/README.md dotln-documentation
+/corpus/README.md dotln-documentation

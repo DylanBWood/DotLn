@@ -432,7 +432,7 @@ final_pass_output="$(node "$fixture_repo/scripts/resume.mjs" final-review-result
   --effort unknown \
   --source operator-attested 2>/dev/null)"
 assert_status_read_only
-assert_status_json '{"workOrder":"WO-099","workOrderPath":"docs/work-orders/WO-099-fixture.md","phase":"closed","latestVerification":"VER-004","verificationPath":"docs/verifications/WO-099/VER-004.md","latestVerdict":"pass","finalReview":"FINAL-003","finalReviewPath":"docs/final-reviews/WO-099/FINAL-003.md","latestAttestation":{"harness":"human","harnessVersion":"not-applicable","model":"human","effort":"unknown","source":"operator-attested"},"effortDrift":[{"effort":"xhigh"},{"effort":"custom-selector"},{"effort":"high"},{"effort":"custom-selector-2"},{"effort":"unknown"}],"latestCheckpoint":{"unavailable":true},"legalNextActions":["release-close","next","activate"],"legalOffRamps":[],"waivedCriteria":[],"withdrawal":null,"corrections":[],"overrideRecords":[]}'
+assert_status_json '{"workOrder":"WO-099","workOrderPath":"docs/work-orders/WO-099-fixture.md","phase":"closed","latestVerification":"VER-004","verificationPath":"docs/verifications/WO-099/VER-004.md","latestVerdict":"pass","finalReview":"FINAL-003","finalReviewPath":"docs/final-reviews/WO-099/FINAL-003.md","latestAttestation":{"harness":"human","harnessVersion":"not-applicable","model":"human","effort":"unknown","source":"operator-attested"},"effortDrift":[{"effort":"xhigh"},{"effort":"custom-selector"},{"effort":"high"},{"effort":"custom-selector-2"},{"effort":"unknown"}],"latestCheckpoint":{"unavailable":true},"legalNextActions":["release-close","next","activate"],"legalOffRamps":["correct"],"waivedCriteria":[],"withdrawal":null,"corrections":[],"overrideRecords":[]}'
 grep -Fq 'npm run worktree -- publish WO-099 --title "<title>" --body-file <contained-reviewed-body-path>' <<<"$final_pass_output"
 grep -Fq 'Latest attestation: harness human; version not-applicable; model human; effort unknown; source operator-attested' "$fixture_repo/docs/control/current.md"
 if grep -Fq 'raw: unknown' "$fixture_repo/docs/control/current.md"; then printf 'error: canonical unknown was duplicated as a raw label\n' >&2; exit 1; fi
@@ -489,7 +489,7 @@ assert.deepStrictEqual(status, {
   ],
   latestCheckpoint: { unavailable: true },
   legalNextActions: ["release-close", "next", "activate"],
-  legalOffRamps: [],
+  legalOffRamps: ["correct"],
   waivedCriteria: [],
   withdrawal: null,
   corrections: [],

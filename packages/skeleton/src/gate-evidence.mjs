@@ -560,8 +560,12 @@ export function gateTreeHash(root) {
 export const checksPath = (root) =>
   join(root, "docs/control/local/harness/checks.json");
 
-/** Product evidence follows tracked source bytes, independent of reports and
- * generated projections. Stage new source files before the reviewer's gate.
+/** Product evidence follows tracked source bytes, independent of reports,
+ * documentation and generated projections. Stage new source files before the
+ * reviewer's gate. A path Git marks `dotln-documentation` (the package
+ * READMEs no suite reads) is documentation for a reader, never product code,
+ * so editing it after a gate leaves the gate's key intact; a README a test
+ * reads as an input stays unmarked and counts (WO-115 D026).
  * @param {string} root @param {string} [revision] */
 export function gateCodeIdentity(root, revision) {
   /** @type {{path:string,mode?:string,object?:string}[]} */
@@ -588,6 +592,7 @@ export function gateCodeIdentity(root, revision) {
       "-z",
       "--stdin",
       "dotln-generated",
+      "dotln-documentation",
     ],
     {
       cwd: root,
@@ -599,16 +604,16 @@ export function gateCodeIdentity(root, revision) {
   if (attributes.status !== 0)
     throw new Error("Generated source classification unavailable");
   const fields = attributes.stdout.split("\0"),
-    generated = new Set();
+    excluded = new Set();
   for (let index = 0; index + 2 < fields.length; index += 3)
-    if (fields[index + 2] === "set") generated.add(fields[index]);
+    if (fields[index + 2] === "set") excluded.add(fields[index]);
   const selected = entries
     .filter(
       ({ path }) =>
         !(
           /^(?:docs|\.claude|\.agents)\//.test(path) ||
           /^[^/]+\.md$/i.test(path) ||
-          generated.has(path)
+          excluded.has(path)
         ),
     )
     .sort((a, b) => a.path.localeCompare(b.path, "en"));
