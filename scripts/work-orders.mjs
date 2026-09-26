@@ -435,7 +435,7 @@ const link = (label, path) =>
   `[${cell(label)}](${path.split("/").map(encodeURIComponent).join("/")})`;
 const report = (id, verdict, path) =>
   id
-    ? `${path ? link(id, `../../${path}`) : cell(id)} (${cell(verdict ?? "pending")})`
+    ? `${path && verdict ? link(id, `../../${path}`) : cell(id)} (${cell(verdict ?? "pending")})`
     : "none recorded";
 
 export const renderIndex = ({
