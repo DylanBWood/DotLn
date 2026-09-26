@@ -1,4 +1,4 @@
-# WO-115 — Console parity contract: every command a UI host may invoke is the same command the terminal runs, exposed through one local loopback surface the resident serves under the compiled authority, with no second authority path (version assigned at activation)
+# WO-115 — Console parity contract: every command a UI host may invoke is the same command the terminal runs, exposed through one local loopback surface the resident serves under the compiled authority, with no second authority path (v0.52.0)
 
 **Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
 

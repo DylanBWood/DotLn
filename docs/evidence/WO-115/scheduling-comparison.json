@@ -1,0 +1,652 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-115",
+  "finding": "VER-004 F1",
+  "method": "Sequential complete npm test runs in one worktree, shared then exclusive, with the watcher error repair and all other repository inputs held identical. No source writes during either gate.",
+  "sourceComparison": {
+    "pathCount": 3473,
+    "differingPaths": [
+      "scripts/test-runner.mjs"
+    ],
+    "onlyEdit": "skeleton suite exclusive: false -> exclusive: true",
+    "sharedRunnerSha256": "a8dee07a3553c462dd74c47641bef0967c1ca984297bd2d17150329d5b6e75bc",
+    "exclusiveRunnerSha256": "2dd260ce22c1c9e10a38ba156ebaae814b991992038cb6edce4ab0bb328baace",
+    "normalizedInputSha256": "51ea98c39418f4a3f66a0e5cfc1c6b3069562bbf667a5f924a6426fe6a52fe80",
+    "sharedGateWrites": [],
+    "exclusiveGateWrites": []
+  },
+  "rows": [
+    {
+      "variant": "shared",
+      "command": "npm test",
+      "startedAt": "2026-09-26T13:52:58.208Z",
+      "finishedAt": "2026-09-26T13:58:11.084Z",
+      "host": {
+        "node": "v26.9.0",
+        "platform": "darwin",
+        "arch": "arm64",
+        "availableParallelism": 16,
+        "loadavg": [
+          2.38525390625,
+          4.00146484375,
+          4.685546875
+        ]
+      },
+      "check": {
+        "checkId": "npm test",
+        "treeHash": "ada22d2aa016d209721b8e0fe0a549f852a0f598",
+        "codeIdentity": "bcf5d03784ac59f22f51e8c172f08b9850bcc842dede4f83856e0d9e7629a583",
+        "durationMs": 312441,
+        "exitCode": 0,
+        "executed": true,
+        "recordedAt": "2026-09-26T13:58:11.009Z",
+        "evidenceRef": "host-gate:bcf5d03784ac59f22f51e8c172f08b9850bcc842dede4f83856e0d9e7629a583:npm test",
+        "executionMode": "fresh",
+        "freshSuites": 72,
+        "reusedSuites": 0,
+        "requiredSuites": [
+          "build",
+          "release-preparation",
+          "github-body",
+          "outward-lint",
+          "target-publish",
+          "license-fixtures",
+          "license-surfaces",
+          "publication-fixtures",
+          "backup-intake",
+          "resume",
+          "beacon-portability",
+          "checkpoint",
+          "worktree",
+          "worktree-integration",
+          "release",
+          "work-orders-fixtures",
+          "kernel",
+          "compiler",
+          "skeleton",
+          "console",
+          "adjacent-queue",
+          "resident-bind",
+          "derived-orders",
+          "portfolio",
+          "codex-continuation",
+          "authority-grants",
+          "local-runner-double",
+          "artifact-corpus"
+        ],
+        "cases": [
+          {
+            "name": "build",
+            "durationMs": 537,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "release-preparation",
+            "durationMs": 1348,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "github-body",
+            "durationMs": 80,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "outward-lint",
+            "durationMs": 397,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "target-publish",
+            "durationMs": 14390,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "license-fixtures",
+            "durationMs": 7381,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "license-surfaces",
+            "durationMs": 1041,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "publication-fixtures",
+            "durationMs": 734,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "backup-intake",
+            "durationMs": 305,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "resume",
+            "durationMs": 34327,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "beacon-portability",
+            "durationMs": 807,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "checkpoint",
+            "durationMs": 6100,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "worktree",
+            "durationMs": 82867,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "worktree-integration",
+            "durationMs": 108902,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "release",
+            "durationMs": 94688,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "work-orders-fixtures",
+            "durationMs": 20236,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "kernel",
+            "durationMs": 743,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "compiler",
+            "durationMs": 560,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "skeleton",
+            "durationMs": 309511,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "console",
+            "durationMs": 21982,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "adjacent-queue",
+            "durationMs": 515,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "resident-bind",
+            "durationMs": 10350,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "derived-orders",
+            "durationMs": 7800,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "portfolio",
+            "durationMs": 19203,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "codex-continuation",
+            "durationMs": 6172,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "authority-grants",
+            "durationMs": 131,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "local-runner-double",
+            "durationMs": 3723,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "artifact-corpus",
+            "durationMs": 166,
+            "exitCode": 0,
+            "executed": true
+          }
+        ],
+        "loadClass": {
+          "sharedCap": 4,
+          "factorPerSlot": 2,
+          "maxHostLoadPerCpu": 2,
+          "scheduler": "exclusive-machinery-v1"
+        },
+        "taskTimeline": [
+          {
+            "name": "console",
+            "durationMs": 21982,
+            "startedAt": "2026-09-26T13:54:38.355Z",
+            "finishedAt": "2026-09-26T13:55:00.338Z",
+            "exitCode": 0,
+            "executed": true,
+            "concurrentAtStart": [
+              "skeleton",
+              "worktree-integration",
+              "work-orders-fixtures"
+            ],
+            "predecessors": [
+              "build",
+              "license-surfaces",
+              "checkpoint"
+            ],
+            "schedulerDurationMs": 21983,
+            "loadClass": "shared",
+            "loadFactor": 8,
+            "peerCap": 3,
+            "reservedSlots": 1,
+            "lanes": [
+              2
+            ]
+          },
+          {
+            "name": "worktree-integration",
+            "durationMs": 108902,
+            "startedAt": "2026-09-26T13:54:34.838Z",
+            "finishedAt": "2026-09-26T13:56:23.742Z",
+            "exitCode": 0,
+            "executed": true,
+            "concurrentAtStart": [
+              "skeleton",
+              "target-publish",
+              "checkpoint"
+            ],
+            "predecessors": [
+              "build",
+              "license-surfaces",
+              "release:case:concurrent"
+            ],
+            "schedulerDurationMs": 108904,
+            "loadClass": "shared",
+            "loadFactor": 8,
+            "peerCap": 3,
+            "reservedSlots": 1,
+            "lanes": [
+              0
+            ]
+          },
+          {
+            "name": "skeleton",
+            "durationMs": 309511,
+            "startedAt": "2026-09-26T13:53:00.150Z",
+            "finishedAt": "2026-09-26T13:58:09.665Z",
+            "exitCode": 0,
+            "executed": true,
+            "concurrentAtStart": [
+              "release:prepare",
+              "resume",
+              "worktree"
+            ],
+            "predecessors": [
+              "build",
+              "license-surfaces"
+            ],
+            "schedulerDurationMs": 309515,
+            "loadClass": "shared",
+            "loadFactor": 8,
+            "peerCap": 3,
+            "reservedSlots": 1,
+            "lanes": [
+              3
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "variant": "exclusive",
+      "command": "npm test",
+      "startedAt": "2026-09-26T13:58:35.436Z",
+      "finishedAt": "2026-09-26T14:05:46.832Z",
+      "host": {
+        "node": "v26.9.0",
+        "platform": "darwin",
+        "arch": "arm64",
+        "availableParallelism": 16,
+        "loadavg": [
+          3.6455078125,
+          4.99560546875,
+          5.06396484375
+        ]
+      },
+      "check": {
+        "checkId": "npm test",
+        "treeHash": "af67dff3eccd21ce525ee0119870716f5d978c12",
+        "codeIdentity": "9eba426a3820be7f1c76568b36cf25af013df8b993512f57824e74aed4f41709",
+        "durationMs": 430952,
+        "exitCode": 0,
+        "executed": true,
+        "recordedAt": "2026-09-26T14:05:46.756Z",
+        "evidenceRef": "host-gate:9eba426a3820be7f1c76568b36cf25af013df8b993512f57824e74aed4f41709:npm test",
+        "executionMode": "fresh",
+        "freshSuites": 72,
+        "reusedSuites": 0,
+        "requiredSuites": [
+          "build",
+          "release-preparation",
+          "github-body",
+          "outward-lint",
+          "target-publish",
+          "license-fixtures",
+          "license-surfaces",
+          "publication-fixtures",
+          "backup-intake",
+          "resume",
+          "beacon-portability",
+          "checkpoint",
+          "worktree",
+          "worktree-integration",
+          "release",
+          "work-orders-fixtures",
+          "kernel",
+          "compiler",
+          "skeleton",
+          "console",
+          "adjacent-queue",
+          "resident-bind",
+          "derived-orders",
+          "portfolio",
+          "codex-continuation",
+          "authority-grants",
+          "local-runner-double",
+          "artifact-corpus"
+        ],
+        "cases": [
+          {
+            "name": "build",
+            "durationMs": 552,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "release-preparation",
+            "durationMs": 983,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "github-body",
+            "durationMs": 81,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "outward-lint",
+            "durationMs": 388,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "target-publish",
+            "durationMs": 13141,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "license-fixtures",
+            "durationMs": 7025,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "license-surfaces",
+            "durationMs": 1047,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "publication-fixtures",
+            "durationMs": 648,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "backup-intake",
+            "durationMs": 267,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "resume",
+            "durationMs": 29767,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "beacon-portability",
+            "durationMs": 565,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "checkpoint",
+            "durationMs": 4888,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "worktree",
+            "durationMs": 77577,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "worktree-integration",
+            "durationMs": 84950,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "release",
+            "durationMs": 57851,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "work-orders-fixtures",
+            "durationMs": 17585,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "kernel",
+            "durationMs": 801,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "compiler",
+            "durationMs": 582,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "skeleton",
+            "durationMs": 286508,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "console",
+            "durationMs": 20177,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "adjacent-queue",
+            "durationMs": 337,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "resident-bind",
+            "durationMs": 8348,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "derived-orders",
+            "durationMs": 6219,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "portfolio",
+            "durationMs": 15926,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "codex-continuation",
+            "durationMs": 4568,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "authority-grants",
+            "durationMs": 116,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "local-runner-double",
+            "durationMs": 3606,
+            "exitCode": 0,
+            "executed": true
+          },
+          {
+            "name": "artifact-corpus",
+            "durationMs": 170,
+            "exitCode": 0,
+            "executed": true
+          }
+        ],
+        "loadClass": {
+          "sharedCap": 4,
+          "factorPerSlot": 2,
+          "maxHostLoadPerCpu": 2,
+          "scheduler": "exclusive-machinery-v1"
+        },
+        "taskTimeline": [
+          {
+            "name": "skeleton",
+            "durationMs": 286508,
+            "startedAt": "2026-09-26T13:58:37.406Z",
+            "finishedAt": "2026-09-26T14:03:23.914Z",
+            "exitCode": 0,
+            "executed": true,
+            "concurrentAtStart": [],
+            "predecessors": [
+              "build",
+              "license-surfaces"
+            ],
+            "schedulerDurationMs": 286508,
+            "loadClass": "isolated",
+            "loadFactor": 2,
+            "peerCap": 0,
+            "reservedSlots": 4,
+            "lanes": [
+              0,
+              1,
+              2,
+              3
+            ]
+          },
+          {
+            "name": "console",
+            "durationMs": 20177,
+            "startedAt": "2026-09-26T14:04:25.154Z",
+            "finishedAt": "2026-09-26T14:04:45.331Z",
+            "exitCode": 0,
+            "executed": true,
+            "concurrentAtStart": [
+              "worktree",
+              "worktree-integration",
+              "work-orders-fixtures"
+            ],
+            "predecessors": [
+              "build",
+              "license-surfaces",
+              "compiler"
+            ],
+            "schedulerDurationMs": 20177,
+            "loadClass": "shared",
+            "loadFactor": 8,
+            "peerCap": 3,
+            "reservedSlots": 1,
+            "lanes": [
+              3
+            ]
+          },
+          {
+            "name": "worktree-integration",
+            "durationMs": 84950,
+            "startedAt": "2026-09-26T14:04:21.767Z",
+            "finishedAt": "2026-09-26T14:05:46.717Z",
+            "exitCode": 0,
+            "executed": true,
+            "concurrentAtStart": [
+              "worktree",
+              "target-publish",
+              "checkpoint"
+            ],
+            "predecessors": [
+              "build",
+              "license-surfaces",
+              "release:case:concurrent"
+            ],
+            "schedulerDurationMs": 84950,
+            "loadClass": "shared",
+            "loadFactor": 8,
+            "peerCap": 3,
+            "reservedSlots": 1,
+            "lanes": [
+              1
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "chosen": "shared",
+  "gateDifferenceMs": 118511,
+  "limits": "One ordered pair on one host; ambient work is uncontrolled. Both runs pass. No statistical reliability, historical timeout cause, or three-consecutive-run target is established."
+}

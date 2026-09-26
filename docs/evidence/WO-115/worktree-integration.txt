@@ -1,0 +1,29 @@
+# node --test --test-reporter=tap scripts/test-worktree-integration.mjs
+# before: the fixture clones the source's moving main (HEAD af401170, local main f73b7e18)
+not ok 1 - real Git fast-forward preserves recovery, histories and authored conflicts with real generators
+not ok 2 - real Git reviewed merge preserves recovery, histories and authored conflicts with real generators
+not ok 3 - three required refusals leave the tree, index, HEAD and recovery refs unchanged
+not ok 4 - an intent-to-add entry is refused before any write, and a failed stash leaves no pending receipt
+not ok 5 - a stash Git stores and then fails to finish resumes with --continue; --continue refuses intent-to-add entries
+not ok 6 - a later stash failure with nothing stashed restores the completed receipt it replaced
+ok 7 - follow-up union preserves compatible histories and refuses divergent same-entry histories
+not ok 8 - untracked stash collision remains explicit and recoverable until continuation
+ok 9 - printed checks use the runner's declared machinery sources, including package code
+# tests 9
+# pass 2
+# fail 7
+# duration_ms 21239.827042
+# after: the fixture's main is the source's committed HEAD (WO-115 D015)
+ok 1 - real Git fast-forward preserves recovery, histories and authored conflicts with real generators
+ok 2 - real Git reviewed merge preserves recovery, histories and authored conflicts with real generators
+ok 3 - three required refusals leave the tree, index, HEAD and recovery refs unchanged
+ok 4 - an intent-to-add entry is refused before any write, and a failed stash leaves no pending receipt
+ok 5 - a stash Git stores and then fails to finish resumes with --continue; --continue refuses intent-to-add entries
+ok 6 - a later stash failure with nothing stashed restores the completed receipt it replaced
+ok 7 - follow-up union preserves compatible histories and refuses divergent same-entry histories
+ok 8 - untracked stash collision remains explicit and recoverable until continuation
+ok 9 - printed checks use the runner's declared machinery sources, including package code
+# tests 9
+# pass 9
+# fail 0
+# duration_ms 83583.857417
