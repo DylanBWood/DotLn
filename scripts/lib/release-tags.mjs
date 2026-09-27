@@ -57,7 +57,7 @@ const annotationFromObject = (object, tag) => {
 };
 export const tagAnnotation = (root, tag) =>
   annotationFromObject(tagContents(root, tag), tag);
-const humanLayerFromAnnotation = (annotation) => {
+export const humanLayerFromAnnotation = (annotation) => {
   const marker = annotation.lastIndexOf("\n\nDOTLN-MANIFEST-BEGIN\n");
   if (marker >= 0 && /\nDOTLN-MANIFEST-END\n?$/.test(annotation.slice(marker)))
     return annotation.slice(0, marker);

@@ -1630,6 +1630,18 @@ ER3-002, reproduced by REFUTATION-004).** With the plan tasks under 2 s,
 [WO-164](../work-orders/WO-164-constant-process-console-collection.md);
 the 2026-09-19 deferral's reopening observation has occurred.
 
+**WO-164 after figure (2026-09-27, executor measurement).** `resume status
+--all --json` folds every order in one process and `release list` caches
+per-tag records in the ignored local lane, so collection runs four node
+processes whatever the order and tag counts. With 113 orders and 104 tags,
+`collectSources` fell from 21.2 s to 2.43–2.47 s cold (the first
+implementation's 6.2 s failed VER-001) and 0.67 s warm, with identical board
+bytes. `console-docs` fell from 22.50 s to 3.53 s cold and the cold
+`test:docs` gate from 31.42 s to 13.37 s, now led by `docs-check` (8.46 s).
+The [WO-164 decisions](../evidence/WO-164/decisions.md) and
+[timing record](../evidence/WO-164/timing.md) keep the figures and reopening
+conditions.
+
 ## Candidate — refutation pass worth its cost
 
 The 2026-09-12 planning pass paid three direct-session refutations of one
@@ -1765,7 +1777,9 @@ their snapshots, including targets in separate repositories. A live gate,
 another live or unknown writer, unreadable pins, current or live session
 ownership, and missing session-end observations retain the affected files;
 legacy advisory markers without session ownership are retained. The dead
-suite-success cache is eligible only without a live gate.
+suite-success cache is eligible only without a live gate. The `release list`
+cache is listed as retained and never removed: each listing rewrites it to the
+current tags, and subject teardown disposes of it (WO-164).
 
 A retained order lane is eligible only after its worktree is gone, a
 non-draft published Release and matching remote tag establish publication (one

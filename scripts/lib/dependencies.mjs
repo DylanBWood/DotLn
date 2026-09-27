@@ -210,7 +210,13 @@ export function projectDependencies(
   };
 }
 
-export function readDependencies(root, state, control) {
+// `releaseSet` lets a caller projecting many orders read the release set once.
+export function readDependencies(
+  root,
+  state,
+  control,
+  releaseSet = () => dependencyReleaseSet(root),
+) {
   if (!state.workOrderPath) return null;
   const path = workOrderAuthorityPath(
     root,
@@ -226,7 +232,7 @@ export function readDependencies(root, state, control) {
     order,
     closedDependencySet(control),
     order.entries.some((entry) => entry.relation === "satisfied-by-release")
-      ? dependencyReleaseSet(root)
+      ? releaseSet()
       : new Set(),
     withdrawnDependencySet(control),
   );

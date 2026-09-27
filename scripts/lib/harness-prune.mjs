@@ -535,6 +535,35 @@ function judgeCache(context) {
     : null;
 }
 
+// `release list` keeps its per-tag records here (WO-164). Each listing
+// rewrites the file to the current tags and subject teardown disposes of the
+// lane, so prune names it and never removes it.
+function judgeListingCache(context) {
+  const path = docRelative(
+    context.root,
+    "control",
+    "local/cache/release-list.json",
+  );
+  let state;
+  try {
+    state = stat(safeChild(context.root, path));
+  } catch (error) {
+    state = error;
+  }
+  return state
+    ? {
+        retained: {
+          kind: "release-list-cache",
+          path,
+          reason:
+            state instanceof Error
+              ? state.message
+              : "live release list cache: each listing rewrites it to the current tags, and subject teardown disposes of it",
+        },
+      }
+    : null;
+}
+
 // A lane's usage copy may be the order's only usage record (WO-171). The
 // order's committed meter snapshot (WO-170) releases the lane only when it names
 // the SHA-256 of every usage copy the lane holds, so it provably carries them:
@@ -695,6 +724,7 @@ export function planHarnessPrune(root, options = {}) {
       .sort())
       record(judgeAdvisory(context, name));
   record(judgeCache(context));
+  record(judgeListingCache(context));
   const lanes = safeChild(root, docRelative(root, "control", "local/retained"));
   if (stat(lanes)?.isDirectory())
     for (const order of readdirSync(lanes)

@@ -2268,9 +2268,11 @@ checkout. A refusal is reported through the helper; sessions write no closeout
 script.
 
 `docs/control/local/` is an ignored lane read and written by scripts: gate
-caches, usage observations, session state and the operator's terms list. Only
-`harness/**` is disposable at subject teardown; the rest is retained. Main's
-release-influence check permits the whole local lane. The separate
+caches, usage observations, session state and the operator's terms list.
+`release list` keeps its per-tag records in `cache/release-list.json`, keyed by
+tag object id and read only while Git reports that path ignored (WO-164). Only
+`harness/**` and `cache/**` are disposable at subject teardown; the rest is
+retained. Main's release-influence check permits the whole local lane. The separate
 `account-labels.md` private mapping is not interpreted by control commands;
 closeout only copies and byte-verifies it as opaque retained material.
 The close helper archives the subject's non-disposable ignored control records

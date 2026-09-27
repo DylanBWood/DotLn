@@ -86,12 +86,16 @@ export async function collectSources(
   root: string,
   requestedStores: readonly string[] = [],
 ): Promise<BoardSources> {
-  const command = (script: string, args: readonly string[]): string =>
+  const command = (
+    script: string,
+    args: readonly string[],
+    maxBuffer = 8_000_000,
+  ): string =>
     execFileSync(process.execPath, [join(root, "scripts", script), ...args], {
       cwd: root,
       encoding: "utf8",
       stdio: ["ignore", "pipe", "pipe"],
-      maxBuffer: 8_000_000,
+      maxBuffer,
       // WO-125 VER-003 measured release:list at 17.2 s alone. The scheduler
       // declares the load factor; ordinary collection keeps its 60 s bound.
       timeout: deadlineLimit(17_200, 60_000),
@@ -114,10 +118,10 @@ export async function collectSources(
       }));
     },
   );
-  const controlStatus = attempt("resume:status--json", () => {
+  const orderIds = (): readonly string[] => {
     if (controlLog.status !== "available")
       throw new Error("control unavailable");
-    const ids = [
+    return [
       ...new Set(
         controlLog.value.flatMap((document) =>
           array(document.value).map((event) =>
@@ -126,18 +130,45 @@ export async function collectSources(
         ),
       ),
     ].sort();
-    return ids.map(
-      (workOrder) =>
-        JSON.parse(
-          command("resume.mjs", [
-            "status",
-            "--json",
-            "--work-order",
-            workOrder,
-          ]),
-        ) as unknown,
+  };
+  const folded = attempt("resume:status--json", () => {
+    const ids = orderIds();
+    // One process folds every order (WO-164). Each object carries the whole
+    // order list, so the output grows with the square of the order count.
+    const statuses = array(
+      JSON.parse(
+        command("resume.mjs", ["status", "--all", "--json"], 256_000_000),
+      ) as unknown,
     );
+    const returned = statuses.map((status) =>
+      string(object(status)["workOrder"]),
+    );
+    if (returned.join("\n") !== ids.join("\n"))
+      throw new Error(
+        `status --all returned orders that differ from the control log (${returned.length} returned, ${ids.length} logged)`,
+      );
+    return statuses;
   });
+  // A failed fold falls back to one process per order, the form before
+  // WO-164, and the source's ref records that it did. When that fails too,
+  // the fold's own failure is reported.
+  const fallback =
+    folded.status === "unavailable" && controlLog.status === "available"
+      ? attempt("resume:status--json#per-order-fallback", () =>
+          orderIds().map(
+            (workOrder) =>
+              JSON.parse(
+                command("resume.mjs", [
+                  "status",
+                  "--json",
+                  "--work-order",
+                  workOrder,
+                ]),
+              ) as unknown,
+          ),
+        )
+      : undefined;
+  const controlStatus = fallback?.status === "available" ? fallback : folded;
   const graphs: LoadoutSource[] = [];
   const loadoutFailures: Source<never>[] = [];
   let loadouts: Source<readonly LoadoutSource[]>;

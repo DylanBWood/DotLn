@@ -51,6 +51,7 @@ import {
 import { CONTROL_LOG_SCHEMA_VERSION, statusProjection } from "./resume.mjs";
 import {
   readControl,
+  readControls,
   controlFromSources,
   addedSegmentEvents,
   latestClosedOrder,
@@ -59,6 +60,12 @@ import {
   selectWorkOrder,
 } from "./lib/control-store.mjs";
 import { executorWriterRelease } from "./lib/executor-handoff.mjs";
+import { releaseListCache } from "./lib/release-list-cache.mjs";
+import {
+  humanLayerFromAnnotation,
+  manifestFromAnnotation,
+  releaseAnnotations,
+} from "./lib/release-tags.mjs";
 
 import {
   compareVersions,
@@ -1910,51 +1917,246 @@ const renderPublishedNotes = (tag) => {
     throw new Error(`${tag} is not a DotLn release tag`);
   process.stdout.write(`${humanLayer}\n`);
 };
-const releaseWorkOrdersBetween = (root, previousRelease, release) => {
-  const workOrders = [];
-  for (const commit of firstParentCommits(root, previousRelease, release)) {
-    const parent = firstParentOf(root, commit);
-    const completed = addedControlEvents(root, parent, commit)
-      .filter(passedFinalReview)
-      .map((event) => event.workOrderId);
-    const changedNotes = changedReleaseNotesAt(root, parent, commit).map(
-      ({ id }) => id,
-    );
-    for (const id of [...completed, ...changedNotes])
-      if (!workOrders.includes(id)) workOrders.push(id);
-  }
-  return workOrders;
-};
-const listPublishedReleases = () => {
-  const releases = [...localTags(toolRoot).values()]
-    .filter(({ name, objectType }) => semver(name) && objectType === "tag")
-    .sort((left, right) => compareVersions(left.name, right.name))
-    .filter((item) =>
-      isDotLnRelease(humanLayerFromTag(toolRoot, item.name), item.name),
-    );
-  const rows = releases.map((item, index) => {
-    let manifest;
+const releaseWorkOrdersForRanges = (root, ranges) => {
+  if (!ranges.length) return [];
+  // Keep Git's exact reachability semantics for each range, but share its
+  // commit/parent views across ranges and read release-note diffs in one batch.
+  const parents = new Map();
+  const commitsByRange = ranges.map(({ previous, release }) => {
+    const output = runGit(root, [
+      "rev-list",
+      "--first-parent",
+      "--reverse",
+      "--parents",
+      previous ? `${previous}..${release}` : release,
+    ]);
+    return output
+      .split("\n")
+      .filter(Boolean)
+      .map((line) => {
+        const [commit, parent] = line.split(" ");
+        parents.set(commit, parent);
+        return commit;
+      });
+  });
+  const revisions = [...new Set([...parents].flat().filter(Boolean))];
+  const controls = new Map();
+  // Bound temporary aggregate reads. A batch may exceed Git's output buffer
+  // even when each accepted historical view fits, so retry those separately.
+  for (let offset = 0; offset < revisions.length; offset += 16) {
+    const batch = revisions.slice(offset, offset + 16);
+    let views;
     try {
-      manifest = manifestFromTag(toolRoot, item.name);
+      views = readControls(root, batch);
     } catch {
-      manifest = undefined;
+      views = new Map(
+        batch.map((revision) => [revision, readControl(root, revision)]),
+      );
     }
-    const workOrders = releaseWorkOrdersBetween(
-      toolRoot,
-      manifest?.release?.previousRelease ?? releases[index - 1]?.name,
-      item.name,
+    for (const [revision, control] of views) controls.set(revision, control);
+  }
+  const notes = new Map();
+  if (parents.size) {
+    const reviews = docRelative(root, "finalReviews");
+    const pattern = new RegExp(
+      `^${reviews.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}/(WO-\\d{3})/RELEASE-NOTES\\.md$`,
     );
-    if (workOrders.length === 0)
-      workOrders.push(...manifestWorkOrders(manifest, toolRoot));
-    if (workOrders.length === 0)
-      workOrders.push(...historicalWorkOrders(toolRoot, item.name));
+    const commits = [...parents];
+    for (let offset = 0; offset < commits.length; offset += 16) {
+      const batch = commits.slice(offset, offset + 16);
+      let output;
+      try {
+        output = runGitPathList(
+          root,
+          [
+            "diff-tree",
+            "--stdin",
+            "--root",
+            "-r",
+            "--no-renames",
+            "--name-only",
+            "-z",
+            "--",
+            reviews,
+          ],
+          {
+            input:
+              batch
+                .map(([commit, parent]) =>
+                  parent ? `${commit} ${parent}` : commit,
+                )
+                .join("\n") + "\n",
+          },
+        );
+      } catch {
+        // An aggregate diff can overflow while every individual diff fits.
+        for (const [commit, parent] of batch)
+          notes.set(
+            commit,
+            changedReleaseNotesAt(root, parent, commit).map(({ path }) => path),
+          );
+        continue;
+      }
+      let current;
+      for (const entry of output) {
+        if (parents.has(entry)) {
+          current = [];
+          notes.set(entry, current);
+        } else if (pattern.test(entry)) {
+          if (!current)
+            throw new Error("release-note diff batch lacks a commit header");
+          current.push(entry);
+        }
+      }
+    }
+    for (const [commit, paths] of notes)
+      notes.set(
+        commit,
+        paths.sort().map((path) => pattern.exec(path)[1]),
+      );
+  }
+  const empty = controlFromSources(new Map());
+  const attributed = new Map(
+    [...parents].map(([commit, parent]) => [
+      commit,
+      [
+        ...addedSegmentEvents(
+          parent ? controls.get(parent) : empty,
+          controls.get(commit),
+          `${parent ?? "the empty history"} and ${commit}`,
+        )
+          .filter(passedFinalReview)
+          .map((event) => event.workOrderId),
+        ...(notes.get(commit) ?? []),
+      ],
+    ]),
+  );
+  return commitsByRange.map((commits) => [
+    ...new Set(commits.flatMap((commit) => attributed.get(commit))),
+  ]);
+};
+// Each tag's derived record is cached by its immutable tag object: an
+// unchanged tag costs no Git read, and only new or moved tags are read, in one
+// batch (WO-164).
+const listPublishedReleases = () => {
+  const tags = localTags(toolRoot);
+  const cache = releaseListCache(toolRoot);
+  const candidates = [...tags.values()]
+    .filter(({ name, objectType }) => semver(name) && objectType === "tag")
+    .sort((left, right) => compareVersions(left.name, right.name));
+  const annotations = releaseAnnotations(
+    toolRoot,
+    candidates.filter(({ name, object }) => !cache.get(name, object)),
+  );
+  const facts = new Map(
+    candidates.map(({ name, object }) => {
+      const cached = cache.get(name, object);
+      if (cached) return [name, cached];
+      const annotation = annotations.get(name);
+      if (!isDotLnRelease(humanLayerFromAnnotation(annotation), name))
+        return [name, { object, dotln: false }];
+      let manifest;
+      try {
+        manifest = manifestFromAnnotation(annotation, name);
+      } catch {
+        manifest = undefined;
+      }
+      // The attribution is used only when the range attributes nothing, so a
+      // manifest it cannot read fails the listing only then, as before
+      // WO-164. The error stands in for the list and the record stays
+      // uncached (release-list-cache.mjs).
+      let attribution;
+      try {
+        attribution = manifestWorkOrders(manifest, toolRoot);
+      } catch (error) {
+        attribution = error;
+      }
+      return [
+        name,
+        {
+          object,
+          dotln: true,
+          // Kept as the text the row prints; a record whose previous release
+          // is neither text nor null stays uncached (release-list-cache.mjs).
+          application: `${manifest?.release?.application ?? name}`,
+          previousRelease: manifest?.release?.previousRelease,
+          manifestWorkOrders: attribution,
+          between: null,
+        },
+      ];
+    }),
+  );
+  const releases = candidates.filter(({ name }) => facts.get(name).dotln);
+  const ranges = releases.map((item, index) => {
+    const fact = facts.get(item.name);
+    const previous = fact.previousRelease ?? releases[index - 1]?.name;
+    // The range is reusable only while both ends name immutable tag objects;
+    // tag names are read as tag refs, so the range and its key agree.
+    const tagged = typeof previous === "string" && tags.has(previous);
+    const bound =
+      previous === undefined
+        ? null
+        : tagged
+          ? tags.get(previous).object
+          : undefined;
+    const workOrders =
+      bound !== undefined &&
+      fact.between?.previous === (previous ?? null) &&
+      fact.between.previousObject === bound
+        ? fact.between.workOrders
+        : undefined;
     return {
-      tag: item.name,
-      commit: item.target,
-      application: manifest?.release?.application ?? item.name,
+      item,
+      fact,
+      previous,
+      bound,
       workOrders,
+      range: {
+        previous: tagged ? `refs/tags/${previous}` : previous,
+        release: `refs/tags/${item.name}`,
+      },
     };
   });
+  const missing = ranges.filter(({ workOrders }) => workOrders === undefined);
+  const derived = releaseWorkOrdersForRanges(
+    toolRoot,
+    missing.map(({ range }) => range),
+  );
+  missing.forEach((range, index) => {
+    range.workOrders = derived[index];
+  });
+  const rows = ranges.map(
+    ({ item, fact, previous, bound, workOrders: between }) => {
+      cache.set(item.name, {
+        ...fact,
+        between:
+          bound === undefined
+            ? null
+            : {
+                previous: previous ?? null,
+                previousObject: bound,
+                workOrders: between,
+              },
+      });
+      const workOrders = [...between];
+      if (workOrders.length === 0) {
+        if (fact.manifestWorkOrders instanceof Error)
+          throw fact.manifestWorkOrders;
+        workOrders.push(...fact.manifestWorkOrders);
+      }
+      if (workOrders.length === 0)
+        workOrders.push(...historicalWorkOrders(toolRoot, item.name));
+      return {
+        tag: item.name,
+        commit: item.target,
+        application: fact.application,
+        workOrders,
+      };
+    },
+  );
+  for (const { name } of candidates)
+    if (!facts.get(name).dotln) cache.set(name, facts.get(name));
+  cache.save();
   process.stdout.write("TAG\tCOMMIT\tAPPLICATION\tWORK ORDERS\n");
   for (const row of rows)
     process.stdout.write(

@@ -3457,6 +3457,15 @@ test("closeout preview and copy preserve collisions, harness state, terms and ev
     true,
   );
   assert.equal(
+    classifyIgnoredMaterial("docs/control/local/cache/release-list.json")
+      .disposable,
+    true,
+  );
+  assert.equal(
+    classifyIgnoredMaterial("docs/control/local/cached-terms.txt").disposable,
+    false,
+  );
+  assert.equal(
     classifyIgnoredMaterial("docs/control/local/terms.txt").disposable,
     false,
   );
