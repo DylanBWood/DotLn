@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "kind": "order-meter-snapshot",
+  "observedAt": "2026-09-27T20:55:52.554Z",
+  "revision": null,
+  "source": "retained usage copies in the main checkout's lane",
+  "orders": [
+    {
+      "workOrder": "WO-050",
+      "usageByRole": {
+        "executor": {"dispatches":2,"totalTokens":null,"costUsd":null,"commandsRun":null,"stepCount":null,"durationMs":1820768},
+        "verifier": {"dispatches":2,"totalTokens":189119,"costUsd":null,"commandsRun":null,"stepCount":null,"durationMs":97160},
+        "reviewer": {"dispatches":1,"totalTokens":22778777,"costUsd":null,"commandsRun":123,"stepCount":141,"durationMs":2388062}
+      }
+    }
+  ],
+  "usageCopies": [
+    {
+      "path": "process/usage.jsonl",
+      "sha256": "5a2e72a09306622a5d8a65b506a06938448a27ca0a051659b480802e691dfe0f",
+      "rows": 13
+    }
+  ]
+}

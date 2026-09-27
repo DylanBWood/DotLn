@@ -1,0 +1,1290 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-27T20:55:52.554Z",
+  "source": "the operator's main checkout's retained lanes (docs/control/local/retained/WO-NNN), read from the WO-170 worktree",
+  "closedOrders": 114,
+  "recovered": 77,
+  "largestSnapshotBytes": 3550,
+  "usageRows": 2262,
+  "unavailable": [
+    "WO-003",
+    "WO-004",
+    "WO-005",
+    "WO-006",
+    "WO-007",
+    "WO-008",
+    "WO-009",
+    "WO-010",
+    "WO-011",
+    "WO-012",
+    "WO-013",
+    "WO-015",
+    "WO-016",
+    "WO-017",
+    "WO-018",
+    "WO-019",
+    "WO-020",
+    "WO-021",
+    "WO-022",
+    "WO-023",
+    "WO-024",
+    "WO-025",
+    "WO-026",
+    "WO-027",
+    "WO-028",
+    "WO-029",
+    "WO-030",
+    "WO-031",
+    "WO-032",
+    "WO-038",
+    "WO-039",
+    "WO-041",
+    "WO-042",
+    "WO-101",
+    "WO-108",
+    "WO-109",
+    "WO-127"
+  ],
+  "orders": [
+    {
+      "workOrder": "WO-043",
+      "bytes": 3550,
+      "keptRow": "docs/evidence/WO-043/meta.json",
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 50
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": 50990500,
+        "verifier": 31136315,
+        "reviewer": 13161563,
+        "release-close": 344874
+      }
+    },
+    {
+      "workOrder": "WO-044",
+      "bytes": 851,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 80
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": 220214169,
+        "verifier": 70761001,
+        "reviewer": 12527108
+      }
+    },
+    {
+      "workOrder": "WO-045",
+      "bytes": 844,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 30
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": null,
+        "verifier": 6737803,
+        "reviewer": 13612199
+      }
+    },
+    {
+      "workOrder": "WO-046",
+      "bytes": 843,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 16
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": null,
+        "verifier": 15605104,
+        "reviewer": 20072324
+      }
+    },
+    {
+      "workOrder": "WO-047",
+      "bytes": 845,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 29
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": null,
+        "verifier": 41379936,
+        "reviewer": 41683580
+      }
+    },
+    {
+      "workOrder": "WO-048",
+      "bytes": 844,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 18
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": null,
+        "verifier": 13711461,
+        "reviewer": 38188001
+      }
+    },
+    {
+      "workOrder": "WO-049",
+      "bytes": 2620,
+      "keptRow": "docs/evidence/WO-049/meta-baseline.json",
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 29
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": null,
+        "verifier": 37400009,
+        "reviewer": 35507420
+      }
+    },
+    {
+      "workOrder": "WO-050",
+      "bytes": 841,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 13
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": null,
+        "verifier": 189119,
+        "reviewer": 22778777
+      }
+    },
+    {
+      "workOrder": "WO-051",
+      "bytes": 842,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 15
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": null,
+        "verifier": 13634258,
+        "reviewer": 6241297
+      }
+    },
+    {
+      "workOrder": "WO-052",
+      "bytes": 845,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 20
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": null,
+        "verifier": 7530218,
+        "reviewer": 70547389
+      }
+    },
+    {
+      "workOrder": "WO-053",
+      "bytes": 841,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 15
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": null,
+        "verifier": 6543627,
+        "reviewer": 5815579
+      }
+    },
+    {
+      "workOrder": "WO-054",
+      "bytes": 844,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 42
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": null,
+        "verifier": 38329525,
+        "reviewer": 13222394
+      }
+    },
+    {
+      "workOrder": "WO-055",
+      "bytes": 845,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 17
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": 11929434,
+        "verifier": 9805425,
+        "reviewer": 14869862
+      }
+    },
+    {
+      "workOrder": "WO-056",
+      "bytes": 844,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 29
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": 137054884,
+        "verifier": 19030055,
+        "reviewer": 9198085
+      }
+    },
+    {
+      "workOrder": "WO-063",
+      "bytes": 840,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 15
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": 5885603,
+        "verifier": 6361710,
+        "reviewer": 14598636
+      }
+    },
+    {
+      "workOrder": "WO-064",
+      "bytes": 844,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 30
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": 62037838,
+        "verifier": 5616036,
+        "reviewer": 25256729
+      }
+    },
+    {
+      "workOrder": "WO-067",
+      "bytes": 807,
+      "keptRow": null,
+      "copies": [],
+      "totalTokensByRole": {
+        "executor": null,
+        "verifier": 4791185,
+        "reviewer": 7491444
+      },
+      "uncarriedCopies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 20,
+          "carriedRows": 15
+        }
+      ]
+    },
+    {
+      "workOrder": "WO-068",
+      "bytes": 845,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 19
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": null,
+        "verifier": 24229810,
+        "reviewer": 28087575
+      }
+    },
+    {
+      "workOrder": "WO-069",
+      "bytes": 840,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 22
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": null,
+        "verifier": null,
+        "reviewer": 17885360
+      }
+    },
+    {
+      "workOrder": "WO-070",
+      "bytes": 843,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 28
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": 78578978,
+        "verifier": 3602377,
+        "reviewer": 6994430
+      }
+    },
+    {
+      "workOrder": "WO-071",
+      "bytes": 711,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 8
+        }
+      ],
+      "totalTokensByRole": {
+        "verifier": 24738170,
+        "reviewer": 15115060
+      }
+    },
+    {
+      "workOrder": "WO-079",
+      "bytes": 840,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 16
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": null,
+        "verifier": 10858158,
+        "reviewer": 7391898
+      }
+    },
+    {
+      "workOrder": "WO-084",
+      "bytes": 840,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 16
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": 6813655,
+        "verifier": 7689479,
+        "reviewer": 14929658
+      }
+    },
+    {
+      "workOrder": "WO-085",
+      "bytes": 843,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 35
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": 26556596,
+        "verifier": 37494113,
+        "reviewer": 6381918
+      }
+    },
+    {
+      "workOrder": "WO-090",
+      "bytes": 837,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 24
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": null,
+        "verifier": 7942557,
+        "reviewer": 9485671
+      }
+    },
+    {
+      "workOrder": "WO-099",
+      "bytes": 842,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 63
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": 201603772,
+        "verifier": null,
+        "reviewer": 7897924
+      }
+    },
+    {
+      "workOrder": "WO-100",
+      "bytes": 848,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 58
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": 191548715,
+        "verifier": 20608762,
+        "reviewer": 38885788
+      }
+    },
+    {
+      "workOrder": "WO-110",
+      "bytes": 843,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 24
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": 71155894,
+        "verifier": null,
+        "reviewer": 12610229
+      }
+    },
+    {
+      "workOrder": "WO-111",
+      "bytes": 845,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 36
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": 43245377,
+        "verifier": 30960468,
+        "reviewer": 9349141
+      }
+    },
+    {
+      "workOrder": "WO-114",
+      "bytes": 847,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 30
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": 43941553,
+        "verifier": 38746431,
+        "reviewer": 16726147
+      }
+    },
+    {
+      "workOrder": "WO-115",
+      "bytes": 851,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 78
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": 113381672,
+        "verifier": 41786055,
+        "reviewer": 77792146
+      }
+    },
+    {
+      "workOrder": "WO-119",
+      "bytes": 844,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 16
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": null,
+        "verifier": 9631228,
+        "reviewer": 18604915
+      }
+    },
+    {
+      "workOrder": "WO-120",
+      "bytes": 841,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 14
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": 12730226,
+        "verifier": 7031946,
+        "reviewer": 98332985
+      }
+    },
+    {
+      "workOrder": "WO-121",
+      "bytes": 845,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 22
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": null,
+        "verifier": 16699209,
+        "reviewer": 39847462
+      }
+    },
+    {
+      "workOrder": "WO-122",
+      "bytes": 846,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 19
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": null,
+        "verifier": 10589277,
+        "reviewer": 10843634
+      }
+    },
+    {
+      "workOrder": "WO-125",
+      "bytes": 982,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 67
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": 43016722,
+        "verifier": 40949599,
+        "reviewer": 10272627,
+        "release-close": 537428
+      }
+    },
+    {
+      "workOrder": "WO-126",
+      "bytes": 2863,
+      "keptRow": "docs/evidence/WO-126/meta.json",
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 28
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": 79941302,
+        "verifier": 116719929,
+        "reviewer": 25351219
+      }
+    },
+    {
+      "workOrder": "WO-128",
+      "bytes": 983,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 23
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": 45852868,
+        "verifier": 12444327,
+        "reviewer": 16213083,
+        "release-close": 1021477
+      }
+    },
+    {
+      "workOrder": "WO-129",
+      "bytes": 982,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 39
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": 26222030,
+        "verifier": 26805617,
+        "reviewer": 74560864,
+        "release-close": 1882539
+      }
+    },
+    {
+      "workOrder": "WO-130",
+      "bytes": 983,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 68
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": 108979437,
+        "verifier": 593778776,
+        "reviewer": 87870941,
+        "release-close": 973911
+      }
+    },
+    {
+      "workOrder": "WO-131",
+      "bytes": 851,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 36
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": 146650248,
+        "verifier": 48524353,
+        "reviewer": 11832818
+      }
+    },
+    {
+      "workOrder": "WO-132",
+      "bytes": 842,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 53
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": null,
+        "verifier": null,
+        "reviewer": 10650864
+      }
+    },
+    {
+      "workOrder": "WO-133",
+      "bytes": 845,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 38
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": null,
+        "verifier": 22873215,
+        "reviewer": 34159810
+      }
+    },
+    {
+      "workOrder": "WO-134",
+      "bytes": 840,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 12
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": null,
+        "verifier": 13284489,
+        "reviewer": null
+      }
+    },
+    {
+      "workOrder": "WO-135",
+      "bytes": 844,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 18
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": null,
+        "verifier": 17203429,
+        "reviewer": 15470659
+      }
+    },
+    {
+      "workOrder": "WO-136",
+      "bytes": 842,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 18
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": null,
+        "verifier": 20443712,
+        "reviewer": 30952456
+      }
+    },
+    {
+      "workOrder": "WO-137",
+      "bytes": 839,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 16
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": null,
+        "verifier": 7883785,
+        "reviewer": 20905089
+      }
+    },
+    {
+      "workOrder": "WO-138",
+      "bytes": 840,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 24
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": null,
+        "verifier": 20500631,
+        "reviewer": 8378684
+      }
+    },
+    {
+      "workOrder": "WO-139",
+      "bytes": 843,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 37
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": null,
+        "verifier": 26624142,
+        "reviewer": null
+      }
+    },
+    {
+      "workOrder": "WO-140",
+      "bytes": 840,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 20
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": 61138419,
+        "verifier": null,
+        "reviewer": 8592383
+      }
+    },
+    {
+      "workOrder": "WO-141",
+      "bytes": 842,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 14
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": null,
+        "verifier": 8281016,
+        "reviewer": 13912830
+      }
+    },
+    {
+      "workOrder": "WO-142",
+      "bytes": 846,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 56
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": null,
+        "verifier": 116999520,
+        "reviewer": 19421691
+      }
+    },
+    {
+      "workOrder": "WO-143",
+      "bytes": 844,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 21
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": null,
+        "verifier": 28948654,
+        "reviewer": 22832430
+      }
+    },
+    {
+      "workOrder": "WO-144",
+      "bytes": 841,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 40
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": null,
+        "verifier": null,
+        "reviewer": 36226243
+      }
+    },
+    {
+      "workOrder": "WO-145",
+      "bytes": 841,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 18
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": 8882922,
+        "verifier": 3855914,
+        "reviewer": 5706667
+      }
+    },
+    {
+      "workOrder": "WO-146",
+      "bytes": 839,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 36
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": null,
+        "verifier": null,
+        "reviewer": 13183562
+      }
+    },
+    {
+      "workOrder": "WO-147",
+      "bytes": 715,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 15
+        }
+      ],
+      "totalTokensByRole": {
+        "verifier": 21123276,
+        "reviewer": 8392406
+      }
+    },
+    {
+      "workOrder": "WO-148",
+      "bytes": 841,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 23
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": 81909024,
+        "verifier": null,
+        "reviewer": 11119652
+      }
+    },
+    {
+      "workOrder": "WO-149",
+      "bytes": 843,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 26
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": null,
+        "verifier": 18182807,
+        "reviewer": 15299553
+      }
+    },
+    {
+      "workOrder": "WO-150",
+      "bytes": 849,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 13
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": 34670210,
+        "verifier": 588789,
+        "reviewer": 21512129
+      }
+    },
+    {
+      "workOrder": "WO-151",
+      "bytes": 848,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 29
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": 118344148,
+        "verifier": 11248743,
+        "reviewer": 32784597
+      }
+    },
+    {
+      "workOrder": "WO-152",
+      "bytes": 846,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 30
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": 37737870,
+        "verifier": 9636007,
+        "reviewer": 17366422
+      }
+    },
+    {
+      "workOrder": "WO-153",
+      "bytes": 844,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 28
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": 38434330,
+        "verifier": 5214329,
+        "reviewer": 16449517
+      }
+    },
+    {
+      "workOrder": "WO-154",
+      "bytes": 847,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 30
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": 128686126,
+        "verifier": 10224852,
+        "reviewer": 13100929
+      }
+    },
+    {
+      "workOrder": "WO-155",
+      "bytes": 844,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 19
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": 11245881,
+        "verifier": 11625214,
+        "reviewer": 10964844
+      }
+    },
+    {
+      "workOrder": "WO-156",
+      "bytes": 840,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 33
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": 25577341,
+        "verifier": 8234797,
+        "reviewer": 6647468
+      }
+    },
+    {
+      "workOrder": "WO-157",
+      "bytes": 850,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 38
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": 303169729,
+        "verifier": 19214886,
+        "reviewer": 11796986
+      }
+    },
+    {
+      "workOrder": "WO-158",
+      "bytes": 849,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 45
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": 126624552,
+        "verifier": 22204713,
+        "reviewer": 44971931
+      }
+    },
+    {
+      "workOrder": "WO-159",
+      "bytes": 845,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 28
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": 115580154,
+        "verifier": 12402667,
+        "reviewer": 6778366
+      }
+    },
+    {
+      "workOrder": "WO-160",
+      "bytes": 846,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 36
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": 50530278,
+        "verifier": 47561121,
+        "reviewer": 12185607
+      }
+    },
+    {
+      "workOrder": "WO-161",
+      "bytes": 844,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 29
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": 27358600,
+        "verifier": 35153323,
+        "reviewer": 7480550
+      }
+    },
+    {
+      "workOrder": "WO-164",
+      "bytes": 847,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 40
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": 91344086,
+        "verifier": 14867016,
+        "reviewer": 52141044
+      }
+    },
+    {
+      "workOrder": "WO-165",
+      "bytes": 841,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 17
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": null,
+        "verifier": 12855951,
+        "reviewer": 12512397
+      }
+    },
+    {
+      "workOrder": "WO-166",
+      "bytes": 846,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 24
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": 52837626,
+        "verifier": 29743726,
+        "reviewer": 23365473
+      }
+    },
+    {
+      "workOrder": "WO-168",
+      "bytes": 847,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 35
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": 142826608,
+        "verifier": 18953377,
+        "reviewer": 33258389
+      }
+    },
+    {
+      "workOrder": "WO-169",
+      "bytes": 845,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 22
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": 80784378,
+        "verifier": 12928855,
+        "reviewer": 25953460
+      }
+    },
+    {
+      "workOrder": "WO-171",
+      "bytes": 843,
+      "keptRow": null,
+      "copies": [
+        {
+          "path": "process/usage.jsonl",
+          "rows": 24
+        }
+      ],
+      "totalTokensByRole": {
+        "executor": 63329573,
+        "verifier": 8671094,
+        "reviewer": 16102600
+      }
+    }
+  ],
+  "uncarried": [
+    "WO-067"
+  ]
+}
