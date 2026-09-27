@@ -2298,11 +2298,15 @@ claim evidence or releases it does not have.
   command list: `cat`, `head`, `tail`, `wc`, `ls`, `grep`, `sed -n` with a
   script whose every command prints (numeric, `$` or `/regex/` addresses),
   `git --no-pager diff|log|show|status|stash list`, and, at the worktree root only,
-  `node scripts/harness.mjs writer --show` and
-  `npm run resume --silent -- status`. A stage with a redirect operand, a
-  heredoc, an environment prefix or wrapper, an expansion or an unquoted glob
-  character is not on the list; descriptor duplication such as `2>&1` opens
-  no file and passes. A listed reader piped into an unlisted or writing stage
+  `node scripts/harness.mjs writer --show|evidence --wait [--timeout seconds]`
+  and `npm run resume --silent -- status`, `--silent` on either side of `resume`.
+  A stage with a heredoc, an environment prefix or wrapper, an expansion or
+  an unquoted glob character is not on the list. Four argument forms are
+  (WO-168): a quoted word holding `<` or `>`; a revision suffix (`~`, `^`,
+  `@{…}`) in a listed Git read's operand; an input redirect from a literal
+  path; an output redirect to exactly `/dev/null`. Descriptor duplication
+  such as `2>&1` opens no file and passes; `<>` is refused, and any other
+  redirect is off the list and judged by that adapter. A listed reader piped into an unlisted or writing stage
   is refused (receipt 028's criterion 6 known issue). A Git read on the list
   carries `--no-pager` (or `-P`): a paged read runs the configured or
   default pager, an unlisted program, whenever its output is a terminal
@@ -2312,7 +2316,8 @@ claim evidence or releases it does not have.
   external-program option, and is admitted only while the repository configures no
   `core.fsmonitor`, `diff.external`, diff `command` or `textconv` driver,
   clean, smudge or process filter, `log.showSignature`, `gpg.program` or
-  `gpg.<format>.program`; a configured program returns the
+  `gpg.<format>.program`, no `%G` pretty format and no `post-index-change`
+  hook; a configured program returns the
   [WO-142-D012](../evidence/WO-142/decisions.md#wo-142-d012--retain-existing-git-admission-with-an-explicit-effects-follow-up)
   refusal. The index stat refresh a plain `git status` may take remains the
   recorded residual of that follow-up. The refusal text names the list; a

@@ -3082,6 +3082,10 @@ function outsideWriteResponse(
   return effect ? { effect } : {};
 }
 
+/** WO-168 (WO-158-D028 b): the hooks a listed Git read can start. The index
+ * refresh of a diff or a status writes the index, which runs this hook. */
+const LIVE_GATE_GIT_HOOKS: readonly string[] = ["post-index-change"];
+
 /** WO-158 (WO-142-D012): a plain Git read runs programs the repository
  * configures. The live-gate list admits one only while none is configured;
  * the index stat refresh a status may take is the recorded residual. */
@@ -3090,23 +3094,48 @@ function configuredGitPrograms(directory: string): boolean {
     directory,
     [
       "config",
+      "-z",
       "--get-regexp",
-      String.raw`^(core\.fsmonitor|diff\.external|diff\..+\.(command|textconv)|filter\..+\.(clean|smudge|process)|log\.showsignature|gpg\.program|gpg\..+\.program)$`,
+      String.raw`^(core\.fsmonitor|diff\.external|diff\..+\.(command|textconv)|filter\..+\.(clean|smudge|process)|log\.showsignature|gpg\.program|gpg\..+\.program|format\.pretty|pretty\..+|hook\..+\.event)$`,
     ],
     true,
   );
-  return configured
-    .split("\n")
-    .filter(Boolean)
-    .some((line) => {
-      const [key, ...value] = line.split(" ");
-      return !(
-        ["core.fsmonitor", "log.showsignature"].includes(key!) &&
-        ["false", "no", "off", "0", ""].includes(value.join(" ").toLowerCase())
-      );
-    });
+  if (
+    configured
+      .split("\0")
+      .filter(Boolean)
+      .some((record) => {
+        // A record is its key, a newline and its value, so either may hold a
+        // space. A key alone is a boolean, which Git reads as true.
+        const end = record.indexOf("\n");
+        const key = end < 0 ? record : record.slice(0, end);
+        const text = end < 0 ? "true" : record.slice(end + 1);
+        // A pretty format runs the signature program only through %G, and a
+        // configured hook runs only for the event it names.
+        if (key === "format.pretty" || key.startsWith("pretty."))
+          return text.includes("%G");
+        if (key.startsWith("hook.")) return LIVE_GATE_GIT_HOOKS.includes(text);
+        return !(
+          ["core.fsmonitor", "log.showsignature"].includes(key) &&
+          ["false", "no", "off", "0", ""].includes(text.toLowerCase())
+        );
+      })
+  )
+    return true;
+  // The hooks directory honours core.hooksPath. One that cannot be named
+  // establishes nothing, so the read is not admitted.
+  const hooks = git(directory, ["rev-parse", "--git-path", "hooks"], true);
+  if (!hooks.trim()) return true;
+  return LIVE_GATE_GIT_HOOKS.some((name) => {
+    try {
+      const info = statSync(resolve(directory, hooks.trim(), name));
+      return info.isFile() && (info.mode & 0o111) !== 0;
+    } catch (error) {
+      return !["ENOENT", "ENOTDIR"].includes(errorCode(error) ?? "");
+    }
+  });
 }
-const LIVE_GATE_READ_TEXT = `Read-only commands stay admitted while it runs: ${LIVE_GATE_READ_LIST}, each stage without a redirect operand, heredoc or unquoted glob; a Git read carries --no-pager, names no %G signature placeholder and needs a repository that configures no fsmonitor, external diff, textconv, filter or signature program.`;
+const LIVE_GATE_READ_TEXT = `Read-only commands stay admitted while it runs: ${LIVE_GATE_READ_LIST}, each stage without a heredoc, expansion or unquoted glob. Admitted forms: a quoted < or >, a Git revision suffix (~, ^, @{...}), an input redirect from a literal path, an output redirect to /dev/null, descriptor duplication such as 2>&1, and --silent before or after resume; any other redirect is judged by its destination. A Git read carries --no-pager, names no %G signature placeholder and needs a repository that configures no fsmonitor, external diff, textconv, filter or signature program, no %G pretty format and no post-index-change hook.`;
 
 /** All generated pre-tool boundaries share this guard. There is no agent-
  * supplied gate-child bypass; gate-owned subprocess writes do not dispatch tools.

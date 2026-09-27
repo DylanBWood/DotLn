@@ -116,9 +116,11 @@ import {
 
 import {
   shellRedirectTargets,
+  shellWritePaths,
   shellWriteTargets,
   patchWriteTargets,
   liveGateReads,
+  LIVE_GATE_READ_LIST,
 } from "../packages/skeleton/dist/src/harness-command.js";
 
 const sourceRoot = fileURLToPath(new URL("../", import.meta.url));
@@ -4657,7 +4659,7 @@ test("WO-158 a live gate admits the fixed read-only list stage by stage and name
       "git --no-pager show -s --pretty=format:%GS HEAD",
     ];
     const listed =
-      /Read-only commands stay admitted while it runs: cat, head, tail, wc, ls, grep, sed -n with a print-only script, git --no-pager diff\|log\|show\|status\|stash list, node scripts\/harness\.mjs writer --show\|evidence --wait \[--timeout seconds\] and npm run resume --silent -- status, each stage without a redirect operand, heredoc or unquoted glob; a Git read carries --no-pager/;
+      /Read-only commands stay admitted while it runs: cat, head, tail, wc, ls, grep, sed -n with a print-only script, git --no-pager diff\|log\|show\|status\|stash list, node scripts\/harness\.mjs writer --show\|evidence --wait \[--timeout seconds\] and npm run resume --silent -- status, each stage without a heredoc, expansion or unquoted glob\. Admitted forms: a quoted < or >, a Git revision suffix \(~, \^, @\{\.\.\.\}\), an input redirect from a literal path, an output redirect to \/dev\/null, descriptor duplication such as 2>&1, and --silent before or after resume; any other redirect is judged by its destination\. A Git read carries --no-pager/;
     const active = beginGateRun(root, "npm test");
     try {
       for (const hook of [
@@ -4830,6 +4832,279 @@ test("WO-158 FINAL-001 F1: Git prefix orders terminate and chained writes remain
     }
   } finally {
     removeFixture(root, { recursive: true });
+  }
+});
+
+test("WO-168 a live gate admits four argument forms of listed reads and the second npm spelling, and refuses every other form", () => {
+  const gitRead = { git: true, helper: false };
+  const read = { git: false, helper: false };
+  const helper = { git: false, helper: true };
+  // The seven commands of the order's observed gap.
+  const gap = [
+    ["git --no-pager diff HEAD~1", gitRead],
+    ["git --no-pager show stash@{0}", gitRead],
+    ["grep -n '<title>' fixture.ts", read],
+    ['git --no-pager log -1 --format="%H <%ae>"', gitRead],
+    ["wc -l < fixture.ts", read],
+    ["ls docs 2>/dev/null", read],
+    ["npm run --silent resume -- status", helper],
+  ];
+  const table = [
+    ...gap,
+    // A quoted word that contains < or >; an operator beside a quoted word
+    // is still an operator.
+    ["grep -n 'a > b' fixture.ts", read],
+    ["grep -n '2>&1' fixture.ts", read],
+    ['cat "fixture.ts">fixture.ts', null],
+    ['grep "x">out fixture.ts', null],
+    ["ls docs 2>'/dev/null'", null],
+    // A revision suffix in an operand of a listed Git read.
+    ["git --no-pager show HEAD^{tree}", gitRead],
+    ["git --no-pager log -1 HEAD@{upstream}", gitRead],
+    ["git --no-pager diff HEAD~2 HEAD^ -- fixture.ts", gitRead],
+    ["git --no-pager diff ~/x", null],
+    ["git --no-pager log -1 --format=~/x", null],
+    ["git --no-pager show HEAD:~/x", null],
+    ["git --no-pager show HEAD@{a,b}", null],
+    ["git --no-pager show HEAD@{1..3}", null],
+    ["git --no-pager show HEAD@{{0}}", null],
+    ["git --no-pager diff HEAD~1 -- docs/*.md", null],
+    ["git --no-pager diff 'HEAD'~1", null],
+    ["git --no-pager diff $(x)", null],
+    // zsh parameter flags are expansions, in a Git operand and anywhere else.
+    ["git --no-pager diff $~x", null],
+    ["git --no-pager diff $=x", null],
+    ["cat $=x", null],
+    ["cat $^x", null],
+    ["cat $+x", null],
+    // zsh's `=` expansion: at a word's start, after empty quotes, and after
+    // `=` or `:` where an assignment value expands; an escaped or quoted `=`
+    // and one inside an option word are literal.
+    ["ls =cat", null],
+    ["cat ''=cat", null],
+    ["git --no-pager diff =cat", null],
+    ["git --no-pager log -1 --format==cat", null],
+    ["git --no-pager show HEAD~1:=cat", null],
+    ["cat \\=cat", read],
+    ["grep -n '=cat' fixture.ts", read],
+    // A `=` with nothing after it stays literal; zsh still expands `==`.
+    ["grep -c = fixture.ts", read],
+    ["grep -c a:= fixture.ts", read],
+    ["grep -c == fixture.ts", null],
+    ["git --no-pager log -1 --format=%H HEAD~1", gitRead],
+    ["ls stash@{0}", null],
+    ["ls docs/*.md", null],
+    // An input redirect from a literal path.
+    ["wc -l <fixture.ts", read],
+    ["wc -l 0< fixture.ts", read],
+    ["wc -l < 'fixture one.ts'", read],
+    ["wc -l <> fixture.ts", null],
+    ["wc -l <>fixture.ts", null],
+    ["wc -l < fix*.ts", null],
+    ["wc -l < $HOME/x", null],
+    ["wc -l <<< fixture.ts", null],
+    ["wc -l << END\nfixture.ts\nEND", null],
+    ["wc -l <", null],
+    ["< fixture.ts", null],
+    // An output redirect whose literal operand is exactly /dev/null.
+    ["ls docs > /dev/null 2>&1", read],
+    ["ls docs >>/dev/null", read],
+    // A shell without `&>` backgrounds the reader and runs what follows.
+    ["ls docs &>/dev/null", null],
+    ["ls docs &>/dev/null touch fixture.ts", null],
+    ["ls docs &>>/dev/null", null],
+    ["ls docs 2>/tmp/x", null],
+    ["ls docs 2>/dev/null/x", null],
+    ["ls docs 2>/dev/../dev/null", null],
+    ["ls docs >&/dev/null", null],
+    ["ls docs 2>", null],
+    ["ls > fixture.ts", null],
+    // Either position of --silent, once; helper forms argument by argument.
+    ["npm run resume --silent -- status", helper],
+    ["npm run resume -- status --json --work-order WO-168", helper],
+    ["npm --silent run resume -- status", null],
+    ["npm run --silent resume --silent -- status", null],
+    ["npm run --silent resume -- next", null],
+    ["npm run --silent resume status", null],
+    ["npm run 'resume --silent -- status'", null],
+    ["npm 'run resume' -- status", null],
+    ["node scripts/harness.mjs writer --show", helper],
+    ["node scripts/harness.mjs evidence --wait", helper],
+    ["node scripts/harness.mjs evidence --wait --timeout 3", helper],
+    ["node 'scripts/harness.mjs writer' --show", null],
+    ["node scripts/harness.mjs 'writer --show'", null],
+    ["node scripts/harness.mjs evidence '--wait --timeout' 3", null],
+    ["node scripts/harness.mjs evidence --wait --timeout", null],
+    // Only space and tab end a word: after any other whitespace a `#` is
+    // inside the word, and a shell runs what follows it.
+    ...["\u00a0", "\r", "\u000b", "\f", "\u2028"].map((blank) => [
+      `cat fixture.ts${blank}#;touch fixture.ts`,
+      null,
+    ]),
+    ["cat fixture.ts\t# a comment", read],
+    ["cat fixture.ts # a comment", read],
+    // The list names no new program, and quoted globs stay admitted.
+    ["cut -c1-80 fixture.ts", null],
+    ["sort fixture.ts", null],
+    ['grep -n "a*" fixture.ts', read],
+    ["grep -n 'N[0-9]' fixture.ts", read],
+  ];
+  for (const [command, expected] of table)
+    assert.deepEqual(liveGateReads(command), expected, command);
+  // VER-001 F1 and F2: the destination adapter the hook falls back to agrees.
+  // Where a shell backgrounds at `&>`, the words after its operand are another
+  // command, so they make the invocation opaque; nothing after it keeps the
+  // WO-144 discard.
+  for (const [command, expected] of [
+    ["ls docs &>/dev/null touch fixture.ts", null],
+    ["ls docs &> /dev/null touch fixture.ts", null],
+    ["ls docs &>>/dev/null touch fixture.ts", null],
+    ["&>/dev/null ls docs", null],
+    ["ls =cat", null],
+    ["ls docs &>/dev/null", ["/dev/null"]],
+    ["ls docs &>/dev/null 2>&1", ["/dev/null"]],
+    ["ls docs &>/dev/null; touch fixture.ts", ["/dev/null", "fixture.ts"]],
+  ])
+    assert.deepEqual(shellWritePaths(command), expected, command);
+  assert.equal(shellRedirectTargets("true &>/dev/null touch fixture.ts"), null);
+  assert.equal(
+    LIVE_GATE_READ_LIST,
+    "cat, head, tail, wc, ls, grep, sed -n with a print-only script, git --no-pager diff|log|show|status|stash list, node scripts/harness.mjs writer --show|evidence --wait [--timeout seconds] and npm run resume --silent -- status",
+  );
+
+  const root = fixture();
+  const hooksPath = realpathSync(
+    mkdtempSync(join(tmpdir(), "dotln-wo168-hooks-")),
+  );
+  try {
+    const payload = (command) =>
+      input(root, "PreToolUse", { tool_name: "Bash", tool_input: { command } });
+    // Only the fixture repository's own configuration is judged, and the
+    // system temporary root is a directory that does not hold /tmp.
+    const environment = {
+      GIT_CONFIG_GLOBAL: "/dev/null",
+      GIT_CONFIG_NOSYSTEM: "1",
+      TMPDIR: hooksPath,
+      TMP: hooksPath,
+      TEMP: hooksPath,
+    };
+    const judge = (command, hook) =>
+      invoke(root, hook, payload(command), false, environment);
+    const denied = (command, hook = "permissions") => {
+      const result = judge(command, hook);
+      assert.equal(
+        result.hookSpecificOutput?.permissionDecision,
+        "deny",
+        `${hook}: ${command}`,
+      );
+      assert.match(
+        result.hookSpecificOutput.permissionDecisionReason,
+        /write may change gate inputs during active gate .*Admitted forms: a quoted < or >, a Git revision suffix \(~, \^, @\{\.\.\.\}\), an input redirect from a literal path, an output redirect to \/dev\/null, descriptor duplication such as 2>&1, and --silent before or after resume; any other redirect is judged by its destination\. .* no %G pretty format and no post-index-change hook\./,
+      );
+    };
+    const admitted = (command, hook = "permissions") =>
+      assert.equal(allowed(judge(command, hook)), true, `${hook}: ${command}`);
+    const active = beginGateRun(root, "npm test");
+    try {
+      for (const hook of [
+        "permissions",
+        "concurrent-work-requires-worktrees",
+        "write-observer",
+      ]) {
+        for (const [command] of gap) admitted(command, hook);
+        for (const command of [
+          "git --no-pager diff $(x)",
+          "ls docs/*.md",
+          "wc -l <> fixture.ts",
+          "cut -c1-80 fixture.ts",
+          // A redirect the destination adapter names onto a gate input.
+          "ls docs 2>fixture.ts",
+          "cat fixture.ts\u00a0#;touch fixture.ts",
+          // VER-001 F1: dash runs the touch; F2: zsh expands the word.
+          "ls docs &>/dev/null touch fixture.ts",
+          "ls =cat",
+        ])
+          denied(command, hook);
+        // Off the list, an `&>` discard with nothing after it is judged by its
+        // destination, as outside a gate (WO-144).
+        admitted("ls docs &>/dev/null", hook);
+        // Off the list, a redirect is judged by its destination: the gate
+        // passes this one and the outside-write guard refuses it.
+        const elsewhere = judge("ls docs 2>/tmp/x", hook);
+        assert.equal(
+          elsewhere.hookSpecificOutput?.permissionDecision,
+          "deny",
+          hook,
+        );
+        assert.match(
+          elsewhere.hookSpecificOutput.permissionDecisionReason,
+          /outside-project write to \/tmp\/x .* lacks an equipped outside-write grant/,
+        );
+        assert.doesNotMatch(
+          elsewhere.hookSpecificOutput.permissionDecisionReason,
+          /active gate/,
+        );
+      }
+      // WO-158-D028 (b): a hook or a signature format a listed read can run.
+      const hook = join(root, ".git/hooks/post-index-change");
+      writeFileSync(hook, "#!/bin/sh\n");
+      chmodSync(hook, 0o644);
+      admitted("git --no-pager diff");
+      chmodSync(hook, 0o755);
+      denied("git --no-pager diff");
+      denied("git --no-pager log -1");
+      rmSync(hook);
+      admitted("git --no-pager diff");
+
+      writeFileSync(join(hooksPath, "post-index-change"), "#!/bin/sh\n");
+      chmodSync(join(hooksPath, "post-index-change"), 0o755);
+      writeFileSync(join(hooksPath, "pre-commit"), "#!/bin/sh\n");
+      chmodSync(join(hooksPath, "pre-commit"), 0o755);
+      git(root, "config", "core.hooksPath", hooksPath);
+      denied("git --no-pager diff");
+      rmSync(join(hooksPath, "post-index-change"));
+      // Another executable hook in the directory is none a read can start.
+      admitted("git --no-pager diff");
+      git(root, "config", "--unset", "core.hooksPath");
+
+      for (const [key, value, verdict] of [
+        ["hook.fixture.event", "post-index-change", denied],
+        // A subsection name may hold a space.
+        ["hook.fixture hook.event", "post-index-change", denied],
+        ["hook.fixture.event", "pre-commit", admitted],
+        ["format.pretty", "format:%H %G?", denied],
+        ["pretty.signed", "format:%H %GS", denied],
+        ["format.pretty", "oneline", admitted],
+        ["pretty.plain", "format:%H %s", admitted],
+      ]) {
+        git(root, "config", key, value);
+        try {
+          verdict("git --no-pager log -1");
+        } finally {
+          git(root, "config", "--unset", key);
+        }
+      }
+      // A key written without a value is a boolean Git reads as true.
+      const config = join(root, ".git/config");
+      const written = readFileSync(config, "utf8");
+      for (const [section, name, verdict] of [
+        ["log", "showSignature", denied],
+        ["core", "fsmonitor", denied],
+        ["core", "ignoreCase", admitted],
+      ]) {
+        writeFileSync(config, `${written}[${section}]\n\t${name}\n`);
+        try {
+          verdict("git --no-pager log -1");
+        } finally {
+          writeFileSync(config, written);
+        }
+      }
+    } finally {
+      active.release();
+    }
+  } finally {
+    removeFixture(root, { recursive: true });
+    removeFixture(hooksPath, { recursive: true });
   }
 });
 
