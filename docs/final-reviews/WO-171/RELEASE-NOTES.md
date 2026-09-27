@@ -1,0 +1,19 @@
+## Release overview
+
+The operator's `harness prune --apply` can now finish. It plans once and asks GitHub about publication with one Release listing and one remote tag listing, instead of re-planning and making two remote calls per lane and stash before every deletion. An apply stopped part way resumes when it is run again. A retained order lane that holds the only copy of an order's usage record stays until a committed snapshot carries that copy.
+
+## Read before upgrading
+
+No action is required, and nothing runs an apply for you. The next `node scripts/harness.mjs prune` listing will show most retained order lanes under `retained` with `usage has no committed snapshot` or `usage copy is not in the committed snapshot`, where they were candidates before. On the operator's checkout on 2026-09-27 that was 73 lanes, 45.6 MB. They stay until `docs/evidence/WO-NNN/meta.json` is committed naming each usage copy's SHA-256. WO-170 as currently filed writes usage totals by role and no digest, so it will not release them unless it is amended; that decision is open for the next planning pass. The usage rule does not apply to integration stashes: the 15 published ones listed there (5.85 GB) are candidates that one apply removes. Publication is read once per apply, so a Release withdrawn while an apply runs is not seen by that apply. An order whose Release falls outside the newest 10,000 stays retained. A stash drop stopped while it holds its locks still needs the operator, as before.
+
+## Substantive changes
+
+An apply builds one plan. Before each deletion it re-reads registered worktrees, the writer and its events, live gates in every worktree and the ref backend, then re-judges only the candidate it is about to remove: its inventory, its guards and, for a stash, its identity by SHA. It refuses with `Prune subject changed` when anything differs, as before. Publication is `gh release list --limit 10000` and `git ls-remote --refs --tags origin`, joined to the local release records. An order's release is its newest local release tag that is listed as non-draft and whose remote tag names the same object. A failed listing keeps every lane and stash. Byte proofs are written to a partial file and linked into place, so a proof that exists is whole and a rerun continues from what remains. A retained lane holding `process/usage.jsonl`, or a copy that worktree preservation renamed with a `.from-WO-NNN` suffix on the file or its directory, stays retained until HEAD's `meta.json` for the order names every copy's SHA-256. A bound resident store inside a lane is inventoried in the lane's byte proof and removed with it.
+
+## Progressive polish
+
+The prune fixtures now count plans and publication calls instead of timing them, stop an apply with a real signal, and take preserved usage names from the real reconciliation call. The review gate re-runs them when `scripts/lib/intake-reconciliation.mjs` changes. Product 07's local lane retention paragraph states the one listing per run, the usage condition and resumption.
+
+## Evidence and compatibility
+
+Application `v0.52.6` is a patch over `v0.52.5`. No package source changed, so no component version moves, and no dependency, control-event schema, gate step, contract or edition changed. The listing of the operator's main checkout took 68.2 s before and 16.4 s after this change, and 18.0 s in the final review. Independent verification failed once, on a collision-renamed usage copy the first rule missed, and passed all nine criteria after the repair. The final review's gate passed 32 suites, 0 failed, in 570.30 s. Known limits are recorded with follow-ups: the usage rule finds a digest anywhere in the snapshot's text, a stop between a proof's link and its partial's removal leaves a small partial file, and the stash drop's own stopped states need the operator.

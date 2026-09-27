@@ -107,6 +107,8 @@ const machinerySources = {
     "packages/skeleton/src/gate-evidence.mjs",
     "scripts/test-harness.mjs",
     "scripts/lib/harness-prune.mjs",
+    // WO-171: the prune's usage retention follows preservation's collision names.
+    "scripts/lib/intake-reconciliation.mjs",
     "scripts/lib/stash-drop.mjs",
     // WO-159: prune lists stale Codex episode homes through the launcher.
     "packages/skeleton/src/worker-transport.ts",

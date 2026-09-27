@@ -1,4 +1,4 @@
-# WO-171 — Prune apply finishes: one plan and one publication observation per apply instead of one per candidate, an interrupted apply resumes, and a retained lane keeps its usage copy until the order's meter snapshot is committed (version assigned at activation)
+# WO-171 — Prune apply finishes: one plan and one publication observation per apply instead of one per candidate, an interrupted apply resumes, and a retained lane keeps its usage copy until the order's meter snapshot is committed (v0.52.6)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).

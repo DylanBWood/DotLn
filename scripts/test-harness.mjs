@@ -1,6 +1,7 @@
 import "./test-fixture-temporary.mjs";
 import test from "node:test";
 import { pruneHarness, pruneInventory } from "./lib/harness-prune.mjs";
+import { reconcileWorktreeMaterial } from "./lib/intake-reconciliation.mjs";
 import "./test-target-harness.mjs";
 import "./test-observed-facts.mjs";
 import {
@@ -8145,7 +8146,7 @@ test("WO-142 D1 publication proof binds the origin repository despite ambient GH
     write(
       root,
       "bin/gh",
-      `#!${process.execPath}\nconst fs=require('node:fs');const args=process.argv.slice(2);const bound=args[args.indexOf('--repo')+1]==='github.com/fixture-origin/fixture'&&!process.env.GH_REPO&&!process.env.GH_HOST;fs.appendFileSync(${JSON.stringify(join(root, "gh-observations.jsonl"))},JSON.stringify({args,repo:process.env.GH_REPO??null,host:process.env.GH_HOST??null})+String.fromCharCode(10));if(bound&&process.env.DOTLN_PRUNE_PUBLISHED!=='yes')process.exit(1);process.stdout.write(JSON.stringify({tagName:'v9.9.9',isDraft:false}));\n`,
+      `#!${process.execPath}\nconst fs=require('node:fs');const args=process.argv.slice(2);const bound=args[args.indexOf('--repo')+1]==='github.com/fixture-origin/fixture'&&!process.env.GH_REPO&&!process.env.GH_HOST;fs.appendFileSync(${JSON.stringify(join(root, "gh-observations.jsonl"))},JSON.stringify({args,repo:process.env.GH_REPO??null,host:process.env.GH_HOST??null})+String.fromCharCode(10));if(bound&&process.env.DOTLN_PRUNE_PUBLISHED!=='yes')process.exit(1);process.stdout.write(JSON.stringify([{tagName:'v9.9.9',isDraft:false}]));\n`,
     );
     chmodSync(join(root, "bin/git"), 0o700);
     chmodSync(join(root, "bin/gh"), 0o700);
@@ -8190,6 +8191,8 @@ test("WO-142 D1 publication proof binds the origin repository despite ambient GH
       .map(JSON.parse);
     assert.equal(observations.length, 2);
     for (const row of observations) {
+      // WO-171: one release listing per plan, never a view per release.
+      assert.deepEqual(row.args.slice(0, 2), ["release", "list"]);
       assert.equal(
         row.args[row.args.indexOf("--repo") + 1],
         "github.com/fixture-origin/fixture",
@@ -8920,6 +8923,772 @@ test("WO-160 non-top prune retains stashes during concurrent pack-refs pruning",
     if (pack && pack.exitCode === null && pack.signalCode === null)
       pack.kill("SIGKILL");
     if (exited) await exited;
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+// WO-171: four published retained lanes and two published integration stashes.
+const pruneApplyFixture = (prefix) => {
+  const root = realpathSync(mkdtempSync(join(tmpdir(), prefix)));
+  git(root, "init", "--quiet", "-b", "main");
+  git(root, "config", "user.name", "Fixture");
+  git(root, "config", "user.email", "fixture@example.invalid");
+  write(root, ".gitignore", "docs/control/local/\n");
+  write(root, "tracked.txt", "base\n");
+  git(root, "add", ".");
+  git(root, "commit", "-qm", "base");
+  const lanes = ["WO-901", "WO-902", "WO-903", "WO-904"];
+  for (const order of lanes)
+    write(
+      root,
+      `docs/control/local/retained/${order}/evidence.txt`,
+      `${order} retained bytes\n`,
+    );
+  const stashes = [];
+  for (const order of ["WO-905", "WO-906"]) {
+    write(root, "tracked.txt", `${order}\n`);
+    git(root, "stash", "push", "-m", `${order} integrate 2030-01-01`);
+    stashes.push(git(root, "rev-parse", "refs/stash"));
+  }
+  return { root, lanes, stashes };
+};
+const laneProofs = (root) =>
+  Object.fromEntries(
+    readdirSync(join(root, "docs/control/local/retained"))
+      .filter((name) => /^WO-\d{3}\.bytes-[a-f0-9]{16}\.json$/.test(name))
+      .sort()
+      .map((name) => [
+        name,
+        readFileSync(join(root, "docs/control/local/retained", name), "utf8"),
+      ]),
+  );
+// Runs one apply in a child whose fs.rmSync acts after its Nth lane deletion:
+// "stop" delivers SIGTERM (the exit 143 of 2026-09-24), "touch" changes a file.
+const interruptedPrune = (root, after, action) => {
+  const preload = join(root, "bin/prune-interrupt.cjs");
+  write(
+    root,
+    "bin/prune-interrupt.cjs",
+    `const fs = require("node:fs");
+const remove = fs.rmSync;
+let lanes = 0;
+fs.rmSync = function (path, ...rest) {
+  const result = remove.call(this, path, ...rest);
+  if (/\\/retained\\/WO-\\d{3}$/.test(String(path)) && ++lanes === ${after}) {
+    const action = ${JSON.stringify(action)};
+    if (action.touch) fs.appendFileSync(action.touch, "changed after the plan\\n");
+    else {
+      process.kill(process.pid, "SIGTERM");
+      Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 10000);
+    }
+  }
+  return result;
+};
+require("node:module").syncBuiltinESMExports();
+`,
+  );
+  return spawnSync(
+    process.execPath,
+    [
+      "--require",
+      preload,
+      "--input-type=module",
+      "-e",
+      `import {pruneHarness} from ${JSON.stringify(new URL("./lib/harness-prune.mjs", import.meta.url).href)};pruneHarness(process.argv[1], {apply: true, publishedRelease: () => "v1.0.0"});`,
+      root,
+    ],
+    { encoding: "utf8" },
+  );
+};
+
+test("WO-171 one apply plans once and asks each order's publication at most once", () => {
+  const { root, lanes, stashes } = pruneApplyFixture("dotln-prune-once-");
+  try {
+    // Never a candidate: asked once by the plan and never by a check.
+    write(root, "docs/control/local/retained/WO-907/evidence.txt", "kept\n");
+    // Only a plan lists the retained directory; a check reads one lane.
+    const retained = join(root, "docs/control/local/retained");
+    write(
+      root,
+      "bin/prune-plans.cjs",
+      `const fs = require("node:fs");
+const list = fs.readdirSync;
+globalThis.pruneRetainedListings = 0;
+fs.readdirSync = function (path, ...rest) {
+  if (String(path) === ${JSON.stringify(retained)}) globalThis.pruneRetainedListings++;
+  return list.call(this, path, ...rest);
+};
+require("node:module").syncBuiltinESMExports();
+`,
+    );
+    const run = spawnSync(
+      process.execPath,
+      [
+        "--require",
+        join(root, "bin/prune-plans.cjs"),
+        "--input-type=module",
+        "-e",
+        `import {pruneHarness} from ${JSON.stringify(new URL("./lib/harness-prune.mjs", import.meta.url).href)};const calls = [];const applied = pruneHarness(process.argv[1], {apply: true, publishedRelease: (order) => { calls.push(order); return order === "WO-907" ? null : "v1.0.0"; }});console.log(JSON.stringify({plans: globalThis.pruneRetainedListings, calls, candidates: applied.candidates}));`,
+        root,
+      ],
+      { encoding: "utf8" },
+    );
+    assert.equal(run.status, 0, run.stderr);
+    const { plans, calls, candidates } = JSON.parse(run.stdout);
+    assert.deepEqual(calls, [...lanes, "WO-907", "WO-906", "WO-905"]);
+    assert.equal(plans, 1);
+    assert.deepEqual(
+      candidates.map((row) => row.workOrder),
+      [...lanes, "WO-906", "WO-905"],
+    );
+    for (const order of lanes)
+      assert.equal(
+        existsSync(join(root, `docs/control/local/retained/${order}`)),
+        false,
+      );
+    assert.deepEqual(
+      candidates
+        .filter((row) => row.kind === "integration-stash")
+        .map((row) => row.stash),
+      [...stashes].reverse(),
+    );
+    assert.equal(git(root, "stash", "list"), "");
+    assert.ok(
+      existsSync(join(root, "docs/control/local/retained/WO-907/evidence.txt")),
+    );
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("WO-171 one apply issues one release listing and one tag listing whatever the number of orders", () => {
+  const { root, lanes } = pruneApplyFixture("dotln-prune-listings-");
+  try {
+    git(
+      root,
+      "remote",
+      "add",
+      "origin",
+      "https://github.com/fixture-origin/fixture.git",
+    );
+    // WO-907 is a draft Release, WO-908's remote tag names another object and
+    // WO-909 has no Release: each stays retained.
+    const orders = [...lanes, "WO-905", "WO-906", "WO-907", "WO-908", "WO-909"];
+    const objects = {};
+    for (const [index, order] of orders.slice(0, 8).entries()) {
+      const tag = `v1.0.${index + 1}`;
+      const manifest = {
+        release: { application: tag },
+        workOrder: { id: order },
+        notes: { changedFiles: [] },
+      };
+      git(
+        root,
+        "tag",
+        "-a",
+        tag,
+        "-m",
+        `DotLn ${tag}\n\nDOTLN-MANIFEST-BEGIN\n${JSON.stringify(manifest)}\nDOTLN-MANIFEST-END`,
+      );
+      objects[tag] = git(root, "rev-parse", `refs/tags/${tag}`);
+    }
+    for (const order of ["WO-907", "WO-908", "WO-909"])
+      write(root, `docs/control/local/retained/${order}/evidence.txt`, "x\n");
+    const remoteTags = Object.entries(objects)
+      .map(
+        ([tag, object]) =>
+          `${tag === "v1.0.8" ? "0".repeat(40) : object}\trefs/tags/${tag}\n`,
+      )
+      .join("");
+    // Newest first, as gh lists them: thirty unrelated Releases come first, so
+    // a listing left at gh's default limit of 30 would establish nothing.
+    const releases = [
+      ...Array.from({ length: 30 }, (_, index) => ({
+        tagName: `v2.0.${index}`,
+        isDraft: false,
+      })),
+      ...Object.keys(objects).map((tagName) => ({
+        tagName,
+        isDraft: tagName === "v1.0.7",
+      })),
+    ];
+    const log = join(root, "observations.jsonl");
+    const realGit = execFileSync("which", ["git"], { encoding: "utf8" }).trim();
+    write(
+      root,
+      "bin/git",
+      `#!${process.execPath}\nconst {spawnSync}=require('node:child_process');const fs=require('node:fs');const args=process.argv.slice(2);if(args[2]==='ls-remote'){fs.appendFileSync(${JSON.stringify(log)},JSON.stringify({program:'git',args})+String.fromCharCode(10));process.stdout.write(${JSON.stringify(remoteTags)});}else{const r=spawnSync(${JSON.stringify(realGit)},args,{stdio:'inherit'});process.exit(r.status??1);}\n`,
+    );
+    write(
+      root,
+      "bin/gh",
+      `#!${process.execPath}\nconst fs=require('node:fs');const args=process.argv.slice(2);fs.appendFileSync(${JSON.stringify(log)},JSON.stringify({program:'gh',args})+String.fromCharCode(10));const at=args.indexOf('--limit');process.stdout.write(JSON.stringify(${JSON.stringify(releases)}.slice(0,at<0?30:Number(args[at+1]))));\n`,
+    );
+    chmodSync(join(root, "bin/git"), 0o700);
+    chmodSync(join(root, "bin/gh"), 0o700);
+    const invoke = (apply) => {
+      const run = spawnSync(
+        process.execPath,
+        [
+          "--input-type=module",
+          "-e",
+          `import {pruneHarness} from ${JSON.stringify(new URL("./lib/harness-prune.mjs", import.meta.url).href)};console.log(JSON.stringify(pruneHarness(process.argv[1], {apply: process.argv[2] === "apply"})));`,
+          root,
+          apply ? "apply" : "preview",
+        ],
+        {
+          encoding: "utf8",
+          env: {
+            ...process.env,
+            PATH: `${join(root, "bin")}:${process.env.PATH}`,
+          },
+        },
+      );
+      assert.equal(run.status, 0, run.stderr);
+      const observed = readFileSync(log, "utf8")
+        .trim()
+        .split("\n")
+        .map(JSON.parse);
+      rmSync(log);
+      return { result: JSON.parse(run.stdout), observed };
+    };
+    for (const apply of [false, true]) {
+      const { result, observed } = invoke(apply);
+      assert.deepEqual(
+        observed.map((row) => [row.program, ...row.args.slice(0, 2)]),
+        [
+          ["gh", "release", "list"],
+          ["git", "-C", root],
+        ],
+      );
+      assert.equal(
+        observed[0].args[observed[0].args.indexOf("--repo") + 1],
+        "github.com/fixture-origin/fixture",
+      );
+      assert.deepEqual(observed[1].args.slice(2), [
+        "ls-remote",
+        "--refs",
+        "--tags",
+        "origin",
+      ]);
+      assert.deepEqual(
+        result.candidates.map((row) => [row.workOrder, row.release]),
+        [
+          ["WO-901", "v1.0.1"],
+          ["WO-902", "v1.0.2"],
+          ["WO-903", "v1.0.3"],
+          ["WO-904", "v1.0.4"],
+          ["WO-906", "v1.0.6"],
+          ["WO-905", "v1.0.5"],
+        ],
+      );
+      assert.deepEqual(
+        result.retained
+          .filter((row) => row.kind === "retained-lane")
+          .map((row) => [row.path.split("/").at(-1), row.reason]),
+        ["WO-907", "WO-908", "WO-909"].map((order) => [
+          order,
+          "published release is not established",
+        ]),
+      );
+    }
+    assert.equal(git(root, "stash", "list"), "");
+    for (const order of lanes)
+      assert.equal(
+        existsSync(join(root, `docs/control/local/retained/${order}`)),
+        false,
+      );
+    // Three orders remain: still one listing of each.
+    const { result, observed } = invoke(false);
+    assert.deepEqual(
+      observed.map((row) => [row.program, ...row.args.slice(0, 2)]),
+      [
+        ["gh", "release", "list"],
+        ["git", "-C", root],
+      ],
+    );
+    assert.deepEqual(result.candidates, []);
+    assert.equal(
+      result.retained.filter((row) => row.kind === "retained-lane").length,
+      3,
+    );
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("WO-171 an apply stopped after two deletions resumes and keeps the first byte proofs", () => {
+  const { root, lanes, stashes } = pruneApplyFixture("dotln-prune-resume-");
+  try {
+    const stopped = interruptedPrune(root, 2, { stop: true });
+    assert.equal(stopped.signal, "SIGTERM", stopped.stderr);
+    for (const [index, order] of lanes.entries())
+      assert.equal(
+        existsSync(join(root, `docs/control/local/retained/${order}`)),
+        index >= 2,
+        order,
+      );
+    const first = laneProofs(root);
+    assert.deepEqual(
+      Object.keys(first).map((name) => name.slice(0, 6)),
+      ["WO-901", "WO-902"],
+    );
+    assert.equal(
+      git(root, "log", "-g", "--format=%H", "refs/stash"),
+      [...stashes].reverse().join("\n"),
+    );
+    const resumed = pruneHarness(root, {
+      apply: true,
+      publishedRelease: () => "v1.0.0",
+    });
+    assert.deepEqual(
+      resumed.candidates.map((row) => row.workOrder),
+      ["WO-903", "WO-904", "WO-906", "WO-905"],
+    );
+    const after = laneProofs(root);
+    for (const [name, bytes] of Object.entries(first))
+      assert.equal(after[name], bytes, name);
+    assert.deepEqual(
+      Object.keys(after).map((name) => name.slice(0, 6)),
+      lanes,
+    );
+    assert.equal(git(root, "stash", "list"), "");
+    assert.deepEqual(
+      pruneHarness(root, { publishedRelease: () => "v1.0.0" }).candidates,
+      [],
+    );
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("WO-171 a candidate changed between the plan and its deletion is refused whole", () => {
+  const { root } = pruneApplyFixture("dotln-prune-changed-");
+  try {
+    const changed = join(
+      root,
+      "docs/control/local/retained/WO-902/evidence.txt",
+    );
+    const refused = interruptedPrune(root, 1, { touch: changed });
+    assert.equal(refused.status, 1);
+    assert.match(
+      refused.stderr,
+      /Prune subject changed; retained docs\/control\/local\/retained\/WO-902/,
+    );
+    assert.equal(
+      readFileSync(changed, "utf8"),
+      "WO-902 retained bytes\nchanged after the plan\n",
+    );
+    assert.deepEqual(
+      Object.keys(laneProofs(root)).map((name) => name.slice(0, 6)),
+      ["WO-901"],
+    );
+    for (const order of ["WO-903", "WO-904"])
+      assert.ok(existsSync(join(root, `docs/control/local/retained/${order}`)));
+    assert.equal(git(root, "stash", "list").split("\n").length, 2);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("WO-171 a lane holding a usage copy is retained until a committed snapshot carries it", () => {
+  const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-prune-usage-")));
+  try {
+    git(root, "init", "--quiet", "-b", "main");
+    git(root, "config", "user.name", "Fixture");
+    git(root, "config", "user.email", "fixture@example.invalid");
+    write(root, ".gitignore", "docs/control/local/\n");
+    git(root, "add", ".");
+    git(root, "commit", "-qm", "base");
+    const usage =
+      [
+        {
+          workOrder: "WO-911",
+          role: "executor",
+          recordedAt: "2030-01-01T00:00:00.000Z",
+        },
+        {
+          workOrder: "WO-911",
+          role: "reviewer",
+          recordedAt: "2030-01-02T00:00:00.000Z",
+        },
+      ]
+        .map((row) => JSON.stringify(row))
+        .join("\n") + "\n";
+    const copy = createHash("sha256").update(usage).digest("hex");
+    for (const order of ["WO-911", "WO-913", "WO-914"])
+      write(
+        root,
+        `docs/control/local/retained/${order}/process/usage.jsonl`,
+        usage,
+      );
+    write(
+      root,
+      "docs/control/local/retained/WO-912/evidence.txt",
+      "no usage\n",
+    );
+    const options = {
+      publishedRelease: (order) => (order === "WO-913" ? null : "v1.0.0"),
+    };
+    const reasons = () =>
+      Object.fromEntries(
+        pruneHarness(root, options).retained.map((row) => [
+          row.path.split("/").at(-1),
+          row.reason,
+        ]),
+      );
+    const commit = (path, message) => {
+      git(root, "add", path);
+      git(root, "commit", "-qm", message);
+    };
+    assert.deepEqual(reasons(), {
+      "WO-911": "usage has no committed snapshot",
+      "WO-913": "published release is not established",
+      "WO-914": "usage has no committed snapshot",
+    });
+    assert.deepEqual(
+      pruneHarness(root, options).candidates.map((row) => row.workOrder),
+      ["WO-912"],
+    );
+    // A whole-meter snapshot names the order and postdates the copy, yet holds
+    // only the rows of the checkout that wrote it (WO-043 on 2026-09-27).
+    const meter = "docs/evidence/WO-911/meta.json";
+    write(
+      root,
+      meter,
+      JSON.stringify({
+        observedAt: "2030-02-01T00:00:00.000Z",
+        orders: [{ workOrder: "WO-911", usage: [{ role: "release-close" }] }],
+      }) + "\n",
+    );
+    commit(meter, "WO-911 whole meter");
+    // A committed link at the snapshot path carries nothing either.
+    mkdirSync(join(root, "docs/evidence/WO-914"), { recursive: true });
+    symlinkSync("/nonexistent", join(root, "docs/evidence/WO-914/meta.json"));
+    commit("docs/evidence/WO-914/meta.json", "WO-914 link");
+    assert.equal(
+      reasons()["WO-911"],
+      "usage copy is not in the committed snapshot",
+    );
+    assert.equal(
+      reasons()["WO-914"],
+      "usage copy is not in the committed snapshot",
+    );
+    // Written but not committed, it is not yet the order's record.
+    const carried =
+      JSON.stringify({
+        workOrder: "WO-911",
+        usageCopies: [{ path: "process/usage.jsonl", sha256: copy }],
+      }) + "\n";
+    write(root, meter, carried);
+    assert.equal(
+      reasons()["WO-911"],
+      "usage copy is not in the committed snapshot",
+    );
+    commit(meter, "WO-911 meter snapshot");
+    assert.deepEqual(reasons(), {
+      "WO-913": "published release is not established",
+      "WO-914": "usage copy is not in the committed snapshot",
+    });
+    const applied = pruneHarness(root, { ...options, apply: true });
+    assert.deepEqual(
+      applied.candidates.map((row) => row.workOrder),
+      ["WO-911", "WO-912"],
+    );
+    const lane = applied.candidates.find((row) => row.workOrder === "WO-911");
+    const proof = JSON.parse(readFileSync(join(root, lane.byteProof), "utf8"));
+    assert.equal(
+      proof.files.find((row) => row.path === "process/usage.jsonl").sha256,
+      copy,
+    );
+    for (const order of ["WO-913", "WO-914"])
+      assert.ok(
+        existsSync(
+          join(
+            root,
+            `docs/control/local/retained/${order}/process/usage.jsonl`,
+          ),
+        ),
+      );
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+// VER-001 F1: worktree preservation names a colliding file or directory
+// `<name>.from-WO-NNN[-n]`, so a lane can hold usage copies under names the
+// canonical path misses. Each keeps the lane until the snapshot names it.
+test("WO-171 a collision-preserved usage copy keeps its lane until the snapshot names it", () => {
+  const main = realpathSync(
+    mkdtempSync(join(tmpdir(), "dotln-prune-collision-")),
+  );
+  const source = realpathSync(
+    mkdtempSync(join(tmpdir(), "dotln-prune-collision-source-")),
+  );
+  try {
+    for (const root of [main, source]) {
+      git(root, "init", "--quiet", "-b", "main");
+      git(root, "config", "user.name", "Fixture");
+      git(root, "config", "user.email", "fixture@example.invalid");
+      write(root, ".gitignore", "docs/control/local/\n");
+      git(root, "add", ".");
+      git(root, "commit", "-qm", "base");
+    }
+    const lane = (order) => `docs/control/local/retained/${order}`;
+    const usage = (label) =>
+      JSON.stringify({
+        workOrder: label,
+        role: "verifier",
+        recordedAt: "2030-01-01T00:00:00.000Z",
+      }) + "\n";
+    const sha256 = (text) => createHash("sha256").update(text).digest("hex");
+    const copies = {
+      canonical: usage("canonical"),
+      file: usage("file collision"),
+      fileAgain: usage("numbered file collision"),
+      directory: usage("directory collision"),
+      directoryAgain: usage("numbered directory collision"),
+    };
+    // The canonical copy was preserved first; WO-922's and WO-923's lanes hold
+    // a file where the source's `process` directory would go.
+    write(main, `${lane("WO-921")}/process/usage.jsonl`, copies.canonical);
+    write(main, `${lane("WO-922")}/process`, "a file named process\n");
+    write(main, `${lane("WO-923")}/process`, "a file named process\n");
+    write(
+      main,
+      `${lane("WO-923")}/process.from-WO-923`,
+      "and its first suffix\n",
+    );
+    const preserve = (order, text) => {
+      write(source, "docs/control/local/process/usage.jsonl", text);
+      const receipt = reconcileWorktreeMaterial(source, main, order);
+      return receipt.files
+        .find((row) => row.source === "docs/control/local/process/usage.jsonl")
+        .destination.slice(lane(order).length + 1);
+    };
+    assert.deepEqual(
+      [
+        preserve("WO-921", copies.file),
+        preserve("WO-921", copies.fileAgain),
+        preserve("WO-922", copies.directory),
+        preserve("WO-923", copies.directoryAgain),
+      ],
+      [
+        "process/usage.jsonl.from-WO-921",
+        "process/usage.jsonl.from-WO-921-2",
+        "process.from-WO-922/usage.jsonl",
+        "process.from-WO-923-2/usage.jsonl",
+      ],
+    );
+    const options = { publishedRelease: () => "v1.0.0" };
+    const reasons = () =>
+      Object.fromEntries(
+        pruneHarness(main, options).retained.map((row) => [
+          row.path.split("/").at(-1),
+          row.reason,
+        ]),
+      );
+    const snapshot = (order, carried) => {
+      const path = `docs/evidence/${order}/meta.json`;
+      write(
+        main,
+        path,
+        JSON.stringify({
+          workOrder: order,
+          usageCopies: carried.map((text) => ({ sha256: sha256(text) })),
+        }) + "\n",
+      );
+      git(main, "add", path);
+      git(main, "commit", "-qm", `${order} meter snapshot`);
+    };
+    // WO-922's and WO-923's only usage copies are preserved under a suffix.
+    assert.deepEqual(reasons(), {
+      "WO-921": "usage has no committed snapshot",
+      "WO-922": "usage has no committed snapshot",
+      "WO-923": "usage has no committed snapshot",
+    });
+    // VER-001's reproduction: the snapshot carries the canonical copy only.
+    snapshot("WO-921", [copies.canonical]);
+    snapshot("WO-922", [copies.directory]);
+    snapshot("WO-923", [copies.directory]);
+    assert.deepEqual(reasons(), {
+      "WO-921": "usage copy is not in the committed snapshot",
+      "WO-923": "usage copy is not in the committed snapshot",
+    });
+    snapshot("WO-921", [copies.canonical, copies.file]);
+    assert.equal(
+      reasons()["WO-921"],
+      "usage copy is not in the committed snapshot",
+    );
+    snapshot("WO-921", [copies.canonical, copies.file, copies.fileAgain]);
+    assert.deepEqual(reasons(), {
+      "WO-923": "usage copy is not in the committed snapshot",
+    });
+    const applied = pruneHarness(main, { ...options, apply: true });
+    assert.deepEqual(
+      applied.candidates.map((row) => row.workOrder),
+      ["WO-921", "WO-922"],
+    );
+    const proved = (order) =>
+      Object.fromEntries(
+        JSON.parse(
+          readFileSync(
+            join(
+              main,
+              applied.candidates.find((row) => row.workOrder === order)
+                .byteProof,
+            ),
+            "utf8",
+          ),
+        )
+          .files.filter((row) => row.path.includes("usage.jsonl"))
+          .map((row) => [row.path, row.sha256]),
+      );
+    assert.deepEqual(proved("WO-921"), {
+      "process/usage.jsonl": sha256(copies.canonical),
+      "process/usage.jsonl.from-WO-921": sha256(copies.file),
+      "process/usage.jsonl.from-WO-921-2": sha256(copies.fileAgain),
+    });
+    assert.deepEqual(proved("WO-922"), {
+      "process.from-WO-922/usage.jsonl": sha256(copies.directory),
+    });
+    assert.ok(
+      existsSync(
+        join(main, `${lane("WO-923")}/process.from-WO-923-2/usage.jsonl`),
+      ),
+    );
+  } finally {
+    rmSync(main, { recursive: true, force: true });
+    rmSync(source, { recursive: true, force: true });
+  }
+});
+
+test("WO-171 a bound resident store follows its retained lane into the byte proof", () => {
+  const root = realpathSync(
+    mkdtempSync(join(tmpdir(), "dotln-prune-resident-")),
+  );
+  try {
+    git(root, "init", "--quiet", "-b", "main");
+    const lane = "docs/control/local/retained/WO-921";
+    const store = [
+      "resident/WO-921-1/binding.json",
+      "resident/WO-921-1/resident.json",
+      "resident/WO-921-1/events.jsonl",
+      "resident/WO-921-1/.resident-append/events.jsonl",
+    ];
+    for (const path of store) write(root, `${lane}/${path}`, `${path}\n`);
+    const applied = pruneHarness(root, {
+      apply: true,
+      publishedRelease: () => "v1.0.0",
+    });
+    assert.deepEqual(
+      applied.candidates.map((row) => row.path),
+      [lane],
+    );
+    assert.equal(existsSync(join(root, lane)), false);
+    const proof = JSON.parse(
+      readFileSync(join(root, applied.candidates[0].byteProof), "utf8"),
+    );
+    assert.deepEqual(
+      proof.files
+        .filter((row) => !row.directory)
+        .map((row) => row.path)
+        .sort(),
+      [...store].sort(),
+    );
+    for (const path of store)
+      assert.equal(
+        proof.files.find((row) => row.path === path).sha256,
+        createHash("sha256").update(`${path}\n`).digest("hex"),
+      );
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("WO-171 an unreadable global observation still stops the plan", () => {
+  const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-prune-closed-")));
+  try {
+    git(root, "init", "--quiet", "-b", "main");
+    const lane = "docs/control/local/retained/WO-931/evidence.txt";
+    write(root, lane, "published lane\n");
+    const options = { apply: true, publishedRelease: () => "v1.0.0" };
+    const events = "docs/control/local/harness/writer-events.jsonl";
+    write(root, events, "{not json\n");
+    assert.throws(() => pruneHarness(root, options), /JSON/);
+    assert.ok(existsSync(join(root, lane)));
+    rmSync(join(root, events));
+    const marker = `docs/control/local/harness/active-gates/${randomUUID()}.json`;
+    write(root, marker, "{not json");
+    assert.throws(() => pruneHarness(root, options), /JSON/);
+    assert.ok(existsSync(join(root, lane)));
+    rmSync(join(root, marker));
+    assert.deepEqual(
+      pruneHarness(root, options).candidates.map((row) => row.workOrder),
+      ["WO-931"],
+    );
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("WO-171 a stop before a byte proof is published leaves nothing a rerun refuses", () => {
+  const { root, lanes } = pruneApplyFixture("dotln-prune-proof-");
+  try {
+    write(
+      root,
+      "bin/prune-proof-stop.cjs",
+      `const fs = require("node:fs");
+const link = fs.linkSync;
+fs.linkSync = function (from, to, ...rest) {
+  if (String(to).includes(".bytes-")) {
+    process.kill(process.pid, "SIGTERM");
+    Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 10000);
+  }
+  return link.call(this, from, to, ...rest);
+};
+require("node:module").syncBuiltinESMExports();
+`,
+    );
+    const stopped = spawnSync(
+      process.execPath,
+      [
+        "--require",
+        join(root, "bin/prune-proof-stop.cjs"),
+        "--input-type=module",
+        "-e",
+        `import {pruneHarness} from ${JSON.stringify(new URL("./lib/harness-prune.mjs", import.meta.url).href)};pruneHarness(process.argv[1], {apply: true, publishedRelease: () => "v1.0.0"});`,
+        root,
+      ],
+      { encoding: "utf8" },
+    );
+    assert.equal(stopped.signal, "SIGTERM", stopped.stderr);
+    const retained = join(root, "docs/control/local/retained");
+    const partials = readdirSync(retained).filter((name) =>
+      name.endsWith(".partial"),
+    );
+    assert.equal(partials.length, 1);
+    assert.match(partials[0], /^WO-901\.bytes-[a-f0-9]{16}\.json\.partial$/);
+    assert.deepEqual(laneProofs(root), {});
+    assert.ok(existsSync(join(retained, "WO-901/evidence.txt")));
+    // Even a torn partial is replaced, never read as the proof.
+    writeFileSync(join(retained, partials[0]), "{");
+    const resumed = pruneHarness(root, {
+      apply: true,
+      publishedRelease: () => "v1.0.0",
+    });
+    assert.equal(resumed.candidates.length, 6);
+    assert.deepEqual(
+      Object.keys(laneProofs(root)).map((name) => name.slice(0, 6)),
+      lanes,
+    );
+    assert.deepEqual(
+      readdirSync(retained).filter((name) => name.endsWith(".partial")),
+      [],
+    );
+    for (const [name, bytes] of Object.entries(laneProofs(root)))
+      assert.equal(JSON.parse(bytes).workOrder, name.slice(0, 6));
+  } finally {
     rmSync(root, { recursive: true, force: true });
   }
 });

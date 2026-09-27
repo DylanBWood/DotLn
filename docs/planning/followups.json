@@ -8406,6 +8406,20 @@
           "title": "Candidate — local lane retention",
           "summary": "## Candidate — local lane retention Ignored local lanes grow without a rule: 13 immutable harness runtime snapshots (34 MB), 36 MB of hook journals and 31 MB of retained close lanes on 2026-09-16. A retention rule may remove a snapshot no installed manifest pins and a retained lane older than its order's published release, keeping the retained-lane byte proofs. No order is allocated; reopen on disk pressure or when the snapshot count exceeds twenty. **Reopened and allocated 2026-09-19 (cleanup pass).** 27 snapshots (80 MB) with one pinned, 99 MB under `docs/control/local/`, and 96 MB under `.git/dotln/suite-success`, which no source has written since WO-132 removed the suite-success cache. A",
           "missing": false
+        },
+        {
+          "hash": "0b3afd2606092f91d9d45a83d75bbb780d44091d1719897f255f8b4d0af46637",
+          "ref": "docs/product/07-execution-guide.md#candidate--local-lane-retention",
+          "title": "Candidate — local lane retention",
+          "summary": "## Candidate — local lane retention Ignored local lanes grow without a rule: 13 immutable harness runtime snapshots (34 MB), 36 MB of hook journals and 31 MB of retained close lanes on 2026-09-16. A retention rule may remove a snapshot no installed manifest pins and a retained lane older than its order's published release, keeping the retained-lane byte proofs. No order is allocated; reopen on disk pressure or when the snapshot count exceeds twenty. **Reopened and allocated 2026-09-19 (cleanup pass).** 27 snapshots (80 MB) with one pinned, 99 MB under `docs/control/local/`, and 96 MB under `.git/dotln/suite-success`, which no source has written since WO-132 removed the suite-success cache. A",
+          "missing": false
+        },
+        {
+          "hash": "829688d235bc028240f84200e70f82ddbd23c5af9b99cfd045c0f898f068ad73",
+          "ref": "docs/product/07-execution-guide.md#candidate--local-lane-retention",
+          "title": "Candidate — local lane retention",
+          "summary": "## Candidate — local lane retention Ignored local lanes grow without a rule: 13 immutable harness runtime snapshots (34 MB), 36 MB of hook journals and 31 MB of retained close lanes on 2026-09-16. A retention rule may remove a snapshot no installed manifest pins and a retained lane older than its order's published release, keeping the retained-lane byte proofs. No order is allocated; reopen on disk pressure or when the snapshot count exceeds twenty. **Reopened and allocated 2026-09-19 (cleanup pass).** 27 snapshots (80 MB) with one pinned, 99 MB under `docs/control/local/`, and 96 MB under `.git/dotln/suite-success`, which no source has written since WO-132 removed the suite-success cache. A",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -11183,6 +11197,14 @@
           "reopenWhen": "the operator opens the efficiency pass, or a role's headroom falls below 256 bytes",
           "targets": [],
           "at": "2026-09-27T15:59:34.269Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-171's final review: WO-171 grows product 07 by 151 bytes and no generated sentence. node scripts/harness-context.mjs --check reads every profile at delta 0; the reviewer stays 24,171 of 24,576 (405 bytes of headroom). [WO-171 final review (docs/final-reviews/WO-171/FINAL-001.md)]",
+          "reopenWhen": "the operator opens the efficiency pass, or a role's headroom falls below 256 bytes",
+          "targets": [],
+          "at": "2026-09-27T19:06:17.324Z"
         }
       ]
     },
@@ -12093,6 +12115,14 @@
           "reopenWhen": "an order next opens these consumers, a supported input exceeds the batch limit, or a real source-change workload reproduces the reported parser or progress cost",
           "targets": [],
           "at": "2026-09-27T14:35:55.600Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-171's final review: WO-171 opened scripts/test-runner.mjs for one declared-source line; selecting TAP for the remaining Node suites and the other members are untouched. [WO-171 final review (docs/final-reviews/WO-171/FINAL-001.md)]",
+          "reopenWhen": "an order next opens these consumers, a supported input exceeds the batch limit, or a real source-change workload reproduces the reported parser or progress cost",
+          "targets": [],
+          "at": "2026-09-27T19:06:17.294Z"
         }
       ]
     },
@@ -13390,6 +13420,14 @@
           "reopenWhen": "the next order that changes resident-state.ts and records a feedback edition, or an operator reads a misleading verifier-unavailable hold over an incomplete capsule",
           "targets": [],
           "at": "2026-09-27T15:59:34.044Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-171's final review: a textual match on docs/product/07-execution-guide.md. WO-171 edits only the local lane retention paragraph there and changes neither resident-state.ts nor a feedback edition. [WO-171 final review (docs/final-reviews/WO-171/FINAL-001.md)]",
+          "reopenWhen": "the next order that changes resident-state.ts and records a feedback edition, or an operator reads a misleading verifier-unavailable hold over an incomplete capsule",
+          "targets": [],
+          "at": "2026-09-27T19:06:17.137Z"
         }
       ]
     },
@@ -17367,6 +17405,14 @@
           "reopenWhen": "the next order that touches usage or meta attribution",
           "targets": [],
           "at": "2026-09-27T15:59:34.214Z"
+        },
+        {
+          "sourceRevision": 4,
+          "status": "deferred",
+          "reason": "Deferred again by WO-171's final review: a textual match on docs/control/current.md, a generated projection. WO-171 keeps usage copies on disk and reads a committed meta.json only for a digest; it changes no usage or meta attribution. [WO-171 final review (docs/final-reviews/WO-171/FINAL-001.md)]",
+          "reopenWhen": "the next order that touches usage or meta attribution",
+          "targets": [],
+          "at": "2026-09-27T19:06:17.232Z"
         }
       ]
     },
@@ -18579,6 +18625,14 @@
           "reopenWhen": "Next document-maintenance planning pass or an observed new verbatim decision dispatch.",
           "targets": [],
           "at": "2026-09-27T15:59:34.157Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-171's final review: a textual match on docs/evidence/WO-171/decisions.md and the decisions index, which every order changes. WO-171's records quote only the resume dispatch phrases, no operator chat. [WO-171 final review (docs/final-reviews/WO-171/FINAL-001.md)]",
+          "reopenWhen": "Next document-maintenance planning pass or an observed new verbatim decision dispatch.",
+          "targets": [],
+          "at": "2026-09-27T19:06:17.168Z"
         }
       ]
     },
@@ -18744,6 +18798,14 @@
           "reopenWhen": "a real release close leaves main reserved or reclaims a live session's reservation, or the shell fixture's adapter diverges from the runtime's writer protocol",
           "targets": [],
           "at": "2026-09-27T15:59:34.185Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-171's final review: WO-171 edits scripts/test-harness.mjs only for its nine prune fixtures and the WO-142 D1 fake gh, which now answers a release listing. The release-close fixture against the real runtime is not its work. [WO-171 final review (docs/final-reviews/WO-171/FINAL-001.md)]",
+          "reopenWhen": "a real release close leaves main reserved or reclaims a live session's reservation, or the shell fixture's adapter diverges from the runtime's writer protocol",
+          "targets": [],
+          "at": "2026-09-27T19:06:17.200Z"
         }
       ]
     },
@@ -19187,6 +19249,14 @@
           "reopenWhen": "a script an order adds escapes every machinery suite until the reviewer's gate, or the next order that edits changedMachinery in scripts/test-runner.mjs",
           "targets": [],
           "at": "2026-09-27T14:35:55.800Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-171's final review: WO-171's repair adds one declared source (intake-reconciliation.mjs) to the harness-fixtures row of scripts/test-runner.mjs and adds no script, so changedMachinery is untouched and nothing escaped a machinery suite. [WO-171 final review (docs/final-reviews/WO-171/FINAL-001.md)]",
+          "reopenWhen": "a script an order adds escapes every machinery suite until the reviewer's gate, or the next order that edits changedMachinery in scripts/test-runner.mjs",
+          "targets": [],
+          "at": "2026-09-27T19:06:17.263Z"
         }
       ]
     },
@@ -19322,6 +19392,14 @@
           "reopenWhen": "a planning pass over the standing text, the next order that edits the writer text, or a session acts on one of the named sentences against the shipped behaviour",
           "targets": [],
           "at": "2026-09-27T15:59:34.522Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-171's final review: a textual match on README.md, product 07, the work-order index and WO-171's evidence README. WO-171 edits the release line of README.md and product 07's lane retention paragraph, not the writer text. [WO-171 final review (docs/final-reviews/WO-171/FINAL-001.md)]",
+          "reopenWhen": "a planning pass over the standing text, the next order that edits the writer text, or a session acts on one of the named sentences against the shipped behaviour",
+          "targets": [],
+          "at": "2026-09-27T19:06:17.355Z"
         }
       ]
     },
@@ -19444,6 +19522,102 @@
           "reopenWhen": "the next order that edits observed-facts.ts, the harness or process-debt fixture temporary root, or the scripts/resume.mjs dispatch release; or a full-gate hedge is attributed to a partial row while both rows are in scope",
           "targets": [],
           "at": "2026-09-27T15:59:34.438Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-dc6c139003bd4b89",
+      "key": "decision:docs/evidence/WO-171/decisions.md#wo-171-d004",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "3f3bbaafd1d7568c0eef236d655e68d4fbdb6d0f163a8070436f38b7e71a0932",
+          "ref": "docs/evidence/WO-171/decisions.md#wo-171-d004--a-lane-holding-a-usage-copy-waits-for-a-committed-snapshot-that-carries-it",
+          "title": "WO-171-D004: WO-170: record in each per-order snapshot the SHA-256 of every retained usage copy it carries (for example usageCopies: [{path, sha256}]), and write or refresh the snapshot after the orde",
+          "summary": "{ \"id\": \"WO-171-D004\", \"date\": \"2026-09-27\", \"dispatch\": \"resume: next\", \"decision\": \"A retained lane that would otherwise be a candidate, and whose inventory holds a regular file at `process/usage.jsonl` (at any depth), stays retained until HEAD's `<evidence root>/WO-NNN/meta.json` is JSON that names the SHA-256 of every such copy. Without a committed blob the reason is 'usage has no committed snapshot'; with a committed snapshot that does not name the copy it is 'usage copy is not in the committed snapshot'. The reason is asked last (after registration, publication and the inventory), so a lane that is also unpublished keeps its existing reason. It is a retention reason and not an eligibil",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Open by WO-171's final review for the next planning pass, before WO-170 activates. WO-170 as filed writes usage totals by role and nothing else into each snapshot (its Design and criterion 5). Under WO-171 D004 such a snapshot releases no lane, so the 73 lanes kept for usage on the operator's checkout stay kept after WO-170 closes. The pass should amend WO-170 to record each carried copy's SHA-256 in a named field, written after the order's last usage row, or record that the lanes stay. D014's follow-up narrows the prune to that field. [WO-171 final review (docs/final-reviews/WO-171/FINAL-001.md)]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-27T19:06:17.417Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-e62c63344f52405f",
+      "key": "decision:docs/evidence/WO-171/decisions.md#wo-171-d007",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "cdae22e062f572b9d295a73eb6b4c64a859559dd24a1cefbed8eb04a1b2608b3",
+          "ref": "docs/evidence/WO-171/decisions.md#wo-171-d007--what-a-stopped-apply-resumes-from-one-repair-and-what-stays-boarded",
+          "title": "WO-171-D007: scripts/lib/stash-drop.mjs: a stopped drop leaves states a rerun cannot pass without the operator. They are the three lock files, a recovery snapshot that no longer matches once the reflo",
+          "summary": "{ \"id\": \"WO-171-D007\", \"date\": \"2026-09-27\", \"dispatch\": \"resume: next\", \"decision\": \"Resumption rests on the byte proofs, not a progress file (as the order designs). A lane or snapshot stopped before or during removal is listed again with what remains: its earlier proof is kept, and a partly removed lane gets a second proof of the remainder. A stash stopped after its proof is proved again with identical bytes and dropped. One adjacent defect is repaired here because it defeats the resume this order promises. A proof was written in place, so a stop between creating the file and writing it left a partial proof, and every later apply refused that candidate and every one after it with 'Preserva",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by WO-171's final review under D007's condition: the stopped stash-drop states are in scripts/lib/stash-drop.mjs, outside WO-171's files, and need the operator whatever the prune does. No operator apply has met one. [WO-171 final review (docs/final-reviews/WO-171/FINAL-001.md)]",
+          "reopenWhen": "an operator apply is observed stopping at a stash in one of these states, or the next order that edits scripts/lib/stash-drop.mjs",
+          "targets": [],
+          "at": "2026-09-27T19:06:17.483Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-6f08db4cc5d96847",
+      "key": "decision:docs/evidence/WO-171/decisions.md#wo-171-d012",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "207464db9263be9cd9f32c73c5475c83e17e3c179d18fc4bff32be5d5526322d",
+          "ref": "docs/evidence/WO-171/decisions.md#wo-171-d012--verification-found-a-preserved-usage-copy-the-prune-misses",
+          "title": "WO-171-D012: WO-171 repair: make usage retention recognize every usage copy name that reconciliation can create, including file and parent-directory collision suffixes and their numbered forms; requir",
+          "summary": "{ \"id\": \"WO-171-D012\", \"date\": \"2026-09-27\", \"dispatch\": \"resume: verify\", \"decision\": \"Criterion 5 is unmet. Worktree preservation can place a second usage copy at process/usage.jsonl.from-WO-NNN, or under process.from-WO-NNN/usage.jsonl, when archived paths collide. The prune's usage guard recognizes only paths ending in process/usage.jsonl. A committed snapshot naming the original copy can therefore make the lane a candidate while another copy in its deletion inventory has no committed snapshot. Verification ran no apply against the operator's checkout; no loss is observed in the recorded current listing.\", \"evidence\": [ \"scripts/lib/intake-reconciliation.mjs plan maps a differing destina",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by WO-171's final review: D013 repaired VER-001 F1. The collision fixture gets its four names from the real reconcileWorktreeMaterial call and passed in VER-002's gate and this review's gate; the safety helper also retained a lane holding process.from-WO-930/usage.jsonl.from-WO-930. [WO-171 final review (docs/final-reviews/WO-171/FINAL-001.md)]",
+          "reopenWhen": "reconciliation gains another naming scheme, or a usage copy is found that a lane candidate's inventory would delete while no committed snapshot names it",
+          "targets": [],
+          "at": "2026-09-27T19:06:17.386Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-50cda1c03ecd8ea8",
+      "key": "decision:docs/evidence/WO-171/decisions.md#wo-171-d014",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "4915efa52c2fbb0b9234dd7db4e3a52d19cba936390d4a42171ec232910d5bfb",
+          "ref": "docs/evidence/WO-171/decisions.md#wo-171-d014--final-review-passes-and-boards-where-the-usage-rule-looks-for-a-digest",
+          "title": "WO-171-D014: scripts/lib/harness-prune.mjs usageRetention: once WO-170 (or its amendment) settles the field that names each carried usage copy's SHA-256, match the digest only in that field of the par",
+          "summary": "{ \"id\": \"WO-171-D014\", \"date\": \"2026-09-27\", \"dispatch\": \"resume: final review\", \"decision\": \"FINAL-001 passes WO-171 on all nine criteria and changes no source. One minor defect is boarded rather than fixed. usageRetention releases a lane when each copy's SHA-256 appears anywhere in the text of HEAD's meta.json, not in a field that says the snapshot carries that copy, so a snapshot that mentions a digest for another reason (a copy it skipped, for example) would release the lane. Nothing writes a digest into meta.json today, and WO-170, the first producer, has not settled the field. Choosing a field here would pre-empt WO-170, which D004 declined for the same reason. A `<proof>.partial` left",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by WO-171's final review, which minted it: no producer writes a SHA-256 into meta.json today, and the field the prune should read is WO-170's to choose (FUP-dc6c139003bd4b89). A leftover proof partial is a few kilobytes that nothing lists. [WO-171 final review (docs/final-reviews/WO-171/FINAL-001.md)]",
+          "reopenWhen": "WO-170 or any other producer writes a SHA-256 into meta.json, the next order that edits harness-prune.mjs, or a proof partial is found beside a whole proof on the operator's host",
+          "targets": [],
+          "at": "2026-09-27T19:06:17.450Z"
         }
       ]
     }

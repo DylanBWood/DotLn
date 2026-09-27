@@ -1767,11 +1767,13 @@ ownership, and missing session-end observations retain the affected files;
 legacy advisory markers without session ownership are retained. The dead
 suite-success cache is eligible only without a live gate.
 
-A retained order lane is eligible only after its worktree is gone and a
-non-draft published Release and matching remote tag establish publication.
-The command first keeps a sibling `WO-NNN.bytes-<digest>.json` inventory of
-paths, modes, byte lengths and SHA-256 hashes, then removes the lane. Symlinks,
-special files and nested repositories are retained. This is an on-demand
+A retained order lane is eligible only after its worktree is gone, a
+non-draft published Release and matching remote tag establish publication (one
+listing of each per run), and the order's committed `meta.json` names the SHA-256
+of any usage copy it holds. The command first keeps a sibling `WO-NNN.bytes-<digest>.json`
+inventory of paths, modes, byte lengths and SHA-256 hashes, then removes the
+lane; a stopped apply resumes when run again. Symlinks, special files and nested
+repositories are retained. This is an on-demand
 command, not a new recurring check. The real-checkout listing, before/after
 sizes and fixture evidence belong to
 [WO-142 evidence](../evidence/WO-142/README.md) and its
