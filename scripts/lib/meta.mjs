@@ -1169,7 +1169,7 @@ export function renderMeta(meta) {
     `Drift-to-low-performance — installed cold start (previous edition ${meta.coldStart.comparisonEdition ?? "unknown"}):`,
     ...meta.coldStart.profiles.map(
       (row) =>
-        `${row.skillsRoot}/${row.role}: ${display(row.bytes)} bytes; ceiling ${display(row.ceiling)}; previous ${display(row.previousBytes)}; Δ edition ${display(row.delta)}; last acceptance ${row.lastAcceptance?.date ?? "unknown"}: ${display(row.lastAcceptance?.bytes)} bytes, Δ ${display(row.lastAcceptance?.delta)}${row.lastAcceptance?.cause ? ` (${row.lastAcceptance.cause})` : ""}; ${row.verdict}`,
+        `${row.skillsRoot}/${row.role}: ${display(row.bytes)} bytes; ceiling ${row.ceiling == null ? "unset" : display(row.ceiling)}; previous ${display(row.previousBytes)}; Δ edition ${display(row.delta)}; last acceptance ${row.lastAcceptance?.date ?? "unknown"}: ${display(row.lastAcceptance?.bytes)} bytes, Δ ${display(row.lastAcceptance?.delta)}${row.lastAcceptance?.cause ? ` (${row.lastAcceptance.cause})` : ""}; ${row.verdict}`,
     ),
     "",
     `Declared supports=${display(meta.declared.supports)}, units=${display(meta.declared.units)}, hooks=${display(meta.declared.hooks)}`,

@@ -83,6 +83,30 @@ export async function requireLifecycleEvidence(
     } catch (error) {
       advise(error.message);
     }
+    // WO-169: the register rows this change or order touches. The advisory
+    // carries the rule because no role text names it; it reads and never
+    // writes, and a repository without main is judged by its order alone.
+    try {
+      const { changedAgainstMain, touchingFollowups } =
+        await import("./planning-followups.mjs");
+      const { branchWorkOrder } = await import("./control-store.mjs");
+      const orders = /^WO-\d{3}$/.test(workOrder ?? "") ? [workOrder] : [];
+      const { matched } = touchingFollowups(root, {
+        paths: changedAgainstMain(root, { required: false }).paths,
+        orders,
+        whole: true,
+      });
+      // The command selects its order by branch; elsewhere it is told which.
+      const command = `npm run plan -- followups --touching${orders.length && branchWorkOrder(root) !== workOrder ? ` --work-order ${workOrder}` : ""}`;
+      if (matched)
+        advise(
+          `${matched} pending follow-up ${matched === 1 ? "row names" : "rows name"} ${["a file this change touches", ...orders].join(" or ")} (a textual match): run ${command}; fix a row inside the Boy Scout bound or record it as left in the order's decisions, never widen the order; the final review disposes each listed row through the feed.`,
+        );
+    } catch (error) {
+      advise(
+        `Follow-up rows this change touches unavailable: ${error.message}`,
+      );
+    }
   }
   const directory = docPath(root, "control", "local/harness");
   const role = {

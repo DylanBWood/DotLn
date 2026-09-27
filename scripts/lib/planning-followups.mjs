@@ -13,6 +13,7 @@ import { join } from "node:path";
 import { createHash } from "node:crypto";
 import { spawnSync } from "node:child_process";
 import { readDecisions } from "./meta.mjs";
+import { runGit, runGitPathList } from "./git.mjs";
 import { readAdjacentQueue } from "./adjacent-queue.mjs";
 import { checkLocalTerms } from "./terms.mjs";
 
@@ -478,30 +479,36 @@ export function syncFollowups(root, { check = false } = {}) {
   };
   return check ? run() : withLock(root, run);
 }
-export function disposeFollowup(root, request) {
+const timestamp = () => new Date().toISOString();
+// One request against the state in hand and the revision its planner read.
+function dispose(root, state, revision, request, at) {
+  requireFollowup(
+    exact(request, [
+      "expectedRevision",
+      "id",
+      "sourceRevision",
+      "status",
+      "reason",
+      "reopenWhen",
+      "targets",
+    ]) && request.expectedRevision === revision,
+    "stale register revision or request shape; reread follow-ups",
+  );
+  const entry = state.entries.find((row) => row.id === request.id);
+  requireFollowup(
+    entry && request.sourceRevision === entry.revisions.length,
+    "missing item or stale source revision",
+  );
+  const { expectedRevision, id, ...disposition } = request;
+  entry.dispositions.push({ ...disposition, at });
+  validate(state, root);
+  requireAllocationTargets(root, state);
+  return entry;
+}
+export function disposeFollowup(root, request, { now = timestamp } = {}) {
   return withLock(root, () => {
     const state = syncFollowups(root, { check: true });
-    requireFollowup(
-      exact(request, [
-        "expectedRevision",
-        "id",
-        "sourceRevision",
-        "status",
-        "reason",
-        "reopenWhen",
-        "targets",
-      ]) && request.expectedRevision === hash(state),
-      "stale register revision or request shape; reread follow-ups",
-    );
-    const entry = state.entries.find((row) => row.id === request.id);
-    requireFollowup(
-      entry && request.sourceRevision === entry.revisions.length,
-      "missing item or stale source revision",
-    );
-    const { expectedRevision, id, ...disposition } = request;
-    entry.dispositions.push({ ...disposition, at: new Date().toISOString() });
-    validate(state, root);
-    requireAllocationTargets(root, state);
+    const entry = dispose(root, state, hash(state), request, now());
     persist(root, state);
     return {
       id: entry.id,
@@ -510,20 +517,74 @@ export function disposeFollowup(root, request) {
     };
   });
 }
+// A batch binds every request to the one revision its planner read. Each is
+// judged against the state the earlier ones produce; the register is written
+// once, after the last, so one invalid request writes nothing.
+export function disposeFollowups(root, requests, { now = timestamp } = {}) {
+  return withLock(root, () => {
+    const state = syncFollowups(root, { check: true }),
+      revision = hash(state);
+    requireFollowup(
+      Array.isArray(requests) && requests.length > 0,
+      "a batch names at least one request",
+    );
+    const applied = requests.map((request, index) => {
+      try {
+        const entry = dispose(root, state, revision, request, now());
+        // The register is screened whole when it is written; screening each
+        // request's own text first lets a refusal name the request.
+        checkLocalTerms(root, [
+          {
+            name: `request index ${index}`,
+            text: `${request.reason}\n${request.reopenWhen ?? ""}`,
+          },
+        ]);
+        return { id: entry.id, status: followupStatus(entry) };
+      } catch (error) {
+        throw new Error(
+          `${error.message} (request index ${index}; nothing was written)`,
+        );
+      }
+    });
+    persist(root, state);
+    return { applied, revision: hash(state) };
+  });
+}
+// Current decision records by register key, with the link their heading resolves.
+const decisionSources = (root) =>
+  new Map(
+    readDecisions(root).map((row) => [
+      `decision:${row.path}#${row.id.toLowerCase()}`,
+      { row, ref: `${row.path}#${row.anchor ?? row.id.toLowerCase()}` },
+    ]),
+  );
+const feedRow = (entry, decisions) => {
+  const source = entry.revisions.at(-1),
+    disposition = entry.dispositions.at(-1);
+  return {
+    id: entry.id,
+    status: followupStatus(entry),
+    sourceRevision: entry.revisions.length,
+    title: source.title,
+    source: decisions.get(entry.key)?.ref ?? source.ref,
+    sourceMissing: source.missing,
+    reason: disposition ? compact(disposition.reason, 220) : null,
+    reopenWhen: disposition?.reopenWhen
+      ? compact(disposition.reopenWhen, 220)
+      : null,
+  };
+};
+const pendingRank = { "needs-review": 0, open: 1, deferred: 2, untriaged: 3 };
+const pendingOrder = (a, b) =>
+  pendingRank[followupStatus(a)] - pendingRank[followupStatus(b)] ||
+  a.id.localeCompare(b.id);
 export function planningFollowups(root, { cursor = null, all = false } = {}) {
   const state = syncFollowups(root, { check: true }),
     revision = hash(state);
   const selected = state.entries.filter(
     (entry) => all || !closed.has(followupStatus(entry)),
   );
-  if (!all) {
-    const rank = { "needs-review": 0, open: 1, deferred: 2, untriaged: 3 };
-    selected.sort(
-      (a, b) =>
-        rank[followupStatus(a)] - rank[followupStatus(b)] ||
-        a.id.localeCompare(b.id),
-    );
-  }
+  if (!all) selected.sort(pendingOrder);
   let offset = 0;
   if (cursor !== null) {
     const match = /^([a-f0-9]{64}):(pending|all):(\d+)$/.exec(cursor);
@@ -540,28 +601,10 @@ export function planningFollowups(root, { cursor = null, all = false } = {}) {
   const counts = {};
   for (const entry of state.entries)
     counts[followupStatus(entry)] = (counts[followupStatus(entry)] ?? 0) + 1;
-  const decisionRefs = new Map(
-    readDecisions(root).map((row) => [
-      `decision:${row.path}#${row.id.toLowerCase()}`,
-      `${row.path}#${row.anchor ?? row.id.toLowerCase()}`,
-    ]),
-  );
-  const rows = selected.slice(offset, offset + 8).map((entry) => {
-    const source = entry.revisions.at(-1),
-      disposition = entry.dispositions.at(-1);
-    return {
-      id: entry.id,
-      status: followupStatus(entry),
-      sourceRevision: entry.revisions.length,
-      title: source.title,
-      source: decisionRefs.get(entry.key) ?? source.ref,
-      sourceMissing: source.missing,
-      reason: disposition ? compact(disposition.reason, 220) : null,
-      reopenWhen: disposition?.reopenWhen
-        ? compact(disposition.reopenWhen, 220)
-        : null,
-    };
-  });
+  const decisions = decisionSources(root);
+  const rows = selected
+    .slice(offset, offset + 8)
+    .map((entry) => feedRow(entry, decisions));
   const page = {
     revision,
     coverage:
@@ -578,9 +621,14 @@ export function planningFollowups(root, { cursor = null, all = false } = {}) {
     offset + rows.length < selected.length
       ? `npm run plan -- followups${all ? " --all" : ""} --cursor ${revision}:${all ? "all" : "pending"}:${offset + rows.length}`
       : null;
+  return bounded(page, next);
+}
+// Rows drop from the end until the page fits its budget; the continuation
+// then names the first row that was dropped.
+function bounded(page, next) {
   page.next = next();
-  while (Buffer.byteLength(encode(page)) > 8192 && rows.length > 1) {
-    rows.pop();
+  while (Buffer.byteLength(encode(page)) > 8192 && page.rows.length > 1) {
+    page.rows.pop();
     page.next = next();
   }
   requireFollowup(
@@ -588,6 +636,214 @@ export function planningFollowups(root, { cursor = null, all = false } = {}) {
     "one follow-up exceeds the planning page budget",
   );
   return page;
+}
+
+// The files a worktree changes: tracked differences from its merge base with
+// main, and untracked files, because an order's work stays uncommitted until
+// final review. A stale local main and origin/main are read together so the
+// base is the nearest one.
+export function changedAgainstMain(root, { required = true } = {}) {
+  const refs = ["main", "origin/main"].filter(
+    (ref) =>
+      spawnSync(
+        "git",
+        ["rev-parse", "--verify", "--quiet", `${ref}^{commit}`],
+        {
+          cwd: root,
+        },
+      ).status === 0,
+  );
+  if (!refs.length && !required) return { base: null, paths: [] };
+  requireFollowup(refs.length, "no main to compare with; name the paths");
+  const base = runGit(root, ["merge-base", "HEAD", ...refs]);
+  return {
+    base,
+    paths: [
+      ...new Set([
+        // Both names of a renamed file, whatever diff.renames is set to.
+        ...runGitPathList(root, [
+          "diff",
+          "--name-only",
+          "--no-renames",
+          "-z",
+          base,
+          "--",
+        ]),
+        ...runGitPathList(root, [
+          "ls-files",
+          "--others",
+          "--exclude-standard",
+          "-z",
+        ]),
+      ]),
+    ].sort(),
+  };
+}
+// A path is named where its base name stands as a whole name and the path
+// written around it agrees with the path's own trailing components: the whole
+// path or a shorter tail of it such as its base name. A given path may be a
+// tail itself, so a longer written path that ends in it names it too; a
+// changed file is whole, and a longer written path is another file. Another
+// file of the same base name, or a longer name, is never named.
+const namesPath = (value, path, whole) => {
+  const parts = path.split("/"),
+    base = parts.at(-1);
+  for (
+    let at = value.indexOf(base);
+    at !== -1;
+    at = value.indexOf(base, at + 1)
+  ) {
+    if (/^(?:[\w-]|\.\w)/.test(value.slice(at + base.length))) continue;
+    let start = at;
+    while (start > 0 && /[\w@./-]/.test(value[start - 1])) start--;
+    const written = value
+      .slice(start, at + base.length)
+      .split("/")
+      .filter((part) => part && part !== ".");
+    if (whole && written.length > parts.length) continue;
+    const length = Math.min(written.length, parts.length);
+    if (written.slice(-length).join("/") === parts.slice(-length).join("/"))
+      return true;
+  }
+  return false;
+};
+const namesOrder = (value, order) =>
+  new RegExp(`(?<![\\w-])${order}(?!\\d)`).test(value);
+const matchNote =
+  "Textual match, a pointer for judgment and never a verdict: a pending row is listed when its source title or summary, its decision's followup or reopenWhen, or its latest disposition names a given path, a trailing part of it such as its base name, or a given order. A false match costs one row read; a row that names its seam in other words is not listed.";
+
+// The pending rows a change, a file list or an order touches (WO-169). `whole`
+// says the paths are this checkout's own files, as a change's are.
+export function touchingFollowups(
+  root,
+  {
+    paths = [],
+    orders = [],
+    whole = false,
+    cursor = null,
+    continuation = null,
+  } = {},
+) {
+  const state = syncFollowups(root, { check: true }),
+    revision = hash(state);
+  const terms = {
+    paths: [
+      ...new Set(
+        paths.map((path) => path.replace(/^(?:\.\/)+/, "").replace(/\/+$/, "")),
+      ),
+    ].sort(),
+    orders: [...new Set(orders)].sort(),
+  };
+  // A changed file's name is what Git reports; only a given term is judged.
+  requireFollowup(
+    (whole ||
+      terms.paths.every((path) => text(path) && !path.startsWith("-"))) &&
+      terms.orders.every((order) => /^WO-\d{3}$/.test(order)),
+    "touching takes paths and WO-NNN identifiers",
+  );
+  const decisions = decisionSources(root);
+  const pending = state.entries.filter(
+    (entry) => !closed.has(followupStatus(entry)),
+  );
+  const selected = pending.sort(pendingOrder).flatMap((entry) => {
+    const source = entry.revisions.at(-1),
+      decision = decisions.get(entry.key)?.row,
+      disposition = entry.dispositions.at(-1);
+    const named = [
+      source.title,
+      source.summary,
+      decision?.followup,
+      typeof decision?.reopenWhen === "object"
+        ? JSON.stringify(decision.reopenWhen)
+        : decision?.reopenWhen,
+      disposition?.reason,
+      disposition?.reopenWhen,
+    ]
+      .filter((value) => typeof value === "string")
+      .join("\n");
+    const matched = [
+      ...terms.paths.filter((path) => namesPath(named, path, whole)),
+      ...terms.orders.filter((order) => namesOrder(named, order)),
+    ];
+    return matched.length ? [{ entry, matched }] : [];
+  });
+  const identity = hash({ ...terms, whole }).slice(0, 16);
+  let offset = 0;
+  if (cursor !== null) {
+    const match = /^([a-f0-9]{64}):touching-([a-f0-9]{16}):(\d+)$/.exec(cursor);
+    requireFollowup(
+      match &&
+        match[1] === revision &&
+        match[2] === identity &&
+        Number.isSafeInteger(Number(match[3])) &&
+        Number(match[3]) <= selected.length,
+      "stale or invalid page cursor; restart follow-ups --touching",
+    );
+    offset = Number(match[3]);
+  }
+  const page = {
+    revision,
+    match: matchNote,
+    touching: { paths: terms.paths.length, orders: terms.orders },
+    pending: pending.length,
+    matched: selected.length,
+    // A row lists its first terms and counts the rest, so its size does not
+    // grow with the change and one row cannot exceed the page.
+    rows: selected.slice(offset, offset + 8).map(({ entry, matched }) => ({
+      ...feedRow(entry, decisions),
+      matched: matched.slice(0, 4),
+      ...(matched.length > 4 ? { matchedCount: matched.length } : {}),
+    })),
+    next: null,
+  };
+  return bounded(page, () =>
+    offset + page.rows.length < selected.length
+      ? `npm run plan -- followups --touching${continuation ? ` ${continuation}` : ""} --cursor ${revision}:touching-${identity}:${offset + page.rows.length}`
+      : null,
+  );
+}
+
+// Every pending row whole, for a pass that must read the register: the page
+// bound and the 220-character clip belong to the feed, not to this file.
+export function exportFollowups(root, { all = false } = {}) {
+  const state = syncFollowups(root, { check: true });
+  const decisions = decisionSources(root);
+  const counts = {};
+  for (const entry of state.entries)
+    counts[followupStatus(entry)] = (counts[followupStatus(entry)] ?? 0) + 1;
+  const selected = state.entries.filter(
+    (entry) => all || !closed.has(followupStatus(entry)),
+  );
+  if (!all) selected.sort(pendingOrder);
+  return {
+    revision: hash(state),
+    total: state.entries.length,
+    counts,
+    pending: state.entries.filter((entry) => !closed.has(followupStatus(entry)))
+      .length,
+    showing: all ? "all" : "pending",
+    rows: selected.map((entry) => {
+      const source = entry.revisions.at(-1),
+        decision = decisions.get(entry.key);
+      return {
+        id: entry.id,
+        status: followupStatus(entry),
+        kind: entry.kind,
+        sourceRevision: entry.revisions.length,
+        source: decision?.ref ?? source.ref,
+        sourceMissing: source.missing,
+        title: source.title,
+        ...(decision
+          ? {
+              decision: decision.row.decision,
+              followup: decision.row.followup ?? null,
+              reopenWhen: decision.row.reopenWhen,
+            }
+          : { summary: source.summary }),
+        dispositions: entry.dispositions,
+      };
+    }),
+  };
 }
 export function requirePlanningHandoffs(root, workOrder) {
   const queue = readAdjacentQueue(root, workOrder);
