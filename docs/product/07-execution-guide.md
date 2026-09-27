@@ -1257,7 +1257,11 @@ Standard artifacts, all doc-only:
   registered evidence source (`scripts/lib/evidence-sources.mjs`) names the
   deterministic re-mint of each edition whose check it stales (WO-152 D004:
   `evidenceSourceContent` normalizes component release labels away, so a
-  version-only bump never makes an edition stale);
+  version-only bump never makes an edition stale); an order that edits a
+  declared source of a machinery suite (`machinerySources` in
+  `scripts/test-runner.mjs`) names `npm test -- --review` in its final
+  criterion, so the suites its change selects run before verification
+  (WO-144 D010);
 - product-doc write-back for durable understanding, with the publication
   index and edition locks repaired in the same pass;
 - `npm run meta -- --plan-cost` refreshes the bounded, subject-hashed cost

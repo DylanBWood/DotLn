@@ -1871,6 +1871,14 @@
           "reopenWhen": "the parity contract (WO-115) exists",
           "targets": [],
           "at": "2026-09-19T01:19:48.671Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Its reopening condition occurred: the parity contract exists (WO-115 closed at v0.52.0 on 2026-09-26). Not filed by the 2026-09-27 pass, which the operator scoped to small fixes in at most two orders; recorded open for the next pass that files product orders. [2026-09-27 onesie-twosie planning pass (docs/planning/onesie-twosie-followup-drain-2026-09-27.md section 5)]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-27T00:36:37.793Z"
         }
       ]
     },
@@ -2368,6 +2376,14 @@
           "reopenWhen": "WO-056 closes (the pass's suggestion)",
           "targets": [],
           "at": "2026-09-19T01:19:52.025Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Its reopening condition occurred: WO-056 closed. The support is still unbuilt. Not filed by the 2026-09-27 pass, which the operator scoped to small fixes in at most two orders; recorded open for the next pass that files product orders. [2026-09-27 onesie-twosie planning pass (docs/planning/onesie-twosie-followup-drain-2026-09-27.md section 5)]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-27T00:36:38.324Z"
         }
       ]
     },
@@ -2453,6 +2469,14 @@
           "reopenWhen": "a bounded live reproduction with host events and a measured continuation outcome, or WO-120 landing",
           "targets": [],
           "at": "2026-09-19T01:20:01.842Z"
+        },
+        {
+          "sourceRevision": 4,
+          "status": "open",
+          "reason": "One reopening condition occurred: WO-120 landed, and with WO-100 it owns durable work identity. The Claude side and a measured automatic-compaction outcome stay open. Not filed by the 2026-09-27 pass, which the operator scoped to small fixes in at most two orders; recorded open for the next pass that files product orders. [2026-09-27 onesie-twosie planning pass (docs/planning/onesie-twosie-followup-drain-2026-09-27.md section 5)]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-27T00:36:38.851Z"
         }
       ]
     },
@@ -2845,6 +2869,14 @@
           "reopenWhen": "WO-111 closes with an observed unattended run, or a second lane runs unattended",
           "targets": [],
           "at": "2026-09-22T22:02:09.787Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Its reopening condition occurred: WO-111 closed with an observed unattended run (its final review records two). Not filed by the 2026-09-27 pass, which the operator scoped to small fixes in at most two orders; recorded open for the next pass that files product orders. [2026-09-27 onesie-twosie planning pass (docs/planning/onesie-twosie-followup-drain-2026-09-27.md section 5)]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-27T00:36:39.369Z"
         }
       ]
     },
@@ -3208,6 +3240,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-25T21:30:02.874Z"
+        },
+        {
+          "sourceRevision": 6,
+          "status": "open",
+          "reason": "Measured by the 2026-09-27 onesie-twosie pass: the feed's first page showed two rows needing review, three open and three deferred of 155 pending; the pass read all 155 by two scratch scripts (193 KB projected) and wrote one request file per disposition. WO-169 items 2 and 3 (the export and the batch apply) carry the register half of this candidate; orientation to the product stays open. [2026-09-27 onesie-twosie planning pass (docs/planning/onesie-twosie-followup-drain-2026-09-27.md section 5)]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-27T00:36:27.954Z"
         }
       ]
     },
@@ -3256,6 +3296,14 @@
           "reopenWhen": "WO-110 activation (the pass's suggestion)",
           "targets": [],
           "at": "2026-09-19T01:19:59.332Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Its reopening condition occurred: WO-110 activated and closed. No ModelInputPlan exists in package source at 4c34b332. Not filed by the 2026-09-27 pass, which the operator scoped to small fixes in at most two orders; recorded open for the next pass that files product orders. [2026-09-27 onesie-twosie planning pass (docs/planning/onesie-twosie-followup-drain-2026-09-27.md section 5)]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-27T00:36:39.890Z"
         }
       ]
     },
@@ -4025,6 +4073,14 @@
           "reopenWhen": "the first order dispatched under the default records neither an experiment nor a kept-current decline, or the record of experiments since the last adopted improvement is long enough to read an adaptive pressure",
           "targets": [],
           "at": "2026-09-22T00:34:50.559Z"
+        },
+        {
+          "sourceRevision": 11,
+          "status": "settled",
+          "reason": "Settled again at revision 11: the revision is an anchor repair in the candidate's text (commit c02511ab, WO-085) and changes no claim; the 2026-09-22 settlement stands. [2026-09-27 onesie-twosie planning pass (docs/planning/onesie-twosie-followup-drain-2026-09-27.md section 5)]",
+          "reopenWhen": "the first order dispatched under the default records neither an experiment nor a kept-current decline, or the record of experiments since the last adopted improvement is long enough to read an adaptive pressure",
+          "targets": [],
+          "at": "2026-09-27T00:36:27.437Z"
         }
       ]
     },
@@ -8376,6 +8432,14 @@
             "WO-166"
           ],
           "at": "2026-09-25T21:29:55.961Z"
+        },
+        {
+          "sourceRevision": 5,
+          "status": "settled",
+          "reason": "Settled at revision 5: WO-166 closed at v0.52.3 with the dispatch reservation, the release at every Codex completion and the holder's age on every refusal, and the candidate records the shipped behaviour in place. The three standing sentences that still understate it are WO-168 item 7. [2026-09-27 onesie-twosie planning pass (docs/planning/onesie-twosie-followup-drain-2026-09-27.md section 5)]",
+          "reopenWhen": "a Codex-owned reservation outlives its session twice after WO-166",
+          "targets": [],
+          "at": "2026-09-27T00:36:26.924Z"
         }
       ]
     },
@@ -11039,6 +11103,14 @@
           "reopenWhen": "a role's cold start meets its ceiling again, or the operator opens the efficiency pass",
           "targets": [],
           "at": "2026-09-19T01:18:51.055Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again. Its reopening condition occurred three times since 2026-09-19 (reviewer 2026-09-19, verifier 2026-09-20, executor 2026-09-22), each answered by a dated acceptance under the standing 2026-09-17 route. Measured at 4c34b332: executor 26,110 of 29,246; verifier 22,913 of 25,151; reviewer 23,995 of 24,576; release close 15,019 of 16,384; planner 17,167 of 24,576. The efficiency pass stays the operator's; WO-168 bounds its sentence to 200 bytes. [2026-09-27 onesie-twosie planning pass (docs/planning/onesie-twosie-followup-drain-2026-09-27.md section 5)]",
+          "reopenWhen": "the operator opens the efficiency pass, or a role's headroom falls below 256 bytes",
+          "targets": [],
+          "at": "2026-09-27T00:36:37.278Z"
         }
       ]
     },
@@ -11241,6 +11313,14 @@
           "reopenWhen": "the next order that opens reactor.ts",
           "targets": [],
           "at": "2026-09-19T01:20:04.414Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again with the observation recorded: reactor.ts was opened by WO-099, WO-151, WO-154 and WO-070 after the 2026-09-19 deferral and none saw this row. reactor.ts is a feedback source path, so the three items ride only with an order that already pays a live episode; WO-169 item 1 is the mechanism that will show the row to it. [2026-09-27 onesie-twosie planning pass (docs/planning/onesie-twosie-followup-drain-2026-09-27.md section 5)]",
+          "reopenWhen": "the next order that opens reactor.ts and pays a live feedback episode",
+          "targets": [],
+          "at": "2026-09-27T00:36:35.714Z"
         }
       ]
     },
@@ -11660,6 +11740,14 @@
           "reopenWhen": "the next order that records a second edition it never makes current",
           "targets": [],
           "at": "2026-09-19T01:20:07.823Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Its reopening condition occurred repeatedly: orders record editions they never make current (WO-166's authority revisions 001 to 004). No retention rule exists, and a rule that removes evidence is the operator's decision. The Codex session-identity join was not examined by the 2026-09-27 pass. Recorded open. [2026-09-27 onesie-twosie planning pass (docs/planning/onesie-twosie-followup-drain-2026-09-27.md section 5)]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-27T00:36:41.961Z"
         }
       ]
     },
@@ -11708,6 +11796,14 @@
           "reopenWhen": "the next order that changes resident-host.ts or resident-state.ts with a fresh feedback edition, or a live row that shows a same-reason refusal after re-arm under-recorded",
           "targets": [],
           "at": "2026-09-21T06:59:00.126Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again with the observation recorded: WO-100 changed resident-state.ts and resident-host.ts and recorded a feedback edition on 2026-09-22, after this row's deferral, without seeing it. No live row shows an under-recorded same-reason refusal, and the change is replay-sensitive. [2026-09-27 onesie-twosie planning pass (docs/planning/onesie-twosie-followup-drain-2026-09-27.md section 5)]",
+          "reopenWhen": "the next order that changes resident-host.ts or resident-state.ts with a fresh feedback edition, or a live row that shows a same-reason refusal after re-arm under-recorded",
+          "targets": [],
+          "at": "2026-09-27T00:36:36.238Z"
         }
       ]
     },
@@ -11845,6 +11941,14 @@
           "reopenWhen": "a second refused read containing a quoted glob or an input redirect in a live gate, an admitted redirect that reaches an ungranted outside destination, or a gate input observed changed by an admitted metadata command (map candidate: shell destination adapter width, 2026-09-21)",
           "targets": [],
           "at": "2026-09-21T06:59:01.149Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Settled: WO-158 (v0.49.0) added the live-gate read list and the configured-program check that admits a listed Git read only while the repository configures no fsmonitor, external diff, textconv, filter or signature program (configuredGitPrograms, whose comment names this decision). The index stat refresh a status may take is the recorded residual; WO-168 item 4 adds hooks and pretty formats holding %G. [2026-09-27 onesie-twosie planning pass (docs/planning/onesie-twosie-followup-drain-2026-09-27.md section 5)]",
+          "reopenWhen": "a gate input is observed changed by an admitted metadata command",
+          "targets": [],
+          "at": "2026-09-27T00:36:32.596Z"
         }
       ]
     },
@@ -11917,6 +12021,16 @@
           "reopenWhen": "a second refused read containing a quoted glob or an input redirect in a live gate, an admitted redirect that reaches an ungranted outside destination, or a gate input observed changed by an admitted metadata command (map candidate: shell destination adapter width, 2026-09-21)",
           "targets": [],
           "at": "2026-09-21T06:59:01.912Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-168 item 4 for the literal input redirect. The quoted-glob half no longer reproduces: the built liveGateReads admits grep with a double-quoted star pattern and with a single-quoted bracket pattern (probed on main at 4c34b332). [2026-09-27 onesie-twosie planning pass (docs/planning/onesie-twosie-followup-drain-2026-09-27.md section 5)]",
+          "reopenWhen": "a live-gate session reports a refused read of a listed program after WO-168 closes",
+          "targets": [
+            "WO-168"
+          ],
+          "at": "2026-09-27T00:36:28.981Z"
         }
       ]
     },
@@ -11941,6 +12055,14 @@
           "reopenWhen": "the next order that edits scripts/lib/meta.mjs, observed-facts.ts or release preparation, or another repair that meets the no-files-changed message beside a changed draft (map candidate: meter and closeout residue, 2026-09-21)",
           "targets": [],
           "at": "2026-09-21T06:59:02.170Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled: WO-160 item 3 (v0.51.0) made release prepare list each file it wrote, with a fixture asserting the message against the files. The row's reopening text named release preparation, which WO-160 edited without seeing it. Who owns an executor-time PR draft stays with the gathered candidate FUP-fa028783f3f6b17f. [2026-09-27 onesie-twosie planning pass (docs/planning/onesie-twosie-followup-drain-2026-09-27.md section 5)]",
+          "reopenWhen": "a repair meets a no-files-changed message beside a changed reviewer draft",
+          "targets": [],
+          "at": "2026-09-27T00:36:33.114Z"
         }
       ]
     },
@@ -11989,6 +12111,16 @@
           "reopenWhen": "a planning refutation runs through a CLI transport (record whether each CLI accepts the result schema), or the adapter candidate reopens",
           "targets": [],
           "at": "2026-09-21T06:59:02.673Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Item (b), the stranded comment, is allocated to WO-168 item 8. Item (a) stays an observation to make: no planning refutation has run through a CLI transport since, so schema acceptance at launch is still unobserved. [2026-09-27 onesie-twosie planning pass (docs/planning/onesie-twosie-followup-drain-2026-09-27.md section 5)]",
+          "reopenWhen": "a planning refutation runs through a CLI transport (record whether each CLI accepts the result schema)",
+          "targets": [
+            "WO-168"
+          ],
+          "at": "2026-09-27T00:36:29.492Z"
         }
       ]
     },
@@ -12166,6 +12298,14 @@
           "reopenWhen": "a final-review gate again meets a deterministic failure in a suite no earlier run selected (map candidate: machinery suite selection before final review, 2026-09-21); or a second refused read containing a quoted glob or an input redirect in a live gate, an admitted redirect that reaches an ungranted outside destination, or a gate input observed changed by an admitted metadata command (map candidate: shell destination adapter width, 2026-09-21)",
           "targets": [],
           "at": "2026-09-21T06:59:03.695Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again. Part 1 is answered by the planning rule this pass adds to product 07 and by WO-169 item 5 (FUP-ca485137e32985fb). Part 2, the redirect accessor answering for the whole command, stays with the shell destination adapter candidate. [2026-09-27 onesie-twosie planning pass (docs/planning/onesie-twosie-followup-drain-2026-09-27.md section 5)]",
+          "reopenWhen": "a literal outside redirect beside an opaque one reaches the operator's folders, or a final-review gate again meets a deterministic failure in a suite no earlier run selected",
+          "targets": [],
+          "at": "2026-09-27T00:36:35.193Z"
         }
       ]
     },
@@ -12246,6 +12386,16 @@
           "reopenWhen": "the next order that edits scripts/lib/meta.mjs, observed-facts.ts or release preparation, or another repair that meets the no-files-changed message beside a changed draft (map candidate: meter and closeout residue, 2026-09-21)",
           "targets": [],
           "at": "2026-09-21T06:59:04.211Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-168 item 8 as a boy-scout item: the hedge match prefers the longest matching identity. observed-facts.ts is a registered evidence source and WO-168 re-mints for its own seam. The row's reopening text named meta.mjs and release preparation, which WO-155, WO-158 and WO-160 edited without seeing it. [2026-09-27 onesie-twosie planning pass (docs/planning/onesie-twosie-followup-drain-2026-09-27.md section 5)]",
+          "reopenWhen": "a hedged quantity resolves to the wrong gate row after WO-168 closes",
+          "targets": [
+            "WO-168"
+          ],
+          "at": "2026-09-27T00:36:30.009Z"
         }
       ]
     },
@@ -12614,6 +12764,14 @@
           "reopenWhen": "the next cleanup order, or a declared source changes again and a third unselected edition accumulates",
           "targets": [],
           "at": "2026-09-21T06:59:05.755Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Its reopening condition occurred: unselected editions keep accumulating (216 edition directories under docs/evidence on 2026-09-27, four editions selected by current.json; WO-166 recorded authority revisions 001 to 005). Whether never-current evidence may be pruned is the operator's decision; recorded open. [2026-09-27 onesie-twosie planning pass (docs/planning/onesie-twosie-followup-drain-2026-09-27.md section 5)]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-27T00:36:41.441Z"
         }
       ]
     },
@@ -12688,6 +12846,14 @@
           "reopenWhen": "the next order that edits scripts/lib/meta.mjs, observed-facts.ts or release preparation, or another repair that meets the no-files-changed message beside a changed draft (map candidate: meter and closeout residue, 2026-09-21)",
           "targets": [],
           "at": "2026-09-21T06:59:06.011Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled as not reproduced: WO-166's published PR body (2026-09-26) carries populated executor, verifier and reviewer dispatch rows in its meter block. [2026-09-27 onesie-twosie planning pass (docs/planning/onesie-twosie-followup-drain-2026-09-27.md section 5)]",
+          "reopenWhen": "a published PR body's meter block has an empty dispatch table for the order it publishes",
+          "targets": [],
+          "at": "2026-09-27T00:36:33.634Z"
         }
       ]
     },
@@ -13062,6 +13228,14 @@
           "reopenWhen": "the next order that changes resident-state.ts and records a feedback edition, or an operator reads a misleading verifier-unavailable hold over an incomplete capsule",
           "targets": [],
           "at": "2026-09-21T06:59:06.786Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again with the observation recorded: WO-100 changed resident-state.ts and recorded a feedback edition on 2026-09-22 without seeing this row. The wording fix still needs an order that pays a live episode for that file. [2026-09-27 onesie-twosie planning pass (docs/planning/onesie-twosie-followup-drain-2026-09-27.md section 5)]",
+          "reopenWhen": "the next order that changes resident-state.ts and records a feedback edition, or an operator reads a misleading verifier-unavailable hold over an incomplete capsule",
+          "targets": [],
+          "at": "2026-09-27T00:36:36.754Z"
         }
       ]
     },
@@ -13504,6 +13678,14 @@
           "reopenWhen": "a second refused read containing a quoted glob or an input redirect in a live gate, an admitted redirect that reaches an ungranted outside destination, or a gate input observed changed by an admitted metadata command (map candidate: shell destination adapter width, 2026-09-21)",
           "targets": [],
           "at": "2026-09-21T06:59:09.920Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again with what remains: WO-168 item 4 takes the over-refused argument forms of listed reads, and the Git configured-program half was settled by WO-158; the expansion-spelled redirect adapter (WO-144 D009 and D010 part 2) stays. [2026-09-27 onesie-twosie planning pass (docs/planning/onesie-twosie-followup-drain-2026-09-27.md section 5)]",
+          "reopenWhen": "an admitted redirect reaches an ungranted outside destination, or a literal outside redirect beside an opaque one reaches the operator's folders",
+          "targets": [],
+          "at": "2026-09-27T00:36:34.678Z"
         }
       ]
     },
@@ -13528,6 +13710,14 @@
           "reopenWhen": "the next order that edits scripts/lib/meta.mjs, observed-facts.ts or release preparation, or another repair that meets the no-files-changed message beside a changed draft (map candidate: meter and closeout residue, 2026-09-21)",
           "targets": [],
           "at": "2026-09-21T06:59:10.959Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again with its members disposed one by one: the unset label goes to WO-169, the hedge match to WO-168, release prepare's write reporting was settled by WO-160, and the empty dispatch table does not reproduce. What remains is the ownership of an executor-time PR draft. Its seam was opened by WO-155, WO-158 and WO-160 without any of them seeing this row. [2026-09-27 onesie-twosie planning pass (docs/planning/onesie-twosie-followup-drain-2026-09-27.md section 5)]",
+          "reopenWhen": "another repair meets a changed reviewer draft it did not write, or the next order that edits release preparation",
+          "targets": [],
+          "at": "2026-09-27T00:36:34.157Z"
         }
       ]
     },
@@ -13552,6 +13742,16 @@
           "reopenWhen": "a final-review gate again meets a deterministic failure in a suite no earlier run selected (map candidate: machinery suite selection before final review, 2026-09-21)",
           "targets": [],
           "at": "2026-09-21T06:59:10.442Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Answered in two parts. This pass adds the planning rule to product 07 in place: an order that edits a declared source of a machinery suite names npm test -- --review in its final criterion. WO-169 item 5 makes the configuration-root suite declare the scripts it scans, the gap that let WO-165's literal reach main (WO-085 D014). Selecting changed machinery in plain npm test is declined as the larger change (map candidate 4 of 2026-09-27). [2026-09-27 onesie-twosie planning pass (docs/planning/onesie-twosie-followup-drain-2026-09-27.md section 5)]",
+          "reopenWhen": "an order whose criterion named the review gate still meets a deterministic machinery failure first at final review, or two orders without the named gate do",
+          "targets": [
+            "WO-169"
+          ],
+          "at": "2026-09-27T00:36:31.553Z"
         }
       ]
     },
@@ -13600,6 +13800,16 @@
           "reopenWhen": "a second integration meets an authored conflict, or a regenerated projection carries a conflict byte",
           "targets": [],
           "at": "2026-09-22T00:34:44.464Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-169 item 4. Its reopening observation occurred: WO-165's integration met five authored conflicts (D007), and nine integration records carry the doubled full stop the follow-up names. [2026-09-27 onesie-twosie planning pass (docs/planning/onesie-twosie-followup-drain-2026-09-27.md section 5)]",
+          "reopenWhen": "after WO-169 closes, a regenerated projection carries a conflict byte or an integration record doubles its full stop",
+          "targets": [
+            "WO-169"
+          ],
+          "at": "2026-09-27T00:36:30.523Z"
         }
       ]
     },
@@ -15818,6 +16028,14 @@
           "reopenWhen": "docs/planning/refutations exceeds 32 MB, or a planning pass with room after WO-085 lands",
           "targets": [],
           "at": "2026-09-25T21:29:59.961Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "One reopening condition occurred: WO-085 landed and the 2026-09-27 pass had room for two orders. Not filed: the operator scoped the pass to small defects, and the change sits on the receipt helper every planning pass runs. docs/planning/refutations measured 17,028 KB across 73 files on 2026-09-27. Recorded open for the next standard pass. [2026-09-27 onesie-twosie planning pass (docs/planning/onesie-twosie-followup-drain-2026-09-27.md section 5)]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-27T00:36:40.923Z"
         }
       ]
     },
@@ -15894,6 +16112,16 @@
           "reopenWhen": "the next order that edits the meter's drift-row render",
           "targets": [],
           "at": "2026-09-25T21:29:58.825Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-169 item 6: the drift rows render a null ceiling as unset. Re-observed on main at 4c34b332 (display(row.ceiling) in renderMetaTable). [2026-09-27 onesie-twosie planning pass (docs/planning/onesie-twosie-followup-drain-2026-09-27.md section 5)]",
+          "reopenWhen": "another meter or CLI row renders an unset limit as unavailable after WO-169 closes",
+          "targets": [
+            "WO-169"
+          ],
+          "at": "2026-09-27T00:36:31.036Z"
         }
       ]
     },
@@ -16062,6 +16290,16 @@
           "reopenWhen": "WO-115 or WO-117 activates",
           "targets": [],
           "at": "2026-09-25T21:29:59.104Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-117 as a catalog carry-in. Its reopening condition occurred unseen: WO-115 activated on 2026-09-25 and closed at v0.52.0 without a disposition of this row. WO-117 is the next order that opens the resident host; priority low by its own record. [2026-09-27 onesie-twosie planning pass (docs/planning/onesie-twosie-followup-drain-2026-09-27.md section 5)]",
+          "reopenWhen": "WO-117 closes without disposing the carry-in, or an ordinary launchpad produces either condition",
+          "targets": [
+            "WO-117"
+          ],
+          "at": "2026-09-27T00:36:32.068Z"
         }
       ]
     },
@@ -17103,6 +17341,16 @@
           "reopenWhen": "the next order that touches harness-host outside-write grants or the live-gate list",
           "targets": [],
           "at": "2026-09-25T21:30:01.126Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-168: item 2 (a granted root is a real directory; item a), item 3 (the override exit prints before an input refusal and an appended record is never reported as not appended; items c and d) and item 4 (the configured-program check names hooks and a pretty format holding %G, item b; revision syntax and quoted angle brackets are admitted for listed reads, item e; helper forms compare argument by argument, item f). [2026-09-27 onesie-twosie planning pass (docs/planning/onesie-twosie-followup-drain-2026-09-27.md section 5)]",
+          "reopenWhen": "after WO-168 closes, a write lands outside every granted root through a swapped root, a gate input changes under an admitted read, or an override exit prints nothing",
+          "targets": [
+            "WO-168"
+          ],
+          "at": "2026-09-27T00:36:28.467Z"
         }
       ]
     },
@@ -17524,6 +17772,14 @@
           "reopenWhen": "the next planning pass opens (it runs the inventory as its first research stream)",
           "targets": [],
           "at": "2026-09-25T21:58:45.431Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Its reopening text names the next planning pass as the inventory's opening stream. The operator scoped the 2026-09-27 pass to the follow-up queue and small fixes, so the inventory was not run; recorded open for the next standard pass. [2026-09-27 onesie-twosie planning pass (docs/planning/onesie-twosie-followup-drain-2026-09-27.md section 5)]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-27T00:36:40.408Z"
         }
       ]
     },
@@ -17564,7 +17820,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-075 as a catalog carry-in: the kit runtime is the first order that runs these paths under a launchpad that is not the scripts' checkout. Priority low by its own record; the executor decides at activation. [2026-09-27 onesie-twosie planning pass (docs/planning/onesie-twosie-followup-drain-2026-09-27.md section 5)]",
+          "reopenWhen": "WO-075 closes without disposing the carry-in, or a launchpad separate from the scripts' checkout must run these paths first",
+          "targets": [
+            "WO-075"
+          ],
+          "at": "2026-09-27T00:36:26.408Z"
+        }
+      ]
     },
     {
       "id": "FUP-04bdf07955e1e24f",
@@ -17579,7 +17846,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled: WO-166 criterion 6 made the pins-only test resolve the live audit through the edition it names (commit 14619ee7) and VER-002 passed it; the order closed at v0.52.3. [2026-09-27 onesie-twosie planning pass (docs/planning/onesie-twosie-followup-drain-2026-09-27.md section 5)]",
+          "reopenWhen": "the pins-only test fails again while a carried feedback edition is selected",
+          "targets": [],
+          "at": "2026-09-27T00:36:25.887Z"
+        }
+      ]
     },
     {
       "id": "FUP-85a17b1df99f353f",
@@ -17945,7 +18221,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 3,
+          "status": "settled",
+          "reason": "Settled: the reopening D026 recorded was answered inside the order. WO-115 was re-activated and took a fresh cycle over the fixed tree (VER-006, FINAL-003 with its product gate bound at the transition) and was published as v0.52.0. [2026-09-27 onesie-twosie planning pass (docs/planning/onesie-twosie-followup-drain-2026-09-27.md section 5)]",
+          "reopenWhen": "a complete gate at the published code identity repeats the WO-143 or WO-114 deadline failure, or a served terminal command diverges from its direct run",
+          "targets": [],
+          "at": "2026-09-27T00:36:24.849Z"
+        }
+      ]
     },
     {
       "id": "FUP-ca628adcc713c0b8",
@@ -17960,7 +18245,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred: the fold trusts a productGate binding's declared subject type, but resume correct cannot write such an event and reviewedProductGate ignores it, so no consequence exists to remove; re-observed in scripts/lib/control.mjs on main at 4c34b332. The NoOp record is the planning document section 8. [2026-09-27 onesie-twosie planning pass (docs/planning/onesie-twosie-followup-drain-2026-09-27.md section 5)]",
+          "reopenWhen": "the next order that edits the RecordCorrected fold in scripts/lib/control.mjs, or a committed segment carries a gate binding whose subject is not a passing final review",
+          "targets": [],
+          "at": "2026-09-27T00:36:25.362Z"
+        }
+      ]
     },
     {
       "id": "FUP-59f75a891ac4d0d0",
@@ -17975,7 +18269,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled: WO-165 D008 corrected M1 (the route comment) and M2 (the residue control's pattern) inside final review's boy-scout bound, as this follow-up invited; the order closed at v0.52.1. [2026-09-27 onesie-twosie planning pass (docs/planning/onesie-twosie-followup-drain-2026-09-27.md section 5)]",
+          "reopenWhen": "an episode on the background route or another unpinned route observes a delegate tool in its surface, or delegate wording returns to the residue under a spelling the control misses",
+          "targets": [],
+          "at": "2026-09-27T00:36:24.334Z"
+        }
+      ]
     },
     {
       "id": "FUP-71fc2efc208f597a",
@@ -18014,7 +18317,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled: an in-order repair directive. WO-085's repair answered F1 to F5 (D010 to D014) and VER-002 passed all five criteria with F1 to F5 reproduced as fixed; the order closed at v0.52.2. [2026-09-27 onesie-twosie planning pass (docs/planning/onesie-twosie-followup-drain-2026-09-27.md section 5)]",
+          "reopenWhen": "a later verification of WO-085's subject reproduces one of F1 to F5",
+          "targets": [],
+          "at": "2026-09-27T00:36:23.825Z"
+        }
+      ]
     },
     {
       "id": "FUP-a6b9c4dc86ac8995",
@@ -18029,7 +18341,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "O3 is allocated to WO-086, amended by this pass: it retires the docs check's heading exemption of roadmap Release boundary for one registered generated block and restates the ceiling from counted bytes. O1 and O2 (recognizer width), O4 (raise comparison) and O5 (link scope) are declined in the planning document section 8: the byte ceiling is the limiter and nothing fails today. O6 to O12 were the repair's; O13 has not recurred. [2026-09-27 onesie-twosie planning pass (docs/planning/onesie-twosie-followup-drain-2026-09-27.md section 5)]",
+          "reopenWhen": "a product document gains a dated paragraph or candidate heading of an unmatched shape while under its ceiling, a ceiling is raised without the integration base being compared, or WO-086 closes with the heading exemption in place",
+          "targets": [
+            "WO-086"
+          ],
+          "at": "2026-09-27T00:36:22.301Z"
+        }
+      ]
     },
     {
       "id": "FUP-040634d583e2c517",
@@ -18044,7 +18367,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "V2 and V7 are allocated to WO-086, amended by this pass (the exemption pinned to a registered generated block; a demoted terminating heading exempts nothing). V5 is written into product 08 PRs and commits by this pass: a PR body links evidence with paths relative to the stored body file. V1, V3, V4 and V6 are declined in the planning document section 8; V8 to V10 need no action. [2026-09-27 onesie-twosie planning pass (docs/planning/onesie-twosie-followup-drain-2026-09-27.md section 5)]",
+          "reopenWhen": "a final review's PR body is refused by the link rule after the product 08 sentence, a generator other than WO-086's writes a marker block into docs/product, or an unused historical exception admits a new broken link",
+          "targets": [
+            "WO-086"
+          ],
+          "at": "2026-09-27T00:36:22.802Z"
+        }
+      ]
     },
     {
       "id": "FUP-40f361277410f64f",
@@ -18059,7 +18393,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-167, whose criterion 2 this pass amended: the proof that the role skills' heading citations survive the fold is node scripts/harness-context.mjs --check, which resolves every Read selector strictly. Reproduced by this pass: a renamed Goal-aligned decisions heading fails with Unresolved required section. The docs check proves Markdown links only. [2026-09-27 onesie-twosie planning pass (docs/planning/onesie-twosie-followup-drain-2026-09-27.md section 5)]",
+          "reopenWhen": "WO-167 activates with criterion 2 not naming the harness-context check, or a skill's heading citation breaks without a refusal",
+          "targets": [
+            "WO-167"
+          ],
+          "at": "2026-09-27T00:36:23.314Z"
+        }
+      ]
     },
     {
       "id": "FUP-a27067d36a3d6c91",
@@ -18105,7 +18450,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred: the second half is discharged (main's runtime was rebuilt after the WO-166 merge, so its hook no longer judges a pid-less thread owner dead). The release-close fixture against the real runtime in a linked pair needs publication stubs beyond the shell fixture, and no release close has failed on the writer protocol; the NoOp record is the planning document section 8. [2026-09-27 onesie-twosie planning pass (docs/planning/onesie-twosie-followup-drain-2026-09-27.md section 5)]",
+          "reopenWhen": "a real release close leaves main reserved or reclaims a live session's reservation, or the shell fixture's adapter diverges from the runtime's writer protocol",
+          "targets": [],
+          "at": "2026-09-27T00:36:21.783Z"
+        }
+      ]
     },
     {
       "id": "FUP-b537eae489004287",
@@ -18120,7 +18474,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-168: item 5 (a refused Codex dispatch leaves no reservation), item 6 (a stale built runtime refuses by naming bootstrap) and item 7 (product 07's release-close row). The transitional case at WO-166's own close has passed: main's runtime built at 2026-09-26T23:53Z holds the reservation entry point. [2026-09-27 onesie-twosie planning pass (docs/planning/onesie-twosie-followup-drain-2026-09-27.md section 5)]",
+          "reopenWhen": "a Codex release-close dispatch in main fails after main's runtime is rebuilt, a refused dispatch appends a lifecycle event, or an observation-log failure strands a reservation its own session cannot reclaim",
+          "targets": [
+            "WO-168"
+          ],
+          "at": "2026-09-27T00:36:20.774Z"
+        }
+      ]
     },
     {
       "id": "FUP-a6c598371c7f86cf",
@@ -18135,7 +18500,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-168 items 1 and 2: the session scratch directory is created wherever its path is printed or returned, and a granted root must be a real directory. Re-observed on main at 4c34b332: harnessSessionScratch only computes the path and none of its four call sites creates it. [2026-09-27 onesie-twosie planning pass (docs/planning/onesie-twosie-followup-drain-2026-09-27.md section 5)]",
+          "reopenWhen": "a role session reports the printed scratch path absent after WO-168 closes, or WO-168 closes without item 1",
+          "targets": [
+            "WO-168"
+          ],
+          "at": "2026-09-27T00:36:20.263Z"
+        }
+      ]
     },
     {
       "id": "FUP-465c6ce0f041b447",
@@ -18150,7 +18526,146 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-168 item 7: the generated five-refusals sentence, product 02's writer paragraph and product 07's work-order index paragraph, edited in place; the generated sentence is bounded to 200 bytes of growth against a reviewer cold-start headroom of 581 bytes. [2026-09-27 onesie-twosie planning pass (docs/planning/onesie-twosie-followup-drain-2026-09-27.md section 5)]",
+          "reopenWhen": "a session acts on one of the three sentences against the shipped behaviour, or WO-168 closes without them",
+          "targets": [
+            "WO-168"
+          ],
+          "at": "2026-09-27T00:36:21.281Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-99f720bad9200a33",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-onesie-twosie-pass-recorded-2026-09-27::214da07e5db0e6cd8c4f01206b8e837af8be59d8ec57aa6d9e91bbf9cdfb29e0",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "cde8aebae1193aad1c5d2f2b8eec35b7c6fa054634e5e6904d9b36843a5c31e9",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-onesie-twosie-pass-recorded-2026-09-27",
+          "title": "Seam-conditioned follow-ups reach the order that opens their seam.",
+          "summary": "1. **Seam-conditioned follow-ups reach the order that opens their seam.** A row deferred until \"the next order that edits\" a file is shown to no order: `reactor.ts` was edited by WO-099, WO-151, WO-154 and WO-070, `scripts/lib/meta.mjs` and release preparation by WO-155, WO-158 and WO-160, and `resident-state.ts` by WO-100, each after the deferral of rows that wait for exactly that, and WO-115 closed without the row deferred until it activated; eight rows, none disposed. Candidate: `followups --touching` names the pending rows a change touches and the completion check advises with the count. Allocated to WO-169 item 1. Reopen: an order closes with a touching row undisposed after WO-169.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-169 item 1: followups --touching names the pending rows a change touches and the completion check advises with the count. [2026-09-27 onesie-twosie planning pass (docs/planning/onesie-twosie-followup-drain-2026-09-27.md section 5)]",
+          "reopenWhen": "an order closes with a touching row undisposed after WO-169",
+          "targets": [
+            "WO-169"
+          ],
+          "at": "2026-09-27T00:36:42.477Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-8533f830e7c7265f",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-onesie-twosie-pass-recorded-2026-09-27::30847a05d639de2a6e244dd741dd40d16a8807e2aaef01686e6e2ba85791141f",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "4e58a6a24b418cd71ce1cd2e99880b456fb77eb7e502e30f9fbe468f00ffbf37",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-onesie-twosie-pass-recorded-2026-09-27",
+          "title": "Changed machinery suites in the plain product gate.",
+          "summary": "4. **Changed machinery suites in the plain product gate.** `npm test` selects product suites and `--review` adds the machinery suites whose declared sources changed, so an executor's green gate can precede a deterministic machinery failure (WO-144 D010; WO-166 D013 met four stale process fixtures at the repair's integrated review gate). Selecting them in plain `npm test` changes the duration and meaning of the gate every role runs. Declined for now: the planning rule that an order editing a machinery source names `npm test -- --review` is the smaller probe. Reopen: an order whose criterion named the review gate still meets a deterministic machinery failure first at final review, or two order",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "duplicate",
+          "reason": "Duplicate of the machinery-suite-selection row, which carries this pass's decision: the planning rule and WO-169 item 5 now, the runner default declined as the larger change. [2026-09-27 onesie-twosie planning pass (docs/planning/onesie-twosie-followup-drain-2026-09-27.md section 5)]",
+          "reopenWhen": "the reopening observation of FUP-ca485137e32985fb",
+          "targets": [
+            "FUP-ca485137e32985fb"
+          ],
+          "at": "2026-09-27T00:36:44.047Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-6180ef00941d7995",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-onesie-twosie-pass-recorded-2026-09-27::32b5627659f674412cd9940b080be74f80974376cd5f384a4d84fe301dc3935a",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "81fb52dbb88cdec671d97af6f71d207b6cdf32cac936b44f552ec3cf683f31b7",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-onesie-twosie-pass-recorded-2026-09-27",
+          "title": "Programs the live gate refuses.",
+          "summary": "5. **Programs the live gate refuses.** Sessions met refusals for `cut`, `sort`, `date`, `printf` and `echo` while a gate was live (WO-158 VER-003 and FINAL-002). Each would need a bounded option vocabulary (`sort -o` writes a file), and the refusal already names the list. Declined; WO-168 corrects the argument forms of programs already listed and adds none. Reopen: the retained journals or three reports after WO-168 show a session losing more than one command to the same unlisted program in one gate window.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Declined for now by the 2026-09-27 pass (planning document section 8): each program needs a bounded option vocabulary on the boundary that protects gate inputs, and the refusal already names the list; WO-168 corrects the argument forms of listed programs only. [2026-09-27 onesie-twosie planning pass (docs/planning/onesie-twosie-followup-drain-2026-09-27.md section 5)]",
+          "reopenWhen": "the retained journals or three reports after WO-168 show a session losing more than one command to the same unlisted program in one gate window",
+          "targets": [],
+          "at": "2026-09-27T00:36:44.570Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-28ded9eb997633f2",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-onesie-twosie-pass-recorded-2026-09-27::4974d55a5c908a45d309f2214a7c8b13eeeee6012734e2b51ad200abc1935376",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "f0c8975bd21696affe3fd44e6c7a52059c930052cd61d72c1368db2e252f04ad",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-onesie-twosie-pass-recorded-2026-09-27",
+          "title": "The follow-up feed exports its pending rows whole.",
+          "summary": "2. **The follow-up feed exports its pending rows whole.** The feed pages at eight rows and clips reasons; the 2026-09-25 pass read 36 rows by a throwaway script and this pass 155. Candidate: `followups --export` writes every pending row whole to a file and prints counts only, so the page bound keeps protecting the planner's context. Allocated to WO-169 item 2. Reopen: a pass still writes its own projection.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-169 item 2: followups --export writes every pending row whole to a file and prints counts only. [2026-09-27 onesie-twosie planning pass (docs/planning/onesie-twosie-followup-drain-2026-09-27.md section 5)]",
+          "reopenWhen": "a planning pass still writes its own projection of the register after WO-169",
+          "targets": [
+            "WO-169"
+          ],
+          "at": "2026-09-27T00:36:43.001Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-d7c0c433892e120f",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-onesie-twosie-pass-recorded-2026-09-27::a1cf1793c8bb3d4ad7e62d212faddb802b4b31e3b1a3e92cdb045520e2c23756",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "8f978e10eeafe32842a6cb39a0720a86b30f142a61acd7c215cb50b33f18e6e1",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-onesie-twosie-pass-recorded-2026-09-27",
+          "title": "A batch of dispositions in one command.",
+          "summary": "3. **A batch of dispositions in one command.** `followups --apply` takes one request bound to a revision that every apply changes; 163 request files sit in the main checkout's local control lane. Candidate: an array form under one expected revision, applied in order, all or none. Allocated to WO-169 item 3. Reopen: a pass still chains revisions by script.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-169 item 3: followups --apply accepts an array of requests under one expected revision, applied in order, all or none. [2026-09-27 onesie-twosie planning pass (docs/planning/onesie-twosie-followup-drain-2026-09-27.md section 5)]",
+          "reopenWhen": "a planning pass still chains revisions by script after WO-169",
+          "targets": [
+            "WO-169"
+          ],
+          "at": "2026-09-27T00:36:43.525Z"
+        }
+      ]
     }
   ]
 }

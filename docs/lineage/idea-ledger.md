@@ -40,6 +40,63 @@ are now declared above. The [decision record](../evidence/WO-084/decisions.md)
 records the legacy ledger write-back; `node scripts/lineage.mjs index` generates
 the index and `index --check` enforces this rule in `npm run test:docs`.
 
+## 2026-09-27 — Planning pass: onesie-twosie, the follow-up queue drained (WO-168, WO-169; WO-086 and WO-167 amended)
+
+Source: the operator's dispatch, captured verbatim in ignored intake
+(`docs/intake/notes/2026-09-27-onesie-twosie-followup-drain-planning.md`,
+SHA-256 `5c01f978f3257f7fc87936301983d9ec74ada82f3c246f8270e79e197dbb8a05`):
+a small pass that drains the follow-up queue and fixes small nagging
+issues, at most two work orders, in parallel and next, one or none being
+acceptable. Inputs: the register's 155 pending rows, read whole; the
+decisions, verifications and final reviews of WO-070, WO-115, WO-165,
+WO-085 and WO-166; the harness, runner, integrate-helper and feed sources
+at `4c34b332`; first-parent history since each deferral. Clean-room
+screen: no stop condition. The record is
+[the planning document](../planning/onesie-twosie-followup-drain-2026-09-27.md).
+
+- **A printed path exists** `adopted`
+  - The harness prints a session scratch path at every role dispatch and
+    nothing creates the directory; a final review lost a gate to it
+    (WO-166 D015) and the operator directed that a session never write to
+    a scratch directory that does not exist. WO-168 creates it wherever it
+    is printed and carries the boarded defects of the same seam: a granted
+    root that follows a symlink, the override exit withheld by an input
+    refusal, listed reads refused for their arguments during a live gate,
+    a refused Codex dispatch that keeps its reservation, and three
+    sentences that understate what WO-166 shipped. Provenance:
+    operator-directed.
+- **Follow-ups reach the order that opens their seam** `adopted`
+  - Fifty-seven deferred rows wait for an order's activation or for "the
+    next order that edits" a file, and nothing shows a row to that order:
+    four seams were opened by nine closed orders with eight rows
+    untouched. WO-169 adds `followups --touching` and a completion
+    advisory, the export and batch apply that replace the scripts each
+    pass rewrites, and three small corrections (the integrate helper's
+    record and ordering, the configuration-root suite's sources, the
+    meter's unset label).
+- **An order that edits a machinery source names the review gate** `adopted`
+  - Product 07's planning procedure gains the clause in place; WO-168 and
+    WO-169 are the first orders under it. Source: WO-144 D010 and the
+    machinery failures WO-085 and WO-166 met at a repair's review gate.
+- **Queued orders are amended where a verification boarded a planning decision** `adopted`
+  - WO-086 retires the docs check's heading exemption for one registered
+    generated block and restates the roadmap's ceiling from its counted
+    bytes; WO-167's criterion 2 names the harness-context check as the
+    proof for the skills' citations (WO-085 D009, D015 and D016).
+- **Changed machinery suites in the plain product gate** `deferred`
+  - Map candidate 4 of the pass; the planning rule is the smaller probe.
+    Reopen: an order whose criterion named the review gate still meets a
+    machinery failure first at final review.
+- **Programs the live gate refuses** `deferred`
+  - Map candidate 5; each program needs a bounded option vocabulary.
+    Reopen: a session loses more than one command to the same unlisted
+    program in one gate window.
+- **A reopening condition that occurred is recorded open** `adopted`
+  - Nine rows outside the pass's category (five product candidates, the
+    stored-data inventory, receipts by identity, retention of
+    never-current editions) are recorded open with their evidence instead
+    of left deferred on a condition already met.
+
 ## 2026-09-25 — Planning pass: second judgment (receipt 029's findings repaired in the five orders; three nominations)
 
 Source: receipt 029 (`2026-09-25-planning-8f567de659b31991-029`, aligned
