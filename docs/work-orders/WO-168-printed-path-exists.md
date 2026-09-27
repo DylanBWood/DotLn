@@ -1,4 +1,4 @@
-# WO-168 — A printed path exists: the harness creates the session scratch directory wherever it prints it, a granted root is a real directory, a refused Codex dispatch leaves no reservation, a live gate admits four argument forms of the reads it already lists, and the standing writer sentences say what ships (version assigned at activation)
+# WO-168 — A printed path exists: the harness creates the session scratch directory wherever it prints it, a granted root is a real directory, a refused Codex dispatch leaves no reservation, a live gate admits four argument forms of the reads it already lists, and the standing writer sentences say what ships (v0.52.5)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).

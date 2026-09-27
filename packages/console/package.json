@@ -25,8 +25,8 @@
     "node": ">=26.0.0 <27"
   },
   "dependencies": {
-    "@dotln/compiler": "0.19.2",
+    "@dotln/compiler": "0.19.3",
     "@dotln/kernel": "0.6.0",
-    "@dotln/skeleton": "0.44.2"
+    "@dotln/skeleton": "0.44.3"
   }
 }
