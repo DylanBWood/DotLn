@@ -323,8 +323,17 @@ export function scanHedges(
         /\b(?:took|duration|ran|lasted)\b/i.test(part) &&
         !/\b(?:ago|since)\b/i.test(part)
       ) {
-        const matching = facts.gates.filter((gate) =>
-          part.includes(gate.checkId),
+        // WO-168 (WO-140-D007): `npm test -- --inside-sandbox` contains
+        // `npm test`, so a named identity yields to a longer one that holds
+        // it. Two unrelated identities in one phrase stay ambiguous.
+        const named = facts.gates.filter((gate) => part.includes(gate.checkId));
+        const matching = named.filter(
+          (gate) =>
+            !named.some(
+              (other) =>
+                other.checkId !== gate.checkId &&
+                other.checkId.includes(gate.checkId),
+            ),
         );
         if (matching.length === 1 && Number.isFinite(matching[0]?.durationMs)) {
           observed = `${matching[0]!.durationMs} ms`;

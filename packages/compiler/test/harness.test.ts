@@ -464,7 +464,7 @@ test("WO-132 both harness roles receive identical duties and the shared instruct
   assert.match(merged, /operator override:/);
   assert.match(
     merged,
-    /Codex carries the duties and grants as role text without automatic enforcement/,
+    /under Codex a lifecycle dispatch reserves the writer and refuses a foreign holder, and the other duties and grants are role text because Codex tool calls are unhooked/,
   );
   for (const file of availableBundle.files.filter(
     (file) =>

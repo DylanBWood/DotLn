@@ -15,8 +15,10 @@ import {
   renameSync,
   rmdirSync,
   rmSync,
+  statSync,
   unlinkSync,
   writeFileSync,
+  type Stats,
 } from "node:fs";
 import {
   basename,
@@ -1448,12 +1450,27 @@ export function reserveCodexDispatchWriter(
     hook_event_name: "UserPromptSubmit",
   };
   const actorId = sessionKey(input);
-  const writers = reserveHarnessWriter(
-    root,
-    input,
-    actorId,
-    codexHostProcess(),
-  );
+  // WO-168 (WO-166-D014): a dispatch refused after its reservation was placed
+  // leaves the worktree as it found it. A reservation this session already
+  // held, or one that cannot be observed, is not this dispatch's to release.
+  let held = true;
+  try {
+    held = observeWriterHolder(root).writer?.actorId === actorId;
+  } catch {
+    // The reservation below names what could not be read.
+  }
+  let writers: readonly HarnessWriter[];
+  try {
+    writers = reserveHarnessWriter(root, input, actorId, codexHostProcess());
+  } catch (error) {
+    if (!held)
+      try {
+        releaseHarnessWriter(root, input);
+      } catch {
+        // The refusal names the first failure; writer --show reports the rest.
+      }
+    throw error;
+  }
   const foreign = writers.find((writer) => writer.actorId !== actorId);
   if (foreign) throw new Error(writerRefusal(foreign));
   return harnessWriterView(root);
@@ -1724,9 +1741,11 @@ export function beginHarnessSession(
   }
   const override = openOverrideAdvisory(root);
   if (override) process.stderr.write(`${override}\n`);
+  const scratch = ensureHarnessSessionScratch(sessionId);
+  if (scratch.advisory) process.stderr.write(`${scratch.advisory}\n`);
   return {
     session: sessionKey(input),
-    scratch: harnessSessionScratch(sessionId),
+    scratch: scratch.path,
     inheritedOutputs: Object.keys(snapshot).length - adopted.length,
   };
 }
@@ -2820,6 +2839,52 @@ function planningWriteRefusal(
 export const harnessSessionScratch = (sessionId: string) =>
   join(tmpdir(), "dotln", digest(sessionId), "scratch");
 
+/** Why a path is not a real directory the session user owns; null when it is. */
+const notOwnDirectory = (info: Stats): string | null =>
+  info.isSymbolicLink()
+    ? "it is a symbolic link"
+    : !info.isDirectory()
+      ? "it is not a directory"
+      : typeof process.getuid === "function" && info.uid !== process.getuid()
+        ? "another user owns it"
+        : null;
+
+/**
+ * WO-168 (WO-166-D015): a printed scratch path exists. Every place that
+ * prints or returns the path creates the directory first, mode 0700; an
+ * existing real directory the session user owns is used as it is. Anything
+ * else is one advisory naming the path and the cause, never a refusal.
+ */
+export function ensureHarnessSessionScratch(sessionId: string): {
+  readonly path: string;
+  readonly advisory?: string;
+} {
+  const path = harnessSessionScratch(sessionId);
+  let cause: string | null;
+  try {
+    // Inspect first: a recursive mkdir passes over a link to a directory.
+    let info = lstatSync(path, { throwIfNoEntry: false });
+    if (!info) {
+      // `<system-temp>/dotln` is shared where the temporary directory is, so
+      // it stays traversable; only the session's own directories are private.
+      mkdirSync(dirname(dirname(path)), { recursive: true });
+      mkdirSync(path, { recursive: true, mode: 0o700 });
+      info = lstatSync(path);
+    }
+    cause = notOwnDirectory(info);
+  } catch (error) {
+    cause =
+      errorCode(error) ??
+      (error instanceof Error ? error.message : "unknown failure");
+  }
+  return cause
+    ? {
+        path,
+        advisory: `DotLn advisory: session scratch ${path} is unavailable (${cause.replace(/\s+/g, " ")}); use another granted root for temporary work; host permissions decide.`,
+      }
+    : { path };
+}
+
 /**
  * WO-158-D010 (FUP-9ac70adcd20de223): the scratchpad Claude Code prints at
  * session start, /tmp/claude-<uid>/<project key>/<session id>/scratchpad.
@@ -2852,6 +2917,24 @@ export function claudeHostScratchpad(
     input.session_id,
     "scratchpad",
   );
+}
+
+/**
+ * WO-168 (WO-158-D028 a): a session root is granted as the directory it
+ * names. Ancestors resolve physically, so the system temporary directory's
+ * own symlinked prefix keeps working; a final component that is a link, a
+ * file or another user's directory grants nothing. An absent root is judged
+ * as before, so the write that creates it is admitted. A root that cannot be
+ * inspected throws as its resolution always did, which is the guard's one
+ * advisory and an admission, never a refusal.
+ */
+function grantedSessionRoot(path: string): {
+  readonly physical: string;
+  readonly cause?: string;
+} {
+  const info = lstatSync(path, { throwIfNoEntry: false });
+  const cause = info ? notOwnDirectory(info) : null;
+  return { physical: prospectiveRealpath(path), ...(cause ? { cause } : {}) };
 }
 
 function outsideWriteResponse(
@@ -2918,6 +3001,7 @@ function outsideWriteResponse(
           ),
         }
       : config.envelope;
+    const ungranted: { path: string; physical: string; cause: string }[] = [];
     const roots = grants
       .filter((grant) => {
         const effect = outsideWriteEffect(grant);
@@ -2965,11 +3049,25 @@ function outsideWriteResponse(
             break;
           }
         }
-        return [{ ...grant, physical: prospectiveRealpath(path) }];
+        if (
+          grant.kind !== "session-scratch" &&
+          grant.kind !== "host-scratchpad"
+        )
+          return [{ ...grant, physical: prospectiveRealpath(path) }];
+        const { physical, cause } = grantedSessionRoot(path);
+        if (cause === undefined) return [{ ...grant, physical }];
+        ungranted.push({ path, physical, cause });
+        return [];
       });
     const grant = roots.find((candidate) =>
       withinRoot(candidate.physical, destination.physical),
     );
+    // Only a root the destination would have used explains its refusal.
+    const withheld = grant
+      ? undefined
+      : ungranted.find((candidate) =>
+          withinRoot(candidate.physical, destination.physical),
+        );
     observe({
       role: session.role ?? "unknown",
       destination: destination.physical,
@@ -2987,7 +3085,7 @@ function outsideWriteResponse(
       return {
         response: protocolRefusal(
           config.event,
-          `DOTLN_HARNESS_REFUSED: outside-project write to ${destination.path} (physical destination ${destination.physical}) lacks an equipped outside-write grant for role ${session.role ?? "unknown"} (WO-144). Use operator override: for authorized recovery.`,
+          `DOTLN_HARNESS_REFUSED: outside-project write to ${destination.path} (physical destination ${destination.physical}) lacks an equipped outside-write grant for role ${session.role ?? "unknown"} (WO-144).${withheld ? ` Granted root ${withheld.path} grants nothing: ${withheld.cause} (WO-168).` : ""} Use operator override: for authorized recovery.`,
         ),
       };
     const tools: HookConfig["tools"] = config.tools ?? harnessToolEffects;
@@ -2999,6 +3097,10 @@ function outsideWriteResponse(
   return effect ? { effect } : {};
 }
 
+/** WO-168 (WO-158-D028 b): the hooks a listed Git read can start. The index
+ * refresh of a diff or a status writes the index, which runs this hook. */
+const LIVE_GATE_GIT_HOOKS: readonly string[] = ["post-index-change"];
+
 /** WO-158 (WO-142-D012): a plain Git read runs programs the repository
  * configures. The live-gate list admits one only while none is configured;
  * the index stat refresh a status may take is the recorded residual. */
@@ -3007,23 +3109,48 @@ function configuredGitPrograms(directory: string): boolean {
     directory,
     [
       "config",
+      "-z",
       "--get-regexp",
-      String.raw`^(core\.fsmonitor|diff\.external|diff\..+\.(command|textconv)|filter\..+\.(clean|smudge|process)|log\.showsignature|gpg\.program|gpg\..+\.program)$`,
+      String.raw`^(core\.fsmonitor|diff\.external|diff\..+\.(command|textconv)|filter\..+\.(clean|smudge|process)|log\.showsignature|gpg\.program|gpg\..+\.program|format\.pretty|pretty\..+|hook\..+\.event)$`,
     ],
     true,
   );
-  return configured
-    .split("\n")
-    .filter(Boolean)
-    .some((line) => {
-      const [key, ...value] = line.split(" ");
-      return !(
-        ["core.fsmonitor", "log.showsignature"].includes(key!) &&
-        ["false", "no", "off", "0", ""].includes(value.join(" ").toLowerCase())
-      );
-    });
+  if (
+    configured
+      .split("\0")
+      .filter(Boolean)
+      .some((record) => {
+        // A record is its key, a newline and its value, so either may hold a
+        // space. A key alone is a boolean, which Git reads as true.
+        const end = record.indexOf("\n");
+        const key = end < 0 ? record : record.slice(0, end);
+        const text = end < 0 ? "true" : record.slice(end + 1);
+        // A pretty format runs the signature program only through %G, and a
+        // configured hook runs only for the event it names.
+        if (key === "format.pretty" || key.startsWith("pretty."))
+          return text.includes("%G");
+        if (key.startsWith("hook.")) return LIVE_GATE_GIT_HOOKS.includes(text);
+        return !(
+          ["core.fsmonitor", "log.showsignature"].includes(key) &&
+          ["false", "no", "off", "0", ""].includes(text.toLowerCase())
+        );
+      })
+  )
+    return true;
+  // The hooks directory honours core.hooksPath. One that cannot be named
+  // establishes nothing, so the read is not admitted.
+  const hooks = git(directory, ["rev-parse", "--git-path", "hooks"], true);
+  if (!hooks.trim()) return true;
+  return LIVE_GATE_GIT_HOOKS.some((name) => {
+    try {
+      const info = statSync(resolve(directory, hooks.trim(), name));
+      return info.isFile() && (info.mode & 0o111) !== 0;
+    } catch (error) {
+      return !["ENOENT", "ENOTDIR"].includes(errorCode(error) ?? "");
+    }
+  });
 }
-const LIVE_GATE_READ_TEXT = `Read-only commands stay admitted while it runs: ${LIVE_GATE_READ_LIST}, each stage without a redirect operand, heredoc or unquoted glob; a Git read carries --no-pager, names no %G signature placeholder and needs a repository that configures no fsmonitor, external diff, textconv, filter or signature program.`;
+const LIVE_GATE_READ_TEXT = `Read-only commands stay admitted while it runs: ${LIVE_GATE_READ_LIST}, each stage without a heredoc, expansion or unquoted glob. Admitted forms: a quoted < or >, a Git revision suffix (~, ^, @{...}), an input redirect from a literal path, an output redirect to /dev/null, descriptor duplication such as 2>&1, and --silent before or after resume; any other redirect is judged by its destination. A Git read carries --no-pager, names no %G signature placeholder and needs a repository that configures no fsmonitor, external diff, textconv, filter or signature program, no %G pretty format and no post-index-change hook.`;
 
 /** All generated pre-tool boundaries share this guard. There is no agent-
  * supplied gate-child bypass; gate-owned subprocess writes do not dispatch tools.
@@ -3305,6 +3432,7 @@ async function evaluateExistingHarnessHook(
       initializeSubagentCounter(harnessStateDirectory(root), input.session_id);
     let additionalContext: string | undefined;
     let receipt: string | undefined;
+    let scratchAdvisory: string | undefined;
     const intent = input.prompt?.trim() ?? "";
     const role =
       config.roles?.find((role) => role.intents.includes(intent)) ??
@@ -3348,7 +3476,9 @@ async function evaluateExistingHarnessHook(
         receipt = dispatched.receipt;
       }
       additionalContext = `DotLn resolved role ${role.name}. Load the dotln-${role.name} skill.${control.workOrderPath ? ` Read the selected work order ${control.workOrderPath} before interpreting the phase, including a closed phase.` : " Follow its requested observation or planning/ideation procedure."} A skill grants no authority.${dispatched ? `\n${dispatched.context}` : ""}`;
-      additionalContext += `\nDotLn session scratch: ${harnessSessionScratch(input.session_id)}. Use this path for temporary work. Native scratch and /tmp need a separate grant when outside system-temp; a printed path does not override the active grants.`;
+      const scratch = ensureHarnessSessionScratch(input.session_id);
+      scratchAdvisory = scratch.advisory;
+      additionalContext += `\nDotLn session scratch: ${scratch.path}. ${scratchAdvisory ?? "Use this path for temporary work."} Native scratch and /tmp need a separate grant when outside system-temp; a printed path does not override the active grants.`;
       if (input.session_id)
         additionalContext += `\n${usageReadbackLine(input.session_id)}`;
       const expected: Record<string, string> = {
@@ -3461,7 +3591,9 @@ async function evaluateExistingHarnessHook(
       .join("\n");
     // The receipt is the operator's only terminal evidence of the dispatch;
     // the briefing itself reaches the model alone.
-    const notices = [receipt, warning].filter(Boolean).join("\n");
+    const notices = [receipt, warning, scratchAdvisory]
+      .filter(Boolean)
+      .join("\n");
     return additionalContext
       ? {
           ...(notices ? { systemMessage: notices } : {}),
@@ -3896,6 +4028,18 @@ function recordOperatorOverride(
       },
     );
   };
+  // WO-168 (WO-158-D028 d): the append is the fact. The order's log says
+  // whether it happened when the lifecycle fails after writing it.
+  const records = (): number | null => {
+    try {
+      return localEvents(root, control.workOrder).filter(
+        (event) => event.type === "OperatorOverrideRecorded",
+      ).length;
+    } catch {
+      return null;
+    }
+  };
+  const before = records();
   const policy = dispatchAdmissionPolicy(root);
   const facts = policy
     ? writerIsolationFacts(root, invocation, session, input)
@@ -3908,13 +4052,22 @@ function recordOperatorOverride(
     return overrideAdvisory(exit, "the writer reservation refuses it");
   }
   const output = `${run.stdout ?? ""}${run.stderr ?? ""}`.trim();
-  record(root, input, { overrideRecord: { recorded: run.status === 0 } });
-  if (run.status !== 0)
-    return overrideAdvisory(
-      exit,
-      `resume refused it: ${output.slice(0, 400) || run.error?.message || "lifecycle unavailable"}`,
-    );
-  const receipt = `DotLn: ${output.split("\n").find((line) => line.startsWith("Recorded OperatorOverrideRecorded")) ?? "recorded OperatorOverrideRecorded"}`;
+  const after = run.status === 0 ? null : records();
+  const appended =
+    run.status === 0 || (before !== null && after !== null && after > before);
+  // An observation that cannot be journaled never reports a recorded event
+  // as not appended.
+  try {
+    record(root, input, { overrideRecord: { recorded: appended } });
+  } catch {
+    // Observation cannot change what the lifecycle recorded.
+  }
+  const failure = `${output.slice(0, 400) || run.error?.message || "lifecycle unavailable"}`;
+  if (!appended) return overrideAdvisory(exit, `resume refused it: ${failure}`);
+  const receipt =
+    run.status === 0
+      ? `DotLn: ${output.split("\n").find((line) => line.startsWith("Recorded OperatorOverrideRecorded")) ?? "recorded OperatorOverrideRecorded"}`
+      : `DotLn: recorded OperatorOverrideRecorded for ${control.workOrder}; resume then failed: ${failure.replace(/\s+/g, " ")}.`;
   return {
     systemMessage: `${exit.systemMessage}\n${receipt}`,
     hookSpecificOutput: {
@@ -3936,6 +4089,12 @@ export async function runHarnessHook(
   let response: Record<string, unknown> = {};
   let reasonClass: string =
     config.kind === "permission" ? "authority" : config.kind;
+  // WO-168 (WO-158-D028 c): the mode is already normal when an override
+  // exits, so its exit message and record command print ahead of the refusal.
+  const inputRefusal = (reason: string) =>
+    overrideExit
+      ? overrideAdvisory(overrideExit, reason)
+      : protocolRefusal(config.event, reason);
   try {
     // Hook input arrives on a pipe. Drain it through the event loop: a traced
     // synchronous fd-0 read stalled before evaluation under Node 22 on macOS.
@@ -3946,8 +4105,7 @@ export async function runHarnessHook(
       } catch {
         process.stdout.write(
           JSON.stringify(
-            protocolRefusal(
-              config.event,
+            inputRefusal(
               "DOTLN_HARNESS_INPUT_REFUSED: INVALID_JSON at $: invalid JSON",
             ),
           ),
@@ -3962,8 +4120,7 @@ export async function runHarnessHook(
     if (!decoded.ok) {
       process.stdout.write(
         JSON.stringify(
-          protocolRefusal(
-            config.event,
+          inputRefusal(
             `DOTLN_HARNESS_INPUT_REFUSED: ${decoded.code} at ${decoded.path}: ${decoded.message}`,
           ),
         ),

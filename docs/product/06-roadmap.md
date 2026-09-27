@@ -20,6 +20,17 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-168 activation completion (2026-09-27):** assigned application `v0.52.4`,
+the next patch above the observed local `v0.52.3` tag. A printed session scratch
+path exists, a granted session root is a real directory, a refused Codex
+dispatch leaves no reservation, and a live gate admits four argument forms of
+the reads it lists. Compiler `0.19.2` to `0.19.3` and skeleton `0.44.2` to
+`0.44.3` are compatible patch bumps for their changed source; the console's
+exact pins and lockfile follow. Independent verification, final review and
+publication remain separate dispatches.
+
+**WO-168 collision retiming (2026-09-27):** unpublished target `v0.52.4` is superseded by `v0.52.5` under the existing patch classification because the observed release baseline is `v0.52.4`. Scope, acceptance, component versions, and published tags are unchanged by this retiming.
+
 **WO-169 activation completion (2026-09-27):** assigned application `v0.52.4`,
 the next patch above the observed local `v0.52.3` tag. The follow-up feed names
 the pending rows a change, a file list or an order touches and completion

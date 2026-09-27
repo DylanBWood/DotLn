@@ -8,6 +8,7 @@ import {
   renameSync,
   writeFileSync,
 } from "node:fs";
+import { createHash } from "node:crypto";
 import { createCheckpoint } from "./lib/checkpoint.mjs";
 import { dirname, join, posix, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
@@ -299,6 +300,9 @@ const checkpoint = (action, workOrderId) => {
     return warn(error instanceof Error ? error.message : String(error));
   }
 };
+// WO-168 (WO-166-D014): set while a Codex dispatch holds a reservation it
+// placed and has recorded nothing, so a refusal leaves the worktree as found.
+let releaseRefusedDispatch;
 const appendTransition = (action, event) => {
   const control = readControl(repoRoot);
   const segment =
@@ -308,6 +312,8 @@ const appendTransition = (action, event) => {
     { ...event, ...checkpoint(action, event.workOrderId) },
     segment,
   );
+  // The dispatch is recorded: its session owns the reservation from here.
+  releaseRefusedDispatch = undefined;
   let ordinal;
   try {
     const after = readControl(repoRoot);
@@ -1040,7 +1046,7 @@ const recordedBriefings = {
   "final-review": (state) => finalReviewBriefing(state, state.finalReviewPath),
 };
 
-export const main = async (argv = process.argv.slice(2)) => {
+const run = async (argv) => {
   const [action = "status", ...rawArgs] = argv;
   let releaseExecutorWriter;
   const harnessHostPath = join(
@@ -1048,16 +1054,47 @@ export const main = async (argv = process.argv.slice(2)) => {
     "packages/skeleton/dist/src/harness-host.js",
   );
   const reserveCodexDispatch = async (worktree = repoRoot) => {
-    if (!process.env.CODEX_THREAD_ID) return;
+    const thread = process.env.CODEX_THREAD_ID;
+    if (!thread) return;
     if (!existsSync(harnessHostPath)) {
       throw new Error(
         "Codex writer reservation unavailable; harness runtime is not built. Run npm run build before retrying this dispatch.",
       );
     }
-    const { reserveCodexDispatchWriter } = await import(
-      pathToFileURL(harnessHostPath)
-    );
-    reserveCodexDispatchWriter(worktree, process.env.CODEX_THREAD_ID);
+    const {
+      reserveCodexDispatchWriter,
+      harnessWriterView,
+      releaseHarnessWriter,
+    } = await import(pathToFileURL(harnessHostPath));
+    // A runtime built before this script lacks the entry point (WO-166-D014).
+    if (typeof reserveCodexDispatchWriter !== "function")
+      throw new Error(
+        "Codex writer reservation unavailable; the built harness runtime lacks reserveCodexDispatchWriter. Run node scripts/bootstrap.mjs before retrying this dispatch.",
+      );
+    // A reservation this session already held, or a holder that cannot be
+    // observed, is not this dispatch's to release.
+    let held = true;
+    try {
+      const holder = harnessWriterView(worktree);
+      held =
+        holder.reserved &&
+        holder.actorId === createHash("sha256").update(thread).digest("hex");
+    } catch {
+      // The reservation below names what could not be read.
+    }
+    reserveCodexDispatchWriter(worktree, thread);
+    if (!held && typeof releaseHarnessWriter === "function")
+      releaseRefusedDispatch = () => {
+        try {
+          releaseHarnessWriter(worktree, {
+            cwd: worktree,
+            session_id: thread,
+            hook_event_name: "Stop",
+          });
+        } catch {
+          // The refusal names the first failure; writer --show reports the rest.
+        }
+      };
   };
   reportHarnessRuntime(repoRoot);
   const { args, workOrder } = selectionArgs(rawArgs);
@@ -2008,6 +2045,18 @@ export const main = async (argv = process.argv.slice(2)) => {
     releaseExecutorWriter?.();
   }
   process.stdout.write(`${message}\n`);
+};
+
+export const main = async (argv = process.argv.slice(2)) => {
+  releaseRefusedDispatch = undefined;
+  try {
+    await run(argv);
+  } catch (error) {
+    releaseRefusedDispatch?.();
+    throw error;
+  } finally {
+    releaseRefusedDispatch = undefined;
+  }
 };
 
 if (isMainModule(import.meta.url)) {

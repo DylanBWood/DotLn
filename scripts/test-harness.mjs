@@ -1,3 +1,4 @@
+import "./test-fixture-temporary.mjs";
 import test from "node:test";
 import { pruneHarness, pruneInventory } from "./lib/harness-prune.mjs";
 import "./test-target-harness.mjs";
@@ -115,9 +116,11 @@ import {
 
 import {
   shellRedirectTargets,
+  shellWritePaths,
   shellWriteTargets,
   patchWriteTargets,
   liveGateReads,
+  LIVE_GATE_READ_LIST,
 } from "../packages/skeleton/dist/src/harness-command.js";
 
 const sourceRoot = fileURLToPath(new URL("../", import.meta.url));
@@ -4656,7 +4659,7 @@ test("WO-158 a live gate admits the fixed read-only list stage by stage and name
       "git --no-pager show -s --pretty=format:%GS HEAD",
     ];
     const listed =
-      /Read-only commands stay admitted while it runs: cat, head, tail, wc, ls, grep, sed -n with a print-only script, git --no-pager diff\|log\|show\|status\|stash list, node scripts\/harness\.mjs writer --show\|evidence --wait \[--timeout seconds\] and npm run resume --silent -- status, each stage without a redirect operand, heredoc or unquoted glob; a Git read carries --no-pager/;
+      /Read-only commands stay admitted while it runs: cat, head, tail, wc, ls, grep, sed -n with a print-only script, git --no-pager diff\|log\|show\|status\|stash list, node scripts\/harness\.mjs writer --show\|evidence --wait \[--timeout seconds\] and npm run resume --silent -- status, each stage without a heredoc, expansion or unquoted glob\. Admitted forms: a quoted < or >, a Git revision suffix \(~, \^, @\{\.\.\.\}\), an input redirect from a literal path, an output redirect to \/dev\/null, descriptor duplication such as 2>&1, and --silent before or after resume; any other redirect is judged by its destination\. A Git read carries --no-pager/;
     const active = beginGateRun(root, "npm test");
     try {
       for (const hook of [
@@ -4829,6 +4832,279 @@ test("WO-158 FINAL-001 F1: Git prefix orders terminate and chained writes remain
     }
   } finally {
     removeFixture(root, { recursive: true });
+  }
+});
+
+test("WO-168 a live gate admits four argument forms of listed reads and the second npm spelling, and refuses every other form", () => {
+  const gitRead = { git: true, helper: false };
+  const read = { git: false, helper: false };
+  const helper = { git: false, helper: true };
+  // The seven commands of the order's observed gap.
+  const gap = [
+    ["git --no-pager diff HEAD~1", gitRead],
+    ["git --no-pager show stash@{0}", gitRead],
+    ["grep -n '<title>' fixture.ts", read],
+    ['git --no-pager log -1 --format="%H <%ae>"', gitRead],
+    ["wc -l < fixture.ts", read],
+    ["ls docs 2>/dev/null", read],
+    ["npm run --silent resume -- status", helper],
+  ];
+  const table = [
+    ...gap,
+    // A quoted word that contains < or >; an operator beside a quoted word
+    // is still an operator.
+    ["grep -n 'a > b' fixture.ts", read],
+    ["grep -n '2>&1' fixture.ts", read],
+    ['cat "fixture.ts">fixture.ts', null],
+    ['grep "x">out fixture.ts', null],
+    ["ls docs 2>'/dev/null'", null],
+    // A revision suffix in an operand of a listed Git read.
+    ["git --no-pager show HEAD^{tree}", gitRead],
+    ["git --no-pager log -1 HEAD@{upstream}", gitRead],
+    ["git --no-pager diff HEAD~2 HEAD^ -- fixture.ts", gitRead],
+    ["git --no-pager diff ~/x", null],
+    ["git --no-pager log -1 --format=~/x", null],
+    ["git --no-pager show HEAD:~/x", null],
+    ["git --no-pager show HEAD@{a,b}", null],
+    ["git --no-pager show HEAD@{1..3}", null],
+    ["git --no-pager show HEAD@{{0}}", null],
+    ["git --no-pager diff HEAD~1 -- docs/*.md", null],
+    ["git --no-pager diff 'HEAD'~1", null],
+    ["git --no-pager diff $(x)", null],
+    // zsh parameter flags are expansions, in a Git operand and anywhere else.
+    ["git --no-pager diff $~x", null],
+    ["git --no-pager diff $=x", null],
+    ["cat $=x", null],
+    ["cat $^x", null],
+    ["cat $+x", null],
+    // zsh's `=` expansion: at a word's start, after empty quotes, and after
+    // `=` or `:` where an assignment value expands; an escaped or quoted `=`
+    // and one inside an option word are literal.
+    ["ls =cat", null],
+    ["cat ''=cat", null],
+    ["git --no-pager diff =cat", null],
+    ["git --no-pager log -1 --format==cat", null],
+    ["git --no-pager show HEAD~1:=cat", null],
+    ["cat \\=cat", read],
+    ["grep -n '=cat' fixture.ts", read],
+    // A `=` with nothing after it stays literal; zsh still expands `==`.
+    ["grep -c = fixture.ts", read],
+    ["grep -c a:= fixture.ts", read],
+    ["grep -c == fixture.ts", null],
+    ["git --no-pager log -1 --format=%H HEAD~1", gitRead],
+    ["ls stash@{0}", null],
+    ["ls docs/*.md", null],
+    // An input redirect from a literal path.
+    ["wc -l <fixture.ts", read],
+    ["wc -l 0< fixture.ts", read],
+    ["wc -l < 'fixture one.ts'", read],
+    ["wc -l <> fixture.ts", null],
+    ["wc -l <>fixture.ts", null],
+    ["wc -l < fix*.ts", null],
+    ["wc -l < $HOME/x", null],
+    ["wc -l <<< fixture.ts", null],
+    ["wc -l << END\nfixture.ts\nEND", null],
+    ["wc -l <", null],
+    ["< fixture.ts", null],
+    // An output redirect whose literal operand is exactly /dev/null.
+    ["ls docs > /dev/null 2>&1", read],
+    ["ls docs >>/dev/null", read],
+    // A shell without `&>` backgrounds the reader and runs what follows.
+    ["ls docs &>/dev/null", null],
+    ["ls docs &>/dev/null touch fixture.ts", null],
+    ["ls docs &>>/dev/null", null],
+    ["ls docs 2>/tmp/x", null],
+    ["ls docs 2>/dev/null/x", null],
+    ["ls docs 2>/dev/../dev/null", null],
+    ["ls docs >&/dev/null", null],
+    ["ls docs 2>", null],
+    ["ls > fixture.ts", null],
+    // Either position of --silent, once; helper forms argument by argument.
+    ["npm run resume --silent -- status", helper],
+    ["npm run resume -- status --json --work-order WO-168", helper],
+    ["npm --silent run resume -- status", null],
+    ["npm run --silent resume --silent -- status", null],
+    ["npm run --silent resume -- next", null],
+    ["npm run --silent resume status", null],
+    ["npm run 'resume --silent -- status'", null],
+    ["npm 'run resume' -- status", null],
+    ["node scripts/harness.mjs writer --show", helper],
+    ["node scripts/harness.mjs evidence --wait", helper],
+    ["node scripts/harness.mjs evidence --wait --timeout 3", helper],
+    ["node 'scripts/harness.mjs writer' --show", null],
+    ["node scripts/harness.mjs 'writer --show'", null],
+    ["node scripts/harness.mjs evidence '--wait --timeout' 3", null],
+    ["node scripts/harness.mjs evidence --wait --timeout", null],
+    // Only space and tab end a word: after any other whitespace a `#` is
+    // inside the word, and a shell runs what follows it.
+    ...["\u00a0", "\r", "\u000b", "\f", "\u2028"].map((blank) => [
+      `cat fixture.ts${blank}#;touch fixture.ts`,
+      null,
+    ]),
+    ["cat fixture.ts\t# a comment", read],
+    ["cat fixture.ts # a comment", read],
+    // The list names no new program, and quoted globs stay admitted.
+    ["cut -c1-80 fixture.ts", null],
+    ["sort fixture.ts", null],
+    ['grep -n "a*" fixture.ts', read],
+    ["grep -n 'N[0-9]' fixture.ts", read],
+  ];
+  for (const [command, expected] of table)
+    assert.deepEqual(liveGateReads(command), expected, command);
+  // VER-001 F1 and F2: the destination adapter the hook falls back to agrees.
+  // Where a shell backgrounds at `&>`, the words after its operand are another
+  // command, so they make the invocation opaque; nothing after it keeps the
+  // WO-144 discard.
+  for (const [command, expected] of [
+    ["ls docs &>/dev/null touch fixture.ts", null],
+    ["ls docs &> /dev/null touch fixture.ts", null],
+    ["ls docs &>>/dev/null touch fixture.ts", null],
+    ["&>/dev/null ls docs", null],
+    ["ls =cat", null],
+    ["ls docs &>/dev/null", ["/dev/null"]],
+    ["ls docs &>/dev/null 2>&1", ["/dev/null"]],
+    ["ls docs &>/dev/null; touch fixture.ts", ["/dev/null", "fixture.ts"]],
+  ])
+    assert.deepEqual(shellWritePaths(command), expected, command);
+  assert.equal(shellRedirectTargets("true &>/dev/null touch fixture.ts"), null);
+  assert.equal(
+    LIVE_GATE_READ_LIST,
+    "cat, head, tail, wc, ls, grep, sed -n with a print-only script, git --no-pager diff|log|show|status|stash list, node scripts/harness.mjs writer --show|evidence --wait [--timeout seconds] and npm run resume --silent -- status",
+  );
+
+  const root = fixture();
+  const hooksPath = realpathSync(
+    mkdtempSync(join(tmpdir(), "dotln-wo168-hooks-")),
+  );
+  try {
+    const payload = (command) =>
+      input(root, "PreToolUse", { tool_name: "Bash", tool_input: { command } });
+    // Only the fixture repository's own configuration is judged, and the
+    // system temporary root is a directory that does not hold /tmp.
+    const environment = {
+      GIT_CONFIG_GLOBAL: "/dev/null",
+      GIT_CONFIG_NOSYSTEM: "1",
+      TMPDIR: hooksPath,
+      TMP: hooksPath,
+      TEMP: hooksPath,
+    };
+    const judge = (command, hook) =>
+      invoke(root, hook, payload(command), false, environment);
+    const denied = (command, hook = "permissions") => {
+      const result = judge(command, hook);
+      assert.equal(
+        result.hookSpecificOutput?.permissionDecision,
+        "deny",
+        `${hook}: ${command}`,
+      );
+      assert.match(
+        result.hookSpecificOutput.permissionDecisionReason,
+        /write may change gate inputs during active gate .*Admitted forms: a quoted < or >, a Git revision suffix \(~, \^, @\{\.\.\.\}\), an input redirect from a literal path, an output redirect to \/dev\/null, descriptor duplication such as 2>&1, and --silent before or after resume; any other redirect is judged by its destination\. .* no %G pretty format and no post-index-change hook\./,
+      );
+    };
+    const admitted = (command, hook = "permissions") =>
+      assert.equal(allowed(judge(command, hook)), true, `${hook}: ${command}`);
+    const active = beginGateRun(root, "npm test");
+    try {
+      for (const hook of [
+        "permissions",
+        "concurrent-work-requires-worktrees",
+        "write-observer",
+      ]) {
+        for (const [command] of gap) admitted(command, hook);
+        for (const command of [
+          "git --no-pager diff $(x)",
+          "ls docs/*.md",
+          "wc -l <> fixture.ts",
+          "cut -c1-80 fixture.ts",
+          // A redirect the destination adapter names onto a gate input.
+          "ls docs 2>fixture.ts",
+          "cat fixture.ts\u00a0#;touch fixture.ts",
+          // VER-001 F1: dash runs the touch; F2: zsh expands the word.
+          "ls docs &>/dev/null touch fixture.ts",
+          "ls =cat",
+        ])
+          denied(command, hook);
+        // Off the list, an `&>` discard with nothing after it is judged by its
+        // destination, as outside a gate (WO-144).
+        admitted("ls docs &>/dev/null", hook);
+        // Off the list, a redirect is judged by its destination: the gate
+        // passes this one and the outside-write guard refuses it.
+        const elsewhere = judge("ls docs 2>/tmp/x", hook);
+        assert.equal(
+          elsewhere.hookSpecificOutput?.permissionDecision,
+          "deny",
+          hook,
+        );
+        assert.match(
+          elsewhere.hookSpecificOutput.permissionDecisionReason,
+          /outside-project write to \/tmp\/x .* lacks an equipped outside-write grant/,
+        );
+        assert.doesNotMatch(
+          elsewhere.hookSpecificOutput.permissionDecisionReason,
+          /active gate/,
+        );
+      }
+      // WO-158-D028 (b): a hook or a signature format a listed read can run.
+      const hook = join(root, ".git/hooks/post-index-change");
+      writeFileSync(hook, "#!/bin/sh\n");
+      chmodSync(hook, 0o644);
+      admitted("git --no-pager diff");
+      chmodSync(hook, 0o755);
+      denied("git --no-pager diff");
+      denied("git --no-pager log -1");
+      rmSync(hook);
+      admitted("git --no-pager diff");
+
+      writeFileSync(join(hooksPath, "post-index-change"), "#!/bin/sh\n");
+      chmodSync(join(hooksPath, "post-index-change"), 0o755);
+      writeFileSync(join(hooksPath, "pre-commit"), "#!/bin/sh\n");
+      chmodSync(join(hooksPath, "pre-commit"), 0o755);
+      git(root, "config", "core.hooksPath", hooksPath);
+      denied("git --no-pager diff");
+      rmSync(join(hooksPath, "post-index-change"));
+      // Another executable hook in the directory is none a read can start.
+      admitted("git --no-pager diff");
+      git(root, "config", "--unset", "core.hooksPath");
+
+      for (const [key, value, verdict] of [
+        ["hook.fixture.event", "post-index-change", denied],
+        // A subsection name may hold a space.
+        ["hook.fixture hook.event", "post-index-change", denied],
+        ["hook.fixture.event", "pre-commit", admitted],
+        ["format.pretty", "format:%H %G?", denied],
+        ["pretty.signed", "format:%H %GS", denied],
+        ["format.pretty", "oneline", admitted],
+        ["pretty.plain", "format:%H %s", admitted],
+      ]) {
+        git(root, "config", key, value);
+        try {
+          verdict("git --no-pager log -1");
+        } finally {
+          git(root, "config", "--unset", key);
+        }
+      }
+      // A key written without a value is a boolean Git reads as true.
+      const config = join(root, ".git/config");
+      const written = readFileSync(config, "utf8");
+      for (const [section, name, verdict] of [
+        ["log", "showSignature", denied],
+        ["core", "fsmonitor", denied],
+        ["core", "ignoreCase", admitted],
+      ]) {
+        writeFileSync(config, `${written}[${section}]\n\t${name}\n`);
+        try {
+          verdict("git --no-pager log -1");
+        } finally {
+          writeFileSync(config, written);
+        }
+      }
+    } finally {
+      active.release();
+    }
+  } finally {
+    removeFixture(root, { recursive: true });
+    removeFixture(hooksPath, { recursive: true });
   }
 });
 
@@ -5189,6 +5465,181 @@ test("WO-158 VER-001 F3: two override exits in one second keep two captures, eac
   }
 });
 
+test("WO-168 an override exit prints ahead of an input refusal, and an appended record is never reported as not appended", () => {
+  const root = fixture();
+  const session = `wo168-override-${randomUUID()}`;
+  try {
+    for (const path of [
+      "scripts/resume.mjs",
+      "scripts/work-orders.mjs",
+      "scripts/lib",
+      "packages/skeleton/src",
+    ])
+      cpSync(join(sourceRoot, path), join(root, path), { recursive: true });
+    rmSync(join(root, "docs/control/orders/WO-999.jsonl"));
+    write(
+      root,
+      "docs/work-orders/WO-999-fixture.md",
+      "# WO-999 — Fixture\n\n**Model:** fixture.\n**Effort:** executor any; verifier any; reviewer any.\n**Objective:** exercise the override exit.\n",
+    );
+    write(
+      root,
+      "docs/planning/sequence.md",
+      "<!-- dotln-work-order-sequence:start -->\n- WO-999 — Fixture\n<!-- dotln-work-order-sequence:end -->\n",
+    );
+    write(
+      root,
+      ".gitignore",
+      "node_modules/\n**/dist/\ndocs/control/local/\ndocs/intake/**\n",
+    );
+    const pkg = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
+    pkg.scripts["work-orders"] = "node scripts/work-orders.mjs";
+    write(root, "package.json", json(pkg));
+    git(root, "add", ".");
+    git(
+      root,
+      "-c",
+      "user.name=Fixture",
+      "-c",
+      "user.email=fixture@example.invalid",
+      "-c",
+      "commit.gpgsign=false",
+      "commit",
+      "-qm",
+      "Real lifecycle",
+    );
+    const activated = spawnSync(
+      process.execPath,
+      [
+        "scripts/resume.mjs",
+        "activate",
+        "WO-999",
+        "docs/work-orders/WO-999-fixture.md",
+      ],
+      { cwd: root, encoding: "utf8" },
+    );
+    assert.equal(activated.status, 0, activated.stderr);
+    const records = () =>
+      readFileSync(join(root, "docs/control/orders/WO-999.jsonl"), "utf8")
+        .trim()
+        .split("\n")
+        .map(JSON.parse)
+        .filter((event) => event.type === "OperatorOverrideRecorded");
+    const payload = (text) =>
+      input(root, "UserPromptSubmit", { session_id: session, prompt: text });
+    const prompt = (text, shape = (value) => value) =>
+      invoke(root, "session", shape(payload(text)), false, {
+        CLAUDE_EFFORT: "high",
+      });
+    const command =
+      /npm run resume -- override-record --bypassed dotln-hook-enforcement --effects <what the recovery changed, or none> --reason 'operator override from /;
+
+    // WO-158-D028 (c): the decoder refuses an input without cwd after the
+    // mode is already normal; the exit and its record command still print.
+    prompt("operator override: first recovery");
+    const refused = prompt(
+      "operator override: off",
+      ({ cwd, ...rest }) => rest,
+    );
+    assert.match(
+      refused.systemMessage,
+      /operator-control exited; ordinary workflow checks resume.*DOTLN_HARNESS_INPUT_REFUSED: MISSING_FIELD at \$\.cwd/,
+    );
+    assert.match(refused.hookSpecificOutput.additionalContext, command);
+    assert.equal(records().length, 0);
+    // Without an override exit the refusal is the protocol's own.
+    const plain = prompt("resume: status", ({ cwd, ...rest }) => rest);
+    assert.match(
+      plain.systemMessage,
+      /^DotLn: prompt accepted; DOTLN_HARNESS_INPUT_REFUSED: MISSING_FIELD at \$\.cwd/,
+    );
+
+    // WO-158-D028 (d): the session holds the writer, so nothing journals
+    // before the append; the observation after it cannot be written.
+    assert.equal(
+      allowed(
+        invoke(
+          root,
+          "concurrent-work-requires-worktrees",
+          input(root, "PreToolUse", {
+            session_id: session,
+            tool_name: "Write",
+            tool_input: { file_path: join(root, "fixture.ts") },
+          }),
+        ),
+      ),
+      true,
+    );
+    prompt("operator override: second recovery");
+    const log = join(
+      root,
+      "docs/control/local/harness",
+      `${createHash("sha256").update(session).digest("hex")}.jsonl`,
+    );
+    rmSync(log, { force: true });
+    mkdirSync(log);
+    const unjournaled = prompt("operator override: off");
+    assert.equal(records().length, 1);
+    assert.match(
+      unjournaled.systemMessage,
+      /operator-control exited.*Recorded OperatorOverrideRecorded for WO-999 at ordinal/s,
+    );
+    assert.doesNotMatch(JSON.stringify(unjournaled), /was not appended/);
+    rmSync(log, { recursive: true });
+
+    // The lifecycle appends the record and then fails: still appended.
+    cpSync(
+      join(root, "scripts/resume.mjs"),
+      join(root, "scripts/resume-lifecycle.mjs"),
+    );
+    const failing = (when) =>
+      write(
+        root,
+        "scripts/resume.mjs",
+        [
+          'import { spawnSync } from "node:child_process";',
+          'import { fileURLToPath } from "node:url";',
+          "const args = process.argv.slice(2);",
+          `const before = ${JSON.stringify(when === "before")};`,
+          "const fail = (text) => { console.error(text); process.exit(1); };",
+          'if (before && args[0] === "override-record")',
+          '  fail("fixture: refused before the append");',
+          "const run = spawnSync(",
+          "  process.execPath,",
+          '  [fileURLToPath(new URL("./resume-lifecycle.mjs", import.meta.url)), ...args],',
+          '  { stdio: "inherit" },',
+          ");",
+          'if (args[0] === "override-record" && run.status === 0)',
+          '  fail("fixture: projection failed after the append");',
+          "process.exit(run.status ?? 1);",
+          "",
+        ].join("\n"),
+      );
+    failing("after");
+    prompt("operator override: third recovery");
+    const failedAfter = prompt("operator override: off");
+    assert.equal(records().length, 2);
+    assert.match(
+      failedAfter.systemMessage,
+      /operator-control exited.*recorded OperatorOverrideRecorded for WO-999; resume then failed: /s,
+    );
+    assert.doesNotMatch(JSON.stringify(failedAfter), /was not appended/);
+
+    // A lifecycle that refuses before any append is still reported so.
+    failing("before");
+    prompt("operator override: fourth recovery");
+    const refusedBefore = prompt("operator override: off");
+    assert.equal(records().length, 2);
+    assert.match(
+      refusedBefore.systemMessage,
+      /OperatorOverrideRecorded was not appended \(resume refused it: fixture: refused before the append\)/,
+    );
+    assert.match(refusedBefore.hookSpecificOutput.additionalContext, command);
+  } finally {
+    removeFixture(root, { recursive: true });
+  }
+});
+
 test("WO-135 generated planning hooks refuse repository code paths and preserve documents, scratch and override", () => {
   const root = fixture();
   const scratch = realpathSync(
@@ -5328,6 +5779,12 @@ test("WO-144 repair admits null discards and exposes scratch with single consist
       dispatch.hookSpecificOutput.additionalContext,
       /Native scratch and \/tmp need a separate grant/,
     );
+    // WO-168: the dispatch that printed the path created it; this fixture
+    // never does.
+    const printed = lstatSync(scratch);
+    assert.equal(printed.isDirectory(), true);
+    assert.equal(printed.mode & 0o777, 0o700);
+    assert.equal(printed.uid, process.getuid());
     const cli = spawnSync(
       process.execPath,
       ["scripts/harness.mjs", "scratch"],
@@ -5416,7 +5873,6 @@ test("WO-144 repair admits null discards and exposes scratch with single consist
       assert.equal(allowed(result), true);
       assert.equal(result.systemMessage, undefined, JSON.stringify(result));
     }
-    mkdirSync(scratch, { recursive: true });
     writeFileSync(path, "scratch");
     const post = invoke(
       root,
@@ -5458,6 +5914,338 @@ test("WO-144 repair admits null discards and exposes scratch with single consist
   } finally {
     removeFixture(root, { recursive: true });
     removeFixture(outside, { recursive: true });
+  }
+});
+
+test("WO-168 a printed session scratch path exists at the dispatch, the Codex begin and harness scratch, and an obstructed path advises without blocking", () => {
+  const root = fixture();
+  const outside = realpathSync(
+    mkdtempSync(join(tmpdir(), "dotln-wo168-scratch-")),
+  );
+  const temporary = join(outside, "temporary");
+  mkdirSync(temporary);
+  mkdirSync(join(outside, "target"));
+  const environment = { TMPDIR: temporary, TMP: temporary, TEMP: temporary };
+  const scratchOf = (session) =>
+    join(
+      temporary,
+      "dotln",
+      createHash("sha256").update(session).digest("hex"),
+      "scratch",
+    );
+  const dispatch = (session) =>
+    invoke(
+      root,
+      "session",
+      input(root, "UserPromptSubmit", {
+        session_id: session,
+        prompt: "resume: next",
+      }),
+      false,
+      environment,
+    );
+  const cli = (session, ...args) =>
+    spawnSync(process.execPath, ["scripts/harness.mjs", ...args], {
+      cwd: root,
+      env: { ...process.env, ...environment, CODEX_THREAD_ID: session },
+      encoding: "utf8",
+    });
+  const created = (path) => {
+    const info = lstatSync(path);
+    assert.equal(info.isDirectory(), true, path);
+    assert.equal(info.mode & 0o777, 0o700, path);
+    assert.equal(info.uid, process.getuid(), path);
+  };
+  const unavailable = (session, cause) =>
+    `DotLn advisory: session scratch ${scratchOf(session)} is unavailable (${cause})`;
+  const count = (text, part) => (text ?? "").split(part).length - 1;
+  try {
+    // Each place prints or returns the path; this fixture never creates it.
+    const claude = dispatch("wo168-claude");
+    assert.ok(
+      claude.hookSpecificOutput.additionalContext.includes(
+        `DotLn session scratch: ${scratchOf("wo168-claude")}. Use this path for temporary work.`,
+      ),
+    );
+    assert.doesNotMatch(
+      JSON.stringify(claude),
+      /session scratch .* is unavailable/,
+    );
+    created(scratchOf("wo168-claude"));
+
+    const begun = cli("wo168-codex", "begin", "wo168-codex", "executor");
+    assert.equal(begun.status, 0, begun.stderr);
+    assert.equal(JSON.parse(begun.stdout).scratch, scratchOf("wo168-codex"));
+    assert.doesNotMatch(begun.stderr, /session scratch/);
+    created(scratchOf("wo168-codex"));
+
+    const printed = cli("wo168-cli", "scratch");
+    assert.equal(printed.status, 0, printed.stderr);
+    assert.equal(printed.stdout.trim(), scratchOf("wo168-cli"));
+    assert.doesNotMatch(printed.stderr, /session scratch/);
+    created(scratchOf("wo168-cli"));
+
+    // An existing real directory of the session user is used as it is.
+    mkdirSync(scratchOf("wo168-existing"), { recursive: true });
+    chmodSync(scratchOf("wo168-existing"), 0o755);
+    writeFileSync(join(scratchOf("wo168-existing"), "kept.txt"), "kept");
+    const existing = cli("wo168-existing", "scratch");
+    assert.equal(existing.status, 0, existing.stderr);
+    assert.doesNotMatch(existing.stderr, /session scratch/);
+    assert.equal(lstatSync(scratchOf("wo168-existing")).mode & 0o777, 0o755);
+    assert.equal(
+      readFileSync(join(scratchOf("wo168-existing"), "kept.txt"), "utf8"),
+      "kept",
+    );
+
+    // A file or a link at the path is one advisory and an unblocked dispatch.
+    mkdirSync(dirname(scratchOf("wo168-file")), { recursive: true });
+    writeFileSync(scratchOf("wo168-file"), "occupied");
+    const occupied = dispatch("wo168-file");
+    const briefing = occupied.hookSpecificOutput.additionalContext;
+    assert.match(briefing, /DotLn resolved role executor/);
+    assert.doesNotMatch(briefing, /Use this path for temporary work/);
+    assert.equal(
+      count(briefing, unavailable("wo168-file", "it is not a directory")),
+      1,
+    );
+    assert.equal(
+      count(
+        occupied.systemMessage,
+        unavailable("wo168-file", "it is not a directory"),
+      ),
+      1,
+    );
+    assert.equal(readFileSync(scratchOf("wo168-file"), "utf8"), "occupied");
+
+    mkdirSync(dirname(scratchOf("wo168-link")), { recursive: true });
+    symlinkSync(join(outside, "target"), scratchOf("wo168-link"));
+    const linked = dispatch("wo168-link");
+    assert.match(
+      linked.hookSpecificOutput.additionalContext,
+      /DotLn resolved role executor/,
+    );
+    assert.equal(
+      count(
+        linked.systemMessage,
+        unavailable("wo168-link", "it is a symbolic link"),
+      ),
+      1,
+    );
+    assert.equal(lstatSync(scratchOf("wo168-link")).isSymbolicLink(), true);
+    for (const [linkedSession, ...args] of [
+      ["wo168-link-codex", "begin", "wo168-link-codex", "executor"],
+      ["wo168-link-cli", "scratch"],
+    ]) {
+      mkdirSync(dirname(scratchOf(linkedSession)), { recursive: true });
+      symlinkSync(join(outside, "target"), scratchOf(linkedSession));
+      const run = cli(linkedSession, ...args);
+      assert.equal(run.status, 0, run.stderr);
+      assert.equal(
+        count(run.stderr, unavailable(linkedSession, "it is a symbolic link")),
+        1,
+        run.stderr,
+      );
+      assert.ok(run.stdout.includes(scratchOf(linkedSession)));
+      assert.equal(lstatSync(scratchOf(linkedSession)).isSymbolicLink(), true);
+    }
+    assert.deepEqual(readdirSync(join(outside, "target")), []);
+  } finally {
+    removeFixture(root, { recursive: true });
+    removeFixture(outside, { recursive: true });
+  }
+});
+
+test("WO-168 a granted session root is a real directory: a linked root grants nothing, a real or absent root grants, and an unreadable root advises once", () => {
+  const root = fixture();
+  const outside = realpathSync(
+    mkdtempSync(join(tmpdir(), "dotln-wo168-roots-")),
+  );
+  const temporary = join(outside, "temporary");
+  const blocked = join(outside, "blocked");
+  const target = join(outside, "home/Documents");
+  for (const directory of [temporary, blocked, target])
+    mkdirSync(directory, { recursive: true });
+  const narrow = (directory) => ({
+    TMPDIR: directory,
+    TMP: directory,
+    TEMP: directory,
+  });
+  const environment = narrow(temporary);
+  const session = "wo168-session-roots";
+  const project = `-fixture-wo168-${randomUUID()}`;
+  const transcript = `/fixture-home/.claude/projects/${project}/${session}.jsonl`;
+  const base = `/tmp/claude-${process.getuid()}`;
+  const baseExisted = existsSync(base);
+  const scratchpad = `${base}/${project}/${session}/scratchpad`;
+  const scratch = join(
+    temporary,
+    "dotln",
+    createHash("sha256").update(session).digest("hex"),
+    "scratch",
+  );
+  const hooks = [
+    "permissions",
+    "concurrent-work-requires-worktrees",
+    "write-observer",
+  ];
+  const calls = (directory, id = session) =>
+    [
+      ["Write", { file_path: join(directory, "new.txt") }],
+      ["Bash", { command: `printf x > '${directory}/new.txt'` }],
+    ].map(([tool, args]) =>
+      input(root, "PreToolUse", {
+        session_id: id,
+        transcript_path: transcript,
+        tool_name: tool,
+        tool_input: args,
+      }),
+    );
+  const judged = (directory, verdict, env = environment) => {
+    for (const hook of hooks)
+      for (const call of calls(directory)) {
+        const reply = invoke(root, hook, call, false, env);
+        verdict(reply, `${hook}: ${JSON.stringify(call.tool_input)}`);
+      }
+  };
+  const admitted = (reply, label) => {
+    assert.equal(allowed(reply), true, label);
+    assert.equal(reply.systemMessage, undefined, label);
+  };
+  const refusedFor = (granted) => (reply, label) => {
+    assert.equal(reply.hookSpecificOutput?.permissionDecision, "deny", label);
+    const reason = reply.hookSpecificOutput.permissionDecisionReason;
+    assert.match(
+      reason,
+      /physical destination .* lacks an equipped outside-write grant for role executor.*operator override:/,
+    );
+    assert.ok(
+      reason.includes(
+        `Granted root ${granted} grants nothing: it is a symbolic link (WO-168).`,
+      ),
+      reason,
+    );
+  };
+  const unexplained = (reply, label) => {
+    assert.equal(reply.hookSpecificOutput?.permissionDecision, "deny", label);
+    assert.doesNotMatch(
+      reply.hookSpecificOutput.permissionDecisionReason,
+      /Granted root/,
+    );
+  };
+  try {
+    // Without the system temporary grant, which holds the scratch path, only
+    // the root under judgment can admit a write beneath it.
+    const sessionRoots = ["session-scratch", "host-scratchpad"].map((kind) => ({
+      kind,
+      source: "Fixture declared role grant",
+    }));
+    const program = contributorProgram();
+    emitHarness(root, {
+      program: withOutsideAuthority(
+        {
+          ...program,
+          roles: program.roles.map((role) => ({
+            ...role,
+            outsideWriteGrants: role.name === "executor" ? sessionRoots : [],
+          })),
+        },
+        sessionRoots,
+      ),
+    });
+    // The dispatch gives the session its role and creates the real root.
+    invoke(
+      root,
+      "session",
+      input(root, "UserPromptSubmit", {
+        session_id: session,
+        transcript_path: transcript,
+        prompt: "resume: next",
+      }),
+      false,
+      environment,
+    );
+    assert.equal(lstatSync(scratch).isDirectory(), true);
+    judged(temporary, unexplained);
+    judged(scratch, admitted);
+
+    // WO-158-D028 (a): the swap that carried the grant to its target.
+    rmSync(scratch, { recursive: true });
+    symlinkSync(target, scratch);
+    judged(scratch, refusedFor(scratch));
+    assert.deepEqual(readdirSync(target), []);
+
+    // A root that does not exist yet admits the write that creates it.
+    rmSync(scratch);
+    judged(scratch, admitted);
+
+    mkdirSync(dirname(scratchpad), { recursive: true });
+    symlinkSync(target, scratchpad);
+    judged(scratchpad, refusedFor(scratchpad));
+    assert.deepEqual(readdirSync(target), []);
+    rmSync(scratchpad);
+    judged(scratchpad, admitted);
+    mkdirSync(scratchpad);
+    judged(scratchpad, admitted);
+
+    // The system temporary grant is unchanged: it follows a linked root, as
+    // the temporary directory's own prefix is linked on some hosts.
+    emitHarness(root);
+    const linked = join(outside, "linked-temporary");
+    symlinkSync(temporary, linked);
+    judged(linked, admitted, narrow(linked));
+
+    // A root that cannot be inspected is the guard's one advisory and an
+    // admission. `dotln` is a file here, so lstat answers ENOTDIR.
+    releaseHarnessWriter(root, input(root, "Stop", { session_id: session }));
+    writeFileSync(join(blocked, "dotln"), "not a directory");
+    const unreadable = "wo168-unreadable-root";
+    const entry = invoke(
+      root,
+      "session",
+      input(root, "UserPromptSubmit", {
+        session_id: unreadable,
+        prompt: "resume: next",
+      }),
+      false,
+      narrow(blocked),
+    );
+    assert.match(
+      entry.hookSpecificOutput.additionalContext,
+      /DotLn resolved role executor/,
+    );
+    assert.match(
+      entry.systemMessage,
+      /session scratch .* is unavailable \(ENOTDIR\)/,
+    );
+    const replies = hooks.map((hook) =>
+      invoke(
+        root,
+        hook,
+        input(root, "PreToolUse", {
+          session_id: unreadable,
+          tool_name: "Write",
+          tool_input: { file_path: join(blocked, "new.txt") },
+        }),
+        false,
+        narrow(blocked),
+      ),
+    );
+    assert.ok(replies.every(allowed), JSON.stringify(replies));
+    assert.equal(
+      replies.filter((reply) =>
+        reply.systemMessage?.includes("outside-write guard unavailable"),
+      ).length,
+      1,
+      JSON.stringify(replies),
+    );
+  } finally {
+    removeFixture(root, { recursive: true });
+    removeFixture(outside, { recursive: true });
+    // Only this fixture's own project segment under the host's directory.
+    rmSync(`${base}/${project}`, { recursive: true, force: true });
+    if (!baseExisted && existsSync(base) && !readdirSync(base).length)
+      rmSync(base, { recursive: true });
   }
 });
 

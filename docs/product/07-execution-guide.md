@@ -262,7 +262,7 @@ table includes the shared goal card and the refuter's separate subject boundary.
    | `resume: fix`           | `npm run resume -- fix`                                                                                                                                                                                                    | repair, reading BOTH the original work order and named failure source; if a repair was prematurely marked complete, the phrase may reopen it only while that unresolved source remains                                                                                   |
    | `resume: verify`        | `npm run resume -- verify`                                                                                                                                                                                                 | verify, writing the exact `VER-NNN` path it allocates                                                                                                                                                                                                                    |
    | `resume: final review`  | `npm run resume -- final-review`                                                                                                                                                                                           | review into the allocated `FINAL-NNN`; on pass, record it, commit the reviewed state, push only the WO branch, and open its PR                                                                                                                                           |
-   | `resume: release close` | run the exact `cd <main> && node <main>/scripts/release.mjs close WO-NNN --publish` command projected by `resume release-close` or printed by `worktree publish`; after the subject is already removed, use main's copy | update main, consume the reviewer product gate, publish the validated tag and Release, then attempt worktree cleanup; if Release creation fails after tag push, rerun from updated main |
+   | `resume: release close` | in a main-checkout session, dispatch `npm run resume -- release-close --work-order WO-NNN` there, then run in that session the exact `node <main>/scripts/release.mjs close WO-NNN --publish` helper it prints (`worktree publish` prints the same); dispatched from the subject it prints only this route; after the subject is already removed, use main's copy | update main, consume the reviewer product gate, publish the validated tag and Release, then attempt worktree cleanup; if Release creation fails after tag push, rerun from updated main |
    | the operator accepts criterion N unmet (words captured) | `npm run resume -- waive N --reason <text> --capture <intake file> --capture-hash sha256:<digest> <actor-flags>` from the operator's terminal, a verifier or a reviewer session (WO-158) | the report records `**Criterion N:** unmet, waived by <ordinal>`; the order's executor never records a waiver |
    | the operator withdraws the order (words captured) | `npm run resume -- withdraw --disposition failed\|superseded\|abandoned --reason <text> --capture <intake file> --capture-hash sha256:<digest> <actor-flags>` (WO-158) | stop: `withdrawn` is terminal, and only `npm run resume -- activate` of a changed revision with a new dated `**Reactivation (YYYY-MM-DD):**` note leaves it |
    | a recorded attestation, report path or checkpoint is wrong, or a recorded passing final review carries no product gate | `npm run resume -- correct <ordinal\|report-path> --set <field>=<value> --reason <text> <actor-flags>` (WO-158); `--set productGate=<evidenceRef>` binds a complete passing `npm test` row whose code identity is the one the pass recorded in its checkpoint and still the working tree's, once, and is the only correction legal in `closed` (WO-115) | never correct a verdict or edit a filed report; a wrong verdict takes a later report; a changed subject takes a fresh final review; publication and release close read the bound gate from the committed correction |
@@ -333,7 +333,9 @@ sibling merge cannot shift another order's close ordinal. Run
 `npm run work-orders -- index` after executor dispatch and before its evidence gate.
 `implementation-ready` and `repair-complete` refresh the final index automatically,
 then release the current Codex session's writer reservation after the result and
-observations are recorded. Finish authored writes before that command; reading
+observations are recorded; `verification-result`, `final-review-result` and a
+successful `release close --publish` release their session's the same way.
+Finish authored writes before that command; reading
 the resulting projections needs no new writer. No operator release command is
 part of ordinary completion. Verification and final-review actors refresh
 after dispatch and after recording their result. `npm run test:docs` includes
@@ -1848,7 +1850,7 @@ session exceeds the cap on a path WO-139 reports as uncounted.
 
 Final review publishes the reviewed work-order branch and PR; the operator
 retains merge authority. After merge, `resume: release close` authorizes the
-exact helper command printed by `resume release-close` or `worktree publish`.
+exact helper command printed by `resume release-close` in main or `worktree publish`.
 Run main's helper with main as the working directory; retries use the same
 updated main after the subject is removed.
 
@@ -2298,11 +2300,15 @@ claim evidence or releases it does not have.
   command list: `cat`, `head`, `tail`, `wc`, `ls`, `grep`, `sed -n` with a
   script whose every command prints (numeric, `$` or `/regex/` addresses),
   `git --no-pager diff|log|show|status|stash list`, and, at the worktree root only,
-  `node scripts/harness.mjs writer --show` and
-  `npm run resume --silent -- status`. A stage with a redirect operand, a
-  heredoc, an environment prefix or wrapper, an expansion or an unquoted glob
-  character is not on the list; descriptor duplication such as `2>&1` opens
-  no file and passes. A listed reader piped into an unlisted or writing stage
+  `node scripts/harness.mjs writer --show|evidence --wait [--timeout seconds]`
+  and `npm run resume --silent -- status`, `--silent` on either side of `resume`.
+  A stage with a heredoc, an environment prefix or wrapper, an expansion or
+  an unquoted glob character is not on the list. Four argument forms are
+  (WO-168): a quoted word holding `<` or `>`; a revision suffix (`~`, `^`,
+  `@{…}`) in a listed Git read's operand; an input redirect from a literal
+  path; an output redirect to exactly `/dev/null`. Descriptor duplication
+  such as `2>&1` opens no file and passes; `<>` is refused, and any other
+  redirect is off the list and judged by that adapter. A listed reader piped into an unlisted or writing stage
   is refused (receipt 028's criterion 6 known issue). A Git read on the list
   carries `--no-pager` (or `-P`): a paged read runs the configured or
   default pager, an unlisted program, whenever its output is a terminal
@@ -2312,7 +2318,8 @@ claim evidence or releases it does not have.
   external-program option, and is admitted only while the repository configures no
   `core.fsmonitor`, `diff.external`, diff `command` or `textconv` driver,
   clean, smudge or process filter, `log.showSignature`, `gpg.program` or
-  `gpg.<format>.program`; a configured program returns the
+  `gpg.<format>.program`, no `%G` pretty format and no `post-index-change`
+  hook; a configured program returns the
   [WO-142-D012](../evidence/WO-142/decisions.md#wo-142-d012--retain-existing-git-admission-with-an-explicit-effects-follow-up)
   refusal. The index stat refresh a plain `git status` may take remains the
   recorded residual of that follow-up. The refusal text names the list; a
@@ -2345,16 +2352,21 @@ claim evidence or releases it does not have.
   (default 20, `null` disables); and a known outside-project write destination
   without a containing root declared by its active role or equipped support
   and admitted through the compiled authority envelope. Root kinds are system
-  temporary, DotLn session scratch, main's ignored intake and an operator-named
-  absolute root; the manifest names declaration and authority-grant sources.
-  The six default roles carry temporary and session-scratch grants only.
+  temporary, DotLn session scratch, the host-printed scratchpad, main's ignored
+  intake and an operator-named absolute root; the manifest names declaration and authority-grant sources.
+  The six default roles carry temporary, session-scratch and host-scratchpad
+  grants only.
   `os.tmpdir()` identifies the temporary root; scratch is
   `<system-temp>/dotln/<session-key>/scratch`. Claude role dispatch prints the
-  concrete path; Codex uses `node scripts/harness.mjs scratch`. Use that scratch
+  concrete path; Codex uses `node scripts/harness.mjs scratch`. Each, and a
+  Codex session begin, creates the directory (mode 0700) first, so a printed
+  path exists; a failure is one advisory. Use that scratch
   path: native scratch and `/tmp` need a separate grant when outside system-temp.
   Literal redirects to the `/dev/null` character device discard output; other
   device mutations still need grants. Symlinks and removals use physical
-  destinations. The outside-write judgment holds from any working directory
+  destinations; a scratch or host-scratchpad root that is itself a link, or
+  not the session user's directory, grants nothing.
+  The outside-write judgment holds from any working directory
   and resolves relative destinations there; the four older refusals are judged
   only at the worktree root and journal their stand-down elsewhere. A literal
   redirect is judged on any program (`npm run meta 2>../.x` refuses); a

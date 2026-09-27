@@ -52,8 +52,11 @@ interface ShellWord {
   readonly value: string;
   readonly dynamic: boolean;
   readonly quoted: boolean;
-  /** WO-158: an unquoted, unescaped `*?[]{}~` the shell may expand. */
+  /** WO-158: an unquoted, unescaped `*?[]{}~` the shell may expand; WO-168
+   * adds zsh's `=` expansion. */
   readonly expands?: boolean;
+  /** WO-168: an unquoted, unescaped `<` or `>` the shell reads as an operator. */
+  readonly redirects?: boolean;
 }
 interface ShellInvocation {
   readonly words: ShellWord[];
@@ -103,11 +106,14 @@ function shellWords(source: string): ShellInvocation[] {
     inWord = false,
     dynamic = false,
     quoted = false,
-    expands = false;
+    expands = false,
+    redirects = false,
+    equals = -1;
   let heredocs: { delimiter: string; words: ShellWord[] }[] = [];
   let needsDelimiter = false;
   const flush = () => {
     if (!inWord) return;
+    if (equals >= 0 && word.length > equals + 1) expands = true;
     if (needsDelimiter) {
       heredocs.push({ delimiter: word, words: current });
       needsDelimiter = false;
@@ -121,12 +127,14 @@ function shellWords(source: string): ShellInvocation[] {
       throw new HarnessCommandRefused(
         "Shell control syntax requires an explicit effect adapter",
       );
-    } else current.push({ value: word, dynamic, quoted, expands });
+    } else current.push({ value: word, dynamic, quoted, expands, redirects });
     word = "";
     inWord = false;
     dynamic = false;
     quoted = false;
     expands = false;
+    redirects = false;
+    equals = -1;
   };
   const finish = (piped = false) => {
     flush();
@@ -169,7 +177,8 @@ function shellWords(source: string): ShellInvocation[] {
         throw new HarnessCommandRefused(
           "Dynamic shell substitution requires an explicit effect adapter",
         );
-      if (char === "$" && /[A-Za-z0-9_{$'"@*#?!-]/.test(line[i + 1] ?? ""))
+      // zsh also expands `$=name`, `$^name`, `$~name` and `$+name`.
+      if (char === "$" && /[A-Za-z0-9_{$'"@*#?!=^~+-]/.test(line[i + 1] ?? ""))
         dynamic = true;
       if (quote === '"') {
         if (char === '"') quote = "";
@@ -183,7 +192,9 @@ function shellWords(source: string): ShellInvocation[] {
         continue;
       }
       if (char === "#" && !inWord) break;
-      if (/\s/.test(char)) {
+      // A shell's blanks are space and tab; lines are already split. Any other
+      // whitespace stays inside its word, where a `#` begins no comment.
+      if (char === " " || char === "\t") {
         flush();
         continue;
       }
@@ -213,6 +224,7 @@ function shellWords(source: string): ShellInvocation[] {
         (char === "&" && line[i + 1] === ">")
       ) {
         inWord = true;
+        redirects = true;
         word += char + line[++i];
         if (line[i] === ">" && line[i + 1] === ">") word += line[++i];
         continue;
@@ -259,6 +271,12 @@ function shellWords(source: string): ShellInvocation[] {
       }
       inWord = true;
       if (/[*?\[\]{}~]/.test(char)) expands = true;
+      // zsh expands `=name` to a command path at the start of a word, even
+      // after empty quotes, and after `=` or `:` in an assignment value; a
+      // `=` with nothing after it stays literal (judged at flush).
+      if (char === "=" && equals < 0 && /(?:^|[=:])$/.test(word))
+        equals = word.length;
+      if (char === "<" || char === ">") redirects = true;
       word += char;
     }
     if (continued) {
@@ -321,10 +339,6 @@ const literalRedirectOperand = (
   /^(?:[A-Za-z0-9._/]|-$)/.test(word.value) &&
   !/[*?\[\]{}~<>]/.test(word.value);
 
-/** Bounded destination adapter for gate admission. null means the destinations
- * are opaque, never an empty write set. Keep expansion/quotation provenance;
- * arbitrary scripts and interpreters need their own reviewed path adapter.
- */
 /** Keep the activation read vocabulary: literal arguments to these programs
  * have no file-write or program-execution option. Shell expansion and output
  * redirections are screened by shellWriteTargets before reaching this function.
@@ -486,12 +500,15 @@ function invocationRedirects(
 ): { command: string[]; redirects: ShellWriteTarget[] } | null {
   const command: string[] = [];
   const redirects: ShellWriteTarget[] = [];
+  // A shell without `&>` (dash, busybox ash) backgrounds what precedes it and
+  // runs the words after its operand as a command of their own (WO-168).
+  let background = false;
   for (let index = 0; index < words.length; index++) {
     const word = words[index]!;
     // Whole-word quotation does not prove every character was quoted.
     // Mixed/escaped wildcard forms stay opaque to this bounded adapter.
-    if (word.dynamic || /[*?\[\]{}~]/.test(word.value)) {
-      if (strict || /[<>]/.test(word.value)) return null;
+    if (word.dynamic || word.expands || /[*?\[\]{}~]/.test(word.value)) {
+      if (strict || background || /[<>]/.test(word.value)) return null;
       command.push(word.value);
       continue;
     }
@@ -525,15 +542,21 @@ function invocationRedirects(
         followFinalSymlink: true,
         redirect: true,
       });
+      if (word.value.startsWith("&")) background = true;
     } else {
-      // Mixed quoted/unquoted redirects and embedded redirects are opaque.
-      if (/[<>]/.test(word.value)) return null;
+      // Mixed quoted/unquoted redirects and embedded redirects are opaque, and
+      // so is a command word the shells would give to different programs.
+      if (background || /[<>]/.test(word.value)) return null;
       command.push(word.value);
     }
   }
   return { command, redirects };
 }
 
+/** Bounded destination adapter for gate admission. null means the destinations
+ * are opaque, never an empty write set. Keep expansion/quotation provenance;
+ * arbitrary scripts and interpreters need their own reviewed path adapter.
+ */
 export function shellWriteTargets(
   source: string,
 ): readonly ShellWriteTarget[] | null {
@@ -678,6 +701,39 @@ const liveGateGit = (args: readonly string[]): boolean => {
       ) && !arg.includes("%G"),
   );
 };
+// WO-168 (WO-158-D028 f): a helper form is judged argument by argument, so a
+// quoted word that merely spells several arguments is a different command.
+const sameArguments = (
+  args: readonly string[],
+  expected: readonly string[],
+): boolean =>
+  args.length === expected.length &&
+  args.every((arg, index) => arg === expected[index]);
+const liveGateNode = ([script, ...args]: readonly string[]): boolean =>
+  script === "scripts/harness.mjs" &&
+  (sameArguments(args, ["writer", "--show"]) ||
+    sameArguments(args, ["evidence", "--wait"]) ||
+    (sameArguments(args.slice(0, 3), ["evidence", "--wait", "--timeout"]) &&
+      args.length === 4 &&
+      /^\d+(?:\.\d+)?$/.test(args[3]!)));
+// `--silent` sits on either side of the script name, once.
+const liveGateNpm = (args: readonly string[]): boolean => {
+  const separator = args.indexOf("--");
+  if (separator < 0) return false;
+  const run = args.slice(0, separator);
+  const status = args.slice(separator + 1);
+  if (
+    !sameArguments(run, ["run", "resume"]) &&
+    !sameArguments(run, ["run", "--silent", "resume"]) &&
+    !sameArguments(run, ["run", "resume", "--silent"])
+  )
+    return false;
+  if (status.shift() !== "status") return false;
+  if (status[0] === "--json") status.shift();
+  if (status[0] === "--work-order")
+    return status.length === 2 && /^WO-\d{3}$/.test(status[1]!);
+  return status.length === 0;
+};
 const liveGateRead = ([program, ...args]: readonly string[]): boolean => {
   switch (program) {
     // No option of these writes a file or runs a program.
@@ -693,25 +749,34 @@ const liveGateRead = ([program, ...args]: readonly string[]): boolean => {
     case "git":
       return liveGateGit(args);
     case "node":
-      return (
-        args.join(" ") === "scripts/harness.mjs writer --show" ||
-        /^scripts\/harness\.mjs evidence --wait(?: --timeout (?:\d+(?:\.\d+)?))?$/.test(
-          args.join(" "),
-        )
-      );
+      return liveGateNode(args);
     case "npm":
-      return /^run resume (?:--silent )?-- status(?: --json)?(?: --work-order WO-\d{3})?$/.test(
-        args.join(" "),
-      );
+      return liveGateNpm(args);
     default:
       return false;
   }
 };
 
+/** WO-168: a revision suffix the shell leaves alone. The word is unquoted, so
+ * its value is what the shell sees: no glob character, no dollar sign, no
+ * tilde or zsh `=` where a shell expands one (the start of a word, or after
+ * `=` or `:`), and every brace pair free of a comma and of a `..` range. */
+const revisionOperand = (word: ShellWord): boolean =>
+  !word.quoted &&
+  !/[*?\[\]$]/.test(word.value) &&
+  !/(?:^|[=:])(?:~|=.)/.test(word.value) &&
+  !/[{}]/.test(word.value.replace(/\{(?![^{}]*(?:,|\.\.))[^{}]*\}/g, ""));
+
 /** Every stage of every pipeline and list must be on the list, with no
- * redirect operand, heredoc, expansion or environment prefix: a listed reader
- * piped into an unlisted writer is refused (receipt 028, criterion 6). Only
- * descriptor duplication such as 2>&1 passes, because it opens no file.
+ * heredoc, expansion or environment prefix: a listed reader piped into an
+ * unlisted writer is refused (receipt 028, criterion 6). Descriptor
+ * duplication such as 2>&1 opens no file and passes. WO-168 admits four
+ * argument forms that change no gate input: a quoted word that contains `<`
+ * or `>`; a revision suffix (`~`, `^`, `@{…}`) in an operand of a listed Git
+ * read; an input redirect from a literal path; and an output redirect whose
+ * literal operand is exactly /dev/null. `<>`, `&>`, every other redirect and
+ * an operator in a partly quoted word stay off the list; the destination
+ * adapter judges what it can name.
  * null means not admitted; `git` says whether a Git read needs the host's
  * configured-program check, and `helper` whether a repository script runs,
  * which is reviewed only at the root. */
@@ -726,10 +791,33 @@ export function liveGateReads(
     for (const { words, stdin } of invocations) {
       if (stdin.length) return null;
       const values: string[] = [];
-      for (const word of words) {
-        if (word.dynamic || word.expands) return null;
-        if (!word.quoted && /^\d*[<>]&\d+$/.test(word.value)) continue;
-        if (/[<>]/.test(word.value)) return null;
+      for (let index = 0; index < words.length; index++) {
+        const word = words[index]!;
+        if (word.dynamic) return null;
+        if (word.redirects) {
+          if (word.quoted || word.expands) return null;
+          if (/^\d*[<>]&\d+$/.test(word.value)) continue;
+          // `&>` is left out: a shell without it backgrounds the reader and
+          // runs the words that follow as a command of their own.
+          const redirect = /^(\d*<|\d*>>?)(.*)$/.exec(word.value);
+          if (!redirect) return null;
+          const operand = redirect[2]
+            ? { ...word, value: redirect[2], redirects: false }
+            : words[++index];
+          if (
+            !literalRedirectOperand(operand) ||
+            operand.expands ||
+            operand.redirects ||
+            (!redirect[1]!.endsWith("<") && operand.value !== "/dev/null")
+          )
+            return null;
+          continue;
+        }
+        if (
+          word.expands &&
+          !(index > 0 && values[0] === "git" && revisionOperand(word))
+        )
+          return null;
         values.push(word.value);
       }
       if (!liveGateRead(values)) return null;
