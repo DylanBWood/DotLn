@@ -1,23 +1,23 @@
 # Current control state
 
-## WO-168
+## WO-171
 
-- Work order: WO-168
-- Work-order path: docs/work-orders/WO-168-printed-path-exists.md
+- Work order: WO-171
+- Work-order path: docs/work-orders/WO-171-prune-apply-finishes.md
 - Phase: closed
 - Latest verification: VER-002
-- Verification path: docs/verifications/WO-168/VER-002.md
+- Verification path: docs/verifications/WO-171/VER-002.md
 - Latest verdict: pass
 - Final review: FINAL-001
-- Final-review path: docs/final-reviews/WO-168/FINAL-001.md
+- Final-review path: docs/final-reviews/WO-171/FINAL-001.md
 - Latest attestation: harness claude-code; version 2.1.283; model claude-opus-5-5; effort xhigh; source claude-session-readback; account not-applicable
 - Effort drift: xhigh -> xhigh (subagents) (raw: ultra)
-- Latest recordedAt: 2026-09-27T16:07:57.647Z
-- Elapsed implementation: 6962842 ms
-- Elapsed verification: 883068 ms
-- Elapsed repair: 2192527 ms
-- Elapsed finalReview: 1676228 ms
-- Latest checkpoint: 0dbb191914c0b548e0c4ab32a70bc3191026dcdb (restore: `git checkout refs/dotln/checkpoint/WO-168/11 -- .`)
+- Latest recordedAt: 2026-09-27T19:12:00.198Z
+- Elapsed implementation: 3559029 ms
+- Elapsed verification: 807983 ms
+- Elapsed repair: 1774558 ms
+- Elapsed finalReview: 1450123 ms
+- Latest checkpoint: f7ceab76d2a5a3089cf2aaea2c1d6bae25e64705 (restore: `git checkout refs/dotln/checkpoint/WO-171/10 -- .`)
 - Legal next actions: release-close, next, activate
 - Legal off-ramps: correct
 
