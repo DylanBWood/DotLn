@@ -1,0 +1,177 @@
+{
+  "register": {
+    "commit": "4c34b3321c950a4e8b4047582efa9cea03d6f689",
+    "entries": 653
+  },
+  "method": "touchingFollowups with whole paths over each order's landing diff on main's first-parent history (git diff --name-only <commit>^1 <commit>) and the order's identifier, against the register at the commit the 2026-09-27 pass measured",
+  "seams": {
+    "packages/skeleton/src/reactor.ts": {
+      "rows": {
+        "FUP-f12a1f894923b2b2": "deferred"
+      },
+      "orders": {
+        "WO-099": {
+          "landing": "bca52bf2",
+          "changedFiles": 110,
+          "pending": 155,
+          "matched": 20,
+          "returned": {
+            "FUP-f12a1f894923b2b2": [
+              "packages/skeleton/src/reactor.ts"
+            ]
+          },
+          "missed": []
+        },
+        "WO-151": {
+          "landing": "4bf626f4",
+          "changedFiles": 72,
+          "pending": 155,
+          "matched": 19,
+          "returned": {
+            "FUP-f12a1f894923b2b2": [
+              "packages/skeleton/src/reactor.ts"
+            ]
+          },
+          "missed": []
+        },
+        "WO-154": {
+          "landing": "a403671d",
+          "changedFiles": 97,
+          "pending": 155,
+          "matched": 17,
+          "returned": {
+            "FUP-f12a1f894923b2b2": [
+              "packages/skeleton/src/reactor.ts"
+            ]
+          },
+          "missed": []
+        },
+        "WO-070": {
+          "landing": "f73b7e18",
+          "changedFiles": 96,
+          "pending": 155,
+          "matched": 19,
+          "returned": {
+            "FUP-f12a1f894923b2b2": [
+              "packages/skeleton/src/reactor.ts"
+            ]
+          },
+          "missed": []
+        }
+      }
+    },
+    "scripts/lib/meta.mjs and release preparation": {
+      "rows": {
+        "FUP-fa028783f3f6b17f": "deferred",
+        "FUP-526d14d44ee178b3": "deferred",
+        "FUP-156ca538f603194a": "deferred",
+        "FUP-b66c5b4726dc9262": "deferred"
+      },
+      "orders": {
+        "WO-155": {
+          "landing": "a8d58149",
+          "changedFiles": 38,
+          "pending": 155,
+          "matched": 13,
+          "returned": {
+            "FUP-156ca538f603194a": [
+              "scripts/lib/meta.mjs"
+            ],
+            "FUP-526d14d44ee178b3": [
+              "scripts/lib/meta.mjs"
+            ],
+            "FUP-b66c5b4726dc9262": [
+              "scripts/lib/meta.mjs"
+            ],
+            "FUP-fa028783f3f6b17f": [
+              "scripts/lib/meta.mjs"
+            ]
+          },
+          "missed": []
+        },
+        "WO-158": {
+          "landing": "852861d3",
+          "changedFiles": 110,
+          "pending": 155,
+          "matched": 33,
+          "returned": {
+            "FUP-156ca538f603194a": [
+              "scripts/lib/meta.mjs"
+            ],
+            "FUP-526d14d44ee178b3": [
+              "scripts/lib/meta.mjs"
+            ],
+            "FUP-b66c5b4726dc9262": [
+              "scripts/lib/meta.mjs"
+            ],
+            "FUP-fa028783f3f6b17f": [
+              "scripts/lib/meta.mjs"
+            ]
+          },
+          "missed": []
+        },
+        "WO-160": {
+          "landing": "64f9326f",
+          "changedFiles": 71,
+          "pending": 155,
+          "matched": 22,
+          "returned": {
+            "FUP-526d14d44ee178b3": [
+              "scripts/release.mjs"
+            ]
+          },
+          "missed": [
+            "FUP-fa028783f3f6b17f",
+            "FUP-156ca538f603194a",
+            "FUP-b66c5b4726dc9262"
+          ]
+        }
+      }
+    },
+    "packages/skeleton/src/resident-state.ts with a feedback edition": {
+      "rows": {
+        "FUP-4f8cd7989607ad3f": "deferred",
+        "FUP-56b599e15f97e666": "deferred"
+      },
+      "orders": {
+        "WO-100": {
+          "landing": "ad5bb1d7",
+          "changedFiles": 108,
+          "pending": 155,
+          "matched": 18,
+          "returned": {
+            "FUP-4f8cd7989607ad3f": [
+              "packages/skeleton/src/resident-host.ts",
+              "packages/skeleton/src/resident-state.ts"
+            ],
+            "FUP-56b599e15f97e666": [
+              "docs/product/07-execution-guide.md",
+              "packages/skeleton/src/resident-state.ts",
+              "scripts/lib/evidence-sources.mjs"
+            ]
+          },
+          "missed": []
+        }
+      }
+    },
+    "WO-115 activation": {
+      "rows": {
+        "FUP-4656197433cb8b3d": "deferred"
+      },
+      "orders": {
+        "WO-115": {
+          "landing": "d3768d2d",
+          "changedFiles": 78,
+          "pending": 155,
+          "matched": 18,
+          "returned": {
+            "FUP-4656197433cb8b3d": [
+              "WO-115"
+            ]
+          },
+          "missed": []
+        }
+      }
+    }
+  }
+}

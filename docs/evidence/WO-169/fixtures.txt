@@ -1,0 +1,119 @@
+$ node --test --test-name-pattern="^WO-169 " scripts/test-process-debt.mjs
+Advisory: Latest npm run test:docs for current tree: missing; run npm run test:docs before handoff.
+Advisory: Session authorship and output reads unavailable.
+Advisory: Latest npm run test:docs for current tree: missing; run npm run test:docs before handoff.
+Advisory: 1 pending follow-up row names a file this change touches or WO-999 (a textual match): run npm run plan -- followups --touching; fix a row inside the Boy Scout bound or record it as left in the order's decisions, never widen the order; the final review disposes each listed row through the feed.
+Advisory: Session authorship and output reads unavailable.
+Advisory: Latest npm run test:docs for current tree: missing; run npm run test:docs before handoff.
+Advisory: Follow-up rows this change touches unavailable: Planning follow-ups: register is stale; run npm run meta or npm run plan -- followups --sync
+Advisory: Session authorship and output reads unavailable.
+Advisory: Latest npm run test:docs for current tree: missing; run npm run test:docs before handoff.
+Advisory: 2 pending follow-up rows name a file this change touches or WO-999 (a textual match): run npm run plan -- followups --touching; fix a row inside the Boy Scout bound or record it as left in the order's decisions, never widen the order; the final review disposes each listed row through the feed.
+Advisory: Session authorship and output reads unavailable.
+Advisory: Latest npm run test:docs for current tree: missing; run npm run test:docs before handoff.
+Advisory: Session authorship and output reads unavailable.
+Advisory: Latest npm run test:docs for current tree: missing; run npm run test:docs before handoff.
+Advisory: 1 pending follow-up row names a file this change touches or WO-999 (a textual match): run npm run plan -- followups --touching; fix a row inside the Boy Scout bound or record it as left in the order's decisions, never widen the order; the final review disposes each listed row through the feed.
+Advisory: Session authorship and output reads unavailable.
+Advisory: Latest npm run test:docs for current tree: missing; run npm run test:docs before handoff.
+Advisory: Follow-up rows this change touches unavailable: Planning follow-ups: register is stale; run npm run meta or npm run plan -- followups --sync
+Advisory: Session authorship and output reads unavailable.
+Advisory: Latest npm run test:docs for current tree: missing; run npm run test:docs before handoff.
+Advisory: 2 pending follow-up rows name a file this change touches or WO-999 (a textual match): run npm run plan -- followups --touching; fix a row inside the Boy Scout bound or record it as left in the order's decisions, never widen the order; the final review disposes each listed row through the feed.
+Advisory: Session authorship and output reads unavailable.
+Advisory: Latest npm run test:docs for current tree: missing; run npm run test:docs before handoff.
+Advisory: Session authorship and output reads unavailable.
+Advisory: Latest npm run test:docs for current tree: missing; run npm run test:docs before handoff.
+Advisory: 2 pending follow-up rows name a file this change touches or WO-999 (a textual match): run npm run plan -- followups --touching --work-order WO-999; fix a row inside the Boy Scout bound or record it as left in the order's decisions, never widen the order; the final review disposes each listed row through the feed.
+Advisory: Session authorship and output reads unavailable.
+✔ WO-169 followups --touching names the pending rows a path, an order or this change touches (219.346917ms)
+✔ WO-169 the change is read from the merge base with main: committed, renamed, deleted and untracked files, never main's own (246.104083ms)
+✔ WO-169 followups --touching pages within the byte budget and its continuation keeps the terms (144.965875ms)
+✔ WO-169 completion advises with the count, the command and the rule when rows touch the change, and never refuses (928.492375ms)
+✔ WO-169 followups --export writes every pending row whole to a granted destination and prints only counts (300.550459ms)
+✔ WO-169 followups --apply takes a batch under one revision, all or none (211.007292ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2129.90275
+exit 0
+
+$ node --test --test-name-pattern="WO-155 cold-start trends" scripts/test-process-debt.mjs
+✔ WO-155 cold-start trends share edition and acceptance evidence across the CLI and meter (464.905459ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 543.3445
+exit 0
+
+$ node --test --test-name-pattern="release shell changes select|WO-169 a changed script" scripts/test-runner.test.mjs
+✔ release shell changes select their inventory guard during review (61.215292ms)
+✔ WO-169 a changed script outside the former eight sources selects the configuration-root suite (69.817209ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 177.664333
+exit 0
+
+$ node --test scripts/test-configuration-root.mjs
+Generated records/lineage/README.md
+▶ configuration root
+  ✔ an absent configuration means today's layout (1.906166ms)
+  ✔ a declared root moves its documents and its children (0.847875ms)
+  ✔ registered repositories expose a validated public profile (0.726333ms)
+  ✔ a malformed configuration refuses with its path (2.357208ms)
+  ✔ the launchpad is discovered, and the override wins (2.172542ms)
+  ✔ no control-plane script keeps a literal document root or a second root derivation (13.242209ms)
+  ✔ configured lineage and planning consumers use the launchpad ledger (63.015625ms)
+  ✔ configured follow-up references validate against their roots (7.684083ms)
+  ✔ writing-worker defaults separate tool inputs from configured outputs (4.324375ms)
+  ✔ a fixture launchpad with non-default roots drives the lifecycle (960.6405ms)
+  ✔ worktree start and finish use the configured roots (1468.379125ms)
+  ✔ every declared root key is reachable (0.580792ms)
+✔ configuration root (2527.278292ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2578.412209
+exit 0
+
+$ node --test scripts/test-worktree-integration.mjs
+{"case":"fast-forward","checkpoint":"refs/dotln/checkpoint/WO-998/1","retainedStash":"681c0a6518a887592705e7288cc4a5eeccde591c","retimed":"v9000.0.2","unchangedControl":true,"realGenerators":true}
+{"case":"reviewed merge","checkpoint":"refs/dotln/checkpoint/WO-998/1","retainedStash":"13b48ad34b4faebc47f14547e30cc94abac858e6","retimed":"v9000.0.2","unchangedControl":true,"realGenerators":true}
+✔ real Git fast-forward preserves recovery, histories and authored conflicts with real generators (10983.050292ms)
+✔ real Git reviewed merge preserves recovery, histories and authored conflicts with real generators (11337.268625ms)
+✔ three required refusals leave the tree, index, HEAD and recovery refs unchanged (5658.131709ms)
+✔ an intent-to-add entry is refused before any write, and a failed stash leaves no pending receipt (5879.954375ms)
+✔ a stash Git stores and then fails to finish resumes with --continue; --continue refuses intent-to-add entries (6076.509792ms)
+✔ a later stash failure with nothing stashed restores the completed receipt it replaced (11501.2785ms)
+✔ follow-up union preserves compatible histories and refuses divergent same-entry histories (0.996167ms)
+✔ untracked stash collision remains explicit and recoverable until continuation (10429.755375ms)
+✔ WO-169 a first invocation with no authored conflict generates at once (9698.879875ms)
+✔ WO-169 a pass whose generator fails keeps its checks and names the pending step, not a conflict (9727.372375ms)
+✔ WO-169 the integration record holds each release message as one line with one full stop (0.47575ms)
+✔ printed checks use the runner's declared machinery sources, including package code (57.012833ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 81406.984209
+exit 0
