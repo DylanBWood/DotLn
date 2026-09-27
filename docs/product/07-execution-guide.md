@@ -262,7 +262,7 @@ table includes the shared goal card and the refuter's separate subject boundary.
    | `resume: fix`           | `npm run resume -- fix`                                                                                                                                                                                                    | repair, reading BOTH the original work order and named failure source; if a repair was prematurely marked complete, the phrase may reopen it only while that unresolved source remains                                                                                   |
    | `resume: verify`        | `npm run resume -- verify`                                                                                                                                                                                                 | verify, writing the exact `VER-NNN` path it allocates                                                                                                                                                                                                                    |
    | `resume: final review`  | `npm run resume -- final-review`                                                                                                                                                                                           | review into the allocated `FINAL-NNN`; on pass, record it, commit the reviewed state, push only the WO branch, and open its PR                                                                                                                                           |
-   | `resume: release close` | run the exact `cd <main> && node <main>/scripts/release.mjs close WO-NNN --publish` command projected by `resume release-close` or printed by `worktree publish`; after the subject is already removed, use main's copy | update main, consume the reviewer product gate, publish the validated tag and Release, then attempt worktree cleanup; if Release creation fails after tag push, rerun from updated main |
+   | `resume: release close` | in a main-checkout session, dispatch `npm run resume -- release-close --work-order WO-NNN` there, then run in that session the exact `node <main>/scripts/release.mjs close WO-NNN --publish` helper it prints (`worktree publish` prints the same); dispatched from the subject it prints only this route; after the subject is already removed, use main's copy | update main, consume the reviewer product gate, publish the validated tag and Release, then attempt worktree cleanup; if Release creation fails after tag push, rerun from updated main |
    | the operator accepts criterion N unmet (words captured) | `npm run resume -- waive N --reason <text> --capture <intake file> --capture-hash sha256:<digest> <actor-flags>` from the operator's terminal, a verifier or a reviewer session (WO-158) | the report records `**Criterion N:** unmet, waived by <ordinal>`; the order's executor never records a waiver |
    | the operator withdraws the order (words captured) | `npm run resume -- withdraw --disposition failed\|superseded\|abandoned --reason <text> --capture <intake file> --capture-hash sha256:<digest> <actor-flags>` (WO-158) | stop: `withdrawn` is terminal, and only `npm run resume -- activate` of a changed revision with a new dated `**Reactivation (YYYY-MM-DD):**` note leaves it |
    | a recorded attestation, report path or checkpoint is wrong, or a recorded passing final review carries no product gate | `npm run resume -- correct <ordinal\|report-path> --set <field>=<value> --reason <text> <actor-flags>` (WO-158); `--set productGate=<evidenceRef>` binds a complete passing `npm test` row whose code identity is the one the pass recorded in its checkpoint and still the working tree's, once, and is the only correction legal in `closed` (WO-115) | never correct a verdict or edit a filed report; a wrong verdict takes a later report; a changed subject takes a fresh final review; publication and release close read the bound gate from the committed correction |
@@ -333,7 +333,9 @@ sibling merge cannot shift another order's close ordinal. Run
 `npm run work-orders -- index` after executor dispatch and before its evidence gate.
 `implementation-ready` and `repair-complete` refresh the final index automatically,
 then release the current Codex session's writer reservation after the result and
-observations are recorded. Finish authored writes before that command; reading
+observations are recorded; `verification-result`, `final-review-result` and a
+successful `release close --publish` release their session's the same way.
+Finish authored writes before that command; reading
 the resulting projections needs no new writer. No operator release command is
 part of ordinary completion. Verification and final-review actors refresh
 after dispatch and after recording their result. `npm run test:docs` includes
@@ -1848,7 +1850,7 @@ session exceeds the cap on a path WO-139 reports as uncounted.
 
 Final review publishes the reviewed work-order branch and PR; the operator
 retains merge authority. After merge, `resume: release close` authorizes the
-exact helper command printed by `resume release-close` or `worktree publish`.
+exact helper command printed by `resume release-close` in main or `worktree publish`.
 Run main's helper with main as the working directory; retries use the same
 updated main after the subject is removed.
 

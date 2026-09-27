@@ -898,7 +898,10 @@ reservation is migrated when it is the session's own, reclaimed when its owner
 is dead, and otherwise honoured; it is never created again. A live holder, an
 unrecorded owner, or an owner identity the holding
 session itself found dead is honoured, and the refusal names the holder's
-truncated actor key and host process. `node scripts/harness.mjs writer --show`
+truncated actor key, owner, reservation time, age and release command; a
+Codex lifecycle dispatch records a verified `codex-host` ancestor, else a
+pid-less `thread` owner of unknown liveness that is never reclaimed.
+`node scripts/harness.mjs writer --show`
 is a bounded metadata read that a refused session may run;
 `writer --release [--force]` is an operator action outside a governed session
 that refuses a live owner without `--force` and logs every release; its
