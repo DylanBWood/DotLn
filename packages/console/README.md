@@ -1,7 +1,10 @@
 # Actor board
 
-Component `0.3.0` prepares application `v0.52.0` with the resident command
-client. Component `0.2.0` prepared application `v0.47.0`: the console added a live
+Component `0.3.1` prepares application `v0.52.7`: host collection folds every
+order's status in one process and reads release history through a per-tag
+cache, with byte-identical board output. Component `0.3.0` prepared application
+`v0.52.0` with the resident command client. Component `0.2.0` prepared
+application `v0.47.0`: the console added a live
 `runtime-status-v1` text host while preserving the actor board and its pinned
 fixtures. The board's historical selfhost fixture records the WO-132 writer-v2
 evidence.
@@ -221,8 +224,12 @@ activation names that selected regression episode; it is not a timestamp or a
 claim that the unit fired inside a worker episode. Fixture and live counts stay
 separate; no rate is computed and zero observations are labeled `unobserved`.
 
-Fixed read-only commands supply all selected `resume status --json` snapshots,
-`resume usage --json`, `worktree constellation` and `release list`. Signed elapsed
+Fixed read-only commands supply every order's status from one
+`resume status --all --json` fold, `resume usage --json`, `worktree
+constellation` and `release list`, whose per-tag records are cached in the
+ignored local lane (WO-164). A failed fold falls back to one
+`resume status --json --work-order` call per order, and the status source's
+ref `resume:status--json#per-order-fallback` records that it did. Signed elapsed
 durations and legal-action strings are preserved. Status has no dependency
 blocker field; that cell stays unknown and dependency evidence comes separately
 from the generated index. Beacon metadata never establishes worker liveness.

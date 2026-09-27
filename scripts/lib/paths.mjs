@@ -115,6 +115,8 @@ export const classifyIgnoredMaterial = (candidate, root) => {
     (anchoredBuildOutput(candidate) ||
       anchored(candidate, ".runtime") ||
       anchored(candidate, `${controlLocal}/harness`) ||
+      // Derived listing records, rebuilt on demand (WO-164).
+      anchored(candidate, `${controlLocal}/cache`) ||
       anchored(candidate, ".control-beacons") ||
       /(?:^|\/)\.dotln-beacon-stage-[A-Za-z0-9]{6}(?:\/|$)/.test(candidate) ||
       disposableBasename(candidate));

@@ -7566,6 +7566,8 @@ test("WO-142 D1 prune previews without writes, preserves live files and keeps de
       "unpublished bytes",
     );
     write(root, ".git/dotln/suite-success/obsolete.json", "dead cache");
+    // WO-164: the live release list cache is named and never removed.
+    write(root, "docs/control/local/cache/release-list.json", "{}\n");
     // WO-159: a Codex episode home whose launcher exited is listed, not pruned.
     const codexHomeRoot = join(root, "system-temp");
     const exited = spawnSync(process.execPath, ["-e", ""]).pid;
@@ -7596,6 +7598,17 @@ test("WO-142 D1 prune previews without writes, preserves live files and keeps de
       "retained-lane",
       "snapshot",
     ]);
+    assert.deepEqual(
+      preview.retained.filter((row) => row.kind === "release-list-cache"),
+      [
+        {
+          kind: "release-list-cache",
+          path: "docs/control/local/cache/release-list.json",
+          reason:
+            "live release list cache: each listing rewrites it to the current tags, and subject teardown disposes of it",
+        },
+      ],
+    );
     const applied = pruneHarness(root, { ...options, apply: true });
     assert.deepEqual(
       applied.candidates.map((row) => row.path),
@@ -7615,6 +7628,7 @@ test("WO-142 D1 prune previews without writes, preserves live files and keeps de
       `${marker}live.advisory`,
       `${marker}legacy.advisory`,
       "docs/control/local/retained/WO-902/evidence.txt",
+      "docs/control/local/cache/release-list.json",
     ])
       assert.equal(existsSync(join(root, path)), true, path);
     const lane = applied.candidates.find((row) => row.kind === "retained-lane");

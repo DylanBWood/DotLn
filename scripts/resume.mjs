@@ -42,7 +42,11 @@ import {
   refreshExecutorIndex,
 } from "./lib/executor-handoff.mjs";
 import { executorEntryBriefing } from "./lib/executor-readiness.mjs";
-import { dependencyRefusal, readDependencies } from "./lib/dependencies.mjs";
+import {
+  dependencyRefusal,
+  dependencyReleaseSet,
+  readDependencies,
+} from "./lib/dependencies.mjs";
 import {
   projectControlBeacon,
   restrictedBeaconBriefing,
@@ -1110,8 +1114,10 @@ const run = async (argv) => {
     throw new Error(
       `activation binds ${branch}; use --work-order ${args[0]} to override`,
     );
+  // `status --all --json` answers for every order, so it selects none (WO-164).
+  const allOrders = action === "status" && args.includes("--all");
   const selected =
-    action === "times" || action === "usage"
+    action === "times" || action === "usage" || allOrders
       ? undefined
       : selectWorkOrder(control, {
           workOrder: action === "activate" ? args[0] : workOrder,
@@ -1122,6 +1128,7 @@ const run = async (argv) => {
         });
   let state = control.orders.get(selected)?.state ?? fold([]);
   let message;
+  let statuses;
 
   switch (action) {
     case "usage": {
@@ -1139,10 +1146,34 @@ const run = async (argv) => {
       break;
     }
     case "status": {
-      if (args.length > 1 || (args.length === 1 && args[0] !== "--json"))
-        throw new Error("usage: resume status [--json]");
+      if (
+        allOrders
+          ? workOrder || args.length !== 2 || !args.includes("--json")
+          : args.length > 1 || (args.length === 1 && args[0] !== "--json")
+      )
+        throw new Error(
+          "usage: resume status [--json] | resume status --all --json",
+        );
       const rendered = render(control, latestClosed, storage, branch);
       warnIfProjectionDisagrees(rendered);
+      if (allOrders) {
+        // One fold returns the per-order form's objects for every order, in
+        // id order; the release set dependency edges read is read once.
+        let releases;
+        const releaseSet = () => (releases ??= dependencyReleaseSet(repoRoot));
+        statuses = [...control.locations.keys()].sort().map((id) => {
+          const order = control.orders.get(
+            selectWorkOrder(control, { workOrder: id }),
+          ).state;
+          return statusProjection(
+            control,
+            id,
+            readDependencies(repoRoot, order, control, releaseSet),
+          );
+        });
+        message = JSON.stringify(statuses);
+        break;
+      }
       message =
         args[0] === "--json"
           ? JSON.stringify(
@@ -2012,8 +2043,14 @@ const run = async (argv) => {
     ) {
       const report =
         claudeReport ?? (await currentHarnessSessionReport(repoRoot));
-      message =
-        action === "status" && args.includes("--json")
+      message = statuses
+        ? JSON.stringify(
+            statuses.map((status) => ({
+              ...status,
+              currentSession: report.session,
+            })),
+          )
+        : action === "status" && args.includes("--json")
           ? JSON.stringify(
               { ...JSON.parse(message), currentSession: report.session },
               null,

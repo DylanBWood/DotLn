@@ -8,6 +8,7 @@ import {
   existsSync,
   mkdirSync,
   readFileSync,
+  readdirSync,
   realpathSync,
   rmSync,
   writeFileSync,
@@ -451,6 +452,77 @@ await test("test-control-segments", async (t) => {
         readFileSync(join(repo, orderSegmentPath("WO-901"))),
         activeBytes,
       );
+    },
+  );
+  await t.test(
+    "WO-164 status --all --json returns every order's per-order object and appends nothing",
+    () => {
+      const authority = "docs/work-orders/WO-903-fixture.md";
+      const header = `# WO-903 — fixture\n\n**Model:** any.\n**Effort:** executor any; verifier any; reviewer any.\n`;
+      write(authority, header);
+      pass(["activate", "WO-903", authority]);
+      // A release edge makes the fold read the release set it shares.
+      write(
+        authority,
+        `${header}\n<!-- dotln-dependencies:start -->\n${JSON.stringify([{ workOrderId: "WO-901", relation: "satisfied-by-release", release: "v9.9.9", reason: "fixture release edge" }])}\n<!-- dotln-dependencies:end -->\n\n**Objective:** fixture.\n`,
+      );
+      const controlBytes = () => [
+        readFileSync(join(repo, LEGACY_CONTROL_PATH)),
+        readFileSync(join(repo, "docs/control/current.md")),
+        ...readdirSync(join(repo, "docs/control/orders"))
+          .sort()
+          .map((name) => [
+            name,
+            readFileSync(join(repo, "docs/control/orders", name)),
+          ]),
+      ];
+      const before = controlBytes();
+      const sessionless = { ...process.env };
+      for (const name of [
+        "CLAUDE_EFFORT",
+        "CODEX_THREAD_ID",
+        "COPILOT_AGENT_SESSION_ID",
+      ])
+        delete sessionless[name];
+      for (const env of [
+        sessionless,
+        { ...sessionless, CLAUDE_EFFORT: "high" },
+      ]) {
+        const all = run(["status", "--all", "--json"], env);
+        assert.equal(all.status, 0, all.stderr);
+        const statuses = JSON.parse(all.stdout);
+        assert.deepEqual(
+          statuses.map((status) => status.workOrder),
+          ["WO-900", "WO-901", "WO-903"],
+        );
+        for (const status of statuses) {
+          const one = run(
+            ["status", "--json", "--work-order", status.workOrder],
+            env,
+          );
+          assert.equal(one.status, 0, one.stderr);
+          assert.deepEqual(status, JSON.parse(one.stdout));
+          assert.equal("currentSession" in status, "CLAUDE_EFFORT" in env);
+        }
+        assert.equal(
+          statuses.at(-1).dependencies.entries[0].state,
+          "unmet",
+          "the release edge is judged against the shared release set",
+        );
+      }
+      for (const args of [
+        ["status", "--all"],
+        ["status", "--all", "--json", "--json"],
+        ["status", "--all", "--json", "--work-order", "WO-900"],
+      ]) {
+        const refused = run(args);
+        assert.equal(refused.status, 1);
+        assert.match(
+          refused.stderr,
+          /usage: resume status \[--json\] \| resume status --all --json/,
+        );
+      }
+      assert.deepEqual(controlBytes(), before);
     },
   );
   await t.test(
