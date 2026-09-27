@@ -11259,6 +11259,14 @@
           "reopenWhen": "the operator opens the efficiency pass, or a role's headroom falls below 256 bytes",
           "targets": [],
           "at": "2026-09-27T20:16:29.105Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-170's final review: a textual match on product 07. node scripts/harness-context.mjs --check reads every role profile at delta 0; the reviewer is 24,171 of 24,576 bytes, 405 bytes of headroom. [WO-170 final review (docs/final-reviews/WO-170/FINAL-001.md)]",
+          "reopenWhen": "the operator opens the efficiency pass, or a role's headroom falls below 256 bytes",
+          "targets": [],
+          "at": "2026-09-27T23:31:48.299Z"
         }
       ]
     },
@@ -13506,6 +13514,14 @@
           "reopenWhen": "the next order that changes resident-state.ts and records a feedback edition, or an operator reads a misleading verifier-unavailable hold over an incomplete capsule",
           "targets": [],
           "at": "2026-09-27T20:16:28.962Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-170's final review: a textual match on product 07, where WO-170 edits one meter sentence. resident-state.ts and the feedback edition are unchanged. [WO-170 final review (docs/final-reviews/WO-170/FINAL-001.md)]",
+          "reopenWhen": "the next order that changes resident-state.ts and records a feedback edition, or an operator reads a misleading verifier-unavailable hold over an incomplete capsule",
+          "targets": [],
+          "at": "2026-09-27T23:31:48.156Z"
         }
       ]
     },
@@ -14012,6 +14028,14 @@
           "reopenWhen": "another repair meets a changed reviewer draft it did not write, or the next order that edits release preparation",
           "targets": [],
           "at": "2026-09-27T15:59:34.298Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-170's final review. Its condition occurred: WO-170 edits release prepare in scripts/release.mjs to write the order's meter snapshot. The remaining member, ownership of an executor-time PR draft in scripts/lib/release-preparation.mjs, is untouched and recurred: docs/final-reviews/WO-170/PR.md held only the meter block when this review began, and the reviewer wrote the body around it. [WO-170 final review (docs/final-reviews/WO-170/FINAL-001.md)]",
+          "reopenWhen": "another repair meets a changed reviewer draft it did not write, or the next order that edits release preparation",
+          "targets": [],
+          "at": "2026-09-27T23:31:48.328Z"
         }
       ]
     },
@@ -17499,6 +17523,14 @@
           "reopenWhen": "the next order that touches usage or meta attribution",
           "targets": [],
           "at": "2026-09-27T20:16:29.020Z"
+        },
+        {
+          "sourceRevision": 4,
+          "status": "deferred",
+          "reason": "Deferred again by WO-170's final review with the meter's part decided: WO-170-D014 found that meta shows no attestation field and none of its values depends on one, so it applies no RecordCorrected value and counts each RecordCorrected event once as an operator direction. Resume usage and the console board, the row's other consumers, are outside WO-170 (its non-goals). [WO-170 final review (docs/final-reviews/WO-170/FINAL-001.md)]",
+          "reopenWhen": "the next order that touches usage attribution in resume usage or the console board",
+          "targets": [],
+          "at": "2026-09-27T23:31:48.214Z"
         }
       ]
     },
@@ -18734,6 +18766,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-27T20:16:28.813Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "open",
+          "reason": "Kept open by WO-170's final review: a textual match on WO-170's decisions and the decisions index. WO-170's decisions quote no operator chat; D019 paraphrases the operator's review-time statement and choice and quotes neither. The sweep itself stays with planning. [WO-170 final review (docs/final-reviews/WO-170/FINAL-001.md)]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-27T23:31:48.068Z"
         }
       ]
     },
@@ -18915,6 +18955,14 @@
           "reopenWhen": "a real release close leaves main reserved or reclaims a live session's reservation, or the shell fixture's adapter diverges from the runtime's writer protocol",
           "targets": [],
           "at": "2026-09-27T20:16:28.991Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-170's final review: WO-170 changes release prepare in scripts/release.mjs and adds release-prepare and prune fixtures. Release close, its publish path and the writer protocol are untouched. [WO-170 final review (docs/final-reviews/WO-170/FINAL-001.md)]",
+          "reopenWhen": "a real release close leaves main reserved or reclaims a live session's reservation, or the shell fixture's adapter diverges from the runtime's writer protocol",
+          "targets": [],
+          "at": "2026-09-27T23:31:48.184Z"
         }
       ]
     },
@@ -19525,6 +19573,14 @@
           "reopenWhen": "a planning pass over the standing text, the next order that edits the writer text, or a session acts on one of the named sentences against the shipped behaviour",
           "targets": [],
           "at": "2026-09-27T20:16:29.133Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-170's final review: textual matches on README.md (the release line), product 07 (one meter sentence), the work-order index and WO-170's evidence README. The writer text is untouched. [WO-170 final review (docs/final-reviews/WO-170/FINAL-001.md)]",
+          "reopenWhen": "a planning pass over the standing text, the next order that edits the writer text, or a session acts on one of the named sentences against the shipped behaviour",
+          "targets": [],
+          "at": "2026-09-27T23:31:48.358Z"
         }
       ]
     },
@@ -19679,6 +19735,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-27T19:06:17.417Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Kept open by WO-170's final review for its remaining clause. The field is chosen: top-level usageCopies of {path, sha256, rows}, written in the 77 recovered snapshots, 76 with a digest (WO-170-D007, D011), and the prune reads only that field (D008). A snapshot release prepare writes cannot name the copy worktree finish makes later, so each order closed from WO-170 on keeps its lane until a refresh after its last usage row; no step writes that refresh. [WO-170 final review (docs/final-reviews/WO-170/FINAL-001.md)]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-27T23:31:48.098Z"
         }
       ]
     },
@@ -19711,6 +19775,14 @@
           "reopenWhen": "an operator apply is observed stopping at a stash in one of these states, or the next order that edits scripts/lib/stash-drop.mjs",
           "targets": [],
           "at": "2026-09-27T20:16:29.077Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-170's final review: WO-170 changes only usageRetention in scripts/lib/harness-prune.mjs. scripts/lib/stash-drop.mjs is untouched. [WO-170 final review (docs/final-reviews/WO-170/FINAL-001.md)]",
+          "reopenWhen": "an operator apply is observed stopping at a stash in one of these states, or the next order that edits scripts/lib/stash-drop.mjs",
+          "targets": [],
+          "at": "2026-09-27T23:31:48.271Z"
         }
       ]
     },
@@ -19767,6 +19839,14 @@
           "reopenWhen": "WO-170 or any other producer writes a SHA-256 into meta.json, the next order that edits usageRetention in scripts/lib/harness-prune.mjs, or a proof partial is found beside a whole proof on the operator's host",
           "targets": [],
           "at": "2026-09-27T20:16:28.904Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-170's final review with its digest clause done: usageRetention now accepts a copy only when the parsed snapshot's usageCopies names its SHA-256 (WO-170-D008), with a fixture for a digest named elsewhere. The proof-partial clause remains; WO-170 does not touch the proof writer. [WO-170 final review (docs/final-reviews/WO-170/FINAL-001.md)]",
+          "reopenWhen": "a <proof>.partial is found beside a whole proof on the operator's host, or the next order that edits the byte-proof writer in scripts/lib/harness-prune.mjs",
+          "targets": [],
+          "at": "2026-09-27T23:31:48.127Z"
         }
       ]
     },
@@ -19904,6 +19984,86 @@
           "reopenWhen": "A DotLn-headlined tag with a non-array notes.changedFiles appears on the operator's tree, or the next order that edits manifestWorkOrders in scripts/lib/release-tags.mjs or the release listing in scripts/release.mjs.",
           "targets": [],
           "at": "2026-09-27T20:16:29.247Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Deferred again by WO-170's final review: WO-170 edits only the prepare command of scripts/release.mjs. manifestWorkOrders and the release listing are untouched. [WO-170 final review (docs/final-reviews/WO-170/FINAL-001.md)]",
+          "reopenWhen": "A DotLn-headlined tag with a non-array notes.changedFiles appears on the operator's tree, or the next order that edits manifestWorkOrders in scripts/lib/release-tags.mjs or the release listing in scripts/release.mjs.",
+          "targets": [],
+          "at": "2026-09-27T23:31:48.242Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-633bd373e3298785",
+      "key": "decision:docs/evidence/WO-170/decisions.md#wo-170-d015",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "10efa424b89b5d8e93fd2bca2e9f15e05f91550ba877fb92bb51cbb8dc787811",
+          "ref": "docs/evidence/WO-170/decisions.md#wo-170-d015--verification-found-an-older-retained-observation-winning-after-ten-collisions",
+          "title": "WO-170-D015: WO-170 repair, VER-001 F1: select the latest same-dispatch observation across retained copies independently of lexical filename order, preserve supersession and unknown-value semantics, a",
+          "summary": "{ \"id\": \"WO-170-D015\", \"date\": \"2026-09-27\", \"dispatch\": \"resume: verify\", \"kind\": \"finding\", \"decision\": \"VER-001 F1 fails criterion 3. Preserve the implementation for repair: the retained usage reader and recoveredUsageSnapshot select 190 tokens when the latest supported preservation copy holds 200, and the recovery certifies all eleven copies as carried.\", \"evidence\": [ \"docs/verifications/WO-170/VER-001.md F1: independently reproduced by the verifier and one read-only reviewer using recordUsageObservation and reconcileWorktreeMaterial, in temporary repositories\", \"scripts/lib/meta.mjs latestUsage replaces matching dispatch keys in traversal order; retainedUsageCopies sorts filenames lexi",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-170 repair (WO-170-D017) implements VER-001 F1: latestUsage orders an order's rows by recordedAt, then observedAt, before selecting each dispatch's latest row, so both collectMeta and recoveredUsageSnapshot give 200 after eleven preserved observations through .from-WO-999-10 and the certificate carries every copy; the new regression fails with the pre-repair read order (190) and the integrated review gate passed (34 suites, 0 failures, code identity 99f38f8f…c761). The 77 committed recovered snapshots recompute unchanged. Independent re-verification is next.",
+          "reopenWhen": "Fresh verification reproduces F1, or a usage writer records rows without recordedAt or out of recording order (WO-170-D017).",
+          "targets": [],
+          "at": "2026-09-27T22:40:47.533Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-8b4295633c92630d",
+      "key": "decision:docs/evidence/WO-170/decisions.md#wo-170-d016",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "c5a13140bb48cb1c7863595bd956c4975befa67cf9e0736ca66f62eed28b28f9",
+          "ref": "docs/evidence/WO-170/decisions.md#wo-170-d016--verification-found-an-overbroad-statement-about-legacy-journal-values",
+          "title": "WO-170-D016: WO-170 repair, VER-001 N1: qualify the implementation evidence's Limits paragraph to name the preserved legacy-row exceptions, without changing their metrics or claiming their historical ",
+          "summary": "{ \"id\": \"WO-170-D016\", \"date\": \"2026-09-27\", \"dispatch\": \"resume: verify\", \"kind\": \"finding\", \"decision\": \"VER-001 N1 records a documentation correction for repair. The implementation evidence's Limits paragraph says journal-derived values of all pre-WO-170 closed orders are unavailable, but the preserved legacy rows of WO-043, WO-049 and WO-126 are exceptions, as D003, D007 and D012 already explain.\", \"evidence\": [ \"docs/evidence/WO-170/README.md Limits paragraph; docs/verifications/WO-170/VER-001.md N1\", \"docs/evidence/WO-043/meta.json retains guardRefusals 11 and bytesReadIntoContext 115815398; the verifier read these values directly and the independent recovery audit compared the kept ro",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-170 repair (WO-170-D018) corrects VER-001 N1: the Limits paragraph of docs/evidence/WO-170/README.md names WO-043, WO-049 and WO-126 as keeping their earlier whole-meter metrics under the meter's 'its corrections are not journal counts' label, with their correction counts unavailable; no metric, snapshot or reader changed. Independent re-verification is next.",
+          "reopenWhen": "Fresh verification finds the evidence summary disagreeing with the legacy rows or their source label (WO-170-D018).",
+          "targets": [],
+          "at": "2026-09-27T22:40:47.564Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-80a2f11e1e0874d8",
+      "key": "decision:docs/evidence/WO-170/decisions.md#wo-170-d019",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "915af0dc8627f2b6c501525c04b6a47dac5ea4240a9993a71ddb7698af17f13e",
+          "ref": "docs/evidence/WO-170/decisions.md#wo-170-d019--final-review-passes-and-records-that-the-direction-count-reads-agent-written-labels",
+          "title": "WO-170-D019: Planner: make operatorDirections count what the operator directed, not how an agent labelled it. Choose between a structured field that the docs check requires when the operator scope-exp",
+          "summary": "{ \"id\": \"WO-170-D019\", \"date\": \"2026-09-27\", \"dispatch\": \"resume: final review; operator chose to pass and record the direction-label finding\", \"kind\": \"finding\", \"decision\": \"FINAL-001 passes WO-170 on all seven criteria and changes no source. One finding is recorded, not fixed. operatorDirections counts a decision record only when its dispatch field begins with scope expand:, operator override:, analysis: or conversation only: (or, for records filed before the docs check, operator). The dispatch field is written by the dispatched agent, not the operator: the docs check requires one of seven control prefixes followed by up to 240 characters of paraphrase, and resume: is one of the seven. A ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Open by WO-170's final review for the next planning pass (WO-170-D019): the direction count follows agent-written dispatch labels, so a step the operator took inside a resume: dispatch is not counted. 71 of 871 dispatches count at main; 165 others in 44 orders name the operator after resume:. Medium priority, before a planning pass relies on the Directions column or the shifting-the-burden series. [WO-170 final review (docs/final-reviews/WO-170/FINAL-001.md)]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-27T23:31:48.387Z"
         }
       ]
     }
