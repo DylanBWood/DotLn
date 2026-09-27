@@ -20,6 +20,17 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-164 activation completion (2026-09-27):** assigned application `v0.52.6`,
+the next patch above the observed local `v0.52.5` tag. Console collection issues
+a constant number of processes: `resume status --all --json` folds every order
+once, and `release list` caches each tag's derived record by its tag object id in
+the ignored local lane; the board's output is byte-identical. Console `0.3.0` to
+`0.3.1` is a compatible patch bump for its changed collector; the lockfile
+follows. Independent verification, final review and publication remain
+separate dispatches.
+
+**WO-164 collision retiming (2026-09-27):** unpublished target `v0.52.6` is superseded by `v0.52.7` under the existing patch classification because the observed release baseline is `v0.52.6`. Scope, acceptance, component versions, and published tags are unchanged by this retiming.
+
 **WO-171 activation completion (2026-09-27):** assigned application `v0.52.6`,
 the next patch above the observed local `v0.52.5` tag. A prune apply plans
 once, observes publication with one release listing and one tag listing,
