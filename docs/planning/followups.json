@@ -5558,6 +5558,27 @@
           "title": "Candidate — cold-gate structural cuts",
           "summary": "## Candidate — cold-gate structural cuts The 2026-09-12 planning pass declined to allocate the structural cuts that the relayed proof-carrying-gates plan proposed for the one fresh full gate, because their benefit is unmeasured until the gate's critical path is recorded. The 2026-09-12T16:08Z fresh gate ran 475 s of wall-clock over 1,229 s of task time: the two exclusive suites held it at concurrency one for 206 s, and perfect packing over the cap of four would take 307 s. WO-128 records each task's concurrent peers in the gate row; that trace is the entry evidence for this candidate. WO-128's [first accepted shared row](../evidence/WO-128/shared-series-002.json) now supplies that evidence: ",
           "missing": false
+        },
+        {
+          "hash": "f108acf03935d8db915e91175e11996e49bcea16bde1ec3e555b7af3cd2c0a24",
+          "ref": "docs/product/07-execution-guide.md#candidate--cold-gate-structural-cuts",
+          "title": "Candidate — cold-gate structural cuts",
+          "summary": "## Candidate — cold-gate structural cuts The 2026-09-12 planning pass declined to allocate the structural cuts that the relayed proof-carrying-gates plan proposed for the one fresh full gate, because their benefit is unmeasured until the gate's critical path is recorded. The 2026-09-12T16:08Z fresh gate ran 475 s of wall-clock over 1,229 s of task time: the two exclusive suites held it at concurrency one for 206 s, and perfect packing over the cap of four would take 307 s. WO-128 records each task's concurrent peers in the gate row; that trace is the entry evidence for this candidate. WO-128's [first accepted shared row](../evidence/WO-128/shared-series-002.json) now supplies that evidence: ",
+          "missing": false
+        },
+        {
+          "hash": "5246d6ec4ead4490bffddedd70bb7d3d50f56786e2cb363af485b8f2775cff44",
+          "ref": "docs/product/07-execution-guide.md#candidate--cold-gate-structural-cuts",
+          "title": "Candidate — cold-gate structural cuts",
+          "summary": "## Candidate — cold-gate structural cuts The 2026-09-12 planning pass declined to allocate the structural cuts that the relayed proof-carrying-gates plan proposed for the one fresh full gate, because their benefit is unmeasured until the gate's critical path is recorded. The 2026-09-12T16:08Z fresh gate ran 475 s of wall-clock over 1,229 s of task time: the two exclusive suites held it at concurrency one for 206 s, and perfect packing over the cap of four would take 307 s. WO-128 records each task's concurrent peers in the gate row; that trace is the entry evidence for this candidate. WO-128's [first accepted shared row](../evidence/WO-128/shared-series-002.json) now supplies that evidence: ",
+          "missing": false
+        },
+        {
+          "hash": "7fab5b44fe1d8245d95cd3f786124803d588e629d185e42b7a6eb9d78bd45409",
+          "ref": "docs/product/07-execution-guide.md#candidate--cold-gate-structural-cuts",
+          "title": "Candidate — cold-gate structural cuts",
+          "summary": "## Candidate — cold-gate structural cuts The 2026-09-12 planning pass declined to allocate the structural cuts that the relayed proof-carrying-gates plan proposed for the one fresh full gate, because their benefit is unmeasured until the gate's critical path is recorded. The 2026-09-12T16:08Z fresh gate ran 475 s of wall-clock over 1,229 s of task time: the two exclusive suites held it at concurrency one for 206 s, and perfect packing over the cap of four would take 307 s. WO-128 records each task's concurrent peers in the gate row; that trace is the entry evidence for this candidate. WO-128's [first accepted shared row](../evidence/WO-128/shared-series-002.json) now supplies that evidence: ",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -5618,6 +5639,24 @@
             "WO-164"
           ],
           "at": "2026-09-25T01:51:14.789Z"
+        },
+        {
+          "sourceRevision": 13,
+          "status": "allocated",
+          "reason": "Retain allocation to WO-164 after the product 07 repair write-back. Cold console-docs now measures 3.53 s and the cold document gate 13.37 s; docs-check leads its chain. Final review still owns close-stage disposition under the existing reopening condition.",
+          "reopenWhen": "the document gate's critical path exceeds ten seconds after WO-164 closes",
+          "targets": [
+            "WO-164"
+          ],
+          "at": "2026-09-27T17:54:24.351Z"
+        },
+        {
+          "sourceRevision": 14,
+          "status": "open",
+          "reason": "Disposed by WO-164's final review (FINAL-002). WO-164 took console collection off the document gate's critical path: console-docs ran 22.50 s at activation and 1.43 s warm in the final subject's gate (3.53 s cold in the repair record). The row's reopening condition is met by the subject that closes: that gate's scheduled chain is build 0.55 s, docs-check 8.27 s, console-docs 1.43 s and plan 2.11 s, 12.40 s in all, led by docs-check. Open for the next planning pass; WO-164's non-goals exclude the gate's task selection.",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-27T20:16:28.844Z"
         }
       ]
     },
@@ -8420,6 +8459,13 @@
           "title": "Candidate — local lane retention",
           "summary": "## Candidate — local lane retention Ignored local lanes grow without a rule: 13 immutable harness runtime snapshots (34 MB), 36 MB of hook journals and 31 MB of retained close lanes on 2026-09-16. A retention rule may remove a snapshot no installed manifest pins and a retained lane older than its order's published release, keeping the retained-lane byte proofs. No order is allocated; reopen on disk pressure or when the snapshot count exceeds twenty. **Reopened and allocated 2026-09-19 (cleanup pass).** 27 snapshots (80 MB) with one pinned, 99 MB under `docs/control/local/`, and 96 MB under `.git/dotln/suite-success`, which no source has written since WO-132 removed the suite-success cache. A",
           "missing": false
+        },
+        {
+          "hash": "74a9cd9725860fb90a4e91e921e9b6a3727a3bd69360e1f99bde2ec9fb31a129",
+          "ref": "docs/product/07-execution-guide.md#candidate--local-lane-retention",
+          "title": "Candidate — local lane retention",
+          "summary": "## Candidate — local lane retention Ignored local lanes grow without a rule: 13 immutable harness runtime snapshots (34 MB), 36 MB of hook journals and 31 MB of retained close lanes on 2026-09-16. A retention rule may remove a snapshot no installed manifest pins and a retained lane older than its order's published release, keeping the retained-lane byte proofs. No order is allocated; reopen on disk pressure or when the snapshot count exceeds twenty. **Reopened and allocated 2026-09-19 (cleanup pass).** 27 snapshots (80 MB) with one pinned, 99 MB under `docs/control/local/`, and 96 MB under `.git/dotln/suite-success`, which no source has written since WO-132 removed the suite-success cache. A",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -11205,6 +11251,14 @@
           "reopenWhen": "the operator opens the efficiency pass, or a role's headroom falls below 256 bytes",
           "targets": [],
           "at": "2026-09-27T19:06:17.324Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-164's final review (FINAL-002): WO-164 edits product 07's cold-gate candidate and prune paragraph and no generated role sentence. node scripts/harness-context.mjs --check reads every role within its ceiling, the reviewer at 24,171 of 24,576 bytes, and no role below 256 bytes of headroom.",
+          "reopenWhen": "the operator opens the efficiency pass, or a role's headroom falls below 256 bytes",
+          "targets": [],
+          "at": "2026-09-27T20:16:29.105Z"
         }
       ]
     },
@@ -11674,6 +11728,14 @@
             "WO-164"
           ],
           "at": "2026-09-25T01:51:11.650Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Retargeted at WO-164's close by its final review (FINAL-002), as criterion 5 requires. The row's console half is answered: collectSources measured 2.14 and 2.17 s cold and 0.63 and 0.65 s warm with 114 orders and 105 tags, against 21.2 s before (WO-164-D001, D009). Its other half, the work-order index's per-tag reads, was WO-164's non-goal and stays deferred.",
+          "reopenWhen": "collectSources reaches three seconds cold or warm on the operator's host (WO-164-D009, D014), a cold release list exceeds ten seconds (D004), status --all --json output exceeds 32 MB (D003), or work-orders index exceeds ten seconds.",
+          "targets": [],
+          "at": "2026-09-27T20:16:29.276Z"
         }
       ]
     },
@@ -12020,6 +12082,14 @@
           "reopenWhen": "either script is invoked through a symlinked path, or the next order that edits either file",
           "targets": [],
           "at": "2026-09-21T06:59:00.892Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-164's final review (FINAL-002): a textual match on scripts/lib/paths.mjs, where WO-164 adds one disposable-lane classification. Neither corpus/mutation/mutate.mjs nor corpus/harness/generator-runtime.mjs changed.",
+          "reopenWhen": "either script is invoked through a symlinked path, or the next order that edits either file",
+          "targets": [],
+          "at": "2026-09-27T20:16:28.875Z"
         }
       ]
     },
@@ -13428,6 +13498,14 @@
           "reopenWhen": "the next order that changes resident-state.ts and records a feedback edition, or an operator reads a misleading verifier-unavailable hold over an incomplete capsule",
           "targets": [],
           "at": "2026-09-27T19:06:17.137Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-164's final review (FINAL-002): a textual match on product 07, where WO-164 adds the cold-gate after figure and one prune sentence. resident-state.ts and the feedback edition are unchanged.",
+          "reopenWhen": "the next order that changes resident-state.ts and records a feedback edition, or an operator reads a misleading verifier-unavailable hold over an incomplete capsule",
+          "targets": [],
+          "at": "2026-09-27T20:16:28.962Z"
         }
       ]
     },
@@ -17413,6 +17491,14 @@
           "reopenWhen": "the next order that touches usage or meta attribution",
           "targets": [],
           "at": "2026-09-27T19:06:17.232Z"
+        },
+        {
+          "sourceRevision": 4,
+          "status": "deferred",
+          "reason": "Deferred again by WO-164's final review (FINAL-002): a textual match on docs/control/current.md, a generated projection. WO-164 changes how status is collected, not usage or meta attribution; the batched status objects equal the per-order ones.",
+          "reopenWhen": "the next order that touches usage or meta attribution",
+          "targets": [],
+          "at": "2026-09-27T20:16:29.020Z"
         }
       ]
     },
@@ -18599,6 +18685,13 @@
           "title": "WO-085-D004: Sweep committed public decision records for operator chat retained verbatim, using WO-153 D008 as provenance; decide the bounded correction route for closed records and the role-text para",
           "summary": "{ \"id\": \"WO-085-D004\", \"date\": \"2026-09-26\", \"dispatch\": \"resume: next; carry-in FUP-87ed701db7d7209e\", \"decision\": \"Deliver the prospective lexical dispatch check here and retarget the remaining historical operator-chat sweep and role-text question to a separate follow-up. Existing dispatches are stored only as fingerprints, not copied into the baseline.\", \"evidence\": [ \"WO-085 criterion 4 requires the remaining sweep stay named outside this order.\", \"WO-153 D008 includes both the historical sweep and instruction gap; this order explicitly changes no role text.\", \"A control prefix and length bound cannot establish semantic paraphrase; review still judges that distinction.\" ], \"rejected\": [ ",
           "missing": false
+        },
+        {
+          "hash": "7efe14fec54e1f24d49fd6b2b0e5df363f3e5b79c8ba0e44f05022e979480c74",
+          "ref": "docs/evidence/WO-085/decisions.md#wo-085-d004",
+          "title": "WO-085-D004: Sweep committed public decision records for operator chat retained verbatim, using WO-153 D008 as provenance; decide the bounded correction route for closed records and the role-text para",
+          "summary": "{ \"id\": \"WO-085-D004\", \"date\": \"2026-09-26\", \"dispatch\": \"resume: next; carry-in FUP-87ed701db7d7209e\", \"decision\": \"Deliver the prospective lexical dispatch check here and retarget the remaining historical operator-chat sweep and role-text question to a separate follow-up. Existing dispatches are stored only as fingerprints, not copied into the baseline.\", \"evidence\": [ \"WO-085 criterion 4 requires the remaining sweep stay named outside this order.\", \"WO-153 D008 includes both the historical sweep and instruction gap; this order explicitly changes no role text.\", \"A control prefix and length bound cannot establish semantic paraphrase; review still judges that distinction.\" ], \"rejected\": [ ",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -18633,6 +18726,14 @@
           "reopenWhen": "Next document-maintenance planning pass or an observed new verbatim decision dispatch.",
           "targets": [],
           "at": "2026-09-27T19:06:17.168Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "open",
+          "reason": "Reopened by WO-164's final review (FINAL-002): its condition occurred. The FINAL-001 repair recorded two operator scope-expansion messages word for word in WO-164-D014, WO-164-D016 and repair-final-001.md; FINAL-002 paraphrased them before any commit, and WO-164-D017 records the observation, including WO-168-D017's committed quote written after WO-153-D008. The role text still asks decisions to name the operator dispatch without saying to paraphrase, and WO-085's check reads only dispatch fields. Open for the next document-maintenance planning pass.",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-27T20:16:28.813Z"
         }
       ]
     },
@@ -18806,6 +18907,14 @@
           "reopenWhen": "a real release close leaves main reserved or reclaims a live session's reservation, or the shell fixture's adapter diverges from the runtime's writer protocol",
           "targets": [],
           "at": "2026-09-27T19:06:17.200Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-164's final review (FINAL-002): WO-164 changes release list in scripts/release.mjs and one prune fixture in scripts/test-harness.mjs. The release-close path and its writer protocol are untouched.",
+          "reopenWhen": "a real release close leaves main reserved or reclaims a live session's reservation, or the shell fixture's adapter diverges from the runtime's writer protocol",
+          "targets": [],
+          "at": "2026-09-27T20:16:28.991Z"
         }
       ]
     },
@@ -19320,6 +19429,14 @@
           "reopenWhen": "the next order that edits scripts/lib/planning-followups.mjs or scripts/refute-plan.mjs, or a planner or executor misses a row because it links a changed file relatively, an advisory prints a command that refuses, or a register write is refused after an export",
           "targets": [],
           "at": "2026-09-27T14:43:42.069Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Deferred again by WO-164's final review (FINAL-002): a textual match on product 03, where WO-164 describes the release-list cache in the local-lane paragraph. planning-followups.mjs and refute-plan.mjs are unchanged.",
+          "reopenWhen": "the next order that edits scripts/lib/planning-followups.mjs or scripts/refute-plan.mjs, or a planner or executor misses a row because it links a changed file relatively, an advisory prints a command that refuses, or a register write is refused after an export",
+          "targets": [],
+          "at": "2026-09-27T20:16:29.048Z"
         }
       ]
     },
@@ -19400,6 +19517,14 @@
           "reopenWhen": "a planning pass over the standing text, the next order that edits the writer text, or a session acts on one of the named sentences against the shipped behaviour",
           "targets": [],
           "at": "2026-09-27T19:06:17.355Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-164's final review (FINAL-002): textual matches on README.md, product 03, product 07 and the work-order index. WO-164 edits the release line, the local-lane paragraph, the cold-gate candidate and the prune paragraph; the writer text and the named sentences are untouched.",
+          "reopenWhen": "a planning pass over the standing text, the next order that edits the writer text, or a session acts on one of the named sentences against the shipped behaviour",
+          "targets": [],
+          "at": "2026-09-27T20:16:29.133Z"
         }
       ]
     },
@@ -19522,6 +19647,14 @@
           "reopenWhen": "the next order that edits observed-facts.ts, the harness or process-debt fixture temporary root, or the scripts/resume.mjs dispatch release; or a full-gate hedge is attributed to a partial row while both rows are in scope",
           "targets": [],
           "at": "2026-09-27T15:59:34.438Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-164's final review (FINAL-002): a textual match on scripts/resume.mjs. WO-164 adds the status --all --json form and its session projection; it changes neither observed-facts.ts, the harness or process-debt fixture temporary root, nor the dispatch release.",
+          "reopenWhen": "the next order that edits observed-facts.ts, the harness or process-debt fixture temporary root, or the scripts/resume.mjs dispatch release; or a full-gate hedge is attributed to a partial row while both rows are in scope",
+          "targets": [],
+          "at": "2026-09-27T20:16:28.933Z"
         }
       ]
     },
@@ -19570,6 +19703,14 @@
           "reopenWhen": "an operator apply is observed stopping at a stash in one of these states, or the next order that edits scripts/lib/stash-drop.mjs",
           "targets": [],
           "at": "2026-09-27T19:06:17.483Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-164's final review (FINAL-002): a textual match on scripts/lib/harness-prune.mjs. WO-164 adds a retained row there, does not edit scripts/lib/stash-drop.mjs, and no stopped apply was observed.",
+          "reopenWhen": "an operator apply is observed stopping at a stash in one of these states, or the next order that edits scripts/lib/stash-drop.mjs",
+          "targets": [],
+          "at": "2026-09-27T20:16:29.077Z"
         }
       ]
     },
@@ -19618,6 +19759,151 @@
           "reopenWhen": "WO-170 or any other producer writes a SHA-256 into meta.json, the next order that edits harness-prune.mjs, or a proof partial is found beside a whole proof on the operator's host",
           "targets": [],
           "at": "2026-09-27T19:06:17.450Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-164's final review (FINAL-002). Its condition 'the next order that edits harness-prune.mjs' occurred: WO-164 adds a retained release-list-cache judge there. The work still waits on WO-170's choice of the field that names each usage copy's SHA-256 (FUP-dc6c139003bd4b89), which no producer writes today, so it cannot be done inside WO-164's bound. The condition is narrowed to an edit of usageRetention.",
+          "reopenWhen": "WO-170 or any other producer writes a SHA-256 into meta.json, the next order that edits usageRetention in scripts/lib/harness-prune.mjs, or a proof partial is found beside a whole proof on the operator's host",
+          "targets": [],
+          "at": "2026-09-27T20:16:28.904Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-d68bd29cf96864f1",
+      "key": "decision:docs/evidence/WO-164/decisions.md#wo-164-d007",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "978869efe0a873376e6f7e34d0dd1f1a35ff2f728da8723aa047bebadae973f6",
+          "ref": "docs/evidence/WO-164/decisions.md#wo-164-d007--verifier-finding-on-the-first-collection",
+          "title": "WO-164-D007: In resume: fix, make the first collectSources call on the current 100-plus-order, 90-plus-tag host complete under 3 seconds while preserving release-list and board bytes, constant collect",
+          "summary": "{ \"id\": \"WO-164-D007\", \"date\": \"2026-09-27\", \"dispatch\": \"resume: verify\", \"kind\": \"finding\", \"decision\": \"Criterion 2 is unmet. Its under-3-second collectSources bound is unqualified, so it includes the first collection in a new worktree or after a release derivation code change. The executor's warm result meets the bound, but its 6,261 and 6,165 ms cold results do not. This verifier reproduced an uncached collection in 5,845 ms and a warm collection in 632 ms on the same 113-order host; both returned the same release listing hash. The uncached reproduction set GIT_GRAFT_FILE=/dev/null only for the first call, which makes the cache stand aside without altering repository files. It is not a ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "WO-164 resume: fix addresses VER-001 F1 under the original criterion. D008-D009 and docs/evidence/WO-164/repair.md record literal cold 2,427-2,468 ms and unchanged board bytes. Independent re-verification is next; this allocation does not record a verification verdict.",
+          "reopenWhen": "re-verification measures cold collection at or above three seconds or observes changed board bytes",
+          "targets": [
+            "WO-164"
+          ],
+          "at": "2026-09-27T17:54:24.318Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by WO-164's final review (FINAL-002): WO-164-D008 batched the cold derivation. VER-002, FINAL-001, the FINAL-001 repair, VER-003 and FINAL-002 measured the first collection at 2.14 to 2.72 s, under the three-second bound, with the release listing's bytes unchanged.",
+          "reopenWhen": "Cold collectSources on the operator's host reaches three seconds, or same-tree board or listing bytes differ (WO-164-D009).",
+          "targets": [],
+          "at": "2026-09-27T20:16:29.304Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-e9bd0effe2b00f0e",
+      "key": "decision:docs/evidence/WO-164/decisions.md#wo-164-d010",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "588c6ee2b13b03558d5f0abd25643c1c0d8264f078008e1f82c421c52a19c310",
+          "ref": "docs/evidence/WO-164/decisions.md#wo-164-d010--final-review-finding-the-new-cache-module-fails-the-configuration-root-suite",
+          "title": "WO-164-D010: WO-164 resume: fix — derive the scripts directory in scripts/lib/release-list-cache.mjs through scripts/lib/config.mjs (for example from TOOL_ROOT) instead of new URL(\"../\", import.meta.u",
+          "summary": "{ \"id\": \"WO-164-D010\", \"date\": \"2026-09-27\", \"dispatch\": \"resume: final review; FINAL-001\", \"kind\": \"finding\", \"decision\": \"Fail FINAL-001 on criterion 6 and return the finding to repair. The final review's `npm test -- --review` exited 1: 33 suites passed and `configuration-root` failed its subtest `no control-plane script keeps a literal document root or a second root derivation`, naming `scripts/lib/release-list-cache.mjs: newURL(\\\"../\\\",import.meta.url)`. The new module derives the scripts directory from its own URL instead of through scripts/lib/config.mjs, which already exports TOOL_ROOT for that purpose. The resolved directory is the same, so no listing byte changes; the repository in",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by WO-164's final review (FINAL-002): scripts/lib/release-list-cache.mjs derives its scripts directory from TOOL_ROOT (WO-164-D013), and configuration-root passed in the final review's npm test -- --review.",
+          "reopenWhen": "The configuration-root suite reports another root derivation in scripts/lib/release-list-cache.mjs.",
+          "targets": [],
+          "at": "2026-09-27T20:16:29.218Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-6a9eb3c24f1ab9ea",
+      "key": "decision:docs/evidence/WO-164/decisions.md#wo-164-d011",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "3d9da579939942432e3d2b5edd1594aa5898e44cff7a418169d27aab72e32f2d",
+          "ref": "docs/evidence/WO-164/decisions.md#wo-164-d011--final-review-finding-receipt-028s-three-known-issues-have-no-recorded-disposition",
+          "title": "WO-164-D011: WO-164 resume: fix — record one decision that disposes each of receipt 028's three WO-164 known issues with evidence and a reopening condition. Either implement the fold-to-per-order fall",
+          "summary": "{ \"id\": \"WO-164-D011\", \"date\": \"2026-09-27\", \"dispatch\": \"resume: final review; FINAL-001\", \"kind\": \"finding\", \"decision\": \"Route to the same repair one decision that disposes each of the three WO-164 known issues in the ideation receipt, planning receipt 028. The receipt judged WO-164 aligned-with-findings. The planning map's WO-164 row carries the issues 'to carry into the executor's decisions', and no WO-164 decision names them. (1) Criterion 4: no runtime fallback from the one-process fold to the per-order form. The planning pass weighed the answer as 'a fold failure falls back to the per-order form and records that it did'. The subject has no fallback, and no decision declines it. (2) C",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by WO-164's final review (FINAL-002): WO-164-D014 disposes receipt 028's three known issues. The fold fallback and the retained prune row are implemented with regressions that passed in the final review's gate, and VER-003 read D014.",
+          "reopenWhen": "A collection on the operator's host reports resume:status--json#per-order-fallback or differs from the per-order form outside the fixture, a guard refusal names the cache path during test:docs, or a prune inventory lists an unregistered cache (WO-164-D014).",
+          "targets": [],
+          "at": "2026-09-27T20:16:29.162Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-934cf5f4268029c8",
+      "key": "decision:docs/evidence/WO-164/decisions.md#wo-164-d012",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "efbbd4b5ff766e7984ec8df91e3b8f4861788317b0a6f4b49e14d1de7c6ff11c",
+          "ref": "docs/evidence/WO-164/decisions.md#wo-164-d012--final-review-finding-an-eager-manifest-read-fails-listings-the-original-printed",
+          "title": "WO-164-D012: WO-164 resume: fix — keep release list printing every row the original printed when a DotLn-headlined tag's manifest carries a non-array notes.changedFiles, for example by deriving the ma",
+          "summary": "{ \"id\": \"WO-164-D012\", \"date\": \"2026-09-27\", \"dispatch\": \"resume: final review; FINAL-001\", \"kind\": \"finding\", \"decision\": \"Route to the same repair one listing difference the review's helper established by execution. The new `listPublishedReleases` computes `manifestWorkOrders(manifest, toolRoot)` for every uncached DotLn release so it can cache the result (scripts/release.mjs line 2073). The original called it only when a release's range attributed no work order (HEAD line 1948). `manifestWorkOrders` spreads `(manifest?.notes?.changedFiles ?? []).flatMap(...)`, which throws when `changedFiles` is a string, an object or a number. A tag whose headline is `DotLn <tag>` and whose manifest carr",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by WO-164's final review (FINAL-002): WO-164-D013 defers a failed manifest attribution to the one row that reads it. The console fixture's string, object and number rows print as the original did and passed in the final review's gate, and the repair compared original, cold and warm listings byte for byte.",
+          "reopenWhen": "A listing differs between the original and repaired code on one repository state (WO-164-D013).",
+          "targets": [],
+          "at": "2026-09-27T20:16:29.190Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-e2cf2122a642d1e0",
+      "key": "decision:docs/evidence/WO-164/decisions.md#wo-164-d013",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "76470ed1bed0485be62b67c687ab01b93e16d1ddf519ac979fe06a3bb45af437",
+          "ref": "docs/evidence/WO-164/decisions.md#wo-164-d013--repair-final-001-the-caches-root-derivation-and-the-listings-lazy-manifest-attribution",
+          "title": "WO-164-D013: Adjacent defect met and not fixed (adjacent-0001): release list fails as a whole, and with it the board's release source, when a DotLn-headlined tag on an empty range carries a non-array ",
+          "summary": "{ \"id\": \"WO-164-D013\", \"date\": \"2026-09-27\", \"dispatch\": \"resume: fix; FINAL-001\", \"decision\": \"Repair F1 and F3 without changing any listing or board byte. F1 (D010): `scripts/lib/release-list-cache.mjs` derives its scripts directory as `join(TOOL_ROOT, \\\"scripts\\\")` through `scripts/lib/config.mjs` instead of `new URL(\\\"../\\\", import.meta.url)`; the directory it resolves is unchanged. F3 (D012): `release list` still derives an uncached release's manifest attribution with its other facts, but a throw from `manifestWorkOrders` is kept in place of the list. The error is thrown only when the release's range attributes nothing, which is the only case in which the original read the attribution. ",
+          "missing": false
+        },
+        {
+          "hash": "480a1369172a6e2a6f298788dec400c328fb7e8e7dfb9bd91bd95d2b41ee6a0d",
+          "ref": "docs/evidence/WO-164/decisions.md#wo-164-d013--repair-final-001-the-caches-root-derivation-and-the-listings-lazy-manifest-attribution",
+          "title": "WO-164-D013: Adjacent defect met and not fixed (adjacent-0001): release list fails as a whole, and with it the board's release source, when a DotLn-headlined tag on an empty range carries a non-array ",
+          "summary": "{ \"id\": \"WO-164-D013\", \"date\": \"2026-09-27\", \"dispatch\": \"resume: fix; FINAL-001\", \"decision\": \"Repair F1 and F3 without changing any listing or board byte. F1 (D010): `scripts/lib/release-list-cache.mjs` derives its scripts directory as `join(TOOL_ROOT, \\\"scripts\\\")` through `scripts/lib/config.mjs` instead of `new URL(\\\"../\\\", import.meta.url)`; the directory it resolves is unchanged. F3 (D012): `release list` still derives an uncached release's manifest attribution with its other facts, but a throw from `manifestWorkOrders` is kept in place of the list. The error is thrown only when the release's range attributes nothing, which is the only case in which the original read the attribution. ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Deferred by WO-164's final review (FINAL-002). The empty-range failure on a non-array notes.changedFiles predates WO-164 and needs a hand-made or foreign DotLn-headlined tag; none exists on the operator's tree. WO-164 kept the original's output there so criterion 1's byte identity holds. This row is the destination of WO-164's adjacent item adjacent-0001.",
+          "reopenWhen": "A DotLn-headlined tag with a non-array notes.changedFiles appears on the operator's tree, or the next order that edits manifestWorkOrders in scripts/lib/release-tags.mjs or the release listing in scripts/release.mjs.",
+          "targets": [],
+          "at": "2026-09-27T20:16:29.247Z"
         }
       ]
     }
