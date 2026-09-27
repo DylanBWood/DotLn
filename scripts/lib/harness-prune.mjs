@@ -3,6 +3,7 @@ import { createHash } from "node:crypto";
 import { spawnSync } from "node:child_process";
 import {
   existsSync,
+  linkSync,
   lstatSync,
   mkdirSync,
   readFileSync,
@@ -116,50 +117,88 @@ function safeChild(root, path) {
   return absolute;
 }
 
-function publishedRelease(root, order, releases) {
+// A listing at its limit may be truncated; a release missing from it retains.
+const RELEASE_LISTING_LIMIT = 10000;
+
+function publicationListings(root) {
   const repository = resolveGitHubPushTarget(root);
-  for (const release of releases
-    .filter((row) => row.workOrders.includes(order))
-    .reverse()) {
-    const result = spawnSync(
-      "gh",
-      [
-        "release",
-        "view",
-        release.name,
-        "--repo",
-        repository.selector,
-        "--json",
-        "tagName,isDraft",
-      ],
-      {
-        cwd: root,
-        encoding: "utf8",
-        timeout: 15000,
-        env: environmentWithoutGhRepo(),
-        stdio: ["ignore", "pipe", "pipe"],
-      },
-    );
-    if (result.status !== 0) continue;
-    try {
-      const remote = JSON.parse(result.stdout);
-      const remoteTag = runGit(root, [
-        "ls-remote",
-        "--refs",
-        "origin",
-        `refs/tags/${release.name}`,
-      ]).split(/\s/u)[0];
-      if (
-        remote.tagName === release.name &&
-        remote.isDraft === false &&
-        remoteTag === release.object
+  const result = spawnSync(
+    "gh",
+    [
+      "release",
+      "list",
+      "--repo",
+      repository.selector,
+      "--json",
+      "tagName,isDraft",
+      "--limit",
+      String(RELEASE_LISTING_LIMIT),
+    ],
+    {
+      cwd: root,
+      encoding: "utf8",
+      timeout: 60000,
+      maxBuffer: 16 * 1024 * 1024,
+      env: environmentWithoutGhRepo(),
+      stdio: ["ignore", "pipe", "pipe"],
+    },
+  );
+  if (result.status !== 0) throw new Error("release listing unavailable");
+  const published = new Set(
+    JSON.parse(result.stdout)
+      .filter(
+        (row) => row?.isDraft === false && typeof row.tagName === "string",
       )
-        return release.name;
-    } catch {
-      /* Unavailable publication evidence retains the lane. */
+      .map((row) => row.tagName),
+  );
+  const tags = new Map(
+    runGit(root, ["ls-remote", "--refs", "--tags", "origin"])
+      .split("\n")
+      .filter(Boolean)
+      .map((line) => {
+        const [object, ref] = line.split("\t");
+        return [ref.slice("refs/tags/".length), object];
+      }),
+  );
+  return { published, tags, releases: localReleaseRecords(root) };
+}
+
+/** Publication is observed once per plan: one release listing and one remote
+ * tag listing, joined to the local release records and kept per order. The
+ * injectable observation is for fixtures and is likewise asked once per order.
+ * Unavailable publication evidence retains every lane and stash. */
+function publicationObservation(root, options) {
+  const observed = new Map();
+  let listings;
+  return (order) => {
+    if (!observed.has(order)) {
+      let release = null;
+      try {
+        if (options.publishedRelease)
+          release = options.publishedRelease(order) ?? null;
+        else {
+          // One attempt per plan; a failed listing is not retried per order.
+          if (listings === undefined) {
+            listings = null;
+            listings = publicationListings(root);
+          }
+          release =
+            listings?.releases
+              .filter((row) => row.workOrders.includes(order))
+              .reverse()
+              .find(
+                (row) =>
+                  listings.published.has(row.name) &&
+                  listings.tags.get(row.name) === row.object,
+              )?.name ?? null;
+        }
+      } catch {
+        /* An absent publication observation never permits deletion. */
+      }
+      observed.set(order, release);
     }
-  }
-  return null;
+    return observed.get(order);
+  };
 }
 
 function integrationStashes(root) {
@@ -227,37 +266,9 @@ function stashInventory(root, stash) {
   return inventory.map((row) => ({ ...row, ...blobs.get(row.object) }));
 }
 
-/** Read-only by default. Injectable publication observation is for fixtures. */
-export function planHarnessPrune(root, options = {}) {
-  root = realpathSync(root);
-  if (realpathSync(runGit(root, ["rev-parse", "--show-toplevel"])) !== root)
-    throw new Error("harness prune requires the physical Git root");
-  const worktrees = parseWorktrees(root);
-  const current =
-    options.sessionId ??
-    process.env.CODEX_THREAD_ID ??
-    process.env.CLAUDE_CODE_SESSION_ID ??
-    process.env.CLAUDE_SESSION_ID;
-  const currentKey = current ? digest(current) : null;
-  const directory = safeChild(
-    root,
-    docRelative(root, "control", "local/harness"),
-  );
-  const writer = harnessWriterView(root);
-  const protectedSessions = new Set([
-    currentKey,
-    ...(writer.reserved ? [writer.actorId] : []),
-  ]);
-  const writerEvents = lines(join(directory, "writer-events.jsonl"));
-  for (const row of writerEvents)
-    if (row.actorId && knownOwner(row.owner) && harnessProcessAlive(row.owner))
-      protectedSessions.add(row.actorId);
-  const gateLive = worktrees.some(
-    (tree) =>
-      existsSync(tree.worktree) && activeGateRuns(tree.worktree).length > 0,
-  );
+function installedPins(worktrees) {
   const pinned = new Set();
-  let pinsUnknown = false;
+  let unknown = false;
   for (const tree of worktrees) {
     for (const name of [
       ".claude/harness-manifest.json",
@@ -321,7 +332,7 @@ export function planHarnessPrune(root, options = {}) {
             throw new Error("installed target manifest shape unavailable");
         }
       } catch {
-        pinsUnknown = true;
+        unknown = true;
       }
     }
   }
@@ -361,208 +372,284 @@ export function planHarnessPrune(root, options = {}) {
         pinned.add(resolve(launchpad, receipt.runtimeSnapshot));
       }
     } catch {
-      pinsUnknown = true;
+      unknown = true;
     }
   }
-  const candidates = [],
-    retained = [];
-  const consider = (kind, path, label, reason, extra = {}) => {
-    if (reason) {
-      retained.push({ kind, path: label, reason });
-      return;
-    }
-    try {
-      const inventory = pruneInventory(
-        path,
-        "",
-        kind === "snapshot" ? path : undefined,
-      );
-      candidates.push({
+  return { pinned, unknown };
+}
+
+// What the judgments read. The plan makes one context; the pre-delete check
+// makes a fresh one for its single candidate and shares only the plan's
+// publication observation. The global reads stay eager, as in the plan before
+// WO-171, so an unreadable one stops the plan or the apply instead of being
+// skipped; only the snapshot pins, which never throw, wait for a snapshot.
+function pruneContext(root, options, publication) {
+  const current =
+    options.sessionId ??
+    process.env.CODEX_THREAD_ID ??
+    process.env.CLAUDE_CODE_SESSION_ID ??
+    process.env.CLAUDE_SESSION_ID;
+  const directory = safeChild(
+    root,
+    docRelative(root, "control", "local/harness"),
+  );
+  const worktrees = parseWorktrees(root);
+  let pins;
+  return {
+    root,
+    options,
+    directory,
+    currentKey: current ? digest(current) : null,
+    worktrees,
+    registered: (order) =>
+      worktrees.some(
+        (tree) => tree.branch === `refs/heads/${order.toLowerCase()}`,
+      ),
+    writer: harnessWriterView(root),
+    writerEvents: lines(join(directory, "writer-events.jsonl")),
+    gateLive: worktrees.some(
+      (tree) =>
+        existsSync(tree.worktree) && activeGateRuns(tree.worktree).length > 0,
+    ),
+    pins: () => (pins ??= installedPins(worktrees)),
+    stashBackend: runGit(root, ["rev-parse", "--show-ref-format"]),
+    releaseOf: publication ?? publicationObservation(root, options),
+  };
+}
+
+function assess(kind, path, label, reason, extra = {}) {
+  if (reason) return { retained: { kind, path: label, reason } };
+  try {
+    const inventory = pruneInventory(
+      path,
+      "",
+      kind === "snapshot" ? path : undefined,
+    );
+    return {
+      candidate: {
         kind,
         absolute: path,
         path: label,
         bytes: inventory.reduce((sum, row) => sum + (row.bytes ?? 0), 0),
         inventory,
         ...extra,
-      });
-    } catch (error) {
-      retained.push({ kind, path: label, reason: error.message });
-    }
-  };
-  const snapshots = safeChild(root, ".runtime/harness");
-  if (stat(snapshots)?.isDirectory())
-    for (const name of readdirSync(snapshots).sort()) {
-      const path = join(snapshots, name);
-      consider(
-        "snapshot",
-        path,
-        `.runtime/harness/${name}`,
-        !/^[a-f0-9]{16}$/.test(name)
-          ? "unrecognized snapshot name"
-          : pinsUnknown
-            ? "installed manifest or target receipt unreadable"
-            : pinned.has(path)
-              ? "installed manifest or target receipt pins this snapshot"
-              : gateLive
-                ? "a registered worktree has a live gate"
-                : writer.reserved &&
-                    writer.actorId !== currentKey &&
-                    writer.alive !== false
-                  ? "another live or unknown writer may use this snapshot"
-                  : null,
+      },
+    };
+  } catch (error) {
+    return { retained: { kind, path: label, reason: error.message } };
+  }
+}
+
+function judgeSnapshot(context, name) {
+  const path = join(safeChild(context.root, ".runtime/harness"), name);
+  return assess(
+    "snapshot",
+    path,
+    `.runtime/harness/${name}`,
+    !/^[a-f0-9]{16}$/.test(name)
+      ? "unrecognized snapshot name"
+      : context.pins().unknown
+        ? "installed manifest or target receipt unreadable"
+        : context.pins().pinned.has(path)
+          ? "installed manifest or target receipt pins this snapshot"
+          : context.gateLive
+            ? "a registered worktree has a live gate"
+            : context.writer.reserved &&
+                context.writer.actorId !== context.currentKey &&
+                context.writer.alive !== false
+              ? "another live or unknown writer may use this snapshot"
+              : null,
+  );
+}
+
+// Current, reserved, or held by a live owner in the writer history.
+const sessionProtected = (context, key) =>
+  key === context.currentKey ||
+  (context.writer.reserved && context.writer.actorId === key) ||
+  context.writerEvents.some(
+    (row) =>
+      row.actorId === key &&
+      knownOwner(row.owner) &&
+      harnessProcessAlive(row.owner),
+  );
+
+function judgeAdvisory(context, name) {
+  const path = join(context.directory, name);
+  const { writerEvents } = context;
+  let reason = null;
+  try {
+    const marker = json(path);
+    if (!/^[a-f0-9]{64}$/.test(marker.sessionKey ?? ""))
+      reason = "legacy marker has no session ownership";
+    else if (sessionProtected(context, marker.sessionKey))
+      reason = "session is current, reserved or live";
+    else {
+      const owner =
+        marker.owner === undefined
+          ? writerEvents
+              .filter(
+                (row) =>
+                  row.actorId === marker.sessionKey && row.owner !== undefined,
+              )
+              .at(-1)?.owner
+          : marker.owner;
+      if (!knownOwner(owner)) reason = "session owner liveness is unknown";
+      else if (harnessProcessAlive(owner))
+        reason = "session owner is still live";
+      const journal = lines(
+        join(context.directory, `${marker.sessionKey}.jsonl`),
       );
+      if (
+        !reason &&
+        (journal.at(-1)?.event !== "Stop" ||
+          !journal.some((row) => row.event === "Stop" && row.finished === true))
+      )
+        reason = "session end is not observed";
     }
-  if (stat(directory)?.isDirectory())
-    for (const name of readdirSync(directory)
-      .filter((name) => name.endsWith(".advisory"))
-      .sort()) {
-      const path = join(directory, name);
-      let reason = null;
-      try {
-        const marker = json(path);
-        if (!/^[a-f0-9]{64}$/.test(marker.sessionKey ?? ""))
-          reason = "legacy marker has no session ownership";
-        else if (protectedSessions.has(marker.sessionKey))
-          reason = "session is current, reserved or live";
-        else {
-          const owner =
-            marker.owner === undefined
-              ? writerEvents
-                  .filter(
-                    (row) =>
-                      row.actorId === marker.sessionKey &&
-                      row.owner !== undefined,
-                  )
-                  .at(-1)?.owner
-              : marker.owner;
-          if (!knownOwner(owner)) reason = "session owner liveness is unknown";
-          else if (harnessProcessAlive(owner))
-            reason = "session owner is still live";
-          const journal = lines(join(directory, `${marker.sessionKey}.jsonl`));
-          if (
-            !reason &&
-            (journal.at(-1)?.event !== "Stop" ||
-              !journal.some(
-                (row) => row.event === "Stop" && row.finished === true,
-              ))
-          )
-            reason = "session end is not observed";
-        }
-      } catch {
-        reason = "legacy or unreadable marker ownership";
-      }
-      consider(
-        "advisory",
-        path,
-        docRelative(root, "control", `local/harness/${name}`),
-        reason,
-      );
-    }
+  } catch {
+    reason = "legacy or unreadable marker ownership";
+  }
+  return assess(
+    "advisory",
+    path,
+    docRelative(context.root, "control", `local/harness/${name}`),
+    reason,
+  );
+}
+
+function judgeCache(context) {
   const common = realpathSync(
-    resolve(root, runGit(root, ["rev-parse", "--git-common-dir"])),
+    resolve(
+      context.root,
+      runGit(context.root, ["rev-parse", "--git-common-dir"]),
+    ),
   );
   const cache = safeChild(common, "dotln/suite-success");
-  if (stat(cache))
-    consider(
-      "dead-cache",
-      cache,
-      "git-common/dotln/suite-success",
-      gateLive ? "a registered worktree has a live gate" : null,
-    );
-  const lanes = safeChild(root, docRelative(root, "control", "local/retained"));
-  let releases;
-  if (stat(lanes)?.isDirectory())
-    for (const order of readdirSync(lanes)
-      .filter((name) => /^WO-\d{3}$/.test(name))
-      .sort()) {
-      const path = join(lanes, order);
-      const registered = worktrees.some(
-        (tree) => tree.branch === `refs/heads/${order.toLowerCase()}`,
-      );
-      let release = null;
-      if (!registered) {
-        try {
-          release = options.publishedRelease
-            ? options.publishedRelease(order)
-            : publishedRelease(
-                root,
-                order,
-                (releases ??= localReleaseRecords(root)),
-              );
-        } catch {
-          /* An absent publication observation never permits deletion. */
-        }
-      }
-      consider(
-        "retained-lane",
-        path,
-        docRelative(root, "control", `local/retained/${order}`),
-        registered
-          ? "order still has a registered worktree"
-          : !release
-            ? "published release is not established"
-            : null,
-        { workOrder: order, release },
-      );
-    }
-  const stashBackend = runGit(root, ["rev-parse", "--show-ref-format"]);
-  for (const stash of integrationStashes(root)) {
-    const label = `${stash.selector} ${stash.subject}`;
-    let reason = !stash.workOrder
-      ? "unnamed or unrecognized integration stash"
-      : stashBackend !== "files"
-        ? "unsupported Git ref backend"
-        : null;
-    if (
-      !reason &&
-      worktrees.some(
-        (tree) => tree.branch === `refs/heads/${stash.workOrder.toLowerCase()}`,
+  return stat(cache)
+    ? assess(
+        "dead-cache",
+        cache,
+        "git-common/dotln/suite-success",
+        context.gateLive ? "a registered worktree has a live gate" : null,
       )
-    )
-      reason = "order still has a registered worktree";
-    if (!reason && gateLive) reason = "a registered worktree has a live gate";
-    if (!reason)
-      for (const tree of worktrees) {
-        const receipt = join(
-          tree.worktree,
-          docRelative(tree.worktree, "control", "local/integration.json"),
-        );
-        if (existsSync(receipt)) {
-          try {
-            const pending = json(receipt);
-            if (
-              !pending.complete &&
-              (pending.stash === stash.stash ||
-                pending.workOrder === stash.workOrder)
-            )
-              reason = "pending integration retains this stash";
-          } catch {
-            reason = "integration ownership unavailable";
-          }
+    : null;
+}
+
+// A lane's usage copy may be the order's only usage record (WO-171). The
+// order's committed meter snapshot (WO-170) releases the lane only when it names
+// the SHA-256 of every usage copy the lane holds, so it provably carries them:
+// a whole-meter snapshot such as WO-043's predates most of its lane's rows,
+// and one written on main holds only main's own usage file. Worktree
+// preservation names a colliding file or directory `<name>.from-WO-NNN[-n]`
+// (intake-reconciliation.mjs), so either name may carry that suffix.
+const preserved = String.raw`(?:\.from-WO-\d{3,}(?:-\d+)?)*`;
+const usageCopy = new RegExp(
+  String.raw`(?:^|/)process${preserved}/usage\.jsonl${preserved}$`,
+  "u",
+);
+function usageRetention(root, order, inventory) {
+  const copies = inventory.filter(
+    (row) => !row.directory && usageCopy.test(row.path),
+  );
+  if (!copies.length) return null;
+  const snapshot = spawnSync(
+    "git",
+    [
+      "-C",
+      root,
+      "cat-file",
+      "blob",
+      `HEAD:${docRelative(root, "evidence", order, "meta.json")}`,
+    ],
+    {
+      encoding: "utf8",
+      maxBuffer: 16 * 1024 * 1024,
+      stdio: ["ignore", "pipe", "ignore"],
+    },
+  );
+  if (snapshot.status !== 0) return "usage has no committed snapshot";
+  try {
+    JSON.parse(snapshot.stdout);
+    if (copies.every((copy) => snapshot.stdout.includes(copy.sha256)))
+      return null;
+  } catch {
+    /* A snapshot that is not JSON carries nothing. */
+  }
+  return "usage copy is not in the committed snapshot";
+}
+
+function judgeLane(context, order) {
+  const { root } = context;
+  const path = join(
+    safeChild(root, docRelative(root, "control", "local/retained")),
+    order,
+  );
+  const label = docRelative(root, "control", `local/retained/${order}`);
+  const registered = context.registered(order);
+  const release = registered ? null : context.releaseOf(order);
+  const judged = assess(
+    "retained-lane",
+    path,
+    label,
+    registered
+      ? "order still has a registered worktree"
+      : !release
+        ? "published release is not established"
+        : null,
+    { workOrder: order, release },
+  );
+  const usage =
+    judged.candidate && usageRetention(root, order, judged.candidate.inventory);
+  return usage
+    ? { retained: { kind: "retained-lane", path: label, reason: usage } }
+    : judged;
+}
+
+function judgeStash(context, stash) {
+  const { root, options } = context;
+  const label = `${stash.selector} ${stash.subject}`;
+  let reason = !stash.workOrder
+    ? "unnamed or unrecognized integration stash"
+    : context.stashBackend !== "files"
+      ? "unsupported Git ref backend"
+      : null;
+  if (!reason && context.registered(stash.workOrder))
+    reason = "order still has a registered worktree";
+  if (!reason && context.gateLive)
+    reason = "a registered worktree has a live gate";
+  if (!reason)
+    for (const tree of context.worktrees) {
+      const receipt = join(
+        tree.worktree,
+        docRelative(tree.worktree, "control", "local/integration.json"),
+      );
+      if (existsSync(receipt)) {
+        try {
+          const pending = json(receipt);
+          if (
+            !pending.complete &&
+            (pending.stash === stash.stash ||
+              pending.workOrder === stash.workOrder)
+          )
+            reason = "pending integration retains this stash";
+        } catch {
+          reason = "integration ownership unavailable";
         }
       }
-    let release = null;
-    if (!reason) {
-      try {
-        release = options.publishedRelease
-          ? options.publishedRelease(stash.workOrder)
-          : publishedRelease(
-              root,
-              stash.workOrder,
-              (releases ??= localReleaseRecords(root)),
-            );
-      } catch {
-        /* Unknown publication retains. */
-      }
-      if (!release) reason = "published release is not established";
     }
-    if (!reason) {
-      try {
-        const inventory =
-          options.inventoryCache?.get(stash.stash) ??
-          stashInventory(root, stash.stash);
-        options.inventoryCache?.set(stash.stash, inventory);
-        candidates.push({
+  let release = null;
+  if (!reason) {
+    release = context.releaseOf(stash.workOrder);
+    if (!release) reason = "published release is not established";
+  }
+  if (!reason) {
+    try {
+      const inventory =
+        options.inventoryCache?.get(stash.stash) ??
+        stashInventory(root, stash.stash);
+      options.inventoryCache?.set(stash.stash, inventory);
+      return {
+        candidate: {
           kind: "integration-stash",
           path: label,
           stash: stash.stash,
@@ -570,27 +657,88 @@ export function planHarnessPrune(root, options = {}) {
           release,
           inventory,
           bytes: inventory.reduce((sum, row) => sum + row.bytes, 0),
-        });
-      } catch (error) {
-        reason = error.message;
-      }
+        },
+      };
+    } catch (error) {
+      reason = error.message;
     }
-    if (reason)
-      retained.push({
-        kind: "integration-stash",
-        path: label,
-        stash: stash.stash,
-        reason,
-      });
   }
+  return {
+    retained: {
+      kind: "integration-stash",
+      path: label,
+      stash: stash.stash,
+      reason,
+    },
+  };
+}
+
+/** Read-only by default. Injectable publication observation is for fixtures. */
+export function planHarnessPrune(root, options = {}) {
+  root = realpathSync(root);
+  if (realpathSync(runGit(root, ["rev-parse", "--show-toplevel"])) !== root)
+    throw new Error("harness prune requires the physical Git root");
+  const context = pruneContext(root, options);
+  const candidates = [],
+    retained = [];
+  const record = (judged) => {
+    if (judged?.candidate) candidates.push(judged.candidate);
+    else if (judged) retained.push(judged.retained);
+  };
+  const snapshots = safeChild(root, ".runtime/harness");
+  if (stat(snapshots)?.isDirectory())
+    for (const name of readdirSync(snapshots).sort())
+      record(judgeSnapshot(context, name));
+  if (stat(context.directory)?.isDirectory())
+    for (const name of readdirSync(context.directory)
+      .filter((name) => name.endsWith(".advisory"))
+      .sort())
+      record(judgeAdvisory(context, name));
+  record(judgeCache(context));
+  const lanes = safeChild(root, docRelative(root, "control", "local/retained"));
+  if (stat(lanes)?.isDirectory())
+    for (const order of readdirSync(lanes)
+      .filter((name) => /^WO-\d{3}$/.test(name))
+      .sort())
+      record(judgeLane(context, order));
+  for (const stash of integrationStashes(root))
+    record(judgeStash(context, stash));
   return {
     root,
     candidates,
     retained,
     bytes: candidates.reduce((sum, row) => sum + row.bytes, 0),
+    publication: context.releaseOf,
   };
 }
 
+// Re-judge one planned candidate from fresh local observations; only the
+// plan's publication observation is shared, so no listing is repeated.
+function recheckCandidate(plan, row, options) {
+  const context = pruneContext(plan.root, options, plan.publication);
+  let judged;
+  if (row.kind === "snapshot")
+    judged = judgeSnapshot(context, basename(row.absolute));
+  else if (row.kind === "advisory")
+    judged = judgeAdvisory(context, basename(row.absolute));
+  else if (row.kind === "dead-cache") judged = judgeCache(context);
+  else if (row.kind === "retained-lane")
+    judged = judgeLane(context, row.workOrder);
+  else {
+    const entry = integrationStashes(plan.root).find(
+      (entry) => entry.stash === row.stash,
+    );
+    judged = entry && judgeStash(context, entry);
+  }
+  const fresh = judged?.candidate;
+  return fresh &&
+    (fresh.absolute ?? fresh.stash) === (row.absolute ?? row.stash)
+    ? fresh
+    : undefined;
+}
+
+// One plan per apply. Each deletion follows a re-check of that candidate alone,
+// and its byte proof precedes it, so a stopped apply resumes by running again.
 export function pruneHarness(root, { apply = false, ...options } = {}) {
   options = { ...options, inventoryCache: new Map() };
   const plan = planHarnessPrune(root, options);
@@ -598,15 +746,11 @@ export function pruneHarness(root, { apply = false, ...options } = {}) {
     for (const row of plan.candidates) {
       let proofCreated = false;
       let proofPath;
-      const fresh = planHarnessPrune(root, options).candidates.find(
-        (candidate) =>
-          row.kind === "integration-stash"
-            ? candidate.kind === row.kind && candidate.stash === row.stash
-            : candidate.absolute === row.absolute,
-      );
+      const fresh = recheckCandidate(plan, row, options);
       if (
         !fresh ||
         fresh.release !== row.release ||
+        fresh.workOrder !== row.workOrder ||
         JSON.stringify(fresh.inventory) !== JSON.stringify(row.inventory)
       )
         throw new Error(`Prune subject changed; retained ${row.path}`);
@@ -641,12 +785,21 @@ export function pruneHarness(root, { apply = false, ...options } = {}) {
         safeChild(plan.root, proofPath);
         mkdirSync(dirname(proofPath), { recursive: true, mode: 0o700 });
         if (!existsSync(proofPath)) {
-          writeFileSync(proofPath, proof, {
+          // Published whole by a link, so a stopped apply never leaves a
+          // partial proof that every later apply would refuse.
+          const partial = `${proofPath}.partial`;
+          rmSync(partial, { force: true });
+          writeFileSync(partial, proof, {
             flag: "wx",
             mode: 0o600,
             flush: true,
           });
-          proofCreated = true;
+          try {
+            linkSync(partial, proofPath);
+            proofCreated = true;
+          } finally {
+            rmSync(partial, { force: true });
+          }
         }
         if (readFileSync(proofPath, "utf8") !== proof)
           throw new Error(
