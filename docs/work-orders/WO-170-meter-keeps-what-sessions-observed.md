@@ -1,4 +1,4 @@
-# WO-170 — The meter keeps what an order's sessions observed and counts the operator's directions: a bounded per-order snapshot is written while the journals exist, retained usage is read and recovered once for closed orders, an unread journal reads unavailable instead of zero, and directions per closed order form a series (version assigned at activation)
+# WO-170 — The meter keeps what an order's sessions observed and counts the operator's directions: a bounded per-order snapshot is written while the journals exist, retained usage is read and recovered once for closed orders, an unread journal reads unavailable instead of zero, and directions per closed order form a series (v0.52.8)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).

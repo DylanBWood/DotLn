@@ -548,8 +548,32 @@ pr_only="$(release_command prepare --local)"
 grep -Fq 'target v0.2.1 remains current' <<<"$pr_only"
 grep -Fxq '  docs/final-reviews/WO-099/PR.md' <<<"$pr_only"
 if grep -Fq 'no files changed' <<<"$pr_only"; then exit 1; fi
+# WO-170: no session journal of the order here, so no snapshot, and it says why.
+grep -Fxq 'Meter snapshot not written: this checkout holds no session journal of WO-099.' <<<"$pr_only"
+test ! -e "$main/docs/evidence/WO-099/meta.json"
 meter_again="$(release_command prepare --local)"
 grep -Fxq '  docs/final-reviews/WO-099/PR.md' <<<"$meter_again"
+# With one, prepare writes the order's own row, within 8 KB, beside the meter block.
+mkdir -p "$main/docs/control/local/harness"
+printf '%s\n' \
+  '{"workOrder":"WO-099","role":"executor","event":"PreToolUse","refused":true}' \
+  '{"workOrder":"WO-099","event":"Stop","finished":false}' \
+  '{"workOrder":"WO-100","event":"Stop","finished":false}' \
+  '{"workOrder":"WO-099","typedEvent":"OperatorCorrectionReceived","eventId":"correction:0","phase":"implementation"}' \
+  >"$main/docs/control/local/harness/$(printf 'a%.0s' {1..64}).jsonl"
+snapshotted="$(release_command prepare --local)"
+grep -Fxq '  docs/final-reviews/WO-099/PR.md' <<<"$snapshotted"
+grep -Fxq '  docs/evidence/WO-099/meta.json' <<<"$snapshotted"
+grep -Eq '^Meter snapshot: docs/evidence/WO-099/meta\.json, [0-9]+ bytes\.$' <<<"$snapshotted"
+test "$(wc -c <"$main/docs/evidence/WO-099/meta.json")" -le 8192
+node -e '
+const snapshot = JSON.parse(require("fs").readFileSync(process.argv[1], "utf8"));
+const [row, ...others] = snapshot.orders;
+const { guardRefusals, stopRefusals, operatorCorrections } = row.metrics;
+if (others.length || row.workOrder !== "WO-099" || guardRefusals !== 1 || stopRefusals !== 1 || operatorCorrections !== 1 || row.corrections.source !== "session-journal")
+  throw new Error(`unexpected snapshot ${JSON.stringify(row.metrics)}`);
+' "$main/docs/evidence/WO-099/meta.json"
+grep -Fq '| Corrections | Directions |' "$main/docs/final-reviews/WO-099/PR.md"
 release_command check-surfaces --local >/dev/null
 printf 'release preparation CLI preserved three independent control segments and all Git refs\n'
 }

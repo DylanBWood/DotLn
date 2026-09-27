@@ -10,6 +10,7 @@ import {
   writeDecisionsIndex,
   checkMeta,
   metaHealth,
+  writeOrderSnapshot,
 } from "./lib/meta.mjs";
 import {
   recordUsageObservation,
@@ -137,8 +138,17 @@ export async function metaMain(args = process.argv.slice(2), repo = root) {
       throw new Error(
         "The first meter baseline is immutable; write meta.json for a later observation",
       );
-    mkdirSync(dirname(join(repo, path)), { recursive: true });
-    writeFileSync(join(repo, path), JSON.stringify(meta, null, 2) + "\n");
+    if (path.endsWith("meta-baseline.json")) {
+      mkdirSync(dirname(join(repo, path)), { recursive: true });
+      writeFileSync(join(repo, path), JSON.stringify(meta, null, 2) + "\n");
+    } else {
+      // WO-170: a later observation is the order's bounded snapshot, as
+      // release prepare writes it.
+      const workOrder = path.match(/(WO-\d{3})\/meta\.json$/)[1];
+      const snapshot = writeOrderSnapshot(repo, meta, workOrder);
+      if (snapshot.reason)
+        throw new Error(`Meter snapshot not written: ${snapshot.reason}`);
+    }
   }
   if (options["--check"]) checkMeta(meta);
   console.log(

@@ -1,0 +1,19 @@
+## Release overview
+
+The process meter on `main` now keeps what a closed order's sessions observed. `release prepare` writes a small per-order snapshot while the order's session journals still exist, and the meter reads it after the worktree is gone. A value nobody observed now reads unavailable instead of 0. Usage totals by role were recovered once for 77 closed orders. A new count of the operator's directions per order is shown beside corrections; as shipped it follows how agents labelled those directions, so read it as a lower bound.
+
+## Read before upgrading
+
+No action is required. After this release, a closed order's correction count reads unavailable where it used to read 0 when no journal or snapshot is present. Tokens for closed orders appear where they read unavailable before. `docs/evidence/WO-043/meta.json` and `docs/evidence/WO-126/meta.json` shrink from whole-meter copies of about 100 KB to their own order's row; the other rows remain in Git history and the baselines are unchanged. 77 new or rewritten `meta.json` files name the SHA-256 of 76 retained usage copies, so the next `harness prune --apply` on the operator's checkout no longer keeps those lanes for usage. Their per-dispatch usage rows would then survive only as the committed totals by role. The "Directions" column counts decision records whose agent-written dispatch label begins with `scope expand:`, `operator override:`, `analysis:` or `conversation only:`, plus three off-ramp events; a step the operator took inside a `resume:` dispatch is not counted, and a follow-up asks planning to fix that before the series is relied on.
+
+## Substantive changes
+
+`release prepare` writes `docs/evidence/WO-NNN/meta.json`, the order's own meter row within 8 KB, from the same collection as the pull-request meter block. It writes only in a checkout that holds a session journal of the order and only while the order is open, and otherwise prints why. `meta --write` writes the same row under the same conditions. For a closed order the meter reads journal-derived values from that snapshot, never from a later session's journal or usage, and reports them unavailable when no snapshot exists. Usage is chosen per role from this checkout, then the snapshot, then the retained usage copies, with each source named; the latest recorded observation of a dispatch wins regardless of file names. The meter adds `operatorDirections` to its table, its shifting-the-burden signal and a per-closed-order line, and counts intake captures cited per planning pass without reading them. The prune accepts a usage copy as carried only when the snapshot's `usageCopies` list names its digest.
+
+## Progressive polish
+
+The meter's text output gains usage-by-role lines and marks rows read from a retained copy. A torn line in a retained copy is skipped and counted instead of stopping the meter, and the retained-lane walk follows no links. The cost reconciliation no longer prints "historical metrics undefined" for a usage-only snapshot. Product 07's meter sentence is updated in place.
+
+## Evidence and compatibility
+
+Application `v0.52.8` is a patch over `v0.52.7`. No package source changed, so no component version moves, and no dependency, control-event schema, gate step, journal format, contract or edition changed. Independent verification failed once, on an older usage observation chosen after ten collision-preserved copies, and passed all seven criteria after the repair. The final review's gate passed 34 suites, 0 failed, in 638.97 s. It audited all 77 recovered snapshots against the operator's main checkout, finding every digest and per-role total matching. Known limits are recorded with follow-ups: the direction count follows agent-written labels, a snapshot stops at its `release prepare`, and journal values of orders closed before this release are not recovered, except for three earlier whole-meter rows.

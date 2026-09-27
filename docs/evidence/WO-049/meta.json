@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "kind": "order-meter-snapshot",
+  "observedAt": "2026-09-16T19:44:40.947Z",
+  "revision": "0eacb54d070134127f36eebd380239d8c806b86a",
+  "source": "the order's row of docs/evidence/WO-049/meta-baseline.json observed at 2026-09-16T19:44:40.947Z",
+  "orders": [
+    {
+      "workOrder": "WO-049",
+      "phase": "active",
+      "metrics": {
+        "elapsedMs": null,
+        "attempts": 0,
+        "gateMs": null,
+        "fastGateMs": null,
+        "readObligationCount": null,
+        "readObligationBytes": null,
+        "codeDiffBytes": 57232,
+        "readAmplification": null,
+        "machineryShare": null,
+        "elapsedPerCodeByte": null,
+        "tokens": null,
+        "costUsd": null,
+        "declaredPromptTokens": 669,
+        "coldStartBytes": 17930,
+        "subjectCharacters": 80,
+        "gateStepCount": null,
+        "operatorCorrections": 1,
+        "guardRefusals": 0,
+        "stopRefusals": 0,
+        "reAnnouncements": null,
+        "manualCloseoutSteps": null,
+        "emergencyPasses": null,
+        "bypassTools": null,
+        "adHocScripts": null,
+        "commandsRun": null,
+        "bytesReadIntoContext": null,
+        "stepCount": null,
+        "authorshipSnapshots": null,
+        "authorshipMs": null,
+        "authorshipBytes": null,
+        "authorshipCommands": null,
+        "authorshipMeanMs": null,
+        "authorshipPeakBytes": null,
+        "hookRuns": 1,
+        "hookMs": 236.153417,
+        "hookMeanMs": 236.153417,
+        "hookPeakMs": 236.153417,
+        "prBodyBytes": 3167
+      },
+      "usageByRole": {
+        "executor": {"dispatches":4,"totalTokens":null,"costUsd":null,"commandsRun":null,"stepCount":null,"durationMs":7713766},
+        "verifier": {"dispatches":5,"totalTokens":37400009,"costUsd":null,"commandsRun":null,"stepCount":null,"durationMs":2900282},
+        "reviewer": {"dispatches":1,"totalTokens":35507420,"costUsd":null,"commandsRun":78,"stepCount":186,"durationMs":2239969}
+      },
+      "dispatches": [
+        {"role":"executor","wallClockMs":99,"hookRuns":1,"hookMs":236.153417,"hookMeanMs":236.153417,"hookPeakMs":236.153417,"declaredPromptTokens":669}
+      ],
+      "declared": {
+        "promptTokens": 669,
+        "supports": 8,
+        "units": 10,
+        "hooks": 9
+      }
+    }
+  ],
+  "usageRecovered": {
+    "observedAt": "2026-09-27T20:55:52.554Z",
+    "source": "retained usage copies in the main checkout's lane"
+  },
+  "usageCopies": [
+    {
+      "path": "process/usage.jsonl",
+      "sha256": "e8b16ea096fdcd2921783aa4c23cf20b4a6562ee8c59a57c048aad6ac9cdeac4",
+      "rows": 29
+    }
+  ]
+}

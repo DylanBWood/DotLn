@@ -9388,6 +9388,21 @@ test("WO-171 a lane holding a usage copy is retained until a committed snapshot 
       reasons()["WO-914"],
       "usage copy is not in the committed snapshot",
     );
+    // WO-170 settles the field: a digest named anywhere else is not a carried
+    // copy (WO-171-D014).
+    write(
+      root,
+      meter,
+      JSON.stringify({
+        workOrder: "WO-911",
+        skipped: [{ path: "process/usage.jsonl", sha256: copy }],
+      }) + "\n",
+    );
+    commit(meter, "WO-911 snapshot naming a copy it does not carry");
+    assert.equal(
+      reasons()["WO-911"],
+      "usage copy is not in the committed snapshot",
+    );
     // Written but not committed, it is not yet the order's record.
     const carried =
       JSON.stringify({

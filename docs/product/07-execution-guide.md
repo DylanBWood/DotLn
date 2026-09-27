@@ -2049,8 +2049,9 @@ claim evidence or releases it does not have.
   (`correctness-over-sycophancy`), `anti-oscillation`, and the ban on over-literal
   or malicious compliance (`fail-conservative-correction`). Untyped corrections
   and unmarked guesses are outside this lexical count. The meter's
-  shifting-the-burden row measures these events without automatic consequence;
-  it no longer treats decision documents as correction telemetry.
+  shifting-the-burden row counts these events (from the order's `meta.json`
+  once its journals are gone) and prefixed or off-ramp operator directions,
+  without automatic consequence.
 - **Recovery point before destruction.** Never run `git checkout .`,
   `git restore .`, `git reset --hard`, `git clean` (any flags), or
   `git stash drop` in a work-order worktree. Until final review, the

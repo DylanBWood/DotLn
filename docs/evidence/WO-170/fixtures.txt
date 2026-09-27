@@ -1,0 +1,67 @@
+# WO-170 fixture transcripts
+# Recorded 2026-09-27T21:52:55Z in <worktree> after the passing review gate (code identity cde8bad3efaaedb33a5a07bebdf0b08b3846a9e720268c4fd669d1f02a3f9e7d); Node v26.9.0.
+
+$ node --test --test-name-pattern="WO-170|WO-141" scripts/test-process-debt.mjs
+✔ WO-141 meter counts journal events under their original order and phase (100.438625ms)
+✔ WO-141 meter retains only journal-derived historical correction counts (109.118917ms)
+✔ WO-170 a closed order's snapshot stands for its journals, and with neither they read unavailable (265.622542ms)
+✔ WO-170 a retained usage copy supplies the order's tokens by role and names its source (133.744709ms)
+✔ WO-170 operator directions equal a hand count of committed decisions and off-ramp events (123.971917ms)
+✔ WO-170 the order's snapshot is its own bounded row, written only where its journals are (238.060542ms)
+✔ WO-170 a retained lane is read without following links or failing on a torn line (67.209792ms)
+✔ WO-170 recovery carries usage totals by role and each retained copy's digest, keeping a whole-meter row (49.94725ms)
+ℹ tests 8
+ℹ pass 8
+ℹ fail 0
+
+$ node --test --test-name-pattern="WO-171" scripts/test-harness.mjs
+✔ WO-171 one apply plans once and asks each order's publication at most once (336.138709ms)
+✔ WO-171 one apply issues one release listing and one tag listing whatever the number of orders (2716.54225ms)
+✔ WO-171 an apply stopped after two deletions resumes and keeps the first byte proofs (407.16175ms)
+✔ WO-171 a candidate changed between the plan and its deletion is refused whole (216.863458ms)
+✔ WO-171 a lane holding a usage copy is retained until a committed snapshot carries it (382.283042ms)
+✔ WO-171 a collision-preserved usage copy keeps its lane until the snapshot names it (468.481333ms)
+✔ WO-171 a bound resident store follows its retained lane into the byte proof (45.885708ms)
+✔ WO-171 an unreadable global observation still stops the plan (57.875625ms)
+✔ WO-171 a stop before a byte proof is published leaves nothing a rerun refuses (374.682125ms)
+ℹ tests 9
+ℹ pass 9
+ℹ fail 0
+
+$ bash scripts/test-release.sh --case prepare_independent
+PROGRESS release case prepare_independent started
+release preparation CLI preserved three independent control segments and all Git refs
+PROGRESS release case prepare_independent passed
+release tests passed
+
+$ node --test scripts/test-configuration-root.mjs
+ℹ tests 13
+ℹ pass 13
+ℹ fail 0
+
+# Repair of VER-001, recorded 2026-09-27T22:39:23Z in <worktree> after the passing review gate (code identity 99f38f8f7c99243b2f14f8761ac6fa79972292c44b5f8bcae9c9fece5529c761); Node v26.9.0.
+
+$ node --test --test-name-pattern="WO-170|WO-141" scripts/test-process-debt.mjs
+✔ WO-141 meter counts journal events under their original order and phase (81.948ms)
+✔ WO-141 meter retains only journal-derived historical correction counts (97.957833ms)
+✔ WO-170 a closed order's snapshot stands for its journals, and with neither they read unavailable (244.556625ms)
+✔ WO-170 a retained usage copy supplies the order's tokens by role and names its source (123.754083ms)
+✔ WO-170 the latest retained observation of a dispatch wins past preservation's tenth collision (378.999333ms)
+✔ WO-170 operator directions equal a hand count of committed decisions and off-ramp events (117.991667ms)
+✔ WO-170 the order's snapshot is its own bounded row, written only where its journals are (224.233208ms)
+✔ WO-170 a retained lane is read without following links or failing on a torn line (66.594375ms)
+✔ WO-170 recovery carries usage totals by role and each retained copy's digest, keeping a whole-meter row (46.114542ms)
+ℹ tests 9
+ℹ pass 9
+ℹ fail 0
+
+$ node --test --test-name-pattern="WO-171" scripts/test-harness.mjs
+ℹ tests 9
+ℹ pass 9
+ℹ fail 0
+
+# The collision test with the sort in latestUsage replaced by a no-op (the pre-repair read order), in place, then restored byte for byte:
+✖ WO-170 the latest retained observation of a dispatch wins past preservation's tenth collision
+  + actual - expected
+  +   190
+  -   200

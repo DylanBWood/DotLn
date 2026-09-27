@@ -20,6 +20,15 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-170 activation completion (2026-09-27):** assigned application `v0.52.8`,
+the next patch above the observed local `v0.52.7` tag. `release prepare` writes
+the order's bounded meter snapshot beside the pull-request meter block while its
+session journals exist; the meter reads that snapshot and the retained usage
+copies, reports an unread journal as unavailable instead of zero, and counts the
+operator's directions per order from committed decisions and control events.
+No package source changes, so no component version moves. Independent
+verification, final review and publication remain separate dispatches.
+
 **WO-164 activation completion (2026-09-27):** assigned application `v0.52.6`,
 the next patch above the observed local `v0.52.5` tag. Console collection issues
 a constant number of processes: `resume status --all --json` folds every order
