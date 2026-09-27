@@ -19,7 +19,10 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { unionFollowups } from "./lib/planning-followups.mjs";
 import { readControl } from "./lib/control-store.mjs";
-import { integrationTestCommand } from "./lib/worktree-integration.mjs";
+import {
+  integrationTestCommand,
+  releaseLine,
+} from "./lib/worktree-integration.mjs";
 
 const source = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const text = (root, path) => readFileSync(join(root, path), "utf8");
@@ -120,7 +123,10 @@ const event = (workOrderId, type, extra = {}) =>
     ...extra,
   }) + "\n";
 
-function fixture(t, { reviewed = false, third = "active" } = {}) {
+function fixture(
+  t,
+  { reviewed = false, third = "active", authored = true } = {},
+) {
   const temporary = realpathSync(
     mkdtempSync(join(tmpdir(), "dotln-integrate-test-")),
   );
@@ -269,7 +275,8 @@ function fixture(t, { reviewed = false, third = "active" } = {}) {
   if (reviewed) {
     claim(subject, "v9000.0.1");
     generatedConflicts(subject, "local");
-    put(subject, "authored-fixture.md", "reviewed local intent\n");
+    if (authored)
+      put(subject, "authored-fixture.md", "reviewed local intent\n");
     put(subject, "docs/lineage/decisions-index.md", "reviewed projection\n");
     appendEntry(subject, "reviewed-local");
     git(subject, "add", "-A");
@@ -310,7 +317,7 @@ function fixture(t, { reviewed = false, third = "active" } = {}) {
   if (!reviewed) {
     claim(subject, "v9000.0.1");
     generatedConflicts(subject, "local");
-    put(subject, "authored-fixture.md", "local intent\n");
+    if (authored) put(subject, "authored-fixture.md", "local intent\n");
     put(subject, "docs/lineage/decisions-index.md", "local projection\n");
     put(
       subject,
@@ -378,17 +385,38 @@ for (const reviewed of [false, true])
       text(f.subject, "authored-fixture.md"),
       /<<<<<<<.*\n[\s\S]*=======\n[\s\S]*>>>>>>>/,
     );
-    if (!reviewed) {
-      assert.match(
-        text(f.subject, "docs/work-orders/WO-998-fixture.md"),
-        /v9000\.0\.2/,
-      );
-      assert.match(
-        text(f.subject, "docs/evidence/WO-998/decisions.md"),
-        /Carried-forward claims: \*\*reviewer to complete/,
-      );
-      assert.deepEqual(receipt.pending, [], first.stdout);
-    }
+    // WO-169 item 4: while an authored conflict remains no generator runs, so
+    // no `Regenerated:` line is printed over conflict markers (WO-138 D011).
+    assert.doesNotMatch(first.stdout, /Regenerated:/);
+    assert.deepEqual(
+      receipt.pending,
+      [
+        reviewed
+          ? "stash apply and generation await authored merge resolution"
+          : "generation awaits authored conflict resolution and --continue",
+      ],
+      first.stdout,
+    );
+    assert.match(first.stdout, new RegExp(`Pending: ${receipt.pending[0]}`));
+    // The checks and the draft decision describe the generated tree, so the
+    // completing pass prints them.
+    assert.doesNotMatch(first.stdout, /Affected checks|Reviewer: complete/);
+    assert.match(
+      first.stdout,
+      /--continue; the completing pass prints the affected checks and writes the draft decision\. No lifecycle event or acceptance result was appended\./,
+    );
+    assert.doesNotMatch(
+      text(f.subject, "docs/work-orders/WO-998-fixture.md"),
+      /v9000\.0\.2/,
+      "release preparation waits for the authored resolution",
+    );
+    assert.ok(
+      !existsSync(join(f.subject, "docs/evidence/WO-998/decisions.md")) ||
+        !text(f.subject, "docs/evidence/WO-998/decisions.md").includes(
+          receipt.checkpointRef,
+        ),
+      "the integration stub waits for the authored resolution",
+    );
     put(
       f.subject,
       "authored-fixture.md",
@@ -454,7 +482,14 @@ for (const reviewed of [false, true])
       Object.fromEntries(readControl(f.subject).sources),
       f.control,
     );
-    assert.match(continued.stdout, /npm test -- --review/);
+    assert.match(
+      continued.stdout,
+      /Affected checks \(not run\):\n  npm test -- --review/,
+    );
+    assert.match(
+      continued.stdout,
+      /Reviewer: complete the integration decision/,
+    );
     assert.match(continued.stdout, /npm run publication:check/);
     assert.match(continued.stdout, /node scripts\/harness.mjs check/);
     checked(f.subject, process.execPath, ["scripts/harness.mjs", "check"]);
@@ -493,6 +528,25 @@ for (const reviewed of [false, true])
     assert.match(
       text(f.subject, "docs/evidence/WO-998/decisions.md"),
       /Carried-forward claims: \*\*reviewer to complete/,
+    );
+    assert.match(continued.stdout, /Regenerated: integration decision stub/);
+    // The record holds the release message as one line closed by one full
+    // stop, and still names the conflict the first pass observed.
+    const stub = text(f.subject, "docs/evidence/WO-998/decisions.md").split(
+      "\n",
+    );
+    const release = stub.findIndex((line) =>
+      line.startsWith("Release preparation: "),
+    );
+    assert.match(
+      stub[release],
+      /^Release preparation: Retimed WO-998: v\d+\.\d+\.\d+ → v9000\.0\.2\. Files changed: [^.].*\. Tag observation: local snapshot only\.$/,
+    );
+    assert.doesNotMatch(stub[release], /\.\./);
+    assert.match(stub[release + 1], /^Carried-forward claims: /);
+    assert.match(
+      stub[release + 2],
+      /^Authored conflicts observed: authored-fixture\.md\.$/,
     );
     console.log(
       JSON.stringify({
@@ -779,6 +833,79 @@ test("untracked stash collision remains explicit and recoverable until continuat
     "explicitly combined upstream and local addition\n",
   );
   assert.equal(git(f.subject, "rev-parse", "refs/stash"), receipt.stash);
+});
+
+test("WO-169 a first invocation with no authored conflict generates at once", (t) => {
+  const f = fixture(t, { authored: false });
+  const first = f.invoke();
+  assert.equal(first.status, 0, first.stdout + first.stderr);
+  assert.match(first.stdout, /Authored conflicts: none/);
+  assert.match(first.stdout, /Regenerated: integration decision stub/);
+  assert.doesNotMatch(first.stdout, /Pending: /);
+  assert.match(
+    first.stdout,
+    /Affected checks \(not run\):\n  npm test -- --review/,
+  );
+  const receipt = JSON.parse(
+    text(f.subject, "docs/control/local/integration.json"),
+  );
+  assert.equal(receipt.complete, true);
+  assert.deepEqual(receipt.pending, []);
+  assert.deepEqual(receipt.authored, []);
+  assert.match(
+    text(f.subject, "docs/evidence/WO-998/decisions.md"),
+    /^Authored conflicts observed: none\.$/m,
+  );
+  assert.equal(text(f.subject, "authored-fixture.md"), "upstream intent\n");
+});
+
+test("WO-169 a pass whose generator fails keeps its checks and names the pending step, not a conflict", (t) => {
+  const f = fixture(t, { authored: false });
+  // Release preparation reads the decisions record; one with no entry fails it.
+  put(f.subject, "docs/evidence/WO-998/decisions.md", "# WO-998 decisions\n");
+  const first = f.invoke();
+  assert.equal(first.status, 1, first.stdout + first.stderr);
+  assert.match(first.stdout, /Authored conflicts: none/);
+  assert.match(first.stdout, /Regenerated: integration decision stub/);
+  assert.match(first.stdout, /Pending: release preparation: /);
+  assert.match(first.stdout, /Affected checks \(not run\):/);
+  assert.match(
+    first.stdout,
+    /Generation ran and left the pending steps above; repair their cause, then run npm run worktree -- integrate WO-998 --continue/,
+  );
+  assert.doesNotMatch(
+    first.stdout,
+    /Resolve authored conflicts|Integration mechanics complete/,
+  );
+  assert.equal(
+    JSON.parse(text(f.subject, "docs/control/local/integration.json")).complete,
+    false,
+  );
+});
+
+test("WO-169 the integration record holds each release message as one line with one full stop", () => {
+  for (const [message, line] of [
+    [
+      "Retimed WO-165: v0.51.2 → v0.52.1.\nFiles changed:\n  docs/work-orders/WO-165-fixture.md\n  README.md\nTag observation: local snapshot only.",
+      "Retimed WO-165: v0.51.2 → v0.52.1. Files changed: docs/work-orders/WO-165-fixture.md, README.md. Tag observation: local snapshot only.",
+    ],
+    [
+      "WO-160 target v0.51.0 remains current.\nno files changed.\nTag observation: local snapshot only.",
+      "WO-160 target v0.51.0 remains current. no files changed. Tag observation: local snapshot only.",
+    ],
+    ["pending", "pending."],
+    // Other line endings are line breaks too, and a listed path keeps its
+    // own bytes.
+    [
+      "Retimed WO-165: v0.51.2 → v0.52.1.\r\nFiles changed:\r\n  docs/odd:\r\n  docs/dotted.\r\nTag observation: origin.\r\n",
+      "Retimed WO-165: v0.51.2 → v0.52.1. Files changed: docs/odd:, docs/dotted.. Tag observation: origin.",
+    ],
+    ["One.\rTwo." + String.fromCharCode(0x2028) + "Three.", "One. Two. Three."],
+  ]) {
+    assert.equal(releaseLine(message), line);
+    assert.doesNotMatch(releaseLine(message), /[\r\n]|\.\.$/);
+    assert.ok(!releaseLine(message).includes(String.fromCharCode(0x2028)));
+  }
 });
 
 test("printed checks use the runner's declared machinery sources, including package code", async (t) => {

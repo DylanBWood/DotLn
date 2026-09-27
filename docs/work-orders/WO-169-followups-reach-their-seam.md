@@ -1,4 +1,4 @@
-# WO-169 — Follow-ups reach the order that opens their seam: the feed names the pending rows a change, a file list or an order touches, for the planner before an order is filed and for the executor at completion, exports its rows whole and applies a batch of dispositions in one command; the integrate helper regenerates after authored conflicts are staged and records the release line once; the review gate selects the configuration-root suite for every script it scans; the meter names an unset ceiling (version assigned at activation)
+# WO-169 — Follow-ups reach the order that opens their seam: the feed names the pending rows a change, a file list or an order touches, for the planner before an order is filed and for the executor at completion, exports its rows whole and applies a batch of dispositions in one command; the integrate helper regenerates after authored conflicts are staged and records the release line once; the review gate selects the configuration-root suite for every script it scans; the meter names an unset ceiling (v0.52.4)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).

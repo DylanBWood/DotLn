@@ -3280,6 +3280,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-27T00:36:27.954Z"
+        },
+        {
+          "sourceRevision": 6,
+          "status": "open",
+          "reason": "Kept open by WO-169's final review. WO-169 delivers the register half this row's last disposition named: followups --touching finds pending rows by path or order, --export writes every pending row whole to one file, and --apply takes a batch under one revision; this review read the register by export and disposed its touching rows in one batch. Orientation to the product, the other half, is untouched and stays open. [WO-169 final review (docs/final-reviews/WO-169/FINAL-001.md)]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-27T14:35:55.424Z"
         }
       ]
     },
@@ -11151,6 +11159,14 @@
           "reopenWhen": "the operator opens the efficiency pass, or a role's headroom falls below 256 bytes",
           "targets": [],
           "at": "2026-09-27T00:36:37.278Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-169's final review: listed because the row names docs/product/07-execution-guide.md. WO-169 changes no role text, skill or ceiling, so no cold-start profile moved. [WO-169 final review (docs/final-reviews/WO-169/FINAL-001.md)]",
+          "reopenWhen": "the operator opens the efficiency pass, or a role's headroom falls below 256 bytes",
+          "targets": [],
+          "at": "2026-09-27T14:35:55.657Z"
         }
       ]
     },
@@ -11361,6 +11377,14 @@
           "reopenWhen": "the next order that opens reactor.ts and pays a live feedback episode",
           "targets": [],
           "at": "2026-09-27T00:36:35.714Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-169's final review: listed because its last disposition names WO-169 as the mechanism that will show it to an order opening reactor.ts. WO-169 does not open reactor.ts; from this release the completion advisory counts this row for an executor whose change does. [WO-169 final review (docs/final-reviews/WO-169/FINAL-001.md)]",
+          "reopenWhen": "the next order that opens reactor.ts and pays a live feedback episode",
+          "targets": [],
+          "at": "2026-09-27T14:35:55.629Z"
         }
       ]
     },
@@ -12045,6 +12069,14 @@
           "reopenWhen": "an order next opens these consumers, a supported input exceeds the batch limit, or a real source-change workload reproduces the reported parser or progress cost",
           "targets": [],
           "at": "2026-09-21T06:59:01.656Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-169's final review. WO-169 opened scripts/test-runner.mjs for one row of its source table; selecting TAP for the remaining Node suites changes what every gate prints, and the other members name consumers WO-169 does not open, so none is inside the Boy Scout bound. [WO-169 final review (docs/final-reviews/WO-169/FINAL-001.md)]",
+          "reopenWhen": "an order next opens these consumers, a supported input exceeds the batch limit, or a real source-change workload reproduces the reported parser or progress cost",
+          "targets": [],
+          "at": "2026-09-27T14:35:55.600Z"
         }
       ]
     },
@@ -12364,6 +12396,14 @@
           "reopenWhen": "a literal outside redirect beside an opaque one reaches the operator's folders, or a final-review gate again meets a deterministic failure in a suite no earlier run selected",
           "targets": [],
           "at": "2026-09-27T00:36:35.193Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-169's final review. WO-169 item 5 gives the configuration-root suite scripts/ as its declared source (WO-169-D007), which closes the case of part 1 that WO-085 D014 met; the untracked-file gap in changedMachinery is FUP-b1163d128e371b7f. Part 2, the shell redirect accessor, is outside WO-169's files and stays with the shell destination adapter candidate. [WO-169 final review (docs/final-reviews/WO-169/FINAL-001.md)]",
+          "reopenWhen": "a literal outside redirect beside an opaque one reaches the operator's folders, or a final-review gate again meets a deterministic failure in a suite no earlier run selected",
+          "targets": [],
+          "at": "2026-09-27T14:35:55.455Z"
         }
       ]
     },
@@ -13302,6 +13342,14 @@
           "reopenWhen": "the next order that changes resident-state.ts and records a feedback edition, or an operator reads a misleading verifier-unavailable hold over an incomplete capsule",
           "targets": [],
           "at": "2026-09-27T00:36:36.754Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-169's final review: listed because WO-169 changed docs/product/07-execution-guide.md, a textual match on a document name. WO-169 changes neither resident-state.ts nor a feedback edition, so the seam did not open. [WO-169 final review (docs/final-reviews/WO-169/FINAL-001.md)]",
+          "reopenWhen": "the next order that changes resident-state.ts and records a feedback edition, or an operator reads a misleading verifier-unavailable hold over an incomplete capsule",
+          "targets": [],
+          "at": "2026-09-27T14:35:55.484Z"
         }
       ]
     },
@@ -13784,6 +13832,14 @@
           "reopenWhen": "another repair meets a changed reviewer draft it did not write, or the next order that edits release preparation",
           "targets": [],
           "at": "2026-09-27T00:36:34.157Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-169's final review. Its unset-label member is fixed by WO-169 item 6 (WO-169-D008, allocated row FUP-e5a6ca7dbe6270ea): the drift rows print ceiling unset. The remaining member, ownership of an executor-time PR draft, recurred here: the executor's release preparation left docs/final-reviews/WO-169/PR.md holding only the meter block, and the reviewer wrote the body around it. The seam is scripts/lib/release-preparation.mjs. [WO-169 final review (docs/final-reviews/WO-169/FINAL-001.md)]",
+          "reopenWhen": "another repair meets a changed reviewer draft it did not write, or the next order that edits release preparation",
+          "targets": [],
+          "at": "2026-09-27T14:35:55.686Z"
         }
       ]
     },
@@ -17115,6 +17171,13 @@
           "title": "WO-159-D020: Planner: the WO-143 lock-boundary matrix subtest (packages/skeleton/test/resident.test.ts, 'once and loop restart at every acquisition filesystem boundary, including killed reclaimers') r",
           "summary": "{ \"id\": \"WO-159-D020\", \"date\": \"2026-09-25\", \"dispatch\": \"resume: final review\", \"decision\": \"Pass final review without integration and record the reviewer's product gate as it happened. Local main, origin main and the worktree HEAD were the same commit (1f888509) at review, so no merge, retime or re-mint was needed, the integrate helper was not run, and every VER-002 claim is carried forward on unchanged source bytes. The first `npm test -- --review` failed one skeleton subtest this order does not touch, the WO-143 lock-boundary matrix, which exceeded its own 240 s budget while a sibling worktree's product gate shared the host; the second run, alone on the host, passed 37 suites with 0 fail",
           "missing": false
+        },
+        {
+          "hash": "4378ca7d71a244e5548a7251f75e8e88cf64dc17c75f2c2a5f727a93046aa0ab",
+          "ref": "docs/evidence/WO-159/decisions.md#wo-159-d020",
+          "title": "WO-159-D020: Planner: the WO-143 lock-boundary matrix subtest (packages/skeleton/test/resident.test.ts, 'once and loop restart at every acquisition filesystem boundary, including killed reclaimers') r",
+          "summary": "{ \"id\": \"WO-159-D020\", \"date\": \"2026-09-25\", \"dispatch\": \"resume: final review\", \"decision\": \"Pass final review without integration and record the reviewer's product gate as it happened. Local main, origin main and the worktree HEAD were the same commit (1f888509) at review, so no merge, retime or re-mint was needed, the integrate helper was not run, and every VER-002 claim is carried forward on unchanged source bytes. The first `npm test -- --review` failed one skeleton subtest this order does not touch, the WO-143 lock-boundary matrix, which exceeded its own 240 s budget while a sibling worktree's product gate shared the host; the second run, alone on the host, passed 37 suites with 0 fail",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -17225,6 +17288,14 @@
           "reopenWhen": "the next order that touches usage or meta attribution",
           "targets": [],
           "at": "2026-09-25T21:30:00.824Z"
+        },
+        {
+          "sourceRevision": 4,
+          "status": "deferred",
+          "reason": "Deferred again by WO-169's final review: listed because WO-169 regenerated docs/control/current.md, a generated projection. WO-169 changes one label of the meter's drift rows in scripts/lib/meta.mjs and no usage or meta attribution, so the seam did not open. [WO-169 final review (docs/final-reviews/WO-169/FINAL-001.md)]",
+          "reopenWhen": "the next order that touches usage or meta attribution",
+          "targets": [],
+          "at": "2026-09-27T14:35:55.571Z"
         }
       ]
     },
@@ -18421,6 +18492,14 @@
           "reopenWhen": "Next document-maintenance planning pass or an observed new verbatim decision dispatch.",
           "targets": [],
           "at": "2026-09-26T03:37:02.496Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-169's final review: listed because the row names docs/evidence/*/decisions.md and docs/lineage/decisions-index.md, which every order changes. WO-169's fourteen decision records carry resume phrases as their dispatch and quote no operator chat, so the seam did not open. [WO-169 final review (docs/final-reviews/WO-169/FINAL-001.md)]",
+          "reopenWhen": "Next document-maintenance planning pass or an observed new verbatim decision dispatch.",
+          "targets": [],
+          "at": "2026-09-27T14:35:55.514Z"
         }
       ]
     },
@@ -18856,6 +18935,14 @@
           "reopenWhen": "two planning passes in a row end with more pending rows than they began with",
           "targets": [],
           "at": "2026-09-27T01:46:00.880Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-169's final review. The flow this row waited for now exists: followups --export writes every disposition with its date to one file, so a pass can count arrivals and disposals from that file. No counter is built, and the reopening condition has not been observed. [WO-169 final review (docs/final-reviews/WO-169/FINAL-001.md)]",
+          "reopenWhen": "two planning passes in a row end with more pending rows than they began with",
+          "targets": [],
+          "at": "2026-09-27T14:35:55.542Z"
         }
       ]
     },
@@ -18880,6 +18967,186 @@
           "reopenWhen": "a verification, a review or a planning pass needs a gate's failure output and finds the reference unresolved",
           "targets": [],
           "at": "2026-09-27T01:45:59.813Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-5a03cc13047c1dc4",
+      "key": "decision:docs/evidence/WO-169/decisions.md#wo-169-d002",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "0a9fea023165bce9af0340193e54905acbfdc3c3f359df646fbf206635fbb174",
+          "ref": "docs/evidence/WO-169/decisions.md#wo-169-d002--the-match-is-textual-and-aligned-on-path-components",
+          "title": "WO-169-D002: Planner: after three orders complete with the register advisory, read the counts their ImplementationReady and RepairCompleted events recorded beside the rows their final reviews disposed",
+          "summary": "{ \"id\": \"WO-169-D002\", \"date\": \"2026-09-27\", \"dispatch\": \"resume: next\", \"decision\": \"followups --touching lists a pending row when its source title or summary, its decision's whole followup or reopenWhen (read from the decision record, because the register clips a summary at 700 characters), or its latest disposition names a term. A path is named where its base name stands as a whole name and the path written around it equals the path's own trailing components. A given argument may itself be a tail, so a longer written path that ends in it names it; a changed file is a whole path, so a longer written path is another file. An order is named by its identifier not followed by a digit. Rows kee",
+          "missing": false
+        },
+        {
+          "hash": "0ec189855f00e6d438bf754c8893cd27c697a860e43a744171121ed9e59f2f0c",
+          "ref": "docs/evidence/WO-169/decisions.md#wo-169-d002--the-match-is-textual-and-aligned-on-path-components",
+          "title": "WO-169-D002: Planner: after three orders complete with the register advisory, read the counts their ImplementationReady and RepairCompleted events recorded beside the rows their final reviews disposed",
+          "summary": "{ \"id\": \"WO-169-D002\", \"date\": \"2026-09-27\", \"dispatch\": \"resume: next\", \"decision\": \"followups --touching lists a pending row when its source title or summary, its decision's whole followup or reopenWhen (read from the decision record, because the register clips a summary at 700 characters), or its latest disposition names a term. A path is named where its base name stands as a whole name and the path written around it equals the path's own trailing components. A given argument may itself be a tail, so a longer written path that ends in it names it; a changed file is a whole path, so a longer written path is another file. An order is named by its identifier not followed by a digit. Rows kee",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Deferred by WO-169's final review until the counts it asks for exist: only WO-169 has completed with the register advisory (14 rows at implementation-ready; 16 at this review, two of them minted by VER-001 and by this review). The match's known limits stay recorded in WO-169-D002. [WO-169 final review (docs/final-reviews/WO-169/FINAL-001.md)]",
+          "reopenWhen": "three orders have completed implementation or repair with the register advisory, or an order closes with a touching row undisposed",
+          "targets": [],
+          "at": "2026-09-27T14:35:55.772Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-58a4c432faa720e6",
+      "key": "decision:docs/evidence/WO-169/decisions.md#wo-169-d004",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "4bef2d8dc3ada34ad2f5f80abea6a69c017974e6a3252531cd9a25d85e8a4b3d",
+          "ref": "docs/evidence/WO-169/decisions.md#wo-169-d004--the-export-is-one-json-file-and-its-destination-is-judged-where-it-lands",
+          "title": "WO-169-D004: Planner: the export command refuses a Claude Code host scratchpad because it has no session identity; decide with the scratch-directory work (WO-168) whether a command may read the sessio",
+          "summary": "{ \"id\": \"WO-169-D004\", \"date\": \"2026-09-27\", \"dispatch\": \"resume: next\", \"decision\": \"followups --export <file> [--all] writes one JSON document: the feed's revision, totals and counts, and every selected row with its identity, status, kind, source revision count, source link, title, the decision's whole decision, followup and reopenWhen or the candidate's register summary, and the whole disposition history. Standard output carries the same summary without the rows, the number exported and the physical path. The destination is resolved to its physical path first. Inside the checkout it must lie in the ignored local control lane and be ignored by Git; outside the checkout it must lie in the s",
+          "missing": false
+        },
+        {
+          "hash": "06c70eff6e1dcd93d57b1d3cd5c09a60204810ac43714f38fba63ae4493822d0",
+          "ref": "docs/evidence/WO-169/decisions.md#wo-169-d004--the-export-is-one-json-file-and-its-destination-is-judged-where-it-lands",
+          "title": "WO-169-D004: Planner: the export command refuses a Claude Code host scratchpad because it has no session identity, and it takes the system temporary directory from the environment it runs in; decide w",
+          "summary": "{ \"id\": \"WO-169-D004\", \"date\": \"2026-09-27\", \"dispatch\": \"resume: next\", \"decision\": \"followups --export <file> [--all] writes one JSON document: the feed's revision, totals and counts, and every selected row with its identity, status, kind, source revision count, source link, title, the decision's whole decision, followup and reopenWhen or the candidate's register summary, and the whole disposition history. Standard output carries the same summary without the rows, the number exported and the physical path. The destination is resolved to its physical path first. Inside the checkout it must lie in the ignored local control lane and be ignored by Git; outside the checkout it must lie in the s",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Deferred by WO-169's final review to the scratch-directory work it names: WO-168 is filed and queued, and the pass after it closes decides whether a command may read the session's granted roots. This review's live export to the DotLn session scratch directory succeeded and the host scratchpad was refused, as WO-169-D004 states. [WO-169 final review (docs/final-reviews/WO-169/FINAL-001.md)]",
+          "reopenWhen": "WO-168 closes, or a planner is refused an export destination the role's grants admit and has no granted alternative",
+          "targets": [],
+          "at": "2026-09-27T14:35:55.743Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-406744f5e9966250",
+      "key": "decision:docs/evidence/WO-169/decisions.md#wo-169-d006",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "4104b29301839f80b2c3b804462214e472a584c612897c06fd31ab10148c20e0",
+          "ref": "docs/evidence/WO-169/decisions.md#wo-169-d006--generation-waits-for-authored-conflicts-the-record-holds-the-release-message-as-one-line",
+          "title": "WO-169-D006: Two defects of worktree integrate that predate this order, met in review and left: the decision stub is written once per checkpoint, so a stub written on a pass whose release preparation ",
+          "summary": "{ \"id\": \"WO-169-D006\", \"date\": \"2026-09-27\", \"dispatch\": \"resume: next\", \"decision\": \"worktree integrate runs its generators only when the stage is applied and neither an unmerged path nor an untracked stash collision remains; while one remains it prints the authored conflicts and one pending line saying that generation awaits their resolution and --continue. The affected checks and the instruction to complete the draft decision describe the generated tree, so the pass that completes prints them and an incomplete pass says that it will. The decision stub writes the release message as one line closed by one full stop: sentences are joined, the indented file list is folded into its Files chang",
+          "missing": false
+        },
+        {
+          "hash": "8089ad2f6b7d53a9ed23e83a7f14c4ea2b4386dda50cf5cbcd16c0ccbefaf44f",
+          "ref": "docs/evidence/WO-169/decisions.md#wo-169-d006--generation-waits-for-authored-conflicts-the-record-holds-the-release-message-as-one-line",
+          "title": "WO-169-D006: Two defects of worktree integrate that predate this order, met in review and left: the decision stub is written once per checkpoint, so a stub written on a pass whose release preparation ",
+          "summary": "{ \"id\": \"WO-169-D006\", \"date\": \"2026-09-27\", \"dispatch\": \"resume: next\", \"decision\": \"worktree integrate runs its generators only when the stage is applied and neither an unmerged path nor an untracked stash collision remains; while one remains it prints the authored conflicts and one pending line saying that generation awaits their resolution and --continue. The affected checks and the instruction to complete the draft decision describe the generated tree, so a pass that held generation leaves them to the pass that runs it and says so; a pass that generated and left a failed step keeps its checks and names the step to repair, not a conflict. The decision stub writes the release message as o",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Deferred by WO-169's final review: two low-priority defects of scripts/lib/worktree-integration.mjs that predate WO-169 and that no real integration has met; a review helper reproduced the stale Release preparation: pending entry in a throwaway integration. WO-086 is filed against the same decision stub. [WO-169 final review (docs/final-reviews/WO-169/FINAL-001.md)]",
+          "reopenWhen": "a real integration meets either defect, or the next order that edits the decision stub or stash-apply stage of scripts/lib/worktree-integration.mjs",
+          "targets": [],
+          "at": "2026-09-27T14:35:55.715Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-b1163d128e371b7f",
+      "key": "decision:docs/evidence/WO-169/decisions.md#wo-169-d007",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "fcefb19e5eeffdc7a55eb743cec4f53cc5e1cc6dae2daafe419cf214c83afd72",
+          "ref": "docs/evidence/WO-169/decisions.md#wo-169-d007--the-configuration-root-suite-declares-scripts",
+          "title": "WO-169-D007: Planner: changedMachinery reads git diff, which omits untracked files, so a script an order adds selects no machinery suite until it is staged; the executor's and verifier's review gates ",
+          "summary": "{ \"id\": \"WO-169-D007\", \"date\": \"2026-09-27\", \"dispatch\": \"resume: next\", \"decision\": \"The configuration-root suite's declared sources become the one directory entry scripts/, which contains the former eight. Any changed path under scripts/ now selects the suite under --review. The existing selection fixture for a changed release shell file now expects configuration-root beside runner-fixtures. worktree integrate shares the selection, so it prints npm test -- --review whenever a script changed since the recorded base.\", \"evidence\": [ \"scripts/test-runner.mjs machinerySources; changedMachinery matches by prefix and already carries directory entries\", \"scripts/test-runner.test.mjs: WO-169 a cha",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by WO-169's final review: changedMachinery in scripts/test-runner.mjs reads git diff and omits untracked files, a gap that predates WO-169 and lies outside its one-row change to the source table; the reviewer's procedure stages new source before its gate, so the final gate still selects the suite. [WO-169 final review (docs/final-reviews/WO-169/FINAL-001.md)]",
+          "reopenWhen": "a script an order adds escapes every machinery suite until the reviewer's gate, or the next order that edits changedMachinery in scripts/test-runner.mjs",
+          "targets": [],
+          "at": "2026-09-27T14:35:55.800Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-c5438ef80c397cf0",
+      "key": "decision:docs/evidence/WO-169/decisions.md#wo-169-d012",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "fc57d5f9ed9af71156f1f37f447fb2a0330cfb80fdc0d5e46b64cc9ca698063c",
+          "ref": "docs/evidence/WO-169/decisions.md#wo-169-d012--board-a-large-touching-querys-page-limit",
+          "title": "WO-169-D012: Planner: decide a bounded representation or explicit input-size refusal for followups --touching when its query terms alone outgrow the 8 KB page and continuation. Reproduce 500 distinct ",
+          "summary": "{ \"id\": \"WO-169-D012\", \"date\": \"2026-09-27\", \"dispatch\": \"resume: verify; VER-001\", \"decision\": \"Record a low-severity limit of followups --touching: a valid explicit query with 500 distinct order identifiers fails the 8 KB page bound instead of returning a page or naming an input-size limit. The fixture cases in criterion 1 and this order's own 26-path, one-order query succeed. Keep the verification subject unchanged and pass the specified criterion while naming this limit in VER-001.\", \"evidence\": [ \"Read-only verifier reproduction on the current register: touchingFollowups(process.cwd(), { orders: WO-000 through WO-399 }) returned 114 matches, one row, a 4,747-byte page and a continuation",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by WO-169's final review: an explicit followups --touching query of 500 order identifiers exceeds the 8 KB page (VER-001 N1), while this order's own 27-path no-argument query pages normally and explicit callers can split their terms. [WO-169 final review (docs/final-reviews/WO-169/FINAL-001.md)]",
+          "reopenWhen": "a normal no-argument order diff reaches the page limit of followups --touching, or a planning pass needs one large explicit query to avoid losing a disposition",
+          "targets": [],
+          "at": "2026-09-27T14:35:55.829Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-e55e258d37cb3f20",
+      "key": "decision:docs/evidence/WO-169/decisions.md#wo-169-d014",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "93a35d1be5794979b5d6ba0dc2461b49579893b340eb1b5e2557afdf47fdc2bc",
+          "ref": "docs/evidence/WO-169/decisions.md#wo-169-d014--final-review-board-three-minor-feed-defects-and-correct-one-limit-claim",
+          "title": "WO-169-D014: Next order that edits scripts/lib/planning-followups.mjs or scripts/refute-plan.mjs: (1) make namesPath treat a written path's leading ../ components as a tail, so a relative link is matc",
+          "summary": "{ \"id\": \"WO-169-D014\", \"date\": \"2026-09-27\", \"dispatch\": \"resume: final review; FINAL-001\", \"decision\": \"Pass the order with three minor defects in the feed forms boarded, not repaired, because each lies outside the acceptance criteria and a reviewer does not write a behavioural fix and certify it. (1) followups --touching never matches a path written as a relative link on the full path: namesPath compares the link's .. components with the given path's leading components, so --touching docs/product/03-architecture.md does not return a row that links ../product/03-architecture.md, while --touching 03-architecture.md and --touching product/03-architecture.md do. WO-169-D002 lists this limit as",
+          "missing": false
+        },
+        {
+          "hash": "c118f83a049ad210e74581a4cb84f4b8b00cef679f64779accae6d4c203d2fdc",
+          "ref": "docs/evidence/WO-169/decisions.md#wo-169-d014--final-review-board-three-minor-feed-defects-and-correct-one-limit-claim",
+          "title": "WO-169-D014: Next order that edits scripts/lib/planning-followups.mjs or scripts/refute-plan.mjs: (1) make namesPath treat a written path's leading ../ components as a tail, so a relative link is matc",
+          "summary": "{ \"id\": \"WO-169-D014\", \"date\": \"2026-09-27\", \"dispatch\": \"resume: final review; FINAL-001\", \"decision\": \"Pass the order with three minor defects in the feed forms boarded, not repaired, because each lies outside the acceptance criteria and a reviewer does not write a behavioural fix and certify it. (1) followups --touching never matches a path written as a relative link on the full path: namesPath compares the link's .. components with the given path's leading components, so --touching docs/product/03-architecture.md does not return a row that links ../product/03-architecture.md, while --touching 03-architecture.md and --touching product/03-architecture.md do. WO-169-D002 lists this limit as",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by WO-169's final review, which met these four low-priority edges of the feed forms in scripts/lib/planning-followups.mjs, scripts/refute-plan.mjs and scripts/lib/lifecycle-evidence.mjs and boarded them in WO-169-D014; none is met by DotLn's own repository today, and none fails an acceptance criterion. [WO-169 final review (docs/final-reviews/WO-169/FINAL-001.md)]",
+          "reopenWhen": "the next order that edits scripts/lib/planning-followups.mjs or scripts/refute-plan.mjs, or a planner or executor misses a row because it links a changed file relatively, an advisory prints a command that refuses, or a register write is refused after an export",
+          "targets": [],
+          "at": "2026-09-27T14:35:55.857Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Deferred again by WO-169's final review after it corrected its own record the same day: WO-169-D014 had said none of the four edges is met by DotLn's repository, but a linked worktree's lane lacks terms.txt, so an export there could create it. The four low-priority edges of the feed forms in scripts/lib/planning-followups.mjs, scripts/refute-plan.mjs and scripts/lib/lifecycle-evidence.mjs remain boarded; none has been met in use and none fails an acceptance criterion. [WO-169 final review (docs/final-reviews/WO-169/FINAL-001.md)]",
+          "reopenWhen": "the next order that edits scripts/lib/planning-followups.mjs or scripts/refute-plan.mjs, or a planner or executor misses a row because it links a changed file relatively, an advisory prints a command that refuses, or a register write is refused after an export",
+          "targets": [],
+          "at": "2026-09-27T14:43:42.069Z"
         }
       ]
     }

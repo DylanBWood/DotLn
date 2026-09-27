@@ -700,8 +700,8 @@ receipt keeps the original bases, checkpoint and stash across this boundary;
 the stash is never popped or dropped. A clean-tree continuation adopts only
 the stash named for this integration and its original base; ambiguous matches
 require explicit inspection. The helper commits a resolved divergent merge
-before applying the stash, retaining uncommitted work for the current role. A reviewed branch's
-authored merge conflict can delay stash application until that continuation.
+before applying the stash, retaining uncommitted work for the current role. An authored
+conflict delays generation, and a reviewed branch's stash application, until that continuation.
 Generated fragments in mixed documents are re-merged separately from their
 authored content. The follow-up register unions entries by id and retains
 compatible history prefixes; divergent histories for one id need authored
@@ -1293,6 +1293,13 @@ record. Changed items, explicit open items and deferrals precede the untriaged
 migration. Unchosen items persist; allocation, deferral, rejection and duplicates
 retain reasons and source history. New nominations use formal candidate headings
 or sourced decision records and sync in the same pass with `npm run meta`.
+
+`followups --touching [<path or WO-NNN>…]` lists the pending rows whose text
+names a changed or given path or an order: the planner runs it before filing
+an order, completion advises the executor with the count and the rule, and a
+pass retiring closed orders names them; each use ends in a recorded
+disposition. `--export <file>` writes every pending row whole and `--apply`
+takes a batch under one revision.
 
 Read the [follow-up procedure](../planning/followups.md) when recording a
 choice or reconciling a source change. The metadata and document gates check

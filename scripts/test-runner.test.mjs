@@ -82,9 +82,11 @@ test("release shell changes select their inventory guard during review", async (
   );
   assert.deepEqual(changedMachinery(repo, suites, "main"), []);
   writeFileSync(shell, baseline + "release_case_added() {\n  :\n}\n");
+  // Every path under scripts/ also selects the configuration-root suite
+  // since WO-169 item 5 declared the directory.
   assert.deepEqual(
     changedMachinery(repo, suites, "main").map((row) => row.name),
-    ["runner-fixtures"],
+    ["configuration-root", "runner-fixtures"],
   );
   const messages = [];
   const saved = console.log;
@@ -102,7 +104,7 @@ test("release shell changes select their inventory guard during review", async (
           messages.some((line) => line.startsWith(`${row.name} —`)),
       )
       .map((row) => row.name),
-    ["runner-fixtures"],
+    ["configuration-root", "runner-fixtures"],
   );
   const tasks = expandSuiteTasks(
     suites.filter((row) => row.name === "runner-fixtures"),
@@ -112,6 +114,63 @@ test("release shell changes select their inventory guard during review", async (
     tasks.some((task) =>
       task.args?.includes("scripts/test-release-fixtures.mjs"),
     ),
+  );
+});
+
+test("WO-169 a changed script outside the former eight sources selects the configuration-root suite", async (t) => {
+  const repo = mkdtempSync(join(tmpdir(), "dotln-script-selection-"));
+  t.after(() => rmSync(repo, { recursive: true, force: true }));
+  const git = (...args) =>
+    execFileSync("git", args, {
+      cwd: repo,
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "pipe"],
+    });
+  git("init", "-b", "main");
+  mkdirSync(join(repo, "scripts"));
+  mkdirSync(join(repo, "packages/kernel/src"), { recursive: true });
+  // The script WO-165 changed while no gate selected the suite that scans
+  // it (WO-085 D014), and a source no machinery suite declares.
+  const script = join(repo, "scripts/authority-evidence.mjs");
+  const other = join(repo, "packages/kernel/src/undeclared.ts");
+  writeFileSync(script, "export const route = 1;\n");
+  writeFileSync(other, "export const value = 1;\n");
+  git("add", ".");
+  git(
+    "-c",
+    "user.name=Fixture",
+    "-c",
+    "user.email=fixture@example.invalid",
+    "commit",
+    "-m",
+    "fixture baseline",
+  );
+  const listed = async () => {
+    const messages = [];
+    const saved = console.log;
+    try {
+      console.log = (line) => messages.push(line);
+      await runGate(["--review", "--list"], repo);
+    } finally {
+      console.log = saved;
+    }
+    return messages;
+  };
+  writeFileSync(other, "export const value = 2;\n");
+  assert.deepEqual(changedMachinery(repo, suites, "main"), []);
+  assert.ok(
+    !(await listed()).some((line) => line.startsWith("configuration-root —")),
+    "a change outside scripts/ leaves the suite unselected",
+  );
+  writeFileSync(script, "export const route = 2;\n");
+  assert.ok(
+    changedMachinery(repo, suites, "main").some(
+      (row) => row.name === "configuration-root",
+    ),
+  );
+  assert.ok(
+    (await listed()).some((line) => line.startsWith("configuration-root —")),
+    "npm test -- --review --list names the suite",
   );
 });
 

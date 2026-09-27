@@ -16,6 +16,7 @@ import {
   cpSync,
   chmodSync,
   existsSync,
+  linkSync,
   lstatSync,
   mkdirSync,
   mkdtempSync,
@@ -125,6 +126,7 @@ import {
   readFollowups,
   planningFollowups,
   disposeFollowup,
+  disposeFollowups,
   followupStatus,
   requirePlanningHandoffs,
 } from "./lib/planning-followups.mjs";
@@ -3842,6 +3844,8 @@ test("WO-155 cold-start trends share edition and acceptance evidence across the 
   const budgetPath = "docs/control/budgets.json";
   const budgets = JSON.parse(readFileSync(join(source, budgetPath), "utf8"));
   budgets.acceptances = [];
+  // The fixture owns the unset ceiling it asserts below (WO-169 item 6).
+  budgets.limits.coldStartBytes.refuter = null;
   write(root, budgetPath, json(budgets));
   const paths = [".claude/skills", ".agents/skills"].flatMap((prefix) =>
     [
@@ -3934,6 +3938,21 @@ test("WO-155 cold-start trends share edition and acceptance evidence across the 
     renderMeta(meta),
     /ceiling [\d,]+; previous \d+; Δ edition 4; last acceptance 2026-09-20: \d+ bytes, Δ 9/,
   );
+  // WO-169 item 6: an unset ceiling reads "unset" in the drift rows as it
+  // does in the budget rows and the legend; "unavailable" stays a missing
+  // observation (WO-155 D006).
+  assert.equal(
+    renderMeta(meta).match(
+      /^\S+\/refuter: [\d,]+ bytes; ceiling unset; .*; unset$/gm,
+    )?.length,
+    2,
+    renderMeta(meta),
+  );
+  assert.match(
+    renderMeta(meta),
+    /^current\/coldStartBytes\.refuter: [\d,]+; ceiling unset; unset$/m,
+  );
+  assert.doesNotMatch(renderMeta(meta), /ceiling unavailable/);
   assert.deepEqual(readFileSync(join(root, budgetPath)), beforeBudget);
   const invalid = spawnSync(
     process.execPath,
@@ -5083,6 +5102,789 @@ test("follow-up handoffs require a live public destination without copying local
   );
   dispose(root, entry, "declined");
   assert.throws(() => requirePlanningHandoffs(root, wo), /public FUP/);
+});
+
+// WO-169 fixtures: a register whose rows name their seams in each field the
+// match reads, on a worktree branch with a main to compare against.
+const seamDecision = (record) =>
+  `## ${record.id} — Full title\n\n\`\`\`json\n${json({
+    date: "2026-09-27",
+    dispatch: "Synthetic operator source",
+    decision: "Keep the current behavior. ".repeat(40).trim(),
+    evidence: ["fixture evidence"],
+    rejected: [],
+    reopenWhen: "The fixture observation occurs",
+    ...record,
+  })}\`\`\`\n`;
+// Longer than the feed's 220-character clip and the register's 200-character
+// title, and naming its seam after both.
+const seamFollowup = `Priority low. ${"The measured reason stays beside the row. ".repeat(6)}It can ride with the next order that opens \`packages/skeleton/src/reactor.ts\`.`;
+const defer = (root, id, reopenWhen, status = "deferred") => {
+  const entry = readFollowups(root).entries.find((row) => row.id === id);
+  return disposeFollowup(root, {
+    expectedRevision: planningFollowups(root).revision,
+    id,
+    sourceRevision: entry.revisions.length,
+    status,
+    reason: "Synthetic reviewed disposition with explicit coverage",
+    reopenWhen,
+    targets: [],
+  });
+};
+const seamRegister = (root) => {
+  git(root, "branch", "main");
+  write(
+    root,
+    "docs/product/ideas.md",
+    [
+      "## Candidate — Whole path\nWaits for the next order that edits `scripts/lib/meta.mjs`.",
+      "## Candidate — Base name\nThe drift label lives in meta.mjs. It can ride along.",
+      "## Candidate — Another file\nOnly scripts/meta.mjs and test-meta.mjs are involved.",
+      "## Candidate — Settled row\nAlso names scripts/lib/meta.mjs, and is settled.",
+      "## Candidate — Disposition row\nIts own text names no seam.",
+      "## Candidate — Named order\nDeferred until WO-115 activates.",
+      "## Candidate — Longer identifier\nNames WO-1150 and XWO-115 only.",
+      "## Candidate — This order\nRides with WO-999 and the tracked own.txt file.",
+      "## Candidate — Deeper file\nOnly fixtures/own.txt, a file of another directory.",
+    ].join("\n\n") + "\n",
+  );
+  write(
+    root,
+    "docs/evidence/WO-998/decisions.md",
+    "# Decisions\n\n" +
+      [
+        seamDecision({ id: "WO-998-D001", followup: seamFollowup }),
+        seamDecision({
+          id: "WO-998-D002",
+          followup: "Decide the retention rule.",
+          reopenWhen: "A later order edits scripts/lib/late.mjs",
+        }),
+      ].join("\n"),
+  );
+  const ids = Object.fromEntries(
+    syncFollowups(root).entries.map((entry) => [
+      entry.revisions.at(-1).title.replace(/:.*$/, ""),
+      entry.id,
+    ]),
+  );
+  defer(root, ids["Candidate — Settled row"], "Changed evidence", "settled");
+  defer(
+    root,
+    ids["Candidate — Disposition row"],
+    "The next order that edits scripts/lib/meta.mjs",
+  );
+  return ids;
+};
+const touched = (page) => page.rows.map((row) => row.id).sort();
+
+test("WO-169 followups --touching names the pending rows a path, an order or this change touches", async (t) => {
+  const root = repo(t);
+  const ids = seamRegister(root);
+  const before = snapshot(root);
+  const path = await planMain(
+    ["followups", "--touching", "scripts/lib/meta.mjs"],
+    root,
+  );
+  assert.deepEqual(
+    touched(path),
+    [
+      ids["Candidate — Whole path"],
+      ids["Candidate — Base name"],
+      ids["Candidate — Disposition row"],
+    ].sort(),
+    "the path, its base name and a latest disposition; no settled row and no other file of that name",
+  );
+  assert.equal(path.matched, 3);
+  assert.match(path.match, /^Textual match, a pointer for judgment/);
+  assert.deepEqual(
+    Object.keys(path.rows[0]),
+    [...Object.keys(planningFollowups(root).rows[0]), "matched"],
+    "the feed's row shape, with the terms that matched",
+  );
+  assert.ok(path.rows.every((row) => row.status !== "settled"));
+  assert.deepEqual(path.rows[0].matched, ["scripts/lib/meta.mjs"]);
+  assert.deepEqual(
+    touched(await planMain(["followups", "--touching", "WO-115"], root)),
+    [ids["Candidate — Named order"]],
+  );
+  // A decision's whole followup and reopenWhen are read from its record: the
+  // register's summary is clipped before either begins.
+  assert.ok(
+    !readFollowups(root)
+      .entries.find((row) => row.id === ids["WO-998-D001"])
+      .revisions.at(-1)
+      .summary.includes("reactor.ts"),
+  );
+  assert.deepEqual(
+    touched(await planMain(["followups", "--touching", "reactor.ts"], root)),
+    [ids["WO-998-D001"]],
+  );
+  assert.deepEqual(
+    touched(
+      await planMain(
+        ["followups", "--touching", "scripts/lib/late.mjs", "WO-998"],
+        root,
+      ),
+    ),
+    [ids["WO-998-D001"], ids["WO-998-D002"]].sort(),
+  );
+  // No argument: the files changed against the merge base with main,
+  // untracked ones included, and the active order.
+  write(root, "own.txt", "changed\n");
+  write(root, "scripts/lib/meta.mjs", "export const meter = 1;\n");
+  const change = await planMain(["followups", "--touching"], root);
+  assert.deepEqual(
+    touched(change),
+    [
+      ids["Candidate — Whole path"],
+      ids["Candidate — Base name"],
+      ids["Candidate — Disposition row"],
+      ids["Candidate — This order"],
+    ].sort(),
+  );
+  assert.deepEqual(change.touching.orders, ["WO-999"]);
+  assert.deepEqual(
+    change.rows.find((row) => row.id === ids["Candidate — This order"]).matched,
+    ["own.txt", "WO-999"],
+  );
+  // A changed file is a whole path, so a longer written path is another
+  // file; a given name may be a tail, so the same row is listed for it.
+  assert.deepEqual(
+    touched(await planMain(["followups", "--touching", "own.txt"], root)),
+    [ids["Candidate — This order"], ids["Candidate — Deeper file"]].sort(),
+  );
+  await assert.rejects(
+    planMain(["followups", "--touching", "--all"], root),
+    /usage: plan followups/,
+  );
+  rmSync(join(root, "scripts/lib/meta.mjs"));
+  write(root, "own.txt", "original\n");
+  assert.deepEqual(snapshot(root), before, "the match reads and never writes");
+});
+
+test("WO-169 the change is read from the merge base with main: committed, renamed, deleted and untracked files, never main's own", async (t) => {
+  const root = repo(t);
+  for (const name of ["old-name.txt", "gone.txt", "committed.txt"])
+    write(root, name, `${name}\n`);
+  git(root, "add", ".");
+  git(root, "commit", "-qm", "seam files");
+  git(root, "branch", "main");
+  const titles = {
+    Renamed: "Waits for the next order that edits old-name.txt.",
+    Deleted: "Waits for gone.txt.",
+    Committed: "Waits for committed.txt.",
+    Untracked: "Waits for fresh.txt.",
+    Dash: "Waits for -dash.txt.",
+    "Main only": "Waits for main-only.txt.",
+    Untouched: "Waits for own.txt.",
+    Many: "Names one.txt, two.txt, three.txt, four.txt, five.txt and six.txt.",
+  };
+  write(
+    root,
+    "docs/product/ideas.md",
+    Object.entries(titles)
+      .map(([title, body]) => `## Candidate — ${title}\n${body}`)
+      .join("\n\n") + "\n",
+  );
+  const ids = Object.fromEntries(
+    syncFollowups(root).entries.map((entry) => [
+      entry.revisions.at(-1).title.replace("Candidate — ", ""),
+      entry.id,
+    ]),
+  );
+  // The branch's own commits are part of its change; HEAD is not the base.
+  git(root, "mv", "old-name.txt", "new-name.txt");
+  git(root, "rm", "-q", "gone.txt");
+  write(root, "committed.txt", "changed\n");
+  git(root, "add", ".");
+  git(root, "commit", "-qm", "branch work");
+  // Main moves on after the branch point; its tip is not the base either.
+  git(root, "checkout", "-q", "main");
+  write(root, "main-only.txt", "merged sibling\n");
+  git(root, "add", ".");
+  git(root, "commit", "-qm", "merged sibling");
+  git(root, "checkout", "-q", "wo-999");
+  write(root, "fresh.txt", "new\n");
+  write(root, "-dash.txt", "a name Git reports is never refused as a term\n");
+  for (const renames of ["true", "false"]) {
+    git(root, "config", "diff.renames", renames);
+    const change = await planMain(["followups", "--touching"], root);
+    assert.deepEqual(
+      touched(change),
+      [ids.Renamed, ids.Deleted, ids.Committed, ids.Untracked, ids.Dash].sort(),
+      `diff.renames ${renames}`,
+    );
+  }
+  // A row lists its first terms and counts the rest.
+  const many = await planMain(
+    [
+      "followups",
+      "--touching",
+      ...["one", "two", "three", "four", "five", "six"].map(
+        (name) => `${name}.txt`,
+      ),
+    ],
+    root,
+  );
+  assert.deepEqual(touched(many), [ids.Many]);
+  assert.deepEqual(many.rows[0].matched, [
+    "five.txt",
+    "four.txt",
+    "one.txt",
+    "six.txt",
+  ]);
+  assert.equal(many.rows[0].matchedCount, 6);
+  const wide = await planMain(
+    [
+      "followups",
+      "--touching",
+      ...Array.from(
+        { length: 400 },
+        (_, index) => `directory-${index}/one.txt`,
+      ),
+    ],
+    root,
+  );
+  assert.equal(wide.rows[0].matchedCount, 400);
+  assert.ok(Buffer.byteLength(json(wide)) <= 8192);
+});
+
+test("WO-169 followups --touching pages within the byte budget and its continuation keeps the terms", async (t) => {
+  const root = repo(t);
+  write(
+    root,
+    "docs/product/candidates.md",
+    Array.from(
+      { length: 21 },
+      (_, index) =>
+        `## Candidate — ${index} ${"目".repeat(150)}\nWaits for it's-a path.mjs, item ${index}.`,
+    ).join("\n\n") + "\n\n## Candidate — Unrelated\nNames nothing.\n",
+  );
+  syncFollowups(root);
+  const terms = ["it's-a path.mjs", "WO-115"];
+  let page = await planMain(["followups", "--touching", ...terms], root),
+    seen = [];
+  assert.equal(page.matched, 21);
+  assert.equal(page.pending, 22);
+  do {
+    assert.ok(Buffer.byteLength(json(page)) <= 8192);
+    seen.push(...page.rows.map((row) => row.id));
+    if (!page.next) break;
+    assert.ok(
+      page.next.startsWith(
+        `npm run plan -- followups --touching 'it'\\''s-a path.mjs' 'WO-115' --cursor `,
+      ),
+      page.next,
+    );
+    page = await planMain(
+      [
+        "followups",
+        "--touching",
+        ...terms,
+        "--cursor",
+        page.next.split(" --cursor ")[1],
+      ],
+      root,
+    );
+  } while (true);
+  assert.equal(new Set(seen).size, 21);
+  assert.equal(seen.length, 21);
+  const cursor = (
+    await planMain(["followups", "--touching", ...terms], root)
+  ).next.split(" --cursor ")[1];
+  await assert.rejects(
+    planMain(
+      ["followups", "--touching", "other.mjs", "--cursor", cursor],
+      root,
+    ),
+    /stale or invalid page cursor/,
+    "a cursor belongs to the terms it was cut for",
+  );
+  dispose(root, readFollowups(root).entries[0], "settled");
+  await assert.rejects(
+    planMain(["followups", "--touching", ...terms, "--cursor", cursor], root),
+    /stale or invalid page cursor/,
+  );
+});
+
+test("WO-169 completion advises with the count, the command and the rule when rows touch the change, and never refuses", async (t) => {
+  const advice = async (root, action) =>
+    (
+      await requireLifecycleEvidence(root, action, undefined, "WO-999")
+    ).advisories.filter((message) => /follow-up row/i.test(message));
+  for (const action of ["implementation-ready", "repair-complete"]) {
+    const root = repo(t);
+    git(root, "branch", "main");
+    write(
+      root,
+      "docs/product/ideas.md",
+      "## Candidate — Seam\nWaits for the next order that edits own.txt.\n\n## Candidate — Elsewhere\nWaits for another.txt.\n",
+    );
+    syncFollowups(root);
+    // Nothing the change touches is named: silent.
+    assert.deepEqual(await advice(root, action), []);
+    write(root, "own.txt", "changed\n");
+    const before = snapshot(root);
+    assert.deepEqual(await advice(root, action), [
+      "1 pending follow-up row names a file this change touches or WO-999 (a textual match): run npm run plan -- followups --touching; fix a row inside the Boy Scout bound or record it as left in the order's decisions, never widen the order; the final review disposes each listed row through the feed.",
+    ]);
+    write(
+      root,
+      "docs/product/more.md",
+      "## Candidate — Order\nRides with WO-999.\n",
+    );
+    // A register the change made stale is reported, never guessed and never
+    // repaired by the completion.
+    assert.deepEqual(await advice(root, action), [
+      "Follow-up rows this change touches unavailable: Planning follow-ups: register is stale; run npm run meta or npm run plan -- followups --sync",
+    ]);
+    syncFollowups(root);
+    assert.match(
+      (await advice(root, action))[0],
+      /^2 pending follow-up rows name /,
+    );
+    rmSync(join(root, "docs/product/more.md"));
+    syncFollowups(root);
+    const tracked = Object.fromEntries(
+      Object.entries(snapshot(root)).filter(
+        ([path]) =>
+          !path.startsWith("docs/control/local/") && path !== FOLLOWUPS,
+      ),
+    );
+    assert.deepEqual(
+      tracked,
+      Object.fromEntries(
+        Object.entries(before).filter(
+          ([path]) =>
+            !path.startsWith("docs/control/local/") && path !== FOLLOWUPS,
+        ),
+      ),
+      "the advisory writes nothing outside the ignored lane",
+    );
+  }
+  // A repository with no main is judged by its order alone.
+  const alone = repo(t);
+  write(
+    alone,
+    "docs/product/ideas.md",
+    "## Candidate — Seam\nNames own.txt.\n",
+  );
+  syncFollowups(alone);
+  write(alone, "own.txt", "changed\n");
+  assert.deepEqual(await advice(alone, "implementation-ready"), []);
+  await assert.rejects(
+    planMain(["followups", "--touching"], alone),
+    /no main to compare with; name the paths/,
+  );
+  // On a branch that names no order, with several open, the command cannot
+  // select the completion's order: the advisory names it, and the command it
+  // prints returns the advisory's count.
+  const shared = repo(t);
+  git(shared, "branch", "main");
+  git(shared, "branch", "-m", "shared-work");
+  write(
+    shared,
+    "docs/control/orders/WO-997.jsonl",
+    JSON.stringify({
+      schemaVersion: 1,
+      type: "WorkOrderActivated",
+      workOrderId: "WO-997",
+      workOrderPath: "docs/work-orders/WO-997-fixture.md",
+      recordedAt: "2026-09-09T00:00:00.000Z",
+    }) + "\n",
+  );
+  write(
+    shared,
+    "docs/product/ideas.md",
+    "## Candidate — Seam\nNames own.txt.\n\n## Candidate — Order\nRides with WO-999.\n",
+  );
+  syncFollowups(shared);
+  write(shared, "own.txt", "changed\n");
+  const [named] = await advice(shared, "implementation-ready");
+  assert.match(
+    named,
+    /^2 pending follow-up rows name a file this change touches or WO-999 \(a textual match\): run npm run plan -- followups --touching --work-order WO-999; /,
+  );
+  assert.equal(
+    (
+      await planMain(
+        ["followups", "--touching", "--work-order", "WO-999"],
+        shared,
+      )
+    ).matched,
+    2,
+  );
+  assert.equal(
+    (await planMain(["followups", "--touching"], shared)).matched,
+    1,
+    "without the flag the command has no order to select",
+  );
+  for (const refused of [
+    ["--work-order"],
+    ["--work-order", "999"],
+    ["own.txt", "--work-order", "WO-999"],
+    ["--work-order", "WO-999", "own.txt"],
+    ["--work-order", "WO-999", "--work-order", "WO-997"],
+  ])
+    await assert.rejects(
+      planMain(["followups", "--touching", ...refused], shared),
+      /usage: plan followups/,
+      refused.join(" "),
+    );
+});
+
+test("WO-169 followups --export writes every pending row whole to a granted destination and prints only counts", async (t) => {
+  const root = repo(t);
+  const ids = seamRegister(root);
+  const long = "A reason that a page would clip. ".repeat(12).trim();
+  defer(root, ids["Candidate — Named order"], long);
+  defer(root, ids["Candidate — Named order"], "WO-115 activates");
+  const outside = realpathSync(mkdtempSync(join(tmpdir(), "dotln-export-")));
+  t.after(() => rmSync(outside, { recursive: true, force: true }));
+  const pages = () => {
+    const rows = [];
+    for (
+      let page = planningFollowups(root);
+      ;
+      page = planningFollowups(root, {
+        cursor: page.next.split(" --cursor ")[1],
+      })
+    ) {
+      rows.push(json(page));
+      if (!page.next) return rows;
+    }
+  };
+  const before = { pages: pages(), files: snapshot(root) };
+  const printed = await planMain(
+    ["followups", "--export", join(outside, "nested/rows.json")],
+    root,
+  );
+  assert.deepEqual(Object.keys(printed), [
+    "revision",
+    "total",
+    "counts",
+    "pending",
+    "showing",
+    "exported",
+    "path",
+  ]);
+  assert.equal(printed.path, join(outside, "nested/rows.json"));
+  assert.equal(printed.revision, planningFollowups(root).revision);
+  assert.equal(printed.exported, printed.pending);
+  assert.equal(printed.exported, 10);
+  const exported = JSON.parse(readFileSync(printed.path, "utf8"));
+  assert.deepEqual(
+    exported.rows.map((row) => row.id).sort(),
+    [
+      ...Object.values(ids).filter(
+        (id) => id !== ids["Candidate — Settled row"],
+      ),
+    ].sort(),
+  );
+  const decision = exported.rows.find((row) => row.id === ids["WO-998-D002"]);
+  assert.deepEqual(
+    {
+      kind: decision.kind,
+      status: decision.status,
+      followup: decision.followup,
+      reopenWhen: decision.reopenWhen,
+      dispositions: decision.dispositions,
+    },
+    {
+      kind: "decision",
+      status: "untriaged",
+      followup: "Decide the retention rule.",
+      reopenWhen: "A later order edits scripts/lib/late.mjs",
+      dispositions: [],
+    },
+  );
+  assert.equal(decision.decision.length, 40 * 27 - 1, "the decision is whole");
+  const action = exported.rows.find((row) => row.id === ids["WO-998-D001"]);
+  assert.equal(action.followup, seamFollowup, "the followup is whole");
+  assert.ok(seamFollowup.length > 220);
+  const history = exported.rows.find(
+    (row) => row.id === ids["Candidate — Named order"],
+  );
+  assert.deepEqual(
+    history.dispositions.map((row) => row.reopenWhen),
+    [long, "WO-115 activates"],
+    "the disposition history is whole and in order",
+  );
+  assert.ok(long.length > 220);
+  assert.equal(
+    history.summary,
+    "## Candidate — Named order Deferred until WO-115 activates.",
+    "a candidate carries the summary its register revision holds",
+  );
+  const all = await planMain(
+    ["followups", "--export", join(outside, "all.json"), "--all"],
+    root,
+  );
+  assert.equal(all.exported, all.total);
+  assert.equal(all.showing, "all");
+  // Inside the checkout only the ignored local control lane is a destination.
+  const lane = await planMain(
+    ["followups", "--export", "docs/control/local/planning/rows.json"],
+    root,
+  );
+  assert.equal(
+    readFileSync(lane.path, "utf8"),
+    readFileSync(printed.path, "utf8"),
+  );
+  const outsideLane = (files) =>
+    Object.fromEntries(
+      Object.entries(files).filter(
+        ([path]) => !path.startsWith("docs/control/local/"),
+      ),
+    );
+  assert.deepEqual(
+    pages(),
+    before.pages,
+    "the feed's pages are byte-identical",
+  );
+  assert.deepEqual(
+    outsideLane(snapshot(root)),
+    outsideLane(before.files),
+    "an export changes no file outside its destination",
+  );
+  // An export is renamed into place: a name that shares its bytes with the
+  // old export keeps them, and only an export is ever replaced.
+  linkSync(lane.path, join(outside, "kept.json"));
+  await planMain(
+    ["followups", "--export", "docs/control/local/planning/rows.json", "--all"],
+    root,
+  );
+  assert.equal(JSON.parse(readFileSync(lane.path, "utf8")).showing, "all");
+  assert.equal(
+    readFileSync(join(outside, "kept.json"), "utf8"),
+    readFileSync(printed.path, "utf8"),
+  );
+  linkSync(join(root, "own.txt"), join(root, "docs/control/local/shared.json"));
+  write(root, "docs/control/local/harness/checks.json", "[]\n");
+  write(outside, "notes.txt", "kept\n");
+  for (const kept of [
+    "docs/control/local/shared.json",
+    "docs/control/local/harness/checks.json",
+    join(outside, "notes.txt"),
+  ])
+    await assert.rejects(
+      planMain(["followups", "--export", kept], root),
+      /destination exists and is not a follow-up export; name a new file/,
+      kept,
+    );
+  assert.equal(readFileSync(join(root, "own.txt"), "utf8"), "original\n");
+  assert.equal(
+    readFileSync(join(root, "docs/control/local/harness/checks.json"), "utf8"),
+    "[]\n",
+  );
+  // Destinations are judged where they physically land: a link out of the
+  // lane is followed to a place no root covers, and another checkout under
+  // the temporary directory is no scratch root.
+  symlinkSync("/", join(root, "docs/control/local/elsewhere"));
+  mkdirSync(join(outside, "checkout"));
+  git(join(outside, "checkout"), "init", "-q");
+  for (const refused of [
+    "docs/planning/rows.json",
+    "rows.json",
+    "docs/control/local/../rows.json",
+    "/dotln-export-refused/rows.json",
+    "docs/control/local/elsewhere/dotln-export-refused/rows.json",
+    join(outside, "checkout/rows.json"),
+    join(outside, "checkout/nested/rows.json"),
+    join(outside, "checkout/.git/rows.json"),
+  ])
+    await assert.rejects(
+      planMain(["followups", "--export", refused], root),
+      /destination must be a file under the system temporary directory or the ignored local control lane/,
+      refused,
+    );
+  assert.ok(!existsSync("/dotln-export-refused"));
+  assert.equal(git(join(outside, "checkout"), "status", "--porcelain"), "");
+  mkdirSync(join(outside, "directory"));
+  await assert.rejects(
+    planMain(["followups", "--export", join(outside, "directory")], root),
+    /not a regular file/,
+  );
+  assert.deepEqual(
+    outsideLane(snapshot(root)),
+    outsideLane(before.files),
+    "no refusal and no export changed a file outside the lane",
+  );
+});
+
+test("WO-169 followups --apply takes a batch under one revision, all or none", async (t) => {
+  const root = repo(t);
+  write(
+    root,
+    "docs/product/ideas.md",
+    "## Candidate — First\nScope one.\n\n## Candidate — Second\nScope two.\n\n## Candidate — Third\nScope three.\n",
+  );
+  write(root, "docs/work-orders/WO-888-fixture.md", "# Filed target\n");
+  const [first, second, third] = syncFollowups(root).entries;
+  // The register the planner read: the third row is a duplicate of the first.
+  dispose(root, third, "duplicate", [first.id]);
+  const revision = planningFollowups(root).revision;
+  const request = (entry, status, targets = []) => ({
+    expectedRevision: revision,
+    id: entry.id,
+    sourceRevision: entry.revisions.length,
+    status,
+    reason: `Synthetic ${status} disposition with explicit coverage`,
+    reopenWhen: "Changed evidence or operator direction",
+    targets,
+  });
+  // The second request is valid only on the state the first produces: alone
+  // it would close a cycle with the register's duplicate.
+  const batch = [
+    request(third, "deferred"),
+    request(first, "duplicate", [third.id]),
+    request(second, "allocated", ["WO-888"]),
+  ];
+  const register = join(root, FOLLOWUPS);
+  const original = readFileSync(register);
+  assert.throws(() => disposeFollowup(root, batch[1]), /duplicate cycle/);
+  assert.deepEqual(readFileSync(register), original);
+  const clock = () => {
+    let tick = 0;
+    return () => `2026-09-27T00:00:0${tick++}.000Z`;
+  };
+  const applied = disposeFollowups(root, batch, { now: clock() });
+  assert.deepEqual(applied.applied, [
+    { id: third.id, status: "deferred" },
+    { id: first.id, status: "duplicate" },
+    { id: second.id, status: "allocated" },
+  ]);
+  const batched = readFileSync(register);
+  assert.equal(applied.revision, planningFollowups(root).revision);
+  writeFileSync(register, original);
+  const now = clock();
+  for (const row of batch)
+    disposeFollowup(
+      root,
+      { ...row, expectedRevision: planningFollowups(root).revision },
+      { now },
+    );
+  assert.deepEqual(
+    readFileSync(register),
+    batched,
+    "the same register bytes as the three single applies",
+  );
+  // The command takes the same file: an array is a batch, an object one
+  // request. Request files are contained regular files.
+  writeFileSync(register, original);
+  write(root, "docs/control/local/batch.json", json(batch));
+  const command = await planMain(
+    ["followups", "--apply", "docs/control/local/batch.json"],
+    root,
+  );
+  assert.deepEqual(command.applied, applied.applied);
+  assert.deepEqual(
+    readFollowups(root).entries.map((entry) =>
+      entry.dispositions.map(({ at, ...row }) => row),
+    ),
+    JSON.parse(batched).entries.map((entry) =>
+      entry.dispositions.map(({ at, ...row }) => row),
+    ),
+  );
+  writeFileSync(register, original);
+  write(
+    root,
+    "docs/control/local/single.json",
+    json(request(first, "deferred")),
+  );
+  assert.deepEqual(
+    await planMain(
+      ["followups", "--apply", "docs/control/local/single.json"],
+      root,
+    ),
+    {
+      id: first.id,
+      status: "deferred",
+      revision: planningFollowups(root).revision,
+    },
+    "the single-request form is unchanged",
+  );
+  // A request the local-terms screen refuses is named by its index too.
+  writeFileSync(register, original);
+  write(root, "docs/control/local/terms.txt", "zebracorn\n");
+  assert.throws(
+    () =>
+      disposeFollowups(root, [
+        request(first, "deferred"),
+        {
+          ...request(second, "deferred"),
+          reason: "Waits for the zebracorn service",
+        },
+      ]),
+    /local-terms list present; refused \[\{"file":"request index 1","line":1,"count":1\}\] \(request index 1; nothing was written\)/,
+  );
+  assert.deepEqual(readFileSync(register), original);
+  assert.ok(!existsSync(`${register}.lock`), "the lock is released");
+  rmSync(join(root, "docs/control/local/terms.txt"));
+  // One invalid request writes nothing and names its index.
+  writeFileSync(register, original);
+  const refusals = [
+    [
+      [
+        request(first, "deferred"),
+        { ...request(second, "deferred"), sourceRevision: 2 },
+        request(third, "deferred"),
+      ],
+      /missing item or stale source revision \(request index 1; nothing was written\)/,
+    ],
+    [
+      [
+        request(first, "deferred"),
+        { ...request(second, "deferred"), id: "FUP-unknown" },
+        request(third, "deferred"),
+      ],
+      /missing item or stale source revision \(request index 1; /,
+    ],
+    [
+      [
+        request(first, "deferred"),
+        request(second, "allocated", ["WO-777"]),
+        request(third, "deferred"),
+      ],
+      /no filed work order \(request index 1; /,
+    ],
+    [
+      [
+        request(first, "deferred"),
+        { ...request(second, "deferred"), expectedRevision: "0".repeat(64) },
+      ],
+      /stale register revision or request shape; reread follow-ups \(request index 1; /,
+    ],
+    [
+      [
+        request(third, "duplicate", [second.id]),
+        request(second, "duplicate", [third.id]),
+      ],
+      /duplicate cycle \(request index 1; /,
+    ],
+    [
+      [request(first, "deferred"), request(second, "deferred"), "third"],
+      /request shape; reread follow-ups \(request index 2; /,
+    ],
+    [[], /a batch names at least one request/],
+  ];
+  for (const [requests, reason] of refusals) {
+    assert.throws(() => disposeFollowups(root, requests), reason);
+    assert.deepEqual(readFileSync(register), original, String(reason));
+    assert.ok(!existsSync(`${register}.lock`), "the lock is released");
+  }
+  write(root, "docs/control/local/refused.json", json(refusals[0][0]));
+  await assert.rejects(
+    planMain(["followups", "--apply", "docs/control/local/refused.json"], root),
+    /request index 1; nothing was written/,
+  );
+  assert.deepEqual(readFileSync(register), original);
+  // A batch is bound to the revision its planner read, like a single request.
+  disposeFollowups(root, [request(first, "deferred")]);
+  assert.throws(
+    () => disposeFollowups(root, [request(second, "deferred")]),
+    /stale register revision or request shape; reread follow-ups \(request index 0; /,
+  );
 });
 
 test("follow-up identities survive independent discovery order in sibling worktrees", (t) => {

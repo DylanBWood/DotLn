@@ -20,6 +20,15 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-169 activation completion (2026-09-27):** assigned application `v0.52.4`,
+the next patch above the observed local `v0.52.3` tag. The follow-up feed names
+the pending rows a change, a file list or an order touches and completion
+advises with their count; the feed exports its rows whole and applies a batch;
+the integrate helper generates after authored conflicts are staged; a changed
+script selects the configuration-root suite; the meter names an unset ceiling.
+No package source changes, so no component version moves. Independent
+verification, final review and publication remain separate dispatches.
+
 **WO-166 activation completion (2026-09-26):** assigned application `v0.52.2`,
 the next patch above the observed local `v0.52.1` tag. The Codex dispatch
 reserves one writer through each role's completion, a gate can be waited on with
