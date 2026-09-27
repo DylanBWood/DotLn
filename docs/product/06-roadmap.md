@@ -20,6 +20,15 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-171 activation completion (2026-09-27):** assigned application `v0.52.6`,
+the next patch above the observed local `v0.52.5` tag. A prune apply plans
+once, observes publication with one release listing and one tag listing,
+re-checks only the candidate it is about to remove, resumes when run again
+after a stop, and keeps a retained lane that holds a usage copy until the
+order's meter snapshot is committed. No package source changes, so no
+component version moves. Independent verification, final review and
+publication remain separate dispatches.
+
 **WO-168 activation completion (2026-09-27):** assigned application `v0.52.4`,
 the next patch above the observed local `v0.52.3` tag. A printed session scratch
 path exists, a granted session root is a real directory, a refused Codex
