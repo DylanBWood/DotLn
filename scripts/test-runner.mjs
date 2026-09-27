@@ -138,16 +138,9 @@ const machinerySources = {
     "packages/compiler/src/harness.ts",
     "packages/skeleton/src/loadouts/",
   ],
-  "configuration-root": [
-    "scripts/lib/config.mjs",
-    "scripts/test-configuration-root.mjs",
-    "scripts/resume.mjs",
-    "scripts/work-orders.mjs",
-    "scripts/worktree.mjs",
-    "scripts/lib/control.mjs",
-    "scripts/lib/control-store.mjs",
-    "scripts/lib/paths.mjs",
-  ],
+  // WO-169 item 5: the suite scans every non-test script for a literal
+  // document root, so any changed script selects it (WO-085 D014).
+  "configuration-root": ["scripts/"],
   "harness-context": [
     "scripts/lib/process-budget.mjs",
     "scripts/lib/harness.mjs",
