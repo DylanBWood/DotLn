@@ -525,7 +525,45 @@ one column; the change is reversible by deleting the snapshot writer.
 NoOp: every closed order keeps reading null or zero on `main`, and the
 next pass counts directions by hand again.
 
-## 16. Second judgment
+## 16. Second judgment — receipt 032
 
-The repaired orders, WO-170 and the revised sequence are committed and
-judged by a second fresh worker; its receipt is filed beside receipt 031.
+Receipt 032 (`2026-09-27-planning-c559862e028dfb80-032`) judged the
+committed subject at `35c7f01e`: the four repaired orders, WO-170, WO-171
+and the 46-entry sequence. Plan and all six orders aligned-with-findings,
+no hold, fifteen known issues, each with a reopening observation. The
+worker read only the compiled subject, in a directory that held nothing
+else.
+
+One judgment follows one subject: the order text is not edited after its
+receipt. The known issues go to the executors as carry-ins on the map's
+catalog rows, where the 2026-09-25 passes put theirs.
+
+| Order | Known issue (receipt 032) | Carried as |
+| --- | --- | --- |
+| WO-168 | the objective says a grant never follows a symlink, while the check is of the root's final component; one refusal cause is covered; the machinery share is unknown | state the rule as what is checked; cover a second cause or record there is none; record the share beside WO-166's 0.559 |
+| WO-169 | the match is textual and no criterion replays the eight rows counted; only this order's final review compares rows named with dispositions recorded | replay the command against the counted rows; state that later orders have no such comparison |
+| WO-171 | the usage reason keys on a snapshot WO-170 defines later; no role runs a real apply; a failed listing is unspecified | name the path and the field; a failed listing retains; leave the operator the record to keep of the first apply |
+| WO-170 | the snapshot is written before the order's last sessions end; directions and rescues share one count; the Cost line counts series the non-goals exclude; four orders close before the snapshot exists | carry the cutoff; separate the counts; state the series filled; write the four orders' snapshots from worktrees still open |
+| WO-086 | a table behind by a release passes with a report; what regenerates it is unnamed | name the command; say whether a missing recorded tag fails |
+| WO-167 | four earlier orders may spend 2,000 of product 07's 2,504 bytes before the fold lands; the `Cites` lists are made by hand; bytes are measured, not reading | report a breach to the operator; verify the lists against the guide and the map; record read bytes once WO-170 supplies them |
+
+Two of the known issues are the planner's own errors, recorded as such.
+WO-170's Cost line says twelve of fourteen trap series are removed; the
+snapshot can fill at most seven, because five have no recorded source and
+are the order's non-goals. What was misread: a series reading null as a
+series the snapshot would fill. What is meant: the snapshot keeps what
+the worktree's meter computed and the rest stay unavailable. What
+changed: the catalog row carries the correction to the executor, and the
+Cost line stands as judged. WO-168's objective says "never follows" where
+the mechanism checks the final component; the same route applies.
+
+Both receipts observe that no order of this pass unblocks a critical-path
+gate and that WO-060, the first gate order, is now eleventh in the
+sequence. That is the consequence of the operator's direction for this
+pass and of §13's one later slot; §15's recommendation stands.
+
+Cost of the two judgments and the survey, by the harness readback of each
+agent task: first refuter 216,381 tokens, 28 tool uses, 1,521 s; survey
+303,417 tokens, 192 tool uses, 1,363 s; second refuter 236,670 tokens, 28
+tool uses, 1,682 s. Dispatch to file by the receipts: 1,822,935 ms and
+1,752,286 ms.
