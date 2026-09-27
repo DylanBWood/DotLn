@@ -26,7 +26,6 @@ import {
   releaseHarnessWriterByOperator,
   runHarnessEvidence,
   beginHarnessSession,
-  harnessSessionScratch,
   observeHarnessSession,
   observeHarnessDelivery,
   measureHarnessUsage,
@@ -71,7 +70,17 @@ try {
       throw new Error(
         "Use the scratch path printed at role dispatch, or pass the host session ID",
       );
-    console.log(harnessSessionScratch(session));
+    // Loaded here, not with the imports above: a runtime built before WO-168
+    // lacks this entry point, and every other action must keep working on it.
+    const { ensureHarnessSessionScratch } =
+      await import("../packages/skeleton/dist/src/harness-host.js");
+    if (typeof ensureHarnessSessionScratch !== "function")
+      throw new Error(
+        "Session scratch unavailable; the built harness runtime lacks ensureHarnessSessionScratch. Run node scripts/bootstrap.mjs",
+      );
+    const scratch = ensureHarnessSessionScratch(session);
+    if (scratch.advisory) process.stderr.write(`${scratch.advisory}\n`);
+    console.log(scratch.path);
   } else if (action === "begin") {
     const [session, role, flag, file] = args;
     if (

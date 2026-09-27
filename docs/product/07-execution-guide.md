@@ -2345,16 +2345,21 @@ claim evidence or releases it does not have.
   (default 20, `null` disables); and a known outside-project write destination
   without a containing root declared by its active role or equipped support
   and admitted through the compiled authority envelope. Root kinds are system
-  temporary, DotLn session scratch, main's ignored intake and an operator-named
-  absolute root; the manifest names declaration and authority-grant sources.
-  The six default roles carry temporary and session-scratch grants only.
+  temporary, DotLn session scratch, the host-printed scratchpad, main's ignored
+  intake and an operator-named absolute root; the manifest names declaration and authority-grant sources.
+  The six default roles carry temporary, session-scratch and host-scratchpad
+  grants only.
   `os.tmpdir()` identifies the temporary root; scratch is
   `<system-temp>/dotln/<session-key>/scratch`. Claude role dispatch prints the
-  concrete path; Codex uses `node scripts/harness.mjs scratch`. Use that scratch
+  concrete path; Codex uses `node scripts/harness.mjs scratch`. Each, and a
+  Codex session begin, creates the directory (mode 0700) first, so a printed
+  path exists; a failure is one advisory. Use that scratch
   path: native scratch and `/tmp` need a separate grant when outside system-temp.
   Literal redirects to the `/dev/null` character device discard output; other
   device mutations still need grants. Symlinks and removals use physical
-  destinations. The outside-write judgment holds from any working directory
+  destinations; a scratch or host-scratchpad root that is itself a link, or
+  not the session user's directory, grants nothing.
+  The outside-write judgment holds from any working directory
   and resolves relative destinations there; the four older refusals are judged
   only at the worktree root and journal their stand-down elsewhere. A literal
   redirect is judged on any program (`npm run meta 2>../.x` refuses); a

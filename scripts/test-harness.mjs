@@ -1,3 +1,4 @@
+import "./test-fixture-temporary.mjs";
 import test from "node:test";
 import { pruneHarness, pruneInventory } from "./lib/harness-prune.mjs";
 import "./test-target-harness.mjs";
@@ -5328,6 +5329,12 @@ test("WO-144 repair admits null discards and exposes scratch with single consist
       dispatch.hookSpecificOutput.additionalContext,
       /Native scratch and \/tmp need a separate grant/,
     );
+    // WO-168: the dispatch that printed the path created it; this fixture
+    // never does.
+    const printed = lstatSync(scratch);
+    assert.equal(printed.isDirectory(), true);
+    assert.equal(printed.mode & 0o777, 0o700);
+    assert.equal(printed.uid, process.getuid());
     const cli = spawnSync(
       process.execPath,
       ["scripts/harness.mjs", "scratch"],
@@ -5416,7 +5423,6 @@ test("WO-144 repair admits null discards and exposes scratch with single consist
       assert.equal(allowed(result), true);
       assert.equal(result.systemMessage, undefined, JSON.stringify(result));
     }
-    mkdirSync(scratch, { recursive: true });
     writeFileSync(path, "scratch");
     const post = invoke(
       root,
@@ -5458,6 +5464,338 @@ test("WO-144 repair admits null discards and exposes scratch with single consist
   } finally {
     removeFixture(root, { recursive: true });
     removeFixture(outside, { recursive: true });
+  }
+});
+
+test("WO-168 a printed session scratch path exists at the dispatch, the Codex begin and harness scratch, and an obstructed path advises without blocking", () => {
+  const root = fixture();
+  const outside = realpathSync(
+    mkdtempSync(join(tmpdir(), "dotln-wo168-scratch-")),
+  );
+  const temporary = join(outside, "temporary");
+  mkdirSync(temporary);
+  mkdirSync(join(outside, "target"));
+  const environment = { TMPDIR: temporary, TMP: temporary, TEMP: temporary };
+  const scratchOf = (session) =>
+    join(
+      temporary,
+      "dotln",
+      createHash("sha256").update(session).digest("hex"),
+      "scratch",
+    );
+  const dispatch = (session) =>
+    invoke(
+      root,
+      "session",
+      input(root, "UserPromptSubmit", {
+        session_id: session,
+        prompt: "resume: next",
+      }),
+      false,
+      environment,
+    );
+  const cli = (session, ...args) =>
+    spawnSync(process.execPath, ["scripts/harness.mjs", ...args], {
+      cwd: root,
+      env: { ...process.env, ...environment, CODEX_THREAD_ID: session },
+      encoding: "utf8",
+    });
+  const created = (path) => {
+    const info = lstatSync(path);
+    assert.equal(info.isDirectory(), true, path);
+    assert.equal(info.mode & 0o777, 0o700, path);
+    assert.equal(info.uid, process.getuid(), path);
+  };
+  const unavailable = (session, cause) =>
+    `DotLn advisory: session scratch ${scratchOf(session)} is unavailable (${cause})`;
+  const count = (text, part) => (text ?? "").split(part).length - 1;
+  try {
+    // Each place prints or returns the path; this fixture never creates it.
+    const claude = dispatch("wo168-claude");
+    assert.ok(
+      claude.hookSpecificOutput.additionalContext.includes(
+        `DotLn session scratch: ${scratchOf("wo168-claude")}. Use this path for temporary work.`,
+      ),
+    );
+    assert.doesNotMatch(
+      JSON.stringify(claude),
+      /session scratch .* is unavailable/,
+    );
+    created(scratchOf("wo168-claude"));
+
+    const begun = cli("wo168-codex", "begin", "wo168-codex", "executor");
+    assert.equal(begun.status, 0, begun.stderr);
+    assert.equal(JSON.parse(begun.stdout).scratch, scratchOf("wo168-codex"));
+    assert.doesNotMatch(begun.stderr, /session scratch/);
+    created(scratchOf("wo168-codex"));
+
+    const printed = cli("wo168-cli", "scratch");
+    assert.equal(printed.status, 0, printed.stderr);
+    assert.equal(printed.stdout.trim(), scratchOf("wo168-cli"));
+    assert.doesNotMatch(printed.stderr, /session scratch/);
+    created(scratchOf("wo168-cli"));
+
+    // An existing real directory of the session user is used as it is.
+    mkdirSync(scratchOf("wo168-existing"), { recursive: true });
+    chmodSync(scratchOf("wo168-existing"), 0o755);
+    writeFileSync(join(scratchOf("wo168-existing"), "kept.txt"), "kept");
+    const existing = cli("wo168-existing", "scratch");
+    assert.equal(existing.status, 0, existing.stderr);
+    assert.doesNotMatch(existing.stderr, /session scratch/);
+    assert.equal(lstatSync(scratchOf("wo168-existing")).mode & 0o777, 0o755);
+    assert.equal(
+      readFileSync(join(scratchOf("wo168-existing"), "kept.txt"), "utf8"),
+      "kept",
+    );
+
+    // A file or a link at the path is one advisory and an unblocked dispatch.
+    mkdirSync(dirname(scratchOf("wo168-file")), { recursive: true });
+    writeFileSync(scratchOf("wo168-file"), "occupied");
+    const occupied = dispatch("wo168-file");
+    const briefing = occupied.hookSpecificOutput.additionalContext;
+    assert.match(briefing, /DotLn resolved role executor/);
+    assert.doesNotMatch(briefing, /Use this path for temporary work/);
+    assert.equal(
+      count(briefing, unavailable("wo168-file", "it is not a directory")),
+      1,
+    );
+    assert.equal(
+      count(
+        occupied.systemMessage,
+        unavailable("wo168-file", "it is not a directory"),
+      ),
+      1,
+    );
+    assert.equal(readFileSync(scratchOf("wo168-file"), "utf8"), "occupied");
+
+    mkdirSync(dirname(scratchOf("wo168-link")), { recursive: true });
+    symlinkSync(join(outside, "target"), scratchOf("wo168-link"));
+    const linked = dispatch("wo168-link");
+    assert.match(
+      linked.hookSpecificOutput.additionalContext,
+      /DotLn resolved role executor/,
+    );
+    assert.equal(
+      count(
+        linked.systemMessage,
+        unavailable("wo168-link", "it is a symbolic link"),
+      ),
+      1,
+    );
+    assert.equal(lstatSync(scratchOf("wo168-link")).isSymbolicLink(), true);
+    for (const [linkedSession, ...args] of [
+      ["wo168-link-codex", "begin", "wo168-link-codex", "executor"],
+      ["wo168-link-cli", "scratch"],
+    ]) {
+      mkdirSync(dirname(scratchOf(linkedSession)), { recursive: true });
+      symlinkSync(join(outside, "target"), scratchOf(linkedSession));
+      const run = cli(linkedSession, ...args);
+      assert.equal(run.status, 0, run.stderr);
+      assert.equal(
+        count(run.stderr, unavailable(linkedSession, "it is a symbolic link")),
+        1,
+        run.stderr,
+      );
+      assert.ok(run.stdout.includes(scratchOf(linkedSession)));
+      assert.equal(lstatSync(scratchOf(linkedSession)).isSymbolicLink(), true);
+    }
+    assert.deepEqual(readdirSync(join(outside, "target")), []);
+  } finally {
+    removeFixture(root, { recursive: true });
+    removeFixture(outside, { recursive: true });
+  }
+});
+
+test("WO-168 a granted session root is a real directory: a linked root grants nothing, a real or absent root grants, and an unreadable root advises once", () => {
+  const root = fixture();
+  const outside = realpathSync(
+    mkdtempSync(join(tmpdir(), "dotln-wo168-roots-")),
+  );
+  const temporary = join(outside, "temporary");
+  const blocked = join(outside, "blocked");
+  const target = join(outside, "home/Documents");
+  for (const directory of [temporary, blocked, target])
+    mkdirSync(directory, { recursive: true });
+  const narrow = (directory) => ({
+    TMPDIR: directory,
+    TMP: directory,
+    TEMP: directory,
+  });
+  const environment = narrow(temporary);
+  const session = "wo168-session-roots";
+  const project = `-fixture-wo168-${randomUUID()}`;
+  const transcript = `/fixture-home/.claude/projects/${project}/${session}.jsonl`;
+  const base = `/tmp/claude-${process.getuid()}`;
+  const baseExisted = existsSync(base);
+  const scratchpad = `${base}/${project}/${session}/scratchpad`;
+  const scratch = join(
+    temporary,
+    "dotln",
+    createHash("sha256").update(session).digest("hex"),
+    "scratch",
+  );
+  const hooks = [
+    "permissions",
+    "concurrent-work-requires-worktrees",
+    "write-observer",
+  ];
+  const calls = (directory, id = session) =>
+    [
+      ["Write", { file_path: join(directory, "new.txt") }],
+      ["Bash", { command: `printf x > '${directory}/new.txt'` }],
+    ].map(([tool, args]) =>
+      input(root, "PreToolUse", {
+        session_id: id,
+        transcript_path: transcript,
+        tool_name: tool,
+        tool_input: args,
+      }),
+    );
+  const judged = (directory, verdict, env = environment) => {
+    for (const hook of hooks)
+      for (const call of calls(directory)) {
+        const reply = invoke(root, hook, call, false, env);
+        verdict(reply, `${hook}: ${JSON.stringify(call.tool_input)}`);
+      }
+  };
+  const admitted = (reply, label) => {
+    assert.equal(allowed(reply), true, label);
+    assert.equal(reply.systemMessage, undefined, label);
+  };
+  const refusedFor = (granted) => (reply, label) => {
+    assert.equal(reply.hookSpecificOutput?.permissionDecision, "deny", label);
+    const reason = reply.hookSpecificOutput.permissionDecisionReason;
+    assert.match(
+      reason,
+      /physical destination .* lacks an equipped outside-write grant for role executor.*operator override:/,
+    );
+    assert.ok(
+      reason.includes(
+        `Granted root ${granted} grants nothing: it is a symbolic link (WO-168).`,
+      ),
+      reason,
+    );
+  };
+  const unexplained = (reply, label) => {
+    assert.equal(reply.hookSpecificOutput?.permissionDecision, "deny", label);
+    assert.doesNotMatch(
+      reply.hookSpecificOutput.permissionDecisionReason,
+      /Granted root/,
+    );
+  };
+  try {
+    // Without the system temporary grant, which holds the scratch path, only
+    // the root under judgment can admit a write beneath it.
+    const sessionRoots = ["session-scratch", "host-scratchpad"].map((kind) => ({
+      kind,
+      source: "Fixture declared role grant",
+    }));
+    const program = contributorProgram();
+    emitHarness(root, {
+      program: withOutsideAuthority(
+        {
+          ...program,
+          roles: program.roles.map((role) => ({
+            ...role,
+            outsideWriteGrants: role.name === "executor" ? sessionRoots : [],
+          })),
+        },
+        sessionRoots,
+      ),
+    });
+    // The dispatch gives the session its role and creates the real root.
+    invoke(
+      root,
+      "session",
+      input(root, "UserPromptSubmit", {
+        session_id: session,
+        transcript_path: transcript,
+        prompt: "resume: next",
+      }),
+      false,
+      environment,
+    );
+    assert.equal(lstatSync(scratch).isDirectory(), true);
+    judged(temporary, unexplained);
+    judged(scratch, admitted);
+
+    // WO-158-D028 (a): the swap that carried the grant to its target.
+    rmSync(scratch, { recursive: true });
+    symlinkSync(target, scratch);
+    judged(scratch, refusedFor(scratch));
+    assert.deepEqual(readdirSync(target), []);
+
+    // A root that does not exist yet admits the write that creates it.
+    rmSync(scratch);
+    judged(scratch, admitted);
+
+    mkdirSync(dirname(scratchpad), { recursive: true });
+    symlinkSync(target, scratchpad);
+    judged(scratchpad, refusedFor(scratchpad));
+    assert.deepEqual(readdirSync(target), []);
+    rmSync(scratchpad);
+    judged(scratchpad, admitted);
+    mkdirSync(scratchpad);
+    judged(scratchpad, admitted);
+
+    // The system temporary grant is unchanged: it follows a linked root, as
+    // the temporary directory's own prefix is linked on some hosts.
+    emitHarness(root);
+    const linked = join(outside, "linked-temporary");
+    symlinkSync(temporary, linked);
+    judged(linked, admitted, narrow(linked));
+
+    // A root that cannot be inspected is the guard's one advisory and an
+    // admission. `dotln` is a file here, so lstat answers ENOTDIR.
+    releaseHarnessWriter(root, input(root, "Stop", { session_id: session }));
+    writeFileSync(join(blocked, "dotln"), "not a directory");
+    const unreadable = "wo168-unreadable-root";
+    const entry = invoke(
+      root,
+      "session",
+      input(root, "UserPromptSubmit", {
+        session_id: unreadable,
+        prompt: "resume: next",
+      }),
+      false,
+      narrow(blocked),
+    );
+    assert.match(
+      entry.hookSpecificOutput.additionalContext,
+      /DotLn resolved role executor/,
+    );
+    assert.match(
+      entry.systemMessage,
+      /session scratch .* is unavailable \(ENOTDIR\)/,
+    );
+    const replies = hooks.map((hook) =>
+      invoke(
+        root,
+        hook,
+        input(root, "PreToolUse", {
+          session_id: unreadable,
+          tool_name: "Write",
+          tool_input: { file_path: join(blocked, "new.txt") },
+        }),
+        false,
+        narrow(blocked),
+      ),
+    );
+    assert.ok(replies.every(allowed), JSON.stringify(replies));
+    assert.equal(
+      replies.filter((reply) =>
+        reply.systemMessage?.includes("outside-write guard unavailable"),
+      ).length,
+      1,
+      JSON.stringify(replies),
+    );
+  } finally {
+    removeFixture(root, { recursive: true });
+    removeFixture(outside, { recursive: true });
+    // Only this fixture's own project segment under the host's directory.
+    rmSync(`${base}/${project}`, { recursive: true, force: true });
+    if (!baseExisted && existsSync(base) && !readdirSync(base).length)
+      rmSync(base, { recursive: true });
   }
 });
 

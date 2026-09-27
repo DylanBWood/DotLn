@@ -1,3 +1,4 @@
+import "./test-fixture-temporary.mjs";
 import "./test-codex-session.mjs";
 import test from "node:test";
 import { fnv1a64 } from "../packages/compiler/dist/src/index.js";
