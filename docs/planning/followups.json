@@ -3869,6 +3869,14 @@
           "reopenWhen": "WO-113 activation",
           "targets": [],
           "at": "2026-09-17T16:48:54.522Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-168's final review: listed because the row names packages/skeleton/src/harness-host.ts, which WO-168 edits for the scratch, grant, override and reservation items. WO-168 does not touch the authored-output delivery contract, so the seam is not opened. [WO-168 final review (docs/final-reviews/WO-168/FINAL-001.md)]",
+          "reopenWhen": "WO-113 activation",
+          "targets": [],
+          "at": "2026-09-27T15:59:33.985Z"
         }
       ]
     },
@@ -11167,6 +11175,14 @@
           "reopenWhen": "the operator opens the efficiency pass, or a role's headroom falls below 256 bytes",
           "targets": [],
           "at": "2026-09-27T14:35:55.657Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-168's final review. WO-168's generated sentence grows every cold-start profile by 176 bytes; node scripts/harness-context.mjs --check reads reviewer 24,171 of 24,576 (405 bytes of headroom), verifier 23,089 of 25,151, executor 26,286 of 29,246, release-close 15,195 of 16,384 and planner 17,343 of 24,576, every verdict within and refuter unset. No headroom is below 256 bytes. [WO-168 final review (docs/final-reviews/WO-168/FINAL-001.md)]",
+          "reopenWhen": "the operator opens the efficiency pass, or a role's headroom falls below 256 bytes",
+          "targets": [],
+          "at": "2026-09-27T15:59:34.269Z"
         }
       ]
     },
@@ -12404,6 +12420,14 @@
           "reopenWhen": "a literal outside redirect beside an opaque one reaches the operator's folders, or a final-review gate again meets a deterministic failure in a suite no earlier run selected",
           "targets": [],
           "at": "2026-09-27T14:35:55.455Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-168's final review. WO-168 changes the destination adapter only to make an invocation opaque (a command word after an &> operand, and zsh's = word, WO-168-D015); it does not make the redirect accessor answer for the whole command, which is part 2. This review's gate selected and passed every required suite, so part 1's condition did not recur. [WO-168 final review (docs/final-reviews/WO-168/FINAL-001.md)]",
+          "reopenWhen": "a literal outside redirect beside an opaque one reaches the operator's folders, or a final-review gate again meets a deterministic failure in a suite no earlier run selected",
+          "targets": [],
+          "at": "2026-09-27T15:59:34.015Z"
         }
       ]
     },
@@ -12878,6 +12902,14 @@
           "reopenWhen": "a week adds more than 10 MB of tracked evidence, or one order commits more than 1 MB of revisions it never makes current",
           "targets": [],
           "at": "2026-09-27T01:45:54.546Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-168's final review. WO-168 minted authority revisions 001, 002 and 003 and selects 003; 002 was never current. Each revision directory is 76 KB (du -sk), far below the row's 1 MB condition. [WO-168 final review (docs/final-reviews/WO-168/FINAL-001.md)]",
+          "reopenWhen": "a week adds more than 10 MB of tracked evidence, or one order commits more than 1 MB of revisions it never makes current",
+          "targets": [],
+          "at": "2026-09-27T15:59:34.101Z"
         }
       ]
     },
@@ -13350,6 +13382,14 @@
           "reopenWhen": "the next order that changes resident-state.ts and records a feedback edition, or an operator reads a misleading verifier-unavailable hold over an incomplete capsule",
           "targets": [],
           "at": "2026-09-27T14:35:55.484Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-168's final review: a textual match on docs/product/07-execution-guide.md. WO-168 changes neither resident-state.ts nor records a live feedback episode (its feedback edition is a carry). [WO-168 final review (docs/final-reviews/WO-168/FINAL-001.md)]",
+          "reopenWhen": "the next order that changes resident-state.ts and records a feedback edition, or an operator reads a misleading verifier-unavailable hold over an incomplete capsule",
+          "targets": [],
+          "at": "2026-09-27T15:59:34.044Z"
         }
       ]
     },
@@ -13800,6 +13840,14 @@
           "reopenWhen": "an admitted redirect reaches an ungranted outside destination, or a literal outside redirect beside an opaque one reaches the operator's folders",
           "targets": [],
           "at": "2026-09-27T00:36:34.678Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-168's final review with what remains. WO-168 item 4 took the over-refused argument forms of listed reads, and D015 made two adapter forms opaque; the expansion-spelled redirect adapter and the root-cwd precondition are WO-168 non-goals. A read-only helper probed about 76 candidate strings against the built classifier and adapter and found no admitted command that writes. [WO-168 final review (docs/final-reviews/WO-168/FINAL-001.md)]",
+          "reopenWhen": "an admitted redirect reaches an ungranted outside destination, or a literal outside redirect beside an opaque one reaches the operator's folders",
+          "targets": [],
+          "at": "2026-09-27T15:59:34.242Z"
         }
       ]
     },
@@ -13840,6 +13888,14 @@
           "reopenWhen": "another repair meets a changed reviewer draft it did not write, or the next order that edits release preparation",
           "targets": [],
           "at": "2026-09-27T14:35:55.686Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-168's final review: a textual match on packages/skeleton/src/observed-facts.ts. The executor-time PR draft member recurred: docs/final-reviews/WO-168/PR.md held only the generated meter block when this review began. WO-168 does not edit release preparation. [WO-168 final review (docs/final-reviews/WO-168/FINAL-001.md)]",
+          "reopenWhen": "another repair meets a changed reviewer draft it did not write, or the next order that edits release preparation",
+          "targets": [],
+          "at": "2026-09-27T15:59:34.298Z"
         }
       ]
     },
@@ -17178,6 +17234,13 @@
           "title": "WO-159-D020: Planner: the WO-143 lock-boundary matrix subtest (packages/skeleton/test/resident.test.ts, 'once and loop restart at every acquisition filesystem boundary, including killed reclaimers') r",
           "summary": "{ \"id\": \"WO-159-D020\", \"date\": \"2026-09-25\", \"dispatch\": \"resume: final review\", \"decision\": \"Pass final review without integration and record the reviewer's product gate as it happened. Local main, origin main and the worktree HEAD were the same commit (1f888509) at review, so no merge, retime or re-mint was needed, the integrate helper was not run, and every VER-002 claim is carried forward on unchanged source bytes. The first `npm test -- --review` failed one skeleton subtest this order does not touch, the WO-143 lock-boundary matrix, which exceeded its own 240 s budget while a sibling worktree's product gate shared the host; the second run, alone on the host, passed 37 suites with 0 fail",
           "missing": false
+        },
+        {
+          "hash": "eaeed442476da244ee1354d0b5047df40c1e8b9ed875f2f2bd51a798d6be8b7c",
+          "ref": "docs/evidence/WO-159/decisions.md#wo-159-d020",
+          "title": "WO-159-D020: Planner: the WO-143 lock-boundary matrix subtest (packages/skeleton/test/resident.test.ts, 'once and loop restart at every acquisition filesystem boundary, including killed reclaimers') r",
+          "summary": "{ \"id\": \"WO-159-D020\", \"date\": \"2026-09-25\", \"dispatch\": \"resume: final review\", \"decision\": \"Pass final review without integration and record the reviewer's product gate as it happened. Local main, origin main and the worktree HEAD were the same commit (1f888509) at review, so no merge, retime or re-mint was needed, the integrate helper was not run, and every VER-002 claim is carried forward on unchanged source bytes. The first `npm test -- --review` failed one skeleton subtest this order does not touch, the WO-143 lock-boundary matrix, which exceeded its own 240 s budget while a sibling worktree's product gate shared the host; the second run, alone on the host, passed 37 suites with 0 fail",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -17296,6 +17359,14 @@
           "reopenWhen": "the next order that touches usage or meta attribution",
           "targets": [],
           "at": "2026-09-27T14:35:55.571Z"
+        },
+        {
+          "sourceRevision": 4,
+          "status": "deferred",
+          "reason": "Deferred again by WO-168's final review: a textual match on docs/control/current.md, a generated projection. WO-168 changes no usage or meta attribution. [WO-168 final review (docs/final-reviews/WO-168/FINAL-001.md)]",
+          "reopenWhen": "the next order that touches usage or meta attribution",
+          "targets": [],
+          "at": "2026-09-27T15:59:34.214Z"
         }
       ]
     },
@@ -18500,6 +18571,14 @@
           "reopenWhen": "Next document-maintenance planning pass or an observed new verbatim decision dispatch.",
           "targets": [],
           "at": "2026-09-27T14:35:55.514Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-168's final review: a textual match on docs/evidence/WO-168/decisions.md and the decisions index, which every order changes. WO-168's records quote resume phrases and the operator's scope expand: control phrase, not operator chat. [WO-168 final review (docs/final-reviews/WO-168/FINAL-001.md)]",
+          "reopenWhen": "Next document-maintenance planning pass or an observed new verbatim decision dispatch.",
+          "targets": [],
+          "at": "2026-09-27T15:59:34.157Z"
         }
       ]
     },
@@ -18657,6 +18736,14 @@
           "reopenWhen": "a real release close leaves main reserved or reclaims a live session's reservation, or the shell fixture's adapter diverges from the runtime's writer protocol",
           "targets": [],
           "at": "2026-09-27T00:36:21.783Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-168's final review: the release-close fixture against the real runtime is one of WO-168's non-goals (WO-166 D008), and WO-168 edits scripts/test-harness.mjs only for its own items and the WO-144 scratch case. [WO-168 final review (docs/final-reviews/WO-168/FINAL-001.md)]",
+          "reopenWhen": "a real release close leaves main reserved or reclaims a live session's reservation, or the shell fixture's adapter diverges from the runtime's writer protocol",
+          "targets": [],
+          "at": "2026-09-27T15:59:34.185Z"
         }
       ]
     },
@@ -18811,6 +18898,14 @@
           "reopenWhen": "the retained journals or three reports after WO-168 show a session losing more than one command to the same unlisted program in one gate window",
           "targets": [],
           "at": "2026-09-27T00:36:44.570Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by WO-168's final review with its first counts (criterion 10). On WO-168's own hooks, beside its live review gate, this review was refused five commands, none in an admitted form: cut twice (each a pipeline stage), node -e once, echo with an expansion once and an unquoted glob once; VER-002 recorded three deliberate probe refusals and the repair session two (pgrep, a shell loop). The two cut refusals match the row's pattern once, but both came before WO-168 ships and a listed reader or the host's file-read tool served each need, so the condition, reports after WO-168, is left for later reports to meet. [WO-168 final review (docs/final-reviews/WO-168/FINAL-001.md)]",
+          "reopenWhen": "the retained journals or three reports after WO-168 show a session losing more than one command to the same unlisted program in one gate window",
+          "targets": [],
+          "at": "2026-09-27T15:59:34.129Z"
         }
       ]
     },
@@ -19029,6 +19124,14 @@
           "reopenWhen": "WO-168 closes, or a planner is refused an export destination the role's grants admit and has no granted alternative",
           "targets": [],
           "at": "2026-09-27T14:35:55.743Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Deferred by WO-168's final review until WO-168 closes, as the row asks. WO-168 creates the session scratch directory wherever its path is printed (item 1) and makes a session-scratch or host-scratchpad root grant only as a real directory the session user owns (item 2); it does not let a command read the session's granted roots, which is this row's decision. [WO-168 final review (docs/final-reviews/WO-168/FINAL-001.md)]",
+          "reopenWhen": "WO-168 closes, or a planner is refused an export destination the role's grants admit and has no granted alternative",
+          "targets": [],
+          "at": "2026-09-27T15:59:34.072Z"
         }
       ]
     },
@@ -19147,6 +19250,200 @@
           "reopenWhen": "the next order that edits scripts/lib/planning-followups.mjs or scripts/refute-plan.mjs, or a planner or executor misses a row because it links a changed file relatively, an advisory prints a command that refuses, or a register write is refused after an export",
           "targets": [],
           "at": "2026-09-27T14:43:42.069Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-0804477ea9d640a7",
+      "key": "decision:docs/evidence/WO-168/decisions.md#wo-168-d004",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "79b95cb645178f090dc1fe90340e9f860b6ba1f60295b3a74e913ffbefd7f43b",
+          "ref": "docs/evidence/WO-168/decisions.md#wo-168-d004--item-2-a-granted-session-root-is-a-real-directory",
+          "title": "WO-168-D004: Planner, low priority, with the next order that edits the outside-write guard: only the final component of a session root is inspected, so an ancestor (<system-temp>/dotln/<key> or the ho",
+          "summary": "{ \"id\": \"WO-168-D004\", \"date\": \"2026-09-27\", \"dispatch\": \"resume: next\", \"decision\": \"For session-scratch and host-scratchpad only, the outside-write guard lstats the root it is about to grant under. A final component that is a link, is not a directory, or belongs to another user grants nothing, and a refusal of a destination that root would have held names the root and the cause. An absent root is judged as before. An lstat failure other than absence throws exactly as the root's resolution always did, which is the guard's existing single advisory and an admission. system-temp, operator-root and main-intake are unchanged.\", \"evidence\": [ \"packages/skeleton/src/harness-host.ts grantedSessionR",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by WO-168's final review to the next order that edits the outside-write guard. D004 inspects only a session root's final component, as the order designs; a read-only helper confirmed that a swapped ancestor still carries the grant. [WO-168 final review (docs/final-reviews/WO-168/FINAL-001.md)]",
+          "reopenWhen": "the next order that edits the outside-write guard, or a write lands outside every granted root through a swapped root or ancestor, or a session is refused under a real root it owns",
+          "targets": [],
+          "at": "2026-09-27T15:59:34.326Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-847826d3542ff249",
+      "key": "decision:docs/evidence/WO-168/decisions.md#wo-168-d006",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "cba566a785de817d3763315177401c1ba8dddd3971a7949ba8e0a25059ef0a6a",
+          "ref": "docs/evidence/WO-168/decisions.md#wo-168-d006--item-4-four-argument-forms-one-spelling-two-git-conditions",
+          "title": "WO-168-D006: Planner, low priority, with the next order that edits the shell destination adapter or command effects: (a) invocationRedirects treats &> and &>> as one redirect, so the hook admits ls do",
+          "summary": "{ \"id\": \"WO-168-D006\", \"date\": \"2026-09-27\", \"dispatch\": \"resume: next\", \"decision\": \"The tokenizer records an unquoted `<` or `>` per word (`redirects`), as WO-158 recorded unquoted glob characters. The live-gate list then admits a word that holds `<` or `>` only inside quotes; a revision suffix in an unquoted operand of a listed Git read when the word holds no glob character, no dollar sign, no tilde at its start or after `=` or `:`, and only brace pairs free of a comma and of `..`; an input redirect whose operand is a literal path; and an output redirect (`>`, `>>`, with or without a descriptor) whose literal operand is exactly `/dev/null`. `&>` stays off the list. `npm run --silent resum",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by WO-168's final review with what remains: D015 fixed items (a) and (c); (b) the second npm spelling outside a gate, (d) /dev/tcp and /dev/udp input redirects and (e) the metadata exception remain, and which shell each supported host runs tool commands through is still not established. [WO-168 final review (docs/final-reviews/WO-168/FINAL-001.md)]",
+          "reopenWhen": "the next order that edits the shell destination adapter or command effects; or a command the list admits writes a file, runs an unlisted program or expands; or a session beside a live gate is refused one of the four forms",
+          "targets": [],
+          "at": "2026-09-27T15:59:34.466Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-fd05316b6030ef73",
+      "key": "decision:docs/evidence/WO-168/decisions.md#wo-168-d009",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "341973f70d70eda0a18ae18dd4b151d8cb4c3a9b3569364ff91428230791c351",
+          "ref": "docs/evidence/WO-168/decisions.md#wo-168-d009--item-7-the-standing-sentences",
+          "title": "WO-168-D009: Planner, low priority, one pass over the standing text: state the Codex dispatch reservation in docs/product/02-domain-model.md (the sentence Codex carries the same duties as role text in",
+          "summary": "{ \"id\": \"WO-168-D009\", \"date\": \"2026-09-27\", \"dispatch\": \"resume: next\", \"decision\": \"Reword the Codex clause of `HARNESS_BOUNDARIES` to `under Codex a lifecycle dispatch reserves the writer and refuses a foreign holder, and the other duties and grants are role text because Codex tool calls are unhooked`, regenerate, and pin the new role bytes in `wo168-role-baseline.json`. Edit product 02's refusal sentence to name the fields a refusal carries and the `codex-host` and `thread` owners. In product 07 edit the index paragraph to name every releasing completion and the `resume: release close` row, with the sentence that repeats it, to the main-session route. Product 07 also carries the sentence",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by WO-168's final review to one planned pass over the standing text: WO-168 edited the four sentences the order names and the root-kinds sentence its own new sentence contradicted; the seven older sentences D009 names are silent about the Codex dispatch reservation, not made false. [WO-168 final review (docs/final-reviews/WO-168/FINAL-001.md)]",
+          "reopenWhen": "a planning pass over the standing text, the next order that edits the writer text, or a session acts on one of the named sentences against the shipped behaviour",
+          "targets": [],
+          "at": "2026-09-27T15:59:34.522Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-94bff00e748a26af",
+      "key": "decision:docs/evidence/WO-168/decisions.md#wo-168-d010",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "bf7517186e020389b945ec26ab71c0fdce87dbdef7f0f0b8f89fc16718bfa7ab",
+          "ref": "docs/evidence/WO-168/decisions.md#wo-168-d010--item-8-the-stranded-comment-and-the-hedge-match",
+          "title": "WO-168-D010: Planner, low priority, with the next order that edits observed-facts.ts: with only the full gate's row in scope, a hedge naming npm test -- --inside-sandbox still resolves to the full gat",
+          "summary": "{ \"id\": \"WO-168-D010\", \"date\": \"2026-09-27\", \"dispatch\": \"resume: next\", \"decision\": \"The `Bounded destination adapter` comment sits above `shellWriteTargets`. A hedged gate duration resolves to a named row unless another named identity contains it, so `npm test -- --inside-sandbox` wins over `npm test` when both rows are in scope, while two unrelated identities in one phrase, or two rows of one identity, stay unmeasured.\", \"evidence\": [ \"packages/skeleton/src/harness-command.ts: the comment directly above `export function shellWriteTargets(`; packages/skeleton/src/observed-facts.ts scanHedges\", \"scripts/test-observed-facts.mjs `WO-168 a hedge names the longest gate identity ...`: three rows",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by WO-168's final review to the next order that edits observed-facts.ts, where D018's containment edge (FUP-51c310284c2fea17) joins it. [WO-168 final review (docs/final-reviews/WO-168/FINAL-001.md)]",
+          "reopenWhen": "the next order that edits observed-facts.ts, or a hedge about a partial run is attributed to the full gate while both rows are in scope",
+          "targets": [],
+          "at": "2026-09-27T15:59:34.494Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-4fd6b834d17bb566",
+      "key": "decision:docs/evidence/WO-168/decisions.md#wo-168-d013",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "b1938e6beb1a042b5af61d197f082c6295b9ae4bc4b6eeadcb290f92c591a5d9",
+          "ref": "docs/evidence/WO-168/decisions.md#wo-168-d013--the-review-gate-both-rows",
+          "title": "WO-168-D013: Record the review gate as it happened. The first npm test -- --review failed: 37 suites passed and the skeleton suite had one case cancelled at its own 240 s budget, WO-143 once and loop ",
+          "summary": "{ \"id\": \"WO-168-D013\", \"date\": \"2026-09-27\", \"dispatch\": \"resume: next\", \"decision\": \"Record the review gate as it happened. The first `npm test -- --review` failed: 37 suites passed and the skeleton suite had one case cancelled at its own 240 s budget, `WO-143 once and loop restart at every acquisition filesystem boundary, including killed reclaimers`, with six of its eight cells done and no failed assertion. The second run, on the identical tree and code identity, passed 38 suites with 0 failures. The first row is not converted to a pass; the second is the evidence this handoff rests on. The budget itself is the standing follow-up of WO-159-D020, whose reopening observation has now occurre",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "duplicate",
+          "reason": "Duplicate by WO-168's final review: D013 records a deadline hit on the WO-143 resident matrix and reopens WO-159-D020, whose row FUP-1d57cbcb226d8f8a holds the budget decision. This review's gate passed the skeleton suite (315.13 s) including that case. [WO-168 final review (docs/final-reviews/WO-168/FINAL-001.md)]",
+          "reopenWhen": "FUP-1d57cbcb226d8f8a is disposed without deciding the WO-143 matrix budget, or a WO-168 gate fails a case other than that matrix",
+          "targets": [
+            "FUP-1d57cbcb226d8f8a"
+          ],
+          "at": "2026-09-27T15:59:34.409Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-114ae3a50b6964b8",
+      "key": "decision:docs/evidence/WO-168/decisions.md#wo-168-d014",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "e823708389d6ead14444f19e5fc710be3ba4e0cbb229e728f51113815d7d5cf9",
+          "ref": "docs/evidence/WO-168/decisions.md#wo-168-d014--verifier-gate-failure-in-the-writer-refusal-fixture",
+          "title": "WO-168-D014: WO-168 repair executor: reproduce and diagnose the WO-131 writer-refusal fixture's full-string mismatch, make its assertion stable while preserving the gate and foreign-writer checks, the",
+          "summary": "{ \"id\": \"WO-168-D014\", \"date\": \"2026-09-27\", \"dispatch\": \"resume: verify\", \"decision\": \"The verifier's npm test -- --review failed one process-debt case. Keep that failed full-gate row distinct from the passing focused rerun and mark criterion 11 unmet. The WO-131 fixture compares two writer-refusal strings from separate hook calls, including a wall-clock age; the exact differing bytes were not retained in the gate output, so a crossed second boundary is an inference, not an established cause.\", \"evidence\": [ \"docs/control/local/harness/checks.json: npm test at 2026-09-27T14:32:25.324Z, tree 536a1c4b79c5eda420b40136c77766b211a29af2, code identity ee886f5a42f3645f1362329409bafb07c3b710da50618",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by WO-168's final review. D016 repaired the WO-131 fixture's comparison across two hook clocks and discharged this follow-up; VER-002's review gate and this review's review gate (38 passed, 0 failed) each passed process-debt including the WO-131 case. [WO-168 final review (docs/final-reviews/WO-168/FINAL-001.md)]",
+          "reopenWhen": "The repaired full gate fails this case, or another fixture compares strings built from separate clock reads.",
+          "targets": [],
+          "at": "2026-09-27T15:59:34.354Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-33173b7f87004a9c",
+      "key": "decision:docs/evidence/WO-168/decisions.md#wo-168-d015",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "c1641885c25efb93f537de065f9acef97058c03e7e66dd938ae65edf96651bdb",
+          "ref": "docs/evidence/WO-168/decisions.md#wo-168-d015--repair-of-ver-001-f1-and-f2--followed-by-words-and-zshs--word",
+          "title": "WO-168-D015: Planner, low priority, with D009's standing-text pass: product 07's destination-adapter paragraph and docs/AI-HARNESS-SECURITY.md do not say that a command word after an &> operand makes ",
+          "summary": "{ \"id\": \"WO-168-D015\", \"date\": \"2026-09-27\", \"dispatch\": \"resume: fix\", \"decision\": \"Repair VER-001 F1 and F2 in the shared tokenizer and destination adapter, with no text change. F2: the tokenizer marks an unquoted `=` as an expansion when it begins a word (also after empty quotes) or follows `=` or `:`, and something follows it in the word; `revisionOperand` refuses the same spelling, so `ls =cat`, `cat ''=cat`, `git --no-pager diff =cat`, `--format==cat`, `HEAD~1:=cat` and `grep -c == f` leave the list, while a lone `=`, `a:=` and an escaped or quoted `=` stay literal. `invocationRedirects` treats that word as it treats a glob, so the strict destination adapter cannot name it either. F1: ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by WO-168's final review to D009's standing-text pass (FUP-fd05316b6030ef73): WO-168's product 07 allowance has 10 bytes left and no sentence is made false by the omission. [WO-168 final review (docs/final-reviews/WO-168/FINAL-001.md)]",
+          "reopenWhen": "the standing-text pass of FUP-fd05316b6030ef73 runs, or a session acts on product 07's destination-adapter paragraph or docs/AI-HARNESS-SECURITY.md against the shipped &> or = rule",
+          "targets": [],
+          "at": "2026-09-27T15:59:34.382Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-51c310284c2fea17",
+      "key": "decision:docs/evidence/WO-168/decisions.md#wo-168-d018",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "115ab406a19000dd0196976200b1c37000aa904b032ba6cc6a25237b46cb6c1b",
+          "ref": "docs/evidence/WO-168/decisions.md#wo-168-d018--final-review-pass-and-board-one-hedge-edge-and-two-fixture-observations",
+          "title": "WO-168-D018: Planner, low priority, with the next order that edits observed-facts.ts (joined to WO-168-D010's follow-up): drop a contained gate identity only where each of its occurrences in the part ",
+          "summary": "{ \"id\": \"WO-168-D018\", \"date\": \"2026-09-27\", \"dispatch\": \"resume: final review\", \"decision\": \"Pass final review of WO-168 on the staged subject without a source change and board, under one follow-up, a minor defect of item 8 that this review established and two observations that fail no criterion. The defect: the containment rule in `scanHedges` drops a named gate identity whenever a longer named identity contains it, even when the phrase also names the shorter identity on its own, so `The npm test gate took about 9 minutes and npm test -- --inside-sandbox about 2` resolves the full gate's 9 minutes to the partial row's duration, where the base left it unmeasured. Criterion 8 is met: its phr",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by WO-168's final review, which minted it (D018): the hedge containment edge, the fixture temporary root's physical TMPDIR, and a dispatch append that writes and then throws. None fails a criterion. [WO-168 final review (docs/final-reviews/WO-168/FINAL-001.md)]",
+          "reopenWhen": "the next order that edits observed-facts.ts, the harness or process-debt fixture temporary root, or the scripts/resume.mjs dispatch release; or a full-gate hedge is attributed to a partial row while both rows are in scope",
+          "targets": [],
+          "at": "2026-09-27T15:59:34.438Z"
         }
       ]
     }
