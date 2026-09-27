@@ -107,9 +107,18 @@ verbatim in one receipt.
 **Design (scope discipline):**
 
 - The table is generated from local annotated tags joined to the orders
-  their messages name; unpublished staging appears in no table.
-- Markers in 06 (and 10 where it lists axes) are checked as the README
-  block is; a stale table fails the document gate.
+  their manifests name, as the work-order index's local release evidence
+  is; the order's heading supplies display text only, so a heading that
+  carries no version still joins. Unpublished staging appears in no
+  table.
+- Markers in 06 (and 10 where it lists axes) are checked by the index's
+  rule: the committed table carries the snapshot of the tags it was
+  generated from, the check requires each recorded tag to remain
+  available and unchanged and the rows to equal those tags' rows, and a
+  newer local tag is reported without refusing. A sibling lane that
+  publishes a tag therefore cannot turn this worktree's document gate
+  red; a checkout that lacks a recorded tag is refused with the tag's
+  name, as the index check refuses it today.
 - `release prepare`: at activation, the target goes into the activation
   event and the order heading (as today) and nowhere else; at a
   collision, the helper appends the integration decision record with the
@@ -144,24 +153,34 @@ write-backs below.
 
 **Acceptance criteria (all required)**
 
-1. The generated table equals the local annotated tags joined to their
-   orders (a fixture compares it with `release list`); the marker check
-   refuses a stale table.
+1. The generated table equals the recorded tags joined to their orders
+   through the tags' manifests (a fixture compares it with `release
+   list`, and one order in the fixture has a heading with no version).
+   The marker check refuses a table whose rows differ from its recorded
+   tags, passes with a report when a newer local tag exists, and names a
+   recorded tag the checkout lacks.
 2. The retired notes are byte-identical in the receipt file (hash recorded
    in the decisions).
-3. A fixture collision through `release prepare` appends the integration
-   decision and changes no product document or README line beyond the
-   version claim; a fixture with a conflicted decisions record refuses
-   with the path and writes nothing.
+3. A fixture collision through `release prepare` and the integrate helper
+   yields exactly one integration decision in the order's decisions
+   record, with the superseded and new targets and the baseline, and
+   changes no product document or README line beyond the version claim;
+   a fixture with a conflicted decisions record refuses with the path and
+   writes nothing.
 4. Write-backs land: 06 and 10 (the markers and pointer), the README block,
    the product 07 sentence, `docs/README.md`'s exemption sentence, ledger
    entry; publication locks. The docs check exempts the registered
    generated block and nothing else in 06: a fixture with an unregistered
    marker pair and one with a demoted terminating heading each report the
-   receipt, the candidate and the bytes inside. Product 06's entry in
-   `doc-ceilings.json` equals its counted bytes at landing plus two per
-   cent; the 63,183 bytes the heading exemption excluded were never
-   counted, so the ceiling does not fall by them (WO-085 D009 O3).
+   receipt, the candidate and the bytes inside. Product 06 holds no
+   collision-retiming, activation-completion or forward-retiming
+   paragraph outside the generated markers, and the docs check's
+   baseline for 06 holds no receipt shape under Release boundary. Product
+   06's counted bytes are recorded before and after; its entry in
+   `doc-ceilings.json` equals the counted bytes at landing plus two per
+   cent and does not exceed its entry at the order's base. The 63,183
+   bytes the heading exemption excluded were never counted, so the
+   ceiling does not fall by them (WO-085 D009 O3).
 5. `npm test` and `npm run test:docs` green; `git diff --check` clean; no
    new dependency.
 
@@ -171,7 +190,11 @@ at final review. No live row.
 **Write-back duty:** as listed in criterion 4.
 
 **Non-goals:** the roadmap's candidate sections (WO-087); version
-assignment at publication (map candidate); component version policy;
+assignment at publication, which would remove the collision itself but
+changes the activation event, the heading rule, `check-surfaces` and
+every role text (map candidate; this order is the smaller probe, and a
+collision that still needs a hand step after it reopens that candidate);
+component version policy;
 rewriting any final review, verification or decision that mentions a
 retime.
 

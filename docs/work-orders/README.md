@@ -7,6 +7,8 @@
 - [ ] [WO-168] — A printed path exists · **queued**
 - [ ] [WO-169] — Follow-ups reach their seam · **queued**
 - [ ] [WO-164] — Constant-process console collection · **queued**
+- [ ] [WO-171] — Prune apply finishes · **queued**
+- [ ] [WO-170] — The meter keeps what sessions observed · **queued**
 - [ ] [WO-162] — In-unit helper reuse · **queued**
 - [ ] [WO-163] — 5S Sort and Set in order · **queued**
 - [ ] [WO-086] — Generated release history · **queued**
@@ -975,7 +977,7 @@ None.
 
 ### WO-168
 
-[WO-168 — A printed path exists: the harness creates the session scratch directory wherever it prints it, a granted root is a real directory, a refused Codex dispatch leaves no reservation, a live gate stops refusing listed reads for their arguments, and the standing writer sentences say what ships (version assigned at activation)](WO-168-printed-path-exists.md)
+[WO-168 — A printed path exists: the harness creates the session scratch directory wherever it prints it, a granted root is a real directory, a refused Codex dispatch leaves no reservation, a live gate admits four argument forms of the reads it already lists, and the standing writer sentences say what ships (version assigned at activation)](WO-168-printed-path-exists.md)
 
 - State: draft.
 - Application target: unassigned.
@@ -986,12 +988,12 @@ None.
 - Release: none recorded.
 - Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
 - Effort: executor xhigh; verifier xhigh; reviewer any.
-- Cost: adds, across the eight items below, a &#96;mkdir&#96; (mode 0700) at the three places the session scratch path is printed or returned and one advisory when it fails; an &#96;lstat&#96; of a granted root's final component before the outside-write guard grants under it; the override exit's message ahead of an input refusal; four argument forms and one command spelling admitted for programs already on the live-gate list, and two configured programs added to the check that guards a listed Git read; the release of a reservation a refused Codex dispatch placed; a refusal naming &#96;node scripts/bootstrap.mjs&#96; where a stale built runtime throws a &#96;TypeError&#96;; the longest-identity rule in one hedge match; one fixture per item. Removes: the turn every role session spends finding the printed scratch path absent, and the masked gate failure that absence produced at WO-166's final review (FINAL-001, reviewer error 1); the refused &#96;git --no-pager diff HEAD~1&#96;, &#96;grep -n '&lt;title&gt;' f&#96;, &#96;wc -l &lt; a.md&#96; and &#96;ls docs 2&gt;/dev/null&#96; a session meets while a gate is live; three standing sentences that understate what WO-166 shipped. Re-mints: &#96;packages/skeleton/src/harness-host.ts&#96;, &#96;harness-command.ts&#96;, &#96;observed-facts.ts&#96; and &#96;packages/compiler/src/harness.ts&#96; are registered evidence sources (&#96;scripts/lib/evidence-sources.mjs&#96;), so the editions whose checks they stale re-mint deterministically (WO-152 D004), and the compiler release owes &#96;feedback-evidence --carry&#96; and the console re-pin (WO-154 D011); none is a feedback source path (&#96;FEEDBACK_SOURCE_PATHS&#96;), so no live episode (WO-147 D010). The generated sentence enters every cold-start profile: its net growth is at most 200 bytes, against a reviewer headroom of 581 bytes measured at &#96;4c34b332&#96;. Wall-clock, tokens and context bytes of the order itself are unknown until run; WO-166, the nearest comparable order on this seam, took 4 h 13 min from activation to its final-review pass with one repair (&#96;docs/control/orders/WO-166.jsonl&#96;).
+- Cost: adds, across the eight items below, a &#96;mkdir&#96; (mode 0700) at the three places the session scratch path is printed or returned and one advisory when it fails; an &#96;lstat&#96; of a granted root's final component before the outside-write guard grants under it; the override exit's message ahead of an input refusal; four argument forms and one command spelling admitted for programs already on the live-gate list, and two configured programs added to the check that guards a listed Git read; the release of a reservation a refused Codex dispatch placed; a refusal naming &#96;node scripts/bootstrap.mjs&#96; where a stale built runtime throws a &#96;TypeError&#96;; the longest-identity rule in one hedge match; one fixture per item. Removes: the turn every role session spends finding the printed scratch path absent, and the masked gate failure that absence produced at WO-166's final review (FINAL-001, reviewer error 1); the refused &#96;git --no-pager diff HEAD~1&#96;, &#96;grep -n '&lt;title&gt;' f&#96;, &#96;wc -l &lt; a.md&#96; and &#96;ls docs 2&gt;/dev/null&#96; a session meets while a gate is live; four standing sentences that understate or misstate what WO-166 shipped (one generated, one in product 02, two in product 07). Re-mints: &#96;packages/skeleton/src/harness-host.ts&#96;, &#96;harness-command.ts&#96;, &#96;observed-facts.ts&#96; and &#96;packages/compiler/src/harness.ts&#96; are registered evidence sources (&#96;scripts/lib/evidence-sources.mjs&#96;), so the editions whose checks they stale re-mint deterministically (WO-152 D004), and the compiler release owes &#96;feedback-evidence --carry&#96; and the console re-pin (WO-154 D011); none is a feedback source path (&#96;FEEDBACK_SOURCE_PATHS&#96;), so no live episode (WO-147 D010). The generated sentence enters every cold-start profile: its net growth is at most 100 bytes, against a reviewer headroom of 581 bytes measured at &#96;4c34b332&#96;. Wall-clock, tokens and context bytes of the order itself are unknown until run; WO-166, the nearest comparable order on this seam, took 4 h 13 min from activation to its final-review pass with one repair (&#96;docs/control/orders/WO-166.jsonl&#96;).
 - Authority: [docs/work-orders/WO-168-printed-path-exists.md](WO-168-printed-path-exists.md)
 
 ### WO-169
 
-[WO-169 — Follow-ups reach the order that opens their seam: the feed names the pending rows a change touches, exports its rows whole and applies a batch of dispositions in one command; the integrate helper regenerates after authored conflicts are staged and records the release line once; the review gate selects the configuration-root suite for every script it scans; the meter names an unset ceiling (version assigned at activation)](WO-169-followups-reach-their-seam.md)
+[WO-169 — Follow-ups reach the order that opens their seam: the feed names the pending rows a change, a file list or an order touches, for the planner before an order is filed and for the executor at completion, exports its rows whole and applies a batch of dispositions in one command; the integrate helper regenerates after authored conflicts are staged and records the release line once; the review gate selects the configuration-root suite for every script it scans; the meter names an unset ceiling (version assigned at activation)](WO-169-followups-reach-their-seam.md)
 
 - State: draft.
 - Application target: unassigned.
@@ -1002,8 +1004,40 @@ None.
 - Release: none recorded.
 - Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
 - Effort: executor xhigh; verifier xhigh; reviewer any.
-- Cost: adds &#96;npm run plan -- followups --touching &#91;&lt;path&gt;…&#93;&#96; (the pending rows whose text names a changed or given path), one advisory line at &#96;implementation-ready&#96; and &#96;repair-complete&#96; when that set is not empty, &#96;followups --export &lt;file&gt;&#96; (every pending row whole, written to a file, counts on standard output) and an array form of &#96;followups --apply&#96; (one expected revision, applied in order, all or none); a conflict check before the integrate helper's first regeneration; &#96;scripts/&#96; among the configuration-root suite's declared sources; one fixture per item. Removes: the silent firing of seam-conditioned rows (four seams, eight rows and nine closed orders counted on 2026-09-27, below); the throwaway script each planning pass writes to read the register (the 2026-09-25 pass read 36 rows that way, this one 155) and the one request file and one invocation per disposition (163 retained request files in the main checkout's local control lane on 2026-09-27); the doubled full stop in every integration record since WO-100 (nine records); &#96;Regenerated:&#96; lines printed over a tree that still holds conflict markers; a red machinery suite reaching &#96;main&#96; unselected (WO-085 D014). Re-mints: none (&#96;scripts/lib/planning-followups.mjs&#96;, &#96;scripts/refute-plan.mjs&#96;, &#96;scripts/lib/lifecycle-evidence.mjs&#96;, &#96;scripts/lib/worktree-integration.mjs&#96;, &#96;scripts/test-runner.mjs&#96; and &#96;scripts/lib/meta.mjs&#96; are not registered evidence sources). Wall-clock, tokens and context bytes of the order itself are unknown until run.
+- Cost: adds &#96;npm run plan -- followups --touching &#91;&lt;path or WO-NNN&gt;…&#93;&#96; (the pending rows whose text names a changed or given path, or a given order), one advisory at &#96;implementation-ready&#96; and &#96;repair-complete&#96; when that set is not empty, which states what the executor does with the rows, &#96;followups --export &lt;file&gt;&#96; (every pending row whole, written to a file, counts on standard output) and an array form of &#96;followups --apply&#96; (one expected revision, applied in order, all or none); a conflict check before the integrate helper's first regeneration; &#96;scripts/&#96; among the configuration-root suite's declared sources, which adds that suite (2.3 s alone on the operator's host, measured 2026-09-27) to the review gate of every order that changes a script; one fixture per item. Removes: the silent firing of seam-conditioned rows (four seams, eight rows and nine closed orders counted on 2026-09-27, below); the throwaway script each planning pass writes to read the register (the 2026-09-25 pass read 36 rows that way, this one 155) and the one request file and one invocation per disposition (163 retained request files in the main checkout's local control lane on 2026-09-27); the doubled full stop in every integration record since WO-100 (nine records); &#96;Regenerated:&#96; lines printed over a tree that still holds conflict markers; a red machinery suite reaching &#96;main&#96; unselected (WO-085 D014). Re-mints: none (&#96;scripts/lib/planning-followups.mjs&#96;, &#96;scripts/refute-plan.mjs&#96;, &#96;scripts/lib/lifecycle-evidence.mjs&#96;, &#96;scripts/lib/worktree-integration.mjs&#96;, &#96;scripts/test-runner.mjs&#96; and &#96;scripts/lib/meta.mjs&#96; are not registered evidence sources). Wall-clock, tokens and context bytes of the order itself are unknown until run.
 - Authority: [docs/work-orders/WO-169-followups-reach-their-seam.md](WO-169-followups-reach-their-seam.md)
+
+### WO-170
+
+[WO-170 — The meter keeps what an order's sessions observed and counts the operator's directions: a bounded per-order snapshot is written while the journals exist, retained usage is read and recovered once for closed orders, an unread journal reads unavailable instead of zero, and directions per closed order form a series (version assigned at activation)](WO-170-meter-keeps-what-sessions-observed.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; dependency-ready.
+- References: WO-126: satisfied-by-close (met) — the process meter and its snapshot option; WO-160: satisfied-by-close (met) — the last edit of release prepare's message; WO-158: satisfied-by-close (met) — the off-ramp event types the direction count reads.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer any.
+- Cost: adds a per-order meter snapshot of at most 8 KB (&#96;docs/evidence/WO-NNN/meta.json&#96;, the order's own row only) written by &#96;release prepare&#96; in the worktree whose journals it summarizes; a read of the usage copies &#96;worktree finish&#96; retains, and one recovery of their totals by role into snapshots for the orders already closed (73 retained copies, 2,141 rows, in the main checkout on 2026-09-27); a count of the operator's directions per order from the public record (decision dispatches that begin with &#96;scope expand:&#96;, &#96;operator override:&#96;, &#96;analysis:&#96; or &#96;conversation only:&#96;, the three off-ramp event types, and the number of intake captures a planning pass cites, never their text); one column in the meter table. Removes: twelve of the fourteen trap series reading null or a false zero for the five orders closed on 2026-09-25 and 2026-09-26 (below); "tokens unavailable" on &#96;main&#96; for an order whose pull request recorded them; the hand count a planning pass makes to answer how often the operator had to step in. Re-mints: none, provided the reading stays in &#96;scripts/lib/meta.mjs&#96; and &#96;scripts/release.mjs&#96;; &#96;packages/skeleton/src/correction-observation.mjs&#96; and &#96;observed-facts.ts&#96; are registered evidence sources and are not edited. Wall-clock, tokens and context bytes of the order itself are unknown until run.
+- Authority: [docs/work-orders/WO-170-meter-keeps-what-sessions-observed.md](WO-170-meter-keeps-what-sessions-observed.md)
+
+### WO-171
+
+[WO-171 — Prune apply finishes: one plan and one publication observation per apply instead of one per candidate, an interrupted apply resumes, and a retained lane keeps its usage copy until the order's meter snapshot is committed (version assigned at activation)](WO-171-prune-apply-finishes.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; dependency-ready.
+- References: WO-160: satisfied-by-close (met) — integration stashes in the prune listing and apply; WO-159: satisfied-by-close (met) — stale Codex episode homes in the prune listing; WO-142: satisfied-by-close (met) — the prune's publication observation and its boarded limit.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer any.
+- Cost: adds one tag listing and one release listing per apply in place of one &#96;gh release view&#96; and one &#96;git ls-remote&#96; per order per plan; a pre-delete check that reads only the candidate about to be removed; a retention reason for a lane whose usage copy has no committed snapshot; fixtures that count plans and publication observations. Removes: a full re-plan before every deletion (&#96;scripts/lib/harness-prune.mjs&#96; &#96;pruneHarness&#96;), which at the listing measured on 2026-09-27 (186 candidates, 64.2 s for one plan on the operator's host) puts one apply at about three hours, each plan making a release view and a remote tag read for every lane and stash it judges (an inference from the measured listing and the source, not an observed run); the unpruned residue that follows from it, 5,508,635,182 bytes in the same listing, of which fourteen integration stashes are 5,433.8 MB and seventy-two retained lanes 56.7 MB. Re-mints: none (&#96;scripts/lib/harness-prune.mjs&#96; is a declared source of the harness-fixtures machinery suite and not a registered evidence source). Wall-clock, tokens and context bytes of the order itself are unknown until run.
+- Authority: [docs/work-orders/WO-171-prune-apply-finishes.md](WO-171-prune-apply-finishes.md)
 
 ## Closed
 
@@ -3174,3 +3208,5 @@ See [the human planning map](../planning/work-order-map.md) for recommendation, 
 [WO-167]: WO-167-execution-guide-folded.md
 [WO-168]: WO-168-printed-path-exists.md
 [WO-169]: WO-169-followups-reach-their-seam.md
+[WO-170]: WO-170-meter-keeps-what-sessions-observed.md
+[WO-171]: WO-171-prune-apply-finishes.md

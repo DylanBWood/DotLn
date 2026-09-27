@@ -139,11 +139,24 @@ takes a one-entry slot after them: WO-165 closed, and it edits
 run beside WO-162 or WO-163. No other pair is recut. Evidence:
 [the planning document](onesie-twosie-followup-drain-2026-09-27.md) §5 and §7.
 
+Operator answer (2026-09-27, second judgment): the operator delegated the
+pass's open decisions and admitted later orders. Two are filed. WO-171 (a
+prune apply plans once and finishes) pairs with WO-164 in the second slot:
+disjoint files, no hard edge, neither re-mints. WO-170 (the meter keeps a
+bounded per-order snapshot, recovers retained usage and counts the
+operator's directions) takes a one-entry slot after them, because it
+shares `release.mjs` with WO-164, and before WO-086. The four orders of
+the first judgment are repaired against receipt 031. Evidence:
+[the planning document](onesie-twosie-followup-drain-2026-09-27.md) §12 to §15.
+
 <!-- dotln-work-order-sequence:start -->
 - WO-168 — A printed path exists
 - WO-169 — Follow-ups reach their seam
 
 - WO-164 — Constant-process console collection
+- WO-171 — Prune apply finishes
+
+- WO-170 — The meter keeps what sessions observed
 
 - WO-162 — In-unit helper reuse
 - WO-163 — 5S Sort and Set in order

@@ -1,4 +1,4 @@
-# WO-169 — Follow-ups reach the order that opens their seam: the feed names the pending rows a change touches, exports its rows whole and applies a batch of dispositions in one command; the integrate helper regenerates after authored conflicts are staged and records the release line once; the review gate selects the configuration-root suite for every script it scans; the meter names an unset ceiling (version assigned at activation)
+# WO-169 — Follow-ups reach the order that opens their seam: the feed names the pending rows a change, a file list or an order touches, for the planner before an order is filed and for the executor at completion, exports its rows whole and applies a batch of dispositions in one command; the integrate helper regenerates after authored conflicts are staged and records the release line once; the review gate selects the configuration-root suite for every script it scans; the meter names an unset ceiling (version assigned at activation)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
@@ -8,14 +8,17 @@ completion advisory, one helper's ordering and output, one row of the
 runner's source table and one rendered label; no control-event schema,
 register schema, gate step or contract change. Assigned at activation
 under the standing opt-out default.
-**Cost:** adds `npm run plan -- followups --touching [<path>…]` (the
-pending rows whose text names a changed or given path), one advisory line
-at `implementation-ready` and `repair-complete` when that set is not
-empty, `followups --export <file>` (every pending row whole, written to a
-file, counts on standard output) and an array form of `followups --apply`
+**Cost:** adds `npm run plan -- followups --touching [<path or WO-NNN>…]`
+(the pending rows whose text names a changed or given path, or a given
+order), one advisory at `implementation-ready` and `repair-complete` when
+that set is not empty, which states what the executor does with the rows,
+`followups --export <file>` (every pending row whole, written to a file,
+counts on standard output) and an array form of `followups --apply`
 (one expected revision, applied in order, all or none); a conflict check
 before the integrate helper's first regeneration; `scripts/` among the
-configuration-root suite's declared sources; one fixture per item.
+configuration-root suite's declared sources, which adds that suite (2.3 s
+alone on the operator's host, measured 2026-09-27) to the review gate of
+every order that changes a script; one fixture per item.
 Removes: the silent firing of seam-conditioned rows (four seams, eight
 rows and nine closed orders counted on 2026-09-27, below); the throwaway
 script each planning pass writes to read the register (the 2026-09-25 pass
@@ -99,8 +102,11 @@ the
 [2026-09-27 planning document](../planning/onesie-twosie-followup-drain-2026-09-27.md)
 §4 and §5.
 
-**Objective:** a follow-up deferred until "the next order that edits"
-a file is shown to the order that edits it; a planning pass reads and
+**Objective:** a follow-up deferred until "the next order that edits" a
+file, or until a named order activates or closes, is shown three times:
+to the planner who files an order naming that file, to the executor whose
+change touches it, and to the pass that retires the closed order; each
+showing ends in a recorded disposition; a planning pass reads and
 disposes the register with the feed's own commands; an integration's
 output and record describe the tree as it is; a script change selects the
 suite that scans scripts; an unset ceiling is called unset.
@@ -148,17 +154,23 @@ suite that scans scripts; an unset ceiling is called unset.
 
 **Design (scope discipline):**
 
-- Item 1: `followups --touching` with no path reads the files changed
-  against the merge base with `main`; with paths it reads those. A row
-  matches when its source text, its decision's `followup` or
-  `reopenWhen`, or its latest disposition names the path or its base
-  name. Output is the feed's row shape within the page bound, with a
-  continuation. It is a textual match and says so; a false match costs a
-  row read, a missed one leaves today's behaviour. The completion check
-  prints one advisory with the count and the command when the set is not
-  empty. It never blocks a completion (the WO-131 direction). The
-  executor's existing duty decides each row: fixed inside the Boy Scout
-  bound, or left with a disposition that says why.
+- Item 1: `followups --touching` with no argument reads the files
+  changed against the merge base with `main` and the active order's
+  identifier; with arguments it reads the given paths and order
+  identifiers. A row matches when its source text, its decision's
+  `followup` or `reopenWhen`, or its latest disposition names the path,
+  its base name or the order. Output is the feed's row shape within the
+  page bound, with a continuation. It is a textual match and says so; a
+  false match costs a row read, a missed one leaves today's behaviour.
+  Three uses, each ending in a record. The planner runs it with the files
+  an order names before filing the order, and allocates or declines each
+  row in that pass. The completion check prints one advisory with the
+  count, the command and the rule: fix a row inside the Boy Scout bound or
+  record it as left in the order's decisions, never widen the order; the
+  final review disposes each listed row through the feed. A pass that
+  retires closed orders runs it with their identifiers. The advisory
+  never blocks a completion (the WO-131 direction) and the role skills
+  are unchanged, because the advisory carries the rule.
 - Item 2: `followups --export <file>` writes every pending row (`--all`
   for every row) whole: identity, status, kind, source, title, the
   decision's `decision`, `followup` and `reopenWhen` or the candidate's
@@ -199,10 +211,13 @@ write-backs; decisions per item.
 
 1. On a fixture register, `followups --touching scripts/lib/meta.mjs`
    returns the pending rows whose text names that path or `meta.mjs` and
-   no settled row; with no path it returns the rows for the fixture's
-   changed files; `implementation-ready` prints the advisory with the
-   count on a fixture with one match and stays silent with none; no
-   completion is refused.
+   no settled row; `--touching WO-115` returns the rows that name that
+   order; with no argument it returns the rows for the fixture's changed
+   files and active order; `implementation-ready` prints the advisory
+   with the count, the command and the rule on a fixture with one match
+   and stays silent with none; no completion is refused. This order's own
+   final review lists every row its `--touching` run returned with the
+   disposition it recorded.
 2. `followups --export` writes every pending row with its whole
    `followup` text and disposition history to the named file and prints
    only counts, revision and path; a destination outside the granted
@@ -219,9 +234,11 @@ write-backs; decisions per item.
    `scripts/authority-evidence.mjs` lists the configuration-root suite.
 6. The meter's drift row for a role with no ceiling reads "ceiling unset".
 7. Write-backs land: `docs/planning/followups.md` and product 07
-   §Retained planning follow-ups name the three forms in place, within
-   600 bytes of product 07's headroom; the register rows named in the
-   provenance are retargeted at close.
+   §Retained planning follow-ups name the three forms and the three uses
+   in place, adding at most 500 bytes to product 07 (185,895 of 188,399
+   counted bytes at the pass's commit; WO-168 adds at most 1,000 before
+   it); the register rows named in the provenance are retargeted at
+   close.
 8. `npm test -- --review` and `npm run test:docs` green; `git diff
    --check` clean; no new dependency.
 

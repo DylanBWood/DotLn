@@ -189,8 +189,9 @@ Each new order re-observes an item before editing it and may end an item
 "not reproduced"; each names `npm test -- --review` and `npm run
 test:docs` in its final criterion, because every source it edits is a
 declared source of a machinery suite. Both orders edit product 07 in
-different sections and bound their growth (1,200 and 600 bytes) against
-2,790 bytes of headroom after this pass's own sentence.
+different sections and bound their growth (1,000 and 500 bytes; WO-170
+300 and WO-171 200) against 2,504 bytes of headroom after this pass's own
+two sentences (185,895 of 188,399 counted bytes).
 
 ## 7. The sequence
 
@@ -206,9 +207,10 @@ queued entries remain.
 | fifth (one entry, unchanged) | WO-087 | after WO-086 |
 
 The delivery pair that held the head since 2026-09-16 is closed. The next
-product entries are WO-060 and WO-116, behind nine debt entries; the
-operator's 2026-09-25 answer kept that order, and this pass adds two debt
-entries in front at the operator's direction.
+product entries are WO-060 and WO-116, behind eight debt entries: six
+queued before this pass, kept in place by the operator's 2026-09-25
+answer, and the two this pass adds in front at the operator's direction.
+§15 adds one more entry and the recommendation that follows from it.
 
 ## 8. Declined alternatives — the NoOp register of this pass
 
@@ -261,10 +263,10 @@ wins, what reopens it.
   `cli-actor.ts` is a feedback source path; the fix pays a live episode.
   Left deferred.
 - **File the fired product candidates (§5.3).** Outside the operator's
-  category for this pass. Recorded open. Reopen: the next pass that files
-  product orders.
-- **Run the stored-data inventory first.** Its reopening text names the
-  next pass; the operator scoped this one. Recorded open.
+  category when the pass opened, so they were recorded open; the
+  operator's answer then delegated the decision, and §13 decides each.
+- **Run the stored-data inventory first.** Not run when the pass opened
+  (the operator had scoped it); run under the operator's answer as §14.
 - **Deleting anything.** No order here removes evidence or history.
   Reopen: never.
 
@@ -304,15 +306,23 @@ them before any export.
 
 ## 10. Evidence and cost of this pass
 
-- Research: none delegated; the planner read the register, the decisions
-  and the source directly and probed the built classifier. Fan-out plan:
-  one refuter of twenty subagent admissions.
-- Documents: two orders and two amended; the sequence; the map (one
-  rationale paragraph, one candidates section, two catalog rows, five row
-  notes); the ledger section; product 07 and product 08 (one sentence
-  each, in place); this document; the register dispositions; the
-  generated index and cost table.
-- Session usage and the refutation's cost are in §12 and the response.
+- Research for the first judgment: none delegated; the planner read the
+  register, the decisions and the source directly and probed the built
+  classifier. For the operator's answer one read-only survey enumerated
+  the stored-data lanes (§14). Subagent admissions used: three of twenty
+  (the first refuter, the survey, the second refuter).
+- Refutation 031: 1,822,935 ms from dispatch to file by the receipt; the
+  worker reported 216,381 tokens and 28 tool uses over 1,521 s (harness
+  readback of the agent task).
+- Session usage at the hook readback of 00:42Z: 55,366,394 total tokens,
+  54,600,511 of them cached input; source
+  claude-transcript-message-usage, scope dispatch; cost unknown. The
+  handoff figure is in the response.
+- Documents: three orders filed and two amended, then all four judged
+  orders repaired against receipt 031; the sequence; the map; two ledger
+  sections; product 07 (two sentences) and product 08 (one), in place;
+  this document; the register dispositions; the generated index and cost
+  table.
 
 ## 11. Reversal conditions for this plan
 
@@ -323,7 +333,199 @@ them before any export.
   machinery failure first at final review.
 - The operator moves a product entry above the pair, or strikes an item.
 
-## 12. Independent review
+## 12. Independent review — receipt 031 and the repairs it led to
 
-Filed after the committed subject is judged; see the receipt beside this
-pass in `docs/planning/refutations/`.
+Receipt 031 (`2026-09-27-planning-e4deffba4add0aff-031`) judged WO-168,
+WO-169, WO-086 and WO-167 aligned-with-findings, with no hold and fifteen
+known issues, each with a reopening observation. The refuter read only
+the compiled subject. Twelve of the fifteen name a defect in an order's
+text that an executor or verifier would meet, so the text is repaired
+here, before anyone activates it, and the repaired subject is judged
+again (§16; the precedent is the 2026-09-25 pass's second judgment).
+
+| Finding (receipt 031) | Repair |
+| --- | --- |
+| WO-168: the objective said a listed read is never refused for its spelling, while criterion 4 keeps `ls docs/*.md` refused | the title and objective name the four admitted forms and say expansion, unquoted globs and other redirects stay refused |
+| WO-168: a granted root that does not exist yet, or whose `lstat` fails, was unspecified | an absent root is judged as at `4c34b332`; another `lstat` error falls back to that judgment with one advisory; criterion 2 has a fixture for each |
+| WO-168: "three sentences", "four sentences" and "stated once" did not reconcile; the generated sentence could spend a third of the reviewer's headroom | four sentences, counted the same way everywhere (one generated, one in product 02, two in product 07); the generated sentence is bounded to 100 bytes, by rewording the clause it replaces |
+| WO-168: ten criteria proved mechanisms on fixtures and no observed outcome | criterion 10: the verification report and the final review record what their own sessions observed on the branch's hooks (the scratch directory at dispatch; every live-gate refusal by program and form) |
+| WO-169: the advisory fires after the edit, to a session with no rule for the rows; the path form suits a planner better | three uses, each ending in a record: the planner before filing, the executor at completion with the rule in the advisory (fix inside the Boy Scout bound or record as left; never widen), the pass that retires closed orders; rows naming an order match too; the order's own final review disposes every row its run returned |
+| WO-169: the configuration-root suite's added run time was uncounted | measured alone on the operator's host: 2.3 s; the Cost line carries it |
+| WO-169: "within 600 bytes of product 07's headroom" had two readings and no number | at most 500 bytes added; 185,895 of 188,399 counted bytes at the pass's commit |
+| WO-086: a table generated from local tags makes the document gate depend on refs outside the tree; a sibling lane's tag would turn it red | the index's existing rule: the committed table carries its tag snapshot, recorded tags must remain available and unchanged, a newer local tag is reported and never refuses |
+| WO-086: the table joined through the heading's version, which WO-113 may move into control events | the join is through the tag's manifest, as the index's local release evidence is; the heading is display text |
+| WO-086: "recorded once" was untested with two writers; the excluded alternative had no reason in the compiled text | criterion 3 requires exactly one integration decision per collision; the non-goal states why version assignment at publication is the larger change |
+| WO-086: no criterion pinned the removal the Cost line claims | criterion 4: no retiming, activation-completion or forward-retiming paragraph outside the markers; bytes before and after; the ceiling does not exceed its entry at the order's base |
+| WO-167: the verifier's evidence was a count; the fold table had no location; no proof covered a queued order's `Cites` line; the ceiling had no headroom | a per-row record in the verification report; the table at `docs/evidence/WO-167/fold-table.md` with dated citations; the executor lists and retargets the product 07 headings queued orders cite; the ceiling is the landing count plus two per cent; the map's bytes are recorded |
+
+Three known issues stand as recorded, with the receipt's reopening
+observations: that none of the judged orders unblocks a critical-path gate
+(true, and the reason for §15's recommendation); that the wider
+configuration-root selection may catch nothing (2.3 s per gate is the
+price); and that the planning map has no byte ceiling while WO-167 and
+WO-087 move sections into it (WO-167 now records the map's bytes).
+
+## 13. The operator's answer: decisions made under delegation
+
+After the first report the operator answered (captured in the sibling
+intake note
+`2026-09-27-onesie-twosie-followup-drain-planning-followup.md`): push and
+open the pull request when done; for the decisions reported as the
+operator's, make the best call, including later orders beyond the two,
+and cite the reasons. Each decision below is the planner's, made under
+that delegation, and each can be reversed by the operator at review.
+
+| Decision | Call | Reason | Reopen |
+| --- | --- | --- | --- |
+| WO-168 item 4: the `/dev/null` sink and the literal input redirect | keep both | a `/dev/null` sink opens no gate input; an input redirect opens its file read-only; each has an admitted and a refused fixture; sessions met both refusals | an admitted form is observed to change a gate input |
+| Consume before produce for standard passes (FUP-304746d9f9c448c0) | adopted, in place in product 07 | every order this pass filed traces to an occurred reopening condition or an operator direction, so the rule costs nothing it did not already do; it bounds what a pass may add to the operator's queue; the meter's machinery share for the last three orders is 0.56 to 0.65 | the operator withdraws it, or a pass records a verified defect it could not file |
+| The babysitting rate, measured (FUP-a33f893036882d16) | filed as WO-170 | the meter reports 0 operator corrections for five orders whose journals it could not read, and nothing counts the 32 operator-direction dispatches the record holds; it is the mission's own measure | the order's decisions |
+| Session journals are discarded at teardown (FUP-85562931791378d4) | allocated to WO-170 | the snapshot written while the journals exist is the public summary; twelve of fourteen trap series are null or a false zero | a question about session behaviour the snapshot cannot answer |
+| The stored-data inventory (FUP-0bdf39fe462c07f0) | run now, by hand, as §14; no generator filed | its own text names a pass's opening research stream; a hand inventory is the smallest probe of whether the table earns a generator; it found two defects worth an order (WO-170's unread usage, WO-171's prune) and three worth a record | a second pass wants the same table |
+| Prune apply re-plans per candidate (FUP-6aafd40115ac97fd) | filed as WO-171 | deferred on 2026-09-21 for want of an observed failure; now one listing takes 64.2 s for 186 candidates, the source re-plans before every deletion, the last apply log reads exit 143 and 5.5 GB is listed unpruned | the order's decisions |
+| Refutation receipts by identity and hash (FUP-beb13d8d099d2917) | deferred | a receipt pair is 450 KB and the directory 17 MB, but the whole repository packs to 24.9 MiB; the change is a receipt schema change with forty read sites on the gate every pass runs, and WO-162 refactors the same helpers first | the directory passes 32 MB, or WO-162 closes |
+| Retention of never-current evidence editions (FUP-5e2f4ce16f9e8be1, FUP-8a4e201d861208ad) | pruning declined; deferred | immutable reports link to edition files; since WO-154 an order's editions cost 0.14 to 0.73 MB (WO-166: 0.62 MB, five authority revisions at 76 KB each); history packs small | a week adds more than 10 MB of tracked evidence, or one order commits more than 1 MB of revisions it never makes current |
+| Intent declaration and the stranger test (FUP-0073) | deferred, half settled | `dotln intent "<prose>"` exists (`packages/skeleton/src/dotln.ts`) and WO-123 carries a filed intent to a terminal state; what remains is the roadmap's v1.0.0 exit, a witnessed run by a non-author, which needs the loop first | WO-083 closes |
+| Additional Opinion (FUP-0089) | deferred | the support needs one batch identity across repeated episodes so that outbox deduplication does not erase the repeat, a kernel and outbox contract; second opinions are dispatched by hand today and work; it belongs with the pattern shelf | WO-091 to WO-095 land |
+| Context Continuity (FUP-0091) | deferred | the candidate itself places continuity in the host's durable work state and allocates no order; WO-120 and WO-100 landed that state, and WO-112 is the first loop that assembles context from it; no Claude-side failure is on record | WO-112 activates, or a session is observed losing its owned task after compaction |
+| Budget-window work-order ladders (FUP-0107) | deferred | WO-111's two unattended runs were 5S changes in a scratch repository under one resident; a ladder allocates this repository's own orders across lanes and usage windows, which needs the resident-owned loop | WO-118 closes, or a second lane runs unattended |
+| Model-input exposure plans (FUP-0113) | deferred | no role sends private or operator-owned material to a model; WO-110 and WO-138 left local inference qualified for one read-only ranking task; WO-062 is the first order that brings external source text to a model input | WO-062 activates, or a local role that reads private material is proposed |
+
+Five of the nine rows are product candidates that wait on product orders
+already in the sequence (WO-062, WO-083, WO-112, WO-118, the pattern
+shelf). Filing more orders would not advance them; running the product
+sequence does. Each carries a note on the catalog row of the order that
+reopens it, so the condition is seen when that order is opened.
+
+The register after both judgments: 662 entries, 129 pending, 128 of them
+deferred with a reopening observation and one open (the planner startup
+measurement); none untriaged and none needing review. The pass began
+with 155 pending, added nine rows of its own and recorded 66
+dispositions, 48 before the first judgment and 18 after the operator's
+answer.
+
+## 14. The stored-data inventory, run by hand
+
+The operator observed on 2026-09-25 that much of what the application
+stores is not measured, analyzed or acted on, and the map recorded the
+inventory as a pass's opening research stream. One read-only survey
+enumerated 22 lanes (303,417 tokens, 192 tool uses, 1,363 s by the
+harness readback); the planner re-measured the rows it relies on, marked
+"re-measured". Three questions per lane: a counter reads it (A), a
+planning pass or review consumed it (B), a decision cites it (C). Counts
+of B and C are files found by pattern and are approximate.
+
+| Lane | Kept in | Size on 2026-09-27 | Bound | A | B | C |
+| --- | --- | --- | --- | --- | --- | --- |
+| Control event logs | tracked | 89 files, 1,046 events | append-only | yes | 61 | 8 |
+| Refutation log and receipts | tracked | 75 files, 17 MB (re-measured) | none | receipts yes, log no | 22 | 11 |
+| Follow-up register | tracked | 658 entries (re-measured) | none | no | 31 | 14 |
+| Planning cost table | tracked | 37 KB | 64 KB | no, it is meter output | 3 | 2 |
+| Evidence editions | tracked | 260 edition rows, 99.5 MB (re-measured) | none | current and feedback only | 92 | 30 |
+| Meter snapshots | tracked | WO-043, WO-049, WO-126 only (re-measured) | baseline immutable | yes | 7 | 0 |
+| Cold-start observations | tracked | 18 files | none | harness-context only | 25 | 5 |
+| Entropy runs and reviews | tracked | 17 files | none | reviews only | 10 | 2 |
+| Discovery records | tracked | 92 files | none | no | 121 | 14 |
+| Decisions and lineage indexes | tracked | 600 KB | regenerated | no | 45 | 10 |
+| Beacons | ignored | none in `main` | leave with the worktree | yes | 19 | 0 |
+| Harness journals and state | ignored | 109 journals, 15 MB | advisory markers only | the checkout's own only | 27 | 2 |
+| Writer events | ignored | 370 rows | none | no | 7 | 1 |
+| Gate rows and failure output | ignored | 256 rows in the hot index (re-measured) | 256-row index; history unbounded | rows yes, output no | 26 | 8 |
+| Usage observations | ignored | 239 rows in `main`; 2,141 retained (re-measured) | none | `main` yes, retained no | 3 | 5 |
+| Retained per-order lanes | ignored | 72 lanes listed by the prune, 56.7 MB (re-measured) | prune, never completed | no | 5 | 1 |
+| Adjacent-work queues | ignored | 48 files | none | gates only | 2 | 2 |
+| Planning-local files | ignored | about 370 files | none | no | 2 | 0 |
+| Release-close local records | ignored | 16 files | none | no | 0 | 0 |
+| Checkpoint refs and stashes | local refs | 1,056 refs; 24 stashes, 14 of them integration stashes of 5.4 GB (re-measured) | stashes by the prune | refs yes | 259 | 20 |
+| Resident and worker stores | ignored | none in `main`; 24 retained files | none | on request | 10 | 2 |
+| Operator-control state, session scratch | system temporary | 2,386 and 55 entries | none | no | 2 | 1 |
+
+What the inventory found, with the route each takes:
+
+| Finding | Evidence | Route |
+| --- | --- | --- |
+| The executor's, verifier's and reviewer's usage exists only in retained copies nothing reads | 73 copies, 2,141 rows (executor 791, verifier 876, reviewer 458); `usageRows` reads the checkout's own file; `main` holds planner, release-close and refuter rows | WO-170: read, and recovered once into per-order snapshots |
+| Session journals, subagent counters and writer events leave with the worktree | the harness lane is disposable at teardown; `main`'s 93 session states are release-close, planner, refuter or unlabeled | WO-170: the snapshot written while they exist |
+| A prune apply cannot finish | one listing 64.2 s; a re-plan before every deletion; 186 candidates; the last apply log reads exit 143; 5,508,635,182 bytes listed | WO-171 |
+| Gate rows outlive the failure output they cite | in `main`'s hot index 257 distinct output references, 234 unresolved: teardown copies the rows and not the files | map candidate 6, deferred |
+| A gate marker with no birth observation never expires | one marker of 2026-09-16, pid 43275, `processStartedAt` null; its process is gone today, and a reused pid would read as a live gate | map candidate 7, deferred |
+| The register has no flow counter | nothing reports arrivals against settlements per pass; this document's §5 is a hand count | map candidate 8, deferred |
+| Operator-control state accumulates in the temporary directory | 2,386 entries, read only by the open-override advisory | map candidate 9, declined |
+
+Lanes where none of the three holds: the release-close local records. The
+planning-local files and the operator-control state have no counter and
+no decision. Nothing here is deleted by this pass.
+
+## 15. The later orders, the sequence and one recommendation
+
+| Order | What it lands | Class | Re-mint |
+| --- | --- | --- | --- |
+| WO-170 The meter keeps what sessions observed (new) | a per-order snapshot of at most 8 KB written by `release prepare` while the journals exist; retained usage read, and recovered once for the closed orders; a correction count computed from no journal reads unavailable, not zero; operator directions per closed order counted from decision dispatches and off-ramp events | patch | none while no registered evidence source is edited |
+| WO-171 Prune apply finishes (new) | one plan and one publication observation per apply; a pre-delete check of the one candidate; an interrupted apply resumes; a lane keeps its usage copy until the order's snapshot is committed | patch | none |
+
+Placement. WO-171 pairs with WO-164 in the second slot: disjoint files
+(the prune and its fixtures; the console collector, the status command
+and the release listing), no hard edge, neither re-mints. WO-170 takes a
+one-entry slot after them, because it edits `scripts/release.mjs`
+(`prepare`) as WO-164 does (`list`) and `scripts/lib/meta.mjs` as WO-169
+does, and before WO-086, which rewrites what `release prepare` writes at
+a collision. WO-171's usage reason keeps the order of WO-170 and the
+operator's next apply from mattering. The sequence holds 46 entries.
+
+| Slot | Entries |
+| --- | --- |
+| head | WO-168; WO-169 |
+| second | WO-164; WO-171 |
+| third | WO-170 |
+| fourth | WO-162; WO-163 |
+| fifth | WO-086; WO-167 |
+| sixth | WO-087 |
+| seventh | WO-060; WO-116 (the first product entries) |
+
+Recommendation, recorded and not acted on: receipt 031 observes that the
+first eight entries sit outside every critical-path gate, and §13 shows
+five deferred product candidates waiting on product orders already
+queued. WO-060 depends only on WO-008 and its own text says "any free
+lane"; WO-116 depends on closed orders. Either can run in the second lane
+beside WO-164 or WO-170 without waiting for the debt entries. The
+operator's 2026-09-25 answer kept the debt entries first for a stated
+three days, so the order of existing entries is left as the operator set
+it; moving WO-060 and WO-116 up is the operator's call.
+
+Goal alignment for WO-171. Mission: it removes a rescue the operator
+cannot complete today, since the apply is the operator's own command and
+does not finish. Critical path: none. Traps: shifting the burden is the
+material lens (the residue waits on a command that runs for hours);
+commons, since 5.5 GB of local residue is shared disk every worktree and
+gate draws on; policy resistance, since the usage reason keeps the prune
+from undoing what WO-170 recovers; rule beating, since the fixture counts
+observations instead of timing them; escalation, drift, success to the
+successful and wrong goal are immaterial to a change of ordering inside
+one command. Naive Interventionism: every retention reason, the byte
+proof and the publication requirement are kept; the change is what is
+re-read, not what may be deleted. NoOp: the residue grows by each
+order's lane and stash, and the usage copies stay one successful apply
+from deletion.
+
+Goal alignment for WO-170. Mission: it measures the thing the mission
+names, how often the operator has to step in, which no record reports
+today. Critical path: none directly; it is the instrument that shows
+whether the debt entries ahead of the product entries reduce that rate.
+Traps: seeking the wrong goal is the material lens, since a plan that
+cannot read its outcome optimizes proxies (orders closed, rows disposed);
+rule beating, since a zero from an unread journal passes for a clean
+record; commons, since the snapshot is bounded at 8 KB per order;
+escalation and policy resistance, since it adds no gate, refusal or
+threshold; drift, since unavailable is reported as unavailable; shifting
+the burden, since the count replaces a planner's hand count; success to
+the successful, since committing the journals was weighed and declined
+for what they contain. Naive Interventionism: the meter's existing
+readers and the pull-request body's table keep their shape apart from
+one column; the change is reversible by deleting the snapshot writer.
+NoOp: every closed order keeps reading null or zero on `main`, and the
+next pass counts directions by hand again.
+
+## 16. Second judgment
+
+The repaired orders, WO-170 and the revised sequence are committed and
+judged by a second fresh worker; its receipt is filed beside receipt 031.

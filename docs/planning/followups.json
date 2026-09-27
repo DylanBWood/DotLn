@@ -1879,6 +1879,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-27T00:36:37.793Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred, half settled, under the operator's 2026-09-27 delegation. Intent declaration exists as a command (dotln intent, packages/skeleton/src/dotln.ts) and WO-123 carries a filed intent to a terminal state. What remains is the roadmap's v1.0.0 exit, a witnessed run by a non-author, which needs the loop (WO-112, WO-118) and the first real run first. [2026-09-27 onesie-twosie planning pass, operator answer (docs/planning/onesie-twosie-followup-drain-2026-09-27.md sections 13 and 14)]",
+          "reopenWhen": "WO-083 closes",
+          "targets": [],
+          "at": "2026-09-27T01:45:55.597Z"
         }
       ]
     },
@@ -2384,6 +2392,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-27T00:36:38.324Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred under the operator's 2026-09-27 delegation. The support needs one batch identity across repeated episodes so that outbox deduplication does not erase an intentional repeat, which is a kernel and outbox contract; second opinions are dispatched by hand today and work (WO-115 D026 used an adversarial read and a second verifier). It belongs with the pattern shelf that follows the workshop. [2026-09-27 onesie-twosie planning pass, operator answer (docs/planning/onesie-twosie-followup-drain-2026-09-27.md sections 13 and 14)]",
+          "reopenWhen": "WO-091 to WO-095 land",
+          "targets": [],
+          "at": "2026-09-27T01:45:56.113Z"
         }
       ]
     },
@@ -2477,6 +2493,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-27T00:36:38.851Z"
+        },
+        {
+          "sourceRevision": 4,
+          "status": "deferred",
+          "reason": "Deferred under the operator's 2026-09-27 delegation. The candidate places continuity in the host's durable work state and allocates no order of its own; WO-120 and WO-100 landed that state and WO-112 is the first loop that assembles a call's context from it. The Codex adapter shipped in WO-054; no Claude-side failure is on record. [2026-09-27 onesie-twosie planning pass, operator answer (docs/planning/onesie-twosie-followup-drain-2026-09-27.md sections 13 and 14)]",
+          "reopenWhen": "WO-112 activates, or a session is observed losing its owned task after compaction",
+          "targets": [],
+          "at": "2026-09-27T01:45:56.638Z"
         }
       ]
     },
@@ -2877,6 +2901,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-27T00:36:39.369Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred under the operator's 2026-09-27 delegation. WO-111's two observed unattended runs were 5S changes in a scratch repository under one resident; a ladder allocates this repository's own orders across lanes and usage windows, which needs the resident-owned loop. [2026-09-27 onesie-twosie planning pass, operator answer (docs/planning/onesie-twosie-followup-drain-2026-09-27.md sections 13 and 14)]",
+          "reopenWhen": "WO-118 closes, or a second lane runs unattended",
+          "targets": [],
+          "at": "2026-09-27T01:45:57.164Z"
         }
       ]
     },
@@ -3304,6 +3336,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-27T00:36:39.890Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred under the operator's 2026-09-27 delegation. No role sends private or operator-owned material to a model today; WO-110 and WO-138 left local inference qualified for one read-only ranking task; no ModelInputPlan exists in package source at 4c34b332. WO-062 is the first order that brings external source text to a model input. [2026-09-27 onesie-twosie planning pass, operator answer (docs/planning/onesie-twosie-followup-drain-2026-09-27.md sections 13 and 14)]",
+          "reopenWhen": "WO-062 activates, or a local role that reads private material is proposed",
+          "targets": [],
+          "at": "2026-09-27T01:45:57.692Z"
         }
       ]
     },
@@ -11748,6 +11788,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-27T00:36:41.961Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred with FUP-5e2f4ce16f9e8be1 under the operator's 2026-09-27 delegation: no retention rule is written because pruning is declined (immutable reports link to editions; since WO-154 a never-current revision costs about 76 KB). The Codex session-identity join was not examined. [2026-09-27 onesie-twosie planning pass, operator answer (docs/planning/onesie-twosie-followup-drain-2026-09-27.md sections 13 and 14)]",
+          "reopenWhen": "a week adds more than 10 MB of tracked evidence, or one order commits more than 1 MB of revisions it never makes current",
+          "targets": [],
+          "at": "2026-09-27T01:45:55.071Z"
         }
       ]
     },
@@ -12087,6 +12135,16 @@
           "reopenWhen": "the post-close apply runs materially longer than twenty minutes, stops with 'Prune subject changed' or meets a rate limit, or a worktree's snapshots pass product 07's retention threshold because of gate-written receipts",
           "targets": [],
           "at": "2026-09-21T06:59:02.421Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-171 under the operator's 2026-09-27 delegation. Item (a) is the order: pruneHarness re-plans before every deletion, one plan took 64.2 s for 186 candidates on 2026-09-27, the last apply log reads exit 143 and 5,508,635,182 bytes are listed unpruned. Item (b), the product-gate suite that writes target lanes in the real checkout, stays out as the order's non-goal. [2026-09-27 onesie-twosie planning pass, operator answer (docs/planning/onesie-twosie-followup-drain-2026-09-27.md sections 13 and 14)]",
+          "reopenWhen": "after WO-171 closes an apply stops with Prune subject changed, meets a rate limit or runs longer than twenty minutes, or a worktree's snapshots pass the retention threshold because of gate-written receipts",
+          "targets": [
+            "WO-171"
+          ],
+          "at": "2026-09-27T01:45:58.752Z"
         }
       ]
     },
@@ -12772,6 +12830,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-27T00:36:41.441Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Pruning declined and the row deferred under the operator's 2026-09-27 delegation. Immutable reports link to edition files, so removing an edition breaks links the docs check judges; the repository's history packs to 24.9 MiB; since WO-154 an order's editions cost 0.14 to 0.73 MB (WO-166: 0.62 MB, five authority revisions at 76 KB each). Measured 2026-09-27: 260 edition rows, 99.5 MB, in a docs/evidence tree of 152.7 MB. [2026-09-27 onesie-twosie planning pass, operator answer (docs/planning/onesie-twosie-followup-drain-2026-09-27.md sections 13 and 14)]",
+          "reopenWhen": "a week adds more than 10 MB of tracked evidence, or one order commits more than 1 MB of revisions it never makes current",
+          "targets": [],
+          "at": "2026-09-27T01:45:54.546Z"
         }
       ]
     },
@@ -13882,6 +13948,16 @@
           "reopenWhen": "a retained store is needed after its worktree is removed and the preserved copy cannot be read, or the prune follow-up decides bound-store eligibility",
           "targets": [],
           "at": "2026-09-22T00:34:45.605Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-171, which decides the eligibility this row waited for: a bound resident store inside a retained lane follows its lane, is inventoried in the lane's byte proof and is removed with it (criterion 6). [2026-09-27 onesie-twosie planning pass, operator answer (docs/planning/onesie-twosie-followup-drain-2026-09-27.md sections 13 and 14)]",
+          "reopenWhen": "a retained store is needed after its lane was pruned and the byte proof cannot answer for it",
+          "targets": [
+            "WO-171"
+          ],
+          "at": "2026-09-27T01:45:59.278Z"
         }
       ]
     },
@@ -16036,6 +16112,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-27T00:36:40.923Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred under the operator's 2026-09-27 delegation. Measured: a receipt pair is 450 KB (receipt 031: 353,450 and 97,231 bytes) and docs/planning/refutations is 17,028 KB across 73 files, while the whole repository packs to 24.9 MiB. The change is a receipt schema change with forty read sites on the gate every planning pass runs (WO-154 D003), and WO-162 refactors the same helpers first. [2026-09-27 onesie-twosie planning pass, operator answer (docs/planning/onesie-twosie-followup-drain-2026-09-27.md sections 13 and 14)]",
+          "reopenWhen": "docs/planning/refutations exceeds 32 MB, or WO-162 closes",
+          "targets": [],
+          "at": "2026-09-27T01:45:54.019Z"
         }
       ]
     },
@@ -17674,6 +17758,16 @@
           "reopenWhen": "a second operator question about session behaviour that the record cannot answer",
           "targets": [],
           "at": "2026-09-25T21:30:02.291Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-170: a bounded per-order meter snapshot is written by release prepare in the worktree while the journals exist, so main keeps what the order's sessions observed. Twelve of the fourteen trap series in the 2026-09-27 cost table are null or a false zero for the last five orders because the journals left with their worktrees and no snapshot was written. [2026-09-27 onesie-twosie planning pass, operator answer (docs/planning/onesie-twosie-followup-drain-2026-09-27.md sections 13 and 14)]",
+          "reopenWhen": "a question about session behaviour that the per-order snapshot cannot answer",
+          "targets": [
+            "WO-170"
+          ],
+          "at": "2026-09-27T01:45:53.505Z"
         }
       ]
     },
@@ -17748,6 +17842,16 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-25T21:58:45.144Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Filed as WO-170 under the operator's 2026-09-27 delegation. The meter reports 0 operator corrections for the five orders closed on 2026-09-25 and 2026-09-26, whose journals it could not read, and nothing counts the 32 operator-direction dispatches the decision records hold (16 scope expand, 3 operator override, 13 older operator labels). [2026-09-27 onesie-twosie planning pass, operator answer (docs/planning/onesie-twosie-followup-drain-2026-09-27.md sections 13 and 14)]",
+          "reopenWhen": "WO-170 closes without the direction series, or the series cannot be read for an order closed after it",
+          "targets": [
+            "WO-170"
+          ],
+          "at": "2026-09-27T01:45:52.994Z"
         }
       ]
     },
@@ -17780,6 +17884,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-27T00:36:40.408Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Run by hand under the operator's 2026-09-27 delegation, as the pass's research stream: 22 lanes against the three questions, recorded in the planning document section 14 with the rows relied on re-measured. It found the unread retained usage and the journals lost at teardown (WO-170), the prune apply that cannot finish (WO-171) and four candidates in the map's section dated 2026-09-27. The generator is not filed: a hand inventory is the smaller probe. [2026-09-27 onesie-twosie planning pass, operator answer (docs/planning/onesie-twosie-followup-drain-2026-09-27.md sections 13 and 14)]",
+          "reopenWhen": "a second planning pass wants the same table",
+          "targets": [],
+          "at": "2026-09-27T01:45:58.222Z"
         }
       ]
     },
@@ -17804,6 +17916,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-25T21:58:45.715Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Adopted under the operator's 2026-09-27 delegation: product 07's planning procedure now says a standard pass files an order only for a reopening condition that has occurred or an operator direction, and disposes every other row it reads. Every order the 2026-09-27 pass filed already met it, and the meter's machinery share for the last three orders is 0.56 to 0.65. [2026-09-27 onesie-twosie planning pass, operator answer (docs/planning/onesie-twosie-followup-drain-2026-09-27.md sections 13 and 14)]",
+          "reopenWhen": "the operator withdraws the rule, or a pass records a verified defect it could not file under it",
+          "targets": [],
+          "at": "2026-09-27T01:45:52.470Z"
         }
       ]
     },
@@ -18664,6 +18784,102 @@
             "WO-169"
           ],
           "at": "2026-09-27T00:36:43.525Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-f4d2906365d8b5c2",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-onesie-twosie-pass-recorded-2026-09-27::18fd80f982fc36b3bcf2d2f1207889a8456643816e85b4d3b35fb1c5b36e0a23",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "8d444332da88dd3246fb0af3e2769940b1b8c64f68ba340c6b36aecc9e29584c",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-onesie-twosie-pass-recorded-2026-09-27",
+          "title": "Operator-control state accumulates in the temporary directory.",
+          "summary": "9. **Operator-control state accumulates in the temporary directory.** The state directory held 2,386 entries on 2026-09-27 and only the open-override advisory reads them. Declined: the files are small, the directory is the system's to clean, and no session start is recorded slow. Reopen: a session start is measured slower because of the directory's size.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined by the 2026-09-27 pass that recorded it: the state files are small, the directory is the system's to clean, only the open-override advisory reads them and no session start is recorded slow. [2026-09-27 onesie-twosie planning pass, operator answer (docs/planning/onesie-twosie-followup-drain-2026-09-27.md sections 13 and 14)]",
+          "reopenWhen": "a session start is measured slower because of the state directory's size",
+          "targets": [],
+          "at": "2026-09-27T01:46:01.415Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-3d6a8147368bdf1c",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-onesie-twosie-pass-recorded-2026-09-27::1e0704c82aef3c2ddc85d1ce4a19723c2deebd31248ed44e594bee772a67f457",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "baf0a7280a3730dd62d5e1a772758f8676aacf9f119bfef1c9a5fe8c9ef7798e",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-onesie-twosie-pass-recorded-2026-09-27",
+          "title": "A gate marker with no birth observation never expires.",
+          "summary": "7. **A gate marker with no birth observation never expires.** A marker whose `processStartedAt` is null is judged live whenever a process holds its pid; the main checkout has held one since 2026-09-16 (pid 43275, no such process on 2026-09-27), and nothing removes a dead marker. A reused pid would read as a live gate and refuse writes. Deferred: no such refusal is on record, and an age bound on the boundary that protects gate evidence needs its own fixtures. Reopen: a session is refused for a live gate while no gate runs, or the next order that edits `gate-evidence.mjs`.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-09-27 pass that recorded it: the one marker without a birth observation belongs to a process that no longer exists, no refusal from a reused pid is on record, and an age bound on the boundary that protects gate evidence needs its own fixtures. [2026-09-27 onesie-twosie planning pass, operator answer (docs/planning/onesie-twosie-followup-drain-2026-09-27.md sections 13 and 14)]",
+          "reopenWhen": "a session is refused for a live gate while no gate runs, or the next order that edits gate-evidence.mjs",
+          "targets": [],
+          "at": "2026-09-27T01:46:00.348Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-74362527b75d12f5",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-onesie-twosie-pass-recorded-2026-09-27::4f92cf458ffc42cb24c22d6c552e014147b143709f41b15d4e63b84e30161718",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "8329a4066617df51dd43e465cc148006d30f6661932046d09905039ecf6604f3",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-onesie-twosie-pass-recorded-2026-09-27",
+          "title": "The register has no flow counter.",
+          "summary": "8. **The register has no flow counter.** Nothing reports how many rows arrive and how many are disposed per pass, or how old the pending rows are; each planning document counts by hand. Deferred: WO-169 changes how rows are found and disposed, and the count is worth adding once that flow exists. Reopen: two passes in a row end with more pending rows than they began with.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-09-27 pass that recorded it: WO-169 changes how rows are found and disposed, and a flow count is worth adding once that flow exists. This pass counted by hand: 155 pending at entry, 9 rows added, 132 pending after the first judgment. [2026-09-27 onesie-twosie planning pass, operator answer (docs/planning/onesie-twosie-followup-drain-2026-09-27.md sections 13 and 14)]",
+          "reopenWhen": "two planning passes in a row end with more pending rows than they began with",
+          "targets": [],
+          "at": "2026-09-27T01:46:00.880Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-dc08b5dc8ae0491c",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-onesie-twosie-pass-recorded-2026-09-27::9bc79721b3309acc3ceab03ed2c33f46ea0ba2fa32b937ba47b16e916bb66b65",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "f3c9d394a6672ebb56011b5fadeb19efb6f1ac591270a839d2120c95fb6ffa99",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-onesie-twosie-pass-recorded-2026-09-27",
+          "title": "Gate rows outlive the failure output they cite.",
+          "summary": "6. **Gate rows outlive the failure output they cite.** `worktree finish` copies an order's gate rows into the main checkout and not the output files the rows reference: of 257 distinct output references in the main checkout's 256-row index on 2026-09-27, 234 do not resolve, and verification reports cite some of them. The lane is local and ignored, so no other clone could resolve them either. Deferred: nobody is recorded needing a failure log that was gone. Reopen: a verification, a review or a planning pass needs a gate's failure output and finds the reference unresolved.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by the 2026-09-27 pass that recorded it: 234 of 257 output references in the main checkout's gate index do not resolve, but the lane is local and ignored and nobody is recorded needing a failure log that was gone. [2026-09-27 onesie-twosie planning pass, operator answer (docs/planning/onesie-twosie-followup-drain-2026-09-27.md sections 13 and 14)]",
+          "reopenWhen": "a verification, a review or a planning pass needs a gate's failure output and finds the reference unresolved",
+          "targets": [],
+          "at": "2026-09-27T01:45:59.813Z"
         }
       ]
     }

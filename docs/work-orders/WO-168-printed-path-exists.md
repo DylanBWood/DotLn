@@ -1,10 +1,10 @@
-# WO-168 — A printed path exists: the harness creates the session scratch directory wherever it prints it, a granted root is a real directory, a refused Codex dispatch leaves no reservation, a live gate stops refusing listed reads for their arguments, and the standing writer sentences say what ships (version assigned at activation)
+# WO-168 — A printed path exists: the harness creates the session scratch directory wherever it prints it, a granted root is a real directory, a refused Codex dispatch leaves no reservation, a live gate admits four argument forms of the reads it already lists, and the standing writer sentences say what ships (version assigned at activation)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh; verifier xhigh; reviewer any.
 **Release classification:** patch. Hook and dispatch behaviour at existing
-boundaries, refusal and advisory text, one generated sentence and four
+boundaries, refusal and advisory text, one generated sentence and three
 product sentences; no control-event schema, gate step, grant kind or
 contract change. Assigned at activation under the standing opt-out default.
 **Cost:** adds, across the eight items below, a `mkdir` (mode 0700) at the
@@ -21,8 +21,9 @@ item. Removes: the turn every role session spends finding the printed
 scratch path absent, and the masked gate failure that absence produced at
 WO-166's final review (FINAL-001, reviewer error 1); the refused
 `git --no-pager diff HEAD~1`, `grep -n '<title>' f`, `wc -l < a.md` and
-`ls docs 2>/dev/null` a session meets while a gate is live; three standing
-sentences that understate what WO-166 shipped. Re-mints:
+`ls docs 2>/dev/null` a session meets while a gate is live; four standing
+sentences that understate or misstate what WO-166 shipped (one generated,
+one in product 02, two in product 07). Re-mints:
 `packages/skeleton/src/harness-host.ts`, `harness-command.ts`,
 `observed-facts.ts` and `packages/compiler/src/harness.ts` are registered
 evidence sources (`scripts/lib/evidence-sources.mjs`), so the editions whose
@@ -30,7 +31,7 @@ checks they stale re-mint deterministically (WO-152 D004), and the compiler
 release owes `feedback-evidence --carry` and the console re-pin (WO-154
 D011); none is a feedback source path (`FEEDBACK_SOURCE_PATHS`), so no live
 episode (WO-147 D010). The generated sentence enters every cold-start
-profile: its net growth is at most 200 bytes, against a reviewer headroom
+profile: its net growth is at most 100 bytes, against a reviewer headroom
 of 581 bytes measured at `4c34b332`. Wall-clock, tokens and context bytes
 of the order itself are unknown until run; WO-166, the nearest comparable
 order on this seam, took 4 h 13 min from activation to its final-review
@@ -107,11 +108,14 @@ product 02 §the writer paragraph; product 07 §Operator resume phrases (the
 §3 and §5.
 
 **Objective:** a path the harness prints for temporary work exists when it
-is printed; a grant follows a real directory and nothing else; a dispatch
-that is refused leaves the worktree as it found it; a session working
-beside a live gate is refused for what a command does, never for how a
-listed read spells its arguments; and a reader of the blueprint meets the
-Codex writer boundary stated once, as it ships.
+is printed; a grant never follows a granted root through a symlink; a
+dispatch that is refused leaves the worktree as it found it; a session
+working beside a live gate is no longer refused four argument forms of
+listed reads that change no gate input (a quoted angle bracket, a revision
+suffix, a literal input redirect, a `/dev/null` sink), while expansion,
+unquoted globs and every other redirect stay refused; and a reader of the
+blueprint meets the Codex writer boundary stated the same way in each of
+the four sentences that carry it.
 
 **Observed gap (dated 2026-09-27, `main` at `4c34b332`):**
 
@@ -159,14 +163,15 @@ Codex writer boundary stated once, as it ships.
    fails with a `TypeError` after the pins-differ advisory (D014, first
    defect; an inference from code, not executed). An unbuilt runtime is
    already refused with a message naming `npm run build`.
-7. Three standing sentences are silent or stale about what WO-166 ships:
-   the generated five-refusals sentence says Codex carries the duties
-   "as role text without automatic enforcement"; product 02's writer
-   paragraph names neither the `codex-host` and `thread` owners nor the
-   fields a refusal carries; product 07's work-order index paragraph
-   names two of the five completions that release, and its
-   `resume: release close` row still says the helper command is projected
-   by `resume release-close` (D016; D014, second defect).
+7. Four standing sentences are silent or stale about what WO-166 ships.
+   One is generated: the five-refusals sentence says Codex carries the
+   duties "as role text without automatic enforcement". One is in product
+   02: the writer paragraph names neither the `codex-host` and `thread`
+   owners nor the fields a refusal carries. Two are in product 07: the
+   work-order index paragraph names two of the five completions that
+   release, and the `resume: release close` row still says the helper
+   command is projected by `resume release-close` (D016; D014, second
+   defect).
 8. The comment "Bounded destination adapter for gate admission" sits above
    `readCommand`, not `shellWriteTargets` (WO-142 D023, item b);
    `observed-facts.ts` matches a hedged quantity to a gate row with
@@ -187,11 +192,14 @@ rule). One fixture per fixed item.
   naming the path and the cause and never blocks the dispatch. The fixture
   drives a real dispatch and asserts the directory exists without creating
   it; the WO-144 fixture stops creating it for itself.
-- Item 2: a granted root whose final component is not a real directory
-  owned by the session user grants nothing, for session-scratch and
-  host-scratchpad alike; ancestors still resolve physically, so the
-  system temporary directory's own symlinked prefix keeps working. The
-  refusal names the root and the cause.
+- Item 2: a granted root whose final component exists and is a symlink,
+  or is not a directory owned by the session user, grants nothing, for
+  session-scratch and host-scratchpad alike; ancestors still resolve
+  physically, so the system temporary directory's own symlinked prefix
+  keeps working. The refusal names the root and the cause. A root that
+  does not exist yet is judged as at `4c34b332`, so the write that
+  creates it is admitted; an `lstat` error other than absence falls back
+  to that judgment with one advisory, never to a refusal.
 - Item 3: with an override exit pending, the exit message and the record
   command print before any input refusal; a record that was appended is
   never reported as not appended.
@@ -216,11 +224,13 @@ rule). One fixture per fixed item.
 - Item 7: `HARNESS_BOUNDARIES` says that under Codex a lifecycle dispatch
   reserves the writer and refuses a foreign holder, and that the other
   duties and grants are role text because Codex tool calls are unhooked,
-  within the 200-byte bound; the bundle and skills are regenerated and the
-  cold-start observation recorded before and after. Products 02 and 07
-  are edited in place, in the sentences named in the gap, within the
-  documents' headroom (02: 2,954 bytes; 07: 3,032 bytes at `4c34b332`,
-  of which this order uses at most 1,200 in 07 and 600 in 02).
+  within the 100-byte bound, by rewording the clause it replaces; the
+  bundle and skills are regenerated and the cold-start observation
+  recorded before and after. Products 02 and 07 are edited in place, in
+  the three sentences named in the gap, within the
+  documents' headroom (02: 2,954 bytes at `4c34b332`; 07: 2,504 bytes at
+  the planning pass's commit, of which this order uses at most 1,000 in
+  07 and 600 in 02).
 - Item 8: the comment moves above `shellWriteTargets`; the hedge match
   prefers the longest matching identity, with a fixture holding both rows.
 - **Declined alternatives, recorded:** adding `cut`, `sort`, `date`,
@@ -244,11 +254,14 @@ sentences; decisions per item.
    and after `harness scratch`, the printed path is a directory of mode
    0700 owned by the session user, asserted by a fixture that does not
    create it; a path that exists as a file or a symlink yields one
-   advisory and an unblocked dispatch.
+   advisory and an unblocked dispatch; product 07's scratch sentence says
+   the path exists when it is printed.
 2. A write under a granted root whose final component is a symlink is
    refused for session-scratch and for host-scratchpad, with the root and
-   the cause named; a write under a real granted root is admitted, and
-   the system temporary grant is unchanged.
+   the cause named; a write under a real granted root is admitted; a
+   write under a granted root that does not exist yet is admitted as at
+   `4c34b332`; a fixture in which `lstat` fails for another reason admits
+   with one advisory; the system temporary grant is unchanged.
 3. With an override exit pending, a hook input with no `cwd` prints the
    exit message and the record command; a fixture in which the record
    call throws after the append prints no "was not appended" line.
@@ -258,28 +271,38 @@ sentences; decisions per item.
    `wc -l <> a.md`, `ls docs 2>/tmp/x` and `cut -c1-80 a.md` as refused;
    a listed Git read is refused while an executable `post-index-change`
    hook or a `%G` pretty format is configured; `LIVE_GATE_READ_LIST`
-   names the same programs as before.
+   names the same programs as before; the refusal text and product 07's
+   read-only list paragraph state the admitted forms.
 5. A Codex dispatch refused because its observation log is not a regular
    file leaves `writer --show` reporting `reserved:false`, and a second
    session's dispatch is then admitted.
 6. A Codex dispatch against a built runtime that lacks the reservation
    entry point exits non-zero before any event with a message naming
    `node scripts/bootstrap.mjs`.
-7. The five-refusals sentence states the Codex dispatch reservation; its
-   net growth is at most 200 bytes and every profile's `coldStartBytes`
-   verdict is unchanged; `node scripts/harness.mjs check` passes; products
-   02 and 07 carry the four sentences in place and the docs check passes
-   with no ceiling raised.
+7. The generated five-refusals sentence states the Codex dispatch
+   reservation; its net growth is at most 100 bytes and every profile's
+   `coldStartBytes` verdict is unchanged; `node scripts/harness.mjs check`
+   passes. Product 02 carries its one sentence and product 07 its two, in
+   place; with the two product 07 edits of criteria 1 and 4 the order
+   adds at most 1,000 bytes to product 07 and 600 to product 02, and the
+   docs check passes with no ceiling raised.
 8. The comment sits above `shellWriteTargets`; a hedge naming
    `npm test -- --inside-sandbox` resolves to that row when both rows are
    in scope.
 9. Stale editions re-mint deterministically with no live episode; the
    register rows named in the provenance are retargeted at close.
-10. `npm test -- --review` and `npm run test:docs` green; `git diff
+10. The verification report and the final review each record what their
+    own session observed on this branch's hooks: that the scratch
+    directory existed when its path was printed, and every command a live
+    gate refused them, by program and form. A refusal of one of the four
+    admitted forms fails this criterion; refusals of other forms are
+    counted and become the reopening evidence of map candidate 5.
+11. `npm test -- --review` and `npm run test:docs` green; `git diff
     --check` clean; no new dependency.
 
 **Evidence gate:** the fixture transcripts; the cold-start observation
-before and after; `npm test -- --review` before `implementation-ready`,
+before and after; the two sessions' own observations of criterion 10;
+`npm test -- --review` before `implementation-ready`,
 because every source this order edits is a declared source of a machinery
 suite (`scripts/test-runner.mjs` `machinerySources`), and again at final
 review. No live row.
@@ -297,8 +320,11 @@ operator reserved (WO-054 D006).
 **Operator-review assumptions**
 
 1. Admitting argument forms for programs already listed is a correction
-   of the list's width, not an addition to it; the operator may strike
-   item 4's `/dev/null` and input-redirect forms and keep the rest.
+   of the list's width, not an addition to it. Decided on 2026-09-27
+   under the operator's delegation: the `/dev/null` and input-redirect
+   forms stay, because a `/dev/null` sink opens no gate input, a literal
+   input redirect opens its file read-only, and each has an admitted and
+   a refused fixture; the operator may still strike either at review.
 2. A patch: no event schema changes and no grant kind is added.
 3. The re-observe rule lets an item end "not reproduced" without failing
    the order.

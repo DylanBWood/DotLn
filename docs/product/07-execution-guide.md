@@ -1118,6 +1118,9 @@ Preconditions and inputs:
 3. Equip Beware of Naive Interventionism and Do Nothing: every candidate the
    pass declines is recorded as a NoOp with its evidence and reversal
    condition, in the `NoOpIntent` shape, so a later pass sees what was weighed.
+   A standard pass files an order only for a reopening condition that has
+   occurred or an operator direction, and disposes every other row it reads
+   ([2026-09-27 pass](../planning/onesie-twosie-followup-drain-2026-09-27.md#13-the-operators-answer-decisions-made-under-delegation)).
 4. `ideation:` entries in the same dispatch run the complete ideation pipeline
    first; their synthesis is planning input.
 
