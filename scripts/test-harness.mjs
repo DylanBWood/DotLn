@@ -5465,6 +5465,181 @@ test("WO-158 VER-001 F3: two override exits in one second keep two captures, eac
   }
 });
 
+test("WO-168 an override exit prints ahead of an input refusal, and an appended record is never reported as not appended", () => {
+  const root = fixture();
+  const session = `wo168-override-${randomUUID()}`;
+  try {
+    for (const path of [
+      "scripts/resume.mjs",
+      "scripts/work-orders.mjs",
+      "scripts/lib",
+      "packages/skeleton/src",
+    ])
+      cpSync(join(sourceRoot, path), join(root, path), { recursive: true });
+    rmSync(join(root, "docs/control/orders/WO-999.jsonl"));
+    write(
+      root,
+      "docs/work-orders/WO-999-fixture.md",
+      "# WO-999 — Fixture\n\n**Model:** fixture.\n**Effort:** executor any; verifier any; reviewer any.\n**Objective:** exercise the override exit.\n",
+    );
+    write(
+      root,
+      "docs/planning/sequence.md",
+      "<!-- dotln-work-order-sequence:start -->\n- WO-999 — Fixture\n<!-- dotln-work-order-sequence:end -->\n",
+    );
+    write(
+      root,
+      ".gitignore",
+      "node_modules/\n**/dist/\ndocs/control/local/\ndocs/intake/**\n",
+    );
+    const pkg = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
+    pkg.scripts["work-orders"] = "node scripts/work-orders.mjs";
+    write(root, "package.json", json(pkg));
+    git(root, "add", ".");
+    git(
+      root,
+      "-c",
+      "user.name=Fixture",
+      "-c",
+      "user.email=fixture@example.invalid",
+      "-c",
+      "commit.gpgsign=false",
+      "commit",
+      "-qm",
+      "Real lifecycle",
+    );
+    const activated = spawnSync(
+      process.execPath,
+      [
+        "scripts/resume.mjs",
+        "activate",
+        "WO-999",
+        "docs/work-orders/WO-999-fixture.md",
+      ],
+      { cwd: root, encoding: "utf8" },
+    );
+    assert.equal(activated.status, 0, activated.stderr);
+    const records = () =>
+      readFileSync(join(root, "docs/control/orders/WO-999.jsonl"), "utf8")
+        .trim()
+        .split("\n")
+        .map(JSON.parse)
+        .filter((event) => event.type === "OperatorOverrideRecorded");
+    const payload = (text) =>
+      input(root, "UserPromptSubmit", { session_id: session, prompt: text });
+    const prompt = (text, shape = (value) => value) =>
+      invoke(root, "session", shape(payload(text)), false, {
+        CLAUDE_EFFORT: "high",
+      });
+    const command =
+      /npm run resume -- override-record --bypassed dotln-hook-enforcement --effects <what the recovery changed, or none> --reason 'operator override from /;
+
+    // WO-158-D028 (c): the decoder refuses an input without cwd after the
+    // mode is already normal; the exit and its record command still print.
+    prompt("operator override: first recovery");
+    const refused = prompt(
+      "operator override: off",
+      ({ cwd, ...rest }) => rest,
+    );
+    assert.match(
+      refused.systemMessage,
+      /operator-control exited; ordinary workflow checks resume.*DOTLN_HARNESS_INPUT_REFUSED: MISSING_FIELD at \$\.cwd/,
+    );
+    assert.match(refused.hookSpecificOutput.additionalContext, command);
+    assert.equal(records().length, 0);
+    // Without an override exit the refusal is the protocol's own.
+    const plain = prompt("resume: status", ({ cwd, ...rest }) => rest);
+    assert.match(
+      plain.systemMessage,
+      /^DotLn: prompt accepted; DOTLN_HARNESS_INPUT_REFUSED: MISSING_FIELD at \$\.cwd/,
+    );
+
+    // WO-158-D028 (d): the session holds the writer, so nothing journals
+    // before the append; the observation after it cannot be written.
+    assert.equal(
+      allowed(
+        invoke(
+          root,
+          "concurrent-work-requires-worktrees",
+          input(root, "PreToolUse", {
+            session_id: session,
+            tool_name: "Write",
+            tool_input: { file_path: join(root, "fixture.ts") },
+          }),
+        ),
+      ),
+      true,
+    );
+    prompt("operator override: second recovery");
+    const log = join(
+      root,
+      "docs/control/local/harness",
+      `${createHash("sha256").update(session).digest("hex")}.jsonl`,
+    );
+    rmSync(log, { force: true });
+    mkdirSync(log);
+    const unjournaled = prompt("operator override: off");
+    assert.equal(records().length, 1);
+    assert.match(
+      unjournaled.systemMessage,
+      /operator-control exited.*Recorded OperatorOverrideRecorded for WO-999 at ordinal/s,
+    );
+    assert.doesNotMatch(JSON.stringify(unjournaled), /was not appended/);
+    rmSync(log, { recursive: true });
+
+    // The lifecycle appends the record and then fails: still appended.
+    cpSync(
+      join(root, "scripts/resume.mjs"),
+      join(root, "scripts/resume-lifecycle.mjs"),
+    );
+    const failing = (when) =>
+      write(
+        root,
+        "scripts/resume.mjs",
+        [
+          'import { spawnSync } from "node:child_process";',
+          'import { fileURLToPath } from "node:url";',
+          "const args = process.argv.slice(2);",
+          `const before = ${JSON.stringify(when === "before")};`,
+          "const fail = (text) => { console.error(text); process.exit(1); };",
+          'if (before && args[0] === "override-record")',
+          '  fail("fixture: refused before the append");',
+          "const run = spawnSync(",
+          "  process.execPath,",
+          '  [fileURLToPath(new URL("./resume-lifecycle.mjs", import.meta.url)), ...args],',
+          '  { stdio: "inherit" },',
+          ");",
+          'if (args[0] === "override-record" && run.status === 0)',
+          '  fail("fixture: projection failed after the append");',
+          "process.exit(run.status ?? 1);",
+          "",
+        ].join("\n"),
+      );
+    failing("after");
+    prompt("operator override: third recovery");
+    const failedAfter = prompt("operator override: off");
+    assert.equal(records().length, 2);
+    assert.match(
+      failedAfter.systemMessage,
+      /operator-control exited.*recorded OperatorOverrideRecorded for WO-999; resume then failed: /s,
+    );
+    assert.doesNotMatch(JSON.stringify(failedAfter), /was not appended/);
+
+    // A lifecycle that refuses before any append is still reported so.
+    failing("before");
+    prompt("operator override: fourth recovery");
+    const refusedBefore = prompt("operator override: off");
+    assert.equal(records().length, 2);
+    assert.match(
+      refusedBefore.systemMessage,
+      /OperatorOverrideRecorded was not appended \(resume refused it: fixture: refused before the append\)/,
+    );
+    assert.match(refusedBefore.hookSpecificOutput.additionalContext, command);
+  } finally {
+    removeFixture(root, { recursive: true });
+  }
+});
+
 test("WO-135 generated planning hooks refuse repository code paths and preserve documents, scratch and override", () => {
   const root = fixture();
   const scratch = realpathSync(

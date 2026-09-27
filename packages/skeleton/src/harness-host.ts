@@ -4013,6 +4013,18 @@ function recordOperatorOverride(
       },
     );
   };
+  // WO-168 (WO-158-D028 d): the append is the fact. The order's log says
+  // whether it happened when the lifecycle fails after writing it.
+  const records = (): number | null => {
+    try {
+      return localEvents(root, control.workOrder).filter(
+        (event) => event.type === "OperatorOverrideRecorded",
+      ).length;
+    } catch {
+      return null;
+    }
+  };
+  const before = records();
   const policy = dispatchAdmissionPolicy(root);
   const facts = policy
     ? writerIsolationFacts(root, invocation, session, input)
@@ -4025,13 +4037,22 @@ function recordOperatorOverride(
     return overrideAdvisory(exit, "the writer reservation refuses it");
   }
   const output = `${run.stdout ?? ""}${run.stderr ?? ""}`.trim();
-  record(root, input, { overrideRecord: { recorded: run.status === 0 } });
-  if (run.status !== 0)
-    return overrideAdvisory(
-      exit,
-      `resume refused it: ${output.slice(0, 400) || run.error?.message || "lifecycle unavailable"}`,
-    );
-  const receipt = `DotLn: ${output.split("\n").find((line) => line.startsWith("Recorded OperatorOverrideRecorded")) ?? "recorded OperatorOverrideRecorded"}`;
+  const after = run.status === 0 ? null : records();
+  const appended =
+    run.status === 0 || (before !== null && after !== null && after > before);
+  // An observation that cannot be journaled never reports a recorded event
+  // as not appended.
+  try {
+    record(root, input, { overrideRecord: { recorded: appended } });
+  } catch {
+    // Observation cannot change what the lifecycle recorded.
+  }
+  const failure = `${output.slice(0, 400) || run.error?.message || "lifecycle unavailable"}`;
+  if (!appended) return overrideAdvisory(exit, `resume refused it: ${failure}`);
+  const receipt =
+    run.status === 0
+      ? `DotLn: ${output.split("\n").find((line) => line.startsWith("Recorded OperatorOverrideRecorded")) ?? "recorded OperatorOverrideRecorded"}`
+      : `DotLn: recorded OperatorOverrideRecorded for ${control.workOrder}; resume then failed: ${failure.replace(/\s+/g, " ")}.`;
   return {
     systemMessage: `${exit.systemMessage}\n${receipt}`,
     hookSpecificOutput: {
@@ -4053,6 +4074,12 @@ export async function runHarnessHook(
   let response: Record<string, unknown> = {};
   let reasonClass: string =
     config.kind === "permission" ? "authority" : config.kind;
+  // WO-168 (WO-158-D028 c): the mode is already normal when an override
+  // exits, so its exit message and record command print ahead of the refusal.
+  const inputRefusal = (reason: string) =>
+    overrideExit
+      ? overrideAdvisory(overrideExit, reason)
+      : protocolRefusal(config.event, reason);
   try {
     // Hook input arrives on a pipe. Drain it through the event loop: a traced
     // synchronous fd-0 read stalled before evaluation under Node 22 on macOS.
@@ -4063,8 +4090,7 @@ export async function runHarnessHook(
       } catch {
         process.stdout.write(
           JSON.stringify(
-            protocolRefusal(
-              config.event,
+            inputRefusal(
               "DOTLN_HARNESS_INPUT_REFUSED: INVALID_JSON at $: invalid JSON",
             ),
           ),
@@ -4079,8 +4105,7 @@ export async function runHarnessHook(
     if (!decoded.ok) {
       process.stdout.write(
         JSON.stringify(
-          protocolRefusal(
-            config.event,
+          inputRefusal(
             `DOTLN_HARNESS_INPUT_REFUSED: ${decoded.code} at ${decoded.path}: ${decoded.message}`,
           ),
         ),
