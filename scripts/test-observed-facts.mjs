@@ -417,6 +417,50 @@ test("scanner does not substitute another quantity or stale usage", (t) => {
   );
 });
 
+test("WO-168 a hedge names the longest gate identity that holds the one it spells", (t) => {
+  const root = fixture(t);
+  const row = (checkId, durationMs) => ({
+    checkId,
+    durationMs,
+    recordedAt: now,
+    workOrder: "WO-999",
+  });
+  write(
+    root,
+    "docs/control/local/harness/checks.json",
+    JSON.stringify([
+      row("npm test", 1200),
+      row("npm test -- --inside-sandbox", 450),
+      row("suite:fixture", 125),
+    ]),
+  );
+  const facts = observedFacts(root, scope, now);
+  assert.equal(facts.gates.length, 3);
+  const hedge = (phrase) => {
+    const [found] = scanHedges(phrase, facts);
+    return [found.observed, found.source];
+  };
+  // WO-140-D007: both rows in scope, the phrase names the partial gate.
+  assert.deepEqual(
+    hedge("The npm test -- --inside-sandbox gate took about 3 minutes"),
+    ["450 ms", "gate-row"],
+  );
+  assert.deepEqual(hedge("The npm test gate took about 3 minutes"), [
+    "1200 ms",
+    "gate-row",
+  ]);
+  // Two unrelated identities, or one identity with two rows, stay ambiguous.
+  assert.deepEqual(
+    hedge("The npm test and suite:fixture gate took about 3 minutes"),
+    ["unmeasured", "quantity-unresolved"],
+  );
+  facts.gates.push(row("npm test -- --inside-sandbox", 460));
+  assert.deepEqual(
+    hedge("The npm test -- --inside-sandbox gate took about 3 minutes"),
+    ["unmeasured", "quantity-unresolved"],
+  );
+});
+
 test("Codex lifecycle boundary observes its current transcript and handoff, including typed corrections", async (t) => {
   const root = fixture(t);
   const id = "00000000-0000-0000-0000-000000000141";
