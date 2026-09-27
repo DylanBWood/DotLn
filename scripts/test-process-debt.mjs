@@ -6611,6 +6611,53 @@ test("WO-166 an unbuilt Codex dispatch refuses before lifecycle writes and names
   assert.doesNotMatch(withoutThread.stderr, /Codex session entry unavailable/);
 });
 
+test("WO-168 a Codex dispatch against a built runtime without the reservation entry point refuses before any event and names bootstrap", (t) => {
+  const root = repo(t);
+  cpSync(join(source, "scripts/lib"), join(root, "scripts/lib"), {
+    recursive: true,
+  });
+  cpSync(join(source, "scripts/resume.mjs"), join(root, "scripts/resume.mjs"));
+  installBeaconFixture(root);
+  write(
+    root,
+    "docs/work-orders/WO-999-fixture.md",
+    "# WO-999 — fixture\n\n**Model:** any.\n**Effort:** executor any; verifier any; reviewer any.\n",
+  );
+  // A runtime built before WO-166: the module loads and lacks the export.
+  write(
+    root,
+    "packages/skeleton/dist/src/harness-host.js",
+    "export const beginHarnessSessionOnce = () => null;\n",
+  );
+  const dispatch = (thread) =>
+    spawnSync(process.execPath, [join(root, "scripts/resume.mjs"), "next"], {
+      cwd: root,
+      encoding: "utf8",
+      env: {
+        ...process.env,
+        CODEX_THREAD_ID: thread,
+        COPILOT_AGENT_SESSION_ID: "",
+      },
+    });
+  const segment = join(root, "docs/control/orders/WO-999.jsonl");
+  const before = readFileSync(segment, "utf8");
+  const result = dispatch("stale-codex-fixture");
+  assert.equal(result.status, 1, result.stdout);
+  assert.match(
+    result.stderr,
+    /Codex writer reservation unavailable; the built harness runtime lacks reserveCodexDispatchWriter\. Run node scripts\/bootstrap\.mjs before retrying this dispatch\./,
+  );
+  assert.doesNotMatch(result.stderr, /is not a function/);
+  assert.equal(readFileSync(segment, "utf8"), before);
+  assert.equal(existsSync(statePath(root, "stale-codex-fixture")), false);
+  assert.equal(
+    existsSync(join(root, "docs/control/local/harness/writer")),
+    false,
+  );
+  const withoutThread = dispatch("");
+  assert.equal(withoutThread.status, 0, withoutThread.stderr);
+});
+
 test("WO-153 a Codex dispatch whose session entry fails names the cause and still delivers its briefing", async (t) => {
   const root = repo(t, { runtime: true });
   cpSync(join(source, "scripts/lib"), join(root, "scripts/lib"), {
@@ -6639,8 +6686,9 @@ test("WO-153 a Codex dispatch whose session entry fails names the cause and stil
       // refuses an observation log that is not a regular file.
       script: resume,
       prepare: (thread) => {
-        // Fail session observation after successful writer admission; a broken
-        // journal before reservation now correctly refuses the dispatch itself.
+        // Fail session observation after successful writer admission. A
+        // journal broken before the reservation refuses the dispatch itself
+        // and releases the reservation it placed (the WO-168 case below).
         reserveCodexDispatchWriter(root, thread);
         rmSync(statePath(root, thread).replace(/\.json$/, ".jsonl"));
         mkdirSync(statePath(root, thread).replace(/\.json$/, ".jsonl"), {
@@ -6825,6 +6873,120 @@ test("WO-153 a Codex dispatch whose session entry fails names the cause and stil
   assert.equal(threadless.status, 0, threadless.stderr);
   assert.doesNotMatch(threadless.stderr, /Codex session entry/);
   assert.deepEqual(records(), before);
+});
+
+test("WO-168 a Codex dispatch refused after placing its reservation releases it, and a second session is then admitted", (t) => {
+  const root = repo(t, { runtime: true });
+  cpSync(join(source, "scripts/lib"), join(root, "scripts/lib"), {
+    recursive: true,
+  });
+  for (const script of ["scripts/harness.mjs", "scripts/resume.mjs"])
+    cpSync(join(source, script), join(root, script));
+  installBeaconFixture(root);
+  write(
+    root,
+    "docs/work-orders/WO-999-fixture.md",
+    "# WO-999 — fixture\n\n**Model:** any.\n**Effort:** executor any; verifier any; reviewer any.\n\n<!-- dotln-dependencies:start -->\n[]\n<!-- dotln-dependencies:end -->\n",
+  );
+  const codexHome = join(root, ".runtime/codex-home");
+  mkdirSync(join(codexHome, "sessions"), { recursive: true });
+  const run = (script, args, thread) =>
+    spawnSync(process.execPath, [join(root, script), ...args], {
+      cwd: root,
+      encoding: "utf8",
+      env: {
+        ...process.env,
+        CODEX_HOME: codexHome,
+        COPILOT_AGENT_SESSION_ID: "",
+        CODEX_THREAD_ID: thread,
+      },
+    });
+  const shown = () => {
+    const view = run("scripts/harness.mjs", ["writer", "--show"], "");
+    assert.equal(view.status, 0, view.stderr);
+    return JSON.parse(view.stdout);
+  };
+  const segment = join(root, "docs/control/orders/WO-999.jsonl");
+  const activated = readFileSync(segment, "utf8");
+  const ready =
+    JSON.stringify({
+      schemaVersion: 1,
+      workOrderId: "WO-999",
+      recordedAt: "2026-09-09T00:01:00.000Z",
+      type: "ImplementationReady",
+    }) + "\n";
+  const broken = "wo168-broken-log";
+  // The observation log is broken before any reservation exists (WO-166-D014).
+  mkdirSync(statePath(root, broken).replace(/\.json$/, ".jsonl"), {
+    recursive: true,
+  });
+  for (const [action, seed] of [
+    ["next", ""],
+    ["verify", ready],
+  ]) {
+    write(root, "docs/control/orders/WO-999.jsonl", activated + seed);
+    const refused = run("scripts/resume.mjs", [action], broken);
+    assert.equal(refused.status, 1, `${action}: ${refused.stdout}`);
+    assert.match(refused.stderr, /Host observation log is not a regular file/);
+    assert.equal(readFileSync(segment, "utf8"), activated + seed, action);
+    assert.deepEqual(
+      shown(),
+      { contract: "harness-writer-v1", reserved: false },
+      action,
+    );
+  }
+  assert.deepEqual(
+    readFileSync(
+      join(root, "docs/control/local/harness/writer-events.jsonl"),
+      "utf8",
+    )
+      .trim()
+      .split("\n")
+      .map((line) => JSON.parse(line).event),
+    ["acquired", "released", "acquired", "released"],
+  );
+  write(root, "docs/control/orders/WO-999.jsonl", activated);
+  const second = "wo168-second-session";
+  const admitted = run("scripts/resume.mjs", ["next"], second);
+  assert.equal(admitted.status, 0, admitted.stderr);
+  assert.equal(
+    shown().actorId,
+    createHash("sha256").update(second).digest("hex"),
+  );
+  // The refused session is refused again while the second one holds it, and
+  // that refusal releases nothing it did not place.
+  const foreign = run("scripts/resume.mjs", ["next"], broken);
+  assert.equal(foreign.status, 1, foreign.stdout);
+  assert.match(foreign.stderr, /reserved by another session/);
+  assert.equal(
+    shown().actorId,
+    createHash("sha256").update(second).digest("hex"),
+  );
+  releaseHarnessWriter(root, input(root, "Stop", second));
+  assert.equal(harnessWriterView(root).reserved, false);
+
+  // A dispatch refused after its reservation by anything before its event
+  // releases it too: here the briefing cannot read the order's declaration.
+  const events = () =>
+    readFileSync(
+      join(root, "docs/control/local/harness/writer-events.jsonl"),
+      "utf8",
+    )
+      .trim()
+      .split("\n")
+      .map((line) => JSON.parse(line).event);
+  write(
+    root,
+    "docs/work-orders/WO-999-fixture.md",
+    "# WO-999 — fixture\n\n**Effort:** executor any; verifier any; reviewer any.\n",
+  );
+  const recorded = events().length;
+  const undeclared = run("scripts/resume.mjs", ["next"], "wo168-undeclared");
+  assert.equal(undeclared.status, 1, undeclared.stdout);
+  assert.match(undeclared.stderr, /\*\*Model:\*\*/);
+  assert.equal(readFileSync(segment, "utf8"), activated);
+  assert.deepEqual(events().slice(recorded), ["acquired", "released"]);
+  assert.deepEqual(shown(), { contract: "harness-writer-v1", reserved: false });
 });
 
 test("WO-132 caller usage avoids a writer reservation and other main writes reserve normally", async (t) => {

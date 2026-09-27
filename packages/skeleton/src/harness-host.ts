@@ -1450,12 +1450,27 @@ export function reserveCodexDispatchWriter(
     hook_event_name: "UserPromptSubmit",
   };
   const actorId = sessionKey(input);
-  const writers = reserveHarnessWriter(
-    root,
-    input,
-    actorId,
-    codexHostProcess(),
-  );
+  // WO-168 (WO-166-D014): a dispatch refused after its reservation was placed
+  // leaves the worktree as it found it. A reservation this session already
+  // held, or one that cannot be observed, is not this dispatch's to release.
+  let held = true;
+  try {
+    held = observeWriterHolder(root).writer?.actorId === actorId;
+  } catch {
+    // The reservation below names what could not be read.
+  }
+  let writers: readonly HarnessWriter[];
+  try {
+    writers = reserveHarnessWriter(root, input, actorId, codexHostProcess());
+  } catch (error) {
+    if (!held)
+      try {
+        releaseHarnessWriter(root, input);
+      } catch {
+        // The refusal names the first failure; writer --show reports the rest.
+      }
+    throw error;
+  }
   const foreign = writers.find((writer) => writer.actorId !== actorId);
   if (foreign) throw new Error(writerRefusal(foreign));
   return harnessWriterView(root);
