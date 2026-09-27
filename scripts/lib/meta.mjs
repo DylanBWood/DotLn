@@ -1,4 +1,4 @@
-import { docPath, docRelative } from "./config.mjs";
+import { docPath, docRelative, rootPattern } from "./config.mjs";
 import { createHash } from "node:crypto";
 import {
   existsSync,
@@ -375,10 +375,31 @@ function hookObservations(root, workOrder) {
     });
 }
 function usageRows(root, workOrder) {
-  const rows = jsonl(
-    root,
-    docRelative(root, "control", "local/process/usage.jsonl"),
-  ).filter((row) => row.workOrder === workOrder);
+  return latestUsage(
+    jsonl(root, docRelative(root, "control", "local/process/usage.jsonl")),
+    workOrder,
+  );
+}
+// The last recorded observation of a dispatch wins, whatever order the rows are
+// read in: retained copies are read by name, and preservation's `-10` sorts
+// before `-2` (VER-001 F1). Rows are ordered by recording time, then by
+// observation cutoff; an undated value counts as earlier than any dated one,
+// and rows equal on both keep the order they were read in.
+const dated = (value) => {
+  const time = Date.parse(value ?? "");
+  return Number.isFinite(time) ? time : -Infinity;
+};
+const byTime = (a, b) => (a === b ? 0 : a - b);
+function latestUsage(parsed, workOrder) {
+  const rows = parsed
+    .filter((row) => row.workOrder === workOrder)
+    .map((row) => [
+      dated(row.recordedAt),
+      dated(row.observation.observedAt),
+      row,
+    ])
+    .sort(([a, x], [b, y]) => byTime(a, b) || byTime(x, y))
+    .map(([, , row]) => row);
   const latest = new Map();
   const superseded = new Set(rows.flatMap((row) => row.supersedes ?? []));
   for (const row of rows.filter(
@@ -389,6 +410,357 @@ function usageRows(root, workOrder) {
       row,
     );
   return [...latest.values()].map(({ sessionKey, supersedes, ...row }) => row);
+}
+
+// `worktree finish` keeps a closed order's usage file in its retained lane,
+// under the collision names preservation gives it (harness-prune.mjs matches
+// the same names). Lane-relative paths, sorted, so a snapshot names them
+// stably; which observation wins does not depend on this order (latestUsage).
+const retainedUsageName = new RegExp(
+  String.raw`(?:^|/)process(?:\.from-WO-\d{3,}(?:-\d+)?)*/usage\.jsonl(?:\.from-WO-\d{3,}(?:-\d+)?)*$`,
+  "u",
+);
+const laneFiles = (directory, prefix = "") =>
+  readdirSync(join(directory, prefix), { withFileTypes: true }).flatMap(
+    (entry) => {
+      const path = prefix ? `${prefix}/${entry.name}` : entry.name;
+      // A link, to a file or a directory, is never followed out of the lane.
+      return entry.isDirectory()
+        ? laneFiles(directory, path)
+        : entry.isFile()
+          ? [path]
+          : [];
+    },
+  );
+/** A retained lane's usage copies, each with every line it could parse; a
+ * line that is not JSON is counted, never read and never fatal. */
+export function retainedUsageCopies(root, workOrder) {
+  const lane = docRelative(root, "control", `local/retained/${workOrder}`);
+  const directory = join(root, lane);
+  if (!existsSync(directory) || !lstatSync(directory).isDirectory()) return [];
+  return laneFiles(directory)
+    .filter((path) => retainedUsageName.test(path))
+    .sort()
+    .map((path) => {
+      const bytes = readFileSync(join(directory, path));
+      const rows = [];
+      let unreadable = 0;
+      for (const line of bytes.toString("utf8").split("\n").filter(Boolean))
+        try {
+          const row = JSON.parse(line);
+          if (row && typeof row === "object" && row.observation) rows.push(row);
+          else unreadable++;
+        } catch {
+          unreadable++;
+        }
+      return { path, lanePath: `${lane}/${path}`, bytes, rows, unreadable };
+    });
+}
+const retainedUsage = (copies, workOrder) =>
+  latestUsage(
+    copies.flatMap((copy) => copy.rows),
+    workOrder,
+  );
+
+const roleRank = (role) =>
+  dispatchKinds.includes(role) ? dispatchKinds.indexOf(role) : Infinity;
+const orderedRoles = (roles) =>
+  [...new Set(roles.filter((role) => typeof role === "string"))].sort(
+    (a, b) => roleRank(a) - roleRank(b) || a.localeCompare(b),
+  );
+/** Usage totals by role: tokens, cost, commands and steps over the dispatch
+ * rows the meter already sums; wall time over every row, as dispatch rows do. */
+export function usageTotals(rows) {
+  return Object.fromEntries(
+    orderedRoles(rows.map((row) => row.role)).map((role) => {
+      const all = rows.filter((row) => row.role === role),
+        dispatch = all.filter((row) => row.observation?.scope === "dispatch");
+      return [
+        role,
+        {
+          dispatches: dispatch.length,
+          totalTokens: sumKnown(
+            dispatch.map((row) => row.observation.usage?.totalTokens),
+          ),
+          costUsd: sumKnown(
+            dispatch.map((row) => row.observation.usage?.costUsd),
+          ),
+          commandsRun: sumKnown(
+            dispatch.map((row) => row.observation.activity?.commandsRun),
+          ),
+          stepCount: sumKnown(
+            dispatch.map((row) => row.observation.activity?.stepCount),
+          ),
+          durationMs: sumKnown(all.map((row) => row.durationMs)),
+        },
+      ];
+    }),
+  );
+}
+
+// WO-170: the operator's directions, counted from what the record publishes.
+// The docs check has required a control prefix on every dispatch since WO-085;
+// records filed before it are counted when they begin with "operator", except
+// the lifecycle dispatch "Operator resume:" that names no direction (a control
+// phrase, or a word beginning "direct" or "correct"). Each record counts once.
+const directionPrefixes = [
+  ["scope expand:", "scopeExpand"],
+  ["operator override:", "operatorOverride"],
+  ["analysis:", "analysis"],
+  ["conversation only:", "conversationOnly"],
+];
+const directionEvents = [
+  "OperatorOverrideRecorded",
+  "RecordCorrected",
+  "CriterionWaived",
+];
+export function operatorDirections(decisions, events) {
+  const byKind = Object.fromEntries(
+    [
+      ...directionPrefixes.map(([, kind]) => kind),
+      "operatorLabel",
+      ...directionEvents,
+    ].map((kind) => [kind, 0]),
+  );
+  for (const { dispatch } of decisions) {
+    const text = String(dispatch).trimStart();
+    const prefix = directionPrefixes.find(([value]) => text.startsWith(value));
+    if (prefix) byKind[prefix[1]]++;
+    else if (
+      /^operator\b/iu.test(text) &&
+      (!/^operator(?:'s)? resume\b/iu.test(text) ||
+        /scope expand|operator override|analysis:|conversation only|\b(?:direct|correct)/iu.test(
+          text,
+        ))
+    )
+      byKind.operatorLabel++;
+  }
+  for (const event of events)
+    if (directionEvents.includes(event.type)) byKind[event.type]++;
+  return {
+    total: Object.values(byKind).reduce((sum, value) => sum + value, 0),
+    byKind,
+    source: "committed decision dispatches and control events",
+  };
+}
+
+/** Intake captures each ledger planning pass cites: distinct intake paths in
+ * its section, a count and never the text. A pass files several orders, so no
+ * capture is attributed to one order's directions. */
+export function planningCaptures(root) {
+  const path = docRelative(root, "lineage", "idea-ledger.md");
+  if (!existsSync(join(root, path))) return [];
+  const ledger = readFileSync(join(root, path), "utf8");
+  const visible = ledger.replace(
+    /^(```|~~~)[^\n]*\n[\s\S]*?^\1[^\n]*$/gm,
+    (match) => match.replace(/[^\n]/g, " "),
+  );
+  const headings = [...visible.matchAll(/^## (.+)$/gm)];
+  const intake = new RegExp(
+    String.raw`${rootPattern(root, "intake")}/[^\s\x60'")]+`,
+    "gu",
+  );
+  return headings.flatMap((match, index) => {
+    const heading = match[1],
+      date = heading.match(/\b\d{4}-\d{2}-\d{2}\b/u)?.[0];
+    if (!date || !/planning pass/iu.test(heading)) return [];
+    const section = ledger.slice(
+      match.index,
+      headings[index + 1]?.index ?? ledger.length,
+    );
+    return [
+      {
+        pass: `planning-${createHash("sha256").update(heading).digest("hex").slice(0, 16)}`,
+        date,
+        captures: new Set(
+          (section.match(intake) ?? []).map((value) =>
+            value.replace(/[.,;:]+$/u, ""),
+          ),
+        ).size,
+      },
+    ];
+  });
+}
+
+const unavailableCorrections = () => ({
+  total: null,
+  byPhase: null,
+  byUnit: null,
+  byPhaseAndUnit: null,
+  source: "unavailable",
+});
+
+// WO-170: the order's own meter row, bounded, written where its journals are.
+// A dispatch row keeps its observed values; an absent one reads unavailable.
+export const SNAPSHOT_BYTES = 8192;
+/** Indented to the row's fields; a dispatch row, a role's totals or a unit
+ * map stays on one line, so the bound holds more than whitespace. */
+export function snapshotText(value) {
+  const format = (node, depth) => {
+    if (depth >= 4 || node === null || typeof node !== "object")
+      return JSON.stringify(node);
+    const list = Array.isArray(node);
+    const entries = list
+      ? node.map((item) => format(item, depth + 1))
+      : Object.entries(node).map(
+          ([key, item]) => `${JSON.stringify(key)}: ${format(item, depth + 1)}`,
+        );
+    if (!entries.length) return list ? "[]" : "{}";
+    const inner = "  ".repeat(depth + 1);
+    return `${list ? "[" : "{"}\n${entries.map((entry) => inner + entry).join(",\n")}\n${"  ".repeat(depth)}${list ? "]" : "}"}`;
+  };
+  return `${format(value, 0)}\n`;
+}
+const observedDispatches = (rows) =>
+  rows
+    .map(({ delta, ...row }) =>
+      Object.fromEntries(
+        Object.entries(row).filter(([, value]) => value !== null),
+      ),
+    )
+    .filter((row) => Object.keys(row).length > 1);
+export function orderSnapshot(meta, workOrder, source) {
+  const order = meta.orders.find((row) => row.workOrder === workOrder);
+  if (!order) throw new Error(`${workOrder} is not a row of this meter`);
+  return {
+    schemaVersion: 1,
+    kind: "order-meter-snapshot",
+    observedAt: meta.observedAt,
+    revision: meta.revision,
+    source,
+    orders: [
+      {
+        workOrder,
+        phase: order.phase,
+        metrics: order.metrics,
+        corrections: order.corrections,
+        directions: order.directions,
+        usageByRole: Object.fromEntries(
+          Object.entries(order.usageByRole).map(
+            ([role, { source, ...totals }]) => [role, totals],
+          ),
+        ),
+        dispatches: observedDispatches(order.dispatches),
+        declared: order.declared,
+      },
+    ],
+  };
+}
+/** Writes the order's snapshot only from a checkout holding its journals,
+ * while the order is open: after the close the meter reads no journal of it. */
+export function writeOrderSnapshot(root, meta, workOrder) {
+  const path = docRelative(root, "evidence", `${workOrder}/meta.json`);
+  const phase = meta.orders.find((row) => row.workOrder === workOrder)?.phase;
+  if (!phase || ["closed", "withdrawn"].includes(phase))
+    return {
+      path,
+      written: false,
+      reason: phase
+        ? `${workOrder} is ${phase}; its committed snapshot is its record`
+        : `${workOrder} is not a row of this meter`,
+    };
+  const journals = new Set(
+    hookObservations(root, workOrder).map((row) => row.journal),
+  ).size;
+  if (!journals)
+    return {
+      path,
+      written: false,
+      reason: `this checkout holds no session journal of ${workOrder}`,
+    };
+  const text = snapshotText(
+    orderSnapshot(
+      meta,
+      workOrder,
+      `the order's checkout: ${journals} session journal${journals === 1 ? "" : "s"}, its usage observations, gate rows and the canonical control fold`,
+    ),
+  );
+  const size = Buffer.byteLength(text);
+  if (size > SNAPSHOT_BYTES)
+    return {
+      path,
+      written: false,
+      reason: `the snapshot would be ${size} bytes, above its ${SNAPSHOT_BYTES}-byte bound`,
+    };
+  const current = existsSync(join(root, path))
+    ? readFileSync(join(root, path), "utf8")
+    : null;
+  if (current !== text) {
+    mkdirSync(dirname(join(root, path)), { recursive: true });
+    writeFileSync(join(root, path), text);
+  }
+  return { path, written: current !== text, bytes: size };
+}
+/** One-time recovery (WO-170): usage totals by role from the retained copies
+ * in `retainedRoot` (the main checkout), with each copy's SHA-256 so that the
+ * prune can release the lane. An existing snapshot keeps its own row. */
+export function recoveredUsageSnapshot(
+  retainedRoot,
+  workOrder,
+  prior,
+  now,
+  priorPath = "the whole-meter snapshot",
+) {
+  const copies = retainedUsageCopies(retainedRoot, workOrder);
+  if (!copies.length) return null;
+  const rows = retainedUsage(copies, workOrder);
+  // The prune releases a lane whose every copy is named here (WO-171), so a
+  // copy holding a row this snapshot does not carry (another order's, or one
+  // it cannot read) is listed without its digest and keeps its lane.
+  const carries = (copy) =>
+    !copy.unreadable && copy.rows.every((row) => row.workOrder === workOrder);
+  const count = (copy) => copy.rows.length + copy.unreadable;
+  const usageCopies = copies.filter(carries).map((copy) => ({
+    path: copy.path,
+    sha256: createHash("sha256").update(copy.bytes).digest("hex"),
+    rows: count(copy),
+  }));
+  const uncarried = copies
+    .filter((copy) => !carries(copy))
+    .map((copy) => ({
+      path: copy.path,
+      rows: count(copy),
+      carriedRows: copy.rows.filter((row) => row.workOrder === workOrder)
+        .length,
+    }));
+  const recovered = {
+    observedAt: now,
+    source: "retained usage copies in the main checkout's lane",
+  };
+  const kept = prior?.orders?.find((row) => row.workOrder === workOrder);
+  const usageByRole = usageTotals(rows);
+  if (kept)
+    return {
+      schemaVersion: 1,
+      kind: "order-meter-snapshot",
+      observedAt: prior.observedAt,
+      revision: prior.revision ?? null,
+      source: `the order's row of ${priorPath} observed at ${prior.observedAt}`,
+      orders: [
+        {
+          workOrder,
+          phase: kept.phase,
+          metrics: kept.metrics,
+          ...(kept.corrections ? { corrections: kept.corrections } : {}),
+          usageByRole,
+          dispatches: observedDispatches(kept.dispatches ?? []),
+          declared: kept.declared ?? null,
+        },
+      ],
+      usageRecovered: recovered,
+      usageCopies,
+      ...(uncarried.length ? { uncarriedCopies: uncarried } : {}),
+    };
+  return {
+    schemaVersion: 1,
+    kind: "order-meter-snapshot",
+    observedAt: now,
+    revision: null,
+    source: recovered.source,
+    orders: [{ workOrder, usageByRole }],
+    usageCopies,
+    ...(uncarried.length ? { uncarriedCopies: uncarried } : {}),
+  };
 }
 
 function authorshipCost(observations) {
@@ -458,8 +830,13 @@ export function trapRows(orders) {
     ],
     [
       "shifting-the-burden-to-the-intervenor",
-      "Operator corrections, manual closeout steps and emergency planning passes",
-      ["operatorCorrections", "manualCloseoutSteps", "emergencyPasses"],
+      "Operator corrections and directions, manual closeout steps and emergency planning passes",
+      [
+        "operatorCorrections",
+        "operatorDirections",
+        "manualCloseoutSteps",
+        "emergencyPasses",
+      ],
     ],
     [
       "drift-to-low-performance",
@@ -504,6 +881,10 @@ export function trapRows(orders) {
             corrections: orders.map((row) => ({
               workOrder: row.workOrder,
               ...row.corrections,
+            })),
+            directions: orders.map((row) => ({
+              workOrder: row.workOrder,
+              ...row.directions,
             })),
           }
         : {}),
@@ -649,15 +1030,15 @@ export async function collectMeta(
       role: roleForPhase[attempt.phase],
       elapsedMs: attempt.elapsedMs === "unknown" ? null : attempt.elapsedMs,
     }));
-    const snapshot =
-      json(root, docRelative(root, "evidence", `${workOrder}/meta.json`)) ??
-      json(
-        root,
-        docRelative(root, "evidence", `${workOrder}/meta-baseline.json`),
-      );
-    const prior = snapshot?.orders?.find(
+    const snapshotPath = ["meta.json", "meta-baseline.json"]
+      .map((name) => docRelative(root, "evidence", `${workOrder}/${name}`))
+      .find((path) => existsSync(join(root, path)));
+    const snapshot = snapshotPath ? json(root, snapshotPath) : null;
+    const found = snapshot?.orders?.find(
       (entry) => entry.workOrder === workOrder,
     );
+    // A recovered snapshot holds usage totals by role and no metrics.
+    const prior = found && { ...found, metrics: found.metrics ?? {} };
     const active = !["closed", "withdrawn"].includes(row.state.phase);
     const contextEdition = json(
       root,
@@ -677,14 +1058,69 @@ export async function collectMeta(
             .map((file) => file.bytes),
         ),
     }));
-    const hook = hookObservations(root, workOrder);
-    // Closed worktrees retain their local journal elsewhere. Preserve only a
-    // snapshot explicitly derived from that journal, never the old decision count.
-    const corrections =
-      !hook.length && prior?.corrections?.source === "session-journal"
+    // Journals leave with the order's worktree; its snapshot, written there by
+    // release prepare, holds every session up to its cutoff. After the close a
+    // checkout holds at most a later session's journal of the order (release
+    // close on main), which is not the order's record, so journal values come
+    // from the snapshot and every checkout reads the same: one written from
+    // journals, or a closed order's row of an earlier whole-meter snapshot.
+    // Corrections count only from journals, never the old decision count; with
+    // no snapshot row, a journal-derived value is unavailable, never zero.
+    const closedOrder = row.state.phase === "closed";
+    const journalSnapshot = prior?.corrections?.source === "session-journal";
+    const hook = closedOrder ? [] : hookObservations(root, workOrder);
+    const held =
+      !hook.length &&
+      (journalSnapshot ||
+        (closedOrder && Object.keys(prior?.metrics ?? {}).length))
+        ? prior
+        : null;
+    const heldSource = `order snapshot ${snapshotPath} (cutoff ${snapshot?.observedAt ?? "unknown"})`;
+    const corrections = hook.length
+      ? correctionCounts(hook)
+      : held && journalSnapshot
         ? prior.corrections
-        : correctionCounts(hook);
-    const usage = usageRows(root, workOrder);
+        : unavailableCorrections();
+    const directions = operatorDirections(
+      decisions.filter((decision) => decision.workOrder === workOrder),
+      events,
+    );
+    // Usage by role: this checkout's observations, then the order's snapshot,
+    // then a retained usage copy; a role none of them holds stays unobserved.
+    const liveUsage = usageRows(root, workOrder);
+    const copies = retainedUsageCopies(root, workOrder);
+    const retainedRows = retainedUsage(copies, workOrder);
+    const unreadable = copies.reduce((sum, copy) => sum + copy.unreadable, 0);
+    const heldUsage = prior?.usageByRole ?? {};
+    const usage = [...liveUsage],
+      usageByRole = {};
+    for (const role of orderedRoles([
+      ...liveUsage.map((value) => value.role),
+      ...Object.keys(heldUsage),
+      ...retainedRows.map((value) => value.role),
+    ])) {
+      if (liveUsage.some((value) => value.role === role))
+        usageByRole[role] = {
+          source: "this checkout's usage observations",
+          ...usageTotals(liveUsage)[role],
+        };
+      else if (heldUsage[role])
+        usageByRole[role] = { source: heldSource, ...heldUsage[role] };
+      else {
+        const rows = retainedRows.filter((value) => value.role === role);
+        usage.push(...rows.map((value) => ({ ...value, retained: true })));
+        usageByRole[role] = {
+          source: `retained usage copy ${copies.map((copy) => copy.lanePath).join(", ")}${unreadable ? ` (${unreadable} unreadable line${unreadable === 1 ? "" : "s"} skipped)` : ""}`,
+          ...usageTotals(rows)[role],
+        };
+      }
+    }
+    const heldRoles = Object.entries(usageByRole)
+      .filter(
+        ([role, value]) =>
+          value.source === heldSource && heldUsage[role].dispatches !== 0,
+      )
+      .map(([, value]) => value);
     const gateRows = checks.filter(
       (check) =>
         check.workOrder === workOrder &&
@@ -746,6 +1182,26 @@ export async function collectMeta(
     const observedUsage = usage.filter(
       (value) => value.observation.scope === "dispatch",
     );
+    // Once usage is chosen per role, one unknown dispatch keeps the sum
+    // unknown; an order total is read only from a snapshot without roles.
+    const perRole = Object.keys(usageByRole).length > 0;
+    const usageSum = (rowValue, heldKey, fallback) =>
+      perRole
+        ? sumKnown([
+            ...observedUsage.map(rowValue),
+            ...heldRoles.map((value) => value[heldKey]),
+          ])
+        : (fallback ?? null);
+    // With the journals held by the snapshot, their values are the snapshot's.
+    const heldMetrics = (computed) =>
+      held
+        ? Object.fromEntries(
+            Object.keys(computed).map((key) => [
+              key,
+              prior.metrics[key] ?? null,
+            ]),
+          )
+        : computed;
     const metrics = {
       elapsedMs: durationMs,
       attempts: phases.length,
@@ -770,18 +1226,16 @@ export async function collectMeta(
         durationMs > 0 && machineMs !== null ? machineMs / durationMs : null,
       elapsedPerCodeByte:
         durationMs !== null && diffBytes > 0 ? durationMs / diffBytes : null,
-      tokens:
-        sumKnown(
-          observedUsage.map((value) => value.observation.usage.totalTokens),
-        ) ??
-        prior?.metrics.tokens ??
-        null,
-      costUsd:
-        sumKnown(
-          observedUsage.map((value) => value.observation.usage.costUsd),
-        ) ??
-        prior?.metrics.costUsd ??
-        null,
+      tokens: usageSum(
+        (value) => value.observation.usage.totalTokens,
+        "totalTokens",
+        prior?.metrics.tokens,
+      ),
+      costUsd: usageSum(
+        (value) => value.observation.usage.costUsd,
+        "costUsd",
+        prior?.metrics.costUsd,
+      ),
       declaredPromptTokens: active
         ? declared.promptTokens
         : (prior?.metrics.declaredPromptTokens ?? null),
@@ -797,6 +1251,7 @@ export async function collectMeta(
         null,
       gateStepCount: gateSteps ?? prior?.metrics.gateStepCount ?? null,
       operatorCorrections: corrections.total,
+      operatorDirections: directions.total,
       guardRefusals: hook.length
         ? guardRefusalCount(hook)
         : (prior?.metrics.guardRefusals ?? null),
@@ -814,13 +1269,13 @@ export async function collectMeta(
       adHocScripts: prior?.metrics.adHocScripts ?? null,
       commandsRun: hook.some((value) => value.toolStep)
         ? hook.filter((value) => value.commandRun).length
-        : (sumKnown(
-            observedUsage.map(
+        : held || closedOrder
+          ? (held?.metrics.commandsRun ?? null)
+          : usageSum(
               (value) => value.observation.activity?.commandsRun,
+              "commandsRun",
+              prior?.metrics.commandsRun,
             ),
-          ) ??
-          prior?.metrics.commandsRun ??
-          null),
       bytesReadIntoContext: hook.length
         ? sumKnown(
             hook
@@ -830,13 +1285,15 @@ export async function collectMeta(
         : (prior?.metrics.bytesReadIntoContext ?? null),
       stepCount: hook.some((value) => value.toolStep)
         ? hook.filter((value) => value.toolStep).length
-        : (sumKnown(
-            observedUsage.map((value) => value.observation.activity?.stepCount),
-          ) ??
-          prior?.metrics.stepCount ??
-          null),
-      ...authorshipCost(hook),
-      ...hookCost(hook),
+        : held || closedOrder
+          ? (held?.metrics.stepCount ?? null)
+          : usageSum(
+              (value) => value.observation.activity?.stepCount,
+              "stepCount",
+              prior?.metrics.stepCount,
+            ),
+      ...heldMetrics(authorshipCost(hook)),
+      ...heldMetrics(hookCost(hook)),
       prBodyBytes:
         bytes(root, docRelative(root, "finalReviews", `${workOrder}/PR.md`)) ??
         prior?.metrics.prBodyBytes ??
@@ -845,40 +1302,71 @@ export async function collectMeta(
     const dispatches = dispatchKinds.map((role) => {
       const rolePhases = phases.filter((value) => value.role === role),
         roleUsage = usage.filter((value) => value.role === role),
-        roleHooks = hook.filter((value) => value.role === role);
+        roleHooks = hook.filter((value) => value.role === role),
+        heldRole = held?.dispatches?.find((value) => value.role === role),
+        roleTotals =
+          usageByRole[role]?.source === heldSource &&
+          heldUsage[role].dispatches !== 0
+            ? usageByRole[role]
+            : null;
+      const journal = (computed) =>
+        held || closedOrder
+          ? Object.fromEntries(
+              Object.keys(computed).map((key) => [
+                key,
+                heldRole?.[key] ?? null,
+              ]),
+            )
+          : computed;
       return {
         role,
         wallClockMs:
           sumKnown(rolePhases.map((value) => value.elapsedMs)) ??
-          sumKnown(roleUsage.map((value) => value.durationMs)),
+          sumKnown(roleUsage.map((value) => value.durationMs)) ??
+          roleTotals?.durationMs ??
+          null,
         attempts: rolePhases.length || null,
-        bytesReadIntoContext: sumKnown(
-          roleHooks
-            .flatMap((value) => value.byteReads ?? [])
-            .map((value) => value.endByte - value.startByte),
-        ),
-        commandsRun: roleHooks.some((value) => value.toolStep)
-          ? roleHooks.filter((value) => value.commandRun).length
-          : sumKnown(
-              roleUsage.map((value) => value.observation.activity?.commandsRun),
-            ),
-        stepCount: roleHooks.some((value) => value.toolStep)
-          ? roleHooks.filter((value) => value.toolStep).length
-          : sumKnown(
-              roleUsage.map((value) => value.observation.activity?.stepCount),
-            ),
-        ...authorshipCost(roleHooks),
-        ...hookCost(roleHooks),
-        observedTokens: sumKnown(
-          roleUsage
-            .filter((value) => value.observation.scope === "dispatch")
-            .map((value) => value.observation.usage.totalTokens),
-        ),
-        observedCostUsd: sumKnown(
-          roleUsage
-            .filter((value) => value.observation.scope === "dispatch")
-            .map((value) => value.observation.usage.costUsd),
-        ),
+        ...journal({
+          bytesReadIntoContext: sumKnown(
+            roleHooks
+              .flatMap((value) => value.byteReads ?? [])
+              .map((value) => value.endByte - value.startByte),
+          ),
+          commandsRun: roleHooks.some((value) => value.toolStep)
+            ? roleHooks.filter((value) => value.commandRun).length
+            : (sumKnown(
+                roleUsage.map(
+                  (value) => value.observation.activity?.commandsRun,
+                ),
+              ) ??
+              roleTotals?.commandsRun ??
+              null),
+          stepCount: roleHooks.some((value) => value.toolStep)
+            ? roleHooks.filter((value) => value.toolStep).length
+            : (sumKnown(
+                roleUsage.map((value) => value.observation.activity?.stepCount),
+              ) ??
+              roleTotals?.stepCount ??
+              null),
+          ...authorshipCost(roleHooks),
+          ...hookCost(roleHooks),
+        }),
+        observedTokens:
+          sumKnown(
+            roleUsage
+              .filter((value) => value.observation.scope === "dispatch")
+              .map((value) => value.observation.usage.totalTokens),
+          ) ??
+          roleTotals?.totalTokens ??
+          null,
+        observedCostUsd:
+          sumKnown(
+            roleUsage
+              .filter((value) => value.observation.scope === "dispatch")
+              .map((value) => value.observation.usage.costUsd),
+          ) ??
+          roleTotals?.costUsd ??
+          null,
         declaredPromptTokens:
           active && role === "executor"
             ? declared.promptTokens
@@ -892,8 +1380,10 @@ export async function collectMeta(
       phases,
       metrics,
       corrections,
+      directions,
       dispatches,
       usage,
+      usageByRole,
       coldStart: active
         ? coldStart.profiles.map(({ role, skillsRoot, bytes }) => ({
             role,
@@ -905,7 +1395,19 @@ export async function collectMeta(
       declared: active ? declared : (prior?.declared ?? null),
       source: {
         phases: "canonical control fold",
-        usage: usage.length ? "host observations" : "unavailable",
+        journals: hook.length
+          ? "this checkout's session journals"
+          : held
+            ? journalSnapshot
+              ? heldSource
+              : `earlier whole-meter row ${snapshotPath} (cutoff ${snapshot?.observedAt ?? "unknown"}); its corrections are not journal counts`
+            : "unavailable",
+        usage: Object.keys(usageByRole).length
+          ? Object.entries(usageByRole)
+              .map(([role, value]) => `${role}: ${value.source}`)
+              .join("; ")
+          : "unavailable",
+        directions: directions.source,
         unobserved: "null means unavailable, never zero",
       },
     };
@@ -1002,6 +1504,10 @@ export async function collectMeta(
       }
   }
   const traps = trapRows(orders);
+  const captures = planningCaptures(root);
+  traps.find(
+    (row) => row.id === "shifting-the-burden-to-the-intervenor",
+  ).planningCaptures = captures;
   traps.find((row) => row.id === "drift-to-low-performance").coldStart = {
     comparisonEdition: coldStart.comparisonEdition,
     profiles: coldStart.profiles,
@@ -1064,9 +1570,10 @@ export async function collectMeta(
       const prior = snapshot?.orders?.find(
         (entry) => entry.workOrder === workOrder,
       );
+      // A recovered snapshot carries usage totals only: no historical metrics.
       return {
         ...current,
-        historicalMetrics: prior
+        historicalMetrics: Object.keys(prior?.metrics ?? {}).length
           ? {
               source: docRelative(
                 root,
@@ -1079,6 +1586,14 @@ export async function collectMeta(
           : null,
       };
     }),
+    // Computed from committed files, so every checkout reads every closed order.
+    closedDirections: closed.map(([workOrder]) => ({
+      workOrder,
+      ...operatorDirections(
+        decisions.filter((decision) => decision.workOrder === workOrder),
+        eventsForOrder(control, workOrder),
+      ),
+    })),
     unassignedDispatches: usageRows(root, null),
     coldStart,
     declared,
@@ -1103,11 +1618,11 @@ export function renderMetaTable(meta) {
     "",
     `Observation cutoff: ${meta.observedAt ?? "unknown"}; source: canonical control events and the recorded gate, usage and harness observations collected by npm run meta.`,
     "",
-    "| Work | Phase ms / attempts | Gate ms | Read files / bytes | Observed tokens / USD | Declared prompt tokens | Corrections |",
-    "| --- | ---: | ---: | ---: | ---: | ---: | ---: |",
+    "| Work | Phase ms / attempts | Gate ms | Read files / bytes | Observed tokens / USD | Declared prompt tokens | Corrections | Directions |",
+    "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
     ...meta.orders.map(
       (row) =>
-        `| ${row.workOrder} | ${d(row, "elapsedMs")} / ${row.metrics.attempts} | ${d(row, "gateMs")} | ${d(row, "readObligationCount")} / ${d(row, "readObligationBytes")} | ${d(row, "tokens")} / ${d(row, "costUsd")} | ${d(row, "declaredPromptTokens")} | ${d(row, "operatorCorrections")} |`,
+        `| ${row.workOrder} | ${d(row, "elapsedMs")} / ${row.metrics.attempts} | ${d(row, "gateMs")} | ${d(row, "readObligationCount")} / ${d(row, "readObligationBytes")} | ${d(row, "tokens")} / ${d(row, "costUsd")} | ${d(row, "declaredPromptTokens")} | ${d(row, "operatorCorrections")} | ${d(row, "operatorDirections")} |`,
     ),
     "",
     "Unavailable observations are not zero; unset ceilings are not approvals of a future limit.",
@@ -1158,7 +1673,15 @@ export function renderMeta(meta) {
     ...meta.orders.flatMap((order) =>
       order.usage.map(
         (row) =>
-          `${order.workOrder}/${row.role}: ${display(row.observation.usage.totalTokens)} tokens; USD ${display(row.observation.usage.costUsd)}; ${row.observation.source}, ${row.observation.scope}`,
+          `${order.workOrder}/${row.role}: ${display(row.observation.usage.totalTokens)} tokens; USD ${display(row.observation.usage.costUsd)}; ${row.observation.source}, ${row.observation.scope}${row.retained ? "; retained usage copy" : ""}`,
+      ),
+    ),
+    "",
+    "Usage by role (dispatch totals and their source):",
+    ...meta.orders.flatMap((order) =>
+      Object.entries(order.usageByRole ?? {}).map(
+        ([role, row]) =>
+          `${order.workOrder}/${role}: ${display(row.totalTokens)} tokens over ${display(row.dispatches)} dispatches; USD ${display(row.costUsd)}; ${row.source}`,
       ),
     ),
     ...(meta.unassignedDispatches ?? []).map(
@@ -1192,8 +1715,36 @@ export function renderMeta(meta) {
     "Systems-trap signals:",
     ...meta.orders.map(
       (row) =>
-        `${row.workOrder} journal corrections: ${row.corrections.total}; per phase ${JSON.stringify(row.corrections.byPhase)}; per unit ${JSON.stringify(row.corrections.byUnit)}; per phase/unit ${JSON.stringify(row.corrections.byPhaseAndUnit)}.`,
+        `${row.workOrder} journal corrections: ${display(row.corrections.total)}; per phase ${JSON.stringify(row.corrections.byPhase)}; per unit ${JSON.stringify(row.corrections.byUnit)}; per phase/unit ${JSON.stringify(row.corrections.byPhaseAndUnit)}; ${row.source?.journals ?? row.corrections.source}.`,
     ),
+    ...meta.orders
+      .filter((row) => row.directions)
+      .map(
+        (row) =>
+          `${row.workOrder} operator directions: ${row.directions.total}; ${
+            Object.entries(row.directions.byKind)
+              .filter(([, value]) => value)
+              .map(([key, value]) => `${key} ${value}`)
+              .join(", ") || "none recorded"
+          }; ${row.directions.source}.`,
+      ),
+    ...(meta.closedDirections?.length
+      ? [
+          `Operator directions per closed order (committed decisions and control events): ${meta.closedDirections
+            .map((row) => `${row.workOrder} ${row.total}`)
+            .join(", ")}.`,
+        ]
+      : []),
+    ...(meta.traps.find(
+      (row) => row.id === "shifting-the-burden-to-the-intervenor",
+    )?.planningCaptures?.length
+      ? [
+          `Intake captures cited per planning pass (count only): ${meta.traps
+            .find((row) => row.id === "shifting-the-burden-to-the-intervenor")
+            .planningCaptures.map((row) => `${row.date} ${row.captures}`)
+            .join("; ")}.`,
+        ]
+      : []),
     ...meta.traps.map(
       (row) =>
         `${row.id}: ${row.indicators.map((indicator) => `${indicator.metric} ${display(indicator.series.at(-1)?.value)} (Δ ${display(indicator.series.at(-1)?.delta)})`).join("; ")}; ${row.reopenCandidate ? "REOPEN CANDIDATE" : "insufficient worsening evidence"}`,

@@ -598,8 +598,13 @@ function usageRetention(root, order, inventory) {
   );
   if (snapshot.status !== 0) return "usage has no committed snapshot";
   try {
-    JSON.parse(snapshot.stdout);
-    if (copies.every((copy) => snapshot.stdout.includes(copy.sha256)))
+    // WO-170 names each carried copy in `usageCopies`; a digest elsewhere in
+    // the snapshot (a skipped copy, say) carries nothing (WO-171-D014).
+    const carried = JSON.parse(snapshot.stdout)?.usageCopies;
+    if (
+      Array.isArray(carried) &&
+      copies.every((copy) => carried.some((row) => row?.sha256 === copy.sha256))
+    )
       return null;
   } catch {
     /* A snapshot that is not JSON carries nothing. */

@@ -2249,9 +2249,18 @@ const main = async () => {
       new Date().toISOString().slice(0, 10),
     );
     const written = applyReleasePreparation(plan);
+    let snapshotLine = "";
     if (existsSync(docPath(toolRoot, "control", "budgets.json"))) {
-      const { collectMeta, renderMetaTable } = await import("./lib/meta.mjs");
+      const { collectMeta, renderMetaTable, writeOrderSnapshot } =
+        await import("./lib/meta.mjs");
       const meta = await collectMeta(toolRoot);
+      // WO-170: the order's bounded meter snapshot, from the same collection,
+      // written only where the order's session journals are.
+      const snapshot = writeOrderSnapshot(toolRoot, meta, state.workOrderId);
+      if (snapshot.written) written.push(join(toolRoot, snapshot.path));
+      snapshotLine = snapshot.reason
+        ? `Meter snapshot not written: ${snapshot.reason}.\n`
+        : `Meter snapshot: ${snapshot.path}, ${snapshot.bytes} bytes.\n`;
       const path = docPath(
         toolRoot,
         "finalReviews",
@@ -2277,7 +2286,7 @@ const main = async () => {
       }
     }
     process.stdout.write(
-      `${plan.edits.length ? `Retimed ${state.workOrderId}: ${plan.previous} → ${plan.target}.` : `${state.workOrderId} target ${plan.target} remains current.`}\n${written.length ? `Files changed:\n${written.map((path) => `  ${relative(toolRoot, path)}`).join("\n")}` : "no files changed."}\nTag observation: ${localOnly ? "local snapshot only" : "origin"}.\n`,
+      `${plan.edits.length ? `Retimed ${state.workOrderId}: ${plan.previous} → ${plan.target}.` : `${state.workOrderId} target ${plan.target} remains current.`}\n${written.length ? `Files changed:\n${written.map((path) => `  ${relative(toolRoot, path)}`).join("\n")}` : "no files changed."}\n${snapshotLine}Tag observation: ${localOnly ? "local snapshot only" : "origin"}.\n`,
     );
     return;
   }

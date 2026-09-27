@@ -69,6 +69,11 @@ import {
   writeDecisionsIndex,
   inheritedLedgerDuty,
   trapRows,
+  operatorDirections,
+  writeOrderSnapshot,
+  recoveredUsageSnapshot,
+  usageTotals,
+  SNAPSHOT_BYTES,
 } from "./lib/meta.mjs";
 import { requireLifecycleEvidence } from "./lib/lifecycle-evidence.mjs";
 import { installBeaconFixture } from "./test-beacon-fixture.mjs";
@@ -227,7 +232,946 @@ test("WO-141 meter retains only journal-derived historical correction counts", a
   const legacy = (await collectMeta(root)).orders.find(
     (row) => row.workOrder === workOrder,
   );
-  assert.equal(legacy.metrics.operatorCorrections, 0);
+  // WO-170: a count computed from no journal is unavailable, not zero.
+  assert.equal(legacy.metrics.operatorCorrections, null);
+  assert.equal(legacy.corrections.source, "unavailable");
+});
+
+function closeFixtureOrder(root, workOrder = "WO-999", extra = []) {
+  const segment = join(root, `docs/control/orders/${workOrder}.jsonl`);
+  writeFileSync(
+    segment,
+    readFileSync(segment, "utf8") +
+      [
+        { type: "ImplementationReady" },
+        { type: "VerificationRequested", verificationId: "VER-001" },
+        {
+          type: "VerificationCompleted",
+          verificationId: "VER-001",
+          verdict: "pass",
+        },
+        { type: "FinalReviewRequested", finalReviewId: "FINAL-001" },
+        {
+          type: "FinalReviewCompleted",
+          finalReviewId: "FINAL-001",
+          verdict: "pass",
+        },
+        ...extra,
+      ]
+        .map((event) =>
+          JSON.stringify({
+            schemaVersion: 1,
+            workOrderId: workOrder,
+            ...event,
+          }),
+        )
+        .join("\n") +
+      "\n",
+  );
+}
+function writeJournal(root, session, rows) {
+  const key = createHash("sha256").update(session).digest("hex");
+  write(
+    root,
+    `docs/control/local/harness/${key}.jsonl`,
+    rows.map((row) => JSON.stringify(row)).join("\n") + "\n",
+  );
+}
+function usageRow(workOrder, role, startedAt, totalTokens) {
+  return {
+    workOrder,
+    role,
+    startedAt,
+    durationMs: 1000,
+    observation: {
+      source: "claude-transcript-message-usage",
+      scope: "dispatch",
+      observedAt: startedAt,
+      usage: {
+        inputTokens: null,
+        cachedInputTokens: null,
+        cacheWriteInputTokens: null,
+        outputTokens: null,
+        reasoningOutputTokens: null,
+        totalTokens,
+        costUsd: null,
+      },
+      activity: { stepCount: 3, commandsRun: 2, source: "fixture" },
+    },
+    recordedAt: startedAt,
+  };
+}
+const jsonLines = (rows) =>
+  rows.map((row) => JSON.stringify(row)).join("\n") + "\n";
+const metaRow = async (root, workOrder = "WO-999") =>
+  (await collectMeta(root)).orders.find((row) => row.workOrder === workOrder);
+
+test("WO-170 a closed order's snapshot stands for its journals, and with neither they read unavailable", async (t) => {
+  const root = repo(t);
+  const workOrder = "WO-999";
+  closeFixtureOrder(root);
+  // After the close a checkout holds at most a later session's journal of the
+  // order (release close on main); it is not the order's record.
+  writeJournal(root, "release-close", [
+    { workOrder, role: "release-close", event: "PreToolUse", refused: true },
+    { workOrder, event: "Stop", finished: false },
+    {
+      workOrder,
+      typedEvent: "OperatorCorrectionReceived",
+      eventId: "correction:0",
+      phase: "release-close",
+    },
+    { workOrder, event: "PostToolUse", toolStep: true, commandRun: true },
+  ]);
+  // Main's own usage file holds the release-close dispatch (2 commands, 3
+  // steps); that session's activity is not the order's commands either.
+  const releaseClose = usageRow(
+    workOrder,
+    "release-close",
+    "2026-09-27T13:00:00.000Z",
+    7,
+  );
+  write(
+    root,
+    "docs/control/local/process/usage.jsonl",
+    jsonLines([releaseClose]),
+  );
+  const journalKeys = [
+    "guardRefusals",
+    "stopRefusals",
+    "operatorCorrections",
+    "commandsRun",
+    "stepCount",
+    "bytesReadIntoContext",
+    "hookRuns",
+    "authorshipSnapshots",
+  ];
+  const unobserved = await metaRow(root);
+  assert.equal(unobserved.phase, "closed");
+  for (const key of journalKeys)
+    assert.equal(unobserved.metrics[key], null, key);
+  assert.equal(unobserved.corrections.source, "unavailable");
+  assert.equal(unobserved.source.journals, "unavailable");
+  assert.equal(unobserved.metrics.operatorDirections, 0);
+  assert.equal(unobserved.metrics.tokens, 7);
+  assert.equal(
+    unobserved.dispatches.find((row) => row.role === "release-close")
+      .commandsRun,
+    null,
+  );
+  // Every closed order's directions come from committed files, in or out of
+  // the meter's five-order window.
+  assert.deepEqual(
+    (await collectMeta(root)).closedDirections.map((row) => [
+      row.workOrder,
+      row.total,
+    ]),
+    [["WO-999", 0]],
+  );
+  assert.match(
+    renderMeta(await collectMeta(root)),
+    /^Operator directions per closed order \(committed decisions and control events\): WO-999 0\.$/m,
+  );
+  const table = renderMetaTable(await collectMeta(root));
+  assert.match(
+    table,
+    /^\| WO-999 \|.*\| unavailable \(Δ unavailable\) \| 0 \(Δ unavailable\) \|$/m,
+  );
+  assert.match(
+    renderMeta(await collectMeta(root)),
+    /^WO-999 journal corrections: unavailable; .*; unavailable\.$/m,
+  );
+  const corrections = {
+    total: 2,
+    byPhase: { implementation: 2 },
+    byUnit: { unnamed: 2 },
+    byPhaseAndUnit: { implementation: { unnamed: 2 } },
+    source: "session-journal",
+  };
+  const held = {
+    guardRefusals: 3,
+    stopRefusals: 1,
+    operatorCorrections: 2,
+    commandsRun: 41,
+    stepCount: 57,
+    bytesReadIntoContext: 90210,
+    hookRuns: 12,
+    authorshipSnapshots: 4,
+  };
+  write(
+    root,
+    `docs/evidence/${workOrder}/meta.json`,
+    json({
+      schemaVersion: 1,
+      kind: "order-meter-snapshot",
+      observedAt: "2026-09-27T12:00:00.000Z",
+      orders: [
+        {
+          workOrder,
+          metrics: { ...held, readObligationBytes: 1234, tokens: 999 },
+          corrections,
+          usageByRole: {
+            executor: {
+              dispatches: 1,
+              totalTokens: 500,
+              costUsd: null,
+              commandsRun: 40,
+              stepCount: 50,
+              durationMs: 1000,
+            },
+          },
+          dispatches: [
+            {
+              role: "executor",
+              bytesReadIntoContext: 90210,
+              commandsRun: 41,
+              stepCount: 57,
+              hookRuns: 12,
+            },
+          ],
+        },
+      ],
+    }),
+  );
+  const order = await metaRow(root);
+  assert.deepEqual(
+    Object.fromEntries(journalKeys.map((key) => [key, order.metrics[key]])),
+    held,
+  );
+  assert.equal(order.metrics.readObligationBytes, 1234);
+  assert.deepEqual(order.corrections, corrections);
+  assert.equal(
+    order.source.journals,
+    "order snapshot docs/evidence/WO-999/meta.json (cutoff 2026-09-27T12:00:00.000Z)",
+  );
+  const executor = order.dispatches.find((row) => row.role === "executor");
+  assert.equal(executor.bytesReadIntoContext, 90210);
+  assert.equal(executor.commandsRun, 41);
+  assert.equal(executor.hookRuns, 12);
+  assert.equal(executor.observedTokens, 500);
+  // Usage by role outranks the snapshot's own order total: its roles plus
+  // this checkout's release-close dispatch.
+  assert.equal(order.metrics.tokens, 507);
+  assert.equal(
+    order.dispatches.find((row) => row.role === "release-close").commandsRun,
+    null,
+  );
+  // One unknown dispatch keeps the total unknown; the snapshot's order total
+  // is never the fallback once usage is read per role.
+  write(
+    root,
+    "docs/control/local/process/usage.jsonl",
+    jsonLines([
+      {
+        ...releaseClose,
+        observation: {
+          ...releaseClose.observation,
+          usage: { ...releaseClose.observation.usage, totalTokens: null },
+        },
+      },
+    ]),
+  );
+  assert.equal((await metaRow(root)).metrics.tokens, null);
+  // An earlier whole-meter row of a closed order (WO-043, WO-049, WO-126)
+  // keeps its journal values; its corrections were never journal counts.
+  write(
+    root,
+    `docs/evidence/${workOrder}/meta.json`,
+    json({
+      observedAt: "2026-09-11T00:00:00.000Z",
+      orders: [
+        {
+          workOrder,
+          metrics: {
+            operatorCorrections: 9,
+            guardRefusals: 11,
+            stopRefusals: 2,
+            bytesReadIntoContext: 999,
+            commandsRun: 5,
+            stepCount: 6,
+            gateMs: 70,
+          },
+          dispatches: [{ role: "verifier", bytesReadIntoContext: 321 }],
+        },
+      ],
+    }),
+  );
+  const legacy = await metaRow(root);
+  assert.deepEqual(
+    [
+      legacy.metrics.guardRefusals,
+      legacy.metrics.stopRefusals,
+      legacy.metrics.bytesReadIntoContext,
+      legacy.metrics.commandsRun,
+      legacy.metrics.stepCount,
+      legacy.metrics.operatorCorrections,
+    ],
+    [11, 2, 999, 5, 6, null],
+  );
+  assert.equal(
+    legacy.dispatches.find((row) => row.role === "verifier")
+      .bytesReadIntoContext,
+    321,
+  );
+  assert.equal(
+    legacy.source.journals,
+    "earlier whole-meter row docs/evidence/WO-999/meta.json (cutoff 2026-09-11T00:00:00.000Z); its corrections are not journal counts",
+  );
+  assert.deepEqual(
+    (await collectMeta(root)).costReconciliation[0].historicalMetrics.metrics
+      .gateMs,
+    70,
+  );
+  // A recovered snapshot holds usage totals only: no historical metrics, and
+  // the reconciliation line stays unknown.
+  write(
+    root,
+    `docs/evidence/${workOrder}/meta.json`,
+    json({
+      observedAt: "2026-09-27T20:55:52.554Z",
+      orders: [{ workOrder, usageByRole: {} }],
+      usageCopies: [],
+    }),
+  );
+  const recovered = await collectMeta(root);
+  assert.equal(recovered.costReconciliation[0].historicalMetrics, null);
+  assert.match(
+    renderMeta(recovered),
+    /^WO-999: promised removal: .*; observed: unknown; outcome unknown$/m,
+  );
+  // The snapshot is written only while the order is open.
+  assert.deepEqual(writeOrderSnapshot(root, recovered, workOrder), {
+    path: "docs/evidence/WO-999/meta.json",
+    written: false,
+    reason: "WO-999 is closed; its committed snapshot is its record",
+  });
+});
+
+test("WO-170 a retained usage copy supplies the order's tokens by role and names its source", async (t) => {
+  const root = repo(t);
+  const workOrder = "WO-999";
+  closeFixtureOrder(root);
+  const lane = `docs/control/local/retained/${workOrder}`;
+  write(
+    root,
+    `${lane}/process/usage.jsonl`,
+    jsonLines([
+      usageRow(workOrder, "executor", "2026-09-27T01:00:00.000Z", 100),
+      usageRow(workOrder, "executor", "2026-09-27T02:00:00.000Z", 20),
+      usageRow(workOrder, "verifier", "2026-09-27T03:00:00.000Z", 30),
+    ]),
+  );
+  // Preservation's collision name is a usage copy; another file is not.
+  write(
+    root,
+    `${lane}/process.from-WO-999/usage.jsonl`,
+    jsonLines([usageRow(workOrder, "reviewer", "2026-09-27T04:00:00.000Z", 4)]),
+  );
+  write(
+    root,
+    `${lane}/other/usage.jsonl`,
+    jsonLines([
+      usageRow(workOrder, "reviewer", "2026-09-27T05:00:00.000Z", 999),
+    ]),
+  );
+  const copies = `retained usage copy ${lane}/process.from-WO-999/usage.jsonl, ${lane}/process/usage.jsonl`;
+  const order = await metaRow(root);
+  assert.equal(order.metrics.tokens, 154);
+  assert.equal(
+    order.dispatches.find((row) => row.role === "executor").observedTokens,
+    120,
+  );
+  assert.equal(
+    order.source.usage,
+    `executor: ${copies}; verifier: ${copies}; reviewer: ${copies}`,
+  );
+  assert.deepEqual(order.usageByRole.executor, {
+    source: copies,
+    dispatches: 2,
+    totalTokens: 120,
+    costUsd: null,
+    commandsRun: 4,
+    stepCount: 6,
+    durationMs: 2000,
+  });
+  assert.match(
+    renderMeta(await collectMeta(root)),
+    /^WO-999\/executor: 120 tokens over 2 dispatches; USD unavailable; retained usage copy /m,
+  );
+  // This checkout's observation of a role, then the snapshot's totals, win
+  // over the copy for that role.
+  write(
+    root,
+    "docs/control/local/process/usage.jsonl",
+    jsonLines([
+      usageRow(workOrder, "release-close", "2026-09-27T06:00:00.000Z", 7),
+    ]),
+  );
+  write(
+    root,
+    `docs/evidence/${workOrder}/meta.json`,
+    json({
+      observedAt: "2026-09-27T05:30:00.000Z",
+      orders: [
+        {
+          workOrder,
+          usageByRole: {
+            verifier: {
+              dispatches: 1,
+              totalTokens: 31,
+              costUsd: null,
+              commandsRun: null,
+              stepCount: null,
+              durationMs: null,
+            },
+          },
+        },
+      ],
+    }),
+  );
+  const mixed = await metaRow(root);
+  assert.deepEqual(
+    Object.fromEntries(
+      Object.entries(mixed.usageByRole).map(([role, row]) => [
+        role,
+        [row.totalTokens, row.source.split(" ")[0]],
+      ]),
+    ),
+    {
+      executor: [120, "retained"],
+      verifier: [31, "order"],
+      reviewer: [4, "retained"],
+      "release-close": [7, "this"],
+    },
+  );
+  assert.equal(mixed.metrics.tokens, 162);
+  // An unknown dispatch keeps the total unknown, as for live observations.
+  write(
+    root,
+    `${lane}/process.from-WO-999/usage.jsonl`,
+    jsonLines([
+      usageRow(workOrder, "reviewer", "2026-09-27T04:00:00.000Z", null),
+    ]),
+  );
+  assert.equal((await metaRow(root)).metrics.tokens, null);
+});
+
+test("WO-170 the latest retained observation of a dispatch wins past preservation's tenth collision", async (t) => {
+  // VER-001 F1: successive observations of one dispatch, each preserved by
+  // worktree finish, land in `.from-WO-999`, `-2` … `-10`; `-10` is read
+  // before `-2`, and the older total won.
+  const source = repo(t),
+    main = repo(t);
+  const workOrder = "WO-999";
+  closeFixtureOrder(main);
+  const cutoff = "2026-09-27T21:00:00.000Z";
+  const recovered = [];
+  for (let index = 0; index <= 10; index++) {
+    const totalTokens = 100 + index * 10;
+    recordUsageObservation(source, {
+      workOrder,
+      role: "executor",
+      startedAt: "2026-09-27T01:00:00.000Z",
+      sessionKey: "a".repeat(64),
+      observation: {
+        source: "claude-transcript-message-usage",
+        scope: "dispatch",
+        observedAt: new Date(Date.parse(cutoff) + index * 1000).toISOString(),
+        usage: {
+          inputTokens: totalTokens,
+          cachedInputTokens: null,
+          cacheWriteInputTokens: null,
+          outputTokens: 0,
+          reasoningOutputTokens: null,
+          totalTokens,
+          costUsd: null,
+        },
+      },
+    });
+    reconcileWorktreeMaterial(source, main, workOrder);
+    recovered.push(recoveredUsageSnapshot(main, workOrder, null, cutoff));
+  }
+  const lane = `docs/control/local/retained/${workOrder}`;
+  assert.ok(existsSync(join(main, lane, "process/usage.jsonl.from-WO-999-10")));
+  assert.deepEqual(
+    recovered.map((row) => row.orders[0].usageByRole.executor.totalTokens),
+    [100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200],
+  );
+  // Every copy is certified, and none holds an observation newer than the one
+  // the snapshot carries.
+  const last = recovered.at(-1);
+  assert.equal(last.usageCopies.length, 11);
+  assert.equal(last.uncarriedCopies, undefined);
+  assert.equal(last.orders[0].usageByRole.executor.dispatches, 1);
+  const order = await metaRow(main);
+  assert.equal(order.metrics.tokens, 200);
+  assert.match(order.usageByRole.executor.source, /^retained usage copy /);
+  // Read order still decides nothing: a dispatch's rows reversed across two
+  // copies, and an undated row, do not displace the latest dated observation.
+  for (const name of readdirSync(join(main, lane, "process")))
+    rmSync(join(main, lane, "process", name));
+  const row = (total, recordedAt) => ({
+    ...usageRow(workOrder, "verifier", "2026-09-27T02:00:00.000Z", total),
+    recordedAt,
+  });
+  write(
+    main,
+    `${lane}/process/usage.jsonl.from-WO-999-10`,
+    jsonLines([row(30, "2026-09-27T03:00:00.000Z")]),
+  );
+  write(
+    main,
+    `${lane}/process/usage.jsonl.from-WO-999-2`,
+    jsonLines([row(20, "2026-09-27T02:30:00.000Z"), row(5, undefined)]),
+  );
+  assert.equal(
+    recoveredUsageSnapshot(main, workOrder, null, cutoff).orders[0].usageByRole
+      .verifier.totalTokens,
+    30,
+  );
+  assert.equal((await metaRow(main)).metrics.tokens, 30);
+});
+
+test("WO-170 operator directions equal a hand count of committed decisions and off-ramp events", async (t) => {
+  const root = repo(t);
+  const decision = (id, dispatch) =>
+    `## ${id}\n\n\`\`\`json\n${json({
+      id,
+      date: "2026-09-27",
+      dispatch,
+      decision: "Fixture decision.",
+      evidence: ["fixture"],
+      rejected: [],
+      reopenWhen: "never",
+    })}\`\`\`\n`;
+  write(
+    root,
+    "docs/evidence/WO-999/decisions.md",
+    `# WO-999 decisions\n\n${[
+      decision("WO-999-D001", "resume: next"),
+      decision("WO-999-D002", "scope expand: add the second fixture"),
+      decision("WO-999-D003", "scope expand: merge main in"),
+      decision("WO-999-D004", "operator override: recover the checkpoint"),
+    ].join("\n")}`,
+  );
+  const segment = join(root, "docs/control/orders/WO-999.jsonl");
+  writeFileSync(
+    segment,
+    readFileSync(segment, "utf8") +
+      JSON.stringify({
+        schemaVersion: 1,
+        workOrderId: "WO-999",
+        type: "RecordCorrected",
+        subject: { ordinal: 1 },
+        fields: { checkpointRef: "refs/dotln/checkpoint/WO-999/2" },
+        reason: "fixture correction",
+        actor: {
+          harness: "claude-code",
+          harnessVersion: "fixture",
+          model: "fixture",
+          effort: "xhigh",
+          source: "operator-attested",
+        },
+      }) +
+      "\n",
+  );
+  write(
+    root,
+    "docs/control/orders/WO-998.jsonl",
+    JSON.stringify({
+      schemaVersion: 1,
+      type: "WorkOrderActivated",
+      workOrderId: "WO-998",
+      workOrderPath: "docs/work-orders/WO-998-fixture.md",
+      recordedAt: "2026-09-09T00:00:00.000Z",
+    }) + "\n",
+  );
+  const meta = await collectMeta(root);
+  const order = meta.orders.find((row) => row.workOrder === "WO-999");
+  assert.equal(order.metrics.operatorDirections, 4);
+  assert.deepEqual(order.directions, {
+    total: 4,
+    byKind: {
+      scopeExpand: 2,
+      operatorOverride: 1,
+      analysis: 0,
+      conversationOnly: 0,
+      operatorLabel: 0,
+      OperatorOverrideRecorded: 0,
+      RecordCorrected: 1,
+      CriterionWaived: 0,
+    },
+    source: "committed decision dispatches and control events",
+  });
+  const none = meta.orders.find((row) => row.workOrder === "WO-998");
+  assert.equal(none.metrics.operatorDirections, 0);
+  assert.equal(none.directions.total, 0);
+  const table = renderMetaTable(meta);
+  assert.match(table, /\| Corrections \| Directions \|$/m);
+  assert.match(table, /^\| WO-999 \|.*\| 4 \(Δ [^)]*\) \|$/m);
+  assert.match(table, /^\| WO-998 \|.*\| 0 \(Δ [^)]*\) \|$/m);
+  assert.match(
+    renderMeta(meta),
+    /^WO-999 operator directions: 4; scopeExpand 2, operatorOverride 1, RecordCorrected 1; committed decision dispatches and control events\.$/m,
+  );
+  const trap = meta.traps.find(
+    (row) => row.id === "shifting-the-burden-to-the-intervenor",
+  );
+  assert.deepEqual(
+    Object.fromEntries(
+      trap.indicators
+        .find((row) => row.metric === "operatorDirections")
+        .series.map((row) => [row.workOrder, row.value]),
+    ),
+    { "WO-998": 0, "WO-999": 4 },
+  );
+  assert.equal(
+    trap.directions.find((row) => row.workOrder === "WO-999").total,
+    4,
+  );
+  // Records filed before the docs check count when they begin with
+  // "operator", in either case, except a lifecycle "Operator resume:" that
+  // names no direction.
+  assert.deepEqual(
+    operatorDirections(
+      [
+        "Operator correction during resume: fixture",
+        "operator question during resume: fixture",
+        "operator, 2026-09-20: fixture",
+        "Operator resume: next; fixture",
+        "Operator resume: fix and scope expand: fixture",
+        "Operator resume: next; same-session direction to use judgment",
+        "Operator's resume",
+        "resume: next",
+        "planning: fixture",
+        "operatorless: fixture",
+      ].map((dispatch) => ({ dispatch })),
+      [{ type: "CriterionWaived" }, { type: "WorkOrderWithdrawn" }],
+    ).byKind,
+    {
+      scopeExpand: 0,
+      operatorOverride: 0,
+      analysis: 0,
+      conversationOnly: 0,
+      operatorLabel: 5,
+      OperatorOverrideRecorded: 0,
+      RecordCorrected: 0,
+      CriterionWaived: 1,
+    },
+  );
+  // Intake captures are counted per ledger planning pass, never per order.
+  write(
+    root,
+    "docs/lineage/idea-ledger.md",
+    "# Ledger\n\n## 2026-09-27 — Planning pass: fixture\n\nSource: `docs/intake/notes/a.md` and `docs/intake/notes/b.md`; again docs/intake/notes/a.md.\n\n```md\n## 2026-09-28 — Planning pass: a fenced example\n```\n\n## 2026-09-26 — Ideation: not a pass\n\n`docs/intake/notes/c.md`\n",
+  );
+  assert.deepEqual(
+    (await collectMeta(root)).traps
+      .find((row) => row.id === "shifting-the-burden-to-the-intervenor")
+      .planningCaptures.map(({ date, captures }) => [date, captures]),
+    [["2026-09-27", 2]],
+  );
+});
+
+test("WO-170 the order's snapshot is its own bounded row, written only where its journals are", async (t) => {
+  const root = repo(t);
+  const workOrder = "WO-999";
+  const path = "docs/evidence/WO-999/meta.json";
+  assert.deepEqual(
+    writeOrderSnapshot(root, await collectMeta(root), workOrder),
+    {
+      path,
+      written: false,
+      reason: "this checkout holds no session journal of WO-999",
+    },
+  );
+  assert.equal(existsSync(join(root, path)), false);
+  // The heaviest row the meter can hold: six roles with every per-role value
+  // observed and two dozen named correction units across three phases.
+  const roles = [
+    "executor",
+    "verifier",
+    "reviewer",
+    "release-close",
+    "planner",
+    "refuter",
+  ];
+  const rows = [];
+  for (const role of roles) {
+    rows.push({ workOrder, role, event: "SessionStart" });
+    for (let index = 0; index < 4; index++)
+      rows.push({
+        workOrder,
+        role,
+        event: "PostToolUse",
+        toolStep: true,
+        commandRun: true,
+        byteReads: [{ startByte: 0, endByte: 123456 }],
+        hookTiming: { durationMs: 12.345 },
+        authorship: { durationMs: 1234, files: 12, bytes: 123456, commands: 3 },
+      });
+    rows.push({ workOrder, role, event: "PreToolUse", refused: true });
+  }
+  for (let index = 0; index < 24; index++)
+    rows.push({
+      workOrder,
+      typedEvent: "OperatorCorrectionReceived",
+      eventId: `correction:${index}`,
+      phase: ["implementation", "verification", "finalReview"][index % 3],
+      units: [`fixture-correction-unit-${String(index).padStart(2, "0")}`],
+    });
+  writeJournal(root, "heavy", rows);
+  write(
+    root,
+    "docs/control/local/process/usage.jsonl",
+    jsonLines(
+      roles.map((role, index) =>
+        usageRow(workOrder, role, `2026-09-27T0${index}:00:00.000Z`, 123456789),
+      ),
+    ),
+  );
+  const meta = await collectMeta(root);
+  const result = writeOrderSnapshot(root, meta, workOrder);
+  assert.equal(result.written, true, result.reason);
+  assert.ok(result.bytes <= SNAPSHOT_BYTES, `${result.bytes} bytes`);
+  const text = readFileSync(join(root, path), "utf8");
+  assert.equal(Buffer.byteLength(text), result.bytes);
+  const snapshot = JSON.parse(text);
+  const row = meta.orders.find((value) => value.workOrder === workOrder);
+  assert.equal(snapshot.kind, "order-meter-snapshot");
+  assert.equal(snapshot.observedAt, meta.observedAt);
+  assert.match(snapshot.source, /^the order's checkout: 1 session journal, /);
+  assert.deepEqual(
+    snapshot.orders.map((value) => value.workOrder),
+    [workOrder],
+  );
+  const [own] = snapshot.orders;
+  assert.deepEqual(own.metrics, row.metrics);
+  assert.deepEqual(own.corrections, row.corrections);
+  assert.deepEqual(own.directions, row.directions);
+  assert.equal(own.metrics.operatorCorrections, 24);
+  assert.equal(own.metrics.guardRefusals, 6);
+  assert.deepEqual(Object.keys(own.usageByRole), roles);
+  assert.equal(own.usageByRole.refuter.source, undefined);
+  assert.deepEqual(
+    own.dispatches.map((value) => value.role),
+    roles,
+  );
+  // The snapshot reads back as the order's row where the journals are gone.
+  rmSync(join(root, "docs/control/local"), { recursive: true, force: true });
+  closeFixtureOrder(root);
+  const reread = await metaRow(root);
+  for (const key of [
+    "guardRefusals",
+    "stopRefusals",
+    "operatorCorrections",
+    "commandsRun",
+    "bytesReadIntoContext",
+    "tokens",
+  ])
+    assert.equal(reread.metrics[key], row.metrics[key], key);
+  // A later observation replaces the file; meta --write writes the same row,
+  // with the same conditions.
+  const { metaMain } = await import("./meta.mjs");
+  const quiet = async (args) => {
+    const log = console.log;
+    console.log = () => {};
+    try {
+      return await metaMain(args, root);
+    } finally {
+      console.log = log;
+    }
+  };
+  await assert.rejects(
+    quiet(["--write", path]),
+    /^Error: Meter snapshot not written: WO-999 is closed; its committed snapshot is its record$/,
+  );
+  const segment = join(root, "docs/control/orders/WO-999.jsonl");
+  writeFileSync(
+    segment,
+    readFileSync(segment, "utf8").split("\n").slice(0, 1).join("\n") + "\n",
+  );
+  await assert.rejects(
+    quiet(["--write", path]),
+    /^Error: Meter snapshot not written: this checkout holds no session journal of WO-999$/,
+  );
+  writeJournal(root, "later", rows.slice(0, 3));
+  await quiet(["--write", path]);
+  const later = JSON.parse(readFileSync(join(root, path), "utf8"));
+  assert.equal(later.orders[0].metrics.operatorCorrections, 0);
+  assert.equal(later.orders.length, 1);
+});
+
+test("WO-170 a retained lane is read without following links or failing on a torn line", async (t) => {
+  const root = repo(t);
+  const workOrder = "WO-999";
+  closeFixtureOrder(root);
+  const lane = `docs/control/local/retained/${workOrder}`;
+  write(
+    root,
+    `${lane}/process/usage.jsonl`,
+    jsonLines([
+      usageRow(workOrder, "executor", "2026-09-27T01:00:00.000Z", 100),
+    ]) + '{"workOrder":"WO-999","ro',
+  );
+  // A link out of the lane, to a directory holding a usage copy, is not read.
+  write(
+    root,
+    "outside/process/usage.jsonl",
+    jsonLines([
+      usageRow(workOrder, "verifier", "2026-09-27T02:00:00.000Z", 5000),
+    ]),
+  );
+  symlinkSync(join(root, "outside"), join(root, lane, "linked"));
+  const order = await metaRow(root);
+  assert.deepEqual(Object.keys(order.usageByRole), ["executor"]);
+  assert.equal(order.metrics.tokens, 100);
+  assert.equal(
+    order.usageByRole.executor.source,
+    `retained usage copy ${lane}/process/usage.jsonl (1 unreadable line skipped)`,
+  );
+});
+
+test("WO-170 recovery carries usage totals by role and each retained copy's digest, keeping a whole-meter row", async (t) => {
+  const main = repo(t);
+  const now = "2026-09-27T21:00:00.000Z";
+  const first = jsonLines([
+    usageRow("WO-997", "executor", "2026-09-20T01:00:00.000Z", 100),
+    usageRow("WO-997", "verifier", "2026-09-20T02:00:00.000Z", 50),
+    usageRow("WO-997", "verifier", "2026-09-20T03:00:00.000Z", 5),
+  ]);
+  write(main, "docs/control/local/retained/WO-997/process/usage.jsonl", first);
+  const digest = (text) => createHash("sha256").update(text).digest("hex");
+  const recovered = recoveredUsageSnapshot(main, "WO-997", null, now);
+  assert.deepEqual(recovered, {
+    schemaVersion: 1,
+    kind: "order-meter-snapshot",
+    observedAt: now,
+    revision: null,
+    source: "retained usage copies in the main checkout's lane",
+    orders: [
+      {
+        workOrder: "WO-997",
+        usageByRole: {
+          executor: {
+            dispatches: 1,
+            totalTokens: 100,
+            costUsd: null,
+            commandsRun: 2,
+            stepCount: 3,
+            durationMs: 1000,
+          },
+          verifier: {
+            dispatches: 2,
+            totalTokens: 55,
+            costUsd: null,
+            commandsRun: 4,
+            stepCount: 6,
+            durationMs: 2000,
+          },
+        },
+      },
+    ],
+    usageCopies: [
+      { path: "process/usage.jsonl", sha256: digest(first), rows: 3 },
+    ],
+  });
+  assert.equal(recoveredUsageSnapshot(main, "WO-990", null, now), null);
+  // A whole-meter snapshot keeps the order's own row, without other orders,
+  // deltas or unobserved dispatch values, and gains the recovered totals.
+  const second = jsonLines([
+    usageRow("WO-996", "reviewer", "2026-09-20T04:00:00.000Z", 7),
+  ]);
+  write(main, "docs/control/local/retained/WO-996/process/usage.jsonl", first);
+  write(
+    main,
+    "docs/control/local/retained/WO-996/process.from-WO-995/usage.jsonl",
+    second,
+  );
+  const prior = {
+    schemaVersion: 1,
+    observedAt: "2026-09-10T00:00:00.000Z",
+    revision: "a".repeat(40),
+    orders: [
+      {
+        workOrder: "WO-996",
+        phase: "final-review",
+        metrics: { gateMs: 5, tokens: 1 },
+        dispatches: [
+          { role: "executor", commandsRun: 3, stepCount: null, delta: {} },
+          { role: "planner", commandsRun: null },
+        ],
+        usage: [{ role: "executor" }],
+        coldStart: [{ role: "executor", bytes: 1 }],
+        sizes: { "CLAUDE.md": 1 },
+        declared: { hooks: 9 },
+        delta: {},
+      },
+      { workOrder: "WO-995", metrics: {} },
+    ],
+    budgets: [],
+  };
+  const kept = recoveredUsageSnapshot(main, "WO-996", prior, now);
+  assert.equal(kept.observedAt, prior.observedAt);
+  assert.equal(kept.revision, prior.revision);
+  assert.deepEqual(kept.usageRecovered, {
+    observedAt: now,
+    source: "retained usage copies in the main checkout's lane",
+  });
+  assert.deepEqual(kept.orders, [
+    {
+      workOrder: "WO-996",
+      phase: "final-review",
+      metrics: { gateMs: 5, tokens: 1 },
+      usageByRole: {
+        reviewer: {
+          dispatches: 1,
+          totalTokens: 7,
+          costUsd: null,
+          commandsRun: 2,
+          stepCount: 3,
+          durationMs: 1000,
+        },
+      },
+      dispatches: [{ role: "executor", commandsRun: 3 }],
+      declared: { hooks: 9 },
+    },
+  ]);
+  // A copy holding rows the snapshot does not carry (another order's, as in
+  // WO-067's lane, or an unreadable line) is listed without its digest, so the
+  // prune keeps its lane.
+  assert.deepEqual(
+    kept.usageCopies.map(({ path, sha256 }) => [path, sha256]),
+    [["process.from-WO-995/usage.jsonl", digest(second)]],
+  );
+  assert.deepEqual(kept.uncarriedCopies, [
+    { path: "process/usage.jsonl", rows: 3, carriedRows: 0 },
+  ]);
+  write(
+    main,
+    "docs/control/local/retained/WO-994/process/usage.jsonl",
+    jsonLines([usageRow("WO-994", "executor", "2026-09-20T06:00:00.000Z", 9)]) +
+      '{"workOrder":"WO-994","ro',
+  );
+  const torn = recoveredUsageSnapshot(main, "WO-994", null, now);
+  assert.equal(torn.orders[0].usageByRole.executor.totalTokens, 9);
+  assert.deepEqual(torn.usageCopies, []);
+  assert.deepEqual(torn.uncarriedCopies, [
+    { path: "process/usage.jsonl", rows: 2, carriedRows: 1 },
+  ]);
+  assert.equal(
+    usageTotals([
+      usageRow("WO-996", "planner", "2026-09-20T05:00:00.000Z", 1),
+      {
+        ...usageRow("WO-996", "planner", "x", 2),
+        observation: {
+          ...usageRow("WO-996", "planner", "x", 2).observation,
+          scope: "session-cumulative",
+        },
+      },
+    ]).planner.totalTokens,
+    1,
+  );
 });
 const json = (value) => JSON.stringify(value, null, 2) + "\n";
 const write = (root, path, value) => {
