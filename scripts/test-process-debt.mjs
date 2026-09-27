@@ -7916,10 +7916,16 @@ test("WO-131 prompt submission stays open while dispatches retain the ordinary c
   assert.equal(writerDenied.permissionDecision, "deny");
   const contended = prompt("contender", "resume: verify");
   assert.equal(contended.decision, undefined);
+  // Each hook reads the reservation's age from its own clock, so a second
+  // boundary between the two calls changes that one field (WO-168 VER-001 F3).
+  // The pattern below still requires an age in the delivered reason.
+  const ageless = (text) =>
+    text.replace(/; age \d+ seconds\./g, "; age <seconds> seconds.");
   assert.ok(
-    contended.hookSpecificOutput.additionalContext.includes(
-      writerDenied.permissionDecisionReason,
+    ageless(contended.hookSpecificOutput.additionalContext).includes(
+      ageless(writerDenied.permissionDecisionReason),
     ),
+    `${writerDenied.permissionDecisionReason}\n---\n${contended.hookSpecificOutput.additionalContext}`,
   );
   assert.match(
     contended.hookSpecificOutput.additionalContext,
