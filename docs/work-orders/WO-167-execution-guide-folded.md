@@ -21,8 +21,10 @@ Wall-clock, tokens and context bytes are unknown until run.
 **Nomination provenance:** the operator's 2026-09-25 item 4 ("all adds,
 ballooning in size, AI slop"), measured by the standard pass: the guide is
 181,458 bytes and 2,531 lines, 1,933 at WO-090's close five days earlier;
-32 dated paragraphs; nine candidates. Planner-synthesized. Opaque
-identifier, not a priority. Clean-room screen: no stop condition.
+32 dated paragraphs; nine candidates; criterion 2's proof named by the
+2026-09-27 pass (WO-085 D016, register row FUP-40f361277410f64f).
+Planner-synthesized. Opaque identifier, not a priority. Clean-room screen:
+no stop condition.
 **Depends on:** WO-085 merged (the check that keeps the fold from regrowing
 and the ceiling this order lowers).
 **Recommended placement:** paired with WO-086 directly after WO-162 and
@@ -49,9 +51,13 @@ subject; its 32 dated paragraphs and nine `Candidate —` headings at
 (every `Read:` anchor into the guide); `docs/publication/` (index rows);
 `docs/planning/work-order-map.md` (the candidates sections); the WO-090
 order and its FINAL-001 (the earlier cut and what it kept);
-`docs/planning/followups.md`; the
+`docs/planning/followups.md`; `scripts/lib/harness-context.mjs`
+(`readDirectives`, `sectionRange`: the strict resolution of each skill's
+selectors) with `docs/evidence/WO-085/decisions.md` D016; the
 [2026-09-25 standard-pass planning document](../planning/standard-pass-2026-09-25.md)
-§5.
+§5; the
+[2026-09-27 planning document](../planning/onesie-twosie-followup-drain-2026-09-27.md)
+§6.
 
 **Objective:** a reader of the execution guide meets each rule once, in
 the sentence where it applies, with a citation to its rationale; the
@@ -96,7 +102,7 @@ it there.
   source missing); the executor's own deferrals name current public rows
   before the move (receipt 029, finding 3).
 - Record the before and after line and byte counts and lower 07's ceiling
-  to the after count.
+  to the after count plus two per cent.
 - **Declined alternatives, recorded:** a second cut of sections into other
   documents (WO-090 did the move; the residue is inline amendments);
   folding every product document in one order (one document per order so
@@ -110,24 +116,41 @@ reconciliation; the ceiling; the count record.
 
 1. Zero dated bold paragraphs and zero `Candidate —` headings remain in
    product 07 (the WO-085 check's baseline for 07 is emptied); the fold
-   table lists all 32 paragraphs, and the verifier checks every row's
-   rule against its sentence and records the count checked.
+   table, filed at `docs/evidence/WO-167/fold-table.md`, lists all 32
+   paragraphs, each with the sentence that now carries its rule and a
+   bracketed citation that keeps the paragraph's date; the verification
+   report carries the verifier's own row for every paragraph (the
+   paragraph, the sentence, and whether the rule is unchanged), not a
+   count.
 2. Every heading cited by a role skill, a queued order's `Cites` line or
    the publication index resolves after the fold; the nine index rows for
-   the moved candidates are gone or retargeted; `check-publication` and
-   the docs check report zero broken anchors.
+   the moved candidates are gone or retargeted. The proof for the role
+   skills and the instruction file is `node scripts/harness-context.mjs
+   --check`, which resolves every `Read:` selector strictly and fails
+   with "Unresolved required section" on a moved heading; the docs check
+   scans Markdown links in root and configured-document files only and
+   reads the skills' inline-code citations as nothing, so it proves the
+   links and `check-publication` the index rows (WO-085 D016). All three
+   report zero failures. No check reads a queued order's `Cites` line, so
+   the executor records the list of product 07 headings that queued
+   orders cite, before and after the fold, and retargets in the same
+   change each citation of a heading that moved to the map.
 3. The register carries each moved candidate as a duplicate of its map
    row with history retained, through nine recorded `--apply` requests;
    pending counts recorded before and after.
 4. Product 07's byte count is recorded before and after and its ceiling
-   lowered to the after count; the publication locks are refreshed.
+   lowered to the counted bytes at landing plus two per cent, the rule
+   every other product document's entry follows, so the next order's
+   in-place sentence fits; the planning map's byte count is recorded
+   before and after; the publication locks are refreshed.
 5. Write-backs land: ledger entry; `docs/README.md` where it points at a
    moved candidate.
 6. `npm test` and `npm run test:docs` green; `git diff --check` clean; no
    new dependency.
 
-**Evidence gate:** the diff; the anchor list before and after; the register
-counts; `npm run test:docs`; `npm test` at final review. No live row.
+**Evidence gate:** the diff; the anchor list before and after;
+`node scripts/harness-context.mjs --check`; the register counts;
+`npm run test:docs`; `npm test` at final review. No live row.
 
 **Write-back duty:** as listed in criteria 4 and 5.
 

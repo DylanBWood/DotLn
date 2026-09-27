@@ -298,7 +298,8 @@ hand-authored commit messages continue to use plain subjects.
 
 The summary leads with the resulting behavior and why it matters. Include the
 validation result and any limitation or migration a reviewer needs to act on;
-link the full evidence. Optimize for accuracy, clarity, and useful substance.
+link the full evidence with paths relative to the stored body file, the form
+the document gate resolves. Optimize for accuracy, clarity, and useful substance.
 Scale detail to the change: complex behavior and consequential tradeoffs may
 need several paragraphs or grouped explanations. There is no sentence quota,
 and shortening the text must not remove what the reviewer needs. Remove repeated claims,

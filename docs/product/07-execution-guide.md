@@ -1118,6 +1118,9 @@ Preconditions and inputs:
 3. Equip Beware of Naive Interventionism and Do Nothing: every candidate the
    pass declines is recorded as a NoOp with its evidence and reversal
    condition, in the `NoOpIntent` shape, so a later pass sees what was weighed.
+   A standard pass files an order only for a reopening condition that has
+   occurred or an operator direction, and disposes every other row it reads
+   ([2026-09-27 pass](../planning/onesie-twosie-followup-drain-2026-09-27.md#13-the-operators-answer-decisions-made-under-delegation)).
 4. `ideation:` entries in the same dispatch run the complete ideation pipeline
    first; their synthesis is planning input.
 
@@ -1257,7 +1260,11 @@ Standard artifacts, all doc-only:
   registered evidence source (`scripts/lib/evidence-sources.mjs`) names the
   deterministic re-mint of each edition whose check it stales (WO-152 D004:
   `evidenceSourceContent` normalizes component release labels away, so a
-  version-only bump never makes an edition stale);
+  version-only bump never makes an edition stale); an order that edits a
+  declared source of a machinery suite (`machinerySources` in
+  `scripts/test-runner.mjs`) names `npm test -- --review` in its final
+  criterion, so the suites its change selects run before verification
+  (WO-144 D010);
 - product-doc write-back for durable understanding, with the publication
   index and edition locks repaired in the same pass;
 - `npm run meta -- --plan-cost` refreshes the bounded, subject-hashed cost

@@ -22,23 +22,31 @@ rule. Removes: 545 lines of 06 §Release boundary (20 machine-written
 component-integration paragraphs, two forward-retiming sections) and the
 per-order growth of two paragraphs; the retiming vocabulary from the
 surfaces a reader meets first (06, README, product 07's integration
-sentence, CLAUDE.md's shared-memory line, edited by the 2026-09-25 pass).
-Re-mints: none (`scripts/release.mjs` and `scripts/lib/release-preparation.mjs`
-are not registered evidence sources). Wall-clock, tokens and context bytes
-are unknown until run.
+sentence, CLAUDE.md's shared-memory line, edited by the 2026-09-25 pass);
+the docs check's unconditional exemption of 06 §Release boundary
+(`scripts/docs-check.mjs` `productContent`; lines 21–857 and 63,183 bytes
+at `4c34b332`), replaced by the one registered marker pair of the
+generated table (WO-085 D009 O3; D015 V2 and V7).
+Re-mints: none (`scripts/release.mjs`, `scripts/lib/release-preparation.mjs`
+and `scripts/docs-check.mjs` are not registered evidence sources).
+Wall-clock, tokens and context bytes are unknown until run.
 **Nomination provenance:** WO-035's release-history item, cut into a
 bounded child at the operator's 2026-09-08 correction; held 2026-09-19
 until WO-079 landed, which it did on 2026-09-20 (`worktree integrate`);
 rewritten by the 2026-09-25 standard pass at the operator's item 3
 ("release retiming phrases everywhere in docs; makes me decentivized from
-doing parallel work orders"). Planner-synthesized draft. Opaque identifier,
-not a priority. Clean-room screen: no stop condition.
+doing parallel work orders"); amended by the 2026-09-27 pass with the
+docs check's exemption retirement and the corrected ceiling statement,
+which WO-085's verifications boarded for planning (register rows
+FUP-a6b9c4dc86ac8995 and FUP-040634d583e2c517). Planner-synthesized draft.
+Opaque identifier, not a priority. Clean-room screen: no stop condition.
 **Depends on:** WO-164 merged (it edits `scripts/release.mjs` `list`, whose
 per-tag cache this order's `--markdown` reads); WO-160 merged (the last
 `release.mjs` edit; closed, v0.51.0).
 **Recommended placement:** paired with WO-167 directly after WO-162 and
 WO-163. This order edits `scripts/release.mjs`,
-`scripts/lib/release-preparation.mjs`, products 06 and 10, the README and
+`scripts/lib/release-preparation.mjs`, `scripts/docs-check.mjs` (the
+exemption), products 06 and 10, the README, `docs/README.md` and
 one sentence of product 07; WO-167 edits product 07's body and the map.
 The one product 07 sentence is named so the pair's integration is a
 one-line union. WO-087 follows (both edit 06). A recommendation, not a
@@ -66,9 +74,14 @@ dependency token.
 (line 120, the collision note; the README and roadmap writes); product 07
 §Independent workflows and integration (the 2026-09-16 checklist and the
 2026-09-17 amendment); `npm run worktree -- integrate` (the draft
-integration decision it writes); the
+integration decision it writes); `scripts/docs-check.mjs`
+(`productContent`: the Release boundary range and the comment that no
+generator owns a marked product block) with
+`docs/evidence/WO-085/decisions.md` D009 (O3) and D015 (V2, V7); the
 [2026-09-25 standard-pass planning document](../planning/standard-pass-2026-09-25.md)
-§4.
+§4; the
+[2026-09-27 planning document](../planning/onesie-twosie-followup-drain-2026-09-27.md)
+§6.
 
 **Objective:** the tag is the record and the roadmap shows it as a
 generated table; a version collision between two lanes is recorded once,
@@ -94,9 +107,18 @@ verbatim in one receipt.
 **Design (scope discipline):**
 
 - The table is generated from local annotated tags joined to the orders
-  their messages name; unpublished staging appears in no table.
-- Markers in 06 (and 10 where it lists axes) are checked as the README
-  block is; a stale table fails the document gate.
+  their manifests name, as the work-order index's local release evidence
+  is; the order's heading supplies display text only, so a heading that
+  carries no version still joins. Unpublished staging appears in no
+  table.
+- Markers in 06 (and 10 where it lists axes) are checked by the index's
+  rule: the committed table carries the snapshot of the tags it was
+  generated from, the check requires each recorded tag to remain
+  available and unchanged and the rows to equal those tags' rows, and a
+  newer local tag is reported without refusing. A sibling lane that
+  publishes a tag therefore cannot turn this worktree's document gate
+  red; a checkout that lacks a recorded tag is refused with the tag's
+  name, as the index check refuses it today.
 - `release prepare`: at activation, the target goes into the activation
   event and the order heading (as today) and nowhere else; at a
   collision, the helper appends the integration decision record with the
@@ -107,6 +129,13 @@ verbatim in one receipt.
   one-line pointer where the section stood.
 - Product 07 §Independent workflows: the sentence naming "a dated roadmap
   note" becomes "the integration decision"; the mechanism text stays.
+- The docs check stops exempting 06 §Release boundary by its heading.
+  The generated table's marker pair is registered by product path and
+  marker name as the one block the check exempts from the byte count and
+  from receipt and candidate detection; a marker pair nobody registered,
+  and a Release boundary whose terminating heading was demoted or
+  quoted, exempt nothing. `docs/README.md`'s sentence about the exemption
+  and the unregistered markers is edited in place.
 - Failure path: when the collision's decision cannot be appended (the
   integrate helper's decision stub meets an authored conflict,
   `worktree-integration.mjs`; receipt 029, WO-086 finding), `release
@@ -119,22 +148,39 @@ verbatim in one receipt.
   observation); editing the index generator; deleting the notes.
 
 **Deliverables:** the emitter; the markers and check; the receipt; the
-`release prepare` change; the write-backs below.
+`release prepare` change; the docs check's registered exemption; the
+write-backs below.
 
 **Acceptance criteria (all required)**
 
-1. The generated table equals the local annotated tags joined to their
-   orders (a fixture compares it with `release list`); the marker check
-   refuses a stale table.
+1. The generated table equals the recorded tags joined to their orders
+   through the tags' manifests (a fixture compares it with `release
+   list`, and one order in the fixture has a heading with no version).
+   The marker check refuses a table whose rows differ from its recorded
+   tags, passes with a report when a newer local tag exists, and names a
+   recorded tag the checkout lacks.
 2. The retired notes are byte-identical in the receipt file (hash recorded
    in the decisions).
-3. A fixture collision through `release prepare` appends the integration
-   decision and changes no product document or README line beyond the
-   version claim; a fixture with a conflicted decisions record refuses
-   with the path and writes nothing.
+3. A fixture collision through `release prepare` and the integrate helper
+   yields exactly one integration decision in the order's decisions
+   record, with the superseded and new targets and the baseline, and
+   changes no product document or README line beyond the version claim;
+   a fixture with a conflicted decisions record refuses with the path and
+   writes nothing.
 4. Write-backs land: 06 and 10 (the markers and pointer), the README block,
-   the product 07 sentence, ledger entry; publication locks; product 06's
-   ceiling in `doc-ceilings.json` lowered to its new size.
+   the product 07 sentence, `docs/README.md`'s exemption sentence, ledger
+   entry; publication locks. The docs check exempts the registered
+   generated block and nothing else in 06: a fixture with an unregistered
+   marker pair and one with a demoted terminating heading each report the
+   receipt, the candidate and the bytes inside. Product 06 holds no
+   collision-retiming, activation-completion or forward-retiming
+   paragraph outside the generated markers, and the docs check's
+   baseline for 06 holds no receipt shape under Release boundary. Product
+   06's counted bytes are recorded before and after; its entry in
+   `doc-ceilings.json` equals the counted bytes at landing plus two per
+   cent and does not exceed its entry at the order's base. The 63,183
+   bytes the heading exemption excluded were never counted, so the
+   ceiling does not fall by them (WO-085 D009 O3).
 5. `npm test` and `npm run test:docs` green; `git diff --check` clean; no
    new dependency.
 
@@ -144,7 +190,11 @@ at final review. No live row.
 **Write-back duty:** as listed in criterion 4.
 
 **Non-goals:** the roadmap's candidate sections (WO-087); version
-assignment at publication (map candidate); component version policy;
+assignment at publication, which would remove the collision itself but
+changes the activation event, the heading rule, `check-surfaces` and
+every role text (map candidate; this order is the smaller probe, and a
+collision that still needs a hand step after it reopens that candidate);
+component version policy;
 rewriting any final review, verification or decision that mentions a
 retime.
 

@@ -126,15 +126,37 @@ hard edge inside a pair; only WO-166 re-mints. WO-088 and WO-089 stay last
 under their 2026-09-19 holds. Evidence:
 [the standard-pass planning document](standard-pass-2026-09-25.md) §7 and §8.
 
-<!-- dotln-work-order-sequence:start -->
-- WO-070 — Beacon portability
-- WO-115 — Console parity contract
+Onesie-twosie pass (2026-09-27): five closed entries leave (WO-070, WO-115,
+WO-166, WO-085, WO-165). The operator asked for at most two small orders,
+in parallel and next: WO-168 (the session scratch directory exists when
+printed; the boarded hook, grant, live-gate and Codex dispatch defects;
+the standing writer sentences) pairs with WO-169 (the follow-up feed shows
+pending rows to the order that opens their seam, exports and batch-applies;
+the integrate helper's record; the configuration-root suite's sources) at
+the head. Disjoint surfaces, no hard edge; only WO-168 re-mints. WO-164
+takes a one-entry slot after them: WO-165 closed, and it edits
+`scripts/resume.mjs` as WO-168 does, so it follows WO-168's close and may
+run beside WO-162 or WO-163. No other pair is recut. Evidence:
+[the planning document](onesie-twosie-followup-drain-2026-09-27.md) §5 and §7.
 
-- WO-166 — Session boundaries
-- WO-085 — Product documents stop accreting
+Operator answer (2026-09-27, second judgment): the operator delegated the
+pass's open decisions and admitted later orders. Two are filed. WO-171 (a
+prune apply plans once and finishes) pairs with WO-164 in the second slot:
+disjoint files, no hard edge, neither re-mints. WO-170 (the meter keeps a
+bounded per-order snapshot, recovers retained usage and counts the
+operator's directions) takes a one-entry slot after them, because it
+shares `release.mjs` with WO-164, and before WO-086. The four orders of
+the first judgment are repaired against receipt 031. Evidence:
+[the planning document](onesie-twosie-followup-drain-2026-09-27.md) §12 to §15.
+
+<!-- dotln-work-order-sequence:start -->
+- WO-168 — A printed path exists
+- WO-169 — Follow-ups reach their seam
 
 - WO-164 — Constant-process console collection
-- WO-165 — Entropy review route agreement
+- WO-171 — Prune apply finishes
+
+- WO-170 — The meter keeps what sessions observed
 
 - WO-162 — In-unit helper reuse
 - WO-163 — 5S Sort and Set in order

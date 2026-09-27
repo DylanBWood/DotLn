@@ -40,6 +40,131 @@ are now declared above. The [decision record](../evidence/WO-084/decisions.md)
 records the legacy ledger write-back; `node scripts/lineage.mjs index` generates
 the index and `index --check` enforces this rule in `npm run test:docs`.
 
+## 2026-09-27 — Planning pass: operator answer (decisions delegated; WO-170 and WO-171 filed; receipt 031's findings repaired)
+
+Source: the operator's answer to the pass's first report, captured
+verbatim in the sibling intake note
+(`docs/intake/notes/2026-09-27-onesie-twosie-followup-drain-planning-followup.md`,
+SHA-256 `d69ea33f5c0ebb394ce2ae9d5f83b4e27e5e8ee597aadd0b77752cb28c90b5c3`):
+push and open the pull request when done; for the decisions reported as
+the operator's, make the best call, including later orders beyond the
+two, and cite the reasons. Inputs: receipt 031
+(`2026-09-27-planning-e4deffba4add0aff-031`, aligned with findings, no
+hold, fifteen known issues); one read-only survey of 22 stored-data
+lanes, with the rows relied on re-measured by the planner; the meter, the
+prune and the release-preparation sources at `4c34b332`. Clean-room
+screen: no stop condition. The record is
+[the planning document](../planning/onesie-twosie-followup-drain-2026-09-27.md)
+§12 to §16.
+
+- **Repair the orders before an executor meets the defect** `adopted`
+  - Twelve of receipt 031's fifteen findings name defects in the order
+    text: WO-168's objective claimed a universal its own fixture table
+    contradicts, left an absent granted root unspecified and counted its
+    sentences three ways; WO-169's advisory gave the rows to a session
+    with no rule for them; WO-086's table made the document gate depend
+    on tag refs outside the tree and pinned no removal; WO-167 lowered
+    the guide's ceiling to zero headroom and proved a count, not a
+    comparison. Each is repaired and judged again.
+- **The meter keeps what an order's sessions observed** `adopted`
+  - Journals leave with the worktree and the per-order snapshot that
+    would keep their summary has not been written since WO-126, so twelve
+    of fourteen trap series are null or a false zero for the last five
+    orders. WO-170 writes a bounded snapshot while the journals exist,
+    reads the retained usage copies and recovers their totals once.
+    Provenance: operator-directed (the 2026-09-25 nomination).
+- **The operator's directions are counted** `adopted`
+  - The decision records hold 32 operator-direction dispatches and the
+    meter counts none of them; WO-170 adds the series per closed order,
+    from the public record only. It is the mission's own measure.
+- **A prune apply finishes** `adopted`
+  - The apply re-plans before every deletion; one plan takes 64 s with
+    186 candidates, the last apply log reads exit 143, and 5.5 GB is
+    listed unpruned. WO-171 plans once, observes publication once and
+    keeps a lane whose usage copy has no committed snapshot.
+- **Consume before produce for standard passes** `adopted`
+  - Product 07's planning procedure now says a standard pass files an
+    order only for a reopening condition that has occurred or an operator
+    direction. Decided under the operator's delegation.
+- **The stored-data inventory, run by hand** `adopted`
+  - 22 lanes against three questions (a counter reads it; a pass or
+    review consumed it; a decision cites it). The generator is not filed:
+    a hand inventory is the smaller probe. `deferred` for the generator;
+    reopen when a second pass wants the same table.
+- **Gate rows outlive the failure output they cite** `deferred`
+  - 234 of 257 output references in the main checkout's index do not
+    resolve. Reopen: someone needs a failure log that is gone.
+- **A gate marker with no birth observation never expires** `deferred`
+  - Reopen: a refusal for a live gate while no gate runs, or the next
+    order that edits the gate evidence module.
+- **The register has no flow counter** `deferred`
+  - Reopen: two passes in a row end with more pending rows than they
+    began with.
+- **Product candidates wait on product orders, not on more planning** `adopted`
+  - Intent declaration's stranger test, Additional Opinion, Context
+    Continuity, the budget-window ladders and model-input exposure plans
+    are each deferred to the queued product order that reopens it, with
+    a note on that order's catalog row. Receipts by identity and edition
+    retention are deferred with measured thresholds; pruning evidence is
+    declined.
+
+## 2026-09-27 — Planning pass: onesie-twosie, the follow-up queue drained (WO-168, WO-169; WO-086 and WO-167 amended)
+
+Source: the operator's dispatch, captured verbatim in ignored intake
+(`docs/intake/notes/2026-09-27-onesie-twosie-followup-drain-planning.md`,
+SHA-256 `5c01f978f3257f7fc87936301983d9ec74ada82f3c246f8270e79e197dbb8a05`):
+a small pass that drains the follow-up queue and fixes small nagging
+issues, at most two work orders, in parallel and next, one or none being
+acceptable. Inputs: the register's 155 pending rows, read whole; the
+decisions, verifications and final reviews of WO-070, WO-115, WO-165,
+WO-085 and WO-166; the harness, runner, integrate-helper and feed sources
+at `4c34b332`; first-parent history since each deferral. Clean-room
+screen: no stop condition. The record is
+[the planning document](../planning/onesie-twosie-followup-drain-2026-09-27.md).
+
+- **A printed path exists** `adopted`
+  - The harness prints a session scratch path at every role dispatch and
+    nothing creates the directory; a final review lost a gate to it
+    (WO-166 D015) and the operator directed that a session never write to
+    a scratch directory that does not exist. WO-168 creates it wherever it
+    is printed and carries the boarded defects of the same seam: a granted
+    root that follows a symlink, the override exit withheld by an input
+    refusal, listed reads refused for their arguments during a live gate,
+    a refused Codex dispatch that keeps its reservation, and three
+    sentences that understate what WO-166 shipped. Provenance:
+    operator-directed.
+- **Follow-ups reach the order that opens their seam** `adopted`
+  - Fifty-seven deferred rows wait for an order's activation or for "the
+    next order that edits" a file, and nothing shows a row to that order:
+    four seams were opened by nine closed orders with eight rows
+    untouched. WO-169 adds `followups --touching` and a completion
+    advisory, the export and batch apply that replace the scripts each
+    pass rewrites, and three small corrections (the integrate helper's
+    record and ordering, the configuration-root suite's sources, the
+    meter's unset label).
+- **An order that edits a machinery source names the review gate** `adopted`
+  - Product 07's planning procedure gains the clause in place; WO-168 and
+    WO-169 are the first orders under it. Source: WO-144 D010 and the
+    machinery failures WO-085 and WO-166 met at a repair's review gate.
+- **Queued orders are amended where a verification boarded a planning decision** `adopted`
+  - WO-086 retires the docs check's heading exemption for one registered
+    generated block and restates the roadmap's ceiling from its counted
+    bytes; WO-167's criterion 2 names the harness-context check as the
+    proof for the skills' citations (WO-085 D009, D015 and D016).
+- **Changed machinery suites in the plain product gate** `deferred`
+  - Map candidate 4 of the pass; the planning rule is the smaller probe.
+    Reopen: an order whose criterion named the review gate still meets a
+    machinery failure first at final review.
+- **Programs the live gate refuses** `deferred`
+  - Map candidate 5; each program needs a bounded option vocabulary.
+    Reopen: a session loses more than one command to the same unlisted
+    program in one gate window.
+- **A reopening condition that occurred is recorded open** `adopted`
+  - Nine rows outside the pass's category (five product candidates, the
+    stored-data inventory, receipts by identity, retention of
+    never-current editions) are recorded open with their evidence instead
+    of left deferred on a condition already met.
+
 ## 2026-09-25 — Planning pass: second judgment (receipt 029's findings repaired in the five orders; three nominations)
 
 Source: receipt 029 (`2026-09-25-planning-8f567de659b31991-029`, aligned
