@@ -276,6 +276,27 @@ function command(root, program, args) {
   return result.stdout;
 }
 
+// `release prepare` prints sentences and an indented file list on separate
+// lines; the record holds them as one line closed by one full stop. A listed
+// path keeps its own bytes; only a sentence gives up its full stop.
+export function releaseLine(message) {
+  const sentences = [];
+  for (const line of message
+    .split(/\r\n?|[\n\u2028\u2029]/)
+    .filter((line) => line.trim())) {
+    const last = sentences.at(-1);
+    if (/^\s/.test(line) && last) last.items.push(line.trim());
+    else sentences.push({ text: line.trim(), items: [] });
+  }
+  return `${sentences
+    .map(({ text, items }) =>
+      items.length
+        ? `${text} ${items.join(", ")}`
+        : text.replace(/[.\s]+$/, ""),
+    )
+    .join(". ")}.`;
+}
+
 function decisionStub(root, receipt) {
   const path = docRelative(
     root,
@@ -320,7 +341,7 @@ function decisionStub(root, receipt) {
 Fetched main: \`${receipt.upstream}\`. Checkpoint: \`${receipt.checkpointRef}\`.
 Named stash retained: ${receipt.stash ? `\`${receipt.stash}\` (${receipt.stashName})` : "none needed (clean tree)"}.
 Resolved projections: ${receipt.resolved.join(", ") || "none"}.
-Release preparation: ${receipt.release ?? "pending"}.
+Release preparation: ${releaseLine(receipt.release || "pending")}
 Carried-forward claims: **reviewer to complete; no acceptance judgment recorded**.
 Authored conflicts observed: ${receipt.authored.join(", ") || "none"}.
 Affected checks are printed by the command; results remain untested until executed.\n`,
@@ -719,10 +740,17 @@ export async function integrateWorktree(root, workOrder, args = []) {
       ...(receipt.untrackedConflicts ?? []),
     ]),
   ];
+  // Generation over conflict markers is provisional and its `Regenerated:`
+  // lines mislead (WO-138 D011), so it waits until none remains.
+  const unresolved = [
+    ...new Set([...conflicts(root), ...(receipt.untrackedConflicts ?? [])]),
+  ];
   const pending =
-    receipt.stage === "applied"
-      ? regenerate(root, receipt)
-      : ["stash apply and generation await authored merge resolution"];
+    receipt.stage !== "applied"
+      ? ["stash apply and generation await authored merge resolution"]
+      : unresolved.length
+        ? ["generation awaits authored conflict resolution and --continue"]
+        : regenerate(root, receipt);
   if (!pending.length && receipt.resolved.length)
     runGit(root, ["add", "--", ...receipt.resolved]);
   const remaining = [
@@ -741,19 +769,24 @@ export async function integrateWorktree(root, workOrder, args = []) {
     console.log(
       `Untracked stash collisions require explicit resolution; original bytes remain at ${receipt.stash}^3. Stage the chosen content and use --continue to acknowledge the resolution.`,
     );
+  // The affected checks and the draft decision describe the generated tree,
+  // so a pass that held generation leaves them to the one that runs it.
+  if (receipt.stage !== "applied" || unresolved.length) {
+    console.log(
+      `Resolve authored conflicts explicitly, git add resolved paths, then run npm run worktree -- integrate ${workOrder} --continue; the completing pass prints the affected checks and writes the draft decision. No lifecycle event or acceptance result was appended.`,
+    );
+    return receipt;
+  }
   console.log(
     `Affected checks (not run):\n  ${await integrationTestCommand(root, receipt.before)}\n  npm run publication:check\n  node scripts/harness.mjs check\n  npm run release -- check-surfaces --local`,
   );
   console.log(
     "Reviewer: complete the integration decision's carried-forward claims; assess component-version collisions and changed evidence inputs. No lifecycle event or acceptance result was appended.",
   );
-  if (!receipt.complete)
-    console.log(
-      `Resolve authored conflicts explicitly, git add resolved paths, then run npm run worktree -- integrate ${workOrder} --continue`,
-    );
-  else
-    console.log(
-      "Integration mechanics complete. Preservation and merge identities are in the receipt; recovery refs and stash retained.",
-    );
+  console.log(
+    receipt.complete
+      ? "Integration mechanics complete. Preservation and merge identities are in the receipt; recovery refs and stash retained."
+      : `Generation ran and left the pending steps above; repair their cause, then run npm run worktree -- integrate ${workOrder} --continue`,
+  );
   return receipt;
 }
