@@ -53,7 +53,10 @@ had gone through all the older queued orders, whose text may be out of
 date; then corrections of the pass for shifting work onto the operator,
 the rule that a live feedback episode on either of two named
 configurations needs no authorization, and the refutation's model and
-time limit. Inputs: the control logs
+time limit; and, after the subject was committed, the resume, the push
+authorization and the override exit, captured in the sibling note
+`docs/intake/notes/2026-09-28-standard-pass-planning-2.md` (SHA-256
+`b22b91496572ddbb946849f3ac037b633d74ab8f12f8bc77a812a34e7e14b7b2`). Inputs: the control logs
 (961 events in 95 segments, 158 in the older log) and the 96 reports they
 record as failed, read whole by eight read-only surveys; the 928
 structured decisions, the 56 corrections among them read by the planner;
@@ -156,6 +159,12 @@ and [the failure inventory](../planning/failure-inventory-2026-09-28.md).
     the operator's own fork stays the operator's, with a fallback. The
     pass had routed such steps to the operator and was corrected for
     shifting the burden to the intervenor. Provenance: operator-directed.
+- **Independent review: receipt 033** `adopted`
+  - The operator's own refute dispatch, on GPT-6 Astra at `max` with the
+    transport's twenty-minute limit removed, judged the sequence and all
+    41 orders: aligned-with-findings, no hold, fourteen known issues, each
+    a constructible case carried to its order's catalog row. Provenance:
+    operator-directed.
 - **Whether the live feedback audit earns its place** `deferred`
   - 92 live feedback verifications in 56 orders since WO-011; all 368
     verdicts are pass, and the deterministic regressions already run each

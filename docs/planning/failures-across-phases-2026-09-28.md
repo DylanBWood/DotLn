@@ -736,10 +736,17 @@ any export; a stranger to the session can read either.
 - Model: the operator set Claude Fable 5.1 at maximum effort for the
   pass and switched the session to Claude Opus 5.5 during it (first
   observed at 13:46:51Z on 2026-09-28, when the fifth order survey had
-  stopped on the Fable 5.1 usage limit after writing its result). The
-  eight report surveys and the five order surveys ran on Fable 5.1; the
-  five drafting agents were started on Opus. The refuter's model is
-  recorded in §17.
+  stopped on the Fable 5.1 usage limit after writing its result), then
+  back to Fable 5.1 at maximum effort when the pass resumed after the
+  refutation. The eight report surveys and the five order surveys ran on
+  Fable 5.1; the five drafting agents were started on Opus. The refuter's
+  configuration is recorded in §17.
+- Usage at the pause, by the harness readback of this session:
+  206,297,462 tokens (732,096 output, the rest mostly cached reads); the
+  five drafting agents 3,362,369 tokens and 1,314 tool uses. The refute
+  session's own counter read 90,605 tokens at its entry measurement, by
+  its notes. Subagents observed: 19 of the cap of 20, one child unlinked
+  and unaccounted for. The figures at handoff are in the response.
 - Counts were made by throwaway scripts in session scratch over the
   control logs, the decisions and the register's export; WO-172 replaces
   them.
@@ -762,11 +769,39 @@ any export; a stranger to the session can read either.
 
 ## 17. Independent review
 
-At the operator's direction the pass's one refutation runs on GPT-6
-Astra at `max` with no time limit, in a `planning: refute` dispatch the
-operator opens after this subject is committed. The external transport
-could not serve it: its twenty-minute deadline is a constant
-(`PLAN_REFUTATION_LIMITS` in
-`packages/skeleton/src/plan-refutation-protocol.ts`) that a planning
-pass cannot change. The receipt, its verdict and the dispositions of its
-findings are recorded here when this pass resumes.
+Receipt 033 (`2026-09-28-planning-9d6f7cc5cb3b7647-033`) judged the
+committed subject at `a89d2deb`: the sequence and all 41 orders. Verdict
+**aligned-with-findings**: 27 orders aligned, 14 aligned with one known
+issue each, no hold; the local-terms list was present. The refuter ran in
+the operator's own `planning: refute` dispatch under an operator
+override that removed the transport's twenty-minute deadline; the
+operator attests the configuration as Codex GPT-6 Astra at `max`, and the
+receipt itself records model and effort as unknown, since a direct
+session reports none. Dispatch to file took 771,413 ms. The refuter's
+statement says it read the canonical prompt whole and nothing else.
+
+The override belongs to that session: this session was never in override
+mode, and the operator's later `operator override: off` here found
+ordinary workflow mode. No `OperatorOverrideRecorded` event exists for it,
+because the record command is order-scoped and a planning pass has no
+order; the refute session's own notes record the override and its reason.
+
+The fourteen known issues, each a constructible case with a reopening
+observation and none an observed failure, are carried onto the orders'
+catalog rows in the map, where the executor reads them at activation. No
+order is edited after the judgment, so the receipt stands on the judged
+bytes. In summary: WO-173, gate reuse at one code identity may miss an
+input outside that identity; WO-066, one round per item does not bound a
+loop that keeps receiving new items; WO-058, an expected console error
+would be an adverse witness; WO-062, the bundle has no field for an
+omitted item; WO-123, a kill between an external effect and its durable
+receipt; WO-075, a fork actor's required gates without package source;
+WO-073, an existing registration without a profile; WO-077, a retained
+modified kit file beside a rewritten manifest; WO-113, the dependency
+refusal's advice conflicts with the new check; WO-082, the collision
+reads broader than the gap's rule; WO-097, a retired rule under the Codex
+profile where hooks do not fire; WO-098, counts that move while role load
+rises; WO-088, the seven-phrase list against the guide's four off-ramp
+rows; WO-089, one latest level per id across independent scopes. Two of
+them are the planner's own: WO-113's retained refusal advice and WO-082's
+collision wording were both flagged by the surveys and left as they were.
