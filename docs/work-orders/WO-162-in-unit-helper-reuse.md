@@ -1,4 +1,4 @@
-# WO-162 — Reduce, reuse, recycle inside the scripts unit: seventeen local Git wrappers become calls to the library's `runGit`, the fixture writer and pretty-JSON helpers get one home, the receipt helpers `entropy-review.mjs` cloned from `plan-receipts.mjs` are shared, the named JSON readers use `paths.mjs`, the bare-hex digest gets its own exported name, and the compiler exports the two normalizers `compile.ts` re-declares (version assigned at activation)
+# WO-162 — Reduce, reuse, recycle inside the scripts unit: seventeen local Git wrappers become calls to the library's `runGit`, the fixture writer and pretty-JSON helpers get one home, the receipt helpers `entropy-review.mjs` cloned from `plan-receipts.mjs` are shared, the named JSON readers use `paths.mjs`, the bare-hex digest gets its own exported name, and the compiler exports the two normalizers `compile.ts` re-declares (v0.52.10)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
@@ -152,15 +152,23 @@ regression; the divergence decisions.
 4. The five named JSON readers call `paths.mjs`; every asserted error
    message still matches.
 5. Every fixture tree's recorded digests and every fixture output are
-   byte-identical before and after (the regression diffs them);
-   `sha256Hex` is exported and the eight copies are gone.
+   byte-identical before and after (the regression diffs them), except
+   four console self-host files that follow the compiler label the
+   changed compiler source requires, under the operator’s 2026-09-27
+   amendment (WO-162-D012): `packages/console/fixtures/expected/selfhost.html`,
+   `selfhost.json` and `selfhost.txt` record the feedback policy hash, and
+   `packages/console/fixtures/manifest.json` records the matching feedback
+   edition and its maturity digest; `sha256Hex` is exported and the
+   eight copies are gone.
 6. `compile.ts` no longer declares `compareText` or `orderedUnique`; the
    compiler's fixture hashes are unchanged.
 7. One decision per divergence, naming the dependent callers; any latent
    defect found is a named follow-up.
 8. The authority edition re-mints deterministically; `npm test` and
    `npm run test:docs` green; `git diff --check` clean; no new dependency;
-   the diff touches no file WO-163 names.
+   helper-only overlap with files WO-163 names is permitted under the
+   operator’s 2026-09-27 authorization (WO-162-D003); its moves and
+   retirements remain in WO-163.
 
 **Evidence gate:** the regression transcript; the before/after digest
 comparison; `npm test` at final review. No live row.
@@ -178,3 +186,28 @@ any behavior change; the generated hooks' inlined helpers; the
    in three or more files; two-line wrappers duplicated twice are left.
 2. A latent defect found while deciding a divergence becomes a follow-up
    row, not a repair inside this order.
+
+## Execution scope clarification — 2026-09-27
+
+The operator authorized continuing WO-162 with limited helper-only overlap
+with WO-163 in separate worktrees. The original disjoint-file premise was
+incorrect: the required adopters include files WO-163 also names. Final review
+integrates those edits; this order does not perform WO-163’s moves or
+retirements. Decision: [WO-162-D003](../evidence/WO-162/decisions.md#wo-162-d003).
+
+## Execution amendment — 2026-09-27 (criterion 5)
+
+VER-001 found criterion 5 unmet as written. Criterion 6 changes registered
+compiler source, so the release gates require the compiler label to move from
+`0.19.3` to `0.19.4`. The feedback policy hash includes that label. The three
+expected console self-host outputs record that hash, and the console fixture
+manifest records the matching feedback edition and its maturity digest.
+Criteria 5 and 6 could not both hold. During `resume: fix` the operator chose
+to amend criterion 5: those four files may follow the required label; every
+other fixture path and recorded digest stays byte-identical. The same
+four-file exception qualifies the byte-identical wording in the release
+classification, the objective and the Design's digest bullet, whose text is
+unchanged. The stored-fixture comparison is
+`docs/evidence/WO-162/compare-fixtures.mjs`; the regression compares helper
+outputs at fixed inputs. The helper refactor contributes no fixture
+difference. Decision: [WO-162-D012](../evidence/WO-162/decisions.md#wo-162-d012).
