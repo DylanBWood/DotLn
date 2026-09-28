@@ -20,6 +20,14 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-167 activation completion (2026-09-28):** assigned application `v0.52.11`,
+the next patch above the observed local `v0.52.10` tag. Product 07's dated
+amendment paragraphs are folded into the sentences they amend with bracketed
+citations, its nine candidates move to the planning map under their slugs, and
+its ceiling falls from 188,399 to 157,212 bytes. Documentation only; no
+component version changes.
+Independent verification, final review and publication remain separate dispatches.
+
 **WO-162 activation completion (2026-09-27):** assigned application `v0.52.9`,
 the next patch above the observed local `v0.52.8` tag. Repeated Git, fixture,
 JSON, receipt and digest helpers share implementations inside scripts, and the

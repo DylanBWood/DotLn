@@ -3227,6 +3227,13 @@
           "title": "Candidate — planner startup context",
           "summary": "## Candidate — planner startup context Operator steering during WO-126 identifies excessive context needed to learn the repository's purpose and choose the next work. First measure what the bounded follow-up feed removes. Compare the remaining required reads, context bytes, commands and wall-clock with a short purpose brief and scoped retrieval of candidate authorities. The feed may discharge the candidate-selection part; do not duplicate that implementation or assume it solves orientation to the product. Preserve scope, sources and rejection reasons while reducing reading. Reopen in a planning pass if observed startup still requires broad document loads; settle this candidate with measured ",
           "missing": false
+        },
+        {
+          "hash": null,
+          "ref": "docs/product/07-execution-guide.md#candidate--planner-startup-context",
+          "title": "Candidate — planner startup context",
+          "summary": "## Candidate — planner startup context Operator steering during WO-126 identifies excessive context needed to learn the repository's purpose and choose the next work. First measure what the bounded follow-up feed removes. Compare the remaining required reads, context bytes, commands and wall-clock with a short purpose brief and scoped retrieval of candidate authorities. The feed may discharge the candidate-selection part; do not duplicate that implementation or assume it solves orientation to the product. Preserve scope, sources and rejection reasons while reducing reading. Reopen in a planning pass if observed startup still requires broad document loads; settle this candidate with measured ",
+          "missing": true
         }
       ],
       "dispositions": [
@@ -3309,6 +3316,16 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-28T14:59:04.596Z"
+        },
+        {
+          "sourceRevision": 7,
+          "status": "duplicate",
+          "reason": "WO-167 moved product 07 §Candidate — planner startup context to the planning map under the same slug (docs/planning/work-order-map.md#candidate--planner-startup-context); its dated leads became bracketed citations, its links and references to product 07 were rebased, and its text is otherwise unchanged. FUP-6d91d100269519d7 is the map row and carries the candidate. This row's last disposition was open at revision 6, reopen: none (open); the pass that triages FUP-6d91d100269519d7 carries it. [WO-167, 2026-09-28]",
+          "reopenWhen": "docs/planning/work-order-map.md §Candidate — planner startup context is removed, renamed or returned to a product document",
+          "targets": [
+            "FUP-6d91d100269519d7"
+          ],
+          "at": "2026-09-28T16:12:50.106Z"
         }
       ]
     },
@@ -3952,6 +3969,13 @@
           "title": "Candidate — recurring review of implementation alternatives",
           "summary": "## Candidate — recurring review of implementation alternatives The operator's 2026-09-09 ideation during WO-126 asks for useful alternatives to surface routinely, automatically or periodically, without depending on an operator first objecting to a dependency. The build comparison is the concrete case: questioning the Python prerequisite exposed a cheaper Node-only method, with a different publication guarantee that the operator explicitly selected. The general opportunity is to question the method while preserving the purpose. Avoid treating either dependency avoidance or the fastest measurement as the answer in advance. Candidate entry points are a new dependency or process step, measured c",
           "missing": false
+        },
+        {
+          "hash": null,
+          "ref": "docs/product/07-execution-guide.md#candidate--recurring-review-of-implementation-alternatives",
+          "title": "Candidate — recurring review of implementation alternatives",
+          "summary": "## Candidate — recurring review of implementation alternatives The operator's 2026-09-09 ideation during WO-126 asks for useful alternatives to surface routinely, automatically or periodically, without depending on an operator first objecting to a dependency. The build comparison is the concrete case: questioning the Python prerequisite exposed a cheaper Node-only method, with a different publication guarantee that the operator explicitly selected. The general opportunity is to question the method while preserving the purpose. Avoid treating either dependency avoidance or the fastest measurement as the answer in advance. Candidate entry points are a new dependency or process step, measured c",
+          "missing": true
         }
       ],
       "dispositions": [
@@ -3962,6 +3986,16 @@
           "reopenWhen": "observations can distinguish missed opportunities from redundant review",
           "targets": [],
           "at": "2026-09-19T01:19:58.486Z"
+        },
+        {
+          "sourceRevision": 4,
+          "status": "duplicate",
+          "reason": "WO-167 moved product 07 §Candidate — recurring review of implementation alternatives to the planning map under the same slug (docs/planning/work-order-map.md#candidate--recurring-review-of-implementation-alternatives); its dated leads became bracketed citations, its links and references to product 07 were rebased, and its text is otherwise unchanged. FUP-19cd701c25446383 is the map row and carries the candidate. This row's last disposition was deferred at revision 3, reopen: observations can distinguish missed opportunities from redundant review; the pass that triages FUP-19cd701c25446383 carries it. [WO-167, 2026-09-28]",
+          "reopenWhen": "docs/planning/work-order-map.md §Candidate — recurring review of implementation alternatives is removed, renamed or returned to a product document",
+          "targets": [
+            "FUP-19cd701c25446383"
+          ],
+          "at": "2026-09-28T16:12:50.137Z"
         }
       ]
     },
@@ -4090,6 +4124,13 @@
         },
         {
           "hash": "1d7656c04386eb58280ae7618719e7848e3105b738629afba527abfb915291ee",
+          "ref": "docs/product/05-pattern-library.md#candidate--tinkerer--scientist",
+          "title": "Candidate — Tinkerer / Scientist",
+          "summary": "## Candidate — Tinkerer / Scientist **Near-term planning request, 2026-09-11:** the operator asks to prioritize this candidate soon, including its adaptive bad-luck protection based on time since the last demonstrated application improvement. It remains unimplemented and unallocated. The operator explicitly excludes implementing it in the current WO-043 repair. Carry the request through existing `FUP-fc4158d3207e495d`; the next planning pass should select a bounded experiment and allocation, preserving the budget, evidence and reset distinctions below. Source: the [WO-043 breakout](../evidence/WO-043/ideation-commands-and-usage.md). **Allocated 2026-09-19 (second planning pass of that day).*",
+          "missing": false
+        },
+        {
+          "hash": "52256d13d3a557e8754a10fbd14fcbdb6a116240f00c7d558266d03250bd13aa",
           "ref": "docs/product/05-pattern-library.md#candidate--tinkerer--scientist",
           "title": "Candidate — Tinkerer / Scientist",
           "summary": "## Candidate — Tinkerer / Scientist **Near-term planning request, 2026-09-11:** the operator asks to prioritize this candidate soon, including its adaptive bad-luck protection based on time since the last demonstrated application improvement. It remains unimplemented and unallocated. The operator explicitly excludes implementing it in the current WO-043 repair. Carry the request through existing `FUP-fc4158d3207e495d`; the next planning pass should select a bounded experiment and allocation, preserving the budget, evidence and reset distinctions below. Source: the [WO-043 breakout](../evidence/WO-043/ideation-commands-and-usage.md). **Allocated 2026-09-19 (second planning pass of that day).*",
@@ -5600,6 +5641,13 @@
           "title": "Candidate — cold-gate structural cuts",
           "summary": "## Candidate — cold-gate structural cuts The 2026-09-12 planning pass declined to allocate the structural cuts that the relayed proof-carrying-gates plan proposed for the one fresh full gate, because their benefit is unmeasured until the gate's critical path is recorded. The 2026-09-12T16:08Z fresh gate ran 475 s of wall-clock over 1,229 s of task time: the two exclusive suites held it at concurrency one for 206 s, and perfect packing over the cap of four would take 307 s. WO-128 records each task's concurrent peers in the gate row; that trace is the entry evidence for this candidate. WO-128's [first accepted shared row](../evidence/WO-128/shared-series-002.json) now supplies that evidence: ",
           "missing": false
+        },
+        {
+          "hash": null,
+          "ref": "docs/product/07-execution-guide.md#candidate--cold-gate-structural-cuts",
+          "title": "Candidate — cold-gate structural cuts",
+          "summary": "## Candidate — cold-gate structural cuts The 2026-09-12 planning pass declined to allocate the structural cuts that the relayed proof-carrying-gates plan proposed for the one fresh full gate, because their benefit is unmeasured until the gate's critical path is recorded. The 2026-09-12T16:08Z fresh gate ran 475 s of wall-clock over 1,229 s of task time: the two exclusive suites held it at concurrency one for 206 s, and perfect packing over the cap of four would take 307 s. WO-128 records each task's concurrent peers in the gate row; that trace is the entry evidence for this candidate. WO-128's [first accepted shared row](../evidence/WO-128/shared-series-002.json) now supplies that evidence: ",
+          "missing": true
         }
       ],
       "dispositions": [
@@ -5686,6 +5734,16 @@
           "reopenWhen": "after WO-173 closes an order still pays more than four product gate runs, or the plain product gate exceeds six minutes fresh",
           "targets": [],
           "at": "2026-09-28T14:59:04.918Z"
+        },
+        {
+          "sourceRevision": 15,
+          "status": "duplicate",
+          "reason": "WO-167 moved product 07 §Candidate — cold-gate structural cuts to the planning map under the same slug (docs/planning/work-order-map.md#candidate--cold-gate-structural-cuts); its dated leads became bracketed citations, its links and references to product 07 were rebased, and its text is otherwise unchanged. FUP-e96221b106cd136a is the map row and carries the candidate. This row's last disposition was deferred at revision 14, reopen: after WO-173 closes an order still pays more than four product gate runs, or the plain product gate exceeds six minutes fresh; the pass that triages FUP-e96221b106cd136a carries it. [WO-167, 2026-09-28]",
+          "reopenWhen": "docs/planning/work-order-map.md §Candidate — cold-gate structural cuts is removed, renamed or returned to a product document",
+          "targets": [
+            "FUP-e96221b106cd136a"
+          ],
+          "at": "2026-09-28T16:12:50.168Z"
         }
       ]
     },
@@ -5707,6 +5765,13 @@
           "title": "Candidate — refutation pass worth its cost",
           "summary": "## Candidate — refutation pass worth its cost The 2026-09-12 planning pass paid three direct-session refutations of one subject, all holds: 2,454 s, 833 s and 333 s of recorded dispatch-to-file, and more of operator wall-clock, with the third hold overridden by the operator as a known issue. The holds were logically valid counterexamples to contract wording; none changed the platform the orders build. The operator's direction is recorded: the point is to create a platform, not to prove every constructible case before filing, and the refutation pass must be made worth its cost before a later pass pays it again. The next planning pass measures the refuter's yield against its cost from the rece",
           "missing": false
+        },
+        {
+          "hash": null,
+          "ref": "docs/product/07-execution-guide.md#candidate--refutation-pass-worth-its-cost",
+          "title": "Candidate — refutation pass worth its cost",
+          "summary": "## Candidate — refutation pass worth its cost The 2026-09-12 planning pass paid three direct-session refutations of one subject, all holds: 2,454 s, 833 s and 333 s of recorded dispatch-to-file, and more of operator wall-clock, with the third hold overridden by the operator as a known issue. The holds were logically valid counterexamples to contract wording; none changed the platform the orders build. The operator's direction is recorded: the point is to create a platform, not to prove every constructible case before filing, and the refutation pass must be made worth its cost before a later pass pays it again. The next planning pass measures the refuter's yield against its cost from the rece",
+          "missing": true
         }
       ],
       "dispositions": [
@@ -5727,6 +5792,16 @@
             "WO-132"
           ],
           "at": "2026-09-15T05:10:10.793Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "duplicate",
+          "reason": "WO-167 moved product 07 §Candidate — refutation pass worth its cost to the planning map under the same slug (docs/planning/work-order-map.md#candidate--refutation-pass-worth-its-cost); its dated leads became bracketed citations, its links and references to product 07 were rebased, and its text is otherwise unchanged. FUP-5eaeb603b228f581 is the map row and carries the candidate. This row's last disposition was allocated at revision 2 (WO-132), reopen: The goal review passes an order the operator later names misaligned, or WO-132 closes without criterion 11; the pass that triages FUP-5eaeb603b228f581 carries it. [WO-167, 2026-09-28]",
+          "reopenWhen": "docs/planning/work-order-map.md §Candidate — refutation pass worth its cost is removed, renamed or returned to a product document",
+          "targets": [
+            "FUP-5eaeb603b228f581"
+          ],
+          "at": "2026-09-28T16:12:50.197Z"
         }
       ]
     },
@@ -8416,6 +8491,13 @@
           "title": "Candidate — follow-up register settlement",
           "summary": "## Candidate — follow-up register settlement The register holds 297 entries with 283 untriaged (2026-09-16). Two mechanisms fill it: the migration harvested every historical candidate heading and NoOp bullet as a pending row, and every per-order decision record is harvested as a follow-up although a decision with a `reopenWhen` observation is a record, not an action. Three planning passes have selected nothing from the feed. A later pass may spend one session settling the migration rows as historical, and may change the collector so a decision record enters the feed only when its reopening observation has been recorded. No order is allocated; reopen at a planning pass that has the session to",
           "missing": false
+        },
+        {
+          "hash": null,
+          "ref": "docs/product/07-execution-guide.md#candidate--follow-up-register-settlement",
+          "title": "Candidate — follow-up register settlement",
+          "summary": "## Candidate — follow-up register settlement The register holds 297 entries with 283 untriaged (2026-09-16). Two mechanisms fill it: the migration harvested every historical candidate heading and NoOp bullet as a pending row, and every per-order decision record is harvested as a follow-up although a decision with a `reopenWhen` observation is a record, not an action. Three planning passes have selected nothing from the feed. A later pass may spend one session settling the migration rows as historical, and may change the collector so a decision record enters the feed only when its reopening observation has been recorded. No order is allocated; reopen at a planning pass that has the session to",
+          "missing": true
         }
       ],
       "dispositions": [
@@ -8446,6 +8528,16 @@
           "reopenWhen": "the next planning pass counts more than ten discharged in-order directives among its untriaged rows, or untriaged rows again pass fifty",
           "targets": [],
           "at": "2026-09-21T06:59:08.332Z"
+        },
+        {
+          "sourceRevision": 7,
+          "status": "duplicate",
+          "reason": "WO-167 moved product 07 §Candidate — follow-up register settlement to the planning map under the same slug (docs/planning/work-order-map.md#candidate--follow-up-register-settlement); its dated leads became bracketed citations, its links and references to product 07 were rebased, and its text is otherwise unchanged. FUP-3f3a79213fec2409 is the map row and carries the candidate. This row's last disposition was deferred at revision 6, reopen: the next planning pass counts more than ten discharged in-order directives among its untriaged rows, or untriaged rows again pass fifty; the pass that triages FUP-3f3a79213fec2409 carries it. [WO-167, 2026-09-28]",
+          "reopenWhen": "docs/planning/work-order-map.md §Candidate — follow-up register settlement is removed, renamed or returned to a product document",
+          "targets": [
+            "FUP-3f3a79213fec2409"
+          ],
+          "at": "2026-09-28T16:12:50.227Z"
         }
       ]
     },
@@ -8495,6 +8587,13 @@
           "title": "Candidate — local lane retention",
           "summary": "## Candidate — local lane retention Ignored local lanes grow without a rule: 13 immutable harness runtime snapshots (34 MB), 36 MB of hook journals and 31 MB of retained close lanes on 2026-09-16. A retention rule may remove a snapshot no installed manifest pins and a retained lane older than its order's published release, keeping the retained-lane byte proofs. No order is allocated; reopen on disk pressure or when the snapshot count exceeds twenty. **Reopened and allocated 2026-09-19 (cleanup pass).** 27 snapshots (80 MB) with one pinned, 99 MB under `docs/control/local/`, and 96 MB under `.git/dotln/suite-success`, which no source has written since WO-132 removed the suite-success cache. A",
           "missing": false
+        },
+        {
+          "hash": null,
+          "ref": "docs/product/07-execution-guide.md#candidate--local-lane-retention",
+          "title": "Candidate — local lane retention",
+          "summary": "## Candidate — local lane retention Ignored local lanes grow without a rule: 13 immutable harness runtime snapshots (34 MB), 36 MB of hook journals and 31 MB of retained close lanes on 2026-09-16. A retention rule may remove a snapshot no installed manifest pins and a retained lane older than its order's published release, keeping the retained-lane byte proofs. No order is allocated; reopen on disk pressure or when the snapshot count exceeds twenty. **Reopened and allocated 2026-09-19 (cleanup pass).** 27 snapshots (80 MB) with one pinned, 99 MB under `docs/control/local/`, and 96 MB under `.git/dotln/suite-success`, which no source has written since WO-132 removed the suite-success cache. A",
+          "missing": true
         }
       ],
       "dispositions": [
@@ -8523,6 +8622,16 @@
           "reopenWhen": "disk pressure, or an observed retained candidate that the documented ownership and publication rules cannot explain",
           "targets": [],
           "at": "2026-09-28T14:59:04.567Z"
+        },
+        {
+          "sourceRevision": 7,
+          "status": "duplicate",
+          "reason": "WO-167 moved product 07 §Candidate — local lane retention to the planning map under the same slug (docs/planning/work-order-map.md#candidate--local-lane-retention); its dated leads became bracketed citations, its links and references to product 07 were rebased, and its text is otherwise unchanged. FUP-b932c089f1edf4ce is the map row and carries the candidate. This row's last disposition was settled at revision 6, reopen: disk pressure, or an observed retained candidate that the documented ownership and publication rules cannot explain; the pass that triages FUP-b932c089f1edf4ce carries it. [WO-167, 2026-09-28]",
+          "reopenWhen": "docs/planning/work-order-map.md §Candidate — local lane retention is removed, renamed or returned to a product document",
+          "targets": [
+            "FUP-b932c089f1edf4ce"
+          ],
+          "at": "2026-09-28T16:12:50.257Z"
         }
       ]
     },
@@ -8565,6 +8674,13 @@
           "title": "Candidate — stale writer reservation self-diagnosis",
           "summary": "## Candidate — stale writer reservation self-diagnosis WO-050 VER-001 observed a Codex executor's reservation outliving its session with `liveness: unavailable`, refusing every shell command of the next session including `node scripts/harness.mjs writer --show`, until an operator released it from a terminal. The kept invariant was right; the diagnosis path was not. The stand-down declined a shell classifier. The original candidate awaited a second observed occurrence. **Substance shipped 2026-09-18 (recorded by the 2026-09-19 cleanup pass).** WO-139's commit `3ea00e50` releases the executor's writer at completion (`scripts/lib/executor-handoff.mjs`; `scripts/resume.mjs` `executorWriterReleas",
           "missing": false
+        },
+        {
+          "hash": null,
+          "ref": "docs/product/07-execution-guide.md#candidate--stale-writer-reservation-self-diagnosis",
+          "title": "Candidate — stale writer reservation self-diagnosis",
+          "summary": "## Candidate — stale writer reservation self-diagnosis WO-050 VER-001 observed a Codex executor's reservation outliving its session with `liveness: unavailable`, refusing every shell command of the next session including `node scripts/harness.mjs writer --show`, until an operator released it from a terminal. The kept invariant was right; the diagnosis path was not. The stand-down declined a shell classifier. The original candidate awaited a second observed occurrence. **Substance shipped 2026-09-18 (recorded by the 2026-09-19 cleanup pass).** WO-139's commit `3ea00e50` releases the executor's writer at completion (`scripts/lib/executor-handoff.mjs`; `scripts/resume.mjs` `executorWriterReleas",
+          "missing": true
         }
       ],
       "dispositions": [
@@ -8593,6 +8709,16 @@
           "reopenWhen": "a Codex-owned reservation outlives its session twice after WO-166",
           "targets": [],
           "at": "2026-09-27T00:36:26.924Z"
+        },
+        {
+          "sourceRevision": 6,
+          "status": "duplicate",
+          "reason": "WO-167 moved product 07 §Candidate — stale writer reservation self-diagnosis to the planning map under the same slug (docs/planning/work-order-map.md#candidate--stale-writer-reservation-self-diagnosis); its dated leads became bracketed citations, its links and references to product 07 were rebased, and its text is otherwise unchanged. FUP-0349c7a91fe63917 is the map row and carries the candidate. This row's last disposition was settled at revision 5, reopen: a Codex-owned reservation outlives its session twice after WO-166; the pass that triages FUP-0349c7a91fe63917 carries it. [WO-167, 2026-09-28]",
+          "reopenWhen": "docs/planning/work-order-map.md §Candidate — stale writer reservation self-diagnosis is removed, renamed or returned to a product document",
+          "targets": [
+            "FUP-0349c7a91fe63917"
+          ],
+          "at": "2026-09-28T16:12:50.288Z"
         }
       ]
     },
@@ -9562,6 +9688,13 @@
           "title": "Candidate — guided operator work orders",
           "summary": "## Candidate — guided operator work orders **Disposed 2026-09-17:** the section above is this candidate's convention, and WO-137 is its first use. The text below is retained as the source. Operator direction, 2026-09-16: a work-order type should carry guided human work through the normal workflow. Its purpose is to help the operator reach a specific result or setup, including ordinary trial and error, and return either evidence of success or a useful failure artifact. Local inference readiness and possible LM Studio setup are the immediate example; this is a general pattern for work that requires operator participation, not a separate informal checklist. A candidate contract names the desire",
           "missing": false
+        },
+        {
+          "hash": null,
+          "ref": "docs/product/07-execution-guide.md#candidate--guided-operator-work-orders",
+          "title": "Candidate — guided operator work orders",
+          "summary": "## Candidate — guided operator work orders **Disposed 2026-09-17:** the section above is this candidate's convention, and WO-137 is its first use. The text below is retained as the source. Operator direction, 2026-09-16: a work-order type should carry guided human work through the normal workflow. Its purpose is to help the operator reach a specific result or setup, including ordinary trial and error, and return either evidence of success or a useful failure artifact. Local inference readiness and possible LM Studio setup are the immediate example; this is a general pattern for work that requires operator participation, not a separate informal checklist. A candidate contract names the desire",
+          "missing": true
         }
       ],
       "dispositions": [
@@ -9574,6 +9707,16 @@
             "WO-137"
           ],
           "at": "2026-09-17T16:48:51.262Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "duplicate",
+          "reason": "WO-167 moved product 07 §Candidate — guided operator work orders to the planning map under the same slug (docs/planning/work-order-map.md#candidate--guided-operator-work-orders); its dated leads became bracketed citations, its links and references to product 07 were rebased, and its text is otherwise unchanged. FUP-615bb914973f0600 is the map row and carries the candidate. This row's last disposition was allocated at revision 2 (WO-137), reopen: an index consumer needs the outcome typed, or a research order is cited as a capability; the pass that triages FUP-615bb914973f0600 carries it. [WO-167, 2026-09-28]",
+          "reopenWhen": "docs/planning/work-order-map.md §Candidate — guided operator work orders is removed, renamed or returned to a product document",
+          "targets": [
+            "FUP-615bb914973f0600"
+          ],
+          "at": "2026-09-28T16:12:50.319Z"
         }
       ]
     },
@@ -10445,6 +10588,13 @@
           "title": "Candidate — total subagent cap across every spawn path",
           "summary": "## Candidate — total subagent cap across every spawn path Operator direction, 2026-09-17: a session's total subagents need a hard, configurable cap (about twenty), because a top-level guideline of five fans out through per-item adversarial and refutation trees to more than a hundred. The harness documents no total cap, only a size guideline, a concurrency ceiling of sixteen and a per-workflow limit of a thousand; its hooks fire for the Agent and Workflow tools and inside subagents. WO-139 counts and refuses at the admission points the hook can see and counts descendants at their first attributable tool call, so an agent the harness creates before any hook fires is counted late or not at all,",
           "missing": false
+        },
+        {
+          "hash": null,
+          "ref": "docs/product/07-execution-guide.md#candidate--total-subagent-cap-across-every-spawn-path",
+          "title": "Candidate — total subagent cap across every spawn path",
+          "summary": "## Candidate — total subagent cap across every spawn path Operator direction, 2026-09-17: a session's total subagents need a hard, configurable cap (about twenty), because a top-level guideline of five fans out through per-item adversarial and refutation trees to more than a hundred. The harness documents no total cap, only a size guideline, a concurrency ceiling of sixteen and a per-workflow limit of a thousand; its hooks fire for the Agent and Workflow tools and inside subagents. WO-139 counts and refuses at the admission points the hook can see and counts descendants at their first attributable tool call, so an agent the harness creates before any hook fires is counted late or not at all,",
+          "missing": true
         }
       ],
       "dispositions": [
@@ -10465,6 +10615,16 @@
           "reopenWhen": "the harness documents a pre-creation admission hook or a total-cap setting, or a session exceeds the cap on a path WO-139 reports as uncounted",
           "targets": [],
           "at": "2026-09-21T06:59:09.151Z"
+        },
+        {
+          "sourceRevision": 4,
+          "status": "duplicate",
+          "reason": "WO-167 moved product 07 §Candidate — total subagent cap across every spawn path to the planning map under the same slug (docs/planning/work-order-map.md#candidate--total-subagent-cap-across-every-spawn-path); its dated leads became bracketed citations, its links and references to product 07 were rebased, and its text is otherwise unchanged. FUP-67a3ccb3b295200e is the map row and carries the candidate. This row's last disposition was deferred at revision 3, reopen: the harness documents a pre-creation admission hook or a total-cap setting, or a session exceeds the cap on a path WO-139 reports as uncounted; the pass that triages FUP-67a3ccb3b295200e carries it. [WO-167, 2026-09-28]",
+          "reopenWhen": "docs/planning/work-order-map.md §Candidate — total subagent cap across every spawn path is removed, renamed or returned to a product document",
+          "targets": [
+            "FUP-67a3ccb3b295200e"
+          ],
+          "at": "2026-09-28T16:12:50.349Z"
         }
       ]
     },
@@ -13003,6 +13163,13 @@
         },
         {
           "hash": "3b4d6a6dc9286b6f1c82539b1e978c27aa8c3d80549cd53ec7ed5933cc1f9d7d",
+          "ref": "docs/evidence/WO-090/decisions.md#wo-090-d006--operator-authorized-local-commits-refresh-the-planning-judgment",
+          "title": "WO-090-D006: Planning: design an explicit executor route for an authorized edit to the goal standard that requires fresh planning refutation before final review. The present exact-text binding plus co",
+          "summary": "{ \"id\": \"WO-090-D006\", \"date\": \"2026-09-20\", \"dispatch\": \"resume: fix; operator response to the concrete local-commit exception: Authorize local commits and refutation\", \"decision\": \"After the live product gate finishes, commit the changed planning inputs (product 07 and WO-090's already-assigned title) and this decision record locally, refresh the canonical planning cost table from this run's actual observations, commit that input locally, then run the canonical pass-scoped planning refutation with one fresh background worker, no inherited conversation and no descendants. File its frozen judgment through the canonical receipt helper and run the document checks. The operator explicitly autho",
+          "missing": false
+        },
+        {
+          "hash": "43ea9e478b1f2f7beed1cfd01b0c0123dc7df7ab4a5e211f9b911cab098046a5",
           "ref": "docs/evidence/WO-090/decisions.md#wo-090-d006--operator-authorized-local-commits-refresh-the-planning-judgment",
           "title": "WO-090-D006: Planning: design an explicit executor route for an authorized edit to the goal standard that requires fresh planning refutation before final review. The present exact-text binding plus co",
           "summary": "{ \"id\": \"WO-090-D006\", \"date\": \"2026-09-20\", \"dispatch\": \"resume: fix; operator response to the concrete local-commit exception: Authorize local commits and refutation\", \"decision\": \"After the live product gate finishes, commit the changed planning inputs (product 07 and WO-090's already-assigned title) and this decision record locally, refresh the canonical planning cost table from this run's actual observations, commit that input locally, then run the canonical pass-scoped planning refutation with one fresh background worker, no inherited conversation and no descendants. File its frozen judgment through the canonical receipt helper and run the document checks. The operator explicitly autho",
@@ -21239,6 +21406,156 @@
           "at": "2026-09-28T14:59:05.449Z"
         }
       ]
+    },
+    {
+      "id": "FUP-e96221b106cd136a",
+      "key": "candidate:docs/planning/work-order-map.md#candidate--cold-gate-structural-cuts",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "116960db0c58aa5b1490fb9801aad6035823a44ee8039e7d75535b9bc63af81c",
+          "ref": "docs/planning/work-order-map.md#candidate--cold-gate-structural-cuts",
+          "title": "Candidate — cold-gate structural cuts",
+          "summary": "### Candidate — cold-gate structural cuts The 2026-09-12 planning pass declined to allocate the structural cuts that the relayed proof-carrying-gates plan proposed for the one fresh full gate, because their benefit is unmeasured until the gate's critical path is recorded. The 2026-09-12T16:08Z fresh gate ran 475 s of wall-clock over 1,229 s of task time: the two exclusive suites held it at concurrency one for 206 s, and perfect packing over the cap of four would take 307 s. WO-128 records each task's concurrent peers in the gate row; that trace is the entry evidence for this candidate. WO-128's [first accepted shared row](../evidence/WO-128/shared-series-002.json) now supplies that evidence:",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-3f3a79213fec2409",
+      "key": "candidate:docs/planning/work-order-map.md#candidate--follow-up-register-settlement",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "33f8a3252d9e0013f45eee0146b543b1b8519ec4fe3d66df094e89446aaaa202",
+          "ref": "docs/planning/work-order-map.md#candidate--follow-up-register-settlement",
+          "title": "Candidate — follow-up register settlement",
+          "summary": "### Candidate — follow-up register settlement The register holds 297 entries with 283 untriaged (2026-09-16). Two mechanisms fill it: the migration harvested every historical candidate heading and NoOp bullet as a pending row, and every per-order decision record is harvested as a follow-up although a decision with a `reopenWhen` observation is a record, not an action. Three planning passes have selected nothing from the feed. A later pass may spend one session settling the migration rows as historical, and may change the collector so a decision record enters the feed only when its reopening observation has been recorded. No order is allocated; reopen at a planning pass that has the session t",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-615bb914973f0600",
+      "key": "candidate:docs/planning/work-order-map.md#candidate--guided-operator-work-orders",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "07f69f890c5fee559700dfd78c3f77b68ab2e966ec09ec5f1577ee339733bd24",
+          "ref": "docs/planning/work-order-map.md#candidate--guided-operator-work-orders",
+          "title": "Candidate — guided operator work orders",
+          "summary": "### Candidate — guided operator work orders Disposed: product 07 §Research and guided-operator work orders is this candidate's convention, and WO-137 is its first use [vision-into-use pass, 2026-09-17]. The text below is retained as the source. Operator direction, 2026-09-16: a work-order type should carry guided human work through the normal workflow. Its purpose is to help the operator reach a specific result or setup, including ordinary trial and error, and return either evidence of success or a useful failure artifact. Local inference readiness and possible LM Studio setup are the immediate example; this is a general pattern for work that requires operator participation, not a separate i",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-b932c089f1edf4ce",
+      "key": "candidate:docs/planning/work-order-map.md#candidate--local-lane-retention",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "e4ccbf85aeb415aa04671954dd5e562b642bd6b2dac41b7094fffb13780fa5a6",
+          "ref": "docs/planning/work-order-map.md#candidate--local-lane-retention",
+          "title": "Candidate — local lane retention",
+          "summary": "### Candidate — local lane retention Ignored local lanes grow without a rule: 13 immutable harness runtime snapshots (34 MB), 36 MB of hook journals and 31 MB of retained close lanes on 2026-09-16. A retention rule may remove a snapshot no installed manifest pins and a retained lane older than its order's published release, keeping the retained-lane byte proofs. No order is allocated; reopen on disk pressure or when the snapshot count exceeds twenty. Reopened and allocated: 27 snapshots (80 MB) with one pinned, 99 MB under `docs/control/local/`, and 96 MB under `.git/dotln/suite-success`, which no source has written since WO-132 removed the suite-success cache [[cleanup pass](outstanding-cle",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-6d91d100269519d7",
+      "key": "candidate:docs/planning/work-order-map.md#candidate--planner-startup-context",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "98bdf2c5aac0720374e607cc59529a5c807cd57c336a35d00a1414d0ff1dd627",
+          "ref": "docs/planning/work-order-map.md#candidate--planner-startup-context",
+          "title": "Candidate — planner startup context",
+          "summary": "### Candidate — planner startup context Operator steering during WO-126 identifies excessive context needed to learn the repository's purpose and choose the next work. First measure what the bounded follow-up feed removes. Compare the remaining required reads, context bytes, commands and wall-clock with a short purpose brief and scoped retrieval of candidate authorities. The feed may discharge the candidate-selection part; do not duplicate that implementation or assume it solves orientation to the product. Preserve scope, sources and rejection reasons while reducing reading. Reopen in a planning pass if observed startup still requires broad document loads; settle this candidate with measured",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-19cd701c25446383",
+      "key": "candidate:docs/planning/work-order-map.md#candidate--recurring-review-of-implementation-alternatives",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "48efebfbc79ff1940b46b3bcc63d1328b7644b65cb307dd598c9e5f8cc56bfd7",
+          "ref": "docs/planning/work-order-map.md#candidate--recurring-review-of-implementation-alternatives",
+          "title": "Candidate — recurring review of implementation alternatives",
+          "summary": "### Candidate — recurring review of implementation alternatives The operator's 2026-09-09 ideation during WO-126 asks for useful alternatives to surface routinely, automatically or periodically, without depending on an operator first objecting to a dependency. The build comparison is the concrete case: questioning the Python prerequisite exposed a cheaper Node-only method, with a different publication guarantee that the operator explicitly selected. The general opportunity is to question the method while preserving the purpose. Avoid treating either dependency avoidance or the fastest measurement as the answer in advance. Candidate entry points are a new dependency or process step, measured ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-5eaeb603b228f581",
+      "key": "candidate:docs/planning/work-order-map.md#candidate--refutation-pass-worth-its-cost",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "902298bd4897c05fea39d225b37fb7be4d54183804323dac9f076f31ff37ee32",
+          "ref": "docs/planning/work-order-map.md#candidate--refutation-pass-worth-its-cost",
+          "title": "Candidate — refutation pass worth its cost",
+          "summary": "### Candidate — refutation pass worth its cost The 2026-09-12 planning pass paid three direct-session refutations of one subject, all holds: 2,454 s, 833 s and 333 s of recorded dispatch-to-file, and more of operator wall-clock, with the third hold overridden by the operator as a known issue. The holds were logically valid counterexamples to contract wording; none changed the platform the orders build. The operator's direction is recorded: the point is to create a platform, not to prove every constructible case before filing, and the refutation pass must be made worth its cost before a later pass pays it again. The next planning pass measures the refuter's yield against its cost from the rec",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0349c7a91fe63917",
+      "key": "candidate:docs/planning/work-order-map.md#candidate--stale-writer-reservation-self-diagnosis",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "3508401acd6b3db819b7be2cfe3d5954c011b89dd3983850d5d9d294895324d3",
+          "ref": "docs/planning/work-order-map.md#candidate--stale-writer-reservation-self-diagnosis",
+          "title": "Candidate — stale writer reservation self-diagnosis",
+          "summary": "### Candidate — stale writer reservation self-diagnosis WO-050 VER-001 observed a Codex executor's reservation outliving its session with `liveness: unavailable`, refusing every shell command of the next session including `node scripts/harness.mjs writer --show`, until an operator released it from a terminal. The kept invariant was right; the diagnosis path was not. The stand-down declined a shell classifier. The original candidate awaited a second observed occurrence. Substance shipped: WO-139's commit `3ea00e50` releases the executor's writer at completion (`scripts/lib/executor-handoff.mjs`; `scripts/resume.mjs` `executorWriterRelease`), and the hook admits `node scripts/harness.mjs write",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-67a3ccb3b295200e",
+      "key": "candidate:docs/planning/work-order-map.md#candidate--total-subagent-cap-across-every-spawn-path",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "91a3e05b241f44a64f864b7adaf871d5cc80920414d4eaca03c2f1e4b5e59c98",
+          "ref": "docs/planning/work-order-map.md#candidate--total-subagent-cap-across-every-spawn-path",
+          "title": "Candidate — total subagent cap across every spawn path",
+          "summary": "### Candidate — total subagent cap across every spawn path Operator direction, 2026-09-17: a session's total subagents need a hard, configurable cap (about twenty), because a top-level guideline of five fans out through per-item adversarial and refutation trees to more than a hundred. The harness documents no total cap, only a size guideline, a concurrency ceiling of sixteen and a per-workflow limit of a thousand; its hooks fire for the Agent and Workflow tools and inside subagents. WO-139 counts and refuses at the admission points the hook can see and counts descendants at their first attributable tool call, so an agent the harness creates before any hook fires is counted late or not at all",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-dde0b0bf89f86cfc",
+      "key": "decision:docs/evidence/WO-167/decisions.md#wo-167-d006",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "1fea3aa447471312fc6c3ceaffb4fd6c226c81e33e47da3819fc35a9b1404d87",
+          "ref": "docs/evidence/WO-167/decisions.md#wo-167-d006",
+          "title": "WO-167-D006: Decide how the skills' heading citations get a check that can fail: node scripts/harness-context.mjs --check measures cold-start bytes only and exits 0 with a cited product heading rename",
+          "summary": "{ \"id\": \"WO-167-D006\", \"date\": \"2026-09-28\", \"dispatch\": \"resume: next\", \"decision\": \"Prove that the role skills' and the instruction file's citations resolve with the harness library's strict resolver over CLAUDE.md and all twelve installed skills (18 of 18 anchored Read selectors resolve), and record that node scripts/harness-context.mjs --check, which criterion 2 names as that proof, exits 0 whether or not a cited heading exists.\", \"evidence\": [ \"scripts/harness-context.mjs main runs measureColdStarts (scripts/lib/process-budget.mjs), which reads only CLAUDE.md and the skill files' byte counts; the strict resolution (directedReads, sectionRange) runs in measureHarnessContext, which script",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }
