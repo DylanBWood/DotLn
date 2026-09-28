@@ -43,8 +43,8 @@ branch's first-parent history containing that role's latest global acceptance
 (date, then record order). Its source and measured bytes are recorded; the
 ceiling and numbers in historical reason prose are not byte measurements.
 Missing history or files produce an unavailable delta with a cause.
-`--check` evaluates and prints budget advisories without refusing; no flag
-prints the measurement alone. `npm run meta` includes the same per-role rows
+`--check` refuses any unresolved `Read:`, never a budget advisory;
+no flag prints the measurement alone. `npm run meta` includes the same per-role rows
 in its drift signal. The [loading observations](../evidence/WO-155/skill-loading.json)
 found fresh Claude Explore and Copilot task workers without the floor in their initial context,
 so the full refusals paragraph remains in each skill under WO-155's fallback.

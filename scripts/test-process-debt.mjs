@@ -5037,6 +5037,62 @@ test("WO-155 missing history and missing role files are explicit unknowns; check
   );
 });
 
+test("WO-167 VER-001 F1 harness-context --check refuses a renamed heading an installed skill reads; budgets stay advisory", (t) => {
+  const root = repo(t);
+  write(
+    root,
+    "docs/control/budgets.json",
+    readFileSync(join(source, "docs/control/budgets.json")),
+  );
+  const guide = "docs/product/07-execution-guide.md";
+  write(root, guide, "# Guide\n\n## Goal-aligned decisions\n\nRule.\n");
+  write(
+    root,
+    "CLAUDE.md",
+    "# Fixture floor\nRead[executor]: `@skills/dotln-executor/SKILL.md`\n",
+  );
+  for (const skillsRoot of [".claude/skills", ".agents/skills"])
+    write(
+      root,
+      `${skillsRoot}/dotln-executor/SKILL.md`,
+      `Read: \`@work-order\`\nGoal Alignment: Read \`${guide}#Goal-aligned decisions\`.\n`,
+    );
+  const script = join(source, "scripts/harness-context.mjs");
+  const run = (...args) =>
+    spawnSync(process.execPath, [script, ...args], {
+      cwd: root,
+      encoding: "utf8",
+      env: { ...process.env, DOTLN_LAUNCHPAD: root },
+    });
+  const resolved = run("--check");
+  assert.equal(resolved.status, 0, resolved.stderr);
+  assert.doesNotMatch(resolved.stderr, /Unresolved/);
+  write(root, guide, "# Guide\n\n## Goal alignment decisions\n\nRule.\n");
+  const renamed = run("--check");
+  assert.equal(renamed.status, 1);
+  for (const skillsRoot of [".claude/skills", ".agents/skills"])
+    assert.match(
+      renamed.stderr,
+      new RegExp(
+        `Unresolved installed read: ${skillsRoot.replace(".", "\\.")}/dotln-executor/SKILL\\.md:2 \\(executor\\): Unresolved required section: Goal-aligned decisions\\n`,
+      ),
+    );
+  // The measurement is unchanged and, without --check, never refuses.
+  assert.deepEqual(JSON.parse(renamed.stdout), JSON.parse(resolved.stdout));
+  const measured = run();
+  assert.equal(measured.status, 0);
+  assert.equal(measured.stderr, "");
+  // A floor read of a missing skill file is unresolved, not skipped.
+  write(root, guide, "# Guide\n\n## Goal-aligned decisions\n\nRule.\n");
+  rmSync(join(root, ".agents/skills/dotln-executor/SKILL.md"));
+  const missing = run("--check");
+  assert.equal(missing.status, 1);
+  assert.equal(
+    missing.stderr,
+    "Unresolved installed read: CLAUDE.md:2 (executor): Unresolved required file: .agents/skills/dotln-executor/SKILL.md\n",
+  );
+});
+
 test("budgets keep unselected caps unset and cold-start measurement ignores product prose", (t) => {
   const root = repo(t);
   write(
