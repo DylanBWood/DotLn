@@ -1,4 +1,4 @@
-# WO-167 — The execution guide folded: its dated amendment paragraphs are folded into the sentences they amend with one-line citations, its nine candidates move to the planning map, every heading a role skill or the publication index cites still resolves, and the guide's ceiling is lowered to the result (version assigned at activation)
+# WO-167 — The execution guide folded: its dated amendment paragraphs are folded into the sentences they amend with one-line citations, its nine candidates move to the planning map, every heading a role skill or the publication index cites still resolves, and the guide's ceiling is lowered to the result (v0.53.1)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).

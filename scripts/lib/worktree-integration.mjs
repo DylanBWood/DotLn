@@ -121,7 +121,7 @@ const pureProjection = (root, path) =>
 
 // Re-merge mixed documents after masking only their generated fragment. The
 // authored text still goes through Git's three-way merge and may conflict.
-function mixedProjection(root, path) {
+function mixedProjection(root, path, recordedPath) {
   const mask =
     path === "CLAUDE.md"
       ? (s) =>
@@ -175,7 +175,8 @@ function mixedProjection(root, path) {
     let contents = merged.stdout;
     if (path === "README.md") {
       const id = runGit(root, ["branch", "--show-current"]).toUpperCase();
-      const authority = readControl(root).orders.get(id)?.state.workOrderPath;
+      const authority =
+        readControl(root).orders.get(id)?.state.workOrderPath ?? recordedPath;
       if (!authority) return false;
       const versions = strictVersionsIn(
         readFileSync(join(root, authority), "utf8").split("\n")[0],
@@ -219,7 +220,7 @@ function resolveProjections(root, receipt) {
         put(root, path, seed);
         resolved = true;
       }
-    } else resolved = mixedProjection(root, path);
+    } else resolved = mixedProjection(root, path, receipt.workOrderPath);
     if (resolved) {
       // This clears Git's unmerged stages so stash apply can run; generation
       // below is still mandatory, and its failure leaves a pending receipt.
@@ -459,8 +460,13 @@ export async function integrateWorktree(root, workOrder, args = []) {
   const { activeGateRuns } = await import("./gate-evidence.mjs");
   if (activeGateRuns(root).length)
     throw new Error("integration refuses during a live test gate");
-  const state = readControl(root).orders.get(workOrder)?.state;
-  if (!state || !["repairing", "final-review"].includes(state.phase))
+  // An uncommitted control log travels in this integration's stash, so until
+  // the stash is applied a continuation judges what its receipt recorded.
+  const state =
+    readControl(root).orders.get(workOrder)?.state ??
+    (continuation ? previous : undefined);
+  const { phase, workOrderPath } = state ?? {};
+  if (!["repairing", "final-review"].includes(phase))
     throw new Error(
       "integrate requires the selected order in repairing or final-review",
     );
@@ -645,7 +651,8 @@ export async function integrateWorktree(root, workOrder, args = []) {
     ]);
     receipt = {
       workOrder,
-      phase: state.phase,
+      phase,
+      workOrderPath,
       preservationCommit: checkpoint.checkpointSha,
       mergeCommit: null,
       stashesBefore: stashEntries().map(([sha]) => sha),

@@ -1929,6 +1929,504 @@ its reopening condition. This section grants no activation authority.
    regressions passed, or ten more orders pay an episode and every
    verdict is pass.
 
+## Moved from the execution guide (2026-09-28)
+
+WO-167 moved these nine candidates here from product 07 under their slugs.
+Each dated paragraph's bold lead became a status word and a bracketed
+citation that keeps its date; links are rebased, and two references that
+pointed within product 07 now name it. Each register row keyed to the
+product 07 heading is a duplicate of the row keyed here. This section
+grants no activation authority.
+
+### Candidate — guided operator work orders
+
+Disposed: product 07 §Research and guided-operator work orders is this
+candidate's convention, and WO-137 is its first use [vision-into-use pass,
+2026-09-17]. The text below is retained as the source.
+
+Operator direction, 2026-09-16: a work-order type should carry guided human
+work through the normal workflow. Its purpose is to help the operator reach a
+specific result or setup, including ordinary trial and error, and return either
+evidence of success or a useful failure artifact. Local inference readiness and
+possible LM Studio setup are the immediate example; this is a general pattern
+for work that requires operator participation, not a separate informal checklist.
+
+A candidate contract names the desired observable result, starting conditions,
+constraints and authority, agent and operator responsibilities, success checks,
+and the evidence to retain if attempts fail. The agent proposes the next useful
+step from observed results, explains required operator actions, records what was
+actually attempted and adapts the next step. Unexecuted suggestions remain
+distinct from observations. Preserve progress across pauses and sessions so the
+operator can resume the same order. Trial and error is expected learning, not a
+reason to restart the workflow or silently expand authority.
+
+Two explicit outcomes are needed: a result/setup that passes its declared check,
+or a failure artifact describing the attempted path, observed errors, ruled-out
+causes, remaining blocker and a useful next action or reopening condition.
+Distinguish an environment limitation or exhausted attempt from a defect in
+DotLn. Producing the requested failure artifact can discharge the investigation
+deliverable, but never certifies the original setup as successful. Independent
+review should judge the evidence appropriate to the declared outcome.
+
+The next planning pass should decide how to express this type using existing
+WorkOrders, human-handoff actors, continuation and evidence surfaces, including
+how lifecycle status distinguishes successful setup from completed investigation
+with failure. Preserve the normal authority, privacy and review boundaries.
+No new schema, lifecycle transition or implementation is selected here.
+
+Source: the operator's second 2026-09-16 ideation during WO-051, synthesized in
+the ledger and [breakout receipt](../evidence/WO-051/ideation-local-models.md).
+Reopen at the next planning pass with local-model readiness or another concrete
+operator-assisted outcome. The cost and value question is whether this removes
+repeated setup explanation and lost diagnostic work without adding a separate
+process the operator must manage.
+
+### Candidate — planner startup context
+
+Operator steering during WO-126 identifies excessive context needed to learn
+the repository's purpose and choose the next work. First measure what the
+bounded follow-up feed removes. Compare the remaining required reads, context
+bytes, commands and wall-clock with a short purpose brief and scoped retrieval
+of candidate authorities. The feed may discharge the candidate-selection part;
+do not duplicate that implementation or assume it solves orientation to the
+product. Preserve scope, sources and rejection reasons while reducing reading.
+Reopen in a planning pass if observed startup still requires broad document
+loads; settle this candidate with measured evidence if the feed is sufficient.
+The operator expressly permits this comparison after WO-126.
+
+Measured: the pass consumed the feed's first page and selected nothing from
+it: 283 of the 287 pending rows are the untriaged migration and the three
+open items were declined again, as in the two passes before it
+[[R1 replan pass](r1-replan-2026-09-16.md), 2026-09-16]. Orientation still needed canonical status, the
+sequence, the previous planning document and its ledger section, the three
+subject orders, the writing-worker record, the seven closed orders' decision
+records and final reviews, and the code surfaces the orders name. The feed
+cannot be judged until the register settlement candidate below removes the
+migration rows from the pending set; this candidate stays open.
+
+Measured: the first page showed four invalidated dispositions, one open
+item, two deferrals and one untriaged row of 371 pending, and the pass again
+selected nothing from it; it read the whole register by batch instead
+[[cleanup pass](outstanding-cleanup-2026-09-19.md), 2026-09-19]. That pass disposed the pending rows, so the
+next planning pass is the first that can judge the feed; this candidate
+stays open until that measurement.
+
+Measured: the first page showed six invalidated dispositions and the two
+open items, of 149 pending; the pass selected nothing from it and read the
+whole register by script, because the 67 rows that mattered were untriaged
+and the page orders them last [[standard pass](standard-pass-2026-09-21.md),
+2026-09-21]. It also
+read canonical status, the sequence, the two 2026-09-20 planning documents
+and receipt 021, the decision files of the eleven orders whose rows were
+untriaged, the map's two candidate sections, the cost table and the budgets
+file before choosing anything. The feed carried real nominations for the
+first time (WO-142 row B17's boarded defects), so its content is now right
+and its ordering is the remaining friction: untriaged rows should precede
+invalidated dispositions when a pass opens, and a pass needs the count of
+rows per source order, not a first page of eight. No order is allocated;
+reopen at the next pass with that ordering tried, or when the first page
+again shows nothing the pass acts on.
+
+Measured: the first page showed three invalidated dispositions, three open
+items and two deferrals of 150 pending; the pass selected nothing from it and
+read the register by script because the 29 untriaged rows (decision records
+from WO-063, WO-064, WO-100, WO-120, WO-151 and WO-152) were paged last
+[[closeout follow-ups pass](closeout-followups-2026-09-22.md), 2026-09-22]. Orientation also read
+canonical status, the sequence, product 07's planning and ideation sections,
+the three same-day planning documents' route and answer sections, the
+decision files of six orders, two final reviews, the map's three latest
+candidate sections, the queued orders' headers, the budgets file and the
+integrate helper's source. The ordering friction stands as recorded above;
+one further ask: the first page should say which closed orders contributed
+the untriaged rows. Stays open.
+
+### Candidate — recurring review of implementation alternatives
+
+The operator's 2026-09-09 ideation during WO-126 asks for useful alternatives
+to surface routinely, automatically or periodically, without depending on an
+operator first objecting to a dependency. The build comparison is the concrete
+case: questioning the Python prerequisite exposed a cheaper Node-only method,
+with a different publication guarantee that the operator explicitly selected.
+The general opportunity is to question the method while preserving the purpose.
+Avoid treating either dependency avoidance or the fastest measurement as the
+answer in advance.
+
+Candidate entry points are a new dependency or process step, measured cost
+growth, and occasional review of an existing mechanism. At a selected boundary,
+compare retaining the method, removing unnecessary work, and a credible simpler
+alternative using the tools already available. State the outcome and guarantees,
+measure the relevant resource costs, retain the evidence and rejection reasons,
+and identify what would reopen the choice. Guarantee changes still need their
+existing authority; an opportunity to ask does not authorize replacing a method.
+
+The existing four process questions and meter supply the questions and signals;
+the Entropy Reducer and retained follow-up feed supply possible review and
+handoff surfaces. The missing evidence is that they actually provoke useful
+comparisons at an affordable cadence. Compare default, event-triggered and
+periodic sampling before adding another mandatory review or prompt fragment.
+Evaluate discoveries and accepted improvements alongside false positives,
+operator interruptions, review time, context bytes, commands and token usage;
+also exercise an unchanged case where keeping the method is the right result.
+An expensive review that only restates the questions would repeat the process
+debt it is meant to address.
+
+Trigger selection, sampling cadence, host binding and implementation allocation
+remain open. Reopen at planning when observations can distinguish missed
+opportunities from redundant review. No new runtime check, schedule or work
+order is allocated by this candidate. Provenance and required review are in the
+[ideation receipt](../evidence/WO-126/ideation-alternatives.md).
+
+The operator's follow-up proposes a
+[Tinkerer / Scientist support](../product/05-pattern-library.md#candidate--tinkerer--scientist)
+that sometimes turns the relevant question, input or proposed response into a
+small experiment. A separate support modifier may tune activation rate. This
+provides a candidate behavioral mechanism for the review question above; it
+does not settle its cadence or imply every answer must run an A/B test.
+The second proposed behavior is
+[historical comparison after a forced alternative](../product/05-pattern-library.md#candidate--historical-comparison-after-a-forced-alternative):
+when a constraint or decision produces another method with roughly the same
+purpose, retain comparable observations even if the immediate choice is settled.
+Automatic activation versus optional equipment remains open. This records the
+benefit obtained incidentally in WO-126 as an intentional future behavior.
+
+### Candidate — cold-gate structural cuts
+
+The 2026-09-12 planning pass declined to allocate the structural cuts that
+the relayed proof-carrying-gates plan proposed for the one fresh full gate,
+because their benefit is unmeasured until the gate's critical path is
+recorded. The 2026-09-12T16:08Z fresh gate ran 475 s of wall-clock over
+1,229 s of task time: the two exclusive suites held it at concurrency one for
+206 s, and perfect packing over the cap of four would take 307 s. WO-128
+records each task's concurrent peers in the gate row; that trace is the entry
+evidence for this candidate.
+
+WO-128's [first accepted shared row](../evidence/WO-128/shared-series-002.json)
+now supplies that evidence: 689.520 s wall-clock, 2674.262 s
+of task time, and a 688.383 s observed scheduler chain. Its
+largest chain node is `plan-refutation:fixtures` at 523.842 s;
+the [complete offline trace](../evidence/WO-128/diagnosis.md#accepted-shared-series-and-deadline-comparison)
+retains every edge and visible wait. Five shared passes keep the exclusive
+flags removed, but their median 694.561 s exceeds the exact earlier
+476.304 s gate. This is reliability evidence and a measured entry point for
+planning, not an allocation or a demonstrated structural speedup.
+
+The cuts, each measured before allocation: copy-on-write clones of the sealed
+release template and other prepared fixtures where the filesystem supports
+them (`scripts/lib/release-fixtures.mjs` copies two repositories into forty
+case directories today; the copy time is unmeasured); splitting the
+`worktree`, `resume`, `skeleton` and `plan-refutation:fixtures` tasks into
+schedulable cases with their own temporary roots, as WO-126 did for the
+release cases; extracting pure decision logic from the lifecycle, release and
+worktree shells so each policy permutation stops paying for a fixture
+repository, with a model-based check of the lifecycle's legal and illegal
+sequences and a retained black-box Git conformance set; and sharding across
+machines, which does not reduce total compute and cannot help an indivisible
+task. Removing tests is not a cut: a test is removable only when a stronger
+instrument subsumes its unique detections, which the mutation corpus
+(WO-108) measures.
+
+Reopen at a planning pass when a recorded trace names the node that bounds
+the gate after WO-128's exclusivity decision, or when the meter reports three
+consecutive worsening gate deltas. No order, number, sequence position or
+activation authority is allocated here.
+
+Superseded: the recorded 2026-09-15T04:10Z gate names the bounding nodes:
+the machinery's own suites (harness fixtures 145 s, process debt 143 s,
+runner fixtures 135 s isolated, plan-refutation fixtures 69 s) on a
+lane-saturated schedule, while the longest suite numbers (console, release,
+plan-refutation) were spans between split tasks
+[[machinery stand-down pass](machinery-stand-down-2026-09-15.md), 2026-09-15]. The machinery
+stand-down pass removes that share from the default gate and runs the gate
+once per order instead of cutting its fixtures
+([WO-132](../work-orders/WO-132-machinery-stand-down.md) criteria 4 to 6).
+Reopen only if the once-per-order `npm test` exceeds six minutes fresh after
+that inventory split.
+
+Reopening observation: the seventeen final-review product gates recorded in
+`docs/control/orders/` since 2026-09-16 ran 303 to 1,178 s, median 793 s;
+sixteen exceeded six minutes [[cleanup pass](outstanding-cleanup-2026-09-19.md),
+2026-09-19].
+The cause of each (suite selection, host load, an integrated sibling) is not
+analysed; the gate rows this pass could read carry a total and no per-suite
+durations. The `fastGateMs` ceiling of 120 s was WO-126's budget for a fast
+gate that WO-132 removed; the metric has since read the one full product
+gate, so the same day's second pass unset the ceiling in
+`docs/control/budgets.json`. Nothing is allocated: an order that shortens the
+gate needs the per-suite breakdown first, and none is recorded.
+
+Re-measured: the thirteen final-review product gates recorded from
+2026-09-19 to 2026-09-21 (WO-142 to WO-069) ran 256 to 536 s, median 483 s;
+eleven exceeded six minutes [[standard pass](standard-pass-2026-09-21.md),
+2026-09-21]. The `FinalReviewCompleted`
+gate row still carries `durationMs`, a code identity and an exit code and no
+per-suite durations, so the same reason holds: nothing is allocated until a
+breakdown is recorded. The meter's drift signal flagged the gate's step count
+rising 65, 72, 73, 74, 80 across WO-090 to WO-069 as a reopen candidate; each
+order added suites or cases, so the count is planning input for this
+candidate, not a hold. The candidate stays open.
+
+WO-156 planning-check cut: resolving the work-order root pattern once per
+subject call reduced the fixture's `statSync` calls from 543 to 10 while
+preserving its subject JSON [WO-156 executor measurement, 2026-09-24]. On this host,
+`node scripts/refute-plan.mjs check` fell from 17.86 s to 2.85 s and the
+`test:docs` `plan` and `plan-refutation-current` tasks fell from 25.27 s and
+25.20 s to 3.25 s and 3.19 s; the full document gate fell from 30.80 s to
+24.41 s because other tasks still run concurrently. Those initial figures
+missed the 2 s bound and led to VER-001 and the operator-authorized repair.
+The repair batches immutable Git reads and caches unchanged normalization
+within 512 entries and 1 MiB of string storage. The first repair measured
+1.799–1.823 s versus 3.121–3.177 s with the pre-repair sources, with identical
+stdout and 98 Git launches versus 242. VER-002 then found optional-prefetch
+and aggregate-buffer regressions. Their correction measured 1.657–1.667 s
+versus 2.792–2.824 s on the same tree, with identical stdout and 104 launches;
+the six additional historical fallback reads preserve accepted inputs. Its
+`test:docs` plan tasks took 1.90 s and 1.81 s. The [WO-156 decisions](../evidence/WO-156/decisions.md)
+and [repair evidence](../evidence/WO-156/repair.md) preserve the comparisons,
+refusal checks and reopening conditions. This local measurement does not
+assign a new structural cut to the broader product gate.
+
+Console collection is the gate's critical path: with the plan tasks under
+2 s, `console-docs` runs 20.06 s of a 24.81 s `test:docs`: 101 sequential
+`resume status` forks (12.8 to 13.3 s) and one `release list` of 5.2 to
+5.6 s over 1,050 Git spawns, linear in tag count [REVIEW-003 ER3-002,
+reproduced by REFUTATION-004, 2026-09-25]. Allocated to
+[WO-164](../work-orders/WO-164-constant-process-console-collection.md);
+the 2026-09-19 deferral's reopening observation has occurred.
+
+WO-164 after figure: `resume status --all --json` folds every order in one
+process and `release list` caches per-tag records in the ignored local lane,
+so collection runs four node processes whatever the order and tag counts
+[WO-164 executor measurement, 2026-09-27]. With 113 orders and 104 tags,
+`collectSources` fell from 21.2 s to 2.43–2.47 s cold (the first
+implementation's 6.2 s failed VER-001) and 0.67 s warm, with identical board
+bytes. `console-docs` fell from 22.50 s to 3.53 s cold and the cold
+`test:docs` gate from 31.42 s to 13.37 s, now led by `docs-check` (8.46 s).
+The [WO-164 decisions](../evidence/WO-164/decisions.md) and
+[timing record](../evidence/WO-164/timing.md) keep the figures and reopening
+conditions.
+
+### Candidate — refutation pass worth its cost
+
+The 2026-09-12 planning pass paid three direct-session refutations of one
+subject, all holds: 2,454 s, 833 s and 333 s of recorded dispatch-to-file,
+and more of operator wall-clock, with the third hold overridden by the
+operator as a known issue. The holds were logically valid counterexamples to
+contract wording; none changed the platform the orders build. The operator's
+direction is recorded: the point is to create a platform, not to prove every
+constructible case before filing, and the refutation pass must be made worth
+its cost before a later pass pays it again.
+
+The next planning pass measures the refuter's yield against its cost from the
+receipts and the meter (dispatch-to-file, tokens, holds whose repairs changed
+a criterion an executor later relied on, holds overridden) and selects one of:
+a bounded refuter scope that judges an order's platform claims and cost
+declarations rather than adversarial completeness of every contract sentence;
+a hold budget per pass after which findings are recorded as known issues with
+reopening conditions instead of stopping the pass; a refuter prompt that
+carries the operator's platform-first standard; or retiring the pass-scoped
+refutation in favour of the full-scope one at release boundaries. Any change
+to the refuter's rules or the gate needs its own order; this candidate
+allocates none.
+
+Reopen at the next planning pass, or when a refutation's third consecutive
+hold stops a pass again. No order, number, sequence position or activation
+authority is allocated here.
+
+Resolved: the machinery stand-down pass measured the yield: receipts 009 to
+012 held four times on constructed counterexamples at 2,454, 833, 333 and
+755 s, two holds were overridden, and one overridden hold was re-raised by
+the next receipt and re-imported as scope, producing a design that failed
+verification and was removed
+[[machinery stand-down pass](machinery-stand-down-2026-09-15.md), 2026-09-15]. The pass selected the
+bounded scope and changed the hold semantics together: the refuter judges
+goal alignment, system traps, constraint removal and antifragility from the
+Cost line, the meter and the critical path; only an observed failure or a
+vision contradiction holds; a constructible counterexample is a known issue;
+one judgment per pass, no third-hold stop, no budget refusal, and a
+disposition binds the criterion text. Allocated to
+[WO-132](../work-orders/WO-132-machinery-stand-down.md) criterion 11; this
+candidate closes on that order's merge.
+
+### Candidate — follow-up register settlement
+
+The register holds 297 entries with 283 untriaged (2026-09-16). Two
+mechanisms fill it: the migration harvested every historical candidate
+heading and NoOp bullet as a pending row, and every per-order decision
+record is harvested as a follow-up although a decision with a
+`reopenWhen` observation is a record, not an action. Three planning passes
+have selected nothing from the feed. A later pass may spend one session
+settling the migration rows as historical, and may change the collector so
+a decision record enters the feed only when its reopening observation has
+been recorded. No order is allocated; reopen at a planning pass that has the
+session to spend, or when the pending count exceeds three hundred.
+
+Measured: 359 entries, 348 pending, 344 untriaged; the 62 entries added
+since the R1 pass are 45 decision records, four ideation candidates, fifteen
+defect-register items and one NoOp bullet, and every one was untriaged until
+this pass disposed the candidates and the register items it decided
+[[vision-into-use pass](vision-into-use-2026-09-17.md), 2026-09-17]. The pending count crossed
+three hundred by harvesting decision records, so the threshold rises to
+four hundred; the collector change stays the candidate's substance.
+
+Settled and allocated: 399 entries (235 decision records, 164 candidate
+rows), 371 pending, 364 never triaged (228 decision records, 136 candidate
+rows) [cleanup pass, 2026-09-19].
+The operator budgeted the session this candidate asked for. Eight read-only
+batch surveys classified every pending row against `main` at `3b3533f8` and
+the pass disposed them; the counts and the rows that carried real work are
+in [the planning document](outstanding-cleanup-2026-09-19.md)
+§2. After it: 417 entries, none untriaged, five open and 76 deferred with
+reopening conditions. The collector change is
+[WO-142](../work-orders/WO-142-outstanding-cleanup.md) row A1. Reopen if
+untriaged rows pass fifty after WO-142 closes.
+
+Implemented in WO-142: a decision enters the pending feed only when it
+names a `followup`, or another decision records an observed reopening
+through `reopens.decisionId` and `reopens.observation` [WO-142, 2026-09-19]. A
+`reopenWhen` condition by itself creates no action. The decisions index still
+lists every record; existing register entries, identifiers and history are
+retained. Executor, verifier and reviewer role text now requires an encountered
+defect to be fixed inside the Boy Scout bound or boarded up as a decision
+record naming its follow-up, cited by the report. The collector change and
+before/after observations are recorded in
+[WO-142 evidence](../evidence/WO-142/README.md) and its
+[decisions](../evidence/WO-142/decisions.md). The next planning pass's feed
+size and untriaged count are the reopening observations; the fifty-row
+threshold above stays in force.
+
+Reopening observation: 486 entries, 149 pending, 67 untriaged after WO-142
+closed: 65 decision rows from eleven orders closed on 2026-09-19 to
+2026-09-21 and two planning candidates [standard pass, 2026-09-21].
+The threshold fired for a different reason than the migration refill it was
+written against: the rows are B17's boarded defects and the collector is
+doing what WO-142 made it do. Inside them, 16 are in-order repair directives
+(a verifier's `followup` beginning "In resume: fix" or "Repair ... VER-001
+F<n>") that the order's own repair cycle discharged before it closed, two are
+decisions reopened by those repairs, and four are final-review routings the
+review discharged; all 22 were settled by this pass with the closing evidence
+named. The remaining 45 were settled, allocated, deferred or left open one by one
+([the standard-pass planning document](standard-pass-2026-09-21.md)
+§3). The `followup` field therefore carries two things the feed cannot tell
+apart: routing inside an order and a nomination that outlives it. No
+collector change is allocated; the smallest fix is role text (a verifier
+names in-order routing in the decision and the report, and reserves
+`followup` for what outlives the order), which is a bundle regeneration for
+the next order that edits the verifier role. Reopen when the next planning
+pass counts more than ten discharged in-order directives in its untriaged
+rows, or when untriaged rows again pass fifty.
+
+### Candidate — local lane retention
+
+Ignored local lanes grow without a rule: 13 immutable harness runtime
+snapshots (34 MB), 36 MB of hook journals and 31 MB of retained close lanes
+on 2026-09-16. A retention rule may remove a snapshot no installed manifest
+pins and a retained lane older than its order's published release, keeping
+the retained-lane byte proofs. No order is allocated; reopen on disk
+pressure or when the snapshot count exceeds twenty.
+
+Reopened and allocated: 27 snapshots (80 MB) with one pinned, 99 MB under
+`docs/control/local/`, and 96 MB under `.git/dotln/suite-success`, which no
+source has written since WO-132 removed the suite-success cache
+[[cleanup pass](outstanding-cleanup-2026-09-19.md), 2026-09-19]. Allocated to
+[WO-142](../work-orders/WO-142-outstanding-cleanup.md) row D1: an on-demand
+prune that lists before it deletes.
+
+Implemented in WO-142: run `node scripts/harness.mjs prune` to list
+removable paths, byte totals and reasons for retaining other paths; this
+form writes nothing [WO-142, 2026-09-19]. After reviewing
+the listing, `node scripts/harness.mjs prune --apply` removes only candidates
+whose ownership and byte inventory still match a fresh observation. Installed
+manifests and target installation receipts across registered worktrees protect
+their snapshots, including targets in separate repositories. A live gate,
+another live or unknown writer, unreadable pins, current or live session
+ownership, and missing session-end observations retain the affected files;
+legacy advisory markers without session ownership are retained. The dead
+suite-success cache is eligible only without a live gate. The `release list`
+cache is listed as retained and never removed: each listing rewrites it to the
+current tags, and subject teardown disposes of it (WO-164).
+
+A retained order lane is eligible only after its worktree is gone, a
+non-draft published Release and matching remote tag establish publication (one
+listing of each per run), and the order's committed `meta.json` names the SHA-256
+of any usage copy it holds. The command first keeps a sibling `WO-NNN.bytes-<digest>.json`
+inventory of paths, modes, byte lengths and SHA-256 hashes, then removes the
+lane; a stopped apply resumes when run again. Symlinks, special files and nested
+repositories are retained. This is an on-demand
+command, not a new recurring check. The real-checkout listing, before/after
+sizes and fixture evidence belong to
+[WO-142 evidence](../evidence/WO-142/README.md) and its
+[decisions](../evidence/WO-142/decisions.md). Reopen on disk pressure or an
+observed retained candidate that the documented ownership/publication rules
+cannot explain.
+
+### Candidate — stale writer reservation self-diagnosis
+
+WO-050 VER-001 observed a Codex executor's reservation outliving its
+session with `liveness: unavailable`, refusing every shell command of the
+next session including `node scripts/harness.mjs writer --show`, until an
+operator released it from a terminal. The kept invariant was right; the
+diagnosis path was not. The stand-down declined a shell classifier. The
+original candidate awaited a second observed occurrence.
+
+Substance shipped: WO-139's commit `3ea00e50` releases the executor's writer
+at completion (`scripts/lib/executor-handoff.mjs`; `scripts/resume.mjs`
+`executorWriterRelease`), and the hook admits
+`node scripts/harness.mjs writer --show` among its repository commands
+(`packages/skeleton/src/harness-host.ts`) [2026-09-18, recorded by the
+[cleanup pass](outstanding-cleanup-2026-09-19.md), 2026-09-19]. The reopening condition was met the
+other way round: three Codex sessions after WO-155 (WO-156's repair, WO-161's
+implementation and repair) found no reservation at dispatch, because
+`beginHarnessSessionOnce` reserves nothing while the role text describes a
+reservation completion releases; two reserved by hand mid-phase and one handed
+off unreserved. Frequency is unknown (worktree journals are discarded at
+teardown). WO-166 makes the five Codex lifecycle dispatches reserve before a
+control event can be appended, using a verified Codex ancestor or a pid-less
+thread owner whose liveness remains unknown
+([2026-09-25 standard pass](standard-pass-2026-09-25.md) §3).
+Executor, verifier, reviewer and release-close completion release only their own
+reservation after the durable result. A release-close handoff from the subject
+checkout directs the new main session to dispatch there, so the session that
+runs the helper owns and releases main's writer. Every foreign-writer refusal
+names the holder, owner, reservation time, age and operator release command,
+including `--force` for a live owner; `writer --show` remains available for
+diagnosis. An open operator override is reported once at the next session start
+in the same worktree. `node scripts/harness.mjs evidence --wait [--timeout <seconds>]`
+exits with the recorded gate outcome or a timeout; run it in the background under
+Claude Code. The killed Codex session still needs the operator release route when
+its owner cannot be proven dead.
+
+### Candidate — total subagent cap across every spawn path
+
+Operator direction, 2026-09-17: a session's total subagents need a hard,
+configurable cap (about twenty), because a top-level guideline of five fans
+out through per-item adversarial and refutation trees to more than a
+hundred. The harness documents no total cap, only a size guideline, a
+concurrency ceiling of sixteen and a per-workflow limit of a thousand; its
+hooks fire for the Agent and Workflow tools and inside subagents. WO-139
+counts and refuses at the admission points the hook can see and counts
+descendants at their first attributable tool call, so an agent the harness
+creates before any hook fires is counted late or not at all, and Codex's
+`spawn_agent` fires no hook in the recorded profile. The 2026-09-18
+[WO-139 probe](../evidence/WO-139/README.md) observes Claude 2.1.276 sharing
+`session_id` and supplying distinct `agent_id` values for direct and workflow
+children. Direct Agent results join that identity to `tool_use_id` when the
+result is observed, including immediately for background spawns. Probe 2 also
+observed `SubagentStart` carrying `session_id` and `agent_id` before each
+child's first tool call; no hook is registered for it and its ability to deny
+is untested ([WO-139 review, items 5–6](../final-reviews/WO-139/FINAL-002.md)). During unresolved overlap the counter reports a minimum
+distinct count, preserving every observation and excluding children seen
+before a later spawn; it never invents a parent link. For example, two
+unresolved direct admissions and two later workflow children can represent
+four agents while the minimum is two. Agents created before their first
+hook, silent agents, unknown identities, unreadable counters and this
+unresolved overlap remain outside an exact total guarantee. The requirement that remains open is a
+guaranteed maximum across every path: admission before creation, including
+descendants and concurrent spawns. No order is allocated for it; the
+Contributor's batching rule is the interim control. Reopen when the harness
+documents a pre-creation admission hook or a total-cap setting, or when a
+session exceeds the cap on a path WO-139 reports as uncounted.
+
+
 ## REVIEW-003 consumed — dispositions and routes (2026-09-25)
 
 Recorded by the 2026-09-25 planning pass, which paid for

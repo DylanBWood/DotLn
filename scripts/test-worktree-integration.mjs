@@ -937,6 +937,37 @@ test("untracked stash collision remains explicit and recoverable until continuat
   );
 });
 
+test("WO-167 --continue judges the recorded phase while the uncommitted control log travels in the stash", (t) => {
+  const f = fixture(t, { reviewed: true });
+  const log = "docs/control/orders/WO-998.jsonl";
+  const bytes = text(f.subject, log);
+  runGit(f.subject, ["rm", "-q", "--cached", log], fixtureGitOptions);
+  runGit(
+    f.subject,
+    ["commit", "-qm", "the control log stays uncommitted"],
+    fixtureGitOptions,
+  );
+  assert.equal(text(f.subject, log), bytes);
+  const first = f.invoke();
+  assert.equal(first.status, 1, first.stdout + first.stderr);
+  assert.ok(!existsSync(join(f.subject, log)), "the stash holds the log");
+  // The README release block still resolves from the recorded order path.
+  assert.match(first.stdout, /Authored conflicts: 'authored-fixture.md'\n/);
+  const receipt = JSON.parse(
+    text(f.subject, "docs/control/local/integration.json"),
+  );
+  assert.equal(receipt.phase, "final-review");
+  put(f.subject, "authored-fixture.md", "explicitly combined intent\n");
+  runGit(f.subject, ["add", "authored-fixture.md"], fixtureGitOptions);
+  const continued = f.invoke("--continue");
+  assert.equal(continued.status, 0, continued.stdout + continued.stderr);
+  assert.doesNotMatch(continued.stderr, /requires the selected order/);
+  assert.equal(text(f.subject, log), bytes);
+  assert.ok(
+    JSON.parse(text(f.subject, "docs/control/local/integration.json")).complete,
+  );
+});
+
 test("WO-169 a first invocation with no authored conflict generates at once", (t) => {
   const f = fixture(t, { authored: false });
   const first = f.invoke();

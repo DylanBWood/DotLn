@@ -1234,8 +1234,8 @@ toward a small experiment on a relevant question, input, proposed answer or
 response. The names Tinkerer and Scientist remain alternatives. The motivating
 Node/Python build comparison found a useful option after a dependency objection;
 the desired behavior is to elicit such evidence without waiting for that
-objection every time. This extends product 07's
-[recurring-alternatives candidate](07-execution-guide.md#candidate--recurring-review-of-implementation-alternatives).
+objection every time. This extends the planning map's
+[recurring-alternatives candidate](../planning/work-order-map.md#candidate--recurring-review-of-implementation-alternatives).
 
 An A/B comparison is one experiment shape, alongside a targeted probe or a
 small prototype. State the question, credible alternatives, observation and

@@ -45,10 +45,10 @@
       "decision": "docs/evidence/WO-085/decisions.md#wo-085-d005"
     },
     "07-execution-guide.md": {
-      "nonExemptBytesAtLanding": 184704,
-      "ceiling": 188399,
-      "date": "2026-09-26",
-      "decision": "docs/evidence/WO-085/decisions.md#wo-085-d012"
+      "nonExemptBytesAtLanding": 154129,
+      "ceiling": 157212,
+      "date": "2026-09-28",
+      "decision": "docs/evidence/WO-167/decisions.md#wo-167-d007"
     },
     "08-publication-compiler.md": {
       "nonExemptBytesAtLanding": 22552,

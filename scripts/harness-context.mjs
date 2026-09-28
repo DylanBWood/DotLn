@@ -16,8 +16,14 @@ import {
   countReads,
   directedReads,
   legacyDirectedReads,
+  readDirectives,
+  sectionRange,
 } from "./lib/harness-context.mjs";
-import { measureColdStarts, requireBudgets } from "./lib/process-budget.mjs";
+import {
+  dispatchKinds,
+  measureColdStarts,
+  requireBudgets,
+} from "./lib/process-budget.mjs";
 
 const root = findLaunchpad();
 export const fixtureTree = join(root, "scripts/fixtures/harness-context/tree");
@@ -163,6 +169,51 @@ export function measureHarnessContext(overrides = new Map()) {
     profiles: result,
   };
 }
+/** Every document selector the installed floor and role skills read, resolved
+ * with the strict resolver; task selectors (`@work-order`, ...) are task input
+ * and absent skill files are the measurement's unknowns (WO-167 VER-001 F1). */
+export function unresolvedInstalledReads(launchpad) {
+  const text = (path) =>
+    existsSync(join(launchpad, path))
+      ? readFileSync(join(launchpad, path), "utf8")
+      : null;
+  const floor = text("CLAUDE.md");
+  const failures = new Set();
+  for (const skillsRoot of [".claude/skills", ".agents/skills"])
+    for (const role of dispatchKinds) {
+      const skillPath = `${skillsRoot}/dotln-${role}/SKILL.md`;
+      for (const [source, body] of [
+        ["CLAUDE.md", floor],
+        [skillPath, text(skillPath)],
+      ]) {
+        if (body === null) continue;
+        let directives;
+        try {
+          directives = readDirectives(body, role);
+        } catch (error) {
+          failures.add(`${source} (${role}): ${error.message}`);
+          continue;
+        }
+        for (const { selector, line } of directives) {
+          const [path, ...anchor] = selector
+            .replace(/^@skills\//, `${skillsRoot}/`)
+            .split("#");
+          if (path.startsWith("@")) continue;
+          try {
+            if (path.startsWith("/") || path.split("/").includes(".."))
+              throw new Error(`Unsafe required path: ${path}`);
+            const target = text(path);
+            if (target === null)
+              throw new Error(`Unresolved required file: ${path}`);
+            sectionRange(target, anchor.join("#"));
+          } catch (error) {
+            failures.add(`${source}:${line} (${role}): ${error.message}`);
+          }
+        }
+      }
+    }
+  return [...failures];
+}
 export function checkContextMeasurement(measurement) {
   if (!measurement.instruction.lower)
     process.stderr.write(
@@ -178,14 +229,20 @@ if (isMainModule(import.meta.url)) {
   const args = process.argv.slice(2);
   if (args.includes("--help")) {
     console.log(
-      "usage: harness-context.mjs [--check] [--write]\nMeasures installed cold-start bytes and historical deltas as JSON. --check evaluates budgets and prints advisory breaches; budget observations never refuse. --write refreshes the legacy WO-126 measurement path.",
+      "usage: harness-context.mjs [--check] [--write]\nMeasures installed cold-start bytes and historical deltas as JSON. --check evaluates budgets and prints advisory breaches; budget observations never refuse. --check also resolves every document Read selector of the installed floor and role skills strictly and exits 1 naming each one that does not resolve. --write refreshes the legacy WO-126 measurement path.",
     );
   } else if (args.some((arg) => !["--check", "--write"].includes(arg))) {
     console.error("usage: harness-context.mjs [--check] [--write]");
     process.exitCode = 1;
   } else {
     const result = measureColdStarts(root);
-    if (args.includes("--check")) requireBudgets(result.profiles);
+    if (args.includes("--check")) {
+      requireBudgets(result.profiles);
+      for (const failure of unresolvedInstalledReads(root)) {
+        console.error(`Unresolved installed read: ${failure}`);
+        process.exitCode = 1;
+      }
+    }
     const destination = docPath(
       root,
       "evidence",
