@@ -121,6 +121,232 @@ test("release shell changes select their inventory guard during review", async (
       task.args?.includes("scripts/test-release-fixtures.mjs"),
     ),
   );
+  // WO-173 (WO-169 D007): an untracked script a suite declares selects it
+  // before it is staged, so the review gate covers the file an order adds.
+  writeFileSync(shell, baseline);
+  assert.deepEqual(changedMachinery(repo, suites, "main"), []);
+  writeFileSync(join(repo, "scripts/test-gate-deadlines.mjs"), "export {};\n");
+  assert.deepEqual(
+    changedMachinery(repo, suites, "main").map((row) => row.name),
+    ["configuration-root", "runner-fixtures"],
+  );
+});
+
+test("WO-173 npm test reuses a passing complete row of a covering selection at the same code identity; --again, a changed source, a failed row, a partial row and a plain row under --review run the gate", async (t) => {
+  const repo = mkdtempSync(join(tmpdir(), "dotln-gate-reuse-"));
+  t.after(() => rmSync(repo, { recursive: true, force: true }));
+  const fixtureGitOptions = {
+    exec: true,
+    trim: false,
+    encoding: "utf8",
+    stdio: ["ignore", "pipe", "pipe"],
+  };
+  runGit(repo, ["init", "-b", "main"], fixtureGitOptions);
+  runGit(repo, ["config", "maintenance.auto", "false"], fixtureGitOptions);
+  runGit(repo, ["config", "user.name", "Fixture"], fixtureGitOptions);
+  runGit(
+    repo,
+    ["config", "user.email", "fixture@example.invalid"],
+    fixtureGitOptions,
+  );
+  writeFileSync(
+    join(repo, ".gitignore"),
+    "docs/control/local/\nobserved.jsonl\n",
+  );
+  mkdirSync(join(repo, "scripts"));
+  const source = (name) => join(repo, `scripts/${name}.mjs`);
+  for (const name of ["build", "alpha", "machine"])
+    writeFileSync(
+      source(name),
+      `import fs from "node:fs";\nfs.appendFileSync("observed.jsonl", ${JSON.stringify(`${name}\n`)});\n`,
+    );
+  runGit(repo, ["add", "."], fixtureGitOptions);
+  runGit(repo, ["commit", "-qm", "Gate reuse fixture"], fixtureGitOptions);
+  // The order's branch: main stays behind, so a machinery source changed
+  // here is selected under --review while the code identity stays put.
+  runGit(repo, ["checkout", "-q", "-b", "work"], fixtureGitOptions);
+  writeFileSync(
+    source("machine"),
+    readFileSync(source("machine"), "utf8") + "// changed\n",
+  );
+  runGit(
+    repo,
+    ["commit", "-qam", "Change the machinery source"],
+    fixtureGitOptions,
+  );
+  const row = (name, options = {}) => ({
+    name,
+    command: [process.execPath, `scripts/${name}.mjs`],
+    ...options,
+  });
+  const table = [
+    row("build", { build: true, product: true }),
+    row("alpha", { product: true }),
+    row("machine", { machinery: true, sources: ["scripts/machine.mjs"] }),
+  ];
+  const observed = () =>
+    existsSync(join(repo, "observed.jsonl"))
+      ? readFileSync(join(repo, "observed.jsonl"), "utf8").trim().split("\n")
+      : [];
+  const rows = () =>
+    readGateChecks(repo).filter((check) => check.checkId === "npm test");
+  const lines = [];
+  const log = console.log;
+  console.log = (line) => lines.push(String(line));
+  t.after(() => (console.log = log));
+  const gate = (args) => runGate(["--serial", ...args], repo, { table });
+  const rx = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const reuseLine = (check, review = false) =>
+    new RegExp(
+      `^npm test: a passing complete row of a selection that covers this one already exists at code identity ${check.codeIdentity} \\(recorded ${rx(check.recordedAt)}, [\\d.]+ s, ${check.requiredSuites.length} suites, ${rx(check.evidenceRef)}\\); no suite started\\. Run npm test -- --again${review ? " --review" : ""} to run it anyway\\.$`,
+      "m",
+    );
+  const identity = gateCodeIdentity(repo);
+  const first = await gate([]);
+  assert.equal(first.exitCode, 0);
+  assert.equal(first.reused, undefined);
+  assert.equal(first.codeIdentity, identity);
+  assert.deepEqual(first.requiredSuites, ["build", "alpha"]);
+  assert.deepEqual(observed(), ["build", "alpha"]);
+  assert.equal(rows().length, 1);
+  // The same selection at the same code identity: the row is printed, no
+  // suite starts and nothing is recorded; publication still finds that row.
+  lines.length = 0;
+  const reused = await gate([]);
+  assert.equal(reused.exitCode, 0);
+  assert.equal(reused.reused, true);
+  assert.equal(reused.evidenceRef, first.evidenceRef);
+  assert.deepEqual(observed(), ["build", "alpha"]);
+  assert.equal(rows().length, 1);
+  assert.match(lines.join("\n"), reuseLine(first));
+  assert.equal(
+    findGateCheck(repo, "npm test", gateTreeHash(repo)).evidenceRef,
+    first.evidenceRef,
+  );
+  // --again runs the selection.
+  const again = await gate(["--again"]);
+  assert.equal(again.exitCode, 0);
+  assert.equal(again.reused, undefined);
+  assert.deepEqual(observed(), ["build", "alpha", "build", "alpha"]);
+  assert.equal(rows().length, 2);
+  // --fresh keeps its meaning and runs the selection too.
+  const fresh = await gate(["--fresh"]);
+  assert.equal(fresh.reused, undefined);
+  assert.equal(observed().length, 6);
+  assert.equal(rows().length, 3);
+  // A plain row under --review runs the gate: the selection holds the
+  // machinery suite the branch's change selects, which no row covers yet.
+  const review = await gate(["--review"]);
+  assert.equal(review.exitCode, 0);
+  assert.equal(review.reused, undefined);
+  assert.deepEqual(review.requiredSuites, ["build", "alpha", "machine"]);
+  assert.deepEqual(observed().slice(6), ["build", "alpha", "machine"]);
+  assert.equal(rows().length, 4);
+  // The review row now covers both forms.
+  lines.length = 0;
+  const reviewAgain = await gate(["--review"]);
+  assert.equal(reviewAgain.reused, true);
+  assert.equal(reviewAgain.evidenceRef, review.evidenceRef);
+  assert.match(lines.join("\n"), reuseLine(review, true));
+  const plainAfterReview = await gate([]);
+  assert.equal(plainAfterReview.reused, true);
+  assert.equal(plainAfterReview.evidenceRef, review.evidenceRef);
+  assert.equal(observed().length, 9);
+  assert.equal(rows().length, 4);
+  // A changed source file moves the code identity, and the gate runs.
+  writeFileSync(
+    source("alpha"),
+    readFileSync(source("alpha"), "utf8") + "// edit\n",
+  );
+  assert.notEqual(gateCodeIdentity(repo), identity);
+  const changed = await gate([]);
+  assert.equal(changed.reused, undefined);
+  assert.equal(observed().length, 11);
+  assert.equal(changed.codeIdentity, gateCodeIdentity(repo));
+  // A failed row and a partial row at the current identity never satisfy the
+  // lookup, whoever recorded them.
+  for (const [label, extra] of [
+    ["failed", { exitCode: 1, evidenceRef: "fixture:failed" }],
+    [
+      "partial",
+      {
+        partial: true,
+        excludedSuites: ["alpha"],
+        evidenceRef: "fixture:partial",
+      },
+    ],
+  ]) {
+    writeFileSync(
+      source("alpha"),
+      readFileSync(source("alpha"), "utf8") + `// ${label}\n`,
+    );
+    const moved = gateCodeIdentity(repo);
+    assert.equal(
+      rows().some((check) => check.codeIdentity === moved),
+      false,
+    );
+    recordGateChecks(repo, [
+      {
+        ...changed,
+        codeIdentity: moved,
+        recordedAt: new Date().toISOString(),
+        ...extra,
+      },
+    ]);
+    const before = observed().length;
+    const run = await gate([]);
+    assert.equal(run.reused, undefined, label);
+    assert.equal(observed().length, before + 2, label);
+  }
+  // The lookup itself, beside the runner.
+  const { coveringGateCheck } = await import("./lib/gate-reuse.mjs");
+  const covering = await coveringGateCheck(repo, "npm test", [
+    "build",
+    "alpha",
+    "zeta",
+  ]);
+  assert.equal(covering.row, undefined);
+  assert.deepEqual(covering.missing, ["zeta"]);
+  assert.ok(covering.candidates.length >= 1);
+  assert.equal(
+    (await coveringGateCheck(repo, "npm test", ["alpha"])).row.evidenceRef,
+    rows().at(-1).evidenceRef,
+  );
+  // A complete passing row that names no suites covers an empty requirement,
+  // as publication accepts it, and never a named selection, so the runner
+  // does not reuse it.
+  writeFileSync(
+    source("alpha"),
+    readFileSync(source("alpha"), "utf8") + "// bare\n",
+  );
+  const bare = gateCodeIdentity(repo);
+  const { requiredSuites: omitted, ...bareRow } = changed;
+  assert.ok(omitted.length);
+  recordGateChecks(repo, [
+    {
+      ...bareRow,
+      codeIdentity: bare,
+      evidenceRef: "fixture:bare",
+      recordedAt: new Date().toISOString(),
+    },
+  ]);
+  assert.equal(
+    (await coveringGateCheck(repo, "npm test", [], bare)).row.evidenceRef,
+    "fixture:bare",
+  );
+  assert.equal(
+    (await coveringGateCheck(repo, "npm test", ["alpha"], bare)).row,
+    undefined,
+  );
+  const beforeBare = observed().length;
+  const bareRun = await gate([]);
+  assert.equal(
+    bareRun.reused,
+    undefined,
+    "a row naming no suites is not reused",
+  );
+  assert.equal(observed().length, beforeBare + 2);
+  assert.deepEqual(activeGateRuns(repo), [], "every run released its marker");
 });
 
 test("WO-169 a changed script outside the former eight sources selects the configuration-root suite", async (t) => {
@@ -1683,7 +1909,9 @@ test("WO-140 an inherited marker whose denied-write probe succeeds does not refu
   assert.deepEqual(readdirSync(fixture.denied), []);
   assert.deepEqual(fixture.observed(), ["build", "alpha", "outside"]);
   // No marker at all is today's behavior: no probe and no sandbox field.
-  const plain = await runGate(["--serial"], fixture.repo, {
+  // The first run's row would be reused at this code identity (WO-173), so
+  // the second run says --again to run the selection.
+  const plain = await runGate(["--serial", "--again"], fixture.repo, {
     ...fixture.options(0o555),
     sandbox: { env: {}, markers: fixture.options(0o555).sandbox.markers },
   });
