@@ -40,6 +40,65 @@ are now declared above. The [decision record](../evidence/WO-084/decisions.md)
 records the legacy ledger write-back; `node scripts/lineage.mjs index` generates
 the index and `index --check` enforces this rule in `npm run test:docs`.
 
+## 2026-09-28 — Ideation during WO-173 execution: product documents that only grow (the roadmap, the README)
+
+Source: two operator messages during `resume: next` on WO-173, captured
+verbatim in main's ignored intake (`docs/intake/notes/WO-173-expanded-ideation-2026-09-28.md`, SHA-256
+`2993746fa51b3d9d903c9e3b39162f7110600b717e4e499abfbd5ecbf78cf71f`). The first: the roadmap
+reads as scratch, with a paragraph appended at its top for every release,
+including the ones parallel releases produce, a retiming section for
+something that happened once, and candidates that belong in ideation or the
+pattern library; every product file should be as tight as possible, public,
+telling one cohesive story; today they serve individual work orders, not a
+human reader. The second: the public README has the same disease, work
+orders append their own material, and the shape is growth without regard
+to the whole, by workers who own a phase and never the document. Shape-first
+reading: the payload is an ownership relation between a phase worker and a
+whole document, not a complaint about any one paragraph. Clean-room screen:
+the operator's own words about this repository, nothing employer-derived.
+Receipt: [WO-173-D006](../evidence/WO-173/decisions.md#wo-173-d006--ideation-breakout-receipt-product-documents-that-only-grow).
+
+- **Product documents are owned as wholes** `candidate` `operator-directed`
+  - A product document is written for a reader of the whole and stays as
+    tight as it can be; a section that grows only by dated paragraphs is a
+    log, and a log belongs in release records, order evidence or a generated
+    view. Product 07 §Documentation freshness and ownership already says so
+    (operator direction, 2026-09-25). What this entry adds is why the rule
+    does not hold: the machinery mandates the appends. The executor role text
+    tells every order to complete "a missing activation target under
+    06-roadmap.md §Release boundary", and `release prepare` refuses a README
+    block whose version line does not name the order's target, so each
+    order's worker writes the paragraph and the line the machinery asks for
+    and never rereads the whole; WO-173 did both during this dispatch, before
+    the ideation. Candidate in the planning map (this date).
+- **The roadmap's release log and retiming notes are WO-086's subject** `preserved` `operator-directed`
+  - WO-086 (queued) renders §Release boundary from annotated tags between
+    markers, records a collision as the integrating order's typed decision
+    and moves the hand-kept notes to one receipt; WO-087 moves the roadmap's
+    candidate sections out. The operator's message re-observes their gap on
+    2026-09-28: §Release boundary runs from line 21 to line 733 of a
+    161,041-byte document (545 lines at WO-086's 2026-09-25 observation).
+    Neither order removes the executor duty that writes the paragraph, and
+    neither covers the README block beyond collision prose or the roadmap's
+    capability-progression and counterfactual-profiling sections.
+- **The README release block has outgrown its rule** `candidate` `operator-directed`
+  - WO-068-D004's rule: the "What runs today" write-back rewrites the block
+    within fifteen sentences and moves per-order detail to release notes. On
+    2026-09-28 the block between its markers is 7,251 bytes and about forty
+    sentences by a terminator count. Route: a block `release prepare`
+    renders from the version line and the latest release notes, and a surface
+    check that refuses growth past the rule, so no order can append to it.
+    Candidate in the planning map (this date).
+- **An append the machinery demands is a mechanism to remove, not a discipline to preach** `preserved` `operator-directed`
+  - The 2026-09-28 failures pass recorded that a rule in prose stopped
+    neither of two recurring failures; the same holds here, where a
+    2026-09-25 rule against dated paragraphs is followed by an executor duty
+    to append one. Once WO-086 gives the release boundary a generated home,
+    the activation-target duty leaves the role text and `docs-check` can
+    refuse a new per-order dated paragraph under a product heading the way
+    it refuses a ceiling. Reopen: WO-086 closes, or the next planning pass
+    sequences the roadmap fold.
+
 ## 2026-09-28 — Planning pass: the failures no instrument counted (WO-172, WO-173; the queue re-observed)
 
 Source: the operator's dispatch and thirteen messages during the pass,
