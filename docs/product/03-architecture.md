@@ -1606,7 +1606,16 @@ text, never the default channel for state you own in structured form.
 - `SourceAdapter`: tracked-work artifact → immutable **SourceBundle** (rich-text
   semantics preserved as data — strikethrough, color, revision history, images
   with OCR-as-aid-never-truth; per-artifact convention inference; secrets stay
-  in the adapter, never in prompts/logs/repo). A **StoryContract** is the typed
+  in the adapter, never in prompts/logs/repo). WO-060's `decodeSourceBundle` is
+  the port's input contract: sections, discussion with role-label authors, image
+  references by content hash and revisions, with rich text kept in each text's
+  own markup and spans as UTF-8 byte ranges of one section or entry; malformed
+  input refuses with a path, and the hash is an fnv1a64 equality receipt. The
+  screen is a declared filter, not a detector of every secret: it refuses its
+  declared shapes (a private-key header, a Bearer credential, GitHub token
+  prefixes) and each declared URL form whose host is off the allowlist supplied
+  at decode time, and passes an unprefixed 40-hex token, a JWT without the
+  Bearer word or a password in the userinfo of an allowed URL. A **StoryContract** is the typed
   interpretation compiled from a SourceBundle (purpose, current/desired
   behavior, acceptance criteria, examples, constraints, non-goals, assumptions,
   open questions, pinned source revision); an **ImpactMap** is the structured

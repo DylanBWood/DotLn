@@ -24,6 +24,8 @@ const commonSources = [
   "packages/compiler/src/render.ts",
   "packages/compiler/src/seiri.ts",
   "packages/compiler/src/senses.ts",
+  // WO-060: the compiler index re-exports the SourceBundle contract.
+  "packages/compiler/src/source-bundle.ts",
   "packages/compiler/src/types.ts",
   "packages/compiler/src/verification.ts",
   "packages/compiler/src/views.ts",

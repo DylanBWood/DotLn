@@ -1,4 +1,4 @@
-# WO-060 — SourceBundle v1: an immutable, positively decoded bundle of a tracked-work artifact's sections, discussion, image references and revisions, with a screen that refuses the secret shapes it declares and every declared URL form whose host is not allowed (version assigned at activation)
+# WO-060 — SourceBundle v1: an immutable, positively decoded bundle of a tracked-work artifact's sections, discussion, image references and revisions, with a screen that refuses the secret shapes it declares and every declared URL form whose host is not allowed (v0.53.0)
 
 **Model:** any capable model. State the model and effort actually run in the
 result (07-execution-guide.md §Model-specific notes).

@@ -194,6 +194,11 @@ so no recorded program, manifest or semantic hash changes because the schema
 exists. `repositories`, `build` and `release` are validated here and consumed
 by later orders; their own contents are not a version axis of this schema.
 
+WO-060 adds the `source-bundle-v1` contract axis, independent of compiler
+`0.20.0`, which carries it. The hash domain `dotln:source-bundle:v1` names it;
+a later version adds a discriminator whose absence means v1. The
+compiled-program contract, kernel and event schema are unchanged.
+
 ## Transformation graph
 
 Schema and component changes form a directed graph of named, versioned
