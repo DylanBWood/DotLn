@@ -27,12 +27,16 @@ const releaseAssignment = (before, after) => {
   const newTitle = after.match(/^# [^\r\n]+/u)?.[0];
   const placeholder = "(version assigned at activation)";
   // A title filed without the placeholder (the 2026-09-25 pass, WO-158-D017)
-  // admits the same single label, appended after one space.
+  // admits the same single label, appended after one space. A judged label
+  // admits one replacement: a collision retime is bookkeeping (WO-167-D013).
+  const judgedLabel = oldTitle?.match(releaseLabel);
   const stem = oldTitle?.endsWith(placeholder)
     ? oldTitle.slice(0, -placeholder.length)
-    : oldTitle && !/\(v[^()]*\)$/u.test(oldTitle)
-      ? `${oldTitle} `
-      : undefined;
+    : judgedLabel && oldTitle[judgedLabel.index - 1] === " "
+      ? oldTitle.slice(0, judgedLabel.index)
+      : oldTitle && !/\(v[^()]*\)$/u.test(oldTitle)
+        ? `${oldTitle} `
+        : undefined;
   if (stem === undefined || !newTitle?.startsWith(stem))
     return { source: after, version: null };
   const version = newTitle.slice(stem.length);
@@ -41,6 +45,7 @@ const releaseAssignment = (before, after) => {
   return {
     source: oldTitle + after.slice(newTitle.length),
     version: version.slice(1, -1),
+    from: judgedLabel ? judgedLabel[0].slice(1, -1) : null,
   };
 };
 
@@ -443,7 +448,9 @@ export function checkPlanContinuation(
       updates.push({
         path,
         workOrderId,
-        kind: "release-assignment",
+        ...(assigned.from
+          ? { kind: "release-retiming", from: assigned.from }
+          : { kind: "release-assignment" }),
         version: assigned.version,
       });
     const migrated = migrateDependencies(

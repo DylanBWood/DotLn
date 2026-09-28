@@ -3567,6 +3567,64 @@ else {
       },
     );
     await check(
+      "WO-167 continuation admits one collision retime of a judged release label, and nothing else",
+      async () => {
+        const repo = makeRepo(parent, "judged-release-retiming");
+        const path = orderPath("WO-901");
+        const unlabelled = read(repo, path);
+        const original = unlabelled.replace(
+          "# WO-901 — Fixture",
+          "# WO-901 — Fixture (v1.2.3)",
+        );
+        write(repo, path, original);
+        commit(repo, "assign the fixture release");
+        await writeDirectReceipt(repo);
+        commit(repo, "record reviewed plan");
+        write(
+          repo,
+          path,
+          original.replace("Fixture (v1.2.3)", "Fixture (v1.3.1)"),
+        );
+        const retimed = await checkPlanGate(repo);
+        assert.deepEqual(
+          retimed.continuation.workspaceUpdates.map(
+            ({ kind, from, version }) => [kind, from, version],
+          ),
+          [["release-retiming", "v1.2.3", "v1.3.1"]],
+        );
+        for (const title of [
+          "# WO-901 — Fixture",
+          "# WO-901 — Fixture(v1.3.1)",
+          "# WO-901 — Fixture (v01.3.1)",
+          "# WO-901 — Fixture (v1.2.3) (v1.3.1)",
+          "# WO-901 — Fixture renamed (v1.3.1)",
+        ]) {
+          write(
+            repo,
+            path,
+            original.replace("# WO-901 — Fixture (v1.2.3)", title),
+          );
+          await assert.rejects(
+            checkPlanGate(repo),
+            /matching the current subject/u,
+            title,
+          );
+        }
+        // The label is the only admitted change; a body edit still refuses.
+        write(
+          repo,
+          path,
+          original
+            .replace("Fixture (v1.2.3)", "Fixture (v1.3.1)")
+            .replace(/\n$/u, "\nAn edited body.\n"),
+        );
+        await assert.rejects(
+          checkPlanGate(repo),
+          /matching the current subject/u,
+        );
+      },
+    );
+    await check(
       "WO-042 continuation rejects planning edits and forged execution classifications in both HEAD and the workspace",
       async () => {
         const repo = makeRepo(parent, "continuation-refusals");
