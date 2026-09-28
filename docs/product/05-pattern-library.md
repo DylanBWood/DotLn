@@ -34,7 +34,8 @@ tokens for solved problems); Sustain is the cadence. As equipment: the slotted
 5S set with compiled set bonuses. The launch narrative: "the 5S applied to your
 repo, for free, automatically — constant, ever-present, never in the way:
 cleaners, fixers, tool builders, bridge makers, gap pluggers, auditors,
-referees."
+referees." The first launchpad Sort and Set in order ran by hand on 2026-09-27
+(WO-163), each retirement through a recorded decision.
 
 A useful 5S recommendation also needs a sound implementation. The candidate
 [implementation-consequences extension](#candidate-extension--implementation-and-delayed-consequences)

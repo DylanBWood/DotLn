@@ -20,6 +20,16 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-163 activation completion (2026-09-27):** assigned application `v0.52.9`,
+the next patch above the observed local `v0.52.8` tag. Three import-only
+scripts move into `scripts/lib/`, the library's one command block becomes the
+`scripts/release-fixtures.mjs` entry point, three one-shot planning inputs
+retire by decision, the follow-up register is marked generated, and the WO-042
+mutation reproduction is kept as a historical record whose `--check` verifies
+the record against itself. No package source changes, so no component version
+moves. Independent verification, final review and publication remain separate
+dispatches.
+
 **WO-170 activation completion (2026-09-27):** assigned application `v0.52.8`,
 the next patch above the observed local `v0.52.7` tag. `release prepare` writes
 the order's bounded meter snapshot beside the pull-request meter block while its
