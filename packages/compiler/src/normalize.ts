@@ -23,13 +23,13 @@ import type {
   WorkOrderSeed,
 } from "./types.js";
 
-const compareText = (left: string, right: string): number =>
+export const compareText = (left: string, right: string): number =>
   left < right ? -1 : left > right ? 1 : 0;
 
 const sortedUnique = (values: readonly string[]): readonly string[] =>
   [...new Set(values)].sort(compareText);
 
-const orderedUnique = (values: readonly string[]): readonly string[] => [
+export const orderedUnique = (values: readonly string[]): readonly string[] => [
   ...new Set(values),
 ];
 
