@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { json as prettyJson } from "./lib/helpers.mjs";
 // One explicit, detached live row: the operator is away, the resident fires the
 // cadence, a real harness judges a session with a planted drift, and the drift
 // holds the next dispatch. Raw transport output stays ephemeral; the filed row
@@ -155,7 +156,7 @@ if (process.argv[2] === "--child") {
         "The structural finding is host-derived; a live model judgment may add others",
       ],
     };
-    writeFileSync(output, JSON.stringify(row, null, 2) + "\n");
+    writeFileSync(output, prettyJson(row));
     assert.equal(row.label, "observed");
     assert.equal(row.hostChecks.holdRaised, true);
     assert.equal(row.hostChecks.dispatchRefusedWhileHeld, true);

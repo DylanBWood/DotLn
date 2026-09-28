@@ -1,3 +1,5 @@
+import { runGit } from "./lib/git.mjs";
+import { write, json, sha256Hex as sha256 } from "./lib/helpers.mjs";
 import "./test-fixture-temporary.mjs";
 import test from "node:test";
 import { pruneHarness, pruneInventory } from "./lib/harness-prune.mjs";
@@ -129,17 +131,7 @@ const sourceRoot = fileURLToPath(new URL("../", import.meta.url));
 // process as the live reservation owner, and an outer session's declared
 // process cannot leak into fixture state.
 process.env.CLAUDE_PID = String(process.pid);
-const git = (root, ...args) =>
-  execFileSync("git", args, {
-    cwd: root,
-    encoding: "utf8",
-    stdio: ["ignore", "pipe", "pipe"],
-  }).trim();
-const write = (root, path, contents) => {
-  mkdirSync(dirname(join(root, path)), { recursive: true });
-  writeFileSync(join(root, path), contents);
-};
-const json = (value) => JSON.stringify(value, null, 2) + "\n";
+const fixtureGitOptions = { exec: true, stdio: ["ignore", "pipe", "pipe"] };
 const withOutsideAuthority = (program, roots) => {
   const grants = [
     ...contributorOutsideAuthority,
@@ -188,8 +180,13 @@ const control = {
 };
 function fixture() {
   const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-harness-test-")));
-  git(root, "init", "-b", "wo-999");
-  assert.equal(realpathSync(git(root, "rev-parse", "--show-toplevel")), root);
+  runGit(root, ["init", "-b", "wo-999"], fixtureGitOptions);
+  assert.equal(
+    realpathSync(
+      runGit(root, ["rev-parse", "--show-toplevel"], fixtureGitOptions),
+    ),
+    root,
+  );
   for (const name of ["compiler", "skeleton", "kernel"]) {
     cpSync(
       join(sourceRoot, `packages/${name}/dist/src`),
@@ -256,6 +253,8 @@ function fixture() {
     "scripts/lib/harness.mjs",
     "scripts/lib/terms.mjs",
     "scripts/lib/paths.mjs",
+    "scripts/lib/helpers.mjs",
+    "scripts/lib/git.mjs",
   ]) {
     mkdirSync(dirname(join(root, path)), { recursive: true });
     cpSync(join(sourceRoot, path), join(root, path));
@@ -274,18 +273,21 @@ function fixture() {
     "docs/work-orders/WO-999-fixture.md",
     "# Synthetic work order\nRead fixture.ts and run npm test.\n",
   );
-  git(root, "add", ".");
-  git(
+  runGit(root, ["add", "."], fixtureGitOptions);
+  runGit(
     root,
-    "-c",
-    "user.name=Fixture",
-    "-c",
-    "user.email=fixture@example.invalid",
-    "-c",
-    "commit.gpgsign=false",
-    "commit",
-    "-m",
-    "Create fixture",
+    [
+      "-c",
+      "user.name=Fixture",
+      "-c",
+      "user.email=fixture@example.invalid",
+      "-c",
+      "commit.gpgsign=false",
+      "commit",
+      "-m",
+      "Create fixture",
+    ],
+    fixtureGitOptions,
   );
   emitHarness(root);
   return root;
@@ -514,21 +516,24 @@ test("WO-139 Codex executor and fix completion automatically release after the f
     );
     // A subject briefing hands off to a different main session. It must not
     // reserve main under the subject actor that will never complete there.
-    git(root, "add", ".");
-    git(
+    runGit(root, ["add", "."], fixtureGitOptions);
+    runGit(
       root,
-      "-c",
-      "user.name=Fixture",
-      "-c",
-      "user.email=fixture@example.invalid",
-      "-c",
-      "commit.gpgsign=false",
-      "commit",
-      "-m",
-      "Closed fixture",
+      [
+        "-c",
+        "user.name=Fixture",
+        "-c",
+        "user.email=fixture@example.invalid",
+        "-c",
+        "commit.gpgsign=false",
+        "commit",
+        "-m",
+        "Closed fixture",
+      ],
+      fixtureGitOptions,
     );
     const main = join(root, "docs/control/local/linked-main");
-    git(root, "worktree", "add", "-b", "main", main);
+    runGit(root, ["worktree", "add", "-b", "main", main], fixtureGitOptions);
     for (const name of ["compiler", "skeleton", "kernel"])
       cpSync(
         join(root, `packages/${name}/dist`),
@@ -1146,7 +1151,11 @@ test("WO-146 Copilot native path aliases retain existing generated write guards"
       ).hookSpecificOutput.permissionDecisionReason,
       /AMBIGUOUS_PATH/,
     );
-    git(root, "switch", "-c", "planning/2030-01-02-copilot");
+    runGit(
+      root,
+      ["switch", "-c", "planning/2030-01-02-copilot"],
+      fixtureGitOptions,
+    );
     assert.equal(
       allowed(permissions(call(join(root, "docs/inside.md")))),
       true,
@@ -1156,7 +1165,7 @@ test("WO-146 Copilot native path aliases retain existing generated write guards"
         .permissionDecisionReason,
       /planning branch write/,
     );
-    git(root, "switch", "wo-999");
+    runGit(root, ["switch", "wo-999"], fixtureGitOptions);
     active = beginGateRun(root, "npm test");
     assert.match(
       permissions(call(join(root, "src/inside.ts"))).hookSpecificOutput
@@ -1250,7 +1259,11 @@ test("WO-146 generated hooks keep writer, planning, outside-write and live-gate 
       ),
       false,
     );
-    git(root, "switch", "-c", "planning/2030-01-02-patch");
+    runGit(
+      root,
+      ["switch", "-c", "planning/2030-01-02-patch"],
+      fixtureGitOptions,
+    );
     assert.equal(
       allowed(invoke(root, "permissions", call(["docs/inside.md"]))),
       true,
@@ -1268,7 +1281,7 @@ test("WO-146 generated hooks keep writer, planning, outside-write and live-gate 
       ).hookSpecificOutput.permissionDecisionReason,
       /outside-write grant/,
     );
-    git(root, "switch", "wo-999");
+    runGit(root, ["switch", "wo-999"], fixtureGitOptions);
     active = beginGateRun(root, "npm test");
     assert.match(
       invoke(root, "permissions", call(["src/inside.ts"])).hookSpecificOutput
@@ -1649,7 +1662,7 @@ for (const mode of ["runner", "evidence", "entry"])
           'import {writeFileSync} from "node:fs"; writeFileSync("../fixture.ts", "changed\\n");\n',
         );
         write(root, `${local}/tracked.ts`, "tracked despite ignore\n");
-        git(root, "add", "-f", `${local}/tracked.ts`);
+        runGit(root, ["add", "-f", `${local}/tracked.ts`], fixtureGitOptions);
         symlinkSync(
           join(root, "fixture.ts"),
           join(root, local, "input-link.ts"),
@@ -2264,7 +2277,7 @@ test("WO-132 hooks preserve boundary observations and delegate non-writer judgme
       }),
       true,
     );
-    git(root, "switch", "-c", "main");
+    runGit(root, ["switch", "-c", "main"], fixtureGitOptions);
     parity(
       root,
       "concurrent-work-requires-worktrees",
@@ -2274,7 +2287,7 @@ test("WO-132 hooks preserve boundary observations and delegate non-writer judgme
       }),
       true,
     );
-    git(root, "switch", "wo-999");
+    runGit(root, ["switch", "wo-999"], fixtureGitOptions);
     const before = readFileSync(join(root, "fixture.ts"), "utf8");
     for (const after of [before, "// @ts-ignore\n" + before]) {
       write(root, "fixture.ts", after);
@@ -3395,7 +3408,7 @@ test("WO-039 completion tracks outputs across commits and auxiliary prompts reta
     invoke(root, "write-observer", authored("PreToolUse"));
     write(root, "fixture.ts", "export const value = 2;\n");
     invoke(root, "read-observer", authored("PostToolUse"));
-    const before = git(root, "rev-parse", "HEAD");
+    const before = runGit(root, ["rev-parse", "HEAD"], fixtureGitOptions);
     assert.deepEqual(
       harnessOutputObligations(root, observedSession(root)).map(
         (row) => row.path,
@@ -3407,18 +3420,21 @@ test("WO-039 completion tracks outputs across commits and auxiliary prompts reta
       allowed(invoke(root, "read-observer", nativeRead(root, "fixture.ts"))),
       true,
     );
-    git(root, "add", ".");
-    git(
+    runGit(root, ["add", "."], fixtureGitOptions);
+    runGit(
       root,
-      "-c",
-      "user.name=Fixture",
-      "-c",
-      "user.email=fixture@example.invalid",
-      "-c",
-      "commit.gpgsign=false",
-      "commit",
-      "-m",
-      "Commit already reviewed fixture outputs",
+      [
+        "-c",
+        "user.name=Fixture",
+        "-c",
+        "user.email=fixture@example.invalid",
+        "-c",
+        "commit.gpgsign=false",
+        "commit",
+        "-m",
+        "Commit already reviewed fixture outputs",
+      ],
+      fixtureGitOptions,
     );
     assert.ok(harnessOutputs(root, before).length > 0);
     assert.equal(harnessOutputs(root).length, 0);
@@ -4368,7 +4384,7 @@ test("WO-132 generated hooks delegate classification, attribution, scope and run
 test("WO-132 main uses one reservation for build, bootstrap, history and release; coordination tools do not become writers", () => {
   const root = fixture();
   try {
-    git(root, "switch", "-c", "main");
+    runGit(root, ["switch", "-c", "main"], fixtureGitOptions);
     assert.equal(
       allowed(
         invoke(
@@ -4477,7 +4493,7 @@ test("WO-132 only the live product gate refuses input and success-record writes,
   try {
     // VER-003 F1: these literal append destinations are protected gate inputs.
     for (const path of ["1", "-"]) write(root, path, "seed\n");
-    git(root, "add", "--", "1", "-");
+    runGit(root, ["add", "--", "1", "-"], fixtureGitOptions);
     for (const path of ["1", "-"])
       assert.equal(gateInputPath(root, path), true, path);
     const payload = (tool_name, tool_input) =>
@@ -4702,7 +4718,7 @@ test("WO-158 a live gate admits the fixed read-only list stage by stage and name
         ["gpg.program", "false", "git --no-pager log -1"],
         ["gpg.ssh.program", "false", "git --no-pager show --stat HEAD"],
       ]) {
-        git(root, "config", key, value);
+        runGit(root, ["config", key, value], fixtureGitOptions);
         try {
           assert.equal(
             invoke(root, "permissions", payload(command)).hookSpecificOutput
@@ -4711,10 +4727,10 @@ test("WO-158 a live gate admits the fixed read-only list stage by stage and name
             `${key}: ${command}`,
           );
         } finally {
-          git(root, "config", "--unset", key);
+          runGit(root, ["config", "--unset", key], fixtureGitOptions);
         }
       }
-      git(root, "config", "core.fsmonitor", "false");
+      runGit(root, ["config", "core.fsmonitor", "false"], fixtureGitOptions);
       assert.equal(
         allowed(invoke(root, "permissions", payload("git --no-pager status"))),
         true,
@@ -5061,12 +5077,12 @@ test("WO-168 a live gate admits four argument forms of listed reads and the seco
       chmodSync(join(hooksPath, "post-index-change"), 0o755);
       writeFileSync(join(hooksPath, "pre-commit"), "#!/bin/sh\n");
       chmodSync(join(hooksPath, "pre-commit"), 0o755);
-      git(root, "config", "core.hooksPath", hooksPath);
+      runGit(root, ["config", "core.hooksPath", hooksPath], fixtureGitOptions);
       denied("git --no-pager diff");
       rmSync(join(hooksPath, "post-index-change"));
       // Another executable hook in the directory is none a read can start.
       admitted("git --no-pager diff");
-      git(root, "config", "--unset", "core.hooksPath");
+      runGit(root, ["config", "--unset", "core.hooksPath"], fixtureGitOptions);
 
       for (const [key, value, verdict] of [
         ["hook.fixture.event", "post-index-change", denied],
@@ -5078,11 +5094,11 @@ test("WO-168 a live gate admits four argument forms of listed reads and the seco
         ["format.pretty", "oneline", admitted],
         ["pretty.plain", "format:%H %s", admitted],
       ]) {
-        git(root, "config", key, value);
+        runGit(root, ["config", key, value], fixtureGitOptions);
         try {
           verdict("git --no-pager log -1");
         } finally {
-          git(root, "config", "--unset", key);
+          runGit(root, ["config", "--unset", key], fixtureGitOptions);
         }
       }
       // A key written without a value is a boolean Git reads as true.
@@ -5219,18 +5235,21 @@ test("WO-158 operator override: off appends OperatorOverrideRecorded with the op
     const pkg = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
     pkg.scripts["work-orders"] = "node scripts/work-orders.mjs";
     write(root, "package.json", json(pkg));
-    git(root, "add", ".");
-    git(
+    runGit(root, ["add", "."], fixtureGitOptions);
+    runGit(
       root,
-      "-c",
-      "user.name=Fixture",
-      "-c",
-      "user.email=fixture@example.invalid",
-      "-c",
-      "commit.gpgsign=false",
-      "commit",
-      "-qm",
-      "Real lifecycle",
+      [
+        "-c",
+        "user.name=Fixture",
+        "-c",
+        "user.email=fixture@example.invalid",
+        "-c",
+        "commit.gpgsign=false",
+        "commit",
+        "-qm",
+        "Real lifecycle",
+      ],
+      fixtureGitOptions,
     );
     const activated = spawnSync(
       process.execPath,
@@ -5368,18 +5387,21 @@ test("WO-158 VER-001 F3: two override exits in one second keep two captures, eac
     const pkg = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
     pkg.scripts["work-orders"] = "node scripts/work-orders.mjs";
     write(root, "package.json", json(pkg));
-    git(root, "add", ".");
-    git(
+    runGit(root, ["add", "."], fixtureGitOptions);
+    runGit(
       root,
-      "-c",
-      "user.name=Fixture",
-      "-c",
-      "user.email=fixture@example.invalid",
-      "-c",
-      "commit.gpgsign=false",
-      "commit",
-      "-qm",
-      "Real lifecycle",
+      [
+        "-c",
+        "user.name=Fixture",
+        "-c",
+        "user.email=fixture@example.invalid",
+        "-c",
+        "commit.gpgsign=false",
+        "commit",
+        "-qm",
+        "Real lifecycle",
+      ],
+      fixtureGitOptions,
     );
     const activated = spawnSync(
       process.execPath,
@@ -5496,18 +5518,21 @@ test("WO-168 an override exit prints ahead of an input refusal, and an appended 
     const pkg = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
     pkg.scripts["work-orders"] = "node scripts/work-orders.mjs";
     write(root, "package.json", json(pkg));
-    git(root, "add", ".");
-    git(
+    runGit(root, ["add", "."], fixtureGitOptions);
+    runGit(
       root,
-      "-c",
-      "user.name=Fixture",
-      "-c",
-      "user.email=fixture@example.invalid",
-      "-c",
-      "commit.gpgsign=false",
-      "commit",
-      "-qm",
-      "Real lifecycle",
+      [
+        "-c",
+        "user.name=Fixture",
+        "-c",
+        "user.email=fixture@example.invalid",
+        "-c",
+        "commit.gpgsign=false",
+        "commit",
+        "-qm",
+        "Real lifecycle",
+      ],
+      fixtureGitOptions,
     );
     const activated = spawnSync(
       process.execPath,
@@ -5649,7 +5674,11 @@ test("WO-135 generated planning hooks refuse repository code paths and preserve 
   const sessionId = `wo135-planning-${root}`;
   try {
     beginHarnessSession(root, sessionId, "planner");
-    git(root, "switch", "-c", "planning/2030-01-02-fixture");
+    runGit(
+      root,
+      ["switch", "-c", "planning/2030-01-02-fixture"],
+      fixtureGitOptions,
+    );
     mkdirSync(join(root, "docs"), { recursive: true });
     symlinkSync(join(root, "scripts"), join(root, "docs/source"));
     symlinkSync(scratch, join(root, "docs/scratch"));
@@ -5735,7 +5764,7 @@ test("WO-135 generated planning hooks refuse repository code paths and preserve 
         ?.permissionDecision,
       "deny",
     );
-    git(root, "switch", "wo-999");
+    runGit(root, ["switch", "wo-999"], fixtureGitOptions);
     assert.equal(allowed(invoke(root, "permissions", denied[0])), true);
   } finally {
     removeFixture(root, { recursive: true });
@@ -6671,7 +6700,11 @@ test("WO-144 unreadable grants advise once and preserve all four existing refusa
     } finally {
       gate.release();
     }
-    git(root, "switch", "-c", "planning/2030-01-02-grants");
+    runGit(
+      root,
+      ["switch", "-c", "planning/2030-01-02-grants"],
+      fixtureGitOptions,
+    );
     assert.equal(
       allowed(
         invoke(
@@ -6692,7 +6725,7 @@ test("WO-144 unreadable grants advise once and preserve all four existing refusa
       ),
       false,
     );
-    git(root, "switch", "wo-999");
+    runGit(root, ["switch", "wo-999"], fixtureGitOptions);
     write(root, "docs/control/budgets.json", json({ subagentCap: 0 }));
     const descendant = invoke(
       root,
@@ -6780,7 +6813,11 @@ test("WO-144 scratch-only role grant is session-scoped and main intake must be i
       ),
       false,
     );
-    git(root, "worktree", "add", "-b", "wo-linked", linked);
+    runGit(
+      root,
+      ["worktree", "add", "-b", "wo-linked", linked],
+      fixtureGitOptions,
+    );
     for (const path of ["packages", "node_modules"])
       cpSync(join(root, path), join(linked, path), {
         recursive: true,
@@ -6829,7 +6866,7 @@ test("WO-144 FINAL-001 F1 a moved working directory is still judged and journals
   const session = "outside-moved";
   for (const directory of [temporary, other, documents])
     mkdirSync(directory, { recursive: true });
-  git(other, "init", "-b", "main");
+  runGit(other, ["init", "-b", "main"], fixtureGitOptions);
   mkdirSync(join(root, "docs/nested"), { recursive: true });
   const environment = { TMPDIR: temporary, TMP: temporary, TEMP: temporary };
   const request = (cwd, tool, args) =>
@@ -7161,7 +7198,11 @@ test("WO-144 FINAL-001 F2 a literal redirect is judged on any program while the 
       ],
     );
     // The planning-branch refusal keeps its whole-command reading.
-    git(root, "switch", "-c", "planning/2030-01-03-fixture");
+    runGit(
+      root,
+      ["switch", "-c", "planning/2030-01-03-fixture"],
+      fixtureGitOptions,
+    );
     assert.equal(
       allowed(
         invoke(
@@ -7517,7 +7558,7 @@ test("WO-142 D1 prune previews without writes, preserves live files and keeps de
   };
   assert.equal(harnessProcessAlive(deadOwner), false);
   try {
-    git(root, "init", "--quiet");
+    runGit(root, ["init", "--quiet"], fixtureGitOptions);
     write(
       root,
       ".claude/harness-manifest.json",
@@ -7899,7 +7940,7 @@ test("WO-142 D1 target receipts and stopped live or unknown readers retain their
   };
   assert.equal(harnessProcessAlive(deadOwner), false);
   try {
-    git(root, "init", "--quiet");
+    runGit(root, ["init", "--quiet"], fixtureGitOptions);
     write(
       root,
       ".runtime/harness/aaaaaaaaaaaaaaaa/runtime.js",
@@ -8034,7 +8075,7 @@ test("WO-142 D1 malformed installed manifests never establish absent snapshot ow
     mkdtempSync(join(tmpdir(), "dotln-prune-manifest-")),
   );
   try {
-    git(root, "init", "--quiet");
+    runGit(root, ["init", "--quiet"], fixtureGitOptions);
     write(root, ".runtime/harness/aaaaaaaaaaaaaaaa/runtime.js", "installed");
     write(root, ".runtime/harness/bbbbbbbbbbbbbbbb/runtime.js", "unowned");
     const manifestPath = ".claude/harness-manifest.json";
@@ -8108,17 +8149,20 @@ test("WO-142 D1 publication proof binds the origin repository despite ambient GH
     mkdtempSync(join(tmpdir(), "dotln-prune-publication-")),
   );
   try {
-    git(root, "init", "--quiet");
-    git(
+    runGit(root, ["init", "--quiet"], fixtureGitOptions);
+    runGit(
       root,
-      "-c",
-      "user.name=Fixture",
-      "-c",
-      "user.email=fixture@example.invalid",
-      "commit",
-      "--allow-empty",
-      "-qm",
-      "Fixture",
+      [
+        "-c",
+        "user.name=Fixture",
+        "-c",
+        "user.email=fixture@example.invalid",
+        "commit",
+        "--allow-empty",
+        "-qm",
+        "Fixture",
+      ],
+      fixtureGitOptions,
     );
     const tag = "v9.9.9";
     const manifest = {
@@ -8126,26 +8170,36 @@ test("WO-142 D1 publication proof binds the origin repository despite ambient GH
       workOrder: { id: "WO-999" },
       notes: { changedFiles: [] },
     };
-    git(
+    runGit(
       root,
-      "-c",
-      "user.name=Fixture",
-      "-c",
-      "user.email=fixture@example.invalid",
-      "tag",
-      "-a",
-      tag,
-      "-m",
-      `DotLn ${tag}\n\nDOTLN-MANIFEST-BEGIN\n${JSON.stringify(manifest)}\nDOTLN-MANIFEST-END`,
+      [
+        "-c",
+        "user.name=Fixture",
+        "-c",
+        "user.email=fixture@example.invalid",
+        "tag",
+        "-a",
+        tag,
+        "-m",
+        `DotLn ${tag}\n\nDOTLN-MANIFEST-BEGIN\n${JSON.stringify(manifest)}\nDOTLN-MANIFEST-END`,
+      ],
+      fixtureGitOptions,
     );
-    git(
+    runGit(
       root,
-      "remote",
-      "add",
-      "origin",
-      "https://github.com/fixture-origin/fixture.git",
+      [
+        "remote",
+        "add",
+        "origin",
+        "https://github.com/fixture-origin/fixture.git",
+      ],
+      fixtureGitOptions,
     );
-    const object = git(root, "rev-parse", `refs/tags/${tag}`);
+    const object = runGit(
+      root,
+      ["rev-parse", `refs/tags/${tag}`],
+      fixtureGitOptions,
+    );
     const realGit = execFileSync("which", ["git"], { encoding: "utf8" }).trim();
     write(
       root,
@@ -8222,7 +8276,7 @@ test("WO-142 D1 publication proof binds the origin repository despite ambient GH
 test("WO-142 D1 snapshot package links are inventoried without traversal while unsafe links and lanes stay retained", () => {
   const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-prune-links-")));
   try {
-    git(root, "init", "--quiet");
+    runGit(root, ["init", "--quiet"], fixtureGitOptions);
     const snapshot = ".runtime/harness/aaaaaaaaaaaaaaaa";
     const names = ["kernel", "compiler", "skeleton", "console"];
     mkdirSync(join(root, snapshot, "node_modules/@dotln"), { recursive: true });
@@ -8395,7 +8449,7 @@ test("WO-142 repair D1 Claude current session survives a stale finished owner", 
     delete process.env.CODEX_THREAD_ID;
     delete process.env.CLAUDE_SESSION_ID;
     process.env.CLAUDE_CODE_SESSION_ID = "fixture-current-claude";
-    git(root, "init", "--quiet");
+    runGit(root, ["init", "--quiet"], fixtureGitOptions);
     const sessionKey = createHash("sha256")
       .update("fixture-current-claude")
       .digest("hex");
@@ -8557,22 +8611,38 @@ test("WO-160 prune removes a sole published stash with recovery bytes and permit
     mkdtempSync(join(tmpdir(), "dotln-prune-last-stash-")),
   );
   try {
-    git(root, "init", "--quiet", "-b", "main");
-    git(root, "config", "user.name", "Fixture");
-    git(root, "config", "user.email", "fixture@example.invalid");
+    runGit(root, ["init", "--quiet", "-b", "main"], fixtureGitOptions);
+    runGit(root, ["config", "user.name", "Fixture"], fixtureGitOptions);
+    runGit(
+      root,
+      ["config", "user.email", "fixture@example.invalid"],
+      fixtureGitOptions,
+    );
     write(root, ".gitignore", "docs/control/local/\n");
     write(root, "tracked.txt", "base\n");
-    git(root, "add", ".");
-    git(root, "commit", "-qm", "base");
+    runGit(root, ["add", "."], fixtureGitOptions);
+    runGit(root, ["commit", "-qm", "base"], fixtureGitOptions);
     write(root, "tracked.txt", "preserved\n");
-    git(root, "stash", "push", "-m", "WO-901 integrate 2030-01-01");
+    runGit(
+      root,
+      ["stash", "push", "-m", "WO-901 integrate 2030-01-01"],
+      fixtureGitOptions,
+    );
     const ref = resolve(
       root,
-      git(root, "rev-parse", "--git-path", "refs/stash").trim(),
+      runGit(
+        root,
+        ["rev-parse", "--git-path", "refs/stash"],
+        fixtureGitOptions,
+      ).trim(),
     );
     const log = resolve(
       root,
-      git(root, "rev-parse", "--git-path", "logs/refs/stash").trim(),
+      runGit(
+        root,
+        ["rev-parse", "--git-path", "logs/refs/stash"],
+        fixtureGitOptions,
+      ).trim(),
     );
     const before = {
       ref: readFileSync(ref, "utf8"),
@@ -8593,15 +8663,25 @@ test("WO-160 prune removes a sole published stash with recovery bytes and permit
     assert.equal(recovery.reflog, before.reflog);
     assert.equal(existsSync(ref), false);
     assert.equal(existsSync(log), false);
-    assert.equal(git(root, "stash", "list").trim(), "");
+    assert.equal(runGit(root, ["stash", "list"], fixtureGitOptions).trim(), "");
     assert.equal(
-      git(root, "show", `${recovery.stash}:tracked.txt`),
+      runGit(
+        root,
+        ["show", `${recovery.stash}:tracked.txt`],
+        fixtureGitOptions,
+      ),
       "preserved",
     );
     write(root, "tracked.txt", "next\n");
-    git(root, "stash", "push", "-m", "subsequent work");
-    assert.match(git(root, "stash", "list"), /subsequent work/);
-    assert.equal(git(root, "show", "refs/stash:tracked.txt"), "next");
+    runGit(root, ["stash", "push", "-m", "subsequent work"], fixtureGitOptions);
+    assert.match(
+      runGit(root, ["stash", "list"], fixtureGitOptions),
+      /subsequent work/,
+    );
+    assert.equal(
+      runGit(root, ["show", "refs/stash:tracked.txt"], fixtureGitOptions),
+      "next",
+    );
   } finally {
     rmSync(root, { recursive: true, force: true });
   }
@@ -8612,19 +8692,27 @@ test("WO-160 prune inventories only published integration stashes and resolves s
     mkdtempSync(join(tmpdir(), "dotln-prune-stashes-")),
   );
   try {
-    git(root, "init", "--quiet", "-b", "main");
-    git(root, "config", "user.name", "Fixture");
-    git(root, "config", "user.email", "fixture@example.invalid");
+    runGit(root, ["init", "--quiet", "-b", "main"], fixtureGitOptions);
+    runGit(root, ["config", "user.name", "Fixture"], fixtureGitOptions);
+    runGit(
+      root,
+      ["config", "user.email", "fixture@example.invalid"],
+      fixtureGitOptions,
+    );
     write(root, ".gitignore", "docs/control/local/\n");
     write(root, "tracked.txt", "base\n");
-    git(root, "add", ".");
-    git(root, "commit", "-qm", "base");
+    runGit(root, ["add", "."], fixtureGitOptions);
+    runGit(root, ["commit", "-qm", "base"], fixtureGitOptions);
     const stash = (name, bytes) => {
       write(root, "tracked.txt", bytes);
-      git(root, "add", "tracked.txt");
+      runGit(root, ["add", "tracked.txt"], fixtureGitOptions);
       write(root, "untracked.txt", `untracked ${bytes}`);
-      git(root, "stash", "push", "-u", "-m", name);
-      return git(root, "rev-parse", "refs/stash").trim();
+      runGit(root, ["stash", "push", "-u", "-m", name], fixtureGitOptions);
+      return runGit(
+        root,
+        ["rev-parse", "refs/stash"],
+        fixtureGitOptions,
+      ).trim();
     };
     const first = stash("WO-901 integrate 2030-01-01", "first\n");
     const second = stash("WO-902 integrate 2030-01-01", "second\n");
@@ -8636,12 +8724,16 @@ test("WO-160 prune inventories only published integration stashes and resolves s
     };
     const reflog = resolve(
       root,
-      git(root, "rev-parse", "--git-path", "logs/refs/stash").trim(),
+      runGit(
+        root,
+        ["rev-parse", "--git-path", "logs/refs/stash"],
+        fixtureGitOptions,
+      ).trim(),
     );
     writeFileSync(reflog, readFileSync(reflog, "utf8").replace(/\n$/u, "  \n"));
-    const before = git(root, "stash", "list");
+    const before = runGit(root, ["stash", "list"], fixtureGitOptions);
     const preview = pruneHarness(root, options);
-    assert.equal(git(root, "stash", "list"), before);
+    assert.equal(runGit(root, ["stash", "list"], fixtureGitOptions), before);
     assert.deepEqual(
       new Set(
         preview.candidates
@@ -8663,15 +8755,21 @@ test("WO-160 prune inventories only published integration stashes and resolves s
     );
     for (const name of ["refs/stash", "packed-refs"]) {
       const lock =
-        resolve(root, git(root, "rev-parse", "--git-path", name).trim()) +
-        ".lock";
+        resolve(
+          root,
+          runGit(
+            root,
+            ["rev-parse", "--git-path", name],
+            fixtureGitOptions,
+          ).trim(),
+        ) + ".lock";
       writeFileSync(lock, "other writer lock");
       assert.throws(
         () => pruneHarness(root, { ...options, apply: true }),
         /EEXIST/,
       );
       assert.equal(readFileSync(lock, "utf8"), "other writer lock");
-      assert.equal(git(root, "stash", "list"), before);
+      assert.equal(runGit(root, ["stash", "list"], fixtureGitOptions), before);
       const proofs = join(
         root,
         "docs/control/local/retained/integration-stashes",
@@ -8716,7 +8814,11 @@ test("WO-160 prune inventories only published integration stashes and resolves s
         proof.files.reduce((sum, file) => sum + file.bytes, 0),
       );
     }
-    const left = git(root, "log", "-g", "--format=%H", "refs/stash");
+    const left = runGit(
+      root,
+      ["log", "-g", "--format=%H", "refs/stash"],
+      fixtureGitOptions,
+    );
     assert.ok(!left.includes(first) && !left.includes(second));
     assert.ok(left.includes(unpublished) && left.includes(unnamed));
   } finally {
@@ -8727,29 +8829,45 @@ test("WO-160 prune inventories only published integration stashes and resolves s
 test("WO-160 prune removes packed stash refs without resurrecting entries", () => {
   const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-prune-packed-")));
   try {
-    git(root, "init", "--quiet", "-b", "main");
-    git(root, "config", "user.name", "Fixture");
-    git(root, "config", "user.email", "fixture@example.invalid");
+    runGit(root, ["init", "--quiet", "-b", "main"], fixtureGitOptions);
+    runGit(root, ["config", "user.name", "Fixture"], fixtureGitOptions);
+    runGit(
+      root,
+      ["config", "user.email", "fixture@example.invalid"],
+      fixtureGitOptions,
+    );
     write(root, ".gitignore", "docs/control/local/\n");
     write(root, "tracked.txt", "base\n");
-    git(root, "add", ".");
-    git(root, "commit", "-qm", "base");
+    runGit(root, ["add", "."], fixtureGitOptions);
+    runGit(root, ["commit", "-qm", "base"], fixtureGitOptions);
     const stash = (name, contents) => {
       write(root, "tracked.txt", contents);
-      git(root, "stash", "push", "-m", name);
-      return git(root, "rev-parse", "refs/stash").trim();
+      runGit(root, ["stash", "push", "-m", name], fixtureGitOptions);
+      return runGit(
+        root,
+        ["rev-parse", "refs/stash"],
+        fixtureGitOptions,
+      ).trim();
     };
     const first = stash("WO-901 integrate 2030-01-01", "first\n");
     const second = stash("WO-902 integrate 2030-01-01", "second\n");
     const ref = resolve(
       root,
-      git(root, "rev-parse", "--git-path", "refs/stash").trim(),
+      runGit(
+        root,
+        ["rev-parse", "--git-path", "refs/stash"],
+        fixtureGitOptions,
+      ).trim(),
     );
     const packed = resolve(
       root,
-      git(root, "rev-parse", "--git-path", "packed-refs").trim(),
+      runGit(
+        root,
+        ["rev-parse", "--git-path", "packed-refs"],
+        fixtureGitOptions,
+      ).trim(),
     );
-    git(root, "pack-refs", "--all");
+    runGit(root, ["pack-refs", "--all"], fixtureGitOptions);
     assert.equal(existsSync(ref), false);
     const originalPacked = readFileSync(packed, "utf8");
     const originalPackedMode = lstatSync(packed).mode & 0o777;
@@ -8765,7 +8883,7 @@ test("WO-160 prune removes packed stash refs without resurrecting entries", () =
       new Set([first, second]),
     );
     const applied = pruneHarness(root, { ...options, apply: true });
-    assert.equal(git(root, "stash", "list").trim(), "");
+    assert.equal(runGit(root, ["stash", "list"], fixtureGitOptions).trim(), "");
     assert.equal(existsSync(ref), false);
     assert.doesNotMatch(readFileSync(packed, "utf8"), / refs\/stash$/m);
     assert.equal(lstatSync(packed).mode & 0o777, originalPackedMode);
@@ -8780,11 +8898,16 @@ test("WO-160 prune removes packed stash refs without resurrecting entries", () =
     }
     const retained = stash("ordinary saved work", "retained\n");
     const published = stash("WO-901 integrate 2030-01-02", "published\n");
-    git(root, "pack-refs", "--all");
+    runGit(root, ["pack-refs", "--all"], fixtureGitOptions);
     const beforeTopDrop = readFileSync(packed);
     pruneHarness(root, { ...options, apply: true });
-    assert.equal(git(root, "rev-parse", "refs/stash").trim(), retained);
-    assert.ok(!git(root, "stash", "list").includes(published));
+    assert.equal(
+      runGit(root, ["rev-parse", "refs/stash"], fixtureGitOptions).trim(),
+      retained,
+    );
+    assert.ok(
+      !runGit(root, ["stash", "list"], fixtureGitOptions).includes(published),
+    );
     assert.deepEqual(readFileSync(packed), beforeTopDrop);
   } finally {
     rmSync(root, { recursive: true, force: true });
@@ -8799,16 +8922,20 @@ test("WO-160 prune rewrites an expired reflog prefix like Git stash drop", () =>
     mkdtempSync(join(tmpdir(), "dotln-drop-expired-")),
   );
   try {
-    git(root, "init", "--quiet", "-b", "main");
-    git(root, "config", "user.name", "Fixture");
-    git(root, "config", "user.email", "fixture@example.invalid");
+    runGit(root, ["init", "--quiet", "-b", "main"], fixtureGitOptions);
+    runGit(root, ["config", "user.name", "Fixture"], fixtureGitOptions);
+    runGit(
+      root,
+      ["config", "user.email", "fixture@example.invalid"],
+      fixtureGitOptions,
+    );
     write(root, ".gitignore", "docs/control/local/\n");
     write(root, "tracked.txt", "base\n");
-    git(root, "add", ".");
-    git(root, "commit", "-qm", "base");
+    runGit(root, ["add", "."], fixtureGitOptions);
+    runGit(root, ["commit", "-qm", "base"], fixtureGitOptions);
     for (const name of ["WO-901 integrate 2030-01-01", "ordinary saved work"]) {
       write(root, "tracked.txt", `${name}\n`);
-      git(root, "stash", "push", "-m", name);
+      runGit(root, ["stash", "push", "-m", name], fixtureGitOptions);
     }
     const log = join(root, ".git/logs/refs/stash");
     // Expiring an older prefix can leave the oldest surviving old OID non-null.
@@ -8816,21 +8943,24 @@ test("WO-160 prune rewrites an expired reflog prefix like Git stash drop", () =>
       log,
       readFileSync(log, "utf8").replace(
         /^[a-f0-9]+/u,
-        git(root, "rev-parse", "HEAD"),
+        runGit(root, ["rev-parse", "HEAD"], fixtureGitOptions),
       ),
     );
     cpSync(root, control, { recursive: true });
-    git(control, "stash", "drop", "stash@{1}");
+    runGit(control, ["stash", "drop", "stash@{1}"], fixtureGitOptions);
     pruneHarness(root, { apply: true, publishedRelease: () => "v1.0.0" });
     assert.equal(
-      git(root, "rev-parse", "refs/stash"),
-      git(control, "rev-parse", "refs/stash"),
+      runGit(root, ["rev-parse", "refs/stash"], fixtureGitOptions),
+      runGit(control, ["rev-parse", "refs/stash"], fixtureGitOptions),
     );
     assert.deepEqual(
       readFileSync(log),
       readFileSync(join(control, ".git/logs/refs/stash")),
     );
-    assert.equal(git(root, "stash", "list"), git(control, "stash", "list"));
+    assert.equal(
+      runGit(root, ["stash", "list"], fixtureGitOptions),
+      runGit(control, ["stash", "list"], fixtureGitOptions),
+    );
   } finally {
     rmSync(root, { recursive: true, force: true });
     rmSync(control, { recursive: true, force: true });
@@ -8843,13 +8973,17 @@ test("WO-160 non-top prune retains stashes during concurrent pack-refs pruning",
   );
   let pack, exited;
   try {
-    git(root, "init", "--quiet", "-b", "main");
-    git(root, "config", "user.name", "Fixture");
-    git(root, "config", "user.email", "fixture@example.invalid");
+    runGit(root, ["init", "--quiet", "-b", "main"], fixtureGitOptions);
+    runGit(root, ["config", "user.name", "Fixture"], fixtureGitOptions);
+    runGit(
+      root,
+      ["config", "user.email", "fixture@example.invalid"],
+      fixtureGitOptions,
+    );
     write(root, ".gitignore", "docs/control/local/\n");
     write(root, "tracked.txt", "base\n");
-    git(root, "add", ".");
-    git(root, "commit", "-qm", "base");
+    runGit(root, ["add", "."], fixtureGitOptions);
+    runGit(root, ["commit", "-qm", "base"], fixtureGitOptions);
     const stashes = [];
     for (const name of [
       "WO-901 integrate 2030-01-01",
@@ -8857,14 +8991,16 @@ test("WO-160 non-top prune retains stashes during concurrent pack-refs pruning",
       "ordinary saved work",
     ]) {
       write(root, "tracked.txt", `${name}\n`);
-      git(root, "stash", "push", "-m", name);
-      stashes.push(git(root, "rev-parse", "refs/stash"));
+      runGit(root, ["stash", "push", "-m", name], fixtureGitOptions);
+      stashes.push(
+        runGit(root, ["rev-parse", "refs/stash"], fixtureGitOptions),
+      );
     }
     const ref = join(root, ".git/refs/stash");
     const packed = join(root, ".git/packed-refs");
     // Git prunes these tags before refs/stash. Widen its real post-pack
     // window, then suspend that process so fixture speed cannot close it.
-    const head = git(root, "rev-parse", "HEAD");
+    const head = runGit(root, ["rev-parse", "HEAD"], fixtureGitOptions);
     for (let index = 0; index < 30_000; index++)
       write(
         root,
@@ -8927,9 +9063,16 @@ test("WO-160 non-top prune retains stashes during concurrent pack-refs pruning",
     assert.deepEqual(result, { code: 0, signal: null }, stderr);
     // The pack process really pruned the loose stash ref after our drop.
     assert.equal(existsSync(ref), false);
-    assert.equal(git(root, "rev-parse", "--verify", "refs/stash"), stashes[2]);
+    assert.equal(
+      runGit(root, ["rev-parse", "--verify", "refs/stash"], fixtureGitOptions),
+      stashes[2],
+    );
     assert.deepEqual(
-      git(root, "log", "-g", "--format=%H", "refs/stash").split("\n"),
+      runGit(
+        root,
+        ["log", "-g", "--format=%H", "refs/stash"],
+        fixtureGitOptions,
+      ).split("\n"),
       stashes.slice(1).reverse(),
     );
     assert.deepEqual(readFileSync(packed), packedBefore);
@@ -8944,13 +9087,17 @@ test("WO-160 non-top prune retains stashes during concurrent pack-refs pruning",
 // WO-171: four published retained lanes and two published integration stashes.
 const pruneApplyFixture = (prefix) => {
   const root = realpathSync(mkdtempSync(join(tmpdir(), prefix)));
-  git(root, "init", "--quiet", "-b", "main");
-  git(root, "config", "user.name", "Fixture");
-  git(root, "config", "user.email", "fixture@example.invalid");
+  runGit(root, ["init", "--quiet", "-b", "main"], fixtureGitOptions);
+  runGit(root, ["config", "user.name", "Fixture"], fixtureGitOptions);
+  runGit(
+    root,
+    ["config", "user.email", "fixture@example.invalid"],
+    fixtureGitOptions,
+  );
   write(root, ".gitignore", "docs/control/local/\n");
   write(root, "tracked.txt", "base\n");
-  git(root, "add", ".");
-  git(root, "commit", "-qm", "base");
+  runGit(root, ["add", "."], fixtureGitOptions);
+  runGit(root, ["commit", "-qm", "base"], fixtureGitOptions);
   const lanes = ["WO-901", "WO-902", "WO-903", "WO-904"];
   for (const order of lanes)
     write(
@@ -8961,8 +9108,12 @@ const pruneApplyFixture = (prefix) => {
   const stashes = [];
   for (const order of ["WO-905", "WO-906"]) {
     write(root, "tracked.txt", `${order}\n`);
-    git(root, "stash", "push", "-m", `${order} integrate 2030-01-01`);
-    stashes.push(git(root, "rev-parse", "refs/stash"));
+    runGit(
+      root,
+      ["stash", "push", "-m", `${order} integrate 2030-01-01`],
+      fixtureGitOptions,
+    );
+    stashes.push(runGit(root, ["rev-parse", "refs/stash"], fixtureGitOptions));
   }
   return { root, lanes, stashes };
 };
@@ -9066,7 +9217,7 @@ require("node:module").syncBuiltinESMExports();
         .map((row) => row.stash),
       [...stashes].reverse(),
     );
-    assert.equal(git(root, "stash", "list"), "");
+    assert.equal(runGit(root, ["stash", "list"], fixtureGitOptions), "");
     assert.ok(
       existsSync(join(root, "docs/control/local/retained/WO-907/evidence.txt")),
     );
@@ -9078,12 +9229,15 @@ require("node:module").syncBuiltinESMExports();
 test("WO-171 one apply issues one release listing and one tag listing whatever the number of orders", () => {
   const { root, lanes } = pruneApplyFixture("dotln-prune-listings-");
   try {
-    git(
+    runGit(
       root,
-      "remote",
-      "add",
-      "origin",
-      "https://github.com/fixture-origin/fixture.git",
+      [
+        "remote",
+        "add",
+        "origin",
+        "https://github.com/fixture-origin/fixture.git",
+      ],
+      fixtureGitOptions,
     );
     // WO-907 is a draft Release, WO-908's remote tag names another object and
     // WO-909 has no Release: each stays retained.
@@ -9096,15 +9250,22 @@ test("WO-171 one apply issues one release listing and one tag listing whatever t
         workOrder: { id: order },
         notes: { changedFiles: [] },
       };
-      git(
+      runGit(
         root,
-        "tag",
-        "-a",
-        tag,
-        "-m",
-        `DotLn ${tag}\n\nDOTLN-MANIFEST-BEGIN\n${JSON.stringify(manifest)}\nDOTLN-MANIFEST-END`,
+        [
+          "tag",
+          "-a",
+          tag,
+          "-m",
+          `DotLn ${tag}\n\nDOTLN-MANIFEST-BEGIN\n${JSON.stringify(manifest)}\nDOTLN-MANIFEST-END`,
+        ],
+        fixtureGitOptions,
       );
-      objects[tag] = git(root, "rev-parse", `refs/tags/${tag}`);
+      objects[tag] = runGit(
+        root,
+        ["rev-parse", `refs/tags/${tag}`],
+        fixtureGitOptions,
+      );
     }
     for (const order of ["WO-907", "WO-908", "WO-909"])
       write(root, `docs/control/local/retained/${order}/evidence.txt`, "x\n");
@@ -9206,7 +9367,7 @@ test("WO-171 one apply issues one release listing and one tag listing whatever t
         ]),
       );
     }
-    assert.equal(git(root, "stash", "list"), "");
+    assert.equal(runGit(root, ["stash", "list"], fixtureGitOptions), "");
     for (const order of lanes)
       assert.equal(
         existsSync(join(root, `docs/control/local/retained/${order}`)),
@@ -9248,7 +9409,11 @@ test("WO-171 an apply stopped after two deletions resumes and keeps the first by
       ["WO-901", "WO-902"],
     );
     assert.equal(
-      git(root, "log", "-g", "--format=%H", "refs/stash"),
+      runGit(
+        root,
+        ["log", "-g", "--format=%H", "refs/stash"],
+        fixtureGitOptions,
+      ),
       [...stashes].reverse().join("\n"),
     );
     const resumed = pruneHarness(root, {
@@ -9266,7 +9431,7 @@ test("WO-171 an apply stopped after two deletions resumes and keeps the first by
       Object.keys(after).map((name) => name.slice(0, 6)),
       lanes,
     );
-    assert.equal(git(root, "stash", "list"), "");
+    assert.equal(runGit(root, ["stash", "list"], fixtureGitOptions), "");
     assert.deepEqual(
       pruneHarness(root, { publishedRelease: () => "v1.0.0" }).candidates,
       [],
@@ -9299,7 +9464,10 @@ test("WO-171 a candidate changed between the plan and its deletion is refused wh
     );
     for (const order of ["WO-903", "WO-904"])
       assert.ok(existsSync(join(root, `docs/control/local/retained/${order}`)));
-    assert.equal(git(root, "stash", "list").split("\n").length, 2);
+    assert.equal(
+      runGit(root, ["stash", "list"], fixtureGitOptions).split("\n").length,
+      2,
+    );
   } finally {
     rmSync(root, { recursive: true, force: true });
   }
@@ -9308,12 +9476,16 @@ test("WO-171 a candidate changed between the plan and its deletion is refused wh
 test("WO-171 a lane holding a usage copy is retained until a committed snapshot carries it", () => {
   const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-prune-usage-")));
   try {
-    git(root, "init", "--quiet", "-b", "main");
-    git(root, "config", "user.name", "Fixture");
-    git(root, "config", "user.email", "fixture@example.invalid");
+    runGit(root, ["init", "--quiet", "-b", "main"], fixtureGitOptions);
+    runGit(root, ["config", "user.name", "Fixture"], fixtureGitOptions);
+    runGit(
+      root,
+      ["config", "user.email", "fixture@example.invalid"],
+      fixtureGitOptions,
+    );
     write(root, ".gitignore", "docs/control/local/\n");
-    git(root, "add", ".");
-    git(root, "commit", "-qm", "base");
+    runGit(root, ["add", "."], fixtureGitOptions);
+    runGit(root, ["commit", "-qm", "base"], fixtureGitOptions);
     const usage =
       [
         {
@@ -9352,8 +9524,8 @@ test("WO-171 a lane holding a usage copy is retained until a committed snapshot 
         ]),
       );
     const commit = (path, message) => {
-      git(root, "add", path);
-      git(root, "commit", "-qm", message);
+      runGit(root, ["add", path], fixtureGitOptions);
+      runGit(root, ["commit", "-qm", message], fixtureGitOptions);
     };
     assert.deepEqual(reasons(), {
       "WO-911": "usage has no committed snapshot",
@@ -9456,12 +9628,16 @@ test("WO-171 a collision-preserved usage copy keeps its lane until the snapshot 
   );
   try {
     for (const root of [main, source]) {
-      git(root, "init", "--quiet", "-b", "main");
-      git(root, "config", "user.name", "Fixture");
-      git(root, "config", "user.email", "fixture@example.invalid");
+      runGit(root, ["init", "--quiet", "-b", "main"], fixtureGitOptions);
+      runGit(root, ["config", "user.name", "Fixture"], fixtureGitOptions);
+      runGit(
+        root,
+        ["config", "user.email", "fixture@example.invalid"],
+        fixtureGitOptions,
+      );
       write(root, ".gitignore", "docs/control/local/\n");
-      git(root, "add", ".");
-      git(root, "commit", "-qm", "base");
+      runGit(root, ["add", "."], fixtureGitOptions);
+      runGit(root, ["commit", "-qm", "base"], fixtureGitOptions);
     }
     const lane = (order) => `docs/control/local/retained/${order}`;
     const usage = (label) =>
@@ -9470,7 +9646,6 @@ test("WO-171 a collision-preserved usage copy keeps its lane until the snapshot 
         role: "verifier",
         recordedAt: "2030-01-01T00:00:00.000Z",
       }) + "\n";
-    const sha256 = (text) => createHash("sha256").update(text).digest("hex");
     const copies = {
       canonical: usage("canonical"),
       file: usage("file collision"),
@@ -9527,8 +9702,12 @@ test("WO-171 a collision-preserved usage copy keeps its lane until the snapshot 
           usageCopies: carried.map((text) => ({ sha256: sha256(text) })),
         }) + "\n",
       );
-      git(main, "add", path);
-      git(main, "commit", "-qm", `${order} meter snapshot`);
+      runGit(main, ["add", path], fixtureGitOptions);
+      runGit(
+        main,
+        ["commit", "-qm", `${order} meter snapshot`],
+        fixtureGitOptions,
+      );
     };
     // WO-922's and WO-923's only usage copies are preserved under a suffix.
     assert.deepEqual(reasons(), {
@@ -9597,7 +9776,7 @@ test("WO-171 a bound resident store follows its retained lane into the byte proo
     mkdtempSync(join(tmpdir(), "dotln-prune-resident-")),
   );
   try {
-    git(root, "init", "--quiet", "-b", "main");
+    runGit(root, ["init", "--quiet", "-b", "main"], fixtureGitOptions);
     const lane = "docs/control/local/retained/WO-921";
     const store = [
       "resident/WO-921-1/binding.json",
@@ -9638,7 +9817,7 @@ test("WO-171 a bound resident store follows its retained lane into the byte proo
 test("WO-171 an unreadable global observation still stops the plan", () => {
   const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-prune-closed-")));
   try {
-    git(root, "init", "--quiet", "-b", "main");
+    runGit(root, ["init", "--quiet", "-b", "main"], fixtureGitOptions);
     const lane = "docs/control/local/retained/WO-931/evidence.txt";
     write(root, lane, "published lane\n");
     const options = { apply: true, publishedRelease: () => "v1.0.0" };

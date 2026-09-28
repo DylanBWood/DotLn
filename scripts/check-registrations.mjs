@@ -1,11 +1,12 @@
 #!/usr/bin/env node
+import { execGit } from "./lib/git.mjs";
 // WO-157 item 13 (WO-151 D021): a new committed artifact or a new document
 // suite owes a registration to a check that enumerates it. This document-gate
 // row makes both owed registrations fail when they are missing, before the
 // artifact is committed or the enumerating suite happens to be selected.
 import { TOOL_ROOT, docRelative, findLaunchpad } from "./lib/config.mjs";
 import { isMainModule } from "./lib/paths.mjs";
-import { execFileSync } from "node:child_process";
+
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { decodeLog, encodeLog } from "@dotln/kernel";
@@ -24,8 +25,7 @@ const STUBS = "scripts/lib/document-gate-stubs.mjs";
 export function registrationFindings(root = findLaunchpad()) {
   const registry = JSON.parse(readFileSync(join(TOOL_ROOT, REGISTRY), "utf8"));
   const segment = new RegExp(registry.controlSegmentPattern, "u");
-  const files = execFileSync(
-    "git",
+  const files = execGit(
     [
       "-C",
       root,

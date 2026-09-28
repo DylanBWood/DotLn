@@ -1622,10 +1622,17 @@ Each keeps its source and the observation that reopens it. This section
 grants no activation authority.
 
 1. **Skeleton protocol validator kit.** `object`, `exact` and `check`
-   are byte-identical across `entropy-review-protocol.ts`,
+   have repeated groups across `entropy-review-protocol.ts`,
    `verification-protocol.ts`, `worker-protocol.ts`,
    `mission-check-protocol.ts` and `plan-refutation-protocol.ts`; every
-   one is a feedback source, so WO-162 excludes them. Rides as a boy-scout
+   one is a feedback source, so WO-162 excludes them. **WO-162 measurement,
+   2026-09-27:** 12 declarations (including worker `keys`), 64 lines,
+   2,280 declaration bytes and 162 direct calls. Identical groups contribute
+   996 surplus bytes before shared-module/import overhead: three `object`
+   copies, two distinct pairs of `exact`, and the mission/plan `check` pair.
+   The original claim that all three helpers were identical in all five
+   files was incorrect; verification's `check` restricts its reason to
+   `EvidenceResultRefusal`, which a future adoption must preserve. Rides as a boy-scout
    item on the next order that pays a live feedback episode and touches
    two of the five. Reopen: that order's activation.
 2. **Control-character contracts differ under one name.** `line`/`text`

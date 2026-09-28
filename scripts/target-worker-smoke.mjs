@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+import { json as prettyJson } from "./lib/helpers.mjs";
+import { runGit } from "./lib/git.mjs";
 // Operator-approved outside-sandbox smoke. Retain only bounded derived facts.
 import { docPath, findLaunchpad } from "./lib/config.mjs";
 import { execFileSync } from "node:child_process";
@@ -30,15 +32,12 @@ const root = realpathSync(findLaunchpad());
 const [harness] = process.argv.slice(2);
 if (process.argv.length !== 3 || !["claude", "codex"].includes(harness))
   throw new Error("usage: target-worker-smoke.mjs claude|codex");
-const git = (cwd, ...args) =>
-  execFileSync("git", args, {
-    cwd,
-    encoding: "utf8",
-    stdio: ["ignore", "pipe", "pipe"],
-  }).trim();
+const fixtureGitOptions = { exec: true, stdio: ["ignore", "pipe", "pipe"] };
 if (
   realpathSync(process.cwd()) !== root ||
-  realpathSync(git(root, "rev-parse", "--show-toplevel")) !== root
+  realpathSync(
+    runGit(root, ["rev-parse", "--show-toplevel"], fixtureGitOptions),
+  ) !== root
 )
   throw new Error("run from launchpad Git root");
 const output = docPath(root, "evidence", "WO-049", `live-${harness}.json`);
@@ -47,18 +46,21 @@ if (existsSync(output))
     "live result already exists; preserve it before recording another attempt",
   );
 const target = realpathSync(mkdtempSync(join(tmpdir(), "dotln-target-live-")));
-git(target, "init", "-b", "target-smoke");
+runGit(target, ["init", "-b", "target-smoke"], fixtureGitOptions);
 writeFileSync(join(target, "source.txt"), "synthetic smoke\n");
-git(target, "add", "source.txt");
-git(
+runGit(target, ["add", "source.txt"], fixtureGitOptions);
+runGit(
   target,
-  "-c",
-  "user.name=Fixture",
-  "-c",
-  "user.email=fixture@example.invalid",
-  "commit",
-  "-qm",
-  "Synthetic smoke base",
+  [
+    "-c",
+    "user.name=Fixture",
+    "-c",
+    "user.email=fixture@example.invalid",
+    "commit",
+    "-qm",
+    "Synthetic smoke base",
+  ],
+  fixtureGitOptions,
 );
 const id = createHash("sha256").update(target).digest("hex");
 const lane = docPath(root, "control", "local/harness/targets", id);
@@ -231,7 +233,7 @@ checkTargetHarness(target, options);
 removeTargetHarness(target, options);
 record.bundleRemoved = true;
 mkdirSync(docPath(root, "evidence", "WO-049"), { recursive: true });
-writeFileSync(output, JSON.stringify(record, null, 2) + "\n");
+writeFileSync(output, prettyJson(record));
 // Preserve the synthetic tree and its local state for review; expose only a shape.
 console.log(JSON.stringify(record));
 process.exitCode = passed ? 0 : 1;

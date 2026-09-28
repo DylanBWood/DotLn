@@ -1,10 +1,11 @@
 #!/usr/bin/env node
+import { json as prettyJson, sha256Hex as sha256 } from "./lib/helpers.mjs";
 import {
   harnessRuntimeCause,
   refreshHarnessRuntime,
 } from "./lib/harness-runtime.mjs";
 import { docPath, docRelative, findLaunchpad } from "./lib/config.mjs";
-import { createHash } from "node:crypto";
+
 import {
   existsSync,
   mkdirSync,
@@ -132,7 +133,6 @@ const templateShape = {
     knownLimitations: [],
   },
 };
-const sha256 = (value) => createHash("sha256").update(value).digest("hex");
 const execute = (command, args, options = {}) =>
   spawnSync(command, args, {
     encoding: "utf8",
@@ -2330,9 +2330,7 @@ const main = async () => {
     const [tag] = args;
     if (!tag || args.length !== 1)
       throw new Error("usage: release manifest-from-tag vX.Y.Z");
-    process.stdout.write(
-      `${JSON.stringify(manifestFromTag(toolRoot, tag), null, 2)}\n`,
-    );
+    process.stdout.write(prettyJson(manifestFromTag(toolRoot, tag)));
     return;
   }
   if (action === "notes") {

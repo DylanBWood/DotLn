@@ -1,3 +1,5 @@
+import { runGit } from "./git.mjs";
+import { json, write as writeFixture } from "./helpers.mjs";
 // WO-136 research apparatus. Nothing here installs a new product boundary.
 import { TOOL_ROOT, docPath, findLaunchpad } from "./config.mjs";
 import assert from "node:assert/strict";
@@ -16,7 +18,7 @@ import {
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
-import { dirname, join } from "node:path";
+import { join } from "node:path";
 import { createServer } from "node:net";
 import { createInterface } from "node:readline/promises";
 
@@ -60,11 +62,7 @@ export const cells = () =>
       })),
     ),
   );
-const write = (path, contents) => {
-  mkdirSync(dirname(path), { recursive: true });
-  writeFileSync(path, contents);
-};
-const json = (value) => JSON.stringify(value, null, 2) + "\n";
+const write = (path, contents) => writeFixture("", path, contents);
 const gitEnvironment = () => ({
   ...Object.fromEntries(
     Object.entries(process.env).filter(([name]) => !name.startsWith("GIT_")),
@@ -76,15 +74,22 @@ const gitEnvironment = () => ({
   GIT_COMMITTER_NAME: "Probe",
   GIT_COMMITTER_EMAIL: "probe@example.invalid",
 });
-const git = (cwd, args, optional = false) => {
-  const result = spawnSync(
-    "git",
+const git = (cwd, args, optional = false) =>
+  runGit(
+    cwd,
     ["-c", "core.hooksPath=/dev/null", "-c", "commit.gpgsign=false", ...args],
-    { cwd, env: gitEnvironment(), encoding: "utf8", timeout: 10_000 },
+    {
+      cwd,
+      env: gitEnvironment(),
+      timeout: 10_000,
+      maxBuffer: 1024 * 1024,
+      onFailure: (result) => {
+        if (!optional)
+          assert.equal(result.status, 0, "fixture Git operation failed");
+        return null;
+      },
+    },
   );
-  if (!optional) assert.equal(result.status, 0, "fixture Git operation failed");
-  return result.status === 0 ? result.stdout.trim() : null;
-};
 
 export function createAuthorityFixture(cell) {
   assert.ok(cells().some((entry) => entry.id === cell.id));

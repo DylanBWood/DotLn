@@ -1,5 +1,7 @@
+import { json as prettyJson, sha256Hex as digest } from "./helpers.mjs";
+import { readJsonFile } from "./paths.mjs";
 import { docRelative } from "./config.mjs";
-import { createHash } from "node:crypto";
+
 import { spawnSync } from "node:child_process";
 import {
   existsSync,
@@ -22,7 +24,7 @@ import {
   resolve,
   sep,
 } from "node:path";
-import { runGit, parseWorktrees, readGitObjects } from "./git.mjs";
+import { runGit, parseWorktrees, readGitObjects, spawnGit } from "./git.mjs";
 import { dropInventoriedStash } from "./stash-drop.mjs";
 import { localReleaseRecords } from "./release-records.mjs";
 import {
@@ -36,8 +38,7 @@ import {
 } from "../../packages/skeleton/dist/src/harness-host.js";
 import { staleCodexEpisodeHomes } from "../../packages/skeleton/dist/src/worker-transport.js";
 
-const digest = (value) => createHash("sha256").update(value).digest("hex");
-const json = (path) => JSON.parse(readFileSync(path, "utf8"));
+const json = (path) => readJsonFile(path, { rawErrors: true });
 const lines = (path) =>
   existsSync(path)
     ? readFileSync(path, "utf8")
@@ -202,14 +203,13 @@ function publicationObservation(root, options) {
 }
 
 function integrationStashes(root) {
-  const result = spawnSync(
-    "git",
+  const result = spawnGit(
     ["log", "-g", "--format=%H%x00%gs", "refs/stash", "--"],
     { cwd: root, encoding: "utf8" },
   );
   if (result.status !== 0) {
     if (
-      spawnSync("git", ["rev-parse", "--verify", "--quiet", "refs/stash"], {
+      spawnGit(["rev-parse", "--verify", "--quiet", "refs/stash"], {
         cwd: root,
       }).status !== 0
     )
@@ -581,8 +581,7 @@ function usageRetention(root, order, inventory) {
     (row) => !row.directory && usageCopy.test(row.path),
   );
   if (!copies.length) return null;
-  const snapshot = spawnSync(
-    "git",
+  const snapshot = spawnGit(
     [
       "-C",
       root,
@@ -792,19 +791,14 @@ export function pruneHarness(root, { apply = false, ...options } = {}) {
       if (["retained-lane", "integration-stash"].includes(row.kind)) {
         // Durable form of the existing preservation byte inventory, emitted
         // only by this operator command and kept outside the removed lane.
-        const proof =
-          JSON.stringify(
-            {
-              workOrder: row.workOrder,
-              release: row.release,
-              retainedControl: true,
-              ...(row.stash ? { stash: row.stash } : {}),
-              bytes: row.bytes,
-              files: row.inventory,
-            },
-            null,
-            2,
-          ) + "\n";
+        const proof = prettyJson({
+          workOrder: row.workOrder,
+          release: row.release,
+          retainedControl: true,
+          ...(row.stash ? { stash: row.stash } : {}),
+          bytes: row.bytes,
+          files: row.inventory,
+        });
         const proofBase =
           row.kind === "integration-stash"
             ? join(

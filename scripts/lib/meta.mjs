@@ -1,3 +1,5 @@
+import { readJsonFile } from "./paths.mjs";
+import { runGit } from "./git.mjs";
 import { docPath, docRelative, rootPattern } from "./config.mjs";
 import { createHash } from "node:crypto";
 import {
@@ -25,7 +27,7 @@ import {
 
 const json = (root, path, fallback = null) =>
   existsSync(join(root, path))
-    ? JSON.parse(readFileSync(join(root, path), "utf8"))
+    ? readJsonFile(join(root, path), { rawErrors: true })
     : fallback;
 const jsonl = (root, path) =>
   existsSync(join(root, path))
@@ -44,14 +46,12 @@ const sumKnown = (values) =>
     : null;
 const delta = (value, previous) =>
   Number.isFinite(value) && Number.isFinite(previous) ? value - previous : null;
-const git = (root, args) => {
-  const run = spawnSync("git", args, {
-    cwd: root,
-    encoding: "utf8",
+const git = (root, args) =>
+  runGit(root, args, {
+    trim: false,
     maxBuffer: 8 * 1024 * 1024,
-  });
-  return run.status === 0 ? run.stdout.trimEnd() : null;
-};
+    onFailure: () => null,
+  })?.trimEnd() ?? null;
 const roleForPhase = {
   implementation: "executor",
   repair: "executor",

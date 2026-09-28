@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { json as prettyJson } from "./lib/helpers.mjs";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
@@ -57,10 +58,7 @@ if (mode === "--record-current-selfhost") {
   if (!manifest.capture.includes(capture)) manifest.capture += ` ${capture}`;
   // Check every newly pinned input before replacing the fixture manifest.
   loadFixture("selfhost");
-  writeFileSync(
-    join(fixtureRoot, "manifest.json"),
-    JSON.stringify(manifest, null, 2) + "\n",
-  );
+  writeFileSync(join(fixtureRoot, "manifest.json"), prettyJson(manifest));
 }
 const writing = mode !== "--check";
 const directory = join(fixtureRoot, "expected");
@@ -70,7 +68,7 @@ for (const name of mode === "--record-current-selfhost"
   : Object.keys(manifest.cases)) {
   const board = projectBoard(loadFixture(name));
   for (const [extension, contents] of [
-    ["json", JSON.stringify(board, null, 2) + "\n"],
+    ["json", prettyJson(board)],
     ["txt", renderTerminal(board)],
     ["html", renderHtml(board)],
   ]) {

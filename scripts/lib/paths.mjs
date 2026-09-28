@@ -1,5 +1,6 @@
+import { runGit } from "./git.mjs";
 import { defaultDocRelative, docPath, docRelative } from "./config.mjs";
-import { spawnSync } from "node:child_process";
+
 import {
   existsSync,
   lstatSync,
@@ -15,26 +16,28 @@ export const containedRegularFile = (path, root) =>
   lstatSync(path).isFile() &&
   realpathSync(path).startsWith(`${realpathSync(root)}${sep}`);
 
-export const parseJson = (source, displayPath) => {
+export const parseJson = (source, displayPath, { rawErrors = false } = {}) => {
   try {
     return JSON.parse(source);
   } catch (error) {
+    if (rawErrors) throw error;
     throw new Error(
       `invalid JSON in ${displayPath}: ${error instanceof Error ? error.message : String(error)}`,
     );
   }
 };
 
-export const readJsonFile = (path) => {
+export const readJsonFile = (path, { rawErrors = false } = {}) => {
   let source;
   try {
     source = readFileSync(path, "utf8");
   } catch (error) {
+    if (rawErrors) throw error;
     throw new Error(
       `cannot read JSON file ${path}: ${error instanceof Error ? error.message : String(error)}`,
     );
   }
-  return parseJson(source, path);
+  return parseJson(source, path, { rawErrors });
 };
 
 export const workOrderAuthorityPath = (
@@ -160,25 +163,51 @@ export function inspectNestedRepository(root, candidate) {
   try {
     if (!lstatSync(gitDirectory).isDirectory())
       return { repository: true, commits: null, empty: false };
-    const git = (...args) => {
-      const result = spawnSync(
-        "git",
-        ["--git-dir", gitDirectory, "--work-tree", directory, ...args],
-        { cwd: directory, encoding: "utf8", timeout: 5000 },
-      );
-      if (result.status !== 0) throw new Error("Repository inspection failed");
-      return result.stdout.trim();
+    const inspectionGitFlags = [
+      "--git-dir",
+      gitDirectory,
+      "--work-tree",
+      directory,
+    ];
+    const inspectionGitOptions = {
+      cwd: directory,
+      timeout: 5000,
+      maxBuffer: 1024 * 1024,
+      onFailure: () => {
+        throw new Error("Repository inspection failed");
+      },
     };
-    const commits = git("rev-list", "--all", "--count") !== "0";
-    const refs = git("for-each-ref", "--format=%(refname)");
-    const index = git("ls-files", "--stage");
-    const objects = git("count-objects", "-v");
+    const commits =
+      runGit(
+        directory,
+        [...inspectionGitFlags, "rev-list", "--all", "--count"],
+        inspectionGitOptions,
+      ) !== "0";
+    const refs = runGit(
+      directory,
+      [...inspectionGitFlags, "for-each-ref", "--format=%(refname)"],
+      inspectionGitOptions,
+    );
+    const index = runGit(
+      directory,
+      [...inspectionGitFlags, "ls-files", "--stage"],
+      inspectionGitOptions,
+    );
+    const objects = runGit(
+      directory,
+      [...inspectionGitFlags, "count-objects", "-v"],
+      inspectionGitOptions,
+    );
     const noObjects =
       ["count", "in-pack", "packs", "garbage"].every((key) =>
         new RegExp(`^${key}: 0$`, "m").test(objects),
       ) && !/^alternate:/m.test(objects);
     const unborn = /^refs\/heads\/.+/.test(
-      git("symbolic-ref", "--quiet", "HEAD"),
+      runGit(
+        directory,
+        [...inspectionGitFlags, "symbolic-ref", "--quiet", "HEAD"],
+        inspectionGitOptions,
+      ),
     );
     return {
       repository: true,

@@ -1,5 +1,6 @@
+import { spawnGit } from "./git.mjs";
 import { createHash } from "node:crypto";
-import { spawnSync } from "node:child_process";
+
 import {
   existsSync,
   mkdirSync,
@@ -43,8 +44,7 @@ const codeIdentity = () => {
 // neither read nor written while any of them is present.
 const plainHistory = (root) => {
   const base = process.env.GIT_REPLACE_REF_BASE || "refs/replace/";
-  const result = spawnSync(
-    "git",
+  const result = spawnGit(
     [
       "-C",
       root,
@@ -103,7 +103,7 @@ export function releaseListCache(root) {
   try {
     // A tracked or unignored path is never trusted or written.
     if (
-      spawnSync("git", ["-C", root, "check-ignore", "-q", "--", relativePath], {
+      spawnGit(["-C", root, "check-ignore", "-q", "--", relativePath], {
         stdio: "ignore",
       }).status === 0 &&
       plainHistory(root)

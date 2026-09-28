@@ -26,6 +26,7 @@ import {
   removeMergedBranch,
   runGit,
   runGitPathList,
+  spawnGit,
 } from "./lib/git.mjs";
 import {
   containedRegularFile,
@@ -43,8 +44,7 @@ import {
 
 const toolRoot = findLaunchpad();
 const readTrackedTextAtHead = (root, path, displayPath) => {
-  const tree = spawnSync(
-    "git",
+  const tree = spawnGit(
     [
       "-C",
       root,
@@ -60,7 +60,7 @@ const readTrackedTextAtHead = (root, path, displayPath) => {
   if (tree.status !== 0 || !/^[0-9a-f]{40,64}\0$/.test(tree.stdout))
     throw new Error(`${displayPath}: file is not tracked`);
   const object = tree.stdout.slice(0, -1);
-  const blob = spawnSync("git", ["-C", root, "cat-file", "blob", object]);
+  const blob = spawnGit(["-C", root, "cat-file", "blob", object]);
   if (blob.status !== 0)
     throw new Error(`${displayPath}: committed file cannot be read`);
   try {
@@ -492,7 +492,7 @@ const main = async () => {
     }
     runGit(mainPath, ["fetch", "origin", "main"]);
     runGit(mainPath, ["merge", "--ff-only", "origin/main"]);
-    const merged = spawnSync("git", [
+    const merged = spawnGit([
       "-C",
       mainPath,
       "merge-base",

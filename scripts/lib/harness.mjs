@@ -1,3 +1,9 @@
+import { spawnGit, runGit } from "./git.mjs";
+import {
+  json as targetJson,
+  json as prettyJson,
+  sha256Hex as targetDigest,
+} from "./helpers.mjs";
 import { TOOL_ROOT, docRelative, findLaunchpad } from "./config.mjs";
 import {
   cpSync,
@@ -15,8 +21,6 @@ import {
 } from "node:fs";
 import { dirname, join, relative, resolve, sep } from "node:path";
 
-import { createHash } from "node:crypto";
-import { execFileSync, spawnSync } from "node:child_process";
 import {
   canonicalStringify,
   fnv1a64,
@@ -274,7 +278,7 @@ export function emitHarness(root, options = {}) {
       throw new Error(`unowned harness output refuses replacement: ${path}`);
   // Validate every destination before the first write. Never edit user scope.
   const manifestTarget = contained(root, manifestPath);
-  const manifestText = JSON.stringify(installation.manifest, null, 2) + "\n";
+  const manifestText = prettyJson(installation.manifest);
   const localTerms = checkLocalTerms(options.termsRoot ?? root, [
     ...writes.map((file) => ({
       name: relative(root, file.path),
@@ -390,8 +394,7 @@ export function checkHarness(root, options = {}) {
   const manifest = contained(root, manifestPath);
   if (
     !existsSync(manifest) ||
-    readFileSync(manifest, "utf8") !==
-      JSON.stringify(expected.manifest, null, 2) + "\n"
+    readFileSync(manifest, "utf8") !== prettyJson(expected.manifest)
   )
     throw new Error("harness drift: manifest");
   return {
@@ -407,19 +410,14 @@ export function checkHarness(root, options = {}) {
 }
 
 const targetManifest = ".claude/target-worker-manifest.json";
-const targetDigest = (value) =>
-  createHash("sha256").update(value).digest("hex");
-const targetGit = (root, ...args) =>
-  execFileSync("git", args, {
-    cwd: root,
-    encoding: "utf8",
-    stdio: ["ignore", "pipe", "pipe"],
-    timeout: 10000,
-  }).trim();
+const targetGitOptions = {
+  exec: true,
+  stdio: ["ignore", "pipe", "pipe"],
+  timeout: 10000,
+};
 const targetStat = (path) => lstatSync(path, { throwIfNoEntry: false });
 function targetIgnore(context, path, installed = false) {
-  const result = spawnSync(
-    "git",
+  const result = spawnGit(
     ["check-ignore", "--no-index", "-z", "-v", "--stdin"],
     {
       cwd: context.root,
@@ -478,7 +476,11 @@ function safeLocalDirectory(root, path) {
 }
 function targetContext(target, options = {}) {
   const root = realpathSync(target);
-  if (realpathSync(targetGit(root, "rev-parse", "--show-toplevel")) !== root)
+  if (
+    realpathSync(
+      runGit(root, ["rev-parse", "--show-toplevel"], targetGitOptions),
+    ) !== root
+  )
     throw new Error("target requires the physical Git worktree root");
   const launchpad = realpathSync(options.runtimeRoot ?? findLaunchpad());
   if (
@@ -501,7 +503,7 @@ function targetContext(target, options = {}) {
     throw new Error("target installation receipt is not a regular file");
   const exclude = resolve(
     root,
-    targetGit(root, "rev-parse", "--git-path", "info/exclude"),
+    runGit(root, ["rev-parse", "--git-path", "info/exclude"], targetGitOptions),
   );
   // Git may legitimately put info/exclude in a shared repository outside this worktree.
   // Check every existing ancestor without following user-created symlinks.
@@ -538,7 +540,6 @@ function targetContext(target, options = {}) {
     registryPath,
   };
 }
-const targetJson = (value) => JSON.stringify(value, null, 2) + "\n";
 const readTargetReceipt = (context) =>
   existsSync(context.receiptPath)
     ? JSON.parse(readFileSync(context.receiptPath, "utf8"))
@@ -727,7 +728,7 @@ function emitTargetUnlocked(context, options) {
   }
   for (const file of installed) {
     const path = targetFile(context.root, file.path);
-    if (targetGit(context.root, "ls-files", "--", file.path))
+    if (runGit(context.root, ["ls-files", "--", file.path], targetGitOptions))
       throw new Error(`target output is tracked: ${file.path}`);
     if (targetStat(path) && !owned.includes(file.path))
       throw new Error(
@@ -789,7 +790,7 @@ export function checkTargetHarness(target, options = {}) {
       throw new Error(`target drift: ${file.path}`);
     if (!lines.includes(`/${file.path}`))
       throw new Error(`target exclude missing: ${file.path}`);
-    if (targetGit(context.root, "ls-files", "--", file.path))
+    if (runGit(context.root, ["ls-files", "--", file.path], targetGitOptions))
       throw new Error(`target output is tracked: ${file.path}`);
     targetIgnore(context, file.path, true);
   }
@@ -816,7 +817,7 @@ function removeTargetUnlocked(context) {
       hash(readFileSync(path, "utf8")) !== file.hash
     )
       throw new Error(`target drift: ${file.path}`);
-    if (targetGit(context.root, "ls-files", "--", file.path))
+    if (runGit(context.root, ["ls-files", "--", file.path], targetGitOptions))
       throw new Error(`target output is tracked: ${file.path}`);
   }
   const nextExclude = updateTargetExclude(context, files, true);

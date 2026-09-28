@@ -161,13 +161,14 @@ node - "$fixture_repo" "$saved/times.json" "$saved/times.log.before" <<'NODE'
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
-const { execFileSync, spawnSync } = require("node:child_process");
+const { spawnSync } = require("node:child_process");
 const [root, outputPath, originalPath] = process.argv.slice(2);
 const source = fs.readFileSync(outputPath, "utf8");
 const output = JSON.parse(source);
 const original = fs.readFileSync(originalPath, "utf8");
 const events = original.trim().split("\n").map(JSON.parse);
-const expectedSeconds = Number(execFileSync("git", ["-C", root, "show", "-s", "--format=%ct", events[1].checkpointSha], { encoding: "utf8" }).trim());
+const { runGit } = require(path.join(root, "scripts/lib/git.mjs"));
+const expectedSeconds = Number(runGit(root, ["show", "-s", "--format=%ct", events[1].checkpointSha]));
 assert.equal(output.eventCount, 3);
 assert.equal(output.localRefsRead, 1);
 assert.deepEqual(output.counts, { recordedAt: 1, "recovered-from-local-checkpoint-ref": 1, unknown: 1 });
@@ -265,7 +266,6 @@ report docs/final-reviews/WO-097/FINAL-002.md
 lifecycle final-review-result pass "${actor_flags[@]}"
 node - "$lifecycle_repo" <<'NODE'
 const assert = require("node:assert/strict"), fs = require("node:fs"), path = require("node:path");
-const { execFileSync } = require("node:child_process");
 const root = process.argv[2];
 const events = fs.readFileSync(path.join(root, "docs/control/orders/WO-097.jsonl"), "utf8").trim().split("\n").map(JSON.parse);
 assert.deepEqual([...new Set(events.map((event) => event.type))].sort(), ["WorkOrderActivated", "ImplementationReady", "VerificationRequested", "VerificationCompleted", "RepairRequested", "RepairCompleted", "FinalReviewRequested", "FinalReviewCompleted"].sort());
@@ -273,9 +273,9 @@ assert.equal(new Set(events.map((event) => event.checkpointRef)).size, events.le
 for (const event of events) {
   assert.match(event.checkpointSha ?? "", /^[a-f0-9]{40}$/);
   assert.match(event.checkpointRef ?? "", /^refs\/dotln\/checkpoint\/WO-097\/[1-9]\d*$/);
-  const git = (...args) => execFileSync("git", ["-C", root, ...args], { encoding: "utf8" });
-  assert.equal(git("rev-parse", event.checkpointRef).trim(), event.checkpointSha);
-  assert.equal(git("show", `${event.checkpointRef}:recovery-sentinel.txt`), "uncommitted recovery sentinel\n");
+  const { runGit } = require(path.join(root, "scripts/lib/git.mjs"));
+  assert.equal(runGit(root, ["rev-parse", event.checkpointRef]), event.checkpointSha);
+  assert.equal(runGit(root, ["show", `${event.checkpointRef}:recovery-sentinel.txt`], { trim: false }), "uncommitted recovery sentinel\n");
 }
 console.log(`all lifecycle checkpoint refs resolve with recovery bytes: ${events.length} transitions`);
 NODE

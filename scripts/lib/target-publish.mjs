@@ -1,4 +1,5 @@
-import { spawnSync } from "node:child_process";
+import { spawnGit, runGit } from "./git.mjs";
+
 import { createHash } from "node:crypto";
 import {
   existsSync,
@@ -123,23 +124,21 @@ const HOOKLESS = [
   "-c",
   "core.fsmonitor=false",
 ];
-const git = (cwd, args, options = {}) => {
-  const result = spawnSync("git", ["-C", cwd, ...HOOKLESS, ...args], {
-    maxBuffer: 16 * 1024 * 1024,
-    ...options,
-  });
-  if (result.status !== 0)
+const targetGitOptions = {
+  trim: false,
+  encoding: null,
+  onFailure: (result, args) => {
     throw refuse(
-      `git ${args[0]} failed in the target repository: ${String(result.stderr ?? "").trim()}`,
+      `git ${args[HOOKLESS.length]} failed in the target repository: ${String(result.stderr ?? "").trim()}`,
     );
-  return result.stdout;
+  },
 };
 /** The push URL origin's configuration names, before any URL rewrite, which
  * must be the GitHub repository ensureGh resolved: a rewrite the target's
  * configuration adds cannot redirect the push (WO-157). */
 const pushUrl = (repo, repository) => {
   const values = (key) =>
-    spawnSync("git", ["-C", repo, ...HOOKLESS, "config", "--get-all", key], {
+    spawnGit(["-C", repo, ...HOOKLESS, "config", "--get-all", key], {
       encoding: "utf8",
     })
       .stdout.split("\n")
@@ -167,13 +166,13 @@ const pushUrl = (repo, repository) => {
 function pushObservedCommit(repo, url, branch, commit) {
   const lane = mkdtempSync(join(tmpdir(), "dotln-target-push-"));
   try {
-    const init = spawnSync("git", ["init", "--quiet", "--bare", lane], {
+    const init = spawnGit(["init", "--quiet", "--bare", lane], {
       encoding: "utf8",
     });
     if (init.status !== 0)
       throw refuse(`git init failed for the publish lane: ${init.stderr}`);
     const inLane = (args) => {
-      const result = spawnSync("git", ["-C", lane, ...HOOKLESS, ...args], {
+      const result = spawnGit(["-C", lane, ...HOOKLESS, ...args], {
         encoding: "utf8",
         maxBuffer: 16 * 1024 * 1024,
       });
@@ -201,7 +200,10 @@ function pushObservedCommit(repo, url, branch, commit) {
   }
 }
 const gitText = (cwd, ...args) =>
-  git(cwd, args, { encoding: "utf8" }).replace(/\n$/u, "");
+  runGit(cwd, [...HOOKLESS, ...args], {
+    ...targetGitOptions,
+    ...{ encoding: "utf8" },
+  }).replace(/\n$/u, "");
 
 const only = (events, type, label) => {
   const found = events.filter((event) => event.type === type);
@@ -334,8 +336,7 @@ function observeTarget(episode) {
   const { commit, diffHash } = episode.observation;
   if (gitText(repo, "rev-parse", "--show-toplevel") !== realpathSync(repo))
     throw refuse("the episode repository is not a Git root");
-  const head = spawnSync(
-    "git",
+  const head = spawnGit(
     [
       "-C",
       repo,
@@ -350,7 +351,7 @@ function observeTarget(episode) {
   if (head.status !== 0 || head.stdout.trim() !== commit)
     throw refuse(`branch ${branch} no longer names the observed commit`);
   if (
-    spawnSync("git", [
+    spawnGit([
       "-C",
       repo,
       ...HOOKLESS,
@@ -363,7 +364,16 @@ function observeTarget(episode) {
     throw refuse("the observed commit does not descend from the base");
   const diff = ["--no-ext-diff", "--no-textconv", "--no-renames"];
   const digest = createHash("sha256")
-    .update(git(repo, ["diff", "--binary", ...diff, baseCommit, commit, "--"]))
+    .update(
+      runGit(
+        repo,
+        [
+          ...HOOKLESS,
+          ...["diff", "--binary", ...diff, baseCommit, commit, "--"],
+        ],
+        targetGitOptions,
+      ),
+    )
     .digest("hex");
   if (digest !== diffHash)
     throw refuse("the target diff differs from the effect receipt");

@@ -1,6 +1,7 @@
+import { execGit } from "./lib/git.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
-import { execFileSync } from "node:child_process";
+
 import {
   mkdirSync,
   mkdtempSync,
@@ -25,7 +26,7 @@ function fixture({
   const root = realpathSync(
     mkdtempSync(join(tmpdir(), "dotln-release-preparation-")),
   );
-  execFileSync("git", ["init", "--quiet", "-b", "wo-099", root], {
+  execGit(["init", "--quiet", "-b", "wo-099", root], {
     stdio: "pipe",
   });
   const authorityPath = "docs/work-orders/WO-099-fixture.md";

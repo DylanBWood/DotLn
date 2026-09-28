@@ -1,3 +1,4 @@
+import { json as encode } from "./helpers.mjs";
 import { defaultDocRelative, docRelative, rootPattern } from "./config.mjs";
 import {
   existsSync,
@@ -11,9 +12,9 @@ import {
 } from "node:fs";
 import { join } from "node:path";
 import { createHash } from "node:crypto";
-import { spawnSync } from "node:child_process";
+
 import { readDecisions } from "./meta.mjs";
-import { runGit, runGitPathList } from "./git.mjs";
+import { runGit, runGitPathList, spawnGit } from "./git.mjs";
 import { readAdjacentQueue } from "./adjacent-queue.mjs";
 import { checkLocalTerms } from "./terms.mjs";
 
@@ -24,7 +25,6 @@ export const followupsPath = (root) =>
   docRelative(root, "planning", "followups.json");
 const closed = new Set(["allocated", "declined", "duplicate", "settled"]);
 const statuses = new Set(["open", "deferred", ...closed]);
-const encode = (value) => JSON.stringify(value, null, 2) + "\n";
 const hash = (value) =>
   createHash("sha256")
     .update(typeof value === "string" ? value : encode(value))
@@ -312,7 +312,7 @@ function validate(state, root) {
   return state;
 }
 function committedState(root) {
-  const result = spawnSync("git", ["show", `HEAD:${followupsPath(root)}`], {
+  const result = spawnGit(["show", `HEAD:${followupsPath(root)}`], {
     cwd: root,
     encoding: "utf8",
     maxBuffer: 32 * 1024 * 1024,
@@ -645,13 +645,9 @@ function bounded(page, next) {
 export function changedAgainstMain(root, { required = true } = {}) {
   const refs = ["main", "origin/main"].filter(
     (ref) =>
-      spawnSync(
-        "git",
-        ["rev-parse", "--verify", "--quiet", `${ref}^{commit}`],
-        {
-          cwd: root,
-        },
-      ).status === 0,
+      spawnGit(["rev-parse", "--verify", "--quiet", `${ref}^{commit}`], {
+        cwd: root,
+      }).status === 0,
   );
   if (!refs.length && !required) return { base: null, paths: [] };
   requireFollowup(refs.length, "no main to compare with; name the paths");

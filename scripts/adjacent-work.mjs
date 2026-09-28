@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { json as prettyJson } from "./lib/helpers.mjs";
 import { isMainModule } from "./lib/paths.mjs";
 import { lstatSync, readFileSync, realpathSync } from "node:fs";
 import { resolve } from "node:path";
@@ -83,9 +84,7 @@ export function main(args, root = process.cwd()) {
 }
 if (isMainModule(import.meta.url)) {
   try {
-    process.stdout.write(
-      JSON.stringify(main(process.argv.slice(2)), null, 2) + "\n",
-    );
+    process.stdout.write(prettyJson(main(process.argv.slice(2))));
   } catch (error) {
     process.stderr.write(`${error.message}\n`);
     process.exitCode = 1;

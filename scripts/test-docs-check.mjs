@@ -1,8 +1,10 @@
+import { write as writeFixture } from "./lib/helpers.mjs";
+import { spawnGit } from "./lib/git.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { dirname, join, resolve } from "node:path";
+import { join, resolve } from "node:path";
 import { spawnSync } from "node:child_process";
 import {
   checkDocs,
@@ -18,11 +20,8 @@ const script = resolve("scripts/docs-check.mjs");
 function fixture(t, roots = {}) {
   const root = mkdtempSync(join(tmpdir(), "dotln-docs-check-"));
   t.after(() => rmSync(root, { recursive: true, force: true }));
-  const write = (path, source) => {
-    mkdirSync(dirname(join(root, path)), { recursive: true });
-    writeFileSync(join(root, path), source);
-  };
-  assert.equal(spawnSync("git", ["init", "-q", root]).status, 0);
+  const write = (path, source) => writeFixture(root, path, source);
+  assert.equal(spawnGit(["init", "-q", root]).status, 0);
   write("dotln.config.json", JSON.stringify({ version: 1, roots }));
   const docs = roots.docs ?? "docs",
     product = roots.product ?? `${docs}/product`,
@@ -382,9 +381,9 @@ test("a ceiling increase requires an existing planning decision, including after
   const entry = f.ceilings.documents["00-fixture.md"];
   entry.ceiling = 100;
   f.controls();
-  assert.equal(spawnSync("git", ["-C", f.root, "add", "."]).status, 0);
+  assert.equal(spawnGit(["-C", f.root, "add", "."]).status, 0);
   assert.equal(
-    spawnSync("git", [
+    spawnGit([
       "-C",
       f.root,
       "-c",

@@ -99,6 +99,10 @@ const commonSources = [
   "packages/skeleton/tsconfig.json",
   "scripts/build.mjs",
   "scripts/lib/evidence-sources.mjs",
+  // WO-162: evidence tools consume the shared byte serializers and Git/JSON IO.
+  "scripts/lib/helpers.mjs",
+  "scripts/lib/git.mjs",
+  "scripts/lib/paths.mjs",
   "tsconfig.json",
 ];
 

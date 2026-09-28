@@ -1,7 +1,9 @@
 import {
   canonicalStringify,
+  compareText,
   normalizeCompiledProgram,
   normalizeLoadoutGraph,
+  orderedUnique,
   semanticHash,
 } from "./normalize.js";
 import { loadoutFromEditableView } from "./views.js";
@@ -34,13 +36,6 @@ import {
   type WorkOrder,
   type WorkOrderListField,
 } from "./types.js";
-
-const compareText = (left: string, right: string): number =>
-  left < right ? -1 : left > right ? 1 : 0;
-
-const orderedUnique = (values: readonly string[]): readonly string[] => [
-  ...new Set(values),
-];
 
 const emissionsOf = <K extends SupportEmission["kind"]>(
   support: SupportFacet,

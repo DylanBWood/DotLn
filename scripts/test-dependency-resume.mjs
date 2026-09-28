@@ -1,3 +1,4 @@
+import { spawnGit } from "./lib/git.mjs";
 import assert from "node:assert/strict";
 import {
   cpSync,
@@ -23,9 +24,9 @@ mkdirSync(join(root, "docs/control/orders"), { recursive: true });
 cpSync(join(scripts, "resume.mjs"), join(root, "scripts/resume.mjs"));
 cpSync(join(scripts, "lib"), join(root, "scripts/lib"), { recursive: true });
 installBeaconFixture(root);
-assert.equal(spawnSync("git", ["init", "-q", root]).status, 0);
+assert.equal(spawnGit(["init", "-q", root]).status, 0);
 assert.equal(
-  spawnSync("git", ["rev-parse", "--show-toplevel"], {
+  spawnGit(["rev-parse", "--show-toplevel"], {
     cwd: root,
     encoding: "utf8",
   }).stdout.trim(),

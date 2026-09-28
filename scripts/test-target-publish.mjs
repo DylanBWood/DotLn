@@ -1,3 +1,5 @@
+import { write as writeFixture } from "./lib/helpers.mjs";
+import { spawnGit, execGit } from "./lib/git.mjs";
 // WO-064: target publication over real source-change episodes, a local bare
 // origin behind a GitHub URL and the gh stub. No network or vendor CLI.
 import test from "node:test";
@@ -14,7 +16,7 @@ import {
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
-import { dirname, join } from "node:path";
+import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { decodeLog } from "@dotln/kernel";
 import { SourceChangeHost } from "../packages/skeleton/dist/src/source-change-host.js";
@@ -95,10 +97,7 @@ exit 64
 chmodSync(join(bin, "git"), 0o755);
 chmodSync(join(bin, "gh"), 0o755);
 
-const write = (path, text) => {
-  mkdirSync(dirname(path), { recursive: true });
-  writeFileSync(path, text);
-};
+const write = (path, text) => writeFixture("", path, text);
 const grantFor = (repo, grantedBy) => ({
   ...loadout.authorityGrants[0],
   grantId: `${grantedBy}.target-publish`,
@@ -114,7 +113,7 @@ async function scenario(t, { grantedBy = "operator" } = {}) {
   const target = join(root, "target");
   const origin = join(root, "origin.git");
   const baseCommit = readFileSync(join(root, "base.txt"), "utf8");
-  execFileSync("git", ["init", "--quiet", "--bare", origin]);
+  execGit(["init", "--quiet", "--bare", origin]);
   fixtureGit(target, "remote", "add", "origin", GITHUB);
   fixtureGit(target, "config", `url.${origin}.insteadOf`, GITHUB);
   fixtureGit(target, "push", "--quiet", "origin", "main");
@@ -212,8 +211,7 @@ async function scenario(t, { grantedBy = "operator" } = {}) {
       },
     );
   const remoteBranch = () =>
-    spawnSync(
-      "git",
+    spawnGit(
       [
         "--git-dir",
         origin,
@@ -344,13 +342,9 @@ await test("WO-064 AC1/AC2: lint and target refusals name their rule; the grante
   assert.equal(calls.length, 3);
   assert.equal(subject.remoteBranch(), observation.commit);
   assert.equal(
-    execFileSync(
-      "git",
-      ["--git-dir", join(subject.root, "origin.git"), "tag", "--list"],
-      {
-        encoding: "utf8",
-      },
-    ),
+    execGit(["--git-dir", join(subject.root, "origin.git"), "tag", "--list"], {
+      encoding: "utf8",
+    }),
     "",
   );
   assert.equal(readFileSync(join(target, ".git/config"), "utf8"), configBefore);
@@ -505,8 +499,7 @@ await test("WO-157: publication runs no hook or repository configuration the tar
     chmodSync(path, 0o755);
   }
   // The planted hooks are live for an ordinary push from the target.
-  execFileSync(
-    "git",
+  execGit(
     [
       "-C",
       subject.target,
@@ -531,14 +524,14 @@ await test("WO-157: publication runs no hook or repository configuration the tar
     chmodSync(path, 0o755);
     return path;
   };
-  execFileSync("git", [
+  execGit([
     "-C",
     subject.target,
     "config",
     "remote.origin.receivepack",
     logger("receivepack"),
   ]);
-  execFileSync("git", [
+  execGit([
     "-C",
     subject.target,
     "config",
@@ -547,13 +540,7 @@ await test("WO-157: publication runs no hook or repository configuration the tar
   ]);
   const included = join(subject.root, "included.gitconfig");
   write(included, `[core]\n\tfsmonitor = ${logger("fsmonitor")}\n`);
-  execFileSync("git", [
-    "-C",
-    subject.target,
-    "config",
-    "include.path",
-    included,
-  ]);
+  execGit(["-C", subject.target, "config", "include.path", included]);
   const published = subject.publish();
   assert.equal(published.status, 0, published.stderr);
   assert.equal(subject.remoteBranch(), subject.observation.commit);

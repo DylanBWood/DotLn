@@ -1,7 +1,9 @@
 #!/usr/bin/env node
+import { runGit } from "./lib/git.mjs";
+import { json } from "./lib/helpers.mjs";
 import { docRelative, findLaunchpad } from "./lib/config.mjs";
 import assert from "node:assert/strict";
-import { execFileSync } from "node:child_process";
+
 import { createHash } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { pathToFileURL } from "node:url";
@@ -74,13 +76,17 @@ const baseline = JSON.parse(
 const digest = (contents) =>
   `sha256:${createHash("sha256").update(contents).digest("hex")}`;
 const hash = (value) => digest(canonicalStringify(value));
-const git = (...args) =>
-  execFileSync("git", args, {
-    cwd: root,
-    encoding: "utf8",
-    maxBuffer: 16 * 1024 * 1024,
-  });
-const prior = (path) => git("show", `${baseline.sourceRevision}:${path}`);
+const evidenceGitOptions = {
+  exec: true,
+  trim: false,
+  maxBuffer: 16 * 1024 * 1024,
+};
+const prior = (path) =>
+  runGit(
+    root,
+    ["show", `${baseline.sourceRevision}:${path}`],
+    evidenceGitOptions,
+  );
 const results = {
   seiri: compileLoadout(seiriLoadout, seiriEnvironment()),
   entropy: compileLoadout(
@@ -844,15 +850,19 @@ const withoutDerivedIdentities = (value) => {
     }),
   );
 };
-const bundlePaths = git(
-  "ls-tree",
-  "-r",
-  "--name-only",
-  "v0.16.0",
-  "--",
-  ".agents",
-  ".claude",
-  "CLAUDE.md",
+const bundlePaths = runGit(
+  root,
+  [
+    "ls-tree",
+    "-r",
+    "--name-only",
+    "v0.16.0",
+    "--",
+    ".agents",
+    ".claude",
+    "CLAUDE.md",
+  ],
+  evidenceGitOptions,
 )
   .trim()
   .split("\n");
@@ -872,7 +882,7 @@ const currentPaths = (installation) =>
 assert.deepEqual(currentPaths(equipped), currentPaths(unequipped));
 const generated = (installation, path) =>
   path === ".claude/harness-manifest.json"
-    ? JSON.stringify(installation.manifest, null, 2) + "\n"
+    ? json(installation.manifest)
     : (installation.files.find((file) => file.path === path)?.contents ?? null);
 // WO-042 proved its version-specific bundle migration. Retain those exact
 // observations; WO-126 intentionally changes the procedure and hook policy.
@@ -891,7 +901,11 @@ const historicalEvidence = [
   "verification/stale-status.txt",
 ].map((name) => {
   const path = docRelative(root, "evidence", `WO-042/${name}`);
-  assert.equal(read(path), git("show", `v0.16.0:${path}`), path);
+  assert.equal(
+    read(path),
+    runGit(root, ["show", `v0.16.0:${path}`], evidenceGitOptions),
+    path,
+  );
   return { path, hash: digest(read(path)), unchanged: true };
 });
 const comparisonPaths = [
@@ -899,7 +913,7 @@ const comparisonPaths = [
 ].sort();
 const bundleFiles = comparisonPaths.map((path) => {
   const before = bundlePaths.includes(path)
-    ? git("show", `v0.16.0:${path}`)
+    ? runGit(root, ["show", `v0.16.0:${path}`], evidenceGitOptions)
     : null;
   const after = generated(unequipped, path);
   if (after !== null && path.startsWith(".claude/hooks/")) {
@@ -1063,8 +1077,8 @@ const bundleDiff = {
   },
 };
 const files = new Map([
-  ["authority.json", JSON.stringify(transcript, null, 2) + "\n"],
-  ["bundle-diff.json", JSON.stringify(bundleDiff, null, 2) + "\n"],
+  ["authority.json", json(transcript)],
+  ["bundle-diff.json", json(bundleDiff)],
 ]);
 const preserved =
   mode === "--check" &&

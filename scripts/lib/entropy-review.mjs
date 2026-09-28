@@ -1,3 +1,12 @@
+import {
+  timestamp,
+  validDigest,
+  exact,
+  parseWithLabel,
+  ensureDirectory as ensureReceiptDirectory,
+  locked as withReceiptLock,
+  json as prettyJson,
+} from "./helpers.mjs";
 import { docRelative } from "./config.mjs";
 import {
   appendFileSync,
@@ -10,13 +19,12 @@ import {
   readdirSync,
   realpathSync,
   rmSync,
-  rmdirSync,
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve, sep } from "node:path";
 import { containedRegularFile } from "./paths.mjs";
-import { committedReader, sha256 } from "./plan-subject.mjs";
+import { committedReader, sha256, sha256Hex } from "./plan-subject.mjs";
 import { checkLocalTerms } from "./terms.mjs";
 import { runGit, runGitPathList } from "./git.mjs";
 import { validateAccountLabel } from "./control-actor.mjs";
@@ -63,60 +71,33 @@ const proposalsRoot = (root) => docRelative(root, "docs", "proposals");
 const check = (condition, reason) => {
   if (!condition) throw new Error(reason);
 };
-const hex = (value) => sha256(value).slice(7);
-const exact = (value, keys) =>
-  value !== null &&
-  typeof value === "object" &&
-  !Array.isArray(value) &&
-  Object.keys(value).sort().join(",") === [...keys].sort().join(",");
-const timestamp = (value) =>
-  typeof value === "string" &&
-  /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/u.test(value) &&
-  Number.isFinite(Date.parse(value));
-const validDigest = (value) =>
-  typeof value === "string" && /^sha256:[0-9a-f]{64}$/u.test(value);
+const hex = sha256Hex;
 export const validReceiptId = (value) =>
   typeof value === "string" && /^(REVIEW|REFUTATION)-\d{3}$/u.test(value);
 const readJson = (path, label) => {
   try {
-    return JSON.parse(readFileSync(path, "utf8"));
+    return parseWithLabel(readFileSync(path, "utf8"), label);
   } catch {
     throw new Error(`invalid JSON: ${label}`);
   }
 };
+const ensureDirectory = (root, path) =>
+  ensureReceiptDirectory(
+    root,
+    path,
+    `entropy evidence directory must not be a symlink: ${path}`,
+  );
+const locked = (root, run) =>
+  withReceiptLock(
+    root,
+    runsRoot(root),
+    "entropy",
+    `entropy evidence directory must not be a symlink: ${runsRoot(root)}`,
+    run,
+  );
+
 const skeleton = (name) =>
   import(`../../packages/skeleton/dist/src/${name}.js`);
-
-const ensureDirectory = (root, path) => {
-  let directory = root;
-  for (const part of path.split("/")) {
-    directory = join(directory, part);
-    if (!existsSync(directory)) mkdirSync(directory);
-    check(
-      lstatSync(directory).isDirectory() &&
-        !lstatSync(directory).isSymbolicLink(),
-      `entropy evidence directory must not be a symlink: ${path}`,
-    );
-  }
-};
-
-/** One writer at a time, so two sessions cannot claim the same number. */
-const locked = async (root, run) => {
-  ensureDirectory(root, runsRoot(root));
-  const lock = join(root, runsRoot(root), ".writer-lock");
-  try {
-    mkdirSync(lock);
-  } catch {
-    throw new Error(
-      "entropy evidence writer already active; inspect any interrupted writer before retrying",
-    );
-  }
-  try {
-    return await run();
-  } finally {
-    rmdirSync(lock);
-  }
-};
 
 /** An operator-named input file. The capture lane sits outside the repository
  * under the granted system-temp root, so containment is checked against either
@@ -367,7 +348,7 @@ export function currentDispatch(root, kind) {
 const writePending = (root, kind, pending) => {
   const path = pendingPath(root, kind, pending.subjectHash);
   ensureDirectory(root, localRoot(root));
-  writeFileSync(join(root, path), `${JSON.stringify(pending, null, 2)}\n`, {
+  writeFileSync(join(root, path), prettyJson(pending), {
     mode: 0o600,
   });
   writeFileSync(
@@ -807,7 +788,7 @@ async function fileReceipt(root, { payload, kind }) {
     });
     writeFileSync(
       join(root, runsRoot(root), `${receiptId}.json`),
-      `${JSON.stringify(receipt, null, 2)}\n`,
+      prettyJson(receipt),
       { flag: "wx", mode: 0o644 },
     );
     writeFileSync(join(root, runsRoot(root), `${receiptId}.md`), rendered, {
@@ -943,7 +924,7 @@ async function runEpisode(root, request, pending, role) {
     mkdirSync(request.capture, { recursive: true, mode: 0o700 });
     const resultPath = join(request.capture, "result.json");
     if (!existsSync(resultPath))
-      writeFileSync(resultPath, `${JSON.stringify(returned, null, 2)}\n`, {
+      writeFileSync(resultPath, prettyJson(returned), {
         mode: 0o600,
       });
     const statementPath = join(request.capture, "statement.txt");
@@ -1802,7 +1783,7 @@ function filePacket(root, reviewReceiptId, packet, reason, date) {
       "Filing records the packet. Promotion to a work order remains an operator-authorized planning act.",
     packet,
   };
-  const bytes = `${JSON.stringify(filed, null, 2)}\n`;
+  const bytes = prettyJson(filed);
   checkLocalTerms(root, [{ name: path, text: bytes }]);
   writeFileSync(absolute, bytes, { flag: "wx", mode: 0o644 });
   return { path, packetHash: sha256(bytes) };

@@ -1,3 +1,4 @@
+import { json as prettyJson } from "./lib/helpers.mjs";
 import { isMainModule } from "./lib/paths.mjs";
 import {
   copyFileSync,
@@ -31,7 +32,7 @@ export const installLicenseFixture = (root) => {
       manifest.name ??= "dotln-license-fixture";
       manifest.workspaces = ["packages/*"];
     }
-    writeFileSync(join(root, path), `${JSON.stringify(manifest, null, 2)}\n`);
+    writeFileSync(join(root, path), prettyJson(manifest));
   }
 };
 

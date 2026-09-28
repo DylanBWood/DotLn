@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+import { json as prettyJson } from "./lib/helpers.mjs";
+import { spawnGit } from "./lib/git.mjs";
 import { docPath, findLaunchpad } from "./lib/config.mjs";
 import { isMainModule } from "./lib/paths.mjs";
 import { observedSpawnSync as spawnSync } from "../packages/skeleton/src/gate-deadlines.mjs";
@@ -63,7 +65,7 @@ export function discoverHarness(root, name, probe = probeHarness) {
   if (
     realpathSync(root) !==
     realpathSync(
-      spawnSync("git", ["rev-parse", "--show-toplevel"], {
+      spawnGit(["rev-parse", "--show-toplevel"], {
         cwd: root,
         encoding: "utf8",
       }).stdout.trim(),
@@ -103,7 +105,7 @@ export function discoverHarness(root, name, probe = probeHarness) {
       harnessVersion: row.value,
       observedAt: row.observedAt,
     };
-  writeFileSync(path, JSON.stringify(document, null, 2) + "\n");
+  writeFileSync(path, prettyJson(document));
   return { harness: name, ...row };
 }
 if (isMainModule(import.meta.url)) {

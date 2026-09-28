@@ -1,15 +1,9 @@
+import { write as writeFixture } from "./lib/helpers.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
-import {
-  mkdtempSync,
-  mkdirSync,
-  readFileSync,
-  rmSync,
-  symlinkSync,
-  writeFileSync,
-} from "node:fs";
+import { mkdtempSync, readFileSync, rmSync, symlinkSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { dirname, join } from "node:path";
+import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { authorize } from "@dotln/kernel";
 import {
@@ -43,10 +37,8 @@ import {
 import { CONFIG_FILENAME, loadConfig } from "./lib/config.mjs";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
-const write = (dir, path, grants) => {
-  mkdirSync(dirname(join(dir, path)), { recursive: true });
-  writeFileSync(join(dir, path), JSON.stringify(grants) + "\n");
-};
+const write = (dir, path, grants) =>
+  writeFixture(dir, path, JSON.stringify(grants) + "\n");
 const guard = (program, effect) =>
   authorize({ kind: "Act", effect, payload: {} }, program.authorityEnvelope, {
     now: 1,

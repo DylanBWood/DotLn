@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { json as prettyJson } from "./lib/helpers.mjs";
 // One explicit, detached live row; raw transport output stays ephemeral.
 import { docPath, findLaunchpad } from "./lib/config.mjs";
 import assert from "node:assert/strict";
@@ -117,7 +118,7 @@ if (process.argv[2] === "--child") {
         "No raw transcript, paths or session/commit identities in this row",
       ],
     };
-    writeFileSync(output, JSON.stringify(row, null, 2) + "\n");
+    writeFileSync(output, prettyJson(row));
     assert.equal(row.label, "observed");
     assert.equal(row.origin, "actor");
     assert.equal(row.operatorAwayBeforeAndAfter, true);

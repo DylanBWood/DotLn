@@ -1,6 +1,7 @@
 #!/usr/bin/env node
+import { spawnGit } from "./lib/git.mjs";
 import { isMainModule } from "./lib/paths.mjs";
-import { spawn, spawnSync } from "node:child_process";
+import { spawn } from "node:child_process";
 import { availableParallelism, tmpdir } from "node:os";
 import { randomUUID } from "node:crypto";
 import {
@@ -199,6 +200,10 @@ const machinerySources = {
     "scripts/discover.mjs",
     "packages/skeleton/src/usage-observation.mjs",
     "scripts/test-process-debt.mjs",
+    "scripts/test-helper-reuse.mjs",
+    "scripts/lib/helpers.mjs",
+    "scripts/lib/git.mjs",
+    "scripts/lib/paths.mjs",
     "scripts/test-codex-session.mjs",
     "scripts/lib/harness-runtime.mjs",
     "scripts/lib/lifecycle-evidence.mjs",
@@ -358,13 +363,13 @@ function classifySuite(row) {
   };
 }
 export function changedMachinery(repo, table = suites, base = "origin/main") {
-  let run = spawnSync("git", ["diff", "--name-only", base, "--"], {
+  let run = spawnGit(["diff", "--name-only", base, "--"], {
     cwd: repo,
     encoding: "utf8",
   });
   if (run.status !== 0) {
     base = "main";
-    run = spawnSync("git", ["diff", "--name-only", base, "--"], {
+    run = spawnGit(["diff", "--name-only", base, "--"], {
       cwd: repo,
       encoding: "utf8",
     });
@@ -382,7 +387,7 @@ export function changedMachinery(repo, table = suites, base = "origin/main") {
     )
     .filter((file) => {
       // Reuse the evidence projection: release literals alone change no behavior.
-      const before = spawnSync("git", ["show", `${base}:${file}`], {
+      const before = spawnGit(["show", `${base}:${file}`], {
         cwd: repo,
         encoding: "utf8",
       });

@@ -1,4 +1,5 @@
-import { createHash } from "node:crypto";
+import { sha256Hex } from "./helpers.mjs";
+export { sha256Hex } from "./helpers.mjs";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { parseHeader, parseSequence } from "../work-orders.mjs";
@@ -24,8 +25,7 @@ export const THESIS_HEADINGS = [
     "Mission — increase the chance of operator flow",
   ],
 ];
-export const sha256 = (value) =>
-  `sha256:${createHash("sha256").update(value).digest("hex")}`;
+export const sha256 = (value) => `sha256:${sha256Hex(value)}`;
 
 // Length framing is supplied by JSON's string encoding. No whitespace folding
 // occurs before hashing source bytes. A revision id is provenance, not identity.

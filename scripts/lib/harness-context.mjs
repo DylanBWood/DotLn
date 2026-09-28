@@ -1,9 +1,9 @@
+import { spawnGit } from "./git.mjs";
 import { defaultDocRelative } from "./config.mjs";
 import { dirname } from "node:path";
-import { spawnSync } from "node:child_process";
 
 const historyGit = (root, args, input) => {
-  const result = spawnSync("git", args, {
+  const result = spawnGit(args, {
     cwd: root,
     input,
     maxBuffer: 16 * 1024 * 1024,

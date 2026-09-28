@@ -20,6 +20,20 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-162 activation completion (2026-09-27):** assigned application `v0.52.9`,
+the next patch above the observed local `v0.52.8` tag. Repeated Git, fixture,
+JSON, receipt and digest helpers share implementations inside scripts, and the
+compiler imports its existing normalizers. Compiler `0.19.3` to `0.19.4` is a
+compatible patch; skeleton and console compiler pins and the lockfile follow.
+Fixed-input helper outputs and diagnostics are unchanged. Of 177 committed
+fixture-tree paths, 173 are byte-identical. Four self-host console fixture
+files changed because the required compiler label enters the feedback policy
+hash: three expected outputs record that hash, and the fixture manifest
+records the matching feedback edition and its maturity digest.
+Independent verification, final review and publication remain separate dispatches.
+
+**WO-162 collision retiming (2026-09-28):** unpublished target `v0.52.9` is superseded by `v0.52.10` under the existing patch classification because the observed release baseline is `v0.52.9`. Scope, acceptance, component versions, and published tags are unchanged by this retiming.
+
 **WO-163 activation completion (2026-09-27):** assigned application `v0.52.9`,
 the next patch above the observed local `v0.52.8` tag. Three import-only
 scripts move into `scripts/lib/`, the library's one command block becomes the

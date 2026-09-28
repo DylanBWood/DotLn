@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { write, json as prettyJson } from "./lib/helpers.mjs";
 import { isMainModule } from "./lib/paths.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
@@ -98,10 +99,6 @@ const actor = {
   effort: "unknown",
   source: "operator-attested",
   accountLabel: "fixture",
-};
-const write = (repo, path, source) => {
-  mkdirSync(dirname(join(repo, path)), { recursive: true });
-  writeFileSync(join(repo, path), source);
 };
 const read = (repo, path) => readFileSync(join(repo, path), "utf8");
 const commit = (repo, label, date = "2030-01-02T00:00:00Z") => {
@@ -234,7 +231,7 @@ const directEpisode = (result) => ({
   settingsVerification: "unverified",
   profileId: "plan-refutation-v1",
   completedAt: new Date(now()).toISOString(),
-  resultHash: sha256(`${JSON.stringify(result, null, 2)}\n`),
+  resultHash: sha256(prettyJson(result)),
   judgmentBasis: "canonical-subject-and-protocol",
   independence: "session-attested",
   contextIsolation: "not-enforced",
@@ -453,7 +450,7 @@ export async function fixtures() {
         write(
           repo,
           `${RECEIPTS}/${modified.receiptId}.json`,
-          JSON.stringify(modified, null, 2) + "\n",
+          prettyJson(modified),
         );
         write(
           repo,

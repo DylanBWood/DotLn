@@ -1,6 +1,8 @@
+import { write as writeFixture, json as prettyJson } from "./lib/helpers.mjs";
+import { runGit } from "./lib/git.mjs";
 import { docPath, docRelative, findLaunchpad } from "./lib/config.mjs";
 import assert from "node:assert/strict";
-import { execFileSync, spawn, spawnSync } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import {
   cpSync,
@@ -31,13 +33,13 @@ import { installBeaconFixture } from "./test-beacon-fixture.mjs";
 
 const root = realpathSync(findLaunchpad());
 assert.equal(realpathSync(process.cwd()), root);
-const git = (directory, ...args) =>
-  execFileSync("git", args, {
-    cwd: directory,
-    encoding: "utf8",
-    stdio: ["ignore", "pipe", "pipe"],
-  }).trim();
-assert.equal(realpathSync(git(root, "rev-parse", "--show-toplevel")), root);
+const fixtureGitOptions = { exec: true, stdio: ["ignore", "pipe", "pipe"] };
+assert.equal(
+  realpathSync(
+    runGit(root, ["rev-parse", "--show-toplevel"], fixtureGitOptions),
+  ),
+  root,
+);
 assert.equal(
   process.env.DOTLN_LIVE_HARNESS,
   "1",
@@ -66,13 +68,12 @@ assert.ok(
 const scratch = realpathSync(
   mkdtempSync(join(tmpdir(), "dotln-harness-live-")),
 );
-const write = (path, text) => {
-  mkdirSync(dirname(join(scratch, path)), { recursive: true });
-  writeFileSync(join(scratch, path), text);
-};
-git(scratch, "init", "-b", "wo-999");
+const write = (path, text) => writeFixture(scratch, path, text);
+runGit(scratch, ["init", "-b", "wo-999"], fixtureGitOptions);
 assert.equal(
-  realpathSync(git(scratch, "rev-parse", "--show-toplevel")),
+  realpathSync(
+    runGit(scratch, ["rev-parse", "--show-toplevel"], fixtureGitOptions),
+  ),
   scratch,
 );
 cpSync(fixtureTree, scratch, { recursive: true });
@@ -113,17 +114,13 @@ write(
 );
 write(
   "package.json",
-  JSON.stringify(
-    {
-      private: true,
-      scripts: {
-        resume: "node scripts/resume.mjs",
-        test: "node fixture/source.test.mjs",
-      },
+  prettyJson({
+    private: true,
+    scripts: {
+      resume: "node scripts/resume.mjs",
+      test: "node fixture/source.test.mjs",
     },
-    null,
-    2,
-  ) + "\n",
+  }),
 );
 const publication = docRelative(root, "product", "08-publication-compiler.md");
 write(publication, readFileSync(join(root, publication), "utf8"));
@@ -171,21 +168,25 @@ write(
 write("CLAUDE.md", readFileSync(join(root, "CLAUDE.md"), "utf8"));
 symlinkSync("CLAUDE.md", join(scratch, "AGENTS.md"));
 emitHarness(scratch, { termsRoot: root });
-git(scratch, "add", ".");
-git(
+runGit(scratch, ["add", "."], fixtureGitOptions);
+runGit(
   scratch,
-  "-c",
-  "user.name=Fixture",
-  "-c",
-  "user.email=fixture@example.invalid",
-  "-c",
-  "commit.gpgsign=false",
-  "commit",
-  "-m",
-  "Create isolated role-entry fixture",
+  [
+    "-c",
+    "user.name=Fixture",
+    "-c",
+    "user.email=fixture@example.invalid",
+    "-c",
+    "commit.gpgsign=false",
+    "commit",
+    "-m",
+    "Create isolated role-entry fixture",
+  ],
+  fixtureGitOptions,
 );
-const head = git(scratch, "rev-parse", "HEAD");
-if (role === "release-close") git(scratch, "switch", "-c", "main");
+const head = runGit(scratch, ["rev-parse", "HEAD"], fixtureGitOptions);
+if (role === "release-close")
+  runGit(scratch, ["switch", "-c", "main"], fixtureGitOptions);
 const read = (path) => readFileSync(join(scratch, path), "utf8");
 const skillPath = `.claude/skills/dotln-${role}/SKILL.md`;
 const directed = directedReads({
@@ -446,7 +447,8 @@ const record = {
   deniedEffectRefused: denied,
   requiredDeniedEffect,
   requiredDeniedEffectRefused,
-  fixtureCommitDidNotExecute: git(scratch, "rev-parse", "HEAD") === head,
+  fixtureCommitDidNotExecute:
+    runGit(scratch, ["rev-parse", "HEAD"], fixtureGitOptions) === head,
   correction: {
     tokenConfirmed: false,
     reachedThroughRoleSkill:
@@ -477,12 +479,12 @@ const record = {
     !scopeEvidence.attemptedOutsideDirectedSet.length &&
     !scopeEvidence.unlocatedReadRefusals &&
     writerPassed &&
-    git(scratch, "rev-parse", "HEAD") === head,
+    runGit(scratch, ["rev-parse", "HEAD"], fixtureGitOptions) === head,
   rawTranscriptRetained: false,
   userScopeSettingsWritten: false,
 };
 mkdirSync(dirname(destination), { recursive: true });
-writeFileSync(destination, JSON.stringify(record, null, 2) + "\n");
+writeFileSync(destination, prettyJson(record));
 console.log(
   JSON.stringify(
     {

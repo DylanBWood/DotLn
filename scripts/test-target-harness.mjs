@@ -1,7 +1,9 @@
+import { runGit } from "./lib/git.mjs";
+import { write, sha256Hex as digest } from "./lib/helpers.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
-import { execFileSync, spawnSync } from "node:child_process";
-import { createHash } from "node:crypto";
+import { spawnSync } from "node:child_process";
+
 import {
   cpSync,
   existsSync,
@@ -18,7 +20,7 @@ import {
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
-import { dirname, join } from "node:path";
+import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   emitTargetHarness,
@@ -39,17 +41,7 @@ import {
 } from "../packages/skeleton/dist/src/feedback-boundary.js";
 
 const source = fileURLToPath(new URL("../", import.meta.url));
-const git = (root, ...args) =>
-  execFileSync("git", args, {
-    cwd: root,
-    encoding: "utf8",
-    stdio: ["ignore", "pipe", "pipe"],
-  }).trim();
-const write = (root, path, text) => {
-  mkdirSync(dirname(join(root, path)), { recursive: true });
-  writeFileSync(join(root, path), text);
-};
-const digest = (value) => createHash("sha256").update(value).digest("hex");
+const fixtureGitOptions = { exec: true, stdio: ["ignore", "pipe", "pipe"] };
 const manifestPath = ".claude/target-worker-manifest.json";
 const tree = (root, path = "") =>
   Object.fromEntries(
@@ -70,19 +62,22 @@ function fixture(unrelated = false) {
   const launchpad = join(base, "launchpad with space # unicode-é");
   mkdirSync(target);
   mkdirSync(launchpad);
-  git(target, "init", "-b", "fixture-target");
+  runGit(target, ["init", "-b", "fixture-target"], fixtureGitOptions);
   write(target, "source.txt", "fixture\n");
   if (unrelated) write(target, ".claude/unrelated.txt", "preserve\n");
-  git(target, "add", ".");
-  git(
+  runGit(target, ["add", "."], fixtureGitOptions);
+  runGit(
     target,
-    "-c",
-    "user.name=Fixture",
-    "-c",
-    "user.email=fixture@example.invalid",
-    "commit",
-    "-qm",
-    "Fixture base",
+    [
+      "-c",
+      "user.name=Fixture",
+      "-c",
+      "user.email=fixture@example.invalid",
+      "commit",
+      "-qm",
+      "Fixture base",
+    ],
+    fixtureGitOptions,
   );
   for (const name of readdirSync(join(source, "packages"))) {
     const modules = runtimeModuleDirectory(join(source, "packages", name));
@@ -167,7 +162,10 @@ for (const unrelated of [false, true])
       const exclude = join(f.target, ".git/info/exclude");
       writeFileSync(exclude, "# existing without final newline");
       const original = readFileSync(exclude, "utf8");
-      assert.equal(git(f.target, "status", "--porcelain"), "");
+      assert.equal(
+        runGit(f.target, ["status", "--porcelain"], fixtureGitOptions),
+        "",
+      );
       const cli = spawnSync(
         process.execPath,
         [
@@ -202,9 +200,19 @@ for (const unrelated of [false, true])
             .filter((line) => line === `/${file.path}`).length,
           1,
         );
-      assert.equal(git(f.target, "status", "--porcelain"), "");
-      git(f.target, "add", "-A");
-      assert.equal(git(f.target, "diff", "--cached", "--name-only"), "");
+      assert.equal(
+        runGit(f.target, ["status", "--porcelain"], fixtureGitOptions),
+        "",
+      );
+      runGit(f.target, ["add", "-A"], fixtureGitOptions);
+      assert.equal(
+        runGit(
+          f.target,
+          ["diff", "--cached", "--name-only"],
+          fixtureGitOptions,
+        ),
+        "",
+      );
       assert.equal(checkTargetHarness(f.target, f.options).files, 7);
       const post = tree(f.target);
       emitTargetHarness(f.target, f.options);
@@ -225,7 +233,10 @@ for (const unrelated of [false, true])
       removeTargetHarness(f.target, f.options);
       assert.deepEqual(tree(f.target), before);
       assert.equal(readFileSync(exclude, "utf8"), original);
-      assert.equal(git(f.target, "status", "--porcelain"), "");
+      assert.equal(
+        runGit(f.target, ["status", "--porcelain"], fixtureGitOptions),
+        "",
+      );
     } finally {
       rmSync(f.base, { recursive: true, force: true });
     }
@@ -258,15 +269,24 @@ test("WO-049 removal preserves appended user rules and refuses duplicate exclude
     }
     writeFileSync(exclude, installed + "/my-build-output/\n");
     write(f.target, "my-build-output/bundle.js", "artifact\n");
-    assert.equal(git(f.target, "status", "--porcelain"), "");
+    assert.equal(
+      runGit(f.target, ["status", "--porcelain"], fixtureGitOptions),
+      "",
+    );
     removeTargetHarness(f.target, f.options);
     assert.equal(
       readFileSync(exclude, "utf8"),
       original + "\n/my-build-output/\n",
     );
-    assert.equal(git(f.target, "status", "--porcelain"), "");
-    git(f.target, "add", "-A");
-    assert.equal(git(f.target, "diff", "--cached", "--name-only"), "");
+    assert.equal(
+      runGit(f.target, ["status", "--porcelain"], fixtureGitOptions),
+      "",
+    );
+    runGit(f.target, ["add", "-A"], fixtureGitOptions);
+    assert.equal(
+      runGit(f.target, ["diff", "--cached", "--name-only"], fixtureGitOptions),
+      "",
+    );
 
     // A new episode observes current user lines and EOF state, not the old baseline.
     const revised = original + "\n/my-build-output/\n/CLAUDE.local.md";
@@ -485,7 +505,7 @@ test("WO-049 unowned, tracked-missing and symlink destinations refuse before mut
       } else {
         write(f.target, path, "{}\n");
         if (mode === "tracked-missing") {
-          git(f.target, "add", path);
+          runGit(f.target, ["add", path], fixtureGitOptions);
           unlinkSync(join(f.target, path));
         }
       }
@@ -509,7 +529,11 @@ test("WO-049 Codex profile contains only instruction and manifest; linked worktr
   const f = fixture();
   try {
     const sibling = join(f.base, "linked");
-    git(f.target, "worktree", "add", "-b", "fixture-linked", sibling);
+    runGit(
+      f.target,
+      ["worktree", "add", "-b", "fixture-linked", sibling],
+      fixtureGitOptions,
+    );
     const exclude = join(f.target, ".git/info/exclude");
     const original = readFileSync(exclude, "utf8");
     emitTargetHarness(f.target, f.options);
@@ -523,7 +547,10 @@ test("WO-049 Codex profile contains only instruction and manifest; linked worktr
     );
     removeTargetHarness(f.target, f.options);
     assert.equal(checkTargetHarness(sibling, f.options).files, 2);
-    assert.equal(git(sibling, "status", "--porcelain"), "");
+    assert.equal(
+      runGit(sibling, ["status", "--porcelain"], fixtureGitOptions),
+      "",
+    );
     removeTargetHarness(sibling, f.options);
     assert.equal(readFileSync(exclude, "utf8"), original);
   } finally {

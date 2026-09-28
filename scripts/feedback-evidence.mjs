@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { json } from "./lib/helpers.mjs";
 import { docRelative, findLaunchpad } from "./lib/config.mjs";
 import assert from "node:assert/strict";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
@@ -68,7 +69,6 @@ if (unsubjected.length)
   throw new Error(
     `feedback subject omits an imported request protocol: ${unsubjected.join("; ")}; add it to FEEDBACK_SOURCE_PATHS`,
   );
-const json = (value) => JSON.stringify(value, null, 2) + "\n";
 function immutableWrite(name, source) {
   const path = join(destination, name);
   if (existsSync(path)) {

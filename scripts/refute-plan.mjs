@@ -1,7 +1,8 @@
 #!/usr/bin/env node
+import { json as prettyJson } from "./lib/helpers.mjs";
 import { docPath, docRelative, findLaunchpad } from "./lib/config.mjs";
 import { isMainModule } from "./lib/paths.mjs";
-import { spawnSync } from "node:child_process";
+
 import {
   existsSync,
   lstatSync,
@@ -26,7 +27,7 @@ import {
   writePlanReceipt,
 } from "./lib/plan-receipts.mjs";
 import { containedRegularFile } from "./lib/paths.mjs";
-import { runGit, shellQuote } from "./lib/git.mjs";
+import { runGit, shellQuote, spawnGit } from "./lib/git.mjs";
 import { prospectiveRealpath } from "./lib/gate-evidence.mjs";
 import {
   branchWorkOrder,
@@ -65,21 +66,25 @@ function exportDestination(root, name) {
   const path = prospectiveRealpath(resolve(root, name));
   const within = (granted) =>
     path.startsWith(`${prospectiveRealpath(granted)}${sep}`);
-  const git = (directory, ...args) =>
-    spawnSync("git", ["-C", directory, ...args], { encoding: "utf8" });
   let parent = dirname(path);
   while (!existsSync(parent)) parent = dirname(parent);
   if (
     !(within(root)
       ? within(docPath(root, "control", "local")) &&
-        git(root, "check-ignore", "-q", "--", path).status === 0
+        spawnGit(["-C", root, "check-ignore", "-q", "--", path], {
+          encoding: "utf8",
+        }).status === 0
       : within(tmpdir()) &&
         !/true/.test(
-          git(
-            parent,
-            "rev-parse",
-            "--is-inside-work-tree",
-            "--is-inside-git-dir",
+          spawnGit(
+            [
+              "-C",
+              parent,
+              "rev-parse",
+              "--is-inside-work-tree",
+              "--is-inside-git-dir",
+            ],
+            { encoding: "utf8" },
           ).stdout,
         ))
   )
@@ -195,11 +200,9 @@ export async function main(args = process.argv.slice(2), root = toolRoot) {
       // A new file renamed into place: a name that shares its bytes with
       // another is replaced, never written through.
       const temporary = `${path}.${process.pid}.tmp`;
-      writeFileSync(
-        temporary,
-        `${JSON.stringify({ ...summary, rows }, null, 2)}\n`,
-        { flag: "wx" },
-      );
+      writeFileSync(temporary, prettyJson({ ...summary, rows }), {
+        flag: "wx",
+      });
       try {
         renameSync(temporary, path);
       } catch (error) {

@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { isMainModule } from "../lib/paths.mjs";
+import { json } from "../lib/helpers.mjs";
 // Bounded research client. Live inference is explicit and never a test import effect.
 import { execFileSync, execFile } from "node:child_process";
 import { promisify } from "node:util";
@@ -496,7 +497,7 @@ async function main() {
   mkdirSync(dirname(out), { recursive: true });
   const save = (rows) => {
     packet.rows = rows;
-    writeFileSync(out, JSON.stringify(packet, null, 2) + "\n");
+    writeFileSync(out, json(packet));
   };
   try {
     livePreflight();

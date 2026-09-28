@@ -1,3 +1,6 @@
+import { readJsonFile } from "./lib/paths.mjs";
+import { runGit } from "./lib/git.mjs";
+import { write } from "./lib/helpers.mjs";
 // WO-100 end to end: reviewed portfolio text in dotln.config.json, the WO-119
 // producer over its fixture repository, WO-120 durable identities in the
 // index, and a resident whose derived orders change source through a WO-052
@@ -19,7 +22,7 @@ import {
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
-import { dirname, join } from "node:path";
+import { join } from "node:path";
 import { TOOL_ROOT, docPath, docRelative, loadConfig } from "./lib/config.mjs";
 import { materializeOrder, replayAllocations } from "./lib/derived-orders.mjs";
 import { readControl } from "./lib/control-store.mjs";
@@ -45,7 +48,7 @@ import {
 } from "../packages/skeleton/dist/src/resident-store.js";
 import { decodeResidentConfiguration } from "../packages/skeleton/dist/src/resident-state.js";
 
-const read = (path) => JSON.parse(readFileSync(join(TOOL_ROOT, path), "utf8"));
+const read = (path) => readJsonFile(join(TOOL_ROOT, path), { rawErrors: true });
 const repository = read(
   "packages/skeleton/fixtures/wo119-discovery/repository.json",
 );
@@ -55,26 +58,17 @@ const artifactIdentity = read(
 ).request.artifactIdentity;
 const WRITE = ["git.local", "repo.read", "repo.write", "shell.run"];
 
-const git = (cwd, ...args) =>
-  execFileSync(
-    "git",
-    [
-      "-c",
-      "core.hooksPath=/dev/null",
-      "-c",
-      "commit.gpgsign=false",
-      "-c",
-      "user.name=Fixture",
-      "-c",
-      "user.email=fixture@example.invalid",
-      ...args,
-    ],
-    { cwd, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] },
-  ).trim();
-const write = (root, path, source) => {
-  mkdirSync(dirname(join(root, path)), { recursive: true });
-  writeFileSync(join(root, path), source);
-};
+const fixtureGitFlags = [
+  "-c",
+  "core.hooksPath=/dev/null",
+  "-c",
+  "commit.gpgsign=false",
+  "-c",
+  "user.name=Fixture",
+  "-c",
+  "user.email=fixture@example.invalid",
+];
+const fixtureGitOptions = { exec: true, stdio: ["ignore", "pipe", "pipe"] };
 
 /** The reviewed text: 5S maintenance of one registered scratch repository. */
 const portfolioText = (overrides = {}) => ({
@@ -137,9 +131,17 @@ async function fixture(fn) {
       ".gitignore",
       `${docRelative(launchpad, "control", "local")}\n`,
     );
-    git(launchpad, "init", "-q", "--initial-branch=main");
-    git(launchpad, "add", ".");
-    git(launchpad, "commit", "-qm", "Fixture launchpad");
+    runGit(
+      launchpad,
+      [...fixtureGitFlags, "init", "-q", "--initial-branch=main"],
+      fixtureGitOptions,
+    );
+    runGit(launchpad, [...fixtureGitFlags, "add", "."], fixtureGitOptions);
+    runGit(
+      launchpad,
+      [...fixtureGitFlags, "commit", "-qm", "Fixture launchpad"],
+      fixtureGitOptions,
+    );
     // The registered scratch target, seeded with WO-119's six candidates.
     const target = join(root, "target");
     mkdirSync(target);
@@ -157,15 +159,27 @@ async function fixture(fn) {
         ...repository.conventions,
       }),
     );
-    git(target, "init", "-q", "--initial-branch=main");
-    git(target, "add", "-A");
-    git(target, "commit", "-qm", "Scratch target");
+    runGit(
+      target,
+      [...fixtureGitFlags, "init", "-q", "--initial-branch=main"],
+      fixtureGitOptions,
+    );
+    runGit(target, [...fixtureGitFlags, "add", "-A"], fixtureGitOptions);
+    runGit(
+      target,
+      [...fixtureGitFlags, "commit", "-qm", "Scratch target"],
+      fixtureGitOptions,
+    );
     mkdirSync(join(root, "trees"));
     return await fn({
       root,
       launchpad,
       target,
-      base: git(target, "rev-parse", "HEAD"),
+      base: runGit(
+        target,
+        [...fixtureGitFlags, "rev-parse", "HEAD"],
+        fixtureGitOptions,
+      ),
     });
   } finally {
     // WO-054 snapshots are read-only; unlock them as WO-055's fixture does.
@@ -197,7 +211,7 @@ const shine =
         ? source.replace(marker, "")
         : `${source}// attempted\n`,
     );
-    git(cwd, "add", "src/main.js");
+    runGit(cwd, [...fixtureGitFlags, "add", "src/main.js"], fixtureGitOptions);
   };
 /** WO-052 double: a writer that edits and commits inside its worktree; the
  * host refuses any committed path outside the declared surfaces. */
@@ -207,9 +221,17 @@ function writer(log, edit) {
     harnessVersion: "fixture",
     dispatch(request, now) {
       edit(request.cwd, request);
-      git(request.cwd, "commit", "-q", "-F", request.commitMessagePath);
+      runGit(
+        request.cwd,
+        [...fixtureGitFlags, "commit", "-q", "-F", request.commitMessagePath],
+        fixtureGitOptions,
+      );
       appendFileSync(log, `${request.workOrder.workOrderId}\n`);
-      const sha = git(request.cwd, "rev-parse", "HEAD");
+      const sha = runGit(
+        request.cwd,
+        [...fixtureGitFlags, "rev-parse", "HEAD"],
+        fixtureGitOptions,
+      );
       return {
         receipt: Promise.resolve({
           commandId: request.command.commandId,
@@ -226,7 +248,11 @@ function writer(log, edit) {
             requiresHuman: false,
             observedCommit: {
               sha,
-              branch: git(request.cwd, "symbolic-ref", "--short", "HEAD"),
+              branch: runGit(
+                request.cwd,
+                [...fixtureGitFlags, "symbolic-ref", "--short", "HEAD"],
+                fixtureGitOptions,
+              ),
             },
             observedDenials: "unavailable",
           },
@@ -552,11 +578,22 @@ test("WO-100 criteria 1-3: derived orders materialize as indexed records, activa
       for (const event of observed) {
         const { commit } = event.payload.portfolio.change;
         assert.deepEqual(
-          git(target, "diff", "--name-only", base, commit).split("\n"),
+          runGit(
+            target,
+            [...fixtureGitFlags, "diff", "--name-only", base, commit],
+            fixtureGitOptions,
+          ).split("\n"),
           ["src/main.js"],
         );
       }
-      assert.equal(git(target, "rev-parse", "HEAD"), base);
+      assert.equal(
+        runGit(
+          target,
+          [...fixtureGitFlags, "rev-parse", "HEAD"],
+          fixtureGitOptions,
+        ),
+        base,
+      );
       // Criterion 3: peak still admits the Sort move, yet the spent budget is
       // a reasoned NoOp; nothing dispatches past it.
       const left = state();
@@ -620,8 +657,16 @@ test("a Sort move passes only when the host sees the exact relocation and its na
       "checks/placement.cjs",
       "const fs = require('node:fs'); process.exit(fs.existsSync('docs/guide.md') && !fs.existsSync('loose/guide.md') ? 0 : 1);\n",
     );
-    git(target, "add", "checks/placement.cjs");
-    git(target, "commit", "-qm", "Placement check");
+    runGit(
+      target,
+      [...fixtureGitFlags, "add", "checks/placement.cjs"],
+      fixtureGitOptions,
+    );
+    runGit(
+      target,
+      [...fixtureGitFlags, "commit", "-qm", "Placement check"],
+      fixtureGitOptions,
+    );
     const sortChecked = (command) =>
       decodePortfolio({
         ...loadConfig(launchpad).portfolios["gardener-5s"],
@@ -642,7 +687,11 @@ test("a Sort move passes only when the host sees the exact relocation and its na
         0,
         derivations.length,
         ...deriveWorkOrders(discover(target).candidates, definition, peak, {
-          baseCommit: git(target, "rev-parse", "HEAD"),
+          baseCommit: runGit(
+            target,
+            [...fixtureGitFlags, "rev-parse", "HEAD"],
+            fixtureGitOptions,
+          ),
         }),
       );
     derive();
@@ -692,7 +741,11 @@ test("a Sort move passes only when the host sees the exact relocation and its na
     };
     const move = (cwd) => {
       mkdirSync(join(cwd, "docs"), { recursive: true });
-      git(cwd, "mv", "loose/guide.md", "docs/guide.md");
+      runGit(
+        cwd,
+        [...fixtureGitFlags, "mv", "loose/guide.md", "docs/guide.md"],
+        fixtureGitOptions,
+      );
     };
     const moved = await run("misplaced-file:loose/guide.md", move, {}, "moved");
     assert.deepEqual(moved.verdict, {
@@ -704,7 +757,18 @@ test("a Sort move passes only when the host sees the exact relocation and its na
     assert.equal(moved.calls.length, 1);
     // A second bound base is a second durable identity; the copy leaves the
     // misplaced file in place, so the host check fails and no verifier runs.
-    git(target, "commit", "-q", "--allow-empty", "-m", "Move the base");
+    runGit(
+      target,
+      [
+        ...fixtureGitFlags,
+        "commit",
+        "-q",
+        "--allow-empty",
+        "-m",
+        "Move the base",
+      ],
+      fixtureGitOptions,
+    );
     derive();
     const copy = (cwd) => {
       mkdirSync(join(cwd, "docs"), { recursive: true });
@@ -712,7 +776,11 @@ test("a Sort move passes only when the host sees the exact relocation and its na
         join(cwd, "docs/guide.md"),
         readFileSync(join(cwd, "loose/guide.md")),
       );
-      git(cwd, "add", "docs/guide.md");
+      runGit(
+        cwd,
+        [...fixtureGitFlags, "add", "docs/guide.md"],
+        fixtureGitOptions,
+      );
     };
     const copied = await run(
       "misplaced-file:loose/guide.md",
@@ -746,11 +814,19 @@ test("a Sort move passes only when the host sees the exact relocation and its na
         "package.json",
         `${JSON.stringify({ private: true, scripts: { lint: "node checks/lint.cjs", test: script } })}\n`,
       );
-      git(target, "commit", "-qam", `npm test runs ${script}`);
+      runGit(
+        target,
+        [...fixtureGitFlags, "commit", "-qam", `npm test runs ${script}`],
+        fixtureGitOptions,
+      );
       derive();
     };
     npmTest("node checks/placement.cjs");
-    const shared = git(target, "ls-tree", "-r", "--name-only", "HEAD")
+    const shared = runGit(
+      target,
+      [...fixtureGitFlags, "ls-tree", "-r", "--name-only", "HEAD"],
+      fixtureGitOptions,
+    )
       .split("\n")
       .filter((path) => path !== "loose/guide.md")
       .sort();

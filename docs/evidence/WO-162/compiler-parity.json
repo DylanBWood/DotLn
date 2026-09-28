@@ -1,0 +1,23 @@
+{
+  "baseline": "6f9494649db9a4984911801ae320788264d84ff9",
+  "rows": [
+    {
+      "name": "seiri",
+      "ok": true,
+      "bytes": 7775,
+      "sha256": "f920fd10afb48926ad611500ded9cb8436b363da5eb6f7b828ae2bffefafca41"
+    },
+    {
+      "name": "entropy",
+      "ok": true,
+      "bytes": 24814,
+      "sha256": "707de736a1e0f1e9ddc39ebbe5a87753742dadaaeac59db4d5d1721948b79949"
+    },
+    {
+      "name": "authority",
+      "ok": true,
+      "bytes": 3047,
+      "sha256": "0cffd8b5644cd87f06bb3c8e2fd2c1a8d63cf9a8bb2208b9672eba6d2f81c2eb"
+    }
+  ]
+}

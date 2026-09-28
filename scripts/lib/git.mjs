@@ -1,4 +1,4 @@
-import { spawnSync } from "node:child_process";
+import { execFileSync, spawnSync } from "node:child_process";
 import { resolve } from "node:path";
 
 export const shellQuote = (value) => `'${value.replaceAll("'", `'\\''`)}'`;
@@ -8,15 +8,33 @@ export const failureOf = (result, fallback) =>
     .map((value) => (value == null ? "" : String(value).trim()))
     .find(Boolean) ?? "";
 
+// Keep raw status/byte consumers and execFileSync diagnostics intact while
+// giving Git subprocess invocation one home. These preserve the supplied argv.
+export const spawnGit = (args, options) => spawnSync("git", args, options);
+export const execGit = (args, options) => execFileSync("git", args, options);
+
 export const runGit = (cwd, args, options = {}) => {
-  const { trim = true, ...spawnOptions } = options;
-  const result = spawnSync("git", ["-C", cwd, ...args], {
+  const {
+    trim = true,
+    exec = false,
+    raw = false,
+    onFailure,
+    ...spawnOptions
+  } = options;
+  if (raw) return spawnGit(args, { cwd, ...spawnOptions });
+  if (exec) {
+    const output = execGit(args, { cwd, encoding: "utf8", ...spawnOptions });
+    return trim ? output.trim() : output;
+  }
+  const result = spawnGit(["-C", cwd, ...args], {
     encoding: "utf8",
     maxBuffer: 16 * 1024 * 1024,
     ...spawnOptions,
   });
-  if (result.status !== 0)
+  if (result.status !== 0) {
+    if (onFailure) return onFailure(result, args);
     throw new Error(failureOf(result, `git ${args.join(" ")} failed`));
+  }
   return trim ? result.stdout.trim() : result.stdout;
 };
 
@@ -59,7 +77,7 @@ export const readGitObjects = (root, objectIds, type) => {
 };
 
 export const runGitPathList = (cwd, args, options = {}) => {
-  const result = spawnSync("git", ["-C", cwd, ...args], {
+  const result = spawnGit(["-C", cwd, ...args], {
     encoding: "utf8",
     maxBuffer: 16 * 1024 * 1024,
     ...options,

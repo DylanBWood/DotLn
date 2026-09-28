@@ -1,3 +1,4 @@
+import { spawnGit, execGit, runGit } from "./lib/git.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { execFileSync, spawn, spawnSync } from "node:child_process";
@@ -59,26 +60,31 @@ const barrier = { name: "build", command: ["build"], build: true };
 test("release shell changes select their inventory guard during review", async (t) => {
   const repo = mkdtempSync(join(tmpdir(), "dotln-release-selection-"));
   t.after(() => rmSync(repo, { recursive: true, force: true }));
-  const git = (...args) =>
-    execFileSync("git", args, {
-      cwd: repo,
-      encoding: "utf8",
-      stdio: ["ignore", "pipe", "pipe"],
-    });
-  git("init", "-b", "main");
+  const fixtureGitOptions = {
+    exec: true,
+    trim: false,
+
+    encoding: "utf8",
+    stdio: ["ignore", "pipe", "pipe"],
+  };
+  runGit(repo, ["init", "-b", "main"], fixtureGitOptions);
   mkdirSync(join(repo, "scripts"));
   const shell = join(repo, "scripts/test-release.sh");
   const baseline = "release_case_existing() {\n  :\n}\n";
   writeFileSync(shell, baseline);
-  git("add", ".");
-  git(
-    "-c",
-    "user.name=Fixture",
-    "-c",
-    "user.email=fixture@example.invalid",
-    "commit",
-    "-m",
-    "fixture baseline",
+  runGit(repo, ["add", "."], fixtureGitOptions);
+  runGit(
+    repo,
+    [
+      "-c",
+      "user.name=Fixture",
+      "-c",
+      "user.email=fixture@example.invalid",
+      "commit",
+      "-m",
+      "fixture baseline",
+    ],
+    fixtureGitOptions,
   );
   assert.deepEqual(changedMachinery(repo, suites, "main"), []);
   writeFileSync(shell, baseline + "release_case_added() {\n  :\n}\n");
@@ -120,13 +126,14 @@ test("release shell changes select their inventory guard during review", async (
 test("WO-169 a changed script outside the former eight sources selects the configuration-root suite", async (t) => {
   const repo = mkdtempSync(join(tmpdir(), "dotln-script-selection-"));
   t.after(() => rmSync(repo, { recursive: true, force: true }));
-  const git = (...args) =>
-    execFileSync("git", args, {
-      cwd: repo,
-      encoding: "utf8",
-      stdio: ["ignore", "pipe", "pipe"],
-    });
-  git("init", "-b", "main");
+  const fixtureGitOptions = {
+    exec: true,
+    trim: false,
+
+    encoding: "utf8",
+    stdio: ["ignore", "pipe", "pipe"],
+  };
+  runGit(repo, ["init", "-b", "main"], fixtureGitOptions);
   mkdirSync(join(repo, "scripts"));
   mkdirSync(join(repo, "packages/kernel/src"), { recursive: true });
   // The script WO-165 changed while no gate selected the suite that scans
@@ -135,15 +142,19 @@ test("WO-169 a changed script outside the former eight sources selects the confi
   const other = join(repo, "packages/kernel/src/undeclared.ts");
   writeFileSync(script, "export const route = 1;\n");
   writeFileSync(other, "export const value = 1;\n");
-  git("add", ".");
-  git(
-    "-c",
-    "user.name=Fixture",
-    "-c",
-    "user.email=fixture@example.invalid",
-    "commit",
-    "-m",
-    "fixture baseline",
+  runGit(repo, ["add", "."], fixtureGitOptions);
+  runGit(
+    repo,
+    [
+      "-c",
+      "user.name=Fixture",
+      "-c",
+      "user.email=fixture@example.invalid",
+      "commit",
+      "-m",
+      "fixture baseline",
+    ],
+    fixtureGitOptions,
   );
   const listed = async () => {
     const messages = [];
@@ -176,16 +187,17 @@ test("WO-169 a changed script outside the former eight sources selects the confi
 
 test("WO-133 review selection ignores release-only changes and retains host behavior suites", async () => {
   const repo = mkdtempSync(join(tmpdir(), "dotln-version-selection-"));
-  const git = (...args) =>
-    execFileSync("git", args, {
-      cwd: repo,
-      encoding: "utf8",
-      stdio: ["ignore", "pipe", "pipe"],
-    });
+  const fixtureGitOptions = {
+    exec: true,
+    trim: false,
+
+    encoding: "utf8",
+    stdio: ["ignore", "pipe", "pipe"],
+  };
   const version = "packages/skeleton/src/version.ts";
   const compiler = "packages/compiler/src/artifact-identity.ts";
   try {
-    git("init", "-b", "main");
+    runGit(repo, ["init", "-b", "main"], fixtureGitOptions);
     mkdirSync(join(repo, "packages/skeleton/src"), { recursive: true });
     mkdirSync(join(repo, "packages/compiler/src"), { recursive: true });
     writeFileSync(
@@ -200,15 +212,19 @@ test("WO-133 review selection ignores release-only changes and retains host beha
       join(repo, "packages/skeleton/src/harness-host.ts"),
       "export const behavior = 1;\n",
     );
-    git("add", ".");
-    git(
-      "-c",
-      "user.name=Fixture",
-      "-c",
-      "user.email=fixture@example.invalid",
-      "commit",
-      "-m",
-      "fixture baseline",
+    runGit(repo, ["add", "."], fixtureGitOptions);
+    runGit(
+      repo,
+      [
+        "-c",
+        "user.name=Fixture",
+        "-c",
+        "user.email=fixture@example.invalid",
+        "commit",
+        "-m",
+        "fixture baseline",
+      ],
+      fixtureGitOptions,
     );
     writeFileSync(
       join(repo, version),
@@ -663,15 +679,20 @@ test("timeout is an executed failure with suite identity and measured duration",
 test("only and document CLI selection execute their declared checks with the projection build", async () => {
   const repo = mkdtempSync(join(tmpdir(), "dotln-runner-cli-"));
   try {
-    const git = (...args) =>
-      execFileSync("git", args, {
-        cwd: repo,
-        encoding: "utf8",
-        stdio: ["ignore", "pipe", "pipe"],
-      });
-    git("init", "-q");
-    git("config", "user.name", "Fixture");
-    git("config", "user.email", "fixture@example.invalid");
+    const fixtureGitOptions = {
+      exec: true,
+      trim: false,
+
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "pipe"],
+    };
+    runGit(repo, ["init", "-q"], fixtureGitOptions);
+    runGit(repo, ["config", "user.name", "Fixture"], fixtureGitOptions);
+    runGit(
+      repo,
+      ["config", "user.email", "fixture@example.invalid"],
+      fixtureGitOptions,
+    );
     writeFileSync(
       join(repo, ".gitignore"),
       "docs/control/local/\nobserved.jsonl\n",
@@ -702,8 +723,8 @@ test("only and document CLI selection execute their declared checks with the pro
         scripts: { "format:check": "node scripts/format.cjs" },
       }),
     );
-    git("add", ".");
-    git("commit", "-qm", "Runner fixture");
+    runGit(repo, ["add", "."], fixtureGitOptions);
+    runGit(repo, ["commit", "-qm", "Runner fixture"], fixtureGitOptions);
     assert.equal(
       (await runGate(["--only", "format", "--serial"], repo)).exitCode,
       0,
@@ -754,9 +775,9 @@ test("WO-157 the document gate refuses an unregistered docs JSONL and an unstubb
   );
   t.after(() => rmSync(parent, { recursive: true, force: true }));
   const copy = join(parent, "repository");
-  execFileSync("git", ["clone", "--quiet", "--shared", root, copy]);
+  execGit(["clone", "--quiet", "--shared", root, copy]);
   const listed = (...args) =>
-    execFileSync("git", ["-C", root, ...args], { encoding: "utf8" })
+    execGit(["-C", root, ...args], { encoding: "utf8" })
       .split("\0")
       .filter(Boolean);
   for (const path of [
@@ -984,15 +1005,20 @@ test("WO-044 a gate that polls its request ends within the stop command's wait a
 test("WO-044 the runner honours a stop request at its next boundary, ends running suites and records no check", async () => {
   const repo = mkdtempSync(join(tmpdir(), "dotln-runner-stop-"));
   try {
-    const git = (...args) =>
-      execFileSync("git", args, {
-        cwd: repo,
-        encoding: "utf8",
-        stdio: ["ignore", "pipe", "pipe"],
-      });
-    git("init", "-q");
-    git("config", "user.name", "Fixture");
-    git("config", "user.email", "fixture@example.invalid");
+    const fixtureGitOptions = {
+      exec: true,
+      trim: false,
+
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "pipe"],
+    };
+    runGit(repo, ["init", "-q"], fixtureGitOptions);
+    runGit(repo, ["config", "user.name", "Fixture"], fixtureGitOptions);
+    runGit(
+      repo,
+      ["config", "user.email", "fixture@example.invalid"],
+      fixtureGitOptions,
+    );
     writeFileSync(
       join(repo, ".gitignore"),
       "docs/control/local/\nobserved.jsonl\n",
@@ -1010,8 +1036,8 @@ test("WO-044 the runner honours a stop request at its next boundary, ends runnin
         scripts: { "format:check": "node scripts/format.cjs" },
       }),
     );
-    git("add", ".");
-    git("commit", "-qm", "Runner stop fixture");
+    runGit(repo, ["add", "."], fixtureGitOptions);
+    runGit(repo, ["commit", "-qm", "Runner stop fixture"], fixtureGitOptions);
     // A request already present ends the gate before its first suite.
     await assert.rejects(
       runGate(["--only", "format", "--serial"], repo, {
@@ -1132,11 +1158,11 @@ test("WO-044 VER-001 cancellation ends a grandchild holding inherited output pip
 test("WO-125 gate inputs include tracked ignored files and new installed roots, excluding scratch", (t) => {
   const repo = mkdtempSync(join(tmpdir(), "dotln-gate-inputs-"));
   t.after(() => rmSync(repo, { recursive: true, force: true }));
-  execFileSync("git", ["init", "-q"], { cwd: repo });
+  execGit(["init", "-q"], { cwd: repo });
   mkdirSync(join(repo, "scratch"));
   writeFileSync(join(repo, ".gitignore"), "scratch/\nnode_modules/\ndist/\n");
   writeFileSync(join(repo, "scratch/retained.txt"), "tracked\n");
-  execFileSync("git", ["add", "-f", "scratch/retained.txt"], { cwd: repo });
+  execGit(["add", "-f", "scratch/retained.txt"], { cwd: repo });
   assert.equal(gateInputPath(repo, "scratch/new.txt"), false);
   assert.equal(gateInputPath(repo, "scratch/retained.txt"), true);
   assert.equal(gateInputPath(repo, "new-source.ts"), true);
@@ -1150,7 +1176,7 @@ test("WO-125 gate inputs include tracked ignored files and new installed roots, 
 test("WO-125 VER-002 installed input case aliases include prospective roots", (t) => {
   const repo = mkdtempSync(join(tmpdir(), "dotln-gate-case-"));
   t.after(() => rmSync(repo, { recursive: true, force: true }));
-  execFileSync("git", ["init", "-q"], { cwd: repo });
+  execGit(["init", "-q"], { cwd: repo });
   mkdirSync(join(repo, "node_modules"));
   mkdirSync(join(repo, "packages/skeleton/dist"), { recursive: true });
   mkdirSync(join(repo, "packages/future"));
@@ -1172,7 +1198,7 @@ test("WO-125 VER-002 installed input case aliases include prospective roots", (t
 test("WO-125 VER-002 resolves dangling links and physical parent traversal", (t) => {
   const repo = mkdtempSync(join(tmpdir(), "dotln-gate-symlink-"));
   t.after(() => rmSync(repo, { recursive: true, force: true }));
-  execFileSync("git", ["init", "-q"], { cwd: repo });
+  execGit(["init", "-q"], { cwd: repo });
   mkdirSync(join(repo, "scratch"));
   mkdirSync(join(repo, "packages/skeleton"), { recursive: true });
   writeFileSync(join(repo, ".gitignore"), "scratch/\n");
@@ -1199,11 +1225,11 @@ test("WO-125 VER-002 resolves dangling links and physical parent traversal", (t)
 test("WO-125 VER-003 protects pre-existing hard links while ordinary scratch stays writable", (t) => {
   const repo = mkdtempSync(join(tmpdir(), "dotln-gate-hardlink-"));
   t.after(() => rmSync(repo, { recursive: true, force: true }));
-  execFileSync("git", ["init", "-q"], { cwd: repo });
+  execGit(["init", "-q"], { cwd: repo });
   mkdirSync(join(repo, "scratch"));
   writeFileSync(join(repo, ".gitignore"), "scratch/\n");
   writeFileSync(join(repo, "input.ts"), "export const value = 1;\n");
-  execFileSync("git", ["add", "input.ts"], { cwd: repo });
+  execGit(["add", "input.ts"], { cwd: repo });
   linkSync(join(repo, "input.ts"), join(repo, "scratch/input-link.ts"));
   symlinkSync("input-link.ts", join(repo, "scratch/via-symlink.ts"));
   for (const path of ["scratch/input-link.ts", "scratch/via-symlink.ts"])
@@ -1380,12 +1406,14 @@ test("live progress arrives before a running process completes and remains bound
 
 test("code identity follows tracked source and dependency bytes across processes and revisions", () => {
   const repo = mkdtempSync(join(tmpdir(), "dotln-code-identity-"));
-  const git = (...args) =>
-    execFileSync("git", ["-C", repo, ...args], { encoding: "utf8" }).trim();
+  const fixtureGitOptions = { encoding: "utf8" };
   try {
-    git("init", "-q");
-    git("config", "user.name", "Fixture");
-    git("config", "user.email", "fixture@example.invalid");
+    execGit(["-C", repo, "init", "-q"], fixtureGitOptions);
+    execGit(["-C", repo, "config", "user.name", "Fixture"], fixtureGitOptions);
+    execGit(
+      ["-C", repo, "config", "user.email", "fixture@example.invalid"],
+      fixtureGitOptions,
+    );
     mkdirSync(join(repo, "docs"));
     writeFileSync(
       join(repo, ".gitattributes"),
@@ -1405,8 +1433,8 @@ test("code identity follows tracked source and dependency bytes across processes
       join(repo, "package.json"),
       '{"private":true,"dependencies":{"fixture":"1.0.0"}}\n',
     );
-    git("add", ".");
-    git("commit", "-qm", "fixture");
+    execGit(["-C", repo, "add", "."], fixtureGitOptions);
+    execGit(["-C", repo, "commit", "-qm", "fixture"], fixtureGitOptions);
     const code = gateCodeIdentity(repo),
       tree = gateTreeHash(repo);
     assert.equal(gateCodeIdentity(repo, "HEAD"), code);
@@ -1462,8 +1490,11 @@ test("code identity follows tracked source and dependency bytes across processes
       '{"private":true,"dependencies":{"fixture":"2.0.0"}}\n',
     );
     assert.notEqual(gateCodeIdentity(repo), code);
-    git("add", ".");
-    git("commit", "-qm", "dependency update");
+    execGit(["-C", repo, "add", "."], fixtureGitOptions);
+    execGit(
+      ["-C", repo, "commit", "-qm", "dependency update"],
+      fixtureGitOptions,
+    );
     assert.equal(gateCodeIdentity(repo, "HEAD"), gateCodeIdentity(repo));
   } finally {
     rmSync(repo, { recursive: true, force: true });
@@ -1487,21 +1518,26 @@ const confinementFixture = (t) => {
     chmodSync(denied, 0o755);
     rmSync(repo, { recursive: true, force: true });
   });
-  const git = (...args) =>
-    execFileSync("git", args, {
-      cwd: repo,
-      encoding: "utf8",
-      stdio: ["ignore", "pipe", "pipe"],
-    });
-  git("init", "-q");
+  const fixtureGitOptions = {
+    exec: true,
+    trim: false,
+
+    encoding: "utf8",
+    stdio: ["ignore", "pipe", "pipe"],
+  };
+  runGit(repo, ["init", "-q"], fixtureGitOptions);
   // Every commit otherwise starts Git's detached automatic maintenance. Git
   // 2.55 estimates loose objects from objects/17 alone, so two there made a
   // fixture commit start a geometric repack still writing .git/objects/pack
   // when the teardown removed the tree (ENOTEMPTY; WO-063 D005, WO-157). The
   // fixture has no maintenance to exercise.
-  git("config", "maintenance.auto", "false");
-  git("config", "user.name", "Fixture");
-  git("config", "user.email", "fixture@example.invalid");
+  runGit(repo, ["config", "maintenance.auto", "false"], fixtureGitOptions);
+  runGit(repo, ["config", "user.name", "Fixture"], fixtureGitOptions);
+  runGit(
+    repo,
+    ["config", "user.email", "fixture@example.invalid"],
+    fixtureGitOptions,
+  );
   writeFileSync(
     join(repo, ".gitignore"),
     "docs/control/local/\nobserved.jsonl\ndenied/\n",
@@ -1513,8 +1549,12 @@ const confinementFixture = (t) => {
       join(repo, `scripts/${name}.mjs`),
       `import fs from "node:fs";\nfs.appendFileSync("observed.jsonl", ${JSON.stringify(`${name}\n`)});\n`,
     );
-  git("add", ".");
-  git("commit", "-qm", "Host-confinement fixture");
+  runGit(repo, ["add", "."], fixtureGitOptions);
+  runGit(
+    repo,
+    ["commit", "-qm", "Host-confinement fixture"],
+    fixtureGitOptions,
+  );
   const row = (name, options = {}) => ({
     name,
     command: [process.execPath, `scripts/${name}.mjs`],
@@ -1713,12 +1753,13 @@ test("WO-140 a confined partial row is rejected by every product-gate consumer a
   // Consumers 3 and 4: pull-request publication and release close both read
   // the committed reviewer observation through reviewedProductGate.
   const { reviewedProductGate } = await import("./lib/release-records.mjs");
-  const git = (...args) =>
-    execFileSync("git", args, {
-      cwd: repo,
-      encoding: "utf8",
-      stdio: ["ignore", "pipe", "pipe"],
-    });
+  const fixtureGitOptions = {
+    exec: true,
+    trim: false,
+
+    encoding: "utf8",
+    stdio: ["ignore", "pipe", "pipe"],
+  };
   mkdirSync(join(repo, "docs/control/orders"), { recursive: true });
   const review = (productGate) => {
     const base = { schemaVersion: 1, workOrderId: "WO-999" };
@@ -1744,8 +1785,8 @@ test("WO-140 a confined partial row is rejected by every product-gate consumer a
         .map(JSON.stringify)
         .join("\n") + "\n",
     );
-    git("add", "docs/control/orders");
-    git("commit", "-qm", "Reviewer observation");
+    runGit(repo, ["add", "docs/control/orders"], fixtureGitOptions);
+    runGit(repo, ["commit", "-qm", "Reviewer observation"], fixtureGitOptions);
   };
   for (const row of [
     recorded[0],
@@ -1814,8 +1855,12 @@ test("WO-140 a confined partial row is rejected by every product-gate consumer a
       }) + "\n",
       { flag: "a" },
     );
-    git("add", "docs/control/orders");
-    git("commit", "-qm", "Bind the reviewer gate");
+    runGit(repo, ["add", "docs/control/orders"], fixtureGitOptions);
+    runGit(
+      repo,
+      ["commit", "-qm", "Bind the reviewer gate"],
+      fixtureGitOptions,
+    );
   };
   bind(accepted.productGate, "2026-09-20T00:00:03.000Z");
   assert.equal(
@@ -1846,7 +1891,7 @@ test("WO-140 the recognized markers probe the path their sandbox protects and fa
   );
   const repo = mkdtempSync(join(tmpdir(), "dotln-confinement-markers-"));
   t.after(() => rmSync(repo, { recursive: true, force: true }));
-  execFileSync("git", ["init", "-q"], { cwd: repo });
+  execGit(["init", "-q"], { cwd: repo });
   const [claude, codex] = confinementMarkers;
   assert.equal(claude.deniedDirectory(repo), join(repo, ".claude/hooks"));
   assert.equal(
@@ -2047,14 +2092,16 @@ test("WO-140 any partial flag or exclusion shape disqualifies a row under the np
 // .git/objects/pack when the teardown removed the tree (ENOTEMPTY).
 test("WO-157 the host-confinement fixture's commits start no background Git maintenance that could race its teardown", (t) => {
   const { repo } = confinementFixture(t);
-  const git = (args, options = {}) =>
-    execFileSync("git", args, {
-      cwd: repo,
-      encoding: "utf8",
-      stdio: ["pipe", "pipe", "pipe"],
-      ...options,
-    });
-  const format = git(["rev-parse", "--show-object-format"]).trim();
+  const fixtureGitOptions = {
+    exec: true,
+    trim: false,
+    stdio: ["pipe", "pipe", "pipe"],
+  };
+  const format = runGit(
+    repo,
+    ["rev-parse", "--show-object-format"],
+    fixtureGitOptions,
+  ).trim();
   // Git 2.55 estimates loose objects from objects/17 alone; two there make a
   // repository's automatic maintenance repack.
   let planted = 0;
@@ -2064,10 +2111,13 @@ test("WO-157 the host-confinement fixture's commits start no background Git main
       .update(`blob ${Buffer.byteLength(text)}\0${text}`)
       .digest("hex");
     if (!id.startsWith("17")) continue;
-    git(["hash-object", "-w", "--stdin"], { input: text });
+    runGit(repo, ["hash-object", "-w", "--stdin"], {
+      ...fixtureGitOptions,
+      ...{ input: text },
+    });
     planted += 1;
   }
-  const needed = spawnSync("git", ["maintenance", "is-needed", "--auto"], {
+  const needed = spawnGit(["maintenance", "is-needed", "--auto"], {
     cwd: repo,
   });
   if (needed.status !== 129)
@@ -2079,9 +2129,12 @@ test("WO-157 the host-confinement fixture's commits start no background Git main
   const traces = mkdtempSync(join(tmpdir(), "dotln-maintenance-trace-"));
   t.after(() => rmSync(traces, { recursive: true, force: true }));
   writeFileSync(join(repo, "teardown.txt"), "teardown probe\n");
-  git(["add", "teardown.txt"]);
-  git(["commit", "-qm", "Teardown probe"], {
-    env: { ...process.env, GIT_TRACE2_EVENT: join(traces, "commit.jsonl") },
+  runGit(repo, ["add", "teardown.txt"], fixtureGitOptions);
+  runGit(repo, ["commit", "-qm", "Teardown probe"], {
+    ...fixtureGitOptions,
+    ...{
+      env: { ...process.env, GIT_TRACE2_EVENT: join(traces, "commit.jsonl") },
+    },
   });
   const started = readFileSync(join(traces, "commit.jsonl"), "utf8")
     .trim()
@@ -2155,11 +2208,14 @@ test("WO-160 document failures rerun at the base, retain red status and record i
     mkdtempSync(join(tmpdir(), "dotln-document-label-")),
   );
   t.after(() => rmSync(repo, { recursive: true, force: true }));
-  const git = (...args) =>
-    execFileSync("git", args, { cwd: repo, encoding: "utf8" }).trim();
-  git("init", "-q", "-b", "main");
-  git("config", "user.name", "Fixture");
-  git("config", "user.email", "fixture@example.invalid");
+  const fixtureGitOptions = { exec: true, trim: true, encoding: "utf8" };
+  runGit(repo, ["init", "-q", "-b", "main"], fixtureGitOptions);
+  runGit(repo, ["config", "user.name", "Fixture"], fixtureGitOptions);
+  runGit(
+    repo,
+    ["config", "user.email", "fixture@example.invalid"],
+    fixtureGitOptions,
+  );
   mkdirSync(join(repo, "scripts"));
   writeFileSync(join(repo, ".gitignore"), "docs/control/local/\n");
   writeFileSync(join(repo, "scripts/inherited.mjs"), "process.exitCode = 1;\n");
@@ -2167,9 +2223,9 @@ test("WO-160 document failures rerun at the base, retain red status and record i
     join(repo, "scripts/introduced.mjs"),
     "process.exitCode = 0;\n",
   );
-  git("add", ".");
-  git("commit", "-qm", "base checks");
-  const base = git("rev-parse", "HEAD");
+  runGit(repo, ["add", "."], fixtureGitOptions);
+  runGit(repo, ["commit", "-qm", "base checks"], fixtureGitOptions);
+  const base = runGit(repo, ["rev-parse", "HEAD"], fixtureGitOptions);
   writeFileSync(
     join(repo, "scripts/introduced.mjs"),
     "process.exitCode = 1;\n",
@@ -2179,7 +2235,7 @@ test("WO-160 document failures rerun at the base, retain red status and record i
     document: true,
     command: [process.execPath, `scripts/${name}.mjs`],
   }));
-  const before = git("diff");
+  const before = runGit(repo, ["diff"], fixtureGitOptions);
   for (const flags of [["--against", base], []]) {
     const result = await runGate(["--document", ...flags], repo, { table });
     assert.equal(result.exitCode, 1);
@@ -2193,7 +2249,7 @@ test("WO-160 document failures rerun at the base, retain red status and record i
       ],
     );
     assert.ok(result.failureComparisons.every((row) => row.base === base));
-    assert.equal(git("diff"), before);
+    assert.equal(runGit(repo, ["diff"], fixtureGitOptions), before);
     assert.equal(
       readGateChecks(repo, gateTreeHash(repo)).at(-1).checkId,
       "npm run test:docs",

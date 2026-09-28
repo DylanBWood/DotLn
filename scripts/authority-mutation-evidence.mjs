@@ -9,11 +9,11 @@
 // against itself, then that the recorded killing-test titles occur in package
 // test source, and reports the drift. Lexical title presence does not prove
 // active test coverage. The environment scrub is the instrument's.
+import { sha256Hex as sha256 } from "./lib/helpers.mjs";
+import { runGit } from "./lib/git.mjs";
 import { docPath, findLaunchpad } from "./lib/config.mjs";
 import assert from "node:assert/strict";
 import { tmpdir } from "node:os";
-import { execFileSync } from "node:child_process";
-import { createHash } from "node:crypto";
 import { readFileSync, realpathSync } from "node:fs";
 import { join } from "node:path";
 
@@ -25,18 +25,18 @@ assert.ok(
   "usage: authority-mutation-evidence.mjs --check (historical record; --write is retired)",
 );
 const root = realpathSync(findLaunchpad());
-const git = (cwd, args) =>
-  execFileSync("git", args, {
-    cwd,
-    env: cleanEnvironment(realpathSync(tmpdir())),
-    encoding: "utf8",
-    maxBuffer: 32 * 1024 * 1024,
-  });
+const evidenceGitOptions = {
+  exec: true,
+  trim: false,
+  env: cleanEnvironment(realpathSync(tmpdir())),
+  maxBuffer: 32 * 1024 * 1024,
+};
 assert.equal(
-  realpathSync(git(root, ["rev-parse", "--show-toplevel"]).trim()),
+  realpathSync(
+    runGit(root, ["rev-parse", "--show-toplevel"], evidenceGitOptions).trim(),
+  ),
   root,
 );
-const sha256 = (value) => createHash("sha256").update(value).digest("hex");
 const destination = docPath(root, "evidence", "WO-042/mutations");
 const summary = JSON.parse(
   readFileSync(join(destination, "summary.json"), "utf8"),
@@ -59,7 +59,11 @@ for (const [index, id] of ["M00001", "M00002"].entries()) {
 }
 const inventory = [
   ...new Set(
-    git(root, ["ls-files", "-z", "--cached", "--others", "--exclude-standard"])
+    runGit(
+      root,
+      ["ls-files", "-z", "--cached", "--others", "--exclude-standard"],
+      evidenceGitOptions,
+    )
       .split("\0")
       .filter(Boolean),
   ),

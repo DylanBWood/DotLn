@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-import { createHash } from "node:crypto";
+import { sha256Hex as hash } from "./lib/helpers.mjs";
+
 import {
   existsSync,
   readFileSync,
@@ -19,7 +20,6 @@ import { isMainModule } from "./lib/paths.mjs";
 import { readDecisions } from "./lib/meta.mjs";
 import { parsers } from "prettier/plugins/markdown.mjs";
 
-const hash = (value) => createHash("sha256").update(value).digest("hex");
 const normalized = (value) => value.replace(/\s+/g, " ").trim();
 const inside = (root, path) =>
   path === root || path.startsWith(`${root}${sep}`);

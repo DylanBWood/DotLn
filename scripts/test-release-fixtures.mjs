@@ -1,3 +1,4 @@
+import { runGit } from "./lib/git.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
@@ -49,21 +50,50 @@ test("sealed fixture copies share no mutable refs or files and refuse a changed 
   t.after(() => rmSync(root, { recursive: true, force: true }));
   const fixture = join(root, "fixture");
   mkdirSync(fixture);
-  const git = (...args) => execFileSync("git", args, { stdio: "pipe" });
-  git("init", "--bare", join(fixture, "origin.git"));
-  git("clone", join(fixture, "origin.git"), join(fixture, "project"));
+  const fixtureGitOptions = {
+    exec: true,
+    trim: false,
+    encoding: null,
+    stdio: "pipe",
+  };
+  runGit(
+    undefined,
+    ["init", "--bare", join(fixture, "origin.git")],
+    fixtureGitOptions,
+  );
+  runGit(
+    undefined,
+    ["clone", join(fixture, "origin.git"), join(fixture, "project")],
+    fixtureGitOptions,
+  );
   const project = join(fixture, "project");
-  git("-C", project, "config", "user.name", "Fixture");
-  git("-C", project, "config", "user.email", "fixture@example.invalid");
+  runGit(
+    undefined,
+    ["-C", project, "config", "user.name", "Fixture"],
+    fixtureGitOptions,
+  );
+  runGit(
+    undefined,
+    ["-C", project, "config", "user.email", "fixture@example.invalid"],
+    fixtureGitOptions,
+  );
   writeFileSync(join(project, "input.txt"), "original\n");
-  git("-C", project, "add", ".");
-  git("-C", project, "commit", "-qm", "Fixture");
-  git(
-    "-C",
-    project,
-    "config",
-    "url.fixture.insteadOf",
-    "https://example.invalid/template",
+  runGit(undefined, ["-C", project, "add", "."], fixtureGitOptions);
+  runGit(
+    undefined,
+    ["-C", project, "commit", "-qm", "Fixture"],
+    fixtureGitOptions,
+  );
+  runGit(
+    undefined,
+    [
+      "-C",
+      project,
+      "config",
+      "url.fixture.insteadOf",
+      "https://example.invalid/template",
+    ],
+    fixtureGitOptions,
   );
   const template = join(root, "template"),
     first = join(root, "first"),
@@ -74,18 +104,40 @@ test("sealed fixture copies share no mutable refs or files and refuse a changed 
   const file = (base) => join(base, "project/input.txt");
   assert.notEqual(lstatSync(file(first)).ino, lstatSync(file(second)).ino);
   writeFileSync(file(first), "changed\n");
-  git("-C", join(first, "project"), "tag", "only-first");
+  runGit(
+    undefined,
+    ["-C", join(first, "project"), "tag", "only-first"],
+    fixtureGitOptions,
+  );
   assert.equal(readFileSync(file(second), "utf8"), "original\n");
   assert.equal(readFileSync(file(template), "utf8"), "original\n");
-  assert.equal(git("-C", join(second, "project"), "tag").toString(), "");
-  assert.equal(git("-C", join(template, "project"), "tag").toString(), "");
+  assert.equal(
+    runGit(
+      undefined,
+      ["-C", join(second, "project"), "tag"],
+      fixtureGitOptions,
+    ).toString(),
+    "",
+  );
+  assert.equal(
+    runGit(
+      undefined,
+      ["-C", join(template, "project"), "tag"],
+      fixtureGitOptions,
+    ).toString(),
+    "",
+  );
   assert.throws(() =>
-    git(
-      "-C",
-      join(second, "project"),
-      "config",
-      "--get",
-      "url.fixture.insteadOf",
+    runGit(
+      undefined,
+      [
+        "-C",
+        join(second, "project"),
+        "config",
+        "--get",
+        "url.fixture.insteadOf",
+      ],
+      fixtureGitOptions,
     ),
   );
   writeFileSync(file(template), "tampered\n");
