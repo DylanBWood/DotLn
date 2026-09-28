@@ -163,8 +163,10 @@ with the optional-read counterexample as a fixture and the validation keyed
 by every input that selects a read path; WO-078's registry is generated from
 receipts written inside the existing export step, its Cost line names the
 removed lookup, and no recurring bookkeeping remains. The dated accepted
-dispositions are in
-[proof-carrying-gates-2026-09-12-dispositions.json](proof-carrying-gates-2026-09-12-dispositions.json);
+dispositions were filed as `proof-carrying-gates-2026-09-12-dispositions.json`,
+retired by WO-163 on 2026-09-27: commit `c0a60b6d` holds its last bytes and
+[receipt 013](refutations/2026-09-15-planning-39243aa3f0fc8df2-013.md)
+carries the same nine entries;
 Receipt 010 held WO-130 criterion 2 twice more: a replica that substitutes
 a directory is skipped by a regular-file check, and a validation record keyed
 without the declared inputs that select read paths stays current after a
