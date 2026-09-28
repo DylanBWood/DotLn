@@ -1,4 +1,4 @@
-# WO-173 — A handoff states what it knows: the executor judges every criterion on one line before it hands off, a criterion it records met needs its named gate's passing row, a criterion it records unmet is shown to the operator and the judge at the next dispatch, a gate that already passed at the same code identity is not run again, and the resident's lock matrix gives each cell its own deadline (version assigned at activation)
+# WO-173 — A handoff states what it knows: the executor judges every criterion on one line before it hands off, a criterion it records met needs its named gate's passing row, a criterion it records unmet is shown to the operator and the judge at the next dispatch, a gate that already passed at the same code identity is not run again, and the resident's lock matrix gives each cell its own deadline (v0.53.2)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).

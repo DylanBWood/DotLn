@@ -38,6 +38,13 @@ import {
 } from "./lib/receipt-cost.mjs";
 import { requireLifecycleEvidence } from "./lib/lifecycle-evidence.mjs";
 import {
+  declaredCriteria as declaredCriteriaOf,
+  describeHandoff,
+  handoffLedgerPath,
+  readHandoffLedger,
+  requireGateClaims,
+} from "./lib/handoff-ledger.mjs";
+import {
   executorWriterRelease,
   refreshExecutorIndex,
 } from "./lib/executor-handoff.mjs";
@@ -710,6 +717,9 @@ const renderOffRamps = (state) =>
       `- Withdrawal: ${state.withdrawal.disposition} at ordinal ${state.withdrawal.ordinal} — ${state.withdrawal.reason}`,
     state.waivedCriteria?.length &&
       `- Waived criteria: ${state.waivedCriteria.map((waiver) => `${waiver.criterionId} (ordinal ${waiver.ordinal})`).join(", ")}`,
+    // WO-173: what the executor's handoff ledger recorded unmet.
+    state.unmetCriteria?.length &&
+      `- Unmet criteria: ${state.unmetCriteria.map((row) => row.criterionId).join(", ")} (recorded unmet by the executor at ordinal ${state.unmetCriteria[0].ordinal})`,
     state.corrections?.length &&
       `- Corrections: ${state.corrections
         .map(
@@ -767,6 +777,7 @@ const projectOrder = (state, events) => {
     legalNextActions: legalActions(state),
     legalOffRamps: legalOffRamps(state),
     waivedCriteria: state.waivedCriteria ?? [],
+    unmetCriteria: state.unmetCriteria ?? [],
     withdrawal: state.withdrawal ?? null,
     corrections: state.corrections ?? [],
     overrideRecords: state.overrideRecords ?? [],
@@ -1008,23 +1019,13 @@ const requireReactivation = (state, workOrderPath) => {
 
 // The numbered acceptance criteria an order declares, or null when its
 // authority has no such list to check against.
-const declaredCriteria = (state) => {
-  const text = readFileSync(
-    workOrderAuthorityPath(repoRoot, state.workOrderId, state.workOrderPath),
-    "utf8",
-  );
-  const start = text.search(
-    /^(?:\*\*Acceptance criteria\b[^\n]*|#{2,4} Acceptance criteria\b[^\n]*)$/imu,
-  );
-  if (start < 0) return null;
-  const ids = [];
-  for (const line of text.slice(start).split(/\r?\n/u).slice(1)) {
-    if (/^(?:#{1,4} |\*\*[^*]+(?::\*\*|\*\*$))/u.test(line)) break;
-    const item = /^(\d{1,4})\.\s/u.exec(line);
-    if (item) ids.push(item[1]);
-  }
-  return ids.length ? ids : null;
-};
+const declaredCriteria = (state) =>
+  declaredCriteriaOf(
+    readFileSync(
+      workOrderAuthorityPath(repoRoot, state.workOrderId, state.workOrderPath),
+      "utf8",
+    ),
+  )?.map((criterion) => criterion.id) ?? null;
 
 /**
  * The briefing each dispatch prints. `briefing` projects the recorded
@@ -1032,16 +1033,47 @@ const declaredCriteria = (state) => {
  * resumes a recorded repair, verification or final review receives what the
  * recording session received, without a second transition.
  */
+// WO-173: the handoff ledger the executor writes before either completion,
+// the three sentences the failure record of 2026-09-28 asked for, and the
+// disclosure of what the executor recorded unmet, with the two routes that
+// spare the cycle.
+const ledgerBriefing = (state, before) =>
+  ` Before ${before}, judge each acceptance criterion on one line of ${handoffLedgerPath(repoRoot, state.workOrderId)}: \`**Criterion <id>:** met\` with its evidence or \`unmet\` with why; a met criterion naming npm test or npm run test:docs stands on that gate's passing row.`;
+const repairSentence =
+  "A repair closes the class the finding names: state the rule the repaired code holds and add a case the report did not quote.";
+const offRampSentence =
+  "A recorded off-ramp whose capture hash matches is judged from the record and never put back to the operator.";
+const verifySentence = `A finding names its class and the rule a repair must hold; a defect outside the declared criteria is boarded with its reproduction, not failed. ${offRampSentence}`;
+// A criterion the record already waives needs neither route.
+const unmetBriefing = (state) => {
+  const waived = new Set(
+    (state.waivedCriteria ?? []).map((row) => row.criterionId),
+  );
+  const ids = (state.unmetCriteria ?? [])
+    .map((row) => row.criterionId)
+    .filter((id) => !waived.has(id));
+  if (!ids.length) return "";
+  return `\nThe executor recorded ${ids.length === 1 ? "criterion" : "criteria"} ${ids.join(", ")} unmet in ${handoffLedgerPath(repoRoot, state.workOrderId)}. A waiver this session records from the operator's capture (npm run resume -- waive ${ids.length === 1 ? ids[0] : "<criterion>"} --reason <text> ${captureUsage} <actor flags> --work-order ${state.workOrderId}) or an authorized amendment (npm run plan -- amend-order) spares the cycle; without either the criterion is judged as it stands.`;
+};
 const executionBriefing = (state) => {
   const declaration = activeWorkOrderDeclaration(state);
-  return `Execute ${state.workOrderPath}.\n${declaration.modelSource}\n${declaration.effortSource}\nRead that authority and only its cited blueprint sections; when its deliverable and evidence exist, run ${commandFor("implementation-ready", state.workOrderId)}.${executorEntryBriefing(repoRoot, state.workOrderId)}`;
+  return `Execute ${state.workOrderPath}.\n${declaration.modelSource}\n${declaration.effortSource}\nRead that authority and only its cited blueprint sections; when its deliverable and evidence exist, run ${commandFor("implementation-ready", state.workOrderId)}.${ledgerBriefing(state, "that command")}${executorEntryBriefing(repoRoot, state.workOrderId)}`;
 };
 const repairBriefing = (state) =>
-  `Repair ${state.workOrderPath} using ${state.failureSourcePath}; read both artifacts.${executorEntryBriefing(repoRoot, state.workOrderId)}`;
+  `Repair ${state.workOrderPath} using ${state.failureSourcePath}; read both artifacts. ${repairSentence}${ledgerBriefing(state, "repair-complete")}${executorEntryBriefing(repoRoot, state.workOrderId)}`;
 const verificationBriefing = (state, reportPath) =>
-  `Verify ${state.workOrderPath}; write the immutable report to ${reportPath}. ${costLineBriefing}`;
+  `Verify ${state.workOrderPath}; write the immutable report to ${reportPath}. ${costLineBriefing}\n${verifySentence}${unmetBriefing(state)}`;
 const finalReviewBriefing = (state, reportPath) =>
-  `Final-review ${state.workOrderPath}, the complete verification sequence, and ideation receipt; write ${reportPath}. ${costLineBriefing}`;
+  `Final-review ${state.workOrderPath}, the complete verification sequence, and ideation receipt; write ${reportPath}. ${costLineBriefing}\n${offRampSentence}${unmetBriefing(state)}`;
+// The advisories and rows the handoff produced ride on the completion's
+// evidence, beside the diff check's.
+const completionHandoff = (evidence, handoff, gates) => {
+  for (const message of handoff.advisories)
+    console.warn(`Advisory: ${message}`);
+  evidence.advisories.push(...handoff.advisories, ...gates.advisories);
+  if (gates.productGate) evidence.productGate = gates.productGate;
+  if (gates.documentGate) evidence.documentGate = gates.documentGate;
+};
 const recordedBriefings = {
   active: executionBriefing,
   repairing: repairBriefing,
@@ -1287,20 +1319,30 @@ const run = async (argv) => {
     case "implementation-ready": {
       requirePhase(state, "active");
       const actor = completionActor(action, args, state, "executor");
+      // WO-173: the ledger is read first; a claim the record contradicts is
+      // refused before anything else runs, and a handoff never is.
+      const handoff = readHandoffLedger(repoRoot, state);
       releaseExecutorWriter = await executorWriterRelease(repoRoot);
-      const evidence = await requireLifecycleEvidence(
+      const { gateIndexError, ...evidence } = await requireLifecycleEvidence(
         repoRoot,
         action,
         undefined,
         state.workOrderId,
       );
+      // The gates a met criterion names, the document gate last and inline;
+      // a gate index the diff check could not write is reported there once.
+      const gates = await requireGateClaims(repoRoot, handoff, {
+        gateIndexError,
+      });
+      completionHandoff(evidence, handoff, gates);
       appendTransition(action, {
         type: "ImplementationReady",
         ...(evidence ? { evidence } : {}),
         workOrderId: state.workOrderId,
+        ...(handoff.checked ? { unmetCriteria: handoff.unmet } : {}),
         actor,
       });
-      message = `${state.workOrderId} is ready for verification.`;
+      message = `${state.workOrderId} is ready for verification.${describeHandoff(handoff)}`;
       break;
     }
     case "verify": {
@@ -1404,21 +1446,27 @@ const run = async (argv) => {
     case "repair-complete": {
       requirePhase(state, "repairing");
       const actor = completionActor(action, args, state, "executor");
+      const handoff = readHandoffLedger(repoRoot, state);
       releaseExecutorWriter = await executorWriterRelease(repoRoot);
-      const evidence = await requireLifecycleEvidence(
+      const { gateIndexError, ...evidence } = await requireLifecycleEvidence(
         repoRoot,
         action,
         undefined,
         state.workOrderId,
       );
+      const gates = await requireGateClaims(repoRoot, handoff, {
+        gateIndexError,
+      });
+      completionHandoff(evidence, handoff, gates);
       appendTransition(action, {
         type: "RepairCompleted",
         ...(evidence ? { evidence } : {}),
         workOrderId: state.workOrderId,
         sourceVerificationId: state.failureSourceId,
+        ...(handoff.checked ? { unmetCriteria: handoff.unmet } : {}),
         actor,
       });
-      message = `${state.workOrderId} repair is ready for re-verification.`;
+      message = `${state.workOrderId} repair is ready for re-verification.${describeHandoff(handoff)}`;
       break;
     }
     case "final-review": {

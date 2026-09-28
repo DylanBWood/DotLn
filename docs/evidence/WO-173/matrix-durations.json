@@ -1,0 +1,124 @@
+{
+  "schemaVersion": 1,
+  "subject": "packages/skeleton/test/resident.test.ts: WO-143 once and loop restart at every acquisition filesystem boundary, including killed reclaimers (eight subtests, WO-173)",
+  "command": "node --test --test-reporter=tap --test-name-pattern='^WO-143 once and loop restart at every acquisition filesystem boundary' packages/skeleton/dist/test/resident.test.js",
+  "host": "the operator's host (Darwin 24.6.0, Node v26.9.0)",
+  "cellDeadlineMs": 120000,
+  "runs": [
+    {
+      "label": "alone",
+      "note": "no product gate of this session running; other sessions on the host unobserved; uptime load averages 5.51 5.71 4.90 read at 15:57 local after the run",
+      "startedAt": "2026-09-28T19:53:34Z",
+      "finishedAt": "2026-09-28T19:56:24Z",
+      "exitCode": 0,
+      "parentDurationMs": 170522,
+      "cells": [
+        {
+          "cell": "once-lifetime-fresh",
+          "verdict": "ok",
+          "durationMs": 17897
+        },
+        {
+          "cell": "once-lifetime-reclaim",
+          "verdict": "ok",
+          "durationMs": 22479
+        },
+        {
+          "cell": "once-append-fresh",
+          "verdict": "ok",
+          "durationMs": 17013
+        },
+        {
+          "cell": "once-append-reclaim",
+          "verdict": "ok",
+          "durationMs": 21985
+        },
+        {
+          "cell": "loop-lifetime-fresh",
+          "verdict": "ok",
+          "durationMs": 21664
+        },
+        {
+          "cell": "loop-lifetime-reclaim",
+          "verdict": "ok",
+          "durationMs": 25517
+        },
+        {
+          "cell": "loop-append-fresh",
+          "verdict": "ok",
+          "durationMs": 19196
+        },
+        {
+          "cell": "loop-append-reclaim",
+          "verdict": "ok",
+          "durationMs": 24353
+        }
+      ]
+    },
+    {
+      "label": "beside-review-gate",
+      "note": "started one second before npm test -- --review in the same worktree; that gate is the besideGate row, which failed on four suites and whose start (recorded time minus duration, 2026-09-28T20:14:29.438Z) matches this run; no other gate of this session",
+      "startedAt": "2026-09-28T20:14:28Z",
+      "finishedAt": "2026-09-28T20:17:22Z",
+      "exitCode": 0,
+      "parentDurationMs": 174379,
+      "cells": [
+        {
+          "cell": "once-lifetime-fresh",
+          "verdict": "ok",
+          "durationMs": 18742
+        },
+        {
+          "cell": "once-lifetime-reclaim",
+          "verdict": "ok",
+          "durationMs": 23733
+        },
+        {
+          "cell": "once-append-fresh",
+          "verdict": "ok",
+          "durationMs": 17543
+        },
+        {
+          "cell": "once-append-reclaim",
+          "verdict": "ok",
+          "durationMs": 21688
+        },
+        {
+          "cell": "loop-lifetime-fresh",
+          "verdict": "ok",
+          "durationMs": 21013
+        },
+        {
+          "cell": "loop-lifetime-reclaim",
+          "verdict": "ok",
+          "durationMs": 26247
+        },
+        {
+          "cell": "loop-append-fresh",
+          "verdict": "ok",
+          "durationMs": 20046
+        },
+        {
+          "cell": "loop-append-reclaim",
+          "verdict": "ok",
+          "durationMs": 24883
+        }
+      ],
+      "besideGate": {
+        "checkId": "npm test",
+        "recordedAt": "2026-09-28T20:25:29.740Z",
+        "durationMs": 660302,
+        "exitCode": 1,
+        "evidenceRef": "host-gate:1a453c200e4381887dc408ca684686a77bc029b6b9126283aba56425bcd0d211:npm test"
+      },
+      "laterPassingGate": {
+        "checkId": "npm test",
+        "recordedAt": "2026-09-28T20:50:02.516Z",
+        "durationMs": 640354,
+        "exitCode": 0,
+        "evidenceRef": "host-gate:64b907d08ffc7e0c47e0244377c96a913ba2fb33f171912286d16a305d26c29d:npm test",
+        "note": "the passing rerun, started 2026-09-28T20:39:22.162Z after this run finished; not a companion of this measurement"
+      }
+    }
+  ]
+}

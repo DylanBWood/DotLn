@@ -1929,6 +1929,42 @@ its reopening condition. This section grants no activation authority.
    regressions passed, or ten more orders pay an episode and every
    verdict is pass.
 
+## Candidates — returns from ideation during WO-173 (recorded 2026-09-28)
+
+Recorded from the operator's two ideation messages during WO-173's
+execution (ignored intake `docs/intake/notes/WO-173-expanded-ideation-2026-09-28.md`,
+SHA-256 `2993746fa51b3d9d903c9e3b39162f7110600b717e4e499abfbd5ecbf78cf71f`; the
+ledger section of this date; receipt WO-173-D006). None is allocated; this
+section grants no activation authority.
+
+1. **Product documents owned as wholes.** The operator's standard: every
+   product file as tight as possible, public, one cohesive story; the
+   roadmap and the README read as scratch because each order appends its
+   paragraph and nobody owns the document. Product 07 §Documentation
+   freshness and ownership already forbids the dated paragraph (2026-09-25);
+   the executor role text and `release prepare` still demand two per order,
+   the roadmap's activation-completion paragraph and the README block's
+   version line, and WO-173 wrote both during this dispatch. Route: WO-086
+   gives the release boundary its generated home and WO-087 moves the
+   candidates out; after them, the activation-target duty leaves the role
+   text and `docs-check` refuses a new per-order dated paragraph under any
+   product heading, as it refuses a ceiling. Reopen: WO-086 closes, or the
+   next pass re-sequences the roadmap fold.
+2. **The README release block regenerated within its rule.** WO-068-D004
+   bounds the block at fifteen sentences with per-order detail in release
+   notes; on 2026-09-28 the block between its markers is 7,251 bytes and
+   about forty sentences. Route: `release prepare` renders the block from
+   the version line and the latest release notes, and `check-surfaces`
+   refuses a block over the rule, so an order cannot append to it. Reopen:
+   WO-086 lands without the README, or a reader of the README reports it as
+   a log again.
+3. **The roadmap's remaining sections.** Beyond the release boundary
+   (WO-086) and the candidates (WO-087), the roadmap holds capability
+   progression policies and counterfactual profiling material that a reader
+   of a roadmap does not expect. Deferred to the pass that sequences WO-087:
+   decide their home (a product policy document or the planning map).
+   Reopen: WO-087 is amended or sequenced.
+
 ## Moved from the execution guide (2026-09-28)
 
 WO-167 moved these nine candidates here from product 07 under their slugs.

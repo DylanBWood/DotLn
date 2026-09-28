@@ -1,0 +1,304 @@
+# WO-173 fixture transcripts
+
+Captured on 2026-09-28 on the operator's host from the commands named under each heading; the evidence gate's first item. TAP summaries keep the case lines and totals; the full outputs stayed in session scratch.
+
+## Resume suite (scripts/test-resume.sh, which runs scripts/test-off-ramps.mjs, scripts/test-dependency-resume.mjs and scripts/test-control-segments.mjs)
+
+off-ramp fixtures passed
+time-blind current.md cmp: absent passed
+time-blind current.md cmp: reordered passed
+time-blind current.md cmp: backwards passed
+beacons: every lifecycle transition matches phase/verdict/effort/time; status and next preserve inode/ctime/size/mtime
+resume tests passed
+
+## Runner fixtures (node --test scripts/test-runner.test.mjs, cases WO-173, release shell selection, WO-140 inherited marker)
+
+ok 1 - release shell changes select their inventory guard during review
+ok 2 - WO-173 npm test reuses a passing complete row of a covering selection at the same code identity; --again, a changed source, a failed row, a partial row and a plain row under --review run the gate
+ok 3 - WO-140 an inherited marker whose denied-write probe succeeds does not refuse and leaves no probe behind
+# pass 3
+# fail 0
+# cancelled 0
+# duration_ms 1391.126875
+
+## Lock-matrix deadline fixture (node --test packages/skeleton/dist/test/resident.test.js, case WO-173)
+
+ok 1 - WO-173 a lock-matrix cell that exceeds its own deadline fails by name while the other seven run
+# pass 1
+# fail 0
+# cancelled 0
+# duration_ms 782.824209
+
+## Lock matrix alone (node --test on the built resident test, the WO-143 case)
+
+ok 1 - WO-143 once and loop restart at every acquisition filesystem boundary, including killed reclaimers
+# pass 9
+# fail 0
+# cancelled 0
+# duration_ms 170598.368125
+
+## Lock matrix beside the review gate
+
+ok 1 - WO-143 once and loop restart at every acquisition filesystem boundary, including killed reclaimers
+# pass 9
+# fail 0
+# cancelled 0
+# duration_ms 174453.811041
+
+## Derived orders (node --test scripts/test-derived-orders.mjs, the lifecycle case)
+
+ok 1 - compiled order materializes, activates and shares index, status and lifecycle
+# pass 1
+# fail 0
+# cancelled 0
+# duration_ms 1481.544625
+
+## Process debt (node --test scripts/test-process-debt.mjs, the five completion and role-text cases)
+
+ok 1 - WO-132 all four completions admit missing gates, reads and counters; Stop advises and releases
+ok 2 - WO-145 optional economy support preserves historical snapshots through WO-173 and changes only executor instructions on
+ok 3 - WO-169 completion advises with the count, the command and the rule when rows touch the change, and never refuses
+ok 4 - WO-131 prompt submission stays open while dispatches retain the ordinary command's gate and writer checks
+ok 5 - WO-173 completion prints nothing about the document gate: the inline run at a met claim replaces WO-160's tree-hash lookup, and nothing blocks
+# pass 5
+# fail 0
+# cancelled 0
+# duration_ms 8424.283375
+
+## Beacon portability and configuration root (node --test on each file)
+
+ok 1 - WO-070 grep scan finds one home for the seven Beacon leaves and no skeleton source or dist copy of them
+ok 2 - WO-070 copied control plane emits a decoded Beacon without skeleton source
+# pass 2
+# fail 0
+# cancelled 0
+# duration_ms 439.031583
+ok 1 - configuration root
+# pass 13
+# fail 0
+# cancelled 0
+# duration_ms 2374.763458
+
+## First review gate (npm test -- --review, four fixtures moved by the change; repaired in the second)
+
+started 2026-09-28T20:14:28Z, finished 2026-09-28T20:25:29Z, shell exit 1
+
+PASS build 0.61 s
+PASS harness 0.18 s
+PASS harness-evidence 0.38 s
+PASS authority-evidence 0.67 s
+PASS license-surfaces 1.25 s
+PASS feedback-evidence 2.59 s
+PASS harness-fixtures 264.10 s
+FAIL process-debt 78.31 s
+  [process-debt] not ok 73 - WO-145 optional economy support preserves historical snapshots through WO-168 and changes only executor instructions on
+  [process-debt]   error: |-
+  [process-debt]   expected: 'fc8c638ddcfd896eef74db54d25c0ce3a8401c527396bd0ad20b060f72eedc75'
+  [process-debt]   actual: 'd5444b2686b5da9c9a7856e43d94cd2cbf0f680b0e3d0428de68fca7bfedd6e4'
+  [process-debt] not ok 107 - WO-131 prompt submission stays open while dispatches retain the ordinary command's gate and writer checks
+  [process-debt]   error: |-
+  [process-debt]   expected:
+  [process-debt]   actual: |-
+  [process-debt] not ok 116 - WO-160 completion observes the latest complete current-tree document gate without blocking
+  [process-debt]   error: |-
+  [process-debt]   expected: 1
+  [process-debt]   actual: 0
+PASS release:prepare 0.63 s
+PASS release:case:preflight 0.08 s
+PASS release:case:surfaces 3.39 s
+PASS release:case:surfaces_local_snapshot 0.91 s
+PASS release:case:prepare_independent 1.64 s
+PASS release:case:license_surfaces 3.98 s
+PASS release:case:surfaces_committed_readme 1.26 s
+PASS release:case:surfaces_lower 1.35 s
+PASS release:case:surfaces_first 0.93 s
+PASS release:case:surfaces_component 1.98 s
+PASS release:case:surfaces_non_source 1.17 s
+PASS release:case:surfaces_new_component 1.65 s
+PASS release:case:surfaceclose 2.25 s
+PASS release:case:surfaceclose_linked 1.75 s
+PASS release:case:bodyclose 1.32 s
+PASS release:case:dirty 2.70 s
+PASS release:case:unreachable 2.23 s
+PASS release:case:derived 2.12 s
+PASS release:case:settings_scope 2.79 s
+PASS release:case:nonmain 0.82 s
+PASS release:case:divergence 0.86 s
+PASS release:case:malformed 0.81 s
+PASS release:case:missinggh 2.26 s
+PASS release:case:unauthenticated 1.56 s
+PASS release:case:splitorigin 0.78 s
+PASS resume 42.64 s
+PASS release:case:lower 1.38 s
+PASS release:case:cadence_missing 1.97 s
+PASS release:case:failures 2.43 s
+PASS release:case:conflict 1.50 s
+PASS release:case:localconflict 1.35 s
+PASS release:case:cadence_inconsistent 3.98 s
+PASS release:case:nestedtag 1.70 s
+PASS release:case:prepare 2.03 s
+PASS release:case:missinglocalprevious 2.04 s
+PASS release:case:pushfail 2.39 s
+PASS release:case:refrecovery 3.47 s
+PASS release:case:stale_helpers 6.07 s
+PASS release:case:createrecovery 8.84 s
+PASS release:case:runtime_refresh 12.25 s
+PASS release:case:success 14.14 s
+PASS release:case:firstrelease 2.97 s
+PASS release:case:edition 5.71 s
+PASS worktree 83.49 s
+PASS release:case:composed_evidence 5.01 s
+PASS release:case:cached_evidence 5.95 s
+PASS github-body 0.08 s
+PASS outward-lint 0.38 s
+PASS release-preparation 1.37 s
+PASS license-fixtures 7.48 s
+PASS publication-fixtures 0.83 s
+PASS backup-intake 0.31 s
+FAIL beacon-portability 0.64 s
+  [beacon-portability] not ok 2 - WO-070 copied control plane emits a decoded Beacon without skeleton source
+  [beacon-portability]   error: |-
+  [beacon-portability]     Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-beacon-portable-zrdyQN/packages/skeleton/src/gate-evidence.mjs' imported from /private/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-beacon-portable-zrdyQN/scripts/lib/gate-evidence.mjs
+  [beacon-portability]   expected: 0
+  [beacon-portability]   actual: 1
+PASS release:case:concurrent 14.38 s
+PASS target-publish 14.16 s
+PASS checkpoint 6.40 s
+PASS work-orders-fixtures 19.65 s
+PASS adjacent-queue 0.54 s
+PASS console 25.05 s
+PASS resident-bind 10.55 s
+PASS derived-orders 8.28 s
+PASS codex-continuation 5.59 s
+PASS authority-grants 0.12 s
+PASS local-runner-double 3.63 s
+PASS artifact-corpus 0.17 s
+FAIL configuration-root 3.95 s
+  [configuration-root]     # Subtest: no control-plane script keeps a literal document root or a second root derivation
+  [configuration-root]     not ok 6 - no control-plane script keeps a literal document root or a second root derivation
+  [configuration-root]       error: |-
+  [configuration-root]       expected:
+  [configuration-root]       actual:
+  [configuration-root] not ok 1 - configuration root
+  [configuration-root]   error: '1 subtest failed'
+PASS portfolio 19.25 s
+PASS registrations 0.49 s
+FAIL runner-fixtures 18.68 s
+  [runner-fixtures] not ok 46 - WO-140 an inherited marker whose denied-write probe succeeds does not refuse and leaves no probe behind
+  [runner-fixtures]   error: |-
+  [runner-fixtures]   actual:
+PASS worktree-integration 121.77 s
+PASS skeleton 313.10 s
+PASS kernel 0.70 s
+PASS compiler 0.63 s
+npm test: 33 passed; 4 failed; 660.30 s; 81 fresh tasks
+
+## Second review gate (npm test -- --review at the handoff's code identity)
+
+started 2026-09-28T20:39:21Z, finished 2026-09-28T20:50:02Z, shell exit 0
+
+PASS build 0.55 s
+PASS harness 0.17 s
+PASS harness-evidence 0.37 s
+PASS authority-evidence 0.64 s
+PASS license-surfaces 1.15 s
+PASS feedback-evidence 2.49 s
+PASS harness-fixtures 239.99 s
+PASS process-debt 76.88 s
+PASS release:prepare 0.61 s
+PASS release:case:preflight 0.08 s
+PASS release:case:surfaces 3.23 s
+PASS release:case:surfaces_local_snapshot 0.90 s
+PASS release:case:prepare_independent 1.61 s
+PASS release:case:license_surfaces 3.97 s
+PASS release:case:surfaces_committed_readme 1.20 s
+PASS release:case:surfaces_lower 1.24 s
+PASS release:case:surfaces_first 0.92 s
+PASS release:case:surfaces_component 1.79 s
+PASS release:case:surfaces_non_source 1.45 s
+PASS release:case:surfaces_new_component 1.71 s
+PASS release:case:surfaceclose 2.49 s
+PASS release:case:surfaceclose_linked 1.76 s
+PASS release:case:bodyclose 1.23 s
+PASS release:case:dirty 2.71 s
+PASS release:case:unreachable 2.23 s
+PASS release:case:derived 2.10 s
+PASS release:case:settings_scope 2.48 s
+PASS release:case:nonmain 1.08 s
+PASS release:case:divergence 0.80 s
+PASS release:case:malformed 0.91 s
+PASS release:case:missinggh 2.32 s
+PASS release:case:unauthenticated 1.59 s
+PASS release:case:splitorigin 0.86 s
+PASS resume 42.22 s
+PASS release:case:lower 1.41 s
+PASS release:case:failures 2.16 s
+PASS release:case:cadence_missing 1.85 s
+PASS release:case:conflict 1.66 s
+PASS release:case:localconflict 1.54 s
+PASS release:case:cadence_inconsistent 4.12 s
+PASS release:case:nestedtag 1.63 s
+PASS release:case:prepare 1.95 s
+PASS release:case:missinglocalprevious 2.07 s
+PASS release:case:pushfail 2.32 s
+PASS release:case:refrecovery 3.35 s
+PASS release:case:stale_helpers 5.90 s
+PASS release:case:createrecovery 8.39 s
+PASS release:case:runtime_refresh 12.44 s
+PASS release:case:success 13.95 s
+PASS release:case:firstrelease 2.97 s
+PASS release:case:edition 5.58 s
+PASS worktree 82.02 s
+PASS release:case:composed_evidence 5.04 s
+PASS release:case:cached_evidence 5.90 s
+PASS github-body 0.08 s
+PASS outward-lint 0.40 s
+PASS release-preparation 1.50 s
+PASS license-fixtures 7.48 s
+PASS publication-fixtures 0.80 s
+PASS backup-intake 0.29 s
+PASS beacon-portability 1.04 s
+PASS release:case:concurrent 14.31 s
+PASS target-publish 14.32 s
+PASS checkpoint 6.70 s
+PASS work-orders-fixtures 19.66 s
+PASS adjacent-queue 0.36 s
+PASS console 25.14 s
+PASS resident-bind 10.47 s
+PASS derived-orders 8.47 s
+PASS codex-continuation 5.70 s
+PASS authority-grants 0.13 s
+PASS local-runner-double 3.69 s
+PASS artifact-corpus 0.17 s
+PASS portfolio 19.26 s
+PASS configuration-root 3.87 s
+PASS registrations 0.58 s
+PASS runner-fixtures 19.14 s
+PASS worktree-integration 127.53 s
+PASS skeleton 318.86 s
+PASS kernel 0.71 s
+PASS compiler 0.65 s
+npm test: 37 passed; 0 failed; 640.35 s; 81 fresh tasks
+
+## Repair after VER-001: resume suite (node scripts/test-runner.mjs --only resume, after the last code edit)
+
+PASS build 0.55 s
+PASS resume 34.19 s
+suite:resume: 2 passed; 0 failed; 34.78 s; 2 fresh tasks
+
+## Repair after VER-001: negative controls (the current scripts/test-off-ramps.mjs in session scratch, one file from refs/dotln/checkpoint/WO-173/6)
+
+old scripts/lib/lifecycle-evidence.mjs: exit 1
+AssertionError [ERR_ASSERTION]: implementation-ready under not json: ...
+error: Unexpected token 'o', "not json
+" is not valid JSON
+
+old scripts/lib/handoff-ledger.mjs: exit 1
+AssertionError [ERR_ASSERTION]: implementation-ready under not json: ...
+Advisory: Gate index unavailable: Unexpected token 'o', "not json " is not valid JSON; the npm test claim of criteria 2, 3 is recorded as stated.
+error: criterion 1 recorded met names npm run test:docs, and the document gate failed after 0.0 s (exit 1):
+  FAIL docs-check 0.20 s
+
+## Repair after VER-001: product gate (npm test -- --review)
+
+npm test: 37 passed; 0 failed; 642.41 s; 81 fresh tasks

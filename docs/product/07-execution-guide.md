@@ -1232,8 +1232,10 @@ or sourced decision records and sync in the same pass with `npm run meta`.
 names a changed or given path or an order: the planner runs it before filing
 an order, completion advises the executor with the count and the rule, and a
 pass retiring closed orders names them; each use ends in a recorded
-disposition. `--export <file>` writes every pending row whole and `--apply`
-takes a batch under one revision.
+disposition, and the final review disposes a listed row whose seam the change
+opened or whose condition occurred and leaves a row it only matched as it is.
+`--export <file>` writes every pending row whole and `--apply` takes a batch
+under one revision.
 
 Read the [follow-up procedure](../planning/followups.md) when recording a
 choice or reconciling a source change. The metadata and document gates check
@@ -1924,8 +1926,16 @@ claim evidence or releases it does not have.
   inside runtime pins. Review selection uses the existing evidence content
   projection for compiler/package version literals, so version-only bumps select
   no machinery suite; a host behavior edit still selects its declared suites.
-  Lifecycle transitions run only the inline whitespace check and record their
-  reports/attestations without gate, read or usage prerequisites.
+  Lifecycle transitions run the inline whitespace check and record their
+  reports/attestations without read or usage prerequisites. The executor
+  completions also read `docs/evidence/WO-NNN/handoff.md`, one line per
+  declared criterion in the report's forms [WO-173, 2026-09-28]: a criterion
+  recorded met that names `npm run test:docs` runs that gate inline; one
+  that names `npm test` or `npm test -- --review` needs a passing row at
+  the current code identity covering the change's review selection; one
+  recorded unmet always records and is shown at the next dispatch. `npm
+  test` reuses a passing complete row of a covering selection at that
+  identity and exits; `--again` runs it.
 - **Host-confinement preflight.** `scripts/lib/host-confinement.mjs` detects
   a host restriction; it creates no sandbox [WO-140, 2026-09-19; renamed by
   WO-161, 2026-09-25]. The operator's three CLI sessions currently run
@@ -2019,8 +2029,8 @@ claim evidence or releases it does not have.
   from 309.511 to 286.508 seconds but added 118.511 seconds to the complete
   gate. Shared skeleton has priority 80, reserves one of four lanes and uses
   deadline load factor 8; exclusive skeleton would take priority 200 before
-  shared suites, reserve all four lanes and use factor 2. The acquisition
-  matrix's fixed 240-second deadline is unaffected. This single ordered pair
+  shared suites, reserve all four lanes and use factor 2. Each lock-matrix
+  cell now has its own 120 s deadline (WO-173). This single ordered pair
   supports retaining shared scheduling; it does not establish the historical
   timeout cause or reliability under all host loads. Future scheduling changes
   require a same-source comparison. The acceptance target is three consecutive

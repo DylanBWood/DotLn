@@ -16,31 +16,41 @@ export async function requireLifecycleEvidence(
   });
   if (diff.status !== 0)
     throw new Error(`git diff --check failed: ${diff.stdout}${diff.stderr}`);
-  const {
-    gateTreeHash,
-    findGateCheck,
-    readGateChecks,
-    partialGateCheck,
-    recordGateChecks,
-  } = await import("./gate-evidence.mjs");
+  const { gateTreeHash, findGateCheck, recordGateChecks } =
+    await import("./gate-evidence.mjs");
   const treeHash = gateTreeHash(root);
-  recordGateChecks(root, [
-    {
-      checkId: "git diff --check",
-      treeHash,
-      subject: treeHash,
-      durationMs: Date.now() - started,
-      exitCode: 0,
-      executed: true,
-      evidenceRef: `inline-diff:${treeHash}`,
-      recordedAt: new Date().toISOString(),
-    },
-  ]);
+  const executor = ["implementation-ready", "repair-complete"].includes(action);
   const advisories = [];
   const advise = (message) => {
     advisories.push(message);
     console.warn(`Advisory: ${message}`);
   };
+  // The whitespace check refuses; its row is bookkeeping. A gate index that
+  // cannot be read or written never refuses a completion and is left as it
+  // is. An executor completion reports it once, with the gate claims it
+  // leaves as stated (requireGateClaims); any other completion reports it here.
+  let gateIndexError;
+  try {
+    recordGateChecks(root, [
+      {
+        checkId: "git diff --check",
+        treeHash,
+        subject: treeHash,
+        durationMs: Date.now() - started,
+        exitCode: 0,
+        executed: true,
+        evidenceRef: `inline-diff:${treeHash}`,
+        recordedAt: new Date().toISOString(),
+      },
+    ]);
+  } catch (error) {
+    // A parse error quotes the damaged bytes; an advisory is one line.
+    gateIndexError = error.message.replace(/\s+/gu, " ").trim();
+    if (!executor)
+      advise(
+        `Gate index unavailable: ${gateIndexError}; the git diff --check row is not recorded.`,
+      );
+  }
   const gate =
     action === "final-review-result" && verdict !== "fail"
       ? findGateCheck(root, "npm test", treeHash)
@@ -49,33 +59,10 @@ export async function requireLifecycleEvidence(
     advise(
       "No passing product gate at this code identity; the reviewer runs npm test before publication.",
     );
-  if (["implementation-ready", "repair-complete"].includes(action)) {
-    let documents;
-    let documentRowsUnavailable = false;
-    try {
-      documents = readGateChecks(root, treeHash)
-        .filter((row) => row.checkId === "npm run test:docs")
-        .at(-1);
-    } catch (error) {
-      documentRowsUnavailable = true;
-      advise(
-        `Latest npm run test:docs for current tree unavailable: ${error.message}`,
-      );
-    }
-    if (
-      !documentRowsUnavailable &&
-      (!documents ||
-        documents.exitCode !== 0 ||
-        documents.executed !== true ||
-        partialGateCheck(documents) ||
-        !Number.isFinite(documents.durationMs) ||
-        documents.durationMs < 0 ||
-        typeof documents.evidenceRef !== "string" ||
-        !documents.evidenceRef.trim())
-    )
-      advise(
-        `Latest npm run test:docs for current tree: ${documents ? `not passing (${documents.evidenceRef ?? "no reference"}, ${documents.recordedAt ?? "unknown cutoff"})` : "missing"}; run npm run test:docs before handoff.`,
-      );
+  // WO-173: the document gate is no longer looked up by tree hash here, which
+  // every report write changed; a criterion recorded met that names it makes
+  // the completion run it inline (scripts/lib/handoff-ledger.mjs).
+  if (executor) {
     try {
       const { requirePlanningHandoffs } =
         await import("./planning-followups.mjs");
@@ -100,7 +87,7 @@ export async function requireLifecycleEvidence(
       const command = `npm run plan -- followups --touching${orders.length && branchWorkOrder(root) !== workOrder ? ` --work-order ${workOrder}` : ""}`;
       if (matched)
         advise(
-          `${matched} pending follow-up ${matched === 1 ? "row names" : "rows name"} ${["a file this change touches", ...orders].join(" or ")} (a textual match): run ${command}; fix a row inside the Boy Scout bound or record it as left in the order's decisions, never widen the order; the final review disposes each listed row through the feed.`,
+          `${matched} pending follow-up ${matched === 1 ? "row names" : "rows name"} ${["a file this change touches", ...orders].join(" or ")} (a textual match): run ${command}; fix a row inside the Boy Scout bound or record it as left in the order's decisions, never widen the order; the final review disposes a listed row whose seam the change opened or whose condition occurred, and leaves a row it only matched as it is.`,
         );
     } catch (error) {
       advise(
@@ -170,5 +157,11 @@ export async function requireLifecycleEvidence(
         "exitCode",
       ].map((key) => [key, gate[key]]),
     );
-  return { treeHash, ...(productGate ? { productGate } : {}), advisories };
+  // `gateIndexError` is for the gate claims and never reaches the event.
+  return {
+    treeHash,
+    ...(productGate ? { productGate } : {}),
+    advisories,
+    ...(executor && gateIndexError ? { gateIndexError } : {}),
+  };
 }

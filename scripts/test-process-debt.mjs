@@ -5568,7 +5568,7 @@ test("meter diff bytes include newly authored untracked source", (t) => {
   );
 });
 
-test("WO-145 optional economy support preserves historical snapshots through WO-168 and changes only executor instructions on", () => {
+test("WO-145 optional economy support preserves historical snapshots through WO-173 and changes only executor instructions on", () => {
   const historical = JSON.parse(
     readFileSync(
       join(source, "packages/skeleton/fixtures/wo145-role-baseline.json"),
@@ -5579,11 +5579,11 @@ test("WO-145 optional economy support preserves historical snapshots through WO-
   // snapshot to make the current generated instruction check pass. WO-149's
   // common role edits affect both settings, so pin contemporaneous default and
   // opt-out bytes separately and preserve the complete historical chain.
-  // WO-157, WO-158, WO-161, WO-166 and WO-168 shared role edits follow the
-  // same route.
+  // WO-157, WO-158, WO-161, WO-166, WO-168 and WO-173 shared role edits
+  // follow the same route.
   const baseline = JSON.parse(
     readFileSync(
-      join(source, "packages/skeleton/fixtures/wo168-role-baseline.json"),
+      join(source, "packages/skeleton/fixtures/wo173-role-baseline.json"),
       "utf8",
     ),
   );
@@ -6487,7 +6487,7 @@ test("WO-169 completion advises with the count, the command and the rule when ro
     write(root, "own.txt", "changed\n");
     const before = snapshot(root);
     assert.deepEqual(await advice(root, action), [
-      "1 pending follow-up row names a file this change touches or WO-999 (a textual match): run npm run plan -- followups --touching; fix a row inside the Boy Scout bound or record it as left in the order's decisions, never widen the order; the final review disposes each listed row through the feed.",
+      "1 pending follow-up row names a file this change touches or WO-999 (a textual match): run npm run plan -- followups --touching; fix a row inside the Boy Scout bound or record it as left in the order's decisions, never widen the order; the final review disposes a listed row whose seam the change opened or whose condition occurred, and leaves a row it only matched as it is.",
     ]);
     write(
       root,
@@ -9115,7 +9115,7 @@ test("WO-131 prompt submission stays open while dispatches retain the ordinary c
   const repair = prompt("repair-session", "resume: fix");
   assert.match(
     repair.hookSpecificOutput.additionalContext,
-    /Dispatch recorded by the harness: npm run resume -- fix\. Never repeat it\. Open the reply with one line that begins 'I intend to' and names the concrete initial action, before any tool call\.\nRepair docs\/work-orders\/WO-999-fixture\.md using docs\/verifications\/WO-999\/VER-001\.md; read both artifacts\.\nExecutor entry duties:\n/,
+    /Dispatch recorded by the harness: npm run resume -- fix\. Never repeat it\. Open the reply with one line that begins 'I intend to' and names the concrete initial action, before any tool call\.\nRepair docs\/work-orders\/WO-999-fixture\.md using docs\/verifications\/WO-999\/VER-001\.md; read both artifacts\. A repair closes the class the finding names: state the rule the repaired code holds and add a case the report did not quote\. Before repair-complete, judge each acceptance criterion on one line of docs\/evidence\/WO-999\/handoff\.md: `\*\*Criterion <id>:\*\* met` with its evidence or `unmet` with why; a met criterion naming npm test or npm run test:docs stands on that gate's passing row\.\nExecutor entry duties:\n/,
   );
   assert.match(
     supportsOf(repair.systemMessage),
@@ -9655,24 +9655,19 @@ test("WO-160 opaque shell output needs a delivered read", async (t) => {
   );
 });
 
-test("WO-160 completion observes the latest complete current-tree document gate without blocking", async (t) => {
+test("WO-173 completion prints nothing about the document gate: the inline run at a met claim replaces WO-160's tree-hash lookup, and nothing blocks", async (t) => {
   const root = repo(t);
-  const completion = async () =>
+  const completion = async (action = "implementation-ready") =>
     (
-      await requireLifecycleEvidence(
-        root,
-        "implementation-ready",
-        "pass",
-        "WO-999",
-      )
+      await requireLifecycleEvidence(root, action, "pass", "WO-999")
     ).advisories.filter((message) => /test:docs/.test(message));
-  assert.equal((await completion()).length, 1);
+  assert.deepEqual(await completion(), []);
   const current = {
     ...gate(root, "npm run test:docs"),
     recordedAt: "2030-01-01T00:00:00.000Z",
   };
   recordGateChecks(root, [{ ...current, treeHash: "a".repeat(40) }]);
-  assert.equal((await completion()).length, 1);
+  assert.deepEqual(await completion(), []);
   recordGateChecks(root, [current]);
   assert.deepEqual(await completion(), []);
   for (const [index, patch] of [
@@ -9688,8 +9683,10 @@ test("WO-160 completion observes the latest complete current-tree document gate 
         recordedAt: `2030-01-01T00:00:0${index + 1}.000Z`,
       },
     ]);
-    assert.equal((await completion()).length, 1);
+    assert.deepEqual(await completion(), []);
   }
+  // An unreadable archive is no longer read here either: the completion
+  // still records its diff-check row and returns.
   const archive = `docs/control/local/harness/check-history/${gateTreeHash(root)}.json`;
   write(root, archive, "{unreadable");
   for (const action of ["implementation-ready", "repair-complete"]) {
@@ -9700,10 +9697,9 @@ test("WO-160 completion observes the latest complete current-tree document gate 
       "WO-999",
     );
     assert.deepEqual(
-      result.advisories
-        .filter((message) => /test:docs/.test(message))
-        .map((message) => /unavailable/.test(message)),
-      [true],
+      result.advisories.filter((message) => /test:docs/.test(message)),
+      [],
     );
+    assert.match(result.treeHash, /^[a-f0-9]{40,64}$/);
   }
 });

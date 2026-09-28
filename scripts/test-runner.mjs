@@ -23,6 +23,7 @@ import {
   gateCodeIdentity,
   recordGateChecks,
 } from "./lib/gate-evidence.mjs";
+import { coveringGateCheck, describeGateRow } from "./lib/gate-reuse.mjs";
 import {
   createReleaseFixtureContext,
   releaseCases,
@@ -171,6 +172,8 @@ const machinerySources = {
     "scripts/lib/gate-timeline.mjs",
     "scripts/measure-gates.mjs",
     "scripts/lib/gate-evidence.mjs",
+    // WO-173: the passing-row lookup `npm test` reuses and completions read.
+    "scripts/lib/gate-reuse.mjs",
     "scripts/lib/host-confinement.mjs",
     "scripts/test-runner.mjs",
     "packages/skeleton/src/evidence-editions.mjs",
@@ -375,8 +378,18 @@ export function changedMachinery(repo, table = suites, base = "origin/main") {
     });
   }
   if (run.status !== 0) return table.filter((row) => row.machinery);
-  const files = run.stdout
-    .split("\n")
+  // WO-173 (WO-169 D007): an order's work stays uncommitted until final
+  // review, so the change includes its untracked files, which the diff omits.
+  const untracked = spawnGit(
+    ["ls-files", "--others", "--exclude-standard", "-z"],
+    { cwd: repo, encoding: "utf8" },
+  );
+  const files = [
+    ...new Set([
+      ...run.stdout.split("\n"),
+      ...(untracked.status === 0 ? untracked.stdout.split("\0") : []),
+    ]),
+  ]
     .filter(Boolean)
     .filter((file) =>
       table.some(
@@ -1162,6 +1175,7 @@ async function runGateChecks(
     serial = false,
     list = false,
     confinedPartial = false,
+    again = false,
     only,
     against;
   for (let index = 0; index < args.length; index++) {
@@ -1172,9 +1186,10 @@ async function runGateChecks(
     else if (arg === "--serial") serial = true;
     else if (arg === "--list") list = true;
     else if (arg === "--confined-partial") confinedPartial = true;
-    else if (arg === "--fresh") {
-      /* Every invocation is fresh. */
-    } else if (
+    // Both flags run the selection instead of reusing a covering row
+    // (WO-173); --fresh keeps the meaning measure-gates.mjs relies on.
+    else if (arg === "--fresh" || arg === "--again") again = true;
+    else if (
       arg === "--against" &&
       !against &&
       args[index + 1] &&
@@ -1184,7 +1199,7 @@ async function runGateChecks(
     else if (arg === "--only" && !only) only = args[++index];
     else
       throw new Error(
-        "usage: test-runner [--document|--machinery|--review] [--only <suite>] [--against <rev>] [--confined-partial] [--serial] [--list]",
+        "usage: test-runner [--document|--machinery|--review] [--only <suite>] [--against <rev>] [--confined-partial] [--again] [--serial] [--list]",
       );
   }
   if (against && !document)
@@ -1210,6 +1225,29 @@ async function runGateChecks(
         `${row.name} — protects: ${row.protects}${row.needs ? ` — needs: ${row.needs}` : ""}`,
       );
     return { exitCode: 0 };
+  }
+  // WO-173: `npm test`, with or without --review, first looks for a passing
+  // complete row of the same command at the current code identity whose
+  // required suites include this selection's. One exists: print it and exit
+  // without starting a suite; --again runs the gate. A changed code identity,
+  // a partial row and a failed row never satisfy the lookup, and the row
+  // publication accepted before stays the row it accepts.
+  if (!again && !only && !document && !machinery && !confinedPartial) {
+    const required = selected.map((row) => row.name);
+    let covering;
+    try {
+      covering = await coveringGateCheck(repo, "npm test", required);
+    } catch (error) {
+      console.log(
+        `npm test: passing-row lookup unavailable (${error.message}); running the selection`,
+      );
+    }
+    if (covering?.row) {
+      console.log(
+        `npm test: a passing complete row of a selection that covers this one already exists at code identity ${covering.codeIdentity} (${describeGateRow(covering.row)}); no suite started. Run npm test -- --again${review ? " --review" : ""} to run it anyway.`,
+      );
+      return { ...covering.row, reused: true, executionMode: "reused" };
+    }
   }
   // The preflight precedes the build, the diagnostics directory and every
   // suite. Outside a sandbox in force the selection and identity are unchanged.
