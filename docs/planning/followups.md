@@ -27,9 +27,10 @@ continue through `next`. It has three uses, and each ends in a record:
 2. At `implementation-ready` and `repair-complete` the completion check prints
    one advisory with the count, the command and the rule: fix a row inside the
    Boy Scout bound or record it as left in the order's decisions, never widen
-   the order; the final review disposes each listed row through the feed. The
-   advisory never refuses a completion, and a stale register is reported as
-   unavailable instead of being repaired by the completion.
+   the order; the final review disposes a listed row whose seam the change
+   opened or whose condition occurred, and leaves a row it only matched as it
+   is. The advisory never refuses a completion, and a stale register is
+   reported as unavailable instead of being repaired by the completion.
 3. A pass that retires closed orders runs it with their identifiers.
 
 `npm run plan -- followups --export <file>` writes every pending row whole

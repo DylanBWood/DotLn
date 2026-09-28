@@ -20,6 +20,18 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-173 activation completion (2026-09-28):** assigned application `v0.53.2`,
+the next patch above the observed local `v0.53.1` tag. The two executor
+completions read `docs/evidence/WO-NNN/handoff.md`: a criterion recorded met
+that names a gate stands on that gate's row, a criterion recorded unmet is
+shown at the next dispatch, `npm test` reuses a covering passing row at the
+current code identity with `--again` to run it, and the lock matrix runs as
+eight subtests with their own deadlines. Skeleton `0.44.3` to `0.44.4` is a
+compatible patch for the changed role instruction; the console pin and the
+lockfile follow. The authority edition is re-minted deterministically; the
+feedback edition stays current. Independent verification, final review and
+publication remain separate dispatches.
+
 **WO-167 activation completion (2026-09-28):** assigned application `v0.52.11`,
 the next patch above the observed local `v0.52.10` tag. Product 07's dated
 amendment paragraphs are folded into the sentences they amend with bracketed

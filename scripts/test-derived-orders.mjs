@@ -27,6 +27,7 @@ import {
   projectDerivedOrders,
 } from "./lib/derived-orders.mjs";
 import { checkGeneratedSections } from "./lib/derived-contract.mjs";
+import { declaredCriteria } from "./lib/handoff-ledger.mjs";
 import {
   readControl,
   eventsForOrder,
@@ -187,6 +188,19 @@ test("compiled order materializes, activates and shares index, status and lifecy
       "--work-order",
       result.workOrderId,
     ];
+    // WO-173: a derived order declares numbered criteria, so each executor
+    // completion reads the handoff ledger, one line per criterion.
+    const ledger = () =>
+      write(
+        root,
+        docRelative(root, "evidence", `${result.workOrderId}/handoff.md`),
+        `${declaredCriteria(
+          readFileSync(join(root, result.workOrderPath), "utf8"),
+        )
+          .map(({ id }) => `**Criterion ${id}:** met. Fixture evidence.`)
+          .join("\n")}\n`,
+      );
+    ledger();
     run(root, "scripts/resume.mjs", args);
     assert.equal(
       readControl(root).orders.get(result.workOrderId).state.phase,
@@ -237,6 +251,7 @@ test("compiled order materializes, activates and shares index, status and lifecy
           "--work-order",
           result.workOrderId,
         ]);
+        ledger();
         run(root, "scripts/resume.mjs", ["repair-complete", ...flags]);
       }
     }

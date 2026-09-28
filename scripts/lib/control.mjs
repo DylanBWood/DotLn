@@ -144,6 +144,25 @@ const offRampEvent = (event, at) => {
   }
 };
 
+// WO-173: an executor completion carries the identifiers its handoff ledger
+// recorded unmet; the fold projects them with the ordinal that recorded them,
+// and an event without the field (an order whose criteria could not be read,
+// or one recorded before this rule) projects none.
+const unmetCriteria = (event, at) => {
+  if (event.unmetCriteria === undefined) return undefined;
+  if (
+    !Array.isArray(event.unmetCriteria) ||
+    !event.unmetCriteria.every(
+      (id) => typeof id === "string" && CRITERION_ID.test(id),
+    )
+  )
+    throw new Error(`invalid ${event.type} unmetCriteria at line ${at}`);
+  return event.unmetCriteria.map((criterionId) => ({
+    criterionId,
+    ordinal: at,
+  }));
+};
+
 export const parseControlEvents = (source) =>
   source
     .trim()
@@ -182,6 +201,8 @@ const emptyState = () => ({
   withdrawal: undefined,
   corrections: undefined,
   overrideRecords: undefined,
+  // WO-173: the criteria the latest executor completion recorded unmet.
+  unmetCriteria: undefined,
 });
 
 const effortPair = (actor) => ({
@@ -270,11 +291,13 @@ const scanControl = (events, visit) => {
           withdrawal: undefined,
           corrections: undefined,
           overrideRecords: undefined,
+          unmetCriteria: undefined,
         });
         attested.set(event.workOrderId, []);
         break;
       case "ImplementationReady":
         state.phase = "ready-to-verify";
+        state.unmetCriteria = unmetCriteria(event, index + 1);
         break;
       case "VerificationRequested":
         Object.assign(state, {
@@ -301,6 +324,7 @@ const scanControl = (events, visit) => {
         break;
       case "RepairCompleted":
         state.phase = "ready-to-verify";
+        state.unmetCriteria = unmetCriteria(event, index + 1);
         break;
       case "FinalReviewRequested":
         Object.assign(state, {
