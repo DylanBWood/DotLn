@@ -65,7 +65,7 @@ make_repo() {
   github_repo="dotln-fixture/$name"
   github_origin="https://github.com/$github_repo.git"
   if [[ -n "$release_template" ]]; then
-    "$node_bin" "$script_dir/lib/release-fixtures.mjs" copy "$release_template" "$fixture"
+    "$node_bin" "$script_dir/release-fixtures.mjs" copy "$release_template" "$fixture"
   else
   git init --bare "$origin" >/dev/null
   # These disposable stores are copied into templates and local clones. A
@@ -82,7 +82,7 @@ make_repo() {
   git -C "$main" remote set-url origin "$github_origin"
   git -C "$main" switch -c main >/dev/null 2>&1
   mkdir -p "$main/scripts" "$main/docs/work-orders" "$main/docs/control" "$main/docs/releases" "$main/packages/kernel/src" "$main/packages/kernel/test-fixtures" "$main/packages/skeleton/dist/src" "$main/packages/skeleton/src"
-  cp "$script_dir/release.mjs" "$script_dir/release-notes.mjs" "$script_dir/github-repository.mjs" "$script_dir/github-body.mjs" "$script_dir/worktree.mjs" "$script_dir/resume.mjs" "$script_dir/license-surfaces.mjs" "$main/scripts/"
+  cp "$script_dir/release.mjs" "$script_dir/worktree.mjs" "$script_dir/resume.mjs" "$script_dir/license-surfaces.mjs" "$main/scripts/"
   cp -R "$script_dir/lib" "$main/scripts/lib"
   node "$script_dir/test-beacon-fixture.mjs" "$main"
   cp "$script_dir/../docs/releases/tag-manifest.template.json" "$main/docs/releases/"
@@ -1651,7 +1651,7 @@ PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" DOTLN_GH_LOG="$gh_log" DOTLN_GH_STATE
 if [[ -n "$prepare_template" ]]; then
   if [[ -n "$release_template" || -n "$selected_case" ]]; then exit 64; fi
   make_repo template
-  "$node_bin" "$script_dir/lib/release-fixtures.mjs" save "$fixture" "$prepare_template"
+  "$node_bin" "$script_dir/release-fixtures.mjs" save "$fixture" "$prepare_template"
   printf 'PROGRESS release template prepared\n'
   exit 0
 fi
@@ -1666,13 +1666,13 @@ if [[ -n "$selected_case" ]]; then
 else
   if [[ -z "$release_template" ]]; then
     make_repo template
-    "$node_bin" "$script_dir/lib/release-fixtures.mjs" save "$fixture" "$test_root/template-snapshot"
+    "$node_bin" "$script_dir/release-fixtures.mjs" save "$fixture" "$test_root/template-snapshot"
     release_template="$test_root/template-snapshot"
   fi
   while IFS= read -r release_case; do
     printf 'PROGRESS release case %s started\n' "$release_case"
     "release_case_$release_case"
     printf 'PROGRESS release case %s passed\n' "$release_case"
-  done < <("$node_bin" "$script_dir/lib/release-fixtures.mjs" list "$script_dir/..")
+  done < <("$node_bin" "$script_dir/release-fixtures.mjs" list "$script_dir/..")
 fi
 printf 'release tests passed\n'

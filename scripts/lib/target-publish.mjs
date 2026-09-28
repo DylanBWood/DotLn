@@ -25,12 +25,12 @@ import {
   assertGitHubBodyProfile,
   generateTargetPullRequest,
   withTemporaryBody,
-} from "../github-body.mjs";
+} from "./github-body.mjs";
 import {
   ensureGh,
   executeGh,
   parseGitHubTarget,
-} from "../github-repository.mjs";
+} from "./github-repository.mjs";
 
 // The two remote effects of a target publication. The source-change writer
 // never exercises them; publication exercises only them (WO-064).

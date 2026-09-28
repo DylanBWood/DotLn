@@ -1,4 +1,4 @@
-import { docRelative, findLaunchpad } from "./lib/config.mjs";
+import { docRelative, findLaunchpad } from "./config.mjs";
 export const releaseNoteHeadings = Object.freeze([
   "Release overview",
   "Read before upgrading",

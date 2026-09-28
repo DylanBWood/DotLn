@@ -801,14 +801,7 @@ await test("configuration root", async (t) => {
         git(main, "switch", "-q", "-c", "main");
 
         mkdirSync(join(main, "scripts"), { recursive: true });
-        for (const name of [
-          "worktree.mjs",
-          "resume.mjs",
-          "release.mjs",
-          "release-notes.mjs",
-          "github-repository.mjs",
-          "github-body.mjs",
-        ])
+        for (const name of ["worktree.mjs", "resume.mjs", "release.mjs"])
           cpSync(join(scriptRoot, name), join(main, "scripts", name));
         // The fixture has no dependency tree to install; worktree start still
         // prepares the checkout through this entry point.

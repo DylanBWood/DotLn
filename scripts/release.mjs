@@ -24,12 +24,15 @@ import {
   parseReleaseNotes,
   releaseNoteHeadings,
   releaseNotesPathFor,
-} from "./release-notes.mjs";
+} from "./lib/release-notes.mjs";
 import {
   environmentWithoutGhRepo,
   resolveGitHubPushTarget,
-} from "./github-repository.mjs";
-import { assertGitHubBodyProfile, withTemporaryBody } from "./github-body.mjs";
+} from "./lib/github-repository.mjs";
+import {
+  assertGitHubBodyProfile,
+  withTemporaryBody,
+} from "./lib/github-body.mjs";
 import {
   applyReleasePreparation,
   planReleasePreparation,
@@ -1055,7 +1058,7 @@ const criticalNotes = (files, evidence) => {
     );
   if (
     files.some((path) =>
-      /^scripts\/(resume|worktree|release|release-notes|github-repository)\./.test(
+      /^scripts\/(?:resume|worktree|release|(?:lib\/)?(?:release-notes|github-repository))\./.test(
         path,
       ),
     )

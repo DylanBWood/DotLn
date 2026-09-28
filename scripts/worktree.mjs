@@ -5,13 +5,19 @@ import { existsSync, lstatSync, realpathSync } from "node:fs";
 import { basename, dirname, join, relative, resolve, sep } from "node:path";
 
 import { spawnSync } from "node:child_process";
-import { assertGitHubBodyProfile, withTemporaryBody } from "./github-body.mjs";
-import { parseReleaseNotes, releaseNotesPathFor } from "./release-notes.mjs";
+import {
+  assertGitHubBodyProfile,
+  withTemporaryBody,
+} from "./lib/github-body.mjs";
+import {
+  parseReleaseNotes,
+  releaseNotesPathFor,
+} from "./lib/release-notes.mjs";
 import {
   ensureGh,
   executeGh,
   resolveGitHubPushTarget,
-} from "./github-repository.mjs";
+} from "./lib/github-repository.mjs";
 import {
   ensureClean,
   shellQuote,

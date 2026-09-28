@@ -31,7 +31,7 @@ git -C "$main" config "url.$test_root/origin.git.insteadOf" "$github_origin"
 git -C "$main" remote set-url origin "$github_origin"
 git -C "$main" switch -c main >/dev/null 2>&1
 mkdir -p "$main/scripts" "$main/docs/work-orders" "$main/docs/control" "$main/docs/discovery" "$main/packages/kernel"
-cp "$script_dir/worktree.mjs" "$script_dir/resume.mjs" "$script_dir/release.mjs" "$script_dir/release-notes.mjs" "$script_dir/github-repository.mjs" "$script_dir/github-body.mjs" "$script_dir/license-surfaces.mjs" "$main/scripts/"
+cp "$script_dir/worktree.mjs" "$script_dir/resume.mjs" "$script_dir/release.mjs" "$script_dir/license-surfaces.mjs" "$main/scripts/"
 cp -R "$script_dir/lib" "$main/scripts/lib"
 node "$script_dir/test-beacon-fixture.mjs" "$main"
 if grep -Fq 'current.md' "$main/scripts/worktree.mjs"; then
@@ -234,7 +234,7 @@ assert_notes_refusal 'duplicated required heading "## Substantive changes"'
 set_release_notes $'## Release overview\n\nOverview.\n\n## Substantive changes\n\nChange.\n\n## Read before upgrading\n\nNone.\n\n## Progressive polish\n\nNone.\n\n## Evidence and compatibility\n\nEvidence.\n'
 assert_notes_refusal 'required headings are misordered'
 # Reserved-heading parsing exercises code blocks and visible title spellings.
-node --input-type=module - "$main/scripts/release-notes.mjs" <<'NODE'
+node --input-type=module - "$main/scripts/lib/release-notes.mjs" <<'NODE'
 import assert from "node:assert/strict";
 import { pathToFileURL } from "node:url";
 const { parseReleaseNotes, releaseNoteHeadings } = await import(pathToFileURL(process.argv[2]));

@@ -74,18 +74,22 @@ requested count.
 
 Compared against main at `7c1ea72b244d57cb2eb4ef015076668ab99213f9`; counts are newline counts.
 
+Navigation update, 2026-09-28 (WO-163): the links for `github-body.mjs`,
+`github-repository.mjs` and `release-notes.mjs` follow their relocation into
+`scripts/lib/`. The table retains WO-030’s historical path labels and counts.
+
 | Script                                                                              |     Main |   WO-030 |     Delta |
 | ----------------------------------------------------------------------------------- | -------: | -------: | --------: |
 | [scripts/check-publication.mjs](../../../scripts/check-publication.mjs)             |      614 |      614 |         0 |
-| [scripts/github-body.mjs](../../../scripts/github-body.mjs)                         |      196 |      196 |         0 |
-| [scripts/github-repository.mjs](../../../scripts/github-repository.mjs)             |       84 |       84 |         0 |
+| [scripts/github-body.mjs](../../../scripts/lib/github-body.mjs)                         |      196 |      196 |         0 |
+| [scripts/github-repository.mjs](../../../scripts/lib/github-repository.mjs)             |       84 |       84 |         0 |
 | [scripts/lib/control-store.mjs](../../../scripts/lib/control-store.mjs)             |        0 |      195 |      +195 |
 | [scripts/lib/control-time.mjs](../../../scripts/lib/control-time.mjs)               |      135 |      135 |         0 |
 | [scripts/lib/control.mjs](../../../scripts/lib/control.mjs)                         |      185 |      235 |       +50 |
 | [scripts/lib/git.mjs](../../../scripts/lib/git.mjs)                                 |       80 |       80 |         0 |
 | [scripts/lib/paths.mjs](../../../scripts/lib/paths.mjs)                             |       70 |       70 |         0 |
 | [scripts/lib/release-records.mjs](../../../scripts/lib/release-records.mjs)         |      174 |      183 |        +9 |
-| [scripts/release-notes.mjs](../../../scripts/release-notes.mjs)                     |      192 |      192 |         0 |
+| [scripts/release-notes.mjs](../../../scripts/lib/release-notes.mjs)                     |      192 |      192 |         0 |
 | [scripts/release.mjs](../../../scripts/release.mjs)                                 |     1758 |     1763 |        +5 |
 | [scripts/resume.mjs](../../../scripts/resume.mjs)                                   |      878 |      984 |      +106 |
 | [scripts/test-concurrent-control.mjs](../../../scripts/test-concurrent-control.mjs) |        0 |      403 |      +403 |
