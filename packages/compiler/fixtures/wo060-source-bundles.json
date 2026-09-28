@@ -1,0 +1,1595 @@
+{
+  "description": "WO-060 synthetic SourceBundle fixtures. Every issue, name and token-shaped string is synthetic and was never a credential; each host is a public GitHub host or under the reserved .example domain. Spans are UTF-8 byte offsets.",
+  "allowedHosts": [
+    "github.com",
+    "www.github.com",
+    "docs.github.com"
+  ],
+  "valid": [
+    {
+      "name": "feature-request",
+      "hash": "fnv1a64:1ee60b93ab4ddb62",
+      "bundle": {
+        "bundleId": "synthetic-issue-101",
+        "sourceKind": "synthetic-issue",
+        "revisionId": "2026-09-20T12:05:00Z",
+        "sections": [
+          {
+            "id": "s-summary",
+            "heading": "Summary",
+            "text": "Add a CSV export to the weekly report so a reviewer can share it without screenshots.",
+            "span": {
+              "sectionId": "s-summary",
+              "start": 0,
+              "end": 85
+            }
+          },
+          {
+            "id": "s-behavior",
+            "heading": "Desired behavior",
+            "text": "1. The report page shows an **Export CSV** button.\n2. ~~The export includes archived rows.~~ The export leaves archived rows out.\n3. The file name carries the report's week, for example `report-2026-W38.csv`.",
+            "span": {
+              "sectionId": "s-behavior",
+              "start": 0,
+              "end": 208
+            }
+          },
+          {
+            "id": "s-out-of-scope",
+            "heading": "Out of scope",
+            "text": "Scheduling exports by e-mail.",
+            "span": {
+              "sectionId": "s-out-of-scope",
+              "start": 0,
+              "end": 29
+            }
+          }
+        ],
+        "discussion": [
+          {
+            "id": "e-101-1",
+            "author": "reporter",
+            "text": "Opening this after the planning call; the numbered list is the whole request.",
+            "span": {
+              "entryId": "e-101-1",
+              "start": 0,
+              "end": 77
+            },
+            "createdAt": "2026-09-20T10:15:00Z"
+          },
+          {
+            "id": "e-101-2",
+            "author": "reviewer",
+            "text": "Should the export respect the filters that are active on the page?",
+            "span": {
+              "entryId": "e-101-2",
+              "start": 0,
+              "end": 66
+            },
+            "createdAt": "2026-09-20T11:02:00Z"
+          },
+          {
+            "id": "e-101-3",
+            "author": "reporter",
+            "text": "Yes: the export is what the page shows, filters included.",
+            "span": {
+              "entryId": "e-101-3",
+              "start": 0,
+              "end": 57
+            },
+            "createdAt": "2026-09-20T11:40:00Z"
+          }
+        ],
+        "images": [],
+        "revisions": [
+          {
+            "revisionId": "2026-09-20T12:05:00Z",
+            "changedSpans": [
+              {
+                "sectionId": "s-behavior",
+                "start": 51,
+                "end": 129
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "bug-report-with-screenshot",
+      "hash": "fnv1a64:86d8ca46a3edcb95",
+      "bundle": {
+        "bundleId": "synthetic-issue-102",
+        "sourceKind": "synthetic-issue",
+        "revisionId": "2026-09-21T09:45:00Z",
+        "sections": [
+          {
+            "id": "s-steps",
+            "heading": "Steps to reproduce",
+            "text": "1. Open **Settings → Notifications**.\n2. Turn off *Weekly digest* and press **Save**.\n3. Reload the page.",
+            "span": {
+              "sectionId": "s-steps",
+              "start": 0,
+              "end": 107
+            }
+          },
+          {
+            "id": "s-expected",
+            "heading": "Expected behavior",
+            "text": "The digest stays off after the reload.",
+            "span": {
+              "sectionId": "s-expected",
+              "start": 0,
+              "end": 38
+            }
+          },
+          {
+            "id": "s-actual",
+            "heading": "Current behavior",
+            "text": "The digest is on again, and an error dialog appears:\n\n![Error dialog after saving notification settings](https://github.com/user-attachments/assets/00000000-0000-4000-8000-000000000102)\n\nThe settings reference is at https://docs.github.com/en/account-and-profile.",
+            "span": {
+              "sectionId": "s-actual",
+              "start": 0,
+              "end": 263
+            }
+          }
+        ],
+        "discussion": [
+          {
+            "id": "e-102-1",
+            "author": "automation",
+            "text": "Label added: needs-triage.",
+            "span": {
+              "entryId": "e-102-1",
+              "start": 0,
+              "end": 26
+            },
+            "createdAt": "2026-09-21T08:31:00Z"
+          },
+          {
+            "id": "e-102-2",
+            "author": "reviewer",
+            "text": "Which browser was this in, and does it happen in a private window?",
+            "span": {
+              "entryId": "e-102-2",
+              "start": 0,
+              "end": 66
+            },
+            "createdAt": "2026-09-21T09:10:00Z"
+          },
+          {
+            "id": "e-102-3",
+            "author": "reporter",
+            "text": "Firefox 131 and Safari 18; yes, the private window shows it too.\n\n![Private window with the digest on](https://github.com/user-attachments/assets/00000000-0000-4000-8000-000000000112)",
+            "span": {
+              "entryId": "e-102-3",
+              "start": 0,
+              "end": 183
+            },
+            "createdAt": "2026-09-21T09:45:00Z"
+          }
+        ],
+        "images": [
+          {
+            "id": "img-private-window",
+            "hash": "sha256:6f201566a33e2ac3db2f11b5d980d5dfac50279c0ff06ce9e73929f6db643e6c",
+            "altText": "Private window with the digest on",
+            "referencedBy": {
+              "entryId": "e-102-3",
+              "start": 66,
+              "end": 183
+            }
+          },
+          {
+            "id": "img-error-dialog",
+            "hash": "sha256:f8a8fc025232cb675e1309030e25ebd634e3aaad94ee0b5d8114ed6d37294583",
+            "altText": "Error dialog after saving notification settings",
+            "referencedBy": {
+              "sectionId": "s-actual",
+              "start": 54,
+              "end": 185
+            }
+          }
+        ],
+        "revisions": []
+      }
+    },
+    {
+      "name": "multibyte-text",
+      "hash": "fnv1a64:cff2ec7a7ec56694",
+      "bundle": {
+        "bundleId": "synthetic-issue-103",
+        "sourceKind": "synthetic-issue",
+        "revisionId": "2026-09-22T15:45:00Z",
+        "sections": [
+          {
+            "id": "s-context",
+            "heading": "Überblick",
+            "text": "Die Übersicht zeigt „Größe“ falsch an, wenn die Sprache Deutsch ist. 日本語の表示も確認してください。",
+            "span": {
+              "sectionId": "s-context",
+              "start": 0,
+              "end": 124
+            }
+          },
+          {
+            "id": "s-criteria",
+            "heading": "Acceptance",
+            "text": "- Sizes use the locale's decimal separator: 1,5 MB in German.\n- Emoji in names 🙂 keep their width.",
+            "span": {
+              "sectionId": "s-criteria",
+              "start": 0,
+              "end": 101
+            }
+          }
+        ],
+        "discussion": [
+          {
+            "id": "e-103-1",
+            "author": "reporter",
+            "text": "The size column shows 1.5 MB where 1,5 MB is expected 🙂\n\n![](https://github.com/user-attachments/assets/00000000-0000-4000-8000-000000000103)",
+            "span": {
+              "entryId": "e-103-1",
+              "start": 0,
+              "end": 144
+            },
+            "createdAt": "2026-09-22T14:00:00Z"
+          },
+          {
+            "id": "e-103-2",
+            "author": "reviewer",
+            "text": "Is the separator wrong in the export too, or only on the page?",
+            "span": {
+              "entryId": "e-103-2",
+              "start": 0,
+              "end": 62
+            },
+            "createdAt": "2026-09-22T15:30:00Z"
+          }
+        ],
+        "images": [
+          {
+            "id": "img-size-column",
+            "hash": "sha256:ac636ccc16512aca07df92d1238ed35b033981a674ed55f4f7edd2bae45f6a9a",
+            "referencedBy": {
+              "entryId": "e-103-1",
+              "start": 60,
+              "end": 144
+            }
+          }
+        ],
+        "revisions": [
+          {
+            "revisionId": "2026-09-22T15:45:00Z",
+            "changedSpans": [
+              {
+                "sectionId": "s-criteria",
+                "start": 61,
+                "end": 61
+              },
+              {
+                "sectionId": "s-context",
+                "start": 21,
+                "end": 34
+              },
+              {
+                "entryId": "e-103-1",
+                "start": 54,
+                "end": 58
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "one-section",
+      "hash": "fnv1a64:194cee50b6a617c8",
+      "bundle": {
+        "bundleId": "synthetic-issue-104",
+        "sourceKind": "synthetic-issue",
+        "revisionId": "2026-09-23T09:00:00Z",
+        "sections": [
+          {
+            "id": "s-body",
+            "text": "Rename the Close button to Done on the confirmation sheet.",
+            "span": {
+              "sectionId": "s-body",
+              "start": 0,
+              "end": 58
+            }
+          }
+        ],
+        "discussion": [],
+        "images": [],
+        "revisions": []
+      }
+    },
+    {
+      "name": "one-entry",
+      "hash": "fnv1a64:7d55d2ba177b2680",
+      "bundle": {
+        "bundleId": "synthetic-issue-105",
+        "sourceKind": "synthetic-issue",
+        "revisionId": "2026-09-24T16:20:00Z",
+        "sections": [],
+        "discussion": [
+          {
+            "id": "e-105-1",
+            "author": "reviewer",
+            "text": "Confirmed on the current build; the guide at https://docs.github.com/en/issues describes the expected state.",
+            "span": {
+              "entryId": "e-105-1",
+              "start": 0,
+              "end": 108
+            },
+            "createdAt": "2026-09-24T16:20:00Z"
+          }
+        ],
+        "images": [],
+        "revisions": []
+      }
+    },
+    {
+      "name": "revised-with-supersession",
+      "hash": "fnv1a64:d7507e8efb5e38c1",
+      "bundle": {
+        "bundleId": "synthetic-issue-106",
+        "sourceKind": "synthetic-issue",
+        "revisionId": "2026-09-26T12:00:00Z",
+        "sections": [
+          {
+            "id": "s-request",
+            "heading": "Request",
+            "text": "Allow archiving a project from its settings page.\n\nThe archive keeps issues read-only.",
+            "span": {
+              "sectionId": "s-request",
+              "start": 0,
+              "end": 86
+            }
+          },
+          {
+            "id": "s-constraints",
+            "heading": "Constraints",
+            "text": "Archiving must not delete data. See www.github.com for the style of the confirmation dialog.",
+            "span": {
+              "sectionId": "s-constraints",
+              "start": 0,
+              "end": 92
+            }
+          }
+        ],
+        "discussion": [
+          {
+            "id": "e-106-1",
+            "author": "reporter",
+            "text": "Requirement: an archived project can be restored by an owner.",
+            "span": {
+              "entryId": "e-106-1",
+              "start": 0,
+              "end": 61
+            },
+            "createdAt": "2026-09-25T09:00:00Z"
+          },
+          {
+            "id": "e-106-2",
+            "author": "reviewer",
+            "text": "Restoring needs a second confirmation?",
+            "span": {
+              "entryId": "e-106-2",
+              "start": 0,
+              "end": 38
+            },
+            "createdAt": "2026-09-25T10:00:00Z"
+          },
+          {
+            "id": "e-106-3",
+            "author": "reporter",
+            "text": "Decision: restoring is out of scope for now; this supersedes the restore requirement above.",
+            "span": {
+              "entryId": "e-106-3",
+              "start": 0,
+              "end": 91
+            },
+            "createdAt": "2026-09-26T11:30:00Z"
+          }
+        ],
+        "images": [],
+        "revisions": [
+          {
+            "revisionId": "2026-09-25T09:30:00Z",
+            "changedSpans": [
+              {
+                "sectionId": "s-request",
+                "start": 51,
+                "end": 86
+              }
+            ]
+          },
+          {
+            "revisionId": "2026-09-26T12:00:00Z",
+            "changedSpans": [
+              {
+                "entryId": "e-106-1",
+                "start": 49,
+                "end": 60
+              },
+              {
+                "sectionId": "s-constraints",
+                "start": 92,
+                "end": 92
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "malformed": [
+    {
+      "name": "not-an-object",
+      "path": "$",
+      "reason": "expected an object",
+      "bundle": [
+        {
+          "bundleId": "synthetic-issue-104",
+          "sourceKind": "synthetic-issue",
+          "revisionId": "2026-09-23T09:00:00Z",
+          "sections": [
+            {
+              "id": "s-body",
+              "text": "Rename the Close button to Done on the confirmation sheet.",
+              "span": {
+                "sectionId": "s-body",
+                "start": 0,
+                "end": 58
+              }
+            }
+          ],
+          "discussion": [],
+          "images": [],
+          "revisions": []
+        }
+      ]
+    },
+    {
+      "name": "tracker-specific-field",
+      "path": "$.assignee",
+      "reason": "unexpected field",
+      "bundle": {
+        "bundleId": "synthetic-issue-104",
+        "sourceKind": "synthetic-issue",
+        "revisionId": "2026-09-23T09:00:00Z",
+        "sections": [
+          {
+            "id": "s-body",
+            "text": "Rename the Close button to Done on the confirmation sheet.",
+            "span": {
+              "sectionId": "s-body",
+              "start": 0,
+              "end": 58
+            }
+          }
+        ],
+        "discussion": [],
+        "images": [],
+        "revisions": [],
+        "assignee": "synthetic-user"
+      }
+    },
+    {
+      "name": "author-is-an-identity",
+      "path": "$.discussion[1].author",
+      "reason": "expected a role label: reporter, reviewer or automation",
+      "bundle": {
+        "bundleId": "synthetic-issue-101",
+        "sourceKind": "synthetic-issue",
+        "revisionId": "2026-09-20T12:05:00Z",
+        "sections": [
+          {
+            "id": "s-summary",
+            "heading": "Summary",
+            "text": "Add a CSV export to the weekly report so a reviewer can share it without screenshots.",
+            "span": {
+              "sectionId": "s-summary",
+              "start": 0,
+              "end": 85
+            }
+          },
+          {
+            "id": "s-behavior",
+            "heading": "Desired behavior",
+            "text": "1. The report page shows an **Export CSV** button.\n2. ~~The export includes archived rows.~~ The export leaves archived rows out.\n3. The file name carries the report's week, for example `report-2026-W38.csv`.",
+            "span": {
+              "sectionId": "s-behavior",
+              "start": 0,
+              "end": 208
+            }
+          },
+          {
+            "id": "s-out-of-scope",
+            "heading": "Out of scope",
+            "text": "Scheduling exports by e-mail.",
+            "span": {
+              "sectionId": "s-out-of-scope",
+              "start": 0,
+              "end": 29
+            }
+          }
+        ],
+        "discussion": [
+          {
+            "id": "e-101-1",
+            "author": "reporter",
+            "text": "Opening this after the planning call; the numbered list is the whole request.",
+            "span": {
+              "entryId": "e-101-1",
+              "start": 0,
+              "end": 77
+            },
+            "createdAt": "2026-09-20T10:15:00Z"
+          },
+          {
+            "id": "e-101-2",
+            "author": "synthetic-user",
+            "text": "Should the export respect the filters that are active on the page?",
+            "span": {
+              "entryId": "e-101-2",
+              "start": 0,
+              "end": 66
+            },
+            "createdAt": "2026-09-20T11:02:00Z"
+          },
+          {
+            "id": "e-101-3",
+            "author": "reporter",
+            "text": "Yes: the export is what the page shows, filters included.",
+            "span": {
+              "entryId": "e-101-3",
+              "start": 0,
+              "end": 57
+            },
+            "createdAt": "2026-09-20T11:40:00Z"
+          }
+        ],
+        "images": [],
+        "revisions": [
+          {
+            "revisionId": "2026-09-20T12:05:00Z",
+            "changedSpans": [
+              {
+                "sectionId": "s-behavior",
+                "start": 51,
+                "end": 129
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "image-carries-bytes",
+      "path": "$.images[1].bytes",
+      "reason": "unexpected field",
+      "bundle": {
+        "bundleId": "synthetic-issue-102",
+        "sourceKind": "synthetic-issue",
+        "revisionId": "2026-09-21T09:45:00Z",
+        "sections": [
+          {
+            "id": "s-steps",
+            "heading": "Steps to reproduce",
+            "text": "1. Open **Settings → Notifications**.\n2. Turn off *Weekly digest* and press **Save**.\n3. Reload the page.",
+            "span": {
+              "sectionId": "s-steps",
+              "start": 0,
+              "end": 107
+            }
+          },
+          {
+            "id": "s-expected",
+            "heading": "Expected behavior",
+            "text": "The digest stays off after the reload.",
+            "span": {
+              "sectionId": "s-expected",
+              "start": 0,
+              "end": 38
+            }
+          },
+          {
+            "id": "s-actual",
+            "heading": "Current behavior",
+            "text": "The digest is on again, and an error dialog appears:\n\n![Error dialog after saving notification settings](https://github.com/user-attachments/assets/00000000-0000-4000-8000-000000000102)\n\nThe settings reference is at https://docs.github.com/en/account-and-profile.",
+            "span": {
+              "sectionId": "s-actual",
+              "start": 0,
+              "end": 263
+            }
+          }
+        ],
+        "discussion": [
+          {
+            "id": "e-102-1",
+            "author": "automation",
+            "text": "Label added: needs-triage.",
+            "span": {
+              "entryId": "e-102-1",
+              "start": 0,
+              "end": 26
+            },
+            "createdAt": "2026-09-21T08:31:00Z"
+          },
+          {
+            "id": "e-102-2",
+            "author": "reviewer",
+            "text": "Which browser was this in, and does it happen in a private window?",
+            "span": {
+              "entryId": "e-102-2",
+              "start": 0,
+              "end": 66
+            },
+            "createdAt": "2026-09-21T09:10:00Z"
+          },
+          {
+            "id": "e-102-3",
+            "author": "reporter",
+            "text": "Firefox 131 and Safari 18; yes, the private window shows it too.\n\n![Private window with the digest on](https://github.com/user-attachments/assets/00000000-0000-4000-8000-000000000112)",
+            "span": {
+              "entryId": "e-102-3",
+              "start": 0,
+              "end": 183
+            },
+            "createdAt": "2026-09-21T09:45:00Z"
+          }
+        ],
+        "images": [
+          {
+            "id": "img-private-window",
+            "hash": "sha256:6f201566a33e2ac3db2f11b5d980d5dfac50279c0ff06ce9e73929f6db643e6c",
+            "altText": "Private window with the digest on",
+            "referencedBy": {
+              "entryId": "e-102-3",
+              "start": 66,
+              "end": 183
+            }
+          },
+          {
+            "id": "img-error-dialog",
+            "hash": "sha256:f8a8fc025232cb675e1309030e25ebd634e3aaad94ee0b5d8114ed6d37294583",
+            "altText": "Error dialog after saving notification settings",
+            "referencedBy": {
+              "sectionId": "s-actual",
+              "start": 54,
+              "end": 185
+            },
+            "bytes": "c3ludGhldGlj"
+          }
+        ],
+        "revisions": []
+      }
+    },
+    {
+      "name": "span-beyond-text",
+      "path": "$.images[1].referencedBy.end",
+      "reason": "beyond the end of the text",
+      "bundle": {
+        "bundleId": "synthetic-issue-102",
+        "sourceKind": "synthetic-issue",
+        "revisionId": "2026-09-21T09:45:00Z",
+        "sections": [
+          {
+            "id": "s-steps",
+            "heading": "Steps to reproduce",
+            "text": "1. Open **Settings → Notifications**.\n2. Turn off *Weekly digest* and press **Save**.\n3. Reload the page.",
+            "span": {
+              "sectionId": "s-steps",
+              "start": 0,
+              "end": 107
+            }
+          },
+          {
+            "id": "s-expected",
+            "heading": "Expected behavior",
+            "text": "The digest stays off after the reload.",
+            "span": {
+              "sectionId": "s-expected",
+              "start": 0,
+              "end": 38
+            }
+          },
+          {
+            "id": "s-actual",
+            "heading": "Current behavior",
+            "text": "The digest is on again, and an error dialog appears:\n\n![Error dialog after saving notification settings](https://github.com/user-attachments/assets/00000000-0000-4000-8000-000000000102)\n\nThe settings reference is at https://docs.github.com/en/account-and-profile.",
+            "span": {
+              "sectionId": "s-actual",
+              "start": 0,
+              "end": 263
+            }
+          }
+        ],
+        "discussion": [
+          {
+            "id": "e-102-1",
+            "author": "automation",
+            "text": "Label added: needs-triage.",
+            "span": {
+              "entryId": "e-102-1",
+              "start": 0,
+              "end": 26
+            },
+            "createdAt": "2026-09-21T08:31:00Z"
+          },
+          {
+            "id": "e-102-2",
+            "author": "reviewer",
+            "text": "Which browser was this in, and does it happen in a private window?",
+            "span": {
+              "entryId": "e-102-2",
+              "start": 0,
+              "end": 66
+            },
+            "createdAt": "2026-09-21T09:10:00Z"
+          },
+          {
+            "id": "e-102-3",
+            "author": "reporter",
+            "text": "Firefox 131 and Safari 18; yes, the private window shows it too.\n\n![Private window with the digest on](https://github.com/user-attachments/assets/00000000-0000-4000-8000-000000000112)",
+            "span": {
+              "entryId": "e-102-3",
+              "start": 0,
+              "end": 183
+            },
+            "createdAt": "2026-09-21T09:45:00Z"
+          }
+        ],
+        "images": [
+          {
+            "id": "img-private-window",
+            "hash": "sha256:6f201566a33e2ac3db2f11b5d980d5dfac50279c0ff06ce9e73929f6db643e6c",
+            "altText": "Private window with the digest on",
+            "referencedBy": {
+              "entryId": "e-102-3",
+              "start": 66,
+              "end": 183
+            }
+          },
+          {
+            "id": "img-error-dialog",
+            "hash": "sha256:f8a8fc025232cb675e1309030e25ebd634e3aaad94ee0b5d8114ed6d37294583",
+            "altText": "Error dialog after saving notification settings",
+            "referencedBy": {
+              "sectionId": "s-actual",
+              "start": 54,
+              "end": 264
+            }
+          }
+        ],
+        "revisions": []
+      }
+    },
+    {
+      "name": "span-inside-a-character",
+      "path": "$.revisions[0].changedSpans[1].start",
+      "reason": "inside a UTF-8 character",
+      "bundle": {
+        "bundleId": "synthetic-issue-103",
+        "sourceKind": "synthetic-issue",
+        "revisionId": "2026-09-22T15:45:00Z",
+        "sections": [
+          {
+            "id": "s-context",
+            "heading": "Überblick",
+            "text": "Die Übersicht zeigt „Größe“ falsch an, wenn die Sprache Deutsch ist. 日本語の表示も確認してください。",
+            "span": {
+              "sectionId": "s-context",
+              "start": 0,
+              "end": 124
+            }
+          },
+          {
+            "id": "s-criteria",
+            "heading": "Acceptance",
+            "text": "- Sizes use the locale's decimal separator: 1,5 MB in German.\n- Emoji in names 🙂 keep their width.",
+            "span": {
+              "sectionId": "s-criteria",
+              "start": 0,
+              "end": 101
+            }
+          }
+        ],
+        "discussion": [
+          {
+            "id": "e-103-1",
+            "author": "reporter",
+            "text": "The size column shows 1.5 MB where 1,5 MB is expected 🙂\n\n![](https://github.com/user-attachments/assets/00000000-0000-4000-8000-000000000103)",
+            "span": {
+              "entryId": "e-103-1",
+              "start": 0,
+              "end": 144
+            },
+            "createdAt": "2026-09-22T14:00:00Z"
+          },
+          {
+            "id": "e-103-2",
+            "author": "reviewer",
+            "text": "Is the separator wrong in the export too, or only on the page?",
+            "span": {
+              "entryId": "e-103-2",
+              "start": 0,
+              "end": 62
+            },
+            "createdAt": "2026-09-22T15:30:00Z"
+          }
+        ],
+        "images": [
+          {
+            "id": "img-size-column",
+            "hash": "sha256:ac636ccc16512aca07df92d1238ed35b033981a674ed55f4f7edd2bae45f6a9a",
+            "referencedBy": {
+              "entryId": "e-103-1",
+              "start": 60,
+              "end": 144
+            }
+          }
+        ],
+        "revisions": [
+          {
+            "revisionId": "2026-09-22T15:45:00Z",
+            "changedSpans": [
+              {
+                "sectionId": "s-criteria",
+                "start": 61,
+                "end": 61
+              },
+              {
+                "sectionId": "s-context",
+                "start": 22,
+                "end": 34
+              },
+              {
+                "entryId": "e-103-1",
+                "start": 54,
+                "end": 58
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "duplicate-id-across-kinds",
+      "path": "$.discussion[1].id",
+      "reason": "duplicate id",
+      "bundle": {
+        "bundleId": "synthetic-issue-101",
+        "sourceKind": "synthetic-issue",
+        "revisionId": "2026-09-20T12:05:00Z",
+        "sections": [
+          {
+            "id": "s-summary",
+            "heading": "Summary",
+            "text": "Add a CSV export to the weekly report so a reviewer can share it without screenshots.",
+            "span": {
+              "sectionId": "s-summary",
+              "start": 0,
+              "end": 85
+            }
+          },
+          {
+            "id": "s-behavior",
+            "heading": "Desired behavior",
+            "text": "1. The report page shows an **Export CSV** button.\n2. ~~The export includes archived rows.~~ The export leaves archived rows out.\n3. The file name carries the report's week, for example `report-2026-W38.csv`.",
+            "span": {
+              "sectionId": "s-behavior",
+              "start": 0,
+              "end": 208
+            }
+          },
+          {
+            "id": "s-out-of-scope",
+            "heading": "Out of scope",
+            "text": "Scheduling exports by e-mail.",
+            "span": {
+              "sectionId": "s-out-of-scope",
+              "start": 0,
+              "end": 29
+            }
+          }
+        ],
+        "discussion": [
+          {
+            "id": "e-101-1",
+            "author": "reporter",
+            "text": "Opening this after the planning call; the numbered list is the whole request.",
+            "span": {
+              "entryId": "e-101-1",
+              "start": 0,
+              "end": 77
+            },
+            "createdAt": "2026-09-20T10:15:00Z"
+          },
+          {
+            "id": "s-summary",
+            "author": "reviewer",
+            "text": "Should the export respect the filters that are active on the page?",
+            "span": {
+              "entryId": "s-summary",
+              "start": 0,
+              "end": 66
+            },
+            "createdAt": "2026-09-20T11:02:00Z"
+          },
+          {
+            "id": "e-101-3",
+            "author": "reporter",
+            "text": "Yes: the export is what the page shows, filters included.",
+            "span": {
+              "entryId": "e-101-3",
+              "start": 0,
+              "end": 57
+            },
+            "createdAt": "2026-09-20T11:40:00Z"
+          }
+        ],
+        "images": [],
+        "revisions": [
+          {
+            "revisionId": "2026-09-20T12:05:00Z",
+            "changedSpans": [
+              {
+                "sectionId": "s-behavior",
+                "start": 51,
+                "end": 129
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "section-span-not-whole",
+      "path": "$.sections[0].span.end",
+      "reason": "expected the whole text",
+      "bundle": {
+        "bundleId": "synthetic-issue-104",
+        "sourceKind": "synthetic-issue",
+        "revisionId": "2026-09-23T09:00:00Z",
+        "sections": [
+          {
+            "id": "s-body",
+            "text": "Rename the Close button to Done on the confirmation sheet.",
+            "span": {
+              "sectionId": "s-body",
+              "start": 0,
+              "end": 57
+            }
+          }
+        ],
+        "discussion": [],
+        "images": [],
+        "revisions": []
+      }
+    }
+  ],
+  "screened": [
+    {
+      "case": "private-key-block",
+      "kind": "secret-shape",
+      "planted": "-----BEGIN RSA PRIVATE KEY-----",
+      "matched": "-----BEGIN RSA PRIVATE KEY-----",
+      "finding": {
+        "kind": "secret-shape",
+        "id": "private-key-block",
+        "path": "$.sections[0].text",
+        "start": 35,
+        "end": 66,
+        "span": {
+          "sectionId": "s-log",
+          "start": 35,
+          "end": 66
+        }
+      },
+      "bundle": {
+        "bundleId": "synthetic-screen-private-key-block",
+        "sourceKind": "synthetic-issue",
+        "revisionId": "2026-09-27T12:00:00Z",
+        "sections": [
+          {
+            "id": "s-log",
+            "heading": "Log",
+            "text": "The failing run printed this line: -----BEGIN RSA PRIVATE KEY----- and then stopped.",
+            "span": {
+              "sectionId": "s-log",
+              "start": 0,
+              "end": 84
+            }
+          }
+        ],
+        "discussion": [],
+        "images": [],
+        "revisions": []
+      },
+      "without": {
+        "bundleId": "synthetic-screen-private-key-block",
+        "sourceKind": "synthetic-issue",
+        "revisionId": "2026-09-27T12:00:00Z",
+        "sections": [
+          {
+            "id": "s-log",
+            "heading": "Log",
+            "text": "The failing run printed this line: and then stopped.",
+            "span": {
+              "sectionId": "s-log",
+              "start": 0,
+              "end": 52
+            }
+          }
+        ],
+        "discussion": [],
+        "images": [],
+        "revisions": []
+      }
+    },
+    {
+      "case": "bearer-credential",
+      "kind": "secret-shape",
+      "planted": "Bearer SyntheticBearer0000000000000",
+      "matched": "Bearer SyntheticBearer0000000000000",
+      "finding": {
+        "kind": "secret-shape",
+        "id": "bearer-credential",
+        "path": "$.discussion[0].text",
+        "start": 35,
+        "end": 70,
+        "span": {
+          "entryId": "e-log",
+          "start": 35,
+          "end": 70
+        }
+      },
+      "bundle": {
+        "bundleId": "synthetic-screen-bearer-credential",
+        "sourceKind": "synthetic-issue",
+        "revisionId": "2026-09-27T12:00:00Z",
+        "sections": [],
+        "discussion": [
+          {
+            "id": "e-log",
+            "author": "reviewer",
+            "text": "The failing run printed this line: Bearer SyntheticBearer0000000000000 and then stopped.",
+            "span": {
+              "entryId": "e-log",
+              "start": 0,
+              "end": 88
+            },
+            "createdAt": "2026-09-27T12:00:00Z"
+          }
+        ],
+        "images": [],
+        "revisions": []
+      },
+      "without": {
+        "bundleId": "synthetic-screen-bearer-credential",
+        "sourceKind": "synthetic-issue",
+        "revisionId": "2026-09-27T12:00:00Z",
+        "sections": [],
+        "discussion": [
+          {
+            "id": "e-log",
+            "author": "reviewer",
+            "text": "The failing run printed this line: and then stopped.",
+            "span": {
+              "entryId": "e-log",
+              "start": 0,
+              "end": 52
+            },
+            "createdAt": "2026-09-27T12:00:00Z"
+          }
+        ],
+        "images": [],
+        "revisions": []
+      }
+    },
+    {
+      "case": "github-personal-access-token",
+      "kind": "secret-shape",
+      "planted": "ghp_SyntheticClassic00000000000000000000",
+      "matched": "ghp_SyntheticClassic00000000000000000000",
+      "finding": {
+        "kind": "secret-shape",
+        "id": "github-personal-access-token",
+        "path": "$.sections[0].text",
+        "start": 35,
+        "end": 75,
+        "span": {
+          "sectionId": "s-log",
+          "start": 35,
+          "end": 75
+        }
+      },
+      "bundle": {
+        "bundleId": "synthetic-screen-github-personal-access-token",
+        "sourceKind": "synthetic-issue",
+        "revisionId": "2026-09-27T12:00:00Z",
+        "sections": [
+          {
+            "id": "s-log",
+            "heading": "Log",
+            "text": "The failing run printed this line: ghp_SyntheticClassic00000000000000000000 and then stopped.",
+            "span": {
+              "sectionId": "s-log",
+              "start": 0,
+              "end": 93
+            }
+          }
+        ],
+        "discussion": [],
+        "images": [],
+        "revisions": []
+      },
+      "without": {
+        "bundleId": "synthetic-screen-github-personal-access-token",
+        "sourceKind": "synthetic-issue",
+        "revisionId": "2026-09-27T12:00:00Z",
+        "sections": [
+          {
+            "id": "s-log",
+            "heading": "Log",
+            "text": "The failing run printed this line: and then stopped.",
+            "span": {
+              "sectionId": "s-log",
+              "start": 0,
+              "end": 52
+            }
+          }
+        ],
+        "discussion": [],
+        "images": [],
+        "revisions": []
+      }
+    },
+    {
+      "case": "github-fine-grained-personal-access-token",
+      "kind": "secret-shape",
+      "planted": "github_pat_11SYNTHETIC0000000000_synthetic0000000000",
+      "matched": "github_pat_11SYNTHETIC0000000000_synthetic0000000000",
+      "finding": {
+        "kind": "secret-shape",
+        "id": "github-fine-grained-personal-access-token",
+        "path": "$.discussion[0].text",
+        "start": 35,
+        "end": 87,
+        "span": {
+          "entryId": "e-log",
+          "start": 35,
+          "end": 87
+        }
+      },
+      "bundle": {
+        "bundleId": "synthetic-screen-github-fine-grained-personal-access-token",
+        "sourceKind": "synthetic-issue",
+        "revisionId": "2026-09-27T12:00:00Z",
+        "sections": [],
+        "discussion": [
+          {
+            "id": "e-log",
+            "author": "reviewer",
+            "text": "The failing run printed this line: github_pat_11SYNTHETIC0000000000_synthetic0000000000 and then stopped.",
+            "span": {
+              "entryId": "e-log",
+              "start": 0,
+              "end": 105
+            },
+            "createdAt": "2026-09-27T12:00:00Z"
+          }
+        ],
+        "images": [],
+        "revisions": []
+      },
+      "without": {
+        "bundleId": "synthetic-screen-github-fine-grained-personal-access-token",
+        "sourceKind": "synthetic-issue",
+        "revisionId": "2026-09-27T12:00:00Z",
+        "sections": [],
+        "discussion": [
+          {
+            "id": "e-log",
+            "author": "reviewer",
+            "text": "The failing run printed this line: and then stopped.",
+            "span": {
+              "entryId": "e-log",
+              "start": 0,
+              "end": 52
+            },
+            "createdAt": "2026-09-27T12:00:00Z"
+          }
+        ],
+        "images": [],
+        "revisions": []
+      }
+    },
+    {
+      "case": "github-oauth-access-token",
+      "kind": "secret-shape",
+      "planted": "gho_SyntheticOAuth0000000000000000000000",
+      "matched": "gho_SyntheticOAuth0000000000000000000000",
+      "finding": {
+        "kind": "secret-shape",
+        "id": "github-oauth-access-token",
+        "path": "$.sections[0].text",
+        "start": 35,
+        "end": 75,
+        "span": {
+          "sectionId": "s-log",
+          "start": 35,
+          "end": 75
+        }
+      },
+      "bundle": {
+        "bundleId": "synthetic-screen-github-oauth-access-token",
+        "sourceKind": "synthetic-issue",
+        "revisionId": "2026-09-27T12:00:00Z",
+        "sections": [
+          {
+            "id": "s-log",
+            "heading": "Log",
+            "text": "The failing run printed this line: gho_SyntheticOAuth0000000000000000000000 and then stopped.",
+            "span": {
+              "sectionId": "s-log",
+              "start": 0,
+              "end": 93
+            }
+          }
+        ],
+        "discussion": [],
+        "images": [],
+        "revisions": []
+      },
+      "without": {
+        "bundleId": "synthetic-screen-github-oauth-access-token",
+        "sourceKind": "synthetic-issue",
+        "revisionId": "2026-09-27T12:00:00Z",
+        "sections": [
+          {
+            "id": "s-log",
+            "heading": "Log",
+            "text": "The failing run printed this line: and then stopped.",
+            "span": {
+              "sectionId": "s-log",
+              "start": 0,
+              "end": 52
+            }
+          }
+        ],
+        "discussion": [],
+        "images": [],
+        "revisions": []
+      }
+    },
+    {
+      "case": "github-user-to-server-token",
+      "kind": "secret-shape",
+      "planted": "ghu_SyntheticUserToServer000000000000000",
+      "matched": "ghu_SyntheticUserToServer000000000000000",
+      "finding": {
+        "kind": "secret-shape",
+        "id": "github-user-to-server-token",
+        "path": "$.discussion[0].text",
+        "start": 35,
+        "end": 75,
+        "span": {
+          "entryId": "e-log",
+          "start": 35,
+          "end": 75
+        }
+      },
+      "bundle": {
+        "bundleId": "synthetic-screen-github-user-to-server-token",
+        "sourceKind": "synthetic-issue",
+        "revisionId": "2026-09-27T12:00:00Z",
+        "sections": [],
+        "discussion": [
+          {
+            "id": "e-log",
+            "author": "reviewer",
+            "text": "The failing run printed this line: ghu_SyntheticUserToServer000000000000000 and then stopped.",
+            "span": {
+              "entryId": "e-log",
+              "start": 0,
+              "end": 93
+            },
+            "createdAt": "2026-09-27T12:00:00Z"
+          }
+        ],
+        "images": [],
+        "revisions": []
+      },
+      "without": {
+        "bundleId": "synthetic-screen-github-user-to-server-token",
+        "sourceKind": "synthetic-issue",
+        "revisionId": "2026-09-27T12:00:00Z",
+        "sections": [],
+        "discussion": [
+          {
+            "id": "e-log",
+            "author": "reviewer",
+            "text": "The failing run printed this line: and then stopped.",
+            "span": {
+              "entryId": "e-log",
+              "start": 0,
+              "end": 52
+            },
+            "createdAt": "2026-09-27T12:00:00Z"
+          }
+        ],
+        "images": [],
+        "revisions": []
+      }
+    },
+    {
+      "case": "github-server-to-server-token",
+      "kind": "secret-shape",
+      "planted": "ghs_12345_eyJhbGciOiJub25lIn0.eyJzeW50aGV0aWMiOnRydWV9.c3ludGhldGlj",
+      "matched": "ghs_12345_eyJhbGciOiJub25lIn0.eyJzeW50aGV0aWMiOnRydWV9.c3ludGhldGlj",
+      "finding": {
+        "kind": "secret-shape",
+        "id": "github-server-to-server-token",
+        "path": "$.sections[0].text",
+        "start": 35,
+        "end": 102,
+        "span": {
+          "sectionId": "s-log",
+          "start": 35,
+          "end": 102
+        }
+      },
+      "bundle": {
+        "bundleId": "synthetic-screen-github-server-to-server-token",
+        "sourceKind": "synthetic-issue",
+        "revisionId": "2026-09-27T12:00:00Z",
+        "sections": [
+          {
+            "id": "s-log",
+            "heading": "Log",
+            "text": "The failing run printed this line: ghs_12345_eyJhbGciOiJub25lIn0.eyJzeW50aGV0aWMiOnRydWV9.c3ludGhldGlj and then stopped.",
+            "span": {
+              "sectionId": "s-log",
+              "start": 0,
+              "end": 120
+            }
+          }
+        ],
+        "discussion": [],
+        "images": [],
+        "revisions": []
+      },
+      "without": {
+        "bundleId": "synthetic-screen-github-server-to-server-token",
+        "sourceKind": "synthetic-issue",
+        "revisionId": "2026-09-27T12:00:00Z",
+        "sections": [
+          {
+            "id": "s-log",
+            "heading": "Log",
+            "text": "The failing run printed this line: and then stopped.",
+            "span": {
+              "sectionId": "s-log",
+              "start": 0,
+              "end": 52
+            }
+          }
+        ],
+        "discussion": [],
+        "images": [],
+        "revisions": []
+      }
+    },
+    {
+      "case": "github-refresh-token",
+      "kind": "secret-shape",
+      "planted": "ghr_SyntheticRefresh00000000000000000000",
+      "matched": "ghr_SyntheticRefresh00000000000000000000",
+      "finding": {
+        "kind": "secret-shape",
+        "id": "github-refresh-token",
+        "path": "$.discussion[0].text",
+        "start": 35,
+        "end": 75,
+        "span": {
+          "entryId": "e-log",
+          "start": 35,
+          "end": 75
+        }
+      },
+      "bundle": {
+        "bundleId": "synthetic-screen-github-refresh-token",
+        "sourceKind": "synthetic-issue",
+        "revisionId": "2026-09-27T12:00:00Z",
+        "sections": [],
+        "discussion": [
+          {
+            "id": "e-log",
+            "author": "reviewer",
+            "text": "The failing run printed this line: ghr_SyntheticRefresh00000000000000000000 and then stopped.",
+            "span": {
+              "entryId": "e-log",
+              "start": 0,
+              "end": 93
+            },
+            "createdAt": "2026-09-27T12:00:00Z"
+          }
+        ],
+        "images": [],
+        "revisions": []
+      },
+      "without": {
+        "bundleId": "synthetic-screen-github-refresh-token",
+        "sourceKind": "synthetic-issue",
+        "revisionId": "2026-09-27T12:00:00Z",
+        "sections": [],
+        "discussion": [
+          {
+            "id": "e-log",
+            "author": "reviewer",
+            "text": "The failing run printed this line: and then stopped.",
+            "span": {
+              "entryId": "e-log",
+              "start": 0,
+              "end": 52
+            },
+            "createdAt": "2026-09-27T12:00:00Z"
+          }
+        ],
+        "images": [],
+        "revisions": []
+      }
+    },
+    {
+      "case": "scheme-authority",
+      "kind": "url-form",
+      "planted": "https://tracker.synthetic.example/browse/SYN-1",
+      "matched": "https://tracker.synthetic.example",
+      "finding": {
+        "kind": "url-form",
+        "id": "scheme-authority",
+        "path": "$.sections[0].text",
+        "start": 35,
+        "end": 68,
+        "span": {
+          "sectionId": "s-log",
+          "start": 35,
+          "end": 68
+        }
+      },
+      "bundle": {
+        "bundleId": "synthetic-screen-scheme-authority",
+        "sourceKind": "synthetic-issue",
+        "revisionId": "2026-09-27T12:00:00Z",
+        "sections": [
+          {
+            "id": "s-log",
+            "heading": "Log",
+            "text": "The failing run printed this line: https://tracker.synthetic.example/browse/SYN-1 and then stopped.",
+            "span": {
+              "sectionId": "s-log",
+              "start": 0,
+              "end": 99
+            }
+          }
+        ],
+        "discussion": [],
+        "images": [],
+        "revisions": []
+      },
+      "without": {
+        "bundleId": "synthetic-screen-scheme-authority",
+        "sourceKind": "synthetic-issue",
+        "revisionId": "2026-09-27T12:00:00Z",
+        "sections": [
+          {
+            "id": "s-log",
+            "heading": "Log",
+            "text": "The failing run printed this line: and then stopped.",
+            "span": {
+              "sectionId": "s-log",
+              "start": 0,
+              "end": 52
+            }
+          }
+        ],
+        "discussion": [],
+        "images": [],
+        "revisions": []
+      }
+    },
+    {
+      "case": "www-autolink",
+      "kind": "url-form",
+      "planted": "www.wiki.synthetic.example/runbook",
+      "matched": "www.wiki.synthetic.example",
+      "finding": {
+        "kind": "url-form",
+        "id": "www-autolink",
+        "path": "$.discussion[0].text",
+        "start": 35,
+        "end": 61,
+        "span": {
+          "entryId": "e-log",
+          "start": 35,
+          "end": 61
+        }
+      },
+      "bundle": {
+        "bundleId": "synthetic-screen-www-autolink",
+        "sourceKind": "synthetic-issue",
+        "revisionId": "2026-09-27T12:00:00Z",
+        "sections": [],
+        "discussion": [
+          {
+            "id": "e-log",
+            "author": "reviewer",
+            "text": "The failing run printed this line: www.wiki.synthetic.example/runbook and then stopped.",
+            "span": {
+              "entryId": "e-log",
+              "start": 0,
+              "end": 87
+            },
+            "createdAt": "2026-09-27T12:00:00Z"
+          }
+        ],
+        "images": [],
+        "revisions": []
+      },
+      "without": {
+        "bundleId": "synthetic-screen-www-autolink",
+        "sourceKind": "synthetic-issue",
+        "revisionId": "2026-09-27T12:00:00Z",
+        "sections": [],
+        "discussion": [
+          {
+            "id": "e-log",
+            "author": "reviewer",
+            "text": "The failing run printed this line: and then stopped.",
+            "span": {
+              "entryId": "e-log",
+              "start": 0,
+              "end": 52
+            },
+            "createdAt": "2026-09-27T12:00:00Z"
+          }
+        ],
+        "images": [],
+        "revisions": []
+      }
+    }
+  ],
+  "limits": {
+    "strings": [
+      "token a1b2c3d4e5f60718293a4b5c6d7e8f9012345678",
+      "eyJhbGciOiJub25lIn0.eyJzdWIiOiJzeW50aGV0aWMifQ.",
+      "https://synthetic:not-a-password@github.com/"
+    ],
+    "hash": "fnv1a64:ef01f83f06d189ef",
+    "bundle": {
+      "bundleId": "synthetic-screen-limits",
+      "sourceKind": "synthetic-issue",
+      "revisionId": "2026-09-27T12:00:00Z",
+      "sections": [
+        {
+          "id": "s-limits",
+          "heading": "Outside the declared set",
+          "text": "An unprefixed 40-hex token: token a1b2c3d4e5f60718293a4b5c6d7e8f9012345678\nA JWT without the scheme word: eyJhbGciOiJub25lIn0.eyJzdWIiOiJzeW50aGV0aWMifQ.\nA password in the userinfo of an allowed host: https://synthetic:not-a-password@github.com/",
+          "span": {
+            "sectionId": "s-limits",
+            "start": 0,
+            "end": 245
+          }
+        }
+      ],
+      "discussion": [],
+      "images": [],
+      "revisions": []
+    }
+  }
+}

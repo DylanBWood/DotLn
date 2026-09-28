@@ -28,6 +28,17 @@ its ceiling falls from 188,399 to 157,212 bytes. Documentation only; no
 component version changes.
 Independent verification, final review and publication remain separate dispatches.
 
+**WO-060 activation completion (2026-09-28):** assigned application `v0.53.0`,
+the next minor above the observed local `v0.52.10` tag. The compiler gains the
+SourceBundle v1 contract: types, a positive decoder, a canonical hash and a
+screen that refuses its declared secret shapes and every declared URL form
+whose host is not on the caller's allowlist. Compiler `0.19.4` to `0.20.0` is a
+minor bump for the new export; skeleton and console compiler pins and the
+lockfile follow. The compiler label enters the feedback policy hash, so the
+feedback edition is carried, the console self-host fixtures follow the label
+and the other registered editions are re-minted deterministically.
+Independent verification, final review and publication remain separate dispatches.
+
 **WO-162 activation completion (2026-09-27):** assigned application `v0.52.9`,
 the next patch above the observed local `v0.52.8` tag. Repeated Git, fixture,
 JSON, receipt and digest helpers share implementations inside scripts, and the

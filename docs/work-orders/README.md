@@ -4,7 +4,7 @@
 
 ## Proposed order
 
-- [ ] [WO-060] — SourceBundle contract · **queued**
+- [x] [WO-060] — SourceBundle contract · **final-reviewed**
 - [ ] [WO-167] — The execution guide folded · **queued**
 - [ ] [WO-116] — Audit projection served · **queued**
 - [ ] [WO-173] — A handoff states what it knows · **queued**
@@ -242,30 +242,14 @@ None.
 - Cost: adds &#96;packages/browser-evidence/&#96; with one exported &#96;runScenario&#96;, its synthetic application and fixtures, the dependency pinned to the version WO-057 observed and its lockfile entries, a suite row in &#96;scripts/test-runner.mjs&#96;, one dependency inventory paragraph in &#96;docs/LEGAL.md&#96;, at most 400 bytes in product 03, one sentence in README §What runs today and one capability-table addition. Removes the gap between WO-058's witness kinds and a producer: no product code can drive a browser. WO-123 depends on it. Re-mints: &#96;package-lock.json&#96; is a registered evidence source in every edition and a source the feedback verifier judges, whose projection keeps registry dependencies, so the authority, artifact-identity, verification and harness editions are re-minted deterministically and the executor runs one live self-host episode for the feedback edition on Codex &#96;gpt-6-sol&#96; or Claude Code &#96;claude-opus-5-5&#96;, at &#96;xhigh&#96;, with the console re-pinned to the new feedback edition; the root &#96;tsconfig.json&#96; joins the deterministic re-mint if the package is TypeScript, and &#96;packages/skeleton/src/evidence-editions.mjs&#96; if the package's release label is normalized beside the five components'. Wall-clock, tokens and context bytes are unknown until run.
 - Authority: [docs/work-orders/WO-059-playwright-evidence-adapter.md](WO-059-playwright-evidence-adapter.md)
 
-### WO-060
-
-[WO-060 — SourceBundle v1: an immutable, positively decoded bundle of a tracked-work artifact's sections, discussion, image references and revisions, with a screen that refuses the secret shapes it declares and every declared URL form whose host is not allowed (version assigned at activation)](WO-060-source-bundle-contract.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-008: satisfied-by-release (met) v0.4.0 — the pure compiler package that holds the contract.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh+; verifier xhigh+; reviewer any.
-- Cost: adds one module in &#96;packages/compiler/src/&#96; with its types, a positive decoder, a canonical hash and a screen whose shapes are data; fourteen synthetic bundle fixtures and one fixture per declared shape and URL form; one export, and the module's registration in &#96;scripts/lib/evidence-sources.mjs&#96;; at most 800 bytes in product 03 and 300 in product 10. Removes nothing that runs today: the &#96;SourceAdapter&#96; port is prose and no code carries a tracked-work artifact. What it unblocks is gate G of the critical path: WO-061 and WO-062 depend on the bundle and WO-065 on its screen. Re-mints: deterministic, each edition that &#96;packages/compiler/src/index.ts&#96;, &#96;packages/compiler/package.json&#96; or &#96;scripts/lib/evidence-sources.mjs&#96; stales; the compiler release moves the policy hash the console binds, so the feedback edition is carried (&#96;feedback-evidence --carry&#96;), the console is re-pinned and the console self-host fixtures that hold the compiler label follow it (WO-154 D011; WO-162 D012); no source the feedback verifier judges is edited, so no live episode. Wall-clock, tokens and context bytes are unknown until run.
-- Authority: [docs/work-orders/WO-060-source-bundle-contract.md](WO-060-source-bundle-contract.md)
-
 ### WO-061
 
 [WO-061 — StoryContract compile: a pure function derives classified, provenance-bearing statements and acceptance criteria from a SourceBundle, labels model-inferred statements as such, and a source revision invalidates exactly the derived items it touched (version assigned at activation)](WO-061-story-contract-compile.md)
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-060, WO-058.
-- References: WO-060: hard (unmet) — the bundle it compiles from; WO-058: hard (unmet) — the visual claim type a criterion drawn from a visual annotation carries; WO-054: reference-only (non-blocking) — its criteria are what the verification host consumes.
+- Dependencies: typed; blocked on WO-058.
+- References: WO-060: hard (met) — the bundle it compiles from; WO-058: hard (unmet) — the visual claim type a criterion drawn from a visual annotation carries; WO-054: reference-only (non-blocking) — its criteria are what the verification host consumes.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -280,8 +264,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-060.
-- References: WO-060: hard (unmet) — the bundle shape it produces.
+- Dependencies: typed; dependency-ready.
+- References: WO-060: hard (met) — the bundle shape it produces.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -296,8 +280,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-060.
-- References: WO-064: hard (met) — a pull request to observe; WO-060: hard (unmet) — the screen every stored comment passes; WO-068: reference-only (non-blocking) — the resident host; no cadence observes pull requests, and WO-123 composes observation into the vertical.
+- Dependencies: typed; dependency-ready.
+- References: WO-064: hard (met) — a pull request to observe; WO-060: hard (met) — the screen every stored comment passes; WO-068: reference-only (non-blocking) — the resident host; no cadence observes pull requests, and WO-123 composes observation into the vertical.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -1748,6 +1732,23 @@ None.
 - Inherited ledger duty: discharge with [this order's decisions](../evidence/WO-056/decisions.md) and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
 - Latest attestation: harness claude-code; version 2.1.278; model claude-opus-5&#91;1m&#93;; effort xhigh; source operator-attested; account not-applicable.
 - Authority: [docs/work-orders/WO-056-live-verification-and-repair.md](WO-056-live-verification-and-repair.md)
+
+### WO-060
+
+[WO-060 — SourceBundle v1: an immutable, positively decoded bundle of a tracked-work artifact's sections, discussion, image references and revisions, with a screen that refuses the secret shapes it declares and every declared URL form whose host is not allowed (v0.53.0)](WO-060-source-bundle-contract.md)
+
+- State: closed.
+- Application target: v0.53.0.
+- Dependencies: typed; activation not applicable.
+- References: WO-008: satisfied-by-release (met) v0.4.0 — the pure compiler package that holds the contract.
+- Verification: [VER-001](../../docs/verifications/WO-060/VER-001.md) (pass).
+- Final review: [FINAL-001](../../docs/final-reviews/WO-060/FINAL-001.md) (pass).
+- Release: unreleased.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Cost: adds one module in &#96;packages/compiler/src/&#96; with its types, a positive decoder, a canonical hash and a screen whose shapes are data; fourteen synthetic bundle fixtures and one fixture per declared shape and URL form; one export, and the module's registration in &#96;scripts/lib/evidence-sources.mjs&#96;; at most 800 bytes in product 03 and 300 in product 10. Removes nothing that runs today: the &#96;SourceAdapter&#96; port is prose and no code carries a tracked-work artifact. What it unblocks is gate G of the critical path: WO-061 and WO-062 depend on the bundle and WO-065 on its screen. Re-mints: deterministic, each edition that &#96;packages/compiler/src/index.ts&#96;, &#96;packages/compiler/package.json&#96; or &#96;scripts/lib/evidence-sources.mjs&#96; stales; the compiler release moves the policy hash the console binds, so the feedback edition is carried (&#96;feedback-evidence --carry&#96;), the console is re-pinned and the console self-host fixtures that hold the compiler label follow it (WO-154 D011; WO-162 D012); no source the feedback verifier judges is edited, so no live episode. Wall-clock, tokens and context bytes are unknown until run.
+- Latest attestation: harness claude-code; version 2.1.283; model claude-fable-5-1; effort xhigh; source claude-session-readback; account not-applicable.
+- Authority: [docs/work-orders/WO-060-source-bundle-contract.md](WO-060-source-bundle-contract.md)
 
 ### WO-063
 

@@ -11,3 +11,4 @@ export * from "./feedback.js";
 export * from "./harness.js";
 export * from "./authority.js";
 export * from "./presence.js";
+export * from "./source-bundle.js";
