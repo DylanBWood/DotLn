@@ -17,16 +17,19 @@ collision appending the integration decision the integrate helper already
 drafts (product 07 §Independent workflows: "a dated decision record")
 instead of a roadmap paragraph and a README sentence; the README release
 block reduced to its version claim inside the existing fifteen-sentence
-rule. Removes: 545 lines of 06 §Release boundary (20 machine-written
-"collision retiming" paragraphs, the activation-completion and
-component-integration paragraphs, two forward-retiming sections) and the
-per-order growth of two paragraphs; the retiming vocabulary from the
+rule. Removes: 06 §Release boundary's hand-kept notes (545 lines at
+`64f9326f`; 910 lines, 21 to 930, at `5f3849ec`, the executor counting
+at its base: machine-written "collision retiming" paragraphs, the
+activation-completion and component-integration paragraphs, two
+forward-retiming sections) and the per-order growth of two paragraphs;
+the retiming vocabulary from the
 surfaces a reader meets first (06, README, product 07's integration
 sentence, CLAUDE.md's shared-memory line, edited by the 2026-09-25 pass);
 the docs check's unconditional exemption of 06 §Release boundary
 (`scripts/docs-check.mjs` `productContent`; lines 21–857 and 63,183 bytes
-at `4c34b332`), replaced by the one registered marker pair of the
-generated table (WO-085 D009 O3; D015 V2 and V7).
+at `4c34b332`, lines 21–930 and 68,433 bytes at `5f3849ec`), replaced by
+the one registered marker pair of the generated table (WO-085 D009 O3;
+D015 V2 and V7).
 Re-mints: none (`scripts/release.mjs`, `scripts/lib/release-preparation.mjs`
 and `scripts/docs-check.mjs` are not registered evidence sources).
 Wall-clock, tokens and context bytes are unknown until run.
@@ -38,19 +41,28 @@ rewritten by the 2026-09-25 standard pass at the operator's item 3
 doing parallel work orders"); amended by the 2026-09-27 pass with the
 docs check's exemption retirement and the corrected ceiling statement,
 which WO-085's verifications boarded for planning (register rows
-FUP-a6b9c4dc86ac8995 and FUP-040634d583e2c517). Planner-synthesized draft.
+FUP-a6b9c4dc86ac8995 and FUP-040634d583e2c517); amended by the
+2026-09-28 pass, which re-observed its figures on `main` at `5f3849ec`,
+named the receipt file without a date range and moved the order into a
+pair with a product order
+([planning document](../planning/failures-across-phases-2026-09-28.md)
+§10). Planner-synthesized draft.
 Opaque identifier, not a priority. Clean-room screen: no stop condition.
 **Depends on:** WO-164 merged (it edits `scripts/release.mjs` `list`, whose
 per-tag cache this order's `--markdown` reads); WO-160 merged (the last
 `release.mjs` edit; closed, v0.51.0).
-**Recommended placement:** paired with WO-167 directly after WO-162 and
-WO-163. This order edits `scripts/release.mjs`,
+**Recommended placement:** paired with WO-117 in the fourth slot. This
+order edits `scripts/release.mjs`,
 `scripts/lib/release-preparation.mjs`, `scripts/docs-check.mjs` (the
 exemption), products 06 and 10, the README, `docs/README.md` and
-one sentence of product 07; WO-167 edits product 07's body and the map.
-The one product 07 sentence is named so the pair's integration is a
-one-line union. WO-087 follows (both edit 06). A recommendation, not a
-dependency token.
+one sentence of product 07; WO-117 edits `packages/console`, product 04
+and one sentence of the README's "What runs today", which this order's
+release block does not hold. Its product 07 sentence is four bytes
+longer than the one it replaces and the guide has nine bytes of
+headroom until the fold (WO-167), so it runs after the fold and after
+WO-173 and WO-172, which add to the guide; it runs after WO-060 because
+both write product 10 §Separate version axes. WO-087 follows (both edit
+06). A recommendation, not a dependency token.
 
 <!-- dotln-dependencies:start -->
 [
@@ -101,8 +113,9 @@ verbatim in one receipt.
   with no retime, and every pair since has retimed anyway (WO-158
   v0.48→v0.49, WO-160 v0.50→v0.51, WO-111, WO-156, WO-100, WO-147, WO-069,
   WO-099, WO-110, WO-146).
-- The 2026-09-19 measurement: 61 tags (93 now), the note machine-written,
-  "no recurring hand cost". The cost is the reader's, not the writer's.
+- The 2026-09-19 measurement: 61 tags (93 on 2026-09-25, 109 on
+  2026-09-28), the note machine-written, "no recurring hand cost". The
+  cost is the reader's, not the writer's.
 
 **Design (scope discipline):**
 
@@ -125,8 +138,9 @@ verbatim in one receipt.
   superseded and new targets and the baseline, and touches no product
   document or README prose. The README block keeps the version claim.
 - The retired notes move byte for byte to
-  `docs/planning/release-history-notes-2026-08-31-to-2026-09-25.md` with a
-  one-line pointer where the section stood.
+  `docs/planning/release-history-notes.md`, which states the dates of
+  the first and last note it holds, with a one-line pointer where the
+  section stood.
 - Product 07 §Independent workflows: the sentence naming "a dated roadmap
   note" becomes "the integration decision"; the mechanism text stays.
 - The docs check stops exempting 06 §Release boundary by its heading.
@@ -178,13 +192,16 @@ write-backs below.
    baseline for 06 holds no receipt shape under Release boundary. Product
    06's counted bytes are recorded before and after; its entry in
    `doc-ceilings.json` equals the counted bytes at landing plus two per
-   cent and does not exceed its entry at the order's base. The 63,183
-   bytes the heading exemption excluded were never counted, so the
-   ceiling does not fall by them (WO-085 D009 O3).
-5. `npm test` and `npm run test:docs` green; `git diff --check` clean; no
-   new dependency.
+   cent and does not exceed its entry at the order's base. The bytes
+   the heading exemption excluded (63,183 at `4c34b332`, 68,433 at
+   `5f3849ec`) were never counted, so the ceiling does not fall by them
+   (WO-085 D009 O3).
+5. `npm test -- --review` and `npm run test:docs` green; `git diff
+   --check` clean; no new dependency.
 
-**Evidence gate:** the fixture transcripts; `npm run test:docs`; `npm test`
+**Evidence gate:** the fixture transcripts; `npm run test:docs`; `npm test
+-- --review` before `implementation-ready`, because every file under
+`scripts/` is a declared source of the configuration-root suite, and again
 at final review. No live row.
 
 **Write-back duty:** as listed in criterion 4.

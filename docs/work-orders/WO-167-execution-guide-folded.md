@@ -1,4 +1,4 @@
-# WO-167 — The execution guide folded: its 32 dated amendment paragraphs are folded into the sentences they amend with one-line citations, its nine candidates move to the planning map, every heading a role skill or the publication index cites still resolves, and the guide's ceiling is lowered to the result (version assigned at activation)
+# WO-167 — The execution guide folded: its dated amendment paragraphs are folded into the sentences they amend with one-line citations, its nine candidates move to the planning map, every heading a role skill or the publication index cites still resolves, and the guide's ceiling is lowered to the result (version assigned at activation)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
@@ -13,26 +13,38 @@ sentence it amends, its date and source reduced to a bracketed citation of
 the decision or planning document that holds the rationale), nine map
 sections carrying the guide's candidates under their slugs with register
 reconciliation, and a lowered ceiling for 07 in `doc-ceilings.json`;
-removes the 32 dated paragraphs and nine candidate sections as separate
-text and the reading they cost every cold start. Re-mints: `docs/product/`
-is not a registered evidence source; the generated skills cite headings,
-not bytes, so no bundle change unless a cited heading moves (it must not).
+removes the dated paragraphs (33 at `5f3849ec`) and nine candidate
+sections as separate text and the reading they cost every cold start, and
+the guide's standstill: at `5f3849ec` it holds 188,390 of 188,399 counted
+bytes, so no order can add a sentence to it until the fold lands.
+Re-mints: `docs/product/` is not a registered evidence source; the
+generated skills cite headings, not bytes, so no bundle change unless a
+cited heading moves (it must not).
 Wall-clock, tokens and context bytes are unknown until run.
-**Nomination provenance:** the operator's 2026-09-25 item 4 ("all adds,
-ballooning in size, AI slop"), measured by the standard pass: the guide is
+**Nomination provenance:** the operator's 2026-09-25 item 4 (the guide
+only ever gains text, keeps growing and fills with generated prose; a
+paraphrase), measured by the standard pass: the guide is
 181,458 bytes and 2,531 lines, 1,933 at WO-090's close five days earlier;
 32 dated paragraphs; nine candidates; criterion 2's proof named by the
-2026-09-27 pass (WO-085 D016, register row FUP-40f361277410f64f).
-Planner-synthesized. Opaque identifier, not a priority. Clean-room screen:
-no stop condition.
+2026-09-27 pass (WO-085 D016, register row FUP-40f361277410f64f);
+amended by the 2026-09-28 pass, which recounted the guide on `main` at
+`5f3849ec` (33 dated paragraphs, 2,617 lines, 9 bytes of headroom),
+made the count the executor's at its base and moved the fold to the
+head of the sequence
+([planning document](../planning/failures-across-phases-2026-09-28.md)
+§10). Planner-synthesized. Opaque identifier, not a priority. Clean-room
+screen: no stop condition.
 **Depends on:** WO-085 merged (the check that keeps the fold from regrowing
 and the ceiling this order lowers).
-**Recommended placement:** paired with WO-086 directly after WO-162 and
-WO-163. This order edits product 07's body and the map; WO-086 edits
-`release.mjs`, products 06 and 10, the README and one named sentence of
-product 07 (§Independent workflows: "a dated roadmap note" → "the
-integration decision"), which this order leaves to it. Disjoint apart from
-that sentence; neither depends on the other. A recommendation, not a
+**Recommended placement:** paired with WO-060 at the head of the
+sequence. This order edits product 07's body, the map, the publication
+index rows of the moved candidates and 07's ceiling; WO-060 edits
+`packages/compiler/src/`, the evidence-source registry and products 03
+and 10. Disjoint files apart from the publication locks every order
+regenerates; neither depends on the other; this order re-mints nothing.
+It leaves one named sentence of product 07 (§Independent workflows: "a
+dated roadmap note") to WO-086, and WO-173, WO-172 and WO-086 each wait
+for it because each adds to the guide. A recommendation, not a
 dependency token.
 
 <!-- dotln-dependencies:start -->
@@ -46,8 +58,9 @@ dependency token.
 <!-- dotln-dependencies:end -->
 
 **Cites (read these sections):** 07-execution-guide.md whole (the fold's
-subject; its 32 dated paragraphs and nine `Candidate —` headings at
-`64f9326f`); `.claude/skills/*/SKILL.md` and `.agents/skills/*/SKILL.md`
+subject; 32 dated paragraphs and nine `Candidate —` headings at
+`64f9326f`, 33 and nine at `5f3849ec`); `.claude/skills/*/SKILL.md` and
+`.agents/skills/*/SKILL.md`
 (every `Read:` anchor into the guide); `docs/publication/` (index rows);
 `docs/planning/work-order-map.md` (the candidates sections); the WO-090
 order and its FINAL-001 (the earlier cut and what it kept);
@@ -65,12 +78,18 @@ guide's candidates live in the map; every role skill's cold-start read
 resolves unchanged; the guide is measurably smaller and its ceiling holds
 it there.
 
-**Observed gap (dated 2026-09-25, `main` at `64f9326f`):**
+**Observed gap (dated 2026-09-25, `main` at `64f9326f`; recounted
+2026-09-28 at `5f3849ec`):**
 
-- 32 dated bold paragraphs (`**Operator correction (2026-09-07…)**`,
+- Dated bold paragraphs (`**Operator correction (2026-09-07…)**`,
   `**Amendment (2026-09-17…)**`, `**Second consumption (2026-09-25)…**`)
   each restate a rule beside the sentence it amends; a cold-start reader
-  reads both and reconciles them.
+  reads both and reconciles them. A dated paragraph is one whose bold
+  lead holds a date; by that rule the guide held 32 at `64f9326f` and
+  holds 33 at `5f3849ec`, WO-164 having added its figure paragraph on
+  2026-09-27.
+- The guide grew from 181,458 bytes on 2026-09-25 to 188,390 on
+  2026-09-28 and has 9 bytes of headroom under its ceiling of 188,399.
 - Nine `## Candidate —` sections (about 480 lines, §Candidate — guided
   operator work orders through §Candidate — total subagent cap) sit
   between the guide's operating sections.
@@ -94,9 +113,10 @@ it there.
   rows that cite the moved candidate headings (`docs/publication/`) are
   removed or retargeted in the same change and both locks refreshed
   (receipt 029, WO-167 finding 2).
-- The executor records a fold table: every dated paragraph, the sentence
-  that now carries its rule, and the citation; the verifier reads every
-  row, not a sample (receipt 029, finding 1).
+- The executor counts the dated paragraphs at its base by the rule the
+  observed gap states and records a fold table: every dated paragraph,
+  the sentence that now carries its rule, and the citation; the verifier
+  reads every row, not a sample (receipt 029, finding 1).
 - Register reconciliation is nine `followups --apply` duplicate
   dispositions written by the executor (`npm run meta` only marks the old
   source missing); the executor's own deferrals name current public rows
@@ -116,8 +136,9 @@ reconciliation; the ceiling; the count record.
 
 1. Zero dated bold paragraphs and zero `Candidate —` headings remain in
    product 07 (the WO-085 check's baseline for 07 is emptied); the fold
-   table, filed at `docs/evidence/WO-167/fold-table.md`, lists all 32
-   paragraphs, each with the sentence that now carries its rule and a
+   table, filed at `docs/evidence/WO-167/fold-table.md`, lists every
+   dated paragraph the guide holds at the order's base (33 at
+   `5f3849ec`), each with the sentence that now carries its rule and a
    bracketed citation that keeps the paragraph's date; the verification
    report carries the verifier's own row for every paragraph (the
    paragraph, the sentence, and whether the rule is unchanged), not a
