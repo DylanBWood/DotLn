@@ -14,7 +14,7 @@
       "sections": [
         {
           "id": "actors-d388bf69a2138223",
-          "title": "WO-162 self-hosted executor",
+          "title": "WO-060 self-hosted executor",
           "status": "available",
           "explanation": null,
           "rows": [
@@ -226,7 +226,7 @@
         },
         {
           "id": "actors-b9a9504826d64362",
-          "title": "WO-162 self-hosted verifier",
+          "title": "WO-060 self-hosted verifier",
           "status": "available",
           "explanation": null,
           "rows": [
@@ -752,7 +752,7 @@
         },
         {
           "id": "receipts-d388bf69a2138223",
-          "title": "Audit receipts — WO-162 self-hosted executor",
+          "title": "Audit receipts — WO-060 self-hosted executor",
           "status": "available",
           "explanation": null,
           "rows": [
@@ -1028,7 +1028,7 @@
         },
         {
           "id": "receipts-b9a9504826d64362",
-          "title": "Audit receipts — WO-162 self-hosted verifier",
+          "title": "Audit receipts — WO-060 self-hosted verifier",
           "status": "available",
           "explanation": null,
           "rows": [
@@ -1692,7 +1692,7 @@
         },
         {
           "id": "recorded-builds-d388bf69a2138223",
-          "title": "Recorded builds — WO-162 self-hosted executor",
+          "title": "Recorded builds — WO-060 self-hosted executor",
           "status": "available",
           "explanation": null,
           "rows": [
@@ -1840,7 +1840,7 @@
         },
         {
           "id": "recorded-builds-b9a9504826d64362",
-          "title": "Recorded builds — WO-162 self-hosted verifier",
+          "title": "Recorded builds — WO-060 self-hosted verifier",
           "status": "available",
           "explanation": null,
           "rows": [
@@ -2022,7 +2022,7 @@
                   "key": "policyHash",
                   "label": "Feedback policy hash",
                   "status": "known",
-                  "value": "fnv1a64:6b43d188a1dbaa57",
+                  "value": "fnv1a64:70605e1e97e6390f",
                   "explanation": null,
                   "evidence": [
                     "evidence-4"
@@ -2262,7 +2262,7 @@
                   "key": "policyHash",
                   "label": "Feedback policy hash",
                   "status": "known",
-                  "value": "fnv1a64:6b43d188a1dbaa57",
+                  "value": "fnv1a64:70605e1e97e6390f",
                   "explanation": null,
                   "evidence": [
                     "evidence-6"
@@ -2502,7 +2502,7 @@
                   "key": "policyHash",
                   "label": "Feedback policy hash",
                   "status": "known",
-                  "value": "fnv1a64:6b43d188a1dbaa57",
+                  "value": "fnv1a64:70605e1e97e6390f",
                   "explanation": null,
                   "evidence": [
                     "evidence-8"
@@ -2742,7 +2742,7 @@
                   "key": "policyHash",
                   "label": "Feedback policy hash",
                   "status": "known",
-                  "value": "fnv1a64:6b43d188a1dbaa57",
+                  "value": "fnv1a64:70605e1e97e6390f",
                   "explanation": null,
                   "evidence": [
                     "evidence-10"
@@ -2982,7 +2982,7 @@
                   "key": "policyHash",
                   "label": "Feedback policy hash",
                   "status": "known",
-                  "value": "fnv1a64:6b43d188a1dbaa57",
+                  "value": "fnv1a64:70605e1e97e6390f",
                   "explanation": null,
                   "evidence": [
                     "evidence-12"
@@ -3222,7 +3222,7 @@
                   "key": "policyHash",
                   "label": "Feedback policy hash",
                   "status": "known",
-                  "value": "fnv1a64:6b43d188a1dbaa57",
+                  "value": "fnv1a64:70605e1e97e6390f",
                   "explanation": null,
                   "evidence": [
                     "evidence-14"
@@ -3462,7 +3462,7 @@
                   "key": "policyHash",
                   "label": "Feedback policy hash",
                   "status": "known",
-                  "value": "fnv1a64:6b43d188a1dbaa57",
+                  "value": "fnv1a64:70605e1e97e6390f",
                   "explanation": null,
                   "evidence": [
                     "evidence-16"
@@ -3702,7 +3702,7 @@
                   "key": "policyHash",
                   "label": "Feedback policy hash",
                   "status": "known",
-                  "value": "fnv1a64:6b43d188a1dbaa57",
+                  "value": "fnv1a64:70605e1e97e6390f",
                   "explanation": null,
                   "evidence": [
                     "evidence-18"
@@ -3942,7 +3942,7 @@
                   "key": "policyHash",
                   "label": "Feedback policy hash",
                   "status": "known",
-                  "value": "fnv1a64:6b43d188a1dbaa57",
+                  "value": "fnv1a64:70605e1e97e6390f",
                   "explanation": null,
                   "evidence": [
                     "evidence-20"
@@ -4182,7 +4182,7 @@
                   "key": "policyHash",
                   "label": "Feedback policy hash",
                   "status": "known",
-                  "value": "fnv1a64:6b43d188a1dbaa57",
+                  "value": "fnv1a64:70605e1e97e6390f",
                   "explanation": null,
                   "evidence": [
                     "evidence-22"
@@ -4408,14 +4408,14 @@
         },
         {
           "id": "matrices-d388bf69a2138223",
-          "title": "Acceptance evidence — WO-162 self-hosted executor",
+          "title": "Acceptance evidence — WO-060 self-hosted executor",
           "status": "available",
           "explanation": "The source records no entries",
           "rows": []
         },
         {
           "id": "matrices-b9a9504826d64362",
-          "title": "Acceptance evidence — WO-162 self-hosted verifier",
+          "title": "Acceptance evidence — WO-060 self-hosted verifier",
           "status": "available",
           "explanation": null,
           "rows": [
@@ -4729,7 +4729,7 @@
       "explanation": null
     },
     {
-      "ref": "docs/evidence/WO-162/feedback-001/feedback.json",
+      "ref": "docs/evidence/WO-060/feedback-001/feedback.json",
       "status": "available",
       "explanation": null
     },
@@ -4837,7 +4837,7 @@
     },
     {
       "id": "evidence-5",
-      "source": "docs/evidence/WO-162/feedback-001/feedback.json",
+      "source": "docs/evidence/WO-060/feedback-001/feedback.json",
       "record": "maturity:anti-oscillation; fixtures:anti-oscillation"
     },
     {
@@ -4847,7 +4847,7 @@
     },
     {
       "id": "evidence-7",
-      "source": "docs/evidence/WO-162/feedback-001/feedback.json",
+      "source": "docs/evidence/WO-060/feedback-001/feedback.json",
       "record": "maturity:bounded-boy-scout-cleanup; fixtures:bounded-boy-scout-cleanup"
     },
     {
@@ -4857,7 +4857,7 @@
     },
     {
       "id": "evidence-9",
-      "source": "docs/evidence/WO-162/feedback-001/feedback.json",
+      "source": "docs/evidence/WO-060/feedback-001/feedback.json",
       "record": "maturity:concurrent-work-requires-worktrees; fixtures:concurrent-work-requires-worktrees"
     },
     {
@@ -4867,7 +4867,7 @@
     },
     {
       "id": "evidence-11",
-      "source": "docs/evidence/WO-162/feedback-001/feedback.json",
+      "source": "docs/evidence/WO-060/feedback-001/feedback.json",
       "record": "maturity:correctness-over-sycophancy; fixtures:correctness-over-sycophancy"
     },
     {
@@ -4877,7 +4877,7 @@
     },
     {
       "id": "evidence-13",
-      "source": "docs/evidence/WO-162/feedback-001/feedback.json",
+      "source": "docs/evidence/WO-060/feedback-001/feedback.json",
       "record": "maturity:fail-conservative-correction; fixtures:fail-conservative-correction"
     },
     {
@@ -4887,7 +4887,7 @@
     },
     {
       "id": "evidence-15",
-      "source": "docs/evidence/WO-162/feedback-001/feedback.json",
+      "source": "docs/evidence/WO-060/feedback-001/feedback.json",
       "record": "maturity:no-attribution; fixtures:no-attribution"
     },
     {
@@ -4897,7 +4897,7 @@
     },
     {
       "id": "evidence-17",
-      "source": "docs/evidence/WO-162/feedback-001/feedback.json",
+      "source": "docs/evidence/WO-060/feedback-001/feedback.json",
       "record": "maturity:no-lint-type-disables-as-fixes; fixtures:no-lint-type-disables-as-fixes"
     },
     {
@@ -4907,7 +4907,7 @@
     },
     {
       "id": "evidence-19",
-      "source": "docs/evidence/WO-162/feedback-001/feedback.json",
+      "source": "docs/evidence/WO-060/feedback-001/feedback.json",
       "record": "maturity:no-partial-completion; fixtures:no-partial-completion"
     },
     {
@@ -4917,7 +4917,7 @@
     },
     {
       "id": "evidence-21",
-      "source": "docs/evidence/WO-162/feedback-001/feedback.json",
+      "source": "docs/evidence/WO-060/feedback-001/feedback.json",
       "record": "maturity:read-your-own-output; fixtures:read-your-own-output"
     },
     {
@@ -4927,7 +4927,7 @@
     },
     {
       "id": "evidence-23",
-      "source": "docs/evidence/WO-162/feedback-001/feedback.json",
+      "source": "docs/evidence/WO-060/feedback-001/feedback.json",
       "record": "maturity:verify-app-before-done; fixtures:verify-app-before-done"
     },
     {

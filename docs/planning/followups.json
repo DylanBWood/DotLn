@@ -13165,6 +13165,14 @@
           "reopenWhen": "one order commits more than 1 MB under docs/evidence, or a week that begins on or after 2026-09-25 adds more than 10 MB of tracked evidence",
           "targets": [],
           "at": "2026-09-28T14:59:04.654Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred with the measurement, by WO-060's final review: WO-060 commits 374,344 bytes under docs/evidence/WO-060 (three editions re-minted, one carried, the fixture transcript and the order's records), under the row's 1 MB per-order trigger; the order prunes no unselected edition. [WO-060 final review (docs/final-reviews/WO-060/FINAL-001.md)]",
+          "reopenWhen": "one order commits more than 1 MB under docs/evidence, or a week that begins on or after 2026-09-25 adds more than 10 MB of tracked evidence",
+          "targets": [],
+          "at": "2026-09-28T17:50:58.026Z"
         }
       ]
     },
@@ -13677,6 +13685,14 @@
           "reopenWhen": "the next order that changes resident-state.ts and records a feedback edition, or an operator reads a misleading verifier-unavailable hold over an incomplete capsule",
           "targets": [],
           "at": "2026-09-28T03:29:45.785Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-060's final review: a textual match on scripts/lib/evidence-sources.mjs, where WO-060 registers one compiler module. packages/skeleton/src/resident-state.ts is unchanged, and the feedback edition is carried from WO-162, not recorded fresh. [WO-060 final review (docs/final-reviews/WO-060/FINAL-001.md)]",
+          "reopenWhen": "the next order that changes resident-state.ts and records a feedback edition, or an operator reads a misleading verifier-unavailable hold over an incomplete capsule",
+          "targets": [],
+          "at": "2026-09-28T17:50:57.996Z"
         }
       ]
     },
@@ -17811,6 +17827,14 @@
           "reopenWhen": "the next order that touches usage attribution in resume usage or the console board",
           "targets": [],
           "at": "2026-09-28T03:29:45.876Z"
+        },
+        {
+          "sourceRevision": 4,
+          "status": "deferred",
+          "reason": "Deferred again by WO-060's final review: a textual match on the generated control projection docs/control/current.md. WO-060 does not touch usage attribution, resume usage, meta or the console board. [WO-060 final review (docs/final-reviews/WO-060/FINAL-001.md)]",
+          "reopenWhen": "the next order that touches usage attribution in resume usage or the console board",
+          "targets": [],
+          "at": "2026-09-28T17:50:58.057Z"
         }
       ]
     },
@@ -19875,6 +19899,14 @@
           "reopenWhen": "a planner or executor misses a row because it links a changed file relatively, an advisory prints a command that refuses, or a register write is refused after an export",
           "targets": [],
           "at": "2026-09-28T14:59:05.183Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Deferred again by WO-060's final review: a textual match on docs/product/03-architecture.md, which WO-060 writes in §Ports. scripts/lib/planning-followups.mjs and scripts/refute-plan.mjs are untouched, and the feed found every row this review disposed. [WO-060 final review (docs/final-reviews/WO-060/FINAL-001.md)]",
+          "reopenWhen": "a planner or executor misses a row because it links a changed file relatively, an advisory prints a command that refuses, or a register write is refused after an export",
+          "targets": [],
+          "at": "2026-09-28T17:50:58.117Z"
         }
       ]
     },
@@ -19987,6 +20019,14 @@
           "reopenWhen": "a planning pass over the standing text, the next order that edits the writer text, or a session acts on one of the named sentences against the shipped behaviour",
           "targets": [],
           "at": "2026-09-28T03:29:45.966Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-060's final review: textual matches on README.md (the release line), the order's evidence README, product 03 (one sentence group added to §Ports) and the generated work-order index. The writer text and the named sentences are untouched. [WO-060 final review (docs/final-reviews/WO-060/FINAL-001.md)]",
+          "reopenWhen": "a planning pass over the standing text, the next order that edits the writer text, or a session acts on one of the named sentences against the shipped behaviour",
+          "targets": [],
+          "at": "2026-09-28T17:50:58.146Z"
         }
       ]
     },
@@ -20301,6 +20341,14 @@
           "reopenWhen": "a <proof>.partial is found beside a whole proof on the operator's host, or the next order that edits the byte-proof writer in scripts/lib/harness-prune.mjs",
           "targets": [],
           "at": "2026-09-28T03:29:45.569Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-060's final review: a textual match on the order's meter snapshot docs/evidence/WO-060/meta.json. scripts/lib/harness-prune.mjs and its byte-proof writer are untouched by this compiler order. [WO-060 final review (docs/final-reviews/WO-060/FINAL-001.md)]",
+          "reopenWhen": "a <proof>.partial is found beside a whole proof on the operator's host, or the next order that edits the byte-proof writer in scripts/lib/harness-prune.mjs",
+          "targets": [],
+          "at": "2026-09-28T17:50:57.965Z"
         }
       ]
     },
@@ -21237,6 +21285,92 @@
           "reopenWhen": "a live verification returns anything but pass where the deterministic regressions passed, or ten more orders pay an episode and every verdict is pass",
           "targets": [],
           "at": "2026-09-28T14:59:05.449Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-afc1bd32fa034417",
+      "key": "decision:docs/evidence/WO-060/decisions.md#wo-060-d004",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "5fe1ff96e5f46a5e8fd854674c037ee9b5c9770c1f85f0fc292064b2abcc6f71",
+          "ref": "docs/evidence/WO-060/decisions.md#wo-060-d004--the-screens-declared-set-each-pattern-from-its-public-source",
+          "title": "WO-060-D004: Planner: a later minor of the SourceBundle screen could declare two more shapes, each named today as the v1 screen's limit in packages/compiler/src/source-bundle.ts and product 03 §Ports:",
+          "summary": "{ \"id\": \"WO-060-D004\", \"date\": \"2026-09-28\", \"dispatch\": \"resume: next\", \"decision\": \"SOURCE_SECRET_SHAPES declares eight shapes and SOURCE_URL_FORMS declares two forms. A match refuses with its location.\\n- private-key-block: -----BEGIN, a label ending in PRIVATE KEY with an optional BLOCK, then -----, in any case.\\n- bearer-credential: the word Bearer in any case, then spaces or tabs and at least twenty b64token characters before any = padding.\\n- github-personal-access-token, github-oauth-access-token, github-user-to-server-token and github-refresh-token: ghp_, gho_, ghu_ or ghr_, then at least 36 base62 characters.\\n- github-server-to-server-token: GitHub's own regex, ghs_[A-Za-z0-9\\\\.\\\\",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by WO-060 to a later planning pass: the order fixes a minimum declared set, and operator-review assumption 2 makes adding a shape a later minor release. Both strings pass v1 by design and are named as its limit.",
+          "reopenWhen": "an adapter stores a URL userinfo password or a JWT without the Bearer word, or a planning pass schedules the next minor of the SourceBundle screen",
+          "targets": [],
+          "at": "2026-09-28T16:25:36.226Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-060's final review: the v1 screen lands with its declared eight shapes and two URL forms, and the two shapes this row names, a URL userinfo password and a JWT without the Bearer word, stay a later minor under the order's operator-review assumption 2; the limits fixture, the module header and product 03 §Ports name them as the v1 limit. [WO-060 final review (docs/final-reviews/WO-060/FINAL-001.md)]",
+          "reopenWhen": "an adapter stores a URL userinfo password or a JWT without the Bearer word, or a planning pass schedules the next minor of the SourceBundle screen",
+          "targets": [],
+          "at": "2026-09-28T17:50:58.086Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-0a5c04cf5c741559",
+      "key": "decision:docs/evidence/WO-060/decisions.md#wo-060-d009",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "798199eb049807318ae5baced16aec9e8c1551b5baf6b32e662b0e49f254cb1a",
+          "ref": "docs/evidence/WO-060/decisions.md#wo-060-d009--the-review-gate-at-the-final-subject-the-wo-143-matrix-deadline-not-this-orders-code",
+          "title": "WO-060-D009: Planner: the skeleton WO-143 acquisition matrix (packages/skeleton/test/resident.test.ts, fixed 240,000 ms deadline) failed the shared npm test -- --review in two of three runs on 2026-09",
+          "summary": "{ \"id\": \"WO-060-D009\", \"date\": \"2026-09-28\", \"dispatch\": \"resume: next\", \"decision\": \"Hand off with the review gate's result as observed. At the final staged subject, npm test -- --review failed 35 of 36 suites, each time only on the skeleton WO-143 acquisition matrix at its fixed 240,000 ms deadline. The first review gate passed 36 of 36; its product code was identical, and the subject differed only in the order's then-untracked files and in documentation. A focused run of that test on this subject passed in about the time WO-115 recorded. The deadline and the skeleton test are outside this order, so no further full gate runs without the operator's word. Criterion 6's review gate is not met",
+          "missing": false
+        },
+        {
+          "hash": "4dfe252cc13a9dd6e7575384ac40360d0e4e0299823b638a936b166c6ef658f9",
+          "ref": "docs/evidence/WO-060/decisions.md#wo-060-d009--the-review-gate-at-the-final-subject-the-wo-143-matrix-deadline-not-this-orders-code",
+          "title": "WO-060-D009: Planner: the skeleton WO-143 acquisition matrix (packages/skeleton/test/resident.test.ts, fixed 240,000 ms deadline) failed the shared npm test -- --review in two of three runs on 2026-09",
+          "summary": "{ \"id\": \"WO-060-D009\", \"date\": \"2026-09-28\", \"dispatch\": \"resume: next\", \"decision\": \"Hand off with the review gate's result as observed. After the post-gate test edit, npm test -- --review passed 35 of 36 suites in both runs, the second on the final staged subject. The one failure each time was the skeleton WO-143 acquisition matrix at its fixed 240,000 ms deadline. The first review gate passed 36 of 36; its product code was identical, and the subject differed only in the order's then-untracked files and in documentation. A focused run of that test on this subject passed in about the time WO-115 recorded. The deadline and the skeleton test are outside this order, so no further full gate run",
+          "missing": false
+        },
+        {
+          "hash": "3c9ff9cadcf183dc345f29a3f18b0324d56e604182f05603c42c65e2afabef56",
+          "ref": "docs/evidence/WO-060/decisions.md#wo-060-d009--the-review-gate-at-the-final-subject-the-wo-143-matrix-deadline-not-this-orders-code",
+          "title": "WO-060-D009: Planner: the skeleton WO-143 acquisition matrix (packages/skeleton/test/resident.test.ts, fixed 240,000 ms deadline) failed the shared npm test -- --review in two of three runs on 2026-09",
+          "summary": "{ \"id\": \"WO-060-D009\", \"date\": \"2026-09-28\", \"dispatch\": \"resume: next\", \"decision\": \"Hand off with the review gate's result as observed. After the post-gate test edit, npm test -- --review passed 35 of 36 suites in both runs, the second on the final staged subject. The one failure each time was the skeleton WO-143 acquisition matrix at its fixed 240,000 ms deadline. The first review gate passed 36 of 36; its product code was identical, and the subject differed only in the order's then-untracked files and in documentation. A focused run of that test on this subject passed in about the time WO-115 recorded. The deadline and the skeleton test are outside this order, so no further full gate run",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by WO-060 to a planning pass: the WO-143 matrix deadline is skeleton test and gate scheduling, outside this compiler order's scope; the order's gate evidence and a focused passing run are in its D009.",
+          "reopenWhen": "a planning pass schedules gate reliability, or the matrix fails a review gate again in any order",
+          "targets": [],
+          "at": "2026-09-28T16:59:01.504Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Deferred by WO-060 to a planning pass: the WO-143 matrix deadline is skeleton test and gate scheduling, outside this compiler order's scope; the order's gate evidence and a focused passing run are in its D009.",
+          "reopenWhen": "a planning pass schedules gate reliability, or the matrix fails a review gate again in any order",
+          "targets": [],
+          "at": "2026-09-28T17:00:02.010Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "deferred",
+          "reason": "Deferred again by WO-060's final review, at the revision WO-060-D010 created: the review gate passed on the final subject's code identity in VER-001's run and in the final review's run, so criterion 6 is met and D009's statement that it is not met is superseded; the executor's two failures at the WO-143 matrix's 240 s deadline are unchanged observations, and the planner decides between an exclusive schedule, a load-scaled deadline or a smaller matrix, as D009 asks. [WO-060 final review (docs/final-reviews/WO-060/FINAL-001.md)]",
+          "reopenWhen": "a planning pass schedules gate reliability, or the matrix fails a review gate again in any order",
+          "targets": [],
+          "at": "2026-09-28T17:50:57.933Z"
         }
       ]
     }
