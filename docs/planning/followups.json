@@ -11488,6 +11488,14 @@
           "reopenWhen": "the operator opens the efficiency pass, or a role's headroom falls below 256 bytes",
           "targets": [],
           "at": "2026-09-28T19:03:44.902Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Its reopening condition occurred: WO-173's role sentence grew 227 bytes at the operator's direction (WO-173-D007), leaving the reviewer's cold start at 24,398 of 24,576 bytes in both skill roots, 178 bytes of headroom, below 256 (node scripts/harness-context.mjs --check at the final review). WO-173-D010 listed this row as a text match on product 07; the condition, not the match, is what occurred. Open for planning before the next reviewer role-text change. [WO-173 final review (docs/final-reviews/WO-173/FINAL-001.md)]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-28T22:21:22.251Z"
         }
       ]
     },
@@ -17858,6 +17866,13 @@
           "title": "WO-159-D020: Planner: the WO-143 lock-boundary matrix subtest (packages/skeleton/test/resident.test.ts, 'once and loop restart at every acquisition filesystem boundary, including killed reclaimers') r",
           "summary": "{ \"id\": \"WO-159-D020\", \"date\": \"2026-09-25\", \"dispatch\": \"resume: final review\", \"decision\": \"Pass final review without integration and record the reviewer's product gate as it happened. Local main, origin main and the worktree HEAD were the same commit (1f888509) at review, so no merge, retime or re-mint was needed, the integrate helper was not run, and every VER-002 claim is carried forward on unchanged source bytes. The first `npm test -- --review` failed one skeleton subtest this order does not touch, the WO-143 lock-boundary matrix, which exceeded its own 240 s budget while a sibling worktree's product gate shared the host; the second run, alone on the host, passed 37 suites with 0 fail",
           "missing": false
+        },
+        {
+          "hash": "218fc4456517ad6dd478263001279ea9ab96310568cf381453be4a07fabc8c41",
+          "ref": "docs/evidence/WO-159/decisions.md#wo-159-d020",
+          "title": "WO-159-D020: Planner: the WO-143 lock-boundary matrix subtest (packages/skeleton/test/resident.test.ts, 'once and loop restart at every acquisition filesystem boundary, including killed reclaimers') r",
+          "summary": "{ \"id\": \"WO-159-D020\", \"date\": \"2026-09-25\", \"dispatch\": \"resume: final review\", \"decision\": \"Pass final review without integration and record the reviewer's product gate as it happened. Local main, origin main and the worktree HEAD were the same commit (1f888509) at review, so no merge, retime or re-mint was needed, the integrate helper was not run, and every VER-002 claim is carried forward on unchanged source bytes. The first `npm test -- --review` failed one skeleton subtest this order does not touch, the WO-143 lock-boundary matrix, which exceeded its own 240 s budget while a sibling worktree's product gate shared the host; the second run, alone on the host, passed 37 suites with 0 fail",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -17878,6 +17893,14 @@
             "WO-173"
           ],
           "at": "2026-09-28T14:59:04.536Z"
+        },
+        {
+          "sourceRevision": 4,
+          "status": "settled",
+          "reason": "Settled by WO-173: the WO-143 lock matrix runs as eight subtests, one per cell, each with its own 120 s deadline (WO-173-D008); the delay fixture fails one cell by name while the other seven run, the matrix measured 170.5 s alone and 174.38 s beside a review gate, and it passed inside the final review's npm test -- --review. [WO-173 final review (docs/final-reviews/WO-173/FINAL-001.md)]",
+          "reopenWhen": "a lock-matrix cell is cancelled at its own deadline while no sibling gate runs, or a later review records a loaded per-cell duration above 60 s",
+          "targets": [],
+          "at": "2026-09-28T22:21:22.010Z"
         }
       ]
     },
@@ -19907,6 +19930,14 @@
             "WO-173"
           ],
           "at": "2026-09-28T14:59:05.036Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "The allocated part landed in WO-173: the completion advisory, docs/planning/followups.md and product 07 say the final review disposes a listed row whose seam the change opened or whose condition occurred and leaves a row it only matched as it is (WO-173-D007); the declined part stays as the planning pass recorded it. WO-173's final review applied the rule: nine rows disposed, the rest left as text matches. [WO-173 final review (docs/final-reviews/WO-173/FINAL-001.md)]",
+          "reopenWhen": "an order closes with a touching row undisposed whose seam it opened, or generated projections account for more than a quarter of a review's dispositions",
+          "targets": [],
+          "at": "2026-09-28T22:21:22.132Z"
         }
       ]
     },
@@ -20015,6 +20046,13 @@
           "title": "WO-169-D007: Planner: changedMachinery reads git diff, which omits untracked files, so a script an order adds selects no machinery suite until it is staged; the executor's and verifier's review gates ",
           "summary": "{ \"id\": \"WO-169-D007\", \"date\": \"2026-09-27\", \"dispatch\": \"resume: next\", \"decision\": \"The configuration-root suite's declared sources become the one directory entry scripts/, which contains the former eight. Any changed path under scripts/ now selects the suite under --review. The existing selection fixture for a changed release shell file now expects configuration-root beside runner-fixtures. worktree integrate shares the selection, so it prints npm test -- --review whenever a script changed since the recorded base.\", \"evidence\": [ \"scripts/test-runner.mjs machinerySources; changedMachinery matches by prefix and already carries directory entries\", \"scripts/test-runner.test.mjs: WO-169 a cha",
           "missing": false
+        },
+        {
+          "hash": "eb391bf1090bd5f0e2472c719d9a72b3120a4875228a44aaf3d8ec38d319e629",
+          "ref": "docs/evidence/WO-169/decisions.md#wo-169-d007--the-configuration-root-suite-declares-scripts",
+          "title": "WO-169-D007: Planner: changedMachinery reads git diff, which omits untracked files, so a script an order adds selects no machinery suite until it is staged; the executor's and verifier's review gates ",
+          "summary": "{ \"id\": \"WO-169-D007\", \"date\": \"2026-09-27\", \"dispatch\": \"resume: next\", \"decision\": \"The configuration-root suite's declared sources become the one directory entry scripts/, which contains the former eight. Any changed path under scripts/ now selects the suite under --review. The existing selection fixture for a changed release shell file now expects configuration-root beside runner-fixtures. worktree integrate shares the selection, so it prints npm test -- --review whenever a script changed since the recorded base.\", \"evidence\": [ \"scripts/test-runner.mjs machinerySources; changedMachinery matches by prefix and already carries directory entries\", \"scripts/test-runner.test.mjs: WO-169 a cha",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -20059,6 +20097,14 @@
             "WO-173"
           ],
           "at": "2026-09-28T14:59:05.154Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Settled by WO-173: changedMachinery joins git ls-files --others --exclude-standard to the diff (WO-173-D003), so a script an order adds selects the machinery suites that declare it before it is staged; the runner fixture selects configuration-root and runner-fixtures for an untracked scripts/test-gate-deadlines.mjs, and the completion reads the same selection. [WO-173 final review (docs/final-reviews/WO-173/FINAL-001.md)]",
+          "reopenWhen": "an untracked file that no machinery suite declares is reported as selecting one, or a script an order adds escapes every machinery suite until the reviewer's gate",
+          "targets": [],
+          "at": "2026-09-28T22:21:22.073Z"
         }
       ]
     },
@@ -21161,6 +21207,14 @@
             "WO-173"
           ],
           "at": "2026-09-28T14:59:04.798Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Landed in WO-173: the verify and final-review briefings say a recorded off-ramp whose capture hash matches is judged from the record and never put back to the operator, and list a criterion the executor recorded unmet with the waiver and amendment routes, leaving out one the record already waives (WO-173-D005, D017). The final review received the sentence and judged criterion 5's hash-matched waiver from the record. [WO-173 final review (docs/final-reviews/WO-173/FINAL-001.md)]",
+          "reopenWhen": "a role again routes an authorized, hash-matched off-ramp back to the operator for confirmation",
+          "targets": [],
+          "at": "2026-09-28T22:21:22.102Z"
         }
       ]
     },
@@ -21800,8 +21854,172 @@
           "reopenWhen": "a planning pass schedules gate reliability, or the matrix fails a review gate again in any order",
           "targets": [],
           "at": "2026-09-28T17:50:57.933Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "settled",
+          "reason": "Its seam opened and closed in WO-173: the matrix's fixed 240,000 ms deadline is replaced by a 120 s deadline per cell (WO-173-D008), so a slowed cell fails alone and by name instead of cancelling the matrix; the matrix passed in the final review's gate. [WO-173 final review (docs/final-reviews/WO-173/FINAL-001.md)]",
+          "reopenWhen": "the matrix fails a review gate again in any order",
+          "targets": [],
+          "at": "2026-09-28T22:21:22.041Z"
         }
       ]
+    },
+    {
+      "id": "FUP-84bc6f15abd1e45f",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-ideation-during-wo-173-recorded-2026-09-28::0b37f9a4fd7bb884c5e85a367ff2fc16974ea445ff55ee46a1cf6feded61caa7",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "d5acf59de469b548928487c30425031ca57c7004ad7120d8d809693ad0a26733",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-ideation-during-wo-173-recorded-2026-09-28",
+          "title": "The README release block regenerated within its rule.",
+          "summary": "2. **The README release block regenerated within its rule.** WO-068-D004 bounds the block at fifteen sentences with per-order detail in release notes; on 2026-09-28 the block between its markers is 7,251 bytes and about forty sentences. Route: `release prepare` renders the block from the version line and the latest release notes, and `check-surfaces` refuses a block over the rule, so an order cannot append to it. Reopen: WO-086 lands without the README, or a reader of the README reports it as a log again.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-cd1a227413938345",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-ideation-during-wo-173-recorded-2026-09-28::1eeaa2a38230c2fe4312c00568955c06088abe8a03a181b51781c1fd251e806b",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "655436016d7d0357bd7251b91aa6c11f2f21b297ac71f46803a04c80daf57042",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-ideation-during-wo-173-recorded-2026-09-28",
+          "title": "Product documents owned as wholes.",
+          "summary": "1. **Product documents owned as wholes.** The operator's standard: every product file as tight as possible, public, one cohesive story; the roadmap and the README read as scratch because each order appends its paragraph and nobody owns the document. Product 07 §Documentation freshness and ownership already forbids the dated paragraph (2026-09-25); the executor role text and `release prepare` still demand two per order, the roadmap's activation-completion paragraph and the README block's version line, and WO-173 wrote both during this dispatch. Route: WO-086 gives the release boundary its generated home and WO-087 moves the candidates out; after them, the activation-target duty leaves the rol",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-07d0d6b377e55321",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-ideation-during-wo-173-recorded-2026-09-28::5c9ef06918ae75b8589431598feb6ba19567c7afe3073aa8543e90b50a3a3ed5",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "bc26c61ff4cda1507dc5214a91a0e50b13bf008f69c37073e3a21b558d5e7576",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-ideation-during-wo-173-recorded-2026-09-28",
+          "title": "The roadmap's remaining sections.",
+          "summary": "3. **The roadmap's remaining sections.** Beyond the release boundary (WO-086) and the candidates (WO-087), the roadmap holds capability progression policies and counterfactual profiling material that a reader of a roadmap does not expect. Deferred to the pass that sequences WO-087: decide their home (a product policy document or the planning map). Reopen: WO-087 is amended or sequenced.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-96091899814ccd0c",
+      "key": "decision:docs/evidence/WO-173/decisions.md#wo-173-d012",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "142520f80f2f747054f8cc56f928d019debb0f0b38fba976d139072986eafe8a",
+          "ref": "docs/evidence/WO-173/decisions.md#wo-173-d012--verification-an-unreadable-live-gate-index-still-blocks-both-completions",
+          "title": "WO-173-D012: WO-173 executor, next resume: fix, blocking VER-001 F1: make unreadable gate-index storage advisory across both completion paths, including the preceding diff-evidence write, while preser",
+          "summary": "{ \"id\": \"WO-173-D012\", \"date\": \"2026-09-28\", \"dispatch\": \"resume: verify\", \"decision\": \"Fail VER-001 on criterion 2. Both executor completions call requireLifecycleEvidence before requireGateClaims. Its inline diff-check record calls recordGateChecks, which parses the live checks.json without a fallback. A malformed live index therefore refuses both a met gate claim and an explicitly unmet criterion before the promised gate-index advisory can run. The existing fixture corrupts an archive, so it misses this earlier reader. The verifier leaves implementation unchanged and routes the defect through repair.\", \"evidence\": [ \"scripts/resume.mjs implementation-ready and repair-complete: requireLife",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "VER-001 F1 is closed: gate storage a completion cannot read or write is one advisory and the completion records (WO-173-D015), and VER-002 reproduced the repair independently across both completions and three kinds of damage. [WO-173 final review (docs/final-reviews/WO-173/FINAL-001.md)]",
+          "reopenWhen": "a completion refuses on gate storage it cannot read or write",
+          "targets": [],
+          "at": "2026-09-28T22:21:22.161Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-8c9a0ab2a894b7fd",
+      "key": "decision:docs/evidence/WO-173/decisions.md#wo-173-d013",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "085ec0a95520ef8f2dc9b22a646ca8850f6d5a351349338aa0e45eaa9dc7e139",
+          "ref": "docs/evidence/WO-173/decisions.md#wo-173-d013--correction-the-operator-accepts-the-briefing-byte-overage",
+          "title": "WO-173-D013: Planner or final reviewer: retain the known total briefing growth (verify +726 bytes and final-review +570 for one unmet criterion) as accepted and nonblocking under CriterionWaived ordin",
+          "summary": "{ \"id\": \"WO-173-D013\", \"date\": \"2026-09-28\", \"dispatch\": \"resume: verify; operator clarified that the known byte overage is accepted at present\", \"kind\": \"correction\", \"decision\": \"Report the briefing growth as an accepted, nonblocking observation. The required sentences and both routes are present. Record the operator's acceptance through CriterionWaived ordinal 4 for criterion 5; its reason limits the accepted gap to the numeric bound. No byte-trimming repair is requested.\", \"misread\": \"The verifier read the earlier byte-limit direction too narrowly and announced that the 400-byte overage would be a blocking finding. D007 had already recorded the operator's direction against trimming usefu",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "The accepted overage stands: criterion 5 is unmet, waived by ordinal 4, whose capture hash matches the event; after the filler removal (WO-173-D017) the verify briefing grows 640 bytes and final review 496 for one unmet criterion. The final review judged the waiver from the record and asks for no trimming. [WO-173 final review (docs/final-reviews/WO-173/FINAL-001.md)]",
+          "reopenWhen": "the operator reopens the acceptance of the briefing growth, or evidence shows a functional readability or context-budget problem in a verify or final-review briefing",
+          "targets": [],
+          "at": "2026-09-28T22:21:22.221Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-c3cabf64e06999db",
+      "key": "decision:docs/evidence/WO-173/decisions.md#wo-173-d014",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "7451887ea6cb68f3790ebdfb15e6399860d8293a55ee687d450b9505f9237692",
+          "ref": "docs/evidence/WO-173/decisions.md#wo-173-d014--verification-the-matrix-measurement-points-to-the-wrong-companion-gate",
+          "title": "WO-173-D014: WO-173 executor, next resume: fix, nonblocking VER-001 N2: correct matrix-durations.json's besideGate reference to the actual overlapping first gate, preserving its failed verdict separat",
+          "summary": "{ \"id\": \"WO-173-D014\", \"date\": \"2026-09-28\", \"dispatch\": \"resume: verify\", \"decision\": \"Keep criterion 6 met with a nonblocking evidence-reference correction to make during repair. The executor recorded the required solo and concurrent matrix measurements. The concurrent interval overlaps the first product gate, while matrix-durations.json's besideGate fields name the later passing rerun. Do not describe that later row as the concurrent gate or turn this metadata error into a new runtime finding.\", \"evidence\": [ \"docs/evidence/WO-173/matrix-durations.json: concurrent matrix interval 2026-09-28T20:14:28Z to 20:17:22Z, duration 174379 ms; besideGate instead names the row recorded at 20:50:02.5",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "VER-001 N2 is corrected: matrix-durations.json names the failed gate that overlapped the concurrent run as its companion and keeps the later pass apart (WO-173-D015); VER-002 checked the timestamps. [WO-173 final review (docs/final-reviews/WO-173/FINAL-001.md)]",
+          "reopenWhen": "the matrix measurement interval is disputed by additional evidence",
+          "targets": [],
+          "at": "2026-09-28T22:21:22.191Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-a6cf758ebdd11f1c",
+      "key": "decision:docs/evidence/WO-173/decisions.md#wo-173-d016",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "7da79698c90f014378764cd18e5733005f29f9f39395991bd94a45fae32e3382",
+          "ref": "docs/evidence/WO-173/decisions.md#wo-173-d016--correction-comments-labelled-with-a-finding-identifier",
+          "title": "WO-173-D016: Planning: remove report-local finding labels (VER-NNN Fn, FINAL-NNN Fn, bare Dnnn) from code comments in scripts/ and packages/, keeping the rule each comment states; 45 lines in 25 files",
+          "summary": "{ \"id\": \"WO-173-D016\", \"date\": \"2026-09-28\", \"dispatch\": \"resume: fix; the operator's correction during the repair\", \"kind\": \"correction\", \"decision\": \"An error of this repair: its first comments labelled code with a report-local finding identifier (`VER-001 F1`) instead of only stating the rule. The label means nothing once the order closes, since every order has a VER-001. The comments now state the rule alone. The same kind of label stands in 45 comment lines across 25 files outside this order's diff; this order does not widen to them and names them for a cleanup pass.\", \"misread\": \"The executor followed the codebase's habit of tagging a comment with the finding that prompted it and took ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred by WO-173's repair (WO-173-D016): the 45 labelled comment lines sit in 25 files outside this order's files, and the order may not widen; a cleanup pass is planning's to select.",
+          "reopenWhen": "A planning pass selects a comment cleanup, the operator sets whether WO-NNN tags in comments are the same class, or a new order adds such a label to a comment.",
+          "targets": [],
+          "at": "2026-09-28T21:48:32.803Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-7629e03c6573f5cb",
+      "key": "decision:docs/evidence/WO-173/decisions.md#wo-173-d018",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "8dbc427a77aa9413cc7237d5c58e4f3ef250af0148474013574cde032acdfc63",
+          "ref": "docs/evidence/WO-173/decisions.md#wo-173-d018--final-review-passes-and-boards-a-reused-row-that-never-ran-an-untracked-files-bytes",
+          "title": "WO-173-D018: Planner: close the untracked-source gap in npm test reuse. scripts/test-runner.mjs runGateChecks and scripts/lib/handoff-ledger.mjs requireGateClaims reuse or accept a passing npm test ro",
+          "summary": "{ \"id\": \"WO-173-D018\", \"date\": \"2026-09-28\", \"dispatch\": \"resume: final review\", \"decision\": \"Pass FINAL-001 and board one defect this review met. The npm test reuse lookup (scripts/test-runner.mjs runGateChecks through scripts/lib/gate-reuse.mjs coveringGateCheck) and the executor completion's npm test claim check (scripts/lib/handoff-ledger.mjs requireGateClaims) key on gateCodeIdentity, which hashes the working-tree bytes of tracked paths only. An order's new source files stay untracked until the final review stages them, so an edit to one after a passing row moves neither the identity nor the gate: npm test prints the old row and exits 0, and a met npm test claim stands on it. Before thi",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }
