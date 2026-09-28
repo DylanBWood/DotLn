@@ -1,0 +1,14 @@
+✔ WO-162 every former fixture writer produces identical trees and recorded digests (3079.34125ms)
+ℹ 31 legacy writers × 99 inputs: generated trees, modes and digests identical
+✔ WO-162 serializers and digest names preserve stored bytes (123.912333ms)
+ℹ 4 legacy serializer families and 8 bare-hex digest definers agree on exact bytes
+✔ WO-162 Git adapters preserve raw results, trimming, bytes, flags and failure diagnostics (64.229083ms)
+✔ WO-162 JSON and receipt adapters retain exact refusals and release locks (2.690375ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3273.19475

@@ -1,0 +1,32 @@
+{
+  "baseline": "6f9494649db9a4984911801ae320788264d84ff9",
+  "rows": [
+    {
+      "name": "seiri",
+      "ok": true,
+      "bytes": 7775,
+      "sha256": "f920fd10afb48926ad611500ded9cb8436b363da5eb6f7b828ae2bffefafca41",
+      "currentSha256": "b1dbb95e303e425fca6112418ec487ecc841aec8bb8c48758e83b8c9a2d75a5a",
+      "semanticHash": "fnv1a64:9ca8d0229c6bd8db",
+      "onlyChangedField": "artifactIdentity.compilerPackageVersion: 0.19.3 -> 0.19.4"
+    },
+    {
+      "name": "entropy",
+      "ok": true,
+      "bytes": 24814,
+      "sha256": "707de736a1e0f1e9ddc39ebbe5a87753742dadaaeac59db4d5d1721948b79949",
+      "currentSha256": "3a7c234df5f62fbd78343e7502eb4542a61703edde61c5505efdade28614b2eb",
+      "semanticHash": "fnv1a64:47ba1cdb85c1d2fb",
+      "onlyChangedField": "artifactIdentity.compilerPackageVersion: 0.19.3 -> 0.19.4"
+    },
+    {
+      "name": "authority",
+      "ok": true,
+      "bytes": 3047,
+      "sha256": "0cffd8b5644cd87f06bb3c8e2fd2c1a8d63cf9a8bb2208b9672eba6d2f81c2eb",
+      "currentSha256": "e76760e267a6c3ea27522d960bf417bd2d7675d18e23d9c5401a057f72c7c0bd",
+      "semanticHash": "fnv1a64:635bd6d7cb6c2ace",
+      "onlyChangedField": "artifactIdentity.compilerPackageVersion: 0.19.3 -> 0.19.4"
+    }
+  ]
+}

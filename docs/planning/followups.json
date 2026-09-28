@@ -11267,6 +11267,14 @@
           "reopenWhen": "the operator opens the efficiency pass, or a role's headroom falls below 256 bytes",
           "targets": [],
           "at": "2026-09-27T23:31:48.299Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-162's final review: a textual match on scripts/harness-context.mjs, which adopts the serializer. node scripts/harness-context.mjs --check reads every role profile at delta 0; the smallest headroom is the reviewer's, 24,171 of 24,576 bytes. [WO-162 final review (docs/final-reviews/WO-162/FINAL-001.md)]",
+          "reopenWhen": "the operator opens the efficiency pass, or a role's headroom falls below 256 bytes",
+          "targets": [],
+          "at": "2026-09-28T03:29:45.936Z"
         }
       ]
     },
@@ -11509,6 +11517,14 @@
           "reopenWhen": "a snapshot that fails to load a reachable module, or the next order that changes the bundle's shape",
           "targets": [],
           "at": "2026-09-19T01:20:04.124Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-162's final review: scripts/lib/harness.mjs adopts helpers, and the generated bundle's pins moved with the compiler label and the runtime snapshot. The bundle's shape is unchanged; harness check reports 31 generated surfaces. [WO-162 final review (docs/final-reviews/WO-162/FINAL-001.md)]",
+          "reopenWhen": "a snapshot that fails to load a reachable module, or the next order that changes the bundle's shape",
+          "targets": [],
+          "at": "2026-09-28T03:29:45.906Z"
         }
       ]
     },
@@ -11744,6 +11760,14 @@
           "reopenWhen": "collectSources reaches three seconds cold or warm on the operator's host (WO-164-D009, D014), a cold release list exceeds ten seconds (D004), status --all --json output exceeds 32 MB (D003), or work-orders index exceeds ten seconds.",
           "targets": [],
           "at": "2026-09-27T20:16:29.276Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-162's final review: a textual match on scripts/work-orders.mjs, where WO-162 removes one unused import. The work-order index's per-tag reads are untouched. [WO-162 final review (docs/final-reviews/WO-162/FINAL-001.md)]",
+          "reopenWhen": "collectSources reaches three seconds cold or warm on the operator's host (WO-164-D009, D014), a cold release list exceeds ten seconds (D004), status --all --json output exceeds 32 MB (D003), or work-orders index exceeds ten seconds.",
+          "targets": [],
+          "at": "2026-09-28T03:29:45.815Z"
         }
       ]
     },
@@ -12120,6 +12144,14 @@
           "reopenWhen": "either script is invoked through a symlinked path, or the next order that edits either file",
           "targets": [],
           "at": "2026-09-27T20:16:28.875Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-162's final review: a textual match on scripts/lib/paths.mjs, where WO-162 adds the rawErrors option and adopts runGit. Neither corpus/mutation/mutate.mjs nor corpus/harness/generator-runtime.mjs changed. [WO-162 final review (docs/final-reviews/WO-162/FINAL-001.md)]",
+          "reopenWhen": "either script is invoked through a symlinked path, or the next order that edits either file",
+          "targets": [],
+          "at": "2026-09-28T03:29:45.722Z"
         }
       ]
     },
@@ -12231,6 +12263,14 @@
           "reopenWhen": "an order next opens these consumers, a supported input exceeds the batch limit, or a real source-change workload reproduces the reported parser or progress cost",
           "targets": [],
           "at": "2026-09-28T02:36:18.575Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-162's final review: WO-162 opens scripts/test-runner.mjs and scripts/lib/git.mjs for helper adoption only. TAP selection and the other members are untouched. [WO-162 final review (docs/final-reviews/WO-162/FINAL-001.md)]",
+          "reopenWhen": "an order next opens these consumers, a supported input exceeds the batch limit, or a real source-change workload reproduces the reported parser or progress cost",
+          "targets": [],
+          "at": "2026-09-28T03:29:45.508Z"
         }
       ]
     },
@@ -12924,6 +12964,14 @@
           "reopenWhen": "another execution order needs to edit the bound goal standard, or the committed subject differs from the reviewed bytes at final review",
           "targets": [],
           "at": "2026-09-21T06:59:05.496Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Deferred again by WO-162's final review: a textual match on scripts/lib/plan-direct.mjs, where WO-162 replaces two serializer calls. No order edited the bound goal standard. [WO-162 final review (docs/final-reviews/WO-162/FINAL-001.md)]",
+          "reopenWhen": "another execution order needs to edit the bound goal standard, or the committed subject differs from the reviewed bytes at final review",
+          "targets": [],
+          "at": "2026-09-28T03:29:45.753Z"
         }
       ]
     },
@@ -13048,6 +13096,14 @@
           "reopenWhen": "a week adds more than 10 MB of tracked evidence, or one order commits more than 1 MB of revisions it never makes current",
           "targets": [],
           "at": "2026-09-27T15:59:34.101Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Opened by WO-162's final review because the row's first reopening condition is met by measurement: 783 files under docs/evidence, 29.52 MB, were added since the last commit before 2026-09-21 (bca52bf2). The largest shares are WO-157 at 5.04 MB and nine orders near 2 MB each. WO-162 adds 0.6 MB; its unselected authority revisions 001 and 002 are 76 KB each (du -sk), below the row's second condition. [WO-162 final review (docs/final-reviews/WO-162/FINAL-001.md)]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-28T03:29:45.135Z"
         }
       ]
     },
@@ -13552,6 +13608,14 @@
           "reopenWhen": "the next order that changes resident-state.ts and records a feedback edition, or an operator reads a misleading verifier-unavailable hold over an incomplete capsule",
           "targets": [],
           "at": "2026-09-27T23:31:48.156Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-162's final review: a textual match on scripts/lib/evidence-sources.mjs, where WO-162 registers three library modules. resident-state.ts is unchanged. [WO-162 final review (docs/final-reviews/WO-162/FINAL-001.md)]",
+          "reopenWhen": "the next order that changes resident-state.ts and records a feedback edition, or an operator reads a misleading verifier-unavailable hold over an incomplete capsule",
+          "targets": [],
+          "at": "2026-09-28T03:29:45.785Z"
         }
       ]
     },
@@ -14074,6 +14138,14 @@
           "reopenWhen": "another repair meets a changed reviewer draft it did not write, or the next order that edits release preparation",
           "targets": [],
           "at": "2026-09-28T02:36:18.605Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-162's final review: scripts/lib/meta.mjs adopts the JSON reader and the Git wrapper with its null-on-failure result, and scripts/release.mjs adopts the digest and serializer. Release preparation's behavior is untouched. The pull-request draft this review met held only the meter block release prepare wrote. [WO-162 final review (docs/final-reviews/WO-162/FINAL-001.md)]",
+          "reopenWhen": "another repair meets a changed reviewer draft it did not write, or the next order that edits release preparation",
+          "targets": [],
+          "at": "2026-09-28T03:29:45.691Z"
         }
       ]
     },
@@ -16310,6 +16382,14 @@
           "reopenWhen": "the next order that edits scripts/resident-bind.mjs",
           "targets": [],
           "at": "2026-09-25T21:29:58.544Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-162's final review: WO-162 edits scripts/resident-bind.mjs for helper adoption only (the digest, the serializer, one JSON reader and one Git call). Its non-goals exclude behavior change, so the profile comparison this row asks for was not added. [WO-162 final review (docs/final-reviews/WO-162/FINAL-001.md)]",
+          "reopenWhen": "the next order that edits scripts/resident-bind.mjs",
+          "targets": [],
+          "at": "2026-09-28T03:29:45.415Z"
         }
       ]
     },
@@ -16410,6 +16490,14 @@
           "reopenWhen": "docs/planning/refutations exceeds 32 MB, or WO-162 closes",
           "targets": [],
           "at": "2026-09-27T01:45:54.019Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Opened by WO-162's final review for the planner: the row waited on WO-162, which refactors the same receipt helpers and passes final review here. scripts/lib/plan-receipts.mjs now shares six helpers with the entropy receipts through scripts/lib/helpers.mjs; its receipt subject handling is unchanged. The row's condition completes when WO-162 closes. [WO-162 final review (docs/final-reviews/WO-162/FINAL-001.md)]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-28T03:29:45.167Z"
         }
       ]
     },
@@ -17007,6 +17095,14 @@
           "reopenWhen": "a value accepted by one surface is refused by another",
           "targets": [],
           "at": "2026-09-25T01:51:17.969Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-162's final review. WO-162-D006 decided the divergence and names each validator's class. A probe showed text with U+0085 or U+2028 passing the handoff validator and failing the mission clause validator; no production path transfers text between the two surfaces, so no value has been refused late. [WO-162 final review (docs/final-reviews/WO-162/FINAL-001.md)]",
+          "reopenWhen": "An order introduces a handoff-to-mission text transfer, or a real accepted value is refused late (WO-162-D006)",
+          "targets": [],
+          "at": "2026-09-28T03:29:45.322Z"
         }
       ]
     },
@@ -17134,6 +17230,13 @@
           "title": "Skeleton protocol validator kit.",
           "summary": "1. **Skeleton protocol validator kit.** `object`, `exact` and `check` are byte-identical across `entropy-review-protocol.ts`, `verification-protocol.ts`, `worker-protocol.ts`, `mission-check-protocol.ts` and `plan-refutation-protocol.ts`; every one is a feedback source, so WO-162 excludes them. Rides as a boy-scout item on the next order that pays a live feedback episode and touches two of the five. Reopen: that order's activation.",
           "missing": false
+        },
+        {
+          "hash": "77608a568eb2a415b740af74e54b2be096d5da442fa0a325f89e716a1cbe04b3",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-off-ramps-pass-recorded-2026-09-25",
+          "title": "Skeleton protocol validator kit.",
+          "summary": "1. **Skeleton protocol validator kit.** `object`, `exact` and `check` have repeated groups across `entropy-review-protocol.ts`, `verification-protocol.ts`, `worker-protocol.ts`, `mission-check-protocol.ts` and `plan-refutation-protocol.ts`; every one is a feedback source, so WO-162 excludes them. **WO-162 measurement, 2026-09-27:** 12 declarations (including worker `keys`), 64 lines, 2,280 declaration bytes and 162 direct calls. Identical groups contribute 996 surplus bytes before shared-module/import overhead: three `object` copies, two distinct pairs of `exact`, and the mission/plan `check` pair. The original claim that all three helpers were identical in all five files was incorrect; veri",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -17144,6 +17247,22 @@
           "reopenWhen": "an order that pays a live feedback episode and touches two of the five protocol files activates",
           "targets": [],
           "at": "2026-09-25T01:51:17.312Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "WO-162 measured the actual duplicate groups; preserve verification typed reasons and wait for the existing live-episode seam.",
+          "reopenWhen": "An order pays a live feedback episode and touches two of the five protocol files.",
+          "targets": [],
+          "at": "2026-09-28T00:07:58.242Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Deferred again by WO-162's final review: the map candidate gained WO-162's measurement (12 declarations, 2,280 bytes, 162 calls, 996 surplus bytes), as the order's write-back duty requires. No skeleton protocol file changed. [WO-162 final review (docs/final-reviews/WO-162/FINAL-001.md)]",
+          "reopenWhen": "An order pays a live feedback episode and touches two of the five protocol files.",
+          "targets": [],
+          "at": "2026-09-28T03:29:45.383Z"
         }
       ]
     },
@@ -17577,6 +17696,14 @@
           "reopenWhen": "the next order that touches usage attribution in resume usage or the console board",
           "targets": [],
           "at": "2026-09-28T02:36:18.449Z"
+        },
+        {
+          "sourceRevision": 4,
+          "status": "deferred",
+          "reason": "Deferred again by WO-162's final review: a textual match on the generated control projection. WO-162 does not touch usage attribution, resume usage or the console board. [WO-162 final review (docs/final-reviews/WO-162/FINAL-001.md)]",
+          "reopenWhen": "the next order that touches usage attribution in resume usage or the console board",
+          "targets": [],
+          "at": "2026-09-28T03:29:45.876Z"
         }
       ]
     },
@@ -18828,6 +18955,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-28T02:36:18.358Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "open",
+          "reason": "Kept open by WO-162's final review: a textual match on WO-162's decisions and the decisions index. WO-162's decisions paraphrase the operator's directions and record two selected option labels (D003, D012); they quote no operator chat. [WO-162 final review (docs/final-reviews/WO-162/FINAL-001.md)]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-28T03:29:45.292Z"
         }
       ]
     },
@@ -19025,6 +19160,14 @@
           "reopenWhen": "a real release close leaves main reserved or reclaims a live session's reservation, or the shell fixture's adapter diverges from the runtime's writer protocol",
           "targets": [],
           "at": "2026-09-28T02:36:18.418Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-162's final review: WO-162 adopts helpers in scripts/release.mjs and in the fixtures of scripts/test-harness.mjs. Release close, its publish path and the writer protocol are untouched. [WO-162 final review (docs/final-reviews/WO-162/FINAL-001.md)]",
+          "reopenWhen": "a real release close leaves main reserved or reclaims a live session's reservation, or the shell fixture's adapter diverges from the runtime's writer protocol",
+          "targets": [],
+          "at": "2026-09-28T03:29:45.660Z"
         }
       ]
     },
@@ -19444,6 +19587,14 @@
           "reopenWhen": "a real integration meets either defect, or the next order that edits the decision stub or stash-apply stage of scripts/lib/worktree-integration.mjs",
           "targets": [],
           "at": "2026-09-27T14:35:55.715Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Deferred again by WO-162's final review: WO-162's integration met neither defect. Generation waited for the four authored conflicts, and the decision stub was written once, on the completing pass, with its release line. WO-162's edits to scripts/lib/worktree-integration.mjs are helper adoption only. [WO-162 final review (docs/final-reviews/WO-162/FINAL-001.md)]",
+          "reopenWhen": "a real integration meets either defect, or the next order that edits the decision stub or stash-apply stage of scripts/lib/worktree-integration.mjs",
+          "targets": [],
+          "at": "2026-09-28T03:29:45.537Z"
         }
       ]
     },
@@ -19484,6 +19635,14 @@
           "reopenWhen": "a script an order adds escapes every machinery suite until the reviewer's gate, or the next order that edits changedMachinery in scripts/test-runner.mjs",
           "targets": [],
           "at": "2026-09-28T02:36:18.481Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-162's final review: changedMachinery in scripts/test-runner.mjs gained a call-site rewrite to spawnGit with the same arguments; its reading of git diff is unchanged. WO-162 adds scripts/lib/helpers.mjs and scripts/test-helper-reuse.mjs, declares both in process-debt, and both were staged before the review gate. [WO-162 final review (docs/final-reviews/WO-162/FINAL-001.md)]",
+          "reopenWhen": "a script an order adds escapes every machinery suite until the reviewer's gate, or the next order that edits changedMachinery in scripts/test-runner.mjs",
+          "targets": [],
+          "at": "2026-09-28T03:29:45.476Z"
         }
       ]
     },
@@ -19555,6 +19714,14 @@
           "reopenWhen": "the next order that edits scripts/lib/planning-followups.mjs or scripts/refute-plan.mjs, or a planner or executor misses a row because it links a changed file relatively, an advisory prints a command that refuses, or a register write is refused after an export",
           "targets": [],
           "at": "2026-09-27T20:16:29.048Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Deferred again by WO-162's final review: WO-162 edits scripts/lib/planning-followups.mjs and scripts/refute-plan.mjs for helper adoption only (the serializer and Git calls with unchanged arguments). Its non-goals exclude behavior change, so the three feed defects are untouched. [WO-162 final review (docs/final-reviews/WO-162/FINAL-001.md)]",
+          "reopenWhen": "the next order that edits scripts/lib/planning-followups.mjs or scripts/refute-plan.mjs, or a planner or executor misses a row because it links a changed file relatively, an advisory prints a command that refuses, or a register write is refused after an export",
+          "targets": [],
+          "at": "2026-09-28T03:29:45.445Z"
         }
       ]
     },
@@ -19659,6 +19826,14 @@
           "reopenWhen": "a planning pass over the standing text, the next order that edits the writer text, or a session acts on one of the named sentences against the shipped behaviour",
           "targets": [],
           "at": "2026-09-28T02:36:18.636Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-162's final review: textual matches on README.md (the release line) and the generated work-order index. The writer text is untouched. [WO-162 final review (docs/final-reviews/WO-162/FINAL-001.md)]",
+          "reopenWhen": "a planning pass over the standing text, the next order that edits the writer text, or a session acts on one of the named sentences against the shipped behaviour",
+          "targets": [],
+          "at": "2026-09-28T03:29:45.966Z"
         }
       ]
     },
@@ -19683,6 +19858,14 @@
           "reopenWhen": "the next order that edits observed-facts.ts, or a hedge about a partial run is attributed to the full gate while both rows are in scope",
           "targets": [],
           "at": "2026-09-27T15:59:34.494Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-162's final review: a textual match on scripts/test-observed-facts.mjs, whose fixtures adopt helpers. observed-facts.ts is unchanged. [WO-162 final review (docs/final-reviews/WO-162/FINAL-001.md)]",
+          "reopenWhen": "the next order that edits observed-facts.ts, or a hedge about a partial run is attributed to the full gate while both rows are in scope",
+          "targets": [],
+          "at": "2026-09-28T03:29:45.846Z"
         }
       ]
     },
@@ -19869,6 +20052,14 @@
           "reopenWhen": "an operator apply is observed stopping at a stash in one of these states, or the next order that edits scripts/lib/stash-drop.mjs",
           "targets": [],
           "at": "2026-09-28T02:36:18.543Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-162's final review: a textual match on scripts/lib/harness-prune.mjs, which adopts helpers. scripts/lib/stash-drop.mjs is untouched. [WO-162 final review (docs/final-reviews/WO-162/FINAL-001.md)]",
+          "reopenWhen": "an operator apply is observed stopping at a stash in one of these states, or the next order that edits scripts/lib/stash-drop.mjs",
+          "targets": [],
+          "at": "2026-09-28T03:29:45.601Z"
         }
       ]
     },
@@ -19941,6 +20132,14 @@
           "reopenWhen": "a <proof>.partial is found beside a whole proof on the operator's host, or the next order that edits the byte-proof writer in scripts/lib/harness-prune.mjs",
           "targets": [],
           "at": "2026-09-28T02:36:18.388Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-162's final review: in scripts/lib/harness-prune.mjs the proof text is serialized by the shared helper with the same bytes, and the digest, the JSON reader and three Git calls adopt helpers. usageRetention's digest matching is untouched. WO-162's meta.json is the order snapshot release prepare writes. [WO-162 final review (docs/final-reviews/WO-162/FINAL-001.md)]",
+          "reopenWhen": "a <proof>.partial is found beside a whole proof on the operator's host, or the next order that edits the byte-proof writer in scripts/lib/harness-prune.mjs",
+          "targets": [],
+          "at": "2026-09-28T03:29:45.569Z"
         }
       ]
     },
@@ -20094,6 +20293,14 @@
           "reopenWhen": "A DotLn-headlined tag with a non-array notes.changedFiles appears on the operator's tree, or the next order that edits manifestWorkOrders in scripts/lib/release-tags.mjs or the release listing in scripts/release.mjs.",
           "targets": [],
           "at": "2026-09-28T02:36:18.512Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Deferred again by WO-162's final review: WO-162 changes the digest helper and the manifest-from-tag serializer in scripts/release.mjs and two Git calls in scripts/lib/release-list-cache.mjs. manifestWorkOrders and the release listing are untouched. [WO-162 final review (docs/final-reviews/WO-162/FINAL-001.md)]",
+          "reopenWhen": "A DotLn-headlined tag with a non-array notes.changedFiles appears on the operator's tree, or the next order that edits manifestWorkOrders in scripts/lib/release-tags.mjs or the release listing in scripts/release.mjs.",
+          "targets": [],
+          "at": "2026-09-28T03:29:45.631Z"
         }
       ]
     },
@@ -20252,6 +20459,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-28T02:36:18.760Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by WO-162's final review, which integrated main after WO-163 merged: the import WO-162 adds to scripts/lib/github-repository.mjs reads ./git.mjs, the four authored conflicts are resolved with WO-163's changes kept whole, and the review gate passed on the merged subject (WO-162-D017). [WO-162 final review (docs/final-reviews/WO-162/FINAL-001.md)]",
+          "reopenWhen": "scripts/worktree.mjs or scripts/release.mjs fails to load scripts/lib/github-repository.mjs on main after WO-162 merges",
+          "targets": [],
+          "at": "2026-09-28T03:29:45.102Z"
         }
       ]
     },
@@ -20276,6 +20491,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-28T02:36:18.667Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Kept open by WO-162's final review for the planner: a textual match on scripts/lib/github-repository.mjs, where WO-162 changes one import and one call. WO-062 and WO-065 still cite the old path (WO-163-D012). [WO-162 final review (docs/final-reviews/WO-162/FINAL-001.md)]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-28T03:29:45.261Z"
         }
       ]
     },
@@ -20422,6 +20645,147 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-28T02:36:18.729Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-b789b81160c008ea",
+      "key": "decision:docs/evidence/WO-162/decisions.md#wo-162-d006",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "6e866d6af72b804959a5dc0d70fb01a3cd07b9c08be62aabfdcb7509d24d8801",
+          "ref": "docs/evidence/WO-162/decisions.md#wo-162-d006",
+          "title": "WO-162-D006: Decide acceptance of C1 and Unicode separators when text crosses handoff and mission interfaces; retain map candidate 2 and its observed-late-refusal reopening condition until a real tran",
+          "summary": "{ \"id\": \"WO-162-D006\", \"date\": \"2026-09-27\", \"dispatch\": \"resume: next; read-only divergence review checked against named callers\", \"decision\": \"Keep domain-specific text validators and nominate the evidenced handoff/mission contract mismatch without changing acceptance semantics in this order.\", \"evidence\": [ \"Scripts validators serve experiment metadata (meta.mjs), multiline contract prose (derived-contract.mjs), queue/follow-up reasons (adjacent-queue.mjs and planning-followups.mjs), and short receipt assertions (plan-receipts.mjs). Their control classes differ intentionally by domain.\", \"Read-only executable probe: plain Choose scope passes assertHandoffQuestion and missionSubject; Choos",
+          "missing": false
+        },
+        {
+          "hash": "8d5c8d63872f04c629fb179c56950f8218d25d7bdd0933c2e3473d4795c17fc6",
+          "ref": "docs/evidence/WO-162/decisions.md#wo-162-d006",
+          "title": "WO-162-D006: Decide acceptance of C1 and Unicode separators when text crosses handoff and mission interfaces; retain map candidate 2 and its observed-late-refusal reopening condition until a real tran",
+          "summary": "{ \"id\": \"WO-162-D006\", \"date\": \"2026-09-27\", \"dispatch\": \"resume: next; read-only divergence review checked against named callers\", \"decision\": \"Keep domain-specific text validators and nominate the evidenced handoff/mission contract mismatch without changing acceptance semantics in this order.\", \"evidence\": [ \"Line numbers are this order's working tree. Scripts has five validators named text: three control-character classes and one validator with none, which is the order's four. scripts/lib/meta.mjs:89 (experiment fields) checks only for non-blank text. derived-contract.mjs:25-28 (provenance, compiled WorkOrder scalars and list entries) rejects C0 except tab, newline and carriage return, an",
+          "missing": false
+        },
+        {
+          "hash": "8ec45c205bf8bc38cfb2a2d606c57c187d896d7dee85065e5546d8284851ac47",
+          "ref": "docs/evidence/WO-162/decisions.md#wo-162-d006",
+          "title": "WO-162-D006: Decide acceptance of C1 and Unicode separators when text crosses handoff and mission interfaces; retain map candidate 2 and its observed-late-refusal reopening condition until a real tran",
+          "summary": "{ \"id\": \"WO-162-D006\", \"date\": \"2026-09-27\", \"dispatch\": \"resume: next; read-only divergence review checked against named callers\", \"decision\": \"Keep domain-specific text validators and nominate the evidenced handoff/mission contract mismatch without changing acceptance semantics in this order.\", \"evidence\": [ \"Scope: validators named text in scripts, and validators named line, body or text in the five skeleton protocol files and handoff-contract.ts. Line numbers are this order's working tree. Control-character checks under other names exist and are outside this order's list, for example offRampText in scripts/lib/control.mjs, missionPath in mission-check-protocol.ts:333-341 (rejects C0, bac",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-162 D006 records the interface mismatch; changing text contracts is explicitly excluded from this order.",
+          "reopenWhen": "An order introduces a handoff-to-mission text transfer or a real accepted value is refused late.",
+          "targets": [],
+          "at": "2026-09-28T00:07:57.726Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "WO-162 D006 records the interface mismatch; changing text contracts is explicitly excluded from this order. Revision 2 is the repair of VER-001 F2: D006 now names the scripts and skeleton protocol validators with their classes; the deferred decision is unchanged.",
+          "reopenWhen": "An order introduces a handoff-to-mission text transfer or a real accepted value is refused late.",
+          "targets": [],
+          "at": "2026-09-28T02:15:19.017Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "deferred",
+          "reason": "WO-162 D006 records the interface mismatch; changing text contracts is explicitly excluded from this order. Revisions 2 and 3 are the repair of VER-001 F2: D006 now states its scope and names the scripts and skeleton protocol validators with their classes; the deferred decision is unchanged.",
+          "reopenWhen": "An order introduces a handoff-to-mission text transfer or a real accepted value is refused late.",
+          "targets": [],
+          "at": "2026-09-28T02:26:48.217Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "deferred",
+          "reason": "Deferred again by WO-162's final review: D006 records the interface mismatch with its scope and callers, and changing a text contract is WO-162's non-goal. [WO-162 final review (docs/final-reviews/WO-162/FINAL-001.md)]",
+          "reopenWhen": "An order introduces a handoff-to-mission text transfer or a real accepted value is refused late.",
+          "targets": [],
+          "at": "2026-09-28T03:29:45.352Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-8369f2b4284e70a8",
+      "key": "decision:docs/evidence/WO-162/decisions.md#wo-162-d004",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "173f4e0190674f3d88d02b059941a8e804ca8f3a1a2f9a5baf11af7217180235",
+          "ref": "docs/evidence/WO-162/decisions.md#wo-162-d004",
+          "title": "WO-162-D004: Refuse source-change and beacon paths whose spelling differs from the filesystem's identity for that directory (letter case, Unicode normalization, volume alias) before any containment co",
+          "summary": "{ \"id\": \"WO-162-D004\", \"date\": \"2026-09-27\", \"dispatch\": \"resume: next; read-only divergence review checked against named callers\", \"decision\": \"Keep the three containment helpers separate.\", \"evidence\": [ \"packages/beacons/src/beacon-io.mjs:30-36 counts the root itself as inside. Its one call site is validateBeaconDirectory (:81). A beacon directory equal to the repository root enters the repository branch and is refused: git check-ignore fails for the root and any failure maps to the gitignored refusal (:102-106), so the root is refused without its ignore rules being evaluated.\", \"packages/skeleton/src/source-change-environment.ts:7-15 requires a strict descendant through path.relative; ro",
+          "missing": false
+        },
+        {
+          "hash": "c19f16ebf0ebbf45d808ba4aa6b490b029ce0f3d4eace5f1587fe64282d8a952",
+          "ref": "docs/evidence/WO-162/decisions.md#wo-162-d004",
+          "title": "WO-162-D004: Refuse source-change and beacon paths whose spelling differs from the filesystem's identity for that directory (letter case, volume alias, and Unicode form, which was observed only at the",
+          "summary": "{ \"id\": \"WO-162-D004\", \"date\": \"2026-09-27\", \"dispatch\": \"resume: next; read-only divergence review checked against named callers\", \"decision\": \"Keep the three containment helpers separate.\", \"evidence\": [ \"Line numbers are this order's working tree. packages/beacons/src/beacon-io.mjs:30-36 counts the root itself as inside. Its one call site is validateBeaconDirectory (:81). A beacon directory equal to the repository root enters the repository branch; any failure of the ignore check maps to the gitignored refusal (:102-106). In scratch the ignore check failed for the root, so the root was refused without its ignore rules being evaluated. validateBeaconDirectory is reached from the skeleton C",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Open by WO-162's repair of VER-001 F1 for the next planning pass (WO-162-D004): the source-change and beacon guards accept a directory spelled in a different letter case, Unicode form or volume alias, and the worktree guard verifies identity only after git worktree add, leaving a worktree and branch behind. Reproduced on case-insensitive APFS with the built module in scratch fixtures. No in-repository production caller reaches it today; the worktreeParent setting has no consumer. Medium priority, before an order gives that setting a consumer or adds a production source-change host caller.",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-28T02:15:18.985Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "open",
+          "reason": "Open by WO-162's repair of VER-001 F1 for the next planning pass (WO-162-D004): the source-change and beacon guards accept a directory spelled in a different letter case or through a volume alias, and the worktree guard verifies identity only after git worktree add, leaving a worktree and branch behind. Reproduced on one case-insensitive APFS host with the built module in scratch fixtures. The beacon guard is reachable today from the skeleton CLI's --beacons argument, though the variant spellings were not driven through the CLI. No in-repository production caller constructs the source-change host, and no reader of the worktreeParent setting was found. Medium priority. Revision 2 corrects revision 1's reachability sentence, which covered only the source-change guard.",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-28T02:26:48.185Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "open",
+          "reason": "Kept open by WO-162's final review for the next planning pass (WO-162-D004): the source-change and beacon guards accept a directory spelled in a different letter case or through a volume alias, and the worktree guard verifies identity only after git worktree add. Reproduced in scratch fixtures on one case-insensitive volume by VER-001 and again by the repair; not fixed in WO-162, whose diff touches none of the three files. [WO-162 final review (docs/final-reviews/WO-162/FINAL-001.md)]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-28T03:29:45.199Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-9625ca888d7d08f5",
+      "key": "decision:docs/evidence/WO-162/decisions.md#wo-162-d016",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "ba196da5c38e382dd023eee5dc6d1d638e43c29f1ce126d7d2c8ef034e01e736",
+          "ref": "docs/evidence/WO-162/decisions.md#wo-162-d016",
+          "title": "WO-162-D016: Planner: decide how a wrong execution amendment is corrected. Today a PlanExecutionAmended row whose decision text later changes can be neither withdrawn nor superseded, because checkPlan",
+          "summary": "{ \"id\": \"WO-162-D016\", \"date\": \"2026-09-27\", \"dispatch\": \"resume: fix; executor error in binding the criterion 5 amendment, and its recovery\", \"kind\": \"correction\", \"decision\": \"Keep one amendment row for criterion 5, the one that binds the corrected D012 and the corrected order text, and remove the executor's own superseded, uncommitted row from the planning control log. D012 and D003 are bound by amendment rows and must not change again; a later correction to either is a new decision.\", \"misread\": \"The executor bound D012 with plan amend-order at 02:10Z, then edited D012 when the refutation showed its wording was wrong, and bound it again at 02:26Z. It assumed the later row replaced the ea",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Open by WO-162's repair for the next planning pass (WO-162-D016): an execution amendment whose decision text later changes can be neither withdrawn nor superseded, because the planning check and the withdrawal both validate the row's decision hash against the current decision. Met when the executor edited a bound decision by mistake. Low priority; the workaround is to never edit a bound decision.",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-28T02:30:46.103Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Kept open by WO-162's final review for the planner (WO-162-D016). The review accepted the executor's removal of its own uncommitted amendment row: the 27 committed rows are a byte prefix of the working log and the planning check passes. How a wrong execution amendment is withdrawn or superseded remains undecided. [WO-162 final review (docs/final-reviews/WO-162/FINAL-001.md)]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-28T03:29:45.230Z"
         }
       ]
     }

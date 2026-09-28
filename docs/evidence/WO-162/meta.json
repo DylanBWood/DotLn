@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "kind": "order-meter-snapshot",
+  "observedAt": "2026-09-28T03:30:47.281Z",
+  "revision": "5531cda9cd6f5462e21338226430bfcd34c6e19e",
+  "source": "the order's checkout: 5 session journals, its usage observations, gate rows and the canonical control fold",
+  "orders": [
+    {
+      "workOrder": "WO-162",
+      "phase": "final-review",
+      "metrics": {
+        "elapsedMs": 11164476,
+        "attempts": 4,
+        "gateMs": 1916979,
+        "fastGateMs": 644868,
+        "readObligationCount": 3,
+        "readObligationBytes": 22104,
+        "codeDiffBytes": 410008,
+        "readAmplification": 0.053911143197205906,
+        "machineryShare": 0.3673122679470134,
+        "elapsedPerCodeByte": 27.22989795321067,
+        "tokens": 92198379,
+        "costUsd": null,
+        "declaredPromptTokens": 1019,
+        "coldStartBytes": 26286,
+        "subjectCharacters": null,
+        "gateStepCount": 88,
+        "operatorCorrections": 1,
+        "operatorDirections": 0,
+        "guardRefusals": 55,
+        "stopRefusals": 0,
+        "reAnnouncements": null,
+        "manualCloseoutSteps": null,
+        "emergencyPasses": null,
+        "bypassTools": null,
+        "adHocScripts": null,
+        "commandsRun": 1823,
+        "bytesReadIntoContext": 1149995,
+        "stepCount": 2107,
+        "authorshipSnapshots": 3746,
+        "authorshipMs": 180869.87299800018,
+        "authorshipBytes": 28093778866,
+        "authorshipCommands": 7492,
+        "authorshipMeanMs": 48.283468499199195,
+        "authorshipPeakBytes": 7727124,
+        "hookRuns": 12783,
+        "hookMs": 1378243.2785039966,
+        "hookMeanMs": 107.8184525153717,
+        "hookPeakMs": 2114.091125,
+        "prBodyBytes": 10859
+      },
+      "corrections": {
+        "total": 1,
+        "byPhase": {"repair":1},
+        "byUnit": {"unnamed":1},
+        "byPhaseAndUnit": {"repair":{"unnamed":1}},
+        "source": "session-journal"
+      },
+      "directions": {
+        "total": 0,
+        "byKind": {"scopeExpand":0,"operatorOverride":0,"analysis":0,"conversationOnly":0,"operatorLabel":0,"OperatorOverrideRecorded":0,"RecordCorrected":0,"CriterionWaived":0},
+        "source": "committed decision dispatches and control events"
+      },
+      "usageByRole": {
+        "executor": {"dispatches":2,"totalTokens":47177395,"costUsd":null,"commandsRun":null,"stepCount":283,"durationMs":7046408},
+        "verifier": {"dispatches":2,"totalTokens":14051731,"costUsd":null,"commandsRun":null,"stepCount":111,"durationMs":4150132},
+        "reviewer": {"dispatches":1,"totalTokens":30969253,"costUsd":null,"commandsRun":95,"stepCount":146,"durationMs":2221532}
+      },
+      "dispatches": [
+        {"role":"executor","wallClockMs":7063627,"attempts":2,"bytesReadIntoContext":665994,"commandsRun":506,"stepCount":643,"authorshipSnapshots":1046,"authorshipMs":52257.62308299993,"authorshipBytes":7877604244,"authorshipCommands":2092,"authorshipMeanMs":49.959486695028616,"authorshipPeakBytes":7589806,"hookRuns":3888,"hookMs":423155.78963400057,"hookMeanMs":108.83636564660509,"hookPeakMs":2114.091125,"observedTokens":47177395,"declaredPromptTokens":1019},
+        {"role":"verifier","wallClockMs":4100849,"attempts":2,"bytesReadIntoContext":283345,"commandsRun":1221,"stepCount":1317,"authorshipSnapshots":2488,"authorshipMs":119900.65028599983,"authorshipBytes":18645816454,"authorshipCommands":4976,"authorshipMeanMs":48.19157969694527,"authorshipPeakBytes":7513128,"hookRuns":8004,"hookMs":867459.8919229984,"hookMeanMs":108.37829734170394,"hookPeakMs":2028.291917,"observedTokens":14051731},
+        {"role":"reviewer","wallClockMs":2221532,"bytesReadIntoContext":200656,"commandsRun":96,"stepCount":147,"authorshipSnapshots":212,"authorshipMs":8711.599628999998,"authorshipBytes":1570358168,"authorshipCommands":424,"authorshipMeanMs":41.092451080188674,"authorshipPeakBytes":7727124,"hookRuns":888,"hookMs":86293.30898899995,"hookMeanMs":97.17714976238733,"hookPeakMs":2087.603708,"observedTokens":30969253}
+      ],
+      "declared": {
+        "promptTokens": 1019,
+        "supports": 9,
+        "units": 10,
+        "hooks": 13
+      }
+    }
+  ]
+}
