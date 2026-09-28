@@ -1,6 +1,7 @@
 #!/usr/bin/env node
+import { execGit } from "./lib/git.mjs";
 import { isMainModule } from "./lib/paths.mjs";
-import { execFileSync } from "node:child_process";
+
 import { readFileSync, realpathSync } from "node:fs";
 import { resolve } from "node:path";
 
@@ -26,7 +27,7 @@ if (isMainModule(import.meta.url)) {
     const root = realpathSync(process.cwd());
     if (
       realpathSync(
-        execFileSync("git", ["rev-parse", "--show-toplevel"], {
+        execGit(["rev-parse", "--show-toplevel"], {
           encoding: "utf8",
         }).trim(),
       ) !== root

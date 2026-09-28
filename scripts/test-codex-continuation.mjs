@@ -1,6 +1,8 @@
+import { sha256Hex as digest } from "./lib/helpers.mjs";
+import { spawnGit } from "./lib/git.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
-import { createHash } from "node:crypto";
+
 import {
   mkdtempSync,
   realpathSync,
@@ -15,8 +17,6 @@ import { join } from "node:path";
 import { spawnSync } from "node:child_process";
 import { codexContinuation } from "../packages/compiler/src/codex-continuation.mjs";
 import { operatorControl } from "../packages/compiler/src/operator-control.mjs";
-
-const digest = (text) => createHash("sha256").update(text).digest("hex");
 
 test("generated JavaScript harness surfaces agree with the repository format policy", async () => {
   const { harnessInstallation } = await import("./lib/harness.mjs");
@@ -80,9 +80,9 @@ async function fixture(run) {
   const root = realpathSync(
     mkdtempSync(join(tmpdir(), "dotln-codex-continuation-")),
   );
-  assert.equal(spawnSync("git", ["init", "--quiet"], { cwd: root }).status, 0);
+  assert.equal(spawnGit(["init", "--quiet"], { cwd: root }).status, 0);
   assert.equal(
-    spawnSync("git", ["rev-parse", "--show-toplevel"], {
+    spawnGit(["rev-parse", "--show-toplevel"], {
       cwd: root,
       encoding: "utf8",
     }).stdout.trim(),

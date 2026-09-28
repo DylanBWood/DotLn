@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { isMainModule } from "../lib/paths.mjs";
+import { json } from "../lib/helpers.mjs";
 // WO-110 criterion 2. Live inference is explicit: importing this module
 // contacts nothing, and only `--live` dispatches against the operator's
 // endpoint. The packet records shapes, never model-authored text.
@@ -169,7 +170,7 @@ async function main() {
         };
   const packet = packetFor({ origin, probe, row });
   mkdirSync(dirname(out), { recursive: true });
-  writeFileSync(out, JSON.stringify(packet, null, 2) + "\n");
+  writeFileSync(out, json(packet));
   console.log(
     JSON.stringify({
       output: out,

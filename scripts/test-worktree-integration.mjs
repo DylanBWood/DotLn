@@ -1,3 +1,5 @@
+import { runGit } from "./lib/git.mjs";
+import { json as prettyJson, write as put } from "./lib/helpers.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
@@ -26,10 +28,6 @@ import {
 
 const source = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const text = (root, path) => readFileSync(join(root, path), "utf8");
-const put = (root, path, contents) => {
-  mkdirSync(dirname(join(root, path)), { recursive: true });
-  writeFileSync(join(root, path), contents);
-};
 const run = (cwd, command, args) =>
   spawnSync(command, args, {
     cwd,
@@ -46,7 +44,16 @@ const checked = (cwd, program, args) => {
   );
   return result.stdout.trim();
 };
-const git = (root, ...args) => checked(root, "git", args);
+const fixtureGitOptions = {
+  maxBuffer: 32 * 1024 * 1024,
+  env: { ...process.env, DOTLN_ACCOUNT_LABEL: "" },
+  onFailure: (result, args) =>
+    assert.equal(
+      result.status,
+      0,
+      `git ${args.join(" ")}\n${result.stdout}${result.stderr}`,
+    ),
+};
 const entry = (name) => {
   const key = `decision:docs/evidence/WO-998/decisions.md#${name}`;
   return {
@@ -78,7 +85,7 @@ const appendEntry = (root, name) => {
   const path = "docs/planning/followups.json";
   const register = JSON.parse(text(root, path));
   register.entries.push(entry(name));
-  put(root, path, JSON.stringify(register, null, 2) + "\n");
+  put(root, path, prettyJson(register));
 };
 const claim = (root, version) =>
   put(
@@ -146,16 +153,19 @@ function fixture(
     source,
     origin,
   ]);
-  git(origin, "config", "maintenance.auto", "false");
-  git(origin, "config", "receive.autogc", "false");
+  runGit(origin, ["config", "maintenance.auto", "false"], fixtureGitOptions);
+  runGit(origin, ["config", "receive.autogc", "false"], fixtureGitOptions);
   // The fixture's main is the source's own committed revision, not its moving
   // main, so the working-tree overlays below and the committed peers they
   // import come from one revision (WO-115 D015).
-  git(
+  runGit(
     origin,
-    "update-ref",
-    "refs/heads/main",
-    git(source, "rev-parse", "HEAD"),
+    [
+      "update-ref",
+      "refs/heads/main",
+      runGit(source, ["rev-parse", "HEAD"], fixtureGitOptions),
+    ],
+    fixtureGitOptions,
   );
   checked(temporary, "git", [
     "-c",
@@ -173,7 +183,7 @@ function fixture(
     ["user.email", "fixture@example.invalid"],
     ["maintenance.auto", "false"],
   ])
-    git(main, "config", key, value);
+    runGit(main, ["config", key, value], fixtureGitOptions);
   // The two entry points; the peers they import statically travel with the
   // library overlay below.
   for (const path of ["scripts/worktree.mjs", "scripts/resume.mjs"])
@@ -240,10 +250,18 @@ function fixture(
     ),
   );
   put(main, "authored-fixture.md", "base intent\n");
-  git(main, "add", "-A");
-  git(main, "commit", "-qm", "integration fixture base");
-  git(main, "push", "-q", "origin", "main");
-  git(main, "worktree", "add", "--quiet", "-b", "wo-998", subject, "main");
+  runGit(main, ["add", "-A"], fixtureGitOptions);
+  runGit(
+    main,
+    ["commit", "-qm", "integration fixture base"],
+    fixtureGitOptions,
+  );
+  runGit(main, ["push", "-q", "origin", "main"], fixtureGitOptions);
+  runGit(
+    main,
+    ["worktree", "add", "--quiet", "-b", "wo-998", subject, "main"],
+    fixtureGitOptions,
+  );
   // Dependencies are read-only links; workspace links point into this fixture.
   mkdirSync(join(subject, "node_modules/@dotln"), { recursive: true });
   for (const name of ["typescript", "@types", "prettier"])
@@ -266,7 +284,7 @@ function fixture(
     join(subject, "packages/beacons"),
     join(subject, "node_modules/@dotln/beacons"),
   );
-  const before = git(subject, "rev-parse", "HEAD");
+  const before = runGit(subject, ["rev-parse", "HEAD"], fixtureGitOptions);
   if (reviewed) {
     claim(subject, "v9000.0.1");
     generatedConflicts(subject, "local");
@@ -274,10 +292,18 @@ function fixture(
       put(subject, "authored-fixture.md", "reviewed local intent\n");
     put(subject, "docs/lineage/decisions-index.md", "reviewed projection\n");
     appendEntry(subject, "reviewed-local");
-    git(subject, "add", "-A");
-    git(subject, "commit", "-qm", "reviewed fixture work");
+    runGit(subject, ["add", "-A"], fixtureGitOptions);
+    runGit(
+      subject,
+      ["commit", "-qm", "reviewed fixture work"],
+      fixtureGitOptions,
+    );
   }
-  const reviewedHead = git(subject, "rev-parse", "HEAD");
+  const reviewedHead = runGit(
+    subject,
+    ["rev-parse", "HEAD"],
+    fixtureGitOptions,
+  );
   // Main represents the already merged sibling, and publishes a colliding
   // local tag. No phase of the unrelated third order is consulted.
   put(main, "authored-fixture.md", "upstream intent\n");
@@ -304,11 +330,15 @@ function fixture(
     text(main, "scripts/lib/process-budget.mjs") +
       "\n// fixture machinery change\n",
   );
-  git(main, "add", "-A");
-  git(main, "commit", "-qm", "merged sibling fixture");
-  git(main, "tag", "v9000.0.1");
-  git(main, "push", "-q", "origin", "main", "refs/tags/v9000.0.1");
-  const upstream = git(main, "rev-parse", "HEAD");
+  runGit(main, ["add", "-A"], fixtureGitOptions);
+  runGit(main, ["commit", "-qm", "merged sibling fixture"], fixtureGitOptions);
+  runGit(main, ["tag", "v9000.0.1"], fixtureGitOptions);
+  runGit(
+    main,
+    ["push", "-q", "origin", "main", "refs/tags/v9000.0.1"],
+    fixtureGitOptions,
+  );
+  const upstream = runGit(main, ["rev-parse", "HEAD"], fixtureGitOptions);
   if (!reviewed) {
     claim(subject, "v9000.0.1");
     generatedConflicts(subject, "local");
@@ -367,13 +397,24 @@ for (const reviewed of [false, true])
       receipt.checkpointRef.startsWith("refs/dotln/checkpoint/WO-998/"),
     );
     assert.equal(
-      git(f.subject, "show", `${receipt.checkpointRef}:untracked-fixture.md`),
+      runGit(
+        f.subject,
+        ["show", `${receipt.checkpointRef}:untracked-fixture.md`],
+        fixtureGitOptions,
+      ),
       "retained untracked bytes",
     );
-    assert.ok(git(f.subject, "stash", "list").includes("WO-998 integrate"));
-    assert.equal(git(f.subject, "rev-parse", "refs/stash"), receipt.stash);
+    assert.ok(
+      runGit(f.subject, ["stash", "list"], fixtureGitOptions).includes(
+        "WO-998 integrate",
+      ),
+    );
     assert.equal(
-      git(f.subject, "rev-parse", "HEAD"),
+      runGit(f.subject, ["rev-parse", "refs/stash"], fixtureGitOptions),
+      receipt.stash,
+    );
+    assert.equal(
+      runGit(f.subject, ["rev-parse", "HEAD"], fixtureGitOptions),
       reviewed ? f.reviewedHead : f.upstream,
     );
     assert.match(
@@ -417,7 +458,7 @@ for (const reviewed of [false, true])
       "authored-fixture.md",
       "reviewer retained local and upstream intent\n",
     );
-    git(f.subject, "add", "authored-fixture.md");
+    runGit(f.subject, ["add", "authored-fixture.md"], fixtureGitOptions);
     const hookDir = join(dirname(f.subject), "failing-hooks");
     mkdirSync(hookDir, { recursive: true });
     for (const name of ["pre-commit", "prepare-commit-msg", "post-commit"])
@@ -426,13 +467,17 @@ for (const reviewed of [false, true])
         `#!/bin/sh\nprintf invoked > '${join(dirname(f.subject), "hook-called")}'\nexit 1\n`,
         { mode: 0o755 },
       );
-    git(f.subject, "config", "core.hooksPath", hookDir);
+    runGit(f.subject, ["config", "core.hooksPath", hookDir], fixtureGitOptions);
     const continued = f.invoke("--continue");
     assert.ok(
       !existsSync(join(dirname(f.subject), "hook-called")),
       "helper disables all commit hooks",
     );
-    git(f.subject, "config", "--unset", "core.hooksPath");
+    runGit(
+      f.subject,
+      ["config", "--unset", "core.hooksPath"],
+      fixtureGitOptions,
+    );
     assert.equal(continued.status, 0, continued.stdout + continued.stderr);
     const after = JSON.parse(
       text(f.subject, "docs/control/local/integration.json"),
@@ -457,7 +502,7 @@ for (const reviewed of [false, true])
       "continuation must not create another checkpoint",
     );
     assert.equal(
-      git(f.subject, "rev-parse", "refs/stash"),
+      runGit(f.subject, ["rev-parse", "refs/stash"], fixtureGitOptions),
       receipt.stash,
       "stash was kept",
     );
@@ -500,12 +545,16 @@ for (const reviewed of [false, true])
     ]);
     if (reviewed) {
       assert.equal(
-        git(f.subject, "rev-parse", "HEAD"),
+        runGit(f.subject, ["rev-parse", "HEAD"], fixtureGitOptions),
         after.mergeCommit,
         "helper records its merge commit",
       );
       assert.equal(
-        git(f.subject, "show", "-s", "--format=%P", after.mergeCommit),
+        runGit(
+          f.subject,
+          ["show", "-s", "--format=%P", after.mergeCommit],
+          fixtureGitOptions,
+        ),
         `${f.reviewedHead} ${f.upstream}`,
       );
       assert.notEqual(
@@ -558,17 +607,30 @@ for (const reviewed of [false, true])
 test("three required refusals leave the tree, index, HEAD and recovery refs unchanged", (t) => {
   const f = fixture(t);
   const snapshot = () => ({
-    head: git(f.subject, "rev-parse", "HEAD"),
-    diff: git(f.subject, "diff", "--binary", "HEAD"),
-    status: git(f.subject, "status", "--porcelain", "--untracked-files=all"),
-    refs: git(
+    head: runGit(f.subject, ["rev-parse", "HEAD"], fixtureGitOptions),
+    diff: runGit(f.subject, ["diff", "--binary", "HEAD"], fixtureGitOptions),
+    status: runGit(
       f.subject,
-      "for-each-ref",
-      "--format=%(refname) %(objectname)",
-      "refs/dotln",
-      "refs/stash",
+      ["status", "--porcelain", "--untracked-files=all"],
+      fixtureGitOptions,
     ),
-    index: readFileSync(git(f.subject, "rev-parse", "--git-path", "index")),
+    refs: runGit(
+      f.subject,
+      [
+        "for-each-ref",
+        "--format=%(refname) %(objectname)",
+        "refs/dotln",
+        "refs/stash",
+      ],
+      fixtureGitOptions,
+    ),
+    index: readFileSync(
+      runGit(
+        f.subject,
+        ["rev-parse", "--git-path", "index"],
+        fixtureGitOptions,
+      ),
+    ),
   });
   const original = snapshot();
   const mismatch = run(f.subject, process.execPath, [
@@ -579,17 +641,19 @@ test("three required refusals leave the tree, index, HEAD and recovery refs unch
   assert.notEqual(mismatch.status, 0);
   assert.match(mismatch.stderr, /matching wo-NNN/);
   assert.deepEqual(snapshot(), original);
-  git(
+  runGit(
     f.subject,
-    "remote",
-    "set-url",
-    "origin",
-    join(f.temporary, "absent.git"),
+    ["remote", "set-url", "origin", join(f.temporary, "absent.git")],
+    fixtureGitOptions,
   );
   const missing = f.invoke();
   assert.notEqual(missing.status, 0);
   assert.deepEqual(snapshot(), original);
-  git(f.subject, "remote", "set-url", "origin", f.origin);
+  runGit(
+    f.subject,
+    ["remote", "set-url", "origin", f.origin],
+    fixtureGitOptions,
+  );
   put(f.subject, "docs/intake/fixture.md", "private fixture intake\n");
   const intake = f.invoke();
   assert.notEqual(intake.status, 0);
@@ -632,21 +696,28 @@ test("an intent-to-add entry is refused before any write, and a failed stash lea
   const f = fixture(t);
   const receiptPath = join(f.subject, "docs/control/local/integration.json");
   const snapshot = () => ({
-    head: git(f.subject, "rev-parse", "HEAD"),
-    stage: git(f.subject, "ls-files", "--stage"),
-    status: git(f.subject, "status", "--porcelain", "--untracked-files=all"),
-    refs: git(
+    head: runGit(f.subject, ["rev-parse", "HEAD"], fixtureGitOptions),
+    stage: runGit(f.subject, ["ls-files", "--stage"], fixtureGitOptions),
+    status: runGit(
       f.subject,
-      "for-each-ref",
-      "--format=%(refname) %(objectname)",
-      "refs/dotln",
-      "refs/stash",
+      ["status", "--porcelain", "--untracked-files=all"],
+      fixtureGitOptions,
     ),
-    stashes: git(f.subject, "stash", "list"),
+    refs: runGit(
+      f.subject,
+      [
+        "for-each-ref",
+        "--format=%(refname) %(objectname)",
+        "refs/dotln",
+        "refs/stash",
+      ],
+      fixtureGitOptions,
+    ),
+    stashes: runGit(f.subject, ["stash", "list"], fixtureGitOptions),
     receipt: existsSync(receiptPath),
   });
   put(f.subject, "intent to add.md", "marked with git add -N\n");
-  git(f.subject, "add", "-N", "intent to add.md");
+  runGit(f.subject, ["add", "-N", "intent to add.md"], fixtureGitOptions);
   const original = snapshot();
   const refused = f.invoke();
   assert.notEqual(refused.status, 0, refused.stdout + refused.stderr);
@@ -656,12 +727,16 @@ test("an intent-to-add entry is refused before any write, and a failed stash lea
   assert.deepEqual(snapshot(), original);
   assert.equal(original.receipt, false);
   assert.equal(original.stashes, "");
-  git(f.subject, "add", "--", "intent to add.md");
+  runGit(f.subject, ["add", "--", "intent to add.md"], fixtureGitOptions);
   // Any other failure of the stash push (here a held index lock) happens after
   // the checkpoint; nothing is stashed, so no pending receipt may remain.
   const lock = resolve(
     f.subject,
-    git(f.subject, "rev-parse", "--git-path", "index.lock"),
+    runGit(
+      f.subject,
+      ["rev-parse", "--git-path", "index.lock"],
+      fixtureGitOptions,
+    ),
   );
   writeFileSync(lock, "");
   const staged = snapshot();
@@ -670,9 +745,15 @@ test("an intent-to-add entry is refused before any write, and a failed stash lea
   assert.notEqual(failed.status, 0, failed.stdout + failed.stderr);
   assert.match(failed.stderr, /index\.lock/);
   assert.equal(existsSync(receiptPath), false);
-  assert.equal(git(f.subject, "stash", "list"), "");
-  assert.equal(git(f.subject, "rev-parse", "HEAD"), staged.head);
-  assert.equal(git(f.subject, "ls-files", "--stage"), staged.stage);
+  assert.equal(runGit(f.subject, ["stash", "list"], fixtureGitOptions), "");
+  assert.equal(
+    runGit(f.subject, ["rev-parse", "HEAD"], fixtureGitOptions),
+    staged.head,
+  );
+  assert.equal(
+    runGit(f.subject, ["ls-files", "--stage"], fixtureGitOptions),
+    staged.stage,
+  );
   const fresh = f.invoke();
   assert.equal(fresh.status, 1, fresh.stdout + fresh.stderr);
   assert.match(fresh.stdout, /Authored conflicts: 'authored-fixture.md'/);
@@ -690,7 +771,7 @@ test("a stash Git stores and then fails to finish resumes with --continue; --con
     if (existsSync(join(f.subject, "locked")))
       chmodSync(join(f.subject, "locked"), 0o755);
   });
-  const head = git(f.subject, "rev-parse", "HEAD");
+  const head = runGit(f.subject, ["rev-parse", "HEAD"], fixtureGitOptions);
   const failed = f.invoke();
   assert.notEqual(failed.status, 0, failed.stdout + failed.stderr);
   assert.match(
@@ -702,9 +783,16 @@ test("a stash Git stores and then fails to finish resumes with --continue; --con
   const pending = JSON.parse(readFileSync(receiptPath, "utf8"));
   assert.equal(pending.stage, "preserved");
   assert.equal(pending.stash, retained);
-  assert.equal(git(f.subject, "rev-parse", "HEAD"), head);
   assert.equal(
-    git(f.subject, "show", `${retained}^3:locked/untracked.md`),
+    runGit(f.subject, ["rev-parse", "HEAD"], fixtureGitOptions),
+    head,
+  );
+  assert.equal(
+    runGit(
+      f.subject,
+      ["show", `${retained}^3:locked/untracked.md`],
+      fixtureGitOptions,
+    ),
     "locked untracked bytes",
   );
   // A dirty tree cannot resume: the retained stash already holds the work.
@@ -715,11 +803,11 @@ test("a stash Git stores and then fails to finish resumes with --continue; --con
     dirty.stderr,
     /holds this integration's work but the tree is not clean/,
   );
-  git(f.subject, "reset", "-q", "--hard", "HEAD");
-  git(f.subject, "clean", "-q", "-f", "-d");
+  runGit(f.subject, ["reset", "-q", "--hard", "HEAD"], fixtureGitOptions);
+  runGit(f.subject, ["clean", "-q", "-f", "-d"], fixtureGitOptions);
   // An intent-to-add entry is refused at --continue before anything moves.
   put(f.subject, "late.md", "marked late\n");
-  git(f.subject, "add", "-N", "late.md");
+  runGit(f.subject, ["add", "-N", "late.md"], fixtureGitOptions);
   const receiptBytes = readFileSync(receiptPath);
   const marked = f.invoke("--continue");
   assert.notEqual(marked.status, 0);
@@ -728,7 +816,7 @@ test("a stash Git stores and then fails to finish resumes with --continue; --con
     /refuses intent-to-add entries.*'late\.md'.*--continue again/,
   );
   assert.deepEqual(readFileSync(receiptPath), receiptBytes);
-  git(f.subject, "rm", "-q", "--cached", "late.md");
+  runGit(f.subject, ["rm", "-q", "--cached", "late.md"], fixtureGitOptions);
   rmSync(join(f.subject, "late.md"));
   // WO-160: simulate a crash after Git saved the named stash but before the
   // helper recorded its SHA. The tree is clean and --continue must adopt it.
@@ -754,7 +842,7 @@ test("a later stash failure with nothing stashed restores the completed receipt 
     readFileSync(join(f.subject, "untracked-fixture.md"), "utf8"),
   );
   put(f.subject, "authored-fixture.md", "explicitly combined intent\n");
-  git(f.subject, "add", "authored-fixture.md");
+  runGit(f.subject, ["add", "authored-fixture.md"], fixtureGitOptions);
   const done = f.invoke("--continue");
   assert.equal(done.status, 0, done.stdout + done.stderr);
   const completed = readFileSync(receiptPath);
@@ -762,7 +850,11 @@ test("a later stash failure with nothing stashed restores the completed receipt 
   put(f.subject, "authored-fixture.md", "work after integration\n");
   const lock = resolve(
     f.subject,
-    git(f.subject, "rev-parse", "--git-path", "index.lock"),
+    runGit(
+      f.subject,
+      ["rev-parse", "--git-path", "index.lock"],
+      fixtureGitOptions,
+    ),
   );
   writeFileSync(lock, "");
   const failed = f.invoke();
@@ -797,9 +889,13 @@ test("follow-up union preserves compatible histories and refuses divergent same-
 test("untracked stash collision remains explicit and recoverable until continuation", (t) => {
   const f = fixture(t);
   put(f.main, "untracked-fixture.md", "upstream authored addition\n");
-  git(f.main, "add", "untracked-fixture.md");
-  git(f.main, "commit", "-qm", "upstream untracked collision");
-  git(f.main, "push", "-q", "origin", "main");
+  runGit(f.main, ["add", "untracked-fixture.md"], fixtureGitOptions);
+  runGit(
+    f.main,
+    ["commit", "-qm", "upstream untracked collision"],
+    fixtureGitOptions,
+  );
+  runGit(f.main, ["push", "-q", "origin", "main"], fixtureGitOptions);
   const first = f.invoke();
   assert.equal(first.status, 1, first.stdout + first.stderr);
   assert.match(
@@ -811,7 +907,11 @@ test("untracked stash collision remains explicit and recoverable until continuat
   );
   assert.deepEqual(receipt.untrackedConflicts, ["untracked-fixture.md"]);
   assert.equal(
-    git(f.subject, "show", `${receipt.stash}^3:untracked-fixture.md`),
+    runGit(
+      f.subject,
+      ["show", `${receipt.stash}^3:untracked-fixture.md`],
+      fixtureGitOptions,
+    ),
     "retained untracked bytes",
   );
   put(
@@ -820,14 +920,21 @@ test("untracked stash collision remains explicit and recoverable until continuat
     "explicitly combined upstream and local addition\n",
   );
   put(f.subject, "authored-fixture.md", "explicitly combined intent\n");
-  git(f.subject, "add", "untracked-fixture.md", "authored-fixture.md");
+  runGit(
+    f.subject,
+    ["add", "untracked-fixture.md", "authored-fixture.md"],
+    fixtureGitOptions,
+  );
   const continued = f.invoke("--continue");
   assert.equal(continued.status, 0, continued.stdout + continued.stderr);
   assert.equal(
     text(f.subject, "untracked-fixture.md"),
     "explicitly combined upstream and local addition\n",
   );
-  assert.equal(git(f.subject, "rev-parse", "refs/stash"), receipt.stash);
+  assert.equal(
+    runGit(f.subject, ["rev-parse", "refs/stash"], fixtureGitOptions),
+    receipt.stash,
+  );
 });
 
 test("WO-169 a first invocation with no authored conflict generates at once", (t) => {
@@ -908,12 +1015,16 @@ test("printed checks use the runner's declared machinery sources, including pack
     mkdtempSync(join(tmpdir(), "dotln-integrate-checks-")),
   );
   t.after(() => rmSync(root, { recursive: true, force: true }));
-  git(root, "init", "-q", "-b", "main");
-  git(root, "config", "user.name", "Fixture");
-  git(root, "config", "user.email", "fixture@example.invalid");
+  runGit(root, ["init", "-q", "-b", "main"], fixtureGitOptions);
+  runGit(root, ["config", "user.name", "Fixture"], fixtureGitOptions);
+  runGit(
+    root,
+    ["config", "user.email", "fixture@example.invalid"],
+    fixtureGitOptions,
+  );
   put(root, "packages/compiler/src/verification.ts", "// baseline\n");
-  git(root, "add", "-A");
-  git(root, "commit", "-qm", "baseline");
+  runGit(root, ["add", "-A"], fixtureGitOptions);
+  runGit(root, ["commit", "-qm", "baseline"], fixtureGitOptions);
   assert.equal(await integrationTestCommand(root, "HEAD"), "npm test");
   put(
     root,

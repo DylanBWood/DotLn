@@ -1,5 +1,13 @@
+import { execGit, runGit } from "./lib/git.mjs";
+import {
+  write,
+  json,
+  write as writeFixture,
+  sha256Hex as digest,
+} from "./lib/helpers.mjs";
 import "./test-fixture-temporary.mjs";
 import "./test-codex-session.mjs";
+import "./test-helper-reuse.mjs";
 import test from "node:test";
 import { fnv1a64 } from "../packages/compiler/dist/src/index.js";
 import {
@@ -1041,7 +1049,6 @@ test("WO-170 recovery carries usage totals by role and each retained copy's dige
     usageRow("WO-997", "verifier", "2026-09-20T03:00:00.000Z", 5),
   ]);
   write(main, "docs/control/local/retained/WO-997/process/usage.jsonl", first);
-  const digest = (text) => createHash("sha256").update(text).digest("hex");
   const recovered = recoveredUsageSnapshot(main, "WO-997", null, now);
   assert.deepEqual(recovered, {
     schemaVersion: 1,
@@ -1173,17 +1180,7 @@ test("WO-170 recovery carries usage totals by role and each retained copy's dige
     1,
   );
 });
-const json = (value) => JSON.stringify(value, null, 2) + "\n";
-const write = (root, path, value) => {
-  mkdirSync(dirname(join(root, path)), { recursive: true });
-  writeFileSync(join(root, path), value);
-};
-const git = (root, ...args) =>
-  execFileSync("git", args, {
-    cwd: root,
-    encoding: "utf8",
-    stdio: ["ignore", "pipe", "pipe"],
-  }).trim();
+const fixtureGitOptions = { exec: true, stdio: ["ignore", "pipe", "pipe"] };
 const snapshot = (root) => {
   const result = {};
   const walk = (base = "") => {
@@ -1235,10 +1232,19 @@ function repo(t, { runtime = false } = {}) {
       retryDelay: 100,
     });
   });
-  git(root, "init", "-q", "-b", "wo-999");
-  assert.equal(realpathSync(git(root, "rev-parse", "--show-toplevel")), root);
-  git(root, "config", "user.name", "Fixture");
-  git(root, "config", "user.email", "fixture@example.invalid");
+  runGit(root, ["init", "-q", "-b", "wo-999"], fixtureGitOptions);
+  assert.equal(
+    realpathSync(
+      runGit(root, ["rev-parse", "--show-toplevel"], fixtureGitOptions),
+    ),
+    root,
+  );
+  runGit(root, ["config", "user.name", "Fixture"], fixtureGitOptions);
+  runGit(
+    root,
+    ["config", "user.email", "fixture@example.invalid"],
+    fixtureGitOptions,
+  );
   write(
     root,
     ".gitignore",
@@ -1305,8 +1311,8 @@ function repo(t, { runtime = false } = {}) {
       join(root, "node_modules/typescript"),
     );
   }
-  git(root, "add", ".");
-  git(root, "commit", "-qm", "Fixture base");
+  runGit(root, ["add", "."], fixtureGitOptions);
+  runGit(root, ["commit", "-qm", "Fixture base"], fixtureGitOptions);
   return root;
 }
 
@@ -2067,7 +2073,10 @@ const gate = (root, checkId = "fixture:tree-check", exitCode = 0) => ({
 
 test("tree evidence matches Git objects, reuses any successful session and invalidates on one byte", (t) => {
   const root = repo(t);
-  assert.equal(gateTreeHash(root), git(root, "rev-parse", "HEAD^{tree}"));
+  assert.equal(
+    gateTreeHash(root),
+    runGit(root, ["rev-parse", "HEAD^{tree}"], fixtureGitOptions),
+  );
   const first = gate(root);
   recordGateChecks(root, [
     { ...first, session: "first" },
@@ -2083,8 +2092,11 @@ test("tree evidence matches Git objects, reuses any successful session and inval
   write(root, ".gitattributes", "*.txt text eol=lf\n");
   write(root, "line.txt", "windows\r\nline\r\n");
   symlinkSync("line.txt", join(root, "link.txt"));
-  git(root, "add", ".");
-  assert.equal(gateTreeHash(root), git(root, "write-tree"));
+  runGit(root, ["add", "."], fixtureGitOptions);
+  assert.equal(
+    gateTreeHash(root),
+    runGit(root, ["write-tree"], fixtureGitOptions),
+  );
 });
 
 test("concurrent evidence writers retain every successful row", async (t) => {
@@ -2222,8 +2234,12 @@ test("session outputs include only two observed edits; generated and oversized f
     ["generated.txt", "large.txt"],
   );
   assert.ok(!owed.some((row) => row.path === "inherited.txt"));
-  git(root, "add", ".");
-  git(root, "commit", "-qm", "Authored files survive a commit");
+  runGit(root, ["add", "."], fixtureGitOptions);
+  runGit(
+    root,
+    ["commit", "-qm", "Authored files survive a commit"],
+    fixtureGitOptions,
+  );
   assert.deepEqual(harnessOutputObligations(root, state(root)), owed);
 });
 
@@ -4239,7 +4255,7 @@ test("WO-132 harness evidence reuses product results across document edits and i
   );
   assert.deepEqual(count(), ["test"]);
   write(root, "changed-source.js", "export const changed = true;\n");
-  git(root, "add", "changed-source.js");
+  runGit(root, ["add", "changed-source.js"], fixtureGitOptions);
   const changed = runHarnessEvidence(root);
   assert.notEqual(changed[0].codeIdentity, initial[0].codeIdentity);
   assert.equal(changed[0].codeIdentity, gateCodeIdentity(root));
@@ -4431,10 +4447,10 @@ test("WO-044 closeout classifies nested repositories: empty scaffolding is disca
     local = "docs/control/local";
   const mount = `${local}/feedback/verifier/mount`;
   mkdirSync(join(from, mount), { recursive: true });
-  git(join(from, mount), "init", "-q");
+  runGit(join(from, mount), ["init", "-q"], fixtureGitOptions);
   const kept = `${local}/prototypes/repo`;
   mkdirSync(join(from, kept), { recursive: true });
-  git(join(from, kept), "init", "-q");
+  runGit(join(from, kept), ["init", "-q"], fixtureGitOptions);
   write(from, `${kept}/file.txt`, "kept nested content\n");
   const author = [
     "-c",
@@ -4442,8 +4458,12 @@ test("WO-044 closeout classifies nested repositories: empty scaffolding is disca
     "-c",
     "user.email=f@example.invalid",
   ];
-  git(join(from, kept), ...author, "add", "file.txt");
-  git(join(from, kept), ...author, "commit", "-qm", "kept");
+  runGit(join(from, kept), [...author, "add", "file.txt"], fixtureGitOptions);
+  runGit(
+    join(from, kept),
+    [...author, "commit", "-qm", "kept"],
+    fixtureGitOptions,
+  );
   write(from, `${local}/terms.txt`, "subject terms\n");
   const preview = reconcileWorktreeMaterial(from, main, "WO-999", {
     dryRun: true,
@@ -4508,24 +4528,32 @@ test("WO-044 VER-001 preserves unborn repositories with refs, staged-only bytes,
     const path = `docs/control/local/prototypes/${kind}`;
     const nested = join(from, path);
     mkdirSync(nested, { recursive: true });
-    git(nested, "init", "-q");
+    runGit(nested, ["init", "-q"], fixtureGitOptions);
     if (kind === "refs") {
-      git(
+      runGit(
         nested,
-        "-c",
-        "user.name=Fixture",
-        "-c",
-        "user.email=f@example.invalid",
-        "commit",
-        "--allow-empty",
-        "-qm",
-        "saved",
+        [
+          "-c",
+          "user.name=Fixture",
+          "-c",
+          "user.email=f@example.invalid",
+          "commit",
+          "--allow-empty",
+          "-qm",
+          "saved",
+        ],
+        fixtureGitOptions,
       );
-      git(nested, "symbolic-ref", "HEAD", "refs/heads/unborn");
+      runGit(
+        nested,
+        ["symbolic-ref", "HEAD", "refs/heads/unborn"],
+        fixtureGitOptions,
+      );
     } else if (kind === "index" || kind === "objects") {
       write(nested, "valuable.txt", "saved fixture bytes\n");
-      git(nested, "add", "valuable.txt");
-      if (kind === "objects") git(nested, "rm", "--cached", "valuable.txt");
+      runGit(nested, ["add", "valuable.txt"], fixtureGitOptions);
+      if (kind === "objects")
+        runGit(nested, ["rm", "--cached", "valuable.txt"], fixtureGitOptions);
       rmSync(join(nested, "valuable.txt"));
     } else write(nested, ".git/HEAD", "broken\n");
     assert.equal(inspectNestedRepository(from, path + "/").empty, false, kind);
@@ -4546,10 +4574,10 @@ test("WO-044 VER-001 preserves unborn repositories with refs, staged-only bytes,
     assert.ok(receipt.files.length > 0);
     if (kind === "index")
       assert.equal(
-        git(
+        runGit(
           join(main, "docs/control/local/retained/WO-999/prototypes", kind),
-          "show",
-          ":valuable.txt",
+          ["show", ":valuable.txt"],
+          fixtureGitOptions,
         ),
         "saved fixture bytes",
       );
@@ -4657,7 +4685,7 @@ test("closeout archives retained control files and nested directories without ch
   assert.equal(existsSync(join(main, archive, "harness")), false);
   verifyPreservedMaterial(from, main, applied);
   assert.equal(
-    git(main, "status", "--porcelain"),
+    runGit(main, ["status", "--porcelain"], fixtureGitOptions),
     "",
     "no retained records enter Git",
   );
@@ -4785,8 +4813,16 @@ test("closeout refuses source and destination symlinks and unignored archive pat
   const literalPath = "docs/control/local/retained/WO-999/literal[1].txt";
   write(literalSource, "docs/control/local/literal[1].txt", "same bytes");
   write(literalMain, literalPath, "same bytes");
-  git(literalMain, "--literal-pathspecs", "add", "--force", "--", literalPath);
-  git(literalMain, "commit", "-qm", "Tracked archive collision fixture");
+  runGit(
+    literalMain,
+    ["--literal-pathspecs", "add", "--force", "--", literalPath],
+    fixtureGitOptions,
+  );
+  runGit(
+    literalMain,
+    ["commit", "-qm", "Tracked archive collision fixture"],
+    fixtureGitOptions,
+  );
   assert.throws(
     () => reconcileWorktreeMaterial(literalSource, literalMain, "WO-999"),
     /tracked in main/,
@@ -4812,9 +4848,9 @@ test("WO-155 cold-start trends share edition and acceptance evidence across the 
     ].map((role) => `${prefix}/dotln-${role}/SKILL.md`),
   );
   for (const path of paths) write(root, path, "Règle\n");
-  git(root, "add", ".");
-  git(root, "commit", "-qm", "First release fixture");
-  git(root, "tag", "v1.0.0");
+  runGit(root, ["add", "."], fixtureGitOptions);
+  runGit(root, ["commit", "-qm", "First release fixture"], fixtureGitOptions);
+  runGit(root, ["tag", "v1.0.0"], fixtureGitOptions);
   const first = measureColdStarts(root);
   assert.equal(first.comparisonEdition, "v1.0.0");
   assert.equal(first.profiles[0].delta, 0);
@@ -4835,9 +4871,13 @@ test("WO-155 cold-start trends share edition and acceptance evidence across the 
     "CLAUDE.md",
     readFileSync(join(root, "CLAUDE.md"), "utf8") + "accepted\n",
   );
-  git(root, "add", ".");
-  git(root, "commit", "-qm", "Accept executor fixture");
-  const acceptedRevision = git(root, "rev-parse", "HEAD");
+  runGit(root, ["add", "."], fixtureGitOptions);
+  runGit(root, ["commit", "-qm", "Accept executor fixture"], fixtureGitOptions);
+  const acceptedRevision = runGit(
+    root,
+    ["rev-parse", "HEAD"],
+    fixtureGitOptions,
+  );
   const acceptedBytes = measureColdStarts(root).profiles[0].bytes;
   // An older entry appended later, and a newer scoped entry, cannot replace
   // the latest global acceptance. The record's ceiling is not its byte count.
@@ -4849,14 +4889,18 @@ test("WO-155 cold-start trends share edition and acceptance evidence across the 
   });
   write(root, budgetPath, json(budgets));
   for (const path of paths) write(root, path, "Règle\nmore\n");
-  git(root, "add", ".");
-  git(root, "commit", "-qm", "Next release fixture");
-  git(root, "tag", "v1.1.0");
+  runGit(root, ["add", "."], fixtureGitOptions);
+  runGit(root, ["commit", "-qm", "Next release fixture"], fixtureGitOptions);
+  runGit(root, ["tag", "v1.1.0"], fixtureGitOptions);
   // A sibling worktree can publish a greater version without changing HEAD.
-  git(root, "checkout", "-qb", "sibling");
-  git(root, "commit", "--allow-empty", "-qm", "Sibling release fixture");
-  git(root, "tag", "v9.0.0");
-  git(root, "checkout", "-q", "wo-999");
+  runGit(root, ["checkout", "-qb", "sibling"], fixtureGitOptions);
+  runGit(
+    root,
+    ["commit", "--allow-empty", "-qm", "Sibling release fixture"],
+    fixtureGitOptions,
+  );
+  runGit(root, ["tag", "v9.0.0"], fixtureGitOptions);
+  runGit(root, ["checkout", "-q", "wo-999"], fixtureGitOptions);
   write(root, paths[0], "Règle\nmore\nnow\n");
   const beforeBudget = readFileSync(join(root, budgetPath));
   const measured = measureColdStarts(root);
@@ -4919,7 +4963,11 @@ test("WO-155 cold-start trends share edition and acceptance evidence across the 
   );
   assert.equal(invalid.status, 1);
   assert.match(invalid.stderr, /usage:/);
-  write(root, ".git/shallow", git(root, "rev-parse", "HEAD") + "\n");
+  write(
+    root,
+    ".git/shallow",
+    runGit(root, ["rev-parse", "HEAD"], fixtureGitOptions) + "\n",
+  );
   const shallow = measureColdStarts(root).profiles[0].lastAcceptance;
   assert.equal(shallow.bytes, null);
   assert.equal(shallow.cause, "acceptance-history-unavailable");
@@ -4971,7 +5019,7 @@ test("WO-155 missing history and missing role files are explicit unknowns; check
   assert.equal(unchecked.stderr, "");
   assert.match(checked.stderr, /Advisory: process budget exceeded/);
   assert.deepEqual(JSON.parse(unchecked.stdout), JSON.parse(checked.stdout));
-  git(root, "tag", "v0.1.0");
+  runGit(root, ["tag", "v0.1.0"], fixtureGitOptions);
   const missingHistoricalFile = measureColdStarts(root).profiles[0];
   assert.equal(missingHistoricalFile.previousBytes, null);
   assert.equal(
@@ -5457,7 +5505,7 @@ test("meter diff bytes include newly authored untracked source", (t) => {
   write(root, "scripts/new.mjs", "export const observed = true;\n");
   const after = codeDiffBytes(root);
   assert.ok(after > before);
-  git(root, "add", "scripts/new.mjs");
+  runGit(root, ["add", "scripts/new.mjs"], fixtureGitOptions);
   assert.ok(
     codeDiffBytes(root) > before,
     "staging source must not lose the measurement",
@@ -5507,11 +5555,9 @@ test("WO-145 optional economy support preserves historical snapshots through WO-
   assert.equal(roles.length, Object.keys(baseline.roles).length);
   assert.equal(roles.length, Object.keys(baseline.optOutRoles).length);
   for (const file of roles) {
-    const released = execFileSync(
-      "git",
-      ["show", `${historical.release}:${file.path}`],
-      { cwd: source },
-    );
+    const released = execGit(["show", `${historical.release}:${file.path}`], {
+      cwd: source,
+    });
     assert.equal(
       createHash("sha256").update(released).digest("hex"),
       historical.roles[file.path],
@@ -5772,8 +5818,8 @@ test("follow-ups retain changed, removed and overlapping public sources without 
   dispose(root, entry, "deferred");
   assert.equal(planningFollowups(root).pending, 3);
   assert.equal(planningFollowups(root).rows[0].id, entry.id);
-  git(root, "add", ".");
-  git(root, "commit", "-qm", "fixture follow-ups");
+  runGit(root, ["add", "."], fixtureGitOptions);
+  runGit(root, ["commit", "-qm", "fixture follow-ups"], fixtureGitOptions);
   write(
     root,
     path,
@@ -5857,8 +5903,12 @@ test("only named actions and observed reopenings enter the decision feed; histor
     ],
   };
   write(root, FOLLOWUPS, json(historical));
-  git(root, "add", ".");
-  git(root, "commit", "-qm", "retain historical decision");
+  runGit(root, ["add", "."], fixtureGitOptions);
+  runGit(
+    root,
+    ["commit", "-qm", "retain historical decision"],
+    fixtureGitOptions,
+  );
   const bytes = readFileSync(join(root, FOLLOWUPS), "utf8");
   syncFollowups(root);
   assert.equal(readFileSync(join(root, FOLLOWUPS), "utf8"), bytes);
@@ -5996,9 +6046,9 @@ test("follow-up planning entry pages reach every pending record within the byte 
   const oldCursor = planningFollowups(root).next.split(" --cursor ")[1];
   dispose(root, readFollowups(root).entries[0], "settled");
   assert.throws(() => planningFollowups(root, { cursor: oldCursor }), /stale/);
-  git(root, "add", ".");
-  git(root, "commit", "-qm", "fixture feed");
-  git(root, "branch", "-m", "main");
+  runGit(root, ["add", "."], fixtureGitOptions);
+  runGit(root, ["commit", "-qm", "fixture feed"], fixtureGitOptions);
+  runGit(root, ["branch", "-m", "main"], fixtureGitOptions);
   const started = await planMain(["start", "followups"], root);
   assert.equal(started.followups.pending, 40);
   assert.ok(started.followups.next);
@@ -6087,7 +6137,7 @@ const defer = (root, id, reopenWhen, status = "deferred") => {
   });
 };
 const seamRegister = (root) => {
-  git(root, "branch", "main");
+  runGit(root, ["branch", "main"], fixtureGitOptions);
   write(
     root,
     "docs/product/ideas.md",
@@ -6221,9 +6271,9 @@ test("WO-169 the change is read from the merge base with main: committed, rename
   const root = repo(t);
   for (const name of ["old-name.txt", "gone.txt", "committed.txt"])
     write(root, name, `${name}\n`);
-  git(root, "add", ".");
-  git(root, "commit", "-qm", "seam files");
-  git(root, "branch", "main");
+  runGit(root, ["add", "."], fixtureGitOptions);
+  runGit(root, ["commit", "-qm", "seam files"], fixtureGitOptions);
+  runGit(root, ["branch", "main"], fixtureGitOptions);
   const titles = {
     Renamed: "Waits for the next order that edits old-name.txt.",
     Deleted: "Waits for gone.txt.",
@@ -6248,21 +6298,21 @@ test("WO-169 the change is read from the merge base with main: committed, rename
     ]),
   );
   // The branch's own commits are part of its change; HEAD is not the base.
-  git(root, "mv", "old-name.txt", "new-name.txt");
-  git(root, "rm", "-q", "gone.txt");
+  runGit(root, ["mv", "old-name.txt", "new-name.txt"], fixtureGitOptions);
+  runGit(root, ["rm", "-q", "gone.txt"], fixtureGitOptions);
   write(root, "committed.txt", "changed\n");
-  git(root, "add", ".");
-  git(root, "commit", "-qm", "branch work");
+  runGit(root, ["add", "."], fixtureGitOptions);
+  runGit(root, ["commit", "-qm", "branch work"], fixtureGitOptions);
   // Main moves on after the branch point; its tip is not the base either.
-  git(root, "checkout", "-q", "main");
+  runGit(root, ["checkout", "-q", "main"], fixtureGitOptions);
   write(root, "main-only.txt", "merged sibling\n");
-  git(root, "add", ".");
-  git(root, "commit", "-qm", "merged sibling");
-  git(root, "checkout", "-q", "wo-999");
+  runGit(root, ["add", "."], fixtureGitOptions);
+  runGit(root, ["commit", "-qm", "merged sibling"], fixtureGitOptions);
+  runGit(root, ["checkout", "-q", "wo-999"], fixtureGitOptions);
   write(root, "fresh.txt", "new\n");
   write(root, "-dash.txt", "a name Git reports is never refused as a term\n");
   for (const renames of ["true", "false"]) {
-    git(root, "config", "diff.renames", renames);
+    runGit(root, ["config", "diff.renames", renames], fixtureGitOptions);
     const change = await planMain(["followups", "--touching"], root);
     assert.deepEqual(
       touched(change),
@@ -6369,7 +6419,7 @@ test("WO-169 completion advises with the count, the command and the rule when ro
     ).advisories.filter((message) => /follow-up row/i.test(message));
   for (const action of ["implementation-ready", "repair-complete"]) {
     const root = repo(t);
-    git(root, "branch", "main");
+    runGit(root, ["branch", "main"], fixtureGitOptions);
     write(
       root,
       "docs/product/ideas.md",
@@ -6435,8 +6485,8 @@ test("WO-169 completion advises with the count, the command and the rule when ro
   // select the completion's order: the advisory names it, and the command it
   // prints returns the advisory's count.
   const shared = repo(t);
-  git(shared, "branch", "main");
-  git(shared, "branch", "-m", "shared-work");
+  runGit(shared, ["branch", "main"], fixtureGitOptions);
+  runGit(shared, ["branch", "-m", "shared-work"], fixtureGitOptions);
   write(
     shared,
     "docs/control/orders/WO-997.jsonl",
@@ -6637,7 +6687,7 @@ test("WO-169 followups --export writes every pending row whole to a granted dest
   // the temporary directory is no scratch root.
   symlinkSync("/", join(root, "docs/control/local/elsewhere"));
   mkdirSync(join(outside, "checkout"));
-  git(join(outside, "checkout"), "init", "-q");
+  runGit(join(outside, "checkout"), ["init", "-q"], fixtureGitOptions);
   for (const refused of [
     "docs/planning/rows.json",
     "rows.json",
@@ -6654,7 +6704,14 @@ test("WO-169 followups --export writes every pending row whole to a granted dest
       refused,
     );
   assert.ok(!existsSync("/dotln-export-refused"));
-  assert.equal(git(join(outside, "checkout"), "status", "--porcelain"), "");
+  assert.equal(
+    runGit(
+      join(outside, "checkout"),
+      ["status", "--porcelain"],
+      fixtureGitOptions,
+    ),
+    "",
+  );
   mkdirSync(join(outside, "directory"));
   await assert.rejects(
     planMain(["followups", "--export", join(outside, "directory")], root),
@@ -7946,7 +8003,7 @@ test("WO-168 a Codex dispatch refused after placing its reservation releases it,
 test("WO-132 caller usage avoids a writer reservation and other main writes reserve normally", async (t) => {
   const root = repo(t, { runtime: true });
   emitHarness(root);
-  git(root, "branch", "-m", "main");
+  runGit(root, ["branch", "-m", "main"], fixtureGitOptions);
   beginHarnessSession(root, "meter-session", "release-close");
   const policy = config(root, "concurrent-work-requires-worktrees");
   const invoke = (command) =>
@@ -8196,7 +8253,7 @@ test("WO-131 operator-control precedes runtime, state, Git, gate and writer chec
 
 test("WO-132 generated release-close handoff and preview use the main writer reservation", (t) => {
   const root = repo(t, { runtime: true });
-  git(root, "branch", "-m", "main");
+  runGit(root, ["branch", "-m", "main"], fixtureGitOptions);
   cpSync(join(source, "scripts/lib"), join(root, "scripts/lib"), {
     recursive: true,
   });
@@ -8544,8 +8601,12 @@ if (action === "status") {
     "docs/control/local/lifecycle-stub.json",
     JSON.stringify({ phase: "needs-fix" }),
   );
-  git(root, "add", ".");
-  git(root, "commit", "-qm", "Lifecycle stub with legal actions");
+  runGit(root, ["add", "."], fixtureGitOptions);
+  runGit(
+    root,
+    ["commit", "-qm", "Lifecycle stub with legal actions"],
+    fixtureGitOptions,
+  );
   emitHarness(root);
   // The dispatch is judged by the compiled policy the installed writer hook
   // carries: the host compiles the same unit at the same hash, and refuses
@@ -8693,8 +8754,8 @@ test("WO-131 prompt submission stays open while dispatches retain the ordinary c
     "docs/work-orders/WO-999-fixture.md",
     "# WO-999 fixture\n\n**Model:** any capable model.\n**Effort:** executor any; verifier any; reviewer any.\n",
   );
-  git(root, "add", ".");
-  git(root, "commit", "-qm", "Real lifecycle");
+  runGit(root, ["add", "."], fixtureGitOptions);
+  runGit(root, ["commit", "-qm", "Real lifecycle"], fixtureGitOptions);
   emitHarness(root);
   const hook = (name, payload) => {
     const run = spawnSync(
@@ -8742,11 +8803,10 @@ test("WO-131 prompt submission stays open while dispatches retain the ordinary c
     current: existsSync(join(root, "docs/control/current.md"))
       ? readFileSync(join(root, "docs/control/current.md"), "utf8")
       : null,
-    refs: git(
+    refs: runGit(
       root,
-      "for-each-ref",
-      "--format=%(refname) %(objectname)",
-      "refs/dotln/",
+      ["for-each-ref", "--format=%(refname) %(objectname)", "refs/dotln/"],
+      fixtureGitOptions,
     ),
     reports: existsSync(join(root, "docs/verifications"))
       ? readdirSync(join(root, "docs/verifications"), { recursive: true })
@@ -9186,11 +9246,8 @@ test("WO-140 a newly allocated receipt needs counters with their source or one c
 
   const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-receipt-cost-")));
   t.after(() => rmSync(root, { recursive: true, force: true }));
-  execFileSync("git", ["init", "-q"], { cwd: root });
-  const write = (path, text) => {
-    mkdirSync(dirname(join(root, path)), { recursive: true });
-    writeFileSync(join(root, path), text);
-  };
+  execGit(["init", "-q"], { cwd: root });
+  const write = (path, text) => writeFixture(root, path, text);
   const requested = (id, stamped) => ({
     schemaVersion: 1,
     recordedAt: `2026-09-20T00:00:0${id}.000Z`,
@@ -9360,11 +9417,8 @@ test("WO-140 the cost line is a record and not a mention, and meta --check is wi
     mkdtempSync(join(tmpdir(), "dotln-receipt-wiring-")),
   );
   t.after(() => rmSync(root, { recursive: true, force: true }));
-  execFileSync("git", ["init", "-q"], { cwd: root });
-  const write = (path, text) => {
-    mkdirSync(dirname(join(root, path)), { recursive: true });
-    writeFileSync(join(root, path), text);
-  };
+  execGit(["init", "-q"], { cwd: root });
+  const write = (path, text) => writeFixture(root, path, text);
   const event = (reportPath, index) => ({
     schemaVersion: 1,
     recordedAt: `2026-09-20T00:00:0${index}.000Z`,

@@ -1,3 +1,4 @@
+import { json } from "./helpers.mjs";
 import { docRelative } from "./config.mjs";
 import { spawnSync } from "node:child_process";
 import {
@@ -14,7 +15,13 @@ import {
 import { tmpdir } from "node:os";
 import { dirname, join, resolve, sep } from "node:path";
 import { createCheckpoint } from "./checkpoint.mjs";
-import { failureOf, runGit, runGitPathList, shellQuote } from "./git.mjs";
+import {
+  failureOf,
+  runGit,
+  runGitPathList,
+  shellQuote,
+  spawnGit,
+} from "./git.mjs";
 import { containedRegularFile } from "./paths.mjs";
 import { readControl } from "./control-store.mjs";
 import { followupsPath, unionFollowups } from "./planning-followups.mjs";
@@ -28,7 +35,6 @@ const editionPages = (root) =>
   ["everyday-ai-user-toc.md", "software-engineer-toc.md"].map((name) =>
     docRelative(root, "publication", name),
   );
-const json = (value) => JSON.stringify(value, null, 2) + "\n";
 const conflicts = (root) =>
   runGitPathList(root, ["diff", "--name-only", "--diff-filter=U", "-z"]);
 // `git add -N` entries: an include-untracked stash cannot save or re-apply
@@ -47,7 +53,7 @@ const intentToAdd = (root) =>
     .filter((row) => row.startsWith("1 ") && row[3] === "A")
     .map((row) => row.split(" ").slice(8).join(" "));
 const gitResult = (root, args) =>
-  spawnSync("git", ["-C", root, ...args], {
+  spawnGit(["-C", root, ...args], {
     encoding: "utf8",
     maxBuffer: 32 * 1024 * 1024,
   });
@@ -85,11 +91,9 @@ function unrestoredUntracked(root, stash) {
     "-z",
     `${stash}^3`,
   ]).filter((path) => {
-    const original = spawnSync(
-      "git",
-      ["-C", root, "show", `${stash}^3:${path}`],
-      { maxBuffer: 32 * 1024 * 1024 },
-    );
+    const original = spawnGit(["-C", root, "show", `${stash}^3:${path}`], {
+      maxBuffer: 32 * 1024 * 1024,
+    });
     try {
       const file = join(root, path);
       const actual = lstatSync(file).isSymbolicLink()
@@ -153,8 +157,7 @@ function mixedProjection(root, path) {
       writeFileSync(file, mask(s));
       return file;
     });
-    const merged = spawnSync(
-      "git",
+    const merged = spawnGit(
       [
         "merge-file",
         "-p",

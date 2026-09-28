@@ -1,3 +1,4 @@
+import { sha256Hex as digest } from "./helpers.mjs";
 import { docRelative } from "./config.mjs";
 import {
   constants,
@@ -8,12 +9,11 @@ import {
   readdirSync,
   realpathSync,
 } from "node:fs";
-import { createHash } from "node:crypto";
+
 import { dirname, join, relative, resolve, sep } from "node:path";
 import { runGitPathList } from "./git.mjs";
 import { classifyIgnoredMaterial, inspectNestedRepository } from "./paths.mjs";
 
-const digest = (bytes) => createHash("sha256").update(bytes).digest("hex");
 const stat = (path) => lstatSync(path, { throwIfNoEntry: false });
 const controlRoot = (root) => docRelative(root, "control", "local");
 const preservationProofs = new WeakMap();

@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { json as prettyJson, sha256Hex as sha256 } from "./lib/helpers.mjs";
 // Bind a resident to the active work. One command reads the canonical control
 // state for an order, the worktree the helper created for it and the order's
 // own authority file, and writes a fresh store whose `mission-check` actor
@@ -6,8 +7,7 @@
 // declared surfaces are exactly the ones typed on the command line, and the
 // binding record beside the store is what `--check` compares with canonical
 // state before any launch line is printed (WO-148).
-import { spawnSync } from "node:child_process";
-import { createHash } from "node:crypto";
+
 import {
   existsSync,
   lstatSync,
@@ -31,9 +31,19 @@ import {
   registeredProfileMismatches,
   registeredRepositoryInputs,
 } from "./lib/authority-grants.mjs";
-import { failureOf, parseWorktrees, runGit, shellQuote } from "./lib/git.mjs";
+import {
+  failureOf,
+  parseWorktrees,
+  runGit,
+  shellQuote,
+  spawnGit,
+} from "./lib/git.mjs";
 import { eventsForOrder, readControl } from "./lib/control-store.mjs";
-import { isMainModule, workOrderAuthorityPath } from "./lib/paths.mjs";
+import {
+  isMainModule,
+  workOrderAuthorityPath,
+  readJsonFile,
+} from "./lib/paths.mjs";
 import {
   CONTRIBUTOR_MISSION_PHASE,
   CONTRIBUTOR_MISSION_POLICY,
@@ -136,7 +146,6 @@ const word = (value) =>
   /^[A-Za-z0-9][A-Za-z0-9._-]*$/u.test(String(value))
     ? String(value)
     : shellQuote(String(value));
-const sha256 = (bytes) => createHash("sha256").update(bytes).digest("hex");
 const regularFile = (path) =>
   existsSync(path) &&
   lstatSync(path).isFile() &&
@@ -462,8 +471,7 @@ export function assertIgnoredStore(launchpad, store) {
   const lane = docRelative(launchpad, "control", RESIDENT_LANE);
   for (const name of STORE_FILES) {
     const path = join(store, name);
-    const asked = spawnSync(
-      "git",
+    const asked = spawnGit(
       ["-C", launchpad, "check-ignore", "-q", "--", path],
       { encoding: "utf8" },
     );
@@ -575,16 +583,12 @@ function writeStore(lane, store, configuration, binding) {
   mkdirSync(lane, { recursive: true, mode: 0o700 });
   if (existsSync(store)) refuse(`store already exists: ${store}`);
   mkdirSync(store, { mode: 0o700 });
-  writeFileSync(
-    join(store, "resident.json"),
-    `${JSON.stringify(configuration, null, 2)}\n`,
-    { mode: 0o600 },
-  );
-  writeFileSync(
-    join(store, "binding.json"),
-    `${JSON.stringify(binding, null, 2)}\n`,
-    { mode: 0o600 },
-  );
+  writeFileSync(join(store, "resident.json"), prettyJson(configuration), {
+    mode: 0o600,
+  });
+  writeFileSync(join(store, "binding.json"), prettyJson(binding), {
+    mode: 0o600,
+  });
 }
 
 /** WO-157 item 6 (WO-100 D006): a resident bound to a declared portfolio is
@@ -762,7 +766,7 @@ export function portfolioMismatches(
 const readJson = (path, label) => {
   if (!regularFile(path)) refuse(`${label} is missing: ${path}`);
   try {
-    return JSON.parse(readFileSync(path, "utf8"));
+    return readJsonFile(path, { rawErrors: true });
   } catch (error) {
     refuse(`${label} is not readable JSON: ${path}: ${error.message}`);
   }

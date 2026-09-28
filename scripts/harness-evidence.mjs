@@ -1,8 +1,9 @@
+import { execGit } from "./lib/git.mjs";
 import { docPath, docRelative, findLaunchpad } from "./lib/config.mjs";
 import { checkEvidenceImports } from "./lib/evidence-sources.mjs";
 import { isMainModule } from "./lib/paths.mjs";
 import assert from "node:assert/strict";
-import { execFileSync } from "node:child_process";
+
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 
@@ -33,7 +34,7 @@ export function checkHarnessEvidence(root) {
   // changes cannot rewrite those observations into a new live run. Current
   // output, runtime replacement and guards are exercised by the full fixtures.
   const historical = JSON.parse(
-    execFileSync("git", ["show", "v0.16.0:.claude/harness-manifest.json"], {
+    execGit(["show", "v0.16.0:.claude/harness-manifest.json"], {
       cwd: root,
       encoding: "utf8",
       maxBuffer: 8 * 1024 * 1024,

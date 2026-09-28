@@ -1,3 +1,5 @@
+import { spawnGit, runGit } from "./lib/git.mjs";
+import { write, json as prettyJson } from "./lib/helpers.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
@@ -44,23 +46,14 @@ const temporary = (prefix, run) => {
   }
 };
 
-const write = (root, path, bytes) => {
-  mkdirSync(dirname(join(root, path)), { recursive: true });
-  writeFileSync(join(root, path), bytes);
-};
-
-const git = (root, ...args) => {
-  const result = spawnSync("git", ["-C", root, ...args], { encoding: "utf8" });
-  assert.equal(result.status, 0, `git ${args.join(" ")}: ${result.stderr}`);
-  return result.stdout.trim();
+const fixtureGitOptions = {
+  maxBuffer: 1024 * 1024,
+  onFailure: (result, args) =>
+    assert.equal(result.status, 0, `git ${args.join(" ")}: ${result.stderr}`),
 };
 
 const declared = (config) => {
-  write(
-    config.root,
-    CONFIG_FILENAME,
-    `${JSON.stringify(config.body, null, 2)}\n`,
-  );
+  write(config.root, CONFIG_FILENAME, prettyJson(config.body));
   return config.root;
 };
 
@@ -433,14 +426,17 @@ await test("configuration root", async (t) => {
           `# Fixture ledger\n\nStatuses: ${declaration}\n\n## 2026-09-21 planning pass — configured roots\n\n- **Configured roots** \`candidate\`\n`,
         );
         write(root, "scripts/refute-plan.mjs", "// fixture introduction\n");
-        git(root, "init", "-q", "-b", "main");
-        git(root, "config", "user.email", "fixture@example.invalid");
-        git(root, "config", "user.name", "Fixture");
-        git(root, "add", ".");
+        runGit(root, ["init", "-q", "-b", "main"], fixtureGitOptions);
+        runGit(
+          root,
+          ["config", "user.email", "fixture@example.invalid"],
+          fixtureGitOptions,
+        );
+        runGit(root, ["config", "user.name", "Fixture"], fixtureGitOptions);
+        runGit(root, ["add", "."], fixtureGitOptions);
         // Date the introduction on the ledger heading's day, not the wall
         // clock: planningPassScope admits passes from the introduction on.
-        const committed = spawnSync(
-          "git",
+        const committed = spawnGit(
           ["-C", root, "commit", "-q", "-m", "configured planning fixture"],
           {
             encoding: "utf8",
@@ -517,6 +513,11 @@ await test("configuration root", async (t) => {
       const launchpad = join(root, "launchpad");
       try {
         mkdirSync(join(tool, "scripts/lib"), { recursive: true });
+        for (const name of ["helpers.mjs", "paths.mjs", "git.mjs"])
+          cpSync(
+            join(sourceRoot, "scripts/lib", name),
+            join(tool, "scripts/lib", name),
+          );
         cpSync(
           join(sourceRoot, "scripts/lib/config.mjs"),
           join(tool, "scripts/lib/config.mjs"),
@@ -592,9 +593,13 @@ await test("configuration root", async (t) => {
           recursive: true,
         });
         installBeaconFixture(root);
-        git(root, "init", "-q", "-b", "wo-999");
-        git(root, "config", "user.email", "fixture@example.invalid");
-        git(root, "config", "user.name", "Fixture");
+        runGit(root, ["init", "-q", "-b", "wo-999"], fixtureGitOptions);
+        runGit(
+          root,
+          ["config", "user.email", "fixture@example.invalid"],
+          fixtureGitOptions,
+        );
+        runGit(root, ["config", "user.name", "Fixture"], fixtureGitOptions);
 
         const order = `${roots.workOrders}/WO-999-fixture.md`;
         write(
@@ -792,13 +797,17 @@ await test("configuration root", async (t) => {
         const origin = join(root, "origin.git");
         const main = join(root, "project");
         assert.equal(
-          spawnSync("git", ["init", "--bare", "-b", "main", origin]).status,
+          spawnGit(["init", "--bare", "-b", "main", origin]).status,
           0,
         );
-        assert.equal(spawnSync("git", ["clone", "-q", origin, main]).status, 0);
-        git(main, "config", "user.email", "fixture@example.invalid");
-        git(main, "config", "user.name", "Fixture");
-        git(main, "switch", "-q", "-c", "main");
+        assert.equal(spawnGit(["clone", "-q", origin, main]).status, 0);
+        runGit(
+          main,
+          ["config", "user.email", "fixture@example.invalid"],
+          fixtureGitOptions,
+        );
+        runGit(main, ["config", "user.name", "Fixture"], fixtureGitOptions);
+        runGit(main, ["switch", "-q", "-c", "main"], fixtureGitOptions);
 
         mkdirSync(join(main, "scripts"), { recursive: true });
         for (const name of ["worktree.mjs", "resume.mjs", "release.mjs"])
@@ -823,9 +832,9 @@ await test("configuration root", async (t) => {
         );
         write(main, "package.json", '{"private":true}\n');
         write(main, ".gitignore", `${roots.control}/local/\n`);
-        git(main, "add", ".");
-        git(main, "commit", "-q", "-m", "fixture");
-        git(main, "push", "-q", "-u", "origin", "main");
+        runGit(main, ["add", "."], fixtureGitOptions);
+        runGit(main, ["commit", "-q", "-m", "fixture"], fixtureGitOptions);
+        runGit(main, ["push", "-q", "-u", "origin", "main"], fixtureGitOptions);
 
         const worktree = (cwd, ...args) => {
           const result = spawnSync(
@@ -896,10 +905,18 @@ await test("configuration root", async (t) => {
           `# Final fixture\n\n**Actor attestation:** ${JSON.stringify(attestation)}\n\n**Process cost:** unknown; cause no-session\n`,
         );
         resume("final-review-result", "pass", ...actor);
-        git(subject, "add", ".");
-        git(subject, "commit", "-q", "-m", "WO-999 closed");
-        git(main, "merge", "-q", "--no-ff", "-m", "merge WO-999", "wo-999");
-        git(main, "push", "-q", "origin", "main");
+        runGit(subject, ["add", "."], fixtureGitOptions);
+        runGit(
+          subject,
+          ["commit", "-q", "-m", "WO-999 closed"],
+          fixtureGitOptions,
+        );
+        runGit(
+          main,
+          ["merge", "-q", "--no-ff", "-m", "merge WO-999", "wo-999"],
+          fixtureGitOptions,
+        );
+        runGit(main, ["push", "-q", "origin", "main"], fixtureGitOptions);
 
         const finished = worktree(main, "finish", "WO-999");
         assert.equal(
@@ -909,7 +926,7 @@ await test("configuration root", async (t) => {
         );
         assert.equal(existsSync(subject), false, "the worktree was removed");
         assert.equal(
-          git(main, "branch", "--list", "wo-999"),
+          runGit(main, ["branch", "--list", "wo-999"], fixtureGitOptions),
           "",
           "the merged branch was removed",
         );

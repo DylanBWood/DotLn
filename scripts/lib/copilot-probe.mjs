@@ -1,3 +1,5 @@
+import { spawnGit } from "./git.mjs";
+import { json, write as writeFixture } from "./helpers.mjs";
 import { docRelative, findLaunchpad } from "./config.mjs";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
@@ -77,11 +79,8 @@ export const copilotLaunchRows = [
     model: "auto",
   },
 ];
-const write = (directory, path, text) => {
-  mkdirSync(dirname(join(directory, path)), { recursive: true });
-  writeFileSync(join(directory, path), text, { mode: 0o600 });
-};
-const json = (value) => JSON.stringify(value, null, 2) + "\n";
+const write = (directory, path, text) =>
+  writeFixture(directory, path, text, { mode: 0o600 });
 const readLines = (path) => {
   let invalidLines = 0;
   const rows = existsSync(path)
@@ -132,13 +131,13 @@ export function prepareCopilotScratch(
   );
   const home = join(directory, "cli-home");
   mkdirSync(home);
-  const init = spawnSync("git", ["init", "--quiet", directory], {
+  const init = spawnGit(["init", "--quiet", directory], {
     encoding: "utf8",
   });
   assert.equal(init.status, 0, init.stderr);
   assert.equal(
     realpathSync(
-      spawnSync("git", ["rev-parse", "--show-toplevel"], {
+      spawnGit(["rev-parse", "--show-toplevel"], {
         cwd: directory,
         encoding: "utf8",
       }).stdout.trim(),

@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { json as prettyJson } from "./lib/helpers.mjs";
 import { docPath, findLaunchpad } from "./lib/config.mjs";
 import { isMainModule } from "./lib/paths.mjs";
 import assert from "node:assert/strict";
@@ -203,10 +204,7 @@ function measure(output) {
       deadlines: summarizeDeadlines(records),
     });
     // Preserve every attempt locally without changing gate inputs between runs.
-    writeFileSync(
-      join(local, "series.json"),
-      JSON.stringify(series, null, 2) + "\n",
-    );
+    writeFileSync(join(local, "series.json"), prettyJson(series));
     console.log(
       `Fresh full gate ${ordinal}/5: exit ${processExitCode}; ${gate?.durationMs ?? "unknown"} ms; ${gate?.freshSuites ?? 0} fresh / ${gate?.reusedSuites ?? 0} reused tasks`,
     );
@@ -214,14 +212,14 @@ function measure(output) {
       console.error(
         "Measurement stopped at the first failure. Diagnose the retained attempt before another series.",
       );
-      writeFileSync(output, JSON.stringify(series, null, 2) + "\n", {
+      writeFileSync(output, prettyJson(series), {
         flag: "wx",
       });
       process.exitCode = 1;
       return;
     }
   }
-  writeFileSync(output, JSON.stringify(series, null, 2) + "\n", { flag: "wx" });
+  writeFileSync(output, prettyJson(series), { flag: "wx" });
   console.log(JSON.stringify(checkMeasurementSeries(series)));
 }
 

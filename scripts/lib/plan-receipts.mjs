@@ -1,12 +1,18 @@
+import {
+  timestamp,
+  validDigest,
+  exact,
+  parseWithLabel as json,
+  ensureDirectory as ensureReceiptDirectory,
+  locked as withReceiptLock,
+  json as prettyJson,
+} from "./helpers.mjs";
 import { defaultDocRelative, docRelative, rootPattern } from "./config.mjs";
 import {
   appendFileSync,
   existsSync,
-  lstatSync,
-  mkdirSync,
   readFileSync,
   readdirSync,
-  rmdirSync,
   writeFileSync,
 } from "node:fs";
 import { join } from "node:path";
@@ -47,8 +53,6 @@ const receiptSchema = "plan-refutation-receipt-v1";
 const validReceiptId = (value) =>
   typeof value === "string" &&
   /^\d{4}-\d{2}-\d{2}-[a-z][a-z0-9-]*-\d{3}$/u.test(value);
-const validDigest = (value) =>
-  typeof value === "string" && /^sha256:[0-9a-f]{64}$/u.test(value);
 const manual = /^2026-09-06-phase-two-redirect(?:-00[2-6])?\.json$/u;
 const stable = (value) =>
   JSON.stringify(value, (_key, item) =>
@@ -64,27 +68,11 @@ const same = (a, b) => stable(a) === stable(b);
 const check = (condition, reason) => {
   if (!condition) throw new Error(reason);
 };
-const exact = (value, keys) =>
-  value &&
-  typeof value === "object" &&
-  !Array.isArray(value) &&
-  Object.keys(value).sort().join(",") === [...keys].sort().join(",");
 const text = (value) =>
   typeof value === "string" &&
   value.trim() &&
   value.length <= 4_000 &&
   !/[\u0000-\u001f\u007f-\u009f\u2028\u2029]/u.test(value);
-const timestamp = (value) =>
-  typeof value === "string" &&
-  /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/u.test(value) &&
-  Number.isFinite(Date.parse(value));
-const json = (source, label) => {
-  try {
-    return JSON.parse(source);
-  } catch {
-    throw new Error(`invalid JSON: ${label}`);
-  }
-};
 const read = (root, path) => {
   check(
     containedRegularFile(join(root, path), root),
@@ -92,6 +80,21 @@ const read = (root, path) => {
   );
   return readFileSync(join(root, path), "utf8");
 };
+const ensureDirectory = (root, path) =>
+  ensureReceiptDirectory(
+    root,
+    path,
+    "planning evidence directory must not be a symlink",
+  );
+const locked = (root, run) =>
+  withReceiptLock(
+    root,
+    receiptsRoot(root),
+    "planning",
+    "planning evidence directory must not be a symlink",
+    run,
+  );
+
 const protocol = () =>
   import("../../packages/skeleton/dist/src/plan-refutation-protocol.js");
 export const addressedHolds = (result) =>
@@ -266,8 +269,7 @@ export async function validateReceipt(root, receipt) {
         e.settingsVerification === "unverified" &&
         e.profileId === "plan-refutation-v1" &&
         timestamp(e.completedAt) &&
-        e.resultHash ===
-          sha256(`${JSON.stringify(receipt.result, null, 2)}\n`) &&
+        e.resultHash === sha256(prettyJson(receipt.result)) &&
         e.judgmentBasis === "canonical-subject-and-protocol" &&
         e.independence === "session-attested" &&
         e.contextIsolation === "not-enforced" &&
@@ -755,35 +757,6 @@ export async function readReceipts(root) {
   return seen;
 }
 
-const ensureDirectory = (root, path) => {
-  let directory = root;
-  for (const part of path.split("/")) {
-    directory = join(directory, part);
-    if (!existsSync(directory)) mkdirSync(directory);
-    check(
-      lstatSync(directory).isDirectory() &&
-        !lstatSync(directory).isSymbolicLink(),
-      "planning evidence directory must not be a symlink",
-    );
-  }
-};
-const locked = async (root, run) => {
-  ensureDirectory(root, receiptsRoot(root));
-  const lock = join(root, receiptsRoot(root), ".writer-lock");
-  try {
-    mkdirSync(lock);
-  } catch {
-    throw new Error(
-      "planning evidence writer already active; inspect any interrupted writer before retrying",
-    );
-  }
-  try {
-    return await run();
-  } finally {
-    rmdirSync(lock);
-  }
-};
-
 export async function writePlanReceipt(
   root,
   { pass, slug, subject, episode, dispositions = [] },
@@ -817,7 +790,7 @@ export async function writePlanReceipt(
       subject,
     );
     if (provenance.kind === "direct-session" && subject.goalReview)
-      provenance.resultHash = sha256(`${JSON.stringify(result, null, 2)}\n`);
+      provenance.resultHash = sha256(prettyJson(result));
     const localTerms = checkLocalTerms(root, [
       { name: "validated-result", text: JSON.stringify(result) },
       {
@@ -857,7 +830,7 @@ export async function writePlanReceipt(
       );
     writeFileSync(
       join(root, receiptsRoot(root), `${receiptId}.json`),
-      `${JSON.stringify(receipt, null, 2)}\n`,
+      prettyJson(receipt),
       { flag: "wx", mode: 0o644 },
     );
     writeFileSync(join(root, receiptsRoot(root), `${receiptId}.md`), md, {

@@ -15,7 +15,7 @@ import {
 } from "node:fs";
 import { dirname, isAbsolute, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { parseWorktrees } from "./lib/git.mjs";
+import { parseWorktrees, runGit } from "./lib/git.mjs";
 import { classifyIgnoredMaterial } from "./lib/paths.mjs";
 import {
   installBeaconFixture,
@@ -36,13 +36,17 @@ import {
   groupCounts,
 } from "../packages/beacons/src/control-codebook.mjs";
 import { validateBeaconDirectory } from "../packages/beacons/src/beacon-io.mjs";
+const fixtureGitOptions = {
+  trim: false,
+  maxBuffer: 1024 * 1024,
+  onFailure: (result) => assert.equal(result.status, 0, result.stderr),
+};
 await test("test-control-beacons", async (t) => {
   let owned,
     scripts,
     root,
     run,
     ok,
-    git,
     left,
     right,
     call,
@@ -87,12 +91,22 @@ await test("test-control-beacons", async (t) => {
         return result.stdout;
       };
 
-      git = (cwd, args) => ok(run(cwd, "git", ["-C", cwd, ...args]));
-
-      git(root, ["init", "-b", "main"]);
-      assert.equal(git(root, ["rev-parse", "--show-toplevel"]).trim(), root);
-      git(root, ["config", "user.name", "DotLn Test"]);
-      git(root, ["config", "user.email", "test@example.invalid"]);
+      runGit(root, ["init", "-b", "main"], { ...fixtureGitOptions, cwd: root });
+      assert.equal(
+        runGit(root, ["rev-parse", "--show-toplevel"], {
+          ...fixtureGitOptions,
+          cwd: root,
+        }).trim(),
+        root,
+      );
+      runGit(root, ["config", "user.name", "DotLn Test"], {
+        ...fixtureGitOptions,
+        cwd: root,
+      });
+      runGit(root, ["config", "user.email", "test@example.invalid"], {
+        ...fixtureGitOptions,
+        cwd: root,
+      });
       cpSync(scripts, join(root, "scripts"), { recursive: true });
       cpSync(join(scripts, "../.gitignore"), join(root, ".gitignore"));
       installBeaconFixture(root);
@@ -102,14 +116,23 @@ await test("test-control-beacons", async (t) => {
           join(root, `docs/work-orders/${id}-fixture.md`),
           `# ${id} fixture\n\n**Model:** any.\n**Effort:** executor any; verifier any; reviewer any.\n`,
         );
-      git(root, ["add", "."]);
-      git(root, ["commit", "-qm", "fixture"]);
+      runGit(root, ["add", "."], { ...fixtureGitOptions, cwd: root });
+      runGit(root, ["commit", "-qm", "fixture"], {
+        ...fixtureGitOptions,
+        cwd: root,
+      });
       left = join(owned, "constellation left");
 
       right = join(owned, "constellation right");
 
-      git(root, ["worktree", "add", "-b", "wo-098", left]);
-      git(root, ["worktree", "add", "-b", "wo-099", right]);
+      runGit(root, ["worktree", "add", "-b", "wo-098", left], {
+        ...fixtureGitOptions,
+        cwd: root,
+      });
+      runGit(root, ["worktree", "add", "-b", "wo-099", right], {
+        ...fixtureGitOptions,
+        cwd: root,
+      });
       call = (cwd, tool, args) =>
         run(cwd, process.execPath, [join(cwd, `scripts/${tool}.mjs`), ...args]);
 

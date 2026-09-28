@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { json } from "./lib/helpers.mjs";
 import { docRelative, findLaunchpad } from "./lib/config.mjs";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
@@ -52,7 +53,6 @@ const evidenceDirectory = currentEvidence(
   "artifact-identity",
 ).directory;
 const read = (path) => readFileSync(new URL(path, root), "utf8");
-const json = (value) => JSON.stringify(value, null, 2) + "\n";
 const baseline = JSON.parse(
   read(docRelative(fileURLToPath(root), "evidence", "WO-029/baseline.json")),
 );

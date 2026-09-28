@@ -1,3 +1,5 @@
+import { json as prettyJson } from "./lib/helpers.mjs";
+import { spawnGit } from "./lib/git.mjs";
 import { findLaunchpad } from "./lib/config.mjs";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
@@ -68,7 +70,7 @@ assert.ok(version);
 const cwd = realpathSync(mkdtempSync(join(tmpdir(), "dotln-effort-probe-")));
 const startedAt = new Date().toISOString();
 try {
-  assert.equal(spawnSync("git", ["init", "--quiet", cwd]).status, 0);
+  assert.equal(spawnGit(["init", "--quiet", cwd]).status, 0);
   const schemaPath = join(cwd, "result.json");
   const schema = {
     type: "object",
@@ -216,24 +218,20 @@ try {
   }
   writeFileSync(
     destination,
-    JSON.stringify(
-      {
-        schemaVersion: 1,
-        workOrder: "WO-125",
-        startedAt,
-        completedAt: new Date().toISOString(),
-        harness: "codex-cli",
-        harnessVersion: version,
-        model: "gpt-6-sol",
-        scope:
-          "five operator-approved synthetic CLI launches outside the parent sandbox; no effective-effort claim",
-        prompt: 'Return exactly {"ok":true}. Do not use tools.',
-        schema,
-        rows,
-      },
-      null,
-      2,
-    ) + "\n",
+    prettyJson({
+      schemaVersion: 1,
+      workOrder: "WO-125",
+      startedAt,
+      completedAt: new Date().toISOString(),
+      harness: "codex-cli",
+      harnessVersion: version,
+      model: "gpt-6-sol",
+      scope:
+        "five operator-approved synthetic CLI launches outside the parent sandbox; no effective-effort claim",
+      prompt: 'Return exactly {"ok":true}. Do not use tools.',
+      schema,
+      rows,
+    }),
     { flag: "wx" },
   );
   if (rows.some((row) => !row.accepted)) process.exitCode = 1;

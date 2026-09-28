@@ -1,3 +1,4 @@
+import { json as prettyJson } from "./lib/helpers.mjs";
 import { docRelative, findLaunchpad } from "./lib/config.mjs";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
@@ -443,10 +444,7 @@ if (mode === "--snapshot") {
       refusal: value.refusal,
     };
   });
-  writeFileSync(
-    join(destination, "manifest.json"),
-    JSON.stringify(manifest, null, 2) + "\n",
-  );
+  writeFileSync(join(destination, "manifest.json"), prettyJson(manifest));
   console.log(
     `Captured ${manifest.length} full Decision/projection observations.`,
   );

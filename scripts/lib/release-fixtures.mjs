@@ -1,3 +1,4 @@
+import { spawnGit } from "./git.mjs";
 import { createHash, randomUUID } from "node:crypto";
 import {
   cpSync,
@@ -13,8 +14,6 @@ import {
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-
-import { spawnSync } from "node:child_process";
 
 const marker = "release-fixture-template.json";
 const roots = ["origin.git", "project"];
@@ -95,8 +94,7 @@ export function copyReleaseTemplate(template, destination) {
   // installs its own local origin after this copy; no refs or writable files
   // are shared with the template or another case.
   const repo = join(destination, "project");
-  const mapping = spawnSync(
-    "git",
+  const mapping = spawnGit(
     [
       "-C",
       repo,
@@ -111,7 +109,7 @@ export function copyReleaseTemplate(template, destination) {
   if (![0, 1].includes(mapping.status))
     throw new Error("Fixture URL mapping unavailable");
   for (const key of mapping.stdout.trim().split("\n").filter(Boolean)) {
-    const result = spawnSync("git", [
+    const result = spawnGit([
       "-C",
       repo,
       "config",

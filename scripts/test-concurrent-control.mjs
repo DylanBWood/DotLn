@@ -1,14 +1,9 @@
+import { write as writeFixture } from "./lib/helpers.mjs";
+import { runGit } from "./lib/git.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import {
-  cpSync,
-  existsSync,
-  mkdirSync,
-  readFileSync,
-  realpathSync,
-  writeFileSync,
-} from "node:fs";
+import { cpSync, existsSync, readFileSync, realpathSync } from "node:fs";
 import { dirname, isAbsolute, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { LEGACY_CONTROL_PATH, orderSegmentPath } from "./lib/control.mjs";
@@ -24,13 +19,17 @@ import {
   recordGateChecks,
 } from "./lib/gate-evidence.mjs";
 import { readIndex } from "./work-orders.mjs";
+const fixtureGitOptions = {
+  maxBuffer: 16 * 1024 * 1024,
+  onFailure: (result) =>
+    assert.equal(result.status, 0, `${result.stdout}\n${result.stderr}`),
+};
 await test("test-concurrent-control", async (t) => {
   let fixture,
     main,
     scriptRoot,
     run,
     ok,
-    git,
     command,
     write,
     commit,
@@ -94,9 +93,13 @@ await test("test-concurrent-control", async (t) => {
         return result.stdout.trim();
       };
 
-      git = (root, args) => ok(run(root, "git", ["-C", root, ...args]));
-
-      assert.equal(git(main, ["rev-parse", "--show-toplevel"]), main);
+      assert.equal(
+        runGit(main, ["rev-parse", "--show-toplevel"], {
+          ...fixtureGitOptions,
+          cwd: main,
+        }),
+        main,
+      );
       command = (root, tool, args) =>
         ok(
           run(root, process.execPath, [
@@ -105,14 +108,14 @@ await test("test-concurrent-control", async (t) => {
           ]),
         );
 
-      write = (root, path, bytes) => {
-        mkdirSync(dirname(join(root, path)), { recursive: true });
-        writeFileSync(join(root, path), bytes);
-      };
+      write = writeFixture;
 
       commit = (root, message) => {
-        git(root, ["add", "."]);
-        git(root, ["commit", "-qm", message]);
+        runGit(root, ["add", "."], { ...fixtureGitOptions, cwd: root });
+        runGit(root, ["commit", "-qm", message], {
+          ...fixtureGitOptions,
+          cwd: root,
+        });
       };
 
       resume = (root, args) => command(root, "resume", args);
@@ -158,7 +161,7 @@ await test("test-concurrent-control", async (t) => {
           "README.md",
           `# Fixture\n\n<!-- DOTLN-RELEASE-BEGIN -->\n\nThis source is DotLn \`${version}\`.\n<!-- DOTLN-RELEASE-END -->\n`,
         );
-        git(root, ["add", "."]);
+        runGit(root, ["add", "."], { ...fixtureGitOptions, cwd: root });
         recordGateChecks(root, [
           {
             checkId: "npm test",
@@ -191,11 +194,11 @@ await test("test-concurrent-control", async (t) => {
           branch,
         ]);
         if (result.status !== 0) {
-          const conflicts = git(root, [
-            "diff",
-            "--name-only",
-            "--diff-filter=U",
-          ]).split("\n");
+          const conflicts = runGit(
+            root,
+            ["diff", "--name-only", "--diff-filter=U"],
+            { ...fixtureGitOptions, cwd: root },
+          ).split("\n");
           assert.ok(conflicts.length > 0);
           assert.ok(
             conflicts.every((path) =>
@@ -225,18 +228,28 @@ await test("test-concurrent-control", async (t) => {
         },
       };
 
-      git(main, [
-        "tag",
-        "-f",
-        "-a",
-        "v0.2.0",
-        "-m",
-        `DotLn v0.2.0 — fixture baseline\n\nDOTLN-MANIFEST-BEGIN\n${JSON.stringify(baseline)}\nDOTLN-MANIFEST-END`,
-      ]);
-      baselineTag = git(main, ["rev-parse", "refs/tags/v0.2.0"]);
+      runGit(
+        main,
+        [
+          "tag",
+          "-f",
+          "-a",
+          "v0.2.0",
+          "-m",
+          `DotLn v0.2.0 — fixture baseline\n\nDOTLN-MANIFEST-BEGIN\n${JSON.stringify(baseline)}\nDOTLN-MANIFEST-END`,
+        ],
+        { ...fixtureGitOptions, cwd: main },
+      );
+      baselineTag = runGit(main, ["rev-parse", "refs/tags/v0.2.0"], {
+        ...fixtureGitOptions,
+        cwd: main,
+      });
 
       // The bare fixture shares no object database; transfer the rewritten fixture tag.
-      git(main, ["push", "--force", "origin", "refs/tags/v0.2.0"]);
+      runGit(main, ["push", "--force", "origin", "refs/tags/v0.2.0"], {
+        ...fixtureGitOptions,
+        cwd: main,
+      });
       assert.ok(baselineTag);
       cpSync(
         join(scriptRoot, "work-orders.mjs"),
@@ -259,7 +272,10 @@ await test("test-concurrent-control", async (t) => {
       );
       refresh(main);
       commit(main, "Concurrent fixture authorities");
-      git(main, ["push", "origin", "main"]);
+      runGit(main, ["push", "origin", "main"], {
+        ...fixtureGitOptions,
+        cwd: main,
+      });
       legacyBytes = readFileSync(join(main, LEGACY_CONTROL_PATH));
 
       subjects = new Map();
@@ -271,7 +287,13 @@ await test("test-concurrent-control", async (t) => {
           `docs/work-orders/${id}-fixture.md`,
         ]);
         const subject = join(fixture, `project-wo${id.slice(3)}`);
-        assert.equal(git(subject, ["rev-parse", "--show-toplevel"]), subject);
+        assert.equal(
+          runGit(subject, ["rev-parse", "--show-toplevel"], {
+            ...fixtureGitOptions,
+            cwd: subject,
+          }),
+          subject,
+        );
         assert.equal(status(subject).workOrder, id);
         subjects.set(id, subject);
       }
@@ -406,7 +428,10 @@ await test("test-concurrent-control", async (t) => {
           .filter((row) => row.phase !== "closed")
           .every((row) => typeof row.elapsed.implementation === "number"),
       );
-      git(main, ["push", "origin", "main"]);
+      runGit(main, ["push", "origin", "main"], {
+        ...fixtureGitOptions,
+        cwd: main,
+      });
     },
   );
   await t.test(
@@ -421,7 +446,10 @@ await test("test-concurrent-control", async (t) => {
         readControl(main).orders.get("WO-902"),
         preMerge.get("WO-902"),
       );
-      git(main, ["push", "origin", "main"]);
+      runGit(main, ["push", "origin", "main"], {
+        ...fixtureGitOptions,
+        cwd: main,
+      });
       finished = command(main, "worktree", ["finish", "WO-901"]);
 
       assert.match(finished, /removed merged wo-901 worktree/);
@@ -434,7 +462,13 @@ await test("test-concurrent-control", async (t) => {
       prepared = command(main, "release", ["close", "WO-901"]);
 
       assert.match(prepared, /Prepared and validated v0.2.1/);
-      assert.equal(git(main, ["tag", "--list", "v0.2.1"]), "");
+      assert.equal(
+        runGit(main, ["tag", "--list", "v0.2.1"], {
+          ...fixtureGitOptions,
+          cwd: main,
+        }),
+        "",
+      );
       assert.match(
         command(main, "release", ["close", "WO-901", "--publish"]),
         /Published annotated v0.2.1/,
@@ -463,7 +497,10 @@ await test("test-concurrent-control", async (t) => {
         ).map((event) => event.workOrderId),
         ["WO-903", "WO-903"],
       );
-      git(main, ["push", "origin", "main"]);
+      runGit(main, ["push", "origin", "main"], {
+        ...fixtureGitOptions,
+        cwd: main,
+      });
       // Revalidate the remaining lane against the integrated base before final review.
       merge(second, "main", "WO-901");
       assert.equal(status(second).workOrder, "WO-902");
@@ -481,7 +518,10 @@ await test("test-concurrent-control", async (t) => {
         readControl(main).orders.get("WO-903"),
         preMerge.get("WO-903"),
       );
-      git(main, ["push", "origin", "main"]);
+      runGit(main, ["push", "origin", "main"], {
+        ...fixtureGitOptions,
+        cwd: main,
+      });
       assert.match(
         command(main, "release", ["close", "WO-902", "--publish"]),
         /Published annotated v0.2.2/,
@@ -523,12 +563,11 @@ await test("test-concurrent-control", async (t) => {
       );
       prior = controlFromSources(new Map());
 
-      for (const revision of git(main, [
-        "rev-list",
-        "--first-parent",
-        "--reverse",
-        "HEAD",
-      ]).split("\n")) {
+      for (const revision of runGit(
+        main,
+        ["rev-list", "--first-parent", "--reverse", "HEAD"],
+        { ...fixtureGitOptions, cwd: main },
+      ).split("\n")) {
         const control = readControl(main, revision);
         addedSegmentEvents(
           prior,
@@ -539,14 +578,18 @@ await test("test-concurrent-control", async (t) => {
       }
       console.log("Concurrent integration fixture Git log:");
       console.log(
-        git(main, [
-          "log",
-          "--graph",
-          "--oneline",
-          "--decorate",
-          "--exclude=refs/dotln/checkpoint/*",
-          "--all",
-        ]),
+        runGit(
+          main,
+          [
+            "log",
+            "--graph",
+            "--oneline",
+            "--decorate",
+            "--exclude=refs/dotln/checkpoint/*",
+            "--all",
+          ],
+          { ...fixtureGitOptions, cwd: main },
+        ),
       );
     },
   );

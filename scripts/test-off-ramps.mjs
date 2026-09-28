@@ -1,3 +1,4 @@
+import { spawnGit } from "./lib/git.mjs";
 // WO-158 off-ramps: each route appends its typed event with the actor
 // attestation, refuses outside its legal phases with the legal list, and
 // projects in status --json and current.md; withdrawn is terminal.
@@ -27,7 +28,7 @@ mkdirSync(join(root, "docs/work-orders"), { recursive: true });
 cpSync(join(scripts, "resume.mjs"), join(root, "scripts/resume.mjs"));
 cpSync(join(scripts, "lib"), join(root, "scripts/lib"), { recursive: true });
 installBeaconFixture(root);
-assert.equal(spawnSync("git", ["init", "-q", root]).status, 0);
+assert.equal(spawnGit(["init", "-q", root]).status, 0);
 cpSync(join(scripts, "../.gitignore"), join(root, ".gitignore"));
 
 // Host session variables would make the fixture judge this session.
@@ -51,10 +52,7 @@ for (const args of [
   ["commit", "-q", "-m", "fixture"],
   ["checkout", "-q", "-b", "wo-099"],
 ])
-  assert.equal(
-    spawnSync("git", ["-C", root, ...args], { env: baseEnv }).status,
-    0,
-  );
+  assert.equal(spawnGit(["-C", root, ...args], { env: baseEnv }).status, 0);
 const call = (args, env = {}) =>
   spawnSync(process.execPath, [join(root, "scripts/resume.mjs"), ...args], {
     cwd: root,

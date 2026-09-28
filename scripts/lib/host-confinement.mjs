@@ -1,5 +1,6 @@
+import { spawnGit } from "./git.mjs";
 import { closeSync, openSync, rmSync } from "node:fs";
-import { spawnSync } from "node:child_process";
+
 import { isAbsolute, join, resolve } from "node:path";
 import { randomUUID } from "node:crypto";
 
@@ -10,7 +11,7 @@ export const OUTSIDE_CONFINEMENT = "outside-sandbox";
 export const CONFINED_PARTIAL_CHECK = "npm test -- --inside-sandbox";
 
 const gitDirectory = (repo) => {
-  const run = spawnSync("git", ["rev-parse", "--git-dir"], {
+  const run = spawnGit(["rev-parse", "--git-dir"], {
     cwd: repo,
     encoding: "utf8",
   });

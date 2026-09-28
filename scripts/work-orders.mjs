@@ -28,7 +28,7 @@ import {
   projectDependencies,
   withdrawnDependencySet,
 } from "./lib/dependencies.mjs";
-import { runGit, runGitPathList } from "./lib/git.mjs";
+import { runGit } from "./lib/git.mjs";
 import {
   containedRegularFile,
   parseJson,

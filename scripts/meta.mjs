@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { json as prettyJson } from "./lib/helpers.mjs";
 import { docPath, findLaunchpad, rootPattern } from "./lib/config.mjs";
 import { isMainModule } from "./lib/paths.mjs";
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
@@ -117,7 +118,7 @@ export async function metaMain(args = process.argv.slice(2), repo = root) {
       })),
       traps: meta.traps,
     };
-    const text = JSON.stringify(table, null, 2) + "\n";
+    const text = prettyJson(table);
     if (Buffer.byteLength(text) > 65536)
       throw new Error(
         "Planning cost table exceeds 64 KB; select the bounded subject rows",
@@ -140,7 +141,7 @@ export async function metaMain(args = process.argv.slice(2), repo = root) {
       );
     if (path.endsWith("meta-baseline.json")) {
       mkdirSync(dirname(join(repo, path)), { recursive: true });
-      writeFileSync(join(repo, path), JSON.stringify(meta, null, 2) + "\n");
+      writeFileSync(join(repo, path), prettyJson(meta));
     } else {
       // WO-170: a later observation is the order's bounded snapshot, as
       // release prepare writes it.

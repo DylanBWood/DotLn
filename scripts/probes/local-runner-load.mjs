@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { isMainModule } from "../lib/paths.mjs";
+import { json } from "../lib/helpers.mjs";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
@@ -352,7 +353,7 @@ async function main() {
     baseline: packet.loadBaseline ?? (await readHealth()),
     record: (loadTest) => {
       packet.loadTest = loadTest;
-      writeFileSync(path, JSON.stringify(packet, null, 2) + "\n");
+      writeFileSync(path, json(packet));
     },
   });
   console.log(

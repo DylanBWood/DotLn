@@ -1,4 +1,5 @@
-import { spawnSync } from "node:child_process";
+import { runGit } from "./git.mjs";
+
 import {
   existsSync,
   mkdirSync,
@@ -20,15 +21,11 @@ export async function classifyDocumentFailures(
 ) {
   const failed = rows.filter((row) => row.exitCode !== 0);
   if (!failed.length) return [];
-  const git = (cwd, args) => {
-    const run = spawnSync("git", args, {
-      cwd,
-      encoding: "utf8",
-      maxBuffer: 32 * 1024 * 1024,
-    });
-    if (run.status !== 0)
-      throw new Error(run.stderr.trim() || "base Git observation failed");
-    return run.stdout.trim();
+  const baseGitOptions = {
+    maxBuffer: 32 * 1024 * 1024,
+    onFailure: (result) => {
+      throw new Error(result.stderr.trim() || "base Git observation failed");
+    },
   };
   const unknown = (reason, base = null) =>
     failed.map(({ name }) => ({
@@ -40,32 +37,31 @@ export async function classifyDocumentFailures(
   let base, temporary;
   try {
     base = against
-      ? git(repo, [
-          "rev-parse",
-          "--verify",
-          "--end-of-options",
-          `${against}^{commit}`,
-        ])
-      : git(repo, ["merge-base", "HEAD", "main"]);
+      ? runGit(
+          repo,
+          ["rev-parse", "--verify", "--end-of-options", `${against}^{commit}`],
+          baseGitOptions,
+        )
+      : runGit(repo, ["merge-base", "HEAD", "main"], baseGitOptions);
     temporary = mkdtempSync(join(tmpdir(), "dotln-document-base-"));
     const copy = join(temporary, "subject");
-    git(repo, [
-      "clone",
-      "--quiet",
-      "--shared",
-      "--no-checkout",
-      "--",
+    runGit(
       repo,
+      ["clone", "--quiet", "--shared", "--no-checkout", "--", repo, copy],
+      baseGitOptions,
+    );
+    runGit(
       copy,
-    ]);
-    git(copy, [
-      "-c",
-      "core.hooksPath=/dev/null",
-      "checkout",
-      "--quiet",
-      "--detach",
-      base,
-    ]);
+      [
+        "-c",
+        "core.hooksPath=/dev/null",
+        "checkout",
+        "--quiet",
+        "--detach",
+        base,
+      ],
+      baseGitOptions,
+    );
     // External dependencies may be shared; workspace packages and build output
     // must belong to the base, never to the current subject.
     const dependencies = join(repo, "node_modules");

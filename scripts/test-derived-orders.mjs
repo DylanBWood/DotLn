@@ -1,3 +1,5 @@
+import { runGit } from "./lib/git.mjs";
+import { write } from "./lib/helpers.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { spawn, spawnSync } from "node:child_process";
@@ -15,7 +17,7 @@ import {
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
-import { dirname, join } from "node:path";
+import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 import { TOOL_ROOT, docPath, docRelative, loadConfig } from "./lib/config.mjs";
 import {
@@ -54,10 +56,6 @@ function compiled() {
     compileLoadout(graph, { ...environment, repo: "self" }),
   ).workOrder;
 }
-const write = (root, path, source) => {
-  mkdirSync(dirname(join(root, path)), { recursive: true });
-  writeFileSync(join(root, path), source);
-};
 const run = (root, script, args = [], success = true) => {
   const result = spawnSync(
     process.execPath,
@@ -73,24 +71,20 @@ const run = (root, script, args = [], success = true) => {
 };
 async function fixture(fn, config) {
   const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-derived-")));
-  const git = (...args) => {
-    const result = spawnSync(
-      "git",
-      [
-        "-c",
-        "core.hooksPath=/dev/null",
-        "-c",
-        "commit.gpgsign=false",
-        "-c",
-        "user.name=Fixture",
-        "-c",
-        "user.email=fixture@example.invalid",
-        ...args,
-      ],
-      { cwd: root, encoding: "utf8" },
-    );
-    assert.equal(result.status, 0, result.stderr);
-    return result.stdout.trim();
+  const fixtureGitFlags = [
+    "-c",
+    "core.hooksPath=/dev/null",
+    "-c",
+    "commit.gpgsign=false",
+    "-c",
+    "user.name=Fixture",
+    "-c",
+    "user.email=fixture@example.invalid",
+  ];
+  const fixtureGitOptions = {
+    cwd: root,
+    maxBuffer: 1024 * 1024,
+    onFailure: (result) => assert.equal(result.status, 0, result.stderr),
   };
   try {
     if (config)
@@ -110,10 +104,27 @@ async function fixture(fn, config) {
       ".gitignore",
       `${docRelative(root, "control", "local")}\nruntime-store/\n`,
     );
-    git("init", "--initial-branch=main");
-    assert.equal(realpathSync(git("rev-parse", "--show-toplevel")), root);
-    git("add", ".");
-    git("commit", "-qm", "Fixture base");
+    runGit(
+      root,
+      [...fixtureGitFlags, "init", "--initial-branch=main"],
+      fixtureGitOptions,
+    );
+    assert.equal(
+      realpathSync(
+        runGit(
+          root,
+          [...fixtureGitFlags, "rev-parse", "--show-toplevel"],
+          fixtureGitOptions,
+        ),
+      ),
+      root,
+    );
+    runGit(root, [...fixtureGitFlags, "add", "."], fixtureGitOptions);
+    runGit(
+      root,
+      [...fixtureGitFlags, "commit", "-qm", "Fixture base"],
+      fixtureGitOptions,
+    );
     return await fn(root);
   } finally {
     rmSync(root, { recursive: true, force: true });

@@ -1,3 +1,4 @@
+import { sha256Hex as digest } from "./helpers.mjs";
 // WO-158 off-ramps: the operator capture every operator act names, the
 // recording session's observed role, and the report convention that judges a
 // waived criterion. Shared by `resume` routes and their completion checks.
@@ -80,7 +81,6 @@ const journalAt = (root, key) => {
     return undefined;
   }
 };
-const digest = (text) => createHash("sha256").update(text).digest("hex");
 const sessionJournals = (root, env) =>
   [
     ...new Set(

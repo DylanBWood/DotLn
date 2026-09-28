@@ -1,11 +1,11 @@
+import { spawnGit } from "./git.mjs";
 import { spawnSync } from "node:child_process";
 
 const failure =
   "origin must identify exactly one matching GitHub HOST/OWNER/REPO fetch and push target";
 
 const remoteUrls = (root, push) => {
-  const resolved = spawnSync(
-    "git",
+  const resolved = spawnGit(
     [
       "-C",
       root,

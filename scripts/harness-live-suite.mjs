@@ -1,3 +1,4 @@
+import { spawnGit } from "./lib/git.mjs";
 import { docPath, findLaunchpad } from "./lib/config.mjs";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
@@ -13,7 +14,7 @@ assert.equal(
   "1",
   "explicit bounded live suite required",
 );
-const git = spawnSync("git", ["rev-parse", "--show-toplevel"], {
+const git = spawnGit(["rev-parse", "--show-toplevel"], {
   cwd: root,
   encoding: "utf8",
 });

@@ -1,3 +1,5 @@
+import { runGit } from "./git.mjs";
+import { json, write as writeFixture } from "./helpers.mjs";
 import { docPath, docRelative, findLaunchpad, rootPattern } from "./config.mjs";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
@@ -9,10 +11,9 @@ import {
   readFileSync,
   realpathSync,
   symlinkSync,
-  writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
-import { dirname, join, sep } from "node:path";
+import { join, sep } from "node:path";
 import { emitHarness, checkHarness } from "./harness.mjs";
 import {
   currentCopilotSession,
@@ -56,12 +57,9 @@ const episodes = [
     event: "VerificationCompleted",
   },
 ];
-const json = (value) => JSON.stringify(value, null, 2) + "\n";
-const write = (root, path, contents) => {
-  mkdirSync(dirname(join(root, path)), { recursive: true });
-  writeFileSync(join(root, path), contents, { mode: 0o600 });
-};
-const run = (cwd, command, args) => {
+const write = (root, path, contents) =>
+  writeFixture(root, path, contents, { mode: 0o600 });
+const fixtureEnvironment = () => {
   const env = { ...process.env };
   for (const key of [
     "COPILOT_AGENT_SESSION_ID",
@@ -70,18 +68,22 @@ const run = (cwd, command, args) => {
     "COPILOT_PROJECT_DIR",
   ])
     delete env[key];
+  return env;
+};
+const run = (cwd, command, args) => {
   return spawnSync(command, args, {
     cwd,
-    env,
+    env: fixtureEnvironment(),
     encoding: "utf8",
     timeout: 30_000,
   });
 };
-const git = (root, ...args) => {
-  const result = run(root, "git", args);
-  assert.equal(result.status, 0, result.stderr);
-  return result.stdout.trim();
-};
+const fixtureGitOptions = () => ({
+  env: fixtureEnvironment(),
+  timeout: 30_000,
+  maxBuffer: 1024 * 1024,
+  onFailure: (result) => assert.equal(result.status, 0, result.stderr),
+});
 const owned = (directory) => {
   const root = realpathSync(directory);
   assert.ok(
@@ -90,7 +92,12 @@ const owned = (directory) => {
       !root.startsWith(`${repository}${sep}`),
     "qualification requires its system-temporary fixture, never DotLn",
   );
-  assert.equal(realpathSync(git(root, "rev-parse", "--show-toplevel")), root);
+  assert.equal(
+    realpathSync(
+      runGit(root, ["rev-parse", "--show-toplevel"], fixtureGitOptions()),
+    ),
+    root,
+  );
   const state = JSON.parse(readFileSync(join(root, statePath), "utf8"));
   assert.equal(state.kind, "copilot-qualification-v1");
   return { root, state };
@@ -171,7 +178,7 @@ export function prepareCopilotQualification({
   const root = realpathSync(
     mkdtempSync(join(parent, "dotln-copilot-qualification-")),
   );
-  git(root, "init", "--quiet", "-b", "wo-999");
+  runGit(root, ["init", "--quiet", "-b", "wo-999"], fixtureGitOptions());
   for (const directory of ["scripts", docRelative(repository, "product")])
     cpSync(join(repository, directory), join(root, directory), {
       recursive: true,
@@ -291,19 +298,22 @@ export function prepareCopilotQualification({
   write(root, statePath, json(state));
   emitHarness(root, { termsRoot: repository });
   checkHarness(root, { termsRoot: repository });
-  git(root, "add", ".");
-  git(
+  runGit(root, ["add", "."], fixtureGitOptions());
+  runGit(
     root,
-    "-c",
-    "user.name=Fixture",
-    "-c",
-    "user.email=fixture@example.invalid",
-    "-c",
-    "commit.gpgsign=false",
-    "commit",
-    "--quiet",
-    "-m",
-    "Create isolated Copilot qualification fixture",
+    [
+      "-c",
+      "user.name=Fixture",
+      "-c",
+      "user.email=fixture@example.invalid",
+      "-c",
+      "commit.gpgsign=false",
+      "commit",
+      "--quiet",
+      "-m",
+      "Create isolated Copilot qualification fixture",
+    ],
+    fixtureGitOptions(),
   );
   assert.equal(status(root).phase, "active");
   for (const script of ["scripts/work-orders.mjs", "scripts/meta.mjs"]) {

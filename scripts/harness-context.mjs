@@ -1,3 +1,4 @@
+import { json as prettyJson } from "./lib/helpers.mjs";
 import { docPath, docRelative, findLaunchpad } from "./lib/config.mjs";
 import { isMainModule } from "./lib/paths.mjs";
 import assert from "node:assert/strict";
@@ -190,7 +191,7 @@ if (isMainModule(import.meta.url)) {
       "evidence",
       "WO-126/harness-context.json",
     );
-    const text = JSON.stringify(result, null, 2) + "\n";
+    const text = prettyJson(result);
     if (process.argv.includes("--write")) {
       mkdirSync(docPath(root, "evidence", "WO-126"), { recursive: true });
       writeFileSync(destination, text);

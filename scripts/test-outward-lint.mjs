@@ -1,16 +1,10 @@
+import { write as writeFixture } from "./lib/helpers.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import {
-  mkdtempSync,
-  mkdirSync,
-  readFileSync,
-  rmSync,
-  symlinkSync,
-  writeFileSync,
-} from "node:fs";
+import { mkdtempSync, readFileSync, rmSync, symlinkSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { dirname, join } from "node:path";
+import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { lintOutwardArtifact } from "./lib/outward-lint.mjs";
 import { checkOutwardArtifact } from "./outward-lint.mjs";
@@ -33,10 +27,7 @@ const rules = (result) => result.findings.map((finding) => finding.rule);
 const fixture = (t, control = "docs/control") => {
   const root = mkdtempSync(join(tmpdir(), "outward-lint-"));
   t.after(() => rmSync(root, { recursive: true, force: true }));
-  const write = (path, text) => {
-    mkdirSync(dirname(join(root, path)), { recursive: true });
-    writeFileSync(join(root, path), text);
-  };
+  const write = (path, text) => writeFixture(root, path, text);
   write(
     "dotln.config.json",
     JSON.stringify({ version: 1, roots: { control } }),
@@ -307,6 +298,7 @@ test("copied CLI runs with relocated documents and no default document tree", (t
     "lib/outward-lint.mjs",
     "lib/config.mjs",
     "lib/paths.mjs",
+    "lib/git.mjs",
     "lib/terms.mjs",
   ])
     write(

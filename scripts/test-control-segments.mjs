@@ -1,3 +1,5 @@
+import { spawnGit } from "./lib/git.mjs";
+import { write as writeFixture } from "./lib/helpers.mjs";
 import test from "node:test";
 import { installBeaconFixture } from "./test-beacon-fixture.mjs";
 import assert from "node:assert/strict";
@@ -80,12 +82,9 @@ await test("test-control-segments", async (t) => {
         recursive: true,
       });
       installBeaconFixture(repo);
-      assert.equal(spawnSync("git", ["init", "-q", repo]).status, 0);
+      assert.equal(spawnGit(["init", "-q", repo]).status, 0);
       writeFileSync(join(repo, ".gitignore"), "docs/control/local/\n");
-      write = (path, bytes) => {
-        mkdirSync(dirname(join(repo, path)), { recursive: true });
-        writeFileSync(join(repo, path), bytes);
-      };
+      write = (path, bytes) => writeFixture(repo, path, bytes);
 
       lines = (events) => events.map(JSON.stringify).join("\n") + "\n";
 

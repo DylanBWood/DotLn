@@ -1,3 +1,4 @@
+import { write } from "./lib/helpers.mjs";
 import test from "node:test";
 import { installBeaconFixture } from "./test-beacon-fixture.mjs";
 import assert from "node:assert/strict";
@@ -41,10 +42,6 @@ const root = process.argv[2];
 assert.ok(root && isAbsolute(root) && realpathSync(root) === root);
 assert.ok(existsSync(join(root, ".dotln-test-root-owner")));
 const check = (label, run) => test(label, run);
-const write = (repo, path, content) => {
-  mkdirSync(dirname(join(repo, path)), { recursive: true });
-  writeFileSync(join(repo, path), content);
-};
 const planningPath = "docs/planning/work-order-map.md";
 const sequenceSource = (items = []) =>
   `# Plan\n\n<!-- dotln-work-order-sequence:start -->\n${items.map(([id, label]) => `- ${id} — ${label}`).join("\n")}\n<!-- dotln-work-order-sequence:end -->\n`;

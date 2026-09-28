@@ -1,7 +1,7 @@
+import { spawnGit } from "./git.mjs";
 import { docPath } from "./config.mjs";
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
-import { spawnSync } from "node:child_process";
 
 export async function requireLifecycleEvidence(
   root,
@@ -10,7 +10,7 @@ export async function requireLifecycleEvidence(
   workOrder,
 ) {
   const started = Date.now();
-  const diff = spawnSync("git", ["diff", "--check"], {
+  const diff = spawnGit(["diff", "--check"], {
     cwd: root,
     encoding: "utf8",
   });

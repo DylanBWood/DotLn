@@ -1,3 +1,5 @@
+import { write as writeFixture, json as prettyJson } from "./helpers.mjs";
+import { spawnGit } from "./git.mjs";
 // WO-044 writing-worker and unattended-launch probe.
 //
 // Each launch runs an installed harness once against a scratch Git worktree
@@ -20,11 +22,10 @@ import {
   readdirSync,
   realpathSync,
   rmSync,
-  statSync,
   writeFileSync,
 } from "node:fs";
 import { homedir, tmpdir } from "node:os";
-import { basename, dirname, join } from "node:path";
+import { basename, join } from "node:path";
 import { pathToFileURL } from "node:url";
 
 export const MARKERS = [
@@ -156,11 +157,8 @@ export function createScratchWorktree({ base = tmpdir() } = {}) {
   const runtimeDirectory = realpathSync(
     mkdtempSync(join(base, "dotln-writing-worker-runtime-")),
   );
-  const write = (path, text) => {
-    mkdirSync(dirname(join(scratch, path)), { recursive: true });
-    writeFileSync(join(scratch, path), text);
-  };
-  const git = spawnSync("git", ["init", "--quiet", scratch], {
+  const write = (path, text) => writeFixture(scratch, path, text);
+  const git = spawnGit(["init", "--quiet", scratch], {
     cwd: scratch,
     encoding: "utf8",
   });
@@ -199,15 +197,11 @@ export function createScratchWorktree({ base = tmpdir() } = {}) {
   );
   write(
     ".claude/settings.json",
-    JSON.stringify(
-      {
-        autoMemoryEnabled: false,
-        permissions: { deny: ["Bash(touch settings-denied.txt)"] },
-        hooks,
-      },
-      null,
-      2,
-    ) + "\n",
+    prettyJson({
+      autoMemoryEnabled: false,
+      permissions: { deny: ["Bash(touch settings-denied.txt)"] },
+      hooks,
+    }),
   );
   const codexHooks = Object.fromEntries(
     HOOK_EVENTS.map((event) => [
@@ -228,9 +222,8 @@ export function createScratchWorktree({ base = tmpdir() } = {}) {
   );
   write(".codex/hooks.json", JSON.stringify({ hooks: codexHooks }, null, 2));
   write(".gitignore", "probe-events.jsonl\ntest-ran\n");
-  spawnSync("git", ["add", "."], { cwd: scratch });
-  spawnSync(
-    "git",
+  spawnGit(["add", "."], { cwd: scratch });
+  spawnGit(
     [
       "-c",
       "user.name=Probe",
@@ -273,7 +266,7 @@ export function observeScratch(tree) {
           }
         })
     : [];
-  const status = spawnSync("git", ["status", "--porcelain"], {
+  const status = spawnGit(["status", "--porcelain"], {
     cwd: tree.scratch,
     encoding: "utf8",
   });
@@ -1145,7 +1138,7 @@ export async function runWritingWorker({
       const path = join(tree.scratch, ".claude/settings.json");
       const settings = JSON.parse(readFileSync(path, "utf8"));
       settings.permissions.deny = [];
-      writeFileSync(path, JSON.stringify(settings, null, 2) + "\n");
+      writeFileSync(path, prettyJson(settings));
     }
     const aliases = tree.aliases;
     const record = {
@@ -1363,7 +1356,7 @@ export async function runWritingWorker({
         (episode) => !codex.codexDigestPairEqual(episode.userConfig),
       );
     }
-    writeFileSync(target, JSON.stringify(record, null, 2) + "\n");
+    writeFileSync(target, prettyJson(record));
     written.push(target);
     process.stdout.write(`${basename(target)}: ${summaryLine(record)}\n`);
   }
@@ -1918,7 +1911,7 @@ export function renderReport({ out = findLaunchpad(), date }) {
       out,
       docRelative(out, "discovery", `writing-worker-smoke-${date}.json`),
     ),
-    JSON.stringify(index, null, 2) + "\n",
+    prettyJson(index),
   );
   // Dated addendum in environment.md, replaced idempotently between markers.
   const environmentPath = docPath(out, "discovery", "environment.md");

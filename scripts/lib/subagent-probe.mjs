@@ -1,3 +1,5 @@
+import { write as writeFixture, json as prettyJson } from "./helpers.mjs";
+import { spawnGit } from "./git.mjs";
 import { TOOL_ROOT } from "./config.mjs";
 import assert from "node:assert/strict";
 import { spawn, spawnSync } from "node:child_process";
@@ -29,23 +31,18 @@ export async function subagentProbe(args) {
     "retain existing observations; choose a new evidence file",
   );
   const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-subagents-")));
-  assert.equal(
-    spawnSync("git", ["init", "--quiet", root], { cwd: root }).status,
-    0,
-  );
+  assert.equal(spawnGit(["init", "--quiet", root], { cwd: root }).status, 0);
   assert.equal(
     realpathSync(
-      spawnSync("git", ["rev-parse", "--show-toplevel"], {
+      spawnGit(["rev-parse", "--show-toplevel"], {
         cwd: root,
         encoding: "utf8",
       }).stdout.trim(),
     ),
     root,
   );
-  const write = (path, contents) => {
-    mkdirSync(dirname(join(root, path)), { recursive: true });
-    writeFileSync(join(root, path), contents, { mode: 0o600 });
-  };
+  const write = (path, contents) =>
+    writeFixture(root, path, contents, { mode: 0o600 });
   const id = randomUUID();
   write("root-session.txt", id);
   write("identity-key.txt", randomBytes(32));
@@ -217,7 +214,7 @@ export async function subagentProbe(args) {
     requestedAgents: 3,
   };
   mkdirSync(dirname(target), { recursive: true });
-  writeFileSync(target, JSON.stringify(record, null, 2) + "\n");
+  writeFileSync(target, prettyJson(record));
   console.log(
     JSON.stringify({
       path: args[0],

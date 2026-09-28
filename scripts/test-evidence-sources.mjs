@@ -1,10 +1,12 @@
+import { json as prettyJson, write } from "./lib/helpers.mjs";
+import { execGit } from "./lib/git.mjs";
 // WO-157 item 12 (WO-151 D001): the recorded evidence inventories follow the
 // import graph. A copy of this repository, with the working tree overlaid,
 // shows a moved request protocol staling the feedback edition, an excluded
 // import admitted with its reason, and an unregistered import refused by name.
 import test from "node:test";
 import assert from "node:assert/strict";
-import { execFileSync, spawnSync } from "node:child_process";
+import { spawnSync } from "node:child_process";
 import {
   appendFileSync,
   cpSync,
@@ -24,7 +26,7 @@ import { TOOL_ROOT } from "./lib/config.mjs";
 import { currentEvidence } from "../packages/skeleton/src/evidence-editions.mjs";
 
 const paths = (...args) =>
-  execFileSync("git", ["-C", TOOL_ROOT, ...args], { encoding: "utf8" })
+  execGit(["-C", TOOL_ROOT, ...args], { encoding: "utf8" })
     .split("\0")
     .filter(Boolean);
 
@@ -39,7 +41,7 @@ function editionCopy(t, { workspace = false } = {}) {
   );
   t.after(() => rmSync(parent, { recursive: true, force: true }));
   const copy = join(parent, "repository");
-  execFileSync("git", ["clone", "--quiet", "--shared", TOOL_ROOT, copy]);
+  execGit(["clone", "--quiet", "--shared", TOOL_ROOT, copy]);
   for (const path of [
     ...paths("diff", "-z", "--name-only", "HEAD"),
     ...paths("ls-files", "-z", "--others", "--exclude-standard"),
@@ -151,10 +153,7 @@ test("WO-157 relative imports resolve compiled and type-only forms as the check 
   const { relativeImports } = await import("./lib/evidence-sources.mjs");
   const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-imports-")));
   t.after(() => rmSync(root, { recursive: true, force: true }));
-  const put = (path, text) => {
-    mkdirSync(dirname(join(root, path)), { recursive: true });
-    writeFileSync(join(root, path), text);
-  };
+  const put = (path, text) => write(root, path, text);
   put("packages/p/src/a.ts", "export const a = 1;\n");
   put("packages/p/src/b.mjs", "export const b = 1;\n");
   put("packages/p/src/c.mjs", "export const c = 1;\n");
@@ -199,10 +198,7 @@ test("WO-157 VER-001 F4: every legal runtime import form is read, and only type 
   const { relativeImports } = await import("./lib/evidence-sources.mjs");
   const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-imports-")));
   t.after(() => rmSync(root, { recursive: true, force: true }));
-  const put = (path, text) => {
-    mkdirSync(dirname(join(root, path)), { recursive: true });
-    writeFileSync(join(root, path), text);
-  };
+  const put = (path, text) => write(root, path, text);
   const runtime = [..."efghijklmqrsvwxyz", "aa", "u$"];
   for (const name of [...runtime, "n", "o", "o2", "o3", "re", "tt"])
     put(`packages/p/src/${name}.mjs`, "export const value = 1;\n");
@@ -300,7 +296,7 @@ test("WO-154 a pins-only change keeps or carries the live audit; a judged change
   assert.deepEqual(pinned, expected);
   for (const name of pinned)
     assert.equal(
-      execFileSync("git", ["hash-object", join(live, "pins", name)], {
+      execGit(["hash-object", join(live, "pins", name)], {
         cwd: copy,
         encoding: "utf8",
       }).trim(),
@@ -320,7 +316,7 @@ test("WO-154 a pins-only change keeps or carries the live audit; a judged change
   const json = (change) => (text) => {
     const value = JSON.parse(text);
     change(value);
-    return `${JSON.stringify(value, null, 2)}\n`;
+    return prettyJson(value);
   };
   const labelled = [
     "package-lock.json",
@@ -403,7 +399,7 @@ test("WO-154 a pins-only change keeps or carries the live audit; a judged change
 
   // A reference nothing can rebuild is stale by its path.
   const stream = join(copy, live, "selfhost-verification.jsonl");
-  const blob = execFileSync("git", ["hash-object", store], {
+  const blob = execGit(["hash-object", store], {
     cwd: copy,
     encoding: "utf8",
   }).trim();
@@ -413,11 +409,9 @@ test("WO-154 a pins-only change keeps or carries the live audit; a judged change
   edit(
     `${live}/edition.json`,
     json((value) => {
-      value.liveAudit.verification.blobHash = execFileSync(
-        "git",
-        ["hash-object", stream],
-        { encoding: "utf8" },
-      ).trim();
+      value.liveAudit.verification.blobHash = execGit(["hash-object", stream], {
+        encoding: "utf8",
+      }).trim();
       value.liveAudit.verification.bytes = Buffer.byteLength(forged);
     }),
   );
@@ -447,7 +441,7 @@ test("WO-154 a rebuilt compiler release needs only the deterministic carry; the 
   const json = (change) => (text) => {
     const value = JSON.parse(text);
     change(value);
-    return `${JSON.stringify(value, null, 2)}\n`;
+    return prettyJson(value);
   };
   const recorded = JSON.parse(
     readFileSync(join(copy, "packages/compiler/package.json"), "utf8"),

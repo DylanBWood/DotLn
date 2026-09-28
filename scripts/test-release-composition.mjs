@@ -1,20 +1,17 @@
+import { write as writeFixture, json as prettyJson } from "./lib/helpers.mjs";
 import assert from "node:assert/strict";
 import {
   appendFileSync,
   existsSync,
-  mkdirSync,
   readFileSync,
   writeFileSync,
 } from "node:fs";
-import { dirname, join } from "node:path";
+import { join } from "node:path";
 import { spawnSync } from "node:child_process";
 import { pathToFileURL } from "node:url";
 
 const [action, root, workOrder = "WO-099"] = process.argv.slice(2);
-const write = (path, value) => {
-  mkdirSync(dirname(join(root, path)), { recursive: true });
-  writeFileSync(join(root, path), value);
-};
+const write = (path, value) => writeFixture(root, path, value);
 const run = (command, args) => {
   const result = spawnSync(command, args, { cwd: root, encoding: "utf8" });
   assert.equal(
@@ -61,7 +58,7 @@ if (action === "record") {
 } else if (action === "prepare") {
   const manifest = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
   manifest.scripts.test = "node scripts/fixture-one-gate.mjs";
-  write("package.json", JSON.stringify(manifest, null, 2) + "\n");
+  write("package.json", prettyJson(manifest));
   write("scripts/fixture-product.mjs", "export const add = (a, b) => a + b;\n");
   write(
     "scripts/fixture-one-gate.mjs",

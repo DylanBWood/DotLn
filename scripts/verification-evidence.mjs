@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { json } from "./lib/helpers.mjs";
 import { findLaunchpad } from "./lib/config.mjs";
 import assert from "node:assert/strict";
 import { mkdtempSync, readFileSync, realpathSync, rmSync } from "node:fs";
@@ -35,7 +36,6 @@ const root = new URL(`${selection.directory}/`, repository);
 const directory = realpathSync(
   mkdtempSync(join(tmpdir(), "dotln-verification-evidence-")),
 );
-const json = (value) => JSON.stringify(value, null, 2) + "\n";
 try {
   let at = 1_000_000;
   let staleStatus;

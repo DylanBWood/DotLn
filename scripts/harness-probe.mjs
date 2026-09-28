@@ -1,3 +1,5 @@
+import { write as writeFixture, json as prettyJson } from "./lib/helpers.mjs";
+import { spawnGit } from "./lib/git.mjs";
 import { docRelative, findLaunchpad } from "./lib/config.mjs";
 import assert from "node:assert/strict";
 import { tmpdir } from "node:os";
@@ -26,7 +28,7 @@ assert.equal(
 );
 assert.equal(
   realpathSync(
-    spawnSync("git", ["rev-parse", "--show-toplevel"], {
+    spawnGit(["rev-parse", "--show-toplevel"], {
       cwd: root,
       encoding: "utf8",
     }).stdout.trim(),
@@ -110,17 +112,14 @@ function phaseZero(mode) {
   const directory = mkdtempSync(
     join(realpathSync(tmpdir()), "dotln-harness-probe-"),
   );
-  const write = (path, text) => {
-    mkdirSync(dirname(join(directory, path)), { recursive: true });
-    writeFileSync(join(directory, path), text);
-  };
+  const write = (path, text) => writeFixture(directory, path, text);
   assert.equal(
-    spawnSync("git", ["init", "--quiet", directory], { cwd: directory }).status,
+    spawnGit(["init", "--quiet", directory], { cwd: directory }).status,
     0,
   );
   assert.equal(
     realpathSync(
-      spawnSync("git", ["rev-parse", "--show-toplevel"], {
+      spawnGit(["rev-parse", "--show-toplevel"], {
         cwd: directory,
         encoding: "utf8",
       }).stdout.trim(),
@@ -156,19 +155,15 @@ function phaseZero(mode) {
   );
   write(
     ".claude/settings.json",
-    JSON.stringify(
-      {
-        autoMemoryEnabled: false,
-        permissions: { deny: ["Bash(touch settings-denied.txt)"] },
-        hooks,
-      },
-      null,
-      2,
-    ) + "\n",
+    prettyJson({
+      autoMemoryEnabled: false,
+      permissions: { deny: ["Bash(touch settings-denied.txt)"] },
+      hooks,
+    }),
   );
   write(".claude/skills/dotln-probe/SKILL.md", skill);
   write(".agents/skills/dotln-probe/SKILL.md", skill);
-  write(".codex/hooks.json", JSON.stringify({ hooks }, null, 2) + "\n");
+  write(".codex/hooks.json", prettyJson({ hooks }));
   const isCodex = mode === "codex";
   const executable = isCodex ? "codex" : "claude";
   const model = isCodex ? "gpt-6-sol" : "claude-fable-5";
@@ -294,7 +289,7 @@ function phaseZero(mode) {
     codexIsolation,
   };
   mkdirSync(dirname(target), { recursive: true });
-  writeFileSync(target, JSON.stringify(record, null, 2) + "\n");
+  writeFileSync(target, prettyJson(record));
   console.log(
     JSON.stringify(
       {

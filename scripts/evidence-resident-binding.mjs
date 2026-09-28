@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { json as prettyJson } from "./lib/helpers.mjs";
 // WO-148's live row: one operator-run bind of a real in-flight order, then one
 // detached resident cycle with the operator marked away, so the cadence judges
 // the worktree the command aimed it at rather than a synthetic one. The filed
@@ -206,7 +207,7 @@ if (process.argv[2] === "--child") {
         "The capsule is pinned when the store is bound, so it judges the worktree as it read at that moment, not as it reads when this row is filed",
       ],
     };
-    writeFileSync(output, `${JSON.stringify(row, null, 2)}\n`);
+    writeFileSync(output, prettyJson(row));
     // The row's own subject: the bind aimed a real store at a real worktree
     // while the operator was away. The judge's verdict never gates this.
     assert.equal(row.binding.storeUnderControlLane, true);

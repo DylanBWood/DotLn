@@ -1,3 +1,4 @@
+import { write, sha256Hex as nativeNoticeHash } from "./lib/helpers.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
@@ -34,10 +35,6 @@ const scope = {
 };
 const now = "2026-09-17T14:32:00.000Z";
 const dispatch = "2026-09-17T14:06:00.000Z";
-const write = (root, path, content) => {
-  mkdirSync(dirname(join(root, path)), { recursive: true });
-  writeFileSync(join(root, path), content);
-};
 const fixture = (t) => {
   const root = mkdtempSync(join(tmpdir(), "dotln-facts-"));
   t.after(() => rmSync(root, { recursive: true, force: true }));
@@ -669,8 +666,6 @@ test("WO-142 B2 non-Codex briefing leaves the facts block to its hook", async ()
   }
 });
 
-const nativeNoticeHash = (value) =>
-  createHash("sha256").update(value).digest("hex");
 const nativeNotice = (id, status = "completed", call = "") =>
   `<task-notification><task-id>${id}</task-id>${call ? `<tool-use-id>${call}</tool-use-id>` : ""}<status>${status}</status><summary>synthetic payload</summary></task-notification>`;
 const nativeNoticeFixture = (t) => {

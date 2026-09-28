@@ -1,3 +1,4 @@
+import { json as prettyJson } from "./lib/helpers.mjs";
 import assert from "node:assert/strict";
 import { tmpdir } from "node:os";
 import { spawnSync } from "node:child_process";
@@ -125,10 +126,7 @@ for (const transport of [
     };
     evidence.runs.push(failed);
     console.log(JSON.stringify(failed));
-    writeFileSync(
-      resolve(option("--evidence")),
-      JSON.stringify(evidence, null, 2) + "\n",
-    );
+    writeFileSync(resolve(option("--evidence")), prettyJson(evidence));
     process.exitCode = 1;
     continue;
   }
@@ -144,10 +142,7 @@ for (const transport of [
     };
     evidence.runs.push(blocked);
     console.log(JSON.stringify(blocked));
-    writeFileSync(
-      resolve(option("--evidence")),
-      JSON.stringify(evidence, null, 2) + "\n",
-    );
+    writeFileSync(resolve(option("--evidence")), prettyJson(evidence));
     process.exitCode = 1;
     continue;
   }
@@ -191,8 +186,5 @@ for (const transport of [
   console.log(
     JSON.stringify({ transport: transport.name, envelope: result.envelope }),
   );
-  writeFileSync(
-    resolve(option("--evidence")),
-    JSON.stringify(evidence, null, 2) + "\n",
-  );
+  writeFileSync(resolve(option("--evidence")), prettyJson(evidence));
 }

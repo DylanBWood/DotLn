@@ -1,9 +1,9 @@
 #!/usr/bin/env node
+import { sha256Hex as sha256, json } from "../lib/helpers.mjs";
 
 // WO-138 live evaluations are explicit. Importing this module performs no
 // inference, starts no runner and invokes no remote transport.
 import { spawn, execFileSync } from "node:child_process";
-import { createHash } from "node:crypto";
 import {
   existsSync,
   mkdirSync,
@@ -73,8 +73,7 @@ const exactKeys = (value, keys) =>
   !Array.isArray(value) &&
   Object.keys(value).sort().join("\0") === [...keys].sort().join("\0");
 
-export const sha256 = (value) =>
-  createHash("sha256").update(value).digest("hex");
+export { sha256 };
 
 export function stableValue(value) {
   if (Array.isArray(value)) return value.map(stableValue);
@@ -970,7 +969,7 @@ function atomicJson(path, value, { replace = false } = {}) {
     dirname(path),
     `.${basename(path)}.${process.pid}.${Date.now()}.part`,
   );
-  writeFileSync(stage, JSON.stringify(value, null, 2) + "\n", { mode: 0o600 });
+  writeFileSync(stage, json(value), { mode: 0o600 });
   renameSync(stage, path);
 }
 

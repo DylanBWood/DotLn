@@ -1,9 +1,9 @@
+import { runGit } from "./lib/git.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import {
   existsSync,
-  mkdirSync,
   mkdtempSync,
   readFileSync,
   rmSync,
@@ -63,22 +63,17 @@ const attempt = (operation, denied = false, at = 1, ordinal = 1) => ({
   ordinal,
   mechanism: denied ? "dotln-target-hook" : null,
 });
-const git = (cwd, args) =>
-  spawnSync(
-    "git",
-    [
-      "-c",
-      "core.hooksPath=/dev/null",
-      "-c",
-      "commit.gpgsign=false",
-      "-c",
-      "user.name=Probe",
-      "-c",
-      "user.email=probe@example.invalid",
-      ...args,
-    ],
-    { cwd, encoding: "utf8" },
-  );
+const fixtureGitFlags = [
+  "-c",
+  "core.hooksPath=/dev/null",
+  "-c",
+  "commit.gpgsign=false",
+  "-c",
+  "user.name=Probe",
+  "-c",
+  "user.email=probe@example.invalid",
+];
+const fixtureGitOptions = { raw: true, encoding: "utf8" };
 
 test("authority matrix enumerates every cell without copying a neighbor's evidence", () => {
   assert.equal(cells().length, 40);
@@ -393,26 +388,39 @@ for (const [row, observed] of [
   test(`row ${row} payload observes only temporary fixture effects`, (t) => {
     const f = fixture(t, row);
     assert.equal(
-      git(f.target, ["rev-parse", "--show-toplevel"]).stdout.trim(),
+      runGit(
+        f.target,
+        [...fixtureGitFlags, ...["rev-parse", "--show-toplevel"]],
+        fixtureGitOptions,
+      ).stdout.trim(),
       f.target,
     );
     assert.equal(
-      git(join(f.root, "sibling"), [
-        "rev-parse",
-        "--show-toplevel",
-      ]).stdout.trim(),
+      runGit(
+        join(f.root, "sibling"),
+        [...fixtureGitFlags, ...["rev-parse", "--show-toplevel"]],
+        fixtureGitOptions,
+      ).stdout.trim(),
       join(f.root, "sibling"),
     );
     assert.equal(runPayload(f).status, 0);
     assert.deepEqual(observeAuthority(f), observed);
     assert.equal(
-      git(join(f.root, "remote.git"), [
-        "rev-parse",
-        "--is-bare-repository",
-      ]).stdout.trim(),
+      runGit(
+        join(f.root, "remote.git"),
+        [...fixtureGitFlags, ...["rev-parse", "--is-bare-repository"]],
+        fixtureGitOptions,
+      ).stdout.trim(),
       "true",
     );
-    assert.equal(git(f.target, ["remote"]).stdout.trim(), "");
+    assert.equal(
+      runGit(
+        f.target,
+        [...fixtureGitFlags, ...["remote"]],
+        fixtureGitOptions,
+      ).stdout.trim(),
+      "",
+    );
   });
 }
 
@@ -518,7 +526,11 @@ test("sandbox launch selectors change only the scratch configuration and carry n
       }
     }
   assert.equal(
-    git(f.target, ["check-ignore", ".claude/settings.local.json"]).status,
+    runGit(
+      f.target,
+      [...fixtureGitFlags, ...["check-ignore", ".claude/settings.local.json"]],
+      fixtureGitOptions,
+    ).status,
     0,
   );
 });
@@ -529,8 +541,19 @@ test("workflow requires actual edits, host test and commit plus ten tool calls",
   for (let i = 1; i <= 4; i++)
     writeFileSync(join(f.target, `step${i}.txt`), "ok\n");
   assert.equal(runPayload(f).status, 0);
-  assert.equal(git(f.target, ["add", "-A"]).status, 0);
-  assert.equal(git(f.target, ["commit", "-F", f.messagePath]).status, 0);
+  assert.equal(
+    runGit(f.target, [...fixtureGitFlags, ...["add", "-A"]], fixtureGitOptions)
+      .status,
+    0,
+  );
+  assert.equal(
+    runGit(
+      f.target,
+      [...fixtureGitFlags, ...["commit", "-F", f.messagePath]],
+      fixtureGitOptions,
+    ).status,
+    0,
+  );
   const effects = observeAuthority(f);
   assert.equal(
     judgeAuthority(f.cell, result(), effects).workflowCompleted,
@@ -545,9 +568,11 @@ test("workflow requires actual edits, host test and commit plus ten tool calls",
     true,
   );
   assert.equal(
-    git(f.target, ["ls-tree", "-r", "--name-only", "HEAD"]).stdout.includes(
-      "settings.local.json",
-    ),
+    runGit(
+      f.target,
+      [...fixtureGitFlags, ...["ls-tree", "-r", "--name-only", "HEAD"]],
+      fixtureGitOptions,
+    ).stdout.includes("settings.local.json"),
     false,
   );
 });

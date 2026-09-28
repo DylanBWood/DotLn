@@ -1,3 +1,4 @@
+import { json as prettyJson } from "./helpers.mjs";
 import { docRelative } from "./config.mjs";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
@@ -226,7 +227,7 @@ export async function beginDirectRefutation(
     );
   mkdirSync(join(root, localPlan(root)), { recursive: true });
   if (!existsSync(join(root, path)))
-    writeFileSync(join(root, path), JSON.stringify(pending, null, 2) + "\n", {
+    writeFileSync(join(root, path), prettyJson(pending), {
       flag: "wx",
     });
   writeFileSync(
@@ -308,7 +309,7 @@ export async function fileDirectRefutation(
     settingsVerification: "unverified",
     profileId: "plan-refutation-v1",
     completedAt,
-    resultHash: sha256(`${JSON.stringify(result, null, 2)}\n`),
+    resultHash: sha256(prettyJson(result)),
     judgmentBasis: "canonical-subject-and-protocol",
     independence: "session-attested",
     contextIsolation: "not-enforced",

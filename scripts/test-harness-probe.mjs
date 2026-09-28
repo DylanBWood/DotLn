@@ -1,3 +1,5 @@
+import { spawnGit } from "./lib/git.mjs";
+import { write } from "./lib/helpers.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
@@ -13,7 +15,7 @@ import {
   writeFileSync,
 } from "node:fs";
 import { hostname, tmpdir } from "node:os";
-import { dirname, join, resolve } from "node:path";
+import { join, resolve } from "node:path";
 import {
   LABELS,
   createScratchWorktree,
@@ -27,10 +29,6 @@ import {
 } from "./lib/writing-worker-probe.mjs";
 
 const repository = resolve(import.meta.dirname, "..");
-const write = (root, path, text) => {
-  mkdirSync(dirname(join(root, path)), { recursive: true });
-  writeFileSync(join(root, path), text);
-};
 
 test("WO-146 Copilot probe refuses live work without opt-in and reduces payload values", async () => {
   const { runCopilotProbe } = await import("./lib/copilot-probe.mjs");
@@ -918,13 +916,13 @@ test("WO-044 the scratch worktree is a committed foreign repository outside this
   const { base } = stubEnvironment(t);
   const tree = createScratchWorktree({ base });
   assert.ok(!tree.scratch.startsWith(repository));
-  const top = spawnSync("git", ["rev-parse", "--show-toplevel"], {
+  const top = spawnGit(["rev-parse", "--show-toplevel"], {
     cwd: tree.scratch,
     encoding: "utf8",
   }).stdout.trim();
   assert.equal(top, tree.scratch);
   assert.equal(
-    spawnSync("git", ["status", "--porcelain"], {
+    spawnGit(["status", "--porcelain"], {
       cwd: tree.scratch,
       encoding: "utf8",
     }).stdout,

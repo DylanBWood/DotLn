@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+import { runGit } from "./lib/git.mjs";
+import { write, json as prettyJson } from "./lib/helpers.mjs";
 import { isMainModule } from "./lib/paths.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
@@ -14,7 +16,7 @@ import {
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
-import { spawnSync } from "node:child_process";
+
 import { fileURLToPath } from "node:url";
 
 import {
@@ -39,18 +41,14 @@ import { canonicalWorkerArgs } from "../packages/skeleton/dist/src/worker-transp
 
 const toolRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 
-const git = (repo, args) => {
-  const run = spawnSync("git", args, { cwd: repo, encoding: "utf8" });
-  assert.equal(run.status, 0, `git ${args.join(" ")}: ${run.stderr}`);
-  return run.stdout.trim();
-};
-const write = (repo, path, body) => {
-  mkdirSync(dirname(join(repo, path)), { recursive: true });
-  writeFileSync(join(repo, path), body);
+const fixtureGitOptions = {
+  maxBuffer: 1024 * 1024,
+  onFailure: (result, args) =>
+    assert.equal(result.status, 0, `git ${args.join(" ")}: ${result.stderr}`),
 };
 const commit = (repo, message) => {
-  git(repo, ["add", "-A"]);
-  git(repo, ["commit", "--quiet", "-m", message]);
+  runGit(repo, ["add", "-A"], fixtureGitOptions);
+  runGit(repo, ["commit", "--quiet", "-m", message], fixtureGitOptions);
 };
 
 /** A launchpad with this repository's document layout and its own Git history.
@@ -60,10 +58,14 @@ function fixtureRepository(parent) {
   // path, and the command refuses a root that is not its own.
   const repo = realpathSync(mkdtempSync(join(parent, "entropy-")));
   fixtureRepositories.push(repo);
-  git(repo, ["init", "--quiet", "-b", "main"]);
-  git(repo, ["config", "user.email", "fixture@example.invalid"]);
-  git(repo, ["config", "user.name", "Fixture"]);
-  git(repo, ["config", "commit.gpgsign", "false"]);
+  runGit(repo, ["init", "--quiet", "-b", "main"], fixtureGitOptions);
+  runGit(
+    repo,
+    ["config", "user.email", "fixture@example.invalid"],
+    fixtureGitOptions,
+  );
+  runGit(repo, ["config", "user.name", "Fixture"], fixtureGitOptions);
+  runGit(repo, ["config", "commit.gpgsign", "false"], fixtureGitOptions);
   write(repo, "README.md", "# Fixture subject\n\nOne tracked file.\n");
   write(repo, "src/module.mjs", "export const value = 1;\n");
   write(
@@ -111,7 +113,7 @@ export async function entropyFixtures() {
         );
       }
       commit(repo, "pre-mechanism pair");
-      const before = git(repo, ["status", "--porcelain"]);
+      const before = runGit(repo, ["status", "--porcelain"], fixtureGitOptions);
       const subject = await entropy(["subject"], repo);
       assert.equal(subject.action, "review");
       assert.ok(!JSON.stringify(subject).includes("undefined"));
@@ -119,7 +121,10 @@ export async function entropyFixtures() {
         "REFUTATION-001",
         "REVIEW-001",
       ]);
-      assert.equal(git(repo, ["status", "--porcelain"]), before);
+      assert.equal(
+        runGit(repo, ["status", "--porcelain"], fixtureGitOptions),
+        before,
+      );
     });
 
     await test("the fake transport drives review, receipt, refute, refutation-receipt and dispose end to end", async () => {
@@ -171,7 +176,7 @@ export async function entropyFixtures() {
       );
       assert.equal(
         receipt.subject.baseCommit,
-        git(repo, ["rev-parse", "HEAD"]),
+        runGit(repo, ["rev-parse", "HEAD"], fixtureGitOptions),
       );
       assert.equal(receipt.compilation.compileInputs.route, "fake");
       assert.equal(
@@ -444,7 +449,7 @@ export async function entropyFixtures() {
         /refuses a dirty tree/u,
         "the working tree's bytes never become the reviewed subject",
       );
-      const head = git(repo, ["rev-parse", "HEAD"]);
+      const head = runGit(repo, ["rev-parse", "HEAD"], fixtureGitOptions);
       const named = await entropy(["review", head], repo);
       assert.equal(
         named.subjectHash.length,
@@ -525,7 +530,7 @@ export async function entropyFixtures() {
 
     await test("the explicit route binds the named commit, not the working tree", async () => {
       const repo = fixtureRepository(parent);
-      const head = git(repo, ["rev-parse", "HEAD"]);
+      const head = runGit(repo, ["rev-parse", "HEAD"], fixtureGitOptions);
       await entropy(["review", head, "--transport", "fake"], repo);
       const pending = currentDispatch(repo, "review");
       // Unrelated working-tree movement during the episode: the subject is the
@@ -898,7 +903,7 @@ export async function entropyFixtures() {
       const original = readFileSync(jsonPath, "utf8");
       const edited = JSON.parse(original);
       edited.findingSummary.total = 99;
-      writeFileSync(jsonPath, `${JSON.stringify(edited, null, 2)}\n`);
+      writeFileSync(jsonPath, prettyJson(edited));
       assert.throws(() => checkEntropyReceipts(repo), /was hand-edited/u);
       writeFileSync(jsonPath, original);
       assert.equal(checkEntropyReceipts(repo).status, "ok");

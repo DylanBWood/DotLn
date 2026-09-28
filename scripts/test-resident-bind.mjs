@@ -1,3 +1,5 @@
+import { spawnGit, runGit } from "./lib/git.mjs";
+import { write, json as prettyJson } from "./lib/helpers.mjs";
 // WO-148 fixtures: a real Git launchpad with an activated order in its own
 // worktree, bound by the actual command. Nothing here is synthesized past the
 // launchpad itself — the store, the capsule and the binding record are the
@@ -83,35 +85,27 @@ const ACTIVATED = {
   workOrderPath: "docs/work-orders/WO-999-fixture.md",
 };
 
-const write = (root, path, bytes) => {
-  mkdirSync(dirname(join(root, path)), { recursive: true });
-  writeFileSync(join(root, path), bytes);
-};
-const git = (root, ...args) => {
-  const result = spawnSync(
-    "git",
-    [
-      "-C",
-      root,
-      "-c",
-      "core.hooksPath=/dev/null",
-      "-c",
-      "commit.gpgsign=false",
-      ...args,
-    ],
-    {
-      encoding: "utf8",
-      env: {
-        ...process.env,
-        GIT_AUTHOR_NAME: "Fixture",
-        GIT_AUTHOR_EMAIL: "fixture@example.invalid",
-        GIT_COMMITTER_NAME: "Fixture",
-        GIT_COMMITTER_EMAIL: "fixture@example.invalid",
-      },
-    },
-  );
-  assert.equal(result.status, 0, `git ${args.join(" ")}: ${result.stderr}`);
-  return result.stdout.trim();
+const fixtureGitFlags = [
+  "-c",
+  "core.hooksPath=/dev/null",
+  "-c",
+  "commit.gpgsign=false",
+];
+const fixtureGitOptions = {
+  maxBuffer: 1024 * 1024,
+  onFailure: (result, args) =>
+    assert.equal(
+      result.status,
+      0,
+      `git ${args.slice(4).join(" ")}: ${result.stderr}`,
+    ),
+  env: {
+    ...process.env,
+    GIT_AUTHOR_NAME: "Fixture",
+    GIT_AUTHOR_EMAIL: "fixture@example.invalid",
+    GIT_COMMITTER_NAME: "Fixture",
+    GIT_COMMITTER_EMAIL: "fixture@example.invalid",
+  },
 };
 
 /** One launchpad on `main`, one worktree on `wo-999` with the order activated
@@ -126,7 +120,11 @@ function fixture(options = {}) {
   const controlRoot = options.controlRoot ?? "docs/control";
   const orderSegment = `${controlRoot}/orders/WO-999.jsonl`;
   mkdirSync(launchpad);
-  git(launchpad, "init", "--initial-branch=main");
+  runGit(
+    launchpad,
+    [...fixtureGitFlags, "init", "--initial-branch=main"],
+    fixtureGitOptions,
+  );
   write(
     launchpad,
     ".gitignore",
@@ -136,22 +134,30 @@ function fixture(options = {}) {
     write(
       launchpad,
       "dotln.config.json",
-      `${JSON.stringify(
-        { version: 1, roots: { control: options.controlRoot } },
-        null,
-        2,
-      )}\n`,
+      prettyJson({ version: 1, roots: { control: options.controlRoot } }),
     );
   write(launchpad, "docs/work-orders/WO-999-fixture.md", CONTRACT);
   write(launchpad, "docs/product/00-vision.md", VISION);
   write(launchpad, "packages/fixture/src/judge.ts", "export const a = 1;\n");
   if (options.decisions)
     write(launchpad, "docs/evidence/WO-999/decisions.md", DECISIONS);
-  git(launchpad, "add", "-A");
-  git(launchpad, "commit", "-m", "fixture baseline");
-  const baseCommit = git(launchpad, "rev-parse", "HEAD");
+  runGit(launchpad, [...fixtureGitFlags, "add", "-A"], fixtureGitOptions);
+  runGit(
+    launchpad,
+    [...fixtureGitFlags, "commit", "-m", "fixture baseline"],
+    fixtureGitOptions,
+  );
+  const baseCommit = runGit(
+    launchpad,
+    [...fixtureGitFlags, "rev-parse", "HEAD"],
+    fixtureGitOptions,
+  );
   const worktree = join(root, "worktree");
-  git(launchpad, "worktree", "add", worktree, "-b", "wo-999", "main");
+  runGit(
+    launchpad,
+    [...fixtureGitFlags, "worktree", "add", worktree, "-b", "wo-999", "main"],
+    fixtureGitOptions,
+  );
   write(worktree, orderSegment, `${JSON.stringify(ACTIVATED)}\n`);
   // Work in flight: branch commits are forbidden before final review, so the
   // change the capsule supervises is ordinarily uncommitted.
@@ -435,14 +441,18 @@ test("every refusal names the missing thing", () =>
     }
     // A branch whose worktree exists but whose control state never activated
     // the order is an unknown order, not a missing worktree.
-    git(
+    runGit(
       context.launchpad,
-      "worktree",
-      "add",
-      join(context.root, "other"),
-      "-b",
-      "wo-998",
-      "main",
+      [
+        ...fixtureGitFlags,
+        "worktree",
+        "add",
+        join(context.root, "other"),
+        "-b",
+        "wo-998",
+        "main",
+      ],
+      fixtureGitOptions,
     );
     const unknown = run(
       context.launchpad,
@@ -502,14 +512,22 @@ test("--check names every mismatch, refuses a launch line and exits non-zero", (
 
     // The worktree moves.
     const moved = join(context.root, "moved");
-    git(context.launchpad, "worktree", "move", context.worktree, moved);
+    runGit(
+      context.launchpad,
+      [...fixtureGitFlags, "worktree", "move", context.worktree, moved],
+      fixtureGitOptions,
+    );
     const relocated = run(context.launchpad, "--check", store);
     assert.equal(relocated.status, 1);
     assert.match(relocated.stdout, /mismatch {3}worktree: the binding names/u);
 
     // The worktree disappears entirely.
     rmSync(moved, { recursive: true, force: true });
-    git(context.launchpad, "worktree", "prune");
+    runGit(
+      context.launchpad,
+      [...fixtureGitFlags, "worktree", "prune"],
+      fixtureGitOptions,
+    );
     const gone = run(context.launchpad, "--check", store);
     assert.equal(gone.status, 1);
     assert.match(gone.stdout, /no worktree for wo-999 exists now/u);
@@ -566,7 +584,7 @@ test("--check names a store retargeted through any declared source field", () =>
     ]) {
       const retargeted = JSON.parse(declared);
       retargeted.actors["mission-check"].missionSource[field] = value;
-      writeFileSync(residentPath, `${JSON.stringify(retargeted, null, 2)}\n`);
+      writeFileSync(residentPath, prettyJson(retargeted));
       const checked = run(context.launchpad, "--check", store);
       assert.equal(checked.status, 1, `${field} was accepted as fresh`);
       assert.match(checked.stdout, /Stale binding for WO-999/u, field);
@@ -583,7 +601,7 @@ test("--check names a store retargeted through any declared source field", () =>
     // would refuse is named rather than read as plain JSON.
     const broken = JSON.parse(declared);
     delete broken.actors["mission-check"].worker;
-    writeFileSync(residentPath, `${JSON.stringify(broken, null, 2)}\n`);
+    writeFileSync(residentPath, prettyJson(broken));
     const undecodable = run(context.launchpad, "--check", store);
     assert.equal(undecodable.status, 1);
     assert.match(
@@ -640,12 +658,15 @@ test("the store and its binding record stay in the ignored control lane", () =>
     const store = storeOf(result.stdout);
     // Nothing the bind wrote can reach a committed surface of the launchpad.
     assert.equal(
-      git(context.launchpad, "status", "--porcelain", "--untracked-files=all"),
+      runGit(
+        context.launchpad,
+        [...fixtureGitFlags, "status", "--porcelain", "--untracked-files=all"],
+        fixtureGitOptions,
+      ),
       "",
     );
     for (const name of ["resident.json", "binding.json"]) {
-      const ignored = spawnSync(
-        "git",
+      const ignored = spawnGit(
         ["-C", context.launchpad, "check-ignore", join(store, name)],
         { encoding: "utf8" },
       );
@@ -668,11 +689,15 @@ test("a configured control lane Git can see refuses the bind that would fill it"
         false,
       );
       assert.equal(
-        git(
+        runGit(
           context.launchpad,
-          "status",
-          "--porcelain",
-          "--untracked-files=all",
+          [
+            ...fixtureGitFlags,
+            "status",
+            "--porcelain",
+            "--untracked-files=all",
+          ],
+          fixtureGitOptions,
         ),
         "",
       );
@@ -689,12 +714,15 @@ test("a configured control root with its ignore rule binds into the ignored lane
       join(context.launchpad, "records/state/local/resident/WO-999-1"),
     );
     assert.equal(
-      git(context.launchpad, "status", "--porcelain", "--untracked-files=all"),
+      runGit(
+        context.launchpad,
+        [...fixtureGitFlags, "status", "--porcelain", "--untracked-files=all"],
+        fixtureGitOptions,
+      ),
       "",
     );
     for (const name of STORE_FILES) {
-      const ignored = spawnSync(
-        "git",
+      const ignored = spawnGit(
         ["-C", context.launchpad, "check-ignore", join(store, name)],
         { encoding: "utf8" },
       );
@@ -710,9 +738,21 @@ test("--base takes the operator's commit and is checked against the worktree", (
       "packages/fixture/src/second.ts",
       "export const b = 1;\n",
     );
-    git(context.worktree, "add", "-A");
-    git(context.worktree, "commit", "-m", "an integrated sibling's commit");
-    const sibling = git(context.worktree, "rev-parse", "HEAD");
+    runGit(
+      context.worktree,
+      [...fixtureGitFlags, "add", "-A"],
+      fixtureGitOptions,
+    );
+    runGit(
+      context.worktree,
+      [...fixtureGitFlags, "commit", "-m", "an integrated sibling's commit"],
+      fixtureGitOptions,
+    );
+    const sibling = runGit(
+      context.worktree,
+      [...fixtureGitFlags, "rev-parse", "HEAD"],
+      fixtureGitOptions,
+    );
     const result = bind(context.launchpad, "--base", sibling);
     assert.equal(result.status, 0, result.stderr);
     const binding = JSON.parse(
@@ -974,9 +1014,21 @@ test("a merge base moved by integrating main is named before any launch line", (
       "packages/fixture/src/main-only.ts",
       "export const m = 1;\n",
     );
-    git(context.launchpad, "add", "-A");
-    git(context.launchpad, "commit", "-m", "main advances");
-    git(context.worktree, "merge", "--no-edit", "main");
+    runGit(
+      context.launchpad,
+      [...fixtureGitFlags, "add", "-A"],
+      fixtureGitOptions,
+    );
+    runGit(
+      context.launchpad,
+      [...fixtureGitFlags, "commit", "-m", "main advances"],
+      fixtureGitOptions,
+    );
+    runGit(
+      context.worktree,
+      [...fixtureGitFlags, "merge", "--no-edit", "main"],
+      fixtureGitOptions,
+    );
     const integrated = run(context.launchpad, "--check", store);
     assert.equal(integrated.status, 1);
     assert.match(
@@ -996,7 +1048,11 @@ test("a merge base moved by integrating main is named before any launch line", (
     );
     assert.equal(
       binding.baseCommit,
-      git(context.launchpad, "rev-parse", "main"),
+      runGit(
+        context.launchpad,
+        [...fixtureGitFlags, "rev-parse", "main"],
+        fixtureGitOptions,
+      ),
     );
     assert.notEqual(binding.baseCommit, context.baseCommit);
   }));
@@ -1122,7 +1178,11 @@ function portfolioFixture() {
   );
   const launchpad = join(root, "launchpad");
   mkdirSync(launchpad);
-  git(launchpad, "init", "--initial-branch=main");
+  runGit(
+    launchpad,
+    [...fixtureGitFlags, "init", "--initial-branch=main"],
+    fixtureGitOptions,
+  );
   write(launchpad, ".gitignore", "/docs/control/local/\n");
   write(launchpad, "packages/skeleton/loadouts/grants.json", "[]\n");
   const config = {
@@ -1148,9 +1208,13 @@ function portfolioFixture() {
       "self-5s": { ...PORTFOLIO, repo: "self" },
     },
   };
-  write(launchpad, "dotln.config.json", `${JSON.stringify(config, null, 2)}\n`);
-  git(launchpad, "add", "-A");
-  git(launchpad, "commit", "-m", "fixture launchpad");
+  write(launchpad, "dotln.config.json", prettyJson(config));
+  runGit(launchpad, [...fixtureGitFlags, "add", "-A"], fixtureGitOptions);
+  runGit(
+    launchpad,
+    [...fixtureGitFlags, "commit", "-m", "fixture launchpad"],
+    fixtureGitOptions,
+  );
   const presence = JSON.parse(
     readFileSync(
       join(sourceRoot, "packages/skeleton/fixtures/wo100-portfolio.json"),
@@ -1187,7 +1251,7 @@ function portfolioFixture() {
     evidence: ["verified-input"],
   };
   const templatePath = join(root, "template.json");
-  writeFileSync(templatePath, `${JSON.stringify(template, null, 2)}\n`);
+  writeFileSync(templatePath, prettyJson(template));
   let stores = 0;
   return {
     root,
