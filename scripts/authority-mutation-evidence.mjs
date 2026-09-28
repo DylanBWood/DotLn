@@ -1,47 +1,62 @@
 #!/usr/bin/env node
+// Historical since WO-163, which closes WO-142 D008. The record beside
+// WO-042's evidence is the 2026-09-09 observation of one fixture snapshot.
+// --check compared every package file, the lockfile, the mutation instrument
+// and this tool with the recorded hashes, so it failed at the first later edit
+// to any of them. --write could not rerun the observation: the instrument's
+// campaign names a Beacon leaf that has left the skeleton package, and a rerun
+// would replace a closed order's record. --check now verifies the record
+// against itself, then that the recorded killing-test titles occur in package
+// test source, and reports the drift. Lexical title presence does not prove
+// active test coverage. The environment scrub is the instrument's.
 import { docPath, findLaunchpad } from "./lib/config.mjs";
 import assert from "node:assert/strict";
 import { tmpdir } from "node:os";
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import {
-  lstatSync,
-  mkdirSync,
-  readFileSync,
-  readlinkSync,
-  realpathSync,
-  symlinkSync,
-  writeFileSync,
-} from "node:fs";
-import { dirname, isAbsolute, join, relative, resolve } from "node:path";
+import { readFileSync, realpathSync } from "node:fs";
+import { join } from "node:path";
 
-import {
-  cleanEnvironment,
-  cleanupScratch,
-  createScratch,
-  linkDependencies,
-  runProcess,
-} from "../corpus/mutation/mutate.mjs";
+import { cleanEnvironment } from "../corpus/mutation/mutate.mjs";
 
 const [mode, ...extra] = process.argv.slice(2);
 assert.ok(
-  ["--write", "--check"].includes(mode) && !extra.length,
-  "usage: authority-mutation-evidence.mjs --write|--check",
+  mode === "--check" && !extra.length,
+  "usage: authority-mutation-evidence.mjs --check (historical record; --write is retired)",
 );
 const root = realpathSync(findLaunchpad());
-const git = (cwd, args, options = {}) =>
+const git = (cwd, args) =>
   execFileSync("git", args, {
     cwd,
     env: cleanEnvironment(realpathSync(tmpdir())),
     encoding: "utf8",
     maxBuffer: 32 * 1024 * 1024,
-    ...options,
   });
 assert.equal(
   realpathSync(git(root, ["rev-parse", "--show-toplevel"]).trim()),
   root,
 );
 const sha256 = (value) => createHash("sha256").update(value).digest("hex");
+const destination = docPath(root, "evidence", "WO-042/mutations");
+const summary = JSON.parse(
+  readFileSync(join(destination, "summary.json"), "utf8"),
+);
+const transcript = readFileSync(join(destination, "reproduce.log"), "utf8");
+assert.equal(sha256(transcript), summary.transcriptSha256);
+for (const [index, id] of ["M00001", "M00002"].entries()) {
+  const result = summary.results[index];
+  assert.equal(result.id, id);
+  assert.equal(result.verdict, "killed-by-test");
+  assert.equal(result.compiled, true);
+  assert.ok(result.killingTests.length > 0);
+  assert.ok(transcript.includes(JSON.stringify(result)));
+  const baseline = summary.baselines[index];
+  assert.equal(baseline.verdict, "survived");
+  assert.equal(baseline.failed, 0);
+  assert.equal(baseline.cancelled, 0);
+  assert.ok(baseline.passed > 0);
+  assert.ok(transcript.includes(`baseline ${JSON.stringify(baseline)}`));
+}
 const inventory = [
   ...new Set(
     git(root, ["ls-files", "-z", "--cached", "--others", "--exclude-standard"])
@@ -49,189 +64,37 @@ const inventory = [
       .filter(Boolean),
   ),
 ].sort();
+// A path the index lists and the working tree lacks counts as changed.
+const current = (path) => {
+  try {
+    return readFileSync(join(root, path));
+  } catch {
+    return null;
+  }
+};
+const tests = inventory
+  .filter((path) => /^packages\/[^/]+\/test\/.*\.ts$/u.test(path))
+  .map((path) => current(path)?.toString() ?? "");
+for (const title of summary.results.flatMap((result) => result.killingTests))
+  assert.ok(
+    tests.some((source) => source.includes(title)),
+    `the record's killing-test title is absent from package test source: ${title}`,
+  );
 const subjectPaths = inventory.filter((path) =>
   /^(?:packages\/|(?:package(?:-lock)?|tsconfig)\.json$|corpus\/mutation\/(?:mutate|enumerate)\.mjs$|scripts\/authority-mutation-evidence\.mjs$)/u.test(
     path,
   ),
 );
-const subjectFiles = subjectPaths.map((path) => ({
-  path,
-  sha256: sha256(readFileSync(join(root, path))),
-}));
-const destination = docPath(root, "evidence", "WO-042/mutations");
-const check = () => {
-  const summary = JSON.parse(
-    readFileSync(join(destination, "summary.json"), "utf8"),
-  );
-  assert.deepEqual(
-    summary.subjectFiles,
-    subjectFiles,
-    "mutation evidence executable subject drift",
-  );
-  const transcript = readFileSync(join(destination, "reproduce.log"), "utf8");
-  assert.equal(sha256(transcript), summary.transcriptSha256);
-  for (const [index, id] of ["M00001", "M00002"].entries()) {
-    const result = summary.results[index];
-    assert.equal(result.id, id);
-    assert.equal(result.verdict, "killed-by-test");
-    assert.equal(result.compiled, true);
-    assert.ok(result.killingTests.length > 0);
-    assert.ok(transcript.includes(JSON.stringify(result)));
-    const baseline = summary.baselines[index];
-    assert.equal(baseline.verdict, "survived");
-    assert.equal(baseline.failed, 0);
-    assert.equal(baseline.cancelled, 0);
-    assert.ok(baseline.passed > 0);
-    assert.ok(transcript.includes(`baseline ${JSON.stringify(baseline)}`));
-  }
-  console.log(
-    "Verified current executable subject, two green baselines and two named mutation test kills.",
-  );
-};
-
-if (mode === "--write") {
-  const handle = createScratch();
-  try {
-    // An isolated fixture Git directory lets the unchanged runner consume the
-    // current uncommitted source. No refs, index or objects in the order change.
-    const scratch = join(handle.path, "tree");
-    mkdirSync(scratch);
-    for (const path of inventory) {
-      const source = join(root, path),
-        target = join(scratch, path);
-      const stat = lstatSync(source);
-      mkdirSync(dirname(target), { recursive: true });
-      if (stat.isSymbolicLink()) {
-        const link = readlinkSync(source);
-        assert.ok(
-          !isAbsolute(link) &&
-            !relative(scratch, resolve(dirname(target), link)).startsWith(".."),
-          "snapshot link must stay contained",
-        );
-        symlinkSync(link, target);
-      } else {
-        assert.ok(stat.isFile(), "snapshot entries must be regular files");
-        writeFileSync(target, readFileSync(source), {
-          flag: "wx",
-          mode: stat.mode & 0o777,
-        });
-      }
-    }
-    git(scratch, [
-      "-c",
-      "init.defaultBranch=authority-mutation-fixture",
-      "init",
-      "--quiet",
-    ]);
-    const objects = realpathSync(
-      resolve(root, git(root, ["rev-parse", "--git-path", "objects"]).trim()),
-    );
-    writeFileSync(
-      join(scratch, ".git/objects/info/alternates"),
-      objects + "\n",
-    );
-    git(scratch, ["add", "--all"]);
-    const tree = git(scratch, ["write-tree"]).trim();
-    const activation = JSON.parse(
-      readFileSync(
-        docPath(root, "evidence", "WO-042/authority-baseline.json"),
-        "utf8",
-      ),
-    ).sourceRevision;
-    const snapshot = git(
-      scratch,
-      [
-        "-c",
-        "user.name=Mutation fixture",
-        "-c",
-        "user.email=fixture@example.invalid",
-        "commit-tree",
-        tree,
-        "-p",
-        activation,
-      ],
-      {
-        input: "WO-042 current-source mutation fixture\n",
-        env: {
-          ...cleanEnvironment(handle.path),
-          GIT_AUTHOR_DATE: "2000-01-01T00:00:00Z",
-          GIT_COMMITTER_DATE: "2000-01-01T00:00:00Z",
-        },
-      },
-    ).trim();
-    writeFileSync(join(scratch, ".git/HEAD"), snapshot + "\n");
-    linkDependencies(scratch, join(root, "node_modules"));
-    let transcript = "";
-    const run = async (...args) => {
-      const command = [
-        "corpus/mutation/mutate.mjs",
-        "--commit",
-        snapshot,
-        ...args,
-      ];
-      const result = await runProcess(process.execPath, command, {
-        cwd: scratch,
-        env: cleanEnvironment(handle.path),
-        timeoutMs: 300000,
-      });
-      assert.equal(result.timedOut, false, "mutation reproduction timeout");
-      assert.equal(result.code, 0, result.output);
-      const output = result.output.split(handle.path).join("<scratch>");
-      transcript += `$ node ${command.join(" ")}\n${output}`;
-      process.stdout.write(output);
-      return output;
-    };
-    await run("--enumerate");
-    const baselines = [],
-      results = [];
-    for (const id of ["M00001", "M00002"]) {
-      const output = await run("--reproduce", id);
-      const lines = output.trimEnd().split("\n");
-      baselines.push(
-        JSON.parse(lines.find((line) => line.startsWith("baseline ")).slice(9)),
-      );
-      results.push(
-        JSON.parse(lines.find((line) => line.startsWith(`{"id":"${id}"`))),
-      );
-      assert.equal(results.at(-1).verdict, "killed-by-test");
-    }
-    const policy = JSON.parse(
-      readFileSync(
-        join(scratch, `corpus/mutation/policy-${snapshot}.json`),
-        "utf8",
-      ),
-    );
-    const sites = readFileSync(
-      join(scratch, `corpus/mutation/sites-${snapshot}.jsonl`),
-      "utf8",
-    )
-      .trimEnd()
-      .split("\n")
-      .map((line) => JSON.parse(line))
-      .filter((site) => ["M00001", "M00002"].includes(site.id));
-    mkdirSync(destination, { recursive: true });
-    writeFileSync(join(destination, "reproduce.log"), transcript);
-    writeFileSync(
-      join(destination, "summary.json"),
-      JSON.stringify(
-        {
-          scope:
-            "Current public worktree snapshot in isolated fixture Git; only F-00001 and F-00002 reproduced. Historical campaign unchanged. Recreate with node scripts/authority-mutation-evidence.mjs --write; snapshot id is temporary, not a source-branch commit.",
-          activation,
-          snapshot,
-          subjectFiles,
-          policy,
-          sites,
-          baselines,
-          results,
-          transcriptSha256: sha256(transcript),
-        },
-        null,
-        2,
-      ) + "\n",
-    );
-  } finally {
-    cleanupScratch(handle);
-  }
-}
-check();
+const recorded = new Map(
+  summary.subjectFiles.map((file) => [file.path, file.sha256]),
+);
+const unchanged = subjectPaths.filter((path) => {
+  const bytes = current(path);
+  return bytes !== null && recorded.get(path) === sha256(bytes);
+}).length;
+console.log(
+  `Historical record verified against itself: snapshot ${summary.snapshot}, two green baselines and two named mutation test kills. Recorded killing-test titles occur in package test source; lexical presence does not establish active test coverage.`,
+);
+console.log(
+  `Executable subject since the record: ${recorded.size} recorded files, ${subjectPaths.length} current, ${unchanged} unchanged. No other claim about current source.`,
+);

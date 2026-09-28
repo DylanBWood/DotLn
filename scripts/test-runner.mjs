@@ -183,6 +183,8 @@ const machinerySources = {
     "scripts/test-release.sh",
     "scripts/lib/suite-evidence.mjs",
     "scripts/lib/release-fixtures.mjs",
+    // WO-163: the release shell runs the library through this entry point.
+    "scripts/release-fixtures.mjs",
     "packages/skeleton/src/gate-evidence.mjs",
     "packages/skeleton/src/gate-deadlines.mjs",
   ],

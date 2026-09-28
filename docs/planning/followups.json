@@ -12046,6 +12046,20 @@
           "title": "WO-142-D008: Decide whether node scripts/authority-mutation-evidence.mjs --check should be regenerated against current source or its reproduction command removed from docs/evidence/WO-042/README.md. A",
           "summary": "{ \"id\": \"WO-142-D008\", \"date\": \"2026-09-19\", \"dispatch\": \"resume: verify\", \"decision\": \"Record, without fixing, that the retained evidence tool named by row A7 already fails its own check mode at the activation commit.\", \"evidence\": [ \"docs/verifications/WO-142/VER-001.md\", \"scripts/authority-mutation-evidence.mjs\", \"docs/evidence/WO-042/README.md\" ], \"rejected\": [ \"Repairing a retained evidence tool during verification would edit implementation.\", \"Treating A7 as not reproduced does not establish that the retained tool still runs.\" ], \"followup\": \"Decide whether `node scripts/authority-mutation-evidence.mjs --check` should be regenerated against current source or its reproduction command re",
           "missing": false
+        },
+        {
+          "hash": "b7fb05ef6e3022bb7472e8ec13ffbca1f6786829064aede3f362b7714623259b",
+          "ref": "docs/evidence/WO-142/decisions.md#wo-142-d008--board-up-the-retained-wo-042-mutation-tools-broken-check",
+          "title": "WO-142-D008: Decide whether node scripts/authority-mutation-evidence.mjs --check should be regenerated against current source or its reproduction command removed from docs/evidence/WO-042/README.md. A",
+          "summary": "{ \"id\": \"WO-142-D008\", \"date\": \"2026-09-19\", \"dispatch\": \"resume: verify\", \"decision\": \"Record, without fixing, that the retained evidence tool named by row A7 already fails its own check mode at the activation commit.\", \"evidence\": [ \"docs/verifications/WO-142/VER-001.md\", \"scripts/authority-mutation-evidence.mjs\", \"docs/evidence/WO-042/README.md\" ], \"rejected\": [ \"Repairing a retained evidence tool during verification would edit implementation.\", \"Treating A7 as not reproduced does not establish that the retained tool still runs.\" ], \"followup\": \"Decide whether `node scripts/authority-mutation-evidence.mjs --check` should be regenerated against current source or its reproduction command re",
+          "missing": false
+        },
+        {
+          "hash": "71e982e74075eab2657a75a8377682df6885fa575cd5e58cb3b23189c230fa32",
+          "ref": "docs/evidence/WO-142/decisions.md#wo-142-d008--board-up-the-retained-wo-042-mutation-tools-broken-check",
+          "title": "WO-142-D008: Decide whether node scripts/authority-mutation-evidence.mjs --check should be regenerated against current source or its reproduction command removed from docs/evidence/WO-042/README.md. A",
+          "summary": "{ \"id\": \"WO-142-D008\", \"date\": \"2026-09-19\", \"dispatch\": \"resume: verify\", \"decision\": \"Record, without fixing, that the retained evidence tool named by row A7 already fails its own check mode at the activation commit.\", \"evidence\": [ \"docs/verifications/WO-142/VER-001.md\", \"scripts/authority-mutation-evidence.mjs\", \"docs/evidence/WO-042/README.md\" ], \"rejected\": [ \"Repairing a retained evidence tool during verification would edit implementation.\", \"Treating A7 as not reproduced does not establish that the retained tool still runs.\" ], \"followup\": \"Decide whether `node scripts/authority-mutation-evidence.mjs --check` should be regenerated against current source or its reproduction command re",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -12066,6 +12080,14 @@
             "WO-163"
           ],
           "at": "2026-09-25T01:51:12.276Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "settled",
+          "reason": "Settled by WO-163 at close, as its criterion 5 requires: WO-163-D008 takes WO-142-D008's second option. The WO-042 reproduction is marked historical beside its evidence in docs/evidence/WO-042/mutations/README.md, --write is retired, and node scripts/authority-mutation-evidence.mjs --check exits 0 on the current tree on a narrower claim, record consistency and lexical title presence (WO-163-D017). [WO-163 final review (docs/final-reviews/WO-163/FINAL-001.md)]",
+          "reopenWhen": "the historical --check fails on the unchanged WO-042 record, or an order wants a current-source mutation reproduction, which writes a new record under its own evidence directory",
+          "targets": [],
+          "at": "2026-09-28T02:36:18.326Z"
         }
       ]
     },
@@ -12201,6 +12223,14 @@
           "reopenWhen": "an order next opens these consumers, a supported input exceeds the batch limit, or a real source-change workload reproduces the reported parser or progress cost",
           "targets": [],
           "at": "2026-09-27T19:06:17.294Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-163's final review: WO-163 opens scripts/test-runner.mjs for one declared-source line in runner-fixtures. TAP selection and the other members are untouched. [WO-163 final review (docs/final-reviews/WO-163/FINAL-001.md)]",
+          "reopenWhen": "an order next opens these consumers, a supported input exceeds the batch limit, or a real source-change workload reproduces the reported parser or progress cost",
+          "targets": [],
+          "at": "2026-09-28T02:36:18.575Z"
         }
       ]
     },
@@ -14036,6 +14066,14 @@
           "reopenWhen": "another repair meets a changed reviewer draft it did not write, or the next order that edits release preparation",
           "targets": [],
           "at": "2026-09-27T23:31:48.328Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-163's final review: WO-163 changes imports and one pattern in scripts/release.mjs and does not edit release preparation. The reviewer drafts it met were written by release prepare and this review, not a repair. [WO-163 final review (docs/final-reviews/WO-163/FINAL-001.md)]",
+          "reopenWhen": "another repair meets a changed reviewer draft it did not write, or the next order that edits release preparation",
+          "targets": [],
+          "at": "2026-09-28T02:36:18.605Z"
         }
       ]
     },
@@ -17531,6 +17569,14 @@
           "reopenWhen": "the next order that touches usage attribution in resume usage or the console board",
           "targets": [],
           "at": "2026-09-27T23:31:48.214Z"
+        },
+        {
+          "sourceRevision": 4,
+          "status": "deferred",
+          "reason": "Deferred again by WO-163's final review: a textual match on the generated control projection. WO-163 does not touch usage attribution, resume usage or the console board. [WO-163 final review (docs/final-reviews/WO-163/FINAL-001.md)]",
+          "reopenWhen": "the next order that touches usage attribution in resume usage or the console board",
+          "targets": [],
+          "at": "2026-09-28T02:36:18.449Z"
         }
       ]
     },
@@ -18774,6 +18820,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-27T23:31:48.068Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "open",
+          "reason": "Kept open by WO-163's final review: a textual match on WO-163's decisions and the decisions index. WO-163's decisions paraphrase the operator's replies (D018, D020, D021) and quote no operator chat. [WO-163 final review (docs/final-reviews/WO-163/FINAL-001.md)]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-28T02:36:18.358Z"
         }
       ]
     },
@@ -18963,6 +19017,14 @@
           "reopenWhen": "a real release close leaves main reserved or reclaims a live session's reservation, or the shell fixture's adapter diverges from the runtime's writer protocol",
           "targets": [],
           "at": "2026-09-27T23:31:48.184Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-163's final review: WO-163 changes three import specifiers and the workflow-tooling pattern in scripts/release.mjs, and the fixture copy line and four entry-point calls in scripts/test-release.sh. Release close, its publish path and the writer protocol are untouched. [WO-163 final review (docs/final-reviews/WO-163/FINAL-001.md)]",
+          "reopenWhen": "a real release close leaves main reserved or reclaims a live session's reservation, or the shell fixture's adapter diverges from the runtime's writer protocol",
+          "targets": [],
+          "at": "2026-09-28T02:36:18.418Z"
         }
       ]
     },
@@ -19414,6 +19476,14 @@
           "reopenWhen": "a script an order adds escapes every machinery suite until the reviewer's gate, or the next order that edits changedMachinery in scripts/test-runner.mjs",
           "targets": [],
           "at": "2026-09-27T19:06:17.263Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-163's final review: WO-163 adds scripts/release-fixtures.mjs, declares it in runner-fixtures in scripts/test-runner.mjs, and staged it before every review gate, so it did not escape the machinery selection. changedMachinery is untouched. [WO-163 final review (docs/final-reviews/WO-163/FINAL-001.md)]",
+          "reopenWhen": "a script an order adds escapes every machinery suite until the reviewer's gate, or the next order that edits changedMachinery in scripts/test-runner.mjs",
+          "targets": [],
+          "at": "2026-09-28T02:36:18.481Z"
         }
       ]
     },
@@ -19581,6 +19651,14 @@
           "reopenWhen": "a planning pass over the standing text, the next order that edits the writer text, or a session acts on one of the named sentences against the shipped behaviour",
           "targets": [],
           "at": "2026-09-27T23:31:48.358Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-163's final review: textual matches on README.md (the release line) and three evidence READMEs. The writer text is untouched. [WO-163 final review (docs/final-reviews/WO-163/FINAL-001.md)]",
+          "reopenWhen": "a planning pass over the standing text, the next order that edits the writer text, or a session acts on one of the named sentences against the shipped behaviour",
+          "targets": [],
+          "at": "2026-09-28T02:36:18.636Z"
         }
       ]
     },
@@ -19783,6 +19861,14 @@
           "reopenWhen": "an operator apply is observed stopping at a stash in one of these states, or the next order that edits scripts/lib/stash-drop.mjs",
           "targets": [],
           "at": "2026-09-27T23:31:48.271Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-163's final review: WO-163 changes one import specifier in scripts/lib/harness-prune.mjs. scripts/lib/stash-drop.mjs is untouched. [WO-163 final review (docs/final-reviews/WO-163/FINAL-001.md)]",
+          "reopenWhen": "an operator apply is observed stopping at a stash in one of these states, or the next order that edits scripts/lib/stash-drop.mjs",
+          "targets": [],
+          "at": "2026-09-28T02:36:18.543Z"
         }
       ]
     },
@@ -19847,6 +19933,14 @@
           "reopenWhen": "a <proof>.partial is found beside a whole proof on the operator's host, or the next order that edits the byte-proof writer in scripts/lib/harness-prune.mjs",
           "targets": [],
           "at": "2026-09-27T23:31:48.127Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-163's final review: WO-163 changes one import specifier in scripts/lib/harness-prune.mjs, and its own meta.json is the order snapshot release prepare writes. The byte-proof writer is untouched. [WO-163 final review (docs/final-reviews/WO-163/FINAL-001.md)]",
+          "reopenWhen": "a <proof>.partial is found beside a whole proof on the operator's host, or the next order that edits the byte-proof writer in scripts/lib/harness-prune.mjs",
+          "targets": [],
+          "at": "2026-09-28T02:36:18.388Z"
         }
       ]
     },
@@ -19992,6 +20086,14 @@
           "reopenWhen": "A DotLn-headlined tag with a non-array notes.changedFiles appears on the operator's tree, or the next order that edits manifestWorkOrders in scripts/lib/release-tags.mjs or the release listing in scripts/release.mjs.",
           "targets": [],
           "at": "2026-09-27T23:31:48.242Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Deferred again by WO-163's final review: WO-163 changes import specifiers and the workflow-tooling pattern in scripts/release.mjs. manifestWorkOrders and the release listing are untouched. [WO-163 final review (docs/final-reviews/WO-163/FINAL-001.md)]",
+          "reopenWhen": "A DotLn-headlined tag with a non-array notes.changedFiles appears on the operator's tree, or the next order that edits manifestWorkOrders in scripts/lib/release-tags.mjs or the release listing in scripts/release.mjs.",
+          "targets": [],
+          "at": "2026-09-28T02:36:18.512Z"
         }
       ]
     },
@@ -20064,6 +20166,262 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-27T23:31:48.387Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-0b0ec2840f54ba3c",
+      "key": "decision:docs/evidence/WO-163/decisions.md#wo-163-d005",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "cd3d6fa430265a43ab3ee23f0011746f80176fc8d6123780010a9e43e863b04d",
+          "ref": "docs/evidence/WO-163/decisions.md#wo-163-d005--three-historical-link-exceptions-for-closed-wo-030-evidence",
+          "title": "WO-163-D005: Operator, then planner, low priority: accept or replace the route WO-163 took for three links from closed WO-030 evidence to scripts it moved (three exceptions in docs/control/doc-baselin",
+          "summary": "{ \"id\": \"WO-163-D005\", \"date\": \"2026-09-27\", \"dispatch\": \"resume: next\", \"decision\": \"A declared choice that awaits the operator's acceptance. docs/control/doc-baseline.json gains three link exceptions for docs/evidence/WO-030/README.md, whose table links to the three scripts at their old paths on lines 80, 81 and 88. Those links resolved when written; this order's move breaks them. They are the first exceptions of that kind: the other 329 missing-file entries name a destination that never existed in history. The README is closed-order evidence, committed once, and is not edited. No rule covers the case. WO-085-D012 admitted an occurrence at the landing when its source bytes were committed a",
+          "missing": false
+        },
+        {
+          "hash": "5b9ea06a8c8949cf922e1fa9e042047655b4fa6fd2ac6c6bf87c766f5823c25b",
+          "ref": "docs/evidence/WO-163/decisions.md#wo-163-d005--three-historical-link-exceptions-for-closed-wo-030-evidence",
+          "title": "WO-163-D005: Operator, then planner, low priority: accept or replace the route WO-163 took for three links from closed WO-030 evidence to scripts it moved (three exceptions in docs/control/doc-baselin",
+          "summary": "{ \"id\": \"WO-163-D005\", \"date\": \"2026-09-27\", \"dispatch\": \"resume: next\", \"decision\": \"A declared choice that awaits the operator's acceptance. docs/control/doc-baseline.json gains three link exceptions for docs/evidence/WO-030/README.md, whose table links to the three scripts at their old paths on lines 80, 81 and 88. Those links resolved when written; this order's move breaks them. They are the first exceptions of that kind: the other 329 missing-file entries name a destination that never existed in history. The README is closed-order evidence, committed once, and is not edited. No rule covers the case. WO-085-D012 admitted an occurrence at the landing when its source bytes were committed a",
+          "missing": false
+        },
+        {
+          "hash": "a94ce79511e7e2f953eacfbd23e15e56de2f43adedde28f61162aeacb6688520",
+          "ref": "docs/evidence/WO-163/decisions.md#wo-163-d005--three-historical-link-exceptions-for-closed-wo-030-evidence",
+          "title": "WO-163-D005: Operator, then planner, low priority: accept or replace the route WO-163 took for three links from closed WO-030 evidence to scripts it moved (three exceptions in docs/control/doc-baselin",
+          "summary": "{ \"id\": \"WO-163-D005\", \"date\": \"2026-09-27\", \"dispatch\": \"resume: next\", \"decision\": \"A declared choice that awaits the operator's acceptance. docs/control/doc-baseline.json gains three link exceptions for docs/evidence/WO-030/README.md, whose table links to the three scripts at their old paths on lines 80, 81 and 88. Those links resolved when written; this order's move breaks them. They are the first exceptions of that kind: the other 329 missing-file entries name a destination that never existed in history. The README is closed-order evidence, committed once, and is not edited. No rule covers the case. WO-085-D012 admitted an occurrence at the landing when its source bytes were committed a",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 3,
+          "status": "settled",
+          "reason": "WO-163-D017 repairs VER-001 F2: the three link destinations now resolve, historical labels/counts are unchanged, and the baseline equals HEAD. The proposed exception-policy extension is withdrawn; no new standing policy is required for this bounded navigation repair.",
+          "reopenWhen": "A repaired destination stops resolving or a later change proposes a new baseline exception.",
+          "targets": [],
+          "at": "2026-09-28T02:09:36.835Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-667e12ad11c15caf",
+      "key": "decision:docs/evidence/WO-163/decisions.md#wo-163-d009",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "a0c47accbc75cd7bc70dc0e4d3986dd0744750f6afdd203e6190758c945f1c8e",
+          "ref": "docs/evidence/WO-163/decisions.md#wo-163-d009--boarded-the-mutation-instrument-cannot-run-on-the-current-tree",
+          "title": "WO-163-D009: Planner, low priority: decide whether a mutation campaign on a current commit is wanted. If it is, corpus/mutation/mutate.mjs loadSnapshot must read blobs without one 128 MiB buffer (the ",
+          "summary": "{ \"id\": \"WO-163-D009\", \"date\": \"2026-09-27\", \"dispatch\": \"resume: next\", \"decision\": \"Record, without fixing, two defects of the WO-108 mutation instrument met while judging D008. loadSnapshot in corpus/mutation/mutate.mjs reads every blob of the commit through one 128 MiB buffer and fails with ENOBUFS on the base commit, whose tree holds 210,774,324 bytes. selectCampaign in corpus/mutation/enumerate.mjs names packages/skeleton/src/beacon-v3-fs.mjs, which moved to packages/beacons, and throws. Neither file is among this order's files, and the recorded WO-108 campaign, which names its own base commit, is not affected by this order.\", \"evidence\": [ \"node, read-only: loadSnapshot(<worktree>, HE",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Opened by WO-163's final review for the planner, low priority: whether a mutation campaign on a current commit is wanted; no gate runs the instrument on a current commit (WO-163-D009). [WO-163 final review (docs/final-reviews/WO-163/FINAL-001.md)]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-28T02:36:18.698Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-7932ccddcde95d4f",
+      "key": "decision:docs/evidence/WO-163/decisions.md#wo-163-d011",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "e039c015e88595e75ef74fed2dc451f1aa0657f07a754710cd9084fff815c8da",
+          "ref": "docs/evidence/WO-163/decisions.md#wo-163-d011--boarded-the-sibling-order-edits-ten-of-the-same-scripts-one-of-them-a-file-this-order-moves",
+          "title": "WO-163-D011: Final review of whichever of WO-162 and WO-163 integrates second: expect conflicts in the ten script paths both orders edit, and before scripts/worktree.mjs runs again change the import W",
+          "summary": "{ \"id\": \"WO-163-D011\", \"date\": \"2026-09-27\", \"dispatch\": \"resume: next\", \"decision\": \"Record, without changing either worktree, that the order's premise of files disjoint from WO-162's does not hold. Read on 2026-09-28 at 01:10Z from the sibling worktree's uncommitted state, which may change: WO-162 edits ten script paths that this order also edits. One is scripts/github-repository.mjs at its old path, where WO-162 adds an import of ./lib/git.mjs. This order renames that file with no content change, so a merge that follows the rename carries the line into scripts/lib/github-repository.mjs without a conflict, and there it resolves to scripts/lib/lib/git.mjs, which does not exist. scripts/work",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Opened by WO-163's final review for whichever of WO-162 and WO-163 integrates second, WO-162 if this pull request merges first: change the import WO-162 adds to the moved scripts/lib/github-repository.mjs from ./lib/git.mjs to ./git.mjs before scripts/worktree.mjs runs, and expect conflicts in the shared script paths (WO-163-D011). [WO-163 final review (docs/final-reviews/WO-163/FINAL-001.md)]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-28T02:36:18.760Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-045a0a480f95bcc7",
+      "key": "decision:docs/evidence/WO-163/decisions.md#wo-163-d012",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "67fcdd0e8a4a463f5083ab645954be0174572761a7fb5e575db186cbc4a132d0",
+          "ref": "docs/evidence/WO-163/decisions.md#wo-163-d012--boarded-two-orders-not-yet-activated-cite-an-old-path",
+          "title": "WO-163-D012: Planner: WO-062 (line 36) and WO-065 (line 47) cite scripts/github-repository.mjs, which WO-163 moved to scripts/lib/github-repository.mjs. Amend both citations before either order is act",
+          "summary": "{ \"id\": \"WO-163-D012\", \"date\": \"2026-09-27\", \"dispatch\": \"resume: next\", \"decision\": \"Record, without editing them, that two draft orders cite scripts/github-repository.mjs among the sections to read: WO-062 at line 36 and WO-065 at line 47. The file now lives at scripts/lib/github-repository.mjs. Order text is bound by the planning receipts and is the planner's to amend. Closed orders WO-025, WO-063, WO-064 and WO-142, and the planning map's rows for WO-064 and WO-163, also name old paths in code text; they describe what those orders touched and stay as written. No check resolves code text, so no gate fails.\", \"evidence\": [ \"docs/evidence/WO-163/greps.txt section 12: every work order and pl",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Opened by WO-163's final review for the planner: WO-062 line 36 and WO-065 line 47 still cite scripts/github-repository.mjs; amend both before either is activated (WO-163-D012). [WO-163 final review (docs/final-reviews/WO-163/FINAL-001.md)]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-28T02:36:18.667Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-44d1b44c82c77064",
+      "key": "decision:docs/evidence/WO-163/decisions.md#wo-163-d014",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "064e43a254c0a48ce6971495ccbcf5f2bb57762926033e0d2cedcc4b58c70cdd",
+          "ref": "docs/evidence/WO-163/decisions.md#wo-163-d014--ver-001-f1-criterion-4-remains-unmet",
+          "title": "WO-163-D014: Repair handoff: preserve the safe generated attribute and resolve VER-001 F1 through an explicitly authorized off-ramp for the unmet criterion, or demonstrate the original requirement wit",
+          "summary": "{ \"id\": \"WO-163-D014\", \"date\": \"2026-09-28\", \"dispatch\": \"resume: verify\", \"decision\": \"Fail criterion 4 as written. The generated attribute is set, but git diff --stat still reports ordinary line counts. D006 correctly disclosed the missing observation; neither its disclosure nor the criterion's parenthetical waives the preceding requirement.\", \"evidence\": [ \"docs/verifications/WO-163/VER-001.md F1\", \".gitattributes line 5\", \"git check-attr dotln-generated diff binary -- docs/planning/followups.json: set, unspecified, unspecified\", \"git diff HEAD --numstat -- docs/planning/followups.json before verifier write-back: 67 additions and 0 deletions\", \"docs/planning/off-ramps-5s-entropy-2026-09-2",
+          "missing": false
+        },
+        {
+          "hash": "809f1a53bc1c90b3e292a68d128c347f50ea12360da9b2d26cefc2e1eb9c22e4",
+          "ref": "docs/evidence/WO-163/decisions.md#wo-163-d014--ver-001-f1-criterion-4-remains-unmet",
+          "title": "WO-163-D014: Repair handoff: preserve the safe generated attribute and resolve VER-001 F1 through an explicitly authorized off-ramp for the unmet criterion, or demonstrate the original requirement wit",
+          "summary": "{ \"id\": \"WO-163-D014\", \"date\": \"2026-09-28\", \"dispatch\": \"resume: verify\", \"decision\": \"Fail criterion 4 as written. The generated attribute is set, but git diff --stat still reports ordinary line counts. D006 correctly disclosed the missing observation; neither its disclosure nor the criterion's parenthetical waives the preceding requirement.\", \"evidence\": [ \"docs/verifications/WO-163/VER-001.md F1\", \".gitattributes line 5\", \"git check-attr dotln-generated diff binary -- docs/planning/followups.json: set, unspecified, unspecified\", \"git diff HEAD --numstat -- docs/planning/followups.json before verifier write-back: 67 additions and 0 deletions\", \"docs/planning/off-ramps-5s-entropy-2026-09-2",
+          "missing": false
+        },
+        {
+          "hash": "a392f6b49178ca69d3aaca37d7676a1ad2bcbb3cb9b3e326e673c3075352ba9e",
+          "ref": "docs/evidence/WO-163/decisions.md#wo-163-d014--ver-001-f1-criterion-4-remains-unmet",
+          "title": "WO-163-D014: Repair handoff: preserve the safe generated attribute and resolve VER-001 F1 through an explicitly authorized off-ramp for the unmet criterion, or demonstrate the original requirement wit",
+          "summary": "{ \"id\": \"WO-163-D014\", \"date\": \"2026-09-28\", \"dispatch\": \"resume: verify\", \"decision\": \"Fail criterion 4 as written. The generated attribute is set, but git diff --stat still reports ordinary line counts. D006 correctly disclosed the missing observation; neither its disclosure nor the criterion's parenthetical waives the preceding requirement.\", \"evidence\": [ \"docs/verifications/WO-163/VER-001.md F1\", \".gitattributes line 5\", \"git check-attr dotln-generated diff binary -- docs/planning/followups.json: set, unspecified, unspecified\", \"git diff HEAD --numstat -- docs/planning/followups.json before verifier write-back: 67 additions and 0 deletions\", \"docs/planning/off-ramps-5s-entropy-2026-09-2",
+          "missing": false
+        },
+        {
+          "hash": "a2ba9c8699374e908a392f693442fbfe0545e629429d352de152d76ffae98f72",
+          "ref": "docs/evidence/WO-163/decisions.md#wo-163-d014--ver-001-f1-criterion-4-remains-unmet",
+          "title": "WO-163-D014: Repair handoff: preserve the safe generated attribute and resolve VER-001 F1 through an explicitly authorized off-ramp for the unmet criterion, or demonstrate the original requirement wit",
+          "summary": "{ \"id\": \"WO-163-D014\", \"date\": \"2026-09-28\", \"dispatch\": \"resume: verify\", \"decision\": \"Fail criterion 4 as written. The generated attribute is set, but git diff --stat still reports ordinary line counts. D006 correctly disclosed the missing observation; neither its disclosure nor the criterion's parenthetical waives the preceding requirement.\", \"evidence\": [ \"docs/verifications/WO-163/VER-001.md F1\", \".gitattributes line 5\", \"git check-attr dotln-generated diff binary -- docs/planning/followups.json: set, unspecified, unspecified\", \"git diff HEAD --numstat -- docs/planning/followups.json before verifier write-back: 67 additions and 0 deletions\", \"docs/planning/off-ramps-5s-entropy-2026-09-2",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 3,
+          "status": "settled",
+          "reason": "WO-163-D018 records the operator-authorized criterion 4 waiver, canonically filed by an independent non-executor at ordinal 6. The original requirement remains unmet, waived by 6; safe generated attribution and textual diff remain.",
+          "reopenWhen": "The waiver is invalidated or executable evidence establishes the original requirement within the planning constraint.",
+          "targets": [],
+          "at": "2026-09-28T02:09:36.866Z"
+        },
+        {
+          "sourceRevision": 4,
+          "status": "settled",
+          "reason": "WO-163-D018 records the operator-authorized criterion 4 waiver, canonically filed by an independent non-executor at ordinal 6. The original requirement remains unmet, waived by 6; safe generated attribution and textual diff remain.",
+          "reopenWhen": "The waiver is invalidated or executable evidence establishes the original requirement within the planning constraint.",
+          "targets": [],
+          "at": "2026-09-28T02:11:11.988Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-ca999c98d351e09a",
+      "key": "decision:docs/evidence/WO-163/decisions.md#wo-163-d016",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "6f850613d71dd820dec5a3cebda676d91e881a35c854747db7b57f44bc10f687",
+          "ref": "docs/evidence/WO-163/decisions.md#wo-163-d016--ver-001-n1-lexical-title-presence-does-not-establish-test-coverage",
+          "title": "WO-163-D016: Repair owner, low priority: narrow the historical note, checker output and D008's current-source claim to lexical title presence plus the independently observed active package tests at th",
+          "summary": "{ \"id\": \"WO-163-D016\", \"date\": \"2026-09-28\", \"dispatch\": \"resume: verify\", \"decision\": \"Record a nonblocking overclaim in the historical mutation check. The check establishes that each killing-test title appears somewhere in package test source. It does not establish that an active test with that title still guards the behavior. The actual two tests are active in the judged tree, so this is not a present compiler-coverage failure and does not defeat criterion 5's historical-disposition arm.\", \"evidence\": [ \"docs/verifications/WO-163/VER-001.md N1 and its in-memory reproduction\", \"scripts/authority-mutation-evidence.mjs lines 75 to 82\", \"docs/evidence/WO-042/mutations/README.md lines 41 to 43",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-163-D017 narrows the checker, historical note and D008 to record consistency and lexical title presence; the comment-only probe now emits that limit, while absent titles fail. Active coverage is a separately dated observation.",
+          "reopenWhen": "The checker or documentation again claims active coverage from lexical title presence.",
+          "targets": [],
+          "at": "2026-09-28T02:09:36.896Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-e96e0676a5c34f98",
+      "key": "decision:docs/evidence/WO-163/decisions.md#wo-163-d020",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "f8777a4ba6d9e13cb734e5ee2aa8d922cff3be4cf85cad22c49cf7c807a55256",
+          "ref": "docs/evidence/WO-163/decisions.md#wo-163-d020--the-criterion-4-waiver-stands-its-recorder-was-the-executor-sessions-helper",
+          "title": "WO-163-D020: Operator, low priority, before final review: confirm that WO-163's criterion 4 waiver, recorded by the executor session's helper, satisfies the authorization. If not, record a disposition",
+          "summary": "{ \"id\": \"WO-163-D020\", \"date\": \"2026-09-28\", \"dispatch\": \"resume: verify\", \"decision\": \"Accept CriterionWaived ordinal 6 as the canonical, operator-authorized disposition of criterion 4, and record as nonblocking who recorded it. The recorder was a helper launched by the executor session after the executor released its writer reservation. The captured question named a different recorder: a non-executor verifier or the operator's own terminal. The operator's authority over the criterion is established; only the recording route departs from the question.\", \"evidence\": [ \"docs/control/orders/WO-163.jsonl CriterionWaived at 2026-09-28T02:07:54.790Z: criterion 4, recordingSession role unobserved,",
+          "missing": false
+        },
+        {
+          "hash": "110e13a1b07f65c813c54877465e3aa41b5ad83902644afacb325170351018fb",
+          "ref": "docs/evidence/WO-163/decisions.md#wo-163-d020--the-criterion-4-waiver-stands-its-recorder-was-the-executor-sessions-helper",
+          "title": "WO-163-D020: Operator, low priority, before final review: confirm that WO-163's criterion 4 waiver, recorded by the executor session's helper, satisfies the authorization. If not, record a disposition",
+          "summary": "{ \"id\": \"WO-163-D020\", \"date\": \"2026-09-28\", \"dispatch\": \"resume: verify\", \"decision\": \"Accept CriterionWaived ordinal 6 as the canonical, operator-authorized disposition of criterion 4, and record as nonblocking who recorded it. The recorder was a helper launched by the executor session after the executor released its writer reservation. The captured question named a different recorder: a non-executor verifier or the operator's own terminal. The operator's authority over the criterion is established; only the recording route departs from the question.\", \"evidence\": [ \"docs/control/orders/WO-163.jsonl CriterionWaived at 2026-09-28T02:07:54.790Z: criterion 4, recordingSession role unobserved,",
+          "missing": false
+        },
+        {
+          "hash": "21ed75f802017e7e9b6c0635dc98cb7a753344e7a266e58e9f0de8c12048a991",
+          "ref": "docs/evidence/WO-163/decisions.md#wo-163-d020--the-criterion-4-waiver-stands-its-recorder-was-the-executor-sessions-helper",
+          "title": "WO-163-D020: Operator, low priority, before final review: confirm that WO-163's criterion 4 waiver, recorded by the executor session's helper, satisfies the authorization. If not, record a disposition",
+          "summary": "{ \"id\": \"WO-163-D020\", \"date\": \"2026-09-28\", \"dispatch\": \"resume: verify\", \"decision\": \"Accept CriterionWaived ordinal 6 as the canonical, operator-authorized disposition of criterion 4, and record as nonblocking who recorded it. The recorder was a helper launched by the executor session after the executor released its writer reservation. The captured question named a different recorder: a non-executor verifier or the operator's own terminal. The operator's authority over the criterion is established; only the recording route departs from the question.\", \"evidence\": [ \"docs/control/orders/WO-163.jsonl CriterionWaived at 2026-09-28T02:07:54.790Z: criterion 4, recordingSession role unobserved,",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 3,
+          "status": "open",
+          "reason": "Narrowed by WO-163's final review: the operator half is void, because the criterion 4 waiver stands on its record and asking the operator to confirm it was the reviewer's error (WO-163-D021). The planner half is carried: under Codex, executorOf did not recognize the executor's helper after the executor released its writer reservation. [WO-163 final review (docs/final-reviews/WO-163/FINAL-001.md)]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-28T02:36:18.790Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-756224e6e2cbf35a",
+      "key": "decision:docs/evidence/WO-163/decisions.md#wo-163-d021",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "7f8a5056fcda8da3016db64c4f97ea4324e2c28d93a01a161f31d0e94aa4dbbd",
+          "ref": "docs/evidence/WO-163/decisions.md#wo-163-d021--correction-the-final-reviewer-asked-the-operator-to-confirm-a-waiver-they-had-already-given",
+          "title": "WO-163-D021: Planner, low priority: when a CriterionWaived event's captureHash matches an operator capture that authorizes that waiver, no later verifier or reviewer routes the recorder question back ",
+          "summary": "{ \"id\": \"WO-163-D021\", \"date\": \"2026-09-28\", \"dispatch\": \"resume: final review\", \"kind\": \"correction\", \"decision\": \"The criterion 4 waiver stands on its canonical record, CriterionWaived ordinal 6, whose operator capture authorizes it and whose SHA-256 equals the event's captureHash. It never needed the operator's confirmation. This final review asked for one anyway; that is the reviewer's failure, recorded as such at the operator's direction.\", \"misread\": \"The final reviewer read D020's follow-up ('Operator, low priority, before final review: confirm ...') as something the operator had to clear before the review could pass, and asked the operator whether the waiver stands. The operator had ",
+          "missing": false
+        },
+        {
+          "hash": "6bab74457cbefc3c55229d675083a9d9ad6e1882809bc56d0f30c9b0f84bf641",
+          "ref": "docs/evidence/WO-163/decisions.md#wo-163-d021--correction-the-final-reviewer-asked-the-operator-to-confirm-a-waiver-they-had-already-given",
+          "title": "WO-163-D021: Planner, low priority: when a CriterionWaived event's captureHash matches an operator capture that authorizes that waiver, no later verifier or reviewer routes the recorder question back ",
+          "summary": "{ \"id\": \"WO-163-D021\", \"date\": \"2026-09-28\", \"dispatch\": \"resume: final review\", \"kind\": \"correction\", \"decision\": \"The criterion 4 waiver stands on its canonical record, CriterionWaived ordinal 6, whose operator capture authorizes it and whose SHA-256 equals the event's captureHash. It never needed the operator's confirmation. This final review asked for one anyway; that is the reviewer's failure, recorded as such at the operator's direction.\", \"misread\": \"The final reviewer read D020's follow-up ('Operator, low priority, before final review: confirm ...') as something the operator had to clear before the review could pass, and asked the operator whether the waiver stands. The operator had ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "open",
+          "reason": "Minted by WO-163's final review for the next planning pass: a hash-matched, operator-authorized off-ramp is judged from the record and never routed back to the operator for confirmation (WO-163-D021). [WO-163 final review (docs/final-reviews/WO-163/FINAL-001.md)]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-28T02:36:18.729Z"
         }
       ]
     }

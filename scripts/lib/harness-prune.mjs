@@ -28,7 +28,7 @@ import { localReleaseRecords } from "./release-records.mjs";
 import {
   environmentWithoutGhRepo,
   resolveGitHubPushTarget,
-} from "../github-repository.mjs";
+} from "./github-repository.mjs";
 import { activeGateRuns } from "./gate-evidence.mjs";
 import {
   harnessWriterView,

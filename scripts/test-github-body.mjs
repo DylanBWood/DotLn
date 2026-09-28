@@ -4,7 +4,7 @@ import { readFile } from "node:fs/promises";
 import {
   assertGitHubBodyProfile,
   githubBodyProfileFailures,
-} from "./github-body.mjs";
+} from "./lib/github-body.mjs";
 
 const prettierConfig = JSON.parse(
   await readFile(new URL("../.prettierrc.json", import.meta.url), "utf8"),
@@ -158,7 +158,7 @@ await test("GitHub prose profile case 12", () => {
 });
 
 // WO-064: the target pull-request generator is pure over its artifacts.
-const { generateTargetPullRequest } = await import("./github-body.mjs");
+const { generateTargetPullRequest } = await import("./lib/github-body.mjs");
 const { lintOutwardArtifact } = await import("./lib/outward-lint.mjs");
 const vocabulary = JSON.parse(
   await readFile(

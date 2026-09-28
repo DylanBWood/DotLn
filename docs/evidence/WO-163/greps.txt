@@ -1,0 +1,124 @@
+WO-163 grep transcripts
+
+Recorded 2026-09-28T01:17:55Z on branch wo-163 over base 6f949464, working tree as delivered.
+Paths are relative to the worktree root. git grep reads tracked files and exits 1 when nothing matches.
+Every search excludes docs/evidence/WO-163, this order's own evidence.
+
+## 1. The order's first step: fixture and discovery pins naming the three files
+
+$ git grep -n -o -E '[a-z-]*(github-body\.mjs|github-repository\.mjs|release-notes\.mjs)' -- docs/discovery scripts/fixtures
+scripts/fixtures/runner-baseline-v0.16.0.json:12:test-github-body.mjs
+[exit 0]
+
+## 2. Code, tests, harness files and live documents that name the three files (recorded history, work orders, the planning root and the generated indexes are sections 3 and 12)
+
+$ git grep -n -E '(^|[^-])(github-body|github-repository|release-notes)\.mjs' -- . ':!docs/evidence' ':!docs/verifications' ':!docs/final-reviews' ':!docs/planning' ':!docs/control' ':!docs/work-orders' ':!docs/lineage' ':!corpus/manifests' ':!scripts/fixtures'
+scripts/lib/harness-prune.mjs:31:} from "./github-repository.mjs";
+scripts/lib/target-publish.mjs:28:} from "./github-body.mjs";
+scripts/lib/target-publish.mjs:33:} from "./github-repository.mjs";
+scripts/release.mjs:27:} from "./lib/release-notes.mjs";
+scripts/release.mjs:31:} from "./lib/github-repository.mjs";
+scripts/release.mjs:35:} from "./lib/github-body.mjs";
+scripts/test-github-body.mjs:7:} from "./lib/github-body.mjs";
+scripts/test-github-body.mjs:161:const { generateTargetPullRequest } = await import("./lib/github-body.mjs");
+scripts/test-worktree.sh:237:node --input-type=module - "$main/scripts/lib/release-notes.mjs" <<'NODE'
+scripts/worktree.mjs:11:} from "./lib/github-body.mjs";
+scripts/worktree.mjs:15:} from "./lib/release-notes.mjs";
+scripts/worktree.mjs:20:} from "./lib/github-repository.mjs";
+[exit 0]
+
+## 3. Markdown links to the old paths, which the document check resolves
+
+$ git grep -n -o -E '\]\([^)]*scripts/(github-body|github-repository|release-notes)\.mjs\)' -- . ':!docs/evidence/WO-163'
+docs/evidence/WO-030/README.md:80:](../../../scripts/github-body.mjs)
+docs/evidence/WO-030/README.md:81:](../../../scripts/github-repository.mjs)
+docs/evidence/WO-030/README.md:88:](../../../scripts/release-notes.mjs)
+[exit 0]
+
+## 4. Command blocks under scripts/lib
+
+$ git grep -n -E 'isMainModule\(|process\.argv|process\.exit|import\.meta\.main|^#!' -- scripts/lib
+scripts/lib/paths.mjs:257:export const isMainModule = (moduleUrl, entry = process.argv[1]) => {
+[exit 0]
+
+## 5. What runs release-fixtures as a command
+
+$ git grep -n -E 'release-fixtures\.mjs"? (list|save|copy)' -- . ':!docs/evidence/WO-163'
+scripts/release-fixtures.mjs:17:          "usage: release-fixtures.mjs list <repo> | save|copy <source> <destination>",
+scripts/test-release.sh:68:    "$node_bin" "$script_dir/release-fixtures.mjs" copy "$release_template" "$fixture"
+scripts/test-release.sh:1654:  "$node_bin" "$script_dir/release-fixtures.mjs" save "$fixture" "$prepare_template"
+scripts/test-release.sh:1669:    "$node_bin" "$script_dir/release-fixtures.mjs" save "$fixture" "$test_root/template-snapshot"
+scripts/test-release.sh:1676:  done < <("$node_bin" "$script_dir/release-fixtures.mjs" list "$script_dir/..")
+[exit 0]
+
+## 6. Readers of the three retired planning inputs in code, harness files and the package manifest
+
+$ git grep -n -I -E 'process-debt-2026-09-09-dispositions|machinery-stand-down-2026-09-15-dispositions|proof-carrying-gates-2026-09-12-dispositions|dispositions\.json' -- scripts packages corpus .claude .agents .codex package.json
+[exit 1]
+
+## 7. The same names in documents outside the refutation receipts
+
+$ git grep -n -o -I -E '.{0,40}(process-debt-2026-09-09-dispositions|machinery-stand-down-2026-09-15-dispositions|proof-carrying-gates-2026-09-12-dispositions).{0,20}' -- docs README.md ':!docs/planning/refutations' ':!docs/evidence/WO-163'
+docs/lineage/idea-ledger.md:2034:    `docs/planning/proof-carrying-gates-2026-09-12-dispositions.json`. Reopen
+docs/planning/work-order-map.md:166:dispositions were filed as `proof-carrying-gates-2026-09-12-dispositions.json`,
+docs/work-orders/README.md:93: receipt, check or document reads (&#96;process-debt-2026-09-09-dispositions.json&#96;, &#96;mac
+docs/work-orders/README.md:93:2026-09-15-dispositions.json&#96;, &#96;proof-carrying-gates-2026-09-12-dispositions.json&#96;, one-shot
+docs/work-orders/WO-163-5s-sort-and-set-in-order.md:20:(`process-debt-2026-09-09-dispositions.json`,
+docs/work-orders/WO-163-5s-sort-and-set-in-order.md:21:`machinery-stand-down-2026-09-15-dispositions.json`,
+docs/work-orders/WO-163-5s-sort-and-set-in-order.md:22:`proof-carrying-gates-2026-09-12-dispositions.json`, one-shot inp
+[exit 0]
+
+## 8. The same names in the refutation receipts, counted per file
+
+$ git grep -c -I -E 'process-debt-2026-09-09-dispositions|machinery-stand-down-2026-09-15-dispositions|proof-carrying-gates-2026-09-12-dispositions' -- docs/planning/refutations
+docs/planning/refutations/2026-09-25-planning-8f567de659b31991-029.json:1
+docs/planning/refutations/2026-09-25-planning-c93346fb3a92bb7f-030.json:1
+docs/planning/refutations/2026-09-25-planning-cb4e4076b7ec0078-028.json:1
+docs/planning/refutations/2026-09-27-planning-c559862e028dfb80-032.json:1
+docs/planning/refutations/2026-09-27-planning-e4deffba4add0aff-031.json:1
+[exit 0]
+
+## 9. Markdown links to any dispositions input
+
+$ git grep -n -o -E '\]\([^)]*dispositions\.json\)' -- . ':!docs/evidence/WO-163'
+docs/planning/critical-path-2026-09-08.md:78:](critical-path-2026-09-08-dispositions.json)
+[exit 0]
+
+## 10. The remaining planning inputs of that kind
+
+$ git ls-files 'docs/planning/*dispositions*'
+docs/planning/critical-path-2026-09-08-dispositions.json
+[exit 0]
+
+## 11. Attributes of the follow-up register, with the cost table as the comparison row
+
+$ git check-attr -a -- docs/planning/followups.json
+docs/planning/followups.json: dotln-generated: set
+[exit 0]
+
+$ git check-attr dotln-generated diff binary -- docs/planning/followups.json
+docs/planning/followups.json: dotln-generated: set
+docs/planning/followups.json: diff: unspecified
+docs/planning/followups.json: binary: unspecified
+[exit 0]
+
+$ git check-attr dotln-generated -- docs/planning/cost-table.json
+docs/planning/cost-table.json: dotln-generated: set
+[exit 0]
+
+## 12. Work orders and planning documents that name an old path in code text, which no check resolves
+
+$ git grep -n -o -E 'scripts/(github-body|github-repository|release-notes)\.mjs' -- docs/work-orders docs/planning ':!docs/work-orders/README.md' ':!docs/work-orders/WO-163-5s-sort-and-set-in-order.md' ':!docs/planning/refutations'
+docs/planning/work-order-map.md:2049:scripts/github-body.mjs
+docs/planning/work-order-map.md:2138:scripts/github-body.mjs
+docs/planning/work-order-map.md:2138:scripts/github-repository.mjs
+docs/planning/work-order-map.md:2138:scripts/release-notes.mjs
+docs/work-orders/WO-025-version-bearing-surfaces.md:71:scripts/github-body.mjs
+docs/work-orders/WO-062-github-issue-source-adapter.md:36:scripts/github-repository.mjs
+docs/work-orders/WO-063-outward-artifact-lint.md:38:scripts/github-body.mjs
+docs/work-orders/WO-064-target-publish.md:24:scripts/github-body.mjs
+docs/work-orders/WO-064-target-publish.md:56:scripts/github-repository.mjs
+docs/work-orders/WO-064-target-publish.md:56:scripts/github-body.mjs
+docs/work-orders/WO-065-pull-request-state-observation.md:47:scripts/github-repository.mjs
+docs/work-orders/WO-142-outstanding-cleanup.md:159:scripts/release-notes.mjs
+[exit 0]
