@@ -1,15 +1,25 @@
 # WO-112 — The loop from core: one scratch issue travels from SourceBundle to a verified pull request with the post-PR loop against a scratch target, run from this launchpad and measured item by item against the predecessor's loop (version assigned at activation)
 
-**Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
-
 **Model:** the actual local harnesses for every episode, operator-witnessed
-from a terminal outside the sandbox; launch claims recorded per episode
+from the operator's terminal; launch claims recorded per episode
 (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.
-**Release classification:** minor. The composition of the earlier gates as
-one `dotln vertical` command plus the evidence record; a defect found in a
-primitive is a separate bounded order. Assigned at activation under the
-standing opt-out default.
+**Release classification:** patch. The first end-to-end run of WO-123's
+composition and its evidence record; no code ships (the command is
+WO-123's), as with the evidence runs of WO-053, WO-056 and WO-111, and a
+defect found in a primitive is a separate bounded order. Assigned at
+activation under the standing opt-out default.
+**Cost:** adds one witnessed live run of the composition against a
+scratch target (the actual harnesses' episodes, a branch, a push and a
+pull request under an operator grant, and the post-pull-request loop) and
+`docs/evidence/WO-112/README.md` with the sanitized receipts, the
+measures and the parity scores; at most 300 bytes in product 06 and 200
+in product 12; a README sentence folded into its release block; one
+appended capability-table section. Removes the absence of any
+end-to-end run: no record holds one today. It unblocks WO-118 (gate V of
+the critical path). Re-mints: none; the order edits no registered or
+judged source. Wall-clock, tokens and context bytes are unknown until
+run.
 **Nomination provenance:** the 2026-09-08 critical-path planning pass (gate
 H's proof), re-cut at the operator's same-day direction that no
 target-application work order lives in this repository: the core proof runs
@@ -18,14 +28,32 @@ their fork of the starter. The operator's description of the predecessor's
 loop is the parity checklist, generalized under the Clean Room floor.
 Planner-synthesized draft; captures and hashes in the ledger section of that
 date. Opaque identifier, not a priority. Clean-room screen: the target and
-issue are scratch artifacts in a personal public repository.
+issue are scratch artifacts in a personal public repository. Register row
+FUP-0049 allocates this order the critical-path candidate that proves the
+vertical from core (2026-09-19). Amended by the 2026-09-28 planning pass,
+which re-observed the order on `main` at `5f3849ec`: the command is
+WO-123's and this order ships the run's evidence; the third replan
+checkpoint follows WO-083, as the critical path defines it; the parity
+items, the labeled claims and the vocabulary check are declared sets; the
+operator's steps have a fallback; the outside-root carry-in is written
+in; the final criterion names both gates
+([planning document](../planning/failures-across-phases-2026-09-28.md)
+§10).
 **Depends on:** WO-123 merged (the composition this run executes); WO-053
-merged (the live primitive); WO-056 merged (live verification and repair);
-WO-045, WO-046, WO-047 and WO-048 merged (the codecs are mandatory before
-the loop runs against anything the operator keeps).
-**Recommended placement:** last of the primitive gates; the third replan
-checkpoint follows its receipt. It adds the composition command and
-`docs/evidence/WO-112/`. A recommendation, not a dependency token.
+merged (the live primitive; closed, v0.29.3); WO-056 merged (live
+verification and repair; closed, v0.33.2); WO-045, WO-046, WO-047 and
+WO-048 merged (the codecs are mandatory before the loop runs against
+anything the operator keeps; closed, v0.20.0, v0.21.0, v0.22.0 and
+v0.21.1).
+**Recommended placement:** in the serial run after WO-123 and before
+WO-074. This order changes no code: it adds `docs/evidence/WO-112/` and
+writes products 06 and 12, `README.md` and the capability table. WO-123
+edits `packages/skeleton/src/`, `packages/beacons/src/`,
+`scripts/lib/config.mjs` and products 07 and 03; WO-074 adds the
+launchpad export script and writes product 03, `docs/LEGAL.md` and
+`docs/README.md`; neither edits this order's files. The third replan
+checkpoint follows WO-083, not this order. A recommendation, not a
+dependency token.
 
 <!-- dotln-dependencies:start -->
 [
@@ -69,10 +97,20 @@ checkpoint follows its receipt. It adds the composition command and
 
 **Cites (read these sections):** 00-vision.md §The one-paragraph story;
 06-roadmap.md §Application version pending — Source-to-deliverable vertical
-(the rung's exit criteria and measures); 12-workstream-application.md
-§Replacing a successful but costly workflow (the replacement table);
-`docs/planning/critical-path-2026-09-08.md` §The destination in the
-operator's terms; every order named in Depends on.
+(the rung's exit sentence; the measures are this order's own);
+12-workstream-application.md §Replacing a successful but costly workflow
+(the replacement table); `docs/planning/critical-path-2026-09-08.md`
+§The destination in the operator's terms (the parity sentence) and §Stop
+and replan points (the third checkpoint); 07-execution-guide.md
+§Discipline (outside-project writes and their root grants; the release
+opt-out) and §Operator recovery controls (`withdraw`);
+`docs/work-orders/WO-060-source-bundle-contract.md` (the screen);
+`docs/work-orders/WO-066-review-comment-resolution-loop.md` (the terminal
+state; no merge); `docs/planning/capability-table.md` (appended dated
+sections); `scripts/check-registrations.mjs` (JSONL under `docs/`);
+register row FUP-0049; the
+[2026-09-28 planning document](../planning/failures-across-phases-2026-09-28.md)
+§10.1; every order named in Depends on.
 
 **Objective:** Run WO-123's composition once, witnessed, against a scratch
 target repository that carries a small web page and a scratch issue: SourceBundle (WO-062) → StoryContract (WO-061,
@@ -86,10 +124,30 @@ model input and output, sessions, human touch time, cycle time, retries,
 cost, evidence coverage, findings and operator interventions; score the
 parity checklist item by item.
 
-**Observed gap (dated 2026-09-08, `main` at `33e2c25`):**
+**Observed gap (dated 2026-09-28, `main` at `5f3849ec`; first observed
+2026-09-08 at `33e2c25`):**
 
-- The predecessor performs this loop today from prose rules; DotLn has no
-  end-to-end run anywhere.
+- DotLn has no end-to-end run: `docs/evidence/WO-112/` does not exist and
+  no command composes the loop (WO-123 is open). Segments are
+  live-evidenced since the order was filed: the first external source
+  change (WO-053), live verification and repair (WO-056), a pull request
+  opened on a scratch remote by `worktree publish --target` in an
+  operator-run smoke with a deterministic writer double (WO-064), and two
+  unattended scratch windows (WO-111).
+- The predecessor is not in this repository (00 §The one-paragraph
+  story); its loop is known here as the critical path's parity sentence,
+  one sentence naming eight items, not an enumerated list. The roadmap
+  rung holds one exit sentence and no measures, so the measures are
+  defined only in this order.
+- The critical path places the third replan checkpoint after WO-112 and
+  the fork's first run, WO-083; WO-083 depends on WO-118, which depends
+  on this order.
+- This repository ships no `dotln.config.json`, where a registered target
+  is declared. The default roles grant outside-project writes only under
+  the temporary, session-scratch and host-scratchpad roots, and order
+  contracts do not supply active grants (07 §Discipline; the WO-144
+  carry-in on this order's planning map row).
+- The operator's sessions run without a host sandbox (07 §Discipline).
 
 **Design (scope discipline):**
 
@@ -99,11 +157,31 @@ parity checklist item by item.
   automated review item resolved; a separate control scenario in the same
   run carries one incorrect suggestion that must be rejected with evidence,
   so `NeedsHuman` is proven legitimate rather than allowed to pass.
+- The terminal state is the pull request with every automated item
+  observed `resolved` (WO-065, WO-066), or a typed stop. DotLn merges
+  nothing (WO-066's non-goal), so the merge or close that follows is the
+  operator's and no step of the run; WO-118 uses the same definition.
 - Unmeasured values are `unknown`, never estimated.
+- The scratch target's checkout and every directory the run writes
+  outside this repository are named in the receipt. Unless one lies under
+  a root the default roles grant, the executing role or an equipped
+  support carries an operator-named root grant with its provenance,
+  admitted through the compiled envelope; order contracts do not supply
+  active grants (WO-144 carry-in, planning map catalog row).
+- The run supplies the scratch repository's forge host as the allowlist
+  of WO-060's screen at decode time; a refused item is a typed stop that
+  names the item, recorded in the receipt.
+- A receipt committed as JSONL under `docs/` round-trips as an
+  EventEnvelope stream or is declared in this order's evidence
+  declaration.
+- The third replan checkpoint follows WO-083, as the critical path
+  defines it; this order's receipt is one of its inputs.
 - **Declined alternatives, recorded:** running against the operator's
   Angular repository from this launchpad (that work is the fork's, by the
   operator's direction; core records only the sibling receipt through
-  WO-083).
+  WO-083); answering the third replan checkpoint at this order's close
+  (the critical path places it after WO-083, which waits for WO-118 and
+  so for this order; reopen when the critical path moves the checkpoint).
 
 **Deliverables:** `docs/evidence/WO-112/README.md`
 with sanitized receipts, the measures and the checklist; the write-backs
@@ -111,36 +189,88 @@ below.
 
 **Acceptance criteria (all required)**
 
-1. The pull request exists on the scratch repository with a generated title
-   and body; every acceptance criterion of the StoryContract carries
+1. The pull request exists on the scratch repository with a generated
+   title and body; every acceptance criterion of the StoryContract carries
    evidence, visual ones with screenshot witnesses; findings, if any, were
-   resolved through repair; in the representative scenario every automated review
-   comment is `resolved` and none is `NeedsHuman`; in the control scenario
-   the incorrect suggestion is rejected with recorded evidence; the terminal
-   state was human-controlled.
+   resolved through repair; in the representative scenario every
+   automated review comment is observed `resolved` and none is
+   `NeedsHuman`; in the control scenario the incorrect suggestion is
+   rejected with recorded evidence; the run ends in the terminal state the
+   Design defines and merges nothing. If the witnessed run has not
+   happened by handoff, the executor records this criterion unmet with the
+   command the operator runs (WO-123's `dotln vertical <issue>` from the
+   operator's terminal) and what the run needs from the operator (the
+   scratch repository with its issue and automated reviewer, the planted
+   suggestion, the target's registration and the root and remote grants);
+   the other criteria are judged; the criterion closes by the operator's
+   run or by a recorded waiver.
 2. No DotLn file, path or vocabulary is in the target's branch or pull
-   request, proven by the lint and a tree grep recorded in the receipt.
-3. The measures are recorded with methods; each parity item is scored
-   observed-met, observed-unmet or unknown with its evidence reference, and
-   the parity claim passes only if every item is observed-met.
-4. Every claim is labeled `observed`, `launch-claim` or `unknown`.
-5. Write-backs land: 06 (the rung's status), 12 (the replacement table rows
-   with evidence), README "What runs today", the capability table (a dated
-   `vertical.source-to-pr` row), ledger entry; the third replan checkpoint is
-   answered in the planning map.
-6. `npm test` green; `git diff --check` clean; no new dependency beyond the
-   ones the earlier orders pinned.
+   request, as far as the outward-artifact lint's configured vocabulary
+   and a tree grep for the terms and path prefixes the receipt lists can
+   show; both are recorded in the receipt. The criterion is judged against
+   the declared set; a case outside it is a follow-up, not a failure.
+3. The measures are recorded with methods; each item of the critical
+   path's parity sentence (the linked source, here one scratch issue;
+   intake and understanding of the requirements; the branch; the change;
+   conventional commits; a generated pull-request title and body; every
+   automated review comment resolved; no operator tending of a harness) is
+   scored observed-met, observed-unmet or unknown with its evidence
+   reference, and the parity claim passes only if every item is
+   observed-met.
+4. Every measure and every parity score in the receipt is labeled
+   `observed`, `launch-claim` or `unknown`.
+5. Write-backs land, each in place with no dated paragraph: 06
+   §Application version pending — Source-to-deliverable vertical (the
+   rung's status; at most 300 bytes added, against 1,802 bytes of
+   headroom on 2026-09-28); 12 §Replacing a successful but costly
+   workflow (the evidence for the rows the run observed; at most 200
+   bytes added, against 360 bytes of headroom on 2026-09-28); `README.md`
+   §What runs today, folded into the release block's prose, which is
+   rewritten, never appended to; the capability table, an appended
+   `## WO-112 dated addition (YYYY-MM-DD)` section with a
+   `vertical.source-to-pr` row, never a row edited in place; the decisions
+   file; the publication locks refreshed. Product 06 is also written by
+   WO-086, WO-087, WO-066, WO-061, WO-124, WO-096 and WO-095, and product
+   12 by WO-061, WO-118, WO-080 and WO-082: the executor re-measures the
+   headroom at its base; where the bound does not fit, it consolidates the
+   section it edits in the same change; a ceiling is raised only by a
+   planning-document decision.
+6. `npm test -- --review` and `npm run test:docs` green;
+   `git diff --check` clean; no new dependency beyond the ones the earlier
+   orders pinned.
 
-**Evidence gate:** the receipts; `npm test`.
+**Evidence gate:** the receipts, the lint output and the tree grep, the
+measures and the parity scores; `npm run test:docs`;
+`npm test -- --review` before `implementation-ready`, because
+`docs/evidence/WO-112/` lies under `docs/`, a declared source of
+registrations, and again at final review. The live row: the run against
+the scratch target, which the operator witnesses (criterion 1).
 
 **Write-back duty:** as listed in criterion 5.
 
 **Non-goals:** any target-application repository of the operator's (planned
 in the fork); cross-repository workstreams (WO-080 onward); the console
-framework decision; any runtime fix (a separate order).
+framework decision; any runtime fix (a separate order); merging the pull
+request (WO-066's non-goal); the third replan checkpoint, answered after
+WO-083; Context Continuity, register row FUP-0091, which the planning map
+notes reopens at this order's activation, for the activating pass to
+dispose.
 
 **Operator-review assumptions**
 
-1. The operator witnesses the run and files the receipt from an outside
-   terminal.
-2. A run that fails records its receipt under this order's evidence and does not close the order; dependents wait for an observed success, and the operator may withdraw the order with a dated note. A defect found in a primitive is nominated as its own order.
+1. The operator witnesses the run and files the receipt from the
+   operator's terminal.
+2. A run that fails records its receipt under this order's evidence and
+   does not close the order; dependents wait for an observed success. A
+   defect found in a primitive is nominated as its own order.
+3. The run reuses the scratch repository of WO-064's smoke; the executor
+   creates no remote repository. What only the operator's account or
+   grants can supply (the automated reviewer's setting on that
+   repository, the issue and the planted suggestion if no grant admits
+   them, the remote grants) is the operator's part of the witnessed
+   run.
+4. The scratch target is registered in a launchpad configuration kept out
+   of the committed tree, since this repository ships no
+   `dotln.config.json`; the receipt records the registration by shape.
+5. The class is patch: the order ships evidence only, as WO-053, WO-056
+   and WO-111 did.

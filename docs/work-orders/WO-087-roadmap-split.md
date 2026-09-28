@@ -14,8 +14,10 @@ the slug of each heading preserved, and the register reconciliation of
 each renamed source as a duplicate of its new entry through seven
 `followups --apply` requests the executor writes (`npm run meta` only
 marks the old source missing; receipt 029, WO-087 finding 2); removes 864
-lines of candidate policy from 06 (lines 799–1662 at `9cc597d7`; receipt
-029, finding 1) and their publication index rows and locks; lowers product 06's
+lines of candidate policy from 06, the range from §Work-order navigation
+and identity through §Candidate — local-model usefulness experiments
+(lines 799–1662 at `9cc597d7`, 931–1794 at `5f3849ec`; receipt 029,
+finding 1), and their publication index rows and locks; lowers product 06's
 ceiling in `doc-ceilings.json` to its new size. Re-mints: none. Wall-clock,
 tokens and context bytes are unknown until run.
 **Nomination provenance:** WO-035's roadmap-split item, cut into a bounded
@@ -24,15 +26,19 @@ WO-085 and WO-090 settled what lives where (WO-090 closed 2026-09-20;
 WO-085 rewritten 2026-09-25); rewritten by the 2026-09-25 standard pass at
 the operator's item 4: the destination is the planning map, not a new
 numbered product document, because candidates are planning material the
-register already collects from the map. Planner-synthesized draft. Opaque
+register already collects from the map; amended by the 2026-09-28 pass,
+which names the range by its headings, because the line numbers move
+with every activation note above it, and restated its slot
+([planning document](../planning/failures-across-phases-2026-09-28.md)
+§10). Planner-synthesized draft. Opaque
 identifier, not a priority. Clean-room screen: no stop condition.
 **Depends on:** WO-086 merged (both edit 06; the generated history lands
 first so the roadmap is edited once more, not twice).
-**Recommended placement:** a one-entry slot directly after WO-086 and
-WO-167; it may run beside whichever of those is still open once WO-086
-has closed, as WO-146 and WO-149 did beside their pairs. It edits 06, the
-map, the publication index and locks, `docs/README.md` and the register.
-A recommendation, not a dependency token.
+**Recommended placement:** a one-entry slot directly after WO-117 and
+WO-086; it may run beside WO-117 if that order is still open once WO-086
+has closed, and it does not run beside WO-066, which also edits 06. It
+edits 06, the map, the publication index and locks, `docs/README.md` and
+the register. A recommendation, not a dependency token.
 
 <!-- dotln-dependencies:start -->
 [
@@ -46,7 +52,8 @@ A recommendation, not a dependency token.
 
 **Cites (read these sections):** 06-roadmap.md §Work-order navigation and
 identity through §Candidate — local-model usefulness experiments (lines
-799–1662 at `64f9326f`); `docs/planning/work-order-map.md` §Preserved
+799–1662 at `64f9326f`, 931–1794 at `5f3849ec`);
+`docs/planning/work-order-map.md` §Preserved
 unallocated candidates and the dated candidates sections;
 `docs/planning/followups.md` (renamed sources reconcile as duplicates);
 `docs/publication/` (index rows and locks); `scripts/check-publication.mjs`;
@@ -61,9 +68,10 @@ across, and no link breaks.
 **Observed gap (dated 2026-09-25, `main` at `64f9326f`):**
 
 - 06 carries 864 lines of candidate policy between its ladder rungs
-  (lines 799–1662: six `Candidate —` headings and the
-  capability-progression policies); it is 2,155 lines and 148,793 bytes,
-  the third-largest product document.
+  (lines 799–1662 then, 931–1794 at `5f3849ec`: six `Candidate —`
+  headings and the capability-progression policies); it was 2,155 lines
+  and 148,793 bytes, the third-largest product document, and is 2,287
+  lines and 158,507 bytes at `5f3849ec`.
 - The register collects candidate headings from product and planning
   documents alike (`docs/planning/followups.md`), so the move loses no
   identity; a renamed source is reconciled as a duplicate of its new entry.
@@ -86,8 +94,9 @@ reconciliation, the write-backs below.
 
 **Acceptance criteria (all required)**
 
-1. Every moved heading keeps its slug; the removal is exactly the named
-   range, recorded as before and after line counts; `check-publication`
+1. Every moved heading keeps its slug; the removal is exactly the range
+   the headings name, whatever its line numbers at the order's base,
+   recorded as before and after line counts; `check-publication`
    passes with the rows removed and both edition locks refreshed; the docs
    check reports zero broken links and 06 under its lowered ceiling.
 2. The register shows each moved candidate's old row as a duplicate of its

@@ -1,32 +1,54 @@
 # WO-103 — Authorization guard and outbox factorial decision-table corpus (version assigned at activation)
 
-**Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
-
 **Model:** Codex (any capable tier); any capable model may substitute. State the
 model and effort actually run in the result (07-execution-guide.md
 §Model-specific notes).
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.
-**Release classification:** assigned by the planner at activation. Before
-`resume -- activate`, the planner MUST rewrite this H1 to carry exactly one
-strict `vX.Y.Z` (`scripts/release.mjs` refuses any other heading at close) and
-MUST pin the close disposition: a version strictly below the latest published
-tag (honest no-release close) or an operator-authorized, dated retiming.
-Never an unauthorized patch between the reserved v0.2.2 (WO-005) and v0.2.3
-(WO-006) rungs. Expected class: internal tooling/evidence only.
-**Historical series note (superseded):** reserved adjacent WO-10x series,
-parallel to the mainline;
-numbering provisional — the operator may renumber at activation.
-**Identity update — 2026-09-01:** the provisional renumbering option above is
-superseded for identifier identity. Retain `WO-103` as this order's stable,
-opaque reference; represent purpose and grouping in the provisional work-order
-map and future explicit metadata. This update changes no other scope.
-**Compatibility amendment — 2026-09-03:** WO-017 changes the shipped authority
-and outbox oracles this corpus is meant to exhaust. The objective, outputs, and
-acceptance criteria below are retargeted to that post-WO-017 contract; this
-order must not be activated from an older base.
-**Depends on:** WO-017 merged — branch from `origin/main` at or after its
-reviewed close. WO-004 is satisfied transitively. Independent of the other
+**Release classification:** patch. Evidence only: new files under
+`corpus/`; no runtime, package or contract change. Assigned at activation
+under the standing opt-out default; a close without a release needs the
+operator's direction.
+**Cost:** adds a seeded factorial generator with `--write` and `--check`
+modes and an independent eight-rule precedence and semantic-revocation
+oracle, sharded cells under `corpus/fixtures/authority/` and
+`corpus/fixtures/outbox/`, replay, property and permutation harnesses
+under `corpus/harness/`, a generated precedence table, a manifest and run
+transcripts under `corpus/manifests/`, and a findings file if a finding
+arises; nothing joins the root `npm test`. Removes nothing that runs; it
+widens failure-matrix rows 1 and 3 into exhaustive form. Re-mints: none;
+the order adds new files only and edits neither the kernel, a registered
+source of every edition, nor the registered corpus modules. Wall-clock,
+tokens and context bytes are unknown until run.
+**Nomination provenance:** filed on 2026-09-01 (`1c3ec8aa`) in the
+adjacent work-order series for autonomous Codex downtime, parallel to the
+mainline; its identifier is a stable, opaque reference, as the same day's
+identity update settled when it retired the series' provisional
+renumbering. On 2026-09-03 it was retargeted to the authority and outbox
+contract WO-017 shipped, so it is not activated from an older base.
+WO-017's final review carried one open item to this oracle (FINAL-001,
+adjudication 8), which the 2026-09-19 cleanup pass recorded on this
+order's planning map row. Opaque identifier, not a priority. Clean-room
+screen: the corpus is original generated test data; no stop condition.
+Amended by the 2026-09-28 planning pass, which re-observed the order on
+`main` at `5f3849ec`: it is restated in the current form; the carry-in is
+written in; the never-throws and outbox criteria quarantine what the
+Objective already quarantines; its release, authority and gates follow
+today's lifecycle
+([planning document](../planning/failures-across-phases-2026-09-28.md)
+§10).
+**Depends on:** WO-017 merged (the reviewed kernel truthfulness boundary
+is the corpus baseline; closed, v0.3.5); WO-004 merged (satisfied
+transitively by WO-017; closed, v0.2.1). Independent of the other
 adjacent orders.
+**Recommended placement:** outside the sequence; the planning map names
+WO-107 the first candidate for adjacent evidence work and this order an
+alternative. It adds files only under `corpus/fixtures/authority/`,
+`corpus/fixtures/outbox/`, `corpus/harness/` and `corpus/manifests/`, so
+it is disjoint from every queued order. Before it is sequenced a planning
+pass decides whether the factorial is still wanted, whether it releases
+as a patch or closes without a release at the operator's direction, and
+which delivery order it pairs with as the evidence entry. A
+recommendation, not a dependency token.
 
 <!-- dotln-dependencies:start -->
 [
@@ -43,20 +65,26 @@ adjacent orders.
 ]
 <!-- dotln-dependencies:end -->
 
-**Cites (read these sections):** 02-domain-model.md (AuthorityEnvelope, the
+**Cites (read these sections):** 02-domain-model.md §Events and decisions
+(the kernel loop) and §Identity and composition (AuthorityEnvelope, the
 structural authorization guard, semantic revocation conditions, the
-own-property resource rule, the Command outbox protocol,
-CommandPersisted/CommandResult/CommandRefused);
-docs/lineage/idea-ledger.md adopted entries "Refuse, never throw, at the
-authority boundary" and "Namespace-tagged command identity";
-03-architecture.md failure-injection matrix (rows 1 and 3 shipped; rows 2/4/6
-reserved for WO-009) and §Corpus policy (layout being extended — see
-Corpus-layout note); the shipped `authorize`, `persistCommand`,
-`applyCommandResult`, and overloaded `replayOutbox` in
-`packages/kernel/src/core.ts` — the read-only oracle, including the eight-rule
-refusal order, exclusive expiry boundary, shared predicate registry,
-trailing-`*` prefix `effectMatches`, and `Object.hasOwn` resource rule;
-07-execution-guide.md §Model-specific notes and the precedence rule.
+own-property resource rule, the Command outbox protocol, `CommandPersisted`,
+`CommandResult` and `CommandRefused`); `docs/lineage/idea-ledger.md`
+adopted entries "Refuse, never throw, at the authority boundary" and
+"Namespace-tagged command identity"; 03-architecture.md §Session lifecycle
+& resilience (the failure-injection matrix: rows 1 and 3 at v0.1.0; rows
+2, 4 and 6 established by WO-009, closed at `v0.10.0`) and §Corpus policy;
+the shipped `authorize`, `persistCommand`, `applyCommandResult` and
+overloaded `replayOutbox` in `packages/kernel/src/core.ts`, the read-only
+oracle, with the eight-rule refusal order, the exclusive expiry boundary,
+the shared predicate registry, the trailing-`*` prefix `effectMatches`
+and the `Object.hasOwn` resource rule; `packages/skeleton/src/audit.ts`
+(`semanticAuthorityInputsAreComplete`) and
+`docs/final-reviews/WO-017/FINAL-001.md` §Adjudications, item 8 (the
+carry-in); `corpus/README.md`; 07-execution-guide.md §Model-specific notes
+and §Discipline (the precedence rule; release assignment is opt-out); the
+[2026-09-28 planning document](../planning/failures-across-phases-2026-09-28.md)
+§10.1.
 
 **Objective:** (a) Full factorial sweep of `authorize()`: every combination of
 {effect string vs non-string} × {now before/at/after expiresAt — `now >=
@@ -98,90 +126,158 @@ if an incomplete object reaches `pendingCommands`, quarantine it as a numbered
 finding rather than blessing the cast as a valid Command. This widens shipped
 failure-matrix rows 1 and 3 into exhaustive form.
 
-**Authority (bounded):**
-- MAY create new files only under `corpus/fixtures/authority/`,
-  `corpus/fixtures/outbox/`, `corpus/harness/`, and `corpus/manifests/`
-  (including `corpus/manifests/runs/`), plus `corpus/README.md` if absent.
-- MUST NOT modify any existing repo file. Exempt: the standing lifecycle
-  machinery when running in the control-plane slot — `scripts/resume.mjs`
-  appends to `docs/control/resume.jsonl`, the regenerated
-  `docs/control/current.md`, checkpoint refs under
-  `refs/dotln/checkpoint/...`, and numbered
-  `docs/verifications/WO-103/VER-NNN.md` (and final-review) artifacts. Ledger
-  duty waived by this clause (precedence rule); note the skipped duty in the
-  result.
-- Any cell where the shipped guard throws, mis-orders precedence, or diverges
-  from the independent oracle is a numbered finding in
-  `corpus/manifests/findings-WO-103.md` with the reproducing cell — never an
-  in-place fix, and never a change to refusal reasons or precedence even if a
-  finding suggests one (findings go to the operator).
-- Zero new dependencies; nothing added to the root `test` script or any
-  declared release-evidence command.
-- No external effects: no push/PR/tag/publish/install/config
-  mutation/destructive git.
+**Observed gap (dated 2026-09-28, `main` at `5f3849ec`; first observed
+2026-09-01 at `1c3ec8aa`):**
 
-**Corpus-layout note:** `corpus/` does not exist yet; 03-architecture.md
-§Corpus policy's sanitized/fixtures/manifests tree governs the sanitized
-source/incident corpus, not generated test corpora. This order extends the
-layout with generated evidence material; whichever adjacent order lands first
-creates `corpus/README.md` distinguishing the two. Record as an open question
-that a later doc pass must sync §Corpus policy (no `docs/` authority here).
+- `corpus/` exists since WO-101 (`383ee550`, 2026-09-01) with its entry
+  point `corpus/README.md`, WO-101's ID and Program lanes and WO-108's
+  mutation lane; product 03 §Corpus policy has recorded the generated
+  corpora since its 2026-09-06 synchronization. Neither names an
+  authority or outbox lane, and `npm test` runs a corpus test only by name
+  (WO-101's ID test).
+- The guard applies eight rules in the Objective's order; an envelope
+  expires when `now >= expiresAt`; the shipped reason strings include
+  `cannot evaluate revocation`, `required evidence missing` and
+  `resource limit exceeded` (`authorize`, kernel component 0.6.0).
+- `replayOutbox` persists any `CommandPersisted` payload whose `command`
+  is an object with a non-empty string `commandId`, with no other
+  structural check, so an incomplete command reaches `pendingCommands`.
+  Its result traces are `accepted`, `dedup`, `unknown` and
+  `preceded-persist`; `applyCommandResult` also returns
+  `ignored-event-type` for an event that is not a result, a branch
+  `replayOutbox` does not reach.
+- Failure-matrix rows 2, 4 and 6 are no longer reserved: WO-009
+  established worker recovery for them.
+- WO-017's final review found that a `cannot evaluate revocation` refusal
+  caused by a missing `state` or a missing `predicateEnv` emits a partial
+  trace suffix, which the audit projection's
+  `semanticAuthorityInputsAreComplete` does not accept, so the denied
+  record stands without its trace link; it carried the case to this
+  oracle, whose cells include missing-input environments (FINAL-001,
+  adjudication 8).
+- Release preparation requires one classification line that begins
+  `patch.`, `minor.` or `major.`, and retimes a heading version at or
+  below the latest tag (`v0.52.10`) to the next version of its class, so a
+  version below the latest tag no longer yields a close without a
+  release; that close is the operator's direction (07 §Discipline).
+- The lifecycle writes more than the order's first exemption list named:
+  the order's control segment, the generated index, the decisions file,
+  release preparation's heading, README block and roadmap note, and
+  verification and final-review records.
+- The operator's sessions run without a host sandbox; `npm test` refuses
+  inside a sandbox in force when a selected suite needs the outside, as
+  the skeleton suite does.
 
-**Isolation & control plane:** one writable agent, own worktree from the clean
-main checkout. Default is in-slot activation via `npm run worktree -- start`
-between mainline activations, with the standard resume phases. If run outside
-the slot as explicitly sequenced adjacent work, the operator names the
-closeout path at activation (numbered verification, final review, PR,
-explicit no-release disposition). The choice happens at activation, never
-mid-flight; zero mid-flight operator decisions.
+**Design (scope discipline):**
 
-**Preflight (operator):** WO-017 is merged and its authority/outbox contract is
-the pinned base; node_modules provisioned (network-disabled Codex sandbox);
-`npm run build && npm test` green at the base commit. Fully offline and
-model-invocation-free thereafter.
+- New files only, under `corpus/fixtures/authority/`,
+  `corpus/fixtures/outbox/`, `corpus/harness/` and `corpus/manifests/`
+  (with `corpus/manifests/runs/`). No existing file is edited apart from
+  the records the lifecycle's own commands write; `corpus/README.md`
+  exists, so the lane's commands are recorded in its manifest
+  (operator-review assumption 2).
+- Any cell where the shipped guard throws, mis-orders precedence or
+  diverges from the independent oracle is a numbered finding in
+  `corpus/manifests/findings-WO-103.md` with the reproducing cell, never
+  an in-place fix, and never a change to refusal reasons or precedence
+  even if a finding suggests one; findings go to the operator.
+- The missing-input cells include a `cannot evaluate revocation` refusal
+  from a missing `state` and from a missing `predicateEnv`; each pins the
+  partial trace suffix the guard emits, and the audit projection's
+  unlinked record for that refusal is a numbered finding with its
+  reproducing cell (WO-017 FINAL-001, adjudication 8; planning map
+  catalog row).
+- Zero new dependencies; nothing is added to the root `test` script or any
+  declared release-evidence command. The work is offline and invokes no
+  model after `npm run build`; the choice of closeout is made at
+  activation, and no operator decision is needed mid-flight.
+- The executor's work has no external effect: no push, pull request, tag,
+  publish, install, configuration change or destructive Git operation.
+- **Declined alternatives, recorded:** fixing the under-linked audit
+  record here (the order pins and records; a fix belongs to an order that
+  owns the audit projection; reopen when one does).
 
 **Deliverables:**
-1. `corpus/harness/generate-authority-corpus.mjs` — seeded factorial generator
-   with `--write`/`--check` (regenerate-and-diff) modes; includes the independent
-   eight-rule precedence and semantic-revocation oracle.
-2. `corpus/fixtures/authority/` and `corpus/fixtures/outbox/` — sharded JSONL
-   cells (inputs + expected AuthorizationResult or OutboxState + expected
-   branchPath, per the Objective's expected-output schema), within a stated
-   committed budget; the full factorial regenerable from seed.
-3. `corpus/harness/wo103-*.test.mjs` — cell replay, the never-throws property
-   over the full factorial, condition × event evaluation, threading, legacy and
-   trace-bearing replay projections, and permutation sweeps.
-4. A GENERATED precedence-matrix reference table at
-   `corpus/manifests/WO-103-precedence.md` (generated by the harness, never
-   hand-edited — regeneration is part of the gate).
-5. `corpus/manifests/WO-103.json` (seed, factor levels, permutation caps, cell
-   counts, fixture hashes, base commit, toolchain profile) and
-   `corpus/manifests/runs/WO-103-<commit>.log`.
-6. Generator/oracle self-tests with planted known cells.
 
-**Acceptance criteria (all required):**
+- `corpus/harness/generate-authority-corpus.mjs`: a seeded factorial
+  generator with `--write` and `--check` (regenerate-and-diff) modes,
+  including the independent eight-rule precedence and
+  semantic-revocation oracle.
+- `corpus/fixtures/authority/` and `corpus/fixtures/outbox/`: sharded
+  JSONL cells (inputs, the expected AuthorizationResult or OutboxState and
+  the expected branchPath, per the Objective's expected-output schema),
+  within a stated committed budget; the full factorial regenerable from
+  the seed.
+- `corpus/harness/wo103-*.test.mjs`: cell replay, the never-throws
+  property over the declared factorial, condition × event evaluation,
+  threading, legacy and trace-bearing replay projections, and permutation
+  sweeps.
+- A generated precedence-matrix reference table at
+  `corpus/manifests/WO-103-precedence.md`, produced by the harness and
+  never hand-edited; regeneration is part of the gate.
+- `corpus/manifests/WO-103.json` (seed, factor levels, permutation caps,
+  cell counts, fixture hashes, base commit, toolchain profile) and
+  `corpus/manifests/runs/WO-103-<commit>.log`.
+- Generator and oracle self-tests with planted known cells.
+
+**Acceptance criteria (all required)**
+
 1. The manifest states every factor, level, and the permutation cap; cell
    counts equal the declared cross-product exactly.
 2. Shipped output matches the independent eight-rule precedence oracle for
-   every cell — exact shipped reason strings and full traces, and for authorized
-   cells the minted commandId and decremented resourceLimits — or the divergence
-   is a quarantined numbered finding.
-3. The never-throws property holds over the full factorial (refusals are
-   structural, with trace); every condition sees every event, missing or broken
-   semantic inputs fail closed, and a prior match never masks a later error.
-4. Outbox sweeps prove duplicate-delivery idempotence, result-before-persist
-   completion, structurally valid pending commands, and exact trace
-   classification over all enumerated orders within the declared cap.
-5. `--check` regeneration is byte-identical from the recorded seed; the
+   every cell — exact shipped reason strings and full traces, and for
+   authorized cells the minted commandId and decremented resourceLimits —
+   or the divergence is a quarantined numbered finding.
+3. The never-throws property holds over every cell of the declared
+   factorial (refusals are structural, with trace); every condition sees
+   every event, missing or broken semantic inputs fail closed, and a prior
+   match never masks a later error; a throwing cell or a masked error is a
+   quarantined numbered finding with its reproducing cell, never a fix.
+   The criterion is judged against the declared set; a case outside it is
+   a follow-up, not a failure.
+4. Outbox sweeps over all enumerated orders within the declared cap prove
+   duplicate-delivery idempotence, result-before-persist completion and
+   exact trace classification; a structurally incomplete command that
+   reaches `pendingCommands` is recorded as a quarantined numbered
+   finding, as the Objective directs.
+5. The cells with a missing `state` and with a missing `predicateEnv` each
+   refuse with `cannot evaluate revocation` and pin the partial trace
+   suffix the guard emits; the findings file records, with that cell, that
+   the audit projection leaves the refusal without its trace link (WO-017
+   FINAL-001, adjudication 8).
+6. `--check` regeneration is byte-identical from the recorded seed; the
    precedence table is regenerated, not edited.
+7. The decisions file records the seed, the factor levels, the cap and
+   each finding's number, and no existing file is edited beyond the
+   lifecycle's own records.
+8. After `npm run build`, the generator's `--check` from the recorded
+   seed and `node --test corpus/harness/wo103-*.test.mjs` pass with counts
+   matching the manifest; `npm test` and `npm run test:docs` green;
+   `git diff --check` clean; no new dependency.
 
-**Evidence gate (executable):** `npm run build && node
-corpus/harness/generate-authority-corpus.mjs --seed <recorded> --check &&
-node --test corpus/harness/wo103-*.test.mjs`, transcript captured under
-`corpus/manifests/runs/` with counts matching the manifest.
+**Evidence gate:** the transcript under `corpus/manifests/runs/` of
+`npm run build`,
+`node corpus/harness/generate-authority-corpus.mjs --seed <recorded> --check`
+and `node --test corpus/harness/wo103-*.test.mjs`, with counts matching
+the manifest; `npm test` and `npm run test:docs` before
+`implementation-ready` and at final review. No live row.
 
-**Non-goals:** failure-matrix rows 2/4/6 (WO-009's contract — do not
-pre-build); any transport, host, or worktree-lifecycle machinery (WO-009);
-AuditRecord or projections (WO-007); kernel edits; changing refusal reasons
-or precedence even if a finding suggests it; root test-script wiring;
-docs/product or ledger write-backs.
+**Write-back duty:** as listed in criterion 7.
+
+**Non-goals:** failure-matrix rows 2, 4 and 6 (established by WO-009; not
+rebuilt here); any transport, host or worktree-lifecycle machinery;
+AuditRecord or projections, the audit projection's trace linkage among
+them (the under-linked refusal is recorded, not fixed); kernel edits;
+changing refusal reasons or precedence even if a finding suggests it;
+root test-script wiring; product-document write-backs; naming the lane in
+`corpus/README.md` or product 03 §Corpus policy.
+
+**Operator-review assumptions**
+
+1. The order releases as a patch under the opt-out default.
+2. The lane's commands live in its manifest; `corpus/README.md` and
+   product 03 §Corpus policy name the lane in a later order's
+   documentation change; this order modifies no existing file.
+3. The under-linked refusal is recorded as a finding with its cell and
+   never fixed here; a fix belongs to an order that owns the audit
+   projection.

@@ -12,6 +12,22 @@ Planning entry returns the pending [follow-up register](followups.json) in
 bounded pages. Use `npm run plan -- followups` for its current counts, source
 pointers and continuation command; untouched items persist across passes.
 
+Planning entry reads what failed (operator direction, 2026-09-28): before the
+register, a pass counts the failed judgments, repairs and corrections recorded
+since the pass before it, reads each failed report and gives its cause a route
+in the pass's document. Until WO-172 lands the count is made by hand from
+`docs/control/orders/` and the decision records; the
+[failure inventory](failure-inventory-2026-09-28.md) holds the record to
+2026-09-28.
+
+Live feedback episodes (operator direction, 2026-09-28): an order that owes
+one runs it in the executor's session on Codex `gpt-6-sol` at `xhigh` or
+Claude Code `claude-opus-5-5` at `xhigh`. On either, it needs no operator
+authorization and its cost is accepted; a repair that edits a judged source
+again runs another the same way. A step the executor can perform is the
+executor's: no order marks it operator-run or routes it to the operator.
+WO-172 moves this rule into product 07.
+
 Lane pairs (operator direction, 2026-09-16; recut 2026-09-17): from WO-141
 onward the queued entries are grouped two per blank-separated pair for two
 parallel lanes. Inside a pair the two orders name disjoint primary surfaces
@@ -149,28 +165,42 @@ shares `release.mjs` with WO-164, and before WO-086. The four orders of
 the first judgment are repaired against receipt 031. Evidence:
 [the planning document](onesie-twosie-followup-drain-2026-09-27.md) §12 to §15.
 
+Failures pass (2026-09-28): seven closed entries leave (WO-168, WO-169,
+WO-164, WO-171, WO-170, WO-162, WO-163). At the operator's direction the
+pass counted what the phases recorded as failed: 96 failed judgments and 99
+repairs in the control logs and 56 corrections in the decisions, none of
+them shown to a pass by any instrument. Two orders are filed: WO-173 (the
+executor judges every criterion before it hands off, a criterion recorded
+met needs its gate's passing row and one recorded unmet is shown at the
+next dispatch) and WO-172 (`plan failures`, the counts when a pass opens,
+failed judgments in the meter). Four pairs are recut so that each holds one
+product entry and one debt entry, as the 2026-09-16 direction describes a
+pair: WO-060 with WO-167 at the head (the first critical-path gate; the
+fold, because the guide has 9 bytes of headroom), WO-116 with WO-173,
+WO-065 with WO-172, WO-117 with WO-086. WO-087 keeps a one-entry slot after
+WO-086 and does not run beside WO-066, which also edits product 06. WO-173
+and WO-172 depend on WO-167; WO-065 on WO-060; WO-117 on WO-116. Disjoint
+files inside each pair, no hard edge inside a pair; one order of each of
+the first two pairs re-mints, and WO-117 in the fourth. The pass also
+re-observed every open order against `main` and amended what had gone
+stale; WO-072 now depends on WO-123, which carries the source-change guard
+fix. WO-066 with WO-057 and the serial run keep their order. Evidence:
+[the planning document](failures-across-phases-2026-09-28.md) §10 and §11.
+
 <!-- dotln-work-order-sequence:start -->
-- WO-168 — A printed path exists
-- WO-169 — Follow-ups reach their seam
-
-- WO-164 — Constant-process console collection
-- WO-171 — Prune apply finishes
-
-- WO-170 — The meter keeps what sessions observed
-
-- WO-162 — In-unit helper reuse
-- WO-163 — 5S Sort and Set in order
-
-- WO-086 — Generated release history
+- WO-060 — SourceBundle contract
 - WO-167 — The execution guide folded
 
-- WO-087 — Candidates leave the roadmap
-
-- WO-060 — SourceBundle contract
 - WO-116 — Audit projection served
+- WO-173 — A handoff states what it knows
 
 - WO-065 — Pull-request state observation
+- WO-172 — Failures reach planning
+
 - WO-117 — Console live host
+- WO-086 — Generated release history
+
+- WO-087 — Candidates leave the roadmap
 
 - WO-066 — Review-comment resolution loop
 - WO-057 — Browser runtime truth

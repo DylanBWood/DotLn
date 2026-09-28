@@ -40,6 +40,129 @@ are now declared above. The [decision record](../evidence/WO-084/decisions.md)
 records the legacy ledger write-back; `node scripts/lineage.mjs index` generates
 the index and `index --check` enforces this rule in `npm run test:docs`.
 
+## 2026-09-28 — Planning pass: the failures no instrument counted (WO-172, WO-173; the queue re-observed)
+
+Source: the operator's dispatch and thirteen messages during the pass,
+captured verbatim in ignored intake
+(`docs/intake/notes/2026-09-28-standard-pass-planning.md`, SHA-256
+`171241b575489ed9bb81b224faf02fb8b3caa73aa83e70cf340a5d4681405b6a`): a standard pass; nine
+minutes later, the direction that the failures of every phase, about a
+hundred and planning's among them for not noticing, be addressed, all of
+which should have been documented; later, the question whether the pass
+had gone through all the older queued orders, whose text may be out of
+date; then corrections of the pass for shifting work onto the operator,
+the rule that a live feedback episode on either of two named
+configurations needs no authorization, and the refutation's model and
+time limit. Inputs: the control logs
+(961 events in 95 segments, 158 in the older log) and the 96 reports they
+record as failed, read whole by eight read-only surveys; the 928
+structured decisions, the 56 corrections among them read by the planner;
+the register's 156 pending rows, read whole; every open order, five
+re-observed by the planner and 45 by five read-only surveys; the
+completion, gate-evidence, meter and planning sources at `5f3849ec`.
+Clean-room screen: no stop condition; the inventory paraphrases reports
+and decisions and holds no operator chat. The record is
+[the planning document](../planning/failures-across-phases-2026-09-28.md)
+and [the failure inventory](../planning/failure-inventory-2026-09-28.md).
+
+- **A pass reads what failed before it reads what is queued** `adopted`
+  - The control logs hold 96 failed judgments and 99 repairs across 117
+    orders, a third of the recorded phase time, and the first
+    verification failed in 5 of the first 30 orders and in 23 of the
+    last 29. No instrument a pass reads at entry counts any of it, and
+    this pass opened on the register like the passes before it. The rule
+    is on the sequence file until WO-172 lands. Provenance:
+    operator-directed.
+- **Failures reach planning** `adopted`
+  - WO-172: one command lists the failed judgments, repairs,
+    corrections, off-ramps and amendments of a window from the public
+    record; `plan start` prints their counts; the meter carries them per
+    order; the direction count is judged against a hand classification.
+    Fifty-four of the 56 recorded corrections never entered the register
+    because they name no follow-up; the feed lists them and a pass
+    decides which pattern needs a row.
+- **A handoff states what it knows** `adopted`
+  - WO-173: the executor judges every criterion on one line before it
+    hands off. In 24 failed reports every failing finding would have
+    been shown by a check that existed, and in 13 the executor had
+    already recorded the gap; the operator then decided one cycle late.
+    A criterion recorded unmet is listed at the next dispatch, where a
+    waiver is legal.
+- **A claim is refused, a handoff is not** `adopted`
+  - A criterion recorded met that names a gate needs that gate's passing
+    row; recorded unmet with its reason it always records. The
+    2026-09-15 stand-down's removal of gate evidence from the transitions
+    stands.
+- **A criterion declares its set** `adopted`
+  - Guards are the largest class among the failing findings (48 of 184)
+    and five orders were repaired one shape at a time through 16 failed
+    judgments, each until someone stated a rule for input the guard
+    cannot read. An order's criterion names what it covers and what
+    happens to everything else. Applied to WO-060's screen and WO-116's
+    privacy clause.
+- **A fact in an order carries its commit and is re-observed before the order moves up** `adopted`
+  - WO-167 counted 32 dated paragraphs where the guide holds 33; WO-087
+    named a range by line numbers that had moved by 132 lines; WO-062
+    and WO-065 cited a helper that had moved. Every queued order was
+    re-observed against `main` and amended where a fact had gone stale.
+    Provenance: operator-directed.
+- **One product entry and one debt entry to a pair** `adopted`
+  - Four pairs are recut so that WO-060 and WO-116, the next
+    critical-path gates, run beside the fold and the handoff order
+    instead of behind them. The 2026-09-16 direction describes a pair
+    this way and the 2026-09-25 direction asks for half product, half
+    debt.
+- **The verdict rule for a case ordinary use has not reached** `deferred`
+  - 23 of the 96 failed reports rest only on such cases. The decision is
+    the operator's; the smaller step is the declared set. Reopen: after
+    WO-173, two orders in a row fail only on cases outside their
+    declared sets.
+- **Which judge** `deferred`
+  - The first verification failed in 28 of 78 orders that Codex executed
+    and Claude Code judged and in 20 of 24 the other way round; the
+    cause is not established, so a change of judge would be a guess.
+    Reopen: one order is judged by two judges.
+- **Release close records its outcome** `deferred`
+  - Reopen: a release close fails and the next pass cannot say why.
+- **A judgment that leaves no report** `deferred`
+  - Reopen: a verification is dispatched and no result is recorded for
+    it within a day.
+- **An executor's adversarial review before handoff** `rejected`
+  - It repeats the verifier at an unmeasured cost. Reopen: an order pays
+    one and its first verification passes where its neighbours' fail.
+- **Cited paths checked with the plan** `deferred`
+  - The surveys found 109 of 899 citations in the 45 open orders
+    unresolved or moved, and every one of the 45 is re-observed in this
+    pass. Reopen: a pass finds a cited path moved in an order it had
+    re-observed.
+- **Withdrawing the superseded umbrellas** `rejected`
+  - Six orders outside the sequence say in their own text that they are
+    superseded whole (WO-033, WO-034, WO-035, WO-036, WO-037, WO-040);
+    their children now state the rules they carried. A withdrawal takes
+    the operator's words (WO-158) and nothing waits on one, so they stay
+    unedited. Reopen: an umbrella's text misleads an executor or a pass.
+- **A live feedback episode needs no authorization on two named configurations** `adopted`
+  - An order that owes one runs it in the executor's session on Codex
+    `gpt-6-sol` at `xhigh` or Claude Code `claude-opus-5-5` at `xhigh`,
+    its cost accepted; a repair that edits a judged source again runs
+    another the same way. No rule had required the authorization: it
+    grew from orders' own assumptions (WO-152, WO-154), and it deferred
+    real fixes to avoid a second paid episode (WO-099 D027, WO-152 D009,
+    WO-157 D024). The pass's first drafts repeated it. Provenance:
+    operator-directed.
+- **A step the executor can perform is the executor's** `adopted`
+  - A read-only smoke and a measurement of the executor's own launch are
+    the executor's too; only a session the operator witnesses or a run in
+    the operator's own fork stays the operator's, with a fallback. The
+    pass had routed such steps to the operator and was corrected for
+    shifting the burden to the intervenor. Provenance: operator-directed.
+- **Whether the live feedback audit earns its place** `deferred`
+  - 92 live feedback verifications in 56 orders since WO-011; all 368
+    verdicts are pass, and the deterministic regressions already run each
+    mechanism present and removed. Reopen: a live verification returns
+    anything but pass where the deterministic regressions passed, or ten
+    more orders pay an episode and every verdict is pass.
+
 ## 2026-09-27 — Planning pass: operator answer (decisions delegated; WO-170 and WO-171 filed; receipt 031's findings repaired)
 
 Source: the operator's answer to the pass's first report, captured

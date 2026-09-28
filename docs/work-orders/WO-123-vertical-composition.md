@@ -1,13 +1,40 @@
 # WO-123 — `dotln vertical` composition: the vertical continuation sequences the loop's primitives from a filed intent to a terminal pull-request state with each step's receipt, entered by the resident under standing authorization or by one command, proven with doubles (version assigned at activation)
 
-**Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
-
 **Model:** any capable model. State the model and effort actually run in the
 result (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.
 **Release classification:** minor. One continuation with two entries, one
-admission decision, one portfolio class and one command; no new primitive.
-Assigned at activation under the standing opt-out default.
+admission decision, one portfolio class and one command, and a
+path-identity refusal in the source-change and beacon guards; no new
+primitive. Assigned at activation under the standing opt-out default.
+**Cost:** adds the vertical continuation in the executable subset;
+`admitIntent` and its two events, `IntentAdmitted` and `IntentHeld`, among
+the resident's event types in `packages/skeleton/src/resident-state.ts`;
+the `intent` portfolio class in `packages/skeleton/src/portfolio.ts` and
+`scripts/lib/config.mjs`; the `dotln vertical <issue>` command in
+`packages/skeleton/src/dotln.ts`; a refusal of variant-spelled paths
+before any containment comparison in
+`packages/skeleton/src/source-change-worktree.ts`,
+`packages/skeleton/src/source-change-environment.ts` and
+`packages/beacons/src/beacon-io.mjs`; fixtures with doubles and a fake
+clock; at most 500 bytes in product 07 and 300 in product 03. Removes the
+gap that no command and no resident path runs the loop end to end, and
+the worktree, branch and registration a variant-spelled parent leaves
+behind (register row FUP-8369f2b4284e70a8). It unblocks WO-112 and then
+WO-118 (gate V of the critical path). Re-mints: `resident-state.ts`,
+`portfolio.ts`, `source-change-worktree.ts` and
+`source-change-environment.ts` are registered sources of every evidence
+edition (`scripts/lib/evidence-sources.mjs`), so each edition they stale
+is re-minted deterministically, and a new module a registered source
+imports is registered there or excluded with a reason;
+`resident-state.ts` and the two source-change files are also judged by
+the feedback verifier (`FEEDBACK_SOURCE_PATHS` in
+`packages/skeleton/src/feedback-audit.ts`), so the executor runs one live
+feedback self-host episode on Codex `gpt-6-sol` or Claude Code
+`claude-opus-5-5`, at `xhigh`, which needs no authorization and whose cost
+is accepted; `beacon-io.mjs`, `dotln.ts` and `scripts/lib/config.mjs`
+are in no edition. Wall-clock, tokens and context bytes are unknown until
+run.
 **Nomination provenance:** the external review of the revised plan
 (2026-09-08, finding 10): the loop proof combined composition code with the
 final live proof; and the first refutation receipt of this pass
@@ -16,20 +43,40 @@ hold on criterion 1): a command-only fixture could pass while WO-118's
 one-intent resident run had no admission or scheduling path, so the
 resident-entered run is the acceptance path. Planner-synthesized draft; the
 captures' hashes are in the ledger section of that date. Opaque identifier,
-not a priority. Clean-room screen: no stop condition.
-**Depends on:** WO-052 merged (the source-change host); WO-054 and WO-055
-merged (verification and repair); WO-059 merged (browser witnesses);
-WO-061 and WO-062 merged (the contract from an issue); WO-124 merged
-(surfaces from the contract); WO-064, WO-065 and WO-066 merged (delivery
-and the pull-request loop); WO-068 merged (the resident that admits the
-intent and dispatches the first step); WO-120 merged (the filed intent and
-the derived order's durable identity); WO-100 merged (the portfolio
-contract the `intent` class extends); WO-042 merged (admitted grants and
-the effective envelope the run is bound to).
-**Recommended placement:** after the primitives, WO-068, WO-100 and
-WO-120; it adds the continuation, the admission decision and its events,
-the `intent` portfolio class, the command, and fixtures with doubles and a
-fake clock. A recommendation, not a dependency token.
+not a priority. Clean-room screen: no stop condition. Amended by the
+2026-09-28 planning pass, which re-observed the order on `main` at
+`5f3849ec`: it takes the path-identity refusal of register row
+FUP-8369f2b4284e70a8 (WO-162 D004), whose condition names an order that
+adds a production source-change host caller, as this one does; it
+records what the filed draft and the portfolio contract hold today,
+names its re-mints and the live episode, and bounds its write-backs
+behind WO-167
+([planning document](../planning/failures-across-phases-2026-09-28.md)
+§10).
+**Depends on:** WO-052 merged (the source-change host; closed, v0.28.0);
+WO-054 and WO-055 merged (verification and repair; closed, v0.30.0 and
+v0.31.0); WO-059 merged (browser witnesses); WO-061 and WO-062 merged (the
+contract from an issue); WO-124 merged (surfaces from the contract);
+WO-063 merged (the outward lint the publish step runs; closed, v0.40.3);
+WO-064, WO-065 and WO-066 merged (delivery and the pull-request loop;
+WO-064 closed, v0.43.0); WO-068 merged (the resident that admits the
+intent and dispatches the first step; closed, v0.23.0); WO-120 merged
+(the filed intent and the derived order's durable identity; closed,
+v0.41.0); WO-100 merged (the portfolio contract the `intent` class
+extends; closed, v0.44.0); WO-042 merged (admitted grants and the
+effective envelope the run is bound to; closed, v0.16.0); WO-167 merged
+(product 07 has 9 bytes of headroom until the fold resets its ceiling).
+**Recommended placement:** in the serial run after WO-062 and before
+WO-112. This order edits `packages/skeleton/src/` (the continuation,
+`resident-state.ts`, `portfolio.ts`, `dotln.ts`,
+`source-change-worktree.ts` and `source-change-environment.ts`),
+`packages/beacons/src/beacon-io.mjs`, `scripts/lib/config.mjs`, the
+evidence-source registry if a new module needs it, their fixtures, the
+editions it re-mints and products 07 and 03. Neither neighbour edits
+these files: WO-062 adds a source adapter and WO-112 writes documents
+only. WO-116, earlier in the sequence, also edits `dotln.ts`, and WO-073,
+later, edits `scripts/lib/config.mjs`. A recommendation, not a
+dependency token.
 
 <!-- dotln-dependencies:start -->
 [
@@ -69,6 +116,11 @@ fake clock. A recommendation, not a dependency token.
     "reason": "surfaces from the contract"
   },
   {
+    "workOrderId": "WO-063",
+    "relation": "hard",
+    "reason": "the outward lint the publish step runs"
+  },
+  {
     "workOrderId": "WO-064",
     "relation": "hard",
     "reason": "publish"
@@ -102,16 +154,34 @@ fake clock. A recommendation, not a dependency token.
     "workOrderId": "WO-042",
     "relation": "hard",
     "reason": "admitted grants and the effective envelope the run is bound to"
+  },
+  {
+    "workOrderId": "WO-167",
+    "relation": "hard",
+    "reason": "product 07 has 9 bytes of headroom until the fold resets its ceiling"
   }
 ]
 <!-- dotln-dependencies:end -->
 
 **Cites (read these sections):** 12-workstream-application.md §One outcome
 from request to return; 03-architecture.md §Operator-presence policy (the
-resident's dispatch rules); `docs/work-orders/WO-100-preauthorized-portfolio.md`
-(the portfolio contract); `docs/work-orders/WO-120-derived-work-identity.md`
-(the draft an intent files); `docs/work-orders/WO-068-resident-host.md`
-(the actor catalog and dispatch); the other orders named in Depends on.
+resident's dispatch rules); 07-execution-guide.md §Derived work and intent
+and §Declaring a portfolio (the draft an intent files; the portfolio keys
+and the bind refusal of a `self` portfolio);
+`docs/work-orders/WO-100-preauthorized-portfolio.md` (the portfolio
+contract); `docs/work-orders/WO-120-derived-work-identity.md` (the draft
+an intent files); `docs/work-orders/WO-068-resident-host.md` (the actor
+catalog and dispatch); `docs/work-orders/WO-060-source-bundle-contract.md`
+(the screen's declared set and role labels); `scripts/lib/derived-orders.mjs`
+(`fileIntent`); `scripts/lib/config.mjs` and
+`packages/skeleton/src/portfolio.ts` (the portfolio keys and
+`decodePortfolio`); `packages/skeleton/src/resident-state.ts`
+(`residentEventTypes`); `docs/evidence/WO-162/decisions.md` D004 and
+register row FUP-8369f2b4284e70a8 (the path-identity defect, its
+reproduction and its checks); `scripts/lib/evidence-sources.mjs` and
+`packages/skeleton/src/feedback-audit.ts` (`FEEDBACK_SOURCE_PATHS`); the
+[2026-09-28 planning document](../planning/failures-across-phases-2026-09-28.md)
+§10.1; the other orders named in Depends on.
 
 **Objective:** The vertical continuation sequences: bundle (WO-062) →
 contract (WO-061) → surfaces (WO-124) → derived order (WO-120) →
@@ -133,13 +203,45 @@ draft or returns `NeedsHuman` with the reason and dispatches nothing. The
 order adds no primitive, and every step's failure is a typed stop with the
 step named.
 
-**Observed gap (dated 2026-09-08, `main` at `33e2c25`):**
+**Observed gap (dated 2026-09-28, `main` at `5f3849ec`; first observed
+2026-09-08 at `33e2c25`):**
 
-- No command runs the loop end to end; each primitive has its own entry.
-- Nothing lets the resident admit a filed intent under standing authority
-  and schedule the loop's first step: the only unattended derivation
-  (WO-100) consumes discovery candidates, and WO-118 composes without
-  fixing the runtime (the first refutation receipt's largest gap).
+- No command runs the loop end to end. The `dotln` entrypoint's actions
+  are `intent`, `presence`, `handoff`, `resident`, `status`, `demo`,
+  `verify-demo` and `feedback-audit`, and nothing in `packages/` or
+  `scripts/` defines a vertical continuation, `admitIntent`,
+  `IntentAdmitted` or `IntentHeld`. The closed primitives each have their
+  own entry; WO-059, WO-061, WO-062, WO-124, WO-065 and WO-066 are open.
+- Nothing lets the resident admit a filed intent under standing
+  authority. `dotln intent` files a draft and activates nothing; the draft
+  names `repo: self`, `baseCommit: unassigned`, no surfaces, one
+  placeholder criterion, the constraint that human review is required
+  before activation and an unassigned release classification
+  (`fileIntent`). The resident's fifteen event types include none for an
+  intent, and the only unattended derivation, WO-100's portfolio, derives
+  orders from WO-119's five discovery candidate kinds. WO-118's Design
+  still builds nothing, so the admission is this order's.
+- The portfolio contract has no class. Its keys are `version`, `repo`,
+  `mechanics`, `surfaces`, `phases`, `budget` and `verification`; unknown
+  keys refuse; `mechanics` admits only `sort`, `shine` and `standardize`;
+  `verification` is keyed by candidate kind; `decodePortfolio`
+  re-validates the same shape; a portfolio whose `repo` is `self` has no
+  authority profile and is refused at bind.
+- The source-change and beacon guards compare path strings after a
+  canonical-path check built on `realpathSync`, which on one
+  case-insensitive volume returned the letter case and the volume alias it
+  was given, and at one check a decomposed Unicode spelling. There a
+  lowercase spelling of the launchpad given as the worktree parent passed
+  the constructor, `git worktree add` ran, identity verification then
+  threw, and the worktree, its registration and its branch remained; the
+  beacon guard, called directly, accepted case-variant spellings that skip
+  its ignore and intake refusals, and the skeleton CLI's `--beacons`
+  argument reaches it, though no variant was driven through the CLI
+  (WO-162 D004, reproduced by its VER-001 and again in its repair;
+  register row FUP-8369f2b4284e70a8, open).
+- Product 07 holds 188,390 of its 188,399 counted bytes and product 03
+  has 3,284 bytes of headroom at `5f3849ec`; the executor re-measures both
+  at its base.
 
 **Design (scope discipline):**
 
@@ -154,51 +256,130 @@ step named.
   remote effects need the admitted grants; the derived order's envelope is
   the intersection of the portfolio, the phase and the grants, never wider
   (WO-042).
+- The `intent` class adds a shape to both portfolio validators, which
+  refuse unknown keys today; existing portfolios decode unchanged. The
+  entry declares the target repository and the surfaces ceiling the
+  admission binds a filed draft to (operator-review assumption 3).
+- A draft, portfolio entry or grant the admission cannot decode is held
+  with the reason as `IntentHeld`, and nothing is dispatched.
+- Issue text, discussion and review comments pass WO-060's screen at
+  decode time with the forge host the artifact lives on as the allowlist.
+  A refused item is recorded with its shape and span and without its
+  text, the rest of the bundle or observation is kept, and the
+  continuation stops at the step that consumed the item, naming it. WO-060
+  holds the declared set and the role labels (`reporter`, `reviewer`,
+  `automation`).
+- Path identity: before any containment comparison, the source-change
+  guards and the beacon directory guard compare each input path's spelling
+  with the filesystem's identity for that directory and refuse a
+  difference in letter case, volume alias or Unicode form, and the host
+  verifies identity before `git worktree add`, so a refusal leaves no
+  worktree, branch or registration. `realpathSync.native` alone is not the
+  check: it returned a volume alias unchanged (WO-162 D004). A path whose
+  identity the guard cannot read is refused. The string-only prefix check
+  in `packages/skeleton/src/worker-protocol.ts` (lines 330-349 at
+  `5f3849ec`) stays as it is; D004 lists it for awareness only.
 - **Declined alternatives, recorded:** a human activation step between the
   intent and the first dispatch on the resident path (that is WO-120's
   draft review, kept for every intent no authorization covers); the
   resident inferring authorization from the intent's text; a second
-  continuation for the command path.
+  continuation for the command path; merging the three containment helpers
+  (their callers depend on distinct edge behavior, WO-162 D004; reopen
+  when a caller needs one containment rule).
 
 **Deliverables:** the continuation, the admission decision and its events,
-the `intent` portfolio class, the command, fixtures with doubles and a fake
-clock, the write-backs below.
+the `intent` portfolio class, the command, the path-identity refusal,
+fixtures with doubles and a fake clock, the re-mints, the write-backs
+below.
 
 **Acceptance criteria (all required)**
 
 1. A resident integration fixture, with doubles for every external actor
-   and a fake clock, starts from the same filed intent WO-120's
-   `dotln intent` exposes, under an explicit standing authorization (a
-   fixture portfolio entry of the `intent` class covering the target and
-   the surfaces, and admitted fixture grants for the remote effects): the
+   and a fake clock, starts from a draft filed as WO-120's `dotln intent`
+   files it, under an explicit standing authorization (a fixture portfolio
+   entry of the `intent` class declaring the target and the surfaces
+   ceiling, and admitted fixture grants for the remote effects): the
    resident admits the intent with no `dotln vertical` invocation and no
-   manual activation, persists the accepted contract and the vertical
-   continuation as events, dispatches the first step itself, and runs to
-   the terminal state writing one receipt per step; a resident restart
-   after any step resumes the continuation at the next step under the same
-   order and episode identities, and a fixture asserts the identities and
-   that no step runs twice. In the same fixture an intent with no covering
-   portfolio entry, one whose surfaces exceed the ceiling, and one whose
-   contract compiles to `NeedsHuman` each stay a draft or return
-   `NeedsHuman` with the reason, derive no order and dispatch nothing;
-   negative fixtures assert that no dispatch event follows.
+   manual activation, records `IntentAdmitted`, persists the accepted
+   contract and the vertical continuation as events, dispatches the first
+   step itself, and runs to the terminal state writing one receipt per
+   step; a resident restart after any step resumes the continuation at the
+   next step under the same order and episode identities, and a fixture
+   asserts the identities and that no step runs twice. In the same fixture
+   an intent with no covering portfolio entry, one whose surfaces exceed
+   the ceiling, one whose contract compiles to `NeedsHuman` and one whose
+   draft or entry cannot be decoded each stay a draft or return
+   `NeedsHuman` with the reason, record `IntentHeld`, derive no order and
+   dispatch nothing; negative fixtures assert that no dispatch event
+   follows. The criterion is judged against the declared set; a case
+   outside it is a follow-up, not a failure.
 2. `dotln vertical <issue>` enters the same persisted continuation for an
-   operator-invoked run and reaches the same terminal state with the same
-   receipts; a kill after any step resumes at the next.
-3. A failing step (a refused capsule, a lint refusal, a `NeedsHuman`) stops
-   with the step named and no later step runs.
-4. Write-backs land: 07 (the command; the `intent` portfolio class under
-   §Operator resume phrases), 03 §Operator-presence policy (the resident's
-   admission), ledger entry.
-5. `npm test` green; `git diff --check` clean; no new dependency.
+   operator-invoked run and reaches the same terminal state; from the step
+   at which the two entries converge, named in the decisions, it writes
+   the same kinds of receipt in the same order as the resident path; a
+   kill after any step resumes at the next.
+3. A failing step (a refused capsule, a lint refusal, a `NeedsHuman`, an
+   item WO-060's screen refuses) stops with the step named and no later
+   step runs. The criterion is judged against the declared set; a case
+   outside it is a follow-up, not a failure.
+4. Before any containment comparison, the source-change guards
+   (`source-change-worktree.ts`, `source-change-environment.ts`) and the
+   beacon directory guard (`beacon-io.mjs`) refuse a path whose spelling
+   differs from the filesystem's identity for that directory by letter
+   case, volume alias or Unicode form, and the source-change host creates
+   no worktree before identity is verified. On a case-insensitive volume,
+   fixtures give a parent, a launchpad and a beacon directory in each of
+   the three variant spellings: each refuses and leaves no worktree,
+   branch or worktree registration, and a canonical disjoint parent still
+   succeeds. A path whose identity the guard cannot read is refused. A
+   variant kind the fixture host cannot construct is recorded with the
+   host's filesystem, and the criterion is judged on the kinds
+   constructed. The criterion is judged against the declared set; a case
+   outside it is a follow-up, not a failure.
+5. Write-backs land, each in place with no dated paragraph: 07 §Derived
+   work and intent (the command and the admission) and §Declaring a
+   portfolio (the `intent` class), at most 500 bytes added to product 07,
+   against 9 bytes of headroom on 2026-09-28, which WO-167's fold resets;
+   03 §Operator-presence policy (the resident's admission; at most 300
+   bytes added, against 3,284 bytes of headroom on 2026-09-28); the
+   decisions file; the publication locks refreshed. Other open orders
+   write these documents (product 07: WO-173, WO-172, WO-086, WO-113,
+   WO-072, WO-073 and WO-080; product 03: WO-060, WO-059, WO-062, WO-124,
+   WO-073, WO-074 and WO-075): the executor re-measures the headroom at
+   its base; where the bound does not fit, it consolidates the section it
+   edits in the same change; a ceiling is raised only by a
+   planning-document decision.
+6. The re-mints the Cost line names are recorded: each edition the edited
+   registered sources stale is re-minted deterministically, a new module a
+   registered source imports is registered or excluded with a reason, and
+   after the last edit to a judged source the executor re-mints the
+   feedback edition from one live feedback self-host episode over the
+   edited judged sources, on Codex `gpt-6-sol` or Claude Code
+   `claude-opus-5-5`, at `xhigh` (`npm run dotln -- feedback-audit`, then
+   `npm run evidence:feedback -- --record-selfhost <directory>`); the
+   decisions record the configuration. A repair that edits a judged source
+   again runs another the same way.
+7. `npm test -- --review` and `npm run test:docs` green;
+   `git diff --check` clean; no new dependency.
 
-**Evidence gate:** the transcripts; `npm test`.
+**Evidence gate:** the fixture transcripts, including the path-identity
+fixtures with the host and filesystem they ran on; the re-mint records
+and the live feedback audit; `npm run test:docs`; `npm test -- --review`
+before `implementation-ready`, because
+`packages/skeleton/src/resident-state.ts` is a declared source of the
+authority, artifact, verification, feedback and harness evidence suites,
+and again at final review. The live row: the executor's live feedback
+self-host episode over the edited judged sources (criterion 6).
 
-**Write-back duty:** as listed in criterion 4.
+**Write-back duty:** as listed in criterion 5.
 
 **Non-goals:** the live proof (WO-112); the resident-owned run from a
 starter (WO-118); deriving work from discovery candidates (WO-100); the
-human review of a draft no authorization covers (WO-120).
+human review of a draft no authorization covers (WO-120); a change to
+what `dotln intent` files; merging the three containment helpers or
+changing the string check in `worker-protocol.ts`; path-identity cases
+outside the declared set (a case-sensitive volume, another operating
+system), each a follow-up.
 
 **Operator-review assumptions**
 
@@ -206,3 +387,14 @@ human review of a draft no authorization covers (WO-120).
 2. Standing authorization for an intent is a portfolio entry plus admitted
    grants, both reviewed text; the reviewer may prefer a dedicated grant
    kind.
+3. The `intent` entry, not the filed draft, supplies the target repository
+   and the surfaces ceiling: the draft keeps the `repo: self` and the empty
+   surfaces `dotln intent` files, and the accepted binding carries the
+   entry's, so `dotln intent` is unchanged.
+4. The executor names in the decisions the steps that run before the
+   admission decision (a ceiling needs the surfaces it bounds) and the
+   step at which the command's entry and the resident's converge; the
+   receipts criterion 2 compares are those from that step on.
+5. The path-identity refusal lands here because the register row's
+   condition is an order that adds a production source-change host
+   caller; a path the guard cannot read is refused, never passed.

@@ -1,26 +1,52 @@
 # WO-113 — Work-order files are stable contracts: state changes live in control events, receipts in evidence directories, judgment in verifications and the release decision in final reviews, checked forward from a cutoff and migrated for the open orders (version assigned at activation)
 
-**Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
-
 **Model:** any capable model. State the model and effort actually run in the
 result (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.
 **Release classification:** patch. One check in the work-order tooling and
 a forward-only migration of open orders' dated notes. Assigned at activation
 under the standing opt-out default.
+**Cost:** adds one check in `scripts/work-orders.mjs`, run by
+`index --check`, over the order files filed after the cutoff (the allowed
+fields in their order, a date only in the observed gap's lead, no dated
+heading and no receipt or reconciliation section), with fixtures; the
+move of the open orders' dated notes to their evidence READMEs with a
+pointer left behind; at most 700 bytes in product 07; the generated
+index's Sources and limits. Removes the dated notes open orders carry in
+their files (at `5f3849ec`: six umbrella records, one redirect note, four
+identity updates, one compatibility amendment, one scope split and one
+dated problem lead). Re-mints: none; `scripts/work-orders.mjs`,
+`scripts/lib/derived-contract.mjs` and `scripts/lib/dependencies.mjs` are
+not registered evidence sources, and no source the feedback verifier
+judges is edited. Wall-clock, tokens and context bytes are unknown until
+run.
 **Nomination provenance:** the 2026-09-08 external audit's separation rule
 (the work-order file must stop becoming the execution log), restated by the
 operator during the critical-path planning pass's correction; the
 repository's existing homes for each surface. Planner-synthesized draft;
 captures and hashes in the ledger section of that date. Opaque identifier,
-not a priority. Clean-room screen: no stop condition.
+not a priority. Clean-room screen: no stop condition. Amended by the
+2026-09-28 planning pass, which re-observed the order on `main` at
+`5f3849ec`: the check admits the observed gap's dated lead, which product
+07 requires, and the planning continuation's execution record; the
+section rule binds orders filed after the cutoff; the notes to migrate
+are those the open orders carry at its base, relative links rewritten;
+the product 07 write-back is bounded behind WO-167; the final criterion
+names both gates
+([planning document](../planning/failures-across-phases-2026-09-28.md)
+§10).
 **Depends on:** WO-043 merged (supersession and deferral become typed
-entries, so no dated prose is needed for them); WO-026 merged (the index;
-satisfied at `v0.5.2`).
-**Recommended placement:** after WO-043, in any free lane; it edits
-`scripts/work-orders.mjs` (the check), the open orders' dated notes, and
-the evidence READMEs that receive them. A recommendation, not a dependency
-token.
+entries, so no dated prose is needed for them; closed, v0.17.1); WO-026
+merged (the index; satisfied at `v0.5.2`); WO-167 merged (product 07 has
+9 bytes of headroom until the fold resets its ceiling).
+**Recommended placement:** in the serial run after WO-118 and before
+WO-080. This order edits `scripts/work-orders.mjs` (the check), its
+fixtures, the open orders' dated notes, the evidence READMEs that receive
+them, product 07 §Discipline and the generated index. WO-080, the next
+entry, also edits `scripts/work-orders.mjs` and writes product 07;
+WO-173, earlier in the sequence, writes 07 §Discipline too. The index
+reports the order dependency-ready at `5f3849ec`; the WO-167 edge holds
+it until the fold lands. A recommendation, not a dependency token.
 
 <!-- dotln-dependencies:start -->
 [
@@ -34,18 +60,33 @@ token.
     "relation": "satisfied-by-release",
     "release": "v0.5.2",
     "reason": "the index"
+  },
+  {
+    "workOrderId": "WO-167",
+    "relation": "hard",
+    "reason": "product 07 has 9 bytes of headroom until the fold resets its ceiling"
   }
 ]
 <!-- dotln-dependencies:end -->
 
 **Cites (read these sections):** 07-execution-guide.md §Discipline
-(forward-only enforcement; never back-fill history) and §Documentation
-freshness and ownership; 09-audit-resilience-privacy.md §Canonical audit
-record; `docs/verifications/README.md` and `docs/final-reviews/` (the
-judgment and decision homes); `docs/evidence/` (the receipt homes);
-`docs/control/` (the state homes); `scripts/work-orders.mjs` (`parseHeader`);
-the open orders carrying dated notes (redirect notes, retarget
-reconciliations, ideation breakout receipts, umbrella records).
+(forward-only enforcement: a new guard binds new work; never back-fill
+history; the precedence rule) and §Documentation freshness and ownership;
+07-execution-guide.md §Operator-opened planning pass (the dated observed
+gap each planner-synthesized draft carries); 09-audit-resilience-privacy.md
+§Canonical audit record; `docs/verifications/README.md` and
+`docs/final-reviews/` (the judgment and decision homes); `docs/evidence/`
+(the receipt homes); `docs/control/` (the state homes);
+`scripts/work-orders.mjs` (`parseHeader`); `scripts/lib/dependencies.mjs`
+(`dependencyHeader`, the dependency refusal);
+`scripts/lib/derived-contract.mjs` (`checkGeneratedSections`,
+`SECTION_SETS`); `scripts/lib/plan-continuation.mjs` (the
+execution-record appendix); `scripts/docs-check.mjs` (`linkFailures`);
+the open orders carrying dated notes, listed in the observed gap; register
+row FUP-0025 (the umbrella-note migration); the planning map's catalog
+row for this order (WO-157 criterion 14); the
+[2026-09-28 planning document](../planning/failures-across-phases-2026-09-28.md)
+§10.1.
 
 **Objective:** Make the five surfaces machine-kept: a work-order file holds
 the stable contract (title, metadata, typed dependencies, cites, objective,
@@ -53,53 +94,158 @@ gap, design, deliverables, criteria, non-goals, assumptions); a state change
 is a control event; a receipt lives under `docs/evidence/WO-NNN/`;
 independent judgment is a `VER-NNN`; the release decision is a `FINAL-NNN`.
 A check refuses, for orders filed after the cutoff, any dated note or
-receipt paragraph in the order file (a bold dated lead, a heading containing
-a date, a "receipt" or "reconciliation" section), and the open orders'
-existing dated notes move verbatim to their evidence READMEs with a one-line
-pointer, umbrella supersession becoming WO-043's typed `superseded` entries.
+receipt paragraph in the order file (a bold lead holding a date other
+than the observed gap's, a heading containing a date, a "receipt" or
+"reconciliation" section), and the open orders' existing dated notes move
+to their evidence READMEs, verbatim apart from relative links, with a
+one-line pointer; the umbrella records' prose moves beside the typed
+`superseded` entries they already carry.
 
-**Observed gap (dated 2026-09-08, `main` at `33e2c25`):**
+**Observed gap (dated 2026-09-28, `main` at `5f3849ec`; first observed
+2026-09-08 at `33e2c25`):**
 
-- Open orders carry redirect notes, retarget reconciliations, ideation
-  breakout receipts and, since this pass, umbrella records; the index reads
-  their headers, so every such note is an untyped addition to the contract
-  region.
+- Open orders carry dated notes: six umbrella records (WO-033, WO-034,
+  WO-035, WO-036, WO-037, WO-040), one redirect note (WO-035), four
+  identity updates (WO-102, WO-103, WO-105, WO-107), one compatibility
+  amendment (WO-103), one scope split (WO-105) and one dated problem lead
+  (WO-014). All but WO-014's sit in the region `parseHeader` reads, from
+  the title to the first heading or the `**Objective:**` lead. No open
+  order holds a heading with a date, or a receipt or reconciliation
+  section, below its title, and no open order still carries a retarget
+  reconciliation or an ideation breakout receipt. Planning passes amend
+  open orders, so the executor re-measures this set at its base.
+- The six umbrella orders already carry typed `superseded` entries (14,
+  4, 7, 1, 5 and 3) beside their prose records; only the prose moves.
+  Register row FUP-0025 allocated the umbrella-note migration to this
+  order on 2026-09-19.
+- `checkGeneratedSections` already refuses, for generated authorities
+  only, a heading outside their six sections and any bold lead holding a
+  date, and requires typed dependencies; its comment leaves the global
+  migration to this order. An allocation event carries the digest of the
+  section set it was written under, and a superseded set stays in
+  `SECTION_SETS` (WO-157 criterion 14, WO-120 D007).
+- Product 07 §Operator-opened planning pass requires each
+  planner-synthesized draft to carry a dated observed gap, and every
+  order the 2026-09-28 pass wrote carries one as a bold lead that may
+  wrap over two lines; a rule refusing every dated bold lead would refuse
+  them all.
+- The planning continuation check admits one appended
+  `## Execution record` section as an order file's execution update; 18
+  closed orders carry one, the latest appended on 2026-09-25 (WO-160),
+  and no open order does.
+- WO-036's umbrella record links `WO-126-process-debt.md` relatively;
+  moved byte for byte into its evidence README, the link would name a
+  missing file, which the document gate refuses.
+- The dependency refusal still tells the operator to change a relation
+  "in this authority file with a dated reviewed note".
+- Product 07 holds 188,390 of its 188,399 counted bytes at `5f3849ec`;
+  WO-167's fold resets the ceiling, and the executor re-measures it at
+  its base.
 
 **Design (scope discipline):**
 
 - The cutoff is the activation date; closed and historical orders are never
   edited (their notes are history).
 - The check is a positive rule over the order's sections; the allowed
-  section set is documented in 07.
+  section set is documented in 07. The allowed fields, in this order:
+  Model; Effort; Release classification; Cost; Nomination provenance;
+  Depends on; Recommended placement; an optional Repository line; the
+  typed dependency block; Cites; Objective; Observed gap; Design;
+  Deliverables; Acceptance criteria; Evidence gate; Write-back duty;
+  Non-goals; Operator-review assumptions; after them, at most the one
+  `## Execution record` section the planning continuation check admits.
+  Every field but the Repository line is required.
+- A date stands in one bold lead, the observed gap's
+  (`**Observed gap (dated …):**`, which may wrap over two lines). Any
+  other bold lead holding a date, a heading below the title holding a
+  date and a section headed as a receipt or a reconciliation are refused.
+  The title is not a section.
+- The section rule binds orders filed after the cutoff. An open order
+  filed before it is judged by the date rule once its notes have moved;
+  its other older-form sections stay, as the guide's forward-only rule
+  keeps history.
+- A lead or heading the check cannot classify is refused with the path
+  and the line; an order whose filing date the check cannot read is
+  judged as filed after the cutoff.
+- Each moved note keeps its bytes except relative links, which are
+  rewritten to resolve from the evidence directory; the decisions file
+  lists each rewritten link. The pointer left in the order holds no date.
+- The umbrella records' prose moves beside the typed `superseded` entries
+  the six orders already carry; the migration is this order's by register
+  row FUP-0025.
+- Generated authorities keep `checkGeneratedSections` and their section
+  set; a change to that set keeps the superseded set in `SECTION_SETS`, so
+  historical allocation events still fold (WO-157 criterion 14; the
+  planning map's catalog row for this order).
 - **Declined alternatives, recorded:** rewriting closed orders; a front-matter
-  migration (unselected in the roadmap).
+  migration (unselected in the roadmap); refusing every dated bold lead, as
+  the generated authorities' check does (it would refuse the dated
+  observed gap product 07 requires of every planner-synthesized draft;
+  reopen when product 07 stops requiring one); refusing the
+  execution-record appendix (the planning continuation check admits it as
+  an order's one execution update, so the two checks would contradict
+  each other; reopen when that check stops admitting it).
 
-**Deliverables:** the check, the migration, the pointers, the write-backs
-below.
+**Deliverables:** the check, the migration, the pointers, fixtures, the
+write-backs below.
 
 **Acceptance criteria (all required)**
 
-1. The check refuses a fixture order with a dated bold lead, a dated
-   heading and a receipt section, and passes the allowed section set; it
-   runs in `index --check`.
-2. Every open order passes the check after migration; each moved note is
-   byte-identical in its evidence README with a pointer left behind; umbrella
-   records are typed `superseded` entries and the prose record is in the
-   evidence README.
+1. The check runs in `index --check`. For an order filed after the cutoff
+   it refuses, naming the path and the line, each of these fixtures: a
+   bold lead holding a date other than the observed gap's; a heading below
+   the title holding a date; a section headed as a receipt or a
+   reconciliation; a lead outside the allowed set, an unclassifiable one
+   included; a required field missing; the fields out of order. It passes
+   a fixture in the allowed set whose observed-gap lead wraps over two
+   lines and which ends in one `## Execution record` section. A fixture
+   whose filing date the check cannot read is judged as filed after the
+   cutoff. The criterion is judged against the declared set; a case
+   outside it is a follow-up, not a failure.
+2. After migration, every open order at the activation base holds no
+   dated note (the observed gap's lead is not a note): its dated notes are
+   in its evidence README, each byte-identical apart from relative links
+   rewritten to resolve there, each rewrite listed in the decisions file,
+   and a pointer holding no date is left in the order; the umbrella
+   records' prose is in their evidence READMEs beside the typed
+   `superseded` entries the orders already carry. The executor lists the
+   notes it moved, measured at its base.
 3. Closed and historical orders are byte-identical to the activation base.
-4. Write-backs land: 07 §Discipline (the five surfaces and the allowed
-   sections), `docs/work-orders/README.md` Sources and limits (generated),
-   ledger entry.
-5. `npm test` green; `git diff --check` clean; no new dependency.
+4. Write-backs land, each in place with no dated paragraph: 07 §Discipline
+   (the five surfaces, the allowed fields and the date rule; at most 700
+   bytes added to product 07, against 9 bytes of headroom on 2026-09-28,
+   which WO-167's fold resets); `docs/work-orders/README.md` Sources and
+   limits (generated, through `scripts/work-orders.mjs`); the decisions
+   file; the publication locks refreshed. WO-173, WO-172, WO-086, WO-123,
+   WO-072, WO-073 and WO-080 also write product 07: the executor
+   re-measures the headroom at its base; where the bound does not fit, it
+   consolidates the section it edits in the same change; a ceiling is
+   raised only by a planning-document decision.
+5. `npm test -- --review` and `npm run test:docs` green;
+   `git diff --check` clean; no new dependency.
 
-**Evidence gate:** the transcripts; `npm test`.
+**Evidence gate:** the fixture transcripts; the list of moved notes and
+rewritten links; `npm run test:docs`; `npm test -- --review` before
+`implementation-ready`, because `scripts/work-orders.mjs` is a declared
+source of harness-fixtures and process-debt, and again at final review.
+No live row.
 
 **Write-back duty:** as listed in criterion 4.
 
 **Non-goals:** product-doc receipts (WO-085); front matter; editing closed
-orders.
+orders; an open order's older-form sections other than its dated notes;
+the generated authorities' section set; the dependency refusal's advice
+to add a dated reviewed note (`scripts/lib/dependencies.mjs`), recorded
+as a follow-up in the decisions file.
 
 **Operator-review assumptions**
 
 1. The umbrella records this pass added are the last dated notes filed
    before the cutoff; they migrate here.
+2. A date stands in an order file only in the observed gap's lead,
+   because product 07 requires a dated observed gap.
+3. The execution-record appendix the planning continuation check admits
+   stays allowed; moving execution records to evidence would change that
+   check as well, which this order does not do.
+4. An order whose filing date the check cannot read is judged by the full
+   rule, which admits nothing the rule would refuse.

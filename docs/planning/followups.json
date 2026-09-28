@@ -562,6 +562,19 @@
             "WO-090"
           ],
           "at": "2026-09-19T01:19:36.770Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated again: the reopening condition occurred (WO-079 closed, and this pass rewrote WO-089 after WO-085 closed). WO-084, WO-085 and WO-090 are closed; the documentation reset's remaining work is WO-086 to WO-089, each re-observed and amended in this pass. [2026-09-28 planning pass (docs/planning/failures-across-phases-2026-09-28.md section 12)]",
+          "reopenWhen": "the last of WO-086 to WO-089 closes, or a pass takes one of them out of the sequence",
+          "targets": [
+            "WO-086",
+            "WO-087",
+            "WO-088",
+            "WO-089"
+          ],
+          "at": "2026-09-28T14:59:05.478Z"
         }
       ]
     },
@@ -3288,6 +3301,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-27T14:35:55.424Z"
+        },
+        {
+          "sourceRevision": 6,
+          "status": "open",
+          "reason": "Kept open with this pass's measurement. The first page showed two rows needing review and six open rows, and the pass acted on all eight; what no entry instrument showed was the pass's subject, the 96 failed judgments. Orientation read the status, the sequence, the planning and ideation sections of product 07, the previous pass's document, the register whole by export (156 rows), two intake captures, the queued orders and the sources the two new orders name. WO-172 adds what failed to what a pass is shown at entry; orientation to the product is untouched. [2026-09-28 planning pass (docs/planning/failures-across-phases-2026-09-28.md section 12)]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-28T14:59:04.596Z"
         }
       ]
     },
@@ -5657,6 +5678,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-27T20:16:28.844Z"
+        },
+        {
+          "sourceRevision": 14,
+          "status": "deferred",
+          "reason": "Deferred with the measurement. The document gate runs 12.8 s, led by docs-check at 8.5 s. The plain product gate runs 314 to 322 s, under the six minutes the stand-down set; the review selection runs 612 to 645 s, the skeleton suite 310 to 315 s of it. The larger multiplier is the 2 to 9 product gate runs an order pays, which WO-173 reduces by not running a gate again at a code identity that passed. No cut is filed. [2026-09-28 planning pass (docs/planning/failures-across-phases-2026-09-28.md section 12)]",
+          "reopenWhen": "after WO-173 closes an order still pays more than four product gate runs, or the plain product gate exceeds six minutes fresh",
+          "targets": [],
+          "at": "2026-09-28T14:59:04.918Z"
         }
       ]
     },
@@ -8486,6 +8515,14 @@
           "reopenWhen": "disk pressure, or an observed retained candidate that the documented ownership and publication rules cannot explain",
           "targets": [],
           "at": "2026-09-21T06:59:08.589Z"
+        },
+        {
+          "sourceRevision": 6,
+          "status": "settled",
+          "reason": "Settled again: the candidate text changed because WO-171 and WO-170 recorded what the prune retains, a lane whose usage copy no committed snapshot names. The on-demand prune exists and its apply finishes. The listing of 2026-09-28 names 892 MB removable (74 retained lanes, two integration stashes) and four lanes waiting for a snapshot; running the apply is the operator's. [2026-09-28 planning pass (docs/planning/failures-across-phases-2026-09-28.md section 12)]",
+          "reopenWhen": "disk pressure, or an observed retained candidate that the documented ownership and publication rules cannot explain",
+          "targets": [],
+          "at": "2026-09-28T14:59:04.567Z"
         }
       ]
     },
@@ -11670,6 +11707,14 @@
           "reopenWhen": "the next order that reads the meter's per-role rows as evidence",
           "targets": [],
           "at": "2026-09-19T01:20:04.982Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again: WO-170 read the per-role rows and recovered them for 77 closed orders; whether a worker audit episode is counted as the verifier's in those rows is unknown to this pass, which relied on no per-role figure. WO-172 adds counts per order, not per role. [2026-09-28 planning pass (docs/planning/failures-across-phases-2026-09-28.md section 12)]",
+          "reopenWhen": "a planning pass or an order relies on a per-role usage figure to decide something",
+          "targets": [],
+          "at": "2026-09-28T14:59:05.124Z"
         }
       ]
     },
@@ -11952,6 +11997,14 @@
           "reopenWhen": "a week adds more than 10 MB of tracked evidence, or one order commits more than 1 MB of revisions it never makes current",
           "targets": [],
           "at": "2026-09-27T01:45:55.071Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again with FUP-5e2f4ce16f9e8be1 and its measurement: the week to 2026-09-28 added 28.7 MB, 23.9 MB of it before 2026-09-25; an order now adds 0.05 to 0.67 MB. No retention rule is written while pruning is declined. The Codex session-identity join was not examined. [2026-09-28 planning pass (docs/planning/failures-across-phases-2026-09-28.md section 12)]",
+          "reopenWhen": "one order commits more than 1 MB under docs/evidence, or a week that begins on or after 2026-09-25 adds more than 10 MB of tracked evidence",
+          "targets": [],
+          "at": "2026-09-28T14:59:04.683Z"
         }
       ]
     },
@@ -13104,6 +13157,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-28T03:29:45.135Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred with the measurement. Tracked evidence grew 28.7 MB in the week to 2026-09-28, 23.9 MB of it in the first four days; the sixteen orders closed since 2026-09-25 added 5.4 MB, 0.05 to 0.67 MB each, and WO-162's two unselected authority revisions are 76 KB each. The week's figure is orders that closed before editions were recorded by reference (WO-154). Pruning stays declined: immutable reports link to edition files. [2026-09-28 planning pass (docs/planning/failures-across-phases-2026-09-28.md section 12)]",
+          "reopenWhen": "one order commits more than 1 MB under docs/evidence, or a week that begins on or after 2026-09-25 adds more than 10 MB of tracked evidence",
+          "targets": [],
+          "at": "2026-09-28T14:59:04.654Z"
         }
       ]
     },
@@ -14926,6 +14987,16 @@
           "reopenWhen": "ten closed orders without the phrase after WO-151, or two passes that open with it and still carry findings undecided",
           "targets": [],
           "at": "2026-09-22T22:02:11.958Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-172 criterion 3: the recorded condition occurred. Sixteen orders have passed final review since REVIEW-003 ended on 2026-09-25 and the phrase has not been used. plan start prints the count at entry; it suggests and schedules nothing. The pass recommends a review to the operator. [2026-09-28 planning pass (docs/planning/failures-across-phases-2026-09-28.md section 12)]",
+          "reopenWhen": "WO-172 closes without the count, or two passes that open with the phrase still carry findings undecided",
+          "targets": [
+            "WO-172"
+          ],
+          "at": "2026-09-28T14:59:05.065Z"
         }
       ]
     },
@@ -15821,6 +15892,16 @@
           "reopenWhen": "ten closed orders without the phrase after WO-151, or two passes that open with it and still carry findings undecided",
           "targets": [],
           "at": "2026-09-22T22:02:19.539Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-172 criterion 3 with FUP-abfdb650f125a77f: sixteen orders closed since the last review without the phrase. [2026-09-28 planning pass (docs/planning/failures-across-phases-2026-09-28.md section 12)]",
+          "reopenWhen": "WO-172 closes without the count, or two passes that open with the phrase still carry findings undecided",
+          "targets": [
+            "WO-172"
+          ],
+          "at": "2026-09-28T14:59:05.095Z"
         }
       ]
     },
@@ -16498,6 +16579,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-28T03:29:45.167Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred: WO-162 closed, which was one of the two recorded conditions; the other has not occurred, the receipts directory holding 17.4 MB in 77 files. The change is a receipt schema change on the gate every pass runs, and this pass adds one receipt pair. [2026-09-28 planning pass (docs/planning/failures-across-phases-2026-09-28.md section 12)]",
+          "reopenWhen": "the receipts directory passes 32 MB",
+          "targets": [],
+          "at": "2026-09-28T14:59:04.948Z"
         }
       ]
     },
@@ -17127,6 +17216,14 @@
           "reopenWhen": "a week adds more than 10 MB of tracked evidence",
           "targets": [],
           "at": "2026-09-25T01:51:19.869Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again: the recorded condition occurred for the week to 2026-09-28 (28.7 MB), on orders that closed before WO-154 took effect; tracked evidence is 146.6 MB of 201.9 MB and the sixteen orders closed since 2026-09-25 added 5.4 MB. A ceiling would still be a mechanism with no removal. [2026-09-28 planning pass (docs/planning/failures-across-phases-2026-09-28.md section 12)]",
+          "reopenWhen": "a week that begins on or after 2026-09-25 adds more than 10 MB of tracked evidence",
+          "targets": [],
+          "at": "2026-09-28T14:59:04.712Z"
         }
       ]
     },
@@ -17548,6 +17645,16 @@
           "reopenWhen": "a second deadline hit on the WO-143 matrix subtest with cause unestablished",
           "targets": [],
           "at": "2026-09-25T21:29:59.668Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "allocated",
+          "reason": "Allocated: the reopening condition occurred. Four records show the WO-143 lock matrix cancelled at its 240 s deadline (WO-114 VER-001, WO-159 D020, WO-115 FINAL-001, WO-168 D013), three of them followed by a passing rerun, and the gate rows hold the skeleton suite failing in both lanes 22 seconds apart on 2026-09-27. WO-173 criterion 6 gives each of the eight cells its own deadline. [2026-09-28 planning pass (docs/planning/failures-across-phases-2026-09-28.md section 12)]",
+          "reopenWhen": "WO-173 closes without the eight subtests, or a cell is cancelled at its own deadline while no sibling gate runs",
+          "targets": [
+            "WO-173"
+          ],
+          "at": "2026-09-28T14:59:04.536Z"
         }
       ]
     },
@@ -18963,6 +19070,16 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-28T03:29:45.292Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Allocated to WO-172 criterion 6. 228 of the 928 decision dispatch fields name the operator; a pattern search finds fifteen that may hold the operator's words, the latest dated 2026-09-25, before the dispatch check landed. WO-172 reads every one for its direction count, paraphrases those that hold the operator's words under the dispatch check's rule and files the comparison by digest. That is the correction route for a closed record. [2026-09-28 planning pass (docs/planning/failures-across-phases-2026-09-28.md section 12)]",
+          "reopenWhen": "WO-172 closes without the comparison, or a decision dispatch recorded after 2026-09-26 holds the operator's words",
+          "targets": [
+            "WO-172"
+          ],
+          "at": "2026-09-28T14:59:04.770Z"
         }
       ]
     },
@@ -19517,6 +19634,16 @@
           "reopenWhen": "three orders have completed implementation or repair with the register advisory, or an order closes with a touching row undisposed",
           "targets": [],
           "at": "2026-09-27T14:35:55.772Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Allocated in part and declined in part. Seven orders have completed with the register advisory (8 to 27 rows each) and their final reviews wrote 123 dispositions: 11 named a generated projection or the release line, so leaving those paths out of the match is declined as too small; 60 re-deferred a row whose seam the change did not open, and WO-173 criterion 7 rewords the rule so that a review disposes a row whose seam opened or whose condition occurred. [2026-09-28 planning pass (docs/planning/failures-across-phases-2026-09-28.md section 12)]",
+          "reopenWhen": "an order closes with a touching row undisposed whose seam it opened, or generated projections account for more than a quarter of a review's dispositions",
+          "targets": [
+            "WO-173"
+          ],
+          "at": "2026-09-28T14:59:05.036Z"
         }
       ]
     },
@@ -19556,6 +19683,14 @@
           "reopenWhen": "WO-168 closes, or a planner is refused an export destination the role's grants admit and has no granted alternative",
           "targets": [],
           "at": "2026-09-27T15:59:34.072Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "declined",
+          "reason": "Declined: WO-168 closed, the recorded condition. This pass exported the register twice to the session scratch the dispatch printed, which the planner's grants admit; a command has no session identity, so the host scratchpad stays refused, and a granted destination exists. [2026-09-28 planning pass (docs/planning/failures-across-phases-2026-09-28.md section 12)]",
+          "reopenWhen": "a planner is refused an export destination the role's grants admit and has no granted alternative",
+          "targets": [],
+          "at": "2026-09-28T14:59:05.007Z"
         }
       ]
     },
@@ -19643,6 +19778,16 @@
           "reopenWhen": "a script an order adds escapes every machinery suite until the reviewer's gate, or the next order that edits changedMachinery in scripts/test-runner.mjs",
           "targets": [],
           "at": "2026-09-28T03:29:45.476Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-173 criterion 2: the completion asks which machinery suites a change selects, so the change includes its untracked files. [2026-09-28 planning pass (docs/planning/failures-across-phases-2026-09-28.md section 12)]",
+          "reopenWhen": "WO-173 closes with changedMachinery still reading tracked files only, or a script an order adds escapes every machinery suite until the reviewer's gate",
+          "targets": [
+            "WO-173"
+          ],
+          "at": "2026-09-28T14:59:05.154Z"
         }
       ]
     },
@@ -19722,6 +19867,14 @@
           "reopenWhen": "the next order that edits scripts/lib/planning-followups.mjs or scripts/refute-plan.mjs, or a planner or executor misses a row because it links a changed file relatively, an advisory prints a command that refuses, or a register write is refused after an export",
           "targets": [],
           "at": "2026-09-28T03:29:45.445Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Deferred again: WO-172 adds a command beside the feed and calls its export rule without changing it, and WO-173 rewords the advisory's rule and leaves the command it prints; neither opens the four edges, and none has been met in use. Both executors are shown this row by the completion advisory. [2026-09-28 planning pass (docs/planning/failures-across-phases-2026-09-28.md section 12)]",
+          "reopenWhen": "a planner or executor misses a row because it links a changed file relatively, an advisory prints a command that refuses, or a register write is refused after an export",
+          "targets": [],
+          "at": "2026-09-28T14:59:05.183Z"
         }
       ]
     },
@@ -20004,6 +20157,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-27T23:31:48.098Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred with the measurement: the listing of 2026-09-28 retains four lanes for a usage copy no committed snapshot names (WO-067, WO-162, WO-163, WO-170). The copies are kept, so nothing is lost while they wait. A refresh after an order's last usage row needs a commit that release close does not make. [2026-09-28 planning pass (docs/planning/failures-across-phases-2026-09-28.md section 12)]",
+          "reopenWhen": "retained lanes waiting for a snapshot pass twenty, or the next order that edits the snapshot writer in scripts/lib/meta.mjs",
+          "targets": [],
+          "at": "2026-09-28T14:59:04.977Z"
         }
       ]
     },
@@ -20373,6 +20534,16 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-27T23:31:48.387Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-172 criterion 5: the direction count also reads a lifecycle dispatch that names an operator step, judged against a hand classification of every dispatch that names the operator; below 95 in 100 the reader is not shipped and the classification returns to planning. This pass relied on no figure of the Directions column. [2026-09-28 planning pass (docs/planning/failures-across-phases-2026-09-28.md section 12)]",
+          "reopenWhen": "WO-172 closes with the reader not shipped, or a planning pass reads the Directions column to judge operator supervision before then",
+          "targets": [
+            "WO-172"
+          ],
+          "at": "2026-09-28T14:59:04.857Z"
         }
       ]
     },
@@ -20435,6 +20606,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-28T02:36:18.698Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined: no queued order needs a mutation campaign on a current commit and no gate runs the instrument. The two defects that stop it on the current tree stay recorded in WO-163 D009. [2026-09-28 planning pass (docs/planning/failures-across-phases-2026-09-28.md section 12)]",
+          "reopenWhen": "an order needs a mutation campaign on a current commit, or a gate begins to run the instrument",
+          "targets": [],
+          "at": "2026-09-28T14:59:04.741Z"
         }
       ]
     },
@@ -20499,6 +20678,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-28T03:29:45.261Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled: WO-062 and WO-065 cite scripts/lib/github-repository.mjs, amended with the re-observation of the queue (planning document section 10.4). [2026-09-28 planning pass (docs/planning/failures-across-phases-2026-09-28.md section 12)]",
+          "reopenWhen": "either order is activated with a citation that does not resolve",
+          "targets": [],
+          "at": "2026-09-28T14:59:04.626Z"
         }
       ]
     },
@@ -20614,6 +20801,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-28T02:36:18.790Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "deferred",
+          "reason": "Deferred: one occurrence, and the waiver it concerns stands on the operator's capture. Under Codex the rule that an executor never records its own waiver rests on role text once the executor has released its writer; recognizing a helper needs a session lineage Codex does not expose to a hook. [2026-09-28 planning pass (docs/planning/failures-across-phases-2026-09-28.md section 12)]",
+          "reopenWhen": "an off-ramp is recorded by an executor's descendant without an operator capture",
+          "targets": [],
+          "at": "2026-09-28T14:59:04.827Z"
         }
       ]
     },
@@ -20645,6 +20840,16 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-28T02:36:18.729Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Allocated to WO-173: the verify and final-review briefings say that a recorded off-ramp whose capture hash matches is judged from the record and never put back to the operator (criterion 5). The briefings also list a criterion the executor recorded unmet with the waiver route, so the question is asked once, at the dispatch where a waiver is legal. [2026-09-28 planning pass (docs/planning/failures-across-phases-2026-09-28.md section 12)]",
+          "reopenWhen": "a role again routes an authorized, hash-matched off-ramp back to the operator for confirmation",
+          "targets": [
+            "WO-173"
+          ],
+          "at": "2026-09-28T14:59:04.798Z"
         }
       ]
     },
@@ -20754,6 +20959,16 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-28T03:29:45.199Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "Allocated to WO-123, the first order in the sequence that composes the source-change episode into a resident-entered run, which is the row's own condition (an order that adds a production source-change host caller). WO-123 gains the criterion: variant-spelled parent, launchpad and beacon inputs refuse before any containment comparison and leave no worktree, branch or registration, and a canonical disjoint parent still succeeds. WO-072, which gives worktreeParent its first reader, takes WO-123 as a hard dependency. The files the row names under packages/skeleton/src are registered and judged, so WO-123 names their re-mints and the live episode. [2026-09-28 planning pass (docs/planning/failures-across-phases-2026-09-28.md section 12)]",
+          "reopenWhen": "WO-123 closes without the criterion, or an order sequenced before it adds a production source-change host caller",
+          "targets": [
+            "WO-123"
+          ],
+          "at": "2026-09-28T14:59:05.213Z"
         }
       ]
     },
@@ -20786,6 +21001,242 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-28T03:29:45.230Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred: one occurrence, recovered in its own order; the record states the workaround, which is never to edit a decision an amendment row binds and to bind a new decision instead (WO-162 D016). [2026-09-28 planning pass (docs/planning/failures-across-phases-2026-09-28.md section 12)]",
+          "reopenWhen": "a second bound decision is edited after its amendment row, or the next order that edits scripts/lib/plan-receipts.mjs",
+          "targets": [],
+          "at": "2026-09-28T14:59:04.888Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-0fe667120ff19e79",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-failures-pass-recorded-2026-09-28::17b13a302340d1678c4edc88fd09e22eef7642eedd592a3b542564afc61f0434",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "eb12fb804c4ccb49a2a123731be26ccdb69e19407947e4cf460a53212fe07271",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-failures-pass-recorded-2026-09-28",
+          "title": "Cited paths checked with the plan.",
+          "summary": "6. **Cited paths checked with the plan.** The stale citations in the queue were found by reading each order. A check of every cited path would spend part of the plan check's two seconds. Deferred: a pass re-observes an order before it moves to the head. Reopen: a pass finds a cited path moved in an order it had re-observed.",
+          "missing": false
+        },
+        {
+          "hash": "4e6765eb722947614448fcac41da679e5d57e9dae72d2c8132867500bfee4fef",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-failures-pass-recorded-2026-09-28",
+          "title": "Cited paths checked with the plan.",
+          "summary": "6. **Cited paths checked with the plan.** The stale citations in the queue were found by reading each order: the surveys of 2026-09-28 found 109 of 899 citations in the 45 open orders unresolved or moved (46 paths, 42 sections, 21 orders, reports or decisions). A check of every cited path would spend part of the plan check's two seconds. Deferred: every open order was re-observed and amended in this pass, and a pass re-observes an order before it moves to the head. Reopen: a pass finds a cited path moved in an order it had re-observed.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Deferred as the map records it (candidate 6 of 2026-09-28): the surveys found 109 of 899 citations in the 45 open orders unresolved or moved, every open order was re-observed and amended in this pass, and a pass re-observes an order before it moves to the head. [2026-09-28 planning pass (docs/planning/failures-across-phases-2026-09-28.md section 12)]",
+          "reopenWhen": "a pass finds a cited path moved in an order it had re-observed",
+          "targets": [],
+          "at": "2026-09-28T14:59:05.390Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-ee5190faadaeffa0",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-failures-pass-recorded-2026-09-28::7a2b6dc08656dc533850119fec22a2ef41638f84765207d8db35b721fca30a44",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "615d6fc5b085d75f2edc95b774ce0a1abe38cb55396226413e93a57af132e09f",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-failures-pass-recorded-2026-09-28",
+          "title": "Which judge.",
+          "summary": "4. **Which judge.** The first verification failed in 28 of the 78 orders that Codex executed and Claude Code judged, and in 20 of the 24 judged the other way round; the pairing changed on 2026-09-22 and the failure rate rose the same week. The cause is not established: the judges, the executors and the kind of order all changed together. Reopen: one order is judged by two judges, or the operator asks.",
+          "missing": false
+        },
+        {
+          "hash": "c91d5c141d0e395b996f6096c4a60faa26e9ae9608b1101ed2f7fd298b7d6018",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-failures-pass-recorded-2026-09-28",
+          "title": "Which judge.",
+          "summary": "4. **Which judge.** The first verification failed in 28 of the 78 orders that Codex executed and Claude Code judged, and in 20 of the 24 judged the other way round; the pairing changed on 2026-09-22 and the failure rate rose the same week. The cause is not established: the judges, the executors and the kind of order all changed together, so a change of judge would be a guess. Deferred. Reopen: one order is judged by two judges.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Deferred as the map records it (candidate 4 of 2026-09-28): the first verification failed in 28 of 78 orders Codex executed and Claude Code judged and in 20 of 24 the other way round; the judges, the executors and the kind of order changed together, so the cause is not established and a change of judge would be a guess. [2026-09-28 planning pass (docs/planning/failures-across-phases-2026-09-28.md section 12)]",
+          "reopenWhen": "one order is judged by two judges",
+          "targets": [],
+          "at": "2026-09-28T14:59:05.331Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-5f33921210b0c441",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-failures-pass-recorded-2026-09-28::ac34444c496173a36b0a2532d8afcbe6faf0e9136313c9d6ec91d9f063aabc28",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "248ddb04770aa0aa868a20ec669d3d715a129509474e11a0ef4693463743cf42",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-failures-pass-recorded-2026-09-28",
+          "title": "A judgment that leaves no report.",
+          "summary": "2. **A judgment that leaves no report.** A judge's session that opens an allocation and writes nothing is invisible to every count: the surveys met three among 96 failed reports (WO-039, and two sessions on WO-126's fourth verification). Deferred. Reopen: a verification is dispatched and no result is recorded for it within a day.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred as the map records it (candidate 2 of 2026-09-28): three judge sessions that left no report were met among 96 failed reports. [2026-09-28 planning pass (docs/planning/failures-across-phases-2026-09-28.md section 12)]",
+          "reopenWhen": "a verification is dispatched and no result is recorded for it within a day",
+          "targets": [],
+          "at": "2026-09-28T14:59:05.272Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-5c6f6df2298843b5",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-failures-pass-recorded-2026-09-28::ace18032bc1d428f6946ea458dd7ddad288fee28cbcde668b5e0f04a2f8853bd",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "e4bc92fc629ee17d0e4563bbace9d5247cde4b72ff21932eb9a43750b85d7b46",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-failures-pass-recorded-2026-09-28",
+          "title": "An executor's adversarial review before handoff.",
+          "summary": "5. **An executor's adversarial review before handoff.** It would reach for the 126 findings no existing check shows. Declined: it repeats the verifier at a cost nobody has measured, and one order that ran a three-lens review before handoff failed on a guard (WO-171). Reopen: an order pays such a review and its first verification passes where its neighbours' fail.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined as the map records it (candidate 5 of 2026-09-28): it repeats the verifier at a cost nobody has measured, and one order that ran a three-lens review before handoff still failed on a guard (WO-171). [2026-09-28 planning pass (docs/planning/failures-across-phases-2026-09-28.md section 12)]",
+          "reopenWhen": "an order pays such a review and its first verification passes where its neighbours' fail",
+          "targets": [],
+          "at": "2026-09-28T14:59:05.361Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-b053a956adb84b6a",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-failures-pass-recorded-2026-09-28::db2a517eaba6a717db0d4c16bdfed0752a44fdfeb281756706beeb5acd1ad86a",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "882f72d6da7a870b08a27d3b72cfdb6f43603df865e3d82d549b026ae2899a31",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-failures-pass-recorded-2026-09-28",
+          "title": "The verdict rule for a case ordinary use has not reached.",
+          "summary": "3. **The verdict rule for a case ordinary use has not reached.** 23 of the 96 failed reports rest only on such cases (24.7 hours of judging and repair). The operator changed the planning refuter's rule on 2026-09-15 so that a constructible counterexample is a known issue; for code the choice is the operator's, and it would also have passed defects that were real and cheap to fix. The smaller step is in force: a criterion declares its set, and a case outside it is boarded. Reopen: after WO-173, two orders in a row fail only on cases outside their declared sets.",
+          "missing": false
+        },
+        {
+          "hash": "ec5d52045ec23435befe96567ae09a08b7439afc1071c3345736c6ec807db7c5",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-failures-pass-recorded-2026-09-28",
+          "title": "The verdict rule for a case ordinary use has not reached.",
+          "summary": "3. **The verdict rule for a case ordinary use has not reached.** 23 of the 96 failed reports rest only on such cases (24.7 hours of judging and repair). The operator changed the planning refuter's rule on 2026-09-15 so that a constructible counterexample is a known issue; for code the same rule would also have passed defects that were real and cheap to fix. Declined for code while the smaller step takes effect: a criterion declares its set, and a case outside it is boarded. Reopen: after WO-173, two orders in a row fail only on cases outside their declared sets.",
+          "missing": false
+        },
+        {
+          "hash": "d935a20f3c5b289ff95e1ed515f331210ccd01766701804fa2b31472e9e2a03e",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-failures-pass-recorded-2026-09-28",
+          "title": "The verdict rule for a case ordinary use has not reached.",
+          "summary": "3. **The verdict rule for a case ordinary use has not reached.** 23 of the 96 failed reports rest only on such cases (24.7 hours of judging and repair). The operator changed the planning refuter's rule on 2026-09-15 so that a constructible counterexample is a known issue; for code the same rule would also have passed defects that were real and cheap to fix. Deferred for code while the smaller step takes effect: a criterion declares its set, and a case outside it is boarded. Reopen: after WO-173, two orders in a row fail only on cases outside their declared sets.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Deferred as the map records it (candidate 3 of 2026-09-28): the verdict rule for code is the operator's to change; 23 of 96 failed reports rest only on cases ordinary use has not reached, and the smaller step, a criterion that declares its set, is in force from this pass. [2026-09-28 planning pass (docs/planning/failures-across-phases-2026-09-28.md section 12)]",
+          "reopenWhen": "after WO-173, two orders in a row fail only on cases outside their declared sets, or the operator decides the rule",
+          "targets": [],
+          "at": "2026-09-28T14:59:05.302Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "deferred",
+          "reason": "Deferred for code while rule 2 takes effect (map candidate 3 of 2026-09-28): 23 of 96 failed reports rest only on cases ordinary use has not reached; a criterion that declares its set boards a case outside it without touching what a judge may fail. [2026-09-28 planning pass (docs/planning/failures-across-phases-2026-09-28.md section 12)]",
+          "reopenWhen": "after WO-173, two orders in a row fail only on cases outside their declared sets",
+          "targets": [],
+          "at": "2026-09-28T14:59:54.164Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-1acab8a941a8814e",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-failures-pass-recorded-2026-09-28::e02150bcf800b626a23bc1da7ced378e5b86cbe19c73a865503a0aceaeaed3fd",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "7a0fc6efd005b6df617366cefee10ede22fbc1ae58e862f96a27ffd17d3bee5f",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-failures-pass-recorded-2026-09-28",
+          "title": "The register's match skips generated projections",
+          "summary": "7. **The register's match skips generated projections** (WO-169 D002). Seven final reviews wrote 123 dispositions and 11 of them named a generated projection or the release line. Declined as too few to pay for a change; WO-173 rewords the rule that made a review write 60 others. Reopen: the share passes a quarter of a review's dispositions.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Declined as the map records it (candidate 7 of 2026-09-28): 11 of the 123 dispositions seven final reviews wrote named a generated projection or the release line, too few to pay for a change; WO-173 rewords the rule that made a review write 60 others. [2026-09-28 planning pass (docs/planning/failures-across-phases-2026-09-28.md section 12)]",
+          "reopenWhen": "the share passes a quarter of a review's dispositions",
+          "targets": [],
+          "at": "2026-09-28T14:59:05.420Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-ecf9d3b703a0b7d9",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-failures-pass-recorded-2026-09-28::fef60aafea30d9527ba8f59beb221a823aa947b00fd989e1584922d31212fbb8",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "579dd6fcd58a72c72acbe9c5d9c42dccddff2c9bf5a39627e144d9b9efbb0153",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-failures-pass-recorded-2026-09-28",
+          "title": "Release close records its outcome.",
+          "summary": "1. **Release close records its outcome.** A close that fails leaves logs and notes in the ignored local lane, for eleven of 117 orders and under no common name, and no event; a pass cannot count failed closes or say why one failed. A record needs a home a pull request carries, as the meter's snapshot has. Deferred: no close is recorded as failed since WO-171 made the prune finish. Reopen: a release close fails and the next pass cannot say why.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred as the map records it (candidate 1 of 2026-09-28): no release close is recorded as failed since WO-171 made the prune finish, and a record needs a home a pull request carries. [2026-09-28 planning pass (docs/planning/failures-across-phases-2026-09-28.md section 12)]",
+          "reopenWhen": "a release close fails and the next pass cannot say why",
+          "targets": [],
+          "at": "2026-09-28T14:59:05.243Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-5c87e6f142847def",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-failures-pass-recorded-2026-09-28::208cd537173b90106723c799d8c2d866c1ea8f6196994d14b740711d94bda70a",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "c6e5c1d22b15479f384168666b8006c8f992c647702e7da4f691548056e64d06",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-failures-pass-recorded-2026-09-28",
+          "title": "Whether the live feedback audit earns its place.",
+          "summary": "8. **Whether the live feedback audit earns its place.** A live model re-reads the pinned feedback sources and the regression report in an empty mount to confirm the report's claims; the deterministic regressions already run each unit's mechanism present and removed without a model. The record holds 92 live feedback verifications in 56 orders since WO-011, and all 368 of their verdicts are pass. Until 2026-09-28 the episode also cost fixes: three orders deferred a real defect to avoid a second paid episode (WO-099 D027, WO-152 D009, WO-157 D024). The operator's direction of 2026-09-28 removes the authorization; the episode's own cost stays. Deferred. Reopen: a live verification returns anythi",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred as the map records it (candidate 8 of 2026-09-28): 92 live feedback verifications in 56 orders since WO-011, all 368 verdicts pass, and the deterministic regressions already run each mechanism present and removed; the operator's 2026-09-28 direction removed the per-episode authorization, and the episode's own cost stays. [2026-09-28 planning pass (docs/planning/failures-across-phases-2026-09-28.md section 12)]",
+          "reopenWhen": "a live verification returns anything but pass where the deterministic regressions passed, or ten more orders pay an episode and every verdict is pass",
+          "targets": [],
+          "at": "2026-09-28T14:59:05.449Z"
         }
       ]
     }
