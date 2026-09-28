@@ -4199,6 +4199,14 @@
           "reopenWhen": "the first order dispatched under the default records neither an experiment nor a kept-current decline, or the record of experiments since the last adopted improvement is long enough to read an adaptive pressure",
           "targets": [],
           "at": "2026-09-27T00:36:27.437Z"
+        },
+        {
+          "sourceRevision": 12,
+          "status": "settled",
+          "reason": "Settled again at revision 12: the revision is WO-167's retarget of the candidate's one inbound link from product 07's moved recurring-alternatives candidate to the same slug in the planning map (docs/planning/work-order-map.md#candidate--recurring-review-of-implementation-alternatives); it changes no claim, and the earlier settlement stands. [WO-167 final review (docs/final-reviews/WO-167/FINAL-001.md)]",
+          "reopenWhen": "the first order dispatched under the default records neither an experiment nor a kept-current decline, or the record of experiments since the last adopted improvement is long enough to read an adaptive pressure",
+          "targets": [],
+          "at": "2026-09-28T19:03:44.694Z"
         }
       ]
     },
@@ -11472,6 +11480,14 @@
           "reopenWhen": "the operator opens the efficiency pass, or a role's headroom falls below 256 bytes",
           "targets": [],
           "at": "2026-09-28T03:29:45.936Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-167's final review: textual matches on docs/product/07-execution-guide.md and scripts/harness-context.mjs. WO-167-D011 adds the strict read check to --check and leaves its measurement unchanged; node scripts/harness-context.mjs --check reads every role profile at delta 0, and the smallest headroom is the reviewer's 405 bytes (24,171 of 24,576), above 256. [WO-167 final review (docs/final-reviews/WO-167/FINAL-001.md)]",
+          "reopenWhen": "the operator opens the efficiency pass, or a role's headroom falls below 256 bytes",
+          "targets": [],
+          "at": "2026-09-28T19:03:44.902Z"
         }
       ]
     },
@@ -11770,6 +11786,14 @@
           "reopenWhen": "a planning pass confirms no receipt subject depends on the path",
           "targets": [],
           "at": "2026-09-19T01:20:06.966Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-167's final review: a textual match on scripts/lib/plan-continuation.mjs, where WO-167-D013 lets releaseAssignment admit one replacement of a judged release label and report it as release-retiming. migrateDependencies and the WO-043 dependency-migration path are untouched. [WO-167 final review (docs/final-reviews/WO-167/FINAL-001.md)]",
+          "reopenWhen": "a planning pass confirms no receipt subject depends on the path",
+          "targets": [],
+          "at": "2026-09-28T19:03:44.753Z"
         }
       ]
     },
@@ -13192,6 +13216,14 @@
           "reopenWhen": "another execution order needs to edit the bound goal standard, or the committed subject differs from the reviewed bytes at final review",
           "targets": [],
           "at": "2026-09-28T03:29:45.753Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "open",
+          "reason": "Opened for planning by WO-167's final review: the reopening observation occurred. WO-167 is the second execution order that needed to edit the bound goal standard (its criterion 1 folds two dated paragraphs of product 07 section Goal-aligned decisions); the operator again authorized local commits and one pass-scoped refutation (WO-167-D008), whose receipt 034 took 2,401,703 ms from dispatch to file. The other half of the condition did not occur: at final review node scripts/refute-plan.mjs check reports the judged, committed and workspace subjects equal, with only the release retiming WO-167-D013 admits. The executor route remains a planning design. [WO-167 final review (docs/final-reviews/WO-167/FINAL-001.md)]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-28T19:03:44.724Z"
         }
       ]
     },
@@ -13860,6 +13892,14 @@
           "reopenWhen": "the next order that changes resident-state.ts and records a feedback edition, or an operator reads a misleading verifier-unavailable hold over an incomplete capsule",
           "targets": [],
           "at": "2026-09-28T17:50:57.996Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-167's final review: a textual match on docs/product/07-execution-guide.md, whose fold changes no rule's meaning. packages/skeleton/src/resident-state.ts is unchanged and no feedback edition is recorded. [WO-167 final review (docs/final-reviews/WO-167/FINAL-001.md)]",
+          "reopenWhen": "the next order that changes resident-state.ts and records a feedback edition, or an operator reads a misleading verifier-unavailable hold over an incomplete capsule",
+          "targets": [],
+          "at": "2026-09-28T19:03:44.842Z"
         }
       ]
     },
@@ -18002,6 +18042,14 @@
           "reopenWhen": "the next order that touches usage attribution in resume usage or the console board",
           "targets": [],
           "at": "2026-09-28T17:50:58.057Z"
+        },
+        {
+          "sourceRevision": 4,
+          "status": "deferred",
+          "reason": "Deferred again by WO-167's final review: a textual match on the generated control projection docs/control/current.md. WO-167 does not touch usage attribution, resume usage, meta or the console board. [WO-167 final review (docs/final-reviews/WO-167/FINAL-001.md)]",
+          "reopenWhen": "the next order that touches usage attribution in resume usage or the console board",
+          "targets": [],
+          "at": "2026-09-28T19:03:44.872Z"
         }
       ]
     },
@@ -18511,6 +18559,22 @@
           "reopenWhen": "WO-167 closes",
           "targets": [],
           "at": "2026-09-25T21:30:01.996Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-167's final review: its condition falls at WO-167's close, which is release close, not final review. For the pass that takes it, the fold's method is measured: product 07 fell from 188,390 to 154,129 bytes with every dated paragraph folded and read row by row by two verifiers, and its ceiling fell to 157,212. [WO-167 final review (docs/final-reviews/WO-167/FINAL-001.md)]",
+          "reopenWhen": "WO-167 closes",
+          "targets": [],
+          "at": "2026-09-28T19:03:44.960Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Opened for planning by WO-167's final review, correcting its own deferral of the same day (WO-167-D014): that deferral said the condition 'WO-167 closes' falls at release close, but the final-review pass moved WO-167 to phase closed at 2026-09-28T19:06:52Z and its dependents now read it as met, so the condition has occurred. The fold's method is measured for the per-document consolidation of products 03, 02 and 05: product 07 fell from 188,390 to 154,129 bytes with every dated paragraph folded and read row by row by two verifiers, and its ceiling fell to 157,212. [WO-167 final review (docs/final-reviews/WO-167/FINAL-001.md); WO-167-D014]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-28T19:07:48.521Z"
         }
       ]
     },
@@ -19373,6 +19437,14 @@
             "WO-167"
           ],
           "at": "2026-09-27T00:36:23.314Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by WO-167: the premise of this allocation now holds. After the VER-001 F1 repair (WO-167-D011), node scripts/harness-context.mjs --check resolves every Read selector strictly and fails with 'Unresolved required section' on a renamed cited heading; on the folded guide it, the docs check and check-publication each report zero failures, and VER-002 found criterion 2 met. [WO-167 final review (docs/final-reviews/WO-167/FINAL-001.md)]",
+          "reopenWhen": "A cited heading moves while harness-context --check exits 0, or the docs check or check-publication stops covering the links and index rows WO-085-D016 assigns them.",
+          "targets": [],
+          "at": "2026-09-28T19:03:44.663Z"
         }
       ]
     },
@@ -19921,6 +19993,14 @@
           "reopenWhen": "a real integration meets either defect, or the next order that edits the decision stub or stash-apply stage of scripts/lib/worktree-integration.mjs",
           "targets": [],
           "at": "2026-09-28T03:29:45.537Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Deferred again by WO-167's final review: WO-167's integration met neither defect. Its D012 stub was written on the completing pass with the release line 'WO-167 target v0.53.1 remains current', and its stash applied with one authored conflict that --continue resolved. The --continue refusal it met was a different one, the phase read from a control log inside the integration's own stash; WO-167-D013 fixes it in the entry check, the receipt's recorded order path and the README projection, not in the decision stub or the stash-apply stage. [WO-167 final review (docs/final-reviews/WO-167/FINAL-001.md)]",
+          "reopenWhen": "a real integration meets either defect, or the next order that edits the decision stub or stash-apply stage of scripts/lib/worktree-integration.mjs",
+          "targets": [],
+          "at": "2026-09-28T19:03:44.783Z"
         }
       ]
     },
@@ -20194,6 +20274,14 @@
           "reopenWhen": "a planning pass over the standing text, the next order that edits the writer text, or a session acts on one of the named sentences against the shipped behaviour",
           "targets": [],
           "at": "2026-09-28T17:50:58.146Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-167's final review: textual matches on README.md (the release line), the order's evidence README, product 07 and the generated work-order index. The named product 07 sentence in section Discipline ('Codex carries the same duties, grants and advisory cap as role text') reads the same before and after the fold, and the writer text is untouched. [WO-167 final review (docs/final-reviews/WO-167/FINAL-001.md)]",
+          "reopenWhen": "a planning pass over the standing text, the next order that edits the writer text, or a session acts on one of the named sentences against the shipped behaviour",
+          "targets": [],
+          "at": "2026-09-28T19:03:44.931Z"
         }
       ]
     },
@@ -20516,6 +20604,14 @@
           "reopenWhen": "a <proof>.partial is found beside a whole proof on the operator's host, or the next order that edits the byte-proof writer in scripts/lib/harness-prune.mjs",
           "targets": [],
           "at": "2026-09-28T17:50:57.965Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-167's final review: a textual match on the order's meter snapshot docs/evidence/WO-167/meta.json. scripts/lib/harness-prune.mjs and its byte-proof writer are untouched. [WO-167 final review (docs/final-reviews/WO-167/FINAL-001.md)]",
+          "reopenWhen": "a <proof>.partial is found beside a whole proof on the operator's host, or the next order that edits the byte-proof writer in scripts/lib/harness-prune.mjs",
+          "targets": [],
+          "at": "2026-09-28T19:03:44.813Z"
         }
       ]
     },
@@ -21601,9 +21697,25 @@
           "title": "WO-167-D006: Decide how the skills' heading citations get a check that can fail: node scripts/harness-context.mjs --check measures cold-start bytes only and exits 0 with a cited product heading rename",
           "summary": "{ \"id\": \"WO-167-D006\", \"date\": \"2026-09-28\", \"dispatch\": \"resume: next\", \"decision\": \"Prove that the role skills' and the instruction file's citations resolve with the harness library's strict resolver over CLAUDE.md and all twelve installed skills (18 of 18 anchored Read selectors resolve), and record that node scripts/harness-context.mjs --check, which criterion 2 names as that proof, exits 0 whether or not a cited heading exists.\", \"evidence\": [ \"scripts/harness-context.mjs main runs measureColdStarts (scripts/lib/process-budget.mjs), which reads only CLAUDE.md and the skill files' byte counts; the strict resolution (directedReads, sectionRange) runs in measureHarnessContext, which script",
           "missing": false
+        },
+        {
+          "hash": "b707d10b92fdd021ed3ff5af86b39713a76501a58a4dd529bd0da0da58f040e6",
+          "ref": "docs/evidence/WO-167/decisions.md#wo-167-d006",
+          "title": "WO-167-D006: Decide how the skills' heading citations get a check that can fail: node scripts/harness-context.mjs --check measures cold-start bytes only and exits 0 with a cited product heading rename",
+          "summary": "{ \"id\": \"WO-167-D006\", \"date\": \"2026-09-28\", \"dispatch\": \"resume: next\", \"decision\": \"Prove that the role skills' and the instruction file's citations resolve with the harness library's strict resolver over CLAUDE.md and all twelve installed skills (18 of 18 anchored Read selectors resolve), and record that node scripts/harness-context.mjs --check, which criterion 2 names as that proof, exits 0 whether or not a cited heading exists.\", \"evidence\": [ \"scripts/harness-context.mjs main runs measureColdStarts (scripts/lib/process-budget.mjs), which reads only CLAUDE.md and the skill files' byte counts; the strict resolution (directedReads, sectionRange) runs in measureHarnessContext, which script",
+          "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Settled by WO-167's repair of VER-001 F1 (WO-167-D011): node scripts/harness-context.mjs --check now resolves every document selector that CLAUDE.md and the twelve installed role skills read, with the strict resolver, and exits 1 naming each unresolved section or file. The regression 'WO-167 VER-001 F1 harness-context --check refuses a renamed heading an installed skill reads' fails on the unrepaired script; VER-002 reproduced the refusal and the regression passed in the final review's npm test -- --review. [WO-167 final review (docs/final-reviews/WO-167/FINAL-001.md)]",
+          "reopenWhen": "A skill or floor Read selector is found unresolved while harness-context --check exits 0, or the check refuses a selector the strict resolver in directedReads accepts (WO-167-D011).",
+          "targets": [],
+          "at": "2026-09-28T19:03:44.631Z"
+        }
+      ]
     },
     {
       "id": "FUP-afc1bd32fa034417",

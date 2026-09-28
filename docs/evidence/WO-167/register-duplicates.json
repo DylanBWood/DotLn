@@ -1,0 +1,101 @@
+[
+  {
+    "expectedRevision": "550933af82bc4156017f8b73db5c9cc8f19177600294caccee0efbbd30636e31",
+    "id": "FUP-0111",
+    "sourceRevision": 7,
+    "status": "duplicate",
+    "reason": "WO-167 moved product 07 §Candidate — planner startup context to the planning map under the same slug (docs/planning/work-order-map.md#candidate--planner-startup-context); its dated leads became bracketed citations, its links and references to product 07 were rebased, and its text is otherwise unchanged. FUP-6d91d100269519d7 is the map row and carries the candidate. This row's last disposition was open at revision 6, reopen: none (open); the pass that triages FUP-6d91d100269519d7 carries it. [WO-167, 2026-09-28]",
+    "reopenWhen": "docs/planning/work-order-map.md §Candidate — planner startup context is removed, renamed or returned to a product document",
+    "targets": [
+      "FUP-6d91d100269519d7"
+    ]
+  },
+  {
+    "expectedRevision": "550933af82bc4156017f8b73db5c9cc8f19177600294caccee0efbbd30636e31",
+    "id": "FUP-3e3dcc8781144d46",
+    "sourceRevision": 4,
+    "status": "duplicate",
+    "reason": "WO-167 moved product 07 §Candidate — recurring review of implementation alternatives to the planning map under the same slug (docs/planning/work-order-map.md#candidate--recurring-review-of-implementation-alternatives); its dated leads became bracketed citations, its links and references to product 07 were rebased, and its text is otherwise unchanged. FUP-19cd701c25446383 is the map row and carries the candidate. This row's last disposition was deferred at revision 3, reopen: observations can distinguish missed opportunities from redundant review; the pass that triages FUP-19cd701c25446383 carries it. [WO-167, 2026-09-28]",
+    "reopenWhen": "docs/planning/work-order-map.md §Candidate — recurring review of implementation alternatives is removed, renamed or returned to a product document",
+    "targets": [
+      "FUP-19cd701c25446383"
+    ]
+  },
+  {
+    "expectedRevision": "550933af82bc4156017f8b73db5c9cc8f19177600294caccee0efbbd30636e31",
+    "id": "FUP-b8a329d9970b8206",
+    "sourceRevision": 15,
+    "status": "duplicate",
+    "reason": "WO-167 moved product 07 §Candidate — cold-gate structural cuts to the planning map under the same slug (docs/planning/work-order-map.md#candidate--cold-gate-structural-cuts); its dated leads became bracketed citations, its links and references to product 07 were rebased, and its text is otherwise unchanged. FUP-e96221b106cd136a is the map row and carries the candidate. This row's last disposition was deferred at revision 14, reopen: after WO-173 closes an order still pays more than four product gate runs, or the plain product gate exceeds six minutes fresh; the pass that triages FUP-e96221b106cd136a carries it. [WO-167, 2026-09-28]",
+    "reopenWhen": "docs/planning/work-order-map.md §Candidate — cold-gate structural cuts is removed, renamed or returned to a product document",
+    "targets": [
+      "FUP-e96221b106cd136a"
+    ]
+  },
+  {
+    "expectedRevision": "550933af82bc4156017f8b73db5c9cc8f19177600294caccee0efbbd30636e31",
+    "id": "FUP-baa0ea5df1f8e6a9",
+    "sourceRevision": 3,
+    "status": "duplicate",
+    "reason": "WO-167 moved product 07 §Candidate — refutation pass worth its cost to the planning map under the same slug (docs/planning/work-order-map.md#candidate--refutation-pass-worth-its-cost); its dated leads became bracketed citations, its links and references to product 07 were rebased, and its text is otherwise unchanged. FUP-5eaeb603b228f581 is the map row and carries the candidate. This row's last disposition was allocated at revision 2 (WO-132), reopen: The goal review passes an order the operator later names misaligned, or WO-132 closes without criterion 11; the pass that triages FUP-5eaeb603b228f581 carries it. [WO-167, 2026-09-28]",
+    "reopenWhen": "docs/planning/work-order-map.md §Candidate — refutation pass worth its cost is removed, renamed or returned to a product document",
+    "targets": [
+      "FUP-5eaeb603b228f581"
+    ]
+  },
+  {
+    "expectedRevision": "550933af82bc4156017f8b73db5c9cc8f19177600294caccee0efbbd30636e31",
+    "id": "FUP-3f2a874835f66bb5",
+    "sourceRevision": 7,
+    "status": "duplicate",
+    "reason": "WO-167 moved product 07 §Candidate — follow-up register settlement to the planning map under the same slug (docs/planning/work-order-map.md#candidate--follow-up-register-settlement); its dated leads became bracketed citations, its links and references to product 07 were rebased, and its text is otherwise unchanged. FUP-3f3a79213fec2409 is the map row and carries the candidate. This row's last disposition was deferred at revision 6, reopen: the next planning pass counts more than ten discharged in-order directives among its untriaged rows, or untriaged rows again pass fifty; the pass that triages FUP-3f3a79213fec2409 carries it. [WO-167, 2026-09-28]",
+    "reopenWhen": "docs/planning/work-order-map.md §Candidate — follow-up register settlement is removed, renamed or returned to a product document",
+    "targets": [
+      "FUP-3f3a79213fec2409"
+    ]
+  },
+  {
+    "expectedRevision": "550933af82bc4156017f8b73db5c9cc8f19177600294caccee0efbbd30636e31",
+    "id": "FUP-6c401ec3e9e06edb",
+    "sourceRevision": 7,
+    "status": "duplicate",
+    "reason": "WO-167 moved product 07 §Candidate — local lane retention to the planning map under the same slug (docs/planning/work-order-map.md#candidate--local-lane-retention); its dated leads became bracketed citations, its links and references to product 07 were rebased, and its text is otherwise unchanged. FUP-b932c089f1edf4ce is the map row and carries the candidate. This row's last disposition was settled at revision 6, reopen: disk pressure, or an observed retained candidate that the documented ownership and publication rules cannot explain; the pass that triages FUP-b932c089f1edf4ce carries it. [WO-167, 2026-09-28]",
+    "reopenWhen": "docs/planning/work-order-map.md §Candidate — local lane retention is removed, renamed or returned to a product document",
+    "targets": [
+      "FUP-b932c089f1edf4ce"
+    ]
+  },
+  {
+    "expectedRevision": "550933af82bc4156017f8b73db5c9cc8f19177600294caccee0efbbd30636e31",
+    "id": "FUP-195ab93be762ad42",
+    "sourceRevision": 6,
+    "status": "duplicate",
+    "reason": "WO-167 moved product 07 §Candidate — stale writer reservation self-diagnosis to the planning map under the same slug (docs/planning/work-order-map.md#candidate--stale-writer-reservation-self-diagnosis); its dated leads became bracketed citations, its links and references to product 07 were rebased, and its text is otherwise unchanged. FUP-0349c7a91fe63917 is the map row and carries the candidate. This row's last disposition was settled at revision 5, reopen: a Codex-owned reservation outlives its session twice after WO-166; the pass that triages FUP-0349c7a91fe63917 carries it. [WO-167, 2026-09-28]",
+    "reopenWhen": "docs/planning/work-order-map.md §Candidate — stale writer reservation self-diagnosis is removed, renamed or returned to a product document",
+    "targets": [
+      "FUP-0349c7a91fe63917"
+    ]
+  },
+  {
+    "expectedRevision": "550933af82bc4156017f8b73db5c9cc8f19177600294caccee0efbbd30636e31",
+    "id": "FUP-56b2d81b540555bb",
+    "sourceRevision": 3,
+    "status": "duplicate",
+    "reason": "WO-167 moved product 07 §Candidate — guided operator work orders to the planning map under the same slug (docs/planning/work-order-map.md#candidate--guided-operator-work-orders); its dated leads became bracketed citations, its links and references to product 07 were rebased, and its text is otherwise unchanged. FUP-615bb914973f0600 is the map row and carries the candidate. This row's last disposition was allocated at revision 2 (WO-137), reopen: an index consumer needs the outcome typed, or a research order is cited as a capability; the pass that triages FUP-615bb914973f0600 carries it. [WO-167, 2026-09-28]",
+    "reopenWhen": "docs/planning/work-order-map.md §Candidate — guided operator work orders is removed, renamed or returned to a product document",
+    "targets": [
+      "FUP-615bb914973f0600"
+    ]
+  },
+  {
+    "expectedRevision": "550933af82bc4156017f8b73db5c9cc8f19177600294caccee0efbbd30636e31",
+    "id": "FUP-57257901a26aec18",
+    "sourceRevision": 4,
+    "status": "duplicate",
+    "reason": "WO-167 moved product 07 §Candidate — total subagent cap across every spawn path to the planning map under the same slug (docs/planning/work-order-map.md#candidate--total-subagent-cap-across-every-spawn-path); its dated leads became bracketed citations, its links and references to product 07 were rebased, and its text is otherwise unchanged. FUP-67a3ccb3b295200e is the map row and carries the candidate. This row's last disposition was deferred at revision 3, reopen: the harness documents a pre-creation admission hook or a total-cap setting, or a session exceeds the cap on a path WO-139 reports as uncounted; the pass that triages FUP-67a3ccb3b295200e carries it. [WO-167, 2026-09-28]",
+    "reopenWhen": "docs/planning/work-order-map.md §Candidate — total subagent cap across every spawn path is removed, renamed or returned to a product document",
+    "targets": [
+      "FUP-67a3ccb3b295200e"
+    ]
+  }
+]

@@ -24,9 +24,13 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 the next patch above the observed local `v0.52.10` tag. Product 07's dated
 amendment paragraphs are folded into the sentences they amend with bracketed
 citations, its nine candidates move to the planning map under their slugs, and
-its ceiling falls from 188,399 to 157,212 bytes. Documentation only; no
-component version changes.
+its ceiling falls from 188,399 to 157,212 bytes. The VER-001 repair makes
+`harness-context --check` refuse an unresolved installed read, and the
+integration it met continues while an uncommitted control log is stashed and
+admits a retimed judged release label. No component version changes.
 Independent verification, final review and publication remain separate dispatches.
+
+**WO-167 collision retiming (2026-09-28):** unpublished target `v0.52.11` is superseded by `v0.53.1` under the existing patch classification because the observed release baseline is `v0.53.0`. Scope, acceptance, component versions, and published tags are unchanged by this retiming.
 
 **WO-060 activation completion (2026-09-28):** assigned application `v0.53.0`,
 the next minor above the observed local `v0.52.10` tag. The compiler gains the
