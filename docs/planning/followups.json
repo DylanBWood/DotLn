@@ -11504,6 +11504,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-28T22:21:22.251Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Kept open by WO-172's final review with a new measurement: WO-172's hand-written Shell rule (390 bytes) put the reviewer's cold start at 24,788 bytes against 24,576, and the ceiling rose to 28,884 by the standing route (docs/control/budgets.json acceptance of 2026-09-29, WO-172-D037). The efficiency redesign this row holds is still undecided. [WO-172 final review (docs/final-reviews/WO-172/FINAL-001.md)]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-29T23:48:50.395Z"
         }
       ]
     },
@@ -13019,6 +13027,13 @@
           "title": "WO-056-D005: Planner: weigh one bounded order over the verification and repair hosts. (a) Record RepairSnapshotPrepared without a physical path, or outside the verification child log, so a re-verifica",
           "summary": "{ \"id\": \"WO-056-D005\", \"date\": \"2026-09-19\", \"dispatch\": \"resume: next; operator steering: use 1 subagent to do some adversarial testing\", \"decision\": \"One read-only subagent attacked the validator, replay, regression fixture and collector. Accepted and fixed: (1) a process double relabelled `claude` validated and counted as live; (2) pass flags held over facts bound to neither the log nor each other; (3) the criterion-3 replay reported the negative retained with the fold's actor and episode guards removed; (4) the privacy screen missed common path and credential shapes and nested shapes were open; (5) the collector could throw instead of filing a failed run; (6) the log's stated compiler ve",
           "missing": false
+        },
+        {
+          "hash": "c5695f4afa33ad7a4ad53968bdf069525668004ce5f2c6492bbe707890c31c29",
+          "ref": "docs/evidence/WO-056/decisions.md#wo-056-d005--adversarial-pass-bind-facts-to-the-log-make-the-replay-guard-sensitive-always-file",
+          "title": "WO-056-D005: Planner: weigh one bounded order over the verification and repair hosts. (a) Record RepairSnapshotPrepared without a physical path, or outside the verification child log, so a re-verifica",
+          "summary": "{ \"id\": \"WO-056-D005\", \"date\": \"2026-09-19\", \"dispatch\": \"resume: next; operator steering to add adversarial testing through one subagent\", \"decision\": \"One read-only subagent attacked the validator, replay, regression fixture and collector. Accepted and fixed: (1) a process double relabelled `claude` validated and counted as live; (2) pass flags held over facts bound to neither the log nor each other; (3) the criterion-3 replay reported the negative retained with the fold's actor and episode guards removed; (4) the privacy screen missed common path and credential shapes and nested shapes were open; (5) the collector could throw instead of filing a failed run; (6) the log's stated compiler v",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -13396,6 +13411,14 @@
           "reopenWhen": "one order commits more than 1 MB under docs/evidence, or a week that begins on or after 2026-09-25 adds more than 10 MB of tracked evidence",
           "targets": [],
           "at": "2026-09-28T17:50:58.026Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Opened by WO-172's final review: its reopening condition occurred. WO-172 commits 1,803,819 bytes under docs/evidence/WO-172, above the row's 1 MB, of which 714,550 are ten authority editions (001 to 010, one per regeneration of the hooks across its repairs) and only 010 is selected; the transcript survey adds 431,296. Planning decides whether superseded editions keep their bytes. [WO-172 final review (docs/final-reviews/WO-172/FINAL-001.md)]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-29T23:48:50.363Z"
         }
       ]
     },
@@ -14817,6 +14840,13 @@
           "title": "WO-149-D003: File a dedicated work order to reconcile the local-model role qualification probe with the single TOOL_ROOT derivation. It must either rerun and independently validate the full immutable ",
           "summary": "{ \"id\": \"WO-149-D003\", \"date\": \"2026-09-21\", \"dispatch\": \"resume: next; Adjacent Repair item adjacent-0001\", \"decision\": \"Do not repair the configured-root failure inside WO-149. Restore scripts/probes/local-model-role-qualification.mjs byte-for-byte after the concrete TOOL_ROOT repair made the configuration-root suite pass but invalidated the committed WO-138 episode bindings. Dispose adjacent-0001 as a known issue and leave both guards honest.\", \"evidence\": [ \"npm test -- --only configuration-root on the unmodified probe: failure at scripts/test-configuration-root.mjs because the probe independently derives ../.. from import.meta.url\", \"Bounded probe: importing TOOL_ROOT and setting ROOT =",
           "missing": false
+        },
+        {
+          "hash": "2e8899026e9e0578be2ee6ca4ad683546ab5197e2ad40665d5c598099a53797a",
+          "ref": "docs/evidence/WO-149/decisions.md#wo-149-d003",
+          "title": "WO-149-D003: File a dedicated work order to reconcile the local-model role qualification probe with the single TOOL_ROOT derivation. It must either rerun and independently validate the full immutable ",
+          "summary": "{ \"id\": \"WO-149-D003\", \"date\": \"2026-09-21\", \"dispatch\": \"resume: next; Adjacent Repair item adjacent-0001\", \"decision\": \"Do not repair the configured-root failure inside WO-149. Restore scripts/probes/local-model-role-qualification.mjs byte-for-byte after the concrete TOOL_ROOT repair made the configuration-root suite pass but invalidated the committed WO-138 episode bindings. Dispose adjacent-0001 as a known issue and leave both guards honest.\", \"evidence\": [ \"npm test -- --only configuration-root on the unmodified probe: failure at scripts/test-configuration-root.mjs because the probe independently derives ../.. from import.meta.url\", \"Bounded probe: importing TOOL_ROOT and setting ROOT =",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -15252,6 +15282,14 @@
             "WO-172"
           ],
           "at": "2026-09-28T14:59:05.065Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by WO-172's final review: plan start prints the number of orders whose final review passed since the latest filed Entropy Reducer review ended, read from the receipt's endedAt (23 on this repository at REVIEW-003), and unknown with no filed review (criterion 3, repaired from VER-001 F1). It suggests and schedules nothing. [WO-172 final review (docs/final-reviews/WO-172/FINAL-001.md)]",
+          "reopenWhen": "two passes that open with the count still carry findings undecided",
+          "targets": [],
+          "at": "2026-09-29T23:48:49.941Z"
         }
       ]
     },
@@ -16157,6 +16195,14 @@
             "WO-172"
           ],
           "at": "2026-09-28T14:59:05.095Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by WO-172's final review: landed with FUP-abfdb650f125a77f: plan start prints the orders closed since the last Entropy Reducer review (criterion 3). [WO-172 final review (docs/final-reviews/WO-172/FINAL-001.md)]",
+          "reopenWhen": "two passes that open with the count still carry findings undecided",
+          "targets": [],
+          "at": "2026-09-29T23:48:49.974Z"
         }
       ]
     },
@@ -17216,6 +17262,20 @@
           "title": "WO-111-D011: Planner: nominate a bounded runtime order before a WO-111 rerun or any further live Codex worker proof. Launch Codex source-change and verifier episodes so the user-level Codex configurat",
           "summary": "{ \"id\": \"WO-111-D011\", \"date\": \"2026-09-24\", \"dispatch\": \"resume: verify\", \"decision\": \"Give an owner to a runtime side effect met during verification that WO-111 may not fix. The live Codex source-change worker launches leave project trust entries for the scratch targets in the operator's user-level Codex configuration, which lies outside the portfolio, the scratch roots and the worktree. WO-111 criterion 6 and its non-goals exclude runtime fixes, so this decision boards up the defect for a bounded order. VER-001 B1 records the criterion-2 judgment.\", \"evidence\": [ \"docs/verifications/WO-111/VER-001.md B1\", \"Verifier read of the operator's user-level Codex configuration on 2026-09-24: two t",
           "missing": false
+        },
+        {
+          "hash": "673e039cb353e29f87512b5b906b8d34e544f5cb86da82f001e9c9ae36475c05",
+          "ref": "docs/evidence/WO-111/decisions.md#wo-111-d011",
+          "title": "WO-111-D011: Planner: nominate a bounded runtime order before a WO-111 rerun or any further live Codex worker proof. Launch Codex source-change and verifier episodes so the user-level Codex configurat",
+          "summary": "{ \"id\": \"WO-111-D011\", \"date\": \"2026-09-24\", \"dispatch\": \"resume: verify\", \"decision\": \"Give an owner to a runtime side effect met during verification that WO-111 may not fix. The live Codex source-change worker launches leave project trust entries for the scratch targets in the operator's user-level Codex configuration, which lies outside the portfolio, the scratch roots and the worktree. WO-111 criterion 6 and its non-goals exclude runtime fixes, so this decision boards up the defect for a bounded order. VER-001 B1 records the criterion-2 judgment.\", \"evidence\": [ \"docs/verifications/WO-111/VER-001.md B1\", \"Verifier read of the operator's user-level Codex configuration on 2026-09-24: two t",
+          "missing": false
+        },
+        {
+          "hash": "f2aee3948f304b1fcfaa9d8c1ac86eafbc5efbb0aa3f9ffe6994626c0a945909",
+          "ref": "docs/evidence/WO-111/decisions.md#wo-111-d011",
+          "title": "WO-111-D011: Planner: nominate a bounded runtime order before a WO-111 rerun or any further live Codex worker proof. Launch Codex source-change and verifier episodes so the user-level Codex configurat",
+          "summary": "{ \"id\": \"WO-111-D011\", \"date\": \"2026-09-24\", \"dispatch\": \"resume: verify\", \"decision\": \"Give an owner to a runtime side effect met during verification that WO-111 may not fix. The live Codex source-change worker launches leave project trust entries for the scratch targets in the operator's user-level Codex configuration, which lies outside the portfolio, the scratch roots and the worktree. WO-111 criterion 6 and its non-goals exclude runtime fixes, so this decision boards up the defect for a bounded order. VER-001 B1 records the criterion-2 judgment.\", \"evidence\": [ \"docs/verifications/WO-111/VER-001.md B1\", \"Verifier read of the operator's user-level Codex configuration on 2026-09-24: two t",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -17272,6 +17332,20 @@
           "ref": "docs/evidence/WO-111/decisions.md#wo-111-d016",
           "title": "WO-111-D016: Route VER-002 B1 to WO-111 repair. The repair reruns the live window with an isolated Codex home, supplied by the WO-111 caller, for every worker and verifier launch. It adds a before/aft",
           "summary": "{ \"id\": \"WO-111-D016\", \"kind\": \"correction\", \"date\": \"2026-09-24\", \"dispatch\": \"resume: verify; operator correction: VER-002's routing is not a legitimate workflow; get the order to fix\", \"decision\": \"Route VER-002 B1 to WO-111 repair. The repair reruns the live window with an isolated Codex home, supplied by the WO-111 caller, for every worker and verifier launch. It adds a before/after digest of the user Codex configuration to the receipt's protected surfaces, fixes D015's two documentary defects, and returns to verification. This route needs no runtime source change, operator waiver or withdrawal.\", \"misread\": \"VER-002 said a documentary resume: fix could not close criterion 2. It routed ",
+          "missing": false
+        },
+        {
+          "hash": "a1f740c7f78f6c660450e9964c1487f823431a04b4dfb12f60c211052a37bdf9",
+          "ref": "docs/evidence/WO-111/decisions.md#wo-111-d016",
+          "title": "WO-111-D016: Route VER-002 B1 to WO-111 repair. The repair reruns the live window with an isolated Codex home, supplied by the WO-111 caller, for every worker and verifier launch. It adds a before/aft",
+          "summary": "{ \"id\": \"WO-111-D016\", \"kind\": \"correction\", \"date\": \"2026-09-24\", \"dispatch\": \"resume: verify; operator correction that the routing of VER-002 was not a legitimate workflow and that the order goes to repair\", \"decision\": \"Route VER-002 B1 to WO-111 repair. The repair reruns the live window with an isolated Codex home, supplied by the WO-111 caller, for every worker and verifier launch. It adds a before/after digest of the user Codex configuration to the receipt's protected surfaces, fixes D015's two documentary defects, and returns to verification. This route needs no runtime source change, operator waiver or withdrawal.\", \"misread\": \"VER-002 said a documentary resume: fix could not close c",
+          "missing": false
+        },
+        {
+          "hash": "37112243c99be88e7168747cf5abee24c3910ae325e98617b094ae0c12b3167e",
+          "ref": "docs/evidence/WO-111/decisions.md#wo-111-d016",
+          "title": "WO-111-D016: Route VER-002 B1 to WO-111 repair. The repair reruns the live window with an isolated Codex home, supplied by the WO-111 caller, for every worker and verifier launch. It adds a before/aft",
+          "summary": "{ \"id\": \"WO-111-D016\", \"kind\": \"correction\", \"date\": \"2026-09-24\", \"dispatch\": \"resume: verify; operator correction that routing VER-002 outside the lifecycle was wrong and that the order goes to a repair\", \"decision\": \"Route VER-002 B1 to WO-111 repair. The repair reruns the live window with an isolated Codex home, supplied by the WO-111 caller, for every worker and verifier launch. It adds a before/after digest of the user Codex configuration to the receipt's protected surfaces, fixes D015's two documentary defects, and returns to verification. This route needs no runtime source change, operator waiver or withdrawal.\", \"misread\": \"VER-002 said a documentary resume: fix could not close crit",
           "missing": false
         }
       ],
@@ -19405,6 +19479,14 @@
             "WO-172"
           ],
           "at": "2026-09-28T14:59:04.770Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "open",
+          "reason": "Opened by WO-172's final review: its reopening condition occurred. Two dispatch fields dated 2026-09-28, after the dispatch check landed, held the operator's words (WO-116-D016, WO-167-D013; WO-172-D008), so the remaining scope, the role-text paraphrase rule and a check that flags quoted operator messages (WO-153-D008, WO-085-D004), is open. WO-172 delivered the comparison and paraphrased 16 fields; D008's follow-up FUP-f287a595299249ff carries the rest of the route. [WO-172 final review (docs/final-reviews/WO-172/FINAL-001.md)]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-29T23:48:50.331Z"
         }
       ]
     },
@@ -20278,6 +20360,14 @@
           "reopenWhen": "a planner or executor misses a row because it links a changed file relatively, an advisory prints a command that refuses, or a register write is refused after an export",
           "targets": [],
           "at": "2026-09-28T17:50:58.117Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Deferred again by WO-172's final review: WO-172 edits scripts/lib/planning-followups.mjs only to export the page bound and scripts/refute-plan.mjs to add plan failures; namesPath, the advisory commands and the export-then-write refusal are untouched. [WO-172 final review (docs/final-reviews/WO-172/FINAL-001.md)]",
+          "reopenWhen": "a planner or executor misses a row because it links a changed file relatively, an advisory prints a command that refuses, or a register write is refused after an export",
+          "targets": [],
+          "at": "2026-09-29T23:48:50.459Z"
         }
       ]
     },
@@ -20979,6 +21069,14 @@
             "WO-172"
           ],
           "at": "2026-09-28T14:59:04.857Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by WO-172's final review: the direction reader shipped under criterion 5. It agrees with the hand classification on 238 of 241 operator-naming dispatches at base 8c28f479 and 241 of 241 now, each disagreement listed; operatorDirections counts a lifecycle dispatch that names an operator step, at most once. Its held-out shortfall (70 of 80) stays FUP-b3454d6ce3594ef3, and the reopen candidate the reader raises in the meter is recorded for the next pass (WO-172-D059). [WO-172 final review (docs/final-reviews/WO-172/FINAL-001.md)]",
+          "reopenWhen": "the reader's count is withdrawn, or a planning pass finds the Directions column misreads an operator step the hand classification holds",
+          "targets": [],
+          "at": "2026-09-29T23:48:49.906Z"
         }
       ]
     },
@@ -21452,6 +21550,14 @@
           "reopenWhen": "a second bound decision is edited after its amendment row, or the next order that edits scripts/lib/plan-receipts.mjs",
           "targets": [],
           "at": "2026-09-28T14:59:04.888Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-172's final review: WO-172 edits scripts/lib/plan-receipts.mjs only to export the manual-receipt pattern it reads receipts by; it neither changes how an amendment binds or is withdrawn nor edits a bound decision (it held the two amendment-bound dispatch fields, WO-172-D007). [WO-172 final review (docs/final-reviews/WO-172/FINAL-001.md)]",
+          "reopenWhen": "a second bound decision is edited after its amendment row, or the next order that changes how scripts/lib/plan-receipts.mjs binds or withdraws an amendment",
+          "targets": [],
+          "at": "2026-09-29T23:48:50.427Z"
         }
       ]
     },
@@ -22428,6 +22534,14 @@
           "reopenWhen": "a lane integrates main while carrying an activation, scope or collision paragraph under 06 §Release boundary, or the receipt's byte-identity check fails after a landed paragraph moves",
           "targets": [],
           "at": "2026-09-29T19:49:12.508Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "settled",
+          "reason": "Settled by WO-172's final review: the WO-172 part is discharged. WO-172 integrated main at fee6ee4c, kept main's generated release-history block, and moved its activation, scope and collision paragraphs out of product 06 into its own evidence README, where all twelve lines appear verbatim (WO-172-D048); product 06 equals main. D012 named the decisions record; the evidence README beside it, cited by D048, keeps them out of 06 as the rule intends. All three parts are now discharged. [WO-172 final review (docs/final-reviews/WO-172/FINAL-001.md)]",
+          "reopenWhen": "a lane integrates main while carrying an activation, scope or collision paragraph under 06 §Release boundary, or the receipt's byte-identity check fails after a landed paragraph moves",
+          "targets": [],
+          "at": "2026-09-29T23:48:50.299Z"
         }
       ]
     },
@@ -22610,6 +22724,503 @@
           "at": "2026-09-29T19:49:12.538Z"
         }
       ]
+    },
+    {
+      "id": "FUP-f287a595299249ff",
+      "key": "decision:docs/evidence/WO-172/decisions.md#wo-172-d008",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "5bc0142c5a21340cf21ff2fa43619178aca89b77ec67a07ffb76f505b225469d",
+          "ref": "docs/evidence/WO-172/decisions.md#wo-172-d008--operator-words-this-orders-route-does-not-reach",
+          "title": "WO-172-D008: Decide a correction route for operator words that the dispatch-field route cannot reach: a dispatch field bound by an execution amendment (WO-142-D010), and quotations in a decision's oth",
+          "summary": "{ \"id\": \"WO-172-D008\", \"date\": \"2026-09-29\", \"dispatch\": \"resume: next\", \"decision\": \"Two kinds of operator words stay in the committed record after this order. WO-142-D010's dispatch holds the operator's message after its scope expand: prefix, and a PlanExecutionAmended row binds that decision's bytes, so the paraphrase route this order uses would fail the planning check. And a decision's other fields can quote the operator: WO-116-D016's decision text quotes the question its dispatch now paraphrases, and this order's non-goal excludes every field but the dispatch. Both go to planning.\", \"evidence\": [ \"scripts/lib/plan-receipts.mjs validateAmendment: every PlanExecutionAmended row's decisio",
+          "missing": false
+        },
+        {
+          "hash": "d1afe80966e0c17fffa9224db40911d5ecc0cc775c68f067eabcb42af7bfa731",
+          "ref": "docs/evidence/WO-172/decisions.md#wo-172-d008--operator-words-beyond-this-orders-route-and-their-recurrence-after-the-check",
+          "title": "WO-172-D008: Decide how operator words leave the record where the dispatch-field route cannot reach, and how their recurrence stops: dispatch fields bound by an execution amendment (WO-142-D010, WO-15",
+          "summary": "{ \"id\": \"WO-172-D008\", \"date\": \"2026-09-29\", \"dispatch\": \"resume: next\", \"decision\": \"The operator's words stand in more places than this order's dispatch-field route reaches, and the route does not stop them recurring. Two dispatch fields keep them because an execution amendment binds their decisions' bytes: WO-142-D010 and WO-151-D007. Other fields and files keep them: WO-044-D014's evidence field, WO-116-D016's decision text (re-rendered by the decisions index), the WO-167-D013 section prose and the WO-167 review body, WO-111's repair record and WO-099's third repair record. The register's revisions are append-only, so a row synced before a paraphrase keeps the earlier dispatch. And two f",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-a9412a7815418c21",
+      "key": "decision:docs/evidence/WO-172/decisions.md#wo-172-d010",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "83d566a0eba07199971e692624538ad7808d941758c646b4c422adb89c173ac7",
+          "ref": "docs/evidence/WO-172/decisions.md#wo-172-d010--write-backs-and-the-live-episode-rule-this-orders-text-does-not-carry",
+          "title": "WO-172-D010: Give the live-feedback-episode rule of the 2026-09-28 planning pass (rule 6 of §10.1: a step the executor can perform is the executor's; a live episode runs on the named actors without op",
+          "summary": "{ \"id\": \"WO-172-D010\", \"date\": \"2026-09-29\", \"dispatch\": \"resume: next\", \"decision\": \"Product 07 §Operator-opened planning pass, entry item 2, gains in place the sentence that a standard pass first reads npm run plan -- failures, whose counts plan start prints, and disposes what it lists (215 bytes added of the 400 allowed; 2,391 bytes of headroom before). docs/planning/sequence.md loses the interim paragraph the 2026-09-28 pass wrote on reading what failed (13,965 to 13,516 bytes); the paragraph sits outside the byte-addressed sequence block, so the planning subject is unchanged. docs/planning/followups.md names the command in one sentence. The software-engineer edition's source lock follow",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-9cb0a7e667913624",
+      "key": "decision:docs/evidence/WO-172/decisions.md#wo-172-d009",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "b337ee1e89be2119fc429d93c1c0b28886ade1ae6108afe18aeda7535f281021",
+          "ref": "docs/evidence/WO-172/decisions.md#wo-172-d009--operator-steps-the-record-holds-that-this-orders-instruments-do-not-count",
+          "title": "WO-172-D009: Decide whether plan failures counts a decision whose dispatch names an operator correction as a correction (15 today, listed in docs/evidence/WO-172/direction-agreement.json correctionsNo",
+          "summary": "{ \"id\": \"WO-172-D009\", \"date\": \"2026-09-29\", \"dispatch\": \"resume: next\", \"decision\": \"Two sets of operator steps the record holds stay outside this order's instruments. Plan failures lists a correction only when its decision is recorded as one (kind correction or a misread field), as the order defines it: 15 decisions whose dispatch names an operator correction carry neither, so a pass does not see them as corrections (the direction count does). And operatorDirections reads lifecycle dispatches only, as the order scopes it: 11 free-text dispatches filed before the docs check name a counted step but neither begin with operator nor carry a resume: prefix, so no rule counts them. Both go to pla",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-84ea5fb168c317cf",
+      "key": "decision:docs/evidence/WO-172/decisions.md#wo-172-d013",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "4ca0b8ec669eaca85f6628f5b335e92266e12aa446152abb8abff280025eaf3b",
+          "ref": "docs/evidence/WO-172/decisions.md#wo-172-d013--the-transcript-survey-what-the-operator-did-against-what-the-record-holds",
+          "title": "WO-172-D013: Decide how the operator's interventions reach the public record when they happen, since the survey measured that the record holds 14% of correction episodes as operator-correction dispatc",
+          "summary": "{ \"id\": \"WO-172-D013\", \"date\": \"2026-09-29\", \"dispatch\": \"resume: next; the transcript survey of criterion 9 under the operator's scope expansion recorded in WO-172-D012\", \"decision\": \"The survey read 2,396 messages the operator typed between 2026-08-31 and 2026-09-29 in 748 sessions across 124 orders (733 Claude turn prompts, 443 queued and absorbed mid-turn, 40 queued to the next turn, 73 interrupts, 483 Codex turn prompts, 612 while the agent worked, 12 question answers); 693 were bare dispatches and 1,703 were classified: correction 503, direction 346, question 217, ideation 163, other step 120, answer 115, scope expansion 73, interrupt 73, acknowledgement 53, override 19, takeover 6, no",
+          "missing": false
+        },
+        {
+          "hash": "68283f53619b35307e7b5e1dec94dee01f48f67a28c7baaff27e3fe78236cccd",
+          "ref": "docs/evidence/WO-172/decisions.md#wo-172-d013--the-transcript-survey-what-the-operator-did-against-what-the-record-holds",
+          "title": "WO-172-D013: Decide how the operator's interventions reach the public record when they happen, since the survey measured that the record holds 14% of correction episodes as operator-correction dispatc",
+          "summary": "{ \"id\": \"WO-172-D013\", \"date\": \"2026-09-29\", \"dispatch\": \"resume: next; the transcript survey of criterion 9 under the operator's scope expansion recorded in WO-172-D012\", \"decision\": \"The survey read 2,396 messages the operator typed between 2026-08-31 and 2026-09-29 in 748 sessions across 124 orders (733 Claude turn prompts, 443 queued and absorbed mid-turn, 40 queued to the next turn, 73 interrupts, 483 Codex turn prompts, 612 while the agent worked, 12 question answers); 693 were bare dispatches and 1,703 were classified: correction 503, direction 346, question 217, ideation 163, other step 120, answer 115, scope expansion 73, interrupt 73, acknowledgement 53, override 19, takeover 6, no",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-a6cf30a8b7bc4a83",
+      "key": "decision:docs/evidence/WO-172/decisions.md#wo-172-d014",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "bb8858ea3429800c01aaaccb93f5cd6d8b58ea848af5bfcc45e6d7ee0e55cd20",
+          "ref": "docs/evidence/WO-172/decisions.md#wo-172-d014--release-v0541-and-the-attestation-with-ultracode-independent-of-effort",
+          "title": "WO-172-D014: Decide how an attestation records ultracode now that it no longer implies an effort: a supplied ultra, ultra code or ultracode spelling maps to xhigh with mode subagents in scripts/resume",
+          "summary": "{ \"id\": \"WO-172-D014\", \"date\": \"2026-09-29\", \"dispatch\": \"resume: next; with the operator's note at 2026-09-29T01:27Z that Claude Code's ultracode now runs at any effort, this session at max\", \"decision\": \"The order's heading takes v0.54.1, the next patch above the observed local v0.54.0 tag, with the activation-completion paragraph in product 06 §Release boundary and the README's version line; release prepare --local then kept the target and wrote the meter snapshot (3,258 bytes) and the PR meter block. No package changes, so no component version changes and no edition is re-minted: scripts/lib/plan-receipts.mjs, the one changed file outside the order's named set, is not a registered eviden",
+          "missing": false
+        },
+        {
+          "hash": "349d52cdea0562b931c15c8580c205caae62b44cfa3abdce7897e1d30eb2ea2e",
+          "ref": "docs/evidence/WO-172/decisions.md#wo-172-d014--release-v0541-and-the-attestation-with-ultracode-independent-of-effort",
+          "title": "WO-172-D014: Decide how an attestation records ultracode now that it no longer implies an effort: a supplied ultra, ultra code or ultracode spelling maps to xhigh with mode subagents in scripts/resume",
+          "summary": "{ \"id\": \"WO-172-D014\", \"date\": \"2026-09-29\", \"dispatch\": \"resume: next; with the operator's note at 2026-09-29T01:27Z that Claude Code's ultracode now runs at any effort, this session at max\", \"decision\": \"The order's heading takes v0.54.1, the next patch above the observed local v0.54.0 tag, with the activation-completion paragraph in product 06 §Release boundary and the README's version line; release prepare --local then kept the target and wrote the meter snapshot (3,258 bytes) and the PR meter block. No package changes, so no component version changes and no edition is re-minted: scripts/lib/plan-receipts.mjs, the one changed file outside the order's named set, is not a registered eviden",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-c1ce08180deefe81",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-ideation-during-wo-172-recorded-2026-09-29::a3b581b1a39062e09f1ea541337d34290a662ae436be84022efe8b8322588599",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "4917373330ab2570d23c72564e8b165c7667230b2385bba3e54237b822d51b0f",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-ideation-during-wo-172-recorded-2026-09-29",
+          "title": "Label an intervention with a disposition and a direction.",
+          "summary": "1. **Label an intervention with a disposition and a direction.** When the operator's interventions reach the record (WO-172-D013's follow-up), a label may name a disposition the agent lacked, had too little of or had too much of, beside the intervention's class, from the starting vocabulary the operator transcribed (the ledger section of this date). The operator's reading is the reference: a proposed label is scored against the operator's own before any count rests on it (WO-172-D016). Open: a fixed or grown vocabulary, a direction or a graded level, and whether readings add up per role, model or loadout. Reopen: a planning pass takes up WO-172-D013's follow-up, or the operator labels interv",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-b3454d6ce3594ef3",
+      "key": "decision:docs/evidence/WO-172/decisions.md#wo-172-d006",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "a27ca595c7c556e8a776889336196fa3d7f2968566aa706a8f4bfa589571de53",
+          "ref": "docs/evidence/WO-172/decisions.md#wo-172-d006--the-direction-reader-judged-against-a-hand-classification-filed-first",
+          "title": "WO-172-D006: Decide whether the reader's count stands or the structured operator-step field returns: the reader agrees with the hand classification on 238 of 241 fields at the base but with an indepen",
+          "summary": "{ \"id\": \"WO-172-D006\", \"date\": \"2026-09-29\", \"dispatch\": \"resume: next\", \"decision\": \"The hand classification (direction-classification.json, SHA-256 ef44ebbcd9cdee99b689a07c04834be85a827812497c505731c3b6a88a7397e0, filed 2026-09-29T00:52:34Z) reads the 241 dispatch fields that name the operator at base 8c28f479 into eight classes: the six counted steps (correction, direction, scope expansion, override, takeover, answer), other-step and none; two agent passes agreed on 238 and the executor settled 13, recording why. operatorStep in scripts/lib/meta.mjs reads the first operator step a dispatch names, in a clause that names the operator, skipping a step the text marks as prior, standing or cit",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0c76cd39223a576b",
+      "key": "decision:docs/evidence/WO-172/decisions.md#wo-172-d018",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "9e477478d6f41b16a3891879969fb6eb8fb99430e69093a6c2d8a3d383187f1d",
+          "ref": "docs/evidence/WO-172/decisions.md#wo-172-d018--the-operators-reading-of-the-blind-sample-scored",
+          "title": "WO-172-D018: Give the operator-intervention instrument (WO-172-D013's follow-up) the operator's own classes and the context the survey lacked: positive reinforcement, which the operator names a primar",
+          "summary": "{ \"id\": \"WO-172-D018\", \"date\": \"2026-09-29\", \"dispatch\": \"resume: next; the operator's reading of the blind sample fixed in WO-172-D016, given at 2026-09-29T03:09Z by the prompt hook's clock and settled at 03:25Z, scored once\", \"decision\": \"Scored once at 2026-09-29T03:28:20.975Z against the operator's reading: classes agree on 13 of 18 (12 when an answer the operator read as several steps needs a single match), failure instructions on 16 of 17, severity on all 15 the operator stated, and what prompted the message on 12 of 17, compared descriptively. By the classifier's class, the operator confirmed both sampled corrections, ideation messages, overrides and other steps, and one of two questi",
+          "missing": false
+        },
+        {
+          "hash": "a87219dc14c9a949ecbdd9f420194433f3be743f1939bcdbc7d6907fcbd588f4",
+          "ref": "docs/evidence/WO-172/decisions.md#wo-172-d018--the-operators-reading-of-the-blind-sample-scored",
+          "title": "WO-172-D018: Give the operator-intervention instrument (WO-172-D013's follow-up) the operator's own classes and the context the survey lacked, decided with the operator rather than from the survey's r",
+          "summary": "{ \"id\": \"WO-172-D018\", \"date\": \"2026-09-29\", \"dispatch\": \"resume: next; the operator's reading of the blind sample fixed in WO-172-D016, given at 2026-09-29T03:09Z by the prompt hook's clock and settled at 03:25Z, scored once\", \"decision\": \"Scored once at 2026-09-29T03:28:20.975Z against the operator's reading: classes agree on 13 of 18 (12 when an answer the operator read as several steps needs a single match), failure instructions on 16 of 17, severity on all 15 the operator stated, and what prompted the message on 12 of 17, compared descriptively. By the classifier's class, the operator confirmed both sampled corrections, ideation messages, overrides and other steps, and one of two questi",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0748081bdb00632d",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-transcript-survey-recorded-2026-09-29::5009ca0ae5bc6b43bb444eddb52c7d125c0851b967101dc7f59adbb51791d848",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "61348b71f3a2ede3e7e49db72347249b75611984f2649ede3fbefe75d44d3da7",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-transcript-survey-recorded-2026-09-29",
+          "title": "Dispose the survey's subject map.",
+          "summary": "1. **Dispose the survey's subject map.** Take the map's 30 themes as a pass's subject beside `plan failures`: each names its episodes, the orders it touched, what the record already holds and a next step. Twenty-five need action. Three declined rows saw their recurrence conditions occur (FUP-5f58198706dfa59e, FUP-a815e8862796c2e1, FUP-9a23fe23cbf08958), and six themes recurred after their fixing order's final review. Confirm each theme with the operator before allocating it. Reopen: a planning pass takes up the map, or the operator corrects a theme.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-6332681e9500a84b",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-transcript-survey-recorded-2026-09-29::7113b8e20d6c4d5ab621d75b38991cbed559788e6f47059c316b67668afd66e5",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "c1a654f74a20f2f1f8ed0dff6d35a6fdd0692222e57e4992ef34a7221012f118",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-transcript-survey-recorded-2026-09-29",
+          "title": "Stop retrying after a provider safeguard refusal.",
+          "summary": "2. **Stop retrying after a provider safeguard refusal.** The one subject nothing in the record covers: repeated provider safety refusals stalled an order's close and the retry loop could not break free even when warned. After a second consecutive refusal a role stops retrying, records the stop as a decision naming the phase and model, and resumes in a fresh session. Reopen: another episode, or a pass allocates it.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-8582f2042a235019",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-the-transcript-survey-recorded-2026-09-29::847bd0514f613d99f501ffa67ea37fd93cdfea080d5bc2ee071ad8510fbea13e",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "2060c37e2378e69f7fc0e8182e091bf59aa0bea278937770d07a8aef1af1d023",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-the-transcript-survey-recorded-2026-09-29",
+          "title": "A living collection of interaction shapes.",
+          "summary": "3. **A living collection of interaction shapes.** Give the candidate shapes a lasting home, a format later passes add to, reword and retire, the operator's confirmation of each, and an exhibit view. Horizon, in the operator's stated direction of 2026-09-29: streams built from the operator's inputs, counterfactual replay of recorded agent trajectories, and a twin of the operator's interventions ranked by fidelity against the operator's confirmed readings on held-out samples, used to improve agent behaviour in a loop. The twin predicts interventions, never feelings, stays local like intake, and is re-scored on fresh held-out samples so agents are not tuned to it instead of the operator. Reopen",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-e701c2768c38748f",
+      "key": "decision:docs/evidence/WO-172/decisions.md#wo-172-d024",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "447da5bcade5bc0f3ff0728f600ccfb0ae0e2e1ef633e30fe210751b54b008e6",
+          "ref": "docs/evidence/WO-172/decisions.md#wo-172-d024--verification-records-the-review-time-boundary-missing-role-comparisons-and-survey-timing",
+          "title": "WO-172-D024: WO-172 repair: resolve VER-001 F1 by using the latest filed review receipt's endedAt, testing a pass between completion and filing and preserving unknown/fallback behavior, and correct D0",
+          "summary": "{ \"id\": \"WO-172-D024\", \"date\": \"2026-09-29\", \"dispatch\": \"resume: verify\", \"kind\": \"finding\", \"decision\": \"Record three defects for repair without changing the judged implementation or survey: VER-001 F1, criterion 3, counts from the Entropy Reducer review's filing time rather than its end; VER-001 F2, criterion 9, the committed survey compares episodes with the record per order and class but omits the required joint order-and-role comparison; VER-001 F3, criterion 9, queued messages carry send times but agent context and previous-message state from their later delivery. The other checks retain their own evidence; passing gates do not discharge these missing behaviors.\", \"evidence\": [ \"scrip",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by WO-172's final review: VER-002 confirmed VER-001 F1 to F3 repaired (the review's endedAt, the joint order-and-role comparison, send-time context), and VER-003 to VER-005 kept them. [WO-172 final review (docs/final-reviews/WO-172/FINAL-001.md)]",
+          "reopenWhen": "a verification finds F1, F2 or F3 again",
+          "targets": [],
+          "at": "2026-09-29T23:48:50.007Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-eb6f41ea2dcbabd6",
+      "key": "decision:docs/evidence/WO-172/decisions.md#wo-172-d028",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "e1b02b8bad5c5dd0a87240788d19467168b94842480b7fb2da57f331188a4485",
+          "ref": "docs/evidence/WO-172/decisions.md#wo-172-d028--verification-finds-the-question-tool-route-missing-and-one-injected-prompt-counted",
+          "title": "WO-172-D028: WO-172 repair: resolve VER-002 F4 by reading each non-error tool_result of a non-sidechain Claude AskUserQuestion call made before activation as the question-tool-answer route (its timest",
+          "summary": "{ \"id\": \"WO-172-D028\", \"date\": \"2026-09-29\", \"dispatch\": \"resume: verify\", \"kind\": \"finding\", \"decision\": \"Record two criterion 9 defects for repair without changing the judged implementation or survey: VER-002 F4, the survey omits every Claude Code question-tool answer given before activation (43 answered AskUserQuestion results in 37 surveyed sessions, 6 of them with typed text), although criterion 9 reads each message by its route and names the question-tool answer; VER-002 F5, it counts one Codex continuation prompt injected by .codex/hooks/continuation.mjs as a message the operator typed, although criterion 9 excludes injected context. VER-001 F1-F3 are repaired and criteria 1-8 and 10 ",
+          "missing": false
+        },
+        {
+          "hash": "73da6a9e2f3efc19ad310e8bf0ef89a16137e3f8b3ded9f6bead0c416b84c422",
+          "ref": "docs/evidence/WO-172/decisions.md#wo-172-d028--verification-finds-the-question-tool-route-missing-and-one-injected-prompt-counted",
+          "title": "WO-172-D028: WO-172 repair: resolve VER-002 F4 by reading each non-error tool_result of a non-sidechain Claude AskUserQuestion call made before activation as the question-tool-answer route (its timest",
+          "summary": "{ \"id\": \"WO-172-D028\", \"date\": \"2026-09-29\", \"dispatch\": \"resume: verify\", \"kind\": \"finding\", \"decision\": \"Record two criterion 9 defects for repair without changing the judged implementation or survey: VER-002 F4, the survey omits every Claude Code question-tool answer given before activation (43 answered AskUserQuestion results in 37 surveyed sessions, 6 of them with typed text), although criterion 9 reads each message by its route and names the question-tool answer; VER-002 F5, it counts one Codex continuation prompt injected by .codex/hooks/continuation.mjs as a message the operator typed, although criterion 9 excludes injected context. VER-001 F1-F3 are repaired and criteria 1-8 and 10 ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Settled by WO-172's final review: VER-003 confirmed VER-002 F4 and F5 repaired: the 43 question-tool answers are read and the hook-injected prompt is excluded, and its route census found no uncovered candidate. [WO-172 final review (docs/final-reviews/WO-172/FINAL-001.md)]",
+          "reopenWhen": "a transcript line holding the operator's typing is found that no route reads and no exclusion names",
+          "targets": [],
+          "at": "2026-09-29T23:48:50.040Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-a87bd8daf6adf223",
+      "key": "decision:docs/evidence/WO-172/decisions.md#wo-172-d029",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "45656a9dbe1bf1c9b43693f754a278fa0c9fe8a6db04fa2c830f9f617da3e5e2",
+          "ref": "docs/evidence/WO-172/decisions.md#wo-172-d029--a-nonexistent-calendar-date-moves-the-plan-failures-window",
+          "title": "WO-172-D029: Refuse a plan failures --since or --until bound whose date fields do not round-trip (a date-only bound's UTC date, or a timestamp's date and time in its zone) with the existing flag messa",
+          "summary": "{ \"id\": \"WO-172-D029\", \"date\": \"2026-09-29\", \"dispatch\": \"resume: verify\", \"kind\": \"finding\", \"decision\": \"Board a defect outside the declared criteria: plan failures reads an impossible calendar date in --since or --until as another day instead of refusing it, against D002's rule that a bound is a UTC date or a time with its zone.\", \"evidence\": [ \"npm run plan -- failures --since 2026-09-31 exits 0 with window.since 2026-10-01T00:00:00.000Z; npm run plan -- failures --all --until 2026-02-30 exits 0 with window.until 2026-03-02T00:00:00.000Z. canonicalTime in scripts/lib/plan-failures.mjs checks the pattern and Date.parse finiteness only, and V8 rolls a day past the month's end into the next",
+          "missing": false
+        },
+        {
+          "hash": "6ade6ea3da5a92c46b63ad9789eb8889f3c4bcf4826601ed98438a2e2ac0fe12",
+          "ref": "docs/evidence/WO-172/decisions.md#wo-172-d029--a-nonexistent-calendar-date-moves-the-plan-failures-window",
+          "title": "WO-172-D029: Refuse a plan failures --since or --until bound whose date fields do not round-trip (a date-only bound's UTC date, or a timestamp's date and time in its zone) with the existing flag messa",
+          "summary": "{ \"id\": \"WO-172-D029\", \"date\": \"2026-09-29\", \"dispatch\": \"resume: verify\", \"kind\": \"finding\", \"decision\": \"Board a defect outside the declared criteria: plan failures reads an impossible calendar date in --since or --until as another day instead of refusing it, against D002's rule that a bound is a UTC date or a time with its zone.\", \"evidence\": [ \"npm run plan -- failures --since 2026-09-31 exits 0 with window.since 2026-10-01T00:00:00.000Z; npm run plan -- failures --all --until 2026-02-30 exits 0 with window.until 2026-03-02T00:00:00.000Z. canonicalTime in scripts/lib/plan-failures.mjs checks the pattern and Date.parse finiteness only, and V8 rolls a day past the month's end into the next",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Settled by WO-172's final review: D035 refuses a bound that names no real moment; VER-003 reproduced the refusal of 2026-09-31 and 2026-02-30, and the final review's reviewer refused nine more malformed bounds. [WO-172 final review (docs/final-reviews/WO-172/FINAL-001.md)]",
+          "reopenWhen": "plan failures admits a bound whose date or time does not round-trip",
+          "targets": [],
+          "at": "2026-09-29T23:48:50.104Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-07fbe74aa4440d5e",
+      "key": "decision:docs/evidence/WO-172/decisions.md#wo-172-d030",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "a9d8d2395b8dc49bdb701913994e8e5ab549d403bb84d556f0083ea2e2ff7d30",
+          "ref": "docs/evidence/WO-172/decisions.md#wo-172-d030--two-evidence-lines-overstate-what-their-sources-hold",
+          "title": "WO-172-D030: In the WO-172 repair, state each moved register row's actual revision change against HEAD and name the intermediate FUP-f3281eb085ad87a7 revision under D008's append-only statement; repla",
+          "summary": "{ \"id\": \"WO-172-D030\", \"date\": \"2026-09-29\", \"dispatch\": \"resume: verify\", \"kind\": \"finding\", \"decision\": \"Board two evidence-accuracy defects outside the declared criteria in this order's own evidence: dispatch-paraphrases.json registerRowsMoved records FUP-3c34a8ffbf61376f as revision 5 to 6 and FUP-f3281eb085ad87a7 as 1 to 2 where the register moved 5 to 7 and 1 to 3, and does not name the intermediate FUP-f3281eb085ad87a7 revision that holds a superseded paraphrase; and handoff.md's criterion 4 line cites a 57,531-byte initial cost-table observation that no record holds (D005 records 57,296) and fixture coverage of the 64 KB bound that no test asserts.\", \"evidence\": [ \"git show HEAD:docs",
+          "missing": false
+        },
+        {
+          "hash": "f731f83b01ebc8eef8af5e86df7585d3b6482d1682efef89139ef361b4468e35",
+          "ref": "docs/evidence/WO-172/decisions.md#wo-172-d030--two-evidence-lines-overstate-what-their-sources-hold",
+          "title": "WO-172-D030: In the WO-172 repair, state each moved register row's actual revision change against HEAD and name the intermediate FUP-f3281eb085ad87a7 revision under D008's append-only statement; repla",
+          "summary": "{ \"id\": \"WO-172-D030\", \"date\": \"2026-09-29\", \"dispatch\": \"resume: verify\", \"kind\": \"finding\", \"decision\": \"Board two evidence-accuracy defects outside the declared criteria in this order's own evidence: dispatch-paraphrases.json registerRowsMoved records FUP-3c34a8ffbf61376f as revision 5 to 6 and FUP-f3281eb085ad87a7 as 1 to 2 where the register moved 5 to 7 and 1 to 3, and does not name the intermediate FUP-f3281eb085ad87a7 revision that holds a superseded paraphrase; and handoff.md's criterion 4 line cites a 57,531-byte initial cost-table observation that no record holds (D005 records 57,296) and fixture coverage of the 64 KB bound that no test asserts.\", \"evidence\": [ \"git show HEAD:docs",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Settled by WO-172's final review: D036 and D040 corrected the moved rows' revision changes and the handoff's measurements, and VER-003 checked them. [WO-172 final review (docs/final-reviews/WO-172/FINAL-001.md)]",
+          "reopenWhen": "another evidence statement of this order is found that its source does not hold (WO-172-D060)",
+          "targets": [],
+          "at": "2026-09-29T23:48:50.137Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-74e984d94ea97de5",
+      "key": "decision:docs/evidence/WO-172/decisions.md#wo-172-d033",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "2b53cf618262bbdb054d50258402c774a660248aaa4b0810486c6416b8bf9151",
+          "ref": "docs/evidence/WO-172/decisions.md#wo-172-d033--operator-scope-expansion-what-the-shell-says-about-a-command-becomes-criterion-11",
+          "title": "WO-172-D033: Register the host's failed-command event so the observer also answers and counts a command whose result the host marks failed. On Claude Code 2.1.284 the event fires for a Bash error, car",
+          "summary": "{ \"id\": \"WO-172-D033\", \"date\": \"2026-09-29\", \"dispatch\": \"scope expand: (operator, 2026-09-29) stop roles writing commands the shell refuses or misreads, a failure seen in every phase; build the mechanism inside this order, and do not stop at the classes first named\", \"decision\": \"Amend WO-172 in execution with criterion 11. The shared instructions every role reads in both harnesses state that commands run under zsh and name the forms the record shows roles getting wrong. Under Claude Code the harness's observer recognises a diagnostic the shell itself printed in a command's output, by class and only when the command's own text bears it out, hands the agent that class's guidance as context, ",
+          "missing": false
+        },
+        {
+          "hash": "4ed38a7984f1437c429afa5f25cba1971e429469d802cf05a17437b7c2935ceb",
+          "ref": "docs/evidence/WO-172/decisions.md#wo-172-d033--operator-scope-expansion-what-the-shell-says-about-a-command-becomes-criterion-11",
+          "title": "WO-172-D033: Register the host's failed-command event so the observer also answers and counts a command whose result the host marks failed. On Claude Code 2.1.284 the event fires for a Bash error, car",
+          "summary": "{ \"id\": \"WO-172-D033\", \"date\": \"2026-09-29\", \"dispatch\": \"scope expand: (operator, 2026-09-29) stop roles writing commands the shell refuses or misreads, a failure seen in every phase; build the mechanism inside this order, and do not stop at the classes first named\", \"decision\": \"Amend WO-172 in execution with criterion 11. The shared instructions every role reads in both harnesses state that commands run under zsh and name the forms the record shows roles getting wrong. Under Claude Code the harness's observer recognises a diagnostic the shell itself printed in a command's output, by class and only when the command's own text bears it out, hands the agent that class's guidance as context, ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-42079a068929081b",
+      "key": "decision:docs/evidence/WO-172/decisions.md#wo-172-d034",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "19edb7de202e389d57463ff632086b7b7f3ded45e93fb8318d53355540cfef3d",
+          "ref": "docs/evidence/WO-172/decisions.md#wo-172-d034--the-question-tool-answers-are-read-and-the-injected-prompt-is-left-out",
+          "title": "WO-172-D034: The survey now reads 2,439 messages: the judged 2,396, less the one continuation prompt a hook injected, with 43 question-tool answers and one queued message that holds text and an image.",
+          "summary": "{ \"id\": \"WO-172-D034\", \"date\": \"2026-09-29\", \"dispatch\": \"resume: fix; repair of VER-002 F4 and F5\", \"decision\": \"The survey now reads 2,439 messages: the judged 2,396, less the one continuation prompt a hook injected, with 43 question-tool answers and one queued message that holds text and an image. 1,746 are classified in 1,038 episodes at the 120 s gap (1,274 at 60 s, 776 at 300 s), compared jointly in 319 order-and-role rows over 110 orders, 98 of them listed as differing. The answer-class comparison moves from 68 transcript episodes, 19 record entries and 9 matched to 93, 19 and 16; failure instructions from 45, 159 and 15 to 50, 159 and 19. No other counted class, and none of the overr",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by WO-172's final review: the survey's route repair (D034, reopening D028, and D039) was verified by VER-003 and held through VER-005; the survey retains 2,434 messages. [WO-172 final review (docs/final-reviews/WO-172/FINAL-001.md)]",
+          "reopenWhen": "a transcript line holding the operator's typing is found that no route reads and no exclusion names, or a verification does not reproduce a figure",
+          "targets": [],
+          "at": "2026-09-29T23:48:50.072Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-4a5df0114c411df3",
+      "key": "decision:docs/evidence/WO-172/decisions.md#wo-172-d037",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "4903aa432b7c9f75a137ef989de24b0f13bd4ec9928a896505fdd0c9b5e61f59",
+          "ref": "docs/evidence/WO-172/decisions.md#wo-172-d037--the-observer-answers-and-counts-what-the-shell-says-about-a-command",
+          "title": "WO-172-D037: CLAUDE.md gains a hand-written Shell rule of 390 bytes. The command module gains a classifier of the diagnostics zsh prints and the guidance for each class; the observer calls it after a ",
+          "summary": "{ \"id\": \"WO-172-D037\", \"date\": \"2026-09-29\", \"dispatch\": \"scope expand: (operator, 2026-09-29) the mechanism of WO-172-D033, built in this order from the classes the record holds\", \"decision\": \"CLAUDE.md gains a hand-written Shell rule of 390 bytes. The command module gains a classifier of the diagnostics zsh prints and the guidance for each class; the observer calls it after a Bash call, hands the agent the guidance as context and appends a counted row to docs/control/local/harness/shell-diagnostics.jsonl; plan failures prints the counts as localShellDiagnostics. No existing export, judgment or registration changes. Skeleton moves from 0.45.0 to 0.45.1 with the console's pin and the lockfil",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by WO-172's final review: the scope expansion's mechanism landed: the Shell rule, the observer's answers and local counts, and the baseline, with criterion 11 met on VER-005. The failed-command event stays FUP-74e984d94ea97de5, VER-004's edge cases FUP-d90c46abf5658272, and the final review's items WO-172-D059. [WO-172 final review (docs/final-reviews/WO-172/FINAL-001.md)]",
+          "reopenWhen": "a count from the local file set beside the baseline shows the rate unchanged, or a host changes the fields a hook is handed",
+          "targets": [],
+          "at": "2026-09-29T23:48:50.267Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-e42645118711be72",
+      "key": "decision:docs/evidence/WO-172/decisions.md#wo-172-d042",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "730353711bd56bfbfaa4097e130937ade14cf7cb47184e8350c57d53b1fa3978",
+          "ref": "docs/evidence/WO-172/decisions.md#wo-172-d042--verification-finds-false-shell-attribution-missed-substitutions-and-repeated-answers",
+          "title": "WO-172-D042: Repair WO-172 VER-003 F6-F8 within criterion 11: derive corroboration from parsed command words, read real process-substitution diagnostics in the existing classes, and retain failed-use ",
+          "summary": "{ \"id\": \"WO-172-D042\", \"date\": \"2026-09-29\", \"dispatch\": \"resume: verify\", \"kind\": \"finding\", \"decision\": \"Criterion 11 is unmet. Record three reproduced defects for repair in this order: a shell-shaped line printed inside a quoted argument falsely receives guidance and a count; a real unmatched-pattern diagnostic inside a process substitution receives neither; and a failed result is answered and counted again after ordinary growth of the intact shared diagnostic lane. The verifier changes no implementation.\", \"evidence\": [ \"VER-003 F6: print -r -- '(eval):1: command not found: gawk' exits zero. The classifier emits program-not-found although no parsed command word becomes gawk. A generated ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by WO-172's final review: VER-004 confirmed VER-003 F6 to F8 repaired: parsed corroboration, process-substitution coverage and intact-lane deduplication. The final review boards the remaining corroboration edges in WO-172-D059. [WO-172 final review (docs/final-reviews/WO-172/FINAL-001.md)]",
+          "reopenWhen": "a verification or ordinary use reproduces F6, F7 or F8",
+          "targets": [],
+          "at": "2026-09-29T23:48:50.169Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-320a0f6be5198baa",
+      "key": "decision:docs/evidence/WO-172/decisions.md#wo-172-d043",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "172b23a3f503d10957101148cfbd2257553abefa0704207425bf2a41fd0de596",
+          "ref": "docs/evidence/WO-172/decisions.md#wo-172-d043--verification-finds-known-phases-kept-unnamed-in-the-survey-comparison",
+          "title": "WO-172-D043: Repair WO-172 VER-003 F9 within criterion 9: audit the retained record-side role extraction against its frozen public sources, correct the six confirmed entries and any further sourced om",
+          "summary": "{ \"id\": \"WO-172-D043\", \"date\": \"2026-09-29\", \"dispatch\": \"resume: verify\", \"kind\": \"finding\", \"decision\": \"Criterion 9 remains unmet on VER-003 F9. Its routes and send-time context are repaired, but the frozen record-side comparison omits phase information already present in three decisions: WO-126-D022 is a correction during repair, WO-129-D002 a correction during execution, and WO-131-D016 a correction of ongoing execution. Each appears as unnamed in both the classified-dispatch and correction groups. Judge these six entries from their original public source, without adding later decisions to the survey subject.\", \"evidence\": [ \"The dispatch strings of the three decisions are byte-identica",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by WO-172's final review: VER-004 confirmed VER-003 F9 repaired: WO-126-D022, WO-129-D002 and WO-131-D016 carry their roles, and the joint comparison regenerates from the frozen record. [WO-172 final review (docs/final-reviews/WO-172/FINAL-001.md)]",
+          "reopenWhen": "a criterion 9 comparison contradicts the survey's written role rule",
+          "targets": [],
+          "at": "2026-09-29T23:48:50.202Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-86ac0c6cccd9c541",
+      "key": "decision:docs/evidence/WO-172/decisions.md#wo-172-d051",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "933295a1fde12d476bbce37f4122405133afe4df20a2e37b1abe3ed53c3d74d4",
+          "ref": "docs/evidence/WO-172/decisions.md#wo-172-d051--verification-finds-concurrent-observers-answer-and-count-one-failed-use-twice",
+          "title": "WO-172-D051: Repair WO-172 VER-004 F10 within criterion 11: claim each failed use atomically before answering and appending (an exclusive-create marker named by the use's hash beside the lane, as the ",
+          "summary": "{ \"id\": \"WO-172-D051\", \"date\": \"2026-09-29\", \"dispatch\": \"resume: verify\", \"kind\": \"finding\", \"decision\": \"Criterion 11 is unmet on one reproduced defect. When two tool calls finish together after a failed command, each read observer sees the same unanswered failed use, answers it and appends a row, so one failed use gets two guidance contexts and two rows. The verifier changes no implementation.\", \"evidence\": [ \"Live, 2026-09-29T20:57:19Z: ls *.dotln-race-probe-1 (zsh refused it, exit 1) was followed by two harmless Bash calls in one message. Both returned the same guidance context, and the lane gained two rows for one use hash at 20:57:19.952Z and 20:57:19.953Z.\", \"Isolated fixture with th",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by WO-172's final review: VER-005 confirmed VER-004 F10 repaired: one context and one row per failed use under concurrent observers, live in the host and in 100 stress trials, with mutants that reproduce the old race. [WO-172 final review (docs/final-reviews/WO-172/FINAL-001.md)]",
+          "reopenWhen": "a concurrent or interrupted observer gives more than one context or row for one failed use",
+          "targets": [],
+          "at": "2026-09-29T23:48:50.234Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-b6d0e2ca54007892",
+      "key": "decision:docs/evidence/WO-172/decisions.md#wo-172-d052",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "dccbf85caa7d1dad56b3f3d2b75720798f1ec9d953fa1c6d4dbf2f1e61bb9f90",
+          "ref": "docs/evidence/WO-172/decisions.md#wo-172-d052--verification-boards-survey-and-documentation-items",
+          "title": "WO-172-D052: Planning: dispose the survey items VER-004 boarded, deciding whether the role rule should take prose alone, whether WO-131-D014 stays as an inference, and whether to add a test for the ro",
+          "summary": "{ \"id\": \"WO-172-D052\", \"date\": \"2026-09-29\", \"dispatch\": \"resume: verify\", \"decision\": \"Board these criterion 9 items with their reproductions rather than fail: four decisions whose own prose says repair but whose dispatches name no phase (WO-166-D010, WO-166-D011, WO-168-D017, WO-085-D012), which the survey's dispatch-first rule leaves unnamed; WO-131-D014's executor role, a labelled inference against that rule; an untested role-whitelist assertion in repairRecordRoles (deleting it leaves the 14 cases passing); the README criterion 9 row omitting survey-repair-3.json, D044 and D046 and the handoff calling 2,396 messages judged; a comparison that regenerates only from scratch files by design",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-d90c46abf5658272",
+      "key": "decision:docs/evidence/WO-172/decisions.md#wo-172-d053",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "c192dafd7677d1918c06ce83633c30fa1ff37e016d58ef69e04e1f77e24f82de",
+          "ref": "docs/evidence/WO-172/decisions.md#wo-172-d053--verification-boards-shell-observer-edge-cases",
+          "title": "WO-172-D053: Planning: dispose the shell observer edge cases VER-004 boarded, deciding which to repair (honouring an escaped quote inside an ANSI-C quote, coproc and the - precommand, and corroboratin",
+          "summary": "{ \"id\": \"WO-172-D053\", \"date\": \"2026-09-29\", \"dispatch\": \"resume: verify\", \"decision\": \"Board these criterion 11 edge cases rather than fail: an unquoted variable that holds a printed whole-value line is attributed to a word-splitting mistake; a printed line that names the command's own head word is corroborated, which text alone cannot distinguish; an ANSI-C quote with an escaped quote, coproc and the - precommand are missed; classification cost has no bound for pathological commands (a 250 KB run of an unfinished parameter expansion took 6.2 s against a 15 s hook timeout, and nothing blocks); and the lane is read in full, which the executor declares.\", \"evidence\": [ \"The shell agent reprod",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-01e80ba5ce62c72a",
+      "key": "decision:docs/evidence/WO-172/decisions.md#wo-172-d059",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "525c741d5ac0939da2f180dc89fe9fa93ded3cabab58f3000db0047f220e9064",
+          "ref": "docs/evidence/WO-172/decisions.md#wo-172-d059--final-review-pass-and-the-items-it-boards",
+          "title": "WO-172-D059: Next order that edits the read observer or plan failures, with FUP-d90c46abf5658272: (1) catch a malformed decisions block in plan failures and plan start and name its path and decision i",
+          "summary": "{ \"id\": \"WO-172-D059\", \"date\": \"2026-09-29\", \"dispatch\": \"resume: final review\", \"kind\": \"finding\", \"decision\": \"Pass WO-172 on FINAL-001. All eleven criteria are met on the integrated subject VER-005 judged; since the final-review checkpoint only generated projections and this review's documents changed, and no source or test byte. The review met seven items outside the criteria and fixes none of them, since a reviewer writes no behavior; none breaks a criterion's written text. Board them as one follow-up. (1) A malformed JSON block in a working-tree decisions record makes plan start and plan failures print the parser's message, which quotes part of that decision's text. (2) The read observ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

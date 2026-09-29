@@ -1,4 +1,4 @@
-# WO-172 — Failures reach planning: `plan failures` lists the failed judgments, repairs, corrections and off-ramps since the last pass from the public record, `plan start` prints their counts, the meter carries each order's failed judgments and the process-health line says how many first verifications failed, and the direction count reads what the operator did (version assigned at activation)
+# WO-172 — Failures reach planning: `plan failures` lists the failed judgments, repairs, corrections and off-ramps since the last pass from the public record, `plan start` prints their counts, the meter carries each order's failed judgments and the process-health line says how many first verifications failed, and the direction count reads what the operator did (v0.56.2)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
@@ -27,10 +27,20 @@ while the record holds 96, 99 and 56; a process-health line that reads
 a direction count that WO-170's final review found to read 71 of 871
 dispatches while 165 others name the operator after `resume:` (D019);
 the register row eight dispositions kept open (FUP-71fc2efc208f597a).
-Re-mints: none (`scripts/refute-plan.mjs`,
+Re-mints for the original scope: none (`scripts/refute-plan.mjs`,
 `scripts/lib/meta.mjs` and the new module are not registered evidence
 sources; `docs/evidence/*/decisions.md` is not one either). Wall-clock,
 tokens and context bytes of the order itself are unknown until run.
+By the operator's scope expansion of 2026-09-29 (WO-172-D033) the order
+also adds one hand-written rule of 390 bytes to `CLAUDE.md`, read at
+every cold start; the observer's context of at most 900 characters after
+a command in whose output the shell printed a diagnostic, and as much
+again at the next observed call for a command whose result the host
+marked failed; one ignored local file of counted rows; and one block in
+`plan failures`. Skeleton
+`0.45.0` moves to `0.45.2` after integrating main's `0.45.1`, and the authority edition is re-minted
+because the generated hooks' digests move; the feedback,
+artifact-identity and verification editions stay current.
 **Nomination provenance:** the operator's 2026-09-28 direction during the
 planning pass (about a hundred failures across the phases, planning among
 them for not noticing, to be addressed; they should all have been
@@ -192,7 +202,10 @@ did.
 **Deliverables:** the module and the command; the `plan start` block;
 the meter's fields and summary; the direction reader and its hand
 classification; the paraphrased fields and their comparison; fixtures;
-the write-backs below.
+the write-backs below; the transcript survey and its comparison
+(criterion 9, WO-172-D012); the candidate interaction shapes
+(criterion 10, WO-172-D021); the shell rule, the observer's diagnostics
+with their local count, and the baseline (criterion 11, WO-172-D033).
 
 **Acceptance criteria (all required)**
 
@@ -242,9 +255,69 @@ the write-backs below.
    07 changed.
 8. `npm test -- --review` and `npm run test:docs` green;
    `git diff --check` clean; no new dependency.
+9. Transcript survey (operator scope expansion, 2026-09-29, WO-172-D012):
+   every message the operator typed into this repository's Claude Code
+   and Codex CLI or VS Code sessions on this machine before this order's
+   activation is read by its route (a turn prompt, a message queued while
+   the agent worked, a queued message delivered as the next turn, an
+   interrupt, a question-tool answer; subagent threads, `codex exec`
+   launches, peer sessions, task notifications and injected context
+   excluded) with its send time, its gaps to the operator's previous
+   message, to the session's dispatch and to the agent's last output, and
+   the agent's last text and tool calls before it. Each is classified
+   with the hand classification's classes, marked when it tells a role
+   to record a failure, and grouped into episodes by the time between
+   messages. The messages stay in session scratch; the committed evidence
+   holds counts and identifiers of orders and decisions only: per order
+   and role, the episodes of each class and the failure instructions
+   against what the record holds (the classified decision dispatches,
+   the recorded corrections and the failed judgments), with each order
+   where they differ listed. The claim is the executor's reading of the
+   transcripts this machine retains, not of every session that ran.
+10. Candidate interaction shapes (operator scope expansion, 2026-09-29,
+    WO-172-D021): a starter set of candidate RxJS shapes of sampled
+    operator and agent interactions, each a one-line pipeline and a
+    one-line marble diagram with a title and a caption of a few words,
+    drawn from a theme of the transcript survey, a sampled message the
+    operator read, or this order's own interactions. Each records its
+    source by identifier and none carries the operator's words. The set
+    is a structured file that later passes add to, improve and reshape;
+    the continuing collection is routed to planning. The shapes are the
+    executor's candidates until the operator confirms them.
+11. Shell diagnostics (operator scope expansion, 2026-09-29,
+    WO-172-D033): a command the shell refuses or misreads as written is
+    answered and counted. The shared instructions every role reads in
+    both harnesses state that commands run under zsh and name the forms
+    the record shows roles getting wrong, in at most 400 bytes, with any
+    cold-start ceiling the rule breaches raised by the standing route.
+    Under Claude Code the harness's observer recognises a diagnostic the
+    shell itself printed in a command's output, by class, only when the
+    command's own text bears it out; it hands the agent that class's
+    guidance as context, refuses and blocks nothing and prints nothing
+    to the terminal; and it appends one row for each diagnostic to an
+    ignored local file that holds the class and its scope and never a
+    pattern or a command's text. `plan failures` prints those counts by
+    class and by order, labelled local and counted only, and omits them
+    where the file is absent. The committed evidence holds the baseline
+    that the transcripts this machine retains give, by harness, class
+    and role, as counts; the live observations that a hook's context
+    reaches the model after a command and after a failed command; and
+    the limits: a result the host marks failed reaches no registered
+    hook, so the observer reads it from the session's transcript and
+    answers it at the next observed call; a word-splitting mistake
+    leaves a diagnostic only where the whole value names a program or a
+    file; and under Codex only the rule applies. Registering the
+    failed-command event, which would answer at the failed call itself,
+    stays routed with its evidence and its precondition, an observation
+    of how Copilot treats that event, since both hosts read one
+    registration file. The claim is a rule delivered, a mechanism that
+    answers and counts, and a baseline; not that the mistake stops.
 
 **Evidence gate:** the fixture transcripts; the command's output on this
 repository for criterion 1; the hand classification; the comparison;
+the transcript survey's counts (criterion 9); the shapes file
+(criterion 10); the shell diagnostics' baseline, observations and
+fixtures (criterion 11);
 `npm run test:docs`; `npm test -- --review` at final review. No live row.
 
 **Write-back duty:** as listed in criterion 7. Record corrections the

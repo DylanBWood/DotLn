@@ -1,0 +1,1251 @@
+{
+  "schemaVersion": 1,
+  "kind": "wo-172-intervention-subjects",
+  "question": "What were the operator's interventions about, and what does planning already hold for each subject?",
+  "method": "The 298 survey episodes holding a correction or a failure instruction (2026-08-31 to 2026-09-28, 72 orders) were read by two agents that named each episode's subject in their own words with a theme key, a layer (subject, meta, meta-meta) and a fix target; one agent consolidated the keys into themes and mapped each to the register, the planning map, work orders, product documents and role skills, with a next step. The operator's own readings of sampled messages and WO-172's corrected handling failures were given as authoritative. Orders, dates and recurrence after the fixing order's final review are computed from the survey's episodes and the control logs. Themes, counts and identifiers only; no message text. Repair F2/F3 retains those themes and recomputes their counts from send-time episodes split by role; repair records the exact effect. Repair F4/F5 keeps those themes, carries each through the regenerated episodes and places four pieces that hold a question-tool answer by the executor's reading; the repair block records the exact effect.",
+  "status": "The executor's reading through agents; the operator accepted the map as good for now at 2026-09-29T05:01Z by the prompt hook's clock and may correct any theme later (WO-172-D022).",
+  "totals": {
+    "episodes": 303,
+    "withheld": 0,
+    "themes": 30,
+    "rawKeys": 59,
+    "unmappedKeys": [],
+    "episodesOutsideThemes": 0,
+    "byCoverage": {
+      "fixed": 10,
+      "partial": 16,
+      "tracked": 2,
+      "candidate": 1,
+      "untracked": 1
+    },
+    "byLayer": {
+      "meta": 193,
+      "subject": 61,
+      "meta-meta": 49
+    }
+  },
+  "themes": [
+    {
+      "key": "gate-rerun-loop",
+      "title": "Gates rerun in loops or run slowly",
+      "description": "Roles rerun the product or evidence gate after changes that should not need it, restart multi-run series after trivial edits, or sit on gates the machinery made slow, and the operator had to break the cycle repeatedly.",
+      "layer": "meta",
+      "fixTarget": "harness-or-tooling",
+      "episodes": 21,
+      "orders": {
+        "main": 4,
+        "WO-131": 3,
+        "WO-126": 2,
+        "WO-044": 2,
+        "WO-060": 2,
+        "WO-042": 1,
+        "WO-128": 1,
+        "WO-051": 1,
+        "WO-049": 1,
+        "WO-147": 1,
+        "WO-166": 1,
+        "WO-169": 1,
+        "WO-164": 1
+      },
+      "firstSeen": "2026-09-09",
+      "lastSeen": "2026-09-28",
+      "coverage": "fixed",
+      "coverageRefs": [
+        "WO-132",
+        "WO-173",
+        "docs/product/07-execution-guide.md:1910-1941",
+        "docs/planning/failures-across-phases-2026-09-28.md:135-140,656-660",
+        "FUP-7629e03c6573f5cb"
+      ],
+      "coverageEvidence": "Product 07 'Write once, run once' (lines 1910-1941) keys the gate by code identity (WO-132, closed 2026-09-15T17:05Z) and adds WO-173's lookup that exits when a passing row covers the same identity (closed 2026-09-28T22:24Z). Nine episodes fall between the two and none after WO-173; failures §13 (lines 656-660) reopens the structural cut if an order still pays over four gate runs.",
+      "recurrence": {
+        "fixingOrdersClosed": {
+          "WO-132": "2026-09-15T17:05:03.271Z",
+          "WO-173": "2026-09-28T22:24:21.315Z"
+        },
+        "episodesAfterLastFix": 0
+      },
+      "mapperRecurredAfterFix": "yes",
+      "nextStep": "At the next pass, count product gate runs per order since WO-173 from the gate index, as failures §3 did; reopen the structural-cut item if any order exceeds four (§13), and triage FUP-7629e03c6573f5cb's untracked-source reuse gap.",
+      "operatorConfirmedRefs": []
+    },
+    {
+      "key": "asks-or-stalls-instead-of-acting",
+      "title": "Asks, stalls or re-diagnoses instead of acting",
+      "description": "Roles put routine decisions back to the operator, halt at a blocker they could fix, list options instead of doing them, or keep diagnosing when a cheap action such as regenerating, reinstalling or supplying the command would settle it.",
+      "layer": "meta",
+      "fixTarget": "agent-behaviour",
+      "episodes": 22,
+      "orders": {
+        "main": 5,
+        "WO-042": 3,
+        "WO-018": 2,
+        "WO-044": 2,
+        "WO-006": 1,
+        "WO-031": 1,
+        "WO-039": 1,
+        "WO-130": 1,
+        "WO-131": 1,
+        "WO-051": 1,
+        "WO-099": 1,
+        "WO-111": 1,
+        "WO-162": 1,
+        "WO-163": 1
+      },
+      "firstSeen": "2026-09-01",
+      "lastSeen": "2026-09-28",
+      "coverage": "partial",
+      "coverageRefs": [
+        "docs/product/07-execution-guide.md:1444-1472",
+        ".claude/skills/dotln-executor/SKILL.md:21-25",
+        "docs/planning/sequence.md:15-20",
+        "FUP-a9412a7815418c21",
+        "scripts/resume.mjs:1045",
+        "docs/planning/failures-across-phases-2026-09-28.md:318,326-329"
+      ],
+      "coverageEvidence": "Product 07 (lines 1444-1472) says to decide and continue within authority (landed 2026-09-09) and not to ask for routine release numbers, but Adjacent Repair and Intent to Act are equipped only for the executor; rule 6 (a step the executor can perform is the executor's) sits in sequence.md lines 15-20 with its product 07 home pending as FUP-a9412a7815418c21. Failures §7 counts settled matters put back to the operator, three times in WO-163.",
+      "recurrence": null,
+      "mapperRecurredAfterFix": "yes",
+      "nextStep": "Triage FUP-a9412a7815418c21: move rule 6 into product 07 §Discipline and the shared role text (contributor.ts common) so every role, not only the executor, settles routine version, waiver and live-episode questions itself (E0975, E0980, E0987).",
+      "operatorConfirmedRefs": [
+        "validation item 1, WO-042 final review"
+      ]
+    },
+    {
+      "key": "misread-operator-intent",
+      "title": "Misreads what the operator was asking for",
+      "description": "An agent answers a different question from the one asked, frames a direction narrower or broader than its aim, or fits the operator's words into its own categories without checking its reading with the operator.",
+      "layer": "meta",
+      "fixTarget": "agent-behaviour",
+      "episodes": 16,
+      "orders": {
+        "main": 5,
+        "WO-003": 1,
+        "WO-006": 1,
+        "WO-007": 1,
+        "WO-023": 1,
+        "WO-021": 1,
+        "WO-109": 1,
+        "WO-049": 1,
+        "WO-054": 1,
+        "WO-146": 1,
+        "WO-111": 1,
+        "WO-115": 1
+      },
+      "firstSeen": "2026-08-31",
+      "lastSeen": "2026-09-28",
+      "coverage": "partial",
+      "coverageRefs": [
+        "FUP-22929ecc5931615f",
+        "FUP-e93507c6b9f1d47e",
+        "docs/planning/work-order-map.md:994-998,1114-1127",
+        ".claude/skills/dotln-executor/SKILL.md:25",
+        "docs/evidence/WO-172/decisions.md#wo-172-d019",
+        "FUP-0c76cd39223a576b"
+      ],
+      "coverageEvidence": "The map's 2026-09-16 items on a dispatch prefix read as conversation (lines 994-998, 1114-1120) were declined on 2026-09-17 as role-text duties (FUP-22929ecc5931615f, FUP-e93507c6b9f1d47e) with reopen on recurrence, and Intent to Act, which lets the operator catch a misreading before work starts, is equipped only in the executor skill (line 25). WO-172-D019 records the rule to classify faithfully and confirm the reading; FUP-0c76cd39223a576b (untriaged) asks for the operator's own classes.",
+      "recurrence": null,
+      "mapperRecurredAfterFix": "yes",
+      "nextStep": "Extend the executor-only Intent to Act support to the planner, verifier and reviewer in packages/skeleton/src/loadouts/contributor.ts so each states its reading of the operator's aim before acting, and score misreads against the operator's reading once FUP-0c76cd39223a576b is allocated.",
+      "operatorConfirmedRefs": [
+        "WO-172-D016",
+        "WO-172-D019",
+        "operator question 2026-09-29T03:37Z"
+      ]
+    },
+    {
+      "key": "claims-without-evidence",
+      "title": "States conclusions it has not checked",
+      "description": "Agents assert causes, blockers, unreachable services, required steps or finished work from a partial search or a guess, and report figures before separating their sources.",
+      "layer": "meta",
+      "fixTarget": "agent-behaviour",
+      "episodes": 16,
+      "orders": {
+        "main": 6,
+        "WO-003": 2,
+        "WO-044": 2,
+        "WO-021": 1,
+        "WO-126": 1,
+        "WO-067": 1,
+        "WO-137": 1,
+        "WO-099": 1,
+        "WO-155": 1
+      },
+      "firstSeen": "2026-08-31",
+      "lastSeen": "2026-09-24",
+      "coverage": "fixed",
+      "coverageRefs": [
+        "CLAUDE.md:17-24",
+        "WO-141",
+        "docs/product/07-execution-guide.md:1485-1509",
+        "FUP-5f58198706dfa59e",
+        "FUP-2f80a6a6318d4ddf",
+        "FUP-512f562095c82009",
+        "docs/planning/failures-across-phases-2026-09-28.md:311-332"
+      ],
+      "coverageEvidence": "CLAUDE.md's evidence-before-claims floor (commit 1e16cb90, 2026-09-16) and WO-141's advisory estimate journal (closed 2026-09-17T22:01Z; product 07 lines 1485-1509) address it, and failures §7 (lines 329-332) observes that the prose rule stopped no recurrence. Declined rows FUP-5f58198706dfa59e, FUP-2f80a6a6318d4ddf and FUP-512f562095c82009 reopen on a recurrence after 2026-09-17, which E0753, E0810 and E0882 are.",
+      "recurrence": {
+        "fixingOrdersClosed": {
+          "WO-141": "2026-09-17T22:01:17.687Z"
+        },
+        "episodesAfterLastFix": 4
+      },
+      "mapperRecurredAfterFix": "yes",
+      "nextStep": "Reopen FUP-5f58198706dfa59e, whose recurrence condition has occurred (E0753, E0810, E0882, WO-172-D015), and give claims WO-173's form: a handoff or report claim names the command and output it rests on, checked wherever a gate row exists.",
+      "operatorConfirmedRefs": [
+        "WO-172-D015"
+      ]
+    },
+    {
+      "key": "lifecycle-handoff-gaps",
+      "title": "Lifecycle gaps lose context or leave manual steps",
+      "description": "Early lifecycle defects left repair sessions without context, needed hand-run commits and refutation commands, skipped recording a repair start, forced extra passes on parallel lanes, and left chores and lock releases to the operator.",
+      "layer": "subject",
+      "fixTarget": "harness-or-tooling",
+      "episodes": 15,
+      "orders": {
+        "WO-003": 3,
+        "main": 3,
+        "WO-006": 2,
+        "WO-002": 1,
+        "WO-101": 1,
+        "WO-041": 1,
+        "WO-039": 1,
+        "WO-130": 1,
+        "WO-052": 1,
+        "WO-139": 1
+      },
+      "firstSeen": "2026-08-31",
+      "lastSeen": "2026-09-18",
+      "coverage": "fixed",
+      "coverageRefs": [
+        "FUP-e513ddca3cfbe398",
+        ".claude/skills/dotln-refuter/SKILL.md:18-21",
+        "WO-139",
+        "WO-079",
+        "FUP-5047977fa705e78b",
+        "docs/product/07-execution-guide.md:658-733"
+      ],
+      "coverageEvidence": "WO-130-D010 (FUP-e513ddca3cfbe398) records the dispatch before any repair, the refuter skill (lines 18-21) files and commits receipts from a background worker (since 2026-09-13), WO-139 releases the writer at completion (2026-09-18T18:10Z), WO-079 added worktree integrate for parallel lanes (2026-09-21) and WO-142 took the stale security runbook (FUP-5047977fa705e78b). No episode after 2026-09-18.",
+      "recurrence": {
+        "fixingOrdersClosed": {
+          "WO-139": "2026-09-18T18:10:02.992Z",
+          "WO-079": "2026-09-21T03:21:09.085Z"
+        },
+        "episodesAfterLastFix": 0
+      },
+      "mapperRecurredAfterFix": "no",
+      "nextStep": "None needed: no episode since 2026-09-18, and each gap now has a landed fix (WO-130, the 2026-09-13 background refuter, WO-139, WO-079).",
+      "operatorConfirmedRefs": []
+    },
+    {
+      "key": "judge-overreach",
+      "title": "Judges reach beyond the acceptance criteria",
+      "description": "Verifiers and reviewers pad reports with theoretical or non-defect findings, chase side questions and settled authorizations, fail work on bounds the operator set aside, and fan out far more agents and reads than a review needs.",
+      "layer": "meta",
+      "fixTarget": "agent-behaviour",
+      "episodes": 13,
+      "orders": {
+        "WO-043": 2,
+        "WO-003": 1,
+        "WO-004": 1,
+        "WO-018": 1,
+        "WO-020": 1,
+        "WO-042": 1,
+        "WO-126": 1,
+        "WO-044": 1,
+        "WO-099": 1,
+        "WO-111": 1,
+        "WO-166": 1,
+        "WO-173": 1
+      },
+      "firstSeen": "2026-08-31",
+      "lastSeen": "2026-09-28",
+      "coverage": "partial",
+      "coverageRefs": [
+        "FUP-b053a956adb84b6a",
+        "docs/planning/work-order-map.md:1882-1890",
+        "scripts/resume.mjs:1046",
+        "docs/planning/failures-across-phases-2026-09-28.md:398-401",
+        "WO-139",
+        "FUP-8c9a0ab2a894b7fd"
+      ],
+      "coverageEvidence": "Map candidate 3 of 2026-09-28 (FUP-b053a956adb84b6a, deferred; lines 1882-1890) waits for two orders failing only outside declared sets, and WO-173's verify sentence (scripts/resume.mjs:1046) boards such defects, landing after the last episode. No fan-out episode followed WO-139's cap and batching rule (2026-09-18); E1002 failed WO-173 on its own briefing byte bound, later waived (FUP-8c9a0ab2a894b7fd).",
+      "recurrence": {
+        "fixingOrdersClosed": {
+          "WO-139": "2026-09-18T18:10:02.992Z"
+        },
+        "episodesAfterLastFix": 4
+      },
+      "mapperRecurredAfterFix": "unknown",
+      "nextStep": "At the next pass, test FUP-b053a956adb84b6a's reopen condition against orders made ready after WO-173 using plan failures, and add to the verify briefing that scope the operator set aside is recorded as known, not failed (E1002).",
+      "operatorConfirmedRefs": []
+    },
+    {
+      "key": "sandbox-and-authority",
+      "title": "Sandbox and permission steps not requested or not workable",
+      "description": "Approval prompts outpaced the operator, a settings fix was overstated, and agents stalled on sandbox-blocked steps, suggested weaker security, or passed commands and overrides to the operator instead of requesting authority through the host.",
+      "layer": "meta",
+      "fixTarget": "agent-behaviour",
+      "episodes": 12,
+      "orders": {
+        "WO-006": 4,
+        "WO-044": 3,
+        "WO-032": 1,
+        "WO-039": 1,
+        "WO-131": 1,
+        "main": 1,
+        "WO-111": 1
+      },
+      "firstSeen": "2026-09-01",
+      "lastSeen": "2026-09-24",
+      "coverage": "partial",
+      "coverageRefs": [
+        "WO-014",
+        "docs/work-orders/WO-014-approval-burden-contract.md:129-150",
+        "WO-140",
+        "WO-161",
+        "docs/product/07-execution-guide.md:1942-1967",
+        ".claude/skills/dotln-verifier/SKILL.md:36",
+        ".claude/skills/dotln-release-close/SKILL.md:22",
+        "docs/planning/failures-across-phases-2026-09-28.md:504-505"
+      ],
+      "coverageEvidence": "WO-014 (draft, outside the sequence until approval prompts are recorded interrupting a session) re-observed on 2026-09-28 that sessions now run without a host sandbox and left open whether approval friction remains (lines 129-150). WO-140 prints the outside command, verifier and reviewer text says to run it under host permissions, and release close says to request egress through the host flow; E0679 and E0895 came after those rules.",
+      "recurrence": {
+        "fixingOrdersClosed": {
+          "WO-140": "2026-09-20T04:48:16.888Z",
+          "WO-161": "2026-09-25T18:48:00.750Z"
+        },
+        "episodesAfterLastFix": 0
+      },
+      "mapperRecurredAfterFix": "yes",
+      "nextStep": "Settle WO-014's open question (does approval friction remain without a host sandbox) before sequencing it, and add one shared role line: authority a step needs is requested in-session through the host flow, never passed to the operator as a command (E0679, E0895).",
+      "operatorConfirmedRefs": [
+        "validation item 3, WO-006",
+        "validation item 7, WO-006",
+        "validation item 13, WO-044"
+      ]
+    },
+    {
+      "key": "release-close",
+      "title": "Release close runs long, stops short or targets the wrong release",
+      "description": "Post-merge publication needed unplanned steps, ran suites and refutations it did not need, picked the wrong release, handed publication back to the operator, or halted on leftover residue.",
+      "layer": "subject",
+      "fixTarget": "harness-or-tooling",
+      "episodes": 13,
+      "orders": {
+        "main": 9,
+        "WO-003": 2,
+        "WO-042": 1,
+        "WO-044": 1
+      },
+      "firstSeen": "2026-08-31",
+      "lastSeen": "2026-09-16",
+      "coverage": "fixed",
+      "coverageRefs": [
+        "WO-127",
+        "WO-044",
+        "WO-132",
+        "WO-171",
+        "docs/product/07-execution-guide.md:1816-1819",
+        ".claude/skills/dotln-release-close/SKILL.md:22",
+        "FUP-ecf9d3b703a0b7d9",
+        "FUP-8cfd3ff52146a016",
+        "docs/planning/failures-across-phases-2026-09-28.md:376"
+      ],
+      "coverageEvidence": "WO-127 (2026-09-11), WO-044's folded close repairs (2026-09-15), WO-132's rule that close runs no suite with the skill's host egress line, and WO-171's finishing prune (2026-09-27) address it; E0598 and E0648 came after earlier fixes, none after 2026-09-16. Failures §9 (line 376) notes a failed close leaves no public record, and FUP-ecf9d3b703a0b7d9 and FUP-8cfd3ff52146a016 stay deferred.",
+      "recurrence": {
+        "fixingOrdersClosed": {
+          "WO-127": "2026-09-11T05:15:08.860Z",
+          "WO-044": "2026-09-15T03:49:29.573Z",
+          "WO-132": "2026-09-15T17:05:03.271Z",
+          "WO-171": "2026-09-27T19:12:00.198Z"
+        },
+        "episodesAfterLastFix": 0
+      },
+      "mapperRecurredAfterFix": "yes",
+      "nextStep": "Make FUP-ecf9d3b703a0b7d9's reopen condition observable: have plan failures count release-close attempts and failures from the ignored local lane beside gate rows (failures §9), and carry FUP-8cfd3ff52146a016's real-runtime publish fixture into the order that records outcomes.",
+      "operatorConfirmedRefs": []
+    },
+    {
+      "key": "opaque-communication",
+      "title": "Hands the operator unclear or unusable text",
+      "description": "Commands carry placeholders, questions leave their purpose unexplained, jargon goes undefined, and long summaries replace concrete results or the next step, leaving the operator to decode the message.",
+      "layer": "meta",
+      "fixTarget": "agent-behaviour",
+      "episodes": 12,
+      "orders": {
+        "main": 5,
+        "WO-032": 1,
+        "WO-131": 1,
+        "WO-044": 1,
+        "WO-142": 1,
+        "WO-110": 1,
+        "WO-138": 1,
+        "WO-163": 1
+      },
+      "firstSeen": "2026-09-07",
+      "lastSeen": "2026-09-28",
+      "coverage": "partial",
+      "coverageRefs": [
+        "docs/product/07-execution-guide.md:2046-2048"
+      ],
+      "coverageEvidence": "Product 07's return-shape rule (lines 2046-2048, since 2026-09-02) asks for a compact result without narration; a search of product 07 and the role skills found no rule that a command handed to the operator is runnable or that a question states its purpose, and episodes continued to 2026-09-28.",
+      "recurrence": null,
+      "mapperRecurredAfterFix": "yes",
+      "nextStep": "Add one line to the shared role text (contributor.ts common): a command given to the operator is copy-paste runnable with real paths and no placeholders, and a question states what it decides and why in plain words (E0586, E0807, E0986).",
+      "operatorConfirmedRefs": []
+    },
+    {
+      "key": "operator-words-distorted",
+      "title": "Records the operator's words wider, narrower or other than said",
+      "description": "Corrections are applied too literally or turned into rules never given, temporary constraints are recorded as lasting, and statements, decisions or verbatim text are attributed to the operator in committed records.",
+      "layer": "meta-meta",
+      "fixTarget": "agent-behaviour",
+      "episodes": 12,
+      "orders": {
+        "main": 6,
+        "WO-004": 1,
+        "WO-017": 1,
+        "WO-131": 1,
+        "WO-044": 1,
+        "WO-153": 1,
+        "WO-170": 1
+      },
+      "firstSeen": "2026-08-31",
+      "lastSeen": "2026-09-27",
+      "coverage": "partial",
+      "coverageRefs": [
+        ".claude/skills/dotln-verifier/SKILL.md:47",
+        "docs/product/07-execution-guide.md:1569-1580",
+        "WO-085",
+        "FUP-71fc2efc208f597a",
+        "FUP-f287a595299249ff",
+        "docs/planning/failures-across-phases-2026-09-28.md:314"
+      ],
+      "coverageEvidence": "Every role carries the anti-oscillation unit (verifier SKILL.md line 47) and product 07 lines 1569-1580 record that decided means sourced, not frozen; WO-085's dispatch check (2026-09-26) and WO-172's paraphrase sweep (FUP-71fc2efc208f597a) reach decision dispatch fields only, and FUP-f287a595299249ff (untriaged) holds the rest. E0968 postdates WO-085.",
+      "recurrence": {
+        "fixingOrdersClosed": {
+          "WO-085": "2026-09-26T21:23:17.516Z"
+        },
+        "episodesAfterLastFix": 1
+      },
+      "mapperRecurredAfterFix": "yes",
+      "nextStep": "Triage FUP-f287a595299249ff after WO-172's sweep: extend the dispatch check to work-order provenance lines and decision texts, so any rule or phrase attributed to the operator cites its capture digest (E0968, WO-172-D020).",
+      "operatorConfirmedRefs": [
+        "WO-172-D020"
+      ]
+    },
+    {
+      "key": "corrections-not-durable",
+      "title": "Corrections and failures do not persist as process",
+      "description": "Fixes are narrated in chat or scoped to one session, roles leave their own failures out of the record, supports meant to carry a correction fail to load, and the operator has to give a rule again.",
+      "layer": "meta-meta",
+      "fixTarget": "harness-or-tooling",
+      "episodes": 12,
+      "orders": {
+        "main": 4,
+        "WO-126": 3,
+        "WO-130": 2,
+        "WO-042": 1,
+        "WO-052": 1,
+        "WO-164": 1
+      },
+      "firstSeen": "2026-09-09",
+      "lastSeen": "2026-09-28",
+      "coverage": "tracked",
+      "coverageRefs": [
+        "FUP-84ea5fb168c317cf",
+        "FUP-e2612bcb7ad08955",
+        "WO-172",
+        "docs/product/07-execution-guide.md:1863-1865",
+        ".claude/skills/dotln-executor/SKILL.md:38",
+        "FUP-3a6e3d734d493650"
+      ],
+      "coverageEvidence": "Role text says to record a correction the same day (executor SKILL.md line 38), product 07 lines 1863-1865 make a stated complaint a decision, and WO-130-D013 made the intent line harness-owned (FUP-3a6e3d734d493650); yet WO-172-D013 measured that the record holds 14% of correction episodes. FUP-84ea5fb168c317cf (untriaged, high) asks for an instrument, and declined FUP-e2612bcb7ad08955 already named transcript-derived counts.",
+      "recurrence": null,
+      "mapperRecurredAfterFix": "yes",
+      "nextStep": "Allocate FUP-84ea5fb168c317cf at the next pass: the prompt hook records each operator message's route, time and class as a typed event holding a digest, never text, so plan failures counts corrections no role wrote down; fold FUP-e2612bcb7ad08955 into it.",
+      "operatorConfirmedRefs": [
+        "WO-172-D011"
+      ]
+    },
+    {
+      "key": "hook-and-gate-obstruction",
+      "title": "Hooks and gate machinery block the work",
+      "description": "Stop-hook and read refusals flooded sessions, a lock or live gate blocked stopping or delegating, a runtime prerequisite was circular, and code-identity rules let documentation edits void a recorded gate.",
+      "layer": "subject",
+      "fixTarget": "harness-or-tooling",
+      "episodes": 12,
+      "orders": {
+        "WO-039": 3,
+        "WO-131": 3,
+        "main": 2,
+        "WO-044": 2,
+        "WO-042": 1,
+        "WO-115": 1
+      },
+      "firstSeen": "2026-09-08",
+      "lastSeen": "2026-09-26",
+      "coverage": "fixed",
+      "coverageRefs": [
+        "WO-132",
+        "WO-115",
+        "docs/product/07-execution-guide.md:1808-1830,1910-1917",
+        "FUP-d636595e251ba81b"
+      ],
+      "coverageEvidence": "WO-132's stand-down (product 07 lines 1808-1830) cut hooks to five refusals and made read and handoff checks advisory, WO-044-D011 (FUP-d636595e251ba81b) gave sessions evidence --stop, and WO-115 marked package READMEs as documentation (lines 1910-1917) the day E0940 recurred after WO-132. No episode after that fix.",
+      "recurrence": {
+        "fixingOrdersClosed": {
+          "WO-132": "2026-09-15T17:05:03.271Z",
+          "WO-115": "2026-09-26T17:04:38.329Z"
+        },
+        "episodesAfterLastFix": 0
+      },
+      "mapperRecurredAfterFix": "yes",
+      "nextStep": "None needed: WO-132 left five refusals with advisory reads, and WO-115 fixed the one later recurrence (README edits changing code identity, E0940) the same day.",
+      "operatorConfirmedRefs": [
+        "validation item 1, WO-042 final review"
+      ]
+    },
+    {
+      "key": "planning-drifts-from-vision",
+      "title": "Plans drift from the vision and the operator's direction",
+      "description": "Planning passes lose core parts of the product vision, mix personal policy into the platform, file orders too narrow or too large, and keep sequencing machinery debt ahead of delivery without any pass noticing.",
+      "layer": "meta-meta",
+      "fixTarget": "process-or-docs",
+      "episodes": 11,
+      "orders": {
+        "main": 9,
+        "WO-016": 1,
+        "WO-126": 1
+      },
+      "firstSeen": "2026-09-03",
+      "lastSeen": "2026-09-22",
+      "coverage": "partial",
+      "coverageRefs": [
+        "docs/product/07-execution-guide.md:61-78",
+        "docs/planning/vision-into-use-2026-09-17.md",
+        "docs/planning/failures-across-phases-2026-09-28.md:542-554",
+        "FUP-abfdb650f125a77f",
+        "FUP-ba35c0b5ae47cfb8"
+      ],
+      "coverageEvidence": "Product 07's goal-aligned decisions (lines 61-78) and the refuter's goal-alignment judgment address it, yet failures §11 (lines 542-554) records fourteen of sixteen orders closed since 2026-09-25 as debt against the half-product standard. FUP-abfdb650f125a77f and FUP-ba35c0b5ae47cfb8 give WO-172 an entry count of orders since the last Entropy Reducer review.",
+      "recurrence": null,
+      "mapperRecurredAfterFix": "yes",
+      "nextStep": "Have plan start print the delivery-versus-debt split of the last eight closed orders against the operator's half-and-half standard (failures §11), beside WO-172's count of orders since the last Entropy Reducer review, so drift shows at entry.",
+      "operatorConfirmedRefs": []
+    },
+    {
+      "key": "serves-check-not-goal",
+      "title": "Serves a check, cap or symptom instead of the goal",
+      "description": "Agents trim or keep text to satisfy byte caps, add machinery that serves itself, build mechanisms against a surface symptom, and revert or remove working fixes so a stale check passes.",
+      "layer": "meta",
+      "fixTarget": "agent-behaviour",
+      "episodes": 11,
+      "orders": {
+        "main": 3,
+        "WO-044": 2,
+        "WO-049": 1,
+        "WO-054": 1,
+        "WO-099": 1,
+        "WO-154": 1,
+        "WO-115": 1,
+        "WO-173": 1
+      },
+      "firstSeen": "2026-09-14",
+      "lastSeen": "2026-09-28",
+      "coverage": "partial",
+      "coverageRefs": [
+        "docs/product/07-execution-guide.md:1716-1726",
+        "FUP-a815e8862796c2e1",
+        "FUP-da72ac3d4d5123bf",
+        "FUP-d217775b9c71ce81",
+        "FUP-c6dce0e659a830f1",
+        "FUP-8c9a0ab2a894b7fd"
+      ],
+      "coverageEvidence": "Product 07 lines 1716-1726 forbid trimming around a cold-start ceiling, and WO-049-D002 and WO-054-D004 withdrew a phrase ban and a keyword parser; the rewind rows FUP-a815e8862796c2e1 and FUP-da72ac3d4d5123bf were declined on 2026-09-17 to reopen on a second attempt, which E0876 is. WO-173's own byte bound drove E0999 and needed a waiver (FUP-8c9a0ab2a894b7fd).",
+      "recurrence": null,
+      "mapperRecurredAfterFix": "yes",
+      "nextStep": "Reopen FUP-a815e8862796c2e1, whose condition (a second rewind attempt) occurred in E0876, and state in product 07's planning procedure that a byte figure in an order is a reported target under the ceiling rule, never a trim bound (E0999).",
+      "operatorConfirmedRefs": []
+    },
+    {
+      "key": "deferring-fixes",
+      "title": "Defers fixable defects",
+      "description": "Executors, verifiers and planners push real, repairable defects to later orders, follow-ups or planning passes, or accept a flaky pass, instead of fixing them while the order is open.",
+      "layer": "meta",
+      "fixTarget": "agent-behaviour",
+      "episodes": 10,
+      "orders": {
+        "main": 2,
+        "WO-131": 1,
+        "WO-044": 1,
+        "WO-047": 1,
+        "WO-121": 1,
+        "WO-052": 1,
+        "WO-053": 1,
+        "WO-111": 1,
+        "WO-161": 1
+      },
+      "firstSeen": "2026-09-09",
+      "lastSeen": "2026-09-25",
+      "coverage": "partial",
+      "coverageRefs": [
+        "docs/product/07-execution-guide.md:1444-1455",
+        ".claude/skills/dotln-verifier/SKILL.md:38",
+        "scripts/resume.mjs:1046",
+        "docs/planning/failures-across-phases-2026-09-28.md:33-52"
+      ],
+      "coverageEvidence": "Product 07 lines 1444-1455 (2026-09-09) and the boarded-defect role line (2026-09-19) say pre-existing origin is no reason to defer, and failures §1 (lines 33-52) removed live-episode authorization after three orders deferred real defects to avoid a paid episode. WO-173's verify sentence (scripts/resume.mjs:1046) now boards defects outside the criteria, which the operator's 2026-09-25 permission to fail such an order (E0911) contradicts.",
+      "recurrence": null,
+      "mapperRecurredAfterFix": "yes",
+      "nextStep": "Reconcile WO-173's verify sentence that a defect outside the declared criteria is boarded, not failed (scripts/resume.mjs:1046), with the operator's 2026-09-25 permission to fail an order for repairable defects (E0911), and state the boundary in product 07's Adjacent Repair rule.",
+      "operatorConfirmedRefs": []
+    },
+    {
+      "key": "waits-polled-or-narrated",
+      "title": "Polls, narrates or idles while work runs",
+      "description": "During gates and background tasks agents post repeated status lines, poll transcripts, claim watchers that do not exist or sit idle, instead of waiting quietly or spending the wait on bounded work.",
+      "layer": "meta",
+      "fixTarget": "agent-behaviour",
+      "episodes": 10,
+      "orders": {
+        "WO-116": 3,
+        "WO-126": 2,
+        "main": 1,
+        "WO-130": 1,
+        "WO-134": 1,
+        "WO-049": 1,
+        "WO-162": 1
+      },
+      "firstSeen": "2026-09-10",
+      "lastSeen": "2026-09-28",
+      "coverage": "candidate",
+      "coverageRefs": [
+        ".claude/skills/dotln-verifier/SKILL.md:17",
+        "WO-166",
+        "docs/product/07-execution-guide.md:2046-2048",
+        "FUP-34baa790901c6d95",
+        "docs/planning/work-order-map.md:1977-1990",
+        "FUP-3bb4dea9dde2a392",
+        "FUP-1f47fd50acc97814"
+      ],
+      "coverageEvidence": "Role text says to await a gate with evidence --wait in the background (verifier SKILL.md line 17, WO-166, 2026-09-26), product 07 bans narration theater, and WO-127-D003 asked for concrete progress; the rest sits in two 2026-09-28 map candidates (lines 1977-1990), FUP-3bb4dea9dde2a392 (untriaged) and FUP-1f47fd50acc97814 (open after a trial). E0976 and E1006 came after WO-166.",
+      "recurrence": {
+        "fixingOrdersClosed": {
+          "WO-166": "2026-09-26T23:44:41.957Z"
+        },
+        "episodesAfterLastFix": 4
+      },
+      "mapperRecurredAfterFix": "yes",
+      "nextStep": "Allocate the utilization candidate (FUP-3bb4dea9dde2a392) with FUP-1f47fd50acc97814's recorded trial: role text says a wait runs evidence --wait in the background and then does bounded listed work or stays quiet, never polling or narrating (E0976, E1006).",
+      "operatorConfirmedRefs": []
+    },
+    {
+      "key": "clean-room-overreach",
+      "title": "Clean-room screening applied too broadly",
+      "description": "Agents scrubbed context that was already public, paraphrased terms and phrase lists whose exact wording was the point, set aside founding ideas wholesale, and blocked readiness on a complete terms list.",
+      "layer": "meta",
+      "fixTarget": "agent-behaviour",
+      "episodes": 8,
+      "orders": {
+        "WO-007": 2,
+        "WO-109": 2,
+        "WO-001": 1,
+        "WO-012": 1,
+        "WO-017": 1,
+        "WO-039": 1
+      },
+      "firstSeen": "2026-08-31",
+      "lastSeen": "2026-09-07",
+      "coverage": "fixed",
+      "coverageRefs": [
+        "CLAUDE.md:3-15",
+        "docs/product/07-execution-guide.md:911-945",
+        "docs/product/07-execution-guide.md:1442",
+        "WO-109"
+      ],
+      "coverageEvidence": "The CLAUDE.md floor was rewritten on 2026-09-08 (commit 53d94e8c) to permit exact wording under recorded direct-filing provenance, product 07's ideation steps and Direct Draft Fidelity (lines 911-945) set a proportionate screen, WO-109 remined founding sources by shape, and outward lint reports a missing local-terms list as unavailable (line 1442). No episode after 2026-09-07.",
+      "recurrence": {
+        "fixingOrdersClosed": {
+          "WO-109": "2026-09-08T01:18:26.844Z"
+        },
+        "episodesAfterLastFix": 0
+      },
+      "mapperRecurredAfterFix": "no",
+      "nextStep": "None needed: no episode since the floor was rewritten on 2026-09-08; the opposite failure, operator words kept verbatim, is handled under the operator-words theme.",
+      "operatorConfirmedRefs": []
+    },
+    {
+      "key": "redundant-stage-testing",
+      "title": "Every role reruns the full product gate",
+      "description": "Verifiers run full product gates that the executor and final review also run, even after their verdict is settled, so each order pays for the same tests several times.",
+      "layer": "meta-meta",
+      "fixTarget": "agent-behaviour",
+      "episodes": 8,
+      "orders": {
+        "WO-044": 1,
+        "WO-132": 1,
+        "WO-052": 1,
+        "WO-054": 1,
+        "WO-070": 1,
+        "WO-164": 1,
+        "WO-163": 1,
+        "WO-162": 1
+      },
+      "firstSeen": "2026-09-14",
+      "lastSeen": "2026-09-28",
+      "coverage": "partial",
+      "coverageRefs": [
+        "packages/skeleton/src/loadouts/contributor.ts:83,123",
+        ".claude/skills/dotln-verifier/SKILL.md:35-36",
+        "docs/product/07-execution-guide.md:1813-1816,1925-1926,1939-1941",
+        "WO-132",
+        "WO-173"
+      ],
+      "coverageEvidence": "The stand-down set one product gate per order at final review (product 07 lines 1813-1816), but the verifier procedure still includes productGate (contributor.ts line 123; verifier SKILL.md line 36) and lines 1925-1926 let verifiers run tests when useful; WO-173's lookup (lines 1939-1941) only skips a rerun at the same code identity. Six episodes followed WO-132.",
+      "recurrence": {
+        "fixingOrdersClosed": {
+          "WO-132": "2026-09-15T17:05:03.271Z",
+          "WO-173": "2026-09-28T22:24:21.315Z"
+        },
+        "episodesAfterLastFix": 0
+      },
+      "mapperRecurredAfterFix": "yes",
+      "nextStep": "Remove productGate from the verifier procedure (packages/skeleton/src/loadouts/contributor.ts:123) so the verifier cites the executor's handoff.md gate row and runs npm test only to reproduce a finding, using --again with a stated reason.",
+      "operatorConfirmedRefs": []
+    },
+    {
+      "key": "question-read-as-instruction",
+      "title": "Treats a question, complaint or stale message as an instruction",
+      "description": "An operator question stops or narrows in-flight work, a complaint is read as license to act, an override is stretched past its purpose, and after compaction an old message is answered instead of resuming the order.",
+      "layer": "meta",
+      "fixTarget": "agent-behaviour",
+      "episodes": 8,
+      "orders": {
+        "main": 2,
+        "WO-109": 1,
+        "WO-039": 1,
+        "WO-126": 1,
+        "WO-121": 1,
+        "WO-053": 1,
+        "WO-162": 1
+      },
+      "firstSeen": "2026-09-08",
+      "lastSeen": "2026-09-28",
+      "coverage": "fixed",
+      "coverageRefs": [
+        "docs/product/07-execution-guide.md:1661-1673,1889-1909",
+        "FUP-5dd41f26ea5c719a",
+        "WO-054",
+        ".claude/skills/dotln-verifier/SKILL.md:11",
+        "scripts/resume.mjs:1043-1046"
+      ],
+      "coverageEvidence": "Product 07 lines 1661-1673 (2026-09-08, extended by WO-126-D019, FUP-5dd41f26ea5c719a) and role text line 11 say only an explicit pause or stop interrupts work, and WO-054's Codex compaction restore (lines 1889-1909, 2026-09-18) resumes the saved task over an old message. E0426 and E0974 recurred after the rule.",
+      "recurrence": {
+        "fixingOrdersClosed": {
+          "WO-054": "2026-09-18T21:25:35.278Z"
+        },
+        "episodesAfterLastFix": 1
+      },
+      "mapperRecurredAfterFix": "yes",
+      "nextStep": "Add the question-is-not-a-waiver rule to the verify and final-review briefings beside WO-173's sentences (scripts/resume.mjs:1043-1046), since the role-text line did not stop E0974, a verifier halting its workflow when merely asked about it.",
+      "operatorConfirmedRefs": [
+        "validation item 12, WO-054"
+      ]
+    },
+    {
+      "key": "residue-left-behind",
+      "title": "Leaves locks, monitors and stray files behind",
+      "description": "Sessions end with writer reservations or background monitors still held, keep disposable fixtures, and test runs leave stray files or change tracked ones.",
+      "layer": "subject",
+      "fixTarget": "agent-behaviour",
+      "episodes": 8,
+      "orders": {
+        "WO-003": 1,
+        "WO-011": 1,
+        "WO-125": 1,
+        "WO-050": 1,
+        "main": 1,
+        "WO-122": 1,
+        "WO-158": 1,
+        "WO-161": 1
+      },
+      "firstSeen": "2026-08-31",
+      "lastSeen": "2026-09-25",
+      "coverage": "partial",
+      "coverageRefs": [
+        ".claude/skills/dotln-executor/SKILL.md:46",
+        "WO-139",
+        "WO-166",
+        "docs/product/07-execution-guide.md:1485-1488",
+        "FUP-0349c7a91fe63917"
+      ],
+      "coverageEvidence": "The executor skill (line 46) forbids leaving the writer reserved and completion releases it (WO-139, 2026-09-18; WO-166 for Codex), with no writer episode since; no rule covers background monitors at handoff, though WO-141's Stop advisory already lists journaled background dispatches (product 07 lines 1485-1488). E0909 and E0912 are monitors.",
+      "recurrence": {
+        "fixingOrdersClosed": {
+          "WO-139": "2026-09-18T18:10:02.992Z",
+          "WO-166": "2026-09-26T23:44:41.957Z"
+        },
+        "episodesAfterLastFix": 0
+      },
+      "mapperRecurredAfterFix": "no",
+      "nextStep": "Add to the shared completion text (contributor.ts evidence) that a role stops its own background monitors before recording its result, and have the Stop advisory, which already lists journaled background dispatches (WO-141), name any still running (E0909, E0912).",
+      "operatorConfirmedRefs": []
+    },
+    {
+      "key": "premature-verdict-or-handoff",
+      "title": "Passes or hands off before the work is checked",
+      "description": "A pass is recorded while a fan-out still runs or before a gate, observations stay unverified, a visual check is replaced by a DOM read or coverage is weakened, and a role misses errors in its own output.",
+      "layer": "meta",
+      "fixTarget": "agent-behaviour",
+      "episodes": 9,
+      "orders": {
+        "main": 2,
+        "WO-032": 1,
+        "WO-068": 1,
+        "WO-122": 1,
+        "WO-138": 1,
+        "WO-147": 1,
+        "WO-100": 1,
+        "WO-162": 1
+      },
+      "firstSeen": "2026-09-07",
+      "lastSeen": "2026-09-28",
+      "coverage": "partial",
+      "coverageRefs": [
+        "WO-173",
+        "docs/product/07-execution-guide.md:1932-1941",
+        ".claude/skills/dotln-verifier/SKILL.md:40-41",
+        "FUP-9a23fe23cbf08958",
+        "FUP-9625ca888d7d08f5",
+        "docs/planning/failures-across-phases-2026-09-28.md:201-212"
+      ],
+      "coverageEvidence": "WO-173 (closed 2026-09-28) makes executor completions check a criterion ledger and the gates it names (product 07 lines 1932-1941), while the verifier text requires the report first and refuses a pass over an unmet line (SKILL.md lines 40-41) but checks no gate the verifier cites. FUP-9a23fe23cbf08958 (declined 2026-09-17, reopen on recurrence) covers handoffs without their checks, and E0836 recurred.",
+      "recurrence": {
+        "fixingOrdersClosed": {
+          "WO-173": "2026-09-28T22:24:21.315Z"
+        },
+        "episodesAfterLastFix": 0
+      },
+      "mapperRecurredAfterFix": "yes",
+      "nextStep": "Apply WO-173's claim check to verification-result: a criterion judged met that names a gate needs that gate's passing row or inline run; reopen FUP-9a23fe23cbf08958, whose recurrence condition occurred (E0836 recorded a pass before the docs gate).",
+      "operatorConfirmedRefs": []
+    },
+    {
+      "key": "planning-refutation-loop",
+      "title": "Planning refutation loops, stalls or needs hand steps",
+      "description": "Refutation re-held plans on constructible gaps, launched the wrong transport, carried moot holds, needed manual operator steps, and ran under a fixed time budget that blocked filing.",
+      "layer": "subject",
+      "fixTarget": "harness-or-tooling",
+      "episodes": 7,
+      "orders": {
+        "main": 7
+      },
+      "firstSeen": "2026-09-09",
+      "lastSeen": "2026-09-13",
+      "coverage": "partial",
+      "coverageRefs": [
+        "WO-132",
+        "docs/planning/work-order-map.md:2289-2329",
+        ".claude/skills/dotln-refuter/SKILL.md:18-21",
+        "packages/skeleton/src/plan-refutation-protocol.ts:133-136",
+        "docs/planning/failures-across-phases-2026-09-28.md:770-787"
+      ],
+      "coverageEvidence": "WO-132 criterion 11 made constructible counterexamples known issues (map lines 2289-2329) and the refuter skill (lines 18-21) runs a background worker with no third-hold or duration refusal; but PLAN_REFUTATION_LIMITS.timeoutMs is still a fixed 1,200,000 ms (plan-refutation-protocol.ts:134), and receipt 033 ran on 2026-09-28 under an operator override lifting that deadline (failures §17).",
+      "recurrence": {
+        "fixingOrdersClosed": {
+          "WO-132": "2026-09-15T17:05:03.271Z"
+        },
+        "episodesAfterLastFix": 0
+      },
+      "mapperRecurredAfterFix": "yes",
+      "nextStep": "Replace the fixed 20-minute PLAN_REFUTATION_LIMITS.timeoutMs (packages/skeleton/src/plan-refutation-protocol.ts:134) with a deadline drawn from recorded refutation durations, or none, so no pass needs the override receipt 033 took (failures §17).",
+      "operatorConfirmedRefs": [
+        "validation item 16, planning pass"
+      ]
+    },
+    {
+      "key": "slow-phase-duration",
+      "title": "Phases run far longer than their work",
+      "description": "Verification, review, repair and release close stretched to hours through blocked probes, late gate starts, side research, extra live runs, repeated repair rounds and slow lookups.",
+      "layer": "meta",
+      "fixTarget": "harness-or-tooling",
+      "episodes": 7,
+      "orders": {
+        "main": 2,
+        "WO-132": 1,
+        "WO-121": 1,
+        "WO-135": 1,
+        "WO-146": 1,
+        "WO-099": 1
+      },
+      "firstSeen": "2026-09-15",
+      "lastSeen": "2026-09-25",
+      "coverage": "partial",
+      "coverageRefs": [
+        "docs/planning/failures-across-phases-2026-09-28.md:112-143,359-361",
+        "WO-158",
+        "WO-160",
+        "WO-164",
+        "WO-172"
+      ],
+      "coverageEvidence": "Failures §3 (lines 112-143) timed phases by hand and §8 (lines 359-361) notes completedPhaseAttempts already pairs every attempt; WO-158, WO-160 and WO-164 fixed specific causes (live-gate reads, prune network time, the release list) with no later episode. No instrument flags a long phase at pass entry; WO-172 counts failed judgments, not durations.",
+      "recurrence": {
+        "fixingOrdersClosed": {
+          "WO-158": "2026-09-25T16:22:35.089Z",
+          "WO-160": "2026-09-25T20:37:21.835Z",
+          "WO-164": "2026-09-27T20:21:56.783Z"
+        },
+        "episodesAfterLastFix": 0
+      },
+      "mapperRecurredAfterFix": "no",
+      "nextStep": "Have plan start or plan failures list orders whose phase attempts ran past twice that phase's median, from completedPhaseAttempts (failures §8), so a pass sees long phases at entry instead of timing them by hand as §3 did.",
+      "operatorConfirmedRefs": []
+    },
+    {
+      "key": "pr-and-commit-quality",
+      "title": "Pull-request titles and commits drift in form",
+      "description": "PR titles grew release by release and then swung too short, gitmoji landed on commits instead of titles, an attribution trailer was considered, and titles were sized by numeric rules rather than written as headlines.",
+      "layer": "meta-meta",
+      "fixTarget": "agent-behaviour",
+      "episodes": 6,
+      "orders": {
+        "WO-031": 2,
+        "WO-006": 1,
+        "WO-109": 1,
+        "WO-039": 1,
+        "main": 1
+      },
+      "firstSeen": "2026-09-02",
+      "lastSeen": "2026-09-09",
+      "coverage": "fixed",
+      "coverageRefs": [
+        "docs/product/07-execution-guide.md:1625-1660",
+        ".claude/skills/dotln-reviewer/SKILL.md:41",
+        "WO-063"
+      ],
+      "coverageEvidence": "Product 07 lines 1625-1660 hold the gitmoji-in-title rule and the ratchet-creep rule (2026-09-08), and the reviewer role text (SKILL.md line 41) has required headline titles since 2026-09-11; E0362 came after the ratchet rule, none after the headline rule, and WO-063 lints outward titles.",
+      "recurrence": {
+        "fixingOrdersClosed": {
+          "WO-063": "2026-09-22T02:12:36.701Z"
+        },
+        "episodesAfterLastFix": 0
+      },
+      "mapperRecurredAfterFix": "yes",
+      "nextStep": "None needed: no episode since the headline rule entered the reviewer role text on 2026-09-11 (.claude/skills/dotln-reviewer/SKILL.md line 41), and WO-063 lints outward titles.",
+      "operatorConfirmedRefs": [
+        "validation item 14, WO-109 final review"
+      ]
+    },
+    {
+      "key": "ideation-ledger-fidelity",
+      "title": "Ideation captured raw or recorded inaccurately",
+      "description": "Ideas were left as raw intake without synthesis, and the idea ledger and architecture documents misattributed sources, misread the operator's analogies or misordered entries.",
+      "layer": "meta",
+      "fixTarget": "agent-behaviour",
+      "episodes": 6,
+      "orders": {
+        "WO-003": 3,
+        "WO-006": 1,
+        "WO-016": 1,
+        "WO-028": 1
+      },
+      "firstSeen": "2026-08-31",
+      "lastSeen": "2026-09-04",
+      "coverage": "fixed",
+      "coverageRefs": [
+        "docs/product/07-execution-guide.md:847-990",
+        "FUP-fe8f162b7d022512",
+        "WO-084",
+        "FUP-d3940f4e6201b477"
+      ],
+      "coverageEvidence": "Product 07's ideation mode (lines 847-990) requires synthesis unless capture-only is explicit (since 2026-09-02) and a breakout receipt the verifier digests, WO-054-D007 (FUP-fe8f162b7d022512) confirmed a bare prefix means the full pipeline, and WO-084 put ledger sections in descending date order (FUP-d3940f4e6201b477). No episode after 2026-09-04.",
+      "recurrence": {
+        "fixingOrdersClosed": {
+          "WO-084": "2026-09-19T05:48:01.811Z"
+        },
+        "episodesAfterLastFix": 0
+      },
+      "mapperRecurredAfterFix": "no",
+      "nextStep": "None needed: no episode since 2026-09-04; ideation mode requires synthesis and a verified breakout receipt, and WO-084 ordered ledger sections newest first.",
+      "operatorConfirmedRefs": []
+    },
+    {
+      "key": "unknown-or-frozen-reports",
+      "title": "Reports leave readable values unknown or treat drafts as frozen",
+      "description": "Reports record usage or other values as unknown or null when a readable source exists, drop measurements instead of taking them, and append corrections or demand extra passes because a draft or receipt is wrongly treated as unchangeable.",
+      "layer": "meta",
+      "fixTarget": "agent-behaviour",
+      "episodes": 6,
+      "orders": {
+        "WO-043": 3,
+        "main": 2,
+        "WO-111": 1
+      },
+      "firstSeen": "2026-09-11",
+      "lastSeen": "2026-09-24",
+      "coverage": "partial",
+      "coverageRefs": [
+        "docs/product/07-execution-guide.md:1674-1704,1527-1536",
+        "CLAUDE.md:21",
+        "FUP-34baa790901c6d95",
+        "WO-140",
+        "WO-170"
+      ],
+      "coverageEvidence": "Product 07 lines 1674-1704 require usage when available and a closed cause code for unknown (WO-140), CLAUDE.md line 21 says to obtain missing evidence, and WO-127-D003 (FUP-34baa790901c6d95) required saving measurements or dropping the unmeasured-cost line; nothing instructs correcting an unfiled report in place rather than appending. E0896 and WO-172-D012 followed WO-140.",
+      "recurrence": {
+        "fixingOrdersClosed": {
+          "WO-140": "2026-09-20T04:48:16.888Z",
+          "WO-170": "2026-09-27T23:35:02.023Z"
+        },
+        "episodesAfterLastFix": 0
+      },
+      "mapperRecurredAfterFix": "yes",
+      "nextStep": "Add to the shared role text that unknown is written only after naming the readable source tried (CLAUDE.md: obtain it) and that an unfiled report is corrected in place, not appended to; WO-172-D012 and E0896 show both recur.",
+      "operatorConfirmedRefs": [
+        "WO-172-D012 evidence (01:07Z)"
+      ]
+    },
+    {
+      "key": "writes-outside-lane",
+      "title": "Writes bookkeeping or edits outside its lane",
+      "description": "Version bookkeeping and finding labels land in product documents and code comments, old planning records are edited to pass a check, and agents try to edit user-level instructions or write to main outside the phases allowed.",
+      "layer": "meta",
+      "fixTarget": "agent-behaviour",
+      "episodes": 6,
+      "orders": {
+        "WO-045": 1,
+        "WO-121": 1,
+        "WO-111": 1,
+        "WO-166": 1,
+        "WO-173": 1,
+        "WO-116": 1
+      },
+      "firstSeen": "2026-09-15",
+      "lastSeen": "2026-09-28",
+      "coverage": "partial",
+      "coverageRefs": [
+        "docs/product/07-execution-guide.md:1399-1416",
+        "WO-144",
+        "docs/planning/work-order-map.md:1940-1952",
+        "FUP-cd1a227413938345",
+        "FUP-bf614feaea90cac3",
+        "FUP-a6cf758ebdd11f1c"
+      ],
+      "coverageEvidence": "Product 07 lines 1399-1416 moved per-order dated paragraphs out of product headings (2026-09-25) and WO-144 refuses known outside-project writes without a granted root; the product-document ownership candidate (FUP-cd1a227413938345, map lines 1940-1952), FUP-bf614feaea90cac3 (ideation writes aimed at main) and FUP-a6cf758ebdd11f1c (finding labels in comments) are untriaged or deferred. E0953, E1004 and E1008 came after.",
+      "recurrence": {
+        "fixingOrdersClosed": {
+          "WO-144": "2026-09-20T01:07:40.129Z"
+        },
+        "episodesAfterLastFix": 4
+      },
+      "mapperRecurredAfterFix": "yes",
+      "nextStep": "After WO-086 and WO-087, allocate the product-document ownership candidate (FUP-cd1a227413938345) so role text drops the per-order roadmap paragraph duty, and triage FUP-bf614feaea90cac3 so an ideation capture never writes main outside final review or release close (E1008).",
+      "operatorConfirmedRefs": []
+    },
+    {
+      "key": "session-identity-readback",
+      "title": "Sessions misreport their own model and effort",
+      "description": "Sessions wrote a model default into instructions, misread an effort spelling, and attested unknown effort when the harness exposed a readable value.",
+      "layer": "subject",
+      "fixTarget": "harness-or-tooling",
+      "episodes": 5,
+      "orders": {
+        "WO-049": 3,
+        "WO-152": 1,
+        "WO-100": 1
+      },
+      "firstSeen": "2026-09-16",
+      "lastSeen": "2026-09-22",
+      "coverage": "fixed",
+      "coverageRefs": [
+        "WO-049",
+        "FUP-ba0543bee5b0895c",
+        "WO-157",
+        "FUP-eba6a79fc106bd28",
+        "WO-158",
+        ".claude/skills/dotln-verifier/SKILL.md:15,39",
+        "FUP-a6cf30a8b7bc4a83"
+      ],
+      "coverageEvidence": "WO-049 made Codex briefings report the active thread's model and effort (2026-09-16); E0850, a Claude attestation of unknown effort, preceded WO-157's CLAUDE_EFFORT readback (FUP-ba0543bee5b0895c, closed 2026-09-24), and WO-158 refuses a disagreeing attestation (FUP-eba6a79fc106bd28). No episode after WO-157; FUP-a6cf30a8b7bc4a83 (untriaged) covers ultracode no longer implying xhigh.",
+      "recurrence": {
+        "fixingOrdersClosed": {
+          "WO-049": "2026-09-16T22:59:11.973Z",
+          "WO-157": "2026-09-24T15:17:25.744Z",
+          "WO-158": "2026-09-25T16:22:35.089Z"
+        },
+        "episodesAfterLastFix": 0
+      },
+      "mapperRecurredAfterFix": "no",
+      "nextStep": "None needed for readback since WO-157 and WO-158; triage the residual FUP-a6cf30a8b7bc4a83 so an ultracode spelling is recorded as a mode apart from effort in parseActor and normalizeWorkerEffort.",
+      "operatorConfirmedRefs": [
+        "validation item 9, WO-050 verification"
+      ]
+    },
+    {
+      "key": "provider-safeguard-block",
+      "title": "Provider safeguard refusals trap the session",
+      "description": "Repeated provider safety refusals stalled closing out an order, and the retry loop could not break free even after a warning.",
+      "layer": "subject",
+      "fixTarget": "provider-or-model",
+      "episodes": 1,
+      "orders": {
+        "WO-044": 1
+      },
+      "firstSeen": "2026-09-15",
+      "lastSeen": "2026-09-15",
+      "coverage": "untracked",
+      "coverageRefs": [],
+      "coverageEvidence": "A search of product 07, the planning documents, the role skills, docs/AI-HARNESS-SECURITY.md and the register found no record of provider safeguard refusals or a rule for leaving the retry loop; E0429, a false verify start after safety flagging, sits in the judge theme.",
+      "recurrence": null,
+      "mapperRecurredAfterFix": "not-applicable",
+      "nextStep": "File a register row: after a second consecutive provider safeguard refusal a role stops retrying, records the stop as a decision naming phase and model, and resumes in a fresh session; nothing in the record covers this today (E0589). Filed as FUP-6332681e9500a84b (WO-172-D023).",
+      "operatorConfirmedRefs": [
+        "validation item 15, WO-126 verification"
+      ]
+    },
+    {
+      "key": "positive-reinforcement",
+      "title": "Unprompted trap judgment the operator wants kept",
+      "description": "The operator named, as behaviour to keep, an agent applying the rule-beating and wrong-goal lenses without being asked; the survey's rubric had no class for such reinforcement, so no count shows what went right.",
+      "layer": "meta",
+      "fixTarget": "harness-or-tooling",
+      "episodes": 0,
+      "orders": {},
+      "firstSeen": null,
+      "lastSeen": null,
+      "coverage": "tracked",
+      "coverageRefs": [
+        "FUP-0c76cd39223a576b",
+        ".claude/skills/dotln-verifier/SKILL.md:9"
+      ],
+      "coverageEvidence": "FUP-0c76cd39223a576b (WO-172-D018, untriaged, high) asks that the intervention instrument carry the operator's own classes, positive reinforcement first among them; the Goal Alignment procedure every role carries (verifier SKILL.md line 9) is the behaviour confirmed.",
+      "recurrence": null,
+      "mapperRecurredAfterFix": "not-applicable",
+      "nextStep": "When FUP-0c76cd39223a576b is allocated, add a reinforcement class the operator confirms, seeded with this unprompted trap judgment, so plan failures and the meter count what went right beside what failed.",
+      "operatorConfirmedRefs": [
+        "validation item 4, WO-126 ideation"
+      ]
+    }
+  ],
+  "refCheck": "Every cited FUP id (44), order (63) and file and line reference (74) was checked against the register, the work-order index and the files on 2026-09-29; none was missing.",
+  "repair": {
+    "source": "WO-172-D026; VER-001 F2/F3",
+    "originalEpisodes": 298,
+    "episodes": 301,
+    "rule": "Split a session episode at an order or role change before comparison; preserve its existing theme for each split piece. The accepted 30-theme interpretation and next steps are unchanged; this is a count reconciliation, not a fresh operator endorsement.",
+    "changes": [
+      {
+        "order": "WO-007",
+        "fromRole": "executor-repair",
+        "role": "executor-repair",
+        "theme": "clean-room-overreach"
+      },
+      {
+        "order": "WO-018",
+        "fromRole": "executor",
+        "role": "executor",
+        "theme": "asks-or-stalls-instead-of-acting"
+      },
+      {
+        "order": "WO-018",
+        "fromRole": "executor",
+        "role": "ideation",
+        "theme": "asks-or-stalls-instead-of-acting"
+      },
+      {
+        "order": "WO-042",
+        "fromRole": "executor",
+        "role": "executor",
+        "theme": "asks-or-stalls-instead-of-acting"
+      },
+      {
+        "order": "WO-042",
+        "fromRole": "executor",
+        "role": "ideation",
+        "theme": "asks-or-stalls-instead-of-acting"
+      },
+      {
+        "order": "WO-116",
+        "fromRole": "executor",
+        "role": "executor",
+        "theme": "waits-polled-or-narrated"
+      },
+      {
+        "order": "WO-116",
+        "fromRole": "executor",
+        "role": "ideation",
+        "theme": "waits-polled-or-narrated"
+      }
+    ]
+  },
+  "repair2": {
+    "source": "WO-172-D034; VER-002 F4/F5",
+    "previousEpisodes": 301,
+    "episodes": 303,
+    "inherited": 299,
+    "rule": "A piece that holds a retained message keeps the theme of the piece that message stood in. An added question-tool answer that joins two pieces makes them one. A piece that holds only added answers, or that becomes a failure instruction through one, has no theme to inherit; the executor read it and placed it in one of the accepted 30 themes. The themes and next steps are unchanged; the four readings are the executor's and not the operator's.",
+    "read": [
+      {
+        "order": "WO-006",
+        "role": "verifier",
+        "theme": "asks-or-stalls-instead-of-acting",
+        "reading": "a verifier put the recording of its verdict back to the operator as options"
+      },
+      {
+        "order": "WO-039",
+        "role": "verifier",
+        "theme": "hook-and-gate-obstruction",
+        "reading": "a stale lock blocked the verification"
+      },
+      {
+        "order": "WO-121",
+        "role": "verifier",
+        "theme": "deferring-fixes",
+        "reading": "the recommended option passed the order and nominated a failure the verifier had reproduced"
+      },
+      {
+        "order": "WO-100",
+        "role": "reviewer",
+        "theme": "premature-verdict-or-handoff",
+        "reading": "three verifications had passed on a gate that did not select the failing suite"
+      }
+    ],
+    "merged": [
+      {
+        "order": "WO-166",
+        "role": "verifier",
+        "theme": "judge-overreach",
+        "piecesBefore": 2
+      }
+    ],
+    "changedThemes": {
+      "asks-or-stalls-instead-of-acting": [
+        21,
+        22
+      ],
+      "judge-overreach": [
+        14,
+        13
+      ],
+      "sandbox-and-authority": [
+        13,
+        12
+      ],
+      "hook-and-gate-obstruction": [
+        11,
+        12
+      ],
+      "deferring-fixes": [
+        9,
+        10
+      ],
+      "premature-verdict-or-handoff": [
+        8,
+        9
+      ]
+    }
+  }
+}

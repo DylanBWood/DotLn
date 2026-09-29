@@ -1,0 +1,98 @@
+{
+  "schemaVersion": 1,
+  "kind": "wo-172-shell-concurrency-repair",
+  "criterion": 11,
+  "failureSource": "docs/verifications/WO-172/VER-004.md F10",
+  "decision": "WO-172-D054",
+  "rule": "For an eligible failed use, concurrent observers emit at most one guidance context and append one row per diagnostic while its lane remains intact. A hook interrupted before appending leaves the use recoverable; recovery cannot delete a replacement claim.",
+  "baseline": {
+    "check": "node --test --test-name-pattern='WO-172 F10' scripts/test-harness.mjs",
+    "exitCode": 1,
+    "observedContexts": 2,
+    "requiredContexts": 1,
+    "source": "Executed against the pre-repair runtime; assertion 2 !== 1."
+  },
+  "repairCheck": {
+    "check": "node --test --test-name-pattern='WO-172' scripts/test-harness.mjs",
+    "exitCode": 0,
+    "tests": 4,
+    "durationMs": 11298.36725,
+    "concurrencyCaseDurationMs": 2098.208,
+    "source": "Node test runner stdout after adding the staged stale-snapshot case suggested by the read-only audit."
+  },
+  "cases": [
+    {
+      "case": "two-observers-sharing-absent-lane-snapshot",
+      "observerProcesses": 2,
+      "contexts": 1,
+      "rows": 1
+    },
+    {
+      "case": "eight-observers-and-two-diagnostic-classes",
+      "observerProcesses": 8,
+      "contexts": 1,
+      "rows": 2,
+      "classes": [
+        "program-not-found",
+        "unmatched-pattern"
+      ]
+    },
+    {
+      "case": "stale-snapshot-after-winner-completes-and-releases",
+      "observerProcesses": 2,
+      "contexts": 1,
+      "rows": 1,
+      "laneRecheckDeterministic": true
+    },
+    {
+      "case": "direct-generated-hooks-after-one-zsh-failure",
+      "observerProcesses": 2,
+      "contexts": 1,
+      "rows": 1,
+      "preloadOrBarrier": false
+    },
+    {
+      "case": "killed-hook-before-append",
+      "rowsBeforeRecovery": 0,
+      "contextsAfterRecovery": 1,
+      "rowsAfterRecovery": 1,
+      "class": "reserved-parameter"
+    },
+    {
+      "case": "delayed-dead-owner-reclaimer",
+      "loserContexts": 0,
+      "replacementPreserved": true
+    },
+    {
+      "case": "subsequent-observation-of-each-answered-use",
+      "additionalContexts": 0,
+      "additionalRows": 0
+    },
+    {
+      "case": "normal-claim-release",
+      "claimsLeftAfterCompletion": 0
+    }
+  ],
+  "privacy": "Lane rows retain the existing class and scope fields and hashed use only; claim filenames are hashed-use and random-nonce identifiers and claim contents contain pid and observed process start time. Tests assert no command, pattern or raw use identifier in rows.",
+  "limits": [
+    "These are actual zsh commands and actual generated-hook OS processes in an isolated fixture. Deterministic cases hold filesystem boundaries; the direct pair uses no preload or barrier.",
+    "This Codex session does not observe fresh native Claude model delivery. Historical native-host observations in VER-004 and shell-diagnostics.json remain identified as historical, rather than re-labelled as current.",
+    "The original transcript-tail, late-answer, static-parser and lane-IO limits remain. Corrupt or unreadable claim metadata is preserved and that call answers nothing."
+  ],
+  "audit": {
+    "readOnlyAgents": 1,
+    "descendants": 0,
+    "finding": "No new ordinary-use defect found. Suggested the deterministic stale-snapshot case, which now passes.",
+    "limits": "Source review only; the auditor ran no tests and wrote no files."
+  },
+  "fullReview": {
+    "command": "npm test -- --review",
+    "exitCode": 0,
+    "checks": 38,
+    "freshTasks": 82,
+    "durationMs": 762844,
+    "recordedAt": "2026-09-29T22:57:53.942Z",
+    "codeIdentity": "a893dcbf913ee731807aa0120c66bfd8371ca30217e5b638114ea80c1a5a6142",
+    "matchesCurrentSource": true
+  }
+}

@@ -1,0 +1,405 @@
+{
+  "schemaVersion": 1,
+  "kind": "wo-172-dispatch-paraphrases",
+  "reading": "The executor read the 241 dispatch fields that name the operator (the hand classification, direction-classification.json) and the 14 others that carry an operator control prefix (scope expand:, operator override:, analysis:, conversation only:) at base 8c28f479. The claim is this reading, recorded; it is not that no quotation of the operator remains anywhere in the record.",
+  "rule": "A listed field is paraphrased in place under the dispatch check's rule: a control prefix (the lifecycle one the decision was recorded under when the field had none) and at most 240 characters of paraphrase on one line, naming the same operator step. Nothing else in the decision changes. A digest is SHA-256 of the field's text, the docs check's dispatch fingerprint; docs/control/doc-baseline.json holds the before digest of every field filed before WO-085.",
+  "changed": [
+    {
+      "decision": "WO-044-D014",
+      "path": "docs/evidence/WO-044/decisions.md",
+      "judgment": "a quoted fragment of the operator's message",
+      "beforeSha256": "c36975f74a5bf3c530cefe420030d078775f523f0b234fe5cc16e3d7596eee9a",
+      "afterSha256": "6e1a6c5efcf5c8d6013e6a3e87dfaf6b3085149c4d1268400d7f7cad34b9491b"
+    },
+    {
+      "decision": "WO-044-D015",
+      "path": "docs/evidence/WO-044/decisions.md",
+      "judgment": "a quotation of the operator's instruction",
+      "beforeSha256": "0475e1c3cd1165880f2b0375c95b889b766547955a718d2c5bba323eddda6607",
+      "afterSha256": "9565bc8c0516e83dce9f4d3c2bf0906d1d2bfadb3595703841450530c5911602"
+    },
+    {
+      "decision": "WO-044-D016",
+      "path": "docs/evidence/WO-044/decisions.md",
+      "judgment": "a quotation of the operator's report; the option label the agent offered is kept",
+      "beforeSha256": "ae9f34b3e0e466d0cff87b2a368397f28f22b9ad271cf3471ca79373b7a742ad",
+      "afterSha256": "701cc51a3c9fd729d56e8932a65cf11372369364080646bf625a4a5d5e5a887f"
+    },
+    {
+      "decision": "WO-056-D005",
+      "path": "docs/evidence/WO-056/decisions.md",
+      "judgment": "the operator's chat wording after the colon",
+      "beforeSha256": "d933ed268cdde52852cd21491e15c4d2f59fa6f2b526cc84c4e6e0593d83aecf",
+      "afterSha256": "75d9ec05da4b25aefffec71a5053b1df6e28cd8fa867839abb945ba65c910738"
+    },
+    {
+      "decision": "WO-056-D010",
+      "path": "docs/evidence/WO-056/decisions.md",
+      "judgment": "two quotations of the operator's messages; no control prefix",
+      "beforeSha256": "aba9822fc5f56b49e8e1179c1cdc3b4e877d64d816abb08d7cc0b0868cf83c68",
+      "afterSha256": "00010c681dffcc5c588881d1430276308443b0bd57410482ee309606f8dad8d7"
+    },
+    {
+      "decision": "WO-111-D014",
+      "path": "docs/evidence/WO-111/decisions.md",
+      "judgment": "the operator's chat wording after the colon",
+      "beforeSha256": "19a7ae5eedea841b3cc6107152fd07dc4a1ae5f3bb67669e2ed907bc03752f0a",
+      "afterSha256": "985cfb1f26cd089654a246314dff509ecc202f7d3fe75a5125736869040a9cd8"
+    },
+    {
+      "decision": "WO-111-D016",
+      "path": "docs/evidence/WO-111/decisions.md",
+      "judgment": "the operator's chat wording after the colon; a first paraphrase kept one of its phrases and was replaced after review",
+      "beforeSha256": "9ccc0ad417bb8174bef69b52b97a96a86f1d62f392ce2b2da85dc21bcffe373c",
+      "afterSha256": "063f089c5bf1c20bd533f1d7efd4fcffd6f3c0c14ea40914f06f8163e86456c9"
+    },
+    {
+      "decision": "WO-116-D016",
+      "path": "docs/evidence/WO-116/decisions.md",
+      "judgment": "a quotation of the operator's question in backticks",
+      "beforeSha256": "b0366d461236b2b2baf24e30dde1e943692e2473c7a257203a0682601777ddfe",
+      "afterSha256": "b4e0183c2d654400e6c193a18b57c9e1c84a8faeba7fd0d48c0c654864ddf614"
+    },
+    {
+      "decision": "WO-142-D003",
+      "path": "docs/evidence/WO-142/decisions.md",
+      "judgment": "the operator's chat wording after the colon",
+      "beforeSha256": "adf6e8bdf7c101816546cfb78cf89d387b04642016626c0045386963acc179a2",
+      "afterSha256": "3b86b8c26412ed998904c36e2dd3b74c65fee1a626ffaeec73a177ebdd254471"
+    },
+    {
+      "decision": "WO-146-D006",
+      "path": "docs/evidence/WO-146/decisions.md",
+      "judgment": "the operator's chat wording in the first person; no control prefix",
+      "beforeSha256": "f502682649b74b1ebdd7f26aa1b4d0da51702738b0a21ed6472e831069a27037",
+      "afterSha256": "ff93f761a9a3a23fa7fefb5ddcd4beb0df67a84b3bac8fbc8d363f65c5378c1f"
+    },
+    {
+      "decision": "WO-146-D010",
+      "path": "docs/evidence/WO-146/decisions.md",
+      "judgment": "the operator's chat wording after the colon",
+      "beforeSha256": "8ff769afc2502e89feb5593e038fbc174e583f558a5b1137b3bc627d887c7283",
+      "afterSha256": "36f6f313706013ffa55316ab9e3b91125d9b167b89255a002f68ce825c64d4dd"
+    },
+    {
+      "decision": "WO-149-D007",
+      "path": "docs/evidence/WO-149/decisions.md",
+      "judgment": "the operator's chat wording after the colon",
+      "beforeSha256": "3fbf654bf01fae3cdbf8270907a75d810db5353741375f640d0854dab1ae5da8",
+      "afterSha256": "e268be216a224c3107a293737bef596974995a42675fc3d6506974a44e17ce12"
+    },
+    {
+      "decision": "WO-159-D013",
+      "path": "docs/evidence/WO-159/decisions.md",
+      "judgment": "two quotations of the operator's messages",
+      "beforeSha256": "0d44b91811ea7f40d64a2ba8577c9ca864a267f196331d03abd9c7bc06e05877",
+      "afterSha256": "9bdd26f0a9514013e0ca1396ad63af0850006c546fbb977be17e8b5d3e36470c"
+    },
+    {
+      "decision": "WO-167-D013",
+      "path": "docs/evidence/WO-167/decisions.md",
+      "judgment": "a quotation of the operator's message",
+      "beforeSha256": "e99b9004344c3738b20f2431e04918d39c28c1521ad3b11ac50df4fedf871398",
+      "afterSha256": "b14e504575ee47d20ff2b45792ddec44ea47b40efcfefc8a1b8ee183075d73ab"
+    },
+    {
+      "decision": "WO-099-D028",
+      "path": "docs/evidence/WO-099/decisions.md",
+      "judgment": "the operator's message after the prefix, cited by WO-153 D008",
+      "beforeSha256": "7bc8cc3d004706393e8a2ee9fff071f5309538a698f09c2362a6e84213a1ab0c",
+      "afterSha256": "895a0b93f3899a0fb7e5b78a87672b10ba538dfb653235ab2c8bd6112d94a730"
+    },
+    {
+      "decision": "WO-156-D007",
+      "path": "docs/evidence/WO-156/decisions.md",
+      "judgment": "the operator's chat wording in the second person after the prefix",
+      "beforeSha256": "19736e8f3c72f79e45e17b82bbbfd262d1fd8039b69bcdeec4e44660c857858c",
+      "afterSha256": "9d6cd6a761488ab2bd41c2a4a333c1ccb5b936f4ce92654b65917d4bfddbe7f4"
+    }
+  ],
+  "heldWordsLeftUnchanged": [
+    {
+      "decision": "WO-142-D010",
+      "judgment": "Holds the operator's message after its scope expand: prefix. A PlanExecutionAmended row binds the decision's bytes by digest (decisionHash) and the planning check validates every amendment row against the current decision, so any edit fails npm run plan -- check, the failure WO-162-D016 recorded. Left unchanged; WO-172-D008 names the follow-up."
+    },
+    {
+      "decision": "WO-151-D007",
+      "judgment": "A 37-character run of the operator's message stands in the field beside a control phrase; the reading first judged it paraphrase and the review found the run. A PlanExecutionAmended row binds the decision, so it is left unchanged for the route WO-172-D008 names."
+    }
+  ],
+  "candidates": {
+    "source": "WO-172's observed gap: six fields carry a quotation of 25 characters or more and nine continue in lower case after a colon, three of the nine being the control phrase itself (WO-049 D002, D005 and D006). The order does not list the other fifteen by identifier.",
+    "quotation": {
+      "reproduction": "At 5f3849ec, a quotation between matching marks (' \" ` or typographic) of 25 or more characters, possessive apostrophes excluded, matches exactly six of the 228 fields",
+      "judgments": [
+        {
+          "decision": "WO-044-D015",
+          "judgment": "the operator's instruction, quoted: paraphrased"
+        },
+        {
+          "decision": "WO-044-D016",
+          "judgment": "the operator's report, quoted: paraphrased; the option label the agent offered, 'Plan it; ship bounded now', is the agent's text and stays"
+        },
+        {
+          "decision": "WO-056-D010",
+          "judgment": "two of the operator's messages, quoted: paraphrased"
+        },
+        {
+          "decision": "WO-146-D001",
+          "judgment": "unchanged: the backticked names are commands (claude, codex, copilot) and the rest is a third-person account; the operator's words are in ignored intake, which the field cites; an amendment row also binds the decision"
+        },
+        {
+          "decision": "WO-151-D007",
+          "judgment": "unchanged: the backticked text is the control phrase planning: entropy reducer, but the rest keeps a 37-character run of the operator's message; an amendment row binds the decision (WO-172-D008)"
+        },
+        {
+          "decision": "WO-159-D013",
+          "judgment": "two of the operator's messages, quoted: paraphrased"
+        }
+      ]
+    },
+    "lowerCaseAfterColon": {
+      "named": [
+        "WO-049-D002",
+        "WO-049-D005",
+        "WO-049-D006"
+      ],
+      "namedJudgment": "unchanged: after the colon comes the control phrase itself (resume: next), no words of the operator",
+      "reproduction": "The order's pattern is not stated and was not reproduced: a field whose text after an operator ...: colon runs in lower case to its end matches 25 fields at 5f3849ec, a superset holding the three named; every one is judged here, and the reading of all 241 fields covers any the order's pattern matched.",
+      "judgments": [
+        {
+          "decision": "WO-044-D003",
+          "judgment": "unchanged: the agent's summary of defects B and C in parentheses"
+        },
+        {
+          "decision": "WO-044-D004",
+          "judgment": "unchanged: the agent's summary of defect D"
+        },
+        {
+          "decision": "WO-044-D006",
+          "judgment": "unchanged: the agent's summary of defect A"
+        },
+        {
+          "decision": "WO-044-D008",
+          "judgment": "unchanged: the agent's summary of defects I and J and of the operator's directions"
+        },
+        {
+          "decision": "WO-044-D009",
+          "judgment": "unchanged: a third-person account of the operator's directions"
+        },
+        {
+          "decision": "WO-044-D011",
+          "judgment": "unchanged: a third-person account of the correction"
+        },
+        {
+          "decision": "WO-044-D014",
+          "judgment": "a fragment of the operator's message in quotation marks: paraphrased"
+        },
+        {
+          "decision": "WO-044-D015",
+          "judgment": "the operator's instruction, quoted: paraphrased"
+        },
+        {
+          "decision": "WO-049-D002",
+          "judgment": "unchanged: the control phrase"
+        },
+        {
+          "decision": "WO-049-D005",
+          "judgment": "unchanged: the control phrase"
+        },
+        {
+          "decision": "WO-049-D006",
+          "judgment": "unchanged: the control phrase"
+        },
+        {
+          "decision": "WO-054-D005",
+          "judgment": "unchanged: the control phrase"
+        },
+        {
+          "decision": "WO-056-D005",
+          "judgment": "the operator's chat wording: paraphrased"
+        },
+        {
+          "decision": "WO-110-D007",
+          "judgment": "unchanged: the agent's account of when the override came"
+        },
+        {
+          "decision": "WO-111-D007",
+          "judgment": "unchanged: a summary of the operator's refinement in the agent's terms"
+        },
+        {
+          "decision": "WO-111-D008",
+          "judgment": "unchanged: a summary of the correction in the agent's terms"
+        },
+        {
+          "decision": "WO-111-D009",
+          "judgment": "unchanged: a list of the clarified topics"
+        },
+        {
+          "decision": "WO-111-D014",
+          "judgment": "the operator's chat wording, ungrammatical as sent: paraphrased"
+        },
+        {
+          "decision": "WO-130-D003",
+          "judgment": "unchanged: the executor's own correction and the control phrase"
+        },
+        {
+          "decision": "WO-130-D010",
+          "judgment": "unchanged: the executor's own correction and the control phrase"
+        },
+        {
+          "decision": "WO-131-D017",
+          "judgment": "unchanged: a third-person account"
+        },
+        {
+          "decision": "WO-142-D003",
+          "judgment": "the operator's chat wording: paraphrased"
+        },
+        {
+          "decision": "WO-146-D010",
+          "judgment": "the operator's chat wording: paraphrased"
+        },
+        {
+          "decision": "WO-147-D008",
+          "judgment": "unchanged: the control phrases and the agent's account"
+        },
+        {
+          "decision": "WO-149-D007",
+          "judgment": "the operator's chat wording: paraphrased"
+        }
+      ]
+    }
+  },
+  "otherFieldsJudgedHoldingWords": [
+    {
+      "decision": "WO-111-D016",
+      "judgment": "the operator's chat wording after the colon: paraphrased"
+    },
+    {
+      "decision": "WO-116-D016",
+      "judgment": "the operator's question in backticks: paraphrased; the decision text also quotes it, which this order's route does not reach (WO-172-D008)"
+    },
+    {
+      "decision": "WO-146-D006",
+      "judgment": "the operator's chat wording in the first person: paraphrased"
+    },
+    {
+      "decision": "WO-167-D013",
+      "judgment": "the operator's message, quoted: paraphrased"
+    },
+    {
+      "decision": "WO-099-D028",
+      "judgment": "the operator's message after the prefix, cited by WO-153-D008: paraphrased"
+    },
+    {
+      "decision": "WO-156-D007",
+      "judgment": "the operator's chat wording in the second person after the prefix: paraphrased"
+    }
+  ],
+  "prefixFieldsJudgedUnchanged": [
+    {
+      "decision": "WO-054-D002",
+      "judgment": "the prefix alone"
+    },
+    {
+      "decision": "WO-135-D003",
+      "judgment": "the prefix and the control phrase"
+    },
+    {
+      "decision": "WO-049-D001",
+      "judgment": "a rule's name"
+    },
+    {
+      "decision": "WO-085-D010",
+      "judgment": "the agent's account, naming the order"
+    },
+    {
+      "decision": "WO-085-D012",
+      "judgment": "the agent's account"
+    },
+    {
+      "decision": "WO-135-D005",
+      "judgment": "a short imperative in the agent's terms"
+    },
+    {
+      "decision": "WO-139-D005",
+      "judgment": "the agent's technical account"
+    },
+    {
+      "decision": "WO-156-D005",
+      "judgment": "the option label the agent offered; an amendment row also binds the decision"
+    },
+    {
+      "decision": "WO-166-D010",
+      "judgment": "three generic words whose paraphrase is the same words"
+    },
+    {
+      "decision": "WO-166-D011",
+      "judgment": "the same three words and the command the executor ran"
+    },
+    {
+      "decision": "WO-168-D017",
+      "judgment": "the same three words and the command the executor ran"
+    }
+  ],
+  "registerRowsMoved": {
+    "note": "npm run meta synced the register after the paraphrases: a row's source is its decision, with the decisions that reopen it, so its revision moved and its status reads needs-review until the final review disposes it again. Listed for the final review.",
+    "rows": [
+      {
+        "id": "FUP-5d191eb1b77b3431",
+        "source": "WO-056-D005 (its own followup)",
+        "revision": "1 to 2",
+        "status": "deferred to needs-review",
+        "revisionsAtHead": 1,
+        "revisionsNow": 2
+      },
+      {
+        "id": "FUP-f219d99187db98b7",
+        "source": "WO-149-D003 (reopened by the paraphrased WO-149-D007)",
+        "revision": "2 to 3",
+        "status": "settled to needs-review",
+        "revisionsAtHead": 2,
+        "revisionsNow": 3
+      },
+      {
+        "id": "FUP-3c34a8ffbf61376f",
+        "source": "WO-111-D011 (reopened by the paraphrased WO-111-D014 and WO-111-D016)",
+        "revision": "5 to 7",
+        "status": "allocated to needs-review",
+        "revisionsAtHead": 5,
+        "revisionsNow": 7,
+        "intermediateRevisions": [
+          6
+        ],
+        "intermediate": "Revision 6 is the row as synced with that first paraphrase of WO-111-D016 among its reopening decisions, and revision 7 the row with the field now filed: recomputing the row's source with each dispatch reproduces each revision's hash."
+      },
+      {
+        "id": "FUP-f3281eb085ad87a7",
+        "source": "WO-111-D016",
+        "revision": "1 to 3",
+        "status": "duplicate to needs-review",
+        "revisionsAtHead": 1,
+        "revisionsNow": 3,
+        "intermediateRevisions": [
+          2
+        ],
+        "intermediate": "Revision 2 holds a first paraphrase of WO-111-D016's dispatch (127 characters, SHA-256 5ecef25cf73d435f62b0cdf74e19c88cd7c0ba20387d720b2a27c00ac5fec509), superseded by the field now filed (124 characters, revision 3); revision 1 holds the base field. The register's revisions are append-only, so revisions 1 and 2 stay (WO-172-D008)."
+      }
+    ],
+    "against": "HEAD (8c28f479) and the working register, recounted 2026-09-29 in the second repair (VER-002 B2; WO-172-D030, WO-172-D036)",
+    "correction": "As first filed this list gave FUP-3c34a8ffbf61376f as 5 to 6 and FUP-f3281eb085ad87a7 as 1 to 2. The register was synced twice while WO-111-D016 was paraphrased, so each of the two rows gained two revisions; the four rows listed are still exactly the rows that moved."
+  },
+  "wordsBeyondTheRoute": {
+    "note": "Places outside a decision dispatch field where the operator's words stand, found by this order's reading and its review; this order's route changes dispatch fields only. Paths only, never the words.",
+    "places": [
+      "docs/evidence/WO-167/decisions.md: the WO-167-D013 section prose, which calls the quotation verbatim",
+      "docs/final-reviews/WO-167/PR.md: the review body repeats the same direction",
+      "docs/evidence/WO-111/repair.md: the WO-111-D014 message in quotation marks",
+      "docs/evidence/WO-099/repair-003.md: the WO-099-D028 message beside its prefix",
+      "docs/evidence/WO-044/decisions.md: WO-044-D014's evidence field keeps the fragment its dispatch no longer holds",
+      "docs/evidence/WO-116/decisions.md: WO-116-D016's decision text, re-rendered in docs/lineage/decisions-index.md",
+      "docs/planning/followups.json: register revisions are append-only, so a row's earlier revision keeps the dispatch it had when synced (FUP-5d191eb1b77b3431 and FUP-f3281eb085ad87a7 among them)"
+    ]
+  },
+  "recurrence": "WO-116-D016 and WO-167-D013, both dated 2026-09-28, held the operator's words and passed the prospective dispatch check (a prefix and at most 240 characters): the check that landed on 2026-09-26 does not stop recurrence (WO-172-D008)."
+}

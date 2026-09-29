@@ -1,0 +1,1124 @@
+{
+  "schemaVersion": 1,
+  "kind": "wo-172-direction-hand-classification",
+  "subject": "Every decision dispatch field that names the operator (matches /operator/i) in the decisions files under docs/evidence at base 8c28f479, read 2026-09-29: 241 of 986 decisions. The order counted 228 of 928 at 5f3849ec; 13 were filed since.",
+  "rule": "The class is the first operator step the dispatch names, reading left to right. A leading scope expand: or operator override: prefix is the first step. A mention of the operator that is not a step is skipped; a step the text marks as prior, standing or cited (continued under or after, within, standing, default, recorded, a decision reference such as D007 or (WO-167-D008)) is a reference, not a step. With no step the class is none.",
+  "classes": {
+    "correction": "the operator corrected the agent: named a correction, rejected something, pointed out an error, or clarified or refined what was meant",
+    "direction": "the operator instructed, required, requested, directed, steered, permitted, approved or authorized something on their own initiative",
+    "scope-expansion": "the operator expanded the scope of the order",
+    "override": "the operator used or authorized an override, or overrode a hold",
+    "takeover": "the operator took over a stopped or failed session",
+    "answer": "the operator answered a question or choice the agent put: answered, response, replied, selected, chose, confirmed, or a picked option label",
+    "other-step": "an operator step outside the six: a question, ideation messages, a report, a note, a live attempt the operator ran",
+    "none": "no step the operator took: the dispatch label itself, a section name, a reference to a standing or earlier step, an act of the executor, or a model the operator selected"
+  },
+  "counted": [
+    "correction",
+    "direction",
+    "scope-expansion",
+    "override",
+    "takeover",
+    "answer"
+  ],
+  "method": "Two agent passes (A and B) classified all 241 rows independently under this rule from the dispatch text alone and agreed on 238. The executor read every row and settled 13: the 3 split rows and 10 where both passes applied the rule differently from the reading of the executor (clarifications as corrections; marked references as none). The class recorded here is the executor's. Filed before any reader was written; the reader is judged against it.",
+  "counts": {
+    "none": 71,
+    "other-step": 15,
+    "direction": 52,
+    "correction": 33,
+    "scope-expansion": 39,
+    "override": 5,
+    "answer": 19,
+    "takeover": 7
+  },
+  "holdsOperatorWords": [
+    "WO-044-D014",
+    "WO-044-D015",
+    "WO-044-D016",
+    "WO-056-D005",
+    "WO-056-D010",
+    "WO-111-D014",
+    "WO-111-D016",
+    "WO-116-D016",
+    "WO-142-D003",
+    "WO-146-D006",
+    "WO-146-D010",
+    "WO-149-D007",
+    "WO-159-D013",
+    "WO-167-D013"
+  ],
+  "executorChanges": [
+    {
+      "decision": "WO-049-D003",
+      "passA": "other-step",
+      "passB": "other-step",
+      "class": "correction",
+      "reason": "a clarification says what was meant: the meant half of a correction"
+    },
+    {
+      "decision": "WO-053-D003",
+      "passA": "override",
+      "passB": "override",
+      "class": "none",
+      "reason": "the dispatch continued under an override recorded earlier; a reference, not a step"
+    },
+    {
+      "decision": "WO-054-D005",
+      "passA": "other-step",
+      "passB": "other-step",
+      "class": "correction",
+      "reason": "a clarification says what was meant: the meant half of a correction"
+    },
+    {
+      "decision": "WO-111-D007",
+      "passA": "other-step",
+      "passB": "other-step",
+      "class": "correction",
+      "reason": "a refinement says what was meant: the meant half of a correction"
+    },
+    {
+      "decision": "WO-111-D009",
+      "passA": "other-step",
+      "passB": "other-step",
+      "class": "correction",
+      "reason": "a clarification says what was meant: the meant half of a correction"
+    },
+    {
+      "decision": "WO-111-D012",
+      "passA": "other-step",
+      "passB": "other-step",
+      "class": "correction",
+      "reason": "a clarification says what was meant: the meant half of a correction"
+    },
+    {
+      "decision": "WO-131-D005",
+      "passA": "scope-expansion",
+      "passB": "direction",
+      "class": "scope-expansion",
+      "reason": "the follow-up is framed within the scope expand it extends"
+    },
+    {
+      "decision": "WO-146-D006",
+      "passA": "direction",
+      "passB": "other-step",
+      "class": "direction",
+      "reason": "the operator told the executor to update main and integrate"
+    },
+    {
+      "decision": "WO-146-D007",
+      "passA": "direction",
+      "passB": "direction",
+      "class": "none",
+      "reason": "the dispatch continued after an integration requested earlier; a reference, not a step"
+    },
+    {
+      "decision": "WO-146-D010",
+      "passA": "direction",
+      "passB": "other-step",
+      "class": "direction",
+      "reason": "the operator told the executor to integrate the updated main"
+    },
+    {
+      "decision": "WO-154-D013",
+      "passA": "direction",
+      "passB": "direction",
+      "class": "none",
+      "reason": "the authorization is the one D011 records; a reference, not a step"
+    },
+    {
+      "decision": "WO-162-D003",
+      "passA": "direction",
+      "passB": "direction",
+      "class": "correction",
+      "reason": "a clarification says what was meant: the meant half of a correction"
+    },
+    {
+      "decision": "WO-173-D013",
+      "passA": "direction",
+      "passB": "direction",
+      "class": "correction",
+      "reason": "a clarification says what was meant: the meant half of a correction"
+    }
+  ],
+  "rows": [
+    {
+      "decision": "WO-043-D001",
+      "class": "none"
+    },
+    {
+      "decision": "WO-043-D002",
+      "class": "none"
+    },
+    {
+      "decision": "WO-043-D003",
+      "class": "none"
+    },
+    {
+      "decision": "WO-043-D004",
+      "class": "none"
+    },
+    {
+      "decision": "WO-043-D005",
+      "class": "none"
+    },
+    {
+      "decision": "WO-043-D006",
+      "class": "other-step"
+    },
+    {
+      "decision": "WO-043-D007",
+      "class": "direction"
+    },
+    {
+      "decision": "WO-043-D008",
+      "class": "other-step"
+    },
+    {
+      "decision": "WO-043-D009",
+      "class": "direction"
+    },
+    {
+      "decision": "WO-043-D010",
+      "class": "direction"
+    },
+    {
+      "decision": "WO-043-D011",
+      "class": "none"
+    },
+    {
+      "decision": "WO-043-D012",
+      "class": "direction"
+    },
+    {
+      "decision": "WO-043-D013",
+      "class": "correction"
+    },
+    {
+      "decision": "WO-043-D014",
+      "class": "none"
+    },
+    {
+      "decision": "WO-044-D001",
+      "class": "scope-expansion"
+    },
+    {
+      "decision": "WO-044-D002",
+      "class": "scope-expansion"
+    },
+    {
+      "decision": "WO-044-D003",
+      "class": "scope-expansion"
+    },
+    {
+      "decision": "WO-044-D004",
+      "class": "scope-expansion"
+    },
+    {
+      "decision": "WO-044-D005",
+      "class": "scope-expansion"
+    },
+    {
+      "decision": "WO-044-D006",
+      "class": "scope-expansion"
+    },
+    {
+      "decision": "WO-044-D007",
+      "class": "other-step"
+    },
+    {
+      "decision": "WO-044-D008",
+      "class": "scope-expansion"
+    },
+    {
+      "decision": "WO-044-D009",
+      "class": "override"
+    },
+    {
+      "decision": "WO-044-D010",
+      "class": "scope-expansion"
+    },
+    {
+      "decision": "WO-044-D011",
+      "class": "correction"
+    },
+    {
+      "decision": "WO-044-D014",
+      "class": "scope-expansion",
+      "holdsOperatorWords": true
+    },
+    {
+      "decision": "WO-044-D015",
+      "class": "override",
+      "holdsOperatorWords": true
+    },
+    {
+      "decision": "WO-044-D016",
+      "class": "scope-expansion",
+      "holdsOperatorWords": true
+    },
+    {
+      "decision": "WO-049-D007",
+      "class": "direction"
+    },
+    {
+      "decision": "WO-049-D002",
+      "class": "correction"
+    },
+    {
+      "decision": "WO-049-D003",
+      "class": "correction"
+    },
+    {
+      "decision": "WO-049-D005",
+      "class": "correction"
+    },
+    {
+      "decision": "WO-049-D006",
+      "class": "correction"
+    },
+    {
+      "decision": "WO-051-D003",
+      "class": "direction"
+    },
+    {
+      "decision": "WO-053-D002",
+      "class": "correction"
+    },
+    {
+      "decision": "WO-053-D003",
+      "class": "none"
+    },
+    {
+      "decision": "WO-054-D004",
+      "class": "correction"
+    },
+    {
+      "decision": "WO-054-D005",
+      "class": "correction"
+    },
+    {
+      "decision": "WO-054-D006",
+      "class": "direction"
+    },
+    {
+      "decision": "WO-054-D007",
+      "class": "other-step"
+    },
+    {
+      "decision": "WO-056-D005",
+      "class": "direction",
+      "holdsOperatorWords": true
+    },
+    {
+      "decision": "WO-056-D006",
+      "class": "other-step"
+    },
+    {
+      "decision": "WO-056-D008",
+      "class": "scope-expansion"
+    },
+    {
+      "decision": "WO-056-D009",
+      "class": "scope-expansion"
+    },
+    {
+      "decision": "WO-056-D010",
+      "class": "direction",
+      "holdsOperatorWords": true
+    },
+    {
+      "decision": "WO-060-D008",
+      "class": "correction"
+    },
+    {
+      "decision": "WO-064-D012",
+      "class": "answer"
+    },
+    {
+      "decision": "WO-067-D003",
+      "class": "answer"
+    },
+    {
+      "decision": "WO-068-D004",
+      "class": "direction"
+    },
+    {
+      "decision": "WO-070-D010",
+      "class": "scope-expansion"
+    },
+    {
+      "decision": "WO-079-D003",
+      "class": "direction"
+    },
+    {
+      "decision": "WO-085-D003",
+      "class": "direction"
+    },
+    {
+      "decision": "WO-090-D006",
+      "class": "answer"
+    },
+    {
+      "decision": "WO-090-D001",
+      "class": "none"
+    },
+    {
+      "decision": "WO-099-D010",
+      "class": "direction"
+    },
+    {
+      "decision": "WO-100-D007",
+      "class": "scope-expansion"
+    },
+    {
+      "decision": "WO-100-D008",
+      "class": "other-step"
+    },
+    {
+      "decision": "WO-100-D014",
+      "class": "answer"
+    },
+    {
+      "decision": "WO-100-D017",
+      "class": "answer"
+    },
+    {
+      "decision": "WO-110-D001",
+      "class": "direction"
+    },
+    {
+      "decision": "WO-110-D007",
+      "class": "override"
+    },
+    {
+      "decision": "WO-111-D003",
+      "class": "other-step"
+    },
+    {
+      "decision": "WO-111-D004",
+      "class": "scope-expansion"
+    },
+    {
+      "decision": "WO-111-D006",
+      "class": "correction"
+    },
+    {
+      "decision": "WO-111-D007",
+      "class": "correction"
+    },
+    {
+      "decision": "WO-111-D008",
+      "class": "correction"
+    },
+    {
+      "decision": "WO-111-D009",
+      "class": "correction"
+    },
+    {
+      "decision": "WO-111-D012",
+      "class": "correction"
+    },
+    {
+      "decision": "WO-111-D013",
+      "class": "answer"
+    },
+    {
+      "decision": "WO-111-D014",
+      "class": "correction",
+      "holdsOperatorWords": true
+    },
+    {
+      "decision": "WO-111-D016",
+      "class": "correction",
+      "holdsOperatorWords": true
+    },
+    {
+      "decision": "WO-111-D017",
+      "class": "direction"
+    },
+    {
+      "decision": "WO-111-D018",
+      "class": "correction"
+    },
+    {
+      "decision": "WO-111-D019",
+      "class": "correction"
+    },
+    {
+      "decision": "WO-111-D020",
+      "class": "direction"
+    },
+    {
+      "decision": "WO-115-D005",
+      "class": "takeover"
+    },
+    {
+      "decision": "WO-115-D006",
+      "class": "takeover"
+    },
+    {
+      "decision": "WO-115-D007",
+      "class": "takeover"
+    },
+    {
+      "decision": "WO-115-D008",
+      "class": "takeover"
+    },
+    {
+      "decision": "WO-115-D009",
+      "class": "takeover"
+    },
+    {
+      "decision": "WO-115-D010",
+      "class": "takeover"
+    },
+    {
+      "decision": "WO-115-D011",
+      "class": "takeover"
+    },
+    {
+      "decision": "WO-115-D019",
+      "class": "scope-expansion"
+    },
+    {
+      "decision": "WO-115-D020",
+      "class": "scope-expansion"
+    },
+    {
+      "decision": "WO-115-D026",
+      "class": "direction"
+    },
+    {
+      "decision": "WO-116-D013",
+      "class": "correction"
+    },
+    {
+      "decision": "WO-116-D014",
+      "class": "correction"
+    },
+    {
+      "decision": "WO-116-D015",
+      "class": "other-step"
+    },
+    {
+      "decision": "WO-116-D016",
+      "class": "direction",
+      "holdsOperatorWords": true
+    },
+    {
+      "decision": "WO-122-D004",
+      "class": "answer"
+    },
+    {
+      "decision": "WO-122-D005",
+      "class": "direction"
+    },
+    {
+      "decision": "WO-125-D005",
+      "class": "direction"
+    },
+    {
+      "decision": "WO-125-D001",
+      "class": "none"
+    },
+    {
+      "decision": "WO-125-D002",
+      "class": "none"
+    },
+    {
+      "decision": "WO-125-D003",
+      "class": "scope-expansion"
+    },
+    {
+      "decision": "WO-125-D004",
+      "class": "none"
+    },
+    {
+      "decision": "WO-126-D001",
+      "class": "answer"
+    },
+    {
+      "decision": "WO-126-D002",
+      "class": "direction"
+    },
+    {
+      "decision": "WO-126-D003",
+      "class": "direction"
+    },
+    {
+      "decision": "WO-126-D004",
+      "class": "none"
+    },
+    {
+      "decision": "WO-126-D005",
+      "class": "direction"
+    },
+    {
+      "decision": "WO-126-D006",
+      "class": "scope-expansion"
+    },
+    {
+      "decision": "WO-126-D007",
+      "class": "answer"
+    },
+    {
+      "decision": "WO-126-D008",
+      "class": "none"
+    },
+    {
+      "decision": "WO-126-D009",
+      "class": "scope-expansion"
+    },
+    {
+      "decision": "WO-126-D010",
+      "class": "none"
+    },
+    {
+      "decision": "WO-126-D011",
+      "class": "none"
+    },
+    {
+      "decision": "WO-126-D012",
+      "class": "none"
+    },
+    {
+      "decision": "WO-126-D013",
+      "class": "none"
+    },
+    {
+      "decision": "WO-126-D014",
+      "class": "correction"
+    },
+    {
+      "decision": "WO-126-D015",
+      "class": "none"
+    },
+    {
+      "decision": "WO-126-D016",
+      "class": "none"
+    },
+    {
+      "decision": "WO-126-D017",
+      "class": "none"
+    },
+    {
+      "decision": "WO-126-D018",
+      "class": "none"
+    },
+    {
+      "decision": "WO-126-D019",
+      "class": "correction"
+    },
+    {
+      "decision": "WO-126-D020",
+      "class": "none"
+    },
+    {
+      "decision": "WO-126-D021",
+      "class": "none"
+    },
+    {
+      "decision": "WO-126-D022",
+      "class": "correction"
+    },
+    {
+      "decision": "WO-126-D023",
+      "class": "none"
+    },
+    {
+      "decision": "WO-126-D024",
+      "class": "none"
+    },
+    {
+      "decision": "WO-126-D025",
+      "class": "none"
+    },
+    {
+      "decision": "WO-126-D026",
+      "class": "none"
+    },
+    {
+      "decision": "WO-126-D027",
+      "class": "none"
+    },
+    {
+      "decision": "WO-126-D028",
+      "class": "none"
+    },
+    {
+      "decision": "WO-126-D029",
+      "class": "none"
+    },
+    {
+      "decision": "WO-127-D001",
+      "class": "direction"
+    },
+    {
+      "decision": "WO-127-D004",
+      "class": "other-step"
+    },
+    {
+      "decision": "WO-127-D002",
+      "class": "direction"
+    },
+    {
+      "decision": "WO-127-D003",
+      "class": "correction"
+    },
+    {
+      "decision": "WO-127-D005",
+      "class": "other-step"
+    },
+    {
+      "decision": "WO-127-D006",
+      "class": "direction"
+    },
+    {
+      "decision": "WO-127-D007",
+      "class": "direction"
+    },
+    {
+      "decision": "WO-128-D001",
+      "class": "none"
+    },
+    {
+      "decision": "WO-128-D002",
+      "class": "answer"
+    },
+    {
+      "decision": "WO-128-D003",
+      "class": "none"
+    },
+    {
+      "decision": "WO-128-D004",
+      "class": "none"
+    },
+    {
+      "decision": "WO-128-D005",
+      "class": "none"
+    },
+    {
+      "decision": "WO-128-D006",
+      "class": "none"
+    },
+    {
+      "decision": "WO-128-D007",
+      "class": "none"
+    },
+    {
+      "decision": "WO-128-D008",
+      "class": "none"
+    },
+    {
+      "decision": "WO-128-D009",
+      "class": "none"
+    },
+    {
+      "decision": "WO-128-D010",
+      "class": "none"
+    },
+    {
+      "decision": "WO-128-D011",
+      "class": "none"
+    },
+    {
+      "decision": "WO-129-D001",
+      "class": "scope-expansion"
+    },
+    {
+      "decision": "WO-129-D002",
+      "class": "correction"
+    },
+    {
+      "decision": "WO-129-D003",
+      "class": "none"
+    },
+    {
+      "decision": "WO-129-D004",
+      "class": "scope-expansion"
+    },
+    {
+      "decision": "WO-129-D005",
+      "class": "none"
+    },
+    {
+      "decision": "WO-129-D006",
+      "class": "none"
+    },
+    {
+      "decision": "WO-130-D001",
+      "class": "none"
+    },
+    {
+      "decision": "WO-130-D002",
+      "class": "none"
+    },
+    {
+      "decision": "WO-130-D003",
+      "class": "none"
+    },
+    {
+      "decision": "WO-130-D004",
+      "class": "none"
+    },
+    {
+      "decision": "WO-130-D005",
+      "class": "none"
+    },
+    {
+      "decision": "WO-130-D006",
+      "class": "direction"
+    },
+    {
+      "decision": "WO-130-D007",
+      "class": "none"
+    },
+    {
+      "decision": "WO-130-D008",
+      "class": "scope-expansion"
+    },
+    {
+      "decision": "WO-130-D009",
+      "class": "direction"
+    },
+    {
+      "decision": "WO-130-D010",
+      "class": "none"
+    },
+    {
+      "decision": "WO-130-D011",
+      "class": "direction"
+    },
+    {
+      "decision": "WO-130-D012",
+      "class": "none"
+    },
+    {
+      "decision": "WO-130-D013",
+      "class": "direction"
+    },
+    {
+      "decision": "WO-130-D014",
+      "class": "none"
+    },
+    {
+      "decision": "WO-130-D015",
+      "class": "none"
+    },
+    {
+      "decision": "WO-131-D001",
+      "class": "override"
+    },
+    {
+      "decision": "WO-131-D002",
+      "class": "correction"
+    },
+    {
+      "decision": "WO-131-D003",
+      "class": "scope-expansion"
+    },
+    {
+      "decision": "WO-131-D005",
+      "class": "scope-expansion"
+    },
+    {
+      "decision": "WO-131-D007",
+      "class": "scope-expansion"
+    },
+    {
+      "decision": "WO-131-D008",
+      "class": "scope-expansion"
+    },
+    {
+      "decision": "WO-131-D009",
+      "class": "scope-expansion"
+    },
+    {
+      "decision": "WO-131-D010",
+      "class": "direction"
+    },
+    {
+      "decision": "WO-131-D011",
+      "class": "none"
+    },
+    {
+      "decision": "WO-131-D013",
+      "class": "direction"
+    },
+    {
+      "decision": "WO-131-D014",
+      "class": "scope-expansion"
+    },
+    {
+      "decision": "WO-131-D016",
+      "class": "other-step"
+    },
+    {
+      "decision": "WO-131-D017",
+      "class": "direction"
+    },
+    {
+      "decision": "WO-131-D018",
+      "class": "direction"
+    },
+    {
+      "decision": "WO-131-D019",
+      "class": "direction"
+    },
+    {
+      "decision": "WO-131-D020",
+      "class": "none"
+    },
+    {
+      "decision": "WO-131-D021",
+      "class": "scope-expansion"
+    },
+    {
+      "decision": "WO-131-D022",
+      "class": "direction"
+    },
+    {
+      "decision": "WO-139-D002",
+      "class": "scope-expansion"
+    },
+    {
+      "decision": "WO-142-D003",
+      "class": "direction",
+      "holdsOperatorWords": true
+    },
+    {
+      "decision": "WO-142-D011",
+      "class": "scope-expansion"
+    },
+    {
+      "decision": "WO-142-D014",
+      "class": "scope-expansion"
+    },
+    {
+      "decision": "WO-145-D001",
+      "class": "answer"
+    },
+    {
+      "decision": "WO-146-D001",
+      "class": "correction"
+    },
+    {
+      "decision": "WO-146-D002",
+      "class": "answer"
+    },
+    {
+      "decision": "WO-146-D006",
+      "class": "direction",
+      "holdsOperatorWords": true
+    },
+    {
+      "decision": "WO-146-D007",
+      "class": "none"
+    },
+    {
+      "decision": "WO-146-D008",
+      "class": "none"
+    },
+    {
+      "decision": "WO-146-D009",
+      "class": "direction"
+    },
+    {
+      "decision": "WO-146-D010",
+      "class": "direction",
+      "holdsOperatorWords": true
+    },
+    {
+      "decision": "WO-146-D012",
+      "class": "direction"
+    },
+    {
+      "decision": "WO-147-D008",
+      "class": "override"
+    },
+    {
+      "decision": "WO-148-D002",
+      "class": "none"
+    },
+    {
+      "decision": "WO-148-D004",
+      "class": "none"
+    },
+    {
+      "decision": "WO-148-D006",
+      "class": "none"
+    },
+    {
+      "decision": "WO-149-D007",
+      "class": "scope-expansion",
+      "holdsOperatorWords": true
+    },
+    {
+      "decision": "WO-149-D005",
+      "class": "direction"
+    },
+    {
+      "decision": "WO-151-D007",
+      "class": "scope-expansion"
+    },
+    {
+      "decision": "WO-151-D011",
+      "class": "other-step"
+    },
+    {
+      "decision": "WO-152-D006",
+      "class": "none"
+    },
+    {
+      "decision": "WO-152-D012",
+      "class": "correction"
+    },
+    {
+      "decision": "WO-153-D006",
+      "class": "scope-expansion"
+    },
+    {
+      "decision": "WO-153-D007",
+      "class": "answer"
+    },
+    {
+      "decision": "WO-153-D008",
+      "class": "correction"
+    },
+    {
+      "decision": "WO-154-D008",
+      "class": "none"
+    },
+    {
+      "decision": "WO-154-D011",
+      "class": "answer"
+    },
+    {
+      "decision": "WO-154-D012",
+      "class": "other-step"
+    },
+    {
+      "decision": "WO-154-D013",
+      "class": "none"
+    },
+    {
+      "decision": "WO-154-D014",
+      "class": "answer"
+    },
+    {
+      "decision": "WO-156-D006",
+      "class": "answer"
+    },
+    {
+      "decision": "WO-156-D009",
+      "class": "none"
+    },
+    {
+      "decision": "WO-156-D010",
+      "class": "none"
+    },
+    {
+      "decision": "WO-157-D030",
+      "class": "scope-expansion"
+    },
+    {
+      "decision": "WO-157-D035",
+      "class": "none"
+    },
+    {
+      "decision": "WO-158-D004",
+      "class": "none"
+    },
+    {
+      "decision": "WO-158-D005",
+      "class": "none"
+    },
+    {
+      "decision": "WO-158-D010",
+      "class": "direction"
+    },
+    {
+      "decision": "WO-159-D011",
+      "class": "none"
+    },
+    {
+      "decision": "WO-159-D013",
+      "class": "other-step",
+      "holdsOperatorWords": true
+    },
+    {
+      "decision": "WO-160-D011",
+      "class": "direction"
+    },
+    {
+      "decision": "WO-162-D003",
+      "class": "correction"
+    },
+    {
+      "decision": "WO-162-D012",
+      "class": "answer"
+    },
+    {
+      "decision": "WO-162-D013",
+      "class": "direction"
+    },
+    {
+      "decision": "WO-164-D014",
+      "class": "scope-expansion"
+    },
+    {
+      "decision": "WO-164-D016",
+      "class": "scope-expansion"
+    },
+    {
+      "decision": "WO-165-D004",
+      "class": "direction"
+    },
+    {
+      "decision": "WO-165-D005",
+      "class": "direction"
+    },
+    {
+      "decision": "WO-167-D008",
+      "class": "answer"
+    },
+    {
+      "decision": "WO-167-D009",
+      "class": "none"
+    },
+    {
+      "decision": "WO-167-D013",
+      "class": "direction",
+      "holdsOperatorWords": true
+    },
+    {
+      "decision": "WO-169-D015",
+      "class": "direction"
+    },
+    {
+      "decision": "WO-170-D019",
+      "class": "answer"
+    },
+    {
+      "decision": "WO-173-D006",
+      "class": "other-step"
+    },
+    {
+      "decision": "WO-173-D007",
+      "class": "direction"
+    },
+    {
+      "decision": "WO-173-D013",
+      "class": "correction"
+    },
+    {
+      "decision": "WO-173-D016",
+      "class": "correction"
+    },
+    {
+      "decision": "WO-173-D017",
+      "class": "direction"
+    }
+  ]
+}

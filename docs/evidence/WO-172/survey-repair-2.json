@@ -1,0 +1,440 @@
+{
+  "schemaVersion": 1,
+  "kind": "wo-172-survey-repair",
+  "findings": [
+    "VER-002 F4",
+    "VER-002 F5",
+    "review S1",
+    "review S2",
+    "review S3",
+    "review S4"
+  ],
+  "rules": {
+    "F4": "A user line is read for the operator's input whatever it carries. Each result of a question-tool call that is not an error and not in a subagent thread is one message by the question-tool-answer route, sent at the result's time, with the call it answers in the context before it. A body of parts is read for its text under the route that carried it. A route the survey does not read is named with its count.",
+    "launched": "A prompt the host marks as sent through its SDK entry point was launched by a tool call; it is not the operator's typing, keeps its place in the numbering and is left out before any gap or count is taken.",
+    "repeated": "A line the host repeats in the file of a continued session, under the same line identifier, is one line: it is read in the file that holds the most lines and passed over in the others.",
+    "F5": "An item a hook injected is never the operator's typing, whatever the hook is named: it is recognised by the host's own item type or by a body that is one whole hook element, keeps its place in the numbering so that no retained key moves, and is left out before any gap or count is taken."
+  },
+  "census": {
+    "cutoff": "2026-09-29T00:23:41.357Z",
+    "questionTool": {
+      "calls": 44,
+      "answered": 43,
+      "refused": 1,
+      "refusedHolds": "a harness refusal of the call; no answer and no typed text",
+      "inSubagentThreads": 0,
+      "callsAfterCutoff": 2,
+      "answeredAfterCutoffOfACallBefore": 0
+    },
+    "values": {
+      "all": 52,
+      "picked": 45,
+      "typed": 6,
+      "hostPlaceholders": 1,
+      "notes": 1,
+      "notAnOfferedLabel": 7,
+      "answersWithTypedText": 6,
+      "answersOfTwoQuestions": 9
+    },
+    "attribution": {
+      "namedOrders": 25,
+      "answersInNamedOrders": 39,
+      "answersInMain": 4,
+      "sessions": 37,
+      "sessionsOutsideTheJudgedSubject": 0,
+      "byRole": {
+        "undispatched": 2,
+        "verifier": 11,
+        "release-close": 2,
+        "reviewer": 11,
+        "planner": 2,
+        "executor-repair": 10,
+        "executor": 5
+      },
+      "note": "By the session's worktree and by the nearest earlier message of the same session alike. VER-002 reports 26 named orders: 26 is the number of project folders that hold an answer when the main checkout's folder is counted, which is the executor's inference about that figure; 39 answers in named orders and 4 in main agree with the report."
+    },
+    "hookInjected": {
+      "removed": [
+        {
+          "id": "codex:01a0e53f:4",
+          "via": "codex-prompt-while-working",
+          "order": "WO-162",
+          "sentAt": "2026-09-28T00:11:53.226Z"
+        }
+      ],
+      "hostItemsOfAHookType": 1,
+      "otherWrappersInTheSubject": 0,
+      "claudeLinesAHookWrote": "140 stop-hook feedback lines before activation, each marked by the host as not the operator's and never counted"
+    },
+    "passedOver": [
+      {
+        "id": "claude:4cf6b039:0",
+        "via": "claude-turn-prompt",
+        "order": "WO-009",
+        "sentAt": "2026-09-05T22:50:40.371Z",
+        "reason": "repeated-line"
+      },
+      {
+        "id": "claude:e018d126:0",
+        "via": "claude-turn-prompt",
+        "order": "WO-039",
+        "sentAt": "2026-09-08T01:07:52.799Z",
+        "reason": "repeated-line"
+      },
+      {
+        "id": "claude:e018d126:1",
+        "via": "claude-queued-absorbed-mid-turn",
+        "order": "WO-039",
+        "sentAt": "2026-09-08T01:07:55.328Z",
+        "reason": "repeated-line"
+      },
+      {
+        "id": "claude:e018d126:2",
+        "via": "claude-queued-absorbed-mid-turn",
+        "order": "WO-039",
+        "sentAt": "2026-09-08T01:20:54.909Z",
+        "reason": "repeated-line"
+      },
+      {
+        "id": "claude:4e4dee9e:0",
+        "via": "claude-queued-next-turn",
+        "order": "WO-155",
+        "sentAt": "2026-09-24T18:56:48.457Z",
+        "reason": "sdk-launched"
+      }
+    ],
+    "bodiesOfParts": {
+      "queuedMessagesWithParts": 1,
+      "interruptMarkersWithParts": 28,
+      "interruptMarkersReadAsInterrupts": 28,
+      "typedTurnPromptsWithParts": 0,
+      "added": [
+        {
+          "id": "claude:e9565a10:p0",
+          "order": "main",
+          "role": "planner",
+          "via": "claude-queued-absorbed-mid-turn",
+          "sentAt": "2026-09-16T03:01:46.256Z",
+          "others": [
+            "image"
+          ]
+        }
+      ]
+    },
+    "routesNotRead": {
+      "slashCommands": {
+        "invocations": 365,
+        "recordedAsUserLines": 358,
+        "recordedAsSystemLines": 7,
+        "withArguments": 4,
+        "argumentCharacters": 117,
+        "names": 13,
+        "namesOnSystemLinesOnly": 1,
+        "queuedWhileTheAgentWorked": 2
+      },
+      "shellCommandsTypedAtThePrompt": {
+        "all": 39,
+        "queuedWhileTheAgentWorked": 10
+      },
+      "bareToolRefusals": {
+        "all": 7,
+        "withTypedText": 0,
+        "coincidingWithACountedInterrupt": 7
+      },
+      "queuedMessages": {
+        "queued": 508,
+        "deliveredWithTheirText": 481,
+        "deliveredAsParts": 1,
+        "operatorShellCommands": 10,
+        "scheduledFirings": 3,
+        "slashCommands": 2,
+        "withdrawnByTheOperator": 10,
+        "noDeliveryShown": 1
+      }
+    }
+  },
+  "subject": {
+    "judged": 2396,
+    "removed": [
+      "claude:4cf6b039:0",
+      "claude:e018d126:0",
+      "claude:e018d126:1",
+      "claude:e018d126:2",
+      "claude:4e4dee9e:0",
+      "codex:01a0e53f:4"
+    ],
+    "addedAnswers": 43,
+    "addedBodiesOfParts": 1,
+    "now": 2434,
+    "retainedKeys": 2390,
+    "retainedKeysWhoseRoleOrderRouteTextOrContextChanged": 0,
+    "retainedKeysWhoseGapToThePreviousMessageChanged": 26,
+    "negativeGaps": {
+      "sinceAgent": 0,
+      "gapPrevOperator": 0,
+      "sinceDispatch": 0
+    },
+    "answersWithContextStrictlyBefore": 43,
+    "screenedFields": 52,
+    "screenedFieldsBefore": 47
+  },
+  "classification": {
+    "added": 44,
+    "byClass": {
+      "answer": 41,
+      "correction": 2,
+      "direction": 1
+    },
+    "failureInstructions": 5,
+    "severity": 5,
+    "picksOnly": 37,
+    "typed": {
+      "answer": 4,
+      "correction": 2
+    },
+    "agreementOfTwoClassifiers": "every field of all 44",
+    "retainedLabelsChanged": 0,
+    "limits": "The labels are the classifiers' and the executor's reading. The operator's validation of 2026-09-29 sampled none of these messages and is unchanged. One answer's text is withheld by the clean-room screen."
+  },
+  "impact": {
+    "messages": [
+      2396,
+      2434
+    ],
+    "judged": [
+      1703,
+      1743
+    ],
+    "byRoute": {
+      "claude-turn-prompt": [
+        733,
+        731
+      ],
+      "claude-queued-absorbed-mid-turn": [
+        443,
+        442
+      ],
+      "codex-prompt-while-working": [
+        612,
+        611
+      ],
+      "claude-queued-next-turn": [
+        40,
+        39
+      ],
+      "claude-question-answer": [
+        0,
+        43
+      ]
+    },
+    "byClass": {
+      "direction": [
+        348,
+        347
+      ],
+      "none": [
+        15,
+        14
+      ],
+      "answer": [
+        112,
+        153
+      ],
+      "correction": [
+        504,
+        505
+      ]
+    },
+    "failureInstructions": {
+      "before": [
+        45,
+        159,
+        15
+      ],
+      "now": [
+        50,
+        159,
+        19
+      ]
+    },
+    "severity": [
+      643,
+      647
+    ],
+    "episodes": [
+      1016,
+      1035
+    ],
+    "episodesAt60s": [
+      1247,
+      1271
+    ],
+    "episodesAt300s": [
+      761,
+      773
+    ],
+    "episodesByClass": {
+      "other-step": [
+        65,
+        64
+      ],
+      "direction": [
+        213,
+        212
+      ],
+      "question": [
+        142,
+        139
+      ],
+      "answer": [
+        79,
+        106
+      ],
+      "correction": [
+        285,
+        284
+      ],
+      "interrupt": [
+        23,
+        22
+      ],
+      "none": [
+        2,
+        1
+      ]
+    },
+    "episodesWhollyNew": 24,
+    "episodesAnAnswerJoined": 19,
+    "episodeClassesChangedByJoining": [
+      {
+        "order": "main",
+        "role": "undispatched",
+        "from": "other-step",
+        "to": "answer"
+      },
+      {
+        "order": "WO-006",
+        "role": "reviewer",
+        "from": "question",
+        "to": "answer"
+      },
+      {
+        "order": "WO-110",
+        "role": "executor",
+        "from": "question",
+        "to": "answer"
+      }
+    ],
+    "orderAndRoleRows": [
+      317,
+      318
+    ],
+    "orders": [
+      109,
+      110
+    ],
+    "rowsNew": [
+      "WO-015 verifier",
+      "WO-018 verifier"
+    ],
+    "rowsChanged": [
+      "WO-001 undispatched",
+      "WO-004 release-close",
+      "WO-006 reviewer",
+      "WO-006 verifier",
+      "WO-008 verifier",
+      "WO-015 verifier",
+      "WO-018 verifier",
+      "WO-039 executor-repair",
+      "WO-039 undispatched",
+      "WO-039 verifier",
+      "WO-044 executor-repair",
+      "WO-047 reviewer",
+      "WO-048 reviewer",
+      "WO-064 reviewer",
+      "WO-070 executor",
+      "WO-099 executor",
+      "WO-099 executor-repair",
+      "WO-099 verifier",
+      "WO-100 reviewer",
+      "WO-110 executor",
+      "WO-121 verifier",
+      "WO-153 executor-repair",
+      "WO-154 executor-repair",
+      "WO-162 executor",
+      "WO-166 verifier",
+      "WO-167 executor",
+      "WO-170 reviewer"
+    ],
+    "answerClass": {
+      "before": [
+        68,
+        19,
+        9
+      ],
+      "now": [
+        93,
+        19,
+        16
+      ]
+    },
+    "otherCountedClassesChanged": [
+      "correction",
+      "direction"
+    ],
+    "differingOrders": {
+      "before": 99,
+      "now": 98,
+      "added": [
+        "WO-015"
+      ],
+      "removed": [
+        "WO-064",
+        "WO-153"
+      ]
+    },
+    "withoutTheHookItemAlone": "VER-002 gave 2,395 messages, 1,702 judged, 611 prompts while working, 14 of class none and 1,015 episodes for the removal alone; this repair's figures add the 44 messages to those."
+  },
+  "subjectMap": {
+    "before": 301,
+    "now": 303,
+    "inherited": 299,
+    "read": 4,
+    "merged": 1,
+    "changedThemes": {
+      "asks-or-stalls-instead-of-acting": [
+        21,
+        22
+      ],
+      "judge-overreach": [
+        14,
+        13
+      ],
+      "sandbox-and-authority": [
+        13,
+        12
+      ],
+      "hook-and-gate-obstruction": [
+        11,
+        12
+      ],
+      "deferring-fixes": [
+        9,
+        10
+      ],
+      "premature-verdict-or-handoff": [
+        8,
+        9
+      ]
+    }
+  },
+  "checks": [
+    "node --test docs/evidence/WO-172/survey-repair.test.mjs: thirteen synthetic cases pass, eight of them the second repair's",
+    "Nine negative controls on scratch copies of the folds each fail the case that holds the rule removed",
+    "The extraction's output is byte-identical before and after the folds moved into the committed module",
+    "Every retained key keeps its role, order, route, text and context; only the gap to the previous message moves, for the 26 messages that follow an added one",
+    "No gap is negative; each answer's context lies strictly before it",
+    "Joint row totals reconcile with order totals; the 303 subject-map pieces sum over the 30 themes"
+  ],
+  "reproduction": "survey-repair.mjs holds the pure folds and survey-repair.test.mjs their synthetic cases. Machine-local extraction, the classifiers' labels and notes, and every message stay in ignored session scratch. No product command reads transcripts."
+}
