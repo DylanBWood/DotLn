@@ -1965,6 +1965,30 @@ section grants no activation authority.
    decide their home (a product policy document or the planning map).
    Reopen: WO-087 is amended or sequenced.
 
+## Candidates — returns from ideation during WO-116 (recorded 2026-09-28)
+
+Recorded from the operator's ideation messages during WO-116's execution
+(ignored intake `docs/intake/notes/WO-116-expanded-ideation-2026-09-28.md` in
+the wo-116 worktree, SHA-256
+`b00d1e6376c4e83318c1af0eef46867ed51a950bb649ee793e07fa34f4722b74`; the
+ledger section of this date; receipt WO-116-D015). None is allocated; this
+section grants no activation authority.
+
+1. **Utilization, not activation.** Distinguish time used toward a purpose
+   with an end from activity for its own sake, in the execution guide's
+   goal-aligned decisions and in the process meter, whose counts (tool calls,
+   steps, hook runs) measure activation only. The observed case is the WO-116
+   executor's polling while its review ran (WO-116-D013). Reopen: a planning
+   pass places the distinction, or another order records the same failure.
+2. **Waits used under the Blackjack +3 shape.** Tentative: let the
+   progressive-absence curve (ADR-0007 item 6 and its amendment; product 03
+   §Candidate — progressive absence authority and return readiness) decide
+   what bounded, verifiable work an agent does while it waits on its own
+   background work, with a declared ceiling and cutoff, instead of polling or
+   idling. Open: scope inside an active order, owner, and measurement.
+   Reopen: the progressive-absence candidate is allocated, or the operator
+   directs a trial.
+
 ## Moved from the execution guide (2026-09-28)
 
 WO-167 moved these nine candidates here from product 07 under their slugs.

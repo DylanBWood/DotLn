@@ -40,6 +40,57 @@ are now declared above. The [decision record](../evidence/WO-084/decisions.md)
 records the legacy ledger write-back; `node scripts/lineage.mjs index` generates
 the index and `index --check` enforces this rule in `npm run test:docs`.
 
+## 2026-09-28 — Ideation during WO-116 execution: utilization, not activation, while a phase waits
+
+Source: three operator messages during `resume: next` on WO-116, captured
+unedited in the wo-116 worktree's ignored intake
+(`docs/intake/notes/WO-116-expanded-ideation-2026-09-28.md`, SHA-256
+`b00d1e6376c4e83318c1af0eef46867ed51a950bb649ee793e07fa34f4722b74`; final
+review or release close reconciles it into main). The executor, its
+implementation and gates done, was waiting on a background review and kept
+its turn alive with repeated short status checks, assuming that ending the
+turn would leave the order unrecoverable. The operator: stopping must be
+possible at any moment during a phase; the failure is activity that is
+random, ad hoc, without end and without purpose; the wait could be put to
+use, possibly with the Blackjack +3 operator-away notions; note "utilization
+vs activation". Shape-first reading: the payload is the contrast between
+being busy and using time toward an end, not a rule about any one tool.
+Clean-room screen: the operator's own words about this repository, nothing
+employer-derived. Receipt:
+[WO-116-D015](../evidence/WO-116/decisions.md#wo-116-d015--ideation-breakout-receipt-utilization-not-activation-while-a-phase-waits),
+with the corrections
+[WO-116-D013](../evidence/WO-116/decisions.md#wo-116-d013--correction-activation-not-utilization-while-the-review-ran)
+and
+[WO-116-D014](../evidence/WO-116/decisions.md#wo-116-d014--correction-a-capture-aimed-at-the-main-checkout).
+
+- **Utilization, not activation** `candidate` `operator-directed`
+  - Activation is an agent doing something because a turn, a tick or a poll
+    lets it; utilization is time spent toward a stated purpose with an end.
+    A count of tool calls, hook runs or steps measures activation, and none
+    of them shows utilization, as product 09 already warns for its cost
+    ledger (use shown "without treating activity as value"). The failure the
+    operator named is activation without utilization: calls made to stay
+    active, with no question to answer and no end. Candidate in the planning
+    map (this date).
+- **A phase is stoppable at any moment** `candidate` `operator-directed`
+  - Ending a turn is never the failure. The harness already treats Stop as a
+    completion affordance that refuses at most once, records an unmet
+    obligation and lets the turn end, and a refused Stop keeps the writer
+    (product 02). Background work reports its own completion, so an agent
+    with nothing purposeful to do while it waits ends its turn instead of
+    polling. The entry adds no mechanism; it names the behaviour the
+    executor broke.
+- **A wait used under the Blackjack +3 shape** `raw` `operator-directed`
+  - Tentative, in the operator's word "possibly": an agent's wait for its
+    own background work is a short operator-away window, and the
+    progressive-absence shape of ADR-0007's Blackjack +3 lens (a stake that
+    grows with time away to a peak, declines, and resets at a declared
+    cutoff) could decide what bounded, verifiable work fills it, instead of
+    either polling or idling. Open: what fill work stays inside an active
+    order's scope and non-goals, who owns it (the waiting executor or the
+    resident), and how a fill is measured as utilization rather than
+    activation. Candidate in the planning map (this date).
+
 ## 2026-09-28 — Ideation during WO-173 execution: product documents that only grow (the roadmap, the README)
 
 Source: two operator messages during `resume: next` on WO-173, captured
