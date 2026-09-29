@@ -45,6 +45,7 @@ function decodeResult(value: unknown): ConsoleCommandResult {
 export async function invokeConsoleCommand(
   connection: ConsoleConnection,
   request: ConsoleCommandRequest,
+  signal?: AbortSignal,
 ): Promise<ConsoleCommandResult> {
   const response = await fetch(
     endpoint(connection, "/console-commands-v1/invoke"),
@@ -55,6 +56,7 @@ export async function invokeConsoleCommand(
         "content-type": "application/json",
       },
       body: JSON.stringify(request),
+      ...(signal ? { signal } : {}),
     },
   );
   const result = decodeResult(await response.json());
@@ -65,9 +67,11 @@ export async function invokeConsoleCommand(
 
 export async function readConsoleContract(
   connection: ConsoleConnection,
+  signal?: AbortSignal,
 ): Promise<unknown> {
   const response = await fetch(endpoint(connection, "/console-commands-v1"), {
     headers: { authorization: `Bearer ${connection.token}` },
+    ...(signal ? { signal } : {}),
   });
   if (!response.ok)
     throw new Error(`console contract refused (${response.status})`);

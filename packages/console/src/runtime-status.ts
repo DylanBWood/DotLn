@@ -61,7 +61,7 @@ export function renderRuntimeStatus(view: RuntimeStatusV1): string {
     "Budget",
     `  ${view.budget.status} · episodes ${amount(view.budget.episodes)} · wall ${amount(view.budget.wallMs)} ms · tokens ${amount(view.budget.tokens)}`,
     "",
-    `Open work orders (${view.workOrders.status})`,
+    `Open work orders (${view.workOrders.status}${view.workOrders.reason ? `: ${view.workOrders.reason}` : ""})`,
     ...(view.workOrders.items.length
       ? view.workOrders.items.map(
           (order) =>

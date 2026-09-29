@@ -10,3 +10,9 @@ export { decodeRuntimeStatus } from "@dotln/skeleton/dist/src/runtime-status-con
 export * from "./console-client.js";
 export * from "./console-client-node.js";
 export * from "./types.js";
+export {
+  renderLiveView,
+  watchLiveView,
+  liveCommand,
+  invokeLiveCommand,
+} from "./live.js";

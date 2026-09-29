@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { existsSync, readFileSync } from "node:fs";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
 import { decodeLog } from "@dotln/kernel";
 import { WorkerStore } from "./worker-store.js";
 import { projectWorkerStatus, renderWorkerStatus } from "./worker-status.js";
@@ -129,11 +129,29 @@ try {
       const { findLaunchpad, docPath } = await import(
         new URL("../../../../scripts/lib/config.mjs", import.meta.url).href
       );
+      let commandRoot = resolve(
+        process.env["DOTLN_LAUNCHPAD"] ?? process.cwd(),
+      );
+      let workOrderIndexPath: string | undefined;
+      let workOrderIndexError:
+        | import("./runtime-status-contract.js").WorkOrderSourceReason
+        | undefined;
+      try {
+        commandRoot = findLaunchpad();
+        try {
+          workOrderIndexPath = docPath(commandRoot, "workOrders", "README.md");
+        } catch {
+          workOrderIndexError = "configuration-invalid";
+        }
+      } catch {
+        workOrderIndexError = "launchpad-unavailable";
+      }
       await new ResidentHost({
         directory,
         policyId: options.get("--policy")!,
-        commandRoot: findLaunchpad(),
-        workOrderIndexPath: docPath(findLaunchpad(), "workOrders", "README.md"),
+        commandRoot,
+        ...(workOrderIndexPath === undefined ? {} : { workOrderIndexPath }),
+        ...(workOrderIndexError === undefined ? {} : { workOrderIndexError }),
       }).run({
         once: switches.has("--once"),
         tickMs: Number(options.get("--tick") ?? 1000),
@@ -142,6 +160,7 @@ try {
     } finally {
       process.removeListener("SIGINT", stop);
       process.removeListener("SIGTERM", stop);
+      process.removeListener("SIGHUP", stop);
     }
   } else if (command === "status") {
     if (options.size !== 1 || [...switches].some((key) => key !== "--json"))

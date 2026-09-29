@@ -12261,6 +12261,14 @@
           "reopenWhen": "the next order that changes resident-host.ts or resident-state.ts with a fresh feedback edition, or a live row that shows a same-reason refusal after re-arm under-recorded",
           "targets": [],
           "at": "2026-09-27T00:36:36.238Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-117 final review observed the named resident-host.ts change plus deterministic feedback remint. The diff only forwards the index-source cause; resident-state.ts and NoOp deduplication are unchanged, and feedback carries unchanged judged behavior. A replay-sensitive NoOp identity change exceeds this live-host order. Preserve the defect for a resident replay order; D012 records this disposition.",
+          "reopenWhen": "A resident replay order changes NoOp deduplication, or a live row shows a same-reason refusal after re-arm under-recorded.",
+          "targets": [],
+          "at": "2026-09-29T17:38:44.326Z"
         }
       ]
     },
@@ -17070,6 +17078,13 @@
           "title": "WO-114-D013: Resident index-source hardening, for the planner to place (low priority; a bounded fix beside WO-115 or the next resident-host order): resolve the dotln resident CLI's launchpad and index",
           "summary": "{ \"id\": \"WO-114-D013\", \"date\": \"2026-09-24\", \"dispatch\": \"resume: verify\", \"decision\": \"Record VER-002 as a passing verification of the repaired WO-114 subject. VER-001-F1 to F6 are resolved and criteria 1-5 are met. Board up two minor defects the independent review found and this verifier reproduced, without routing the order back to repair: VER-002-N1, dotln resident now refuses to start when the launchpad or its configuration cannot be resolved, a precondition the repair introduced to select the projection's index and that 04 and the console README do not state; VER-002-N2, a bound index path that is a FIFO or other blocking special file hangs the resident's first transaction while it hol",
           "missing": false
+        },
+        {
+          "hash": "994a6521e4c721b9b0d9bca224b3dacdcd20bf548d938f248b2bbcac41ee8004",
+          "ref": "docs/evidence/WO-114/decisions.md#wo-114-d013--ver-002-pass-two-minor-index-source-hardening-defects-boarded-up",
+          "title": "WO-114-D013: Resident index-source hardening, for the planner to place (low priority; a bounded fix beside WO-115 or the next resident-host order): resolve the dotln resident CLI's launchpad and index",
+          "summary": "{ \"id\": \"WO-114-D013\", \"date\": \"2026-09-24\", \"dispatch\": \"resume: verify\", \"decision\": \"Record VER-002 as a passing verification of the repaired WO-114 subject. VER-001-F1 to F6 are resolved and criteria 1-5 are met. Board up two minor defects the independent review found and this verifier reproduced, without routing the order back to repair: VER-002-N1, dotln resident now refuses to start when the launchpad or its configuration cannot be resolved, a precondition the repair introduced to select the projection's index and that 04 and the console README do not state; VER-002-N2, a bound index path that is a FIFO or other blocking special file hangs the resident's first transaction while it hol",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -17090,6 +17105,22 @@
             "WO-117"
           ],
           "at": "2026-09-27T00:36:32.068Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-117 implemented guarded launchpad/index resolution, coded unavailable causes, nonblocking regular-file reads and lifetime-owned stale temporary cleanup. The focused runtime-status regressions pass; docs/evidence/WO-117/decisions.md records the design and handoff records full gate evidence.",
+          "reopenWhen": "A bad source blocks resident work or a helper loses the selected source cause.",
+          "targets": [],
+          "at": "2026-09-29T15:24:27.031Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "open",
+          "reason": "WO-117 final review: the missing-launchpad, malformed regular-file configuration, FIFO index and stale temporary cases pass. VER-001 B1 and D008 reopen this row because a FIFO at dotln.config.json still blocks startup. The public promises are narrowed in D011; the remaining configuration-reader defect needs planning and independent verification.",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-29T17:38:44.260Z"
         }
       ]
     },
@@ -22233,6 +22264,78 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-29T02:32:08.583Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-d05888ed8f31fda2",
+      "key": "decision:docs/evidence/WO-117/decisions.md#wo-117-d003",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "259dbe44c5e9ed7484465c79cd947918192033094e2faf3bf9666d97e153a412",
+          "ref": "docs/evidence/WO-117/decisions.md#wo-117-d003",
+          "title": "WO-117-D003: Bound the passive audit preview to eight L0 receipts and eight L1 causal entries; :audit serves the full WO-116 render. Add optional coded unavailable reasons and register their runtime c",
+          "summary": "{ \"id\": \"WO-117-D003\", \"date\": \"2026-09-29\", \"dispatch\": \"resume: next\", \"decision\": \"Bound the passive audit preview to eight L0 receipts and eight L1 causal entries; :audit serves the full WO-116 render. Add optional coded unavailable reasons and register their runtime contract in evidence inputs. Prepare application v0.56.0 with console 0.4.0 and skeleton 0.45.1.\", \"evidence\": [ \"Read-only review measured the existing WO-009 fixture's full audit at about 2,224 lines; repeating it on each tick would obscure live status and typed input.\", \"The preview uses projectAuditEvents without adding a domain fold; exact full audit and other command bytes still flow through invokeConsoleCommand.\", \"20",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-117 D004/D005 correct the operator-observed scrolling failure with a stable live screen, plain controls and paused inspection results. Current focused and PTY checks pass; the operator reported completing the retry. The full review gate passed 38 suites on 2026-09-29.",
+          "reopenWhen": "A supported terminal still loses input or inspection results, or new event shapes escape validated display fields.",
+          "targets": [],
+          "at": "2026-09-29T15:57:49.370Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-165f9860f8f32a67",
+      "key": "decision:docs/evidence/WO-117/decisions.md#wo-117-d007",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "788033b7c3f2035f2cfd828b885f2cfa46024f70a7335c3b42880805816fc865",
+          "ref": "docs/evidence/WO-117/decisions.md#wo-117-d007",
+          "title": "WO-117-D007: Planning, before WO-118 relies on the live host for unattended supervision (document items may instead be taken by the WO-117 final review within its Boy Scout bound). B2: bound the passi",
+          "summary": "{ \"id\": \"WO-117-D007\", \"date\": \"2026-09-29\", \"dispatch\": \"resume: verify\", \"decision\": \"Pass VER-001. Criteria 1 to 5 are met at code identity a4e5e0d8. Criterion 1 is read as follows: the live mode renders WO-116's audit view on demand through its audit control (byte parity tested), beside a bounded passive preview. On a resident store, the preview's L0 and L1 lines and the full L0 and L1 projections are empty, because WO-116 derives no records from resident event types. Criterion 2 is met by the operator-reported run on a live.ts earlier than the final one. The verifier's own PTY probe of the final build against a real resident reproduces the same sequence. Several defects fall outside the",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "WO-117 final review resolves R1-R6 through the fixture transcript, witness/probe provenance correction, D011, accurate product 04 and console README, and the capability level/target/E0 assessment. B2-B5 and T1 remain: history-scaled refresh, duplicate recovery notices, absent passive liveness, incomplete order/refusal diagnostics and committed terminal regressions. B1 remains under FUP-4656197433cb8b3d. Plan these before WO-118 relies on unattended supervision; no behavioral fix was self-certified here.",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-29T17:38:44.294Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-9ada0dd67e9fd3e4",
+      "key": "decision:docs/evidence/WO-117/decisions.md#wo-117-d013",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "d64898171ed559b44f60ee4cc27ad7656e6f4221f2242eab06dcf8c4909903a1",
+          "ref": "docs/evidence/WO-117/decisions.md#wo-117-d013",
+          "title": "WO-117-D013: Planner at the next queue review: reconcile docs/planning/sequence.md at 13,965 bytes with docs/control/budgets.json sequenceBytes 8,192 and its recorded 12,369-byte acceptance, using the",
+          "summary": "{ \"id\": \"WO-117-D013\", \"date\": \"2026-09-29\", \"dispatch\": \"resume: final review\", \"decision\": \"Preserve the inherited sequence-size advisory and nominate its reconciliation to planning. It does not change this order's implementation, criteria or publication authority.\", \"evidence\": [ \"The meter reports sequenceBytes 13,965 against configured 8,192. docs/planning/sequence.md is byte-identical to HEAD at 13,965 bytes and WO-117 does not edit it.\", \"docs/control/budgets.json retains a 2026-09-22 acceptance at 12,369 bytes alongside the configured 8,192 ceiling; the current sequence exceeds both. All role cold-start sizes are within their configured ceilings.\" ], \"rationale\": \"Keep the observed p",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-117 final review records an inherited sequence-size advisory on an unchanged planning file, not a console defect. D013 supplies the measured bytes and the configured/accepted ceilings for the next planning pass; no queue or budget edit is authorized by this order.",
+          "reopenWhen": "The next planning pass changes the sequence or its horizon, or an operator relies on the stale configured/accepted ceiling.",
+          "targets": [],
+          "at": "2026-09-29T17:41:14.894Z"
         }
       ]
     }

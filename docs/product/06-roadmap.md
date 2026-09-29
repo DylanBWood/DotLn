@@ -20,6 +20,17 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-117 activation completion (2026-09-29):** assigned application `v0.56.0`,
+the next minor above observed local `v0.55.0`. Console `0.3.1` to `0.4.0`
+adds the combined live host. Skeleton `0.45.0` to `0.45.1` hardens index-source
+resolution and reads, with an optional coded unavailable reason in status;
+legacy status views remain accepted by the new decoder; older strict decoders
+reject unavailable views carrying the new field and need updating. The console dependency pin and lockfile
+follow. All four selected evidence editions are re-minted; feedback carries
+its unchanged judged behavior. The operator-witnessed session stays separate
+from fixture evidence. Verification, final review and publication remain
+separate dispatches.
+
 **WO-065 activation completion (2026-09-29):** assigned application `v0.55.0`,
 the next minor above observed local `v0.54.0`. The on-demand pull-request
 observer records screened checks and review comments in the publication log,

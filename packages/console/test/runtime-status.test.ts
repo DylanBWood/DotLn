@@ -115,8 +115,12 @@ function schemaMatches(
       root,
     );
   }
-  if (Array.isArray(schema["anyOf"]))
-    return schema["anyOf"].some((item) => schemaMatches(value, item, root));
+  if (
+    Array.isArray(schema["anyOf"]) &&
+    !schema["anyOf"].some((item) => schemaMatches(value, item, root))
+  )
+    return false;
+  if (schema["not"] && schemaMatches(value, schema["not"], root)) return false;
   if (Object.hasOwn(schema, "const") && value !== schema["const"]) return false;
   if (Array.isArray(schema["enum"]) && !schema["enum"].includes(value))
     return false;
@@ -439,3 +443,42 @@ test(
     assert.equal(cli.exitCode, null);
   },
 );
+
+test("WO-117 schema and decoder accept legacy status and only coded unavailable reasons", () => {
+  const schema = JSON.parse(
+    readFileSync(
+      new URL("../../runtime-status-v1.schema.json", import.meta.url),
+      "utf8",
+    ),
+  );
+  for (const status of ["available", "unavailable"]) {
+    for (const reason of [
+      undefined,
+      "launchpad-unavailable",
+      "configuration-invalid",
+      "binding-unavailable",
+      "index-unreadable",
+      "index-not-regular",
+      "index-invalid",
+      "private/path",
+      null,
+    ]) {
+      const candidate = {
+        ...view,
+        workOrders: {
+          status,
+          items: [],
+          ...(reason === undefined ? {} : { reason }),
+        },
+      };
+      const expected =
+        reason === undefined ||
+        (status === "unavailable" &&
+          typeof reason === "string" &&
+          reason !== "private/path");
+      assert.equal(schemaMatches(candidate, schema, schema), expected);
+      if (expected) assert.deepEqual(decodeRuntimeStatus(candidate), candidate);
+      else assert.throws(() => decodeRuntimeStatus(candidate));
+    }
+  }
+});

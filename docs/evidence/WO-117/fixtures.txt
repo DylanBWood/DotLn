@@ -1,0 +1,36 @@
+WO-117 final-review fixture transcript
+Source code identity: 6b7f545b9cece0be95128dcca0b1fced128cc3258f5267d12d0ccb579654b0de
+Command: node --test --test-reporter=spec packages/console/dist/test/live.test.js packages/console/dist/test/runtime-status.test.js packages/skeleton/dist/test/runtime-status.test.js
+Source: current build after staging new source files; reviewer execution on 2026-09-29
+Exit code: 0
+
+✔ WO-117 combined passive view refreshes status, orders and audit without receipts and recovers (6518.0425ms)
+✔ WO-117 live command read, mutation, audit and refusal have invoke byte parity and exact receipts (2345.051792ms)
+✔ WO-117 literal input, serial commands, EOF and invalid input (585.90025ms)
+✔ WO-117 signals abort active invocation and contract fetches (157.739167ms)
+✔ WO-117 idle clock samples do not repaint and compact audit fields cannot forge lines (1223.069ms)
+✔ WO-117 generic payloads and inherited names cannot stop refresh (4005.897125ms)
+✔ WO-114 shared schema and decoder admit the fixture and reject foreign fields (1.476125ms)
+✔ WO-114 text host renders every status section and CLI reads the file (56.1865ms)
+✔ WO-114 text host refreshes after atomic replacement (20.772208ms)
+✔ WO-114 status watch recovers when notifications are absent (257.574791ms)
+✔ WO-114 status poll stops when a watcher error closes without a close event (604.967167ms)
+✔ WO-114 schema and decoder agree on all order fields (1.550917ms)
+✔ WO-114 status text neutralizes terminal, bidi and line controls (0.14375ms)
+✔ WO-114 watch CLI survives missing, malformed and foreign files and deduplicates replacements (527.641625ms)
+✔ WO-117 schema and decoder accept legacy status and only coded unavailable reasons (0.957583ms)
+✔ WO-114 per-event status, tick, privacy and restart transcript (337.519833ms)
+✔ WO-114 helper and installed-snapshot heartbeat share the host's index and replay every publication (195.983458ms)
+✔ WO-114 CLI binds the selected launchpad's configured index root (171.5275ms)
+✔ WO-114 failed publication cannot abort start, presence or dispatch and the next tick rebuilds (295.228917ms)
+✔ WO-117 bad launchpad sources remain live, replace old bindings and survive helpers (493.542ms)
+✔ WO-117 FIFO index and binding cannot block the resident CLI (347.908292ms)
+✔ WO-117 only the lifetime owner sweeps status temporaries (82.034417ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 22
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 14919.216541

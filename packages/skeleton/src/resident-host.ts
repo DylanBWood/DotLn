@@ -88,6 +88,7 @@ export interface ResidentHostOptions {
   policyId: string;
   commandRoot?: string;
   workOrderIndexPath?: string;
+  workOrderIndexError?: import("./runtime-status-contract.js").WorkOrderSourceReason;
   configuration?: ResidentConfiguration;
   now?: () => number;
   catalog?: Readonly<Record<ActorKind, ActorAdapter>>;
@@ -108,6 +109,7 @@ export class ResidentHost {
       options.directory,
       options.predicates,
       options.workOrderIndexPath,
+      options.workOrderIndexError,
     );
     this.now = options.now ?? Date.now;
     this.catalog =

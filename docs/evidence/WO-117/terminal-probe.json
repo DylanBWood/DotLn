@@ -1,0 +1,66 @@
+{
+  "date": "2026-09-29",
+  "source": "executor-controlled pseudo-terminal using Python standard-library pty; real resident and read-only script adapter on operator-selected scratch Git clone",
+  "operatorWitness": false,
+  "terminal": {
+    "rows": 24,
+    "columns": 80
+  },
+  "observations": {
+    "idleRepaints": 0,
+    "wrappedInputPreserved": true,
+    "awayActorBack": true,
+    "diffAndAuditPause": true,
+    "promptVisible": true,
+    "quitExit": 0
+  },
+  "method": [
+    "Launch live in a 24x80 PTY; require alternate-screen entry and live> prompt.",
+    "Observe two idle seconds; require no full-screen repaint.",
+    "Enter away; observe presence change and actor start.",
+    "Type 170 characters across wrapped lines; require no repaint for five seconds.",
+    "Clear input and enter back; observe presence return.",
+    "Enter diff; require normal-screen result and no repaint while paused.",
+    "Press Enter; require alternate screen and prompt restored.",
+    "Enter audit; require full governed raw output including ScriptEpisodeObserved and paused view.",
+    "Resume and quit; require exit0 and every rendered frame to leave room for prompt."
+  ],
+  "limits": [
+    "Automated terminal evidence does not replace the operator-witnessed criterion.",
+    "Probes cover ASCII input and CJK display at 24x80 and 12x20; terminal implementations and grapheme widths can differ."
+  ],
+  "supplemental": {
+    "source": "executor-controlled PTY with a status fixture; current live CLI",
+    "shortOrdersPause": true,
+    "allFourOrdersVisible": true,
+    "cjkFramesFit": true,
+    "resizeFrames": [
+      "24x80",
+      "12x20",
+      "24x80"
+    ],
+    "errorPersistsInSummary": true,
+    "exitMatchesLastCommand": true,
+    "method": "Render a CJK phase; inspect a four-order result and require no repaint while paused; resize 80 to 20 to 80 columns and require display widths and row counts to fit; submit invalid input and require readable error plus persistent summary."
+  },
+  "reviewCorrection": {
+    "date": "2026-09-29",
+    "source": "docs/verifications/WO-117/VER-001.md R2-R3; docs/evidence/WO-117/decisions.md WO-117-D011",
+    "main": {
+      "build": "pre-final live.ts; matches the 15:35 UTC automated sequence identified by VER-001",
+      "exactObservedAt": null,
+      "codeIdentity": null
+    },
+    "supplemental": {
+      "build": "executor-described current CLI; no recorded code identity",
+      "exactObservedAt": null,
+      "codeIdentity": null
+    },
+    "limits": [
+      "File recorded before the executor full gate; no post-gate execution is established.",
+      "Unknown exact times and source identities are not reconstructed from file modification time.",
+      "Terminal-mode regression tests are not committed; payload validation is covered by live.test.ts.",
+      "VER-001 separately reports its final-build real-resident 24x80 PTY reproduction."
+    ]
+  }
+}
