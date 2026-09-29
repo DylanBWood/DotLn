@@ -1,0 +1,48 @@
+# WO-116
+
+The console's parity contract could serve every inspection a UI needs except runtime audit: the skeleton's `--audit` rendered the three audit projections over the fixture scenario only, and no command read a real store. A UI that wanted to show what the runtime did would have needed a second reader of the log. This pull request lands WO-116: `dotln audit` prints a store's audit projections in the terminal, and the console serves exactly those bytes as `dotln.audit`. It is the third step of gate U on the critical path, and WO-117's console live host waits for it.
+
+- **`dotln audit --store <directory> [--workstream <id> | --episode <id>]`.** The command reads the store's `events.jsonl`, keeps the envelopes of the selected workstream or episode, and hands them to the unchanged audit fold, which prints the L0 receipt, the L1 causal timeline and the L4 governed raw JSON under their headings with their fidelity labels. Selecting before the fold, not filtering its output, means each selection is labeled as the fold labels one projection run (`ep:`, `ws:` or `log:mixed`) and the command adds no field. Over the fixture scenario's log the output equals the skeleton's `--audit` section byte for byte in all three scopes (59,613 bytes) ([D002](../../evidence/WO-116/decisions.md#wo-116-d002--the-terminal-command-selects-envelopes-before-the-unchanged-fold)).
+- **Refusals name what is missing.** An empty store, an empty log or a missing directory refuses as `audit: store <directory> holds no events`; a selection the log lacks refuses as `audit: episode <id> is not in store <directory>` or the workstream form; nothing is created or written. The fold's own refusals, such as an event missing a class-required reference, now print in the fold's words instead of the generic worker-host line ([D003](../../evidence/WO-116/decisions.md#wo-116-d003--refusals-in-the-terminals-words)).
+- **One contract identifier.** `console-commands-v1` gains `dotln.audit` with the terminal entrypoint and the `audit` prefix; the terminal parser owns the rest of the grammar. The classifier, loopback and client derive from the contract, so none of them changed. The served result carries the terminal's exit code, stdout and stderr and no other field, and `console invoke` prints those bytes as the text host's render ([D004](../../evidence/WO-116/decisions.md#wo-116-d004--one-contract-identifier-classified-by-the-terminals-classifier), [D005](../../evidence/WO-116/decisions.md#wo-116-d005--the-text-host-renders-the-served-bytes-through-invoke)).
+- **Write-backs in place.** Product 09 §Audit projections and visualizations names the command and the served bytes in 343 added bytes (limit 400); product 04 §Console parity contract v1 adds the identifier in 49 (limit 200); the console README's parity paragraph and example name it ([D010](../../evidence/WO-116/decisions.md#wo-116-d010--write-backs-in-place)).
+
+**What a reviewer should know.**
+
+- **No access rule is added.** `dotln.audit` serves governed raw's complete retained envelopes to the local user the loopback admits. Product 09 defers the projections' access and retention rules, and a redacted served result would be the second source this order removes; the declined alternative reopens when product 09 defines an access rule ([D006](../../evidence/WO-116/decisions.md#wo-116-d006--the-served-command-serves-the-terminals-bytes-and-adds-no-access-rule)).
+- **A resident's own store audits with empty summaries.** The fold recognizes none of the event types a resident host appends, so over a resident store L0 and L1 are empty and only governed raw shows what happened, and the fold's omission labels say "fixture" over any store. Changing that is new audit semantics and edits the registered fold, both outside this order; it is a planning row ([D008](../../evidence/WO-116/decisions.md#wo-116-d008--observed-limit-a-resident-stores-own-events-are-context-to-the-fold)).
+- **A selection is judged as its own log.** Some associations pair adjacent envelopes, so in a log whose workstreams interleave, a workstream selection can pair a command with its authority trace where the whole log does not. No store observed here interleaves; the adjacency-hardening candidate FUP-0053, deferred until this order's activation, is reopened for planning ([D012](../../evidence/WO-116/decisions.md#wo-116-d012--fup-0053s-reopening-condition-is-met-its-disposition-stays-with-planning)).
+- **The command is classified `shell.run`**, as every `dotln` entrypoint is, so a read-only envelope refuses it; distinguishing read-only `dotln` subcommands is the classifier's change, not this order's.
+
+**How the review went.** A Claude Code executor built the command, the contract entry and both fixture families, recorded D001 to D016, repaired the `dotln` usage and command list to name `handoff answer` as an adjacent fix (D011), and handled an operator ideation breakout about using a wait rather than filling it, recording two corrections of its own conduct, the breakout receipt and a trial of the wait (D013 to D016). [VER-001](../../verifications/WO-116/VER-001.md), run in Codex, passed all five criteria and reran both affected suites. [FINAL-001](FINAL-001.md) read the full diff against the order, staged the work, ran the review gate once at the staged identity and reopened two register rows whose conditions this order met; it routed nothing to repair.
+
+**Validation.** The reviewer's `npm test -- --review` passed **29 passed, 0 failed, 322.76 s, 73 fresh tasks, exit 0** at code identity `89720b83…`, after the order's new test file was staged; that row binds the released bytes. A spot check outside the fixtures printed the same 59,613 bytes as the skeleton's `--audit` section in all three scopes. `npm run test:docs` and `publication:check` pass after the review records; `git diff --check` is clean; no dependency is added and no lint, type or format suppression is introduced.
+
+This prepares application `v0.54.0`, a minor release over `v0.53.2`, the classification the order declared. Skeleton `0.44.4` to `0.45.0` is a minor bump for the new command and contract identifier; the console pin and the lockfile follow. The audit fold is unchanged and no edition is re-minted.
+
+Full evidence: [decisions D001 to D016](../../evidence/WO-116/decisions.md), the [evidence README](../../evidence/WO-116/README.md), the [handoff ledger](../../evidence/WO-116/handoff.md), the [fixture transcripts](../../evidence/WO-116/fixtures.txt), [VER-001](../../verifications/WO-116/VER-001.md), the [final review](FINAL-001.md) and [the order](../../work-orders/WO-116-audit-projection-served.md).
+
+<!-- dotln-process-meter:start -->
+
+Observation cutoff: 2026-09-29T00:11:05.513Z; source: canonical control events and the recorded gate, usage and harness observations collected by npm run meta.
+
+| Work | Phase ms / attempts | Gate ms | Read files / bytes | Observed tokens / USD | Declared prompt tokens | Corrections | Directions |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| WO-163 | 10,315,544 (Δ unavailable) / 5 | 2,285,041 (Δ unavailable) | 23 (Δ unavailable) / 405,178 (Δ unavailable) | 62,130,267 (Δ unavailable) / unavailable (Δ unavailable) | 1,019 (Δ unavailable) | 1 (Δ unavailable) | 1 (Δ unavailable) |
+| WO-162 | 13,503,324 (Δ 3,187,780) / 5 | 1,916,979 (Δ -368,062) | 3 (Δ -20) / 22,104 (Δ -383,074) | 92,198,379 (Δ 30,068,112) / unavailable (Δ unavailable) | 1,019 (Δ 0) | 1 (Δ 0) | 0 (Δ -1) |
+| WO-060 | 6,799,386 (Δ -6,703,938) / 3 | 1,775,953 (Δ -141,026) | 21 (Δ 18) / 292,085 (Δ 269,981) | 103,210,110 (Δ 11,011,731) / unavailable (Δ unavailable) | 1,019 (Δ 0) | 1 (Δ 0) | 0 (Δ 0) |
+| WO-167 | 11,439,453 (Δ 4,640,067) / 5 | 3,044,426 (Δ 1,268,473) | 14 (Δ -7) / 232,580 (Δ -59,505) | 168,489,088 (Δ 65,278,978) / unavailable (Δ unavailable) | 1,019 (Δ 0) | 2 (Δ 1) | 0 (Δ 0) |
+| WO-173 | 10,679,133 (Δ -760,320) / 5 | 2,587,931 (Δ -456,495) | 9 (Δ -5) / 118,695 (Δ -113,885) | 88,392,150 (Δ -80,096,938) / unavailable (Δ unavailable) | 1,019 (Δ 0) | 3 (Δ 1) | 1 (Δ 1) |
+| WO-116 | 4,748,494 (Δ -5,930,639) / 2 | 961,856 (Δ -1,626,075) | 0 (Δ -9) / 0 (Δ -118,695) | 120,263,202 (Δ 31,871,052) / unavailable (Δ unavailable) | 1,019 (Δ 0) | 2 (Δ -1) | 0 (Δ -1) |
+
+Unavailable observations are not zero; unset ceilings are not approvals of a future limit.
+
+| Dispatch | Wall ms (Δ) | Context bytes (Δ) | Commands (Δ) | Tokens (Δ) | Steps (Δ) | USD (Δ) / declared prompt tokens |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| WO-116/executor | 4,460,093 (-3,476,401) | 798,428 (680,808) | 1,064 (670) | 110,744,434 (31,842,457) | 1,236 (795) | unavailable (unavailable) / 1,019 |
+| WO-116/verifier | 288,401 (-1,109,927) | unavailable (unavailable) | unavailable (unavailable) | 2,049,329 (-7,354,787) | 22 (-57) | unavailable (unavailable) / unavailable |
+| WO-116/reviewer | 449,346 (-894,965) | 64,236 (unavailable) | 63 (-16) | 7,469,439 (7,383,382) | 72 (-17) | unavailable (unavailable) / unavailable |
+| WO-116/release-close | unavailable (unavailable) | unavailable (unavailable) | unavailable (unavailable) | unavailable (unavailable) | unavailable (unavailable) | unavailable (unavailable) / unavailable |
+| WO-116/planner | unavailable (unavailable) | unavailable (unavailable) | unavailable (unavailable) | unavailable (unavailable) | unavailable (unavailable) | unavailable (unavailable) / unavailable |
+| WO-116/refuter | unavailable (unavailable) | unavailable (unavailable) | unavailable (unavailable) | unavailable (unavailable) | unavailable (unavailable) | unavailable (unavailable) / unavailable |
+<!-- dotln-process-meter:end -->

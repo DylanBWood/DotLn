@@ -1,0 +1,68 @@
+# WO-116 fixture transcripts
+
+Captured on 2026-09-28 (from 23:06:59Z) on the operator's host from the commands named under each heading, over the built packages at skeleton 0.45.0; the evidence gate's first item. `<scratch>` stands for the DotLn session scratch directory, whose stores were written by the commands in the order's session: `fixture-store/events.jsonl` holds the fixture scenario's log (`runScenario` over packages/skeleton/fixtures/repo-tree.json, 28 events, workstream `ws_repo_garden`, episode `ep_seiri_1`), `empty-store` is an empty directory, `no-such-dir` does not exist, and `resident-store` is a resident started once with the WO-067 presence fixture followed by `dotln presence away` and `dotln presence back` (6 events). TAP summaries keep the case lines and totals; the full outputs stayed in session scratch.
+
+## Terminal fixtures (node --test packages/skeleton/dist/test/audit-command.test.js)
+
+Recaptured at 23:48:30Z over the final test code, after the review's wording fixes and the D016 trial's two test edits.
+
+✔ WO-116 the terminal audit command prints the skeleton --audit projections byte for byte over the fixture log, with their fidelity labels, in every scope (266.406292ms)
+✔ WO-116 each audit scope selects what the fold scopes for it; an empty store, an absent selection and an invalid source refuse by name without writing (1010.4235ms)
+✔ WO-116 the dotln usage and command list name audit beside every other command, handoff included (121.232084ms)
+ℹ tests 3
+ℹ pass 3
+ℹ fail 0
+ℹ duration_ms 1474.264708
+
+## Loopback and text-host fixtures (node --test packages/console/dist/test/console-commands.test.js)
+
+Recaptured at 23:48:30Z over the final test code.
+
+✔ WO-115 the console names terminal commands as typed and strips host-session identity (2.466875ms)
+✔ WO-115 a bound resident serves terminal bytes and events under the terminal's compiled authority, refuses in terminal shape and replays its receipts (8461.35125ms)
+✔ WO-115 the compiled envelope admits or refuses each command by the terminal classifier's effect, through the terminal hooks' decider (2365.829458ms)
+✔ WO-115 every contract command keeps its terminal parser, refusal bytes and events over loopback (5610.081083ms)
+✔ WO-115 console receipts leave the resident host's change baseline to the host (178.641041ms)
+✔ WO-116 the served audit command returns the terminal's bytes for each store and selection, the text host shows the three labeled projections, and the resident's own store audits as it stood when the command started (2831.760291ms)
+ℹ tests 6
+ℹ pass 6
+ℹ fail 0
+ℹ duration_ms 19524.043667
+
+## The terminal command against the skeleton's --audit (node packages/skeleton/dist/src/cli.js --audit; node packages/skeleton/dist/src/dotln.js audit ...)
+
+The --audit section is the skeleton CLI's stdout from the `L0 RECEIPT` line to the blank line before `verified=`; `cmp` compares each audit stdout with it.
+
+skeleton --audit section | 59613 bytes | sha256 ec659a6d15835727 | skeleton v0.45.0
+dotln audit --store <scratch>/fixture-store | exit 0 | 59613 bytes | sha256 ec659a6d15835727 | identical to the --audit section | stderr []
+dotln audit --store <scratch>/fixture-store --workstream ws_repo_garden | exit 0 | 59613 bytes | sha256 ec659a6d15835727 | identical to the --audit section | stderr []
+dotln audit --store <scratch>/fixture-store --episode ep_seiri_1 | exit 0 | 59613 bytes | sha256 ec659a6d15835727 | identical to the --audit section | stderr []
+
+## Refusals (node packages/skeleton/dist/src/dotln.js audit ...)
+
+dotln audit --store <scratch>/empty-store | exit 1 | stdout 0 bytes | stderr [audit: store <scratch>/empty-store holds no events]
+dotln audit --store <scratch>/no-such-dir | exit 1 | stdout 0 bytes | stderr [audit: store <scratch>/no-such-dir holds no events]
+dotln audit --store <scratch>/fixture-store --episode ep_absent | exit 1 | stdout 0 bytes | stderr [audit: episode ep_absent is not in store <scratch>/fixture-store]
+dotln audit --store <scratch>/fixture-store --workstream ws_absent | exit 1 | stdout 0 bytes | stderr [audit: workstream ws_absent is not in store <scratch>/fixture-store]
+dotln audit --store <scratch>/fixture-store --workstream ws_repo_garden --episode ep_seiri_1 | exit 1 | stdout 0 bytes | stderr [usage: dotln audit --store <directory> [--workstream <id> | --episode <id>]]
+<scratch>/no-such-dir after the refusal: absent (ls <scratch> | grep -c '^no-such-dir$' printed 0)
+
+## A resident store's own log (node packages/skeleton/dist/src/dotln.js audit --store <scratch>/resident-store)
+
+exit 0 | 18868 bytes | "projectionRef": "audit-projection:ws:resident:l0-receipt" | "receipts": [] | "entries": []
+
+The resident's six events (ResidentConfigured, ClockSampled and OperatorPresenceObserved) are context to the fold: L0 and L1 carry no records and governed raw carries every envelope (decision WO-116-D008).
+
+## adjacent-0001 checks
+
+npm run build --silent | exit 0
+Built compiler, console, kernel, skeleton with atomic file replacement; installed harness snapshots remain immutable
+
+node --test packages/skeleton/dist/test/audit-command.test.js | exit 0
+✔ WO-116 the terminal audit command prints the skeleton --audit projections byte for byte over the fixture log, with their fidelity labels, in every scope (265.614459ms)
+✔ WO-116 each audit scope selects what the fold scopes for it; an empty store, an absent selection and an invalid source refuse by name without writing (1052.388458ms)
+✔ WO-116 the dotln usage and command list name audit beside every other command, handoff included (119.488917ms)
+ℹ tests 3
+ℹ pass 3
+ℹ fail 0
+ℹ duration_ms 1512.9535

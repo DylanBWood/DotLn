@@ -1349,6 +1349,14 @@
           "reopenWhen": "WO-116 activation or an observed mis-association (the pass's suggestion)",
           "targets": [],
           "at": "2026-09-19T01:19:47.004Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Reopened by WO-116's final review: its deferral condition, WO-116 activation, occurred on 2026-09-28. WO-116 did not take up the hardening (the fold is unchanged, and new audit semantics are its non-goal). WO-116-D012 adds one derived observation for planning: dotln audit selects envelopes before the fold, so in a log whose workstreams interleave a workstream selection can pair an allowed command with its authority trace where the whole log does not; no store observed in WO-116 interleaves. [WO-116 final review (docs/final-reviews/WO-116/FINAL-001.md)]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-29T00:10:57.864Z"
         }
       ]
     },
@@ -22016,6 +22024,89 @@
           "ref": "docs/evidence/WO-173/decisions.md#wo-173-d018--final-review-passes-and-boards-a-reused-row-that-never-ran-an-untracked-files-bytes",
           "title": "WO-173-D018: Planner: close the untracked-source gap in npm test reuse. scripts/test-runner.mjs runGateChecks and scripts/lib/handoff-ledger.mjs requireGateClaims reuse or accept a passing npm test ro",
           "summary": "{ \"id\": \"WO-173-D018\", \"date\": \"2026-09-28\", \"dispatch\": \"resume: final review\", \"decision\": \"Pass FINAL-001 and board one defect this review met. The npm test reuse lookup (scripts/test-runner.mjs runGateChecks through scripts/lib/gate-reuse.mjs coveringGateCheck) and the executor completion's npm test claim check (scripts/lib/handoff-ledger.mjs requireGateClaims) key on gateCodeIdentity, which hashes the working-tree bytes of tracked paths only. An order's new source files stay untracked until the final review stages them, so an edit to one after a passing row moves neither the identity nor the gate: npm test prints the old row and exits 0, and a met npm test claim stands on it. Before thi",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-3d4b39cd4b2c4a08",
+      "key": "decision:docs/evidence/WO-116/decisions.md#wo-116-d008",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "3f735f5525186f7608745951474f8044f5bde0a6ad40fd1145b36f82e91b5da1",
+          "ref": "docs/evidence/WO-116/decisions.md#wo-116-d008--observed-limit-a-resident-stores-own-events-are-context-to-the-fold",
+          "title": "WO-116-D008: Planning: nominate audit action classes for the resident's own events (episode dispatch and outcome, handoffs, mission holds, portfolio activation and console invocations), so the L0 rece",
+          "summary": "{ \"id\": \"WO-116-D008\", \"date\": \"2026-09-28\", \"dispatch\": \"resume: next\", \"decision\": \"Over a resident store the command projects without refusal, but the fold recognizes none of the event types a resident host appends (ResidentConfigured, ClockSampled, OperatorPresenceObserved, ScriptEpisodeDispatched, HandoffRequested, DecisionRecorded, the console receipts and others), so L0 and L1 carry no receipts or entries and only L4 governed raw shows what the resident did. This order adds no audit semantics, its non-goal; the gap goes to planning as a follow-up.\", \"evidence\": [ \"Session-scratch run on 2026-09-28: a resident started once with the WO-067 presence fixture, then dotln presence away and ",
+          "missing": false
+        },
+        {
+          "hash": "686099c7089fa705fa7dc3f0640c7a791818b18015f3abd3534b55947b666364",
+          "ref": "docs/evidence/WO-116/decisions.md#wo-116-d008--observed-limit-a-resident-stores-own-events-are-context-to-the-fold",
+          "title": "WO-116-D008: Planning: nominate audit action classes for the resident's own events (episode dispatch and outcome, handoffs, mission holds, portfolio activation and console invocations), so the L0 rece",
+          "summary": "{ \"id\": \"WO-116-D008\", \"date\": \"2026-09-28\", \"dispatch\": \"resume: next\", \"decision\": \"Over a resident store the command projects without refusal, but none of the event types a resident host appends (ResidentConfigured, ClockSampled, OperatorPresenceObserved, ScriptEpisodeDispatched, ScriptEpisodeObserved, CliWorkerObserved, PortfolioOrderObserved, ScriptEpisodeRefused, ActorUnavailable, HandoffRequested, DecisionRecorded, the console receipts and others) is a consequential source for the fold; DecisionRecorded counts only as supporting evidence beside a CommandPersisted or CommandRefused, which a resident host does not append. So L0 and L1 carry no receipts or entries and only L4 governed ra",
+          "missing": false
+        },
+        {
+          "hash": "551dcb66904079d2f85d1c06a18e51106287bcb18a8fc626000ff2b0b1e316be",
+          "ref": "docs/evidence/WO-116/decisions.md#wo-116-d008--observed-limit-a-resident-stores-own-events-are-context-to-the-fold",
+          "title": "WO-116-D008: Planning: nominate audit action classes for the resident's own events (episode dispatch and outcome, handoffs, mission holds, portfolio activation and console invocations), so the L0 rece",
+          "summary": "{ \"id\": \"WO-116-D008\", \"date\": \"2026-09-28\", \"dispatch\": \"resume: next\", \"decision\": \"Over a resident store the command projects without refusal, but none of the event types a resident host appends (ResidentConfigured, ClockSampled, OperatorPresenceObserved, ScriptEpisodeDispatched, ScriptEpisodeObserved, ScriptEpisodeLost, ScriptEpisodeRefused, CliWorkerObserved, PortfolioOrderActivated, PortfolioOrderObserved, ActorUnavailable, HandoffRequested, HandoffAnswered, MissionDriftObserved, MissionHoldCleared and the console receipts) is a consequential source for the fold, and a resident host appends no DecisionRecorded, which the fold reads only as supporting evidence beside a CommandPersisted ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-1f47fd50acc97814",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-ideation-during-wo-116-recorded-2026-09-28::0ee67d0335c101edca675d5b88489c8630296ff0d9445981f54ca5f7cd54bdc3",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "ef30fcc526cdccea405bc4223a01ffdf8d601ef904b5ad479c53a442eb059dec",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-ideation-during-wo-116-recorded-2026-09-28",
+          "title": "Waits used under the Blackjack +3 shape.",
+          "summary": "2. **Waits used under the Blackjack +3 shape.** Tentative: let the progressive-absence curve (ADR-0007 item 6 and its amendment; product 03 §Candidate — progressive absence authority and return readiness) decide what bounded, verifiable work an agent does while it waits on its own background work, with a declared ceiling and cutoff, instead of polling or idling. Open: scope inside an active order, owner, and measurement. Reopen: the progressive-absence candidate is allocated, or the operator directs a trial.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Reopened by WO-116's final review: the candidate's reopening condition, an operator-directed trial, occurred in the same dispatch that recorded it. WO-116-D016 records the trial: while its read-only review ran, the executor spent the wait on one question with an end, the operator's 'is this the best way i can write this code?', over the order's own code, and kept or changed each unit by a verdict. Planning judges whether that trial informs the Blackjack +3 wait shape. [WO-116 final review (docs/final-reviews/WO-116/FINAL-001.md)]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-29T00:10:57.895Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-3bb4dea9dde2a392",
+      "key": "candidate:docs/planning/work-order-map.md#candidates--returns-from-ideation-during-wo-116-recorded-2026-09-28::d90f129e65a014dda750cd8412eaac38ed05c37484f68251fd17d24b7a7e5a21",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "922fe4255a17a9b3a86f2324d7ce8630fc123b8d43347994eb347681b9b96312",
+          "ref": "docs/planning/work-order-map.md#candidates--returns-from-ideation-during-wo-116-recorded-2026-09-28",
+          "title": "Utilization, not activation.",
+          "summary": "1. **Utilization, not activation.** Distinguish time used toward a purpose with an end from activity for its own sake, in the execution guide's goal-aligned decisions and in the process meter, whose counts (tool calls, steps, hook runs) measure activation only. The observed case is the WO-116 executor's polling while its review ran (WO-116-D013). Reopen: a planning pass places the distinction, or another order records the same failure.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-bf614feaea90cac3",
+      "key": "decision:docs/evidence/WO-116/decisions.md#wo-116-d014",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "0e05fb3d10dbbbccba339847ccc58c390e7bc0c589078aa363c8a091f11233a1",
+          "ref": "docs/evidence/WO-116/decisions.md#wo-116-d014--correction-a-capture-aimed-at-the-main-checkout",
+          "title": "WO-116-D014: Planning: product 07 §Operator-opened ideation mode step 1 aims an executor's ideation capture at the main control-plane checkout's intake and calls a worktree copy provisional staging; t",
+          "summary": "{ \"id\": \"WO-116-D014\", \"date\": \"2026-09-28\", \"dispatch\": \"resume: next; the operator's correction at 2026-09-28T23:33Z by the prompt hook's clock, during the ideation breakout\", \"kind\": \"correction\", \"decision\": \"An error of this dispatch, named by the operator: during the ideation breakout the executor tried to write the raw capture into the main control-plane checkout's ignored intake, a checkout outside this worktree that this session does not own; the outside-write guard refused it (WO-144) and nothing was written there. The capture for ideation opened around a work order belongs in the worktree's own docs/intake/notes/<work-order>-expanded-ideation-<date>.md, and carrying worktree intak",
           "missing": false
         }
       ],
