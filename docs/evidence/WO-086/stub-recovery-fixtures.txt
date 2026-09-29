@@ -1,0 +1,16 @@
+✔ WO-086 a conflicted decisions record refuses the collision's record and writes nothing (8345.617041ms)
+✔ WO-086 a retime that lands on a continuation is recorded once, in the stub the failed pass withheld (13406.496709ms)
+✔ WO-086 a blocked PR directory preserves collision inputs for continuation (14424.092708ms)
+✔ WO-086 a blocked PR file preserves collision inputs for continuation (14002.591125ms)
+✔ WO-086 a stub blocked by a regular file retains its saved collision through continuation (13673.318875ms)
+✔ WO-086 a stub blocked by a symlink retains its saved collision through continuation (12245.337917ms)
+✔ WO-086 a stub blocked by a regular file with a newer tag during retry retains its saved collision through continuation (17246.618083ms)
+✔ WO-086 a tag that lands after the stub is written is recorded once, by release prepare (13794.217083ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 107194.864541

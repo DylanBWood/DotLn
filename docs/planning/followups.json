@@ -14454,6 +14454,14 @@
           "reopenWhen": "another repair meets a changed reviewer draft it did not write, or the next order that edits release preparation",
           "targets": [],
           "at": "2026-09-28T03:29:45.691Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Deferred again by WO-086's final review. Its condition occurred: WO-086 edits release preparation (the collision record, the output ordering and activation assignment), but not the ownership of the executor-time PR draft. That member recurred: docs/final-reviews/WO-086/PR.md held only the generated meter block, under a '# WO-086' heading, when this review began. [WO-086 final review (docs/final-reviews/WO-086/FINAL-001.md)]",
+          "reopenWhen": "another repair meets a changed reviewer draft it did not write, or the next order that edits release preparation",
+          "targets": [],
+          "at": "2026-09-29T19:49:12.478Z"
         }
       ]
     },
@@ -19447,6 +19455,14 @@
             "WO-086"
           ],
           "at": "2026-09-27T00:36:22.301Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by WO-086: the docs check no longer exempts 06 §Release boundary by its heading. Only the registered dotln-release-history block is exempt, and it is held to its recorded tags. 06's ceiling is restated from counted bytes, 98,323 = ceil(96,395 × 1.02), under the operator-authorized D004 (WO-086-D006, D011). VER-003 criterion 4 and the final review reproduced the figures. [WO-086 final review (docs/final-reviews/WO-086/FINAL-001.md)]",
+          "reopenWhen": "A heading or an unregistered marker pair exempts product bytes again, or 06's ceiling rises without a cited decision.",
+          "targets": [],
+          "at": "2026-09-29T19:49:12.387Z"
         }
       ]
     },
@@ -19473,6 +19489,14 @@
             "WO-086"
           ],
           "at": "2026-09-27T00:36:22.802Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by WO-086: V2, because no heading exempts anything and fixtures show a demoted, quoted or hidden terminating heading exempts no receipt, candidate or bytes; V7, because the one marker exemption is registered by product path and marker name now that WO-086's generator writes into docs/product (WO-086-D006). V5 was already written by the 2026-09-27 pass. [WO-086 final review (docs/final-reviews/WO-086/FINAL-001.md)]",
+          "reopenWhen": "A generator other than WO-086's writes a marker block into docs/product, or a demoted, quoted or hidden heading changes exempt bytes.",
+          "targets": [],
+          "at": "2026-09-29T19:49:12.417Z"
         }
       ]
     },
@@ -20045,6 +20069,13 @@
           "title": "WO-169-D006: Two defects of worktree integrate that predate this order, met in review and left: the decision stub is written once per checkpoint, so a stub written on a pass whose release preparation ",
           "summary": "{ \"id\": \"WO-169-D006\", \"date\": \"2026-09-27\", \"dispatch\": \"resume: next\", \"decision\": \"worktree integrate runs its generators only when the stage is applied and neither an unmerged path nor an untracked stash collision remains; while one remains it prints the authored conflicts and one pending line saying that generation awaits their resolution and --continue. The affected checks and the instruction to complete the draft decision describe the generated tree, so a pass that held generation leaves them to the pass that runs it and says so; a pass that generated and left a failed step keeps its checks and names the step to repair, not a conflict. The decision stub writes the release message as o",
           "missing": false
+        },
+        {
+          "hash": "82de7466854536a0654d6dade1cf1bc8a7aaa00d7865caf31ff0d75da4983447",
+          "ref": "docs/evidence/WO-169/decisions.md#wo-169-d006--generation-waits-for-authored-conflicts-the-record-holds-the-release-message-as-one-line",
+          "title": "WO-169-D006: Two defects of worktree integrate that predate this order, met in review and left: the decision stub is written once per checkpoint, so a stub written on a pass whose release preparation ",
+          "summary": "{ \"id\": \"WO-169-D006\", \"date\": \"2026-09-27\", \"dispatch\": \"resume: next\", \"decision\": \"worktree integrate runs its generators only when the stage is applied and neither an unmerged path nor an untracked stash collision remains; while one remains it prints the authored conflicts and one pending line saying that generation awaits their resolution and --continue. The affected checks and the instruction to complete the draft decision describe the generated tree, so a pass that held generation leaves them to the pass that runs it and says so; a pass that generated and left a failed step keeps its checks and names the step to repair, not a conflict. The decision stub writes the release message as o",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -20071,6 +20102,14 @@
           "reopenWhen": "a real integration meets either defect, or the next order that edits the decision stub or stash-apply stage of scripts/lib/worktree-integration.mjs",
           "targets": [],
           "at": "2026-09-28T19:03:44.783Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "deferred",
+          "reason": "Deferred again by WO-086's final review, whose change met the reopening condition by editing the decision stub stage. The first defect is fixed: the stub waits for a failed preparation and files a saved outcome first, so no stub keeps 'Release preparation: pending.' (WO-086-D007, D022; VER-003). The second defect, a failed stash apply that leaves stage applying, is untouched and no real integration has met it. [WO-086 final review (docs/final-reviews/WO-086/FINAL-001.md)]",
+          "reopenWhen": "a real integration meets the stash-apply defect, or the next order that edits the stash-apply stage of scripts/lib/worktree-integration.mjs",
+          "targets": [],
+          "at": "2026-09-29T19:49:12.447Z"
         }
       ]
     },
@@ -22336,6 +22375,239 @@
           "reopenWhen": "The next planning pass changes the sequence or its horizon, or an operator relies on the stale configured/accepted ceiling.",
           "targets": [],
           "at": "2026-09-29T17:41:14.894Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-439252e49f6381fc",
+      "key": "decision:docs/evidence/WO-086/decisions.md#wo-086-d010",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "d304ab2b8246ce7fd0a544381aed3e19e0ad3a66797f4b276656513699a99be1",
+          "ref": "docs/evidence/WO-086/decisions.md#wo-086-d010--a-product-07-claim-this-order-leaves-standing",
+          "title": "WO-086-D010: Next document-maintenance pass: say that npm run test:docs runs check-surfaces --local, or move release-surfaces into the product gate. Paths: docs/product/07-execution-guide.md, scripts/",
+          "summary": "{ \"id\": \"WO-086-D010\", \"date\": \"2026-09-29\", \"dispatch\": \"resume: next\", \"kind\": \"finding\", \"decision\": \"Board, not fix: product 07 §Independent workflows says 'npm test runs check-surfaces --local before expensive suites', but the release-surfaces suite is a document-lane suite that npm run test:docs runs and npm test does not. The sentence shares the paragraph whose one named sentence this order edits, and the order keeps that mechanism text.\", \"evidence\": [ \"scripts/test-runner.mjs classifySuite lists release-surfaces among the document suites; selection runs document rows only under --document.\", \"docs/product/07-execution-guide.md §Independent workflows and integration, the paragraph be",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-b86a71ffd5b1e334",
+      "key": "decision:docs/evidence/WO-086/decisions.md#wo-086-d012",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "74659edfb2b20674598f802067052742c8706a8d6f67119707aff7421833706c",
+          "ref": "docs/evidence/WO-086/decisions.md#wo-086-d012--transition-for-lanes-that-wrote-roadmap-notes-before-this-order",
+          "title": "WO-086-D012: WO-117 and WO-172 lanes, and WO-086's final review: at integration, keep main's generated release-history block in docs/product/06-roadmap.md; move each lane's activation, scope or collis",
+          "summary": "{ \"id\": \"WO-086-D012\", \"date\": \"2026-09-29\", \"dispatch\": \"resume: next; after the executor's independent review\", \"kind\": \"finding\", \"decision\": \"Record the transition for the two live lanes whose work already carries old-style §Release boundary paragraphs: WO-117 (this order's planned pair, in final review) and WO-172. Whichever lands second meets an authored conflict across 06's section, and any such paragraph kept in 06 now fails the docs check as a new receipt. A lane that integrates main after this order keeps main's generated block and moves its own activation, scope and collision notes into its own decisions record, never back into 06. If WO-117 or WO-172 lands first, WO-086's final-r",
+          "missing": false
+        },
+        {
+          "hash": "2c3c8078f1b79a37ecfe45ce3e562dbb1d9daf2651281a3ad5be9178e702f81a",
+          "ref": "docs/evidence/WO-086/decisions.md#wo-086-d012--transition-for-lanes-that-wrote-roadmap-notes-before-this-order",
+          "title": "WO-086-D012: WO-117 and WO-172 lanes, and WO-086's final review: at integration, keep main's generated release-history block in docs/product/06-roadmap.md; move each lane's activation, scope or collis",
+          "summary": "{ \"id\": \"WO-086-D012\", \"date\": \"2026-09-29\", \"dispatch\": \"resume: next; after the executor's independent review\", \"kind\": \"finding\", \"decision\": \"Record the transition for the two lanes whose work carries old-style §Release boundary paragraphs: WO-117 (this order's planned pair) and WO-172. WO-117 merged to main at 4d7c3319 during this dispatch and published v0.56.0, so its '**WO-117 activation completion (2026-09-29):**' paragraph now stands under main's §Release boundary: WO-086's final-review integration resolves 06 by keeping this order's pointer and registered block, moves that landed paragraph byte for byte into docs/planning/release-history-notes.md with its SHA-256 and updates the re",
+          "missing": false
+        },
+        {
+          "hash": "3d04fe4308a72c2b512adc33012da89311edda1ac37c6c7cdd0c221e7e1d0645",
+          "ref": "docs/evidence/WO-086/decisions.md#wo-086-d012--transition-for-lanes-that-wrote-roadmap-notes-before-this-order",
+          "title": "WO-086-D012: WO-117 and WO-172 lanes, and WO-086's final review: at integration, keep main's generated release-history block in docs/product/06-roadmap.md; move each lane's activation, scope or collis",
+          "summary": "{ \"id\": \"WO-086-D012\", \"date\": \"2026-09-29\", \"dispatch\": \"resume: next; after the executor's independent review\", \"kind\": \"finding\", \"decision\": \"Record the transition for the two lanes whose work carries old-style §Release boundary paragraphs: WO-117 (this order's planned pair) and WO-172. WO-117 merged to main at 4d7c3319 during this dispatch and published v0.56.0, so its '**WO-117 activation completion (2026-09-29):**' paragraph now stands under main's §Release boundary: WO-086's final-review integration resolves 06 by keeping this order's pointer and registered block, moves that landed paragraph byte for byte into docs/planning/release-history-notes.md with its SHA-256 and updates the re",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 3,
+          "status": "deferred",
+          "reason": "Deferred by WO-086's final review. The WO-117 and WO-086 parts are discharged: WO-117's landed note moved byte for byte into the release-history notes with its SHA-256 (WO-086-D017), and main has not moved since. The WO-172 part remains for that lane's integration; the docs check refuses its old-style paragraphs in 06 as new receipts, so it cannot land them unnoticed. [WO-086 final review (docs/final-reviews/WO-086/FINAL-001.md)]",
+          "reopenWhen": "a lane integrates main while carrying an activation, scope or collision paragraph under 06 §Release boundary, or the receipt's byte-identity check fails after a landed paragraph moves",
+          "targets": [],
+          "at": "2026-09-29T19:49:12.508Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-2855ce1f2ac2005a",
+      "key": "decision:docs/evidence/WO-086/decisions.md#wo-086-d013",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "62abe2b5cb1afbde5f5cda04ab2dce7cb16daba9ee79e2fcb6f039f83e0295f3",
+          "ref": "docs/evidence/WO-086/decisions.md#wo-086-d013--receipt-detection-misses-dated-labels-without-the-bold-colon-form",
+          "title": "WO-086-D013: Next document-maintenance pass: decide whether docs-check's receipt shape also refuses dated per-order labels ending in a full stop or unbolded, at least under product 06; paths scripts/d",
+          "summary": "{ \"id\": \"WO-086-D013\", \"date\": \"2026-09-29\", \"dispatch\": \"resume: next; after the executor's independent review\", \"kind\": \"finding\", \"decision\": \"Board, not fix: the docs check recognizes a receipt only as a paragraph whose first child is bold and whose label ends in a dated '(…):' or names an operator direction. A dated bold label ending in a full stop, or an unbolded label such as base 06's 'WO-068 release assignment (2026-09-16):', passes. After this order a per-order note could still enter 06 in those shapes; the recognizer is WO-085's and widening it is a planning decision (WO-085 D009 O1, D015 V1).\", \"evidence\": [ \"scripts/docs-check.mjs productContent: the receipt shape tests /\\\\([^)]",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-dbd155ee6605d6ca",
+      "key": "decision:docs/evidence/WO-086/decisions.md#wo-086-d015",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "615e9caf2a8c10683aa81015d2c5f7aef4821f722e9ae2ba277e5d69aeda0a22",
+          "ref": "docs/evidence/WO-086/decisions.md#wo-086-d015--verification-a-post-edit-output-failure-loses-collision-provenance",
+          "title": "WO-086-D015: WO-086 resume: fix, F1: retain the original collision outcome durably across post-edit failures and continuation, or restore preparation edits when later output fails, so exactly one deci",
+          "summary": "{ \"id\": \"WO-086-D015\", \"date\": \"2026-09-29\", \"dispatch\": \"resume: verify; independent VER-001\", \"kind\": \"finding\", \"decision\": \"Fail criterion 3 on F1: release prepare --integration can change the heading and README claim before an ancillary PR write fails; the integration helper then withholds its decision, and continuation records only that the new target remains current, losing the superseded target and release baseline. Preserve implementation for the executor's repair; the verifier changes no behavior.\", \"evidence\": [ \"docs/verifications/WO-086/VER-001.md F1: the collision reviewer and the root verifier each reproduced the edge in an isolated copy of scripts/test-worktree-integration.mj",
+          "missing": false
+        },
+        {
+          "hash": "3633e6ce2ad8797a30a0aa8c3993060e73589f9bba80e3dc117c6e57f61e29e0",
+          "ref": "docs/evidence/WO-086/decisions.md#wo-086-d015--verification-a-post-edit-output-failure-loses-collision-provenance",
+          "title": "WO-086-D015: WO-086 resume: fix, F1: retain the original collision outcome durably across post-edit failures and continuation, or restore preparation edits when later output fails, so exactly one deci",
+          "summary": "{ \"id\": \"WO-086-D015\", \"date\": \"2026-09-29\", \"dispatch\": \"resume: verify; independent VER-001\", \"kind\": \"finding\", \"decision\": \"Fail criterion 3 on F1: release prepare --integration can change the heading and README claim before an ancillary PR write fails; the integration helper then withholds its decision, and continuation records only that the new target remains current, losing the superseded target and release baseline. Preserve implementation for the executor's repair; the verifier changes no behavior.\", \"evidence\": [ \"docs/verifications/WO-086/VER-001.md F1: the collision reviewer and the root verifier each reproduced the edge in an isolated copy of scripts/test-worktree-integration.mj",
+          "missing": false
+        },
+        {
+          "hash": "0f76d264a5db78adffa2177cc6a51c234c5e4d7ea0fc17f27d82a2f4134a64a9",
+          "ref": "docs/evidence/WO-086/decisions.md#wo-086-d015--verification-a-post-edit-output-failure-loses-collision-provenance",
+          "title": "WO-086-D015: WO-086 resume: fix, F1: retain the original collision outcome durably across post-edit failures and continuation, or restore preparation edits when later output fails, so exactly one deci",
+          "summary": "{ \"id\": \"WO-086-D015\", \"date\": \"2026-09-29\", \"dispatch\": \"resume: verify; independent VER-001\", \"kind\": \"finding\", \"decision\": \"Fail criterion 3 on F1: release prepare --integration can change the heading and README claim before an ancillary PR write fails; the integration helper then withholds its decision, and continuation records only that the new target remains current, losing the superseded target and release baseline. Preserve implementation for the executor's repair; the verifier changes no behavior.\", \"evidence\": [ \"docs/verifications/WO-086/VER-001.md F1: the collision reviewer and the root verifier each reproduced the edge in an isolated copy of scripts/test-worktree-integration.mj",
+          "missing": false
+        },
+        {
+          "hash": "f250f111d6ab650e99fff024af334b74bb539285fe8193413af2d7922bc9939b",
+          "ref": "docs/evidence/WO-086/decisions.md#wo-086-d015--verification-a-post-edit-output-failure-loses-collision-provenance",
+          "title": "WO-086-D015: WO-086 resume: fix, F1: retain the original collision outcome durably across post-edit failures and continuation, or restore preparation edits when later output fails, so exactly one deci",
+          "summary": "{ \"id\": \"WO-086-D015\", \"date\": \"2026-09-29\", \"dispatch\": \"resume: verify; independent VER-001\", \"kind\": \"finding\", \"decision\": \"Fail criterion 3 on F1: release prepare --integration can change the heading and README claim before an ancillary PR write fails; the integration helper then withholds its decision, and continuation records only that the new target remains current, losing the superseded target and release baseline. Preserve implementation for the executor's repair; the verifier changes no behavior.\", \"evidence\": [ \"docs/verifications/WO-086/VER-001.md F1: the collision reviewer and the root verifier each reproduced the edge in an isolated copy of scripts/test-worktree-integration.mj",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 4,
+          "status": "settled",
+          "reason": "VER-002 independently confirms the F1 repair; D023 final full gate preserves both F1 regressions.",
+          "reopenWhen": "An ancillary output failure again changes a target without complete collision evidence.",
+          "targets": [],
+          "at": "2026-09-29T19:24:38.836Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-b7c02d7813506c55",
+      "key": "decision:docs/evidence/WO-086/decisions.md#wo-086-d019",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "f1bbcb6e6f69aebe755788dfa74247707856421fc8054474f24283de619a4fae",
+          "ref": "docs/evidence/WO-086/decisions.md#wo-086-d019--preserve-collision-inputs-through-ancillary-output-failures",
+          "title": "WO-086-D019: Write the meter snapshot and PR meter block before applying the release-preparation plan. On any ancillary filesystem failure the original heading, README claim and collision decision rem",
+          "summary": "{ \"id\": \"WO-086-D019\", \"date\": \"2026-09-29\", \"dispatch\": \"resume: fix; VER-001 F1\", \"decision\": \"Write the meter snapshot and PR meter block before applying the release-preparation plan. On any ancillary filesystem failure the original heading, README claim and collision decision remain unchanged; continuation recomputes and records the original collision exactly once. Core plan writes retain their existing rollback. Preserve the printed changed-file order.\", \"evidence\": [ \"VER-001 F1 reproduced a regular file blocking docs/final-reviews/WO-998 after the target had changed.\", \"scripts/release.mjs currently collects meta before apply, so moving apply after ancillary outputs does not change th",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by WO-086's final review: D019's output ordering is in force. VER-002 and VER-003 confirmed that both F1 PR blockers preserve the original inputs and that continuation records one complete collision. [WO-086 final review (docs/final-reviews/WO-086/FINAL-001.md)]",
+          "reopenWhen": "An ancillary output failure again changes a target without complete collision evidence.",
+          "targets": [],
+          "at": "2026-09-29T19:49:12.324Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-221c4db9233b3476",
+      "key": "decision:docs/evidence/WO-086/decisions.md#wo-086-d021",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "03777a70ac2c57ef040d9f113805efaf35069025552959d1f591198ecf459f01",
+          "ref": "docs/evidence/WO-086/decisions.md#wo-086-d021--verification-a-failed-integration-stub-after-a-successful-retime-loses-collision-provenance",
+          "title": "WO-086-D021: WO-086 resume: fix, F2: once release preparation under worktree integrate has changed the target, its superseded target, new target and baseline must reach exactly one integration decisio",
+          "summary": "{ \"id\": \"WO-086-D021\", \"date\": \"2026-09-29\", \"dispatch\": \"resume: verify; independent VER-002\", \"kind\": \"finding\", \"decision\": \"Fail criterion 3 again on F2: the F1 repair covers the meter and PR outputs inside release prepare, but not the integration decision stub that follows a successful release prepare --integration. When that stub cannot be written, the heading and README already carry the new target; continuation reruns preparation, which reports only that the new target remains current, and the stub then records that line without the superseded target or the baseline. The verifier changes no behavior.\", \"evidence\": [ \"docs/verifications/WO-086/VER-002.md F2: isolated real-Git copies o",
+          "missing": false
+        },
+        {
+          "hash": "1512da28d9f83e0034a3d8a4e0d53da42ca11bc0c2603ed2630b902a629142b0",
+          "ref": "docs/evidence/WO-086/decisions.md#wo-086-d021--verification-a-failed-integration-stub-after-a-successful-retime-loses-collision-provenance",
+          "title": "WO-086-D021: WO-086 resume: fix, F2: once release preparation under worktree integrate has changed the target, its superseded target, new target and baseline must reach exactly one integration decisio",
+          "summary": "{ \"id\": \"WO-086-D021\", \"date\": \"2026-09-29\", \"dispatch\": \"resume: verify; independent VER-002\", \"kind\": \"finding\", \"decision\": \"Fail criterion 3 on F2, a defect VER-001 missed in the subject it judged; the executor's repair fixed F1 as reported and did not introduce F2. The integration decision stub follows a successful release prepare --integration; when that stub cannot be written, the heading and README already carry the new target; continuation reruns preparation, which reports only that the new target remains current, and the stub then records that line without the superseded target or the baseline. The verifier changes no behavior.\", \"evidence\": [ \"docs/verifications/WO-086/VER-002.md ",
+          "missing": false
+        },
+        {
+          "hash": "873a6dfc5de8ab5a069b16e35798e8afbdb84c9137f03dc520d19fd5cafa64e0",
+          "ref": "docs/evidence/WO-086/decisions.md#wo-086-d021--verification-a-failed-integration-stub-after-a-successful-retime-loses-collision-provenance",
+          "title": "WO-086-D021: WO-086 resume: fix, F2: once release preparation under worktree integrate has changed the target, its superseded target, new target and baseline must reach exactly one integration decisio",
+          "summary": "{ \"id\": \"WO-086-D021\", \"date\": \"2026-09-29\", \"dispatch\": \"resume: verify; independent VER-002\", \"kind\": \"finding\", \"decision\": \"Fail criterion 3 on F2, a defect VER-001 missed in the subject it judged; the executor's repair fixed F1 as reported and did not introduce F2. The integration decision stub follows a successful release prepare --integration; when that stub cannot be written, the heading and README already carry the new target; continuation reruns preparation, which reports only that the new target remains current, and the stub then records that line without the superseded target or the baseline. The verifier changes no behavior.\", \"evidence\": [ \"docs/verifications/WO-086/VER-002.md ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 3,
+          "status": "allocated",
+          "reason": "VER-002 F2 is repaired under this WO-086 resume: fix; D022 and D023 record the saved-outcome rule and passing final gates. Allocation includes the required fresh independent verification, whose verdict is still pending.",
+          "reopenWhen": "Fresh independent verification fails criterion 3 or a blocked stub continuation loses or duplicates collision provenance.",
+          "targets": [
+            "WO-086"
+          ],
+          "at": "2026-09-29T19:24:38.869Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "settled",
+          "reason": "Settled by WO-086's final review: VER-003 independently passed criterion 3 on the D022 repair, reproducing both VER-002 F2 variants, a newer tag during blocked recovery and a conflict on the saved path, with a negative control. The final review's collision reviewer ran the eight WO-086 integration fixtures fresh (8/8). [WO-086 final review (docs/final-reviews/WO-086/FINAL-001.md)]",
+          "reopenWhen": "A blocked stub continuation through worktree integrate loses or duplicates collision provenance.",
+          "targets": [],
+          "at": "2026-09-29T19:49:12.292Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-5350f61967cf008f",
+      "key": "decision:docs/evidence/WO-086/decisions.md#wo-086-d022",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "8d77fff3efc434b56b8e6724f0b44e281063eed2157a7ebe104df27a35106c3a",
+          "ref": "docs/evidence/WO-086/decisions.md#wo-086-d022--file-the-saved-preparation-outcome-before-preparing-again",
+          "title": "WO-086-D022: When an integration has a successful saved release-preparation outcome but no integration decision marker, write that decision from the saved outcome before invoking preparation again. If",
+          "summary": "{ \"id\": \"WO-086-D022\", \"date\": \"2026-09-29\", \"dispatch\": \"resume: fix; VER-002 F2\", \"decision\": \"When an integration has a successful saved release-preparation outcome but no integration decision marker, write that decision from the saved outcome before invoking preparation again. If the stub still fails, withhold preparation and retain the outcome and target. Once the stub succeeds, invoke ordinary preparation so any newer collision gets its own decision through the existing post-stub path. Keep the receipt format, core rollback and F1 output ordering.\", \"evidence\": [ \"VER-002 F2 and regenerate() show receipt.release survives the failed stub but is overwritten by the next successful prepare",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by WO-086's final review: D022's saved-outcome rule is in force and VER-003 passed it. The hand-run --integration edge the review met is boarded separately under WO-086-D024. [WO-086 final review (docs/final-reviews/WO-086/FINAL-001.md)]",
+          "reopenWhen": "A saved preparation outcome is overwritten before filing through worktree integrate, or a later collision through the helper lacks its own complete decision.",
+          "targets": [],
+          "at": "2026-09-29T19:49:12.356Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-b7a66e7a4fa7ad20",
+      "key": "decision:docs/evidence/WO-086/decisions.md#wo-086-d024",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "9b1b6ed8ab6e174687d59d525bf2079e91d31aaf61be71d48df144d7bab836a3",
+          "ref": "docs/evidence/WO-086/decisions.md#wo-086-d024--final-review-pass-and-the-hardening-items-it-met",
+          "title": "WO-086-D024: Next order that edits release preparation, the integrate helper or the release-history check, or a document-maintenance pass: harden the collision recorder and the table check. Refuse rel",
+          "summary": "{ \"id\": \"WO-086-D024\", \"date\": \"2026-09-29\", \"dispatch\": \"resume: final review\", \"kind\": \"finding\", \"decision\": \"Pass WO-086 on FINAL-001. The review met seven hardening items and fixed none of them, since a reviewer writes no behavior; none falsifies a criterion. Board them as one follow-up. (1) A hand-run release prepare --local --integration is admitted while an integration is pending even after its stub was written or while a saved outcome waits, and then its retime is recorded nowhere; the helper never passes the flag in those states, and the flag is documented nowhere outside the code. (2) Ordinary release prepare writes decisions.md through a symlinked docs/evidence/WO-NNN whose targe",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Opened by WO-086's final review: seven low-priority hardening items the review's two read-only reviewers reproduced in the collision recorder and the release-history check. None loses a record on a helper path or falsifies a criterion. [WO-086 final review (docs/final-reviews/WO-086/FINAL-001.md)]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-29T19:49:12.538Z"
         }
       ]
     }
