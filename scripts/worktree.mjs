@@ -243,6 +243,38 @@ const main = async () => {
     }
     return;
   }
+  if (action === "observe-pr") {
+    const args = process.argv.slice(3);
+    const flags = new Map();
+    for (let i = 0; i < args.length; i += 2) {
+      if (
+        !["--store", "--number", "--repository"].includes(args[i]) ||
+        !args[i + 1] ||
+        flags.has(args[i])
+      )
+        throw new Error(
+          "usage: worktree observe-pr --store <episode-store> --number <N> [--repository HOST/OWNER/REPO]",
+        );
+      flags.set(args[i], args[i + 1]);
+    }
+    if (
+      !flags.has("--store") ||
+      !/^[1-9][0-9]*$/u.test(flags.get("--number") ?? "")
+    )
+      throw new Error(
+        "usage: worktree observe-pr --store <episode-store> --number <N> [--repository HOST/OWNER/REPO]",
+      );
+    const { observePullRequest } =
+      await import("./lib/pull-request-observer.mjs");
+    observePullRequest({
+      cwd: toolRoot,
+      store: resolve(flags.get("--store")),
+      number: Number(flags.get("--number")),
+      repositoryId: flags.get("--repository"),
+      log: (line) => process.stdout.write(`${line}\n`),
+    });
+    return;
+  }
   const mainPath = mainWorktree(toolRoot);
 
   const workOrderPath = actionArgs[0];
@@ -579,7 +611,7 @@ const main = async () => {
     );
   } else {
     throw new Error(
-      "usage: worktree start WO-NNN <work-order-path> | worktree integrate WO-NNN [--intake-backup <archive.zip>] [--continue] | worktree publish WO-NNN --title <title> --body-file <path> | worktree publish WO-NNN --target <request.json> | worktree finish WO-NNN [--dry-run] | worktree settle WO-NNN [--dry-run]",
+      "usage: worktree start WO-NNN <work-order-path> | worktree integrate WO-NNN [--intake-backup <archive.zip>] [--continue] | worktree publish WO-NNN --title <title> --body-file <path> | worktree publish WO-NNN --target <request.json> | worktree observe-pr --store <episode-store> --number <N> [--repository HOST/OWNER/REPO] | worktree finish WO-NNN [--dry-run] | worktree settle WO-NNN [--dry-run]",
     );
   }
 };

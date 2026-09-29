@@ -83,11 +83,12 @@ export const environmentWithoutGhRepo = (environment = process.env) => {
   return clean;
 };
 
-export const executeGh = (cwd, args) =>
+export const executeGh = (cwd, args, { maxBuffer } = {}) =>
   spawnSync("gh", args, {
     cwd,
     encoding: "utf8",
     env: environmentWithoutGhRepo(),
+    ...(maxBuffer === undefined ? {} : { maxBuffer }),
   });
 
 // Every remote mutation first proves the push target, gh and its login.

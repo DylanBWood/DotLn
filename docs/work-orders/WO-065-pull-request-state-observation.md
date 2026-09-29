@@ -1,4 +1,4 @@
-# WO-065 — Pull-request state observation: a read-only adapter projects a pull request's checks and review comments into typed, classified events on demand (version assigned at activation)
+# WO-065 — Pull-request state observation: a read-only adapter projects a pull request's checks and review comments into typed, classified events on demand (v0.55.0)
 
 **Model:** any capable model; the live smoke is operator-run. State the
 model and effort actually run (07-execution-guide.md §Model-specific notes).

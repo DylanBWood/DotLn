@@ -1,0 +1,218 @@
+{
+  "DotlnPullRequest": {
+    "first": {
+      "data": {
+        "repository": {
+          "nameWithOwner": "dotln-fixture/target",
+          "pullRequest": {
+            "number": 7,
+            "headRefOid": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "author": {
+              "__typename": "User",
+              "login": "fixture-author"
+            }
+          }
+        }
+      }
+    }
+  },
+  "DotlnChecks": {
+    "first": {
+      "data": {
+        "repository": {
+          "object": {
+            "oid": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "statusCheckRollup": {
+              "contexts": {
+                "nodes": [
+                  {
+                    "__typename": "CheckRun",
+                    "id": "CR_1",
+                    "name": "unit",
+                    "status": "COMPLETED",
+                    "conclusion": "FAILURE"
+                  },
+                  {
+                    "__typename": "StatusContext",
+                    "id": "SC_1",
+                    "context": "lint",
+                    "state": "SUCCESS"
+                  },
+                  {
+                    "__typename": "CheckRun",
+                    "id": "CR_2",
+                    "name": "build",
+                    "status": "IN_PROGRESS",
+                    "conclusion": null
+                  }
+                ],
+                "pageInfo": {
+                  "hasNextPage": false,
+                  "endCursor": null
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "DotlnComments": {
+    "first": {
+      "data": {
+        "repository": {
+          "nameWithOwner": "dotln-fixture/target",
+          "pullRequest": {
+            "number": 7,
+            "headRefOid": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "author": {
+              "__typename": "User",
+              "login": "fixture-author"
+            },
+            "comments": {
+              "nodes": [
+                {
+                  "id": "IC_1",
+                  "body": "See https://github.com/dotln-fixture/target/pull/7",
+                  "author": {
+                    "__typename": "User",
+                    "login": "fixture-author"
+                  }
+                }
+              ],
+              "pageInfo": {
+                "hasNextPage": false,
+                "endCursor": null
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "DotlnReviews": {
+    "first": {
+      "data": {
+        "repository": {
+          "nameWithOwner": "dotln-fixture/target",
+          "pullRequest": {
+            "number": 7,
+            "headRefOid": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "author": {
+              "__typename": "User",
+              "login": "fixture-author"
+            },
+            "reviews": {
+              "nodes": [
+                {
+                  "id": "PRR_1",
+                  "body": "Please handle the empty input.",
+                  "author": {
+                    "__typename": "User",
+                    "login": "fixture-reviewer"
+                  },
+                  "state": "CHANGES_REQUESTED"
+                },
+                {
+                  "id": "PRR_2",
+                  "body": "",
+                  "author": {
+                    "__typename": "User",
+                    "login": "fixture-reviewer"
+                  },
+                  "state": "APPROVED"
+                }
+              ],
+              "pageInfo": {
+                "hasNextPage": false,
+                "endCursor": null
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "DotlnThreads": {
+    "first": {
+      "data": {
+        "repository": {
+          "nameWithOwner": "dotln-fixture/target",
+          "pullRequest": {
+            "number": 7,
+            "headRefOid": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "author": {
+              "__typename": "User",
+              "login": "fixture-author"
+            },
+            "reviewThreads": {
+              "nodes": [
+                {
+                  "id": "PRRT_1",
+                  "isResolved": false,
+                  "comments": {
+                    "nodes": [
+                      {
+                        "id": "PRRC_1",
+                        "body": "Handle empty input.",
+                        "author": {
+                          "__typename": "Bot",
+                          "login": "fixture-agent"
+                        },
+                        "path": "fixture.txt",
+                        "line": 1,
+                        "state": "SUBMITTED"
+                      },
+                      {
+                        "id": "PRRC_2",
+                        "body": "Agreed.",
+                        "author": {
+                          "__typename": "User",
+                          "login": "fixture-reviewer"
+                        },
+                        "path": "fixture.txt",
+                        "line": 1,
+                        "state": "SUBMITTED"
+                      }
+                    ],
+                    "pageInfo": {
+                      "hasNextPage": false,
+                      "endCursor": null
+                    }
+                  }
+                },
+                {
+                  "id": "PRRT_2",
+                  "isResolved": true,
+                  "comments": {
+                    "nodes": [
+                      {
+                        "id": "PRRC_3",
+                        "body": "This was addressed.",
+                        "author": {
+                          "__typename": "Bot",
+                          "login": "fixture-agent"
+                        },
+                        "path": "fixture.txt",
+                        "line": 1,
+                        "state": "SUBMITTED"
+                      }
+                    ],
+                    "pageInfo": {
+                      "hasNextPage": false,
+                      "endCursor": null
+                    }
+                  }
+                }
+              ],
+              "pageInfo": {
+                "hasNextPage": false,
+                "endCursor": null
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
