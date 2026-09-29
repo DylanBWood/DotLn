@@ -11,6 +11,8 @@ import {
   writeDecisionsIndex,
   checkMeta,
   metaHealth,
+  planCostTable,
+  planCostText,
   writeOrderSnapshot,
 } from "./lib/meta.mjs";
 import {
@@ -105,25 +107,10 @@ export async function metaMain(args = process.argv.slice(2), repo = root) {
     });
     if (!subject.costTable)
       throw new Error("Planning cost collection needs the budget contract");
-    const table = {
-      ...subject.costTable,
-      observedAt: meta.observedAt,
-      subjectRevision: subject.revision,
-      rows: subject.orders.map((order) => ({
-        workOrder: order.workOrderId,
-        observedAt: meta.observedAt,
-        metrics:
-          meta.orders.find((row) => row.workOrder === order.workOrderId)
-            ?.metrics ?? null,
-      })),
-      traps: meta.traps,
-    };
-    const text = prettyJson(table);
-    if (Buffer.byteLength(text) > 65536)
-      throw new Error(
-        "Planning cost table exceeds 64 KB; select the bounded subject rows",
-      );
-    writeFileSync(docPath(repo, "planning", "cost-table.json"), text);
+    writeFileSync(
+      docPath(repo, "planning", "cost-table.json"),
+      planCostText(planCostTable(meta, subject)),
+    );
   }
   if (options["--write"]) {
     const path = options["--write"];

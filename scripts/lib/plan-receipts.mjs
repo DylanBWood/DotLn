@@ -53,7 +53,11 @@ const receiptSchema = "plan-refutation-receipt-v1";
 const validReceiptId = (value) =>
   typeof value === "string" &&
   /^\d{4}-\d{2}-\d{2}-[a-z][a-z0-9-]*-\d{3}$/u.test(value);
-const manual = /^2026-09-06-phase-two-redirect(?:-00[2-6])?\.json$/u;
+// The pre-mechanism redirect records, never read as receipts (WO-172 reads the
+// planning receipts' completion times by the same exclusion).
+export const MANUAL_RECEIPTS =
+  /^2026-09-06-phase-two-redirect(?:-00[2-6])?\.json$/u;
+const manual = MANUAL_RECEIPTS;
 const stable = (value) =>
   JSON.stringify(value, (_key, item) =>
     item && typeof item === "object" && !Array.isArray(item)

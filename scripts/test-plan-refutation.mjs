@@ -6,6 +6,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import childProcess from "node:child_process";
 import { syncBuiltinESMExports } from "node:module";
+import { createHash } from "node:crypto";
 import {
   existsSync,
   mkdtempSync,
@@ -23,6 +24,7 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { authorize } from "../packages/kernel/dist/src/index.js";
 import { compilePlanRefuter } from "../packages/skeleton/dist/src/loadouts/plan-refuter.js";
+import { sinceEntropyReview } from "./lib/plan-failures.mjs";
 import {
   FakePlanRefutationTransport,
   cannedPlanDrift,
@@ -268,6 +270,413 @@ const mutate = (repo, path, from, to) => {
   assert.ok(before.includes(from));
   write(repo, path, before.replace(from, to));
   commit(repo, "criterion or standard change");
+};
+
+// WO-172: a record holding one item of each kind, events without a time, a
+// correction recorded by a misread field alone and a filed Entropy Reducer
+// review. The planning receipt completes at 2030-01-02T12:00Z, so WO-802's
+// items lie in the default window, WO-803's before it and WO-801's without a
+// time.
+const lines = (rows) =>
+  rows.map((row) => JSON.stringify({ schemaVersion: 1, ...row })).join("\n") +
+  "\n";
+const stableJson = (value) =>
+  JSON.stringify(value, (_key, item) =>
+    item && typeof item === "object" && !Array.isArray(item)
+      ? Object.fromEntries(
+          Object.keys(item)
+            .sort()
+            .map((key) => [key, item[key]]),
+        )
+      : item,
+  );
+const at = (day, hour, minute = 0) =>
+  `${day}T${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}:00.000Z`;
+const failureActor = {
+  harness: "codex-cli",
+  harnessVersion: "fixture",
+  model: "fixture-model",
+  effort: "xhigh",
+  source: "operator-attested",
+};
+const failureReceipt = (ordinal, kind, completedAt) => {
+  const receiptId = `${completedAt.slice(0, 10)}-${kind}-fixture-${String(ordinal).padStart(3, "0")}`;
+  return [
+    `${RECEIPTS}/${receiptId}.json`,
+    prettyJson({
+      schemaVersion: "plan-refutation-receipt-v1",
+      receiptId,
+      ordinal,
+      pass: { id: `${kind}-fixture`, kind, heading: "Fixture pass" },
+      episode: { kind: "direct-session", completedAt },
+    }),
+  ];
+};
+const failureDecision = (id, date, extra = {}) =>
+  `## ${id}\n\n\`\`\`json\n${prettyJson({
+    id,
+    date,
+    dispatch: "resume: next",
+    decision: "Fixture decision.",
+    evidence: ["fixture"],
+    rejected: [],
+    reopenWhen: "never",
+    ...extra,
+  })}\`\`\`\n`;
+const failureRecord = (repo, { review = true } = {}) => {
+  const verification = (order, id, verdict, time, extra = {}) => [
+    {
+      type: "VerificationRequested",
+      workOrderId: order,
+      verificationId: id,
+      reportPath: `docs/verifications/${order}/${id}.md`,
+      ...(time ? { recordedAt: time } : {}),
+    },
+    {
+      type: "VerificationCompleted",
+      workOrderId: order,
+      verificationId: id,
+      reportPath: `docs/verifications/${order}/${id}.md`,
+      verdict,
+      ...(time ? { recordedAt: time } : {}),
+      ...extra,
+    },
+  ];
+  const review_ = (order, id, verdict, time) => [
+    {
+      type: "FinalReviewRequested",
+      workOrderId: order,
+      finalReviewId: id,
+      reportPath: `docs/final-reviews/${order}/${id}.md`,
+      ...(time ? { recordedAt: time } : {}),
+    },
+    {
+      type: "FinalReviewCompleted",
+      workOrderId: order,
+      finalReviewId: id,
+      reportPath: `docs/final-reviews/${order}/${id}.md`,
+      verdict,
+      ...(time ? { recordedAt: time } : {}),
+    },
+  ];
+  const repair = (order, source, time) => [
+    {
+      type: "RepairRequested",
+      workOrderId: order,
+      sourceFindingId: source,
+      ...(time ? { recordedAt: time } : {}),
+    },
+    {
+      type: "RepairCompleted",
+      workOrderId: order,
+      sourceVerificationId: source,
+      ...(time ? { recordedAt: time } : {}),
+    },
+  ];
+  // WO-801 in the older log: no event carries a time.
+  write(
+    repo,
+    "docs/control/resume.jsonl",
+    lines([
+      {
+        type: "WorkOrderActivated",
+        workOrderId: "WO-801",
+        workOrderPath: "docs/work-orders/WO-801-fixture.md",
+      },
+      { type: "ImplementationReady", workOrderId: "WO-801" },
+      ...verification("WO-801", "VER-001", "fail"),
+      ...repair("WO-801", "VER-001"),
+      ...verification("WO-801", "VER-002", "pass"),
+      ...review_("WO-801", "FINAL-001", "pass"),
+    ]),
+  );
+  const day = "2030-01-03";
+  write(
+    repo,
+    "docs/control/orders/WO-802.jsonl",
+    lines([
+      {
+        type: "WorkOrderActivated",
+        workOrderId: "WO-802",
+        workOrderPath: "docs/work-orders/WO-802-fixture.md",
+        recordedAt: at(day, 0),
+      },
+      {
+        type: "ImplementationReady",
+        workOrderId: "WO-802",
+        recordedAt: at(day, 1),
+      },
+      ...verification("WO-802", "VER-001", "fail", at(day, 2), {
+        actor: failureActor,
+      }),
+      ...repair("WO-802", "VER-001", at(day, 3)),
+      ...verification("WO-802", "VER-002", "pass", at(day, 4)),
+      ...review_("WO-802", "FINAL-001", "fail", at(day, 5)),
+      ...repair("WO-802", "FINAL-001", at(day, 6)),
+      {
+        type: "CriterionWaived",
+        workOrderId: "WO-802",
+        criterionId: "2",
+        reason: "Fixture waiver.",
+        capture: "docs/intake/fixture-waiver.json",
+        captureHash: sha256("fixture waiver capture"),
+        actor: failureActor,
+        recordedAt: at(day, 6, 30),
+      },
+      // A correction of VER-001's report path and judge (the event at
+      // ordinal 4), as resume correct appends it.
+      {
+        type: "RecordCorrected",
+        workOrderId: "WO-802",
+        subject: { ordinal: 4 },
+        fields: {
+          reportPath: "docs/verifications/WO-802/VER-001-corrected.md",
+          model: "corrected-model",
+        },
+        reason: "Fixture correction.",
+        actor: failureActor,
+        recordedAt: at(day, 6, 45),
+      },
+      ...verification("WO-802", "VER-003", "pass", at(day, 7)),
+      ...review_("WO-802", "FINAL-002", "pass", at(day, 8)),
+    ]),
+  );
+  write(
+    repo,
+    "docs/control/orders/WO-803.jsonl",
+    lines([
+      {
+        type: "WorkOrderActivated",
+        workOrderId: "WO-803",
+        workOrderPath: "docs/work-orders/WO-803-fixture.md",
+        recordedAt: at("2029-12-01", 0),
+      },
+      {
+        type: "ImplementationReady",
+        workOrderId: "WO-803",
+        recordedAt: at("2029-12-01", 1),
+      },
+      ...verification("WO-803", "VER-001", "pass", at("2029-12-01", 2)),
+      ...review_("WO-803", "FINAL-001", "pass", at("2029-12-01", 3)),
+    ]),
+  );
+  const amended = (decisionId, recordedAt) => ({
+    schemaVersion: 3,
+    type: "PlanExecutionAmended",
+    recordedAt,
+    receiptId: "2030-01-02-planning-fixture-001",
+    receiptHash: sha256("receipt"),
+    workOrderId: "WO-802",
+    sourceOrderHash: sha256("source order"),
+    orderHash: sha256(`order ${decisionId}`),
+    orderLength: 10,
+    decisionId,
+    decisionHash: sha256(decisionId),
+    reason: "Fixture amendment.",
+  });
+  const second = amended("WO-802-D002", at(day, 9, 30));
+  writeFileSync(
+    join(repo, OVERRIDES),
+    [
+      amended("WO-802-D001", at(day, 9)),
+      second,
+      {
+        schemaVersion: 4,
+        type: "PlanExecutionAmendmentWithdrawn",
+        recordedAt: at(day, 10),
+        workOrderId: "WO-802",
+        rowOrdinalWithdrawn: 2,
+        amendmentHash: sha256(stableJson(second)),
+        receiptHash: second.receiptHash,
+        sourceOrderHash: second.sourceOrderHash,
+        orderHash: second.orderHash,
+        reason: "Fixture withdrawal.",
+      },
+      {
+        schemaVersion: 1,
+        type: "PlanHoldOverridden",
+        recordedAt: at(day, 11),
+        receiptId: "2030-01-02-planning-fixture-001",
+        receiptHash: sha256("receipt"),
+        holdId: `hold-${"a".repeat(24)}`,
+        reason: "Fixture override.",
+        actor: {
+          harness: "human",
+          harnessVersion: "fixture",
+          model: "human",
+          effort: "unknown",
+          source: "operator-attested",
+        },
+        captureHash: sha256("override capture"),
+      },
+    ]
+      .map((event) => JSON.stringify(event))
+      .join("\n") + "\n",
+  );
+  write(
+    repo,
+    "docs/evidence/WO-802/decisions.md",
+    `# WO-802 decisions\n\n${[
+      failureDecision("WO-802-D001", day, {
+        dispatch: "resume: fix; operator correction",
+        kind: "correction",
+        misread: "The gate.",
+        meant: "Its input.",
+        changed: "The fixture.",
+      }),
+      failureDecision("WO-802-D002", day, { misread: "The order." }),
+      failureDecision("WO-802-D003", day),
+    ].join("\n")}`,
+  );
+  write(
+    repo,
+    "docs/evidence/WO-803/decisions.md",
+    `# WO-803 decisions\n\n${failureDecision("WO-803-D001", "2029-12-01", {
+      dispatch: "resume: verify",
+      kind: "correction",
+      misread: "A report.",
+      meant: "Its verdict.",
+      changed: "The record.",
+    })}`,
+  );
+  for (const [path, text] of [
+    failureReceipt(1, "planning", "2030-01-02T12:00:00.000Z"),
+    // A later evidence receipt and a manual redirect record open no window.
+    failureReceipt(2, "evidence", "2030-01-04T00:00:00.000Z"),
+    [`${RECEIPTS}/2026-09-06-phase-two-redirect-002.json`, "{}\n"],
+  ])
+    write(repo, path, text);
+  if (review) {
+    write(
+      repo,
+      "docs/control/entropy-reducer.jsonl",
+      lines([
+        {
+          type: "EntropyReviewFiled",
+          recordedAt: at(day, 8, 30),
+          receiptId: "REVIEW-001",
+          ordinal: 1,
+          receiptHash: sha256("review"),
+          renderedHash: sha256("rendered"),
+          subjectHash: "b".repeat(64),
+          baseCommit: "c".repeat(40),
+          identity: "entropy-reducer@1",
+        },
+      ]),
+    );
+    write(
+      repo,
+      "docs/instance/entropy-reducer/runs/REVIEW-001.json",
+      prettyJson({ receiptId: "REVIEW-001", endedAt: at(day, 7, 30) }),
+    );
+  }
+  // The ignored local gate index: counted per order, never listed.
+  write(
+    repo,
+    "docs/control/local/harness/checks.json",
+    JSON.stringify([
+      {
+        checkId: "npm test",
+        workOrder: "WO-802",
+        executed: true,
+        exitCode: 1,
+        recordedAt: at(day, 1, 30),
+      },
+      {
+        checkId: "npm test",
+        workOrder: "WO-802",
+        executed: true,
+        exitCode: 0,
+        recordedAt: at(day, 7, 30),
+      },
+      {
+        checkId: "npm test",
+        workOrder: "WO-803",
+        executed: true,
+        exitCode: 1,
+        recordedAt: at("2029-12-01", 1, 30),
+      },
+    ]),
+  );
+  // The ignored local lane of what the shell said about commands as written:
+  // counted per class and per order, never listed. A torn line and a row of
+  // no class are passed over, and a row without an order is unassigned.
+  write(
+    repo,
+    "docs/control/local/harness/shell-diagnostics.jsonl",
+    [
+      ...[
+        [at(day, 1, 45), "unmatched-pattern", "WO-802"],
+        [at(day, 8, 0), "unmatched-pattern", "WO-802"],
+        [at(day, 8, 5), "program-not-found", null],
+        [at("2029-12-01", 1, 30), "reserved-parameter", "WO-803"],
+        [at(day, 8, 10), "Not A Class", "WO-802"],
+      ].map(([time, kind, workOrder]) =>
+        JSON.stringify({
+          at: time,
+          shell: "zsh",
+          kind,
+          workOrder,
+          role: "executor",
+          phase: "implementation",
+          session: "0".repeat(64),
+        }),
+      ),
+      '{"at":"torn',
+    ].join("\n") + "\n",
+  );
+  commit(repo, "failure record");
+  return repo;
+};
+const failureRepo = (parent, name, options) => {
+  const repo = join(parent, name);
+  mkdirSync(repo);
+  runGit(repo, ["init", "-q", "-b", "main"]);
+  write(repo, ".gitignore", "docs/intake/**\ndocs/control/local/**\n");
+  return failureRecord(repo, options);
+};
+const failureCounts = (counts) => ({
+  failedVerifications: 0,
+  failedFinalReviews: 0,
+  repairs: 0,
+  ordersMadeReady: 0,
+  failedFirstVerifications: 0,
+  corrections: 0,
+  offRamps: 0,
+  offRampEvents: {},
+  amendments: 0,
+  withdrawnAmendments: 0,
+  overriddenHolds: 0,
+  ...counts,
+});
+const windowCounts = failureCounts({
+  failedVerifications: 1,
+  failedFinalReviews: 1,
+  repairs: 2,
+  ordersMadeReady: 1,
+  failedFirstVerifications: 1,
+  corrections: 2,
+  offRamps: 2,
+  offRampEvents: { CriterionWaived: 1, RecordCorrected: 1 },
+  amendments: 2,
+  withdrawnAmendments: 1,
+  overriddenHolds: 1,
+});
+// Every file under a checkout, ignored ones included, by path and bytes.
+const treeDigest = (repo) => {
+  const hash = createHash("sha256");
+  const walk = (directory) => {
+    for (const entry of readdirSync(join(repo, directory), {
+      withFileTypes: true,
+    }).sort((a, b) => a.name.localeCompare(b.name))) {
+      const path = directory ? `${directory}/${entry.name}` : entry.name;
+      if (path === ".git") continue;
+      if (entry.isDirectory()) walk(path);
+      else hash.update(`${path}\0`).update(readFileSync(join(repo, path)));
+    }
+  };
+  walk("");
+  return hash.digest("hex");
 };
 
 export async function fixtures() {
@@ -3977,6 +4386,657 @@ else {
         );
         assert.deepEqual(scope.judgedOrderIds, ["WO-901", "WO-902"]);
         assert.deepEqual(scope.carried, []);
+      },
+    );
+    await check(
+      "WO-172 plan failures counts each kind of item in its window, lists an event without a time only under --all, and pages the record under the feed's bound",
+      async () => {
+        const repo = failureRepo(parent, "failures-record");
+        const snapshot = () => treeDigest(repo);
+        const before = snapshot();
+        // The default window opens at the latest planning receipt.
+        const page = await plan(["failures"], repo);
+        assert.deepEqual(page.window, {
+          since: "2030-01-02T12:00:00.000Z",
+          until: null,
+          opensAt: "latest planning receipt 2030-01-02-planning-fixture-001",
+          timeless: "excluded",
+        });
+        assert.deepEqual(page.counts.window, windowCounts);
+        assert.deepEqual(
+          page.counts.record,
+          failureCounts({
+            failedVerifications: 2,
+            failedFinalReviews: 1,
+            repairs: 3,
+            ordersMadeReady: 3,
+            failedFirstVerifications: 2,
+            corrections: 3,
+            offRamps: 2,
+            offRampEvents: { CriterionWaived: 1, RecordCorrected: 1 },
+            amendments: 2,
+            withdrawnAmendments: 1,
+            overriddenHolds: 1,
+          }),
+        );
+        assert.equal(page.items, 12);
+        assert.equal(page.next, null);
+        assert.deepEqual(
+          [...new Set(page.rows.map((row) => row.kind))].sort(),
+          ["amendment", "correction", "failed-judgment", "off-ramp", "repair"],
+        );
+        // Newest first; a decision's day sorts at its end; identifiers,
+        // dates and paths only. The withdrawal is its own item, and the
+        // correction of VER-001 replaces its path and judge.
+        assert.deepEqual(page.rows, [
+          {
+            kind: "correction",
+            decision: "WO-802-D001",
+            date: "2030-01-03",
+            phase: "repair",
+          },
+          {
+            kind: "correction",
+            decision: "WO-802-D002",
+            date: "2030-01-03",
+            phase: "implementation",
+          },
+          {
+            kind: "amendment",
+            event: "PlanHoldOverridden",
+            receipt: "2030-01-02-planning-fixture-001",
+            recordedAt: "2030-01-03T11:00:00.000Z",
+          },
+          {
+            kind: "amendment",
+            event: "PlanExecutionAmendmentWithdrawn",
+            order: "WO-802",
+            decision: "WO-802-D002",
+            recordedAt: "2030-01-03T10:00:00.000Z",
+          },
+          {
+            kind: "amendment",
+            event: "PlanExecutionAmended",
+            order: "WO-802",
+            decision: "WO-802-D002",
+            recordedAt: "2030-01-03T09:30:00.000Z",
+            withdrawn: true,
+          },
+          {
+            kind: "amendment",
+            event: "PlanExecutionAmended",
+            order: "WO-802",
+            decision: "WO-802-D001",
+            recordedAt: "2030-01-03T09:00:00.000Z",
+            withdrawn: false,
+          },
+          {
+            kind: "off-ramp",
+            event: "RecordCorrected",
+            order: "WO-802",
+            corrects: "VER-001",
+            recordedAt: "2030-01-03T06:45:00.000Z",
+          },
+          {
+            kind: "off-ramp",
+            event: "CriterionWaived",
+            order: "WO-802",
+            criterion: "2",
+            recordedAt: "2030-01-03T06:30:00.000Z",
+          },
+          {
+            kind: "repair",
+            order: "WO-802",
+            answers: "FINAL-001",
+            recordedAt: "2030-01-03T06:00:00.000Z",
+          },
+          {
+            kind: "failed-judgment",
+            order: "WO-802",
+            report: "FINAL-001",
+            phase: "finalReview",
+            recordedAt: "2030-01-03T05:00:00.000Z",
+            path: "docs/final-reviews/WO-802/FINAL-001.md",
+            judge: { harness: "unknown", model: "unknown", effort: "unknown" },
+          },
+          {
+            kind: "repair",
+            order: "WO-802",
+            answers: "VER-001",
+            recordedAt: "2030-01-03T03:00:00.000Z",
+          },
+          {
+            kind: "failed-judgment",
+            order: "WO-802",
+            report: "VER-001",
+            phase: "verification",
+            recordedAt: "2030-01-03T02:00:00.000Z",
+            path: "docs/verifications/WO-802/VER-001-corrected.md",
+            judge: {
+              harness: "codex-cli",
+              model: "corrected-model",
+              effort: "xhigh",
+            },
+            corrected: true,
+          },
+        ]);
+        assert.deepEqual(page.localGateFailures, {
+          source: "local",
+          counted:
+            "failed rows of this checkout's gate index, not runs (a run can leave a runner row and a host row); counted only",
+          failedRows: 1,
+          byOrder: { "WO-802": 1 },
+        });
+        assert.deepEqual(page.localShellDiagnostics, {
+          source: "local",
+          counted:
+            "diagnostics the shell printed about commands as written, as this checkout's observer saw them under Claude Code; a lower bound, counted only",
+          diagnostics: 3,
+          byKind: { "unmatched-pattern": 2, "program-not-found": 1 },
+          byOrder: { "WO-802": 2, unassigned: 1 },
+        });
+        // A window that ends before the withdrawal shows the amendment in
+        // force and counts no withdrawal.
+        const earlier = await plan(
+          ["failures", "--until", "2030-01-03T09:45:00.000Z"],
+          repo,
+        );
+        assert.equal(earlier.counts.window.withdrawnAmendments, 0);
+        assert.deepEqual(
+          earlier.rows
+            .filter((row) => row.event === "PlanExecutionAmended")
+            .map(({ decision, withdrawn }) => [decision, withdrawn]),
+          [
+            ["WO-802-D002", false],
+            ["WO-802-D001", false],
+          ],
+        );
+        // Events without a time belong to --all only, as `unknown`, oldest.
+        const all = await plan(["failures", "--all"], repo);
+        assert.deepEqual(all.counts.window, all.counts.record);
+        assert.equal(all.window.timeless, "included");
+        assert.deepEqual(
+          all.rows
+            .slice(-2)
+            .map(({ kind, order, recordedAt }) => [kind, order, recordedAt]),
+          [
+            ["failed-judgment", "WO-801", "unknown"],
+            ["repair", "WO-801", "unknown"],
+          ],
+        );
+        assert.deepEqual(all.localGateFailures.byOrder, {
+          "WO-802": 1,
+          "WO-803": 1,
+        });
+        assert.deepEqual(all.localShellDiagnostics.byKind, {
+          "unmatched-pattern": 2,
+          "program-not-found": 1,
+          "reserved-parameter": 1,
+        });
+        assert.deepEqual(all.localShellDiagnostics.byOrder, {
+          "WO-802": 2,
+          "WO-803": 1,
+          unassigned: 1,
+        });
+        const since = await plan(["failures", "--since", "2000-01-01"], repo);
+        assert.equal(since.window.since, "2000-01-01T00:00:00.000Z");
+        assert.ok(!since.rows.some((row) => row.recordedAt === "unknown"));
+        assert.equal(since.counts.window.failedVerifications, 1);
+        assert.equal(since.counts.window.corrections, 3);
+        // The upper bound includes its day for a decision and its instant
+        // for an event.
+        const until = await plan(
+          ["failures", "--all", "--until", "2030-01-03T02:00:00.000Z"],
+          repo,
+        );
+        assert.deepEqual(
+          until.counts.window,
+          failureCounts({
+            failedVerifications: 2,
+            repairs: 1,
+            ordersMadeReady: 3,
+            failedFirstVerifications: 2,
+            corrections: 3,
+          }),
+        );
+        // A bound in another zone names the same instant, and a leap day is
+        // a day its month holds.
+        const offset = await plan(
+          ["failures", "--all", "--until", "2030-01-03T07:30:00+05:30"],
+          repo,
+        );
+        assert.equal(offset.window.until, "2030-01-03T02:00:00.000Z");
+        assert.deepEqual(offset.counts.window, until.counts.window);
+        const leap = await plan(["failures", "--since", "2028-02-29"], repo);
+        assert.equal(leap.window.since, "2028-02-29T00:00:00.000Z");
+        for (const [args, message] of [
+          [["--all", "--since", "2030-01-01"], /usage: plan failures/],
+          [["--since"], /usage: plan failures/],
+          [["--all", "--all"], /usage: plan failures/],
+          [["--cursor", "x", "--export", "f.json"], /usage: plan failures/],
+          [
+            ["--since", "yesterday"],
+            /--since needs a UTC date or a time with its zone/,
+          ],
+          // A time without its zone would read as the host's local time.
+          [
+            ["--until", "2030-01-03T02:00"],
+            /--until needs a UTC date or a time with its zone/,
+          ],
+          // A day its month does not hold would roll into the next month and
+          // move the window (WO-172-D029): a date, a day absent from a common
+          // year, and a timestamp whose instant falls on a real day of the
+          // month it names, which only its own zone's reading exposes.
+          [
+            ["--since", "2026-09-31"],
+            /--since needs a UTC date or a time with its zone/,
+          ],
+          [
+            ["--all", "--until", "2026-02-30"],
+            /--until needs a UTC date or a time with its zone/,
+          ],
+          [
+            ["--since", "2030-02-29"],
+            /--since needs a UTC date or a time with its zone/,
+          ],
+          [
+            ["--all", "--until", "2030-09-31T04:00:00+05:30"],
+            /--until needs a UTC date or a time with its zone/,
+          ],
+          [
+            ["--all", "--until", "2030-01-03T24:00:00Z"],
+            /--until needs a UTC date or a time with its zone/,
+          ],
+          // An instant outside the years 0000 to 9999 has no text that
+          // sorts with the record's times, and the engine holds no leap
+          // second.
+          [
+            ["--since", "9999-12-31T23:59:59-23:59"],
+            /--since needs a UTC date or a time with its zone/,
+          ],
+          [
+            ["--all", "--until", "9999-12-31T23:59:59-23:59"],
+            /--until needs a UTC date or a time with its zone/,
+          ],
+          [
+            ["--all", "--until", "0000-01-01T00:00:00+00:01"],
+            /--until needs a UTC date or a time with its zone/,
+          ],
+          [
+            ["--all", "--until", "2016-12-31T23:59:60Z"],
+            /--until needs a UTC date or a time with its zone/,
+          ],
+          [
+            ["--since", "2030-01-05", "--until", "2030-01-04"],
+            /closes before it opens/,
+          ],
+          [["--cursor", `${"0".repeat(64)}:0`], /stale or invalid page cursor/],
+        ])
+          await assert.rejects(
+            plan(["failures", ...args], repo),
+            message,
+            args.join(" "),
+          );
+        // Enough items for several pages: each stays under 8 KB and the
+        // cursors reach every item once, in the export's order.
+        write(
+          repo,
+          "docs/control/orders/WO-804.jsonl",
+          lines([
+            {
+              type: "WorkOrderActivated",
+              workOrderId: "WO-804",
+              workOrderPath: "docs/work-orders/WO-804-fixture.md",
+              recordedAt: at("2030-01-05", 0),
+            },
+            ...Array.from({ length: 40 }, (_, index) => [
+              {
+                type: "VerificationCompleted",
+                workOrderId: "WO-804",
+                verificationId: `VER-${String(index + 1).padStart(3, "0")}`,
+                reportPath: `docs/verifications/WO-804/VER-${String(index + 1).padStart(3, "0")}.md`,
+                verdict: "fail",
+                actor: failureActor,
+                recordedAt: at("2030-01-05", 1, index),
+              },
+              {
+                type: "RepairCompleted",
+                workOrderId: "WO-804",
+                sourceVerificationId: `VER-${String(index + 1).padStart(3, "0")}`,
+                recordedAt: at("2030-01-05", 2, index),
+              },
+            ]).flat(),
+          ]),
+        );
+        const pages = [];
+        for (let next = ["failures"]; next;) {
+          const current = await plan(next, repo);
+          assert.ok(Buffer.byteLength(prettyJson(current)) <= 8192);
+          assert.ok(current.rows.length <= 32);
+          pages.push(current);
+          next = current.next?.replace(/^npm run plan -- /, "").split(" ");
+        }
+        assert.ok(pages.length > 2);
+        const outside = realpathSync(
+          mkdtempSync(join(tmpdir(), "dotln-failures-export-")),
+        );
+        try {
+          const printed = await plan(
+            ["failures", "--export", join(outside, "failures.json")],
+            repo,
+          );
+          assert.deepEqual(Object.keys(printed), [
+            "revision",
+            "kind",
+            "window",
+            "counts",
+            "localGateFailures",
+            "localShellDiagnostics",
+            "items",
+            "exported",
+            "path",
+          ]);
+          assert.equal(printed.exported, 92);
+          const exported = JSON.parse(readFileSync(printed.path, "utf8"));
+          assert.deepEqual(
+            exported.rows,
+            pages.flatMap((current) => current.rows),
+          );
+          assert.equal(exported.revision, pages[0].revision);
+          // An export replaces only an export of its own kind.
+          await plan(["failures", "--export", printed.path, "--all"], repo);
+          write(
+            outside,
+            "rows.json",
+            '{"revision":"x","showing":"pending","rows":[]}\n',
+          );
+          await assert.rejects(
+            plan(["failures", "--export", join(outside, "rows.json")], repo),
+            /Failures export destination exists and is not a failures export; name a new file/,
+          );
+          await assert.rejects(
+            plan(["followups", "--export", printed.path], repo),
+            /Follow-up export destination exists and is not a follow-up export; name a new file/,
+          );
+          await assert.rejects(
+            plan(["failures", "--export", "docs/planning/failures.json"], repo),
+            /Failures export destination must be a file under the system temporary directory or the ignored local control lane/,
+          );
+        } finally {
+          rmSync(outside, { recursive: true, force: true });
+        }
+        // A cursor names the window's items: a new item stales it.
+        const stale = pages[0].next.split(" --cursor ")[1];
+        writeFileSync(
+          join(repo, "docs/control/orders/WO-804.jsonl"),
+          `${read(repo, "docs/control/orders/WO-804.jsonl")}${lines([
+            {
+              type: "RepairCompleted",
+              workOrderId: "WO-804",
+              sourceVerificationId: "VER-040",
+              recordedAt: at("2030-01-05", 3),
+            },
+          ])}`,
+        );
+        await assert.rejects(
+          plan(["failures", "--cursor", stale], repo),
+          /stale or invalid page cursor; restart plan failures/,
+        );
+        rmSync(join(repo, "docs/control/orders/WO-804.jsonl"));
+        // A receipt the chain would refuse is refused by name, never skipped.
+        const unreadable = `${RECEIPTS}/2030-01-06-planning-fixture-004.json`;
+        write(
+          repo,
+          unreadable,
+          '{"receiptId":"2030-01-06-planning-fixture-004"}\n',
+        );
+        await assert.rejects(
+          plan(["failures"], repo),
+          /Planning failures: receipt 2030-01-06-planning-fixture-004\.json names no receipt schema/,
+        );
+        rmSync(join(repo, unreadable));
+        // The local lane names the twelve orders with the most failed rows,
+        // counts the rest, and a row without an order is unassigned.
+        const checks = join(repo, "docs/control/local/harness/checks.json");
+        const kept = readFileSync(checks, "utf8");
+        writeFileSync(
+          checks,
+          JSON.stringify(
+            Array.from({ length: 15 }, (_, index) => ({
+              checkId: "npm test",
+              ...(index < 14
+                ? { workOrder: `WO-7${String(index).padStart(2, "0")}` }
+                : {}),
+              executed: true,
+              exitCode: 1,
+              recordedAt: at("2030-01-03", 1, index),
+            })),
+          ),
+        );
+        const lane = (await plan(["failures"], repo)).localGateFailures;
+        assert.equal(lane.failedRows, 15);
+        assert.equal(Object.keys(lane.byOrder).length, 12);
+        assert.equal(lane.otherOrders + Object.keys(lane.byOrder).length, 15);
+        assert.equal(lane.otherRows, 3);
+        assert.ok(
+          "unassigned" in lane.byOrder || lane.otherOrders === 3,
+          "a row without an order is counted as unassigned",
+        );
+        writeFileSync(checks, kept);
+        // The shell lane names twelve orders and counts the rest; without the
+        // file the page holds no block, and a lane that is not a regular file
+        // is reported and stops nothing.
+        const shell = join(
+          repo,
+          "docs/control/local/harness/shell-diagnostics.jsonl",
+        );
+        const keptShell = readFileSync(shell, "utf8");
+        writeFileSync(
+          shell,
+          Array.from({ length: 15 }, (_, index) =>
+            JSON.stringify({
+              at: at("2030-01-03", 1, index),
+              shell: "zsh",
+              kind: index % 2 ? "unmatched-pattern" : "equals-word",
+              workOrder:
+                index < 14 ? `WO-7${String(index).padStart(2, "0")}` : null,
+            }),
+          ).join("\n") + "\n",
+        );
+        const counted = (await plan(["failures"], repo)).localShellDiagnostics;
+        assert.equal(counted.diagnostics, 15);
+        assert.deepEqual(counted.byKind, {
+          "equals-word": 8,
+          "unmatched-pattern": 7,
+        });
+        assert.equal(Object.keys(counted.byOrder).length, 12);
+        assert.equal(counted.otherOrders, 3);
+        assert.equal(counted.otherRows, 3);
+        assert.equal("otherKinds" in counted, false);
+        // A kind is counted under its own name whatever the name is, a row
+        // marked failed is counted as any other, and a lane of many kinds
+        // names twenty-four, counts the rest and keeps the page.
+        writeFileSync(
+          shell,
+          [
+            ...["constructor", "constructor", "toString", "__proto__"].map(
+              (kind) => ({ kind }),
+            ),
+            { kind: "equals-word", marked: "failed", use: "0".repeat(64) },
+            ...Array.from({ length: 200 }, (_, index) => ({
+              kind: `kind-${"abcdefghij"[index % 10]}${"abcdefghij"[Math.floor(index / 10) % 10]}${"abc"[Math.floor(index / 100)]}`,
+            })),
+          ]
+            .map((row) =>
+              JSON.stringify({
+                at: at("2030-01-03", 1, 0),
+                shell: "zsh",
+                workOrder: "WO-700",
+                ...row,
+              }),
+            )
+            .join("\n") + "\n",
+        );
+        const kinds = (await plan(["failures"], repo)).localShellDiagnostics;
+        // Two of the names are no kind's: a kind is lower-case letters and
+        // hyphens.
+        assert.equal(kinds.diagnostics, 203);
+        assert.equal(kinds.byKind.constructor, 2);
+        assert.equal(kinds.byKind["equals-word"], 1);
+        assert.equal(Object.keys(kinds.byKind).length, 24);
+        assert.equal(kinds.otherKinds, 178);
+        assert.equal(kinds.otherKindRows, 178);
+        assert.ok(
+          Object.values(kinds.byKind).every((count) => Number.isInteger(count)),
+        );
+        rmSync(shell);
+        const without = await plan(["failures"], repo);
+        assert.equal("localShellDiagnostics" in without, false);
+        assert.ok(without.localGateFailures);
+        mkdirSync(shell);
+        assert.deepEqual(
+          (await plan(["failures"], repo)).localShellDiagnostics,
+          {
+            source: "local",
+            unavailable:
+              "Planning failures: the shell diagnostic log is not a regular file",
+          },
+        );
+        rmSync(shell, { recursive: true });
+        writeFileSync(shell, keptShell);
+        assert.equal(snapshot(), before, "the command writes nothing");
+      },
+    );
+    await check(
+      "WO-172 plan start prints the window's counts, the command and the orders passed since the latest Entropy Reducer review in at most 1 KB, and opens the branch when the counts cannot be computed",
+      async () => {
+        const repo = failureRepo(parent, "failures-start");
+        const started = await plan(["start", "failures"], repo);
+        assert.deepEqual(Object.keys(started), [
+          "branch",
+          "phase",
+          "authority",
+          "failures",
+          "followups",
+        ]);
+        assert.deepEqual(started.failures, {
+          command: "npm run plan -- failures",
+          since: "2030-01-02T12:00:00.000Z",
+          opensAt: "latest planning receipt 2030-01-02-planning-fixture-001",
+          items: 12,
+          counts: windowCounts,
+          // WO-802 passed between review completion and filing; WO-803's
+          // and WO-801's passes precede completion or carry no time.
+          sinceEntropyReview: {
+            review: "REVIEW-001",
+            endedAt: "2030-01-03T07:30:00.000Z",
+            finalReviewPassedOrders: 1,
+          },
+        });
+        assert.ok(Buffer.byteLength(prettyJson(started.failures)) <= 1024);
+        // Compare instants, excluding the exact endpoint and deduplicating
+        // orders. An offset timestamp can sort before its earlier UTC bound.
+        const passedAt = (workOrderId, recordedAt, verdict = "pass") => ({
+          type: "FinalReviewCompleted",
+          workOrderId,
+          recordedAt,
+          verdict,
+        });
+        assert.equal(
+          sinceEntropyReview(repo, {
+            eventSegments: new Map([
+              [
+                "fixture",
+                [
+                  passedAt("WO-901", "2030-01-03T07:30:00.000Z"),
+                  passedAt("WO-902", "2030-01-03T03:00:00.000-05:00"),
+                  passedAt("WO-902", "2030-01-03T09:00:00.000Z"),
+                  passedAt("WO-903", "2030-01-03T08:00:00.000Z", "fail"),
+                  passedAt("WO-904", undefined),
+                ],
+              ],
+            ]),
+          }).finalReviewPassedOrders,
+          1,
+        );
+        // An empty window prints zero counts.
+        runGit(repo, ["switch", "-q", "main"]);
+        write(
+          repo,
+          ...failureReceipt(3, "planning", "2031-01-01T00:00:00.000Z"),
+        );
+        commit(repo, "a later planning receipt");
+        const empty = await plan(["start", "empty"], repo);
+        assert.equal(empty.failures.since, "2031-01-01T00:00:00.000Z");
+        assert.equal(empty.failures.items, 0);
+        assert.deepEqual(empty.failures.counts, failureCounts({}));
+        // Counts that cannot be computed are one line; the branch opens.
+        runGit(repo, ["switch", "-q", "main"]);
+        writeFileSync(
+          join(repo, OVERRIDES),
+          `${read(repo, OVERRIDES)}${JSON.stringify({ schemaVersion: 9, type: "Unknown" })}\n`,
+        );
+        commit(repo, "an unreadable planning control event");
+        const unreadable = await plan(["start", "unreadable"], repo);
+        assert.match(
+          unreadable.branch,
+          /^planning\/\d{4}-\d{2}-\d{2}-unreadable$/,
+        );
+        assert.equal(
+          runGit(repo, ["symbolic-ref", "--short", "HEAD"]),
+          unreadable.branch,
+        );
+        assert.deepEqual(Object.keys(unreadable.failures), [
+          "command",
+          "unavailable",
+          "sinceEntropyReview",
+        ]);
+        assert.match(
+          unreadable.failures.unavailable,
+          /^counts not computed: [^\n]+$/,
+        );
+        assert.equal(
+          unreadable.failures.sinceEntropyReview.finalReviewPassedOrders,
+          1,
+        );
+        assert.ok(Buffer.byteLength(prettyJson(unreadable.failures)) <= 1024);
+        // With no filed Entropy Reducer review the count is unknown.
+        const unreviewed = failureRepo(parent, "failures-unreviewed", {
+          review: false,
+        });
+        const none = await plan(["start", "unreviewed"], unreviewed);
+        assert.deepEqual(none.failures.sinceEntropyReview, {
+          review: null,
+          finalReviewPassedOrders: "unknown",
+        });
+        assert.deepEqual(none.failures.counts, windowCounts);
+        // A filed receipt without a usable completion time never falls back
+        // to filing time or an older review; startup remains available.
+        const receiptPath =
+          "docs/instance/entropy-reducer/runs/REVIEW-001.json";
+        for (const [label, bytes] of [
+          ["missing", null],
+          ["malformed", "{"],
+          ["undated", prettyJson({ receiptId: "REVIEW-001" })],
+          ["invalid-time", prettyJson({ endedAt: "unknown" })],
+        ]) {
+          runGit(repo, ["switch", "-q", "main"]);
+          if (bytes === null) rmSync(join(repo, receiptPath));
+          else write(repo, receiptPath, bytes);
+          commit(repo, `a ${label} review receipt`);
+          const unavailable = await plan(["start", `review-${label}`], repo);
+          assert.match(
+            unavailable.failures.sinceEntropyReview,
+            /^unknown: [^\n]+$/,
+          );
+          assert.equal(
+            runGit(repo, ["symbolic-ref", "--short", "HEAD"]),
+            unavailable.branch,
+          );
+          assert.ok(
+            Buffer.byteLength(prettyJson(unavailable.failures)) <= 1024,
+          );
+        }
       },
     );
     await check(

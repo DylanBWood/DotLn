@@ -12,14 +12,6 @@ Planning entry returns the pending [follow-up register](followups.json) in
 bounded pages. Use `npm run plan -- followups` for its current counts, source
 pointers and continuation command; untouched items persist across passes.
 
-Planning entry reads what failed (operator direction, 2026-09-28): before the
-register, a pass counts the failed judgments, repairs and corrections recorded
-since the pass before it, reads each failed report and gives its cause a route
-in the pass's document. Until WO-172 lands the count is made by hand from
-`docs/control/orders/` and the decision records; the
-[failure inventory](failure-inventory-2026-09-28.md) holds the record to
-2026-09-28.
-
 Live feedback episodes (operator direction, 2026-09-28): an order that owes
 one runs it in the executor's session on Codex `gpt-6-sol` at `xhigh` or
 Claude Code `claude-opus-5-5` at `xhigh`. On either, it needs no operator

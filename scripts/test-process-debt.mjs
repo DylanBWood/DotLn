@@ -78,6 +78,12 @@ import {
   inheritedLedgerDuty,
   trapRows,
   operatorDirections,
+  operatorStep,
+  OPERATOR_STEPS,
+  metaHealth,
+  planCostTable,
+  planCostText,
+  PLAN_COST_BYTES,
   writeOrderSnapshot,
   recoveredUsageSnapshot,
   usageTotals,
@@ -311,6 +317,18 @@ function usageRow(workOrder, role, startedAt, totalTokens) {
 }
 const jsonLines = (rows) =>
   rows.map((row) => JSON.stringify(row)).join("\n") + "\n";
+// WO-172: the lifecycle steps the direction reader adds, zero unless named.
+const lifecycleSteps = (counts = {}) => ({
+  resumeCorrection: 0,
+  resumeDirection: 0,
+  resumeScopeExpansion: 0,
+  resumeOverride: 0,
+  resumeTakeover: 0,
+  resumeAnswer: 0,
+  ...counts,
+});
+const directionSource =
+  "committed decision dispatches (control prefixes, legacy operator labels and the operator step a lifecycle dispatch names) and control events";
 const metaRow = async (root, workOrder = "WO-999") =>
   (await collectMeta(root)).orders.find((row) => row.workOrder === workOrder);
 
@@ -805,11 +823,12 @@ test("WO-170 operator directions equal a hand count of committed decisions and o
       analysis: 0,
       conversationOnly: 0,
       operatorLabel: 0,
+      ...lifecycleSteps(),
       OperatorOverrideRecorded: 0,
       RecordCorrected: 1,
       CriterionWaived: 0,
     },
-    source: "committed decision dispatches and control events",
+    source: directionSource,
   });
   const none = meta.orders.find((row) => row.workOrder === "WO-998");
   assert.equal(none.metrics.operatorDirections, 0);
@@ -820,7 +839,7 @@ test("WO-170 operator directions equal a hand count of committed decisions and o
   assert.match(table, /^\| WO-998 \|.*\| 0 \(Δ [^)]*\) \|$/m);
   assert.match(
     renderMeta(meta),
-    /^WO-999 operator directions: 4; scopeExpand 2, operatorOverride 1, RecordCorrected 1; committed decision dispatches and control events\.$/m,
+    /^WO-999 operator directions: 4; scopeExpand 2, operatorOverride 1, RecordCorrected 1; committed decision dispatches \(control prefixes, legacy operator labels and the operator step a lifecycle dispatch names\) and control events\.$/m,
   );
   const trap = meta.traps.find(
     (row) => row.id === "shifting-the-burden-to-the-intervenor",
@@ -862,6 +881,7 @@ test("WO-170 operator directions equal a hand count of committed decisions and o
       analysis: 0,
       conversationOnly: 0,
       operatorLabel: 5,
+      ...lifecycleSteps(),
       OperatorOverrideRecorded: 0,
       RecordCorrected: 0,
       CriterionWaived: 1,
@@ -879,6 +899,386 @@ test("WO-170 operator directions equal a hand count of committed decisions and o
       .planningCaptures.map(({ date, captures }) => [date, captures]),
     [["2026-09-27", 2]],
   );
+});
+
+const fixtureDecision = (id, extra = {}) =>
+  `## ${id}\n\n\`\`\`json\n${json({
+    id,
+    date: "2026-09-10",
+    dispatch: "resume: next",
+    decision: "Fixture decision.",
+    evidence: ["fixture"],
+    rejected: [],
+    reopenWhen: "never",
+    ...extra,
+  })}\`\`\`\n`;
+// One order's lifecycle from activation to close, its first verification
+// failing or passing, at a given hour of 2026-09-11.
+const closedOrder = (workOrder, hour, first) =>
+  [
+    [
+      "WorkOrderActivated",
+      { workOrderPath: `docs/work-orders/${workOrder}-fixture.md` },
+    ],
+    ["ImplementationReady"],
+    ["VerificationRequested", { verificationId: "VER-001" }],
+    ["VerificationCompleted", { verificationId: "VER-001", verdict: first }],
+    ...(first === "fail"
+      ? [
+          ["RepairRequested", { sourceFindingId: "VER-001" }],
+          ["RepairCompleted", { sourceVerificationId: "VER-001" }],
+          ["VerificationRequested", { verificationId: "VER-002" }],
+          [
+            "VerificationCompleted",
+            { verificationId: "VER-002", verdict: "pass" },
+          ],
+        ]
+      : []),
+    ["FinalReviewRequested", { finalReviewId: "FINAL-001" }],
+    ["FinalReviewCompleted", { finalReviewId: "FINAL-001", verdict: "pass" }],
+  ].map(([type, fields = {}], minute) => ({
+    schemaVersion: 1,
+    type,
+    workOrderId: workOrder,
+    ...fields,
+    recordedAt: `2026-09-11T${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}:00.000Z`,
+  }));
+
+test("WO-172 every closed order carries its failed judgments, repairs and recorded corrections without a journal, and the health line counts failed first verifications over the last eight closed orders", async (t) => {
+  const root = repo(t);
+  // WO-999 fails its first verification and its first final review and is
+  // repaired after each; no journal and no snapshot of it exists.
+  const segment = join(root, "docs/control/orders/WO-999.jsonl");
+  writeFileSync(
+    segment,
+    readFileSync(segment, "utf8") +
+      jsonLines(
+        [
+          ["ImplementationReady"],
+          ["VerificationRequested", { verificationId: "VER-001" }],
+          [
+            "VerificationCompleted",
+            { verificationId: "VER-001", verdict: "fail" },
+          ],
+          ["RepairRequested", { sourceFindingId: "VER-001" }],
+          ["RepairCompleted", { sourceVerificationId: "VER-001" }],
+          ["VerificationRequested", { verificationId: "VER-002" }],
+          [
+            "VerificationCompleted",
+            { verificationId: "VER-002", verdict: "pass" },
+          ],
+          ["FinalReviewRequested", { finalReviewId: "FINAL-001" }],
+          [
+            "FinalReviewCompleted",
+            { finalReviewId: "FINAL-001", verdict: "fail" },
+          ],
+          ["RepairRequested", { sourceFindingId: "FINAL-001" }],
+          ["RepairCompleted", { sourceVerificationId: "FINAL-001" }],
+          ["VerificationRequested", { verificationId: "VER-003" }],
+          [
+            "VerificationCompleted",
+            { verificationId: "VER-003", verdict: "pass" },
+          ],
+          ["FinalReviewRequested", { finalReviewId: "FINAL-002" }],
+          [
+            "FinalReviewCompleted",
+            { finalReviewId: "FINAL-002", verdict: "pass" },
+          ],
+        ].map(([type, fields = {}], minute) => ({
+          schemaVersion: 1,
+          type,
+          workOrderId: "WO-999",
+          ...fields,
+          recordedAt: `2026-09-10T00:${String(minute + 1).padStart(2, "0")}:00.000Z`,
+        })),
+      ),
+  );
+  // A correction by kind, one by a misread field alone, and a decision that
+  // is neither.
+  write(
+    root,
+    "docs/evidence/WO-999/decisions.md",
+    `# WO-999 decisions\n\n${[
+      fixtureDecision("WO-999-D001", {
+        kind: "correction",
+        misread: "The order.",
+        meant: "Its criterion.",
+        changed: "The fixture.",
+      }),
+      fixtureDecision("WO-999-D002", { misread: "The gate." }),
+      fixtureDecision("WO-999-D003"),
+    ].join("\n")}`,
+  );
+  const fields = [
+    "failedVerifications",
+    "failedFinalReviews",
+    "repairs",
+    "recordedCorrections",
+  ];
+  const pick = (metrics) =>
+    Object.fromEntries(fields.map((key) => [key, metrics[key]]));
+  let meta = await collectMeta(root);
+  const order = meta.orders.find((row) => row.workOrder === "WO-999");
+  assert.equal(order.phase, "closed");
+  assert.equal(order.source.journals, "unavailable", "no retained journal");
+  assert.deepEqual(pick(order.metrics), {
+    failedVerifications: 1,
+    failedFinalReviews: 1,
+    repairs: 2,
+    recordedCorrections: 2,
+  });
+  assert.deepEqual(meta.closedJudgments, [
+    {
+      workOrder: "WO-999",
+      failedVerifications: 1,
+      failedFinalReviews: 1,
+      repairs: 2,
+      recordedCorrections: 2,
+      firstVerification: "fail",
+    },
+  ]);
+  // Fewer than eight closed orders: the summary states the number counted.
+  assert.deepEqual(
+    { ...meta.firstVerifications, source: undefined },
+    {
+      counted: 1,
+      failed: 1,
+      orders: [{ workOrder: "WO-999", firstVerification: "fail" }],
+      source: undefined,
+    },
+  );
+  assert.match(
+    metaHealth(meta),
+    /; first verification failed in 1 of the 1 closed orders counted \(fewer than eight\); 0 reopen candidates;/,
+  );
+  assert.match(
+    renderMeta(meta),
+    /^Failed verifications \/ failed final reviews \/ repairs \/ recorded corrections per closed order \(control fold and decisions\): WO-999 1\/1\/2\/2\.$/m,
+  );
+  assert.match(
+    renderMeta(meta),
+    /^First verification failed in 1 of the 1 closed orders counted \(fewer than eight\): WO-999 fail\.$/m,
+  );
+  // Nine closed orders: the last eight by close time are counted, WO-999 is
+  // the oldest and falls out.
+  for (const [index, first] of [
+    "fail",
+    "fail",
+    "pass",
+    "fail",
+    "pass",
+    "pass",
+    "fail",
+    "pass",
+  ].entries())
+    write(
+      root,
+      `docs/control/orders/WO-90${index + 1}.jsonl`,
+      jsonLines(closedOrder(`WO-90${index + 1}`, index + 1, first)),
+    );
+  meta = await collectMeta(root);
+  assert.equal(meta.closedJudgments.length, 9, "every closed order");
+  assert.deepEqual(
+    meta.firstVerifications.orders.map((row) => row.workOrder),
+    [
+      "WO-901",
+      "WO-902",
+      "WO-903",
+      "WO-904",
+      "WO-905",
+      "WO-906",
+      "WO-907",
+      "WO-908",
+    ],
+  );
+  assert.equal(meta.firstVerifications.failed, 4);
+  assert.match(
+    metaHealth(meta),
+    /; first verification failed in 4 of the last 8 closed orders; 0 reopen candidates;/,
+  );
+  // The planning cost table carries the same summary and the meter rows'
+  // four fields; no threshold, trap or reopen candidate reads them.
+  const table = planCostTable(meta, {
+    costTable: { schemaVersion: 1 },
+    revision: "fixture",
+    orders: [{ workOrderId: "WO-908" }, { workOrderId: "WO-999" }],
+  });
+  assert.deepEqual(table.firstVerifications, meta.firstVerifications);
+  assert.deepEqual(pick(table.rows[0].metrics), {
+    failedVerifications: 0,
+    failedFinalReviews: 0,
+    repairs: 0,
+    recordedCorrections: 0,
+  });
+  assert.equal(table.rows[1].metrics, null, "outside the meter's rows");
+  // The table is written whole within its 64 KB bound and refused over it:
+  // at the bound's last byte, one byte past it, in bytes where characters
+  // would still fit, and for the builder's own rows.
+  assert.equal(PLAN_COST_BYTES, 65536);
+  assert.equal(planCostText(table), json(table));
+  const padded = (bytes) => ({
+    pad: "x".repeat(bytes - Buffer.byteLength(json({ pad: "" }))),
+  });
+  assert.equal(
+    Buffer.byteLength(planCostText(padded(PLAN_COST_BYTES))),
+    PLAN_COST_BYTES,
+  );
+  assert.throws(
+    () => planCostText(padded(PLAN_COST_BYTES + 1)),
+    /Planning cost table exceeds 64 KB/,
+  );
+  const wide = { pad: "é".repeat(PLAN_COST_BYTES / 2) };
+  assert.ok(
+    json(wide).length < PLAN_COST_BYTES,
+    "fewer characters than the bound",
+  );
+  assert.throws(() => planCostText(wide), /Planning cost table exceeds 64 KB/);
+  assert.throws(
+    () =>
+      planCostText(
+        planCostTable(meta, {
+          costTable: { schemaVersion: 1 },
+          revision: "fixture",
+          orders: Array.from({ length: 1200 }, (_, index) => ({
+            workOrderId: `WO-${String(index).padStart(3, "0")}`,
+          })),
+        }),
+      ),
+    /Planning cost table exceeds 64 KB/,
+  );
+  assert.equal(meta.reopenCandidates.length, 0);
+  assert.ok(
+    meta.traps.every((row) =>
+      row.indicators.every((indicator) => !fields.includes(indicator.metric)),
+    ),
+  );
+});
+
+test("WO-172 the direction reader names the operator step a dispatch records, and a lifecycle dispatch counts it once", () => {
+  // Variants of classified rows and the review's phrasings, both of which
+  // shaped the rules; the held-out measure is direction-agreement.json's
+  // independently written battery.
+  for (const [dispatch, step] of [
+    ["resume: next; operator request to rebase onto main", "direction"],
+    ["resume: next; at the operator's request, rebased onto main", "direction"],
+    [
+      "resume: next; the operator told the executor to integrate main",
+      "direction",
+    ],
+    ["resume: fix; operator asked for a narrower repair", "direction"],
+    [
+      "resume: verify; operator pointed out that the fixture was stale",
+      "correction",
+    ],
+    ["resume: final review; operator picked option 2", "answer"],
+    ["resume: next; no operator correction was needed", "none"],
+    ["resume: next; the operator has not approved the waiver", "none"],
+    ["resume: next; no scope expansion was needed", "none"],
+    ["resume: verify; the verifier requested the operator's capture", "none"],
+    ["resume: fix; the executor's correction of the operator's path", "none"],
+    ["resume: next; operator direction recorded in D004 still holds", "none"],
+    // A reply cue makes a direction an answer, never a question or a note.
+    [
+      "resume: next; operator question in chat about the default effort",
+      "other-step",
+    ],
+    [
+      "resume: fix; the operator's note in chat that the parallel order merged",
+      "other-step",
+    ],
+    [
+      "resume: fix; operator correction about the gate's input set",
+      "correction",
+    ],
+    [
+      "resume: next; the operator clarified which report was current",
+      "correction",
+    ],
+    ["resume: next; operator direction to split the fixture", "direction"],
+    ["resume: verify; operator approved one extra live row", "direction"],
+    ["resume: next; operator-requested rebase onto main", "direction"],
+    [
+      "resume: fix; operator scope expansion to cover the export path",
+      "scope-expansion",
+    ],
+    [
+      "resume: next; operator-authorized scope expansion for criterion 3",
+      "scope-expansion",
+    ],
+    ["resume: next; operator override of the writer reservation", "override"],
+    ["resume: next; operator takeover after the session crashed", "takeover"],
+    [
+      "resume: final review; operator selected 'Repair here' when asked",
+      "answer",
+    ],
+    ["resume: fix; operator answered: keep the cache", "answer"],
+    ["resume: next; operator question about the page bound", "other-step"],
+    ["resume: next; standing operator direction of 2026-09-01", "none"],
+    [
+      "resume: fix; within the operator's authorization recorded in D004",
+      "none",
+    ],
+    ["resume: next; operator scope expansion (D002)", "none"],
+    [
+      "resume: next; operator-review assumption 2 says the gate must not require a live row",
+      "none",
+    ],
+    [
+      "resume: next, including the approved fixture repair the operator named",
+      "none",
+    ],
+    ["Executor correction during the operator's resume: next dispatch", "none"],
+    ["resume: next", "none"],
+    ["scope expand: add the export", "scope-expansion"],
+    ["operator override: recover the checkpoint", "override"],
+  ])
+    assert.equal(operatorStep(dispatch), step, dispatch);
+  const directions = operatorDirections(
+    [
+      "resume: fix; operator correction about the gate's input set",
+      "resume: next; operator direction to split the fixture",
+      "resume: next; operator scope expansion to cover the export path",
+      "resume: next; operator override of the writer reservation",
+      "resume: next; operator takeover after the session crashed",
+      "resume: final review; operator selected 'Repair here' when asked",
+      // An operator step outside the six and a reference are not counted.
+      "resume: next; operator question about the page bound",
+      "resume: next; standing operator direction of 2026-09-01",
+      // A legacy lifecycle label the WO-170 rule leaves uncounted is read;
+      // one it counts, and a control prefix, count once.
+      "Operator resume: next, with approval of the bounded repair",
+      "Operator resume: fix; operator correction during the repair",
+      "scope expand: add the export",
+    ].map((dispatch) => ({ dispatch })),
+    [],
+  );
+  assert.deepEqual(directions.byKind, {
+    scopeExpand: 1,
+    operatorOverride: 0,
+    analysis: 0,
+    conversationOnly: 0,
+    operatorLabel: 1,
+    ...lifecycleSteps({
+      resumeCorrection: 1,
+      resumeDirection: 2,
+      resumeScopeExpansion: 1,
+      resumeOverride: 1,
+      resumeTakeover: 1,
+      resumeAnswer: 1,
+    }),
+    OperatorOverrideRecorded: 0,
+    RecordCorrected: 0,
+    CriterionWaived: 0,
+  });
+  assert.equal(directions.total, 9);
+  assert.deepEqual(OPERATOR_STEPS, [
+    "correction",
+    "direction",
+    "scope-expansion",
+    "override",
+    "takeover",
+    "answer",
+  ]);
 });
 
 test("WO-170 the order's snapshot is its own bounded row, written only where its journals are", async (t) => {
