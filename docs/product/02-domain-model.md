@@ -856,7 +856,9 @@ separates these executable switches from the broader modifier policy model.
 | Clean Room                                          | Locked hand-written floor plus a provenance-judgment residue line                                      | No automatic source-provenance judgment is claimed                                                                    |
 
 WO-133 makes the generated prelude report an unavailable runtime once per session
-and cause, retaining every journal row while PostToolUse observers stay silent.
+and cause, retaining every journal row while PostToolUse observers print nothing
+to the terminal; the read observer may hand the agent context after a shell
+command (WO-172-D037).
 
 Generated unit hooks import the pinned built `feedbackBoundary`; there is no
 copied predicate. Permission decisions go through the shared reactor's authority

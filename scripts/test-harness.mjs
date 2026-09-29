@@ -23,6 +23,7 @@ import {
 } from "../packages/skeleton/src/gate-deadlines.mjs";
 import { createHash, randomUUID } from "node:crypto";
 import {
+  appendFileSync,
   cpSync,
   chmodSync,
   existsSync,
@@ -88,6 +89,7 @@ import {
   reserveCodexDispatchWriter,
   runHarnessEvidence,
   seedHarnessWriter,
+  SHELL_DIAGNOSTICS,
 } from "../packages/skeleton/dist/src/harness-host.js";
 import { operatorControl } from "../packages/compiler/src/operator-control.mjs";
 import {
@@ -124,6 +126,8 @@ import {
   patchWriteTargets,
   liveGateReads,
   LIVE_GATE_READ_LIST,
+  shellDiagnostics,
+  shellGuidance,
 } from "../packages/skeleton/dist/src/harness-command.js";
 
 const sourceRoot = fileURLToPath(new URL("../", import.meta.url));
@@ -8432,6 +8436,1399 @@ test("WO-142 repair B2 actual PostToolUse background rows carry scope", () => {
       /synthetic-command|fixture-bash-task|fixture-bash-call/,
     );
   } finally {
+    removeFixture(root, { recursive: true });
+  }
+});
+
+// What zsh 5.9 printed for each command, recorded from the shell itself with
+// each command run as the host runs one, and what the classifier finds: the
+// kind, what the command wrote, how, and the word with its pattern quoted.
+const shellCases = [
+  [
+    "grep -rn --include=*.nomatch foo . | cat; print after",
+    ["(eval):1: no matches found: --include=*.nomatch"],
+    [
+      [
+        "unmatched-pattern",
+        "--include=*.nomatch",
+        "option",
+        "--include='*.nomatch'",
+      ],
+    ],
+  ],
+  [
+    "find . -name *.nomatch | cat; print after",
+    ["(eval):1: no matches found: *.nomatch"],
+    [["unmatched-pattern", "*.nomatch", "option", "'*.nomatch'"]],
+  ],
+  [
+    "ls docs/*.nomatch docs/*.md | cat; print after",
+    ["(eval):1: no matches found: docs/*.nomatch"],
+    [["unmatched-pattern", "docs/*.nomatch", "operand"]],
+  ],
+  [
+    "d=docs; ls $d/*.nomatch | cat; print after",
+    ["(eval):1: no matches found: docs/*.nomatch"],
+    [["unmatched-pattern", "$d/*.nomatch", "operand"]],
+  ],
+  [
+    "ls ~/nosuch-dotln-probe/*.x | cat; print after",
+    ["(eval):1: no matches found: /Users/fixture/nosuch-dotln-probe/*.x"],
+    [["unmatched-pattern", "~/nosuch-dotln-probe/*.x", "operand"]],
+  ],
+  [
+    "ls file{1,2}* | cat; print after",
+    ["(eval):1: no matches found: file1*"],
+    [["unmatched-pattern", "file{1,2}*", "operand"]],
+  ],
+  [
+    "curl -s https://example.test/page?id=1 -m 1 | cat; print after",
+    ["(eval):1: no matches found: https://example.test/page?id=1"],
+    [["unmatched-pattern", "https://example.test/page?id=1", "operand"]],
+  ],
+  [
+    "print -r -- a (b|c) | cat; print after",
+    ["(eval):1: no matches found: (b|c)"],
+    [["unmatched-pattern", "(b|c)", "operand"]],
+  ],
+  [
+    "zsh -f -c 'ls *.nomatch; print inner' | cat; print after",
+    ["zsh:1: no matches found: *.nomatch"],
+    [["unmatched-pattern", "*.nomatch", "operand"]],
+  ],
+  [
+    "eval 'ls *.nomatch | cat'; print after",
+    ["(eval):1: no matches found: *.nomatch"],
+    [["unmatched-pattern", "*.nomatch", "operand"]],
+  ],
+  [
+    "cat <<PY\nx = `ls *.nomatch`\nPY",
+    ["(eval):1: no matches found: *.nomatch"],
+    [["unmatched-pattern", "*.nomatch", "heredoc"]],
+  ],
+  ["cat <<'PY'\nx = `ls *.nomatch`\nPY", [], []],
+  [
+    "print -r -- docs/[ | cat; print after",
+    ["(eval):1: bad pattern: docs/["],
+    [["bad-pattern", "docs/[", ""]],
+  ],
+  [
+    "git for-each-ref --format=%(refname) refs/heads | head -1; print after",
+    ["(eval):1: missing end of string"],
+    [["bad-pattern", "--format=%(refname)", "parentheses"]],
+  ],
+  [
+    "print -r -- foo(bar) | cat; print after",
+    ["(eval):1: unknown file attribute: b"],
+    [["bad-pattern", "foo(bar)", "parentheses"]],
+  ],
+  [
+    "print -r -- === | cat; print after",
+    ["(eval):1: == not found"],
+    [["equals-word", "===", ""]],
+  ],
+  [
+    "export X==value | cat; print after",
+    ["(eval):1: value not found"],
+    [["equals-word", "X==value", ""]],
+  ],
+  [
+    "nosuch-program-dotln; print after",
+    ["(eval):1: command not found: nosuch-program-dotln"],
+    [["program-not-found", "nosuch-program-dotln", ""]],
+  ],
+  [
+    "path=/tmp/x; ls | head -1; print after",
+    ["(eval):1: command not found: ls", "(eval):1: command not found: head"],
+    [
+      ["program-not-found", "ls", "path"],
+      ["program-not-found", "head", "path"],
+    ],
+  ],
+  [
+    "for path in a b; do ls | head -1; done; print after",
+    [
+      "(eval):1: command not found: ls",
+      "(eval):1: command not found: head",
+      "(eval):1: command not found: ls",
+      "(eval):1: command not found: head",
+    ],
+    [
+      ["program-not-found", "ls", "path"],
+      ["program-not-found", "head", "path"],
+      ["program-not-found", "ls", "path"],
+      ["program-not-found", "head", "path"],
+    ],
+  ],
+  [
+    'print -r -- "see `nosuch-dotln-tool` for more"; print after',
+    ["(eval):1: command not found: nosuch-dotln-tool"],
+    [["program-not-found", "nosuch-dotln-tool", "backquotes"]],
+  ],
+  [
+    "cmd='print -r -- split'; $cmd; print after",
+    ["(eval):1: command not found: print -r -- split"],
+    [["unsplit-word", "$cmd", "program"]],
+  ],
+  [
+    'R="./nosuch dir/prog -x"; $R hello; print after',
+    ["(eval):1: no such file or directory: ./nosuch dir/prog -x"],
+    [["unsplit-word", "$R", "program"]],
+  ],
+  [
+    'FILES="docs/a.md\ndocs/b.md"; for f in $FILES; do wc -c < $f; done; print after',
+    ["(eval):2: no such file or directory: docs/a.md\\ndocs/b.md"],
+    [["unsplit-word", "$FILES", ""]],
+  ],
+  [
+    "(status=1) | cat; print after",
+    ["(eval):1: read-only variable: status"],
+    [["reserved-parameter", "status", ""]],
+  ],
+  [
+    "c=3; (print -r -- refs/$c:scripts/lib) | cat; print after",
+    ["(eval):1: bad substitution"],
+    [["bad-substitution", "$c:s", "modifier"]],
+  ],
+  [
+    "(print -r -- ${x,,}) | cat; print after",
+    ["(eval):1: bad substitution"],
+    [["bad-substitution", "", "bash"]],
+  ],
+  [
+    "x=abc; (print -r -- ${!x}) | cat; print after",
+    ["(eval):1: bad substitution"],
+    [["bad-substitution", "", "bash"]],
+  ],
+  [
+    'name=abc; (print -r -- "^$name[ (=]") | cat; print after',
+    ["(eval):1: invalid subscript"],
+    [["bad-subscript", "$name[", ""]],
+  ],
+  [
+    'name=abc; (print -r -- "$name[[:space:]]*x") | cat; print after',
+    ["(eval):1: bad output format specification"],
+    [["bad-subscript", "$name[", ""]],
+  ],
+  [
+    "(print -r -- $((1 +))) | cat; print after",
+    ["(eval):1: bad math expression: operand expected at end of string"],
+    [["bad-math", "", ""]],
+  ],
+  [
+    "let x=1+; print after",
+    ["(eval):1: bad math expression: operand expected at end of string"],
+    [["bad-math", "", ""]],
+  ],
+  [
+    "set -u; (true | false; print -r -- ${PIPESTATUS[0]}) | cat; print after",
+    ["(eval):1: PIPESTATUS[0]: parameter not set"],
+    [["bash-parameter", "PIPESTATUS", ""]],
+  ],
+  [
+    "read -a words <<< 'x y z'; print after",
+    ["(eval):read:1: bad option: -a"],
+    [["builtin-option", "read -a", "array"]],
+  ],
+  [
+    "read -p 'prompt: ' answer < /dev/null; print after",
+    ["(eval):read:1: -p: no coprocess"],
+    [["builtin-option", "read -p", ""]],
+  ],
+  [
+    "declare -n ref=x; print after",
+    ["(eval):declare:1: bad option: -n"],
+    [["builtin-option", "declare -n", ""]],
+  ],
+  [
+    'zsh -f -c "echo \'unterminated" | cat; print after',
+    ["zsh:1: unmatched '"],
+    [["unmatched-quote", "'", ""]],
+  ],
+  [
+    "zsh -f -c 'if true; then print a' | cat; print after",
+    ["zsh:1: parse error near `a'"],
+    [["parse-error", "a", ""]],
+  ],
+  [
+    "cat < nosuch-file | cat; print after",
+    ["(eval):1: no such file or directory: nosuch-file"],
+    [["missing-file", "", ""]],
+  ],
+  [
+    'H=/nosuch-dotln; cd "$H"; cd "$H/t-base"; print after',
+    [
+      "(eval):cd:1: no such file or directory: /nosuch-dotln",
+      "(eval):cd:1: no such file or directory: /nosuch-dotln/t-base",
+    ],
+    [
+      ["missing-file", "", ""],
+      ["missing-file", "", ""],
+    ],
+  ],
+  [
+    "source ./nosuch-file; print after",
+    ["(eval):source:1: no such file or directory: ./nosuch-file"],
+    [["missing-file", "", ""]],
+  ],
+  [
+    "[ abc -ge 5 ] && print yes; print after",
+    ["(eval):[:1: integer expression expected: abc"],
+    [],
+  ],
+  [
+    "print -r -- ~nosuchuserdotln/x | cat; print after",
+    ["(eval):1: no such user or named directory: nosuchuserdotln"],
+    [],
+  ],
+  ["print -r -- docs/*.md 'c*d' \"e*f\" a\\*b; print after", [], []],
+  [
+    "ls docs/*.md(N) | cat; x=(a b c); print $x[2]; f() { print fn }; f",
+    [],
+    [],
+  ],
+];
+const shellFound = (command, output) =>
+  shellDiagnostics(command, output).map(({ kind, written, form, remedy }) => [
+    kind,
+    written,
+    form,
+    ...(remedy ? [remedy] : []),
+  ]);
+
+const shellRepairCases = [
+  ["ls <(ls *.dotln-repair-no-match)", "unmatched-pattern"],
+  ["print -r -- >(ls *.dotln-repair-no-match)", "unmatched-pattern"],
+  ["cat =(ls *.dotln-repair-no-match)", "unmatched-pattern"],
+  ["ls <(cat <(ls *.dotln-repair-no-match))", "unmatched-pattern"],
+  ["cat <(read -a dotln_fixture)", "builtin-option"],
+  ["command -- nosuch-dotln-repair-program; true", "program-not-found"],
+  ["'nosuch-dotln-repair-program'; true", "program-not-found"],
+  ["cmd=nosuch-dotln-repair-program; $cmd; true", "program-not-found"],
+  ["cmd=gawk print -r -- '(eval):1: command not found: gawk'; $cmd", null],
+  ["(cmd=gawk); print -r -- '(eval):1: command not found: gawk'; $cmd", null],
+  ["cmd=gawk; '$cmd'; true", "program-not-found"],
+  ["'zsh' -f -c 'nosuch-dotln-repair-program'; true", "program-not-found"],
+  ["'eval' 'nosuch-dotln-repair-program'; true", "program-not-found"],
+  ["cmd=nosuch-dotln-repair-program; eval '$cmd'; true", "program-not-found"],
+  [
+    "(exec -a dotln-alias nosuch-dotln-repair-program); true",
+    "program-not-found",
+  ],
+  [
+    "command -v nosuch-dotln-repair-program; print -r -- '(eval):1: command not found: nosuch-dotln-repair-program'",
+    null,
+  ],
+  [
+    "command -V nosuch-dotln-repair-program; print -r -- '(eval):1: command not found: nosuch-dotln-repair-program'",
+    null,
+  ],
+  ["zsh -f -c 'print hello |'; true", "parse-error"],
+  ["cat <(zsh -f -c 'print hello |')", "parse-error"],
+  ["zsh -f -c 'print hello;;'; true", "parse-error"],
+  ["zsh -f -c 'then print x'; true", "parse-error"],
+  ["zsh -f -c 'fi'; true", "parse-error"],
+  ["zsh -f -c 'print hello )'; true", "parse-error"],
+  ["zsh -f -c 'print hello || || true'; true", "parse-error"],
+  ["zsh -f -c 'print hello | | cat'; true", "parse-error"],
+  ["zsh -f -c 'if true then print x; fi'; true", "parse-error"],
+  ["zsh -f -c 'case x in x) print hello );; esac'; true", "parse-error"],
+  ["zsh -f -c 'case x in (x) print hello );; esac'; true", "parse-error"],
+  [
+    "case x in (x) nosuch-dotln-repair-program;; esac; true",
+    "program-not-found",
+  ],
+  [
+    'case x in x|nosuch-dotln-repair-program) print -r -- "(eval):1: command not found: nosuch-dotln-repair-program";; esac',
+    null,
+  ],
+  [
+    "case x in $(nosuch-dotln-repair-program)) :;; esac; true",
+    "program-not-found",
+  ],
+  [
+    'if false; then :; elif true; then print -r -- "(eval):1: parse error near \\`then\'"; fi',
+    null,
+  ],
+  ['case x in x) print -r -- "(eval):1: parse error near \\`)\'";; esac', null],
+  [
+    'case dotln in dotln*) print -r -- "(eval):1: no matches found: dotln*";; esac',
+    null,
+  ],
+  ["case x in x) ls *.dotln-repair-no-match;; esac; true", "unmatched-pattern"],
+  ["case x in (x[) :;; esac; true", "bad-pattern"],
+  ["zsh -f -c 'print \"$(print hi'; true", "unmatched-quote"],
+  [
+    "zsh -f -c 'print $(print \"hello'; true",
+    ["unmatched-quote", "parse-error"],
+  ],
+  ["print -r -- '(eval):1: parse error near `|' | cat", null],
+  ["x=(one two); print -r -- $x[1]", null],
+  ["print -r -- '<(ls *.dotln-repair-no-match)'", null],
+  ["print -r -- '(eval):1: command not found: gawk'", null],
+  ["print -r -- '(eval):1: permission denied: denied'", null],
+  ['print -r -- "(eval):1: unmatched \'"', null],
+  ['print -r -- "(eval):1: parse error near \\`a\'"', null],
+  [
+    "print -r -- '(eval):1: no such user or named directory: nobody-here'",
+    null,
+  ],
+];
+const runRepairShell = (command, cwd) => {
+  const result = spawnSync("zsh", ["-f", "-c", command], {
+    cwd,
+    encoding: "utf8",
+  });
+  assert.ifError(result.error);
+  assert.equal(result.status, 0, command);
+  return `${result.stdout}\n${result.stderr}`;
+};
+test("WO-172 repair reads actual process substitutions and keeps printed diagnostics inert", () => {
+  const root = mkdtempSync(join(tmpdir(), "dotln-shell-repair-"));
+  try {
+    for (const [command, kind] of shellRepairCases) {
+      const found = shellDiagnostics(command, runRepairShell(command, root));
+      assert.deepEqual(
+        found.map(({ kind }) => kind),
+        Array.isArray(kind) ? kind : kind ? [kind] : [],
+        command,
+      );
+    }
+  } finally {
+    removeFixture(root, { recursive: true });
+  }
+});
+
+test("WO-172 a line the shell printed is classed only when a word of the command bears it out", () => {
+  for (const [command, said, expected] of shellCases)
+    assert.deepEqual(
+      shellFound(command, ["before", ...said, "after"].join("\n")),
+      expected,
+      command,
+    );
+  // The recorded cases hold every class and form the guidance turns on.
+  assert.deepEqual(
+    [
+      ...new Set(
+        shellCases.flatMap(([, , expected]) =>
+          expected.map(([kind, , form]) => (form ? `${kind}/${form}` : kind)),
+        ),
+      ),
+    ].sort(),
+    [
+      "bad-math",
+      "bad-pattern",
+      "bad-pattern/parentheses",
+      "bad-subscript",
+      "bad-substitution/bash",
+      "bad-substitution/modifier",
+      "bash-parameter",
+      "builtin-option",
+      "builtin-option/array",
+      "equals-word",
+      "missing-file",
+      "program-not-found",
+      "program-not-found/backquotes",
+      "program-not-found/path",
+      "reserved-parameter",
+      "parse-error",
+      "unmatched-pattern/heredoc",
+      "unmatched-pattern/operand",
+      "unmatched-pattern/option",
+      "unmatched-quote",
+      "unsplit-word",
+      "unsplit-word/program",
+    ].sort(),
+  );
+  // What the host refuses is counted where the command names it, and the
+  // lower priority of a background job where the command starts one.
+  assert.deepEqual(
+    shellFound(
+      "print hi > /etc/dotln-probe-denied; print after",
+      "(eval):1: permission denied: /etc/dotln-probe-denied\nafter",
+    ),
+    [["not-permitted", "", ""]],
+  );
+  assert.deepEqual(
+    shellFound(
+      "sleep 1 & print after",
+      "(eval):1: nice(5) failed: operation not permitted\nafter",
+    ),
+    [["not-permitted", "", ""]],
+  );
+  assert.deepEqual(
+    shellFound(
+      "sleep 1 && print after",
+      "(eval):1: nice(5) failed: operation not permitted\nafter",
+    ),
+    [],
+  );
+  // A line of no listed class counts only where it opens the output, and a
+  // builtin's only where the command runs that builtin.
+  const unlisted = "(eval):1: no such user or named directory: nobody-here";
+  assert.deepEqual(shellFound("ls ~nobody-here/x", `\n${unlisted}\nafter`), [
+    ["other", "", ""],
+  ]);
+  assert.deepEqual(shellFound("ls ~nobody-here/x", `before\n${unlisted}`), []);
+  assert.deepEqual(
+    shellFound("[ abc -ge 5 ]", "(eval):[:1: integer expression expected: abc"),
+    [["other", "", ""]],
+  );
+  assert.deepEqual(
+    shellFound("cat run.log", "(eval):cd:1: no such file or directory: /x/y"),
+    [],
+  );
+  assert.deepEqual(
+    shellFound("cat run.log", "(eval):read:1: bad option: -a"),
+    [],
+  );
+  // A line the command printed is not the shell's: no word of these commands
+  // becomes the pattern named, though a word of each expands.
+  const printed = "start\n(eval):1: no matches found: release-*.tgz\nend";
+  for (const command of [
+    "cat logs/*.log",
+    "tail -n 3 ~/notes/session.log",
+    "git --no-pager show HEAD~1:docs/log.txt",
+    "curl -s https://example.test/page?id=1",
+    "cat docs/{a,b}.txt",
+    "[ -f run.log ] && cat run.log",
+    "grep -rn --include='release-*.tgz' x .",
+    'ls "release-*.tgz"',
+    "ls release-\\*.tgz",
+    "cat <<'EOF'\nls release-*.tgz\nEOF",
+    "# ls release-*.tgz\ncat run.log",
+  ])
+    assert.deepEqual(shellFound(command, printed), [], command);
+  for (const [command, output] of [
+    ["cat run.log", "(eval):1: command not found: gawk"],
+    [
+      "print -r -- '(eval):1: command not found: gawk'",
+      "(eval):1: command not found: gawk",
+    ],
+    ["print -r -- x # gawk", "(eval):1: command not found: gawk"],
+    ["print -r -- gawk", "(eval):1: command not found: gawk"],
+    ["cmd=gawk; cat run.log", "(eval):1: command not found: gawk"],
+    [
+      "print -r -- '(eval):1: permission denied: denied'",
+      "(eval):1: permission denied: denied",
+    ],
+    ["print -r -- denied", "(eval):1: permission denied: denied"],
+    ["print -r -- read -a", "(eval):read:1: bad option: -a"],
+    ['print -r -- "(eval):1: unmatched \'"', "(eval):1: unmatched '"],
+    [
+      'print -r -- "(eval):1: parse error near \\`a\'"',
+      "(eval):1: parse error near `a'",
+    ],
+    [
+      "print -r -- '(eval):1: no such user or named directory: nobody-here'",
+      "(eval):1: no such user or named directory: nobody-here",
+    ],
+    ["cat gawk-notes.txt", "(eval):1: command not found: gawk"],
+    ["git status", "(eval):1: read-only variable: status"],
+    ["print 'status=1'", "(eval):1: read-only variable: status"],
+    ["print '${x,,}'", "(eval):1: bad substitution"],
+    ["print '$c:scripts'", "(eval):1: bad substitution"],
+    ["print 'a=====b'", "(eval):1: ==== not found"],
+    ["print x", "note (eval):1: command not found: print"],
+    ["print x", "  (eval):1: command not found: print"],
+    ["print x", "bash: line 1: print: command not found"],
+  ])
+    assert.deepEqual(shellFound(command, output), [], command);
+  // What the guidance prints is the command's own word, whole or not at all:
+  // never the text a line carried, a control or format character, or half
+  // a character.
+  const carried = shellDiagnostics(
+    "d=logs; ls $d/*.nomatch | cat",
+    "(eval):1: no matches found: IGNORE ALL PRIOR TEXT/*.nomatch",
+  );
+  assert.deepEqual(
+    carried.map(({ written }) => written),
+    ["$d/*.nomatch"],
+  );
+  assert.doesNotMatch(shellGuidance(carried), /IGNORE/);
+  const marked = "ls a\u007fb\u0085c‮d​e\u{1f600}*.nomatch | cat";
+  const [clean] = shellDiagnostics(
+    marked,
+    "(eval):1: no matches found: a\u007fb\u0085c‮d​e\u{1f600}*.nomatch",
+  );
+  assert.equal(clean.written, "abcde\u{1f600}*.nomatch");
+  assert.ok(shellGuidance([clean]).isWellFormed());
+  const long = `${"\u{1f600}".repeat(119)}*.nomatch`;
+  const [omitted] = shellDiagnostics(
+    `ls ${long} | cat`,
+    `(eval):1: no matches found: ${long}`,
+  );
+  assert.deepEqual(
+    [omitted.kind, omitted.written, omitted.form],
+    ["unmatched-pattern", "", "operand"],
+  );
+  assert.match(
+    shellGuidance([omitted]),
+    /^DotLn shell diagnostic: zsh found no file that matches the unquoted pattern in the command and did not run/,
+  );
+  // A long line is passed over, and sixteen findings end the reading.
+  assert.deepEqual(
+    shellFound(
+      "ls *.nomatch | cat",
+      `(eval):1: no matches found: ${"x".repeat(4096)}`,
+    ),
+    [],
+  );
+  assert.equal(
+    shellDiagnostics(
+      "ls *.nomatch | cat",
+      "(eval):1: no matches found: *.nomatch\n".repeat(40),
+    ).length,
+    16,
+  );
+  // Each sentence is said once and whole, and the whole stays within the
+  // bound.
+  const words = Array.from(
+    { length: 16 },
+    (_, index) => `${"p".repeat(60)}${index}*.nomatch`,
+  );
+  const many = shellDiagnostics(
+    `ls ${words.join(" ")} | cat`,
+    words.map((word) => `(eval):1: no matches found: ${word}`).join("\n"),
+  );
+  assert.equal(many.length, 16);
+  const bounded = shellGuidance(many);
+  assert.ok(Array.from(bounded).length <= 900, String(bounded.length));
+  assert.match(bounded, /none match\.$/);
+  assert.equal(bounded.split("zsh found no file").length - 1, 3);
+  assert.equal(
+    shellGuidance([...many.slice(0, 1), ...many.slice(0, 1)]),
+    shellGuidance(many.slice(0, 1)),
+  );
+  // The sentences, as the agent is handed them.
+  const guidance = (command) => {
+    const held = shellCases.find(([script]) => script === command);
+    return shellGuidance(shellDiagnostics(command, held[1].join("\n"))).replace(
+      "DotLn shell diagnostic: ",
+      "",
+    );
+  };
+  assert.equal(
+    guidance("grep -rn --include=*.nomatch foo . | cat; print after"),
+    "zsh read the unquoted word --include=*.nomatch as a file pattern, found no file that matches and did not run the command that holds it. Quote the pattern: --include='*.nomatch'.",
+  );
+  assert.equal(
+    guidance("ls docs/*.nomatch docs/*.md | cat; print after"),
+    "zsh found no file that matches the unquoted pattern docs/*.nomatch and did not run the command that holds it. If a program was meant to receive the pattern, quote it; if it was meant to name files, none match.",
+  );
+  assert.equal(
+    guidance("path=/tmp/x; ls | head -1; print after"),
+    "The command assigns path, which zsh ties to PATH, so zsh found no program after the assignment. Use another name.",
+  );
+  assert.equal(
+    guidance("c=3; (print -r -- refs/$c:scripts/lib) | cat; print after"),
+    "zsh reads a colon and a letter after a parameter as a modifier and refused $c:s. Write the name in braces before the colon, as in ${name}:text.",
+  );
+  assert.equal(
+    guidance("cmd='print -r -- split'; $cmd; print after"),
+    "zsh does not split $cmd into words: it looked for one program named by the whole value. Use an array, or ${=name} where the value is a list of words.",
+  );
+  assert.equal(
+    guidance("zsh -f -c 'if true; then print a' | cat; print after"),
+    "zsh could not parse the command near a. If the command carries a script or long text inline, put it in a file through a quoted heredoc.",
+  );
+  for (const [command, said, expected] of shellCases) {
+    const text = shellGuidance(shellDiagnostics(command, said.join("\n")));
+    const silent = expected.every(([kind]) =>
+      ["missing-file", "not-permitted", "other"].includes(kind),
+    );
+    assert.equal(text === null, silent, command);
+    if (text) assert.match(text, /^DotLn shell diagnostic: \S.*\.$/s, command);
+  }
+  assert.match(
+    shellGuidance(
+      shellDiagnostics("print -r -- === | cat", "(eval):1: == not found"),
+      true,
+    ),
+    /^DotLn shell diagnostic, for an earlier command the host marked failed: zsh read the unquoted word ===,/,
+  );
+  // A command of a megabyte is read once and in its first part.
+  const started = performance.now();
+  assert.deepEqual(
+    shellFound(
+      `print ${"a=b ".repeat(262144)}; ls *.nomatch | cat`,
+      "(eval):1: no matches found: *.nomatch",
+    ),
+    [],
+  );
+  assert.ok(performance.now() - started < deadlineLimit(1000, 10_000));
+});
+
+test("WO-172 the generated observer answers the agent with the shell's diagnostic, at the call or after a failed one, counts it locally and refuses nothing", () => {
+  const root = fixture();
+  try {
+    beginHarnessSession(root, "synthetic-session", "executor");
+    const lane = join(root, "docs/control/local/harness", SHELL_DIAGNOSTICS);
+    const rows = () =>
+      existsSync(lane)
+        ? readFileSync(lane, "utf8")
+            .trim()
+            .split("\n")
+            .map((line) => JSON.parse(line))
+        : [];
+    // The recorded host shape of a Bash result the host did not mark failed.
+    const bash = (command, stdout, extra = {}, more = {}) =>
+      input(root, "PostToolUse", {
+        tool_name: "Bash",
+        tool_use_id: "fixture-bash-call",
+        tool_input: { command },
+        tool_response: {
+          interrupted: false,
+          isImage: false,
+          noOutputExpected: false,
+          stderr: "",
+          stdout,
+          ...extra,
+        },
+        ...more,
+      });
+    const said = (result) => result.hookSpecificOutput?.additionalContext;
+    // The recorded host shape of a file read, which the observer admits.
+    const notes = join(root, "fixture-notes.txt");
+    writeFileSync(notes, "one\n");
+    const read = (more = {}) =>
+      input(root, "PostToolUse", {
+        tool_name: "Read",
+        tool_use_id: "fixture-read-call",
+        tool_input: { file_path: notes },
+        tool_response: {
+          type: "text",
+          file: {
+            filePath: notes,
+            content: "one",
+            numLines: 1,
+            startLine: 1,
+            totalLines: 1,
+          },
+        },
+        ...more,
+      });
+    const refused = invoke(
+      root,
+      "read-observer",
+      bash(
+        "ls scripts/*.nomatch | head -1; echo after",
+        "(eval):1: no matches found: scripts/*.nomatch\nafter\n",
+      ),
+    );
+    assert.deepEqual(refused, {
+      hookSpecificOutput: {
+        hookEventName: "PostToolUse",
+        additionalContext:
+          "DotLn shell diagnostic: zsh found no file that matches the unquoted pattern scripts/*.nomatch and did not run the command that holds it. If a program was meant to receive the pattern, quote it; if it was meant to name files, none match.",
+      },
+    });
+    assert.ok(allowed(refused));
+    for (const key of ["decision", "continue", "systemMessage", "reason"])
+      assert.equal(key in refused, false, key);
+    const [row, ...others] = rows();
+    assert.deepEqual(others, []);
+    assert.match(row.at, /^\d{4}-\d{2}-\d{2}T/);
+    const session = createHash("sha256")
+      .update("synthetic-session")
+      .digest("hex");
+    assert.deepEqual(
+      { ...row, at: null },
+      {
+        at: null,
+        shell: "zsh",
+        kind: "unmatched-pattern",
+        workOrder: "WO-999",
+        role: "executor",
+        phase: "implementation",
+        session,
+      },
+    );
+    assert.equal(lstatSync(lane).mode & 0o777, 0o600);
+    // The row holds neither the pattern nor the command, and no field a
+    // guard's count reads.
+    assert.doesNotMatch(JSON.stringify(row), /nomatch|head|synthetic-session/);
+    for (const key of ["refusal", "refused", "decision"])
+      assert.equal(key in row, false, key);
+    // A class with no guidance is counted and the agent is handed nothing.
+    assert.deepEqual(
+      invoke(
+        root,
+        "read-observer",
+        bash(
+          "cat < missing.txt; echo next",
+          "(eval):1: no such file or directory: missing.txt\nnext\n",
+        ),
+      ),
+      {},
+    );
+    assert.deepEqual(
+      rows().map((entry) => entry.kind),
+      ["unmatched-pattern", "missing-file"],
+    );
+    // Nothing is said and nothing is counted when no word of the command
+    // bears the line out, when the result holds no text, for another tool,
+    // one that carries a command among them, and before the command runs.
+    const line = "(eval):1: no matches found: *.log";
+    for (const payload of [
+      bash("cat notes.txt", "(eval):1: no matches found: logs/*.txt\n"),
+      bash("cat logs/*.log", "(eval):1: no matches found: release-*.tgz\n"),
+      bash(
+        "grep -n 'no matches found' 'logs/*.txt'",
+        "(eval):1: no matches found: logs/*.txt\n",
+      ),
+      bash("ls *.log", `note: ${line}\n`),
+      bash("ls *.log", undefined, { stderr: undefined }),
+      bash("ls *.log", ""),
+      input(root, "PostToolUse", {
+        tool_name: "Bash",
+        tool_input: { command: "ls *.log" },
+        tool_response: {},
+      }),
+      input(root, "PostToolUse", {
+        tool_name: "Bash",
+        tool_input: { command: "ls *.log" },
+      }),
+      input(root, "PostToolUse", {
+        tool_name: "Monitor",
+        tool_input: { command: "ls *.log" },
+        tool_response: { stdout: line, stderr: "" },
+      }),
+      read(),
+      read({
+        tool_input: { file_path: notes, command: "ls *.log" },
+        tool_response: {
+          stdout: line,
+          file: { content: "one", numLines: 1, startLine: 1, totalLines: 1 },
+        },
+      }),
+    ])
+      assert.deepEqual(
+        invoke(root, "read-observer", payload),
+        {},
+        JSON.stringify([payload.tool_name, payload.tool_input]),
+      );
+    assert.deepEqual(
+      invoke(
+        root,
+        "write-observer",
+        input(root, "PreToolUse", {
+          tool_name: "Bash",
+          tool_input: { command: "ls *.log" },
+          tool_response: { stdout: line },
+        }),
+      ),
+      {},
+    );
+    assert.equal(rows().length, 2);
+    // The line may arrive on the error stream of a result that did not fail.
+    assert.match(
+      said(
+        invoke(
+          root,
+          "read-observer",
+          bash("grep -c x --include=*.log .; true", "", {
+            stderr: "(eval):1: no matches found: --include=*.log\n",
+          }),
+        ),
+      ),
+      /Quote the pattern: --include='\*\.log'\.$/,
+    );
+    assert.equal(rows().length, 3);
+
+    // A result the host marked failed reaches no hook. The observer reads
+    // it from the session's transcript at the next observed call, answers
+    // it once and counts it with the mark.
+    const transcripts = join(root, ".fixture-transcripts");
+    const transcript = join(transcripts, "synthetic-session.jsonl");
+    const call = (id, command) =>
+      JSON.stringify({
+        type: "assistant",
+        message: {
+          role: "assistant",
+          content: [
+            { type: "text", text: "next" },
+            { type: "tool_use", id, name: "Bash", input: { command } },
+          ],
+        },
+      });
+    const result = (id, content, failed) =>
+      JSON.stringify({
+        type: "user",
+        message: {
+          role: "user",
+          content: [
+            {
+              type: "tool_result",
+              tool_use_id: id,
+              content,
+              ...(failed ? { is_error: true } : {}),
+            },
+          ],
+        },
+      });
+    mkdirSync(transcripts, { recursive: true });
+    writeFileSync(
+      transcript,
+      [
+        "{ a line that cannot be read",
+        call("use-1", "echo ===== start"),
+        result("use-1", "Exit code 1\n(eval):1: ==== not found", true),
+        call("use-2", "ls *.unseen | cat"),
+        result("use-2", "(eval):1: no matches found: *.unseen", false),
+        call("use-3", "cat notes.txt"),
+        result(
+          "use-3",
+          [{ type: "text", text: "Exit code 1\n(eval):1: ==== not found" }],
+          true,
+        ),
+        JSON.stringify({
+          type: "assistant",
+          message: {
+            content: [
+              {
+                type: "tool_use",
+                id: "use-4",
+                name: "Read",
+                input: { command: "echo =====" },
+              },
+            ],
+          },
+        }),
+        result("use-4", "(eval):1: ==== not found", true),
+        "",
+      ].join("\n"),
+    );
+    const after = (more = {}) => read({ transcript_path: transcript, ...more });
+    // The journal holds the read, so the call was observed and not set aside.
+    assert.ok(
+      journalRows(root, {
+        sessionKey: session,
+        workOrder: "WO-999",
+        phase: "implementation",
+      }).some(
+        (entry) => entry.event === "PostToolUse" && entry.tool === "Read",
+      ),
+    );
+    const late = invoke(root, "read-observer", after());
+    assert.equal(
+      said(late),
+      "DotLn shell diagnostic, for an earlier command the host marked failed: zsh read the unquoted word =====, which begins with =, as the path of a program and found none. Quote the word.",
+    );
+    assert.ok(allowed(late));
+    const use = createHash("sha256").update("use-1").digest("hex");
+    assert.deepEqual(
+      rows()
+        .slice(3)
+        .map((entry) => ({ ...entry, at: null })),
+      [
+        {
+          at: null,
+          shell: "zsh",
+          kind: "equals-word",
+          workOrder: "WO-999",
+          role: "executor",
+          phase: "implementation",
+          session,
+          marked: "failed",
+          use,
+        },
+      ],
+    );
+    assert.doesNotMatch(JSON.stringify(rows()), /use-1|=====|echo/);
+    // Once: the next calls are handed nothing for it.
+    assert.deepEqual(invoke(root, "read-observer", after()), {});
+    assert.equal(rows().length, 4);
+    // An intact shared lane may grow while this agent's transcript stays
+    // unchanged. Its old failed result still has one count and one answer.
+    const beforeGrowth = readFileSync(lane, "utf8");
+    const unrelated =
+      JSON.stringify({
+        at: "2026-09-29T00:00:00Z",
+        shell: "zsh",
+        kind: "unmatched-pattern",
+        workOrder: "WO-998",
+        role: "executor",
+        phase: "implementation",
+        session: "another-session",
+      }) + "\n";
+    appendFileSync(lane, unrelated.repeat(2048));
+    assert.ok(lstatSync(lane).size > 262144);
+    assert.deepEqual(invoke(root, "read-observer", after()), {});
+    assert.equal(rows().filter((entry) => entry.use === use).length, 1);
+    // Restore fixture rows so the following independent cases retain their
+    // original count assertions. This never changes a project lane.
+    writeFileSync(lane, beforeGrowth);
+    // With the call's own diagnostic, both are said.
+    appendFileSync(
+      transcript,
+      [
+        call("use-5", "c=3; git show refs/x/$c:scripts/a.mjs"),
+        result("use-5", "Exit code 1\n(eval):1: bad substitution", true),
+        "",
+      ].join("\n"),
+    );
+    const both = said(
+      invoke(
+        root,
+        "read-observer",
+        bash(
+          "ls scripts/*.nomatch | head -1; echo after",
+          "(eval):1: no matches found: scripts/*.nomatch\nafter\n",
+          {},
+          { transcript_path: transcript },
+        ),
+      ),
+    );
+    assert.match(
+      both,
+      /^DotLn shell diagnostic: zsh found no file .* none match\. DotLn shell diagnostic, for an earlier command the host marked failed: zsh reads a colon and a letter after a parameter as a modifier and refused \$c:s\. /,
+    );
+    assert.deepEqual(
+      rows()
+        .slice(4)
+        .map(({ kind, marked }) => [kind, marked]),
+      [
+        ["unmatched-pattern", undefined],
+        ["bad-substitution", "failed"],
+      ],
+    );
+    // A subagent's failed result stands in the agent's own file, under the
+    // session's directory; the session's file is not read for it.
+    const agentFile = join(
+      transcripts,
+      "synthetic-session/subagents/workflows/run-1/agent-a1.jsonl",
+    );
+    mkdirSync(dirname(agentFile), { recursive: true });
+    writeFileSync(
+      agentFile,
+      [
+        call("use-6", "status=1; print after"),
+        result(
+          "use-6",
+          "Exit code 1\n(eval):1: read-only variable: status",
+          true,
+        ),
+        "",
+      ].join("\n"),
+    );
+    assert.match(
+      said(invoke(root, "read-observer", after({ agent_id: "a1" }))),
+      /marked failed: zsh reserves the parameter status and refused the assignment\. Use another name\.$/,
+    );
+    assert.deepEqual(
+      invoke(root, "read-observer", after({ agent_id: "a2" })),
+      {},
+    );
+    assert.deepEqual(
+      invoke(root, "read-observer", after({ agent_id: "../a1" })),
+      {},
+    );
+    assert.equal(rows().length, 7);
+    // A transcript that is absent, a link or not a file answers nothing.
+    const linked = join(transcripts, "linked.jsonl");
+    symlinkSync(transcript, linked);
+    appendFileSync(
+      transcript,
+      [
+        call("use-7", "echo ===== again"),
+        result("use-7", "Exit code 1\n(eval):1: ==== not found", true),
+        "",
+      ].join("\n"),
+    );
+    for (const path of [
+      join(transcripts, "absent.jsonl"),
+      linked,
+      transcripts,
+      "relative.jsonl",
+    ])
+      assert.deepEqual(
+        invoke(root, "read-observer", after({ transcript_path: path })),
+        {},
+        path,
+      );
+    assert.equal(rows().length, 7);
+
+    // A lane that is not a regular file loses the count and nothing else:
+    // the observer still answers the call's own command and still journals
+    // the call. It leaves a failed result unanswered, since its row is what
+    // keeps the answer from being repeated, and writes through no link.
+    const outside = join(root, ".fixture-outside.jsonl");
+    for (const place of [
+      () => mkdirSync(lane),
+      () => symlinkSync(outside, lane),
+      () => {
+        writeFileSync(outside, "kept\n");
+        symlinkSync(outside, lane);
+      },
+    ]) {
+      rmSync(lane, { recursive: true, force: true });
+      place();
+      const answer = said(
+        invoke(
+          root,
+          "read-observer",
+          bash(
+            "ls *.log | cat; true",
+            "(eval):1: no matches found: *.log\n",
+            {},
+            { transcript_path: transcript },
+          ),
+        ),
+      );
+      assert.match(answer, /^DotLn shell diagnostic: zsh found no file/);
+      assert.doesNotMatch(answer, /earlier command/);
+      assert.equal(lstatSync(lane).isFile(), false);
+      if (existsSync(outside))
+        assert.equal(readFileSync(outside, "utf8"), "kept\n");
+    }
+    // A lane that was removed holds no answer, so the failed results the
+    // transcript's last lines hold are answered again, each sentence once.
+    rmSync(lane, { recursive: true, force: true });
+    assert.equal(
+      said(invoke(root, "read-observer", after())),
+      [
+        "DotLn shell diagnostic, for an earlier command the host marked failed: zsh read the unquoted word =====, which begins with =, as the path of a program and found none. Quote the word.",
+        "DotLn shell diagnostic, for an earlier command the host marked failed: zsh reads a colon and a letter after a parameter as a modifier and refused $c:s. Write the name in braces before the colon, as in ${name}:text.",
+      ].join(" "),
+    );
+    assert.deepEqual(
+      rows().map(({ kind, marked }) => [kind, marked]),
+      [
+        ["equals-word", "failed"],
+        ["bad-substitution", "failed"],
+        ["equals-word", "failed"],
+      ],
+    );
+    assert.deepEqual(invoke(root, "read-observer", after()), {});
+    assert.ok(
+      journalRows(root, {
+        sessionKey: session,
+        workOrder: "WO-999",
+        phase: "implementation",
+      }).some(
+        (entry) => entry.event === "PostToolUse" && entry.tool === "Bash",
+      ),
+    );
+    // Real zsh output flows through the generated observer. Quoted reports
+    // yield neither context nor rows; each actual inner refusal yields one.
+    for (const [command, kind] of shellRepairCases) {
+      const before = rows().length;
+      const answer = invoke(
+        root,
+        "read-observer",
+        bash(command, runRepairShell(command, root)),
+      );
+      assert.equal(
+        rows().length,
+        before + (Array.isArray(kind) ? kind.length : kind ? 1 : 0),
+        command,
+      );
+      if (kind) assert.match(said(answer), /^DotLn shell diagnostic:/, command);
+      else assert.deepEqual(answer, {}, command);
+    }
+    // Duplicate host result parts in one transcript are one failed use,
+    // including a use whose row follows an oversized lane line.
+    appendFileSync(lane, "x".repeat(70000) + "\n" + unrelated.repeat(2048));
+    writeFileSync(
+      transcript,
+      [
+        call("repair-duplicate", "echo ===== repair"),
+        result(
+          "repair-duplicate",
+          "Exit code 1\n(eval):1: ==== not found",
+          true,
+        ),
+        result(
+          "repair-duplicate",
+          "Exit code 1\n(eval):1: ==== not found",
+          true,
+        ),
+        "",
+      ].join("\n"),
+    );
+    const duplicate = createHash("sha256")
+      .update("repair-duplicate")
+      .digest("hex");
+    assert.match(said(invoke(root, "read-observer", after())), /marked failed/);
+    assert.deepEqual(invoke(root, "read-observer", after()), {});
+    const held = readFileSync(lane, "utf8")
+      .split("\n")
+      .filter((line) => line.includes(duplicate))
+      .map((line) => JSON.parse(line));
+    assert.equal(held.length, 1);
+  } finally {
+    removeFixture(root, { recursive: true });
+  }
+});
+
+test("WO-172 F10 concurrent failed-use answers survive an interrupted owner and a stale reclaimer", async () => {
+  const root = fixture();
+  const children = [];
+  try {
+    beginHarnessSession(root, "synthetic-session", "executor");
+    const state = join(root, "docs/control/local/harness");
+    const lane = join(state, SHELL_DIAGNOSTICS);
+    const transcript = join(root, "shell-race-transcript.jsonl");
+    const preload = join(state, "shell-race-preload.mjs");
+    writeFileSync(
+      preload,
+      `import fs from "node:fs";
+import { syncBuiltinESMExports } from "node:module";
+import { deadlineLimit, startDeadline } from ${JSON.stringify(new URL("../packages/skeleton/src/gate-deadlines.mjs", import.meta.url).href)};
+const original = { lstatSync: fs.lstatSync, openSync: fs.openSync, writeSync: fs.writeSync, unlinkSync: fs.unlinkSync };
+let paused = false, laneFile;
+const hold = () => {
+  if (paused) return;
+  paused = true;
+  fs.writeFileSync(process.env.SHELL_RACE_READY, "ready");
+  const deadline = startDeadline("harness:shell-claim-barrier", deadlineLimit(1000, 20000));
+  const sleeper = new Int32Array(new SharedArrayBuffer(4));
+  while (!fs.existsSync(process.env.SHELL_RACE_GO)) {
+    deadline.check();
+    Atomics.wait(sleeper, 0, 0, 5);
+  }
+  deadline.finish();
+};
+fs.lstatSync = function (file, ...args) {
+  const observed = original.lstatSync(file, ...args);
+  if (process.env.SHELL_RACE_STAGE === "snapshot" && file === process.env.SHELL_RACE_LANE) hold();
+  return observed;
+};
+fs.openSync = function (file, ...args) {
+  const descriptor = original.openSync(file, ...args);
+  if (file === process.env.SHELL_RACE_LANE && (args[0] & fs.constants.O_APPEND)) laneFile = descriptor;
+  return descriptor;
+};
+fs.writeSync = function (file, ...args) {
+  if (process.env.SHELL_RACE_STAGE === "append" && file === laneFile) hold();
+  return original.writeSync(file, ...args);
+};
+fs.unlinkSync = function (file, ...args) {
+  if (process.env.SHELL_RACE_STAGE === "retire" && file.startsWith(process.env.SHELL_RACE_CLAIM + "/")) hold();
+  return original.unlinkSync(file, ...args);
+};
+syncBuiltinESMExports();
+`,
+    );
+    const setFailure = (id, command) => {
+      const shell = spawnSync("zsh", ["-f", "-c", command], {
+        cwd: root,
+        encoding: "utf8",
+      });
+      assert.notEqual(shell.status, 0);
+      writeFileSync(
+        transcript,
+        [
+          {
+            message: {
+              content: [
+                { type: "tool_use", id, name: "Bash", input: { command } },
+              ],
+            },
+          },
+          {
+            message: {
+              content: [
+                {
+                  type: "tool_result",
+                  tool_use_id: id,
+                  is_error: true,
+                  content: `Exit code ${shell.status}\n${shell.stdout}${shell.stderr}`,
+                },
+              ],
+            },
+          },
+        ]
+          .map((row) => JSON.stringify(row))
+          .join("\n") + "\n",
+      );
+      return createHash("sha256").update(id).digest("hex");
+    };
+    const launch = (label, stage = "", claim = "") => {
+      const child = spawn(
+        process.execPath,
+        [
+          ...(stage ? ["--import", preload] : []),
+          ".claude/hooks/read-observer.mjs",
+        ],
+        {
+          cwd: root,
+          env: {
+            ...process.env,
+            SHELL_RACE_STAGE: stage,
+            SHELL_RACE_LANE: lane,
+            SHELL_RACE_CLAIM: claim,
+            SHELL_RACE_READY: join(state, `${label}.ready`),
+            SHELL_RACE_GO: join(state, `${label}.go`),
+          },
+          stdio: ["pipe", "pipe", "pipe"],
+        },
+      );
+      children.push(child);
+      let stdout = "",
+        stderr = "";
+      const done = new Promise((resolve, reject) => {
+        child.once("error", reject);
+        child.stdout.on("data", (chunk) => (stdout += chunk));
+        child.stderr.on("data", (chunk) => (stderr += chunk));
+        child.once("close", (code, signal) =>
+          resolve({ code, signal, stdout, stderr }),
+        );
+      });
+      child.stdin.end(
+        JSON.stringify(
+          input(root, "PostToolUse", {
+            transcript_path: transcript,
+            tool_name: "Bash",
+            tool_use_id: `observed-${label}`,
+            tool_input: { command: "print observed" },
+            tool_response: { stdout: "observed\n", stderr: "" },
+          }),
+        ),
+      );
+      return { child, done };
+    };
+    const ready = async (label) => {
+      const deadline = startDeadline(
+        "harness:await-shell-claim",
+        deadlineLimit(1000, 20000),
+      );
+      while (!existsSync(join(state, `${label}.ready`))) {
+        deadline.check();
+        await new Promise((resolve) => setTimeout(resolve, 5));
+      }
+      deadline.finish();
+    };
+    const release = (label) => writeFileSync(join(state, `${label}.go`), "go");
+    const response = async ({ done }) => {
+      const run = await done;
+      assert.equal(run.code, 0, run.stderr);
+      assert.equal(run.stderr, "");
+      const answer = JSON.parse(run.stdout);
+      assert.ok(allowed(answer));
+      return answer.hookSpecificOutput?.additionalContext ?? "";
+    };
+    const rows = () =>
+      existsSync(lane)
+        ? readFileSync(lane, "utf8")
+            .split("\n")
+            .filter(Boolean)
+            .map((line) => JSON.parse(line))
+        : [];
+    // Each process observes the same absent lane before any may acquire a
+    // claim. This deterministically exposes the old read/append race.
+    for (const count of [2, 8]) {
+      rmSync(lane, { force: true });
+      const command =
+        count === 2
+          ? "ls *.dotln-claim-unseen"
+          : "ls <(ls *.dotln-claim-unseen); dotln_shell_claim_missing";
+      const use = setFailure(`concurrent-${count}`, command);
+      const labels = Array.from(
+        { length: count },
+        (_, i) => `race-${count}-${i}`,
+      );
+      const calls = labels.map((label) => launch(label, "snapshot"));
+      await Promise.all(labels.map(ready));
+      labels.forEach(release);
+      const answers = await Promise.all(calls.map(response));
+      assert.equal(
+        answers.filter(Boolean).length,
+        1,
+        `${count} observers answer once`,
+      );
+      assert.deepEqual(
+        rows()
+          .map(({ kind }) => kind)
+          .sort(),
+        count === 2
+          ? ["unmatched-pattern"]
+          : ["program-not-found", "unmatched-pattern"],
+      );
+      assert.ok(
+        rows().every((row) => row.use === use && row.marked === "failed"),
+      );
+      assert.equal(await response(launch(`repeat-${count}`)), "");
+      assert.doesNotMatch(
+        JSON.stringify(rows()),
+        /dotln-claim-unseen|dotln_shell_claim_missing|concurrent-/,
+      );
+      assert.equal(
+        readdirSync(state).filter((name) => name.includes(".shell-claim"))
+          .length,
+        0,
+      );
+    }
+    // A contender's absent-lane snapshot may outlive a winner's whole
+    // claim. It must recheck after acquiring the now-vacant slot.
+    rmSync(lane, { force: true });
+    const staleUse = setFailure("stale-snapshot", "ls *.dotln-stale-unseen");
+    const first = launch("snapshot-first", "snapshot");
+    const second = launch("snapshot-second", "snapshot");
+    await Promise.all([ready("snapshot-first"), ready("snapshot-second")]);
+    release("snapshot-first");
+    assert.match(await response(first), /marked failed/);
+    assert.equal(existsSync(join(state, `${staleUse}.shell-claim`)), false);
+    release("snapshot-second");
+    assert.equal(await response(second), "");
+    assert.deepEqual(
+      rows().map(({ kind, use }) => [kind, use]),
+      [["unmatched-pattern", staleUse]],
+    );
+
+    // Also run the generated hooks directly, without a preload or barrier,
+    // after one actual zsh failure: one context and one row for two calls.
+    rmSync(lane, { force: true });
+    const directUse = setFailure("direct-overlap", "ls *.dotln-direct-unseen");
+    const direct = await Promise.all(
+      [launch("direct-a"), launch("direct-b")].map(response),
+    );
+    assert.equal(direct.filter(Boolean).length, 1);
+    assert.deepEqual(
+      rows().map(({ kind, use }) => [kind, use]),
+      [["unmatched-pattern", directUse]],
+    );
+    assert.equal(await response(launch("direct-repeat")), "");
+
+    // A hook killed before its append cannot permanently consume the use.
+    // A reclaimer paused on that exact dead instance cannot remove its live
+    // replacement, even when its original lane snapshot is still empty.
+    rmSync(lane, { force: true });
+    const use = setFailure("interrupted-owner", "status=1; print after");
+    const claim = join(state, `${use}.shell-claim`);
+    const interrupted = launch("interrupted", "append");
+    await ready("interrupted");
+    assert.equal(rows().length, 0);
+    const previous = readdirSync(claim);
+    assert.equal(previous.length, 1);
+    assert.equal(
+      JSON.parse(readFileSync(join(claim, previous[0]), "utf8")).pid,
+      interrupted.child.pid,
+    );
+    interrupted.child.kill("SIGKILL");
+    assert.equal((await interrupted.done).signal, "SIGKILL");
+    const delayed = launch("delayed", "retire", claim);
+    await ready("delayed");
+    const winner = launch("winner", "append");
+    await ready("winner");
+    const replacement = readdirSync(claim);
+    assert.notDeepEqual(replacement, previous);
+    release("delayed");
+    assert.equal(await response(delayed), "");
+    assert.deepEqual(readdirSync(claim), replacement);
+    release("winner");
+    assert.match(await response(winner), /marked failed.*reserves.*status/);
+    assert.deepEqual(
+      rows().map(({ kind, use: held }) => [kind, held]),
+      [["reserved-parameter", use]],
+    );
+    assert.equal(existsSync(claim), false);
+    assert.equal(await response(launch("recovered-repeat")), "");
+  } finally {
+    for (const child of children)
+      if (child.exitCode === null && child.signalCode === null)
+        child.kill("SIGKILL");
     removeFixture(root, { recursive: true });
   }
 });

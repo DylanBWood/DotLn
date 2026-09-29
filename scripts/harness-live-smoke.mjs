@@ -321,7 +321,8 @@ const messages = output.split("\n").flatMap((line) => {
 });
 const observationDir = docPath(scratch, "control", "local/harness");
 const observations = readdirSync(observationDir)
-  .filter((name) => name.endsWith(".jsonl") && name !== "writer-events.jsonl")
+  // A session's journal is named by its key; other local logs are not rows.
+  .filter((name) => /^[a-f0-9]{64}\.jsonl$/u.test(name))
   .flatMap((name) =>
     readFileSync(join(observationDir, name), "utf8")
       .trim()

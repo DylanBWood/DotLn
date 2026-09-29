@@ -327,6 +327,1119 @@ export function shellInvocations(source: string): string[][] {
   return shellWords(source).map(({ words }) => words.map((word) => word.value));
 }
 
+/** WO-172: what the shell itself said about a command as written. zsh begins
+ * such a line with its own name, the name of a builtin that refused and a
+ * line number. The same text inside other output is not this command's
+ * diagnostic, so a class counts only when the command's own words bear it
+ * out, and the guidance holds only what the command itself wrote. */
+export type ShellDiagnosticKind =
+  | "unmatched-pattern"
+  | "bad-pattern"
+  | "equals-word"
+  | "program-not-found"
+  | "unsplit-word"
+  | "reserved-parameter"
+  | "bad-substitution"
+  | "bad-subscript"
+  | "bad-math"
+  | "bash-parameter"
+  | "builtin-option"
+  | "unmatched-quote"
+  | "parse-error"
+  | "missing-file"
+  | "not-permitted"
+  | "other";
+export interface ShellDiagnostic {
+  readonly kind: ShellDiagnosticKind;
+  /** What the command wrote that the line is about, bounded and without
+   * control or format characters; never text that only the output holds. */
+  readonly written: string;
+  /** How the command wrote it, where the class's guidance turns on it. */
+  readonly form: string;
+  /** The word with its pattern quoted, where the command's text gives one. */
+  readonly remedy?: string;
+}
+interface ReadWord {
+  /** The word as the command wrote it. */
+  readonly raw: string;
+  /** What stood outside quotes, U+0000 where quoted or substituted text stood. */
+  readonly bare: string;
+  /** The word without its quotes. */
+  readonly text: string;
+  readonly position:
+    "assignment" | "control" | "head" | "argument" | "redirect" | "pattern";
+  readonly command: number;
+  readonly scope: string;
+  /** Inside backquotes that stand in double quotes or an unquoted heredoc. */
+  readonly ticked: boolean;
+  /** Inside a substitution of a heredoc whose delimiter is not quoted. */
+  readonly heredoc: boolean;
+}
+interface ShellReading {
+  readonly words: ReadWord[];
+  /** The command outside single quotes. */
+  readonly plain: string;
+  readonly background: boolean;
+  readonly commands: number;
+  readonly unmatchedQuotes: readonly string[];
+  readonly incomplete: boolean;
+  readonly syntax: readonly string[];
+  readonly syntaxFaults: readonly string[];
+}
+const readControl = new Set([
+  "if",
+  "then",
+  "elif",
+  "else",
+  "while",
+  "until",
+  "do",
+  "!",
+  "{",
+  "time",
+  "command",
+  "builtin",
+  "noglob",
+  "nocorrect",
+  "exec",
+]);
+const readWrappers = new Set([
+  "command",
+  "builtin",
+  "exec",
+  "noglob",
+  "nocorrect",
+  "time",
+]);
+const readShells = new Set(["zsh", "bash", "sh", "dash", "ksh"]);
+const READ_LIMIT = 262144;
+// Text the shell takes as written stands in the private use area, so that a
+// quoted `$` or brace is never read as one zsh changes.
+const asHeld = (char: string) =>
+  /[${}~\u0000]/.test(char)
+    ? String.fromCharCode(0xe000 + char.charCodeAt(0))
+    : char;
+const asWritten = (text: string) =>
+  text.replace(/[\ue000-\ue07f]/g, (char) =>
+    String.fromCharCode(char.charCodeAt(0) - 0xe000),
+  );
+
+/** The command's words as the shell splits them, read without refusing any
+ * form: control syntax, substitutions and heredocs are read, and a script
+ * handed to a shell or to eval is read as a command of its own. */
+function readShellCommand(full: string, depth = 0): ShellReading {
+  const source = full.length > READ_LIMIT ? full.slice(0, READ_LIMIT) : full;
+  const words: ReadWord[] = [];
+  const unmatchedQuotes: string[] = [];
+  let incomplete = false;
+  const syntax: string[] = [];
+  const syntaxFaults: string[] = [];
+  const cases: {
+    stage: "header" | "pattern" | "body";
+    scope: string;
+  }[] = [];
+  const scopes: number[] = [];
+  const currentCase = () =>
+    cases.at(-1)?.scope === scopes.join("/") ? cases.at(-1) : undefined;
+  let scopeSerial = 0,
+    lastSyntax = "";
+  const stack: {
+    start: number;
+    bare: string;
+    text: string;
+    first: boolean;
+    quote: string;
+    parens: number;
+    redirect: boolean;
+    wrapper: string;
+    wrapperValue: boolean;
+    scope: number;
+    at: number;
+    ticking: boolean;
+    close: string;
+  }[] = [];
+  let plain = "",
+    bare = "",
+    text = "",
+    quote = "";
+  let start = -1,
+    first = true,
+    parens = 0,
+    command = 0,
+    ticks = 0,
+    redirect = false,
+    wrapper = "",
+    wrapperValue = false,
+    background = false;
+  let awaited: { delimiter: string; strip: boolean; quoted: boolean }[] = [];
+  const flush = (end: number) => {
+    if (start >= 0) {
+      const literal = asWritten(text);
+      const wrapperFlag = first && Boolean(wrapper) && bare.startsWith("-");
+      const consumeValue = first && wrapperValue;
+      const position =
+        currentCase()?.stage === "pattern" && bare !== "esac"
+          ? "pattern"
+          : redirect
+            ? "redirect"
+            : wrapperFlag || consumeValue
+              ? "control"
+              : !first
+                ? "argument"
+                : /^[A-Za-z_]\w*\+?=/.test(bare)
+                  ? "assignment"
+                  : readControl.has(bare) || readWrappers.has(literal)
+                    ? "control"
+                    : "head";
+      words.push({
+        raw: source.slice(start, end),
+        bare,
+        text,
+        position,
+        command,
+        scope: scopes.join("/"),
+        ticked: ticks > 0,
+        heredoc: false,
+      });
+      if (position === "head" || position === "control") {
+        if (bare === "case")
+          cases.push({ stage: "header", scope: scopes.join("/") });
+        else if (bare === "esac") cases.pop();
+      }
+      if (bare === "in" && currentCase()?.stage === "header")
+        currentCase()!.stage = "pattern";
+      if (position === "head") {
+        first = false;
+        wrapper = "";
+      }
+      if (consumeValue) wrapperValue = false;
+      if (wrapperFlag && wrapper === "exec" && bare === "-a")
+        wrapperValue = true;
+      if (wrapperFlag && wrapper === "command" && /^-[p]*[vV]/.test(bare))
+        first = false;
+      if (position === "control" && readWrappers.has(literal))
+        wrapper = literal;
+      redirect = false;
+      lastSyntax = "";
+    }
+    start = -1;
+    bare = "";
+    text = "";
+  };
+  const finish = (end: number) => {
+    flush(end);
+    first = true;
+    redirect = false;
+    wrapper = "";
+    wrapperValue = false;
+    command++;
+  };
+  for (let i = 0; i < source.length; i++) {
+    const char = source[i]!;
+    if (quote === "'") {
+      if (char === "'") quote = "";
+      else text += asHeld(char);
+      continue;
+    }
+    if (char === "\\") {
+      if (source[i + 1] === "\n") i++;
+      else if (i + 1 < source.length) {
+        if (start < 0) start = i;
+        if (!quote) bare += "\u0000";
+        plain += char + source[i + 1]!;
+        text += asHeld(source[++i]!);
+      }
+      continue;
+    }
+    const processSubstitution =
+      !quote &&
+      source[i + 1] === "(" &&
+      (/[<>]/.test(char) || (char === "=" && start < 0));
+    const substitutes =
+      (char === "$" && source[i + 1] === "(" && source[i + 2] !== "(") ||
+      processSubstitution;
+    if (quote === '"' && !substitutes && char !== "`") {
+      if (char === '"') quote = "";
+      else {
+        plain += char;
+        text += /[{}~]/.test(char) ? asHeld(char) : char;
+      }
+      continue;
+    }
+    if (char === "'" || char === '"') {
+      quote = char;
+      if (start < 0) start = i;
+      bare += "\u0000";
+      continue;
+    }
+    if (parens && !substitutes && char !== "`") {
+      bare += char;
+      text += char;
+      plain += char;
+      if (char === "(") parens++;
+      else if (char === ")") parens--;
+      continue;
+    }
+    if (char === "\n") {
+      finish(i);
+      plain += char;
+      let at = i + 1,
+        body = "";
+      for (const { delimiter, strip, quoted } of awaited)
+        while (at <= source.length) {
+          const end = source.indexOf("\n", at);
+          const stop = end < 0 ? source.length : end;
+          const line = source.slice(at, stop);
+          at = stop + 1;
+          if ((strip ? line.replace(/^\t+/, "") : line) === delimiter) break;
+          if (!quoted) body += `${line}\n`;
+        }
+      if (awaited.length) i = at - 1;
+      awaited = [];
+      plain += body;
+      // A heredoc whose delimiter is not quoted runs the substitutions its
+      // body holds.
+      if (depth < 2)
+        for (const [, called, ticked] of body.matchAll(
+          /\$\(((?:[^()]|\([^()]*\))*)\)|`([^`]*)`/g,
+        )) {
+          const inner = readShellCommand(called ?? ticked ?? "", depth + 1);
+          unmatchedQuotes.push(...inner.unmatchedQuotes);
+          incomplete ||= inner.incomplete;
+          syntax.push(...inner.syntax);
+          syntaxFaults.push(...inner.syntaxFaults);
+          for (const word of inner.words)
+            words.push({
+              ...word,
+              command: word.command + command + 1,
+              heredoc: true,
+              ticked: word.ticked || ticked !== undefined,
+            });
+          command += inner.commands + 1;
+        }
+      continue;
+    }
+    if (char === "#" && start < 0) {
+      const end = source.indexOf("\n", i);
+      i = (end < 0 ? source.length : end) - 1;
+      continue;
+    }
+    if (char === " " || char === "\t") {
+      flush(i);
+      plain += char;
+      continue;
+    }
+    if (substitutes || (char === "`" && stack.at(-1)?.close !== "`")) {
+      const ticking = quote === '"' && !substitutes;
+      stack.push({
+        start: start < 0 ? i : start,
+        bare: quote ? bare : `${bare}\u0000`,
+        text: `${text}\u0000`,
+        first,
+        quote,
+        parens,
+        redirect,
+        wrapper,
+        wrapperValue,
+        scope: ++scopeSerial,
+        at: i,
+        ticking,
+        close: substitutes ? ")" : "`",
+      });
+      if (ticking) ticks++;
+      start = -1;
+      bare = "";
+      text = "";
+      quote = "";
+      parens = 0;
+      redirect = false;
+      first = true;
+      wrapper = "";
+      wrapperValue = false;
+      scopes.push(scopeSerial);
+      command++;
+      plain += substitutes ? `${char}(` : char;
+      if (substitutes) i++;
+      continue;
+    }
+    const outer = stack.at(-1);
+    if (outer && char === outer.close && scopes.at(-1) === outer.scope) {
+      finish(i);
+      stack.pop();
+      scopes.pop();
+      if (outer.ticking) ticks--;
+      ({
+        start,
+        bare,
+        text,
+        first,
+        quote,
+        parens,
+        redirect,
+        wrapper,
+        wrapperValue,
+      } = outer);
+      plain += char;
+      continue;
+    }
+    // A parenthesis after a word, or among a command's arguments, opens a
+    // pattern and not a group.
+    if (char === "(" && currentCase()?.stage === "pattern" && start < 0) {
+      // Optional case-arm opener; its closing parenthesis starts the body.
+      plain += char;
+      continue;
+    }
+    if (
+      char === "(" &&
+      source[i + 1] !== ")" &&
+      (start < 0 ? !first : !/[$=]$/.test(bare))
+    ) {
+      if (start < 0) start = i;
+      parens = 1;
+      bare += char;
+      text += char;
+      plain += char;
+      continue;
+    }
+    if (char === "<" && source[i + 1] === "<" && source[i + 2] !== "<") {
+      flush(i);
+      let at = i + 2;
+      const strip = source[at] === "-";
+      if (strip) at++;
+      while (source[at] === " " || source[at] === "\t") at++;
+      let delimiter = "",
+        quoted = false;
+      for (; at < source.length && !/[\s;|&()<>]/.test(source[at]!); at++) {
+        const mark = source[at]!;
+        if (mark === "'" || mark === '"') {
+          const end = source.indexOf(mark, at + 1);
+          quoted = true;
+          delimiter += source.slice(at + 1, end < 0 ? source.length : end);
+          at = end < 0 ? source.length : end;
+        } else if (mark === "\\") {
+          quoted = true;
+          delimiter += source[++at] ?? "";
+        } else delimiter += mark;
+      }
+      if (delimiter) awaited.push({ delimiter, strip, quoted });
+      plain += " ";
+      i = at - 1;
+      continue;
+    }
+    // A duplicated descriptor is one redirection, not a list separator.
+    if (
+      char === "&" &&
+      (/[<>]/.test(source[i - 1] ?? "") || source[i + 1] === ">")
+    ) {
+      flush(i);
+      plain += char;
+      continue;
+    }
+    if (
+      char === ";" ||
+      char === "|" ||
+      char === "&" ||
+      char === "(" ||
+      char === ")"
+    ) {
+      if (char === "&" && source[i + 1] !== "&" && source[i - 1] !== "&")
+        background = true;
+      const previousSyntax = start < 0 ? lastSyntax : "";
+      finish(i);
+      if (char === "(" && currentCase()?.stage !== "pattern")
+        scopes.push(++scopeSerial);
+      else if (char === ")") {
+        if (currentCase()?.stage === "pattern") currentCase()!.stage = "body";
+        else {
+          if (!scopes.length) syntaxFaults.push(")");
+          scopes.pop();
+        }
+      }
+      const operator =
+        (char === "|" || char === "&" || char === ";") && source[i + 1] === char
+          ? char + source[++i]
+          : char;
+      if (operator === ";;") {
+        if (!currentCase()) syntaxFaults.push(operator);
+        else currentCase()!.stage = "pattern";
+      }
+      if (["|", "||", "&&"].includes(previousSyntax))
+        syntaxFaults.push(operator);
+      syntax.push(operator);
+      lastSyntax = operator;
+      plain += char;
+      continue;
+    }
+    if (char === "<" || char === ">") {
+      // A descriptor prefix belongs to the redirection, not a command head.
+      if (/^\d+$/.test(bare)) {
+        start = -1;
+        bare = "";
+        text = "";
+      } else flush(i);
+      redirect = true;
+      plain += char;
+      continue;
+    }
+    if (start < 0) start = i;
+    bare += char;
+    text += char;
+    plain += char;
+  }
+  finish(source.length);
+  if (depth < 2)
+    for (const [index, word] of [...words].entries()) {
+      if (word.position !== "head") continue;
+      const name = asWritten(word.text).replace(/^.*\//, "");
+      const rest: ReadWord[] = [];
+      for (
+        let next = words[index + 1];
+        next?.command === word.command;
+        next = words[index + 1 + rest.length]
+      )
+        rest.push(next);
+      const flag = rest.findIndex((option) =>
+        /^-[A-Za-z]*c$/.test(option.bare),
+      );
+      const script =
+        name === "eval"
+          ? rest.map((argument) => asWritten(argument.text)).join(" ")
+          : readShells.has(name) && flag >= 0
+            ? asWritten(rest[flag + 1]?.text ?? "")
+            : "";
+      if (!script) continue;
+      const inner = readShellCommand(
+        script.replaceAll("\u0000", " "),
+        depth + 1,
+      );
+      unmatchedQuotes.push(...inner.unmatchedQuotes);
+      incomplete ||= inner.incomplete;
+      syntax.push(...inner.syntax);
+      syntaxFaults.push(...inner.syntaxFaults);
+      for (const within of inner.words)
+        words.push({
+          ...within,
+          command: within.command + command + 1,
+          scope:
+            name === "eval"
+              ? [word.scope, within.scope].filter(Boolean).join("/")
+              : `${word.scope}/script-${word.command}/${within.scope}`,
+        });
+      command += inner.commands + 1;
+      plain += `\n${inner.plain}`;
+      background ||= inner.background;
+    }
+  if (quote) unmatchedQuotes.push(quote);
+  for (const held of stack) {
+    if (held.quote) unmatchedQuotes.push(held.quote);
+    syntaxFaults.push(source.slice(held.at));
+  }
+  if (stack.some(({ close }) => close === "`")) unmatchedQuotes.push("`");
+  const blocks: { close: string; needs: string | null }[] = [];
+  for (const { bare, position } of words) {
+    if (position !== "head" && position !== "control") continue;
+    const close = (
+      {
+        if: "fi",
+        for: "done",
+        select: "done",
+        while: "done",
+        until: "done",
+        case: "esac",
+        "{": "}",
+      } as Record<string, string>
+    )[bare];
+    if (close)
+      blocks.push({
+        close,
+        needs:
+          bare === "if"
+            ? "then"
+            : /^(for|select|while|until)$/.test(bare)
+              ? "do"
+              : null,
+      });
+    else if (["then", "do"].includes(bare)) {
+      if (blocks.at(-1)?.needs === bare) blocks.at(-1)!.needs = null;
+      else syntaxFaults.push(bare);
+    } else if (["fi", "done", "esac", "}"].includes(bare)) {
+      if (blocks.at(-1)?.close !== bare || blocks.at(-1)?.needs)
+        syntaxFaults.push(bare);
+      if (blocks.at(-1)?.close === bare) blocks.pop();
+    } else if (["else", "elif"].includes(bare)) {
+      if (blocks.at(-1)?.close !== "fi" || blocks.at(-1)?.needs)
+        syntaxFaults.push(bare);
+      else if (bare === "elif") blocks.at(-1)!.needs = "then";
+    }
+  }
+  incomplete ||= Boolean(
+    quote ||
+    stack.length ||
+    blocks.length ||
+    scopes.length ||
+    ["|", "||", "&&"].includes(lastSyntax),
+  );
+  return {
+    words,
+    plain,
+    background,
+    commands: command,
+    unmatchedQuotes,
+    incomplete,
+    syntax,
+    syntaxFaults,
+  };
+}
+
+/** What zsh may read as a file pattern in an unquoted word. */
+const patterned = /[*?\[\]^~#(|]/;
+/** What zsh changes in a word before it uses the word. */
+const changed =
+  /\u0000+|\$\{[^}]*\}|\$[A-Za-z_]\w*|\$[0-9@*#?!$-]|\{[^{}\s]*(?:,|\.\.)[^{}\s]*\}/gu;
+/** The parts of a word zsh leaves as written hold the text the shell named,
+ * in order and from end to end. */
+function holdsInOrder(parts: readonly string[], named: string): boolean {
+  const opening = parts[0] ?? "",
+    closing = parts.at(-1) ?? "";
+  if (parts.length < 2) return named === opening;
+  if (
+    !named.startsWith(opening) ||
+    !named.endsWith(closing) ||
+    named.length < opening.length + closing.length
+  )
+    return false;
+  let at = opening.length;
+  for (const part of parts.slice(1, -1)) {
+    const found = named.indexOf(part, at);
+    if (found < 0 || found + part.length > named.length - closing.length)
+      return false;
+    at = found + part.length;
+  }
+  return true;
+}
+/** zsh prints a line break inside the word it names as a backslash and n. */
+const namings = (named: string) =>
+  named.includes("\\n") ? [named, named.replaceAll("\\n", "\n")] : [named];
+/** The unquoted word becomes the pattern the shell named once zsh has changed
+ * its parameters, its leading tilde and its braces. */
+const becomes = (bare: string, named: string) => {
+  const parts = bare.replace(/^~[^/\u0000]*/u, "\u0000").split(changed);
+  return (
+    patterned.test(parts.join("")) &&
+    namings(named).some((naming) => holdsInOrder(parts, naming))
+  );
+};
+/** The word, quoted or not, becomes the path the shell named; a word that is
+ * all parameter names no path. */
+const becomesPath = (text: string, named: string) => {
+  const parts = text
+    .replace(/^~[^/\u0000]*/u, "\u0000")
+    .split(changed)
+    .map(asWritten);
+  return (
+    parts.join("").replace(/[/.]/g, "").length > 1 && holdsInOrder(parts, named)
+  );
+};
+const allParameters = (text: string) =>
+  text !== "" && text.replace(changed, "") === "";
+/** A literal head, or a whole head parameter with a preceding literal value.
+ * An unrelated argument, comment or assignment cannot name a program. */
+const programWord = ({ words }: ShellReading, named: string) => {
+  const values = new Map<string, Map<string, string>>();
+  const executed = new Set(
+    words
+      .filter(({ position }) => position === "head")
+      .map(({ command }) => command),
+  );
+  for (const word of words) {
+    const written = asWritten(word.text);
+    if (word.position === "assignment" && !executed.has(word.command)) {
+      const assignment = /^([A-Za-z_]\w*)=(.*)$/s.exec(word.text);
+      if (assignment && !/[$`\u0000]/.test(assignment[2]!)) {
+        if (!values.has(word.scope)) values.set(word.scope, new Map());
+        values.get(word.scope)!.set(assignment[1]!, asWritten(assignment[2]!));
+      }
+    }
+    if (word.position !== "head") continue;
+    const parameter =
+      /^\$(?:([A-Za-z_]\w*)|[\{\ue07b]([A-Za-z_]\w*)[\}\ue07d])$/.exec(
+        word.text,
+      );
+    let value = parameter ? undefined : written;
+    if (parameter) {
+      const scopes = word.scope ? word.scope.split("/") : [];
+      let script = -1;
+      for (const [index, scope] of scopes.entries())
+        if (scope.startsWith("script-")) script = index;
+      for (let length = scopes.length; length >= script + 1; length--) {
+        value = values
+          .get(scopes.slice(0, length).join("/"))
+          ?.get(parameter[1] ?? parameter[2]!);
+        if (value !== undefined) break;
+      }
+    }
+    if (value !== undefined && namings(named).includes(value)) return word;
+  }
+  return undefined;
+};
+const patternFlags = new Set([
+  "-name",
+  "-iname",
+  "-path",
+  "-ipath",
+  "-wholename",
+  "-regex",
+  "--include",
+  "--exclude",
+  "--exclude-dir",
+  "-g",
+  "--glob",
+  "--iglob",
+  "-e",
+  "--regexp",
+]);
+const assigners = new Set([
+  "for",
+  "select",
+  "read",
+  "local",
+  "typeset",
+  "declare",
+  "export",
+  "integer",
+  "float",
+  "readonly",
+  "getopts",
+]);
+const bashParameters = new Set([
+  "PIPESTATUS",
+  "BASH_SOURCE",
+  "BASH_REMATCH",
+  "BASH_VERSION",
+  "BASH_VERSINFO",
+  "BASH_LINENO",
+  "BASH_COMMAND",
+  "BASHPID",
+  "FUNCNAME",
+]);
+/** The command assigns the parameter: as an assignment, or as the name a
+ * loop, a read or a declaration sets. */
+const assigns = ({ words }: ShellReading, name: string) => {
+  const head = new Map<number, string>();
+  for (const word of words)
+    if (word.position === "head" && !head.has(word.command))
+      head.set(word.command, word.bare);
+  return words.some(({ bare, position, command }) =>
+    bare.startsWith(`${name}=`) || bare.startsWith(`${name}+=`)
+      ? position === "assignment" || assigners.has(head.get(command) ?? "")
+      : bare === name &&
+        position === "argument" &&
+        assigners.has(head.get(command) ?? ""),
+  );
+};
+/** A parameter standing as a whole word: where a program's name stands, or
+ * unquoted among the arguments. */
+const unsplitWord = ({ words }: ShellReading) =>
+  words.find(
+    ({ raw, position }) =>
+      position === "head" && /^"?\$\{?[A-Za-z_]\w*\}?"?$/.test(raw),
+  ) ??
+  words.find(
+    ({ raw, position }) =>
+      position === "argument" && /^\$\{?[A-Za-z_]\w*\}?$/.test(raw),
+  );
+const shown = (value: string) => {
+  const clean = value.replace(/[\p{C}\p{Zl}\p{Zp}]/gu, "");
+  return Array.from(clean).length <= 120 ? clean : "";
+};
+const quotable = /^[^\s'"`$\\]+$/;
+interface Borne {
+  readonly written: string;
+  readonly form: string;
+  readonly remedy?: string;
+}
+const unwritten: Borne = { written: "", form: "" };
+type ShellClass = readonly [
+  RegExp,
+  ShellDiagnosticKind,
+  (
+    subject: { readonly source: string; readonly reading: ShellReading },
+    named: string,
+  ) => Borne | null,
+];
+// Each class: the message the shell prints, the kind, and how the command
+// bears it out: null when it does not, else what the command wrote and how.
+const shellClasses: readonly ShellClass[] = [
+  [
+    /^no matches found: (.+)$/,
+    "unmatched-pattern",
+    ({ reading }, named) => {
+      for (const [index, word] of reading.words.entries()) {
+        if (word.position === "pattern") continue;
+        if (!becomes(word.bare, named)) continue;
+        if (word.heredoc) return { written: word.raw, form: "heredoc" };
+        const option = /^(--?[A-Za-z][\w-]*=)(.+)$/s.exec(word.raw);
+        const before = reading.words[index - 1];
+        if (option && patterned.test(option[2]!))
+          return {
+            written: word.raw,
+            form: "option",
+            remedy: quotable.test(option[2]!)
+              ? `${option[1]}'${option[2]}'`
+              : "",
+          };
+        if (before?.command === word.command && patternFlags.has(before.bare))
+          return {
+            written: word.raw,
+            form: "option",
+            remedy: quotable.test(word.raw) ? `'${word.raw}'` : "",
+          };
+        return { written: word.raw, form: "operand" };
+      }
+      return null;
+    },
+  ],
+  [
+    /^bad pattern: (.+)$/,
+    "bad-pattern",
+    ({ reading }, named) => {
+      const word = reading.words.find(({ bare }) => becomes(bare, named));
+      return word ? { written: word.raw, form: "" } : null;
+    },
+  ],
+  // zsh reads parentheses that close an unquoted word as qualifiers of a
+  // file pattern.
+  [
+    /^(?:unknown file attribute: .+|missing end of string|missing delimiter for '.' glob qualifier|number expected)()$/,
+    "bad-pattern",
+    ({ reading }) => {
+      const word = reading.words.find(
+        ({ bare, position }) =>
+          /[^\s$=(]\((?!\))/.test(bare) && position !== "assignment",
+      );
+      return word ? { written: word.raw, form: "parentheses" } : null;
+    },
+  ],
+  [
+    /^command not found: (.+)$/,
+    "program-not-found",
+    ({ reading }, named) => {
+      const word = programWord(reading, named);
+      if (word?.ticked) return { written: word.raw, form: "backquotes" };
+      if (/\s|\\n/.test(named)) return null;
+      return word
+        ? { written: named, form: assigns(reading, "path") ? "path" : "" }
+        : null;
+    },
+  ],
+  // zsh names the whole value where a parameter was not split into words.
+  [
+    /^(?:command not found|no such file or directory): (.*(?:\s|\\n).*)$/,
+    "unsplit-word",
+    ({ reading }, named) => {
+      if (reading.words.some(({ text }) => becomesPath(text, named)))
+        return null;
+      const word = unsplitWord(reading);
+      return word
+        ? { written: word.raw, form: word.position === "head" ? "program" : "" }
+        : null;
+    },
+  ],
+  [
+    /^read-only variable: ([A-Za-z_]\w*)$/,
+    "reserved-parameter",
+    ({ reading }, named) =>
+      assigns(reading, named) ? { written: named, form: "" } : null,
+  ],
+  [
+    /^bad substitution()$/,
+    "bad-substitution",
+    ({ reading: { plain } }) => {
+      if (/\$\{[^}]*(?:,|\^)\}|\$\{![^}]+\}|\$\{[^}]+@[A-Za-z]\}/.test(plain))
+        return { written: "", form: "bash" };
+      const modifier = /\$[A-Za-z_]\w*:[A-Za-z&]/.exec(plain);
+      return modifier
+        ? { written: modifier[0], form: "modifier" }
+        : plain.includes("${")
+          ? unwritten
+          : null;
+    },
+  ],
+  [
+    /^(?:invalid subscript|bad output format specification)()$/,
+    "bad-subscript",
+    ({ reading: { plain } }) => {
+      const subscript = /\$[A-Za-z_]\w*\[/.exec(plain);
+      return subscript ? { written: subscript[0], form: "" } : null;
+    },
+  ],
+  [
+    /^bad math expression: (.+)$/,
+    "bad-math",
+    ({ reading: { plain } }) =>
+      /\(\(|\$\[|(?:^|[\s;&|])let\s|\$[A-Za-z_]\w*\[/.test(plain)
+        ? unwritten
+        : null,
+  ],
+  [
+    /^([A-Za-z_]\w*)(?:\[[^\]]*\])?: parameter not set$/,
+    "bash-parameter",
+    ({ reading: { plain } }, named) =>
+      bashParameters.has(named) && new RegExp(`\\$\\{?${named}\\b`).test(plain)
+        ? { written: named, form: "" }
+        : null,
+  ],
+  [
+    /^unmatched (['"`])$/,
+    "unmatched-quote",
+    ({ reading }, named) =>
+      reading.unmatchedQuotes.includes(named)
+        ? { written: named, form: "" }
+        : null,
+  ],
+  [
+    /^parse error near `(.*)'$/,
+    "parse-error",
+    ({ reading }, named) =>
+      reading.syntaxFaults.includes(named) ||
+      (reading.incomplete &&
+        (named === "\\n" ||
+          reading.syntax.includes(named) ||
+          reading.words.some(({ text }) => asWritten(text) === named)))
+        ? { written: named === "\\n" ? "" : named, form: "" }
+        : null,
+  ],
+  [
+    /^no such file or directory: (.+)$/,
+    "missing-file",
+    ({ reading }, named) =>
+      reading.words.some(
+        ({ text, position }) =>
+          (position === "head" || position === "redirect") &&
+          becomesPath(text, named),
+      )
+        ? unwritten
+        : null,
+  ],
+  [
+    /^(?:operation not permitted|permission denied|read-only file system): (.+)$/,
+    "not-permitted",
+    ({ reading }, named) =>
+      reading.words.some(
+        ({ text, position }) =>
+          (position === "head" || position === "redirect") &&
+          becomesPath(text, named),
+      )
+        ? unwritten
+        : null,
+  ],
+  // The host refuses the lower priority zsh gives a background job.
+  [
+    /^nice\(\d+\) failed: operation not permitted()$/,
+    "not-permitted",
+    ({ reading }) => (reading.background ? unwritten : null),
+  ],
+  // zsh reads an unquoted word that begins with = as a program's path and
+  // names the rest of the word.
+  [
+    /^(\S+) not found$/,
+    "equals-word",
+    ({ reading }, named) => {
+      const word = reading.words.find(({ bare }) => {
+        const at = bare.indexOf(`=${named}`);
+        return (
+          at >= 0 &&
+          bare.endsWith(named) &&
+          (at === 0 || /[=:]/.test(bare[at - 1] ?? ""))
+        );
+      });
+      return word ? { written: word.raw, form: "" } : null;
+    },
+  ],
+];
+// A builtin's own refusal carries its name before the line number.
+const builtinClasses: readonly (readonly [RegExp, ShellDiagnosticKind])[] = [
+  [/^bad option: (-\S+)$/, "builtin-option"],
+  [/^(-\S+): no coprocess$/, "builtin-option"],
+  [/^no such file or directory: (.+)$/, "missing-file"],
+  [/^(?:operation not permitted|permission denied): (.+)$/, "not-permitted"],
+];
+const shellLine = /^(?:\(eval\)|zsh):(?:([^\s:\d][^\s:]*):)?(?:\d+:)? (.+)$/;
+export function shellDiagnostics(
+  command: string,
+  output: string,
+): readonly ShellDiagnostic[] {
+  const found: ShellDiagnostic[] = [];
+  const source =
+    command.length > READ_LIMIT ? command.slice(0, READ_LIMIT) : command;
+  let reading: ShellReading | undefined;
+  const lines = output.split("\n");
+  const first = lines.findIndex((line) => line.trim() !== "");
+  for (const [index, line] of lines.entries()) {
+    if (found.length >= 16) break;
+    const shaped = line.length > 4096 ? null : shellLine.exec(line);
+    const message = shaped?.[2]?.trim();
+    if (!shaped || !message) continue;
+    const builtin = shaped[1];
+    reading ??= readShellCommand(source);
+    const words = reading.words;
+    // A line of no listed class counts when it opens the output: a command's
+    // own refusal comes before anything the command printed.
+    const other = (executedBuiltin = false) => {
+      const user = /^no such user or named directory: (.+)$/.exec(message);
+      const expansion =
+        user &&
+        words.some(
+          ({ bare }) =>
+            bare === `~${user[1]}` || bare.startsWith(`~${user[1]}/`),
+        );
+      if (index === first && (executedBuiltin || expansion))
+        found.push({ kind: "other", ...unwritten });
+    };
+    if (builtin) {
+      const named = new Set(
+        words
+          .filter(
+            ({ text, position }) =>
+              asWritten(text) === builtin && position === "head",
+          )
+          .map((word) => word.command),
+      );
+      if (!named.size) continue;
+      const listed = builtinClasses.find(([pattern]) => pattern.test(message));
+      const subject = listed?.[0].exec(message)?.[1];
+      if (!listed || !subject) {
+        other(true);
+        continue;
+      }
+      const within = words.filter(
+        (word) => named.has(word.command) && word.position === "argument",
+      );
+      if (listed[1] !== "builtin-option") {
+        // The shell names the builtin, so a word of parameters alone bears
+        // the line out.
+        if (
+          within.some(
+            ({ text }) => becomesPath(text, subject) || allParameters(text),
+          )
+        )
+          found.push({ kind: listed[1], ...unwritten });
+      } else if (
+        within.some(
+          ({ bare }) =>
+            bare.startsWith("-") && bare.includes(subject.slice(-1)),
+        )
+      )
+        found.push({
+          kind: "builtin-option",
+          written: shown(`${builtin} ${subject}`),
+          form: builtin === "read" && subject === "-a" ? "array" : "",
+        });
+      continue;
+    }
+    const listed = shellClasses.filter(([pattern]) => pattern.test(message));
+    if (!listed.length) {
+      other();
+      continue;
+    }
+    for (const [pattern, kind, bears] of listed) {
+      const borne = bears(
+        { source, reading },
+        pattern.exec(message)?.[1] ?? "",
+      );
+      if (!borne) continue;
+      const remedy = shown(borne.remedy ?? "");
+      found.push({
+        kind,
+        written: shown(borne.written),
+        form: borne.form,
+        ...(remedy ? { remedy } : {}),
+      });
+      break;
+    }
+  }
+  return found;
+}
+
+const inlineAdvice =
+  "If the command carries a script or long text inline, put it in a file through a quoted heredoc.";
+/** What the shell said, as the class words it, and what to write instead. A
+ * class that is not about how the command was written gives none. */
+function shellSentence({
+  kind,
+  written,
+  form,
+  remedy,
+}: ShellDiagnostic): string | null {
+  const word = written ? ` ${written}` : " in the command";
+  switch (kind) {
+    case "unmatched-pattern":
+      return form === "heredoc"
+        ? `zsh ran a substitution inside a heredoc whose delimiter is not quoted and found no file that matches the pattern${word}. Quote the delimiter, as in <<'EOF', where the body is text.`
+        : form === "option"
+          ? `zsh read the unquoted word${word} as a file pattern, found no file that matches and did not run the command that holds it. Quote the pattern${remedy ? `: ${remedy}` : ""}.`
+          : `zsh found no file that matches the unquoted pattern${word} and did not run the command that holds it. If a program was meant to receive the pattern, quote it; if it was meant to name files, none match.`;
+    case "bad-pattern":
+      return form === "parentheses"
+        ? `zsh read the parentheses in the unquoted word${word} as part of a file pattern and could not parse them. Quote the word.`
+        : `zsh read the unquoted word${word} as a file pattern and could not parse it. Quote the word if it is text.`;
+    case "equals-word":
+      return `zsh read the unquoted word${word}, which begins with =, as the path of a program and found none. Quote the word.`;
+    case "program-not-found":
+      return form === "backquotes"
+        ? "zsh ran the text between backquotes as a command and found no such program: backquotes substitute inside double quotes and in a heredoc whose delimiter is not quoted. Put text that holds backquotes in single quotes or a quoted heredoc."
+        : form === "path"
+          ? "The command assigns path, which zsh ties to PATH, so zsh found no program after the assignment. Use another name."
+          : `zsh found no program named ${written} on this host.`;
+    case "unsplit-word":
+      return `zsh does not split ${written || "a parameter"} into words: it ${form === "program" ? "looked for one program named by the whole value" : "used the whole value as one word"}. Use an array, or \${=name} where the value is a list of words.`;
+    case "reserved-parameter":
+      return `zsh reserves the parameter ${written} and refused the assignment. Use another name.`;
+    case "bad-substitution":
+      return form === "modifier"
+        ? `zsh reads a colon and a letter after a parameter as a modifier and refused ${written}. Write the name in braces before the colon, as in \${name}:text.`
+        : form === "bash"
+          ? "zsh refused a parameter expansion it does not know; forms such as ${name,,}, ${name^^} and ${!name} are bash's."
+          : "zsh refused a parameter expansion the command holds.";
+    case "bad-subscript":
+      return `zsh reads a bracket after a parameter as a subscript and refused ${written}. Write the name in braces before the bracket, as in \${name}[text].`;
+    case "bad-math":
+      return "zsh could not evaluate an arithmetic expression the command holds. Check that each value inside it is one number.";
+    case "bash-parameter":
+      return `${written} is bash's parameter and zsh does not set it.${written === "PIPESTATUS" ? " zsh's is pipestatus, counted from 1." : ""}`;
+    case "builtin-option":
+      return `zsh's own ${written.replace(" ", " refused ")}: its options are not bash's.${form === "array" ? " read -A fills an array." : ""}`;
+    case "unmatched-quote":
+      return `zsh found a quote it could not pair (${written}). ${inlineAdvice}`;
+    case "parse-error":
+      return `zsh could not parse the command${written ? ` near ${written}` : " at the end of a line"}. ${inlineAdvice}`;
+    default:
+      return null;
+  }
+}
+/** The guidance for what was found, each sentence once and whole, as context
+ * for the agent; `earlier` names a command that ran before the call the
+ * guidance arrives with. */
+export function shellGuidance(
+  diagnostics: readonly ShellDiagnostic[],
+  earlier = false,
+): string | null {
+  const said: string[] = [];
+  const opening = earlier
+    ? "DotLn shell diagnostic, for an earlier command the host marked failed:"
+    : "DotLn shell diagnostic:";
+  let length = opening.length;
+  for (const diagnostic of diagnostics) {
+    const next = shellSentence(diagnostic);
+    if (!next || said.includes(next)) continue;
+    const added = Array.from(next).length + 1;
+    if (length + added > 900) continue;
+    length += added;
+    said.push(next);
+  }
+  return said.length ? `${opening} ${said.join(" ")}` : null;
+}
+
 // Redirect operators and filename expansion differ between shells: a leading
 // `!` can be zsh's clobber mark, and `=` can expand to a command path. Require
 // a plain path prefix instead of treating every captured suffix as literal.

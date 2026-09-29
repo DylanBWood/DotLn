@@ -6,11 +6,16 @@ import { AsyncLocalStorage } from "node:async_hooks";
 import { tmpdir } from "node:os";
 import {
   appendFileSync,
+  closeSync,
+  constants,
   existsSync,
+  fstatSync,
   lstatSync,
   mkdirSync,
+  openSync,
   readdirSync,
   readFileSync,
+  readSync,
   realpathSync,
   renameSync,
   rmdirSync,
@@ -18,6 +23,7 @@ import {
   statSync,
   unlinkSync,
   writeFileSync,
+  writeSync,
   type Stats,
 } from "node:fs";
 import {
@@ -60,6 +66,8 @@ import {
   shellWritePaths,
   shellWriteTargets,
   commitMessageInputs,
+  shellDiagnostics,
+  shellGuidance,
 } from "./harness-command.js";
 import {
   activeGateRuns,
@@ -974,7 +982,9 @@ export function codexHostProcess(
   return { source: "thread" };
 }
 /** Signal-zero existence, then a start-time comparison when the process table is readable. */
-export function harnessProcessAlive(owner: HarnessProcess): boolean {
+export function harnessProcessAlive(
+  owner: Pick<HarnessProcess, "pid" | "startedAt">,
+): boolean {
   if (!validPid(owner.pid)) return false;
   try {
     process.kill(owner.pid, 0);
@@ -1022,14 +1032,375 @@ const ownerFields = (owner: HarnessProcess | undefined) =>
 const appendWriterEvent = (root: string, event: Record<string, unknown>) => {
   const path = join(harnessStateDirectory(root), "writer-events.jsonl");
   mkdirSync(dirname(path), { recursive: true, mode: 0o700 });
-  if (existsSync(path) && !lstatSync(path).isFile())
+  // The entry itself is read and opened: a link in the log's place, to a
+  // file or to nothing, is never written through.
+  const entry = lstatSync(path, { throwIfNoEntry: false });
+  if (entry && !entry.isFile())
     throw new Error("Writer event log is not a regular file");
-  appendFileSync(
+  const file = openSync(
     path,
-    JSON.stringify({ at: new Date().toISOString(), ...event }) + "\n",
-    { mode: 0o600 },
+    constants.O_WRONLY |
+      constants.O_APPEND |
+      constants.O_CREAT |
+      constants.O_NOFOLLOW,
+    0o600,
   );
+  try {
+    writeSync(
+      file,
+      JSON.stringify({ at: new Date().toISOString(), ...event }) + "\n",
+    );
+  } finally {
+    closeSync(file);
+  }
 };
+/** WO-172: the local lane of what the shell said about commands as written.
+ * A row holds its class and its scope, never a pattern or a command's text,
+ * and names no field a guard's count reads. */
+export const SHELL_DIAGNOSTICS = "shell-diagnostics.jsonl";
+const appendShellDiagnostic = (root: string, row: Record<string, unknown>) => {
+  const path = join(harnessStateDirectory(root), SHELL_DIAGNOSTICS);
+  mkdirSync(dirname(path), { recursive: true, mode: 0o700 });
+  // The entry itself is read and opened: a link in the lane's place, to a
+  // file or to nothing, is never written through.
+  const entry = lstatSync(path, { throwIfNoEntry: false });
+  if (entry && !entry.isFile())
+    throw new Error("Shell diagnostic log is not a regular file");
+  const file = openSync(
+    path,
+    constants.O_WRONLY |
+      constants.O_APPEND |
+      constants.O_CREAT |
+      constants.O_NOFOLLOW,
+    0o600,
+  );
+  try {
+    writeSync(
+      file,
+      JSON.stringify({ at: new Date().toISOString(), ...row }) + "\n",
+    );
+  } finally {
+    closeSync(file);
+  }
+};
+/** A result the host marks failed reaches no registered hook, so it is read
+ * from the agent's own transcript at the next observed call: the last lines
+ * of the file, and each failed shell result once. */
+const TRANSCRIPT_TAIL = 262144;
+const LANE_BUFFER = 65536;
+function tailOf(path: string, length: number): string {
+  if (!lstatSync(path, { throwIfNoEntry: false })?.isFile()) return "";
+  const file = openSync(path, constants.O_RDONLY | constants.O_NOFOLLOW);
+  try {
+    const size = fstatSync(file).size;
+    const take = Math.min(size, length);
+    const buffer = Buffer.alloc(take);
+    readSync(file, buffer, 0, take, size - take);
+    const text = buffer.toString("utf8");
+    // A tail that opens inside a line leaves that line out.
+    return size > take ? text.slice(text.indexOf("\n") + 1) : text;
+  } finally {
+    closeSync(file);
+  }
+}
+/** The host keeps a subagent's lines in a file of its own under the
+ * session's directory; the path the hook is handed may name either. */
+function agentTranscript(input: HarnessInput): string | null {
+  const path = input.transcript_path;
+  if (!path || !isAbsolute(path)) return null;
+  const agent = input.agent_id;
+  if (!agent) return path;
+  if (
+    !/^[A-Za-z0-9_-]{1,128}$/.test(agent) ||
+    !/^[A-Za-z0-9-]{1,128}$/.test(input.session_id)
+  )
+    return null;
+  const name = `agent-${agent}.jsonl`;
+  if (basename(path) === name) return path;
+  const held = join(dirname(path), input.session_id, "subagents");
+  const runs = join(held, "workflows");
+  const places = [held];
+  try {
+    for (const run of readdirSync(runs).slice(0, 256))
+      places.push(join(runs, run));
+  } catch {
+    // The session ran no workflow.
+  }
+  return (
+    places
+      .map((place) => join(place, name))
+      .find((file) => lstatSync(file, { throwIfNoEntry: false })?.isFile()) ??
+    null
+  );
+}
+interface FailedShellResult {
+  readonly use: string;
+  readonly command: string;
+  readonly output: string;
+}
+function failedShellResults(transcript: string): FailedShellResult[] {
+  const commands = new Map<string, string>();
+  const failed: FailedShellResult[] = [];
+  const text = (content: unknown): string =>
+    typeof content === "string"
+      ? content
+      : Array.isArray(content)
+        ? content
+            .map((part: unknown) =>
+              typeof part === "string"
+                ? part
+                : typeof (part as { text?: unknown } | null)?.text === "string"
+                  ? (part as { text: string }).text
+                  : "",
+            )
+            .join("\n")
+        : "";
+  for (const line of tailOf(transcript, TRANSCRIPT_TAIL).split("\n")) {
+    if (!line) continue;
+    let row: unknown;
+    try {
+      row = JSON.parse(line);
+    } catch {
+      continue;
+    }
+    const content = (row as { message?: { content?: unknown } } | null)?.message
+      ?.content;
+    if (!Array.isArray(content)) continue;
+    for (const part of content as (Record<string, unknown> | null)[]) {
+      if (
+        part?.type === "tool_use" &&
+        part.name === "Bash" &&
+        typeof part.id === "string"
+      ) {
+        const command = (part.input as { command?: unknown } | null)?.command;
+        if (typeof command === "string") commands.set(part.id, command);
+      } else if (
+        part?.type === "tool_result" &&
+        part.is_error === true &&
+        typeof part.tool_use_id === "string"
+      ) {
+        const command = commands.get(part.tool_use_id);
+        // The host opens a failed result with the status the command left.
+        const output = text(part.content).replace(/^Exit code \d+\n/, "");
+        if (command !== undefined && output)
+          failed.push({ use: digest(part.tool_use_id), command, output });
+      }
+    }
+  }
+  return failed.slice(-4);
+}
+/** Keep the identities of every currently eligible result, even when unrelated
+ * activity moves its row outside the lane's tail. Read the intact lane in fixed
+ * buffers, retaining only those identities, and stop when all are found. */
+function answeredShellResults(
+  root: string,
+  eligible: Set<string>,
+): Set<string> {
+  const answered = new Set<string>();
+  const lane = join(harnessStateDirectory(root), SHELL_DIAGNOSTICS);
+  if (!lstatSync(lane, { throwIfNoEntry: false })?.isFile()) return answered;
+  const file = openSync(lane, constants.O_RDONLY | constants.O_NOFOLLOW);
+  try {
+    const size = fstatSync(file).size;
+    const buffer = Buffer.alloc(LANE_BUFFER);
+    let offset = 0,
+      pending = "",
+      oversized = false;
+    const inspect = () => {
+      if (!oversized && pending.includes('"use"')) {
+        try {
+          const use = (JSON.parse(pending) as { use?: unknown } | null)?.use;
+          if (typeof use === "string" && eligible.has(use)) answered.add(use);
+        } catch {
+          // A line that cannot be read names no result.
+        }
+      }
+      pending = "";
+      oversized = false;
+    };
+    while (offset < size && answered.size < eligible.size) {
+      const read = readSync(
+        file,
+        buffer,
+        0,
+        Math.min(buffer.length, size - offset),
+        offset,
+      );
+      if (!read) break;
+      offset += read;
+      const parts = buffer.toString("utf8", 0, read).split("\n");
+      for (const [index, part] of parts.entries()) {
+        if (!oversized) {
+          if (pending.length + part.length > 4096) oversized = true;
+          else pending += part;
+        }
+        if (index < parts.length - 1) inspect();
+      }
+    }
+    if (offset === size && pending) inspect();
+  } finally {
+    closeSync(file);
+  }
+  return answered;
+}
+/** One short-lived hook owns a failed-use answer. Prepare an immutable
+ * nonce-named owner before atomically placing its directory, as the writer
+ * reservation does. Dead-owner recovery removes only that observed nonce:
+ * a delayed reclaimer cannot unlink a replacement's claim. No waiter sleeps. */
+function claimShellResult(root: string, use: string): (() => void) | null {
+  const parent = harnessStateDirectory(root);
+  mkdirSync(parent, { recursive: true, mode: 0o700 });
+  const directory = join(parent, `${use}.shell-claim`);
+  const nonce = randomBytes(16).toString("hex");
+  const name = `claim-${nonce}.json`;
+  const prepared = `${directory}.prepare-${nonce}`;
+  const retire = (held: string) => {
+    if (!unlinkIfPresent(join(directory, held))) return;
+    try {
+      rmdirSync(directory);
+    } catch (error) {
+      if (!["ENOTEMPTY", "EEXIST", "ENOENT"].includes(errorCode(error) ?? ""))
+        throw error;
+    }
+  };
+  mkdirSync(prepared, { mode: 0o700 });
+  try {
+    const startedAt = processTable().find(
+      ({ pid }) => pid === process.pid,
+    )?.startedAt;
+    writeFileSync(
+      join(prepared, name),
+      JSON.stringify({
+        pid: process.pid,
+        ...(startedAt ? { startedAt } : {}),
+      }) + "\n",
+      { flag: "wx", mode: 0o600 },
+    );
+    for (;;) {
+      try {
+        renameSync(prepared, directory);
+        return () => retire(name);
+      } catch (error) {
+        if (!["ENOTEMPTY", "EEXIST"].includes(errorCode(error) ?? ""))
+          throw error;
+      }
+      try {
+        if (!lstatSync(directory).isDirectory()) return null;
+        const names = readdirSync(directory);
+        if (!names.length) continue;
+        if (names.length !== 1 || !/^claim-[a-f0-9]{32}\.json$/.test(names[0]!))
+          return null;
+        const owner = JSON.parse(
+          tailOf(join(directory, names[0]!), 4096),
+        ) as Pick<HarnessProcess, "pid" | "startedAt"> | null;
+        if (
+          !owner ||
+          !validPid(owner.pid) ||
+          (owner.startedAt !== undefined &&
+            typeof owner.startedAt !== "string") ||
+          harnessProcessAlive(owner)
+        )
+          return null;
+        retire(names[0]!);
+      } catch (error) {
+        if (errorCode(error) !== "ENOENT") throw error;
+      }
+    }
+  } finally {
+    rmSync(prepared, { recursive: true, force: true });
+  }
+}
+/** After a call, hand the agent the guidance of each class the shell named
+ * and count each diagnostic: for the call's own command where the host did
+ * not mark its result failed, and for an earlier command whose result it did.
+ * It refuses nothing, blocks nothing and prints nothing to the terminal, and
+ * an error here changes no other observation. */
+function observeShellDiagnostics(
+  root: string,
+  input: HarnessInput,
+  role: string | undefined,
+  scope: () => {
+    workOrder: string | null;
+    phase: string | null;
+    sessionKey: string;
+  },
+): { hookSpecificOutput?: Record<string, unknown> } {
+  try {
+    if (input.hook_event_name !== "PostToolUse") return {};
+    const said: string[] = [];
+    const row = (kind: string, failed?: string) => {
+      const { workOrder, phase, sessionKey: session } = scope();
+      appendShellDiagnostic(root, {
+        shell: "zsh",
+        kind,
+        workOrder,
+        role: role ?? null,
+        phase,
+        session,
+        ...(failed ? { marked: "failed", use: failed } : {}),
+      });
+    };
+    const command = input.tool_input?.command;
+    const output = [input.tool_response?.stdout, input.tool_response?.stderr]
+      .filter((text): text is string => typeof text === "string")
+      .join("\n");
+    if (input.tool_name === "Bash" && typeof command === "string" && output) {
+      const found = shellDiagnostics(command, output);
+      try {
+        for (const { kind } of found) row(kind);
+      } catch {
+        // The count is lost; the agent is still answered.
+      }
+      const guidance = shellGuidance(found);
+      if (guidance) said.push(guidance);
+    }
+    try {
+      const transcript =
+        harnessInputHarness(input) === "claude-code"
+          ? agentTranscript(input)
+          : null;
+      const failed = transcript ? failedShellResults(transcript) : [];
+      const answered = failed.length
+        ? answeredShellResults(root, new Set(failed.map(({ use }) => use)))
+        : new Set<string>();
+      for (const { use, command: earlier, output: held } of failed) {
+        if (answered.has(use)) continue;
+        const found = shellDiagnostics(earlier, held);
+        if (!found.length) continue;
+        const release = claimShellResult(root, use);
+        if (!release) continue;
+        try {
+          // The earlier snapshot may predate a winner that already finished
+          // and released its claim. Recheck under ownership before writing.
+          if (answeredShellResults(root, new Set([use])).has(use)) {
+            answered.add(use);
+            continue;
+          }
+          // Its row keeps the answer from repeating after claim release;
+          // an unwritable failed-use row still supplies no guidance.
+          for (const { kind } of found) row(kind, use);
+          answered.add(use);
+          const guidance = shellGuidance(found, true);
+          if (guidance && !said.includes(guidance)) said.push(guidance);
+        } finally {
+          release();
+        }
+      }
+    } catch {
+      // A transcript or a lane that cannot be read answers nothing.
+    }
+    return said.length
+      ? {
+          hookSpecificOutput: {
+            hookEventName: "PostToolUse",
+            additionalContext: said.join(" "),
+          },
+        }
+      : {};
+  } catch {
+    return {};
+  }
+}
 /**
  * An emptied instance is retired. The current instance is the one file that no
  * other file names as superseded; superseded files of the same lineage may
@@ -3655,9 +4026,20 @@ async function evaluateExistingHarnessHook(
       ...(outside.length ? { outsideDirectedSet: outside } : {}),
     });
     writeJson(statePath(root, input), session);
+    // Last, so that a call whose other observations fail is neither counted
+    // nor answered.
+    const shell = observeShellDiagnostics(
+      root,
+      input,
+      session.role,
+      observationScope,
+    );
     if (outside.length)
-      return protocolAdvisory("observed read outside the directed set");
-    return {};
+      return {
+        ...protocolAdvisory("observed read outside the directed set"),
+        ...shell,
+      };
+    return shell;
   }
   if (config.kind === "finish") {
     if (!config.policy) throw new Error("Missing compiled finish policy");

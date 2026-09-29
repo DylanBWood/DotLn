@@ -209,6 +209,7 @@ in `docs/PLAYBOOK.md`.
 
 One line per `.claude/` or CLAUDE.md change (see execution guide):
 
+- 2026-09-29: WO-172 adds the hand-written Shell rule to `CLAUDE.md` (commands run under zsh, 390 bytes) and regenerates the hook bundle so the observer hands the agent what the shell said about a command, at the call or after a failed one, and counts it locally; the reviewer's cold-start ceiling rises by the standing route. No refusal, permission or safety boundary moves, and personal settings are unchanged.
 - 2026-09-25: WO-161 regenerates the role skills, hook bundle and `CLAUDE.md`
   residue to describe the operator's sandbox-off host posture; DotLn refusals
   and host permission settings remain the boundary. Personal settings are unchanged.
