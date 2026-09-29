@@ -26,6 +26,7 @@ import { containedRegularFile } from "./paths.mjs";
 import { readControl } from "./control-store.mjs";
 import { followupsPath, unionFollowups } from "./planning-followups.mjs";
 import { strictVersionsIn } from "./release-records.mjs";
+import { decisionsConflicted } from "./release-preparation.mjs";
 import { refreshControlProjection } from "../resume.mjs";
 
 const receiptFile = (root) =>
@@ -307,11 +308,14 @@ function decisionStub(root, receipt) {
     "evidence",
     `${receipt.workOrder}/decisions.md`,
   );
-  if (conflicts(root).includes(path))
-    throw new Error("decisions record has an authored conflict");
-  const before = existsSync(join(root, path))
+  const recorded = existsSync(join(root, path))
     ? readFileSync(join(root, path), "utf8")
-    : `# ${receipt.workOrder} decisions\n`;
+    : undefined;
+  if (decisionsConflicted(root, path, recorded))
+    throw new Error(
+      `${path} has an authored conflict; resolve it, stage it with git add -- ${path}, then run npm run worktree -- integrate ${receipt.workOrder} --continue`,
+    );
+  const before = recorded ?? `# ${receipt.workOrder} decisions\n`;
   const marker = `<!-- integration ${receipt.checkpointRef} -->`;
   if (before.includes(marker)) return;
   const used = [
@@ -328,6 +332,9 @@ function decisionStub(root, receipt) {
       receipt.checkpointRef,
       `base ${receipt.before}`,
       `upstream ${receipt.upstream}`,
+      ...(receipt.release
+        ? [`release preparation: ${releaseLine(receipt.release)}`]
+        : []),
     ],
     rejected: [
       {
@@ -370,10 +377,44 @@ function regenerate(root, receipt) {
       node("scripts/harness.mjs", "emit"),
     );
   run("current control projection", () => refreshControlProjection(root));
-  run("release preparation", () => {
-    receipt.release = node("scripts/release.mjs", "prepare", "--local").trim();
-  });
-  run("integration decision stub", () => decisionStub(root, receipt));
+  // A collision is recorded once (WO-086): in the integration decision below
+  // while it is still to be written, and by release prepare itself once an
+  // earlier pass wrote it. The stub waits for a preparation that failed, so a
+  // retime that lands on a later pass is never left unrecorded. If the stub
+  // failed after preparation succeeded, file that saved outcome before any
+  // new preparation can overwrite it; while the stub is blocked, prepare waits.
+  const decisions = join(
+    root,
+    docRelative(root, "evidence", `${receipt.workOrder}/decisions.md`),
+  );
+  let stubbed =
+    existsSync(decisions) &&
+    readFileSync(decisions, "utf8").includes(
+      `<!-- integration ${receipt.checkpointRef} -->`,
+    );
+  const savedRelease = !stubbed && receipt.release;
+  if (savedRelease)
+    run("integration decision stub", () => {
+      decisionStub(root, receipt);
+      stubbed = true;
+    });
+  if (savedRelease && !stubbed)
+    pending.push("release preparation: awaits integration decision stub");
+  else {
+    run("release preparation", () => {
+      receipt.release = node(
+        "scripts/release.mjs",
+        "prepare",
+        "--local",
+        ...(stubbed ? [] : ["--integration"]),
+      ).trim();
+    });
+    if (pending.some((item) => item.startsWith("release preparation: "))) {
+      if (!stubbed)
+        pending.push("integration decision stub: awaits release preparation");
+    } else if (!savedRelease)
+      run("integration decision stub", () => decisionStub(root, receipt));
+  }
   run("decisions index, follow-up register and meta", () =>
     node("scripts/meta.mjs"),
   );

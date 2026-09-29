@@ -184,9 +184,13 @@ function fixture(
     ["maintenance.auto", "false"],
   ])
     runGit(main, ["config", key, value], fixtureGitOptions);
-  // The two entry points; the peers they import statically travel with the
-  // library overlay below.
-  for (const path of ["scripts/worktree.mjs", "scripts/resume.mjs"])
+  // The two entry points and the release command the helper spawns; the peers
+  // they import statically travel with the library overlay below.
+  for (const path of [
+    "scripts/worktree.mjs",
+    "scripts/resume.mjs",
+    "scripts/release.mjs",
+  ])
     cpSync(join(source, path), join(main, path));
   // The overlay carries the whole shared library so a working-tree module and
   // its peers never split across the clone's committed copies.
@@ -468,6 +472,16 @@ for (const reviewed of [false, true])
         { mode: 0o755 },
       );
     runGit(f.subject, ["config", "core.hooksPath", hookDir], fixtureGitOptions);
+    const decisionsFile = join(f.subject, "docs/evidence/WO-998/decisions.md");
+    const decisionsIn = () =>
+      existsSync(decisionsFile)
+        ? [
+            ...readFileSync(decisionsFile, "utf8").matchAll(
+              /```json\n([\s\S]*?)\n```/g,
+            ),
+          ].map((match) => JSON.parse(match[1]))
+        : [];
+    const decisionsBefore = decisionsIn().length;
     const continued = f.invoke("--continue");
     assert.ok(
       !existsSync(join(dirname(f.subject), "hook-called")),
@@ -584,9 +598,43 @@ for (const reviewed of [false, true])
     );
     assert.match(
       stub[release],
-      /^Release preparation: Retimed WO-998: v\d+\.\d+\.\d+ → v9000\.0\.2\. Files changed: [^.].*\. Tag observation: local snapshot only\.$/,
+      /^Release preparation: Retimed WO-998: v9000\.0\.1 → v9000\.0\.2 above the observed release baseline v9000\.0\.1\. Files changed: [^.].*\. Tag observation: local snapshot only\.$/,
     );
     assert.doesNotMatch(stub[release], /\.\./);
+    // WO-086: the collision is recorded exactly once, as this integration
+    // decision with the superseded and new targets and the baseline; release
+    // preparation appended none of its own and changed no product document,
+    // and the README only in its version claim.
+    const appended = decisionsIn().slice(decisionsBefore);
+    assert.equal(appended.length, 1, JSON.stringify(appended));
+    assert.ok(appended[0].evidence.includes(after.checkpointRef));
+    assert.ok(
+      appended[0].evidence.includes(
+        `release preparation: ${stub[release].slice("Release preparation: ".length)}`,
+      ),
+      JSON.stringify(appended[0].evidence),
+    );
+    assert.equal(
+      runGit(
+        f.subject,
+        ["diff", "--name-only", f.upstream, "--", "docs/product"],
+        fixtureGitOptions,
+      ),
+      "",
+      "no product document changes",
+    );
+    for (const line of runGit(
+      f.subject,
+      ["diff", "--unified=0", f.upstream, "--", "README.md"],
+      fixtureGitOptions,
+    )
+      .split("\n")
+      .filter((row) => /^[-+](?![-+]{2} )/.test(row)))
+      assert.match(
+        line,
+        /^[-+]This source prepares DotLn `v\d+\.\d+\.\d+`\.$/,
+        "the README changes, if at all, only in its version claim",
+      );
     assert.match(stub[release + 1], /^Carried-forward claims: /);
     assert.match(
       stub[release + 2],
@@ -999,8 +1047,13 @@ test("WO-169 a pass whose generator fails keeps its checks and names the pending
   const first = f.invoke();
   assert.equal(first.status, 1, first.stdout + first.stderr);
   assert.match(first.stdout, /Authored conflicts: none/);
-  assert.match(first.stdout, /Regenerated: integration decision stub/);
   assert.match(first.stdout, /Pending: release preparation: /);
+  // WO-086: the stub waits for the preparation it would record.
+  assert.match(
+    first.stdout,
+    /Pending: integration decision stub: awaits release preparation/,
+  );
+  assert.doesNotMatch(first.stdout, /Regenerated: integration decision stub/);
   assert.match(first.stdout, /Affected checks \(not run\):/);
   assert.match(
     first.stdout,
@@ -1013,6 +1066,341 @@ test("WO-169 a pass whose generator fails keeps its checks and names the pending
   assert.equal(
     JSON.parse(text(f.subject, "docs/control/local/integration.json")).complete,
     false,
+  );
+});
+
+test("WO-086 a conflicted decisions record refuses the collision's record and writes nothing", (t) => {
+  const f = fixture(t, { authored: false });
+  const path = "docs/evidence/WO-998/decisions.md";
+  const conflicted =
+    "# WO-998 decisions\n\n<<<<<<< local\nlocal note\n=======\nupstream note\n>>>>>>> upstream\n";
+  put(f.subject, path, conflicted);
+  const first = f.invoke();
+  assert.equal(first.status, 1, first.stdout + first.stderr);
+  assert.match(first.stdout, /Authored conflicts: none/);
+  assert.match(
+    first.stdout,
+    /Pending: release preparation: .*docs\/evidence\/WO-998\/decisions\.md has an authored conflict; resolve it, stage it with git add -- docs\/evidence\/WO-998\/decisions\.md, then rerun npm run worktree -- integrate WO-998 --continue\. Nothing was written\./,
+  );
+  // The stub waits for the preparation that refused; neither writes.
+  assert.match(
+    first.stdout,
+    /Pending: integration decision stub: awaits release preparation/,
+  );
+  // Never a fallback: no retime, no record, no roadmap or README paragraph.
+  assert.equal(text(f.subject, path), conflicted);
+  assert.match(
+    text(f.subject, "docs/work-orders/WO-998-fixture.md").split("\n")[0],
+    /\(v9000\.0\.1\)$/,
+  );
+  assert.match(
+    text(f.subject, "README.md"),
+    /This source prepares DotLn `v9000\.0\.1`/,
+  );
+  assert.equal(
+    runGit(
+      f.subject,
+      ["diff", "--name-only", f.upstream, "--", "docs/product"],
+      fixtureGitOptions,
+    ),
+    "",
+  );
+});
+
+test("WO-086 a retime that lands on a continuation is recorded once, in the stub the failed pass withheld", (t) => {
+  const f = fixture(t, { authored: false });
+  const path = "docs/evidence/WO-998/decisions.md";
+  // An entry-less record fails the preparation's meter before any write.
+  put(f.subject, path, "# WO-998 decisions\n");
+  const first = f.invoke();
+  assert.equal(first.status, 1, first.stdout + first.stderr);
+  assert.match(first.stdout, /Pending: release preparation: /);
+  assert.equal(text(f.subject, path), "# WO-998 decisions\n");
+  assert.match(
+    text(f.subject, "docs/work-orders/WO-998-fixture.md").split("\n")[0],
+    /\(v9000\.0\.1\)$/,
+  );
+  // The actor repairs the cause and continues.
+  rmSync(join(f.subject, path));
+  const continued = f.invoke("--continue");
+  assert.equal(continued.status, 0, continued.stdout + continued.stderr);
+  assert.match(continued.stdout, /Regenerated: integration decision stub/);
+  const rows = [
+    ...text(f.subject, path).matchAll(/```json\n([\s\S]*?)\n```/g),
+  ].map((match) => JSON.parse(match[1]));
+  assert.equal(rows.length, 1, JSON.stringify(rows));
+  assert.ok(
+    rows[0].evidence.some((item) =>
+      item.startsWith(
+        "release preparation: Retimed WO-998: v9000.0.1 → v9000.0.2 above the observed release baseline v9000.0.1.",
+      ),
+    ),
+    JSON.stringify(rows[0].evidence),
+  );
+});
+
+for (const blocker of ["PR directory", "PR file"])
+  test(`WO-086 a blocked ${blocker} preserves collision inputs for continuation`, (t) => {
+    const f = fixture(t, { authored: false });
+    const directory = join(f.subject, "docs/final-reviews/WO-998");
+    const blocked =
+      blocker === "PR directory" ? directory : join(directory, "PR.md");
+    if (blocker === "PR directory")
+      put(f.subject, "docs/final-reviews/WO-998", "blocked\n");
+    else {
+      mkdirSync(blocked, { recursive: true });
+      // Git preserves files, not empty directories, through the stash.
+      writeFileSync(join(blocked, "blocker"), "blocked\n");
+    }
+    const authority = "docs/work-orders/WO-998-fixture.md";
+    const decisions = "docs/evidence/WO-998/decisions.md";
+    const headingBefore = text(f.subject, authority);
+    const readmeBefore = text(f.subject, "README.md");
+    const first = f.invoke();
+    assert.equal(first.status, 1, first.stdout + first.stderr);
+    assert.match(first.stdout, /Pending: release preparation: /);
+    assert.match(
+      first.stdout,
+      blocker === "PR directory" ? /EEXIST/ : /EISDIR/,
+    );
+    assert.match(
+      first.stdout,
+      /Pending: integration decision stub: awaits release preparation/,
+    );
+    assert.equal(text(f.subject, authority), headingBefore);
+    assert.equal(text(f.subject, "README.md"), readmeBefore);
+    assert.equal(existsSync(join(f.subject, decisions)), false);
+    assert.equal(
+      runGit(
+        f.subject,
+        ["diff", "--name-only", f.upstream, "--", "docs/product"],
+        fixtureGitOptions,
+      ),
+      "",
+    );
+    rmSync(blocked, { recursive: true });
+    const continued = f.invoke("--continue");
+    assert.equal(continued.status, 0, continued.stdout + continued.stderr);
+    assert.match(text(f.subject, authority).split("\n")[0], /\(v9000\.0\.2\)$/);
+    const rows = [
+      ...text(f.subject, decisions).matchAll(/```json\n([\s\S]*?)\n```/g),
+    ].map((match) => JSON.parse(match[1]));
+    assert.equal(rows.length, 1, JSON.stringify(rows));
+    assert.ok(
+      rows[0].evidence.some((item) =>
+        item.startsWith(
+          "release preparation: Retimed WO-998: v9000.0.1 → v9000.0.2 above the observed release baseline v9000.0.1.",
+        ),
+      ),
+      JSON.stringify(rows[0].evidence),
+    );
+    assert.equal(
+      runGit(
+        f.subject,
+        ["diff", "--name-only", f.upstream, "--", "docs/product"],
+        fixtureGitOptions,
+      ),
+      "",
+    );
+    assert.equal(
+      text(f.subject, "README.md"),
+      readmeBefore.replace("v9000.0.1", "v9000.0.2"),
+    );
+    assert.equal(
+      JSON.parse(text(f.subject, "docs/control/local/integration.json"))
+        .complete,
+      true,
+    );
+  });
+
+for (const [blocker, newerTag] of [
+  ["regular file", false],
+  ["symlink", false],
+  ["regular file with a newer tag during retry", true],
+])
+  test(`WO-086 a stub blocked by a ${blocker} retains its saved collision through continuation`, (t) => {
+    const f = fixture(t, { authored: false });
+    const directory = join(f.subject, "docs/evidence/WO-998");
+    if (blocker === "symlink") {
+      mkdirSync(join(f.subject, "stub-target"));
+      put(f.subject, "stub-target/keep", "preserved through stash\n");
+      symlinkSync("../../stub-target", directory);
+    } else put(f.subject, "docs/evidence/WO-998", "blocked\n");
+    const authority = "docs/work-orders/WO-998-fixture.md";
+    const decisions = "docs/evidence/WO-998/decisions.md";
+    const receipt = "docs/control/local/integration.json";
+    const readmeBefore = text(f.subject, "README.md");
+    const first = f.invoke();
+    assert.equal(first.status, 1, first.stdout + first.stderr);
+    assert.match(first.stdout, /Regenerated: release preparation/);
+    assert.match(first.stdout, /Pending: integration decision stub: /);
+    assert.match(text(f.subject, authority).split("\n")[0], /\(v9000\.0\.2\)$/);
+    assert.equal(existsSync(join(f.subject, decisions)), false);
+    const saved = JSON.parse(text(f.subject, receipt)).release;
+    assert.match(
+      saved,
+      /^Retimed WO-998: v9000\.0\.1 → v9000\.0\.2 above the observed release baseline v9000\.0\.1\./,
+    );
+    if (newerTag) {
+      // A second collision must wait until the first outcome is filed.
+      runGit(f.main, ["tag", "v9000.0.2"], fixtureGitOptions);
+      const blockedRetry = f.invoke("--continue");
+      assert.equal(
+        blockedRetry.status,
+        1,
+        blockedRetry.stdout + blockedRetry.stderr,
+      );
+      assert.match(blockedRetry.stdout, /Pending: integration decision stub: /);
+      assert.match(
+        blockedRetry.stdout,
+        /Pending: release preparation: awaits integration decision stub/,
+      );
+      assert.doesNotMatch(
+        blockedRetry.stdout,
+        /Regenerated: release preparation/,
+      );
+      assert.equal(JSON.parse(text(f.subject, receipt)).release, saved);
+      assert.match(
+        text(f.subject, authority).split("\n")[0],
+        /\(v9000\.0\.2\)$/,
+      );
+      assert.equal(
+        text(f.subject, "README.md"),
+        readmeBefore.replace("v9000.0.1", "v9000.0.2"),
+      );
+      assert.equal(existsSync(join(f.subject, decisions)), false);
+    }
+    rmSync(directory);
+    if (blocker === "symlink") {
+      // Filing the saved stub can succeed before the next prepare fails.
+      // The marker then owns the first outcome on every further continuation.
+      const pr = join(f.subject, "docs/final-reviews/WO-998/PR.md");
+      rmSync(pr);
+      mkdirSync(pr);
+      writeFileSync(join(pr, "blocker"), "blocked\n");
+      const failedPrepare = f.invoke("--continue");
+      assert.equal(
+        failedPrepare.status,
+        1,
+        failedPrepare.stdout + failedPrepare.stderr,
+      );
+      assert.match(
+        failedPrepare.stdout,
+        /Regenerated: integration decision stub/,
+      );
+      assert.match(
+        failedPrepare.stdout,
+        /Pending: release preparation: .*EISDIR/,
+      );
+      assert.doesNotMatch(
+        failedPrepare.stdout,
+        /Pending: integration decision stub:/,
+      );
+      assert.equal(JSON.parse(text(f.subject, receipt)).release, saved);
+      assert.ok(
+        text(f.subject, decisions).includes(
+          `release preparation: ${releaseLine(saved)}`,
+        ),
+      );
+      rmSync(pr, { recursive: true });
+    }
+    const continued = f.invoke("--continue");
+    assert.equal(continued.status, 0, continued.stdout + continued.stderr);
+    const rows = [
+      ...text(f.subject, decisions).matchAll(/```json\n([\s\S]*?)\n```/g),
+    ].map((match) => JSON.parse(match[1]));
+    assert.equal(rows.length, newerTag ? 2 : 1, JSON.stringify(rows));
+    assert.equal(
+      rows[0].evidence.filter((item) => item.startsWith("release preparation:"))
+        .length,
+      1,
+    );
+    assert.ok(
+      rows[0].evidence.includes(`release preparation: ${releaseLine(saved)}`),
+      JSON.stringify(rows[0].evidence),
+    );
+    assert.equal(
+      (text(f.subject, decisions).match(/<!-- integration /g) ?? []).length,
+      1,
+    );
+    if (newerTag) {
+      assert.deepEqual(rows[1].evidence, [
+        "release baseline v9000.0.2 (local tags)",
+        "superseded target v9000.0.2",
+        "new target v9000.0.3",
+      ]);
+      assert.equal(rows[1].dispatch, "resume: fix; release prepare");
+      assert.equal(
+        rows.filter((row) => JSON.stringify(row).includes("v9000.0.3")).length,
+        1,
+      );
+    }
+    const target = newerTag ? "v9000.0.3" : "v9000.0.2";
+    assert.ok(
+      text(f.subject, authority).split("\n")[0].endsWith(`(${target})`),
+    );
+    assert.equal(
+      text(f.subject, "README.md"),
+      readmeBefore.replace("v9000.0.1", target),
+    );
+    assert.equal(
+      runGit(
+        f.subject,
+        ["diff", "--name-only", f.upstream, "--", "docs/product"],
+        fixtureGitOptions,
+      ),
+      "",
+    );
+    assert.equal(JSON.parse(text(f.subject, receipt)).complete, true);
+  });
+
+test("WO-086 a tag that lands after the stub is written is recorded once, by release prepare", (t) => {
+  const f = fixture(t, { authored: false });
+  const path = "docs/evidence/WO-998/decisions.md";
+  // The subject's target is above main's tag, so the first pass is current.
+  put(
+    f.subject,
+    "docs/work-orders/WO-998-fixture.md",
+    text(f.subject, "docs/work-orders/WO-998-fixture.md").replace(
+      "(v9000.0.1)",
+      "(v9000.0.5)",
+    ),
+  );
+  claim(f.subject, "v9000.0.5");
+  // A step after the stub fails: the work-order index refuses its temporary.
+  put(f.subject, "docs/work-orders/README.md.tmp", "interrupted\n");
+  const first = f.invoke();
+  assert.equal(first.status, 1, first.stdout + first.stderr);
+  assert.match(first.stdout, /Regenerated: integration decision stub/);
+  assert.match(first.stdout, /Pending: work-order index: /);
+  assert.match(
+    text(f.subject, path),
+    /^Release preparation: WO-998 target v9000\.0\.5 remains current\./m,
+  );
+  // A sibling publishes the colliding version between the passes.
+  rmSync(join(f.subject, "docs/work-orders/README.md.tmp"));
+  runGit(f.main, ["tag", "v9000.0.5"], fixtureGitOptions);
+  const continued = f.invoke("--continue");
+  assert.equal(continued.status, 0, continued.stdout + continued.stderr);
+  assert.match(
+    text(f.subject, "docs/work-orders/WO-998-fixture.md").split("\n")[0],
+    /\(v9000\.0\.6\)$/,
+  );
+  const rows = [
+    ...text(f.subject, path).matchAll(/```json\n([\s\S]*?)\n```/g),
+  ].map((match) => JSON.parse(match[1]));
+  // The stub keeps its first-pass line; the collision is its own decision.
+  assert.equal(rows.length, 2, JSON.stringify(rows));
+  assert.deepEqual(rows[1].evidence, [
+    "release baseline v9000.0.5 (local tags)",
+    "superseded target v9000.0.5",
+    "new target v9000.0.6",
+  ]);
+  assert.equal(rows[1].dispatch, "resume: fix; release prepare");
+  assert.equal(
+    rows.filter((row) => JSON.stringify(row).includes("v9000.0.6")).length,
+    1,
+    "the collision is recorded exactly once",
   );
 });
 

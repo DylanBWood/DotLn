@@ -18,6 +18,14 @@ import {
 import { runGit, runGitPathList } from "./lib/git.mjs";
 import { isMainModule } from "./lib/paths.mjs";
 import { readDecisions } from "./lib/meta.mjs";
+import {
+  RELEASE_HISTORY,
+  checkReleaseHistory,
+  historyCommand,
+  historyEnd,
+  historyStart,
+  markerLine,
+} from "./lib/release-history.mjs";
 import { parsers } from "prettier/plugins/markdown.mjs";
 
 const normalized = (value) => value.replace(/\s+/g, " ").trim();
@@ -75,25 +83,28 @@ export function productContent(file, source) {
     failures = [],
     ranges = [];
   const titles = headingRecords(ast);
-  // No generator currently owns a marked product block. Markers alone grant
-  // no exemption; a future producer needs an explicit product-path/marker
-  // registration and regression coverage when it lands.
-  if (file === "06-roadmap.md") {
-    const boundary = titles.find(
-      (row) =>
-        row.level === 2 &&
-        ast.children.includes(row.node) &&
-        renderedText(row.node) === "Release boundary",
+  // One generated block is registered, by product path and marker name: the
+  // roadmap's release history (WO-086), whose rows the check below compares
+  // with their recorded tags. Any other marker pair, and this one anywhere
+  // else or malformed, exempts nothing; no heading exempts anything.
+  if (file === RELEASE_HISTORY.product) {
+    const mentions = source.split("\n").filter(markerLine).length;
+    const markers = ast.children.filter(
+      (node) =>
+        node.type === "html" &&
+        [historyStart, historyEnd].includes(node.value.trim()),
     );
-    if (boundary) {
-      const next = titles.find(
-        (row) =>
-          row.start > boundary.start &&
-          row.level <= 2 &&
-          ast.children.includes(row.node),
+    if (
+      mentions === 2 &&
+      markers.length === 2 &&
+      markers[0].value.trim() === historyStart &&
+      markers[1].value.trim() === historyEnd
+    )
+      ranges.push([start(markers[0]), end(markers[1])]);
+    else if (mentions)
+      failures.push(
+        `the registered ${RELEASE_HISTORY.marker} block needs exactly one ordered pair of top-level marker lines; until then it exempts nothing`,
       );
-      ranges.push([boundary.start, next?.start ?? source.length]);
-    }
   }
   ranges.sort((a, b) => a[0] - b[0]);
   const merged = [];
@@ -369,13 +380,21 @@ export function checkDocs(root, { ceilings, baseline, files } = {}) {
   const products = readdirSync(directory, { recursive: true })
     .filter((file) => file.endsWith(".md"))
     .sort();
+  const notices = [];
   for (const name of products) {
     const file = docRelative(root, "product", name);
-    const measured = productContent(
-      name,
-      readFileSync(join(directory, name), "utf8"),
-    );
-    failures.push(...measured.failures);
+    const source = readFileSync(join(directory, name), "utf8");
+    const measured = productContent(name, source);
+    failures.push(...measured.failures.map((failure) => `${file}: ${failure}`));
+    if (name === RELEASE_HISTORY.product) {
+      // The exemption stands on this comparison: the index's rule for tags.
+      const history = checkReleaseHistory(root, source, file);
+      failures.push(...history.failures);
+      if (history.newer.length)
+        notices.push(
+          `NEWER local release tags not in ${file}: ${history.newer.join(", ")}; the table stays valid for its recorded tags; run ${historyCommand} to add them`,
+        );
+    }
     const entry = ceilings.documents[name];
     if (!entry)
       failures.push(
@@ -454,7 +473,7 @@ export function checkDocs(root, { ceilings, baseline, files } = {}) {
         `${failure.file}:${failure.line}: ${failure.reason}: ${failure.href}`,
       );
   }
-  return { rows, failures, historicalLinks };
+  return { rows, failures, historicalLinks, notices };
 }
 
 if (isMainModule(import.meta.url)) {
@@ -467,6 +486,7 @@ if (isMainModule(import.meta.url)) {
       console.log(
         `${row.document} | ${row.bytes} | ${row.exemptBytes} | ${row.ceiling ?? "missing"} | ${row.headroom ?? "unknown"}`,
       );
+    for (const notice of result.notices) console.log(notice);
     for (const failure of result.failures) console.error(`FAIL ${failure}`);
     console.log(
       `${result.failures.length ? "FAIL" : "PASS"} docs check: ${result.rows.length} product documents; ${result.historicalLinks} declared historical link occurrences; ${result.failures.length} failures`,

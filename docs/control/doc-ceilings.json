@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "policy": "UTF-8 bytes excluding 06-roadmap.md Release boundary until WO-086 retires it. No product marker generator is registered; marker pairs alone grant no exemption. Initial ceiling is ceil(nonExemptBytesAtLanding * 1.02); consolidation lowers the ceiling in the same change. An increase after landing requires a resolving planning-document decision in the entry, including when restoring previously removed headroom.",
+  "policy": "UTF-8 bytes excluding the one registered generated block, 06-roadmap.md's dotln-release-history markers (WO-086), whose rows docs-check compares with their recorded tags; any other marker pair grants no exemption. Initial ceiling is ceil(nonExemptBytesAtLanding * 1.02); consolidation lowers the ceiling in the same change. An increase after landing requires a resolving planning-document decision in the entry, including when restoring previously removed headroom.",
   "documents": {
     "00-vision.md": {
       "nonExemptBytesAtLanding": 28025,
@@ -39,10 +39,10 @@
       "decision": "docs/evidence/WO-085/decisions.md#wo-085-d005"
     },
     "06-roadmap.md": {
-      "nonExemptBytesAtLanding": 90074,
-      "ceiling": 91876,
-      "date": "2026-09-26",
-      "decision": "docs/evidence/WO-085/decisions.md#wo-085-d005"
+      "nonExemptBytesAtLanding": 96395,
+      "ceiling": 98323,
+      "date": "2026-09-29",
+      "decision": "docs/planning/release-history-notes.md#product-06-ceiling"
     },
     "07-execution-guide.md": {
       "nonExemptBytesAtLanding": 154129,

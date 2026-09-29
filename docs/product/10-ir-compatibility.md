@@ -59,6 +59,9 @@ Do not collapse these identities into one version number:
   its declared capability set; and
 - environment capability profile.
 
+Each release tag's application and component versions are listed in the
+roadmap's [generated release history](06-roadmap.md#release-boundary).
+
 WO-029 adds a separate artifact-identity schema axis (`ArtifactIdentityV1.schemaVersion: 1`) and definition-hash scheme (`dotln-component-definition-fnv1a64-v1`). Equip payload version `2` is independent of EventEnvelope schema `1`. The identity distinguishes the unchanged compiled-program contract (`compilerVersion: "1"`, recorded as `compilerContractVersion`) from executing compiler package `0.3.0`; neither changes merely because the staged application is `v0.9.0` or skeleton component is `0.8.0`. Historical raw equips remain replayable but receive no pin retroactively. Runtime compatibility for a new consuming decision requires agreement with the recorded pin or explicit re-equip. This receipt does not add a new release-manifest schema field or silently fill the existing unimplemented IR/artifact/transformation ranges.
 
 WO-009 prepares application `v0.10.0` and skeleton `0.9.0` above published
@@ -72,7 +75,7 @@ new probe; they do not migrate historical logs or authorize model substitution.
 A `WO-NNN` identifier orders and names a unit of work; it is not another version
 axis. The SemVer in a current work-order heading is its planned application
 release target. While unpublished, it may be retimed only by explicit operator
-authorization and a dated migration note, with any active scope or acceptance
+authorization and a recorded decision, with any active scope or acceptance
 impact carried into independent review. Once published, the annotated
 application tag is immutable. Neither operation changes package, schema,
 artifact, identity, or transformation versions by implication.

@@ -63,8 +63,9 @@ The document gate (`npm run test:docs`) runs
 [`scripts/docs-check.mjs`](../scripts/docs-check.mjs): edit product facts in place;
 put receipts in the order's evidence README and candidates in the planning map.
 [Ceilings](control/doc-ceilings.json) count UTF-8 bytes with two per cent initial
-headroom, excluding roadmap §Release boundary until WO-086 retires its handwritten
-notes. No product marker generator is registered; marker pairs grant no exemption.
+headroom, excluding one registered generated block: the roadmap's release
+history between its `dotln-release-history` markers, whose rows the check
+compares with their recorded tags. Any other marker pair exempts nothing.
 A higher ceiling requires a cited planning
 decision. The [activation baseline](control/doc-baseline.json) identifies existing
 receipt labels, candidate headings, decision dispatch fingerprints and historical
