@@ -184,3 +184,14 @@ WO-060's declared set.
    text, so WO-066 stops on it instead of never learning of it.
 3. The forge host is the whole default allowlist; a link to any other
    host refuses that comment's text until a later order admits more.
+
+**Authorized ideation breakout (2026-09-29):** The operator's `ideation:`
+message during execution requests a minimum of three subagents with each
+harness's workflow mode enabled and willing discretionary delegation with it
+disabled. This adds document-only capture, synthesis and write-back to the
+review subject; it adds no runtime change to the observer. Read
+[WO-065-D008](../evidence/WO-065/decisions.md#wo-065-d008), the named new ledger
+section and product 05 §Orchestration and quality policies. Verification and
+final review judge traceability, counting-scope inference, policy consistency
+and the distinction between specification and observed enforcement. Original
+acceptance criteria and non-goals remain in force.

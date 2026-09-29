@@ -40,6 +40,37 @@ are now declared above. The [decision record](../evidence/WO-084/decisions.md)
 records the legacy ledger write-back; `node scripts/lineage.mjs index` generates
 the index and `index --check` enforces this rule in `npm run test:docs`.
 
+## 2026-09-29 — Ideation during WO-065: useful delegation with workflow mode
+
+Source: the operator's `ideation:` message during `resume: next`, captured
+unedited in this worktree's ignored
+`docs/intake/notes/WO-065-expanded-ideation-2026-09-29.md`, SHA-256
+`88b5b5545d9551062cc8a778a27926002e62e1bf1971e58df0401bb1b7584f3d`. Final review or release close reconciles the capture
+into main. Clean-room screen: the operator's personal experience with these
+harnesses; no employer material, credentials or internal identifiers. Ordinary
+Shape-First synthesis, with no direct-draft filing. Receipt:
+[WO-065-D008](../evidence/WO-065/decisions.md#wo-065-d008).
+
+- **Workflow mode carries a minimum delegation outcome** `specified` `operator-directed`.
+  The operator reports that enabled workflow use brings Claude to roughly
+  3–18 subagents and Codex to roughly 1–3 within a 20-agent total, while both
+  use fewer without it, particularly Codex. Those are reported observations.
+  Their desired profile uses at least three distinct contributing subagents
+  when the respective mode is enabled. Synthesis scope: one active root
+  workflow task, with useful assignments and integrated results, rather than
+  restarting the quota per turn or counting repeated messages. Total budget,
+  concurrency, authority and one writer per worktree remain separate limits;
+  unmet capacity is reported honestly. Product 05 §Orchestration and quality
+  policies holds the specification; implementation and readback binding are
+  a planning follow-up.
+- **Disabling workflow mode keeps delegation available** `specified` `operator-directed`.
+  Roughly zero to three is an expectation that varies with the work, not a
+  maximum or a ban. The setting being off should not make an actor hesitate
+  to delegate useful work. General orchestration willingness and the separate
+  No Fan-Out policy retain their existing meanings. Reopen the chosen counting
+  scope if the operator identifies a different workflow boundary or observed
+  use turns the floor into redundant work.
+
 ## 2026-09-28 — Ideation during WO-116 execution: utilization, not activation, while a phase waits
 
 Source: three operator messages during `resume: next` on WO-116, captured

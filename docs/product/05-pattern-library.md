@@ -1097,6 +1097,26 @@ Independent writers still need isolated worktrees. An adapter must prove which
 limits it enforces and expose unavailable capabilities; a prompt alone is not a
 hard concurrency cap.
 
+**Personal workflow profile (specified).** When Claude's or Codex's respective
+subagent/workflow setting is enabled, use at least three distinct subagents
+that contribute to the active workflow task. Give them useful bounded duties
+and incorporate their results. Count across that root task, including its
+breakouts and retries; turns and messages to a reused agent do not restart
+or multiply the count. This scope is the synthesis of the operator's comparison
+against the shared total budget. Schedule within host concurrency, authority,
+No Fan-Out and the remaining root budget (currently 20 including descendants);
+if a constraint prevents three contributions, report the unmet minimum and
+constraint. Never fill the count with empty work or claim unobserved agents.
+When the setting is off, delegate whenever it improves the work; roughly zero
+to three is the operator's expectation, with more permitted when warranted.
+Off does not equip No Fan-Out. Numeric reasoning effort alone does not prove
+workflow mode; bind the mode to supplied setting/readback evidence. Distinguish
+requested, started and contributing counts from instrument-observed admissions.
+The operator's reported harness differences are experience, not a measured
+comparison. This refines the personal profile, leaves general Orchestrate
+as a preference, and claims no runtime enforcement or settings change
+([WO-065-D008](../evidence/WO-065/decisions.md#wo-065-d008)).
+
 A quality variant declares what it preserves, what it reduces, its cost and its
 admissible conditions. The minimum is explicit at the platform, selected work
 contract or personal build that owns it. A personal option can select another
