@@ -205,7 +205,7 @@ D005; no live attempt was involved.
 {
   "id": "WO-056-D005",
   "date": "2026-09-19",
-  "dispatch": "resume: next; operator steering: use 1 subagent to do some adversarial testing",
+  "dispatch": "resume: next; operator steering to add adversarial testing through one subagent",
   "decision": "One read-only subagent attacked the validator, replay, regression fixture and collector. Accepted and fixed: (1) a process double relabelled `claude` validated and counted as live; (2) pass flags held over facts bound to neither the log nor each other; (3) the criterion-3 replay reported the negative retained with the fold's actor and episode guards removed; (4) the privacy screen missed common path and credential shapes and nested shapes were open; (5) the collector could throw instead of filing a failed run; (6) the log's stated compiler version was unbound and read from any actor; (7) the live requirement summed flags across receipts and ignored containment. Pass flags are now claimed by trial validation, so the collector cannot disagree with the contract.",
   "evidence": [
     "Subagent report, 2026-09-19 (59 tool uses; probes retained in session scratch, not in the repository)",
@@ -452,7 +452,7 @@ skeleton version.
 {
   "id": "WO-056-D010",
   "date": "2026-09-20",
-  "dispatch": "operator, 2026-09-20: \"also i merged in a parallel work order, so update main\" then \"yes integrate do what you gotta do\"",
+  "dispatch": "resume: next; operator direction (2026-09-20): a parallel order had merged, so update main and integrate by whatever means were needed",
   "decision": "Fast-forward this worktree from base 295766dd to origin/main 37a729ca (WO-140, #98) before the live repository feedback audit, instead of leaving integration to final review. The branch had no commit of its own, so no merge commit was made. Preserve first: the whole working tree, tracked and untracked, was written to refs/dotln/checkpoint/WO-056/2 (979d0e52) and verified byte-for-byte, and the 21 overlapping files were also copied to session scratch. All 21 were generated projections (14 hook files, the harness manifest, docs/control/current.md, docs/evidence/current.json, the decisions index, the follow-up register, two publication locks, the work-order index); only those were put back to their committed bytes so the fast-forward could proceed, then every one was regenerated on the integrated tree. No hand-authored file overlapped and no upstream path collided with an untracked file.",
   "evidence": [
     "git status before: wo-056...origin/main [behind 3]; git log HEAD..origin/main: f2dd331d, b9ed8932, 37a729ca",

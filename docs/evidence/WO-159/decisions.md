@@ -325,7 +325,7 @@ writes the operator's home.
   "id": "WO-159-D013",
   "kind": "correction",
   "date": "2026-09-25",
-  "dispatch": "resume: next; operator message during execution: 'i updated config.toml from 43 to 1. but i never saved the file', then 'ok i hit save'",
+  "dispatch": "resume: next; operator messages during execution: the trust-entry edit from 43 to 1 had not been saved, and later that it was saved",
   "decision": "Record the live row, a writer-shape trust probe and the trust census as observed. The live row's census is 43 trusted entries before and after, the file as it stood; the planning pass's one-entry baseline came from an unsaved edit. After the operator saved at 2026-09-25T04:40:38Z the user configuration holds 1 trusted entry and none in a DotLn scratch family.",
   "misread": "The 2026-09-25 planning pass (commit b3991fbd) recorded that the operator had removed every user-level trust entry but the DotLn project's, so WO-159's baseline would be one entry.",
   "meant": "The operator had edited config.toml down to one entry in an editor without saving; the file on disk still held the 43 entries of WO-111's diagnosis.",

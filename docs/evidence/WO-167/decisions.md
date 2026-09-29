@@ -496,7 +496,7 @@ title.
 {
   "id": "WO-167-D013",
   "date": "2026-09-28",
-  "dispatch": "resume: fix; operator direction: \"just deal with merging in main now ffs\"",
+  "dispatch": "resume: fix; operator direction to merge main in immediately",
   "decision": "Integrate main now with npm run worktree -- integrate WO-167 (merge commit 49de2a30, base 8541e0d4 to upstream 0f3498a6, checkpoint refs/dotln/checkpoint/WO-167/6, named stash a177676d retained), and repair the two defects the integration met: --continue and the README release-block projection now fall back to the phase and order path the receipt recorded while the uncommitted control log is in the integration's own stash; the planning continuation admits one replacement of a judged release label as a release-retiming update.",
   "evidence": [
     "First pass: authored conflicts README.md and docs/product/06-roadmap.md. README kept this branch's unpublished v0.52.11 line for the retime; product 06 kept both activation paragraphs, WO-167 above WO-060, as main orders WO-162 above WO-163.",

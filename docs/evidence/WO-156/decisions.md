@@ -200,7 +200,7 @@ D002 remains the single economy decision; these measurements are acceptance work
 {
   "id": "WO-156-D007",
   "date": "2026-09-24",
-  "dispatch": "scope expand: do whatever adjacent fixes you need to, either found from this run, from the verifier run as a follow up, or from the initial executor run",
+  "dispatch": "scope expand: authority for any needed adjacent repair, whether found in this run, the verifier's follow-up run or the first executor run",
   "decision": "Apply the operator's continuing adjacent-repair authorization to defects encountered in this repair and its verification, including D003/D004 from the original execution and VER-001. Preserve evidence and record any additional concrete repair. No additional work-order-text change is needed for the current fixes, which remain within the Git and normalization amendments D005/D006.",
   "evidence": [
     "The operator explicitly expanded adjacent-fix authority in the active conversation on 2026-09-24.",
