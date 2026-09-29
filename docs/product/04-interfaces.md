@@ -176,7 +176,7 @@ browser-capable client use this one route.
 | `worktree.start`, `worktree.integrate`, `worktree.publish`, `worktree.finish`, `worktree.settle` | `node scripts/worktree.mjs <action>` |
 | `harness.emit`, `harness.check` | `node scripts/harness.mjs emit` or `check`, without the rebuild `npm run harness` adds, because a running resident already uses the built packages |
 | `skeleton.compiled-diff` | `node packages/skeleton/dist/src/cli.js --compiled-diff`; that parser also accepts `--audit` and `--beacons <directory>` with it, served as the terminal runs them |
-| `dotln.intent`, `dotln.presence-away`, `dotln.presence-back`, `dotln.status` | `node packages/skeleton/dist/src/dotln.js` with `intent`, `presence away`, `presence back` or `status` |
+| `dotln.intent`, `dotln.presence-away`, `dotln.presence-back`, `dotln.status`, `dotln.audit` | `node packages/skeleton/dist/src/dotln.js` with `intent`, `presence away`, `presence back`, `status` or `audit` |
 | `console.status` | `node packages/console/dist/src/cli.js status` |
 | `resident.bind-portfolio` | `node scripts/resident-bind.mjs --portfolio`, selecting an already-declared portfolio |
 
@@ -257,11 +257,11 @@ terminal command.
 
 There is no terminal command for saved-build selection, an equip preview, or
 declaring a portfolio: portfolio declaration is reviewed configuration text,
-and `resident.bind-portfolio` selects one already declared. Runtime audit is
-reserved for WO-116; the fixture-only skeleton `--audit` is not a runtime audit
-projection. Other terminal commands fall outside the categories this contract
-names: the resume role results and off-ramps (`implementation-ready`,
-`verification-result`, `repair-complete`, `final-review-result`, `waive`,
+and `resident.bind-portfolio` selects one already declared. `dotln.audit`
+serves a store's audit projections (product 09); the fixture-only skeleton
+`--audit` is not a runtime audit projection. Other terminal commands fall
+outside the categories this contract names: the resume role results and
+off-ramps (`implementation-ready`, `verification-result`, `repair-complete`, `final-review-result`, `waive`,
 `withdraw`, `correct`, `override-record`), `briefing` and `usage`, `worktree
 constellation`, `resident-bind WO-NNN` and `--check`, `dotln resident`,
 `demo`, `verify-demo`, `feedback-audit` and `handoff`, and `console board`.

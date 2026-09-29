@@ -4,6 +4,7 @@ import { join } from "node:path";
 import { decodeLog } from "@dotln/kernel";
 import { WorkerStore } from "./worker-store.js";
 import { projectWorkerStatus, renderWorkerStatus } from "./worker-status.js";
+import { renderAuditProjections } from "./audit.js";
 import { runWorkerDemo } from "./worker-demo.js";
 import {
   ClaudeCliPrintWorkOrderTransport,
@@ -52,6 +53,7 @@ try {
           "--policy",
           "--tick",
           "--episode",
+          "--workstream",
           "--work-order",
           "--option",
         ].includes(key) ||
@@ -67,7 +69,7 @@ try {
   const directory = options.get("--store") ?? "";
   if (!directory && command !== "intent")
     throw new Error(
-      'usage: dotln intent "<prose>" | dotln resident --store <directory> --policy <id> [--tick <ms> | --once] | dotln presence away|back --store <directory> | dotln status --store <directory> [--json] | dotln demo --store <directory> --transport <claude-cli-print|codex-cli-exec> --model <model> --effort <level> [--beacons] | dotln <verify-demo|feedback-audit> --store <directory> [--transport fake|claude-cli-print|codex-cli-exec --model <model> --effort <level>]',
+      'usage: dotln intent "<prose>" | dotln resident --store <directory> --policy <id> [--tick <ms> | --once] | dotln presence away|back --store <directory> | dotln status --store <directory> [--json] | dotln audit --store <directory> [--workstream <id> | --episode <id>] | dotln handoff answer --store <directory> --episode <id> --work-order <id> --option <id> | dotln demo --store <directory> --transport <claude-cli-print|codex-cli-exec> --model <model> --effort <level> [--beacons] | dotln <verify-demo|feedback-audit> --store <directory> [--transport fake|claude-cli-print|codex-cli-exec --model <model> --effort <level>]',
     );
   if (command === "intent") {
     if (!intentProse || options.size || switches.size)
@@ -153,6 +155,37 @@ try {
         ? JSON.stringify(status, null, 2)
         : renderWorkerStatus(status),
     );
+  } else if (command === "audit") {
+    if (
+      switches.size ||
+      [...options.keys()].some(
+        (key) => !["--store", "--workstream", "--episode"].includes(key),
+      ) ||
+      (options.has("--workstream") && options.has("--episode"))
+    )
+      throw new Error(
+        "usage: dotln audit --store <directory> [--workstream <id> | --episode <id>]",
+      );
+    const events = decodeLog(new WorkerStore(directory).read());
+    if (events.length === 0)
+      throw new Error(`audit: store ${directory} holds no events`);
+    const workstream = options.get("--workstream");
+    const episode = options.get("--episode");
+    // One projection run scopes itself by its input events (product 09 §Audit
+    // projections), so a selection passes the envelopes the fold would scope
+    // and never filters the fold's output.
+    const selected = events.filter(
+      (event) =>
+        (workstream === undefined || event.workstreamId === workstream) &&
+        (episode === undefined || event.episodeId === episode),
+    );
+    if (selected.length === 0)
+      throw new Error(
+        workstream === undefined
+          ? `audit: episode ${episode} is not in store ${directory}`
+          : `audit: workstream ${workstream} is not in store ${directory}`,
+      );
+    console.log(renderAuditProjections(selected));
   } else if (command === "verify-demo" || command === "feedback-audit") {
     if (
       [...options.keys()].some(
@@ -274,7 +307,7 @@ try {
     if (result.envelope.status !== "completed") process.exitCode = 1;
   } else
     throw new Error(
-      "expected intent, resident, presence, status, demo, verify-demo or feedback-audit",
+      "expected intent, resident, presence, handoff, status, audit, demo, verify-demo or feedback-audit",
     );
 } catch (error) {
   // Unexpected external diagnostics may contain paths or auth details.
@@ -282,7 +315,7 @@ try {
     error instanceof WorkerFailure
       ? `worker refused: ${error.code}${error.code === "invalid-result" ? ` (${invalidResultDetail(error.detail)})` : ""}; pending work is retained`
       : error instanceof Error &&
-          /^(derived order:|usage:|live demo requires|demo requires|expected |status accepts|unknown or duplicate|missing option|duplicate option|console loopback)/u.test(
+          /^(derived order:|usage:|live demo requires|demo requires|expected |status accepts|unknown or duplicate|missing option|duplicate option|console loopback|audit:|invalid audit )/u.test(
             error.message,
           )
         ? error.message
