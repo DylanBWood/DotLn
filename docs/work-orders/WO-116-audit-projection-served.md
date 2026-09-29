@@ -1,4 +1,4 @@
-# WO-116 — Audit projection served: a terminal command renders the canonical audit record's three projections for a resident store, and the parity surface serves the same bytes with their fidelity labels, so a UI can audit what the runtime did without a second source (version assigned at activation)
+# WO-116 — Audit projection served: a terminal command renders the canonical audit record's three projections for a resident store, and the parity surface serves the same bytes with their fidelity labels, so a UI can audit what the runtime did without a second source (v0.54.0)
 
 **Model:** any capable model. State the model and effort actually run in the
 result (07-execution-guide.md §Model-specific notes).

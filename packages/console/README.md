@@ -60,6 +60,7 @@ terminal command through the resident:
 npm run console -- commands --store <bound-store>
 npm run console -- invoke --store <bound-store> skeleton.compiled-diff
 npm run console -- invoke --store <bound-store> resume.status --json
+npm run console -- invoke --store <bound-store> dotln.audit --store <store> --episode <id>
 ```
 
 `invoke` writes the terminal's stdout and stderr bytes unchanged and exits
@@ -89,11 +90,14 @@ host. The Node text host obtains it with `readConsoleConnection(store)`,
 exported from `@dotln/console` with both client functions. The endpoint binds
 to `127.0.0.1`, requires the token, refuses a non-local browser `Origin` and
 admits a caller that sends none. The contract covers existing terminal
-commands, including derived-order activation, the release-close publish helper
-and selection of an already-declared portfolio. Saved-build selection, equip
-preview and runtime audit have no terminal command in this version; runtime
-audit follows WO-116. The command list, classification and refusal shapes are
-in product 04 §Console parity contract v1.
+commands, including derived-order activation, the release-close publish helper,
+selection of an already-declared portfolio and runtime audit: `dotln.audit`
+runs `dotln audit --store <store> [--workstream <id> | --episode <id>]`, and
+`invoke` prints the L0 receipt, causal timeline and governed raw projections
+with their fidelity labels, byte for byte as the terminal does. Saved-build
+selection and equip preview have no terminal command in this version. The
+command list, classification and refusal shapes are in product 04 §Console
+parity contract v1.
 
 ## Live runtime status
 

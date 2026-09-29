@@ -338,7 +338,12 @@ EventEnvelope, names the verifier as this rung's audience, declares
 restricted-access intent, leaves retention undefined, and states that access
 enforcement is deferred. Every deeper link declares whether its target exists
 and its access/enforcement state. The folds do no I/O, are disposable, and
-rebuild byte-identically over replay.
+rebuild byte-identically over replay. `dotln audit --store <directory>` prints
+the three projections for a store's retained log, or for its events in one
+workstream (`--workstream`) or episode (`--episode`), and refuses by name a
+store with no events or a selection the log lacks. Console command
+`dotln.audit` serves exactly those bytes to the local user and adds no access
+rule.
 
 Different questions need different geometries over the same records:
 

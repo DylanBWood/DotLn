@@ -52,6 +52,10 @@ export const CONSOLE_COMMANDS_V1 = {
     entry: "packages/skeleton/dist/src/dotln.js",
     prefix: ["status"],
   },
+  "dotln.audit": {
+    entry: "packages/skeleton/dist/src/dotln.js",
+    prefix: ["audit"],
+  },
   "console.status": {
     entry: "packages/console/dist/src/cli.js",
     prefix: ["status"],

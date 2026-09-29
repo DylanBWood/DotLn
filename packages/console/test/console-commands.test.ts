@@ -19,10 +19,14 @@ import { isDeepStrictEqual } from "node:util";
 import { join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { setTimeout as delay } from "node:timers/promises";
-import { decodeLog, type Event } from "@dotln/kernel";
+import { decodeLog, encodeLog, type Event } from "@dotln/kernel";
 import { compileLoadout, requireCompiled } from "@dotln/compiler";
 import { ResidentHost } from "@dotln/skeleton/dist/src/resident-host.js";
 import { ResidentStore } from "@dotln/skeleton/dist/src/resident-store.js";
+import {
+  runScenario,
+  type FixtureTree,
+} from "@dotln/skeleton/dist/src/scenario.js";
 import {
   CONSOLE_COMMANDS_V1,
   consoleChildEnvironment,
@@ -321,6 +325,7 @@ test("WO-115 the console names terminal commands as typed and strips host-sessio
       "dotln.presence-back":
         "node packages/skeleton/dist/src/dotln.js presence back",
       "dotln.status": "node packages/skeleton/dist/src/dotln.js status",
+      "dotln.audit": "node packages/skeleton/dist/src/dotln.js audit",
       "console.status": "node packages/console/dist/src/cli.js status",
       "resident.bind-portfolio": "node scripts/resident-bind.mjs --portfolio",
     },
@@ -350,6 +355,7 @@ test("WO-115 the console names terminal commands as typed and strips host-sessio
           ["harness.check", []],
           ["skeleton.compiled-diff", []],
           ["dotln.intent", ["a request"]],
+          ["dotln.audit", ["--store", "/tmp/x"]],
           ["console.status", ["--store", "/tmp/x"]],
           ["resident.bind-portfolio", ["name"]],
         ] as const
@@ -371,6 +377,8 @@ test("WO-115 the console names terminal commands as typed and strips host-sessio
       "node scripts/harness.mjs check": "shell.run",
       "node packages/skeleton/dist/src/cli.js --compiled-diff": "shell.run",
       "node packages/skeleton/dist/src/dotln.js intent 'a request'":
+        "shell.run",
+      "node packages/skeleton/dist/src/dotln.js audit --store /tmp/x":
         "shell.run",
       "node packages/console/dist/src/cli.js status --store /tmp/x":
         "shell.run",
@@ -995,6 +1003,7 @@ test("WO-115 every contract command keeps its terminal parser, refusal bytes and
     "dotln.presence-away": [],
     "dotln.presence-back": [],
     "dotln.status": [],
+    "dotln.audit": [],
     "console.status": [],
     "resident.bind-portfolio": [],
   };
@@ -1056,4 +1065,219 @@ test("WO-115 console receipts leave the resident host's change baseline to the h
   assert.equal(resident.changed(), true);
   await resident.transaction(() => undefined);
   assert.equal(resident.changed(), false);
+});
+
+test("WO-116 the served audit command returns the terminal's bytes for each store and selection, the text host shows the three labeled projections, and the resident's own store audits as it stood when the command started", async (t) => {
+  const store = temporary("audit");
+  const fixtureStore = temporary("audit-fixture");
+  const mixedStore = temporary("audit-mixed");
+  const emptyStore = temporary("audit-empty");
+  const asStarted = temporary("audit-as-started");
+  t.after(() => {
+    for (const directory of [
+      store,
+      fixtureStore,
+      mixedStore,
+      emptyStore,
+      asStarted,
+    ])
+      rmSync(directory, { recursive: true, force: true });
+  });
+  // The fixture scenario's log, and that log with one event in a second
+  // episode and one in a second workstream.
+  const fixtureLog = runScenario(
+    JSON.parse(
+      readFileSync(
+        join(root, "packages/skeleton/fixtures/repo-tree.json"),
+        "utf8",
+      ),
+    ) as FixtureTree,
+  ).log;
+  writeFileSync(join(fixtureStore, "events.jsonl"), fixtureLog);
+  writeFileSync(
+    join(mixedStore, "events.jsonl"),
+    fixtureLog +
+      encodeLog(
+        (
+          [
+            ["evt_29", "ws_repo_garden", "ep_seiri_2"],
+            ["evt_30", "ws_second", undefined],
+          ] as const
+        ).map(([eventId, workstreamId, episodeId], index): Event => ({
+          schemaVersion: 1,
+          eventId,
+          type: "WorkOrderEmitted",
+          occurredAt: 1_000_000 + index,
+          actorId: "repo-gardener",
+          workstreamId,
+          ...(episodeId === undefined ? {} : { episodeId }),
+          payload: { workOrder: { workOrderId: `wo_${eventId}` } },
+        })),
+      ),
+  );
+  // The projections the skeleton's `--audit` renders for the fixture log.
+  const skeleton = spawnSync(
+    process.execPath,
+    [join(root, "packages/skeleton/dist/src/cli.js"), "--audit"],
+    { cwd: root, encoding: "utf8" },
+  );
+  assert.equal(skeleton.status, 0, skeleton.stderr);
+  const rendered = skeleton.stdout.slice(
+    skeleton.stdout.indexOf("\nL0 RECEIPT\n") + 1,
+    skeleton.stdout.lastIndexOf("\n\nverified=") + 1,
+  );
+  assert.match(rendered, /^L0 RECEIPT\n/u);
+
+  const resident = await serve(store, bound(store));
+  try {
+    const { connection } = resident;
+    const served: Record<string, ConsoleCommandResult> = {};
+    for (const args of [
+      ["--store", fixtureStore],
+      ["--store", fixtureStore, "--workstream", "ws_repo_garden"],
+      ["--store", fixtureStore, "--episode", "ep_seiri_1"],
+      ["--store", mixedStore],
+      ["--store", mixedStore, "--workstream", "ws_repo_garden"],
+      ["--store", mixedStore, "--workstream", "ws_second"],
+      ["--store", mixedStore, "--episode", "ep_seiri_2"],
+      ["--store", emptyStore],
+      ["--store", mixedStore, "--episode", "ep_absent"],
+    ]) {
+      const control = controlDigest();
+      const events = domainEvents(store);
+      const direct = terminal("dotln.audit", args);
+      const result = await invokeConsoleCommand(connection, {
+        version: 1,
+        command: "dotln.audit",
+        args,
+      });
+      // The envelope carries the terminal's exit code and bytes, nothing else.
+      assert.deepEqual(Object.keys(result).sort(), [
+        "command",
+        "exitCode",
+        "stderrBase64",
+        "stdoutBase64",
+        "version",
+      ]);
+      assert.deepEqual(bytes(result), direct, args.join(" "));
+      assert.equal(controlDigest(), control, args.join(" "));
+      assert.deepEqual(domainEvents(store), events, args.join(" "));
+      const receipt = decodeLog(logOf(store))
+        .filter((event) => event.type === "ConsoleCommandInvoked")
+        .at(-1)!.payload as Record<string, unknown>;
+      assert.equal(receipt["command"], "dotln.audit");
+      assert.equal(receipt["effect"], effectOf("dotln.audit", args));
+      assert.equal(receipt["authorized"], true);
+      served[args.slice(1).join(" ")] = result;
+    }
+    const stdout = (key: string) =>
+      Buffer.from(served[key]!.stdoutBase64, "base64").toString("utf8");
+    // Over the fixture log each selection is the skeleton's own render.
+    for (const key of [
+      fixtureStore,
+      `${fixtureStore} --workstream ws_repo_garden`,
+      `${fixtureStore} --episode ep_seiri_1`,
+    ])
+      assert.equal(stdout(key), rendered, key);
+    for (const [key, scope] of [
+      [mixedStore, "log:mixed"],
+      [`${mixedStore} --workstream ws_repo_garden`, "ws:ws_repo_garden"],
+      [`${mixedStore} --workstream ws_second`, "ws:ws_second"],
+      [`${mixedStore} --episode ep_seiri_2`, "ep:ep_seiri_2"],
+    ] as const)
+      assert.ok(
+        stdout(key).includes(
+          `"projectionRef": "audit-projection:${scope}:l0-receipt"`,
+        ),
+        key,
+      );
+    // Refusals are the terminal's, naming the store or the episode.
+    assert.deepEqual(bytes(served[emptyStore]!), {
+      exitCode: 1,
+      stdout: Buffer.alloc(0),
+      stderr: Buffer.from(`audit: store ${emptyStore} holds no events\n`),
+    });
+    assert.deepEqual(bytes(served[`${mixedStore} --episode ep_absent`]!), {
+      exitCode: 1,
+      stdout: Buffer.alloc(0),
+      stderr: Buffer.from(
+        `audit: episode ep_absent is not in store ${mixedStore}\n`,
+      ),
+    });
+
+    // The text host renders the served bytes: the three projections, each
+    // headed and carrying its fidelity label.
+    const shown = await textHost([
+      "invoke",
+      "--store",
+      store,
+      "dotln.audit",
+      "--store",
+      fixtureStore,
+    ]);
+    assert.deepEqual(
+      { exitCode: shown.code, stdout: shown.stdout, stderr: shown.stderr },
+      terminal("dotln.audit", ["--store", fixtureStore]),
+    );
+    assert.equal(shown.stdout.toString("utf8"), rendered);
+    assert.deepEqual(
+      [
+        ...shown.stdout
+          .toString("utf8")
+          .matchAll(
+            /^(L0 RECEIPT|CAUSAL TIMELINE|GOVERNED RAW JSON)$|^ {2}"fidelity": "(L[0-9])",$/gmu,
+          ),
+      ].map((match) => match[1] ?? match[2]),
+      ["L0 RECEIPT", "L0", "CAUSAL TIMELINE", "L1", "GOVERNED RAW JSON", "L4"],
+    );
+
+    // The resident's own store: parity is judged against the store as it
+    // stands when the child starts, which holds this invocation's receipt.
+    const own = await invokeConsoleCommand(connection, {
+      version: 1,
+      command: "dotln.audit",
+      args: ["--store", store],
+    });
+    assert.equal(own.exitCode, 0, bytes(own).stderr.toString());
+    const lines = logOf(store).trimEnd().split("\n");
+    const invokedAt = lines.findLastIndex(
+      (line) => (JSON.parse(line) as Event).type === "ConsoleCommandInvoked",
+    );
+    assert.equal(
+      (JSON.parse(lines[invokedAt + 1]!) as Event).type,
+      "ConsoleCommandObserved",
+    );
+    writeFileSync(
+      join(asStarted, "events.jsonl"),
+      lines.slice(0, invokedAt + 1).join("\n") + "\n",
+    );
+    assert.deepEqual(
+      bytes(own),
+      terminal("dotln.audit", ["--store", asStarted]),
+    );
+    const ownOutput = bytes(own).stdout.toString("utf8");
+    const raw = JSON.parse(
+      ownOutput.slice(ownOutput.indexOf("\nGOVERNED RAW JSON\n") + 19),
+    ) as { events: Event[]; projectionRef: string };
+    assert.equal(
+      raw.projectionRef,
+      "audit-projection:ws:resident:governed-raw-json",
+    );
+    assert.deepEqual(
+      raw.events,
+      decodeLog(lines.slice(0, invokedAt + 1).join("\n") + "\n"),
+    );
+    assert.equal(raw.events.at(-1)!.type, "ConsoleCommandInvoked");
+    assert.equal(raw.events.at(-1)!.actorId, "console");
+  } finally {
+    await resident.stop();
+  }
+  // Every result replays from its receipts without rerunning the command.
+  const replayed = replayConsoleResults(store);
+  assert.deepEqual(replayed.incomplete, []);
+  assert.equal(
+    replayed.results.filter((result) => result.command === "dotln.audit")
+      .length,
+    11,
+  );
 });

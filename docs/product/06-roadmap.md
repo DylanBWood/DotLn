@@ -20,6 +20,17 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-116 activation completion (2026-09-28):** assigned application `v0.54.0`,
+the next minor above the observed local `v0.53.2` tag. `dotln audit --store
+<directory>` prints the audit fold's three projections for a store's retained
+log, one workstream or one episode, byte for byte as the skeleton's `--audit`
+renders a log, and refuses an empty store or an absent selection by name; the
+console contract adds `dotln.audit`, whose served result is those bytes.
+Skeleton `0.44.4` to `0.45.0` is a minor bump for the new command and
+identifier; the console pin and the lockfile follow. The audit fold is
+unchanged and no edition is re-minted. Independent verification, final review
+and publication remain separate dispatches.
+
 **WO-173 activation completion (2026-09-28):** assigned application `v0.53.2`,
 the next patch above the observed local `v0.53.1` tag. The two executor
 completions read `docs/evidence/WO-NNN/handoff.md`: a criterion recorded met
