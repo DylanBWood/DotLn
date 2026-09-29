@@ -1,0 +1,613 @@
+{
+  "schemaVersion": 1,
+  "kind": "wo-172-survey-role-repair",
+  "finding": "VER-003 F9",
+  "rule": "Repair sourced recording-role metadata in the frozen snapshot; never infer a recording actor from a historical, future or support-name reference alone.",
+  "source": {
+    "seedRevision": "8c28f47900ec796b827cc8856be1310aebd7408d",
+    "frozenRecordSha256": "77df5e85a2b16516744aaed24b3285a3f2ab4e951c9dc93b08685046633f5610",
+    "cutoff": "Frozen retained identifier membership; transcript send cutoff 2026-09-29T00:23:41.357Z",
+    "extractionTime": "unknown",
+    "dispatchVariants": "Sixteen current source dispatches differ from the seed and match dispatch-paraphrases.json. Exact working-tree variants at original extraction are not established; unchanged seed decision prose supports these role judgments.",
+    "roleRepair": "survey-repair-3.json"
+  },
+  "membership": {
+    "orders": 75,
+    "steps": 255,
+    "corrections": 61,
+    "failedJudgments": 98
+  },
+  "changes": [
+    {
+      "decision": "WO-043-D006",
+      "groups": [
+        "steps"
+      ],
+      "role": "executor-repair",
+      "sourcePaths": [
+        "docs/evidence/WO-043/decisions.md",
+        "docs/evidence/WO-043/repair-001.md"
+      ],
+      "rationale": "The repair report explicitly places D005 through D013 in the current repair.",
+      "dispatchSource": {
+        "baseSha256": "afe8f00abd4cf7fcc8d5b23c8aa9a397b928e192a4ad186f9cd1bfcf2ad415f7",
+        "currentSha256": "afe8f00abd4cf7fcc8d5b23c8aa9a397b928e192a4ad186f9cd1bfcf2ad415f7",
+        "changed": false
+      }
+    },
+    {
+      "decision": "WO-043-D007",
+      "groups": [
+        "steps"
+      ],
+      "role": "executor-repair",
+      "sourcePaths": [
+        "docs/evidence/WO-043/decisions.md",
+        "docs/evidence/WO-043/repair-001.md"
+      ],
+      "rationale": "The repair report explicitly places D005 through D013 in the current repair.",
+      "dispatchSource": {
+        "baseSha256": "e33debb3abf8030416f350a50dad074d4ea2171cfd861b4f1141f443580dfe71",
+        "currentSha256": "e33debb3abf8030416f350a50dad074d4ea2171cfd861b4f1141f443580dfe71",
+        "changed": false
+      }
+    },
+    {
+      "decision": "WO-043-D008",
+      "groups": [
+        "steps"
+      ],
+      "role": "executor-repair",
+      "sourcePaths": [
+        "docs/evidence/WO-043/decisions.md",
+        "docs/evidence/WO-043/repair-001.md"
+      ],
+      "rationale": "The repair report explicitly places D005 through D013 in the current repair.",
+      "dispatchSource": {
+        "baseSha256": "ca30589b63d9d57117a54042227d5ca3d8a65cd33c37a24d2b4d01ab11ad2cd9",
+        "currentSha256": "ca30589b63d9d57117a54042227d5ca3d8a65cd33c37a24d2b4d01ab11ad2cd9",
+        "changed": false
+      }
+    },
+    {
+      "decision": "WO-043-D009",
+      "groups": [
+        "steps"
+      ],
+      "role": "executor-repair",
+      "sourcePaths": [
+        "docs/evidence/WO-043/decisions.md",
+        "docs/evidence/WO-043/repair-001.md"
+      ],
+      "rationale": "The repair report explicitly places D005 through D013 in the current repair.",
+      "dispatchSource": {
+        "baseSha256": "acbf4c7d3b36ca8504c9f6d345e79a2da6ebbc554aeba25fa4e67464cf21dfdc",
+        "currentSha256": "acbf4c7d3b36ca8504c9f6d345e79a2da6ebbc554aeba25fa4e67464cf21dfdc",
+        "changed": false
+      }
+    },
+    {
+      "decision": "WO-043-D010",
+      "groups": [
+        "steps"
+      ],
+      "role": "executor-repair",
+      "sourcePaths": [
+        "docs/evidence/WO-043/decisions.md",
+        "docs/evidence/WO-043/repair-001.md"
+      ],
+      "rationale": "The repair report explicitly places D005 through D013 in the current repair.",
+      "dispatchSource": {
+        "baseSha256": "004161437d8a233821030e8a0710d153416e800393c8efc6b1c1f61e2d5e2e21",
+        "currentSha256": "004161437d8a233821030e8a0710d153416e800393c8efc6b1c1f61e2d5e2e21",
+        "changed": false
+      }
+    },
+    {
+      "decision": "WO-043-D011",
+      "groups": [
+        "steps"
+      ],
+      "role": "executor-repair",
+      "sourcePaths": [
+        "docs/evidence/WO-043/decisions.md",
+        "docs/evidence/WO-043/repair-001.md"
+      ],
+      "rationale": "The repair report explicitly places D005 through D013 in the current repair.",
+      "dispatchSource": {
+        "baseSha256": "598020162382b9e80a4ef29d76e4b7bc634df1d1b905dfd487d879935719aad7",
+        "currentSha256": "598020162382b9e80a4ef29d76e4b7bc634df1d1b905dfd487d879935719aad7",
+        "changed": false
+      }
+    },
+    {
+      "decision": "WO-043-D012",
+      "groups": [
+        "steps"
+      ],
+      "role": "executor-repair",
+      "sourcePaths": [
+        "docs/evidence/WO-043/decisions.md",
+        "docs/evidence/WO-043/repair-001.md"
+      ],
+      "rationale": "The repair report explicitly places D005 through D013 in the current repair.",
+      "dispatchSource": {
+        "baseSha256": "feadc7e478232b1c1018184efbd8c529d683a3237949b6bbe9bb8cf53eef5bbc",
+        "currentSha256": "feadc7e478232b1c1018184efbd8c529d683a3237949b6bbe9bb8cf53eef5bbc",
+        "changed": false
+      }
+    },
+    {
+      "decision": "WO-043-D013",
+      "groups": [
+        "steps"
+      ],
+      "role": "executor-repair",
+      "sourcePaths": [
+        "docs/evidence/WO-043/decisions.md",
+        "docs/evidence/WO-043/repair-001.md"
+      ],
+      "rationale": "The repair report explicitly places D005 through D013 in the current repair.",
+      "dispatchSource": {
+        "baseSha256": "6ecd62864a22d255dede092383dad3b56cbef06534d06cb3ae5763ac064cdc3b",
+        "currentSha256": "6ecd62864a22d255dede092383dad3b56cbef06534d06cb3ae5763ac064cdc3b",
+        "changed": false
+      }
+    },
+    {
+      "decision": "WO-085-D010",
+      "groups": [
+        "steps"
+      ],
+      "role": "executor-repair",
+      "sourcePaths": [
+        "docs/evidence/WO-085/decisions.md"
+      ],
+      "rationale": "The decision explicitly locates the authorization during resume: fix.",
+      "dispatchSource": {
+        "baseSha256": "9f24deca6e285cc5d87a9b21044348c5cd3a26a150a3206421cb29685f188800",
+        "currentSha256": "9f24deca6e285cc5d87a9b21044348c5cd3a26a150a3206421cb29685f188800",
+        "changed": false
+      }
+    },
+    {
+      "decision": "WO-099-D028",
+      "groups": [
+        "steps"
+      ],
+      "role": "executor-repair",
+      "sourcePaths": [
+        "docs/evidence/WO-099/decisions.md"
+      ],
+      "rationale": "Unchanged original decision prose locates integration during the current repair; the later dispatch paraphrase is not needed.",
+      "dispatchSource": {
+        "baseSha256": "7bc8cc3d004706393e8a2ee9fff071f5309538a698f09c2362a6e84213a1ab0c",
+        "currentSha256": "895a0b93f3899a0fb7e5b78a87672b10ba538dfb653235ab2c8bd6112d94a730",
+        "changed": true
+      }
+    },
+    {
+      "decision": "WO-126-D009",
+      "groups": [
+        "steps"
+      ],
+      "role": "executor-repair",
+      "sourcePaths": [
+        "docs/evidence/WO-126/decisions.md"
+      ],
+      "rationale": "The dispatch authorizes improvements within WO-126 repair.",
+      "dispatchSource": {
+        "baseSha256": "b5588d4859fa71479d483481008b8b17dc08b1dea56e10d2e420f48a20043a7d",
+        "currentSha256": "b5588d4859fa71479d483481008b8b17dc08b1dea56e10d2e420f48a20043a7d",
+        "changed": false
+      }
+    },
+    {
+      "decision": "WO-126-D022",
+      "groups": [
+        "steps",
+        "corrections"
+      ],
+      "role": "executor-repair",
+      "sourcePaths": [
+        "docs/evidence/WO-126/decisions.md"
+      ],
+      "rationale": "F9: dispatch identifies the VER-004 repair.",
+      "dispatchSource": {
+        "baseSha256": "af159598755ce2d56d9747421ec52d11a2bde5b2ce70e9d4a1481c861d58d1ce",
+        "currentSha256": "af159598755ce2d56d9747421ec52d11a2bde5b2ce70e9d4a1481c861d58d1ce",
+        "changed": false
+      }
+    },
+    {
+      "decision": "WO-127-D006",
+      "groups": [
+        "steps"
+      ],
+      "role": "executor-repair",
+      "sourcePaths": [
+        "docs/evidence/WO-127/decisions.md",
+        "docs/work-orders/WO-127-release-close-recovery.md"
+      ],
+      "rationale": "The FINAL-001 repair section identifies the corresponding hook and canonical-projection repairs.",
+      "dispatchSource": {
+        "baseSha256": "6164da0a419cc66c21ed4d02d83a7d556b9fa840423dd7f19d20476c88c65d06",
+        "currentSha256": "6164da0a419cc66c21ed4d02d83a7d556b9fa840423dd7f19d20476c88c65d06",
+        "changed": false
+      }
+    },
+    {
+      "decision": "WO-127-D007",
+      "groups": [
+        "steps"
+      ],
+      "role": "executor-repair",
+      "sourcePaths": [
+        "docs/evidence/WO-127/decisions.md",
+        "docs/work-orders/WO-127-release-close-recovery.md"
+      ],
+      "rationale": "The FINAL-001 repair section identifies the corresponding hook and canonical-projection repairs.",
+      "dispatchSource": {
+        "baseSha256": "2d0f8261349473e3b45d54279eb2570d82d2a6084cbf96a46607238b69a7fd7d",
+        "currentSha256": "2d0f8261349473e3b45d54279eb2570d82d2a6084cbf96a46607238b69a7fd7d",
+        "changed": false
+      }
+    },
+    {
+      "decision": "WO-129-D002",
+      "groups": [
+        "steps",
+        "corrections"
+      ],
+      "role": "executor",
+      "sourcePaths": [
+        "docs/evidence/WO-129/decisions.md"
+      ],
+      "rationale": "F9: dispatch identifies execution.",
+      "dispatchSource": {
+        "baseSha256": "626b16314a23b5eee56ebcadfba9206fbb43a2d739fc376f34e474bcbe981c99",
+        "currentSha256": "626b16314a23b5eee56ebcadfba9206fbb43a2d739fc376f34e474bcbe981c99",
+        "changed": false
+      }
+    },
+    {
+      "decision": "WO-131-D001",
+      "groups": [
+        "steps"
+      ],
+      "role": "planner",
+      "sourcePaths": [
+        "docs/evidence/WO-131/decisions.md",
+        "docs/planning/refutations/2026-09-13-planning-dc998fb93c27e337-012.md"
+      ],
+      "rationale": "Frozen D006 identifies D001 and D002 as the preserved original planning decisions.",
+      "dispatchSource": {
+        "baseSha256": "99ce9850da6dab7b15c458cd4b834a2600218bca4088265c20472280984ffd6a",
+        "currentSha256": "99ce9850da6dab7b15c458cd4b834a2600218bca4088265c20472280984ffd6a",
+        "changed": false
+      }
+    },
+    {
+      "decision": "WO-131-D002",
+      "groups": [
+        "steps"
+      ],
+      "role": "planner",
+      "sourcePaths": [
+        "docs/evidence/WO-131/decisions.md",
+        "docs/planning/refutations/2026-09-13-planning-dc998fb93c27e337-012.md"
+      ],
+      "rationale": "Frozen D006 identifies D001 and D002 as the preserved original planning decisions.",
+      "dispatchSource": {
+        "baseSha256": "8e193f6814df3ae84a317a9f5b0438c74aec3084c03e9ddaf176bd38b0b60a9a",
+        "currentSha256": "8e193f6814df3ae84a317a9f5b0438c74aec3084c03e9ddaf176bd38b0b60a9a",
+        "changed": false
+      }
+    },
+    {
+      "decision": "WO-131-D005",
+      "groups": [
+        "steps"
+      ],
+      "role": "executor",
+      "sourcePaths": [
+        "docs/evidence/WO-131/decisions.md"
+      ],
+      "rationale": "Frozen D006 identifies D003 through D005 as execution decisions.",
+      "dispatchSource": {
+        "baseSha256": "bef260c9e3b2f674977d75063b54d8f90a48cd43b49880598a60403edc2f77a5",
+        "currentSha256": "bef260c9e3b2f674977d75063b54d8f90a48cd43b49880598a60403edc2f77a5",
+        "changed": false
+      }
+    },
+    {
+      "decision": "WO-131-D014",
+      "groups": [
+        "steps"
+      ],
+      "role": "executor",
+      "sourcePaths": [
+        "docs/evidence/WO-131/decisions.md",
+        "docs/evidence/WO-131/gate-performance.json",
+        "docs/evidence/WO-131/README.md",
+        "docs/control/orders/WO-131.jsonl"
+      ],
+      "rationale": "Inference: first implementation measurement and accepted gate precede implementation-ready; adjacent repair describes scheduling work, not a fix dispatch.",
+      "dispatchSource": {
+        "baseSha256": "dfd6757e6c7af77bb57e48ce8a874964cb874b322a03aedf10b34d5b45405a15",
+        "currentSha256": "dfd6757e6c7af77bb57e48ce8a874964cb874b322a03aedf10b34d5b45405a15",
+        "changed": false
+      }
+    },
+    {
+      "decision": "WO-131-D015",
+      "groups": [
+        "corrections"
+      ],
+      "role": "executor",
+      "sourcePaths": [
+        "docs/evidence/WO-131/decisions.md"
+      ],
+      "rationale": "Dispatch identifies execution amendments and preserves the original planning subject.",
+      "dispatchSource": {
+        "baseSha256": "f090bea07371459cc7c0956dfa3be7b9fa05cd949d6a44704c24990344aec5de",
+        "currentSha256": "f090bea07371459cc7c0956dfa3be7b9fa05cd949d6a44704c24990344aec5de",
+        "changed": false
+      }
+    },
+    {
+      "decision": "WO-131-D016",
+      "groups": [
+        "steps",
+        "corrections"
+      ],
+      "role": "executor",
+      "sourcePaths": [
+        "docs/evidence/WO-131/decisions.md"
+      ],
+      "rationale": "F9: dispatch and correction describe interrupted ongoing execution.",
+      "dispatchSource": {
+        "baseSha256": "84ba9eec46ef228ae8d339de358253ce507a58707155358997d5d3b99af81389",
+        "currentSha256": "84ba9eec46ef228ae8d339de358253ce507a58707155358997d5d3b99af81389",
+        "changed": false
+      }
+    },
+    {
+      "decision": "WO-131-D017",
+      "groups": [
+        "steps"
+      ],
+      "role": "executor",
+      "sourcePaths": [
+        "docs/evidence/WO-131/decisions.md"
+      ],
+      "rationale": "Dispatch corrects current execution focus; the implementation measurement continues.",
+      "dispatchSource": {
+        "baseSha256": "7ff2087d4d25992880043fb1deee6a33d564ef7ee3357eb767120c991883f809",
+        "currentSha256": "7ff2087d4d25992880043fb1deee6a33d564ef7ee3357eb767120c991883f809",
+        "changed": false
+      }
+    },
+    {
+      "decision": "WO-131-D020",
+      "groups": [
+        "steps"
+      ],
+      "role": "executor-repair",
+      "sourcePaths": [
+        "docs/evidence/WO-131/decisions.md",
+        "docs/evidence/WO-131/README.md"
+      ],
+      "rationale": "D020 continues D019 resume: fix; D021 explicitly places its bounded fix in this repair.",
+      "dispatchSource": {
+        "baseSha256": "07b8c7951b7b1075876da5f3cdb100be279d84bf8a2fd1e06cfea8a870ec47e5",
+        "currentSha256": "07b8c7951b7b1075876da5f3cdb100be279d84bf8a2fd1e06cfea8a870ec47e5",
+        "changed": false
+      }
+    },
+    {
+      "decision": "WO-131-D021",
+      "groups": [
+        "steps"
+      ],
+      "role": "executor-repair",
+      "sourcePaths": [
+        "docs/evidence/WO-131/decisions.md",
+        "docs/evidence/WO-131/README.md"
+      ],
+      "rationale": "D020 continues D019 resume: fix; D021 explicitly places its bounded fix in this repair.",
+      "dispatchSource": {
+        "baseSha256": "5193b6d9f3853a374b0216cdb7d29614293af1388f085bde08961217236ca1b2",
+        "currentSha256": "5193b6d9f3853a374b0216cdb7d29614293af1388f085bde08961217236ca1b2",
+        "changed": false
+      }
+    },
+    {
+      "decision": "WO-156-D007",
+      "groups": [
+        "steps"
+      ],
+      "role": "executor-repair",
+      "sourcePaths": [
+        "docs/evidence/WO-156/decisions.md"
+      ],
+      "rationale": "Unchanged original decision and rejection identify defects encountered in this repair and its own Git path.",
+      "dispatchSource": {
+        "baseSha256": "19736e8f3c72f79e45e17b82bbbfd262d1fd8039b69bcdeec4e44660c857858c",
+        "currentSha256": "9d6cd6a761488ab2bd41c2a4a333c1ccb5b936f4ce92654b65917d4bfddbe7f4",
+        "changed": true
+      }
+    }
+  ],
+  "keptAmbiguous": [
+    {
+      "decision": "WO-110-D007",
+      "role": "unnamed",
+      "reason": "Historical timing after implementation-ready does not establish actor."
+    },
+    {
+      "decision": "WO-127-D002",
+      "role": "unnamed",
+      "reason": "Recovery of an older release defect does not establish this order fix phase."
+    },
+    {
+      "decision": "WO-111-D008",
+      "role": "unnamed",
+      "reason": "Future planning follow-up does not establish recording role."
+    },
+    {
+      "decision": "WO-131-D009",
+      "role": "unnamed",
+      "reason": "Planning holds describe the subject rather than recording phase."
+    },
+    {
+      "decision": "WO-131-D018",
+      "role": "unnamed",
+      "reason": "Accepted measurements and later-phase evidence do not establish recording role."
+    },
+    {
+      "decision": "WO-139-D005",
+      "role": "unnamed",
+      "reason": "Completed executor handoff is historical."
+    }
+  ],
+  "sources": [
+    {
+      "path": "docs/evidence/WO-043/decisions.md",
+      "baseSha256": "49490b132bbe8249142ef3cf1362dd1a65f6cebd10f51626acfde7f95f48d4be"
+    },
+    {
+      "path": "docs/evidence/WO-043/repair-001.md",
+      "baseSha256": "6addd743f3fe0adbaee3f92ca8674aea614db57244bfe64e34c47821392fd77b"
+    },
+    {
+      "path": "docs/evidence/WO-085/decisions.md",
+      "baseSha256": "cd337a0a63a2dc1fdea90e330abffa27d27dc712623a207e4cb5e90adff1a8f8"
+    },
+    {
+      "path": "docs/evidence/WO-099/decisions.md",
+      "baseSha256": "300b38702f5d7c0000104fa94285cdb25165dbe86967170a82d66025db41ba51"
+    },
+    {
+      "path": "docs/evidence/WO-126/decisions.md",
+      "baseSha256": "9664dd2c11728ba005e4ca84338b5d5eda59cda08e9f4615084b5e33d1695261"
+    },
+    {
+      "path": "docs/evidence/WO-127/decisions.md",
+      "baseSha256": "7606f9939910b8ce88857faaa872981d671c5e2ed9c0031bd9af90ba647c3b39"
+    },
+    {
+      "path": "docs/work-orders/WO-127-release-close-recovery.md",
+      "baseSha256": "c24aa9ecd9073aae194844383563dddde7a8dd1a8b28f8906674f0dd66c22425"
+    },
+    {
+      "path": "docs/evidence/WO-129/decisions.md",
+      "baseSha256": "cb820be54157fd6545b421bad46e5742b2c45bb76e6c587f55651898cb082f24"
+    },
+    {
+      "path": "docs/evidence/WO-131/decisions.md",
+      "baseSha256": "d40cd695fad1d8ef41c2d678e48e51fdf4b7d683c02c681dd721e0ed4d2b606a"
+    },
+    {
+      "path": "docs/planning/refutations/2026-09-13-planning-dc998fb93c27e337-012.md",
+      "baseSha256": "0286a1fe66f5eeeb5665561cb07da5c5b541f17faefc057e4dbfbd1f66256987"
+    },
+    {
+      "path": "docs/evidence/WO-131/gate-performance.json",
+      "baseSha256": "e17b6547ce68a7c0d12196c0a0175ec9eda0658abe61815dd36d4df87b44bf5e"
+    },
+    {
+      "path": "docs/evidence/WO-131/README.md",
+      "baseSha256": "e0d0b0f1367df082be946ec246a5120d2da7cd644c11038182066bf0c0929140"
+    },
+    {
+      "path": "docs/control/orders/WO-131.jsonl",
+      "baseSha256": "b530c8e93d4b8f1e37315ad760517894dde29f36dd7a622f4435fcb222cbf2e1"
+    },
+    {
+      "path": "docs/evidence/WO-156/decisions.md",
+      "baseSha256": "09f1b62e0084ab1cbabeeccc194021662b4473f5180ed564b05c3cd62d60a351"
+    }
+  ],
+  "observedAt": "2026-09-29T19:54:47.555Z",
+  "reproduction": {
+    "before": {
+      "rows": 318,
+      "differingOrders": 98,
+      "byClass": {
+        "correction": {
+          "transcript": 204,
+          "record": 33,
+          "matched": 20
+        },
+        "direction": {
+          "transcript": 132,
+          "record": 52,
+          "matched": 10
+        },
+        "scope-expansion": {
+          "transcript": 62,
+          "record": 53,
+          "matched": 19
+        },
+        "override": {
+          "transcript": 7,
+          "record": 5,
+          "matched": 2
+        },
+        "takeover": {
+          "transcript": 4,
+          "record": 7,
+          "matched": 1
+        },
+        "answer": {
+          "transcript": 93,
+          "record": 19,
+          "matched": 16
+        }
+      }
+    },
+    "after": {
+      "rows": 317,
+      "differingOrders": 98,
+      "byClass": {
+        "correction": {
+          "transcript": 204,
+          "record": 33,
+          "matched": 21
+        },
+        "direction": {
+          "transcript": 132,
+          "record": 52,
+          "matched": 10
+        },
+        "scope-expansion": {
+          "transcript": 62,
+          "record": 53,
+          "matched": 25
+        },
+        "override": {
+          "transcript": 7,
+          "record": 5,
+          "matched": 2
+        },
+        "takeover": {
+          "transcript": 4,
+          "record": 7,
+          "matched": 1
+        },
+        "answer": {
+          "transcript": 93,
+          "record": 19,
+          "matched": 16
+        }
+      },
+      "unnamedSteps": 26,
+      "unnamedCorrections": 3,
+      "unknownRows": 27
+    },
+    "episodes": 1035,
+    "changedFields": 28,
+    "unchanged": "All identifiers, dates, classes, failed judgments, transcript membership, chronology and validation."
+  }
+}

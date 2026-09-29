@@ -1,0 +1,108 @@
+{
+  "schemaVersion": 2,
+  "kind": "wo-172-criterion-1",
+  "command": "npm run plan -- failures --all --until 2026-09-28T04:00:00.000Z --export <file under the system temporary directory>",
+  "measuredAt": "2026-09-29T02:38:42.217Z",
+  "subject": "this order's workspace on base 8c28f479, after the review repairs and formatting; the export's revision digest names the record it read",
+  "exportRevision": "efc43e0f568695e2ea95e827efbba44a0bf6cd07415b1e1aa09b60a4d5626e06",
+  "window": {
+    "since": null,
+    "until": "2026-09-28T04:00:00.000Z",
+    "opensAt": "the whole record (--all)",
+    "timeless": "included"
+  },
+  "items": {
+    "total": 286,
+    "byKind": {
+      "correction": 61,
+      "repair": 99,
+      "amendment": 29,
+      "off-ramp": 1,
+      "failed-judgment": 96
+    }
+  },
+  "counts": {
+    "window": {
+      "failedVerifications": 86,
+      "failedFinalReviews": 10,
+      "repairs": 99,
+      "ordersMadeReady": 117,
+      "failedFirstVerifications": 54,
+      "corrections": 61,
+      "offRamps": 1,
+      "offRampEvents": {
+        "CriterionWaived": 1
+      },
+      "amendments": 25,
+      "withdrawnAmendments": 1,
+      "overriddenHolds": 3
+    },
+    "wholeRecord": {
+      "failedVerifications": 88,
+      "failedFinalReviews": 10,
+      "repairs": 101,
+      "ordersMadeReady": 121,
+      "failedFirstVerifications": 56,
+      "corrections": 64,
+      "offRamps": 2,
+      "offRampEvents": {
+        "CriterionWaived": 2
+      },
+      "amendments": 26,
+      "withdrawnAmendments": 1,
+      "overriddenHolds": 3
+    }
+  },
+  "inventoryAt5f3849ec": {
+    "failedVerifications": 86,
+    "failedFinalReviews": 10,
+    "repairs": 99,
+    "ordersMadeReady": 117,
+    "failedFirstVerifications": 54,
+    "corrections": 56,
+    "waivers": 1,
+    "amendments": 25,
+    "withdrawnAmendments": 1,
+    "overriddenHolds": 3
+  },
+  "differences": [
+    {
+      "count": "corrections",
+      "inventory": 56,
+      "command": 61
+    }
+  ],
+  "differenceItems": [
+    {
+      "decision": "WO-060-D008",
+      "date": "2026-09-28",
+      "phase": "implementation",
+      "filedAfter5f3849ec": true
+    },
+    {
+      "decision": "WO-116-D013",
+      "date": "2026-09-28",
+      "phase": "implementation",
+      "filedAfter5f3849ec": true
+    },
+    {
+      "decision": "WO-116-D014",
+      "date": "2026-09-28",
+      "phase": "implementation",
+      "filedAfter5f3849ec": true
+    },
+    {
+      "decision": "WO-173-D013",
+      "date": "2026-09-28",
+      "phase": "verification",
+      "filedAfter5f3849ec": true
+    },
+    {
+      "decision": "WO-173-D016",
+      "date": "2026-09-28",
+      "phase": "repair",
+      "filedAfter5f3849ec": true
+    }
+  ],
+  "judgment": "The 5 corrections in the window that no decisions file at 5f3849ec holds (WO-060-D008, WO-116-D013, WO-116-D014, WO-173-D013, WO-173-D016), all dated 2026-09-28 and filed after the inventory, cause the difference of 5; every other count equals the inventory's, and both correction counts are right for their subject (WO-172-D003). Corrections dated 2026-09-28 that 5f3849ec already held (WO-163-D019, WO-163-D021) are in both counts."
+}

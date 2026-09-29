@@ -1,0 +1,486 @@
+{
+  "schemaVersion": 1,
+  "kind": "wo-172-survey-validation",
+  "scoredAt": "2026-09-29T03:28:20.975Z",
+  "protocol": {
+    "sample": "18 messages drawn by a hash of each message's id and send time, two from each class the classifier assigned to at least 50 messages and two overrides; interrupts excluded (set by route)",
+    "sampleSha256": "fc6495cf33f18a000b61f029986091b82ef261ef714c785a2fa2841d595e25fa",
+    "blind": "the operator saw each message with its time, route, the agent's preceding output and neighbouring messages within 10 minutes, never the classifier's labels",
+    "mappingSha256": "0b7d8f797a2cd6d8ec59bd1adb2db0b11f3a04f5a3850679d3d21cbccef4243f",
+    "mapping": "the executor mapped the operator's free-text answers into the rubric's fields, having seen the classifier's labels; the operator settled items 7, 14 and 15 and corrected items 2, 3 and 4 before scoring",
+    "rule": "class, failure instruction and severity scored once; a field the operator did not state is left out; a class the operator gave outside the rubric counts as a miss; for an item the operator read as several steps, the classifier agrees when its class is one of them (classSingle records the stricter reading); instigator compared descriptively"
+  },
+  "totals": {
+    "class": {
+      "agree": 13,
+      "scored": 18
+    },
+    "classSingleLabel": {
+      "agree": 12,
+      "scored": 18
+    },
+    "failureInstruction": {
+      "agree": 16,
+      "scored": 17
+    },
+    "severity": {
+      "agree": 15,
+      "scored": 15
+    },
+    "instigator": {
+      "agree": 12,
+      "scored": 17
+    },
+    "mappingStood": {
+      "stood": 12,
+      "of": 15,
+      "corrected": [
+        2,
+        3,
+        4
+      ],
+      "asked": [
+        7,
+        14,
+        15
+      ]
+    }
+  },
+  "byClassifierClass": {
+    "correction": {
+      "sampled": 2,
+      "operatorAgrees": 2
+    },
+    "question": {
+      "sampled": 2,
+      "operatorAgrees": 1
+    },
+    "acknowledgement": {
+      "sampled": 2,
+      "operatorAgrees": 1
+    },
+    "answer": {
+      "sampled": 2,
+      "operatorAgrees": 1
+    },
+    "direction": {
+      "sampled": 2,
+      "operatorAgrees": 1
+    },
+    "ideation": {
+      "sampled": 2,
+      "operatorAgrees": 2
+    },
+    "scope-expansion": {
+      "sampled": 2,
+      "operatorAgrees": 1
+    },
+    "override": {
+      "sampled": 2,
+      "operatorAgrees": 2
+    },
+    "other-step": {
+      "sampled": 2,
+      "operatorAgrees": 2
+    }
+  },
+  "rows": [
+    {
+      "n": 1,
+      "order": "WO-042",
+      "role": "reviewer",
+      "classifier": {
+        "class": "correction",
+        "failureInstruction": false,
+        "severity": true,
+        "instigator": "agent-slow-or-repeating"
+      },
+      "operator": {
+        "class": "correction",
+        "failureInstruction": false,
+        "severity": true,
+        "instigator": "agent-slow-or-repeating or agent-stopped"
+      },
+      "classAgrees": true,
+      "classSingle": true,
+      "failureInstructionAgrees": true,
+      "severityAgrees": true,
+      "instigatorAgrees": true
+    },
+    {
+      "n": 2,
+      "order": "WO-003",
+      "role": "executor",
+      "classifier": {
+        "class": "question",
+        "failureInstruction": false,
+        "severity": false,
+        "instigator": "agent-working"
+      },
+      "operator": {
+        "class": "outside the rubric: trial and error",
+        "failureInstruction": "not stated",
+        "severity": "not stated",
+        "instigator": "not stated"
+      },
+      "classAgrees": false,
+      "classSingle": false,
+      "failureInstructionAgrees": null,
+      "severityAgrees": null,
+      "instigatorAgrees": null
+    },
+    {
+      "n": 3,
+      "order": "WO-006",
+      "role": "ideation",
+      "classifier": {
+        "class": "correction",
+        "failureInstruction": false,
+        "severity": true,
+        "instigator": "agent-wrong"
+      },
+      "operator": {
+        "class": "direction + correction + question",
+        "failureInstruction": false,
+        "severity": true,
+        "instigator": "outside: another terminal"
+      },
+      "classAgrees": true,
+      "classSingle": false,
+      "failureInstructionAgrees": true,
+      "severityAgrees": true,
+      "instigatorAgrees": false
+    },
+    {
+      "n": 4,
+      "order": "WO-126",
+      "role": "ideation",
+      "classifier": {
+        "class": "acknowledgement",
+        "failureInstruction": false,
+        "severity": false,
+        "instigator": "agent-working"
+      },
+      "operator": {
+        "class": "outside the rubric: positive reinforcement",
+        "failureInstruction": false,
+        "severity": false,
+        "instigator": "agent-working"
+      },
+      "classAgrees": false,
+      "classSingle": false,
+      "failureInstructionAgrees": true,
+      "severityAgrees": true,
+      "instigatorAgrees": true
+    },
+    {
+      "n": 5,
+      "order": "WO-028",
+      "role": "executor",
+      "classifier": {
+        "class": "answer",
+        "failureInstruction": false,
+        "severity": false,
+        "instigator": "agent-asked"
+      },
+      "operator": {
+        "class": "direction",
+        "failureInstruction": false,
+        "severity": false,
+        "instigator": "operator-initiative"
+      },
+      "classAgrees": false,
+      "classSingle": false,
+      "failureInstructionAgrees": true,
+      "severityAgrees": true,
+      "instigatorAgrees": false
+    },
+    {
+      "n": 6,
+      "order": "WO-145",
+      "role": "executor",
+      "classifier": {
+        "class": "answer",
+        "failureInstruction": false,
+        "severity": false,
+        "instigator": "agent-asked"
+      },
+      "operator": {
+        "class": "answer",
+        "failureInstruction": false,
+        "severity": "not stated",
+        "instigator": "agent-asked"
+      },
+      "classAgrees": true,
+      "classSingle": true,
+      "failureInstructionAgrees": true,
+      "severityAgrees": null,
+      "instigatorAgrees": true
+    },
+    {
+      "n": 7,
+      "order": "WO-006",
+      "role": "executor",
+      "classifier": {
+        "class": "question",
+        "failureInstruction": false,
+        "severity": true,
+        "instigator": "agent-claimed-done"
+      },
+      "operator": {
+        "class": "question",
+        "failureInstruction": false,
+        "severity": "not stated",
+        "instigator": "agent-claimed-done"
+      },
+      "classAgrees": true,
+      "classSingle": true,
+      "failureInstructionAgrees": true,
+      "severityAgrees": null,
+      "instigatorAgrees": true
+    },
+    {
+      "n": 8,
+      "order": "WO-002",
+      "role": "undispatched",
+      "classifier": {
+        "class": "direction",
+        "failureInstruction": false,
+        "severity": false,
+        "instigator": "operator-initiative"
+      },
+      "operator": {
+        "class": "ideation",
+        "failureInstruction": false,
+        "severity": false,
+        "instigator": "operator-initiative"
+      },
+      "classAgrees": false,
+      "classSingle": false,
+      "failureInstructionAgrees": true,
+      "severityAgrees": true,
+      "instigatorAgrees": true
+    },
+    {
+      "n": 9,
+      "order": "WO-050",
+      "role": "verifier",
+      "classifier": {
+        "class": "direction",
+        "failureInstruction": true,
+        "severity": true,
+        "instigator": "operator-initiative"
+      },
+      "operator": {
+        "class": "direction",
+        "failureInstruction": true,
+        "severity": true,
+        "instigator": "outside: another session"
+      },
+      "classAgrees": true,
+      "classSingle": true,
+      "failureInstructionAgrees": true,
+      "severityAgrees": true,
+      "instigatorAgrees": false
+    },
+    {
+      "n": 10,
+      "order": "WO-002",
+      "role": "undispatched",
+      "classifier": {
+        "class": "ideation",
+        "failureInstruction": false,
+        "severity": false,
+        "instigator": "operator-initiative"
+      },
+      "operator": {
+        "class": "ideation",
+        "failureInstruction": false,
+        "severity": false,
+        "instigator": "operator-initiative"
+      },
+      "classAgrees": true,
+      "classSingle": true,
+      "failureInstructionAgrees": true,
+      "severityAgrees": true,
+      "instigatorAgrees": true
+    },
+    {
+      "n": 11,
+      "order": "WO-039",
+      "role": "ideation",
+      "classifier": {
+        "class": "ideation",
+        "failureInstruction": false,
+        "severity": false,
+        "instigator": "agent-working"
+      },
+      "operator": {
+        "class": "ideation",
+        "failureInstruction": false,
+        "severity": false,
+        "instigator": "agent-working"
+      },
+      "classAgrees": true,
+      "classSingle": true,
+      "failureInstructionAgrees": true,
+      "severityAgrees": true,
+      "instigatorAgrees": true
+    },
+    {
+      "n": 12,
+      "order": "WO-054",
+      "role": "executor",
+      "classifier": {
+        "class": "scope-expansion",
+        "failureInstruction": false,
+        "severity": false,
+        "instigator": "operator-initiative"
+      },
+      "operator": {
+        "class": "scope-expansion",
+        "failureInstruction": false,
+        "severity": false,
+        "instigator": "operator-initiative"
+      },
+      "classAgrees": true,
+      "classSingle": true,
+      "failureInstructionAgrees": true,
+      "severityAgrees": true,
+      "instigatorAgrees": true
+    },
+    {
+      "n": 13,
+      "order": "WO-044",
+      "role": "executor",
+      "classifier": {
+        "class": "override",
+        "failureInstruction": false,
+        "severity": true,
+        "instigator": "agent-asked"
+      },
+      "operator": {
+        "class": "override",
+        "failureInstruction": false,
+        "severity": true,
+        "instigator": "agent-asked"
+      },
+      "classAgrees": true,
+      "classSingle": true,
+      "failureInstructionAgrees": true,
+      "severityAgrees": true,
+      "instigatorAgrees": true
+    },
+    {
+      "n": 14,
+      "order": "WO-109",
+      "role": "reviewer",
+      "classifier": {
+        "class": "scope-expansion",
+        "failureInstruction": true,
+        "severity": true,
+        "instigator": "operator-initiative"
+      },
+      "operator": {
+        "class": "direction",
+        "failureInstruction": false,
+        "severity": true,
+        "instigator": "outside: a pattern across sessions"
+      },
+      "classAgrees": false,
+      "classSingle": false,
+      "failureInstructionAgrees": false,
+      "severityAgrees": true,
+      "instigatorAgrees": false
+    },
+    {
+      "n": 15,
+      "order": "WO-126",
+      "role": "verifier",
+      "classifier": {
+        "class": "acknowledgement",
+        "failureInstruction": false,
+        "severity": false,
+        "instigator": "agent-blocked"
+      },
+      "operator": {
+        "class": "acknowledgement",
+        "failureInstruction": false,
+        "severity": false,
+        "instigator": "agent-blocked"
+      },
+      "classAgrees": true,
+      "classSingle": true,
+      "failureInstructionAgrees": true,
+      "severityAgrees": true,
+      "instigatorAgrees": true
+    },
+    {
+      "n": 16,
+      "order": "main",
+      "role": "planner",
+      "classifier": {
+        "class": "override",
+        "failureInstruction": false,
+        "severity": true,
+        "instigator": "agent-blocked"
+      },
+      "operator": {
+        "class": "override",
+        "failureInstruction": false,
+        "severity": true,
+        "instigator": "agent-blocked"
+      },
+      "classAgrees": true,
+      "classSingle": true,
+      "failureInstructionAgrees": true,
+      "severityAgrees": true,
+      "instigatorAgrees": true
+    },
+    {
+      "n": 17,
+      "order": "WO-100",
+      "role": "executor",
+      "classifier": {
+        "class": "other-step",
+        "failureInstruction": false,
+        "severity": false,
+        "instigator": "agent-working"
+      },
+      "operator": {
+        "class": "other-step",
+        "failureInstruction": false,
+        "severity": false,
+        "instigator": "operator-initiative"
+      },
+      "classAgrees": true,
+      "classSingle": true,
+      "failureInstructionAgrees": true,
+      "severityAgrees": true,
+      "instigatorAgrees": false
+    },
+    {
+      "n": 18,
+      "order": "WO-006",
+      "role": "executor-repair",
+      "classifier": {
+        "class": "other-step",
+        "failureInstruction": false,
+        "severity": false,
+        "instigator": "operator-initiative"
+      },
+      "operator": {
+        "class": "other-step",
+        "failureInstruction": false,
+        "severity": false,
+        "instigator": "operator-initiative"
+      },
+      "classAgrees": true,
+      "classSingle": true,
+      "failureInstructionAgrees": true,
+      "severityAgrees": true,
+      "instigatorAgrees": true
+    }
+  ],
+  "limits": "Eighteen items show a gross failure, not a fine one; with two items a class, a class's agreement is one of 0, 1 or 2 in 2. The sample is stratified by the classifier's class, so the overall figure is not the survey's accuracy."
+}

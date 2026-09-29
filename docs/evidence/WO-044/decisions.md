@@ -419,7 +419,7 @@ signalling any process.
 {
   "id": "WO-044-D014",
   "date": "2026-09-14",
-  "dispatch": "resume: fix; operator scope expand (2026-09-14): the final gate runs 'over and over' and reuse never triggers in verify — fix the gate loop.",
+  "dispatch": "resume: fix; operator scope expand (2026-09-14): the final gate reran repeatedly and reuse never triggered in verify, so fix the gate loop.",
   "decision": "Align the harness evidence runner with the lifecycle contract it already carries. Extract one shared lifecycleRequiredChecks(verdict) in gate-evidence.mjs; the lifecycle gate (lifecycle-evidence.mjs) and the runner (harness-host.ts) both read it so they cannot drift. runHarnessEvidence takes an optional pendingVerdict, and `harness evidence` accepts a strict `--fail` selector, so a failing verdict records only `git diff --check` instead of dragging ~10 minutes of test:full to reach a 126 ms check its own contract does not require. An absent verdict runs the full set byte-for-byte unchanged, and the pass path still requires test:full. The shared role evidence procedure documents `--fail`.",
   "evidence": [
     "scripts/lib/lifecycle-evidence.mjs:38-41 requires only git diff --check on a fail; packages/skeleton/src/harness-host.ts:1599-1611 hardcoded and ran both checks unconditionally; scripts/harness.mjs:118 refused all overrides.",
@@ -451,7 +451,7 @@ wrong goal.
 {
   "id": "WO-044-D015",
   "date": "2026-09-14",
-  "dispatch": "operator override: during resume: fix (2026-09-14): 'use workflows and make edits to make workflows available'.",
+  "dispatch": "operator override: during resume: fix (2026-09-14), a direction that the repair work through workflows and make the edits that let workflows run.",
   "decision": "Classify the Workflow tool as `spawn` in harnessToolEffects (packages/skeleton/src/harness-command.ts), the same class as Agent and Task, so the generated permission guard admits it as repo.read and treats each subagent's own tool calls as passing the same guards. The re-emit carries the tools-map change into the installed permissions hook. This is the durable analog of D011's TaskStop/KillShell classification; without it the tool is refused as 'Unclassified effectful tool: Workflow' in normal mode.",
   "evidence": [
     "The installed permissions hook refused the Workflow tool ('DOTLN_HARNESS_REFUSED: command classification: Unclassified effectful tool: Workflow') in normal mode; permissionEffect (harness-host.ts:2179-2192) throws for any tool absent from the map and maps a spawn to repo.read, refusing only isolation:remote.",
@@ -478,7 +478,7 @@ the guards. NoOp keeps workflows unavailable outside an override.
 {
   "id": "WO-044-D016",
   "date": "2026-09-14",
-  "dispatch": "resume: fix; operator scope expand (2026-09-14): 'nothing was reused'; the operator chose 'Plan it; ship bounded now' on the reuse fork.",
+  "dispatch": "resume: fix; operator scope expand (2026-09-14): the gate had reused no suite; the operator chose 'Plan it; ship bounded now' on the reuse fork.",
   "decision": "Route the gate reuse defect to a planning pass rather than repair it here. It is a reuse-KEY CONTRACT change, not a bounded bug: the application-level test:full check is keyed to the whole tree hash including docs (gate-evidence.mjs gateTreeHash), so a verifier's report or control edit invalidates the executor's green gate; and fixture suites declare the whole scripts/ directory as an input (suite-evidence.mjs fixturePaths), so any script edit re-keys ~60+ tasks. Both change what the gate certifies and can only be verified by the full cold gates the operator is objecting to. Extend the existing README planning note to the three coupled items (doc-insensitive test:full key; per-suite input narrowing; content-keyed evidence editions) and ship only the bounded fail-path fix (D014) now, which already removes the cold gate on the fail path.",
   "evidence": [
     "Diagnosis workflow: the suite-input over-declaration is confirmed (suite-evidence.mjs:131 'scripts/', ~60+ tasks) and verdicted needs-planning; narrowing is fail-safe against stale reuse but is a contract change whose verification needs full replica gate runs.",

@@ -32,7 +32,7 @@
     "coldStartBytes": {
       "executor": 29246,
       "verifier": 25151,
-      "reviewer": 24576,
+      "reviewer": 28884,
       "release-close": 16384,
       "planner": 24576,
       "refuter": null
@@ -44,6 +44,14 @@
     "passRefutationMs": 120000
   },
   "acceptances": [
+    {
+      "date": "2026-09-29",
+      "metric": "coldStartBytes.reviewer",
+      "scope": null,
+      "dispatch": "reviewer",
+      "ceiling": 28884,
+      "reason": "WO-172 measured 24,788 bytes in each existing skill root (CLAUDE.md 6,610 plus the reviewer skill 18,178) against 24,576, from 24,398 at base 8c28f479, after the operator's scope expansion of 2026-09-29 added the hand-written Shell rule of 390 bytes to CLAUDE.md: commands run under zsh, with the forms the record shows every role getting wrong. Under product 07's standing 2026-09-17 route, preserve the reviewed rule and set this ceiling to the measured 24,788 plus one 4,096-byte step, 28,884. The other bounded roles remain within their ceilings; refuter remains unset. Reassess when another reviewed rule needs more. Decision: docs/evidence/WO-172/decisions.md#wo-172-d037."
+    },
     {
       "date": "2026-09-22",
       "metric": "coldStartBytes.executor",

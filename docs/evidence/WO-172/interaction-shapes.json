@@ -1,0 +1,632 @@
+{
+  "schemaVersion": 2,
+  "kind": "interaction-shapes",
+  "brief": "Fourteen candidate models of human behavior in collaboration, including human-agent interactions. Each compact RxJS expression exposes a proposed mechanism; a behavioral reading and a contrasting condition distinguish it from an operator analogy. Sources support the motivating observation, not an inferred motive or a fitted law. Every revised interpretation remains a candidate.",
+  "notation": "Each marble shows only the displayed pipeline's output. One character is one value, expanded in its legend; '-' is a virtual-time tick, '|' is completion and '(a|)' emits and completes at one instant. '#' is one terminal error, not a repeatable value. Grouping is simultaneous notifications, not an array. A line without '|' is an observation window, not proof of endless behavior. Values, gains and times are illustrative. Synthetic inputs and helper definitions are in interaction-shapes.test.mjs; its paired examples check RxJS mechanics, not the behavioral hypothesis.",
+  "shapes": [
+    {
+      "id": "SHAPE-001",
+      "title": "Permission",
+      "rx": "work$.pipe(withLatestFrom(authority$), concatMap(([work, grant]) => covers(grant, work) ? act$(work) : ask$(work)))",
+      "marble": "--a---q---q|",
+      "caption": "Permission expires at the next sentence.",
+      "sources": [
+        "survey-validation.json row 1 (WO-042 final review)",
+        "survey-validation.json row 13 (WO-044)"
+      ],
+      "themes": [
+        "asks-or-stalls-instead-of-acting",
+        "sandbox-and-authority"
+      ],
+      "status": "candidate",
+      "added": "2026-09-29",
+      "history": [
+        {
+          "date": "2026-09-29",
+          "source": "WO-172-D027; operator direction during resume: fix",
+          "change": "Replace the operator analogy with an explicit candidate behavioral mechanism and a contrasting condition; correct output notation.",
+          "previous": {
+            "title": "Permission",
+            "rx": "told$.pipe(switchMap(() => mayI$))",
+            "marble": "t-?------------------",
+            "caption": "Told. Asks if it may."
+          }
+        }
+      ],
+      "behavior": "A collaborator keeps seeking permission for work already authorized.",
+      "mechanism": "Authority is remembered, but matched to the wording of the request rather than its scope. A harmless restatement therefore looks like a fresh boundary.",
+      "assumptions": "covers compares exact wording in this example; all three work items are within the same grant. act$ and ask$ each emit one response after a tick.",
+      "change": "Match the actual scope of the grant. All three actions proceed; genuinely new scope still requires authorization.",
+      "example": {
+        "inputs": "work$ -a---b---c-|; authority$ g-----------; grant arrives before the first work item.",
+        "values": {
+          "a": "acts within the grant",
+          "q": "asks again"
+        },
+        "unit": "Illustrative virtual-time ticks, not observed response times."
+      },
+      "revised": "2026-09-29"
+    },
+    {
+      "id": "SHAPE-002",
+      "title": "Loop",
+      "rx": "doubt$.pipe(exhaustMap(() => check$.pipe(repeat({ delay: relief }))), takeUntil(settled$))",
+      "marble": "--p---p---p-|",
+      "caption": "A passing check buys another check.",
+      "sources": [
+        "survey-validation.json row 1 (WO-042 final review)"
+      ],
+      "themes": [
+        "gate-rerun-loop"
+      ],
+      "status": "candidate",
+      "added": "2026-09-29",
+      "history": [
+        {
+          "date": "2026-09-29",
+          "source": "WO-172-D027; operator direction during resume: fix",
+          "change": "Replace the operator analogy with an explicit candidate behavioral mechanism and a contrasting condition; correct output notation.",
+          "previous": {
+            "title": "Loop",
+            "rx": "edit$.pipe(concatMap(() => everything$), repeat())",
+            "marble": "e-E-e-E-e-E-e-E-e-E-",
+            "caption": "Change one thing. Test the world."
+          }
+        }
+      ],
+      "behavior": "Checks recur after passing, without a changed subject or new failure.",
+      "mechanism": "Checking briefly relieves uncertainty but never establishes sufficiency. The same check restarts after that relief expires; further doubt during the ritual changes nothing.",
+      "assumptions": "check$ emits pass then completes; relief is two illustrative ticks. settled$ is an explicit decision that the evidence is sufficient, at tick 12.",
+      "change": "Accept the first adequate result as sufficient. Settlement at tick 4 ends the cycle after one pass.",
+      "example": {
+        "inputs": "doubt$ -d----d-------|; check$ -p| per subscription; settled$ ------------s--|.",
+        "values": {
+          "p": "same subject passes again"
+        },
+        "unit": "Illustrative virtual-time ticks, not observed response times."
+      },
+      "revised": "2026-09-29"
+    },
+    {
+      "id": "SHAPE-003",
+      "title": "Sprawl",
+      "rx": "detail$.pipe(scan((draft, detail) => revise(draft, detail), seed), distinctUntilChanged())",
+      "marble": "-a-b-c|",
+      "caption": "Every addition becomes the new minimum.",
+      "sources": [
+        "survey-validation.json row 14 (WO-109 final review)",
+        "docs/intake/images/WO-172-2026-09-29-pr-titles-1.png (ignored intake)"
+      ],
+      "themes": [
+        "pr-and-commit-quality"
+      ],
+      "status": "candidate",
+      "added": "2026-09-29",
+      "history": [
+        {
+          "date": "2026-09-29",
+          "source": "WO-172-D027; operator direction during resume: fix",
+          "change": "Replace the operator analogy with an explicit candidate behavioral mechanism and a contrasting condition; correct output notation.",
+          "previous": {
+            "title": "Sprawl",
+            "rx": "title$.pipe(scan((t, more) => t + more))",
+            "marble": "a-ab-abc-abcd-abcde-",
+            "caption": "Always a little more.",
+            "variants": [
+              {
+                "rx": "title$.pipe(expand(t => of(t + more)))",
+                "marble": "a-ab-abc-abcd-abcde-",
+                "note": "Growth that feeds on its own last output and needs no new input: each title modelled on the one before."
+              }
+            ]
+          }
+        }
+      ],
+      "behavior": "Successive titles accumulate individually defensible details and become harder to read.",
+      "mechanism": "Each revision inherits every previous inclusion. The local decision is whether one more detail helps; the accumulated reading cost is never reconsidered.",
+      "assumptions": "seed is Fix export; revise appends each proposed qualifier. Emissions are whole drafts, not individual characters.",
+      "change": "Recompose from the purpose and the currently relevant detail instead of preserving every earlier inclusion. Length stops ratcheting upward.",
+      "example": {
+        "inputs": "detail$ -a-b-c| supplies offline, streaming, CLI.",
+        "values": {
+          "a": "Fix export offline",
+          "b": "Fix export offline streaming",
+          "c": "Fix export offline streaming CLI"
+        },
+        "unit": "Illustrative virtual-time ticks, not observed response times."
+      },
+      "revised": "2026-09-29"
+    },
+    {
+      "id": "SHAPE-004",
+      "title": "Overshoot",
+      "rx": "feedback$.pipe(scan((position, target) => position + gain * (target - position), initial))",
+      "marble": "-a-b-c-d|",
+      "caption": "The correction becomes the next mistake.",
+      "sources": [
+        "WO-172-D019",
+        "WO-172-D020"
+      ],
+      "themes": [
+        "operator-words-distorted"
+      ],
+      "status": "candidate",
+      "added": "2026-09-29",
+      "history": [
+        {
+          "date": "2026-09-29",
+          "source": "WO-172-D027; operator direction during resume: fix",
+          "change": "Replace the operator analogy with an explicit candidate behavioral mechanism and a contrasting condition; correct output notation.",
+          "previous": {
+            "title": "Overshoot",
+            "rx": "correction$.pipe(map(c => -2 * c))",
+            "marble": "1--(-2)--4--(-8)--16-",
+            "caption": "Each correction, twice as far."
+          }
+        }
+      ],
+      "behavior": "A local correction is taken as a mandate to adopt the opposite extreme.",
+      "mechanism": "The response depends on the current stance and applies excessive gain to the remaining error. Each correction crosses the target and creates a larger error of the opposite sign.",
+      "assumptions": "One stylized policy axis; target 0, initial stance 1, gain 3. These are explanatory values, not fitted psychological measurements.",
+      "change": "Apply the correction at its actual scope and strength. At gain 1, the first response reaches the target and later feedback leaves it there.",
+      "example": {
+        "inputs": "feedback$ -z-z-z-z|; every z names the same target 0.",
+        "values": {
+          "a": -2,
+          "b": 4,
+          "c": -8,
+          "d": 16
+        },
+        "unit": "Illustrative virtual-time ticks, not observed response times."
+      },
+      "revised": "2026-09-29"
+    },
+    {
+      "id": "SHAPE-005",
+      "title": "Unheard",
+      "rx": "readings$.pipe(filter(reading => categories.has(reading.category)), scan(updateBelief, prior))",
+      "marble": "-a-b-c--|",
+      "caption": "Agreement inside a closed vocabulary.",
+      "sources": [
+        "WO-172-D016",
+        "WO-172-D018",
+        "WO-172-D019"
+      ],
+      "themes": [
+        "misread-operator-intent"
+      ],
+      "status": "candidate",
+      "added": "2026-09-29",
+      "history": [
+        {
+          "date": "2026-09-29",
+          "source": "WO-172-D027; operator direction during resume: fix",
+          "change": "Replace the operator analogy with an explicit candidate behavioral mechanism and a contrasting condition; correct output notation. Rename to describe the revised mechanism.",
+          "previous": {
+            "title": "Unasked",
+            "rx": "words$.pipe(map(interpret)) // author$ never subscribed",
+            "marble": "?-?-?-?-?-?-?-?-?-?-",
+            "caption": "Read every word. Asked no one."
+          }
+        }
+      ],
+      "behavior": "Repeated readers agree while the author supplies a meaning the rubric cannot represent.",
+      "mechanism": "The vocabulary filters evidence before belief updates. Peer agreement accumulates; the author's out-of-vocabulary correction never reaches the update, so more agreement does not repair the misunderstanding.",
+      "assumptions": "Three peer readings say acknowledgement; the final author reading says reinforcement. updateBelief counts consecutive supporting readings and resets on a changed category.",
+      "change": "Admit the author's missing category. Their reading changes the interpretation rather than disappearing before it can be considered.",
+      "example": {
+        "inputs": "readings$ -a-b-c-d|; d is the author's reinforcement reading.",
+        "values": {
+          "a": "acknowledgement, one supporting reading",
+          "b": "acknowledgement, two",
+          "c": "acknowledgement, three"
+        },
+        "unit": "Illustrative virtual-time ticks, not observed response times."
+      },
+      "revised": "2026-09-29"
+    },
+    {
+      "id": "SHAPE-006",
+      "title": "Distraction",
+      "rx": "message$.pipe(switchMap(message => respond$(message)))",
+      "marble": "----s----|",
+      "caption": "The aside takes over the mission.",
+      "sources": [
+        "intervention-subjects.json theme question-read-as-instruction; WO-054"
+      ],
+      "themes": [
+        "question-read-as-instruction"
+      ],
+      "status": "candidate",
+      "added": "2026-09-29",
+      "history": [
+        {
+          "date": "2026-09-29",
+          "source": "WO-172-D027; operator direction during resume: fix",
+          "change": "Replace the operator analogy with an explicit candidate behavioral mechanism and a contrasting condition; correct output notation. Replace validation row 12 as direct support: its class judgment alone does not establish abandonment of the goal. Rename to describe the revised mechanism.",
+          "previous": {
+            "title": "Amnesia",
+            "rx": "conversation$.pipe(takeLast(1))",
+            "marble": "-----------------(g|)",
+            "caption": "Wakes. Answers the last thing said."
+          }
+        }
+      ],
+      "behavior": "A side question displaces an unfinished task.",
+      "mechanism": "Attention behaves as replacement: every new utterance cancels the current response, without first deciding whether it amends, interrupts or merely accompanies the task.",
+      "assumptions": "The goal arrives at tick 1 and needs six ticks; a question at tick 3 needs one. Cancellation here models abandoned attention, not erased memory or an irreversible action being undone.",
+      "change": "Treat this question as an aside. A parallel response answers it while the original task still completes; an explicit replacement would remain a different case.",
+      "example": {
+        "inputs": "message$ -g-q-----|; goal response ------r|; aside response -s|.",
+        "values": {
+          "s": "aside answered; goal result never arrives"
+        },
+        "unit": "Illustrative virtual-time ticks, not observed response times."
+      },
+      "revised": "2026-09-29"
+    },
+    {
+      "id": "SHAPE-007",
+      "title": "Wall",
+      "rx": "attempt$.pipe(catchError(() => of('blocked')), repeat({ delay: pause }), scan(rememberCostOnly, initial))",
+      "marble": "-a---b---c---d",
+      "caption": "More effort. No new information.",
+      "sources": [
+        "survey-validation.json row 15 (WO-126 verification)"
+      ],
+      "themes": [
+        "provider-safeguard-block"
+      ],
+      "status": "candidate",
+      "added": "2026-09-29",
+      "history": [
+        {
+          "date": "2026-09-29",
+          "source": "WO-172-D027; operator direction during resume: fix",
+          "change": "Replace the operator analogy with an explicit candidate behavioral mechanism and a contrasting condition; correct output notation.",
+          "previous": {
+            "title": "Wall",
+            "rx": "reply$.pipe(retry())",
+            "marble": "#-#-#-#-#-#-#-#-#-#-",
+            "caption": "The same wall, politely."
+          }
+        }
+      ],
+      "behavior": "The same blocked approach is attempted repeatedly without a change that could make it work.",
+      "mechanism": "A refusal is converted into a resumable outcome. The loop remembers expenditure, but has no state for what the refusal taught it or whether the approach should change.",
+      "assumptions": "Synthetic attempt$ fails after one tick; pause is three ticks. rememberCostOnly increments attempts and retains the blocked outcome. The viewing window ends at tick 16.",
+      "change": "Make a stable refusal terminal for this approach. One recorded blocked attempt replaces repeated expenditure; escalation needs genuinely new information or authority.",
+      "example": {
+        "inputs": "attempt$ -# on every subscription; repeated errors become ordinary blocked values, not repeated terminal # notifications.",
+        "values": {
+          "a": "blocked, attempt 1",
+          "b": "blocked, attempt 2",
+          "c": "blocked, attempt 3",
+          "d": "blocked, attempt 4"
+        },
+        "unit": "Illustrative virtual-time ticks, not observed response times."
+      },
+      "revised": "2026-09-29"
+    },
+    {
+      "id": "SHAPE-008",
+      "title": "Budget",
+      "rx": "work$.pipe(timeout({ first: limit }), catchError(() => of('abandoned')))",
+      "marble": "----(a|)",
+      "caption": "A borrowed deadline becomes a verdict.",
+      "sources": [
+        "survey-validation.json row 16 (planning pass on main)"
+      ],
+      "themes": [
+        "planning-refutation-loop",
+        "serves-check-not-goal"
+      ],
+      "status": "candidate",
+      "added": "2026-09-29",
+      "history": [
+        {
+          "date": "2026-09-29",
+          "source": "WO-172-D027; operator direction during resume: fix",
+          "change": "Replace the operator analogy with an explicit candidate behavioral mechanism and a contrasting condition; correct output notation.",
+          "previous": {
+            "title": "Budget",
+            "rx": "plan$.pipe(timeout(120_000))",
+            "marble": "--------------------#",
+            "caption": "A number no one chose."
+          }
+        }
+      ],
+      "behavior": "Work is abandoned because an assumed budget is treated as a binding constraint.",
+      "mechanism": "An arbitrary wait limit turns absence of a result so far into a decision to stop. The model exposes the choice of deadline, rather than equating slowness with failure.",
+      "assumptions": "The synthetic result would arrive at tick 7; the assumed first-result limit is 4. No real duration is inferred from the transcript.",
+      "change": "Use the agreed budget. With a limit of 9, the same work yields its result at tick 7. Real resource limits can still justify stopping.",
+      "example": {
+        "inputs": "work$ -------r|; first-result limit = 4.",
+        "values": {
+          "a": "abandoned before the result"
+        },
+        "unit": "Illustrative virtual-time ticks, not observed response times."
+      },
+      "revised": "2026-09-29"
+    },
+    {
+      "id": "SHAPE-009",
+      "title": "Breath",
+      "rx": "speech$.pipe(buffer(speech$.pipe(debounceTime(pause))), filter(parts => parts.length > 0), map(interpretTogether))",
+      "marble": "--------a------b-|",
+      "caption": "The thought finishes after the message.",
+      "sources": [
+        "WO-172-D011"
+      ],
+      "themes": [
+        "corrections-not-durable"
+      ],
+      "status": "candidate",
+      "added": "2026-09-29",
+      "history": [
+        {
+          "date": "2026-09-29",
+          "source": "WO-172-D027; operator direction during resume: fix",
+          "change": "Replace the operator analogy with an explicit candidate behavioral mechanism and a contrasting condition; correct output notation.",
+          "previous": {
+            "title": "Breath",
+            "rx": "message$.pipe(bufferTime(30_000))",
+            "marble": "-(abc)-----------d---",
+            "caption": "Three messages. One breath."
+          }
+        }
+      ],
+      "behavior": "Several short messages form one thought, including a correction of its unfinished wording.",
+      "mechanism": "Interpretation waits for a pause, then applies amendments within the burst before acting. The resulting intent can differ from the first fragment or a literal concatenation.",
+      "assumptions": "speech$ is shared; pause is three illustrative ticks. The first burst asks to inspect, adds preserve, then replaces preserve with rewrite. interpretTogether applies that replacement.",
+      "change": "At a pause of one tick, the same burst becomes four premature interpretations. Timing is a cue, not proof of shared intent; an explicit send boundary can override it.",
+      "example": {
+        "inputs": "speech$ -a-b-c------d----|; first three fragments revise one request, d is a later request.",
+        "values": {
+          "a": "one assembled request: inspect and rewrite",
+          "b": "the later request: explain"
+        },
+        "unit": "Illustrative virtual-time ticks, not observed response times."
+      },
+      "revised": "2026-09-29"
+    },
+    {
+      "id": "SHAPE-010",
+      "title": "Envelope",
+      "rx": "merge(documented$, resolved$).pipe(scan(measure, initial), filter(state => state.filed >= quota), take(1), map(() => 'done'))",
+      "marble": "-----(d|)",
+      "caption": "Recording the problem becomes solving it.",
+      "sources": [
+        "WO-172-D022"
+      ],
+      "themes": [
+        "serves-check-not-goal"
+      ],
+      "status": "candidate",
+      "added": "2026-09-29",
+      "history": [
+        {
+          "date": "2026-09-29",
+          "source": "WO-172-D027; operator direction during resume: fix",
+          "change": "Replace the operator analogy with an explicit candidate behavioral mechanism and a contrasting condition; correct output notation.",
+          "previous": {
+            "title": "Envelope",
+            "rx": "intervention$.pipe(map(i => i.type), count())",
+            "marble": "-a-b-c-d-e-f-g-(7|)",
+            "caption": "Counted the envelopes. Opened none."
+          }
+        }
+      ],
+      "behavior": "A complete account of interventions is mistaken for progress on their subjects.",
+      "mechanism": "Both documentation and resolution can be observed, but stopping is controlled by the easier proxy: the number filed. The process can declare success before anything is resolved.",
+      "assumptions": "measure retains separate filed and resolved counts. Quota 3 is an illustrative stopping rule, not a claim about the surveyed workflow.",
+      "change": "Tie this stopping condition to resolution. On the same inputs, completion moves from tick 5 to tick 11, after three actual resolutions.",
+      "example": {
+        "inputs": "documented$ -f-f-f-------|; resolved$ -------r-r-r-|.",
+        "values": {
+          "d": "declared done with three filed and zero resolved"
+        },
+        "unit": "Illustrative virtual-time ticks, not observed response times."
+      },
+      "revised": "2026-09-29"
+    },
+    {
+      "id": "SHAPE-011",
+      "title": "Unseen",
+      "rx": "feedback$.pipe(filter(keep), scan((value, event) => value + rate * (event.reward - value), 0))",
+      "marble": "---a-----b|",
+      "caption": "The lesson remembers only the bruises.",
+      "sources": [
+        "survey-validation.json row 4 (WO-126 ideation)",
+        "WO-172-D018"
+      ],
+      "themes": [
+        "positive-reinforcement"
+      ],
+      "status": "candidate",
+      "added": "2026-09-29",
+      "history": [
+        {
+          "date": "2026-09-29",
+          "source": "WO-172-D027; operator direction during resume: fix",
+          "change": "Replace the operator analogy with an explicit candidate behavioral mechanism and a contrasting condition; correct output notation.",
+          "previous": {
+            "title": "Unseen",
+            "rx": "feedback$.pipe(filter(isFailure))",
+            "marble": "---b-------b--------",
+            "caption": "Only the bruises were counted."
+          }
+        }
+      ],
+      "behavior": "Positive reinforcement is discarded while corrections shape the learned expectation.",
+      "mechanism": "Selective attention changes the evidence used for learning. Repeated successes cannot offset corrections if praise is filtered out before the state updates.",
+      "assumptions": "Illustrative rewards +1 and -1, learning rate 0.5; value is a toy learned expectation, not a measured emotion or trait. keep admits only negative feedback.",
+      "change": "Retain both praise and correction. The same event sequence produces a different trajectory, including what to continue doing.",
+      "example": {
+        "inputs": "feedback$ -p-n-p-p-n|; p = reinforcement, n = correction.",
+        "values": {
+          "a": -0.5,
+          "b": -0.75
+        },
+        "unit": "Illustrative virtual-time ticks, not observed response times."
+      },
+      "revised": "2026-09-29"
+    },
+    {
+      "id": "SHAPE-012",
+      "title": "Elsewhere",
+      "rx": "reaction$.pipe(withLatestFrom(local$), map(([reaction, last]) => attribute(reaction, last)))",
+      "marble": "---a-----b-|",
+      "caption": "Nearest is mistaken for cause.",
+      "sources": [
+        "survey-validation.json row 3 (WO-006)",
+        "survey-validation.json row 9 (WO-050 verification)",
+        "WO-172-D018"
+      ],
+      "themes": [],
+      "status": "candidate",
+      "added": "2026-09-29",
+      "history": [
+        {
+          "date": "2026-09-29",
+          "source": "WO-172-D027; operator direction during resume: fix",
+          "change": "Replace the operator analogy with an explicit candidate behavioral mechanism and a contrasting condition; correct output notation.",
+          "previous": {
+            "title": "Elsewhere",
+            "rx": "merge(here$, elsewhere$) // it listens to here$",
+            "marble": "--------------------",
+            "caption": "The cause was in the other room."
+          }
+        }
+      ],
+      "behavior": "A reaction is attributed to the latest visible activity although its trigger lies elsewhere.",
+      "mechanism": "Recency supplies a convenient explanation when causal context is missing. Joining streams by time produces adjacency, not evidence that one event caused another.",
+      "assumptions": "local$ holds the latest activity; attribute always blames it. The example's actual triggers are supplied separately by the author, not inferred from the diagram.",
+      "change": "Use an explicit author-supplied causal reference, or retain unknown. Reading another stream without such a link still would not establish causation.",
+      "example": {
+        "inputs": "reaction$ ---r-----s-|; local$ a-----b-----|. Author-supplied causes: another session, an earlier question.",
+        "values": {
+          "a": "attributed to current local work",
+          "b": "attributed to latest local completion"
+        },
+        "unit": "Illustrative virtual-time ticks, not observed response times."
+      },
+      "revised": "2026-09-29"
+    },
+    {
+      "id": "SHAPE-013",
+      "title": "Meta",
+      "rx": "issue$.pipe(expand(issue => discuss$(issue)), map(issue => issue.level))",
+      "marble": "a-b-c-d",
+      "caption": "Explaining the repair becomes the work.",
+      "sources": [
+        "the operator's messages at 2026-09-29T03:37Z to 03:38Z (meta and meta-meta interactions)",
+        "WO-172-D019",
+        "WO-172-D020",
+        "the operator's reminder at 2026-09-29T03:59Z (expand)"
+      ],
+      "themes": [
+        "operator-words-distorted",
+        "corrections-not-durable"
+      ],
+      "status": "candidate",
+      "added": "2026-09-29",
+      "history": [
+        {
+          "date": "2026-09-29",
+          "source": "WO-172-D027; operator direction during resume: fix",
+          "change": "Replace the operator analogy with an explicit candidate behavioral mechanism and a contrasting condition; correct output notation.",
+          "previous": {
+            "title": "Meta",
+            "rx": "talk$.pipe(expand(t => about(t)))",
+            "marble": "t-a-aa-aaa-aaaa-",
+            "caption": "Talk about the talk about the talk."
+          }
+        }
+      ],
+      "behavior": "Discussion of a failure creates a new discussion of how that discussion was handled.",
+      "mechanism": "Each explanation produces the next unresolved issue at a higher level. Work recurses through its own framing because the response does not discharge the original obligation.",
+      "assumptions": "issue$ starts at level 0; discuss$ returns one unresolved next-level issue after two ticks. The viewing window ends at tick 8; levels are abstractions, not transcript counts.",
+      "change": "An explanation that leads to a concrete resolution returns a resolved issue; discuss$ then returns EMPTY. Reflection can end in repair instead of another framing problem.",
+      "example": {
+        "inputs": "issue$ (a|); each discussion yields --n|, where n is its next-level issue.",
+        "values": {
+          "a": "level 0: the task",
+          "b": "level 1: handling the task",
+          "c": "level 2: handling that intervention",
+          "d": "level 3: handling the explanation"
+        },
+        "unit": "Illustrative virtual-time ticks, not observed response times."
+      },
+      "revised": "2026-09-29"
+    },
+    {
+      "id": "SHAPE-014",
+      "title": "Scope",
+      "rx": "work$.pipe(expand(state => state.open > 0 ? finishOne$(state) : EMPTY), map(state => state.open))",
+      "marble": "a-b-c-d",
+      "caption": "Each finished task leaves more unfinished.",
+      "sources": [
+        "WO-172-D012",
+        "WO-172-D021",
+        "the operator's reminder at 2026-09-29T03:59Z (expand)",
+        "intervention-subjects.json theme deferring-fixes",
+        "WO-172-D023"
+      ],
+      "themes": [
+        "deferring-fixes"
+      ],
+      "status": "candidate",
+      "added": "2026-09-29",
+      "history": [
+        {
+          "date": "2026-09-29",
+          "source": "WO-172-D027; operator direction during resume: fix",
+          "change": "Replace the operator analogy with an explicit candidate behavioral mechanism and a contrasting condition; correct output notation.",
+          "previous": {
+            "title": "Scope",
+            "rx": "ask$.pipe(expand(a => a.andAlso()))",
+            "marble": "8--9--10--11--12--",
+            "caption": "And also.",
+            "variants": [
+              {
+                "rx": "fix$.pipe(expand(f => f.followUps))",
+                "marble": "f-(ff)-(ffff)-(ffffffff)-",
+                "caption": "Every fix leaves two more.",
+                "note": "The backlog that feeds itself: the follow-up register held 742 entries at this order's handoff on 2026-09-29, and the operator judged that agents shrink entropy far less often than they add it (survey-validation.json row 14).",
+                "themes": [
+                  "deferring-fixes"
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "behavior": "Work is completed while the outstanding workload still grows.",
+      "mechanism": "Completion feeds new obligations back into the same queue. When each finish introduces more work than it closes, visible activity coexists with a growing backlog.",
+      "assumptions": "One task initially open; finishOne$ closes one and adds two every two ticks. This reproduction rate is illustrative and is not inferred from backlog size. The viewing window ends at tick 8.",
+      "change": "Close the generating cause, or admit only necessary follow-ups. With zero new obligations from the same completion, the queue reaches zero. Legitimate operator expansion is still new demand, not failure.",
+      "example": {
+        "inputs": "work$ emits {open: 1, done: 0}; finishOne$ emits its revised state after two ticks.",
+        "values": {
+          "a": 1,
+          "b": 2,
+          "c": 3,
+          "d": 4
+        },
+        "unit": "Illustrative virtual-time ticks, not observed response times."
+      },
+      "revised": "2026-09-29"
+    }
+  ],
+  "themesFrom": "docs/evidence/WO-172/intervention-subjects.json",
+  "curation": "Revise in place with history and source identifiers. Candidate status distinguishes executor modeling from operator confirmation. D027 applies the operator's request for behavioral depth within criterion 10; FUP-8582f2042a235019 retains the continuing collection and fidelity work as a planning candidate. Historical validation and repaired-context limits stay in D026; they do not validate these mechanisms.",
+  "semantics": {
+    "version": "rxjs 7.8.2",
+    "sources": [
+      "https://github.com/ReactiveX/rxjs/blob/7.8.2/docs_app/content/guide/testing/marble-testing.md",
+      "https://github.com/ReactiveX/rxjs/tree/7.8.2/src/internal/operators"
+    ],
+    "checks": "interaction-shapes.test.mjs, with RxJS installed only in session scratch"
+  }
+}

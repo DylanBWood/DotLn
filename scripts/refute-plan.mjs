@@ -51,18 +51,39 @@ import {
   touchingFollowups,
   exportFollowups,
 } from "./lib/planning-followups.mjs";
+import {
+  exportFailures,
+  failuresAtStart,
+  isFailuresExport,
+  planningFailures,
+} from "./lib/plan-failures.mjs";
 
 const toolRoot = findLaunchpad();
 const usage =
-  "plan subject | check | refute [--direct] [--scope pass|full] | refute --transport claude-cli-print|codex-cli-exec|fake [--slug <label>] [--model <model>] [--effort <level>] [--dispositions <file>] [--evidence-only] | dispose <receipt-id> <hold-id> <reason> | amend-order <WO-NNN> <WO-NNN-DNNN> <operator-authorization reason> | amend-order <WO-NNN> --withdraw <row-ordinal> <reason> | override <receipt-id> <hold-id> <reason> --capture <ignored-intake-file> --capture-hash sha256:<digest> [actor-flags]";
+  "plan subject | check | failures […] | refute [--direct] [--scope pass|full] | refute --transport claude-cli-print|codex-cli-exec|fake [--slug <label>] [--model <model>] [--effort <level>] [--dispositions <file>] [--evidence-only] | dispose <receipt-id> <hold-id> <reason> | amend-order <WO-NNN> <WO-NNN-DNNN> <operator-authorization reason> | amend-order <WO-NNN> --withdraw <row-ordinal> <reason> | override <receipt-id> <hold-id> <reason> --capture <ignored-intake-file> --capture-hash sha256:<digest> [actor-flags]";
 const followupsUsage =
   "usage: plan followups [--all] [--cursor <cursor>] | --sync | --show <FUP-id> | --apply <request.json or batch.json> | --touching [<path or WO-NNN>…] [--cursor <cursor>] | --touching --work-order <WO-NNN> [--cursor <cursor>] | --export <file> [--all]";
+const failuresUsage =
+  "usage: plan failures [--all | --since <time>] [--until <time>] [--cursor <cursor>] | failures --export <file> [--all | --since <time>] [--until <time>]";
+const followupExport = {
+  label: "Follow-up export",
+  written: (previous) =>
+    typeof previous?.revision === "string" &&
+    ["pending", "all"].includes(previous.showing) &&
+    Array.isArray(previous.rows),
+  other: "a follow-up export",
+};
+const failuresExport = {
+  label: "Failures export",
+  written: isFailuresExport,
+  other: "a failures export",
+};
 // A command has no session identity, so it judges the two roots it can
 // resolve by itself, on physical paths: inside the checkout only the ignored
 // local control lane, outside it only the system temporary directory, which
 // holds DotLn session scratch, and there no other checkout or Git directory.
-// An existing file is replaced only when an export wrote it.
-function exportDestination(root, name) {
+// An existing file is replaced only when an export of the same kind wrote it.
+function exportDestination(root, name, kind = followupExport) {
   const path = prospectiveRealpath(resolve(root, name));
   const within = (granted) =>
     path.startsWith(`${prospectiveRealpath(granted)}${sep}`);
@@ -89,27 +110,69 @@ function exportDestination(root, name) {
         ))
   )
     throw new Error(
-      "Follow-up export destination must be a file under the system temporary directory or the ignored local control lane",
+      `${kind.label} destination must be a file under the system temporary directory or the ignored local control lane`,
     );
   if (!existsSync(path)) return path;
   if (!lstatSync(path).isFile())
-    throw new Error("Follow-up export destination is not a regular file");
+    throw new Error(`${kind.label} destination is not a regular file`);
   let previous;
   try {
     previous = JSON.parse(readFileSync(path, "utf8"));
   } catch {
     // Not JSON: not an export.
   }
-  if (
-    !previous ||
-    typeof previous.revision !== "string" ||
-    !["pending", "all"].includes(previous.showing) ||
-    !Array.isArray(previous.rows)
-  )
+  if (!kind.written(previous))
     throw new Error(
-      "Follow-up export destination exists and is not a follow-up export; name a new file",
+      `${kind.label} destination exists and is not ${kind.other}; name a new file`,
     );
   return path;
+}
+// A new file renamed into place: a name that shares its bytes with another is
+// replaced, never written through.
+function writeExport(path, value) {
+  mkdirSync(dirname(path), { recursive: true });
+  const temporary = `${path}.${process.pid}.tmp`;
+  writeFileSync(temporary, prettyJson(value), { flag: "wx" });
+  try {
+    renameSync(temporary, path);
+  } catch (error) {
+    rmSync(temporary, { force: true });
+    throw error;
+  }
+}
+// WO-172: `plan failures` takes at most one of each flag; `--all` and
+// `--since` exclude each other, and an export writes no page cursor.
+function failuresOptions(rest) {
+  const flags = {};
+  for (let i = 0; i < rest.length; i++) {
+    const key = rest[i];
+    if (key === "--all" && !flags.all) {
+      flags.all = true;
+      continue;
+    }
+    if (
+      !["--since", "--until", "--cursor", "--export"].includes(key) ||
+      key in flags ||
+      !rest[i + 1] ||
+      rest[i + 1].startsWith("--")
+    )
+      throw new Error(failuresUsage);
+    flags[key] = rest[++i];
+  }
+  if (
+    (flags.all && flags["--since"]) ||
+    (flags["--export"] && flags["--cursor"])
+  )
+    throw new Error(failuresUsage);
+  return {
+    window: {
+      all: Boolean(flags.all),
+      since: flags["--since"] ?? null,
+      until: flags["--until"] ?? null,
+    },
+    cursor: flags["--cursor"] ?? null,
+    export: flags["--export"] ?? null,
+  };
 }
 const options = (args, allowed) => {
   const out = {};
@@ -196,19 +259,7 @@ export async function main(args = process.argv.slice(2), root = toolRoot) {
       const { rows, ...summary } = exportFollowups(root, {
         all: rest.length === 3,
       });
-      mkdirSync(dirname(path), { recursive: true });
-      // A new file renamed into place: a name that shares its bytes with
-      // another is replaced, never written through.
-      const temporary = `${path}.${process.pid}.tmp`;
-      writeFileSync(temporary, prettyJson({ ...summary, rows }), {
-        flag: "wx",
-      });
-      try {
-        renameSync(temporary, path);
-      } catch (error) {
-        rmSync(temporary, { force: true });
-        throw error;
-      }
+      writeExport(path, { ...summary, rows });
       return { ...summary, exported: rows.length, path };
     }
     if (rest.length === 2 && rest[0] === "--show") {
@@ -225,6 +276,20 @@ export async function main(args = process.argv.slice(2), root = toolRoot) {
       throw new Error(followupsUsage);
     return planningFollowups(root, { all, cursor: flags[1] ?? null });
   }
+  if (command === "failures") {
+    const options = failuresOptions(rest);
+    if (options.export) {
+      const path = exportDestination(root, options.export, failuresExport);
+      const { rows, ...summary } = exportFailures(root, options.window);
+      writeExport(path, { ...summary, rows });
+      const { source, ...printed } = summary;
+      return { ...printed, exported: rows.length, path };
+    }
+    return planningFailures(root, {
+      ...options.window,
+      cursor: options.cursor,
+    });
+  }
   if (command === "start") {
     reportHarnessRuntime(root);
     if (rest.length !== 1 || !/^[a-z][a-z0-9-]{0,60}$/.test(rest[0]))
@@ -235,12 +300,16 @@ export async function main(args = process.argv.slice(2), root = toolRoot) {
     )
       throw new Error("plan start requires clean main");
     const followups = planningFollowups(root);
+    // WO-172: what failed since the latest planning receipt, read before the
+    // register; a count that cannot be computed never keeps the branch shut.
+    const failures = failuresAtStart(root);
     const branch = `planning/${new Date().toISOString().slice(0, 10)}-${rest[0]}`;
     runGit(root, ["switch", "-c", branch]);
     return {
       branch,
       phase: "planning",
       authority: "document-only planning dispatch",
+      failures,
       followups,
     };
   }

@@ -25,6 +25,15 @@ Do not wait for the operator to challenge a claim before checking it.
 When wrong, state the specific error, the checked evidence and the correction
 directly. A wording change does not correct an unsupported claim or decision.
 
+## Shell
+
+Commands run in zsh, not bash. Quote a pattern meant for a program
+(`--include='*.mjs'`) and a word that begins with `=`; one left for zsh must
+match a file. Write `${name}` before `:` or `[`. `$name` is one word: use an
+array or `${=name}`. Never assign `path` or `status`. Backquotes run in
+double quotes. Put scripts in files by quoted heredoc. No `gawk`, `timeout`
+or `tac`.
+
 ## Shared memory
 
 Intake → product synthesis → planning/work orders → execution. Record product

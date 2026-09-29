@@ -460,7 +460,7 @@
 {
   "id": "WO-116-D016",
   "date": "2026-09-28",
-  "dispatch": "resume: next; the operator's direction at 2026-09-28T23:39Z by the prompt hook's clock to test out `is this the best way i can write this code?` while waiting",
+  "dispatch": "resume: next; the operator's direction at 2026-09-28T23:39Z by the prompt hook's clock to put one code-quality question to the order's own code while waiting",
   "decision": "While the read-only review ran, the executor used the wait on one question with an end, in the operator's words `is this the best way i can write this code?`, over WO-116's own code: one pass, a verdict per unit, a change only when better. The audit branch in dotln.ts and the contract entry were kept. The alternative for the branch, one scope-and-id pair feeding one filter and one refusal message, trades two plain conditions that mirror the usage line for an indirection, and its double decode matches dotln status. In the skeleton scope test, the last three lines duplicated the `empty` case and were removed with their import. In the WO-116 console case, a count asserted with deepEqual became assert.equal. The pass ran from 23:39:59Z to 23:40:29Z by the shell clock, plus unclocked reading, and ended when every unit had a verdict. It was utilization with a question and an end, not activation. It is the operator-directed trial that the second candidate of the ideation map section names as a reopening condition.",
   "evidence": [
     "packages/skeleton/test/audit-command.test.ts: the removed mkdirSync block and import; packages/console/test/console-commands.test.ts: assert.equal on the replayed dotln.audit count",

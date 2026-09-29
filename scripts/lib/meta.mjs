@@ -1,4 +1,5 @@
 import { readJsonFile } from "./paths.mjs";
+import { json as prettyJson } from "./helpers.mjs";
 import { runGit } from "./git.mjs";
 import { docPath, docRelative, rootPattern } from "./config.mjs";
 import { createHash } from "node:crypto";
@@ -16,7 +17,7 @@ import { spawnSync } from "node:child_process";
 import { usageRecordIdentity } from "../../packages/skeleton/src/usage-observation.mjs";
 import { correctionCounts } from "../../packages/skeleton/src/correction-observation.mjs";
 import { readControl, eventsForOrder } from "./control-store.mjs";
-import { completedPhaseAttempts } from "./control-time.mjs";
+import { completedPhaseAttempts, orderJudgments } from "./control-time.mjs";
 import { readGateChecks } from "./gate-evidence.mjs";
 import {
   readBudgets,
@@ -144,6 +145,11 @@ function checkExperiment(entry, path) {
       `${path}: experiment requires regression and history observations; unknown history uses null`,
     );
 }
+
+/** WO-172: a recorded correction is a decision whose kind is `correction` or
+ * that carries a `misread` field. */
+export const isCorrection = (decision) =>
+  decision.kind === "correction" || Object.hasOwn(decision, "misread");
 
 export function readDecisions(root, { workOrder } = {}) {
   const directory = docPath(root, "evidence");
@@ -514,11 +520,143 @@ const directionEvents = [
   "RecordCorrected",
   "CriterionWaived",
 ];
+
+// WO-172: the operator step a dispatch names, as the order's hand
+// classification reads it: the first step, reading left to right. A match
+// counts only in a clause that names the operator (a scope expansion is always
+// the operator's); one the text marks as prior, standing or cited is a
+// reference, and a dispatch that names no step reads `none`.
+const stepWords = [
+  [
+    "scope-expansion",
+    /\bscope[ -]expan(?:d|ds|ded|sion|sions)\b|\bexpan(?:ds|ded) (?:its )?scope\b|\bauthori[sz]\w*[^;.]{0,60}?\bexpansion\b|\b(?:widened|expanded|extended|broadened)\b[^;.]{0,40}?\b(?:scope|order|WO-\d{3})\b|\b(?:added|brought|folded|pulled)\b[^;.]{0,60}?\b(?:into|to|in) (?:this|the) (?:work )?order(?:'s)? scope\b/giu,
+  ],
+  [
+    "override",
+    /\boverr(?:ide|ode|idden)\b|\boverruled\b[^;.]{0,30}?\b(?:hold|gate|refusal|reservation|lock|block)\b/giu,
+  ],
+  [
+    "takeover",
+    /\btake-?over\b|\btook (?:\w+ )?over\b|\bstepped in\b(?: and| to)? (?:finish|finished|complete|completed|run|ran|restart|restarted|take|took)\b|\bpicked up the (?:failed|stopped|crashed|dead|stalled) \w+/giu,
+  ],
+  [
+    "answer",
+    /\banswer(?:s|ed)?\b|\brespon(?:se|ded)\b|\brepl(?:y|ied)\b|\boperator selected\b|\bchose\b|\bpicked\b|\bwent with\b|\bopted for\b|\bconfirm(?:ed|ation)\b/giu,
+  ],
+  ["answer", /\bfollowed by [A-Z]/gu],
+  [
+    "correction",
+    /\bcorrect(?:ion|ions|ed)\b|\brejected\b(?! by)|\brejects\b|\bchalleng(?:es|ed)\b|\bclarif(?:ication|ied|ies)\b|\brefin(?:ed|ement)\b|\bpointed out\b|\bobjected\b|\bpushed back\b|\bflagged\b|\boverruled\b|\bmis(?:read|understood)\b/giu,
+  ],
+  [
+    "direction",
+    /\bdirect(?:ion|ions|ed|s|ing)\b|\bsteer(?:ed|ing|s)?\b|\brequir(?:e|es|ed|ement)\b(?! (?:in|by) WO-)|\brequests?\b|\brequested\b|\basked (?:for|to|that)\b|\basks for\b|\btold (?:\w+ ){0,2}to\b|\bsaid to\b|\binstruct(?:ion|ed|s)\b|\bauthori[sz](?:ed|es|ation)\b|\bapprov(?:ed|al|es)\b|\bpermit(?:s|ted)\b|\baccepts\b|\bsigned off\b|\boperator continue\b/giu,
+  ],
+  [
+    "other-step",
+    /(?<!open )\bquestion\b(?! (?:for|to) the operator)|\basked\b(?! (?:for|to|that)\b)|\basks\b(?! for\b)|\bideation\b|\breport(?:s|ed)\b|\bnote(?:d)?\b|\bmessages?\b|\blive (?:attempts?|runs?|tests?|smokes?)\b|\bran\b[^;.]{0,40}?\blive\b|\bsupplied\b|\bshared\b|\bmused\b|\bwondered\b|\bfloated\b/giu,
+  ],
+];
+// An option label the operator picked from a question tool is an answer even
+// where the dispatch does not name the operator.
+const optionLabel = /\(Recommended\)/gu;
+// A reference (a prior, standing or cited step) and content the dispatch
+// covers (a word under a modal, "the required series") are not steps.
+const referenceBefore =
+  /\b(?:standing|continuing|continued (?:under|after)|within|under the|previously|earlier|the (?:recorded|approved|required|authori[sz]ed))\b|\bthe operator-$|\bD\d{3}\b|\b(?:must|should|shall|cannot|can|may)(?: not)? $/iu;
+const referenceAfter =
+  /^[^;]{0,40}?\((?:WO-\d{3}-)?D\d{3}\)|^[^;]{0,40}?\b(?:recorded in|still (?:holds|stands|applies))\b|^\s*section\b/iu;
+// A selection of a model, effort or harness is the session's setting, not a
+// step the operator took in the work.
+const settingNear =
+  /\b(?:model|effort|harness|fable|opus|sonnet|haiku|gpt-?\S*|codex|claude)\b/iu;
+// A negated step and a step another role took are not the operator's.
+const negatedBefore =
+  /\b(?:no|not|never|without|n't|gave no|has not|had not|did not)\b[^;,.]{0,24}$/iu;
+const otherActor =
+  /\b(?:executor|verifier|reviewer|refuter|planner|agent)\b/giu;
+const lastAt = (text, pattern) => {
+  let at = -1;
+  for (const match of text.matchAll(pattern)) at = match.index;
+  return at;
+};
+// A reply or a picked option label in the clause makes a direction an answer.
+const answerCue =
+  /\b(?:answered|when asked|in chat|after being shown|check-in)\b|\('[^']+'\)/iu;
+export const OPERATOR_STEPS = [
+  "correction",
+  "direction",
+  "scope-expansion",
+  "override",
+  "takeover",
+  "answer",
+];
+export function operatorStep(dispatch) {
+  const text = String(dispatch).trim();
+  if (/^scope expand:/iu.test(text)) return "scope-expansion";
+  if (/^operator override:/iu.test(text)) return "override";
+  const steps = [];
+  let offset = 0;
+  for (const clause of text.split(/(?<=;|\.(?=\s|$)|\s—\s)/u)) {
+    const operator = /\boperator/iu.test(clause);
+    for (const match of clause.matchAll(optionLabel))
+      steps.push({ at: offset + match.index, step: "answer" });
+    for (const [step, pattern] of stepWords)
+      for (const match of clause.matchAll(pattern)) {
+        // A marker reaches back only within its phrase: to the last comma.
+        const window = clause.slice(Math.max(0, match.index - 60), match.index);
+        const before = window.slice(window.lastIndexOf(",") + 1),
+          after = clause.slice(match.index + match[0].length);
+        if (
+          /selected$/iu.test(match[0]) &&
+          (settingNear.test(after.slice(0, 40)) ||
+            settingNear.test(window.slice(-40)))
+        )
+          continue;
+        // The actor of a step is the last one named before it: the operator,
+        // or another role named after the operator's last mention.
+        const actorBefore = clause.slice(0, match.index);
+        const lastOperator = lastAt(actorBefore, /\boperator/giu);
+        const lastOther = lastAt(actorBefore, otherActor);
+        if (
+          (operator || step === "scope-expansion") &&
+          !referenceBefore.test(before) &&
+          !referenceAfter.test(after) &&
+          !negatedBefore.test(before) &&
+          !(lastOther !== -1 && lastOther > lastOperator) &&
+          !(/^[\w-]+ed$/u.test(match[0]) && /\bthe $/iu.test(before))
+        )
+          steps.push({
+            at: offset + match.index,
+            // A direction given in reply is an answer; one to proceed past a
+            // hold is an override.
+            step:
+              step === "direction" && answerCue.test(clause)
+                ? "answer"
+                : step === "direction" && /\boverrid(?:e|den)\b/iu.test(clause)
+                  ? "override"
+                  : step,
+          });
+      }
+    offset += clause.length;
+  }
+  // The earliest step wins; at one position the lexicon's order decides.
+  return steps.sort((a, b) => a.at - b.at)[0]?.step ?? "none";
+}
+const lifecycleStepKinds = {
+  correction: "resumeCorrection",
+  direction: "resumeDirection",
+  "scope-expansion": "resumeScopeExpansion",
+  override: "resumeOverride",
+  takeover: "resumeTakeover",
+  answer: "resumeAnswer",
+};
 export function operatorDirections(decisions, events) {
   const byKind = Object.fromEntries(
     [
       ...directionPrefixes.map(([, kind]) => kind),
       "operatorLabel",
+      ...Object.values(lifecycleStepKinds),
       ...directionEvents,
     ].map((kind) => [kind, 0]),
   );
@@ -534,13 +672,20 @@ export function operatorDirections(decisions, events) {
         ))
     )
       byKind.operatorLabel++;
+    // WO-172: a lifecycle dispatch the rules above leave uncounted counts the
+    // operator step it names after its resume: prefix.
+    else if (/^(?:operator(?:'s)? )?resume:/iu.test(text)) {
+      const kind = lifecycleStepKinds[operatorStep(text)];
+      if (kind) byKind[kind]++;
+    }
   }
   for (const event of events)
     if (directionEvents.includes(event.type)) byKind[event.type]++;
   return {
     total: Object.values(byKind).reduce((sum, value) => sum + value, 0),
     byKind,
-    source: "committed decision dispatches and control events",
+    source:
+      "committed decision dispatches (control prefixes, legacy operator labels and the operator step a lifecycle dispatch names) and control events",
   };
 }
 
@@ -897,6 +1042,55 @@ export function trapRows(orders) {
   });
 }
 
+/** WO-172: in how many of the last eight closed orders, by close time, the
+ * first verification failed. Fewer closed orders are counted as they are. No
+ * threshold, trap rule or reopen candidate reads it. */
+export function firstVerificationSummary(orders) {
+  return {
+    counted: orders.length,
+    failed: orders.filter((row) => row.firstVerification === "fail").length,
+    orders,
+    source:
+      "canonical control fold: the first completed verification of each of the last eight orders by close time",
+  };
+}
+export const firstVerificationPhrase = (summary) =>
+  summary.counted >= 8
+    ? `first verification failed in ${summary.failed} of the last ${summary.counted} closed orders`
+    : `first verification failed in ${summary.failed} of the ${summary.counted} closed orders counted (fewer than eight)`;
+
+/** The planning cost table `npm run meta -- --plan-cost` writes: the subject's
+ * rows with the meter's metrics, the trap signals and the first-verification
+ * summary. */
+export function planCostTable(meta, subject) {
+  return {
+    ...subject.costTable,
+    observedAt: meta.observedAt,
+    subjectRevision: subject.revision,
+    rows: subject.orders.map((order) => ({
+      workOrder: order.workOrderId,
+      observedAt: meta.observedAt,
+      metrics:
+        meta.orders.find((row) => row.workOrder === order.workOrderId)
+          ?.metrics ?? null,
+    })),
+    traps: meta.traps,
+    firstVerifications: meta.firstVerifications,
+  };
+}
+
+/** The table's bytes as `--plan-cost` writes them. A table over its bound is
+ * refused whole, never written in part. */
+export const PLAN_COST_BYTES = 65536;
+export function planCostText(table) {
+  const text = prettyJson(table);
+  if (Buffer.byteLength(text) > PLAN_COST_BYTES)
+    throw new Error(
+      "Planning cost table exceeds 64 KB; select the bounded subject rows",
+    );
+  return text;
+}
+
 /** Reconcile an explicit cost promise against recorded outcomes. Ambiguous prose
  * and absent measurements stay unknown; this projection never grants or refuses. */
 export function reconcileCost(workOrder, cost, gateRows, observedAt) {
@@ -1023,8 +1217,27 @@ export async function collectMeta(
   }
   const checks = readGateChecks(root);
   const titles = mergedSubjects(root, 100);
+  // WO-172: how an order's judgments ended, read from the control fold and the
+  // decisions, so an order whose journals are gone still has them.
+  const judgments = (
+    workOrder,
+    events = eventsForOrder(control, workOrder),
+  ) => {
+    const judged = orderJudgments(events).get(workOrder);
+    return {
+      failedVerifications: judged?.failedVerifications ?? 0,
+      failedFinalReviews: judged?.failedFinalReviews ?? 0,
+      repairs: judged?.repairs ?? 0,
+      recordedCorrections: decisions.filter(
+        (decision) =>
+          decision.workOrder === workOrder && isCorrection(decision),
+      ).length,
+      firstVerification: judged?.firstVerification ?? null,
+    };
+  };
   const orders = selected.map(([workOrder, row]) => {
     const events = eventsForOrder(control, workOrder);
+    const { firstVerification, ...judged } = judgments(workOrder, events);
     const phases = [...completedPhaseAttempts(events)].map((attempt) => ({
       phase: attempt.phase,
       role: roleForPhase[attempt.phase],
@@ -1205,6 +1418,7 @@ export async function collectMeta(
     const metrics = {
       elapsedMs: durationMs,
       attempts: phases.length,
+      ...judged,
       gateMs:
         sumKnown(gateRows.map((value) => value.durationMs)) ??
         prior?.metrics.gateMs ??
@@ -1594,6 +1808,16 @@ export async function collectMeta(
         eventsForOrder(control, workOrder),
       ),
     })),
+    closedJudgments: closed.map(([workOrder]) => ({
+      workOrder,
+      ...judgments(workOrder),
+    })),
+    firstVerifications: firstVerificationSummary(
+      closed.slice(-8).map(([workOrder]) => ({
+        workOrder,
+        firstVerification: judgments(workOrder).firstVerification,
+      })),
+    ),
     unassignedDispatches: usageRows(root, null),
     coldStart,
     declared,
@@ -1735,6 +1959,28 @@ export function renderMeta(meta) {
             .join(", ")}.`,
         ]
       : []),
+    ...(meta.closedJudgments?.length
+      ? [
+          `Failed verifications / failed final reviews / repairs / recorded corrections per closed order (control fold and decisions): ${meta.closedJudgments
+            .map(
+              (row) =>
+                `${row.workOrder} ${row.failedVerifications}/${row.failedFinalReviews}/${row.repairs}/${row.recordedCorrections}`,
+            )
+            .join(", ")}.`,
+        ]
+      : []),
+    ...(meta.firstVerifications
+      ? [
+          `${firstVerificationPhrase(meta.firstVerifications).replace(/^f/u, "F")}: ${
+            meta.firstVerifications.orders
+              .map(
+                (row) =>
+                  `${row.workOrder} ${row.firstVerification ?? "unverified"}`,
+              )
+              .join(", ") || "none"
+          }.`,
+        ]
+      : []),
     ...(meta.traps.find(
       (row) => row.id === "shifting-the-burden-to-the-intervenor",
     )?.planningCaptures?.length
@@ -1761,7 +2007,7 @@ export function metaHealth(meta) {
     (row) => row.verdict === "breach",
   ).length;
   const latest = meta.orders.at(-1);
-  return `Process health: ${breached ? `${breached} budget breaches` : "no observed budget breach"}; ${latest?.workOrder ?? "no work"} tokens ${display(latest?.metrics.tokens)}; ${meta.reopenCandidates.length} reopen candidates; unset limits remain unset.`;
+  return `Process health: ${breached ? `${breached} budget breaches` : "no observed budget breach"}; ${latest?.workOrder ?? "no work"} tokens ${display(latest?.metrics.tokens)}; ${meta.firstVerifications ? `${firstVerificationPhrase(meta.firstVerifications)}; ` : ""}${meta.reopenCandidates.length} reopen candidates; unset limits remain unset.`;
 }
 export function checkMeta(meta) {
   for (const row of meta.budgets.filter((row) => row.verdict === "breach"))

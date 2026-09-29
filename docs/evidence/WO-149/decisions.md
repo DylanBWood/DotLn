@@ -69,7 +69,7 @@ or removing a check. It is a regression repair, not a second economy experiment.
 {
   "id": "WO-149-D007",
   "date": "2026-09-21",
-  "dispatch": "resume: fix; operator scope expand: please stop trying to cut corners. wasting my time",
+  "dispatch": "resume: fix; operator scope expand directing the repair to stop cutting corners, which was costing the operator time",
   "decision": "Close all four VER-001 findings before repair-complete and execute the full review selection. Preserve the WO-138 probe as an exact, hash-checked historical source artifact before using TOOL_ROOT in its current implementation. Historical evaluation must explicitly select those retained source bytes; new evaluation defaults to the current source and must reject historical or altered build bindings. Exercise the actual no-session usage command and report a missing runtime at dispatch. Produce a live Codex fixture-dispatch receipt with attributable invocation evidence and actual counters.",
   "evidence": [
     "VER-001 findings 1 and 2 independently require repair; findings 3 and 4 identify missing command coverage and silent degradation",

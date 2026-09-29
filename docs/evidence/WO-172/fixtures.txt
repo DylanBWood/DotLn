@@ -1,0 +1,380 @@
+# WO-172 fixture transcripts
+
+Recorded 2026-09-29T02:48:36Z on this worktree (node v26.9.0), after the
+review repairs and the formatting pass, at the code identity of the passing
+gate recorded 2026-09-29T02:48:18Z.
+
+$ node --test-name-pattern="WO-172" scripts/test-plan-refutation.mjs --fixtures-only
+✔ WO-172 plan failures counts each kind of item in its window, lists an event without a time only under --all, and pages the record under the feed's bound (274.149ms)
+✔ WO-172 plan start prints the window's counts, the command and the orders passed since the latest Entropy Reducer review in at most 1 KB, and opens the branch when the counts cannot be computed (323.667458ms)
+ℹ tests 2
+ℹ pass 2
+ℹ fail 0
+
+$ node --test --test-name-pattern="WO-172|WO-170" scripts/test-process-debt.mjs
+✔ WO-170 a closed order's snapshot stands for its journals, and with neither they read unavailable (261.727292ms)
+✔ WO-170 a retained usage copy supplies the order's tokens by role and names its source (128.760625ms)
+✔ WO-170 the latest retained observation of a dispatch wins past preservation's tenth collision (388.012792ms)
+✔ WO-170 operator directions equal a hand count of committed decisions and off-ramp events (121.814875ms)
+✔ WO-172 every closed order carries its failed judgments, repairs and recorded corrections without a journal, and the health line counts failed first verifications over the last eight closed orders (90.845917ms)
+✔ WO-172 the direction reader names the operator step a dispatch records, and a lifecycle dispatch counts it once (1.853917ms)
+✔ WO-170 the order's snapshot is its own bounded row, written only where its journals are (222.117042ms)
+✔ WO-170 a retained lane is read without following links or failing on a torn line (65.414167ms)
+✔ WO-170 recovery carries usage totals by role and each retained copy's digest, keeping a whole-meter row (47.112584ms)
+ℹ tests 9
+ℹ pass 9
+ℹ fail 0
+
+Full files, same worktree and time: scripts/test-plan-refutation.mjs
+--fixtures-only 76 passed of 76, exit 0; scripts/test-process-debt.mjs 118
+passed of 118, exit 0.
+
+Gates: npm test -- --review 33 passed, 0 failed, 401.73 s (recorded
+2026-09-29T02:48:18Z); npm run test:docs 23 passed, 0 failed (recorded
+2026-09-29T02:41:31Z); git diff --check clean; package.json and
+package-lock.json unchanged.
+
+## Repair evidence — 2026-09-29T13:45:05Z observation cutoff
+
+Scope: resume: fix, VER-001 F1–F3; operator-directed revision of criterion 10.
+The earlier evidence above remains historical; these checks judge the repair.
+
+$ node --test-name-pattern="WO-172" scripts/test-plan-refutation.mjs --fixtures-only
+2 tests passed, 0 failed. The plan-start fixture now tests completion before
+filing, the exact boundary, an offset timestamp, order deduplication, and
+unknown fallback with missing, malformed, undated and invalid-time receipts.
+
+$ node --test docs/evidence/WO-172/survey-repair.test.mjs
+5 tests passed, 0 failed: send chronology after later output and intervening
+messages; equal clocks and source order without future tool leakage; a delayed
+dispatch and episode role boundary; joint order/role attribution; one-to-one
+same-day preference and unmatched unknown dates.
+
+$ node docs/evidence/WO-172/interaction-shapes.test.mjs <session-scratch>/shapes-rxjs
+RxJS 7.8.2 installed in session scratch, without changing the project manifest
+or lockfile. 30 tests passed, 0 failed: all 14 displayed pipelines and marbles,
+each contrasting condition, genuinely new scope still requiring authority,
+and a reaction without a causal reference remaining unknown. This checks
+stream semantics, not the candidates' behavioral validity.
+
+Actual survey audit (read-only, retained scratch source): identical 2,396
+message keys and routes; no negative timing gaps; no selected text or tool
+event later than the send; equal-clock context precedes the source position.
+Recomputed 1,016 episodes, 317 joint rows and 109 named orders from the retained
+record snapshot; every joint row, differing-order list and aggregate matches
+the public survey. The live review boundary is REVIEW-003 endedAt
+2026-09-25T01:32:35.112Z, with 20 orders passed since completion.
+
+$ npm run plan -- check
+PASS: 34 receipts, 23 passes; authorized WO-172 amendment retained.
+
+$ npm run publication:check
+PASS: 267/267 headings; both edition locks current.
+
+$ npm run release -- prepare --local
+WO-172 target v0.55.1 remains current; local snapshot only, no component bump.
+
+$ npm run test:docs
+23 passed, 0 failed, 23 fresh tasks, 13.59 s.
+Gate recorded 2026-09-29T13:37:37.569Z.
+
+$ npm test -- --review
+33 passed, 0 failed, 77 fresh tasks, 399.78 s.
+Gate recorded 2026-09-29T13:44:56.872Z, at the repaired code identity.
+
+$ git diff --check
+PASS. package.json and package-lock.json unchanged.
+
+Authored outputs were read; generated survey counts were checked by
+recomputation. The main checkout's local-term screen also passes across the
+12 repair/shape evidence outputs without emitting term contents. Historical
+classification and operator-validation limits remain explicit in D026.
+
+## Second repair evidence — VER-002 F4, F5 and B1–B3
+
+Scope: resume: fix, VER-002 F4 and F5, with the boarded B1–B3 repaired within
+the Boy Scout bound. The sections above remain historical; these checks judge
+this repair. Each entry names the time it was observed.
+
+### adjacent-0001 (B1, WO-172-D029), observed 2026-09-29T15:16Z
+
+$ node --test-name-pattern="WO-172" scripts/test-plan-refutation.mjs --fixtures-only
+2 tests passed, 0 failed. The plan-failures fixture now refuses 2026-09-31,
+2026-02-30, 2030-02-29 (a day a common year lacks), 2030-09-31T04:00:00+05:30
+(an impossible day whose instant falls on a real day of the month it names)
+and 2030-01-03T24:00:00Z, and accepts the leap day 2028-02-29 and the offset
+bound 2030-01-03T07:30:00+05:30 as the instant 2030-01-03T02:00:00.000Z with
+the same counts.
+
+Negative control, scratch copy only: with the round-trip comparison removed
+from canonicalTime the same fixture fails with "Missing expected rejection:
+--since 2026-09-31"; the plan-start fixture still passes.
+
+On this repository: --since 2026-09-31, --all --until 2026-02-30, --all
+--until 2026-09-31T04:00:00+05:30, --since 2026-02-29 and --all --until
+2026-09-28T24:00:00Z each exit 1 with the flag's message; criterion 1's
+invocation is unchanged (86, 10, 99, 117, 54, 61, 1, 25, 1, 3).
+
+### adjacent-0002 (B3, WO-172-D030), observed 2026-09-29T15:36Z
+
+$ node --test --test-name-pattern='WO-172|WO-170' scripts/test-process-debt.mjs
+9 tests passed, 0 failed. The WO-172 meter fixture now asserts the planning
+cost table's bound through planCostText, the function --plan-cost writes with:
+the table within the bound is written whole; a table of exactly 65,536 bytes
+is accepted and one of 65,537 refused; a table of fewer characters than the
+bound whose bytes exceed it is refused; and the builder's own 1,200 rows are
+refused.
+
+Negative control, scratch copy only: with the bound counting characters and
+admitting one byte more, the same fixture fails with "Missing expected
+exception."
+
+Read-only measurement on this repository at 2026-09-29T15:37:43Z: the table
+holds 57,758 bytes for 41 rows against 65,536; the measurement wrote nothing.
+
+### adjacent-0003 (B2, WO-172-D030), observed 2026-09-29T15:45Z
+
+Read-only comparison of docs/planning/followups.json at HEAD and in the
+working tree: four rows existing at HEAD gained revisions, the four that
+dispatch-paraphrases.json lists. FUP-5d191eb1b77b3431 moved 1 to 2,
+FUP-f219d99187db98b7 2 to 3, FUP-3c34a8ffbf61376f 5 to 7 and
+FUP-f3281eb085ad87a7 1 to 3. For FUP-f3281eb085ad87a7 the dispatch each
+revision holds was compared by digest: revision 1 equals the field at HEAD,
+revision 3 the field now filed, and revision 2 neither (127 characters).
+Recomputing the source of FUP-3c34a8ffbf61376f with that intermediate
+dispatch reproduces the hash of its revision 6, and with the field now filed
+the hash of its revision 7. No dispatch text was printed or recorded.
+
+$ npm run test:docs
+23 passed, 0 failed, 23 fresh tasks, 13.97 s.
+
+### adjacent-0004 and the survey repair (VER-002 F4 and F5), observed 2026-09-29T16:02Z
+
+$ node --test docs/evidence/WO-172/survey-repair.test.mjs
+11 tests passed, 0 failed: the five cases of the first repair and six new
+ones. A picked option, a typed value, a multiple selection whose label holds a
+comma and a note are each read as the operator's values; an answer given only
+as a note holds the host's placeholder, which the operator did not type; a
+question left unanswered gives no value; a session's lines give each answered
+question-tool result once, at the result's time and place, and pass over a
+refused call, a subagent thread's question, another tool's result in the same
+line and a result whose call the session does not hold; a body of parts is
+read for its text and names what else it holds; a hook's injection is
+recognised by the host's item type or by one whole hook element under any
+hook name, and a hook element inside a typed message is not.
+
+Negative controls, scratch copies only: six changes to the folds, each
+removing one rule, each fail the case that holds that rule (a subagent
+thread's question read; a refused question read as answered; a hook element
+inside a typed message counted as injected; a hook's item type ignored; a
+body's other parts dropped; the host's placeholder read as typed).
+
+Actual survey audit (read-only, retained scratch source): 44 question-tool
+calls before activation, 43 answered and 1 refused, none in a subagent thread;
+one item of a hook's type against 1,106 user messages in the Codex sessions;
+one queued message whose body is parts. The subject holds 2,439 messages:
+every retained key keeps its role, order, route, text and context, 26 gaps to
+the previous message moved, no gap is negative, and each answer's context
+lies strictly before it. The extraction's output was byte-identical before
+and after the folds moved into the committed module. Recomputed 1,038
+episodes, 319 joint rows over 110 orders and 98 differing orders from the
+retained record snapshot.
+
+Two classifiers labelled the 44 added messages independently under the
+survey's rubric and agreed on every field of each; their re-reading of three
+retained messages beside the message with an image gave the labels on file.
+
+### Criterion 11 (WO-172-D033, WO-172-D037), observed 2026-09-29T16:12Z to 16:41Z
+
+$ npm run build
+Built compiler, console, kernel, skeleton.
+
+$ node --test --test-name-pattern='WO-172|WO-133|WO-142 repair B2' scripts/test-harness.mjs
+4 tests passed, 0 failed: the classifier's cases; the generated observer
+driven as a child process; and, unedited, the WO-133 case that keeps observers
+silent and the WO-142 case whose shape the new fixture follows.
+
+$ node --test-name-pattern='WO-172' scripts/test-plan-refutation.mjs --fixtures-only
+2 tests passed, 0 failed. The plan-failures fixture asserts the local block
+in the default window and under --all, its place in the export's keys, its
+cap of twelve orders, its absence without the file, its report of a file
+that is not a regular file, and that the command writes nothing.
+
+$ npm run harness -- emit
+harness emit: 31 generated surfaces. Changed: 13 hook files and the manifest.
+Settings, skills and the Codex files are byte-identical.
+
+$ node scripts/harness.mjs check
+harness check: 31 generated surfaces; exit 0.
+
+$ node scripts/authority-evidence.mjs --write --edition WO-172 --revision 001
+Recorded; selected in docs/evidence/current.json. The authority, feedback,
+artifact-identity and verification checks then each exit 0.
+
+$ node scripts/release.mjs check-surfaces --local
+PASS component-version @dotln/skeleton: src changed; observed 0.45.1;
+previous v0.54.0 0.45.0. PASS workspace-pin @dotln/console -> @dotln/skeleton:
+observed 0.45.1.
+
+$ node scripts/harness-context.mjs --check
+exit 0, no advisory: the reviewer measures 24,788 bytes against 28,884.
+
+Live probe, session scratch, Claude Code 2.1.284, one headless session that
+read project settings only: the hook after a command was handed the shell's
+line in the result's output stream; the failed-command event fired for the
+same pattern alone with the line in its error text; the model reported each
+hook's context marker and neither terminal marker.
+
+Live observation, this dispatch's session on the regenerated hooks,
+2026-09-29T16:20:41Z: a pattern refused inside a list brought the guidance as
+context and one row (class, order WO-172, role, phase; no pattern, no
+command); plan failures printed one diagnostic. The same pattern alone left
+the result marked failed and brought no context and no row.
+
+### Gates of the second repair
+
+$ npm run plan -- check
+exit 0; the WO-172 amendment of 2026-09-29T16:24:30Z is retained.
+
+$ npm run publication:check
+PASS; both edition locks current, recomputed after the roadmap's paragraph.
+
+$ npm run release -- prepare --local
+WO-172 target v0.55.1 remains current; local snapshot only.
+
+$ npm test -- --review
+38 passed, 0 failed, 82 fresh tasks, 648.81 s.
+Gate recorded 2026-09-29T16:41:21.874Z at code identity
+18414c1c86a465c7f61195cd48dc9978a6e7c8b68db77608986753598e3c932c.
+
+$ git diff --check
+PASS. No dependency is added: the root package.json is unchanged, and
+package-lock.json, packages/skeleton/package.json and
+packages/console/package.json move only the skeleton's version and the
+console's exact pin to it.
+
+$ node docs/evidence/WO-172/interaction-shapes.test.mjs <first-repair-scratch>/shapes-rxjs
+30 tests passed, 0 failed, rerun at 2026-09-29T16:42Z against the RxJS 7.8.2
+installed in the first repair's scratch. The second repair changes none of
+the three shape files.
+
+## Review of the second repair (WO-172-D038 to WO-172-D040), 2026-09-29T17:06Z to 19:10Z
+
+An adversarial review, read-only: three finders and one refuter returned 32
+findings, of which the refuter let 23 stand. What follows supersedes the
+figures of the two sections above where they differ.
+
+$ node --test --test-name-pattern='WO-172' scripts/test-harness.mjs
+2 tests passed, 0 failed, after npm run build. The classifier's case holds
+45 commands with the lines zsh 5.9 printed for each, recorded by running
+each command as the host runs one, and asserts that they hold every kind and
+form the guidance turns on. It asserts silence for eleven commands that hold
+an expanding word beside a line they merely printed, that the guidance holds
+the command's own word and never text a line carried, that a word is printed
+whole or not at all, without control or format characters, and that each
+sentence is said once and whole within 900 characters. The observer's case
+drives the generated hook as a child process: the answer at the call; the
+answer to a failed command at the next observed call, once, from the
+session's transcript and from a subagent's own file; silence for another
+tool that carries a command, for a result without text and for a transcript
+that is absent, a link or not a file; and a lane that is a directory, a link
+to nothing or a link to a file, through which nothing is written.
+
+$ node --test-name-pattern='WO-172' scripts/test-plan-refutation.mjs --fixtures-only
+2 tests passed, 0 failed. The plan-failures fixture now also refuses a bound
+whose instant leaves the years 0000 to 9999 and the 60th second of a minute,
+counts a kind named constructor as any other, and names twenty-four kinds
+and counts the rest for a lane of two hundred.
+
+$ node --test docs/evidence/WO-172/survey-repair.test.mjs
+13 tests passed, 0 failed: a prompt sent through the host's SDK entry point,
+and a line repeated in a continued session's file, are the two added. Three
+more negative controls on scratch copies each fail the case that holds the
+rule removed, nine in all.
+
+Actual survey audit (read-only, retained scratch source): the subject holds
+2,434 messages, 1,743 classified, 1,035 episodes (1,271 at 60 s, 773 at
+300 s), 318 joint rows over 110 orders, 98 differing, 303 subject-map
+pieces. Six keys of the judged 2,396 are left out: one item a hook injected,
+one prompt a tool call launched and four lines a continued session's file
+repeats. The figures equal the ones the review computed for the exclusions.
+
+Baseline by the landed classifier, read at 2026-09-29T18:58:29.925Z:
+609 of 44,235 commands in top-level Claude Code sessions (13.8 per thousand), 1,952 of 100,727 with subagent threads (19.4), and 298 of 27,735 in Codex (10.7).
+
+Live observation, this dispatch's session on the hooks regenerated from the
+landed source: a command that zsh refused and the host marked failed was answered with the next command's result at 2026-09-29T18:59:17.573Z, and its row holds the mark; a pattern refused inside a list was answered with its own result at 2026-09-29T18:59:25.720Z, with both readings, and one row was written.
+
+$ npm run harness -- emit
+harness emit: 31 generated surfaces. Changed: 13 hook files and the manifest.
+
+$ node scripts/authority-evidence.mjs --write --edition WO-172 --revision 002
+Recorded; selected in docs/evidence/current.json. Revision 001 is preserved.
+The authority, feedback, artifact-identity and verification checks each
+exit 0.
+
+$ npm run release -- prepare --local
+WO-172 target v0.55.1 is retimed to v0.56.1 above the observed v0.56.0;
+local snapshot only.
+
+$ npm test -- --review
+41 passed, 0 failed, 85 fresh tasks, 665.95 s.
+Gate recorded 2026-09-29T19:10:50.370Z at code identity
+20530439b9d643073e522a61f436997dcfb6f63c7059bf11005f29066614253a.
+
+$ npm run plan -- check; npm run publication:check; git diff --check
+Each exits 0. The WO-172 amendments of 2026-09-29T16:24:30Z and
+2026-09-29T19:12:18.247Z are retained.
+
+## Third repair — VER-003 F6–F9 and authorized main integration, 2026-09-29
+
+$ node --test --test-name-pattern='WO-172' scripts/test-harness.mjs
+PASS 3 tests, 0 failures, 8.016 s after the final parser edits. Actual zsh plus generated observer context/count checks cover executable roles, quoted printed lines, real process substitutions, wrapper modes, binding scopes, malformed and valid control syntax, optional/alternative case arms, real pattern-expansion errors, intact shared-lane growth beyond 262144 bytes, oversized lines and duplicate result parts. Read-only shell auditor independently passes 31 bounded probes; two reused auditors, no descendants.
+
+$ node --test docs/evidence/WO-172/survey-repair.test.mjs
+PASS 14 tests, 0 failures. Frozen source audit changes only 28 role fields in 25 decisions. Independent reproduction matches all 317 joint rows, global/per-order totals and 98 differing orders; method and comparison rule agree. Transcript subject and historical validation are preserved.
+
+$ npm run worktree -- integrate WO-172 --continue
+Canonical integration complete: original base 8c28f479 -> main fee6ee4c, checkpoint refs/dotln/checkpoint/WO-172/14, retained stash and seven-file intake archive. Five authored conflicts preserve upstream event prefix, both lineage additions and main's generated history; old roadmap receipts moved intact to this evidence README. Skeleton patch 0.45.2 and console pin 0.45.2; canonical application target v0.56.2. Component bookkeeping is bound by the authorized D047 execution amendment. No branch commit or publication.
+
+$ node scripts/authority-evidence.mjs --write --edition WO-172 --revision 009
+Final integrated edition selected; 001 through 008 preserved. Authority, harness (31 surfaces), artifact-identity, verification and feedback checks pass. Other editions are main WO-117; feedback names its carried WO-070 live audit. No fresh live-model delivery claim.
+
+Final classifier baseline read at 2026-09-29T20:17:44.988Z, same historical cutoff 2026-09-29T15:00:09.230Z: 600 of 44,235 top-level Claude commands, 1,936 of 100,727 with subagents, 298 of 27,735 Codex commands. Only counts enter the repository. Prior baseline retained in shell-diagnostics.json.
+
+$ npm test -- --review
+PASS 38 checks, 0 failures, 82 fresh tasks, 695.991 s. Recorded 2026-09-29T20:29:51.807Z at code identity 2263fff6b66c4bdc132ab51190d0577e1a2fe349cf6bc5e0c059bd193f70ebcf. Includes real Git integration, crash/restart, console, planning and shell machinery.
+
+$ npm run plan -- check; npm run publication:check; npm run release -- check-surfaces --local; git diff --check
+Each exits 0 on the integrated subject. Documentation preflight exposed the new roadmap receipt rule and one formatting omission; both are repaired without weakening checks or ceilings. Final documents gate is recorded below after execution.
+
+$ npm run test:docs
+PASS 23 checks, 0 failures, 23 fresh tasks, 14.76 s, after the final baseline and version-bookkeeping amendment. Completion checks the final handoff/decision/index bytes again inline.
+
+## Fourth repair — VER-004 F10, 2026-09-29
+
+$ node --test --test-name-pattern='WO-172 F10' scripts/test-harness.mjs (before implementation)
+FAIL: two real generated observer processes answer one failed use twice (2 !== 1), reproducing F10 deterministically.
+
+$ node --test --test-name-pattern='WO-172' scripts/test-harness.mjs (final repair tests)
+PASS 4 tests, 0 failures, 11.298 s; the concurrency case takes 2.098 s. Actual zsh failures and generated-hook OS processes cover two and eight contenders, two diagnostic classes, a staged stale snapshot after complete claim release, a direct uninstrumented two-hook pair, a killed hook before append, a delayed stale reclaimer, repeat suppression and claim cleanup. One read-only auditor finds no new ordinary-use defect and suggests the staged recheck case; no descendants. shell-concurrency.json records the outcomes and the native-model observation limit.
+
+$ npm run harness -- emit
+harness emit: 31 generated surfaces; old runtime snapshots remain immutable.
+
+$ node scripts/authority-evidence.mjs --write --edition WO-172 --revision 010
+Recorded 34 bundle comparisons. docs/evidence/current.json separately selects 010; 001 through 009 are preserved. The selected --check passes.
+
+$ npm run release -- prepare --local
+WO-172 target v0.56.2 remains current; skeleton and console pin remain the pending compatible patch 0.45.2. Local-tag observation only; no publication.
+
+$ npm run publication:check; git diff --check
+Both pass. Publication coverage: 265/265 product headings; both voice locks current.
+
+$ npm run test:docs (document preflight after adjacent-0007)
+PASS 23 checks, 0 failures, 14.52 s; all 23 tasks fresh. Adjacent-0007 corrects the README evidence links and retained/classified wording without changing the survey.
+
+$ npm test -- --review (complete fourth repair)
+PASS 38 checks, 0 failures, 82 fresh tasks, 762.844 s. Gate recorded 2026-09-29T22:57:53.942Z at code identity a893dcbf913ee731807aa0120c66bfd8371ca30217e5b638114ea80c1a5a6142, independently checked equal to the current source with no active gate remaining. Includes F10, lifecycle, process-debt, real Git integration and runtime kill/restart checks.
+
+Final documentation proof: repair-complete runs test:docs against final authored bytes before appending RepairCompleted; its result and gate reference remain in the canonical control record and ignored gate index. No report bytes are changed merely to copy that inline result.

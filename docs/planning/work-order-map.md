@@ -1989,6 +1989,63 @@ section grants no activation authority.
    Reopen: the progressive-absence candidate is allocated, or the operator
    directs a trial.
 
+## Candidates — returns from ideation during WO-172 (recorded 2026-09-29)
+
+Recorded from the operator's ideation message during WO-172's execution
+(ignored intake `docs/intake/notes/WO-172-expanded-ideation-2026-09-29.md` in
+the wo-172 worktree, SHA-256
+`b0b4983bae7ea4455067abe46292946a0b1bbed2db43c0901367bf5bb018dae3`; the
+ledger section of this date; receipt WO-172-D017). None is allocated; this
+section grants no activation authority.
+
+1. **Label an intervention with a disposition and a direction.** When the
+   operator's interventions reach the record (WO-172-D013's follow-up), a
+   label may name a disposition the agent lacked, had too little of or had
+   too much of, beside the intervention's class, from the starting
+   vocabulary the operator transcribed (the ledger section of this date).
+   The operator's reading is the reference: a proposed label is scored
+   against the operator's own before any count rests on it (WO-172-D016).
+   Open: a fixed or grown vocabulary, a direction or a graded level, and
+   whether readings add up per role, model or loadout. Reopen: a planning
+   pass takes up WO-172-D013's follow-up, or the operator labels
+   interventions in this vocabulary.
+
+## Candidates — returns from the transcript survey (recorded 2026-09-29)
+
+Recorded from WO-172's transcript survey: the subject map of the operator's
+interventions ([intervention-subjects.md](../evidence/WO-172/intervention-subjects.md),
+WO-172-D022) and the candidate interaction shapes
+([interaction-shapes.json](../evidence/WO-172/interaction-shapes.json),
+WO-172-D023). The subjects are the executor's reading through agents, which
+the operator accepted as good for now on 2026-09-29. None is allocated; this section grants no
+activation authority.
+
+1. **Dispose the survey's subject map.** Take the map's 30 themes as a pass's
+   subject beside `plan failures`: each names its episodes, the orders it
+   touched, what the record already holds and a next step. Twenty-five need
+   action. Three declined rows saw their recurrence conditions occur
+   (FUP-5f58198706dfa59e, FUP-a815e8862796c2e1, FUP-9a23fe23cbf08958), and
+   six themes recurred after their fixing order's final review. Confirm each
+   theme with the operator before allocating it. Reopen: a planning pass takes
+   up the map, or the operator corrects a theme.
+2. **Stop retrying after a provider safeguard refusal.** The one subject
+   nothing in the record covers: repeated provider safety refusals stalled an
+   order's close and the retry loop could not break free even when warned.
+   After a second consecutive refusal a role stops retrying, records the stop
+   as a decision naming the phase and model, and resumes in a fresh session.
+   Reopen: another episode, or a pass allocates it.
+3. **A living collection of interaction shapes.** Give the candidate shapes a
+   lasting home, a format later passes add to, reword and retire, the
+   operator's confirmation of each, and an exhibit view. Horizon, in the
+   operator's stated direction of 2026-09-29: streams built from the
+   operator's inputs, counterfactual replay of recorded agent trajectories,
+   and a twin of the operator's interventions ranked by fidelity against the
+   operator's confirmed readings on held-out samples, used to improve agent
+   behaviour in a loop. The twin predicts interventions, never feelings,
+   stays local like intake, and is re-scored on fresh held-out samples so
+   agents are not tuned to it instead of the operator. Reopen: a pass
+   allocates it, or the operator adds or reshapes shapes.
+
 ## Moved from the execution guide (2026-09-28)
 
 WO-167 moved these nine candidates here from product 07 under their slugs.

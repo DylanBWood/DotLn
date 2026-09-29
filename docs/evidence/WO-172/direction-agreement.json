@@ -1,0 +1,329 @@
+{
+  "schemaVersion": 3,
+  "kind": "wo-172-direction-agreement",
+  "classification": {
+    "path": "docs/evidence/WO-172/direction-classification.json",
+    "sha256": "ef44ebbcd9cdee99b689a07c04834be85a827812497c505731c3b6a88a7397e0",
+    "filedAt": "2026-09-29T00:52:34Z"
+  },
+  "reader": "operatorStep in scripts/lib/meta.mjs, judged on the dispatch text alone",
+  "firstDraft": {
+    "observedAt": "2026-09-29T00:56Z",
+    "note": "The reader's first draft on the base texts, before its rules were refined against these disagreements; the draft code is not kept.",
+    "agree": 233,
+    "total": 241,
+    "disagreements": [
+      "WO-056-D010",
+      "WO-100-D017",
+      "WO-126-D004",
+      "WO-128-D001",
+      "WO-128-D008",
+      "WO-131-D001",
+      "WO-146-D006",
+      "WO-146-D010"
+    ]
+  },
+  "base": {
+    "revision": "8c28f479",
+    "agree": 238,
+    "total": 241,
+    "disagreements": [
+      {
+        "decision": "WO-056-D010",
+        "hand": "direction",
+        "reader": "none"
+      },
+      {
+        "decision": "WO-146-D006",
+        "hand": "direction",
+        "reader": "none"
+      },
+      {
+        "decision": "WO-146-D010",
+        "hand": "direction",
+        "reader": "none"
+      }
+    ]
+  },
+  "final": {
+    "revision": "this order's workspace, after the paraphrases",
+    "agree": 241,
+    "total": 241,
+    "disagreements": [],
+    "note": "The base disagreements are the three fields that held the operator's words and named no step (WO-056-D010, WO-146-D006, WO-146-D010); their paraphrases name the step, so the final figure is measured after that rewording, not after a change to the reader."
+  },
+  "inSample": "The rules were refined on these 241 fields after the classification was filed, and a review found several that only one field needs, estimating agreement near 90% without them; after the review the rules were generalized from the review's own phrasings (a development set). The held-out battery below is the generalization measure.",
+  "developmentBattery": {
+    "path": "docs/evidence/WO-172/reader-battery-1.json",
+    "sha256": "a1b60ae539369848b34eb74354a5736d974766e09a090043e064cc3da6dc4444",
+    "author": "one agent that read only the classification's rule and classes, never the reader, the scripts or any decision record (2026-09-29)",
+    "firstScore": {
+      "observedAt": "2026-09-29T02:02:46Z",
+      "agree": 58,
+      "cases": 80,
+      "countedStepAgree": 63,
+      "note": "Scored once before any rule changed; its misses then shaped more general rules, so this battery is a development set, not a held-out measure."
+    },
+    "now": {
+      "cases": 80,
+      "agree": 80,
+      "countedStepAgree": 80,
+      "byClass": {
+        "correction": {
+          "cases": 12,
+          "agree": 12
+        },
+        "direction": {
+          "cases": 12,
+          "agree": 12
+        },
+        "scope-expansion": {
+          "cases": 7,
+          "agree": 7
+        },
+        "override": {
+          "cases": 8,
+          "agree": 8
+        },
+        "takeover": {
+          "cases": 6,
+          "agree": 6
+        },
+        "answer": {
+          "cases": 10,
+          "agree": 10
+        },
+        "other-step": {
+          "cases": 8,
+          "agree": 8
+        },
+        "none": {
+          "cases": 17,
+          "agree": 17
+        }
+      },
+      "misses": []
+    }
+  },
+  "heldOut": {
+    "path": "docs/evidence/WO-172/reader-battery-2.json",
+    "sha256": "a0ffaee07f126748559c8054c6d2397cac4e3be2d0a6ca33eb786c9b8b5ed99c",
+    "author": "a second agent that read only the classification's rule and classes, never the reader, the scripts, any decision record or the first battery, asked for about 60 realistic and 20 hard phrasings with every class at least 6 times (2026-09-29)",
+    "firstScore": {
+      "scoredAt": "2026-09-29T02:18:51.204Z",
+      "batterySha256": "a0ffaee07f126748559c8054c6d2397cac4e3be2d0a6ca33eb786c9b8b5ed99c",
+      "metaSha256": "23b3cb4187a0e5597f8bd4f368f6b5bb26fb6bfc83975d3f4f69e7525b1911e3",
+      "agree": 70,
+      "cases": 80,
+      "countedStepAgree": 72
+    },
+    "rescore": {
+      "cases": 80,
+      "agree": 70,
+      "countedStepAgree": 72,
+      "byClass": {
+        "correction": {
+          "cases": 11,
+          "agree": 9
+        },
+        "direction": {
+          "cases": 10,
+          "agree": 9
+        },
+        "scope-expansion": {
+          "cases": 8,
+          "agree": 8
+        },
+        "override": {
+          "cases": 9,
+          "agree": 8
+        },
+        "takeover": {
+          "cases": 8,
+          "agree": 6
+        },
+        "answer": {
+          "cases": 10,
+          "agree": 9
+        },
+        "other-step": {
+          "cases": 9,
+          "agree": 8
+        },
+        "none": {
+          "cases": 15,
+          "agree": 13
+        }
+      },
+      "misses": [
+        {
+          "dispatch": "resume: fix — operator turned down the retry wrapper because it masked the real failure",
+          "expected": "correction",
+          "reader": "none"
+        },
+        {
+          "dispatch": "resume: fix; operator took control of the stalled executor session and made the commit",
+          "expected": "takeover",
+          "reader": "none"
+        },
+        {
+          "dispatch": "resume: fix; the operator's report: disk usage doubled once the sweep ran",
+          "expected": "other-step",
+          "reader": "none"
+        },
+        {
+          "dispatch": "resume: fix; the operator chose opus at max effort for this repair",
+          "expected": "none",
+          "reader": "answer"
+        },
+        {
+          "dispatch": "resume: next; asked the operator which store to use; operator went with SQLite",
+          "expected": "answer",
+          "reader": "other-step"
+        },
+        {
+          "dispatch": "resume: fix; operator authorized bypassing the stale writer hold",
+          "expected": "override",
+          "reader": "direction"
+        },
+        {
+          "dispatch": "resume: fix; operator commandeered the wedged executor session and landed the fix by hand",
+          "expected": "takeover",
+          "reader": "none"
+        },
+        {
+          "dispatch": "resume: next; operator struck the agent's reading of criterion 4 as too broad",
+          "expected": "correction",
+          "reader": "none"
+        },
+        {
+          "dispatch": "resume: verify; see §Operator Takeover and Recovery in product 07",
+          "expected": "none",
+          "reader": "takeover"
+        },
+        {
+          "dispatch": "resume: next; operator green-lit the three-file split of the parser",
+          "expected": "direction",
+          "reader": "none"
+        }
+      ],
+      "note": "The rescore after a formatting-only change to scripts/lib/meta.mjs reproduces the first score; the battery was never used to change the reader."
+    },
+    "bound": "Below the 95-in-100 agreement the order sets for a reader to replace a hand count (open question 3: the operator may set another figure at review); criterion 5 is judged on the hand classification, where the reader meets it."
+  },
+  "limits": "Every reference label here is a model's or the executor's reading, not the operator's: the classification is two agent passes with the executor settling 13 rows, as criterion 5 asks, and both batteries were written and labelled by agents (WO-172-D016 names the same limit for the survey).",
+  "count": {
+    "rule": "A lifecycle dispatch (resume:, or the legacy Operator resume: label) that WO-170's rules leave uncounted counts the step the reader names; each record counts once. One operator act recorded both as a decision and as a control event (WO-173-D013 and its CriterionWaived) counts once per record, as under WO-170.",
+    "handCountedRows": 155,
+    "routes": {
+      "legacy operator label (WO-170)": 41,
+      "free text outside the lifecycle reader: not counted": 11,
+      "lifecycle reader (WO-172)": 95,
+      "control prefix (WO-170)": 8
+    },
+    "uncounted": [
+      {
+        "decision": "WO-043-D012",
+        "class": "direction",
+        "route": "free text outside the lifecycle reader: not counted"
+      },
+      {
+        "decision": "WO-126-D006",
+        "class": "scope-expansion",
+        "route": "free text outside the lifecycle reader: not counted"
+      },
+      {
+        "decision": "WO-126-D007",
+        "class": "answer",
+        "route": "free text outside the lifecycle reader: not counted"
+      },
+      {
+        "decision": "WO-126-D009",
+        "class": "scope-expansion",
+        "route": "free text outside the lifecycle reader: not counted"
+      },
+      {
+        "decision": "WO-127-D006",
+        "class": "direction",
+        "route": "free text outside the lifecycle reader: not counted"
+      },
+      {
+        "decision": "WO-127-D007",
+        "class": "direction",
+        "route": "free text outside the lifecycle reader: not counted"
+      },
+      {
+        "decision": "WO-129-D004",
+        "class": "scope-expansion",
+        "route": "free text outside the lifecycle reader: not counted"
+      },
+      {
+        "decision": "WO-131-D014",
+        "class": "scope-expansion",
+        "route": "free text outside the lifecycle reader: not counted"
+      },
+      {
+        "decision": "WO-131-D017",
+        "class": "direction",
+        "route": "free text outside the lifecycle reader: not counted"
+      },
+      {
+        "decision": "WO-131-D018",
+        "class": "direction",
+        "route": "free text outside the lifecycle reader: not counted"
+      },
+      {
+        "decision": "WO-131-D022",
+        "class": "direction",
+        "route": "free text outside the lifecycle reader: not counted"
+      }
+    ],
+    "countedByLabelThoughNoStep": [
+      "WO-043-D006",
+      "WO-043-D008",
+      "WO-054-D007",
+      "WO-100-D008",
+      "WO-127-D004",
+      "WO-127-D005",
+      "WO-128-D009",
+      "WO-151-D011"
+    ],
+    "readerCountedOutsideSubject": [
+      "WO-049-D001",
+      "WO-139-D004",
+      "WO-142-D010"
+    ],
+    "totals": {
+      "orders": 122,
+      "baseTexts": {
+        "wo170Rules": 73,
+        "withReader": 168
+      },
+      "currentTextsWithoutThisOrder": {
+        "wo170Rules": 71,
+        "withReader": 169
+      },
+      "currentTexts": {
+        "wo170Rules": 72,
+        "withReader": 172
+      }
+    }
+  },
+  "correctionsNotRecorded": [
+    "WO-043-D013",
+    "WO-044-D011",
+    "WO-049-D003",
+    "WO-053-D002",
+    "WO-054-D004",
+    "WO-054-D005",
+    "WO-111-D006",
+    "WO-111-D007",
+    "WO-111-D008",
+    "WO-111-D009",
+    "WO-131-D002",
+    "WO-146-D001",
+    "WO-152-D012",
+    "WO-153-D008",
+    "WO-162-D003"
+  ]
+}

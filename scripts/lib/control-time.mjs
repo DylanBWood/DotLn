@@ -57,6 +57,42 @@ export function* completedPhaseAttempts(events) {
   }
 }
 
+// WO-172: how each order's judgments ended, in the same append order. The
+// first completed verification is the first judgment of the order's work.
+export function orderJudgments(events) {
+  const orders = new Map();
+  for (const event of events) {
+    if (
+      ![
+        "VerificationCompleted",
+        "FinalReviewCompleted",
+        "RepairCompleted",
+      ].includes(event.type)
+    )
+      continue;
+    const row = orders.get(event.workOrderId) ?? {
+      failedVerifications: 0,
+      failedFinalReviews: 0,
+      repairs: 0,
+      firstVerification: null,
+    };
+    orders.set(event.workOrderId, row);
+    if (event.type === "RepairCompleted") row.repairs++;
+    else if (event.verdict === "fail")
+      row[
+        event.type === "VerificationCompleted"
+          ? "failedVerifications"
+          : "failedFinalReviews"
+      ]++;
+    if (
+      event.type === "VerificationCompleted" &&
+      row.firstVerification === null
+    )
+      row.firstVerification = event.verdict ?? "unknown";
+  }
+  return orders;
+}
+
 // Timing is a projection over append order, never an input to lifecycle state.
 // Each phase names its latest completed attempt, including failed attempts.
 export const controlTimeProjection = (events) => {

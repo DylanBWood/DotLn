@@ -71,6 +71,55 @@ Shape-First synthesis, with no direct-draft filing. Receipt:
   scope if the operator identifies a different workflow boundary or observed
   use turns the floor into redundant work.
 
+## 2026-09-29 — Ideation during WO-172 execution: what an intervention says the agent lacked or overdid
+
+Source: one operator message during `resume: next` on WO-172, captured
+unedited in the wo-172 worktree's ignored intake
+(`docs/intake/notes/WO-172-expanded-ideation-2026-09-29.md`, SHA-256
+`b0b4983bae7ea4455067abe46292946a0b1bbed2db43c0901367bf5bb018dae3`; final
+review or release close reconciles it into main). It arrived while the
+executor was asking the operator for their own reading of 18 of their past
+messages
+([WO-172-D016](../evidence/WO-172/decisions.md#wo-172-d016--correction-the-survey-judged-the-operators-messages-without-consulting-the-operator)),
+after the executor's transcript survey had classified those messages without
+consulting the operator. The operator had transcribed by hand, from a paused
+frame of the television series Westworld, a host's personality attribute
+matrix: two concentric rings of trait names rated on a 20-point scale, each
+inner name paired with an outer one, in no order or spectrum the operator
+could see. They offered it as a starting vocabulary for labelling their
+interventions by a trait the agent lacked entirely, had too little of or had
+too much of. Shape-first reading: the payload is a diagnostic relation, an
+intervention read as one named disposition set wrong in one direction, not
+the show's traits, rings or scale. Clean-room screen: a public television
+reference and the operator's own words, nothing employer-derived; this
+section does not reproduce the list. Receipt:
+[WO-172-D017](../evidence/WO-172/decisions.md#wo-172-d017--ideation-breakout-receipt-a-trait-vocabulary-for-labelling-interventions).
+
+- **An intervention names a disposition and a direction** `candidate` `operator-directed`
+  - Beside its class, a label on an operator intervention can name a
+    disposition the agent lacked entirely, had too little of or had too much
+    of. That gives words to what the operator's intensity markers carry: by
+    the operator's rule (the survey method in WO-172-D013), capitals and
+    profanity say how the agent should have been working, and a disposition
+    with a direction says which way it fell short. The operator's reading is
+    the reference (WO-172-D016): a model may propose such a label, and it
+    stays a hypothesis until it is measured against the operator's own.
+    Open, and the executor's extrapolation from the reference rather than
+    the operator's statement: whether readings add up to a profile per role,
+    model or loadout that the
+    [feedback compiler](../product/02-domain-model.md#feedback-compiler-v1)
+    could act on, as the show's technicians adjust a host. Candidate in the
+    planning map (this date).
+- **The attribute matrix as a starting vocabulary** `preserved` `operator-directed`
+  - The operator's transcription, kept in intake, is the starting word list:
+    57 inner and 60 outer names as typed, one name in both rings, and the
+    operator unsure whether the rings pair one to one. Some names describe
+    bodies, tastes or beliefs rather than work; which carry weight for an
+    agent is open, and the operator's own labels would show which recur. The
+    ring pairing and the 20-point scale are kept as operator recollection,
+    not structure: the operator saw no order or spectrum, and the proposed
+    label needs only a direction.
+
 ## 2026-09-28 — Ideation during WO-116 execution: utilization, not activation, while a phase waits
 
 Source: three operator messages during `resume: next` on WO-116, captured

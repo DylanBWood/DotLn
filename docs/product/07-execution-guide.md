@@ -1037,7 +1037,10 @@ Preconditions and inputs:
    returns the first bounded page of the public follow-up register. A stale
    register refuses entry before creating the branch; refresh it with
    `npm run meta` and include that document update in the preceding checkpoint.
-2. Read canonical status, [the sequence](../planning/sequence.md), and this
+2. A standard pass first reads `npm run plan -- failures`, whose counts
+   `plan start` prints, and disposes what it lists: each failed report is
+   read and its cause given a route in the pass's document (WO-172).
+   Read canonical status, [the sequence](../planning/sequence.md), and this
    guide's planning and ideation sections. Use scoped candidate, ledger and
    order lookups as the current pass requires. The generated index and map
    remain navigation aids rather than whole-file startup prerequisites.
@@ -1874,7 +1877,9 @@ claim evidence or releases it does not have.
   outside-worktree read observation, do not consume `runtime-unavailable`.
   The atomic marker stays in ignored harness state and records session
   ownership for pruning. Every invocation retains its journal row;
-  PostToolUse observers emit no advisory. If marker storage is unavailable,
+  PostToolUse observers emit no advisory; after a shell command the read
+  observer may hand the agent what the shell said about it, as context only
+  [WO-172-D037, 2026-09-29]. If marker storage is unavailable,
   the message remains visible. SessionStart reuses the session handler to compare
   built bytes and the pinned snapshot, without dispatching work. `resume` and
   `plan start` diagnose runtime drift without building. Release close and worktree

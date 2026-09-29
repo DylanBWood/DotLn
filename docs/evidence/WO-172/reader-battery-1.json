@@ -1,0 +1,404 @@
+{
+ "cases": [
+  {
+   "dispatch": "resume: fix; the operator pointed out that the fixture path still named the old worktree",
+   "class": "correction",
+   "why": "Pointing out an error in the agent's work is a correction."
+  },
+  {
+   "dispatch": "resume: next; operator clarified that the budget is counted per order, not per session",
+   "class": "correction",
+   "why": "Clarifying what was meant is a correction."
+  },
+  {
+   "dispatch": "resume: fix; the operator rejected the new retry dependency and asked for a plain loop",
+   "class": "correction",
+   "why": "The first step is a rejection; the request that follows it comes second and does not set the class."
+  },
+  {
+   "dispatch": "resume: fix; the operator objected to swallowing the hook error silently",
+   "class": "correction",
+   "why": "Objecting to the agent's approach rejects it, which is a correction."
+  },
+  {
+   "dispatch": "resume: next; operator correction: the heading names the order, not the branch",
+   "class": "correction",
+   "why": "An explicitly named operator correction."
+  },
+  {
+   "dispatch": "resume: fix; the operator refined criterion 3 so it counts only merged orders",
+   "class": "correction",
+   "why": "Refining what a criterion meant is a correction, not a new direction."
+  },
+  {
+   "dispatch": "Operator corrected the executor: the refusal count is five, not four",
+   "class": "correction",
+   "why": "Old free-text record in which the operator corrects the agent."
+  },
+  {
+   "dispatch": "resume: final review; the operator overruled the reviewer's plan to squash the branch history",
+   "class": "correction",
+   "why": "Overruling the agent's plan rejects it; no hold or gate was overridden, so it is not override."
+  },
+  {
+   "dispatch": "resume: fix; the reviewer requested a rename; the operator objected and kept the old name",
+   "class": "correction",
+   "why": "The reviewer's request is another actor's act; the first operator step is an objection."
+  },
+  {
+   "dispatch": "resume: fix; continued under the operator's standing no-new-deps rule; the operator pointed out the lockfile still changed",
+   "class": "correction",
+   "why": "Continued under and standing make the rule a reference; the first live step points out an error."
+  },
+  {
+   "dispatch": "resume: fix; no override was needed; the operator pointed out the gate was reading a stale cache",
+   "class": "correction",
+   "why": "The negated override is not a step; pointing out the stale cache is the first step."
+  },
+  {
+   "dispatch": "resume: next; the operator said the synthesis misread the intake and restated the goal",
+   "class": "correction",
+   "why": "Saying the agent misread and restating the goal corrects it even without a keyword."
+  },
+  {
+   "dispatch": "resume: next; the operator asked for a --dry-run flag before any write path lands",
+   "class": "direction",
+   "why": "Asked for is a request, not a question."
+  },
+  {
+   "dispatch": "resume: fix; the operator told the executor to drop the retry loop and fail fast",
+   "class": "direction",
+   "why": "Told the executor to is an instruction."
+  },
+  {
+   "dispatch": "resume: next; the operator required that setup must not require network access",
+   "class": "direction",
+   "why": "Required is the step; the modal must not require is only its content."
+  },
+  {
+   "dispatch": "resume: final review; the operator approved publishing without a changelog entry",
+   "class": "direction",
+   "why": "An approval on the operator's own initiative; no agent question is named."
+  },
+  {
+   "dispatch": "resume: next; operator signed off on splitting the migration into two commits",
+   "class": "direction",
+   "why": "Signed off is an unprompted approval."
+  },
+  {
+   "dispatch": "resume: fix; the operator permitted one extra fixture directory under test/",
+   "class": "direction",
+   "why": "Permitting something is direction."
+  },
+  {
+   "dispatch": "resume: next; operator directed that audit output stay byte-identical to the console",
+   "class": "direction",
+   "why": "Directed is direction."
+  },
+  {
+   "dispatch": "resume: fix; the operator steered the repair toward the parser rather than the test",
+   "class": "direction",
+   "why": "Steering the work is direction."
+  },
+  {
+   "dispatch": "resume: fix; no operator correction was needed; the operator requested a changelog line",
+   "class": "direction",
+   "why": "The negated correction is not a step; the first real step is a request."
+  },
+  {
+   "dispatch": "resume: fix; the operator rejected the retry loop (D003), then asked for a timeout flag",
+   "class": "direction",
+   "why": "The D003 citation makes the rejection a reference; the first live step is a request."
+  },
+  {
+   "dispatch": "resume: next; after the verifier's finding, the operator instructed a rerun on a clean cache",
+   "class": "direction",
+   "why": "After attaches to the verifier's finding, not to an operator step, so the instruction is live."
+  },
+  {
+   "dispatch": "Operator resume: next; operator authorized adding one dev dependency for the fuzzer",
+   "class": "direction",
+   "why": "The old-style label is not a step; authorizing a dependency, not an override, is direction."
+  },
+  {
+   "dispatch": "scope expand: WO-181 also covers the Codex compaction adapter",
+   "class": "scope-expansion",
+   "why": "A leading scope expand: prefix is the first step."
+  },
+  {
+   "dispatch": "resume: next; the operator widened WO-190 to include the audit route",
+   "class": "scope-expansion",
+   "why": "Widening the order is a scope expansion."
+  },
+  {
+   "dispatch": "resume: fix; operator added the Windows path bug to this order's scope",
+   "class": "scope-expansion",
+   "why": "Adding work to the order's scope expands it."
+  },
+  {
+   "dispatch": "scope expand: fold the console export into WO-177; the operator also asked for one PR",
+   "class": "scope-expansion",
+   "why": "The leading prefix is the first step; the later request does not change the class."
+  },
+  {
+   "dispatch": "Operator expanded WO-066 to also rewrite the budget table",
+   "class": "scope-expansion",
+   "why": "Old free-text record of the operator expanding the order."
+  },
+  {
+   "dispatch": "resume: next; within the operator's standing budget, the operator expanded the order to cover old receipts",
+   "class": "scope-expansion",
+   "why": "Within and standing make the budget a reference; the first live step expands scope."
+  },
+  {
+   "dispatch": "resume: fix; the operator brought the flaky timer test into this order's scope",
+   "class": "scope-expansion",
+   "why": "Bringing new work into the order expands its scope."
+  },
+  {
+   "dispatch": "operator override: cleared the writer reservation left by a crashed session",
+   "class": "override",
+   "why": "A leading operator override: prefix is the first step."
+  },
+  {
+   "dispatch": "resume: fix; the operator authorized an override of the subagent cap for this run",
+   "class": "override",
+   "why": "Authorizing an override is override, not direction."
+  },
+  {
+   "dispatch": "resume: next; the operator overrode the planning-branch hold to land one script fix",
+   "class": "override",
+   "why": "Overriding a hold is override."
+  },
+  {
+   "dispatch": "resume: fix; the operator overruled the stale writer hold so the repair could commit",
+   "class": "override",
+   "why": "Overruling a hold overrides it."
+  },
+  {
+   "dispatch": "operator override: restore the success record; the operator then clarified the rerun order",
+   "class": "override",
+   "why": "The leading prefix is the first step; the later clarification does not set the class."
+  },
+  {
+   "dispatch": "resume: verify; the operator invoked operator override: to stop a gate stuck on a dead worker",
+   "class": "override",
+   "why": "A live, unmarked use of operator override after the dispatch label."
+  },
+  {
+   "dispatch": "Operator used an override to lift the npm-test write refusal and repair a corrupted record",
+   "class": "override",
+   "why": "Old free-text record of the operator using an override."
+  },
+  {
+   "dispatch": "resume: fix; the operator did not correct the patch but lifted the evidence hold by override",
+   "class": "override",
+   "why": "The negated correction is not a step; lifting a hold by override is."
+  },
+  {
+   "dispatch": "resume: fix; the session died mid-rebase and the operator took over to finish the merge",
+   "class": "takeover",
+   "why": "The operator took over a failed session."
+  },
+  {
+   "dispatch": "resume: next; the executor hung on a hook; the operator stepped in and completed the handoff by hand",
+   "class": "takeover",
+   "why": "The executor's hang is not an operator step; stepping in on the stopped session is a takeover."
+  },
+  {
+   "dispatch": "resume: verify; operator takeover of the verifier session after it failed on a context limit",
+   "class": "takeover",
+   "why": "Noun-form takeover; after attaches to the failure, not to a prior operator step."
+  },
+  {
+   "dispatch": "Operator took over the stalled executor run and committed the fix directly",
+   "class": "takeover",
+   "why": "Old free-text record of a takeover of a stalled session."
+  },
+  {
+   "dispatch": "resume: next; the operator picked up the failed session and reran the gate from its last step",
+   "class": "takeover",
+   "why": "Picking up a failed session is a takeover, not a picked option."
+  },
+  {
+   "dispatch": "resume: final review; the reviewer session failed at publish and the operator took it over to cut the tag",
+   "class": "takeover",
+   "why": "The reviewer's failure is not an operator step; taking over the failed session is."
+  },
+  {
+   "dispatch": "resume: next; the executor asked which lock layout to keep; the operator chose the flat file",
+   "class": "answer",
+   "why": "The executor's question is not an operator step; choosing in reply is an answer."
+  },
+  {
+   "dispatch": "resume: fix; operator picked option 2: keep the old flag as an alias",
+   "class": "answer",
+   "why": "Picking an offered option is an answer."
+  },
+  {
+   "dispatch": "resume: next; operator response: yes, keep both receipts",
+   "class": "answer",
+   "why": "An operator response to the agent's question."
+  },
+  {
+   "dispatch": "resume: final review; when the reviewer asked about signing, the operator replied that the tag stays unsigned",
+   "class": "answer",
+   "why": "A reply to a question the agent put."
+  },
+  {
+   "dispatch": "resume: next; the operator confirmed the branch name the executor proposed",
+   "class": "answer",
+   "why": "Confirming a choice the agent put is an answer, not an approval."
+  },
+  {
+   "dispatch": "resume: fix; the executor offered three repair paths and the operator went with rerunning from a clean cache",
+   "class": "answer",
+   "why": "Went with one of the offered paths means the operator chose an option."
+  },
+  {
+   "dispatch": "resume: next; operator answered the executor's question: the cap is per order",
+   "class": "answer",
+   "why": "Answered the agent's question."
+  },
+  {
+   "dispatch": "resume: verify; the operator selected 'Accept with finding' when the verifier asked how to file",
+   "class": "answer",
+   "why": "Selected an option the verifier put; this is not a model selection."
+  },
+  {
+   "dispatch": "resume: next; Keep both receipts (Recommended)",
+   "class": "answer",
+   "why": "A bare picked option label; the Recommended tag marks an offered choice."
+  },
+  {
+   "dispatch": "resume: fix; continued under the operator's standing budget (D004); when the executor asked about the flaky test, the operator chose to quarantine it",
+   "class": "answer",
+   "why": "The standing, cited budget is a reference; the first live step answers the agent's question."
+  },
+  {
+   "dispatch": "resume: fix; the operator asked why the verify gate took forty minutes",
+   "class": "other-step",
+   "why": "A question (asked why), not a request (asked for)."
+  },
+  {
+   "dispatch": "resume: next; operator note: CI runners are offline until Monday",
+   "class": "other-step",
+   "why": "A note is an operator step outside the six."
+  },
+  {
+   "dispatch": "resume: next; the operator sent ideation messages about audit retention mid-run",
+   "class": "other-step",
+   "why": "Ideation messages are other-step."
+  },
+  {
+   "dispatch": "resume: fix; the operator ran the installer live on a fresh laptop and it stopped at step 3",
+   "class": "other-step",
+   "why": "A live attempt the operator ran."
+  },
+  {
+   "dispatch": "resume: next; the operator reported that the hosted runner queue was backed up for an hour",
+   "class": "other-step",
+   "why": "A report of an observation; it corrects nothing the agent did."
+  },
+  {
+   "dispatch": "resume: fix; the executor answered the operator's question about why the lock outlived the session",
+   "class": "other-step",
+   "why": "The executor's answer is not an operator step; the operator's unmarked question is the first step."
+  },
+  {
+   "dispatch": "resume: verify; the operator asked whether VER-171-2 supersedes VER-171-1",
+   "class": "other-step",
+   "why": "A question asked by the operator."
+  },
+  {
+   "dispatch": "resume: next; the operator mused about moving budgets into the store; no change was requested",
+   "class": "other-step",
+   "why": "Musing is ideation; the negated request after it is not a step."
+  },
+  {
+   "dispatch": "resume: verify",
+   "class": "none",
+   "why": "The dispatch label alone names no operator step."
+  },
+  {
+   "dispatch": "Operator resume: fix; fixed both findings from VER-058-1 and reran the gate",
+   "class": "none",
+   "why": "Operator is part of the old-style label and fix is executor work; no operator step."
+  },
+  {
+   "dispatch": "resume: fix; addressed the Operator direction section of VER-172-1",
+   "class": "none",
+   "why": "Operator direction is a section title here, not a step."
+  },
+  {
+   "dispatch": "resume: next; ran at the model and effort the operator selected for the order",
+   "class": "none",
+   "why": "A model the operator selected is not a step."
+  },
+  {
+   "dispatch": "resume: next; the operator selected Sonnet at medium effort for this order",
+   "class": "none",
+   "why": "A model selection is none even though selected is an answer verb."
+  },
+  {
+   "dispatch": "resume: fix; continued under the operator's standing instruction to keep commits small",
+   "class": "none",
+   "why": "Continued under and standing make the instruction a reference."
+  },
+  {
+   "dispatch": "resume: next; worked within the scope the operator expanded in D003",
+   "class": "none",
+   "why": "Within and the D003 citation make the expansion a reference."
+  },
+  {
+   "dispatch": "resume: fix; the verifier rejected the evidence table and the executor corrected it before rerunning",
+   "class": "none",
+   "why": "Rejection and correction by the verifier and executor are not operator steps."
+  },
+  {
+   "dispatch": "resume: next; the CLI must not require a login, and the operator must be able to run it offline",
+   "class": "none",
+   "why": "Modal requirements; the mention of the operator is not a step."
+  },
+  {
+   "dispatch": "resume: fix; no operator correction was needed",
+   "class": "none",
+   "why": "A negated step is not a step."
+  },
+  {
+   "dispatch": "resume: final review; the operator did not approve a retag, so the existing tag stands",
+   "class": "none",
+   "why": "A negated approval is not a step."
+  },
+  {
+   "dispatch": "resume: fix; continued after the operator's takeover of the failed session",
+   "class": "none",
+   "why": "Continued after marks the takeover as prior."
+  },
+  {
+   "dispatch": "resume: next; the operator required a dry-run flag (WO-151-D004); the executor implemented it",
+   "class": "none",
+   "why": "The decision reference after the step marks it cited; the executor act is not an operator step."
+  },
+  {
+   "dispatch": "resume: next; open question for the operator: should the old flag stay as an alias?",
+   "class": "none",
+   "why": "A question put to the operator, not one the operator asked; no step yet."
+  },
+  {
+   "dispatch": "resume: next; the operator's standing default of high effort applied to every phase",
+   "class": "none",
+   "why": "A standing default is a reference, not a step."
+  },
+  {
+   "dispatch": "resume: next; a subagent picked the cheaper fixture set, then the executor took over its checks",
+   "class": "none",
+   "why": "Picked and took over are acts of a subagent and the executor, not the operator."
+  },
+  {
+   "dispatch": "resume: fix; applied the operator's correction as recorded in the WO-160 decisions",
+   "class": "none",
+   "why": "Recorded marks the correction as cited."
+  }
+ ]
+}

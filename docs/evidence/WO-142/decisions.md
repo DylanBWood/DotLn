@@ -67,7 +67,7 @@ private state that would obscure the original problem.
 {
   "id": "WO-142-D003",
   "date": "2026-09-19",
-  "dispatch": "resume: next; operator steering: follow the spirit of the order as best you can",
+  "dispatch": "resume: next; operator steering to follow the intent of the order as far as possible",
   "decision": "The on-demand prune command keeps a durable regular-file byte inventory beside each deleted retained lane, previews by default, and deletes only with --apply after rechecking its subject.",
   "evidence": ["docs/work-orders/WO-142-outstanding-cleanup.md row D1", "scripts/lib/harness-prune.mjs", "scripts/test-harness.mjs", "docs/final-reviews/WO-133/FINAL-002.md"],
   "rejected": ["Retaining every lane forever because the old preservation inventory lived only in memory would miss the order's intended cleanup.", "Deleting an unproven lane or overwriting a proof would lose recovery evidence.", "A recurring retention service or gate adds cost outside this order."],

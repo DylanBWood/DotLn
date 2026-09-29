@@ -624,17 +624,21 @@ export function planningFollowups(root, { cursor = null, all = false } = {}) {
   return bounded(page, next);
 }
 // Rows drop from the end until the page fits its budget; the continuation
-// then names the first row that was dropped.
-function bounded(page, next) {
+// then names the first row that was dropped. `plan failures` pages under the
+// same bound (WO-172).
+export function bounded(
+  page,
+  next,
+  row = "one follow-up",
+  require = requireFollowup,
+) {
   page.next = next();
   while (Buffer.byteLength(encode(page)) > 8192 && page.rows.length > 1) {
     page.rows.pop();
     page.next = next();
   }
-  requireFollowup(
-    Buffer.byteLength(encode(page)) <= 8192,
-    "one follow-up exceeds the planning page budget",
-  );
+  require(Buffer.byteLength(encode(page)) <=
+    8192, `${row} exceeds the planning page budget`);
   return page;
 }
 

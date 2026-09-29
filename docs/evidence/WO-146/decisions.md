@@ -164,7 +164,7 @@ still do not establish a session token total.
 {
   "id": "WO-146-D006",
   "date": "2026-09-20",
-  "dispatch": "Operator: i merged in a parallel work order; you'll need to update main and integrate changes",
+  "dispatch": "resume: next; operator direction: a parallel order had merged, so update main and integrate its changes",
   "decision": "Fetch main and tags; main was already clean and current at 67b4b188. Preserve the active work in the uniquely named stash WO-146 integration before main 67b4b188 20260920T062236Z, and back up ignored intake separately with the canonical backup helper. Fast-forward wo-146 from 37a729ca to 67b4b188, apply the stash by its message-selected object, and regenerate the conflicted harness artifacts and projections. Keep the stash and intake archive. No branch commit, new lifecycle event, review failure or repair dispatch is created. The existing minor classification remains unchanged.",
   "evidence": [
     "37a729ca5871cdc1b477fcd606e67b4d65b5ed9b",
@@ -311,7 +311,7 @@ runtime.
 {
   "id": "WO-146-D010",
   "date": "2026-09-20",
-  "dispatch": "resume: next; operator: main was also updated with a new work order, so integrate these changes please",
+  "dispatch": "resume: next; operator direction to integrate main, which another merged order had updated",
   "decision": "Preserve the current staged and unstaged work and ignored intake, fast-forward wo-146 from 67b4b188 to fetched main 19e706ad, reapply the named retained stash, and reconcile generated outputs and additive source changes. Retain the minor release classification and retime unpublished versions if upstream consumed them. Continue deterministic validation; launch no new Copilot probes or sessions and record no implementation-ready transition while interactive acceptance is missing.",
   "evidence": [
     "docs/product/07-execution-guide.md#Independent workflows and integration",
