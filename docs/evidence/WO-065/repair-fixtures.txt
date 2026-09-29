@@ -1,0 +1,29 @@
+✔ WO-064 AC1: publish refuses without an operator grant before any remote call (1920.472ms)
+✔ WO-064 AC1: a host-policy grant is not operator provenance (1652.867042ms)
+target publish gh stub transcript (temporary path normalized):
+--version
+auth status --hostname github.com
+pr create --repo github.com/dotln-fixture/target --head fix/fixture-text --base main --title fix: record the synthetic worker line --body-file <generated-PR-body>
+✔ WO-064 AC1/AC2: lint and target refusals name their rule; the granted publish pushes and opens the pull request with the pinned body (3307.10925ms)
+✔ WO-064 AC1 (VER-001 F1): a same-head acceptance matrix must verify this WorkOrder's criteria (2713.908042ms)
+✔ WO-157: publication runs no hook or repository configuration the target holds (2123.578792ms)
+✔ WO-064: the CLI names its usage for a malformed target request (45.326916ms)
+✔ WO-065 AC1: typed classes, correlation, roles and latest normalized-state dedup through the CLI (2145.240792ms)
+✔ WO-065 F1: actor types decide roles on every comment connection and pagination path (311.773084ms)
+✔ WO-065 AC2: every declared secret and URL form is refused without persisted text; safe peers survive (292.86625ms)
+✔ WO-065 AC1/AC2: all connections and nested thread comments paginate (444.638875ms)
+✔ WO-065 AC3: unknown PR, malformed JSON/fields, partial errors and gh failure append nothing (3060.392959ms)
+✔ WO-065: duplicate nodes, stalled pagination and concurrent writer refuse (472.221166ms)
+✔ WO-065 F2: malformed screened bodies remain refused items while safe peers survive (542.822417ms)
+✔ WO-065 F3: refused metadata stays local, preserves check states, and retains no rejected content (588.662625ms)
+✔ WO-065 F3: forge hosts incompatible with the screen refuse before gh (429.18725ms)
+✔ WO-065: draft comments stay transient, deleted authors and opaque padded ids remain readable, empty checks are valid (499.20375ms)
+✔ WO-065: a valid page over the default child-process buffer is decoded and stored (1052.333333ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 17
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 21716.574583

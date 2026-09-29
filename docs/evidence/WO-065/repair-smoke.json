@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-09-29T01:31:36.082Z",
+  "runner": "WO-065 repair; existing operator-authorized scratch publication; read-only remote calls",
+  "target": {
+    "repository": "github.com/<owner>/<scratch-repository>",
+    "number": "positive-integer",
+    "state": "OPEN"
+  },
+  "result": {
+    "firstAppended": false,
+    "secondAppended": false,
+    "headMatchesIndependentView": true,
+    "numberMatchesIndependentView": true,
+    "causationMatchesOpened": true,
+    "correlationMatchesOpened": true,
+    "checks": 0,
+    "comments": 0
+  },
+  "limit": "The retained PR has no populated review fixture; recorded synthetic tests establish F1-F3 classification and refusal behavior."
+}

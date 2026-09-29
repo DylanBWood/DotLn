@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-09-29T00:37:24.669Z",
+  "runner": "executor under explicit operator scratch-repository authorization",
+  "node": "v26.9.0",
+  "gh": "2.98.0",
+  "target": {
+    "repository": "github.com/<owner>/<scratch-repository>",
+    "number": "positive-integer",
+    "state": "OPEN"
+  },
+  "event": {
+    "type": "PullRequestStateObserved",
+    "actorId": "pull-request-observer",
+    "payloadKeys": [
+      "checks",
+      "comments",
+      "headSha",
+      "number",
+      "repositoryId"
+    ],
+    "repositoryIdShape": "github.com/<owner>/<repository>",
+    "headShaShape": "sha1-hex-40",
+    "headMatchesIndependentView": true,
+    "numberMatchesIndependentView": true,
+    "causationMatchesOpened": true,
+    "correlationMatchesOpened": true,
+    "appendedCount": 1,
+    "secondObservationAppendedCount": 0,
+    "checks": 0,
+    "comments": 0,
+    "classes": []
+  },
+  "limit": "This scratch PR may have no checks or review comments; recorded synthetic fixtures establish classification, pagination and privacy behavior."
+}
