@@ -20,6 +20,13 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-065 activation completion (2026-09-29):** assigned application `v0.55.0`,
+the next minor above observed local `v0.54.0`. The on-demand pull-request
+observer records screened checks and review comments in the publication log,
+with identical state suppressed. Script-side additions change no component
+package or dependency. Independent verification, final review and publication
+remain separate dispatches.
+
 **WO-116 activation completion (2026-09-28):** assigned application `v0.54.0`,
 the next minor above the observed local `v0.53.2` tag. `dotln audit --store
 <directory>` prints the audit fold's three projections for a store's retained

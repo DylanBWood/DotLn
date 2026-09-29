@@ -126,7 +126,12 @@ correlation. `repositoryId` is the validated `HOST/OWNER/REPO` push target; no
 URL is kept. The event follows a push of exactly the observed commit under an
 operator-provenance grant for `repo.push` and `pr.open`. It is a host effect
 observation, not a review or merge state; no reactor slice folds it yet, and
-WO-065 owns the first reader.
+WO-065 reads it with `npm run worktree -- observe-pr --store <episode-store>
+--number <N>`. Its correlated `PullRequestStateObserved { repositoryId,
+number, headSha, checks[], comments[] }` goes in the same log only when state
+changes. Checks carry name/state; comments carry role, class and resolution.
+WO-060 screens each comment against the forge host; refused text is omitted,
+with shape, field path and optional span retained. The command only reads GitHub.
 
 The source host accepts a compiled WorkOrder, artifact identity and supplied
 authority, with already-established authority evidence separate from required

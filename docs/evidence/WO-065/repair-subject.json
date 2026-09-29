@@ -1,0 +1,28 @@
+{
+  "recordedAt": "2026-09-29T01:38:23.620Z",
+  "codeIdentity": "ae532e8cbdb854aeb3f48be132bb502fa0549fb766485e8bdf865726a153957d",
+  "evidenceRef": "host-gate:ae532e8cbdb854aeb3f48be132bb502fa0549fb766485e8bdf865726a153957d:npm test",
+  "limit": "New observer and fixture remain untracked until final review stages them. These explicit SHA-256 values identify their executed bytes independently of the runner code identity.",
+  "files": [
+    {
+      "path": "scripts/lib/pull-request-observer.mjs",
+      "sha256": "bc6bc6849d108b39b394dfaaad39b139c9d6490952c6e161df9869a48b60e5d2"
+    },
+    {
+      "path": "scripts/test-target-publish.mjs",
+      "sha256": "5c6fc99fe450a8e535f9bdb6070dcdaf88adfc7bc45a1aabb633113b618a6113"
+    },
+    {
+      "path": "scripts/fixtures/target-publish/observation.json",
+      "sha256": "aee2909795112c755e83cfe3f27561bc3c2db8ff364db6d7d039b1bb5aac684e"
+    },
+    {
+      "path": "scripts/lib/github-repository.mjs",
+      "sha256": "3895c583e8fd1458e14200e1a5fd317761eee1c8e5a4637cea02d621e0273e70"
+    },
+    {
+      "path": "scripts/worktree.mjs",
+      "sha256": "fcc0e84eba1104f53579f3f45941fdea6363cc802171ab00af30d34cdc17f5f5"
+    }
+  ]
+}

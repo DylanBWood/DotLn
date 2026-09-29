@@ -22111,6 +22111,130 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-e62d0d2771185a38",
+      "key": "decision:docs/evidence/WO-065/decisions.md#wo-065-d008",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "36e829787a758a17403d950325e5145c3457eea84eef92330108fae3ba134124",
+          "ref": "docs/evidence/WO-065/decisions.md#wo-065-d008",
+          "title": "WO-065-D008: Planning: implement the personal workflow delegation profile specified in product 05: bind Claude/Codex enabled-mode evidence, minimum three distinct meaningful subagent contributions per",
+          "summary": "{ \"id\": \"WO-065-D008\", \"date\": \"2026-09-29\", \"dispatch\": \"ideation: during resume: next; operator requests minimum three subagents when each workflow mode is enabled and discretionary delegation when disabled\", \"decision\": \"Complete the document-only breakout: adopt the requested personal workflow policy in product 05, append its two specified ledger entries, and preserve the exact source in worktree-local ignored intake. Enabled means at least three distinct contributing agents over the active root workflow task; off means willing delegation with roughly zero to three as an expectation, not a cap. The counting scope is an explicit synthesis inference from the operator comparison against the",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Opened for planning by the operator ideation during WO-065. Implement the personal workflow profile from WO-065-D008 with setting readback, meaningful contribution counts, existing limits, and evidence for both enabled and disabled modes.",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-29T00:51:22.551Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-c327e33bc8eda813",
+      "key": "decision:docs/evidence/WO-065/decisions.md#wo-065-d009",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "e29aadb9ed94ec2c3ee13fa7a6b836f24df0e821403376e10676185228a92850",
+          "ref": "docs/evidence/WO-065/decisions.md#wo-065-d009",
+          "title": "WO-065-D009: WO-065 executor, next resume: fix, blocking VER-001 F1: decide automation from the actor type GraphQL returns (request __typename on every author; Bot is automation), decode the author ty",
+          "summary": "{ \"id\": \"WO-065-D009\", \"date\": \"2026-09-29\", \"dispatch\": \"resume: verify\", \"decision\": \"Fail VER-001 on criterion 1 (F1). The declared automation pattern, a case-insensitive [bot] login suffix, is matched against GraphQL author { login }. GitHub's GraphQL API returns a Bot actor's login without that suffix, so no real automated review comment can reach role automation or class automated-review; every one is stored as reviewer/human-review. The committed fixture's automation author, fixture-agent[bot], is a login shape the queried API does not return, so the passing criterion-1 test does not establish the classification over recorded response shapes. The verifier leaves implementation unchang",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Implemented by the WO-065 repair under resume: fix; D011-D013 and repair-fixtures.txt record passing F1-F3 regressions and full gates. Independent re-verification remains the next phase.",
+          "reopenWhen": "Independent re-verification finds an unresolved case in VER-001 F1-F3.",
+          "targets": [
+            "WO-065"
+          ],
+          "at": "2026-09-29T01:38:52.542Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-0b67dbaface3d750",
+      "key": "decision:docs/evidence/WO-065/decisions.md#wo-065-d010",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "169ff0cfe703175661960d4cd4251858ed8126b0bb8271711ad7ba38c9b0d1c4",
+          "ref": "docs/evidence/WO-065/decisions.md#wo-065-d010",
+          "title": "WO-065-D010: WO-065 repair within its Boy Scout bound, otherwise planning before WO-066 consumes observations: keep one unreadable comment from blocking a whole observation. Store a comment whose body",
+          "summary": "{ \"id\": \"WO-065-D010\", \"date\": \"2026-09-29\", \"dispatch\": \"resume: verify\", \"decision\": \"Board two defects outside the declared criteria, with reproductions, as non-blocking (VER-001 F2 and F3). F2: a comment body that decodes as JSON but holds a C0 control character other than tab, line feed or carriage return (for example an ANSI escape) is malformed for WO-060's discussion text, and the observer refuses the whole observation, so no other comment is stored. F3: a metadata string refused by the screen (an inline comment path, a check name or a node id) refuses the whole observation, as D005 chose; an ordinary repository path that begins with www., such as www.example.org/index.html, trips ww",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Implemented by the WO-065 repair under resume: fix; D011-D013 and repair-fixtures.txt record passing F1-F3 regressions and full gates. Independent re-verification remains the next phase.",
+          "reopenWhen": "Independent re-verification finds an unresolved case in VER-001 F1-F3.",
+          "targets": [
+            "WO-065"
+          ],
+          "at": "2026-09-29T01:38:52.575Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-7a8e67d555cccc01",
+      "key": "decision:docs/evidence/WO-065/decisions.md#wo-065-d014",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "e0c3b5dff7434179aa5a3d1342839145b7e2ed085ed8c22e189c817846f9b1cb",
+          "ref": "docs/evidence/WO-065/decisions.md#wo-065-d014",
+          "title": "WO-065-D014: Planning, before WO-123 composes observe-pr into a resident vertical or WO-066 relies on complete observations (or the WO-065 final review within its Boy Scout bound): F4, decode every re",
+          "summary": "{ \"id\": \"WO-065-D014\", \"date\": \"2026-09-29\", \"dispatch\": \"resume: verify\", \"decision\": \"Pass VER-002: the repair holds VER-001's F1-F3 rules and criteria 1-6 are met. Board two defects outside the declared criteria, with reproductions, as non-blocking (VER-002 F4 and F5). F4: a response string the observer passes back to gh as an argument (a connection's pageInfo.endCursor, or a review thread id when that thread's comments paginate) is decoded as any string; one holding U+0000 makes spawnSync throw ERR_INVALID_ARG_VALUE, and the CLI prints that message, which quotes the leading part of the response value on stderr, without the refusal prefix or a field path. Nothing is appended and the lock ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Opened for planning by WO-065's final review: F4 (a NUL byte in a pagination cursor or paged thread id sent back to gh echoes the value's leading bytes on stderr) and F5 (a token run of millions of characters overflows WO-060's screen and refuses the whole observation) are behavioral repairs, and a reviewer never writes a behavioral fix and certifies it (product 07 section Independent workflows and integration). Both fail closed with nothing stored. Due before WO-123 composes observe-pr into a resident vertical or WO-066 relies on complete observations; WO-060's C1-control and bidirectional-override question rides with it. [WO-065 final review (docs/final-reviews/WO-065/FINAL-001.md)]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-29T02:27:47.666Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-b20c90983e966131",
+      "key": "decision:docs/evidence/WO-065/decisions.md#wo-065-d015",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "11428d1af9b66f4e73d9ef3464c6410c09c07fcb0124a042cb14b669df880e1a",
+          "ref": "docs/evidence/WO-065/decisions.md#wo-065-d015",
+          "title": "WO-065-D015: Planning, before WO-066 relies on automated review text or classes: judge (a) whether an operator-declared list of machine-user logins counts as automation beside the GraphQL Bot type, an",
+          "summary": "{ \"id\": \"WO-065-D015\", \"date\": \"2026-09-29\", \"dispatch\": \"resume: final review\", \"decision\": \"Pass FINAL-001 with no finding routed to repair, and record what a live run on populated pull requests showed, since the operator's scratch pull request has no checks or comments. The observer read three public GitHub pull requests read-only, from a synthetic PullRequestOpened in session scratch, and stored exactly the items a separate raw GraphQL read found, with the classes the order names: 283 checks over three pages, failing checks as ci-failure, Bot authors as automation, resolved threads as resolved, a second run appending nothing. Two usefulness limits follow from declared choices rather than",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Opened for planning by WO-065's final review: a live read of three populated public pull requests stored a User-typed merge bot as reviewer and human-review, and 12 of 21 real Bot review items without text because they link off the forge host. Both follow from declared choices (the Bot type, operator-review assumption 3), so neither fails WO-065; planning judges declared machine-user logins and admitted hosts before WO-066 relies on automated review text or classes (WO-065-D015). [WO-065 final review (docs/final-reviews/WO-065/FINAL-001.md)]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-29T02:32:08.583Z"
+        }
+      ]
     }
   ]
 }
