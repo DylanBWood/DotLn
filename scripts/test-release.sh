@@ -530,16 +530,27 @@ printf '%s\n' '{"schemaVersion":1,"type":"WorkOrderActivated","workOrderId":"WO-
 printf '%s\n' '{"schemaVersion":1,"type":"WorkOrderActivated","workOrderId":"WO-100","workOrderPath":"docs/work-orders/WO-100-fixture.md"}' >"$main/docs/control/orders/WO-100.jsonl"
 write_control_events "$main/docs/control/orders/WO-101.jsonl" WO-101 docs/work-orders/WO-101-fixture.md
 cp -R "$main/docs/control" "$fixture/control-before"
+cp "$main/docs/product/06-roadmap.md" "$fixture/roadmap-before"
 git -C "$main" for-each-ref >"$fixture/refs-before"
+# WO-086: --integration belongs to a pending worktree integrate, whose decision
+# records the collision; without one it refuses before any write.
+if integration_only="$(release_command prepare --local --integration 2>&1)"; then exit 1; fi
+grep -Fq 'release prepare --integration is worktree integrate'"'"'s and needs its pending integration of WO-099' <<<"$integration_only"
+cmp "$main/docs/product/06-roadmap.md" "$fixture/roadmap-before"
+test ! -e "$main/docs/evidence/WO-099/decisions.md"
 prepared="$(release_command prepare --local)"
-grep -Fq 'Retimed WO-099: v0.2.0 → v0.2.1' <<<"$prepared"
-grep -Fq 'WO-099 collision retiming' "$main/docs/product/06-roadmap.md"
+grep -Fxq 'Retimed WO-099: v0.2.0 → v0.2.1 above the observed release baseline v0.2.0.' <<<"$prepared"
+# WO-086: the collision is the order's decision; no product document changes.
+grep -Fxq 'Recorded WO-099-D001 in docs/evidence/WO-099/decisions.md.' <<<"$prepared"
+grep -Fq '"superseded target v0.2.0"' "$main/docs/evidence/WO-099/decisions.md"
+cmp "$main/docs/product/06-roadmap.md" "$fixture/roadmap-before"
 diff -r "$main/docs/control" "$fixture/control-before"
 git -C "$main" for-each-ref >"$fixture/refs-after"
 cmp "$fixture/refs-before" "$fixture/refs-after"
-for written in docs/work-orders/WO-099-fixture.md README.md docs/product/06-roadmap.md; do
+for written in docs/work-orders/WO-099-fixture.md README.md docs/evidence/WO-099/decisions.md; do
   grep -Fxq "  $written" <<<"$prepared"
 done
+if grep -Fq 'docs/product/' <<<"$prepared"; then exit 1; fi
 prepared_again="$(release_command prepare --local)"
 grep -Fq 'no files changed' <<<"$prepared_again"
 # WO-160: an unchanged version can still change the process meter.
@@ -575,7 +586,16 @@ if (others.length || row.workOrder !== "WO-099" || guardRefusals !== 1 || stopRe
 ' "$main/docs/evidence/WO-099/meta.json"
 grep -Fq '| Corrections | Directions |' "$main/docs/final-reviews/WO-099/PR.md"
 release_command check-surfaces --local >/dev/null
-printf 'release preparation CLI preserved three independent control segments and all Git refs\n'
+# WO-086: a placeholder heading is assigned from the latest tag and recorded.
+printf '# WO-099 — fixture (version assigned at activation)\n\n**Release classification:** patch. Existing scope.\n\n**Objective:** Fixture retiming.\n' >"$main/docs/work-orders/WO-099-fixture.md"
+write_release_block "$main" v0.2.0
+assigned="$(release_command prepare --local)"
+grep -Fxq 'Assigned WO-099: v0.2.1, the next patch above the observed release baseline v0.2.0.' <<<"$assigned"
+grep -Fxq 'Recorded WO-099-D002 in docs/evidence/WO-099/decisions.md.' <<<"$assigned"
+head -1 "$main/docs/work-orders/WO-099-fixture.md" | grep -Fxq '# WO-099 — fixture (v0.2.1)'
+cmp "$main/docs/product/06-roadmap.md" "$fixture/roadmap-before"
+release_command check-surfaces --local >/dev/null
+printf 'release preparation CLI recorded its collision and assignment as decisions, preserved three independent control segments, all Git refs and the roadmap\n'
 }
 
 release_case_license_surfaces() {

@@ -1,7 +1,15 @@
-import { docPath } from "./config.mjs";
-import { readFileSync, realpathSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
-import { runGit } from "./git.mjs";
+import { docRelative } from "./config.mjs";
+import {
+  lstatSync,
+  mkdirSync,
+  readFileSync,
+  realpathSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
+import { dirname, join, sep } from "node:path";
+import { runGit, runGitPathList } from "./git.mjs";
+import { json } from "./helpers.mjs";
 import { containedRegularFile, workOrderAuthorityPath } from "./paths.mjs";
 import {
   compareVersions,
@@ -9,8 +17,65 @@ import {
   strictVersionsIn,
 } from "./release-records.mjs";
 
+// The heading an order carries until its target is assigned.
+export const activationPlaceholder = "(version assigned at activation)";
+
+const dispatches = {
+  active: "next",
+  "ready-to-verify": "verify",
+  verifying: "verify",
+  "needs-fix": "fix",
+  repairing: "fix",
+  verified: "final review",
+  "final-review": "final review",
+};
+
+// Git reports the record unmerged, or an authored resolution kept markers.
+// `worktree integrate`'s decision stub applies the same test (WO-086).
+export const decisionsConflicted = (root, path, text) =>
+  runGitPathList(root, [
+    "diff",
+    "--name-only",
+    "--diff-filter=U",
+    "-z",
+    "--",
+    path,
+  ]).length > 0 ||
+  (text !== undefined && /^<{7}(?: |$)[\s\S]*^>{7}(?: |$)/m.test(text));
+
+// A dangling symlink is present too: nothing is written through one.
+const present = (path) => {
+  try {
+    lstatSync(path);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+function appendDecision(before, workOrderId, row) {
+  const used = [
+    ...before.matchAll(new RegExp(`${workOrderId}-D(\\d{3})`, "g")),
+  ].map((match) => Number(match[1]));
+  const id = `${workOrderId}-D${String(Math.max(0, ...used) + 1).padStart(3, "0")}`;
+  return {
+    id,
+    text: `${before.trimEnd()}\n\n## ${id}\n\n\`\`\`json\n${json({ id, ...row })}\`\`\`\n`,
+  };
+}
+
 // All inputs are checked before any edit. No lifecycle or publication writes.
-export function planReleasePreparation(root, state, latest, date) {
+// A missing target is assigned and a collision retimed in the heading and the
+// README version claim only; the order's decisions record says why (WO-086).
+// Under `integration`, `worktree integrate` records a collision in its own
+// integration decision, so none is appended here.
+export function planReleasePreparation(
+  root,
+  state,
+  latest,
+  date,
+  { integration = false, observation = "local tags" } = {},
+) {
   if (
     realpathSync(runGit(root, ["rev-parse", "--show-toplevel"])) !==
     realpathSync(root)
@@ -22,17 +87,7 @@ export function planReleasePreparation(root, state, latest, date) {
       state.workOrderId.toLowerCase()
   )
     throw new Error("release prepare requires the selected wo-NNN worktree");
-  if (
-    ![
-      "active",
-      "ready-to-verify",
-      "verifying",
-      "needs-fix",
-      "repairing",
-      "verified",
-      "final-review",
-    ].includes(state.phase)
-  )
+  if (!Object.hasOwn(dispatches, state.phase))
     throw new Error("release prepare requires an unpublished, open work order");
   if (
     !/^\d{4}-\d{2}-\d{2}$/.test(date) ||
@@ -46,26 +101,22 @@ export function planReleasePreparation(root, state, latest, date) {
     state.workOrderId,
     state.workOrderPath,
   );
-  const paths = [
-    authorityPath,
-    join(root, "README.md"),
-    docPath(root, "product", "06-roadmap.md"),
-  ];
+  const paths = [authorityPath, join(root, "README.md")];
   for (const path of paths)
     if (!containedRegularFile(path, root) || realpathSync(path) !== path)
       throw new Error(
         "release prepare requires contained regular source files",
       );
-  const [authority, readme, roadmap] = paths.map((path) =>
-    readFileSync(path, "utf8"),
-  );
+  const [authority, readme] = paths.map((path) => readFileSync(path, "utf8"));
   const heading = authority.split("\n", 1)[0];
   const versions = strictVersionsIn(heading);
-  if (versions.length !== 1 || !semver(versions[0]))
+  const unassigned =
+    versions.length === 0 && heading.trimEnd().endsWith(activationPlaceholder);
+  if (!unassigned && (versions.length !== 1 || !semver(versions[0])))
     throw new Error(
-      "release prepare requires exactly one strict version in the work-order heading",
+      `release prepare requires exactly one strict version in the work-order heading, or the ${activationPlaceholder} placeholder`,
     );
-  const previous = versions[0];
+  const previous = unassigned ? undefined : versions[0];
   const declarations = [
     ...authority.matchAll(/^\*\*Release classification:\*\*[^\n]*$/gm),
   ];
@@ -91,16 +142,61 @@ export function planReleasePreparation(root, state, latest, date) {
   const finish = lines.indexOf(end);
   const block = lines.slice(start, finish).join("\n");
   const claims = strictVersionsIn(block);
-  if (claims.length !== 1 || claims[0] !== previous)
+  if (claims.length !== 1 || (!unassigned && claims[0] !== previous))
     throw new Error(
-      "release prepare requires one README version matching the work-order target",
+      unassigned
+        ? "release prepare requires one README version claim to replace"
+        : "release prepare requires one README version matching the work-order target",
     );
-  if (!/^## Release boundary$/m.test(roadmap))
+  if (unassigned && !latest)
     throw new Error(
-      "release prepare requires the roadmap Release boundary section",
+      "release prepare cannot assign a target without an observed release tag; assign the heading and README claim by hand",
     );
-  if (!latest || compareVersions(previous, latest) > 0)
-    return { previous, target: previous, classification, latest, edits: [] };
+  // The order's decisions record holds any assignment or collision this
+  // command records (WO-086). It is refused while conflicted in every mode,
+  // since the meter reads it too, and a record created here must land
+  // inside the repository.
+  const decisionsPath = docRelative(
+    root,
+    "evidence",
+    `${state.workOrderId}/decisions.md`,
+  );
+  const decisionsFile = join(root, decisionsPath);
+  let ancestor = dirname(decisionsFile);
+  while (!present(ancestor)) ancestor = dirname(ancestor);
+  const contained = () => {
+    try {
+      const inside = realpathSync(ancestor);
+      return inside.startsWith(`${realpathSync(root)}${sep}`);
+    } catch {
+      return false;
+    }
+  };
+  if (
+    present(decisionsFile)
+      ? !containedRegularFile(decisionsFile, root)
+      : !contained()
+  )
+    throw new Error(
+      `release prepare requires ${decisionsPath} to be a contained regular file`,
+    );
+  const recorded = present(decisionsFile)
+    ? readFileSync(decisionsFile, "utf8")
+    : undefined;
+  if (decisionsConflicted(root, decisionsPath, recorded))
+    throw new Error(
+      `release prepare refuses while ${decisionsPath} has an authored conflict; resolve it, stage it with git add -- ${decisionsPath}, then rerun ${integration ? `npm run worktree -- integrate ${state.workOrderId} --continue` : "npm run release -- prepare"}. Nothing was written.`,
+    );
+  if (!unassigned && (!latest || compareVersions(previous, latest) > 0))
+    return {
+      previous,
+      target: previous,
+      classification,
+      latest,
+      assigned: false,
+      decision: null,
+      edits: [],
+    };
 
   const parts = semver(latest);
   const axis = { major: 0, minor: 1, patch: 2 }[classification];
@@ -111,47 +207,97 @@ export function planReleasePreparation(root, state, latest, date) {
     throw new Error(
       "release prepare version exceeds the supported integer range",
     );
-  const versionPattern = new RegExp(
-    `(?<![A-Za-z0-9._+\\-])${previous.replaceAll(".", "\\.")}(?![A-Za-z0-9._+\\-])`,
-    "u",
+  const boundary = (version) =>
+    new RegExp(
+      `(?<![A-Za-z0-9._+\\-])${version.replaceAll(".", "\\.")}(?![A-Za-z0-9._+\\-])`,
+      "u",
+    );
+  const newHeading = unassigned
+    ? `${heading.trimEnd().slice(0, -activationPlaceholder.length)}(${target})`
+    : heading.replace(boundary(previous), target);
+  lines.splice(
+    start,
+    finish - start,
+    block.replace(boundary(claims[0]), target),
   );
-  const newHeading = heading.replace(versionPattern, target);
-  lines.splice(start, finish - start, block.replace(versionPattern, target));
-  const note = `**${state.workOrderId} collision retiming (${date}):** unpublished target \`${previous}\` is superseded by \`${target}\` under the existing ${classification} classification because the observed release baseline is \`${latest}\`. Scope, acceptance, component versions, and published tags are unchanged by this retiming.\n`;
-  const activation = new RegExp(
-    `^\\*\\*${state.workOrderId} activation completion[^\\n]*(?:\\n(?!\\n)[^\\n]+)*\\n?`,
-    "m",
-  ).exec(roadmap);
-  const newRoadmap = activation
-    ? roadmap.slice(0, activation.index + activation[0].length).trimEnd() +
-      "\n\n" +
-      note +
-      roadmap.slice(activation.index + activation[0].length)
-    : roadmap.replace(
-        /^## Release boundary\n/m,
-        `## Release boundary\n\n${note}`,
-      );
-  const contents = [
-    newHeading + authority.slice(heading.length),
-    lines.join("\n"),
-    newRoadmap,
+
+  // The one record of an assignment or a collision: a decision in the
+  // order's evidence, never a product-document or README paragraph.
+  const reason = unassigned
+    ? {
+        decision: `Assign application target ${target}, the next ${classification} above the observed release baseline ${latest}, to the heading and the README version claim.`,
+        evidence: [
+          `release baseline ${latest} (${observation})`,
+          `${classification} classification declared in ${state.workOrderPath}`,
+        ],
+        rejected: [
+          {
+            option: "An activation-completion paragraph in the roadmap",
+            reason:
+              "The tag is the record and the roadmap's release history is generated from tags (WO-086); this decision keeps the base and the classification.",
+          },
+        ],
+        reopenWhen:
+          "The observed baseline or the classification changes before publication; a later collision is recorded as its own decision.",
+      }
+    : {
+        decision: `Retime unpublished application target ${previous} to ${target}, the next ${classification} above the observed release baseline ${latest}, in the heading and the README version claim. Scope, acceptance, component versions and published tags are unchanged.`,
+        evidence: [
+          `release baseline ${latest} (${observation})`,
+          `superseded target ${previous}`,
+          `new target ${target}`,
+        ],
+        rejected: [
+          {
+            option: "A dated roadmap or README paragraph",
+            reason:
+              "A version collision is recorded once, as this decision (WO-086); product documents and the README carry only the version claim.",
+          },
+        ],
+        reopenWhen:
+          "A collision changes scope, acceptance, component versions or a published tag, or needs a hand step beyond this record.",
+      };
+  const decision =
+    integration && !unassigned
+      ? null
+      : appendDecision(
+          recorded ?? `# ${state.workOrderId} decisions\n`,
+          state.workOrderId,
+          {
+            date,
+            dispatch: `resume: ${dispatches[state.phase]}; release prepare`,
+            ...reason,
+          },
+        );
+  const edits = [
+    {
+      path: authorityPath,
+      before: authority,
+      after: newHeading + authority.slice(heading.length),
+    },
+    { path: paths[1], before: readme, after: lines.join("\n") },
   ];
+  if (decision)
+    edits.push({ path: decisionsFile, before: recorded, after: decision.text });
   return {
     previous,
     target,
     classification,
     latest,
-    edits: paths.map((path, index) => ({
-      path,
-      before: [authority, readme, roadmap][index],
-      after: contents[index],
-    })),
+    assigned: unassigned,
+    decision: decision?.id ?? null,
+    edits,
   };
 }
 
+// An edit whose `before` is undefined creates its file; it must still be absent.
 export function applyReleasePreparation(plan, write = writeFileSync) {
   for (const edit of plan.edits)
-    if (readFileSync(edit.path, "utf8") !== edit.before)
+    if (
+      edit.before === undefined
+        ? present(edit.path)
+        : readFileSync(edit.path, "utf8") !== edit.before
+    )
       throw new Error(
         "release preparation source changed before write; rerun preparation",
       );
@@ -160,10 +306,14 @@ export function applyReleasePreparation(plan, write = writeFileSync) {
     for (const edit of plan.edits) {
       // Include the current file in recovery if a writer fails after truncation.
       written.push(edit);
+      if (edit.before === undefined)
+        mkdirSync(dirname(edit.path), { recursive: true });
       write(edit.path, edit.after);
     }
   } catch (error) {
-    for (const edit of written.reverse()) writeFileSync(edit.path, edit.before);
+    for (const edit of written.reverse())
+      if (edit.before === undefined) rmSync(edit.path, { force: true });
+      else writeFileSync(edit.path, edit.before);
     throw error;
   }
   return written.map((edit) => edit.path);

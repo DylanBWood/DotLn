@@ -665,7 +665,7 @@ Verification judges its recorded subject. When upstream moves, the integrating a
 
 Run the affected executable checks and release/publication preflights on the integrated tree. Feedback evidence uses its declared dependency projection, so workspace release versions and license labels do not demand another live audit. Source, executable configuration, dependency, contract, or acceptance changes still need evidence for the claims they affect. If an integration resolution requires new behavioral code, or a check reveals an actual acceptance defect, return that bounded finding through repair and fresh independent verification; unchanged claims are carried forward with their original evidence. A reviewer never writes a behavioral fix and certifies it. Integration bookkeeping alone must not create a new `VER-NNN`, a failed `FINAL-NNN`, or a repair event.
 
-The existing resume phrases remain the operator interface. The actor performing a handoff completes authorized integration chores within that session. `npm run release -- prepare` handles a colliding target, the README claim, and a dated roadmap note under the recorded release classification. It uses origin's tag observation; `--local` deliberately uses only the fetched local tag snapshot. It never publishes, alters component versions, or appends control events. A missing component bump against the verified branch baseline remains an executor defect. A component bump that was valid at verification may be retimed during integration if upstream consumed the same version, preserving its already-declared compatibility impact and recording that evidence; this is distinct from omitting the original bump. `npm test` runs `check-surfaces --local` before expensive suites against annotated local releases in the subject's own `HEAD` ancestry. Worktrees share tag refs, so an unintegrated sibling's newer tag is excluded from this verification baseline. `worktree publish` / `release close` retain the authoritative remote check on the integrated result. No command acquires authority from a sibling's phase.
+The existing resume phrases remain the operator interface. The actor performing a handoff completes authorized integration chores within that session. `npm run release -- prepare` handles a colliding target, the README claim, and the integration decision under the recorded release classification. It uses origin's tag observation; `--local` deliberately uses only the fetched local tag snapshot. It never publishes, alters component versions, or appends control events. A missing component bump against the verified branch baseline remains an executor defect. A component bump that was valid at verification may be retimed during integration if upstream consumed the same version, preserving its already-declared compatibility impact and recording that evidence; this is distinct from omitting the original bump. `npm test` runs `check-surfaces --local` before expensive suites against annotated local releases in the subject's own `HEAD` ancestry. Worktrees share tag refs, so an unintegrated sibling's newer tag is excluded from this verification baseline. `worktree publish` / `release close` retain the authoritative remote check on the integrated result. No command acquires authority from a sibling's phase.
 
 Run `npm run worktree -- integrate WO-NNN` inside the matching worktree
 ([WO-079](../work-orders/WO-079-worktree-sync.md), the successor to WO-033's
@@ -1463,9 +1463,10 @@ claim evidence or releases it does not have.
   complete them or record an explicit disposition, with a public FUP for deferrals.
 - **Release assignment is opt-out.** Prepare the classified next release and
   update its source claim unless the operator specifies no release
-  [operator default, 2026-09-04]. Complete a missing activation target under
-  `06-roadmap.md` §Release boundary and record the base/classification; do not
-  repeatedly ask for routine release assignment. Retiming an existing target
+  [operator default, 2026-09-04]. `npm run release -- prepare` completes a missing
+  activation target in the heading and README claim and records the base and
+  classification in the order's decisions; do not repeatedly ask for routine
+  release assignment. Retiming an existing target
   and publishing still follow their separate authority rules.
 - **Automate recurring procedure.** Prefer an existing executable helper for
   a mechanical step [operator direction, 2026-09-04]. When authorized work

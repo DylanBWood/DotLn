@@ -249,36 +249,6 @@
         "kind": "receipt",
         "heading": "v0100--real-disposable-worker---wo-009",
         "label": "Implementation receipt (2026-09-05):"
-      },
-      {
-        "kind": "receipt",
-        "heading": "v0120--independent-verification---wo-010",
-        "label": "WO-010 activation completion and implementation receipt (2026-09-06):"
-      },
-      {
-        "kind": "receipt",
-        "heading": "v0130--feedback-compiler-v1-ten-units---wo-011",
-        "label": "WO-011 source (2026-09-06):"
-      },
-      {
-        "kind": "receipt",
-        "heading": "post-10-horizons",
-        "label": "WO-039 activation completion (2026-09-07):"
-      },
-      {
-        "kind": "receipt",
-        "heading": "post-10-horizons",
-        "label": "WO-039 collision retiming (2026-09-07):"
-      },
-      {
-        "kind": "receipt",
-        "heading": "post-10-horizons",
-        "label": "WO-039 integration note (2026-09-08):"
-      },
-      {
-        "kind": "receipt",
-        "heading": "post-10-horizons",
-        "label": "WO-047 replay projection (2026-09-15):"
       }
     ],
     "07-execution-guide.md": [],

@@ -1,4 +1,4 @@
-# WO-086 — Generated release history: `release list --markdown` renders the roadmap's Release boundary from local annotated tags and work-order headers between checked markers, the hand-kept assignment and collision notes move verbatim to a dated planning receipt, and `release prepare` records a collision as the order's typed decision instead of roadmap and README prose (version assigned at activation)
+# WO-086 — Generated release history: `release list --markdown` renders the roadmap's Release boundary from local annotated tags and work-order headers between checked markers, the hand-kept assignment and collision notes move verbatim to a dated planning receipt, and `release prepare` records a collision as the order's typed decision instead of roadmap and README prose (v0.56.1)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
@@ -165,6 +165,13 @@ verbatim in one receipt.
 `release prepare` change; the docs check's registered exemption; the
 write-backs below.
 
+**Authorized repair scope (2026-09-29, WO-086-D016):** the operator's
+`scope expand: merge main in` includes canonical `worktree integrate`
+during this repair, its conflict resolutions and regenerated projections,
+and affected checks on the integrated subject. Preserve the original
+verification report and recovery material; assess carried-forward claims
+explicitly and retain the retired release notes byte for byte.
+
 **Acceptance criteria (all required)**
 
 1. The generated table equals the recorded tags joined to their orders
@@ -192,7 +199,9 @@ write-backs below.
    baseline for 06 holds no receipt shape under Release boundary. Product
    06's counted bytes are recorded before and after; its entry in
    `doc-ceilings.json` equals the counted bytes at landing plus two per
-   cent and does not exceed its entry at the order's base. The bytes
+   cent and does not exceed its entry at the order's base, except by the
+   standing release policy that stays counted under §Release boundary
+   (operator authorization, 2026-09-29, WO-086-D004). The bytes
    the heading exemption excluded (63,183 at `4c34b332`, 68,433 at
    `5f3849ec`) were never counted, so the ceiling does not fall by them
    (WO-085 D009 O3).

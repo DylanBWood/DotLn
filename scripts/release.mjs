@@ -66,6 +66,10 @@ import {
 import { executorWriterRelease } from "./lib/executor-handoff.mjs";
 import { releaseListCache } from "./lib/release-list-cache.mjs";
 import {
+  renderReleaseHistory,
+  writeReleaseHistory,
+} from "./lib/release-history.mjs";
+import {
   humanLayerFromAnnotation,
   manifestFromAnnotation,
   releaseAnnotations,
@@ -76,6 +80,7 @@ import {
   historicalWorkOrders,
   humanLayerFromTag,
   isDotLnRelease,
+  localReleaseRecords,
   localTags,
   manifestFromTag,
   manifestWorkOrders,
@@ -2238,10 +2243,38 @@ const main = async () => {
     return result;
   }
   if (action === "prepare") {
-    if (args.length > 1 || (args.length === 1 && args[0] !== "--local"))
-      throw new Error("usage: release prepare [--local]");
+    if (
+      args.some((arg) => !["--local", "--integration"].includes(arg)) ||
+      new Set(args).size !== args.length
+    )
+      throw new Error("usage: release prepare [--local] [--integration]");
     const localOnly = args.includes("--local");
     const state = parseControlState(toolRoot);
+    // `worktree integrate` passes --integration while its integration
+    // decision is still to be written; that decision records a collision, so
+    // this command appends no second one (WO-086). Anywhere else the flag
+    // would leave the collision unrecorded, so it needs that pending receipt.
+    if (args.includes("--integration")) {
+      let pendingIntegration;
+      try {
+        pendingIntegration = JSON.parse(
+          readFileSync(
+            docPath(toolRoot, "control", "local", "integration.json"),
+            "utf8",
+          ),
+        );
+      } catch {
+        pendingIntegration = undefined;
+      }
+      if (
+        pendingIntegration?.workOrder !== state.workOrderId ||
+        pendingIntegration.complete !== false ||
+        pendingIntegration.stage !== "applied"
+      )
+        throw new Error(
+          `release prepare --integration is worktree integrate's and needs its pending integration of ${state.workOrderId ?? "the selected order"}; run npm run release -- prepare --local without it`,
+        );
+    }
     const latest = latestVersion(
       localOnly ? localTags(toolRoot) : remoteTags(toolRoot),
     );
@@ -2250,17 +2283,24 @@ const main = async () => {
       state,
       latest,
       new Date().toISOString().slice(0, 10),
+      {
+        integration: args.includes("--integration"),
+        observation: localOnly ? "local tags" : "origin tags",
+      },
     );
-    const written = applyReleasePreparation(plan);
+    // The meter reads every decisions record; read it before any edit, so an
+    // unreadable record refuses with nothing written (WO-086).
+    const metering = existsSync(docPath(toolRoot, "control", "budgets.json"));
+    const meterModule = metering ? await import("./lib/meta.mjs") : undefined;
+    const meta = metering ? await meterModule.collectMeta(toolRoot) : undefined;
+    const ancillary = [];
     let snapshotLine = "";
-    if (existsSync(docPath(toolRoot, "control", "budgets.json"))) {
-      const { collectMeta, renderMetaTable, writeOrderSnapshot } =
-        await import("./lib/meta.mjs");
-      const meta = await collectMeta(toolRoot);
+    if (metering) {
+      const { renderMetaTable, writeOrderSnapshot } = meterModule;
       // WO-170: the order's bounded meter snapshot, from the same collection,
       // written only where the order's session journals are.
       const snapshot = writeOrderSnapshot(toolRoot, meta, state.workOrderId);
-      if (snapshot.written) written.push(join(toolRoot, snapshot.path));
+      if (snapshot.written) ancillary.push(join(toolRoot, snapshot.path));
       snapshotLine = snapshot.reason
         ? `Meter snapshot not written: ${snapshot.reason}.\n`
         : `Meter snapshot: ${snapshot.path}, ${snapshot.bytes} bytes.\n`;
@@ -2285,11 +2325,20 @@ const main = async () => {
       if (!existsSync(path) || next !== source) {
         mkdirSync(dirname(path), { recursive: true });
         writeFileSync(path, next);
-        written.push(path);
+        ancillary.push(path);
       }
     }
+    // Ancillary filesystem outputs must succeed before the target changes.
+    // A failed output then leaves the original collision inputs for retry;
+    // the plan's own writer restores any partial core edit (WO-086 F1).
+    const written = [...applyReleasePreparation(plan), ...ancillary];
+    const outcome = !plan.edits.length
+      ? `${state.workOrderId} target ${plan.target} remains current.`
+      : plan.assigned
+        ? `Assigned ${state.workOrderId}: ${plan.target}, the next ${plan.classification} above the observed release baseline ${plan.latest}.`
+        : `Retimed ${state.workOrderId}: ${plan.previous} → ${plan.target} above the observed release baseline ${plan.latest}.`;
     process.stdout.write(
-      `${plan.edits.length ? `Retimed ${state.workOrderId}: ${plan.previous} → ${plan.target}.` : `${state.workOrderId} target ${plan.target} remains current.`}\n${written.length ? `Files changed:\n${written.map((path) => `  ${relative(toolRoot, path)}`).join("\n")}` : "no files changed."}\n${snapshotLine}Tag observation: ${localOnly ? "local snapshot only" : "origin"}.\n`,
+      `${outcome}\n${plan.decision ? `Recorded ${plan.decision} in ${relative(toolRoot, plan.edits.at(-1).path)}.\n` : ""}${written.length ? `Files changed:\n${written.map((path) => `  ${relative(toolRoot, path)}`).join("\n")}` : "no files changed."}\n${snapshotLine}Tag observation: ${localOnly ? "local snapshot only" : "origin"}.\n`,
     );
     return;
   }
@@ -2340,8 +2389,27 @@ const main = async () => {
     return renderPublishedNotes(tag);
   }
   if (action === "list") {
-    if (args.length !== 0) throw new Error("usage: release list");
-    return listPublishedReleases();
+    if (args.length === 0) return listPublishedReleases();
+    // WO-086: the roadmap's generated release history. The default listing
+    // above is unchanged; the console parses its bytes.
+    if (args.length === 1 && args[0] === "--markdown") {
+      process.stdout.write(
+        `${renderReleaseHistory(toolRoot, localReleaseRecords(toolRoot))}\n`,
+      );
+      return;
+    }
+    if (
+      args.length === 2 &&
+      args[0] === "--markdown" &&
+      args[1] === "--write"
+    ) {
+      const written = writeReleaseHistory(toolRoot);
+      process.stdout.write(
+        `${written.changed ? "Wrote" : "Unchanged"} ${written.path}: release history of ${written.tags} local annotated release tags.\n`,
+      );
+      return;
+    }
+    throw new Error("usage: release list [--markdown [--write]]");
   }
   if (action === "publish-notes") {
     const [tag] = args;
@@ -2350,7 +2418,7 @@ const main = async () => {
     return publishHistoricalNotes(tag);
   }
   throw new Error(
-    "usage: release prepare [--local] | release check-surfaces [--local] [--committed [WO-NNN]] | release close WO-NNN [--publish] | release validate <manifest.json> | release manifest-from-tag vX.Y.Z | release notes vX.Y.Z | release list | release publish-notes vX.Y.Z",
+    "usage: release prepare [--local] [--integration] | release check-surfaces [--local] [--committed [WO-NNN]] | release close WO-NNN [--publish] | release validate <manifest.json> | release manifest-from-tag vX.Y.Z | release notes vX.Y.Z | release list [--markdown [--write]] | release publish-notes vX.Y.Z",
   );
 };
 
