@@ -55,6 +55,7 @@ const commonSources = [
   "packages/skeleton/src/presence-signals.ts",
   "packages/skeleton/src/presence-heartbeat.ts",
   "packages/skeleton/src/resident-store.ts",
+  "packages/skeleton/src/runtime-status-contract.ts",
   "packages/skeleton/src/worker-store.ts",
   "packages/skeleton/src/verification-protocol.ts",
   "packages/skeleton/src/plan-refutation-protocol.ts",

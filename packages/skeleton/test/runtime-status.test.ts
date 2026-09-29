@@ -405,3 +405,146 @@ test("WO-114 failed publication cannot abort start, presence or dispatch and the
   assert.equal(read(directory), latest);
   restarted.close();
 });
+
+test("WO-117 bad launchpad sources remain live, replace old bindings and survive helpers", async (t) => {
+  for (const reason of [
+    "launchpad-unavailable",
+    "configuration-invalid",
+  ] as const) {
+    const directory = mkdtempSync(join(tmpdir(), "dotln-index-source-"));
+    t.after(() => rmSync(directory, { recursive: true, force: true }));
+    const store = join(directory, "store");
+    mkdirSync(store);
+    const oldIndex = join(directory, "old-index.md");
+    writeFileSync(oldIndex, index);
+    writeFileSync(
+      join(store, ".runtime-status-source.json"),
+      JSON.stringify({ version: 1, indexPath: oldIndex }),
+    );
+    writeFileSync(
+      join(store, "resident.json"),
+      JSON.stringify(configuration(store)),
+    );
+    const launchpad = join(directory, "launchpad");
+    if (reason === "configuration-invalid") {
+      mkdirSync(launchpad);
+      writeFileSync(join(launchpad, "dotln.config.json"), "{");
+    }
+    const cli = spawnSync(
+      process.execPath,
+      [
+        new URL("../src/dotln.js", import.meta.url).pathname,
+        "resident",
+        "--store",
+        store,
+        "--policy",
+        "fixture.progressive",
+        "--once",
+      ],
+      {
+        env: { ...process.env, DOTLN_LAUNCHPAD: launchpad },
+        encoding: "utf8",
+        timeout: 5000,
+      },
+    );
+    assert.equal(cli.status, 0, cli.stderr);
+    assert.ok(
+      decodeLog(readFileSync(join(store, "events.jsonl"), "utf8")).length > 0,
+    );
+    assert.deepEqual(JSON.parse(read(store)).workOrders, {
+      status: "unavailable",
+      items: [],
+      reason,
+    });
+    await recordPresenceObservation(
+      store,
+      { kind: "away" },
+      undefined,
+      () => 50,
+    );
+    assert.deepEqual(JSON.parse(read(store)).workOrders, {
+      status: "unavailable",
+      items: [],
+      reason,
+    });
+    assert.ok(!read(store).includes(directory));
+    // A valid next lifetime replaces the failure and restores the selected index.
+    const recovered = new ResidentStore(store, {}, oldIndex);
+    await recovered.acquire();
+    recovered.release();
+    assert.equal(JSON.parse(read(store)).workOrders.status, "available");
+  }
+});
+
+test("WO-117 FIFO index and binding cannot block the resident CLI", (t) => {
+  for (const source of ["index", "binding"]) {
+    const directory = mkdtempSync(join(tmpdir(), "dotln-index-fifo-"));
+    t.after(() => rmSync(directory, { recursive: true, force: true }));
+    mkdirSync(join(directory, "orders"));
+    writeFileSync(
+      join(directory, "dotln.config.json"),
+      JSON.stringify({ version: 1, roots: { workOrders: "orders" } }),
+    );
+    const store = join(directory, "store");
+    mkdirSync(store);
+    writeFileSync(
+      join(store, "resident.json"),
+      JSON.stringify(configuration(store)),
+    );
+    const target =
+      source === "index"
+        ? join(directory, "orders", "README.md")
+        : join(store, ".runtime-status-source.json");
+    assert.equal(spawnSync("mkfifo", [target]).status, 0);
+    const cli = spawnSync(
+      process.execPath,
+      [
+        new URL("../src/dotln.js", import.meta.url).pathname,
+        "resident",
+        "--store",
+        store,
+        "--policy",
+        "fixture.progressive",
+        "--once",
+      ],
+      {
+        env: { ...process.env, DOTLN_LAUNCHPAD: directory },
+        encoding: "utf8",
+        timeout: 5000,
+      },
+    );
+    assert.equal(cli.status, 0, cli.stderr);
+    assert.deepEqual(JSON.parse(read(store)).workOrders, {
+      status: "unavailable",
+      items: [],
+      reason: source === "index" ? "index-not-regular" : "index-unreadable",
+    });
+    assert.ok(
+      decodeLog(readFileSync(join(store, "events.jsonl"), "utf8")).length > 0,
+    );
+  }
+});
+
+test("WO-117 only the lifetime owner sweeps status temporaries", async (t) => {
+  const directory = mkdtempSync(join(tmpdir(), "dotln-status-sweep-"));
+  const stale = join(directory, ".runtime-status-abandoned.tmp");
+  const unrelated = join(directory, "keep.tmp");
+  writeFileSync(stale, "stale");
+  writeFileSync(unrelated, "keep");
+  const owner = new ResidentStore(directory);
+  await owner.acquire();
+  t.after(() => {
+    owner.release();
+    rmSync(directory, { recursive: true, force: true });
+  });
+  assert.ok(!fs.existsSync(stale));
+  assert.equal(readFileSync(unrelated, "utf8"), "keep");
+  writeFileSync(stale, "new temporary");
+  await new ResidentStore(directory).transaction(() => {});
+  assert.ok(
+    fs.existsSync(stale),
+    "helper cannot sweep a live writer's temporary",
+  );
+  await assert.rejects(new ResidentStore(directory).acquire(), /live host/u);
+  assert.ok(fs.existsSync(stale), "failed lifetime acquisition cannot sweep");
+});

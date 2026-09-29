@@ -1,4 +1,4 @@
-# WO-117 — Console live host: the text console runs as a client of the resident, showing live agent status, work-order statuses and the audit view, and invoking the parity commands, proven in one operator-witnessed session (version assigned at activation)
+# WO-117 — Console live host: the text console runs as a client of the resident, showing live agent status, work-order statuses and the audit view, and invoking the parity commands, proven in one operator-witnessed session (v0.56.0)
 
 **Model:** any capable model; the witnessed session uses the real resident
 and harness. State the model and effort actually run (07-execution-guide.md

@@ -1,5 +1,8 @@
 import {
   closeSync,
+  constants,
+  fstatSync,
+  readdirSync,
   fsyncSync,
   openSync,
   writeFileSync,
@@ -28,6 +31,10 @@ import {
 } from "./reactor.js";
 import { type ResidentState } from "./resident-state.js";
 import { WorkerStore } from "./worker-store.js";
+import {
+  WORK_ORDER_SOURCE_REASONS,
+  type WorkOrderSourceReason,
+} from "./runtime-status-contract.js";
 import { projectRuntimeStatus } from "./runtime-status.js";
 import {
   classifyPresenceSignal,
@@ -118,6 +125,7 @@ export class ResidentStore {
     directory: string,
     private readonly predicates: PredicateRegistry = {},
     private readonly indexPath?: string,
+    private readonly indexError?: WorkOrderSourceReason,
   ) {
     this.store = new WorkerStore(directory);
     this.appendStore = new WorkerStore(join(directory, ".resident-append"));
@@ -125,32 +133,70 @@ export class ResidentStore {
   private get sourcePath() {
     return join(this.store.directory, ".runtime-status-source.json");
   }
-  private readIndex(): string | null {
+  private readRegular(path: string): string {
+    // O_NONBLOCK closes the stat/open FIFO race; inspect the opened object.
+    const fd = openSync(path, constants.O_RDONLY | constants.O_NONBLOCK);
     try {
-      const source = JSON.parse(readFileSync(this.sourcePath, "utf8"));
-      if (
-        source.version !== 1 ||
-        typeof source.indexPath !== "string" ||
-        !isAbsolute(source.indexPath)
-      )
-        return null;
-      return readFileSync(source.indexPath, "utf8");
+      if (!fstatSync(fd).isFile()) throw new Error("not-regular");
+      return readFileSync(fd, "utf8");
+    } finally {
+      closeSync(fd);
+    }
+  }
+  private readIndex(): { text: string | null; reason?: WorkOrderSourceReason } {
+    let source;
+    try {
+      source = JSON.parse(this.readRegular(this.sourcePath));
+      if (source?.version !== 1) throw new Error("invalid binding");
+      if (WORK_ORDER_SOURCE_REASONS.includes(source.reason))
+        return { text: null, reason: source.reason };
+      if (typeof source.indexPath !== "string" || !isAbsolute(source.indexPath))
+        throw new Error("invalid binding");
     } catch {
-      return null;
+      return { text: null, reason: "binding-unavailable" };
+    }
+    try {
+      return { text: this.readRegular(source.indexPath) };
+    } catch (error) {
+      return {
+        text: null,
+        reason:
+          error instanceof Error && error.message === "not-regular"
+            ? "index-not-regular"
+            : "index-unreadable",
+      };
+    }
+  }
+  private sweepStatusTemporaries() {
+    try {
+      for (const entry of readdirSync(this.store.directory)) {
+        if (!/^\.runtime-status-.+\.tmp$/u.test(entry)) continue;
+        try {
+          unlinkSync(join(this.store.directory, entry));
+        } catch {
+          /* best effort */
+        }
+      }
+    } catch {
+      /* A disposable projection cannot stop resident work. */
     }
   }
   /** Only the lifetime owner selects the source. Helpers, including installed
    * harness snapshots, read this private binding instead of their own checkout. */
   private bindIndex() {
-    if (this.indexPath === undefined) return;
+    if (this.indexPath === undefined && this.indexError === undefined) return;
     const bytes =
-      JSON.stringify({ version: 1, indexPath: resolve(this.indexPath) }) + "\n";
+      JSON.stringify(
+        this.indexError
+          ? { version: 1, reason: this.indexError }
+          : { version: 1, indexPath: resolve(this.indexPath!) },
+      ) + "\n";
     try {
-      if (
-        existsSync(this.sourcePath) &&
-        readFileSync(this.sourcePath, "utf8") === bytes
-      )
-        return;
+      try {
+        if (this.readRegular(this.sourcePath) === bytes) return;
+      } catch {
+        /* replace bad binding */
+      }
       this.replaceProjection(this.sourcePath, bytes);
     } catch {
       // Projection configuration cannot abort authoritative resident work.
@@ -160,12 +206,15 @@ export class ResidentStore {
    * authoritative; an interrupted projection write is rebuilt next transaction. */
   private publish(tx: ResidentTransaction) {
     try {
+      const index = this.readIndex();
       const view = projectRuntimeStatus(
         tx.resident,
         tx.events,
-        this.readIndex(),
+        index.text,
         this.predicates,
       );
+      if (view.workOrders.status === "unavailable")
+        view.workOrders.reason = index.reason ?? "index-invalid";
       this.replaceProjection(
         join(this.store.directory, "runtime-status-v1.json"),
         JSON.stringify(view, null, 2) + "\n",
@@ -247,6 +296,7 @@ export class ResidentStore {
           this.publish(tx),
         );
       });
+      this.sweepStatusTemporaries();
       this.bindIndex();
     });
   }

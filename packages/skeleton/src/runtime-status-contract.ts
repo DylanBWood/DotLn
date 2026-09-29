@@ -1,5 +1,15 @@
 /** The disposable, versioned resident-to-UI status contract. No filesystem or
  * event payload is part of this type; hosts receive only selected facts. */
+export const WORK_ORDER_SOURCE_REASONS = [
+  "launchpad-unavailable",
+  "configuration-invalid",
+  "binding-unavailable",
+  "index-unreadable",
+  "index-not-regular",
+  "index-invalid",
+] as const;
+export type WorkOrderSourceReason = (typeof WORK_ORDER_SOURCE_REASONS)[number];
+
 export interface RuntimeStatusV1 {
   viewModelVersion: "runtime-status-v1";
   observedAt: number;
@@ -41,6 +51,7 @@ export interface RuntimeStatusV1 {
     tokens: { consumed: number; remaining: number | null };
   };
   workOrders: {
+    reason?: WorkOrderSourceReason;
     status: "available" | "unavailable";
     items: {
       order: string;
@@ -158,7 +169,11 @@ export function decodeRuntimeStatus(value: unknown): RuntimeStatusV1 {
     "cadences",
   ]);
   const budget = shape(v["budget"], ["status", "episodes", "wallMs", "tokens"]);
-  const orders = shape(v["workOrders"], ["status", "items"]);
+  const orders = shape(v["workOrders"], [
+    "status",
+    "items",
+    ...(Object.hasOwn(record(v["workOrders"]), "reason") ? ["reason"] : []),
+  ]);
   if (
     v["viewModelVersion"] !== "runtime-status-v1" ||
     !number(v["observedAt"]) ||
@@ -230,6 +245,9 @@ export function decodeRuntimeStatus(value: unknown): RuntimeStatusV1 {
     !quantity(budget["wallMs"]) ||
     !quantity(budget["tokens"]) ||
     !choice(orders["status"], ["available", "unavailable"]) ||
+    (Object.hasOwn(orders, "reason") &&
+      (orders["status"] !== "unavailable" ||
+        !choice(orders["reason"], [...WORK_ORDER_SOURCE_REASONS]))) ||
     !list(orders["items"], (entry) => {
       const row = shape(entry, ["order", "phase", "dependency", "verdict"]);
       return (

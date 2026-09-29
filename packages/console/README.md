@@ -1,4 +1,7 @@
-# Actor board
+# Actor board and live console
+
+Component `0.4.0` prepares application `v0.56.0` with the combined live host
+and coded resident index-source failures.
 
 Component `0.3.1` prepares application `v0.52.7`: host collection folds every
 order's status in one process and reads release history through a per-tag
@@ -48,6 +51,86 @@ display-width rule for the documented text/CJK glyphs. It is not a universal
 terminal grapheme emulator. HTML is one self-contained file with inline CSS,
 no script, no external references, no forms, and only in-document links. The
 command creates a new `.html` file and refuses to overwrite an existing path.
+
+## Combined live host
+
+```sh
+npm run console -- live --store <bound-store>
+```
+
+In a terminal, the live view stays on one screen with the `live>` prompt
+visible. It refreshes at most once a second, ignores clock-only changes, and
+names meaningful changes: presence, actor start/completion, order status and
+holds. Refresh pauses while you type. A bounded audit preview shows the latest
+L0 receipt and L1 entry when projected, plus three recent resident events (clock
+samples omitted). Resident logs currently produce no L0/L1 entries; script
+completion comes from its raw event, without inventing an L0 receipt.
+`orders`, `status` and `audit` expose details omitted from the compact screen.
+Missing or malformed files stay visibly unavailable and recover on valid data.
+Passive observation creates no events; displayed fields neutralize controls.
+
+The compact output bounds displayed rows, but each refresh reads and projects
+the entire event log; work grows with history. The passive view retains the
+last snapshot if the resident stops and does not indicate its freshness or
+reachability. Use an explicit command to check the connection. These limits
+remain tracked in [WO-117 VER-001](../../docs/verifications/WO-117/VER-001.md).
+
+**At the `live>` prompt, type a command and press Enter:**
+
+| Command | What it does |
+| --- | --- |
+| `away` | Mark yourself away in this resident store and arm its policy cadence. |
+| `back` | Mark yourself present again. |
+| `diff` | View the terminal's compiled diff. |
+| `audit` | View all three complete audit projections for this store. |
+| `orders` | Read every work-order status in the projection. |
+| `status` | Read the complete runtime status projection. |
+| `commands` | List the resident's full command vocabulary. |
+| `help` | Display these controls. |
+| `quit` | Close the console; the resident keeps running in its own terminal. |
+
+Inspection results temporarily leave the live screen and stay in terminal scrollback.
+The console explicitly says the view is paused; **press Enter to return to the
+live screen**. Ctrl-C stops the console and aborts a pending request. To stop
+the resident too, press Ctrl-C in its terminal. EOF drains submitted input and
+exits; SIGTERM and SIGHUP stop observation and abort requests.
+
+The friendly controls map to existing contract IDs through the same client as
+`invoke`; they add no authority or identifier. Advanced input remains one JSON
+array per line, with an ID and literal string arguments:
+
+```text
+["skeleton.compiled-diff"]
+["dotln.audit", "--store", "<bound-store>", "--episode", "<episode-id>"]
+```
+
+The terminal parser still owns argument validation and selection. Commands run
+serially with unchanged result bytes and the same two console receipts plus
+ordinary effect events. Command stdout goes to stdout; frames, command stderr
+and separate exit labels go to stderr. Non-terminal output uses changed text
+snapshots without screen controls. Exit status starts at 0 and changes on a
+completed contract command or an input/client failure (1). Local inspection
+and an aborted request retain the previous code. The `:commands`, `:audit`,
+`:quit` aliases are also accepted. The view never infers lifecycle legality.
+
+**Operator walkthrough, in two terminals:**
+
+1. In terminal 1 at the kit root, after building, run:
+   `node packages/console/fixtures/live-walkthrough.mjs <scratch-repository>`.
+   Leave this terminal open. The helper prints an exact terminal-2 command.
+2. Open terminal 2 and run that command. At its `live>` prompt, type `away`
+   and press Enter. Wait about ten seconds for “Actor started”, then about
+   five seconds for “Script completed (verified)”.
+3. At `live>`, type `back` and press Enter. Presence should return to present.
+4. Type `diff`, press Enter, read/scroll the result, then press Enter again to
+   return to the live screen. Repeat with `audit` for the complete projections.
+5. Type `quit` in terminal 2. Press Ctrl-C in terminal 1 to stop the resident.
+
+The [helper](fixtures/live-walkthrough.mjs) creates a fresh ignored store and
+runs the real resident with a real sandboxed read-only script actor. The actor
+checks that its target is a Git worktree, then stays observable for five seconds;
+it uses no fake transport and no model worker. Local logs remain private.
+The operator witness is separate from automated smoke evidence.
 
 ## Resident command client
 
@@ -123,7 +206,14 @@ times, coded holds, portfolio budget, and every Active or Open order in the
 generated index. `unknown` and `unavailable` are explicit; a missing index
 never creates a second order truth. The resident CLI selects the launchpad's
 configured work-order index, including `DOTLN_LAUNCHPAD`, and binds its path in
-private store metadata. All helper and harness writers use that binding. Library
+private store metadata. Missing launchpads, malformed regular-file configuration,
+and missing, unreadable, nonregular or malformed index files leave the resident running with orders unavailable
+and an allowlisted `workOrders.reason`; no local path enters that reason.
+Helpers retain the same failure binding, and a valid restart can replace it.
+Index and binding reads use nonblocking descriptors and require regular files,
+so a FIFO at either path cannot block startup. Configuration reads are not
+covered: a FIFO at `dotln.config.json` can still block startup. Lifetime acquire
+removes stale `.runtime-status-*.tmp` files. All helper and harness writers use that binding. Library
 hosts supply `workOrderIndexPath` on first start; without a binding, orders are
 unavailable. Elapsed time uses the resident's recorded clock, so rebuilding from
 the same log and index reproduces the same bytes. This file is
@@ -135,6 +225,11 @@ previous file until a later event, tick or restart rebuilds it and cannot abort
 resident work. `--watch` renders each changed valid view once, shows a generic
 unavailable message for missing or invalid files, and resumes on a valid update.
 `--json` emits one snapshot for another local host.
+
+The updated decoder accepts earlier status views without `workOrders.reason`.
+Earlier strict `runtime-status-v1` decoders reject new unavailable views that
+include this optional field; update the consumer schema/decoder together with
+the resident. The version label remains `runtime-status-v1`.
 
 ## Contract for another UI host
 

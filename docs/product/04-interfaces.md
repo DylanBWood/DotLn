@@ -417,12 +417,15 @@ dependency state and latest verification verdict from the generated work-order
 index. Derived orders use their ordinary `WO-NNN` identity. The file is a
 disposable projection, never a command or authority source. It omits raw event
 payloads, physical paths, endpoints, session identifiers and host details;
-missing, unreadable or malformed index data is visibly unavailable. The resident
-CLI binds the selected launchpad's configured index in private store metadata;
+missing launchpads, malformed regular-file configuration and missing, unreadable,
+nonregular or malformed index data leave orders unavailable with a coded cause.
+Special-file configuration can still block startup. The resident CLI binds the
+selected index in private store metadata;
 all helpers and installed harness writers read that same binding. Library hosts
 supply the index path on first start; an absent binding is unavailable. Atomic
 status replacement omits durability syncs, while the event log retains its
-durability. A projection failure cannot abort resident work and a later event,
+durability. Lifetime acquire removes stale status temporaries. A projection
+failure cannot abort resident work and a later event,
 tick or restart retries publication. The console's text host reads and watches
 this file, deduplicates unchanged views, and recovers after missing or invalid
 files. A later loopback consumer can carry the same versioned model.
@@ -532,6 +535,9 @@ claim about who authored them or whether a person is present. The
 the independent role-question review boundary.
 
 ### Later console hosts
+
+`console live --store <dir>` combines refreshing status, orders and an audit
+preview; `audit` shows the full view. Commands use the existing parity client.
 
 Console v1 is the planned Angular shell in the operator's example
 consumer, built as the cross-repository pilot's first target change (WO-034)

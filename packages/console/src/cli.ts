@@ -7,16 +7,19 @@ import { projectBoard } from "./board.js";
 import { renderHtml, renderTerminal } from "./render.js";
 import type { BoardSources } from "./types.js";
 import { object } from "./values.js";
+import { liveCli } from "./live.js";
 import { statusCli } from "./runtime-status.js";
 import { readConsoleConnection } from "./console-client-node.js";
 import { invokeConsoleCommand, readConsoleContract } from "./console-client.js";
 
 const usage =
-  "usage: console board [--json | --html <new.html>] [--store <directory>] [--sources <recorded-sources.json>] | console status --store <directory> [--json] [--watch] | console commands --store <directory> | console invoke --store <directory> <command> [args...]";
+  "usage: console live --store <directory> | console board [--json | --html <new.html>] [--store <directory>] [--sources <recorded-sources.json>] | console status --store <directory> [--json] [--watch] | console commands --store <directory> | console invoke --store <directory> <command> [args...]";
 try {
   const args = process.argv.slice(2);
   const action = args.shift();
-  if (action === "status") {
+  if (action === "live") {
+    await liveCli(args);
+  } else if (action === "status") {
     statusCli(args);
   } else if (action === "commands" || action === "invoke") {
     if (args.shift() !== "--store") throw new Error(usage);
