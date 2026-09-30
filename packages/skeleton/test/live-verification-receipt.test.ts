@@ -7,30 +7,35 @@ import { join } from "node:path";
 const directory = fileURLToPath(
   new URL("../../../../docs/evidence/WO-056/", import.meta.url),
 );
-const { validateReceipt } = await import(
-  new URL("../../../../docs/evidence/WO-056/receipt.mjs", import.meta.url).href
-);
-const { replayRecorded } = await import(
-  new URL("../../../../docs/evidence/WO-056/replay.mjs", import.meta.url).href
-);
-const names = readdirSync(directory).filter((name) =>
-  /^(claude|codex|double)-.*\.json$/u.test(name),
-);
 type Receipt = ReturnType<typeof JSON.parse>;
-const receipts: { name: string; receipt: Receipt }[] = names.map((name) => ({
-  name,
-  receipt: JSON.parse(readFileSync(join(directory, name), "utf8")),
-}));
+async function recordedReceipts() {
+  const { validateReceipt } = await import(
+    new URL("../../../../docs/evidence/WO-056/receipt.mjs", import.meta.url)
+      .href
+  );
+  const { replayRecorded } = await import(
+    new URL("../../../../docs/evidence/WO-056/replay.mjs", import.meta.url).href
+  );
+  const names = readdirSync(directory).filter((name) =>
+    /^(claude|codex|double)-.*\.json$/u.test(name),
+  );
+  const receipts: { name: string; receipt: Receipt }[] = names.map((name) => ({
+    name,
+    receipt: JSON.parse(readFileSync(join(directory, name), "utf8")),
+  }));
+  return { validateReceipt, replayRecorded, receipts };
+}
 const flags = ["findingPass", "repairPass", "reverificationPass", "foldPass"];
-const refuses = (name: string, receipt: Receipt, label: string) =>
-  assert.throws(() => validateReceipt(receipt), `${name}: ${label}`);
 const mutate = (receipt: Receipt, change: (r: Receipt) => void): Receipt => {
   const forged = structuredClone(receipt);
   change(forged);
   return forged;
 };
 
-test("WO-056 receipts keep their closed shape, labels, failures and private-output boundary", () => {
+test("[document] WO-056 receipts keep their closed shape, labels, failures and private-output boundary", async () => {
+  const { validateReceipt, receipts } = await recordedReceipts();
+  const refuses = (name: string, receipt: Receipt, label: string) =>
+    assert.throws(() => validateReceipt(receipt), `${name}: ${label}`);
   assert.ok(receipts.length >= 1);
   for (const { name, receipt } of receipts) {
     assert.doesNotThrow(() => validateReceipt(receipt), name);
@@ -272,7 +277,8 @@ test("WO-056 receipts keep their closed shape, labels, failures and private-outp
   }
 });
 
-test("WO-056 AC3 a recorded verification log replays negative against injected implementer events", () => {
+test("[document] WO-056 AC3 a recorded verification log replays negative against injected implementer events", async () => {
+  const { receipts, replayRecorded } = await recordedReceipts();
   const replayable = receipts.filter(
     ({ receipt }) => receipt.eventLog.epistemic === "observed",
   );
@@ -344,7 +350,8 @@ test("WO-056 AC3 a recorded verification log replays negative against injected i
   }
 });
 
-test("WO-056 AC1-AC3 one live harness caught, repaired and re-verified the planted defect", () => {
+test("[document] WO-056 AC1-AC3 one live harness caught, repaired and re-verified the planted defect", async () => {
+  const { receipts } = await recordedReceipts();
   const complete = receipts.filter(
     ({ receipt }) =>
       receipt.launch.value.harness !== "double" &&

@@ -880,7 +880,7 @@ test("row 1 crash recovery replays state, redispatches, and adapter-deduplicates
   assert.equal(commandResult?.causationId, redispatched?.eventId);
 });
 
-test("WO-047 complete Decision bytes match across stored skeleton streams", async (t) => {
+test("[document] WO-047 complete Decision bytes match across stored skeleton streams", async (t) => {
   const root = new URL("../../../../", import.meta.url);
   const evidence = (kind: "artifact-identity" | "verification" | "feedback") =>
     currentEvidence(fileURLToPath(root), kind).directory;

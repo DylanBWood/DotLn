@@ -30,7 +30,7 @@ const refutationRunUrl = new URL(
   import.meta.url,
 );
 
-test("WO-023 AC3 regeneration byte-matches the sole tracked residue projection", async () => {
+test("[document] WO-023 AC3 regeneration byte-matches the sole tracked residue projection", async () => {
   const tracked = await readFile(trackedResidueUrl, "utf8");
   const generated = referenceEntropyReducerResidue();
   assert.equal(generated, tracked);
@@ -245,7 +245,7 @@ test("WO-023 AC3 residue generation is pure and cannot read the tracked projecti
   assert.doesNotMatch(source, /node:fs|readFile|writeFile|RESIDUE\.md/u);
 });
 
-test("WO-023 AC7 review receipt preserves the pinned actor, exact compile inputs, and immutable subject", async () => {
+test("[document] WO-023 AC7 review receipt preserves the pinned actor, exact compile inputs, and immutable subject", async () => {
   const receipt = JSON.parse(await readFile(reviewRunUrl, "utf8")) as any;
   const reviewedProgram = JSON.parse(
     await readFile(reviewedProgramUrl, "utf8"),
@@ -316,7 +316,7 @@ test("WO-023 AC7 review receipt preserves the pinned actor, exact compile inputs
   );
 });
 
-test("WO-023 AC6 refutation receipt rebuilds exactly and promotes only survived findings", async () => {
+test("[document] WO-023 AC6 refutation receipt rebuilds exactly and promotes only survived findings", async () => {
   const review = JSON.parse(await readFile(reviewRunUrl, "utf8")) as any;
   const refutation = JSON.parse(
     await readFile(refutationRunUrl, "utf8"),

@@ -532,7 +532,7 @@ test("WO-068 native script uses exact argv/cwd, clears inherited env, verifies o
   );
 });
 
-test("WO-068 fresh CLI once and presence commands; SIGKILL recovery and dead-owner reclaim", async (t) => {
+test("[document] WO-068 fresh CLI once and presence commands; SIGKILL recovery and dead-owner reclaim", async (t) => {
   if (process.platform !== "darwin") {
     t.skip("native script adapter is Darwin-only");
     return;

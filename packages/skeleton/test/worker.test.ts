@@ -242,7 +242,7 @@ test("WO-125 unknown Codex arguments retain the pre-change bytes on both observe
     );
 });
 
-test("WO-125 observed efforts reach the process and durable launch claim without effective readback", async () => {
+test("[document] WO-125 observed efforts reach the process and durable launch claim without effective readback", async () => {
   const observed = JSON.parse(
     readFileSync(
       new URL(
@@ -552,7 +552,7 @@ test("WO-009 AC3 deterministic real-Git create, verified cwd/base, collision and
   }
 });
 
-test("WO-009 AC1/4 one process replaces only the executor; status is read-only and replay is identical", async () => {
+test("[document] WO-009 AC1/4 one process replaces only the executor; status is read-only and replay is identical", async () => {
   for (const transport of [claude(), codex()]) {
     const root = temporary();
     const store = new WorkerStore(root);
@@ -882,7 +882,7 @@ test("WO-009 invalid correlation, malformed output and success-shaped nonzero ex
     }
 });
 
-test("WO-009 store rejects concurrent hosts and torn logs without truncation; status creates no missing store", () => {
+test("[document] WO-009 store rejects concurrent hosts and torn logs without truncation; status creates no missing store", () => {
   const root = temporary();
   const store = new WorkerStore(root);
   try {

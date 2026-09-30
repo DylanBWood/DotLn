@@ -54,9 +54,181 @@ import {
   probeDeniedWrite,
   confinementMarkers,
 } from "./lib/host-confinement.mjs";
+import {
+  uncoveredMachinerySources,
+  machineryCoverageScope,
+} from "./lib/machinery-coverage.mjs";
 
 const root = resolve(import.meta.dirname, "..");
 const barrier = { name: "build", command: ["build"], build: true };
+test("WO-174 product read guard fails the task and names the case and excluded tracked input, including inherited Node children", async (t) => {
+  const repo = mkdtempSync(join(tmpdir(), "dotln-product-reads-"));
+  t.after(() => rmSync(repo, { recursive: true, force: true }));
+  execGit(["init", "-q"], { cwd: repo });
+  mkdirSync(join(repo, "docs"));
+  mkdirSync(join(repo, "scripts"));
+  writeFileSync(join(repo, "docs/input.md"), "fixture\n");
+  writeFileSync(join(repo, "generated.json"), "{}\n");
+  writeFileSync(join(repo, "NOTE.md"), "fixture\n");
+  for (const directory of [".agents", ".claude"]) {
+    mkdirSync(join(repo, directory));
+    writeFileSync(join(repo, directory, "fixture.txt"), "fixture\n");
+  }
+  writeFileSync(
+    join(repo, ".gitattributes"),
+    "generated.json dotln-generated\n",
+  );
+  writeFileSync(
+    join(repo, "scripts/read.test.mjs"),
+    `
+import test from "node:test";
+import fs from "node:fs";
+import promises from "node:fs/promises";
+import {spawnSync} from "node:child_process";
+test("named async read case", async t => {
+  await Promise.resolve();
+  fs.readFileSync("docs/input.md");
+  const fd = fs.openSync("docs/input.md", "r");
+  fs.readFileSync(fd); fs.closeSync(fd);
+  fs.readdirSync("docs");
+  await promises.readFile(new URL("../docs/input.md", import.meta.url));
+  const handle = await promises.open("docs/input.md", "r"); await handle.close();
+  await promises.readdir("docs");
+  fs.readFileSync("generated.json");
+  fs.readFileSync("NOTE.md");
+  fs.readFileSync(".agents/fixture.txt");
+  fs.readFileSync(".claude/fixture.txt");
+  await t.test("nested inherited child", () => {
+    spawnSync(process.execPath, ["-e", "require('node:fs').readFileSync('docs/input.md')"]);
+  });
+  await t.test("child retaining options in a reduced environment", () => {
+    spawnSync(process.execPath, ["-e", "require('node:fs').readFileSync('docs/input.md')"], {
+      env: {NODE_OPTIONS: process.env.NODE_OPTIONS},
+    });
+  });
+});
+`,
+  );
+  execGit(["add", "."], { cwd: repo });
+  const command = [process.execPath, "--test", "scripts/read.test.mjs"];
+  const unguarded = await executeSuite({ name: "unguarded", command }, repo);
+  assert.equal(unguarded.exitCode, 0, unguarded.output);
+  const guarded = await executeSuite(
+    { name: "read-fixture", command, product: true, packageTest: true },
+    repo,
+  );
+  assert.equal(guarded.exitCode, 1, "the old runner returns zero here");
+  assert.match(guarded.output, /named async read case reads docs\/input\.md/u);
+  assert.match(guarded.output, /nested inherited child reads docs\/input\.md/u);
+  assert.match(
+    guarded.output,
+    /child retaining options in a reduced environment reads docs\/input\.md/u,
+  );
+  assert.match(guarded.output, /reads generated\.json/u);
+  for (const path of ["NOTE.md", ".agents/fixture.txt", ".claude/fixture.txt"])
+    assert.ok(guarded.output.includes(`reads ${path}`), path);
+  const events = readFileSync(guarded.productReadLog, "utf8")
+    .trim()
+    .split("\n")
+    .map(JSON.parse);
+  for (const method of [
+    "readFileSync",
+    "openSync",
+    "readdirSync",
+    "promises.readFile",
+    "promises.open",
+    "promises.readdir",
+  ])
+    assert.ok(
+      events.some((event) => event.method === method),
+      method,
+    );
+  assert.ok(
+    events.some(
+      (event) =>
+        event.pid !== events.find((row) => row.method === "openSync").pid &&
+        event.kind === "excluded-read",
+    ),
+  );
+});
+
+test("WO-174 machinery coverage names an uncovered entry, direct import or literal spawned script, accepts only reasoned exclusions and keeps its stated boundary", (t) => {
+  const repo = mkdtempSync(join(tmpdir(), "dotln-machinery-coverage-"));
+  t.after(() => rmSync(repo, { recursive: true, force: true }));
+  mkdirSync(join(repo, "scripts"));
+  writeFileSync(
+    join(repo, "scripts/imported.mjs"),
+    'import "./transitive.mjs";\n',
+  );
+  writeFileSync(join(repo, "scripts/transitive.mjs"), "export {};\n");
+  writeFileSync(join(repo, "scripts/spawned.mjs"), "export {};\n");
+  writeFileSync(join(repo, "scripts/comment-only.mjs"), "export {};\n");
+  writeFileSync(
+    join(repo, "scripts/entry.mjs"),
+    `
+import "./imported.mjs";
+import {spawnSync} from "node:child_process";
+spawnSync(process.execPath, ["scripts/spawned.mjs"]);
+// spawnSync(process.execPath, ["scripts/comment-only.mjs"]);
+const text = 'spawnSync(process.execPath, ["scripts/comment-only.mjs"])';
+const computed = "scripts/" + "comment-only.mjs";
+`,
+  );
+  const row = {
+    name: "fixture",
+    machinery: true,
+    command: [process.execPath, "scripts/entry.mjs"],
+    sources: [],
+  };
+  assert.deepEqual(uncoveredMachinerySources(repo, [row], {}), [
+    { suite: "fixture", path: "scripts/entry.mjs" },
+    { suite: "fixture", path: "scripts/imported.mjs" },
+    { suite: "fixture", path: "scripts/spawned.mjs" },
+  ]);
+  const covered = {
+    ...row,
+    sources: ["scripts/entry.mjs", "scripts/imported.mjs"],
+  };
+  assert.deepEqual(uncoveredMachinerySources(repo, [covered], {}), [
+    { suite: "fixture", path: "scripts/spawned.mjs" },
+  ]);
+  assert.throws(
+    () =>
+      uncoveredMachinerySources(repo, [covered], {
+        fixture: { "scripts/spawned.mjs": "" },
+      }),
+    /needs a reason/u,
+  );
+  assert.deepEqual(
+    uncoveredMachinerySources(repo, [covered], {
+      fixture: {
+        "scripts/spawned.mjs": "Fixture exclusion with a recorded reason",
+      },
+    }),
+    [],
+  );
+  assert.match(
+    machineryCoverageScope,
+    /transitive imports and paths built at run time are outside/u,
+  );
+});
+
+test("WO-174 every machinery suite covers its direct entry imports and literal script paths", () => {
+  const findings = uncoveredMachinerySources(
+    root,
+    expandSuiteTasks(
+      suites.filter((row) => row.machinery),
+      root,
+    ),
+  );
+  console.log(machineryCoverageScope);
+  assert.deepEqual(
+    findings,
+    [],
+    findings.map((row) => `${row.suite}: uncovered ${row.path}`).join("\n"),
+  );
+});
+
 test("release shell changes select their inventory guard during review", async (t) => {
   const repo = mkdtempSync(join(tmpdir(), "dotln-release-selection-"));
   t.after(() => rmSync(repo, { recursive: true, force: true }));
@@ -938,7 +1110,7 @@ test("only and document CLI selection execute their declared checks with the pro
               .replace(/^/, 'import fs from "node:fs";\n')
           : observer,
       );
-    for (const name of ["skeleton", "console"]) {
+    for (const name of ["kernel", "skeleton", "console"]) {
       const directory = join(repo, `packages/${name}/dist/test`);
       mkdirSync(directory, { recursive: true });
       writeFileSync(join(directory, "fixture.test.js"), observer);
@@ -1526,6 +1698,7 @@ test("release cases use concurrent lanes, wait for preparation and require compl
 
 test("console product and document selections execute every test exactly once", async (t) => {
   const repo = mkdtempSync(join(tmpdir(), "dotln-console-dispatch-"));
+  execGit(["init", "-q"], { cwd: repo });
   t.after(() => rmSync(repo, { recursive: true, force: true }));
   const directory = join(repo, "packages/console/dist/test");
   mkdirSync(directory, { recursive: true });
@@ -1825,6 +1998,7 @@ test("WO-140 the real inventory declares only the suites with an environmental o
     suites.filter((row) => row.needs).map((row) => [row.name, row.needs]),
     [
       ["skeleton", OUTSIDE_CONFINEMENT],
+      ["skeleton-docs", OUTSIDE_CONFINEMENT],
       ["portfolio", OUTSIDE_CONFINEMENT],
     ],
   );

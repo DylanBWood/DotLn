@@ -313,7 +313,7 @@ const openingFiles = (log: string) =>
       .find((line) => line.includes('"type":"VerificationOpened"'))!,
   ).payload.subject.files as Record<string, unknown>[];
 
-test("WO-154 criterion 3: a behavioral change never inherits an older live audit, with the behavioral check bypassed; the D010 comparison passes mechanically", () => {
+test("[document] WO-154 criterion 3: a behavioral change never inherits an older live audit, with the behavioral check bypassed; the D010 comparison passes mechanically", () => {
   const selected = currentEvidence(root, "feedback").directory;
   const edition = JSON.parse(
     readFileSync(join(root, selected, "edition.json"), "utf8"),

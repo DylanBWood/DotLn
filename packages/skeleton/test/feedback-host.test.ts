@@ -53,7 +53,7 @@ test("WO-129 Claude upgrades retain version observations above the supported min
     "99.0.0",
   );
 });
-test("WO-011 selfhost executes the real repository audit, recovers its saved result, and independently verifies once", async () => {
+test("[document] WO-011 selfhost executes the real repository audit, recovers its saved result, and independently verifies once", async () => {
   const directory = realpathSync(
     mkdtempSync(join(tmpdir(), "dotln-feedback-selfhost-")),
   );
