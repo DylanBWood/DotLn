@@ -1,0 +1,464 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-057",
+  "observedDate": "2026-09-30",
+  "timeBasis": "UTC; operator local date 2026-09-29",
+  "recordedAt": "2026-09-30T01:57:37.336Z",
+  "actor": {
+    "harness": "codex-cli",
+    "harnessVersion": "0.159.2",
+    "model": "gpt-6.1-sol",
+    "effort": "max",
+    "source": "codex-session-readback"
+  },
+  "host": {
+    "platform": "darwin",
+    "architecture": "arm64",
+    "macOS": "27.0.1",
+    "darwin": "27.0.0",
+    "node": "26.9.0",
+    "npm": "11.19.1",
+    "hostConfinement": {
+      "inForce": false,
+      "marker": null,
+      "source": "scripts/lib/host-confinement.mjs detectHostConfinement"
+    }
+  },
+  "scope": {
+    "workspaceDependencyAdded": false,
+    "runtimeSourceChanged": false,
+    "scratch": "New system-temp Git checkout; original synthetic fixture; empty npm user/global configuration; private package; explicit public registry and isolated npm/browser caches",
+    "browserCacheLocation": "Downloaded to <scratch>/browser-cache, then moved within <scratch-checkout>/.browsers before confinement so all runtime bytes are readable under the unchanged root boundary",
+    "proxyObservation": {
+      "environmentVariableNames": [],
+      "systemProxy": "scutil --proxy: no enabled HTTP, HTTPS, SOCKS or automatic proxy entry",
+      "npm": {
+        "proxyConfigured": false,
+        "httpsProxyConfigured": false
+      },
+      "limit": "Configured environment, system and npm surfaces only; transparent network filtering is unknown. No filtering proxy endpoint was available to run the required row."
+    },
+    "recovery": "A Codex disconnect lost the interactive exec handle. Saved per-command results established completed installs; canonical status remained active and the writer belonged to this thread. The briefing was read back; the installs were not repeated."
+  },
+  "pins": {
+    "capturedAt": "2026-09-30T01:45:27.850Z",
+    "packageVersion": "1.63.0",
+    "lockfileSha256": "48c679cb89dc5a090d61dd5816d7ed1ca97665bccca61b951636e59324ff16ec",
+    "lockfileUnchanged": true,
+    "fixtureSha256": "c0bca6583ba42b86da402c2ec9af684c8d118df9fe3cca42721c3ca54777f4fd",
+    "packages": {
+      "node_modules/playwright": {
+        "version": "1.63.0",
+        "license": "Apache-2.0",
+        "resolved": "https://registry.npmjs.org/playwright/-/playwright-1.63.0.tgz",
+        "integrity": "sha512-+7ziBLidS4NaNCdt57SUDT+wYmmd5fmiQejUic/kb+YsYSCPyOOE9sebzMjNmQrsnNpDJqd4WHvV/8lfKfUDUg==",
+        "optional": false
+      },
+      "node_modules/playwright-core": {
+        "version": "1.63.0",
+        "license": "Apache-2.0",
+        "resolved": "https://registry.npmjs.org/playwright-core/-/playwright-core-1.63.0.tgz",
+        "integrity": "sha512-rYCsBF/M5HjUch52bbtVONEFjv6Xu8sm8h72dNlR5bzIE1fvC/bxgspzkjSfU+MweEMmPM8KJebG6nnyxo5mCg==",
+        "optional": false
+      }
+    },
+    "browsers": [
+      {
+        "name": "chromium-headless-shell",
+        "revision": "1243",
+        "installByDefault": true,
+        "browserVersion": "153.0.8010.12",
+        "title": "Chrome Headless Shell"
+      },
+      {
+        "name": "ffmpeg",
+        "revision": "1011",
+        "installByDefault": true
+      }
+    ],
+    "browserCacheEntries": [
+      "chromium_headless_shell-1243",
+      "ffmpeg-1011"
+    ]
+  },
+  "confinement": {
+    "profileSource": "packages/skeleton/src/discovery-sandbox.ts; unchanged runtimeReads=[]",
+    "profileSha256": "610c40fe44dd673cfabcc2a92962a0149d969d16dd449b8e2e3e0f1c6d9ad8f0",
+    "profileShape": "(version 1)(allow default)(deny network*)(deny file-read-data)(deny file-write*)(allow file-read-data (subpath \"<scratch>/install\"))(allow file-read-data (subpath \"/usr\"))(allow file-read-data (subpath \"/bin\"))(allow file-read-data (subpath \"/System\"))(allow file-read-data (subpath \"/Library/Apple\"))(allow file-read-data (subpath \"/opt/homebrew\"))(allow file-read-data (subpath \"<user-home>/.local/share/fnm/node-versions/v26.9.0/installation\"))(allow file-read-data (subpath \"/private/var/db/dyld\"))(allow file-read-data (literal \"/\") (literal \"/dev/null\") (literal \"/dev/urandom\"))(allow file-write* (subpath \"<scratch>/install\") (literal \"/dev/null\"))",
+    "environmentShape": {
+      "PATH": "<node-bin>:/usr/bin:/bin",
+      "HOME": "<scratch-checkout>",
+      "TMPDIR": "<scratch-checkout>"
+    },
+    "browserExecutableShape": "<scratch>/install/.browsers/chromium_headless_shell-1243/chrome-headless-shell-mac-arm64/chrome-headless-shell",
+    "browserExecutableSha256": "a0bfe7b4da4787b66058477d696cd1d09065d25f06a548947722b9af77ee8282",
+    "childEnvironmentNames": [
+      "HOME",
+      "PATH",
+      "TMPDIR",
+      "__CF_USER_TEXT_ENCODING"
+    ],
+    "limit": "The detector establishes no harness sandbox. The separate native profile was applied to every browser launch; runtimeReads=[] and no profile relaxation."
+  },
+  "fixture": {
+    "sha256": "c0bca6583ba42b86da402c2ec9af684c8d118df9fe3cca42721c3ca54777f4fd",
+    "html": "<!doctype html>\n<html><head><meta charset=\"utf-8\"><style>html,body{margin:0;width:400px;height:240px;background:#f1f5f9}#panel{position:absolute;left:32px;top:32px;width:336px;height:176px;background:#17324d;border-radius:12px}#mark{position:absolute;left:64px;top:64px;width:96px;height:96px;background:#22c55e}#bar{position:absolute;left:192px;top:88px;width:144px;height:24px;background:#ffffff}</style></head><body><div id=\"panel\"></div><div id=\"mark\"></div><div id=\"bar\"></div></body></html>\n",
+    "viewport": {
+      "width": 400,
+      "height": 240
+    },
+    "deviceScaleFactor": 1,
+    "colorScheme": "light",
+    "reducedMotion": "reduce",
+    "screenshotOptions": {
+      "type": "png",
+      "animations": "disabled",
+      "caret": "hide",
+      "scale": "css"
+    },
+    "visualInspection": "Executor viewed screenshot run 1 and observed the expected slate panel, green square and white bar."
+  },
+  "rows": [
+    {
+      "id": "lockfile-pin",
+      "commandShape": "npm install --package-lock-only --ignore-scripts --no-audit --no-fund (exact playwright 1.63.0; public registry; empty npm config)",
+      "startedAt": "2026-09-30T01:43:25.724Z",
+      "finishedAt": "2026-09-30T01:43:27.203Z",
+      "wallSeconds": 1.479,
+      "exitCode": 0,
+      "signal": null,
+      "errorCode": null,
+      "stdout": "\nup to date in 1s\n",
+      "stderr": "",
+      "label": "observed"
+    },
+    {
+      "id": "package-install-online",
+      "commandShape": "npm ci --ignore-scripts --no-audit --no-fund (pinned scratch lockfile; proxy absent)",
+      "startedAt": "2026-09-30T01:43:27.203Z",
+      "finishedAt": "2026-09-30T01:43:28.061Z",
+      "wallSeconds": 0.858,
+      "exitCode": 0,
+      "signal": null,
+      "errorCode": null,
+      "stdout": "\nadded 2 packages in 803ms\n",
+      "stderr": "",
+      "label": "observed"
+    },
+    {
+      "id": "browser-install-online",
+      "commandShape": "PLAYWRIGHT_BROWSERS_PATH=<scratch>/browser-cache node node_modules/playwright/cli.js install chromium --only-shell",
+      "startedAt": "2026-09-30T01:43:28.287Z",
+      "finishedAt": "2026-09-30T01:45:27.849Z",
+      "wallSeconds": 119.562,
+      "exitCode": 0,
+      "signal": null,
+      "errorCode": null,
+      "stdout": "Downloading Chrome Headless Shell 153.0.8010.12 (playwright chromium-headless-shell v1243) from https://cdn.playwright.dev/builds/cft/153.0.8010.12/mac-arm64/chrome-headless-shell-mac-arm64.zip\nChrome Headless Shell 153.0.8010.12 (playwright chromium-headless-shell v1243) downloaded to <scratch>/browser-cache/chromium_headless_shell-1243\nDownloading FFmpeg (playwright ffmpeg v1011) from https://cdn.playwright.dev/dbazure/download/playwright/builds/ffmpeg/1011/ffmpeg-mac-arm64.zip\nFFmpeg (playwright ffmpeg v1011) downloaded to <scratch>/browser-cache/ffmpeg-1011\n",
+      "stderr": "",
+      "label": "observed"
+    },
+    {
+      "id": "install-filtering-proxy-warmed-cache",
+      "label": "unavailable",
+      "commandShape": "With an available filtering proxy: HTTPS_PROXY=<proxy> npm ci --prefer-offline --ignore-scripts --no-audit --no-fund using the same scratch lockfile and warmed npm cache; PLAYWRIGHT_BROWSERS_PATH=<scratch-checkout>/.browsers node node_modules/playwright/cli.js install chromium --only-shell",
+      "executed": false,
+      "warmedCachesAvailable": true,
+      "reason": "No filtering proxy endpoint was configured on the environment, system or npm surfaces. No proxy was configured for this order; transparent filtering remains unknown."
+    },
+    {
+      "id": "confinement-control",
+      "commandShape": "sandbox-exec -p discoverySandbox(<scratch-checkout>) node boundary-control.cjs (outside read/write and loopback-network probes)",
+      "startedAt": "2026-09-30T01:50:43.915Z",
+      "finishedAt": "2026-09-30T01:50:43.960Z",
+      "wallSeconds": 0.045,
+      "exitCode": 0,
+      "signal": null,
+      "errorCode": null,
+      "stdout": "{\"outsideRead\":\"EPERM\",\"outsideWrite\":\"EPERM\",\"insideWrite\":\"allowed\",\"network\":\"EPERM\"}\n",
+      "stderr": "",
+      "label": "observed"
+    },
+    {
+      "id": "confined-headless-launch",
+      "commandShape": "sandbox-exec -p discoverySandbox(<scratch-checkout>) node probe.mjs launch <pinned-headless-shell> launch-result.json",
+      "startedAt": "2026-09-30T01:50:44.047Z",
+      "finishedAt": "2026-09-30T01:50:45.609Z",
+      "wallSeconds": 1.562,
+      "exitCode": 0,
+      "signal": null,
+      "errorCode": null,
+      "stdout": "{\"ready\":true,\"pid\":14535,\"parentPid\":14514,\"environmentNames\":[\"HOME\",\"PATH\",\"TMPDIR\",\"__CF_USER_TEXT_ENCODING\"],\"launched\":true,\"browserVersion\":\"153.0.8010.12\"}\n",
+      "stderr": "",
+      "label": "observed"
+    },
+    {
+      "id": "screenshot-hash",
+      "label": "observed",
+      "commandShape": "Two independent sandbox-exec browser launches over the same static fixture; sha256 of fixture.html and each PNG",
+      "fixtureSha256": "c0bca6583ba42b86da402c2ec9af684c8d118df9fe3cca42721c3ca54777f4fd",
+      "runs": [
+        {
+          "run": 1,
+          "sha256": "c040f0cdbd028bfbad7244dc4030950a2f828a5c61cae4deee930bd5f3cc2d9c",
+          "bytes": 1505,
+          "launch": {
+            "pid": 14539,
+            "parentPid": 14514,
+            "environmentNames": [
+              "HOME",
+              "PATH",
+              "TMPDIR",
+              "__CF_USER_TEXT_ENCODING"
+            ],
+            "launched": true,
+            "browserVersion": "153.0.8010.12",
+            "screenshotWritten": true,
+            "closed": true
+          }
+        },
+        {
+          "run": 2,
+          "sha256": "c040f0cdbd028bfbad7244dc4030950a2f828a5c61cae4deee930bd5f3cc2d9c",
+          "bytes": 1505,
+          "launch": {
+            "pid": 14544,
+            "parentPid": 14514,
+            "environmentNames": [
+              "HOME",
+              "PATH",
+              "TMPDIR",
+              "__CF_USER_TEXT_ENCODING"
+            ],
+            "launched": true,
+            "browserVersion": "153.0.8010.12",
+            "screenshotWritten": true,
+            "closed": true
+          }
+        }
+      ],
+      "hashesEqual": true,
+      "commands": [
+        {
+          "id": "screenshot-run-1",
+          "commandShape": "sandbox-exec -p discoverySandbox(<scratch-checkout>) node probe.mjs screenshot <pinned-headless-shell> screenshot-1.json",
+          "startedAt": "2026-09-30T01:50:45.693Z",
+          "finishedAt": "2026-09-30T01:50:46.261Z",
+          "wallSeconds": 0.568,
+          "exitCode": 0,
+          "signal": null,
+          "errorCode": null,
+          "stdout": "{\"ready\":true,\"pid\":14539,\"parentPid\":14514,\"environmentNames\":[\"HOME\",\"PATH\",\"TMPDIR\",\"__CF_USER_TEXT_ENCODING\"],\"launched\":true,\"browserVersion\":\"153.0.8010.12\"}\n",
+          "stderr": "",
+          "label": "observed"
+        },
+        {
+          "id": "screenshot-run-2",
+          "commandShape": "sandbox-exec -p discoverySandbox(<scratch-checkout>) node probe.mjs screenshot <pinned-headless-shell> screenshot-2.json",
+          "startedAt": "2026-09-30T01:50:46.341Z",
+          "finishedAt": "2026-09-30T01:50:46.708Z",
+          "wallSeconds": 0.367,
+          "exitCode": 0,
+          "signal": null,
+          "errorCode": null,
+          "stdout": "{\"ready\":true,\"pid\":14544,\"parentPid\":14514,\"environmentNames\":[\"HOME\",\"PATH\",\"TMPDIR\",\"__CF_USER_TEXT_ENCODING\"],\"launched\":true,\"browserVersion\":\"153.0.8010.12\"}\n",
+          "stderr": "",
+          "label": "observed"
+        }
+      ]
+    },
+    {
+      "id": "parent-sigkill",
+      "label": "observed",
+      "commandShape": "Launch a confined held browser; ps named parent/descendant pids; kill -KILL <recorded-node-parent>; ps the same pids after 250 ms and 2000 ms",
+      "startedAt": "2026-09-30T01:52:56.922Z",
+      "finishedAt": "2026-09-30T01:52:59.280Z",
+      "wallSeconds": 2.358,
+      "parentPid": 14577,
+      "browserPids": [
+        14578,
+        14579,
+        14580
+      ],
+      "parentExit": {
+        "exitCode": null,
+        "signal": "SIGKILL"
+      },
+      "before": {
+        "observedAt": "2026-09-30T01:52:57.255Z",
+        "commandShape": "ps -p 14577,14578,14579,14580 -o pid=,ppid=,stat=,comm=",
+        "exitCode": 0,
+        "processes": [
+          {
+            "pid": 14577,
+            "parentPid": 14566,
+            "state": "S",
+            "command": "<user-home>/.local/share/fnm/node-versions/v26.9.0/installation/bin/node"
+          },
+          {
+            "pid": 14578,
+            "parentPid": 14577,
+            "state": "Ss",
+            "command": "<scratch>/install/.browsers/chromium_headless_shell-1243/chrome-headless-shell-mac-arm64/chrome-headless-shell"
+          },
+          {
+            "pid": 14579,
+            "parentPid": 14578,
+            "state": "S",
+            "command": "<scratch>/install/.browsers/chromium_headless_shell-1243/chrome-headless-shell-mac-arm64/chrome-headless-shell"
+          },
+          {
+            "pid": 14580,
+            "parentPid": 14578,
+            "state": "S",
+            "command": "<scratch>/install/.browsers/chromium_headless_shell-1243/chrome-headless-shell-mac-arm64/chrome-headless-shell"
+          }
+        ]
+      },
+      "after": [
+        {
+          "observedAt": "2026-09-30T01:52:57.520Z",
+          "commandShape": "ps -p 14577,14578,14579,14580 -o pid=,ppid=,stat=,comm=",
+          "exitCode": 1,
+          "processes": []
+        },
+        {
+          "observedAt": "2026-09-30T01:52:59.280Z",
+          "commandShape": "ps -p 14577,14578,14579,14580 -o pid=,ppid=,stat=,comm=",
+          "exitCode": 1,
+          "processes": []
+        }
+      ],
+      "browserSurvivedParentKill": false,
+      "survivingBrowserProcesses": [],
+      "cleanupPids": [],
+      "launch": {
+        "pid": 14577,
+        "parentPid": 14566,
+        "environmentNames": [
+          "HOME",
+          "PATH",
+          "TMPDIR",
+          "__CF_USER_TEXT_ENCODING"
+        ],
+        "launched": true,
+        "browserVersion": "153.0.8010.12"
+      },
+      "stdout": "{\"ready\":true,\"pid\":14577,\"parentPid\":14566,\"environmentNames\":[\"HOME\",\"PATH\",\"TMPDIR\",\"__CF_USER_TEXT_ENCODING\"],\"launched\":true,\"browserVersion\":\"153.0.8010.12\"}\n",
+      "stderr": ""
+    },
+    {
+      "id": "launch-without-connected-server",
+      "label": "observed",
+      "commandShape": "launchctl submit -l <one-shot-job> -- /usr/bin/env -i PATH=<node-bin>:/usr/bin:/bin HOME=<scratch-checkout> TMPDIR=<scratch-checkout> sandbox-exec -p discoverySandbox(<scratch-checkout>) node probe.mjs launch <pinned-headless-shell> no-server.json",
+      "startedAt": "2026-09-30T01:52:59.281Z",
+      "finishedAt": "2026-09-30T01:52:59.594Z",
+      "wallSeconds": 0.313,
+      "submitExitCode": 0,
+      "submitStdout": "",
+      "submitStderr": "",
+      "removedVariables": [
+        "CODEX_CI",
+        "CODEX_SESSION_ID",
+        "CODEX_THREAD_ID",
+        "CODEX_VERSION"
+      ],
+      "environmentPolicy": "env -i removes all inherited environment, then supplies only PATH, HOME and TMPDIR; macOS may synthesize __CF_USER_TEXT_ENCODING",
+      "result": {
+        "pid": 14586,
+        "parentPid": 1,
+        "environmentNames": [
+          "HOME",
+          "PATH",
+          "TMPDIR",
+          "__CF_USER_TEXT_ENCODING"
+        ],
+        "launched": true,
+        "browserVersion": "153.0.8010.12",
+        "closed": true
+      },
+      "stdout": "{\"ready\":true,\"pid\":14586,\"parentPid\":1,\"environmentNames\":[\"HOME\",\"PATH\",\"TMPDIR\",\"__CF_USER_TEXT_ENCODING\"],\"launched\":true,\"browserVersion\":\"153.0.8010.12\"}\n",
+      "stderr": "",
+      "processOrigin": "launchd parent pid 1; no harness invocation",
+      "connectedServerAbsent": "No connected-server endpoint or configuration supplied; local chromium.launch only; native boundary denies network. Global server configuration was not changed or inspected.",
+      "jobRemoval": {
+        "exitCode": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    }
+  ],
+  "protectedSurfaces": {
+    "observedAt": "2026-09-30T01:54:41.429Z",
+    "unchanged": [
+      {
+        "file": "package.json",
+        "sha256": "c6e315aa86eac2c56f3244c150b72004b2f0e62b75a6c29876d951bcec9488eb",
+        "unchanged": true
+      },
+      {
+        "file": "package-lock.json",
+        "sha256": "aa2d7a155309d1f96b6cf407af7df9b3c9ceea9d0e3a87cc2f24f83bafce9b6b",
+        "unchanged": true
+      },
+      {
+        "file": "docs/discovery/environment.json",
+        "sha256": "676a16fb6fac48b618d3bb2d203a090c755dbddd4db2f1022ba2591fdcb9ac28",
+        "unchanged": true
+      },
+      {
+        "file": "packages/beacons/package.json",
+        "sha256": "88169fdc9b5e23a4c2afbb897bd90e4d8d2f8b984e86c52fcee70b2e8caad820",
+        "unchanged": true
+      },
+      {
+        "file": "packages/compiler/package.json",
+        "sha256": "f8c278b4122f9b08e030c65bd325d09364d76c8704ec80b1cbd45bf9f83dba9f",
+        "unchanged": true
+      },
+      {
+        "file": "packages/console/package.json",
+        "sha256": "c00094bde5df2a2a04da5dbc63bb992d71544d717efdbfa164caebe75e52d2c7",
+        "unchanged": true
+      },
+      {
+        "file": "packages/kernel/package.json",
+        "sha256": "6112fafd66ed7674e249f1168e7912896f7c3e53c65bd07e6348ae1ede49ba4f",
+        "unchanged": true
+      },
+      {
+        "file": "packages/skeleton/package.json",
+        "sha256": "549ba50ee58260b060fc193bf69def3626647128e3d86d8295e276ecae6f3fcf",
+        "unchanged": true
+      }
+    ],
+    "legalHashDeclarationsUnchanged": true,
+    "browserLicenseFiles": [
+      {
+        "file": "chromium_headless_shell-1243/chrome-headless-shell-mac-arm64/LICENSE.headless_shell",
+        "bytes": 2003323,
+        "sha256": "14561bfc58f207af7ade768e8b95e99f9cf8af6d9aa46b4c0d9ae0b3a97585cc"
+      },
+      {
+        "file": "ffmpeg-1011/COPYING.LGPLv2.1",
+        "bytes": 26526,
+        "sha256": "b634ab5640e258563c536e658cad87080553df6f34f62269a21d554844e58bfe"
+      }
+    ]
+  },
+  "decision": {
+    "consumer": "Planned packages/browser-evidence workspace package, outside the kernel and compiler (WO-059 Design)",
+    "playwrightVersion": "1.63.0",
+    "browser": "Chromium headless shell 153.0.8010.12, Playwright revision 1243",
+    "inventoryDuty": "At implementation, record the pinned package and browser inventory in docs/LEGAL.md. At first built or bundled distribution, apply the existing THIRD_PARTY_NOTICES duty to the actual shipped package/browser/FFmpeg materials; lockfile labels are not a binary-license audit.",
+    "nextOrderImplication": "This host/pin can launch under the current native profile and run standalone. This single static fixture supports equal screenshot hashes only within this observation; parent cleanup was observed over two seconds, not proven for every failure."
+  },
+  "limits": [
+    "One pinned version, one browser, one host and one static local fixture; no cross-platform or arbitrary-application claim.",
+    "One SIGKILL trial; process snapshots after programmed waits of 250 ms and an additional 1750 ms.",
+    "One launchd-origin standalone trial. The global connected browser server was not stopped or reconfigured; the child received no endpoint/configuration, did not invoke a harness and ran under network denial.",
+    "Filtering-proxy installation unavailable. Cache entries were warmed by online installs; no offline/proxy install success is claimed.",
+    "Installation ran online outside the native network-denying launch profile; only the browser runs and boundary control were confined.",
+    "The original scratch-only filename assumption was corrected before any browser launch; WO-057-D003 records the specific error."
+  ]
+}

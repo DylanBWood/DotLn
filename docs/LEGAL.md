@@ -31,6 +31,8 @@ record the authorized upgrade and native parser migration. WO-011's original
 2026-09-06 dependency was TypeScript `5.4.5`; that historical version has been
 superseded. No publication or licensing decision changes here.
 
+**Browser-runtime scratch observation — 2026-09-30 (WO-057).** The [record](discovery/browser-runtime-2026-09-30.md) and its [JSON inventory](discovery/browser-runtime-2026-09-30.json) observed exactly pinned `playwright` and `playwright-core` `1.63.0`, each labeled Apache-2.0 in the isolated scratch lockfile; Chromium headless shell `153.0.8010.12` (Playwright revision `1243`); and its auxiliary FFmpeg revision `1011`. The downloaded Chromium `LICENSE.headless_shell` and FFmpeg `COPYING.LGPLv2.1` were inventoried by filename, size and hash; their full texts were not imported. These labels and bounded observations are not an independent audit of every binary component. [ADR-0002](decisions/0002-kernel-first-agentic-core.md#amendments) names WO-059's future `packages/browser-evidence` consumer outside the kernel and compiler. WO-059 must record its actual pinned dependency/browser inventory when it implements that package. The existing `THIRD_PARTY_NOTICES` duty applies at the first built or bundled distribution to the actual shipped package, browser and auxiliary materials. This discovery adds no workspace dependency and distributes no bundled artifact; the workspace manifests/lockfile, `NOTICE`, license files and the three hash declarations below are unchanged.
+
 **2026-09-06 observation (phase-two planning pass):** the operator intends
 `DotLn-Enterprise-Starter`, an exported launchpad kit of this repository's
 control plane and operating documents, to be forked by several external

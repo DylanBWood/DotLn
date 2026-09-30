@@ -612,3 +612,11 @@ The [writing-worker record](writing-worker-smoke-2026-09-14.md) and its [index](
 Earlier observations above remain time-indexed and unchanged. Requested model
 and effort are launch selectors, not effective-session readback; the local
 transport sends no effort value on the wire at all.
+
+## WO-057 browser-runtime addendum (2026-09-30)
+
+The [browser-runtime record](browser-runtime-2026-09-30.md) and its [JSON packet](browser-runtime-2026-09-30.json) observed Playwright `1.63.0` and Chromium headless shell `153.0.8010.12` (revision `1243`) on macOS `27.0.1`, arm64, Node `26.9.0`, npm `11.19.1`. The executor installed the pinned scratch package and browser online, outside the workspace. The host-confinement detector reported `inForce: false`; all browser launches separately ran under the unchanged `discoverySandbox` profile that the verification host supplies, whose control denied outside reads/writes and loopback network access with `EPERM`.
+
+Two independent confined browser processes rendered equal screenshot hashes over one static original fixture. After SIGKILL of the recorded Node parent, neither process-table snapshot found any of its three recorded browser PIDs. A clean launchd-origin process (parent PID 1) also launched and closed the local browser without the four inherited Codex environment variables or a connected-server endpoint. The temporary launchd job was removed. The filtering-proxy warmed-cache row is `unavailable`: no configured endpoint was found on the bounded environment, system or npm surfaces; transparent filtering remains unknown. These are one-host, one-pin observations, not general screenshot or cleanup guarantees.
+
+[ADR-0002](../decisions/0002-kernel-first-agentic-core.md#amendments) names WO-059's planned `packages/browser-evidence` consumer; [LEGAL](../LEGAL.md#current-state) records the inventory duty. No workspace runtime dependency is added. Earlier observations and `environment.json` remain unchanged, so this addendum re-mints no evidence edition. Actor: Codex CLI `0.159.2`, `gpt-6.1-sol`, effort `max`, source `codex-session-readback`; observation times are UTC (operator local date 2026-09-29). Reobserve when the runtime pin, host or native profile changes, or when a filtering proxy becomes available.
