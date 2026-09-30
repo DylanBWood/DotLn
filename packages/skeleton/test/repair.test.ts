@@ -20,6 +20,7 @@ import {
   repairHash,
   repairNextAction,
   type RepairScopeGrant,
+  type ReviewRepairWitness,
 } from "../src/repair.js";
 import {
   createRepairFixture,
@@ -51,6 +52,84 @@ const findingFor = (
     command: { commandId: "fixture" },
   } as EvidenceWorkerRequest).findings[0]!;
 };
+
+test("WO-066 host review witness preserves scope, named tests, revision and one-round bound", async () => {
+  const fixture = await createRepairFixture();
+  try {
+    const criterion = fixture.original.criteria.find(
+      (entry) => entry.criterionId === "AC-contract",
+    )!;
+    const reviewItem: ReviewRepairWitness = {
+      evidenceId: "evt_2:review-comment",
+      itemId: "review-comment",
+      class: "automated-review",
+      subjectRevision: fixture.subject.revision,
+      criterionId: criterion.criterionId,
+      path: "fixture.txt",
+      line: 1,
+      testCommand: "node contract-test.mjs",
+      observed: "Unresolved synthetic review comment",
+      expected: criterion.description,
+    };
+    const finding: VerificationFinding = {
+      findingId: "review-finding",
+      criterionId: criterion.criterionId,
+      severity: "blocking",
+      observed: reviewItem.observed,
+      expected: reviewItem.expected,
+      evidenceRefs: [reviewItem.evidenceId],
+      reproductionSteps: [reviewItem.testCommand],
+      likelySurface: ["fixture.txt"],
+    };
+    const input = {
+      ...fixture.original,
+      subject: fixture.subject,
+      round: 0,
+      roundLimit: 1,
+      reviewItem,
+    };
+    const result = deriveRepairOrder(finding, input);
+    assert.equal(result.kind, "derived");
+    if (result.kind === "derived") {
+      assert.deepEqual(result.order.surfaces, ["fixture.txt"]);
+      assert.deepEqual(
+        result.order.authorityEnvelope,
+        fixture.original.authorityEnvelope,
+      );
+      assert.deepEqual(
+        result.order.contract,
+        repairContract(fixture.original.workOrder),
+      );
+    }
+    for (const changed of [
+      { subjectRevision: fixture.subject.baseCommit },
+      { line: 0 },
+      { testCommand: "node unnamed-test.mjs" },
+      { evidenceId: "foreign-evidence" },
+    ])
+      assert.equal(
+        deriveRepairOrder(finding, {
+          ...input,
+          reviewItem: { ...reviewItem, ...changed },
+        }).kind,
+        "NeedsHuman",
+      );
+    assert.equal(
+      deriveRepairOrder(finding, { ...input, round: 1 }).kind,
+      "NeedsHuman",
+    );
+    const outside = { ...reviewItem, path: "outside.txt" };
+    assert.equal(
+      deriveRepairOrder(
+        { ...finding, likelySurface: [outside.path] },
+        { ...input, reviewItem: outside },
+      ).kind,
+      "NeedsHuman",
+    );
+  } finally {
+    disposeRepairFixture(fixture.root);
+  }
+});
 
 test("WO-055 AC1 pure derivation contains paths, commands, contract and admitted exact grants", async () => {
   const fixture = await createRepairFixture();
