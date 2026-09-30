@@ -1,22 +1,22 @@
 # Current control state
 
-## WO-087
+## WO-057
 
-- Work order: WO-087
-- Work-order path: docs/work-orders/WO-087-roadmap-split.md
+- Work order: WO-057
+- Work-order path: docs/work-orders/WO-057-browser-runtime-truth.md
 - Phase: closed
 - Latest verification: VER-001
-- Verification path: docs/verifications/WO-087/VER-001.md
+- Verification path: docs/verifications/WO-057/VER-001.md
 - Latest verdict: pass
 - Final review: FINAL-001
-- Final-review path: docs/final-reviews/WO-087/FINAL-001.md
+- Final-review path: docs/final-reviews/WO-057/FINAL-001.md
 - Latest attestation: harness claude-code; version 2.1.285; model claude-opus-5-5; effort xhigh; source claude-session-readback; account not-applicable
-- Effort drift: xhigh (subagents) (raw: ultra) -> xhigh
-- Latest recordedAt: 2026-09-30T01:28:56.985Z
-- Elapsed implementation: 3666040 ms
-- Elapsed verification: 785291 ms
-- Elapsed finalReview: 717452 ms
-- Latest checkpoint: a5471f71c8a003736b8c1a52c1956252c3fbd0b8 (restore: `git checkout refs/dotln/checkpoint/WO-087/6 -- .`)
+- Effort drift: max -> xhigh
+- Latest recordedAt: 2026-09-30T02:50:52.527Z
+- Elapsed implementation: 2102545 ms
+- Elapsed verification: 982699 ms
+- Elapsed finalReview: 945129 ms
+- Latest checkpoint: 3371222936f1a10eb62ae278b04515b775d815f1 (restore: `git checkout refs/dotln/checkpoint/WO-057/6 -- .`)
 - Legal next actions: release-close, next, activate
 - Legal off-ramps: correct
 

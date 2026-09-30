@@ -1,4 +1,4 @@
-# WO-057 — Browser runtime truth: observe whether a Playwright runtime can be installed, launched headless and killed inside a confined checkout in this environment without the harness's connected server, and record the dependency decision as an ADR-0002 amendment (version assigned at activation)
+# WO-057 — Browser runtime truth: observe whether a Playwright runtime can be installed, launched headless and killed inside a confined checkout in this environment without the harness's connected server, and record the dependency decision as an ADR-0002 amendment (v0.56.4)
 
 **Model:** any capable model for the probe; the executor runs every row on
 the actual host, whose sessions run with network access and no host
