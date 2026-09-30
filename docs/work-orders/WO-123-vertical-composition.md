@@ -30,8 +30,7 @@ imports is registered there or excluded with a reason;
 `resident-state.ts` and the two source-change files are also judged by
 the feedback verifier (`FEEDBACK_SOURCE_PATHS` in
 `packages/skeleton/src/feedback-audit.ts`), so the executor runs one live
-feedback self-host episode on Codex `gpt-6-sol` or Claude Code
-`claude-opus-5-5`, at `xhigh`, which needs no authorization and whose cost
+feedback self-host episode on Codex `gpt-6.1-sol` at `max` or Claude Code `claude-opus-5-5` at `xhigh`, which needs no authorization and whose cost
 is accepted; `beacon-io.mjs`, `dotln.ts` and `scripts/lib/config.mjs`
 are in no edition. Wall-clock, tokens and context bytes are unknown until
 run.
@@ -136,6 +135,21 @@ dependency token.
     "reason": "resolution"
   },
   {
+    "workOrderId": "WO-180",
+    "relation": "hard",
+    "reason": "the baseline witness episode the composition sequences before the change"
+  },
+  {
+    "workOrderId": "WO-181",
+    "relation": "hard",
+    "reason": "the independent review episode sequenced after verification"
+  },
+  {
+    "workOrderId": "WO-182",
+    "relation": "hard",
+    "reason": "the deliverable-ready conjunction the run requires before publication"
+  },
+  {
     "workOrderId": "WO-068",
     "relation": "hard",
     "reason": "the resident that admits the intent and dispatches the first step"
@@ -187,7 +201,10 @@ reproduction and its checks); `scripts/lib/evidence-sources.mjs` and
 contract (WO-061) → surfaces (WO-124) → derived order (WO-120) →
 source-change episode (WO-052) → browser witnesses (WO-059) → verification
 and repair (WO-054, WO-055) → lint and publish (WO-063, WO-064) →
-observation and resolution (WO-065, WO-066) to a terminal state, recording
+observation and resolution (WO-065, WO-066) to a terminal state, with the
+baseline witness before the change (WO-180), the independent review after
+verification (WO-181) and the deliverable-ready conjunction before
+publication (WO-182), recording
 each step's receipt under the order. It has two entries that persist the
 same continuation. The resident (WO-068) admits a filed intent (the draft
 WO-120's `dotln intent` writes) when a portfolio entry of the `intent`
@@ -354,8 +371,7 @@ below.
    registered source imports is registered or excluded with a reason, and
    after the last edit to a judged source the executor re-mints the
    feedback edition from one live feedback self-host episode over the
-   edited judged sources, on Codex `gpt-6-sol` or Claude Code
-   `claude-opus-5-5`, at `xhigh` (`npm run dotln -- feedback-audit`, then
+   edited judged sources, on Codex `gpt-6.1-sol` at `max` or Claude Code `claude-opus-5-5` at `xhigh` (`npm run dotln -- feedback-audit`, then
    `npm run evidence:feedback -- --record-selfhost <directory>`); the
    decisions record the configuration. A repair that edits a judged source
    again runs another the same way.

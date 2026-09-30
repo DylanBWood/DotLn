@@ -18,8 +18,7 @@ for the witness kinds and WO-061 for the `visual` claim type. Re-mints:
 both files are registered evidence sources in every edition and sources
 the feedback verifier judges, so the authority, artifact-identity,
 verification and harness editions are re-minted deterministically and the
-executor runs one live self-host episode for the feedback edition on Codex
-`gpt-6-sol` or Claude Code `claude-opus-5-5`, at `xhigh`, which needs no
+executor runs one live self-host episode for the feedback edition on Codex `gpt-6.1-sol` at `max` or Claude Code `claude-opus-5-5` at `xhigh`, which needs no
 authorization; the console is re-pinned to the new feedback
 edition, and its self-host fixtures that hold the compiler label follow
 the compiler release (WO-154 D011; WO-162 D012). Wall-clock, tokens and
@@ -189,8 +188,7 @@ the re-mints, the write-backs below.
    this order stales are re-minted deterministically and the console is
    re-pinned with its self-host fixtures; the decisions record each. After
    the last edit to a judged source the executor re-mints the feedback
-   edition from one live self-host episode on Codex `gpt-6-sol` or Claude
-   Code `claude-opus-5-5`, at `xhigh`; the decisions record the
+   edition from one live self-host episode on Codex `gpt-6.1-sol` at `max` or Claude Code `claude-opus-5-5` at `xhigh`; the decisions record the
    configuration. A repair that edits a judged source again runs another
    the same way.
 7. `npm test -- --review` and `npm run test:docs` green; `git diff

@@ -901,12 +901,11 @@ In ideation mode:
    before looking for original intake or choosing a capture destination. A work
    order's relative `docs/intake/` does not contain main's ignored source corpus.
    Capture unedited material in a dated file under `docs/intake/chats/`,
-   `docs/intake/notes/`, or `docs/intake/images/`. The intended survivor is the
-   main control-plane checkout's ignored intake, resolved explicitly rather than
-   assumed from a relative path. If the active harness cannot write there, a
-   worktree-local capture is provisional staging: preserve it, name the pending
-   reconciliation in the receipt, back it up, and reconcile it before worktree
-   removal. Intake is local-only and gitignored; preserve fragments, repetition,
+   `docs/intake/notes/`, or `docs/intake/images/` of the current checkout. A
+   worktree's capture is staging: the reviewed closeout helper copies it into
+   main's ignored intake at removal (WO-044), so no session writes outside its
+   worktree for a capture; name the pending reconciliation in the receipt
+   [2026-09-30 pass, WO-116 D014]. Intake is local-only and gitignored; preserve fragments, repetition,
    uncertainty, and contradictions.
 2. Apply the clean-room boundary before synthesis. If material resembles
    employer code, configuration, identifiers, proprietary API shapes, internal
@@ -1064,7 +1063,9 @@ remains an alias). The command verifies the committed subject equals the
 workspace and prints the canonical prompt and closed JSON schema. The parent
 spawns one fresh background worker without inherited conversation, supplying
 only that prompt and the shared goal card. In Codex this uses `spawn_agent`
-with `fork_turns: none`; in Claude it uses a fresh background agent. The worker
+with `fork_turns: none`; in Claude it uses a fresh background agent on
+`claude-opus-5-5` (the Agent tool's `opus`) at the root's selected effort
+(§Model-specific notes). The worker
 judges the supplied prompt directly, returns its frozen JSON and a truthful
 single-line statement of at most 4000 characters, and makes no repository or
 Git writes. The parent remains the sole writer and can finish independent
@@ -1211,11 +1212,16 @@ Standard artifacts, all doc-only:
 - `npm run work-orders -- index` regenerated and `npm run test:docs` green.
   A document-only pass runs no code suite.
 
+A byte figure an order or a pass states for a document is a reported target
+under the ceiling rule (`docs/control/doc-ceilings.json`), never a bound a role
+trims reviewed text to meet [2026-09-30 pass; WO-172 theme 14].
+
 An order gives the executor every step the executor can perform (operator
 direction, 2026-09-28): none is marked operator-run or routed to the
 operator. A live feedback episode an order owes runs in the executor's
-session on Codex `gpt-6-sol` or Claude Code `claude-opus-5-5`, at `xhigh`,
-with no operator authorization and its cost accepted; a repair that edits a
+session on Codex `gpt-6.1-sol` at `max` or Claude Code `claude-opus-5-5` at
+`xhigh` (the spawned-agent rule of §Model-specific notes), with no operator
+authorization and its cost accepted; a repair that edits a
 judged source again runs another the same way. A step the order's objective
 gives the operator (a session the operator witnesses, a run in the operator's
 own fork, a grant only the operator's account holds) names its fallback for
@@ -2077,6 +2083,14 @@ Independent verifiers use `xhigh` rather than `max`. A verifier launch may cap
 provider spend at USD 5 when the selected transport exposes a hard dollar-cap
 control. A recorded budget on a transport without that control is a limit
 declaration, not an enforced cap, and must be reported that way.
+
+Spawned agents run the operator's pinned models (direction of 2026-09-30): a
+worker, reviewer, refuter, live episode or probe that a session launches runs
+Codex `gpt-6.1-sol` at `max` or Claude Code `claude-opus-5-5` at `xhigh`.
+Claude Code's Agent tool selects the model (`opus`) and no effort, so a spawned
+Claude agent inherits the root session's selected effort; a root that spawns
+runs at `xhigh`. Compiled defaults and probes that still name `gpt-6-sol` or
+`claude-fable-5` are WO-177's; the attestation records what ran.
 
 - Required attestation fields, `unknown`, Codex thread readback, the
   `--account-label` grammar, the Codex 0.154.0 effort probes and the WO-126

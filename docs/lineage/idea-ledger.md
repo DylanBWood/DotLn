@@ -40,6 +40,122 @@ are now declared above. The [decision record](../evidence/WO-084/decisions.md)
 records the legacy ledger write-back; `node scripts/lineage.mjs index` generates
 the index and `index --check` enforces this rule in `npm run test:docs`.
 
+## 2026-09-30 — Planning pass: the operator's three items and WO-172's subject map taken up (WO-176 to WO-179; the queue and the boarded items disposed)
+
+Source: the operator's dispatch `planning: standard planning pass + small
+additions` and four mid-turn messages of 2026-09-30, captured verbatim in
+ignored intake (`docs/intake/notes/2026-09-30-standard-pass-small-additions-planning.md`,
+SHA-256 `53ec7f2a57d8d07f8337dd97686099b29d09efcf1c0fa5747849ffdf0f5b0e6c`),
+and the repository's own records: `plan failures`, the register, WO-172's
+subject map and survey decisions, the WO-117 and WO-086 evidence, the
+harness source, Claude Code's permission documentation read that day.
+Shape-First Synthesis over repository records and the operator's
+paraphrased report; the clean-room screen found no stop condition. The
+record is [the planning document](../planning/standard-pass-2026-09-30.md).
+
+- **A release close finishes on the handoff's word** `candidate`
+  - The executor knows which repositories it made are scratch; the close
+    learned it from lanes alone, and a lane rule marked a repository under
+    `.runtime/` a blocker while discarding the files beside it. The
+    operator saw a session stop at the refusal and then move the
+    repository by its own decision. Filed as WO-176: the lane is the
+    declaration for disposable roots, `worktree material` declares the
+    rest, completion records the rows in the lifecycle event, the close
+    consumes them and blocks only on an undeclared repository with the one
+    command that settles it, and every close writes `release-close.json`.
+    Provenance: the operator's item 1; WO-117 VER-001; WO-172 themes 2
+    and 8; FUP-ecf9d3b703a0b7d9. Reopen: a close after WO-176 blocks on
+    material the executor declared, or a session again resolves a blocker
+    by its own decision.
+- **The lifecycle admits what it has authorized** `candidate`
+  - Under Claude Code auto mode the classifier denied the publish helper
+    of a close the operator had dispatched, and the session neither
+    retried nor found the route. Allow rules resolve before the classifier
+    and a hook's `allow` bypasses it (documentation read 2026-09-30); the
+    project's hook emits only denials. Filed in WO-178: the hook admits
+    the byte-exact helper when the recorded dispatch, the main checkout and
+    the legal action agree, a `PermissionDenied` hook journals every denial,
+    and the role text (WO-179) says a denial is reported with the operator's
+    two routes. Provenance: the operator's item 3; the 2026-09-25 map item
+    on the classifier; FUP-3682b768d1d00a3b. Reopen: the first Claude
+    auto-mode close after WO-178 records a denial of the admitted command.
+- **Spawned agents run the pinned models** `adopted`
+  - Operator direction: spawned Codex agents run `gpt-6.1-sol` at `max`,
+    spawned Claude agents `claude-opus-5-5` at `xhigh`. Written into
+    product 07 §Model-specific notes and the live-episode sentence, and
+    into the eight queued orders that named the older Codex model; the
+    compiled defaults and probes are WO-177's. Claude Code's Agent tool
+    sets a model and no effort, so a spawned Claude agent runs at the
+    root's selection. Provenance: the operator's item 2; WO-086's Codex
+    readback. Reopen: the operator changes the pins, or a host exposes a
+    per-agent effort.
+- **The record holds what the operator sees** `candidate`
+  - WO-172 measured that the record holds 14% of correction episodes;
+    this pass met two failures no record held (a close that stopped, a
+    denied publish) and two counts it paid by hand (12 of 40 gate rows
+    since WO-173 fresh at an identity already green; the phases above
+    twice their median). Filed as WO-178: the prompt hook records each
+    operator message's route, time, digest and prefix class, never text,
+    with the classes the operator confirmed in WO-172 D018; the Stop
+    advisory names running monitors; `plan failures` counts closes,
+    denials, interventions, long phases and repeated gate runs; `plan
+    start` prints the delivery split from an optional `Track:` header.
+    Provenance: the operator's messages 3 to 5; WO-172 D013, D018,
+    themes 11, 13, 20, 23, 30. Reopen: two passes report more than half
+    of intervention rows unclassified, or a failure class the operator
+    names is still in no count.
+- **Role text carries the corrections the survey confirmed** `candidate`
+  - Twelve themes end in one shared sentence or briefing line that was
+    never written, and four recorded episodes after their fixing order's
+    final review. Filed as WO-179, each sentence traced to its theme and
+    episodes; the verifier consumes the executor's gate row instead of
+    rerunning it; `verification-result` applies WO-173's claim check.
+    Provenance: WO-172 themes 2, 3, 4, 7, 9, 14, 15, 16, 18, 19, 20, 21,
+    26, 29; WO-116 D016. Reopen: a theme recurs after WO-179's final review,
+    or the operator strikes a sentence.
+- **A capture stays in its worktree; the closeout helper carries it**
+  `adopted`
+  - Product 07's ideation step aimed a capture at main's ignored intake
+    from any checkout, an outside-worktree write the fifth refusal admits
+    but a session need not make: WO-044's helper copies worktree intake
+    into main at removal. The step now says so (WO-116 D014, theme 27).
+    Reopen: a capture is lost at a worktree's removal.
+- **A byte figure is a target, never a trim bound** `adopted`
+  - Roles trimmed reviewed text to meet a figure an order stated (theme
+    14, E0999); the ceiling rule is the bound and the figure a report.
+    Written into product 07's planning procedure. Reopen: a review finds
+    reviewed text cut to meet a stated figure.
+- **The vertical's promised steps get their orders** `candidate`
+  - The operator asked whether product orders were missing after five
+    machinery passes. Checked against the vision, the critical path and the
+    roadmap: every step of the source-to-deliverable vertical has an order
+    except three the roadmap and product 03 name, the baseline witness
+    before any change, the independent review episode beside behavior
+    verification, and the deliverable-ready conjunction before a pull
+    request opens. Filed as WO-180, WO-181 and WO-182, each a primitive
+    WO-123 composes and WO-112 runs, placed as the delivery lane of the
+    third, fourth and fifth pairs. Provenance: the operator's message 6;
+    product 03 §VerificationAdapter and §DeliveryAdapter; product 06's
+    vertical; the search of the queued orders. Reopen: a run of WO-112
+    passes a step the roadmap names and no order lands.
+- **The `v1.0.0` exit has an order, months away** `candidate`
+  - The stranger test (a person who has not read these documents declares
+    one intent and receives a verifiable result) had waited as a candidate
+    since 2026-09-06 for the parity contract, which WO-115 closed. Filed as
+    WO-183 after WO-118, the shape of the exit and no priority: the
+    operator places `v1.0.0` months away. Provenance: the map's candidate;
+    product 06 §v1.0.0; the operator's messages 6 and 7. Reopen: WO-118
+    closes, or the operator re-cuts the exit.
+- **Early access until `v1.0.0`** `adopted`
+  - The operator's framing: the ladder below `v1.0.0` is an early-access
+    period, as games hold an alpha or beta; critical product features are
+    likely still unconsidered; once this queue drains the operator brings
+    direction. Written into product 06 §v1.0.0. Planning drains the queue
+    with a delivery lane in every pair and files product work only where
+    the ladder already promises a step. Provenance: the operator's messages
+    7 and 8. Reopen: the operator opens the post-queue direction, or a
+    pass finds a promised step with no order.
+
 ## 2026-09-30 — Planning pass: REVIEW-004 paid for and consumed (WO-174, WO-175; two findings declined on cost; the sequence note folded)
 
 Source: the operator's bare dispatch `planning: entropy reducer`, captured

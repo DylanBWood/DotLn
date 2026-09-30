@@ -678,7 +678,13 @@ material decisions.
 
 A person who has never read these docs declares one bounded intent and receives
 a verifiable result, without learning the taxonomy and without a giant
-transcript. Exit: witnessed run by a non-author.
+transcript. Exit: witnessed run by a non-author (WO-183 names the run). The
+rungs below this one are an early-access period, as a game holds an alpha or
+beta for a long time: the operator places `v1.0.0` months away at the current
+rate, expects critical product features not yet considered, and brings
+direction once the current queue drains; until then planning drains the
+queue with one delivery lane per pair and files product work only where this
+ladder already promises a step [operator direction, 2026-09-30].
 
 ## Post-1.0 horizons
 

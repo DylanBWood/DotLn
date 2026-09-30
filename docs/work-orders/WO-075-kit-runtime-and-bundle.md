@@ -23,8 +23,7 @@ that the registered sources it edits stale is re-minted deterministically
 `packages/compiler/src/codex-continuation.mjs` and
 `scripts/harness-context.mjs`), and
 `packages/skeleton/src/usage-observation.mjs`, which the feedback verifier
-judges, owes one live feedback episode, which the executor runs on Codex
-`gpt-6-sol` or Claude Code `claude-opus-5-5`, at `xhigh`, with no
+judges, owes one live feedback episode, which the executor runs on Codex `gpt-6.1-sol` at `max` or Claude Code `claude-opus-5-5` at `xhigh`, with no
 authorization. Wall-clock, tokens and context bytes are unknown until run.
 **Nomination provenance:** WO-033 phase 3 (the build half: "the export
 carries the build"), cut into a bounded child at the operator's 2026-09-08
@@ -191,8 +190,7 @@ bundle, the smoke record, the carry-in's disposition, the write-backs below.
    its checks under a `DOTLN_LAUNCHPAD` that is not the scripts' checkout,
    or deferred with its reason. If this order edits
    `packages/skeleton/src/usage-observation.mjs`, the executor runs one
-   live feedback episode after that edit on Codex `gpt-6-sol` or Claude
-   Code `claude-opus-5-5`, at `xhigh`, and the decisions record the
+   live feedback episode after that edit on Codex `gpt-6.1-sol` at `max` or Claude Code `claude-opus-5-5` at `xhigh`, and the decisions record the
    configuration.
 6. Write-backs land: 03 §Platform and instance boundary (the build travels
    with the kit), in place with no dated paragraph, at most 300 bytes added,

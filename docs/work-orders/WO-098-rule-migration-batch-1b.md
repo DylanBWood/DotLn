@@ -20,7 +20,7 @@ always-on sentence a new unit covers. Re-mints: the same sources as WO-097;
 `packages/skeleton/src/feedback-selfhost.ts` and
 `packages/skeleton/test/feedback-fixtures.test.ts` are judged by the
 feedback verifier, so the executor runs one live feedback self-host
-episode on Codex `gpt-6-sol` or Claude Code `claude-opus-5-5`, at `xhigh`,
+episode on Codex `gpt-6.1-sol` at `max` or Claude Code `claude-opus-5-5` at `xhigh`,
 which needs no authorization and whose cost is accepted; they,
 `packages/compiler/src/harness.ts`, `packages/compiler/package.json` and
 the loadout that holds a retired sentence are registered, so each other
@@ -203,8 +203,7 @@ the write-backs below.
    file; the publication locks refreshed.
 7. The deterministic re-mints the Cost line names are recorded. After the
    last edit to a judged source the executor runs one live feedback
-   self-host episode on Codex `gpt-6-sol` or Claude Code `claude-opus-5-5`,
-   at `xhigh` (`packages/skeleton/README.md` §Feedback compiler and bounded
+   self-host episode on Codex `gpt-6.1-sol` at `max` or Claude Code `claude-opus-5-5` at `xhigh` (`packages/skeleton/README.md` §Feedback compiler and bounded
    self-hosting), records it as a new feedback edition and re-pins the
    console's self-host fixtures to it; the decisions record the
    configuration. A repair that edits a judged source again runs another

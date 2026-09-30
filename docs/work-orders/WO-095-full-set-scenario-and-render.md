@@ -178,8 +178,9 @@ write-backs below.
    hashes.
 3. If the order changes `packages/skeleton/src/reactor.ts`, the executor
    runs one live feedback self-host episode after its last edit to a
-   judged source, on Codex `gpt-6-sol` at `xhigh` or Claude Code
-   `claude-opus-5-5` at `xhigh` (the operator's 2026-09-28 direction), and
+   judged source, on Codex `gpt-6.1-sol` at `max` or Claude Code
+   `claude-opus-5-5` at `xhigh` (the operator's 2026-09-28 and 2026-09-30
+   directions), and
    mints the feedback edition from it (the audit and
    `node scripts/feedback-evidence.mjs --record-selfhost`, as WO-147 D010
    records); the decisions file records which configuration ran. A repair
