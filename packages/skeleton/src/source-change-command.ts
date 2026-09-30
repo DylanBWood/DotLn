@@ -9,6 +9,7 @@ import {
 } from "node:fs";
 import { join, relative, sep } from "node:path";
 import { observedExecFileSync as execFileSync } from "./gate-deadlines.mjs";
+import { confinedTestCommand } from "./discovery-sandbox.js";
 
 const digest = (value: string) =>
   createHash("sha256").update(value).digest("hex");
@@ -166,7 +167,8 @@ export function sourceChangeCommandEffect(
     ["merge-base", "--is-ancestor", value.baseCommit, "HEAD"],
     { cwd: target, timeout: 5_000, stdio: "pipe" },
   );
-  if (command === value.testCommand) return "shell.run";
+  if (command === confinedTestCommand(target, value.testCommand))
+    return "shell.run";
   if (
     command === "git add -A" ||
     command === `git commit -F ${value.messagePath}`

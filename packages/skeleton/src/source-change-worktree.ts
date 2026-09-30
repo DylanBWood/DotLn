@@ -11,6 +11,7 @@ import {
   writeFileSync,
 } from "node:fs";
 import { dirname, join, resolve, sep } from "node:path";
+import { discoverySandbox } from "./discovery-sandbox.js";
 import {
   observedExecFileSync as execFileSync,
   observedSpawnSync as spawnSync,
@@ -424,15 +425,43 @@ export function runFocusedTest(
   if (!/^[a-zA-Z0-9_./-]+(?: [a-zA-Z0-9_./=-]+)*$/u.test(command))
     throw new Error("source-change test requires a bounded argument vector");
   const [binary, ...args] = command.split(" ");
-  const result = spawnSync(binary!, args, {
-    cwd: path,
-    timeout: 180_000,
-    maxBuffer: 1024 * 1024,
-  });
+  if (process.platform !== "darwin")
+    return {
+      command,
+      exitCode: null,
+      signal: "confinement-unavailable",
+      stdoutHash: sourceDigest(""),
+      stderrHash: sourceDigest("macOS sandbox-exec required"),
+    };
+  const result = spawnSync(
+    "/usr/bin/sandbox-exec",
+    ["-p", discoverySandbox(path), binary!, ...args],
+    {
+      cwd: path,
+      env: {
+        PATH: `${dirname(process.execPath)}:/usr/bin:/bin`,
+        // A read-only empty home avoids tool caches dirtying source. The
+        // profile still denies every write outside the target worktree.
+        HOME: "/var/empty",
+        TMPDIR: path,
+        // npm enables Node's cache under TMPDIR; it is not source output.
+        NODE_DISABLE_COMPILE_CACHE: "1",
+      },
+      timeout: 180_000,
+      maxBuffer: 1024 * 1024,
+    },
+  );
   return {
     command,
-    exitCode: result.status,
-    signal: result.signal ?? (result.error ? "spawn-error" : null),
+    exitCode:
+      result.error || result.stderr?.toString().startsWith("sandbox-exec:")
+        ? null
+        : result.status,
+    signal:
+      result.signal ??
+      (result.error || result.stderr?.toString().startsWith("sandbox-exec:")
+        ? "confinement-unavailable"
+        : null),
     stdoutHash: sourceDigest(result.stdout ?? Buffer.alloc(0)),
     stderrHash: sourceDigest(result.stderr ?? Buffer.alloc(0)),
   };

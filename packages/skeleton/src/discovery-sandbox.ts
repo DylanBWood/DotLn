@@ -24,3 +24,14 @@ export function discoverySandbox(
     `(allow file-read-data (literal "/") (literal "/dev/null") (literal "/dev/urandom"))(allow file-write* (subpath ${quote(root)}) (literal "/dev/null"))`
   );
 }
+
+/** Exact shell spelling used by the Claude writer's native allowlist and
+ * host permission route. The named command remains the contract's input. */
+export function confinedTestCommand(root: string, command: string): string {
+  if (process.platform !== "darwin")
+    throw new Error(
+      "source-change test confinement unavailable: macOS sandbox-exec required",
+    );
+  const quote = (value: string) => `'${value.replaceAll("'", `'\\''`)}'`;
+  return `/usr/bin/env -i PATH=${quote(`${dirname(process.execPath)}:/usr/bin:/bin`)} HOME='/var/empty' TMPDIR=${quote(root)} NODE_DISABLE_COMPILE_CACHE=1 /usr/bin/sandbox-exec -p ${quote(discoverySandbox(root))} ${command}`;
+}
