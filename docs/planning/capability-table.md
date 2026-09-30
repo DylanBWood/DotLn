@@ -1,7 +1,7 @@
 # Capability table v1
 
 This is the first reviewed capability-progression table described by the
-[roadmap](../product/06-roadmap.md#capability-progression-policies). It is an
+[roadmap](work-order-map.md#capability-progression-policies). It is an
 evidence inventory, not scheduler IR, an XP engine, or a claim that every
 planned capability exists.
 

@@ -68,7 +68,7 @@ release contained, and what the next legal action is. Today that is the
 [planning map](../planning/work-order-map.md), the control status, and the
 release records. The concurrent-workflow plan, control-plane beacons, and a
 shared status view are this role's next tooling. The candidate
-[whole-or-split planning view](06-roadmap.md#candidate--whole-or-split-work-orders-under-one-umbrella)
+[whole-or-split planning view](../planning/work-order-map.md#candidate--whole-or-split-work-orders-under-one-umbrella)
 adds smaller reviewable increments under one outcome, with dependencies deciding
 which children can proceed together.
 

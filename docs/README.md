@@ -62,6 +62,10 @@ pause or capture only.
 The document gate (`npm run test:docs`) runs
 [`scripts/docs-check.mjs`](../scripts/docs-check.mjs): edit product facts in place;
 put receipts in the order's evidence README and candidates in the planning map.
+The [roadmap](product/06-roadmap.md) holds the release ladder, exit criteria and
+generated release history; its candidate and capability-policy sections live in
+the [planning map](planning/work-order-map.md#moved-from-the-roadmap-2026-09-30)
+with their slugs and register history preserved (WO-087).
 [Ceilings](control/doc-ceilings.json) count UTF-8 bytes with two per cent initial
 headroom, excluding one registered generated block: the roadmap's release
 history between its `dotln-release-history` markers, whose rows the check
