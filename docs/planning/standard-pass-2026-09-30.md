@@ -570,6 +570,70 @@ subagent are in its receipt.
 
 ## 15. Independent review
 
-Pending at drafting: the receipt is filed after the subject commit and
-this section then records its verdict, scope, wall-clock and known
-issues.
+Receipt [2026-09-30-planning-826842218eb333e2-036](refutations/2026-09-30-planning-826842218eb333e2-036.md)
+judged the committed subject at `29034e26` (scope: the eight new orders
+and the eight edited ones, WO-058, WO-059, WO-072, WO-075, WO-095,
+WO-097, WO-098 and WO-123, plus the sequence; 24 orders carried by hash):
+`aligned-with-findings` for all sixteen orders and for the plan, no hold,
+23 known issues each with a reopening observation, 982,950 ms from
+dispatch to file. The refuter was one fresh background worker on `opus`
+(the worker attests `claude-opus-5-5` from its own context and cannot
+observe its effort; the root's selected `CLAUDE_EFFORT` was `xhigh`),
+given the canonical prompt file and nothing else; by its statement and the
+task record it read that one file in twelve reads, opened no repository
+file, ran no Git, used 16 tools and 202,188 tokens over 889,775 ms.
+Basis for no hold, from its judgment: no observed failure and no vision
+contradiction; every order's cost row is null, which never holds; the
+supplied trap series show no worsening.
+
+The known issues are carried on each order's catalog row for its executor
+and verifier. The pass weighs them here without editing the judged text;
+two of them correct this record:
+
+- **WO-179's cold-start figures were wrong.** The Cost line copied the
+  2026-09-20 and 2026-09-22 acceptance texts (25,150; 21,055). The
+  measured roots at `b51a58a8` are executor 26,903 of 29,246, verifier
+  23,706 of 25,151, reviewer 24,788 of 28,884, release-close 15,585 of
+  16,384 and planner 17,733 of 24,576 (`CLAUDE.md` 6,610 plus each
+  skill). The release-close root, which gains the blocker and denial
+  sentence, is the likely acceptance. The order's criterion 4 measures
+  after regeneration; the catalog row carries the correct figures.
+- **`dotln intent` already exists.** WO-120 filed it as a command that
+  writes a draft for human review; WO-183's Cost line says it adds the
+  command. WO-183 extends it, and the draft path stays: an intent outside
+  intent-class coverage degrades to a draft, never a refusal. The catalog
+  row says so.
+
+The sharpest catches, and what the pass does with each: _WO-180 sits
+before WO-061, whose StoryContract defines the defect/new class the typed
+stop reads._ True; the executor reads the class from the contract when it
+has landed and, before that, treats a contract naming a failing behavior
+as a defect story; the operator can move WO-180 behind WO-061's pair with
+one sequence line at review, which this pass does not do after the
+receipt. _WO-178's admission rests on who wrote the dispatch record._ The
+executor binds the admission to the record the prompt hook wrote from an
+operator prompt and proves a tool-written record does not satisfy it.
+_WO-182's monitored-loop, grounded-body and new-story-baseline items
+cannot be evidenced before publication._ They take non-blocking readings
+(`pending-post-publication`, `self`, `walked`) and judgment items need an
+artifact that records the judgment. _WO-176 removes what a mistaken
+declaration marked disposable._ The close bundles a repository whose
+commits no retained ref reaches before removing it. _WO-181's reviewer
+judges scope against a contract that names no files._ It consumes
+WO-124's derived surfaces when present. _WO-123's admission supersedes
+the draft's human-review constraint and compares surfaces the draft does
+not yet name._ The admission record states the supersession and the
+order of derivation. _WO-179 adds prose while WO-097 and WO-098 retire
+it._ Role text is a lowering rung; a theme that recurs after WO-179's
+review becomes a migration candidate. _WO-177: eight orders pin models
+literally._ Product 07 §Model-specific notes is the rule; the executor
+records what ran. _WO-059's suite fails the gate on a missing browser;
+WO-075's hooks with an absent runtime snapshot; WO-072's untyped safety
+edge; WO-097's and WO-098's migration measures; WO-095's policy-hash
+coupling; WO-058's edition cascade._ Each carried with its reopening
+observation.
+
+Checks after the receipt. `npm run plan -- check`: passing, judged,
+committed and workspace subjects equal (`sha256:d01723ce…`). `npm run
+test:docs`: the result is in the response and the closing commit. The
+handoff usage is in the response.
