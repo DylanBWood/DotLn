@@ -3,12 +3,25 @@ import { spawnSync } from "node:child_process";
 
 const failure =
   "origin must identify exactly one matching GitHub HOST/OWNER/REPO fetch and push target";
+export const HOST_GIT_READ = [
+  "-c",
+  "core.hooksPath=/dev/null",
+  "-c",
+  "core.fsmonitor=false",
+  "-c",
+  "log.showSignature=false",
+  "-c",
+  "gpg.program=/usr/bin/false",
+  "-c",
+  "gpg.ssh.program=/usr/bin/false",
+];
 
 const remoteUrls = (root, push) => {
   const resolved = spawnGit(
     [
       "-C",
       root,
+      ...HOST_GIT_READ,
       "remote",
       "get-url",
       ...(push ? ["--push"] : []),

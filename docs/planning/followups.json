@@ -11881,6 +11881,14 @@
           "reopenWhen": "the next order that opens reactor.ts and pays a live feedback episode",
           "targets": [],
           "at": "2026-09-27T14:35:55.629Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Opened by WO-066's final review: its reopening condition occurred and the items were not taken. WO-066 edited packages/skeleton/src/reactor.ts (the review-item branch of repairDecision) and paid two live feedback episodes, which is the seam this row waited for. The completion advisory counted the row, but the executor neither took the three items nor recorded them as left, and a reviewer does not edit a judged source. Planning decides whether the next order that re-mints the feedback edition takes them or the row is declined. [WO-066 final review (docs/final-reviews/WO-066/FINAL-001.md)]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-30T07:52:00.439Z"
         }
       ]
     },
@@ -16710,6 +16718,14 @@
             "WO-066"
           ],
           "at": "2026-09-25T21:29:57.397Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by WO-066's final review: the carry-in landed. runFocusedTest and the Claude writer's admitted test command both run under sandbox-exec with the discovery profile, and the criterion 6 fixture shows a network connection, a write to the common Git directory and a read outside the worktree each refused after an unconfined positive control. The remaining gap, that the native Claude allowlist rule holds three wildcards and depends on the host hook for exactness, is its own row, FUP-5474f89208c6bb9f (WO-066-D012). [WO-066 final review (docs/final-reviews/WO-066/FINAL-001.md)]",
+          "reopenWhen": "a named test runs outside the confinement, a non-macOS host needs the source-change writer, or FUP-5474f89208c6bb9f is declined without a replacement",
+          "targets": [],
+          "at": "2026-09-30T07:52:00.240Z"
         }
       ]
     },
@@ -16865,6 +16881,14 @@
             "WO-066"
           ],
           "at": "2026-09-25T21:29:57.684Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by WO-066's final review: the carry-in landed. Every Git read the publication host runs in the target's root now carries log.showSignature=false with gpg.program and gpg.ssh.program neutralised beside the hook and fsmonitor overrides (HOST_GIT_READ in scripts/lib/github-repository.mjs), and publication is bound to the request's repositoryId before any remote call. The criterion 5 fixture shows the planted signature program running on an ordinary git log and not during publication, and a changed origin refused with no gh call. [WO-066 final review (docs/final-reviews/WO-066/FINAL-001.md)]",
+          "reopenWhen": "a host Git call in a target's root is added without the shared overrides, or a publication path resolves its repository from the target's configuration alone",
+          "targets": [],
+          "at": "2026-09-30T07:52:00.204Z"
         }
       ]
     },
@@ -18014,6 +18038,14 @@
             "WO-066"
           ],
           "at": "2026-09-25T21:29:57.974Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by WO-066's final review: the reading was taken. Two claude-cli-print worker launches by the executor each left the user settings digest and the canonical project-registry digest unchanged, with user-local settings absent before and after (docs/evidence/WO-066/claude-state.json and claude-state-002.json; WO-066-D006 and D009). No content is retained. It is two launches, not proof for every launch, and ambient changes between readings are not excluded. [WO-066 final review (docs/final-reviews/WO-066/FINAL-001.md)]",
+          "reopenWhen": "a later Claude worker launch changes either digest, or an order needs isolation of the operator's user-level Claude state",
+          "targets": [],
+          "at": "2026-09-30T07:52:00.275Z"
         }
       ]
     },
@@ -22545,6 +22577,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-29T02:27:47.666Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Kept open by WO-066's final review: its condition occurred. WO-066's loop now reads every observation through observe-pr, so F4 (a NUL byte in a cursor or thread id echoed on stderr) and F5 (a very long token run refusing the whole observation) are reachable from the loop. Both still fail closed with nothing stored, and WO-066 changed neither. Due before WO-123 composes the observer and the loop or WO-112 runs them live. [WO-066 final review (docs/final-reviews/WO-066/FINAL-001.md)]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-30T07:52:00.504Z"
         }
       ]
     },
@@ -22569,6 +22609,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-29T02:32:08.583Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Kept open by WO-066's final review: its condition occurred. WO-066 now acts on the observer's classes and refusals without the planning judgment this row asks for. In the loop a comment the screen refused stops the whole run with a typed refused stop, and a bot that runs as a User account is human-review and is never dispatched. On the three real pull requests WO-065's review read, 12 of 21 bot review items were stored as refusals, so the judgment on machine-user logins and admitted hosts now decides how much the loop can do on a real pull request. Due before WO-112 runs the loop live. [WO-066 final review (docs/final-reviews/WO-066/FINAL-001.md)]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-30T07:52:00.472Z"
         }
       ]
     },
@@ -23564,6 +23612,118 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-7b3ad3aadf6c1ca8",
+      "key": "decision:docs/evidence/WO-066/decisions.md#wo-066-d003",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "9fc4b46319971745e9568d5ca66dcf870149d5bd82cc93f0af840fb6d856ed7c",
+          "ref": "docs/evidence/WO-066/decisions.md#wo-066-d003",
+          "title": "WO-066-D003: Bind target publication to the request's explicit repositoryId before any remote call, neutralize signature programs on host Git reads, and admit only the sandbox-exec spelling of a write",
+          "summary": "{ \"id\": \"WO-066-D003\", \"date\": \"2026-09-30\", \"dispatch\": \"resume: next; continue\", \"decision\": \"Bind target publication to the request's explicit repositoryId before any remote call, neutralize signature programs on host Git reads, and admit only the sandbox-exec spelling of a writer's named test. Bind the CLI's repair input to the original writer, authority, contract and named tests before a child can start. Add threadId to screened observations so the publication host can use structured GraphQL dispositions. These changes preserve D001's contract and one-round boundary.\", \"evidence\": [ \"WO-066 focused fixture run: 8 tests passed, including real local Git push/recovery, missing-effect refus",
+          "missing": false
+        },
+        {
+          "hash": "32bf537beb128049396c3a704280e2a0485c15ea97803fe6486511eedc27ac5e",
+          "ref": "docs/evidence/WO-066/decisions.md#wo-066-d003",
+          "title": "WO-066-D003: Bind target publication to the request's explicit repositoryId before any remote call, neutralize signature programs on host Git reads, and admit only the sandbox-exec spelling of a write",
+          "summary": "{ \"id\": \"WO-066-D003\", \"date\": \"2026-09-30\", \"dispatch\": \"resume: next; continue\", \"decision\": \"Bind target publication to the request's explicit repositoryId before any remote call, neutralize signature programs on host Git reads, and admit only the sandbox-exec spelling of a writer's named test. Bind the CLI's repair input to the original writer, authority, contract and named tests before a child can start. Add threadId to screened observations so the publication host can use structured GraphQL dispositions. These changes preserve D001's contract and one-round boundary.\", \"evidence\": [ \"WO-066 focused fixture run: 8 tests passed, including real local Git push/recovery, missing-effect refus",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "duplicate",
+          "reason": "Duplicate by WO-066's final review: this row exists because WO-066-D012 reopens D003 over one statement, that the Claude launch admits exact Bash commands for the confined test. D012's own row carries the correction and the action. [WO-066 final review (docs/final-reviews/WO-066/FINAL-001.md)]",
+          "reopenWhen": "FUP-5474f89208c6bb9f is declined, or another decision reopens WO-066-D003 on a different observation",
+          "targets": [
+            "FUP-5474f89208c6bb9f"
+          ],
+          "at": "2026-09-30T07:52:00.374Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-f60f7a8727ee2a82",
+      "key": "decision:docs/evidence/WO-066/decisions.md#wo-066-d011",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "41d0a0775a77ef91b203ca0fe97cc926a18504851a9a0e1b9864b8656cb5d889",
+          "ref": "docs/evidence/WO-066/decisions.md#wo-066-d011",
+          "title": "WO-066-D011: WO-066 follow-up (review-loop outcome). Record PullRequestReviewLoopStopped as resolved only when every opened item's terminal is resolved from a fresh observation; otherwise stop needs-h",
+          "summary": "{ \"id\": \"WO-066-D011\", \"date\": \"2026-09-30\", \"dispatch\": \"resume: verify\", \"decision\": \"Pass VER-001 with every criterion met, and board two reproduced loop-outcome defects that lie outside the fixture observations. (1) The loop computes its PullRequestReviewLoopStopped status from the latest observation's unresolved items only. A mapped check that is still running on the repaired head, or that ends in a conclusion the observer does not class as a failure, therefore leaves its item needs-human while the loop stops resolved. (2) The observe stage measures freshness from the stage's own start. A kill after the observer appended the post-disposition observation, but before the stage result was ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Opened for planning by WO-066's final review: the verifier reproduced a resolved loop stop while an item is needs-human (a mapped check still pending on the repaired head) and a resumed observe stage that rejects an observation already recorded, and the final review read both causes in the code. Both are behavioral repairs, which a reviewer does not write. Planning also weighs two observations the verifier did not board: a check is matched by name only, and a grant that lapses after a recorded push makes the resumed push stage refuse instead of reusing its receipt. Due before WO-123 composes the loop or WO-112 runs it live. [WO-066 final review (docs/final-reviews/WO-066/FINAL-001.md)]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-30T07:52:00.308Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-5474f89208c6bb9f",
+      "key": "decision:docs/evidence/WO-066/decisions.md#wo-066-d012",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "aab2e42a7842b9e91193ee5d161dcb1a23d7c228dec431756a5e609947db51b5",
+          "ref": "docs/evidence/WO-066/decisions.md#wo-066-d012",
+          "title": "WO-066-D012: WO-066 follow-up (writer allowlist exactness). Remove '' from the command text that Claude's native Bash rule admits. For example, pass sandbox-exec -f a host-owned profile file outside t",
+          "summary": "{ \"id\": \"WO-066-D012\", \"date\": \"2026-09-30\", \"dispatch\": \"resume: verify\", \"decision\": \"Criterion 6 is met, but one statement in D003 is unsupported: that Claude's launch vector auto-admits exact Bash commands for the confined test. The admitted Bash rule is the confined command itself, and its sandbox profile contains three '*' characters. Claude Code documents '*' in a Bash rule as matching any text, so the native rule admits a family of commands. The emitted host permission hook enforces the exact spelling and denies a widened variant. Record the correction and board a follow-up.\", \"reopens\": { \"decisionId\": \"WO-066-D003\", \"observation\": \"The native allowlist entry Bash(<confined command>",
+          "missing": false
+        },
+        {
+          "hash": "3655069b54c23b4fbc4cb5a9b269774d3dec1c7edb4de0ae1a977fb9c2ac23ec",
+          "ref": "docs/evidence/WO-066/decisions.md#wo-066-d012",
+          "title": "WO-066-D012: WO-066 follow-up (writer allowlist exactness). Remove the asterisk wildcards from the command text that Claude's native Bash rule admits. For example, pass sandbox-exec -f a host-owned pr",
+          "summary": "{ \"id\": \"WO-066-D012\", \"date\": \"2026-09-30\", \"dispatch\": \"resume: verify\", \"decision\": \"Criterion 6 is met, but one statement in D003 is unsupported: that Claude's launch vector auto-admits exact Bash commands for the confined test. The admitted Bash rule is the confined command itself, and its sandbox profile contains three asterisks. Claude Code documents an asterisk in a Bash rule as matching any text, so the native rule admits a family of commands. The emitted host permission hook enforces the exact spelling and denies a widened variant. Record the correction and board a follow-up.\", \"reopens\": { \"decisionId\": \"WO-066-D003\", \"observation\": \"The native allowlist entry Bash(<confined comma",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "open",
+          "reason": "Opened for planning by WO-066's final review: the confined test command that Claude's native Bash rule admits contains three wildcards, so that layer admits a family of commands and the emitted host hook is what enforces the exact spelling (WO-066-D012). The change is to discovery-sandbox.ts and worker-transport.ts, both registered evidence sources, so it rides with an order that pays the re-mints. Due before a live Claude writer runs a named test under WO-112. [WO-066 final review (docs/final-reviews/WO-066/FINAL-001.md)]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-30T07:52:00.341Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-24aca90d1fcbc821",
+      "key": "decision:docs/evidence/WO-066/decisions.md#wo-066-d014",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "05a2c739730c6e4c6689afdc7270e6d222d4a22a2d53ec14709cc26a5af19a48",
+          "ref": "docs/evidence/WO-066/decisions.md#wo-066-d014",
+          "title": "WO-066-D014: WO-066 follow-up (review-loop refusal route). When deriveRepairOrder refuses at the repair stage, end the item needs-human with the derivation's reason and offending value instead of thro",
+          "summary": "{ \"id\": \"WO-066-D014\", \"date\": \"2026-09-30\", \"dispatch\": \"resume: final review\", \"decision\": \"Pass FINAL-001: all ten criteria are met on the integrated tree, judged against the order as written. Restore the roadmap's source revision guard, which the product 06 write-back had removed from the pipeline sentence, as a documentation fix inside the Boy Scout bound. Board one reproduced loop defect that verification did not meet: an accepted automated review comment with no line makes the loop throw at the repair stage and leaves the item pending, so every rerun throws again and no later item on that pull request is reached. Settle the three carry-in register rows this order discharged, open the ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Opened for planning by WO-066's final review, which reproduced it: an accepted automated review comment with no line makes the loop throw at the repair stage with the command pending, so every rerun throws and no later item on the pull request is reached (docs/evidence/WO-066/final-review-reproduction.txt; WO-066-D014). It fails closed and is a behavioral repair. It belongs in the same order as FUP-f60f7a8727ee2a82, due before WO-123 composes the loop or WO-112 runs it live. [WO-066 final review (docs/final-reviews/WO-066/FINAL-001.md)]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-30T07:52:00.406Z"
+        }
+      ]
     }
   ]
 }

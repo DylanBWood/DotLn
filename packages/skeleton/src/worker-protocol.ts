@@ -10,6 +10,7 @@ import type { Candidate } from "./reactor.js";
 import type { FixtureTree } from "./scenario.js";
 import type { FixtureInspectionProfile } from "./execution-environment.js";
 import type { SourceChangeProfile } from "./execution-environment.js";
+import { confinedTestCommand } from "./discovery-sandbox.js";
 
 export type WorkerTransportName =
   "claude-cli-print" | "codex-cli-exec" | "local-model-http" | "fake";
@@ -486,7 +487,7 @@ export function writerPrompt(request: WriterRequest): string {
     episodeId: request.episodeId,
     resultId: resultId(request.command),
     mount: request.profile.mounts[0],
-    testCommand: request.testCommand,
+    testCommand: confinedTestCommand(request.cwd, request.testCommand),
     commitCommand: `git commit -F ${request.commitMessagePath}`,
     outputSchema: writerResultSchema(request),
     inspectionInstructions:

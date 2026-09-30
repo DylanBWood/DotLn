@@ -804,7 +804,7 @@ accepted. `--transport fake` exercises the deterministic path without
 live-model claims and cannot be recorded as the witnessed live self-hosted run.
 The default transport is fake; a live transport needs explicit model/effort and
 `DOTLN_LIVE_WORKERS=1`, as in the existing demos.
-The feedback verifier has a fixed ten-minute process deadline and a $3 Claude
+The feedback verifier has a fixed ten-minute process deadline and a $5 Claude
 budget cap, recorded with its attempt. The initial live source audit exceeded
 the inherited three-minute bound; other worker profiles retain their existing
 limits. An interrupted command stays pending and its next attempt is logged.

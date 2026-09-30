@@ -28,6 +28,9 @@ import {
   repairHash,
   repairCommand,
   repairVerificationProgram,
+  repairRoundProgram,
+  deriveRepairOrder,
+  type ReviewRepairWitness,
   type RepairOriginal,
   type RepairGrants,
   type RepairState,
@@ -57,6 +60,12 @@ export interface RepairHostOptions {
   readonly baseline: VerificationSubject;
   readonly subject: VerificationSubject;
   readonly snapshotPath: string;
+  /** Stable item namespace when independent review items share one contract. */
+  readonly episodeNamespace?: string;
+  readonly reviewItem?: {
+    readonly witness: ReviewRepairWitness;
+    readonly finding: import("@dotln/compiler").VerificationFinding;
+  };
   /** Retained child stores and verification copies, outside target worktrees. */
   readonly directory: string;
   readonly source: Pick<
@@ -90,7 +99,7 @@ export class RepairHost {
   readonly workstreamId: string;
   constructor(readonly options: RepairHostOptions) {
     this.now = options.now ?? Date.now;
-    this.workstreamId = `repair_${repairHash(options.original.workOrder.workOrderId).slice(8)}`;
+    this.workstreamId = `repair_${repairHash(options.episodeNamespace ? [options.original.workOrder.workOrderId, options.episodeNamespace] : options.original.workOrder.workOrderId).slice(8)}`;
   }
   get state(): RepairState {
     return this.runtime.repair as unknown as RepairState;
@@ -101,12 +110,34 @@ export class RepairHost {
       round: 0,
       finding: null,
     } as RepairState;
+    const reviewed = this.options.reviewItem;
+    const derivation = reviewed
+      ? deriveRepairOrder(reviewed.finding, {
+          ...this.options.original,
+          subject: this.options.subject,
+          round: 0,
+          reviewItem: reviewed.witness,
+        })
+      : undefined;
+    if (derivation?.kind === "NeedsHuman")
+      throw new Error(
+        `review repair needs human: ${derivation.reason}: ${derivation.offending}`,
+      );
     return {
       original: this.options.original,
       grants: this.options.grants ?? noRepairGrants,
       baseline: this.options.baseline,
       subject: this.options.subject,
-      continuation: repairVerificationProgram(shell),
+      ...(reviewed ? { reviewItem: reviewed } : {}),
+      continuation:
+        derivation?.kind === "derived"
+          ? repairRoundProgram({
+              ...shell,
+              order: derivation.order,
+              round: derivation.order.round,
+              finding: derivation.order.finding,
+            })
+          : repairVerificationProgram(shell),
       host: {
         directory: this.options.directory,
         snapshotPath: this.options.snapshotPath,
@@ -193,7 +224,9 @@ export class RepairHost {
       branch: `dotln-repair-${repairHash([this.workstreamId, order.round]).slice(8)}`,
       surfaces: order.surfaces,
       testCommand: order.tests[0]!.command,
-      commitMessage: `Repair ${order.finding.findingId}\n`,
+      commitMessage: this.options.reviewItem
+        ? "fix: address automated review finding\n"
+        : `Repair ${order.finding.findingId}\n`,
       now: this.now,
     });
   }

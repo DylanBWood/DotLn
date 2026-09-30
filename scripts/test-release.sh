@@ -165,6 +165,12 @@ make_repo() {
     '#!/bin/bash' \
     'set -euo pipefail' \
     "real_git='$real_git'" \
+    'original_args=("$@")' \
+    'if [[ "${1:-}" == "-C" ]]; then' \
+    '  target_root="$2"; shift 2' \
+    '  while [[ "${1:-}" == "-c" ]]; do shift 2; done' \
+    '  set -- -C "$target_root" "$@"' \
+    'fi' \
     'if [[ "$#" -eq 6 && "$1" == "-C" && "$3" == "remote" && "$4" == "get-url" && "$5" == "--all" && "$6" == "origin" ]]; then' \
     '  $real_git -C "$2" config --get-all remote.origin.url' \
     '  exit 0' \
@@ -176,7 +182,7 @@ make_repo() {
     '  exit 0' \
     'fi' \
     'if [[ "${DOTLN_FIXTURE_GIT_FAIL:-}" == "update-ref" && "${3:-}" == "update-ref" ]]; then printf "fixture update-ref failure\\n" >&2; exit 9; fi' \
-    'exec "$real_git" "$@"' >"$bin/git"
+    'exec "$real_git" "${original_args[@]}"' >"$bin/git"
   chmod +x "$bin/git"
   printf '%s\n' \
     '#!/usr/bin/env bash' \

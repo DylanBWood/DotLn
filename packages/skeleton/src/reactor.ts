@@ -2822,15 +2822,37 @@ function repairDecision(
       reason: null,
     };
     const decoded = decodeContinuation(p.continuation);
+    if (p.reviewItem !== undefined) {
+      check(
+        original.roundLimit === 1,
+        "review repair requires one round per item",
+      );
+      const derived = deriveRepairOrder(p.reviewItem.finding, {
+        ...original,
+        subject,
+        round: 0,
+        reviewItem: p.reviewItem.witness,
+      });
+      check(derived.kind === "derived", "review repair derivation refused");
+      if (derived.kind !== "derived")
+        throw new Error("review repair derivation refused");
+      state = {
+        ...state,
+        order: derived.order,
+        round: derived.order.round,
+        finding: derived.order.finding,
+      };
+    }
+    const openingProgram =
+      p.reviewItem === undefined
+        ? repairVerificationProgram(state)
+        : repairRoundProgram(state);
     check(
       decoded.ok &&
-        repairEqual(
-          decoded.ok ? decoded.value : null,
-          repairVerificationProgram(state),
-        ),
+        repairEqual(decoded.ok ? decoded.value : null, openingProgram),
       "opening continuation mismatch",
     );
-    state = { ...state, continuation: repairVerificationProgram(state) };
+    state = { ...state, continuation: openingProgram };
   } else {
     check(
       previous && previous.workstreamId === event.workstreamId,

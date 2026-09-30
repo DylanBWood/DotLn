@@ -40,6 +40,21 @@ export interface RepairOriginal {
   readonly criteria: readonly AcceptanceCriterion[];
   readonly roundLimit?: number;
 }
+/** Host-recorded PR item, supplied separately from the triage judgment.
+ * It authorizes no expansion and is never verifier evidence. */
+export interface ReviewRepairWitness {
+  readonly evidenceId: string;
+  readonly subjectRevision: string;
+  readonly criterionId: string;
+  readonly itemId: string;
+  readonly class: "automated-review" | "ci-failure";
+  readonly path?: string;
+  readonly line?: number;
+  readonly checkName?: string;
+  readonly testCommand: string;
+  readonly observed: string;
+  readonly expected: string;
+}
 /** Scope is admitted separately from verifier output. The registry is host-owned. */
 export interface RepairScopeGrant {
   readonly grant: AuthorityGrant;
@@ -95,6 +110,7 @@ export function deriveRepairOrder(
   input: RepairOriginal & {
     readonly subject: VerificationSubject;
     readonly round: number;
+    readonly reviewItem?: ReviewRepairWitness;
   },
   grants: RepairGrants = noRepairGrants,
 ): RepairDerivation {
@@ -125,9 +141,68 @@ export function deriveRepairOrder(
     input.round >= limit
   )
     return needs("roundLimit", "repair round limit reached or invalid");
-  const evidence = finding.evidenceRefs.map((id) =>
-    input.subject.evidence.find((e) => e.evidenceId === id),
+  const review = input.reviewItem;
+  const test = input.tests.find(
+    (entry) => entry.command === review?.testCommand,
   );
+  const criterion = input.criteria.find(
+    (entry) => entry.criterionId === review?.criterionId,
+  );
+  if (
+    review &&
+    (!review.itemId ||
+      !review.evidenceId ||
+      !criterion ||
+      !test ||
+      test.criterionId !== review.criterionId ||
+      !criterion.requiredChecks.includes(test.checkId) ||
+      review.subjectRevision !== input.subject.revision ||
+      review.criterionId !== finding.criterionId ||
+      finding.evidenceRefs.length !== 1 ||
+      finding.evidenceRefs[0] !== review.evidenceId ||
+      review.observed !== finding.observed ||
+      review.expected !== finding.expected ||
+      finding.reproductionSteps.length !== 1 ||
+      finding.reproductionSteps[0] !== review.testCommand ||
+      (review.class === "automated-review"
+        ? !review.path ||
+          !repositoryPath(review.path) ||
+          !Number.isSafeInteger(review.line) ||
+          review.line! < 1 ||
+          finding.likelySurface.length !== 1 ||
+          finding.likelySurface[0] !== review.path
+        : review.class !== "ci-failure" ||
+          !review.checkName ||
+          finding.likelySurface.some(
+            (surface) => !criterion.codeSurfaces.includes(surface),
+          )))
+  )
+    return needs(review.itemId, "malformed or foreign host review item");
+  // The host item substitutes only for the adverse witness. Scope, tests,
+  // authority and round checks below remain the same derivation.
+  const evidence = review
+    ? [
+        {
+          evidenceId: review.evidenceId,
+          criterionId: review.criterionId,
+          subjectRevision: review.subjectRevision,
+          outcome: "fail" as const,
+          checkId: test!.checkId,
+          claimType: criterion!.claimType,
+          source: criterion!.evidenceSource,
+          codeSurfaces:
+            review.class === "automated-review"
+              ? [review.path!]
+              : criterion!.codeSurfaces,
+          reproductionSteps: [review.testCommand],
+          automatedTest: review.testCommand,
+          observed: review.observed,
+          expected: review.expected,
+        } as VerificationEvidence,
+      ]
+    : finding.evidenceRefs.map((id) =>
+        input.subject.evidence.find((e) => e.evidenceId === id),
+      );
   for (let i = 0; i < evidence.length; i++) {
     const witness = evidence[i];
     if (

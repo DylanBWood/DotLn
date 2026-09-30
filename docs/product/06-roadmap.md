@@ -661,8 +661,9 @@ StoryContract → RepoProfile + ImpactMap → **Live Witness baseline** (reprodu
 before changing; preserve baseline evidence) → implementation episode → blinded
 behavior verification **and** independent code review (two separate episodes) →
 evidence-grounded PR on a personal repo (the deliverable-ready conjunction
-checklist, 03 §DeliveryAdapter) → post-PR loop (CI classification, comment
-triage, source revision guard). The enterprise-tracker adapter remains a future
+checklist, 03 §DeliveryAdapter) → post-PR loop (CI classification; fixture-proven
+triage → bounded repair → verified push → granted disposition → fresh
+observation; human-controlled stops; source revision guard). The enterprise-tracker adapter remains a future
 optional plug-in — the promise generalizes to "any tracked-work artifact +
 registered repo + named authority profile → independently verified deliverable."
 Exit: one real issue travels the pipeline with operator interruptions only at

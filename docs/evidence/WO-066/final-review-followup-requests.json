@@ -1,0 +1,92 @@
+[
+  {
+    "expectedRevision": "9333cf0fac5ecb32059b8cce291dca925ff81f9e8f7ca29075b7c7c0ec6707da",
+    "id": "FUP-0a47198c1e076d4d",
+    "sourceRevision": 1,
+    "status": "settled",
+    "reason": "Settled by WO-066's final review: the carry-in landed. Every Git read the publication host runs in the target's root now carries log.showSignature=false with gpg.program and gpg.ssh.program neutralised beside the hook and fsmonitor overrides (HOST_GIT_READ in scripts/lib/github-repository.mjs), and publication is bound to the request's repositoryId before any remote call. The criterion 5 fixture shows the planted signature program running on an ordinary git log and not during publication, and a changed origin refused with no gh call. [WO-066 final review (docs/final-reviews/WO-066/FINAL-001.md)]",
+    "reopenWhen": "a host Git call in a target's root is added without the shared overrides, or a publication path resolves its repository from the target's configuration alone",
+    "targets": []
+  },
+  {
+    "expectedRevision": "9333cf0fac5ecb32059b8cce291dca925ff81f9e8f7ca29075b7c7c0ec6707da",
+    "id": "FUP-92fd86e53b44fa39",
+    "sourceRevision": 1,
+    "status": "settled",
+    "reason": "Settled by WO-066's final review: the carry-in landed. runFocusedTest and the Claude writer's admitted test command both run under sandbox-exec with the discovery profile, and the criterion 6 fixture shows a network connection, a write to the common Git directory and a read outside the worktree each refused after an unconfined positive control. The remaining gap, that the native Claude allowlist rule holds three wildcards and depends on the host hook for exactness, is its own row, FUP-5474f89208c6bb9f (WO-066-D012). [WO-066 final review (docs/final-reviews/WO-066/FINAL-001.md)]",
+    "reopenWhen": "a named test runs outside the confinement, a non-macOS host needs the source-change writer, or FUP-5474f89208c6bb9f is declined without a replacement",
+    "targets": []
+  },
+  {
+    "expectedRevision": "9333cf0fac5ecb32059b8cce291dca925ff81f9e8f7ca29075b7c7c0ec6707da",
+    "id": "FUP-e398c79e1b32e94b",
+    "sourceRevision": 1,
+    "status": "settled",
+    "reason": "Settled by WO-066's final review: the reading was taken. Two claude-cli-print worker launches by the executor each left the user settings digest and the canonical project-registry digest unchanged, with user-local settings absent before and after (docs/evidence/WO-066/claude-state.json and claude-state-002.json; WO-066-D006 and D009). No content is retained. It is two launches, not proof for every launch, and ambient changes between readings are not excluded. [WO-066 final review (docs/final-reviews/WO-066/FINAL-001.md)]",
+    "reopenWhen": "a later Claude worker launch changes either digest, or an order needs isolation of the operator's user-level Claude state",
+    "targets": []
+  },
+  {
+    "expectedRevision": "9333cf0fac5ecb32059b8cce291dca925ff81f9e8f7ca29075b7c7c0ec6707da",
+    "id": "FUP-f60f7a8727ee2a82",
+    "sourceRevision": 1,
+    "status": "open",
+    "reason": "Opened for planning by WO-066's final review: the verifier reproduced a resolved loop stop while an item is needs-human (a mapped check still pending on the repaired head) and a resumed observe stage that rejects an observation already recorded, and the final review read both causes in the code. Both are behavioral repairs, which a reviewer does not write. Planning also weighs two observations the verifier did not board: a check is matched by name only, and a grant that lapses after a recorded push makes the resumed push stage refuse instead of reusing its receipt. Due before WO-123 composes the loop or WO-112 runs it live. [WO-066 final review (docs/final-reviews/WO-066/FINAL-001.md)]",
+    "reopenWhen": null,
+    "targets": []
+  },
+  {
+    "expectedRevision": "9333cf0fac5ecb32059b8cce291dca925ff81f9e8f7ca29075b7c7c0ec6707da",
+    "id": "FUP-5474f89208c6bb9f",
+    "sourceRevision": 2,
+    "status": "open",
+    "reason": "Opened for planning by WO-066's final review: the confined test command that Claude's native Bash rule admits contains three wildcards, so that layer admits a family of commands and the emitted host hook is what enforces the exact spelling (WO-066-D012). The change is to discovery-sandbox.ts and worker-transport.ts, both registered evidence sources, so it rides with an order that pays the re-mints. Due before a live Claude writer runs a named test under WO-112. [WO-066 final review (docs/final-reviews/WO-066/FINAL-001.md)]",
+    "reopenWhen": null,
+    "targets": []
+  },
+  {
+    "expectedRevision": "9333cf0fac5ecb32059b8cce291dca925ff81f9e8f7ca29075b7c7c0ec6707da",
+    "id": "FUP-7b3ad3aadf6c1ca8",
+    "sourceRevision": 2,
+    "status": "duplicate",
+    "reason": "Duplicate by WO-066's final review: this row exists because WO-066-D012 reopens D003 over one statement, that the Claude launch admits exact Bash commands for the confined test. D012's own row carries the correction and the action. [WO-066 final review (docs/final-reviews/WO-066/FINAL-001.md)]",
+    "reopenWhen": "FUP-5474f89208c6bb9f is declined, or another decision reopens WO-066-D003 on a different observation",
+    "targets": ["FUP-5474f89208c6bb9f"]
+  },
+  {
+    "expectedRevision": "9333cf0fac5ecb32059b8cce291dca925ff81f9e8f7ca29075b7c7c0ec6707da",
+    "id": "FUP-24aca90d1fcbc821",
+    "sourceRevision": 1,
+    "status": "open",
+    "reason": "Opened for planning by WO-066's final review, which reproduced it: an accepted automated review comment with no line makes the loop throw at the repair stage with the command pending, so every rerun throws and no later item on the pull request is reached (docs/evidence/WO-066/final-review-reproduction.txt; WO-066-D014). It fails closed and is a behavioral repair. It belongs in the same order as FUP-f60f7a8727ee2a82, due before WO-123 composes the loop or WO-112 runs it live. [WO-066 final review (docs/final-reviews/WO-066/FINAL-001.md)]",
+    "reopenWhen": null,
+    "targets": []
+  },
+  {
+    "expectedRevision": "9333cf0fac5ecb32059b8cce291dca925ff81f9e8f7ca29075b7c7c0ec6707da",
+    "id": "FUP-f12a1f894923b2b2",
+    "sourceRevision": 1,
+    "status": "open",
+    "reason": "Opened by WO-066's final review: its reopening condition occurred and the items were not taken. WO-066 edited packages/skeleton/src/reactor.ts (the review-item branch of repairDecision) and paid two live feedback episodes, which is the seam this row waited for. The completion advisory counted the row, but the executor neither took the three items nor recorded them as left, and a reviewer does not edit a judged source. Planning decides whether the next order that re-mints the feedback edition takes them or the row is declined. [WO-066 final review (docs/final-reviews/WO-066/FINAL-001.md)]",
+    "reopenWhen": null,
+    "targets": []
+  },
+  {
+    "expectedRevision": "9333cf0fac5ecb32059b8cce291dca925ff81f9e8f7ca29075b7c7c0ec6707da",
+    "id": "FUP-b20c90983e966131",
+    "sourceRevision": 1,
+    "status": "open",
+    "reason": "Kept open by WO-066's final review: its condition occurred. WO-066 now acts on the observer's classes and refusals without the planning judgment this row asks for. In the loop a comment the screen refused stops the whole run with a typed refused stop, and a bot that runs as a User account is human-review and is never dispatched. On the three real pull requests WO-065's review read, 12 of 21 bot review items were stored as refusals, so the judgment on machine-user logins and admitted hosts now decides how much the loop can do on a real pull request. Due before WO-112 runs the loop live. [WO-066 final review (docs/final-reviews/WO-066/FINAL-001.md)]",
+    "reopenWhen": null,
+    "targets": []
+  },
+  {
+    "expectedRevision": "9333cf0fac5ecb32059b8cce291dca925ff81f9e8f7ca29075b7c7c0ec6707da",
+    "id": "FUP-7a8e67d555cccc01",
+    "sourceRevision": 1,
+    "status": "open",
+    "reason": "Kept open by WO-066's final review: its condition occurred. WO-066's loop now reads every observation through observe-pr, so F4 (a NUL byte in a cursor or thread id echoed on stderr) and F5 (a very long token run refusing the whole observation) are reachable from the loop. Both still fail closed with nothing stored, and WO-066 changed neither. Due before WO-123 composes the observer and the loop or WO-112 runs them live. [WO-066 final review (docs/final-reviews/WO-066/FINAL-001.md)]",
+    "reopenWhen": null,
+    "targets": []
+  }
+]

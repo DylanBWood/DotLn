@@ -62,6 +62,7 @@ import {
 } from "./verification-protocol.js";
 
 import { validateSourceChangeEnvironment } from "./source-change-environment.js";
+import { confinedTestCommand } from "./discovery-sandbox.js";
 
 export { normalizeWorkerEffort };
 
@@ -819,7 +820,7 @@ function sourceChangeArgs(
       "--tools",
       "Bash,Read,Edit,Write", // C-W2; C-W1 alone is ambiguous
       "--allowedTools",
-      `Edit,Write,Read,Bash(${request.testCommand}),Bash(git add -A),Bash(git commit -F ${request.commitMessagePath})`,
+      `Edit,Write,Read,Bash(${confinedTestCommand(request.cwd, request.testCommand)}),Bash(git add -A),Bash(git commit -F ${request.commitMessagePath})`,
       // C-W2 exact-pattern form; WO-051 specializes it to the three host commands.
       "--permission-prompts",
       "none", // C-W2; C-U2 establishes unattended denial

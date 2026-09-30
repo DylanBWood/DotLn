@@ -70,6 +70,12 @@ printf '%s\n' \
   '#!/bin/bash' \
   'set -euo pipefail' \
   "real_git='$real_git'" \
+  'original_args=("$@")' \
+  'if [[ "${1:-}" == "-C" ]]; then' \
+  '  target_root="$2"; shift 2' \
+  '  while [[ "${1:-}" == "-c" ]]; do shift 2; done' \
+  '  set -- -C "$target_root" "$@"' \
+  'fi' \
   'if [[ "$#" -eq 6 && "$1" == "-C" && "$3" == "remote" && "$4" == "get-url" && "$5" == "--all" && "$6" == "origin" ]]; then' \
   '  $real_git -C "$2" config --get-all remote.origin.url' \
   '  exit 0' \
@@ -80,7 +86,7 @@ printf '%s\n' \
   '  printf "%s\\n" "$urls"' \
   '  exit 0' \
   'fi' \
-  'exec "$real_git" "$@"' >"$test_root/bin/git"
+  'exec "$real_git" "${original_args[@]}"' >"$test_root/bin/git"
 chmod +x "$test_root/bin/git"
 printf '#!/usr/bin/env bash\nprintf invoked >"%s"\n' "$test_root/codex-invoked" >"$test_root/bin/codex"
 chmod +x "$test_root/bin/codex"

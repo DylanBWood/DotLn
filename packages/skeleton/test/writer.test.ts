@@ -45,6 +45,7 @@ import {
 } from "../src/verification-protocol.js";
 
 import { contributorProgram } from "../src/loadouts/contributor.js";
+import { confinedTestCommand } from "../src/discovery-sandbox.js";
 
 test("WO-161 the bounded Contributor label retains the writer's authority limits", () => {
   const { authorityEnvelope } = contributorProgram().loadout;
@@ -399,6 +400,7 @@ test("WO-051 source-change mount accepts scratch worktrees and rejects root, pre
 test("WO-051 C-W2/C-W3/C-W8/C-W9 and X-W1/X-W2/X-W8 canonical writer shapes", () => {
   const s = scratch();
   try {
+    const confined = confinedTestCommand(s.request.cwd, s.request.testCommand);
     const pinned = JSON.parse(
       readFileSync(
         new URL("../../fixtures/wo051-writer-args.json", import.meta.url),
@@ -416,7 +418,11 @@ test("WO-051 C-W2/C-W3/C-W8/C-W9 and X-W1/X-W2/X-W8 canonical writer shapes", ()
         key === "claude" ? "2.1.270" : "0.154.0",
       );
       assert.deepEqual(
-        args.map((arg) => arg.replaceAll(s.request.cwd, "<worktree>")),
+        args.map((arg) =>
+          arg
+            .replace(confined, s.request.testCommand)
+            .replaceAll(s.request.cwd, "<worktree>"),
+        ),
         // WO-122 live evidence corrects exactly this inherited inspection
         // disable. Preserve the historical WO-051 fixture and every other arg.
         key === "codex"
@@ -443,15 +449,15 @@ test("WO-051 C-W2/C-W3/C-W8/C-W9 and X-W1/X-W2/X-W8 canonical writer shapes", ()
       "/schema.json",
     );
     assert.equal(
-      args[args.indexOf("--allowedTools") + 1]?.match(/Bash\(/g)?.length,
-      3,
+      args[args.indexOf("--allowedTools") + 1],
+      `Edit,Write,Read,Bash(${confined}),Bash(git add -A),Bash(git commit -F ${s.request.commitMessagePath})`,
     );
     const prompt = JSON.parse(writerPrompt(s.request));
     assert.equal(
       prompt.commitCommand,
       `git commit -F ${s.request.commitMessagePath}`,
     );
-    assert.equal(prompt.testCommand, s.request.testCommand);
+    assert.equal(prompt.testCommand, confined);
     assert.match(prompt.outputInstructions, /Never compose a commit message/);
     assert.match(prompt.outputInstructions, /\.claude\/.*\.dotln\//);
     assert.match(

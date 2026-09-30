@@ -19,6 +19,7 @@ import {
   decodeSourceRequest,
 } from "../../packages/skeleton/dist/src/source-change-state.js";
 import { projectAcceptanceEvidenceMatrices } from "../../packages/skeleton/dist/src/verification.js";
+import { repairContract } from "../../packages/skeleton/dist/src/repair.js";
 import { hasAiAttribution } from "../../packages/compiler/src/attribution.mjs";
 import { checkOutwardArtifact } from "../outward-lint.mjs";
 import {
@@ -31,11 +32,15 @@ import {
   ensureGh,
   executeGh,
   parseGitHubTarget,
+  HOST_GIT_READ,
 } from "./github-repository.mjs";
 
-// The two remote effects of a target publication. The source-change writer
-// never exercises them; publication exercises only them (WO-064).
-export const PUBLICATION_EFFECTS = Object.freeze(["repo.push", "pr.open"]);
+// Remote effects owned by the publication host, never the source-change writer.
+export const PUBLICATION_EFFECTS = Object.freeze([
+  "repo.push",
+  "pr.open",
+  "pr.thread.resolve",
+]);
 export const TARGET_PUBLISH_HOST = "target-publish-host";
 
 const refuse = (reason) => new Error(`target publish refused: ${reason}`);
@@ -71,6 +76,7 @@ const REQUEST_KEYS = [
   "store",
   "baseBranch",
   "verificationStore",
+  "repositoryId",
 ];
 /** A host-owned request. Relative paths resolve beside the request file. */
 export function readTargetPublishRequest(path) {
@@ -90,6 +96,7 @@ export function readTargetPublishRequest(path) {
     typeof request.loadout !== "string" ||
     typeof request.store !== "string" ||
     typeof request.baseBranch !== "string" ||
+    typeof request.repositoryId !== "string" ||
     !/^[A-Za-z0-9._/-]+$/u.test(request.baseBranch) ||
     request.environment === null ||
     typeof request.environment !== "object" ||
@@ -100,10 +107,14 @@ export function readTargetPublishRequest(path) {
       typeof request.verificationStore !== "string")
   )
     throw refuse(
-      `the target request requires schemaVersion 1, loadout, an environment of exactly environmentId, version, capabilities, repo and baseCommit (the grant registry is host input), store, baseBranch and an optional verificationStore`,
+      `the target request requires schemaVersion 1, loadout, an environment of exactly environmentId, version, capabilities, repo and baseCommit (the grant registry is host input), store, baseBranch, repositoryId and an optional verificationStore`,
     );
   const base = dirname(file);
+  const repository = parseGitHubTarget(`https://${request.repositoryId}`);
+  if (repository.selector !== request.repositoryId)
+    throw refuse("repositoryId must be canonical HOST/OWNER/REPO");
   return {
+    repositoryId: request.repositoryId,
     loadout: resolve(base, request.loadout),
     environment: request.environment,
     store: resolve(base, request.store),
@@ -115,15 +126,9 @@ export function readTargetPublishRequest(path) {
   };
 }
 
-// A writer, or the focused test the source-change host runs after it, can
-// write the target's common Git directory; no hook or fsmonitor the target
-// holds runs in the host's own Git calls (WO-064 D010, WO-157).
-const HOOKLESS = [
-  "-c",
-  "core.hooksPath=/dev/null",
-  "-c",
-  "core.fsmonitor=false",
-];
+// A writer can alter the target's common Git configuration. The confined
+// focused test cannot; host Git reads suppress executable target configuration.
+const HOOKLESS = HOST_GIT_READ;
 const targetGitOptions = {
   trim: false,
   encoding: null,
@@ -163,7 +168,7 @@ const pushUrl = (repo, repository) => {
  * include.path, remote.<name>.receivepack, credential helpers, URL rewrites)
  * runs in the operator's publish process; only the operator's global and
  * system configuration apply (WO-157). */
-function pushObservedCommit(repo, url, branch, commit) {
+function pushObservedCommit(repo, url, branch, commit, destination = branch) {
   const lane = mkdtempSync(join(tmpdir(), "dotln-target-push-"));
   try {
     const init = spawnGit(["init", "--quiet", "--bare", lane], {
@@ -194,9 +199,302 @@ function pushObservedCommit(repo, url, branch, commit) {
       commit
     )
       throw refuse(`branch ${branch} no longer names the observed commit`);
-    inLane(["push", "--no-follow-tags", url, `${commit}:refs/heads/${branch}`]);
+    inLane([
+      "push",
+      "--no-follow-tags",
+      url,
+      `${commit}:refs/heads/${destination}`,
+    ]);
   } finally {
     rmSync(lane, { recursive: true, force: true });
+  }
+}
+
+/** Compile the original publisher again, never a repair worker's authority.
+ * All local bindings and grants are checked before gh or a remote Git call. */
+function reviewPublicationContext(
+  { workOrderId, request, registry, now },
+  effects,
+) {
+  const source = JSON.parse(readFileSync(request.loadout, "utf8"));
+  const published = compileLoadout(source, {
+    ...request.environment,
+    authorityGrantRegistry: registry,
+  });
+  const writer = compileLoadout(writerLoadout(source), request.environment);
+  if (!published.ok || !writer.ok)
+    throw refuse("review publication loadout does not compile");
+  const episode = readEpisode(request.store);
+  bind(published.program, writer, episode, workOrderId);
+  authorizePublication(published.program, episode, now, effects);
+  const url = pushUrl(episode.request.repo, { selector: request.repositoryId });
+  const publication = new WorkerStore(join(request.store, "publication"));
+  const opened = decodeLog(publication.read()).filter(
+    (event) =>
+      event.actorId === TARGET_PUBLISH_HOST &&
+      event.type === "PullRequestOpened" &&
+      event.payload.headSha === episode.observation.commit &&
+      event.payload.repositoryId === request.repositoryId,
+  );
+  if (opened.length !== 1)
+    throw refuse(
+      "review continuation requires exactly one recorded PullRequestOpened",
+    );
+  return {
+    program: published.program,
+    writer,
+    episode,
+    publication,
+    opened: opened[0],
+    url,
+  };
+}
+
+/** The CLI's host-authored repair file cannot replace the original writer,
+ * its authority, contract or named tests before dispatching a child. */
+export function bindReviewRepairInput(options, repair) {
+  const { writer, episode } = reviewPublicationContext(
+    { ...options, now: options.now ?? Date.now() },
+    [],
+  );
+  const original = repair?.original;
+  const contract = repairContract(writer.program.workOrder);
+  if (
+    !original ||
+    !same(original.workOrder, writer.program.workOrder) ||
+    !same(original.authorityEnvelope, writer.program.authorityEnvelope) ||
+    !same(repair.source?.artifactIdentity, writer.artifactIdentity) ||
+    !same(
+      original.criteria?.map((criterion) => criterion.description),
+      writer.program.workOrder.acceptanceCriteria,
+    ) ||
+    !Array.isArray(original.surfaces) ||
+    !original.surfaces.length ||
+    ![repair.baseline, repair.subject].every(
+      (subject) =>
+        subject &&
+        subject.baseCommit === episode.request.baseCommit &&
+        same(subject.snapshot?.contract, contract) &&
+        same(subject.snapshot?.tests, original.tests),
+    ) ||
+    repair.baseline.repo !== repair.subject.repo ||
+    repair.baseline.revision !== episode.request.baseCommit ||
+    repair.subject.revision !== episode.observation.commit
+  )
+    throw refuse(
+      "the repair input differs from the recorded original writer, contract or tests",
+    );
+}
+const recordReviewEffect = (context, type, payload, now) => {
+  const { event } = appendEvent(context.publication.read(), {
+    schemaVersion: 1,
+    type,
+    actorId: TARGET_PUBLISH_HOST,
+    occurredAt: now,
+    workstreamId: context.episode.workstreamId,
+    causationId: context.opened.eventId,
+    payload,
+  });
+  context.publication.append(event);
+  return event;
+};
+
+/** A real WO-054 acceptance matrix is required for the exact child head. */
+export function pushRepairedHead(options) {
+  const {
+    request,
+    repairStore,
+    verificationStore,
+    itemKey,
+    now = Date.now(),
+  } = options;
+  const context = reviewPublicationContext({ ...options, now }, ["repo.push"]);
+  const repair = readEpisode(repairStore);
+  const { commit } = repair.observation;
+  const payload = {
+    itemKey,
+    repositoryId: request.repositoryId,
+    number: context.opened.payload.number,
+    headSha: commit,
+    branch: context.episode.request.branch,
+  };
+  const previous = () =>
+    decodeLog(context.publication.read()).find(
+      (event) =>
+        event.actorId === TARGET_PUBLISH_HOST &&
+        event.type === "PullRequestRepairPushed" &&
+        event.causationId === context.opened.eventId &&
+        same(event.payload, payload),
+    );
+  if (previous()) return previous();
+  if (
+    repair.request.repo !== context.episode.request.repo ||
+    repair.request.workOrderId !==
+      `${context.program.workOrder.workOrderId}_repair_1`
+  )
+    throw refuse("the repair episode belongs to another order or repository");
+  if (
+    spawnGit([
+      "-C",
+      repair.request.repo,
+      ...HOOKLESS,
+      "merge-base",
+      "--is-ancestor",
+      context.opened.payload.headSha,
+      commit,
+    ]).status !== 0
+  )
+    throw refuse(
+      "the repaired head does not descend from the recorded pull-request head",
+    );
+  const matrix = acceptanceMatrix(
+    verificationStore,
+    commit,
+    context.program.workOrder,
+  );
+  if (!matrix || matrix.rows.some((row) => row.status !== "verified"))
+    throw refuse("the repaired head is not independently verified");
+  const target = observeTarget(repair);
+  lintArtifacts(options.launchpad, [
+    { kind: "branch", text: payload.branch },
+    ...target.commits.map(({ message }) => ({ kind: "commit", text: message })),
+  ]);
+  context.publication.acquire();
+  try {
+    const raced = previous();
+    if (raced) return raced;
+    // Binding precedes the remote availability/authentication calls too.
+    const repository = ensureGh(repair.request.repo);
+    if (
+      repository.selector.toLowerCase() !== request.repositoryId.toLowerCase()
+    )
+      throw refuse("origin differs from the requested repository");
+    pushObservedCommit(
+      repair.request.repo,
+      context.url,
+      repair.request.branch,
+      commit,
+      payload.branch,
+    );
+    return recordReviewEffect(context, "PullRequestRepairPushed", payload, now);
+  } finally {
+    context.publication.release();
+  }
+}
+
+/** Evidence-backed structured rejection is the only posted body. Mutation
+ * output is checked but never retained as raw provider text. */
+export function disposeReviewThread(options) {
+  const { request, item, itemKey, judgment, now = Date.now() } = options;
+  const context = reviewPublicationContext({ ...options, now }, [
+    "pr.thread.resolve",
+  ]);
+  if (
+    item.class !== "automated-review" ||
+    item.role !== "automation" ||
+    item.refused ||
+    !item.threadId
+  )
+    throw refuse("only an admitted automated review thread can be disposed");
+  if (
+    !["accept", "reject"].includes(judgment.kind) ||
+    !judgment.evidenceRefs?.length ||
+    judgment.evidenceRefs.some((ref) => typeof ref !== "string" || !ref)
+  )
+    throw refuse(
+      "thread disposition requires a judgment with evidence references",
+    );
+  const body = canonicalStringify({
+    disposition: judgment.kind === "reject" ? "rejected" : "repaired",
+    evidenceRefs: judgment.evidenceRefs,
+  });
+  lintArtifacts(options.launchpad, [{ kind: "pr-body", text: body }]);
+  const payload = {
+    itemKey,
+    itemId: item.id,
+    threadId: item.threadId,
+    repositoryId: request.repositoryId,
+    number: context.opened.payload.number,
+    disposition: judgment.kind,
+    evidenceRefs: judgment.evidenceRefs,
+  };
+  const previous = () =>
+    decodeLog(context.publication.read()).find(
+      (event) =>
+        event.actorId === TARGET_PUBLISH_HOST &&
+        event.type === "PullRequestThreadDisposed" &&
+        event.causationId === context.opened.eventId &&
+        same(event.payload, payload),
+    );
+  if (previous()) return previous();
+  const host = request.repositoryId.split("/")[0];
+  const mutation = (name, query, variables, field) => {
+    const result = executeGh(context.episode.request.repo, [
+      "api",
+      "graphql",
+      "--hostname",
+      host,
+      "-f",
+      `query=mutation ${name}${query}`,
+      ...Object.entries(variables).flatMap(([key, value]) => [
+        "-f",
+        `${key}=${value}`,
+      ]),
+    ]);
+    let data;
+    try {
+      data = JSON.parse(result.stdout);
+    } catch {
+      throw refuse(`gh ${name} returned invalid JSON`);
+    }
+    if (result.status !== 0 || data.errors?.length || !data.data?.[field])
+      throw refuse(
+        `gh ${name} failed (exit ${result.status ?? "unavailable"})`,
+      );
+    return data.data[field];
+  };
+  context.publication.acquire();
+  try {
+    const raced = previous();
+    if (raced) return raced;
+    ensureGh(context.episode.request.repo);
+    if (judgment.kind === "reject") {
+      const posted = decodeLog(context.publication.read()).find(
+        (event) =>
+          event.type === "PullRequestRejectionPosted" &&
+          event.payload.itemKey === itemKey,
+      );
+      if (!posted) {
+        const reply = mutation(
+          "DotlnRejectReview",
+          "($thread: ID!, $body: String!) { addPullRequestReviewThreadReply(input: {pullRequestReviewThreadId: $thread, body: $body}) { comment { id } } }",
+          { thread: item.threadId, body },
+          "addPullRequestReviewThreadReply",
+        );
+        if (typeof reply.comment?.id !== "string")
+          throw refuse("rejection reply has no comment identifier");
+        recordReviewEffect(context, "PullRequestRejectionPosted", payload, now);
+      }
+    }
+    const result = mutation(
+      "DotlnResolveReview",
+      "($thread: ID!) { resolveReviewThread(input: {threadId: $thread}) { thread { id isResolved } } }",
+      { thread: item.threadId },
+      "resolveReviewThread",
+    );
+    if (
+      result.thread?.id !== item.threadId ||
+      result.thread.isResolved !== true
+    )
+      throw refuse("thread resolution response mismatch");
+    return recordReviewEffect(
+      context,
+      "PullRequestThreadDisposed",
+      payload,
+      now,
+    );
+  } finally {
+    context.publication.release();
   }
 }
 const gitText = (cwd, ...args) =>
@@ -291,9 +589,14 @@ function bind(program, writer, episode, workOrderId) {
   for (const [ok, reason] of checks) if (!ok) throw refuse(reason);
 }
 
-function authorizePublication(program, episode, now) {
+export function authorizePublication(
+  program,
+  episode,
+  now,
+  effects = ["repo.push", "pr.open"],
+) {
   const evidence = episode.command.intent.payload.authorityEvidence ?? [];
-  PUBLICATION_EFFECTS.forEach((effect, intentIndex) => {
+  effects.forEach((effect, intentIndex) => {
     const grant = (program.grants ?? []).find(
       (entry) =>
         entry.grantedBy === "operator" &&
@@ -521,6 +824,7 @@ export function publishTargetOrder({
   const previous = already();
   if (previous) return previous;
   authorizePublication(program, episode, now);
+  const boundUrl = pushUrl(repo, { selector: request.repositoryId });
   const target = observeTarget(episode);
   const payload = episode.command.intent.payload;
   const head = target.commits.at(-1);
@@ -555,7 +859,11 @@ export function publishTargetOrder({
     const raced = already();
     if (raced) return raced;
     const repository = ensureGh(repo);
-    pushObservedCommit(repo, pushUrl(repo, repository), branch, commit);
+    if (
+      repository.selector.toLowerCase() !== request.repositoryId.toLowerCase()
+    )
+      throw refuse("origin differs from the requested repository");
+    pushObservedCommit(repo, boundUrl, branch, commit);
     const created = withTemporaryBody(body, (bodyPath) =>
       executeGh(repo, [
         "pr",

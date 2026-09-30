@@ -1,0 +1,161 @@
+Fixture compatibility checks after the stopped first gate; fixture-only Git option normalization, no production guard removed.
+
+Command: env -u CODEX_THREAD_ID bash scripts/test-worktree.sh
+Exit: 0
+Advisory: Session authorship and output reads unavailable.
+Advisory: docs/work-orders/WO-099-fixture.md declares no numbered acceptance criteria this completion can read; docs/evidence/WO-099/handoff.md is not checked.
+Advisory: Session authorship and output reads unavailable.
+Advisory: attestation recorded as supplied; human not-applicable effort unknown has no matching discovery observation.
+Advisory: No passing product gate at this code identity; the reviewer runs npm test before publication.
+Advisory: Session authorship and output reads unavailable.
+worktree surface refusal preserved the checker report and mutated no remote
+release-notes publish validation fixtures passed
+GitHub body profile refused wrapped PR and release-note prose before publication
+publication refuses agent session trailers and URLs in titles and bodies before any push
+FAIL contribution-signoff 77000e6ea81c: observed outside author without matching sign-off; expected Signed-off-by trailer matching the commit author (DCO 1.1); add it with git commit --amend --signoff after reviewing the DCO
+PASS contribution-signoff adf46e9f0303: observed operator author; expected operator exemption (no sign-off required)
+PASS contribution-signoff 31af7a0cb0a9: observed operator author; expected operator exemption (no sign-off required)
+PASS contribution-signoff 2a1bbac8a4ef: observed matching author sign-off; expected Signed-off-by trailer matching the commit author (DCO 1.1); add it with git commit --amend --signoff after reviewing the DCO
+PASS contribution-signoff b33d856aa785: observed operator author; expected operator exemption (no sign-off required)
+contribution sign-off publication fixtures passed before any remote mutation
+worktree gh stub transcript (temporary path normalized):
+--version
+auth status --hostname github.com
+pr create --repo github.com/dotln-fixture/worktree --head wo-099 --base main --title :sparkles: fixture --body-file <committed-PR-body>
+GitHub PR target, authentication, and committed-body fixtures passed
+removal refusal listed every blocker with its lane and remedy
+derived worktrees settled: pruned, preserved and removed, or kept with a blocker
+settle removed a derived worktree with no subject present
+beacon cleanup: populated anchored projection directories removed; docs/intake/dist/x.md negative fixture preserved
+Preparing worktree (new branch 'wo-098')
+destructive finish used committed control state and preserved the hidden-live fixture
+Preparing worktree (new branch 'wo-097')
+finish refused reopened merged order and preserved its closed subject
+Beacon fixture-address:fixture-address.beacon | active | unknown | unknown | host-projected | fresh | v2 | 8365 bytes | unauthenticated-legacy
+Beacon fixture-address:fixture-address.beacon | ready-to-verify | unknown | unknown | host-projected | fresh | v2 | 17597 bytes | unauthenticated-legacy
+Beacon fixture-address:fixture-address.beacon | verifying | unknown | unknown | host-projected | fresh | v2 | 26765 bytes | unauthenticated-legacy
+Group Beacon | active=1 ready-to-verify=1 verifying=1 needs-fix=0 repairing=0 verified=0 final-review=0 closed=0 | group-v1 | 55258 bytes (host cache; fresh)
+▶ test-control-beacons
+  ✔ three-worktree metadata constellation (opaque fixture addresses shortened here): (1939.043708ms)
+  ✔ unreadable garbage content still decodes; missing expected worktree beacon is absent (1.366917ms)
+  ✔ verifier contains only host records; two independent 256-bit names; restricted name appears only in the authorized active next briefing (449.199416ms)
+  ✔ anchored Beacon disposal; protected intake and lookalike/nested paths still refuse (0.596583ms)
+  ✔ filesystem projection failure records exactly one transition and warns without leaking restricted paths (292.793583ms)
+✔ test-control-beacons (2683.791458ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2686.037791
+worktree tests passed
+
+Command: bash scripts/test-release.sh --case success
+Exit: 0
+PROGRESS release case success started
+Preparing worktree (new branch 'wo-099')
+cadence manifest evaluable: ["Once","After","Every","Gate","Until","Backoff"]
+cadence manifest deferred: ["Burst","Calendar","Window","While","Sequence","Merge","Race","Repeat"]
+PROGRESS release case success passed
+release tests passed
+
+Command: env -u CODEX_THREAD_ID bash scripts/test-release.sh --case concurrent
+Exit: 0
+PROGRESS release case concurrent started
+Resolved generated projection conflicts for wo-902: docs/control/current.md
+Resolved generated projection conflicts for wo-901: docs/control/current.md, docs/work-orders/README.md
+Resolved generated projection conflicts for wo-903: docs/control/current.md
+Concurrent integration fixture Git log:
+*   e9d5e33 (HEAD -> main, tag: v0.2.2, origin/main) Integrate wo-902
+|\
+| * 4d5cd67 WO-902 final review pass
+| *   0f8be77 Integrate main
+| |\
+| |/
+|/|
+* |   4a15e83 Integrate wo-903
+|\ \
+| * | 8297d7f (wo-903) WO-903 independent progress
+* | |   e239cf2 (tag: v0.2.1) Integrate wo-901
+|\ \ \
+| * | | 9f10515 WO-901 final review pass
+* | | |   b6bbf95 Integrate wo-902
+|\ \ \ \
+| | |_|/
+| |/| |
+| * | | 0c8cb75 WO-902 independent progress
+| | |/
+| |/|
+* | |   d22c67b Integrate wo-901
+|\ \ \
+| |/ /
+|/| /
+| |/
+| * b5569f5 WO-901 independent progress
+|/
+* e5aec33 Concurrent fixture authorities
+* d7969ba (tag: v0.2.0) fixture v0.2.0
+▶ test-concurrent-control
+  ✔ independent real worktrees: WO-901 ready-to-verify; WO-902 verifying; sibling segment/projection byte-identical after WO-901 transition (2885.09175ms)
+  ✔ serial partial integration preserves complete per-order states; main overview lists both; ambiguous/unknown selection refuses without mutation (870.639ms)
+  ✔ worktree finish and no-publish release close select merged WO-901 while WO-902 is open; validated release then published only to fixture origin/gh stub (6058.582166ms)
+  ✔ old-base third branch retains its segment; every first-parent append-only proof passes; index attributes WO-901 to v0.2.1 and WO-902 to v0.2.2 (4109.836625ms)
+✔ test-concurrent-control (13924.993583ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 13927.198791
+PROGRESS release case concurrent passed
+release tests passed
+
+Command: node scripts/feedback-evidence.mjs --check
+Exit: 0
+Live feedback audit docs/evidence/WO-066/feedback-001 judged the current source.
+Verified ten passing regressions, ten removal failures, and 1192 fewer instruction bytes in the matched projection.
+
+Current-source correction (revision 002).
+Command: env -u CODEX_THREAD_ID node --test --test-name-pattern=<five relevant cases> scripts/test-portfolio.mjs scripts/test-authority-probe.mjs packages/skeleton/dist/test/source-change-confinement.test.js packages/skeleton/dist/test/writer.test.js
+Exit: 0
+✔ WO-066 AC6: host and exact writer command deny direct network, common-Git writes and outside reads (196.867791ms)
+✔ confined npm test leaves committed source clean through host and writer routes (550.908125ms)
+✔ WO-051 C-W2/C-W3/C-W8/C-W9 and X-W1/X-W2/X-W8 canonical writer shapes (99.545667ms)
+✔ real target guard admits exactly the host grant and rejects it after revocation (836.774291ms)
+# {"identities":["WO-900","WO-901","WO-902","WO-903","WO-904"],"moved":{"verdict":"pass","criteria":2,"passed":2,"findings":0},"copied":{"verdict":"fail","criteria":2,"passed":0,"findings":1},"escalated":{"verdict":"fail","criteria":1,"passed":1,"findings":0},"pathless":{"verdict":"pass","criteria":2,"passed":2,"findings":0},"failing":{"verdict":"fail","criteria":2,"passed":1,"findings":1}}
+✔ a Sort move passes only when the host sees the exact relocation and its named check passes, also for a check naming no path in both trees; a copy fails before any verifier runs, and a verifier's human escalation fails the order (10959.706ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 11052.241375
+
+Command: node scripts/feedback-evidence.mjs --check
+Exit: 0
+Live feedback audit docs/evidence/WO-066/feedback-002 judged the current source.
+Verified ten passing regressions, ten removal failures, and 1192 fewer instruction bytes in the matched projection.
+
+Canonical writer assertion correction.
+Command: node --test --test-name-pattern=canonical-writer-shapes packages/skeleton/dist/test/writer.test.js
+Exit: 0
+✔ WO-051 C-W2/C-W3/C-W8/C-W9 and X-W1/X-W2/X-W8 canonical writer shapes (87.862333ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 144.738541
+
+Command: node scripts/feedback-evidence.mjs --check
+Exit: 0
+Live feedback audit docs/evidence/WO-066/feedback-002 judged the current source.
+Verified ten passing regressions, ten removal failures, and 1192 fewer instruction bytes in the matched projection.

@@ -9,6 +9,7 @@ import {
   writeFileSync,
 } from "node:fs";
 import { join } from "node:path";
+import { confinedTestCommand } from "../src/discovery-sandbox.js";
 import { decodeLog, replay, type Event } from "@dotln/kernel";
 import {
   outsideWriteEffect,
@@ -492,11 +493,16 @@ test("WO-052 emitted Claude permission hook admits only live host-issued exact c
       expiresAt: Date.now() + 60_000,
     });
     for (const command of [
-      testCommand,
+      confinedTestCommand(host.tree.path, testCommand),
       "git add -A",
       `git commit -F ${host.tree.messagePath}`,
     ])
       assert.equal(hook(command), true, command);
+    assert.equal(
+      hook(testCommand),
+      false,
+      "raw test command bypasses confinement",
+    );
     for (const command of [
       `${testCommand} && git push`,
       "git push",
@@ -541,7 +547,7 @@ test("WO-052 emitted Claude permission hook admits only live host-issued exact c
       permission.replace(match[1]!, JSON.stringify(config)),
     );
     assert.equal(
-      hook(testCommand),
+      hook(confinedTestCommand(host.tree.path, testCommand)),
       true,
       "the narrowed target still permits shell.run",
     );
