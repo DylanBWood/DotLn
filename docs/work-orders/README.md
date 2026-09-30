@@ -4,7 +4,7 @@
 
 ## Proposed order
 
-- [ ] [WO-058] — Visual and network claim types · **queued**
+- [x] [WO-058] — Visual and network claim types · **final-reviewed**
 - [ ] [WO-174] — Gate rows cover what suites read · **queued**
 - [ ] [WO-059] — Playwright evidence adapter · **queued**
 - [ ] [WO-175] — Reopening conditions report themselves · **queued**
@@ -193,30 +193,14 @@ None.
 - Inherited ledger duty: discharge with this order's decisions file when recorded and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
 - Authority: [docs/work-orders/WO-040-rule-migration-batch-one.md](WO-040-rule-migration-batch-one.md)
 
-### WO-058
-
-[WO-058 — &#96;verification-v1&#96; gains &#96;visual&#96; and &#96;network&#96; claim types with witness rules: a DOM-only witness cannot satisfy a visual criterion, a network claim needs request evidence, and a console error is a failing witness (version assigned at activation)](WO-058-visual-and-network-claim-types.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-010: satisfied-by-release (met) v0.12.0 — the claim-typed evidence contract it extends.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh+; verifier xhigh+; reviewer any.
-- Cost: adds two claim types and five witness kinds to &#96;packages/compiler/src/verification.ts&#96;, the matching result-schema members and admission rules to &#96;packages/skeleton/src/verification-protocol.ts&#96;, fixtures that need no browser, and at most 800 bytes in product 02 and 200 in product 10. Removes the gap product 02 names: visual and network evidence are deferred, so a screenshot is narrative. WO-059 depends on it for the witness kinds and WO-061 for the &#96;visual&#96; claim type. Re-mints: both files are registered evidence sources in every edition and sources the feedback verifier judges, so the authority, artifact-identity, verification and harness editions are re-minted deterministically and the executor runs one live self-host episode for the feedback edition on Codex &#96;gpt-6.1-sol&#96; at &#96;max&#96; or Claude Code &#96;claude-opus-5-5&#96; at &#96;xhigh&#96;, which needs no authorization; the console is re-pinned to the new feedback edition, and its self-host fixtures that hold the compiler label follow the compiler release (WO-154 D011; WO-162 D012). Wall-clock, tokens and context bytes are unknown until run.
-- Authority: [docs/work-orders/WO-058-visual-and-network-claim-types.md](WO-058-visual-and-network-claim-types.md)
-
 ### WO-059
 
 [WO-059 — Playwright evidence adapter: a workspace package outside the kernel and compiler drives a synthetic local application and produces the visual and network witnesses, closes or recovers the browser on a kill, and replays a saved scenario (version assigned at activation)](WO-059-playwright-evidence-adapter.md)
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-058.
-- References: WO-057: hard (met) — the observed runtime rows and the recorded dependency decision; WO-058: hard (unmet) — the claim types and witness rules the adapter produces.
+- Dependencies: typed; dependency-ready.
+- References: WO-057: hard (met) — the observed runtime rows and the recorded dependency decision; WO-058: hard (met) — the claim types and witness rules the adapter produces.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -231,8 +215,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-058.
-- References: WO-060: hard (met) — the bundle it compiles from; WO-058: hard (unmet) — the visual claim type a criterion drawn from a visual annotation carries; WO-054: reference-only (non-blocking) — its criteria are what the verification host consumes.
+- Dependencies: typed; dependency-ready.
+- References: WO-060: hard (met) — the bundle it compiles from; WO-058: hard (met) — the visual claim type a criterion drawn from a visual annotation carries; WO-054: reference-only (non-blocking) — its criteria are what the verification host consumes.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -839,8 +823,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-058.
-- References: WO-058: hard (unmet) — both edit packages/skeleton/src/verification-protocol.ts; the claim types land first; WO-054: satisfied-by-close (met) — the sealed base and candidate snapshots the episode runs on; WO-056: satisfied-by-close (met) — the live blinded verification loop this episode precedes.
+- Dependencies: typed; dependency-ready.
+- References: WO-058: hard (met) — both edit packages/skeleton/src/verification-protocol.ts; the claim types land first; WO-054: satisfied-by-close (met) — the sealed base and candidate snapshots the episode runs on; WO-056: satisfied-by-close (met) — the live blinded verification loop this episode precedes.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -855,8 +839,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-180, WO-058.
-- References: WO-180: hard (unmet) — the same protocol surface and the baseline rows the reviewer reads; WO-058: hard (unmet) — both edit packages/skeleton/src/verification-protocol.ts; the claim types land first; WO-055: satisfied-by-close (met) — bounded repair, where blocking findings route; WO-056: satisfied-by-close (met) — the blinded live loop the review joins.
+- Dependencies: typed; blocked on WO-180.
+- References: WO-180: hard (unmet) — the same protocol surface and the baseline rows the reviewer reads; WO-058: hard (met) — both edit packages/skeleton/src/verification-protocol.ts; the claim types land first; WO-055: satisfied-by-close (met) — bounded repair, where blocking findings route; WO-056: satisfied-by-close (met) — the blinded live loop the review joins.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -1744,6 +1728,23 @@ None.
 - Cost: adds &#96;docs/discovery/browser-runtime-&lt;date&gt;.md&#96; and its &#96;.json&#96;, one dated amendment in ADR-0002 §Amendments, one dated observation in &#96;docs/LEGAL.md&#96; §Current state and one addendum at the end of &#96;docs/discovery/environment.md&#96;; a throwaway scratch package outside the workspace that is never committed. Removes the unknown WO-059 would otherwise pin a runtime on: nothing records whether a package-level browser runtime installs, launches and dies cleanly here without the harness's connected server. WO-059 depends on it. Re-mints: none; no file it edits is a registered evidence source, and &#96;docs/discovery/environment.json&#96;, which is one, stays unchanged, as the last three environment addenda left it (&#96;scripts/lib/evidence-sources.mjs&#96; at &#96;5f3849ec&#96;). Wall-clock, tokens and context bytes are unknown until run.
 - Latest attestation: harness claude-code; version 2.1.285; model claude-opus-5-5; effort xhigh; source claude-session-readback; account not-applicable.
 - Authority: [docs/work-orders/WO-057-browser-runtime-truth.md](WO-057-browser-runtime-truth.md)
+
+### WO-058
+
+[WO-058 — &#96;verification-v1&#96; gains &#96;visual&#96; and &#96;network&#96; claim types with witness rules: a DOM-only witness cannot satisfy a visual criterion, a network claim needs request evidence, and a console error is a failing witness (v0.58.0)](WO-058-visual-and-network-claim-types.md)
+
+- State: closed.
+- Application target: v0.58.0.
+- Dependencies: typed; activation not applicable.
+- References: WO-010: satisfied-by-release (met) v0.12.0 — the claim-typed evidence contract it extends.
+- Verification: [VER-001](../../docs/verifications/WO-058/VER-001.md) (pass).
+- Final review: [FINAL-001](../../docs/final-reviews/WO-058/FINAL-001.md) (pass).
+- Release: unreleased.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Cost: adds two claim types and five witness kinds to &#96;packages/compiler/src/verification.ts&#96;, the matching result-schema members and admission rules to &#96;packages/skeleton/src/verification-protocol.ts&#96;, fixtures that need no browser, and at most 800 bytes in product 02 and 200 in product 10. Removes the gap product 02 names: visual and network evidence are deferred, so a screenshot is narrative. WO-059 depends on it for the witness kinds and WO-061 for the &#96;visual&#96; claim type. Re-mints: both files are registered evidence sources in every edition and sources the feedback verifier judges, so the authority, artifact-identity, verification and harness editions are re-minted deterministically and the executor runs one live self-host episode for the feedback edition on Codex &#96;gpt-6.1-sol&#96; at &#96;max&#96; or Claude Code &#96;claude-opus-5-5&#96; at &#96;xhigh&#96;, which needs no authorization; the console is re-pinned to the new feedback edition, and its self-host fixtures that hold the compiler label follow the compiler release (WO-154 D011; WO-162 D012). Wall-clock, tokens and context bytes are unknown until run.
+- Latest attestation: harness claude-code; version 2.1.285; model claude-opus-5-5; effort xhigh; source claude-session-readback; account not-applicable.
+- Authority: [docs/work-orders/WO-058-visual-and-network-claim-types.md](WO-058-visual-and-network-claim-types.md)
 
 ### WO-060
 

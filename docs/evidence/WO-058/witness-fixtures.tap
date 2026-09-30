@@ -1,0 +1,88 @@
+TAP version 13
+# Subtest: WO-058 all five witness kinds lower as immutable plain data and bind the capsule hash
+ok 1 - WO-058 all five witness kinds lower as immutable plain data and bind the capsule hash
+  ---
+  duration_ms: 5.006375
+  type: 'test'
+  ...
+# Subtest: WO-058 undeclared claim types and witness kinds refuse at their decode paths
+ok 2 - WO-058 undeclared claim types and witness kinds refuse at their decode paths
+  ---
+  duration_ms: 0.408083
+  type: 'test'
+  ...
+# Subtest: WO-058 absent optional witnesses preserve legacy construction bytes
+ok 3 - WO-058 absent optional witnesses preserve legacy construction bytes
+  ---
+  duration_ms: 0.28775
+  type: 'test'
+  ...
+# Subtest: WO-010 AC2 verifier compilation positively selects nested context, is pure and cannot retain implementer prose
+ok 4 - WO-010 AC2 verifier compilation positively selects nested context, is pure and cannot retain implementer prose
+  ---
+  duration_ms: 2.781583
+  type: 'test'
+  ...
+# Subtest: WO-010 AC3 only complete blocking findings compile focused repair WorkOrders
+ok 5 - WO-010 AC3 only complete blocking findings compile focused repair WorkOrders
+  ---
+  duration_ms: 0.3405
+  type: 'test'
+  ...
+# Subtest: WO-010 AC4 repair radius follows changed dependency surfaces and fails closed on unknown surfaces
+ok 6 - WO-010 AC4 repair radius follows changed dependency surfaces and fails closed on unknown surfaces
+  ---
+  duration_ms: 0.1365
+  type: 'test'
+  ...
+# Subtest: WO-154 a recorded capsule keeps its compiler release; any other drift still fails
+ok 7 - WO-154 a recorded capsule keeps its compiler release; any other drift still fails
+  ---
+  duration_ms: 1.312375
+  type: 'test'
+  ...
+# Subtest: WO-058 AC1 DOM and accessibility alone leave visual incomplete; a cited screenshot verifies
+ok 8 - WO-058 AC1 DOM and accessibility alone leave visual incomplete; a cited screenshot verifies
+  ---
+  duration_ms: 8.883083
+  type: 'test'
+  ...
+# Subtest: WO-058 AC2 network requires a cited passing trace bound to its criterion
+ok 9 - WO-058 AC2 network requires a cited passing trace bound to its criterion
+  ---
+  duration_ms: 4.822583
+  type: 'test'
+  ...
+# Subtest: WO-058 unavailable screenshots and traces cannot support a pass
+ok 10 - WO-058 unavailable screenshots and traces cannot support a pass
+  ---
+  duration_ms: 2.487166
+  type: 'test'
+  ...
+# Subtest: WO-058 AC3 a console error bound to each scenario criterion fails both and cannot be omitted or relabeled
+ok 11 - WO-058 AC3 a console error bound to each scenario criterion fails both and cannot be omitted or relabeled
+  ---
+  duration_ms: 3.444166
+  type: 'test'
+  ...
+# Subtest: WO-058 console info/warnings are not errors; unrelated checks retain the existing admission rule
+ok 12 - WO-058 console info/warnings are not errors; unrelated checks retain the existing admission rule
+  ---
+  duration_ms: 3.6545
+  type: 'test'
+  ...
+# Subtest: WO-058 the closed result schema exposes all four claim types
+ok 13 - WO-058 the closed result schema exposes all four claim types
+  ---
+  duration_ms: 1.626375
+  type: 'test'
+  ...
+1..13
+# tests 13
+# suites 0
+# pass 13
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 86.722833

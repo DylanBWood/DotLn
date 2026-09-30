@@ -16853,6 +16853,14 @@
           "reopenWhen": "the next order that edits evidenceResultSchema, or a malformed finding passes the schema",
           "targets": [],
           "at": "2026-09-25T21:29:58.263Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Settled by WO-058's final review (docs/final-reviews/WO-058/FINAL-001.md, WO-058-D010). WO-058 edits evidenceResultSchema, the row's condition. The tightening already landed with WO-157 item 16 (commit 4001a2b7, 2026-09-24): no finding and no fail verdict without a failing witness, 1-100 entry lists, 1-2,000 character lines and contract enums. Its test passes unchanged at code identity fd8769db. Control characters and duplicate entries stay with admission, as that test names. WO-058's live verifier episode completed in one attempt with no finding-shape refusal.",
+          "reopenWhen": "A live verifier episode refuses with finding shape, or with another shape the schema admits and admission refuses.",
+          "targets": [],
+          "at": "2026-09-30T18:08:53.830Z"
         }
       ]
     },
@@ -24422,6 +24430,21 @@
           "at": "2026-09-30T15:30:45.666Z"
         }
       ]
+    },
+    {
+      "id": "FUP-757da8687d847eab",
+      "key": "decision:docs/evidence/WO-058/decisions.md#wo-058-d010",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "544b8fa7ca57ce051c182c62088a3f9f67f4fe3ed3a992c68fedd63f5ca59df3",
+          "ref": "docs/evidence/WO-058/decisions.md#wo-058-d010",
+          "title": "WO-058-D010: Narrow evidenceResultSchema's evaluation claimType enum to the claim types the capsule's criteria carry, and couple it to criterionId where the live transports' accepted schema keywords a",
+          "summary": "{ \"id\": \"WO-058-D010\", \"date\": \"2026-09-30\", \"dispatch\": \"resume: final review\", \"decision\": \"Pass WO-058 on all seven criteria against the original order and accept verification-v1 (operator-review assumption 1) by the Design's test. Stage the three new source files and run the final product gate at the staged identity. Settle FUP-c31c7bcab9270f49, whose condition this order met, and leave the other seven touching rows as textual matches. Board one schema gap without fixing it here: the evaluation claimType enum lists every claim type for every capsule.\", \"evidence\": [ \"Base dd141ad1 equals local main, origin/main and the remote main ref, so no integration ran; tags end at v0.57.0, so targe",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }
