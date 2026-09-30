@@ -81,11 +81,12 @@ clean-room screen found no stop condition. The record is
   itself** `adopted`
   - Three recorded conditions had occurred. The pass regenerated the release
     table (five tags behind), recorded WO-172's evidence bytes against their
-    row, and declined to restore the plan check's two-second figure by an
-    order: 4.7 s in a 17 s document gate does not repay an order and a cache
-    inside a correctness gate. Each decline carries the number that would
-    change it (30 s for the gate, 15 s for docs-check, 8 s for the plan
-    check). Provenance: ER4-005; WO-156 D008; the planning document §5 and
+    row, and declined an order for the plan check: its 4.7 s fell to 2.1 s
+    when the eleven closed entries left the sequence, so the retirement
+    every pass owes was most of the remedy, and a parse cache inside a
+    correctness gate does not repay an order for the rest. Each decline
+    carries the number that would change it (30 s for the gate, 15 s for
+    docs-check, 8 s for the plan check). Provenance: ER4-005; WO-156 D008; the planning document §5 and
     §7. Reopen: one of those figures on the operator's host.
 - **Tracked bytes are a proxy; distinct blobs are what a clone pays**
   `adopted`

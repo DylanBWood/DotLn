@@ -17197,6 +17197,14 @@
           "reopenWhen": "a new check changes subject bytes, mutable-ref freshness or receipt validation",
           "targets": [],
           "at": "2026-09-30T14:01:27.106Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-156's repair stands. Its latency clause occurred at the REVIEW-004 subject (4.37 to 4.83 s in the two episodes, 4.74 to 4.78 s on the operator's host) and the check is 2.10 s after this pass retired eleven closed entries from the sequence, a tenth of a second above the 2 s figure. The latency decision and its threshold are carried by FUP-fb8cbeabbddef397. [2026-09-30 Entropy Reducer planning pass, corrected before handoff (docs/planning/entropy-review-004-2026-09-30.md sections 3 and 5.4)]",
+          "reopenWhen": "a new check changes subject bytes, mutable-ref freshness or receipt validation",
+          "targets": [],
+          "at": "2026-09-30T14:20:20.658Z"
         }
       ]
     },
@@ -17253,6 +17261,14 @@
           "reopenWhen": "either independent accepted-input probe fails, canonical validation weakens or paired output differs",
           "targets": [],
           "at": "2026-09-30T14:01:27.140Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "The VER-002 F1 and F2 repair stands. Its latency clause occurred at the REVIEW-004 subject (4.74 to 4.78 s on the operator's host) and the check is 2.10 s after the closed entries left the sequence; the latency decision is carried by FUP-fb8cbeabbddef397. [2026-09-30 Entropy Reducer planning pass, corrected before handoff (docs/planning/entropy-review-004-2026-09-30.md sections 3 and 5.4)]",
+          "reopenWhen": "either independent accepted-input probe fails, canonical validation weakens or paired output differs",
+          "targets": [],
+          "at": "2026-09-30T14:20:20.692Z"
         }
       ]
     },
@@ -23958,6 +23974,14 @@
           "reopenWhen": "npm run test:docs exceeds 30 s, its docs-check task exceeds 15 s, or the plan check exceeds 8 s, on the operator's host",
           "targets": [],
           "at": "2026-09-30T14:01:27.039Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Accepted as true and declined as an order now. On the operator's host on 2026-09-30: docs-check 9.3 s, of which the review measured 6.6 s parsing 1,262 Markdown files, in a document gate of 14.1 s that grows about 0.2 s a day. The plan check read 4.74 to 4.78 s at the subject and 2.10 s after this pass retired eleven closed entries from the sequence, so most of that figure followed the closed entries still listed and not accumulated history (an inference from two timings of one code revision). A parse cache would save under two minutes an order, against an order's cost and a cache inside a correctness gate. The packet is not filed and stays in the REVIEW-004 receipt. [2026-09-30 Entropy Reducer planning pass, corrected before handoff (docs/planning/entropy-review-004-2026-09-30.md sections 3 and 5.4)]",
+          "reopenWhen": "npm run test:docs exceeds 30 s, its docs-check task exceeds 15 s, or the plan check exceeds 8 s, on the operator's host",
+          "targets": [],
+          "at": "2026-09-30T14:20:20.623Z"
         }
       ]
     }

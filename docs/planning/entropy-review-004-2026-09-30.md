@@ -107,6 +107,20 @@ it opened for planning on 2026-09-29. The row that carries the condition
 (FUP-8a4e201d861208ad) was untouched, which is the finding's point: the
 observation reached a row only because a reviewer happened to measure.
 
+One correction to this pass's own first reading, made before handoff. The
+pass first took the plan check's 4.7 s as the cost of accumulated history,
+as the review's profile suggested, and drafted its decline on that figure.
+Timed again on this branch after the eleven closed entries left the
+sequence, the same code takes 2.10, 2.10 and 2.11 s (load average 5.7), and
+the gate's `plan` task fell from 4.7 to 2.3 s. The check's cost followed
+the closed entries still listed, whose order files carry their appended
+execution records (an inference from two timings of one code revision over
+two subjects; no profile was taken). So the 2 s condition of WO-156 is
+exceeded by a tenth of a second, not by a factor of two, and the remedy for
+the rest was the retirement every pass already owes. WO-175's observed gap
+records the figure at the subject commit and its executor re-measures at
+its base.
+
 ## 4. Dispositions
 
 Recorded with `npm run entropy -- dispose REVIEW-004 <id> <disposition>
@@ -193,7 +207,7 @@ than the change.
 
 | Condition                                                  | Observed                                                     | What this pass did                                                                                                                                                            |
 | ---------------------------------------------------------- | ------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| the plan check above 2 s (WO-156 D008, D010)               | 4.74 to 4.78 s here; 4.37 to 4.83 s in the two episodes      | recorded on both rows; no order (§5.4); the threshold that would change the decision is 8 s, carried by ER4-005's row                                                         |
+| the plan check above 2 s (WO-156 D008, D010)               | 4.74 to 4.78 s at the subject; 2.10 s after the closed entries left | recorded on both rows; no order (§5.4); the threshold that would change the decision is 8 s, carried by ER4-005's row                                                  |
 | the release table "more than a few releases" behind (WO-086 D006) | five tags, v0.56.1 to v0.57.0, one day after landing  | regenerated with `npm run release -- list --markdown --write` (120 tags); docs-check no longer reports newer tags. No lifecycle step writes the table; WO-175's listing shows the count at each planning entry |
 | one order above 1 MB of evidence (FUP-8a4e201d861208ad)    | WO-172: 1,808,181 tracked, 1,354,491 distinct                | recorded on the row; the condition restated on distinct blob bytes in two consecutive orders; FUP-5e2f4ce16f9e8be1 settled: superseded editions keep their bytes              |
 
@@ -205,16 +219,16 @@ listing's first live row.
 
 **ER4-005, the document gate's parse.** True: the cost follows the size of
 closed history, and it is the third gate task in three reviews to do so.
-Declined now on arithmetic. A blob-keyed parse cache would save about 9 s
-of a 17 s gate. At six to fifteen document-gate runs an order (an inference
-from the phases that run it, not a count) that is one to two and a half
+Declined now on arithmetic. A blob-keyed parse cache would save about
+6.6 s of docs-check's 9.3 s, in a document gate that ran 14.1 s on this
+branch at handoff. At six to fifteen document-gate runs an order (an
+inference from the phases that run it, not a count) that is under two
 minutes an order, against an order's three phases and a cache inside a
-gate whose job is correctness. The growth is about 0.2 s a day. The
-operator-amended figure of WO-156 (the plan check under 2 s) is not
-restored: the check was 16 to 20 s when that order was filed and is 4.7 s
-now. The disagreement with the reviewer's precedent argument (ER2-004 and
-ER3-002 were each accepted and repaired) is recorded here: those two were
-19 and 20 s each, inside every gate.
+gate whose job is correctness. The growth is about 0.2 s a day. The plan
+check needs no order: with the closed entries retired it is 2.10 s against
+WO-156's 2 s (§3). The disagreement with the reviewer's precedent argument
+(ER2-004 and ER3-002 were each accepted and repaired) is recorded here:
+those two were 19 and 20 s each, inside every gate.
 
 **ER4-006, the repeated authority transcripts.** True, and smaller than its
 byte count suggests. Identical blobs are one Git object (the refuter's
@@ -304,7 +318,8 @@ Each is a `NoOpIntent`: what happens if nothing changes, why the choice
 wins, what reopens it.
 
 - **An order for the document gate's parse cache (ER4-005).** If nothing
-  changes the gate grows about 0.2 s a day from 17 s. The decline wins on
+  changes the gate grows about 0.2 s a day from 14 s, and the plan check
+  slows between passes as entries close and recovers when they leave. The decline wins on
   the arithmetic of §5.4 and on keeping a cache out of a correctness gate.
   Reopen: `npm run test:docs` above 30 s, docs-check above 15 s or the
   plan check above 8 s, on the operator's host.
@@ -364,11 +379,11 @@ ER4-001 and ER4-002 are evidence that passes without the intended behavior
 occurring, and WO-174's guards are fixtures that fail against the present
 source. _Shifting the burden_: two reviews found crossed thresholds by
 hand, at about USD 10 a review; WO-175 moves the numeric ones to planning
-entry. _Drift to low performance_: declining to restore the two-second
-plan check could be this trap, so the decline states its arithmetic and a
-threshold instead of adopting 4.7 s as the standard; the sequence's size
-is the opposite case, where the pass removed the cause instead of
-recording a third acceptance. _Escalation_: two orders for seven findings,
+entry. _Drift to low performance_: declining an order for the two-second
+plan check could be this trap, so the pass measured again instead of
+adopting 4.7 s as the standard, and found the retirement of closed entries
+returns it to 2.1 s; the sequence's size is the same case, where the pass
+removed the cause instead of recording a third acceptance. _Escalation_: two orders for seven findings,
 no gate, no hook, no refusal at a handoff; the listing is on demand.
 _Seeking the wrong goal_: tracked bytes and gate seconds are proxies;
 ER4-006 and ER4-005 are declined where the proxy moved and the outcome did
@@ -425,8 +440,9 @@ the ignored local apply request, and the removal of the refutation's
 leftover scratch directory under the system temporary directory.
 
 Entropy: REVIEW-004 2,216 s, USD 11.71; REFUTATION-005 700 s, USD 2.08
-(result envelopes; tokens unknown, cause harness-no-readback). Session
-usage and the check of the risk named in §8 are in §11 and the response.
+(result envelopes; tokens unknown, cause harness-no-readback). One
+subagent of twenty was used, the planning refuter. The check of the risk
+named in §8 is in §11; the handoff usage is in the response.
 
 ## 10. Reversal conditions for this plan
 
@@ -437,8 +453,8 @@ usage and the check of the risk named in §8 are in §11 and the response.
   exceed the product gate: the exclusion list, not the check, is revisited.
 - WO-175's listing takes more than 60 s or its timing rows flap on a
   loaded host: those rows move behind a flag.
-- The operator wants the plan check back under 2 s, or the byte-reference
-  form now: ER4-005's or ER4-006's row is allocated from its packet or
+- The operator wants the plan check under 2 s again (it is 2.10 s), or
+  the byte-reference form now: ER4-005's or ER4-006's row is allocated from its packet or
   finding, and the decline is reversed.
 - A placement from a removed sequence note is needed and found nowhere:
   the fold's rule reopens.
@@ -447,5 +463,72 @@ usage and the check of the risk named in §8 are in §11 and the response.
 
 ## 11. Independent review
 
-Pending at the time this section was first committed; the receipt, the
-gates run and the handoff usage are recorded below by the same pass.
+Receipt [2026-09-30-planning-00efe6ec02a962e1-035](refutations/2026-09-30-planning-00efe6ec02a962e1-035.md)
+judged the committed subject at `ceb38441` (scope: the two new orders plus
+the sequence; 30 orders carried by hash): `aligned-with-findings` for both
+orders and for the plan, no hold, fifteen known issues each with a
+reopening observation, 605 s from dispatch to file. The refuter was one
+fresh background worker given the canonical prompt and nothing else (98,726
+tokens, 558 s, ten tool uses; it read the prompt file in two steps and no
+repository file). Basis for no hold, from its judgment: no observed failure
+and no vision contradiction; both orders' cost rows are null, which never
+holds. It also says, and the pass agrees, that neither order names a
+critical-path gate it unblocks and neither shows a removal larger than its
+addition in one unit: each removes a class of wrong answer and adds checks.
+
+The known issues are carried on each order's catalog row for its executor
+and verifier. The pass weighs them here without editing the judged text.
+
+- **WO-174 (6).** _No blocked outcome named._ The outcome is stated in
+  §5.1 and not in the order: the verified loop's gate rows. The refuter's
+  reopening observation stands as written. _The guard's set is narrower
+  than the title._ Intended and declared; the executor adds a read form to
+  the set when one run shows a case using it, and the limit stays in the
+  decisions. _The stale pass may move to the document gate._ Answered by
+  the source: the reuse lookup excludes document runs
+  (`scripts/test-runner.mjs`, the condition that begins the WO-173 lookup),
+  so `npm run test:docs` always runs its tasks, and both gates are every
+  order's final criterion. _The closure check is narrower than the title,
+  and the lists stay hand-kept._ True: the check makes a gap in a literal
+  path detectable and leaves transitive imports to the recorded
+  alternative. _Cost unmeasured before the run._ Criteria 6 and 7 record
+  it; the refuter's 120 s reopening figure is adopted. _What happens when
+  the guard itself fails._ Not specified, and it should be: the executor
+  makes a guard that did not load fail its own fixture and leaves the
+  suite's verdict alone, and records the choice.
+- **WO-175 (9).** _No blocked outcome named._ Correct: it is operator flow,
+  and §8 says so. _Criterion 1 refuses where the title says "absent"._ The
+  decision reader already refuses a malformed condition (`meta.mjs`, the
+  shape check), and the `meta` task is in the document gate, so the refusal
+  reaches the order that writes the decision at its own gate; the health
+  line is what becomes "computed or absent". _One metric, two verdicts._
+  Operator-review assumption 2 names it; two consecutive entries that list
+  WO-150-D003 undisposed is the reopening observation. _The table is
+  hand-kept and bounded._ By design; a threshold a later review finds by
+  hand outside the table reopens it. _Whether `plan start` runs the probes
+  or prints a stored count._ Not specified, and the sharpest catch of the
+  review: a stored count would be the defect the order removes. The
+  executor has `plan start` run the rows that are not timings and print
+  the timing rows as not measured at entry, with the command. _Rows behind
+  a flag read as complete._ The listing's line on what it did not evaluate
+  names them. _The inventory covers one directory, the objective says
+  every file._ The order's claim is bounded to the copy and the supplied
+  directory; a write elsewhere stays outside the witness, and the receipt's
+  sentence says which places it observed. _The instruction sentence costs
+  five re-mints._ Weighed in drafting and not written down: a worker told
+  that nothing outside its working directory may be written, and then
+  handed a temporary directory outside it, is given two instructions that
+  disagree. If the recorded re-mint cost exceeds the 384 s the order cites,
+  that is the reopening observation. _No live row at close._ Stated in the
+  order; the next review's receipt is the row.
+
+Checks after the receipt. `npm run plan -- check`: passing, judged,
+committed and workspace subjects equal. The risk §8 names was checked
+against this branch's documents before the receipt: the kernel case that
+reads product 02 passes (five of five in its file) and the console product
+suite with its document cases skipped passes (41 of 41, 27 s); the code
+identity is unchanged by a document-only pass. `npm run test:docs`: a first
+run failed on a stale ledger index (the generated `docs/lineage/README.md`
+had not been regenerated after the ledger section was added); after
+`node scripts/lineage.mjs index`, 23 passed, none failed, 14.11 s. The
+handoff usage is in the response.
