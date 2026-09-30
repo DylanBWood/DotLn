@@ -20,7 +20,7 @@ it. Re-mints: none; `scripts/worktree.mjs`, `scripts/resume.mjs` and
 sources, would owe the deterministic re-mint of each edition it stales, and
 an edit to `packages/skeleton/src/source-change-worktree.ts`, which the
 feedback verifier judges, a live feedback episode the executor runs on
-Codex `gpt-6-sol` or Claude Code `claude-opus-5-5`, at `xhigh`; importing
+Codex `gpt-6.1-sol` at `max` or Claude Code `claude-opus-5-5` at `xhigh`; importing
 WO-052's helper needs neither.
 Wall-clock, tokens and context bytes are unknown until run.
 **Nomination provenance:** WO-033 phase 2 (the target worktree lifecycle),

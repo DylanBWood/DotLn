@@ -19,8 +19,7 @@ registered evidence source in every edition and a source the feedback
 verifier judges, whose projection keeps registry dependencies, so the
 authority, artifact-identity, verification and harness editions are
 re-minted deterministically and the executor runs one live self-host
-episode for the feedback edition on Codex `gpt-6-sol` or Claude Code
-`claude-opus-5-5`, at `xhigh`, with the console re-pinned to the new
+episode for the feedback edition on Codex `gpt-6.1-sol` at `max` or Claude Code `claude-opus-5-5` at `xhigh`, with the console re-pinned to the new
 feedback edition; the root `tsconfig.json`
 joins the deterministic re-mint if the package is TypeScript, and
 `packages/skeleton/src/evidence-editions.mjs` if the package's release
@@ -201,8 +200,7 @@ inventory paragraph, the suite row, the re-mints, the write-backs below.
 8. Every edition the Cost line names is re-minted deterministically and
    the console re-pinned; the decisions record each. After the last
    lockfile change the executor re-mints the feedback edition from one
-   live self-host episode on Codex `gpt-6-sol` or Claude Code
-   `claude-opus-5-5`, at `xhigh`; the decisions record the configuration.
+   live self-host episode on Codex `gpt-6.1-sol` at `max` or Claude Code `claude-opus-5-5` at `xhigh`; the decisions record the configuration.
    A repair that changes the lockfile again runs another the same way.
 9. `npm test -- --review` and `npm run test:docs` green; `git diff
    --check` clean; the only new direct dependency is the pinned adapter
