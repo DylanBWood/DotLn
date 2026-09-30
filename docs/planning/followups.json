@@ -1996,6 +1996,13 @@
           "title": "Choose a bounded consumer, privacy profile, cadence, cost ceiling, and useful",
           "summary": "- Choose a bounded consumer, privacy profile, cadence, cost ceiling, and useful comparison before implementing the [system baseline](../product/06-roadmap.md#candidate--bounded-system-baseline) or [success-under-growth review](../product/05-pattern-library.md#candidate--success-under-growth).",
           "missing": false
+        },
+        {
+          "hash": "d8ae3b30cd9120106b7635514bab30256a149cabe35157bb302bb50c5f1f8f1f",
+          "ref": "docs/planning/work-order-map.md#preserved-unallocated-candidates",
+          "title": "Choose a bounded consumer, privacy profile, cadence, cost ceiling, and useful",
+          "summary": "- Choose a bounded consumer, privacy profile, cadence, cost ceiling, and useful comparison before implementing the [system baseline](work-order-map.md#candidate--bounded-system-baseline) or [success-under-growth review](../product/05-pattern-library.md#candidate--success-under-growth).",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -2008,6 +2015,16 @@
             "FUP-0106"
           ],
           "at": "2026-09-19T01:19:45.613Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "duplicate",
+          "reason": "WO-087 changed only this source's bounded-system-baseline link destination from the roadmap to the planning map. Preserve its existing duplicate disposition. Prior reason: Duplicate by the 2026-09-19 cleanup pass: the map's pointer to the bounded system baseline candidate.",
+          "reopenWhen": "the row acquires scope its target does not carry",
+          "targets": [
+            "FUP-0106"
+          ],
+          "at": "2026-09-30T00:09:20.472Z"
         }
       ]
     },
@@ -2728,6 +2745,13 @@
           "title": "Candidate — success under growth",
           "summary": "## Candidate — success under growth A solution can become a liability because it succeeds at its original job. More retained evidence can increase startup context and storage; more events can increase fold latency; stronger process can accumulate handoffs and waiting; and useful cross-references can increase the number of surfaces every change must update. These are scenarios to test, not findings that the current system has already failed or reasons to discard deliberate tradeoffs. This candidate support follows a material decision inside the existing review. It asks which useful property grows, how that growth could undermine the outcome it serves, what would reveal the crossover, and what",
           "missing": false
+        },
+        {
+          "hash": "a57fefb2d089af95cea149f9f4e9f42fa6ac24d3e6023c0427b4caa3554b45f1",
+          "ref": "docs/product/05-pattern-library.md#candidate--success-under-growth",
+          "title": "Candidate — success under growth",
+          "summary": "## Candidate — success under growth A solution can become a liability because it succeeds at its original job. More retained evidence can increase startup context and storage; more events can increase fold latency; stronger process can accumulate handoffs and waiting; and useful cross-references can increase the number of surfaces every change must update. These are scenarios to test, not findings that the current system has already failed or reasons to discard deliberate tradeoffs. This candidate support follows a material decision inside the existing review. It asks which useful property grows, how that growth could undermine the outcome it serves, what would reveal the crossover, and what",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -2738,6 +2762,14 @@
           "reopenWhen": "a planning pass names a consumer scenario after WO-091 to WO-095 land (the pass's suggestion), or the clause the source section states",
           "targets": [],
           "at": "2026-09-19T01:19:55.959Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "WO-087 changed only this source's bounded-system-baseline link destination from the roadmap to the planning map. Preserve its existing deferred disposition. Prior reason: Deferred by the 2026-09-19 cleanup pass: a pattern idea with no implementation and no consumer scenario on this horizon.",
+          "reopenWhen": "a planning pass names a consumer scenario after WO-091 to WO-095 land (the pass's suggestion), or the clause the source section states",
+          "targets": [],
+          "at": "2026-09-30T00:09:20.507Z"
         }
       ]
     },
@@ -2848,6 +2880,13 @@
           "title": "Candidate — beacon usefulness checkpoint",
           "summary": "### Candidate — beacon usefulness checkpoint WO-020's exact decoding, replay, metadata-only reading, and atomic emission can establish the local mechanism. WO-021's lifecycle integration, audiences, staleness, and group projection can establish a usable control-plane example. Neither demonstrates that all of DotLn is viable or that Protíno's simulated world is compelling. Technical feasibility, practical usefulness, and felt interest are different questions with different evidence. The [bounded comparison plan](../planning/beacon-usefulness-checkpoint.md) nominates an operator trial after WO-021: answer the same work-state questions with existing status projections and with Beacons, using no",
           "missing": false
+        },
+        {
+          "hash": null,
+          "ref": "docs/product/06-roadmap.md#candidate--beacon-usefulness-checkpoint",
+          "title": "Candidate — beacon usefulness checkpoint",
+          "summary": "### Candidate — beacon usefulness checkpoint WO-020's exact decoding, replay, metadata-only reading, and atomic emission can establish the local mechanism. WO-021's lifecycle integration, audiences, staleness, and group projection can establish a usable control-plane example. Neither demonstrates that all of DotLn is viable or that Protíno's simulated world is compelling. Technical feasibility, practical usefulness, and felt interest are different questions with different evidence. The [bounded comparison plan](../planning/beacon-usefulness-checkpoint.md) nominates an operator trial after WO-021: answer the same work-state questions with existing status projections and with Beacons, using no",
+          "missing": true
         }
       ],
       "dispositions": [
@@ -2858,6 +2897,16 @@
           "reopenWhen": "the operator runs the comparison and records the receipt",
           "targets": [],
           "at": "2026-09-19T01:19:57.360Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "duplicate",
+          "reason": "WO-087 moved this candidate unchanged apart from relative-link rebasing to docs/planning/work-order-map.md#candidate--beacon-usefulness-checkpoint; FUP-a5b7f86d7b4d300d carries its prior disposition. All history remains on FUP-0105.",
+          "reopenWhen": "The target is removed or materially diverges from this preserved candidate, or the operator changes its disposition.",
+          "targets": [
+            "FUP-a5b7f86d7b4d300d"
+          ],
+          "at": "2026-09-30T00:08:57.944Z"
         }
       ]
     },
@@ -2872,6 +2921,13 @@
           "title": "Candidate — bounded system baseline",
           "summary": "### Candidate — bounded system baseline Routine observation can reveal an accumulating burden before it becomes the current constraint. The useful shape is a small, repeatable baseline check and a trend, even when no optimization is underway. Public reporting uses neutral system measures such as size, latency, waiting, and maintenance cost. Daily observation is one possible owner-selected cadence; this candidate installs no job and adds no always-on collection to WO-028. Select only measurements that answer a declared question: | Question | Candidate evidence | Interpretation boundary | | ------------------------------------------------- | ----------------------------------------------------",
           "missing": false
+        },
+        {
+          "hash": null,
+          "ref": "docs/product/06-roadmap.md#candidate--bounded-system-baseline",
+          "title": "Candidate — bounded system baseline",
+          "summary": "### Candidate — bounded system baseline Routine observation can reveal an accumulating burden before it becomes the current constraint. The useful shape is a small, repeatable baseline check and a trend, even when no optimization is underway. Public reporting uses neutral system measures such as size, latency, waiting, and maintenance cost. Daily observation is one possible owner-selected cadence; this candidate installs no job and adds no always-on collection to WO-028. Select only measurements that answer a declared question: | Question | Candidate evidence | Interpretation boundary | | ------------------------------------------------- | ----------------------------------------------------",
+          "missing": true
         }
       ],
       "dispositions": [
@@ -2882,6 +2938,16 @@
           "reopenWhen": "those four are chosen",
           "targets": [],
           "at": "2026-09-19T01:19:57.646Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "duplicate",
+          "reason": "WO-087 moved this candidate unchanged apart from relative-link rebasing to docs/planning/work-order-map.md#candidate--bounded-system-baseline; FUP-c572465bfc1ba9c0 carries its prior disposition. All history remains on FUP-0106.",
+          "reopenWhen": "The target is removed or materially diverges from this preserved candidate, or the operator changes its disposition.",
+          "targets": [
+            "FUP-c572465bfc1ba9c0"
+          ],
+          "at": "2026-09-30T00:08:58.012Z"
         }
       ]
     },
@@ -2896,6 +2962,13 @@
           "title": "Candidate — budget-window work-order ladders",
           "summary": "### Candidate — budget-window work-order ladders The operator prefers concentrating useful work early in available usage windows so the remaining period can be spent on other activities. Preserve a control state machine supporting **zero to many concurrent work orders, each with its own declared workflow steps**. A single ladder and a two-ladder batch are trial capacity settings. Orders may occupy different phases and advance independently; steps and legal transitions remain governed by each order's pinned workflow and evidence contract. The initial role preference is Codex implementation, fresh Opus 5 verification, and fresh Fable final review, with one writer per worktree and model/effort ",
           "missing": false
+        },
+        {
+          "hash": null,
+          "ref": "docs/product/06-roadmap.md#candidate--budget-window-work-order-ladders",
+          "title": "Candidate — budget-window work-order ladders",
+          "summary": "### Candidate — budget-window work-order ladders The operator prefers concentrating useful work early in available usage windows so the remaining period can be spent on other activities. Preserve a control state machine supporting **zero to many concurrent work orders, each with its own declared workflow steps**. A single ladder and a two-ladder batch are trial capacity settings. Orders may occupy different phases and advance independently; steps and legal transitions remain governed by each order's pinned workflow and evidence contract. The initial role preference is Codex implementation, fresh Opus 5 verification, and fresh Fable final review, with one writer per worktree and model/effort ",
+          "missing": true
         }
       ],
       "dispositions": [
@@ -2930,6 +3003,16 @@
           "reopenWhen": "WO-118 closes, or a second lane runs unattended",
           "targets": [],
           "at": "2026-09-27T01:45:57.164Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "duplicate",
+          "reason": "WO-087 moved this candidate unchanged apart from relative-link rebasing to docs/planning/work-order-map.md#candidate--budget-window-work-order-ladders; FUP-e5fccb54a23a8af7 carries its prior disposition. All history remains on FUP-0107.",
+          "reopenWhen": "The target is removed or materially diverges from this preserved candidate, or the operator changes its disposition.",
+          "targets": [
+            "FUP-e5fccb54a23a8af7"
+          ],
+          "at": "2026-09-30T00:08:58.078Z"
         }
       ]
     },
@@ -3007,6 +3090,13 @@
           "title": "Candidate — unattended work-order portfolio",
           "summary": "### Candidate — unattended work-order portfolio The predecessor `v1` needed the operator to drive each interaction with one prompt-bound agent. A recurring cron trigger was an early way to avoid idle time during absence. DotLn now gives a dispatched work order explicit phases and status, so its work can progress during the operator's absence under the current workflow. The remaining opportunity is automatic selection and advancement of *subsequent* eligible work orders without a new human dispatch. An absence curve should govern that future portfolio choice and pace, rather than serve as the mechanism that keeps an already-dispatched order running. An opted-in portfolio has two candidate lan",
           "missing": false
+        },
+        {
+          "hash": null,
+          "ref": "docs/product/06-roadmap.md#candidate--unattended-work-order-portfolio",
+          "title": "Candidate — unattended work-order portfolio",
+          "summary": "### Candidate — unattended work-order portfolio The predecessor `v1` needed the operator to drive each interaction with one prompt-bound agent. A recurring cron trigger was an early way to avoid idle time during absence. DotLn now gives a dispatched work order explicit phases and status, so its work can progress during the operator's absence under the current workflow. The remaining opportunity is automatic selection and advancement of *subsequent* eligible work orders without a new human dispatch. An absence curve should govern that future portfolio choice and pace, rather than serve as the mechanism that keeps an already-dispatched order running. An opted-in portfolio has two candidate lan",
+          "missing": true
         }
       ],
       "dispositions": [
@@ -3038,6 +3128,16 @@
           "reopenWhen": "a resident run on an operator-owned repository contradicts the paragraph, or WO-111 is withdrawn through WO-158's route",
           "targets": [],
           "at": "2026-09-25T01:51:12.897Z"
+        },
+        {
+          "sourceRevision": 11,
+          "status": "duplicate",
+          "reason": "WO-087 moved this candidate unchanged apart from relative-link rebasing to docs/planning/work-order-map.md#candidate--unattended-work-order-portfolio; FUP-f4779d86ca9fd593 carries its prior disposition. All history remains on FUP-0108.",
+          "reopenWhen": "The target is removed or materially diverges from this preserved candidate, or the operator changes its disposition.",
+          "targets": [
+            "FUP-f4779d86ca9fd593"
+          ],
+          "at": "2026-09-30T00:08:58.144Z"
         }
       ]
     },
@@ -3052,6 +3152,13 @@
           "title": "Candidate — whole or split work orders under one umbrella",
           "summary": "### Candidate — whole or split work orders under one umbrella **2026-09-05 operator ideation:** offer a split assessment for any work order. Keep its outcome, scope, and acceptance criteria visible under one umbrella, while proposing smaller, independently reviewable increments. The purpose is to let one body of work produce several useful PRs without losing its shared intent or evidence trail. A split is optional: an already atomic order may be best left whole, and an arbitrary partition should not be recommended merely to reach a requested number of children. Before execution, the whole order and a proposed child plan are alternative routes. Both can be available to choose; their execution",
           "missing": false
+        },
+        {
+          "hash": null,
+          "ref": "docs/product/06-roadmap.md#candidate--whole-or-split-work-orders-under-one-umbrella",
+          "title": "Candidate — whole or split work orders under one umbrella",
+          "summary": "### Candidate — whole or split work orders under one umbrella **2026-09-05 operator ideation:** offer a split assessment for any work order. Keep its outcome, scope, and acceptance criteria visible under one umbrella, while proposing smaller, independently reviewable increments. The purpose is to let one body of work produce several useful PRs without losing its shared intent or evidence trail. A split is optional: an already atomic order may be best left whole, and an arbitrary partition should not be recommended merely to reach a requested number of children. Before execution, the whole order and a proposed child plan are alternative routes. Both can be available to choose; their execution",
+          "missing": true
         }
       ],
       "dispositions": [
@@ -3062,6 +3169,16 @@
           "reopenWhen": "WO-113 activation (the pass's suggestion)",
           "targets": [],
           "at": "2026-09-19T01:19:58.208Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "duplicate",
+          "reason": "WO-087 moved this candidate unchanged apart from relative-link rebasing to docs/planning/work-order-map.md#candidate--whole-or-split-work-orders-under-one-umbrella; FUP-5d31b4cd52b01f51 carries its prior disposition. All history remains on FUP-0109.",
+          "reopenWhen": "The target is removed or materially diverges from this preserved candidate, or the operator changes its disposition.",
+          "targets": [
+            "FUP-5d31b4cd52b01f51"
+          ],
+          "at": "2026-09-30T00:08:58.208Z"
         }
       ]
     },
@@ -3160,6 +3277,13 @@
           "title": "Work-order navigation and identity (candidate)",
           "summary": "## Work-order navigation and identity (candidate) The current control projection answers one narrow question: given a selected work order and its independently folded phase, which lifecycle transitions are legal now? It does not answer which backlog order should be activated after close. The release ladder, hard dependency graph, adjacent evidence/corpus work, and operator preference are distinct planning inputs and must not be collapsed into the next integer. Keep three answers visible: 1. **Workflow legal next:** the transition allowed for the selected order, such as verify, repair, or final review. 2. **Eligible now:** every candidate whose hard dependencies, activation prerequisites, aut",
           "missing": false
+        },
+        {
+          "hash": null,
+          "ref": "docs/product/06-roadmap.md#work-order-navigation-and-identity-candidate",
+          "title": "Work-order navigation and identity (candidate)",
+          "summary": "## Work-order navigation and identity (candidate) The current control projection answers one narrow question: given a selected work order and its independently folded phase, which lifecycle transitions are legal now? It does not answer which backlog order should be activated after close. The release ladder, hard dependency graph, adjacent evidence/corpus work, and operator preference are distinct planning inputs and must not be collapsed into the next integer. Keep three answers visible: 1. **Workflow legal next:** the transition allowed for the selected order, such as verify, repair, or final review. 2. **Eligible now:** every candidate whose hard dependencies, activation prerequisites, aut",
+          "missing": true
         }
       ],
       "dispositions": [
@@ -3186,6 +3310,16 @@
           "reopenWhen": "the reversal condition of that NoOp",
           "targets": [],
           "at": "2026-09-25T01:51:14.143Z"
+        },
+        {
+          "sourceRevision": 14,
+          "status": "duplicate",
+          "reason": "WO-087 moved this candidate unchanged apart from relative-link rebasing to docs/planning/work-order-map.md#work-order-navigation-and-identity-candidate; FUP-7fc458de216e842a carries its prior disposition. All history remains on FUP-0110.",
+          "reopenWhen": "The target is removed or materially diverges from this preserved candidate, or the operator changes its disposition.",
+          "targets": [
+            "FUP-7fc458de216e842a"
+          ],
+          "at": "2026-09-30T00:08:58.272Z"
         }
       ]
     },
@@ -9628,6 +9762,13 @@
           "title": "Candidate — local-model usefulness experiments",
           "summary": "### Candidate — local-model usefulness experiments **WO-137 observation (2026-09-18):** the [readiness packet](../discovery/local-runner-2026-09-18.md) records LM Studio `0.4.24+1`, llama.cpp runtime `2.38.0` and an existing pinned Qwen3.6 27B Q4_K_M artifact. Explicit CLI start and load now work; the fixed three-request smoke is byte-identical, schema and tool round trip pass, HTTP cancellation is observed to become idle within five seconds, timeout occurs and recovery succeeds. The operator-expanded two-minute sequential load run completed nine capped requests and deadline-cancelled the tenth with nominal thermal observations, normal memory pressure and no swap growth. Overall outcome rema",
           "missing": false
+        },
+        {
+          "hash": null,
+          "ref": "docs/product/06-roadmap.md#candidate--local-model-usefulness-experiments",
+          "title": "Candidate — local-model usefulness experiments",
+          "summary": "### Candidate — local-model usefulness experiments **WO-137 observation (2026-09-18):** the [readiness packet](../discovery/local-runner-2026-09-18.md) records LM Studio `0.4.24+1`, llama.cpp runtime `2.38.0` and an existing pinned Qwen3.6 27B Q4_K_M artifact. Explicit CLI start and load now work; the fixed three-request smoke is byte-identical, schema and tool round trip pass, HTTP cancellation is observed to become idle within five seconds, timeout occurs and recovery succeeds. The operator-expanded two-minute sequential load run completed nine capped requests and deadline-cancelled the tenth with nominal thermal observations, normal memory pressure and no swap growth. Overall outcome rema",
+          "missing": true
         }
       ],
       "dispositions": [
@@ -9683,6 +9824,16 @@
           "reopenWhen": "the task, schema, artifact or boundary changes, a new qualification is registered, or a local role that would read private material is proposed, which needs the no-egress experiment first",
           "targets": [],
           "at": "2026-09-22T00:34:49.771Z"
+        },
+        {
+          "sourceRevision": 11,
+          "status": "duplicate",
+          "reason": "WO-087 moved this candidate unchanged apart from relative-link rebasing to docs/planning/work-order-map.md#candidate--local-model-usefulness-experiments; FUP-1310872e0f04488a carries its prior disposition. All history remains on FUP-1aa2504e33959003.",
+          "reopenWhen": "The target is removed or materially diverges from this preserved candidate, or the operator changes its disposition.",
+          "targets": [
+            "FUP-1310872e0f04488a"
+          ],
+          "at": "2026-09-30T00:08:58.336Z"
         }
       ]
     },
@@ -22092,7 +22243,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by WO-087's final review: the reopening condition occurred and the change discharged the item. WO-087 moved product 06's capability progression policies (with its three subsections), bounded baseline, counterfactual profiling and the other candidate sections to the planning map under their unchanged slugs, the home the 2026-09-25 standard pass chose (its section 5); product 06 now holds only the release boundary, the ladder and the post-1.0 horizons. [WO-087 final review (docs/final-reviews/WO-087/FINAL-001.md)]",
+          "reopenWhen": "a later planning pass moves capability-progression or counterfactual-profiling policy back into a product document, or product 06 again carries candidate or policy material outside its release ladder",
+          "targets": [],
+          "at": "2026-09-30T01:24:29.792Z"
+        }
+      ]
     },
     {
       "id": "FUP-96091899814ccd0c",
@@ -23217,6 +23377,189 @@
           "ref": "docs/evidence/WO-172/decisions.md#wo-172-d059--final-review-pass-and-the-items-it-boards",
           "title": "WO-172-D059: Next order that edits the read observer or plan failures, with FUP-d90c46abf5658272: (1) catch a malformed decisions block in plan failures and plan start and name its path and decision i",
           "summary": "{ \"id\": \"WO-172-D059\", \"date\": \"2026-09-29\", \"dispatch\": \"resume: final review\", \"kind\": \"finding\", \"decision\": \"Pass WO-172 on FINAL-001. All eleven criteria are met on the integrated subject VER-005 judged; since the final-review checkpoint only generated projections and this review's documents changed, and no source or test byte. The review met seven items outside the criteria and fixes none of them, since a reviewer writes no behavior; none breaks a criterion's written text. Board them as one follow-up. (1) A malformed JSON block in a working-tree decisions record makes plan start and plan failures print the parser's message, which quotes part of that decision's text. (2) The read observ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-a5b7f86d7b4d300d",
+      "key": "candidate:docs/planning/work-order-map.md#candidate--beacon-usefulness-checkpoint",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "027fbc1165f2223c59615bd673cdbfcc09a660dca66bb6adb84f55e51b33b56e",
+          "ref": "docs/planning/work-order-map.md#candidate--beacon-usefulness-checkpoint",
+          "title": "Candidate — beacon usefulness checkpoint",
+          "summary": "### Candidate — beacon usefulness checkpoint WO-020's exact decoding, replay, metadata-only reading, and atomic emission can establish the local mechanism. WO-021's lifecycle integration, audiences, staleness, and group projection can establish a usable control-plane example. Neither demonstrates that all of DotLn is viable or that Protíno's simulated world is compelling. Technical feasibility, practical usefulness, and felt interest are different questions with different evidence. The [bounded comparison plan](../planning/beacon-usefulness-checkpoint.md) nominates an operator trial after WO-021: answer the same work-state questions with existing status projections and with Beacons, using no",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-087 location-only move: carry FUP-0105's deferred disposition to the same candidate under its unchanged slug. Prior reason: Deferred by the 2026-09-19 cleanup pass: the operator's beacon usefulness comparison was never recorded.",
+          "reopenWhen": "the operator runs the comparison and records the receipt",
+          "targets": [],
+          "at": "2026-09-30T00:08:57.909Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-c572465bfc1ba9c0",
+      "key": "candidate:docs/planning/work-order-map.md#candidate--bounded-system-baseline",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "0bdbf546265381c55c9a065157081f2f30bbbfd182a9ce81c3b92de03579c032",
+          "ref": "docs/planning/work-order-map.md#candidate--bounded-system-baseline",
+          "title": "Candidate — bounded system baseline",
+          "summary": "### Candidate — bounded system baseline Routine observation can reveal an accumulating burden before it becomes the current constraint. The useful shape is a small, repeatable baseline check and a trend, even when no optimization is underway. Public reporting uses neutral system measures such as size, latency, waiting, and maintenance cost. Daily observation is one possible owner-selected cadence; this candidate installs no job and adds no always-on collection to WO-028. Select only measurements that answer a declared question: | Question | Candidate evidence | Interpretation boundary | | ------------------------------------------------- | ----------------------------------------------------",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-087 location-only move: carry FUP-0106's deferred disposition to the same candidate under its unchanged slug. Prior reason: Deferred by the 2026-09-19 cleanup pass: consumer, privacy profile, cadence and cost ceiling are unchosen.",
+          "reopenWhen": "those four are chosen",
+          "targets": [],
+          "at": "2026-09-30T00:08:57.979Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-e5fccb54a23a8af7",
+      "key": "candidate:docs/planning/work-order-map.md#candidate--budget-window-work-order-ladders",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "985f5458c640b77deb098a0cf4fa9b9e20ea80da9ab6da0bdf703bba7b8d6929",
+          "ref": "docs/planning/work-order-map.md#candidate--budget-window-work-order-ladders",
+          "title": "Candidate — budget-window work-order ladders",
+          "summary": "### Candidate — budget-window work-order ladders The operator prefers concentrating useful work early in available usage windows so the remaining period can be spent on other activities. Preserve a control state machine supporting **zero to many concurrent work orders, each with its own declared workflow steps**. A single ladder and a two-ladder batch are trial capacity settings. Orders may occupy different phases and advance independently; steps and legal transitions remain governed by each order's pinned workflow and evidence contract. The initial role preference is Codex implementation, fresh Opus 5 verification, and fresh Fable final review, with one writer per worktree and model/effort ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-087 location-only move: carry FUP-0107's deferred disposition to the same candidate under its unchanged slug. Prior reason: Deferred under the operator's 2026-09-27 delegation. WO-111's two observed unattended runs were 5S changes in a scratch repository under one resident; a ladder allocates this repository's own orders across lanes and usage windows, which needs the resident-owned loop. [2026-09-27 onesie-twosie planning pass, operator answer (docs/planning/onesie-twosie-followup-drain-2026-09-27.md sections 13 and 14)]",
+          "reopenWhen": "WO-118 closes, or a second lane runs unattended",
+          "targets": [],
+          "at": "2026-09-30T00:08:58.045Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-1310872e0f04488a",
+      "key": "candidate:docs/planning/work-order-map.md#candidate--local-model-usefulness-experiments",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "9cf1d8536be647ce629255681f956a8b466c33419ee5626c2735eb6c95c55148",
+          "ref": "docs/planning/work-order-map.md#candidate--local-model-usefulness-experiments",
+          "title": "Candidate — local-model usefulness experiments",
+          "summary": "### Candidate — local-model usefulness experiments **WO-137 observation (2026-09-18):** the [readiness packet](../discovery/local-runner-2026-09-18.md) records LM Studio `0.4.24+1`, llama.cpp runtime `2.38.0` and an existing pinned Qwen3.6 27B Q4_K_M artifact. Explicit CLI start and load now work; the fixed three-request smoke is byte-identical, schema and tool round trip pass, HTTP cancellation is observed to become idle within five seconds, timeout occurs and recovery succeeds. The operator-expanded two-minute sequential load run completed nine capped requests and deadline-cancelled the tenth with nominal thermal observations, normal memory pressure and no swap growth. Overall outcome rema",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-087 location-only move: carry FUP-1aa2504e33959003's deferred disposition to the same candidate under its unchanged slug. Prior reason: Re-recorded by the 2026-09-22 Entropy Reducer pass at the new source revision: WO-137, WO-110 and WO-138 closed; WO-138's disposition after repair is inconclusive (only T2 qualifies, a local model for one read-only role ranking discovery candidates; T1 needs a fresh fixed-schema accuracy qualification; T3 is below its floor), and no private-input, no-egress, implementation or verification qualification follows without its own registered experiment.",
+          "reopenWhen": "the task, schema, artifact or boundary changes, a new qualification is registered, or a local role that would read private material is proposed, which needs the no-egress experiment first",
+          "targets": [],
+          "at": "2026-09-30T00:08:58.304Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-f4779d86ca9fd593",
+      "key": "candidate:docs/planning/work-order-map.md#candidate--unattended-work-order-portfolio",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "461c1b96dcb1ff81a79f617b86d3bc106464c0736570bd285b9d17a0d6b08eed",
+          "ref": "docs/planning/work-order-map.md#candidate--unattended-work-order-portfolio",
+          "title": "Candidate — unattended work-order portfolio",
+          "summary": "### Candidate — unattended work-order portfolio The predecessor `v1` needed the operator to drive each interaction with one prompt-bound agent. A recurring cron trigger was an early way to avoid idle time during absence. DotLn now gives a dispatched work order explicit phases and status, so its work can progress during the operator's absence under the current workflow. The remaining opportunity is automatic selection and advancement of *subsequent* eligible work orders without a new human dispatch. An absence curve should govern that future portfolio choice and pace, rather than serve as the mechanism that keeps an already-dispatched order running. An opted-in portfolio has two candidate lan",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-087 location-only move: carry FUP-0108's settled disposition to the same candidate under its unchanged slug. Prior reason: Re-settled by the 2026-09-25 off-ramps planning pass at the current revision: WO-111 closed (v0.47.1) with the live unattended proof; the paragraph's remaining content (activation policy beyond the curve, slots, ranking) stays candidate. Its earlier reopening condition, WO-111 withdrawn, is expressible once WO-158's WorkOrderWithdrawn exists and did not occur.",
+          "reopenWhen": "a resident run on an operator-owned repository contradicts the paragraph, or WO-111 is withdrawn through WO-158's route",
+          "targets": [],
+          "at": "2026-09-30T00:08:58.111Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-5d31b4cd52b01f51",
+      "key": "candidate:docs/planning/work-order-map.md#candidate--whole-or-split-work-orders-under-one-umbrella",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "b8a7ea1db004f161e57f13072c5ea8058bafa1e92f40c93dad1f1dad4f73373f",
+          "ref": "docs/planning/work-order-map.md#candidate--whole-or-split-work-orders-under-one-umbrella",
+          "title": "Candidate — whole or split work orders under one umbrella",
+          "summary": "### Candidate — whole or split work orders under one umbrella **2026-09-05 operator ideation:** offer a split assessment for any work order. Keep its outcome, scope, and acceptance criteria visible under one umbrella, while proposing smaller, independently reviewable increments. The purpose is to let one body of work produce several useful PRs without losing its shared intent or evidence trail. A split is optional: an already atomic order may be best left whole, and an arbitrary partition should not be recommended merely to reach a requested number of children. Before execution, the whole order and a proposed child plan are alternative routes. Both can be available to choose; their execution",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-087 location-only move: carry FUP-0109's deferred disposition to the same candidate under its unchanged slug. Prior reason: Deferred by the 2026-09-19 cleanup pass: whole-or-split is practiced by hand; no mechanism.",
+          "reopenWhen": "WO-113 activation (the pass's suggestion)",
+          "targets": [],
+          "at": "2026-09-30T00:08:58.176Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-7fc458de216e842a",
+      "key": "candidate:docs/planning/work-order-map.md#work-order-navigation-and-identity-candidate",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "314eb6952c9d5f16f84c089dd48fc5288f0d7b505b2c2ab41fcc2ce1489a48bb",
+          "ref": "docs/planning/work-order-map.md#work-order-navigation-and-identity-candidate",
+          "title": "Work-order navigation and identity (candidate)",
+          "summary": "## Work-order navigation and identity (candidate) The current control projection answers one narrow question: given a selected work order and its independently folded phase, which lifecycle transitions are legal now? It does not answer which backlog order should be activated after close. The release ladder, hard dependency graph, adjacent evidence/corpus work, and operator preference are distinct planning inputs and must not be collapsed into the next integer. Keep three answers visible: 1. **Workflow legal next:** the transition allowed for the selected order, such as verify, repair, or final review. 2. **Eligible now:** every candidate whose hard dependencies, activation prerequisites, aut",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-087 location-only move: carry FUP-0110's settled disposition to the same candidate under its unchanged slug. Prior reason: Re-settled by the 2026-09-25 off-ramps planning pass at the current revision: the intervening revisions are the WO-111 and WO-114 write-backs into the section (the unattended hour's evidence view and the runtime status projection); the 2026-09-19 NoOp stands.",
+          "reopenWhen": "the reversal condition of that NoOp",
+          "targets": [],
+          "at": "2026-09-30T00:08:58.240Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-dc58e92c5cafc732",
+      "key": "decision:docs/evidence/WO-087/decisions.md#wo-087-d011",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "c8c021bb6027f6516d94f5549a0790d9779142b5857b36cb248bd59c431dea6c",
+          "ref": "docs/evidence/WO-087/decisions.md#wo-087-d011",
+          "title": "WO-087-D011: Planning: reconcile canonical worker context with continuation source dependencies. Cause: the full What DotLn is not section is hashed while only its bullets are sent to the worker; capa",
+          "summary": "{ \"id\": \"WO-087-D011\", \"date\": \"2026-09-30\", \"dispatch\": \"resume: next\", \"decision\": \"Defer the broader planning prompt/source-boundary blind spot to a named planning follow-up. This order repairs the encountered citation checks; it does not change what the independent planning worker receives or add a new planning rehearsal policy.\", \"evidence\": [ \"scripts/lib/plan-subject.mjs buildPlanSubject hashes the full What DotLn is not section but exposes only its exclusion bullets to standard.exclusions, omitting the baseline footer link. Capability standard/input rows contain IDs and levels, omitting the introduction; reassessments later constrains the full historical source prefix when row inputs",
           "missing": false
         }
       ],

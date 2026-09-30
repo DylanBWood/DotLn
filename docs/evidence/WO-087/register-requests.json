@@ -1,0 +1,142 @@
+[
+  {
+    "expectedRevision": "0fa67681ce7366e7dba85ded076dcdf92d46af7f2fdb799c330a065c47fa7b96",
+    "id": "FUP-a5b7f86d7b4d300d",
+    "sourceRevision": 1,
+    "status": "deferred",
+    "reason": "WO-087 location-only move: carry FUP-0105's deferred disposition to the same candidate under its unchanged slug. Prior reason: Deferred by the 2026-09-19 cleanup pass: the operator's beacon usefulness comparison was never recorded.",
+    "reopenWhen": "the operator runs the comparison and records the receipt",
+    "targets": []
+  },
+  {
+    "expectedRevision": "0fa67681ce7366e7dba85ded076dcdf92d46af7f2fdb799c330a065c47fa7b96",
+    "id": "FUP-0105",
+    "sourceRevision": 2,
+    "status": "duplicate",
+    "reason": "WO-087 moved this candidate unchanged apart from relative-link rebasing to docs/planning/work-order-map.md#candidate--beacon-usefulness-checkpoint; FUP-a5b7f86d7b4d300d carries its prior disposition. All history remains on FUP-0105.",
+    "reopenWhen": "The target is removed or materially diverges from this preserved candidate, or the operator changes its disposition.",
+    "targets": [
+      "FUP-a5b7f86d7b4d300d"
+    ]
+  },
+  {
+    "expectedRevision": "0fa67681ce7366e7dba85ded076dcdf92d46af7f2fdb799c330a065c47fa7b96",
+    "id": "FUP-c572465bfc1ba9c0",
+    "sourceRevision": 1,
+    "status": "deferred",
+    "reason": "WO-087 location-only move: carry FUP-0106's deferred disposition to the same candidate under its unchanged slug. Prior reason: Deferred by the 2026-09-19 cleanup pass: consumer, privacy profile, cadence and cost ceiling are unchosen.",
+    "reopenWhen": "those four are chosen",
+    "targets": []
+  },
+  {
+    "expectedRevision": "0fa67681ce7366e7dba85ded076dcdf92d46af7f2fdb799c330a065c47fa7b96",
+    "id": "FUP-0106",
+    "sourceRevision": 2,
+    "status": "duplicate",
+    "reason": "WO-087 moved this candidate unchanged apart from relative-link rebasing to docs/planning/work-order-map.md#candidate--bounded-system-baseline; FUP-c572465bfc1ba9c0 carries its prior disposition. All history remains on FUP-0106.",
+    "reopenWhen": "The target is removed or materially diverges from this preserved candidate, or the operator changes its disposition.",
+    "targets": [
+      "FUP-c572465bfc1ba9c0"
+    ]
+  },
+  {
+    "expectedRevision": "0fa67681ce7366e7dba85ded076dcdf92d46af7f2fdb799c330a065c47fa7b96",
+    "id": "FUP-e5fccb54a23a8af7",
+    "sourceRevision": 1,
+    "status": "deferred",
+    "reason": "WO-087 location-only move: carry FUP-0107's deferred disposition to the same candidate under its unchanged slug. Prior reason: Deferred under the operator's 2026-09-27 delegation. WO-111's two observed unattended runs were 5S changes in a scratch repository under one resident; a ladder allocates this repository's own orders across lanes and usage windows, which needs the resident-owned loop. [2026-09-27 onesie-twosie planning pass, operator answer (docs/planning/onesie-twosie-followup-drain-2026-09-27.md sections 13 and 14)]",
+    "reopenWhen": "WO-118 closes, or a second lane runs unattended",
+    "targets": []
+  },
+  {
+    "expectedRevision": "0fa67681ce7366e7dba85ded076dcdf92d46af7f2fdb799c330a065c47fa7b96",
+    "id": "FUP-0107",
+    "sourceRevision": 2,
+    "status": "duplicate",
+    "reason": "WO-087 moved this candidate unchanged apart from relative-link rebasing to docs/planning/work-order-map.md#candidate--budget-window-work-order-ladders; FUP-e5fccb54a23a8af7 carries its prior disposition. All history remains on FUP-0107.",
+    "reopenWhen": "The target is removed or materially diverges from this preserved candidate, or the operator changes its disposition.",
+    "targets": [
+      "FUP-e5fccb54a23a8af7"
+    ]
+  },
+  {
+    "expectedRevision": "0fa67681ce7366e7dba85ded076dcdf92d46af7f2fdb799c330a065c47fa7b96",
+    "id": "FUP-f4779d86ca9fd593",
+    "sourceRevision": 1,
+    "status": "settled",
+    "reason": "WO-087 location-only move: carry FUP-0108's settled disposition to the same candidate under its unchanged slug. Prior reason: Re-settled by the 2026-09-25 off-ramps planning pass at the current revision: WO-111 closed (v0.47.1) with the live unattended proof; the paragraph's remaining content (activation policy beyond the curve, slots, ranking) stays candidate. Its earlier reopening condition, WO-111 withdrawn, is expressible once WO-158's WorkOrderWithdrawn exists and did not occur.",
+    "reopenWhen": "a resident run on an operator-owned repository contradicts the paragraph, or WO-111 is withdrawn through WO-158's route",
+    "targets": []
+  },
+  {
+    "expectedRevision": "0fa67681ce7366e7dba85ded076dcdf92d46af7f2fdb799c330a065c47fa7b96",
+    "id": "FUP-0108",
+    "sourceRevision": 11,
+    "status": "duplicate",
+    "reason": "WO-087 moved this candidate unchanged apart from relative-link rebasing to docs/planning/work-order-map.md#candidate--unattended-work-order-portfolio; FUP-f4779d86ca9fd593 carries its prior disposition. All history remains on FUP-0108.",
+    "reopenWhen": "The target is removed or materially diverges from this preserved candidate, or the operator changes its disposition.",
+    "targets": [
+      "FUP-f4779d86ca9fd593"
+    ]
+  },
+  {
+    "expectedRevision": "0fa67681ce7366e7dba85ded076dcdf92d46af7f2fdb799c330a065c47fa7b96",
+    "id": "FUP-5d31b4cd52b01f51",
+    "sourceRevision": 1,
+    "status": "deferred",
+    "reason": "WO-087 location-only move: carry FUP-0109's deferred disposition to the same candidate under its unchanged slug. Prior reason: Deferred by the 2026-09-19 cleanup pass: whole-or-split is practiced by hand; no mechanism.",
+    "reopenWhen": "WO-113 activation (the pass's suggestion)",
+    "targets": []
+  },
+  {
+    "expectedRevision": "0fa67681ce7366e7dba85ded076dcdf92d46af7f2fdb799c330a065c47fa7b96",
+    "id": "FUP-0109",
+    "sourceRevision": 2,
+    "status": "duplicate",
+    "reason": "WO-087 moved this candidate unchanged apart from relative-link rebasing to docs/planning/work-order-map.md#candidate--whole-or-split-work-orders-under-one-umbrella; FUP-5d31b4cd52b01f51 carries its prior disposition. All history remains on FUP-0109.",
+    "reopenWhen": "The target is removed or materially diverges from this preserved candidate, or the operator changes its disposition.",
+    "targets": [
+      "FUP-5d31b4cd52b01f51"
+    ]
+  },
+  {
+    "expectedRevision": "0fa67681ce7366e7dba85ded076dcdf92d46af7f2fdb799c330a065c47fa7b96",
+    "id": "FUP-7fc458de216e842a",
+    "sourceRevision": 1,
+    "status": "settled",
+    "reason": "WO-087 location-only move: carry FUP-0110's settled disposition to the same candidate under its unchanged slug. Prior reason: Re-settled by the 2026-09-25 off-ramps planning pass at the current revision: the intervening revisions are the WO-111 and WO-114 write-backs into the section (the unattended hour's evidence view and the runtime status projection); the 2026-09-19 NoOp stands.",
+    "reopenWhen": "the reversal condition of that NoOp",
+    "targets": []
+  },
+  {
+    "expectedRevision": "0fa67681ce7366e7dba85ded076dcdf92d46af7f2fdb799c330a065c47fa7b96",
+    "id": "FUP-0110",
+    "sourceRevision": 14,
+    "status": "duplicate",
+    "reason": "WO-087 moved this candidate unchanged apart from relative-link rebasing to docs/planning/work-order-map.md#work-order-navigation-and-identity-candidate; FUP-7fc458de216e842a carries its prior disposition. All history remains on FUP-0110.",
+    "reopenWhen": "The target is removed or materially diverges from this preserved candidate, or the operator changes its disposition.",
+    "targets": [
+      "FUP-7fc458de216e842a"
+    ]
+  },
+  {
+    "expectedRevision": "0fa67681ce7366e7dba85ded076dcdf92d46af7f2fdb799c330a065c47fa7b96",
+    "id": "FUP-1310872e0f04488a",
+    "sourceRevision": 1,
+    "status": "deferred",
+    "reason": "WO-087 location-only move: carry FUP-1aa2504e33959003's deferred disposition to the same candidate under its unchanged slug. Prior reason: Re-recorded by the 2026-09-22 Entropy Reducer pass at the new source revision: WO-137, WO-110 and WO-138 closed; WO-138's disposition after repair is inconclusive (only T2 qualifies, a local model for one read-only role ranking discovery candidates; T1 needs a fresh fixed-schema accuracy qualification; T3 is below its floor), and no private-input, no-egress, implementation or verification qualification follows without its own registered experiment.",
+    "reopenWhen": "the task, schema, artifact or boundary changes, a new qualification is registered, or a local role that would read private material is proposed, which needs the no-egress experiment first",
+    "targets": []
+  },
+  {
+    "expectedRevision": "0fa67681ce7366e7dba85ded076dcdf92d46af7f2fdb799c330a065c47fa7b96",
+    "id": "FUP-1aa2504e33959003",
+    "sourceRevision": 11,
+    "status": "duplicate",
+    "reason": "WO-087 moved this candidate unchanged apart from relative-link rebasing to docs/planning/work-order-map.md#candidate--local-model-usefulness-experiments; FUP-1310872e0f04488a carries its prior disposition. All history remains on FUP-1aa2504e33959003.",
+    "reopenWhen": "The target is removed or materially diverges from this preserved candidate, or the operator changes its disposition.",
+    "targets": [
+      "FUP-1310872e0f04488a"
+    ]
+  }
+]

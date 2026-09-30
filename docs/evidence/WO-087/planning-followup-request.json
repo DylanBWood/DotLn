@@ -1,0 +1,15 @@
+{
+  "expectedRevision": 0,
+  "actor": "executor",
+  "action": {
+    "kind": "queue",
+    "item": {
+      "summary": "Expose omitted planning continuation source dependencies to independent review",
+      "cause": "The worker receives exclusion bullets and capability rows while execution also constrains the omitted exclusion footer and historical capability source prefix.",
+      "fix": "In a separate planning pass, expose or inventory those dependencies and require affected-source review for document relocations, preserving historical receipt hashes.",
+      "paths": ["scripts/lib/plan-subject.mjs", "scripts/lib/plan-direct.mjs", "packages/skeleton/src/plan-refutation-protocol.ts", "scripts/test-plan-refutation.mjs", ".agents/skills/dotln-planner/SKILL.md"],
+      "checks": ["Prompt fixture exposes WO-087 footer and capability introduction dependencies", "npm test -- --review", "npm run test:docs"],
+      "priority": 10
+    }
+  }
+}

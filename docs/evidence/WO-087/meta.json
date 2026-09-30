@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "kind": "order-meter-snapshot",
+  "observedAt": "2026-09-30T01:01:14.521Z",
+  "revision": "c57fd557a4f6617fa64cffc1bfd491140cb082d6",
+  "source": "the order's checkout: 1 session journal, its usage observations, gate rows and the canonical control fold",
+  "orders": [
+    {
+      "workOrder": "WO-087",
+      "phase": "active",
+      "metrics": {
+        "elapsedMs": null,
+        "attempts": 0,
+        "failedVerifications": 0,
+        "failedFinalReviews": 0,
+        "repairs": 0,
+        "recordedCorrections": 2,
+        "gateMs": 376615,
+        "fastGateMs": 376615,
+        "readObligationCount": null,
+        "readObligationBytes": null,
+        "codeDiffBytes": 27171,
+        "readAmplification": null,
+        "machineryShare": null,
+        "elapsedPerCodeByte": null,
+        "tokens": 13325126,
+        "costUsd": null,
+        "declaredPromptTokens": 1019,
+        "coldStartBytes": 26903,
+        "subjectCharacters": null,
+        "gateStepCount": 75,
+        "operatorCorrections": 0,
+        "operatorDirections": 1,
+        "guardRefusals": 0,
+        "stopRefusals": 0,
+        "reAnnouncements": null,
+        "manualCloseoutSteps": null,
+        "emergencyPasses": null,
+        "bypassTools": null,
+        "adHocScripts": null,
+        "commandsRun": null,
+        "bytesReadIntoContext": null,
+        "stepCount": 119,
+        "authorshipSnapshots": null,
+        "authorshipMs": null,
+        "authorshipBytes": null,
+        "authorshipCommands": null,
+        "authorshipMeanMs": null,
+        "authorshipPeakBytes": null,
+        "hookRuns": null,
+        "hookMs": null,
+        "hookMeanMs": null,
+        "hookPeakMs": null,
+        "prBodyBytes": 3164
+      },
+      "corrections": {
+        "total": 0,
+        "byPhase": {},
+        "byUnit": {},
+        "byPhaseAndUnit": {},
+        "source": "session-journal"
+      },
+      "directions": {
+        "total": 1,
+        "byKind": {"scopeExpand":0,"operatorOverride":0,"analysis":0,"conversationOnly":0,"operatorLabel":0,"resumeCorrection":0,"resumeDirection":0,"resumeScopeExpansion":1,"resumeOverride":0,"resumeTakeover":0,"resumeAnswer":0,"OperatorOverrideRecorded":0,"RecordCorrected":0,"CriterionWaived":0},
+        "source": "committed decision dispatches (control prefixes, legacy operator labels and the operator step a lifecycle dispatch names) and control events"
+      },
+      "usageByRole": {
+        "executor": {"dispatches":1,"totalTokens":13325126,"costUsd":null,"commandsRun":null,"stepCount":119,"durationMs":3562667}
+      },
+      "dispatches": [
+        {"role":"executor","wallClockMs":3562667,"stepCount":119,"observedTokens":13325126,"declaredPromptTokens":1019}
+      ],
+      "declared": {
+        "promptTokens": 1019,
+        "supports": 9,
+        "units": 10,
+        "hooks": 13
+      }
+    }
+  ]
+}

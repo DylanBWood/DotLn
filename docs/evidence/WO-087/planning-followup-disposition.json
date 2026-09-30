@@ -1,0 +1,12 @@
+{
+  "expectedRevision": 1,
+  "actor": "executor",
+  "action": {
+    "kind": "dispose",
+    "itemId": "adjacent-0001",
+    "itemRevision": 1,
+    "status": "deferred",
+    "reason": "Canonical worker context and planning policy require a separate reviewed scope; the current order completes its authorized citation-check repair.",
+    "target": "FUP-dc58e92c5cafc732"
+  }
+}

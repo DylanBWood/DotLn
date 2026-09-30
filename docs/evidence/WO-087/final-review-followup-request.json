@@ -1,0 +1,9 @@
+{
+  "expectedRevision": "d372dbae01991b5e1aef81e47d38f9cedd4a348017aef14ddc0f4f38166e8878",
+  "id": "FUP-07d0d6b377e55321",
+  "sourceRevision": 1,
+  "status": "settled",
+  "reason": "Settled by WO-087's final review: the reopening condition occurred and the change discharged the item. WO-087 moved product 06's capability progression policies (with its three subsections), bounded baseline, counterfactual profiling and the other candidate sections to the planning map under their unchanged slugs, the home the 2026-09-25 standard pass chose (its section 5); product 06 now holds only the release boundary, the ladder and the post-1.0 horizons. [WO-087 final review (docs/final-reviews/WO-087/FINAL-001.md)]",
+  "reopenWhen": "a later planning pass moves capability-progression or counterfactual-profiling policy back into a product document, or product 06 again carries candidate or policy material outside its release ladder",
+  "targets": []
+}
