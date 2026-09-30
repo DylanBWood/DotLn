@@ -1,0 +1,22 @@
+[
+  {
+    "expectedRevision": "74eef8b645ae14aa681ea299a58d3e4408a66cefcdc5a2629ff888b8e021c72a",
+    "id": "FUP-0077",
+    "sourceRevision": 2,
+    "status": "duplicate",
+    "reason": "WO-087 changed only this source's bounded-system-baseline link destination from the roadmap to the planning map. Preserve its existing duplicate disposition. Prior reason: Duplicate by the 2026-09-19 cleanup pass: the map's pointer to the bounded system baseline candidate.",
+    "reopenWhen": "the row acquires scope its target does not carry",
+    "targets": [
+      "FUP-0106"
+    ]
+  },
+  {
+    "expectedRevision": "74eef8b645ae14aa681ea299a58d3e4408a66cefcdc5a2629ff888b8e021c72a",
+    "id": "FUP-0100",
+    "sourceRevision": 2,
+    "status": "deferred",
+    "reason": "WO-087 changed only this source's bounded-system-baseline link destination from the roadmap to the planning map. Preserve its existing deferred disposition. Prior reason: Deferred by the 2026-09-19 cleanup pass: a pattern idea with no implementation and no consumer scenario on this horizon.",
+    "reopenWhen": "a planning pass names a consumer scenario after WO-091 to WO-095 land (the pass's suggestion), or the clause the source section states",
+    "targets": []
+  }
+]

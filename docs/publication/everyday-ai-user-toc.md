@@ -2,7 +2,7 @@
 
 Source base revision: `f2a4b232e1868691398964433c7e373fca4b84bb`
 
-Source lock: `sha256:c033d4a38f85fb6817387b2df53179bc55402430c63c5470812769d18d145041`
+Source lock: `sha256:9885f2082fc48f2fa69f45b4b2b5bfe5194580132e2204b1579813f4d5c43fbd`
 
 The base revision identifies where this edition's source set was selected; every
 link must resolve there. The lock pins the exact current bytes of the linked
@@ -99,7 +99,7 @@ route through the [base outline](base-outline.md); mechanics stay one link away.
       concurrent workflows, early completion batches, and release traceability
     - sources:
       [v0.2.2 — Capability table v1](../product/06-roadmap.md#v022--capability-table-v1---wo-005),
-      [Work-order navigation](../product/06-roadmap.md#roadmap--application-release-ladder),
+      [Work-order navigation](../planning/work-order-map.md#work-order-navigation-and-identity-candidate),
       [Freshness and ownership](../product/08-publication-compiler.md#publication-compiler--one-source-many-authoritative-editions),
       [Architecture](../product/03-architecture.md#architecture),
       [Interfaces](../product/04-interfaces.md#interfaces--the-isomorphic-views)
@@ -108,7 +108,7 @@ route through the [base outline](base-outline.md); mechanics stay one link away.
       why technical proofs still need an operator's usefulness judgment
     - sources:
       [Three horizons, one kernel](../product/00-vision.md#three-horizons-one-kernel),
-      [Proposed beacon usefulness checkpoint](../product/06-roadmap.md#roadmap--application-release-ladder),
+      [Proposed beacon usefulness checkpoint](../planning/work-order-map.md#candidate--beacon-usefulness-checkpoint),
       [Portable and regenerable sharing](../product/10-ir-compatibility.md#portable-and-regenerable-sharing)
 
 ## Reader aids

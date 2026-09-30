@@ -295,7 +295,7 @@ the canonical capture and backup independently of worktree removal.
   new preserved entries for alternative whole/child routes, useful split
   suggestions including no split, and UIFA security/identity/evidence judgment.
   Earlier entries retain their bytes.
-- [Product 06](../product/06-roadmap.md#candidate--whole-or-split-work-orders-under-one-umbrella):
+- [Planning map](../planning/work-order-map.md#candidate--whole-or-split-work-orders-under-one-umbrella):
   candidate umbrella and route-exclusion behavior, serial/parallel/mixed
   dependency plans, acceptance coverage, and unchanged opaque identity contract.
 - [Product 13](../product/13-uifa-roles.md#candidate--security-identity-logs-and-traceability-responsibilities):

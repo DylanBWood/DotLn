@@ -1,10 +1,11 @@
-# WO-087 — Candidates leave the roadmap: its candidate and policy sections (864 lines) move to the planning map's candidates sections with their slugs reconciled in the register, so the roadmap holds the ladder and the generated release history (version assigned at activation)
+# WO-087 — Candidates leave the roadmap: its candidate and policy sections (864 lines) move to the planning map's candidates sections with their slugs reconciled in the register, so the roadmap holds the ladder and the generated release history (v0.56.3)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh; verifier xhigh; reviewer any.
-**Release classification:** patch. Text moves, publication index rows and
-register reconciliation; no product code or contract change. Assigned at
+**Release classification:** patch. Text moves, publication index rows,
+register reconciliation and an operator-authorized planning-check repair;
+no runtime product contract change. Assigned at
 activation under the standing opt-out default.
 **Cost:** adds one map section per moved roadmap section (navigation and
 identity, whole-or-split, beacon checkpoint, unattended portfolio, budget
@@ -18,7 +19,12 @@ lines of candidate policy from 06, the range from §Work-order navigation
 and identity through §Candidate — local-model usefulness experiments
 (lines 799–1662 at `9cc597d7`, 931–1794 at `5f3849ec`; receipt 029,
 finding 1), and their publication index rows and locks; lowers product 06's
-ceiling in `doc-ceilings.json` to its new size. Re-mints: none. Wall-clock,
+ceiling in `doc-ceilings.json` to its new size. The operator-authorized expansion
+of 2026-09-30 also edits `scripts/lib/plan-continuation.mjs` and
+`scripts/test-plan-refutation.mjs`: prove location-only vision and capability
+citations preserve their prose and target content, including necessary relative
+link rebasing, instead of treating the relocation as new planning judgment.
+Re-mints: none. Wall-clock,
 tokens and context bytes are unknown until run.
 **Nomination provenance:** WO-035's roadmap-split item, cut into a bounded
 child at the operator's 2026-09-08 correction; held 2026-09-19 until
@@ -58,7 +64,10 @@ unallocated candidates and the dated candidates sections;
 `docs/planning/followups.md` (renamed sources reconcile as duplicates);
 `docs/publication/` (index rows and locks); `scripts/check-publication.mjs`;
 the [2026-09-25 standard-pass planning document](../planning/standard-pass-2026-09-25.md)
-§5.
+§5. Expansion inputs: `scripts/lib/plan-continuation.mjs`, its existing
+continuation fixtures in `scripts/test-plan-refutation.mjs`,
+`scripts/lib/plan-subject.mjs`, and product 07's planning-continuation and
+authorized execution-amendment rules.
 
 **Objective:** the roadmap holds the version ladder with exit criteria and
 the generated release history and nothing else; every candidate it carried
@@ -88,6 +97,18 @@ across, and no link breaks.
 - Lower 06's ceiling to its new size.
 - **Declined alternatives, recorded:** a new product document (item 4);
   deleting candidates; editing any candidate's text.
+- **Operator-authorized expansion, 2026-09-30:** repair the failing planning
+  continuation checks caused by this move's vision and capability citations.
+  Accept only a proved relocation: restore the original destinations to recover
+  the exact citing prose and historical capability source; compare full target
+  content after resolving ordinary relative links to the same repository paths;
+  keep the heading slug and prove the old section was removed and the new one
+  was absent from the reviewed destination. Retain the following rung's exact
+  formatting directive with that rung. Parse real Markdown headings, and refuse
+  ambiguous targets and unsupported context-dependent links. Existing dated
+  capability additions retain their validation. Add passing and refusal
+  regressions, preserve existing receipt bytes and report the admitted
+  continuation. Authority: WO-087-D008, final repair specification WO-087-D010.
 
 **Deliverables:** the move, the rows and locks, the register
 reconciliation, the write-backs below.
@@ -103,11 +124,14 @@ reconciliation, the write-backs below.
    map row with its history retained, through seven recorded `--apply`
    requests; no pending row is lost (counts recorded before and after).
 3. Write-backs land: `docs/README.md`, ledger entry.
-4. `npm test` and `npm run test:docs` green; `git diff --check` clean; no
-   new dependency.
+4. `npm test -- --review` and `npm run test:docs` green; `git diff --check`
+   clean; no new dependency. The planning continuation admits this proven
+   link-only relocation while refusing changed target text, changed vision
+   wording, missing or ambiguous anchors and destinations outside the public
+   planning root. Existing planning receipts remain unchanged.
 
 **Evidence gate:** the diff; the register counts; `npm run test:docs`;
-`npm test` at final review. No live row.
+`npm test -- --review` at final review. No live row.
 
 **Write-back duty:** as listed in criterion 3.
 

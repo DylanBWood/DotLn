@@ -433,5 +433,5 @@ question asks how its success could create its own failure mode. Preserve
 known tradeoffs and use evidence to decide whether to act now, monitor, or
 defer until a constraint appears. The proposed
 [success-under-growth review](05-pattern-library.md#candidate--success-under-growth)
-and [bounded system baseline](06-roadmap.md#candidate--bounded-system-baseline)
+and [bounded system baseline](../planning/work-order-map.md#candidate--bounded-system-baseline)
 must themselves cost less than the burden they expose.

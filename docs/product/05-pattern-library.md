@@ -256,7 +256,7 @@ replay and evidence obligations, measure the current constraint, and avoid
 moving cost into privacy loss, stale projections, weaker verification, or a
 monitor that needs its own full review every day.
 
-The [bounded system baseline](06-roadmap.md#candidate--bounded-system-baseline)
+The [bounded system baseline](../planning/work-order-map.md#candidate--bounded-system-baseline)
 is a candidate observation support for this review and 5S Sustain. A trend can
 justify looking more closely; it does not automatically authorize intervention.
 Runtime composition, triggers, thresholds, and cadence remain unimplemented.

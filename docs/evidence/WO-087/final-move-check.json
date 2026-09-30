@@ -1,0 +1,205 @@
+{
+  "base": "c57fd557a4f6617fa64cffc1bfd491140cb082d6",
+  "observedAt": "2026-09-30T00:50:08.501Z",
+  "range": {
+    "firstLine": 299,
+    "nextHeadingLine": 1163,
+    "grossLines": 864,
+    "movedContentLines": 863,
+    "retainedFormattingLines": 1
+  },
+  "roadmap": {
+    "before": {
+      "lines": 1613,
+      "totalBytes": 127932,
+      "nonExemptBytes": 96395
+    },
+    "after": {
+      "lines": 750,
+      "totalBytes": 71512,
+      "nonExemptBytes": 39975
+    },
+    "outsideRangeEqual": true
+  },
+  "candidateTextEqualAfterTwoLinkRebasings": true,
+  "headings": [
+    {
+      "slug": "work-order-navigation-and-identity-candidate",
+      "sourceLines": 117,
+      "normalizedBeforeSha256": "b1889bd6c57d82b5b255205e524a2d687f1258b78812d4d7d111fd12fd786e10",
+      "normalizedAfterSha256": "b1889bd6c57d82b5b255205e524a2d687f1258b78812d4d7d111fd12fd786e10",
+      "equal": true
+    },
+    {
+      "slug": "candidate--whole-or-split-work-orders-under-one-umbrella",
+      "sourceLines": 48,
+      "normalizedBeforeSha256": "c2b10da7dc4cfbc130ae0640460032ec590d2e238bb30b16cb26c6573746323f",
+      "normalizedAfterSha256": "c2b10da7dc4cfbc130ae0640460032ec590d2e238bb30b16cb26c6573746323f",
+      "equal": true
+    },
+    {
+      "slug": "candidate--beacon-usefulness-checkpoint",
+      "sourceLines": 35,
+      "normalizedBeforeSha256": "774ec16c78e5735adb5c5f7fb94e92eab9a000b6683cedc3d80f7df407bd4f40",
+      "normalizedAfterSha256": "774ec16c78e5735adb5c5f7fb94e92eab9a000b6683cedc3d80f7df407bd4f40",
+      "equal": true
+    },
+    {
+      "slug": "candidate--unattended-work-order-portfolio",
+      "sourceLines": 85,
+      "normalizedBeforeSha256": "ffbaeb3e34ed7c2e090cca935091e7252d12ffbdfa122dce4550daad6e5fb00a",
+      "normalizedAfterSha256": "ffbaeb3e34ed7c2e090cca935091e7252d12ffbdfa122dce4550daad6e5fb00a",
+      "equal": true
+    },
+    {
+      "slug": "candidate--budget-window-work-order-ladders",
+      "sourceLines": 70,
+      "normalizedBeforeSha256": "a2cf909f82e42d813e6daaf74405b62d1283caffc21bdabc326dab953a4105ae",
+      "normalizedAfterSha256": "a2cf909f82e42d813e6daaf74405b62d1283caffc21bdabc326dab953a4105ae",
+      "equal": true
+    },
+    {
+      "slug": "capability-progression-policies",
+      "sourceLines": 31,
+      "normalizedBeforeSha256": "b893b97f0a7e513b594e8f99b0f525b1a5b18f62031759f1a75615f163c693f9",
+      "normalizedAfterSha256": "b893b97f0a7e513b594e8f99b0f525b1a5b18f62031759f1a75615f163c693f9",
+      "equal": true
+    },
+    {
+      "slug": "activation-utilization-and-xp",
+      "sourceLines": 48,
+      "normalizedBeforeSha256": "13460b306e1b85f38db7e12a892798383de1311fe82acd05891162a32085f873",
+      "normalizedAfterSha256": "13460b306e1b85f38db7e12a892798383de1311fe82acd05891162a32085f873",
+      "equal": true
+    },
+    {
+      "slug": "reps-curiosity-and-voluntary-craft",
+      "sourceLines": 82,
+      "normalizedBeforeSha256": "ed4f253437d6e3c18fca92757f3ff895be6b78b6e97aa3b6c7cb74ad613cb765",
+      "normalizedAfterSha256": "ed4f253437d6e3c18fca92757f3ff895be6b78b6e97aa3b6c7cb74ad613cb765",
+      "equal": true
+    },
+    {
+      "slug": "efficiency-as-a-separate-capability-axis",
+      "sourceLines": 85,
+      "normalizedBeforeSha256": "6eb5b6397e7ebd166275cb4f261a48833486a45b08ffc42ac08ddc9a11cb91fe",
+      "normalizedAfterSha256": "6eb5b6397e7ebd166275cb4f261a48833486a45b08ffc42ac08ddc9a11cb91fe",
+      "equal": true
+    },
+    {
+      "slug": "candidate--bounded-system-baseline",
+      "sourceLines": 33,
+      "normalizedBeforeSha256": "79cace44b49c397872a076509404fb1a2403472b63ee4896b53f34ee7de14542",
+      "normalizedAfterSha256": "79cace44b49c397872a076509404fb1a2403472b63ee4896b53f34ee7de14542",
+      "equal": true
+    },
+    {
+      "slug": "counterfactual-profiling-work-orders",
+      "sourceLines": 120,
+      "normalizedBeforeSha256": "1ac5a7055746c3aa1008470e19f15cf1d8adb62e9e4274d127744e97022c3e76",
+      "normalizedAfterSha256": "1ac5a7055746c3aa1008470e19f15cf1d8adb62e9e4274d127744e97022c3e76",
+      "equal": true
+    },
+    {
+      "slug": "candidate--local-model-usefulness-experiments",
+      "sourceLines": 109,
+      "normalizedBeforeSha256": "4720eae173d71c87a1e252e2f328cf76bf78819845568ac5ff187c1d63fb1264",
+      "normalizedAfterSha256": "4720eae173d71c87a1e252e2f328cf76bf78819845568ac5ff187c1d63fb1264",
+      "equal": true
+    }
+  ],
+  "register": {
+    "before": {
+      "total": 771,
+      "pending": 191,
+      "statuses": {
+        "duplicate": 33,
+        "declined": 55,
+        "allocated": 117,
+        "deferred": 141,
+        "settled": 375,
+        "open": 13,
+        "needs-review": 4,
+        "untriaged": 33
+      }
+    },
+    "afterRelocation": {
+      "total": 778,
+      "pending": 191,
+      "statuses": {
+        "duplicate": 40,
+        "declined": 55,
+        "allocated": 117,
+        "deferred": 141,
+        "settled": 375,
+        "open": 13,
+        "needs-review": 4,
+        "untriaged": 33
+      }
+    },
+    "afterIncludingPlanningFollowup": {
+      "total": 779,
+      "pending": 192,
+      "statuses": {
+        "duplicate": 40,
+        "declined": 55,
+        "allocated": 117,
+        "deferred": 141,
+        "settled": 375,
+        "open": 13,
+        "needs-review": 4,
+        "untriaged": 34
+      }
+    },
+    "planningFollowupId": "FUP-dc58e92c5cafc732",
+    "historyPrefixPreserved": true,
+    "pairs": [
+      {
+        "old": "FUP-0105",
+        "target": "FUP-a5b7f86d7b4d300d",
+        "status": "deferred",
+        "slug": "candidate--beacon-usefulness-checkpoint"
+      },
+      {
+        "old": "FUP-0106",
+        "target": "FUP-c572465bfc1ba9c0",
+        "status": "deferred",
+        "slug": "candidate--bounded-system-baseline"
+      },
+      {
+        "old": "FUP-0107",
+        "target": "FUP-e5fccb54a23a8af7",
+        "status": "deferred",
+        "slug": "candidate--budget-window-work-order-ladders"
+      },
+      {
+        "old": "FUP-0108",
+        "target": "FUP-f4779d86ca9fd593",
+        "status": "settled",
+        "slug": "candidate--unattended-work-order-portfolio"
+      },
+      {
+        "old": "FUP-0109",
+        "target": "FUP-5d31b4cd52b01f51",
+        "status": "deferred",
+        "slug": "candidate--whole-or-split-work-orders-under-one-umbrella"
+      },
+      {
+        "old": "FUP-0110",
+        "target": "FUP-7fc458de216e842a",
+        "status": "settled",
+        "slug": "work-order-navigation-and-identity-candidate"
+      },
+      {
+        "old": "FUP-1aa2504e33959003",
+        "target": "FUP-1310872e0f04488a",
+        "status": "deferred",
+        "slug": "candidate--local-model-usefulness-experiments"
+      }
+    ]
+  },
+  "movedSurfaceBrokenLinks": 0,
+  "newDocumentFailures": 0,
+  "declaredHistoricalLinkOccurrences": 412,
+  "filedReportsUnchanged": true
+}

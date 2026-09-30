@@ -39,10 +39,10 @@
       "decision": "docs/evidence/WO-085/decisions.md#wo-085-d005"
     },
     "06-roadmap.md": {
-      "nonExemptBytesAtLanding": 96395,
-      "ceiling": 98323,
-      "date": "2026-09-29",
-      "decision": "docs/planning/release-history-notes.md#product-06-ceiling"
+      "nonExemptBytesAtLanding": 39975,
+      "ceiling": 40775,
+      "date": "2026-09-30",
+      "decision": "docs/evidence/WO-087/decisions.md#wo-087-d004"
     },
     "07-execution-guide.md": {
       "nonExemptBytesAtLanding": 154129,

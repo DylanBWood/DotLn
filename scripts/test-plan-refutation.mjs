@@ -3925,6 +3925,416 @@ else {
       },
     );
     await check(
+      "WO-087 continuation proves relocated vision and capability citations without changing receipts",
+      async () => {
+        const repo = makeRepo(parent, "relocated-planning-citations");
+        const vision = "docs/product/00-vision.md";
+        const capability = "docs/planning/capability-table.md";
+        const roadmap = "docs/product/06-roadmap.md";
+        const destination = "docs/planning/candidates.md";
+        const anchor = "candidate--bounded-system-baseline";
+        const candidate =
+          "### Candidate — bounded system baseline\n\nKeep this exact baseline.\n\n";
+        const oldHref = `06-roadmap.md#${anchor}`;
+        const newHref = `../planning/candidates.md#${anchor}`;
+        const originalVision = read(repo, vision).replace(
+          "## Other narrative",
+          `[Baseline](${oldHref})\n\n## Other narrative`,
+        );
+        const originalCapability =
+          `[Baseline](../product/${oldHref})\n\n` + read(repo, capability);
+        write(repo, vision, originalVision);
+        write(repo, capability, originalCapability);
+        write(
+          repo,
+          roadmap,
+          `# Roadmap\n\n${candidate}## Retained rung\n\nKeep the rung.\n`,
+        );
+        write(repo, destination, "# Planning candidates\n\n");
+        commit(repo, "prepare the citations to be relocated");
+        const receipt = await writeDirectReceipt(repo);
+        commit(repo, "record the unchanged planning judgment");
+        const receiptPath = `${RECEIPTS}/${receipt.receiptId}.json`;
+        const receiptBytes = read(repo, receiptPath);
+        const move = (append = true) => {
+          write(repo, vision, originalVision.replace(oldHref, newHref));
+          write(
+            repo,
+            capability,
+            originalCapability.replace(
+              `../product/${oldHref}`,
+              `candidates.md#${anchor}`,
+            ) +
+              (append
+                ? "\n## WO-901 dated reassessment (2030-01-03)\n\n| Capability | Level |\n| --- | --- |\n| `fixture.first` | **1 — demonstrable** |\n"
+                : ""),
+          );
+          write(
+            repo,
+            roadmap,
+            "# Roadmap\n\n## Retained rung\n\nKeep the rung.\n",
+          );
+          write(
+            repo,
+            destination,
+            `# Planning candidates\n\n${candidate}## Next candidate\n\nAnother proposal.\n`,
+          );
+        };
+        move(false);
+        const linkOnly = await checkPlanGate(repo);
+        // Capability identity binds ID/level rows; unchanged rows require no
+        // capability continuation. The vision citation still needs proof.
+        assert.deepEqual(
+          linkOnly.continuation.workspaceUpdates.map(({ kind }) => kind),
+          ["relocated-planning-link"],
+        );
+        move();
+        const dirty = await checkPlanGate(repo);
+        assert.deepEqual(
+          dirty.continuation.workspaceUpdates.map(({ kind }) => kind),
+          [
+            "relocated-planning-link",
+            "relocated-planning-link",
+            "dated-capability-reassessment",
+          ],
+        );
+        const proof = dirty.continuation.workspaceUpdates[0];
+        assert.equal(proof.targetSectionHash, proof.currentTargetSectionHash);
+        assert.equal(proof.from, oldHref);
+        assert.equal(proof.to, newHref);
+        assert.equal(read(repo, receiptPath), receiptBytes);
+
+        const refusals = [
+          [
+            "changed target wording",
+            () =>
+              write(
+                repo,
+                destination,
+                read(repo, destination).replace(
+                  "exact baseline",
+                  "different baseline",
+                ),
+              ),
+          ],
+          [
+            "changed vision wording",
+            () =>
+              write(
+                repo,
+                vision,
+                read(repo, vision).replace(
+                  "Not a compulsory doctrine",
+                  "A compulsory doctrine",
+                ),
+              ),
+          ],
+          [
+            "changed link label",
+            () =>
+              write(
+                repo,
+                vision,
+                read(repo, vision).replace("[Baseline]", "[Changed baseline]"),
+              ),
+          ],
+          [
+            "missing target anchor",
+            () => write(repo, destination, "# Missing target\n"),
+          ],
+          [
+            "ambiguous target heading",
+            () => write(repo, destination, read(repo, destination) + candidate),
+          ],
+          [
+            "copy without removing the old section",
+            () => write(repo, roadmap, `# Roadmap\n\n${candidate}`),
+          ],
+          [
+            "duplicate old headings still present",
+            () => write(repo, roadmap, `# Roadmap\n\n${candidate}${candidate}`),
+          ],
+          [
+            "external destination",
+            () =>
+              write(
+                repo,
+                vision,
+                read(repo, vision).replace(
+                  newHref,
+                  `https://example.invalid/candidates.md#${anchor}`,
+                ),
+              ),
+          ],
+          [
+            "private destination",
+            () => {
+              write(
+                repo,
+                "docs/intake/candidates.md",
+                `# Private\n\n${candidate}`,
+              );
+              write(
+                repo,
+                vision,
+                read(repo, vision).replace(
+                  newHref,
+                  `../intake/candidates.md#${anchor}`,
+                ),
+              );
+            },
+          ],
+          [
+            "symlink destination",
+            () => {
+              write(
+                repo,
+                "docs/planning/real-candidates.md",
+                read(repo, destination),
+              );
+              rmSync(join(repo, destination));
+              symlinkSync("real-candidates.md", join(repo, destination));
+            },
+          ],
+          [
+            "changed capability history",
+            () =>
+              write(
+                repo,
+                capability,
+                read(repo, capability).replace(
+                  "**0 — latent**",
+                  "**2 — dependable**",
+                ),
+              ),
+          ],
+          [
+            "changed sequence",
+            () =>
+              write(
+                repo,
+                PLAN_MAP,
+                read(repo, PLAN_MAP).replace(
+                  "WO-901 — First",
+                  "WO-901 — Reordered purpose",
+                ),
+              ),
+          ],
+          [
+            "changed roles",
+            () =>
+              write(
+                repo,
+                "docs/product/13-uifa-roles.md",
+                read(repo, "docs/product/13-uifa-roles.md").replace(
+                  "A useful shape.",
+                  "A changed responsibility.",
+                ),
+              ),
+          ],
+        ];
+        const sequence = read(repo, PLAN_MAP);
+        const roles = read(repo, "docs/product/13-uifa-roles.md");
+        for (const [label, mutate] of refusals) {
+          if (existsSync(join(repo, destination)))
+            rmSync(join(repo, destination));
+          move();
+          write(repo, PLAN_MAP, sequence);
+          write(repo, "docs/product/13-uifa-roles.md", roles);
+          mutate();
+          await assert.rejects(
+            checkPlanGate(repo),
+            /matching the current subject/u,
+            label,
+          );
+          assert.equal(read(repo, receiptPath), receiptBytes, label);
+        }
+        if (existsSync(join(repo, destination)))
+          rmSync(join(repo, destination));
+        move();
+        write(repo, PLAN_MAP, sequence);
+        write(repo, "docs/product/13-uifa-roles.md", roles);
+        commit(repo, "commit the proved relocation");
+        const committed = await checkPlanGate(repo);
+        assert.deepEqual(
+          committed.continuation.committedUpdates,
+          dirty.continuation.workspaceUpdates,
+        );
+        assert.equal(read(repo, receiptPath), receiptBytes);
+        write(
+          repo,
+          destination,
+          read(repo, destination).replace("exact baseline", "changed baseline"),
+        );
+        commit(repo, "record a changed committed target");
+        await assert.rejects(
+          checkPlanGate(repo),
+          /matching the current subject/u,
+        );
+        assert.equal(read(repo, receiptPath), receiptBytes);
+      },
+    );
+    await check(
+      "WO-087 relocated target content rebases actual links and preserves code examples and the next rung directive",
+      async () => {
+        const repo = makeRepo(parent, "relocated-citation-content");
+        const vision = "docs/product/00-vision.md";
+        const roadmap = "docs/product/06-roadmap.md";
+        const destination = "docs/planning/candidates.md";
+        const anchor = "capability-progression-policies";
+        const section =
+          "## Capability progression policies\n\n[Roles](13-uifa-roles.md#the-five-roles)\n\n```text\n[Example](13-uifa-roles.md#the-five-roles)\n```\n\n<!-- retained content comment -->\n\n";
+        const directive = "<!-- prettier-ignore -->\n";
+        const rung = "## Retained rung\n\nKeep the rung.\n";
+        const originalVision = read(repo, vision).replace(
+          "## Other narrative",
+          `[Policies](06-roadmap.md#${anchor})\n\n## Other narrative`,
+        );
+        write(repo, vision, originalVision);
+        write(repo, roadmap, `# Roadmap\n\n${section}${directive}${rung}`);
+        write(repo, destination, "# Candidates\n\n");
+        commit(repo, "prepare a citation with a rebased nested link");
+        await writeDirectReceipt(repo);
+        commit(repo, "record the unchanged judgment");
+        const moved = section.replace(
+          "[Roles](13-uifa-roles.md#",
+          "[Roles](../product/13-uifa-roles.md#",
+        );
+        write(
+          repo,
+          vision,
+          originalVision.replace(
+            `06-roadmap.md#${anchor}`,
+            `../planning/candidates.md#${anchor}`,
+          ),
+        );
+        write(repo, roadmap, `# Roadmap\n\n${directive}${rung}`);
+        write(repo, destination, `# Candidates\n\n${moved}## Next heading\n`);
+        const passed = await checkPlanGate(repo);
+        assert.equal(
+          passed.continuation.workspaceUpdates[0].kind,
+          "relocated-planning-link",
+        );
+        assert.notEqual(
+          passed.continuation.workspaceUpdates[0].targetSectionHash,
+          passed.continuation.workspaceUpdates[0].currentTargetSectionHash,
+        );
+        for (const [before, after] of [
+          [
+            "[Example](13-uifa-roles.md#",
+            "[Example](../product/13-uifa-roles.md#",
+          ],
+          ["retained content comment", "rewritten content comment"],
+          [
+            "../product/13-uifa-roles.md#the-five-roles",
+            "../product/13-uifa-roles.md#other-target",
+          ],
+        ]) {
+          write(
+            repo,
+            destination,
+            `# Candidates\n\n${moved.replace(before, after)}## Next heading\n`,
+          );
+          await assert.rejects(
+            checkPlanGate(repo),
+            /matching the current subject/u,
+          );
+        }
+      },
+    );
+    await check(
+      "WO-087 relocation refuses changed link contexts, preexisting targets and hidden fenced changes",
+      async () => {
+        const cases = [
+          ["fragment", "[Other](#retained-rung)\n\n"],
+          ["empty", "[Self]()\n\n"],
+          ["query", "[Self](?print=1)\n\n"],
+          ["query-path", "[Self](roles.md?x/../bar)\n\n"],
+          ["title", '[Roles](13-uifa-roles.md "Roles")\n\n'],
+          ["reference", "[Roles][roles]\n\n[roles]: 13-uifa-roles.md\n\n"],
+          ["outside-reference", "[Roles][roles]\n\n"],
+          ["activated-reference", "[Roles][roles]\n\n"],
+          ["footnote", "Text[^1]\n\n"],
+          ["activated-footnote", "Text[^1]\n\n"],
+          ["image", "![Image](image.png)\n\n"],
+          ["html", '<a href="13-uifa-roles.md">Roles</a>\n\n'],
+          ["html-srcset", '<img srcset="image.png 1x">\n\n'],
+          ["html-poster", '<video poster="image.png"></video>\n\n'],
+          [
+            "html-comment-wrapper",
+            '<!-- noop --><img srcset="image.png 1x"><!-- tail -->\n\n',
+          ],
+          [
+            "html-style",
+            "<style>body {background: url(image.png)}</style>\n\n",
+          ],
+          [
+            "fence",
+            "````text\nBefore\n```\n## Fake rung\nKeep this code.\n````\n\n",
+          ],
+          ["preexisting", "Keep this policy.\n\n"],
+        ];
+        for (const [label, body] of cases) {
+          const repo = makeRepo(parent, `relocation-context-${label}`);
+          const vision = "docs/product/00-vision.md";
+          const roadmap = "docs/product/06-roadmap.md";
+          const destination = "docs/planning/candidates.md";
+          const anchor = "capability-progression-policies";
+          const section = `## Capability progression policies\n\n${body}`;
+          const originalVision = read(repo, vision).replace(
+            "## Other narrative",
+            `[Policies](06-roadmap.md#${anchor})\n\n## Other narrative`,
+          );
+          write(repo, vision, originalVision);
+          write(
+            repo,
+            roadmap,
+            `# Roadmap\n\n${section}## Retained rung\n${label === "outside-reference" ? "\n[roles]: 13-uifa-roles.md\n" : label === "footnote" ? "\n[^1]: Original note.\n" : ""}`,
+          );
+          write(
+            repo,
+            destination,
+            `# Candidates\n\n${label === "preexisting" ? section + section : ""}`,
+          );
+          commit(repo, "prepare context-sensitive citation");
+          const receipt = await writeDirectReceipt(repo);
+          commit(repo, "record the unchanged judgment");
+          const receiptPath = `${RECEIPTS}/${receipt.receiptId}.json`;
+          const receiptBytes = read(repo, receiptPath);
+          write(
+            repo,
+            vision,
+            originalVision.replace(
+              `06-roadmap.md#${anchor}`,
+              `../planning/candidates.md#${anchor}`,
+            ),
+          );
+          write(repo, roadmap, "# Roadmap\n\n## Retained rung\n");
+          const moved =
+            label === "fence"
+              ? section.replace("Keep this code.", "Changed code.")
+              : label === "empty"
+                ? section.replace("[Self]()", "[Self](../product)")
+                : label === "query"
+                  ? section.replace("?print=1", "../product/?print=1")
+                  : label === "query-path"
+                    ? section.replace("roles.md?x/../bar", "../product/bar")
+                    : section;
+          write(
+            repo,
+            destination,
+            `# Candidates\n\n${moved}## Next heading\n${["outside-reference", "activated-reference"].includes(label) ? "\n[roles]: ../product/13-uifa-roles.md\n" : ["footnote", "activated-footnote"].includes(label) ? "\n[^1]: Changed note.\n" : ""}`,
+          );
+          await assert.rejects(
+            checkPlanGate(repo),
+            /matching the current subject/u,
+            label,
+          );
+          assert.equal(read(repo, receiptPath), receiptBytes, label);
+        }
+      },
+    );
+    await check(
       "WO-158 continuation admits one release label appended to a title filed without the placeholder, and nothing else",
       async () => {
         const repo = makeRepo(parent, "unlabelled-release-assignment");
