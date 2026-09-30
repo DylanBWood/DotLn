@@ -961,10 +961,11 @@ is an open interface item, not an implemented host capability.
 
 ### Independent verification v1
 
-WO-010 pins the first executable verification contract in compiler `0.5.0` and skeleton `0.11.0`. This is a bounded realization of the Feedback terms above, with state and behavior claims. Visual/network evidence and comparison/rating consumers remain deferred.
+WO-010 pins the first executable verification contract in compiler `0.5.0` and skeleton `0.11.0`. This realizes the Feedback terms above with state, behavior, visual and network claims. Comparison/rating consumers remain deferred.
 
-- `AcceptanceCriterion` is `{ criterionId, description, claimType: "state" | "behavior", evidenceSource: "synthetic-fixture" | "live", codeSurfaces, requiredChecks }`. Surfaces include declared dependencies; each required check must have sufficient evidence before a pass.
+- `AcceptanceCriterion` is `{ criterionId, description, claimType: "state" | "behavior" | "visual" | "network", evidenceSource: "synthetic-fixture" | "live", codeSurfaces, requiredChecks }`. Surfaces include declared dependencies; each required check must have sufficient evidence before a pass.
 - `VerificationEvidence` is `{ evidenceId, criterionId, checkId, claimType, source, subjectRevision, codeSurfaces, automatedTest: string | null, observed, expected, outcome: "pass" | "fail" | "unavailable", reproductionSteps }`. These are host witnesses, separate from model claims. State reads and behavior subprocess runs are distinct. A synthetic witness cannot satisfy a live criterion. An unavailable runner produces an honest unavailable witness and an unverified criterion. The baseline snapshot and its witnesses are preserved separately from candidate evidence and never certify the candidate.
+- Optional `witness` carries a SHA-256 content hash and kind: `screenshot` also binds `criterionId`; `dom-snapshot` and `accessibility-snapshot` name captured content; `network-trace` carries request method/URL/body hash and response status/body hash; `console-capture` carries level/message entries. Visual/network passes require a cited passing screenshot/trace respectively; DOM or accessibility alone leaves visual unverified. A console error requires outcome `fail` and refuses a pass for its bound criterion/required check even if omitted. A producer binds one capture per criterion a scenario covers. Unknown kinds/types refuse with their decode path. Hashes bind data, not authenticity.
 - `Evaluation` is `{ criterionId, claimType, verdict: "pass" | "fail" | "unverified", evidenceRefs, exemplarRefs, dissentRefs }`. The last two arrays are explicitly empty until their consumers arrive. Matrix evaluations additionally carry `eventId`, the original producing `episodeId`, `subjectRevision`, `stale`, and host-derived `provenance: { kind: "host-admitted-verifier", commandId, inputHash }`. Worker prose cannot supply that provenance. Any adverse witness for a required check prevents a pass, even if the verifier omits its reference.
 - `VerificationFinding` is `{ findingId, criterionId, severity: "blocking" | "major" | "minor", observed, expected, reproductionSteps, evidenceRefs, likelySurface }`. All prose fields and reference/surface lists are required and nonempty. References must belong to the failed criterion, the observed/expected pair must match an adverse host witness, and likely surfaces remain within that criterion's declared dependencies. Every failed evaluation needs a finding; every blocking finding projects a focused repair WorkOrder. Major/minor findings remain visible and require attention without automatically authorizing repair.
 
@@ -1025,7 +1026,7 @@ test to unavailable. This heuristic does not authenticate launcher output and
 cannot turn it into a passing witness. An unavailable
 witness cannot certify acceptance. The same matrix fold preserves failures against
 implementer success claims. This is the first-proof isolation, not a hostile-process
-security boundary; descendant cleanup is not established. Live verifier episodes, visual/network claims and review remain separate orders.
+security boundary; descendant cleanup is not established. Live verifier episodes and review remain separate orders; visual/network claims use subjects without this profile.
 
 WO-055 adds `deriveRepairOrder(finding, original, grants)` and `RepairHost`.
 The original names the WorkOrder, effective authority envelope, declared file or

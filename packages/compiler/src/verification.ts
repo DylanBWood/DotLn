@@ -2,8 +2,40 @@ import { COMPILER_PACKAGE_VERSION } from "./artifact-identity.js";
 import { canonicalStringify, fnv1a64 } from "./normalize.js";
 import type { WorkOrder } from "./types.js";
 
-export type ClaimType = "state" | "behavior";
+export const CLAIM_TYPES = ["state", "behavior", "visual", "network"] as const;
+export type ClaimType = (typeof CLAIM_TYPES)[number];
 export type EvidenceSource = "synthetic-fixture" | "live";
+export type VerificationWitness =
+  | {
+      readonly kind: "screenshot";
+      readonly contentHash: string;
+      readonly criterionId: string;
+    }
+  | {
+      readonly kind: "dom-snapshot" | "accessibility-snapshot";
+      readonly contentHash: string;
+    }
+  | {
+      readonly kind: "network-trace";
+      readonly contentHash: string;
+      readonly request: {
+        readonly method: string;
+        readonly url: string;
+        readonly bodyHash: string | null;
+      };
+      readonly response: {
+        readonly status: number;
+        readonly bodyHash: string | null;
+      };
+    }
+  | {
+      readonly kind: "console-capture";
+      readonly contentHash: string;
+      readonly entries: readonly {
+        readonly level: "debug" | "log" | "info" | "warn" | "error";
+        readonly message: string;
+      }[];
+    };
 export interface AcceptanceCriterion {
   readonly criterionId: string;
   readonly description: string;
@@ -14,6 +46,7 @@ export interface AcceptanceCriterion {
   readonly requiredChecks: readonly string[];
 }
 export interface VerificationEvidence {
+  readonly witness?: VerificationWitness;
   readonly hostTest?: {
     readonly kind: "host-run-test";
     readonly origin: "host";
@@ -258,11 +291,17 @@ function copySnapshot(value: WorktreeSnapshot): WorktreeSnapshot {
 }
 
 export function copyCriterion(value: AcceptanceCriterion): AcceptanceCriterion {
+  return copyCriterionAt(value, "$.criterion");
+}
+function copyCriterionAt(
+  value: AcceptanceCriterion,
+  path: string,
+): AcceptanceCriterion {
   requireValue(
     verificationLine(value.criterionId) && verificationLine(value.description),
     "criterion identity",
   );
-  requireValue(["state", "behavior"].includes(value.claimType), "claim type");
+  requireValue(CLAIM_TYPES.includes(value.claimType), `${path}.claimType`);
   requireValue(
     ["synthetic-fixture", "live"].includes(value.evidenceSource),
     "evidence source",
@@ -277,6 +316,104 @@ export function copyCriterion(value: AcceptanceCriterion): AcceptanceCriterion {
     codeSurfaces,
     requiredChecks: lines(value.requiredChecks, "required checks"),
   };
+}
+const contentHash = (value: unknown): value is string =>
+  typeof value === "string" && /^sha256:[a-f0-9]{64}$/u.test(value);
+
+function copyWitness(
+  value: VerificationWitness,
+  criterionId: string,
+  path: string,
+): VerificationWitness {
+  requireValue(
+    value && typeof value === "object" && !Array.isArray(value),
+    path,
+  );
+  requireValue(
+    [
+      "screenshot",
+      "dom-snapshot",
+      "accessibility-snapshot",
+      "network-trace",
+      "console-capture",
+    ].includes(value.kind),
+    `${path}.kind`,
+  );
+  const common = { kind: value.kind, contentHash: value.contentHash };
+  requireValue(contentHash(common.contentHash), `${path}.contentHash`);
+  switch (value.kind) {
+    case "screenshot":
+      exactFields(value, ["kind", "contentHash", "criterionId"], path);
+      requireValue(
+        verificationLine(value.criterionId) &&
+          value.criterionId === criterionId,
+        `${path}.criterionId`,
+      );
+      return { ...common, kind: value.kind, criterionId: value.criterionId };
+    case "dom-snapshot":
+    case "accessibility-snapshot":
+      exactFields(value, ["kind", "contentHash"], path);
+      return { ...common, kind: value.kind };
+    case "network-trace": {
+      exactFields(value, ["kind", "contentHash", "request", "response"], path);
+      const { request, response } = value;
+      exactFields(request, ["method", "url", "bodyHash"], `${path}.request`);
+      exactFields(response, ["status", "bodyHash"], `${path}.response`);
+      requireValue(
+        typeof request.method === "string" &&
+          /^[A-Z]{1,32}$/u.test(request.method),
+        `${path}.request.method`,
+      );
+      requireValue(verificationLine(request.url), `${path}.request.url`);
+      requireValue(
+        request.bodyHash === null || contentHash(request.bodyHash),
+        `${path}.request.bodyHash`,
+      );
+      requireValue(
+        Number.isInteger(response.status) &&
+          response.status >= 100 &&
+          response.status <= 599,
+        `${path}.response.status`,
+      );
+      requireValue(
+        response.bodyHash === null || contentHash(response.bodyHash),
+        `${path}.response.bodyHash`,
+      );
+      return {
+        ...common,
+        kind: value.kind,
+        request: {
+          method: request.method,
+          url: request.url,
+          bodyHash: request.bodyHash,
+        },
+        response: { status: response.status, bodyHash: response.bodyHash },
+      };
+    }
+    case "console-capture": {
+      exactFields(value, ["kind", "contentHash", "entries"], path);
+      requireValue(
+        Array.isArray(value.entries) && value.entries.length <= 100,
+        `${path}.entries`,
+      );
+      const entries = value.entries.map((entry, i) => {
+        const entryPath = `${path}.entries[${i}]`;
+        exactFields(entry, ["level", "message"], entryPath);
+        requireValue(
+          ["debug", "log", "info", "warn", "error"].includes(entry.level),
+          `${entryPath}.level`,
+        );
+        requireValue(
+          typeof entry.message === "string" &&
+            entry.message.length > 0 &&
+            entry.message.length <= 2_000,
+          `${entryPath}.message`,
+        );
+        return { level: entry.level, message: entry.message };
+      });
+      return { ...common, kind: value.kind, entries };
+    }
+  }
 }
 export function copyFinding(value: VerificationFinding): VerificationFinding {
   requireValue(
@@ -460,6 +597,20 @@ export function copySubject(value: VerificationSubject): VerificationSubject {
       !snapshot || hostTest !== undefined,
       "snapshot evidence requires a host-run test",
     );
+    const witness =
+      item.witness === undefined
+        ? undefined
+        : copyWitness(
+            item.witness,
+            item.criterionId,
+            `$.subject.evidence[${i}].witness`,
+          );
+    requireValue(
+      witness?.kind !== "console-capture" ||
+        !witness.entries.some((entry) => entry.level === "error") ||
+        item.outcome === "fail",
+      `$.subject.evidence[${i}].outcome: console error requires fail`,
+    );
     requireValue(
       verificationLine(item.evidenceId) &&
         verificationLine(item.criterionId) &&
@@ -470,7 +621,7 @@ export function copySubject(value: VerificationSubject): VerificationSubject {
     );
     requireValue(
       item.subjectRevision === value.revision &&
-        ["state", "behavior"].includes(item.claimType) &&
+        CLAIM_TYPES.includes(item.claimType) &&
         ["synthetic-fixture", "live"].includes(item.source) &&
         ["pass", "fail", "unavailable"].includes(item.outcome),
       "evidence provenance",
@@ -483,6 +634,7 @@ export function copySubject(value: VerificationSubject): VerificationSubject {
     requireValue(codeSurfaces.every(repositoryPath), "evidence paths");
     return {
       ...(hostTest ? { hostTest } : {}),
+      ...(witness ? { witness } : {}),
       evidenceId: item.evidenceId,
       criterionId: item.criterionId,
       checkId: item.checkId,
@@ -557,7 +709,9 @@ function lowerVerificationTask(
       criteriaInput.length <= 100,
     "criteria",
   );
-  const criteria = criteriaInput.map(copyCriterion);
+  const criteria = criteriaInput.map((criterion, i) =>
+    copyCriterionAt(criterion, `$.criteria[${i}]`),
+  );
   if (subjectInput.snapshot)
     criteriaInput.forEach((criterion, i) =>
       exactFields(

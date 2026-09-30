@@ -1,0 +1,9 @@
+{
+  "expectedRevision": "56ca7968eb702544673a23eb547d55a9a39b308b9cf3a90e5202254ce1b6b008",
+  "id": "FUP-c31c7bcab9270f49",
+  "sourceRevision": 2,
+  "status": "settled",
+  "reason": "Settled by WO-058's final review (docs/final-reviews/WO-058/FINAL-001.md, WO-058-D010). WO-058 edits evidenceResultSchema, the row's condition. The tightening already landed with WO-157 item 16 (commit 4001a2b7, 2026-09-24): no finding and no fail verdict without a failing witness, 1-100 entry lists, 1-2,000 character lines and contract enums. Its test passes unchanged at code identity fd8769db. Control characters and duplicate entries stay with admission, as that test names. WO-058's live verifier episode completed in one attempt with no finding-shape refusal.",
+  "reopenWhen": "A live verifier episode refuses with finding shape, or with another shape the schema admits and admission refuses.",
+  "targets": []
+}

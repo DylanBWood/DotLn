@@ -1,5 +1,6 @@
 import {
   assertVerificationTask,
+  CLAIM_TYPES,
   assertCompiledFeedback,
   type CompiledFeedback,
   canonicalStringify,
@@ -168,6 +169,9 @@ export const EVIDENCE_RESULT_REFUSALS = [
   "evaluation criterion",
   "claim-typed evidence",
   "unsupported pass",
+  "visual pass requires screenshot",
+  "network pass requires trace",
+  "console error witness",
   "contradictory witness",
   "unsupported failure",
   "finding shape",
@@ -352,6 +356,16 @@ export function parseEvidenceResult(
     );
     if (item.verdict === "pass") {
       check(
+        !request.capsule.subject.evidence.some(
+          (entry) =>
+            entry.criterionId === criterion.criterionId &&
+            criterion.requiredChecks.includes(entry.checkId) &&
+            entry.witness?.kind === "console-capture" &&
+            entry.witness.entries.some((message) => message.level === "error"),
+        ),
+        "console error witness",
+      );
+      check(
         evidence.length > 0 &&
           evidence.every((entry) => entry?.outcome === "pass") &&
           criterion.requiredChecks.every((id) =>
@@ -359,6 +373,23 @@ export function parseEvidenceResult(
           ),
         "unsupported pass",
       );
+      if (criterion.claimType === "visual")
+        check(
+          evidence.some(
+            (entry) =>
+              entry?.witness?.kind === "screenshot" && entry.outcome === "pass",
+          ),
+          "visual pass requires screenshot",
+        );
+      if (criterion.claimType === "network")
+        check(
+          evidence.some(
+            (entry) =>
+              entry?.witness?.kind === "network-trace" &&
+              entry.outcome === "pass",
+          ),
+          "network pass requires trace",
+        );
       // Omitting an adverse witness for the same required check cannot certify it.
       check(
         !request.capsule.subject.evidence.some(
@@ -523,7 +554,7 @@ export function evidenceResultSchema(request: EvidenceWorkerRequest): object {
                   (criterion) => criterion.criterionId,
                 ),
               ),
-              claimType: { ...schemaText, enum: ["state", "behavior"] },
+              claimType: { ...schemaText, enum: [...CLAIM_TYPES] },
               verdict: {
                 ...schemaText,
                 enum: contract.criterionIds.length
@@ -653,7 +684,7 @@ export function transportPrompt(request: TransportRequest): string {
     resultId: resultId(request.command),
     outputInstructions:
       request.capsule.role === "verifier"
-        ? `Independently assess each criterion using the pinned diff, repository snapshot and host witnesses. This is the complete read mount projection; no tools or other context are granted. Preserve evidence source labels. A pass requires every required check, matching claim type and source, with no adverse witness. Missing or unavailable evidence is unverified. Emit full findings for failures, blocking when repair is required. A finding restates host evidence: reference the failing witness in evidenceRefs, which must also appear in that criterion's evaluation, and copy observed and expected verbatim from that witness; keep likelySurface within the criterion's codeSurfaces.${
+        ? `Independently assess each criterion using the pinned diff, repository snapshot and host witnesses. This is the complete read mount projection; no tools or other context are granted. Preserve evidence source labels. A pass requires every required check, matching claim type and source, with no adverse witness. Visual passes additionally require a cited passing screenshot; network passes require a cited passing network-trace. A console-capture error for the criterion's required check prevents a pass even when omitted. Missing or unavailable evidence is unverified. Emit full findings for failures, blocking when repair is required. A finding restates host evidence: reference the failing witness in evidenceRefs, which must also appear in that criterion's evaluation, and copy observed and expected verbatim from that witness; keep likelySurface within the criterion's codeSurfaces.${
             request.capsule.subject.snapshot
               ? " Each reproduction step must be that witness's reproduction step copied verbatim or one of the contract's exact named commands; the host runs them and interprets no prose."
               : ""

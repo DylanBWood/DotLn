@@ -1,0 +1,27 @@
+Command: npm run test:docs
+Exit: 0
+Full log retained in ignored .runtime/wo058-doc-gate.log
+PASS build 0.63 s
+PASS publication 0.16 s
+PASS release-surfaces 1.67 s
+PASS lineage 0.05 s
+PASS index 1.59 s
+PASS harness 0.19 s
+PASS harness-context 0.14 s
+PASS authority-evidence 0.77 s
+PASS harness-evidence 0.42 s
+PASS artifact-evidence 0.26 s
+PASS verification-evidence 1.29 s
+PASS format 4.92 s
+PASS meta 1.39 s
+PASS feedback-evidence 2.88 s
+PASS docs-check 9.70 s
+PASS lineage-fixtures 0.52 s
+PASS docs-check-fixtures 2.75 s
+PASS plan-refutation-current 2.46 s
+PASS registrations 0.52 s
+PASS skeleton-docs 3.32 s
+PASS entropy 0.20 s
+PASS console-docs 4.19 s
+PASS plan 2.52 s
+npm run test:docs: 23 passed; 0 failed; 15.88 s; 23 fresh tasks

@@ -1,4 +1,4 @@
-# WO-058 — `verification-v1` gains `visual` and `network` claim types with witness rules: a DOM-only witness cannot satisfy a visual criterion, a network claim needs request evidence, and a console error is a failing witness (version assigned at activation)
+# WO-058 — `verification-v1` gains `visual` and `network` claim types with witness rules: a DOM-only witness cannot satisfy a visual criterion, a network claim needs request evidence, and a console error is a failing witness (v0.58.0)
 
 **Model:** any capable model. State the model and effort actually run in the
 result (07-execution-guide.md §Model-specific notes).

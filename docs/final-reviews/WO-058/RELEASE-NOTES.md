@@ -1,0 +1,21 @@
+## Release overview
+
+DotLn's verification contract can now judge visual and network claims. A criterion can be typed `visual` or `network`. Host evidence can carry a hash-bound screenshot, DOM snapshot, accessibility snapshot, network trace or console capture. A verifier's pass is admitted only when the right witness supports it. This release is for anyone whose acceptance criteria concern what a page shows or what it requests; until now those were state or behavior claims backed by prose. It delivers the contract and its admission rules, proven with browser-free fixtures. The browser adapter that produces real witnesses belongs to a later order.
+
+## Read before upgrading
+
+No migration is needed. The contract stays `verification-v1`, and the accepted-result version stays 1. Every recorded capsule and stream replays unchanged, because an evidence item without a witness lowers to the same bytes as before. An older compiler or skeleton refuses a capsule that uses a new claim type or witness at decode. A verifier result can now meet three new refusals: `visual pass requires screenshot`, `network pass requires trace` and `console error witness`. The verifier's prompt now states these rules for every capsule. A witness proves only that its hash is bound to the evidence, not that the captured content is authentic. Known limit, recorded as a follow-up: the verifier's result schema offers all four claim types for every criterion, so a live verifier can emit a mismatched claim type that admission then refuses.
+
+## Substantive changes
+
+Verification criteria and evidence accept two new claim types, `visual` and `network`, beside `state` and `behavior`. An evidence item may carry one optional witness of five kinds. Each witness has a `sha256:` content hash and a closed shape. A `screenshot` also names the criterion it is bound to, which must match its evidence item. A `network-trace` records the request's method, URL and body hash and the response's status and body hash. A `console-capture` records up to 100 level and message entries. An unknown kind, a malformed or extra field, or a criterion typed outside the four claim types refuses at decode with its schema path.
+
+Admission gains three rules beside the existing unsupported-pass and contradictory-witness rules. A pass for a visual criterion needs a cited, passing screenshot. DOM and accessibility snapshots alone support only `unverified`, which leaves the row incomplete. A pass for a network criterion needs a cited, passing network trace. A console capture holding an error must be a failing witness. It refuses a pass for its criterion and required check whether or not the verifier cites it, and it supports a cited `fail`. Rows still change only through a host-admitted verifier evaluation, and the worktree-snapshot profile still admits only live behavior criteria with host-run tests.
+
+## Progressive polish
+
+The domain model's verification section now lists the four claim types, the witness kinds and the rules in place of the deferral note. The compatibility document folds the original verification paragraph into one statement of the contract axis and both releases. The installed harness is re-emitted for the new compiler release, and the console's self-host fixture is re-pinned to the new feedback edition.
+
+## Evidence and compatibility
+
+Application `v0.58.0` is a minor release over `v0.57.0`. `@dotln/compiler` moves from 0.20.0 to 0.21.0 and `@dotln/skeleton` from 0.46.0 to 0.47.0; the console's exact pins follow. No external dependency is added, and the kernel is unchanged. The authority, artifact-identity, verification and feedback evidence editions are re-minted at WO-058 revision 001. The feedback edition comes from one live self-host episode on Codex CLI 0.159.2 with `gpt-6.1-sol` at `max`. VER-001 passed all seven criteria, and it re-lowered all 179 recorded `verification-v1` capsules to identical bytes. The product gate has a fresh passing row at this code identity, and the document gate passes. Evidence: [decisions](../../evidence/WO-058/decisions.md), [handoff](../../evidence/WO-058/handoff.md), [fixture transcript](../../evidence/WO-058/witness-fixtures.tap), [VER-001](../../verifications/WO-058/VER-001.md) and [FINAL-001](FINAL-001.md).

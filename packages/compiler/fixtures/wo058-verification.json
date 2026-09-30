@@ -1,0 +1,144 @@
+{
+  "criteria": [
+    {
+      "criterionId": "visual",
+      "description": "The visual fixture is witnessed.",
+      "claimType": "visual",
+      "evidenceSource": "synthetic-fixture",
+      "codeSurfaces": [
+        "scenario.txt"
+      ],
+      "requiredChecks": [
+        "scenario"
+      ]
+    },
+    {
+      "criterionId": "network",
+      "description": "The network fixture is witnessed.",
+      "claimType": "network",
+      "evidenceSource": "synthetic-fixture",
+      "codeSurfaces": [
+        "scenario.txt"
+      ],
+      "requiredChecks": [
+        "scenario"
+      ]
+    }
+  ],
+  "subject": {
+    "repo": "public-witness-fixture",
+    "baseCommit": "base",
+    "revision": "candidate",
+    "diff": "Synthetic scenario changes.",
+    "files": [
+      {
+        "path": "scenario.txt",
+        "contents": "Synthetic visual and network scenario."
+      }
+    ],
+    "evidence": [
+      {
+        "evidenceId": "screenshot",
+        "criterionId": "visual",
+        "checkId": "scenario",
+        "claimType": "visual",
+        "source": "synthetic-fixture",
+        "subjectRevision": "candidate",
+        "codeSurfaces": [
+          "scenario.txt"
+        ],
+        "automatedTest": null,
+        "observed": "Scenario completed.",
+        "expected": "Scenario completed.",
+        "outcome": "pass",
+        "reproductionSteps": [
+          "Run the synthetic scenario."
+        ],
+        "witness": {
+          "kind": "screenshot",
+          "contentHash": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "criterionId": "visual"
+        }
+      },
+      {
+        "evidenceId": "trace",
+        "criterionId": "network",
+        "checkId": "scenario",
+        "claimType": "network",
+        "source": "synthetic-fixture",
+        "subjectRevision": "candidate",
+        "codeSurfaces": [
+          "scenario.txt"
+        ],
+        "automatedTest": null,
+        "observed": "Scenario completed.",
+        "expected": "Scenario completed.",
+        "outcome": "pass",
+        "reproductionSteps": [
+          "Run the synthetic scenario."
+        ],
+        "witness": {
+          "kind": "network-trace",
+          "contentHash": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "request": {
+            "method": "GET",
+            "url": "https://example.test/items",
+            "bodyHash": null
+          },
+          "response": {
+            "status": 200,
+            "bodyHash": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+          }
+        }
+      }
+    ]
+  },
+  "witnesses": {
+    "screenshot": {
+      "kind": "screenshot",
+      "contentHash": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "criterionId": "visual"
+    },
+    "dom": {
+      "kind": "dom-snapshot",
+      "contentHash": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+    },
+    "accessibility": {
+      "kind": "accessibility-snapshot",
+      "contentHash": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+    },
+    "trace": {
+      "kind": "network-trace",
+      "contentHash": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "request": {
+        "method": "GET",
+        "url": "https://example.test/items",
+        "bodyHash": null
+      },
+      "response": {
+        "status": 200,
+        "bodyHash": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+      }
+    },
+    "console": {
+      "kind": "console-capture",
+      "contentHash": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "entries": [
+        {
+          "level": "info",
+          "message": "Scenario completed."
+        }
+      ]
+    },
+    "consoleError": {
+      "kind": "console-capture",
+      "contentHash": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "entries": [
+        {
+          "level": "error",
+          "message": "Synthetic scenario error."
+        }
+      ]
+    }
+  }
+}
