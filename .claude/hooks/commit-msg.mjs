@@ -1,6 +1,6 @@
 // Origin: {"ids":["no-attribution"],"loadoutId":"contributor","semanticHash":"fnv1a64:3fda088a97df0f55"}
-const { runCommitMessageHook } = await import("../../.runtime/harness/715f5d979b370709/packages/skeleton/dist/src/harness-host.js");
-const { feedbackBoundary } = await import("../../.runtime/harness/715f5d979b370709/packages/skeleton/dist/src/feedback-boundary.js");
+const { runCommitMessageHook } = await import("../../.runtime/harness/99bd6eb4b80cd4f3/packages/skeleton/dist/src/harness-host.js");
+const { feedbackBoundary } = await import("../../.runtime/harness/99bd6eb4b80cd4f3/packages/skeleton/dist/src/feedback-boundary.js");
 await runCommitMessageHook({
   "compilerPackageVersion": "0.20.0",
   "runtime": {
@@ -53,7 +53,7 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/source-change-command.js",
-        "hash": "fnv1a64:cbd81fc0aefe372b"
+        "hash": "fnv1a64:933738e4e7daa573"
       },
       {
         "path": "packages/skeleton/dist/src/source-change-state.js",
@@ -85,11 +85,11 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/reactor.js",
-        "hash": "fnv1a64:fedf98491fae9190"
+        "hash": "fnv1a64:46510e30241f5a10"
       },
       {
         "path": "packages/skeleton/dist/src/repair.js",
-        "hash": "fnv1a64:d55bcdad7be35d1b"
+        "hash": "fnv1a64:7275a76da69b600c"
       },
       {
         "path": "packages/skeleton/dist/src/resident-state.js",
@@ -121,7 +121,7 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/worker-protocol.js",
-        "hash": "fnv1a64:bef918c37be71732"
+        "hash": "fnv1a64:259b924cb0091c1e"
       },
       {
         "path": "packages/skeleton/dist/src/presence-machine.js",
@@ -153,7 +153,7 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/discovery-sandbox.js",
-        "hash": "fnv1a64:9d809e99a432c81c"
+        "hash": "fnv1a64:a13a7ffb9a968962"
       },
       {
         "path": "packages/skeleton/dist/src/discovery-actor.js",
@@ -168,7 +168,7 @@ await runCommitMessageHook({
         "hash": "fnv1a64:5ad495017c40b9b2"
       }
     ],
-    "snapshot": ".runtime/harness/715f5d979b370709"
+    "snapshot": ".runtime/harness/99bd6eb4b80cd4f3"
   },
   "policy": {
     "contractVersion": "feedback-v1",
