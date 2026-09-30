@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "kind": "FiledProductSuggestionPacket",
+  "filedAt": "2026-09-30T13:58:17.489Z",
+  "sourceReceiptId": "REVIEW-004",
+  "sourceReceiptPath": "docs/instance/entropy-reducer/runs/REVIEW-004.md",
+  "operatorReason": "Filed as WO-175's design record; the order takes both bounded steps and names the rows of its table. The packet's first alternative, requiring the predicate form for new numeric conditions, is declined until the listing has output to judge it by.",
+  "promotion": "Filing records the packet. Promotion to a work order remains an operator-authorized planning act.",
+  "packet": {
+    "schemaVersion": 1,
+    "kind": "ProductSuggestionPacket",
+    "proposedPath": "docs/proposals/reopen-conditions-evaluated-at-planning-entry/",
+    "sourceEpisodeId": "ep_entropy_ec1125309afb3ff1",
+    "provenance": [
+      "Entropy Reducer review episode ep_entropy_ec1125309afb3ff1, work order wo_entropy_review_1, subject commit feb7a92e1d41d6db3259f98b31521601686bbe04",
+      "Findings ER4-003 and ER4-004, measured",
+      "Lenses architecture-and-semantics and runtime-and-authority"
+    ],
+    "corroboratingEvidenceRefs": [
+      "plan check 4.37 to 4.74 s against the 2 s condition of WO-156-D008 and D010 (register rows settled)",
+      "Generated release table five tags behind against WO-086-D006's condition",
+      "WO-172 committed 1,808,181 bytes under docs/evidence against FUP-8a4e201d861208ad's 1 MB condition",
+      "meta --check: '0 reopen candidates' while the only metric predicate (WO-150-D003) holds at 26,903 bytes",
+      "REVIEW-003 ER3-002: the previous fired condition was also found by a reviewer's hand measurement"
+    ],
+    "dissentingEvidenceRefs": [
+      "docs/planning/followups.json, 2026-09-19 cleanup rule: a decision with a reopening observation is a record and returns to the feed when the observation is recorded, which places the duty on whoever observes",
+      "The 2 s threshold names the operator's host; the timings here are from a frozen copy on the dispatch host",
+      "Most of the 1,134 conditions are qualitative and cannot be probed; 'more than a few releases' is a judgment"
+    ],
+    "suggestion": {
+      "suggestionId": "reopen-conditions-evaluated-at-planning-entry",
+      "submittedBy": "entropy-reducer@1 (planning-reviewer@2), episode ep_entropy_ec1125309afb3ff1",
+      "problemOrOpportunity": "Every decision must record a reopening condition, and 1,134 of 1,135 are prose that nothing evaluates. The one evaluable predicate names a metric the meter cannot resolve, so the meter's reopen-candidate count is zero whatever the state. Three numeric conditions had occurred at the subject commit without a recorded observation, and the previous review found another the same way.",
+      "scope": "Two bounded steps. First, make the existing evaluator honest: refuse a predicate whose metric the meter cannot resolve, and resolve budget-row metrics such as coldStartBytes.executor. Second, add a small probe table keyed by register or decision id (a command and a threshold per row) for the conditions that name a number, run it from planning entry and list the rows whose condition holds. Start with the rows measured here: plan check time, newer release tags, per-order and weekly evidence bytes, collectSources and release list times. No new gate and no refusal.",
+      "evidenceRefs": [
+        "ER4-003",
+        "ER4-004",
+        "scripts/lib/meta.mjs:199-211, :1729-1752, :2010",
+        "scripts/lib/planning-followups.mjs:713",
+        "docs/evidence/WO-156/decisions.md:253, :338",
+        "docs/evidence/WO-086/decisions.md:192-221",
+        "docs/planning/followups.json FUP-8a4e201d861208ad"
+      ],
+      "affectedUsers": [
+        "the planner opening a pass",
+        "the operator who deferred a decision on a stated threshold",
+        "reviewers who today find fired conditions by hand"
+      ],
+      "affectedSystems": [
+        "scripts/lib/meta.mjs",
+        "scripts/lib/planning-followups.mjs",
+        "scripts/refute-plan.mjs",
+        "docs/planning/followups.json",
+        "docs/evidence/*/decisions.md"
+      ],
+      "expectedValue": "A deferral on a measurable threshold becomes self-reporting: the pass that would act on it sees it at entry. The health line's candidate count starts to carry information.",
+      "altitude": 6,
+      "uncertainty": "About 85 of the 1,134 prose conditions look numeric by pattern match; how many can be probed in under a few seconds each is unmeasured. Whether the three observations here would change a planning decision is the operator's call.",
+      "risks": [
+        "A probe table becomes one more list to keep current",
+        "Timing probes vary with host load and could report noise as a reopening"
+      ],
+      "alternatives": [
+        "Require the predicate form for any new condition that states a number, and leave existing prose alone",
+        "Keep hand observation and add the three fired conditions to the register in the next pass"
+      ],
+      "duplicationHints": [
+        "REVIEW-003 ER3-002 and WO-164 (one fired condition handled as an order)",
+        "WO-172 plan failures (a sibling listing at planning entry)",
+        "FUP-7f9a27e6ed6c44b3 (its thresholds were measured here and do not hold: collectSources 0.73 s, index 1.4 s, release list 0.09 s, status --all 3.3 MB)"
+      ],
+      "urgencyRationale": "Deferred rows stand at 141 and grow with each pass, and conditions recorded on 2026-09-24 and 2026-09-28 were already exceeded by 2026-09-30."
+    }
+  }
+}

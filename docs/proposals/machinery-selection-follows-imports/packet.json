@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "kind": "FiledProductSuggestionPacket",
+  "filedAt": "2026-09-30T13:58:17.442Z",
+  "sourceReceiptId": "REVIEW-004",
+  "sourceReceiptPath": "docs/instance/entropy-reducer/runs/REVIEW-004.md",
+  "operatorReason": "Filed as WO-174's design record for its selection group; the order takes the packet's first alternative (direct imports and spawned entry scripts) and records the review gate's cost before and after.",
+  "promotion": "Filing records the packet. Promotion to a work order remains an operator-authorized planning act.",
+  "packet": {
+    "schemaVersion": 1,
+    "kind": "ProductSuggestionPacket",
+    "proposedPath": "docs/proposals/machinery-selection-follows-imports/",
+    "sourceEpisodeId": "ep_entropy_ec1125309afb3ff1",
+    "provenance": [
+      "Entropy Reducer review episode ep_entropy_ec1125309afb3ff1, work order wo_entropy_review_1, subject commit feb7a92e1d41d6db3259f98b31521601686bbe04",
+      "Finding ER4-002, measured by a mutation drill in a scratch clone",
+      "Lens verification-and-evidence"
+    ],
+    "corroboratingEvidenceRefs": [
+      "Drill: a mutant of scripts/harness.mjs selects 'configuration-root, harness'; harness check exits 0; the unselected harness-fixtures case goes from ok to not ok; no other test file names evidence --wait",
+      "scripts/test-runner.mjs machinerySources comments citing WO-157, WO-159, WO-163, WO-169, WO-171 and WO-173 additions",
+      "scripts/test-evidence-sources.mjs: the same closure rule already enforced for the evidence inventories (WO-157 item 12)"
+    ],
+    "dissentingEvidenceRefs": [
+      "docs/product/07-execution-guide.md:2024-2026: selection by declared sources is the settled WO-132 rule, and npm run test:machinery runs every machinery suite on demand",
+      "The wider census of uncovered references came from a heuristic static probe that was not part of the reproduction and over-counts package index imports"
+    ],
+    "suggestion": {
+      "suggestionId": "machinery-selection-follows-imports",
+      "submittedBy": "entropy-reducer@1 (planning-reviewer@2), episode ep_entropy_ec1125309afb3ff1",
+      "problemOrOpportunity": "npm test -- --review runs a machinery suite only when a path in its hand-kept source list changed. The lists omit files the suites execute: a behavior change in scripts/harness.mjs does not select harness-fixtures, the only suite that tests it, and the mutant passes every selected machinery suite. Six orders have already added entries by hand after the fact.",
+      "scope": "Add one check to the runner-fixtures suite: for each machinery suite, the entry file, its static first-party imports and the script paths it spawns must be covered by its declared sources, with a reasoned exclusion list for shared libraries the operator chooses to leave out. Then repair the lists the check reports. The selection rule itself stays as decided.",
+      "evidenceRefs": [
+        "ER4-002",
+        "scripts/test-runner.mjs (machinerySources, changedMachinery)",
+        "scripts/test-harness.mjs:255, :656-836",
+        "scripts/harness.mjs:166-208",
+        "docs/product/07-execution-guide.md:1201-1204, :1930-1934, :2024-2026"
+      ],
+      "affectedUsers": [
+        "executors whose final criterion names npm test -- --review",
+        "verifiers and reviewers who read a green --review as covering the change",
+        "planners who name re-mints and gates per order"
+      ],
+      "affectedSystems": [
+        "scripts/test-runner.mjs",
+        "scripts/test-runner.test.mjs",
+        "scripts/test-harness.mjs",
+        "scripts/test-process-debt.mjs",
+        "scripts/test-plan-refutation.mjs"
+      ],
+      "expectedValue": "A green --review means every machinery suite that executes a changed file ran. List upkeep stops being a per-order hand step and a finding class at verification.",
+      "altitude": 5,
+      "uncertainty": "The number of real gaps after shared libraries are excluded is unknown; the drill proves one. Covering transitive imports could select the two longest suites (harness-fixtures, process-debt) on most script changes and lengthen --review by minutes.",
+      "risks": [
+        "Over-selection restores the long review gate that the machinery stand-down removed",
+        "A closure over spawned script paths needs a convention for paths built at run time"
+      ],
+      "alternatives": [
+        "Cover direct imports and spawned entry scripts only, leaving shared libraries to the product suites",
+        "Run npm run test:machinery once at final review regardless of selection"
+      ],
+      "duplicationHints": [
+        "WO-157 item 12 (evidence-sources import closure)",
+        "WO-169 D007 and WO-173 D003 (untracked files join the selection)"
+      ],
+      "urgencyRationale": "The review gate is the executable witness at implementation-ready and final review. Each order that adds a script widens the uncovered set, and first verifications already fail at about 40 to 50 per cent."
+    }
+  }
+}
