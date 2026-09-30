@@ -1,15 +1,15 @@
 // Origin: {"ids":["no-attribution"],"loadoutId":"contributor","semanticHash":"fnv1a64:3fda088a97df0f55"}
-const { runCommitMessageHook } = await import("../../.runtime/harness/99bd6eb4b80cd4f3/packages/skeleton/dist/src/harness-host.js");
-const { feedbackBoundary } = await import("../../.runtime/harness/99bd6eb4b80cd4f3/packages/skeleton/dist/src/feedback-boundary.js");
+const { runCommitMessageHook } = await import("../../.runtime/harness/9b6b4be4702a12c4/packages/skeleton/dist/src/harness-host.js");
+const { feedbackBoundary } = await import("../../.runtime/harness/9b6b4be4702a12c4/packages/skeleton/dist/src/feedback-boundary.js");
 await runCommitMessageHook({
-  "compilerPackageVersion": "0.20.0",
+  "compilerPackageVersion": "0.21.0",
   "runtime": {
     "skeletonVersion": "0.34.0",
     "boundaryContract": "feedback-v1",
     "files": [
       {
         "path": "packages/compiler/dist/src/artifact-identity.js",
-        "hash": "fnv1a64:ace28f470a31ee75"
+        "hash": "fnv1a64:8f6587cba3d73d24"
       },
       {
         "path": "packages/compiler/dist/src/harness.js",
@@ -113,7 +113,7 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/verification-protocol.js",
-        "hash": "fnv1a64:d0a82b5b5f43d197"
+        "hash": "fnv1a64:ddef760ecc707526"
       },
       {
         "path": "packages/skeleton/dist/src/plan-refutation-protocol.js",
@@ -168,11 +168,11 @@ await runCommitMessageHook({
         "hash": "fnv1a64:5ad495017c40b9b2"
       }
     ],
-    "snapshot": ".runtime/harness/99bd6eb4b80cd4f3"
+    "snapshot": ".runtime/harness/9b6b4be4702a12c4"
   },
   "policy": {
     "contractVersion": "feedback-v1",
-    "compilerPackageVersion": "0.20.0",
+    "compilerPackageVersion": "0.21.0",
     "units": [
       {
         "unitId": "no-attribution",
@@ -225,6 +225,6 @@ await runCommitMessageHook({
         "enforcement": "hard"
       }
     ],
-    "policyHash": "fnv1a64:611a537e83daf3d7"
+    "policyHash": "fnv1a64:148b9118020a0748"
   }
 }, feedbackBoundary);
