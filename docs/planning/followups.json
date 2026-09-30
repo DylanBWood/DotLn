@@ -12372,6 +12372,14 @@
           "reopenWhen": "one order commits more than 1 MB under docs/evidence, or a week that begins on or after 2026-09-25 adds more than 10 MB of tracked evidence",
           "targets": [],
           "at": "2026-09-28T14:59:04.683Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Its per-order condition occurred once: WO-172 committed 1,808,181 tracked bytes under docs/evidence (1,354,491 as distinct blobs), on an order with four failed verifications and an operator-expanded scope; 431,296 are a one-off transcript survey and 453,690 are repeated authority transcripts that are one Git object. No retention rule is written: pruning stays declined because immutable reports link to edition files. The Codex session-identity join was not examined. [2026-09-30 Entropy Reducer planning pass (docs/planning/entropy-review-004-2026-09-30.md section 6)]",
+          "reopenWhen": "two consecutive orders each commit more than 1 MB of distinct blob bytes under docs/evidence, or a week that begins on or after 2026-09-25 adds more than 10 MB of tracked evidence",
+          "targets": [],
+          "at": "2026-09-30T14:01:27.174Z"
         }
       ]
     },
@@ -13578,6 +13586,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-29T23:48:50.363Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "The decision WO-172's final review asked of planning: superseded editions keep their bytes. Immutable reports link to edition files, so pruning stays declined (2026-09-27 pass), and nine of WO-172's ten authority transcripts are one Git object. Writing an unchanged transcript by reference is ER4-006's row, FUP-adf6621e7f958dd8. [2026-09-30 Entropy Reducer planning pass (docs/planning/entropy-review-004-2026-09-30.md section 6)]",
+          "reopenWhen": "the operator decides that committed evidence may be pruned, or a checkout's size is recorded as blocking a clone, a worktree or a frozen review copy",
+          "targets": [],
+          "at": "2026-09-30T14:01:27.208Z"
         }
       ]
     },
@@ -17173,6 +17189,14 @@
           "reopenWhen": "A new check exceeds 2 s or changes subject bytes, mutable-ref freshness or receipt validation.",
           "targets": [],
           "at": "2026-09-24T20:02:05.315Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-156's repair stands. Its latency clause occurred: the plan check takes 4.74 to 4.78 s on the operator's host on 2026-09-30 (4.37 to 4.83 s in REVIEW-004 and REFUTATION-005) against 1.80 s at WO-156's close, and scripts/lib/plan-continuation.mjs now imports the Markdown parser. The latency decision and its new threshold are carried by FUP-fb8cbeabbddef397. [2026-09-30 Entropy Reducer planning pass (docs/planning/entropy-review-004-2026-09-30.md section 6)]",
+          "reopenWhen": "a new check changes subject bytes, mutable-ref freshness or receipt validation",
+          "targets": [],
+          "at": "2026-09-30T14:01:27.106Z"
         }
       ]
     },
@@ -17221,6 +17245,14 @@
           "reopenWhen": "Either independent accepted-input probe fails, canonical validation weakens, output differs, or host check exceeds 2 s.",
           "targets": [],
           "at": "2026-09-24T20:23:22.583Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "The VER-002 F1 and F2 repair stands. Its latency clause occurred on 2026-09-30 (the plan check at 4.74 to 4.78 s on the operator's host) and is carried by FUP-fb8cbeabbddef397 with a new threshold. [2026-09-30 Entropy Reducer planning pass (docs/planning/entropy-review-004-2026-09-30.md section 6)]",
+          "reopenWhen": "either independent accepted-input probe fails, canonical validation weakens or paired output differs",
+          "targets": [],
+          "at": "2026-09-30T14:01:27.140Z"
         }
       ]
     },
@@ -22395,7 +22427,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-174's files touch this row and the order leaves it: its preferred repair does not open the reuse lookup, no gate row whose identity missed a new source file is recorded, and the interim rule (a role that edited an untracked source after the latest row runs npm test -- --again and says why) is in force. [2026-09-30 Entropy Reducer planning pass (docs/planning/entropy-review-004-2026-09-30.md section 6)]",
+          "reopenWhen": "a gate row whose identity missed a new source file, or WO-174's executor opens the reuse lookup",
+          "targets": [],
+          "at": "2026-09-30T14:01:27.309Z"
+        }
+      ]
     },
     {
       "id": "FUP-3d4b39cd4b2c4a08",
@@ -22689,6 +22730,14 @@
           "reopenWhen": "The next planning pass changes the sequence or its horizon, or an operator relies on the stale configured/accepted ceiling.",
           "targets": [],
           "at": "2026-09-29T17:41:14.894Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Reconciled: the sequence's entry note is folded (a pass's dated paragraph leaves with the last entry it places; its planning document, the map and the ledger keep it) and eleven closed entries leave. The file is 3,868 bytes against the configured 8,192; the 2026-09-22 acceptance of 12,369 is no longer relied on. [2026-09-30 Entropy Reducer planning pass (docs/planning/entropy-review-004-2026-09-30.md section 6)]",
+          "reopenWhen": "docs/planning/sequence.md exceeds 8,192 bytes again",
+          "targets": [],
+          "at": "2026-09-30T14:01:27.243Z"
         }
       ]
     },
@@ -22968,7 +23017,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Rule 6 of the 2026-09-28 pass is written into product 07 section Operator-opened planning pass, after the standard artifacts, and the sequence's live-episode paragraph is removed. [2026-09-30 Entropy Reducer planning pass (docs/planning/entropy-review-004-2026-09-30.md section 6)]",
+          "reopenWhen": "the operator changes the rule, or an order again routes a step its executor can perform to the operator",
+          "targets": [],
+          "at": "2026-09-30T14:01:27.276Z"
+        }
+      ]
     },
     {
       "id": "FUP-9cb0a7e667913624",
@@ -23722,6 +23780,184 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-30T07:52:00.406Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-4f482b75a1071ab9",
+      "key": "candidate:docs/planning/entropy-reviews/REVIEW-004.md#candidates--accepted-entropy-reducer-findings-review-review-004-recorded-2026-09-30::0396dd1bbaef8e562967754a407d469cecdff63de2595a7e2f95de59814a648c",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "d3f2c8711fd5ab4dabd140d1e35aea4800e701f4022cf966a40557fe9c236dfb",
+          "ref": "docs/planning/entropy-reviews/REVIEW-004.md#candidates--accepted-entropy-reducer-findings-review-review-004-recorded-2026-09-30",
+          "title": "ER4-002 — A host behavior edit still selects its declared suites (docs/product/07-execution-guide.md:1930-1934), and npm test -- --review includes a machinery suite when",
+          "summary": "- **ER4-002 — A host behavior edit still selects its declared suites (docs/product/07-execution-guide.md:1930-1934), and npm test -- --review includes a machinery suite when ** Surface `scripts/test-runner.mjs (machinerySources, changedMachinery); scripts/test-harness.mjs; scripts/harness.mjs; scripts/test-runner.test.mjs (runner-fixtures)`, severity major, altitude 5, evidence measured. Observed: machinerySources is a hand-kept list in scripts/test-runner.mjs whose comments cite six orders that each added entries after the fact (WO-157, WO-159, WO-163, WO-169, WO-171, WO-173). It omits files its suites execute. harness-fixtures (scripts/test-harness.mjs, 11,299 lines) copies and spawns scri",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-174 as its second group: a closure check in runner-fixtures over each machinery suite's entry file, static imports and literally spawned scripts, and the repaired source lists; selection by declared sources stays the rule. [2026-09-30 Entropy Reducer planning pass (docs/planning/entropy-review-004-2026-09-30.md section 6)]",
+          "reopenWhen": "a mutant of a file a machinery suite executes passes npm test -- --review after WO-174 closes",
+          "targets": [
+            "WO-174"
+          ],
+          "at": "2026-09-30T14:01:26.904Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-ae897de944b750d6",
+      "key": "candidate:docs/planning/entropy-reviews/REVIEW-004.md#candidates--accepted-entropy-reducer-findings-review-review-004-recorded-2026-09-30::08837d652ab2ac926b467c400c54ad8b719a89f254a7638b45369e8dae195f41",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "346d8577ce13a61ad696eaf4dd31ab8a85faf22177e22b7af3b837c990f4a10b",
+          "ref": "docs/planning/entropy-reviews/REVIEW-004.md#candidates--accepted-entropy-reducer-findings-review-review-004-recorded-2026-09-30",
+          "title": "ER4-007 — A review or refutation worker's effects stay inside its frozen copy and the host can show it. The dispatch instructs 'nothing outside this working directory may",
+          "summary": "- **ER4-007 — A review or refutation worker's effects stay inside its frozen copy and the host can show it. The dispatch instructs 'nothing outside this working directory may** Surface `scripts/lib/entropy-review.mjs (dispatch, scratch lane, confinement record); packages/skeleton/src/worker-transport.ts (entropyArgs); packages/skeleton/src/entropy-review-protocol.ts (instructions)`, severity minor, altitude 5, evidence measured. Observed: The claude-cli-print review argv sets no environment (packages/skeleton/src/worker-transport.ts entropyArgs), so the worker's temp root is the system temp directory, outside the copy; neither the dispatch nor the transport mentions TMPDIR. Any probe that ca",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-175 as its third group: a temporary root beside the frozen copy, named in the instructions, inventoried in the receipt and removed with the episode, including when a worker leaves read-only directories (met when REFUTATION-005 was filed). [2026-09-30 Entropy Reducer planning pass (docs/planning/entropy-review-004-2026-09-30.md section 6)]",
+          "reopenWhen": "a receipt's confinement record omits a directory its worker wrote, or a filing again ends on a scratch parent it cannot remove",
+          "targets": [
+            "WO-175"
+          ],
+          "at": "2026-09-30T14:01:27.005Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-adf6621e7f958dd8",
+      "key": "candidate:docs/planning/entropy-reviews/REVIEW-004.md#candidates--accepted-entropy-reducer-findings-review-review-004-recorded-2026-09-30::21e45091025aeafb6e526e79d9b7019b453344ecb26e6757ca234ddd53ea164c",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "c95540e278da55eae78fa76ac0e7e4609de24a567fd23b30e2bb8649c77e5921",
+          "ref": "docs/planning/entropy-reviews/REVIEW-004.md#candidates--accepted-entropy-reducer-findings-review-review-004-recorded-2026-09-30",
+          "title": "ER4-006 — Retained evidence links canonical inputs instead of copying them (docs/product/03-architecture.md §Corpus policy). WO-154 applied this to the self-host editions",
+          "summary": "- **ER4-006 — Retained evidence links canonical inputs instead of copying them (docs/product/03-architecture.md §Corpus policy). WO-154 applied this to the self-host editions** Surface `scripts/authority-evidence.mjs; packages/skeleton/src/evidence-editions.mjs; docs/evidence/*/authority/`, severity minor, altitude 10, evidence measured. Observed: 139 authority edition revisions hold 27 distinct authority.json blobs. Of the 82 revisions that follow another in the same order, 76 repeat their predecessor's authority.json byte for byte; WO-172's ten revisions are one blob. Repeated copies total 5,400,240 bytes, and 40 authority.json files arrived since 2026-09-25. A revision is minted whenever ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Accepted as true and declined as an order now. 139 authority revisions hold 27 distinct transcripts; identical blobs are one Git object, so the 5,400,240 repeated bytes are working-tree bytes, 3.4% of docs/evidence, and cost a clone or a fetch nothing. The by-reference form follows WO-154 and is cheap for an order already in the writer. [2026-09-30 Entropy Reducer planning pass (docs/planning/entropy-review-004-2026-09-30.md section 6)]",
+          "reopenWhen": "the next order that edits scripts/authority-evidence.mjs, or repeated authority.json copies exceed 10% of tracked docs/evidence bytes",
+          "targets": [],
+          "at": "2026-09-30T14:01:27.072Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-72adcb05563bb99b",
+      "key": "candidate:docs/planning/entropy-reviews/REVIEW-004.md#candidates--accepted-entropy-reducer-findings-review-review-004-recorded-2026-09-30::3273e42118b973d692d548d846822c6a41abcc0c29ac59e145d96f55d7a45b6c",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "ab14edb7f719d090eac8d68cd1356d9fe6b778718209875fe74b6f308e059999",
+          "ref": "docs/planning/entropy-reviews/REVIEW-004.md#candidates--accepted-entropy-reducer-findings-review-review-004-recorded-2026-09-30",
+          "title": "ER4-004 — A reopening condition recorded as a bounded metric predicate is evaluated by the meter and reported as a reopen candidate when it holds: scripts/lib/meta.mjs:19",
+          "summary": "- **ER4-004 — A reopening condition recorded as a bounded metric predicate is evaluated by the meter and reported as a reopen candidate when it holds: scripts/lib/meta.mjs:19** Surface `scripts/lib/meta.mjs (readDecisions, collectMeta reopenCandidates, metaHealth)`, severity minor, altitude 8, evidence measured. Observed: The repository's only metric predicate, WO-150-D003 (coldStartBytes.executor > 24576), holds: the executor cold start is 26,903 bytes. meta --check --json returns reopenCandidates [] and the health line reads '0 reopen candidates'. The evaluator reads order.metrics[condition.metric]; order rows carry coldStartBytes, while coldStartBytes.executor is a budget-row name, so the",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-175 as its first group: a predicate whose metric the meter cannot resolve is refused, budget-row metrics resolve, and the health line counts what was computed. [2026-09-30 Entropy Reducer planning pass (docs/planning/entropy-review-004-2026-09-30.md section 6)]",
+          "reopenWhen": "the health line prints a reopen-candidate count the meter did not compute",
+          "targets": [
+            "WO-175"
+          ],
+          "at": "2026-09-30T14:01:26.972Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-c494a909ca1c6017",
+      "key": "candidate:docs/planning/entropy-reviews/REVIEW-004.md#candidates--accepted-entropy-reducer-findings-review-review-004-recorded-2026-09-30::6912ccfaec06abd2bb047e81e76036f8e21a1f1f910c5caeb528efc0538a4066",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "b5c76c398eae84b4642cae7e7e04807ca50fc436597396379db9b4ce9bf45d6a",
+          "ref": "docs/planning/entropy-reviews/REVIEW-004.md#candidates--accepted-entropy-reducer-findings-review-review-004-recorded-2026-09-30",
+          "title": "ER4-001 — A reused or bound npm test row stands for the bytes a judge is judging, so the gate's code identity has to cover every input a product suite reads. packages/ske",
+          "summary": "- **ER4-001 — A reused or bound npm test row stands for the bytes a judge is judging, so the gate's code identity has to cover every input a product suite reads. packages/ske** Surface `packages/skeleton/src/gate-evidence.mjs (gateCodeIdentity); scripts/lib/gate-reuse.mjs; scripts/test-runner.mjs (reuse lookup, package suite table); packages/kernel/test/ac7-readme-map.test.ts; packages/console/test/console-commands.test.ts`, severity major, altitude 5, evidence measured. Observed: gateCodeIdentity drops every path under docs/, .claude/ and .agents/ and every root Markdown file (gate-evidence.mjs:679-680). Product suites read those paths. The kernel suite's AC7 case reads docs/product/02-doma",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-174, paired with WO-058 at the head: product cases that read documentation carry the document tag and run in the document gate behind a read guard; adding the excluded trees to the identity is declined. [2026-09-30 Entropy Reducer planning pass (docs/planning/entropy-review-004-2026-09-30.md section 6)]",
+          "reopenWhen": "a product-suite case reads a path the gate code identity excludes after WO-174 closes, or WO-174 closes without its read guard",
+          "targets": [
+            "WO-174"
+          ],
+          "at": "2026-09-30T14:01:26.868Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-a7461ebe9627663d",
+      "key": "candidate:docs/planning/entropy-reviews/REVIEW-004.md#candidates--accepted-entropy-reducer-findings-review-review-004-recorded-2026-09-30::84e2b3d03b4dc7d7876e74154caea53bba52d0da5476f6787d636324341506cf",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "2a0508ad3f4ad493364903a98c863363f29bce0156b638f656d4d7647586fb20",
+          "ref": "docs/planning/entropy-reviews/REVIEW-004.md#candidates--accepted-entropy-reducer-findings-review-review-004-recorded-2026-09-30",
+          "title": "ER4-003 — A deferred decision is reopened when its recorded observation occurs (the accepted ER3-002 precedent, docs/planning/entropy-reviews/REVIEW-003.md; the 2026-09-1",
+          "summary": "- **ER4-003 — A deferred decision is reopened when its recorded observation occurs (the accepted ER3-002 precedent, docs/planning/entropy-reviews/REVIEW-003.md; the 2026-09-1** Surface `docs/planning/followups.json; docs/evidence/*/decisions.md (reopenWhen); scripts/lib/planning-followups.mjs; scripts/refute-plan.mjs (planning entry); scripts/lib/meta.mjs`, severity major, altitude 6, evidence measured. Observed: Reopening conditions are stored and rendered as text. Decision records hold 1,134 prose conditions against one metric predicate, 141 deferred register rows each carry a prose condition, and the only consumer is a textual path match labelled 'a pointer for judgment and never a verdic",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-175, paired with WO-059: a named table of numeric reopening conditions evaluated on demand and counted at planning entry. The three conditions the review found crossed were acted on in this pass. [2026-09-30 Entropy Reducer planning pass (docs/planning/entropy-review-004-2026-09-30.md section 6)]",
+          "reopenWhen": "a review again finds by hand a crossed threshold that the listing names, or WO-175 closes without the listing",
+          "targets": [
+            "WO-175"
+          ],
+          "at": "2026-09-30T14:01:26.939Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-fb8cbeabbddef397",
+      "key": "candidate:docs/planning/entropy-reviews/REVIEW-004.md#candidates--accepted-entropy-reducer-findings-review-review-004-recorded-2026-09-30::e35c88b71d4b12999e915ced364647ac686e216348c19177c6ce3034ff0f74ec",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "e6cc5888614500cf71418262351552561869810e41a0ad77eefac8a4e8933d08",
+          "ref": "docs/planning/entropy-reviews/REVIEW-004.md#candidates--accepted-entropy-reducer-findings-review-review-004-recorded-2026-09-30",
+          "title": "ER4-005 — The cost of a recurring gate should not grow with the amount of closed history (docs/product/07-execution-guide.md §Discipline: a recurring procedure costs less",
+          "summary": "- **ER4-005 — The cost of a recurring gate should not grow with the amount of closed history (docs/product/07-execution-guide.md §Discipline: a recurring procedure costs less** Surface `scripts/docs-check.mjs; scripts/refute-plan.mjs check; scripts/test-runner.mjs document selection`, severity minor, altitude 10, evidence measured. Observed: docs-check is now the slowest task of npm run test:docs: 9.33 s of a 17.24 s gate, and 9.14 to 9.96 s across four gate runs. On every run it parses each tracked Markdown file under the document roots with the Prettier parser: 1,262 files, 27.5 MB, 6.6 s of an 8.6 s checkDocs. Of that, 3.6 s is docs/final-reviews, docs/verifications and docs/evidence, whi",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Accepted as true and declined as an order now. Measured on the operator's host on 2026-09-30 with a review worker running: docs-check 9.29 s, the plan check 4.74 to 4.78 s, in a document gate of about 17 s that grows about 0.2 s a day. A parse cache would save about 9 s a run, one to two and a half minutes an order, against an order's cost and a cache inside a correctness gate. The packet is not filed and stays in the REVIEW-004 receipt. [2026-09-30 Entropy Reducer planning pass (docs/planning/entropy-review-004-2026-09-30.md section 6)]",
+          "reopenWhen": "npm run test:docs exceeds 30 s, its docs-check task exceeds 15 s, or the plan check exceeds 8 s, on the operator's host",
+          "targets": [],
+          "at": "2026-09-30T14:01:27.039Z"
         }
       ]
     }

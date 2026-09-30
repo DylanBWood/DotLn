@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "kind": "FiledProductSuggestionPacket",
+  "filedAt": "2026-09-30T13:58:17.390Z",
+  "sourceReceiptId": "REVIEW-004",
+  "sourceReceiptPath": "docs/instance/entropy-reducer/runs/REVIEW-004.md",
+  "operatorReason": "Filed as WO-174's design record for its documentation-input group; the order prefers the packet's first repair (document tags and a kernel-docs task) and admits the second per path with a recorded reason.",
+  "promotion": "Filing records the packet. Promotion to a work order remains an operator-authorized planning act.",
+  "packet": {
+    "schemaVersion": 1,
+    "kind": "ProductSuggestionPacket",
+    "proposedPath": "docs/proposals/gate-identity-covers-suite-inputs/",
+    "sourceEpisodeId": "ep_entropy_ec1125309afb3ff1",
+    "provenance": [
+      "Entropy Reducer review episode ep_entropy_ec1125309afb3ff1, work order wo_entropy_review_1, subject commit feb7a92e1d41d6db3259f98b31521601686bbe04",
+      "Finding ER4-001, measured by a scratch-clone drill and a read logger on the product console suite",
+      "Lens verification-and-evidence"
+    ],
+    "corroboratingEvidenceRefs": [
+      "Drill: docs/product/02-domain-model.md edited, gate code identity unchanged (73acb752...), kernel AC7 case ok then not ok",
+      "Product console suite read 456 distinct paths under docs/, .claude/, .agents/ and root Markdown with its [document] skip applied",
+      "docs/evidence/WO-173/decisions.md WO-173-D018: 'a reused row must stand for the bytes a judge is judging'",
+      "packages/skeleton/src/gate-evidence.mjs:629-634: a README a test reads as an input stays unmarked and counts"
+    ],
+    "dissentingEvidenceRefs": [
+      "docs/evidence/WO-173/decisions.md (D003 rationale): a tree-hash lookup 'was wrong after every report write', so excluding docs/ from the key is deliberate",
+      "The reuse lookup was read, not executed, in this episode; only the unchanged key and the flipped verdict were measured",
+      "The console reads are mostly of live control state compared between two readers, so a given documentation change may not change that suite's verdict"
+    ],
+    "suggestion": {
+      "suggestionId": "gate-identity-covers-suite-inputs",
+      "submittedBy": "entropy-reducer@1 (planning-reviewer@2), episode ep_entropy_ec1125309afb3ff1",
+      "problemOrOpportunity": "The key under which a passing npm test row is reused and bound to a publication excludes docs/, .claude/, .agents/ and root Markdown, while the kernel and console product suites read those paths. A product-document edit changed a kernel verdict at an unchanged identity, and the document gate runs no kernel suite, so a write-back after a gate or a docs-only planning branch can land a red product suite that no gate reruns.",
+      "scope": "Decide one of two bounded repairs and add its guard. Either tag the product-suite cases that read documentation as [document] and give kernel a -docs task, so product verdicts are independent of the excluded trees, or add the documentation paths product suites read to the identity as a declared input list. In both cases add a runner fixture that runs the product package suites under a read logger and fails on a read of an excluded path. Out of scope: the untracked-source gap (WO-173-D018) and the rule that reports do not move the key.",
+      "evidenceRefs": [
+        "ER4-001",
+        "packages/skeleton/src/gate-evidence.mjs:629-684",
+        "scripts/test-runner.mjs:501-535, :1229-1247",
+        "packages/kernel/test/ac7-readme-map.test.ts:388-432",
+        "packages/console/test/console-commands.test.ts"
+      ],
+      "affectedUsers": [
+        "executors and verifiers whose npm test claim stands on a reused row",
+        "the reviewer who binds productGate at final review",
+        "planners editing product documents on docs-only branches"
+      ],
+      "affectedSystems": [
+        "packages/skeleton/src/gate-evidence.mjs",
+        "scripts/lib/gate-reuse.mjs",
+        "scripts/lib/handoff-ledger.mjs",
+        "scripts/test-runner.mjs",
+        "packages/kernel/test",
+        "packages/console/test"
+      ],
+      "expectedValue": "A reused or bound product-gate row again means the suites ran on the inputs they read. A documentation edit that breaks a product case is caught by the gate the editing pass already runs, instead of by a later unrelated order.",
+      "altitude": 5,
+      "uncertainty": "How many product cases beyond the kernel AC7 case change verdict with documentation content is unmeasured; the console reads may be verdict-neutral. Moving cases to the document gate lengthens that gate by an unmeasured amount.",
+      "risks": [
+        "Adding documentation paths to the identity would bring back reruns after report writes, the cost WO-173 removed",
+        "Re-tagging cases moves them out of the product gate, so a code change that breaks them is then caught only by the document gate"
+      ],
+      "alternatives": [
+        "Leave the key as it is and have the final review always run with --again",
+        "Hash only the specific documents product suites read (for example docs/product/02-domain-model.md) into the identity"
+      ],
+      "duplicationHints": [
+        "WO-173-D018 and FUP-7629e03c6573f5cb (untracked sources in the same key); FUP-71602ec08bc81e9d",
+        "FUP-2aced1f914f376ef (WO-044-D016 reuse-key contract)"
+      ],
+      "urgencyRationale": "Reuse at this key is four days old (WO-173) and every order's write-back touches the excluded trees. The repair is cheapest before WO-123 and WO-118 compose more suites on the same rows."
+    }
+  }
+}

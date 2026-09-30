@@ -1,0 +1,662 @@
+{
+  "schemaVersion": "entropy-review-receipt-v1",
+  "receiptId": "REVIEW-004",
+  "ordinal": 6,
+  "previousReceiptHash": "sha256:3643dad063a3681369bcc349021104c71244280b96c7214af9a10ba80a28de45",
+  "kind": "EntropyReducerReviewRun",
+  "episodeId": "ep_entropy_ec1125309afb3ff1",
+  "startedAt": "2026-09-30T13:07:32.503Z",
+  "endedAt": "2026-09-30T13:44:28.327Z",
+  "subject": {
+    "schemaVersion": "entropy-review-v1",
+    "baseCommit": "feb7a92e1d41d6db3259f98b31521601686bbe04",
+    "repository": "/Users/dylanwood/Projects/DotLn",
+    "scratchRepository": "/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-entropy/cff9570ebfdf6d3e/review-Y1K4mH/repo",
+    "trackedStatusSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "scratchInventorySha256": "f2f77c6789afc84f0447e9e53c9b25f54ef824510076a98a5a08667b6ef76d9b",
+    "scratchInventoryCount": 4017,
+    "hash": "ec1125309afb3ff11d7e25eadcb8485a3afd5d17eb90ee5df3e7b8d1d8d811ea"
+  },
+  "workingTreeDirtyAtDispatch": false,
+  "namedRevision": "feb7a92e1d41d6db3259f98b31521601686bbe04",
+  "actorAttestation": {
+    "route": "launched",
+    "transport": "claude-cli-print",
+    "harness": "claude-code",
+    "harnessVersion": "2.1.285",
+    "model": "claude-opus-5-5",
+    "effort": "xhigh",
+    "source": "command-line-readback-and-invocation",
+    "accountLabel": null,
+    "tools": [
+      "Bash",
+      "Read",
+      "Glob",
+      "Grep"
+    ],
+    "effectiveModel": "unknown",
+    "effectiveEffort": "unknown",
+    "identity": "entropy-reducer@1",
+    "substitutionReason": null,
+    "substitutionPolicy": "different-reviewer-and-must-be-attested"
+  },
+  "compilation": {
+    "semanticHash": "fnv1a64:1d1dd07b62dfad45",
+    "compileInputs": {
+      "route": "claude-cli-print",
+      "repo": "/var/folders/m1/v91jv25j7nl21fs2yxgjm3540000gn/T/dotln-entropy/cff9570ebfdf6d3e/review-Y1K4mH/repo",
+      "baseCommit": "feb7a92e1d41d6db3259f98b31521601686bbe04",
+      "episodeId": "ep_entropy_ec1125309afb3ff1",
+      "dispatchedAt": 1790773652480,
+      "episodeEndsAt": 1790860052480
+    },
+    "workOrderId": "wo_entropy_review_1",
+    "authorityEnvelopeId": "auth_entropy_reducer",
+    "reviewerRequirement": {
+      "harness": "claude-code",
+      "model": "claude-opus-5-5",
+      "displayModel": "Claude Opus 5.5",
+      "effort": "xhigh",
+      "substitutionPolicy": "different-reviewer-and-must-be-attested"
+    },
+    "executionBoundary": {
+      "mode": "operator-mediated-manual",
+      "deferredProgramKind": null,
+      "commandIds": "symbolic-manual-plan",
+      "resultBinding": "host-validator",
+      "resourceEnforcement": "authorize-each-operation-and-thread-envelope"
+    }
+  },
+  "concern": null,
+  "reviewerOutput": {
+    "schemaVersion": 1,
+    "findings": [
+      {
+        "findingId": "ER4-001",
+        "criterion": "A reused or bound npm test row stands for the bytes a judge is judging, so the gate's code identity has to cover every input a product suite reads. packages/skeleton/src/gate-evidence.mjs (gateCodeIdentity comment, WO-115 D026) says product evidence is independent of documentation and that 'a README a test reads as an input stays unmarked and counts'; WO-173-D018 states the same rule for reuse.",
+        "severity": "major",
+        "observed": "gateCodeIdentity drops every path under docs/, .claude/ and .agents/ and every root Markdown file (gate-evidence.mjs:679-680). Product suites read those paths. The kernel suite's AC7 case reads docs/product/02-domain-model.md (packages/kernel/test/ac7-readme-map.test.ts:388-432). The product console suite, run with its [document] skip, read 456 distinct excluded paths (docs/evidence, docs/work-orders, docs/control, both skill roots, CLAUDE.md); a per-file run attributed 446 of them to console-commands.test. Drill in a scratch clone: replacing one bold term in 02-domain-model.md left the identity at 73acb752... and turned the kernel case from ok to not ok. npm test reuses a passing row by that identity (scripts/test-runner.mjs:1229-1247, scripts/lib/gate-reuse.mjs), an executor's npm test claim and the productGate binding stand on the same row, and npm run test:docs runs no kernel suite. A documentation write-back after a gate, or a docs-only planning branch, can therefore leave a red product suite that no gate reruns until a later code change moves the identity. The unchanged key and the flipped verdict were measured; the reuse lookup itself was read, not executed. WO-173-D018 records the separate untracked-source gap in the same key.",
+        "expected": "Every tracked path a product suite reads is part of the key its passing row is reused under, or the cases that read documentation run in the document gate. Either the identity includes the excluded paths product suites read, or those cases carry the [document] tag (kernel has no -docs task today), with a fixture that fails when a product suite reads a path the identity excludes.",
+        "evidenceRefs": [
+          "packages/skeleton/src/gate-evidence.mjs:629-684 (gateCodeIdentity comment and exclusion)",
+          "scripts/lib/gate-reuse.mjs (coveringGateCheck keys on codeIdentity)",
+          "scripts/test-runner.mjs:1229-1247 (npm test reuse), :501-535 (kernel has no [document] split; only skeleton-docs and console-docs exist)",
+          "packages/kernel/test/ac7-readme-map.test.ts:388-432",
+          "packages/console/test/console-commands.test.ts (446 excluded paths read in a per-file run)",
+          "docs/product/07-execution-guide.md:1924-1929 (productGate bound by identity)",
+          "docs/evidence/WO-173/decisions.md WO-173-D018 (the untracked-source gap, a different cause in the same key)",
+          "Drill output: identity 73acb7520bba8e96... before and after; AC7 case ok then not ok"
+        ],
+        "surface": "packages/skeleton/src/gate-evidence.mjs (gateCodeIdentity); scripts/lib/gate-reuse.mjs; scripts/test-runner.mjs (reuse lookup, package suite table); packages/kernel/test/ac7-readme-map.test.ts; packages/console/test/console-commands.test.ts",
+        "altitude": 5,
+        "standardization": {
+          "kind": "recurring",
+          "rung": "test",
+          "rationale": "Product-document write-backs follow nearly every order, so the gap recurs at each one. The cheapest standard is a runner fixture that runs the product package suites under a read logger and fails on any read of a path the identity excludes."
+        },
+        "evidenceLabel": "measured",
+        "reproduction": {
+          "kind": "command",
+          "command": "cd \"$(git rev-parse --show-toplevel)\" && mkdir -p .runtime/tmp && export TMPDIR=$PWD/.runtime/tmp && node scripts/build.mjs >/dev/null && echo \"== paths the gate code identity leaves out:\" && grep -n -F '(?:docs|\\.claude|\\.agents)' packages/skeleton/src/gate-evidence.mjs && printf '%s' 'import fs from \"node:fs\";import {syncBuiltinESMExports} from \"node:module\";const r=process.env.FSLOG_ROOT,o=process.env.FSLOG_OUT;for(const n of [\"readFileSync\",\"openSync\",\"readdirSync\"]){const f=fs[n];fs[n]=function(p,...a){try{const s=String(p);if(s.startsWith(r+\"/\")&&/^(docs|\\.claude|\\.agents)\\/|^[^/]+\\.md$/i.test(s.slice(r.length+1)))fs.appendFileSync(o,s.slice(r.length+1)+\"\\n\")}catch{}return f.call(this,p,...a)}}syncBuiltinESMExports();' > $TMPDIR/fslog.mjs && rm -f $TMPDIR/fslog.txt && (FSLOG_ROOT=$PWD FSLOG_OUT=$TMPDIR/fslog.txt NODE_OPTIONS=\"--import $TMPDIR/fslog.mjs\" node --test --test-reporter=tap '--test-skip-pattern=\\[document\\]' packages/console/dist/test/*.test.js >/dev/null 2>&1; echo \"product console suite exit $?; distinct excluded paths it read: $(sort -u $TMPDIR/fslog.txt | wc -l | tr -d ' ')\") && rm -rf .runtime/drill-identity && git clone -q --local --no-hardlinks . .runtime/drill-identity && cd .runtime/drill-identity && ln -s ../../node_modules node_modules && node scripts/build.mjs >/dev/null && ID='import {gateCodeIdentity} from \"./packages/skeleton/src/gate-evidence.mjs\";console.log(\"gate code identity:\",gateCodeIdentity(process.cwd()))' && T() { node --test --test-reporter=tap --test-name-pattern='right cell names an entry' packages/kernel/dist/test/ac7-readme-map.test.js 2>&1 | grep -E '^(ok|not ok)'; } && echo \"== scratch clone, before:\" && node --input-type=module -e \"$ID\" && T; sed -i '' 's/\\*\\*Cadence/**Rhythm/' docs/product/02-domain-model.md && echo \"== scratch clone, after editing only $(git diff --name-only):\" && node --input-type=module -e \"$ID\" && T"
+        }
+      },
+      {
+        "findingId": "ER4-002",
+        "criterion": "A host behavior edit still selects its declared suites (docs/product/07-execution-guide.md:1930-1934), and npm test -- --review includes a machinery suite when its own declared sources changed (07:2024-2026), which is why an order editing such a source names --review as its gate (07:1201-1204, WO-144 D010). The declaration therefore has to cover what each suite executes.",
+        "severity": "major",
+        "observed": "machinerySources is a hand-kept list in scripts/test-runner.mjs whose comments cite six orders that each added entries after the fact (WO-157, WO-159, WO-163, WO-169, WO-171, WO-173). It omits files its suites execute. harness-fixtures (scripts/test-harness.mjs, 11,299 lines) copies and spawns scripts/harness.mjs (lines 255, 661-836), which only the harness bundle check declares. Drill in a scratch clone: changing the exit code that harness evidence --wait gives a failed row (scripts/harness.mjs, the branch at 166-208) makes changedMachinery select configuration-root and harness; harness-fixtures is not selected; harness check exits 0 on the mutant; the unselected case 'WO-166 evidence wait exits for pass, failure, timeout and absent row' goes from ok to not ok; no other test file names evidence --wait. In an earlier run configuration-root gave the same result with and without the mutant (11 pass, 2 fail, an artifact of the nested clone). A heuristic static probe outside this reproduction found further uncovered direct references, for example process-debt to scripts/resume.mjs, scripts/release.mjs and scripts/refute-plan.mjs, and plan-refutation to scripts/lib/control.mjs and scripts/lib/dependencies.mjs. The evidence inventories already have an import-closure check (WO-157 item 12); the machinery lists have none. Selection by declared sources is a settled rule and is not questioned here.",
+        "expected": "A change to any first-party file a machinery suite imports or spawns selects that suite under --review, by a check instead of list upkeep: the runner-fixtures suite compares each machinery suite's entry, its static imports and the script paths it spawns with its declared sources and fails on an uncovered path, as the evidence-sources suite does for the evidence inventories.",
+        "evidenceRefs": [
+          "scripts/test-runner.mjs (machinerySources, from line 80; harness-fixtures list at 101-144; changedMachinery at 366-424; suite rows at 592-601)",
+          "scripts/test-harness.mjs:255, :656-836 (copies and spawns scripts/harness.mjs)",
+          "scripts/harness.mjs:166-208 (evidence --wait branch)",
+          "docs/product/07-execution-guide.md:1201-1204, :1930-1934, :2024-2026",
+          "scripts/test-evidence-sources.mjs (the import-closure precedent, WO-157 item 12)",
+          "Drill output: selected 'configuration-root, harness'; harness check exit 0; WO-166 case ok then not ok; 0 other test files name evidence --wait"
+        ],
+        "surface": "scripts/test-runner.mjs (machinerySources, changedMachinery); scripts/test-harness.mjs; scripts/harness.mjs; scripts/test-runner.test.mjs (runner-fixtures)",
+        "altitude": 5,
+        "standardization": {
+          "kind": "recurring",
+          "rung": "test",
+          "rationale": "The list drifts with every order that adds a script or moves a helper, and six orders have already patched it by hand. A closure test in runner-fixtures is cheaper than the next missed regression and reuses the pattern the evidence-sources suite already carries."
+        },
+        "evidenceLabel": "measured",
+        "reproduction": {
+          "kind": "command",
+          "command": "cd \"$(git rev-parse --show-toplevel)\" && mkdir -p .runtime/tmp && export TMPDIR=$PWD/.runtime/tmp && rm -rf .runtime/drill-selection && git clone -q --local --no-hardlinks . .runtime/drill-selection && cd .runtime/drill-selection && ln -s ../../node_modules node_modules && node scripts/build.mjs >/dev/null && T() { node --test --test-reporter=tap --test-name-pattern='WO-166 evidence wait exits' scripts/test-harness.mjs 2>&1 | grep -E '^(ok|not ok)'; } && echo \"== unmutated scratch clone: the harness-fixtures case that spawns scripts/harness.mjs\" && T; sed -i '' 's|process.exitCode = status === \"passed\" ? 0 : status === \"failed\" ? 1 : 2;|process.exitCode = status === \"passed\" ? 0 : 2;|' scripts/harness.mjs && echo \"== mutant: $(git diff --stat | tail -1)\" && node --input-type=module -e 'import {changedMachinery,suites} from \"./scripts/test-runner.mjs\";const s=changedMachinery(process.cwd(),suites,\"HEAD\").map(r=>r.name);console.log(\"machinery suites npm test -- --review selects for this change:\",s.join(\", \"),\"| harness-fixtures selected:\",s.includes(\"harness-fixtures\"));console.log(\"scripts/harness.mjs declared for harness-fixtures:\",suites.find(r=>r.name===\"harness-fixtures\").sources.includes(\"scripts/harness.mjs\"))' && (node scripts/harness.mjs check >/dev/null 2>&1; echo \"selected suite harness (harness.mjs check) exit on mutant: $?\") && echo \"== mutant: the unselected harness-fixtures case\" && T; echo \"other test files naming evidence --wait: $(git grep -l -e 'evidence --wait' -e '\"--wait\"' -- 'scripts/test-*' 'packages/*/test/*' | grep -v '^scripts/test-harness.mjs$' | wc -l | tr -d ' ')\""
+        }
+      },
+      {
+        "findingId": "ER4-003",
+        "criterion": "A deferred decision is reopened when its recorded observation occurs (the accepted ER3-002 precedent, docs/planning/entropy-reviews/REVIEW-003.md; the 2026-09-19 register rule that a decision with a reopening observation 'returns to the feed when that observation is recorded'). Every decision must carry a reopening condition (scripts/lib/meta.mjs:181).",
+        "severity": "major",
+        "observed": "Reopening conditions are stored and rendered as text. Decision records hold 1,134 prose conditions against one metric predicate, 141 deferred register rows each carry a prose condition, and the only consumer is a textual path match labelled 'a pointer for judgment and never a verdict' (scripts/lib/planning-followups.mjs:713). The meter prints '0 reopen candidates'. Three recorded numeric conditions hold at HEAD with no record of the observation. (1) WO-156-D008 and D010 reopen when the plan check exceeds 2 s, and register rows FUP-3dc0266d6b87b939 and FUP-ab1746dc9c595d95 are settled on the same condition; plan check took 4.37 to 4.74 s in six runs, against 1.90 s at WO-156's close. (2) WO-086-D006 reopens when the newer-tag report 'grows by more than a few releases without regeneration'; one day after landing, the generated release table is five tags behind (v0.56.1 to v0.57.0), and only a hand-run command writes it. (3) FUP-8a4e201d861208ad, deferred 2026-09-28, reopens when 'one order commits more than 1 MB under docs/evidence'; WO-172 committed 1,808,181 bytes the next day. A separate probe put docs/evidence growth since the last commit before 2026-09-25 at 9,878,036 bytes, against the same row's 10 MB weekly condition. The 2 s threshold names the operator's host; these timings come from the frozen copy on the dispatch host.",
+        "expected": "A numeric reopening condition is observed by the pass that would act on it. Planning entry runs the measurable conditions of deferred and settled rows and lists the ones that hold, and a condition that names a measurable threshold is recorded in the evaluable form the meter already defines.",
+        "evidenceRefs": [
+          "docs/evidence/WO-156/decisions.md:253 (WO-156-D008 reopenWhen), :338 (WO-156-D010), :322 (plan 1.90 s at close)",
+          "docs/evidence/WO-086/decisions.md:192-221 (WO-086-D006 and its reopenWhen)",
+          "docs/planning/followups.json FUP-8a4e201d861208ad (deferred 2026-09-28T14:59:04Z), FUP-3dc0266d6b87b939, FUP-ab1746dc9c595d95 (settled)",
+          "scripts/lib/planning-followups.mjs:713 (textual match only)",
+          "scripts/lib/release-history.mjs:23, scripts/release.mjs list --markdown --write (no lifecycle caller)",
+          "scripts/lib/meta.mjs:2010 (health line)",
+          "docs/instance/entropy-reducer/runs/REVIEW-003.json ER3-002 (the previous fired condition, found by hand)",
+          "Command output: real 4.37; NEWER ... v0.56.1, v0.56.2, v0.56.3, v0.56.4, v0.57.0; 1808181; 1134 prose, 1 predicate; 0 reopen candidates"
+        ],
+        "surface": "docs/planning/followups.json; docs/evidence/*/decisions.md (reopenWhen); scripts/lib/planning-followups.mjs; scripts/refute-plan.mjs (planning entry); scripts/lib/meta.mjs",
+        "altitude": 6,
+        "standardization": {
+          "kind": "recurring",
+          "rung": "script",
+          "rationale": "Two consecutive reviews have found fired conditions by hand (ER3-002, then three here). A small table of probe commands keyed by register or decision id, run at planning entry, turns the thresholds that name a number into observations without adding a gate."
+        },
+        "evidenceLabel": "measured",
+        "reproduction": {
+          "kind": "command",
+          "command": "cd \"$(git rev-parse --show-toplevel)\" && mkdir -p .runtime/tmp && export TMPDIR=$PWD/.runtime/tmp && node scripts/build.mjs >/dev/null && echo \"== plan check wall time (WO-156-D008 reopens above 2 s):\" && ( /usr/bin/time -p node scripts/refute-plan.mjs check >/dev/null ) 2>&1 | grep real && git grep -h -o '\"reopenWhen\": \"A fresh check on the operator[^\"]*\"' -- docs/evidence/WO-156/decisions.md && echo \"== generated release table (WO-086-D006):\" && node scripts/docs-check.mjs | grep -o 'NEWER local release tags[^;]*' && git grep -h -o '\"reopenWhen\": \"The newer-tag report grows[^\"]*\"' -- docs/evidence/WO-086/decisions.md && echo \"== bytes under docs/evidence/WO-172:\" && git ls-tree -r -l HEAD -- docs/evidence/WO-172 | awk '{s+=$4} END {print s}' && node -e 'const j=require(\"./docs/planning/followups.json\");for(const id of [\"FUP-8a4e201d861208ad\",\"FUP-3dc0266d6b87b939\",\"FUP-ab1746dc9c595d95\"]){const d=j.entries.find(e=>e.id===id).dispositions.at(-1);console.log(id,d.status,d.at,\"| reopenWhen:\",d.reopenWhen)}' && echo \"== what evaluates them:\" && echo \"prose reopenWhen in decision records: $(git grep -h -o '\"reopenWhen\": \"' -- 'docs/evidence/*/decisions.md' | wc -l | tr -d ' '); metric-predicate reopenWhen: $(git grep -h -o '\"reopenWhen\": {' -- 'docs/evidence/*/decisions.md' | wc -l | tr -d ' ')\" && node scripts/meta.mjs --check 2>/dev/null | grep -o '[0-9]* reopen candidates'"
+        }
+      },
+      {
+        "findingId": "ER4-004",
+        "criterion": "A reopening condition recorded as a bounded metric predicate is evaluated by the meter and reported as a reopen candidate when it holds: scripts/lib/meta.mjs:199-211 accepts the form, :1729-1752 evaluates it, and the health line reports the count.",
+        "severity": "minor",
+        "observed": "The repository's only metric predicate, WO-150-D003 (coldStartBytes.executor > 24576), holds: the executor cold start is 26,903 bytes. meta --check --json returns reopenCandidates [] and the health line reads '0 reopen candidates'. The evaluator reads order.metrics[condition.metric]; order rows carry coldStartBytes, while coldStartBytes.executor is a budget-row name, so the lookup is undefined and the predicate can never hold. readDecisions checks only that metric is a string. The breach itself was handled by a dated acceptance on 2026-09-22 (docs/control/budgets.json), so the cost is a loop that reports zero whatever the state, not a missed breach.",
+        "expected": "A predicate whose metric the meter cannot resolve is refused when decisions are read, and a predicate that holds appears among the reopen candidates. Failing that, the health line does not print a candidate count it cannot compute.",
+        "evidenceRefs": [
+          "docs/evidence/WO-150/decisions.md:137-141 (WO-150-D003 reopenWhen predicate)",
+          "scripts/lib/meta.mjs:199-211 (shape validation), :1729-1752 (evaluator, line 1735 lookup), :2010 (health line)",
+          "docs/control/budgets.json (coldStartBytes.executor 29246; acceptance dated 2026-09-22)",
+          "Command output: reopenCandidates []; metrics.coldStartBytes = 26903; metrics[\"coldStartBytes.executor\"] = undefined"
+        ],
+        "surface": "scripts/lib/meta.mjs (readDecisions, collectMeta reopenCandidates, metaHealth)",
+        "altitude": 8,
+        "standardization": {
+          "kind": "one-off"
+        },
+        "evidenceLabel": "measured",
+        "reproduction": {
+          "kind": "command",
+          "command": "cd \"$(git rev-parse --show-toplevel)\" && mkdir -p .runtime/tmp && export TMPDIR=$PWD/.runtime/tmp && node scripts/build.mjs >/dev/null && git grep -n -A4 '\"reopenWhen\": {' -- 'docs/evidence/*/decisions.md' && grep -n 'row.metrics\\[condition.metric\\]' scripts/lib/meta.mjs && node scripts/meta.mjs --check --json 2>/dev/null | node -e 'let s=\"\";process.stdin.on(\"data\",d=>s+=d).on(\"end\",()=>{const m=JSON.parse(s);const o=m.orders.at(-1);console.log(\"meter reopenCandidates:\",JSON.stringify(m.reopenCandidates));console.log(\"latest order\",o.workOrder,\"metrics.coldStartBytes =\",o.metrics.coldStartBytes,\"| metrics[\\\"coldStartBytes.executor\\\"] =\",o.metrics[\"coldStartBytes.executor\"])})' && node scripts/harness-context.mjs --check | node -e 'let s=\"\";process.stdin.on(\"data\",d=>s+=d).on(\"end\",()=>{const r=JSON.parse(s).profiles.find(p=>p.role===\"executor\");console.log(\"executor cold start bytes:\",r.bytes,\"(predicate: > 24576)\")})'; echo \"status: [$(git status --porcelain | tr '\\n' ' ')]\""
+        }
+      },
+      {
+        "findingId": "ER4-005",
+        "criterion": "The cost of a recurring gate should not grow with the amount of closed history (docs/product/07-execution-guide.md §Discipline: a recurring procedure costs less than the failure it prevents; accepted precedents ER2-004 for the plan check and ER3-002 for console collection).",
+        "severity": "minor",
+        "observed": "docs-check is now the slowest task of npm run test:docs: 9.33 s of a 17.24 s gate, and 9.14 to 9.96 s across four gate runs. On every run it parses each tracked Markdown file under the document roots with the Prettier parser: 1,262 files, 27.5 MB, 6.6 s of an 8.6 s checkDocs. Of that, 3.6 s is docs/final-reviews, docs/verifications and docs/evidence, which are closed reports. Those three trees gained 206 Markdown files since 2026-09-25, about 41 a day at roughly 5 ms each. The same gate shows plan at 4.68 s against 1.90 s at WO-156's close; a separate CPU profile of plan check now shows the same Markdown parser frames.",
+        "expected": "A document check's per-run cost follows what changed. Parse results are keyed by blob identity, or the link pass is limited to files that differ from the base plus their targets, so closed reports are parsed once and task times stay flat as reports accumulate.",
+        "evidenceRefs": [
+          "scripts/docs-check.mjs:193-222 (markdownFiles over every document root), :224-300 (linkFailures parses each source and target)",
+          "docs/evidence/WO-156/decisions.md:322 (plan 1.90 s, plan-refutation-current 1.81 s at close)",
+          "docs/instance/entropy-reducer/runs/REVIEW-002.json ER2-004; docs/instance/entropy-reducer/runs/REVIEW-003.json ER3-002",
+          "Command output: 1262 files, 27539569 bytes; parse 6630 ms of 8551 ms; docs-check 9.33 s, plan 4.68 s, gate 17.24 s"
+        ],
+        "surface": "scripts/docs-check.mjs; scripts/refute-plan.mjs check; scripts/test-runner.mjs document selection",
+        "altitude": 10,
+        "standardization": {
+          "kind": "recurring",
+          "rung": "test",
+          "rationale": "This is the third history-linear gate task in three reviews. A runner fixture that counts parses over N and 2N unchanged history files, or a bound timing row in the document gate, catches the class instead of each instance."
+        },
+        "evidenceLabel": "measured",
+        "reproduction": {
+          "kind": "command",
+          "command": "cd \"$(git rev-parse --show-toplevel)\" && mkdir -p .runtime/tmp && export TMPDIR=$PWD/.runtime/tmp && node scripts/build.mjs >/dev/null && node --input-type=module -e 'import {markdownFiles,markdownLinks,checkDocs} from \"./scripts/docs-check.mjs\";import {readFileSync} from \"node:fs\";const root=process.cwd();const files=markdownFiles(root);const by={};let bytes=0,t0=performance.now();for(const f of files){const s=readFileSync(f,\"utf8\");bytes+=Buffer.byteLength(s);const t=performance.now();markdownLinks(s);const k=f.split(\"/\").slice(0,2).join(\"/\");by[k]=(by[k]||0)+performance.now()-t}const parse=performance.now()-t0;t0=performance.now();const r=checkDocs(root);const total=performance.now()-t0;console.log(\"markdown files parsed per run:\",files.length,\"bytes:\",bytes);console.log(\"one parse of every file:\",Math.round(parse)+\" ms; whole checkDocs:\",Math.round(total)+\" ms; failures:\",r.failures.length);for(const [k,v] of Object.entries(by).sort((a,b)=>b[1]-a[1]).slice(0,5))console.log(\" \",k,Math.round(v)+\" ms\")' && echo \"markdown files added under docs/final-reviews, docs/verifications, docs/evidence since 2026-09-25: $(git log --since=2026-09-25 --diff-filter=A --name-only --format= -- 'docs/final-reviews/*.md' 'docs/verifications/*.md' 'docs/evidence/*.md' | sort -u | wc -l | tr -d ' ')\" && node scripts/test-runner.mjs --document --again 2>&1 | grep -E \"^PASS (docs-check|plan|format) |npm run test:docs\""
+        }
+      },
+      {
+        "findingId": "ER4-006",
+        "criterion": "Retained evidence links canonical inputs instead of copying them (docs/product/03-architecture.md §Corpus policy). WO-154 applied this to the self-host editions and left the authority edition as a non-goal of that order (docs/work-orders/WO-154-evidence-editions-by-reference.md:195-198).",
+        "severity": "minor",
+        "observed": "139 authority edition revisions hold 27 distinct authority.json blobs. Of the 82 revisions that follow another in the same order, 76 repeat their predecessor's authority.json byte for byte; WO-172's ten revisions are one blob. Repeated copies total 5,400,240 bytes, and 40 authority.json files arrived since 2026-09-25. A revision is minted whenever either file of the edition differs (scripts/authority-evidence.mjs:1076-1105), and bundle-diff.json pins the installed harness surfaces, so each role-text or hook regeneration records an unchanged 50 KB authority transcript again. Pruning committed editions is declined (FUP-8a4e201d861208ad) and is not proposed.",
+        "expected": "A new authority revision records only what changed. When authority.json is byte-identical to the previous revision, the edition references that blob by path and hash instead of writing a copy, and the check resolves it from Git, as schema 2 self-host editions do.",
+        "evidenceRefs": [
+          "scripts/authority-evidence.mjs:1076-1105 (both files compared; a difference in either requires a new revision)",
+          "docs/evidence/WO-172/authority/001..010/authority.json (one blob, 9cfe0fb4...)",
+          "docs/work-orders/WO-154-evidence-editions-by-reference.md:195-198 (authority edition a non-goal of that order)",
+          "docs/planning/followups.json FUP-8a4e201d861208ad (pruning declined 2026-09-27)",
+          "Command output: 139 revisions, 27 distinct blobs, 76 of 82 identical to predecessor, 5400240 repeated bytes, 40 added since 2026-09-25"
+        ],
+        "surface": "scripts/authority-evidence.mjs; packages/skeleton/src/evidence-editions.mjs; docs/evidence/*/authority/",
+        "altitude": 10,
+        "standardization": {
+          "kind": "recurring",
+          "rung": "script",
+          "rationale": "Every order that regenerates role text or hooks re-mints the edition, so the copy recurs per order and per repair. The standard belongs in the writer: reference an unchanged transcript by blob and let --check resolve it."
+        },
+        "evidenceLabel": "measured",
+        "reproduction": {
+          "kind": "command",
+          "command": "cd \"$(git rev-parse --show-toplevel)\" && git ls-tree -r -l HEAD -- docs/evidence | node -e 'let s=\"\";process.stdin.on(\"data\",d=>s+=d).on(\"end\",()=>{const e={};for(const l of s.split(\"\\n\")){const m=/^\\d+ blob (\\w+)\\s+(\\d+)\\t(docs\\/evidence\\/(WO-\\d+)\\/authority\\/(\\d+)\\/authority\\.json)$/.exec(l);if(m)e[m[4]+\"/\"+m[5]]={blob:m[1],bytes:+m[2]}}const k=Object.keys(e).sort();const blobs=new Set(k.map(x=>e[x].blob));let succ=0,same=0,dup=0;const seen=new Set();for(const x of k){const [wo,rev]=x.split(\"/\");const p=e[wo+\"/\"+String(+rev-1).padStart(3,\"0\")];if(p){succ++;if(p.blob===e[x].blob)same++}if(seen.has(e[x].blob))dup+=e[x].bytes;seen.add(e[x].blob)}console.log(\"authority edition revisions:\",k.length,\"| distinct authority.json blobs:\",blobs.size,\"| revisions with an in-order predecessor:\",succ,\"| byte-identical to that predecessor:\",same,\"| bytes in repeated copies:\",dup)})' && echo \"authority.json files added since 2026-09-25: $(git log --since=2026-09-25 --diff-filter=A --name-only --format= -- 'docs/evidence/*/authority/*/authority.json' | sort -u | wc -l | tr -d ' ')\" && echo \"distinct authority.json blobs among WO-172 revisions 001-010: $(git ls-tree -r HEAD -- docs/evidence/WO-172/authority | grep 'authority.json' | awk '{print $3}' | sort -u | wc -l | tr -d ' ')\""
+        }
+      },
+      {
+        "findingId": "ER4-007",
+        "criterion": "A review or refutation worker's effects stay inside its frozen copy and the host can show it. The dispatch instructs 'nothing outside this working directory may be written' (packages/skeleton/src/entropy-review-protocol.ts:415), and the review profile admits commands so that findings are measured (docs/instance/entropy-reducer/README.md §What the reviewer may run).",
+        "severity": "minor",
+        "observed": "The claude-cli-print review argv sets no environment (packages/skeleton/src/worker-transport.ts entropyArgs), so the worker's temp root is the system temp directory, outside the copy; neither the dispatch nor the transport mentions TMPDIR. Any probe that calls mkdtemp, which includes every product suite, writes there, and the receipt's checks (tracked-status hash, untracked listing, frozen-copy inventory) cannot see it. Keeping the instruction by pointing TMPDIR inside the copy makes the product gate unmeasurable: test-portfolio fails 2 of 3 with 'source-change target overlaps a protected checkout', and in this episode npm test ended 24 passed, 4 failed (resume, target-publish, portfolio, skeleton), all from fixtures nested in a checkout. REVIEW-002 recorded a probe log in the system temp directory; REVIEW-003 redirected TMPDIR and ran only the document gate.",
+        "expected": "The dispatch creates a scratch directory beside the frozen copy inside the episode's scratch parent, exports it to the worker as TMPDIR, names it in the instructions as the only other writable root and inventories it with the copy, so product suites run and the confinement record covers temp writes.",
+        "evidenceRefs": [
+          "packages/skeleton/src/worker-transport.ts:706-745 (entropyArgs; no environment or temp root)",
+          "scripts/lib/entropy-review.mjs:253-271 (scratch lane and per-episode parent that could hold a sibling temp root)",
+          "packages/skeleton/src/entropy-review-protocol.ts:415 (the write instruction)",
+          "packages/skeleton/src/source-change-worktree.ts:133 (the overlap refusal)",
+          "docs/instance/entropy-reducer/README.md §What the reviewer may run (what the receipt records)",
+          "This episode: npm test with TMPDIR inside the copy, 24 passed, 4 failed, 383.58 s; 48 'overlaps a protected checkout' lines",
+          "docs/instance/entropy-reducer/runs/REVIEW-002.json and REVIEW-003.json result summaries"
+        ],
+        "surface": "scripts/lib/entropy-review.mjs (dispatch, scratch lane, confinement record); packages/skeleton/src/worker-transport.ts (entropyArgs); packages/skeleton/src/entropy-review-protocol.ts (instructions)",
+        "altitude": 5,
+        "standardization": {
+          "kind": "recurring",
+          "rung": "script",
+          "rationale": "Every review and refutation episode meets the same choice between an unobserved temp write and an unmeasurable product gate. One change in the dispatch script, a sibling temp root that is exported and inventoried, removes it for all later episodes."
+        },
+        "evidenceLabel": "measured",
+        "reproduction": {
+          "kind": "command",
+          "command": "cd \"$(git rev-parse --show-toplevel)\" && node -p '\"worker temp root (os.tmpdir): \"+require(\"os\").tmpdir()+\" | inside the working directory: \"+require(\"fs\").realpathSync(require(\"os\").tmpdir()).startsWith(process.cwd())' && echo \"TMPDIR mentions in the review dispatch and transport: $(grep -c TMPDIR scripts/lib/entropy-review.mjs packages/skeleton/src/worker-transport.ts scripts/entropy.mjs | tr '\\n' ' ')\" && grep -c 'nothing outside this working directory may be written' packages/skeleton/src/entropy-review-protocol.ts && mkdir -p .runtime/tmp && node scripts/build.mjs >/dev/null && echo \"== a product suite with the temp root kept inside the working directory:\" && TMPDIR=$PWD/.runtime/tmp node --test --test-reporter=tap scripts/test-portfolio.mjs 2>&1 | grep -E \"^# (pass|fail)|error: 'source-change target overlaps a protected checkout'\" | sort | uniq -c; grep -n 'overlaps a protected checkout' packages/skeleton/src/source-change-worktree.ts; echo \"status: [$(git status --porcelain | tr '\\n' ' ')]\""
+        }
+      }
+    ],
+    "proposalPackets": [
+      {
+        "schemaVersion": 1,
+        "kind": "ProductSuggestionPacket",
+        "proposedPath": "docs/proposals/gate-identity-covers-suite-inputs/",
+        "sourceEpisodeId": "ep_entropy_ec1125309afb3ff1",
+        "provenance": [
+          "Entropy Reducer review episode ep_entropy_ec1125309afb3ff1, work order wo_entropy_review_1, subject commit feb7a92e1d41d6db3259f98b31521601686bbe04",
+          "Finding ER4-001, measured by a scratch-clone drill and a read logger on the product console suite",
+          "Lens verification-and-evidence"
+        ],
+        "corroboratingEvidenceRefs": [
+          "Drill: docs/product/02-domain-model.md edited, gate code identity unchanged (73acb752...), kernel AC7 case ok then not ok",
+          "Product console suite read 456 distinct paths under docs/, .claude/, .agents/ and root Markdown with its [document] skip applied",
+          "docs/evidence/WO-173/decisions.md WO-173-D018: 'a reused row must stand for the bytes a judge is judging'",
+          "packages/skeleton/src/gate-evidence.mjs:629-634: a README a test reads as an input stays unmarked and counts"
+        ],
+        "dissentingEvidenceRefs": [
+          "docs/evidence/WO-173/decisions.md (D003 rationale): a tree-hash lookup 'was wrong after every report write', so excluding docs/ from the key is deliberate",
+          "The reuse lookup was read, not executed, in this episode; only the unchanged key and the flipped verdict were measured",
+          "The console reads are mostly of live control state compared between two readers, so a given documentation change may not change that suite's verdict"
+        ],
+        "suggestion": {
+          "suggestionId": "gate-identity-covers-suite-inputs",
+          "submittedBy": "entropy-reducer@1 (planning-reviewer@2), episode ep_entropy_ec1125309afb3ff1",
+          "problemOrOpportunity": "The key under which a passing npm test row is reused and bound to a publication excludes docs/, .claude/, .agents/ and root Markdown, while the kernel and console product suites read those paths. A product-document edit changed a kernel verdict at an unchanged identity, and the document gate runs no kernel suite, so a write-back after a gate or a docs-only planning branch can land a red product suite that no gate reruns.",
+          "scope": "Decide one of two bounded repairs and add its guard. Either tag the product-suite cases that read documentation as [document] and give kernel a -docs task, so product verdicts are independent of the excluded trees, or add the documentation paths product suites read to the identity as a declared input list. In both cases add a runner fixture that runs the product package suites under a read logger and fails on a read of an excluded path. Out of scope: the untracked-source gap (WO-173-D018) and the rule that reports do not move the key.",
+          "evidenceRefs": [
+            "ER4-001",
+            "packages/skeleton/src/gate-evidence.mjs:629-684",
+            "scripts/test-runner.mjs:501-535, :1229-1247",
+            "packages/kernel/test/ac7-readme-map.test.ts:388-432",
+            "packages/console/test/console-commands.test.ts"
+          ],
+          "affectedUsers": [
+            "executors and verifiers whose npm test claim stands on a reused row",
+            "the reviewer who binds productGate at final review",
+            "planners editing product documents on docs-only branches"
+          ],
+          "affectedSystems": [
+            "packages/skeleton/src/gate-evidence.mjs",
+            "scripts/lib/gate-reuse.mjs",
+            "scripts/lib/handoff-ledger.mjs",
+            "scripts/test-runner.mjs",
+            "packages/kernel/test",
+            "packages/console/test"
+          ],
+          "expectedValue": "A reused or bound product-gate row again means the suites ran on the inputs they read. A documentation edit that breaks a product case is caught by the gate the editing pass already runs, instead of by a later unrelated order.",
+          "altitude": 5,
+          "uncertainty": "How many product cases beyond the kernel AC7 case change verdict with documentation content is unmeasured; the console reads may be verdict-neutral. Moving cases to the document gate lengthens that gate by an unmeasured amount.",
+          "risks": [
+            "Adding documentation paths to the identity would bring back reruns after report writes, the cost WO-173 removed",
+            "Re-tagging cases moves them out of the product gate, so a code change that breaks them is then caught only by the document gate"
+          ],
+          "alternatives": [
+            "Leave the key as it is and have the final review always run with --again",
+            "Hash only the specific documents product suites read (for example docs/product/02-domain-model.md) into the identity"
+          ],
+          "duplicationHints": [
+            "WO-173-D018 and FUP-7629e03c6573f5cb (untracked sources in the same key); FUP-71602ec08bc81e9d",
+            "FUP-2aced1f914f376ef (WO-044-D016 reuse-key contract)"
+          ],
+          "urgencyRationale": "Reuse at this key is four days old (WO-173) and every order's write-back touches the excluded trees. The repair is cheapest before WO-123 and WO-118 compose more suites on the same rows."
+        }
+      },
+      {
+        "schemaVersion": 1,
+        "kind": "ProductSuggestionPacket",
+        "proposedPath": "docs/proposals/machinery-selection-follows-imports/",
+        "sourceEpisodeId": "ep_entropy_ec1125309afb3ff1",
+        "provenance": [
+          "Entropy Reducer review episode ep_entropy_ec1125309afb3ff1, work order wo_entropy_review_1, subject commit feb7a92e1d41d6db3259f98b31521601686bbe04",
+          "Finding ER4-002, measured by a mutation drill in a scratch clone",
+          "Lens verification-and-evidence"
+        ],
+        "corroboratingEvidenceRefs": [
+          "Drill: a mutant of scripts/harness.mjs selects 'configuration-root, harness'; harness check exits 0; the unselected harness-fixtures case goes from ok to not ok; no other test file names evidence --wait",
+          "scripts/test-runner.mjs machinerySources comments citing WO-157, WO-159, WO-163, WO-169, WO-171 and WO-173 additions",
+          "scripts/test-evidence-sources.mjs: the same closure rule already enforced for the evidence inventories (WO-157 item 12)"
+        ],
+        "dissentingEvidenceRefs": [
+          "docs/product/07-execution-guide.md:2024-2026: selection by declared sources is the settled WO-132 rule, and npm run test:machinery runs every machinery suite on demand",
+          "The wider census of uncovered references came from a heuristic static probe that was not part of the reproduction and over-counts package index imports"
+        ],
+        "suggestion": {
+          "suggestionId": "machinery-selection-follows-imports",
+          "submittedBy": "entropy-reducer@1 (planning-reviewer@2), episode ep_entropy_ec1125309afb3ff1",
+          "problemOrOpportunity": "npm test -- --review runs a machinery suite only when a path in its hand-kept source list changed. The lists omit files the suites execute: a behavior change in scripts/harness.mjs does not select harness-fixtures, the only suite that tests it, and the mutant passes every selected machinery suite. Six orders have already added entries by hand after the fact.",
+          "scope": "Add one check to the runner-fixtures suite: for each machinery suite, the entry file, its static first-party imports and the script paths it spawns must be covered by its declared sources, with a reasoned exclusion list for shared libraries the operator chooses to leave out. Then repair the lists the check reports. The selection rule itself stays as decided.",
+          "evidenceRefs": [
+            "ER4-002",
+            "scripts/test-runner.mjs (machinerySources, changedMachinery)",
+            "scripts/test-harness.mjs:255, :656-836",
+            "scripts/harness.mjs:166-208",
+            "docs/product/07-execution-guide.md:1201-1204, :1930-1934, :2024-2026"
+          ],
+          "affectedUsers": [
+            "executors whose final criterion names npm test -- --review",
+            "verifiers and reviewers who read a green --review as covering the change",
+            "planners who name re-mints and gates per order"
+          ],
+          "affectedSystems": [
+            "scripts/test-runner.mjs",
+            "scripts/test-runner.test.mjs",
+            "scripts/test-harness.mjs",
+            "scripts/test-process-debt.mjs",
+            "scripts/test-plan-refutation.mjs"
+          ],
+          "expectedValue": "A green --review means every machinery suite that executes a changed file ran. List upkeep stops being a per-order hand step and a finding class at verification.",
+          "altitude": 5,
+          "uncertainty": "The number of real gaps after shared libraries are excluded is unknown; the drill proves one. Covering transitive imports could select the two longest suites (harness-fixtures, process-debt) on most script changes and lengthen --review by minutes.",
+          "risks": [
+            "Over-selection restores the long review gate that the machinery stand-down removed",
+            "A closure over spawned script paths needs a convention for paths built at run time"
+          ],
+          "alternatives": [
+            "Cover direct imports and spawned entry scripts only, leaving shared libraries to the product suites",
+            "Run npm run test:machinery once at final review regardless of selection"
+          ],
+          "duplicationHints": [
+            "WO-157 item 12 (evidence-sources import closure)",
+            "WO-169 D007 and WO-173 D003 (untracked files join the selection)"
+          ],
+          "urgencyRationale": "The review gate is the executable witness at implementation-ready and final review. Each order that adds a script widens the uncovered set, and first verifications already fail at about 40 to 50 per cent."
+        }
+      },
+      {
+        "schemaVersion": 1,
+        "kind": "ProductSuggestionPacket",
+        "proposedPath": "docs/proposals/reopen-conditions-evaluated-at-planning-entry/",
+        "sourceEpisodeId": "ep_entropy_ec1125309afb3ff1",
+        "provenance": [
+          "Entropy Reducer review episode ep_entropy_ec1125309afb3ff1, work order wo_entropy_review_1, subject commit feb7a92e1d41d6db3259f98b31521601686bbe04",
+          "Findings ER4-003 and ER4-004, measured",
+          "Lenses architecture-and-semantics and runtime-and-authority"
+        ],
+        "corroboratingEvidenceRefs": [
+          "plan check 4.37 to 4.74 s against the 2 s condition of WO-156-D008 and D010 (register rows settled)",
+          "Generated release table five tags behind against WO-086-D006's condition",
+          "WO-172 committed 1,808,181 bytes under docs/evidence against FUP-8a4e201d861208ad's 1 MB condition",
+          "meta --check: '0 reopen candidates' while the only metric predicate (WO-150-D003) holds at 26,903 bytes",
+          "REVIEW-003 ER3-002: the previous fired condition was also found by a reviewer's hand measurement"
+        ],
+        "dissentingEvidenceRefs": [
+          "docs/planning/followups.json, 2026-09-19 cleanup rule: a decision with a reopening observation is a record and returns to the feed when the observation is recorded, which places the duty on whoever observes",
+          "The 2 s threshold names the operator's host; the timings here are from a frozen copy on the dispatch host",
+          "Most of the 1,134 conditions are qualitative and cannot be probed; 'more than a few releases' is a judgment"
+        ],
+        "suggestion": {
+          "suggestionId": "reopen-conditions-evaluated-at-planning-entry",
+          "submittedBy": "entropy-reducer@1 (planning-reviewer@2), episode ep_entropy_ec1125309afb3ff1",
+          "problemOrOpportunity": "Every decision must record a reopening condition, and 1,134 of 1,135 are prose that nothing evaluates. The one evaluable predicate names a metric the meter cannot resolve, so the meter's reopen-candidate count is zero whatever the state. Three numeric conditions had occurred at the subject commit without a recorded observation, and the previous review found another the same way.",
+          "scope": "Two bounded steps. First, make the existing evaluator honest: refuse a predicate whose metric the meter cannot resolve, and resolve budget-row metrics such as coldStartBytes.executor. Second, add a small probe table keyed by register or decision id (a command and a threshold per row) for the conditions that name a number, run it from planning entry and list the rows whose condition holds. Start with the rows measured here: plan check time, newer release tags, per-order and weekly evidence bytes, collectSources and release list times. No new gate and no refusal.",
+          "evidenceRefs": [
+            "ER4-003",
+            "ER4-004",
+            "scripts/lib/meta.mjs:199-211, :1729-1752, :2010",
+            "scripts/lib/planning-followups.mjs:713",
+            "docs/evidence/WO-156/decisions.md:253, :338",
+            "docs/evidence/WO-086/decisions.md:192-221",
+            "docs/planning/followups.json FUP-8a4e201d861208ad"
+          ],
+          "affectedUsers": [
+            "the planner opening a pass",
+            "the operator who deferred a decision on a stated threshold",
+            "reviewers who today find fired conditions by hand"
+          ],
+          "affectedSystems": [
+            "scripts/lib/meta.mjs",
+            "scripts/lib/planning-followups.mjs",
+            "scripts/refute-plan.mjs",
+            "docs/planning/followups.json",
+            "docs/evidence/*/decisions.md"
+          ],
+          "expectedValue": "A deferral on a measurable threshold becomes self-reporting: the pass that would act on it sees it at entry. The health line's candidate count starts to carry information.",
+          "altitude": 6,
+          "uncertainty": "About 85 of the 1,134 prose conditions look numeric by pattern match; how many can be probed in under a few seconds each is unmeasured. Whether the three observations here would change a planning decision is the operator's call.",
+          "risks": [
+            "A probe table becomes one more list to keep current",
+            "Timing probes vary with host load and could report noise as a reopening"
+          ],
+          "alternatives": [
+            "Require the predicate form for any new condition that states a number, and leave existing prose alone",
+            "Keep hand observation and add the three fired conditions to the register in the next pass"
+          ],
+          "duplicationHints": [
+            "REVIEW-003 ER3-002 and WO-164 (one fired condition handled as an order)",
+            "WO-172 plan failures (a sibling listing at planning entry)",
+            "FUP-7f9a27e6ed6c44b3 (its thresholds were measured here and do not hold: collectSources 0.73 s, index 1.4 s, release list 0.09 s, status --all 3.3 MB)"
+          ],
+          "urgencyRationale": "Deferred rows stand at 141 and grow with each pass, and conditions recorded on 2026-09-24 and 2026-09-28 were already exceeded by 2026-09-30."
+        }
+      },
+      {
+        "schemaVersion": 1,
+        "kind": "ProductSuggestionPacket",
+        "proposedPath": "docs/proposals/history-independent-document-checks/",
+        "sourceEpisodeId": "ep_entropy_ec1125309afb3ff1",
+        "provenance": [
+          "Entropy Reducer review episode ep_entropy_ec1125309afb3ff1, work order wo_entropy_review_1, subject commit feb7a92e1d41d6db3259f98b31521601686bbe04",
+          "Finding ER4-005, measured; plan check timing from finding ER4-003",
+          "Lens maintainability-and-friction"
+        ],
+        "corroboratingEvidenceRefs": [
+          "docs-check 9.33 s of a 17.24 s document gate; 1,262 Markdown files parsed per run, 6.6 s of 8.6 s in the parser",
+          "206 Markdown files added to docs/final-reviews, docs/verifications and docs/evidence since 2026-09-25",
+          "plan check 4.37 to 4.74 s against 1.90 s at WO-156's close",
+          "REVIEW-002 ER2-004 and REVIEW-003 ER3-002: two earlier history-linear gate tasks, both accepted and repaired one at a time"
+        ],
+        "dissentingEvidenceRefs": [
+          "scripts/docs-check.mjs:34-37: the pinned Prettier parser was chosen so that no second Markdown grammar or dependency is needed",
+          "The gate is 17 s in total and the measured growth is about 0.2 s a day; docs/control/budgets.json leaves fastGateMs unset by operator decision"
+        ],
+        "suggestion": {
+          "suggestionId": "history-independent-document-checks",
+          "submittedBy": "entropy-reducer@1 (planning-reviewer@2), episode ep_entropy_ec1125309afb3ff1",
+          "problemOrOpportunity": "The document gate's slowest task parses every tracked Markdown file on every run, and more than half of that time goes to closed reports that never change. The plan check has picked up the same parser and more than doubled since its two-second repair. This is the third gate task in three reviews whose cost follows the size of history.",
+          "scope": "Cache parse results (links and anchors) by Git blob identity in the ignored local lane, keep the parser and the checks unchanged, and add one runner fixture asserting that a second run over unchanged files performs no parse. Apply the same cache to the plan check's Markdown reads. Out of scope: changing what docs-check verifies or the baseline of historical link exceptions.",
+          "evidenceRefs": [
+            "ER4-005",
+            "scripts/docs-check.mjs:193-300",
+            "docs/evidence/WO-156/decisions.md:322",
+            "scripts/lib/release-list-cache.mjs (the per-tag cache pattern WO-164 introduced)"
+          ],
+          "affectedUsers": [
+            "every planner, executor and reviewer who runs npm run test:docs",
+            "the executor completion that runs the document gate inline (WO-173)"
+          ],
+          "affectedSystems": [
+            "scripts/docs-check.mjs",
+            "scripts/refute-plan.mjs",
+            "scripts/lib/plan-continuation.mjs",
+            "scripts/test-docs-check.mjs"
+          ],
+          "expectedValue": "docs-check and plan check return to roughly the cost of the files a pass changed, the document gate drops from about 17 s toward the format task's 5 s floor, and a fixture holds the class.",
+          "altitude": 10,
+          "uncertainty": "Warm and cold timings with a cache are not measured. The share of plan check time attributable to Markdown parsing comes from one CPU profile.",
+          "risks": [
+            "A cache keyed incorrectly could pass a stale link result; keying by blob identity and parser version bounds this",
+            "A cold checkout still pays the full parse once"
+          ],
+          "alternatives": [
+            "Limit the link pass to files that differ from the base plus the targets they cite",
+            "Exclude closed report trees from the link check and rely on the recorded baseline"
+          ],
+          "duplicationHints": [
+            "docs/proposals/constant-process-console-collection/ (accepted, WO-164)",
+            "REVIEW-002 ER2-004 and WO-156 (plan check under 2 s)"
+          ],
+          "urgencyRationale": "Low. The cost is small today but runs at every planning pass, completion and final review, and the plan check has already passed its recorded two-second condition."
+        }
+      }
+    ],
+    "resultEnvelope": {
+      "workOrderId": "wo_entropy_review_1",
+      "episodeId": "ep_entropy_ec1125309afb3ff1",
+      "status": "completed",
+      "resultId": "res_entropy_ec1125309afb3ff1_review_004",
+      "summary": "Frozen subject feb7a92e reviewed in place: 4,017 tracked paths censused; docs/intake never read. Four lenses worked serially. Constraint first: verification soundness. The npm test reuse key excludes docs/, .claude/ and root Markdown although kernel and console product suites read them; a product-document edit flipped a kernel case at an unchanged identity. Review selection omits the only suite witnessing scripts/harness.mjs; a mutant passed the selected suites. Second, reopening conditions do not reach planning: 1,134 are prose, the single metric predicate cannot resolve its metric, the meter prints zero candidates, and three recorded thresholds have occurred. Minor: docs-check parses 1,262 Markdown files (9.3 s of a 17.2 s gate); 76 of 82 authority re-mints repeat identical bytes; review workers inherit a temp root outside the copy. Seven measured findings, four packets. Document gate 23/0. The default gate failed four suites only because probes kept TMPDIR inside the copy; not reported as defects. One probe, meta without --check, rewrote the tracked work-order index; restored to HEAD bytes and the status hash matches the subject. Episode artifacts removed. Awaiting operator disposition.",
+      "requiresHuman": true
+    },
+    "cleanRoom": {
+      "status": "passed",
+      "stopConditionsFound": false,
+      "evidenceRefs": [
+        "Census from git ls-files: 4,017 tracked paths. docs/intake/** was never opened; its three tracked path names (.gitkeep files) were seen only in the index listing.",
+        "Secret-shape scan over tracked non-intake files matched four files, all synthetic screen fixtures: packages/compiler/fixtures/wo060-source-bundles.json, packages/compiler/src/source-bundle.ts, packages/compiler/test/source-bundle.test.ts and packages/skeleton/test/live-verification-receipt.test.ts. No value is reproduced in this output.",
+        "No employer material, credential, private identifier or internal service detail is incorporated; user settings, remotes and the control plane outside the copy were not read, and every fact cited derives from tracked repository files or commands run in the frozen copy.",
+        "After the episode: HEAD feb7a92e1d41d6db3259f98b31521601686bbe04, git status --porcelain SHA-256 e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 (equal to subject.trackedStatusSha256), 0 untracked non-ignored paths, only node_modules ignored.",
+        "Disclosed deviation: running the meter without --check rewrote the tracked docs/work-orders/README.md inside the frozen copy; it was restored to HEAD bytes with git show and the tree verified identical to HEAD. Scratch clones, build output and gate records created under ignored paths were removed."
+      ]
+    }
+  },
+  "selection": {
+    "measuredDenominator": 7,
+    "measuredStatus": "selected",
+    "inspectionDenominator": 0,
+    "inspectionStatus": "not-applicable",
+    "inspectionSampleSize": 0,
+    "selectionRule": "every measured finding and every by-inspection finding",
+    "measuredSubjects": [
+      {
+        "findingId": "ER4-003",
+        "command": "cd \"$(git rev-parse --show-toplevel)\" && mkdir -p .runtime/tmp && export TMPDIR=$PWD/.runtime/tmp && node scripts/build.mjs >/dev/null && echo \"== plan check wall time (WO-156-D008 reopens above 2 s):\" && ( /usr/bin/time -p node scripts/refute-plan.mjs check >/dev/null ) 2>&1 | grep real && git grep -h -o '\"reopenWhen\": \"A fresh check on the operator[^\"]*\"' -- docs/evidence/WO-156/decisions.md && echo \"== generated release table (WO-086-D006):\" && node scripts/docs-check.mjs | grep -o 'NEWER local release tags[^;]*' && git grep -h -o '\"reopenWhen\": \"The newer-tag report grows[^\"]*\"' -- docs/evidence/WO-086/decisions.md && echo \"== bytes under docs/evidence/WO-172:\" && git ls-tree -r -l HEAD -- docs/evidence/WO-172 | awk '{s+=$4} END {print s}' && node -e 'const j=require(\"./docs/planning/followups.json\");for(const id of [\"FUP-8a4e201d861208ad\",\"FUP-3dc0266d6b87b939\",\"FUP-ab1746dc9c595d95\"]){const d=j.entries.find(e=>e.id===id).dispositions.at(-1);console.log(id,d.status,d.at,\"| reopenWhen:\",d.reopenWhen)}' && echo \"== what evaluates them:\" && echo \"prose reopenWhen in decision records: $(git grep -h -o '\"reopenWhen\": \"' -- 'docs/evidence/*/decisions.md' | wc -l | tr -d ' '); metric-predicate reopenWhen: $(git grep -h -o '\"reopenWhen\": {' -- 'docs/evidence/*/decisions.md' | wc -l | tr -d ' ')\" && node scripts/meta.mjs --check 2>/dev/null | grep -o '[0-9]* reopen candidates'"
+      },
+      {
+        "findingId": "ER4-001",
+        "command": "cd \"$(git rev-parse --show-toplevel)\" && mkdir -p .runtime/tmp && export TMPDIR=$PWD/.runtime/tmp && node scripts/build.mjs >/dev/null && echo \"== paths the gate code identity leaves out:\" && grep -n -F '(?:docs|\\.claude|\\.agents)' packages/skeleton/src/gate-evidence.mjs && printf '%s' 'import fs from \"node:fs\";import {syncBuiltinESMExports} from \"node:module\";const r=process.env.FSLOG_ROOT,o=process.env.FSLOG_OUT;for(const n of [\"readFileSync\",\"openSync\",\"readdirSync\"]){const f=fs[n];fs[n]=function(p,...a){try{const s=String(p);if(s.startsWith(r+\"/\")&&/^(docs|\\.claude|\\.agents)\\/|^[^/]+\\.md$/i.test(s.slice(r.length+1)))fs.appendFileSync(o,s.slice(r.length+1)+\"\\n\")}catch{}return f.call(this,p,...a)}}syncBuiltinESMExports();' > $TMPDIR/fslog.mjs && rm -f $TMPDIR/fslog.txt && (FSLOG_ROOT=$PWD FSLOG_OUT=$TMPDIR/fslog.txt NODE_OPTIONS=\"--import $TMPDIR/fslog.mjs\" node --test --test-reporter=tap '--test-skip-pattern=\\[document\\]' packages/console/dist/test/*.test.js >/dev/null 2>&1; echo \"product console suite exit $?; distinct excluded paths it read: $(sort -u $TMPDIR/fslog.txt | wc -l | tr -d ' ')\") && rm -rf .runtime/drill-identity && git clone -q --local --no-hardlinks . .runtime/drill-identity && cd .runtime/drill-identity && ln -s ../../node_modules node_modules && node scripts/build.mjs >/dev/null && ID='import {gateCodeIdentity} from \"./packages/skeleton/src/gate-evidence.mjs\";console.log(\"gate code identity:\",gateCodeIdentity(process.cwd()))' && T() { node --test --test-reporter=tap --test-name-pattern='right cell names an entry' packages/kernel/dist/test/ac7-readme-map.test.js 2>&1 | grep -E '^(ok|not ok)'; } && echo \"== scratch clone, before:\" && node --input-type=module -e \"$ID\" && T; sed -i '' 's/\\*\\*Cadence/**Rhythm/' docs/product/02-domain-model.md && echo \"== scratch clone, after editing only $(git diff --name-only):\" && node --input-type=module -e \"$ID\" && T"
+      },
+      {
+        "findingId": "ER4-006",
+        "command": "cd \"$(git rev-parse --show-toplevel)\" && git ls-tree -r -l HEAD -- docs/evidence | node -e 'let s=\"\";process.stdin.on(\"data\",d=>s+=d).on(\"end\",()=>{const e={};for(const l of s.split(\"\\n\")){const m=/^\\d+ blob (\\w+)\\s+(\\d+)\\t(docs\\/evidence\\/(WO-\\d+)\\/authority\\/(\\d+)\\/authority\\.json)$/.exec(l);if(m)e[m[4]+\"/\"+m[5]]={blob:m[1],bytes:+m[2]}}const k=Object.keys(e).sort();const blobs=new Set(k.map(x=>e[x].blob));let succ=0,same=0,dup=0;const seen=new Set();for(const x of k){const [wo,rev]=x.split(\"/\");const p=e[wo+\"/\"+String(+rev-1).padStart(3,\"0\")];if(p){succ++;if(p.blob===e[x].blob)same++}if(seen.has(e[x].blob))dup+=e[x].bytes;seen.add(e[x].blob)}console.log(\"authority edition revisions:\",k.length,\"| distinct authority.json blobs:\",blobs.size,\"| revisions with an in-order predecessor:\",succ,\"| byte-identical to that predecessor:\",same,\"| bytes in repeated copies:\",dup)})' && echo \"authority.json files added since 2026-09-25: $(git log --since=2026-09-25 --diff-filter=A --name-only --format= -- 'docs/evidence/*/authority/*/authority.json' | sort -u | wc -l | tr -d ' ')\" && echo \"distinct authority.json blobs among WO-172 revisions 001-010: $(git ls-tree -r HEAD -- docs/evidence/WO-172/authority | grep 'authority.json' | awk '{print $3}' | sort -u | wc -l | tr -d ' ')\""
+      },
+      {
+        "findingId": "ER4-005",
+        "command": "cd \"$(git rev-parse --show-toplevel)\" && mkdir -p .runtime/tmp && export TMPDIR=$PWD/.runtime/tmp && node scripts/build.mjs >/dev/null && node --input-type=module -e 'import {markdownFiles,markdownLinks,checkDocs} from \"./scripts/docs-check.mjs\";import {readFileSync} from \"node:fs\";const root=process.cwd();const files=markdownFiles(root);const by={};let bytes=0,t0=performance.now();for(const f of files){const s=readFileSync(f,\"utf8\");bytes+=Buffer.byteLength(s);const t=performance.now();markdownLinks(s);const k=f.split(\"/\").slice(0,2).join(\"/\");by[k]=(by[k]||0)+performance.now()-t}const parse=performance.now()-t0;t0=performance.now();const r=checkDocs(root);const total=performance.now()-t0;console.log(\"markdown files parsed per run:\",files.length,\"bytes:\",bytes);console.log(\"one parse of every file:\",Math.round(parse)+\" ms; whole checkDocs:\",Math.round(total)+\" ms; failures:\",r.failures.length);for(const [k,v] of Object.entries(by).sort((a,b)=>b[1]-a[1]).slice(0,5))console.log(\" \",k,Math.round(v)+\" ms\")' && echo \"markdown files added under docs/final-reviews, docs/verifications, docs/evidence since 2026-09-25: $(git log --since=2026-09-25 --diff-filter=A --name-only --format= -- 'docs/final-reviews/*.md' 'docs/verifications/*.md' 'docs/evidence/*.md' | sort -u | wc -l | tr -d ' ')\" && node scripts/test-runner.mjs --document --again 2>&1 | grep -E \"^PASS (docs-check|plan|format) |npm run test:docs\""
+      },
+      {
+        "findingId": "ER4-007",
+        "command": "cd \"$(git rev-parse --show-toplevel)\" && node -p '\"worker temp root (os.tmpdir): \"+require(\"os\").tmpdir()+\" | inside the working directory: \"+require(\"fs\").realpathSync(require(\"os\").tmpdir()).startsWith(process.cwd())' && echo \"TMPDIR mentions in the review dispatch and transport: $(grep -c TMPDIR scripts/lib/entropy-review.mjs packages/skeleton/src/worker-transport.ts scripts/entropy.mjs | tr '\\n' ' ')\" && grep -c 'nothing outside this working directory may be written' packages/skeleton/src/entropy-review-protocol.ts && mkdir -p .runtime/tmp && node scripts/build.mjs >/dev/null && echo \"== a product suite with the temp root kept inside the working directory:\" && TMPDIR=$PWD/.runtime/tmp node --test --test-reporter=tap scripts/test-portfolio.mjs 2>&1 | grep -E \"^# (pass|fail)|error: 'source-change target overlaps a protected checkout'\" | sort | uniq -c; grep -n 'overlaps a protected checkout' packages/skeleton/src/source-change-worktree.ts; echo \"status: [$(git status --porcelain | tr '\\n' ' ')]\""
+      },
+      {
+        "findingId": "ER4-004",
+        "command": "cd \"$(git rev-parse --show-toplevel)\" && mkdir -p .runtime/tmp && export TMPDIR=$PWD/.runtime/tmp && node scripts/build.mjs >/dev/null && git grep -n -A4 '\"reopenWhen\": {' -- 'docs/evidence/*/decisions.md' && grep -n 'row.metrics\\[condition.metric\\]' scripts/lib/meta.mjs && node scripts/meta.mjs --check --json 2>/dev/null | node -e 'let s=\"\";process.stdin.on(\"data\",d=>s+=d).on(\"end\",()=>{const m=JSON.parse(s);const o=m.orders.at(-1);console.log(\"meter reopenCandidates:\",JSON.stringify(m.reopenCandidates));console.log(\"latest order\",o.workOrder,\"metrics.coldStartBytes =\",o.metrics.coldStartBytes,\"| metrics[\\\"coldStartBytes.executor\\\"] =\",o.metrics[\"coldStartBytes.executor\"])})' && node scripts/harness-context.mjs --check | node -e 'let s=\"\";process.stdin.on(\"data\",d=>s+=d).on(\"end\",()=>{const r=JSON.parse(s).profiles.find(p=>p.role===\"executor\");console.log(\"executor cold start bytes:\",r.bytes,\"(predicate: > 24576)\")})'; echo \"status: [$(git status --porcelain | tr '\\n' ' ')]\""
+      },
+      {
+        "findingId": "ER4-002",
+        "command": "cd \"$(git rev-parse --show-toplevel)\" && mkdir -p .runtime/tmp && export TMPDIR=$PWD/.runtime/tmp && rm -rf .runtime/drill-selection && git clone -q --local --no-hardlinks . .runtime/drill-selection && cd .runtime/drill-selection && ln -s ../../node_modules node_modules && node scripts/build.mjs >/dev/null && T() { node --test --test-reporter=tap --test-name-pattern='WO-166 evidence wait exits' scripts/test-harness.mjs 2>&1 | grep -E '^(ok|not ok)'; } && echo \"== unmutated scratch clone: the harness-fixtures case that spawns scripts/harness.mjs\" && T; sed -i '' 's|process.exitCode = status === \"passed\" ? 0 : status === \"failed\" ? 1 : 2;|process.exitCode = status === \"passed\" ? 0 : 2;|' scripts/harness.mjs && echo \"== mutant: $(git diff --stat | tail -1)\" && node --input-type=module -e 'import {changedMachinery,suites} from \"./scripts/test-runner.mjs\";const s=changedMachinery(process.cwd(),suites,\"HEAD\").map(r=>r.name);console.log(\"machinery suites npm test -- --review selects for this change:\",s.join(\", \"),\"| harness-fixtures selected:\",s.includes(\"harness-fixtures\"));console.log(\"scripts/harness.mjs declared for harness-fixtures:\",suites.find(r=>r.name===\"harness-fixtures\").sources.includes(\"scripts/harness.mjs\"))' && (node scripts/harness.mjs check >/dev/null 2>&1; echo \"selected suite harness (harness.mjs check) exit on mutant: $?\") && echo \"== mutant: the unselected harness-fixtures case\" && T; echo \"other test files naming evidence --wait: $(git grep -l -e 'evidence --wait' -e '\"--wait\"' -- 'scripts/test-*' 'packages/*/test/*' | grep -v '^scripts/test-harness.mjs$' | wc -l | tr -d ' ')\""
+      }
+    ],
+    "inspectionSubjects": [],
+    "selectedFindingIds": [
+      "ER4-003",
+      "ER4-001",
+      "ER4-006",
+      "ER4-005",
+      "ER4-007",
+      "ER4-004",
+      "ER4-002"
+    ]
+  },
+  "findingSummary": {
+    "total": 7,
+    "measured": 7,
+    "byInspection": 0,
+    "blocking": 0,
+    "major": 3,
+    "minor": 4,
+    "proposalPackets": 4
+  },
+  "confinement": {
+    "subjectBinding": "an explicitly named commit; bound by its tree object, with the working tree's own drift recorded rather than refused",
+    "trackedStatusBeforeSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "trackedStatusAfterSha256": "7faa0a6acc6014fabc21cb9683820c39e902c31fb0e781b4989ae6388a62b6d1",
+    "trackedStatusByteIdentical": false,
+    "scratchInventoryBefore": {
+      "count": 4017,
+      "sha256": "f2f77c6789afc84f0447e9e53c9b25f54ef824510076a98a5a08667b6ef76d9b"
+    },
+    "scratchInventoryAfter": {
+      "count": 4017,
+      "sha256": "f2f77c6789afc84f0447e9e53c9b25f54ef824510076a98a5a08667b6ef76d9b"
+    },
+    "untrackedListing": {
+      "before": {
+        "count": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "after": {
+        "count": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "identical": true
+    },
+    "scratchDelta": {
+      "observed": true,
+      "added": [],
+      "removed": [],
+      "resized": [],
+      "counts": {
+        "added": 0,
+        "removed": 0,
+        "resized": 0
+      },
+      "sha256": {
+        "added": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "removed": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "resized": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "listedPerSet": 100
+    },
+    "excludedFromManifest": [
+      ".git/**",
+      "**/node_modules/**"
+    ],
+    "dependencies": "copied",
+    "commandExecution": "file tools confined to the frozen copy by --restricted; shell commands instructed to stay inside it and checked by the tracked-path status and untracked-listing hashes on either side of the episode",
+    "permissionDenials": 0,
+    "deniedTools": []
+  },
+  "cost": {
+    "line": "tokens unknown; cause harness-no-readback; observed episode wall clock 2216 s, 145 turns, USD 11.713125000000002; source claude-result-envelope",
+    "tokens": null,
+    "costUsd": 11.713125000000002,
+    "durationMs": 2215824,
+    "turns": 145,
+    "source": "claude-result-envelope"
+  },
+  "statement": "{\"schemaVersion\":1,\"findings\":[{\"findingId\":\"ER4-001\",\"criterion\":\"A reused or bound npm test row stands for the bytes a judge is judging, so the gate's code identity has to cover every input a product suite reads. packages/skeleton/src/gate-evidence.mjs (gateCodeIdentity comment, WO-115 D026) says product evidence is independent of documentation and that 'a README a test reads as an input stays unmarked and counts'; WO-173-D018 states the same rule for reuse.\",\"severity\":\"major\",\"evidenceLabel\":\"measured\",\"observed\":\"gateCodeIdentity drops every path under docs/, .claude/ and .agents/ and every root Markdown file (gate-evidence.mjs:679-680). Product suites read those paths. The kernel suite's AC7 case reads docs/product/02-domain-model.md (packages/kernel/test/ac7-readme-map.test.ts:388-432). The product console suite, run with its [document] skip, read 456 distinct excluded paths (docs/evidence, docs/work-orders, docs/control, both skill roots, CLAUDE.md); a per-file run attributed 446 of them to console-commands.test. Drill in a scratch clone: replacing one bold term in 02-domain-model.md left the identity at 73acb752... and turned the kernel case from ok to not ok. npm test reuses a passing row by that identity (scripts/test-runner.mjs:1229-1247, scripts/lib/gate-reuse.mjs), an executor's npm test claim and the productGate binding stand on the same row, and npm run test:docs runs no kernel suite. A documentation write-back after a gate, or a docs-only planning branch, can therefore leave a red product suite that no gate reruns until a later code change moves the identity. The unchanged key and the flipped verdict were measured; the reuse lookup itself was read, not executed. WO-173-D018 records the separate untracked-source gap in the same key.\",\"expected\":\"Every tracked path a product suite reads is part of the key its passing row is reused under, or the cases that read documentation run in the document gate. Either the identity includes the excluded paths product suites read, or those cases carry the [document] tag (kernel has no -docs task today), with a fixture that fails when a product suite reads a path the identity excludes.\",\"reproduction\":{\"kind\":\"command\",\"command\":\"cd \\\"$(git rev-parse --show-toplevel)\\\" && mkdir -p .runtime/tmp && export TMPDIR=$PWD/.runtime/tmp && node scripts/build.mjs >/dev/null && echo \\\"== paths the gate code identity leaves out:\\\" && grep -n -F '(?:docs|\\\\.claude|\\\\.agents)' packages/skeleton/src/gate-evidence.mjs && printf '%s' 'import fs from \\\"node:fs\\\";import {syncBuiltinESMExports} from \\\"node:module\\\";const r=process.env.FSLOG_ROOT,o=process.env.FSLOG_OUT;for(const n of [\\\"readFileSync\\\",\\\"openSync\\\",\\\"readdirSync\\\"]){const f=fs[n];fs[n]=function(p,...a){try{const s=String(p);if(s.startsWith(r+\\\"/\\\")&&/^(docs|\\\\.claude|\\\\.agents)\\\\/|^[^/]+\\\\.md$/i.test(s.slice(r.length+1)))fs.appendFileSync(o,s.slice(r.length+1)+\\\"\\\\n\\\")}catch{}return f.call(this,p,...a)}}syncBuiltinESMExports();' > $TMPDIR/fslog.mjs && rm -f $TMPDIR/fslog.txt && (FSLOG_ROOT=$PWD FSLOG_OUT=$TMPDIR/fslog.txt NODE_OPTIONS=\\\"--import $TMPDIR/fslog.mjs\\\" node --test --test-reporter=tap '--test-skip-pattern=\\\\[document\\\\]' packages/console/dist/test/*.test.js >/dev/null 2>&1; echo \\\"product console suite exit $?; distinct excluded paths it read: $(sort -u $TMPDIR/fslog.txt | wc -l | tr -d ' ')\\\") && rm -rf .runtime/drill-identity && git clone -q --local --no-hardlinks . .runtime/drill-identity && cd .runtime/drill-identity && ln -s ../../node_modules node_modules && node scripts/build.mjs >/dev/null && ID='import {gateCodeIdentity} from \\\"./packages/skeleton/src/gate-evidence.mjs\\\";console.log(\\\"gate code identity:\\\",gateCodeIdentity(process.cwd()))' && T() { node --test --test-reporter=tap --test-name-pattern='right cell names an entry' packages/kernel/dist/test/ac7-readme-map.test.js 2>&1 | grep -E '^(ok|not ok)'; } && echo \\\"== scratch clone, before:\\\" && node --input-type=module -e \\\"$ID\\\" && T; sed -i '' 's/\\\\*\\\\*Cadence/**Rhythm/' docs/product/02-domain-model.md && echo \\\"== scratch clone, after editing only $(git diff --name-only):\\\" && node --input-type=module -e \\\"$ID\\\" && T\"},\"evidenceRefs\":[\"packages/skeleton/src/gate-evidence.mjs:629-684 (gateCodeIdentity comment and exclusion)\",\"scripts/lib/gate-reuse.mjs (coveringGateCheck keys on codeIdentity)\",\"scripts/test-runner.mjs:1229-1247 (npm test reuse), :501-535 (kernel has no [document] split; only skeleton-docs and console-docs exist)\",\"packages/kernel/test/ac7-readme-map.test.ts:388-432\",\"packages/console/test/console-commands.test.ts (446 excluded paths read in a per-file run)\",\"docs/product/07-execution-guide.md:1924-1929 (productGate bound by identity)\",\"docs/evidence/WO-173/decisions.md WO-173-D018 (the untracked-source gap, a different cause in the same key)\",\"Drill output: identity 73acb7520bba8e96... before and after; AC7 case ok then not ok\"],\"surface\":\"packages/skeleton/src/gate-evidence.mjs (gateCodeIdentity); scripts/lib/gate-reuse.mjs; scripts/test-runner.mjs (reuse lookup, package suite table); packages/kernel/test/ac7-readme-map.test.ts; packages/console/test/console-commands.test.ts\",\"altitude\":5,\"standardization\":{\"kind\":\"recurring\",\"rung\":\"test\",\"rationale\":\"Product-document write-backs follow nearly every order, so the gap recurs at each one. The cheapest standard is a runner fixture that runs the product package suites under a read logger and fails on any read of a path the identity excludes.\"}},{\"findingId\":\"ER4-002\",\"criterion\":\"A host behavior edit still selects its declared suites (docs/product/07-execution-guide.md:1930-1934), and npm test -- --review includes a machinery suite when its own declared sources changed (07:2024-2026), which is why an order editing such a source names --review as its gate (07:1201-1204, WO-144 D010). The declaration therefore has to cover what each suite executes.\",\"severity\":\"major\",\"evidenceLabel\":\"measured\",\"observed\":\"machinerySources is a hand-kept list in scripts/test-runner.mjs whose comments cite six orders that each added entries after the fact (WO-157, WO-159, WO-163, WO-169, WO-171, WO-173). It omits files its suites execute. harness-fixtures (scripts/test-harness.mjs, 11,299 lines) copies and spawns scripts/harness.mjs (lines 255, 661-836), which only the harness bundle check declares. Drill in a scratch clone: changing the exit code that harness evidence --wait gives a failed row (scripts/harness.mjs, the branch at 166-208) makes changedMachinery select configuration-root and harness; harness-fixtures is not selected; harness check exits 0 on the mutant; the unselected case 'WO-166 evidence wait exits for pass, failure, timeout and absent row' goes from ok to not ok; no other test file names evidence --wait. In an earlier run configuration-root gave the same result with and without the mutant (11 pass, 2 fail, an artifact of the nested clone). A heuristic static probe outside this reproduction found further uncovered direct references, for example process-debt to scripts/resume.mjs, scripts/release.mjs and scripts/refute-plan.mjs, and plan-refutation to scripts/lib/control.mjs and scripts/lib/dependencies.mjs. The evidence inventories already have an import-closure check (WO-157 item 12); the machinery lists have none. Selection by declared sources is a settled rule and is not questioned here.\",\"expected\":\"A change to any first-party file a machinery suite imports or spawns selects that suite under --review, by a check instead of list upkeep: the runner-fixtures suite compares each machinery suite's entry, its static imports and the script paths it spawns with its declared sources and fails on an uncovered path, as the evidence-sources suite does for the evidence inventories.\",\"reproduction\":{\"kind\":\"command\",\"command\":\"cd \\\"$(git rev-parse --show-toplevel)\\\" && mkdir -p .runtime/tmp && export TMPDIR=$PWD/.runtime/tmp && rm -rf .runtime/drill-selection && git clone -q --local --no-hardlinks . .runtime/drill-selection && cd .runtime/drill-selection && ln -s ../../node_modules node_modules && node scripts/build.mjs >/dev/null && T() { node --test --test-reporter=tap --test-name-pattern='WO-166 evidence wait exits' scripts/test-harness.mjs 2>&1 | grep -E '^(ok|not ok)'; } && echo \\\"== unmutated scratch clone: the harness-fixtures case that spawns scripts/harness.mjs\\\" && T; sed -i '' 's|process.exitCode = status === \\\"passed\\\" ? 0 : status === \\\"failed\\\" ? 1 : 2;|process.exitCode = status === \\\"passed\\\" ? 0 : 2;|' scripts/harness.mjs && echo \\\"== mutant: $(git diff --stat | tail -1)\\\" && node --input-type=module -e 'import {changedMachinery,suites} from \\\"./scripts/test-runner.mjs\\\";const s=changedMachinery(process.cwd(),suites,\\\"HEAD\\\").map(r=>r.name);console.log(\\\"machinery suites npm test -- --review selects for this change:\\\",s.join(\\\", \\\"),\\\"| harness-fixtures selected:\\\",s.includes(\\\"harness-fixtures\\\"));console.log(\\\"scripts/harness.mjs declared for harness-fixtures:\\\",suites.find(r=>r.name===\\\"harness-fixtures\\\").sources.includes(\\\"scripts/harness.mjs\\\"))' && (node scripts/harness.mjs check >/dev/null 2>&1; echo \\\"selected suite harness (harness.mjs check) exit on mutant: $?\\\") && echo \\\"== mutant: the unselected harness-fixtures case\\\" && T; echo \\\"other test files naming evidence --wait: $(git grep -l -e 'evidence --wait' -e '\\\"--wait\\\"' -- 'scripts/test-*' 'packages/*/test/*' | grep -v '^scripts/test-harness.mjs$' | wc -l | tr -d ' ')\\\"\"},\"evidenceRefs\":[\"scripts/test-runner.mjs (machinerySources, from line 80; harness-fixtures list at 101-144; changedMachinery at 366-424; suite rows at 592-601)\",\"scripts/test-harness.mjs:255, :656-836 (copies and spawns scripts/harness.mjs)\",\"scripts/harness.mjs:166-208 (evidence --wait branch)\",\"docs/product/07-execution-guide.md:1201-1204, :1930-1934, :2024-2026\",\"scripts/test-evidence-sources.mjs (the import-closure precedent, WO-157 item 12)\",\"Drill output: selected 'configuration-root, harness'; harness check exit 0; WO-166 case ok then not ok; 0 other test files name evidence --wait\"],\"surface\":\"scripts/test-runner.mjs (machinerySources, changedMachinery); scripts/test-harness.mjs; scripts/harness.mjs; scripts/test-runner.test.mjs (runner-fixtures)\",\"altitude\":5,\"standardization\":{\"kind\":\"recurring\",\"rung\":\"test\",\"rationale\":\"The list drifts with every order that adds a script or moves a helper, and six orders have already patched it by hand. A closure test in runner-fixtures is cheaper than the next missed regression and reuses the pattern the evidence-sources suite already carries.\"}},{\"findingId\":\"ER4-003\",\"criterion\":\"A deferred decision is reopened when its recorded observation occurs (the accepted ER3-002 precedent, docs/planning/entropy-reviews/REVIEW-003.md; the 2026-09-19 register rule that a decision with a reopening observation 'returns to the feed when that observation is recorded'). Every decision must carry a reopening condition (scripts/lib/meta.mjs:181).\",\"severity\":\"major\",\"evidenceLabel\":\"measured\",\"observed\":\"Reopening conditions are stored and rendered as text. Decision records hold 1,134 prose conditions against one metric predicate, 141 deferred register rows each carry a prose condition, and the only consumer is a textual path match labelled 'a pointer for judgment and never a verdict' (scripts/lib/planning-followups.mjs:713). The meter prints '0 reopen candidates'. Three recorded numeric conditions hold at HEAD with no record of the observation. (1) WO-156-D008 and D010 reopen when the plan check exceeds 2 s, and register rows FUP-3dc0266d6b87b939 and FUP-ab1746dc9c595d95 are settled on the same condition; plan check took 4.37 to 4.74 s in six runs, against 1.90 s at WO-156's close. (2) WO-086-D006 reopens when the newer-tag report 'grows by more than a few releases without regeneration'; one day after landing, the generated release table is five tags behind (v0.56.1 to v0.57.0), and only a hand-run command writes it. (3) FUP-8a4e201d861208ad, deferred 2026-09-28, reopens when 'one order commits more than 1 MB under docs/evidence'; WO-172 committed 1,808,181 bytes the next day. A separate probe put docs/evidence growth since the last commit before 2026-09-25 at 9,878,036 bytes, against the same row's 10 MB weekly condition. The 2 s threshold names the operator's host; these timings come from the frozen copy on the dispatch host.\",\"expected\":\"A numeric reopening condition is observed by the pass that would act on it. Planning entry runs the measurable conditions of deferred and settled rows and lists the ones that hold, and a condition that names a measurable threshold is recorded in the evaluable form the meter already defines.\",\"reproduction\":{\"kind\":\"command\",\"command\":\"cd \\\"$(git rev-parse --show-toplevel)\\\" && mkdir -p .runtime/tmp && export TMPDIR=$PWD/.runtime/tmp && node scripts/build.mjs >/dev/null && echo \\\"== plan check wall time (WO-156-D008 reopens above 2 s):\\\" && ( /usr/bin/time -p node scripts/refute-plan.mjs check >/dev/null ) 2>&1 | grep real && git grep -h -o '\\\"reopenWhen\\\": \\\"A fresh check on the operator[^\\\"]*\\\"' -- docs/evidence/WO-156/decisions.md && echo \\\"== generated release table (WO-086-D006):\\\" && node scripts/docs-check.mjs | grep -o 'NEWER local release tags[^;]*' && git grep -h -o '\\\"reopenWhen\\\": \\\"The newer-tag report grows[^\\\"]*\\\"' -- docs/evidence/WO-086/decisions.md && echo \\\"== bytes under docs/evidence/WO-172:\\\" && git ls-tree -r -l HEAD -- docs/evidence/WO-172 | awk '{s+=$4} END {print s}' && node -e 'const j=require(\\\"./docs/planning/followups.json\\\");for(const id of [\\\"FUP-8a4e201d861208ad\\\",\\\"FUP-3dc0266d6b87b939\\\",\\\"FUP-ab1746dc9c595d95\\\"]){const d=j.entries.find(e=>e.id===id).dispositions.at(-1);console.log(id,d.status,d.at,\\\"| reopenWhen:\\\",d.reopenWhen)}' && echo \\\"== what evaluates them:\\\" && echo \\\"prose reopenWhen in decision records: $(git grep -h -o '\\\"reopenWhen\\\": \\\"' -- 'docs/evidence/*/decisions.md' | wc -l | tr -d ' '); metric-predicate reopenWhen: $(git grep -h -o '\\\"reopenWhen\\\": {' -- 'docs/evidence/*/decisions.md' | wc -l | tr -d ' ')\\\" && node scripts/meta.mjs --check 2>/dev/null | grep -o '[0-9]* reopen candidates'\"},\"evidenceRefs\":[\"docs/evidence/WO-156/decisions.md:253 (WO-156-D008 reopenWhen), :338 (WO-156-D010), :322 (plan 1.90 s at close)\",\"docs/evidence/WO-086/decisions.md:192-221 (WO-086-D006 and its reopenWhen)\",\"docs/planning/followups.json FUP-8a4e201d861208ad (deferred 2026-09-28T14:59:04Z), FUP-3dc0266d6b87b939, FUP-ab1746dc9c595d95 (settled)\",\"scripts/lib/planning-followups.mjs:713 (textual match only)\",\"scripts/lib/release-history.mjs:23, scripts/release.mjs list --markdown --write (no lifecycle caller)\",\"scripts/lib/meta.mjs:2010 (health line)\",\"docs/instance/entropy-reducer/runs/REVIEW-003.json ER3-002 (the previous fired condition, found by hand)\",\"Command output: real 4.37; NEWER ... v0.56.1, v0.56.2, v0.56.3, v0.56.4, v0.57.0; 1808181; 1134 prose, 1 predicate; 0 reopen candidates\"],\"surface\":\"docs/planning/followups.json; docs/evidence/*/decisions.md (reopenWhen); scripts/lib/planning-followups.mjs; scripts/refute-plan.mjs (planning entry); scripts/lib/meta.mjs\",\"altitude\":6,\"standardization\":{\"kind\":\"recurring\",\"rung\":\"script\",\"rationale\":\"Two consecutive reviews have found fired conditions by hand (ER3-002, then three here). A small table of probe commands keyed by register or decision id, run at planning entry, turns the thresholds that name a number into observations without adding a gate.\"}},{\"findingId\":\"ER4-004\",\"criterion\":\"A reopening condition recorded as a bounded metric predicate is evaluated by the meter and reported as a reopen candidate when it holds: scripts/lib/meta.mjs:199-211 accepts the form, :1729-1752 evaluates it, and the health line reports the count.\",\"severity\":\"minor\",\"evidenceLabel\":\"measured\",\"observed\":\"The repository's only metric predicate, WO-150-D003 (coldStartBytes.executor > 24576), holds: the executor cold start is 26,903 bytes. meta --check --json returns reopenCandidates [] and the health line reads '0 reopen candidates'. The evaluator reads order.metrics[condition.metric]; order rows carry coldStartBytes, while coldStartBytes.executor is a budget-row name, so the lookup is undefined and the predicate can never hold. readDecisions checks only that metric is a string. The breach itself was handled by a dated acceptance on 2026-09-22 (docs/control/budgets.json), so the cost is a loop that reports zero whatever the state, not a missed breach.\",\"expected\":\"A predicate whose metric the meter cannot resolve is refused when decisions are read, and a predicate that holds appears among the reopen candidates. Failing that, the health line does not print a candidate count it cannot compute.\",\"reproduction\":{\"kind\":\"command\",\"command\":\"cd \\\"$(git rev-parse --show-toplevel)\\\" && mkdir -p .runtime/tmp && export TMPDIR=$PWD/.runtime/tmp && node scripts/build.mjs >/dev/null && git grep -n -A4 '\\\"reopenWhen\\\": {' -- 'docs/evidence/*/decisions.md' && grep -n 'row.metrics\\\\[condition.metric\\\\]' scripts/lib/meta.mjs && node scripts/meta.mjs --check --json 2>/dev/null | node -e 'let s=\\\"\\\";process.stdin.on(\\\"data\\\",d=>s+=d).on(\\\"end\\\",()=>{const m=JSON.parse(s);const o=m.orders.at(-1);console.log(\\\"meter reopenCandidates:\\\",JSON.stringify(m.reopenCandidates));console.log(\\\"latest order\\\",o.workOrder,\\\"metrics.coldStartBytes =\\\",o.metrics.coldStartBytes,\\\"| metrics[\\\\\\\"coldStartBytes.executor\\\\\\\"] =\\\",o.metrics[\\\"coldStartBytes.executor\\\"])})' && node scripts/harness-context.mjs --check | node -e 'let s=\\\"\\\";process.stdin.on(\\\"data\\\",d=>s+=d).on(\\\"end\\\",()=>{const r=JSON.parse(s).profiles.find(p=>p.role===\\\"executor\\\");console.log(\\\"executor cold start bytes:\\\",r.bytes,\\\"(predicate: > 24576)\\\")})'; echo \\\"status: [$(git status --porcelain | tr '\\\\n' ' ')]\\\"\"},\"evidenceRefs\":[\"docs/evidence/WO-150/decisions.md:137-141 (WO-150-D003 reopenWhen predicate)\",\"scripts/lib/meta.mjs:199-211 (shape validation), :1729-1752 (evaluator, line 1735 lookup), :2010 (health line)\",\"docs/control/budgets.json (coldStartBytes.executor 29246; acceptance dated 2026-09-22)\",\"Command output: reopenCandidates []; metrics.coldStartBytes = 26903; metrics[\\\"coldStartBytes.executor\\\"] = undefined\"],\"surface\":\"scripts/lib/meta.mjs (readDecisions, collectMeta reopenCandidates, metaHealth)\",\"altitude\":8,\"standardization\":{\"kind\":\"one-off\"}},{\"findingId\":\"ER4-005\",\"criterion\":\"The cost of a recurring gate should not grow with the amount of closed history (docs/product/07-execution-guide.md §Discipline: a recurring procedure costs less than the failure it prevents; accepted precedents ER2-004 for the plan check and ER3-002 for console collection).\",\"severity\":\"minor\",\"evidenceLabel\":\"measured\",\"observed\":\"docs-check is now the slowest task of npm run test:docs: 9.33 s of a 17.24 s gate, and 9.14 to 9.96 s across four gate runs. On every run it parses each tracked Markdown file under the document roots with the Prettier parser: 1,262 files, 27.5 MB, 6.6 s of an 8.6 s checkDocs. Of that, 3.6 s is docs/final-reviews, docs/verifications and docs/evidence, which are closed reports. Those three trees gained 206 Markdown files since 2026-09-25, about 41 a day at roughly 5 ms each. The same gate shows plan at 4.68 s against 1.90 s at WO-156's close; a separate CPU profile of plan check now shows the same Markdown parser frames.\",\"expected\":\"A document check's per-run cost follows what changed. Parse results are keyed by blob identity, or the link pass is limited to files that differ from the base plus their targets, so closed reports are parsed once and task times stay flat as reports accumulate.\",\"reproduction\":{\"kind\":\"command\",\"command\":\"cd \\\"$(git rev-parse --show-toplevel)\\\" && mkdir -p .runtime/tmp && export TMPDIR=$PWD/.runtime/tmp && node scripts/build.mjs >/dev/null && node --input-type=module -e 'import {markdownFiles,markdownLinks,checkDocs} from \\\"./scripts/docs-check.mjs\\\";import {readFileSync} from \\\"node:fs\\\";const root=process.cwd();const files=markdownFiles(root);const by={};let bytes=0,t0=performance.now();for(const f of files){const s=readFileSync(f,\\\"utf8\\\");bytes+=Buffer.byteLength(s);const t=performance.now();markdownLinks(s);const k=f.split(\\\"/\\\").slice(0,2).join(\\\"/\\\");by[k]=(by[k]||0)+performance.now()-t}const parse=performance.now()-t0;t0=performance.now();const r=checkDocs(root);const total=performance.now()-t0;console.log(\\\"markdown files parsed per run:\\\",files.length,\\\"bytes:\\\",bytes);console.log(\\\"one parse of every file:\\\",Math.round(parse)+\\\" ms; whole checkDocs:\\\",Math.round(total)+\\\" ms; failures:\\\",r.failures.length);for(const [k,v] of Object.entries(by).sort((a,b)=>b[1]-a[1]).slice(0,5))console.log(\\\" \\\",k,Math.round(v)+\\\" ms\\\")' && echo \\\"markdown files added under docs/final-reviews, docs/verifications, docs/evidence since 2026-09-25: $(git log --since=2026-09-25 --diff-filter=A --name-only --format= -- 'docs/final-reviews/*.md' 'docs/verifications/*.md' 'docs/evidence/*.md' | sort -u | wc -l | tr -d ' ')\\\" && node scripts/test-runner.mjs --document --again 2>&1 | grep -E \\\"^PASS (docs-check|plan|format) |npm run test:docs\\\"\"},\"evidenceRefs\":[\"scripts/docs-check.mjs:193-222 (markdownFiles over every document root), :224-300 (linkFailures parses each source and target)\",\"docs/evidence/WO-156/decisions.md:322 (plan 1.90 s, plan-refutation-current 1.81 s at close)\",\"docs/instance/entropy-reducer/runs/REVIEW-002.json ER2-004; docs/instance/entropy-reducer/runs/REVIEW-003.json ER3-002\",\"Command output: 1262 files, 27539569 bytes; parse 6630 ms of 8551 ms; docs-check 9.33 s, plan 4.68 s, gate 17.24 s\"],\"surface\":\"scripts/docs-check.mjs; scripts/refute-plan.mjs check; scripts/test-runner.mjs document selection\",\"altitude\":10,\"standardization\":{\"kind\":\"recurring\",\"rung\":\"test\",\"rationale\":\"This is the third history-linear gate task in three reviews. A runner fixture that counts parses over N and 2N unchanged history files, or a bound timing row in the document gate, catches the class instead of each instance.\"}},{\"findingId\":\"ER4-006\",\"criterion\":\"Retained evidence links canonical inputs instead of copying them (docs/product/03-architecture.md §Corpus policy). WO-154 applied this to the self-host editions and left the authority edition as a non-goal of that order (docs/work-orders/WO-154-evidence-editions-by-reference.md:195-198).\",\"severity\":\"minor\",\"evidenceLabel\":\"measured\",\"observed\":\"139 authority edition revisions hold 27 distinct authority.json blobs. Of the 82 revisions that follow another in the same order, 76 repeat their predecessor's authority.json byte for byte; WO-172's ten revisions are one blob. Repeated copies total 5,400,240 bytes, and 40 authority.json files arrived since 2026-09-25. A revision is minted whenever either file of the edition differs (scripts/authority-evidence.mjs:1076-1105), and bundle-diff.json pins the installed harness surfaces, so each role-text or hook regeneration records an unchanged 50 KB authority transcript again. Pruning committed editions is declined (FUP-8a4e201d861208ad) and is not proposed.\",\"expected\":\"A new authority revision records only what changed. When authority.json is byte-identical to the previous revision, the edition references that blob by path and hash instead of writing a copy, and the check resolves it from Git, as schema 2 self-host editions do.\",\"reproduction\":{\"kind\":\"command\",\"command\":\"cd \\\"$(git rev-parse --show-toplevel)\\\" && git ls-tree -r -l HEAD -- docs/evidence | node -e 'let s=\\\"\\\";process.stdin.on(\\\"data\\\",d=>s+=d).on(\\\"end\\\",()=>{const e={};for(const l of s.split(\\\"\\\\n\\\")){const m=/^\\\\d+ blob (\\\\w+)\\\\s+(\\\\d+)\\\\t(docs\\\\/evidence\\\\/(WO-\\\\d+)\\\\/authority\\\\/(\\\\d+)\\\\/authority\\\\.json)$/.exec(l);if(m)e[m[4]+\\\"/\\\"+m[5]]={blob:m[1],bytes:+m[2]}}const k=Object.keys(e).sort();const blobs=new Set(k.map(x=>e[x].blob));let succ=0,same=0,dup=0;const seen=new Set();for(const x of k){const [wo,rev]=x.split(\\\"/\\\");const p=e[wo+\\\"/\\\"+String(+rev-1).padStart(3,\\\"0\\\")];if(p){succ++;if(p.blob===e[x].blob)same++}if(seen.has(e[x].blob))dup+=e[x].bytes;seen.add(e[x].blob)}console.log(\\\"authority edition revisions:\\\",k.length,\\\"| distinct authority.json blobs:\\\",blobs.size,\\\"| revisions with an in-order predecessor:\\\",succ,\\\"| byte-identical to that predecessor:\\\",same,\\\"| bytes in repeated copies:\\\",dup)})' && echo \\\"authority.json files added since 2026-09-25: $(git log --since=2026-09-25 --diff-filter=A --name-only --format= -- 'docs/evidence/*/authority/*/authority.json' | sort -u | wc -l | tr -d ' ')\\\" && echo \\\"distinct authority.json blobs among WO-172 revisions 001-010: $(git ls-tree -r HEAD -- docs/evidence/WO-172/authority | grep 'authority.json' | awk '{print $3}' | sort -u | wc -l | tr -d ' ')\\\"\"},\"evidenceRefs\":[\"scripts/authority-evidence.mjs:1076-1105 (both files compared; a difference in either requires a new revision)\",\"docs/evidence/WO-172/authority/001..010/authority.json (one blob, 9cfe0fb4...)\",\"docs/work-orders/WO-154-evidence-editions-by-reference.md:195-198 (authority edition a non-goal of that order)\",\"docs/planning/followups.json FUP-8a4e201d861208ad (pruning declined 2026-09-27)\",\"Command output: 139 revisions, 27 distinct blobs, 76 of 82 identical to predecessor, 5400240 repeated bytes, 40 added since 2026-09-25\"],\"surface\":\"scripts/authority-evidence.mjs; packages/skeleton/src/evidence-editions.mjs; docs/evidence/*/authority/\",\"altitude\":10,\"standardization\":{\"kind\":\"recurring\",\"rung\":\"script\",\"rationale\":\"Every order that regenerates role text or hooks re-mints the edition, so the copy recurs per order and per repair. The standard belongs in the writer: reference an unchanged transcript by blob and let --check resolve it.\"}},{\"findingId\":\"ER4-007\",\"criterion\":\"A review or refutation worker's effects stay inside its frozen copy and the host can show it. The dispatch instructs 'nothing outside this working directory may be written' (packages/skeleton/src/entropy-review-protocol.ts:415), and the review profile admits commands so that findings are measured (docs/instance/entropy-reducer/README.md §What the reviewer may run).\",\"severity\":\"minor\",\"evidenceLabel\":\"measured\",\"observed\":\"The claude-cli-print review argv sets no environment (packages/skeleton/src/worker-transport.ts entropyArgs), so the worker's temp root is the system temp directory, outside the copy; neither the dispatch nor the transport mentions TMPDIR. Any probe that calls mkdtemp, which includes every product suite, writes there, and the receipt's checks (tracked-status hash, untracked listing, frozen-copy inventory) cannot see it. Keeping the instruction by pointing TMPDIR inside the copy makes the product gate unmeasurable: test-portfolio fails 2 of 3 with 'source-change target overlaps a protected checkout', and in this episode npm test ended 24 passed, 4 failed (resume, target-publish, portfolio, skeleton), all from fixtures nested in a checkout. REVIEW-002 recorded a probe log in the system temp directory; REVIEW-003 redirected TMPDIR and ran only the document gate.\",\"expected\":\"The dispatch creates a scratch directory beside the frozen copy inside the episode's scratch parent, exports it to the worker as TMPDIR, names it in the instructions as the only other writable root and inventories it with the copy, so product suites run and the confinement record covers temp writes.\",\"reproduction\":{\"kind\":\"command\",\"command\":\"cd \\\"$(git rev-parse --show-toplevel)\\\" && node -p '\\\"worker temp root (os.tmpdir): \\\"+require(\\\"os\\\").tmpdir()+\\\" | inside the working directory: \\\"+require(\\\"fs\\\").realpathSync(require(\\\"os\\\").tmpdir()).startsWith(process.cwd())' && echo \\\"TMPDIR mentions in the review dispatch and transport: $(grep -c TMPDIR scripts/lib/entropy-review.mjs packages/skeleton/src/worker-transport.ts scripts/entropy.mjs | tr '\\\\n' ' ')\\\" && grep -c 'nothing outside this working directory may be written' packages/skeleton/src/entropy-review-protocol.ts && mkdir -p .runtime/tmp && node scripts/build.mjs >/dev/null && echo \\\"== a product suite with the temp root kept inside the working directory:\\\" && TMPDIR=$PWD/.runtime/tmp node --test --test-reporter=tap scripts/test-portfolio.mjs 2>&1 | grep -E \\\"^# (pass|fail)|error: 'source-change target overlaps a protected checkout'\\\" | sort | uniq -c; grep -n 'overlaps a protected checkout' packages/skeleton/src/source-change-worktree.ts; echo \\\"status: [$(git status --porcelain | tr '\\\\n' ' ')]\\\"\"},\"evidenceRefs\":[\"packages/skeleton/src/worker-transport.ts:706-745 (entropyArgs; no environment or temp root)\",\"scripts/lib/entropy-review.mjs:253-271 (scratch lane and per-episode parent that could hold a sibling temp root)\",\"packages/skeleton/src/entropy-review-protocol.ts:415 (the write instruction)\",\"packages/skeleton/src/source-change-worktree.ts:133 (the overlap refusal)\",\"docs/instance/entropy-reducer/README.md §What the reviewer may run (what the receipt records)\",\"This episode: npm test with TMPDIR inside the copy, 24 passed, 4 failed, 383.58 s; 48 'overlaps a protected checkout' lines\",\"docs/instance/entropy-reducer/runs/REVIEW-002.json and REVIEW-003.json result summaries\"],\"surface\":\"scripts/lib/entropy-review.mjs (dispatch, scratch lane, confinement record); packages/skeleton/src/worker-transport.ts (entropyArgs); packages/skeleton/src/entropy-review-protocol.ts (instructions)\",\"altitude\":5,\"standardization\":{\"kind\":\"recurring\",\"rung\":\"script\",\"rationale\":\"Every review and refutation episode meets the same choice between an unobserved temp write and an unmeasurable product gate. One change in the dispatch script, a sibling temp root that is exported and inventoried, removes it for all later episodes.\"}}],\"proposalPackets\":[{\"schemaVersion\":1,\"kind\":\"ProductSuggestionPacket\",\"proposedPath\":\"docs/proposals/gate-identity-covers-suite-inputs/\",\"sourceEpisodeId\":\"ep_entropy_ec1125309afb3ff1\",\"provenance\":[\"Entropy Reducer review episode ep_entropy_ec1125309afb3ff1, work order wo_entropy_review_1, subject commit feb7a92e1d41d6db3259f98b31521601686bbe04\",\"Finding ER4-001, measured by a scratch-clone drill and a read logger on the product console suite\",\"Lens verification-and-evidence\"],\"corroboratingEvidenceRefs\":[\"Drill: docs/product/02-domain-model.md edited, gate code identity unchanged (73acb752...), kernel AC7 case ok then not ok\",\"Product console suite read 456 distinct paths under docs/, .claude/, .agents/ and root Markdown with its [document] skip applied\",\"docs/evidence/WO-173/decisions.md WO-173-D018: 'a reused row must stand for the bytes a judge is judging'\",\"packages/skeleton/src/gate-evidence.mjs:629-634: a README a test reads as an input stays unmarked and counts\"],\"dissentingEvidenceRefs\":[\"docs/evidence/WO-173/decisions.md (D003 rationale): a tree-hash lookup 'was wrong after every report write', so excluding docs/ from the key is deliberate\",\"The reuse lookup was read, not executed, in this episode; only the unchanged key and the flipped verdict were measured\",\"The console reads are mostly of live control state compared between two readers, so a given documentation change may not change that suite's verdict\"],\"suggestion\":{\"suggestionId\":\"gate-identity-covers-suite-inputs\",\"submittedBy\":\"entropy-reducer@1 (planning-reviewer@2), episode ep_entropy_ec1125309afb3ff1\",\"problemOrOpportunity\":\"The key under which a passing npm test row is reused and bound to a publication excludes docs/, .claude/, .agents/ and root Markdown, while the kernel and console product suites read those paths. A product-document edit changed a kernel verdict at an unchanged identity, and the document gate runs no kernel suite, so a write-back after a gate or a docs-only planning branch can land a red product suite that no gate reruns.\",\"scope\":\"Decide one of two bounded repairs and add its guard. Either tag the product-suite cases that read documentation as [document] and give kernel a -docs task, so product verdicts are independent of the excluded trees, or add the documentation paths product suites read to the identity as a declared input list. In both cases add a runner fixture that runs the product package suites under a read logger and fails on a read of an excluded path. Out of scope: the untracked-source gap (WO-173-D018) and the rule that reports do not move the key.\",\"evidenceRefs\":[\"ER4-001\",\"packages/skeleton/src/gate-evidence.mjs:629-684\",\"scripts/test-runner.mjs:501-535, :1229-1247\",\"packages/kernel/test/ac7-readme-map.test.ts:388-432\",\"packages/console/test/console-commands.test.ts\"],\"affectedUsers\":[\"executors and verifiers whose npm test claim stands on a reused row\",\"the reviewer who binds productGate at final review\",\"planners editing product documents on docs-only branches\"],\"affectedSystems\":[\"packages/skeleton/src/gate-evidence.mjs\",\"scripts/lib/gate-reuse.mjs\",\"scripts/lib/handoff-ledger.mjs\",\"scripts/test-runner.mjs\",\"packages/kernel/test\",\"packages/console/test\"],\"expectedValue\":\"A reused or bound product-gate row again means the suites ran on the inputs they read. A documentation edit that breaks a product case is caught by the gate the editing pass already runs, instead of by a later unrelated order.\",\"altitude\":5,\"uncertainty\":\"How many product cases beyond the kernel AC7 case change verdict with documentation content is unmeasured; the console reads may be verdict-neutral. Moving cases to the document gate lengthens that gate by an unmeasured amount.\",\"risks\":[\"Adding documentation paths to the identity would bring back reruns after report writes, the cost WO-173 removed\",\"Re-tagging cases moves them out of the product gate, so a code change that breaks them is then caught only by the document gate\"],\"alternatives\":[\"Leave the key as it is and have the final review always run with --again\",\"Hash only the specific documents product suites read (for example docs/product/02-domain-model.md) into the identity\"],\"duplicationHints\":[\"WO-173-D018 and FUP-7629e03c6573f5cb (untracked sources in the same key); FUP-71602ec08bc81e9d\",\"FUP-2aced1f914f376ef (WO-044-D016 reuse-key contract)\"],\"urgencyRationale\":\"Reuse at this key is four days old (WO-173) and every order's write-back touches the excluded trees. The repair is cheapest before WO-123 and WO-118 compose more suites on the same rows.\"}},{\"schemaVersion\":1,\"kind\":\"ProductSuggestionPacket\",\"proposedPath\":\"docs/proposals/machinery-selection-follows-imports/\",\"sourceEpisodeId\":\"ep_entropy_ec1125309afb3ff1\",\"provenance\":[\"Entropy Reducer review episode ep_entropy_ec1125309afb3ff1, work order wo_entropy_review_1, subject commit feb7a92e1d41d6db3259f98b31521601686bbe04\",\"Finding ER4-002, measured by a mutation drill in a scratch clone\",\"Lens verification-and-evidence\"],\"corroboratingEvidenceRefs\":[\"Drill: a mutant of scripts/harness.mjs selects 'configuration-root, harness'; harness check exits 0; the unselected harness-fixtures case goes from ok to not ok; no other test file names evidence --wait\",\"scripts/test-runner.mjs machinerySources comments citing WO-157, WO-159, WO-163, WO-169, WO-171 and WO-173 additions\",\"scripts/test-evidence-sources.mjs: the same closure rule already enforced for the evidence inventories (WO-157 item 12)\"],\"dissentingEvidenceRefs\":[\"docs/product/07-execution-guide.md:2024-2026: selection by declared sources is the settled WO-132 rule, and npm run test:machinery runs every machinery suite on demand\",\"The wider census of uncovered references came from a heuristic static probe that was not part of the reproduction and over-counts package index imports\"],\"suggestion\":{\"suggestionId\":\"machinery-selection-follows-imports\",\"submittedBy\":\"entropy-reducer@1 (planning-reviewer@2), episode ep_entropy_ec1125309afb3ff1\",\"problemOrOpportunity\":\"npm test -- --review runs a machinery suite only when a path in its hand-kept source list changed. The lists omit files the suites execute: a behavior change in scripts/harness.mjs does not select harness-fixtures, the only suite that tests it, and the mutant passes every selected machinery suite. Six orders have already added entries by hand after the fact.\",\"scope\":\"Add one check to the runner-fixtures suite: for each machinery suite, the entry file, its static first-party imports and the script paths it spawns must be covered by its declared sources, with a reasoned exclusion list for shared libraries the operator chooses to leave out. Then repair the lists the check reports. The selection rule itself stays as decided.\",\"evidenceRefs\":[\"ER4-002\",\"scripts/test-runner.mjs (machinerySources, changedMachinery)\",\"scripts/test-harness.mjs:255, :656-836\",\"scripts/harness.mjs:166-208\",\"docs/product/07-execution-guide.md:1201-1204, :1930-1934, :2024-2026\"],\"affectedUsers\":[\"executors whose final criterion names npm test -- --review\",\"verifiers and reviewers who read a green --review as covering the change\",\"planners who name re-mints and gates per order\"],\"affectedSystems\":[\"scripts/test-runner.mjs\",\"scripts/test-runner.test.mjs\",\"scripts/test-harness.mjs\",\"scripts/test-process-debt.mjs\",\"scripts/test-plan-refutation.mjs\"],\"expectedValue\":\"A green --review means every machinery suite that executes a changed file ran. List upkeep stops being a per-order hand step and a finding class at verification.\",\"altitude\":5,\"uncertainty\":\"The number of real gaps after shared libraries are excluded is unknown; the drill proves one. Covering transitive imports could select the two longest suites (harness-fixtures, process-debt) on most script changes and lengthen --review by minutes.\",\"risks\":[\"Over-selection restores the long review gate that the machinery stand-down removed\",\"A closure over spawned script paths needs a convention for paths built at run time\"],\"alternatives\":[\"Cover direct imports and spawned entry scripts only, leaving shared libraries to the product suites\",\"Run npm run test:machinery once at final review regardless of selection\"],\"duplicationHints\":[\"WO-157 item 12 (evidence-sources import closure)\",\"WO-169 D007 and WO-173 D003 (untracked files join the selection)\"],\"urgencyRationale\":\"The review gate is the executable witness at implementation-ready and final review. Each order that adds a script widens the uncovered set, and first verifications already fail at about 40 to 50 per cent.\"}},{\"schemaVersion\":1,\"kind\":\"ProductSuggestionPacket\",\"proposedPath\":\"docs/proposals/reopen-conditions-evaluated-at-planning-entry/\",\"sourceEpisodeId\":\"ep_entropy_ec1125309afb3ff1\",\"provenance\":[\"Entropy Reducer review episode ep_entropy_ec1125309afb3ff1, work order wo_entropy_review_1, subject commit feb7a92e1d41d6db3259f98b31521601686bbe04\",\"Findings ER4-003 and ER4-004, measured\",\"Lenses architecture-and-semantics and runtime-and-authority\"],\"corroboratingEvidenceRefs\":[\"plan check 4.37 to 4.74 s against the 2 s condition of WO-156-D008 and D010 (register rows settled)\",\"Generated release table five tags behind against WO-086-D006's condition\",\"WO-172 committed 1,808,181 bytes under docs/evidence against FUP-8a4e201d861208ad's 1 MB condition\",\"meta --check: '0 reopen candidates' while the only metric predicate (WO-150-D003) holds at 26,903 bytes\",\"REVIEW-003 ER3-002: the previous fired condition was also found by a reviewer's hand measurement\"],\"dissentingEvidenceRefs\":[\"docs/planning/followups.json, 2026-09-19 cleanup rule: a decision with a reopening observation is a record and returns to the feed when the observation is recorded, which places the duty on whoever observes\",\"The 2 s threshold names the operator's host; the timings here are from a frozen copy on the dispatch host\",\"Most of the 1,134 conditions are qualitative and cannot be probed; 'more than a few releases' is a judgment\"],\"suggestion\":{\"suggestionId\":\"reopen-conditions-evaluated-at-planning-entry\",\"submittedBy\":\"entropy-reducer@1 (planning-reviewer@2), episode ep_entropy_ec1125309afb3ff1\",\"problemOrOpportunity\":\"Every decision must record a reopening condition, and 1,134 of 1,135 are prose that nothing evaluates. The one evaluable predicate names a metric the meter cannot resolve, so the meter's reopen-candidate count is zero whatever the state. Three numeric conditions had occurred at the subject commit without a recorded observation, and the previous review found another the same way.\",\"scope\":\"Two bounded steps. First, make the existing evaluator honest: refuse a predicate whose metric the meter cannot resolve, and resolve budget-row metrics such as coldStartBytes.executor. Second, add a small probe table keyed by register or decision id (a command and a threshold per row) for the conditions that name a number, run it from planning entry and list the rows whose condition holds. Start with the rows measured here: plan check time, newer release tags, per-order and weekly evidence bytes, collectSources and release list times. No new gate and no refusal.\",\"evidenceRefs\":[\"ER4-003\",\"ER4-004\",\"scripts/lib/meta.mjs:199-211, :1729-1752, :2010\",\"scripts/lib/planning-followups.mjs:713\",\"docs/evidence/WO-156/decisions.md:253, :338\",\"docs/evidence/WO-086/decisions.md:192-221\",\"docs/planning/followups.json FUP-8a4e201d861208ad\"],\"affectedUsers\":[\"the planner opening a pass\",\"the operator who deferred a decision on a stated threshold\",\"reviewers who today find fired conditions by hand\"],\"affectedSystems\":[\"scripts/lib/meta.mjs\",\"scripts/lib/planning-followups.mjs\",\"scripts/refute-plan.mjs\",\"docs/planning/followups.json\",\"docs/evidence/*/decisions.md\"],\"expectedValue\":\"A deferral on a measurable threshold becomes self-reporting: the pass that would act on it sees it at entry. The health line's candidate count starts to carry information.\",\"altitude\":6,\"uncertainty\":\"About 85 of the 1,134 prose conditions look numeric by pattern match; how many can be probed in under a few seconds each is unmeasured. Whether the three observations here would change a planning decision is the operator's call.\",\"risks\":[\"A probe table becomes one more list to keep current\",\"Timing probes vary with host load and could report noise as a reopening\"],\"alternatives\":[\"Require the predicate form for any new condition that states a number, and leave existing prose alone\",\"Keep hand observation and add the three fired conditions to the register in the next pass\"],\"duplicationHints\":[\"REVIEW-003 ER3-002 and WO-164 (one fired condition handled as an order)\",\"WO-172 plan failures (a sibling listing at planning entry)\",\"FUP-7f9a27e6ed6c44b3 (its thresholds were measured here and do not hold: collectSources 0.73 s, index 1.4 s, release list 0.09 s, status --all 3.3 MB)\"],\"urgencyRationale\":\"Deferred rows stand at 141 and grow with each pass, and conditions recorded on 2026-09-24 and 2026-09-28 were already exceeded by 2026-09-30.\"}},{\"schemaVersion\":1,\"kind\":\"ProductSuggestionPacket\",\"proposedPath\":\"docs/proposals/history-independent-document-checks/\",\"sourceEpisodeId\":\"ep_entropy_ec1125309afb3ff1\",\"provenance\":[\"Entropy Reducer review episode ep_entropy_ec1125309afb3ff1, work order wo_entropy_review_1, subject commit feb7a92e1d41d6db3259f98b31521601686bbe04\",\"Finding ER4-005, measured; plan check timing from finding ER4-003\",\"Lens maintainability-and-friction\"],\"corroboratingEvidenceRefs\":[\"docs-check 9.33 s of a 17.24 s document gate; 1,262 Markdown files parsed per run, 6.6 s of 8.6 s in the parser\",\"206 Markdown files added to docs/final-reviews, docs/verifications and docs/evidence since 2026-09-25\",\"plan check 4.37 to 4.74 s against 1.90 s at WO-156's close\",\"REVIEW-002 ER2-004 and REVIEW-003 ER3-002: two earlier history-linear gate tasks, both accepted and repaired one at a time\"],\"dissentingEvidenceRefs\":[\"scripts/docs-check.mjs:34-37: the pinned Prettier parser was chosen so that no second Markdown grammar or dependency is needed\",\"The gate is 17 s in total and the measured growth is about 0.2 s a day; docs/control/budgets.json leaves fastGateMs unset by operator decision\"],\"suggestion\":{\"suggestionId\":\"history-independent-document-checks\",\"submittedBy\":\"entropy-reducer@1 (planning-reviewer@2), episode ep_entropy_ec1125309afb3ff1\",\"problemOrOpportunity\":\"The document gate's slowest task parses every tracked Markdown file on every run, and more than half of that time goes to closed reports that never change. The plan check has picked up the same parser and more than doubled since its two-second repair. This is the third gate task in three reviews whose cost follows the size of history.\",\"scope\":\"Cache parse results (links and anchors) by Git blob identity in the ignored local lane, keep the parser and the checks unchanged, and add one runner fixture asserting that a second run over unchanged files performs no parse. Apply the same cache to the plan check's Markdown reads. Out of scope: changing what docs-check verifies or the baseline of historical link exceptions.\",\"evidenceRefs\":[\"ER4-005\",\"scripts/docs-check.mjs:193-300\",\"docs/evidence/WO-156/decisions.md:322\",\"scripts/lib/release-list-cache.mjs (the per-tag cache pattern WO-164 introduced)\"],\"affectedUsers\":[\"every planner, executor and reviewer who runs npm run test:docs\",\"the executor completion that runs the document gate inline (WO-173)\"],\"affectedSystems\":[\"scripts/docs-check.mjs\",\"scripts/refute-plan.mjs\",\"scripts/lib/plan-continuation.mjs\",\"scripts/test-docs-check.mjs\"],\"expectedValue\":\"docs-check and plan check return to roughly the cost of the files a pass changed, the document gate drops from about 17 s toward the format task's 5 s floor, and a fixture holds the class.\",\"altitude\":10,\"uncertainty\":\"Warm and cold timings with a cache are not measured. The share of plan check time attributable to Markdown parsing comes from one CPU profile.\",\"risks\":[\"A cache keyed incorrectly could pass a stale link result; keying by blob identity and parser version bounds this\",\"A cold checkout still pays the full parse once\"],\"alternatives\":[\"Limit the link pass to files that differ from the base plus the targets they cite\",\"Exclude closed report trees from the link check and rely on the recorded baseline\"],\"duplicationHints\":[\"docs/proposals/constant-process-console-collection/ (accepted, WO-164)\",\"REVIEW-002 ER2-004 and WO-156 (plan check under 2 s)\"],\"urgencyRationale\":\"Low. The cost is small today but runs at every planning pass, completion and final review, and the plan check has already passed its recorded two-second condition.\"}}],\"resultEnvelope\":{\"workOrderId\":\"wo_entropy_review_1\",\"episodeId\":\"ep_entropy_ec1125309afb3ff1\",\"status\":\"completed\",\"resultId\":\"res_entropy_ec1125309afb3ff1_review_004\",\"summary\":\"Frozen subject feb7a92e reviewed in place: 4,017 tracked paths censused; docs/intake never read. Four lenses worked serially. Constraint first: verification soundness. The npm test reuse key excludes docs/, .claude/ and root Markdown although kernel and console product suites read them; a product-document edit flipped a kernel case at an unchanged identity. Review selection omits the only suite witnessing scripts/harness.mjs; a mutant passed the selected suites. Second, reopening conditions do not reach planning: 1,134 are prose, the single metric predicate cannot resolve its metric, the meter prints zero candidates, and three recorded thresholds have occurred. Minor: docs-check parses 1,262 Markdown files (9.3 s of a 17.2 s gate); 76 of 82 authority re-mints repeat identical bytes; review workers inherit a temp root outside the copy. Seven measured findings, four packets. Document gate 23/0. The default gate failed four suites only because probes kept TMPDIR inside the copy; not reported as defects. One probe, meta without --check, rewrote the tracked work-order index; restored to HEAD bytes and the status hash matches the subject. Episode artifacts removed. Awaiting operator disposition.\",\"requiresHuman\":true},\"cleanRoom\":{\"status\":\"passed\",\"stopConditionsFound\":false,\"evidenceRefs\":[\"Census from git ls-files: 4,017 tracked paths. docs/intake/** was never opened; its three tracked path names (.gitkeep files) were seen only in the index listing.\",\"Secret-shape scan over tracked non-intake files matched four files, all synthetic screen fixtures: packages/compiler/fixtures/wo060-source-bundles.json, packages/compiler/src/source-bundle.ts, packages/compiler/test/source-bundle.test.ts and packages/skeleton/test/live-verification-receipt.test.ts. No value is reproduced in this output.\",\"No employer material, credential, private identifier or internal service detail is incorporated; user settings, remotes and the control plane outside the copy were not read, and every fact cited derives from tracked repository files or commands run in the frozen copy.\",\"After the episode: HEAD feb7a92e1d41d6db3259f98b31521601686bbe04, git status --porcelain SHA-256 e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 (equal to subject.trackedStatusSha256), 0 untracked non-ignored paths, only node_modules ignored.\",\"Disclosed deviation: running the meter without --check rewrote the tracked docs/work-orders/README.md inside the frozen copy; it was restored to HEAD bytes with git show and the tree verified identical to HEAD. Scratch clones, build output and gate records created under ignored paths were removed.\"]}}",
+  "disposition": {
+    "findingCount": 7,
+    "proposalPacketCount": 4,
+    "proposalFiling": "awaiting operator disposition; not filed",
+    "nextStep": "Fresh blinded refutation before any disposition."
+  },
+  "liveness": "live",
+  "localTerms": {
+    "status": "present"
+  },
+  "receiptHash": "sha256:60a85391ffc86233de33ffdb46660a575c5f0924c554189bdf21c3d85368cdab"
+}

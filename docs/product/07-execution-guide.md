@@ -1211,6 +1211,16 @@ Standard artifacts, all doc-only:
 - `npm run work-orders -- index` regenerated and `npm run test:docs` green.
   A document-only pass runs no code suite.
 
+An order gives the executor every step the executor can perform (operator
+direction, 2026-09-28): none is marked operator-run or routed to the
+operator. A live feedback episode an order owes runs in the executor's
+session on Codex `gpt-6-sol` or Claude Code `claude-opus-5-5`, at `xhigh`,
+with no operator authorization and its cost accepted; a repair that edits a
+judged source again runs another the same way. A step the order's objective
+gives the operator (a session the operator witnesses, a run in the operator's
+own fork, a grant only the operator's account holds) names its fallback for
+the case that it has not happened by handoff.
+
 A planning pass never activates, implements, tags, publishes, merges, edits
 immutable evidence, or reopens a decision without its stated evidence or
 operator direction. A planning pass also

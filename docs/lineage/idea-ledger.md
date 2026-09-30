@@ -40,6 +40,84 @@ are now declared above. The [decision record](../evidence/WO-084/decisions.md)
 records the legacy ledger write-back; `node scripts/lineage.mjs index` generates
 the index and `index --check` enforces this rule in `npm run test:docs`.
 
+## 2026-09-30 — Planning pass: REVIEW-004 paid for and consumed (WO-174, WO-175; two findings declined on cost; the sequence note folded)
+
+Source: the operator's bare dispatch `planning: entropy reducer`, captured
+verbatim in ignored intake
+(`docs/intake/notes/2026-09-30-entropy-review-004-planning.md`, SHA-256
+`13632879f91b792a59789a015da03053e5db65babc697a1e9286c65ddb373c67`), and the
+repository's own records: REVIEW-004 and REFUTATION-005, the register rows
+and decisions the findings bear on (WO-156 D008 and D010, WO-086 D006,
+WO-150 D003, WO-173 D003 and D018), the budgets file and the 2026-09-28
+planning document. Shape-First Synthesis over repository records only; the
+clean-room screen found no stop condition. The record is
+[the planning document](../planning/entropy-review-004-2026-09-30.md).
+
+- **A passing gate row must stand for what its suites read and execute**
+  `candidate`
+  - The gate's code identity leaves out documentation on purpose, yet a
+    kernel case and 446 reads of the console suite depend on it: one bold
+    term changed in product 02 turned a product case red at an unchanged
+    identity, and no gate a documentation pass runs would notice. `--review`
+    selects machinery suites from hand-kept lists that omit files the suites
+    execute: a mutant of `scripts/harness.mjs` passed every selected suite.
+    Filed as WO-174: the cases that read documentation move to the document
+    gate behind a read guard, and a closure check holds the lists.
+    Provenance: ER4-001 and ER4-002; the packets
+    `gate-identity-covers-suite-inputs` and
+    `machinery-selection-follows-imports`; receipt 033's known issue on
+    WO-173. Reopen: a product-suite case reads an excluded path, or a mutant
+    passes `--review`, after WO-174 closes.
+- **A numeric reopening condition should report itself** `candidate`
+  - 1,134 reopening conditions are prose and the one metric predicate names
+    a metric the meter cannot resolve, so "0 reopen candidates" is printed
+    whatever the state; two reviews in a row found crossed thresholds by
+    hand. Filed as WO-175: a named table of at most twelve numeric
+    conditions, evaluated on demand and counted at planning entry, with no
+    gate and no refusal. Prose stays prose. Provenance: ER4-003 and ER4-004;
+    the packet `reopen-conditions-evaluated-at-planning-entry`. Reopen: a
+    review again finds by hand a threshold the listing names.
+- **A crossed threshold is a reason to decide again, not an order by
+  itself** `adopted`
+  - Three recorded conditions had occurred. The pass regenerated the release
+    table (five tags behind), recorded WO-172's evidence bytes against their
+    row, and declined to restore the plan check's two-second figure by an
+    order: 4.7 s in a 17 s document gate does not repay an order and a cache
+    inside a correctness gate. Each decline carries the number that would
+    change it (30 s for the gate, 15 s for docs-check, 8 s for the plan
+    check). Provenance: ER4-005; WO-156 D008; the planning document §5 and
+    §7. Reopen: one of those figures on the operator's host.
+- **Tracked bytes are a proxy; distinct blobs are what a clone pays**
+  `adopted`
+  - 76 of 82 successive authority revisions repeat an identical transcript,
+    5.4 MB in the working tree and one Git object each. The register's
+    evidence thresholds counted tracked bytes; the row now counts distinct
+    blob bytes, and superseded editions keep their bytes because immutable
+    reports link to them. The by-reference form waits for an order that
+    already edits the writer. Provenance: ER4-006; REFUTATION-005's note;
+    the 2026-09-27 decline of pruning. Reopen: repeated copies above 10% of
+    `docs/evidence`, or the next order that edits
+    `scripts/authority-evidence.mjs`.
+- **A review worker's temporary files belong inside its episode** `candidate`
+  - The launched reviewer inherits the system temporary directory, which its
+    receipt cannot see; kept inside the copy, product fixtures fail as nested
+    checkouts, and this review spent 384 s on a product gate whose four
+    failures were artifacts. Filing REFUTATION-005 then ended on read-only
+    fixture directories a drill had left behind. Filed as WO-175's third
+    group. Provenance: ER4-007; this pass's filing. Reopen: a receipt omits a
+    directory its worker wrote.
+- **A pass's dated note in the sequence leaves with the last entry it
+  places** `adopted`
+  - The sequence file held thirteen dated pass notes about orders that had
+    closed and stood at 13,516 bytes against a configured 8,192 and an
+    accepted 12,369. Closed entries already leave at each pass (operator
+    direction, 2026-09-22); their notes now leave with them, the standing
+    placements are restated in one paragraph, and the file is 3,868 bytes.
+    The live-episode rule that lived only in that note is written into
+    product 07. Provenance: WO-117 D013; WO-172 D010; the planning document
+    §6. Reopen: a placement a closed note carried is needed and found in
+    none of the planning document, the map or the ledger.
+
 ## 2026-09-29 — Ideation during WO-065: useful delegation with workflow mode
 
 Source: the operator's `ideation:` message during `resume: next`, captured
