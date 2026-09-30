@@ -385,7 +385,7 @@ test("AC7 evidence: Program and Cadence namespace member surfaces match the pinn
   ]);
 });
 
-test("AC7 evidence: every README map row's right cell names an entry present in docs/product/02-domain-model.md", () => {
+test("[document] AC7 evidence: every README map row's right cell names an entry present in docs/product/02-domain-model.md", () => {
   const domainModelPath = fileURLToPath(
     new URL("../../../../docs/product/02-domain-model.md", import.meta.url),
   );

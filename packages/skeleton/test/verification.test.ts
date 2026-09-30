@@ -460,7 +460,7 @@ test("WO-010 AC3 each blocking finding has its own compiled repair; repair limit
   );
 });
 
-test("WO-010 AC4/5 dotln status exposes stale evidence mid-workstream and is read-only", async () => {
+test("[document] WO-010 AC4/5 dotln status exposes stale evidence mid-workstream and is read-only", async () => {
   const directory = temporary();
   await assert.rejects(
     runVerificationDemo({
@@ -1115,7 +1115,7 @@ test("WO-157 item 8: the host's own receipt check records its typed detail", asy
 // compiler 0.17.0. It replays to its recorded matrix under a later release,
 // while a persisted capsule that differs in anything but that label is
 // still refused.
-test("WO-154 a verification stream recorded under an earlier compiler release replays; other persisted drift is refused", () => {
+test("[document] WO-154 a verification stream recorded under an earlier compiler release replays; other persisted drift is refused", () => {
   const edition = new URL(
     "../../../../docs/evidence/WO-157/verification/001/",
     import.meta.url,
@@ -1197,7 +1197,7 @@ test("WO-154 a verification stream recorded under an earlier compiler release re
 // recorded under compilers 0.5.0 and 0.6.0, replay to complete. The WO-011
 // self-host verifier leaves that byte oracle (its 1,600 prefix projections
 // cost about 100 s), so its replay is asserted here.
-test("WO-154 historical verification streams recorded under compilers 0.5.0 and 0.6.0 replay to complete", () => {
+test("[document] WO-154 historical verification streams recorded under compilers 0.5.0 and 0.6.0 replay to complete", () => {
   for (const [path, release] of [
     ["WO-010/events.jsonl", "0.5.0"],
     ["WO-011/verification/events.jsonl", "0.6.0"],

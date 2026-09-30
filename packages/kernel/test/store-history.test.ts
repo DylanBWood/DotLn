@@ -15,7 +15,7 @@ const protocols = JSON.parse(
   nonEventPaths: Record<string, string>;
   controlSegmentPattern: string;
 };
-test("WO-045 committed EventEnvelope streams decode and round-trip byte-identically", async (t) => {
+test("[document] WO-045 committed EventEnvelope streams decode and round-trip byte-identically", async (t) => {
   const allPaths = execFileSync(
     "git",
     [

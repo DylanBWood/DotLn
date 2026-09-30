@@ -13,7 +13,7 @@ import {
 import {
   fixtureRoot,
   loadFixture,
-  manifest,
+  readFixtureManifest,
   root,
 } from "../packages/console/dist/test/fixtures.js";
 
@@ -25,6 +25,7 @@ if (
   throw new Error(
     "usage: console-fixtures.mjs [--write|--check|--record-current-selfhost] (build first)",
   );
+const manifest = readFixtureManifest();
 if (mode === "--record-current-selfhost") {
   const selected = currentEvidence(root, "feedback");
   // A schema 2 edition names its live audit, which a carried edition keeps
@@ -57,7 +58,7 @@ if (mode === "--record-current-selfhost") {
   const capture = `Current selfhost recording follows ${selected.directory}; previous source editions retain their bytes.`;
   if (!manifest.capture.includes(capture)) manifest.capture += ` ${capture}`;
   // Check every newly pinned input before replacing the fixture manifest.
-  loadFixture("selfhost");
+  loadFixture("selfhost", manifest);
   writeFileSync(join(fixtureRoot, "manifest.json"), prettyJson(manifest));
 }
 const writing = mode !== "--check";
@@ -66,7 +67,7 @@ if (writing) mkdirSync(directory, { recursive: true });
 for (const name of mode === "--record-current-selfhost"
   ? ["selfhost"]
   : Object.keys(manifest.cases)) {
-  const board = projectBoard(loadFixture(name));
+  const board = projectBoard(loadFixture(name, manifest));
   for (const [extension, contents] of [
     ["json", prettyJson(board)],
     ["txt", renderTerminal(board)],

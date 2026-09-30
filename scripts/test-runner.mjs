@@ -40,6 +40,10 @@ import {
 import { classifyDocumentFailures } from "./lib/document-failures.mjs";
 import { evidenceSources } from "./lib/evidence-sources.mjs";
 import { findLaunchpad } from "./lib/config.mjs";
+import {
+  productReadEnvironment,
+  productReadObservations,
+} from "./lib/product-read-guard.mjs";
 
 const recordedSources = evidenceSources(findLaunchpad());
 
@@ -83,6 +87,10 @@ const machinerySources = {
     "scripts/test-fixture-temp-root.sh",
   ],
   "harness-probe": [
+    // WO-174: direct entry imports and literal first-party script inputs.
+    "packages/skeleton/src/discovery-sandbox.ts",
+    "packages/skeleton/src/source-change-command.ts",
+    "scripts/resume.mjs",
     "scripts/harness-probe.mjs",
     "scripts/lib/copilot-probe.mjs",
     "scripts/lib/copilot-qualification.mjs",
@@ -99,6 +107,19 @@ const machinerySources = {
     "packages/skeleton/src/worker-transport.ts",
   ],
   "harness-fixtures": [
+    // WO-174: direct entry imports and literal first-party script inputs.
+    "packages/compiler/src/artifact-identity.ts",
+    "packages/compiler/src/index.ts",
+    "packages/compiler/src/operator-control.mjs",
+    "packages/skeleton/src/gate-deadlines.mjs",
+    "scripts/bootstrap.mjs",
+    "scripts/harness-entry.mjs",
+    "scripts/harness.mjs",
+    "scripts/lib/evidence-preparation.mjs",
+    "scripts/lib/gate-evidence.mjs",
+    "scripts/lib/terms.mjs",
+    "scripts/release.mjs",
+    "scripts/test-fixture-temporary.mjs",
     "packages/skeleton/src/presence-heartbeat.ts",
     "packages/skeleton/src/presence-signals.ts",
     "packages/skeleton/src/resident-store.ts",
@@ -130,6 +151,11 @@ const machinerySources = {
     "packages/skeleton/src/loadouts/",
   ],
   harness: [
+    // WO-174: direct entry imports and literal first-party script inputs.
+    "packages/skeleton/src/usage-observation.mjs",
+    "scripts/lib/evidence-preparation.mjs",
+    "scripts/lib/harness-prune.mjs",
+    "scripts/lib/harness-runtime.mjs",
     "packages/skeleton/src/presence-heartbeat.ts",
     "packages/skeleton/src/presence-signals.ts",
     "packages/skeleton/src/resident-store.ts",
@@ -153,6 +179,14 @@ const machinerySources = {
   ],
   "harness-evidence": recordedSources["harness"],
   "plan-refutation": [
+    // WO-174: direct entry imports and literal first-party script inputs.
+    "packages/kernel/src/index.ts",
+    "scripts/lib/control-store.mjs",
+    "scripts/lib/control.mjs",
+    "scripts/lib/dependencies.mjs",
+    "scripts/lib/legacy-cost.mjs",
+    "scripts/lib/terms.mjs",
+    "scripts/work-orders.mjs",
     "packages/skeleton/src/plan-refutation-host.ts",
     "packages/skeleton/src/plan-refutation-fake.ts",
     "packages/skeleton/src/worker-transport.ts",
@@ -169,6 +203,21 @@ const machinerySources = {
     "scripts/lib/entropy-review.mjs",
   ],
   "runner-fixtures": [
+    "scripts/lib/machinery-coverage.mjs",
+    "scripts/lib/product-read-guard.mjs",
+    "scripts/lib/evidence-sources.mjs",
+    // WO-174: direct entry imports and literal first-party script inputs.
+    "packages/compiler/src/artifact-identity.ts",
+    "packages/skeleton/src/harness-host.ts",
+    "packages/skeleton/src/loadouts/contributor.ts",
+    "packages/skeleton/src/version.ts",
+    "scripts/authority-evidence.mjs",
+    "scripts/build.mjs",
+    "scripts/fixtures/historical-compiler-loader.mjs",
+    "scripts/lib/lifecycle-evidence.mjs",
+    "scripts/lib/release-records.mjs",
+    "scripts/reactor-identity.mjs",
+    "scripts/test-plan-refutation.mjs",
     "scripts/lib/gate-timeline.mjs",
     "scripts/measure-gates.mjs",
     "scripts/lib/gate-evidence.mjs",
@@ -193,6 +242,30 @@ const machinerySources = {
     "packages/skeleton/src/gate-deadlines.mjs",
   ],
   "process-debt": [
+    // WO-174: direct entry imports and literal first-party script inputs.
+    "packages/compiler/src/feedback.ts",
+    "packages/compiler/src/index.ts",
+    "packages/compiler/src/operator-control.mjs",
+    "packages/skeleton/src/feedback-boundary.ts",
+    "packages/skeleton/src/feedback-selfhost.ts",
+    "packages/skeleton/src/gate-deadlines.mjs",
+    "packages/skeleton/src/harness-command.ts",
+    "packages/skeleton/src/observed-facts.ts",
+    "packages/skeleton/src/writer-teardown.mjs",
+    "scripts/bootstrap.mjs",
+    "scripts/harness-context.mjs",
+    "scripts/harness.mjs",
+    "scripts/lib/adjacent-queue.mjs",
+    "scripts/lib/gate-evidence.mjs",
+    "scripts/lib/harness.mjs",
+    "scripts/lib/plan-receipts.mjs",
+    "scripts/meta.mjs",
+    "scripts/operator-control.mjs",
+    "scripts/refute-plan.mjs",
+    "scripts/release.mjs",
+    "scripts/resume.mjs",
+    "scripts/test-beacon-fixture.mjs",
+    "scripts/test-fixture-temporary.mjs",
     "packages/skeleton/src/correction-observation.mjs",
     "scripts/lib/meta.mjs",
     "scripts/lib/intake-reconciliation.mjs",
@@ -217,9 +290,23 @@ const machinerySources = {
     "packages/skeleton/src/subagent-budget.ts",
     "packages/skeleton/src/gate-evidence.mjs",
   ],
-  mutation: ["corpus/mutation/"],
+  mutation: [
+    // WO-174: direct entry imports and literal first-party script inputs.
+    "packages/compiler/src/compile.ts",
+    "packages/compiler/src/normalize.ts",
+    "packages/kernel/src/index.ts",
+    "corpus/mutation/",
+  ],
   // WO-157 item 12: the inventories and the import closure they must follow.
   "evidence-sources": [
+    // WO-174: direct entry imports and literal first-party script inputs.
+    "packages/compiler/src/artifact-identity.ts",
+    "packages/kernel/src/index.ts",
+    "packages/skeleton/src/entropy-review-protocol.ts",
+    "packages/skeleton/src/verification.ts",
+    "packages/skeleton/src/worker-store.ts",
+    "packages/skeleton/test/scenario.test.ts",
+    "scripts/build.mjs",
     "scripts/lib/evidence-sources.mjs",
     "scripts/test-evidence-sources.mjs",
     "scripts/feedback-evidence.mjs",
@@ -229,6 +316,8 @@ const machinerySources = {
   // WO-157 item 13: any changed docs path, stub list or registry re-runs the
   // registration check under --review, not only under test:docs.
   registrations: [
+    // WO-174: direct entry imports and literal first-party script inputs.
+    "packages/kernel/src/index.ts",
     "docs/",
     "scripts/check-registrations.mjs",
     "scripts/lib/document-gate-stubs.mjs",
@@ -242,6 +331,9 @@ const machinerySources = {
   "verification-evidence": recordedSources["verification"],
   "feedback-evidence": recordedSources["feedback"],
   meta: [
+    // WO-174: direct entry imports and literal first-party script inputs.
+    "scripts/lib/executor-handoff.mjs",
+    "scripts/lib/plan-subject.mjs",
     "packages/skeleton/src/correction-observation.mjs",
     "scripts/lib/control-store.mjs",
     "scripts/lib/control-time.mjs",
@@ -513,9 +605,7 @@ export const suites = [
             needs: OUTSIDE_CONFINEMENT,
           }
         : {}),
-      ...(["skeleton", "console"].includes(name)
-        ? { skipPattern: "\\[document\\]" }
-        : {}),
+      skipPattern: "\\[document\\]",
       ...(name === "console" ? {} : { group: "package-tests" }),
       // The outer runner owns parallelism. Node otherwise launches one test
       // process per available CPU on top of every other active suite.
@@ -525,10 +615,11 @@ export const suites = [
       ),
     }),
   ),
-  ...["skeleton", "console"].map((name) =>
+  ...["kernel", "skeleton", "console"].map((name) =>
     nodeTests(`${name}-docs`, `packages/${name}/dist/test/*.test.js`, {
       document: true,
       namePattern: "\\[document\\]",
+      ...(name === "skeleton" ? { needs: OUTSIDE_CONFINEMENT } : {}),
       fileConcurrency: 2,
       protects:
         "current product documentation and recorded inputs agree with their runtime projections",
@@ -714,15 +805,20 @@ export function executeSuite(
   signal = undefined,
 ) {
   const started = Date.now();
-  const env = suiteEnvironment(
+  let env = suiteEnvironment(
     row.executionEnvironment ?? process.env,
     row.gateContext,
   );
   const deadline = startDeadline(`suite:${row.name}`, timeoutMs, { env });
   onProgress({ name: row.name, message: "started", elapsedMs: 0 });
   let command;
+  let readGuard;
   try {
     command = expand([...row.command, ...(row.args ?? [])], repo);
+    if (row.packageTest && row.product && !row.document) {
+      readGuard = productReadEnvironment(repo, env, row.name);
+      env = readGuard.env;
+    }
     if (row.executionWrapper) command = [...row.executionWrapper, ...command];
   } catch (error) {
     return Promise.resolve({
@@ -840,6 +936,21 @@ export function executeSuite(
       signal?.removeEventListener("abort", stop);
       const durationMs = Date.now() - started;
       deadline.finish();
+      let readFailures = [];
+      if (readGuard) {
+        try {
+          readFailures = productReadObservations(readGuard.log).filter(
+            (event) => event.kind === "excluded-read",
+          );
+        } catch (error) {
+          failure ??= `Product read observation unavailable: ${error.message}`;
+        }
+      }
+      if (readFailures.length) {
+        output += `\nProduct read guard: ${readFailures.length} excluded-input observations (${readGuard.log})\n`;
+        for (const event of readFailures)
+          output += `Product read guard: ${event.case} reads ${event.path} (${event.method}); tag the case [document]\n`;
+      }
       resolveRun({
         name: row.name,
         durationMs,
@@ -854,7 +965,16 @@ export function executeSuite(
           : {}),
         startedAt: new Date(started).toISOString(),
         finishedAt: new Date().toISOString(),
-        exitCode: timedOut || stopped ? 1 : (code ?? 1),
+        exitCode:
+          timedOut || stopped || failure || readFailures.length
+            ? 1
+            : (code ?? 1),
+        ...(readGuard
+          ? {
+              productReadLog: readGuard.log,
+              excludedReads: readFailures.length,
+            }
+          : {}),
         executed: true,
         ...(stopped ? { stopped: true } : {}),
         output: `${output}${failure ? `\n${failure}` : ""}${timedOut ? `\nSuite ${row.name} timed out after ${durationMs} ms` : ""}${stopped ? `\nSuite ${row.name} stopped by gate request after ${durationMs} ms` : ""}`,

@@ -48,7 +48,7 @@ import {
   combinedFixture,
   fixtureRoot,
   loadFixture,
-  manifest,
+  readFixtureManifest,
   root,
 } from "./fixtures.js";
 
@@ -186,76 +186,126 @@ const schema = JSON.parse(
   ),
 ) as Record<string, unknown>;
 
-for (const name of Object.keys(manifest.cases))
-  test(`WO-032 AC1/6 ${name}: recorded JSON and both renders; pure, schema-valid, linked and bounded`, () => {
-    const sources = loadFixture(name),
-      before = JSON.stringify(sources);
-    freeze(sources);
-    const board = projectBoard(sources),
-      encoded = JSON.stringify(board, null, 2) + "\n";
-    assert.equal(
-      JSON.stringify(sources),
-      before,
-      "projection mutated recorded input",
-    );
-    assert.deepEqual(projectBoard(sources), board);
+test("[document] WO-174 console fixture generator checks the current lazy exports", () => {
+  const result = spawnSync(
+    process.execPath,
+    ["scripts/console-fixtures.mjs", "--check"],
+    { cwd: root, encoding: "utf8" },
+  );
+  assert.equal(result.status, 0, `${result.stdout}${result.stderr}`);
+  for (const name of Object.keys(readFixtureManifest().cases))
     assert.ok(
-      schemaMatches(JSON.parse(encoded), schema, schema),
-      "serialized board violates its JSON schema",
+      result.stdout.includes(`${name}: JSON, terminal, HTML match\n`),
+      `generator did not check ${name}`,
     );
-    const terminal = renderTerminal(board),
-      html = renderHtml(board);
-    for (const [extension, output] of [
-      ["json", encoded],
-      ["txt", terminal],
-      ["html", html],
-    ])
-      assert.equal(
-        readFileSync(
-          join(fixtureRoot, "expected", `${name}.${extension}`),
-          "utf8",
-        ),
-        output,
-      );
-    assert.deepEqual(
-      board.panels.map((panel) => panel.id),
-      ["actors", "builds", "mechanisms", "work", "blueprint"],
-    );
-    assert.ok(
-      terminal
-        .split("\n")
-        .every((line) => displayWidth(line) <= TERMINAL_WIDTH),
-    );
-    assert.doesNotMatch(
-      html,
-      /<(?:script|iframe|object|embed|img|link|form|input|button|video|audio|canvas)\b/iu,
-    );
-    assert.doesNotMatch(
-      html,
-      /\son[a-z]+\s*=|\b(?:src|srcset|poster)\s*=|url\s*\(|@import/iu,
-    );
-    assert.doesNotMatch(html, /href="(?!#)/u);
-    const ids = [...html.matchAll(/\bid="([^"]+)"/gu)].map((match) => match[1]);
-    assert.equal(new Set(ids).size, ids.length, "duplicate HTML targets");
-    for (const link of html.matchAll(/href="#([^"]+)"/gu))
-      assert.ok(ids.includes(link[1]), `dead link: ${link[1]}`);
-    const evidenceIds = new Set(board.evidence.map((row) => row.id));
-    for (const row of allRows(board))
-      for (const cell of row.cells) {
-        assert.ok(cell.evidence.length > 0, `cell lacks evidence: ${cell.key}`);
-        assert.ok(
-          cell.evidence.every((id) => evidenceIds.has(id)),
-          `cell invents evidence: ${cell.key}`,
-        );
-        if (cell.status !== "known") assert.equal(cell.value, null);
-      }
-    assert.doesNotMatch(
-      encoded,
-      /SYNTHETIC_PRIVATE_|privateTranscript|source-file bodies.*contents|\/Users\/|\/private\//u,
-    );
-  });
+});
 
-test("WO-032 schema refuses a different version, unknown fields, unsupported cells and unlabeled missing facts", () => {
+test("[document] WO-174 fixture drafts validate supplied pins without changing the recorded manifest", () => {
+  const before = readFileSync(join(fixtureRoot, "manifest.json"), "utf8");
+  const draft = readFixtureManifest();
+  const input = draft.inputs["selfhostAudit"]!;
+  input.sha256 =
+    (input.sha256.startsWith("a") ? "b" : "a") + input.sha256.slice(1);
+  assert.throws(
+    () => loadFixture("selfhost", draft),
+    (error: unknown) => {
+      assert.ok(error instanceof assert.AssertionError);
+      assert.ok(
+        error.message.startsWith(
+          `recorded fixture input changed: ${input.path}`,
+        ),
+      );
+      assert.equal(error.expected, input.sha256);
+      return true;
+    },
+  );
+  assert.equal(
+    readFileSync(join(fixtureRoot, "manifest.json"), "utf8"),
+    before,
+  );
+  assert.doesNotThrow(() => loadFixture("selfhost"));
+});
+
+test("[document] WO-032 AC1/6 recorded fixture cases", async (t) => {
+  for (const name of Object.keys(readFixtureManifest().cases))
+    await t.test(
+      `WO-032 AC1/6 ${name}: recorded JSON and both renders; pure, schema-valid, linked and bounded`,
+      () => {
+        const sources = loadFixture(name),
+          before = JSON.stringify(sources);
+        freeze(sources);
+        const board = projectBoard(sources),
+          encoded = JSON.stringify(board, null, 2) + "\n";
+        assert.equal(
+          JSON.stringify(sources),
+          before,
+          "projection mutated recorded input",
+        );
+        assert.deepEqual(projectBoard(sources), board);
+        assert.ok(
+          schemaMatches(JSON.parse(encoded), schema, schema),
+          "serialized board violates its JSON schema",
+        );
+        const terminal = renderTerminal(board),
+          html = renderHtml(board);
+        for (const [extension, output] of [
+          ["json", encoded],
+          ["txt", terminal],
+          ["html", html],
+        ])
+          assert.equal(
+            readFileSync(
+              join(fixtureRoot, "expected", `${name}.${extension}`),
+              "utf8",
+            ),
+            output,
+          );
+        assert.deepEqual(
+          board.panels.map((panel) => panel.id),
+          ["actors", "builds", "mechanisms", "work", "blueprint"],
+        );
+        assert.ok(
+          terminal
+            .split("\n")
+            .every((line) => displayWidth(line) <= TERMINAL_WIDTH),
+        );
+        assert.doesNotMatch(
+          html,
+          /<(?:script|iframe|object|embed|img|link|form|input|button|video|audio|canvas)\b/iu,
+        );
+        assert.doesNotMatch(
+          html,
+          /\son[a-z]+\s*=|\b(?:src|srcset|poster)\s*=|url\s*\(|@import/iu,
+        );
+        assert.doesNotMatch(html, /href="(?!#)/u);
+        const ids = [...html.matchAll(/\bid="([^"]+)"/gu)].map(
+          (match) => match[1],
+        );
+        assert.equal(new Set(ids).size, ids.length, "duplicate HTML targets");
+        for (const link of html.matchAll(/href="#([^"]+)"/gu))
+          assert.ok(ids.includes(link[1]), `dead link: ${link[1]}`);
+        const evidenceIds = new Set(board.evidence.map((row) => row.id));
+        for (const row of allRows(board))
+          for (const cell of row.cells) {
+            assert.ok(
+              cell.evidence.length > 0,
+              `cell lacks evidence: ${cell.key}`,
+            );
+            assert.ok(
+              cell.evidence.every((id) => evidenceIds.has(id)),
+              `cell invents evidence: ${cell.key}`,
+            );
+            if (cell.status !== "known") assert.equal(cell.value, null);
+          }
+        assert.doesNotMatch(
+          encoded,
+          /SYNTHETIC_PRIVATE_|privateTranscript|source-file bodies.*contents|\/Users\/|\/private\//u,
+        );
+      },
+    );
+});
+
+test("[document] WO-032 schema refuses a different version, unknown fields, unsupported cells and unlabeled missing facts", () => {
   const board = projectBoard(loadFixture("selfhost"));
   assert.equal(
     schemaMatches(
@@ -317,7 +367,7 @@ test("WO-032 schema refuses a different version, unknown fields, unsupported cel
   );
 });
 
-test("WO-032 AC2 executor, verifier attempts, authority, hashes and actual accepted episode remain distinct", () => {
+test("[document] WO-032 AC2 executor, verifier attempts, authority, hashes and actual accepted episode remain distinct", () => {
   const fixture = loadFixture("selfhost");
   const store = fixture.stores!.find(
     (item) => item.id === "selfhost-verifier",
@@ -332,7 +382,7 @@ test("WO-032 AC2 executor, verifier attempts, authority, hashes and actual accep
   // Keep the live recording immutable and add a distinct expired attempt only
   // to this fixture-local log, independent of the edition's retry count.
   // A schema 2 edition pins the stream by reference (WO-154).
-  const pinned = manifest.inputs["selfhostVerifier"]!.path;
+  const pinned = readFixtureManifest().inputs["selfhostVerifier"]!.path;
   let log = editionStream(root, readFileSync(join(root, pinned), "utf8"), [
     join(dirname(pinned), "feedback.json"),
   ]);
@@ -444,7 +494,7 @@ test("WO-032 AC2 executor, verifier attempts, authority, hashes and actual accep
   assert.equal(cells(matrix)["AC-context.stale"]!.value, false);
 });
 
-test("WO-032 AC2 the WO-031 operator role has recorded actions and unknown identity, authorship and presence", () => {
+test("[document] WO-032 AC2 the WO-031 operator role has recorded actions and unknown identity, authorship and presence", () => {
   const board = projectBoard(loadFixture("control"));
   const operator = section(board, "control-actors").rows.find(
     (row) => cells(row)["kind"]?.value === "person role",
@@ -469,7 +519,7 @@ test("WO-032 AC2 the WO-031 operator role has recorded actions and unknown ident
   );
 });
 
-test("WO-032 AC3 all shipped exports use the compiler renderer; a new export adds a build without console edits", () => {
+test("[document] WO-032 AC3 all shipped exports use the compiler renderer; a new export adds a build without console edits", () => {
   const fixture = loadFixture("selfhost");
   assert.equal(fixture.loadouts?.status, "available");
   if (fixture.loadouts?.status !== "available")
@@ -530,7 +580,7 @@ test("WO-032 AC3 all shipped exports use the compiler renderer; a new export add
   );
 });
 
-test("WO-032 AC4 ten mechanisms retain five counts per source; zero observations never become a rate", () => {
+test("[document] WO-032 AC4 ten mechanisms retain five counts per source; zero observations never become a rate", () => {
   const input = loadFixture("selfhost"),
     board = projectBoard(input);
   const mechanisms = section(board, "compiled-mechanisms").rows;
@@ -621,7 +671,7 @@ test("WO-032 AC4 ten mechanisms retain five counts per source; zero observations
   );
 });
 
-test("WO-032 AC5 control facts preserve legal actions, negative elapsed, failures, index evidence and Beacon separation", () => {
+test("[document] WO-032 AC5 control facts preserve legal actions, negative elapsed, failures, index evidence and Beacon separation", () => {
   const input = loadFixture("control");
   assert.equal(input.controlStatus?.status, "available");
   if (input.controlStatus?.status !== "available")
@@ -669,7 +719,7 @@ test("WO-032 AC5 control facts preserve legal actions, negative elapsed, failure
   );
 });
 
-test("WO-032 text adapters pin formats and refuse malformed, missing or unsupported sources", () => {
+test("[document] WO-032 text adapters pin formats and refuse malformed, missing or unsupported sources", () => {
   for (const parse of [
     parseConstellation,
     parseReleases,
@@ -710,7 +760,7 @@ test("WO-032 text adapters pin formats and refuse malformed, missing or unsuppor
   );
 });
 
-test("WO-032 the last manual and latest versioned refutations populate verdicts and hold state, without reevaluating the gate", () => {
+test("[document] WO-032 the last manual and latest versioned refutations populate verdicts and hold state, without reevaluating the gate", () => {
   const input = loadFixture("refutations");
   if (input.refutations?.status !== "available") assert.fail("receipts absent");
   const all = input.refutations.value;
@@ -870,7 +920,7 @@ test("[document] WO-032 AC5 each role's pinned answering cells exist and the que
   assert.deepEqual(lead.keys, ["verdict", "reason"]);
 });
 
-test("WO-032 AC6 hostile source text stays inert; output is local anchors and styles only", () => {
+test("[document] WO-032 AC6 hostile source text stays inert; output is local anchors and styles only", () => {
   const board = projectBoard(combinedFixture());
   const attack =
     '<script>alert(1)</script><img src="https://example.invalid/x" onerror="run()">\u001b[31m';
@@ -930,7 +980,7 @@ test("WO-032 AC6 hostile source text stays inert; output is local anchors and st
   assert.throws(() => renderTerminal(board, 12));
 });
 
-test("WO-032 command renders recorded sources without changing them; HTML output preserves existing files and refuses conflicting modes", () => {
+test("[document] WO-032 command renders recorded sources without changing them; HTML output preserves existing files and refuses conflicting modes", () => {
   const directory = mkdtempSync(join(tmpdir(), "dotln-console-test-"));
   try {
     const input = join(directory, "sources.json"),

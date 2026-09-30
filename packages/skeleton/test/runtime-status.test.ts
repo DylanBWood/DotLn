@@ -202,7 +202,7 @@ function configuration(directory: string) {
   });
 }
 
-test("WO-114 helper and installed-snapshot heartbeat share the host's index and replay every publication", async (t) => {
+test("[document] WO-114 helper and installed-snapshot heartbeat share the host's index and replay every publication", async (t) => {
   const directory = mkdtempSync(join(tmpdir(), "dotln-status-writers-"));
   const indexPath = join(directory, "index.md");
   writeFileSync(

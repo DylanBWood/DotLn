@@ -402,7 +402,7 @@ test("WO-115 the console names terminal commands as typed and strips host-sessio
   );
 });
 
-test("WO-115 a bound resident serves terminal bytes and events under the terminal's compiled authority, refuses in terminal shape and replays its receipts", async (t) => {
+test("[document] WO-115 a bound resident serves terminal bytes and events under the terminal's compiled authority, refuses in terminal shape and replays its receipts", async (t) => {
   const store = temporary("bound");
   const quiet = temporary("quiet");
   const hanging = temporary("hanging");
@@ -911,7 +911,7 @@ test("WO-115 a bound resident serves terminal bytes and events under the termina
   assert.equal(existsSync(resident.descriptor), false);
 });
 
-test("WO-115 the compiled envelope admits or refuses each command by the terminal classifier's effect, through the terminal hooks' decider", async (t) => {
+test("[document] WO-115 the compiled envelope admits or refuses each command by the terminal classifier's effect, through the terminal hooks' decider", async (t) => {
   const store = temporary("read-only");
   const presence = temporary("presence");
   t.after(() => {
@@ -976,7 +976,7 @@ test("WO-115 the compiled envelope admits or refuses each command by the termina
   }
 });
 
-test("WO-115 every contract command keeps its terminal parser, refusal bytes and events over loopback", async (t) => {
+test("[document] WO-115 every contract command keeps its terminal parser, refusal bytes and events over loopback", async (t) => {
   const store = temporary("inventory");
   t.after(() => rmSync(store, { recursive: true, force: true }));
   // Each refusal is decided by the parser before any control read or write,
@@ -1067,7 +1067,7 @@ test("WO-115 console receipts leave the resident host's change baseline to the h
   assert.equal(resident.changed(), false);
 });
 
-test("WO-116 the served audit command returns the terminal's bytes for each store and selection, the text host shows the three labeled projections, and the resident's own store audits as it stood when the command started", async (t) => {
+test("[document] WO-116 the served audit command returns the terminal's bytes for each store and selection, the text host shows the three labeled projections, and the resident's own store audits as it stood when the command started", async (t) => {
   const store = temporary("audit");
   const fixtureStore = temporary("audit-fixture");
   const mixedStore = temporary("audit-mixed");

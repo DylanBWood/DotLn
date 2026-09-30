@@ -20,15 +20,18 @@ type Case = {
   controlLog?: readonly string[];
   refutations?: readonly string[];
 } & Readonly<Record<string, unknown>>;
-export const manifest = JSON.parse(
-  readFileSync(join(fixtureRoot, "manifest.json"), "utf8"),
-) as {
+type FixtureManifest = {
   fixtureVersion: string;
   inputs: Record<string, Input>;
   cases: Record<string, Case>;
 };
+export const readFixtureManifest = (): FixtureManifest =>
+  JSON.parse(readFileSync(join(fixtureRoot, "manifest.json"), "utf8"));
 
-export function loadFixture(name: string): BoardSources {
+export function loadFixture(
+  name: string,
+  manifest = readFixtureManifest(),
+): BoardSources {
   const fixture = manifest.cases[name];
   assert.ok(fixture, `unknown fixture ${name}`);
   const read = (key: string): { ref: string; value: unknown } => {

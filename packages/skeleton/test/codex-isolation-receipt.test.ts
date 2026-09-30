@@ -26,13 +26,7 @@ import type { FixtureTree } from "../src/scenario.js";
 // WO-159 AC4: the live receipt lists both digest pairs among its protected
 // surfaces, and a receipt whose pairs differ fails the receipt check.
 const evidence = new URL("../../../../docs/evidence/WO-159/", import.meta.url);
-const {
-  buildReceipt,
-  matchSharedStream,
-  observeLogin,
-  trustCensus,
-  validateReceipt,
-} = await import(new URL("receipt.mjs", evidence).href);
+const receiptTools = () => import(new URL("receipt.mjs", evidence).href);
 const fixture = JSON.parse(
   readFileSync(
     new URL("../../fixtures/repo-tree.json", import.meta.url),
@@ -91,6 +85,7 @@ function operator(root: string, inner?: string) {
 
 /** A fixture receipt from the fake codex: the same builder the live row uses. */
 async function fixtureReceipt(root: string): Promise<Receipt> {
+  const { trustCensus, observeLogin, buildReceipt } = await receiptTools();
   const { env, login, transport } = operator(root);
   const before = trustCensus(env);
   const observed = observeLogin({ binary: login, env });
@@ -117,7 +112,8 @@ async function fixtureReceipt(root: string): Promise<Receipt> {
   );
 }
 
-test("WO-159 AC4 a fixture receipt passes; unequal pairs and other forgeries fail the receipt check", async () => {
+test("[document] WO-159 AC4 a fixture receipt passes; unequal pairs and other forgeries fail the receipt check", async () => {
+  const { validateReceipt } = await receiptTools();
   const root = realpathSync(
     mkdtempSync(join(tmpdir(), "dotln-codex-receipt-test-")),
   );
@@ -278,7 +274,14 @@ test("WO-159 AC4 a fixture receipt passes; unequal pairs and other forgeries fai
   }
 });
 
-test("WO-159 AC4 the verification host's own episode record builds a valid receipt", async () => {
+test("[document] WO-159 AC4 the verification host's own episode record builds a valid receipt", async () => {
+  const {
+    trustCensus,
+    observeLogin,
+    buildReceipt,
+    validateReceipt,
+    matchSharedStream,
+  } = await receiptTools();
   const root = realpathSync(
     mkdtempSync(join(tmpdir(), "dotln-codex-receipt-test-")),
   );
@@ -376,7 +379,8 @@ test("WO-159 AC4 the verification host's own episode record builds a valid recei
   }
 });
 
-test("WO-159 AC3 the committed live receipt and trust probe pass the receipt check", () => {
+test("[document] WO-159 AC3 the committed live receipt and trust probe pass the receipt check", async () => {
+  const { validateReceipt, matchSharedStream } = await receiptTools();
   // The live row is retained evidence: a missing receipt fails, never skips.
   const receipt = JSON.parse(
     readFileSync(fileURLToPath(new URL("live-codex.json", evidence)), "utf8"),

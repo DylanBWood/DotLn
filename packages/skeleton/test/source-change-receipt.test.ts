@@ -7,11 +7,11 @@ import { join } from "node:path";
 const directory = fileURLToPath(
   new URL("../../../../docs/evidence/WO-053/", import.meta.url),
 );
-const { validateReceipt } = await import(
-  new URL("../../../../docs/evidence/WO-053/receipt.mjs", import.meta.url).href
-);
-
-test("WO-053 versioned live receipts preserve failures, labels and private-output boundary", () => {
+test("[document] WO-053 versioned live receipts preserve failures, labels and private-output boundary", async () => {
+  const { validateReceipt } = await import(
+    new URL("../../../../docs/evidence/WO-053/receipt.mjs", import.meta.url)
+      .href
+  );
   const names = readdirSync(directory).filter((name) =>
     /^(claude|codex)-.*\.json$/u.test(name),
   );

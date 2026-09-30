@@ -36,7 +36,7 @@ const event = (type: string): Event => ({
   payload: {},
 });
 
-test("WO-050 full pre-refactor Decision bytes and every retained semantic projection stay identical", () => {
+test("[document] WO-050 full pre-refactor Decision bytes and every retained semantic projection stay identical", () => {
   assert.match(
     execFileSync(
       process.execPath,

@@ -1933,6 +1933,8 @@ claim evidence or releases it does not have.
   `dotln-generated` or `dotln-documentation`; the package READMEs no suite
   reads carry the documentation mark in `.gitattributes`, while a README or
   Markdown file a test reads as an input stays unmarked and counts (WO-115).
+  Product package tasks reject observed reads of excluded tracked inputs;
+  `[document]` cases run in the document gate, including kernel (WO-174).
   The exact tested tree remains beside that key. New source bytes
   require a new final product gate; report/control/index/release-text and
   marked-documentation edits do not. A passing final review recorded while no
@@ -2040,6 +2042,9 @@ claim evidence or releases it does not have.
   probes and their machinery-only tests are removed. `npm run test:machinery`
   runs the machinery suites on demand; the reviewer's `npm test -- --review`
   includes them only when their own declared sources changed since the base.
+  A runner fixture checks direct entry imports and literal script paths against
+  those sources or reasoned exclusions; transitive and computed paths stay
+  outside the check (WO-174).
   Document-sensitive live checks remain in `npm run test:docs`.
   The scheduler retains load-derived deadlines, peer observations, a four-lane
   cap and bounded live progress. Harness fixtures and process-debt fixtures use
