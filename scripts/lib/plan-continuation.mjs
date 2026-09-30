@@ -1,6 +1,6 @@
 import { docRelative } from "./config.mjs";
 import { readFileSync } from "node:fs";
-import { join } from "node:path";
+import { dirname, join, relative, resolve } from "node:path";
 import {
   committedReader,
   sha256,
@@ -10,6 +10,7 @@ import {
 import { containedRegularFile } from "./paths.mjs";
 import { LEGACY_COST_HEADER } from "./legacy-cost.mjs";
 import { dependencyMigration } from "./plan-dependency-migration.mjs";
+import { parsers } from "prettier/plugins/markdown.mjs";
 
 const capabilityTable = (root) =>
   docRelative(root, "planning", "capability-table.md");
@@ -20,6 +21,217 @@ const requireSamePlan = (condition, reason) => {
       `planning pass needs a receipt matching the current subject: ${reason}`,
     );
 };
+
+// Parse headings rather than treating heading-like code as section boundaries.
+// Keep the existing metadata fragment spelling; unsupported forms refuse proof.
+function citationHeadings(source) {
+  const headings = [];
+  const seen = new Map();
+  const visit = (node) => {
+    if (node.type === "heading") {
+      const index = node.position.start.offset;
+      const line = source.slice(index).split("\n", 1)[0];
+      const match = /^#{1,6} (.+?)[ \t]*#*[ \t]*$/u.exec(line);
+      if (!match) throw new Error("unsupported citation heading");
+      const title = match[1];
+      const stem = title
+        .toLowerCase()
+        .replace(/[^\p{L}\p{N}_\s-]/gu, "")
+        .replace(/\s/g, "-");
+      const ordinal = seen.get(stem) ?? 0;
+      seen.set(stem, ordinal + 1);
+      headings.push({
+        index,
+        level: node.depth,
+        title,
+        stem,
+        anchor: `${stem}${ordinal ? `-${ordinal}` : ""}`,
+      });
+    }
+    for (const child of node.children ?? []) visit(child);
+  };
+  visit(parsers.markdown.parse(source));
+  return headings;
+}
+
+// A moved citation preserves the citing prose and cited content. Only proved
+// relative-link rebasing is allowed; historical subject hashes stay put.
+function citedSection(source, anchor) {
+  const headings = citationHeadings(source);
+  const index = headings.findIndex((row) => row.anchor === anchor);
+  if (index < 0) return null;
+  const heading = headings[index];
+  if (headings.filter((row) => row.stem === heading.stem).length !== 1)
+    return null;
+  const next = headings
+    .slice(index + 1)
+    .find((row) => row.level <= heading.level);
+  const text = source.slice(heading.index, next?.index ?? source.length);
+  // References can be defined outside this section. Check their full-document
+  // parse context before comparing the extracted text on its own.
+  inlineLinks(source, {
+    proveContent: true,
+    start: heading.index,
+    end: heading.index + text.length,
+  });
+  // This exact trailing directive formats the following heading, not this
+  // section. Preserve every other comment and every content byte.
+  return next ? text.replace(/\n<!-- prettier-ignore -->\n$/u, "\n") : text;
+}
+
+function inlineLinks(
+  source,
+  { proveContent = false, start = 0, end = source.length } = {},
+) {
+  const result = [];
+  const visit = (node) => {
+    const within =
+      node.position?.start.offset >= start && node.position?.end.offset <= end;
+    const external = (href) => /^[a-z][a-z0-9+.-]*:|^\//iu.test(href);
+    if (
+      proveContent &&
+      within &&
+      (/Reference$/u.test(node.type) ||
+        node.type === "footnoteDefinition" ||
+        (["image", "definition"].includes(node.type) && !external(node.url)) ||
+        (node.type === "html" &&
+          !/^<!--(?:(?!-->)[\s\S])*-->$/u.test(node.value)))
+    )
+      throw new Error("unsupported context-dependent citation content");
+    if (node.type === "link" && within) {
+      const end = node.position.end.offset;
+      const raw = source.slice(node.position.start.offset, end);
+      const supported = raw.endsWith(`](${node.url})`);
+      if (
+        proveContent &&
+        !external(node.url) &&
+        (!supported ||
+          !node.url ||
+          node.url.startsWith("#") ||
+          node.url.includes("?"))
+      )
+        throw new Error("unsupported relative citation link");
+      if (supported)
+        result.push({
+          href: node.url,
+          start: end - node.url.length - 1,
+          end: end - 1,
+        });
+    }
+    for (const child of node.children ?? []) visit(child);
+  };
+  visit(parsers.markdown.parse(source));
+  return result;
+}
+
+function replaceDestinations(source, changes) {
+  for (const change of [...changes].sort((a, b) => b.start - a.start))
+    source =
+      source.slice(0, change.start) + change.href + source.slice(change.end);
+  return source;
+}
+
+function sectionContent(root, file, source) {
+  const changes = inlineLinks(source, { proveContent: true }).flatMap(
+    (link) => {
+      if (/^[a-z][a-z0-9+.-]*:|^\//iu.test(link.href)) return [];
+      const [pathname, ...fragments] = link.href.split("#");
+      const target = relative(
+        root,
+        resolve(root, dirname(file), decodeURIComponent(pathname)),
+      );
+      return [
+        {
+          ...link,
+          href: `${target}${fragments.length ? `#${fragments.join("#")}` : ""}`,
+        },
+      ];
+    },
+  );
+  return replaceDestinations(source, changes);
+}
+
+function relocatedLinks(
+  root,
+  original,
+  read,
+  { workspace, path, complete = true },
+) {
+  const product = docRelative(root, "product");
+  const planning = docRelative(root, "planning");
+  const before = original.read(path);
+  const after = read(path);
+  const left = inlineLinks(before);
+  const right = inlineLinks(after);
+  if (right.length < left.length || (complete && left.length !== right.length))
+    return null;
+  const changes = [];
+  const updates = [];
+  const target = (href, prefix) => {
+    const match = /^([^?#]+\.md)#([^?#]+)$/u.exec(href);
+    if (!match || /^[a-z][a-z0-9+.-]*:|^\//iu.test(match[1])) return null;
+    const file = relative(
+      root,
+      resolve(root, dirname(path), decodeURIComponent(match[1])),
+    );
+    if (!file.startsWith(`${prefix}/`)) return null;
+    return { file, anchor: decodeURIComponent(match[2]) };
+  };
+  try {
+    for (const [index, link] of left.entries()) {
+      const replacement = right[index].href;
+      if (link.href === replacement) continue;
+      const from = target(link.href, product);
+      const to = target(replacement, planning);
+      if (!from || !to || from.anchor !== to.anchor) return null;
+      if (
+        workspace &&
+        ![from.file, to.file].every((file) =>
+          containedRegularFile(
+            join(root, file),
+            resolve(root, file === to.file ? planning : product),
+          ),
+        )
+      )
+        return null;
+      const oldSection = citedSection(original.read(from.file), from.anchor);
+      const newSection = citedSection(read(to.file), to.anchor);
+      if (
+        oldSection === null ||
+        newSection === null ||
+        sectionContent(root, from.file, oldSection) !==
+          sectionContent(root, to.file, newSection) ||
+        citationHeadings(read(from.file)).some(
+          ({ anchor }) => anchor === from.anchor,
+        ) ||
+        (original.paths.includes(to.file) &&
+          citationHeadings(original.read(to.file)).some(
+            ({ anchor }) => anchor === to.anchor,
+          ))
+      )
+        return null;
+      // Be deliberately conservative about syntax: an ordinary inline link
+      // destination must account for every changed byte of the vision source.
+      changes.push({ ...right[index], href: link.href });
+      updates.push({
+        path,
+        kind: "relocated-planning-link",
+        from: link.href,
+        to: replacement,
+        targetSectionHash: sha256(oldSection),
+        currentTargetSectionHash: sha256(newSection),
+        targetContentHash: sha256(sectionContent(root, from.file, oldSection)),
+      });
+    }
+  } catch {
+    return null;
+  }
+  const restored = replaceDestinations(after, changes);
+  return updates.length &&
+    (complete ? restored === before : restored.startsWith(before.trimEnd()))
+    ? { source: restored, updates }
+    : null;
+}
 
 const releaseLabel = /\(v(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\)$/u;
 const releaseAssignment = (before, after) => {
@@ -264,8 +476,27 @@ export function checkPlanContinuation(
         !(adoptsCost && name === "cost-table") &&
         !(judged.goalReview && ["goal-review", "cost-table"].includes(name)),
     );
+  const fixedBefore = fixedInputs(judged);
+  const fixedAfter = fixedInputs(current);
+  const relocation = same(fixedBefore, fixedAfter)
+    ? { updates: [] }
+    : relocatedLinks(root, original, read, {
+        workspace,
+        path: docRelative(root, "product", "00-vision.md"),
+      });
+  const linkUpdates = relocation?.updates ?? null;
   requireSamePlan(
-    same(fixedInputs(judged), fixedInputs(current)),
+    linkUpdates !== null &&
+      same(
+        fixedBefore,
+        fixedAfter.map((input, index) =>
+          input.name.startsWith("vision:") &&
+          input.name === fixedBefore[index]?.name &&
+          linkUpdates.length
+            ? fixedBefore[index]
+            : input,
+        ),
+      ),
     "sequence, vision, roles or order inventory changed",
   );
   if (judged.goalReview)
@@ -290,6 +521,7 @@ export function checkPlanContinuation(
         },
       ]
     : [];
+  updates.push(...linkUpdates);
   if (judged.goalReview && !same(judged.costTable, current.costTable))
     updates.push({
       path: docRelative(root, "planning", "cost-table.json"),
@@ -474,9 +706,18 @@ export function checkPlanContinuation(
   if (!same(capabilityInputs(judged), capabilityInputs(current))) {
     const before = original.read(capabilityTable(root));
     const after = read(capabilityTable(root));
+    const relocation = relocatedLinks(root, original, read, {
+      workspace,
+      path: capabilityTable(root),
+      complete: false,
+    });
     let capabilityUpdates;
     try {
-      capabilityUpdates = reassessments(before, after, judged);
+      capabilityUpdates = reassessments(
+        before,
+        relocation?.source ?? after,
+        judged,
+      );
     } catch (error) {
       if (workspace || !allowCapabilityHistoryRepair) throw error;
       requireSamePlan(
@@ -492,6 +733,7 @@ export function checkPlanContinuation(
         ),
       ];
     }
+    if (relocation) updates.push(...relocation.updates);
     updates.push(
       ...capabilityUpdates.map((update) => ({
         path: capabilityTable(root),
