@@ -7,7 +7,7 @@ import { TARGET_PUBLISH_HOST } from "./target-publish.mjs";
 
 export const PULL_REQUEST_OBSERVER = "pull-request-observer";
 /** @typedef {{id: string, role: 'automation'|'reporter'|'reviewer', path?: string,
- * line?: number, text?: string, resolved: boolean,
+ * line?: number, threadId?: string, text?: string, resolved: boolean,
  * class: 'ci-failure'|'automated-review'|'human-review'|'resolved',
  * refused?: {shape: string, path: string,
  * span?: {entryId: string, start: number, end: number}}}} ObservedComment
@@ -130,7 +130,13 @@ function comment(
   resolved,
   pullAuthor,
   host,
-  { inline = false, ci = false, check = false, bodyPath = `${path}.body` } = {},
+  {
+    inline = false,
+    ci = false,
+    check = false,
+    threadId,
+    bodyPath = `${path}.body`,
+  } = {},
 ) {
   object(raw, path);
   const nodeId = identifier(raw.id, `${path}.id`);
@@ -156,6 +162,11 @@ function comment(
           : "human-review",
   };
   let refusal = idRefusal;
+  if (threadId !== undefined) {
+    const refused = screen(threadId, role, host, `${path}.threadId`);
+    if (refused) refusal ??= refused;
+    else item.threadId = threadId;
+  }
   if (inline) {
     const file = string(raw.path, `${path}.path`);
     const pathRefusal = screen(file, role, host, `${path}.path`);
@@ -520,7 +531,10 @@ export function observePullRequest({
               if (raw.line !== null) positive(raw.line, `${commentPath}.line`);
               return;
             }
-            addComment(raw, commentPath, resolved, { inline: true });
+            addComment(raw, commentPath, resolved, {
+              inline: true,
+              threadId: id,
+            });
           },
         );
       },

@@ -275,6 +275,23 @@ const main = async () => {
     });
     return;
   }
+  if (action === "resolve-pr") {
+    if (workOrderId !== "--request" || actionArgs.length !== 1)
+      throw new Error(
+        "usage: worktree resolve-pr --request <review-loop-request.json>",
+      );
+    const { runReviewLoopRequest } =
+      await import("./lib/review-comment-loop.mjs");
+    const { readAuthorityGrantRegistry } =
+      await import("./lib/authority-grants.mjs");
+    const result = await runReviewLoopRequest(
+      toolRoot,
+      actionArgs[0],
+      readAuthorityGrantRegistry(toolRoot),
+    );
+    process.stdout.write(`${JSON.stringify(result)}\n`);
+    return;
+  }
   const mainPath = mainWorktree(toolRoot);
 
   const workOrderPath = actionArgs[0];
@@ -611,7 +628,7 @@ const main = async () => {
     );
   } else {
     throw new Error(
-      "usage: worktree start WO-NNN <work-order-path> | worktree integrate WO-NNN [--intake-backup <archive.zip>] [--continue] | worktree publish WO-NNN --title <title> --body-file <path> | worktree publish WO-NNN --target <request.json> | worktree observe-pr --store <episode-store> --number <N> [--repository HOST/OWNER/REPO] | worktree finish WO-NNN [--dry-run] | worktree settle WO-NNN [--dry-run]",
+      "usage: worktree start WO-NNN <work-order-path> | worktree integrate WO-NNN [--intake-backup <archive.zip>] [--continue] | worktree publish WO-NNN --title <title> --body-file <path> | worktree publish WO-NNN --target <request.json> | worktree observe-pr --store <episode-store> --number <N> [--repository HOST/OWNER/REPO] | worktree resolve-pr --request <review-loop-request.json> | worktree finish WO-NNN [--dry-run] | worktree settle WO-NNN [--dry-run]",
     );
   }
 };

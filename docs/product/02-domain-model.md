@@ -132,6 +132,9 @@ number, headSha, checks[], comments[] }` goes in the same log only when state
 changes. Checks carry name/state; comments carry role, class and resolution.
 WO-060 screens each comment against the forge host; refused text is omitted,
 with shape, field path and optional span retained. The command only reads GitHub.
+WO-066's `resolve-pr --request <file>` resumes per-item repair and granted
+disposition. `PullRequestReviewLoopStopped` records resolved, needs-human or
+refused with item and observation IDs; only fresh observation proves resolution.
 
 The source host accepts a compiled WorkOrder, artifact identity and supplied
 authority, with already-established authority evidence separate from required
@@ -1027,7 +1030,9 @@ security boundary; descendant cleanup is not established. Live verifier episodes
 WO-055 adds `deriveRepairOrder(finding, original, grants)` and `RepairHost`.
 The original names the WorkOrder, effective authority envelope, declared file or
 directory surfaces, named tests, criteria and optional `roundLimit` (default two).
-Evidence references resolve only against the failed subject's pinned witnesses.
+Evidence references resolve against the failed subject's pinned witnesses. A
+host-recorded review item may replace the adverse witness; contract, scope and
+tests stay original, with `roundLimit: 1` per item.
 The repair surfaces are the unique referenced witness files plus the finding's
 likely surfaces; tests are exact commands resolved from its reproduction steps.
 A step must equal a referenced witness's reproduction step or a named command.

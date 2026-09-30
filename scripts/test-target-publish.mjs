@@ -34,7 +34,30 @@ import {
 } from "../packages/skeleton/dist/test/source-change-fixture.js";
 import { compileLoadout } from "@dotln/compiler";
 import { compileRegisteredLoadout } from "./lib/authority-grants.mjs";
-import { writerLoadout } from "./lib/target-publish.mjs";
+import {
+  writerLoadout,
+  readTargetPublishRequest,
+  pushRepairedHead,
+  disposeReviewThread,
+  bindReviewRepairInput,
+} from "./lib/target-publish.mjs";
+import {
+  resolveReviewComments,
+  replayReviewItems,
+} from "./lib/review-comment-loop.mjs";
+import { observePullRequest } from "./lib/pull-request-observer.mjs";
+import { RepairHost } from "../packages/skeleton/dist/src/repair-host.js";
+import {
+  repairTransport,
+  disposeRepairFixture,
+} from "../packages/skeleton/dist/test/repair-fixture.js";
+import {
+  snapshotCriteria,
+  snapshotTests,
+  snapshotContract,
+  snapshotTransport,
+} from "../packages/skeleton/dist/test/verification-worktree-fixture.js";
+import { prepareWorktreeVerification } from "../packages/skeleton/dist/src/verification-worktree.js";
 import { lintOutwardArtifact } from "./lib/outward-lint.mjs";
 
 const repoRoot = realpathSync(fileURLToPath(new URL("..", import.meta.url)));
@@ -65,6 +88,12 @@ writeFileSync(
   `#!/bin/bash
 set -euo pipefail
 real_git='${realGit}'
+original_args=("$@")
+if [[ "$1" == "-C" && "\${3:-}" == "-c" ]]; then
+  target_root="$2"; shift 2
+  while [[ "\${1:-}" == "-c" ]]; do shift 2; done
+  set -- -C "$target_root" "$@"
+fi
 if [[ "$#" -eq 6 && "$1" == "-C" && "$3 $4 $5 $6" == "remote get-url --all origin" ]]; then
   exec "$real_git" -C "$2" config --get-all remote.origin.url
 fi
@@ -74,7 +103,7 @@ if [[ "$#" -eq 7 && "$1" == "-C" && "$3 $4 $5 $6 $7" == "remote get-url --push -
   printf "%s\\n" "$urls"
   exit 0
 fi
-exec "$real_git" "$@"
+exec "$real_git" "\${original_args[@]}"
 `,
 );
 writeFileSync(
@@ -102,7 +131,7 @@ chmodSync(join(bin, "gh"), 0o755);
 
 const write = (path, text) => writeFixture("", path, text);
 const grantFor = (repo, grantedBy) => ({
-  ...loadout.authorityGrants[0],
+  ...structuredClone(loadout.authorityGrants[0]),
   grantId: `${grantedBy}.target-publish`,
   grantedBy,
   repo,
@@ -110,16 +139,35 @@ const grantFor = (repo, grantedBy) => ({
 
 /** One launchpad root and one real source-change episode per scenario, so the
  * episode's compiled identity binds the same host registry publish reads. */
-async function scenario(t, { grantedBy = "operator" } = {}) {
+async function scenario(
+  t,
+  { grantedBy = "operator", review = false, signed = false } = {},
+) {
   const root = createSourceFixture();
-  t.after(() => rmSync(root, { recursive: true, force: true }));
+  t.after(() => disposeRepairFixture(root));
   const target = join(root, "target");
   const origin = join(root, "origin.git");
+  if (review) {
+    writeFileSync(
+      join(target, "fixture-test.mjs"),
+      "import assert from 'node:assert/strict'; import {readFileSync} from 'node:fs'; assert.match(readFileSync('fixture.txt','utf8'), /changed by synthetic worker/);\n",
+    );
+    writeFileSync(
+      join(target, "contract-test.mjs"),
+      "import assert from 'node:assert/strict'; import {readFileSync} from 'node:fs'; assert.match(readFileSync('fixture.txt','utf8'), /contract-satisfied/);\n",
+    );
+    fixtureGit(target, "add", "-A");
+    fixtureGit(target, "commit", "-m", "Name the synthetic repair contract");
+    writeFileSync(
+      join(root, "base.txt"),
+      fixtureGit(target, "rev-parse", "HEAD"),
+    );
+  }
   const baseCommit = readFileSync(join(root, "base.txt"), "utf8");
   execGit(["init", "--quiet", "--bare", origin]);
   fixtureGit(target, "remote", "add", "origin", GITHUB);
   fixtureGit(target, "config", `url.${origin}.insteadOf`, GITHUB);
-  fixtureGit(target, "push", "--quiet", "origin", "main");
+  fixtureGit(target, "push", "--quiet", origin, "main");
   // Publication pushes from a host lane that reads only the operator's global
   // and system configuration (WO-157), so the fixture's rewrite lives there.
   const globalConfig = join(root, "global.gitconfig");
@@ -142,6 +190,10 @@ async function scenario(t, { grantedBy = "operator" } = {}) {
       : write(join(launchpad, "docs/control/local/terms.txt"), text);
   terms("zephyrcanary\n");
   const grant = grantedBy ? grantFor(target, grantedBy) : null;
+  if (review && grant) {
+    grant.effects.push("pr.thread.resolve");
+    grant.operations.push("pr.thread.resolve");
+  }
   write(
     join(launchpad, "packages/skeleton/loadouts/grants.json"),
     JSON.stringify(grantedBy === "operator" ? [grant] : []),
@@ -152,7 +204,14 @@ async function scenario(t, { grantedBy = "operator" } = {}) {
       JSON.stringify([grant]),
     );
 
-  const source = { ...loadout, authorityGrants: grant ? [grant] : [] };
+  const source = structuredClone({
+    ...loadout,
+    authorityGrants: grant ? [grant] : [],
+  });
+  if (review)
+    Object.assign(source.activeMechanics[0].workOrder, snapshotContract, {
+      workOrderId: "WO-064",
+    });
   const environment = {
     environmentId: "wo064.fixture",
     version: 1,
@@ -178,9 +237,84 @@ async function scenario(t, { grantedBy = "operator" } = {}) {
     branch: BRANCH,
     surfaces: ["fixture.txt"],
     commitMessage: MESSAGE,
+    ...(signed
+      ? {
+          transport: {
+            name: "fake",
+            harnessVersion: "signature-fixture",
+            dispatch(request, now) {
+              writeFileSync(
+                join(request.cwd, "fixture.txt"),
+                "changed by synthetic worker\n",
+              );
+              fixtureGit(request.cwd, "add", "fixture.txt");
+              const tree = fixtureGit(request.cwd, "write-tree");
+              const raw = `tree ${tree}\nparent ${baseCommit}\nauthor Fixture <fixture@example.invalid> 1 +0000\ncommitter Fixture <fixture@example.invalid> 1 +0000\ngpgsig -----BEGIN PGP SIGNATURE-----\n fixture\n -----END PGP SIGNATURE-----\n\n${MESSAGE}`;
+              const commit = execGit(
+                [
+                  "-C",
+                  request.cwd,
+                  "hash-object",
+                  "-t",
+                  "commit",
+                  "-w",
+                  "--stdin",
+                ],
+                { input: raw, encoding: "utf8" },
+              ).trim();
+              fixtureGit(request.cwd, "update-ref", "HEAD", commit);
+              return {
+                receipt: Promise.resolve({
+                  commandId: request.command.commandId,
+                  transport: "fake",
+                  acceptedAt: now(),
+                }),
+                completed: Promise.resolve({
+                  envelope: {
+                    workOrderId: request.workOrder.workOrderId,
+                    episodeId: request.episodeId,
+                    resultId: `result_${request.command.commandId}`,
+                    status: "completed",
+                    summary: "Signed fixture commit",
+                    requiresHuman: false,
+                    observedCommit: { sha: commit, branch: BRANCH },
+                    observedDenials: "unavailable",
+                  },
+                }),
+                alive: () => false,
+                kill() {},
+              };
+            },
+          },
+        }
+      : {}),
   });
+  const baseline = review
+    ? prepareWorktreeVerification({
+        worktree: target,
+        baseCommit,
+        observedCommit: baseCommit,
+        repo: "review-fixture",
+        contract: { ...snapshotContract, workOrderId: "WO-064" },
+        criteria: snapshotCriteria,
+        tests: snapshotTests,
+        directory: join(root, "baseline"),
+      })
+    : null;
   const result = await host.run();
   assert.equal(result.status, "observed", JSON.stringify(result));
+  const prepared = review
+    ? prepareWorktreeVerification({
+        worktree: host.tree.path,
+        baseCommit,
+        observedCommit: result.observation.commit,
+        repo: "review-fixture",
+        contract: { ...snapshotContract, workOrderId: "WO-064" },
+        criteria: snapshotCriteria,
+        tests: snapshotTests,
+        directory: join(root, "review-snapshot"),
+      })
+    : null;
   host.finish();
   write(join(root, "loadout.json"), JSON.stringify(source));
   const request = {
@@ -189,6 +323,7 @@ async function scenario(t, { grantedBy = "operator" } = {}) {
     environment,
     store: "store",
     baseBranch: "main",
+    repositoryId: "github.com/dotln-fixture/target",
   };
   const requestPath = join(root, "request.json");
   write(requestPath, JSON.stringify(request));
@@ -229,6 +364,14 @@ async function scenario(t, { grantedBy = "operator" } = {}) {
     existsSync(ghLog) ? readFileSync(ghLog, "utf8").trim().split("\n") : [];
   return {
     root,
+    launchpad,
+    host,
+    baseline,
+    prepared,
+    grant,
+    source,
+    environment,
+    writer,
     target,
     baseCommit,
     observation: result.observation,
@@ -566,6 +709,48 @@ await test("WO-064: the CLI names its usage for a malformed target request", () 
   assert.match(
     run.stderr,
     /usage: worktree publish WO-NNN --target <target-publish-request\.json>/u,
+  );
+});
+
+await test("WO-066 AC5: a signed-header commit runs planted gpg on ordinary log, never publication; request binds origin before remote calls", async (t) => {
+  const subject = await scenario(t, { signed: true });
+  const sentinel = join(subject.root, "signature-program-ran");
+  const program = join(subject.root, "gpg-probe.sh");
+  writeFileSync(program, `#!/bin/sh\necho ran >> '${sentinel}'\nexit 1\n`);
+  chmodSync(program, 0o755);
+  fixtureGit(subject.target, "config", "log.showSignature", "true");
+  fixtureGit(subject.target, "config", "gpg.program", program);
+  execGit(
+    [
+      "-C",
+      subject.target,
+      "log",
+      "-1",
+      "--format=%B",
+      subject.observation.commit,
+    ],
+    { stdio: "pipe" },
+  );
+  assert.equal(readFileSync(sentinel, "utf8"), "ran\n");
+  rmSync(sentinel);
+  fixtureGit(
+    subject.target,
+    "config",
+    "remote.origin.url",
+    "https://github.com/dotln-fixture/other.git",
+  );
+  refusedBeforeRemote(
+    subject,
+    subject.publish(),
+    /origin's configured push URL names .*other, but its resolved target is .*target/,
+  );
+  fixtureGit(subject.target, "config", "remote.origin.url", GITHUB);
+  const published = subject.publish();
+  assert.equal(published.status, 0, published.stderr);
+  assert.equal(existsSync(sentinel), false);
+  assert.equal(subject.remoteBranch(), subject.observation.commit);
+  process.stdout.write(
+    "WO-066 signature positive control ran; guarded publication did not run it; changed repository refused before gh or push.\n",
   );
 });
 
@@ -1273,4 +1458,537 @@ await test("WO-065: a valid page over the default child-process buffer is decode
       .payload.comments.filter((c) => c.id.startsWith("IC_large_")).length,
     30,
   );
+});
+
+// WO-066: the remote is a local bare repository behind fake gh. Triage and
+// workers are labeled doubles; RepairHost runs the real derivation, snapshot
+// tests and acceptance fold before the publication helper sees a head.
+async function reviewScenario(
+  t,
+  {
+    items = [{ id: "R1", path: "fixture.txt", line: 1, role: "automation" }],
+    check = null,
+    wrong = false,
+  } = {},
+) {
+  const subject = await scenario(t, { review: true });
+  const published = subject.publish();
+  assert.equal(published.status, 0, published.stderr);
+  const response = join(subject.root, "remote-state.json"),
+    replay = join(subject.root, "review-replay.mjs"),
+    ghLog = join(subject.root, "review-gh.log");
+  writeFileSync(
+    response,
+    JSON.stringify({
+      items,
+      check,
+      initialHead: subject.observation.commit,
+      resolved: [],
+    }),
+  );
+  writeFileSync(
+    replay,
+    `
+import {readFileSync,writeFileSync} from 'node:fs'; import {execFileSync} from 'node:child_process';
+const args=process.argv.slice(2), vars={};
+for(let i=0;i<args.length;i++) if(args[i]==='-f'||args[i]==='-F'){const value=args[++i], at=value.indexOf('=');vars[value.slice(0,at)]=value.slice(at+1);}
+const raw=JSON.parse(readFileSync(process.env.DOTLN_GH_RESPONSES,'utf8'));
+const operation=/^(?:query|mutation) (Dotln[A-Za-z]+)\\(/.exec(vars.query)?.[1];
+const head=execFileSync(${JSON.stringify(realGit)},['--git-dir',${JSON.stringify(join(subject.root, "origin.git"))},'rev-parse',${JSON.stringify(`refs/heads/${BRANCH}`)}],{encoding:'utf8'}).trim();
+const page=nodes=>({nodes,pageInfo:{hasNextPage:false,endCursor:null}});
+const author={__typename:'User',login:'fixture-author'};
+const pull={number:7,headRefOid:head,author}; let data;
+if(operation==='DotlnRejectReview') data={addPullRequestReviewThreadReply:{comment:{id:'REPLY_1'}}};
+else if(operation==='DotlnResolveReview') {raw.resolved.push(vars.thread);writeFileSync(process.env.DOTLN_GH_RESPONSES,JSON.stringify(raw));data={resolveReviewThread:{thread:{id:vars.thread,isResolved:true}}};}
+else if(operation==='DotlnChecks') data={repository:{object:{oid:head,statusCheckRollup:{contexts:page(raw.check?[{__typename:'CheckRun',id:'CHECK_1',name:raw.check,status:'COMPLETED',conclusion:head===raw.initialHead?'FAILURE':'SUCCESS'}]:[])}}}};
+else {
+ if(operation==='DotlnComments') pull.comments=page([]);
+ if(operation==='DotlnReviews') pull.reviews=page([]);
+ if(operation==='DotlnThreads') pull.reviewThreads=page(raw.items.map(item=>({id:'T_'+item.id,isResolved:raw.resolved.includes('T_'+item.id),comments:page([{id:item.id,body:item.text??'Synthetic automated finding',author:item.role==='human'?{__typename:'User',login:'human-reviewer'}:{__typename:'Bot',login:'fixture-bot'},path:item.path,line:item.line??null,state:'SUBMITTED'}])})));
+ if(!['DotlnPullRequest','DotlnComments','DotlnReviews','DotlnThreads'].includes(operation)) process.exit(64);
+ data={repository:{nameWithOwner:'dotln-fixture/target',pullRequest:pull}};
+}
+process.stdout.write(JSON.stringify({data}));
+`,
+  );
+  const changes = {
+    PATH: `${bin}:${process.env.PATH}`,
+    GIT_CONFIG_GLOBAL: join(subject.root, "global.gitconfig"),
+    DOTLN_GH_LOG: ghLog,
+    DOTLN_NODE: process.execPath,
+    DOTLN_GH_REPLAY: replay,
+    DOTLN_GH_RESPONSES: response,
+  };
+  const previous = Object.fromEntries(
+    Object.keys(changes).map((key) => [key, process.env[key]]),
+  );
+  Object.assign(process.env, changes);
+  t.after(() => {
+    for (const [key, value] of Object.entries(previous)) {
+      if (value === undefined) delete process.env[key];
+      else process.env[key] = value;
+    }
+  });
+  writeFileSync(join(subject.root, "repair-launches.jsonl"), "");
+  const original = {
+    workOrder: subject.writer.program.workOrder,
+    authorityEnvelope: subject.writer.program.authorityEnvelope,
+    surfaces: ["fixture.txt", "fixture-test.mjs", "contract-test.mjs"],
+    tests: snapshotTests,
+    criteria: snapshotCriteria,
+  };
+  const publication = {
+    launchpad: subject.launchpad,
+    workOrderId: "WO-064",
+    request: readTargetPublishRequest(subject.requestPath),
+    registry: [subject.grant],
+  };
+  let preparedCount = 0;
+  const config = {
+    launchpad: subject.launchpad,
+    store: join(subject.root, "store"),
+    number: 7,
+    repositoryId: "github.com/dotln-fixture/target",
+    original,
+    checkTests: { unit: "node contract-test.mjs" },
+    judgments: Object.fromEntries(
+      [...items.map((item) => item.id), ...(check ? ["ci:CHECK_1"] : [])].map(
+        (id) => [
+          id,
+          {
+            kind: "accept",
+            criterionId: "AC-contract",
+            evidenceRefs: ["synthetic-contract", "synthetic-diff"],
+          },
+        ],
+      ),
+    ),
+    publication,
+    now: () => 20,
+    prepareRepair(active) {
+      preparedCount++;
+      return {
+        baseline: subject.baseline.subject,
+        subject: subject.prepared.subject,
+        snapshotPath: subject.prepared.snapshotPath,
+        store: new WorkerStore(
+          join(subject.root, `review-${active.key.slice(8)}`),
+        ),
+        directory: join(subject.root, `children-${active.key.slice(8)}`),
+        source: {
+          authorityEvidence: [],
+          artifactIdentity: subject.writer.artifactIdentity,
+          worktreeParent: join(subject.root, "trees"),
+          launchpadCheckout: repoRoot,
+          model: "fixture-double",
+          effort: "xhigh",
+          transport: repairTransport(subject.root, wrong),
+        },
+        verifier: {
+          model: "fixture-double",
+          effort: "xhigh",
+          transport: snapshotTransport(),
+        },
+        now: () => 20,
+      };
+    },
+  };
+  return {
+    ...subject,
+    response,
+    ghLog,
+    config,
+    preparedCount: () => preparedCount,
+    events: () =>
+      decodeLog(
+        new WorkerStore(join(subject.root, "store/publication")).read(),
+      ),
+    launches: () =>
+      readFileSync(join(subject.root, "repair-launches.jsonl"), "utf8")
+        .trim()
+        .split("\n")
+        .filter(Boolean),
+    calls: () => (existsSync(ghLog) ? readFileSync(ghLog, "utf8") : ""),
+  };
+}
+
+await test("WO-066 AC1/AC3: an accepted automated thread repairs, verifies, pushes, disposes and records fresh resolution; recovery never pushes twice", async (t) => {
+  const subject = await reviewScenario(t);
+  const pinned = {
+    original: subject.config.original,
+    baseline: subject.baseline.subject,
+    subject: subject.prepared.subject,
+    source: { artifactIdentity: subject.writer.artifactIdentity },
+  };
+  bindReviewRepairInput(subject.config.publication, pinned);
+  assert.throws(
+    () =>
+      bindReviewRepairInput(subject.config.publication, {
+        ...pinned,
+        original: {
+          ...pinned.original,
+          authorityEnvelope: {
+            ...pinned.original.authorityEnvelope,
+            allowedEffects: ["repo.push"],
+          },
+        },
+      }),
+    /repair input differs/,
+  );
+  assert.throws(
+    () =>
+      bindReviewRepairInput(subject.config.publication, {
+        ...pinned,
+        original: { ...pinned.original, tests: [] },
+      }),
+    /repair input differs/,
+  );
+  assert.equal(subject.launches().length, 0);
+  assert.equal(subject.calls(), "");
+  const repairFile = join(subject.root, "review-input.json");
+  const requestFile = join(subject.root, "review-command.json");
+  writeFileSync(
+    repairFile,
+    JSON.stringify({
+      ...pinned,
+      source: {
+        ...pinned.source,
+        transport: "claude-cli-print",
+        model: "claude-opus-5-5",
+        effort: "xhigh",
+      },
+      verifier: {
+        transport: "claude-cli-print",
+        model: "claude-opus-5-5",
+        effort: "xhigh",
+      },
+    }),
+  );
+  writeFileSync(
+    requestFile,
+    JSON.stringify({
+      schemaVersion: 1,
+      workOrderId: "WO-064",
+      number: 7,
+      targetRequest: subject.requestPath,
+      repairInput: repairFile,
+      children: "review-command-children",
+    }),
+  );
+  const disabled = spawnSync(
+    process.execPath,
+    [cli, "resolve-pr", "--request", requestFile],
+    {
+      cwd: subject.launchpad,
+      env: {
+        ...process.env,
+        DOTLN_LAUNCHPAD: subject.launchpad,
+        DOTLN_LIVE_WORKERS: "0",
+      },
+      encoding: "utf8",
+    },
+  );
+  assert.equal(disabled.status, 1);
+  assert.match(disabled.stderr, /DOTLN_LIVE_WORKERS=1/);
+  assert.equal(
+    existsSync(join(subject.root, "review-command-children")),
+    false,
+  );
+  assert.equal(subject.calls(), "");
+  let killed = false;
+  await assert.rejects(
+    resolveReviewComments({
+      ...subject.config,
+      afterPush() {
+        if (!killed) {
+          killed = true;
+          throw new Error("fixture kill after push");
+        }
+      },
+    }),
+    /fixture kill/,
+  );
+  assert.equal(subject.launches().length, 1);
+  assert.equal(
+    subject.events().filter((e) => e.type === "PullRequestRepairPushed").length,
+    1,
+  );
+  const result = await resolveReviewComments(subject.config);
+  assert.equal(result.status, "resolved");
+  assert.equal(subject.launches().length, 1);
+  assert.equal(
+    subject.events().filter((e) => e.type === "PullRequestRepairPushed").length,
+    1,
+  );
+  assert.equal(
+    (subject.calls().match(/mutation DotlnResolveReview/g) ?? []).length,
+    1,
+  );
+  const events = subject.events(),
+    pushed = events.find((e) => e.type === "PullRequestRepairPushed"),
+    disposed = events.find((e) => e.type === "PullRequestThreadDisposed");
+  const observed = events
+    .filter((e) => e.type === "PullRequestStateObserved")
+    .at(-1);
+  assert.ok(events.indexOf(observed) > events.indexOf(disposed));
+  assert.equal(observed.payload.headSha, pushed.payload.headSha);
+  assert.equal(observed.payload.comments[0].class, "resolved");
+  const item = [...replayReviewItems(events).values()][0];
+  const repairLog = decodeLog(
+    new WorkerStore(
+      item.results.repair.repairStore.replace(/source-1$/, "verification-1"),
+    ).read(),
+  );
+  assert.ok(repairLog.some((e) => e.type === "CommandResult"));
+  assert.equal(subject.remoteBranch(), pushed.payload.headSha);
+  process.stdout.write(
+    "WO-066 accepted-thread transcript: one fresh writer; WO-054 pass; one push; granted disposition; recorded resolved observation; interrupted push resumed.\n",
+  );
+});
+
+await test("WO-066 AC1: a mapped failing check repairs and is freshly observed successful at the new head", async (t) => {
+  const subject = await reviewScenario(t, { items: [], check: "unit" });
+  const result = await resolveReviewComments(subject.config);
+  assert.equal(result.status, "resolved");
+  assert.equal(subject.launches().length, 1);
+  assert.equal(
+    subject.events().filter((e) => e.type === "PullRequestThreadDisposed")
+      .length,
+    0,
+  );
+  const latest = subject
+    .events()
+    .filter((e) => e.type === "PullRequestStateObserved")
+    .at(-1);
+  assert.deepEqual(latest.payload.checks, [{ name: "unit", state: "SUCCESS" }]);
+  assert.equal(latest.payload.headSha, subject.remoteBranch());
+});
+
+await test("WO-066 AC2: reject carries evidence to the thread; human comments never dispatch or dispose; outside paths and unmapped checks name NeedsHuman", async (t) => {
+  const reject = await reviewScenario(t);
+  reject.config.judgments.R1.kind = "reject";
+  assert.equal((await resolveReviewComments(reject.config)).status, "resolved");
+  assert.equal(reject.launches().length, 0);
+  assert.equal(
+    reject.events().find((e) => e.type === "PullRequestRejectionPosted").payload
+      .disposition,
+    "reject",
+  );
+  assert.match(
+    reject.calls(),
+    /body=\{"disposition":"rejected","evidenceRefs":\["synthetic-contract","synthetic-diff"\]\}/,
+  );
+  const human = await reviewScenario(t, {
+    items: [{ id: "H1", role: "human", path: "fixture.txt", line: 1 }],
+  });
+  assert.equal(
+    (await resolveReviewComments(human.config)).status,
+    "needs-human",
+  );
+  assert.equal(human.launches().length, 0);
+  assert.doesNotMatch(human.calls(), /mutation/);
+  const outside = await reviewScenario(t, {
+    items: [{ id: "OUTSIDE", path: "outside.txt", line: 1 }],
+  });
+  assert.equal(
+    (await resolveReviewComments(outside.config)).status,
+    "needs-human",
+  );
+  assert.equal(outside.launches().length, 0);
+  assert.match(
+    [...replayReviewItems(outside.events()).values()][0].terminal.reason,
+    /outside.txt/,
+  );
+  const unknown = await reviewScenario(t, {
+    items: [],
+    check: "unknown-check",
+  });
+  assert.equal(
+    (await resolveReviewComments(unknown.config)).status,
+    "needs-human",
+  );
+  assert.equal(unknown.launches().length, 0);
+  assert.match(
+    [...replayReviewItems(unknown.events()).values()][0].terminal.reason,
+    /unknown-check/,
+  );
+});
+
+await test("WO-066 AC2: a refused comment stops with its identifier; failed repair verification cannot push or dispatch a second round", async (t) => {
+  const refused = await reviewScenario(t, {
+    items: [
+      {
+        id: "REFUSED",
+        path: "fixture.txt",
+        line: 1,
+        text: "https://off-list.example/path",
+      },
+    ],
+  });
+  const stop = await resolveReviewComments(refused.config);
+  assert.equal(stop.status, "refused");
+  assert.equal(stop.itemId, "REFUSED");
+  assert.equal(refused.launches().length, 0);
+  assert.doesNotMatch(refused.calls(), /mutation/);
+  const failed = await reviewScenario(t, { wrong: true });
+  assert.equal(
+    (await resolveReviewComments(failed.config)).status,
+    "needs-human",
+  );
+  assert.equal(failed.launches().length, 1);
+  assert.equal(
+    failed.events().filter((e) => e.type === "PullRequestRepairPushed").length,
+    0,
+  );
+  assert.equal(
+    (await resolveReviewComments(failed.config)).status,
+    "needs-human",
+  );
+  assert.equal(failed.launches().length, 1);
+});
+
+await test("WO-066 AC3: later comments enter at observation, but a local resolved bit without an observer event proves nothing", async (t) => {
+  const subject = await reviewScenario(t, { items: [] });
+  assert.equal(
+    (await resolveReviewComments(subject.config)).status,
+    "resolved",
+  );
+  const remote = JSON.parse(readFileSync(subject.response, "utf8"));
+  remote.items = [{ id: "LATE", path: "fixture.txt", line: 1 }];
+  writeFileSync(subject.response, JSON.stringify(remote));
+  subject.config.judgments.LATE = {
+    kind: "reject",
+    evidenceRefs: ["synthetic-contract"],
+  };
+  let observations = 0;
+  const result = await resolveReviewComments({
+    ...subject.config,
+    observe() {
+      observations++;
+      if (observations === 1)
+        return observePullRequest({
+          cwd: subject.launchpad,
+          store: subject.config.store,
+          number: 7,
+          repositoryId: subject.config.repositoryId,
+          now: 20,
+        });
+      return {
+        appended: false,
+        payload: {
+          comments: [{ id: "LATE", resolved: true, class: "resolved" }],
+        },
+      };
+    },
+  });
+  assert.equal(result.status, "needs-human");
+  const late = [...replayReviewItems(subject.events()).values()][0];
+  assert.match(late.terminal.reason, /no fresh post-disposition/);
+  assert.equal(subject.launches().length, 0);
+});
+
+await test("WO-066 AC4: push and every thread disposition require their operator effect before gh; a foreign repaired head cannot push", async (t) => {
+  const subject = await reviewScenario(t);
+  // Derive a verified real child once; the injected cut is before disposition.
+  await assert.rejects(
+    resolveReviewComments({
+      ...subject.config,
+      afterPush() {
+        throw new Error("fixture cut");
+      },
+    }),
+    /fixture cut/,
+  );
+  const item = [...replayReviewItems(subject.events()).values()][0],
+    child = item.results.repair;
+  const source = JSON.parse(
+    readFileSync(join(subject.root, "loadout.json"), "utf8"),
+  );
+  const writeGrant = (effects) => {
+    const grant = { ...subject.grant, effects, operations: effects };
+    source.authorityGrants = [grant];
+    writeFileSync(join(subject.root, "loadout.json"), JSON.stringify(source));
+    return [grant];
+  };
+  writeFileSync(subject.ghLog, "");
+  assert.throws(
+    () =>
+      pushRepairedHead({
+        ...subject.config.publication,
+        registry: writeGrant(["pr.open", "pr.thread.resolve"]),
+        itemKey: "missing-push",
+        ...child,
+        now: 20,
+      }),
+    /repo.push is not granted/,
+  );
+  assert.equal(subject.calls(), "");
+  for (const kind of ["accept", "reject"]) {
+    assert.throws(
+      () =>
+        disposeReviewThread({
+          ...subject.config.publication,
+          registry: writeGrant(["repo.push", "pr.open"]),
+          itemKey: "missing-dispose",
+          item: item.item,
+          judgment: { kind, evidenceRefs: ["synthetic-contract"] },
+          now: 20,
+        }),
+      /pr.thread.resolve is not granted/,
+    );
+    assert.equal(subject.calls(), "");
+  }
+  writeGrant(["repo.push", "pr.open", "pr.thread.resolve"]);
+  const childStore = new WorkerStore(child.repairStore);
+  // A fixture foreign commit is an actual Git commit, with a correspondingly
+  // host-recorded child observation; ancestry refusal precedes any remote IO.
+  const originalLog = childStore.read(),
+    childObservation = decodeLog(originalLog).find(
+      (e) => e.type === "SourceChangeObserved",
+    ).payload;
+  const tree = fixtureGit(
+    subject.target,
+    "rev-parse",
+    `${subject.baseCommit}^{tree}`,
+  );
+  const foreign = execGit(["-C", subject.target, "commit-tree", tree], {
+    input: "Foreign fixture root\n",
+    encoding: "utf8",
+    env: {
+      ...process.env,
+      GIT_AUTHOR_NAME: "Fixture",
+      GIT_AUTHOR_EMAIL: "fixture@example.invalid",
+      GIT_COMMITTER_NAME: "Fixture",
+      GIT_COMMITTER_EMAIL: "fixture@example.invalid",
+    },
+  }).trim();
+  const receiptPath = join(
+    childStore.directory,
+    `${decodeLog(originalLog).find((e) => e.type === "CommandPersisted").payload.command.commandId}.source-change.json`,
+  );
+  const originalReceipt = readFileSync(receiptPath, "utf8");
+  writeFileSync(
+    join(childStore.directory, "events.jsonl"),
+    originalLog.replaceAll(childObservation.commit, foreign),
+  );
+  writeFileSync(
+    receiptPath,
+    originalReceipt.replaceAll(childObservation.commit, foreign),
+  );
+  try {
+    assert.throws(
+      () =>
+        pushRepairedHead({
+          ...subject.config.publication,
+          itemKey: "foreign-head",
+          ...child,
+          now: 20,
+        }),
+      /does not descend/,
+    );
+    assert.equal(subject.calls(), "");
+  } finally {
+    writeFileSync(join(childStore.directory, "events.jsonl"), originalLog);
+    writeFileSync(receiptPath, originalReceipt);
+  }
 });
