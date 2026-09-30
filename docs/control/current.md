@@ -1,22 +1,23 @@
 # Current control state
 
-## WO-058
+## WO-174
 
-- Work order: WO-058
-- Work-order path: docs/work-orders/WO-058-visual-and-network-claim-types.md
+- Work order: WO-174
+- Work-order path: docs/work-orders/WO-174-gate-rows-cover-what-suites-read.md
 - Phase: closed
-- Latest verification: VER-001
-- Verification path: docs/verifications/WO-058/VER-001.md
+- Latest verification: VER-002
+- Verification path: docs/verifications/WO-174/VER-002.md
 - Latest verdict: pass
 - Final review: FINAL-001
-- Final-review path: docs/final-reviews/WO-058/FINAL-001.md
-- Latest attestation: harness claude-code; version 2.1.285; model claude-opus-5-5; effort xhigh; source claude-session-readback; account not-applicable
+- Final-review path: docs/final-reviews/WO-174/FINAL-001.md
+- Latest attestation: harness claude-code; version 2.1.286; model claude-opus-5-5; effort xhigh; source claude-session-readback; account not-applicable
 - Effort drift: max -> xhigh
-- Latest recordedAt: 2026-09-30T18:12:37.767Z
-- Elapsed implementation: 3028646 ms
-- Elapsed verification: 922350 ms
-- Elapsed finalReview: 1063090 ms
-- Latest checkpoint: 66276a9362cf9b94b3768cda6bb8da0c053dd926 (restore: `git checkout refs/dotln/checkpoint/WO-058/6 -- .`)
+- Latest recordedAt: 2026-09-30T21:09:32.026Z
+- Elapsed implementation: 6927943 ms
+- Elapsed verification: 924955 ms
+- Elapsed repair: 2092015 ms
+- Elapsed finalReview: 1114391 ms
+- Latest checkpoint: 0d103f6a099325a707a5ff688bca2c36fbd7cbfa (restore: `git checkout refs/dotln/checkpoint/WO-174/11 -- .`)
 - Legal next actions: release-close, next, activate
 - Legal off-ramps: correct
 

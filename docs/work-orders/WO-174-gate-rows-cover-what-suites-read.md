@@ -1,4 +1,4 @@
-# WO-174 — A passing gate row stands for what its suites read and execute: product cases that read documentation run in the document gate, and `npm test -- --review` selects every machinery suite that imports or spawns a changed file (version assigned at activation)
+# WO-174 — A passing gate row stands for what its suites read and execute: product cases that read documentation run in the document gate, and `npm test -- --review` selects every machinery suite that imports or spawns a changed file (v0.58.1)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
