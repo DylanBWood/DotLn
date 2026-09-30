@@ -1,0 +1,22 @@
+WO-066 final review, 2026-09-30: an accepted automated review comment that has no line
+
+Scenario. A session-scratch copy of scripts/test-target-publish.mjs, with its
+imports pointed at this worktree and one test appended. The test builds the
+order's own reviewScenario with a single automation-authored thread comment on
+fixture.txt whose line the fake gh reports as null, the value the forge returns
+for an outdated or file-level comment. The supplied judgment is accept, with the
+fixture's criterion and evidence references. resolveReviewComments then runs
+twice with the same request. The copy is not committed; the fixture values are
+synthetic.
+
+Command: node --test-name-pattern='REVIEW-REPRO' <scratch copy>
+Result: the appended test ran and printed the line below (3.0 s).
+
+REPRO {"first":{"threw":"review loop refused: repair derivation: malformed or foreign host review item: NOLINE"},"second":{"threw":"review loop refused: repair derivation: malformed or foreign host review item: NOLINE"},"launches":0,"observed":[{"id":"NOLINE","role":"automation","resolved":false,"class":"automated-review","threadId":"T_NOLINE","path":"fixture.txt","text":"Synthetic automated finding"}],"items":[{"terminal":null,"pending":"repair","results":["triage"]}],"stops":[],"mutations":0,"pushes":0}
+
+Reading. The observer stores no line for the comment. Triage accepts it, the
+repair command is persisted, and deriveRepairOrder answers NeedsHuman because a
+review witness needs a positive line. The loop throws on that answer instead of
+ending the item. No worker launches, nothing is pushed and no mutation is sent.
+No ReviewItemFinished and no PullRequestReviewLoopStopped is recorded, the item
+stays pending at the repair stage, and the second run throws the same refusal.

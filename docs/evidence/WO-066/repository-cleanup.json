@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "workOrderId": "WO-066",
+  "observedAt": "2026-09-30T03:28:00.914Z",
+  "roots": [
+    "worktree",
+    "session-scratch"
+  ],
+  "method": "direct traversal of directories and files, without following symlinks; root worktree .git excluded",
+  "nestedRepositoryCount": 0,
+  "nestedRepositories": []
+}

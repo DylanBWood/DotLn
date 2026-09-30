@@ -1,0 +1,18 @@
+Document | Bytes | Exempt bytes | Ceiling | Headroom
+docs/product/00-vision.md | 28041 | 0 | 28586 | 545
+docs/product/01-principles.md | 9462 | 0 | 9652 | 190
+docs/product/02-domain-model.md | 148729 | 0 | 150611 | 1882
+docs/product/03-architecture.md | 173569 | 0 | 176132 | 2563
+docs/product/04-interfaces.md | 60042 | 0 | 60856 | 814
+docs/product/05-pattern-library.md | 134941 | 0 | 136012 | 1071
+docs/product/06-roadmap.md | 40066 | 31537 | 40775 | 709
+docs/product/07-execution-guide.md | 155229 | 0 | 157212 | 1983
+docs/product/08-publication-compiler.md | 22633 | 0 | 23004 | 371
+docs/product/09-audit-resilience-privacy.md | 51102 | 0 | 51775 | 673
+docs/product/10-ir-compatibility.md | 25744 | 0 | 25825 | 81
+docs/product/11-proteino.md | 2058 | 0 | 2100 | 42
+docs/product/11-protino.md | 30626 | 0 | 31239 | 613
+docs/product/12-workstream-application.md | 17997 | 0 | 18357 | 360
+docs/product/13-uifa-roles.md | 26964 | 0 | 27487 | 523
+NEWER local release tags not in docs/product/06-roadmap.md: v0.56.1, v0.56.2, v0.56.3; the table stays valid for its recorded tags; run npm run release -- list --markdown --write to add them
+PASS docs check: 15 product documents; 412 declared historical link occurrences; 0 failures

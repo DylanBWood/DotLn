@@ -1,4 +1,4 @@
-# WO-066 — Review-comment resolution loop: each unresolved automated review comment or failing check derives a bounded repair, runs through a fresh worker, is pushed under the grant and re-observed, until every comment is resolved or recorded as needing a human (version assigned at activation)
+# WO-066 — Review-comment resolution loop: each unresolved automated review comment or failing check derives a bounded repair, runs through a fresh worker, is pushed under the grant and re-observed, until every comment is resolved or recorded as needing a human (v0.57.0)
 
 **Model:** any capable model; the executor runs the live episodes. State
 the model and effort actually run (07-execution-guide.md §Model-specific

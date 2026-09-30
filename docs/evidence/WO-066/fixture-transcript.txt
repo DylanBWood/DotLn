@@ -1,0 +1,89 @@
+Command: node --test scripts/test-target-publish.mjs packages/skeleton/dist/test/repair.test.js packages/skeleton/dist/test/writer.test.js packages/skeleton/dist/test/source-change-host.test.js packages/skeleton/dist/test/source-change-confinement.test.js
+Source: executor command output; fixture doubles, real local Git and sandbox-exec; no remote GitHub effects.
+
+✔ WO-066 host review witness preserves scope, named tests, revision and one-round bound (2155.857959ms)
+✔ WO-055 AC1 pure derivation contains paths, commands, contract and admitted exact grants (2046.854125ms)
+✔ WO-055 AC2 failing source commit repairs once and re-verifies the complete original contract (4836.355125ms)
+✔ WO-055 AC3 two wrong repairs exhaust with last finding and no third source dispatch (6787.507958ms)
+✔ WO-055 AC4 SIGKILL afterRepairCommit resumes persisted continuation without another repair (4685.237292ms)
+✔ WO-055 AC4 SIGKILL afterSnapshotPrepared resumes persisted continuation without another repair (4584.468792ms)
+✔ WO-055 AC1 refused path or command persists byte-identical envelope and dispatches no writer (4433.4545ms)
+✔ WO-066 AC6: host and exact writer command deny direct network, common-Git writes and outside reads (236.65275ms)
+✔ WO-052 AC1 claude: governed foreign worktree, failing baseline, committed passing result, receipt and explicit finish (3810.50475ms)
+✔ WO-052 AC1 codex: governed foreign worktree, failing baseline, committed passing result, receipt and explicit finish (2219.48ms)
+✔ WO-052 AC2 real host SIGKILL before-commit: expired lease recovers one effect (2559.909708ms)
+✔ WO-052 AC2 real host SIGKILL after-commit: expired lease recovers one effect (2558.268084ms)
+✔ WO-052 AC2 real host SIGKILL after-receipt: expired lease recovers one effect (2754.257625ms)
+✔ WO-052 AC3 no commit refuses and retains edits; finish never discards them (1025.77725ms)
+✔ WO-052 effect receipt and stable request are positively decoded before reclaim or redispatch (2131.88825ms)
+✔ WO-052 dirty committed tree and unowned ignored files refuse while preserving contents (3432.64125ms)
+✔ WO-052 authority expiry fences initial dispatch and post-worker admission (1274.02625ms)
+✔ WO-052 AC4 source payloads reject malformed identity, cross-order/branch results and terminal rewrites (0.47675ms)
+✔ WO-052 emitted Claude permission hook admits only live host-issued exact commands (5275.587333ms)
+✔ WO-052 wrong branch and outside-surface commits refuse without redispatch or discard (2861.680667ms)
+✔ WO-052 a second interrupted attempt exhausts recovery; no third dispatch (1612.27675ms)
+✔ WO-157 a grant-bearing artifact identity equips and runs through the source-change host; a malformed registry still refuses (1600.6405ms)
+✔ WO-157 the host counts committed paths against the files ceiling and refuses a removal without repo.delete, except a declared Sort move (8580.340167ms)
+✔ WO-161 the bounded Contributor label retains the writer's authority limits (7.587833ms)
+✔ WO-051 inspection request, validator, parser, prompt and both launch arrays retain activation bytes (0.752709ms)
+✔ WO-051 writer authority, command and environment refuse invalid requests before a launch (119.605083ms)
+✔ WO-051 source-change mount accepts scratch worktrees and rejects root, prefix and symlink escapes (138.87325ms)
+✔ WO-051 C-W2/C-W3/C-W8/C-W9 and X-W1/X-W2/X-W8 canonical writer shapes (147.146917ms)
+✔ WO-051 claude subprocess observes committed and C-K1 edited-uncommitted outcomes (391.614917ms)
+✔ WO-051 claude malformed, spoofed and failed vendor output never becomes a writer result (715.261584ms)
+✔ WO-051 codex subprocess observes committed and C-K1 edited-uncommitted outcomes (439.889667ms)
+✔ WO-051 codex malformed, spoofed and failed vendor output never becomes a writer result (436.62175ms)
+✔ WO-051 strict writer parser keeps observations host-owned and validates stored fields (114.608042ms)
+✔ WO-064 AC1: publish refuses without an operator grant before any remote call (2600.636917ms)
+✔ WO-064 AC1: a host-policy grant is not operator provenance (2231.94875ms)
+target publish gh stub transcript (temporary path normalized):
+--version
+auth status --hostname github.com
+pr create --repo github.com/dotln-fixture/target --head fix/fixture-text --base main --title fix: record the synthetic worker line --body-file <generated-PR-body>
+✔ WO-064 AC1/AC2: lint and target refusals name their rule; the granted publish pushes and opens the pull request with the pinned body (4653.152958ms)
+✔ WO-064 AC1 (VER-001 F1): a same-head acceptance matrix must verify this WorkOrder's criteria (3910.301833ms)
+WO-066 signature positive control ran; guarded publication did not run it; changed repository refused before gh or push.
+✔ WO-157: publication runs no hook or repository configuration the target holds (2929.825834ms)
+✔ WO-064: the CLI names its usage for a malformed target request (56.750083ms)
+✔ WO-066 AC5: a signed-header commit runs planted gpg on ordinary log, never publication; request binds origin before remote calls (2739.482625ms)
+✔ WO-065 AC1: typed classes, correlation, roles and latest normalized-state dedup through the CLI (2808.955666ms)
+✔ WO-065 F1: actor types decide roles on every comment connection and pagination path (410.130208ms)
+✔ WO-065 AC2: every declared secret and URL form is refused without persisted text; safe peers survive (379.371792ms)
+✔ WO-065 AC1/AC2: all connections and nested thread comments paginate (585.893584ms)
+✔ WO-065 AC3: unknown PR, malformed JSON/fields, partial errors and gh failure append nothing (3867.563958ms)
+✔ WO-065: duplicate nodes, stalled pagination and concurrent writer refuse (615.262042ms)
+✔ WO-065 F2: malformed screened bodies remain refused items while safe peers survive (728.019958ms)
+✔ WO-065 F3: refused metadata stays local, preserves check states, and retains no rejected content (695.91175ms)
+✔ WO-065 F3: forge hosts incompatible with the screen refuse before gh (383.12675ms)
+✔ WO-065: draft comments stay transient, deleted authors and opaque padded ids remain readable, empty checks are valid (359.894708ms)
+✔ WO-065: a valid page over the default child-process buffer is decoded and stored (435.968292ms)
+WO-066 accepted-thread transcript: one fresh writer; WO-054 pass; one push; granted disposition; recorded resolved observation; interrupted push resumed.
+✔ WO-066 AC1/AC3: an accepted automated thread repairs, verifies, pushes, disposes and records fresh resolution; recovery never pushes twice (7048.382291ms)
+✔ WO-066 AC1: a mapped failing check repairs and is freshly observed successful at the new head (6761.010042ms)
+✔ WO-066 AC2: reject carries evidence to the thread; human comments never dispatch or dispose; outside paths and unmapped checks name NeedsHuman (14395.133166ms)
+✔ WO-066 AC2: a refused comment stops with its identifier; failed repair verification cannot push or dispatch a second round (10388.074875ms)
+✔ WO-066 AC3: later comments enter at observation, but a local resolved bit without an observer event proves nothing (4092.058833ms)
+✔ WO-066 AC4: push and every thread disposition require their operator effect before gh; a foreign repaired head cannot push (7170.1485ms)
+ℹ tests 57
+ℹ suites 0
+ℹ pass 57
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 80334.713458
+
+Command-level addition after the focused batch:
+node --test --test-name-pattern='WO-066 AC1/AC3' scripts/test-target-publish.mjs
+The accepted-thread fixture additionally exercises resolve-pr with live workers disabled, proving no child directory or remote call occurs before that refusal.
+
+WO-066 accepted-thread transcript: one fresh writer; WO-054 pass; one push; granted disposition; recorded resolved observation; interrupted push resumed.
+✔ WO-066 AC1/AC3: an accepted automated thread repairs, verifies, pushes, disposes and records fresh resolution; recovery never pushes twice (7443.444667ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7525.166625
