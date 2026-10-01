@@ -401,19 +401,23 @@ test("WO-055 AC1 refused path or command persists byte-identical envelope and di
                   const run = transport.dispatch(request, now);
                   return {
                     ...run,
-                    completed: run.completed.then((result) => ({
-                      ...result,
-                      findings:
-                        "findings" in result
-                          ? result.findings.map((f) => ({
-                              ...f,
-                              reproductionSteps: [
-                                ...f.reproductionSteps,
-                                "node outside.mjs",
-                              ],
-                            }))
-                          : [],
-                    })),
+                    completed: run.completed.then((result) =>
+                      result.kind !== "verification"
+                        ? result
+                        : {
+                            ...result,
+                            findings:
+                              "findings" in result
+                                ? result.findings.map((f) => ({
+                                    ...f,
+                                    reproductionSteps: [
+                                      ...f.reproductionSteps,
+                                      "node outside.mjs",
+                                    ],
+                                  }))
+                                : [],
+                          },
+                    ),
                   };
                 },
               },

@@ -10,8 +10,17 @@ import {
   type Evaluation,
   type RepositoryFile,
   type VerificationFinding,
+  type ReviewFinding,
   type VerificationTask,
 } from "@dotln/compiler";
+import {
+  copyReviewFindings,
+  createReviewCompleted,
+  reviewWorkOrder,
+  reviewReferences,
+  validateReviewContext,
+  type ReviewContext,
+} from "./review.js";
 import type { Command, ResultEnvelope, WorkOrder } from "@dotln/kernel";
 import {
   planPrompt,
@@ -366,6 +375,7 @@ export function compareBaseline(
 }
 
 export interface EvidenceWorkerRequest {
+  readonly review?: ReviewContext;
   readonly baseline?: BaselineContext;
   readonly feedback?: CompiledFeedback;
   readonly kind: "evidence-worker";
@@ -392,6 +402,12 @@ export interface VerificationWorkerResult {
   readonly evaluations: readonly Evaluation[];
   readonly findings: readonly VerificationFinding[];
 }
+export interface ReviewWorkerResult {
+  readonly kind: "review";
+  readonly envelope: ResultEnvelope;
+  readonly subjectRevision: string;
+  readonly findings: readonly ReviewFinding[];
+}
 export interface BaselineWorkerResult {
   readonly kind: "baseline";
   readonly envelope: ResultEnvelope;
@@ -404,7 +420,10 @@ export interface RepairWorkerResult {
   readonly replacements: readonly RepositoryFile[];
 }
 export type EvidenceWorkerResult =
-  VerificationWorkerResult | RepairWorkerResult | BaselineWorkerResult;
+  | VerificationWorkerResult
+  | RepairWorkerResult
+  | BaselineWorkerResult
+  | ReviewWorkerResult;
 export type TransportRequest =
   | WorkerRequest
   | WriterRequest
@@ -458,6 +477,9 @@ const exact = (
  * closed: `check` accepts nothing else, so a new reason is added here first. */
 export const EVIDENCE_RESULT_REFUSALS = [
   "episode result shape",
+  "review cannot return edits or diff",
+  "review finding contract",
+  "review episode identity",
   "episode envelope.summary must be a string of at most 320 characters",
   "episode envelope",
   "episode role or subject",
@@ -520,12 +542,30 @@ export function parseEvidenceResult(
   value: unknown,
   request: Pick<
     EvidenceWorkerRequest,
-    "command" | "workOrder" | "capsule" | "episodeId" | "baseline"
+    "command" | "workOrder" | "capsule" | "episodeId" | "baseline" | "review"
   >,
 ): EvidenceWorkerResult {
   const root = object(value);
   const envelope = object(root?.envelope);
   const verifying = request.capsule.role === "verifier";
+  const reviewing = request.review !== undefined;
+  if (reviewing) {
+    validateReviewContext(request.review!, request.capsule);
+    check(
+      !request.review!.implementerEpisodes.includes(request.episodeId) &&
+        !request.review!.rows.some(
+          (row) => row.episodeId === request.episodeId,
+        ),
+      "review episode identity",
+    );
+    check(
+      !root ||
+        !Object.keys(root).some((key) =>
+          ["diff", "patch", "edits", "files", "replacements"].includes(key),
+        ),
+      "review cannot return edits or diff",
+    );
+  }
   const baselineEpisode = request.baseline?.kind === "baseline";
   const comparison = request.baseline?.kind === "comparison";
   if (request.baseline)
@@ -536,18 +576,20 @@ export function parseEvidenceResult(
       envelope &&
       exact(
         root,
-        baselineEpisode
-          ? ["kind", "envelope", "subjectRevision"]
-          : verifying
-            ? [
-                "kind",
-                "envelope",
-                "subjectRevision",
-                "evaluations",
-                "findings",
-                ...(comparison ? ["baselineFindings"] : []),
-              ]
-            : ["kind", "envelope", "subjectRevision", "replacements"],
+        reviewing
+          ? ["kind", "envelope", "subjectRevision", "findings"]
+          : baselineEpisode
+            ? ["kind", "envelope", "subjectRevision"]
+            : verifying
+              ? [
+                  "kind",
+                  "envelope",
+                  "subjectRevision",
+                  "evaluations",
+                  "findings",
+                  ...(comparison ? ["baselineFindings"] : []),
+                ]
+              : ["kind", "envelope", "subjectRevision", "replacements"],
       ),
     "episode result shape",
   );
@@ -576,9 +618,23 @@ export function parseEvidenceResult(
   check(
     root.subjectRevision === request.capsule.subject.revision &&
       root.kind ===
-        (baselineEpisode ? "baseline" : verifying ? "verification" : "repair"),
+        (reviewing
+          ? "review"
+          : baselineEpisode
+            ? "baseline"
+            : verifying
+              ? "verification"
+              : "repair"),
     "episode role or subject",
   );
+  if (reviewing) {
+    try {
+      copyReviewFindings(root.findings, request.capsule, request.review!);
+    } catch {
+      throw new WorkerFailure("invalid-result", "review finding contract");
+    }
+    return root as unknown as ReviewWorkerResult;
+  }
   if (baselineEpisode) return root as unknown as BaselineWorkerResult;
   if (comparison)
     check(
@@ -750,7 +806,8 @@ export function parseEvidenceResult(
       );
     }
     check(
-      canonicalStringify(finding) === canonicalStringify(value) &&
+      finding.class !== "review" &&
+        canonicalStringify(finding) === canonicalStringify(value) &&
         !findingIds.has(finding.findingId),
       "finding shape or duplicate",
     );
@@ -851,11 +908,13 @@ export function evidenceResultSchema(request: EvidenceWorkerRequest): object {
     kind: {
       ...schemaText,
       enum: [
-        request.baseline?.kind === "baseline"
-          ? "baseline"
-          : request.capsule.role === "verifier"
-            ? "verification"
-            : "repair",
+        request.review
+          ? "review"
+          : request.baseline?.kind === "baseline"
+            ? "baseline"
+            : request.capsule.role === "verifier"
+              ? "verification"
+              : "repair",
       ],
     },
     envelope: schemaObject({
@@ -871,6 +930,38 @@ export function evidenceResultSchema(request: EvidenceWorkerRequest): object {
       enum: [request.capsule.subject.revision],
     },
   };
+  if (request.review)
+    return schemaObject({
+      ...common,
+      findings: {
+        type: "array",
+        maxItems: 100,
+        items: schemaObject({
+          class: { ...schemaText, enum: ["review"] },
+          findingId: schemaLine,
+          criterionId: schemaOneOf(
+            request.capsule.criteria.map((criterion) => criterion.criterionId),
+          ),
+          severity: { ...schemaText, enum: ["blocking", "should", "nit"] },
+          observed: schemaLine,
+          expected: schemaLine,
+          reproductionSteps: schemaLines(schemaLine),
+          evidenceRefs: schemaLines(
+            schemaOneOf(reviewReferences(request.capsule, request.review)),
+          ),
+          likelySurface: schemaLines(
+            schemaOneOf([
+              ...new Set(
+                [
+                  ...request.review.baseline.files,
+                  ...request.capsule.subject.files,
+                ].map((file) => file.path),
+              ),
+            ]),
+          ),
+        }),
+      },
+    });
   if (request.baseline?.kind === "baseline") return schemaObject(common);
   const baselineFindings = compareBaseline(request.baseline, request.capsule);
   return schemaObject(
@@ -964,19 +1055,35 @@ export function validateTransportRequest(request: TransportRequest): void {
   if (!isEvidenceRequest(request)) return validateRequest(request);
   try {
     assertVerificationTask(request.capsule);
+    if (request.review) {
+      if (request.baseline)
+        throw new Error("review cannot be a baseline or comparison episode");
+      createReviewCompleted(
+        request.capsule,
+        request.review,
+        request.episodeId,
+        [],
+        false,
+      );
+    }
     if (request.baseline)
       validateBaselineContext(request.baseline, request.capsule);
     if (request.feedback !== undefined)
       assertCompiledFeedback(request.feedback);
     if (
       canonicalStringify(request.workOrder) !==
-        canonicalStringify(request.capsule.workOrder) ||
+        canonicalStringify(
+          request.review
+            ? reviewWorkOrder(request.capsule)
+            : request.capsule.workOrder,
+        ) ||
       request.command.intent.kind !== "Act" ||
       request.command.intent.effect !==
         request.workOrder.allowedOperations[0] ||
       canonicalStringify(request.command.intent.payload) !==
         canonicalStringify({
           capsule: request.capsule,
+          ...(request.review ? { review: request.review } : {}),
           ...(request.baseline ? { baseline: request.baseline } : {}),
         }) ||
       !/^[a-zA-Z0-9][a-zA-Z0-9._:-]*$/u.test(request.model) ||
@@ -1046,11 +1153,15 @@ export function transportPrompt(request: TransportRequest): string {
   validateTransportRequest(request);
   return JSON.stringify({
     capsule: request.capsule,
+    ...(request.review
+      ? { review: request.review, workOrder: reviewWorkOrder(request.capsule) }
+      : {}),
     ...(request.baseline ? { baseline: request.baseline } : {}),
     episodeId: request.episodeId,
     resultId: resultId(request.command),
-    outputInstructions:
-      request.baseline?.kind === "baseline"
+    outputInstructions: request.review
+      ? `The top-level workOrder is this review episode; capsule.workOrder describes the preceding behavior-verification task, not this episode. Independently review the sealed candidate against its original contract, actual diff and declared repository conventions. Behavior verification has passed; read its baseline and candidate rows, never run a product gate or change a behavior verdict. This is the complete read projection, with no implementer narrative. No tools, edits, patches, replacements or writes are granted. ${request.review.conventionsPath === null ? "Declared conventions are absent; judge scope and contract fit only, never invent repository conventions." : `The unchanged declared conventions source is ${request.review.conventionsPath}.`} Return kind review with findings under the existing finding contract and class review: blocking for a concrete maintainability, scope or convention defect that must be repaired before delivery; should and nit are known items only and never authorize changes. Each finding gives its rule verbatim in expected, the concrete violation in observed, inspection steps in reproductionSteps, relevant likelySurface paths, and evidenceRefs from ${JSON.stringify(reviewReferences(request.capsule, request.review))}. Cite contract or the declared conventions source for the rule and diff or file references for the observation. Tie each finding to a supplied criterion. Do not invent a failed host test; review findings are separate judgments. Keep envelope.summary within 320 characters. Return only the schema object.`
+      : request.baseline?.kind === "baseline"
         ? "This is the baseline episode before implementation. Inspect the sealed base and its host-run named tests. No tools, writes or implementer narrative are granted. A completed envelope acknowledges this inspection only; the host derives reproduction or its environment limitation from its own test rows. Return kind baseline, the pinned subjectRevision and envelope only; never supply rows, a verdict or an outcome. Keep envelope.summary to at most 320 characters."
         : request.capsule.role === "verifier"
           ? `Independently assess each criterion using the pinned diff, repository snapshot and host witnesses. This is the complete read mount projection; no tools or other context are granted. Preserve evidence source labels. A pass requires every required check, matching claim type and source, with no adverse witness. Visual passes additionally require a cited passing screenshot; network passes require a cited passing network-trace. A console-capture error for the criterion's required check prevents a pass even when omitted. Missing or unavailable evidence is unverified. Emit full findings for failures, blocking when repair is required. A finding restates host evidence: reference the failing witness in evidenceRefs, which must also appear in that criterion's evaluation, and copy observed and expected verbatim from that witness; keep likelySurface within the criterion's codeSurfaces.${

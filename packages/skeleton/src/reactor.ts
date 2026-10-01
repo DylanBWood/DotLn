@@ -1,3 +1,23 @@
+import type {
+  MatrixEvaluation,
+  AcceptanceEvidenceRow,
+  FindingRecord,
+  VerificationPending,
+  VerificationState,
+} from "./verification.js";
+export type {
+  MatrixEvaluation,
+  AcceptanceEvidenceRow,
+  FindingRecord,
+  VerificationPending,
+  VerificationState,
+} from "./verification.js";
+import {
+  reviewCompletedEvent,
+  createReviewContext,
+  validateReviewOpening,
+  type ReviewCompleted,
+} from "./review.js";
 import {
   REPAIR_HOST,
   repairEventTypes,
@@ -322,6 +342,7 @@ export const sliceEventTypes = {
   verification: [
     "VerificationOpened",
     "BaselineWitnessed",
+    "ReviewCompleted",
     "VerificationDispatchRequested",
     "CommandPersisted",
     "WorkerAttemptStarted",
@@ -1732,82 +1753,6 @@ export const expectedInspectCommandId = commandId(WORKSTREAM, EPISODE, 1, 0);
 
 // Independent-verification workstreams use the same typed reactor boundary.
 export const VERIFICATION_HOST = "verification-host";
-export interface MatrixEvaluation extends Evaluation {
-  readonly provenance: {
-    readonly kind: "host-admitted-verifier";
-    readonly commandId: string;
-    readonly inputHash: string;
-  };
-  readonly eventId: string;
-  readonly episodeId: string;
-  readonly subjectRevision: string;
-  readonly stale: boolean;
-}
-export interface AcceptanceEvidenceRow {
-  readonly criterion: AcceptanceCriterion;
-  readonly status: "incomplete" | "verified" | "failed" | "stale";
-  readonly evaluations: readonly MatrixEvaluation[];
-}
-export interface FindingRecord {
-  readonly finding: VerificationFinding;
-  readonly eventId: string;
-  readonly episodeId: string;
-  readonly subjectRevision: string;
-  readonly status: "open" | "resolved" | "superseded";
-}
-export interface VerificationPending {
-  readonly baseline?: BaselineContext;
-  readonly capsule: VerificationTask;
-  readonly command: Command;
-  readonly ordinal: number;
-  readonly persisted: boolean;
-  readonly attempts: readonly string[];
-  readonly activeEpisode: string | null;
-  readonly leaseExpiresAt: number;
-  readonly leaseExpired: boolean;
-}
-export interface VerificationState {
-  readonly baselineContext?: BaselineContext;
-  readonly baselineWitness?: BaselineWitness;
-  readonly baselineFindings?: readonly BaselineComparisonFinding[];
-  readonly episodeNamespace?: string;
-  readonly workstreamId: string;
-  readonly criteria: readonly AcceptanceCriterion[];
-  readonly baseline: VerificationSubject | null;
-  readonly subject: VerificationSubject | null;
-  readonly rows: readonly AcceptanceEvidenceRow[];
-  readonly evidence: readonly VerificationEvidence[];
-  readonly findings: readonly FindingRecord[];
-  readonly repairPlans: readonly {
-    readonly findingId: string;
-    readonly capsule: VerificationTask;
-  }[];
-  readonly implementerEpisodes: readonly string[];
-  readonly episodeIds: readonly string[];
-  readonly authority: AuthorityEnvelope | null;
-  readonly revocations: readonly Event[];
-  readonly pending: VerificationPending | null;
-  readonly continuation: ExecutableProgramV1;
-  readonly next:
-    | "unopened"
-    | "verify"
-    | "repair"
-    | "apply-repair"
-    | "complete"
-    | "baseline-witnessed"
-    | "attention";
-  readonly proposal: RepairWorkerResult | null;
-  readonly dispatchCount: number;
-  readonly repairCount: number;
-  readonly maxRepairs: number;
-  readonly lastResultEventId: string | null;
-  readonly refusedResults: readonly string[];
-  readonly staleness: readonly {
-    readonly eventId: string;
-    readonly changedSurfaces: readonly string[];
-    readonly criterionIds: readonly string[];
-  }[];
-}
 export const initialVerificationState = (
   workstreamId: string,
 ): VerificationState => ({
@@ -1844,6 +1789,7 @@ const requireState = (value: unknown, detail: string): void => {
 // EventEnvelope is deliberately open. Each branch checks the fields it consumes;
 // model results cross the stricter, closed schema in parseEvidenceResult.
 type VerificationPayload = {
+  reviewConventionsPath?: string | null;
   baselineContext?: BaselineContext;
   criteria: readonly AcceptanceCriterion[];
   baseline: VerificationSubject;
@@ -2044,6 +1990,7 @@ function persistedCompilation(
         payload: json({
           capsule,
           ...(pending.baseline ? { baseline: pending.baseline } : {}),
+          ...(pending.review ? { review: pending.review } : {}),
         }),
       },
     })
@@ -2061,7 +2008,7 @@ function dispatch(state: VerificationState): VerificationState {
     !state.pending &&
       state.subject &&
       state.continuation.kind === "Done" &&
-      ["verify", "repair"].includes(state.next),
+      ["verify", "repair", "review"].includes(state.next),
     "dispatch phase",
   );
   const ordinal = state.dispatchCount + 1;
@@ -2078,7 +2025,7 @@ function dispatch(state: VerificationState): VerificationState {
         (criterion) => criterion.criterionId === finding.criterionId,
       )
     : state.rows
-        .filter((row) => row.status !== "verified")
+        .filter((row) => state.next === "review" || row.status !== "verified")
         .map((row) => row.criterion);
   const capsule = compileVerificationTask(
     `verification_${ordinal}`,
@@ -2087,9 +2034,17 @@ function dispatch(state: VerificationState): VerificationState {
     finding,
   );
   const baseline =
-    capsule.role === "verifier" ? state.baselineContext : undefined;
+    capsule.role === "verifier" && state.next !== "review"
+      ? state.baselineContext
+      : undefined;
   if (baseline) validateBaselineContext(baseline, capsule);
-  const episodeKind = baseline?.kind === "baseline" ? "baseline" : capsule.role;
+  const review =
+    state.next === "review" ? createReviewContext(state, capsule) : undefined;
+  const episodeKind = review
+    ? "review"
+    : baseline?.kind === "baseline"
+      ? "baseline"
+      : capsule.role;
   const episodeId = `${state.episodeNamespace ? `${state.episodeNamespace}_` : ""}ep_${episodeKind}_${ordinal}`;
   const command: Command = {
     commandId: commandId(state.workstreamId, episodeId, ordinal, 0),
@@ -2099,7 +2054,11 @@ function dispatch(state: VerificationState): VerificationState {
       kind: "Act",
       effect: capsule.workOrder.allowedOperations[0]!,
       resource: "episodes",
-      payload: json({ capsule, ...(baseline ? { baseline } : {}) }),
+      payload: json({
+        capsule,
+        ...(baseline ? { baseline } : {}),
+        ...(review ? { review } : {}),
+      }),
     },
   };
   const continuation = verificationContinuation(command);
@@ -2111,6 +2070,7 @@ function dispatch(state: VerificationState): VerificationState {
     dispatchCount: ordinal,
     continuation,
     pending: {
+      ...(review ? { review } : {}),
       ...(baseline ? { baseline } : {}),
       capsule,
       command,
@@ -2143,6 +2103,13 @@ function foldVerificationEvent(
       const baseline = copySubject(value.baseline as VerificationSubject);
       const subject = copySubject(value.subject as VerificationSubject);
       const capsule = compileVerificationTask("opening", criteria, subject);
+      if (value.reviewConventionsPath !== undefined)
+        validateReviewOpening(
+          value.reviewConventionsPath,
+          baseline,
+          subject,
+          value.baselineContext?.kind,
+        );
       if (value.baselineContext) {
         validateBaselineContext(value.baselineContext, capsule);
         const expected =
@@ -2181,6 +2148,9 @@ function foldVerificationEvent(
       );
       return {
         ...state,
+        ...(value.reviewConventionsPath !== undefined
+          ? { reviewConventionsPath: value.reviewConventionsPath }
+          : {}),
         ...(value.baselineContext
           ? {
               baselineContext: JSON.parse(
@@ -2212,6 +2182,26 @@ function foldVerificationEvent(
         })),
         evidence: subject.evidence,
         next: "verify",
+      };
+    }
+    case "ReviewCompleted": {
+      requireState(
+        state.next === "reviewed" &&
+          !state.reviewCompleted &&
+          event.causationId === state.lastResultEventId &&
+          state.continuation.kind === "Emit" &&
+          same(event.payload, state.continuation.event.payload),
+        "review result provenance",
+      );
+      const step = decideProgram(
+        state.continuation,
+        json(state),
+        env(event.occurredAt),
+      );
+      return {
+        ...state,
+        reviewCompleted: event.payload as unknown as ReviewCompleted,
+        continuation: step.continuation!,
       };
     }
     case "BaselineWitnessed": {
@@ -2358,6 +2348,7 @@ function foldVerificationEvent(
           capsule: pending.capsule,
           episodeId: value.value.envelope.episodeId,
           ...(pending.baseline ? { baseline: pending.baseline } : {}),
+          ...(pending.review ? { review: pending.review } : {}),
         });
         requireState(
           result.envelope.status === "completed" &&
@@ -2414,6 +2405,23 @@ function foldVerificationEvent(
                 ),
               ),
             },
+            common.continuation,
+          ),
+        };
+      }
+      if (result.kind === "review") {
+        requireState(pending.review, "review result context");
+        return {
+          ...common,
+          next: "reviewed",
+          continuation: Program.Emit(
+            reviewCompletedEvent(
+              pending.capsule,
+              pending.review!,
+              result,
+              event,
+              pending.command.commandId,
+            ),
             common.continuation,
           ),
         };
@@ -2508,7 +2516,9 @@ function foldVerificationEvent(
         next: result.envelope.requiresHuman
           ? "attention"
           : rows.every((row) => row.status === "verified")
-            ? "complete"
+            ? state.reviewConventionsPath !== undefined
+              ? "review"
+              : "complete"
             : repairPlans.length > 0 && state.repairCount < state.maxRepairs
               ? "repair"
               : "attention",

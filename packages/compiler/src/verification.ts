@@ -70,16 +70,25 @@ export interface VerificationEvidence {
   readonly outcome: "pass" | "fail" | "unavailable";
   readonly reproductionSteps: readonly string[];
 }
-export interface VerificationFinding {
+interface FindingFields {
   readonly findingId: string;
   readonly criterionId: string;
-  readonly severity: "blocking" | "major" | "minor";
   readonly observed: string;
   readonly expected: string;
   readonly reproductionSteps: readonly string[];
   readonly evidenceRefs: readonly string[];
   readonly likelySurface: readonly string[];
 }
+export interface ReviewFinding extends FindingFields {
+  readonly class: "review";
+  readonly severity: "blocking" | "should" | "nit";
+}
+export type VerificationFinding =
+  | (FindingFields & {
+      readonly class?: never;
+      readonly severity: "blocking" | "major" | "minor";
+    })
+  | ReviewFinding;
 export interface Evaluation {
   readonly criterionId: string;
   readonly claimType: ClaimType;
@@ -424,12 +433,16 @@ export function copyFinding(value: VerificationFinding): VerificationFinding {
     "finding fields",
   );
   requireValue(
-    ["blocking", "major", "minor"].includes(value.severity),
+    value.class === "review"
+      ? ["blocking", "should", "nit"].includes(value.severity)
+      : value.class === undefined &&
+          ["blocking", "major", "minor"].includes(value.severity),
     "finding severity",
   );
   const likelySurface = lines(value.likelySurface, "likely surfaces");
   requireValue(likelySurface.every(repositoryPath), "finding paths");
   return {
+    ...(value.class === "review" ? { class: "review" as const } : {}),
     findingId: value.findingId,
     criterionId: value.criterionId,
     severity: value.severity,
@@ -438,7 +451,7 @@ export function copyFinding(value: VerificationFinding): VerificationFinding {
     reproductionSteps: lines(value.reproductionSteps, "reproduction steps"),
     evidenceRefs: lines(value.evidenceRefs, "finding evidence"),
     likelySurface,
-  };
+  } as VerificationFinding;
 }
 export function copySubject(value: VerificationSubject): VerificationSubject {
   const snapshot =

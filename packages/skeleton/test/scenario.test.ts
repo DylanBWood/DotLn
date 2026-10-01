@@ -158,6 +158,9 @@ test("WO-016 AC1 one typed reactor and its pure helpers own kernel decisions", a
   assert.deepEqual(
     [...reactor.matchAll(/from\s+"([^"]+)"/gu)].map((match) => match[1]),
     [
+      "./verification.js",
+      "./verification.js",
+      "./review.js",
       "./repair.js",
       "./source-change-state.js",
       "./resident-state.js",
@@ -172,7 +175,7 @@ test("WO-016 AC1 one typed reactor and its pure helpers own kernel decisions", a
       "./control-beacon.js",
       "./verification-protocol.js",
     ],
-    "the reactor imports only the kernel, pure compiler, identity checks, pure Beacon projections, pure verification contracts and pure resident/source-change folds",
+    "the reactor imports only the kernel, pure compiler, identity checks, pure Beacon projections, pure verification/review contracts and pure resident/source-change folds",
   );
   assert.deepEqual(
     [
@@ -191,6 +194,7 @@ test("WO-016 AC1 one typed reactor and its pure helpers own kernel decisions", a
     "resident-state.ts",
     "source-change-state.ts",
     "repair.ts",
+    "review.ts",
     "presence-machine.ts",
     "actor-contract.ts",
     "work-candidate.ts",

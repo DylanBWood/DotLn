@@ -1,15 +1,15 @@
 // Origin: {"ids":["no-attribution"],"loadoutId":"contributor","semanticHash":"fnv1a64:3fda088a97df0f55"}
-const { runCommitMessageHook } = await import("../../.runtime/harness/0c09e87e35bbbbe9/packages/skeleton/dist/src/harness-host.js");
-const { feedbackBoundary } = await import("../../.runtime/harness/0c09e87e35bbbbe9/packages/skeleton/dist/src/feedback-boundary.js");
+const { runCommitMessageHook } = await import("../../.runtime/harness/d76cf692425a8404/packages/skeleton/dist/src/harness-host.js");
+const { feedbackBoundary } = await import("../../.runtime/harness/d76cf692425a8404/packages/skeleton/dist/src/feedback-boundary.js");
 await runCommitMessageHook({
-  "compilerPackageVersion": "0.21.0",
+  "compilerPackageVersion": "0.22.0",
   "runtime": {
     "skeletonVersion": "0.34.0",
     "boundaryContract": "feedback-v1",
     "files": [
       {
         "path": "packages/compiler/dist/src/artifact-identity.js",
-        "hash": "fnv1a64:8f6587cba3d73d24"
+        "hash": "fnv1a64:bddd89e8eb4bdab7"
       },
       {
         "path": "packages/compiler/dist/src/harness.js",
@@ -85,11 +85,11 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/reactor.js",
-        "hash": "fnv1a64:03b7330ed291e07c"
+        "hash": "fnv1a64:f3b0ee36229eafc9"
       },
       {
         "path": "packages/skeleton/dist/src/repair.js",
-        "hash": "fnv1a64:7275a76da69b600c"
+        "hash": "fnv1a64:61d8ccfed3ce0e72"
       },
       {
         "path": "packages/skeleton/dist/src/resident-state.js",
@@ -109,11 +109,11 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/worker-store.js",
-        "hash": "fnv1a64:b251ba8ef68bd76e"
+        "hash": "fnv1a64:b61e6b191747907a"
       },
       {
         "path": "packages/skeleton/dist/src/verification-protocol.js",
-        "hash": "fnv1a64:2befa3035a9a55fb"
+        "hash": "fnv1a64:5df888fc8e92c738"
       },
       {
         "path": "packages/skeleton/dist/src/plan-refutation-protocol.js",
@@ -168,11 +168,11 @@ await runCommitMessageHook({
         "hash": "fnv1a64:5ad495017c40b9b2"
       }
     ],
-    "snapshot": ".runtime/harness/0c09e87e35bbbbe9"
+    "snapshot": ".runtime/harness/d76cf692425a8404"
   },
   "policy": {
     "contractVersion": "feedback-v1",
-    "compilerPackageVersion": "0.21.0",
+    "compilerPackageVersion": "0.22.0",
     "units": [
       {
         "unitId": "no-attribution",
@@ -225,6 +225,6 @@ await runCommitMessageHook({
         "enforcement": "hard"
       }
     ],
-    "policyHash": "fnv1a64:148b9118020a0748"
+    "policyHash": "fnv1a64:568ade1ba7649e5d"
   }
 }, feedbackBoundary);
