@@ -343,6 +343,12 @@ independent of token-counter freshness and adds no admission check. Missing or
 incomplete metadata is reported without substituting a model default. Explicit
 operator-supplied values remain operator-attested when readback is unavailable.
 
+WO-177 (Codex CLI 0.159.3, 2026-10-01) observed `spawn_agent` accept
+`model: gpt-6.1-sol` and `reasoning_effort: max` with `fork_turns: none`.
+A second call omitted both selectors. Each worker's own status reported
+`gpt-6.1-sol`/`max` from `codex-session-readback`: selected metadata,
+effective values unknown. [Parameters and observations](evidence/WO-177/spawn-agent.md).
+
 Claude Code (observed at 2.1.278 and 2.1.280) exports its session's selected
 effort as `CLAUDE_EFFORT` to the commands it runs, and persists a per-model
 `effortLevel` in its settings; DotLn never sets the variable. Briefings and
@@ -384,9 +390,10 @@ for it with `--transport claude-cli-print` or `--transport codex-cli-exec`;
 without a transport the command prints the canonical prompt and closed schema
 for a background worker the session spawns, and the parent remains the sole
 repository writer. A background-worker failure never triggers an automatic
-external fallback. Claude defaults to `claude-opus-5-5` at `xhigh` and Codex to
-`gpt-6-sol` at `xhigh` (WO-100; previously `claude-fable-5-1` at `max` and
-`gpt-6-astra` with effort `unknown`); both are recorded from the invocation as
+external fallback. Claude defaults to `claude-opus-5-5` at `xhigh` (WO-100) and
+Codex to `gpt-6.1-sol` at `max` (WO-177, replacing WO-100's `gpt-6-sol` at
+`xhigh`; before WO-100, `claude-fable-5-1` at `max` and `gpt-6-astra` with
+effort `unknown`); both are recorded from the invocation as
 `command-line-readback-and-invocation`, and effective model and effort stay
 `unknown` because no harness reports them. The receipt reads
 `entropy-reducer@1` only when a launched `claude-cli-print` episode carried the

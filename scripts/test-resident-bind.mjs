@@ -1131,7 +1131,7 @@ test("WO-157 a bind with --model and --effort records the operator's choice", ()
       "--transport",
       "codex-cli-exec",
       "--model",
-      "gpt-6-sol",
+      "gpt-6.1-sol",
     );
     assert.equal(partial.status, 0, partial.stderr);
     const chosen = JSON.parse(
@@ -1139,7 +1139,7 @@ test("WO-157 a bind with --model and --effort records the operator's choice", ()
     );
     assert.deepEqual(
       [chosen.model, chosen.modelSource, chosen.effort, chosen.effortSource],
-      ["gpt-6-sol", "operator", "xhigh", "default"],
+      ["gpt-6.1-sol", "operator", "xhigh", "default"],
     );
     // A stale default-sourced binding is rebound without freezing the default.
     context.close("WO-999");
@@ -1147,7 +1147,7 @@ test("WO-157 a bind with --model and --effort records the operator's choice", ()
     assert.equal(stale.status, 1);
     assert.match(
       stale.stdout,
-      /Rebind with .* --transport codex-cli-exec --model gpt-6-sol$/mu,
+      /Rebind with .* --transport codex-cli-exec --model gpt-6\.1-sol$/mu,
     );
     assert.doesNotMatch(stale.stdout, /--effort xhigh/u);
   }));

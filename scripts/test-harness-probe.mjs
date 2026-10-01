@@ -27,6 +27,7 @@ import {
   operationEvidence,
   shape,
 } from "./lib/writing-worker-probe.mjs";
+import { subagentProbe } from "./lib/subagent-probe.mjs";
 
 const repository = resolve(import.meta.dirname, "..");
 
@@ -741,6 +742,55 @@ const readTree = (root) => {
   return files;
 };
 
+test("WO-177 the subagent probe launches and records the pinned Claude default", async (t) => {
+  const root = mkdtempSync(join(tmpdir(), "dotln-subagent-default-test-"));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  const binary = join(root, "claude");
+  const launchPath = join(root, "launch.json");
+  writeFileSync(
+    binary,
+    `#!/usr/bin/env node
+const fs = require("node:fs");
+const args = process.argv.slice(2);
+if (args[0] === "--version") console.log("9.9.9 (Claude Code fixture)");
+else {
+  fs.writeFileSync(${JSON.stringify(launchPath)}, JSON.stringify({args, cwd: process.cwd()}));
+  console.log(JSON.stringify({type: "result", is_error: false}));
+}
+`,
+    { mode: 0o755 },
+  );
+  const inheritedPath = process.env.PATH;
+  const inheritedLive = process.env.DOTLN_LIVE_HARNESS;
+  try {
+    process.env.PATH = `${root}:${inheritedPath}`;
+    process.env.DOTLN_LIVE_HARNESS = "1";
+    const target = join(root, "record.json");
+    await subagentProbe([target]);
+    const launch = JSON.parse(readFileSync(launchPath, "utf8"));
+    t.after(() => rmSync(launch.cwd, { recursive: true, force: true }));
+    const record = JSON.parse(readFileSync(target, "utf8"));
+    assert.equal(
+      launch.args[launch.args.indexOf("--model") + 1],
+      "claude-opus-5-5",
+    );
+    assert.equal(launch.args[launch.args.indexOf("--effort") + 1], "xhigh");
+    assert.deepEqual(record.actor, {
+      model: "claude-opus-5-5",
+      effort: "xhigh",
+      source: "launch-selector",
+    });
+    assert.equal(record.exitCode, 0);
+    assert.equal(record.rawTranscriptRetained, false);
+    assert.equal(record.userSettingsWritten, false);
+  } finally {
+    if (inheritedPath === undefined) delete process.env.PATH;
+    else process.env.PATH = inheritedPath;
+    if (inheritedLive === undefined) delete process.env.DOTLN_LIVE_HARNESS;
+    else process.env.DOTLN_LIVE_HARNESS = inheritedLive;
+  }
+});
+
 test("WO-044 VER-001 absent effects and unrelated refusals are ambiguous, and operation evidence uses matched requests", async (t) => {
   const { base, out, env, root } = stubEnvironment(t);
   const stub = join(root, "noop");
@@ -1019,6 +1069,23 @@ test("WO-044 the probe drives every Claude and Codex launch through stub harness
     timing: { idleSampleMs: 50, settleMs: 50 },
   });
   assert.equal(codex.length, 8);
+  for (const [records, model, effort, launch] of [
+    [claude, "claude-opus-5-5", "xhigh", "allowed-tools"],
+    [codex, "gpt-6.1-sol", "max", "workspace-write"],
+  ]) {
+    const record = JSON.parse(
+      readFileSync(
+        records.find((file) => file.includes(`-${launch}.json`)),
+        "utf8",
+      ),
+    );
+    assert.equal(record.actor.model, model);
+    assert.equal(record.actor.effort, effort);
+    assert.deepEqual(launchSelectors(record.harness, record.argsShape), {
+      model,
+      effort,
+    });
+  }
   // WO-159 VER-001 F1: every Codex invocation, including each concurrent
   // session and the fresh recovery, ran in its own home, and each row keeps
   // one record per invocation naming the home that launch saw.

@@ -40,7 +40,12 @@ import {
   ENTROPY_REVIEW_TOOLS,
 } from "../packages/skeleton/dist/src/entropy-review-protocol.js";
 import { entropyReviewAuthorization } from "../packages/skeleton/dist/src/reactor.js";
-import { canonicalWorkerArgs } from "../packages/skeleton/dist/src/worker-transport.js";
+import {
+  canonicalWorkerArgs,
+  ClaudeCliPrintWorkOrderTransport,
+  CodexCliExecWorkOrderTransport,
+} from "../packages/skeleton/dist/src/worker-transport.js";
+import { FakeEntropyTransport } from "../packages/skeleton/dist/src/entropy-review-fake.js";
 
 const toolRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -96,6 +101,95 @@ export async function entropyFixtures() {
   const parent = mkdtempSync(join(tmpdir(), "dotln-entropy-fixtures-"));
   process.env.DOTLN_ENTROPY_FIXTURE = "1";
   try {
+    await test("WO-177 CLI defaults reach review/refutation arguments and receipt attestations through fake workers", async (t) => {
+      const launches = [];
+      for (const Transport of [
+        ClaudeCliPrintWorkOrderTransport,
+        CodexCliExecWorkOrderTransport,
+      ]) {
+        // Exercise CLI option/default selection and receipt filing, replacing
+        // only the model dispatch with the existing synthetic transport.
+        t.mock.method(Transport.prototype, "dispatch", function (request, now) {
+          launches.push({
+            transport: this.name,
+            kind: request.kind,
+            args: canonicalWorkerArgs(
+              this.name,
+              request,
+              join(request.capture, "schema.json"),
+              this.harnessVersion,
+            ),
+          });
+          const dispatched = new FakeEntropyTransport().dispatch(request, now);
+          return {
+            ...dispatched,
+            receipt: dispatched.receipt.then((receipt) => ({
+              ...receipt,
+              transport: this.name,
+            })),
+          };
+        });
+      }
+      for (const [transport, model, effort, identity] of [
+        ["codex-cli-exec", "gpt-6.1-sol", "max", "substitute reviewer"],
+        ["claude-cli-print", "claude-opus-5-5", "xhigh", "entropy-reducer@1"],
+      ]) {
+        const repo = fixtureRepository(parent);
+        const begun = await entropy(["review", "--transport", transport], repo);
+        assert.equal(begun.model, model);
+        assert.equal(begun.effort, effort);
+        const pending = currentDispatch(repo, "review");
+        await entropy(
+          [
+            "receipt",
+            join(pending.capture, "result.json"),
+            "--statement",
+            join(pending.capture, "statement.txt"),
+          ],
+          repo,
+        );
+        await entropy(["refute", "REVIEW-001", "--transport", transport], repo);
+        const refutation = currentDispatch(repo, "refutation");
+        assert.equal(refutation.requestedModel, model);
+        assert.equal(refutation.requestedEffort, effort);
+        await entropy(
+          ["refutation-receipt", join(refutation.capture, "result.json")],
+          repo,
+        );
+        for (const receiptId of ["REVIEW-001", "REFUTATION-001"]) {
+          const receipt = JSON.parse(
+            readFileSync(
+              join(repo, runsRoot(repo), `${receiptId}.json`),
+              "utf8",
+            ),
+          );
+          assert.equal(receipt.liveness, "fixture");
+          assert.equal(receipt.actorAttestation.model, model);
+          assert.equal(receipt.actorAttestation.effort, effort);
+          assert.equal(receipt.actorAttestation.identity, identity);
+          assert.equal(
+            receipt.actorAttestation.source,
+            "command-line-readback-and-invocation",
+          );
+          assert.equal(receipt.actorAttestation.effectiveModel, "unknown");
+          assert.equal(receipt.actorAttestation.effectiveEffort, "unknown");
+        }
+        const selected = launches.filter(
+          (launch) => launch.transport === transport,
+        );
+        assert.deepEqual(
+          selected.map((launch) => launch.kind),
+          ["entropy-review", "entropy-refutation"],
+        );
+        for (const { args } of selected) {
+          assert.equal(args[args.indexOf("--model") + 1], model);
+          if (transport === "claude-cli-print")
+            assert.equal(args[args.indexOf("--effort") + 1], effort);
+          else assert.ok(args.includes(`model_reasoning_effort="${effort}"`));
+        }
+      }
+    });
+
     await test("WO-160 subject skips pre-mechanism receipts and check retains their bytes", async () => {
       const repo = fixtureRepository(parent);
       for (const name of ["REVIEW-001", "REFUTATION-001"]) {

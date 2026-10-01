@@ -515,6 +515,15 @@ test("sandbox launch selectors change only the scratch configuration and carry n
   for (const harness of ["claude", "codex"])
     for (const mode of ["on", "off"]) {
       const launch = authorityLaunch(cell(10, harness, mode), f);
+      const model = harness === "claude" ? "claude-opus-5-5" : "gpt-6.1-sol";
+      const effort = harness === "claude" ? "xhigh" : "max";
+      assert.equal(launch.actor.model, model);
+      assert.equal(launch.actor.effort, effort);
+      assert.equal(launch.args[launch.args.indexOf("--model") + 1], model);
+      if (harness === "claude")
+        assert.equal(launch.args[launch.args.indexOf("--effort") + 1], effort);
+      else
+        assert.ok(launch.args.includes(`model_reasoning_effort="${effort}"`));
       assert.doesNotMatch(
         launch.args.join(" "),
         /dangerously|bypassPermissions|-a never/,
