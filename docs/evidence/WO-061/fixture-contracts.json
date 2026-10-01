@@ -1,0 +1,1840 @@
+{
+  "fixtureProvenance": "Synthetic bundles and supplied inference doubles; no model episode.",
+  "contracts": {
+    "core": {
+      "contractVersion": "story-contract-v1",
+      "contractId": "contract:b3fb23260743e771",
+      "bundleId": "synthetic-core",
+      "bundleHash": "fnv1a64:cc6e4a7b4d776d38",
+      "revisionId": "r1",
+      "statements": [
+        {
+          "statementId": "statement:948122939814bd1f",
+          "span": {
+            "sectionId": "s-intent",
+            "start": 0,
+            "end": 51
+          },
+          "text": "Preserve operator intent.\nRetain source provenance.",
+          "class": "requirement",
+          "origin": "inferred",
+          "rationale": "Synthetic fixture classification: requirement.",
+          "status": "active"
+        },
+        {
+          "statementId": "statement:182eee5b355f7a03",
+          "span": {
+            "sectionId": "s-visual",
+            "start": 0,
+            "end": 44
+          },
+          "text": "Match [image:layout] when drawing the panel.",
+          "class": "requirement",
+          "origin": "inferred",
+          "rationale": "Synthetic fixture classification: requirement.",
+          "status": "active"
+        },
+        {
+          "statementId": "statement:e999bf0f8bea503b",
+          "span": {
+            "sectionId": "s-visual",
+            "start": 45,
+            "end": 101
+          },
+          "text": "![Panel layout](https://github.com/synthetic/layout.png)",
+          "class": "visual annotation",
+          "origin": "rule",
+          "rule": "image",
+          "status": "active"
+        },
+        {
+          "statementId": "statement:30e7326eda6ef263",
+          "span": {
+            "sectionId": "s-old",
+            "start": 0,
+            "end": 23
+          },
+          "text": "~~Use the old layout.~~",
+          "class": "struck",
+          "origin": "rule",
+          "rule": "struck",
+          "status": "active"
+        },
+        {
+          "statementId": "statement:ba7038e12f258cc8",
+          "span": {
+            "sectionId": "s-old",
+            "start": 24,
+            "end": 68
+          },
+          "text": "Quoted earlier planning: use the old layout.",
+          "class": "example",
+          "origin": "inferred",
+          "rationale": "Synthetic fixture classification: example.",
+          "status": "active"
+        },
+        {
+          "statementId": "statement:e52c4b29846c5273",
+          "span": {
+            "sectionId": "s-excluded",
+            "start": 0,
+            "end": 24
+          },
+          "text": "Deploy to a shared host.",
+          "class": "non-requirement",
+          "origin": "rule",
+          "rule": "outOfScope",
+          "status": "active"
+        },
+        {
+          "statementId": "statement:fd4c043950653b55",
+          "span": {
+            "sectionId": "s-unknown",
+            "start": 0,
+            "end": 35
+          },
+          "text": "A choice still needs investigation.",
+          "class": "open decision",
+          "origin": "rule",
+          "status": "active"
+        },
+        {
+          "statementId": "statement:f63c9c82bd9c7128",
+          "span": {
+            "entryId": "e-question",
+            "start": 0,
+            "end": 28
+          },
+          "text": "Should the panel be compact?",
+          "class": "question",
+          "origin": "rule",
+          "rule": "question",
+          "status": "active"
+        },
+        {
+          "statementId": "statement:ef9b3c49f73c5a40",
+          "span": {
+            "entryId": "e-observation",
+            "start": 0,
+            "end": 20
+          },
+          "text": "The build completed.",
+          "class": "current-behavior observation",
+          "origin": "inferred",
+          "rationale": "Synthetic fixture classification: current-behavior observation.",
+          "status": "active"
+        }
+      ],
+      "criteria": [
+        {
+          "criterionId": "criterion:46cf0d86842cfd63",
+          "statementId": "statement:948122939814bd1f",
+          "span": {
+            "sectionId": "s-intent",
+            "start": 0,
+            "end": 51
+          },
+          "description": "Preserve operator intent. Retain source provenance.",
+          "claimType": "behavior",
+          "evidenceSource": "live",
+          "status": "active"
+        },
+        {
+          "criterionId": "criterion:1d2d8dbdfa309c9b",
+          "statementId": "statement:182eee5b355f7a03",
+          "span": {
+            "sectionId": "s-visual",
+            "start": 0,
+            "end": 44
+          },
+          "description": "Match [image:layout] when drawing the panel.",
+          "claimType": "visual",
+          "evidenceSource": "live",
+          "status": "active"
+        }
+      ],
+      "relations": [
+        {
+          "relationId": "relation:b02c8455c6012147",
+          "span": {
+            "entryId": "e-observation",
+            "start": 0,
+            "end": 20
+          },
+          "target": {
+            "entryId": "e-question",
+            "start": 0,
+            "end": 28
+          },
+          "relation": "follows",
+          "origin": "rule",
+          "evidence": [],
+          "status": "active"
+        }
+      ],
+      "openDecisions": [
+        {
+          "decisionId": "decision:3884de805a73e990",
+          "statementId": "statement:fd4c043950653b55",
+          "span": {
+            "sectionId": "s-unknown",
+            "start": 0,
+            "end": 35
+          },
+          "reason": "unclassified"
+        },
+        {
+          "decisionId": "decision:5038166f6d9c4350",
+          "statementId": "statement:f63c9c82bd9c7128",
+          "span": {
+            "entryId": "e-question",
+            "start": 0,
+            "end": 28
+          },
+          "reason": "unanswered"
+        }
+      ],
+      "sourceUnits": [
+        {
+          "span": {
+            "sectionId": "s-intent",
+            "start": 0,
+            "end": 51
+          },
+          "fingerprint": "unit:f82002241593967e"
+        },
+        {
+          "span": {
+            "sectionId": "s-visual",
+            "start": 0,
+            "end": 101
+          },
+          "fingerprint": "unit:6ebb345e73b49bd4"
+        },
+        {
+          "span": {
+            "sectionId": "s-old",
+            "start": 0,
+            "end": 68
+          },
+          "fingerprint": "unit:8ca78e38ee88f4c1"
+        },
+        {
+          "span": {
+            "sectionId": "s-excluded",
+            "start": 0,
+            "end": 24
+          },
+          "fingerprint": "unit:55a111301872e741"
+        },
+        {
+          "span": {
+            "sectionId": "s-unknown",
+            "start": 0,
+            "end": 35
+          },
+          "fingerprint": "unit:d9ea7f6aa3fc70c7"
+        },
+        {
+          "span": {
+            "entryId": "e-question",
+            "start": 0,
+            "end": 28
+          },
+          "fingerprint": "unit:58b98f42f690f43d"
+        },
+        {
+          "span": {
+            "entryId": "e-observation",
+            "start": 0,
+            "end": 20
+          },
+          "fingerprint": "unit:de97927d58e07849"
+        }
+      ],
+      "inferences": [
+        {
+          "span": {
+            "entryId": "e-observation",
+            "start": 0,
+            "end": 20
+          },
+          "class": "current-behavior observation",
+          "rationale": "Synthetic fixture classification: current-behavior observation."
+        },
+        {
+          "span": {
+            "sectionId": "s-old",
+            "start": 24,
+            "end": 68
+          },
+          "class": "example",
+          "rationale": "Synthetic fixture classification: example."
+        },
+        {
+          "span": {
+            "sectionId": "s-visual",
+            "start": 0,
+            "end": 44
+          },
+          "class": "requirement",
+          "rationale": "Synthetic fixture classification: requirement."
+        },
+        {
+          "span": {
+            "sectionId": "s-intent",
+            "start": 0,
+            "end": 51
+          },
+          "class": "requirement",
+          "rationale": "Synthetic fixture classification: requirement."
+        }
+      ]
+    },
+    "thread": {
+      "contractVersion": "story-contract-v1",
+      "contractId": "contract:89fcbd507436095c",
+      "bundleId": "synthetic-thread",
+      "bundleHash": "fnv1a64:c3fd75a695c0392e",
+      "revisionId": "r1",
+      "statements": [
+        {
+          "statementId": "statement:49594081003d3cf8",
+          "span": {
+            "sectionId": "s-earlier",
+            "start": 0,
+            "end": 24
+          },
+          "text": "Use the original layout.",
+          "class": "requirement",
+          "origin": "inferred",
+          "rationale": "Synthetic fixture classification: requirement.",
+          "status": "superseded"
+        },
+        {
+          "statementId": "statement:83944ebe0720aec0",
+          "span": {
+            "sectionId": "s-quote",
+            "start": 0,
+            "end": 44
+          },
+          "text": "> Earlier planning: use the original layout.",
+          "class": "example",
+          "origin": "inferred",
+          "rationale": "Synthetic fixture classification: example.",
+          "status": "active"
+        },
+        {
+          "statementId": "statement:1a846fc6220a36aa",
+          "span": {
+            "entryId": "e-q1",
+            "start": 0,
+            "end": 35
+          },
+          "text": "Should we keep the original layout?",
+          "class": "question",
+          "origin": "rule",
+          "rule": "question",
+          "status": "active"
+        },
+        {
+          "statementId": "statement:01fbc11ffa5bdc3e",
+          "span": {
+            "entryId": "e-q2",
+            "start": 0,
+            "end": 25
+          },
+          "text": "Is the layout accessible?",
+          "class": "question",
+          "origin": "rule",
+          "rule": "question",
+          "status": "active"
+        },
+        {
+          "statementId": "statement:14427736bff66821",
+          "span": {
+            "entryId": "e-a1",
+            "start": 0,
+            "end": 29
+          },
+          "text": "Use the wider layout instead.",
+          "class": "answer",
+          "origin": "inferred",
+          "rationale": "Synthetic fixture classification: answer.",
+          "status": "active"
+        },
+        {
+          "statementId": "statement:713d1c2e57db783c",
+          "span": {
+            "entryId": "e-decision",
+            "start": 0,
+            "end": 49
+          },
+          "text": "Replace the earlier layout with the wider layout.",
+          "class": "requirement",
+          "origin": "inferred",
+          "rationale": "Synthetic fixture classification: requirement.",
+          "status": "active"
+        },
+        {
+          "statementId": "statement:e3ecd64fc4c78015",
+          "span": {
+            "entryId": "e-unanswered",
+            "start": 0,
+            "end": 34
+          },
+          "text": "Which spacing value should we use?",
+          "class": "question",
+          "origin": "rule",
+          "rule": "question",
+          "status": "active"
+        }
+      ],
+      "criteria": [
+        {
+          "criterionId": "criterion:445fba5820cd9b45",
+          "statementId": "statement:49594081003d3cf8",
+          "span": {
+            "sectionId": "s-earlier",
+            "start": 0,
+            "end": 24
+          },
+          "description": "Use the original layout.",
+          "claimType": "behavior",
+          "evidenceSource": "live",
+          "status": "superseded"
+        },
+        {
+          "criterionId": "criterion:b97e5015dac91bd1",
+          "statementId": "statement:713d1c2e57db783c",
+          "span": {
+            "entryId": "e-decision",
+            "start": 0,
+            "end": 49
+          },
+          "description": "Replace the earlier layout with the wider layout.",
+          "claimType": "behavior",
+          "evidenceSource": "live",
+          "status": "active"
+        }
+      ],
+      "relations": [
+        {
+          "relationId": "relation:257f7550d1055b9d",
+          "span": {
+            "entryId": "e-q2",
+            "start": 0,
+            "end": 25
+          },
+          "target": {
+            "entryId": "e-q1",
+            "start": 0,
+            "end": 35
+          },
+          "relation": "follows",
+          "origin": "rule",
+          "evidence": [],
+          "status": "active"
+        },
+        {
+          "relationId": "relation:7abfa58ad64ef604",
+          "span": {
+            "entryId": "e-a1",
+            "start": 0,
+            "end": 29
+          },
+          "target": {
+            "entryId": "e-q2",
+            "start": 0,
+            "end": 25
+          },
+          "relation": "follows",
+          "origin": "rule",
+          "evidence": [],
+          "status": "active"
+        },
+        {
+          "relationId": "relation:e9a1da665b6b318c",
+          "span": {
+            "entryId": "e-a1",
+            "start": 0,
+            "end": 29
+          },
+          "relation": "answers",
+          "target": {
+            "entryId": "e-q1",
+            "start": 0,
+            "end": 35
+          },
+          "evidence": [
+            {
+              "entryId": "e-a1",
+              "start": 0,
+              "end": 29
+            }
+          ],
+          "rationale": "The supplied answer explicitly addresses the first question.",
+          "origin": "inferred",
+          "status": "active"
+        },
+        {
+          "relationId": "relation:29dda6bf62451b65",
+          "span": {
+            "entryId": "e-decision",
+            "start": 0,
+            "end": 49
+          },
+          "relation": "supersedes",
+          "target": {
+            "sectionId": "s-earlier",
+            "start": 0,
+            "end": 24
+          },
+          "evidence": [
+            {
+              "entryId": "e-decision",
+              "start": 0,
+              "end": 49
+            }
+          ],
+          "rationale": "The supplied decision explicitly retires the original layout.",
+          "origin": "inferred",
+          "status": "active"
+        }
+      ],
+      "openDecisions": [
+        {
+          "decisionId": "decision:a2a8d499a6e1912b",
+          "statementId": "statement:01fbc11ffa5bdc3e",
+          "span": {
+            "entryId": "e-q2",
+            "start": 0,
+            "end": 25
+          },
+          "reason": "unanswered"
+        },
+        {
+          "decisionId": "decision:addf426f045d9f87",
+          "statementId": "statement:e3ecd64fc4c78015",
+          "span": {
+            "entryId": "e-unanswered",
+            "start": 0,
+            "end": 34
+          },
+          "reason": "unanswered"
+        }
+      ],
+      "sourceUnits": [
+        {
+          "span": {
+            "sectionId": "s-earlier",
+            "start": 0,
+            "end": 24
+          },
+          "fingerprint": "unit:edb5febcc723965a"
+        },
+        {
+          "span": {
+            "sectionId": "s-quote",
+            "start": 0,
+            "end": 44
+          },
+          "fingerprint": "unit:e22aa8e1dd4b3535"
+        },
+        {
+          "span": {
+            "entryId": "e-q1",
+            "start": 0,
+            "end": 35
+          },
+          "fingerprint": "unit:e353904022b4928f"
+        },
+        {
+          "span": {
+            "entryId": "e-q2",
+            "start": 0,
+            "end": 25
+          },
+          "fingerprint": "unit:aaacce2b53bd2f98"
+        },
+        {
+          "span": {
+            "entryId": "e-a1",
+            "start": 0,
+            "end": 29
+          },
+          "fingerprint": "unit:851813f15fa5c172"
+        },
+        {
+          "span": {
+            "entryId": "e-decision",
+            "start": 0,
+            "end": 49
+          },
+          "fingerprint": "unit:e35eebbd76e3ef5b"
+        },
+        {
+          "span": {
+            "entryId": "e-unanswered",
+            "start": 0,
+            "end": 34
+          },
+          "fingerprint": "unit:fbde351f6e01e331"
+        }
+      ],
+      "inferences": [
+        {
+          "span": {
+            "entryId": "e-a1",
+            "start": 0,
+            "end": 29
+          },
+          "class": "answer",
+          "rationale": "Synthetic fixture classification: answer."
+        },
+        {
+          "span": {
+            "sectionId": "s-quote",
+            "start": 0,
+            "end": 44
+          },
+          "class": "example",
+          "rationale": "Synthetic fixture classification: example."
+        },
+        {
+          "span": {
+            "sectionId": "s-earlier",
+            "start": 0,
+            "end": 24
+          },
+          "class": "requirement",
+          "rationale": "Synthetic fixture classification: requirement."
+        },
+        {
+          "span": {
+            "entryId": "e-decision",
+            "start": 0,
+            "end": 49
+          },
+          "class": "requirement",
+          "rationale": "Synthetic fixture classification: requirement."
+        },
+        {
+          "span": {
+            "entryId": "e-a1",
+            "start": 0,
+            "end": 29
+          },
+          "relation": "answers",
+          "target": {
+            "entryId": "e-q1",
+            "start": 0,
+            "end": 35
+          },
+          "evidence": [
+            {
+              "entryId": "e-a1",
+              "start": 0,
+              "end": 29
+            }
+          ],
+          "rationale": "The supplied answer explicitly addresses the first question."
+        },
+        {
+          "span": {
+            "entryId": "e-decision",
+            "start": 0,
+            "end": 49
+          },
+          "relation": "supersedes",
+          "target": {
+            "sectionId": "s-earlier",
+            "start": 0,
+            "end": 24
+          },
+          "evidence": [
+            {
+              "entryId": "e-decision",
+              "start": 0,
+              "end": 49
+            }
+          ],
+          "rationale": "The supplied decision explicitly retires the original layout."
+        }
+      ]
+    },
+    "taxonomy": {
+      "contractVersion": "story-contract-v1",
+      "contractId": "contract:843ef699d849f520",
+      "bundleId": "synthetic-taxonomy",
+      "bundleHash": "fnv1a64:fe5ea54fc28920ae",
+      "revisionId": "r1",
+      "statements": [
+        {
+          "statementId": "statement:fbfb6b07332ed6f6",
+          "span": {
+            "sectionId": "s-0",
+            "start": 0,
+            "end": 50
+          },
+          "text": "Synthetic requirement statement with Größe 🙂.",
+          "class": "requirement",
+          "origin": "inferred",
+          "rationale": "Synthetic fixture classification: requirement.",
+          "status": "active"
+        },
+        {
+          "statementId": "statement:6efb6804dedb813f",
+          "span": {
+            "sectionId": "s-1",
+            "start": 0,
+            "end": 46
+          },
+          "text": "Synthetic example statement with Größe 🙂.",
+          "class": "example",
+          "origin": "inferred",
+          "rationale": "Synthetic fixture classification: example.",
+          "status": "active"
+        },
+        {
+          "statementId": "statement:44382ca2241d5af2",
+          "span": {
+            "sectionId": "s-2",
+            "start": 0,
+            "end": 45
+          },
+          "text": "Synthetic answer statement with Größe 🙂.",
+          "class": "answer",
+          "origin": "inferred",
+          "rationale": "Synthetic fixture classification: answer.",
+          "status": "active"
+        },
+        {
+          "statementId": "statement:5e90a6d7157269eb",
+          "span": {
+            "sectionId": "s-3",
+            "start": 0,
+            "end": 67
+          },
+          "text": "Synthetic current-behavior observation statement with Größe 🙂.",
+          "class": "current-behavior observation",
+          "origin": "inferred",
+          "rationale": "Synthetic fixture classification: current-behavior observation.",
+          "status": "active"
+        },
+        {
+          "statementId": "statement:973fbed5c1f17fd4",
+          "span": {
+            "sectionId": "s-4",
+            "start": 0,
+            "end": 48
+          },
+          "text": "Synthetic inference statement with Größe 🙂.",
+          "class": "inference",
+          "origin": "inferred",
+          "rationale": "Synthetic fixture classification: inference.",
+          "status": "active"
+        },
+        {
+          "statementId": "statement:8113fa07f066d3be",
+          "span": {
+            "sectionId": "s-5",
+            "start": 0,
+            "end": 49
+          },
+          "text": "Synthetic assumption statement with Größe 🙂.",
+          "class": "assumption",
+          "origin": "inferred",
+          "rationale": "Synthetic fixture classification: assumption.",
+          "status": "active"
+        },
+        {
+          "statementId": "statement:3d86c4bbb98ad465",
+          "span": {
+            "sectionId": "s-6",
+            "start": 0,
+            "end": 52
+          },
+          "text": "Synthetic contradiction statement with Größe 🙂.",
+          "class": "contradiction",
+          "origin": "inferred",
+          "rationale": "Synthetic fixture classification: contradiction.",
+          "status": "active"
+        },
+        {
+          "statementId": "statement:f17ab6f4fbb287ec",
+          "span": {
+            "sectionId": "s-7",
+            "start": 0,
+            "end": 52
+          },
+          "text": "Synthetic open decision statement with Größe 🙂.",
+          "class": "open decision",
+          "origin": "inferred",
+          "rationale": "Synthetic fixture classification: open decision.",
+          "status": "active"
+        }
+      ],
+      "criteria": [
+        {
+          "criterionId": "criterion:48340a2f2765a1b2",
+          "statementId": "statement:fbfb6b07332ed6f6",
+          "span": {
+            "sectionId": "s-0",
+            "start": 0,
+            "end": 50
+          },
+          "description": "Synthetic requirement statement with Größe 🙂.",
+          "claimType": "behavior",
+          "evidenceSource": "live",
+          "status": "active"
+        }
+      ],
+      "relations": [],
+      "openDecisions": [
+        {
+          "decisionId": "decision:755189f9afd2b7b6",
+          "statementId": "statement:f17ab6f4fbb287ec",
+          "span": {
+            "sectionId": "s-7",
+            "start": 0,
+            "end": 52
+          },
+          "reason": "unclassified"
+        }
+      ],
+      "sourceUnits": [
+        {
+          "span": {
+            "sectionId": "s-0",
+            "start": 0,
+            "end": 50
+          },
+          "fingerprint": "unit:ded9ccba7696c0a0"
+        },
+        {
+          "span": {
+            "sectionId": "s-1",
+            "start": 0,
+            "end": 46
+          },
+          "fingerprint": "unit:39afd159f00f57a6"
+        },
+        {
+          "span": {
+            "sectionId": "s-2",
+            "start": 0,
+            "end": 45
+          },
+          "fingerprint": "unit:c2734d8d9687069d"
+        },
+        {
+          "span": {
+            "sectionId": "s-3",
+            "start": 0,
+            "end": 67
+          },
+          "fingerprint": "unit:ca036789230403fd"
+        },
+        {
+          "span": {
+            "sectionId": "s-4",
+            "start": 0,
+            "end": 48
+          },
+          "fingerprint": "unit:a2090828eb0b7203"
+        },
+        {
+          "span": {
+            "sectionId": "s-5",
+            "start": 0,
+            "end": 49
+          },
+          "fingerprint": "unit:a1e7271d8d480fc2"
+        },
+        {
+          "span": {
+            "sectionId": "s-6",
+            "start": 0,
+            "end": 52
+          },
+          "fingerprint": "unit:5747888f8a893110"
+        },
+        {
+          "span": {
+            "sectionId": "s-7",
+            "start": 0,
+            "end": 52
+          },
+          "fingerprint": "unit:3568df4dfb5ef149"
+        }
+      ],
+      "inferences": [
+        {
+          "span": {
+            "sectionId": "s-2",
+            "start": 0,
+            "end": 45
+          },
+          "class": "answer",
+          "rationale": "Synthetic fixture classification: answer."
+        },
+        {
+          "span": {
+            "sectionId": "s-5",
+            "start": 0,
+            "end": 49
+          },
+          "class": "assumption",
+          "rationale": "Synthetic fixture classification: assumption."
+        },
+        {
+          "span": {
+            "sectionId": "s-6",
+            "start": 0,
+            "end": 52
+          },
+          "class": "contradiction",
+          "rationale": "Synthetic fixture classification: contradiction."
+        },
+        {
+          "span": {
+            "sectionId": "s-3",
+            "start": 0,
+            "end": 67
+          },
+          "class": "current-behavior observation",
+          "rationale": "Synthetic fixture classification: current-behavior observation."
+        },
+        {
+          "span": {
+            "sectionId": "s-1",
+            "start": 0,
+            "end": 46
+          },
+          "class": "example",
+          "rationale": "Synthetic fixture classification: example."
+        },
+        {
+          "span": {
+            "sectionId": "s-4",
+            "start": 0,
+            "end": 48
+          },
+          "class": "inference",
+          "rationale": "Synthetic fixture classification: inference."
+        },
+        {
+          "span": {
+            "sectionId": "s-7",
+            "start": 0,
+            "end": 52
+          },
+          "class": "open decision",
+          "rationale": "Synthetic fixture classification: open decision."
+        },
+        {
+          "span": {
+            "sectionId": "s-0",
+            "start": 0,
+            "end": 50
+          },
+          "class": "requirement",
+          "rationale": "Synthetic fixture classification: requirement."
+        }
+      ]
+    }
+  },
+  "revision": {
+    "before": {
+      "contractVersion": "story-contract-v1",
+      "contractId": "contract:5ad78d8b6d02c204",
+      "bundleId": "synthetic-revision",
+      "bundleHash": "fnv1a64:221d3eb86bec34ba",
+      "revisionId": "r1",
+      "statements": [
+        {
+          "statementId": "statement:635c14c60a55fb8f",
+          "span": {
+            "sectionId": "s-change",
+            "start": 0,
+            "end": 10
+          },
+          "text": "Keep data.",
+          "class": "requirement",
+          "origin": "inferred",
+          "rationale": "Synthetic fixture classification: requirement.",
+          "status": "active"
+        },
+        {
+          "statementId": "statement:e0454dafa881407d",
+          "span": {
+            "sectionId": "s-change",
+            "start": 11,
+            "end": 25
+          },
+          "text": "Preserve logs.",
+          "class": "requirement",
+          "origin": "inferred",
+          "rationale": "Synthetic fixture classification: requirement.",
+          "status": "active"
+        },
+        {
+          "statementId": "statement:f5e377c600626561",
+          "span": {
+            "sectionId": "s-keep",
+            "start": 0,
+            "end": 18
+          },
+          "text": "Retain the window.",
+          "class": "requirement",
+          "origin": "inferred",
+          "rationale": "Synthetic fixture classification: requirement.",
+          "status": "active"
+        },
+        {
+          "statementId": "statement:4092da84abe682b1",
+          "span": {
+            "entryId": "e-q",
+            "start": 0,
+            "end": 28
+          },
+          "text": "Should we retain the window?",
+          "class": "question",
+          "origin": "rule",
+          "rule": "question",
+          "status": "active"
+        },
+        {
+          "statementId": "statement:5f37b53880182e7a",
+          "span": {
+            "entryId": "e-a",
+            "start": 0,
+            "end": 23
+          },
+          "text": "Yes, retain the window.",
+          "class": "answer",
+          "origin": "inferred",
+          "rationale": "Synthetic fixture classification: answer.",
+          "status": "active"
+        }
+      ],
+      "criteria": [
+        {
+          "criterionId": "criterion:524c055bdc9261c6",
+          "statementId": "statement:635c14c60a55fb8f",
+          "span": {
+            "sectionId": "s-change",
+            "start": 0,
+            "end": 10
+          },
+          "description": "Keep data.",
+          "claimType": "behavior",
+          "evidenceSource": "live",
+          "status": "active"
+        },
+        {
+          "criterionId": "criterion:1eda5bd8c703832a",
+          "statementId": "statement:e0454dafa881407d",
+          "span": {
+            "sectionId": "s-change",
+            "start": 11,
+            "end": 25
+          },
+          "description": "Preserve logs.",
+          "claimType": "behavior",
+          "evidenceSource": "live",
+          "status": "active"
+        },
+        {
+          "criterionId": "criterion:07e581f51d95c988",
+          "statementId": "statement:f5e377c600626561",
+          "span": {
+            "sectionId": "s-keep",
+            "start": 0,
+            "end": 18
+          },
+          "description": "Retain the window.",
+          "claimType": "behavior",
+          "evidenceSource": "live",
+          "status": "active"
+        }
+      ],
+      "relations": [
+        {
+          "relationId": "relation:3fc92e26ea0a3cb0",
+          "span": {
+            "entryId": "e-a",
+            "start": 0,
+            "end": 23
+          },
+          "target": {
+            "entryId": "e-q",
+            "start": 0,
+            "end": 28
+          },
+          "relation": "follows",
+          "origin": "rule",
+          "evidence": [],
+          "status": "active"
+        },
+        {
+          "relationId": "relation:e9fbc16c2a54c42a",
+          "span": {
+            "entryId": "e-a",
+            "start": 0,
+            "end": 23
+          },
+          "relation": "answers",
+          "target": {
+            "entryId": "e-q",
+            "start": 0,
+            "end": 28
+          },
+          "evidence": [
+            {
+              "sectionId": "s-keep",
+              "start": 0,
+              "end": 18
+            }
+          ],
+          "rationale": "The unchanged requirement supplies evidence for the answer.",
+          "origin": "inferred",
+          "status": "active"
+        }
+      ],
+      "openDecisions": [],
+      "sourceUnits": [
+        {
+          "span": {
+            "sectionId": "s-change",
+            "start": 0,
+            "end": 25
+          },
+          "fingerprint": "unit:d94e9c166a56e0ed"
+        },
+        {
+          "span": {
+            "sectionId": "s-keep",
+            "start": 0,
+            "end": 18
+          },
+          "fingerprint": "unit:e4d4b19f1d37d110"
+        },
+        {
+          "span": {
+            "entryId": "e-q",
+            "start": 0,
+            "end": 28
+          },
+          "fingerprint": "unit:71199f2a63392a60"
+        },
+        {
+          "span": {
+            "entryId": "e-a",
+            "start": 0,
+            "end": 23
+          },
+          "fingerprint": "unit:085a0e097ba20e65"
+        }
+      ],
+      "inferences": [
+        {
+          "span": {
+            "entryId": "e-a",
+            "start": 0,
+            "end": 23
+          },
+          "class": "answer",
+          "rationale": "Synthetic fixture classification: answer."
+        },
+        {
+          "span": {
+            "sectionId": "s-change",
+            "start": 0,
+            "end": 10
+          },
+          "class": "requirement",
+          "rationale": "Synthetic fixture classification: requirement."
+        },
+        {
+          "span": {
+            "sectionId": "s-keep",
+            "start": 0,
+            "end": 18
+          },
+          "class": "requirement",
+          "rationale": "Synthetic fixture classification: requirement."
+        },
+        {
+          "span": {
+            "sectionId": "s-change",
+            "start": 11,
+            "end": 25
+          },
+          "class": "requirement",
+          "rationale": "Synthetic fixture classification: requirement."
+        },
+        {
+          "span": {
+            "entryId": "e-a",
+            "start": 0,
+            "end": 23
+          },
+          "relation": "answers",
+          "target": {
+            "entryId": "e-q",
+            "start": 0,
+            "end": 28
+          },
+          "evidence": [
+            {
+              "sectionId": "s-keep",
+              "start": 0,
+              "end": 18
+            }
+          ],
+          "rationale": "The unchanged requirement supplies evidence for the answer."
+        }
+      ]
+    },
+    "changedSection": {
+      "contract": {
+        "contractVersion": "story-contract-v1",
+        "contractId": "contract:a9255ec098584bfd",
+        "bundleId": "synthetic-revision",
+        "bundleHash": "fnv1a64:807d17009ef818a5",
+        "revisionId": "r2",
+        "statements": [
+          {
+            "statementId": "statement:7951e15d1222a9ef",
+            "span": {
+              "sectionId": "s-change",
+              "start": 0,
+              "end": 32
+            },
+            "text": "Keep data safely.\nPreserve logs.",
+            "class": "open decision",
+            "origin": "rule",
+            "status": "active"
+          },
+          {
+            "statementId": "statement:f5e377c600626561",
+            "span": {
+              "sectionId": "s-keep",
+              "start": 0,
+              "end": 18
+            },
+            "text": "Retain the window.",
+            "class": "requirement",
+            "origin": "inferred",
+            "rationale": "Synthetic fixture classification: requirement.",
+            "status": "active"
+          },
+          {
+            "statementId": "statement:4092da84abe682b1",
+            "span": {
+              "entryId": "e-q",
+              "start": 0,
+              "end": 28
+            },
+            "text": "Should we retain the window?",
+            "class": "question",
+            "origin": "rule",
+            "rule": "question",
+            "status": "active"
+          },
+          {
+            "statementId": "statement:5f37b53880182e7a",
+            "span": {
+              "entryId": "e-a",
+              "start": 0,
+              "end": 23
+            },
+            "text": "Yes, retain the window.",
+            "class": "answer",
+            "origin": "inferred",
+            "rationale": "Synthetic fixture classification: answer.",
+            "status": "active"
+          }
+        ],
+        "criteria": [
+          {
+            "criterionId": "criterion:07e581f51d95c988",
+            "statementId": "statement:f5e377c600626561",
+            "span": {
+              "sectionId": "s-keep",
+              "start": 0,
+              "end": 18
+            },
+            "description": "Retain the window.",
+            "claimType": "behavior",
+            "evidenceSource": "live",
+            "status": "active"
+          }
+        ],
+        "relations": [
+          {
+            "relationId": "relation:3fc92e26ea0a3cb0",
+            "span": {
+              "entryId": "e-a",
+              "start": 0,
+              "end": 23
+            },
+            "target": {
+              "entryId": "e-q",
+              "start": 0,
+              "end": 28
+            },
+            "relation": "follows",
+            "origin": "rule",
+            "evidence": [],
+            "status": "active"
+          },
+          {
+            "relationId": "relation:e9fbc16c2a54c42a",
+            "span": {
+              "entryId": "e-a",
+              "start": 0,
+              "end": 23
+            },
+            "relation": "answers",
+            "target": {
+              "entryId": "e-q",
+              "start": 0,
+              "end": 28
+            },
+            "evidence": [
+              {
+                "sectionId": "s-keep",
+                "start": 0,
+                "end": 18
+              }
+            ],
+            "rationale": "The unchanged requirement supplies evidence for the answer.",
+            "origin": "inferred",
+            "status": "active"
+          }
+        ],
+        "openDecisions": [
+          {
+            "decisionId": "decision:582262f07abe5823",
+            "statementId": "statement:7951e15d1222a9ef",
+            "span": {
+              "sectionId": "s-change",
+              "start": 0,
+              "end": 32
+            },
+            "reason": "unclassified"
+          }
+        ],
+        "sourceUnits": [
+          {
+            "span": {
+              "sectionId": "s-change",
+              "start": 0,
+              "end": 32
+            },
+            "fingerprint": "unit:61b7e2b104301c27"
+          },
+          {
+            "span": {
+              "sectionId": "s-keep",
+              "start": 0,
+              "end": 18
+            },
+            "fingerprint": "unit:e4d4b19f1d37d110"
+          },
+          {
+            "span": {
+              "entryId": "e-q",
+              "start": 0,
+              "end": 28
+            },
+            "fingerprint": "unit:71199f2a63392a60"
+          },
+          {
+            "span": {
+              "entryId": "e-a",
+              "start": 0,
+              "end": 23
+            },
+            "fingerprint": "unit:085a0e097ba20e65"
+          }
+        ],
+        "inferences": [
+          {
+            "span": {
+              "entryId": "e-a",
+              "start": 0,
+              "end": 23
+            },
+            "class": "answer",
+            "rationale": "Synthetic fixture classification: answer."
+          },
+          {
+            "span": {
+              "sectionId": "s-keep",
+              "start": 0,
+              "end": 18
+            },
+            "class": "requirement",
+            "rationale": "Synthetic fixture classification: requirement."
+          },
+          {
+            "span": {
+              "entryId": "e-a",
+              "start": 0,
+              "end": 23
+            },
+            "relation": "answers",
+            "target": {
+              "entryId": "e-q",
+              "start": 0,
+              "end": 28
+            },
+            "evidence": [
+              {
+                "sectionId": "s-keep",
+                "start": 0,
+                "end": 18
+              }
+            ],
+            "rationale": "The unchanged requirement supplies evidence for the answer."
+          }
+        ]
+      },
+      "invalidated": {
+        "statements": [
+          "statement:635c14c60a55fb8f",
+          "statement:e0454dafa881407d"
+        ],
+        "criteria": [
+          "criterion:524c055bdc9261c6",
+          "criterion:1eda5bd8c703832a"
+        ],
+        "relations": [],
+        "openDecisions": []
+      },
+      "diff": {
+        "statements": {
+          "removed": [
+            "statement:635c14c60a55fb8f",
+            "statement:e0454dafa881407d"
+          ],
+          "added": [
+            "statement:7951e15d1222a9ef"
+          ],
+          "changed": []
+        },
+        "criteria": {
+          "removed": [
+            "criterion:524c055bdc9261c6",
+            "criterion:1eda5bd8c703832a"
+          ],
+          "added": [],
+          "changed": []
+        },
+        "relations": {
+          "removed": [],
+          "added": [],
+          "changed": []
+        },
+        "openDecisions": {
+          "removed": [],
+          "added": [
+            "decision:582262f07abe5823"
+          ],
+          "changed": []
+        }
+      }
+    },
+    "explicitSupersession": {
+      "contract": {
+        "contractVersion": "story-contract-v1",
+        "contractId": "contract:5b54f36f52cc5e8f",
+        "bundleId": "synthetic-revision",
+        "bundleHash": "fnv1a64:c0a455d83063808a",
+        "revisionId": "r2",
+        "statements": [
+          {
+            "statementId": "statement:635c14c60a55fb8f",
+            "span": {
+              "sectionId": "s-change",
+              "start": 0,
+              "end": 10
+            },
+            "text": "Keep data.",
+            "class": "requirement",
+            "origin": "inferred",
+            "rationale": "Synthetic fixture classification: requirement.",
+            "status": "active"
+          },
+          {
+            "statementId": "statement:e0454dafa881407d",
+            "span": {
+              "sectionId": "s-change",
+              "start": 11,
+              "end": 25
+            },
+            "text": "Preserve logs.",
+            "class": "requirement",
+            "origin": "inferred",
+            "rationale": "Synthetic fixture classification: requirement.",
+            "status": "active"
+          },
+          {
+            "statementId": "statement:f5e377c600626561",
+            "span": {
+              "sectionId": "s-keep",
+              "start": 0,
+              "end": 18
+            },
+            "text": "Retain the window.",
+            "class": "requirement",
+            "origin": "inferred",
+            "rationale": "Synthetic fixture classification: requirement.",
+            "status": "superseded"
+          },
+          {
+            "statementId": "statement:4092da84abe682b1",
+            "span": {
+              "entryId": "e-q",
+              "start": 0,
+              "end": 28
+            },
+            "text": "Should we retain the window?",
+            "class": "question",
+            "origin": "rule",
+            "rule": "question",
+            "status": "active"
+          },
+          {
+            "statementId": "statement:5f37b53880182e7a",
+            "span": {
+              "entryId": "e-a",
+              "start": 0,
+              "end": 23
+            },
+            "text": "Yes, retain the window.",
+            "class": "answer",
+            "origin": "inferred",
+            "rationale": "Synthetic fixture classification: answer.",
+            "status": "active"
+          },
+          {
+            "statementId": "statement:c28f349ada8444fa",
+            "span": {
+              "entryId": "e-decision",
+              "start": 0,
+              "end": 40
+            },
+            "text": "Decision: retire the window requirement.",
+            "class": "open decision",
+            "origin": "rule",
+            "status": "active"
+          }
+        ],
+        "criteria": [
+          {
+            "criterionId": "criterion:524c055bdc9261c6",
+            "statementId": "statement:635c14c60a55fb8f",
+            "span": {
+              "sectionId": "s-change",
+              "start": 0,
+              "end": 10
+            },
+            "description": "Keep data.",
+            "claimType": "behavior",
+            "evidenceSource": "live",
+            "status": "active"
+          },
+          {
+            "criterionId": "criterion:1eda5bd8c703832a",
+            "statementId": "statement:e0454dafa881407d",
+            "span": {
+              "sectionId": "s-change",
+              "start": 11,
+              "end": 25
+            },
+            "description": "Preserve logs.",
+            "claimType": "behavior",
+            "evidenceSource": "live",
+            "status": "active"
+          },
+          {
+            "criterionId": "criterion:07e581f51d95c988",
+            "statementId": "statement:f5e377c600626561",
+            "span": {
+              "sectionId": "s-keep",
+              "start": 0,
+              "end": 18
+            },
+            "description": "Retain the window.",
+            "claimType": "behavior",
+            "evidenceSource": "live",
+            "status": "superseded"
+          }
+        ],
+        "relations": [
+          {
+            "relationId": "relation:3fc92e26ea0a3cb0",
+            "span": {
+              "entryId": "e-a",
+              "start": 0,
+              "end": 23
+            },
+            "target": {
+              "entryId": "e-q",
+              "start": 0,
+              "end": 28
+            },
+            "relation": "follows",
+            "origin": "rule",
+            "evidence": [],
+            "status": "active"
+          },
+          {
+            "relationId": "relation:e9fbc16c2a54c42a",
+            "span": {
+              "entryId": "e-a",
+              "start": 0,
+              "end": 23
+            },
+            "relation": "answers",
+            "target": {
+              "entryId": "e-q",
+              "start": 0,
+              "end": 28
+            },
+            "evidence": [
+              {
+                "sectionId": "s-keep",
+                "start": 0,
+                "end": 18
+              }
+            ],
+            "rationale": "The unchanged requirement supplies evidence for the answer.",
+            "origin": "inferred",
+            "status": "invalidated"
+          },
+          {
+            "relationId": "relation:5f325c3fb95c0093",
+            "span": {
+              "entryId": "e-decision",
+              "start": 0,
+              "end": 40
+            },
+            "relation": "supersedes",
+            "target": {
+              "sectionId": "s-keep",
+              "start": 0,
+              "end": 18
+            },
+            "evidence": [
+              {
+                "entryId": "e-decision",
+                "start": 0,
+                "end": 40
+              }
+            ],
+            "rationale": "The fixture explicitly retires this earlier requirement.",
+            "origin": "inferred",
+            "status": "active"
+          }
+        ],
+        "openDecisions": [
+          {
+            "decisionId": "decision:42095da9356c67c3",
+            "statementId": "statement:4092da84abe682b1",
+            "span": {
+              "entryId": "e-q",
+              "start": 0,
+              "end": 28
+            },
+            "reason": "unanswered"
+          },
+          {
+            "decisionId": "decision:3d02c1ddf0dfcab4",
+            "statementId": "statement:c28f349ada8444fa",
+            "span": {
+              "entryId": "e-decision",
+              "start": 0,
+              "end": 40
+            },
+            "reason": "unclassified"
+          }
+        ],
+        "sourceUnits": [
+          {
+            "span": {
+              "sectionId": "s-change",
+              "start": 0,
+              "end": 25
+            },
+            "fingerprint": "unit:d94e9c166a56e0ed"
+          },
+          {
+            "span": {
+              "sectionId": "s-keep",
+              "start": 0,
+              "end": 18
+            },
+            "fingerprint": "unit:e4d4b19f1d37d110"
+          },
+          {
+            "span": {
+              "entryId": "e-q",
+              "start": 0,
+              "end": 28
+            },
+            "fingerprint": "unit:71199f2a63392a60"
+          },
+          {
+            "span": {
+              "entryId": "e-a",
+              "start": 0,
+              "end": 23
+            },
+            "fingerprint": "unit:085a0e097ba20e65"
+          },
+          {
+            "span": {
+              "entryId": "e-decision",
+              "start": 0,
+              "end": 40
+            },
+            "fingerprint": "unit:140bea2b2d6a908a"
+          }
+        ],
+        "inferences": [
+          {
+            "span": {
+              "entryId": "e-a",
+              "start": 0,
+              "end": 23
+            },
+            "class": "answer",
+            "rationale": "Synthetic fixture classification: answer."
+          },
+          {
+            "span": {
+              "sectionId": "s-change",
+              "start": 0,
+              "end": 10
+            },
+            "class": "requirement",
+            "rationale": "Synthetic fixture classification: requirement."
+          },
+          {
+            "span": {
+              "sectionId": "s-keep",
+              "start": 0,
+              "end": 18
+            },
+            "class": "requirement",
+            "rationale": "Synthetic fixture classification: requirement."
+          },
+          {
+            "span": {
+              "sectionId": "s-change",
+              "start": 11,
+              "end": 25
+            },
+            "class": "requirement",
+            "rationale": "Synthetic fixture classification: requirement."
+          },
+          {
+            "span": {
+              "entryId": "e-a",
+              "start": 0,
+              "end": 23
+            },
+            "relation": "answers",
+            "target": {
+              "entryId": "e-q",
+              "start": 0,
+              "end": 28
+            },
+            "evidence": [
+              {
+                "sectionId": "s-keep",
+                "start": 0,
+                "end": 18
+              }
+            ],
+            "rationale": "The unchanged requirement supplies evidence for the answer."
+          },
+          {
+            "span": {
+              "entryId": "e-decision",
+              "start": 0,
+              "end": 40
+            },
+            "relation": "supersedes",
+            "target": {
+              "sectionId": "s-keep",
+              "start": 0,
+              "end": 18
+            },
+            "evidence": [
+              {
+                "entryId": "e-decision",
+                "start": 0,
+                "end": 40
+              }
+            ],
+            "rationale": "The fixture explicitly retires this earlier requirement."
+          }
+        ]
+      },
+      "invalidated": {
+        "statements": [
+          "statement:f5e377c600626561"
+        ],
+        "criteria": [
+          "criterion:07e581f51d95c988"
+        ],
+        "relations": [
+          "relation:e9fbc16c2a54c42a"
+        ],
+        "openDecisions": []
+      },
+      "diff": {
+        "statements": {
+          "removed": [],
+          "added": [
+            "statement:c28f349ada8444fa"
+          ],
+          "changed": [
+            "statement:f5e377c600626561"
+          ]
+        },
+        "criteria": {
+          "removed": [],
+          "added": [],
+          "changed": [
+            "criterion:07e581f51d95c988"
+          ]
+        },
+        "relations": {
+          "removed": [],
+          "added": [
+            "relation:5f325c3fb95c0093"
+          ],
+          "changed": [
+            "relation:e9fbc16c2a54c42a"
+          ]
+        },
+        "openDecisions": {
+          "removed": [],
+          "added": [
+            "decision:42095da9356c67c3",
+            "decision:3d02c1ddf0dfcab4"
+          ],
+          "changed": []
+        }
+      }
+    }
+  }
+}
