@@ -1,4 +1,4 @@
-# WO-180 — Baseline witness before any change: a blinded episode on the sealed base snapshot reproduces the defect or walks the adjacent behavior a story names, records typed baseline evidence the verifier later compares against the candidate, and records honest non-reproduction as an environment limitation, never a pass (version assigned at activation)
+# WO-180 — Baseline witness before any change: a blinded episode on the sealed base snapshot reproduces the defect or walks the adjacent behavior a story names, records typed baseline evidence the verifier later compares against the candidate, and records honest non-reproduction as an environment limitation, never a pass (v0.60.0)
 
 **Model:** any capable model; the live rows run the actual local harnesses
 as the episode's actor. State the model and effort actually run

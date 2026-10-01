@@ -11945,6 +11945,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-30T07:52:00.439Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Kept open by WO-180's final review with a second occurrence of its seam: WO-180 edited packages/skeleton/src/reactor.ts (the baseline result branch, the BaselineWitnessed fold and the opening check) and paid two live feedback audits (feedback 002 and 003, decisions D007 and D009). The completion advisory listed the row, and the executor neither took the three items nor recorded them as left. A reviewer does not edit a judged source, so planning still decides whether the next order that re-mints the feedback edition takes them or the row is declined. [WO-180 final review (docs/final-reviews/WO-180/FINAL-001.md)]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-10-01T11:58:59.900Z"
         }
       ]
     },
@@ -22639,6 +22647,20 @@
           "title": "WO-173-D018: Planner: close the untracked-source gap in npm test reuse. scripts/test-runner.mjs runGateChecks and scripts/lib/handoff-ledger.mjs requireGateClaims reuse or accept a passing npm test ro",
           "summary": "{ \"id\": \"WO-173-D018\", \"date\": \"2026-09-28\", \"dispatch\": \"resume: final review\", \"decision\": \"Pass FINAL-001 and board one defect this review met. The npm test reuse lookup (scripts/test-runner.mjs runGateChecks through scripts/lib/gate-reuse.mjs coveringGateCheck) and the executor completion's npm test claim check (scripts/lib/handoff-ledger.mjs requireGateClaims) key on gateCodeIdentity, which hashes the working-tree bytes of tracked paths only. An order's new source files stay untracked until the final review stages them, so an edit to one after a passing row moves neither the identity nor the gate: npm test prints the old row and exits 0, and a met npm test claim stands on it. Before thi",
           "missing": false
+        },
+        {
+          "hash": "b7298ec0bd10770c8eb376999c58963dd0b66e325da9af2311bcc30798da45b7",
+          "ref": "docs/evidence/WO-173/decisions.md#wo-173-d018--final-review-passes-and-boards-a-reused-row-that-never-ran-an-untracked-files-bytes",
+          "title": "WO-173-D018: Planner: close the untracked-source gap in npm test reuse. scripts/test-runner.mjs runGateChecks and scripts/lib/handoff-ledger.mjs requireGateClaims reuse or accept a passing npm test ro",
+          "summary": "{ \"id\": \"WO-173-D018\", \"date\": \"2026-09-28\", \"dispatch\": \"resume: final review\", \"decision\": \"Pass FINAL-001 and board one defect this review met. The npm test reuse lookup (scripts/test-runner.mjs runGateChecks through scripts/lib/gate-reuse.mjs coveringGateCheck) and the executor completion's npm test claim check (scripts/lib/handoff-ledger.mjs requireGateClaims) key on gateCodeIdentity, which hashes the working-tree bytes of tracked paths only. An order's new source files stay untracked until the final review stages them, so an edit to one after a passing row moves neither the identity nor the gate: npm test prints the old row and exits 0, and a met npm test claim stands on it. Before thi",
+          "missing": false
+        },
+        {
+          "hash": "542abaadf53d971ad8a28a5cfa6bd8a46373d7418d3a22847f09f8314651415a",
+          "ref": "docs/evidence/WO-173/decisions.md#wo-173-d018--final-review-passes-and-boards-a-reused-row-that-never-ran-an-untracked-files-bytes",
+          "title": "WO-173-D018: Planner: close the untracked-source gap in npm test reuse. scripts/test-runner.mjs runGateChecks and scripts/lib/handoff-ledger.mjs requireGateClaims reuse or accept a passing npm test ro",
+          "summary": "{ \"id\": \"WO-173-D018\", \"date\": \"2026-09-28\", \"dispatch\": \"resume: final review\", \"decision\": \"Pass FINAL-001 and board one defect this review met. The npm test reuse lookup (scripts/test-runner.mjs runGateChecks through scripts/lib/gate-reuse.mjs coveringGateCheck) and the executor completion's npm test claim check (scripts/lib/handoff-ledger.mjs requireGateClaims) key on gateCodeIdentity, which hashes the working-tree bytes of tracked paths only. An order's new source files stay untracked until the final review stages them, so an edit to one after a passing row moves neither the identity nor the gate: npm test prints the old row and exits 0, and a met npm test claim stands on it. Before thi",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -24801,6 +24823,28 @@
           "at": "2026-10-01T02:12:49.408Z"
         }
       ]
+    },
+    {
+      "id": "FUP-a8ff3066b5663629",
+      "key": "decision:docs/evidence/WO-180/decisions.md#wo-180-d013",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "fb271789f081e72633ad47d9555d2171a2b7a250975ac2e814220ca2f6a08f80",
+          "ref": "docs/evidence/WO-180/decisions.md#wo-180-d013",
+          "title": "WO-180-D013: Planner, before WO-123 activates: amend WO-123 (or WO-061) to carry two WO-180 seams. (1) When the composition builds a BaselineStory, it reads the class from WO-061's StoryContract once ",
+          "summary": "{ \"id\": \"WO-180-D013\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: final review\", \"decision\": \"Pass WO-180 on all six criteria against the original order, on VER-001's reproductions and this review's fresh product gate at the identity that keys the new test file. Board two seams the composition must carry, without failing the order. (1) Receipt 036's known issue on the order's catalog row (docs/planning/work-order-map.md) directs the executor to treat a contract naming a failing behavior as a defect story before WO-061 lands and to record the class source. Nothing in the landed primitive reads a contract: BaselineStory.kind is a caller input, BaselineWitnessed records the class but not where ",
+          "missing": false
+        },
+        {
+          "hash": "48e0566bff99ab79f8e0155c6b554282bcd6691b3deb93fcf4095e45cf44987a",
+          "ref": "docs/evidence/WO-180/decisions.md#wo-180-d013",
+          "title": "WO-180-D013: Planner, before WO-123 activates: amend WO-123 (or WO-061) to carry two WO-180 seams. (1) When the composition builds a BaselineStory, it reads the class from WO-061's StoryContract once ",
+          "summary": "{ \"id\": \"WO-180-D013\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: final review\", \"decision\": \"Pass WO-180 on all six criteria against the original order, on VER-001's reproductions and this review's fresh product gate at the identity that keys the new test file. Board two seams the composition must carry, without failing the order. (1) Receipt 036's known issue on the order's catalog row (docs/planning/work-order-map.md) directs the executor to treat a contract naming a failing behavior as a defect story before WO-061 lands and to record the class source. Nothing in the landed primitive reads a contract: BaselineStory.kind is a caller input, BaselineWitnessed records the class but not where ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }
