@@ -33,6 +33,7 @@ import {
   parseEvidenceResult,
   type TransportRequest,
   type TransportResultFor,
+  type BaselineContext,
 } from "./verification-protocol.js";
 
 type StoredRequest = Exclude<TransportRequest, PlanRefutationRequest>;
@@ -307,7 +308,11 @@ export class WorkerStore {
       const events = decodeLog(this.read());
       const commands = new Map<
         string,
-        { command: StoredRequest["command"]; capsule?: VerificationTask }
+        {
+          command: StoredRequest["command"];
+          capsule?: VerificationTask;
+          baseline?: BaselineContext;
+        }
       >();
       for (const event of events) {
         if (
@@ -359,6 +364,9 @@ export class WorkerStore {
             commands.set(command.commandId, {
               command: command as unknown as StoredRequest["command"],
               ...(capsule ? { capsule } : {}),
+              ...(payload.baseline
+                ? { baseline: payload.baseline as BaselineContext }
+                : {}),
             });
           },
         );
@@ -402,6 +410,7 @@ export class WorkerStore {
               capsule: stored.capsule,
               workOrder: stored.capsule.workOrder,
               episodeId: receipt.episodeId,
+              ...(stored.baseline ? { baseline: stored.baseline } : {}),
             });
           receiptPaths.push(path);
         });

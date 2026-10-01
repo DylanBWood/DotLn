@@ -34,6 +34,7 @@ import {
   validateTransportRequest,
   type EvidenceWorkerRequest,
   type EvidenceWorkerResult,
+  type BaselineContext,
 } from "./verification-protocol.js";
 import {
   initialVerificationRuntime,
@@ -69,6 +70,14 @@ export function preflightVerificationRecovery(
     assertVerificationTask(capsule);
     const path = cwd(command.commandId);
     const request: EvidenceWorkerRequest = {
+      ...((command.intent.payload as unknown as { baseline?: BaselineContext })
+        .baseline
+        ? {
+            baseline: (
+              command.intent.payload as unknown as { baseline: BaselineContext }
+            ).baseline,
+          }
+        : {}),
       ...(feedback ? { feedback } : {}),
       kind: "evidence-worker",
       command,
@@ -145,11 +154,12 @@ export class VerificationDriver {
     );
   }
   drainContinuation(at: number): void {
-    if (this.state.continuation.kind === "Emit")
+    while (this.state.continuation.kind === "Emit")
       this.feed({ ...this.state.continuation.event, occurredAt: at });
   }
   persistNext(at: number): void {
     this.drainContinuation(at);
+    if (this.state.next === "baseline-witnessed") return;
     if (!this.state.pending)
       this.record("VerificationDispatchRequested", at, {});
     if (!this.state.pending!.persisted) {
@@ -210,6 +220,7 @@ export class VerificationHost {
     const pending = driver.state.pending;
     if (!pending) throw new WorkerFailure("profile-refused");
     const request: EvidenceWorkerRequest = {
+      ...(pending.baseline ? { baseline: pending.baseline } : {}),
       ...(this.options.feedback ? { feedback: this.options.feedback } : {}),
       kind: "evidence-worker",
       command: pending.command,
@@ -256,6 +267,40 @@ export class VerificationHost {
   ): Promise<ResultEnvelope> {
     const { driver, transport, now } = this.options;
     const pending = driver.state.pending;
+    if (!pending && driver.state.next === "baseline-witnessed") {
+      const events = decodeLog(driver.log);
+      const accepted = events.find(
+        (event) => event.eventId === driver.state.lastResultEventId,
+      );
+      const payload = accepted?.payload as unknown as {
+        commandId: string;
+        value: EvidenceWorkerResult;
+      };
+      const command = events.find(
+        (event) =>
+          event.type === "CommandPersisted" &&
+          (event.payload as unknown as { command: Command }).command
+            .commandId === payload?.commandId,
+      );
+      const persisted = (command?.payload as unknown as { command: Command })
+        ?.command;
+      const input = persisted?.intent.payload as unknown as {
+        capsule: VerificationTask;
+        baseline: BaselineContext;
+      };
+      if (!input || input.baseline?.kind !== "baseline")
+        throw new WorkerFailure("profile-refused");
+      assertWorktreeSnapshot(input.capsule, cwd);
+      const result = parseEvidenceResult(payload.value, {
+        command: persisted!,
+        capsule: input.capsule,
+        baseline: input.baseline,
+        workOrder: input.capsule.workOrder,
+        episodeId: payload.value.envelope.episodeId,
+      });
+      driver.drainContinuation(now());
+      return result.envelope;
+    }
     if (
       !pending?.persisted ||
       !verificationAuthorization(driver.state, now()).authorized
@@ -277,6 +322,9 @@ export class VerificationHost {
         commandId: pending.command.commandId,
         workerEpisodeId: episodeId,
         role: pending.capsule.role,
+        ...(pending.baseline?.kind === "baseline"
+          ? { episodeKind: "baseline" }
+          : {}),
         mode: cached ? "cached-result-query" : "fresh-transport",
         inputHash: pending.capsule.inputHash,
         model,

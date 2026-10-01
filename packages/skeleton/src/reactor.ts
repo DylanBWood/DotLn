@@ -111,6 +111,12 @@ import type {
 
 import {
   parseEvidenceResult,
+  createBaselineWitness,
+  validateBaselineContext,
+  validateBaselineWitness,
+  type BaselineContext,
+  type BaselineWitness,
+  type BaselineComparisonFinding,
   type EvidenceWorkerResult,
   type RepairWorkerResult,
 } from "./verification-protocol.js";
@@ -315,6 +321,7 @@ export const sliceEventTypes = {
   worker: ["WorkerAttemptStarted", "WorkerLeaseExpired"],
   verification: [
     "VerificationOpened",
+    "BaselineWitnessed",
     "VerificationDispatchRequested",
     "CommandPersisted",
     "WorkerAttemptStarted",
@@ -1749,6 +1756,7 @@ export interface FindingRecord {
   readonly status: "open" | "resolved" | "superseded";
 }
 export interface VerificationPending {
+  readonly baseline?: BaselineContext;
   readonly capsule: VerificationTask;
   readonly command: Command;
   readonly ordinal: number;
@@ -1759,6 +1767,9 @@ export interface VerificationPending {
   readonly leaseExpired: boolean;
 }
 export interface VerificationState {
+  readonly baselineContext?: BaselineContext;
+  readonly baselineWitness?: BaselineWitness;
+  readonly baselineFindings?: readonly BaselineComparisonFinding[];
   readonly episodeNamespace?: string;
   readonly workstreamId: string;
   readonly criteria: readonly AcceptanceCriterion[];
@@ -1783,6 +1794,7 @@ export interface VerificationState {
     | "repair"
     | "apply-repair"
     | "complete"
+    | "baseline-witnessed"
     | "attention";
   readonly proposal: RepairWorkerResult | null;
   readonly dispatchCount: number;
@@ -1832,6 +1844,7 @@ const requireState = (value: unknown, detail: string): void => {
 // EventEnvelope is deliberately open. Each branch checks the fields it consumes;
 // model results cross the stricter, closed schema in parseEvidenceResult.
 type VerificationPayload = {
+  baselineContext?: BaselineContext;
   criteria: readonly AcceptanceCriterion[];
   baseline: VerificationSubject;
   subject: VerificationSubject;
@@ -2026,7 +2039,13 @@ function persistedCompilation(
     !same(release(capsule), release(pending.capsule)) ||
     !same(command, {
       ...pending.command,
-      intent: { ...pending.command.intent, payload: json({ capsule }) },
+      intent: {
+        ...pending.command.intent,
+        payload: json({
+          capsule,
+          ...(pending.baseline ? { baseline: pending.baseline } : {}),
+        }),
+      },
     })
   )
     return null;
@@ -2067,7 +2086,11 @@ function dispatch(state: VerificationState): VerificationState {
     state.subject!,
     finding,
   );
-  const episodeId = `${state.episodeNamespace ? `${state.episodeNamespace}_` : ""}ep_${capsule.role}_${ordinal}`;
+  const baseline =
+    capsule.role === "verifier" ? state.baselineContext : undefined;
+  if (baseline) validateBaselineContext(baseline, capsule);
+  const episodeKind = baseline?.kind === "baseline" ? "baseline" : capsule.role;
+  const episodeId = `${state.episodeNamespace ? `${state.episodeNamespace}_` : ""}ep_${episodeKind}_${ordinal}`;
   const command: Command = {
     commandId: commandId(state.workstreamId, episodeId, ordinal, 0),
     episodeId,
@@ -2076,7 +2099,7 @@ function dispatch(state: VerificationState): VerificationState {
       kind: "Act",
       effect: capsule.workOrder.allowedOperations[0]!,
       resource: "episodes",
-      payload: json({ capsule }),
+      payload: json({ capsule, ...(baseline ? { baseline } : {}) }),
     },
   };
   const continuation = verificationContinuation(command);
@@ -2088,6 +2111,7 @@ function dispatch(state: VerificationState): VerificationState {
     dispatchCount: ordinal,
     continuation,
     pending: {
+      ...(baseline ? { baseline } : {}),
       capsule,
       command,
       ordinal,
@@ -2118,7 +2142,15 @@ function foldVerificationEvent(
       );
       const baseline = copySubject(value.baseline as VerificationSubject);
       const subject = copySubject(value.subject as VerificationSubject);
-      compileVerificationTask("opening", criteria, subject);
+      const capsule = compileVerificationTask("opening", criteria, subject);
+      if (value.baselineContext) {
+        validateBaselineContext(value.baselineContext, capsule);
+        const expected =
+          value.baselineContext.kind === "baseline"
+            ? subject
+            : value.baselineContext.witness.capsule.subject;
+        requireState(same(baseline, expected), "baseline episode identity");
+      }
       requireState(
         baseline.repo === subject.repo &&
           baseline.baseCommit === subject.baseCommit &&
@@ -2149,6 +2181,20 @@ function foldVerificationEvent(
       );
       return {
         ...state,
+        ...(value.baselineContext
+          ? {
+              baselineContext: JSON.parse(
+                JSON.stringify(value.baselineContext),
+              ) as BaselineContext,
+              ...(value.baselineContext.kind === "comparison"
+                ? {
+                    baselineWitness: JSON.parse(
+                      JSON.stringify(value.baselineContext.witness),
+                    ) as BaselineWitness,
+                  }
+                : {}),
+            }
+          : {}),
         ...(value.episodeNamespace
           ? { episodeNamespace: value.episodeNamespace }
           : {}),
@@ -2166,6 +2212,33 @@ function foldVerificationEvent(
         })),
         evidence: subject.evidence,
         next: "verify",
+      };
+    }
+    case "BaselineWitnessed": {
+      const witness = event.payload as unknown as BaselineWitness;
+      requireState(
+        state.next === "baseline-witnessed" &&
+          !state.baselineWitness &&
+          state.baselineContext?.kind === "baseline" &&
+          event.causationId === state.lastResultEventId &&
+          state.continuation.kind === "Emit" &&
+          same(event.payload, state.continuation.event.payload),
+        "baseline result provenance",
+      );
+      validateBaselineWitness(witness);
+      requireState(
+        state.episodeIds.includes(witness.episodeId),
+        "baseline witnessed episode",
+      );
+      const step = decideProgram(
+        state.continuation,
+        json(state),
+        env(event.occurredAt),
+      );
+      return {
+        ...state,
+        baselineWitness: JSON.parse(JSON.stringify(witness)) as BaselineWitness,
+        continuation: step.continuation!,
       };
     }
     case "VerificationDispatchRequested":
@@ -2284,6 +2357,7 @@ function foldVerificationEvent(
           workOrder: pending.capsule.workOrder,
           capsule: pending.capsule,
           episodeId: value.value.envelope.episodeId,
+          ...(pending.baseline ? { baseline: pending.baseline } : {}),
         });
         requireState(
           result.envelope.status === "completed" &&
@@ -2309,6 +2383,41 @@ function foldVerificationEvent(
         lastResultEventId: event.eventId,
         continuation: step.continuation!,
       };
+      if (result.kind === "baseline") {
+        if (result.envelope.requiresHuman)
+          return { ...common, next: "attention" };
+        requireState(
+          pending.baseline?.kind === "baseline",
+          "baseline result context",
+        );
+        const story =
+          pending.baseline!.kind === "baseline"
+            ? pending.baseline!.story
+            : undefined;
+        return {
+          ...common,
+          next: "baseline-witnessed",
+          continuation: Program.Emit(
+            {
+              schemaVersion: 1,
+              type: "BaselineWitnessed",
+              actorId: VERIFICATION_HOST,
+              workstreamId: state.workstreamId,
+              occurredAt: 0,
+              correlationId: pending.command.commandId,
+              causationId: event.eventId,
+              payload: json(
+                createBaselineWitness(
+                  story!,
+                  pending.capsule,
+                  result.envelope.episodeId,
+                ),
+              ),
+            },
+            common.continuation,
+          ),
+        };
+      }
       if (result.kind === "repair")
         return {
           ...common,
@@ -2390,6 +2499,9 @@ function foldVerificationEvent(
         }));
       return {
         ...common,
+        ...(result.baselineFindings
+          ? { baselineFindings: result.baselineFindings }
+          : {}),
         rows,
         findings,
         repairPlans: [...state.repairPlans, ...repairPlans],

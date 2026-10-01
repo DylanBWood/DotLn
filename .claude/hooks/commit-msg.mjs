@@ -1,6 +1,6 @@
 // Origin: {"ids":["no-attribution"],"loadoutId":"contributor","semanticHash":"fnv1a64:3fda088a97df0f55"}
-const { runCommitMessageHook } = await import("../../.runtime/harness/9b6b4be4702a12c4/packages/skeleton/dist/src/harness-host.js");
-const { feedbackBoundary } = await import("../../.runtime/harness/9b6b4be4702a12c4/packages/skeleton/dist/src/feedback-boundary.js");
+const { runCommitMessageHook } = await import("../../.runtime/harness/0c09e87e35bbbbe9/packages/skeleton/dist/src/harness-host.js");
+const { feedbackBoundary } = await import("../../.runtime/harness/0c09e87e35bbbbe9/packages/skeleton/dist/src/feedback-boundary.js");
 await runCommitMessageHook({
   "compilerPackageVersion": "0.21.0",
   "runtime": {
@@ -85,7 +85,7 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/reactor.js",
-        "hash": "fnv1a64:46510e30241f5a10"
+        "hash": "fnv1a64:03b7330ed291e07c"
       },
       {
         "path": "packages/skeleton/dist/src/repair.js",
@@ -109,11 +109,11 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/worker-store.js",
-        "hash": "fnv1a64:39f0f95829c55d38"
+        "hash": "fnv1a64:b251ba8ef68bd76e"
       },
       {
         "path": "packages/skeleton/dist/src/verification-protocol.js",
-        "hash": "fnv1a64:ddef760ecc707526"
+        "hash": "fnv1a64:2befa3035a9a55fb"
       },
       {
         "path": "packages/skeleton/dist/src/plan-refutation-protocol.js",
@@ -168,7 +168,7 @@ await runCommitMessageHook({
         "hash": "fnv1a64:5ad495017c40b9b2"
       }
     ],
-    "snapshot": ".runtime/harness/9b6b4be4702a12c4"
+    "snapshot": ".runtime/harness/0c09e87e35bbbbe9"
   },
   "policy": {
     "contractVersion": "feedback-v1",
