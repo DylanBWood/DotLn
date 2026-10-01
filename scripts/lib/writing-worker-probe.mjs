@@ -42,8 +42,8 @@ export const MARKERS = [
 ];
 export const LABELS = ["observed", "blocked", "unavailable", "ambiguous"];
 const SELECTORS = {
-  claude: { model: "claude-fable-5", effort: "xhigh" },
-  codex: { model: "gpt-6-sol", effort: "xhigh" },
+  claude: { model: "claude-opus-5-5", effort: "xhigh" },
+  codex: { model: "gpt-6.1-sol", effort: "max" },
 };
 
 /* ------------------------------------------------------------------------ */

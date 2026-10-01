@@ -483,8 +483,8 @@ export const TRANSPORT_DEFAULTS = {
     harness: "claude-code",
   },
   "codex-cli-exec": {
-    model: "gpt-6-sol",
-    effort: "xhigh",
+    model: "gpt-6.1-sol",
+    effort: "max",
     harness: "codex-cli",
   },
   fake: { model: "fixture", effort: "max", harness: "other:fixture" },

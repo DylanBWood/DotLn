@@ -1,4 +1,4 @@
-# WO-177 — Spawned agents run the pinned models: every compiled default and probe that launches a worker names Codex `gpt-6.1-sol` at `max` and Claude Code `claude-opus-5-5` at `xhigh`, the Codex agent-spawning parameters are recorded, and the attestation keeps saying what actually ran (version assigned at activation)
+# WO-177 — Spawned agents run the pinned models: every compiled default and probe that launches a worker names Codex `gpt-6.1-sol` at `max` and Claude Code `claude-opus-5-5` at `xhigh`, the Codex agent-spawning parameters are recorded, and the attestation keeps saying what actually ran (v0.61.3)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).

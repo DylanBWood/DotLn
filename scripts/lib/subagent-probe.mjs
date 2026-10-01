@@ -96,7 +96,7 @@ export async function subagentProbe(args) {
     "--session-id",
     id,
     "--model",
-    "claude-fable-5",
+    "claude-opus-5-5",
     "--effort",
     "xhigh",
     "--no-session-persistence",
@@ -202,7 +202,7 @@ export async function subagentProbe(args) {
     harness: "claude-code",
     version,
     actor: {
-      model: "claude-fable-5",
+      model: "claude-opus-5-5",
       effort: "xhigh",
       source: "launch-selector",
     },

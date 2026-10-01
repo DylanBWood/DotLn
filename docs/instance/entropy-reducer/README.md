@@ -15,7 +15,7 @@ surviving findings **in that same pass**. There is no `resume:` phrase, no
 role and no role skill, and no scheduler — nothing runs a review unless the
 operator opens a pass or a session runs the command, and every one of them
 stops at operator disposition. `npm run skeleton` runs the deterministic Repo Gardener
-demonstration, which is a different thing. The operator's GPT-6 Sol/`xhigh`
+demonstration, which is a different thing. The operator's GPT-6.1 Sol/`max`
 default for Codex steps does not silently replace this loadout's different
 actor requirement.
 
@@ -95,7 +95,8 @@ reason. Effective model and effort are recorded as `unknown`, because no
 harness reports them; a launch selection is not a readback. `--source
 operator-attested` records an effort the operator supplies on the background
 route, and that is still a substitute: it is an attestation, not an invocation
-readback. No default silently selects another model.
+readback. Claude defaults to `claude-opus-5-5`/`xhigh`; Codex defaults to
+`gpt-6.1-sol`/`max` and remains a substitute reviewer (WO-177).
 
 Without `--transport`, `review` and `refute` print the canonical prompt and the
 closed result schema for a fresh worker the session spawns, retaining the
