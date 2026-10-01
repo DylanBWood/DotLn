@@ -1824,7 +1824,10 @@ text, never the default channel for state you own in structured form.
   implementation, no unexplained scope, tests/build/lint, live behavior walked,
   visual claims visually inspected, every AC evidenced, independent verification
   and review, final diff read, grounded body, monitored loop) — no single
-  passing signal is ever "done". Post-submission loop ownership: CI failures
+  passing signal is ever "done". Target publication evaluates all fourteen items
+  from bound artifacts, renders their evidence or gaps in `Deliverable-ready`,
+  and refuses locally on an absent item with `--require-deliverable-ready`;
+  operator proposals without the flag still publish with gaps. Post-submission loop ownership: CI failures
   deterministically classified before any repair dispatch, review comments
   triaged by type, upstream source drift watched (revision guard) until a
   human-controlled terminal state. Projection boundary enforced: no internal

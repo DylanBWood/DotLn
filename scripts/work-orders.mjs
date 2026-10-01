@@ -534,6 +534,11 @@ export const renderIndex = ({
         `- Effort: ${cell(row.effort)}`,
         `- Track: ${cell(row.track ?? "unknown")}`,
         `- Cost: ${cell(row.cost)}`,
+        ...(["WO-112", "WO-118"].includes(row.id)
+          ? [
+              "- Delivery: target publication requires `worktree publish WO-NNN --target <request> --require-deliverable-ready` (WO-182); record every absent item before retrying.",
+            ]
+          : []),
         ...(row.ledgerSubstitution
           ? [
               `- Inherited ledger duty: discharge with ${row.hasDecisions ? `[this order's decisions](../evidence/${row.id}/decisions.md)` : `this order's decisions file when recorded`} and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.`,

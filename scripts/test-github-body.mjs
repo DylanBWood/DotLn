@@ -4,7 +4,9 @@ import { readFile } from "node:fs/promises";
 import {
   assertGitHubBodyProfile,
   githubBodyProfileFailures,
+  deliverableReady,
 } from "./lib/github-body.mjs";
+import { readinessFixture } from "./fixtures/target-publish/readiness.mjs";
 
 const prettierConfig = JSON.parse(
   await readFile(new URL("../.prettierrc.json", import.meta.url), "utf8"),
@@ -205,7 +207,7 @@ await test("WO-064 target pull request: title, escaped contract, matrix and diff
   );
   assert.equal(title, "feat(parser): accept empty input");
   assert.equal(
-    body,
+    `${body.split("## Deliverable-ready")[0].trimEnd()}\n`,
     `## Contract
 
 **Objective:** Accept empty input &#42;without&#42; &#64;someone &#35;12 &#60;b&#62;markup&#60;/b&#62; &#124; pipes.
@@ -234,6 +236,233 @@ Focused test observed by the host: exit 1 before the change, signal SIGTERM afte
 `,
   );
   assert.equal(githubBodyProfileFailures(body).length, 0);
+});
+
+await test("WO-182 AC1/AC2: fourteen evidenced rows resolve in the fixture artifact store and render through outward lint", () => {
+  const fixture = readinessFixture();
+  const rows = deliverableReady(fixture.artifacts);
+  assert.equal(rows.length, 14);
+  assert.equal(new Set(rows.map((row) => row.id)).size, 14);
+  for (const row of rows) {
+    assert.equal(row.status, "evidenced", row.item);
+    assert.ok(row.evidenceRefs.length > 0);
+    for (const ref of row.evidenceRefs)
+      assert.notEqual(fixture.resolveRef(ref), undefined, ref);
+  }
+  const { body } = generateTargetPullRequest({
+    ...fixture.bodyInputs,
+    readinessArtifacts: fixture.artifacts,
+  });
+  assert.match(
+    body,
+    /## Deliverable-ready\n\nDeliverable-ready: ready; every applicable item is evidenced\./u,
+  );
+  assert.equal(body.match(/\| evidenced \|/gu).length, 14);
+  for (const row of rows)
+    for (const ref of row.evidenceRefs)
+      assert.ok(body.includes(ref.replaceAll("#", "&#35;")), ref);
+  assert.equal(githubBodyProfileFailures(body).length, 0);
+  assert.equal(
+    lintOutwardArtifact({
+      kind: "pr-body",
+      text: body,
+      vocabulary,
+      localTerms: { status: "present" },
+    }).status,
+    "pass",
+  );
+});
+
+await test("WO-182 AC1: missing baseline/review name their events; declared nonvisual stories are not applicable", () => {
+  const { artifacts } = readinessFixture();
+  artifacts.baseline = null;
+  artifacts.review = null;
+  const rows = deliverableReady(artifacts);
+  assert.match(
+    rows.find((row) => row.id === "baseline").reason,
+    /BaselineWitnessed/u,
+  );
+  assert.match(
+    rows.find((row) => row.id === "independent").reason,
+    /ReviewCompleted/u,
+  );
+  assert.equal(rows.find((row) => row.id === "baseline").status, "absent");
+  assert.equal(rows.find((row) => row.id === "independent").status, "absent");
+  artifacts.verification.value.rows[0].criterion.claimType = "behavior";
+  const visual = deliverableReady(artifacts).find((row) => row.id === "visual");
+  assert.equal(visual.status, "not-applicable");
+  assert.match(visual.reason, /no visual claims/u);
+  artifacts.verification = null;
+  assert.equal(
+    deliverableReady(artifacts).find((row) => row.id === "visual").status,
+    "absent",
+  );
+});
+
+await test("WO-182 carries minor independent review findings into known items without widening scope", () => {
+  const { artifacts, bodyInputs } = readinessFixture();
+  artifacts.review.value.result.counts.should = 1;
+  artifacts.review.value.result.findings = [
+    {
+      class: "review",
+      severity: "should",
+      observed: "A helper name could be clearer.",
+      expected: "Use the existing naming convention.",
+      evidenceRefs: ["diff", "file:src/view.ts"],
+    },
+  ];
+  const before = structuredClone(artifacts);
+  const { body } = generateTargetPullRequest({
+    ...bodyInputs,
+    readinessArtifacts: artifacts,
+  });
+  assert.match(
+    body,
+    /Known review items \(recorded without expanding scope\):/u,
+  );
+  assert.match(body, /\| should \| A helper name could be clearer\./u);
+  assert.match(body, /Deliverable-ready: ready;/u);
+  assert.deepEqual(artifacts, before);
+});
+
+await test("WO-182 refuses stale, failed, unbound, synthetic or self-reviewed evidence as readiness", () => {
+  const mutations = [
+    [
+      "source-revision",
+      (a) => {
+        a.current.value.revision = "c".repeat(40);
+      },
+    ],
+    [
+      "ambiguity",
+      (a) => {
+        a.preparation.value.unresolvedMaterialAmbiguities.push("unanswered");
+      },
+    ],
+    [
+      "ambiguity",
+      (a) => {
+        a.preparation.value.contractHash = "c".repeat(64);
+      },
+    ],
+    [
+      "baseline",
+      (a) => {
+        a.baseline.value.capsule.subject.revision = "c".repeat(40);
+      },
+    ],
+    [
+      "baseline",
+      (a) => {
+        a.baseline.occurredAt = 11;
+      },
+    ],
+    [
+      "baseline",
+      (a) => {
+        a.baseline.value.outcome = "not-reproduced";
+      },
+    ],
+    [
+      "repo-native",
+      (a) => {
+        a.review.value.result.conventionsPath = null;
+      },
+    ],
+    [
+      "scope",
+      (a) => {
+        a.scope.value.surfaces = ["other.ts"];
+      },
+    ],
+    [
+      "checks",
+      (a) => {
+        delete a.preparation.value.checks.lint;
+      },
+    ],
+    [
+      "checks",
+      (a) => {
+        a.verification.value.evidence[1].hostTest.exitCode = 1;
+      },
+    ],
+    [
+      "live-behavior",
+      (a) => {
+        a.verification.value.evidence[0].source = "synthetic";
+      },
+    ],
+    [
+      "visual",
+      (a) => {
+        delete a.verification.value.evidence[3].witness;
+      },
+    ],
+    [
+      "acceptance",
+      (a) => {
+        a.verification.value.rows[0].status = "incomplete";
+      },
+    ],
+    [
+      "acceptance",
+      (a) => {
+        a.verification.value.rows[0].evaluations[0].stale = true;
+      },
+    ],
+    [
+      "acceptance",
+      (a) => {
+        a.verification.value.rows[0].criterion.description = "Other contract";
+      },
+    ],
+    [
+      "independent",
+      (a) => {
+        a.review.value.result.reviewerEpisodeId = "implementer";
+      },
+    ],
+    [
+      "independent",
+      (a) => {
+        a.review.value.result.verifierEpisodeIds = ["unrelated"];
+      },
+    ],
+    [
+      "final-diff",
+      (a) => {
+        a.review.value.subject.diff += "unreviewed";
+      },
+    ],
+    [
+      "final-diff",
+      (a) => {
+        a.review.value.result.counts.blocking = 1;
+      },
+    ],
+    [
+      "grounded-body",
+      (a) => {
+        a.body.value.diff.headCommit = "c".repeat(40);
+      },
+    ],
+    [
+      "monitoring",
+      (a) => {
+        a.preparation.value.monitoring.sourceDrift = "ignore";
+      },
+    ],
+  ];
+  for (const [id, mutate] of mutations) {
+    const artifacts = structuredClone(readinessFixture().artifacts);
+    mutate(artifacts);
+    assert.equal(
+      deliverableReady(artifacts).find((row) => row.id === id).status,
+      "absent",
+      id,
+    );
+  }
 });
 
 await test("WO-064 target pull request: refuses a matrix for another revision and missing artifacts", () => {
