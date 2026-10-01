@@ -25100,6 +25100,51 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-2341c85c58331f3e",
+      "key": "decision:docs/evidence/WO-103/decisions.md#wo-103-d004",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "029fde30fc93e0dc3950073e322c1eacc50d16547d7dad67075a7bb9551493be",
+          "ref": "docs/evidence/WO-103/decisions.md#wo-103-d004",
+          "title": "WO-103-D004: Allocate an audit-owned order to recognize truthful partial semantic-input refusal traces without fabricating missing inputs; cover missing state and missing predicateEnv and preserve rej",
+          "summary": "{ \"id\": \"WO-103-D004\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: next\", \"decision\": \"Quarantine WO-103-F001 and WO-103-F002, the missing-state and missing-environment audit trace omissions, with exact partial suffixes and source event IDs. Defer runtime correction under the order's explicit non-goal.\", \"evidence\": [ \"corpus/manifests/findings-WO-103.md\", \"corpus/harness/wo103-authority.test.mjs\", \"packages/skeleton/src/audit.ts semanticAuthorityInputsAreComplete\", \"docs/final-reviews/WO-017/FINAL-001.md adjudication 8\" ], \"followup\": \"Allocate an audit-owned order to recognize truthful partial semantic-input refusal traces without fabricating missing inputs; cover missing state and missing ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-c1d4be019802be0d",
+      "key": "decision:docs/evidence/WO-103/decisions.md#wo-103-d005",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "df92855e4ceacc93a7a587c63846c96b2796b6470607af572b40ec3d321ae0f5",
+          "ref": "docs/evidence/WO-103/decisions.md#wo-103-d005",
+          "title": "WO-103-D005: Allocate a kernel-owned order for structural CommandPersisted admission in packages/kernel/src/core.ts: validate required Command fields before pending outbox insertion, define malformed-",
+          "summary": "{ \"id\": \"WO-103-D005\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: next\", \"decision\": \"Quarantine WO-103-F003: incomplete command objects with non-empty string IDs reach pendingCommands. Retain permissive observed replay as evidence, never as a valid Command guarantee.\", \"evidence\": [ \"corpus/manifests/findings-WO-103.md\", \"corpus/harness/wo103-outbox.test.mjs\", \"packages/kernel/src/core.ts replayOutbox\" ], \"followup\": \"Allocate a kernel-owned order for structural CommandPersisted admission in packages/kernel/src/core.ts: validate required Command fields before pending outbox insertion, define malformed-input traces and retain persist-once, orphan completion and duplicate-result semantics.\", ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-d22dc57e754ba35c",
+      "key": "decision:docs/evidence/WO-103/decisions.md#wo-103-d012",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "19866357fa2b6546981cb25880204df7ed032602f8514b2c6e24cf31eec04d6c",
+          "ref": "docs/evidence/WO-103/decisions.md#wo-103-d012--final-review-one-precedence-pair-the-declared-factorial-never-contests",
+          "title": "WO-103-D012: Next order that edits the WO-103 corpus or the guard's effect-pattern rules: add an authority pattern level whose denied list matches the effect and whose allowed list does not (for examp",
+          "summary": "{ \"id\": \"WO-103-D012\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: final review; FINAL-001\", \"decision\": \"Pass criterion 2 as declared and board one uncontested precedence pair. No declared authority cell has both 'effect denied' and 'effect not allowed' failing. Every pattern level whose denied list matches 'act' also has an allowed list that matches it, and a non-string effect sets neither flag. A guard that ranked 'effect not allowed' before 'effect denied' would therefore pass the full sweep with zero divergences. The other six adjacent rank pairs are contested, and a swap of each is detected. The order's pattern factor (exact, bare *, prefix a*, overlapping deny-vs-allow) is met as decla",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

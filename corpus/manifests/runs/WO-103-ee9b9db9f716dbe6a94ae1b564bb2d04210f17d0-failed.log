@@ -1,0 +1,753 @@
+Public transcript: command binary and checkout prefixes are normalized. This failed record is retained; its original raw scratch log was replaced by the authorized final attempt.
+WO-103 executable evidence
+Started 2026-10-01T14:26:13.946Z
+Base ee9b9db9f716dbe6a94ae1b564bb2d04210f17d0; current uncommitted corpus subject.
+
+$ npm run build
+
+> build
+> node scripts/build.mjs
+
+Built browser-evidence, compiler, console, kernel, skeleton with atomic file replacement; installed harness snapshots remain immutable
+EXIT 0; wallMs 778
+
+$ node corpus/harness/generate-authority-corpus.mjs --seed wo103-seed-20261001 --check
+authority: 2694384 cells, 220968 predicate calls
+outbox: 254720 orders, 509440 delivery runs
+{"mode":"--check","seed":"wo103-seed-20261001","authorityCells":2694384,"outboxRuns":509440,"fixtures":{"files":9,"rows":1152,"bytes":2145339},"findings":["WO-103-F001","WO-103-F002","WO-103-F003"]}
+EXIT 0; wallMs 29714
+
+$ node --test corpus/harness/wo103-*.test.mjs
+✔ WO-103 complete authority factorial: exact results, traces, IDs, limits, calls and never-throws (26099.438666ms)
+✔ WO-103 planted independent precedence winners and literal trace anchors (0.346916ms)
+✔ WO-103 every condition sees every event; early true cannot mask late error; unknown preflight (0.379125ms)
+✔ WO-103 forged runtime effects refuse structurally, terminal-star matching, namespace IDs (0.435708ms)
+✔ WO-103 consumed envelope threading exhausts exactly at every declared limit/key (1.067291ms)
+✔ WO-103 missing-input partial traces reproduce both numbered audit carry-ins (0.82575ms)
+✔ WO-103 mixed-radix labels match independently traversed Cartesian prefixes and bounds (5.110459ms)
+✔ WO-103 manifest fixture census, full expected schema, budgets and generated table hashes (21.947333ms)
+✔ WO-103 seeded golden selection and independent Cartesian enumeration self-tests (4.07225ms)
+✔ WO-103 regeneration rejects wrong seed, argument ambiguity and planted byte corruption (1.120917ms)
+✔ WO-103 planted faulty winners, traces and decrement are detected by cell comparator (0.378208ms)
+✔ WO-103 exact capped outbox permutations, both projections and duplicate delivery (4630.5445ms)
+✔ WO-103 outbox oracle planted accepted, dedup, unknown and retroactive orphan traces (0.286458ms)
+✔ WO-103 permutation caps and declared factor product are exact, seeded and unique (1.463125ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 26168.276792
+EXIT 0; wallMs 26202
+
+$ npm test -- --again
+
+> test
+> node scripts/test-runner.mjs --again
+
+PROGRESS [build] 0.0 s started
+PASS build 0.62 s
+PROGRESS [license-surfaces] 0.0 s started
+PASS license-surfaces 1.51 s
+PROGRESS [release:prepare] 0.0 s started
+PROGRESS [resume] 0.0 s started
+PROGRESS [worktree] 0.0 s started
+PROGRESS [skeleton] 0.0 s started
+PROGRESS [skeleton] 0.4 s # Subtest: WO-029 new host equips v2, pins authority atomically, and receipts every compiled consumer with replay identity
+PROGRESS [release:prepare] 0.7 s PROGRESS release template prepared
+PASS release:prepare 0.78 s
+PROGRESS [release:case:preflight] 0.0 s started
+PROGRESS [release:case:preflight] 0.0 s PROGRESS release case preflight started
+PROGRESS [release:case:preflight] 0.1 s PROGRESS release case preflight passed
+PASS release:case:preflight 0.10 s
+PROGRESS [release:case:surfaces] 0.0 s started
+PROGRESS [release:case:surfaces] 0.0 s PROGRESS release case surfaces started
+PROGRESS [skeleton] 2.1 s # Subtest: WO-116 the terminal audit command prints the skeleton --audit projections byte for byte over the fixture log, with their fidelity labels, in every scope
+PROGRESS [skeleton] 3.7 s # Subtest: WO-021 agent constellation CLI persists permission/refusal and one metadata perception through the reactor
+PROGRESS [release:case:surfaces] 3.6 s PROGRESS release case surfaces passed
+PASS release:case:surfaces 3.62 s
+PROGRESS [release:case:surfaces_local_snapshot] 0.0 s started
+PROGRESS [release:case:surfaces_local_snapshot] 0.0 s PROGRESS release case surfaces_local_snapshot started
+PROGRESS [release:case:surfaces_local_snapshot] 0.8 s PROGRESS release case surfaces_local_snapshot passed
+PASS release:case:surfaces_local_snapshot 0.86 s
+PROGRESS [release:case:prepare_independent] 0.0 s started
+PROGRESS [release:case:prepare_independent] 0.0 s PROGRESS release case prepare_independent started
+PROGRESS [release:case:prepare_independent] 2.3 s PROGRESS release case prepare_independent passed
+PASS release:case:prepare_independent 2.38 s
+PROGRESS [release:case:license_surfaces] 0.0 s started
+PROGRESS [release:case:license_surfaces] 0.0 s PROGRESS release case license_surfaces started
+PROGRESS [skeleton] 9.2 s # Subtest: WO-119 actual bounded program discovers the pinned six candidates with resolvable evidence
+PROGRESS [skeleton] 10.4 s # Subtest: WO-119 wire rejects malformed or oversized output, wrong modes and unresolved evidence
+PROGRESS [release:case:license_surfaces] 4.5 s PROGRESS release case license_surfaces passed
+PASS release:case:license_surfaces 4.75 s
+PROGRESS [release:case:surfaces_committed_readme] 0.0 s started
+PROGRESS [release:case:surfaces_committed_readme] 0.0 s PROGRESS release case surfaces_committed_readme started
+PROGRESS [release:case:surfaces_committed_readme] 1.4 s PROGRESS release case surfaces_committed_readme passed
+PASS release:case:surfaces_committed_readme 1.52 s
+PROGRESS [release:case:surfaces_lower] 0.0 s started
+PROGRESS [release:case:surfaces_lower] 0.0 s PROGRESS release case surfaces_lower started
+PROGRESS [resume] 15.0 s running; last report: waiting for the next case report
+PROGRESS [worktree] 15.0 s running; last report: waiting for the next case report
+PROGRESS [release:case:surfaces_lower] 1.3 s PROGRESS release case surfaces_lower passed
+PASS release:case:surfaces_lower 1.47 s
+PROGRESS [release:case:surfaces_first] 0.0 s started
+PROGRESS [release:case:surfaces_first] 0.0 s PROGRESS release case surfaces_first started
+PROGRESS [release:case:surfaces_first] 1.1 s PROGRESS release case surfaces_first passed
+PASS release:case:surfaces_first 1.35 s
+PROGRESS [release:case:surfaces_component] 0.0 s started
+PROGRESS [release:case:surfaces_component] 0.0 s PROGRESS release case surfaces_component started
+PROGRESS [release:case:surfaces_component] 2.2 s PROGRESS release case surfaces_component passed
+PASS release:case:surfaces_component 2.32 s
+PROGRESS [release:case:surfaces_non_source] 0.0 s started
+PROGRESS [release:case:surfaces_non_source] 0.0 s PROGRESS release case surfaces_non_source started
+PROGRESS [release:case:surfaces_non_source] 0.9 s PROGRESS release case surfaces_non_source passed
+PASS release:case:surfaces_non_source 0.96 s
+PROGRESS [release:case:surfaces_new_component] 0.0 s started
+PROGRESS [release:case:surfaces_new_component] 0.0 s PROGRESS release case surfaces_new_component started
+PROGRESS [release:case:surfaces_new_component] 0.9 s PROGRESS release case surfaces_new_component passed
+PASS release:case:surfaces_new_component 0.99 s
+PROGRESS [release:case:surfaceclose] 0.0 s started
+PROGRESS [release:case:surfaceclose] 0.0 s PROGRESS release case surfaceclose started
+PROGRESS [skeleton] 21.6 s # Subtest: WO-099 the four verdicts: out-of-surface drift, mid-episode clause change, on-contract pass, unavailable verifier
+PROGRESS [release:case:surfaceclose] 1.6 s PROGRESS release case surfaceclose passed
+PASS release:case:surfaceclose 1.83 s
+PROGRESS [release:case:surfaceclose_linked] 0.0 s started
+PROGRESS [release:case:surfaceclose_linked] 0.0 s PROGRESS release case surfaceclose_linked started
+PROGRESS [skeleton] 23.3 s # Subtest: WO-066 host review witness preserves scope, named tests, revision and one-round bound
+PROGRESS [release:case:surfaceclose_linked] 1.6 s PROGRESS release case surfaceclose_linked passed
+PASS release:case:surfaceclose_linked 1.82 s
+PROGRESS [release:case:bodyclose] 0.0 s started
+PROGRESS [release:case:bodyclose] 0.0 s PROGRESS release case bodyclose started
+PROGRESS [skeleton] 25.6 s # Subtest: WO-055 AC1 pure derivation contains paths, commands, contract and admitted exact grants
+PROGRESS [release:case:bodyclose] 1.4 s PROGRESS release case bodyclose passed
+PASS release:case:bodyclose 1.45 s
+PROGRESS [release:case:dirty] 0.0 s started
+PROGRESS [release:case:dirty] 0.0 s PROGRESS release case dirty started
+PROGRESS [release:case:dirty] 2.9 s PROGRESS release case dirty passed
+PASS release:case:dirty 2.91 s
+PROGRESS [release:case:unreachable] 0.0 s started
+PROGRESS [release:case:unreachable] 0.0 s PROGRESS release case unreachable started
+PROGRESS [resume] 30.0 s running; last report: waiting for the next case report
+PROGRESS [worktree] 30.0 s running; last report: waiting for the next case report
+PROGRESS [skeleton] 31.0 s # Subtest: WO-055 AC2 failing source commit repairs once and re-verifies the complete original contract
+PROGRESS [release:case:unreachable] 2.4 s PROGRESS release case unreachable passed
+PASS release:case:unreachable 2.65 s
+PROGRESS [release:case:derived] 0.0 s started
+PROGRESS [release:case:derived] 0.0 s PROGRESS release case derived started
+PROGRESS [release:case:derived] 2.5 s PROGRESS release case derived passed
+PASS release:case:derived 2.68 s
+PROGRESS [release:case:settings_scope] 0.0 s started
+PROGRESS [release:case:settings_scope] 0.0 s PROGRESS release case settings_scope started
+PROGRESS [release:case:settings_scope] 2.4 s PROGRESS release case settings_scope passed
+PASS release:case:settings_scope 2.54 s
+PROGRESS [release:case:nonmain] 0.0 s started
+PROGRESS [release:case:nonmain] 0.0 s PROGRESS release case nonmain started
+PROGRESS [release:case:nonmain] 0.8 s PROGRESS release case nonmain passed
+PASS release:case:nonmain 0.91 s
+PROGRESS [release:case:divergence] 0.0 s started
+PROGRESS [release:case:divergence] 0.0 s PROGRESS release case divergence started
+PROGRESS [skeleton] 38.3 s # Subtest: WO-055 AC3 two wrong repairs exhaust with last finding and no third source dispatch
+PROGRESS [release:case:divergence] 0.8 s PROGRESS release case divergence passed
+PASS release:case:divergence 0.97 s
+PROGRESS [release:case:malformed] 0.0 s started
+PROGRESS [release:case:malformed] 0.0 s PROGRESS release case malformed started
+PROGRESS [release:case:malformed] 0.8 s PROGRESS release case malformed passed
+PASS release:case:malformed 0.92 s
+PROGRESS [release:case:missinggh] 0.0 s started
+PROGRESS [release:case:missinggh] 0.0 s PROGRESS release case missinggh started
+PROGRESS [release:case:missinggh] 2.2 s PROGRESS release case missinggh passed
+PASS release:case:missinggh 2.35 s
+PROGRESS [release:case:unauthenticated] 0.0 s started
+PROGRESS [release:case:unauthenticated] 0.0 s PROGRESS release case unauthenticated started
+PROGRESS [skeleton] 43.4 s # Subtest: WO-055 AC4 SIGKILL afterRepairCommit resumes persisted continuation without another repair
+PROGRESS [release:case:unauthenticated] 1.4 s PROGRESS release case unauthenticated passed
+PASS release:case:unauthenticated 1.55 s
+PROGRESS [release:case:splitorigin] 0.0 s started
+PROGRESS [release:case:splitorigin] 0.0 s PROGRESS release case splitorigin started
+PROGRESS [release:case:splitorigin] 0.7 s PROGRESS release case splitorigin passed
+PASS release:case:splitorigin 0.83 s
+PROGRESS [release:case:lower] 0.0 s started
+PROGRESS [release:case:lower] 0.0 s PROGRESS release case lower started
+PROGRESS [resume] 45.0 s running; last report: waiting for the next case report
+PROGRESS [worktree] 45.0 s running; last report: waiting for the next case report
+PROGRESS [release:case:lower] 1.4 s PROGRESS release case lower passed
+PASS release:case:lower 1.56 s
+PROGRESS [release:case:failures] 0.0 s started
+PROGRESS [release:case:failures] 0.0 s PROGRESS release case failures started
+PROGRESS [release:case:failures] 2.2 s PROGRESS release case failures passed
+PROGRESS [skeleton] 48.3 s # Subtest: WO-055 AC4 SIGKILL afterSnapshotPrepared resumes persisted continuation without another repair
+PASS release:case:failures 2.37 s
+PROGRESS [release:case:cadence_missing] 0.0 s started
+PROGRESS [release:case:cadence_missing] 0.0 s PROGRESS release case cadence_missing started
+PROGRESS [release:case:cadence_missing] 1.7 s PROGRESS release case cadence_missing passed
+PASS release:case:cadence_missing 1.85 s
+PROGRESS [release:case:cadence_inconsistent] 0.0 s started
+PROGRESS [release:case:cadence_inconsistent] 0.0 s PROGRESS release case cadence_inconsistent started
+PROGRESS [skeleton] 52.1 s # Subtest: WO-055 AC1 refused path or command persists byte-identical envelope and dispatches no writer
+PASS resume 53.46 s
+PROGRESS [release:case:conflict] 0.0 s started
+PROGRESS [release:case:conflict] 0.0 s PROGRESS release case conflict started
+PROGRESS [release:case:cadence_inconsistent] 4.2 s PROGRESS release case cadence_inconsistent passed
+PASS release:case:cadence_inconsistent 4.54 s
+PROGRESS [release:case:localconflict] 0.0 s started
+PROGRESS [release:case:localconflict] 0.0 s PROGRESS release case localconflict started
+PROGRESS [release:case:conflict] 1.8 s PROGRESS release case conflict passed
+PASS release:case:conflict 1.94 s
+PROGRESS [release:case:nestedtag] 0.0 s started
+PROGRESS [release:case:nestedtag] 0.0 s PROGRESS release case nestedtag started
+PROGRESS [release:case:localconflict] 1.2 s PROGRESS release case localconflict passed
+PASS release:case:localconflict 1.37 s
+PROGRESS [release:case:prepare] 0.0 s started
+PROGRESS [release:case:prepare] 0.0 s PROGRESS release case prepare started
+PROGRESS [release:case:nestedtag] 1.3 s PROGRESS release case nestedtag passed
+PASS release:case:nestedtag 1.35 s
+PROGRESS [release:case:missinglocalprevious] 0.0 s started
+PROGRESS [release:case:missinglocalprevious] 0.0 s PROGRESS release case missinglocalprevious started
+PROGRESS [skeleton] 58.3 s # Subtest: WO-068 recorded clock drives all phases; replay ignores ambient clock; return cancels; idle needs a fresh edge
+PROGRESS [release:case:prepare] 2.1 s PROGRESS release case prepare passed
+PASS release:case:prepare 2.19 s
+PROGRESS [release:case:pushfail] 0.0 s started
+PROGRESS [release:case:pushfail] 0.0 s PROGRESS release case pushfail started
+PROGRESS [release:case:missinglocalprevious] 2.2 s PROGRESS release case missinglocalprevious passed
+PASS release:case:missinglocalprevious 2.26 s
+PROGRESS [release:case:refrecovery] 0.0 s started
+PROGRESS [release:case:refrecovery] 0.0 s PROGRESS release case refrecovery started
+PROGRESS [worktree] 60.0 s running; last report: waiting for the next case report
+PROGRESS [release:case:pushfail] 2.3 s PROGRESS release case pushfail passed
+PASS release:case:pushfail 2.43 s
+PROGRESS [release:case:createrecovery] 0.0 s started
+PROGRESS [release:case:createrecovery] 0.0 s PROGRESS release case createrecovery started
+PROGRESS [release:case:refrecovery] 3.7 s PROGRESS release case refrecovery passed
+PASS release:case:refrecovery 3.79 s
+PROGRESS [release:case:stale_helpers] 0.0 s started
+PROGRESS [release:case:stale_helpers] 0.0 s PROGRESS release case stale_helpers started
+PROGRESS [release:case:stale_helpers] 7.0 s PROGRESS release case stale_helpers passed
+PASS release:case:stale_helpers 7.12 s
+PROGRESS [release:case:runtime_refresh] 0.0 s started
+PROGRESS [release:case:runtime_refresh] 0.0 s PROGRESS release case runtime_refresh started
+PROGRESS [release:case:createrecovery] 10.3 s PROGRESS release case createrecovery passed
+PASS release:case:createrecovery 10.46 s
+PROGRESS [release:case:success] 0.0 s started
+PROGRESS [release:case:success] 0.0 s PROGRESS release case success started
+PROGRESS [worktree] 75.0 s running; last report: waiting for the next case report
+PROGRESS [skeleton] 75.0 s running; last report: # Subtest: WO-143 once and loop restart at every acquisition filesystem boundary, including killed reclaimers
+PROGRESS [release:case:runtime_refresh] 12.2 s PROGRESS release case runtime_refresh passed
+PASS release:case:runtime_refresh 12.84 s
+PROGRESS [release:case:edition] 0.0 s started
+PROGRESS [release:case:edition] 0.0 s PROGRESS release case edition started
+PROGRESS [release:case:success] 16.8 s PROGRESS release case success passed
+PASS release:case:success 16.95 s
+PROGRESS [release:case:firstrelease] 0.0 s started
+PROGRESS [release:case:firstrelease] 0.0 s PROGRESS release case firstrelease started
+PROGRESS [release:case:edition] 6.5 s PROGRESS release case edition passed
+PASS release:case:edition 6.54 s
+PROGRESS [release:case:cached_evidence] 0.0 s started
+PROGRESS [release:case:cached_evidence] 0.0 s PROGRESS release case cached_evidence started
+PROGRESS [worktree] 90.0 s running; last report: waiting for the next case report
+PROGRESS [skeleton] 90.0 s running; last report: # Subtest: WO-143 once and loop restart at every acquisition filesystem boundary, including killed reclaimers
+PROGRESS [release:case:firstrelease] 3.1 s PROGRESS release case firstrelease passed
+PASS release:case:firstrelease 3.21 s
+PROGRESS [release:case:composed_evidence] 0.0 s started
+PROGRESS [release:case:composed_evidence] 0.0 s PROGRESS release case composed_evidence started
+PROGRESS [release:case:cached_evidence] 6.7 s PROGRESS release case cached_evidence passed
+PASS release:case:cached_evidence 6.82 s
+PROGRESS [release:case:concurrent] 0.0 s started
+PROGRESS [release:case:concurrent] 0.0 s PROGRESS release case concurrent started
+PROGRESS [release:case:composed_evidence] 5.6 s PROGRESS release case composed_evidence passed
+PASS worktree 97.25 s
+PROGRESS [release-preparation] 0.0 s started
+PASS release:case:composed_evidence 5.78 s
+PROGRESS [github-body] 0.0 s started
+PROGRESS [github-body] 0.1 s # Subtest: GitHub prose profile case 1
+PASS github-body 0.09 s
+PROGRESS [outward-lint] 0.0 s started
+PROGRESS [outward-lint] 0.4 s # Subtest: conforming subject
+PASS outward-lint 0.42 s
+PROGRESS [target-publish] 0.0 s started
+PROGRESS [release-preparation] 2.9 s # Subtest: release preparation records a collision once, as the order's decision, and touches no product document
+PASS release-preparation 2.91 s
+PROGRESS [license-fixtures] 0.0 s started
+PROGRESS [target-publish] 3.6 s # Subtest: WO-064 AC1: publish refuses without an operator grant before any remote call
+PROGRESS [target-publish] 5.9 s # Subtest: WO-064 AC1: a host-policy grant is not operator provenance
+PROGRESS [skeleton] 105.0 s running; last report: # Subtest: WO-143 once and loop restart at every acquisition filesystem boundary, including killed reclaimers
+PROGRESS [target-publish] 10.5 s # Subtest: WO-064 AC1/AC2: lint and target refusals name their rule; the granted publish pushes and opens the pull request with the pinned body
+PROGRESS [license-fixtures] 8.4 s # Subtest: real npm refuses every validated manifest before packing, despite ambient script suppression
+PASS license-fixtures 8.37 s
+PROGRESS [publication-fixtures] 0.0 s started
+PASS publication-fixtures 0.83 s
+PROGRESS [backup-intake] 0.0 s started
+PASS backup-intake 0.28 s
+PROGRESS [beacon-portability] 0.0 s started
+PROGRESS [beacon-portability] 1.1 s # Subtest: WO-070 grep scan finds one home for the seven Beacon leaves and no skeleton source or dist copy of them
+PASS beacon-portability 1.15 s
+PROGRESS [checkpoint] 0.0 s started
+PROGRESS [target-publish] 14.6 s # Subtest: WO-064 AC1 (VER-001 F1): a same-head acceptance matrix must verify this WorkOrder's criteria
+PROGRESS [release:case:concurrent] 16.6 s PROGRESS release case concurrent passed
+PASS release:case:concurrent 16.90 s
+PROGRESS [worktree-integration] 0.0 s started
+PASS checkpoint 7.71 s
+PROGRESS [work-orders-fixtures] 0.0 s started
+PROGRESS [skeleton] 120.0 s running; last report: # Subtest: WO-143 once and loop restart at every acquisition filesystem boundary, including killed reclaimers
+PROGRESS [target-publish] 30.0 s running; last report: ok 4 - WO-064 AC1 (VER-001 F1): a same-head acceptance matrix must verify this WorkOrder's criteria
+PROGRESS [worktree-integration] 15.0 s running; last report: waiting for the next case report
+PROGRESS [target-publish] 32.3 s # Subtest: WO-157: publication runs no hook or repository configuration the target holds
+PROGRESS [work-orders-fixtures] 15.0 s running; last report: waiting for the next case report
+PROGRESS [skeleton] 135.0 s running; last report: # Subtest: WO-143 once and loop restart at every acquisition filesystem boundary, including killed reclaimers
+PROGRESS [target-publish] 40.9 s # Subtest: WO-066 AC1/AC3: an accepted automated thread repairs, verifies, pushes, disposes and records fresh resolution; recovery never pushes twice
+PROGRESS [worktree-integration] 30.0 s running; last report: waiting for the next case report
+PASS work-orders-fixtures 25.56 s
+PROGRESS [console] 0.0 s started
+PROGRESS [console] 0.2 s # Subtest: WO-132 goal receipts render answers, findings and recorded hold status
+PROGRESS [target-publish] 49.3 s # Subtest: WO-066 AC1: a mapped failing check repairs and is freshly observed successful at the new head
+PROGRESS [skeleton] 150.0 s running; last report: # Subtest: WO-143 once and loop restart at every acquisition filesystem boundary, including killed reclaimers
+PROGRESS [worktree-integration] 45.0 s running; last report: waiting for the next case report
+PROGRESS [console] 18.5 s # Subtest: WO-164 console collection spawns a constant number of processes and Git reads only new or moved tags
+PASS console 19.44 s
+PROGRESS [adjacent-queue] 0.0 s started
+PROGRESS [adjacent-queue] 0.5 s # Subtest: WO-042 queued fixes require diagnosis, announcement, steering checkpoint and current priority
+PASS adjacent-queue 0.51 s
+PROGRESS [resident-bind] 0.0 s started
+PROGRESS [target-publish] 67.1 s # Subtest: WO-066 AC2: reject carries evidence to the thread; human comments never dispatch or dispose; outside paths and unmapped checks name NeedsHuman
+PROGRESS [skeleton] 165.0 s running; last report: # Subtest: WO-143 once and loop restart at every acquisition filesystem boundary, including killed reclaimers
+PROGRESS [worktree-integration] 60.0 s running; last report: waiting for the next case report
+PROGRESS [resident-bind] 10.1 s # Subtest: bind writes a store the runtime accepts and aims at the bound worktree
+PASS resident-bind 10.13 s
+PROGRESS [derived-orders] 0.0 s started
+PROGRESS [target-publish] 77.8 s # Subtest: WO-066 AC2: a refused comment stops with its identifier; failed repair verification cannot push or dispatch a second round
+PROGRESS [derived-orders] 5.2 s # Subtest: compiled order materializes, activates and shares index, status and lifecycle
+PROGRESS [skeleton] 180.0 s running; last report: # Subtest: WO-143 once and loop restart at every acquisition filesystem boundary, including killed reclaimers
+PROGRESS [target-publish] 83.1 s # Subtest: WO-066 AC3: later comments enter at observation, but a local resolved bit without an observer event proves nothing
+PROGRESS [derived-orders] 8.7 s # Subtest: two processes serialize allocations, including the same retry key
+PASS derived-orders 8.71 s
+PROGRESS [portfolio] 0.0 s started
+PROGRESS [portfolio] 1.7 s # Subtest: the configuration section is the reviewed portfolio text, validated under its registered repository
+PROGRESS [target-publish] 89.2 s # Subtest: WO-066 AC4: push and every thread disposition require their operator effect before gh; a foreign repaired head cannot push
+PASS target-publish 89.19 s
+PROGRESS [codex-continuation] 0.0 s started
+PROGRESS [worktree-integration] 75.0 s running; last report: waiting for the next case report
+PROGRESS [codex-continuation] 7.4 s # Subtest: generated JavaScript harness surfaces agree with the repository format policy
+PASS codex-continuation 7.38 s
+PROGRESS [authority-grants] 0.0 s started
+PROGRESS [authority-grants] 0.2 s # Subtest: WO-042 AC2 trace, effective envelope and runtime authorize agree for every layer and restoration
+PASS authority-grants 0.20 s
+PROGRESS [local-runner-double] 0.0 s started
+PROGRESS [skeleton] 195.0 s running; last report: # Subtest: WO-143 once and loop restart at every acquisition filesystem boundary, including killed reclaimers
+PROGRESS [local-runner-double] 0.6 s # Subtest: WO-138 matrix pre-registers 30 baselines, five one-factor cells and three failure cells
+PROGRESS [local-runner-double] 3.0 s # Subtest: WO-110 the smoke records an envelope as shapes and keeps model text out
+PASS local-runner-double 3.88 s
+PROGRESS [artifact-corpus] 0.0 s started
+PROGRESS [artifact-corpus] 0.2 s # Subtest: WO-101 independent pair-arithmetic hash is planted on published FNV-1a-64 values
+PASS artifact-corpus 0.18 s
+PROGRESS [portfolio] 24.8 s # Subtest: WO-100 criteria 1-3: derived orders materialize as indexed records, activate with host-policy provenance, change through WO-052, verify through WO-054, reset from a non-last phase on a fail
+PASS portfolio 24.85 s
+PROGRESS [skeleton] 210.0 s running; last report: # Subtest: WO-143 once and loop restart at every acquisition filesystem boundary, including killed reclaimers
+PROGRESS [worktree-integration] 105.0 s running; last report: waiting for the next case report
+PROGRESS [skeleton] 225.1 s running; last report: # Subtest: WO-143 once and loop restart at every acquisition filesystem boundary, including killed reclaimers
+PROGRESS [worktree-integration] 120.0 s running; last report: waiting for the next case report
+PROGRESS [skeleton] 240.1 s running; last report: # Subtest: WO-143 once and loop restart at every acquisition filesystem boundary, including killed reclaimers
+PROGRESS [worktree-integration] 135.0 s running; last report: waiting for the next case report
+PROGRESS [skeleton] 255.1 s running; last report: # Subtest: WO-143 once and loop restart at every acquisition filesystem boundary, including killed reclaimers
+PROGRESS [worktree-integration] 150.0 s running; last report: waiting for the next case report
+PROGRESS [skeleton] 270.1 s running; last report: # Subtest: WO-143 once and loop restart at every acquisition filesystem boundary, including killed reclaimers
+PROGRESS [worktree-integration] 165.0 s running; last report: waiting for the next case report
+PROGRESS [skeleton] 281.1 s ok 222 - WO-143 once and loop restart at every acquisition filesystem boundary, including killed reclaimers
+PROGRESS [worktree-integration] 180.0 s running; last report: waiting for the next case report
+PROGRESS [skeleton] 300.1 s running; last report: ok 223 - WO-173 a lock-matrix cell that exceeds its own deadline fails by name while the other seven run
+PROGRESS [worktree-integration] 195.0 s running; last report: waiting for the next case report
+PROGRESS [skeleton] 315.1 s running; last report: ok 223 - WO-173 a lock-matrix cell that exceeds its own deadline fails by name while the other seven run
+PROGRESS [worktree-integration] 210.0 s running; last report: waiting for the next case report
+PROGRESS [skeleton] 330.1 s running; last report: ok 223 - WO-173 a lock-matrix cell that exceeds its own deadline fails by name while the other seven run
+PROGRESS [worktree-integration] 225.0 s running; last report: waiting for the next case report
+PROGRESS [skeleton] 339.2 s # Subtest: WO-143 thirty consecutive kill/restart rounds remain openable on once and loop paths
+PROGRESS [skeleton] 340.6 s # Subtest: WO-147 a lock released between observation and read is re-inspected under the guard
+PROGRESS [skeleton] 346.3 s # Subtest: WO-147 retirement probe tolerates a delayed claim present when recursive cleanup begins
+PROGRESS [skeleton] 347.4 s # Subtest: WO-143 a delayed claimant cannot unlink a successor through a retired target
+PROGRESS [worktree-integration] 240.0 s running; last report: waiting for the next case report
+PROGRESS [worktree-integration] 255.0 s running; last report: waiting for the next case report
+PROGRESS [skeleton] 375.1 s running; last report: ok 231 - WO-143 a delayed claimant cannot unlink a successor through a retired target
+PROGRESS [worktree-integration] 270.0 s running; last report: waiting for the next case report
+PROGRESS [skeleton] 390.1 s running; last report: ok 231 - WO-143 a delayed claimant cannot unlink a successor through a retired target
+PROGRESS [worktree-integration] 285.0 s running; last report: waiting for the next case report
+PROGRESS [skeleton] 400.1 s # Subtest: WO-143 once and loop recover kills during a running episode's polling acquisition
+PASS skeleton 400.10 s
+PROGRESS [kernel] 0.0 s started
+PROGRESS [kernel] 0.2 s # Subtest: AC1 evidence: no ambient Date.now or Math.random read on either branch (poisoned globals)
+PASS kernel 0.51 s
+PROGRESS [compiler] 0.0 s started
+PROGRESS [compiler] 0.2 s # Subtest: WO-029 seiri: exact identity, manifest membership and independent no-BigInt FNV agreement
+PASS compiler 0.80 s
+PROGRESS [browser-evidence] 0.0 s started
+PROGRESS [browser-evidence] 0.3 s # Subtest: browser component release labels normalize while the pinned browser tree remains evidence input
+PROGRESS [browser-evidence] 0.4 s not ok 2 - installed pinned browser produces all five kinds admitted from a VerificationOpened subject
+PROGRESS [browser-evidence] 0.4 s not ok 3 - saved scenario replays exact declared DOM, network, accessibility, console and screenshot fields
+PROGRESS [browser-evidence] 0.5 s not ok 4 - console error capture binds every scenario criterion and refuses each pass even when omitted
+PROGRESS [browser-evidence] 0.6 s not ok 5 - a failed assertion produces adverse evidence rather than a pass
+PROGRESS [browser-evidence] 0.7 s not ok 6 - failed console.assert is adverse for every covered criterion
+PROGRESS [browser-evidence] 1.2 s not ok 7 - console witness retains captured bytes when a late message arrives during trace stop
+PROGRESS [browser-evidence] 1.2 s not ok 9 - fixture runs without every connected-server environment variable WO-057 removed
+PROGRESS [worktree-integration] 300.0 s running; last report: waiting for the next case report
+PROGRESS [browser-evidence] 14.1 s # Subtest: SIGKILL recovery observes zero recorded browser processes and leaves an unrelated process alive
+PROGRESS [browser-evidence] 14.1 s not ok 10 - SIGKILL recovery observes zero recorded browser processes and leaves an unrelated process alive
+PROGRESS [browser-evidence] 14.1 s not ok 11 - missing pinned browser returns unavailable evidence and the package suite fails with an install command
+PROGRESS [browser-evidence] 14.5 s not ok 15 - capture overflow remains bounded unavailable evidence admitted without a pass
+PROGRESS [browser-evidence] 14.7 s not ok 16 - recovery rejects an unrelated recorded process and ignores a stale root identity
+PROGRESS [browser-evidence] 15.5 s not ok 18 - recovery signals a recorded surviving root and child after owner SIGKILL
+PROGRESS [browser-evidence] 15.6 s not ok 19 - observed console errors remain adverse when another capture is unavailable
+FAIL browser-evidence 15.57 s
+  [browser-evidence] TAP version 13
+  [browser-evidence] # Subtest: browser component release labels normalize while the pinned browser tree remains evidence input
+  [browser-evidence] ok 1 - browser component release labels normalize while the pinned browser tree remains evidence input
+  [browser-evidence]   ---
+  [browser-evidence]   duration_ms: 1.800667
+  [browser-evidence]   type: 'test'
+  [browser-evidence]   ...
+  [browser-evidence] # Subtest: installed pinned browser produces all five kinds admitted from a VerificationOpened subject
+  [browser-evidence] not ok 2 - installed pinned browser produces all five kinds admitted from a VerificationOpened subject
+  [browser-evidence]   ---
+  [browser-evidence]   duration_ms: 91.5555
+  [browser-evidence]   type: 'test'
+  [browser-evidence]   location: './packages/browser-evidence/test/scenario.test.mjs:242:1'
+  [browser-evidence]   failureType: 'testCodeFailure'
+  [browser-evidence]   error: |-
+  [browser-evidence]     Pinned Chromium launch unavailable; run PLAYWRIGHT_BROWSERS_PATH='./.runtime/playwright' npx playwright install chromium --only-shell
+  [browser-evidence]     + actual - expected
+  [browser-evidence]     
+  [browser-evidence]     + 'unavailable'
+  [browser-evidence]     - 'available'
+  [browser-evidence]     
+  [browser-evidence]   code: 'ERR_ASSERTION'
+  [browser-evidence]   name: 'AssertionError'
+  [browser-evidence]   expected: 'available'
+  [browser-evidence]   actual: 'unavailable'
+  [browser-evidence]   operator: 'strictEqual'
+  [browser-evidence]   stack: |-
+  [browser-evidence]     TestContext.<anonymous> (file://./packages/browser-evidence/test/scenario.test.mjs:247:10)
+  [browser-evidence]     async Test.run (node:internal/test_runner/test:1409:7)
+  [browser-evidence]     async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  [browser-evidence]   ...
+  [browser-evidence] # Subtest: saved scenario replays exact declared DOM, network, accessibility, console and screenshot fields
+  [browser-evidence] not ok 3 - saved scenario replays exact declared DOM, network, accessibility, console and screenshot fields
+  [browser-evidence]   ---
+  [browser-evidence]   duration_ms: 2.195083
+  [browser-evidence]   type: 'test'
+  [browser-evidence]   location: './packages/browser-evidence/test/scenario.test.mjs:336:1'
+  [browser-evidence]   failureType: 'testCodeFailure'
+  [browser-evidence]   error: |-
+  [browser-evidence]     The expression evaluated to a falsy value:
+  [browser-evidence]     
+  [browser-evidence]       assert.ok(baseline)
+  [browser-evidence]     
+  [browser-evidence]   code: 'ERR_ASSERTION'
+  [browser-evidence]   name: 'AssertionError'
+  [browser-evidence]   expected: true
+  [browser-evidence]   operator: '=='
+  [browser-evidence]   stack: |-
+  [browser-evidence]     TestContext.<anonymous> (file://./packages/browser-evidence/test/scenario.test.mjs:337:10)
+  [browser-evidence]     Test.runInAsyncScope (node:async_hooks:226:14)
+  [browser-evidence]     Test.run (node:internal/test_runner/test:1402:25)
+  [browser-evidence]     Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+  [browser-evidence]     Test.postRun (node:internal/test_runner/test:1542:19)
+  [browser-evidence]     Test.run (node:internal/test_runner/test:1467:12)
+  [browser-evidence]     async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  [browser-evidence]   ...
+  [browser-evidence] # Subtest: console error capture binds every scenario criterion and refuses each pass even when omitted
+  [browser-evidence] not ok 4 - console error capture binds every scenario criterion and refuses each pass even when omitted
+  [browser-evidence]   ---
+  [browser-evidence]   duration_ms: 89.174125
+  [browser-evidence]   type: 'test'
+  [browser-evidence]   location: './packages/browser-evidence/test/scenario.test.mjs:376:1'
+  [browser-evidence]   failureType: 'testCodeFailure'
+  [browser-evidence]   error: |-
+  [browser-evidence]     Pinned Chromium launch unavailable; run PLAYWRIGHT_BROWSERS_PATH='./.runtime/playwright' npx playwright install chromium --only-shell
+  [browser-evidence]     + actual - expected
+  [browser-evidence]     
+  [browser-evidence]     + 'unavailable'
+  [browser-evidence]     - 'available'
+  [browser-evidence]     
+  [browser-evidence]   code: 'ERR_ASSERTION'
+  [browser-evidence]   name: 'AssertionError'
+  [browser-evidence]   expected: 'available'
+  [browser-evidence]   actual: 'unavailable'
+  [browser-evidence]   operator: 'strictEqual'
+  [browser-evidence]   stack: |-
+  [browser-evidence]     TestContext.<anonymous> (file://./packages/browser-evidence/test/scenario.test.mjs:389:10)
+  [browser-evidence]     async Test.run (node:internal/test_runner/test:1409:7)
+  [browser-evidence]     async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  [browser-evidence]   ...
+  [browser-evidence] # Subtest: a failed assertion produces adverse evidence rather than a pass
+  [browser-evidence] not ok 5 - a failed assertion produces adverse evidence rather than a pass
+  [browser-evidence]   ---
+  [browser-evidence]   duration_ms: 93.597416
+  [browser-evidence]   type: 'test'
+  [browser-evidence]   location: './packages/browser-evidence/test/scenario.test.mjs:425:1'
+  [browser-evidence]   failureType: 'testCodeFailure'
+  [browser-evidence]   error: |-
+  [browser-evidence]     Pinned Chromium launch unavailable; run PLAYWRIGHT_BROWSERS_PATH='./.runtime/playwright' npx playwright install chromium --only-shell
+  [browser-evidence]     + actual - expected
+  [browser-evidence]     
+  [browser-evidence]     + 'unavailable'
+  [browser-evidence]     - 'available'
+  [browser-evidence]     
+  [browser-evidence]   code: 'ERR_ASSERTION'
+  [browser-evidence]   name: 'AssertionError'
+  [browser-evidence]   expected: 'available'
+  [browser-evidence]   actual: 'unavailable'
+  [browser-evidence]   operator: 'strictEqual'
+  [browser-evidence]   stack: |-
+  [browser-evidence]     TestContext.<anonymous> (file://./packages/browser-evidence/test/scenario.test.mjs:438:10)
+  [browser-evidence]     async Test.run (node:internal/test_runner/test:1409:7)
+  [browser-evidence]     async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  [browser-evidence]   ...
+  [browser-evidence] # Subtest: failed console.assert is adverse for every covered criterion
+  [browser-evidence] not ok 6 - failed console.assert is adverse for every covered criterion
+  [browser-evidence]   ---
+  [browser-evidence]   duration_ms: 84.17525
+  [browser-evidence]   type: 'test'
+  [browser-evidence]   location: './packages/browser-evidence/test/scenario.test.mjs:455:1'
+  [browser-evidence]   failureType: 'testCodeFailure'
+  [browser-evidence]   error: |-
+  [browser-evidence]     Pinned Chromium launch unavailable; run PLAYWRIGHT_BROWSERS_PATH='./.runtime/playwright' npx playwright install chromium --only-shell
+  [browser-evidence]     + actual - expected
+  [browser-evidence]     
+  [browser-evidence]     + 'unavailable'
+  [browser-evidence]     - 'available'
+  [browser-evidence]     
+  [browser-evidence]   code: 'ERR_ASSERTION'
+  [browser-evidence]   name: 'AssertionError'
+  [browser-evidence]   expected: 'available'
+  [browser-evidence]   actual: 'unavailable'
+  [browser-evidence]   operator: 'strictEqual'
+  [browser-evidence]   stack: |-
+  [browser-evidence]     TestContext.<anonymous> (file://./packages/browser-evidence/test/scenario.test.mjs:472:10)
+  [browser-evidence]     async Test.run (node:internal/test_runner/test:1409:7)
+  [browser-evidence]     async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  [browser-evidence]   ...
+  [browser-evidence] # Subtest: console witness retains captured bytes when a late message arrives during trace stop
+  [browser-evidence] not ok 7 - console witness retains captured bytes when a late message arrives during trace stop
+  [browser-evidence]   ---
+  [browser-evidence]   duration_ms: 92.901334
+  [browser-evidence]   type: 'test'
+  [browser-evidence]   location: './packages/browser-evidence/test/scenario.test.mjs:509:1'
+  [browser-evidence]   failureType: 'testCodeFailure'
+  [browser-evidence]   error: |-
+  [browser-evidence]     Pinned Chromium launch unavailable; run PLAYWRIGHT_BROWSERS_PATH='./.runtime/playwright' npx playwright install chromium --only-shell
+  [browser-evidence]     + actual - expected
+  [browser-evidence]     
+  [browser-evidence]     + 'unavailable'
+  [browser-evidence]     - 'available'
+  [browser-evidence]     
+  [browser-evidence]   code: 'ERR_ASSERTION'
+  [browser-evidence]   name: 'AssertionError'
+  [browser-evidence]   expected: 'available'
+  [browser-evidence]   actual: 'unavailable'
+  [browser-evidence]   operator: 'strictEqual'
+  [browser-evidence]   stack: |-
+  [browser-evidence]     TestContext.<anonymous> (file://./packages/browser-evidence/test/scenario.test.mjs:536:10)
+  [browser-evidence]     async Test.run (node:internal/test_runner/test:1409:7)
+  [browser-evidence]     async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  [browser-evidence]   ...
+  [browser-evidence] # Subtest: non-missing browser launch failures remain unavailable without install advice
+  [browser-evidence] ok 8 - non-missing browser launch failures remain unavailable without install advice
+  [browser-evidence]   ---
+  [browser-evidence]   duration_ms: 167.352291
+  [browser-evidence]   type: 'test'
+  [browser-evidence]   ...
+  [browser-evidence] # Subtest: fixture runs without every connected-server environment variable WO-057 removed
+  [browser-evidence] not ok 9 - fixture runs without every connected-server environment variable WO-057 removed
+  [browser-evidence]   ---
+  [browser-evidence]   duration_ms: 269.079792
+  [browser-evidence]   type: 'test'
+  [browser-evidence]   location: './packages/browser-evidence/test/scenario.test.mjs:595:1'
+  [browser-evidence]   failureType: 'testCodeFailure'
+  [browser-evidence]   error: |-
+  [browser-evidence]     Expected values to be strictly equal:
+  [browser-evidence]     + actual - expected
+  [browser-evidence]     
+  [browser-evidence]     + 'unavailable'
+  [browser-evidence]     - 'available'
+  [browser-evidence]     
+  [browser-evidence]   code: 'ERR_ASSERTION'
+  [browser-evidence]   name: 'AssertionError'
+  [browser-evidence]   expected: 'available'
+  [browser-evidence]   actual: 'unavailable'
+  [browser-evidence]   operator: 'strictEqual'
+  [browser-evidence]   stack: |-
+  [browser-evidence]     TestContext.<anonymous> (file://./packages/browser-evidence/test/scenario.test.mjs:616:10)
+  [browser-evidence]     Test.runInAsyncScope (node:async_hooks:226:14)
+  [browser-evidence]     Test.run (node:internal/test_runner/test:1402:25)
+  [browser-evidence]     Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+  [browser-evidence]     Test.postRun (node:internal/test_runner/test:1542:19)
+  [browser-evidence]     Test.run (node:internal/test_runner/test:1467:12)
+  [browser-evidence]     async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  [browser-evidence]   ...
+  [browser-evidence] # Subtest: SIGKILL recovery observes zero recorded browser processes and leaves an unrelated process alive
+  [browser-evidence] not ok 10 - SIGKILL recovery observes zero recorded browser processes and leaves an unrelated process alive
+  [browser-evidence]   ---
+  [browser-evidence]   duration_ms: 10021.504083
+  [browser-evidence]   type: 'test'
+  [browser-evidence]   location: './packages/browser-evidence/test/scenario.test.mjs:624:1'
+  [browser-evidence]   failureType: 'testCodeFailure'
+  [browser-evidence]   error: 'Held host recorded browser and descendants'
+  [browser-evidence]   code: 'ERR_ASSERTION'
+  [browser-evidence]   name: 'AssertionError'
+  [browser-evidence]   expected: true
+  [browser-evidence]   actual: false
+  [browser-evidence]   operator: '=='
+  [browser-evidence]   stack: |-
+  [browser-evidence]     TestContext.<anonymous> (file://./packages/browser-evidence/test/scenario.test.mjs:658:12)
+  [browser-evidence]     async Test.run (node:internal/test_runner/test:1409:7)
+  [browser-evidence]     async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  [browser-evidence]   ...
+  [browser-evidence] # Subtest: missing pinned browser returns unavailable evidence and the package suite fails with an install command
+  [browser-evidence] not ok 11 - missing pinned browser returns unavailable evidence and the package suite fails with an install command
+  [browser-evidence]   ---
+  [browser-evidence]   duration_ms: 980.864
+  [browser-evidence]   type: 'test'
+  [browser-evidence]   location: './packages/browser-evidence/test/scenario.test.mjs:719:1'
+  [browser-evidence]   failureType: 'testCodeFailure'
+  [browser-evidence]   error: "Cannot read properties of undefined (reading 'filter')"
+  [browser-evidence]   code: 'ERR_TEST_FAILURE'
+  [browser-evidence]   name: 'TypeError'
+  [browser-evidence]   stack: |-
+  [browser-evidence]     requestFor (file://./packages/browser-evidence/test/scenario.test.mjs:168:38)
+  [browser-evidence]     TestContext.<anonymous> (file://./packages/browser-evidence/test/scenario.test.mjs:749:19)
+  [browser-evidence]     Test.runInAsyncScope (node:async_hooks:226:14)
+  [browser-evidence]     Test.run (node:internal/test_runner/test:1402:25)
+  [browser-evidence]     Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+  [browser-evidence]     Test.postRun (node:internal/test_runner/test:1542:19)
+  [browser-evidence]     Test.run (node:internal/test_runner/test:1467:12)
+  [browser-evidence]     process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+  [browser-evidence]     async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  [browser-evidence]   ...
+  [browser-evidence] # Subtest: fresh worktree suite default prints an install remedy for its actual cache and README setup
+  [browser-evidence] ok 12 - fresh worktree suite default prints an install remedy for its actual cache and README setup
+  [browser-evidence]   ---
+  [browser-evidence]   duration_ms: 1240.208084
+  [browser-evidence]   type: 'test'
+  [browser-evidence]   ...
+  [browser-evidence] # Subtest: default environment caller keeps the platform-default browser install remedy
+  [browser-evidence] ok 13 - default environment caller keeps the platform-default browser install remedy
+  [browser-evidence]   ---
+  [browser-evidence]   duration_ms: 712.622583
+  [browser-evidence]   type: 'test'
+  [browser-evidence]   ...
+  [browser-evidence] # Subtest: unsupported scenario inputs fail before filesystem or browser effects
+  [browser-evidence] ok 14 - unsupported scenario inputs fail before filesystem or browser effects
+  [browser-evidence]   ---
+  [browser-evidence]   duration_ms: 0.442542
+  [browser-evidence]   type: 'test'
+  [browser-evidence]   ...
+  [browser-evidence] # Subtest: capture overflow remains bounded unavailable evidence admitted without a pass
+  [browser-evidence] not ok 15 - capture overflow remains bounded unavailable evidence admitted without a pass
+  [browser-evidence]   ---
+  [browser-evidence]   duration_ms: 87.312792
+  [browser-evidence]   type: 'test'
+  [browser-evidence]   location: './packages/browser-evidence/test/scenario.test.mjs:917:1'
+  [browser-evidence]   failureType: 'testCodeFailure'
+  [browser-evidence]   error: |-
+  [browser-evidence]     The input did not match the regular expression /contract bounds/u. Input:
+  [browser-evidence]     
+  [browser-evidence]     "Pinned Chromium launch unavailable; run PLAYWRIGHT_BROWSERS_PATH='./.runtime/playwright' npx playwright install chromium --only-shell"
+  [browser-evidence]     
+  [browser-evidence]   code: 'ERR_ASSERTION'
+  [browser-evidence]   name: 'AssertionError'
+  [browser-evidence]   expected:
+  [browser-evidence]   actual: "Pinned Chromium launch unavailable; run PLAYWRIGHT_BROWSERS_PATH='./.runtime/playwright' npx playwright install chromium --only-shell"
+  [browser-evidence]   operator: 'match'
+  [browser-evidence]   stack: |-
+  [browser-evidence]     TestContext.<anonymous> (file://./packages/browser-evidence/test/scenario.test.mjs:935:10)
+  [browser-evidence]     async Test.run (node:internal/test_runner/test:1409:7)
+  [browser-evidence]     async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  [browser-evidence]   ...
+  [browser-evidence] # Subtest: recovery rejects an unrelated recorded process and ignores a stale root identity
+  [browser-evidence] not ok 16 - recovery rejects an unrelated recorded process and ignores a stale root identity
+  [browser-evidence]   ---
+  [browser-evidence]   duration_ms: 360.60875
+  [browser-evidence]   type: 'test'
+  [browser-evidence]   location: './packages/browser-evidence/test/scenario.test.mjs:965:1'
+  [browser-evidence]   failureType: 'testCodeFailure'
+  [browser-evidence]   error: |-
+  [browser-evidence]     Pinned Chromium launch unavailable; run PLAYWRIGHT_BROWSERS_PATH='./.runtime/playwright' npx playwright install chromium --only-shell
+  [browser-evidence]     + actual - expected
+  [browser-evidence]     
+  [browser-evidence]     + 'unavailable'
+  [browser-evidence]     - 'available'
+  [browser-evidence]     
+  [browser-evidence]   code: 'ERR_ASSERTION'
+  [browser-evidence]   name: 'AssertionError'
+  [browser-evidence]   expected: 'available'
+  [browser-evidence]   actual: 'unavailable'
+  [browser-evidence]   operator: 'strictEqual'
+  [browser-evidence]   stack: |-
+  [browser-evidence]     TestContext.<anonymous> (file://./packages/browser-evidence/test/scenario.test.mjs:1010:10)
+  [browser-evidence]     async Test.run (node:internal/test_runner/test:1409:7)
+  [browser-evidence]     async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  [browser-evidence]   ...
+  [browser-evidence] # Subtest: a bare browser PID never adopts or signals an unrelated live process
+  [browser-evidence] ok 17 - a bare browser PID never adopts or signals an unrelated live process
+  [browser-evidence]   ---
+  [browser-evidence]   duration_ms: 199.133917
+  [browser-evidence]   type: 'test'
+  [browser-evidence]   ...
+  [browser-evidence] # Subtest: recovery signals a recorded surviving root and child after owner SIGKILL
+  [browser-evidence] not ok 18 - recovery signals a recorded surviving root and child after owner SIGKILL
+  [browser-evidence]   ---
+  [browser-evidence]   duration_ms: 719.899375
+  [browser-evidence]   type: 'test'
+  [browser-evidence]   location: './packages/browser-evidence/test/scenario.test.mjs:1078:1'
+  [browser-evidence]   failureType: 'testCodeFailure'
+  [browser-evidence]   error: |-
+  [browser-evidence]     Pinned Chromium launch unavailable; run PLAYWRIGHT_BROWSERS_PATH='./.runtime/playwright' npx playwright install chromium --only-shell
+  [browser-evidence]     + actual - expected
+  [browser-evidence]     
+  [browser-evidence]     + 'unavailable'
+  [browser-evidence]     - 'available'
+  [browser-evidence]     
+  [browser-evidence]   code: 'ERR_ASSERTION'
+  [browser-evidence]   name: 'AssertionError'
+  [browser-evidence]   expected: 'available'
+  [browser-evidence]   actual: 'unavailable'
+  [browser-evidence]   operator: 'strictEqual'
+  [browser-evidence]   stack: |-
+  [browser-evidence]     TestContext.<anonymous> (file://./packages/browser-evidence/test/scenario.test.mjs:1143:12)
+  [browser-evidence]     async Test.run (node:internal/test_runner/test:1409:7)
+  [browser-evidence]     async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  [browser-evidence]   ...
+  [browser-evidence] # Subtest: observed console errors remain adverse when another capture is unavailable
+  [browser-evidence] not ok 19 - observed console errors remain adverse when another capture is unavailable
+  [browser-evidence]   ---
+  [browser-evidence]   duration_ms: 87.744625
+  [browser-evidence]   type: 'test'
+  [browser-evidence]   location: './packages/browser-evidence/test/scenario.test.mjs:1191:1'
+  [browser-evidence]   failureType: 'testCodeFailure'
+  [browser-evidence]   error: "Cannot read properties of undefined (reading 'kind')"
+  [browser-evidence]   code: 'ERR_TEST_FAILURE'
+  [browser-evidence]   name: 'TypeError'
+  [browser-evidence]   stack: |-
+  [browser-evidence]     file://./packages/browser-evidence/test/scenario.test.mjs:1209:30
+  [browser-evidence]     Array.filter (<anonymous>)
+  [browser-evidence]     TestContext.<anonymous> (file://./packages/browser-evidence/test/scenario.test.mjs:1208:31)
+  [browser-evidence]     async Test.run (node:internal/test_runner/test:1409:7)
+  [browser-evidence]     async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  [browser-evidence]   ...
+  [browser-evidence] 1..19
+  [browser-evidence] # tests 19
+  [browser-evidence] # suites 0
+  [browser-evidence] # pass 6
+  [browser-evidence] # fail 13
+  [browser-evidence] # cancelled 0
+  [browser-evidence] # skipped 0
+  [browser-evidence] # todo 0
+  [browser-evidence] # duration_ms 15504.267875
+PROGRESS [worktree-integration] 315.0 s running; last report: waiting for the next case report
+PROGRESS [worktree-integration] 330.0 s running; last report: waiting for the next case report
+PROGRESS [worktree-integration] 345.0 s running; last report: waiting for the next case report
+PROGRESS [worktree-integration] 360.0 s running; last report: waiting for the next case report
+PROGRESS [worktree-integration] 375.0 s running; last report: waiting for the next case report
+PROGRESS [worktree-integration] 387.3 s # Subtest: real Git fast-forward preserves recovery, histories and authored conflicts with real generators
+PASS worktree-integration 387.33 s
+npm test: 28 passed; 1 failed; 502.59 s; 73 fresh tasks
+EXIT 1; wallMs 503537
+Finished 2026-10-01T14:35:34.180Z

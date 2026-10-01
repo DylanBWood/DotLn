@@ -1,4 +1,4 @@
-# WO-103 — Authorization guard and outbox factorial decision-table corpus (version assigned at activation)
+# WO-103 — Authorization guard and outbox factorial decision-table corpus (v0.60.2)
 
 **Model:** Codex (any capable tier); any capable model may substitute. State the
 model and effort actually run in the result (07-execution-guide.md
