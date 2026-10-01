@@ -8764,10 +8764,17 @@ test("WO-132 generated release-close handoff and preview use the main writer res
       "\n",
   );
   emitHarness(root);
+  // This fixture drives Claude hooks with its own named session; a host
+  // Codex identity must not reserve its preview under a different actor.
+  const fixtureEnvironment = {
+    ...process.env,
+    CODEX_THREAD_ID: "",
+    COPILOT_AGENT_SESSION_ID: "",
+  };
   const printed = spawnSync(
     process.execPath,
     ["scripts/resume.mjs", "release-close"],
-    { cwd: root, encoding: "utf8" },
+    { cwd: root, encoding: "utf8", env: fixtureEnvironment },
   );
   assert.equal(printed.status, 0, printed.stderr);
   const handoff = printed.stdout.match(
@@ -8778,6 +8785,7 @@ test("WO-132 generated release-close handoff and preview use the main writer res
     const run = spawnSync(process.execPath, [`.claude/hooks/${name}.mjs`], {
       cwd: root,
       encoding: "utf8",
+      env: fixtureEnvironment,
       input: JSON.stringify(input(root, event, `${root}:close`, extra)),
     });
     assert.equal(run.status, 0, run.stderr);
