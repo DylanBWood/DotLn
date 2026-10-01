@@ -1,0 +1,341 @@
+WO-102 required corpus evidence
+Pinned base: ee9b9db9f716dbe6a94ae1b564bb2d04210f17d0
+The log filename names the pre-implementation base; no executor branch commit.
+Toolchain: {"architecture": "arm64", "node": "v26.9.0", "npm": "11.19.1", "osKernel": "27.0.0", "platform": "darwin", "typescript": "7.0.2"}
+
+Command: npm run build
+Started: 2026-10-01T14:24:18.600555+00:00
+
+> build
+> node scripts/build.mjs
+
+Built browser-evidence, compiler, console, kernel, skeleton with atomic file replacement; installed harness snapshots remain immutable
+
+Exit: 0; wallSeconds: 0.706171
+
+Command: node corpus/harness/generate-cadence-corpus.mjs --seed wo102-seed-20261001 --check
+Started: 2026-10-01T14:24:19.306740+00:00
+{"mode":"check","seed":"wo102-seed-20261001","full":{"Once":36,"After":48,"Every":645,"Gate":2650,"Until":2650,"Backoff":63360},"committed":{"Once":36,"After":48,"Every":645,"Gate":640,"Until":640,"Backoff":640},"fixtureTotals":{"files":14,"rows":2649,"bytes":1916504},"findings":0}
+
+Exit: 0; wallSeconds: 1.752028
+
+Command: node --test --test-reporter=tap corpus/harness/wo102-generators.test.mjs corpus/harness/wo102-properties.test.mjs corpus/harness/wo102-replay.test.mjs
+Started: 2026-10-01T14:24:21.058770+00:00
+TAP version 13
+# Subtest: WO-102 literal planted anchors pin next-tick, default origin, throws and hand-computed Backoff
+ok 1 - WO-102 literal planted anchors pin next-tick, default origin, throws and hand-computed Backoff
+  ---
+  duration_ms: 1.132292
+  type: 'test'
+  ...
+# Subtest: WO-102 tagged numbers preserve nonfinite intervals; absent startAt is actually absent
+ok 2 - WO-102 tagged numbers preserve nonfinite intervals; absent startAt is actually absent
+  ---
+  duration_ms: 119.536917
+  type: 'test'
+  ...
+# Subtest: WO-102 generator parser rejects missing, duplicate and ambiguous options
+ok 3 - WO-102 generator parser rejects missing, duplicate and ambiguous options
+  ---
+  duration_ms: 0.150542
+  type: 'test'
+  ...
+# Subtest: WO-102 regeneration is byte-identical and seed changes selection without changing the full set
+ok 4 - WO-102 regeneration is byte-identical and seed changes selection without changing the full set
+  ---
+  duration_ms: 5237.113166
+  type: 'test'
+  ...
+# Subtest: WO-102 detects planted clamp/threading drift and renders a numbered exact quarantine
+ok 5 - WO-102 detects planted clamp/threading drift and renders a numbered exact quarantine
+  ---
+  duration_ms: 0.559667
+  type: 'test'
+  ...
+# Subtest: WO-102 poison-only violations are exact findings and host functions are restored
+ok 6 - WO-102 poison-only violations are exact findings and host functions are restored
+  ---
+  duration_ms: 0.209208
+  type: 'test'
+  ...
+# Subtest: WO-102 full declared sweep (69389): drift, determinism, clamp, RNG threading, call order, no mutation
+ok 7 - WO-102 full declared sweep (69389): drift, determinism, clamp, RNG threading, call order, no mutation
+  ---
+  duration_ms: 1065.371875
+  type: 'test'
+  ...
+# Subtest: WO-102 no ambient clock or RNG under poisoned Date.now/Math.random (69389 vectors)
+ok 8 - WO-102 no ambient clock or RNG under poisoned Date.now/Math.random (69389 vectors)
+  ---
+  duration_ms: 463.011375
+  type: 'test'
+  ...
+# Subtest: WO-102 composition enumeration covers every truth mask, version, depth and terminal path
+ok 9 - WO-102 composition enumeration covers every truth mask, version, depth and terminal path
+  ---
+  duration_ms: 25.05825
+  type: 'test'
+  ...
+# Subtest: WO-102 fixture corpus/fixtures/cadence/once-001.jsonl hash and exact replay (36 vectors)
+ok 10 - WO-102 fixture corpus/fixtures/cadence/once-001.jsonl hash and exact replay (36 vectors)
+  ---
+  duration_ms: 1.420542
+  type: 'test'
+  ...
+# Subtest: WO-102 fixture corpus/fixtures/cadence/after-001.jsonl hash and exact replay (48 vectors)
+ok 11 - WO-102 fixture corpus/fixtures/cadence/after-001.jsonl hash and exact replay (48 vectors)
+  ---
+  duration_ms: 0.37775
+  type: 'test'
+  ...
+# Subtest: WO-102 fixture corpus/fixtures/cadence/every-001.jsonl hash and exact replay (256 vectors)
+ok 12 - WO-102 fixture corpus/fixtures/cadence/every-001.jsonl hash and exact replay (256 vectors)
+  ---
+  duration_ms: 1.911333
+  type: 'test'
+  ...
+# Subtest: WO-102 fixture corpus/fixtures/cadence/every-002.jsonl hash and exact replay (256 vectors)
+ok 13 - WO-102 fixture corpus/fixtures/cadence/every-002.jsonl hash and exact replay (256 vectors)
+  ---
+  duration_ms: 1.132666
+  type: 'test'
+  ...
+# Subtest: WO-102 fixture corpus/fixtures/cadence/every-003.jsonl hash and exact replay (133 vectors)
+ok 14 - WO-102 fixture corpus/fixtures/cadence/every-003.jsonl hash and exact replay (133 vectors)
+  ---
+  duration_ms: 0.570291
+  type: 'test'
+  ...
+# Subtest: WO-102 fixture corpus/fixtures/cadence/gate-001.jsonl hash and exact replay (256 vectors)
+ok 15 - WO-102 fixture corpus/fixtures/cadence/gate-001.jsonl hash and exact replay (256 vectors)
+  ---
+  duration_ms: 4.126625
+  type: 'test'
+  ...
+# Subtest: WO-102 fixture corpus/fixtures/cadence/gate-002.jsonl hash and exact replay (256 vectors)
+ok 16 - WO-102 fixture corpus/fixtures/cadence/gate-002.jsonl hash and exact replay (256 vectors)
+  ---
+  duration_ms: 3.513208
+  type: 'test'
+  ...
+# Subtest: WO-102 fixture corpus/fixtures/cadence/gate-003.jsonl hash and exact replay (128 vectors)
+ok 17 - WO-102 fixture corpus/fixtures/cadence/gate-003.jsonl hash and exact replay (128 vectors)
+  ---
+  duration_ms: 1.874292
+  type: 'test'
+  ...
+# Subtest: WO-102 fixture corpus/fixtures/cadence/until-001.jsonl hash and exact replay (256 vectors)
+ok 18 - WO-102 fixture corpus/fixtures/cadence/until-001.jsonl hash and exact replay (256 vectors)
+  ---
+  duration_ms: 3.134584
+  type: 'test'
+  ...
+# Subtest: WO-102 fixture corpus/fixtures/cadence/until-002.jsonl hash and exact replay (256 vectors)
+ok 19 - WO-102 fixture corpus/fixtures/cadence/until-002.jsonl hash and exact replay (256 vectors)
+  ---
+  duration_ms: 3.298792
+  type: 'test'
+  ...
+# Subtest: WO-102 fixture corpus/fixtures/cadence/until-003.jsonl hash and exact replay (128 vectors)
+ok 20 - WO-102 fixture corpus/fixtures/cadence/until-003.jsonl hash and exact replay (128 vectors)
+  ---
+  duration_ms: 1.786292
+  type: 'test'
+  ...
+# Subtest: WO-102 fixture corpus/fixtures/cadence/backoff-001.jsonl hash and exact replay (256 vectors)
+ok 21 - WO-102 fixture corpus/fixtures/cadence/backoff-001.jsonl hash and exact replay (256 vectors)
+  ---
+  duration_ms: 1.190334
+  type: 'test'
+  ...
+# Subtest: WO-102 fixture corpus/fixtures/cadence/backoff-002.jsonl hash and exact replay (256 vectors)
+ok 22 - WO-102 fixture corpus/fixtures/cadence/backoff-002.jsonl hash and exact replay (256 vectors)
+  ---
+  duration_ms: 1.176291
+  type: 'test'
+  ...
+# Subtest: WO-102 fixture corpus/fixtures/cadence/backoff-003.jsonl hash and exact replay (128 vectors)
+ok 23 - WO-102 fixture corpus/fixtures/cadence/backoff-003.jsonl hash and exact replay (128 vectors)
+  ---
+  duration_ms: 0.845375
+  type: 'test'
+  ...
+# Subtest: WO-102 fixture census, counts, registry and explicit boundary classes match manifest
+ok 24 - WO-102 fixture census, counts, registry and explicit boundary classes match manifest
+  ---
+  duration_ms: 2.429166
+  type: 'test'
+  ...
+1..24
+# tests 24
+# suites 0
+# pass 24
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5418.244375
+
+Exit: 0; wallSeconds: 5.45267
+
+FINAL CORPUS AFTER D006 EVENT-ENVELOPE FRAMING
+Expected full counts: {"Once": 36, "After": 48, "Every": 645, "Gate": 2650, "Until": 2650, "Backoff": 63360}
+Expected committed totals: {"files": 11, "rows": 2265, "bytes": 1898287}
+The earlier run is retained as provisional history; this section judges the final framing.
+
+Command: npm run build
+Started: 2026-10-01T14:29:03.315479+00:00
+
+> build
+> node scripts/build.mjs
+
+Built browser-evidence, compiler, console, kernel, skeleton with atomic file replacement; installed harness snapshots remain immutable
+
+Exit: 0; wallSeconds: 0.995785
+
+Command: node corpus/harness/generate-cadence-corpus.mjs --seed wo102-seed-20261001 --check
+Started: 2026-10-01T14:29:04.311307+00:00
+{"mode":"check","seed":"wo102-seed-20261001","full":{"Once":36,"After":48,"Every":645,"Gate":2650,"Until":2650,"Backoff":63360},"committed":{"Once":36,"After":48,"Every":645,"Gate":512,"Until":512,"Backoff":512},"fixtureTotals":{"files":11,"rows":2265,"bytes":1898287},"findings":0}
+
+Exit: 0; wallSeconds: 1.780779
+
+Command: node --test --test-reporter=tap corpus/harness/wo102-generators.test.mjs corpus/harness/wo102-properties.test.mjs corpus/harness/wo102-replay.test.mjs
+Started: 2026-10-01T14:29:06.092130+00:00
+TAP version 13
+# Subtest: WO-102 literal planted anchors pin next-tick, default origin, throws and hand-computed Backoff
+ok 1 - WO-102 literal planted anchors pin next-tick, default origin, throws and hand-computed Backoff
+  ---
+  duration_ms: 1.1005
+  type: 'test'
+  ...
+# Subtest: WO-102 tagged numbers preserve nonfinite intervals; absent startAt is actually absent
+ok 2 - WO-102 tagged numbers preserve nonfinite intervals; absent startAt is actually absent
+  ---
+  duration_ms: 128.604459
+  type: 'test'
+  ...
+# Subtest: WO-102 generator parser rejects missing, duplicate and ambiguous options
+ok 3 - WO-102 generator parser rejects missing, duplicate and ambiguous options
+  ---
+  duration_ms: 0.163083
+  type: 'test'
+  ...
+# Subtest: WO-102 regeneration is byte-identical and seed changes selection without changing the full set
+ok 4 - WO-102 regeneration is byte-identical and seed changes selection without changing the full set
+  ---
+  duration_ms: 5294.002792
+  type: 'test'
+  ...
+# Subtest: WO-102 detects planted clamp/threading drift and renders a numbered exact quarantine
+ok 5 - WO-102 detects planted clamp/threading drift and renders a numbered exact quarantine
+  ---
+  duration_ms: 0.454542
+  type: 'test'
+  ...
+# Subtest: WO-102 poison-only violations are exact findings and host functions are restored
+ok 6 - WO-102 poison-only violations are exact findings and host functions are restored
+  ---
+  duration_ms: 0.207
+  type: 'test'
+  ...
+# Subtest: WO-102 full declared sweep (69389): drift, determinism, clamp, RNG threading, call order, no mutation
+ok 7 - WO-102 full declared sweep (69389): drift, determinism, clamp, RNG threading, call order, no mutation
+  ---
+  duration_ms: 1074.493208
+  type: 'test'
+  ...
+# Subtest: WO-102 no ambient clock or RNG under poisoned Date.now/Math.random (69389 vectors)
+ok 8 - WO-102 no ambient clock or RNG under poisoned Date.now/Math.random (69389 vectors)
+  ---
+  duration_ms: 464.322584
+  type: 'test'
+  ...
+# Subtest: WO-102 composition enumeration covers every truth mask, version, depth and terminal path
+ok 9 - WO-102 composition enumeration covers every truth mask, version, depth and terminal path
+  ---
+  duration_ms: 25.265583
+  type: 'test'
+  ...
+# Subtest: WO-102 fixture corpus/fixtures/cadence/once-001.jsonl hash and exact replay (36 vectors)
+ok 10 - WO-102 fixture corpus/fixtures/cadence/once-001.jsonl hash and exact replay (36 vectors)
+  ---
+  duration_ms: 1.706959
+  type: 'test'
+  ...
+# Subtest: WO-102 fixture corpus/fixtures/cadence/after-001.jsonl hash and exact replay (48 vectors)
+ok 11 - WO-102 fixture corpus/fixtures/cadence/after-001.jsonl hash and exact replay (48 vectors)
+  ---
+  duration_ms: 0.839167
+  type: 'test'
+  ...
+# Subtest: WO-102 fixture corpus/fixtures/cadence/every-001.jsonl hash and exact replay (256 vectors)
+ok 12 - WO-102 fixture corpus/fixtures/cadence/every-001.jsonl hash and exact replay (256 vectors)
+  ---
+  duration_ms: 2.166083
+  type: 'test'
+  ...
+# Subtest: WO-102 fixture corpus/fixtures/cadence/every-002.jsonl hash and exact replay (256 vectors)
+ok 13 - WO-102 fixture corpus/fixtures/cadence/every-002.jsonl hash and exact replay (256 vectors)
+  ---
+  duration_ms: 4.89675
+  type: 'test'
+  ...
+# Subtest: WO-102 fixture corpus/fixtures/cadence/every-003.jsonl hash and exact replay (133 vectors)
+ok 14 - WO-102 fixture corpus/fixtures/cadence/every-003.jsonl hash and exact replay (133 vectors)
+  ---
+  duration_ms: 1.040833
+  type: 'test'
+  ...
+# Subtest: WO-102 fixture corpus/fixtures/cadence/gate-001.jsonl hash and exact replay (256 vectors)
+ok 15 - WO-102 fixture corpus/fixtures/cadence/gate-001.jsonl hash and exact replay (256 vectors)
+  ---
+  duration_ms: 9.159125
+  type: 'test'
+  ...
+# Subtest: WO-102 fixture corpus/fixtures/cadence/gate-002.jsonl hash and exact replay (256 vectors)
+ok 16 - WO-102 fixture corpus/fixtures/cadence/gate-002.jsonl hash and exact replay (256 vectors)
+  ---
+  duration_ms: 7.150584
+  type: 'test'
+  ...
+# Subtest: WO-102 fixture corpus/fixtures/cadence/until-001.jsonl hash and exact replay (256 vectors)
+ok 17 - WO-102 fixture corpus/fixtures/cadence/until-001.jsonl hash and exact replay (256 vectors)
+  ---
+  duration_ms: 5.684666
+  type: 'test'
+  ...
+# Subtest: WO-102 fixture corpus/fixtures/cadence/until-002.jsonl hash and exact replay (256 vectors)
+ok 18 - WO-102 fixture corpus/fixtures/cadence/until-002.jsonl hash and exact replay (256 vectors)
+  ---
+  duration_ms: 6.767542
+  type: 'test'
+  ...
+# Subtest: WO-102 fixture corpus/fixtures/cadence/backoff-001.jsonl hash and exact replay (256 vectors)
+ok 19 - WO-102 fixture corpus/fixtures/cadence/backoff-001.jsonl hash and exact replay (256 vectors)
+  ---
+  duration_ms: 2.005583
+  type: 'test'
+  ...
+# Subtest: WO-102 fixture corpus/fixtures/cadence/backoff-002.jsonl hash and exact replay (256 vectors)
+ok 20 - WO-102 fixture corpus/fixtures/cadence/backoff-002.jsonl hash and exact replay (256 vectors)
+  ---
+  duration_ms: 2.073458
+  type: 'test'
+  ...
+# Subtest: WO-102 fixture census, counts, registry and explicit boundary classes match manifest
+ok 21 - WO-102 fixture census, counts, registry and explicit boundary classes match manifest
+  ---
+  duration_ms: 2.301666
+  type: 'test'
+  ...
+1..21
+# tests 21
+# suites 0
+# pass 21
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5486.497667
+
+Exit: 0; wallSeconds: 5.523691

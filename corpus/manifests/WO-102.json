@@ -1,0 +1,911 @@
+{
+  "schemaVersion": 1,
+  "workOrderId": "WO-102",
+  "seed": "wo102-seed-20261001",
+  "pinnedBaseCommit": "ee9b9db9f716dbe6a94ae1b564bb2d04210f17d0",
+  "oracle": "Pins the shipped evaluateCadence formula at the base; drift/porting alarm only, no external-spec conformance claim. Backoff/LCG use an independent BigInt modulo and repeated-multiplication path.",
+  "numberEncoding": "Nonfinite scalar = {\"$number\":\"NaN\"|\"+Infinity\"|\"-Infinity\"}; absence is an omitted key. The finite Backoff grid uses unsigned 32-bit integer RNG inputs; no wider/noninteger/nonfinite RNG claim.",
+  "fixtureEncoding": "Each JSONL shard is a standard schemaVersion 1 EventEnvelope stream, evt_1 onward per shard, type CadenceGoldenVector, explicit virtual occurredAt=payload.env.now; payload is the complete vector with cadence/state/env/optional event/expected outcome/predicate calls. These are original synthetic observations, not execution-history claims.",
+  "grid": {
+    "version": 1,
+    "Once": {
+      "at": [
+        -100,
+        0,
+        100,
+        1000000000000
+      ],
+      "nowOffsets": [
+        -1,
+        0,
+        1
+      ],
+      "rngState": [
+        0,
+        42,
+        4294967295
+      ]
+    },
+    "After": {
+      "delayMs": [
+        0,
+        1,
+        100,
+        1000000000000
+      ],
+      "now": [
+        -100,
+        0,
+        100,
+        1000000000000
+      ],
+      "rngState": [
+        0,
+        42,
+        4294967295
+      ]
+    },
+    "Every": {
+      "startAt": [
+        "absent",
+        -100,
+        0,
+        100,
+        1000000000000
+      ],
+      "intervalMs": [
+        1,
+        7,
+        20,
+        1000000000000
+      ],
+      "nowCells": [
+        "before-start",
+        "at-start",
+        "after-start",
+        "before-first-tick",
+        "at-first-tick",
+        "after-first-tick",
+        "at-fourth-tick"
+      ],
+      "rngState": [
+        0,
+        42,
+        4294967295
+      ],
+      "invalidIntervalMs": [
+        "NaN",
+        "+Infinity",
+        "-Infinity",
+        0,
+        -1
+      ]
+    },
+    "composition": {
+      "roots": [
+        "Gate",
+        "Until"
+      ],
+      "depths": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "profiles": [
+        "truth",
+        "state.flag",
+        "event.open"
+      ],
+      "assignment": "all 2^depth truth masks; alternate wrapper kind and predicate version at each level",
+      "leaves": [
+        "Once",
+        "After",
+        "Every-absent",
+        "Every-present",
+        "Backoff-jitter",
+        "Backoff-zero-jitter",
+        "Every-invalid"
+      ],
+      "env": {
+        "now": 100,
+        "rngState": 42
+      },
+      "event": "event.open: OpenGate when any raw flag is true; otherwise an omitted event or OtherEvent; extra unknown-id/version short-circuit pins"
+    },
+    "Backoff": {
+      "initialMs": [
+        0,
+        1,
+        100
+      ],
+      "factor": [
+        0.5,
+        1,
+        2,
+        3
+      ],
+      "attempt": [
+        0,
+        1,
+        2,
+        3,
+        10,
+        31
+      ],
+      "maxMs": [
+        0,
+        1,
+        250,
+        100000
+      ],
+      "jitter": [
+        0,
+        0.25,
+        0.5,
+        1,
+        2
+      ],
+      "rngState": [
+        0,
+        1,
+        7,
+        42,
+        2147483647,
+        2147483648,
+        4294967295,
+        634785765,
+        615934122,
+        2782269413,
+        653637408
+      ],
+      "now": [
+        -100,
+        0,
+        100,
+        1000000000000
+      ]
+    }
+  },
+  "predicateRegistry": [
+    {
+      "registryId": "truth",
+      "versions": [
+        1,
+        2
+      ],
+      "rule": "params.open === true; version 2 negates"
+    },
+    {
+      "registryId": "state.flag",
+      "versions": [
+        1,
+        2
+      ],
+      "rule": "state.flags[params.level] === true; version 2 negates"
+    },
+    {
+      "registryId": "event.open",
+      "versions": [
+        1,
+        2
+      ],
+      "rule": "event.type === OpenGate and event.payload.flags[params.level] === true; version 2 negates"
+    }
+  ],
+  "toolchainProfile": {
+    "node": "v26.9.0",
+    "npm": "11.19.1",
+    "typescript": "7.0.2",
+    "platform": "darwin",
+    "architecture": "arm64",
+    "osKernel": "27.0.0"
+  },
+  "counts": {
+    "full": {
+      "total": 69389,
+      "byConstructor": {
+        "Once": 36,
+        "After": 48,
+        "Every": 645,
+        "Gate": 2650,
+        "Until": 2650,
+        "Backoff": 63360
+      },
+      "byClass": {
+        "Once": {
+          "before-at": 12,
+          "at-at": 12,
+          "after-at": 12
+        },
+        "After": {
+          "zero-delay": 12,
+          "now-before-delay": 24,
+          "now-at-delay": 9,
+          "now-after-delay": 15,
+          "unit-delay": 12,
+          "ordinary-delay": 12,
+          "huge-delay": 12
+        },
+        "Every": {
+          "startAt-absent": 129,
+          "before-start": 60,
+          "unit-interval": 105,
+          "at-start": 60,
+          "after-start": 60,
+          "before-first-tick": 60,
+          "at-first-tick": 60,
+          "after-first-tick": 60,
+          "at-fourth-tick": 60,
+          "ordinary-interval": 210,
+          "huge-interval": 105,
+          "invalid-interval:NaN": 45,
+          "invalid-interval:+Infinity": 45,
+          "invalid-interval:-Infinity": 45,
+          "invalid-interval:0": 45,
+          "invalid-interval:-1": 45,
+          "startAt-present": 516
+        },
+        "Gate": {
+          "depth:1": 42,
+          "profile:truth": 882,
+          "leaf:Once": 378,
+          "truth-mask:0": 126,
+          "event-absent": 1785,
+          "leaf:After": 378,
+          "leaf:Every-absent": 378,
+          "leaf:Every-present": 378,
+          "leaf:Backoff-jitter": 378,
+          "leaf:Backoff-zero-jitter": 378,
+          "leaf:Every-invalid": 378,
+          "truth-mask:1": 126,
+          "profile:state.flag": 882,
+          "profile:event.open": 882,
+          "event:OpenGate": 840,
+          "depth:2": 88,
+          "truth-mask:2": 105,
+          "truth-mask:3": 105,
+          "event:OtherEvent": 21,
+          "depth:3": 168,
+          "truth-mask:4": 84,
+          "truth-mask:5": 84,
+          "truth-mask:6": 84,
+          "truth-mask:7": 84,
+          "depth:4": 336,
+          "truth-mask:8": 63,
+          "truth-mask:9": 63,
+          "truth-mask:10": 63,
+          "truth-mask:11": 63,
+          "truth-mask:12": 63,
+          "truth-mask:13": 63,
+          "truth-mask:14": 63,
+          "truth-mask:15": 63,
+          "depth:5": 672,
+          "truth-mask:16": 42,
+          "truth-mask:17": 42,
+          "truth-mask:18": 42,
+          "truth-mask:19": 42,
+          "truth-mask:20": 42,
+          "truth-mask:21": 42,
+          "truth-mask:22": 42,
+          "truth-mask:23": 42,
+          "truth-mask:24": 42,
+          "truth-mask:25": 42,
+          "truth-mask:26": 42,
+          "truth-mask:27": 42,
+          "truth-mask:28": 42,
+          "truth-mask:29": 42,
+          "truth-mask:30": 42,
+          "truth-mask:31": 42,
+          "depth:6": 1344,
+          "truth-mask:32": 21,
+          "truth-mask:33": 21,
+          "truth-mask:34": 21,
+          "truth-mask:35": 21,
+          "truth-mask:36": 21,
+          "truth-mask:37": 21,
+          "truth-mask:38": 21,
+          "truth-mask:39": 21,
+          "truth-mask:40": 21,
+          "truth-mask:41": 21,
+          "truth-mask:42": 21,
+          "truth-mask:43": 21,
+          "truth-mask:44": 21,
+          "truth-mask:45": 21,
+          "truth-mask:46": 21,
+          "truth-mask:47": 21,
+          "truth-mask:48": 21,
+          "truth-mask:49": 21,
+          "truth-mask:50": 21,
+          "truth-mask:51": 21,
+          "truth-mask:52": 21,
+          "truth-mask:53": 21,
+          "truth-mask:54": 21,
+          "truth-mask:55": 21,
+          "truth-mask:56": 21,
+          "truth-mask:57": 21,
+          "truth-mask:58": 21,
+          "truth-mask:59": 21,
+          "truth-mask:60": 21,
+          "truth-mask:61": 21,
+          "truth-mask:62": 21,
+          "truth-mask:63": 21,
+          "unknown-predicate-short-circuit": 4,
+          "outer-truth:false": 2,
+          "outer-truth:true": 2
+        },
+        "Until": {
+          "depth:1": 42,
+          "profile:truth": 882,
+          "leaf:Once": 378,
+          "truth-mask:0": 126,
+          "event-absent": 1785,
+          "leaf:After": 378,
+          "leaf:Every-absent": 378,
+          "leaf:Every-present": 378,
+          "leaf:Backoff-jitter": 378,
+          "leaf:Backoff-zero-jitter": 378,
+          "leaf:Every-invalid": 378,
+          "truth-mask:1": 126,
+          "profile:state.flag": 882,
+          "profile:event.open": 882,
+          "event:OpenGate": 840,
+          "depth:2": 88,
+          "truth-mask:2": 105,
+          "truth-mask:3": 105,
+          "event:OtherEvent": 21,
+          "depth:3": 168,
+          "truth-mask:4": 84,
+          "truth-mask:5": 84,
+          "truth-mask:6": 84,
+          "truth-mask:7": 84,
+          "depth:4": 336,
+          "truth-mask:8": 63,
+          "truth-mask:9": 63,
+          "truth-mask:10": 63,
+          "truth-mask:11": 63,
+          "truth-mask:12": 63,
+          "truth-mask:13": 63,
+          "truth-mask:14": 63,
+          "truth-mask:15": 63,
+          "depth:5": 672,
+          "truth-mask:16": 42,
+          "truth-mask:17": 42,
+          "truth-mask:18": 42,
+          "truth-mask:19": 42,
+          "truth-mask:20": 42,
+          "truth-mask:21": 42,
+          "truth-mask:22": 42,
+          "truth-mask:23": 42,
+          "truth-mask:24": 42,
+          "truth-mask:25": 42,
+          "truth-mask:26": 42,
+          "truth-mask:27": 42,
+          "truth-mask:28": 42,
+          "truth-mask:29": 42,
+          "truth-mask:30": 42,
+          "truth-mask:31": 42,
+          "depth:6": 1344,
+          "truth-mask:32": 21,
+          "truth-mask:33": 21,
+          "truth-mask:34": 21,
+          "truth-mask:35": 21,
+          "truth-mask:36": 21,
+          "truth-mask:37": 21,
+          "truth-mask:38": 21,
+          "truth-mask:39": 21,
+          "truth-mask:40": 21,
+          "truth-mask:41": 21,
+          "truth-mask:42": 21,
+          "truth-mask:43": 21,
+          "truth-mask:44": 21,
+          "truth-mask:45": 21,
+          "truth-mask:46": 21,
+          "truth-mask:47": 21,
+          "truth-mask:48": 21,
+          "truth-mask:49": 21,
+          "truth-mask:50": 21,
+          "truth-mask:51": 21,
+          "truth-mask:52": 21,
+          "truth-mask:53": 21,
+          "truth-mask:54": 21,
+          "truth-mask:55": 21,
+          "truth-mask:56": 21,
+          "truth-mask:57": 21,
+          "truth-mask:58": 21,
+          "truth-mask:59": 21,
+          "truth-mask:60": 21,
+          "truth-mask:61": 21,
+          "truth-mask:62": 21,
+          "truth-mask:63": 21,
+          "unknown-predicate-short-circuit": 4,
+          "outer-truth:false": 2,
+          "outer-truth:true": 2
+        },
+        "Backoff": {
+          "initialMs:0": 21120,
+          "factor:0.5": 15840,
+          "attempt:0": 10560,
+          "maxMs:0": 15840,
+          "jitter:0": 12672,
+          "rngState:0": 5760,
+          "now:-100": 15840,
+          "unclamped": 41616,
+          "rounding-other": 62400,
+          "zero-jitter-draw": 12672,
+          "now:0": 15840,
+          "now:100": 15840,
+          "now:1000000000000": 15840,
+          "rngState:1": 5760,
+          "rngState:7": 5760,
+          "rngState:42": 5760,
+          "rngState:2147483647": 5760,
+          "rngState:2147483648": 5760,
+          "rngState:4294967295": 5760,
+          "rngState:634785765": 5760,
+          "rngState:615934122": 5760,
+          "rngState:2782269413": 5760,
+          "rngState:653637408": 5760,
+          "jitter:0.25": 12672,
+          "jitter-draw": 50688,
+          "jitter:0.5": 12672,
+          "jitter:1": 12672,
+          "jitter:2": 12672,
+          "maxMs:1": 15840,
+          "maxMs:250": 15840,
+          "maxMs:100000": 15840,
+          "attempt:1": 10560,
+          "attempt:2": 10560,
+          "attempt:3": 10560,
+          "attempt:10": 10560,
+          "attempt:31": 10560,
+          "factor:1": 15840,
+          "factor:2": 15840,
+          "factor:3": 15840,
+          "initialMs:1": 21120,
+          "max-clamp": 17136,
+          "rounding-half": 960,
+          "floor-clamp": 4608,
+          "initialMs:100": 21120
+        }
+      },
+      "byOutcome": {
+        "Once": {
+          "due": 36
+        },
+        "After": {
+          "due": 48
+        },
+        "Every": {
+          "due": 420,
+          "throw": 225
+        },
+        "Gate": {
+          "null": 2522,
+          "due": 108,
+          "throw": 20
+        },
+        "Until": {
+          "due": 108,
+          "throw": 20,
+          "null": 2522
+        },
+        "Backoff": {
+          "due": 63360
+        }
+      }
+    },
+    "committed": {
+      "total": 2265,
+      "byConstructor": {
+        "Once": 36,
+        "After": 48,
+        "Every": 645,
+        "Gate": 512,
+        "Until": 512,
+        "Backoff": 512
+      },
+      "byClass": {
+        "Once": {
+          "before-at": 12,
+          "at-at": 12,
+          "after-at": 12
+        },
+        "After": {
+          "zero-delay": 12,
+          "now-before-delay": 24,
+          "now-at-delay": 9,
+          "now-after-delay": 15,
+          "unit-delay": 12,
+          "ordinary-delay": 12,
+          "huge-delay": 12
+        },
+        "Every": {
+          "startAt-absent": 129,
+          "before-start": 60,
+          "unit-interval": 105,
+          "at-start": 60,
+          "after-start": 60,
+          "before-first-tick": 60,
+          "at-first-tick": 60,
+          "after-first-tick": 60,
+          "at-fourth-tick": 60,
+          "ordinary-interval": 210,
+          "huge-interval": 105,
+          "invalid-interval:NaN": 45,
+          "invalid-interval:+Infinity": 45,
+          "invalid-interval:-Infinity": 45,
+          "invalid-interval:0": 45,
+          "invalid-interval:-1": 45,
+          "startAt-present": 516
+        },
+        "Gate": {
+          "depth:6": 262,
+          "profile:event.open": 175,
+          "leaf:Once": 75,
+          "truth-mask:55": 7,
+          "event:OpenGate": 169,
+          "profile:state.flag": 170,
+          "leaf:Every-absent": 73,
+          "truth-mask:21": 7,
+          "event-absent": 340,
+          "truth-mask:5": 21,
+          "profile:truth": 165,
+          "truth-mask:53": 6,
+          "leaf:After": 69,
+          "truth-mask:34": 4,
+          "leaf:Every-present": 74,
+          "truth-mask:8": 10,
+          "leaf:Backoff-zero-jitter": 78,
+          "truth-mask:4": 25,
+          "truth-mask:45": 3,
+          "depth:3": 35,
+          "leaf:Backoff-jitter": 72,
+          "truth-mask:0": 26,
+          "depth:5": 130,
+          "truth-mask:29": 9,
+          "truth-mask:37": 6,
+          "truth-mask:7": 11,
+          "truth-mask:25": 15,
+          "truth-mask:30": 10,
+          "truth-mask:59": 4,
+          "leaf:Every-invalid": 69,
+          "depth:4": 60,
+          "truth-mask:2": 20,
+          "truth-mask:56": 6,
+          "truth-mask:16": 8,
+          "truth-mask:12": 11,
+          "truth-mask:13": 6,
+          "truth-mask:48": 6,
+          "truth-mask:18": 12,
+          "truth-mask:42": 2,
+          "truth-mask:24": 12,
+          "truth-mask:15": 15,
+          "truth-mask:63": 2,
+          "truth-mask:28": 9,
+          "truth-mask:14": 16,
+          "truth-mask:60": 3,
+          "truth-mask:32": 4,
+          "truth-mask:50": 2,
+          "depth:2": 16,
+          "truth-mask:62": 5,
+          "truth-mask:1": 26,
+          "truth-mask:39": 4,
+          "truth-mask:9": 14,
+          "truth-mask:51": 5,
+          "depth:1": 9,
+          "truth-mask:44": 3,
+          "truth-mask:41": 7,
+          "truth-mask:31": 3,
+          "truth-mask:17": 5,
+          "truth-mask:20": 9,
+          "truth-mask:23": 8,
+          "truth-mask:22": 11,
+          "truth-mask:19": 5,
+          "truth-mask:10": 10,
+          "truth-mask:6": 11,
+          "truth-mask:35": 2,
+          "truth-mask:52": 7,
+          "truth-mask:61": 9,
+          "truth-mask:36": 2,
+          "truth-mask:38": 4,
+          "truth-mask:11": 5,
+          "truth-mask:3": 17,
+          "truth-mask:58": 2,
+          "truth-mask:46": 4,
+          "truth-mask:40": 3,
+          "truth-mask:26": 11,
+          "truth-mask:33": 2,
+          "truth-mask:27": 6,
+          "truth-mask:43": 4,
+          "truth-mask:49": 3,
+          "truth-mask:54": 2,
+          "event:OtherEvent": 1,
+          "truth-mask:57": 2,
+          "unknown-predicate-short-circuit": 2,
+          "outer-truth:true": 1,
+          "truth-mask:47": 1,
+          "outer-truth:false": 1
+        },
+        "Until": {
+          "depth:3": 31,
+          "profile:truth": 156,
+          "leaf:Once": 83,
+          "truth-mask:5": 10,
+          "event-absent": 329,
+          "depth:4": 66,
+          "depth:5": 128,
+          "leaf:Every-absent": 75,
+          "truth-mask:16": 11,
+          "depth:6": 266,
+          "profile:state.flag": 170,
+          "leaf:Every-invalid": 78,
+          "truth-mask:0": 26,
+          "truth-mask:62": 5,
+          "leaf:Backoff-jitter": 69,
+          "truth-mask:61": 7,
+          "truth-mask:3": 20,
+          "profile:event.open": 184,
+          "leaf:Every-present": 75,
+          "truth-mask:22": 11,
+          "event:OpenGate": 180,
+          "leaf:Backoff-zero-jitter": 67,
+          "truth-mask:60": 3,
+          "truth-mask:19": 7,
+          "truth-mask:9": 13,
+          "truth-mask:1": 20,
+          "truth-mask:7": 15,
+          "truth-mask:34": 2,
+          "truth-mask:20": 9,
+          "truth-mask:37": 5,
+          "truth-mask:23": 5,
+          "truth-mask:29": 9,
+          "truth-mask:56": 5,
+          "truth-mask:45": 8,
+          "truth-mask:28": 12,
+          "depth:2": 17,
+          "truth-mask:2": 21,
+          "leaf:After": 63,
+          "truth-mask:51": 4,
+          "truth-mask:30": 8,
+          "truth-mask:13": 11,
+          "truth-mask:25": 8,
+          "truth-mask:54": 6,
+          "truth-mask:52": 4,
+          "truth-mask:59": 3,
+          "truth-mask:6": 18,
+          "truth-mask:4": 17,
+          "truth-mask:11": 10,
+          "truth-mask:10": 19,
+          "truth-mask:27": 6,
+          "truth-mask:53": 4,
+          "truth-mask:55": 7,
+          "truth-mask:33": 7,
+          "truth-mask:17": 6,
+          "truth-mask:40": 4,
+          "truth-mask:44": 3,
+          "truth-mask:18": 6,
+          "truth-mask:14": 12,
+          "truth-mask:50": 3,
+          "truth-mask:35": 6,
+          "truth-mask:8": 17,
+          "truth-mask:42": 5,
+          "truth-mask:12": 10,
+          "depth:1": 4,
+          "truth-mask:36": 5,
+          "truth-mask:15": 10,
+          "truth-mask:47": 4,
+          "truth-mask:24": 6,
+          "truth-mask:31": 12,
+          "truth-mask:43": 7,
+          "truth-mask:32": 4,
+          "truth-mask:41": 2,
+          "truth-mask:26": 6,
+          "truth-mask:57": 2,
+          "truth-mask:48": 3,
+          "truth-mask:58": 5,
+          "truth-mask:38": 2,
+          "truth-mask:21": 2,
+          "truth-mask:39": 3,
+          "unknown-predicate-short-circuit": 2,
+          "outer-truth:true": 1,
+          "truth-mask:46": 3,
+          "truth-mask:63": 4,
+          "truth-mask:49": 2,
+          "event:OtherEvent": 1,
+          "outer-truth:false": 1
+        },
+        "Backoff": {
+          "initialMs:0": 159,
+          "factor:1": 121,
+          "attempt:2": 95,
+          "maxMs:1": 126,
+          "jitter:0": 97,
+          "rngState:653637408": 47,
+          "now:1000000000000": 117,
+          "unclamped": 344,
+          "rounding-other": 505,
+          "zero-jitter-draw": 97,
+          "initialMs:1": 176,
+          "factor:2": 132,
+          "attempt:0": 102,
+          "maxMs:100000": 133,
+          "jitter:2": 101,
+          "rngState:4294967295": 37,
+          "floor-clamp": 37,
+          "jitter-draw": 415,
+          "factor:3": 116,
+          "jitter:0.25": 113,
+          "rngState:634785765": 36,
+          "now:100": 125,
+          "initialMs:100": 177,
+          "factor:0.5": 143,
+          "attempt:10": 89,
+          "jitter:0.5": 105,
+          "rngState:2782269413": 46,
+          "now:0": 117,
+          "rngState:615934122": 40,
+          "now:-100": 153,
+          "maxMs:250": 129,
+          "jitter:1": 96,
+          "rngState:1": 45,
+          "max-clamp": 131,
+          "rngState:0": 50,
+          "rngState:2147483648": 59,
+          "attempt:3": 82,
+          "attempt:1": 68,
+          "rngState:2147483647": 57,
+          "maxMs:0": 124,
+          "attempt:31": 76,
+          "rngState:7": 55,
+          "rounding-half": 7,
+          "rngState:42": 40
+        }
+      },
+      "byOutcome": {
+        "Once": {
+          "due": 36
+        },
+        "After": {
+          "due": 48
+        },
+        "Every": {
+          "due": 420,
+          "throw": 225
+        },
+        "Gate": {
+          "null": 488,
+          "due": 19,
+          "throw": 5
+        },
+        "Until": {
+          "null": 487,
+          "due": 22,
+          "throw": 3
+        },
+        "Backoff": {
+          "due": 512
+        }
+      }
+    },
+    "classCountMeaning": "Labels overlap; each count is the number of vectors carrying that label, not a disjoint partition."
+  },
+  "selection": {
+    "rule": "Once/After/Every exhaustive; Gate/Until/Backoff: seed SHA-256 rank, first uncovered class/outcome representatives, then rank fill to 512 per root. Full set independent of seed.",
+    "budget": {
+      "maximumTotalFixtureBytes": 2097152,
+      "maximumRowsPerSampledConstructor": 512,
+      "shardRows": 256
+    }
+  },
+  "fixtures": [
+    {
+      "path": "corpus/fixtures/cadence/once-001.jsonl",
+      "rows": 36,
+      "bytes": 13740,
+      "sha256": "ac1a91cf00becceb7cd769bc6420c8ed045d8f660dabeb1f524e1a54756c37aa"
+    },
+    {
+      "path": "corpus/fixtures/cadence/after-001.jsonl",
+      "rows": 48,
+      "bytes": 19772,
+      "sha256": "a5def0d13c6133d0c9d772d46b7cd2726dfd8a6910a633dd05558cf62eb77e17"
+    },
+    {
+      "path": "corpus/fixtures/cadence/every-001.jsonl",
+      "rows": 256,
+      "bytes": 112471,
+      "sha256": "6bd1d01eb6be5e7a22b0ff3ddd649186ac7c161fc38b9da8febded4f75b8c099"
+    },
+    {
+      "path": "corpus/fixtures/cadence/every-002.jsonl",
+      "rows": 256,
+      "bytes": 113877,
+      "sha256": "d1d4f6864ae30e29e38ea2607d14fd00a67833b6162854c73b356d775dab984a"
+    },
+    {
+      "path": "corpus/fixtures/cadence/every-003.jsonl",
+      "rows": 133,
+      "bytes": 63720,
+      "sha256": "b1e973c138e21df3deb0c67773721ba52f45d68b08ae61aedfecc0d30a302d45"
+    },
+    {
+      "path": "corpus/fixtures/cadence/gate-001.jsonl",
+      "rows": 256,
+      "bytes": 318644,
+      "sha256": "fa5add4cffbc262820db3db77ee9312c68774aa4dea01fc46b676f56738473bb"
+    },
+    {
+      "path": "corpus/fixtures/cadence/gate-002.jsonl",
+      "rows": 256,
+      "bytes": 317988,
+      "sha256": "821c525f410107f68949095ebcae8659d4b6743d216593c0db0b096fb07ce00d"
+    },
+    {
+      "path": "corpus/fixtures/cadence/until-001.jsonl",
+      "rows": 256,
+      "bytes": 320707,
+      "sha256": "a6081f18102b5481c2a0238b87134f0e9a8d15be03cb5da5c550eb8610a18061"
+    },
+    {
+      "path": "corpus/fixtures/cadence/until-002.jsonl",
+      "rows": 256,
+      "bytes": 323312,
+      "sha256": "5bfdc286c0f9710677352d9a5a479c921b560dd04bc20be408c44d7ea7fd1b6f"
+    },
+    {
+      "path": "corpus/fixtures/cadence/backoff-001.jsonl",
+      "rows": 256,
+      "bytes": 146619,
+      "sha256": "11aa6c5381dca4cda9016758057b8e0c5846f4f4d3bdd38b30e0de49c5ae516b"
+    },
+    {
+      "path": "corpus/fixtures/cadence/backoff-002.jsonl",
+      "rows": 256,
+      "bytes": 147437,
+      "sha256": "2c92fa309f2160d337cc18bfc885fa4117937d94c39932cd57a19d55ce95b9b3"
+    }
+  ],
+  "fixtureTotals": {
+    "files": 11,
+    "rows": 2265,
+    "bytes": 1898287
+  },
+  "handComputedBackoff": {
+    "cadence": {
+      "kind": "Backoff",
+      "initialMs": 100,
+      "factor": 2,
+      "maxMs": 100000,
+      "attempt": 3,
+      "jitter": 0.5
+    },
+    "state": {},
+    "env": {
+      "now": 100,
+      "rngState": 42
+    },
+    "expected": {
+      "dueAt": 702,
+      "rngState": 1083814273,
+      "trace": "Backoff:3:602"
+    },
+    "derivation": "next=1083814273; unit=1083814273/4294967296; base=800; scaled=601.8761398270726; rounded delay=602; dueAt=100+602=702"
+  },
+  "findings": [],
+  "evidence": {
+    "runLog": "corpus/manifests/runs/WO-102-ee9b9db9f716dbe6a94ae1b564bb2d04210f17d0.log",
+    "runLogCommitMeaning": "Filename identifies the pinned pre-implementation base, not an implementation commit; no executor branch commit is made.",
+    "commands": [
+      "npm run build",
+      "node corpus/harness/generate-cadence-corpus.mjs --seed wo102-seed-20261001 --check",
+      "node --test corpus/harness/wo102-*.test.mjs",
+      "npm test",
+      "npm run test:docs",
+      "git diff --check"
+    ],
+    "lane": "Manual offline corpus; no addition to root test or release-evidence commands. Existing deferred-kind pins stay in WO-017's root suite."
+  }
+}

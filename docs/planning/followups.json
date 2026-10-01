@@ -25145,6 +25145,43 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-bdfe7ebb85eb6e22",
+      "key": "decision:docs/evidence/WO-102/decisions.md#wo-102-d007",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "ac5c8d6946a055caec1bc6c5661b1cbb95d73d3bd431156a2ad8b4ad2d0aa1b8",
+          "ref": "docs/evidence/WO-102/decisions.md#wo-102-d007",
+          "title": "WO-102-D007: Reuse already-installed public browser binaries through a new ignored .runtime/playwright alias to the WO-176 worktree cache. Run no installation, download, dependency change or settings ",
+          "summary": "{ \"id\": \"WO-102-D007\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: next\", \"decision\": \"Reuse already-installed public browser binaries through a new ignored .runtime/playwright alias to the WO-176 worktree cache. Run no installation, download, dependency change or settings edit. Preserve the cache and compare its entry metadata after the targeted suite and full gate.\", \"evidence\": [ \"npm test: 28 suites passed and browser-evidence failed; 449918 ms; missing pinned Chromium at this worktree's default cache\", \"packages/browser-evidence/test/scenario.test.mjs: default cache and isolated missing-browser/dry-run remedy probes\", \"node_modules/playwright-core/browsers.json: shell revision 1243 and F",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-4feed3b6e7a451ef",
+      "key": "decision:docs/evidence/WO-102/decisions.md#wo-102-d010",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "3be7d550c07d5cf3fafcc214f91891d1f7a3b9a7e778b8424db247fd257a44eb",
+          "ref": "docs/evidence/WO-102/decisions.md#wo-102-d010",
+          "title": "WO-102-D010: Planner, high priority, before the WO-102 lane is run against a changed kernel: bound the corpus harness's failure path under drift. Cap the findings each sweep keeps (for example the fir",
+          "summary": "{ \"id\": \"WO-102-D010\", \"kind\": \"correction\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: final review; operator correction in the active conversation\", \"decision\": \"HARD RED FLAG: a reviewer failure. After the passing product gate, I ran an extra, unrequired end-to-end mutation probe on the operator's machine with no memory bound, and the operator reported 230 GB of memory in use while it ran. The probe was terminated with exit 144 and produced no result. No conclusion in FINAL-001 rests on it. I run no further exploratory checks in this review, only the required lifecycle commands, one at a time.\", \"misread\": \"I judged the probe cheap because the unmutated corpus lane runs in seconds. I laun",
+          "missing": false
+        },
+        {
+          "hash": "9a203d33a29fc89100f747f73a90f51acdad2411b0520cedc17fdd03d537ef88",
+          "ref": "docs/evidence/WO-102/decisions.md#wo-102-d010",
+          "title": "WO-102-D010: Planner, high priority, before the WO-102 lane is run against a changed kernel: bound the corpus harness's failure path under drift. Cap the findings each sweep keeps (for example the fir",
+          "summary": "{ \"id\": \"WO-102-D010\", \"kind\": \"correction\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: final review; operator correction in the active conversation\", \"decision\": \"HARD RED FLAG: a reviewer failure. After the passing product gate, I ran an extra, unrequired end-to-end mutation probe on the operator's machine with no memory bound. The operator reported 230 GB of memory in use while it ran, and later stated that it reached 500 GB and was still climbing. The probe was terminated with exit 144 and produced no result. No conclusion in FINAL-001 rests on it. I run no further exploratory checks in this review, only the required lifecycle commands, one at a time.\", \"misread\": \"I judged the probe che",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }
