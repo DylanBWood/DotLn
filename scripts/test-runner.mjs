@@ -285,6 +285,7 @@ const machinerySources = {
     "scripts/lib/harness-runtime.mjs",
     "scripts/lib/lifecycle-evidence.mjs",
     "scripts/lib/receipt-cost.mjs",
+    "scripts/lib/worktree-material.mjs",
     "scripts/lib/process-budget.mjs",
     "packages/skeleton/src/harness-host.ts",
     "packages/skeleton/src/version.ts",

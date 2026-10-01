@@ -90,6 +90,13 @@ import {
   SNAPSHOT_BYTES,
 } from "./lib/meta.mjs";
 import { requireLifecycleEvidence } from "./lib/lifecycle-evidence.mjs";
+import {
+  committedMaterial,
+  declareMaterial,
+  inventoryMaterial,
+  recoverDisposableRepositories,
+  verifyMaterialState,
+} from "./lib/worktree-material.mjs";
 import { installBeaconFixture } from "./test-beacon-fixture.mjs";
 import { prepareHarnessEvidence } from "./lib/evidence-preparation.mjs";
 import { main as workOrders } from "./work-orders.mjs";
@@ -7377,7 +7384,13 @@ test("follow-up identities survive independent discovery order in sibling worktr
 
 test("Node-only staged builds keep installed hooks executable throughout publication", async (t) => {
   const root = repo(t, { runtime: true });
-  for (const name of ["compiler", "kernel", "skeleton", "console"]) {
+  for (const name of [
+    "compiler",
+    "kernel",
+    "skeleton",
+    "console",
+    "browser-evidence",
+  ]) {
     for (const dir of ["src", "test"])
       if (existsSync(join(source, `packages/${name}/${dir}`)))
         cpSync(
@@ -7475,10 +7488,13 @@ test("Node-only staged builds keep installed hooks executable throughout publica
   );
   assert.deepEqual(stages, [
     "building",
-    ...["compiler", "console", "kernel", "skeleton"].flatMap((name) => [
-      `before:${name}`,
-      `after:${name}`,
-    ]),
+    ...[
+      "browser-evidence",
+      "compiler",
+      "console",
+      "kernel",
+      "skeleton",
+    ].flatMap((name) => [`before:${name}`, `after:${name}`]),
   ]);
   probe();
 });
@@ -10287,4 +10303,414 @@ test("WO-175 condition rows validate sources, preserve unknowns and count at pla
   assert.equal(block.command, "npm run plan -- conditions");
   assert.ok(block.unavailable);
   assert.ok(Buffer.byteLength(json(block)) <= 1024);
+});
+
+function materialRepository(root, path, bytes = "nested fixture\n") {
+  const nested = join(root, path);
+  mkdirSync(nested, { recursive: true });
+  runGit(nested, ["init", "-q"], fixtureGitOptions);
+  write(nested, "saved.txt", bytes);
+  runGit(nested, ["add", "saved.txt"], fixtureGitOptions);
+  runGit(
+    nested,
+    [
+      "-c",
+      "user.name=Fixture",
+      "-c",
+      "user.email=f@example.invalid",
+      "commit",
+      "-qm",
+      "nested fixture",
+    ],
+    fixtureGitOptions,
+  );
+  return nested;
+}
+
+test("WO-176 recorded dispositions never authorize changed or same-path foreign repositories", (t) => {
+  const from = repo(t),
+    derived = repo(t);
+  for (const root of [from, derived])
+    write(
+      root,
+      ".gitignore",
+      readFileSync(join(root, ".gitignore"), "utf8") + "scratch-material/\n",
+    );
+  const path = "scratch-material/x";
+  mkdirSync(join(from, path), { recursive: true });
+  runGit(join(from, path), ["init", "-q"], fixtureGitOptions);
+  const empty = inventoryMaterial(from);
+  assert.equal(empty[0].disposition, "disposable");
+  materialRepository(from, path);
+  const fresh = inventoryMaterial(from, { declarations: empty });
+  assert.equal(fresh[0].disposition, "undeclared");
+  assert.match(fresh[0].reason, /with content/);
+  declareMaterial(from, path, "disposable", "saved scratch word");
+  const declared = inventoryMaterial(from);
+  assert.equal(declared[0].source, "declared");
+  materialRepository(derived, path, "foreign saved commit\n");
+  assert.equal(
+    inventoryMaterial(derived, { declarations: declared })[0].disposition,
+    "undeclared",
+  );
+  assert.equal(
+    inventoryMaterial(derived, { declarations: empty })[0].disposition,
+    "undeclared",
+  );
+  const word = {
+    path,
+    disposition: "disposable",
+    source: "declared",
+    reason: "operator close word",
+  };
+  assert.equal(
+    inventoryMaterial(derived, {
+      declarations: declared,
+      overrides: [word],
+      overrideWorktree: from,
+    })[0].disposition,
+    "undeclared",
+  );
+  assert.equal(
+    inventoryMaterial(derived, {
+      declarations: declared,
+      overrides: [{ ...word, worktree: derived }],
+      overrideWorktree: from,
+    })[0].disposition,
+    "disposable",
+  );
+  // Uncommitted files invalidate a disposal decision even when HEAD is unchanged.
+  write(from, `${path}/unsaved.txt`, "new work after the handoff\n");
+  assert.equal(
+    inventoryMaterial(from, { declarations: declared })[0].disposition,
+    "undeclared",
+  );
+  assert.throws(
+    () => verifyMaterialState(from, declared),
+    /changed.*source retained/,
+  );
+  const legacy = [{ ...word, reason: "unbound legacy word" }];
+  assert.equal(
+    inventoryMaterial(from, { declarations: legacy })[0].disposition,
+    "undeclared",
+  );
+  materialRepository(from, ".runtime/kept");
+  declareMaterial(from, ".runtime/kept", "preserve", "retain this repository");
+  const keeping = inventoryMaterial(from);
+  write(from, ".runtime/kept/later.txt", "later work must stay\n");
+  assert.equal(
+    inventoryMaterial(from, { declarations: keeping }).find(
+      (row) => row.path === ".runtime/kept",
+    ).disposition,
+    "undeclared",
+  );
+});
+
+test("WO-176 disposable recovery bundles retain referenced and unreachable commits", (t) => {
+  const from = repo(t),
+    main = repo(t);
+  const nested = materialRepository(from, ".runtime/x");
+  const dangling = runGit(
+    nested,
+    [
+      "-c",
+      "user.name=Fixture",
+      "-c",
+      "user.email=f@example.invalid",
+      "commit-tree",
+      "HEAD^{tree}",
+      "-p",
+      "HEAD",
+      "-m",
+      "unreachable fixture",
+    ],
+    fixtureGitOptions,
+  );
+  const refs = runGit(nested, ["for-each-ref"], fixtureGitOptions);
+  const material = inventoryMaterial(from);
+  const preview = recoverDisposableRepositories(
+    from,
+    main,
+    "WO-999",
+    material,
+    { dryRun: true },
+  );
+  assert.equal(preview[0].outcome, "would-bundle");
+  assert.ok(!existsSync(join(main, preview[0].path)));
+  const recovery = recoverDisposableRepositories(
+    from,
+    main,
+    "WO-999",
+    material,
+  );
+  assert.equal(recovery[0].commitCount, 2);
+  assert.equal(recovery[0].outcome, "bundled");
+  assert.equal(runGit(nested, ["for-each-ref"], fixtureGitOptions), refs);
+  const clone = join(main, ".runtime/recovered");
+  runGit(
+    main,
+    ["clone", join(main, recovery[0].path), clone],
+    fixtureGitOptions,
+  );
+  assert.equal(
+    runGit(clone, ["show", "HEAD:saved.txt"], fixtureGitOptions),
+    "nested fixture",
+  );
+  assert.equal(
+    runGit(clone, ["cat-file", "-t", dangling], fixtureGitOptions),
+    "commit",
+  );
+  verifyMaterialState(from, material);
+  assert.equal(
+    recoverDisposableRepositories(from, main, "WO-999", material)[0].sha256,
+    recovery[0].sha256,
+  );
+  writeFileSync(join(main, recovery[0].path), "damaged bundle\n");
+  assert.throws(
+    () => recoverDisposableRepositories(from, main, "WO-999", material),
+    /bundle/,
+  );
+  assert.equal(
+    runGit(nested, ["cat-file", "-t", dangling], fixtureGitOptions),
+    "commit",
+  );
+});
+
+test("WO-176 repository disposal uses directory lanes rather than file suffixes or linked metadata", (t) => {
+  const from = repo(t),
+    external = repo(t);
+  write(
+    from,
+    ".gitignore",
+    readFileSync(join(from, ".gitignore"), "utf8") + "work/\n",
+  );
+  for (const path of [
+    "work/notes.tsbuildinfo",
+    "work/.dotln-beacon-stage-abc123",
+    "work/plain",
+  ])
+    materialRepository(from, path);
+  const linked = join(from, ".runtime/linked");
+  runGit(
+    external,
+    ["worktree", "add", "--detach", linked, "HEAD"],
+    fixtureGitOptions,
+  );
+  write(linked, "unsaved.txt", "linked worktree dirt\n");
+  assert.ok(
+    inventoryMaterial(from).every((row) => row.disposition === "undeclared"),
+  );
+  materialRepository(from, ".runtime/standalone");
+  assert.equal(
+    inventoryMaterial(from).find((row) => row.path === ".runtime/standalone")
+      .disposition,
+    "disposable",
+  );
+  write(from, "ordinary.tsbuildinfo", "derived file\n");
+  assert.equal(
+    describeIgnoredMaterial(from, "ordinary.tsbuildinfo").disposable,
+    true,
+  );
+});
+
+test("WO-176 lane disposal and explicit preservation keep repository units and collisions intact", (t) => {
+  const from = repo(t),
+    main = repo(t);
+  materialRepository(from, ".runtime/x");
+  materialRepository(from, "docs/intake/x", "protected intake\n");
+  materialRepository(from, "docs/control/local/cache/x");
+  assert.equal(describeIgnoredMaterial(from, ".runtime/x/").disposable, true);
+  const rows = inventoryMaterial(from);
+  assert.deepEqual(
+    rows.map((row) => [row.path, row.disposition, row.source]),
+    [
+      [".runtime/x", "disposable", "lane"],
+      ["docs/control/local/cache/x", "disposable", "lane"],
+      ["docs/intake/x", "preserve", "lane"],
+    ],
+  );
+  declareMaterial(from, ".runtime/x", "preserve", "keep the saved fixture");
+  const material = inventoryMaterial(from);
+  const receipt = reconcileWorktreeMaterial(from, main, "WO-999", { material });
+  verifyPreservedMaterial(from, main, receipt);
+  const kept = join(
+    main,
+    "docs/control/local/retained/WO-999/material/.runtime/x",
+  );
+  assert.equal(
+    runGit(kept, ["show", "HEAD:saved.txt"], fixtureGitOptions),
+    "nested fixture",
+  );
+  assert.throws(
+    () => declareMaterial(from, "docs/intake/x", "disposable", "invalid"),
+    /Protected intake/,
+  );
+  assert.equal(
+    runGit(
+      join(main, "docs/intake/x"),
+      ["show", "HEAD:saved.txt"],
+      fixtureGitOptions,
+    ),
+    "protected intake",
+  );
+  assert.ok(
+    !receipt.files.some((row) =>
+      row.source.startsWith("docs/control/local/cache/x/"),
+    ),
+  );
+  const retry = reconcileWorktreeMaterial(from, main, "WO-999", { material });
+  verifyPreservedMaterial(from, main, retry);
+  const collision = retry.directories.find(
+    (row) => row.source === ".runtime/x",
+  );
+  assert.match(collision.destination, /x\.from-WO-999$/);
+  assert.equal(
+    runGit(
+      join(main, collision.destination),
+      ["show", "HEAD:saved.txt"],
+      fixtureGitOptions,
+    ),
+    "nested fixture",
+  );
+  const external = repo(t);
+  symlinkSync(external, join(from, ".runtime/link"));
+  assert.throws(
+    () => declareMaterial(from, ".runtime/link", "disposable", "invalid"),
+    /symlink/,
+  );
+  assert.throws(
+    () => declareMaterial(from, "../outside", "disposable", "invalid"),
+    /relative/,
+  );
+});
+
+test("WO-176 actual executor completions record declared, lane and undeclared material without refusing", (t) => {
+  const root = repo(t, { runtime: true });
+  cpSync(join(source, "scripts/lib"), join(root, "scripts/lib"), {
+    recursive: true,
+  });
+  for (const name of ["resume.mjs", "worktree.mjs"])
+    cpSync(join(source, "scripts", name), join(root, "scripts", name));
+  installBeaconFixture(root);
+  write(
+    root,
+    "docs/work-orders/WO-999-fixture.md",
+    "# WO-999 — fixture\n\n**Model:** any capable model.\n**Effort:** executor any; verifier any; reviewer any.\n",
+  );
+  write(
+    root,
+    ".gitignore",
+    readFileSync(join(root, ".gitignore"), "utf8") + "private-fixture/\n",
+  );
+  materialRepository(root, ".runtime/lane");
+  materialRepository(root, "private-fixture/declared");
+  materialRepository(root, "private-fixture/unknown");
+  const call = (script, ...args) =>
+    spawnSync(process.execPath, [join(root, "scripts", script), ...args], {
+      cwd: root,
+      encoding: "utf8",
+      env: {
+        ...process.env,
+        CODEX_THREAD_ID: "",
+        COPILOT_AGENT_SESSION_ID: "",
+        CLAUDE_EFFORT: "",
+      },
+      timeout: 30_000,
+    });
+  const declared = call(
+    "worktree.mjs",
+    "material",
+    "private-fixture/declared",
+    "--disposable",
+    "--reason",
+    "discard fixture",
+  );
+  assert.equal(declared.status, 0, declared.stderr);
+  const actor = [
+    "--harness",
+    "fixture",
+    "--harness-version",
+    "1",
+    "--model",
+    "fixture",
+    "--effort",
+    "high",
+    "--source",
+    "operator-attested",
+  ];
+  const ready = call("resume.mjs", "implementation-ready", ...actor);
+  assert.equal(ready.status, 0, ready.stderr);
+  assert.match(
+    ready.stderr,
+    /Undeclared nested repository.*private-fixture\/unknown.*npm run worktree -- material/,
+  );
+  const eventRows = () =>
+    readFileSync(join(root, "docs/control/orders/WO-999.jsonl"), "utf8")
+      .trim()
+      .split("\n")
+      .map(JSON.parse);
+  const implementation = eventRows().find(
+    (row) => row.type === "ImplementationReady",
+  );
+  assert.deepEqual(
+    implementation.evidence.material.map((row) => [
+      row.path,
+      row.disposition,
+      row.source,
+    ]),
+    [
+      [".runtime/lane", "disposable", "lane"],
+      ["private-fixture/declared", "disposable", "declared"],
+      ["private-fixture/unknown", "undeclared", "lane"],
+    ],
+  );
+  assert.equal(implementation.evidence.material[1].reason, "discard fixture");
+  // Main consumes the filed event, not a later local change to its declaration.
+  runGit(root, ["add", "."], fixtureGitOptions);
+  runGit(root, ["commit", "-qm", "file handoff"], fixtureGitOptions);
+  declareMaterial(
+    root,
+    "private-fixture/declared",
+    "preserve",
+    "changed local word",
+  );
+  assert.equal(committedMaterial(root, "WO-999")[1].disposition, "disposable");
+  const appended =
+    [
+      {
+        type: "VerificationRequested",
+        verificationId: "VER-001",
+        reportPath: "docs/verifications/WO-999/VER-001.md",
+      },
+      {
+        type: "VerificationCompleted",
+        verificationId: "VER-001",
+        reportPath: "docs/verifications/WO-999/VER-001.md",
+        verdict: "fail",
+      },
+      {
+        type: "RepairRequested",
+        sourceFindingId: "VER-001",
+        sourceReportPath: "docs/verifications/WO-999/VER-001.md",
+      },
+    ]
+      .map((row) =>
+        JSON.stringify({
+          schemaVersion: 1,
+          recordedAt: new Date().toISOString(),
+          workOrderId: "WO-999",
+          ...row,
+        }),
+      )
+      .join("\n") + "\n";
+  writeFileSync(join(root, "docs/control/orders/WO-999.jsonl"), appended, {
+    flag: "a",
+  });
+  const repaired = call("resume.mjs", "repair-complete", ...actor);
+  assert.equal(repaired.status, 0, repaired.stderr);
+  const repair = eventRows().at(-1);
+  assert.equal(repair.type, "RepairCompleted");
+  assert.equal(repair.evidence.material[1].disposition, "preserve");
+  assert.equal(repair.evidence.material[1].source, "declared");
+  assert.equal(repair.evidence.material[2].disposition, "undeclared");
 });

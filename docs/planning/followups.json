@@ -18406,6 +18406,14 @@
           "reopenWhen": "a withdrawn order exists on a branch and needs publication or teardown",
           "targets": [],
           "at": "2026-09-30T15:30:44.880Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "WO-176-D007 rechecked canonical control and Git branches: no withdrawn order exists on a branch. Retarget the lifecycle-touch trigger to an actual withdrawn consumer; its route remains outside this order.",
+          "reopenWhen": "a withdrawn order exists on a branch and needs publication or teardown",
+          "targets": [],
+          "at": "2026-10-01T03:09:56.714Z"
         }
       ]
     },
@@ -22160,6 +22168,16 @@
             "WO-178"
           ],
           "at": "2026-09-30T15:30:44.808Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "WO-176 supplies the ignored close outcome contract and material handoff; WO-178 retains counting/admission work. Retargeted for this handoff (WO-176-D007); closure remains independently judged.",
+          "reopenWhen": "WO-176 closes without its record, or a pass needs a close outcome a pull request carries",
+          "targets": [
+            "WO-178"
+          ],
+          "at": "2026-10-01T03:09:56.673Z"
         }
       ]
     },
@@ -24841,6 +24859,243 @@
           "ref": "docs/evidence/WO-180/decisions.md#wo-180-d013",
           "title": "WO-180-D013: Planner, before WO-123 activates: amend WO-123 (or WO-061) to carry two WO-180 seams. (1) When the composition builds a BaselineStory, it reads the class from WO-061's StoryContract once ",
           "summary": "{ \"id\": \"WO-180-D013\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: final review\", \"decision\": \"Pass WO-180 on all six criteria against the original order, on VER-001's reproductions and this review's fresh product gate at the identity that keys the new test file. Board two seams the composition must carry, without failing the order. (1) Receipt 036's known issue on the order's catalog row (docs/planning/work-order-map.md) directs the executor to treat a contract naming a failing behavior as a defect story before WO-061 lands and to record the class source. Nothing in the landed primitive reads a contract: BaselineStory.kind is a caller input, BaselineWitnessed records the class but not where ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-bf51ac5cd8143d98",
+      "key": "decision:docs/evidence/WO-176/decisions.md#wo-176-d006",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "8ac26cc389cc18bbd0952e3db2937d3124d123bcffc7664831e9a65401a0ef37",
+          "ref": "docs/evidence/WO-176/decisions.md#wo-176-d006",
+          "title": "WO-176-D006: Next order editing packages/skeleton/src/gate-evidence.mjs: define the candidate-tree treatment of a protected intake repository directory re-included by .gitignore. Reproduce with a one-",
+          "summary": "{ \"id\": \"WO-176-D006\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: next; adjacent defect diagnosis\", \"decision\": \"Board the pre-existing file-only gate-tree failure for a protected intake repository present during a gate. WO-176 handles its cleanup when local material is created after the reviewed gate; it does not change the gate's source inventory contract.\", \"evidence\": [ \"System-temp probe with the actual .gitignore: docs/intake/x/ is an untracked repository entry\", \"Material shell fixture with that repository before commit_candidate: gateTreeHash refuses Unsupported candidate tree entry\", \"packages/skeleton/src/gate-evidence.mjs gateTreeHash requires each candidate entry to be a regular ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-176-D006 and adjacent-0001: protected intake can be cleaned after a reviewed gate, but gateTreeHash still refuses a repository directory present during the gate. The registered gate source/live feedback repair exceeds WO-176.",
+          "reopenWhen": "a protected intake repository is needed during a gate or completion, or the next order edits gateTreeHash",
+          "targets": [],
+          "at": "2026-10-01T03:09:56.751Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-fac73cbaa42b9187",
+      "key": "decision:docs/evidence/WO-176/decisions.md#wo-176-d019",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "a8fcca3e2e35f88ba4bb5b3aaeab9bc1c7b67b3a33d4cc09998f70f0f11ee2c5",
+          "ref": "docs/evidence/WO-176/decisions.md#wo-176-d019",
+          "title": "WO-176-D019: Next order editing reconcileDerivedWorktrees in scripts/worktree.mjs or finishPublishedWorktree in scripts/release.mjs (priority medium; data-loss class). Bind each committed material row",
+          "summary": "{ \"id\": \"WO-176-D019\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: verify\", \"decision\": \"Pass VER-001 on criteria 1–6 and board a data-loss-class defect outside them. The subject's committed material rows and the close's --material overrides are keyed by path alone, and settlement applies them to every derived worktree. A nested repository in a derived worktree may never have been inventoried by any completion. If its path matches a subject row declared disposable, it becomes declared-disposable, passes the ignored-material check and is removed with that worktree. The same repository is undeclared by its own inventory. The criteria judge the subject worktree; the verifier leaves the implement",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-176-D032: worktree/state binding and scoped flags retain same-path foreign derived repositories; current material and derived review fixtures pass.",
+          "reopenWhen": "A repaired material, recovery or record invariant regresses, or a later session cannot recover a removed commit.",
+          "targets": [],
+          "at": "2026-10-01T13:38:36.770Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-b954a9b6cb652a85",
+      "key": "decision:docs/evidence/WO-176/decisions.md#wo-176-d020",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "0e7b09a61b0dc7e7389e702013f4b57e4d5277f506ac8dc78a500bd69a90ea47",
+          "ref": "docs/evidence/WO-176/decisions.md#wo-176-d020",
+          "title": "WO-176-D020: Next order editing finishPublishedWorktree in scripts/release.mjs, the material advisory in scripts/lib/lifecycle-evidence.mjs or ensureNoIgnoredMaterial in scripts/worktree.mjs (priority",
+          "summary": "{ \"id\": \"WO-176-D020\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: verify\", \"decision\": \"Board two operator-facing accuracy defects outside the criteria. (a) The close record marks cleanup blocked for any path-matching worktree that settle keeps because it is checked out on a branch, and gives it a bare release-close command that cannot settle it. When the subject's finish is blocked, settle's kept line for the subject's own path also adds a second settle blocker to the subject row. (b) The completion advisory says 'declare before close', but the same command has already recorded the row as undeclared. A later declaration takes effect only at a later completion; otherwise the close's --materi",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-176-D032: cleanup inventory excludes branch siblings kept by design and duplicate subject settlement; advisories explain completion timing and lead with scoped close remedies; current review passes.",
+          "reopenWhen": "A repaired material, recovery or record invariant regresses, or a later session cannot recover a removed commit.",
+          "targets": [],
+          "at": "2026-10-01T13:38:36.811Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-1fa571564b4efa07",
+      "key": "decision:docs/evidence/WO-176/decisions.md#wo-176-d022",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "76982251334033aeb7f7114f556adf0dd6f903415f6c9d05febcf98ca9472e3b",
+          "ref": "docs/evidence/WO-176/decisions.md#wo-176-d022--final-review-finding-a-frozen-completion-row-deletes-an-undeclared-repository-that-gained-content",
+          "title": "WO-176-D022: WO-176 resume: fix. Rule the repair must hold: a committed material row governs a repository only in the state it recorded. A repository whose state changed since that completion is judge",
+          "summary": "{ \"id\": \"WO-176-D022\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: final review; FINAL-001\", \"kind\": \"finding\", \"decision\": \"Fail FINAL-001 and return the finding to repair. The close replays the completion's committed material rows as explicit declarations, whatever their source. inventoryMaterial lets an explicit row replace the repository's current classification, so a lane row recorded at completion is frozen. A repository in the other lane that was empty at completion is recorded disposable by the empty-scaffolding rule. If it gains a commit before the close, its own inventory then says undeclared, but the replayed row makes it disposable. The ignored-material check finds no blocker, and",
+          "missing": false
+        },
+        {
+          "hash": "1d7d3b512470e9353081e52d30d95661b3aaee0e793290daf1c673223ae623a6",
+          "ref": "docs/evidence/WO-176/decisions.md#wo-176-d022--final-review-finding-a-frozen-completion-row-deletes-an-undeclared-repository-that-gained-content",
+          "title": "WO-176-D022: WO-176 resume: fix. Rule the repair must hold: a committed material row governs a repository only in the state it recorded. A repository whose state changed since that completion is judge",
+          "summary": "{ \"id\": \"WO-176-D022\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: final review; FINAL-001\", \"kind\": \"finding\", \"decision\": \"Fail FINAL-001 and return the finding to repair. The close replays the completion's committed material rows as explicit declarations, whatever their source. inventoryMaterial lets an explicit row replace the repository's current classification, so a lane row recorded at completion is frozen. A repository in the other lane that was empty at completion is recorded disposable by the empty-scaffolding rule. If it gains a commit before the close, its own inventory then says undeclared, but the replayed row makes it disposable. The ignored-material check finds no blocker, and",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-176-D032: fresh lane observations and current state-bound declarations retain post-completion commits, uncommitted files and changed kept units; current material and process review cases pass.",
+          "reopenWhen": "A repaired material, recovery or record invariant regresses, or a later session cannot recover a removed commit.",
+          "targets": [],
+          "at": "2026-10-01T13:38:36.848Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-32e003236baffa9b",
+      "key": "decision:docs/evidence/WO-176/decisions.md#wo-176-d023",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "092ab66e048298237c4d84a9f52f07937e0f2b1ab7083cd4e57f4e86905300ab",
+          "ref": "docs/evidence/WO-176/decisions.md#wo-176-d023--final-review-minor-defects-recorded-for-the-repair-or-a-follow-up",
+          "title": "WO-176-D023: WO-176 resume: fix, within D022's bound where cheap, otherwise the next order editing finishPublishedWorktree or the material helpers (priority low): print one --material command that car",
+          "summary": "{ \"id\": \"WO-176-D023\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: final review; FINAL-001\", \"kind\": \"finding\", \"decision\": \"Record minor defects met in review and not fixed here. None alone fails a criterion as its fixtures define it. D022's repair may fix any of them within its bound, and any it leaves must be named in that repair's decisions with a follow-up.\", \"evidence\": [ \"(a) D019 is broader than recorded. reconcileDerivedWorktrees passes every committed row to inventoryMaterial (scripts/worktree.mjs:215), including lane rows, so a derived worktree's repository with content can become disposable through a subject row nobody declared, such as D022's empty-scaffolding row. Inference from",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "duplicate",
+          "reason": "WO-176-D032 settles D023(a-g,i). The remaining moved-main retry and concurrent/unbounded-history contract is recorded specifically in WO-176-D029 and FUP-da471832071118c7.",
+          "reopenWhen": "A bounded repaired item regresses, or a remaining release-recovery or attempt-history condition in D029 occurs.",
+          "targets": [
+            "FUP-da471832071118c7"
+          ],
+          "at": "2026-10-01T13:38:36.921Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-d6490bcc786a84b9",
+      "key": "decision:docs/evidence/WO-176/decisions.md#wo-176-d024",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "2a38116fedd1496acb0d24e00e9c2bc2c57744479bdc588d7e693cc9ff60c58c",
+          "ref": "docs/evidence/WO-176/decisions.md#wo-176-d024--final-review-finding-receipt-036s-catalog-duty-has-no-implementation-or-recorded-check",
+          "title": "WO-176-D024: WO-176 resume: fix: before the close removes a declared- or lane-disposable nested repository that holds commits, bundle it into docs/control/local/retained/WO-NNN/ (or record why a repos",
+          "summary": "{ \"id\": \"WO-176-D024\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: final review; FINAL-001\", \"kind\": \"finding\", \"decision\": \"Record that the catalog row's disposition of Receipt 036's known issue is not discharged, and route it to D022's repair. The row says that within the design the close bundles a repository whose commits no retained ref reaches into the retained lane before removing it, and that the decisions record the check. No WO-176 source creates a bundle or checks reachability, and no decision mentions the receipt. The order's text and citations do not carry the duty, so the executor and VER-001 did not judge it. The refuter's reopening condition has occurred in this order's own fix",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-176-D032: Receipt 036 is discharged by verified self-contained bundles of all stored commits and post-removal clone checks; recovery rows name the retained bundle; current review passes.",
+          "reopenWhen": "A repaired material, recovery or record invariant regresses, or a later session cannot recover a removed commit.",
+          "targets": [],
+          "at": "2026-10-01T13:38:36.884Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-da471832071118c7",
+      "key": "decision:docs/evidence/WO-176/decisions.md#wo-176-d029",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "cd3178a03043c826aae77736373d781bdb19f3ee6fd87f9fcc03e675d6aa5aeb",
+          "ref": "docs/evidence/WO-176/decisions.md#wo-176-d029--deferred-release-retry-and-history-contract",
+          "title": "WO-176-D029: Next order editing scripts/release.mjs ensureExistingRelease or retained close history (priority medium): reproduce publication with material blocking cleanup, then move origin/main with ",
+          "summary": "{ \"id\": \"WO-176-D029\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: fix; bounded adjacent dispositions\", \"decision\": \"Defer the moved-main retry and concurrent/unbounded close history to the next order owning immutable-release recovery and retained attempt storage. The material state, scoped remedies, recovery bundles and nonfatal record I/O are repaired here.\", \"evidence\": [ \"FINAL-001 D023(h): after origin/main moves, ensureExistingRelease still requires the existing tag target to equal current main; the printed retry refuses before cleanup\", \"scripts/release.mjs ensureExistingRelease: weakening the equality without separately validating the historical manifest could accept an unrelated tag\"",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-176-D029: retain strict immutable-tag validation and complete attempt history; historical retry and concurrent archived storage need their own contract.",
+          "reopenWhen": "The next release-recovery order edits these seams, a real retry meets moved main, history storage becomes a measured bottleneck, or overlapping closes lose an attempt.",
+          "targets": [],
+          "at": "2026-10-01T13:14:42.628Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-e7096aa6bde63c0e",
+      "key": "decision:docs/evidence/WO-176/decisions.md#wo-176-d033",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "06f5fbefe5042515429fbe4e1d9971780ea0afea7b10166e763bb3bf19782dd4",
+          "ref": "docs/evidence/WO-176/decisions.md#wo-176-d033--verification-nested-object-stores-escape-the-state-binding-and-the-recovery-bundle",
+          "title": "WO-176-D033: Next order editing materialState or recoverDisposableRepositories in scripts/lib/worktree-material.mjs, or worktree finish's inventory in scripts/worktree.mjs (priority medium; recoverabi",
+          "summary": "{ \"id\": \"WO-176-D033\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: verify; VER-002\", \"kind\": \"finding\", \"decision\": \"Pass VER-002 on criteria 1 and 3 and board a recoverability defect, with a narrow data-loss case, outside them. materialState and recoverDisposableRepositories read only the top-level repository's own refs, objects, index and working files. The close deletes every Git object store beneath a removed path. (1) A submodule's store under .git/modules is not in the state, so a commit made inside the submodule after an explicit disposable declaration, then reset away, leaves the state unchanged. The declaration still applies, and the close removes the repository with a commit no bund",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-03ccaaf4c2e6ad49",
+      "key": "decision:docs/evidence/WO-176/decisions.md#wo-176-d034",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "6898369b21c50bd057c7d13565515f4bf883571b8bd1c0e2bc5834cc034cc20b",
+          "ref": "docs/evidence/WO-176/decisions.md#wo-176-d034--verification-close-word-record-accuracy-and-hardening-defects-boarded",
+          "title": "WO-176-D034: Next order editing parseMaterialFlags or inventoryMaterial in scripts/lib/worktree-material.mjs, or finishPublishedWorktree or close in scripts/release.mjs (priority low). Refuse, before ",
+          "summary": "{ \"id\": \"WO-176-D034\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: verify; VER-002\", \"kind\": \"finding\", \"decision\": \"Pass VER-002 on criteria 3 and 4 and board six minor defects outside them. (a) A scoped --material word whose worktree is named through a symlinked alias matches no worktree and is dropped without notice, so an intended preserve on a lane-disposable repository becomes removal (with its bundle). (b) Two words for the same repository are both accepted, and the last one wins: an unscoped word plus a scoped word for the subject, or /wt and /wt/. (c) After a tag push whose Release failed, a retry that fails the gh preflight is recorded refused with tagOutcome null although origin ho",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-a1e36af45f68e3ac",
+      "key": "decision:docs/evidence/WO-176/decisions.md#wo-176-d035",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "12a9b52889763660bb217bb60a349b55e3dd2f61783d767059ec84718f0aafab",
+          "ref": "docs/evidence/WO-176/decisions.md#wo-176-d035--operator-amendment-judge-the-order-on-deleting-scratch-repositories",
+          "title": "WO-176-D035: Planner (priority high): define which nested repositories are scratch, meaning built only to test, verify or help build; the operator left that boundary to the planner. Make the executor ",
+          "summary": "{ \"id\": \"WO-176-D035\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: final review; FINAL-002; operator messages during the review\", \"kind\": \"operator-amendment\", \"decision\": \"Authorization. During FINAL-002 the operator stated, across several messages (paraphrased here): a scratch repository built only to test, verify or help build is to be removed in every case, and its contents never matter; this order was only supposed to remove such repositories; one still present at release close is a stopgap, because the executor or the final review should already have removed it; and the planner should have worked this out. The operator then directed the reviewer to update the order to do only that, with",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-65efad56c927c1f9",
+      "key": "decision:docs/evidence/WO-176/decisions.md#wo-176-d037",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "3a87e908fae08b6ff1c66c4c2bc98795c7780d671bfd536c130ae0bc0ccda2a6",
+          "ref": "docs/evidence/WO-176/decisions.md#wo-176-d037--final-review-defects-in-the-shipped-machinery-the-amended-order-does-not-judge",
+          "title": "WO-176-D037: Next order editing removePreservedWorktree in scripts/worktree.mjs or close in scripts/release.mjs, or the D035 simplification, whichever comes first (priority medium for (a), low otherwi",
+          "summary": "{ \"id\": \"WO-176-D037\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: final review; FINAL-002\", \"kind\": \"finding\", \"decision\": \"Pass FINAL-002 on the amended criteria and board what its two read-only reviewers found in the shipped declaration, preservation and record machinery, which D035 removed from the criteria. (a) removePreservedWorktree passes --force to git worktree remove whenever a preserved intake repository unit is untracked. --force also disables Git's refusal for working trees with submodules, so a subject with a populated committed submodule that holds unpushed commits loses them. DotLn tracks no submodule today. (b) A keep declaration does not survive a worktree move: the row bind",
           "missing": false
         }
       ],

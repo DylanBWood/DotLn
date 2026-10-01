@@ -3,6 +3,8 @@ import { isMainModule } from "./lib/paths.mjs";
 import { json as prettyJson, sha256Hex as sha256 } from "./lib/helpers.mjs";
 import {
   harnessRuntimeCause,
+  claudeSessionReport,
+  currentHarnessSessionReport,
   refreshHarnessRuntime,
 } from "./lib/harness-runtime.mjs";
 import { docPath, docRelative, findLaunchpad } from "./lib/config.mjs";
@@ -45,6 +47,7 @@ import {
   mainWorktree as findMainWorktree,
   parseWorktrees,
   removeMergedBranch,
+  shellQuote,
   runGit,
   runGitPathList,
 } from "./lib/git.mjs";
@@ -66,6 +69,14 @@ import {
 } from "./lib/control-store.mjs";
 import { executorWriterRelease } from "./lib/executor-handoff.mjs";
 import { releaseListCache } from "./lib/release-list-cache.mjs";
+import {
+  committedMaterial,
+  inventoryMaterial,
+  materialCloseCommand,
+  materialFlagValue,
+  parseMaterialFlags,
+  requireMaterialContainment,
+} from "./lib/worktree-material.mjs";
 import {
   renderReleaseHistory,
   writeReleaseHistory,
@@ -1532,12 +1543,66 @@ const updateMain = (root) => {
   )
     throw new Error("main is not synchronized with origin/main");
 };
-const finishPublishedWorktree = (root, workOrderId, dryRun = false) => {
+const finishPublishedWorktree = (
+  root,
+  workOrderId,
+  dryRun = false,
+  record,
+  overrides = [],
+) => {
+  const cleanup = { outcome: "clean", worktrees: [] };
+  if (record) record.cleanup = cleanup;
   try {
     const branch = `wo-${workOrderId.slice(3)}`;
     const subject = parseWorktrees(root).find(
       (item) => item.branch === `refs/heads/${branch}`,
     );
+    const declarations = [
+      ...committedMaterial(root, workOrderId, sourceRevision),
+    ];
+    const suffix = workOrderId.slice(3);
+    const before = parseWorktrees(root).filter(
+      (item) =>
+        item.worktree &&
+        resolve(item.worktree) !== root &&
+        (item === subject ||
+          item.branch === `refs/heads/${branch}` ||
+          (item.detached &&
+            item.worktree
+              .split(/[\\/]/u)
+              .some((part) =>
+                new RegExp(`(?:^|[^0-9a-z])wo${suffix}(?![0-9])`, "i").test(
+                  part,
+                ),
+              ))),
+    );
+    for (const item of before) {
+      const path = resolve(item.worktree);
+      let material = [],
+        inventoryError;
+      try {
+        if (existsSync(path))
+          material = inventoryMaterial(path, {
+            declarations,
+            overrides,
+            overrideWorktree: subject?.worktree ?? null,
+          });
+      } catch (error) {
+        inventoryError = error.message;
+      }
+      cleanup.worktrees.push({
+        path,
+        material,
+        outcome: "pending",
+        blockers: [],
+        ...(inventoryError ? { inventoryError } : {}),
+      });
+      if (record)
+        record.material.push(
+          ...material.map((row) => ({ ...row, worktree: path })),
+        );
+    }
+    const outputs = [];
     const actions = subject?.worktree ? ["finish", "settle"] : ["settle"];
     for (const action of actions) {
       try {
@@ -1548,13 +1613,40 @@ const finishPublishedWorktree = (root, workOrderId, dryRun = false) => {
             action,
             workOrderId,
             ...(dryRun ? ["--dry-run"] : []),
+            ...overrides.flatMap((row) => [
+              "--material",
+              materialFlagValue(row),
+            ]),
           ],
-          { cwd: root },
+          {
+            cwd: root,
+            env: {
+              ...process.env,
+              DOTLN_RELEASE_MATERIAL_REVISION: sourceRevision,
+            },
+          },
         );
+        outputs.push(finished.stdout ?? "");
+        for (const line of (finished.stdout ?? "").split("\n"))
+          if (line.startsWith("Material recovery: ")) {
+            const recovery = JSON.parse(
+              line.slice("Material recovery: ".length),
+            );
+            const previous = record.recovery.find(
+              (row) =>
+                row.path === recovery.path &&
+                row.repository === recovery.repository,
+            );
+            if (previous) Object.assign(previous, recovery);
+            else record.recovery.push(recovery);
+          }
         if (finished.stdout) process.stdout.write(finished.stdout);
         if (finished.status !== 0)
           throw new Error(failureOf(finished, `${action} failed`));
       } catch (error) {
+        const command = `node ${shellQuote(join(root, "scripts/release.mjs"))} close ${workOrderId} --publish`;
+        cleanup.outcome = "blocked";
+        record?.blockers.push({ action, reason: error.message, command });
         process.stdout.write(
           `Advisory: ${dryRun ? "prospective" : "published release"} cleanup blocker: ${error.message}\n`,
         );
@@ -1568,12 +1660,96 @@ const finishPublishedWorktree = (root, workOrderId, dryRun = false) => {
       try {
         removeMergedBranch(root, branch);
       } catch (error) {
+        cleanup.outcome = "blocked";
+        record?.blockers.push({
+          action: "branch",
+          reason: error.message,
+          command: `git branch -d ${branch}`,
+        });
         process.stdout.write(
           `Advisory: published release branch cleanup blocker: ${error.message}\n`,
         );
       }
     }
+    const after = new Set(parseWorktrees(root).map((item) => item.worktree));
+    for (const row of cleanup.worktrees) {
+      const output = outputs.join("\n");
+      if (!dryRun && !after.has(row.path)) row.outcome = "removed";
+      else if (
+        dryRun &&
+        (output.includes(`Derived worktree ${row.path}: would remove`) ||
+          output.includes(`Derived worktree ${row.path}: would prune`) ||
+          (row.path === subject?.worktree &&
+            output.includes(`Dry run: would fetch main`)))
+      )
+        row.outcome = "would-remove";
+      else {
+        row.outcome = "retained";
+        cleanup.outcome = "blocked";
+        row.blockers = (record?.blockers ?? []).filter(
+          (blocker) =>
+            blocker.action ===
+            (row.path === subject?.worktree ? "finish" : "settle"),
+        );
+        const line =
+          row.path === subject?.worktree
+            ? undefined
+            : output
+                .split("\n")
+                .find((line) =>
+                  line.startsWith(`Derived worktree ${row.path}: kept`),
+                );
+        if (line) {
+          const blocker = {
+            action: "settle",
+            reason: line,
+            command: `node ${shellQuote(join(root, "scripts/release.mjs"))} close ${workOrderId} --publish`,
+          };
+          row.blockers.push(blocker);
+          record?.blockers.push(blocker);
+        }
+      }
+    }
+    const undeclared = cleanup.worktrees
+      .filter((row) => row.outcome === "retained")
+      .flatMap((row) =>
+        row.material
+          .filter((material) => material.disposition === "undeclared")
+          .map((material) => ({ path: material.path, worktree: row.path })),
+      );
+    for (const row of cleanup.worktrees)
+      for (const material of row.material)
+        if (
+          material.disposition === "undeclared" &&
+          row.outcome === "retained"
+        ) {
+          const blocker = {
+            action: "material",
+            path: material.path,
+            worktree: row.path,
+            reason: "undeclared nested repository",
+            command: materialCloseCommand(root, workOrderId, undeclared),
+            disposableCommand: materialCloseCommand(
+              root,
+              workOrderId,
+              undeclared,
+              "disposable",
+            ),
+          };
+          row.blockers.push(blocker);
+          record?.blockers.push(blocker);
+        }
+    if (undeclared.length)
+      process.stdout.write(
+        `Material cleanup retry: ${materialCloseCommand(root, workOrderId, undeclared)}\n`,
+      );
   } catch (error) {
+    cleanup.outcome = "blocked";
+    record?.blockers.push({
+      action: "cleanup",
+      reason: error.message,
+      command: `node ${shellQuote(join(root, "scripts/release.mjs"))} close ${workOrderId} --publish`,
+    });
     process.stdout.write(
       `Advisory: ${dryRun ? "prospective" : "published release"} cleanup blocker: ${error.message}\n`,
     );
@@ -1712,7 +1888,7 @@ const backfillReleaseBody = (tag, humanLayer) => {
       : "";
   return `**Notes as generated at close; predates WO-024's release-note edition.**\n\n${humanLayer}${historicalLinks}\n`;
 };
-const publishTag = (root, tag, commit, message, tagger) => {
+const publishTag = (root, tag, commit, message, tagger, publication) => {
   const body = `object ${commit}\ntype commit\ntag ${tag}\ntagger ${tagger}\n\n${message}`;
   const made = execute("git", ["-C", root, "mktag"], { input: body });
   if (made.status !== 0)
@@ -1732,6 +1908,8 @@ const publishTag = (root, tag, commit, message, tagger) => {
     throw new Error(
       `tag push failed; no local tag ref was created: ${failureOf(pushed, "git push failed")}`,
     );
+  publication.tagOutcome = "published";
+  publication.tagObject = object;
   try {
     runGit(root, ["update-ref", `refs/tags/${tag}`, object, ""]);
   } catch (error) {
@@ -1741,20 +1919,15 @@ const publishTag = (root, tag, commit, message, tagger) => {
   }
   return object;
 };
-const close = (workOrderId, args) => {
-  if (
-    !/^WO-\d{3}$/.test(workOrderId ?? "") ||
-    args.some((arg) => !["--publish", "--dry-run"].includes(arg)) ||
-    new Set(args).size !== args.length
-  )
-    throw new Error("usage: release close WO-NNN [--publish] [--dry-run]");
-  const publish = args.includes("--publish");
+const close = (workOrderId, parsed, record) => {
+  const { flags, material: overrides } = parsed;
+  const publish = flags.includes("--publish");
   const root = findMainWorktree(toolRoot);
   if (resolve(process.cwd()) !== root)
     throw new Error(
       `release close must run from the main control-plane checkout: ${root}`,
     );
-  const dryRun = args.includes("--dry-run");
+  const dryRun = flags.includes("--dry-run");
   const reachable = ensureOriginReachable(root);
   if (dryRun)
     process.stdout.write(
@@ -1782,6 +1955,7 @@ const close = (workOrderId, args) => {
       `merged control state is for ${state.workOrderId ?? "none"}, not ${workOrderId}`,
     );
   const authority = workOrderAuthority(root, state, sourceRevision);
+  record.publication.tag = authority.version;
   let local = localTags(root);
   const remote = remoteTags(root);
   const latest = latestVersion(remote);
@@ -1805,6 +1979,8 @@ const close = (workOrderId, args) => {
   });
   process.stdout.write(surfaceCheck.report);
   if (!surfaceCheck.passed) {
+    record.publication.outcome = "refused";
+    record.publication.refusal = surfaceCheck.report.trim();
     process.exitCode = 1;
     return;
   }
@@ -1814,8 +1990,10 @@ const close = (workOrderId, args) => {
     ? `Main tracked files are clean; in-flight orders: ${remaining.join(", ")}.`
     : "Main tracked files are clean and between work orders.";
   if (latest && compareVersions(authority.version, latest) < 0) {
+    record.publication.outcome = "no-release";
     if (!dryRun) refreshHarnessRuntime(root, () => ensureReleaseRuntime(root));
-    if (publish || dryRun) finishPublishedWorktree(root, workOrderId, dryRun);
+    if (publish || dryRun)
+      finishPublishedWorktree(root, workOrderId, dryRun, record, overrides);
     process.stdout.write(
       `${workOrderId} closes ${authority.version}, below latest release ${latest}; no release tag is due. ${mainStatus}\n`,
     );
@@ -1834,11 +2012,13 @@ const close = (workOrderId, args) => {
     const existing = dryRun
       ? withPreviewRuntime(root, inspectExisting)
       : inspectExisting();
+    record.publication.tagOutcome = "already-published";
     if (dryRun) {
+      record.publication.outcome = "preview";
       process.stdout.write(
         `Dry run: would fast-forward main to ${head}, validate the recorded reviewer gate, and reconcile the existing Release.\n${JSON.stringify(existing.manifest, null, 2)}\n`,
       );
-      finishPublishedWorktree(root, workOrderId, true);
+      finishPublishedWorktree(root, workOrderId, true, record, overrides);
       return;
     }
     const projection = publish
@@ -1849,7 +2029,10 @@ const close = (workOrderId, args) => {
           projectedReleaseBody(authority.version, existing.humanLayer),
         )
       : undefined;
-    if (publish) finishPublishedWorktree(root, workOrderId);
+    record.publication.outcome = "already-published";
+    record.publication.release = projection ?? null;
+    if (publish)
+      finishPublishedWorktree(root, workOrderId, false, record, overrides);
     process.stdout.write(
       `${authority.version} is already published from ${head}${projection ? `; GitHub Release ${projection}` : ""}. ${mainStatus}\n`,
     );
@@ -1884,29 +2067,40 @@ const close = (workOrderId, args) => {
     manifest = prepareManifest();
   }
   if (dryRun) {
+    record.publication.outcome = "preview";
     process.stdout.write(
       `Dry run: would fast-forward main to ${head}, run surface checks, build missing or mismatched pinned runtime, validate this reviewer-gate manifest, ${publish ? "create and push the annotated tag and create the Release" : "prepare the release"}, then attempt worktree cleanup. No suite, install or CLI smoke runs.\n${JSON.stringify(manifest, null, 2)}\n`,
     );
-    finishPublishedWorktree(root, workOrderId, true);
+    finishPublishedWorktree(root, workOrderId, true, record, overrides);
     return;
   }
   const humanLayer = releaseEdition(root, manifest);
   const message = tagMessage(root, manifest);
   if (!publish) {
+    record.publication.outcome = "prepared";
     process.stdout.write(
       `Prepared and validated ${authority.version} for ${head}. To create and push only the annotated tag and create its matching GitHub Release, run:\n  npm run release -- close ${workOrderId} --publish\n`,
     );
     return;
   }
-  const tagObject = publishTag(root, authority.version, head, message, tagger);
+  const tagObject = publishTag(
+    root,
+    authority.version,
+    head,
+    message,
+    tagger,
+    record.publication,
+  );
   const projection = ensureGitHubRelease(
     root,
     repository,
     authority.version,
     projectedReleaseBody(authority.version, humanLayer),
   );
+  record.publication.outcome = "published";
+  record.publication.release = projection;
   ensureTrackedClean(root);
-  finishPublishedWorktree(root, workOrderId);
+  finishPublishedWorktree(root, workOrderId, false, record, overrides);
   process.stdout.write(
     `Published annotated ${authority.version} (${tagObject}) for ${head}; GitHub Release ${projection}. ${mainStatus}\n`,
   );
@@ -2224,29 +2418,146 @@ const main = async () => {
   previewRuntimeRoot = undefined;
   const [action, ...args] = process.argv.slice(2);
   if (action === "close") {
+    const workOrderId = args[0];
+    if (!/^WO-\d{3}$/u.test(workOrderId ?? ""))
+      throw new Error(
+        "usage: release close WO-NNN [--publish] [--dry-run] [--material <path>=disposable|preserve]",
+      );
+    const parsed = parseMaterialFlags(args.slice(1), [
+      "--publish",
+      "--dry-run",
+    ]);
+    const root = findMainWorktree(toolRoot);
+    const recordPath = docRelative(
+      root,
+      "control",
+      `local/retained/${workOrderId}/release-close.json`,
+    );
+    let harness = null;
+    try {
+      harness =
+        (!process.env.CODEX_THREAD_ID && !process.env.COPILOT_AGENT_SESSION_ID
+          ? claudeSessionReport()
+          : null
+        )?.session ?? (await currentHarnessSessionReport(root)).session;
+    } catch {
+      // A command outside a known dispatch still records its unknown actor.
+    }
+    const record = {
+      schemaVersion: 1,
+      workOrderId,
+      startedAt: new Date().toISOString(),
+      dryRun: parsed.flags.includes("--dry-run"),
+      dispatch: {
+        harness: harness?.harness ?? null,
+        session:
+          process.env.CODEX_THREAD_ID ||
+          process.env.COPILOT_AGENT_SESSION_ID ||
+          process.env.CLAUDE_CODE_SESSION_ID ||
+          process.env.CLAUDE_SESSION_ID ||
+          null,
+        source: harness?.source ?? "unknown",
+      },
+      publication: {
+        requested: parsed.flags.includes("--publish"),
+        outcome: "not-started",
+        tag: null,
+        tagOutcome: null,
+        release: null,
+        refusal: null,
+      },
+      cleanup: { outcome: "not-attempted", worktrees: [] },
+      material: [],
+      recovery: [],
+      overrides: parsed.material,
+      blockers: [],
+      previousAttempts: [],
+      recordAdvisories: [],
+    };
+    const recordAdvisory = (error) => {
+      const message = `Close record unavailable: ${String(error.message).replace(/\s+/gu, " ").trim()}`;
+      record.recordAdvisories.push(message);
+      process.stderr.write(`Advisory: ${message}\n`);
+    };
+    const priorFile = join(root, recordPath);
+    try {
+      requireMaterialContainment(root, recordPath);
+      if (existsSync(priorFile)) {
+        const bytes = readFileSync(priorFile, "utf8");
+        try {
+          const { previousAttempts = [], ...prior } = JSON.parse(bytes);
+          if (!Array.isArray(previousAttempts))
+            throw new Error("Invalid close history");
+          record.previousAttempts = [...previousAttempts, prior];
+        } catch {
+          // Preserve damaged earlier bytes in the ignored record without
+          // exposing them in diagnostics or making bookkeeping a gate.
+          record.previousAttempts = [{ unreadableRecord: bytes }];
+        }
+      }
+    } catch (error) {
+      recordAdvisory(error);
+    }
     // A release-close dispatch keeps the writer through publication. Only a
     // successful, non-preview close is its completion and releases that actor.
     const completing =
-      args.includes("--publish") && !args.includes("--dry-run");
+      parsed.flags.includes("--publish") && !parsed.flags.includes("--dry-run");
     let releaseWriter;
-    if (completing) {
-      const root = realpathSync(process.cwd());
+    try {
+      if (completing) {
+        const writerRoot = realpathSync(process.cwd());
+        try {
+          releaseWriter = await executorWriterRelease(writerRoot);
+        } catch (error) {
+          if (
+            !existsSync(
+              join(writerRoot, "packages/skeleton/dist/src/harness-host.js"),
+            )
+          )
+            throw new Error(
+              `Release-close runtime is not built in ${writerRoot}; writer reservation retained. Run npm run build in the main checkout, then retry release close.`,
+              { cause: error },
+            );
+          throw error;
+        }
+      }
+      const result = close(workOrderId, parsed, record);
+      if (!process.exitCode) releaseWriter?.();
+      return result;
+    } catch (error) {
+      const published = [
+        "published",
+        "already-published",
+        "no-release",
+      ].includes(record.publication.outcome);
+      if (!published) {
+        record.publication.outcome = [
+          "published",
+          "already-published",
+        ].includes(record.publication.tagOutcome)
+          ? "partially-published"
+          : "refused";
+        record.publication.refusal = error.message;
+      }
+      record.blockers.push({
+        action: published ? "completion" : "publication",
+        reason: error.message,
+        command: `node ${shellQuote(join(root, "scripts/release.mjs"))} close ${workOrderId} --publish`,
+      });
+      throw error;
+    } finally {
+      record.recordedAt = new Date().toISOString();
       try {
-        releaseWriter = await executorWriterRelease(root);
+        requireMaterialContainment(root, recordPath);
+        const file = join(root, recordPath);
+        mkdirSync(dirname(file), { recursive: true, mode: 0o700 });
+        writeFileSync(file, `${JSON.stringify(record, null, 2)}\n`, {
+          mode: 0o600,
+        });
       } catch (error) {
-        if (
-          !existsSync(join(root, "packages/skeleton/dist/src/harness-host.js"))
-        )
-          throw new Error(
-            `Release-close runtime is not built in ${root}; writer reservation retained. Run npm run build in the main checkout, then retry release close.`,
-            { cause: error },
-          );
-        throw error;
+        recordAdvisory(error);
       }
     }
-    const result = close(args[0], args.slice(1));
-    if (!process.exitCode) releaseWriter?.();
-    return result;
   }
   if (action === "prepare") {
     if (

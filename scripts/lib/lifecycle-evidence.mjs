@@ -2,6 +2,10 @@ import { spawnGit } from "./git.mjs";
 import { docPath } from "./config.mjs";
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
+import {
+  inventoryMaterial,
+  materialDeclareCommand,
+} from "./worktree-material.mjs";
 
 export async function requireLifecycleEvidence(
   root,
@@ -25,6 +29,25 @@ export async function requireLifecycleEvidence(
     advisories.push(message);
     console.warn(`Advisory: ${message}`);
   };
+  let material;
+  if (executor) {
+    try {
+      material = inventoryMaterial(root);
+    } catch (error) {
+      advise(`Material declarations unavailable: ${error.message}`);
+      try {
+        material = inventoryMaterial(root, { declarations: [] });
+      } catch (error) {
+        advise(`Material inventory unavailable: ${error.message}`);
+        material = [];
+      }
+    }
+    for (const row of material)
+      if (row.disposition === "undeclared")
+        advise(
+          `Undeclared nested repository ${JSON.stringify(row.path)}; this completion records undeclared. Before another executor completion declare: ${materialDeclareCommand(row.path)}; at close use --material.`,
+        );
+  }
   // The whitespace check refuses; its row is bookkeeping. A gate index that
   // cannot be read or written never refuses a completion and is left as it
   // is. An executor completion reports it once, with the gate claims it
@@ -160,6 +183,7 @@ export async function requireLifecycleEvidence(
   // `gateIndexError` is for the gate claims and never reaches the event.
   return {
     treeHash,
+    ...(executor ? { material } : {}),
     ...(productGate ? { productGate } : {}),
     advisories,
     ...(executor && gateIndexError ? { gateIndexError } : {}),
