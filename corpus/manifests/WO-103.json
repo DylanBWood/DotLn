@@ -1,0 +1,308 @@
+{
+  "schemaVersion": 1,
+  "workOrderId": "WO-103",
+  "seed": "wo103-seed-20261001",
+  "pinnedBaseCommit": "ee9b9db9f716dbe6a94ae1b564bb2d04210f17d0",
+  "provenance": "Original generated inputs from personal-project source; no external data or executable functions serialized into fixtures.",
+  "authority": {
+    "factors": {
+      "effect": [
+        "string",
+        "non-string"
+      ],
+      "clock": [
+        "before",
+        "at",
+        "after"
+      ],
+      "eventTypes": [
+        0,
+        1,
+        2
+      ],
+      "events": [
+        0,
+        1,
+        2
+      ],
+      "typeMatch": [
+        false,
+        true
+      ],
+      "conditions": [
+        0,
+        1,
+        2
+      ],
+      "semanticMatch": [
+        "early",
+        "late",
+        "never"
+      ],
+      "environment": [
+        "complete",
+        "policy",
+        "missing-state",
+        "missing-env",
+        "unknown",
+        "throw-early",
+        "throw-late"
+      ],
+      "patterns": [
+        "exact",
+        "bare-star",
+        "prefix",
+        "allow-miss",
+        "deny-exact",
+        "deny-star",
+        "deny-prefix",
+        "overlap",
+        "list-tail"
+      ],
+      "evidence": [
+        "required-empty",
+        "empty",
+        "subset",
+        "superset"
+      ],
+      "resource": [
+        "undefined",
+        "missing",
+        "one",
+        "zero",
+        "negative",
+        "__proto__:missing",
+        "constructor:missing",
+        "toString:missing",
+        "__proto__:own",
+        "constructor:own",
+        "toString:own"
+      ]
+    },
+    "expectedCells": 2694384,
+    "observedCells": 2694384,
+    "expectedStreamSha256": "dcbd7d040e60de11208f86b4bd28e5c5c98245e7336bc96e178ad8aef69bdb3a",
+    "winners": {
+      "act": 18800,
+      "resource limit exceeded": 22560,
+      "required evidence missing": 41360,
+      "effect not allowed": 20680,
+      "effect denied": 82720,
+      "cannot evaluate revocation": 185328,
+      "authority revoked": 77616,
+      "authority expired": 898128,
+      "effect is not a string": 1347192
+    },
+    "observedPredicateCalls": 220968,
+    "divergences": 0,
+    "inactiveAxes": "Zero conditions/events/types retain inactive labels; every Cartesian label tuple still has exactly one cell.",
+    "predicateRegistry": {
+      "id": "wo103.probe",
+      "version": 1,
+      "semantics": "Match selected condition/event indices; bind state, canonical now, RNG, params and optional policy. Throw at the declared early/late callback ordinal. Unknown references preflight before callbacks."
+    }
+  },
+  "outbox": {
+    "factors": {
+      "commandShape": [
+        "complete",
+        "id-only",
+        "missing-intent",
+        "missing-id",
+        "empty-id",
+        "non-string-id",
+        "null",
+        "array"
+      ],
+      "commandKey": [
+        "cmd-a",
+        "__proto__",
+        "constructor",
+        "toString"
+      ],
+      "malformed": [
+        "null",
+        "array",
+        "number",
+        "missing-field",
+        "invalid-field"
+      ]
+    },
+    "permutationPolicy": {
+      "maximumFullAlphabetSize": 6,
+      "maximumFullOrdersPerAlphabet": 720,
+      "seededOrdersAboveCap": 128,
+      "alphabetSizes": {
+        "pending": 4,
+        "duplicateOrphans": 6,
+        "permanentOrphans": 6,
+        "multipleCommands": 8
+      }
+    },
+    "delivery": [
+      "once",
+      "each-event-twice"
+    ],
+    "expectedOrders": 254720,
+    "observedOrders": 254720,
+    "expectedRuns": 509440,
+    "observedRuns": 509440,
+    "expectedStreamSha256": "ffe5364ab980d2e15e462528961d3e490c74935e5d9498c444c394072aa824f1",
+    "classifications": {
+      "accepted": 51780,
+      "dedup": 94080,
+      "unknown": 794880,
+      "preceded-persist": 62780
+    },
+    "incompletePendingCells": 960,
+    "divergences": 0,
+    "labeledPermutationSlots": true
+  },
+  "auxiliary": {
+    "forgedEffects": [
+      null,
+      true,
+      {},
+      [],
+      "<omitted>"
+    ],
+    "patternProbes": [
+      "a*",
+      "*",
+      "a*b",
+      "a**"
+    ],
+    "deniedListTail": [
+      "other",
+      "a*"
+    ],
+    "identityModes": [
+      "ep",
+      "empty-episode",
+      "no-episode"
+    ],
+    "threadingLimits": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "resourceKeys": [
+      "units",
+      "__proto__",
+      "constructor",
+      "toString"
+    ],
+    "auditCarryInCells": 2,
+    "standaloneMalformedEnvelope": "Not part of the declared set: arbitrary null/malformed envelopes require a separate follow-up."
+  },
+  "committedBudget": {
+    "maximumFiles": 16,
+    "maximumRows": 2048,
+    "maximumTotalBytes": 12582912,
+    "rowsPerShard": 128
+  },
+  "fixtures": [
+    {
+      "path": "corpus/fixtures/authority/wo103-000.jsonl",
+      "rows": 128,
+      "bytes": 224947,
+      "sha256": "df91c5c1e09dabcf9fa9ff441a447e5d0de2b938b3c1ad0d4abfbacad8e877ba"
+    },
+    {
+      "path": "corpus/fixtures/authority/wo103-001.jsonl",
+      "rows": 128,
+      "bytes": 225992,
+      "sha256": "db65a0f32d70869590fcdb161a87ebe504e5625fe2547a1420ef702aa901bbe8"
+    },
+    {
+      "path": "corpus/fixtures/authority/wo103-002.jsonl",
+      "rows": 128,
+      "bytes": 228025,
+      "sha256": "b875d49fd800bb1b2c72c86e1eb81fcada50f8bf49513d21e234f57111f52de1"
+    },
+    {
+      "path": "corpus/fixtures/authority/wo103-003.jsonl",
+      "rows": 128,
+      "bytes": 233362,
+      "sha256": "3c25335dc34283711c1f607f9e2f9e114d7c909390a4455b03e9bec810c9c288"
+    },
+    {
+      "path": "corpus/fixtures/outbox/wo103-000.jsonl",
+      "rows": 128,
+      "bytes": 292107,
+      "sha256": "3333af72958d93afd2eb68f8915bd344d78cba92a0b1abe8844b0e2d3d30324d"
+    },
+    {
+      "path": "corpus/fixtures/outbox/wo103-001.jsonl",
+      "rows": 128,
+      "bytes": 277747,
+      "sha256": "852e82421216244187f54172eedf280d30447c558e44e4dcccfe658984b44801"
+    },
+    {
+      "path": "corpus/fixtures/outbox/wo103-002.jsonl",
+      "rows": 128,
+      "bytes": 277060,
+      "sha256": "6322cb707510519417cdcf0976ae7ccab9426e64bbbd52e1c3fc9d55d8745d6f"
+    },
+    {
+      "path": "corpus/fixtures/outbox/wo103-003.jsonl",
+      "rows": 128,
+      "bytes": 274016,
+      "sha256": "20c163bf99679dec83e365ca8a54bd57c3549d5026a46d3bd4a7202f62310bb6"
+    },
+    {
+      "path": "corpus/fixtures/outbox/wo103-004.jsonl",
+      "rows": 128,
+      "bytes": 271239,
+      "sha256": "a27e9bfdfd6a80bcc67f41853a6f748c472878853ab9344ff01e702dc82e68fb"
+    }
+  ],
+  "fixtureTotals": {
+    "files": 9,
+    "rows": 1152,
+    "bytes": 2304495
+  },
+  "fixtureTransport": {
+    "protocol": "EventEnvelope v1 JSONL",
+    "type": "CorpusFixture",
+    "cellLocation": "payload",
+    "eventIdPolicy": "evt_<physical row>, restarting at evt_1 in each shard; payload.cellId preserves the factorial identity",
+    "semantics": "Synthetic fixture framing only; no runtime event or contract subtype is introduced. Existing strict event codec can decode and re-encode every row."
+  },
+  "goldenPolicy": "512 seeded/level-planted authority cells; one order per outbox factor/alphabet. Full sweeps run and hash every expectation, not just golden cells.",
+  "generatedSurfaces": [
+    {
+      "path": "corpus/manifests/WO-103-precedence.md",
+      "sha256": "960e41b55c362c1030c97e2359edfcb623eef646240aeab6e512a45f78accd51"
+    },
+    {
+      "path": "corpus/manifests/findings-WO-103.md",
+      "sha256": "ab75ff76f0a0f500445937d54f4a3eadab3dd421cbcbf64599ae4f6ad5a50fdb"
+    }
+  ],
+  "findingNumbers": [
+    "WO-103-F001",
+    "WO-103-F002",
+    "WO-103-F003"
+  ],
+  "toolchainProfile": {
+    "node": "v26.9.0",
+    "npm": "11.19.1",
+    "typescript": "7.0.2",
+    "platform": "darwin",
+    "architecture": "arm64"
+  },
+  "evidence": {
+    "commands": [
+      "npm run build",
+      "node corpus/harness/generate-authority-corpus.mjs --seed wo103-seed-20261001 --check",
+      "node --test 'corpus/harness/wo103-*.test.mjs'",
+      "npm test",
+      "npm run test:docs"
+    ],
+    "runLog": "corpus/manifests/runs/WO-103-ee9b9db9f716dbe6a94ae1b564bb2d04210f17d0.log",
+    "runLogCommitMeaning": "Filename names the pinned base; evidence precedes a final reviewed branch commit.",
+    "metadataPolicy": "Toolchain profile records generation host; regeneration does not require impersonating that host."
+  }
+}
