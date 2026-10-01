@@ -3869,6 +3869,13 @@
           "title": "Workstream application — end-user workflow candidate",
           "summary": "# Workstream application — end-user workflow candidate **Status:** operator-opened product exploration, 2026-09-04. This describes a candidate application of DotLn for everyday software work. It is not an implemented interface, a deployment claim, a new release rung, or a replacement for the separately named `προτείνω` thesis. The application identity and first deployment remain unannounced; this public design uses synthetic work only. The product question is what a person does when they sit down to work: start an outcome, make the decisions that need their judgment, inspect the result, and return later without reconstructing the process. DotLn should carry the coordination that currently li",
           "missing": false
+        },
+        {
+          "hash": "2b8057ba55b3118774388297bcd9977f1bb97329067346ec50f1e9798471bcd2",
+          "ref": "docs/product/12-workstream-application.md#workstream-application--end-user-workflow-candidate",
+          "title": "Workstream application — end-user workflow candidate",
+          "summary": "# Workstream application — end-user workflow candidate **Status:** operator-opened product exploration, 2026-09-04. This describes a candidate application of DotLn for everyday software work. It is not an implemented interface, a deployment claim, a new release rung, or a replacement for the separately named `προτείνω` thesis. The application identity and first deployment remain unannounced; this public design uses synthetic work only. The product question is what a person does when they sit down to work: start an outcome, make the decisions that need their judgment, inspect the result, and return later without reconstructing the process. DotLn should carry the coordination that currently li",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -24999,6 +25006,13 @@
           "title": "WO-180-D013: Planner, before WO-123 activates: amend WO-123 (or WO-061) to carry two WO-180 seams. (1) When the composition builds a BaselineStory, it reads the class from WO-061's StoryContract once ",
           "summary": "{ \"id\": \"WO-180-D013\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: final review\", \"decision\": \"Pass WO-180 on all six criteria against the original order, on VER-001's reproductions and this review's fresh product gate at the identity that keys the new test file. Board two seams the composition must carry, without failing the order. (1) Receipt 036's known issue on the order's catalog row (docs/planning/work-order-map.md) directs the executor to treat a contract naming a failing behavior as a defect story before WO-061 lands and to record the class source. Nothing in the landed primitive reads a contract: BaselineStory.kind is a caller input, BaselineWitnessed records the class but not where ",
           "missing": false
+        },
+        {
+          "hash": "be50098e248645013a23e7f084603984e5d425c9a8ad4cbee04de5ccebb7e654",
+          "ref": "docs/evidence/WO-180/decisions.md#wo-180-d013",
+          "title": "WO-180-D013: Planner, before WO-123 activates: amend WO-123 (or WO-061) to carry two WO-180 seams. (1) When the composition builds a BaselineStory, it reads the class from WO-061's StoryContract once ",
+          "summary": "{ \"id\": \"WO-180-D013\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: final review\", \"decision\": \"Pass WO-180 on all six criteria against the original order, on VER-001's reproductions and this review's fresh product gate at the identity that keys the new test file. Board two seams the composition must carry, without failing the order. (1) Receipt 036's known issue on the order's catalog row (docs/planning/work-order-map.md) directs the executor to treat a contract naming a failing behavior as a defect story before WO-061 lands and to record the class source. Nothing in the landed primitive reads a contract: BaselineStory.kind is a caller input, BaselineWitnessed records the class but not where ",
+          "missing": false
         }
       ],
       "dispositions": []
@@ -25594,6 +25608,36 @@
           "ref": "docs/evidence/WO-182/decisions.md#wo-182-d006--final-review-pass-and-two-seams-the-required-runs-inherit",
           "title": "WO-182-D006: Planner, before WO-123 activates (and for WO-112's and WO-118's runs): (1) name the step that writes delivery-preparation.json: the ambiguity inventory from WO-061's StoryContract, the te",
           "summary": "{ \"id\": \"WO-182-D006\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: final review; FINAL-001\", \"kind\": \"finding\", \"decision\": \"Pass WO-182 on all five criteria against the original order, on VER-001's probes, this review's reading of the full diff and a fresh product gate on the integrated tree. Board two seams for the runs that will require readiness, without failing the order. (1) From source, not executed: publishTargetOrder returns an already recorded PullRequestOpened before it evaluates readiness. So publish --target with --require-deliverable-ready for a head an operator already opened without the flag exits 0 ('Already published ...; nothing pushed') even when items were absent. That ca",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-aa6dbe9c5ad79995",
+      "key": "decision:docs/evidence/WO-061/decisions.md#wo-061-d010",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "37352246ba03e1c825add17e388d32d95d2e01223bcec7155955c38d9a652d05",
+          "ref": "docs/evidence/WO-061/decisions.md#wo-061-d010--verification-a-same-role-entry-between-a-question-and-its-reply-leaves-no-follows-fact",
+          "title": "WO-061-D010: Planner, for the next order that edits packages/compiler/src/story-contract.ts (WO-124 is the expected one): decide whether follows targets the first later discussion entry by another rol",
+          "summary": "{ \"id\": \"WO-061-D010\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: verify\", \"decision\": \"Pass WO-061 on all eight criteria. Record, without failing the order, one gap in the structural rule that criterion 4's fixtures do not cover. compileStoryContract records follows only when the entry immediately after a question has another role. When the asker posts a second entry before anyone else replies, the thread records no follows fact at all.\", \"evidence\": [ \"docs/verifications/WO-061/VER-001.md\", \"packages/compiler/src/story-contract.ts lines 428-446: the follows rule reads only bundle.discussion[i + 1] and records nothing when that entry's author equals the question's.\", \"Reproduction against p",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-2534f4dc631f5ebc",
+      "key": "decision:docs/evidence/WO-061/decisions.md#wo-061-d011",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "1f7eaef326dafb5b644ea9b1b5f799663c1ee16646cd74937ae7699e326566a1",
+          "ref": "docs/evidence/WO-061/decisions.md#wo-061-d011--final-review-pass-and-four-compile-seams-outside-the-declared-fixtures",
+          "title": "WO-061-D011: Planner, for WO-124 (the next order that edits packages/compiler/src/story-contract.ts), or WO-062 if it lands first: (1) decide whether an image whose referencedBy covers only whitespace",
+          "summary": "{ \"id\": \"WO-061-D011\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: final review; FINAL-001\", \"kind\": \"finding\", \"decision\": \"Pass WO-061 on all eight criteria against the original order. The basis is VER-001, this review's reading of the full diff, a rerun of the nine WO-061 tests and the fixture-diff check on a fresh build, direct edition, console, harness and publication checks, and the passing product row at the unchanged code identity. main had not moved past the executor's base (v0.62.0, 3a4aa82a), so no integration was needed and v0.63.0 stays the target. Board four seams that the order's fixtures do not reach, without failing the order. (1) compileStoryContract throws 'span must resolv",
           "missing": false
         }
       ],
