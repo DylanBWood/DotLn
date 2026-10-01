@@ -1,4 +1,4 @@
-# WO-181 — Independent review episode: a blinded, read-only episode distinct from the behavior verifier judges the candidate diff against the contract and the repository's conventions, returns typed findings under the finding contract, never edits the branch, and its minor suggestions never widen scope (version assigned at activation)
+# WO-181 — Independent review episode: a blinded, read-only episode distinct from the behavior verifier judges the candidate diff against the contract and the repository's conventions, returns typed findings under the finding contract, never edits the branch, and its minor suggestions never widen scope (v0.61.0)
 
 **Model:** any capable model; the live rows run the actual local harnesses
 as the reviewer. State the model and effort actually run
@@ -128,6 +128,18 @@ gate (it reads rows).
 event, the routes with fixtures; two live rows; the product 03
 write-back; the decisions.
 
+**Operator scope expansion (2026-10-01; WO-181-D008):** prepare the pinned
+Playwright headless Chromium automatically in the existing bootstrap for
+future worktrees, before printing a ready/launch handoff. Use the installed
+lockfile-pinned CLI and the same cache the browser suite selects; retain
+explicit cache overrides. A setup failure preserves the checkout and names
+the retry. Prove a fresh worktree, cache reuse and failed-setup behavior.
+Do not retrofit existing worktrees or turn unavailable browser evidence into
+a passing gate. Bounded surfaces: `scripts/bootstrap.mjs`, its tests in
+`scripts/test-process-debt.mjs`, fresh-worktree evidence in
+`docs/evidence/WO-181/`, package setup instructions and product 07's existing
+bootstrap paragraph; update the catalog carrier and publication locks.
+
 **Acceptance criteria (all required)**
 
 1. On WO-056's synthetic repository with a repaired candidate carrying one
@@ -152,6 +164,11 @@ write-back; the decisions.
    index; WO-123's catalog row names the step.
 6. `npm test -- --review` and `npm run test:docs` green; `git diff
    --check` clean; no new dependency.
+7. Future worktree bootstrap prepares its pinned headless Chromium before
+   readiness without a separate operator install step; a fresh-worktree
+   executable proof launches it, a cached retry succeeds without a download,
+   cache overrides retain their selection, and a failed preparation cannot
+   advertise readiness. Existing worktrees are not retrofitted.
 
 **Evidence gate:** the fixtures of criteria 1 to 3; the live rows;
 `npm test -- --review` before `implementation-ready`; the editions
