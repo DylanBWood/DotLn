@@ -268,12 +268,24 @@ function fixture(
   );
   // Dependencies are read-only links; workspace links point into this fixture.
   mkdirSync(join(subject, "node_modules/@dotln"), { recursive: true });
-  for (const name of ["typescript", "@types", "prettier"])
+  for (const name of [
+    "typescript",
+    "@types",
+    "prettier",
+    "playwright",
+    "playwright-core",
+  ])
     symlinkSync(
       join(source, "node_modules", name),
       join(subject, "node_modules", name),
     );
-  for (const name of ["compiler", "kernel", "skeleton", "console"]) {
+  for (const name of [
+    "browser-evidence",
+    "compiler",
+    "kernel",
+    "skeleton",
+    "console",
+  ]) {
     symlinkSync(
       join(subject, "packages", name),
       join(subject, "node_modules/@dotln", name),
