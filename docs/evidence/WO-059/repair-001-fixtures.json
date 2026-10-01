@@ -1,0 +1,578 @@
+{
+  "schemaVersion": 1,
+  "scope": "WO-059 repair of VER-001 F1; synthetic browser fixtures",
+  "rows": [
+    {
+      "id": "five-witnesses-and-admission",
+      "label": "pass",
+      "evidence": [
+        {
+          "evidenceId": "greeting:visual:0:screenshot",
+          "criterionId": "visual",
+          "checkId": "greeting",
+          "claimType": "visual",
+          "source": "synthetic-fixture",
+          "subjectRevision": "synthetic-candidate",
+          "codeSurfaces": [
+            "packages/browser-evidence/fixtures/index.html"
+          ],
+          "automatedTest": "runScenario greeting",
+          "observed": "screenshot captured; scenario assertions passed",
+          "expected": "Scenario assertions pass without console errors",
+          "outcome": "pass",
+          "reproductionSteps": [
+            "Replay saved scenario greeting with the pinned browser."
+          ],
+          "witness": {
+            "kind": "screenshot",
+            "contentHash": "sha256:c541aae0d0dff602b0cda4027995e16da53ace21bf03b127b625e6ed954b750e",
+            "criterionId": "visual"
+          }
+        },
+        {
+          "evidenceId": "greeting:visual:1:dom-snapshot",
+          "criterionId": "visual",
+          "checkId": "greeting",
+          "claimType": "visual",
+          "source": "synthetic-fixture",
+          "subjectRevision": "synthetic-candidate",
+          "codeSurfaces": [
+            "packages/browser-evidence/fixtures/index.html"
+          ],
+          "automatedTest": "runScenario greeting",
+          "observed": "dom-snapshot captured; scenario assertions passed",
+          "expected": "Scenario assertions pass without console errors",
+          "outcome": "pass",
+          "reproductionSteps": [
+            "Replay saved scenario greeting with the pinned browser."
+          ],
+          "witness": {
+            "kind": "dom-snapshot",
+            "contentHash": "sha256:ebaf5ede151a6c2b13fea3dc73262df8e9cd074b396a261099a93475e93bd049"
+          }
+        },
+        {
+          "evidenceId": "greeting:visual:2:accessibility-snapshot",
+          "criterionId": "visual",
+          "checkId": "greeting",
+          "claimType": "visual",
+          "source": "synthetic-fixture",
+          "subjectRevision": "synthetic-candidate",
+          "codeSurfaces": [
+            "packages/browser-evidence/fixtures/index.html"
+          ],
+          "automatedTest": "runScenario greeting",
+          "observed": "accessibility-snapshot captured; scenario assertions passed",
+          "expected": "Scenario assertions pass without console errors",
+          "outcome": "pass",
+          "reproductionSteps": [
+            "Replay saved scenario greeting with the pinned browser."
+          ],
+          "witness": {
+            "kind": "accessibility-snapshot",
+            "contentHash": "sha256:7de04ce3980b543b39e2bc269a1e106221fbd89c92d5117181cf4aedfffe65a5"
+          }
+        },
+        {
+          "evidenceId": "greeting:visual:3:network-trace",
+          "criterionId": "visual",
+          "checkId": "greeting",
+          "claimType": "visual",
+          "source": "synthetic-fixture",
+          "subjectRevision": "synthetic-candidate",
+          "codeSurfaces": [
+            "packages/browser-evidence/fixtures/index.html"
+          ],
+          "automatedTest": "runScenario greeting",
+          "observed": "network-trace captured; scenario assertions passed",
+          "expected": "Scenario assertions pass without console errors",
+          "outcome": "pass",
+          "reproductionSteps": [
+            "Replay saved scenario greeting with the pinned browser."
+          ],
+          "witness": {
+            "kind": "network-trace",
+            "contentHash": "sha256:f7d99a21f74b0ed1b064aaf91dec179af874dff5e8ce4fc6bee0266d42960eb1",
+            "request": {
+              "method": "GET",
+              "url": "http://fixture.local/",
+              "bodyHash": null
+            },
+            "response": {
+              "status": 200,
+              "bodyHash": "sha256:965358a6fd1813c4312fecea27d3f1a2acfc50e31755fd507da1cf725cff4a99"
+            }
+          }
+        },
+        {
+          "evidenceId": "greeting:visual:4:network-trace",
+          "criterionId": "visual",
+          "checkId": "greeting",
+          "claimType": "visual",
+          "source": "synthetic-fixture",
+          "subjectRevision": "synthetic-candidate",
+          "codeSurfaces": [
+            "packages/browser-evidence/fixtures/index.html"
+          ],
+          "automatedTest": "runScenario greeting",
+          "observed": "network-trace captured; scenario assertions passed",
+          "expected": "Scenario assertions pass without console errors",
+          "outcome": "pass",
+          "reproductionSteps": [
+            "Replay saved scenario greeting with the pinned browser."
+          ],
+          "witness": {
+            "kind": "network-trace",
+            "contentHash": "sha256:7adf8004dfe6eaea4838b86f8551bae545cad2aceb3f8420a4ad95d5afdb5ac5",
+            "request": {
+              "method": "POST",
+              "url": "http://fixture.local/api/greeting",
+              "bodyHash": "sha256:073c7222fe2d2fcb169c1c2b7c0d01d8299ca7fb964b20515e686fc5ec6e7212"
+            },
+            "response": {
+              "status": 200,
+              "bodyHash": "sha256:b78d48eb679b8ce1d24ab945e8965a2727a8924f34551ce5c5102f4ff2239099"
+            }
+          }
+        },
+        {
+          "evidenceId": "greeting:visual:5:console-capture",
+          "criterionId": "visual",
+          "checkId": "greeting",
+          "claimType": "visual",
+          "source": "synthetic-fixture",
+          "subjectRevision": "synthetic-candidate",
+          "codeSurfaces": [
+            "packages/browser-evidence/fixtures/index.html"
+          ],
+          "automatedTest": "runScenario greeting",
+          "observed": "console-capture captured; scenario assertions passed",
+          "expected": "Scenario assertions pass without console errors",
+          "outcome": "pass",
+          "reproductionSteps": [
+            "Replay saved scenario greeting with the pinned browser."
+          ],
+          "witness": {
+            "kind": "console-capture",
+            "contentHash": "sha256:3028024259db985152c74d2b00450f55cb75ade07f446f219887a2774166c168",
+            "entries": [
+              {
+                "level": "info",
+                "message": "Greeting rendered"
+              }
+            ]
+          }
+        },
+        {
+          "evidenceId": "greeting:network:0:screenshot",
+          "criterionId": "network",
+          "checkId": "greeting",
+          "claimType": "network",
+          "source": "synthetic-fixture",
+          "subjectRevision": "synthetic-candidate",
+          "codeSurfaces": [
+            "packages/browser-evidence/fixtures/index.html"
+          ],
+          "automatedTest": "runScenario greeting",
+          "observed": "screenshot captured; scenario assertions passed",
+          "expected": "Scenario assertions pass without console errors",
+          "outcome": "pass",
+          "reproductionSteps": [
+            "Replay saved scenario greeting with the pinned browser."
+          ],
+          "witness": {
+            "kind": "screenshot",
+            "contentHash": "sha256:c541aae0d0dff602b0cda4027995e16da53ace21bf03b127b625e6ed954b750e",
+            "criterionId": "network"
+          }
+        },
+        {
+          "evidenceId": "greeting:network:1:dom-snapshot",
+          "criterionId": "network",
+          "checkId": "greeting",
+          "claimType": "network",
+          "source": "synthetic-fixture",
+          "subjectRevision": "synthetic-candidate",
+          "codeSurfaces": [
+            "packages/browser-evidence/fixtures/index.html"
+          ],
+          "automatedTest": "runScenario greeting",
+          "observed": "dom-snapshot captured; scenario assertions passed",
+          "expected": "Scenario assertions pass without console errors",
+          "outcome": "pass",
+          "reproductionSteps": [
+            "Replay saved scenario greeting with the pinned browser."
+          ],
+          "witness": {
+            "kind": "dom-snapshot",
+            "contentHash": "sha256:ebaf5ede151a6c2b13fea3dc73262df8e9cd074b396a261099a93475e93bd049"
+          }
+        },
+        {
+          "evidenceId": "greeting:network:2:accessibility-snapshot",
+          "criterionId": "network",
+          "checkId": "greeting",
+          "claimType": "network",
+          "source": "synthetic-fixture",
+          "subjectRevision": "synthetic-candidate",
+          "codeSurfaces": [
+            "packages/browser-evidence/fixtures/index.html"
+          ],
+          "automatedTest": "runScenario greeting",
+          "observed": "accessibility-snapshot captured; scenario assertions passed",
+          "expected": "Scenario assertions pass without console errors",
+          "outcome": "pass",
+          "reproductionSteps": [
+            "Replay saved scenario greeting with the pinned browser."
+          ],
+          "witness": {
+            "kind": "accessibility-snapshot",
+            "contentHash": "sha256:7de04ce3980b543b39e2bc269a1e106221fbd89c92d5117181cf4aedfffe65a5"
+          }
+        },
+        {
+          "evidenceId": "greeting:network:3:network-trace",
+          "criterionId": "network",
+          "checkId": "greeting",
+          "claimType": "network",
+          "source": "synthetic-fixture",
+          "subjectRevision": "synthetic-candidate",
+          "codeSurfaces": [
+            "packages/browser-evidence/fixtures/index.html"
+          ],
+          "automatedTest": "runScenario greeting",
+          "observed": "network-trace captured; scenario assertions passed",
+          "expected": "Scenario assertions pass without console errors",
+          "outcome": "pass",
+          "reproductionSteps": [
+            "Replay saved scenario greeting with the pinned browser."
+          ],
+          "witness": {
+            "kind": "network-trace",
+            "contentHash": "sha256:f7d99a21f74b0ed1b064aaf91dec179af874dff5e8ce4fc6bee0266d42960eb1",
+            "request": {
+              "method": "GET",
+              "url": "http://fixture.local/",
+              "bodyHash": null
+            },
+            "response": {
+              "status": 200,
+              "bodyHash": "sha256:965358a6fd1813c4312fecea27d3f1a2acfc50e31755fd507da1cf725cff4a99"
+            }
+          }
+        },
+        {
+          "evidenceId": "greeting:network:4:network-trace",
+          "criterionId": "network",
+          "checkId": "greeting",
+          "claimType": "network",
+          "source": "synthetic-fixture",
+          "subjectRevision": "synthetic-candidate",
+          "codeSurfaces": [
+            "packages/browser-evidence/fixtures/index.html"
+          ],
+          "automatedTest": "runScenario greeting",
+          "observed": "network-trace captured; scenario assertions passed",
+          "expected": "Scenario assertions pass without console errors",
+          "outcome": "pass",
+          "reproductionSteps": [
+            "Replay saved scenario greeting with the pinned browser."
+          ],
+          "witness": {
+            "kind": "network-trace",
+            "contentHash": "sha256:7adf8004dfe6eaea4838b86f8551bae545cad2aceb3f8420a4ad95d5afdb5ac5",
+            "request": {
+              "method": "POST",
+              "url": "http://fixture.local/api/greeting",
+              "bodyHash": "sha256:073c7222fe2d2fcb169c1c2b7c0d01d8299ca7fb964b20515e686fc5ec6e7212"
+            },
+            "response": {
+              "status": 200,
+              "bodyHash": "sha256:b78d48eb679b8ce1d24ab945e8965a2727a8924f34551ce5c5102f4ff2239099"
+            }
+          }
+        },
+        {
+          "evidenceId": "greeting:network:5:console-capture",
+          "criterionId": "network",
+          "checkId": "greeting",
+          "claimType": "network",
+          "source": "synthetic-fixture",
+          "subjectRevision": "synthetic-candidate",
+          "codeSurfaces": [
+            "packages/browser-evidence/fixtures/index.html"
+          ],
+          "automatedTest": "runScenario greeting",
+          "observed": "console-capture captured; scenario assertions passed",
+          "expected": "Scenario assertions pass without console errors",
+          "outcome": "pass",
+          "reproductionSteps": [
+            "Replay saved scenario greeting with the pinned browser."
+          ],
+          "witness": {
+            "kind": "console-capture",
+            "contentHash": "sha256:3028024259db985152c74d2b00450f55cb75ade07f446f219887a2774166c168",
+            "entries": [
+              {
+                "level": "info",
+                "message": "Greeting rendered"
+              }
+            ]
+          }
+        }
+      ],
+      "browserProcessesClosed": [
+        93291,
+        93311,
+        93312,
+        93326
+      ],
+      "traceRetained": true
+    },
+    {
+      "id": "saved-replay",
+      "label": "pass",
+      "stableFields": {
+        "dom": "Exact page.content() UTF-8 bytes after scenario assertions, including filled DOM state represented by the page",
+        "accessibility": "Exact body ariaSnapshot() UTF-8 bytes",
+        "network": [
+          "request.method",
+          "request.url normalized to http://fixture.local with original path/query",
+          "request.bodyHash",
+          "response.status",
+          "response.bodyHash"
+        ],
+        "console": [
+          "level",
+          "message"
+        ],
+        "screenshot": "Equal SHA-256 PNG hashes, following WO-057's equal-hash observation; pinned headless shell, 640x400 viewport, deviceScaleFactor 1, light scheme, reduced motion, animations disabled, caret hidden, CSS scale"
+      },
+      "omittedFields": {
+        "loopback origin port": "Ephemeral per-run fixture server allocation; replaced only in stable network URLs",
+        "network headers": "HTTP Date, connection and browser-generated transport details are not application behavior assertions; raw trace retains them",
+        "network timing and connection identifiers": "Scheduler and socket allocation vary; raw trace retains them",
+        "process ids and start times": "Per-run ownership identities used for recovery, not application replay",
+        "trace container and metadata": "Diagnostic Playwright trace contains runtime times and physical URLs; retained but not compared byte-for-byte",
+        "output directory and caller subject revision": "Host identity/provenance varies independently of captured application content",
+        "live input properties outside HTML serialization": "DOM witness is page.content(), not a claim that HTML serializes every DOM property; accessibility and screenshot also capture the rendered result"
+      },
+      "hashes": {
+        "dom.html": "sha256:ebaf5ede151a6c2b13fea3dc73262df8e9cd074b396a261099a93475e93bd049",
+        "network.json": "sha256:6e5b8e7c7931d73bbc97043679134daf5c0baa3d30fe0a6272e6dff8dc7a2cfb",
+        "accessibility.yml": "sha256:7de04ce3980b543b39e2bc269a1e106221fbd89c92d5117181cf4aedfffe65a5",
+        "console.json": "sha256:8212db380238a22074057965bc9fb3fd7d5f62cca747a30232ea2a93326ea80f",
+        "screenshot.png": "sha256:c541aae0d0dff602b0cda4027995e16da53ace21bf03b127b625e6ed954b750e"
+      }
+    },
+    {
+      "id": "console-error",
+      "label": "pass",
+      "adverseWitnesses": [
+        {
+          "evidenceId": "console-error:visual:4:console-capture",
+          "criterionId": "visual",
+          "checkId": "greeting",
+          "claimType": "visual",
+          "source": "synthetic-fixture",
+          "subjectRevision": "synthetic-candidate",
+          "codeSurfaces": [
+            "packages/browser-evidence/fixtures/index.html"
+          ],
+          "automatedTest": "runScenario console-error",
+          "observed": "Console error captured",
+          "expected": "Scenario assertions pass without console errors",
+          "outcome": "fail",
+          "reproductionSteps": [
+            "Replay saved scenario console-error with the pinned browser."
+          ],
+          "witness": {
+            "kind": "console-capture",
+            "contentHash": "sha256:22c53f4a4f33707f6f2ed44d329505df0cf4a4d0c646b7eac0c11fc1030cec99",
+            "entries": [
+              {
+                "level": "error",
+                "message": "Deliberate fixture error"
+              }
+            ]
+          }
+        },
+        {
+          "evidenceId": "console-error:network:4:console-capture",
+          "criterionId": "network",
+          "checkId": "greeting",
+          "claimType": "network",
+          "source": "synthetic-fixture",
+          "subjectRevision": "synthetic-candidate",
+          "codeSurfaces": [
+            "packages/browser-evidence/fixtures/index.html"
+          ],
+          "automatedTest": "runScenario console-error",
+          "observed": "Console error captured",
+          "expected": "Scenario assertions pass without console errors",
+          "outcome": "fail",
+          "reproductionSteps": [
+            "Replay saved scenario console-error with the pinned browser."
+          ],
+          "witness": {
+            "kind": "console-capture",
+            "contentHash": "sha256:22c53f4a4f33707f6f2ed44d329505df0cf4a4d0c646b7eac0c11fc1030cec99",
+            "entries": [
+              {
+                "level": "error",
+                "message": "Deliberate fixture error"
+              }
+            ]
+          }
+        }
+      ],
+      "refusedCriterionIds": [
+        "visual",
+        "network"
+      ]
+    },
+    {
+      "id": "failed-assertion",
+      "label": "pass",
+      "outcomes": [
+        "fail"
+      ]
+    },
+    {
+      "id": "no-connected-server",
+      "label": "pass",
+      "removedVariables": [
+        "CODEX_CI",
+        "CODEX_SESSION_ID",
+        "CODEX_THREAD_ID",
+        "CODEX_VERSION"
+      ],
+      "present": []
+    },
+    {
+      "id": "host-sigkill-recovery",
+      "label": "pass",
+      "recordedHostPid": 96077,
+      "recordedBrowserPids": [
+        96091,
+        96092,
+        96093,
+        96108
+      ],
+      "before": [
+        {
+          "pid": 96077,
+          "parentPid": 93141,
+          "startedAt": "Wed Sep 30 20:01:14 2026",
+          "command": "node"
+        },
+        {
+          "pid": 96091,
+          "parentPid": 96077,
+          "startedAt": "Wed Sep 30 20:01:14 2026",
+          "command": "chrome-headless-shell"
+        },
+        {
+          "pid": 96092,
+          "parentPid": 96091,
+          "startedAt": "Wed Sep 30 20:01:14 2026",
+          "command": "chrome-headless-shell"
+        },
+        {
+          "pid": 96093,
+          "parentPid": 96091,
+          "startedAt": "Wed Sep 30 20:01:14 2026",
+          "command": "chrome-headless-shell"
+        },
+        {
+          "pid": 96108,
+          "parentPid": 96091,
+          "startedAt": "Wed Sep 30 20:01:15 2026",
+          "command": "chrome-headless-shell"
+        }
+      ],
+      "parentExit": {
+        "exitCode": null,
+        "signal": "SIGKILL"
+      },
+      "recoverySignalledPids": [],
+      "after": [],
+      "unrelatedProcessAlive": true
+    },
+    {
+      "id": "missing-browser",
+      "label": "pass",
+      "availability": "unavailable",
+      "reason": "Pinned Chromium launch unavailable; run PLAYWRIGHT_BROWSERS_PATH='<fixture-output>/empty browser cache '\\'' $cache `cache`' npx playwright install chromium --only-shell",
+      "evidenceOutcomes": [
+        "unavailable"
+      ],
+      "refusedPass": true,
+      "admittedUnverified": true,
+      "packageSuiteExit": 1,
+      "packageSuiteInstallCommand": "PLAYWRIGHT_BROWSERS_PATH='<fixture-output>/empty browser cache '\\'' $cache `cache`' npx playwright install chromium --only-shell",
+      "installCacheMatchesLaunch": true,
+      "shellCharactersPreserved": true
+    },
+    {
+      "id": "fresh-worktree-install-remedy",
+      "label": "pass",
+      "browserPathSupplied": false,
+      "packageSuiteExit": 1,
+      "browserCache": "<fresh-worktree>/.runtime/playwright",
+      "packageSuiteInstallCommand": "PLAYWRIGHT_BROWSERS_PATH='<fresh-worktree>/.runtime/playwright' npx playwright install chromium --only-shell",
+      "installCacheMatchesLaunch": true,
+      "readmeInstallLocationsEqual": true
+    },
+    {
+      "id": "default-caller-install-remedy",
+      "label": "pass",
+      "browserPathSupplied": false,
+      "installCommand": "npx playwright install chromium --only-shell",
+      "platformDefaultCacheSelected": true
+    },
+    {
+      "id": "invalid-input",
+      "label": "pass",
+      "outputCreated": false
+    },
+    {
+      "id": "capture-overflow",
+      "label": "pass",
+      "availability": "unavailable",
+      "reason": "Network capture exceeds contract bounds",
+      "boundedEvidenceCount": 100
+    },
+    {
+      "id": "recovery-identity",
+      "label": "pass",
+      "unrelatedRecordRefused": true,
+      "staleIdentitySignalledPids": [],
+      "originalProcessAlive": true
+    },
+    {
+      "id": "console-error-with-unavailable-capture",
+      "label": "pass",
+      "availability": "unavailable",
+      "consoleOutcomes": [
+        "fail",
+        "fail"
+      ],
+      "refusedPass": true
+    }
+  ],
+  "capturedAt": "2026-10-01T00:01:21.309Z",
+  "codeIdentity": "7938829652c4377d6b8db61d736ec22f86095b03c6367c94b1d0bc9db83ce23b",
+  "source": "Passing focused package run retained in .runtime/wo059-repair-browser.log; host paths replaced with labeled placeholders",
+  "checks": {
+    "command": "node --test packages/browser-evidence/test/scenario.test.mjs",
+    "tests": 14,
+    "pass": 14,
+    "fail": 0,
+    "durationMs": 15645.937416
+  },
+  "limits": [
+    "Printed commands were executed with --dry-run against the installed pin; this repair downloaded no new browser.",
+    "Synthetic fixture, observed POSIX host and WO-057 browser pin only."
+  ]
+}

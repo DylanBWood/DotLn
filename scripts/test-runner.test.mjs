@@ -1808,6 +1808,11 @@ test("code identity follows tracked source and dependency bytes across processes
   const fixtureGitOptions = { encoding: "utf8" };
   try {
     execGit(["-C", repo, "init", "-q"], fixtureGitOptions);
+    // As in confinementFixture, no detached maintenance may race teardown.
+    execGit(
+      ["-C", repo, "config", "maintenance.auto", "false"],
+      fixtureGitOptions,
+    );
     execGit(["-C", repo, "config", "user.name", "Fixture"], fixtureGitOptions);
     execGit(
       ["-C", repo, "config", "user.email", "fixture@example.invalid"],
@@ -1991,13 +1996,14 @@ const confinementFixture = (t) => {
 };
 
 test("WO-140 the real inventory declares only the suites with an environmental outside-only cause", () => {
-  // Each nests `sandbox-exec`, which an outer Seatbelt sandbox refuses:
-  // skeleton's native cases (WO-140-D001) and portfolio's discovery checks
-  // and verification witness (WO-100-D018).
+  // Native skeleton/portfolio cases nest `sandbox-exec`, which an outer
+  // Seatbelt sandbox refuses. Browser evidence owns a Chromium process and
+  // loopback servers; the native discovery profile denies that network access.
   assert.deepEqual(
     suites.filter((row) => row.needs).map((row) => [row.name, row.needs]),
     [
       ["skeleton", OUTSIDE_CONFINEMENT],
+      ["browser-evidence", OUTSIDE_CONFINEMENT],
       ["skeleton-docs", OUTSIDE_CONFINEMENT],
       ["portfolio", OUTSIDE_CONFINEMENT],
     ],

@@ -1,0 +1,22 @@
+{
+  "name": "@dotln/browser-evidence",
+  "version": "0.1.0",
+  "private": true,
+  "license": "Apache-2.0",
+  "type": "module",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/src/index.js"
+    }
+  },
+  "scripts": {
+    "build": "node ../../scripts/build.mjs",
+    "test": "node ../../scripts/build.mjs && node --test test/*.test.mjs",
+    "prepublishOnly": "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\""
+  },
+  "engines": { "node": ">=26.0.0 <27" },
+  "dependencies": { "playwright": "1.63.0" }
+}

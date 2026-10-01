@@ -617,6 +617,20 @@ export const suites = [
       ),
     }),
   ),
+  nodeTests(
+    "browser-evidence",
+    "packages/browser-evidence/test/scenario.test.mjs",
+    {
+      fast: true,
+      packageTest: true,
+      group: "package-tests",
+      needs: OUTSIDE_CONFINEMENT,
+      sources: ["packages/browser-evidence/", "package-lock.json"],
+      protects:
+        "standalone browser scenarios produce admitted witnesses, replay and recover owned processes",
+      fileConcurrency: 1,
+    },
+  ),
   ...["kernel", "skeleton", "console"].map((name) =>
     nodeTests(`${name}-docs`, `packages/${name}/dist/test/*.test.js`, {
       document: true,

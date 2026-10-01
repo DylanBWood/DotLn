@@ -33,6 +33,20 @@ superseded. No publication or licensing decision changes here.
 
 **Browser-runtime scratch observation — 2026-09-30 (WO-057).** The [record](discovery/browser-runtime-2026-09-30.md) and its [JSON inventory](discovery/browser-runtime-2026-09-30.json) observed exactly pinned `playwright` and `playwright-core` `1.63.0`, each labeled Apache-2.0 in the isolated scratch lockfile; Chromium headless shell `153.0.8010.12` (Playwright revision `1243`); and its auxiliary FFmpeg revision `1011`. The downloaded Chromium `LICENSE.headless_shell` and FFmpeg `COPYING.LGPLv2.1` were inventoried by filename, size and hash; their full texts were not imported. These labels and bounded observations are not an independent audit of every binary component. [ADR-0002](decisions/0002-kernel-first-agentic-core.md#amendments) names WO-059's future `packages/browser-evidence` consumer outside the kernel and compiler. WO-059 must record its actual pinned dependency/browser inventory when it implements that package. The existing `THIRD_PARTY_NOTICES` duty applies at the first built or bundled distribution to the actual shipped package, browser and auxiliary materials. This discovery adds no workspace dependency and distributes no bundled artifact; the workspace manifests/lockfile, `NOTICE`, license files and the three hash declarations below are unchanged.
 
+**Dependency inventory update — 2026-09-30 (WO-059).** The private
+`@dotln/browser-evidence` workspace now consumes exactly pinned `playwright`
+`1.63.0`; its only registry dependency is `playwright-core` `1.63.0`, both labeled
+Apache-2.0 in the workspace lockfile. The executor installed the pinned Chromium
+headless shell `153.0.8010.12` (revision `1243`) and auxiliary FFmpeg `1011` in
+the ignored runtime cache. Their upstream notice filenames and hashes are
+inventoried in [the WO-057 observation](discovery/browser-runtime-2026-09-30.json);
+[WO-059's decisions](evidence/WO-059/decisions.md) record the actual lockfile tree
+and runtime inventory. Kernel and compiler retain no runtime dependency; the
+skeleton gains none. These are inventory observations, not a binary-component
+license audit. `NOTICE` and the three pinned legal hashes remain unchanged.
+The source-only change distributes no bundled package or browser; the existing
+`THIRD_PARTY_NOTICES` duty applies when built or bundled materials are distributed.
+
 **2026-09-06 observation (phase-two planning pass):** the operator intends
 `DotLn-Enterprise-Starter`, an exported launchpad kit of this repository's
 control plane and operating documents, to be forked by several external

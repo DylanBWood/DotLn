@@ -24719,6 +24719,88 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-96928fa2501223a5",
+      "key": "decision:docs/evidence/WO-059/decisions.md#wo-059-d017",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "db8931be52175faa351a4307cd042e8209f2c9b0c7ec60e41db700b203b193c6",
+          "ref": "docs/evidence/WO-059/decisions.md#wo-059-d017--final-review-finding-recovery-can-sigkill-a-process-the-adapter-did-not-start",
+          "title": "WO-059-D017: WO-059 resume: fix — make recover() refuse, or signal nothing from, a record that sets browserPid without a recorded root identity, and stop observeOwned from adopting the current holder ",
+          "summary": "{ \"id\": \"WO-059-D017\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: final review; FINAL-001\", \"kind\": \"finding\", \"decision\": \"Fail FINAL-001 on criterion 3 and return the finding to repair. recover() in packages/browser-evidence/src/processes.ts checks root ownership only when the record lists processes. A record with browserPid N and processes [] passes validation; observeOwned then has no recorded root identity, walks from N over the current process table, adopts whatever process now holds pid N with its descendants, and the kill loop SIGKILLs them because their just-observed identities match. runScenario writes exactly that record when its first observation after launchServer misses the bro",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "WO-059 D021/D027 and repair-003 evidence repair the recorded-root invariant with passing bystander and surviving-tree regressions. Fresh independent verification of FINAL-001 F1 remains in WO-059; this executor does not certify that judgment.",
+          "reopenWhen": "Independent verification contradicts the recorded-root invariant or its scoped recovery evidence.",
+          "targets": [
+            "WO-059"
+          ],
+          "at": "2026-10-01T02:12:49.328Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by WO-059 at close. D021's repair captures the browser root with the owner as parent before any observation, and recover() refuses a browserPid without that root. VER-003 passed after reproducing FINAL-001's record shape and four variants with a live bystander, all refused or signalling nothing, and the recorded survivor path signalled. FINAL-002 re-ran FINAL-001's exact shape against a fresh build: refused, record unchanged, bystander alive. [WO-059 final review (docs/final-reviews/WO-059/FINAL-002.md)]",
+          "reopenWhen": "A recovery signals a process outside a recorded tree rooted at a recorded root whose recorded parent is the owner, or observeOwned adopts a process before the root identity is recorded.",
+          "targets": [],
+          "at": "2026-10-01T02:42:28.511Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-4ec1bd58fe0d1fba",
+      "key": "decision:docs/evidence/WO-059/decisions.md#wo-059-d018",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "54f3d31a48e1813302fe1f27ccfb1f7c6bf7fa915a504bd3f8ee7d1dffa64d7b",
+          "ref": "docs/evidence/WO-059/decisions.md#wo-059-d018--final-review-minor-adapter-defects-recorded-for-the-repair-or-a-follow-up",
+          "title": "WO-059-D018: WO-059 resume: fix, within D017's bound where cheap, otherwise planner, low priority: run ps with TZ=UTC and identify the owner by something process.title cannot change; map Playwright's ",
+          "summary": "{ \"id\": \"WO-059-D018\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: final review; FINAL-001\", \"kind\": \"finding\", \"decision\": \"Record five minor defects met in review and not fixed here. None alone fails a criterion as the fixtures define it. D017's repair may fix any of them within its bound; any left must be named in that repair's decisions.\", \"evidence\": [ \"Owner identity drifts with environment: processTable runs ps with LC_ALL=C but inherits TZ, and lstart prints local time. Checked here: TZ=UTC and TZ=America/New_York print 'Thu Oct 1 01:20:14 2026' and 'Wed Sep 30 21:20:14 2026' for the same pid. Recovery under a different TZ matches nothing, signals nothing and still marks the record cl",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-059 D022/D027 and completed adjacent-0002 repair all D018 items: UTC identity, mutable owner title, failed assertions, immutable console bytes, a positive surviving-process kill path and accurate launch diagnostics. All 19 browser tests and the fresh full review pass; independent verification remains separate.",
+          "reopenWhen": "Independent verification or a consumer observes any repaired D018 defect.",
+          "targets": [],
+          "at": "2026-10-01T02:12:49.369Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-a8f5dd98ad1eb0b9",
+      "key": "decision:docs/evidence/WO-059/decisions.md#wo-059-d019",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "57df2c462e77d099153503c70c33d6f27e8e7f0e8b2c3720537cc12b07032879",
+          "ref": "docs/evidence/WO-059/decisions.md#wo-059-d019--final-review-finding-receipt-036s-known-issue-has-no-recorded-disposition",
+          "title": "WO-059-D019: WO-059 resume: fix — record Receipt 036's known issue in the order's decisions: the chosen missing-browser behavior (unavailable witnesses and a failing suite, no skip), the per-worktree ",
+          "summary": "{ \"id\": \"WO-059-D019\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: final review; FINAL-001\", \"kind\": \"finding\", \"decision\": \"Record that the executor left Receipt 036's criterion-6 known issue without a disposition, and route the record to D017's repair. The behavior the receipt asks for holds: a missing browser yields distinct unavailable witnesses and a failing suite, never a silent pass or a skip. What is missing is the recorded disposition the catalog row asks the executor for, and the weighing of one consequence the repair made concrete: the suite's cache is the ignored per-worktree .runtime/playwright, so every new worktree's npm test fails in browser-evidence until that worktree runs t",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-059 D023 records Receipt 036's selected unavailable/failing-suite behavior, accepts explicit per-worktree browser setup under operator-review assumption 2, names its unmeasured download/time/disk cost and preserves the receipt reopening condition.",
+          "reopenWhen": "An order's npm test -- --review fails only in browser-evidence because the browser is missing, or Codex or resident verification cannot run that gate for the same reason; reopen advisory separation through authorized planning.",
+          "targets": [],
+          "at": "2026-10-01T02:12:49.408Z"
+        }
+      ]
     }
   ]
 }
