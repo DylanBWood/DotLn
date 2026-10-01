@@ -1,22 +1,23 @@
 # Current control state
 
-## WO-105
+## WO-178
 
-- Work order: WO-105
-- Work-order path: docs/work-orders/WO-105-crash-shape-corpus.md
+- Work order: WO-178
+- Work-order path: docs/work-orders/WO-178-the-record-holds-what-the-operator-sees.md
 - Phase: closed
-- Latest verification: VER-001
-- Verification path: docs/verifications/WO-105/VER-001.md
+- Latest verification: VER-002
+- Verification path: docs/verifications/WO-178/VER-002.md
 - Latest verdict: pass
-- Final review: FINAL-001
-- Final-review path: docs/final-reviews/WO-105/FINAL-001.md
+- Final review: FINAL-002
+- Final-review path: docs/final-reviews/WO-178/FINAL-002.md
 - Latest attestation: harness claude-code; version 2.1.287; model claude-opus-5-5; effort xhigh; source claude-session-readback; account not-applicable
 - Effort drift: max -> xhigh
-- Latest recordedAt: 2026-10-01T18:27:28.838Z
-- Elapsed implementation: 6646406 ms
-- Elapsed verification: 682859 ms
-- Elapsed finalReview: 2022207 ms
-- Latest checkpoint: 0e1d26e57db57b9f46def44ea01eef3b051540cc (restore: `git checkout refs/dotln/checkpoint/WO-105/7 -- .`)
+- Latest recordedAt: 2026-10-01T19:15:37.433Z
+- Elapsed implementation: 4531034 ms
+- Elapsed verification: 621055 ms
+- Elapsed finalReview: 2091708 ms
+- Elapsed repair: 2930868 ms
+- Latest checkpoint: 447364885f494f9c812ea7ded8bc7052d4e2f682 (restore: `git checkout refs/dotln/checkpoint/WO-178/13 -- .`)
 - Legal next actions: release-close, next, activate
 - Legal off-ramps: correct
 

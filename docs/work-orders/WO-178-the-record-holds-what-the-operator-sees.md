@@ -1,4 +1,4 @@
-# WO-178 — The record holds what the operator sees: the hooks journal host denials and each operator message's route, time and class, the Stop advisory names running monitors, the lifecycle admits the exact publish command under Claude auto mode, and `plan failures` counts closes, denials, interventions, long phases and repeated gate runs beside the judgments it already lists (version assigned at activation)
+# WO-178 — The record holds what the operator sees: the hooks journal host denials and each operator message's route, time and class, the Stop advisory names running monitors, the lifecycle admits the exact publish command under Claude auto mode, and `plan failures` counts closes, denials, interventions, long phases and repeated gate runs beside the judgments it already lists (v0.61.2)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
