@@ -1,4 +1,4 @@
-# WO-102 — Cadence virtual-time grid sweep and golden vector corpus (version assigned at activation)
+# WO-102 — Cadence virtual-time grid sweep and golden vector corpus (v0.60.3)
 
 **Model:** Codex (any capable tier); any capable model may substitute. State the
 model and effort actually run in the result (07-execution-guide.md
