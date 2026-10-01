@@ -2048,7 +2048,7 @@ const run = async (argv) => {
         // The transition may already be recorded: a measurement failure is named
         // and admitted, never allowed to withhold the briefing (WO-153).
         try {
-          const { beginHarnessSessionOnce } = await import(
+          const { beginHarnessSessionOnce, recordCodexDispatch } = await import(
             pathToFileURL(harnessHostPath)
           );
           beginHarnessSessionOnce(
@@ -2056,6 +2056,8 @@ const run = async (argv) => {
             process.env.CODEX_THREAD_ID,
             codexDispatchRole,
           );
+          if (typeof recordCodexDispatch === "function")
+            recordCodexDispatch(repoRoot, process.env.CODEX_THREAD_ID, action);
         } catch (error) {
           process.stderr.write(
             `DotLn advisory: Codex session entry failed (${error instanceof Error ? error.message : String(error)}); process cost remains unknown; cause no-session.\n`,

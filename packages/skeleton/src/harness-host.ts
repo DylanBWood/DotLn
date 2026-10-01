@@ -108,11 +108,14 @@ import {
   observeBackgroundTool,
   observeTypedCorrection,
   namedJudgmentUnits,
+  observedFacts,
+  transcriptMessages,
   type ObservationScope,
 } from "./observed-facts.js";
 export { HARNESS_HOST_VERSION } from "./version.js";
+type HostHookEvent = HarnessEvent | "SessionStart" | "PermissionDenied";
 export interface HarnessInput {
-  readonly hook_event_name: HarnessEvent | "SessionStart";
+  readonly hook_event_name: HostHookEvent;
   readonly cwd: string;
   readonly transcript_path?: string;
   readonly session_id: string;
@@ -122,6 +125,7 @@ export interface HarnessInput {
   readonly tool_input?: Record<string, unknown>;
   readonly tool_response?: Record<string, unknown>;
   readonly prompt?: string;
+  readonly reason?: string;
   readonly effort?: { readonly level?: string };
   readonly harness_version?: string;
   /** Claude sets this when it re-enters Stop because a Stop hook refused. */
@@ -142,7 +146,7 @@ export function harnessInputHarness(
 /** Decode declared host fields; unconsumed native metadata is forward-compatible. */
 export function decodeHarnessInput(
   value: unknown,
-  expectedEvent?: HarnessEvent | "SessionStart",
+  expectedEvent?: HostHookEvent,
 ): DecodeResult<HarnessInput> {
   try {
     return decodeHarnessRecord(value, expectedEvent);
@@ -158,7 +162,7 @@ export function decodeHarnessInput(
 
 function decodeHarnessRecord(
   value: unknown,
-  expectedEvent?: HarnessEvent | "SessionStart",
+  expectedEvent?: HostHookEvent,
 ): DecodeResult<HarnessInput> {
   const fail = (
     code: string,
@@ -182,6 +186,7 @@ function decodeHarnessRecord(
     "transcript_path",
     "harness_version",
     "prompt",
+    "reason",
     "tool_input",
     "tool_response",
     "effort",
@@ -204,6 +209,7 @@ function decodeHarnessRecord(
     "transcript_path",
     "harness_version",
     "prompt",
+    "reason",
   ])
     if (key in value && typeof value[key] !== "string")
       return fail("EXPECTED_STRING", `$.${key}`, "expected a string");
@@ -214,6 +220,7 @@ function decodeHarnessRecord(
       "Stop",
       "UserPromptSubmit",
       "SessionStart",
+      "PermissionDenied",
     ].includes(value.hook_event_name as string)
   )
     return fail("UNKNOWN_EVENT", "$.hook_event_name", "unsupported hook event");
@@ -328,6 +335,7 @@ export interface HarnessSession {
   versionWarning?: string;
   versionObservation?: { value: string; channel: string };
   workOrder?: string;
+  releaseCloseDispatch?: { workOrder: string; recordedAt: string };
 }
 interface HarnessByteRead {
   readonly path: string;
@@ -349,8 +357,9 @@ interface HookConfig {
       readonly hash: string;
     }[];
   };
-  readonly event: HarnessEvent | "SessionStart";
-  readonly kind: "feedback" | "permission" | "observe" | "session" | "finish";
+  readonly event: HostHookEvent;
+  readonly kind:
+    "feedback" | "permission" | "observe" | "session" | "finish" | "denial";
   readonly policy?: CompiledFeedback;
   readonly envelope?: AuthorityEnvelope;
   readonly correctionToken?: string | null;
@@ -581,6 +590,7 @@ const phraseDispatches: Readonly<
   "resume: fix": { action: "fix", active: "repairing" },
   "resume: verify": { action: "verify", active: "verifying" },
   "resume: final review": { action: "final-review", active: "final-review" },
+  "resume: release close": { action: "release-close" },
 };
 /**
  * A prompt dispatch stands in for the ordinary `npm run resume -- <action>`
@@ -726,6 +736,11 @@ function recordDispatch(
       return {
         refusal: `DOTLN_HARNESS_REFUSED: dispatch ${dispatch.action} failed: ${output.slice(0, 600) || run.error?.message || "lifecycle unavailable"}`,
       };
+    if (dispatch.action === "release-close" && control.workOrder)
+      session.releaseCloseDispatch = {
+        workOrder: control.workOrder,
+        recordedAt: new Date().toISOString(),
+      };
     return {
       ...briefingDelivery(
         `Dispatch recorded by the harness: npm run resume -- ${dispatch.action}. Never repeat it.`,
@@ -789,6 +804,210 @@ const record = (
     { mode: 0o600 },
   );
 };
+
+// WO-178: constrained metadata, never prompt, input or reason prose. The
+// prefix is a control-language classification, not a semantic classifier.
+const operatorPrefixes: Readonly<Record<string, string>> = {
+  "resume:": "direction",
+  "planning:": "direction",
+  "ideation:": "ideation",
+  "analysis:": "question",
+  "operator override:": "override",
+  "scope expand:": "scope expansion",
+  "conversation only:": "other step",
+};
+const observationPhase = (session: HarnessSession): string =>
+  session.intent === "resume: fix"
+    ? "repair"
+    : ((
+        {
+          executor: "implementation",
+          verifier: "verification",
+          reviewer: "finalReview",
+        } as Record<string, string>
+      )[session.role ?? ""] ??
+      session.role ??
+      "unknown");
+const observationContext = (session: HarnessSession) => ({
+  workOrder: session.workOrder ?? null,
+  role: session.role ?? "unknown",
+  phase: observationPhase(session),
+});
+const textDigest = (text: string) =>
+  createHash("sha256").update(text).digest("hex");
+const nativeText = (content: unknown): string | undefined =>
+  typeof content === "string"
+    ? content
+    : Array.isArray(content) &&
+        content.every(
+          (part) => part?.type === "text" && typeof part.text === "string",
+        )
+      ? content.map((part) => part.text).join("\n")
+      : undefined;
+function promptRoute(input: HarnessInput) {
+  // UserPromptSubmit has no documented route field. Only the latest native
+  // message with the same bytes establishes a route; an unflushed transcript
+  // or an earlier repeated phrase does not. No transcript text leaves here.
+  try {
+    const row = input.transcript_path
+      ? transcriptMessages(input.transcript_path).at(-1)
+      : undefined;
+    if (
+      row?.type === "queue-operation" &&
+      row.operation === "enqueue" &&
+      nativeText(row.content) === input.prompt
+    )
+      return { route: "mid-turn", routeSource: "transcript-enqueue" };
+    if (
+      row?.type === "attachment" &&
+      row.attachment?.type === "queued_command" &&
+      nativeText(row.attachment.prompt) === input.prompt
+    )
+      return { route: "mid-turn", routeSource: "transcript-queued-command" };
+    if (
+      row?.type === "user" &&
+      row.message?.role === "user" &&
+      !row.isMeta &&
+      nativeText(row.message.content) === input.prompt
+    )
+      return {
+        route: /^\[Request interrupted by user(?: for tool use)?\]$/.test(
+          input.prompt ?? "",
+        )
+          ? "interrupt"
+          : "turn-prompt",
+        routeSource: "transcript-user",
+      };
+  } catch {
+    // Missing optional metadata never changes prompt admission.
+  }
+  return { route: "unknown", routeSource: "host-route-unavailable" };
+}
+export function recordOperatorMessage(
+  root: string,
+  input: HarnessInput,
+  source = harnessInputHarness(input) === "copilot-cli"
+    ? "copilot-prompt-hook"
+    : "claude-prompt-hook",
+) {
+  if (
+    input.hook_event_name !== "UserPromptSubmit" ||
+    typeof input.prompt !== "string" ||
+    typeof input.session_id !== "string" ||
+    !input.session_id
+  )
+    return;
+  const session = readJson(statePath(root, input), initialSession(), true);
+  const prefix =
+    Object.keys(operatorPrefixes).find((prefix) =>
+      input.prompt!.trimStart().startsWith(prefix),
+    ) ?? null;
+  record(root, input, {
+    typedEvent: "OperatorMessageObserved",
+    ...observationContext(session),
+    source,
+    ...(source === "codex-dispatch-phrase"
+      ? { route: "unknown", routeSource: "dispatch-only" }
+      : promptRoute(input)),
+    prefix,
+    class: prefix ? operatorPrefixes[prefix] : "unclassified",
+    digest: textDigest(input.prompt),
+    bytes: Buffer.byteLength(input.prompt),
+  });
+}
+
+/** Codex exposes dispatches here, not a prompt hook or mid-turn inbox. */
+export function recordCodexDispatch(
+  root: string,
+  sessionId: string,
+  action: string,
+) {
+  const phrase = (
+    {
+      next: "next",
+      fix: "fix",
+      verify: "verify",
+      "final-review": "final review",
+      "release-close": "release close",
+    } as Record<string, string>
+  )[action];
+  if (!phrase) return;
+  const input: HarnessInput = {
+    cwd: root,
+    session_id: sessionId,
+    hook_event_name: "UserPromptSubmit",
+    prompt: `resume: ${phrase}`,
+  };
+  const session = readJson(statePath(root, input), initialSession(), true);
+  session.intent = `resume: ${phrase}`;
+  writeJson(statePath(root, input), session);
+  recordOperatorMessage(root, input, "codex-dispatch-phrase");
+}
+
+// Same byte spelling as scripts/lib/git.mjs shellQuote, which prints the helper.
+const shellWord = (value: string) => `'${value.replaceAll("'", `'\\''`)}'`;
+function releaseCloseAdmission(
+  root: string,
+  input: HarnessInput,
+  session: HarnessSession,
+): Record<string, unknown> | null {
+  const dispatch = session.releaseCloseDispatch;
+  if (
+    input.tool_name !== "Bash" ||
+    !dispatch ||
+    harnessInputHarness(input) !== "claude-code" ||
+    !/^WO-\d{3}$/.test(dispatch.workOrder)
+  )
+    return null;
+  const command = input.tool_input?.command;
+  const helper = `${shellWord(process.execPath)} ${shellWord(join(root, "scripts/release.mjs"))} close ${dispatch.workOrder}`;
+  if (typeof command !== "string") return null;
+  let exact =
+    command === `${helper} --publish` || command === `${helper} --dry-run`;
+  // Material paths are one canonical single-quoted shell word, no expansions,
+  // operators or extra flags. The helper itself validates the disposition.
+  if (!exact && command.startsWith(`${helper} --publish --material `)) {
+    const rest = command.slice(`${helper} --publish`.length);
+    exact =
+      /^(?: --material '(?:[^'\r\n\u0000]|'\\'')+=(?:disposable|preserve)')+$/.test(
+        rest,
+      );
+  }
+  if (!exact) return null;
+  try {
+    const main = git(root, ["worktree", "list", "--porcelain"])
+      .split("\n")[0]
+      ?.replace(/^worktree /, "");
+    if (
+      !main ||
+      realpathSync(main) !== realpathSync(root) ||
+      realpathSync(input.cwd) !== realpathSync(root)
+    )
+      return null;
+    const toolCwd = input.tool_input?.cwd ?? input.tool_input?.workdir;
+    if (
+      toolCwd !== undefined &&
+      (typeof toolCwd !== "string" ||
+        realpathSync(resolve(root, toolCwd)) !== realpathSync(root))
+    )
+      return null;
+    const control = harnessControl(root);
+    if (
+      control.workOrder !== dispatch.workOrder ||
+      !control.legalNextActions?.includes("release-close")
+    )
+      return null;
+    return {
+      hookSpecificOutput: {
+        hookEventName: "PreToolUse",
+        permissionDecision: "allow",
+        permissionDecisionReason: `DotLn's first admission: exact release-close helper; recorded release-close dispatch for ${dispatch.workOrder}; cwd is main; canonical release-close is legal. Host deny and ask rules still apply.`,
+      },
+    };
+  } catch {
+    return null;
+  }
+}
 interface ProcessRow {
   readonly pid: number;
   readonly ppid: number;
@@ -1359,14 +1578,25 @@ function observeShellDiagnostics(
         harnessInputHarness(input) === "claude-code"
           ? agentTranscript(input)
           : null;
-      const failed = transcript ? failedShellResults(transcript) : [];
+      const failed = (transcript ? failedShellResults(transcript) : [])
+        .map((result) => ({
+          ...result,
+          found: shellDiagnostics(result.command, result.output),
+        }))
+        .filter(({ found }) => found.length);
       const answered = failed.length
         ? answeredShellResults(root, new Set(failed.map(({ use }) => use)))
         : new Set<string>();
-      for (const { use, command: earlier, output: held } of failed) {
+      for (const { use, found } of failed) {
         if (answered.has(use)) continue;
-        const found = shellDiagnostics(earlier, held);
-        if (!found.length) continue;
+        const guidance = shellGuidance(found, true);
+        // Leave an undisplayed answer unmarked so a later call may deliver it.
+        if (
+          guidance &&
+          !said.includes(guidance) &&
+          Array.from([...said, guidance].join(" ")).length > 1800
+        )
+          continue;
         const release = claimShellResult(root, use);
         if (!release) continue;
         try {
@@ -1380,7 +1610,6 @@ function observeShellDiagnostics(
           // an unwritable failed-use row still supplies no guidance.
           for (const { kind } of found) row(kind, use);
           answered.add(use);
-          const guidance = shellGuidance(found, true);
           if (guidance && !said.includes(guidance)) said.push(guidance);
         } finally {
           release();
@@ -3064,10 +3293,7 @@ const subagentAdvisory = (response: { systemMessage: string }) => {
   subagentAdvisories.add(response);
   return response;
 };
-const protocolRefusal = (
-  event: HarnessEvent | "SessionStart",
-  reason: string,
-) =>
+const protocolRefusal = (event: HostHookEvent, reason: string) =>
   event === "PreToolUse"
     ? {
         hookSpecificOutput: {
@@ -3742,6 +3968,25 @@ async function evaluateExistingHarnessHook(
     return override ? { systemMessage: override } : {};
   }
   const session = readJson(statePath(root, input), initialSession(), true);
+  if (config.kind === "denial") {
+    const bytes = JSON.stringify(input.tool_input ?? {});
+    const bracket =
+      /\[([A-Za-z][A-Za-z -]{0,95})\]/.exec(input.reason ?? "")?.[0] ?? null;
+    record(root, input, {
+      typedEvent: "HostPermissionDenied",
+      ...observationContext(session),
+      tool: /^[A-Za-z0-9_.:-]{1,128}$/.test(input.tool_name ?? "")
+        ? input.tool_name
+        : "unknown",
+      inputDigest: textDigest(bytes),
+      inputBytes: Buffer.byteLength(bytes),
+      rule: bracket,
+    });
+    return {
+      systemMessage:
+        "DotLn advisory: host permission denied the call. The operator can run it with the ! prefix, or use /permissions → Recently denied to retry. No retry is requested by this hook.",
+    };
+  }
   const gateRefusal = activeGateWriteRefusal(
     input,
     root,
@@ -3859,6 +4104,7 @@ async function evaluateExistingHarnessHook(
         "resume: final review": "FinalReviewCompleted",
       };
       if (!auxiliary || !session.role) {
+        if (role.name !== "release-close") delete session.releaseCloseDispatch;
         session.role = role.name;
         session.intent = intent;
         session.startingEventCount = localEvents(
@@ -4088,23 +4334,39 @@ async function evaluateExistingHarnessHook(
           .reduce((sum, row) => sum + row.bytes, 0),
       });
     }
+    const observation = observationBoundary(root, observationScope(), {
+      stop: true,
+      reentry: input.stop_hook_active === true,
+      ...(input.transcript_path
+        ? { transcriptPath: input.transcript_path }
+        : {}),
+    });
+    // Reuse the existing task fold, including terminal observations. A task
+    // only counts here when this session journal witnessed its dispatch.
+    let running = "";
+    try {
+      const tasks = observedFacts(root, observationScope()).tasks.filter(
+        (task) =>
+          task.dispatchedAt &&
+          ["dispatched", "running", "pending"].includes(task.state),
+      );
+      if (tasks.length)
+        running = `DotLn advisory: background dispatches still running by this session's journal: ${tasks.map((task) => `${task.label} (${String(task.key).slice(0, 12)}, ${task.state})`).join(", ")}; expected completion: ${session.expectedEvent ?? "none"}.`;
+    } catch {
+      // Missing optional task observation preserves the existing Stop advice.
+    }
     return {
       systemMessage: [
         subagentSummary(
           subagentUsage(root, harnessStateDirectory(root), input.session_id),
         ),
-        observationBoundary(root, observationScope(), {
-          stop: true,
-          reentry: input.stop_hook_active === true,
-          ...(input.transcript_path
-            ? { transcriptPath: input.transcript_path }
-            : {}),
-        }),
+        observation,
         ...(unmet.length
           ? [
               `DotLn advisory: pending ${unmet.join(", ")}; these observations do not block lifecycle completion.`,
             ]
           : []),
+        ...(running ? [running] : []),
       ].join("\n"),
     };
   }
@@ -4134,6 +4396,13 @@ async function evaluateExistingHarnessHook(
       });
     }
     if (scopeResult) return protocolAdvisory(scopeResult.reason);
+    const close = releaseCloseAdmission(root, input, session);
+    if (close) {
+      record(root, input, {
+        releaseCloseAdmission: session.releaseCloseDispatch!.workOrder,
+      });
+      return close;
+    }
     const effect = permissionEffect(input, root, config.tools, outsideEffect);
     const decision = harnessAuthorization(
       session.correction
@@ -4577,6 +4846,19 @@ export async function runHarnessHook(
       : protocolAdvisory(reason);
   } finally {
     if (observed) {
+      if (config.kind === "session") {
+        try {
+          recordOperatorMessage(
+            observed.root,
+            observed.input,
+            harnessInputHarness(observed.input) === "copilot-cli"
+              ? "copilot-prompt-hook"
+              : "claude-prompt-hook",
+          );
+        } catch {
+          // Journaling failure cannot withhold the operator's prompt.
+        }
+      }
       try {
         const { root, input } = observed;
         const permission = response.hookSpecificOutput as

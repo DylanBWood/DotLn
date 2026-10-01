@@ -1,4 +1,4 @@
-import { runGit } from "./lib/git.mjs";
+import { runGit, shellQuote } from "./lib/git.mjs";
 import { write, json, sha256Hex as sha256 } from "./lib/helpers.mjs";
 import "./test-fixture-temporary.mjs";
 import test from "node:test";
@@ -90,6 +90,7 @@ import {
   runHarnessEvidence,
   seedHarnessWriter,
   SHELL_DIAGNOSTICS,
+  recordCodexDispatch,
 } from "../packages/skeleton/dist/src/harness-host.js";
 import { operatorControl } from "../packages/compiler/src/operator-control.mjs";
 import {
@@ -1068,6 +1069,290 @@ const allowed = (result) =>
   result.decision !== "block" &&
   result.hookSpecificOutput?.permissionDecision !== "deny";
 
+const wo178Rows = (root, id = "synthetic-session") =>
+  readFileSync(
+    join(root, "docs/control/local/harness", `${sha256(id)}.jsonl`),
+    "utf8",
+  )
+    .trim()
+    .split("\n")
+    .map(JSON.parse);
+
+test("WO-178 PermissionDenied journals bounded metadata and offers both operator routes without retry", () => {
+  const root = fixture();
+  try {
+    invoke(
+      root,
+      "session",
+      input(root, "UserPromptSubmit", { prompt: "analysis: off" }),
+    );
+    invoke(
+      root,
+      "session",
+      input(root, "UserPromptSubmit", { prompt: "resume: next" }),
+    );
+    const toolInput = { command: "synthetic denial text " + "é".repeat(2000) };
+    const response = invoke(
+      root,
+      "permission-denied",
+      input(root, "PermissionDenied", {
+        tool_name: "Bash",
+        tool_input: toolInput,
+        reason: "[Create Public Surface] private reason sentinel",
+      }),
+    );
+    const row = wo178Rows(root).find(
+      (row) => row.typedEvent === "HostPermissionDenied",
+    );
+    assert.equal(row.tool, "Bash");
+    assert.equal(row.inputDigest, sha256(JSON.stringify(toolInput)));
+    assert.equal(row.inputBytes, Buffer.byteLength(JSON.stringify(toolInput)));
+    assert.equal(row.rule, "[Create Public Surface]");
+    assert.equal(row.workOrder, "WO-999");
+    assert.equal(row.role, "executor");
+    assert.equal(row.phase, "implementation");
+    assert.ok(Buffer.byteLength(JSON.stringify(row)) < 1024);
+    assert.doesNotMatch(
+      JSON.stringify(row),
+      /synthetic denial text|private reason sentinel/,
+    );
+    assert.match(response.systemMessage, /! prefix/);
+    assert.match(response.systemMessage, /\/permissions.*Recently denied/);
+    assert.equal(response.hookSpecificOutput?.retry, undefined);
+    const settings = JSON.parse(
+      readFileSync(join(root, ".claude/settings.json")),
+    );
+    assert.match(
+      JSON.stringify(settings.hooks.PermissionDenied),
+      /permission-denied\.mjs/,
+    );
+    checkHarness(root);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("WO-178 prompt rows retain digest, prefix class and witnessed route, including recovery prompts", () => {
+  const root = fixture();
+  try {
+    invoke(
+      root,
+      "session",
+      input(root, "UserPromptSubmit", { prompt: "resume: next" }),
+    );
+    const transcript = join(
+      root,
+      "docs/control/local/fixture-transcript.jsonl",
+    );
+    const message = "scope expand: synthetic private phrase é";
+    writeFileSync(
+      transcript,
+      JSON.stringify({
+        type: "queue-operation",
+        operation: "enqueue",
+        content: message,
+      }) + "\n",
+    );
+    invoke(
+      root,
+      "session",
+      input(root, "UserPromptSubmit", {
+        prompt: message,
+        transcript_path: transcript,
+      }),
+    );
+    invoke(
+      root,
+      "session",
+      input(root, "UserPromptSubmit", {
+        prompt: "unclassified synthetic private phrase",
+      }),
+    );
+    invoke(
+      root,
+      "session",
+      input(root, "UserPromptSubmit", {
+        prompt: "analysis: synthetic diagnosis",
+      }),
+    );
+    const rows = wo178Rows(root).filter(
+      (row) => row.typedEvent === "OperatorMessageObserved",
+    );
+    assert.equal(rows.length, 4);
+    assert.equal(rows[1].digest, sha256(message));
+    assert.equal(rows[1].bytes, Buffer.byteLength(message));
+    assert.equal(rows[1].class, "scope expansion");
+    assert.equal(rows[1].route, "mid-turn");
+    assert.equal(rows[2].class, "unclassified");
+    assert.equal(rows[2].route, "unknown");
+    assert.equal(rows[3].class, "question");
+    assert.doesNotMatch(
+      JSON.stringify(rows),
+      /synthetic private phrase|synthetic diagnosis/,
+    );
+    invoke(
+      root,
+      "session",
+      input(root, "UserPromptSubmit", { prompt: "analysis: off" }),
+    );
+    recordCodexDispatch(root, "synthetic-session", "fix");
+    const codex = wo178Rows(root).at(-1);
+    assert.equal(codex.source, "codex-dispatch-phrase");
+    assert.equal(codex.routeSource, "dispatch-only");
+    assert.equal(codex.digest, sha256("resume: fix"));
+    assert.equal(codex.phase, "repair");
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("WO-178 Stop names only journaled dispatches without terminal observations", () => {
+  const root = fixture();
+  try {
+    invoke(
+      root,
+      "session",
+      input(root, "UserPromptSubmit", { prompt: "resume: next" }),
+    );
+    const scope = {
+      sessionKey: sha256("synthetic-session"),
+      workOrder: "WO-999",
+      phase: "implementation",
+    };
+    const at = new Date().toISOString(),
+      key = sha256("fixture-monitor");
+    appendObservation(
+      root,
+      scope,
+      {
+        backgroundTask: {
+          key,
+          state: "running",
+          dispatchedAt: at,
+          observedAt: at,
+        },
+      },
+      at,
+    );
+    let response = invoke(root, "finish", input(root, "Stop"));
+    assert.match(
+      response.systemMessage,
+      /background dispatches still running.*task 1.*expected completion: ImplementationReady/,
+    );
+    appendObservation(root, scope, {
+      backgroundTask: {
+        key,
+        state: "completed",
+        observedAt: new Date().toISOString(),
+      },
+    });
+    response = invoke(root, "finish", input(root, "Stop"));
+    assert.doesNotMatch(
+      response.systemMessage,
+      /background dispatches still running/,
+    );
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("WO-178 exact close helper admission requires the recorded dispatch, main and legal order", () => {
+  const root = fixture();
+  try {
+    const status = {
+      ...control,
+      phase: "closed",
+      legalNextActions: ["release-close"],
+    };
+    write(root, "docs/control/fixture-status.json", json(status));
+    const helper = `${shellQuote(process.execPath)} ${shellQuote(join(root, "scripts/release.mjs"))} close WO-999`;
+    const permission = (command, extra = {}) =>
+      invoke(
+        root,
+        "permissions",
+        input(root, "PreToolUse", {
+          tool_name: "Bash",
+          tool_input: { command },
+          ...extra,
+        }),
+      ).hookSpecificOutput;
+    assert.notEqual(
+      permission(`${helper} --publish`)?.permissionDecision,
+      "allow",
+    );
+    invoke(
+      root,
+      "session",
+      input(root, "UserPromptSubmit", { prompt: "resume: release close" }),
+    );
+    for (const suffix of [
+      "--publish",
+      "--dry-run",
+      "--publish --material 'docs/control/local/fixture=preserve'",
+      `--publish --material ${shellQuote("docs/control/local/fixture's=preserve")} --material 'docs/control/local/second=disposable'`,
+    ]) {
+      const response = permission(`${helper} ${suffix}`);
+      assert.equal(response?.permissionDecision, "allow", suffix);
+      assert.match(
+        response.permissionDecisionReason,
+        /first admission.*recorded release-close dispatch for WO-999.*cwd is main.*canonical release-close is legal/,
+      );
+    }
+    for (const command of [
+      `${helper} --publish --force`,
+      `${helper} --publish `,
+      `${helper.replace("WO-999", "WO-998")} --publish`,
+      `${helper.replace("scripts/release.mjs", "scripts/../scripts/release.mjs")} --publish`,
+      `${helper} --publish && true`,
+      `${helper} --publish --material $(echo fixture)=preserve`,
+      `${helper} --publish --material 'fixture=preserve'; true`,
+    ])
+      assert.notEqual(
+        permission(command)?.permissionDecision,
+        "allow",
+        command,
+      );
+    assert.notEqual(
+      permission(`${helper} --publish`, { session_id: "no-recorded-dispatch" })
+        ?.permissionDecision,
+      "allow",
+    );
+    write(
+      root,
+      "docs/control/fixture-status.json",
+      json({ ...status, legalNextActions: [] }),
+    );
+    assert.notEqual(
+      permission(`${helper} --publish`)?.permissionDecision,
+      "allow",
+    );
+    write(root, "docs/control/fixture-status.json", json(status));
+    const worktree = join(root, "sibling");
+    runGit(
+      root,
+      ["worktree", "add", "--detach", worktree, "HEAD"],
+      fixtureGitOptions,
+    );
+    assert.notEqual(
+      permission(`${helper} --publish`, { cwd: worktree })?.permissionDecision,
+      "allow",
+    );
+    const response = invoke(
+      root,
+      "permissions",
+      input(root, "PreToolUse", {
+        tool_name: "Bash",
+        tool_input: { command: `${helper} --publish` },
+      }),
+      false,
+      { COPILOT_PROJECT_DIR: root },
+    );
+    assert.notEqual(response.hookSpecificOutput?.permissionDecision, "allow");
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
 test("WO-146 three contributors share unique outputs while workers remain explicitly two", () => {
   assert.deepEqual(
     contributorProfiles.map((profile) => profile.harness),
@@ -1390,7 +1675,7 @@ test("WO-139 cap-module-only changes refresh the runtime and snapshot damage is 
       readFileSync(join(root, previous.snapshot, modulePath), "utf8"),
       original,
     );
-    assert.equal(checkHarness(root, options).files, 31);
+    assert.equal(checkHarness(root, options).files, 32);
     assert.match(
       invoke(root, "finish", input(root, "Stop")).systemMessage,
       /^Subagents: 0\/21/,
@@ -8696,7 +8981,159 @@ const shellFound = (command, output) =>
     ...(remedy ? [remedy] : []),
   ]);
 
+test("WO-178 shell carry-ins require complete source words and bound costly shapes", () => {
+  for (const [command, output] of [
+    [
+      "value='one two'; (value=$unknown; $value)",
+      "zsh:1: command not found: one two",
+    ],
+    [
+      "cat $log",
+      "zsh:1: no such file or directory: synthetic private whole value",
+    ],
+    [
+      "log=notes.txt; cat $log",
+      "zsh:1: no such file or directory: synthetic private whole value",
+    ],
+    ["read -ra answer", "zsh:read:1: bad option: -synthetic-private-a"],
+    ["print ${valid}; cat notes.txt", "zsh:1: bad substitution"],
+    [
+      "print $((1+2)); cat notes.txt",
+      "zsh:1: bad math expression: synthetic private reason",
+    ],
+    ["print '${bad,,}'", "zsh:1: bad substitution"],
+    ["print '$((1+))'", "zsh:1: bad math expression: operand expected"],
+  ])
+    assert.deepEqual(shellFound(command, output), [], command);
+  assert.equal(
+    shellFound(
+      "value='one two'; $value",
+      "zsh:1: command not found: one two",
+    )[0]?.[0],
+    "unsplit-word",
+  );
+  assert.equal(
+    shellFound(
+      "print $((1+))",
+      "zsh:1: bad math expression: operand expected",
+    )[0]?.[0],
+    "bad-math",
+  );
+  const before = performance.now();
+  for (const command of [
+    "(".repeat(20000),
+    "${".repeat(125000),
+    "$(".repeat(10000),
+  ])
+    assert.deepEqual(shellDiagnostics(command, "zsh:1: bad substitution"), []);
+  assert.ok(
+    performance.now() - before < 1000,
+    "bounded inputs must not approach the 15-second hook timeout",
+  );
+});
+
+test("WO-178 the observer bounds combined guidance and later delivers unmarked answers", () => {
+  const root = fixture();
+  try {
+    beginHarnessSession(root, "synthetic-session", "executor");
+    const transcript = join(
+      root,
+      ".fixture-transcripts/synthetic-session.jsonl",
+    );
+    const messages = [];
+    for (let index = 0; index < 4; index++) {
+      const words = Array.from(
+        { length: 5 },
+        (_, part) => `fixture-${index}-${part}-${"x".repeat(70)}*.nomatch`,
+      );
+      messages.push({
+        type: "assistant",
+        message: {
+          content: [
+            {
+              type: "tool_use",
+              id: `bounded-${index}`,
+              name: "Bash",
+              input: { command: `ls ${words.join(" ")}` },
+            },
+          ],
+        },
+      });
+      messages.push({
+        type: "user",
+        message: {
+          content: [
+            {
+              type: "tool_result",
+              tool_use_id: `bounded-${index}`,
+              is_error: true,
+              content:
+                "Exit code 1\n" +
+                words
+                  .map((word) => `zsh:1: no matches found: ${word}`)
+                  .join("\n"),
+            },
+          ],
+        },
+      });
+    }
+    write(
+      root,
+      ".fixture-transcripts/synthetic-session.jsonl",
+      messages.map(JSON.stringify).join("\n") + "\n",
+    );
+    const call = () =>
+      invoke(
+        root,
+        "read-observer",
+        input(root, "PostToolUse", {
+          tool_name: "Bash",
+          tool_input: { command: "true" },
+          tool_response: { stdout: "", stderr: "" },
+          transcript_path: transcript,
+        }),
+      ).hookSpecificOutput?.additionalContext ?? "";
+    for (let index = 0; index < 4; index++) {
+      const guidance = call();
+      assert.ok(Array.from(guidance).length <= 1800);
+      if (index === 0) assert.match(guidance, /DotLn shell diagnostic/);
+    }
+    const rows = readFileSync(
+      join(root, "docs/control/local/harness/shell-diagnostics.jsonl"),
+      "utf8",
+    )
+      .trim()
+      .split("\n")
+      .map(JSON.parse);
+    assert.equal(new Set(rows.map((row) => row.use)).size, 4);
+    assert.equal(
+      rows.length,
+      20,
+      "each of five patterns in four failed uses is counted once",
+    );
+    assert.equal(call(), "");
+  } finally {
+    removeFixture(root, { recursive: true });
+  }
+});
+
 const shellRepairCases = [
+  [
+    "log=notes.txt; print -r -- '(eval):1: no such file or directory: one two' >$log; cat $log",
+    null,
+  ],
+  [
+    "print -r -- '(eval):read:1: bad option: -sentinel-r'; read -r answer <<< ok",
+    null,
+  ],
+  [
+    "valid=ok; print -r -- ${valid}; print -r -- '(eval):1: bad substitution'",
+    null,
+  ],
+  [
+    "print -r -- $((1+2)); print -r -- '(eval):1: bad math expression: operand expected'",
+    null,
+  ],
   ["ls <(ls *.dotln-repair-no-match)", "unmatched-pattern"],
   ["print -r -- >(ls *.dotln-repair-no-match)", "unmatched-pattern"],
   ["cat =(ls *.dotln-repair-no-match)", "unmatched-pattern"],

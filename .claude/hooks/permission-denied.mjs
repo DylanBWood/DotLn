@@ -1,10 +1,10 @@
-// Origin: {"ids":["contributor.executor","contributor.planner","contributor.refuter","contributor.release-close","contributor.reviewer","contributor.verifier","no-attribution"],"loadoutId":"contributor","semanticHash":"fnv1a64:3fda088a97df0f55"}
+// Origin: {"ids":["contributor.executor","contributor.permissions","contributor.planner","contributor.refuter","contributor.release-close","contributor.reviewer","contributor.verifier"],"loadoutId":"contributor","semanticHash":"fnv1a64:3fda088a97df0f55"}
 let input, control;
 try {
 const { text } = await import("node:stream/consumers");
 const rawInput = await text(process.stdin);
 try { input = JSON.parse(rawInput); } catch {}
-const event = "PreToolUse";
+const event = "PermissionDenied";
 const recoveryInput = input !== null && typeof input === "object" && !Array.isArray(input) && (input.prompt === undefined || typeof input.prompt === "string") && (typeof input.session_id === "string" || (event === "UserPromptSubmit" && /^(analysis|operator override):(?:\s|$)/i.test((input.prompt ?? "").trim())));
 control = recoveryInput ? await (async function operatorControl(input, event) {
     const prompt = event === "UserPromptSubmit" ? (input.prompt?.trim() ?? "") : "";
@@ -363,7 +363,7 @@ await runHarnessHook({
     ],
     "snapshot": ".runtime/harness/b182ad656372635c"
   },
-  "event": "PreToolUse",
+  "event": "PermissionDenied",
   "tools": {
     "Read": "read",
     "StructuredOutput": "read",
@@ -580,65 +580,7 @@ await runHarnessHook({
       ]
     }
   ],
-  "kind": "feedback",
-  "policy": {
-    "contractVersion": "feedback-v1",
-    "compilerPackageVersion": "0.22.1",
-    "units": [
-      {
-        "unitId": "no-attribution",
-        "version": 2,
-        "incident": {
-          "sourceRefs": [
-            "docs/lineage/idea-ledger.md",
-            "docs/product/06-roadmap.md"
-          ],
-          "sourceTreatment": "synthesized-from-public-lineage",
-          "summary": "The founding mapping selects attribution settings plus a commit hook as defense in depth for the no-attribution requirement.",
-          "retainedSource": "public-reference"
-        },
-        "undesiredBehavior": "Do not append AI coauthors, generated-with footers, harness-suggested session trailers or session URLs to commits, PR titles or bodies, or release notes.",
-        "desiredBehavior": "Disable automatic attribution and reject AI trailers, footers and session links at publication; preserve human coauthors and ordinary subject text.",
-        "scope": [
-          "equipped-feedback-host",
-          "personal-profile"
-        ],
-        "trigger": "attribution",
-        "mechanism": {
-          "handler": "attribution",
-          "version": 2,
-          "rationale": "A deterministic footer/trailer predicate is sufficient; invocation settings reduce generation and the commit hook checks actual bytes."
-        },
-        "enforcement": "hard",
-        "requiredEvidence": [
-          "commit-message-bytes",
-          "invocation-settings",
-          "real-git-hook-result"
-        ],
-        "regressionFixtures": [
-          "WO-126 no-attribution version 2"
-        ],
-        "conflicts": [],
-        "supersedes": [
-          "no-attribution@1"
-        ],
-        "retirementCondition": "Retire this immutable version only when a named replacement preserves its regression evidence; retain the old definition for replay.",
-        "nextMaturityCondition": "Collect host-observed use beyond controlled fixtures, including false activations and overrides, before claiming broader maturity.",
-        "proseEquivalent": "Do not append AI coauthors, generated-with footers, harness-suggested session trailers or session URLs to commits, PR titles or bodies, or release notes. Disable automatic attribution and reject AI trailers, footers and session links at publication; preserve human coauthors and ordinary subject text."
-      }
-    ],
-    "mechanisms": [
-      {
-        "unitId": "no-attribution",
-        "handler": "attribution",
-        "kind": "script",
-        "rung": 1,
-        "enforcement": "hard"
-      }
-    ],
-    "policyHash": "fnv1a64:ba7f3d4294af638a"
-  },
-  "correctionToken": null
+  "kind": "denial"
 }, feedbackBoundary, input, rawInput, control);
 }
 } catch { if (control?.overrideExit) { const { overrideExit, ...exited } = control; const advisory = "DotLn advisory: the pinned runtime is unavailable, so OperatorOverrideRecorded was not appended. " + overrideExit.advisory; process.stdout.write(JSON.stringify({ systemMessage: exited.systemMessage + " " + advisory, hookSpecificOutput: { hookEventName: "UserPromptSubmit", additionalContext: advisory } })); } else { const fs = await import("node:fs");
@@ -682,7 +624,7 @@ const response = (function showHarnessAdvisory(sessionId, event, cause, claimMar
     catch {
         return true;
     }
-})(input?.session_id, "PreToolUse", cause, (key) => {
+})(input?.session_id, "PermissionDenied", cause, (key) => {
   const directory = join(root, "docs/control/local/harness");
   fs.mkdirSync(directory, { recursive: true, mode: 0o700 });
   const marker = join(directory, createHash("sha256").update(key).digest("hex") + ".advisory");
@@ -699,6 +641,6 @@ try {
   const path = join(directory, key + ".jsonl");
   fs.mkdirSync(directory, { recursive: true, mode: 0o700 });
   if (!fs.existsSync(path) || fs.lstatSync(path).isFile())
-    fs.appendFileSync(path, JSON.stringify({ recordedAt: new Date().toISOString(), event: "PreToolUse", advisory, delegated: true }) + "\n", { mode: 0o600 });
+    fs.appendFileSync(path, JSON.stringify({ recordedAt: new Date().toISOString(), event: "PermissionDenied", advisory, delegated: true }) + "\n", { mode: 0o600 });
 } catch {}
 process.stdout.write(JSON.stringify(response)); } }
