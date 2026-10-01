@@ -25583,6 +25583,21 @@
           "at": "2026-10-01T20:14:42.111Z"
         }
       ]
+    },
+    {
+      "id": "FUP-68937a5651fb775a",
+      "key": "decision:docs/evidence/WO-182/decisions.md#wo-182-d006",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "6175fbb3ebfc302f2db27e22adc29d5c589c2a0a48dbc9f8f65ec6e7e068a058",
+          "ref": "docs/evidence/WO-182/decisions.md#wo-182-d006--final-review-pass-and-two-seams-the-required-runs-inherit",
+          "title": "WO-182-D006: Planner, before WO-123 activates (and for WO-112's and WO-118's runs): (1) name the step that writes delivery-preparation.json: the ambiguity inventory from WO-061's StoryContract, the te",
+          "summary": "{ \"id\": \"WO-182-D006\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: final review; FINAL-001\", \"kind\": \"finding\", \"decision\": \"Pass WO-182 on all five criteria against the original order, on VER-001's probes, this review's reading of the full diff and a fresh product gate on the integrated tree. Board two seams for the runs that will require readiness, without failing the order. (1) From source, not executed: publishTargetOrder returns an already recorded PullRequestOpened before it evaluates readiness. So publish --target with --require-deliverable-ready for a head an operator already opened without the flag exits 0 ('Already published ...; nothing pushed') even when items were absent. That ca",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }
