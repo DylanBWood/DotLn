@@ -8966,6 +8966,83 @@ test("WO-131 bootstrap works without dependencies and stops before a launch hand
   assert.equal(calls.length, 2);
 });
 
+test("WO-181 bootstrap prepares the pinned browser in the future worktree cache before readiness", (t) => {
+  const root = repo(t);
+  write(root, "packages/browser-evidence/package.json", "{}\n");
+  write(root, ".claude/harness-manifest.json", "{}\n");
+  const calls = [];
+  const run = (command, args, options) => {
+    calls.push({ command, args, options });
+    return { status: 0, stdout: root + "\n" };
+  };
+  assert.equal(
+    bootstrapWorktree(root, run, { INIT_CWD: "/parent-checkout" }),
+    4,
+  );
+  const browser = calls.find(
+    (call) => call.args[0] === "node_modules/playwright/cli.js",
+  );
+  assert.equal(browser.command, process.execPath);
+  assert.deepEqual(browser.args, [
+    "node_modules/playwright/cli.js",
+    "install",
+    "chromium",
+    "--only-shell",
+  ]);
+  assert.equal(browser.options.cwd, root);
+  assert.equal(
+    browser.options.env.PLAYWRIGHT_BROWSERS_PATH,
+    join(root, ".runtime/playwright"),
+  );
+  assert.equal(browser.options.env.INIT_CWD, root);
+  assert.ok(
+    calls.findIndex((call) => call.args[0] === "ci") < calls.indexOf(browser),
+  );
+  assert.ok(
+    calls.indexOf(browser) < calls.findIndex((call) => call.args[0] === "run"),
+  );
+  for (const cache of [
+    "/explicit cache ' $literal",
+    "relative-cache",
+    "0",
+    "",
+  ]) {
+    calls.length = 0;
+    bootstrapWorktree(root, run, {
+      PLAYWRIGHT_BROWSERS_PATH: cache,
+      INIT_CWD: "/parent-checkout",
+    });
+    const selected = calls.find(
+      (call) => call.args[0] === "node_modules/playwright/cli.js",
+    );
+    assert.equal(selected.options.env.PLAYWRIGHT_BROWSERS_PATH, cache);
+    assert.equal(selected.options.env.INIT_CWD, root);
+  }
+});
+
+test("WO-181 bootstrap preserves a future worktree and refuses readiness when Chromium installation fails", (t) => {
+  const root = repo(t);
+  write(root, "packages/browser-evidence/package.json", "{}\n");
+  write(root, ".claude/harness-manifest.json", "{}\n");
+  const calls = [];
+  assert.throws(
+    () =>
+      bootstrapWorktree(root, (command, args) => {
+        calls.push([command, ...args]);
+        return {
+          status: args[0] === "node_modules/playwright/cli.js" ? 7 : 0,
+          stdout: root + "\n",
+        };
+      }),
+    /playwright\/cli.js install chromium --only-shell.*checkout is preserved.*Retry node scripts\/bootstrap.mjs/u,
+  );
+  assert.equal(
+    calls.some((call) => call.includes("build") || call.includes("emit")),
+    false,
+  );
+  assert.ok(existsSync(join(root, "packages/browser-evidence/package.json")));
+});
+
 test("WO-132 missing bootstrap runtime delegates every pre-tool hook to host permissions", (t) => {
   const root = repo(t, { runtime: true });
   emitHarness(root);

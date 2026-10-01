@@ -7,25 +7,56 @@ import { join } from "node:path";
 import { spawnSync } from "node:child_process";
 
 /** This entry point must never import dependencies or a built adapter. */
-export function bootstrapWorktree(root, run = spawnSync) {
+export function bootstrapWorktree(
+  root,
+  run = spawnSync,
+  environment = process.env,
+) {
   root = realpathSync(root);
   const top = run("git", ["rev-parse", "--show-toplevel"], {
     cwd: root,
     encoding: "utf8",
+    env: environment,
   });
   if (top.status !== 0 || realpathSync(top.stdout.trim()) !== root)
     throw new Error("Bootstrap must run at the physical Git root");
+  const browser = [
+    process.execPath,
+    "node_modules/playwright/cli.js",
+    "install",
+    "chromium",
+    "--only-shell",
+  ];
   const steps = [
     ...(!existsSync(join(root, "node_modules/typescript/bin/tsc"))
       ? [["npm", "ci", "--ignore-scripts", "--no-audit", "--no-fund"]]
+      : []),
+    ...(existsSync(join(root, "packages/browser-evidence/package.json"))
+      ? [browser]
       : []),
     ["npm", "run", "build", "--silent"],
     ...(existsSync(join(root, ".claude/harness-manifest.json"))
       ? [[process.execPath, "scripts/harness.mjs", "emit"]]
       : []),
   ];
-  for (const [command, ...args] of steps) {
-    const result = run(command, args, { cwd: root, stdio: "inherit" });
+  for (const step of steps) {
+    const [command, ...args] = step;
+    const result = run(command, args, {
+      cwd: root,
+      stdio: "inherit",
+      env:
+        step === browser
+          ? {
+              ...environment,
+              // Match scenario.test.mjs; never borrow the parent's INIT_CWD
+              // when worktree start prepares a different checkout.
+              PLAYWRIGHT_BROWSERS_PATH:
+                environment.PLAYWRIGHT_BROWSERS_PATH ??
+                join(root, ".runtime/playwright"),
+              INIT_CWD: root,
+            }
+          : environment,
+    });
     if (result.status !== 0)
       throw new Error(
         `Worktree preparation failed at ${command} ${args.join(" ")}; the checkout is preserved. Retry node scripts/bootstrap.mjs after resolving the reported error.`,

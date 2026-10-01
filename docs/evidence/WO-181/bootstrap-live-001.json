@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "label": "bootstrap-live-001",
+  "scope": "New temporary Git worktrees only; real npm ci, pinned Playwright installer and Chromium launch; build is a labeled marker double and hooks are absent",
+  "source": {
+    "bootstrapSha256": "eb7abc867ddf001b1690a906c3d203cd530ae6a22f28b774aef5a15292dae275",
+    "lockfileSha256": "ae6c6d5dcc91888b42627bf46d447cc12fc5ef3a0b9e2672b28a1ab24bcccfd2",
+    "playwrightVersion": "1.63.0"
+  },
+  "rows": [
+    {
+      "name": "fresh-default-cache",
+      "steps": [
+        {
+          "kind": "git-root",
+          "exitCode": 0
+        },
+        {
+          "kind": "npm-ci",
+          "exitCode": 0
+        },
+        {
+          "kind": "browser-install",
+          "exitCode": 0,
+          "downloadObserved": true,
+          "cacheMatches": true,
+          "initCwdMatches": true
+        },
+        {
+          "kind": "build-double",
+          "exitCode": 0
+        }
+      ],
+      "ready": true,
+      "browserLaunched": true,
+      "browserVersion": "153.0.8010.12",
+      "wallSeconds": 5.481
+    },
+    {
+      "name": "cached-retry-with-download-host-unavailable",
+      "steps": [
+        {
+          "kind": "git-root",
+          "exitCode": 0
+        },
+        {
+          "kind": "browser-install",
+          "exitCode": 0,
+          "downloadObserved": false,
+          "cacheMatches": true,
+          "initCwdMatches": true
+        },
+        {
+          "kind": "build-double",
+          "exitCode": 0
+        }
+      ],
+      "ready": true,
+      "browserLaunched": true,
+      "browserVersion": "153.0.8010.12",
+      "wallSeconds": 0.7
+    },
+    {
+      "name": "fresh-worktree-explicit-cache-offline",
+      "steps": [
+        {
+          "kind": "git-root",
+          "exitCode": 0
+        },
+        {
+          "kind": "npm-ci",
+          "exitCode": 0
+        },
+        {
+          "kind": "browser-install",
+          "exitCode": 0,
+          "downloadObserved": false,
+          "cacheMatches": true,
+          "initCwdMatches": true
+        },
+        {
+          "kind": "build-double",
+          "exitCode": 0
+        }
+      ],
+      "ready": true,
+      "browserLaunched": true,
+      "browserVersion": "153.0.8010.12",
+      "wallSeconds": 1.406
+    }
+  ],
+  "status": "passed"
+}

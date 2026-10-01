@@ -172,11 +172,11 @@ and prompt submission must never block access to Claude or Codex. Missing
 runtime, unreadable state, unavailable briefings and refused dispatches are
 advisory at this boundary. Command-time guards still judge attempted effects;
 an accepted prompt does not claim its dispatch ran. Worktree creation prepares
-dependencies and the hook runtime before printing the launch handoff. A raw or
-interrupted checkout can run `node scripts/bootstrap.mjs`; this source-only
-entry point and read access remain available even when a pre-tool adapter
-cannot load. Bootstrap installs with lifecycle scripts disabled, builds, then
-emits the local hooks, with no new operator step. A
+dependencies, pinned Chromium and hooks before launch. Raw or
+interrupted checkouts can run the source-only `node scripts/bootstrap.mjs`
+without a built adapter; read access stays available. Bootstrap disables npm
+lifecycle scripts, installs the browser in the suite's cache, builds and emits
+hooks. Failure preserves the checkout and names a retry. A
 lifecycle that exposes no legal actions leaves the command to the role, and
 Codex sessions still run the command explicitly (a resumed Codex session runs
 `npm run resume -- briefing` itself). The prose duty this replaces was skipped in WO-130's repair
