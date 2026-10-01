@@ -151,6 +151,106 @@ function checkExperiment(entry, path) {
 export const isCorrection = (decision) =>
   decision.kind === "correction" || Object.hasOwn(decision, "misread");
 
+// Names are declared independently of available observations: null is a known
+// metric without a measurement; a typo is not a metric.
+const ORDER_METRICS = new Set([
+  "elapsedMs",
+  "attempts",
+  "failedVerifications",
+  "failedFinalReviews",
+  "repairs",
+  "gateMs",
+  "fastGateMs",
+  "readObligationCount",
+  "readObligationBytes",
+  "codeDiffBytes",
+  "readAmplification",
+  "machineryShare",
+  "elapsedPerCodeByte",
+  "tokens",
+  "costUsd",
+  "declaredPromptTokens",
+  "coldStartBytes",
+  "subjectCharacters",
+  "gateStepCount",
+  "operatorCorrections",
+  "recordedCorrections",
+  "operatorDirections",
+  "guardRefusals",
+  "stopRefusals",
+  "reAnnouncements",
+  "manualCloseoutSteps",
+  "emergencyPasses",
+  "bypassTools",
+  "adHocScripts",
+  "commandsRun",
+  "bytesReadIntoContext",
+  "stepCount",
+  "prBodyBytes",
+  "authorshipSnapshots",
+  "authorshipMs",
+  "authorshipBytes",
+  "authorshipCommands",
+  "authorshipMeanMs",
+  "authorshipPeakBytes",
+  "hookRuns",
+  "hookMs",
+  "hookMeanMs",
+  "hookPeakMs",
+]);
+const BUDGET_METRICS = new Set([
+  "sequenceBytes",
+  ...dispatchKinds.map((role) => `coldStartBytes.${role}`),
+]);
+export const knownReopeningMetric = (metric) =>
+  ORDER_METRICS.has(metric) || BUDGET_METRICS.has(metric);
+
+/** Current budget measurements and consecutive order measurements are distinct
+ * series. Two skill roots are two observations of one current role, never two
+ * consecutive orders. An unavailable sample remains unknown. */
+export function evaluateDecisionConditions(decisions, orders, budgetRows) {
+  const reopened = new Set(decisions.map((row) => row.reopens?.decisionId));
+  return decisions
+    .filter((row) => typeof row.reopenWhen === "object")
+    .map((row) => {
+      const condition = row.reopenWhen;
+      if (!knownReopeningMetric(condition.metric))
+        throw new Error(
+          `${row.id}: unresolved reopening metric ${condition.metric}`,
+        );
+      const consecutive = condition.consecutive ?? 1;
+      const samples = BUDGET_METRICS.has(condition.metric)
+        ? [budgetRows.filter((sample) => sample.metric === condition.metric)]
+        : orders
+            .slice(-consecutive)
+            .map((sample) => [{ value: sample.metrics[condition.metric] }]);
+      const values = samples.map((group) =>
+        group.length && group.every((sample) => Number.isFinite(sample.value))
+          ? Math.max(...group.map((sample) => sample.value))
+          : null,
+      );
+      const observed =
+        values.length === consecutive && values.every(Number.isFinite);
+      const holds = observed
+        ? values.every((value) =>
+            condition.operator === ">"
+              ? value > condition.value
+              : condition.operator === ">="
+                ? value >= condition.value
+                : value < condition.value,
+          )
+        : null;
+      return {
+        decision: row.id,
+        condition,
+        path: row.path,
+        values,
+        holds,
+        reopened: reopened.has(row.id),
+      };
+    });
+}
+
 export function readDecisions(root, { workOrder } = {}) {
   const directory = docPath(root, "evidence");
   const decisions = [];
@@ -211,6 +311,13 @@ export function readDecisions(root, { workOrder } = {}) {
       )
         throw new Error(
           `${path}: reopening condition must be readable prose or a bounded metric predicate`,
+        );
+      if (
+        typeof condition === "object" &&
+        !knownReopeningMetric(condition.metric)
+      )
+        throw new Error(
+          `${entry.id}: unresolved reopening metric ${condition.metric}`,
         );
       if (decisions.some((prior) => prior.id === entry.id))
         throw new Error(`Duplicate decision id: ${entry.id}`);
@@ -1726,33 +1833,14 @@ export async function collectMeta(
     comparisonEdition: coldStart.comparisonEdition,
     profiles: coldStart.profiles,
   };
-  const reopenCandidates = decisions
-    .filter((decision) => {
-      const condition = decision.reopenWhen;
-      if (typeof condition !== "object") return false;
-      const values = orders
-        .slice(-(condition.consecutive ?? 1))
-        .map((row) => row.metrics[condition.metric]);
-      return (
-        values.length === (condition.consecutive ?? 1) &&
-        values.every(
-          (value) =>
-            Number.isFinite(value) &&
-            (condition.operator === ">"
-              ? value > condition.value
-              : condition.operator === ">="
-                ? value >= condition.value
-                : condition.operator === "<"
-                  ? value < condition.value
-                  : false),
-        )
-      );
-    })
-    .map((row) => ({
-      decision: row.id,
-      condition: row.reopenWhen,
-      path: row.path,
-    }));
+  const decisionConditions = evaluateDecisionConditions(
+    decisions,
+    orders,
+    budgetRows,
+  );
+  const reopenCandidates = decisionConditions
+    .filter((row) => row.holds && !row.reopened)
+    .map(({ decision, condition, path }) => ({ decision, condition, path }));
   for (const trap of traps.filter((row) => row.reopenCandidate))
     reopenCandidates.push({
       trap: trap.id,
@@ -1826,6 +1914,7 @@ export async function collectMeta(
     budgets: budgetRows,
     traps,
     reopenCandidates,
+    decisionConditions,
   };
 }
 
@@ -2007,7 +2096,12 @@ export function metaHealth(meta) {
     (row) => row.verdict === "breach",
   ).length;
   const latest = meta.orders.at(-1);
-  return `Process health: ${breached ? `${breached} budget breaches` : "no observed budget breach"}; ${latest?.workOrder ?? "no work"} tokens ${display(latest?.metrics.tokens)}; ${meta.firstVerifications ? `${firstVerificationPhrase(meta.firstVerifications)}; ` : ""}${meta.reopenCandidates.length} reopen candidates; unset limits remain unset.`;
+  const candidates = meta.decisionConditions?.some(
+    (row) => row.holds === null && !row.reopened,
+  )
+    ? "reopen-candidate count unavailable (metric observation missing)"
+    : `${meta.reopenCandidates.length} reopen candidates`;
+  return `Process health: ${breached ? `${breached} budget breaches` : "no observed budget breach"}; ${latest?.workOrder ?? "no work"} tokens ${display(latest?.metrics.tokens)}; ${meta.firstVerifications ? `${firstVerificationPhrase(meta.firstVerifications)}; ` : ""}${candidates}; unset limits remain unset.`;
 }
 export function checkMeta(meta) {
   for (const row of meta.budgets.filter((row) => row.verdict === "breach"))

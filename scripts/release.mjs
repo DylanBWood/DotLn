@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { isMainModule } from "./lib/paths.mjs";
 import { json as prettyJson, sha256Hex as sha256 } from "./lib/helpers.mjs";
 import {
   harnessRuntimeCause,
@@ -2046,14 +2047,19 @@ const releaseWorkOrdersForRanges = (root, ranges) => {
 // Each tag's derived record is cached by its immutable tag object: an
 // unchanged tag costs no Git read, and only new or moved tags are read, in one
 // batch (WO-164).
-const listPublishedReleases = () => {
-  const tags = localTags(toolRoot);
-  const cache = releaseListCache(toolRoot);
+export const listPublishedReleases = (
+  root = toolRoot,
+  { cold = false } = {},
+) => {
+  const tags = localTags(root);
+  const cache = cold
+    ? { get: () => undefined, set: () => {}, save: () => {} }
+    : releaseListCache(root);
   const candidates = [...tags.values()]
     .filter(({ name, objectType }) => semver(name) && objectType === "tag")
     .sort((left, right) => compareVersions(left.name, right.name));
   const annotations = releaseAnnotations(
-    toolRoot,
+    root,
     candidates.filter(({ name, object }) => !cache.get(name, object)),
   );
   const facts = new Map(
@@ -2075,7 +2081,7 @@ const listPublishedReleases = () => {
       // uncached (release-list-cache.mjs).
       let attribution;
       try {
-        attribution = manifestWorkOrders(manifest, toolRoot);
+        attribution = manifestWorkOrders(manifest, root);
       } catch (error) {
         attribution = error;
       }
@@ -2127,7 +2133,7 @@ const listPublishedReleases = () => {
   });
   const missing = ranges.filter(({ workOrders }) => workOrders === undefined);
   const derived = releaseWorkOrdersForRanges(
-    toolRoot,
+    root,
     missing.map(({ range }) => range),
   );
   missing.forEach((range, index) => {
@@ -2153,7 +2159,7 @@ const listPublishedReleases = () => {
         workOrders.push(...fact.manifestWorkOrders);
       }
       if (workOrders.length === 0)
-        workOrders.push(...historicalWorkOrders(toolRoot, item.name));
+        workOrders.push(...historicalWorkOrders(root, item.name));
       return {
         tag: item.name,
         commit: item.target,
@@ -2422,11 +2428,13 @@ const main = async () => {
   );
 };
 
-try {
-  await main();
-} catch (error) {
-  process.stderr.write(
-    `error: ${error instanceof Error ? error.message : String(error)}\n`,
-  );
-  process.exitCode = 1;
+if (isMainModule(import.meta.url)) {
+  try {
+    await main();
+  } catch (error) {
+    process.stderr.write(
+      `error: ${error instanceof Error ? error.message : String(error)}\n`,
+    );
+    process.exitCode = 1;
+  }
 }

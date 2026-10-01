@@ -10111,3 +10111,180 @@ test("WO-173 completion prints nothing about the document gate: the inline run a
     assert.match(result.treeHash, /^[a-f0-9]{40,64}$/);
   }
 });
+
+test("WO-175 refuses unresolved metrics, resolves budget measurements and settles reopened predicates", async (t) => {
+  const root = repo(t);
+  const base = {
+    id: "WO-999-D001",
+    date: "2026-09-30",
+    dispatch: "fixture",
+    decision: "fixture",
+    evidence: ["fixture"],
+    rejected: [],
+    reopenWhen: {
+      metric: "coldStartBytes.executor",
+      operator: ">",
+      value: 24_576,
+    },
+  };
+  const save = (rows) =>
+    write(
+      root,
+      "docs/evidence/WO-999/decisions.md",
+      rows
+        .map(
+          (row) =>
+            `## ${row.id}\n\n\x60\x60\x60json\n${json(row)}\x60\x60\x60\n`,
+        )
+        .join("\n"),
+    );
+  save([
+    {
+      ...base,
+      reopenWhen: { ...base.reopenWhen, metric: "coldStartBytes.misspelled" },
+    },
+  ]);
+  assert.throws(
+    () => readDecisions(root),
+    /WO-999-D001.*coldStartBytes\.misspelled/,
+  );
+  save([base]);
+  const { evaluateDecisionConditions } = await import("./lib/meta.mjs");
+  const decisions = readDecisions(root);
+  const budgetRows = [
+    { metric: "coldStartBytes.executor", value: 26_903 },
+    { metric: "sequenceBytes", value: 9_000 },
+  ];
+  const holding = evaluateDecisionConditions(decisions, [], budgetRows);
+  assert.equal(holding[0].holds, true);
+  assert.deepEqual(holding[0].values, [26_903]);
+  const sequence = {
+    ...base,
+    id: "WO-999-D002",
+    reopenWhen: { metric: "sequenceBytes", operator: ">=", value: 9_000 },
+  };
+  assert.equal(
+    evaluateDecisionConditions([sequence], [], budgetRows)[0].holds,
+    true,
+  );
+  const later = {
+    ...base,
+    id: "WO-999-D003",
+    reopenWhen: "New observation",
+    reopens: { decisionId: base.id, observation: "Threshold occurred" },
+  };
+  save([base, later]);
+  assert.equal(
+    evaluateDecisionConditions(readDecisions(root), [], budgetRows)[0].reopened,
+    true,
+  );
+  assert.equal(evaluateDecisionConditions([base], [], [])[0].holds, null);
+  assert.equal(
+    evaluateDecisionConditions(
+      [{ ...base, reopenWhen: { ...base.reopenWhen, consecutive: 2 } }],
+      [],
+      budgetRows,
+    )[0].holds,
+    null,
+  );
+  const numeric = {
+    ...base,
+    reopenWhen: { metric: "tokens", operator: ">", value: 10, consecutive: 2 },
+  };
+  assert.equal(
+    evaluateDecisionConditions(
+      [numeric],
+      [{ metrics: { tokens: 11 } }, { metrics: { tokens: 12 } }],
+      [],
+    )[0].holds,
+    true,
+  );
+  assert.equal(
+    evaluateDecisionConditions(
+      [numeric],
+      [{ metrics: { tokens: null } }, { metrics: { tokens: 12 } }],
+      [],
+    )[0].holds,
+    null,
+  );
+  // Exercise the meter's real budget line and candidate list, not just the helper.
+  write(root, "CLAUDE.md", "x".repeat(25_000));
+  write(root, ".claude/skills/dotln-executor/SKILL.md", "fixture");
+  write(root, ".agents/skills/dotln-executor/SKILL.md", "fixture");
+  save([base]);
+  const met = await collectMeta(root);
+  assert.ok(met.reopenCandidates.some((row) => row.decision === base.id));
+  assert.match(
+    metaHealth(met),
+    new RegExp(`${met.reopenCandidates.length} reopen candidates`),
+  );
+  save([base, later]);
+  assert.ok(
+    !(await collectMeta(root)).reopenCandidates.some(
+      (row) => row.decision === base.id,
+    ),
+  );
+});
+
+test("WO-175 condition rows validate sources, preserve unknowns and count at planning entry", async (t) => {
+  const root = repo(t);
+  const {
+    planningConditions,
+    renderPlanningConditions,
+    validateConditionTable,
+    conditionsAtStart,
+  } = await import("./lib/planning-conditions.mjs");
+  const base = {
+    id: "WO-999-D001",
+    date: "2026-09-30",
+    dispatch: "fixture",
+    decision: "fixture",
+    evidence: ["fixture"],
+    rejected: [],
+    reopenWhen: "Fixture threshold",
+  };
+  write(
+    root,
+    "docs/evidence/WO-999/decisions.md",
+    `## ${base.id}\n\n\x60\x60\x60json\n${json(base)}\x60\x60\x60\n`,
+  );
+  const row = {
+    id: "fixture",
+    sources: [base.id],
+    method: "fixture",
+    threshold: 8,
+    unit: "s",
+  };
+  assert.throws(
+    () =>
+      validateConditionTable(
+        [{ ...row, sources: ["WO-999-D404"] }],
+        readDecisions(root),
+        { entries: [] },
+      ),
+    /fixture.*WO-999-D404/,
+  );
+  const holding = await planningConditions(root, {
+    table: [row],
+    measure: async () => ({ value: 9, samples: [9, 10, 8] }),
+  });
+  assert.equal(holding.holding, 1);
+  assert.equal(holding.unevaluated.decisionConditions, 0);
+  assert.match(renderPlanningConditions(holding), /WO-999-D001.*9.*> 8.*true/);
+  assert.match(
+    renderPlanningConditions(holding),
+    /Not evaluated: 0 decision conditions/,
+  );
+  const missing = await planningConditions(root, {
+    table: [row],
+    measure: async () => {
+      throw new Error("missing sample");
+    },
+  });
+  assert.equal(missing.rows[0].holds, null);
+  assert.match(renderPlanningConditions(missing), /unknown \(missing sample\)/);
+  const block = await conditionsAtStart(root);
+  assert.equal(block.command, "npm run plan -- conditions");
+  assert.ok(block.unavailable);
+  assert.ok(Buffer.byteLength(json(block)) <= 1024);
+});

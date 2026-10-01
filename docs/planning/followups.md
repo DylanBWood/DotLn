@@ -9,6 +9,8 @@ Changed items, explicit open items and deferrals precede the untriaged migration
 A pass reads `npm run plan -- failures` before this register: the failed
 reports, repairs, corrections, off-ramps and execution amendments since the
 latest planning receipt, whose counts `plan start` prints (WO-172).
+`npm run plan -- conditions` lists the named numeric reopening thresholds;
+`--slow` measures the document gate and its docs-check task (WO-175).
 
 `npm run plan -- followups --touching [<path or WO-NNN>…]` lists the pending
 rows that name a seam. With arguments it reads the given paths and orders; with

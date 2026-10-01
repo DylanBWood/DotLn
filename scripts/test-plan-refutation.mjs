@@ -5327,8 +5327,14 @@ else {
           "phase",
           "authority",
           "failures",
+          "conditions",
           "followups",
         ]);
+        assert.equal(started.conditions.command, "npm run plan -- conditions");
+        // This fixture has no numeric table sources; an unavailable count
+        // remains a bounded advisory alongside the failure counts.
+        assert.match(started.conditions.unavailable, /^count not computed: /);
+        assert.ok(Buffer.byteLength(prettyJson(started.conditions)) <= 1024);
         assert.deepEqual(started.failures, {
           command: "npm run plan -- failures",
           since: "2030-01-02T12:00:00.000Z",
