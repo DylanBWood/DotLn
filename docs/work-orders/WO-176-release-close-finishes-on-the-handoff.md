@@ -1,4 +1,4 @@
-# WO-176 — Release close finishes on the handoff's word: the executor's completion inventories the worktree's scratch repositories with a declared or lane disposition, the close removes what is disposable, preserves what was declared for keeping, blocks only on an undeclared repository with the exact command that settles it, and writes a record of its own outcome (version assigned at activation)
+# WO-176 — Release close finishes on the handoff's word: the executor's completion inventories the worktree's scratch repositories with a declared or lane disposition, the close removes what is disposable, preserves what was declared for keeping, blocks only on an undeclared repository with the exact command that settles it, and writes a record of its own outcome (v0.60.1)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
@@ -94,14 +94,12 @@ row); `docs/planning/failures-across-phases-2026-09-28.md` §9;
 `docs/evidence/WO-172/intervention-subjects.md` themes 2 and 8; register
 rows FUP-ecf9d3b703a0b7d9, FUP-3a0c4ea52f8d6d08, FUP-8cfd3ff52146a016.
 
-**Objective:** a release close finishes on the record the executor left:
-scratch repositories the executor declared disposable, or that sit in a
-lane already marked disposable, leave with the worktree; a repository
-declared for keeping is preserved as a unit; only an undeclared
-repository outside every known lane blocks, and then the advisory hands
-the operator the one command that settles it. Every close leaves a
-machine-written record of what it published and what it cleaned, so a
-planning pass can count closes that stopped short and say why.
+**Objective:** a release close removes the scratch repositories that were
+built only to test, verify or help build together with the worktree,
+instead of stopping at them. WO-117's close stopped at exactly such a
+repository, a clone with commits inside `.runtime/wo117-walkthrough/`;
+that is the case this order must fix. Amended by the operator on
+2026-10-01 (§Operator scope amendment).
 
 **Observed gap (dated 2026-09-30, `main` at `b51a58a8`):**
 
@@ -185,37 +183,18 @@ write-backs.
 
 **Acceptance criteria (all required)**
 
-1. In a worktree fixture, a nested repository with one commit under
-   `.runtime/x/` is reported disposable by `worktree finish --dry-run`
-   and removed with the worktree by `finish`; the same repository under
-   an `other`-lane path blocks with the declare command; under
-   `docs/intake/` it is preserved as a unit. The first case fails against
-   `main` at `b51a58a8`.
-2. `npm run worktree -- material <path> --disposable --reason <text>`
-   followed by `implementation-ready` records `material` rows with source
-   `declared` in the `ImplementationReady` event; a repository under a
-   disposable lane is recorded with source `lane` without a declaration;
-   an undeclared `other`-lane repository is recorded `undeclared` and
-   named in the completion message; the completion is not refused.
-   `repair-complete` records the same rows.
-3. In the release fixture: with a declared-disposable repository the
-   close publishes and removes the worktree; with a declared-preserve
-   repository it preserves the unit into the retained lane and removes
-   the worktree; with an undeclared repository publication succeeds, the
-   worktree stays, the advisory names `--material <path>=…`, and a rerun
-   with that flag finishes cleanup without repeating publication.
-4. Every close, publish or dry run, writes `release-close.json` with the
-   fields the design names; a fixture covers one blocked and one clean
-   close and one dry run.
-5. Write-backs: product 07 §Workflow closeout and releases, the cleanup
-   paragraph edited in place within 500 bytes; the release-close row of
-   §Operator resume phrases names the record; `docs/evidence/WO-176/decisions.md`;
-   the decisions index; register rows FUP-ecf9d3b703a0b7d9 and
-   FUP-3a0c4ea52f8d6d08 retargeted at close.
-6. `npm test -- --review` and `npm run test:docs` green; `git diff
+1. Release close removes a worktree that holds a nested repository with
+   commits under a scratch lane (`.runtime/`, build output, the harness
+   or cache lane, a beacon directory), with no declaration or flag, and
+   finishes: the release fixture publishes once and the subject is gone.
+   WO-117's shape, a cloned repository with commits inside
+   `.runtime/wo117-walkthrough/`, is the named case. The same repository
+   blocks the close on `main` at `b51a58a8`.
+2. `npm test -- --review` and `npm run test:docs` green; `git diff
    --check` clean; no new dependency.
 
-**Evidence gate:** the fixtures of criteria 1 to 4; `npm test -- --review`
+**Evidence gate:** criterion 1's release fixture and its baseline control
+against `b51a58a8`; `npm test -- --review`
 before `implementation-ready`, because `scripts/lib/paths.mjs`,
 `scripts/lib/intake-reconciliation.mjs` and `scripts/release.mjs` are
 declared sources of machinery suites; the editions `paths.mjs` stales
@@ -246,3 +225,20 @@ items.
    needs no session memory.
 3. An undeclared repository outside every lane still stops cleanup, and
    the operator's word at close time is a flag, not a terminal move.
+
+## Operator scope amendment — 2026-10-01
+
+During final review FINAL-002 the operator restated this order's purpose
+([D035](../evidence/WO-176/decisions.md#wo-176-d035--operator-amendment-judge-the-order-on-deleting-scratch-repositories)):
+it exists to get rid of repositories built only to test, verify or help
+build, whose contents are never wanted. Such a repository still present at
+release close is itself a stopgap; the executor or the final review should
+already have deleted it. The Objective and the two acceptance criteria above
+replace the original objective and six criteria, which stay in this file's
+history on `main`: the declaration command and completion `material` rows,
+the release fixture's preserve and undeclared cases, `release-close.json`,
+and the write-backs. Those mechanisms ship as implemented and as VER-001 and
+VER-002 verified them. They are not this order's criteria, and their recorded
+defects keep their follow-ups. The Design, Deliverables, Non-goals and
+Operator-review assumptions above describe what was built, not what this
+order is judged on.

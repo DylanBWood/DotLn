@@ -1,0 +1,36 @@
+{
+  "startedAt": "2026-10-01T03:10:26.977Z",
+  "cutoff": "2026-10-01T03:10:47.194Z",
+  "wallSeconds": 20.217,
+  "source": "functions.exec orchestration wall clock, including selection correction; preparation before this group is outside the measurement",
+  "commands": [
+    {
+      "command": "node scripts/harness.mjs emit",
+      "elapsedMs": 201,
+      "exitCode": 0
+    },
+    {
+      "command": "node scripts/authority-evidence.mjs --write --edition WO-176 --revision 001",
+      "elapsedMs": 684,
+      "exitCode": 0
+    },
+    {
+      "command": "node scripts/artifact-identity-evidence.mjs --write --edition WO-176 --revision 001",
+      "elapsedMs": 100,
+      "exitCode": 2
+    },
+    {
+      "command": "node scripts/artifact-identity-evidence.mjs --write",
+      "elapsedMs": 264,
+      "exitCode": 0
+    },
+    {
+      "command": "node scripts/verification-evidence.mjs --write",
+      "elapsedMs": 1145,
+      "exitCode": 0
+    }
+  ],
+  "liveEpisode": false,
+  "consoleRepin": false,
+  "tokens": null
+}
