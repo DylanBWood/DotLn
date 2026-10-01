@@ -11,6 +11,7 @@ import { docRelative } from "./config.mjs";
 import {
   appendFileSync,
   cpSync,
+  chmodSync,
   existsSync,
   lstatSync,
   mkdirSync,
@@ -127,13 +128,17 @@ const trackedStatus = (root) =>
 
 /** Paths and sizes under the frozen copy, excluding the Git directory and
  * installed dependencies, as REVIEW-001 recorded its manifest. */
-export function scratchInventory(directory) {
+export function scratchInventory(directory, { temporary = false } = {}) {
   const rows = [];
   const walk = (current, prefix) => {
     for (const entry of readdirSync(current, { withFileTypes: true }).sort(
       (a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0),
     )) {
-      if (entry.name === ".git" || entry.name === "node_modules") continue;
+      if (
+        !temporary &&
+        (entry.name === ".git" || entry.name === "node_modules")
+      )
+        continue;
       const name = prefix ? `${prefix}/${entry.name}` : entry.name;
       if (entry.isSymbolicLink()) rows.push(`${name}\u0000symlink`);
       else if (entry.isDirectory()) walk(join(current, entry.name), name);
@@ -143,7 +148,11 @@ export function scratchInventory(directory) {
   };
   walk(directory, "");
   return {
-    excludedFromManifest: SCRATCH_EXCLUDED,
+    excludedFromManifest: temporary ? [] : SCRATCH_EXCLUDED,
+    bytes: rows.reduce((sum, row) => {
+      const size = Number(row.split("\u0000")[1]);
+      return sum + (Number.isFinite(size) ? size : 0);
+    }, 0),
     count: rows.length,
     sha256: hex(rows.join("\n")),
     paths: rows.map((row) => row.split("\u0000")[0]),
@@ -240,8 +249,77 @@ const CLAUDE_WIDENED_EXECUTION =
  * earlier receipts render their original line byte for byte. */
 const witnessSentence = (confinement) => {
   const { untrackedListing: listing, scratchDelta: delta } = confinement;
-  return `Source repository: tracked-path status unchanged across the episode: **${confinement.trackedStatusByteIdentical}**; untracked, non-ignored path listing unchanged: **${listing.identical}** (${listing.before.count} before, ${listing.after.count} after; recorded, never a refusal condition). Ignored paths and file contents are not observed. Frozen copy path-and-size inventory: ${delta.counts.added} path(s) added, ${delta.counts.removed} removed, ${delta.counts.resized} resized${delta.observed ? "" : " (not observed)"}.`;
+  return `Source repository: tracked-path status unchanged across the episode: **${confinement.trackedStatusByteIdentical}**; untracked, non-ignored path listing unchanged: **${listing.identical}** (${listing.before.count} before, ${listing.after.count} after; recorded, never a refusal condition). Ignored paths and file contents are not observed. Frozen copy path-and-size inventory: ${delta.counts.added} path(s) added, ${delta.counts.removed} removed, ${delta.counts.resized} resized${delta.observed ? "" : " (not observed)"}.${confinement.temporaryDirectory ? ` Episode temporary directory: ${confinement.temporaryDirectory.count ?? "unknown"} path(s), ${confinement.temporaryDirectory.bytes ?? "unknown"} bytes${confinement.temporaryDirectory.observed ? "" : " (not observed)"}.` : ""}`;
 };
+// Only episodes with this observation get the new sentence; earlier receipts
+// keep their exact witness and hashes.
+const temporaryWitness = (pending) => {
+  if (!pending.temporaryDirectory) return {};
+  try {
+    const inventory = scratchInventory(pending.temporaryDirectory, {
+      temporary: true,
+    });
+    return {
+      temporaryDirectory: {
+        path: pending.temporaryDirectory,
+        observed: true,
+        count: inventory.count,
+        bytes: inventory.bytes,
+        sha256: inventory.sha256,
+      },
+    };
+  } catch {
+    return {
+      temporaryDirectory: {
+        path: pending.temporaryDirectory,
+        observed: false,
+        count: null,
+        bytes: null,
+        sha256: null,
+      },
+    };
+  }
+};
+
+/** Repair permissions only inside this episode, without following symlinks.
+ * A cleanup failure after filing cannot turn the durable receipt into failure. */
+export function removeEpisodeScratch(
+  directory,
+  { remove = rmSync, warn = console.warn } = {},
+) {
+  try {
+    const writable = (current) => {
+      const info = lstatSync(current);
+      if (!info.isDirectory() || info.isSymbolicLink()) return;
+      chmodSync(current, 0o700);
+      for (const entry of readdirSync(current)) writable(join(current, entry));
+    };
+    if (existsSync(directory)) writable(directory);
+    remove(directory, { recursive: true, force: true });
+    return true;
+  } catch (error) {
+    const line = String(directory).replace(/[\r\n\u0000-\u001f]/g, " ");
+    warn(
+      `Receipt filed; scratch cleanup left ${line} (${error.code ?? "cleanup-failed"}).`,
+    );
+    return false;
+  }
+}
+
+/** Scope the inherited temporary root to the synchronous transport launch.
+ * Child processes receive a snapshot; parent tools regain their own root. */
+export function launchInTemporaryDirectory(directory, launch) {
+  if (!directory) return launch();
+  const previous = process.env.TMPDIR;
+  process.env.TMPDIR = directory;
+  try {
+    return launch();
+  } finally {
+    if (previous === undefined) delete process.env.TMPDIR;
+    else process.env.TMPDIR = previous;
+  }
+}
+
 const scratchDeltaSummary = (delta) =>
   "deltaCount" in delta ? delta.deltaCount : { ...delta.counts };
 
@@ -291,7 +369,9 @@ function freezeSubject(root, baseCommit) {
     } catch {
       dependencies = "copy-failed";
     }
-  return { parent, repository, dependencies };
+  const temporaryDirectory = join(parent, "tmp");
+  mkdirSync(temporaryDirectory, { mode: 0o700 });
+  return { parent, repository, dependencies, temporaryDirectory };
 }
 
 export function resolveSubject(root, revision) {
@@ -390,7 +470,7 @@ export function discardDispatch(root, kind) {
   check(pending !== null, `no entropy ${kind} dispatch is pending`);
   clearPending(root, kind, pending);
   if (pending.scratchParent && existsSync(pending.scratchParent))
-    rmSync(pending.scratchParent, { recursive: true, force: true });
+    removeEpisodeScratch(pending.scratchParent);
   return { discarded: pending.episodeId, subjectHash: pending.subjectHash };
 }
 
@@ -870,8 +950,34 @@ function readWire(capture, transport) {
 
 const transportFor = async (name, onUsage) => {
   if (name === "fake") {
-    const { FakeEntropyTransport } = await skeleton("entropy-review-fake");
-    return new FakeEntropyTransport();
+    const {
+      FakeEntropyTransport,
+      cannedReviewerOutput,
+      cannedRefutationResult,
+    } = await skeleton("entropy-review-fake");
+    const witness = (request) => {
+      const root = process.env.TMPDIR;
+      if (request.temporaryDirectory && root === request.temporaryDirectory) {
+        writeFileSync(
+          join(root, "worker-environment.json"),
+          prettyJson({
+            kind: request.kind,
+            TMPDIR: root,
+            temporaryDirectory: request.temporaryDirectory,
+          }),
+        );
+      }
+    };
+    return new FakeEntropyTransport(
+      (request) => {
+        witness(request);
+        return cannedReviewerOutput(request);
+      },
+      (request) => {
+        witness(request);
+        return cannedRefutationResult(request);
+      },
+    );
   }
   const { ClaudeCliPrintWorkOrderTransport, CodexCliExecWorkOrderTransport } =
     await skeleton("worker-transport");
@@ -911,7 +1017,9 @@ async function runEpisode(root, request, pending, role) {
       /* usage recording is advisory and never fails an episode */
     }
   });
-  const dispatch = transport.dispatch(request, Date.now);
+  const dispatch = launchInTemporaryDirectory(pending.temporaryDirectory, () =>
+    transport.dispatch(request, Date.now),
+  );
   try {
     const accepted = await dispatch.receipt;
     check(
@@ -1005,10 +1113,8 @@ export async function beginEntropyReview(
   );
   requireNoPending(root, "review");
   const untrackedAtDispatch = untrackedListing(root);
-  const { parent, repository, dependencies } = freezeSubject(
-    root,
-    state.baseCommit,
-  );
+  const { parent, repository, dependencies, temporaryDirectory } =
+    freezeSubject(root, state.baseCommit);
   let retained = false;
   try {
     const inventory = scratchInventory(repository);
@@ -1054,6 +1160,7 @@ export async function beginEntropyReview(
       model: model ?? (transport ? defaults.model : "unknown"),
       effort: effort ?? (transport ? defaults.effort : "unknown"),
       cwd: repository,
+      temporaryDirectory,
       capture,
       residue: compiled.residue,
       lensBriefs: compiled.lensBriefs,
@@ -1074,6 +1181,7 @@ export async function beginEntropyReview(
       scratchInventoryBeforeEntries: inventory.entries,
       namedRevision: revision,
       scratchParent: parent,
+      temporaryDirectory,
       capture,
       dependencies,
       dispatchedAt: now(),
@@ -1128,7 +1236,7 @@ export async function beginEntropyReview(
       file: `npm run entropy -- receipt ${episode.resultPath} --statement ${episode.statementPath}`,
     };
   } catch (error) {
-    if (!retained) rmSync(parent, { recursive: true, force: true });
+    if (!retained) removeEpisodeScratch(parent);
     throw error;
   }
 }
@@ -1262,6 +1370,7 @@ export async function fileEntropyReview(
           pending.namedRevision === "HEAD" || !pending.namedRevision
             ? "HEAD of a clean tree; any tracked change refuses the receipt"
             : "an explicitly named commit; bound by its tree object, with the working tree's own drift recorded rather than refused",
+        ...temporaryWitness(pending),
         trackedStatusBeforeSha256: pending.subject.trackedStatusSha256,
         trackedStatusAfterSha256,
         trackedStatusByteIdentical,
@@ -1291,9 +1400,11 @@ export async function fileEntropyReview(
           pending.transport === "codex-cli-exec"
             ? "host-enforced workspace sandbox rooted at the frozen copy"
             : pending.transport === "claude-cli-print"
-              ? widened
-                ? CLAUDE_WIDENED_EXECUTION
-                : CLAUDE_WITNESS_EXECUTION
+              ? pending.temporaryDirectory
+                ? "file tools confined to the frozen copy by --restricted; shell writes instructed to stay inside the copy or episode temporary directory, witnessed by copy and temporary inventories"
+                : widened
+                  ? CLAUDE_WIDENED_EXECUTION
+                  : CLAUDE_WITNESS_EXECUTION
               : "session-attested; this host enforced no boundary on a worker it did not launch",
         permissionDenials: episode?.wire?.permissionDenials ?? "unobserved",
         deniedTools: episode?.wire?.deniedTools ?? [],
@@ -1319,7 +1430,7 @@ export async function fileEntropyReview(
     pending.scratchParent &&
     existsSync(pending.scratchParent)
   )
-    rmSync(pending.scratchParent, { recursive: true, force: true });
+    removeEpisodeScratch(pending.scratchParent);
   return {
     receipt: `${runsRoot(root)}/${receipt.receiptId}.md`,
     receiptId: receipt.receiptId,
@@ -1382,10 +1493,8 @@ export async function beginEntropyRefutation(
   // and the frozen copy's inventory on either side of the episode.
   const statusAtDispatch = trackedStatus(root);
   const untrackedAtDispatch = untrackedListing(root);
-  const { parent, repository, dependencies } = freezeSubject(
-    root,
-    review.subject.baseCommit,
-  );
+  const { parent, repository, dependencies, temporaryDirectory } =
+    freezeSubject(root, review.subject.baseCommit);
   let retained = false;
   try {
     const inventory = scratchInventory(repository);
@@ -1437,6 +1546,7 @@ export async function beginEntropyRefutation(
       model: model ?? (transport ? defaults.model : "unknown"),
       effort: effort ?? (transport ? defaults.effort : "unknown"),
       cwd: repository,
+      temporaryDirectory,
       capture,
       profile: {
         profileId: "entropy-refutation-v1",
@@ -1458,6 +1568,7 @@ export async function beginEntropyRefutation(
       reviewReceiptId,
       reviewReceiptHash: review.receiptHash,
       scratchParent: parent,
+      temporaryDirectory,
       capture,
       dependencies,
       dispatchedAt: now(),
@@ -1511,7 +1622,7 @@ export async function beginEntropyRefutation(
       file: `npm run entropy -- refutation-receipt ${episode.resultPath}`,
     };
   } catch (error) {
-    if (!retained) rmSync(parent, { recursive: true, force: true });
+    if (!retained) removeEpisodeScratch(parent);
     throw error;
   }
 }
@@ -1612,6 +1723,7 @@ export async function fileEntropyRefutation(
       confinement: {
         subjectBinding:
           "the commit the challenged review receipt names, re-frozen for this episode; the working tree's own drift is recorded rather than refused",
+        ...temporaryWitness(pending),
         trackedStatusBeforeSha256,
         trackedStatusAfterSha256,
         trackedStatusByteIdentical,
@@ -1641,9 +1753,11 @@ export async function fileEntropyRefutation(
           pending.transport === "codex-cli-exec"
             ? "host-enforced workspace sandbox rooted at the frozen copy"
             : pending.transport === "claude-cli-print"
-              ? widened
-                ? CLAUDE_WIDENED_EXECUTION
-                : CLAUDE_WITNESS_EXECUTION
+              ? pending.temporaryDirectory
+                ? "file tools confined to the frozen copy by --restricted; shell writes instructed to stay inside the copy or episode temporary directory, witnessed by copy and temporary inventories"
+                : widened
+                  ? CLAUDE_WIDENED_EXECUTION
+                  : CLAUDE_WITNESS_EXECUTION
               : "session-attested; this host enforced no boundary on a worker it did not launch",
         permissionDenials: episode?.wire?.permissionDenials ?? "unobserved",
         deniedTools: episode?.wire?.deniedTools ?? [],
@@ -1675,7 +1789,7 @@ export async function fileEntropyRefutation(
     pending.scratchParent &&
     existsSync(pending.scratchParent)
   )
-    rmSync(pending.scratchParent, { recursive: true, force: true });
+    removeEpisodeScratch(pending.scratchParent);
   return {
     receipt: `${runsRoot(root)}/${receipt.receiptId}.md`,
     receiptId: receipt.receiptId,

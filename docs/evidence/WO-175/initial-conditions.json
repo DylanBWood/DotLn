@@ -1,0 +1,189 @@
+{
+  "command": "npm run plan -- conditions",
+  "observedAt": "2026-09-30T22:53:31.367Z",
+  "host": {
+    "loadAverage": [
+      5.95263671875,
+      6.3115234375,
+      5.7470703125
+    ],
+    "logicalCpus": 16,
+    "observedAt": "2026-09-30T22:53:31.367Z",
+    "classification": "load measured; other host activity unknown"
+  },
+  "rows": [
+    {
+      "id": "plan-check",
+      "sources": [
+        "FUP-fb8cbeabbddef397",
+        "FUP-3dc0266d6b87b939",
+        "FUP-ab1746dc9c595d95"
+      ],
+      "threshold": 8,
+      "unit": "s",
+      "method": "median of three fresh plan checks",
+      "value": 2.395027625,
+      "samples": [
+        2.395027625,
+        2.3837784579999997,
+        2.614162333
+      ],
+      "holds": false
+    },
+    {
+      "id": "release-tags",
+      "sources": [
+        "WO-086-D006"
+      ],
+      "threshold": 3,
+      "unit": "tags",
+      "method": "local annotated release tags absent from the generated table",
+      "value": 2,
+      "tags": [
+        "v0.58.0",
+        "v0.58.1"
+      ],
+      "holds": false
+    },
+    {
+      "id": "order-evidence",
+      "sources": [
+        "FUP-8a4e201d861208ad"
+      ],
+      "threshold": 1000000,
+      "unit": "bytes/order",
+      "consecutive": 2,
+      "method": "distinct blob bytes under each of the last two closed orders' evidence paths at HEAD",
+      "value": [
+        493640,
+        105087
+      ],
+      "orders": [
+        "WO-058",
+        "WO-174"
+      ],
+      "holds": false
+    },
+    {
+      "id": "week-evidence",
+      "sources": [
+        "FUP-8a4e201d861208ad",
+        "FUP-be1103fbfdd14653"
+      ],
+      "threshold": 10000000,
+      "unit": "bytes/week",
+      "method": "positive tracked evidence size additions since Monday 00:00 UTC",
+      "value": 5478474,
+      "since": "2026-09-28T00:00:00.000Z",
+      "baseCommit": "6f9494649db9a4984911801ae320788264d84ff9",
+      "holds": false
+    },
+    {
+      "id": "collect-sources",
+      "sources": [
+        "FUP-7f9a27e6ed6c44b3"
+      ],
+      "threshold": 3,
+      "unit": "s",
+      "method": "median of three fresh console collectSources calls",
+      "value": 0.7896074999999999,
+      "samples": [
+        0.801230417,
+        0.7896074999999999,
+        0.7617115
+      ],
+      "holds": false
+    },
+    {
+      "id": "release-list",
+      "sources": [
+        "FUP-7f9a27e6ed6c44b3"
+      ],
+      "threshold": 10,
+      "unit": "s",
+      "method": "median of three fresh release lists, cache disabled without changing it",
+      "value": 2.691889417,
+      "samples": [
+        2.644403625,
+        2.885383459,
+        2.691889417
+      ],
+      "holds": false
+    },
+    {
+      "id": "status-bytes",
+      "sources": [
+        "FUP-7f9a27e6ed6c44b3"
+      ],
+      "threshold": 32000000,
+      "unit": "bytes",
+      "method": "UTF-8 stdout of status --all --json",
+      "value": 3461691,
+      "holds": false
+    },
+    {
+      "id": "order-index",
+      "sources": [
+        "FUP-7f9a27e6ed6c44b3"
+      ],
+      "threshold": 10,
+      "unit": "s",
+      "method": "median of three readIndex/renderIndex calls, without writing",
+      "value": 1.303796125,
+      "samples": [
+        1.303796125,
+        1.309030166,
+        1.287517292
+      ],
+      "holds": false
+    },
+    {
+      "id": "document-gate",
+      "sources": [
+        "FUP-fb8cbeabbddef397"
+      ],
+      "threshold": 30,
+      "unit": "s",
+      "slow": true,
+      "method": "median of three fresh document gates (--slow)",
+      "value": null,
+      "unavailable": "not measured; use --slow",
+      "holds": null
+    },
+    {
+      "id": "docs-check",
+      "sources": [
+        "FUP-fb8cbeabbddef397"
+      ],
+      "threshold": 15,
+      "unit": "s",
+      "slow": true,
+      "method": "median of the docs-check tasks in those same three gates (--slow)",
+      "value": null,
+      "unavailable": "not measured; use --slow",
+      "holds": null
+    },
+    {
+      "id": "coldStartBytes.executor",
+      "sources": [
+        "WO-150-D003"
+      ],
+      "method": "meter's budget/order measurements; a later reopens record settles it",
+      "value": [
+        26903
+      ],
+      "threshold": 24576,
+      "operator": ">",
+      "unit": "metric",
+      "holds": true,
+      "reopened": false
+    }
+  ],
+  "holding": 1,
+  "unknown": 2,
+  "unevaluated": {
+    "decisionConditions": 1170,
+    "registerRows": 797
+  },
+  "durationMs": 23105.150875
+}

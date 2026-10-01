@@ -22632,6 +22632,13 @@
           "title": "WO-173-D018: Planner: close the untracked-source gap in npm test reuse. scripts/test-runner.mjs runGateChecks and scripts/lib/handoff-ledger.mjs requireGateClaims reuse or accept a passing npm test ro",
           "summary": "{ \"id\": \"WO-173-D018\", \"date\": \"2026-09-28\", \"dispatch\": \"resume: final review\", \"decision\": \"Pass FINAL-001 and board one defect this review met. The npm test reuse lookup (scripts/test-runner.mjs runGateChecks through scripts/lib/gate-reuse.mjs coveringGateCheck) and the executor completion's npm test claim check (scripts/lib/handoff-ledger.mjs requireGateClaims) key on gateCodeIdentity, which hashes the working-tree bytes of tracked paths only. An order's new source files stay untracked until the final review stages them, so an edit to one after a passing row moves neither the identity nor the gate: npm test prints the old row and exits 0, and a met npm test claim stands on it. Before thi",
           "missing": false
+        },
+        {
+          "hash": "994381d3ae1f323a8cd00eff38b1034e95a916ce39965abfca458da4342069bc",
+          "ref": "docs/evidence/WO-173/decisions.md#wo-173-d018--final-review-passes-and-boards-a-reused-row-that-never-ran-an-untracked-files-bytes",
+          "title": "WO-173-D018: Planner: close the untracked-source gap in npm test reuse. scripts/test-runner.mjs runGateChecks and scripts/lib/handoff-ledger.mjs requireGateClaims reuse or accept a passing npm test ro",
+          "summary": "{ \"id\": \"WO-173-D018\", \"date\": \"2026-09-28\", \"dispatch\": \"resume: final review\", \"decision\": \"Pass FINAL-001 and board one defect this review met. The npm test reuse lookup (scripts/test-runner.mjs runGateChecks through scripts/lib/gate-reuse.mjs coveringGateCheck) and the executor completion's npm test claim check (scripts/lib/handoff-ledger.mjs requireGateClaims) key on gateCodeIdentity, which hashes the working-tree bytes of tracked paths only. An order's new source files stay untracked until the final review stages them, so an edit to one after a passing row moves neither the identity nor the gate: npm test prints the old row and exits 0, and a met npm test claim stands on it. Before thi",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -24196,6 +24203,14 @@
             "WO-175"
           ],
           "at": "2026-09-30T14:01:27.005Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by WO-175 at fixture and fake-transport level, at its passing final review (docs/final-reviews/WO-175/FINAL-001.md; evidence in docs/evidence/WO-175/). Fake review and refutation launches receive TMPDIR in a sibling directory inside the episode scratch parent and outside the frozen copy, and their instructions name it. Receipts inventory that directory's path count, bytes and hash. Filing removes scratch trees that hold read-only directories, and a removal that still fails prints one line after the filed receipt. The portfolio suite passes 3 of 3 from a dispatched frozen copy with that TMPDIR. The first live entropy review or refutation with this capability belongs to the next planning: entropy reducer receipt, and the Codex workspace sandbox gains no grant. Open remainders: the host's transport temporaries share the directory during the launch (FUP-e245dc67344b4261, WO-175-D013), and the instruction's run-on join (FUP-84e5edb1566a4db1, WO-175-D012).",
+          "reopenWhen": "a receipt's confinement record omits a directory its worker wrote, or a filing again ends on a scratch parent it cannot remove",
+          "targets": [],
+          "at": "2026-10-01T00:51:34.331Z"
         }
       ]
     },
@@ -24246,6 +24261,14 @@
             "WO-175"
           ],
           "at": "2026-09-30T14:01:26.972Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by WO-175 at its passing final review (docs/final-reviews/WO-175/FINAL-001.md; evidence in docs/evidence/WO-175/). Reading a decision whose metric predicate names a metric the meter cannot resolve fails with the decision's id and the metric. coldStartBytes.<role> and sequenceBytes resolve from the budget measurement, and order metrics from the order rows. WO-150-D003 is listed at 26,903 bytes against 24,576, and the health line reads 1 reopen candidates. When a predicate cannot be observed, the health line says the count is unavailable. A later decision that records reopens removes a predicate from the list.",
+          "reopenWhen": "the health line prints a reopen-candidate count the meter did not compute",
+          "targets": [],
+          "at": "2026-10-01T00:51:34.290Z"
         }
       ]
     },
@@ -24306,6 +24329,14 @@
             "WO-175"
           ],
           "at": "2026-09-30T14:01:26.939Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by WO-175 at its passing final review (docs/final-reviews/WO-175/FINAL-001.md; evidence in docs/evidence/WO-175/). npm run plan -- conditions measures a closed table of ten named numeric conditions plus the meter's decision predicates. Each row prints its source decision or register row, value, threshold and whether it holds; an unmeasured row is unknown with its reason. A final line counts the recorded conditions it does not evaluate, and plan start prints the holding count and the command. At the final review's tree on 2026-10-01 it listed WO-150-D003 as the one condition that holds, and the two document-gate rows as unknown without --slow. Qualitative conditions stay unevaluated by design.",
+          "reopenWhen": "a review again finds by hand a crossed threshold that the listing names, or WO-175 closes without the listing",
+          "targets": [],
+          "at": "2026-10-01T00:51:34.246Z"
         }
       ]
     },
@@ -24609,6 +24640,81 @@
           "ref": "docs/evidence/WO-174/decisions.md#wo-174-d022--guard-logs-accumulate-without-a-retention-rule",
           "title": "WO-174-D022: Give the product read guard's logs a retention rule. docs/control/local/harness/runner/product-reads/ gains about 4.6 MB (four manifests and four logs) per guarded product run, and nothin",
           "summary": "{ \"id\": \"WO-174-D022\", \"date\": \"2026-09-30\", \"dispatch\": \"resume: final review\", \"decision\": \"Board a low-severity defect met in review. Every guarded product run writes a manifest and an observation log per package task, under the ignored docs/control/local/harness/runner/product-reads/, with a random name. Nothing prunes or rotates them: no other reader exists besides the gate's checks.json entries, which name each log path (productReadLog). On 2026-09-30 one run wrote about 4.6 MB: four manifests of about 204 KB each, a skeleton log of about 3.45 MB and a console log of about 0.34 MB. The directory held about 42 MB (32 task logs and their manifests) after this order's runs in this worktre",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-6d4ea0b291ebdae5",
+      "key": "decision:docs/evidence/WO-157/decisions.md#wo-157-d016",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "da45e0627d390276cc247982443a403d6c19b6f0a9c14f5326f5a7713b9d696e",
+          "ref": "docs/evidence/WO-157/decisions.md#wo-157-d016",
+          "title": "WO-157-D016: Fix the teardown at its cause and add the abandoned-root check. The gate-sandbox fixture sets maintenance.auto=false in its repository before the first commit. Each gate mints an eight-ch",
+          "summary": "{ \"id\": \"WO-157-D016\", \"date\": \"2026-09-22\", \"dispatch\": \"resume: next; WO-157 item 15 (WO-063 D005), criterion 15; receipt 027 known issue on a diagnosis-only route\", \"decision\": \"Fix the teardown at its cause and add the abandoned-root check. The gate-sandbox fixture sets `maintenance.auto=false` in its repository before the first commit. Each gate mints an eight-character tag, passes it to suites as DOTLN_GATE_FIXTURE_TAG, the fixture names its root `dotln-gate-sandbox-<tag>-*`, and after every suite has closed the gate fails, naming them, when any root with its tag survives; the check removes nothing and judges only its own tag, so a concurrent gate's live root or an untagged leftover ne",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-84e5edb1566a4db1",
+      "key": "decision:docs/evidence/WO-175/decisions.md#wo-175-d012",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "a684590a2db875728280231246069af4964015ddb05efb91b309f924c20cca73",
+          "ref": "docs/evidence/WO-175/decisions.md#wo-175-d012",
+          "title": "WO-175-D012: Executor of the next order that edits packages/skeleton/src/entropy-review-protocol.ts: compose the temporary-directory sentence so that outputInstructions starts with a non-space charact",
+          "summary": "{ \"id\": \"WO-175-D012\", \"date\": \"2026-09-30\", \"dispatch\": \"resume: verify\", \"decision\": \"Board, not fail: the entropy prompts join the temporary-directory sentence without a separator, and no fixture asserts the refutation prompt's instruction. temporaryInstruction returns the sentence with a leading space and no trailing one. Each prompt prepends it to the existing text, so outputInstructions begins ' The episode temporary directory is …' and runs on as '…writes stay inside these two roots.Run one Entropy Reducer review …' (review) or '…these two roots.Attempt to falsify …' (refutation). The meaning survives and no criterion depends on the join, so criterion 6 is met. The review assertion in",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-e245dc67344b4261",
+      "key": "decision:docs/evidence/WO-175/decisions.md#wo-175-d013",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "665ef4bb7b299fa480c981f5c19869dfe2a8085ed6f9fdecade7d8756bd5f6b6",
+          "ref": "docs/evidence/WO-175/decisions.md#wo-175-d013",
+          "title": "WO-175-D013: Executor of the next order that may edit packages/skeleton/src/worker-transport.ts or the entropy launch: give the episode temporary directory to the worker's launch environment only, as ",
+          "summary": "{ \"id\": \"WO-175-D013\", \"date\": \"2026-09-30\", \"dispatch\": \"resume: verify\", \"decision\": \"Board, not fail: the host's own transport temporaries are created inside the worker's episode temporary directory. launchInTemporaryDirectory sets process.env.TMPDIR in the host process for the whole synchronous transport.dispatch call. Every host-side tmpdir() call inside that call therefore resolves to the directory the worker is told is its own writable root: the schema directory dotln-worker-schema-* (CliWorkOrderTransport.dispatch), the raw stdout capture dotln-worker-output-*/stdout (runWorkerProcess), and, for Codex, the isolated dotln-codex-home-* with its auth.json symlink (startCodexEpisode). On",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-32621f54d71ae0bd",
+      "key": "decision:docs/evidence/WO-175/decisions.md#wo-175-d015",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "d5336b1505312a1bd8dcccd969014a4fd0738aa05d8af4e6c80a4fcef5cc5fa9",
+          "ref": "docs/evidence/WO-175/decisions.md#wo-175-d015",
+          "title": "WO-175-D015: Planner: confirm or reverse WO-175-D015. To follow the receipt-035 direction, conditionsAtStart measures only the rows whose unit is not seconds and prints the timing rows as not measured",
+          "summary": "{ \"id\": \"WO-175-D015\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: final review\", \"decision\": \"Pass criterion 4 and board a catalog-row direction implemented the other way: plan start measures the timing rows at entry. The planning pass's weighing of receipt 035 (docs/planning/entropy-review-004-2026-09-30.md §11, carried on the order's catalog row in docs/planning/work-order-map.md) directed that plan start run the rows that are not timings and print the timing rows as not measured at entry, with the command. conditionsAtStart (scripts/lib/planning-conditions.mjs) calls planningConditions with the default table, so plan start runs the plan check, collectSources, the cold release list and the",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-f3bcdb51a2eb82c2",
+      "key": "decision:docs/evidence/WO-175/decisions.md#wo-175-d016",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "ce155366fdbea88d444153d8f6637d76f3d36ce3fadcd52c5ebac0ed78679358",
+          "ref": "docs/evidence/WO-175/decisions.md#wo-175-d016",
+          "title": "WO-175-D016: Executor of the next order that re-mints the five editions (the carrier of FUP-84e5edb1566a4db1, WO-175-D012, is the first candidate): record the wall time of the whole re-mint, the deter",
+          "summary": "{ \"id\": \"WO-175-D016\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: final review\", \"decision\": \"Record that receipt 035's re-mint reopening observation cannot be judged from WO-175's record. The planning pass's weighing (docs/planning/entropy-review-004-2026-09-30.md §11) names 'the recorded re-mint cost exceeds the 384 s the order cites' as the reopening observation for the instruction sentence that forced five re-mints. The executor recorded the live feedback audit (61.847 s, 681,326 tokens, USD 1.487; D008 and D010). It recorded no wall time for the deterministic authority, artifact-identity, verification and feedback re-mints, the harness regeneration or the console self-host re-pin. Wheth",
           "missing": false
         }
       ],

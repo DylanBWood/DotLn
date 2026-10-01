@@ -1,0 +1,112 @@
+{
+  "sourceCommand": "node scripts/meta.mjs --check --json",
+  "observedAt": "2026-09-30T23:23:43.540Z",
+  "budgets": [
+    {
+      "metric": "coldStartBytes.executor",
+      "value": 26903,
+      "ceiling": 29246,
+      "verdict": "within"
+    },
+    {
+      "metric": "coldStartBytes.verifier",
+      "value": 23706,
+      "ceiling": 25151,
+      "verdict": "within"
+    },
+    {
+      "metric": "coldStartBytes.reviewer",
+      "value": 24788,
+      "ceiling": 28884,
+      "verdict": "within"
+    },
+    {
+      "metric": "coldStartBytes.release-close",
+      "value": 15585,
+      "ceiling": 16384,
+      "verdict": "within"
+    },
+    {
+      "metric": "coldStartBytes.planner",
+      "value": 17733,
+      "ceiling": 24576,
+      "verdict": "within"
+    },
+    {
+      "metric": "coldStartBytes.refuter",
+      "value": 17308,
+      "ceiling": null,
+      "verdict": "unset"
+    },
+    {
+      "metric": "coldStartBytes.executor",
+      "value": 26903,
+      "ceiling": 29246,
+      "verdict": "within"
+    },
+    {
+      "metric": "coldStartBytes.verifier",
+      "value": 23706,
+      "ceiling": 25151,
+      "verdict": "within"
+    },
+    {
+      "metric": "coldStartBytes.reviewer",
+      "value": 24788,
+      "ceiling": 28884,
+      "verdict": "within"
+    },
+    {
+      "metric": "coldStartBytes.release-close",
+      "value": 15585,
+      "ceiling": 16384,
+      "verdict": "within"
+    },
+    {
+      "metric": "coldStartBytes.planner",
+      "value": 17733,
+      "ceiling": 24576,
+      "verdict": "within"
+    },
+    {
+      "metric": "coldStartBytes.refuter",
+      "value": 17308,
+      "ceiling": null,
+      "verdict": "unset"
+    },
+    {
+      "metric": "sequenceBytes",
+      "value": 5582,
+      "ceiling": 8192,
+      "verdict": "within"
+    }
+  ],
+  "decisionConditions": [
+    {
+      "decision": "WO-150-D003",
+      "condition": {
+        "metric": "coldStartBytes.executor",
+        "operator": ">",
+        "value": 24576
+      },
+      "path": "docs/evidence/WO-150/decisions.md",
+      "values": [
+        26903
+      ],
+      "holds": true,
+      "reopened": false
+    }
+  ],
+  "reopenCandidates": [
+    {
+      "decision": "WO-150-D003",
+      "condition": {
+        "metric": "coldStartBytes.executor",
+        "operator": ">",
+        "value": 24576
+      },
+      "path": "docs/evidence/WO-150/decisions.md"
+    }
+  ],
+  "health": "Process health: no observed budget breach; WO-175 tokens 726,355; first verification failed in 3 of the last 8 closed orders; 1 reopen candidates; unset limits remain unset."
+}

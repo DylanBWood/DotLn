@@ -1,0 +1,22 @@
+Frozen by canonical dispatch from 60eeecdccc3f3717da492a7416435d2227639bc5.
+Sibling TMPDIR inside parent and outside copy: true
+Command: node scripts/build.mjs
+Exit: 0
+Built compiler, console, kernel, skeleton with atomic file replacement; installed harness snapshots remain immutable
+
+Command: node --test scripts/test-portfolio.mjs
+Exit: 0
+✔ the configuration section is the reviewed portfolio text, validated under its registered repository (99.436084ms)
+# {"identities":["WO-900","WO-901","WO-902"],"activations":["failing-lint:src/main.js","failing-test:src/main.js"],"verdicts":["fail","pass"],"states":["widen","probe","widen","peak"],"noOp":"portfolio gardener-5s v1 budget exhausted: 2 of 2 episodes"}
+# {"identities":["WO-900","WO-901","WO-902","WO-903","WO-904"],"moved":{"verdict":"pass","criteria":2,"passed":2,"findings":0},"copied":{"verdict":"fail","criteria":2,"passed":0,"findings":1},"escalated":{"verdict":"fail","criteria":1,"passed":1,"findings":0},"pathless":{"verdict":"pass","criteria":2,"passed":2,"findings":0},"failing":{"verdict":"fail","criteria":2,"passed":1,"findings":1}}
+✔ WO-100 criteria 1-3: derived orders materialize as indexed records, activate with host-policy provenance, change through WO-052, verify through WO-054, reset from a non-last phase on a failure, advance on a pass and stop at the budget with an in-phase candidate left (5117.06775ms)
+✔ a Sort move passes only when the host sees the exact relocation and its named check passes, also for a check naming no path in both trees; a copy fails before any verifier runs, and a verifier's human escalation fails the order (11307.214958ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 16609.285833
+

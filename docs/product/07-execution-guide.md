@@ -1039,6 +1039,8 @@ Preconditions and inputs:
 2. A standard pass first reads `npm run plan -- failures`, whose counts
    `plan start` prints, and disposes what it lists: each failed report is
    read and its cause given a route in the pass's document (WO-172).
+   `plan start` counts numeric reopening conditions; `npm run plan -- conditions`
+   lists them without refusing entry (`--slow` for gate timings, WO-175).
    Read canonical status, [the sequence](../planning/sequence.md), and this
    guide's planning and ideation sections. Use scoped candidate, ledger and
    order lookups as the current pass requires. The generated index and map

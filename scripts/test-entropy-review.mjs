@@ -6,6 +6,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {
   existsSync,
+  chmodSync,
   mkdirSync,
   mkdtempSync,
   readFileSync,
@@ -27,6 +28,8 @@ import {
   entropyScratchLane,
   readEntropyControl,
   renderReceipt,
+  removeEpisodeScratch,
+  launchInTemporaryDirectory,
   runsRoot,
 } from "./lib/entropy-review.mjs";
 import { main as entropy } from "./entropy.mjs";
@@ -267,6 +270,117 @@ export async function entropyFixtures() {
       assert.equal(gate.status, "ok");
       assert.equal(gate.dispositions, 2);
       assert.equal(gate.packets, 1);
+    });
+
+    await test("WO-175 launched review/refutation receive sibling TMPDIR, inventory it and remove read-only trees", async () => {
+      const repo = fixtureRepository(parent);
+      const inherited = process.env.TMPDIR;
+      await entropy(["review", "--transport", "fake"], repo);
+      const review = currentDispatch(repo, "review");
+      const checkLaunch = (pending, kind) => {
+        assert.equal(
+          dirname(pending.temporaryDirectory),
+          pending.scratchParent,
+        );
+        assert.notEqual(
+          pending.temporaryDirectory,
+          pending.subject.scratchRepository,
+        );
+        assert.ok(
+          !pending.temporaryDirectory.startsWith(
+            `${pending.subject.scratchRepository}/`,
+          ),
+        );
+        const received = JSON.parse(
+          readFileSync(
+            join(pending.temporaryDirectory, "worker-environment.json"),
+            "utf8",
+          ),
+        );
+        assert.equal(received.TMPDIR, pending.temporaryDirectory);
+        assert.equal(received.kind, kind);
+        assert.equal(process.env.TMPDIR, inherited);
+      };
+      checkLaunch(review, "entropy-review");
+      write(review.temporaryDirectory, "readonly/nested/evidence.txt", "12345");
+      chmodSync(join(review.temporaryDirectory, "readonly/nested"), 0o500);
+      chmodSync(join(review.temporaryDirectory, "readonly"), 0o500);
+      await entropy(
+        [
+          "receipt",
+          join(review.capture, "result.json"),
+          "--statement",
+          join(review.capture, "statement.txt"),
+        ],
+        repo,
+      );
+      assert.ok(!existsSync(review.scratchParent));
+      const recorded = JSON.parse(
+        readFileSync(join(repo, runsRoot(repo), "REVIEW-001.json"), "utf8"),
+      );
+      assert.equal(recorded.confinement.temporaryDirectory.count, 2);
+      assert.ok(recorded.confinement.temporaryDirectory.bytes > 5);
+      assert.match(
+        renderReceipt(recorded),
+        /Episode temporary directory: 2 path\(s\), \d+ bytes/,
+      );
+      const historical = structuredClone(recorded);
+      delete historical.confinement.temporaryDirectory;
+      const before = renderReceipt(historical);
+      assert.doesNotMatch(before, /Episode temporary directory/);
+      assert.equal(renderReceipt(historical), before);
+      await entropy(["refute", "REVIEW-001", "--transport", "fake"], repo);
+      const refutation = currentDispatch(repo, "refutation");
+      checkLaunch(refutation, "entropy-refutation");
+      write(
+        refutation.temporaryDirectory,
+        "readonly/nested/evidence.txt",
+        "12345",
+      );
+      chmodSync(join(refutation.temporaryDirectory, "readonly/nested"), 0o500);
+      await entropy(
+        ["refutation-receipt", join(refutation.capture, "result.json")],
+        repo,
+      );
+      assert.ok(!existsSync(refutation.scratchParent));
+      const filed = JSON.parse(
+        readFileSync(join(repo, runsRoot(repo), "REFUTATION-001.json"), "utf8"),
+      );
+      assert.equal(filed.confinement.temporaryDirectory.count, 2);
+      assert.match(
+        renderReceipt(filed),
+        /Episode temporary directory: 2 path\(s\), \d+ bytes/,
+      );
+      const leftover = mkdtempSync(join(parent, "cleanup-failure-"));
+      const warnings = [];
+      assert.equal(
+        removeEpisodeScratch(leftover, {
+          remove: () => {
+            const error = new Error("fixture");
+            error.code = "ENOTEMPTY";
+            throw error;
+          },
+          warn: (line) => warnings.push(line),
+        }),
+        false,
+      );
+      assert.equal(warnings.length, 1);
+      assert.match(
+        warnings[0],
+        new RegExp(`Receipt filed; scratch cleanup left ${leftover}`),
+      );
+      assert.equal(
+        launchInTemporaryDirectory(leftover, () => process.env.TMPDIR),
+        leftover,
+      );
+      assert.throws(
+        () =>
+          launchInTemporaryDirectory(leftover, () => {
+            throw new Error("fixture");
+          }),
+        /fixture/,
+      );
+      assert.equal(process.env.TMPDIR, inherited);
     });
 
     await test("the selection rule, its blinding and its denominators are the loadout's, not the host's", async () => {
@@ -1115,6 +1229,7 @@ export async function entropyFixtures() {
           model: "fixture-model",
           effort: "xhigh",
           cwd: pending.subject.scratchRepository,
+          temporaryDirectory: pending.temporaryDirectory,
           capture: pending.capture,
           residue: compiled.residue,
           lensBriefs: compiled.lensBriefs,
@@ -1223,6 +1338,14 @@ export async function entropyFixtures() {
         "the prompt names the frozen copy, never the original repository",
       );
       assert.equal(begun.resultSchema.$id, "dotln.entropy-reducer.output.v1");
+      assert.match(
+        begun.prompt.outputInstructions,
+        /supplied as TMPDIR; it is the only other writable root/,
+      );
+      assert.equal(
+        begun.prompt.temporaryDirectory,
+        currentDispatch(repo, "review").temporaryDirectory,
+      );
       assert.ok(
         !JSON.stringify(begun.prompt).includes(repo),
         "the original repository path never crosses the boundary",

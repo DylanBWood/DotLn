@@ -58,9 +58,15 @@ import {
   planningFailures,
 } from "./lib/plan-failures.mjs";
 
+import {
+  planningConditions,
+  renderPlanningConditions,
+  conditionsAtStart,
+} from "./lib/planning-conditions.mjs";
+
 const toolRoot = findLaunchpad();
 const usage =
-  "plan subject | check | failures […] | refute [--direct] [--scope pass|full] | refute --transport claude-cli-print|codex-cli-exec|fake [--slug <label>] [--model <model>] [--effort <level>] [--dispositions <file>] [--evidence-only] | dispose <receipt-id> <hold-id> <reason> | amend-order <WO-NNN> <WO-NNN-DNNN> <operator-authorization reason> | amend-order <WO-NNN> --withdraw <row-ordinal> <reason> | override <receipt-id> <hold-id> <reason> --capture <ignored-intake-file> --capture-hash sha256:<digest> [actor-flags]";
+  "plan subject | check | conditions [--slow] | failures […] | refute [--direct] [--scope pass|full] | refute --transport claude-cli-print|codex-cli-exec|fake [--slug <label>] [--model <model>] [--effort <level>] [--dispositions <file>] [--evidence-only] | dispose <receipt-id> <hold-id> <reason> | amend-order <WO-NNN> <WO-NNN-DNNN> <operator-authorization reason> | amend-order <WO-NNN> --withdraw <row-ordinal> <reason> | override <receipt-id> <hold-id> <reason> --capture <ignored-intake-file> --capture-hash sha256:<digest> [actor-flags]";
 const followupsUsage =
   "usage: plan followups [--all] [--cursor <cursor>] | --sync | --show <FUP-id> | --apply <request.json or batch.json> | --touching [<path or WO-NNN>…] [--cursor <cursor>] | --touching --work-order <WO-NNN> [--cursor <cursor>] | --export <file> [--all]";
 const failuresUsage =
@@ -276,6 +282,13 @@ export async function main(args = process.argv.slice(2), root = toolRoot) {
       throw new Error(followupsUsage);
     return planningFollowups(root, { all, cursor: flags[1] ?? null });
   }
+  if (command === "conditions") {
+    if (rest.length && !(rest.length === 1 && rest[0] === "--slow"))
+      throw new Error("usage: plan conditions [--slow]");
+    return renderPlanningConditions(
+      await planningConditions(root, { slow: rest[0] === "--slow" }),
+    );
+  }
   if (command === "failures") {
     const options = failuresOptions(rest);
     if (options.export) {
@@ -303,6 +316,7 @@ export async function main(args = process.argv.slice(2), root = toolRoot) {
     // WO-172: what failed since the latest planning receipt, read before the
     // register; a count that cannot be computed never keeps the branch shut.
     const failures = failuresAtStart(root);
+    const conditions = await conditionsAtStart(root);
     const branch = `planning/${new Date().toISOString().slice(0, 10)}-${rest[0]}`;
     runGit(root, ["switch", "-c", branch]);
     return {
@@ -310,6 +324,7 @@ export async function main(args = process.argv.slice(2), root = toolRoot) {
       phase: "planning",
       authority: "document-only planning dispatch",
       failures,
+      conditions,
       followups,
     };
   }
