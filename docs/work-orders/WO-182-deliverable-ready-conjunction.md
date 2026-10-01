@@ -1,4 +1,4 @@
-# WO-182 — Deliverable-ready conjunction: the fourteen items product 03 names are evaluated from artifacts before a target pull request opens, each with its evidence reference or its explicit absence, the generated body states the result, and a run that requires readiness refuses publication while an item is unevidenced (version assigned at activation)
+# WO-182 — Deliverable-ready conjunction: the fourteen items product 03 names are evaluated from artifacts before a target pull request opens, each with its evidence reference or its explicit absence, the generated body states the result, and a run that requires readiness refuses publication while an item is unevidenced (v0.62.0)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
