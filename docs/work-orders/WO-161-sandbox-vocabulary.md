@@ -28,9 +28,9 @@ edited: `packages/skeleton/src/loadouts/contributor.ts`,
 re-mint deterministically; no feedback source changes, so no live episode.
 Wall-clock, tokens and context bytes of the order itself are unknown until
 run.
-**Nomination provenance:** the operator's 2026-09-25 dispatch ("idk why i
-keep seeing sandbox nonsense. NOTHING IS RUNNING IN SANDBOX MODE CLAUDE,
-COPILOT, NOR CODEX"), captured verbatim in ignored intake (SHA-256 in the
+**Nomination provenance:** the operator's 2026-09-25 dispatch correcting
+sandbox claims for Claude, Copilot and Codex because all three run without
+a host sandbox, captured verbatim in ignored intake (SHA-256 in the
 ledger section), and the audit in the planning document §6 (3,853 tracked
 lines in 850 files carry the word; six senses; the cold-start and
 operator-facing sentences that are wrong for the host). Planner-synthesized.

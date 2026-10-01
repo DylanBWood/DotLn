@@ -892,6 +892,21 @@ await check(
       parseHeader("# Valid\n\n**Effort:**\n", "fixture.md").effort,
       "unknown",
     );
+    for (const track of ["delivery", "machinery", "evidence"])
+      assert.equal(
+        parseHeader(`# Valid\n\n**Track:** ${track}\n`, "fixture.md").track,
+        track,
+      );
+    for (const header of [
+      "",
+      "**Track:** invalid",
+      "**Track:** delivery\n**Track:** machinery",
+      "## Body\n**Track:** delivery",
+    ])
+      assert.equal(
+        parseHeader(`# Valid\n\n${header}\n`, "fixture.md").track,
+        "unknown",
+      );
     write(
       repo,
       "docs/work-orders/WO-035-duplicate.md",

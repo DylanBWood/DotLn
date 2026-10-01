@@ -360,7 +360,7 @@ burden is bounded by naming the probe and the fixture the next owner needs.
 {
   "id": "WO-064-D012",
   "date": "2026-09-22",
-  "dispatch": "resume: final review; operator selected 'Fix both here' when asked how to proceed after the review gate failed",
+  "dispatch": "resume: final review; operator authorized both configuration-root repairs during the review",
   "decision": "Repair, in this review and as a commit separate from WO-064's own change, the two configuration-root cases that fail on main independently of WO-064. First, reword a JSDoc sentence in scripts/lib/entropy-review.mjs that named the planning root as a backtick path literal, which the no-literal-root guard counts; the code already resolves the root through config.mjs, so only the comment changes. Second, pin the committer date of the planning-scope fixture's introduction commit in scripts/test-configuration-root.mjs to 2026-09-21T12:00:00+00:00, the day its ledger heading names. planningPassScope admits only passes dated on or after the introduction commit's date, so the hard-coded heading has failed on every day after 2026-09-21. WO-064 changes neither file, and neither failure affects any WO-064 criterion. The suite runs under --review only because WO-064 edits scripts/worktree.mjs, one of its declared sources.",
   "evidence": [
     "Reviewer gate `npm test -- --review`, 2026-09-22T19:18:40Z: 27 passed, 1 failed (configuration-root), 72 fresh tasks, 284.24 s; the two failing cases were 'no control-plane script keeps a literal document root or a second root derivation' (offence: the backticked planning-root path in scripts/lib/entropy-review.mjs) and 'configured lineage and planning consumers use the launchpad ledger' (0 !== 1 at scripts/test-configuration-root.mjs:447)",

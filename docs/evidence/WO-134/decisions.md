@@ -101,8 +101,8 @@ scope therefore also includes this shared extraction; no gate rule changes.
 }
 ```
 
-The operator explicitly answered “Include the bounded fix” after the independent
-audit found this adjacent defect. Queue item `adjacent-0001` records the cause,
+The operator authorized the bounded remedy after the independent audit found
+this adjacent defect. Queue item `adjacent-0001` records the cause,
 scope, announcement and actor-attested check-in. The original test seeded a
 receipt directly, missing the saved-request interaction. Exercise two full-scope
 direct dispatches with unchanged subjects; verify distinct request files and

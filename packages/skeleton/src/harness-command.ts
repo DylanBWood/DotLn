@@ -385,6 +385,7 @@ interface ShellReading {
   readonly incomplete: boolean;
   readonly syntax: readonly string[];
   readonly syntaxFaults: readonly string[];
+  readonly arithmetic: readonly string[];
 }
 const readControl = new Set([
   "if",
@@ -412,7 +413,10 @@ const readWrappers = new Set([
   "time",
 ]);
 const readShells = new Set(["zsh", "bash", "sh", "dash", "ksh"]);
-const READ_LIMIT = 262144;
+// An advisory may decline a costly shape; it never delays or refuses the call.
+const READ_LIMIT = 32768;
+const READ_NESTING = 64;
+class ShellReadingLimit extends Error {}
 // Text the shell takes as written stands in the private use area, so that a
 // quoted `$` or brace is never read as one zsh changes.
 const asHeld = (char: string) =>
@@ -434,13 +438,14 @@ function readShellCommand(full: string, depth = 0): ShellReading {
   let incomplete = false;
   const syntax: string[] = [];
   const syntaxFaults: string[] = [];
+  const arithmetic: string[] = [];
   const cases: {
     stage: "header" | "pattern" | "body";
-    scope: string;
+    scope: number | undefined;
   }[] = [];
   const scopes: number[] = [];
   const currentCase = () =>
-    cases.at(-1)?.scope === scopes.join("/") ? cases.at(-1) : undefined;
+    cases.at(-1)?.scope === scopes.at(-1) ? cases.at(-1) : undefined;
   let scopeSerial = 0,
     lastSyntax = "";
   const stack: {
@@ -503,7 +508,7 @@ function readShellCommand(full: string, depth = 0): ShellReading {
       });
       if (position === "head" || position === "control") {
         if (bare === "case")
-          cases.push({ stage: "header", scope: scopes.join("/") });
+          cases.push({ stage: "header", scope: scopes.at(-1) });
         else if (bare === "esac") cases.pop();
       }
       if (bare === "in" && currentCase()?.stage === "header")
@@ -535,6 +540,8 @@ function readShellCommand(full: string, depth = 0): ShellReading {
     command++;
   };
   for (let i = 0; i < source.length; i++) {
+    if (scopes.length > READ_NESTING || parens > READ_NESTING)
+      throw new ShellReadingLimit();
     const char = source[i]!;
     if (quote === "'") {
       if (char === "'") quote = "";
@@ -558,6 +565,31 @@ function readShellCommand(full: string, depth = 0): ShellReading {
     const substitutes =
       (char === "$" && source[i + 1] === "(" && source[i + 2] !== "(") ||
       processSubstitution;
+    const arithmeticWidth = source.startsWith("$((", i)
+      ? 3
+      : !quote && first && start < 0 && source.startsWith("((", i)
+        ? 2
+        : 0;
+    if (arithmeticWidth) {
+      let level = 2,
+        at = i + arithmeticWidth;
+      for (; at < source.length; at++) {
+        if (source[at] === "(") level++;
+        else if (source[at] === ")") level--;
+        if (level > READ_NESTING) throw new ShellReadingLimit();
+        if (level === 0) break;
+      }
+      arithmetic.push(
+        source.slice(i + arithmeticWidth, level === 0 ? at - 1 : at),
+      );
+      incomplete ||= level !== 0;
+      if (start < 0) start = i;
+      bare += "\u0000";
+      text += "\u0000";
+      plain += source.slice(i, at + 1);
+      i = at;
+      continue;
+    }
     if (quote === '"' && !substitutes && char !== "`") {
       if (char === '"') quote = "";
       else {
@@ -608,6 +640,7 @@ function readShellCommand(full: string, depth = 0): ShellReading {
           incomplete ||= inner.incomplete;
           syntax.push(...inner.syntax);
           syntaxFaults.push(...inner.syntaxFaults);
+          arithmetic.push(...inner.arithmetic);
           for (const word of inner.words)
             words.push({
               ...word,
@@ -816,6 +849,7 @@ function readShellCommand(full: string, depth = 0): ShellReading {
       incomplete ||= inner.incomplete;
       syntax.push(...inner.syntax);
       syntaxFaults.push(...inner.syntaxFaults);
+      arithmetic.push(...inner.arithmetic);
       for (const within of inner.words)
         words.push({
           ...within,
@@ -888,6 +922,7 @@ function readShellCommand(full: string, depth = 0): ShellReading {
     incomplete,
     syntax,
     syntaxFaults,
+    arithmetic,
   };
 }
 
@@ -944,8 +979,12 @@ const allParameters = (text: string) =>
   text !== "" && text.replace(changed, "") === "";
 /** A literal head, or a whole head parameter with a preceding literal value.
  * An unrelated argument, comment or assignment cannot name a program. */
-const programWord = ({ words }: ShellReading, named: string) => {
-  const values = new Map<string, Map<string, string>>();
+const resolvedWord = (
+  { words }: ShellReading,
+  named: string,
+  accepts: (word: ReadWord) => boolean,
+) => {
+  const values = new Map<string, Map<string, string | undefined>>();
   const executed = new Set(
     words
       .filter(({ position }) => position === "head")
@@ -955,12 +994,16 @@ const programWord = ({ words }: ShellReading, named: string) => {
     const written = asWritten(word.text);
     if (word.position === "assignment" && !executed.has(word.command)) {
       const assignment = /^([A-Za-z_]\w*)=(.*)$/s.exec(word.text);
-      if (assignment && !/[$`\u0000]/.test(assignment[2]!)) {
+      if (assignment) {
         if (!values.has(word.scope)) values.set(word.scope, new Map());
-        values.get(word.scope)!.set(assignment[1]!, asWritten(assignment[2]!));
+        if (!/[$`\u0000]/.test(assignment[2]!))
+          values
+            .get(word.scope)!
+            .set(assignment[1]!, asWritten(assignment[2]!));
+        else values.get(word.scope)!.set(assignment[1]!, undefined);
       }
     }
-    if (word.position !== "head") continue;
+    if (!accepts(word)) continue;
     const parameter =
       /^\$(?:([A-Za-z_]\w*)|[\{\ue07b]([A-Za-z_]\w*)[\}\ue07d])$/.exec(
         word.text,
@@ -972,16 +1015,20 @@ const programWord = ({ words }: ShellReading, named: string) => {
       for (const [index, scope] of scopes.entries())
         if (scope.startsWith("script-")) script = index;
       for (let length = scopes.length; length >= script + 1; length--) {
-        value = values
-          .get(scopes.slice(0, length).join("/"))
-          ?.get(parameter[1] ?? parameter[2]!);
-        if (value !== undefined) break;
+        const scope = values.get(scopes.slice(0, length).join("/"));
+        const name = parameter[1] ?? parameter[2]!;
+        if (scope?.has(name)) {
+          value = scope.get(name);
+          break;
+        }
       }
     }
     if (value !== undefined && namings(named).includes(value)) return word;
   }
   return undefined;
 };
+const programWord = (reading: ShellReading, named: string) =>
+  resolvedWord(reading, named, (word) => word.position === "head");
 const patternFlags = new Set([
   "-name",
   "-iname",
@@ -1039,14 +1086,13 @@ const assigns = ({ words }: ShellReading, name: string) => {
 };
 /** A parameter standing as a whole word: where a program's name stands, or
  * unquoted among the arguments. */
-const unsplitWord = ({ words }: ShellReading) =>
-  words.find(
+const unsplitWord = (reading: ShellReading, named: string) =>
+  resolvedWord(
+    reading,
+    named,
     ({ raw, position }) =>
-      position === "head" && /^"?\$\{?[A-Za-z_]\w*\}?"?$/.test(raw),
-  ) ??
-  words.find(
-    ({ raw, position }) =>
-      position === "argument" && /^\$\{?[A-Za-z_]\w*\}?$/.test(raw),
+      (position === "head" && /^"?\$\{?[A-Za-z_]\w*\}?"?$/.test(raw)) ||
+      (position === "argument" && /^\$\{?[A-Za-z_]\w*\}?$/.test(raw)),
   );
 const shown = (value: string) => {
   const clean = value.replace(/[\p{C}\p{Zl}\p{Zp}]/gu, "");
@@ -1059,6 +1105,12 @@ interface Borne {
   readonly remedy?: string;
 }
 const unwritten: Borne = { written: "", form: "" };
+// Quoted braces can still delimit an expansion in double quotes, whereas
+// held dollars (single-quoted or escaped) never introduce an expansion.
+const expansionText = (word: ReadWord) =>
+  word.text.replace(/[\ue07b\ue07d]/g, asWritten);
+const missingOperand = (expression: string) =>
+  /[+*/%<>=|&^?:-]\s*$/.test(expression) && !/(?:\+\+|--)\s*$/.test(expression);
 type ShellClass = readonly [
   RegExp,
   ShellDiagnosticKind,
@@ -1139,7 +1191,7 @@ const shellClasses: readonly ShellClass[] = [
     ({ reading }, named) => {
       if (reading.words.some(({ text }) => becomesPath(text, named)))
         return null;
-      const word = unsplitWord(reading);
+      const word = unsplitWord(reading, named);
       return word
         ? { written: word.raw, form: word.position === "head" ? "program" : "" }
         : null;
@@ -1154,15 +1206,15 @@ const shellClasses: readonly ShellClass[] = [
   [
     /^bad substitution()$/,
     "bad-substitution",
-    ({ reading: { plain } }) => {
-      if (/\$\{[^}]*(?:,|\^)\}|\$\{![^}]+\}|\$\{[^}]+@[A-Za-z]\}/.test(plain))
-        return { written: "", form: "bash" };
-      const modifier = /\$[A-Za-z_]\w*:[A-Za-z&]/.exec(plain);
-      return modifier
-        ? { written: modifier[0], form: "modifier" }
-        : plain.includes("${")
-          ? unwritten
-          : null;
+    ({ reading: { words } }) => {
+      for (const word of words) {
+        const text = expansionText(word);
+        if (/\$\{[^}]*(?:,|\^)\}|\$\{![^}]+\}|\$\{[^}]+@[A-Za-z]\}/.test(text))
+          return { written: "", form: "bash" };
+        const modifier = /\$[A-Za-z_]\w*:[A-Za-z&]/.exec(text);
+        if (modifier) return { written: modifier[0], form: "modifier" };
+      }
+      return null;
     },
   ],
   [
@@ -1176,10 +1228,28 @@ const shellClasses: readonly ShellClass[] = [
   [
     /^bad math expression: (.+)$/,
     "bad-math",
-    ({ reading: { plain } }) =>
-      /\(\(|\$\[|(?:^|[\s;&|])let\s|\$[A-Za-z_]\w*\[/.test(plain)
+    ({ reading }) => {
+      if (reading.arithmetic.some(missingOperand)) return unwritten;
+      const lets = new Set(
+        reading.words
+          .filter(
+            (word) =>
+              word.position === "head" && asWritten(word.text) === "let",
+          )
+          .map((word) => word.command),
+      );
+      return reading.words.some(
+        (word) =>
+          (lets.has(word.command) &&
+            word.position === "argument" &&
+            missingOperand(asWritten(word.text))) ||
+          [
+            ...expansionText(word).matchAll(/\$(?:[A-Za-z_]\w*)?\[([^\]]*)\]/g),
+          ].some((match) => missingOperand(match[1]!)),
+      )
         ? unwritten
-        : null,
+        : null;
+    },
   ],
   [
     /^([A-Za-z_]\w*)(?:\[[^\]]*\])?: parameter not set$/,
@@ -1270,18 +1340,25 @@ export function shellDiagnostics(
   output: string,
 ): readonly ShellDiagnostic[] {
   const found: ShellDiagnostic[] = [];
-  const source =
-    command.length > READ_LIMIT ? command.slice(0, READ_LIMIT) : command;
+  if (command.length > READ_LIMIT) return found;
+  const source = command;
   let reading: ShellReading | undefined;
-  const lines = output.split("\n");
+  const lines = output.slice(0, 65536).split("\n");
+  let candidates = 0;
   const first = lines.findIndex((line) => line.trim() !== "");
   for (const [index, line] of lines.entries()) {
     if (found.length >= 16) break;
     const shaped = line.length > 4096 ? null : shellLine.exec(line);
     const message = shaped?.[2]?.trim();
     if (!shaped || !message) continue;
+    if (++candidates > 64) break;
     const builtin = shaped[1];
-    reading ??= readShellCommand(source);
+    try {
+      reading ??= readShellCommand(source);
+    } catch (error) {
+      if (error instanceof ShellReadingLimit) return [];
+      throw error;
+    }
     const words = reading.words;
     // A line of no listed class counts when it opens the output: a command's
     // own refusal comes before anything the command printed.
@@ -1324,12 +1401,7 @@ export function shellDiagnostics(
           )
         )
           found.push({ kind: listed[1], ...unwritten });
-      } else if (
-        within.some(
-          ({ bare }) =>
-            bare.startsWith("-") && bare.includes(subject.slice(-1)),
-        )
-      )
+      } else if (within.some(({ bare }) => bare === subject))
         found.push({
           kind: "builtin-option",
           written: shown(`${builtin} ${subject}`),

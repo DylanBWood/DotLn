@@ -11,7 +11,8 @@ activation under the standing opt-out default.
 **Nomination provenance:** the 2026-09-08 critical-path planning pass (gate
 H, the lint slice), cut as a bounded order at the operator's same-day
 correction; it carries the camouflage lint WO-033 phase 2 described and the
-parity item "proper conventional commits". Planner-synthesized draft;
+parity requirement for commits that follow the conventional format.
+Planner-synthesized draft;
 captures and hashes in the ledger section of that date. Opaque identifier,
 not a priority. Clean-room screen: the committed vocabulary list names only
 this repository's own public terms; the local-terms list stays local.

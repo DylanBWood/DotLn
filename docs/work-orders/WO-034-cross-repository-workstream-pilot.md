@@ -16,10 +16,9 @@ control plane and the board, and records the pilot's evidence; the pilot's
 external effects happen in the operator's other repositories. Assigned at
 activation under the standing opt-out default.
 **Nomination provenance:** the 2026-09-06 planning pass, from the operator's
-dispatch ("use dotln to start creating enterprise starter. then at some point,
-i would fork enterprise starter and i would open up claude + codex in that
-repo and start planning the work orders that would generate dotln angular ...
-it just proves out that the enterprise workflow works") and product 12's
+dispatch proposing a starter built with DotLn, then a fork whose Claude and
+Codex sessions plan the Angular target's work orders as a practical workflow
+demonstration, and product 12's
 2026-09-06 pilot paragraph, rescoped the same day by the phase-two redirect:
 the fork runs the compiled build WO-033 exports, and the Angular
 repository's first change is a UIFA v1 shell over the actor board's view

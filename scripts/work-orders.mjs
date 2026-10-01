@@ -103,6 +103,9 @@ export const parseHeader = (markdown, path) => {
     version,
     model: field("Model") ?? "unknown",
     effort: field("Effort") ?? "unknown",
+    track: ["delivery", "machinery", "evidence"].includes(field("Track"))
+      ? field("Track")
+      : "unknown",
     cost: field("Cost") ?? "unavailable",
     repository: parseRepositoryDeclaration(markdown, path),
     provenance: parseDerivedProvenance(markdown, path),
@@ -529,6 +532,7 @@ export const renderIndex = ({
         `- Release: ${cell(row.disposition)}.`,
         `- Model: ${cell(row.model)}`,
         `- Effort: ${cell(row.effort)}`,
+        `- Track: ${cell(row.track ?? "unknown")}`,
         `- Cost: ${cell(row.cost)}`,
         ...(row.ledgerSubstitution
           ? [
@@ -581,7 +585,7 @@ const renderSources = (releases, paths) => {
   const lines = [
     "## Sources and limits",
     "",
-    "- **Header observation:** each authority's H1, sole strict application version, Model, Effort, and leading typed dependency block (or legacy Depends on paragraph). Invalid typed declarations refuse with the authority path and offending entry; other unknown metadata is attributed by the Authority link.",
+    "- **Header observation:** each authority's H1, sole strict application version, Model, Effort, optional Track (delivery, machinery or evidence; absent or invalid is unknown), and leading typed dependency block (or legacy Depends on paragraph). Invalid typed declarations refuse with the authority path and offending entry; other unknown metadata is attributed by the Authority link.",
     "- **Proposed sequence:** the marked block in planning/sequence.md, in operator-selected order. Historical fixtures without that file use the map. Missing/malformed blocks, duplicate IDs, and IDs without an authority refuse. This is not a scheduler or proof of dependency eligibility.",
     `- **Control evidence:** the shared fold of legacy \`${paths.legacy}\` plus \`${paths.orders}\`, reduced independently per work order in segment append order. Closed means a passing final review; it does not independently prove merge or publication. A withdrawn order is listed with the closed ones under its recorded disposition, unchecked in the proposed order, and never counts as a pass. Report verdicts come from events, not inferred report contents.`,
     `- **Local release evidence:** the earliest numeric annotated DotLn tag whose manifest names the order or a changed final-review path. The manifest-free v0.2.0 exception uses \`${paths.legacyRelease}\`. Other tags are not release evidence. Remote publication is not checked.`,

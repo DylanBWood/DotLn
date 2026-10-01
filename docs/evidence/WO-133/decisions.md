@@ -90,7 +90,7 @@ claim either observation.
 
 Correction, 2026-09-16: the order assumed an existing SessionStart hook, but this
 checkout only registered the session handler for UserPromptSubmit. The operator
-explicitly directed: “Register the existing handler for SessionStart.” Register
+directed registration of the existing handler for the SessionStart event. Register
 that same handler; SessionStart performs only runtime diagnostics. Preserve prompt
 dispatch and recovery behavior. This resolves the order's “no new hook” wording
 without adding another handler file. First-prompt-only reporting was declined
@@ -183,8 +183,8 @@ unchanged purity tests pass. This changes no permission or journal decision.
 
 The compiler patch from 0.11.1 to 0.11.2 also exposed frozen positive test
 inputs. Production validation intentionally refuses old compiled identities;
-WO-050 D002 records that boundary. The operator explicitly replied “Proceed
-with fixture repair.” Adjacent queue item adjacent-0001 records the bounded
+WO-050 D002 records that boundary. The operator authorized the fixture repairs.
+Adjacent queue item adjacent-0001 records the bounded
 scope and the actor-attested check-in. The historical oracle now runs all 19
 cases with current runtime code in a child that substitutes only its recorded
 compiler identity, 0.11.1, in one exact module. Original logs and input/output
@@ -270,7 +270,7 @@ expected inventory lists 43, omitting only `runtime_refresh`. Add that entry
 after `stale_helpers`, preserving the duplicate and unknown-case checks. The
 report's recommendation identifies a missing dependency: the shell defines the
 inventory that `runner-fixtures` checks, but no machinery suite declares it.
-The operator answered “Proceed with the bounded fix” during this repair.
+The operator authorized this bounded remedy during the repair.
 Adjacent queue item `adjacent-0002` records the selection fix. An isolated Git
 fixture adds a shell case and exercises both source selection and the actual
 review-list entry point. Version-only exclusions stay covered.

@@ -149,7 +149,7 @@ acceptance claim using the recorded source and fixture evidence.
 
 ```json
 {
-  "id": "WO-068-D004", "date": "2026-09-16", "dispatch": "resume: final review; operator instruction during the dispatch to fix the appended README \"What runs today\" block",
+  "id": "WO-068-D004", "date": "2026-09-16", "dispatch": "resume: final review; operator requested a rewrite of the README release summary",
   "decision": "Rewrite the README release block as four labelled paragraphs and tell the next author to rewrite rather than append; nominate the per-order \"one sentence\" write-back duty that causes the accretion.",
   "evidence": ["README.md", "scripts/release.mjs", "scripts/lib/release-preparation.mjs", "docs/product/07-execution-guide.md"],
   "rejected": [

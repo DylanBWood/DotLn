@@ -308,6 +308,93 @@ export const validDispatch = (value) => {
   );
 };
 
+// WO-178: a prospective advisory, with content fingerprints for historical
+// records. The output names records, never repeats the attributed words.
+const attributedWords = (text) =>
+  /\boperator\b[^.!?]*(?:["“]|(?:\s|:)['‘])/iu.test(normalized(text));
+const quotedDispatch = (text) => /["“]|(?:^|[\s:])['‘]/u.test(text);
+const captureCitation = (text) =>
+  /(?:SHA-256[\s:()=-]*(?:sha256:)?|--capture-hash[\s=]+(?:sha256:)?)[a-f0-9]{64}\b/iu.test(
+    text,
+  );
+function* provenanceRecords(paragraph, source) {
+  // Several header fields can share a paragraph. Only a bold label at a
+  // line boundary starts a field; inline bold prose stays in its record.
+  const fields = paragraph.children
+    .map((child, index) => ({ child, index, label: renderedText(child) }))
+    .filter(
+      ({ child, label }) =>
+        child.type === "strong" &&
+        /^[^:\r\n]+:$/u.test(label) &&
+        /(?:^|\n)[\t ]*$/u.test(source.slice(start(paragraph), start(child))),
+    );
+  const textBetween = (from, to) =>
+    paragraph.children.slice(from, to).map(renderedText).join("").trimEnd();
+  // Preserve the original plain-label standalone paragraph form too.
+  const leading = textBetween(0, fields[0]?.index);
+  if (/^(?:Nomination )?Provenance:/iu.test(leading)) yield leading;
+  for (let index = 0; index < fields.length; index++)
+    if (/^(?:Nomination )?Provenance:$/iu.test(fields[index].label))
+      yield textBetween(fields[index].index, fields[index + 1]?.index);
+}
+export function operatorWordFindings(root) {
+  const findings = [];
+  const check = (file, record, text, dispatch = "", captureText = text) => {
+    if (
+      (!attributedWords(text) && !quotedDispatch(dispatch)) ||
+      captureCitation(captureText)
+    )
+      return;
+    findings.push({
+      file,
+      record,
+      fingerprint: hash(normalized(JSON.stringify([text, dispatch]))),
+    });
+  };
+  const orders = docPath(root, "workOrders");
+  if (existsSync(orders))
+    for (const name of readdirSync(orders)
+      .filter((name) => /^WO-\d{3}.*\.md$/u.test(name))
+      .sort()) {
+      const file = docRelative(root, "workOrders", name),
+        source = readFileSync(join(orders, name), "utf8");
+      for (const node of nodes(parseMarkdown(source))) {
+        if (node.type !== "paragraph") continue;
+        for (const text of provenanceRecords(node, source))
+          check(file, "provenance", text);
+      }
+    }
+  for (const row of readDecisions(root)) {
+    const source = readFileSync(join(root, row.path), "utf8");
+    const section =
+      source
+        .split(/(?=^##\s)/mu)
+        .find((part) => new RegExp(`^##\\s+${row.id}\\b`, "u").test(part)) ??
+      "";
+    const prose = section.replace(/```[\s\S]*?```/gu, "");
+    check(
+      row.path,
+      row.id,
+      `${row.decision}\n${prose}`,
+      row.dispatch,
+      JSON.stringify(row) + prose,
+    );
+  }
+  return findings;
+}
+
+export function operatorWordAdvisories(root, baseline = {}) {
+  const findings = operatorWordFindings(root);
+  const current = findings.filter(
+    (row) => baseline[`${row.file}#${row.record}`] !== row.fingerprint,
+  );
+  return {
+    current: current.length,
+    historical: findings.length - current.length,
+    rows: current,
+  };
+}
+
 function planningDecision(root, reference) {
   if (typeof reference !== "string") return false;
   const [file, anchor] = reference.split("#");
@@ -473,7 +560,8 @@ export function checkDocs(root, { ceilings, baseline, files } = {}) {
         `${failure.file}:${failure.line}: ${failure.reason}: ${failure.href}`,
       );
   }
-  return { rows, failures, historicalLinks, notices };
+  const operatorWords = operatorWordAdvisories(root, baseline.operatorWords);
+  return { rows, failures, historicalLinks, notices, operatorWords };
 }
 
 if (isMainModule(import.meta.url)) {
@@ -487,6 +575,13 @@ if (isMainModule(import.meta.url)) {
         `${row.document} | ${row.bytes} | ${row.exemptBytes} | ${row.ceiling ?? "missing"} | ${row.headroom ?? "unknown"}`,
       );
     for (const notice of result.notices) console.log(notice);
+    for (const row of result.operatorWords.rows)
+      console.log(
+        `ADVISORY ${row.file}#${row.record}: operator-attributed words need a capture digest (SHA-256 or --capture-hash), or a paraphrase`,
+      );
+    console.log(
+      `Operator-word advisories: ${result.operatorWords.current}; historical baseline: ${result.operatorWords.historical}.`,
+    );
     for (const failure of result.failures) console.error(`FAIL ${failure}`);
     console.log(
       `${result.failures.length ? "FAIL" : "PASS"} docs check: ${result.rows.length} product documents; ${result.historicalLinks} declared historical link occurrences; ${result.failures.length} failures`,

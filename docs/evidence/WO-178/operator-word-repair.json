@@ -1,0 +1,477 @@
+{
+  "schemaVersion": 1,
+  "dispatch": "resume: fix; WO-178 FINAL-001 criterion 6",
+  "source": "executor reading of full candidate records and attribution spans in current public repository files",
+  "candidateCutoff": "2026-10-01T17:36:28.358Z",
+  "recordedAt": "2026-10-01T17:50:10.740Z",
+  "bound": 30,
+  "priorPassParaphrases": 3,
+  "repairParaphrases": 27,
+  "totalParaphrases": 30,
+  "candidatesBefore": 61,
+  "provenanceBefore": 37,
+  "decisionsBefore": 24,
+  "paraphrasedProvenance": 20,
+  "paraphrasedDecisions": 7,
+  "retained": 34,
+  "retainedProvenance": 17,
+  "retainedDecisions": 17,
+  "currentAdvisories": 0,
+  "followup": "FUP-71fc2efc208f597a",
+  "records": [
+    {
+      "file": "docs/work-orders/WO-014-approval-burden-contract.md",
+      "record": "provenance",
+      "fingerprint": "5a35c7e4df62cba0b34269d4472760e1faa6ccb389f3278c25353018f0d1f226",
+      "disposition": "retained-baseline",
+      "reason": "Cited deferral heading, not an operator quotation."
+    },
+    {
+      "file": "docs/work-orders/WO-019-effort-truth.md",
+      "record": "provenance",
+      "fingerprint": "21ae36549893ed6ecadcd614b2762bd295a91c2d1655045f84b5a2ff294c426f",
+      "disposition": "retained-baseline",
+      "reason": "Cited ledger clause; retained historical source wording."
+    },
+    {
+      "file": "docs/work-orders/WO-026-work-order-index.md",
+      "record": "provenance",
+      "fingerprint": "eafe4833fc6427f07c3006587c471c5e06e7dcdd5b28970556979adec0661376",
+      "disposition": "paraphrased",
+      "reason": "Reword attributed operator text while preserving its instruction, authorization and citations.",
+      "afterFileSha256": "72196049b5d74316792a0314677cadbc572bdc071ee1effa083d23c248dd45ea"
+    },
+    {
+      "file": "docs/work-orders/WO-032-uifa-actor-board.md",
+      "record": "provenance",
+      "fingerprint": "6755ca4e02eaf55c2b222a03adebb87263f78c8cf3617b9b00db3bbf4d702cb1",
+      "disposition": "paraphrased",
+      "reason": "Reword attributed operator text while preserving its instruction, authorization and citations.",
+      "afterFileSha256": "96edd6f90693e9563207a0fba9520b523691eb1729d9281cfdea0954b2922c21"
+    },
+    {
+      "file": "docs/work-orders/WO-033-compiled-starter-export.md",
+      "record": "provenance",
+      "fingerprint": "f57751d3548106f69351004e027ea2dcf3addb78397d6b971b3a4a62e8b7edb5",
+      "disposition": "paraphrased",
+      "reason": "Reword attributed operator text while preserving its instruction, authorization and citations.",
+      "afterFileSha256": "7472db3591302e5d4fb789ebb12541665dc3728896ba5bdbd8aae62f4848ae92"
+    },
+    {
+      "file": "docs/work-orders/WO-034-cross-repository-workstream-pilot.md",
+      "record": "provenance",
+      "fingerprint": "da1a15c02e493df307f83dfb33fd190444617cf0096a0d0fa0102035c0c9a106",
+      "disposition": "paraphrased",
+      "reason": "Reword attributed operator text while preserving its instruction, authorization and citations.",
+      "afterFileSha256": "4b94b3e51d2dd13ddd7433e95ddc544f0b82e1c2dd4e18d361d9a01fee198416"
+    },
+    {
+      "file": "docs/work-orders/WO-035-documentation-structure-reset.md",
+      "record": "provenance",
+      "fingerprint": "afdd0227e3196587afc081601f80e0aad05328c2c05fd4f02284056786719598",
+      "disposition": "paraphrased",
+      "reason": "Reword attributed operator text while preserving its instruction, authorization and citations.",
+      "afterFileSha256": "72c931cb8baa345f08cdf55153df2dbc5e45fea9fb1e05766544e022ea70ed8d"
+    },
+    {
+      "file": "docs/work-orders/WO-037-five-s-equipment-set.md",
+      "record": "provenance",
+      "fingerprint": "16d995cb51880293a664a1f3ba23179e9a3c79ec347e14ebac23b306f45c24e2",
+      "disposition": "paraphrased",
+      "reason": "Reword attributed operator text while preserving its instruction, authorization and citations.",
+      "afterFileSha256": "07c5b1aec6cab37b434ddf3dcfbfc9b8b2dc7ed14e1f40289219606ec9720924"
+    },
+    {
+      "file": "docs/work-orders/WO-039-harness-lowering.md",
+      "record": "provenance",
+      "fingerprint": "d2a35fd4b5e5d2e3ecb7ba78c057b525e6e2c73e80a3d9785c9133abedf01fa5",
+      "disposition": "paraphrased",
+      "reason": "Reword attributed operator text while preserving its instruction, authorization and citations.",
+      "afterFileSha256": "7ec901f73fc0e541403c94f1ba599807ed14bb4445fba95940eb16b136cb1ced"
+    },
+    {
+      "file": "docs/work-orders/WO-041-plan-refutation-mechanism.md",
+      "record": "provenance",
+      "fingerprint": "934d5c5b0a6d909ac8e844a83c3a1cb2bfb0d19760c7949e1a0bfba4ec8e7df5",
+      "disposition": "paraphrased",
+      "reason": "Reword attributed operator text while preserving its instruction, authorization and citations.",
+      "afterFileSha256": "3766e75790e6dde1b2980ddd90a98626691f84c833deaaaca755339ed7abbe49"
+    },
+    {
+      "file": "docs/work-orders/WO-053-first-external-source-change.md",
+      "record": "provenance",
+      "fingerprint": "6322ced5231f8f062f4cf5357509ce5e606fd2719c4c325c832feadbf4367587",
+      "disposition": "retained-baseline",
+      "reason": "Cited planning prioritization rule, not an operator quotation."
+    },
+    {
+      "file": "docs/work-orders/WO-059-playwright-evidence-adapter.md",
+      "record": "provenance",
+      "fingerprint": "9520046cbda9d8d44a09a8f0da646f83f1268d0f98f8b2c7d2268eb9a34db6fd",
+      "disposition": "retained-baseline",
+      "reason": "Approved source bytes preserved: Current horizon receipt 2026-09-30-planning-826842218eb333e2-036."
+    },
+    {
+      "file": "docs/work-orders/WO-061-story-contract-compile.md",
+      "record": "provenance",
+      "fingerprint": "a31a6a634436d96e2da718a6b2837ac260a0776bde6d857780c179bcaf1f3537",
+      "disposition": "retained-baseline",
+      "reason": "Approved source bytes preserved: Current horizon receipt 2026-09-30-planning-826842218eb333e2-036."
+    },
+    {
+      "file": "docs/work-orders/WO-063-outward-artifact-lint.md",
+      "record": "provenance",
+      "fingerprint": "0373fce0c82bbbe48a9f176811bd64d9d66d39f6bce173ea0059d1dec386e125",
+      "disposition": "paraphrased",
+      "reason": "Reword attributed operator text while preserving its instruction, authorization and citations.",
+      "afterFileSha256": "8dd379abdddc3365ee0d2bff1dbaf6b22c057f1206149cfbe407241bcfdd8c88"
+    },
+    {
+      "file": "docs/work-orders/WO-064-target-publish.md",
+      "record": "provenance",
+      "fingerprint": "1abadbc7d7b0c5de419e5f8eaa850bd13c839112bedac374c577a15a0f363b3c",
+      "disposition": "paraphrased",
+      "reason": "Reword attributed operator text while preserving its instruction, authorization and citations.",
+      "afterFileSha256": "4319c09166faa2d0a298ff36444152eb71bf9931fea292b80785c17eaac4aad4"
+    },
+    {
+      "file": "docs/work-orders/WO-065-pull-request-state-observation.md",
+      "record": "provenance",
+      "fingerprint": "6e8a464eee89c9e4105bd8a7415c8ba0969e978ba5dfef02c2b12be2b923ebb7",
+      "disposition": "retained-baseline",
+      "reason": "Approved source bytes preserved: Execution amendment row 30."
+    },
+    {
+      "file": "docs/work-orders/WO-067-presence-policy-compiled.md",
+      "record": "provenance",
+      "fingerprint": "bae580611239ae110e2ee0889e8df54496ac9064387df4b9cb1405abc343d120",
+      "disposition": "paraphrased",
+      "reason": "Reword attributed operator text while preserving its instruction, authorization and citations.",
+      "afterFileSha256": "8909f27bddcaf1d716b32f9d8eee79de0fb0b4b53dc0bdf9ec1ecc2a49054780"
+    },
+    {
+      "file": "docs/work-orders/WO-079-worktree-sync.md",
+      "record": "provenance",
+      "fingerprint": "2a43bfbf27f313012cd2517afd3bbd08e8da1db81e1ade5c98ac1dc461070d4f",
+      "disposition": "retained-baseline",
+      "reason": "Cited reopening condition, not an operator quotation."
+    },
+    {
+      "file": "docs/work-orders/WO-085-spec-receipt-boundary.md",
+      "record": "provenance",
+      "fingerprint": "9bce8e6b61ef18dce3adf6fc9a32a5cd560bdc284655765143e2b36eaedc885a",
+      "disposition": "paraphrased",
+      "reason": "Reword attributed operator text while preserving its instruction, authorization and citations.",
+      "afterFileSha256": "3504aa70299e9610ad366d2b923ae63354dd2451d8edacd1f29673fe59bddd6a"
+    },
+    {
+      "file": "docs/work-orders/WO-086-generated-release-history.md",
+      "record": "provenance",
+      "fingerprint": "6ef4f2b5f4e2059a81ae22f5856415723debaaaefb76fdffca89c64ea367d076",
+      "disposition": "retained-baseline",
+      "reason": "Approved source bytes preserved: Execution amendment row 32."
+    },
+    {
+      "file": "docs/work-orders/WO-091-multi-active-link-groups.md",
+      "record": "provenance",
+      "fingerprint": "ff0d2fd11d95885cbf65e304b30dc1e5dc174d5f086f7835308d4539336c7f56",
+      "disposition": "retained-baseline",
+      "reason": "Cited ledger theme, not an operator quotation."
+    },
+    {
+      "file": "docs/work-orders/WO-099-mission-check.md",
+      "record": "provenance",
+      "fingerprint": "f6b8188a3180c6ca66f849c50db06bf6e637f9f9a179bf33be48b2614ecc1db0",
+      "disposition": "paraphrased",
+      "reason": "Reword attributed operator text while preserving its instruction, authorization and citations.",
+      "afterFileSha256": "515cf86ce25b5f11e4ff95ebdbca5e124c9b6f86049ab1031b954b7970c12d46"
+    },
+    {
+      "file": "docs/work-orders/WO-100-preauthorized-portfolio.md",
+      "record": "provenance",
+      "fingerprint": "46a4d90a09db6b32dff84b0374f1a68911b2373fa5d249952774fdc5bb06881b",
+      "disposition": "retained-baseline",
+      "reason": "Approved source bytes preserved: Execution amendment row 17."
+    },
+    {
+      "file": "docs/work-orders/WO-110-local-model-transport.md",
+      "record": "provenance",
+      "fingerprint": "d9e28d562e18c8950212ea3b2771ab861f570eeadcd653a8a1d5e18655821e1b",
+      "disposition": "paraphrased",
+      "reason": "Reword attributed operator text while preserving its instruction, authorization and citations.",
+      "afterFileSha256": "3e5939490b7743530185967ebcc2a8790bcc6815a12062dd1f5e89ab059c2343"
+    },
+    {
+      "file": "docs/work-orders/WO-130-declared-suite-inputs-replica.md",
+      "record": "provenance",
+      "fingerprint": "802a27bab2dcf6a70dc6e053a497f43a25a988e8c4cae231494428360214a923",
+      "disposition": "retained-baseline",
+      "reason": "Technical terms in a relayed model proposal, not an operator quotation."
+    },
+    {
+      "file": "docs/work-orders/WO-141-no-guessing-enforced.md",
+      "record": "provenance",
+      "fingerprint": "bf62ae05816d4473fed6af99c50448ffd7ecd2468dc8348f4961ead9435acf49",
+      "disposition": "paraphrased",
+      "reason": "Reword attributed operator text while preserving its instruction, authorization and citations.",
+      "afterFileSha256": "3da946392ff497faf15a860d611ae852a410836c3e5efc56551bcf0d86e91189"
+    },
+    {
+      "file": "docs/work-orders/WO-144-outside-project-write-grant.md",
+      "record": "provenance",
+      "fingerprint": "2d0d8de225722af3b4ddcca0302b7f38276298991ea6c87b9895b437b8aca29a",
+      "disposition": "retained-baseline",
+      "reason": "Cited ledger heading, not an operator quotation."
+    },
+    {
+      "file": "docs/work-orders/WO-145-tinkerer-economy-experiment.md",
+      "record": "provenance",
+      "fingerprint": "8d48666ed333c9efdf8ae1411f2d0c00d9511eae3babecbea107a0256a44adae",
+      "disposition": "retained-baseline",
+      "reason": "Cited founding ledger heading, not an operator quotation."
+    },
+    {
+      "file": "docs/work-orders/WO-150-tinkerer-economy-default.md",
+      "record": "provenance",
+      "fingerprint": "3224945b9f78febaac860238ec846534c28a523c9582b386e03d5237fd175ec0",
+      "disposition": "paraphrased",
+      "reason": "Reword attributed operator text while preserving its instruction, authorization and citations.",
+      "afterFileSha256": "6b4eb4ae5eff9d65c54c9fdde5a91c5e3ce861fecaa2ad74c517ee4a9b856f39"
+    },
+    {
+      "file": "docs/work-orders/WO-151-entropy-reducer-dispatch.md",
+      "record": "provenance",
+      "fingerprint": "53a80a4260d5295d46bad6fbd8060f302feb99071f251d69efb87c46283ebef5",
+      "disposition": "retained-baseline",
+      "reason": "Cited operator-guide capability label; canonical dispatch is retained."
+    },
+    {
+      "file": "docs/work-orders/WO-158-lifecycle-off-ramps.md",
+      "record": "provenance",
+      "fingerprint": "1746745cebfecaa9d0c9632152b0a92ae7d963bf2275651caffb39a5a63e44d1",
+      "disposition": "paraphrased",
+      "reason": "Reword attributed operator text while preserving its instruction, authorization and citations.",
+      "afterFileSha256": "007d608aa3dd14294f6369aba7e36ce4377a8a16e7ad7ea60c6135e62009fc0f"
+    },
+    {
+      "file": "docs/work-orders/WO-160-wo111-machinery-followups.md",
+      "record": "provenance",
+      "fingerprint": "9d4da68f8708c7ecf68fb0e880b679a421142eb3a4b80c01d9224be3399aaf54",
+      "disposition": "retained-baseline",
+      "reason": "Approved source bytes preserved: Execution amendment row 26."
+    },
+    {
+      "file": "docs/work-orders/WO-161-sandbox-vocabulary.md",
+      "record": "provenance",
+      "fingerprint": "dfd556bf4b0dcc5123ae5365de2e78c6fcc8fb76f3bed798b7291c5e5e85135b",
+      "disposition": "paraphrased",
+      "reason": "Reword attributed operator text while preserving its instruction, authorization and citations.",
+      "afterFileSha256": "68b4640762e0e9f71d7404632db44d545b1bc1b66f1664b72319c0d06545421c"
+    },
+    {
+      "file": "docs/work-orders/WO-162-in-unit-helper-reuse.md",
+      "record": "provenance",
+      "fingerprint": "38266efb1e24825daec1ec0d2b71285e3b509cd75766e7c46f61c402e08d91e0",
+      "disposition": "retained-baseline",
+      "reason": "Approved source bytes preserved: Execution amendment row 29."
+    },
+    {
+      "file": "docs/work-orders/WO-163-5s-sort-and-set-in-order.md",
+      "record": "provenance",
+      "fingerprint": "4ffddf04142f037973129398ba66cf042111c6c3705783d78610a6d4d7907054",
+      "disposition": "paraphrased",
+      "reason": "Reword attributed operator text while preserving its instruction, authorization and citations.",
+      "afterFileSha256": "10ecb896755a3b6497bddfe4a321f601f33b3f0eaf8df343e119581dde6edfe0"
+    },
+    {
+      "file": "docs/work-orders/WO-166-session-boundaries.md",
+      "record": "provenance",
+      "fingerprint": "10338fb3297daddb84473b8e193b1ea1bd4f343332482d3dd57d61a465d40b66",
+      "disposition": "paraphrased",
+      "reason": "Reword attributed operator text while preserving its instruction, authorization and citations.",
+      "afterFileSha256": "f27f400de18b6b4094ce4ae1b07b5ac8964f76d54b7989bcf39187f760566ce9"
+    },
+    {
+      "file": "docs/work-orders/WO-178-the-record-holds-what-the-operator-sees.md",
+      "record": "provenance",
+      "fingerprint": "752c140fc3c489ea38361ad3b037a40eb5ac69963a4aeb459c8bda7a70915791",
+      "disposition": "retained-baseline",
+      "reason": "Classifier label and public documentation quotations; the lexical check makes no semantic attribution."
+    },
+    {
+      "file": "docs/evidence/WO-044/decisions.md",
+      "record": "WO-044-D016",
+      "fingerprint": "c24fbdf8cd346105d789b5205a9fb1e5aba58a3fc4e50234722b039f497d940d",
+      "disposition": "retained-baseline",
+      "reason": "Attributed historical operator words retained after the thirty-record bound was reached; the existing sweep owns the remainder."
+    },
+    {
+      "file": "docs/evidence/WO-056/decisions.md",
+      "record": "WO-056-D008",
+      "fingerprint": "edf67ff547cb3fd1b411974830f03cae4157255500c771a1622abfdab1abed30",
+      "disposition": "retained-baseline",
+      "reason": "Execution-amendment-bound decision bytes preserved; the existing historical route remains open."
+    },
+    {
+      "file": "docs/evidence/WO-070/decisions.md",
+      "record": "WO-070-D010",
+      "fingerprint": "7089d64fb2e2278c10dc1bcd87f872d2662b099372b6d439ce26315462ce433f",
+      "disposition": "retained-baseline",
+      "reason": "Execution-amendment-bound decision bytes preserved; the existing historical route remains open."
+    },
+    {
+      "file": "docs/evidence/WO-130/decisions.md",
+      "record": "WO-130-D003",
+      "fingerprint": "466a312c481a84918bbffef6a2570d0ef6cee9a438ce9989bec54cdd4cdbc000",
+      "disposition": "paraphrased",
+      "reason": "Reword attributed operator text while preserving its instruction, authorization and citations.",
+      "afterFileSha256": "73669086147917572642e2cfb1de92335c039ce5c0723f9217d0fd530847a233"
+    },
+    {
+      "file": "docs/evidence/WO-133/decisions.md",
+      "record": "WO-133-D002",
+      "fingerprint": "3fce7dfc9937c4bd6cf5f962b71fea9fcd196774b86a500a0d5fe98ad3427171",
+      "disposition": "paraphrased",
+      "reason": "Reword attributed operator text while preserving its instruction, authorization and citations.",
+      "afterFileSha256": "baf78009fc81cfb426462bbfdd98b0a2566d84ef3989d8e23c971a29b2d7ddc8"
+    },
+    {
+      "file": "docs/evidence/WO-133/decisions.md",
+      "record": "WO-133-D004",
+      "fingerprint": "1ee467bf33822720e8e38a9b4c9a531f91f20d2fa8200a4ac0db1e4d92d5b047",
+      "disposition": "paraphrased",
+      "reason": "Reword attributed operator text while preserving its instruction, authorization and citations.",
+      "afterFileSha256": "baf78009fc81cfb426462bbfdd98b0a2566d84ef3989d8e23c971a29b2d7ddc8"
+    },
+    {
+      "file": "docs/evidence/WO-133/decisions.md",
+      "record": "WO-133-D005",
+      "fingerprint": "e3d8d083a14727b6e925e0cf4c9ef84792fb438fced1d05ef7d238fc2e8d810f",
+      "disposition": "paraphrased",
+      "reason": "Reword attributed operator text while preserving its instruction, authorization and citations.",
+      "afterFileSha256": "baf78009fc81cfb426462bbfdd98b0a2566d84ef3989d8e23c971a29b2d7ddc8"
+    },
+    {
+      "file": "docs/evidence/WO-134/decisions.md",
+      "record": "WO-134-D002",
+      "fingerprint": "2d0f705fc143ab88e3ef427e391a6463bd3df7e07c7063ed39827d53382a9eb5",
+      "disposition": "paraphrased",
+      "reason": "Reword attributed operator text while preserving its instruction, authorization and citations.",
+      "afterFileSha256": "4e4c3762ec2553dcb98b969ce8c369e315932bb6270619308335d9366821dabe"
+    },
+    {
+      "file": "docs/evidence/WO-135/decisions.md",
+      "record": "WO-135-D003",
+      "fingerprint": "98af9e828bdc23f05568b1d4421831dd73ebd4953638e69e8cee16770cabc64f",
+      "disposition": "retained-baseline",
+      "reason": "Lexical match on cited order text, configuration, role text, control labels or a described term; retained historical record."
+    },
+    {
+      "file": "docs/evidence/WO-135/decisions.md",
+      "record": "WO-135-D006",
+      "fingerprint": "5cffb4cec9fb20b9efa2fe1cdee7413a4bb29fcab6c7c4d42f7637379fa3b8be",
+      "disposition": "retained-baseline",
+      "reason": "Attributed historical operator words retained after the thirty-record bound was reached; the existing sweep owns the remainder."
+    },
+    {
+      "file": "docs/evidence/WO-138/decisions.md",
+      "record": "WO-138-D009",
+      "fingerprint": "0bc9fdf2eca4a5707ae759cfd8a9d600808d13f385df9bd9d175fd96ed608250",
+      "disposition": "paraphrased",
+      "reason": "Reword attributed operator text while preserving its instruction, authorization and citations.",
+      "afterFileSha256": "a2b6a34b8792022fa261713f3e8f2ce0950ca72a3116d9730a87fe45466a65fd"
+    },
+    {
+      "file": "docs/evidence/WO-143/decisions.md",
+      "record": "WO-143-D003",
+      "fingerprint": "a9eef0675df05689741c055b08af398c713507b0e8a69d6f27c70b6c5eaad84a",
+      "disposition": "retained-baseline",
+      "reason": "Lexical match on cited order text, configuration, role text, control labels or a described term; retained historical record."
+    },
+    {
+      "file": "docs/evidence/WO-146/decisions.md",
+      "record": "WO-146-D012",
+      "fingerprint": "803ab1fcc53eaed8ae62b837a38b10a2b9472e41d5fd316b49b15eadf81bf90f",
+      "disposition": "retained-baseline",
+      "reason": "Attributed historical operator words retained after the thirty-record bound was reached; the existing sweep owns the remainder."
+    },
+    {
+      "file": "docs/evidence/WO-150/decisions.md",
+      "record": "WO-150-D006",
+      "fingerprint": "8a8d3b6c5b5ff8275491981fb0f9f294cdd3aba759a3b6286ab5521718d9bb04",
+      "disposition": "retained-baseline",
+      "reason": "Lexical match on cited order text, configuration, role text, control labels or a described term; retained historical record."
+    },
+    {
+      "file": "docs/evidence/WO-150/decisions.md",
+      "record": "WO-150-D007",
+      "fingerprint": "ac1186d3cdd7af6e3ca996270d157f736519c1ff58620d915a04b060b2e3c23f",
+      "disposition": "retained-baseline",
+      "reason": "Lexical match on cited order text, configuration, role text, control labels or a described term; retained historical record."
+    },
+    {
+      "file": "docs/evidence/WO-152/decisions.md",
+      "record": "WO-152-D005",
+      "fingerprint": "7882e56aaa086d3656e367eb1f5bacdf4d2fa8bf6dcd317ec4d2ea4d84c15aec",
+      "disposition": "retained-baseline",
+      "reason": "Lexical match on cited order text, configuration, role text, control labels or a described term; retained historical record."
+    },
+    {
+      "file": "docs/evidence/WO-154/decisions.md",
+      "record": "WO-154-D004",
+      "fingerprint": "677b3a04e726c0ad42b4b6c4a596bcb080d9dd24e1cdc061ff3cf3c26806c04d",
+      "disposition": "retained-baseline",
+      "reason": "Lexical match on cited order text, configuration, role text, control labels or a described term; retained historical record."
+    },
+    {
+      "file": "docs/evidence/WO-154/decisions.md",
+      "record": "WO-154-D005",
+      "fingerprint": "c1c7c5efefbb7ef3a9953905b66d24e69e4c00c7fdda07197782dde9d164a534",
+      "disposition": "retained-baseline",
+      "reason": "Lexical match on cited order text, configuration, role text, control labels or a described term; retained historical record."
+    },
+    {
+      "file": "docs/evidence/WO-158/decisions.md",
+      "record": "WO-158-D013",
+      "fingerprint": "fc5d1d8387cf5d3699a179cb265ae99f0b7c06553a3d0ae5c11b49f3b7c3c55b",
+      "disposition": "retained-baseline",
+      "reason": "Lexical match on cited order text, configuration, role text, control labels or a described term; retained historical record."
+    },
+    {
+      "file": "docs/evidence/WO-170/decisions.md",
+      "record": "WO-170-D005",
+      "fingerprint": "c74d7d664d7100378f380991e4b0b5e89a91dd064ff21398dacad5de6fd2c3af",
+      "disposition": "retained-baseline",
+      "reason": "Lexical match on cited order text, configuration, role text, control labels or a described term; retained historical record."
+    },
+    {
+      "file": "docs/evidence/WO-170/decisions.md",
+      "record": "WO-170-D012",
+      "fingerprint": "1f0057100d1b10f5bb3ce029bab335868ac418e32d7dcb3f7bd278240f930b77",
+      "disposition": "retained-baseline",
+      "reason": "Lexical match on cited order text, configuration, role text, control labels or a described term; retained historical record."
+    },
+    {
+      "file": "docs/evidence/WO-170/decisions.md",
+      "record": "WO-170-D019",
+      "fingerprint": "8f13941d7569eed777c04ffad0eafcd2d7c60fac2ef5f7563187ae65508c296b",
+      "disposition": "retained-baseline",
+      "reason": "Lexical match on cited order text, configuration, role text, control labels or a described term; retained historical record."
+    },
+    {
+      "file": "docs/evidence/WO-176/decisions.md",
+      "record": "WO-176-D027",
+      "fingerprint": "1a1e0c7d777f9fa8bdcdf980b8bf91f8ed1dc232dc8658a2e5b0dbcf33c13301",
+      "disposition": "paraphrased",
+      "reason": "Reword attributed operator text while preserving its instruction, authorization and citations.",
+      "afterFileSha256": "46eac99f4d09a562df7723fda08d05c5b14fcd07cbb8bb391395265c73221e05"
+    },
+    {
+      "file": "docs/evidence/WO-178/decisions.md",
+      "record": "WO-178-D015",
+      "fingerprint": "53a41373e340525df1b1d23d39d0adfb5316b66dc5d250992bbc40c105428335",
+      "disposition": "retained-baseline",
+      "reason": "Preserve the filed review finding; its lexical match quotes a capture-reference label, not operator message text."
+    }
+  ]
+}

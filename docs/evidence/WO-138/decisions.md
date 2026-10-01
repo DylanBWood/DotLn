@@ -324,8 +324,8 @@ launch. A single pinned snapshot avoids repeated producer work and operator
 rescue; it favors neither model. Naive Interventionism preserves all actual
 observations and producer code. NoOp would leave the comparison unsupported.
 
-Operator authorization, 2026-09-21: the operator answered "Allow this one
-replacement run" to the request for 17 additional remote episodes (34 in this
+Operator authorization, 2026-09-21: the operator approved one replacement
+run comprising 17 additional remote episodes (34 in this
 repair session). This is a bounded exception for the replacement matrix only;
 the persistent cap is unchanged and no coding subagents are introduced.
 

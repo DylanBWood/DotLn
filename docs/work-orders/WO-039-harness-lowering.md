@@ -13,13 +13,13 @@ generated project-scope harness configuration; no kernel change and no change
 to the loadout, feedback, or verification contracts. Assigned at activation
 under the standing opt-out default (06-roadmap.md §Release boundary).
 **Nomination provenance:** the 2026-09-06 phase-two redirect, from the
-operator's correction of the first phase-two pass ("the whole idea is that i
-take the ... hand crafted rules from the v1 app ... and somehow they become
-skills or hooks or the ENTIRE CONCEPT OF DOTLN ITSELF") and the founding
+operator's correction of the first phase-two pass: derive skills, hooks and
+DotLn constructs from the manually authored policy ideas of v1. It also cites
+the founding
 north star's axioms that hard constraints live outside the model in
 permissions and hooks and that prompt fragments are a last-mile artifact
 (ledger §Chat 001, §Notes 001; synthesized, nothing copied). It lowers the
-architecture's "agent enablement skills" section, which has had no order since
+architecture's agent-enablement section, which has had no order since
 it was written. Planner-synthesized draft; the operator's correction is
 preserved locally as a compaction-safety capture. Opaque identifier, not a
 priority. The clean-room screen found no employer, credential,

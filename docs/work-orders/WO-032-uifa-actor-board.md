@@ -13,10 +13,10 @@ default: the first wave-1 order to merge takes the next minor above the
 latest published tag, and the second retimes with a dated note at its
 integration step (06-roadmap.md §Release boundary).
 **Nomination provenance:** the 2026-09-06 planning pass, from the operator's
-dispatch asking for "a UI to see what's going on with dotln and our vision
-around it", rescoped the same day by the phase-two redirect after the
-operator's correction that the first draft was "a dashboard of the process,
-not a UI for actors". The first draft (a showrunner board over control state
+dispatch requesting a visible account of DotLn's activity and product direction,
+rescoped the same day by the phase-two redirect after the operator identified
+the missing actor interface in a draft focused on process status.
+The first draft (a showrunner board over control state
 alone) is retained in this order as one panel. Planner-synthesized draft; the
 dispatch and the correction are preserved locally as compaction-safety
 captures. Opaque identifier, not a priority. The clean-room screen found no

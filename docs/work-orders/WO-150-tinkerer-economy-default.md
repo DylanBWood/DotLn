@@ -26,8 +26,8 @@ Wall-clock, tokens and context bytes of the order itself are unknown until
 run.
 **Nomination provenance:** WO-145 D001's pre-registered reading, applied by
 the 2026-09-21 standard pass (05-pattern-library.md §Candidate — Tinkerer /
-Scientist, the three-trial reading); the operator's same-day answer, "make
-tinkerer on by default unless there was a legit reason not to", captured
+Scientist, the three-trial reading); the operator's same-day answer selecting
+a default-on Tinkerer with reasoned exceptions, captured
 verbatim in ignored intake (SHA-256 in the ledger section); the operator's
 2026-09-11 direction to prioritize the Tinkerer. Planner-synthesized. Opaque
 identifier, not a priority. Clean-room screen: no stop condition.

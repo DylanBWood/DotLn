@@ -13,8 +13,8 @@ deterministic scenario) while keeping every existing compiled program's
 semantic hash and the frozen WO-003 trace oracle byte-identical. Assigned at
 activation under the standing opt-out default.
 **Nomination provenance:** the 2026-09-06 planning pass, from the operator's
-statement that "the real meat & potatoes of the vision starts becoming
-sharper" and the roadmap's Pattern workshop v1 rung, which the pass names as
+observation that the central product idea was becoming more concrete, and the
+roadmap's Pattern workshop v1 rung, which the pass names as
 the wave after the visible loop. The founding corpus supplies the shape:
 5S as a slotted equipment set, set bonuses that compile to real mechanics,
 shared supports across several actives under one policy boundary, the

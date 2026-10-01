@@ -93,7 +93,7 @@ intent → task-scoped build → bounded WorkOrder → disposable executor
 -->
 <!-- DOTLN-RELEASE-BEGIN -->
 
-This source prepares DotLn `v0.61.1`.
+This source prepares DotLn `v0.61.2`.
 
 **The core.** A local-first compiler turns a loadout graph into a bounded
 program and authority envelope that the kernel checks on every decision.
@@ -187,8 +187,10 @@ admissions beyond the configured cap, and known outside-project write
 destinations without an active role's declared, admitted root grant.
 A literal redirect is known on any program; expansions and a program's own
 effects are opaque and remain under host permissions.
-Codex carries the same duties as role text, other judgments defer to host
-permissions, and `analysis:` and `operator override:` remain available for recovery.
+Codex carries the same duties as role text, and other judgments defer to host
+permissions, with one exception: under a recorded release-close dispatch, Claude's
+hook admits the exact release-close helper run from main. `analysis:` and
+`operator override:` remain available for recovery.
 The [execution guide](docs/product/07-execution-guide.md#independent-workflows-and-integration)
 explains integration, evidence and the observed limits of those controls.
 

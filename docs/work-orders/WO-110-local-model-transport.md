@@ -9,7 +9,7 @@ operator has. State the model and effort actually run
 **Release classification:** minor. One transport and one actor kind.
 Assigned at activation under the standing opt-out default.
 **Nomination provenance:** the operator's 2026-09-08 mid-pass list of actor
-kinds ("agents, claude, codex, local, humans, scripts") and WO-027's
+kinds, including hosted and local models, people and scripted execution, and WO-027's
 local-inference probe. Planner-synthesized draft; captures and hashes in the
 ledger section of that date. Opaque identifier, not a priority. Clean-room
 screen: no stop condition.

@@ -10347,6 +10347,14 @@
           "reopenWhen": "R2, or an outside write the journal shows admitted without a grant",
           "targets": [],
           "at": "2026-09-30T15:30:44.952Z"
+        },
+        {
+          "sourceRevision": 13,
+          "status": "deferred",
+          "reason": "WO-178-D002 implements the first exact hook admission under recorded release-close facts. Fixtures pass; host deny and ask rules still apply. Broader DotLn-owned authority remains the R2 candidate.",
+          "reopenWhen": "R2, a live denial of the exact helper, or an outside write admitted without a grant",
+          "targets": [],
+          "at": "2026-10-01T15:47:39.152Z"
         }
       ]
     },
@@ -19874,6 +19882,22 @@
             "WO-178"
           ],
           "at": "2026-09-30T15:30:45.203Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "WO-178-D006: 28 lexical candidates, three paraphrases, 25 fingerprinted historical baseline entries. The wider sweep, bound records and role-text question remain for a planning pass; no claim of complete historical removal.",
+          "reopenWhen": "A current advisory appears, a baseline record changes without capture provenance, or planning chooses a route for the remaining bound fields",
+          "targets": [],
+          "at": "2026-10-01T15:47:39.006Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "WO-178-D018/D020 repair: the full-surface pass judges 61 candidates, paraphrases 27 additional unbound records (30 across the order), and retains 34 fingerprinted historical exceptions. The broader sweep, protected bytes and semantic/role-text question remain for planning.",
+          "reopenWhen": "A current advisory appears, a retained fingerprint changes without capture provenance, or planning chooses a route for the remaining protected records.",
+          "targets": [],
+          "at": "2026-10-01T18:16:36.697Z"
         }
       ]
     },
@@ -22194,6 +22218,24 @@
             "WO-178"
           ],
           "at": "2026-10-01T03:09:56.673Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "WO-176 supplies close records; WO-178 reads failed/incomplete local attempts and implements the exact helper admission. Verification and the first merged auto-mode close remain outstanding observations.",
+          "reopenWhen": "The first merged close lacks an outcome or denies the exact admitted helper",
+          "targets": [
+            "WO-178"
+          ],
+          "at": "2026-10-01T15:47:38.921Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by WO-178 at its passing final review (docs/final-reviews/WO-178/FINAL-002.md; evidence in docs/evidence/WO-178/), for WO-178's share; WO-176 supplied the close records. plan failures counts close attempts with a blocker or no published tag from release-close.json, and the permission hook admits the exact publish or dry-run helper under the recorded release-close dispatch, the main checkout and a legal release-close. The first merged Claude auto-mode close is the declared live observation the next planning pass reads (WO-178-D002). No retry release close records is admitted yet, because each starts with bare node (WO-178-D012, widened by D023, FUP-00ed3cd9ab11599f).",
+          "reopenWhen": "the first merged Claude auto-mode close denies the exact helper, or a close that stopped short leaves no release-close.json the count reads",
+          "targets": [],
+          "at": "2026-10-01T19:11:14.480Z"
         }
       ]
     },
@@ -23316,6 +23358,13 @@
           "title": "WO-172-D008: Decide how operator words leave the record where the dispatch-field route cannot reach, and how their recurrence stops: dispatch fields bound by an execution amendment (WO-142-D010, WO-15",
           "summary": "{ \"id\": \"WO-172-D008\", \"date\": \"2026-09-29\", \"dispatch\": \"resume: next\", \"decision\": \"The operator's words stand in more places than this order's dispatch-field route reaches, and the route does not stop them recurring. Two dispatch fields keep them because an execution amendment binds their decisions' bytes: WO-142-D010 and WO-151-D007. Other fields and files keep them: WO-044-D014's evidence field, WO-116-D016's decision text (re-rendered by the decisions index), the WO-167-D013 section prose and the WO-167 review body, WO-111's repair record and WO-099's third repair record. The register's revisions are append-only, so a row synced before a paraphrase keeps the earlier dispatch. And two f",
           "missing": false
+        },
+        {
+          "hash": "d2397759ea1df0177745675990c2bc438b5ac396ae3e298d9bc50105b985cf1e",
+          "ref": "docs/evidence/WO-172/decisions.md#wo-172-d008--operator-words-beyond-this-orders-route-and-their-recurrence-after-the-check",
+          "title": "WO-172-D008: Decide how operator words leave the record where the dispatch-field route cannot reach, and how their recurrence stops: dispatch fields bound by an execution amendment (WO-142-D010, WO-15",
+          "summary": "{ \"id\": \"WO-172-D008\", \"date\": \"2026-09-29\", \"dispatch\": \"resume: next\", \"decision\": \"The operator's words stand in more places than this order's dispatch-field route reaches, and the route does not stop them recurring. Two dispatch fields keep them because an execution amendment binds their decisions' bytes: WO-142-D010 and WO-151-D007. Other fields and files keep them: WO-044-D014's evidence field, WO-116-D016's decision text (re-rendered by the decisions index), the WO-167-D013 section prose and the WO-167 review body, WO-111's repair record and WO-099's third repair record. The register's revisions are append-only, so a row synced before a paraphrase keeps the earlier dispatch. And two f",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -23328,6 +23377,16 @@
             "WO-178"
           ],
           "at": "2026-09-30T15:30:45.133Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "duplicate",
+          "reason": "WO-178-D006 adds the prospective check and paraphrases three unbound records. Retarget the baseline and remaining fields to the existing historical sweep; bound decisions and prior register revisions are preserved.",
+          "reopenWhen": "A new attributed passage or changed baseline requires a safe correction route",
+          "targets": [
+            "FUP-71fc2efc208f597a"
+          ],
+          "at": "2026-10-01T15:47:38.964Z"
         }
       ]
     },
@@ -23400,6 +23459,24 @@
             "WO-178"
           ],
           "at": "2026-09-30T15:30:45.273Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "WO-178-D006: typed prompt observations and local counts are implemented; Codex is dispatch-only and native route correlation is not full delivery proof. The allocated deliverable awaits independent verification and close.",
+          "reopenWhen": "WO-178 closes without the rows, or two planning passes find more than half unclassified",
+          "targets": [
+            "WO-178"
+          ],
+          "at": "2026-10-01T15:47:38.830Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Settled by WO-178 at its passing final review (docs/final-reviews/WO-178/FINAL-002.md; evidence in docs/evidence/WO-178/). The Claude and Copilot prompt hook appends a typed row for each operator message: digest, byte count, prefix class or unclassified, transcript-correlated route or unknown, order, role and phase, and never text. Codex records its dispatch phrase only and says so. plan failures and plan start count the rows by class, order and phase. Host task notifications are still counted as operator messages (WO-178-D014, FUP-bfe39a18fdf822ae), and classifying unclassified rows stays with FUP-f55fb29d73e6f813.",
+          "reopenWhen": "a planning pass finds that the intervention rows omit operator messages the host delivered to the prompt hook, or a row holds message text",
+          "targets": [],
+          "at": "2026-10-01T19:11:14.405Z"
         }
       ]
     },
@@ -23494,6 +23571,24 @@
             "WO-178"
           ],
           "at": "2026-09-30T15:30:45.309Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "WO-178-D006 uses D018's complete class vocabulary in the feed and prefix-only classes in the hook. Semantic classification remains a later candidate; this deliverable awaits verification and close.",
+          "reopenWhen": "The semantic classifier is allocated, or the retained vocabulary omits an observed class",
+          "targets": [
+            "WO-178"
+          ],
+          "at": "2026-10-01T15:47:38.879Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Settled by WO-178 at its passing final review (docs/final-reviews/WO-178/FINAL-002.md; evidence in docs/evidence/WO-178/). The planning feed accepts D018's full class vocabulary, positive reinforcement and trial and error included, and the hook fills the prefix classes; every other message is unclassified. Semantic classification of unclassified rows remains the candidate FUP-f55fb29d73e6f813.",
+          "reopenWhen": "a planning pass needs a class the feed's vocabulary lacks",
+          "targets": [],
+          "at": "2026-10-01T19:11:14.444Z"
         }
       ]
     },
@@ -23850,6 +23945,16 @@
             "WO-178"
           ],
           "at": "2026-09-30T15:30:45.380Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "duplicate",
+          "reason": "WO-178-D005 repairs source-word/value corroboration and bounds classification. Retarget the known unsupported forms and remaining observer cache/crash work to the concrete residual decision.",
+          "reopenWhen": "An ordinary call reaches the bound or an unsupported form prevents useful advice",
+          "targets": [
+            "FUP-7fd69f3bda6fa326"
+          ],
+          "at": "2026-10-01T15:47:39.053Z"
         }
       ]
     },
@@ -23876,6 +23981,16 @@
             "WO-178"
           ],
           "at": "2026-09-30T15:30:45.344Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "duplicate",
+          "reason": "WO-178-D005 catches malformed decision JSON, bounds combined guidance and classifies before scanning the shared lane. The residual cache and stale-claim work is carried by the new decision.",
+          "reopenWhen": "Repeated costly classification or stale claims prevent an ordinary answer",
+          "targets": [
+            "FUP-7fd69f3bda6fa326"
+          ],
+          "at": "2026-10-01T15:47:39.099Z"
         }
       ]
     },
@@ -24433,6 +24548,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-09-30T18:22:20.830Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Kept open by WO-178's final review with an observation (docs/final-reviews/WO-178/FINAL-002.md): WO-178 adds the operator-word advisory to docs-check, a per-run lexical scan of every work order and decision record that grows with closed history. On the operator's host on 2026-10-01, at the integrated WO-178 tree, the scan took 1.14 to 1.21 s in-process across three runs, of a whole node scripts/docs-check.mjs run of 10.45 to 10.55 s across two.",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-10-01T19:11:14.551Z"
         }
       ]
     },
@@ -25263,6 +25386,160 @@
           "ref": "docs/evidence/WO-105/decisions.md#wo-105-d012--final-review-the-corpuss-byte-pins-are-keyed-to-its-base-and-fail-on-later-main",
           "title": "WO-105-D012: Next order that edits the WO-105 corpus lane, or the first corpus-policy pass after it merges: decide how the lane behaves after its base. Either run its live comparisons against base sou",
           "summary": "{ \"id\": \"WO-105-D012\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: final review; FINAL-001; operator choice of pass with a follow-up\", \"decision\": \"Pass the order and board the base-keyed pins. After integration, the golden fixture, the manifest's lane records and the manifest's oracle hashes no longer match the integrated tree, so the golden --check, both sweep CLIs and three corpus tests exit nonzero. Two upstream changes cause this, and neither is WO-105's. @dotln/compiler moved from 0.21.0 to 0.22.0. Its version string appears 23 times in the demo's LoadoutEquipped payload and in the artifactIdentity envInputs of its decision traces. Replacing 0.21.0 with 0.22.0 in the golden makes its tr",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-7fd69f3bda6fa326",
+      "key": "decision:docs/evidence/WO-178/decisions.md#wo-178-d005",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "27c633fe0edaedd1e8a3d08e949901ee78ba0379ab8ab37aae9742424af3eb7b",
+          "ref": "docs/evidence/WO-178/decisions.md#wo-178-d005--carry-in-remedies-and-retained-limits",
+          "title": "WO-178-D005: Next planning pass, with FUP-d90c46abf5658272 and FUP-01e80ba5ce62c72a: decide a durable cache for failed results with no classified diagnostic and prune interrupted .shell-claim/.prepare",
+          "summary": "{ \"id\": \"WO-178-D005\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: next\", \"decision\": \"Catch malformed decision JSON at its shared reader and report only the public path and constrained heading id. Shell diagnostics now require a known literal whole parameter value for unsplit-word attribution, the whole builtin option, a recognized expansion in a parsed word, or an arithmetic expression with an observable missing operand. Unknown runtime values do not borrow an outer scope's known value. Scope comparisons use the current numeric scope id; commands above 32768 characters, nesting above 64, output beyond 65536 characters and more than 64 candidate lines are outside this advisory's processing b",
+          "missing": false
+        },
+        {
+          "hash": "1d07709bc86c719867a219cf6cce7baf0be57c3f91da86439dca35b8dfbed735",
+          "ref": "docs/evidence/WO-178/decisions.md#wo-178-d005--carry-in-remedies-and-retained-limits",
+          "title": "WO-178-D005: Next planning pass, with FUP-d90c46abf5658272 and FUP-01e80ba5ce62c72a: decide a durable cache for failed results with no classified diagnostic and prune interrupted .shell-claim/.prepare",
+          "summary": "{ \"id\": \"WO-178-D005\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: next\", \"decision\": \"Catch malformed decision JSON at its shared reader and report only the public path and constrained heading id. Shell diagnostics now require a known literal whole parameter value for unsplit-word attribution, the whole builtin option, a recognized expansion in a parsed word, or an arithmetic expression with an observable missing operand. Unknown runtime values do not borrow an outer scope's known value. Scope comparisons use the current numeric scope id; commands above 32768 characters, nesting above 64, output beyond 65536 characters and more than 64 candidate lines are outside this advisory's processing b",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "WO-178-D005 retains a bounded observer: no model or full shell interpreter. Known syntax gaps, classification caching and stale-claim cleanup require a separately selected bounded change.",
+          "reopenWhen": "An ordinary call reaches the bound, a stale claim blocks an answer, or repeated classification approaches the hook timeout",
+          "targets": [],
+          "at": "2026-10-01T15:47:39.199Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-00ed3cd9ab11599f",
+      "key": "decision:docs/evidence/WO-178/decisions.md#wo-178-d012",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "07c2355a0ccda10265cd26b0a71fbac1f790ed67a7b2196fa9c14d77d82b503c",
+          "ref": "docs/evidence/WO-178/decisions.md#wo-178-d012--verification-boards-the-unadmitted-material-retry-spelling",
+          "title": "WO-178-D012: Executor of the next order that edits scripts/lib/worktree-material.mjs, scripts/release.mjs or releaseCloseAdmission: print and admit one byte spelling. Make materialCloseCommand print t",
+          "summary": "{ \"id\": \"WO-178-D012\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: verify\", \"kind\": \"finding\", \"decision\": \"Board, not fail: the material retry that release close prints never matches the admission. materialCloseCommand in scripts/lib/worktree-material.mjs prints a command that starts with the bare word node, followed by the quoted main scripts/release.mjs path, close WO-NNN --publish and one or more --material flags. The material printer feeds both the blocker record and the retry line in scripts/release.mjs. releaseCloseAdmission admits --material flags only after the quoted process.execPath helper, so the printed retry bytes are never admitted and keep today's host judgment. Criterion 4 na",
+          "missing": false
+        },
+        {
+          "hash": "c8b3bbed108d63117e2260ffe1bbdb57bcca1f8530005ef42aa7358cebec1def",
+          "ref": "docs/evidence/WO-178/decisions.md#wo-178-d012--verification-boards-the-unadmitted-material-retry-spelling",
+          "title": "WO-178-D012: Executor of the next order that edits scripts/lib/worktree-material.mjs, scripts/release.mjs or releaseCloseAdmission: print and admit one byte spelling. Make materialCloseCommand print t",
+          "summary": "{ \"id\": \"WO-178-D012\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: verify\", \"kind\": \"finding\", \"decision\": \"Board, not fail: the material retry that release close prints never matches the admission. materialCloseCommand in scripts/lib/worktree-material.mjs prints a command that starts with the bare word node, followed by the quoted main scripts/release.mjs path, close WO-NNN --publish and one or more --material flags. The material printer feeds both the blocker record and the retry line in scripts/release.mjs. releaseCloseAdmission admits --material flags only after the quoted process.execPath helper, so the printed retry bytes are never admitted and keep today's host judgment. Criterion 4 na",
+          "missing": false
+        },
+        {
+          "hash": "e28244b34da21d7145d24258369853d73598bd8fb69d62533bb9f366b07f3a56",
+          "ref": "docs/evidence/WO-178/decisions.md#wo-178-d012--verification-boards-the-unadmitted-material-retry-spelling",
+          "title": "WO-178-D012: Executor of the next order that edits scripts/lib/worktree-material.mjs, scripts/release.mjs or releaseCloseAdmission: print and admit one byte spelling. Make materialCloseCommand print t",
+          "summary": "{ \"id\": \"WO-178-D012\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: verify\", \"kind\": \"finding\", \"decision\": \"Board, not fail: the material retry that release close prints never matches the admission. materialCloseCommand in scripts/lib/worktree-material.mjs prints a command that starts with the bare word node, followed by the quoted main scripts/release.mjs path, close WO-NNN --publish and one or more --material flags. The material printer feeds both the blocker record and the retry line in scripts/release.mjs. releaseCloseAdmission admits --material flags only after the quoted process.execPath helper, so the printed retry bytes are never admitted and keep today's host judgment. Criterion 4 na",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-d5a399224b1a5886",
+      "key": "decision:docs/evidence/WO-178/decisions.md#wo-178-d013",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "2954793c544033c756f8896328fd63a9cac54d1a594bd38ae66d4a547cd85715",
+          "ref": "docs/evidence/WO-178/decisions.md#wo-178-d013--verification-boards-the-admissions-precedence-over-a-typed-correction",
+          "title": "WO-178-D013: Executor of the next order that edits the permission facet, the typed-correction response or releaseCloseAdmission: withhold the admission whenever the session holds a typed-correction st",
+          "summary": "{ \"id\": \"WO-178-D013\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: verify\", \"kind\": \"finding\", \"decision\": \"Board, not fail: the release-close admission returns allow before the correction-narrowed compiled authority is consulted, so a recorded typed-correction state does not withhold it. The VER-001 fixture reproduction records the release-close dispatch, with cwd at main and release-close legal. It then writes the session's correction state: allowedEffects without shell.run, lifecycle.run, repo.write, repo.delete and git.local, the destructive set the correction hook applies. The exact publish helper still returned permissionDecision allow with the first-admission reason. The --force near m",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-bfe39a18fdf822ae",
+      "key": "decision:docs/evidence/WO-178/decisions.md#wo-178-d014",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "b3038a0485ee8a0d13431bc760dd226a052bcfda04cde6102533a6767bbbe73e",
+          "ref": "docs/evidence/WO-178/decisions.md#wo-178-d014--verification-boards-host-notifications-counted-as-operator-messages",
+          "title": "WO-178-D014: Executor of the next order that edits recordOperatorMessage or the planning intervention count: count only messages the host attributes to the operator. When a UserPromptSubmit matches a ",
+          "summary": "{ \"id\": \"WO-178-D014\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: verify\", \"kind\": \"finding\", \"decision\": \"Board, not fail: a host background-task notification is journaled as an operator message and counted as an intervention. In the VER-001 session, a background Bash command finished and the host delivered its completion as a queued command. The prompt hook appended OperatorMessageObserved with prefix null, class unclassified, route unknown, 422 bytes and digest fd116e1a78eff061…. That digest equals the digest of a transcript queued_command attachment whose commandMode is task-notification. The operator typed nothing at that time. failuresAtStart then reported interventions count 2 and unc",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-de7e15d4444da75b",
+      "key": "decision:docs/evidence/WO-178/decisions.md#wo-178-d015",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "7f6c6f1c10d825ca544f40f8f969c6323c6c387f325f7e3bfeeb5e791a8c8206",
+          "ref": "docs/evidence/WO-178/decisions.md#wo-178-d015--final-review-finding-the-operator-word-check-never-reads-a-provenance-field-in-a-header-paragraph",
+          "title": "WO-178-D015: WO-178 resume: fix. Rule the repair must hold: a work-order provenance field is one record wherever it stands. A header-paragraph line, from its bold Provenance or Nomination provenance l",
+          "summary": "{ \"id\": \"WO-178-D015\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: final review; FINAL-001\", \"kind\": \"finding\", \"decision\": \"Fail FINAL-001 on criterion 6 and return the finding to repair. operatorWordFindings in scripts/docs-check.mjs reads a work-order provenance record only when a whole Markdown paragraph begins with Provenance: or Nomination provenance:. Work orders usually write that field as one line of the header paragraph, after lines such as Model and Effort. Of the 166 work orders with a bold provenance field, 157 use that layout, WO-178 among them. A provenance field there that attributes quoted words to the operator, with no capture digest, produces no advisory. The criterion 6 fi",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "WO-178-D017/D020 implements FINAL-001 criterion 6 repair with grouped-header and field-boundary regressions and a full-surface candidate record. Both required gates pass; independent re-verification and final review judge the repair before settlement.",
+          "reopenWhen": "Independent verification reproduces a missed field or a crossed record boundary.",
+          "targets": [
+            "WO-178"
+          ],
+          "at": "2026-10-01T18:16:36.740Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by WO-178 at its passing final review (docs/final-reviews/WO-178/FINAL-002.md; evidence in docs/evidence/WO-178/). The repaired reader judges a provenance field inside a header paragraph exactly as a standalone one (D017). VER-002 injected an attributed quotation after all 168 line-start provenance labels and saw 165 reported; the other three cite a same-field digest. The full-surface pass recorded 61 candidates, 30 paraphrases across the order and 34 fingerprinted exceptions (D018). The residual sweep stays with FUP-71fc2efc208f597a and per-file record keys with FUP-f927210831623001 (D021).",
+          "reopenWhen": "a supported provenance layout is missed, or a retained fingerprint changes without capture provenance",
+          "targets": [],
+          "at": "2026-10-01T19:11:14.516Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-2f1b441dc2c37776",
+      "key": "decision:docs/evidence/WO-178/decisions.md#wo-178-d006",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "e3aa9a966c9d9d0a1e33a9000b7f5accb5e46e747f1f4dfe39ca7831fb5b2d0f",
+          "ref": "docs/evidence/WO-178/decisions.md#wo-178-d006--observation-coverage-and-bounded-paraphrases",
+          "title": "WO-178-D006: The typed prompt row records the hook observation time, UTF-8 digest and byte count, prefix class and lifecycle scope, never message text. UserPromptSubmit has no documented route field: ",
+          "summary": "{ \"id\": \"WO-178-D006\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: next\", \"decision\": \"The typed prompt row records the hook observation time, UTF-8 digest and byte count, prefix class and lifecycle scope, never message text. UserPromptSubmit has no documented route field: a matching latest native transcript row supplies a correlated route and named source; absent, unflushed or unmatched metadata records unknown. No guarantee is made that every mid-turn or interrupt reaches this event. Codex records the reconstructed canonical dispatch phrase only, labels its source dispatch-only and keeps route unknown. Denials preserve a bounded tool name and bracketed rule label, digest and byte count, nev",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-f927210831623001",
+      "key": "decision:docs/evidence/WO-178/decisions.md#wo-178-d021",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "01cf98f0349878ca721f66a4a6f343282945ba70b49b102b89e6e0af9820325c",
+          "ref": "docs/evidence/WO-178/decisions.md#wo-178-d021--verification-boards-provenance-records-that-share-one-baseline-key",
+          "title": "WO-178-D021: Executor of the next order that edits scripts/docs-check.mjs operator-word records: give each provenance record a key unique within its file, such as provenance, provenance-2 in document ",
+          "summary": "{ \"id\": \"WO-178-D021\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: verify\", \"kind\": \"finding\", \"decision\": \"Board, not fail: operatorWordFindings in scripts/docs-check.mjs names every work-order provenance record file#provenance, so two provenance fields in one order share one key. The fingerprint baseline maps a key to one fingerprint. When both fields attribute quoted words to the operator without a capture digest, the baseline can hold only one of them, so the other is reported on every run. Both advisory lines also print the same record name, so the reader cannot tell which field to paraphrase. The repaired reader makes this layout reachable: it now reads a header-paragraph field and a la",
           "missing": false
         }
       ],

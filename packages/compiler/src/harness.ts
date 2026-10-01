@@ -560,7 +560,10 @@ export function lowerToHarness(
         ),
       });
   }
-  const hookPaths = new Map<HarnessEvent | "SessionStart", string[]>();
+  const hookPaths = new Map<
+    HarnessEvent | "SessionStart" | "PermissionDenied",
+    string[]
+  >();
   const hookRoot = ".claude/hooks";
   const emit = (
     path: string,
@@ -576,7 +579,7 @@ export function lowerToHarness(
   };
   const hook = (
     name: string,
-    event: HarnessEvent,
+    event: HarnessEvent | "PermissionDenied",
     config: unknown,
     names: readonly string[],
     rung: number,
@@ -645,7 +648,7 @@ process.stdout.write(JSON.stringify(response));`;
 
     emit(
       path,
-      `${header}let input, control;\ntry {\nconst { text } = await import("node:stream/consumers");\nconst rawInput = await text(process.stdin);\ntry { input = JSON.parse(rawInput); } catch {}\nconst event = ${eventExpression};\nconst recoveryInput = input !== null && typeof input === "object" && !Array.isArray(input) && (input.prompt === undefined || typeof input.prompt === "string") && (typeof input.session_id === "string" || (event === "UserPromptSubmit" && /^(analysis|operator override):(?:\\s|$)/i.test((input.prompt ?? "").trim())));\ncontrol = recoveryInput ? await (${operatorControl.toString()})({ ...input, session_id: typeof input.session_id === "string" ? input.session_id : undefined }, event) : null;\nif (control && !control.overrideExit) { process.stdout.write(JSON.stringify(control)); } else {\nconst { feedbackBoundary } = await import("../../${profile.runtime.snapshot ? `${profile.runtime.snapshot}/` : ""}packages/skeleton/dist/src/feedback-boundary.js");\nconst { runHarnessHook } = await import("../../${profile.runtime.snapshot ? `${profile.runtime.snapshot}/` : ""}packages/skeleton/dist/src/harness-host.js");\nawait runHarnessHook(${json({ compilerPackageVersion: COMPILER_PACKAGE_VERSION, runtime: profile.runtime, event, tools: profile.tools, envelope, grants: program.loadout.grants ?? [], outsideWriteGrants, ...(config as object) }).trim()}, feedbackBoundary, input, rawInput, control);\n}\n} catch { if (control?.overrideExit) { const { overrideExit, ...exited } = control; const advisory = "DotLn advisory: the pinned runtime is unavailable, so OperatorOverrideRecorded was not appended. " + overrideExit.advisory; process.stdout.write(JSON.stringify({ systemMessage: exited.systemMessage + " " + advisory, hookSpecificOutput: { hookEventName: "UserPromptSubmit", additionalContext: advisory } })); } else { ${fallback} } }\n`,
+      `${header}let input, control;\ntry {\nconst { text } = await import("node:stream/consumers");\nconst rawInput = await text(process.stdin);\ntry { input = JSON.parse(rawInput); } catch {}\nconst event = ${eventExpression};\nconst recoveryInput = input !== null && typeof input === "object" && !Array.isArray(input) && (input.prompt === undefined || typeof input.prompt === "string") && (typeof input.session_id === "string" || (event === "UserPromptSubmit" && /^(analysis|operator override):(?:\\s|$)/i.test((input.prompt ?? "").trim())));\ncontrol = recoveryInput ? await (${operatorControl.toString()})({ ...input, session_id: typeof input.session_id === "string" ? input.session_id : undefined }, event) : null;\nif (control && !control.overrideExit) { ${name === "session" ? `try { const { recordOperatorMessage } = await import("../../${profile.runtime.snapshot ? `${profile.runtime.snapshot}/` : ""}packages/skeleton/dist/src/harness-host.js"); const { fileURLToPath } = await import("node:url"); recordOperatorMessage(fileURLToPath(new URL("../../", import.meta.url)), input); } catch {} ` : ""}process.stdout.write(JSON.stringify(control)); } else {\nconst { feedbackBoundary } = await import("../../${profile.runtime.snapshot ? `${profile.runtime.snapshot}/` : ""}packages/skeleton/dist/src/feedback-boundary.js");\nconst { runHarnessHook } = await import("../../${profile.runtime.snapshot ? `${profile.runtime.snapshot}/` : ""}packages/skeleton/dist/src/harness-host.js");\nawait runHarnessHook(${json({ compilerPackageVersion: COMPILER_PACKAGE_VERSION, runtime: profile.runtime, event, tools: profile.tools, envelope, grants: program.loadout.grants ?? [], outsideWriteGrants, ...(config as object) }).trim()}, feedbackBoundary, input, rawInput, control);\n}\n} catch { if (control?.overrideExit) { const { overrideExit, ...exited } = control; const advisory = "DotLn advisory: the pinned runtime is unavailable, so OperatorOverrideRecorded was not appended. " + overrideExit.advisory; process.stdout.write(JSON.stringify({ systemMessage: exited.systemMessage + " " + advisory, hookSpecificOutput: { hookEventName: "UserPromptSubmit", additionalContext: advisory } })); } else { ${fallback} } }\n`,
       origins,
       rung,
     );
@@ -750,6 +753,16 @@ process.stdout.write(JSON.stringify(response));`;
           missingCapabilities: ["hooks.PreToolUse", "settings.permissions"],
         });
   }
+  // Copilot reuses Claude's settings verbatim. Registration claims no observed
+  // Copilot event; the handler records only events the host actually emits.
+  if (profile.events.PreToolUse.available)
+    hook(
+      "permission-denied",
+      "PermissionDenied",
+      { kind: "denial" },
+      permissions.map((facet) => facet.facetId),
+      1,
+    );
   if (profile.events.PreToolUse.available)
     hook(
       "write-observer",
@@ -919,7 +932,9 @@ process.stdout.write(JSON.stringify(response));`;
           event,
           [
             {
-              ...(event.includes("Tool") ? { matcher: ".*" } : {}),
+              ...(event.includes("Tool") || event === "PermissionDenied"
+                ? { matcher: ".*" }
+                : {}),
               hooks: paths.map((path) => ({
                 type: "command",
                 command: `node \"$CLAUDE_PROJECT_DIR/${path}\"`,

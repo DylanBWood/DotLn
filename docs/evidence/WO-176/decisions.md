@@ -227,7 +227,7 @@
   "id": "WO-176-D027",
   "date": "2026-10-01",
   "dispatch": "resume: fix; adjacent-0003 revision 1",
-  "decision": "Repair the bounded material remedies and record-accuracy defects in the existing source and fixtures. The operator selected 'Repair the bounded adjacent cases (Recommended)' after the scope announcement. Keep moved-main release validation and concurrent/unbounded attempt history on named follow-ups.",
+  "decision": "Repair the bounded material remedies and record-accuracy defects in the existing source and fixtures. The operator selected the proposed bounded adjacent repairs after the scope announcement. Keep moved-main release validation and concurrent/unbounded attempt history on named follow-ups.",
   "evidence": [
     "FINAL-001 D023(b–g,i), D020: per-path commands omit the other blockers; tag errors are relabelled by a message regex; record reads occur before try and finally writes can replace the result; derived inventory can throw outside its guard; file basename rules dispose repository directories; the dispatch assertion checks only key existence",
     "scripts/lib/paths.mjs ignoredLane has no feedback lane; that mount is disposable only while empty",

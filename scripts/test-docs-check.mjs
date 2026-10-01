@@ -13,7 +13,106 @@ import {
   markdownLinks,
   productContent,
   validDispatch,
+  operatorWordAdvisories,
+  operatorWordFindings,
 } from "./docs-check.mjs";
+
+test("WO-178 attributed operator words advise by record, with capture and fingerprinted baseline exceptions", (t) => {
+  const f = fixture(t);
+  f.write(
+    "docs/work-orders/WO-999-fixture.md",
+    "# WO-999 — Fixture\n\n**Nomination provenance:** The operator\nsaid “synthetic quoted requirement”.\n",
+  );
+  const first = operatorWordFindings(f.root);
+  assert.equal(first.length, 1);
+  assert.equal(first[0].record, "provenance");
+  assert.doesNotMatch(JSON.stringify(first), /synthetic quoted requirement/);
+  const key = `${first[0].file}#${first[0].record}`;
+  f.baseline.operatorWords = { [key]: first[0].fingerprint };
+  assert.equal(f.check().operatorWords.current, 0);
+  assert.equal(f.check().operatorWords.historical, 1);
+  f.write(
+    first[0].file,
+    "# WO-999 — Fixture\n\n**Nomination provenance:** The operator said “a different quote”.\n",
+  );
+  assert.equal(f.check().operatorWords.current, 1);
+  for (const citation of [
+    `SHA-256 ${"a".repeat(64)}`,
+    `--capture-hash sha256:${"b".repeat(64)}`,
+  ]) {
+    f.write(
+      first[0].file,
+      `# WO-999 — Fixture\n\n**Nomination provenance:** The operator said “synthetic quoted requirement”; ${citation}.\n`,
+    );
+    assert.equal(operatorWordAdvisories(f.root).current, 0);
+  }
+  f.record('resume: next; operator said "synthetic dispatch quote"');
+  assert.equal(operatorWordAdvisories(f.root).current, 1);
+  // A digest in another record does not exempt this dispatch.
+  assert.equal(f.check().operatorWords.current, 1);
+  assert.deepEqual(f.check().failures, []);
+  f.record("resume: next; operator requested the fixture change");
+  assert.equal(operatorWordAdvisories(f.root).current, 0);
+});
+
+test("WO-178 provenance findings and fingerprints survive grouped header layouts", (t) => {
+  const f = fixture(t);
+  const file = "docs/work-orders/WO-999-fixture.md";
+  for (const label of ["Nomination provenance", "Provenance"]) {
+    const field = `**${label}:** The operator\nsaid “synthetic grouped requirement”.`;
+    f.write(file, `# WO-999 — Fixture\n\n${field}\n`);
+    const standalone = operatorWordFindings(f.root);
+    assert.equal(standalone.length, 1);
+    for (const [before, after] of [
+      ["**Model:** Fixture\n**Effort:** high\n", ""],
+      ["**Track:** machinery\n", "\n**Depends on:** no order."],
+    ]) {
+      f.write(file, `# WO-999 — Fixture\n\n${before}${field}${after}\n`);
+      assert.deepEqual(operatorWordFindings(f.root), standalone);
+      const key = `${file}#provenance`;
+      assert.equal(
+        operatorWordAdvisories(f.root, { [key]: standalone[0].fingerprint })
+          .current,
+        0,
+      );
+      f.write(
+        file,
+        `# WO-999 — Fixture\n\n${before}${field.replace("requirement", "change")}${after}\n`,
+      );
+      assert.equal(
+        operatorWordAdvisories(f.root, { [key]: standalone[0].fingerprint })
+          .current,
+        1,
+      );
+    }
+  }
+});
+
+test("WO-178 capture citations and attributed words stay inside their provenance field", (t) => {
+  const f = fixture(t);
+  const file = "docs/work-orders/WO-999-fixture.md";
+  const digest = `SHA-256 ${"c".repeat(64)}`;
+  const field =
+    "**Provenance:** The operator uses the **category:** “synthetic field requirement”.";
+  for (const [before, after] of [
+    [`**Model:** Fixture; ${digest}\n`, ""],
+    ["**Effort:** high\n", `\n**Cost:** ${digest}.`],
+  ]) {
+    f.write(file, `# WO-999 — Fixture\n\n${before}${field}${after}\n`);
+    assert.equal(operatorWordFindings(f.root).length, 1);
+  }
+  f.write(
+    file,
+    `# WO-999 — Fixture\n\n**Model:** Fixture\n${field}\nCapture: ${digest}.\n**Cost:** The operator said “synthetic other-field quote”.\n`,
+  );
+  assert.equal(operatorWordFindings(f.root).length, 0);
+  f.write(
+    file,
+    "# WO-999 — Fixture\n\n**Effort:** high\n**Provenance:** A synthesized requirement.\n**Cost:** The operator said “synthetic other-field quote”.\n\n```md\n**Provenance:** The operator said “synthetic example”.\n```\n",
+  );
+  assert.equal(operatorWordFindings(f.root).length, 0);
+});
+
 import { suites } from "./test-runner.mjs";
 import {
   historyEnd,

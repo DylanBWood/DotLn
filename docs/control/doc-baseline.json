@@ -3305,5 +3305,41 @@
       "reason": "missing file",
       "count": 1
     }
-  ]
+  ],
+  "operatorWords": {
+    "docs/work-orders/WO-014-approval-burden-contract.md#provenance": "5a35c7e4df62cba0b34269d4472760e1faa6ccb389f3278c25353018f0d1f226",
+    "docs/work-orders/WO-019-effort-truth.md#provenance": "21ae36549893ed6ecadcd614b2762bd295a91c2d1655045f84b5a2ff294c426f",
+    "docs/work-orders/WO-053-first-external-source-change.md#provenance": "6322ced5231f8f062f4cf5357509ce5e606fd2719c4c325c832feadbf4367587",
+    "docs/work-orders/WO-059-playwright-evidence-adapter.md#provenance": "9520046cbda9d8d44a09a8f0da646f83f1268d0f98f8b2c7d2268eb9a34db6fd",
+    "docs/work-orders/WO-061-story-contract-compile.md#provenance": "a31a6a634436d96e2da718a6b2837ac260a0776bde6d857780c179bcaf1f3537",
+    "docs/work-orders/WO-065-pull-request-state-observation.md#provenance": "6e8a464eee89c9e4105bd8a7415c8ba0969e978ba5dfef02c2b12be2b923ebb7",
+    "docs/work-orders/WO-079-worktree-sync.md#provenance": "2a43bfbf27f313012cd2517afd3bbd08e8da1db81e1ade5c98ac1dc461070d4f",
+    "docs/work-orders/WO-086-generated-release-history.md#provenance": "6ef4f2b5f4e2059a81ae22f5856415723debaaaefb76fdffca89c64ea367d076",
+    "docs/work-orders/WO-091-multi-active-link-groups.md#provenance": "ff0d2fd11d95885cbf65e304b30dc1e5dc174d5f086f7835308d4539336c7f56",
+    "docs/work-orders/WO-100-preauthorized-portfolio.md#provenance": "46a4d90a09db6b32dff84b0374f1a68911b2373fa5d249952774fdc5bb06881b",
+    "docs/work-orders/WO-130-declared-suite-inputs-replica.md#provenance": "802a27bab2dcf6a70dc6e053a497f43a25a988e8c4cae231494428360214a923",
+    "docs/work-orders/WO-144-outside-project-write-grant.md#provenance": "2d0d8de225722af3b4ddcca0302b7f38276298991ea6c87b9895b437b8aca29a",
+    "docs/work-orders/WO-145-tinkerer-economy-experiment.md#provenance": "8d48666ed333c9efdf8ae1411f2d0c00d9511eae3babecbea107a0256a44adae",
+    "docs/work-orders/WO-151-entropy-reducer-dispatch.md#provenance": "53a80a4260d5295d46bad6fbd8060f302feb99071f251d69efb87c46283ebef5",
+    "docs/work-orders/WO-160-wo111-machinery-followups.md#provenance": "9d4da68f8708c7ecf68fb0e880b679a421142eb3a4b80c01d9224be3399aaf54",
+    "docs/work-orders/WO-162-in-unit-helper-reuse.md#provenance": "38266efb1e24825daec1ec0d2b71285e3b509cd75766e7c46f61c402e08d91e0",
+    "docs/work-orders/WO-178-the-record-holds-what-the-operator-sees.md#provenance": "752c140fc3c489ea38361ad3b037a40eb5ac69963a4aeb459c8bda7a70915791",
+    "docs/evidence/WO-044/decisions.md#WO-044-D016": "c24fbdf8cd346105d789b5205a9fb1e5aba58a3fc4e50234722b039f497d940d",
+    "docs/evidence/WO-056/decisions.md#WO-056-D008": "edf67ff547cb3fd1b411974830f03cae4157255500c771a1622abfdab1abed30",
+    "docs/evidence/WO-070/decisions.md#WO-070-D010": "7089d64fb2e2278c10dc1bcd87f872d2662b099372b6d439ce26315462ce433f",
+    "docs/evidence/WO-135/decisions.md#WO-135-D003": "98af9e828bdc23f05568b1d4421831dd73ebd4953638e69e8cee16770cabc64f",
+    "docs/evidence/WO-135/decisions.md#WO-135-D006": "5cffb4cec9fb20b9efa2fe1cdee7413a4bb29fcab6c7c4d42f7637379fa3b8be",
+    "docs/evidence/WO-143/decisions.md#WO-143-D003": "a9eef0675df05689741c055b08af398c713507b0e8a69d6f27c70b6c5eaad84a",
+    "docs/evidence/WO-146/decisions.md#WO-146-D012": "803ab1fcc53eaed8ae62b837a38b10a2b9472e41d5fd316b49b15eadf81bf90f",
+    "docs/evidence/WO-150/decisions.md#WO-150-D006": "8a8d3b6c5b5ff8275491981fb0f9f294cdd3aba759a3b6286ab5521718d9bb04",
+    "docs/evidence/WO-150/decisions.md#WO-150-D007": "ac1186d3cdd7af6e3ca996270d157f736519c1ff58620d915a04b060b2e3c23f",
+    "docs/evidence/WO-152/decisions.md#WO-152-D005": "7882e56aaa086d3656e367eb1f5bacdf4d2fa8bf6dcd317ec4d2ea4d84c15aec",
+    "docs/evidence/WO-154/decisions.md#WO-154-D004": "677b3a04e726c0ad42b4b6c4a596bcb080d9dd24e1cdc061ff3cf3c26806c04d",
+    "docs/evidence/WO-154/decisions.md#WO-154-D005": "c1c7c5efefbb7ef3a9953905b66d24e69e4c00c7fdda07197782dde9d164a534",
+    "docs/evidence/WO-158/decisions.md#WO-158-D013": "fc5d1d8387cf5d3699a179cb265ae99f0b7c06553a3d0ae5c11b49f3b7c3c55b",
+    "docs/evidence/WO-170/decisions.md#WO-170-D005": "c74d7d664d7100378f380991e4b0b5e89a91dd064ff21398dacad5de6fd2c3af",
+    "docs/evidence/WO-170/decisions.md#WO-170-D012": "1f0057100d1b10f5bb3ce029bab335868ac418e32d7dcb3f7bd278240f930b77",
+    "docs/evidence/WO-170/decisions.md#WO-170-D019": "8f13941d7569eed777c04ffad0eafcd2d7c60fac2ef5f7563187ae65508c296b",
+    "docs/evidence/WO-178/decisions.md#WO-178-D015": "53a41373e340525df1b1d23d39d0adfb5316b66dc5d250992bbc40c105428335"
+  }
 }
