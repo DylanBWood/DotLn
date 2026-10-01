@@ -58,6 +58,16 @@ import {
   snapshotTransport,
 } from "../packages/skeleton/dist/test/verification-worktree-fixture.js";
 import { prepareWorktreeVerification } from "../packages/skeleton/dist/src/verification-worktree.js";
+import {
+  VerificationDriver,
+  VerificationHost,
+} from "../packages/skeleton/dist/src/verification-host.js";
+import {
+  parseEvidenceResult,
+  compareBaseline,
+} from "../packages/skeleton/dist/src/verification-protocol.js";
+import { fixtureVerificationResult } from "../packages/skeleton/dist/src/verification-fake.js";
+import { deliveryContractHash } from "./lib/github-body.mjs";
 import { lintOutwardArtifact } from "./lib/outward-lint.mjs";
 
 const repoRoot = realpathSync(fileURLToPath(new URL("..", import.meta.url)));
@@ -137,12 +147,140 @@ const grantFor = (repo, grantedBy) => ({
   repo,
 });
 
+async function readinessEpisode(
+  root,
+  name,
+  baseline,
+  prepared,
+  criteria,
+  extra = {},
+) {
+  const store = new WorkerStore(join(root, name));
+  store.acquire();
+  const driver = new VerificationDriver(
+    store,
+    `ws_${name.replaceAll("-", "_")}`,
+  );
+  const clock = extra.baselineContext?.kind === "baseline" ? 2 : 20;
+  const transport = {
+    name: "fake",
+    harnessVersion: "not-applicable",
+    dispatch(request, now) {
+      let result;
+      const envelope = {
+        workOrderId: request.workOrder.workOrderId,
+        episodeId: request.episodeId,
+        resultId: `result_${request.command.commandId}`,
+        status: "completed",
+        summary: "Deterministic readiness fixture.",
+        requiresHuman: false,
+      };
+      if (request.baseline?.kind === "baseline")
+        result = {
+          kind: "baseline",
+          subjectRevision: request.capsule.subject.revision,
+          envelope,
+        };
+      else if (request.review)
+        result = {
+          kind: "review",
+          subjectRevision: request.capsule.subject.revision,
+          findings: [],
+          envelope,
+        };
+      else {
+        result = fixtureVerificationResult(
+          request.capsule,
+          request.episodeId,
+          envelope.resultId,
+        );
+        if (request.baseline?.kind === "comparison")
+          result.baselineFindings = compareBaseline(
+            request.baseline,
+            request.capsule,
+          );
+      }
+      return {
+        receipt: Promise.resolve({
+          commandId: request.command.commandId,
+          transport: "fake",
+          acceptedAt: now(),
+        }),
+        completed: Promise.resolve(parseEvidenceResult(result, request)),
+        alive: () => false,
+        kill() {},
+      };
+    },
+  };
+  try {
+    driver.record("VerificationOpened", clock, {
+      baseline: baseline.subject,
+      subject: prepared.subject,
+      criteria,
+      implementerEpisodeId: "ep_future_implementer",
+      maxRepairs: 0,
+      authority: {
+        authorityEnvelopeId: `auth_${name}`,
+        allowedEffects: ["verification.evaluate"],
+        deniedEffects: ["repo.write", "network"],
+        resourceLimits: { episodes: 2 },
+        requiredEvidence: [],
+        expiresAt: 100000,
+        revocationEventTypes: [],
+      },
+      ...extra,
+    });
+    driver.persistNext(clock);
+    const host = new VerificationHost({ driver, transport, now: () => clock });
+    await host.run(prepared.snapshotPath, "process-double", "unknown");
+    if (driver.state.next === "review") {
+      driver.persistNext(clock);
+      await host.run(prepared.snapshotPath, "process-double", "unknown");
+    }
+    return { state: driver.state, events: decodeLog(driver.log) };
+  } finally {
+    store.release();
+  }
+}
+
 /** One launchpad root and one real source-change episode per scenario, so the
  * episode's compiled identity binds the same host registry publish reads. */
 async function scenario(
   t,
-  { grantedBy = "operator", review = false, signed = false } = {},
+  {
+    grantedBy = "operator",
+    review = false,
+    signed = false,
+    readiness = false,
+  } = {},
 ) {
+  if (readiness) review = true;
+  const criteria = readiness
+    ? snapshotCriteria.map((criterion) => ({
+        ...criterion,
+        requiredChecks: [...criterion.requiredChecks, "build", "lint"],
+      }))
+    : snapshotCriteria;
+  const tests = readiness
+    ? [
+        ...snapshotTests,
+        {
+          criterionId: "AC-contract",
+          checkId: "build",
+          command: "node build-test.mjs",
+        },
+        {
+          criterionId: "AC-contract",
+          checkId: "lint",
+          command: "node lint-test.mjs",
+        },
+      ]
+    : snapshotTests;
+  const contract = {
+    ...snapshotContract,
+    workOrderId: "WO-064",
+    requiredEvidence: tests.map((test) => test.command),
+  };
   const root = createSourceFixture();
   t.after(() => disposeRepairFixture(root));
   const target = join(root, "target");
@@ -154,8 +292,19 @@ async function scenario(
     );
     writeFileSync(
       join(target, "contract-test.mjs"),
-      "import assert from 'node:assert/strict'; import {readFileSync} from 'node:fs'; assert.match(readFileSync('fixture.txt','utf8'), /contract-satisfied/);\n",
+      `import assert from 'node:assert/strict'; import {readFileSync} from 'node:fs'; assert.match(readFileSync('fixture.txt','utf8'), /${readiness ? "changed by synthetic worker" : "contract-satisfied"}/);\n`,
     );
+    if (readiness) {
+      writeFileSync(
+        join(target, "CONVENTIONS.md"),
+        "Preserve the existing plain-text fixture format.\n",
+      );
+      for (const kind of ["build", "lint"])
+        writeFileSync(
+          join(target, `${kind}-test.mjs`),
+          "import assert from 'node:assert/strict'; import {readFileSync} from 'node:fs'; assert.equal(readFileSync('fixture.txt','utf8'), 'changed by synthetic worker\\n');\n",
+        );
+    }
     fixtureGit(target, "add", "-A");
     fixtureGit(target, "commit", "-m", "Name the synthetic repair contract");
     writeFileSync(
@@ -208,10 +357,7 @@ async function scenario(
     ...loadout,
     authorityGrants: grant ? [grant] : [],
   });
-  if (review)
-    Object.assign(source.activeMechanics[0].workOrder, snapshotContract, {
-      workOrderId: "WO-064",
-    });
+  if (review) Object.assign(source.activeMechanics[0].workOrder, contract);
   const environment = {
     environmentId: "wo064.fixture",
     version: 1,
@@ -295,11 +441,37 @@ async function scenario(
         baseCommit,
         observedCommit: baseCommit,
         repo: "review-fixture",
-        contract: { ...snapshotContract, workOrderId: "WO-064" },
-        criteria: snapshotCriteria,
-        tests: snapshotTests,
+        contract,
+        criteria,
+        tests,
         directory: join(root, "baseline"),
       })
+    : null;
+  const baselineEpisode = readiness
+    ? await readinessEpisode(
+        root,
+        "readiness-baseline",
+        baseline,
+        baseline,
+        criteria,
+        {
+          baselineContext: {
+            kind: "baseline",
+            story: {
+              kind: "defect",
+              storyId: "fixture-change",
+              tests: [
+                {
+                  criterionId: "AC-contract",
+                  checkId: "superficial",
+                  command: "node fixture-test.mjs",
+                  expectedExitCode: 1,
+                },
+              ],
+            },
+          },
+        },
+      )
     : null;
   const result = await host.run();
   assert.equal(result.status, "observed", JSON.stringify(result));
@@ -309,13 +481,67 @@ async function scenario(
         baseCommit,
         observedCommit: result.observation.commit,
         repo: "review-fixture",
-        contract: { ...snapshotContract, workOrderId: "WO-064" },
-        criteria: snapshotCriteria,
-        tests: snapshotTests,
+        contract,
+        criteria,
+        tests,
         directory: join(root, "review-snapshot"),
       })
     : null;
   host.finish();
+  if (readiness) {
+    const implementationEvents = decodeLog(
+      readFileSync(join(root, "store/events.jsonl"), "utf8"),
+    );
+    const implementerEpisodeId = implementationEvents.find(
+      (event) => event.type === "WorkerAttemptStarted",
+    ).payload.workerEpisodeId;
+    const verified = await readinessEpisode(
+      root,
+      "readiness-verification",
+      baseline,
+      prepared,
+      criteria,
+      {
+        implementerEpisodeId,
+        reviewConventionsPath: "CONVENTIONS.md",
+        baselineContext: {
+          kind: "comparison",
+          witness: baselineEpisode.state.baselineWitness,
+        },
+      },
+    );
+    assert.equal(verified.state.next, "reviewed");
+    const evidenceFor = (check) =>
+      verified.state.evidence
+        .filter((entry) => entry.checkId === check)
+        .map((entry) => entry.evidenceId);
+    writeFileSync(
+      join(root, "store/delivery-preparation.json"),
+      JSON.stringify({
+        schemaVersion: 1,
+        workOrderId: "WO-064",
+        subjectRevision: result.observation.commit,
+        contractHash: deliveryContractHash(writer.program.workOrder),
+        diffHash: result.observation.diffHash,
+        unresolvedMaterialAmbiguities: [],
+        checks: {
+          tests: evidenceFor("superficial"),
+          build: evidenceFor("build"),
+          lint: evidenceFor("lint"),
+        },
+        monitoring: {
+          owner: "fixture-resident",
+          repositoryId: "github.com/dotln-fixture/target",
+          headRevision: result.observation.commit,
+          command: "worktree resolve-pr",
+          ciFailure: "classify-before-repair",
+          reviewComments: "triage-by-type",
+          sourceDrift: "stop",
+          terminalState: "human-controlled",
+        },
+      }),
+    );
+  }
   write(join(root, "loadout.json"), JSON.stringify(source));
   const request = {
     schemaVersion: 1,
@@ -324,15 +550,21 @@ async function scenario(
     store: "store",
     baseBranch: "main",
     repositoryId: "github.com/dotln-fixture/target",
+    ...(readiness
+      ? {
+          baselineStore: "readiness-baseline",
+          verificationStore: "readiness-verification",
+        }
+      : {}),
   };
   const requestPath = join(root, "request.json");
   write(requestPath, JSON.stringify(request));
   const ghLog = join(root, "gh.log");
   const body = join(root, "published-body.md");
-  const publish = () =>
+  const publish = (...flags) =>
     spawnSync(
       process.execPath,
-      [cli, "publish", "WO-064", "--target", requestPath],
+      [cli, "publish", "WO-064", "--target", requestPath, ...flags],
       {
         cwd: root,
         encoding: "utf8",
@@ -395,6 +627,136 @@ const refusedBeforeRemote = (subject, run, pattern) => {
   assert.equal(existsSync(subject.publication), false);
 };
 
+await test("WO-182 AC3: readiness refusal precedes every remote call; operator publication shows the same gaps", async (t) => {
+  const subject = await scenario(t);
+  refusedBeforeRemote(
+    subject,
+    subject.publish("--require-deliverable-ready"),
+    /deliverable-ready evidence absent: .*Reproduced baseline.*Independent verification and review/u,
+  );
+  const published = subject.publish();
+  assert.equal(published.status, 0, published.stderr);
+  const body = readFileSync(subject.body, "utf8");
+  assert.match(body, /## Deliverable-ready\n\nDeliverable-ready: not ready;/u);
+  assert.match(body, /\| Reproduced baseline \| absent \| BaselineWitnessed/u);
+  assert.match(
+    body,
+    /\| Independent verification and review \| absent \| .*ReviewCompleted/u,
+  );
+  assert.equal(subject.ghCalls().length, 3);
+});
+
+await test(
+  "WO-182 AC3: one absent item names its gap; the same store publishes a proposal without the flag",
+  { skip: process.platform !== "darwin" },
+  async (t) => {
+    const subject = await scenario(t, { readiness: true });
+    const file = join(subject.root, "store/delivery-preparation.json");
+    const preparation = JSON.parse(readFileSync(file, "utf8"));
+    writeFileSync(
+      file,
+      JSON.stringify({
+        ...preparation,
+        unresolvedMaterialAmbiguities: ["unanswered-choice"],
+      }),
+    );
+    const run = subject.publish("--require-deliverable-ready");
+    refusedBeforeRemote(
+      subject,
+      run,
+      /deliverable-ready evidence absent: No unresolved material ambiguity\s*$/u,
+    );
+    const published = subject.publish();
+    assert.equal(published.status, 0, published.stderr);
+    const body = readFileSync(subject.body, "utf8");
+    assert.match(body, /Deliverable-ready: not ready; 1 item absent\./u);
+    assert.equal(body.match(/\| evidenced \|/gu).length, 12);
+    assert.match(
+      body,
+      /\| Visual claims visually inspected \| not-applicable \|/u,
+    );
+    assert.equal(subject.ghCalls().length, 3);
+    const again = subject.publish();
+    assert.equal(again.status, 0, again.stderr);
+    assert.equal(subject.ghCalls().length, 3);
+  },
+);
+
+await test(
+  "WO-182 current replayed baseline, verification and review permit required publication",
+  { skip: process.platform !== "darwin" },
+  async (t) => {
+    const subject = await scenario(t, { readiness: true });
+    const published = subject.publish("--require-deliverable-ready");
+    assert.equal(published.status, 0, published.stderr);
+    const body = readFileSync(subject.body, "utf8");
+    assert.match(
+      body,
+      /Deliverable-ready: ready; every applicable item is evidenced\./u,
+    );
+    assert.equal(body.match(/\| evidenced \|/gu).length, 13);
+    assert.match(
+      body,
+      /\| Visual claims visually inspected \| not-applicable \|/u,
+    );
+    assert.equal(subject.ghCalls().length, 3);
+  },
+);
+
+await test(
+  "WO-182 stale preparation and forged baseline/review events cannot bypass readiness",
+  { skip: process.platform !== "darwin" },
+  async (t) => {
+    const subject = await scenario(t, { readiness: true });
+    const file = join(subject.root, "store/delivery-preparation.json");
+    const original = readFileSync(file, "utf8");
+    writeFileSync(
+      file,
+      JSON.stringify({
+        ...JSON.parse(original),
+        subjectRevision: subject.baseCommit,
+      }),
+    );
+    refusedBeforeRemote(
+      subject,
+      subject.publish("--require-deliverable-ready"),
+      /deliverable-ready evidence absent: .*No unresolved material ambiguity.*Tests\/build\/lint.*Monitored loop/u,
+    );
+    writeFileSync(file, original);
+    for (const [store, type] of [
+      ["readiness-baseline", "BaselineWitnessed"],
+      ["readiness-verification", "ReviewCompleted"],
+    ]) {
+      const log = join(subject.root, store, "events.jsonl");
+      const bytes = readFileSync(log, "utf8");
+      const events = decodeLog(bytes);
+      const event = events.find((entry) => entry.type === type);
+      writeFileSync(
+        log,
+        bytes.replace(
+          JSON.stringify(event),
+          JSON.stringify({ ...event, actorId: "implementer" }),
+        ),
+      );
+      refusedBeforeRemote(
+        subject,
+        subject.publish("--require-deliverable-ready"),
+        /target publish refused: (?:the verification store cannot be replayed|deliverable-ready evidence absent)/u,
+      );
+      writeFileSync(log, bytes);
+    }
+    writeFileSync(
+      file,
+      JSON.stringify({ ...JSON.parse(original), ready: true }),
+    );
+    refusedBeforeRemote(
+      subject,
+      subject.publish("--require-deliverable-ready"),
+      /invalid typed preparation shape/u,
+    );
+  },
+);
+
 await test("WO-064 AC1: publish refuses without an operator grant before any remote call", async (t) => {
   const subject = await scenario(t, { grantedBy: null });
   refusedBeforeRemote(
@@ -431,7 +793,7 @@ await test("WO-064 AC1/AC2: lint and target refusals name their rule; the grante
   refusedBeforeRemote(
     subject,
     subject.publish(),
-    /target publish refused: outward lint: pr-body refused: vocabulary\.local \(line 3\)$/mu,
+    /target publish refused: outward lint: pr-body refused: vocabulary\.local \(line 3\)/mu,
   );
   subject.terms(null);
   refusedBeforeRemote(
@@ -497,8 +859,9 @@ await test("WO-064 AC1/AC2: lint and target refusals name their rule; the grante
 
   const body = readFileSync(subject.body, "utf8");
   assert.equal(
-    body,
+    `${body.split("## Deliverable-ready")[0].trimEnd()}\n`,
     readFileSync(join(pinned, "body.md"), "utf8")
+      .split("## Deliverable-ready")[0]
       .replaceAll("<base>", baseCommit)
       .replaceAll("<head>", observation.commit),
   );

@@ -1,6 +1,7 @@
 import { mkdtempSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { createHash } from "node:crypto";
 
 export const withTemporaryBody = (body, operation, filename = "PR.md") => {
   const directory = mkdtempSync(join(tmpdir(), "dotln-body-"));
@@ -246,6 +247,388 @@ export const acceptanceStatuses = (criteria, rows) => {
   return statuses;
 };
 
+const contractFields = [
+  "workOrderId",
+  "objective",
+  "acceptanceCriteria",
+  "constraints",
+  "nonGoals",
+  "requiredEvidence",
+];
+export const deliveryContractHash = (contract) =>
+  createHash("sha256")
+    .update(JSON.stringify(contractFields.map((key) => [key, contract?.[key]])))
+    .digest("hex");
+const diffDigest = (diff) =>
+  createHash("sha256")
+    .update(diff ?? "")
+    .digest("hex");
+const hasReference = (artifact) =>
+  typeof artifact?.ref === "string" && artifact.ref.trim().length > 0;
+const sameContract = (left, right) =>
+  deliveryContractHash(left) === deliveryContractHash(right);
+
+/** @typedef {{id: string, item: string, status: 'evidenced'|'absent'|'not-applicable', evidenceRefs: string[], reason: string|null}} DeliverableReadyRow */
+
+/** Pure over host-read artifacts, never supplied readiness verdicts. Each input
+ * is {ref, value}; refs are logical store aliases, Git objects or body anchors.
+ * The host replays producer logs before supplying baseline/review/verification.
+ * Preparation inventories ambiguity, selects actual check evidence and assigns
+ * future PR monitoring; it cannot supply verification or review judgments. */
+/** @returns {DeliverableReadyRow[]} */
+export function deliverableReady(artifacts = {}) {
+  const {
+    contract,
+    current,
+    implementation,
+    scope,
+    baseline,
+    verification,
+    review,
+    preparation,
+    body,
+  } = artifacts;
+  const order = contract?.value;
+  const head = implementation?.value?.revision;
+  const base = implementation?.value?.baseCommit;
+  const matrix = verification?.value;
+  const subject = matrix?.subject;
+  const witnessed = baseline?.value;
+  const reviewed = review?.value;
+  const prepared = preparation?.value;
+  const contractPresent =
+    hasReference(contract) &&
+    typeof order?.objective === "string" &&
+    order.objective.trim() &&
+    Array.isArray(order.acceptanceCriteria) &&
+    order.acceptanceCriteria.length > 0 &&
+    order.acceptanceCriteria.every(
+      (criterion) => typeof criterion === "string" && criterion.trim(),
+    );
+  const implementationPresent =
+    hasReference(implementation) &&
+    commitId.test(head ?? "") &&
+    commitId.test(base ?? "") &&
+    head !== base &&
+    Array.isArray(implementation.value.files) &&
+    implementation.value.files.length > 0;
+  const matrixBound =
+    contractPresent &&
+    implementationPresent &&
+    hasReference(verification) &&
+    matrix.subjectRevision === head &&
+    subject?.revision === head &&
+    subject.baseCommit === base &&
+    sameContract(subject.snapshot?.contract, order) &&
+    diffDigest(subject.diff) === implementation.value.diffHash &&
+    Array.isArray(matrix.rows) &&
+    acceptanceStatuses(
+      order.acceptanceCriteria,
+      matrix.rows.map((row) => ({
+        description: row.criterion?.description,
+        status: row.status,
+      })),
+    ) !== null;
+  const evidence = matrixBound ? (matrix.evidence ?? []) : [];
+  const passed = (row) =>
+    row.status === "verified" &&
+    row.evaluations?.some(
+      (evaluation) =>
+        evaluation.verdict === "pass" &&
+        !evaluation.stale &&
+        evaluation.subjectRevision === head &&
+        evaluation.provenance?.kind === "host-admitted-verifier" &&
+        evaluation.evidenceRefs?.length > 0 &&
+        evaluation.evidenceRefs.every((ref) =>
+          evidence.some(
+            (entry) =>
+              entry.evidenceId === ref &&
+              entry.subjectRevision === head &&
+              entry.outcome === "pass",
+          ),
+        ),
+    );
+  const allAccepted =
+    matrixBound &&
+    ["complete", "reviewed"].includes(matrix.phase) &&
+    matrix.rows.every(passed);
+  const livePassed = (entry) =>
+    entry?.subjectRevision === head &&
+    entry.outcome === "pass" &&
+    entry.source === "live";
+  const reviewBound =
+    allAccepted &&
+    hasReference(review) &&
+    reviewed.result?.subjectRevision === head &&
+    reviewed.result.baselineRevision === base &&
+    reviewed.subject?.revision === head &&
+    reviewed.subject.baseCommit === base &&
+    sameContract(reviewed.subject.snapshot?.contract, order) &&
+    diffDigest(reviewed.subject.diff) === implementation.value.diffHash &&
+    JSON.stringify(reviewed.subject.files) === JSON.stringify(subject.files);
+  const reviewClear =
+    reviewBound &&
+    reviewed.result.counts?.blocking === 0 &&
+    !reviewed.result.requiresHuman &&
+    reviewed.result.findings?.every(
+      (finding) => finding.severity !== "blocking",
+    );
+  const verifierEpisodes = allAccepted
+    ? [
+        ...new Set(
+          matrix.rows.flatMap((row) =>
+            row.evaluations
+              .filter(
+                (evaluation) =>
+                  evaluation.verdict === "pass" &&
+                  !evaluation.stale &&
+                  evaluation.subjectRevision === head,
+              )
+              .map((evaluation) => evaluation.episodeId),
+          ),
+        ),
+      ]
+    : [];
+  const implementerEpisodes = implementation?.value?.episodeIds ?? [];
+  const independent =
+    reviewClear &&
+    verifierEpisodes.length > 0 &&
+    implementerEpisodes.length > 0 &&
+    implementerEpisodes.every(
+      (id) =>
+        matrix.implementerEpisodes?.includes(id) &&
+        reviewed.result.implementerEpisodeIds?.includes(id),
+    ) &&
+    verifierEpisodes.every(
+      (id) =>
+        !implementerEpisodes.includes(id) &&
+        reviewed.result.verifierEpisodeIds?.includes(id) &&
+        id !== reviewed.result.reviewerEpisodeId,
+    ) &&
+    !implementerEpisodes.includes(reviewed.result.reviewerEpisodeId);
+  const preparationBound =
+    contractPresent &&
+    implementationPresent &&
+    hasReference(preparation) &&
+    prepared.schemaVersion === 1 &&
+    prepared.workOrderId === order.workOrderId &&
+    prepared.subjectRevision === head &&
+    prepared.contractHash === deliveryContractHash(order) &&
+    prepared.diffHash === implementation.value.diffHash;
+  const rows = [];
+  const row = (id, item, valid, refs, reason) =>
+    rows.push({
+      id,
+      item,
+      status: valid ? "evidenced" : "absent",
+      evidenceRefs: valid ? refs : [],
+      reason: valid ? null : reason,
+    });
+  row(
+    "source-revision",
+    "Current source revision",
+    implementationPresent &&
+      hasReference(current) &&
+      current.value.revision === head &&
+      current.value.expectedRevision === head,
+    [current?.ref],
+    "Current source revision guard is missing or differs from the candidate.",
+  );
+  row(
+    "contract",
+    "Explicit contract",
+    contractPresent,
+    [contract?.ref],
+    "Explicit contract is missing.",
+  );
+  row(
+    "ambiguity",
+    "No unresolved material ambiguity",
+    preparationBound &&
+      Array.isArray(prepared.unresolvedMaterialAmbiguities) &&
+      prepared.unresolvedMaterialAmbiguities.length === 0,
+    [`${preparation?.ref}#/unresolvedMaterialAmbiguities`],
+    "Material ambiguity inventory is missing, stale or has unresolved items.",
+  );
+  row(
+    "baseline",
+    "Reproduced baseline",
+    contractPresent &&
+      implementationPresent &&
+      hasReference(baseline) &&
+      witnessed.capsule?.subject?.revision === base &&
+      witnessed.capsule.subject.baseCommit === base &&
+      sameContract(witnessed.capsule.subject.snapshot?.contract, order) &&
+      Number.isFinite(baseline.occurredAt) &&
+      Number.isFinite(implementation.value.startedAt) &&
+      baseline.occurredAt < implementation.value.startedAt &&
+      ["reproduced", "walked"].includes(witnessed.outcome) &&
+      witnessed.limitation === null &&
+      witnessed.evidenceIds?.length > 0,
+    [baseline?.ref],
+    "BaselineWitnessed is missing, unrelated or did not reproduce/walk the baseline.",
+  );
+  row(
+    "repo-native",
+    "Repo-native implementation",
+    independent &&
+      typeof reviewed.result.conventionsPath === "string" &&
+      reviewed.subject.files.some(
+        (file) => file.path === reviewed.result.conventionsPath,
+      ),
+    [review?.ref],
+    "ReviewCompleted against declared repository conventions is missing or has blocking findings.",
+  );
+  row(
+    "scope",
+    "No unexplained scope",
+    independent &&
+      hasReference(scope) &&
+      Array.isArray(scope.value.surfaces) &&
+      implementation.value.files.every((file) =>
+        scope.value.surfaces.some(
+          (surface) =>
+            file.path === surface || file.path.startsWith(`${surface}/`),
+        ),
+      ),
+    [scope?.ref, review?.ref],
+    "Changed paths lack declared scope or a clear ReviewCompleted.",
+  );
+  const checks = prepared?.checks;
+  row(
+    "checks",
+    "Tests/build/lint",
+    preparationBound &&
+      allAccepted &&
+      ["tests", "build", "lint"].every(
+        (kind) =>
+          Array.isArray(checks?.[kind]) &&
+          checks[kind].length > 0 &&
+          checks[kind].every((id) =>
+            evidence.some(
+              (entry) =>
+                entry.evidenceId === id &&
+                livePassed(entry) &&
+                entry.hostTest?.origin === "host" &&
+                entry.hostTest.exitCode === 0,
+            ),
+          ),
+      ),
+    [`${preparation?.ref}#/checks`, verification?.ref],
+    "Passing host-run tests/build/lint evidence is missing or stale.",
+  );
+  row(
+    "live-behavior",
+    "Live behavior walked",
+    allAccepted &&
+      matrix.rows.every((entry) =>
+        entry.criterion.requiredChecks.every((check) =>
+          evidence.some(
+            (witness) =>
+              witness.criterionId === entry.criterion.criterionId &&
+              witness.checkId === check &&
+              livePassed(witness),
+          ),
+        ),
+      ),
+    [verification?.ref],
+    "Passing live behavior witnesses are missing or stale.",
+  );
+  const visual = matrixBound
+    ? matrix.rows.filter((entry) => entry.criterion.claimType === "visual")
+    : null;
+  if (visual?.length === 0)
+    rows.push({
+      id: "visual",
+      item: "Visual claims visually inspected",
+      status: "not-applicable",
+      evidenceRefs: [verification.ref],
+      reason: "The declared criteria contain no visual claims.",
+    });
+  else
+    row(
+      "visual",
+      "Visual claims visually inspected",
+      allAccepted &&
+        visual?.every(
+          (entry) =>
+            passed(entry) &&
+            entry.evaluations.some(
+              (evaluation) =>
+                evaluation.verdict === "pass" &&
+                !evaluation.stale &&
+                evaluation.subjectRevision === head &&
+                evaluation.evidenceRefs.some((id) =>
+                  evidence.some(
+                    (witness) =>
+                      witness.evidenceId === id &&
+                      witness.criterionId === entry.criterion.criterionId &&
+                      livePassed(witness) &&
+                      witness.witness?.kind === "screenshot",
+                  ),
+                ),
+            ),
+        ),
+      [verification?.ref],
+      "Declared visual claim types or passing screenshot inspection evidence are missing.",
+    );
+  row(
+    "acceptance",
+    "Every acceptance criterion evidenced",
+    allAccepted,
+    [verification?.ref],
+    "A current, contract-matched passing acceptance matrix is missing.",
+  );
+  row(
+    "independent",
+    "Independent verification and review",
+    independent,
+    [verification?.ref, review?.ref],
+    "Independent verification and ReviewCompleted for this candidate are missing or blocked.",
+  );
+  row(
+    "final-diff",
+    "Final diff read",
+    independent,
+    [review?.ref],
+    "ReviewCompleted over the final sealed diff is missing or blocked.",
+  );
+  row(
+    "grounded-body",
+    "Grounded body",
+    contractPresent &&
+      implementationPresent &&
+      hasReference(body) &&
+      sameContract(body.value.workOrder, order) &&
+      body.value.diff?.headCommit === head &&
+      body.value.diff.baseCommit === base &&
+      JSON.stringify(body.value.diff.files) ===
+        JSON.stringify(implementation.value.files) &&
+      body.value.tests?.before &&
+      body.value.tests?.after,
+    [body?.ref, contract?.ref, implementation?.ref],
+    "Generated body inputs are missing or differ from the candidate artifacts.",
+  );
+  const monitoring = prepared?.monitoring;
+  row(
+    "monitoring",
+    "Monitored loop",
+    preparationBound &&
+      typeof monitoring?.owner === "string" &&
+      monitoring.owner.trim().length > 0 &&
+      monitoring.repositoryId === implementation.value.repositoryId &&
+      monitoring.headRevision === head &&
+      monitoring.command === "worktree resolve-pr" &&
+      monitoring.ciFailure === "classify-before-repair" &&
+      monitoring.reviewComments === "triage-by-type" &&
+      monitoring.sourceDrift === "stop" &&
+      monitoring.terminalState === "human-controlled",
+    [`${preparation?.ref}#/monitoring`],
+    "Post-publication monitoring owner and stop policies are missing or stale.",
+  );
+  return rows;
+}
+
 /** Pure over artifacts: the host commit message, the WorkOrder contract, the
  * host's test observations, the Git diff summary and, when supplied, the
  * acceptance matrix for the published head and this contract's criteria.
@@ -256,6 +639,7 @@ export const generateTargetPullRequest = ({
   tests,
   diff,
   matrix = null,
+  readinessArtifacts = {},
 }) => {
   const title =
     typeof commitMessage === "string"
@@ -319,6 +703,29 @@ export const generateTargetPullRequest = ({
     verification = `Independent verification: acceptance matrix for ${diff.headCommit}: ${[...matrixStatuses].map((status) => `${count(status)} ${status}`).join(", ")}.`;
   }
   const count = (value) => (value === null ? "binary" : String(value));
+  const readiness = deliverableReady({
+    ...readinessArtifacts,
+    contract: readinessArtifacts.contract ?? {
+      ref: "#contract",
+      value: workOrder,
+    },
+    implementation: readinessArtifacts.implementation ?? {
+      ref: "#change",
+      value: {
+        revision: diff.headCommit,
+        baseCommit: diff.baseCommit,
+        files: diff.files,
+      },
+    },
+    body: { ref: "#acceptance", value: { workOrder, tests, diff, matrix } },
+  });
+  const missing = readiness.filter((row) => row.status === "absent");
+  const knownItems =
+    readiness.find((row) => row.id === "independent").status === "evidenced"
+      ? (readinessArtifacts.review?.value?.result?.findings ?? []).filter(
+          (finding) => ["should", "nit"].includes(finding.severity),
+        )
+      : [];
   const body = [
     "## Contract",
     "",
@@ -349,6 +756,30 @@ export const generateTargetPullRequest = ({
     "",
     `${diff.files.length} ${diff.files.length === 1 ? "file" : "files"} changed from base ${diff.baseCommit} to head ${diff.headCommit}.`,
     "",
+    "## Deliverable-ready",
+    "",
+    `Deliverable-ready: ${missing.length ? `not ready; ${missing.length} ${missing.length === 1 ? "item" : "items"} absent` : "ready; every applicable item is evidenced"}.`,
+    "",
+    "| Item | Status | Evidence or reason |",
+    "| --- | --- | --- |",
+    ...readiness.map(
+      (row) =>
+        `| ${row.item} | ${row.status} | ${literal(row.evidenceRefs.length ? `${row.evidenceRefs.join("; ")}${row.reason ? `; ${row.reason}` : ""}` : row.reason)} |`,
+    ),
+    "",
+    ...(knownItems.length
+      ? [
+          "Known review items (recorded without expanding scope):",
+          "",
+          "| Severity | Observation | Expected | Evidence |",
+          "| --- | --- | --- | --- |",
+          ...knownItems.map(
+            (finding) =>
+              `| ${finding.severity} | ${literal(finding.observed)} | ${literal(finding.expected)} | ${literal(finding.evidenceRefs.join("; "))} |`,
+          ),
+          "",
+        ]
+      : []),
   ].join("\n");
   return { title, body };
 };

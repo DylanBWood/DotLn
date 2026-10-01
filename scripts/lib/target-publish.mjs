@@ -7,6 +7,7 @@ import {
   readFileSync,
   realpathSync,
   rmSync,
+  lstatSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
@@ -18,12 +19,17 @@ import {
   decodeSourceObservation,
   decodeSourceRequest,
 } from "../../packages/skeleton/dist/src/source-change-state.js";
-import { projectAcceptanceEvidenceMatrices } from "../../packages/skeleton/dist/src/verification.js";
+import {
+  replayVerification,
+  VERIFICATION_HOST,
+} from "../../packages/skeleton/dist/src/verification.js";
 import { repairContract } from "../../packages/skeleton/dist/src/repair.js";
 import { hasAiAttribution } from "../../packages/compiler/src/attribution.mjs";
 import { checkOutwardArtifact } from "../outward-lint.mjs";
 import {
   acceptanceStatuses,
+  deliverableReady,
+  deliveryContractHash,
   assertGitHubBodyProfile,
   generateTargetPullRequest,
   withTemporaryBody,
@@ -76,6 +82,8 @@ const REQUEST_KEYS = [
   "store",
   "baseBranch",
   "verificationStore",
+  "baselineStore",
+  "reviewStore",
   "repositoryId",
 ];
 /** A host-owned request. Relative paths resolve beside the request file. */
@@ -103,11 +111,12 @@ export function readTargetPublishRequest(path) {
     Array.isArray(request.environment) ||
     Object.keys(request.environment).sort().join(",") !==
       "baseCommit,capabilities,environmentId,repo,version" ||
-    (request.verificationStore !== undefined &&
-      typeof request.verificationStore !== "string")
+    ["verificationStore", "baselineStore", "reviewStore"].some(
+      (key) => request[key] !== undefined && typeof request[key] !== "string",
+    )
   )
     throw refuse(
-      `the target request requires schemaVersion 1, loadout, an environment of exactly environmentId, version, capabilities, repo and baseCommit (the grant registry is host input), store, baseBranch, repositoryId and an optional verificationStore`,
+      `the target request requires schemaVersion 1, loadout, an environment of exactly environmentId, version, capabilities, repo and baseCommit (the grant registry is host input), store, baseBranch, repositoryId and optional verificationStore, baselineStore and reviewStore`,
     );
   const base = dirname(file);
   const repository = parseGitHubTarget(`https://${request.repositoryId}`);
@@ -123,6 +132,14 @@ export function readTargetPublishRequest(path) {
       request.verificationStore === undefined
         ? null
         : resolve(base, request.verificationStore),
+    baselineStore:
+      request.baselineStore === undefined
+        ? null
+        : resolve(base, request.baselineStore),
+    reviewStore:
+      request.reviewStore === undefined
+        ? null
+        : resolve(base, request.reviewStore),
   };
 }
 
@@ -715,26 +732,46 @@ function observeTarget(episode) {
   return { files, commits };
 }
 
-function acceptanceMatrix(path, commit, workOrder) {
-  if (path === null) return null;
-  let matrices;
+function verificationArtifacts(path) {
+  if (path == null) return [];
   try {
-    matrices = projectAcceptanceEvidenceMatrices(
-      decodeLog(new WorkerStore(path).read()),
-    );
+    const store = new WorkerStore(path);
+    if (existsSync(join(store.directory, "host.lock")))
+      throw new Error("finish or recover the evidence host first");
+    const events = decodeLog(store.read());
+    const streams = [
+      ...new Set(
+        events
+          .filter(
+            (event) =>
+              event.type === "VerificationOpened" &&
+              event.actorId === VERIFICATION_HOST,
+          )
+          .map((event) => event.workstreamId),
+      ),
+    ];
+    return streams.map((id) => ({
+      events,
+      state: replayVerification(events, id),
+    }));
   } catch (error) {
     throw refuse(
       `the verification store cannot be replayed: ${error instanceof Error ? error.message : String(error)}`,
     );
   }
-  const current = matrices.filter(
-    (matrix) => matrix.subjectRevision === commit,
+}
+
+function acceptanceArtifacts(artifacts, path, commit, workOrder) {
+  if (path == null) return { matrix: null, verification: null };
+  const current = artifacts.filter(
+    ({ state }) => state.subject?.revision === commit,
   );
   if (current.length !== 1)
     throw refuse(
       "the verification store has no single acceptance matrix for the published head",
     );
-  const rows = current[0].rows.map((row) => ({
+  const state = current[0].state;
+  const rows = state.rows.map((row) => ({
     description: row.criterion.description,
     status: row.status,
   }));
@@ -742,7 +779,216 @@ function acceptanceMatrix(path, commit, workOrder) {
     throw refuse(
       "the acceptance matrix for the published head does not verify this WorkOrder's acceptance criteria",
     );
-  return { subjectRevision: commit, rows };
+  return {
+    matrix: { subjectRevision: commit, rows },
+    verification: {
+      ref: `verification:${state.workstreamId}`,
+      value: {
+        subjectRevision: commit,
+        phase: state.next,
+        subject: state.subject,
+        rows: state.rows,
+        evidence: state.evidence,
+        implementerEpisodes: state.implementerEpisodes,
+      },
+    },
+  };
+}
+
+function acceptanceMatrix(path, commit, workOrder) {
+  return acceptanceArtifacts(
+    verificationArtifacts(path),
+    path,
+    commit,
+    workOrder,
+  ).matrix;
+}
+
+function readDeliveryPreparation(storePath) {
+  const file = join(storePath, "delivery-preparation.json");
+  const stat = lstatSync(file, { throwIfNoEntry: false });
+  if (!stat) return null;
+  if (!stat.isFile())
+    throw refuse("delivery-preparation.json must be a regular file");
+  let value;
+  try {
+    value = JSON.parse(readFileSync(file, "utf8"));
+  } catch {
+    throw refuse("delivery-preparation.json must contain valid JSON");
+  }
+  const object = (entry) =>
+    entry !== null && typeof entry === "object" && !Array.isArray(entry);
+  const lines = (entries) =>
+    Array.isArray(entries) &&
+    entries.every((entry) => typeof entry === "string" && entry.trim());
+  const keys = [
+    "schemaVersion",
+    "workOrderId",
+    "subjectRevision",
+    "contractHash",
+    "diffHash",
+    "unresolvedMaterialAmbiguities",
+    "checks",
+    "monitoring",
+  ];
+  if (
+    !object(value) ||
+    Object.keys(value).some((key) => !keys.includes(key)) ||
+    value.schemaVersion !== 1 ||
+    typeof value.workOrderId !== "string" ||
+    !value.workOrderId.trim() ||
+    !/^(?:[a-f0-9]{40}|[a-f0-9]{64})$/u.test(value.subjectRevision ?? "") ||
+    ![value.contractHash, value.diffHash].every(
+      (hash) => typeof hash === "string" && /^[a-f0-9]{64}$/u.test(hash),
+    ) ||
+    (value.unresolvedMaterialAmbiguities !== undefined &&
+      !lines(value.unresolvedMaterialAmbiguities)) ||
+    (value.checks !== undefined &&
+      (!object(value.checks) ||
+        Object.entries(value.checks).some(
+          ([key, entries]) =>
+            !["tests", "build", "lint"].includes(key) || !lines(entries),
+        ))) ||
+    (value.monitoring !== undefined &&
+      (!object(value.monitoring) ||
+        Object.keys(value.monitoring).sort().join(",") !==
+          "ciFailure,command,headRevision,owner,repositoryId,reviewComments,sourceDrift,terminalState" ||
+        Object.values(value.monitoring).some(
+          (entry) => typeof entry !== "string" || !entry.trim(),
+        )))
+  )
+    throw refuse(
+      "delivery-preparation.json has an invalid typed preparation shape",
+    );
+  return { ref: "delivery-preparation", value };
+}
+
+// Fixed aliases keep private filesystem paths out of the outward artifact.
+function readinessArtifacts(request, episode, target, workOrder, bodyInputs) {
+  const verificationLog = verificationArtifacts(request.verificationStore);
+  const acceptance = acceptanceArtifacts(
+    verificationLog,
+    request.verificationStore,
+    episode.observation.commit,
+    workOrder,
+  );
+  const baselineLog = request.baselineStore
+    ? verificationArtifacts(request.baselineStore)
+    : verificationLog;
+  const reviewLog = request.reviewStore
+    ? verificationArtifacts(request.reviewStore)
+    : verificationLog;
+  const baseline = baselineLog.filter(
+    ({ state, events }) =>
+      state.baselineWitness?.capsule.subject.revision ===
+        episode.request.baseCommit &&
+      deliveryContractHash(
+        state.baselineWitness.capsule.subject.snapshot?.contract,
+      ) === deliveryContractHash(workOrder) &&
+      events.some(
+        (event) =>
+          event.actorId === VERIFICATION_HOST &&
+          event.workstreamId === state.workstreamId &&
+          event.type === "BaselineWitnessed" &&
+          same(event.payload, state.baselineWitness),
+      ),
+  );
+  const review = reviewLog.filter(
+    ({ state }) =>
+      state.reviewCompleted?.subjectRevision === episode.observation.commit,
+  );
+  const sourceRef = (type) =>
+    `source-event:${
+      episode.events.find(
+        (event) => event.actorId === SOURCE_CHANGE_HOST && event.type === type,
+      ).eventId
+    }`;
+  return {
+    matrix: acceptance.matrix,
+    artifacts: {
+      current: {
+        ref: `commit:${episode.observation.commit}`,
+        value: {
+          revision: episode.observation.commit,
+          expectedRevision: episode.observation.commit,
+        },
+      },
+      contract: { ref: sourceRef("CommandPersisted"), value: workOrder },
+      implementation: {
+        ref: sourceRef("SourceChangeObserved"),
+        value: {
+          revision: episode.observation.commit,
+          baseCommit: episode.request.baseCommit,
+          diffHash: episode.observation.diffHash,
+          files: target.files,
+          repositoryId: request.repositoryId,
+          startedAt: Math.min(
+            ...episode.events
+              .filter(
+                (event) =>
+                  event.actorId === SOURCE_CHANGE_HOST &&
+                  event.type === "WorkerAttemptStarted",
+              )
+              .map((event) => event.occurredAt),
+          ),
+          episodeIds: episode.events
+            .filter(
+              (event) =>
+                event.actorId === SOURCE_CHANGE_HOST &&
+                event.type === "WorkerAttemptStarted",
+            )
+            .map((event) => event.payload.workerEpisodeId),
+        },
+      },
+      scope: {
+        ref: sourceRef("SourceChangeRequested"),
+        value: { surfaces: episode.request.surfaces },
+      },
+      baseline:
+        baseline.length === 1
+          ? {
+              ref: `baseline-event:${
+                baseline[0].events.find(
+                  (event) =>
+                    event.actorId === VERIFICATION_HOST &&
+                    event.workstreamId === baseline[0].state.workstreamId &&
+                    event.type === "BaselineWitnessed",
+                ).eventId
+              }`,
+              occurredAt: baseline[0].events.find(
+                (event) =>
+                  event.actorId === VERIFICATION_HOST &&
+                  event.workstreamId === baseline[0].state.workstreamId &&
+                  event.type === "BaselineWitnessed",
+              ).occurredAt,
+              value: baseline[0].state.baselineWitness,
+            }
+          : null,
+      verification: acceptance.verification,
+      review:
+        review.length === 1
+          ? {
+              ref: `review-event:${
+                review[0].events.find(
+                  (event) =>
+                    event.actorId === VERIFICATION_HOST &&
+                    event.workstreamId === review[0].state.workstreamId &&
+                    event.type === "ReviewCompleted",
+                ).eventId
+              }`,
+              value: {
+                result: review[0].state.reviewCompleted,
+                subject: review[0].state.subject,
+              },
+            }
+          : null,
+      preparation: readDeliveryPreparation(request.store),
+      body: {
+        ref: "#acceptance",
+        value: { ...bodyInputs, matrix: acceptance.matrix },
+      },
+    },
+  };
 }
 
 function lintArtifacts(launchpad, artifacts) {
@@ -781,6 +1027,7 @@ export function publishTargetOrder({
   workOrderId,
   request,
   registry,
+  requireDeliverableReady = false,
   now = Date.now(),
   log = (line) => process.stdout.write(`${line}\n`),
 }) {
@@ -830,7 +1077,7 @@ export function publishTargetOrder({
   const head = target.commits.at(-1);
   if (head?.sha !== commit || head.message !== payload.commitMessage.trimEnd())
     throw refuse("the observed commit message differs from the host message");
-  const { title, body } = generateTargetPullRequest({
+  const bodyInputs = {
     commitMessage: payload.commitMessage,
     workOrder: program.workOrder,
     tests: {
@@ -838,11 +1085,25 @@ export function publishTargetOrder({
       after: episode.observation.testAfter,
     },
     diff: { baseCommit, headCommit: commit, files: target.files },
-    matrix: acceptanceMatrix(
-      request.verificationStore,
-      commit,
-      program.workOrder,
-    ),
+  };
+  const readiness = readinessArtifacts(
+    request,
+    episode,
+    target,
+    program.workOrder,
+    bodyInputs,
+  );
+  const absent = deliverableReady(readiness.artifacts).filter(
+    (row) => row.status === "absent",
+  );
+  if (requireDeliverableReady && absent.length)
+    throw refuse(
+      `deliverable-ready evidence absent: ${absent.map((row) => row.item).join("; ")}`,
+    );
+  const { title, body } = generateTargetPullRequest({
+    ...bodyInputs,
+    matrix: readiness.matrix,
+    readinessArtifacts: readiness.artifacts,
   });
   lintArtifacts(launchpad, [
     { kind: "branch", text: branch },

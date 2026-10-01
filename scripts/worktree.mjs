@@ -458,9 +458,14 @@ const main = async () => {
   } else if (action === "publish" && actionArgs[0] === "--target") {
     // A target order publishes its source-change episode in the target
     // repository under an operator grant (WO-064); no launchpad branch moves.
-    if (actionArgs.length !== 2 || !actionArgs[1])
+    if (
+      ![2, 3].includes(actionArgs.length) ||
+      !actionArgs[1] ||
+      (actionArgs.length === 3 &&
+        actionArgs[2] !== "--require-deliverable-ready")
+    )
       throw new Error(
-        "usage: worktree publish WO-NNN --target <target-publish-request.json>",
+        "usage: worktree publish WO-NNN --target <target-publish-request.json> [--require-deliverable-ready]",
       );
     const { publishTargetOrder, readTargetPublishRequest } =
       await import("./lib/target-publish.mjs");
@@ -471,6 +476,9 @@ const main = async () => {
       workOrderId,
       request: readTargetPublishRequest(actionArgs[1]),
       registry: readAuthorityGrantRegistry(toolRoot),
+      requireDeliverableReady: actionArgs.includes(
+        "--require-deliverable-ready",
+      ),
     });
   } else if (action === "publish") {
     if (
@@ -796,7 +804,7 @@ const main = async () => {
     );
   } else {
     throw new Error(
-      "usage: worktree start WO-NNN <work-order-path> | worktree integrate WO-NNN [--intake-backup <archive.zip>] [--continue] | worktree publish WO-NNN --title <title> --body-file <path> | worktree publish WO-NNN --target <request.json> | worktree observe-pr --store <episode-store> --number <N> [--repository HOST/OWNER/REPO] | worktree resolve-pr --request <review-loop-request.json> | worktree finish WO-NNN [--dry-run] | worktree settle WO-NNN [--dry-run]",
+      "usage: worktree start WO-NNN <work-order-path> | worktree integrate WO-NNN [--intake-backup <archive.zip>] [--continue] | worktree publish WO-NNN --title <title> --body-file <path> | worktree publish WO-NNN --target <request.json> [--require-deliverable-ready] | worktree observe-pr --store <episode-store> --number <N> [--repository HOST/OWNER/REPO] | worktree resolve-pr --request <review-loop-request.json> | worktree finish WO-NNN [--dry-run] | worktree settle WO-NNN [--dry-run]",
     );
   }
 };

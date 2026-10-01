@@ -148,7 +148,10 @@ operator-provenance grant for `repo.push` and `pr.open`, and only after the
 [outward-artifact lint](docs/evidence/WO-063/implementation.md) passes the
 branch, commits, title and a body generated from the contract, acceptance
 status, host test outcomes and diff; missing local-term coverage refuses. The
-[publish decisions](docs/evidence/WO-064/decisions.md) record its limits.
+[publish decisions](docs/evidence/WO-064/decisions.md) record its limits. Its
+[fourteen-item readiness table](docs/evidence/WO-182/artifact-contract.md) names
+evidence or gaps; `--require-deliverable-ready` refuses locally on a missing item,
+while operator proposals without the flag carry those gaps into review.
 
 Derived work shares the same `WO-NNN` identity and lifecycle as authored work.
 `npm run dotln -- intent "Describe the work"` files a draft for review; compiled
