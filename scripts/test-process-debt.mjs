@@ -7377,7 +7377,13 @@ test("follow-up identities survive independent discovery order in sibling worktr
 
 test("Node-only staged builds keep installed hooks executable throughout publication", async (t) => {
   const root = repo(t, { runtime: true });
-  for (const name of ["compiler", "kernel", "skeleton", "console"]) {
+  for (const name of [
+    "compiler",
+    "kernel",
+    "skeleton",
+    "console",
+    "browser-evidence",
+  ]) {
     for (const dir of ["src", "test"])
       if (existsSync(join(source, `packages/${name}/${dir}`)))
         cpSync(
@@ -7475,10 +7481,13 @@ test("Node-only staged builds keep installed hooks executable throughout publica
   );
   assert.deepEqual(stages, [
     "building",
-    ...["compiler", "console", "kernel", "skeleton"].flatMap((name) => [
-      `before:${name}`,
-      `after:${name}`,
-    ]),
+    ...[
+      "browser-evidence",
+      "compiler",
+      "console",
+      "kernel",
+      "skeleton",
+    ].flatMap((name) => [`before:${name}`, `after:${name}`]),
   ]);
   probe();
 });
