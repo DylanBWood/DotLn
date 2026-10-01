@@ -1,4 +1,4 @@
-# WO-059 — Playwright evidence adapter: a workspace package outside the kernel and compiler drives a synthetic local application and produces the visual and network witnesses, closes or recovers the browser on a kill, and replays a saved scenario (version assigned at activation)
+# WO-059 — Playwright evidence adapter: a workspace package outside the kernel and compiler drives a synthetic local application and produces the visual and network witnesses, closes or recovers the browser on a kill, and replays a saved scenario (v0.59.0)
 
 **Model:** any capable model. State the model and effort actually run in the
 result (07-execution-guide.md §Model-specific notes).

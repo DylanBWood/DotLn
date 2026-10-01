@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-30T23:04:25.803Z",
+  "pins": {
+    "playwright": "1.63.0",
+    "playwrightCore": "1.63.0",
+    "chromiumHeadlessShell": "153.0.8010.12",
+    "chromiumRevision": "1243",
+    "ffmpegRevision": "1011"
+  },
+  "registryTree": {
+    "node_modules/playwright": {
+      "version": "1.63.0",
+      "resolved": "https://registry.npmjs.org/playwright/-/playwright-1.63.0.tgz",
+      "integrity": "sha512-+7ziBLidS4NaNCdt57SUDT+wYmmd5fmiQejUic/kb+YsYSCPyOOE9sebzMjNmQrsnNpDJqd4WHvV/8lfKfUDUg==",
+      "license": "Apache-2.0",
+      "dependencies": {
+        "playwright-core": "1.63.0"
+      },
+      "bin": {
+        "playwright": "cli.js"
+      },
+      "engines": {
+        "node": ">=20"
+      }
+    },
+    "node_modules/playwright-core": {
+      "version": "1.63.0",
+      "resolved": "https://registry.npmjs.org/playwright-core/-/playwright-core-1.63.0.tgz",
+      "integrity": "sha512-rYCsBF/M5HjUch52bbtVONEFjv6Xu8sm8h72dNlR5bzIE1fvC/bxgspzkjSfU+MweEMmPM8KJebG6nnyxo5mCg==",
+      "license": "Apache-2.0",
+      "bin": {
+        "playwright-core": "cli.js"
+      },
+      "engines": {
+        "node": ">=20"
+      }
+    }
+  },
+  "browserFiles": [
+    {
+      "file": "chromium_headless_shell-1243/chrome-headless-shell-mac-arm64/chrome-headless-shell",
+      "bytes": 169253248,
+      "contentHash": "sha256:a0bfe7b4da4787b66058477d696cd1d09065d25f06a548947722b9af77ee8282"
+    },
+    {
+      "file": "chromium_headless_shell-1243/chrome-headless-shell-mac-arm64/LICENSE.headless_shell",
+      "bytes": 2003323,
+      "contentHash": "sha256:14561bfc58f207af7ade768e8b95e99f9cf8af6d9aa46b4c0d9ae0b3a97585cc"
+    },
+    {
+      "file": "ffmpeg-1011/COPYING.LGPLv2.1",
+      "bytes": 26526,
+      "contentHash": "sha256:b634ab5640e258563c536e658cad87080553df6f34f62269a21d554844e58bfe"
+    }
+  ],
+  "licensePins": {
+    "LICENSE": "sha256:cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "LICENSE-docs": "sha256:9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411",
+    "NOTICE": "sha256:645cf84db4b0b544bdb8e594d7048ca4ca42da24623b251e6072287ea420d55c"
+  },
+  "limit": "Inventory of actual installed files and upstream lockfile labels, not a binary-component legal audit; no binaries distributed"
+}
