@@ -18,6 +18,11 @@ import {
   type FindingRecord,
   type VerificationState,
 } from "./reactor.js";
+import {
+  baselineWitnessRows,
+  type BaselineWitness,
+  type BaselineComparisonFinding,
+} from "./verification-protocol.js";
 export {
   VERIFICATION_HOST,
   initialVerificationRuntime,
@@ -46,6 +51,9 @@ export function replayVerification(
   );
 }
 export interface AcceptanceEvidenceMatrix {
+  readonly baselineWitness?: BaselineWitness;
+  readonly baselineEvidence?: ReturnType<typeof baselineWitnessRows>;
+  readonly baselineFindings?: readonly BaselineComparisonFinding[];
   readonly workstreamId: string;
   readonly subjectRevision: string | null;
   readonly phase: VerificationState["next"];
@@ -72,6 +80,15 @@ export function projectAcceptanceEvidenceMatrices(
   return streams.map((id) => {
     const state = replayVerification(events, id);
     return {
+      ...(state.baselineWitness
+        ? {
+            baselineWitness: state.baselineWitness,
+            baselineEvidence: baselineWitnessRows(state.baselineWitness),
+          }
+        : {}),
+      ...(state.baselineFindings
+        ? { baselineFindings: state.baselineFindings }
+        : {}),
       workstreamId: id,
       subjectRevision: state.subject?.revision ?? null,
       phase: state.next,

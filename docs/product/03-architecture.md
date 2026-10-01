@@ -1776,10 +1776,11 @@ text, never the default channel for state you own in structured form.
   assurance profile requires this port and the rules that follow; another
   profile may instead expose an explicit self-reported, owner-accepted, or
   unverified disposition. **Baseline first (Live Witness)**:
-  before any change, an episode runs the current base branch and reproduces the
-  defect (or walks adjacent behavior for a new story), preserving baseline
-  evidence; honest non-reproduction is recorded as an environment limitation,
-  never faked. Defects and stories run dual workflows (reproduce → root-cause →
+  before any change, the `baseline` episode on the sealed base preserves host-run
+  rows as `subject: baseline` in `BaselineWitnessed`, reproducing the named defect
+  or walking existing tests for a new story; `not-reproduced` records an environment
+  limitation and a typed defect-story stop, and candidate verification compares
+  the same named tests. Defects and stories run dual workflows (reproduce → root-cause →
   failing regression evidence → repair, vs. understand → define observable
   behavior → tests/mocks → implement). Evidence is typed: mocked-client proof
   (labeled synthetic fixtures, AC-mapped) never counts as live-integration

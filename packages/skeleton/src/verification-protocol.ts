@@ -5,6 +5,7 @@ import {
   type CompiledFeedback,
   canonicalStringify,
   copyFinding,
+  compileVerificationTask,
   verificationLine,
   type Evaluation,
   type RepositoryFile,
@@ -72,7 +73,300 @@ export const FEEDBACK_VERIFIER_LIMITS = {
   maxBudgetUsd: "5.00",
 } as const;
 
+/** Baseline is an episode on existing behavior claims, not a compiler role. */
+export type BaselineStory =
+  | { readonly storyId: string; readonly kind: "new" }
+  | {
+      readonly storyId: string;
+      readonly kind: "defect";
+      readonly tests: readonly {
+        readonly criterionId: string;
+        readonly checkId: string;
+        readonly command: string;
+        readonly expectedExitCode: number;
+      }[];
+    };
+export interface BaselineWitness {
+  readonly story: BaselineStory;
+  readonly capsule: VerificationTask;
+  readonly episodeId: string;
+  readonly outcome: "reproduced" | "not-reproduced" | "walked";
+  readonly limitation: string | null;
+  readonly evidenceIds: readonly string[];
+}
+export type BaselineContext =
+  | { readonly kind: "baseline"; readonly story: BaselineStory }
+  | { readonly kind: "comparison"; readonly witness: BaselineWitness };
+export interface BaselineComparisonFinding {
+  readonly kind: "baseline-test-did-not-fail";
+  readonly storyId: string;
+  readonly criterionId: string;
+  readonly checkId: string;
+  readonly command: string;
+  readonly candidateEvidenceId: string | null;
+  readonly baselineEvidenceId: string | null;
+  readonly observed: string;
+  readonly expected: string;
+}
+
+export function baselineWitnessRows(witness: BaselineWitness) {
+  return witness.capsule.subject.evidence.map((entry) => ({
+    ...entry,
+    subject: "baseline" as const,
+    origin: "host" as const,
+    source: "live" as const,
+  }));
+}
+
+/** Composition calls this before any implementation effect. */
+export function baselineDisposition(witness: BaselineWitness):
+  | { readonly kind: "Continue"; readonly storyId: string }
+  | {
+      readonly kind: "BaselineNotReproduced";
+      readonly storyId: string;
+      readonly limitation: string;
+    } {
+  validateBaselineWitness(witness);
+  return witness.outcome === "not-reproduced"
+    ? {
+        kind: "BaselineNotReproduced",
+        storyId: witness.story.storyId,
+        limitation: witness.limitation!,
+      }
+    : { kind: "Continue", storyId: witness.story.storyId };
+}
+
+const baselineCheck = (valid: unknown, detail: string): void => {
+  if (!valid) throw new WorkerFailure("profile-refused", `baseline: ${detail}`);
+};
+function validateBaselineStory(
+  story: BaselineStory,
+  capsule: VerificationTask,
+): void {
+  const snapshot = capsule.subject.snapshot;
+  baselineCheck(
+    snapshot &&
+      capsule.role === "verifier" &&
+      verificationLine(story?.storyId) &&
+      (story.kind === "new" || story.kind === "defect"),
+    "story or sealed subject",
+  );
+  baselineCheck(
+    exact(
+      story as unknown as Record<string, unknown>,
+      story.kind === "new" ? ["storyId", "kind"] : ["storyId", "kind", "tests"],
+    ),
+    "story shape",
+  );
+  if (story.kind === "new") return;
+  baselineCheck(
+    Array.isArray(story.tests) &&
+      story.tests.length > 0 &&
+      story.tests.length <= 100,
+    "named defect tests",
+  );
+  const seen = new Set<string>();
+  for (const test of story.tests) {
+    const key = canonicalStringify([
+      test.criterionId,
+      test.checkId,
+      test.command,
+    ]);
+    baselineCheck(
+      exact(test as unknown as Record<string, unknown>, [
+        "criterionId",
+        "checkId",
+        "command",
+        "expectedExitCode",
+      ]) &&
+        Number.isInteger(test.expectedExitCode) &&
+        test.expectedExitCode > 0 &&
+        test.expectedExitCode <= 255 &&
+        !seen.has(key) &&
+        snapshot!.tests.some(
+          (named) =>
+            named.criterionId === test.criterionId &&
+            named.checkId === test.checkId &&
+            named.command === test.command,
+        ),
+      "defect test must name a sealed test and its failing exit",
+    );
+    seen.add(key);
+  }
+}
+
+export function createBaselineWitness(
+  story: BaselineStory,
+  capsule: VerificationTask,
+  episodeId: string,
+): BaselineWitness {
+  assertVerificationTask(capsule);
+  validateBaselineStory(story, capsule);
+  baselineCheck(
+    capsule.subject.revision === capsule.subject.baseCommit,
+    "episode must run on the base",
+  );
+  baselineCheck(verificationLine(episodeId), "episode identity");
+  const evidence = capsule.subject.evidence;
+  baselineCheck(
+    capsule.subject.snapshot!.tests.every(
+      (test) =>
+        evidence.filter(
+          (entry) =>
+            entry.criterionId === test.criterionId &&
+            entry.checkId === test.checkId &&
+            entry.hostTest?.command === test.command,
+        ).length === 1,
+    ),
+    "host witness coverage",
+  );
+  const limitations: string[] = [];
+  if (story.kind === "defect") {
+    for (const test of story.tests) {
+      const row = evidence.find(
+        (entry) =>
+          entry.criterionId === test.criterionId &&
+          entry.checkId === test.checkId &&
+          entry.hostTest?.command === test.command,
+      )!;
+      if (
+        row.outcome !== "fail" ||
+        row.hostTest?.exitCode !== test.expectedExitCode
+      )
+        limitations.push(
+          `${test.criterionId}/${test.checkId}: expected exit ${test.expectedExitCode}; observed ${row.observed}.`,
+        );
+    }
+  } else {
+    for (const row of evidence.filter(
+      (entry) => entry.outcome === "unavailable",
+    ))
+      limitations.push(
+        `${row.criterionId}/${row.checkId}: test execution unavailable.`,
+      );
+  }
+  // Positive construction drops caller-owned references and cannot admit prose fields.
+  return JSON.parse(
+    JSON.stringify({
+      story,
+      capsule,
+      episodeId,
+      outcome:
+        story.kind === "new"
+          ? "walked"
+          : limitations.length
+            ? "not-reproduced"
+            : "reproduced",
+      limitation: limitations.length
+        ? limitations.join(" ").slice(0, 2000)
+        : null,
+      evidenceIds: evidence.map((entry) => entry.evidenceId),
+    }),
+  ) as BaselineWitness;
+}
+
+export function validateBaselineWitness(witness: BaselineWitness): void {
+  baselineCheck(
+    witness &&
+      canonicalStringify(witness) ===
+        canonicalStringify(
+          createBaselineWitness(
+            witness.story,
+            witness.capsule,
+            witness.episodeId,
+          ),
+        ),
+    "witness drift",
+  );
+}
+
+export function validateBaselineContext(
+  context: BaselineContext,
+  capsule: VerificationTask,
+): void {
+  baselineCheck(
+    context && (context.kind === "baseline" || context.kind === "comparison"),
+    "context kind",
+  );
+  baselineCheck(
+    exact(
+      context as unknown as Record<string, unknown>,
+      context.kind === "baseline" ? ["kind", "story"] : ["kind", "witness"],
+    ),
+    "context shape",
+  );
+  if (context.kind === "baseline") {
+    createBaselineWitness(context.story, capsule, "preflight");
+    return;
+  }
+  validateBaselineWitness(context.witness);
+  const base = context.witness.capsule.subject,
+    candidate = capsule.subject;
+  baselineCheck(
+    capsule.role === "verifier" &&
+      candidate.snapshot &&
+      base.repo === candidate.repo &&
+      base.revision === candidate.baseCommit &&
+      canonicalStringify(base.snapshot!.contract) ===
+        canonicalStringify(candidate.snapshot.contract) &&
+      canonicalStringify(base.snapshot!.tests) ===
+        canonicalStringify(candidate.snapshot.tests),
+    "comparison identity or named tests",
+  );
+  // Recompile against the candidate criteria to check the baseline surfaces as well.
+  compileVerificationTask("baseline_comparison", capsule.criteria, base);
+}
+
+export function compareBaseline(
+  context: BaselineContext | undefined,
+  capsule: VerificationTask,
+): readonly BaselineComparisonFinding[] {
+  if (context?.kind !== "comparison") return [];
+  validateBaselineContext(context, capsule);
+  const { witness } = context;
+  if (witness.story.kind === "new") return [];
+  return witness.story.tests.flatMap((test) => {
+    if (
+      !capsule.criteria.some(
+        (criterion) => criterion.criterionId === test.criterionId,
+      )
+    )
+      return [];
+    const base = witness.capsule.subject.evidence.find(
+      (row) =>
+        row.criterionId === test.criterionId &&
+        row.checkId === test.checkId &&
+        row.hostTest?.command === test.command,
+    );
+    if (
+      base?.outcome === "fail" &&
+      base.hostTest?.exitCode === test.expectedExitCode
+    )
+      return [];
+    const candidate = capsule.subject.evidence.find(
+      (row) =>
+        row.criterionId === test.criterionId &&
+        row.checkId === test.checkId &&
+        row.hostTest?.command === test.command,
+    );
+    return [
+      {
+        kind: "baseline-test-did-not-fail" as const,
+        storyId: witness.story.storyId,
+        criterionId: test.criterionId,
+        checkId: test.checkId,
+        command: test.command,
+        candidateEvidenceId: candidate?.evidenceId ?? null,
+        baselineEvidenceId: base?.evidenceId ?? null,
+        observed: base?.observed ?? "baseline test witness missing",
+        expected: `exit ${test.expectedExitCode}`,
+      },
+    ];
+  });
+}
+
 export interface EvidenceWorkerRequest {
+  readonly baseline?: BaselineContext;
   readonly feedback?: CompiledFeedback;
   readonly kind: "evidence-worker";
   readonly command: Command;
@@ -91,11 +385,17 @@ export interface EvidenceWorkerRequest {
   };
 }
 export interface VerificationWorkerResult {
+  readonly baselineFindings?: readonly BaselineComparisonFinding[];
   readonly kind: "verification";
   readonly envelope: ResultEnvelope;
   readonly subjectRevision: string;
   readonly evaluations: readonly Evaluation[];
   readonly findings: readonly VerificationFinding[];
+}
+export interface BaselineWorkerResult {
+  readonly kind: "baseline";
+  readonly envelope: ResultEnvelope;
+  readonly subjectRevision: string;
 }
 export interface RepairWorkerResult {
   readonly kind: "repair";
@@ -104,7 +404,7 @@ export interface RepairWorkerResult {
   readonly replacements: readonly RepositoryFile[];
 }
 export type EvidenceWorkerResult =
-  VerificationWorkerResult | RepairWorkerResult;
+  VerificationWorkerResult | RepairWorkerResult | BaselineWorkerResult;
 export type TransportRequest =
   | WorkerRequest
   | WriterRequest
@@ -169,6 +469,8 @@ export const EVIDENCE_RESULT_REFUSALS = [
   "evaluation criterion",
   "claim-typed evidence",
   "unsupported pass",
+  "defect baseline did not fail",
+  "baseline comparison findings",
   "visual pass requires screenshot",
   "network pass requires trace",
   "console error witness",
@@ -218,20 +520,34 @@ export function parseEvidenceResult(
   value: unknown,
   request: Pick<
     EvidenceWorkerRequest,
-    "command" | "workOrder" | "capsule" | "episodeId"
+    "command" | "workOrder" | "capsule" | "episodeId" | "baseline"
   >,
 ): EvidenceWorkerResult {
   const root = object(value);
   const envelope = object(root?.envelope);
   const verifying = request.capsule.role === "verifier";
+  const baselineEpisode = request.baseline?.kind === "baseline";
+  const comparison = request.baseline?.kind === "comparison";
+  if (request.baseline)
+    validateBaselineContext(request.baseline, request.capsule);
+  const baselineFindings = compareBaseline(request.baseline, request.capsule);
   check(
     root &&
       envelope &&
       exact(
         root,
-        verifying
-          ? ["kind", "envelope", "subjectRevision", "evaluations", "findings"]
-          : ["kind", "envelope", "subjectRevision", "replacements"],
+        baselineEpisode
+          ? ["kind", "envelope", "subjectRevision"]
+          : verifying
+            ? [
+                "kind",
+                "envelope",
+                "subjectRevision",
+                "evaluations",
+                "findings",
+                ...(comparison ? ["baselineFindings"] : []),
+              ]
+            : ["kind", "envelope", "subjectRevision", "replacements"],
       ),
     "episode result shape",
   );
@@ -259,9 +575,17 @@ export function parseEvidenceResult(
   );
   check(
     root.subjectRevision === request.capsule.subject.revision &&
-      root.kind === (verifying ? "verification" : "repair"),
+      root.kind ===
+        (baselineEpisode ? "baseline" : verifying ? "verification" : "repair"),
     "episode role or subject",
   );
+  if (baselineEpisode) return root as unknown as BaselineWorkerResult;
+  if (comparison)
+    check(
+      canonicalStringify(root.baselineFindings) ===
+        canonicalStringify(baselineFindings),
+      "baseline comparison findings",
+    );
   if (!verifying) {
     check(
       Array.isArray(root.replacements) &&
@@ -355,6 +679,12 @@ export function parseEvidenceResult(
       "claim-typed evidence",
     );
     if (item.verdict === "pass") {
+      check(
+        !baselineFindings.some(
+          (finding) => finding.criterionId === criterion.criterionId,
+        ),
+        "defect baseline did not fail",
+      );
       check(
         !request.capsule.subject.evidence.some(
           (entry) =>
@@ -520,7 +850,13 @@ export function evidenceResultSchema(request: EvidenceWorkerRequest): object {
   const common = {
     kind: {
       ...schemaText,
-      enum: [request.capsule.role === "verifier" ? "verification" : "repair"],
+      enum: [
+        request.baseline?.kind === "baseline"
+          ? "baseline"
+          : request.capsule.role === "verifier"
+            ? "verification"
+            : "repair",
+      ],
     },
     envelope: schemaObject({
       workOrderId: { ...schemaText, enum: [request.workOrder.workOrderId] },
@@ -535,6 +871,8 @@ export function evidenceResultSchema(request: EvidenceWorkerRequest): object {
       enum: [request.capsule.subject.revision],
     },
   };
+  if (request.baseline?.kind === "baseline") return schemaObject(common);
+  const baselineFindings = compareBaseline(request.baseline, request.capsule);
   return schemaObject(
     request.capsule.role === "repairer"
       ? {
@@ -546,6 +884,29 @@ export function evidenceResultSchema(request: EvidenceWorkerRequest): object {
         }
       : {
           ...common,
+          ...(request.baseline?.kind === "comparison"
+            ? {
+                baselineFindings: {
+                  type: "array",
+                  minItems: baselineFindings.length,
+                  maxItems: baselineFindings.length,
+                  items: schemaObject({
+                    kind: {
+                      ...schemaText,
+                      enum: ["baseline-test-did-not-fail"],
+                    },
+                    storyId: schemaLine,
+                    criterionId: schemaLine,
+                    checkId: schemaLine,
+                    command: schemaLine,
+                    candidateEvidenceId: { type: ["string", "null"] },
+                    baselineEvidenceId: { type: ["string", "null"] },
+                    observed: schemaLine,
+                    expected: schemaLine,
+                  }),
+                },
+              }
+            : {}),
           evaluations: {
             type: "array",
             items: schemaObject({
@@ -603,6 +964,8 @@ export function validateTransportRequest(request: TransportRequest): void {
   if (!isEvidenceRequest(request)) return validateRequest(request);
   try {
     assertVerificationTask(request.capsule);
+    if (request.baseline)
+      validateBaselineContext(request.baseline, request.capsule);
     if (request.feedback !== undefined)
       assertCompiledFeedback(request.feedback);
     if (
@@ -612,7 +975,10 @@ export function validateTransportRequest(request: TransportRequest): void {
       request.command.intent.effect !==
         request.workOrder.allowedOperations[0] ||
       canonicalStringify(request.command.intent.payload) !==
-        canonicalStringify({ capsule: request.capsule }) ||
+        canonicalStringify({
+          capsule: request.capsule,
+          ...(request.baseline ? { baseline: request.baseline } : {}),
+        }) ||
       !/^[a-zA-Z0-9][a-zA-Z0-9._:-]*$/u.test(request.model) ||
       request.model.length > 100 ||
       !/^[a-zA-Z0-9_-]+$/u.test(request.episodeId) ||
@@ -680,15 +1046,18 @@ export function transportPrompt(request: TransportRequest): string {
   validateTransportRequest(request);
   return JSON.stringify({
     capsule: request.capsule,
+    ...(request.baseline ? { baseline: request.baseline } : {}),
     episodeId: request.episodeId,
     resultId: resultId(request.command),
     outputInstructions:
-      request.capsule.role === "verifier"
-        ? `Independently assess each criterion using the pinned diff, repository snapshot and host witnesses. This is the complete read mount projection; no tools or other context are granted. Preserve evidence source labels. A pass requires every required check, matching claim type and source, with no adverse witness. Visual passes additionally require a cited passing screenshot; network passes require a cited passing network-trace. A console-capture error for the criterion's required check prevents a pass even when omitted. Missing or unavailable evidence is unverified. Emit full findings for failures, blocking when repair is required. A finding restates host evidence: reference the failing witness in evidenceRefs, which must also appear in that criterion's evaluation, and copy observed and expected verbatim from that witness; keep likelySurface within the criterion's codeSurfaces.${
-            request.capsule.subject.snapshot
-              ? " Each reproduction step must be that witness's reproduction step copied verbatim or one of the contract's exact named commands; the host runs them and interprets no prose."
-              : ""
-          } Put your own diagnosis in envelope.summary. Keep envelope.summary to at most 320 characters. Return only the schema object; completion means this evaluation finished, never implementation success.`
-        : "Propose replacement contents only for the blocking finding's likely surfaces in the pinned repository snapshot. Keep the repair focused. No file writes or other tools are granted; the host applies a validated proposal in its synthetic fixture and dispatches a fresh blinded verifier. Keep envelope.summary to at most 320 characters. Return only the schema object. You cannot certify acceptance.",
+      request.baseline?.kind === "baseline"
+        ? "This is the baseline episode before implementation. Inspect the sealed base and its host-run named tests. No tools, writes or implementer narrative are granted. A completed envelope acknowledges this inspection only; the host derives reproduction or its environment limitation from its own test rows. Return kind baseline, the pinned subjectRevision and envelope only; never supply rows, a verdict or an outcome. Keep envelope.summary to at most 320 characters."
+        : request.capsule.role === "verifier"
+          ? `Independently assess each criterion using the pinned diff, repository snapshot and host witnesses. This is the complete read mount projection; no tools or other context are granted. Preserve evidence source labels. A pass requires every required check, matching claim type and source, with no adverse witness. Visual passes additionally require a cited passing screenshot; network passes require a cited passing network-trace. A console-capture error for the criterion's required check prevents a pass even when omitted. Missing or unavailable evidence is unverified. Emit full findings for failures, blocking when repair is required. A finding restates host evidence: reference the failing witness in evidenceRefs, which must also appear in that criterion's evaluation, and copy observed and expected verbatim from that witness; keep likelySurface within the criterion's codeSurfaces.${
+              request.capsule.subject.snapshot
+                ? " Each reproduction step must be that witness's reproduction step copied verbatim or one of the contract's exact named commands; the host runs them and interprets no prose."
+                : ""
+            }${request.baseline?.kind === "comparison" ? ` Copy these host comparison findings exactly into baselineFindings: ${JSON.stringify(compareBaseline(request.baseline, request.capsule))}. A criterion named by a baseline finding cannot pass; use unverified when its candidate tests pass, and explain the missing baseline reproduction in your summary.` : ""} Put your own diagnosis in envelope.summary. Keep envelope.summary to at most 320 characters. Return only the schema object; completion means this evaluation finished, never implementation success.`
+          : "Propose replacement contents only for the blocking finding's likely surfaces in the pinned repository snapshot. Keep the repair focused. No file writes or other tools are granted; the host applies a validated proposal in its synthetic fixture and dispatches a fresh blinded verifier. Keep envelope.summary to at most 320 characters. Return only the schema object. You cannot certify acceptance.",
   });
 }
