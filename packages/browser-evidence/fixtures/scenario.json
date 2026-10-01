@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "scenarioId": "greeting",
+  "criteria": [
+    {"criterionId": "visual", "claimType": "visual", "checkId": "greeting", "codeSurfaces": ["packages/browser-evidence/fixtures/index.html"]},
+    {"criterionId": "network", "claimType": "network", "checkId": "greeting", "codeSurfaces": ["packages/browser-evidence/fixtures/index.html"]}
+  ],
+  "steps": [
+    {"action": "navigate", "path": "/"},
+    {"action": "fill", "selector": "#name", "value": "DotLn"},
+    {"action": "click", "selector": "button"},
+    {"action": "assertText", "selector": "#result", "value": "Hello, DotLn!"},
+    {"action": "assertResponse", "path": "/api/greeting", "status": 200}
+  ]
+}

@@ -1,6 +1,6 @@
 {
-  "name": "@dotln/console",
-  "version": "0.4.0",
+  "name": "@dotln/browser-evidence",
+  "version": "0.1.0",
   "private": true,
   "license": "Apache-2.0",
   "type": "module",
@@ -10,23 +10,13 @@
     ".": {
       "types": "./dist/src/index.d.ts",
       "import": "./dist/src/index.js"
-    },
-    "./client": {
-      "types": "./dist/src/console-client.d.ts",
-      "import": "./dist/src/console-client.js"
     }
   },
   "scripts": {
     "build": "node ../../scripts/build.mjs",
-    "test": "node ../../scripts/build.mjs && node --test dist/test/*.test.js",
+    "test": "node ../../scripts/build.mjs && node --test test/*.test.mjs",
     "prepublishOnly": "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\""
   },
-  "engines": {
-    "node": ">=26.0.0 <27"
-  },
-  "dependencies": {
-    "@dotln/compiler": "0.21.0",
-    "@dotln/kernel": "0.6.0",
-    "@dotln/skeleton": "0.47.2"
-  }
+  "engines": { "node": ">=26.0.0 <27" },
+  "dependencies": { "playwright": "1.63.0" }
 }

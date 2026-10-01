@@ -93,7 +93,7 @@ intent → task-scoped build → bounded WorkOrder → disposable executor
 -->
 <!-- DOTLN-RELEASE-BEGIN -->
 
-This source prepares DotLn `v0.58.2`.
+This source prepares DotLn `v0.59.0`.
 
 **The core.** A local-first compiler turns a loadout graph into a bounded
 program and authority envelope that the kernel checks on every decision.
@@ -126,6 +126,9 @@ The [skeleton runbook](packages/skeleton/README.md#resident-host) documents
 `dotln resident`, `dotln presence` and their limits; the
 [actor board](packages/console/README.md), mutation corpus, inspection workers,
 verification matrices and Beacon senses are also runnable.
+The standalone [browser evidence adapter](packages/browser-evidence/README.md)
+runs saved scenarios on a synthetic local app and supplies screenshot,
+DOM/accessibility, network and console witnesses to the verification subject.
 [Live source-change evidence](docs/evidence/WO-053/README.md) shows Claude and
 Codex fixing a synthetic module, passing its host test and committing in isolated
 worktrees, with killed-host recovery preserving the existing commit.

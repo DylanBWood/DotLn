@@ -1791,6 +1791,11 @@ text, never the default channel for state you own in structured form.
   suggestions never auto-expand scope.
   WO-010 implements the initial port as pure `compileVerificationTask` capsules plus a separate effect host that drives the verification branch of the shared typed reactor. `verification-snapshot-v1` exposes only a clean detached worktree's explicit host-read files, pinned diff, criteria and witnessed evidence; no model tools or implementer narrative are admitted. The complete capsule carries its compiler version and input equality key. Kernel programs and authority gates precede the persisted command; host leases, strict result validation and producing-episode identity gate acceptance. The host-owned log, not an actor-supplied event, determines which role produced evidence. The matrix retains criterion status and old/stale evaluations throughout the stream. Every blocking finding compiles a focused repair WorkOrder; one repair is applied before a fresh verifier rechecks affected criteria. The synthetic adapter accepts JSON policy data and runs only its fixed interpreter. Both CLI protocols pass local subprocess evidence; live model verification is supported by the launch path but unwitnessed in WO-010. See [the pinned contract](02-domain-model.md#independent-verification-v1) and [the runbook](../../packages/skeleton/README.md#independent-verification).
 
+  `@dotln/browser-evidence` runs saved scenarios over its synthetic local app,
+  retaining screenshot, DOM/accessibility, network and console witnesses.
+  Caller preparation records them as subject evidence before `VerificationOpened`;
+  the verification host loads no browser.
+
   WO-054's `prepareWorktreeVerification` is the effectful snapshot adapter beside
   that unchanged synthetic host. It accepts the declared base, observed commit,
   canonical WO-052 target worktree, public repository label, closed WorkOrder
