@@ -1,23 +1,22 @@
 # Current control state
 
-## WO-178
+## WO-177
 
-- Work order: WO-178
-- Work-order path: docs/work-orders/WO-178-the-record-holds-what-the-operator-sees.md
+- Work order: WO-177
+- Work-order path: docs/work-orders/WO-177-spawned-agents-run-the-pinned-models.md
 - Phase: closed
-- Latest verification: VER-002
-- Verification path: docs/verifications/WO-178/VER-002.md
+- Latest verification: VER-001
+- Verification path: docs/verifications/WO-177/VER-001.md
 - Latest verdict: pass
-- Final review: FINAL-002
-- Final-review path: docs/final-reviews/WO-178/FINAL-002.md
+- Final review: FINAL-001
+- Final-review path: docs/final-reviews/WO-177/FINAL-001.md
 - Latest attestation: harness claude-code; version 2.1.287; model claude-opus-5-5; effort xhigh; source claude-session-readback; account not-applicable
 - Effort drift: max -> xhigh
-- Latest recordedAt: 2026-10-01T19:15:37.433Z
-- Elapsed implementation: 4531034 ms
-- Elapsed verification: 621055 ms
-- Elapsed finalReview: 2091708 ms
-- Elapsed repair: 2930868 ms
-- Latest checkpoint: 447364885f494f9c812ea7ded8bc7052d4e2f682 (restore: `git checkout refs/dotln/checkpoint/WO-178/13 -- .`)
+- Latest recordedAt: 2026-10-01T20:18:49.614Z
+- Elapsed implementation: 1783821 ms
+- Elapsed verification: 553913 ms
+- Elapsed finalReview: 560523 ms
+- Latest checkpoint: ae2472a60a4613437590f5021a82d6239742242c (restore: `git checkout refs/dotln/checkpoint/WO-177/6 -- .`)
 - Legal next actions: release-close, next, activate
 - Legal off-ramps: correct
 

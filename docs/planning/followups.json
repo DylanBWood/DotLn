@@ -25544,6 +25544,45 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-a583091bec0d08b7",
+      "key": "decision:docs/evidence/WO-177/decisions.md#wo-177-d006",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "2b402561ce14298a670f7bcf0b5afce25dec148f48bf04f1db778b8a14576b60",
+          "ref": "docs/evidence/WO-177/decisions.md#wo-177-d006",
+          "title": "WO-177-D006: Planner, at the next planning pass: file or amend an order that classifies each file above. A live launch default changes to Codex gpt-6.1-sol at max or Claude claude-opus-5-5 at xhigh, w",
+          "summary": "{ \"id\": \"WO-177-D006\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Board, not fail: some launch defaults outside the six this order lists still select the retired models. `npm run plan -- refute --transport codex-cli-exec` without --model or --effort launches gpt-6-sol at xhigh (scripts/refute-plan.mjs:510-519). scripts/harness-probe.mjs:169-170 and scripts/target-worker-smoke.mjs:72-73 launch gpt-6-sol or claude-fable-5 at xhigh. scripts/harness-live-smoke.mjs:282-283, scripts/evidence-mission-check.mjs:31-32, scripts/probe-codex-effort.mjs:89 and :228, and scripts/evidence-resident-actors.mjs:37-38 and :94 also name them; some of these regen",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-62e418efd2d0b2b8",
+      "key": "decision:docs/evidence/WO-177/decisions.md#wo-177-d007",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "f72c335e56a10427e177bc619be1428a86e43330e772fe910b0ed6e653447994",
+          "ref": "docs/evidence/WO-177/decisions.md#wo-177-d007",
+          "title": "WO-177-D007: Executor of the next order that edits docs/AI-HARNESS-SECURITY.md §Harness version, model and effort readback, or a WO-177 repair if one occurs: restore the chain in place. For example: '",
+          "summary": "{ \"id\": \"WO-177-D007\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: verify; VER-001\", \"kind\": \"finding\", \"decision\": \"Board, not fail: the in-place edit of the AI-HARNESS-SECURITY Entropy Reducer launch paragraph now reads 'Claude defaults to claude-opus-5-5 at xhigh and Codex to gpt-6.1-sol at max (WO-177; previously claude-fable-5-1 at max and gpt-6-astra with effort unknown)'. The parenthetical belonged to WO-100 and recorded the values before WO-100. Rewritten to cite WO-177, it credits WO-177 with the Claude default, which WO-100 set and this order left unchanged. It also drops the Codex default WO-177 replaced: gpt-6-sol at xhigh, set by WO-100. Criterion 4 requires the paragraph to name",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by WO-177's final review (D008): the Entropy Reducer launch paragraph in docs/AI-HARNESS-SECURITY.md now credits WO-100 with the Claude default and WO-177 with the Codex default, keeps WO-100's replaced gpt-6-sol at xhigh and keeps the pre-WO-100 values; growth 431 bytes within the order's 600. [WO-177 final review (docs/final-reviews/WO-177/FINAL-001.md)]",
+          "reopenWhen": "An order edits the Entropy Reducer launch paragraph or changes either transport default without keeping the provenance chain.",
+          "targets": [],
+          "at": "2026-10-01T20:14:42.111Z"
+        }
+      ]
     }
   ]
 }
