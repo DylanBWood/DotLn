@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "receipt": "claude-live-002.json",
+  "observation": "The behavior verifier passed both criteria but requested human attention; the host stopped before dispatching review.",
+  "resultEvent": {
+    "schemaVersion": 1,
+    "type": "VerificationWorkerResultObserved",
+    "occurredAt": 1790868976895,
+    "actorId": "verification-host",
+    "workstreamId": "ws_review",
+    "correlationId": "cmd_3b843b5108e71409",
+    "payload": {
+      "commandId": "cmd_3b843b5108e71409",
+      "workerEpisodeId": "ep_verifier_1_attempt_1",
+      "verificationResultVersion": 1,
+      "result": "completed",
+      "value": {
+        "kind": "verification",
+        "envelope": {
+          "workOrderId": "verification_1",
+          "episodeId": "ep_verifier_1_attempt_1",
+          "resultId": "result_cmd_3b843b5108e71409",
+          "status": "completed",
+          "summary": "Both criteria pass on host witnesses (focused-test, contract-test exit 0); add now returns left + right. Out of scope but flagged: diff also edits README.md, violating 'change only sum.mjs', and local TOTAL breaks CONVENTIONS.md lowerCamelCase. Human review advised.",
+          "requiresHuman": true
+        },
+        "subjectRevision": "dd8d5ffcb485bd50442442e31b8cd899d8622085",
+        "evaluations": [
+          {
+            "criterionId": "AC-positive",
+            "claimType": "behavior",
+            "verdict": "pass",
+            "evidenceRefs": [
+              "dd8d5ffcb485bd50442442e31b8cd899d8622085:host-test:0"
+            ],
+            "exemplarRefs": [],
+            "dissentRefs": []
+          },
+          {
+            "criterionId": "AC-signed",
+            "claimType": "behavior",
+            "verdict": "pass",
+            "evidenceRefs": [
+              "dd8d5ffcb485bd50442442e31b8cd899d8622085:host-test:1"
+            ],
+            "exemplarRefs": [],
+            "dissentRefs": []
+          }
+        ],
+        "findings": []
+      }
+    },
+    "eventId": "evt_22"
+  },
+  "reviewDispatched": false
+}

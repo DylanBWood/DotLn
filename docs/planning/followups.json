@@ -11953,6 +11953,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-10-01T11:58:59.900Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Kept open by WO-181's final review with a third occurrence of its seam: WO-181 edited packages/skeleton/src/reactor.ts (the review dispatch, the ReviewCompleted fold, the review result branch and the opening check, and moved the verification state types to verification.ts) and paid a live feedback audit (feedback 002, decision D004). The completion advisory listed the row, and the executor neither took the three items nor recorded them as left; the one any and the append-only repairPlans are still in the file. reactor.ts now stands at 99,655 characters against the audit capsule's 100,000-character file bound (WO-181-D014), so the next order that edits it must free space, and these items are in the same file. A reviewer does not edit a judged source. [WO-181 final review (docs/final-reviews/WO-181/FINAL-001.md)]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-10-01T17:01:11.982Z"
         }
       ]
     },
@@ -12316,6 +12324,14 @@
           "reopenWhen": "the next order that adds a module the reactor imports",
           "targets": [],
           "at": "2026-09-19T01:20:08.389Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "Opened by WO-181's final review: its reopening condition occurred. WO-181 added a module the reactor imports at runtime, packages/skeleton/src/review.ts, which itself imports repair.ts and the compiler, plus type-only imports from verification.ts. The executor extended the named-module allowlist and the no-host-import assertion in packages/skeleton/test/scenario.test.ts to review.ts (WO-181-D007); whether a transitive check passes is still unknown. Planning decides whether an order adds the transitive check or the row is declined. [WO-181 final review (docs/final-reviews/WO-181/FINAL-001.md)]",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-10-01T17:01:12.024Z"
         }
       ]
     },
@@ -25178,6 +25194,60 @@
           "ref": "docs/evidence/WO-102/decisions.md#wo-102-d010",
           "title": "WO-102-D010: Planner, high priority, before the WO-102 lane is run against a changed kernel: bound the corpus harness's failure path under drift. Cap the findings each sweep keeps (for example the fir",
           "summary": "{ \"id\": \"WO-102-D010\", \"kind\": \"correction\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: final review; operator correction in the active conversation\", \"decision\": \"HARD RED FLAG: a reviewer failure. After the passing product gate, I ran an extra, unrequired end-to-end mutation probe on the operator's machine with no memory bound. The operator reported 230 GB of memory in use while it ran, and later stated that it reached 500 GB and was still climbing. The probe was terminated with exit 144 and produced no result. No conclusion in FINAL-001 rests on it. I run no further exploratory checks in this review, only the required lifecycle commands, one at a time.\", \"misread\": \"I judged the probe che",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-cd891042364d172a",
+      "key": "decision:docs/evidence/WO-059/decisions.md#wo-059-d023",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "1ae5003bec06da9021394b2a34f37de53ec375d74fc94fe0e48f3d7fca427847",
+          "ref": "docs/evidence/WO-059/decisions.md#wo-059-d023--receipt-036-missing-browser-disposition",
+          "title": "WO-059-D023: Accept the current missing-browser behavior under WO-059 operator-review assumption 2: unavailable witnesses, no passing evidence and a failing package suite that prints the cache-scoped ",
+          "summary": "{ \"id\": \"WO-059-D023\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: fix; FINAL-001 D019\", \"decision\": \"Accept the current missing-browser behavior under WO-059 operator-review assumption 2: unavailable witnesses, no passing evidence and a failing package suite that prints the cache-scoped install command. Retain the per-worktree cache and the README's explicit setup step. Record Receipt 036's recurring setup cost and its reopening condition; do not silently skip browser checks or redesign the gate in this repair.\", \"evidence\": [ \"docs/planning/refutations/2026-09-30-planning-826842218eb333e2-036.md WO-059 criterion:6 known-issue and the work-order-map row assign this disposition to the executo",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by WO-181's final review: WO-181-D008 reopened this decision under the operator's scope expansion, and WO-181 criterion 7 replaces the manual per-worktree browser setup it accepted. Bootstrap now installs the pinned Chromium headless shell during future-worktree creation, before the launch handoff; the missing-browser behavior this decision kept (unavailable witnesses and a failing suite) is unchanged. VER-001 and FINAL-001 judged the criterion met. [WO-181 final review (docs/final-reviews/WO-181/FINAL-001.md)]",
+          "reopenWhen": "A worktree created through the canonical bootstrap reaches its first gate without a usable pinned browser, or a cache selection differs between preparation and the browser suite's launch.",
+          "targets": [],
+          "at": "2026-10-01T17:01:12.066Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-57ecd19a26362b1c",
+      "key": "decision:docs/evidence/WO-181/decisions.md#wo-181-d012",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "60e576c1ec66ce507f8c0281fc731e86ea28b61342e3f1c830b292bb137d8b62",
+          "ref": "docs/evidence/WO-181/decisions.md#wo-181-d012--verification-board-unrecorded-receipt-036-duties",
+          "title": "WO-181-D012: WO-123: when the composition sequences review, add a fixture in which the review episode fails, times out or is unavailable; record whether the composition stops, retries a fresh attempt ",
+          "summary": "{ \"id\": \"WO-181-D012\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: verify\", \"decision\": \"Board, not fail, two Receipt 036 duties that the work-order map row assigns to WO-181's executor and that this order's evidence does not record. Neither is a declared acceptance criterion. First, review-episode failure: VER-001 observed the shared host's behavior. A review result with status failed records WorkerInterrupted (worker-incomplete) and returns its envelope. A rejected transport records WorkerInterrupted and throws. In both cases the review command stays pending with state.next review and no ReviewCompleted event; rerunning the host starts a fresh attempt. No committed fixture pins this behavio",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-06e91517600ce7a7",
+      "key": "decision:docs/evidence/WO-181/decisions.md#wo-181-d014",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "6b3d913c9846339eca3c5fb29299a8a3d9d084e1ff334c86c43e68449e4931b8",
+          "ref": "docs/evidence/WO-181/decisions.md#wo-181-d014--final-review-pass-and-three-seams-the-composition-inherits",
+          "title": "WO-181-D014: Planner, before WO-123 activates: (1) decide what the composition does when a behavior verifier passes every criterion and asks for human attention over a scope or convention defect that ",
+          "summary": "{ \"id\": \"WO-181-D014\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: final review; FINAL-001\", \"decision\": \"Pass WO-181 on all seven criteria against the original order and the operator's D008 expansion, on VER-001's probes, this review's reading of the full diff and a fresh product gate on the integrated tree. Concur with D012: the two Receipt 036 duties sit outside the declared criteria and stay boarded. Board three further seams without failing the order. (1) Observed: a capable behavior verifier pre-empts the review. Claude attempts 002 and 003 passed both criteria, named exactly the two planted review defects as out of scope and asked for human attention, so the host held the stream and ne",
           "missing": false
         }
       ],

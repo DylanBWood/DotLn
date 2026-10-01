@@ -54,8 +54,15 @@ render settings. Dynamic ports and timings remain in the raw trace. HTML does
 not serialize every live input property; the screenshot/accessibility capture
 also records the rendered result. A changed browser/host needs a new observation.
 
-Install the exactly pinned runtime with the workspace lockfile, then install its
-headless shell before running the suite:
+`npm run worktree -- start ...` prepares the lockfile-pinned headless shell in
+each new worktree before printing its launch handoff. Bootstrap installs the
+JavaScript dependencies with lifecycle scripts disabled, invokes that checkout's
+installed Playwright CLI, then builds and prepares the hooks. Repeated bootstrap
+uses an already installed matching browser. A failed download preserves the
+checkout and stops preparation with the retry command; it never skips a test.
+
+A raw checkout or interrupted setup can run `node scripts/bootstrap.mjs` from
+its root. The equivalent explicit prerequisite and standalone suite commands are:
 
 ```sh
 npm ci --ignore-scripts
@@ -67,14 +74,20 @@ node --test packages/browser-evidence/test/*.test.mjs
 The suite uses `.runtime/playwright` by default or an explicit
 `PLAYWRIGHT_BROWSERS_PATH`. A missing-browser failure prints this install command
 with the selected cache path shell-quoted; a caller without a cache override gets
-the bare command for Playwright's platform default. The fixtures run the actual
-suite in a fresh worktree with no supplied browser-path variable and compare the
+the bare command for Playwright's platform default. The negative fixtures
+deliberately bypass bootstrap, run the actual suite in a fresh worktree with no
+supplied browser-path variable and compare the
 printed remedy and this README's command through the pinned CLI's `--dry-run`.
 They also check an empty custom cache containing shell characters and a caller
 using the platform default. Missing launch still yields unavailable witnesses
 and a failing suite.
-Each fresh worktree without a supplied available cache needs this setup before
-its first gate. A shared cache or automatic download is not established here;
-Receipt 036's disposition and reopening condition are recorded in
+
+Automatic preparation applies to future worktree creation; existing worktrees
+are not retrofitted. Bootstrap uses `.runtime/playwright` by default, honors
+`PLAYWRIGHT_BROWSERS_PATH` and resolves relative selections from the new checkout.
+The cache remains isolated unless the caller explicitly chooses a shared one.
+Receipt 036's earlier manual-setup disposition is reopened by
+[WO-181-D008](../../docs/evidence/WO-181/decisions.md#wo-181-d008--operator-expansion-prepare-future-worktrees);
+the historical observation remains in
 [D023](../../docs/evidence/WO-059/decisions.md#wo-059-d023--receipt-036-missing-browser-disposition).
 No package, browser binary or bundled artifact is published by this work order.

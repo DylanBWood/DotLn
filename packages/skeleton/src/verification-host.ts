@@ -1,3 +1,4 @@
+import { reviewWorkOrder, type ReviewContext } from "./review.js";
 import {
   appendEvent,
   decodeLog,
@@ -78,11 +79,23 @@ export function preflightVerificationRecovery(
             ).baseline,
           }
         : {}),
+      ...((command.intent.payload as unknown as { review?: ReviewContext })
+        .review
+        ? {
+            review: (
+              command.intent.payload as unknown as { review: ReviewContext }
+            ).review,
+          }
+        : {}),
       ...(feedback ? { feedback } : {}),
       kind: "evidence-worker",
       command,
       capsule,
-      workOrder: capsule.workOrder,
+      workOrder: (
+        command.intent.payload as unknown as { review?: ReviewContext }
+      ).review
+        ? reviewWorkOrder(capsule)
+        : capsule.workOrder,
       episodeId: "recovery_preflight",
       model,
       effort,
@@ -159,7 +172,7 @@ export class VerificationDriver {
   }
   persistNext(at: number): void {
     this.drainContinuation(at);
-    if (this.state.next === "baseline-witnessed") return;
+    if (["baseline-witnessed", "reviewed"].includes(this.state.next)) return;
     if (!this.state.pending)
       this.record("VerificationDispatchRequested", at, {});
     if (!this.state.pending!.persisted) {
@@ -221,11 +234,14 @@ export class VerificationHost {
     if (!pending) throw new WorkerFailure("profile-refused");
     const request: EvidenceWorkerRequest = {
       ...(pending.baseline ? { baseline: pending.baseline } : {}),
+      ...(pending.review ? { review: pending.review } : {}),
       ...(this.options.feedback ? { feedback: this.options.feedback } : {}),
       kind: "evidence-worker",
       command: pending.command,
       capsule: pending.capsule,
-      workOrder: pending.capsule.workOrder,
+      workOrder: pending.review
+        ? reviewWorkOrder(pending.capsule)
+        : pending.capsule.workOrder,
       episodeId: `${pending.command.episodeId}_attempt_${pending.attempts.length + 1}`,
       cwd,
       model,
@@ -267,7 +283,10 @@ export class VerificationHost {
   ): Promise<ResultEnvelope> {
     const { driver, transport, now } = this.options;
     const pending = driver.state.pending;
-    if (!pending && driver.state.next === "baseline-witnessed") {
+    if (
+      !pending &&
+      ["baseline-witnessed", "reviewed"].includes(driver.state.next)
+    ) {
       const events = decodeLog(driver.log);
       const accepted = events.find(
         (event) => event.eventId === driver.state.lastResultEventId,
@@ -286,15 +305,17 @@ export class VerificationHost {
         ?.command;
       const input = persisted?.intent.payload as unknown as {
         capsule: VerificationTask;
-        baseline: BaselineContext;
+        baseline?: BaselineContext;
+        review?: ReviewContext;
       };
-      if (!input || input.baseline?.kind !== "baseline")
+      if (!input || (!input.review && input.baseline?.kind !== "baseline"))
         throw new WorkerFailure("profile-refused");
       assertWorktreeSnapshot(input.capsule, cwd);
       const result = parseEvidenceResult(payload.value, {
         command: persisted!,
         capsule: input.capsule,
-        baseline: input.baseline,
+        ...(input.baseline ? { baseline: input.baseline } : {}),
+        ...(input.review ? { review: input.review } : {}),
         workOrder: input.capsule.workOrder,
         episodeId: payload.value.envelope.episodeId,
       });
@@ -322,9 +343,11 @@ export class VerificationHost {
         commandId: pending.command.commandId,
         workerEpisodeId: episodeId,
         role: pending.capsule.role,
-        ...(pending.baseline?.kind === "baseline"
-          ? { episodeKind: "baseline" }
-          : {}),
+        ...(pending.review
+          ? { episodeKind: "review" }
+          : pending.baseline?.kind === "baseline"
+            ? { episodeKind: "baseline" }
+            : {}),
         mode: cached ? "cached-result-query" : "fresh-transport",
         inputHash: pending.capsule.inputHash,
         model,

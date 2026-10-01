@@ -7,6 +7,7 @@ import {
   type AuthorityGrant,
   type NamedVerificationTest,
   type VerificationFinding,
+  type ReviewFinding,
   type VerificationEvidence,
   type VerificationSubject,
   type WorktreeVerificationContract,
@@ -47,7 +48,8 @@ export interface ReviewRepairWitness {
   readonly subjectRevision: string;
   readonly criterionId: string;
   readonly itemId: string;
-  readonly class: "automated-review" | "ci-failure";
+  readonly class: "automated-review" | "ci-failure" | "independent-review";
+  readonly reviewFinding?: ReviewFinding;
   readonly path?: string;
   readonly line?: number;
   readonly checkName?: string;
@@ -142,6 +144,11 @@ export function deriveRepairOrder(
   )
     return needs("roundLimit", "repair round limit reached or invalid");
   const review = input.reviewItem;
+  if (finding.class === "review" && review?.class !== "independent-review")
+    return needs(
+      finding.findingId,
+      "review finding requires its host review record",
+    );
   const test = input.tests.find(
     (entry) => entry.command === review?.testCommand,
   );
@@ -158,24 +165,29 @@ export function deriveRepairOrder(
       !criterion.requiredChecks.includes(test.checkId) ||
       review.subjectRevision !== input.subject.revision ||
       review.criterionId !== finding.criterionId ||
-      finding.evidenceRefs.length !== 1 ||
-      finding.evidenceRefs[0] !== review.evidenceId ||
+      (review.class !== "independent-review" &&
+        (finding.evidenceRefs.length !== 1 ||
+          finding.evidenceRefs[0] !== review.evidenceId)) ||
       review.observed !== finding.observed ||
       review.expected !== finding.expected ||
-      finding.reproductionSteps.length !== 1 ||
-      finding.reproductionSteps[0] !== review.testCommand ||
-      (review.class === "automated-review"
-        ? !review.path ||
-          !repositoryPath(review.path) ||
-          !Number.isSafeInteger(review.line) ||
-          review.line! < 1 ||
-          finding.likelySurface.length !== 1 ||
-          finding.likelySurface[0] !== review.path
-        : review.class !== "ci-failure" ||
-          !review.checkName ||
-          finding.likelySurface.some(
-            (surface) => !criterion.codeSurfaces.includes(surface),
-          )))
+      (review.class !== "independent-review" &&
+        (finding.reproductionSteps.length !== 1 ||
+          finding.reproductionSteps[0] !== review.testCommand)) ||
+      (review.class === "independent-review"
+        ? finding.class !== "review" ||
+          !repairEqual(review.reviewFinding, finding)
+        : review.class === "automated-review"
+          ? !review.path ||
+            !repositoryPath(review.path) ||
+            !Number.isSafeInteger(review.line) ||
+            review.line! < 1 ||
+            finding.likelySurface.length !== 1 ||
+            finding.likelySurface[0] !== review.path
+          : review.class !== "ci-failure" ||
+            !review.checkName ||
+            finding.likelySurface.some(
+              (surface) => !criterion.codeSurfaces.includes(surface),
+            )))
   )
     return needs(review.itemId, "malformed or foreign host review item");
   // The host item substitutes only for the adverse witness. Scope, tests,
@@ -191,9 +203,11 @@ export function deriveRepairOrder(
           claimType: criterion!.claimType,
           source: criterion!.evidenceSource,
           codeSurfaces:
-            review.class === "automated-review"
-              ? [review.path!]
-              : criterion!.codeSurfaces,
+            review.class === "independent-review"
+              ? finding.likelySurface
+              : review.class === "automated-review"
+                ? [review.path!]
+                : criterion!.codeSurfaces,
           reproductionSteps: [review.testCommand],
           automatedTest: review.testCommand,
           observed: review.observed,
@@ -232,7 +246,15 @@ export function deriveRepairOrder(
     ...witnesses.flatMap((e) => e.codeSurfaces),
   ]);
   const commands: string[] = [];
-  for (const step of finding.reproductionSteps) {
+  for (const step of review?.class === "independent-review"
+    ? input.tests
+        .filter(
+          (test) =>
+            test.criterionId === finding.criterionId &&
+            criterion!.requiredChecks.includes(test.checkId),
+        )
+        .map((test) => test.command)
+    : finding.reproductionSteps) {
     const witness = witnesses.find((e) => e.reproductionSteps.includes(step));
     const command =
       witness?.hostTest?.command ?? witness?.automatedTest ?? step;

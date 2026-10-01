@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "receipt": "claude-live-003.json",
+  "observation": "The behavior verifier passed both criteria but requested human attention; review was not dispatched.",
+  "resultEvent": {
+    "schemaVersion": 1,
+    "type": "VerificationWorkerResultObserved",
+    "occurredAt": 1790869109199,
+    "actorId": "verification-host",
+    "workstreamId": "ws_review",
+    "correlationId": "cmd_3b843b5108e71409",
+    "payload": {
+      "commandId": "cmd_3b843b5108e71409",
+      "workerEpisodeId": "ep_verifier_1_attempt_1",
+      "verificationResultVersion": 1,
+      "result": "completed",
+      "value": {
+        "kind": "verification",
+        "envelope": {
+          "workOrderId": "verification_1",
+          "episodeId": "ep_verifier_1_attempt_1",
+          "resultId": "result_cmd_3b843b5108e71409",
+          "status": "completed",
+          "summary": "Both criteria pass: host witnesses host-test:0 and :1 exit 0; sum.mjs returns left + right. Out of scope but flagged: diff also edits README.md (adds 'Unrequested release announcement.'), violating 'change only sum.mjs'; local TOTAL breaks lowerCamelCase convention. Human review advised.",
+          "requiresHuman": true
+        },
+        "subjectRevision": "312499f56e2b55eacfde7eeec568b7c814b23b8b",
+        "evaluations": [
+          {
+            "criterionId": "AC-positive",
+            "claimType": "behavior",
+            "verdict": "pass",
+            "evidenceRefs": [
+              "312499f56e2b55eacfde7eeec568b7c814b23b8b:host-test:0"
+            ],
+            "exemplarRefs": [],
+            "dissentRefs": []
+          },
+          {
+            "criterionId": "AC-signed",
+            "claimType": "behavior",
+            "verdict": "pass",
+            "evidenceRefs": [
+              "312499f56e2b55eacfde7eeec568b7c814b23b8b:host-test:1"
+            ],
+            "exemplarRefs": [],
+            "dissentRefs": []
+          }
+        ],
+        "findings": []
+      }
+    },
+    "eventId": "evt_20"
+  },
+  "reviewDispatched": false
+}

@@ -1,3 +1,4 @@
+import type { ReviewContext } from "./review.js";
 import {
   closeSync,
   fsyncSync,
@@ -312,6 +313,7 @@ export class WorkerStore {
           command: StoredRequest["command"];
           capsule?: VerificationTask;
           baseline?: BaselineContext;
+          review?: ReviewContext;
         }
       >();
       for (const event of events) {
@@ -364,6 +366,9 @@ export class WorkerStore {
             commands.set(command.commandId, {
               command: command as unknown as StoredRequest["command"],
               ...(capsule ? { capsule } : {}),
+              ...(payload.review
+                ? { review: payload.review as unknown as ReviewContext }
+                : {}),
               ...(payload.baseline
                 ? { baseline: payload.baseline as BaselineContext }
                 : {}),
@@ -411,6 +416,7 @@ export class WorkerStore {
               workOrder: stored.capsule.workOrder,
               episodeId: receipt.episodeId,
               ...(stored.baseline ? { baseline: stored.baseline } : {}),
+              ...(stored.review ? { review: stored.review } : {}),
             });
           receiptPaths.push(path);
         });

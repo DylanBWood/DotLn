@@ -1,4 +1,9 @@
+import type { ReviewContext, ReviewCompleted } from "./review.js";
 import type {
+  AcceptanceCriterion,
+  Evaluation,
+  VerificationFinding,
+  VerificationTask,
   VerificationSubject,
   VerificationEvidence,
 } from "@dotln/compiler";
@@ -7,6 +12,9 @@ import {
   type Event,
   type EventDraft,
   type JsonValue,
+  type AuthorityEnvelope,
+  type Command,
+  type ExecutableProgramV1,
 } from "@dotln/kernel";
 import {
   VERIFICATION_HOST,
@@ -14,12 +22,11 @@ import {
   projectRuntimeEnvironment,
   seiriReactor,
   verificationStateFromRuntime,
-  type AcceptanceEvidenceRow,
-  type FindingRecord,
-  type VerificationState,
 } from "./reactor.js";
 import {
   baselineWitnessRows,
+  type BaselineContext,
+  type RepairWorkerResult,
   type BaselineWitness,
   type BaselineComparisonFinding,
 } from "./verification-protocol.js";
@@ -29,13 +36,89 @@ export {
   initialVerificationState,
   verificationAuthorization,
   verificationStateFromRuntime,
-  type MatrixEvaluation,
-  type AcceptanceEvidenceRow,
-  type FindingRecord,
-  type VerificationPending,
-  type VerificationState,
 } from "./reactor.js";
 
+export interface MatrixEvaluation extends Evaluation {
+  readonly provenance: {
+    readonly kind: "host-admitted-verifier";
+    readonly commandId: string;
+    readonly inputHash: string;
+  };
+  readonly eventId: string;
+  readonly episodeId: string;
+  readonly subjectRevision: string;
+  readonly stale: boolean;
+}
+export interface AcceptanceEvidenceRow {
+  readonly criterion: AcceptanceCriterion;
+  readonly status: "incomplete" | "verified" | "failed" | "stale";
+  readonly evaluations: readonly MatrixEvaluation[];
+}
+export interface FindingRecord {
+  readonly finding: VerificationFinding;
+  readonly eventId: string;
+  readonly episodeId: string;
+  readonly subjectRevision: string;
+  readonly status: "open" | "resolved" | "superseded";
+}
+export interface VerificationPending {
+  readonly review?: ReviewContext;
+  readonly baseline?: BaselineContext;
+  readonly capsule: VerificationTask;
+  readonly command: Command;
+  readonly ordinal: number;
+  readonly persisted: boolean;
+  readonly attempts: readonly string[];
+  readonly activeEpisode: string | null;
+  readonly leaseExpiresAt: number;
+  readonly leaseExpired: boolean;
+}
+export interface VerificationState {
+  readonly reviewConventionsPath?: string | null;
+  readonly reviewCompleted?: ReviewCompleted;
+  readonly baselineContext?: BaselineContext;
+  readonly baselineWitness?: BaselineWitness;
+  readonly baselineFindings?: readonly BaselineComparisonFinding[];
+  readonly episodeNamespace?: string;
+  readonly workstreamId: string;
+  readonly criteria: readonly AcceptanceCriterion[];
+  readonly baseline: VerificationSubject | null;
+  readonly subject: VerificationSubject | null;
+  readonly rows: readonly AcceptanceEvidenceRow[];
+  readonly evidence: readonly VerificationEvidence[];
+  readonly findings: readonly FindingRecord[];
+  readonly repairPlans: readonly {
+    readonly findingId: string;
+    readonly capsule: VerificationTask;
+  }[];
+  readonly implementerEpisodes: readonly string[];
+  readonly episodeIds: readonly string[];
+  readonly authority: AuthorityEnvelope | null;
+  readonly revocations: readonly Event[];
+  readonly pending: VerificationPending | null;
+  readonly continuation: ExecutableProgramV1;
+  readonly next:
+    | "unopened"
+    | "verify"
+    | "repair"
+    | "apply-repair"
+    | "complete"
+    | "baseline-witnessed"
+    | "review"
+    | "reviewed"
+    | "attention";
+  readonly proposal: RepairWorkerResult | null;
+  readonly dispatchCount: number;
+  readonly repairCount: number;
+  readonly maxRepairs: number;
+  readonly lastResultEventId: string | null;
+  readonly refusedResults: readonly string[];
+  readonly staleness: readonly {
+    readonly eventId: string;
+    readonly changedSurfaces: readonly string[];
+    readonly criterionIds: readonly string[];
+  }[];
+}
 export function replayVerification(
   events: readonly Event[],
   workstreamId: string,
@@ -51,6 +134,7 @@ export function replayVerification(
   );
 }
 export interface AcceptanceEvidenceMatrix {
+  readonly review?: ReviewCompleted;
   readonly baselineWitness?: BaselineWitness;
   readonly baselineEvidence?: ReturnType<typeof baselineWitnessRows>;
   readonly baselineFindings?: readonly BaselineComparisonFinding[];
@@ -89,6 +173,7 @@ export function projectAcceptanceEvidenceMatrices(
       ...(state.baselineFindings
         ? { baselineFindings: state.baselineFindings }
         : {}),
+      ...(state.reviewCompleted ? { review: state.reviewCompleted } : {}),
       workstreamId: id,
       subjectRevision: state.subject?.revision ?? null,
       phase: state.next,
