@@ -1,0 +1,59 @@
+{
+  "label": "NON-NORMATIVE structural data; not a Seiri policy or deletion authorization",
+  "family": "cycle-mixed",
+  "seed": "wo105-crash-20261001",
+  "roots": [
+    "cycle-mixed/file-0-9dd3b1b7.txt"
+  ],
+  "inventoryCount": 8,
+  "classificationCounts": {
+    "documentation": 1,
+    "source": 2,
+    "notes": 2,
+    "generated-stale": 3
+  },
+  "edges": [
+    [
+      "cycle-mixed/file-0-9dd3b1b7.txt",
+      "cycle-mixed/file-1-f3dce3aa.txt"
+    ],
+    [
+      "cycle-mixed/file-1-f3dce3aa.txt",
+      "cycle-mixed/file-2-dcf63f01.txt"
+    ],
+    [
+      "cycle-mixed/file-2-dcf63f01.txt",
+      "cycle-mixed/file-1-f3dce3aa.txt"
+    ],
+    [
+      "cycle-mixed/file-2-dcf63f01.txt",
+      "cycle-mixed/file-3-b9238c6c.txt"
+    ],
+    [
+      "cycle-mixed/file-3-b9238c6c.txt",
+      "cycle-mixed/file-4-83bc1cdb.txt"
+    ]
+  ],
+  "reachable": [
+    "cycle-mixed/file-0-9dd3b1b7.txt",
+    "cycle-mixed/file-1-f3dce3aa.txt",
+    "cycle-mixed/file-2-dcf63f01.txt",
+    "cycle-mixed/file-3-b9238c6c.txt",
+    "cycle-mixed/file-4-83bc1cdb.txt"
+  ],
+  "unreachable": [
+    "cycle-mixed/file-5-b1deac7e.txt",
+    "cycle-mixed/file-6-d5c5e9c5.txt",
+    "cycle-mixed/file-7-c6dd5060.txt"
+  ],
+  "orphans": [
+    "cycle-mixed/file-0-9dd3b1b7.txt",
+    "cycle-mixed/file-5-b1deac7e.txt",
+    "cycle-mixed/file-6-d5c5e9c5.txt",
+    "cycle-mixed/file-7-c6dd5060.txt"
+  ],
+  "plantedCandidates": [
+    "cycle-mixed/file-6-d5c5e9c5.txt",
+    "cycle-mixed/file-7-c6dd5060.txt"
+  ]
+}

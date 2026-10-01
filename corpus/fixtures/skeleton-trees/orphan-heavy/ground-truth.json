@@ -1,0 +1,67 @@
+{
+  "label": "NON-NORMATIVE structural data; not a Seiri policy or deletion authorization",
+  "family": "orphan-heavy",
+  "seed": "wo105-crash-20261001",
+  "roots": [
+    "orphan-heavy/file-0-26593c27.txt"
+  ],
+  "inventoryCount": 12,
+  "classificationCounts": {
+    "documentation": 2,
+    "source": 3,
+    "notes": 2,
+    "generated-stale": 5
+  },
+  "edges": [
+    [
+      "orphan-heavy/file-0-26593c27.txt",
+      "orphan-heavy/file-1-9cbd8b5a.txt"
+    ],
+    [
+      "orphan-heavy/file-1-9cbd8b5a.txt",
+      "orphan-heavy/file-7-4c285e90.txt"
+    ],
+    [
+      "orphan-heavy/file-2-535ee2f1.txt",
+      "orphan-heavy/file-3-70357f9c.txt"
+    ],
+    [
+      "orphan-heavy/file-3-70357f9c.txt",
+      "orphan-heavy/file-2-535ee2f1.txt"
+    ],
+    [
+      "orphan-heavy/file-7-4c285e90.txt",
+      "orphan-heavy/file-8-6c3920af.txt"
+    ]
+  ],
+  "reachable": [
+    "orphan-heavy/file-0-26593c27.txt",
+    "orphan-heavy/file-1-9cbd8b5a.txt",
+    "orphan-heavy/file-7-4c285e90.txt",
+    "orphan-heavy/file-8-6c3920af.txt"
+  ],
+  "unreachable": [
+    "orphan-heavy/file-10-200da0b9.txt",
+    "orphan-heavy/file-11-fd3ad2c4.txt",
+    "orphan-heavy/file-2-535ee2f1.txt",
+    "orphan-heavy/file-3-70357f9c.txt",
+    "orphan-heavy/file-4-b63a964b.txt",
+    "orphan-heavy/file-5-829d772e.txt",
+    "orphan-heavy/file-6-3f6854b5.txt",
+    "orphan-heavy/file-9-af725642.txt"
+  ],
+  "orphans": [
+    "orphan-heavy/file-0-26593c27.txt",
+    "orphan-heavy/file-10-200da0b9.txt",
+    "orphan-heavy/file-11-fd3ad2c4.txt",
+    "orphan-heavy/file-4-b63a964b.txt",
+    "orphan-heavy/file-5-829d772e.txt",
+    "orphan-heavy/file-6-3f6854b5.txt",
+    "orphan-heavy/file-9-af725642.txt"
+  ],
+  "plantedCandidates": [
+    "orphan-heavy/file-10-200da0b9.txt",
+    "orphan-heavy/file-11-fd3ad2c4.txt",
+    "orphan-heavy/file-9-af725642.txt"
+  ]
+}

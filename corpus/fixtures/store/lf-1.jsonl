@@ -1,0 +1,1 @@
+{"schemaVersion":1,"type":"CommandPersisted","occurredAt":0,"actorId":"corpus-actor","workstreamId":"corpus-stream","payload":{"command":{"commandId":"corpus-command-0","workstreamId":"corpus-stream","intent":{"kind":"Act","effect":"corpus.inspect","payload":{"sample":3458751858}}}},"correlationId":"corpus-command-0","eventId":"evt_1"}

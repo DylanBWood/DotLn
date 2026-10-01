@@ -1,0 +1,50 @@
+{
+  "label": "NON-NORMATIVE structural data; not a Seiri policy or deletion authorization",
+  "family": "chain-mixed",
+  "seed": "wo105-crash-20261001",
+  "roots": [
+    "chain-mixed/file-0-76e3b0ea.txt"
+  ],
+  "inventoryCount": 6,
+  "classificationCounts": {
+    "documentation": 1,
+    "source": 2,
+    "notes": 1,
+    "generated-stale": 2
+  },
+  "edges": [
+    [
+      "chain-mixed/file-0-76e3b0ea.txt",
+      "chain-mixed/file-1-45562b41.txt"
+    ],
+    [
+      "chain-mixed/file-1-45562b41.txt",
+      "chain-mixed/file-2-50640bac.txt"
+    ],
+    [
+      "chain-mixed/file-2-50640bac.txt",
+      "chain-mixed/file-3-51f6131b.txt"
+    ],
+    [
+      "chain-mixed/file-3-51f6131b.txt",
+      "chain-mixed/file-4-4f2dadbe.txt"
+    ]
+  ],
+  "reachable": [
+    "chain-mixed/file-0-76e3b0ea.txt",
+    "chain-mixed/file-1-45562b41.txt",
+    "chain-mixed/file-2-50640bac.txt",
+    "chain-mixed/file-3-51f6131b.txt",
+    "chain-mixed/file-4-4f2dadbe.txt"
+  ],
+  "unreachable": [
+    "chain-mixed/file-5-6c887a05.txt"
+  ],
+  "orphans": [
+    "chain-mixed/file-0-76e3b0ea.txt",
+    "chain-mixed/file-5-6c887a05.txt"
+  ],
+  "plantedCandidates": [
+    "chain-mixed/file-5-6c887a05.txt"
+  ]
+}

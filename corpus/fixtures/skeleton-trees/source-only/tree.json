@@ -1,0 +1,23 @@
+{
+  "files": [
+    {
+      "path": "source-only/file-0-b927c9d5.txt",
+      "referencedBy": [],
+      "classification": "source"
+    },
+    {
+      "path": "source-only/file-1-33ac1130.txt",
+      "referencedBy": [
+        "source-only/file-0-b927c9d5.txt"
+      ],
+      "classification": "source"
+    },
+    {
+      "path": "source-only/file-2-18b4f2cf.txt",
+      "referencedBy": [
+        "source-only/file-1-33ac1130.txt"
+      ],
+      "classification": "source"
+    }
+  ]
+}

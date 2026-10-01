@@ -1,0 +1,283 @@
+
+WO-105 corpus verification 2026-10-01T15:58:55.429Z
+Base 2b1af1abfd947068c402daa1ee24b447fc81b1af; Node v26.9.0; seed wo105-crash-20261001
+source sha256 dd5fef5321568f2610d0b79461c8850d13f934c15b209774ddb8dd99fd666469 corpus/harness/generate-golden-corpus.mjs
+source sha256 f56fea61433c96df7ee7a091e11d7db33c7d38a5031af74e20d2f4b2b6670bf6 corpus/harness/generate-store-corpus.mjs
+source sha256 8b39e844e13dd2f5ab6c8bacf4340b5088cb7be5466b5034b0dc6ae5407cfbbd corpus/harness/generate-tree-corpus.mjs
+source sha256 132a73b3943715205371e9454c9f4ce6ba9ed2b1769d775ffce210ea4379416d corpus/harness/record-wo105.mjs
+source sha256 cec79665e7112fcf42a091ba7d4e847f2d97a2f657aa50924dcc44ea88e770fa corpus/harness/run-wo105.mjs
+source sha256 91ef7a9ecdbc85a59c91bfd187e17fa4f395951a9edf56d6283db1a01f453d97 corpus/harness/skeleton-crash-sweep.mjs
+source sha256 1dad8489f67383a5be0b92a7805f37b9e8db9a570d89203a45f25b277b4ab6bc corpus/harness/truncation-sweep.mjs
+source sha256 0a49096ff005bcda2baef390cc546c37d75b3bc5ce5ca78b9d61481e460334bb corpus/harness/wo105-common.mjs
+source sha256 2b673e9037d1d288839147bf6afac588e13aa6930460cf57593016b6e7ba2a6f corpus/harness/wo105-skeleton.test.mjs
+source sha256 49dd81bc8029c897ab34ff14d4f71908842c0d1c80e35c8156dc942922a04b9d corpus/harness/wo105-store.test.mjs
+
+$ npm run build
+
+> build
+> node scripts/build.mjs
+
+Built browser-evidence, compiler, console, kernel, skeleton with atomic file replacement; installed harness snapshots remain immutable
+Exit 0; elapsedMs 806.411
+
+$ node corpus/harness/generate-store-corpus.mjs --seed wo105-crash-20261001 --check
+{"lane":"store-generator","seed":"wo105-crash-20261001","mode":"check","files":7,"sizes":[0,1,8,64],"depth":12000}
+Exit 0; elapsedMs 52.195
+
+$ node corpus/harness/truncation-sweep.mjs --seed wo105-crash-20261001
+{"lane":"store","seed":"wo105-crash-20261001","cutPoints":72345,"fixtures":[{"id":"lf-0","bytes":0,"cutPoints":1,"outcomes":{"clean-prefix":1},"recordsSha256":"29660ad924ac8d5db2829d3f97242dd7e0a363998890fb16144673f0c4b953ee"},{"id":"lf-1","bytes":338,"cutPoints":339,"outcomes":{"clean-prefix":2,"loud-failure":337},"recordsSha256":"8cbf66b7990837976236d9fe7d1515fe298a8ba599a3d4600ca6f05a9102a31b"},{"id":"lf-8","bytes":2370,"cutPoints":2371,"outcomes":{"clean-prefix":9,"loud-failure":2362},"recordsSha256":"d9d6edf230c6ac1ebdb5291cf7e5655473f30e98e263aae37051cde3b4e6ac13"},{"id":"lf-64","bytes":19282,"cutPoints":19283,"outcomes":{"clean-prefix":65,"loud-failure":19218},"recordsSha256":"ffdd4413e5e528486b1365ce2117d4f4bb9e7f85e747c2ead1cb3cb368320b17"},{"id":"crlf","bytes":2378,"cutPoints":2379,"outcomes":{"clean-prefix":9,"loud-failure":2370},"recordsSha256":"42361cbe20491bf3bad12310ec6241073059c9d19f52d2683906702664b6b1f2"},{"id":"deep-nesting","bytes":24139,"cutPoints":24140,"outcomes":{"clean-prefix":2,"loud-failure":24138},"recordsSha256":"10661626cdb46c3e65aa319a4863b948b5cfcc770e4dee9d07b77d97ee0bb031"},{"id":"canonical-demo","bytes":23831,"cutPoints":23832,"outcomes":{"clean-prefix":29,"loud-failure":23803},"recordsSha256":"fe653292d8d230d3d896623241edd02b34e06caeebbe1949d430b5885ff360dd"}],"families":[{"id":"crlf","classification":"decodes-with-identical-events-to-lf-8","replaySha256":"08055f296a25f57924573373261cc1feeeda13b8fcf83a39a9066ae9bb8ebae9","outboxSha256":"b22a0c3b6bb61f9767108b5de76266fe2ddcdc2bcef3f940ebb013274ef6be28"},{"id":"deep-nesting","classification":"decodes-with-depth-12000-payload","replaySha256":"54ef24859ac3f06848716f3b3860d4276273b0e9883e0464dd4e1ef53ee585d7","outboxSha256":"551c5c269476cad117f81e99b3ab64c032e96845336a20c414f4ef04e23dbe8a"}]}
+Exit 0; elapsedMs 707.223
+
+$ node corpus/harness/generate-tree-corpus.mjs --seed wo105-crash-20261001 --check
+{"lane":"tree-generator","seed":"wo105-crash-20261001","mode":"check","families":4,"files":9}
+Exit 0; elapsedMs 171.098
+
+$ node corpus/harness/generate-golden-corpus.mjs --seed wo105-crash-20261001 --check
+{"lane":"golden","mode":"check","baseCommit":"2b1af1abfd947068c402daa1ee24b447fc81b1af","fixture":"corpus/fixtures/golden-traces/WO-105-demo-2b1af1ab.json"}
+Exit 0; elapsedMs 91.922
+
+$ node corpus/harness/skeleton-crash-sweep.mjs --seed wo105-crash-20261001
+{"lane":"skeleton","seed":"wo105-crash-20261001","cutPoints":16554,"fixtures":[{"id":"canonical-crash-opening","bytes":16553,"cutPoints":16554,"outcomes":{"recovered-prefix":12,"loud-failure":16542},"recordsSha256":"cb1ee5e76fcd834d3a4e85579d63c31a8d2b461f3871bf71b2ea5458e7705af0"}],"families":[{"id":"crlf","bytes":16564,"logSha256":"75caf680e43f405ebaf7eb020923440648280281fb3e651d6d9ee0161f3e02a7","classification":{"offset":null,"outcome":"recovered-prefix","pendingCommands":1,"adapterEffects":1,"adapterDispatches":2,"traceSha256":"4b2e96d7eda7ea54f51760de6f66613b2d924652e3f543173a8b5ee85efe5eeb"},"replaySha256":"c0cf486e2d3f6ab90ab64fabf723d2ceab153a3d0cecceb16d58f360473f5ae5","outboxSha256":"9d658378d3ee664d844b7efda6048816c2c835ddd3b51027e19169bcc683a779"},{"id":"deep-nesting","bytes":40570,"logSha256":"fd4e93def79f28ef69b3e81239e8e2cc4f9e66951ecef5b4fc3b77c9af00503f","classification":{"offset":null,"outcome":"recovered-prefix","pendingCommands":1,"adapterEffects":1,"adapterDispatches":2,"traceSha256":"4b2e96d7eda7ea54f51760de6f66613b2d924652e3f543173a8b5ee85efe5eeb"},"replaySha256":"27c3b962bf6ad391f16dbdf4e6119eeec9abe9094dab5834539d7de0549c4337","outboxSha256":"9d658378d3ee664d844b7efda6048816c2c835ddd3b51027e19169bcc683a779"}]}
+Exit 0; elapsedMs 74136.145
+
+$ node --test --test-reporter=tap corpus/harness/wo105-skeleton.test.mjs corpus/harness/wo105-store.test.mjs
+TAP version 13
+# Subtest: WO-105 golden traces, event log and glyph scene match live/replay and recorded source/fixture bytes
+ok 1 - WO-105 golden traces, event log and glyph scene match live/replay and recorded source/fixture bytes
+  ---
+  duration_ms: 95.032042
+  type: 'test'
+  ...
+# Subtest: WO-105 tree generator, structural truth and distinct live signatures regenerate from seed
+ok 2 - WO-105 tree generator, structural truth and distinct live signatures regenerate from seed
+  ---
+  duration_ms: 702.159291
+  type: 'test'
+  ...
+# Subtest: WO-105 validator rejects planted invalid inventories, graphs, classifications and ground truth
+ok 3 - WO-105 validator rejects planted invalid inventories, graphs, classifications and ground truth
+  ---
+  duration_ms: 1.659166
+  type: 'test'
+  ...
+# Subtest: WO-105 assert-tripping families retain explicit exclusion reasons
+ok 4 - WO-105 assert-tripping families retain explicit exclusion reasons
+  ---
+  duration_ms: 0.301292
+  type: 'test'
+  ...
+# Subtest: WO-105 recovery self-tests catch missing pending commands, duplicate effects and false trace identity
+ok 5 - WO-105 recovery self-tests catch missing pending commands, duplicate effects and false trace identity
+  ---
+  duration_ms: 194.571958
+  type: 'test'
+  ...
+# Subtest: WO-105 every declared skeleton cut and both retained families satisfy recovery invariants
+ok 6 - WO-105 every declared skeleton cut and both retained families satisfy recovery invariants
+  ---
+  duration_ms: 73759.260375
+  type: 'test'
+  ...
+# Subtest: WO-105 store generator regenerates exact bytes; seed, sizes and duplicate results are material
+ok 7 - WO-105 store generator regenerates exact bytes; seed, sizes and duplicate results are material
+  ---
+  duration_ms: 78.631208
+  type: 'test'
+  ...
+# Subtest: WO-105 round-trip laws, LF and CRLF append numbering, and 512 monotonic appends
+ok 8 - WO-105 round-trip laws, LF and CRLF append numbering, and 512 monotonic appends
+  ---
+  duration_ms: 258.095125
+  type: 'test'
+  ...
+# Subtest: WO-105 retained CRLF and depth-12000 classifications and replay determinism
+ok 9 - WO-105 retained CRLF and depth-12000 classifications and replay determinism
+  ---
+  duration_ms: 13.47475
+  type: 'test'
+  ...
+# Subtest: WO-105 classifier self-tests pin empty/full/LF/mid-line and planted silent divergence
+ok 10 - WO-105 classifier self-tests pin empty/full/LF/mid-line and planted silent divergence
+  ---
+  duration_ms: 1.314416
+  type: 'test'
+  ...
+# Subtest: WO-105 every declared store cut pins its prefix, counts, raw digest and compact ranges
+ok 11 - WO-105 every declared store cut pins its prefix, counts, raw digest and compact ranges
+  ---
+  duration_ms: 693.435792
+  type: 'test'
+  ...
+1..11
+# tests 11
+# suites 0
+# pass 11
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 74893.8575
+Exit 0; elapsedMs 74947.258
+PASS all declared corpus commands
+
+WO-105 corpus verification 2026-10-01T16:03:14.355Z
+Base 2b1af1abfd947068c402daa1ee24b447fc81b1af; Node v26.9.0; seed wo105-crash-20261001
+source sha256 dd5fef5321568f2610d0b79461c8850d13f934c15b209774ddb8dd99fd666469 corpus/harness/generate-golden-corpus.mjs
+source sha256 42ac8e5c3aa679cf3f1832ea6bb98139f77676ffdb35f85890db5d2efa41fbff corpus/harness/generate-store-corpus.mjs
+source sha256 8b39e844e13dd2f5ab6c8bacf4340b5088cb7be5466b5034b0dc6ae5407cfbbd corpus/harness/generate-tree-corpus.mjs
+source sha256 2e39a12097c5e58c92527970a26dce90d993c7315968a6f129e776d284877da4 corpus/harness/record-wo105.mjs
+source sha256 cec79665e7112fcf42a091ba7d4e847f2d97a2f657aa50924dcc44ea88e770fa corpus/harness/run-wo105.mjs
+source sha256 91ef7a9ecdbc85a59c91bfd187e17fa4f395951a9edf56d6283db1a01f453d97 corpus/harness/skeleton-crash-sweep.mjs
+source sha256 1dad8489f67383a5be0b92a7805f37b9e8db9a570d89203a45f25b277b4ab6bc corpus/harness/truncation-sweep.mjs
+source sha256 0a49096ff005bcda2baef390cc546c37d75b3bc5ce5ca78b9d61481e460334bb corpus/harness/wo105-common.mjs
+source sha256 2b673e9037d1d288839147bf6afac588e13aa6930460cf57593016b6e7ba2a6f corpus/harness/wo105-skeleton.test.mjs
+source sha256 9da1246d5d7e8ae06c06cbe3fa358677366ee605dd8c91d617f327f1ed9165df corpus/harness/wo105-store.test.mjs
+
+$ npm run build
+
+> build
+> node scripts/build.mjs
+
+Built browser-evidence, compiler, console, kernel, skeleton with atomic file replacement; installed harness snapshots remain immutable
+Exit 0; elapsedMs 1436.704
+
+$ node corpus/harness/generate-store-corpus.mjs --seed wo105-crash-20261001 --check
+{"lane":"store-generator","seed":"wo105-crash-20261001","mode":"check","files":7,"sizes":[0,1,8,64],"depth":12000}
+Exit 0; elapsedMs 91.636
+
+$ node corpus/harness/truncation-sweep.mjs --seed wo105-crash-20261001
+{"lane":"store","seed":"wo105-crash-20261001","cutPoints":72345,"fixtures":[{"id":"lf-0","bytes":0,"cutPoints":1,"outcomes":{"clean-prefix":1},"recordsSha256":"29660ad924ac8d5db2829d3f97242dd7e0a363998890fb16144673f0c4b953ee"},{"id":"lf-1","bytes":338,"cutPoints":339,"outcomes":{"clean-prefix":2,"loud-failure":337},"recordsSha256":"8cbf66b7990837976236d9fe7d1515fe298a8ba599a3d4600ca6f05a9102a31b"},{"id":"lf-8","bytes":2370,"cutPoints":2371,"outcomes":{"clean-prefix":9,"loud-failure":2362},"recordsSha256":"d9d6edf230c6ac1ebdb5291cf7e5655473f30e98e263aae37051cde3b4e6ac13"},{"id":"lf-64","bytes":19282,"cutPoints":19283,"outcomes":{"clean-prefix":65,"loud-failure":19218},"recordsSha256":"ffdd4413e5e528486b1365ce2117d4f4bb9e7f85e747c2ead1cb3cb368320b17"},{"id":"crlf","bytes":2378,"cutPoints":2379,"outcomes":{"clean-prefix":9,"loud-failure":2370},"recordsSha256":"42361cbe20491bf3bad12310ec6241073059c9d19f52d2683906702664b6b1f2"},{"id":"deep-nesting","bytes":24139,"cutPoints":24140,"outcomes":{"clean-prefix":2,"loud-failure":24138},"recordsSha256":"10661626cdb46c3e65aa319a4863b948b5cfcc770e4dee9d07b77d97ee0bb031"},{"id":"canonical-demo","bytes":23831,"cutPoints":23832,"outcomes":{"clean-prefix":29,"loud-failure":23803},"recordsSha256":"fe653292d8d230d3d896623241edd02b34e06caeebbe1949d430b5885ff360dd"}],"families":[{"id":"crlf","classification":"decodes-with-identical-events-to-lf-8","replaySha256":"08055f296a25f57924573373261cc1feeeda13b8fcf83a39a9066ae9bb8ebae9","outboxSha256":"b22a0c3b6bb61f9767108b5de76266fe2ddcdc2bcef3f940ebb013274ef6be28"},{"id":"deep-nesting","classification":"decodes-with-depth-12000-payload","replaySha256":"54ef24859ac3f06848716f3b3860d4276273b0e9883e0464dd4e1ef53ee585d7","outboxSha256":"551c5c269476cad117f81e99b3ab64c032e96845336a20c414f4ef04e23dbe8a"}]}
+Exit 0; elapsedMs 751.407
+
+$ node corpus/harness/generate-tree-corpus.mjs --seed wo105-crash-20261001 --check
+{"lane":"tree-generator","seed":"wo105-crash-20261001","mode":"check","families":4,"files":9}
+Exit 0; elapsedMs 214.564
+
+$ node corpus/harness/generate-golden-corpus.mjs --seed wo105-crash-20261001 --check
+{"lane":"golden","mode":"check","baseCommit":"2b1af1abfd947068c402daa1ee24b447fc81b1af","fixture":"corpus/fixtures/golden-traces/WO-105-demo-2b1af1ab.json"}
+Exit 0; elapsedMs 137.387
+
+$ node corpus/harness/skeleton-crash-sweep.mjs --seed wo105-crash-20261001
+Interrupted during skeleton sweep for the operator's memory-pressure alert; no passing result recorded for this attempt. Earlier completed attempt retained. Subsequent runs use serial test files and a 512 MiB V8 old-space limit.
+
+WO-105 corpus verification 2026-10-01T16:06:21.703Z
+Base 2b1af1abfd947068c402daa1ee24b447fc81b1af; Node v26.9.0; seed wo105-crash-20261001
+Resource profile: NODE_OPTIONS adds --max-old-space-size=512; test files run serially. This bounds V8 old-space, not total process RSS.
+source sha256 dd5fef5321568f2610d0b79461c8850d13f934c15b209774ddb8dd99fd666469 corpus/harness/generate-golden-corpus.mjs
+source sha256 42ac8e5c3aa679cf3f1832ea6bb98139f77676ffdb35f85890db5d2efa41fbff corpus/harness/generate-store-corpus.mjs
+source sha256 8b39e844e13dd2f5ab6c8bacf4340b5088cb7be5466b5034b0dc6ae5407cfbbd corpus/harness/generate-tree-corpus.mjs
+source sha256 822579ba9cfb7cddeb5a7f89ee524038c7f65aa12b37a8e69c9c27277cb7e052 corpus/harness/record-wo105.mjs
+source sha256 9b0876d80d420ac8721de60503adae1474f58d29752ce0ec0fd785948cee6632 corpus/harness/run-wo105.mjs
+source sha256 91ef7a9ecdbc85a59c91bfd187e17fa4f395951a9edf56d6283db1a01f453d97 corpus/harness/skeleton-crash-sweep.mjs
+source sha256 1dad8489f67383a5be0b92a7805f37b9e8db9a570d89203a45f25b277b4ab6bc corpus/harness/truncation-sweep.mjs
+source sha256 0a49096ff005bcda2baef390cc546c37d75b3bc5ce5ca78b9d61481e460334bb corpus/harness/wo105-common.mjs
+source sha256 2b673e9037d1d288839147bf6afac588e13aa6930460cf57593016b6e7ba2a6f corpus/harness/wo105-skeleton.test.mjs
+source sha256 9da1246d5d7e8ae06c06cbe3fa358677366ee605dd8c91d617f327f1ed9165df corpus/harness/wo105-store.test.mjs
+
+$ npm run build
+
+> build
+> node scripts/build.mjs
+
+Built browser-evidence, compiler, console, kernel, skeleton with atomic file replacement; installed harness snapshots remain immutable
+Exit 0; elapsedMs 816.367
+
+$ node corpus/harness/generate-store-corpus.mjs --seed wo105-crash-20261001 --check
+{"lane":"store-generator","seed":"wo105-crash-20261001","mode":"check","files":7,"sizes":[0,1,8,64],"depth":12000}
+Exit 0; elapsedMs 53.524
+
+$ node corpus/harness/truncation-sweep.mjs --seed wo105-crash-20261001
+{"lane":"store","seed":"wo105-crash-20261001","cutPoints":72345,"fixtures":[{"id":"lf-0","bytes":0,"cutPoints":1,"outcomes":{"clean-prefix":1},"recordsSha256":"29660ad924ac8d5db2829d3f97242dd7e0a363998890fb16144673f0c4b953ee"},{"id":"lf-1","bytes":338,"cutPoints":339,"outcomes":{"clean-prefix":2,"loud-failure":337},"recordsSha256":"8cbf66b7990837976236d9fe7d1515fe298a8ba599a3d4600ca6f05a9102a31b"},{"id":"lf-8","bytes":2370,"cutPoints":2371,"outcomes":{"clean-prefix":9,"loud-failure":2362},"recordsSha256":"d9d6edf230c6ac1ebdb5291cf7e5655473f30e98e263aae37051cde3b4e6ac13"},{"id":"lf-64","bytes":19282,"cutPoints":19283,"outcomes":{"clean-prefix":65,"loud-failure":19218},"recordsSha256":"ffdd4413e5e528486b1365ce2117d4f4bb9e7f85e747c2ead1cb3cb368320b17"},{"id":"crlf","bytes":2378,"cutPoints":2379,"outcomes":{"clean-prefix":9,"loud-failure":2370},"recordsSha256":"42361cbe20491bf3bad12310ec6241073059c9d19f52d2683906702664b6b1f2"},{"id":"deep-nesting","bytes":24139,"cutPoints":24140,"outcomes":{"clean-prefix":2,"loud-failure":24138},"recordsSha256":"10661626cdb46c3e65aa319a4863b948b5cfcc770e4dee9d07b77d97ee0bb031"},{"id":"canonical-demo","bytes":23831,"cutPoints":23832,"outcomes":{"clean-prefix":29,"loud-failure":23803},"recordsSha256":"fe653292d8d230d3d896623241edd02b34e06caeebbe1949d430b5885ff360dd"}],"families":[{"id":"crlf","classification":"decodes-with-identical-events-to-lf-8","replaySha256":"08055f296a25f57924573373261cc1feeeda13b8fcf83a39a9066ae9bb8ebae9","outboxSha256":"b22a0c3b6bb61f9767108b5de76266fe2ddcdc2bcef3f940ebb013274ef6be28"},{"id":"deep-nesting","classification":"decodes-with-depth-12000-payload","replaySha256":"54ef24859ac3f06848716f3b3860d4276273b0e9883e0464dd4e1ef53ee585d7","outboxSha256":"551c5c269476cad117f81e99b3ab64c032e96845336a20c414f4ef04e23dbe8a"}]}
+Exit 0; elapsedMs 710.465
+
+$ node corpus/harness/generate-tree-corpus.mjs --seed wo105-crash-20261001 --check
+{"lane":"tree-generator","seed":"wo105-crash-20261001","mode":"check","families":4,"files":9}
+Exit 0; elapsedMs 168.398
+
+$ node corpus/harness/generate-golden-corpus.mjs --seed wo105-crash-20261001 --check
+{"lane":"golden","mode":"check","baseCommit":"2b1af1abfd947068c402daa1ee24b447fc81b1af","fixture":"corpus/fixtures/golden-traces/WO-105-demo-2b1af1ab.json"}
+Exit 0; elapsedMs 91.849
+
+$ node corpus/harness/skeleton-crash-sweep.mjs --seed wo105-crash-20261001
+{"lane":"skeleton","seed":"wo105-crash-20261001","cutPoints":16554,"fixtures":[{"id":"canonical-crash-opening","bytes":16553,"cutPoints":16554,"outcomes":{"recovered-prefix":12,"loud-failure":16542},"recordsSha256":"cb1ee5e76fcd834d3a4e85579d63c31a8d2b461f3871bf71b2ea5458e7705af0"}],"families":[{"id":"crlf","bytes":16564,"logSha256":"75caf680e43f405ebaf7eb020923440648280281fb3e651d6d9ee0161f3e02a7","classification":{"offset":null,"outcome":"recovered-prefix","pendingCommands":1,"adapterEffects":1,"adapterDispatches":2,"traceSha256":"4b2e96d7eda7ea54f51760de6f66613b2d924652e3f543173a8b5ee85efe5eeb"},"replaySha256":"c0cf486e2d3f6ab90ab64fabf723d2ceab153a3d0cecceb16d58f360473f5ae5","outboxSha256":"9d658378d3ee664d844b7efda6048816c2c835ddd3b51027e19169bcc683a779"},{"id":"deep-nesting","bytes":40570,"logSha256":"fd4e93def79f28ef69b3e81239e8e2cc4f9e66951ecef5b4fc3b77c9af00503f","classification":{"offset":null,"outcome":"recovered-prefix","pendingCommands":1,"adapterEffects":1,"adapterDispatches":2,"traceSha256":"4b2e96d7eda7ea54f51760de6f66613b2d924652e3f543173a8b5ee85efe5eeb"},"replaySha256":"27c3b962bf6ad391f16dbdf4e6119eeec9abe9094dab5834539d7de0549c4337","outboxSha256":"9d658378d3ee664d844b7efda6048816c2c835ddd3b51027e19169bcc683a779"}]}
+Exit 0; elapsedMs 73197.496
+
+$ node --test --test-concurrency=1 --test-reporter=tap corpus/harness/wo105-skeleton.test.mjs corpus/harness/wo105-store.test.mjs
+TAP version 13
+# Subtest: WO-105 golden traces, event log and glyph scene match live/replay and recorded source/fixture bytes
+ok 1 - WO-105 golden traces, event log and glyph scene match live/replay and recorded source/fixture bytes
+  ---
+  duration_ms: 71.788125
+  type: 'test'
+  ...
+# Subtest: WO-105 tree generator, structural truth and distinct live signatures regenerate from seed
+ok 2 - WO-105 tree generator, structural truth and distinct live signatures regenerate from seed
+  ---
+  duration_ms: 611.296042
+  type: 'test'
+  ...
+# Subtest: WO-105 validator rejects planted invalid inventories, graphs, classifications and ground truth
+ok 3 - WO-105 validator rejects planted invalid inventories, graphs, classifications and ground truth
+  ---
+  duration_ms: 1.851292
+  type: 'test'
+  ...
+# Subtest: WO-105 assert-tripping families retain explicit exclusion reasons
+ok 4 - WO-105 assert-tripping families retain explicit exclusion reasons
+  ---
+  duration_ms: 0.305667
+  type: 'test'
+  ...
+# Subtest: WO-105 recovery self-tests catch missing pending commands, duplicate effects and false trace identity
+ok 5 - WO-105 recovery self-tests catch missing pending commands, duplicate effects and false trace identity
+  ---
+  duration_ms: 169.6315
+  type: 'test'
+  ...
+# Subtest: WO-105 every declared skeleton cut and both retained families satisfy recovery invariants
+ok 6 - WO-105 every declared skeleton cut and both retained families satisfy recovery invariants
+  ---
+  duration_ms: 73239.372959
+  type: 'test'
+  ...
+# Subtest: WO-105 store generator regenerates exact bytes; seed, sizes and duplicate results are material
+ok 7 - WO-105 store generator regenerates exact bytes; seed, sizes and duplicate results are material
+  ---
+  duration_ms: 106.54125
+  type: 'test'
+  ...
+# Subtest: WO-105 round-trip laws, LF and CRLF append numbering, and 512 monotonic appends
+ok 8 - WO-105 round-trip laws, LF and CRLF append numbering, and 512 monotonic appends
+  ---
+  duration_ms: 241.837375
+  type: 'test'
+  ...
+# Subtest: WO-105 retained CRLF and depth-12000 classifications and replay determinism
+ok 9 - WO-105 retained CRLF and depth-12000 classifications and replay determinism
+  ---
+  duration_ms: 12.819
+  type: 'test'
+  ...
+# Subtest: WO-105 classifier self-tests pin empty/full/LF/mid-line and planted silent divergence
+ok 10 - WO-105 classifier self-tests pin empty/full/LF/mid-line and planted silent divergence
+  ---
+  duration_ms: 1.034833
+  type: 'test'
+  ...
+# Subtest: WO-105 every declared store cut pins its prefix, counts, raw digest and compact ranges
+ok 11 - WO-105 every declared store cut pins its prefix, counts, raw digest and compact ranges
+  ---
+  duration_ms: 640.11625
+  type: 'test'
+  ...
+1..11
+# tests 11
+# suites 0
+# pass 11
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 75230.428083
+Exit 0; elapsedMs 75263.074
+PASS all declared corpus commands

@@ -1,0 +1,42 @@
+{
+  "files": [
+    {
+      "path": "chain-mixed/file-0-76e3b0ea.txt",
+      "referencedBy": [],
+      "classification": "documentation"
+    },
+    {
+      "path": "chain-mixed/file-1-45562b41.txt",
+      "referencedBy": [
+        "chain-mixed/file-0-76e3b0ea.txt"
+      ],
+      "classification": "source"
+    },
+    {
+      "path": "chain-mixed/file-2-50640bac.txt",
+      "referencedBy": [
+        "chain-mixed/file-1-45562b41.txt"
+      ],
+      "classification": "notes"
+    },
+    {
+      "path": "chain-mixed/file-3-51f6131b.txt",
+      "referencedBy": [
+        "chain-mixed/file-2-50640bac.txt"
+      ],
+      "classification": "source"
+    },
+    {
+      "path": "chain-mixed/file-4-4f2dadbe.txt",
+      "referencedBy": [
+        "chain-mixed/file-3-51f6131b.txt"
+      ],
+      "classification": "generated-stale"
+    },
+    {
+      "path": "chain-mixed/file-5-6c887a05.txt",
+      "referencedBy": [],
+      "classification": "generated-stale"
+    }
+  ]
+}

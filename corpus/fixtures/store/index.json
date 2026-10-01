@@ -1,0 +1,72 @@
+{
+  "seed": "wo105-crash-20261001",
+  "sizes": [
+    0,
+    1,
+    8,
+    64
+  ],
+  "depth": 12000,
+  "fixtures": [
+    {
+      "id": "lf-0",
+      "kind": "generated",
+      "expected": "decodes-with-sequential-events",
+      "path": "corpus/fixtures/store/lf-0.jsonl",
+      "storage": "jsonl",
+      "events": 0,
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "id": "lf-1",
+      "kind": "generated",
+      "expected": "decodes-with-sequential-events",
+      "path": "corpus/fixtures/store/lf-1.jsonl",
+      "storage": "jsonl",
+      "events": 1,
+      "bytes": 338,
+      "sha256": "3ff69d80bd4e74e907d69b04791b242e3a0bdac58eb562a209d05686178a57ce"
+    },
+    {
+      "id": "lf-8",
+      "kind": "generated",
+      "expected": "decodes-with-sequential-events",
+      "path": "corpus/fixtures/store/lf-8.jsonl",
+      "storage": "jsonl",
+      "events": 8,
+      "bytes": 2370,
+      "sha256": "a9980818319adc86952288e411f14bfae394478ebc54f848e253e78491c17762"
+    },
+    {
+      "id": "lf-64",
+      "kind": "generated",
+      "expected": "decodes-with-sequential-events",
+      "path": "corpus/fixtures/store/lf-64.jsonl",
+      "storage": "jsonl",
+      "events": 64,
+      "bytes": 19282,
+      "sha256": "903ae8495a333c6c6b471f0b96afcc016e099ea3f1fff64198a1fa7dc553a838"
+    },
+    {
+      "id": "crlf",
+      "kind": "retained-family",
+      "expected": "decodes-with-identical-events-to-lf-8",
+      "path": "corpus/fixtures/store/crlf.json",
+      "storage": "json-log-string",
+      "events": 8,
+      "bytes": 2378,
+      "sha256": "2141962d9eb96c8de32c425f3cfdac62fe9b4e96c829b1b47e8b1a6dfe07317d"
+    },
+    {
+      "id": "deep-nesting",
+      "kind": "retained-family",
+      "expected": "decodes-with-depth-12000-payload",
+      "path": "corpus/fixtures/store/deep-nesting.jsonl",
+      "storage": "jsonl",
+      "events": 1,
+      "bytes": 24139,
+      "sha256": "7a60c9cd930cdadcfdb2f9416117e2d61c14994f298c576e78fdae7c3446e61a"
+    }
+  ]
+}

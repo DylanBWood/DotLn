@@ -1,5 +1,6 @@
 {
   "nonEventPaths": {
+    "corpus/manifests/WO-105-observations.jsonl": "WO-105 crash-corpus classified observations",
     "corpus/fixtures/ids/command-id-vectors.jsonl": "ID vectors",
     "corpus/fixtures/ids/stable-hash-vectors.jsonl": "ID vectors",
     "corpus/fixtures/program/enumerated-000.jsonl": "Program vectors",
