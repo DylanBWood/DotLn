@@ -50,6 +50,9 @@ function editionCopy(t, { workspace = false } = {}) {
     if (existsSync(join(TOOL_ROOT, path))) {
       mkdirSync(dirname(target), { recursive: true });
       cpSync(join(TOOL_ROOT, path), target);
+      // Fresh audit references may name uncommitted source bytes. Preserve
+      // them in this fixture's object database before a case mutates the file.
+      execGit(["-C", copy, "hash-object", "-w", "--", path]);
     } else rmSync(target, { force: true });
   }
   for (const name of ["kernel", "compiler", "skeleton", "console"])
