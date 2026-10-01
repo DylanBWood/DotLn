@@ -11,6 +11,8 @@ import { MANUAL_RECEIPTS, readOverrides } from "./plan-receipts.mjs";
 import { readEntropyControl, readReceipt } from "./entropy-review.mjs";
 import { checksPath, readGateChecks } from "./gate-evidence.mjs";
 import { bounded } from "./planning-followups.mjs";
+import { completedPhaseAttempts } from "./control-time.mjs";
+import { parseHeader } from "../work-orders.mjs";
 
 // WO-172: what failed since the pass before, folded from the public record:
 // the control logs, the planning control log and the structured decisions.
@@ -525,16 +527,303 @@ function localShellDiagnostics(root, includes) {
 const sourceNote = (root) =>
   `${controlPaths(root).legacy}, ${controlPaths(root).orders}/, ${docRelative(root, "control", "plan-refutations.jsonl")} and the decisions under ${docRelative(root, "evidence")}/; identifiers, dates and paths only`;
 
+const knownOrder = (value) =>
+  /^WO-\d{3}$/u.test(value ?? "") ? value : "unassigned";
+const knownTime = (value) =>
+  typeof value === "string" && Number.isFinite(Date.parse(value))
+    ? new Date(value).toISOString()
+    : "unknown";
+const classes = new Set([
+  "correction",
+  "direction",
+  "question",
+  "ideation",
+  "answer",
+  "scope expansion",
+  "interrupt",
+  "acknowledgement",
+  "override",
+  "takeover",
+  "other step",
+  "positive reinforcement",
+  "trial and error",
+  "unclassified",
+]);
+const phases = new Set([
+  "implementation",
+  "verification",
+  "repair",
+  "finalReview",
+  "release-close",
+  "planning",
+  "planner",
+  "refuter",
+  "ideation",
+  "unknown",
+]);
+const tally = (rows, field, limit = 6) => {
+  const counts = new Map();
+  for (const row of rows)
+    counts.set(row[field], (counts.get(row[field]) ?? 0) + 1);
+  const ranked = [...counts].sort(
+    ([a, m], [b, n]) => n - m || a.localeCompare(b),
+  );
+  return {
+    by: Object.fromEntries(ranked.slice(0, limit)),
+    other: ranked.slice(limit).reduce((sum, [, count]) => sum + count, 0),
+  };
+};
+
+/** Local observations are kept apart from immutable failed judgments. Page
+ * metadata counts them; the export carries only these sanitized projections. */
+export function operationalFailures(root, control, includes) {
+  const rows = [],
+    unreadable = { closes: 0, journals: 0, gates: 0 };
+  let closeRecords = 0,
+    journalRecords = 0;
+  const retained = docPath(root, "control", "local/retained");
+  if (existsSync(retained))
+    for (const name of readdirSync(retained).sort()) {
+      if (!/^WO-\d{3}$/.test(name)) continue;
+      const file = join(retained, name, "release-close.json");
+      if (!existsSync(file)) continue;
+      try {
+        if (
+          !lstatSync(join(retained, name)).isDirectory() ||
+          !lstatSync(file).isFile()
+        )
+          throw new Error();
+        const record = JSON.parse(readFileSync(file, "utf8"));
+        if (record.schemaVersion !== 1 || record.workOrderId !== name)
+          throw new Error();
+        closeRecords++;
+        for (const attempt of [
+          ...(Array.isArray(record.previousAttempts)
+            ? record.previousAttempts
+            : []),
+          record,
+        ]) {
+          if (!attempt?.publication || !Array.isArray(attempt.blockers)) {
+            unreadable.closes++;
+            continue;
+          }
+          const published = ["published", "already-published"].includes(
+            attempt.publication.tagOutcome,
+          );
+          if (attempt.blockers.length || !published)
+            rows.push({
+              kind: "release-close",
+              order: name,
+              recordedAt: knownTime(attempt.recordedAt ?? attempt.startedAt),
+              blockers: attempt.blockers.length,
+              unpublishedTag: !published,
+              dryRun: attempt.dryRun === true,
+              noRelease: attempt.publication.outcome === "no-release",
+            });
+        }
+      } catch {
+        unreadable.closes++;
+      }
+    }
+  const directory = dirname(checksPath(root));
+  if (existsSync(directory))
+    for (const name of readdirSync(directory).sort()) {
+      if (!/^[a-f0-9]{64}\.jsonl$/.test(name)) continue;
+      try {
+        const file = join(directory, name);
+        if (!lstatSync(file).isFile()) throw new Error();
+        journalRecords++;
+        for (const line of readFileSync(file, "utf8")
+          .split("\n")
+          .filter(Boolean)) {
+          let row;
+          try {
+            row = JSON.parse(line);
+          } catch {
+            unreadable.journals++;
+            continue;
+          }
+          const context = {
+            order: knownOrder(row.workOrder),
+            phase: phases.has(row.phase) ? row.phase : "unknown",
+            recordedAt: knownTime(row.recordedAt),
+          };
+          if (row.typedEvent === "HostPermissionDenied")
+            rows.push({ kind: "host-denial", ...context });
+          else if (row.typedEvent === "OperatorMessageObserved")
+            rows.push({
+              kind: "intervention",
+              ...context,
+              class: classes.has(row.class) ? row.class : "unclassified",
+              source: [
+                "claude-prompt-hook",
+                "copilot-prompt-hook",
+                "codex-dispatch-phrase",
+              ].includes(row.source)
+                ? row.source
+                : "unknown",
+              route: ["turn-prompt", "mid-turn", "interrupt"].includes(
+                row.route,
+              )
+                ? row.route
+                : "unknown",
+            });
+        }
+      } catch {
+        unreadable.journals++;
+      }
+    }
+  const attempts = [];
+  for (const events of control.eventSegments.values()) {
+    const completions = events.filter((event) =>
+      [
+        "ImplementationReady",
+        "VerificationCompleted",
+        "RepairCompleted",
+        "FinalReviewCompleted",
+      ].includes(event.type),
+    );
+    for (const [index, attempt] of [
+      ...completedPhaseAttempts(events),
+    ].entries())
+      if (Number.isFinite(attempt.elapsedMs) && attempt.elapsedMs >= 0)
+        attempts.push({
+          kind: "long-phase",
+          order: knownOrder(attempt.workOrder),
+          phase: attempt.phase,
+          elapsedMs: attempt.elapsedMs,
+          recordedAt: knownTime(completions[index]?.recordedAt),
+        });
+  }
+  const medians = {};
+  for (const phase of new Set(attempts.map((row) => row.phase))) {
+    const values = attempts
+      .filter((row) => row.phase === phase)
+      .map((row) => row.elapsedMs)
+      .sort((a, b) => a - b);
+    const middle = Math.floor(values.length / 2);
+    medians[phase] =
+      values.length % 2
+        ? values[middle]
+        : (values[middle - 1] + values[middle]) / 2;
+  }
+  rows.push(
+    ...attempts
+      .filter((row) => row.elapsedMs > 2 * medians[row.phase])
+      .map((row) => ({ ...row, medianMs: medians[row.phase] })),
+  );
+  try {
+    const green = new Set();
+    for (const row of readGateChecks(root).sort((a, b) =>
+      (a.recordedAt ?? "").localeCompare(b.recordedAt ?? ""),
+    )) {
+      if (
+        row.checkId !== "npm test" ||
+        row.executed !== true ||
+        !/^[a-f0-9]{64}$/.test(row.codeIdentity ?? "")
+      )
+        continue;
+      if (green.has(row.codeIdentity))
+        rows.push({
+          kind: "repeated-gate",
+          order: knownOrder(row.workOrder),
+          recordedAt: knownTime(row.recordedAt),
+        });
+      if (row.exitCode === 0) green.add(row.codeIdentity);
+    }
+  } catch {
+    unreadable.gates++;
+  }
+  const selected = rows.filter(includes);
+  const ofKind = (kind) => selected.filter((row) => row.kind === kind);
+  const summary = (kind) => {
+    const selected = ofKind(kind),
+      orders = tally(selected, "order");
+    return {
+      source: "local",
+      count: selected.length,
+      byOrder: orders.by,
+      otherOrderRows: orders.other,
+    };
+  };
+  const interventions = ofKind("intervention"),
+    closes = ofKind("release-close");
+  const recent = [...control.orders]
+    .filter(([, row]) => row.state.phase === "closed")
+    .sort(
+      ([a, left], [b, right]) =>
+        (right.closeRecordedAt ?? "").localeCompare(
+          left.closeRecordedAt ?? "",
+        ) || a.localeCompare(b),
+    )
+    .slice(0, 8);
+  const tracks = { delivery: 0, machinery: 0, evidence: 0, unknown: 0 };
+  for (const [, row] of recent) {
+    let track = "unknown";
+    try {
+      const file = join(root, row.state.workOrderPath);
+      if (lstatSync(file).isFile())
+        track = parseHeader(
+          readFileSync(file, "utf8"),
+          row.state.workOrderPath,
+        ).track;
+    } catch {
+      /* Absent authority metadata never guesses a track. */
+    }
+    tracks[track]++;
+  }
+  return {
+    observations: selected,
+    localReleaseCloses: {
+      ...summary("release-close"),
+      records: closeRecords,
+      unreadable: unreadable.closes,
+      dryRuns: closes.filter((row) => row.dryRun).length,
+      noRelease: closes.filter((row) => row.noRelease).length,
+    },
+    localHostDenials: {
+      ...summary("host-denial"),
+      journals: journalRecords,
+      unreadable: unreadable.journals,
+    },
+    interventions: {
+      ...summary("intervention"),
+      byClass: tally(interventions, "class", 14).by,
+      byPhase: tally(interventions, "phase", phases.size).by,
+      bySource: tally(interventions, "source").by,
+      unclassified: interventions.filter((row) => row.class === "unclassified")
+        .length,
+      coverage:
+        "Claude/Copilot prompt-hook rows; Codex dispatch phrases only; unobserved messages unknown",
+    },
+    longPhases: {
+      ...summary("long-phase"),
+      mediansMs: medians,
+      counted:
+        "completed attempts above twice their phase median over the full control record",
+    },
+    repeatedGateRuns: {
+      ...summary("repeated-gate"),
+      unreadable: unreadable.gates,
+      counted:
+        "product-gate rows at an identity already green; rows, not distinct runs",
+    },
+    recentTracks: { counted: recent.length, ...tracks },
+  };
+}
+
 function selection(root, options) {
   const view = failureWindow(root, options);
   const record = failureRecord(root);
   const items = record.items.filter(view.includes).map(view.shown);
   const local = localGateFailures(root, view.includes);
   const shell = localShellDiagnostics(root, view.includes);
+  const operational = operationalFailures(root, record.control, view.includes);
   return {
     view,
     record,
     items,
+    operational,
     revision: sha256(encode({ window: view.public, items })),
     counts: {
       window: failureCounts(items, record.facts.filter(view.includes)),
@@ -570,6 +859,11 @@ export function planningFailures(
     counts: chosen.counts,
     ...(chosen.local ? { localGateFailures: chosen.local } : {}),
     ...(chosen.shell ? { localShellDiagnostics: chosen.shell } : {}),
+    ...Object.fromEntries(
+      Object.entries(chosen.operational).filter(
+        ([key]) => key !== "observations",
+      ),
+    ),
     items: chosen.items.length,
     rows: chosen.items.slice(offset, offset + ROWS_PER_PAGE),
     next: null,
@@ -599,6 +893,7 @@ export function exportFailures(
     counts: chosen.counts,
     ...(chosen.local ? { localGateFailures: chosen.local } : {}),
     ...(chosen.shell ? { localShellDiagnostics: chosen.shell } : {}),
+    ...chosen.operational,
     items: chosen.items.length,
     rows: chosen.items,
   };
@@ -651,6 +946,16 @@ export function failuresAtStart(root) {
       opensAt: chosen.view.public.opensAt,
       items: chosen.items.length,
       counts: chosen.counts.window,
+      localReleaseCloses: chosen.operational.localReleaseCloses.count,
+      localHostDenials: chosen.operational.localHostDenials.count,
+      interventions: {
+        count: chosen.operational.interventions.count,
+        unclassified: chosen.operational.interventions.unclassified,
+      },
+      longPhases: chosen.operational.longPhases.count,
+      repeatedGateRuns: chosen.operational.repeatedGateRuns.count,
+      recentTracks: chosen.operational.recentTracks,
+      localCoverage: "local; Codex dispatch-only; coverage incomplete",
     });
   } catch (error) {
     block.unavailable = `counts not computed: ${oneLine(error.message)}`;

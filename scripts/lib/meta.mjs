@@ -270,8 +270,23 @@ export function readDecisions(root, { workOrder } = {}) {
         `${path}: decision entries must use the documented JSON shape`,
       );
     for (const match of entries) {
-      const entry = JSON.parse(match[1]);
+      let entry;
+      try {
+        entry = JSON.parse(match[1]);
+      } catch {
+        // Parser messages may quote operator-authored decision text.
+        const heading = headings.findLast(
+          (heading) => heading.index < match.index,
+        );
+        const id = /^wo-\d{3}-d\d{3}\b/u
+          .exec(heading?.anchor ?? "")?.[0]
+          ?.toUpperCase();
+        throw new Error(`${path}: ${id ?? "decision block"}: invalid JSON`);
+      }
       if (
+        entry === null ||
+        typeof entry !== "object" ||
+        Array.isArray(entry) ||
         typeof entry.id !== "string" ||
         !entry.id.startsWith(`${name}-`) ||
         !entry.date ||

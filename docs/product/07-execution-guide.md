@@ -1036,9 +1036,9 @@ Preconditions and inputs:
    returns the first bounded page of the public follow-up register. A stale
    register refuses entry before creating the branch; refresh it with
    `npm run meta` and include that document update in the preceding checkpoint.
-2. A standard pass first reads `npm run plan -- failures`, whose counts
-   `plan start` prints, and disposes what it lists: each failed report is
-   read and its cause given a route in the pass's document (WO-172).
+2. Read `npm run plan -- failures`; route each failed report's cause in the pass.
+   `plan start` counts local closes, denials, interventions, long phases,
+   repeated gates and eight recent closes' tracks (WO-178).
    `plan start` counts numeric reopening conditions; `npm run plan -- conditions`
    lists them without refusing entry (`--slow` for gate timings, WO-175).
    Read canonical status, [the sequence](../planning/sequence.md), and this

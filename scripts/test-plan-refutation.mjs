@@ -24,7 +24,12 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { authorize } from "../packages/kernel/dist/src/index.js";
 import { compilePlanRefuter } from "../packages/skeleton/dist/src/loadouts/plan-refuter.js";
-import { sinceEntropyReview } from "./lib/plan-failures.mjs";
+import {
+  sinceEntropyReview,
+  failuresAtStart,
+  operationalFailures,
+  exportFailures,
+} from "./lib/plan-failures.mjs";
 import {
   FakePlanRefutationTransport,
   cannedPlanDrift,
@@ -685,6 +690,169 @@ export async function fixtures() {
   );
   const check = (label, run) => test(label, run);
   try {
+    await check(
+      "WO-178 malformed decision errors name the record without parser excerpts",
+      async () => {
+        const repo = failureRepo(parent, "malformed-decision");
+        const file = "docs/evidence/WO-999/decisions.md";
+        write(
+          repo,
+          file,
+          '# Decisions\n\n## WO-999-D001 — Fixture\n\n```json\n{"decision":"synthetic private sentinel" BROKEN}\n```\n',
+        );
+        const safe =
+          /docs\/evidence\/WO-999\/decisions\.md: WO-999-D001: invalid JSON/;
+        await assert.rejects(plan(["failures"], repo), (error) => {
+          assert.match(error.message, safe);
+          assert.doesNotMatch(error.message, /synthetic private|BROKEN/);
+          return true;
+        });
+        const start = failuresAtStart(repo);
+        assert.match(start.unavailable, safe);
+        assert.doesNotMatch(JSON.stringify(start), /synthetic private|BROKEN/);
+        runGit(repo, ["add", "."]);
+        runGit(repo, [
+          "-c",
+          "user.name=Fixture",
+          "-c",
+          "user.email=fixture@example.test",
+          "commit",
+          "-qm",
+          "Malformed fixture",
+        ]);
+        await assert.rejects(plan(["start", "malformed-decision"], repo), safe);
+      },
+    );
+    await check(
+      "WO-178 local counts and track split reach failures, its export and plan start",
+      async () => {
+        const repo = failureRepo(parent, "operator-record");
+        const time = "2030-01-03T10:00:00.000Z";
+        write(
+          repo,
+          "docs/control/local/retained/WO-802/release-close.json",
+          prettyJson({
+            schemaVersion: 1,
+            workOrderId: "WO-802",
+            recordedAt: time,
+            publication: { tagOutcome: null },
+            blockers: [{ reason: "synthetic private blocker" }],
+          }),
+        );
+        write(
+          repo,
+          `docs/control/local/harness/${"a".repeat(64)}.jsonl`,
+          [
+            { typedEvent: "HostPermissionDenied" },
+            ...["direction", "question", "unclassified"].map(
+              (classification) => ({
+                typedEvent: "OperatorMessageObserved",
+                class: classification,
+                source: "claude-prompt-hook",
+                route: "turn-prompt",
+              }),
+            ),
+          ]
+            .map((row) =>
+              JSON.stringify({
+                ...row,
+                workOrder: "WO-802",
+                phase: "verification",
+                recordedAt: time,
+                prompt: "synthetic private text",
+              }),
+            )
+            .join("\n") + "\n",
+        );
+        write(
+          repo,
+          "docs/control/local/harness/checks.json",
+          prettyJson(
+            [0, 1].map((index) => ({
+              checkId: "npm test",
+              executed: true,
+              exitCode: 0,
+              workOrder: "WO-802",
+              codeIdentity: "b".repeat(64),
+              recordedAt: `2030-01-03T10:0${index}:00.000Z`,
+            })),
+          ),
+        );
+        // Real control-log projection, with a normal pair and an outlying third
+        // attempt: the median is 10 ms and only 30 ms exceeds twice it.
+        const attempts = [10, 10, 30].flatMap((elapsedMs, index) => [
+          {
+            type: "WorkOrderActivated",
+            workOrderId: `WO-90${index}`,
+            recordedAt: time,
+          },
+          {
+            type: "ImplementationReady",
+            workOrderId: `WO-90${index}`,
+            recordedAt: new Date(Date.parse(time) + elapsedMs).toISOString(),
+          },
+        ]);
+        const view = operationalFailures(
+          repo,
+          {
+            eventSegments: new Map([["fixture", attempts]]),
+            orders: new Map(),
+          },
+          () => true,
+        );
+        assert.equal(view.longPhases.count, 1);
+        assert.equal(view.longPhases.mediansMs.implementation, 10);
+        assert.equal(view.localReleaseCloses.count, 1);
+        assert.equal(view.localHostDenials.count, 1);
+        assert.equal(view.interventions.count, 3);
+        assert.deepEqual(view.interventions.byClass, {
+          direction: 1,
+          question: 1,
+          unclassified: 1,
+        });
+        assert.deepEqual(view.interventions.byOrder, { "WO-802": 3 });
+        assert.deepEqual(view.interventions.byPhase, { verification: 3 });
+        assert.equal(view.repeatedGateRuns.count, 1);
+        assert.equal(view.observations.length, 7);
+        assert.doesNotMatch(JSON.stringify(view), /synthetic private/);
+        const page = await plan(["failures"], repo);
+        assert.equal(page.localReleaseCloses.count, 1);
+        assert.equal(page.localHostDenials.count, 1);
+        assert.equal(page.interventions.count, 3);
+        assert.equal(page.repeatedGateRuns.count, 1);
+        assert.equal(
+          exportFailures(repo).observations.filter(
+            (row) => row.kind === "intervention",
+          ).length,
+          3,
+        );
+        const before = await plan(["start", "operator-record"], repo);
+        assert.equal(before.failures.localReleaseCloses, 1);
+        assert.equal(before.failures.localHostDenials, 1);
+        assert.equal(before.failures.interventions.count, 3);
+        assert.equal(before.failures.repeatedGateRuns, 1);
+        assert.ok(before.failures.recentTracks.unknown > 0);
+        assert.ok(Buffer.byteLength(prettyJson(before.failures)) <= 1024);
+        // A Track header labels only its order; absent metadata stays unknown.
+        const orderPath = "docs/work-orders/WO-802-fixture.md";
+        write(repo, orderPath, "# WO-802 — Fixture\n\n**Track:** delivery\n");
+        const tracked = await plan(["failures"], repo);
+        assert.equal(tracked.recentTracks.delivery, 1);
+        assert.equal(
+          tracked.recentTracks.counted,
+          tracked.recentTracks.delivery + tracked.recentTracks.unknown,
+        );
+        // Invalid local records expose unknown coverage without printing bytes.
+        write(
+          repo,
+          "docs/control/local/retained/WO-802/release-close.json",
+          '{"private":"synthetic private malformed',
+        );
+        const damaged = await plan(["failures"], repo);
+        assert.equal(damaged.localReleaseCloses.unreadable, 1);
+        assert.doesNotMatch(JSON.stringify(damaged), /synthetic private/);
+      },
+    );
     await check(
       "WO-156 normalization cache preserves exact semantics and bounds retained inputs",
       (t) => {
@@ -5142,8 +5310,15 @@ else {
             "counts",
             "localGateFailures",
             "localShellDiagnostics",
+            "localReleaseCloses",
+            "localHostDenials",
+            "interventions",
+            "longPhases",
+            "repeatedGateRuns",
+            "recentTracks",
             "items",
             "exported",
+            "exportedObservations",
             "path",
           ]);
           assert.equal(printed.exported, 92);
@@ -5341,6 +5516,19 @@ else {
           opensAt: "latest planning receipt 2030-01-02-planning-fixture-001",
           items: 12,
           counts: windowCounts,
+          localReleaseCloses: 0,
+          localHostDenials: 0,
+          interventions: { count: 0, unclassified: 0 },
+          longPhases: started.failures.longPhases,
+          repeatedGateRuns: 0,
+          recentTracks: {
+            counted: 3,
+            delivery: 0,
+            machinery: 0,
+            evidence: 0,
+            unknown: 3,
+          },
+          localCoverage: "local; Codex dispatch-only; coverage incomplete",
           // WO-802 passed between review completion and filing; WO-803's
           // and WO-801's passes precede completion or carry no time.
           sinceEntropyReview: {

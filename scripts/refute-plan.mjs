@@ -293,10 +293,18 @@ export async function main(args = process.argv.slice(2), root = toolRoot) {
     const options = failuresOptions(rest);
     if (options.export) {
       const path = exportDestination(root, options.export, failuresExport);
-      const { rows, ...summary } = exportFailures(root, options.window);
-      writeExport(path, { ...summary, rows });
+      const { rows, observations, ...summary } = exportFailures(
+        root,
+        options.window,
+      );
+      writeExport(path, { ...summary, rows, observations });
       const { source, ...printed } = summary;
-      return { ...printed, exported: rows.length, path };
+      return {
+        ...printed,
+        exported: rows.length,
+        exportedObservations: observations.length,
+        path,
+      };
     }
     return planningFailures(root, {
       ...options.window,
