@@ -137,6 +137,18 @@ which of the two confinements applied. REVIEW-002 measured the difference this p
 buys: 0 denied tool calls and 4 of 4 findings measured, against REVIEW-001's
 7 denials and 1 measured of 7.
 
+Each new review and refutation receives `TMPDIR` in a directory beside the
+frozen copy, inside the episode scratch parent. The instructions admit writes
+only inside those two roots; the receipt inventories the temporary directory's
+file paths and bytes as well as the copy. Historical receipts keep their
+original rendering. Filing removes the parent, repairing read-only directory
+permissions without following links; a remaining cleanup failure names the
+leftover path in one line after filing and does not undo the filed receipt.
+Codex's workspace sandbox remains rooted at the copy; the sibling directory is
+instructed and inventoried, without a new sandbox grant. This capability is
+fixture-proven, including the frozen-copy portfolio suite; its next live
+review/refutation row belongs to `planning: entropy reducer` (WO-175).
+
 ## Receipts, dispositions and the register
 
 Receipts are numbered from the next unused `NNN`, never overwritten, and bound

@@ -55,6 +55,8 @@ export interface EntropyReviewRequest {
   readonly mode?: "subagents";
   readonly raw?: string;
   readonly cwd: string;
+  /** The episode’s other writable root, beside the frozen copy. */
+  readonly temporaryDirectory?: string;
   /** A host-owned directory outside the frozen copy where the transport
    * retains the raw return. Writing it inside `cwd` would show up as a
    * scratch delta and make the confinement inventory lie. */
@@ -96,6 +98,8 @@ export interface EntropyRefutationRequest {
   readonly mode?: "subagents";
   readonly raw?: string;
   readonly cwd: string;
+  /** The episode’s other writable root, beside the frozen copy. */
+  readonly temporaryDirectory?: string;
   readonly capture: string;
   readonly profile: {
     readonly profileId: "entropy-refutation-v1";
@@ -198,6 +202,14 @@ const commonRequestShape = (
       request.capture !== request.cwd &&
       !request.capture.startsWith(`${request.cwd}/`),
     "entropy request capture must sit outside the frozen copy",
+  );
+  check(
+    request.temporaryDirectory === undefined ||
+      (typeof request.temporaryDirectory === "string" &&
+        request.temporaryDirectory.length > 0 &&
+        request.temporaryDirectory !== request.cwd &&
+        !request.temporaryDirectory.startsWith(`${request.cwd}/`)),
+    "entropy temporary directory must sit outside the frozen copy",
   );
   check(
     request.command.intent.kind === "Act",
@@ -399,6 +411,13 @@ const subjectProjection = (subject: EntropyReviewSubject) => ({
   subjectHash: subject.hash,
 });
 
+const temporaryInstruction = (
+  request: EntropyReviewRequest | EntropyRefutationRequest,
+): string =>
+  request.temporaryDirectory
+    ? ` The episode temporary directory is ${request.temporaryDirectory}, supplied as TMPDIR; it is the only other writable root. Keep all temporary files there; writes stay inside these two roots.`
+    : "";
+
 export const entropyReviewPrompt = (request: EntropyReviewRequest): string => {
   validateEntropyReviewRequest(request);
   return JSON.stringify({
@@ -409,10 +428,14 @@ export const entropyReviewPrompt = (request: EntropyReviewRequest): string => {
     residue: request.residue,
     lensBriefs: request.lensBriefs,
     subject: subjectProjection(request.subject),
+    ...(request.temporaryDirectory
+      ? { temporaryDirectory: request.temporaryDirectory }
+      : {}),
     concern: request.concern,
     outputSchema: reviewerOutputContract,
     outputInstructions:
-      "Run one Entropy Reducer review of the frozen copy at `subject.frozenSubjectPath`, which is your working directory. Follow the compiled Program in order: a whole-repository census of the paths `git ls-files` names, the bounded lens briefs above, then isolated probes. Commands run here and nowhere else: the original repository, the control plane, remotes, settings and operator decisions are read-only and outside this copy, and nothing outside this working directory may be written. Never read `docs/intake/**`. Label every finding `measured` with a reproduction command you actually ran, or `by inspection` with the steps; do not call a finding measured because a command exists. Attach an independent reproduction and evidence references to each. Tag each finding's surface and intervention altitude, and route a recurring finding to the cheapest executable rung. For an operator analogy, extract the intended relationship first and evaluate a literal detail only where a claim depends on it. `concern`, when present, is the operator's hypothesis to inspect, not a finding you must produce. Emit non-authoritative ProductSuggestion packets for `docs/proposals/<suggestionId>/`; you cannot file, promote, implement or verify them, and you do not advance any lifecycle. Apply the clean-room stop screen before returning: stop instead of incorporating employer material, credentials, private identifiers or internal service details. Return only the `outputSchema` object, with `resultEnvelope.workOrderId` and `resultEnvelope.episodeId` exactly as supplied and a summary under 200 words. The host revalidates everything you return and then stops for operator disposition.",
+      temporaryInstruction(request) +
+      "Run one Entropy Reducer review of the frozen copy at `subject.frozenSubjectPath`, which is your working directory. Follow the compiled Program in order: a whole-repository census of the paths `git ls-files` names, the bounded lens briefs above, then isolated probes. Commands run here and nowhere else: the original repository, the control plane, remotes, settings and operator decisions are read-only and outside this copy, and writes stay inside the working directory and any episode temporary directory named above. Never read `docs/intake/**`. Label every finding `measured` with a reproduction command you actually ran, or `by inspection` with the steps; do not call a finding measured because a command exists. Attach an independent reproduction and evidence references to each. Tag each finding's surface and intervention altitude, and route a recurring finding to the cheapest executable rung. For an operator analogy, extract the intended relationship first and evaluate a literal detail only where a claim depends on it. `concern`, when present, is the operator's hypothesis to inspect, not a finding you must produce. Emit non-authoritative ProductSuggestion packets for `docs/proposals/<suggestionId>/`; you cannot file, promote, implement or verify them, and you do not advance any lifecycle. Apply the clean-room stop screen before returning: stop instead of incorporating employer material, credentials, private identifiers or internal service details. Return only the `outputSchema` object, with `resultEnvelope.workOrderId` and `resultEnvelope.episodeId` exactly as supplied and a summary under 200 words. The host revalidates everything you return and then stops for operator disposition.",
   });
 };
 
@@ -427,9 +450,13 @@ export const entropyRefutationPrompt = (
     workOrder: request.workOrder,
     episodeId: request.episodeId,
     subject: subjectProjection(request.subject),
+    ...(request.temporaryDirectory
+      ? { temporaryDirectory: request.temporaryDirectory }
+      : {}),
     subjects: request.subjects,
     outputInstructions:
-      "Attempt to falsify each supplied subject independently, inside the frozen copy at `subject.frozenSubjectPath`, which is your working directory. `subjects.measured` gives a reproduction command and `subjects.inspection` gives steps; repository state and that command or those steps are the whole evidence source. Finding identifiers exist only for attribution: you have not been given, and must not ask for, any reviewer narrative, observed-versus-expected conclusion, severity, proposal or target survival count. Run each reproduction, then judge it: `refuted` when the reproduction does not show what it claims to show, `survived` when it does, `blocked` when you could not run it, with a non-empty reason and evidence references either way. There is no survival quota and no vote; an all-refuted run and an all-survived run are both valid results. Perturbations stay inside this working directory and nothing outside it is written. Return exactly one attempt per supplied subject and only the result schema object.",
+      temporaryInstruction(request) +
+      "Attempt to falsify each supplied subject independently, inside the frozen copy at `subject.frozenSubjectPath`, which is your working directory. `subjects.measured` gives a reproduction command and `subjects.inspection` gives steps; repository state and that command or those steps are the whole evidence source. Finding identifiers exist only for attribution: you have not been given, and must not ask for, any reviewer narrative, observed-versus-expected conclusion, severity, proposal or target survival count. Run each reproduction, then judge it: `refuted` when the reproduction does not show what it claims to show, `survived` when it does, `blocked` when you could not run it, with a non-empty reason and evidence references either way. There is no survival quota and no vote; an all-refuted run and an all-survived run are both valid results. Perturbations stay inside this working directory and any episode temporary directory named above. Return exactly one attempt per supplied subject and only the result schema object.",
   });
 };
 
