@@ -1,4 +1,4 @@
-# WO-061 — StoryContract compile: a pure function derives classified, provenance-bearing statements and acceptance criteria from a SourceBundle, labels model-inferred statements as such, and a source revision invalidates exactly the derived items it touched (version assigned at activation)
+# WO-061 — StoryContract compile: a pure function derives classified, provenance-bearing statements and acceptance criteria from a SourceBundle, labels model-inferred statements as such, and a source revision invalidates exactly the derived items it touched (v0.63.0)
 
 **Model:** any capable model for the pure compiler; the inference slot's
 model episode is a labeled fixture double here. State the model and effort
