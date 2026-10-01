@@ -1,0 +1,21 @@
+# WO-105 executor handoff
+
+All seven criteria are met for the tested subject below. The operator-approved observations-protocol registration is applied; independent verification is the next role.
+
+Actor: codex-cli 0.159.3; model gpt-6-astra; effort max; source codex-session-readback. Base commit: `2b1af1abfd947068c402daa1ee24b447fc81b1af`.
+
+**Criterion 1:** met — the [manifest](../../../corpus/manifests/WO-105.json) records seed `wo105-crash-20261001`, generated event counts 0/1/8/64, all byte lengths, 72,345 store cuts and 16,554 skeleton cuts; the final successful attempt in the [transcript](../../../corpus/manifests/runs/WO-105-2b1af1ab.log) corroborates both counts.
+**Criterion 2:** met — all 72,345 store cuts yield the exact surviving prefix or loud failure; all 16,554 skeleton cuts satisfy the declared single-command effect, surviving-log pending-command and live/replay invariants. Planted silent divergence, duplicate effects, missing pending commands and false trace identity are rejected by the standalone tests; no runtime findings were observed in this declared set.
+**Criterion 3:** met — CRLF and depth-12000 payloads decode with the recorded behavior and deterministic replay/replayOutbox; both complete skeleton mutations recover with one effect and two dispatches. All four included tree families pass independent structural ground-truth checks and seeded byte regeneration; candidate counts 1/2/3/0 and classification mixes give distinct signatures. No actual family is excluded; a planted assertion failure proves explicit exclusion reporting.
+**Criterion 4:** met — the full golden decision traces, event log and glyph scene reproduce against the shipped scenario at the pinned base. Live/replay identity passes for chain-mixed, cycle-mixed, orphan-heavy and source-only, with no excluded family omitted from a required comparison.
+**Criterion 5:** met — the final transcript records passing store, tree and golden `--check` commands; the [tree README](../../../corpus/fixtures/skeleton-trees/README.md) and every ground-truth file label the structural data non-normative. Exact fixture/hash checks pass in the standalone tests.
+**Criterion 6:** met — [decisions](decisions.md) D001/D004 record seed, sizes, all four families and zero numbered findings. Existing-file edits are lifecycle records plus the one observations-protocol registry entry explicitly authorized in D010 and the amended order.
+**Criterion 7:** met — the recorded build, generators, both exhaustive sweeps and all 11 standalone tests pass with the manifest's counts. After the approved registry correction, `npm test -- --serial` passed 29 suites / 0 failed / 74 fresh tasks in 1,065.34 seconds; `npm run test:docs -- --serial` passed 24 suites / 0 failed in 74.09 seconds. `git diff --check HEAD` is clean. No package dependency was added.
+
+The passing product gate was recorded at 2026-10-01T17:33:04.295Z for code identity `9bf958878934eb4fbc85d2bdcaf587d337ee2854d0f051708e52ea7ffc17d946`; its executed row has exit code 0. The manual document gate was recorded at 2026-10-01T17:14:43.705Z for tree `07f4d274c598bedf842c2d3f7e48e54c51243f66`. Completion also runs its inline document check over the final handoff and projections.
+
+The corpus pins existing behavior over its declared set; it does not claim general crash-after-effect reconciliation or multi-command effect attribution. Each skeleton offset calls the shipped recovery hook. The classified observations occupy 32,485 bytes within the declared 65,536-byte budget; compact inclusive ranges expand losslessly to raw per-offset rows, whose digests are checked.
+
+The canonical corpus runner limits each Node process to 512 MiB of V8 old space and runs the two test files serially. Manual root gates use `--serial` for the outer suite scheduler; the lifecycle's inline docs check uses its standard scheduler and inherits the same heap limit. This is not a total-process memory guarantee. D006 records the operator's memory-pressure steering and the interrupted attempt retained in the transcript.
+
+The local patch-release preparation and surface check passed for v0.60.3. D007 leaves four pre-existing follow-ups on their existing routes; the adjacent queue is empty. The economy option in D002 was declined because caching would bypass the required hook; no performance saving is claimed.

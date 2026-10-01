@@ -1,0 +1,74 @@
+{
+  "files": [
+    {
+      "path": "orphan-heavy/file-0-26593c27.txt",
+      "referencedBy": [],
+      "classification": "documentation"
+    },
+    {
+      "path": "orphan-heavy/file-1-9cbd8b5a.txt",
+      "referencedBy": [
+        "orphan-heavy/file-0-26593c27.txt"
+      ],
+      "classification": "source"
+    },
+    {
+      "path": "orphan-heavy/file-2-535ee2f1.txt",
+      "referencedBy": [
+        "orphan-heavy/file-3-70357f9c.txt"
+      ],
+      "classification": "source"
+    },
+    {
+      "path": "orphan-heavy/file-3-70357f9c.txt",
+      "referencedBy": [
+        "orphan-heavy/file-2-535ee2f1.txt"
+      ],
+      "classification": "source"
+    },
+    {
+      "path": "orphan-heavy/file-4-b63a964b.txt",
+      "referencedBy": [],
+      "classification": "documentation"
+    },
+    {
+      "path": "orphan-heavy/file-5-829d772e.txt",
+      "referencedBy": [],
+      "classification": "notes"
+    },
+    {
+      "path": "orphan-heavy/file-6-3f6854b5.txt",
+      "referencedBy": [],
+      "classification": "notes"
+    },
+    {
+      "path": "orphan-heavy/file-7-4c285e90.txt",
+      "referencedBy": [
+        "orphan-heavy/file-1-9cbd8b5a.txt"
+      ],
+      "classification": "generated-stale"
+    },
+    {
+      "path": "orphan-heavy/file-8-6c3920af.txt",
+      "referencedBy": [
+        "orphan-heavy/file-7-4c285e90.txt"
+      ],
+      "classification": "generated-stale"
+    },
+    {
+      "path": "orphan-heavy/file-9-af725642.txt",
+      "referencedBy": [],
+      "classification": "generated-stale"
+    },
+    {
+      "path": "orphan-heavy/file-10-200da0b9.txt",
+      "referencedBy": [],
+      "classification": "generated-stale"
+    },
+    {
+      "path": "orphan-heavy/file-11-fd3ad2c4.txt",
+      "referencedBy": [],
+      "classification": "generated-stale"
+    }
+  ]
+}

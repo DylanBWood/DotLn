@@ -25252,6 +25252,21 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-d093f77bd927f9dc",
+      "key": "decision:docs/evidence/WO-105/decisions.md#wo-105-d012",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "b8c1c31ebb5893be81c7c9cf4941a24e676e8ba8f8f4fd3e68ce760f79efa201",
+          "ref": "docs/evidence/WO-105/decisions.md#wo-105-d012--final-review-the-corpuss-byte-pins-are-keyed-to-its-base-and-fail-on-later-main",
+          "title": "WO-105-D012: Next order that edits the WO-105 corpus lane, or the first corpus-policy pass after it merges: decide how the lane behaves after its base. Either run its live comparisons against base sou",
+          "summary": "{ \"id\": \"WO-105-D012\", \"date\": \"2026-10-01\", \"dispatch\": \"resume: final review; FINAL-001; operator choice of pass with a follow-up\", \"decision\": \"Pass the order and board the base-keyed pins. After integration, the golden fixture, the manifest's lane records and the manifest's oracle hashes no longer match the integrated tree, so the golden --check, both sweep CLIs and three corpus tests exit nonzero. Two upstream changes cause this, and neither is WO-105's. @dotln/compiler moved from 0.21.0 to 0.22.0. Its version string appears 23 times in the demo's LoadoutEquipped payload and in the artifactIdentity envInputs of its decision traces. Replacing 0.21.0 with 0.22.0 in the golden makes its tr",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

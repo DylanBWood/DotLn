@@ -1,11 +1,12 @@
-# WO-105 — Crash-shape corpus: store truncation sweep, skeleton recovery sweep, golden traces, and fixture-tree families (version assigned at activation)
+# WO-105 — Crash-shape corpus: store truncation sweep, skeleton recovery sweep, golden traces, and fixture-tree families (v0.61.1)
 
 **Model:** Codex (any capable tier); any capable model may substitute. State the
 model and effort actually run in the result (07-execution-guide.md
 §Model-specific notes).
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.
 **Release classification:** patch. Evidence only: new files under
-`corpus/`; no runtime, package or contract change. Assigned at activation
+`corpus/` and the operator-approved test protocol registration below;
+no runtime, package-manifest or contract change. Assigned at activation
 under the standing opt-out default; a close without a release needs the
 operator's direction.
 **Cost:** adds seeded store-log and fixture-tree generators with
@@ -17,11 +18,22 @@ transcripts under `corpus/`, and a findings file if a finding arises;
 nothing joins the root `npm test`, and nothing is added under
 `packages/skeleton/test/`. Removes nothing that runs; it pins truncation
 and recovery behavior over every cut the manifest declares. Re-mints:
-none; the order adds new files only and edits none of the registered
+none; apart from the operator-approved registration, the order adds new
+files only and edits none of the registered
 oracles it reads (`packages/kernel/src/core.ts`,
 `packages/kernel/src/store.ts`, `packages/skeleton/src/scenario.ts`,
 `packages/skeleton/fixtures/repo-tree.json`). Wall-clock, tokens and
 context bytes are unknown until run.
+**Operator-authorized exception (2026-10-01):** the operator approved one
+entry in `packages/kernel/test/fixtures/jsonl-protocols.json`, declaring
+`corpus/manifests/WO-105-observations.jsonl` as crash-corpus classified
+observations. The document gate otherwise treats that required file as an
+EventEnvelope stream. This is the sole exception to the existing-file
+boundary beyond lifecycle records, including criterion 6 and the kernel
+edit non-goal below; decoder, test implementation and recorded observation
+bytes remain unchanged. See `docs/evidence/WO-105/decisions.md`
+WO-105-D009/D010. The earlier authorization to install the pinned browser
+locally is recorded in WO-105-D008.
 **Nomination provenance:** filed on 2026-09-01 (`1c3ec8aa`) in the
 adjacent work-order series for autonomous Codex downtime; it consolidates
 the former WO-105 (store lane) and WO-106 (skeleton lane) candidates, and
@@ -45,9 +57,10 @@ v0.2.1); WO-017 merged (the reviewed kernel truthfulness boundary; closed,
 v0.3.5). Independent of the other adjacent orders.
 **Recommended placement:** outside the sequence; the planning map names
 WO-107 the first candidate for adjacent evidence work and this order an
-alternative. It adds files only under `corpus/fixtures/store/`,
+alternative. Apart from the approved protocol registration, it adds files
+only under `corpus/fixtures/store/`,
 `corpus/fixtures/golden-traces/`, `corpus/fixtures/skeleton-trees/`,
-`corpus/harness/` and `corpus/manifests/`, so it is disjoint from every
+`corpus/harness/` and `corpus/manifests/`, so its new corpus files are disjoint from every
 queued order. Before it is sequenced a planning pass decides whether the
 sweep is still wanted, whether the golden traces still earn a corpus
 record beside the root suite's frozen decision traces, whether it
@@ -206,7 +219,8 @@ requires it.
   (including `corpus/fixtures/skeleton-trees/README.md`, where the lane's
   non-normative labeling lives), `corpus/harness/` and
   `corpus/manifests/` (with `corpus/manifests/runs/`). No existing file is
-  edited apart from the records the lifecycle's own commands write:
+  edited apart from the records the lifecycle's own commands write and
+  the operator-approved single test protocol registration above:
   `packages/skeleton/` stays untouched, `fixtures/repo-tree.json`
   included, and no file is added under `packages/skeleton/test/`, which
   the runner would promote into the release evidence. `corpus/README.md`
@@ -231,7 +245,9 @@ requires it.
   The work is offline and invokes no model after `npm run build`, and it
   needs no operator decision mid-flight.
 - The executor's work has no external effect: no push, pull request, tag,
-  publish, install, configuration change or destructive Git operation.
+  publish, configuration change or destructive Git operation. The
+  operator's local pinned-browser installation exception is recorded in
+  WO-105-D008; no other installation is authorized.
 - **Declined alternatives, recorded:** a parallel corpus for cases the
   root suite binds (the scope split's rule; reopen when the decoder's
   contract changes).
@@ -295,7 +311,9 @@ requires it.
    header.
 6. The decisions file records the seeds, the log sizes, the family
    inventory and each finding's number, and no existing file is edited
-   beyond the lifecycle's own records.
+   beyond the lifecycle's own records and the one operator-approved
+   observations-protocol registration in
+   `packages/kernel/test/fixtures/jsonl-protocols.json`.
 7. After `npm run build`, the store and tree generators' `--check` from
    the recorded seeds, the two sweeps and
    `node --test corpus/harness/wo105-*.test.mjs` pass with counts matching
@@ -331,7 +349,8 @@ policy.
 1. The order releases as a patch under the opt-out default.
 2. The lane's commands live in its manifest; `corpus/README.md` and
    product 03 §Corpus policy name the lane in a later order's
-   documentation change; this order modifies no existing file.
+   documentation change; this order modifies no existing file beyond
+   lifecycle records and the operator-approved protocol registration.
 3. The three families the positive decoder refuses with `EVENT_ORDER`
    leave the corpus by the scope split's own rule; CRLF and deep nesting
    stay for their replay-determinism checks.

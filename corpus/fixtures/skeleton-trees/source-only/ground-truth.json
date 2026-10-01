@@ -1,0 +1,35 @@
+{
+  "label": "NON-NORMATIVE structural data; not a Seiri policy or deletion authorization",
+  "family": "source-only",
+  "seed": "wo105-crash-20261001",
+  "roots": [
+    "source-only/file-0-b927c9d5.txt"
+  ],
+  "inventoryCount": 3,
+  "classificationCounts": {
+    "documentation": 0,
+    "source": 3,
+    "notes": 0,
+    "generated-stale": 0
+  },
+  "edges": [
+    [
+      "source-only/file-0-b927c9d5.txt",
+      "source-only/file-1-33ac1130.txt"
+    ],
+    [
+      "source-only/file-1-33ac1130.txt",
+      "source-only/file-2-18b4f2cf.txt"
+    ]
+  ],
+  "reachable": [
+    "source-only/file-0-b927c9d5.txt",
+    "source-only/file-1-33ac1130.txt",
+    "source-only/file-2-18b4f2cf.txt"
+  ],
+  "unreachable": [],
+  "orphans": [
+    "source-only/file-0-b927c9d5.txt"
+  ],
+  "plantedCandidates": []
+}
