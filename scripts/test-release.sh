@@ -46,10 +46,19 @@ assert_u202f() {
 
 
 write_control_events() {
-  local path="$1" id="$2" authority="$3"
+  local path="$1" id="$2" authority="$3" material_evidence=""
+  if [[ -n "${DOTLN_FIXTURE_MATERIAL_SOURCE:-}" ]]; then
+    material_evidence=",\"evidence\":$("$node_bin" --input-type=module - "$DOTLN_FIXTURE_MATERIAL_SOURCE" <<'JS'
+import { pathToFileURL } from "node:url";
+const root = process.argv[2];
+const { inventoryMaterial } = await import(pathToFileURL(`${root}/scripts/lib/worktree-material.mjs`));
+process.stdout.write(JSON.stringify({ material: inventoryMaterial(root) }));
+JS
+)"
+  fi
   printf '%s\n' \
     "{\"schemaVersion\":1,\"type\":\"WorkOrderActivated\",\"workOrderId\":\"$id\",\"workOrderPath\":\"$authority\"}" \
-    "{\"schemaVersion\":1,\"type\":\"ImplementationReady\",\"workOrderId\":\"$id\"}" \
+    "{\"schemaVersion\":1,\"type\":\"ImplementationReady\",\"workOrderId\":\"$id\"$material_evidence}" \
     "{\"schemaVersion\":1,\"type\":\"VerificationRequested\",\"workOrderId\":\"$id\",\"verificationId\":\"VER-001\",\"reportPath\":\"docs/verifications/$id/VER-001.md\"}" \
     "{\"schemaVersion\":1,\"type\":\"VerificationCompleted\",\"workOrderId\":\"$id\",\"verificationId\":\"VER-001\",\"reportPath\":\"docs/verifications/$id/VER-001.md\",\"verdict\":\"pass\"}" \
     "{\"schemaVersion\":1,\"type\":\"FinalReviewRequested\",\"workOrderId\":\"$id\",\"finalReviewId\":\"FINAL-001\",\"reportPath\":\"docs/final-reviews/$id/FINAL-001.md\"}" \
@@ -292,7 +301,11 @@ commit_candidate() {
   write_release_block "$repository" "$surface_version"
   printf '# %s — release fixture, %s\n\n**Objective:** Deliver the visible fixture payoff for %s.\n\n**Non-goals:** Package and hosted distribution remain outside this source release.\n' "$id" "$version" "$id" >"$repository/$authority"
   write_control_events "$repository/docs/control/resume.jsonl" "$id" "$authority"
-  git -C "$repository" add .
+  if [[ -n "${DOTLN_FIXTURE_MATERIAL_SOURCE:-}" ]]; then
+    git -C "$repository" add . -- ':!docs/intake'
+  else
+    git -C "$repository" add .
+  fi
   "$node_bin" "$script_dir/test-release-composition.mjs" record "$repository" "$id"
   git -C "$repository" add docs/control
   git -C "$repository" commit -m "$id candidate $version" >/dev/null
@@ -724,9 +737,18 @@ test "$(git -C "$main" rev-parse HEAD)" = "$(git -C "$main" rev-parse origin/mai
 test ! -e "$npm_log"
 assert_no_candidate_tag "$main" "$origin"
 assert_surface_failure 'FAIL release-block: observed v0.2.0; expected exactly one v0.2.1'
+"$node_bin" - "$main/docs/control/local/retained/WO-099/release-close.json" <<'JS'
+const assert = require("node:assert/strict"), fs = require("node:fs");
+const record = JSON.parse(fs.readFileSync(process.argv[2], "utf8"));
+assert.equal(record.publication.outcome, "refused");
+assert.equal(record.publication.tag, "v0.2.1");
+assert.equal(record.publication.tagOutcome, null);
+assert.match(record.publication.refusal, /FAIL release-block/);
+assert.equal(record.cleanup.outcome, "not-attempted");
+JS
 # Closing reports the deliberately retained writer; check-surfaces does not.
 # Preserve equality for the whole report, including that one known advisory.
-expected_close_output="$(printf 'Advisory: retained ignored material: docs/control/local/harness/writer.json\n%s' "$surface_failure_output")"
+expected_close_output="$(printf 'Advisory: retained ignored material: docs/control/local/harness/writer.json, docs/control/local/retained/WO-099/release-close.json\n%s' "$surface_failure_output")"
 if [[ "$close_surface_output" != "$expected_close_output" ]]; then
   diff -u <(printf '%s\n' "$expected_close_output") <(printf '%s\n' "$close_surface_output") >&2
   exit 1
@@ -947,6 +969,15 @@ mkdir -p "$main/.claude"
 printf 'surviving operator settings fixture\n' >"$main/.claude/settings.local.json"
 lower_output="$(release_close WO-099 --publish)"
 grep -Fq 'below latest release v0.2.0' <<<"$lower_output"
+"$node_bin" - "$main/docs/control/local/retained/WO-099/release-close.json" <<'JS'
+const assert = require("node:assert/strict"), fs = require("node:fs");
+const record = JSON.parse(fs.readFileSync(process.argv[2], "utf8"));
+assert.equal(record.publication.outcome, "no-release");
+assert.equal(record.publication.tag, "v0.0.2");
+assert.equal(record.publication.tagOutcome, null);
+assert.equal(record.cleanup.outcome, "clean");
+assert.equal(record.blockers.length, 0);
+JS
 test ! -e "$npm_log"
 test "$(git -C "$main" status --porcelain)" = ""
 test -f "$main/$intake_path"
@@ -1098,6 +1129,14 @@ commit_candidate "$main" WO-099 v0.2.1
 git -C "$main" push origin main >/dev/null 2>&1
 if create_failure="$(DOTLN_FIXTURE_GH_FAIL=create release_close WO-099 --publish 2>&1)"; then printf 'error: gh release create failure reported success\n' >&2; exit 1; fi
 grep -Fq 'tag published; GitHub Release not created; rerun the same command' <<<"$create_failure"
+"$node_bin" - "$main/docs/control/local/retained/WO-099/release-close.json" <<'JS'
+const assert = require("node:assert/strict"), fs = require("node:fs");
+const record = JSON.parse(fs.readFileSync(process.argv[2], "utf8"));
+assert.equal(record.publication.outcome, "partially-published");
+assert.equal(record.publication.tagOutcome, "published");
+assert.equal(record.publication.release, null);
+assert.match(record.publication.refusal, /fixture create failure/);
+JS
 test "$(git -C "$main" cat-file -t v0.2.1)" = tag
 test "$(git -C "$main" rev-list -n 1 v0.2.1)" = "$(git --git-dir="$origin" rev-list -n 1 v0.2.1)"
 test ! -e "$gh_state/v0.2.1.body"
@@ -1113,6 +1152,13 @@ release_close WO-099 --publish >/dev/null
 test "$(grep -c '^release create v0.2.1 ' "$gh_log")" = 2
 if lookup_failure="$(DOTLN_FIXTURE_GH_FAIL=view release_close WO-099 --publish 2>&1)"; then printf 'error: failed GitHub Release lookup triggered success\n' >&2; exit 1; fi
 grep -Fq 'GitHub Release state not verified and no create was attempted' <<<"$lookup_failure"
+"$node_bin" - "$main/docs/control/local/retained/WO-099/release-close.json" <<'JS'
+const assert = require("node:assert/strict"), fs = require("node:fs");
+const record = JSON.parse(fs.readFileSync(process.argv[2], "utf8"));
+assert.equal(record.publication.outcome, "partially-published");
+assert.equal(record.publication.tagOutcome, "already-published");
+assert.equal(record.publication.release, null);
+JS
 test "$(grep -c '^release create v0.2.1 ' "$gh_log")" = 2
 if ambiguous_404="$(DOTLN_FIXTURE_GH_FAIL=view404 release_close WO-099 --publish 2>&1)"; then printf 'error: ambiguous GitHub 404 triggered success\n' >&2; exit 1; fi
 grep -Fq 'GitHub Release state not verified and no create was attempted' <<<"$ambiguous_404"
@@ -1673,6 +1719,264 @@ release_case_concurrent() {
 make_repo concurrent
 PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" DOTLN_GH_LOG="$gh_log" DOTLN_GH_STATE="$gh_state" DOTLN_GH_ORIGIN="$origin" "$node_bin" "$script_dir/test-concurrent-control.mjs" "$fixture"
 }
+
+release_case_material() {
+for mode in lane disposable preserve unknown unknown_keep intake; do
+  make_repo "material_$mode"
+  subject="$fixture/project-wo099"
+  git -C "$main" worktree add "$subject" -b wo-099 main >/dev/null
+  printf 'scratch-material/\n' >>"$subject/.gitignore"
+  case "$mode" in
+    lane) material_path='.runtime/x' ;;
+    intake) material_path='docs/intake/x' ;;
+    unknown_keep) material_path="scratch-material/repo's space" ;;
+    *) material_path='scratch-material/x' ;;
+  esac
+  nested="$subject/$material_path"
+  # Re-included intake directories can arise after the reviewed gate. Cover
+  # the real ignore policy at cleanup without putting a directory into that
+  # gate's file-only candidate tree.
+  if [[ "$mode" == intake ]]; then
+    commit_candidate "$subject" WO-099 v0.2.1
+  fi
+  mkdir -p "$nested"
+  git -C "$nested" init -q
+  printf 'nested repository fixture\n' >"$nested/saved.txt"
+  git -C "$nested" add saved.txt
+  git -C "$nested" -c user.name=Fixture -c user.email=fixture@example.invalid commit -qm 'nested fixture'
+  if [[ "$mode" == unknown_keep ]]; then
+    second="$subject/scratch-material/second repository"
+    mkdir -p "$second"
+    git -C "$second" init -q
+    printf 'second repository fixture\n' >"$second/saved.txt"
+    git -C "$second" add saved.txt
+    git -C "$second" -c user.name=Fixture -c user.email=fixture@example.invalid commit -qm 'second nested fixture'
+  fi
+  if [[ "$mode" == disposable || "$mode" == preserve ]]; then
+    (cd "$subject" && CODEX_THREAD_ID='' COPILOT_AGENT_SESSION_ID='' "$node_bin" scripts/worktree.mjs material "$material_path" "--$mode" --reason 'fixture disposition')
+  fi
+  if [[ "$mode" != intake ]]; then
+    DOTLN_FIXTURE_MATERIAL_SOURCE="$subject" commit_candidate "$subject" WO-099 v0.2.1
+  fi
+  git -C "$subject" push origin HEAD:main >/dev/null 2>&1
+  # Preview deliberately starts on an older main and consumes origin/main's handoff.
+  if [[ "$mode" == lane ]]; then
+    preview="$(CODEX_THREAD_ID='' COPILOT_AGENT_SESSION_ID='' CLAUDE_CODE_SESSION_ID=fixture-claude-close CLAUDE_EFFORT=high release_close WO-099 --publish --dry-run)"
+  elif [[ "$mode" == preserve ]]; then
+    preview="$(CODEX_THREAD_ID='' COPILOT_AGENT_SESSION_ID='' CLAUDE_CODE_SESSION_ID='' CLAUDE_SESSION_ID=fixture-claude-close CLAUDE_EFFORT=high release_close WO-099 --publish --dry-run)"
+  else
+    preview="$(release_close WO-099 --publish --dry-run)"
+  fi
+  record="$main/docs/control/local/retained/WO-099/release-close.json"
+  "$node_bin" - "$record" "$mode" <<'JS'
+const assert = require("node:assert/strict"), fs = require("node:fs");
+const record = JSON.parse(fs.readFileSync(process.argv[2], "utf8")), mode = process.argv[3];
+assert.equal(record.dryRun, true);
+assert.equal(record.publication.outcome, "preview");
+assert.equal(record.cleanup.outcome, mode.startsWith("unknown") ? "blocked" : "clean");
+assert.equal(record.material.length, mode === "unknown_keep" ? 2 : 1);
+assert.equal(record.material[0].source, ["disposable", "preserve"].includes(mode) ? "declared" : "lane");
+if (["lane", "preserve"].includes(mode)) {
+  assert.equal(record.dispatch.harness, "claude-code");
+  assert.equal(record.dispatch.session, "fixture-claude-close");
+  assert.equal(record.dispatch.source, "claude-session-readback");
+}
+JS
+  test -d "$nested"
+  test ! -f "$gh_state/v0.2.1.body"
+  if [[ "$mode" == lane ]]; then
+    grep -Fq 'nested repository disposable' <<<"$preview"
+  elif [[ "$mode" == unknown* ]]; then
+    grep -Fq 'npm run worktree -- material' <<<"$preview"
+    grep -Fq -- '--material' <<<"$preview"
+  fi
+  output="$(CODEX_THREAD_ID='' COPILOT_AGENT_SESSION_ID='' CLAUDE_CODE_SESSION_ID=fixture-claude-close CLAUDE_EFFORT=high release_close WO-099 --publish)"
+  grep -Fq 'Published annotated v0.2.1' <<<"$output"
+  "$node_bin" - "$record" "$mode" <<'JS'
+const assert = require("node:assert/strict"), fs = require("node:fs");
+const record = JSON.parse(fs.readFileSync(process.argv[2], "utf8")), mode = process.argv[3];
+assert.equal(record.dryRun, false);
+assert.equal(record.publication.outcome, "published");
+assert.equal(record.publication.tag, "v0.2.1");
+assert.equal(record.publication.tagOutcome, "published");
+assert.equal(record.publication.release, "created");
+assert.equal(record.cleanup.outcome, mode.startsWith("unknown") ? "blocked" : "clean");
+assert.equal(record.cleanup.worktrees[0].outcome, mode.startsWith("unknown") ? "retained" : "removed");
+assert.equal(record.dispatch.harness, "claude-code");
+assert.equal(record.dispatch.session, "fixture-claude-close");
+assert.equal(record.dispatch.source, "claude-session-readback");
+if (mode.startsWith("unknown")) {
+  assert.ok(record.blockers.some(row => row.action === "material" && row.command.includes("--material")));
+}
+if (["lane", "disposable"].includes(mode)) {
+  assert.equal(record.recovery.length, 1);
+  assert.equal(record.recovery[0].outcome, "bundled");
+  assert.ok(fs.existsSync(require("node:path").join(require("node:path").dirname(process.argv[2]), "../../../../..", record.recovery[0].path)));
+}
+JS
+  if [[ "$mode" == unknown* ]]; then
+    test -d "$nested"
+    # A new unfiled subject declaration cannot silently change the committed word.
+    (cd "$subject" && CODEX_THREAD_ID='' COPILOT_AGENT_SESSION_ID='' "$node_bin" scripts/worktree.mjs material "$material_path" --disposable --reason 'unfiled local word')
+    retry_blocked="$(release_close WO-099 --publish)"
+    grep -Fq 'cleanup blocker' <<<"$retry_blocked"
+    test -d "$nested"
+    if [[ "$mode" == unknown_keep ]]; then
+      # Execute the exact printed keep command, including its quoted path.
+      retry="$(cd "$main" && PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" DOTLN_GH_LOG="$gh_log" DOTLN_GH_STATE="$gh_state" DOTLN_GH_ORIGIN="$origin" "$node_bin" - "$record" <<'JS'
+const fs = require("node:fs"), { execFileSync } = require("node:child_process");
+const record = JSON.parse(fs.readFileSync(process.argv[2], "utf8"));
+const command = record.blockers.find(row => row.action === "material").command;
+process.stdout.write(execFileSync("sh", ["-c", command], { encoding: "utf8" }));
+JS
+)"
+    else
+      retry="$(release_close WO-099 --publish --material "$material_path=disposable")"
+    fi
+    grep -Fq 'already published' <<<"$retry"
+    test ! -e "$subject"
+    "$node_bin" - "$record" "$mode" <<'JS'
+const assert = require("node:assert/strict"), fs = require("node:fs");
+const record = JSON.parse(fs.readFileSync(process.argv[2], "utf8")), mode = process.argv[3];
+assert.equal(record.publication.outcome, "already-published");
+assert.equal(record.cleanup.outcome, "clean");
+assert.equal(record.overrides[0].disposition, mode === "unknown_keep" ? "preserve" : "disposable");
+assert.equal(record.material[0].reason, "operator close --material declaration");
+assert.equal(record.previousAttempts.length, 3);
+assert.equal(record.previousAttempts[0].dryRun, true);
+assert.equal(record.previousAttempts[1].cleanup.outcome, "blocked");
+assert.equal(record.previousAttempts[2].cleanup.outcome, "blocked");
+JS
+  else
+    test ! -e "$subject"
+  fi
+  if [[ "$mode" == preserve || "$mode" == unknown_keep ]]; then
+    kept="$main/docs/control/local/retained/WO-099/material/$material_path"
+    test "$(git -C "$kept" show HEAD:saved.txt)" = 'nested repository fixture'
+    if [[ "$mode" == unknown_keep ]]; then
+      test "$(git -C "$main/docs/control/local/retained/WO-099/material/scratch-material/second repository" show HEAD:saved.txt)" = 'second repository fixture'
+    fi
+  elif [[ "$mode" == intake ]]; then
+    test "$(git -C "$main/docs/intake/x" show HEAD:saved.txt)" = 'nested repository fixture'
+  fi
+  if [[ "$mode" == lane || "$mode" == disposable ]]; then
+    bundle="$("$node_bin" -e 'const fs = require("node:fs"); process.stdout.write(JSON.parse(fs.readFileSync(process.argv[1], "utf8")).recovery[0].path)' "$record")"
+    git -C "$main" clone "$main/$bundle" "$fixture/recovered" >/dev/null 2>&1
+    test "$(git -C "$fixture/recovered" show HEAD:saved.txt)" = 'nested repository fixture'
+  fi
+  test "$(grep -c '^release create v0.2.1 ' "$gh_log")" = 1
+  test "$(git -C "$main" status --porcelain --untracked-files=no)" = ''
+done
+# A recorded disposal decision must not apply after the repository changes
+# or to another worktree's repository at the same path.
+for change in commit dirt; do
+  make_repo "material_drift_$change"
+  subject="$fixture/project-wo099"
+  derived="$fixture/measurement-wo099"
+  material_path='scratch-material/x'
+  git -C "$main" worktree add "$subject" -b wo-099 main >/dev/null
+  printf 'scratch-material/\n' >>"$subject/.gitignore"
+  nested="$subject/$material_path"
+  mkdir -p "$nested"
+  git -C "$nested" init -q
+  if [[ "$change" == dirt ]]; then
+    printf 'saved before completion\n' >"$nested/saved.txt"
+    git -C "$nested" add saved.txt
+    git -C "$nested" -c user.name=Fixture -c user.email=fixture@example.invalid commit -qm 'nested fixture'
+    (cd "$subject" && "$node_bin" scripts/worktree.mjs material "$material_path" --disposable --reason 'completion word')
+  fi
+  DOTLN_FIXTURE_MATERIAL_SOURCE="$subject" commit_candidate "$subject" WO-099 v0.2.1
+  printf 'new work after completion\n' >"$nested/after.txt"
+  if [[ "$change" == commit ]]; then
+    git -C "$nested" add after.txt
+    git -C "$nested" -c user.name=Fixture -c user.email=fixture@example.invalid commit -qm 'commit after completion'
+  fi
+  git -C "$main" worktree add --detach "$derived" wo-099 >/dev/null
+  mkdir -p "$derived/$material_path"
+  git -C "$derived/$material_path" init -q
+  printf 'different derived work\n' >"$derived/$material_path/foreign.txt"
+  git -C "$derived/$material_path" add foreign.txt
+  git -C "$derived/$material_path" -c user.name=Fixture -c user.email=fixture@example.invalid commit -qm 'foreign derived commit'
+  mkdir -p "$derived/docs/intake/protected"
+  git -C "$derived/docs/intake/protected" init -q
+  git -C "$subject" push origin HEAD:main >/dev/null 2>&1
+  output="$(release_close WO-099 --publish)"
+  grep -Fq 'Published annotated v0.2.1' <<<"$output"
+  test -f "$nested/after.txt"
+  test "$(git -C "$derived/$material_path" show HEAD:foreign.txt)" = 'different derived work'
+  record="$main/docs/control/local/retained/WO-099/release-close.json"
+  "$node_bin" - "$record" <<'JS'
+const assert = require("node:assert/strict"), fs = require("node:fs");
+const record = JSON.parse(fs.readFileSync(process.argv[2], "utf8"));
+assert.equal(record.publication.outcome, "published");
+assert.equal(record.cleanup.outcome, "blocked");
+assert.equal(record.material.length, 3);
+assert.ok(record.material.filter(row => row.path === "scratch-material/x").every(row => row.disposition === "undeclared" && row.reason.includes("with content")));
+assert.ok(record.cleanup.worktrees.every(row => row.outcome === "retained"));
+JS
+  # An unscoped word belongs to the subject; it cannot dispose of the derived unit.
+  output="$(release_close WO-099 --publish --material "$material_path=preserve" --material "$derived::docs/intake/protected=disposable")"
+  grep -Fq 'Protected intake repositories cannot be declared disposable' <<<"$output"
+  test ! -e "$subject"
+  test -d "$derived/$material_path"
+  test -f "$main/docs/control/local/retained/WO-099/material/$material_path/after.txt"
+  release_close WO-099 --publish --material "$derived::$material_path=preserve" >/dev/null
+  test ! -e "$derived"
+  test "$(grep -c '^release create v0.2.1 ' "$gh_log")" = 1
+done
+printf 'material handoff, preview, cleanup, preservation and publication retry passed\n'
+make_repo material_changed_keep
+subject="$fixture/project-wo099"
+git -C "$main" worktree add "$subject" -b wo-099 main >/dev/null
+nested="$subject/.runtime/kept"
+mkdir -p "$nested"
+git -C "$nested" init -q
+printf 'saved keep decision\n' >"$nested/saved.txt"
+git -C "$nested" add saved.txt
+git -C "$nested" -c user.name=Fixture -c user.email=fixture@example.invalid commit -qm 'kept fixture'
+(cd "$subject" && "$node_bin" scripts/worktree.mjs material .runtime/kept --preserve --reason 'keep this unit')
+DOTLN_FIXTURE_MATERIAL_SOURCE="$subject" commit_candidate "$subject" WO-099 v0.2.1
+printf 'later work must stay\n' >"$nested/later.txt"
+git -C "$subject" push origin HEAD:main >/dev/null 2>&1
+output="$(release_close WO-099 --publish)"
+test -f "$nested/later.txt"
+record="$main/docs/control/local/retained/WO-099/release-close.json"
+"$node_bin" - "$record" <<'JS'
+const assert = require("node:assert/strict"), fs = require("node:fs");
+const record = JSON.parse(fs.readFileSync(process.argv[2], "utf8"));
+assert.equal(record.material[0].disposition, "undeclared");
+assert.equal(record.cleanup.outcome, "blocked");
+JS
+release_close WO-099 --publish --material .runtime/kept=preserve >/dev/null
+test ! -e "$subject"
+test "$(cat "$main/docs/control/local/retained/WO-099/material/.runtime/kept/later.txt")" = 'later work must stay'
+for result in success failure; do
+  make_repo "material_record_io_$result"
+  subject="$fixture/project-wo099"
+  git -C "$main" worktree add "$subject" -b wo-099 main >/dev/null
+  commit_candidate "$subject" WO-099 v0.2.1
+  git -C "$subject" push origin HEAD:main >/dev/null 2>&1
+  record="$main/docs/control/local/retained/WO-099/release-close.json"
+  mkdir -p "$record"
+  if [[ "$result" == success ]]; then
+    output="$(release_close WO-099 --publish 2>&1)"
+    grep -Fq 'Published annotated v0.2.1' <<<"$output"
+    test ! -e "$subject"
+  else
+    if output="$(DOTLN_FIXTURE_GH_FAIL=create release_close WO-099 --publish 2>&1)"; then
+      printf 'error: publication failure hidden by record failure\n' >&2; exit 1
+    fi
+    grep -Fq 'tag published; GitHub Release not created; rerun the same command' <<<"$output"
+    grep -Fq 'fixture create failure' <<<"$output"
+    test -d "$subject"
+  fi
+  grep -Fq 'Close record unavailable:' <<<"$output"
+  test -d "$record"
+  test "$(git --git-dir="$origin" cat-file -t v0.2.1)" = tag
+done
+printf 'record I/O preserves publication outcome and original errors\n'
+}
+
 
 if [[ -n "$prepare_template" ]]; then
   if [[ -n "$release_template" || -n "$selected_case" ]]; then exit 64; fi

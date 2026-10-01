@@ -106,6 +106,16 @@ const anchoredBuildOutput = (candidate) =>
   /^(?:node_modules|dist)(?:\/|$)/.test(candidate) ||
   /^packages\/[^/]+\/(?:node_modules|dist)(?:\/|$)/.test(candidate);
 
+// File suffixes and nested beacon-stage names do not classify whole
+// repositories. Only the project's explicit scratch-directory lanes do.
+const disposableRepositoryLane = (candidate, root) =>
+  anchoredBuildOutput(candidate) ||
+  anchored(candidate, ".runtime") ||
+  anchored(candidate, `${lanes(root).controlLocal}/harness`) ||
+  anchored(candidate, `${lanes(root).controlLocal}/cache`) ||
+  anchored(candidate, ".control-beacons") ||
+  /^\.dotln-beacon-stage-[A-Za-z0-9]{6}(?:\/|$)/.test(candidate);
+
 export const disposableBasename = (candidate) =>
   basename(candidate) === ".DS_Store" ||
   basename(candidate).endsWith(".tsbuildinfo");
@@ -159,7 +169,8 @@ export function inspectNestedRepository(root, candidate) {
   if (!names.includes(".git"))
     return { repository: false, commits: false, empty: false };
   const gitDirectory = join(directory, ".git");
-  // Linked worktrees and unreadable repositories are never disposable here.
+  // Linked worktrees and unreadable repositories need an explicit word;
+  // their metadata cannot establish empty standalone scaffolding.
   try {
     if (!lstatSync(gitDirectory).isDirectory())
       return { repository: true, commits: null, empty: false };
@@ -258,6 +269,20 @@ export function describeIgnoredMaterial(root, candidate) {
       ...base,
       classification: `${lane} lane: ignored directory`,
       remedy: remedies(root)[lane],
+    };
+  if (
+    base.disposable &&
+    nested.commits !== null &&
+    disposableRepositoryLane(candidate.replace(/\/$/, ""), root)
+  )
+    return {
+      path: candidate,
+      kind: "nested-repository",
+      lane,
+      ...base,
+      classification: `${lane} lane: disposable scratch repository`,
+      remedy:
+        "disposable by lane; it is removed with the worktree unless declared preserve",
     };
   if (nested.empty && lane !== "intake")
     return {

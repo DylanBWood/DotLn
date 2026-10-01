@@ -463,11 +463,13 @@ git -C "$subject/docs/control/local/feedback/verifier/mount" init -q
 git -C "$subject/vendor/node_modules/kept-repo" init -q
 printf 'kept nested content\n' >"$subject/vendor/node_modules/kept-repo/file.txt"
 if finish_output="$(finish_worktree WO-099 2>&1)"; then printf 'error: ignored secret was deleted\n' >&2; exit 1; fi
-grep -Fq '(2 entries; nothing here deletes ignored material)' <<<"$finish_output"
+grep -Fq '(2 entries; undeclared material is retained)' <<<"$finish_output"
 grep -Fq '.env: other lane: ignored file; move it outside the checkout or delete it from an operator terminal' <<<"$finish_output"
-grep -Fq 'vendor/node_modules/kept-repo/: other lane: nested repository with content and no commit; move it outside the checkout from an operator terminal' <<<"$finish_output"
+grep -Fq 'vendor/node_modules/kept-repo/: other lane: nested repository with content and no commit;' <<<"$finish_output"
+grep -Fq "npm run worktree -- material 'vendor/node_modules/kept-repo' --preserve --reason 'keep this repository'" <<<"$finish_output"
+grep -Fq -- "--material '${subject}::vendor/node_modules/kept-repo=preserve'" <<<"$finish_output"
 if grep -Fq 'npm run backup:intake' <<<"$finish_output"; then printf 'error: intake archive named for non-intake material\n' >&2; exit 1; fi
-if grep -Fq 'verifier/mount' <<<"$finish_output"; then printf 'error: empty nested repository reported as a blocker\n' >&2; exit 1; fi
+if grep -Fq 'verifier/mount/:' <<<"$finish_output"; then printf 'error: empty nested repository reported as a blocker\n' >&2; exit 1; fi
 if grep -Fq 'SECRET=fixture-only' <<<"$finish_output"; then printf 'error: ignored-file content leaked in refusal\n' >&2; exit 1; fi
 test -f "$subject/.env"
 test -f "$subject/tsconfig.tsbuildinfo"
@@ -573,7 +575,7 @@ mkdir -p "$subject/docs/control/local/prototypes/nested" "$subject/docs/control/
 printf 'subject retained record\000bytes\n' >"$subject/docs/control/local/adjacent-work.jsonl"
 printf 'subject prototype\n' >"$subject/docs/control/local/prototypes/nested/source.txt"
 # WO-044: a nested repository with content in the control lane is preserved
-# as a directory unit; an empty verifier mount is discarded as scaffolding.
+# as a directory unit; the verifier mount is disposable while it is empty.
 mkdir -p "$subject/docs/control/local/prototypes/repo" "$subject/docs/control/local/feedback/verifier/mount"
 git -C "$subject/docs/control/local/prototypes/repo" init -q
 printf 'kept nested content\n' >"$subject/docs/control/local/prototypes/repo/file.txt"
@@ -621,11 +623,11 @@ retained_preview="$(finish_worktree WO-099 --dry-run 2>&1)"
 grep -Fq 'docs/control/local/retained/WO-099/adjacent-work.jsonl' <<<"$retained_preview"
 grep -Fq 'docs/control/local/retained/WO-099/process/empty' <<<"$retained_preview"
 grep -Fq '"docs/control/local/prototypes/repo": nested repository preserved as a directory unit' <<<"$retained_preview"
-grep -Fq '"docs/control/local/feedback/verifier/mount": nested repository discarded as empty fixture scaffolding (only .git, no commit)' <<<"$retained_preview"
+grep -Fq '"docs/control/local/feedback/verifier/mount": nested repository disposable; removed with the worktree' <<<"$retained_preview"
 grep -Fq 'docs/control/local/retained/WO-099/prototypes/repo/.git/HEAD' <<<"$retained_preview"
 grep -Fq 'docs/control/local/retained/WO-099/prototypes/repo/file.txt' <<<"$retained_preview"
 grep -Fq "Derived worktree $derived_clean: would remove" <<<"$retained_preview"
-grep -Fq "Derived worktree $derived_dirty: kept (uncommitted changes); remove it from an operator terminal with git worktree remove --force" <<<"$retained_preview"
+grep -Fq "Derived worktree $derived_dirty: kept (uncommitted changes); retry with node '$main/scripts/worktree.mjs' settle WO-099" <<<"$retained_preview"
 grep -Fq "Derived worktree $derived_writer: kept (writer reservation" <<<"$retained_preview"
 grep -Fq "Derived worktree $derived_unknown: kept (writer reservation" <<<"$retained_preview"
 grep -Fq "Derived worktree $derived_gone: would prune (directory missing)" <<<"$retained_preview"

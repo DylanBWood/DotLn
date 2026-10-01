@@ -260,7 +260,7 @@ table includes the shared goal card and the refuter's separate subject boundary.
    | `resume: fix`           | `npm run resume -- fix`                                                                                                                                                                                                    | repair, reading BOTH the original work order and named failure source; if a repair was prematurely marked complete, the phrase may reopen it only while that unresolved source remains                                                                                   |
    | `resume: verify`        | `npm run resume -- verify`                                                                                                                                                                                                 | verify, writing the exact `VER-NNN` path it allocates                                                                                                                                                                                                                    |
    | `resume: final review`  | `npm run resume -- final-review`                                                                                                                                                                                           | review into the allocated `FINAL-NNN`; on pass, record it, commit the reviewed state, push only the WO branch, and open its PR                                                                                                                                           |
-   | `resume: release close` | in a main-checkout session, dispatch `npm run resume -- release-close --work-order WO-NNN` there, then run in that session the exact `node <main>/scripts/release.mjs close WO-NNN --publish` helper it prints (`worktree publish` prints the same); dispatched from the subject it prints only this route; after the subject is already removed, use main's copy | update main, consume the reviewer product gate, publish the validated tag and Release, then attempt worktree cleanup; if Release creation fails after tag push, rerun from updated main |
+   | `resume: release close` | in a main-checkout session, dispatch `npm run resume -- release-close --work-order WO-NNN`, then run its printed `node <main>/scripts/release.mjs close WO-NNN --publish` helper there (`worktree publish` prints it too); a subject dispatch prints this route; use main's copy after subject removal | update main, consume reviewer gate, publish validated tag and Release, attempt cleanup, and write `docs/control/local/retained/WO-NNN/release-close.json`; rerun from updated main if Release creation fails |
    | the operator accepts criterion N unmet (words captured) | `npm run resume -- waive N --reason <text> --capture <intake file> --capture-hash sha256:<digest> <actor-flags>` from the operator's terminal, a verifier or a reviewer session (WO-158) | the report records `**Criterion N:** unmet, waived by <ordinal>`; the order's executor never records a waiver |
    | the operator withdraws the order (words captured) | `npm run resume -- withdraw --disposition failed\|superseded\|abandoned --reason <text> --capture <intake file> --capture-hash sha256:<digest> <actor-flags>` (WO-158) | stop: `withdrawn` is terminal, and only `npm run resume -- activate` of a changed revision with a new dated `**Reactivation (YYYY-MM-DD):**` note leaves it |
    | a recorded attestation, report path or checkpoint is wrong, or a recorded passing final review carries no product gate | `npm run resume -- correct <ordinal\|report-path> --set <field>=<value> --reason <text> <actor-flags>` (WO-158); `--set productGate=<evidenceRef>` binds a complete passing `npm test` row whose code identity is the one the pass recorded in its checkpoint and still the working tree's, once, and is the only correction legal in `closed` (WO-115) | never correct a verdict or edit a filed report; a wrong verdict takes a later report; a changed subject takes a fresh final review; publication and release close read the bound gate from the committed correction |
@@ -1361,14 +1361,15 @@ a differing Release body refuses without editing it. If Release creation fails
 after tag push, rerun the same command. A lower target is an explicit no-release
 outcome. A deliberately deferred eligible release needs a durable disposition.
 
-Only tracked dirt refuses publication. Untracked and ignored local material is
-listed and retained. After publication, worktree finish and derived-worktree
-settlement run as best effort. Cleanup blockers are reported without failing a
-successful publication; never force teardown. The existing preservation helper
-keeps single-copy intake and non-disposable control material in main's ignored
-`docs/control/local/retained/WO-NNN/` lane, preserving collisions and checking
-copied bytes. It refuses unsafe symlinks and uncertain writer/gate ownership.
-Those teardown protections remain independent of publication eligibility.
+Publication refuses tracked dirt; cleanup is best effort and forbids undeclared
+disposal. Finish/settle preserve intake and non-disposable control in main's
+ignored `docs/control/local/retained/WO-NNN/`, retain collisions, verify bytes and
+refuse unsafe symlinks or uncertain writer/gate ownership. Lane rows are
+recomputed; disposal declarations bind worktree/state. Disposable commits are
+bundled and verified. Declare with `worktree material <path> --preserve|--disposable
+--reason <text>`. Close's `--material [<absolute-worktree>::]<path>=disposable|preserve`
+settles unknowns by worktree. Attempts record `release-close.json` there;
+record I/O only advises.
 
 `--dry-run` previews the prospective merged revision, manifest and cleanup
 without moving main, registering/removing a worktree or publishing. It fetches
