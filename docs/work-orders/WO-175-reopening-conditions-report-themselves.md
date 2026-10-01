@@ -1,4 +1,4 @@
-# WO-175 — A numeric reopening condition reports itself: planning entry lists the ones that hold, the meter's reopen-candidate count is computed or absent, and a review worker's temporary files stay inside its episode (version assigned at activation)
+# WO-175 — A numeric reopening condition reports itself: planning entry lists the ones that hold, the meter's reopen-candidate count is computed or absent, and a review worker's temporary files stay inside its episode (v0.58.2)
 
 **Model:** any capable model. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).

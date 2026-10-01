@@ -1,0 +1,131 @@
+{
+  "observedAt": "2026-09-30T23:41:21.672Z",
+  "commands": [
+    {
+      "command": "node docs/evidence/WO-175/predicate-reproduction.mjs --baseline",
+      "exitCode": 1,
+      "expectedFailure": "Missing expected exception",
+      "subject": "feb7a92e:scripts/lib/meta.mjs"
+    },
+    {
+      "command": "node docs/evidence/WO-175/predicate-reproduction.mjs",
+      "exitCode": 0
+    },
+    {
+      "command": "node --test --test-name-pattern=WO-175 scripts/test-process-debt.mjs scripts/test-entropy-review.mjs",
+      "exitCode": 0,
+      "passed": 3
+    },
+    {
+      "command": "node --test scripts/test-entropy-review.mjs",
+      "exitCode": 0,
+      "passed": 22
+    },
+    {
+      "command": "node scripts/test-plan-refutation.mjs",
+      "exitCode": 0,
+      "passed": 80,
+      "durationMs": 64913.845958
+    },
+    {
+      "command": "node --test --test-name-pattern=WO-132 scripts/test-process-debt.mjs",
+      "exitCode": 0,
+      "passed": 13,
+      "durationMs": 18335.797708
+    },
+    {
+      "command": "npm run plan -- conditions",
+      "exitCode": 0,
+      "reportedDurationSeconds": 23.159,
+      "holding": 1,
+      "unknown": 2
+    },
+    {
+      "command": "node scripts/meta.mjs --check --json",
+      "exitCode": 0,
+      "evidence": "meter.json"
+    },
+    {
+      "command": "node --test scripts/test-portfolio.mjs",
+      "exitCode": 0,
+      "passed": 3,
+      "durationMs": 16609.285833,
+      "context": "Canonical frozen dispatch; sibling TMPDIR; see portfolio.txt"
+    },
+    {
+      "command": "npm run test:docs",
+      "exitCode": 0,
+      "passedSuites": 24,
+      "freshTasks": 24,
+      "reportedDurationSeconds": 37.42
+    }
+  ],
+  "fullReview": {
+    "initial": {
+      "command": "npm test -- --review",
+      "exitCode": 1,
+      "passedSuites": 40,
+      "failedSuites": 1,
+      "freshTasks": 85,
+      "reportedDurationSeconds": 883.66,
+      "failure": "WO-172 planning-entry exact field expectation omitted conditions",
+      "correction": "WO-175-D009"
+    },
+    "final": {
+      "command": "npm test -- --review",
+      "exitCode": 0,
+      "passedSuites": 41,
+      "failedSuites": 0,
+      "freshTasks": 85,
+      "durationMs": 921045,
+      "reportedDurationSeconds": 921.04,
+      "codeIdentity": "e15fa662d9b794220ce25249c48f4c35e7794ccbbaef3245e68f68c6fd62245a",
+      "checkId": "npm test",
+      "recordedAt": "2026-09-30T23:41:21.672Z",
+      "evidenceRef": "host-gate:e15fa662d9b794220ce25249c48f4c35e7794ccbbaef3245e68f68c6fd62245a:npm test",
+      "requiredSuites": [
+        "build",
+        "release-preparation",
+        "github-body",
+        "outward-lint",
+        "target-publish",
+        "license-fixtures",
+        "license-surfaces",
+        "publication-fixtures",
+        "backup-intake",
+        "resume",
+        "beacon-portability",
+        "checkpoint",
+        "worktree",
+        "worktree-integration",
+        "release",
+        "work-orders-fixtures",
+        "kernel",
+        "compiler",
+        "skeleton",
+        "console",
+        "adjacent-queue",
+        "resident-bind",
+        "derived-orders",
+        "portfolio",
+        "codex-continuation",
+        "authority-grants",
+        "local-runner-double",
+        "artifact-corpus",
+        "evidence-sources",
+        "configuration-root",
+        "authority-evidence",
+        "harness-fixtures",
+        "harness-evidence",
+        "plan-refutation",
+        "artifact-evidence",
+        "verification-evidence",
+        "feedback-evidence",
+        "runner-fixtures",
+        "process-debt",
+        "meta",
+        "registrations"
+      ]
+    }
+  }
+}

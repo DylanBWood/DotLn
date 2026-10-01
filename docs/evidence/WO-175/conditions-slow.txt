@@ -1,0 +1,16 @@
+Reopening conditions at 2026-09-30T23:19:21.270Z; 133.359 s.
+Host load averages: 8.59912109375, 11.4384765625, 10.65283203125; 16 logical CPUs; other activity unknown.
+| Source | Measurement | Value | Threshold | Holds |
+| --- | --- | --- | --- | --- |
+| FUP-fb8cbeabbddef397 (historical: FUP-3dc0266d6b87b939, FUP-ab1746dc9c595d95) | plan-check: median of three fresh plan checks | 2.4968613339999997 s | > 8 | false |
+| WO-086-D006 | release-tags: local annotated release tags absent from the generated table | 2 tags | > 3 | false |
+| FUP-8a4e201d861208ad | order-evidence: distinct blob bytes under each of the last two closed orders' evidence paths at HEAD | [493640,105087] bytes/order | > 1000000 in 2 consecutive orders | false |
+| FUP-8a4e201d861208ad, FUP-be1103fbfdd14653 | week-evidence: positive tracked evidence size additions since Monday 00:00 UTC | 5478474 bytes/week | > 10000000 | false |
+| FUP-7f9a27e6ed6c44b3 | collect-sources: median of three fresh console collectSources calls | 0.7782937919999999 s | > 3 | false |
+| FUP-7f9a27e6ed6c44b3 | release-list: median of three fresh release lists, cache disabled without changing it | 2.589107333 s | > 10 | false |
+| FUP-7f9a27e6ed6c44b3 | status-bytes: UTF-8 stdout of status --all --json | 3461691 bytes | > 32000000 | false |
+| FUP-7f9a27e6ed6c44b3 | order-index: median of three readIndex/renderIndex calls, without writing | 1.322616208 s | > 10 | false |
+| FUP-fb8cbeabbddef397 | document-gate: median of three fresh document gates (--slow) | 35.993991292 s | > 30 | true |
+| FUP-fb8cbeabbddef397 | docs-check: median of the docs-check tasks in those same three gates (--slow) | 9.85 s | > 15 | false |
+| WO-150-D003 | coldStartBytes.executor: meter's budget/order measurements; a later reopens record settles it | [26903] metric | > 24576 | true |
+2 hold; 0 unknown. Not evaluated: 1177 decision conditions and 799 register rows.

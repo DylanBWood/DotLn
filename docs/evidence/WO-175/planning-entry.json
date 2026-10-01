@@ -1,0 +1,11 @@
+{
+  "command": "npm run plan -- conditions",
+  "holding": 1,
+  "unknown": 2,
+  "unevaluated": {
+    "decisionConditions": 1177,
+    "registerRows": 799
+  },
+  "durationMs": 22204,
+  "slow": "npm run plan -- conditions --slow"
+}
