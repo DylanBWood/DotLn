@@ -10,12 +10,11 @@ v0.5.1 (`68b1ab2`), completed on 2026-09-04 under the operator's release-assignm
 default after activation omitted the target. Planning tooling and candidate
 product documentation; no exported runtime capability. This fills an unassigned
 target, not a retiming or publication authorization.
-**Nomination provenance:** the operator's 2026-09-02 planning session ("it also
-might make sense to separate open and closed work orders, though that would
-include a lot of updating other docs as they are likely referenced a lot"),
-discharging the ledger's 2026-09-01 navigation entry ("pilot the view manually,
-then decide from use whether standardized work-order metadata and a generated
-DAG/index deserve a bounded work order"). The manual map has now been used
+**Nomination provenance:** the operator's 2026-09-02 planning session proposed
+separate views of open and closed orders while accounting for updates to their
+many references. It discharges the ledger's 2026-09-01 navigation entry: use a
+manual view first, then judge whether structured metadata and a generated
+dependency index warrant implementation. The manual map has now been used
 across the WO-006/WO-015 and WO-007 closes and two planning batches, and its
 hand-written evidence cells went stale at each close. Planner-synthesized
 draft; the operator's message is preserved locally as a compaction-safety

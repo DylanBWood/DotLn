@@ -110,8 +110,8 @@ reviewed suites, with the order's accepted absolute-path/same-user residual.
 
 The corrected focused WO-020 destination test subsequently returned exit 0,
 with one test passed and none failed. That result was inspected before
-adjacent-0002's completion was recorded. The operator's later instruction,
-"i apporve all adjacent", authorizes the remaining bounded adjacent work;
+adjacent-0002's completion was recorded. The operator's later instruction
+authorizes all remaining bounded adjacent work;
 no additional approval was inferred from elapsed time.
 
 ## WO-130-D004

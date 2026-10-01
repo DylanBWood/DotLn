@@ -11,9 +11,8 @@ read-only loadout, a closed result schema, a receipt convention, and one
 evidence-gate check; no exported runtime capability. Assigned at activation
 under the standing opt-out default.
 **Nomination provenance:** the 2026-09-06 phase-two redirect, from the
-operator's correction ("there should have been some agent running in the
-background, looking at what the plan was and said HOLD UP! We're not
-actually going in the direction ... intended") and the founding corpus's
+operator's request for an independent background judgment that challenges a
+plan departing from the intended product direction, and the founding corpus's
 standing auditors, referees, and adjudicators, the Contra-Auguste mask, and
 the Ex Machina rule that implementer and verifier are structurally separate
 (ledger §Chat 002, §Chat 005; 00-vision.md §Inspirational sources;

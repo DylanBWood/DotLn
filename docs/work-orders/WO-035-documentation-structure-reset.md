@@ -11,8 +11,8 @@ result (07-execution-guide.md §Model-specific notes).
 checks; no exported runtime capability. Assigned at activation under the
 standing opt-out default.
 **Nomination provenance:** the 2026-09-06 planning pass, from the operator's
-dispatch ("what will this repo look like in 6 months if it continues like
-this? are we good with that?") and the read-only documentation sweep recorded
+dispatch questioning whether the repository's projected growth would remain
+maintainable, and the read-only documentation sweep recorded
 in `docs/planning/phase-two-plan-2026-09-06.md`. It applies the corpus
 maintenance constraint in 03-architecture.md §Corpus policy, which asks for a
 demonstrated reading or upkeep problem before intervention; the sweep supplies

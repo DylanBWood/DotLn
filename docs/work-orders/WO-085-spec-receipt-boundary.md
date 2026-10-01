@@ -32,8 +32,8 @@ Wall-clock, tokens and context bytes are unknown until run.
 child at the operator's 2026-09-08 correction; held 2026-09-19 to be
 rewritten (its check would have refused `release prepare`'s own roadmap
 note); rewritten by the 2026-09-25 standard pass at the operator's item 4
-("docs/product docs becoming a cancer: all adds, ballooning in size, AI
-slop"). Register rows FUP-87ed701db7d7209e (WO-153 D008) and the WO-090
+(uncontrolled growth and repetitive prose in the product documents).
+Register rows FUP-87ed701db7d7209e (WO-153 D008) and the WO-090
 D007 carry-in. Planner-synthesized draft. Opaque identifier, not a
 priority. Clean-room screen: no stop condition.
 **Depends on:** none open. The 2026-09-08 planning deferral until WO-053

@@ -20,8 +20,8 @@ turn, no new receipt, key or ritual. The operator's direction is explicit:
 the mechanism removes the guess, it does not gate responses.
 
 **Nomination provenance:** the operator's direction of 2026-09-17 during
-the vision-into-use planning dispatch, after catching the guess: "that
-needs to be the next work order, full stop" (captured verbatim in ignored
+the vision-into-use planning dispatch, after catching an unsupported claim:
+prioritize this corrective order immediately (captured verbatim in ignored
 intake; hash in the [pass](../planning/vision-into-use-2026-09-17.md)
 header); WO-049 D001, which put the no-guessing line into the shared
 instruction as prose on 2026-09-16 and which this observation shows is not

@@ -15,11 +15,10 @@ contract, the event schema, and the legacy log; no exported runtime package
 capability changes. Assigned at activation under the standing opt-out
 default (06-roadmap.md §Release boundary).
 **Nomination provenance:** the 2026-09-06 planning pass, from the operator's
-dispatch describing the enterprise workflow ("multiple workstreams for working
-in different repos ... act as a launchpad and the user will not have to have
-separate claude sessions in all of these repos"), rescoped the same day by
-the phase-two redirect after the operator's correction that an export of the
-process kit alone "ships no DotLn": a fork must receive an actor, meaning a
+dispatch describing one launchpad coordinating workstreams across repositories
+without a separate operator-managed session for each, rescoped the same day by
+the phase-two redirect after the operator identified the absent product runtime
+in a process-kit-only export: a fork must receive an actor, meaning a
 compiled build the fork's harness enforces, not scripts and prose. The
 operator's chain is the design rule: progress in core makes the starter
 better, which makes each fork and its targets better. Planner-synthesized

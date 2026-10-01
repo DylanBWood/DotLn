@@ -10,8 +10,8 @@ model and effort actually run (07-execution-guide.md §Model-specific notes).
 hold rule; no schema version change. Assigned at activation under the
 standing opt-out default.
 **Nomination provenance:** the operator's 2026-09-08 mid-pass description
-of the predecessor's first cron ("are we sure we understand the goal and
-we're on mission?"); the plan refuter (WO-041), whose judge shape over the
+of v1's first cron, which checked goal comprehension and alignment during work;
+the plan refuter (WO-041), whose judge shape over the
 vision theses this episode reuses for running work. Planner-synthesized
 draft; captures and hashes in the ledger section of that date. Opaque
 identifier, not a priority. Clean-room screen: no stop condition.

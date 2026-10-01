@@ -26,8 +26,8 @@ evidence tool whose own `--check` has failed since its activation commit
 (WO-142 D008) and one whose operator-run row has waited since 2026-09-20
 (WO-099 D007). No registered source changes. Wall-clock, tokens and
 context bytes of the order itself are unknown until run.
-**Nomination provenance:** the operator's 2026-09-25 dispatch ("5S repo
-management"), captured verbatim in ignored intake (SHA-256 in the ledger
+**Nomination provenance:** the operator's 2026-09-25 dispatch requesting
+repository upkeep through the 5S method, captured verbatim in ignored intake (SHA-256 in the ledger
 section), and the measured inventory in the planning document §7 (95
 top-level scripts, none unreferenced; 46 test scripts, none unwired; 78
 evidence directories, none orphaned; the items above are what Sort and Set

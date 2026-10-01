@@ -34,13 +34,13 @@ edited (`scripts/lib/evidence-sources.mjs`, checked 2026-09-25):
 re-mint deterministically. None is a feedback source
 (`FEEDBACK_SOURCE_PATHS`), so no live episode (WO-154 D001). Wall-clock,
 tokens and context bytes of the order itself are unknown until run.
-**Nomination provenance:** the operator's 2026-09-25 dispatch ("off ramps
-or designated nonstandard work order state pathways ... these ad hoc
-decisions are becoming routine. do research for more than just wo-111"),
+**Nomination provenance:** the operator's 2026-09-25 dispatch requesting
+explicit alternate lifecycle routes and research across orders because
+exceptional decisions had become recurrent,
 captured verbatim in ignored intake (SHA-256 in the ledger section), and
 the cross-order catalog in the planning document §3 (101 orders read, 41
 with a failed verification, the categories with no pathway). WO-111 D019
-asks for "an explicit terminal disposition that does not claim success";
+asks for a terminal outcome that can record failure or abandonment;
 none exists. Planner-synthesized. Opaque identifier, not a priority.
 Clean-room screen: no stop condition.
 **Depends on:** WO-139 merged (the execution-amendment route and the hook

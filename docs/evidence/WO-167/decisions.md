@@ -476,7 +476,7 @@ Affected checks: the helper selected npm test -- --review, publication, harness 
 ## WO-167-D013
 
 Dispatch: `resume: fix`, 2026-09-28, during the VER-001 repair. Operator
-direction in this session, verbatim: "just deal with merging in main now ffs".
+direction in this session: integrate main immediately during this repair.
 Session as in D011; no subagents.
 
 Goal alignment: the sibling WO-060 published `v0.53.0` on main at 13:56, so

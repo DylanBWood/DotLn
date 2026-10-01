@@ -49,7 +49,7 @@ lines 266–269 resolves the live audit through `edition.liveAudit.edition`
 (WO-161 D007), because this order's re-mint runs that selection. Wall-clock,
 tokens and context bytes are unknown until run.
 **Nomination provenance:** the operator's 2026-09-25 dispatch, items 1 and
-2 ("codex writer reservation issues"; a monitor built on `tail -f` that
+2 (failures in Codex writer ownership; a monitor built on `tail -f` that
 never exits), with two mid-turn clarifications (recent; found mid-phase;
 frequency unclear); product 07 §Candidate — stale writer reservation
 self-diagnosis, whose reopening condition (a second observed occurrence)

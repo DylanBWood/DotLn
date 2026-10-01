@@ -14,7 +14,7 @@ standing opt-out default.
 authority, the planning map's unallocated product candidate on profiles,
 PresencePolicy and unattended portfolios, and the operator's 2026-09-08
 mid-pass direction during the critical-path planning pass: the predecessor
-runs an "operator away" cron whose work starts small and widens, and the
+runs an unattended cron whose work starts small and widens, and the
 successor is an offline application that dispatches several actor kinds on
 richer policies than a cron. Planner-synthesized draft; the messages are
 preserved verbatim in the pass's ignored correction capture, whose hash is

@@ -12,8 +12,8 @@ and a body generator over artifacts. Assigned at activation under the
 standing opt-out default.
 **Nomination provenance:** the 2026-09-08 critical-path planning pass (gate
 H, the publish slice, carved from WO-033 phase 2), cut as a bounded order at
-the operator's same-day correction; the parity items "great PR body and
-title". Planner-synthesized draft; captures and hashes in the ledger section
+the operator's same-day correction; the parity requirement for useful pull
+request titles and descriptions. Planner-synthesized draft; captures and hashes in the ledger section
 of that date. Opaque identifier, not a priority. Clean-room screen: no stop
 condition.
 **Depends on:** WO-052 merged (a branch to publish exists only after a
