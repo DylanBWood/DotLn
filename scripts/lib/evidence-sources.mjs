@@ -26,6 +26,8 @@ const commonSources = [
   "packages/compiler/src/senses.ts",
   // WO-060: the compiler index re-exports the SourceBundle contract.
   "packages/compiler/src/source-bundle.ts",
+  // WO-061: the compiler index re-exports the pure StoryContract compiler.
+  "packages/compiler/src/story-contract.ts",
   "packages/compiler/src/types.ts",
   "packages/compiler/src/verification.ts",
   "packages/compiler/src/views.ts",

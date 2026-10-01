@@ -1,0 +1,712 @@
+{
+  "allowedHosts": [
+    "github.com"
+  ],
+  "core": {
+    "bundle": {
+      "bundleId": "synthetic-core",
+      "sourceKind": "synthetic-issue",
+      "revisionId": "r1",
+      "sections": [
+        {
+          "id": "s-intent",
+          "heading": "Request",
+          "text": "Preserve operator intent.\nRetain source provenance.",
+          "span": {
+            "sectionId": "s-intent",
+            "start": 0,
+            "end": 51
+          }
+        },
+        {
+          "id": "s-visual",
+          "heading": "Layout",
+          "text": "Match [image:layout] when drawing the panel.\n![Panel layout](https://github.com/synthetic/layout.png)",
+          "span": {
+            "sectionId": "s-visual",
+            "start": 0,
+            "end": 101
+          }
+        },
+        {
+          "id": "s-old",
+          "heading": "History",
+          "text": "~~Use the old layout.~~\nQuoted earlier planning: use the old layout.",
+          "span": {
+            "sectionId": "s-old",
+            "start": 0,
+            "end": 68
+          }
+        },
+        {
+          "id": "s-excluded",
+          "heading": "Out of scope",
+          "text": "Deploy to a shared host.",
+          "span": {
+            "sectionId": "s-excluded",
+            "start": 0,
+            "end": 24
+          }
+        },
+        {
+          "id": "s-unknown",
+          "heading": "Discussion",
+          "text": "A choice still needs investigation.",
+          "span": {
+            "sectionId": "s-unknown",
+            "start": 0,
+            "end": 35
+          }
+        }
+      ],
+      "discussion": [
+        {
+          "id": "e-question",
+          "author": "reporter",
+          "text": "Should the panel be compact?",
+          "span": {
+            "entryId": "e-question",
+            "start": 0,
+            "end": 28
+          },
+          "createdAt": "2026-10-01T00:00:00Z"
+        },
+        {
+          "id": "e-observation",
+          "author": "automation",
+          "text": "The build completed.",
+          "span": {
+            "entryId": "e-observation",
+            "start": 0,
+            "end": 20
+          },
+          "createdAt": "2026-10-01T00:00:01Z"
+        }
+      ],
+      "images": [
+        {
+          "id": "layout",
+          "hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "referencedBy": {
+            "sectionId": "s-visual",
+            "start": 45,
+            "end": 101
+          }
+        }
+      ],
+      "revisions": []
+    },
+    "inferences": [
+      {
+        "span": {
+          "sectionId": "s-intent",
+          "start": 0,
+          "end": 51
+        },
+        "class": "requirement",
+        "rationale": "Synthetic fixture classification: requirement."
+      },
+      {
+        "span": {
+          "sectionId": "s-visual",
+          "start": 0,
+          "end": 44
+        },
+        "class": "requirement",
+        "rationale": "Synthetic fixture classification: requirement."
+      },
+      {
+        "span": {
+          "sectionId": "s-old",
+          "start": 24,
+          "end": 68
+        },
+        "class": "example",
+        "rationale": "Synthetic fixture classification: example."
+      },
+      {
+        "span": {
+          "entryId": "e-observation",
+          "start": 0,
+          "end": 20
+        },
+        "class": "current-behavior observation",
+        "rationale": "Synthetic fixture classification: current-behavior observation."
+      }
+    ],
+    "expected": [
+      [
+        "s-intent",
+        "requirement",
+        "inferred"
+      ],
+      [
+        "s-visual",
+        "requirement",
+        "inferred"
+      ],
+      [
+        "s-visual",
+        "visual annotation",
+        "rule"
+      ],
+      [
+        "s-old",
+        "struck",
+        "rule"
+      ],
+      [
+        "s-old",
+        "example",
+        "inferred"
+      ],
+      [
+        "s-excluded",
+        "non-requirement",
+        "rule"
+      ],
+      [
+        "s-unknown",
+        "open decision",
+        "rule"
+      ],
+      [
+        "e-question",
+        "question",
+        "rule"
+      ],
+      [
+        "e-observation",
+        "current-behavior observation",
+        "inferred"
+      ]
+    ]
+  },
+  "thread": {
+    "bundle": {
+      "bundleId": "synthetic-thread",
+      "sourceKind": "synthetic-issue",
+      "revisionId": "r1",
+      "sections": [
+        {
+          "id": "s-earlier",
+          "heading": "Request",
+          "text": "Use the original layout.",
+          "span": {
+            "sectionId": "s-earlier",
+            "start": 0,
+            "end": 24
+          }
+        },
+        {
+          "id": "s-quote",
+          "heading": "Earlier planning",
+          "text": "> Earlier planning: use the original layout.",
+          "span": {
+            "sectionId": "s-quote",
+            "start": 0,
+            "end": 44
+          }
+        }
+      ],
+      "discussion": [
+        {
+          "id": "e-q1",
+          "author": "reporter",
+          "text": "Should we keep the original layout?",
+          "span": {
+            "entryId": "e-q1",
+            "start": 0,
+            "end": 35
+          },
+          "createdAt": "2026-10-01T00:00:00Z"
+        },
+        {
+          "id": "e-q2",
+          "author": "reviewer",
+          "text": "Is the layout accessible?",
+          "span": {
+            "entryId": "e-q2",
+            "start": 0,
+            "end": 25
+          },
+          "createdAt": "2026-10-01T00:00:01Z"
+        },
+        {
+          "id": "e-a1",
+          "author": "automation",
+          "text": "Use the wider layout instead.",
+          "span": {
+            "entryId": "e-a1",
+            "start": 0,
+            "end": 29
+          },
+          "createdAt": "2026-10-01T00:00:02Z"
+        },
+        {
+          "id": "e-decision",
+          "author": "reviewer",
+          "text": "Replace the earlier layout with the wider layout.",
+          "span": {
+            "entryId": "e-decision",
+            "start": 0,
+            "end": 49
+          },
+          "createdAt": "2026-10-01T00:00:03Z"
+        },
+        {
+          "id": "e-unanswered",
+          "author": "reporter",
+          "text": "Which spacing value should we use?",
+          "span": {
+            "entryId": "e-unanswered",
+            "start": 0,
+            "end": 34
+          },
+          "createdAt": "2026-10-01T00:00:04Z"
+        }
+      ],
+      "images": [],
+      "revisions": []
+    },
+    "inferences": [
+      {
+        "span": {
+          "sectionId": "s-earlier",
+          "start": 0,
+          "end": 24
+        },
+        "class": "requirement",
+        "rationale": "Synthetic fixture classification: requirement."
+      },
+      {
+        "span": {
+          "sectionId": "s-quote",
+          "start": 0,
+          "end": 44
+        },
+        "class": "example",
+        "rationale": "Synthetic fixture classification: example."
+      },
+      {
+        "span": {
+          "entryId": "e-a1",
+          "start": 0,
+          "end": 29
+        },
+        "class": "answer",
+        "rationale": "Synthetic fixture classification: answer."
+      },
+      {
+        "span": {
+          "entryId": "e-decision",
+          "start": 0,
+          "end": 49
+        },
+        "class": "requirement",
+        "rationale": "Synthetic fixture classification: requirement."
+      },
+      {
+        "span": {
+          "entryId": "e-a1",
+          "start": 0,
+          "end": 29
+        },
+        "relation": "answers",
+        "target": {
+          "entryId": "e-q1",
+          "start": 0,
+          "end": 35
+        },
+        "evidence": [
+          {
+            "entryId": "e-a1",
+            "start": 0,
+            "end": 29
+          }
+        ],
+        "rationale": "The supplied answer explicitly addresses the first question."
+      },
+      {
+        "span": {
+          "entryId": "e-decision",
+          "start": 0,
+          "end": 49
+        },
+        "relation": "supersedes",
+        "target": {
+          "sectionId": "s-earlier",
+          "start": 0,
+          "end": 24
+        },
+        "evidence": [
+          {
+            "entryId": "e-decision",
+            "start": 0,
+            "end": 49
+          }
+        ],
+        "rationale": "The supplied decision explicitly retires the original layout."
+      }
+    ],
+    "expected": [
+      [
+        "s-earlier",
+        "requirement",
+        "inferred"
+      ],
+      [
+        "s-quote",
+        "example",
+        "inferred"
+      ],
+      [
+        "e-q1",
+        "question",
+        "rule"
+      ],
+      [
+        "e-q2",
+        "question",
+        "rule"
+      ],
+      [
+        "e-a1",
+        "answer",
+        "inferred"
+      ],
+      [
+        "e-decision",
+        "requirement",
+        "inferred"
+      ],
+      [
+        "e-unanswered",
+        "question",
+        "rule"
+      ]
+    ]
+  },
+  "taxonomy": {
+    "bundle": {
+      "bundleId": "synthetic-taxonomy",
+      "sourceKind": "synthetic-issue",
+      "revisionId": "r1",
+      "sections": [
+        {
+          "id": "s-0",
+          "heading": "Statement",
+          "text": "Synthetic requirement statement with Größe 🙂.",
+          "span": {
+            "sectionId": "s-0",
+            "start": 0,
+            "end": 50
+          }
+        },
+        {
+          "id": "s-1",
+          "heading": "Statement",
+          "text": "Synthetic example statement with Größe 🙂.",
+          "span": {
+            "sectionId": "s-1",
+            "start": 0,
+            "end": 46
+          }
+        },
+        {
+          "id": "s-2",
+          "heading": "Statement",
+          "text": "Synthetic answer statement with Größe 🙂.",
+          "span": {
+            "sectionId": "s-2",
+            "start": 0,
+            "end": 45
+          }
+        },
+        {
+          "id": "s-3",
+          "heading": "Statement",
+          "text": "Synthetic current-behavior observation statement with Größe 🙂.",
+          "span": {
+            "sectionId": "s-3",
+            "start": 0,
+            "end": 67
+          }
+        },
+        {
+          "id": "s-4",
+          "heading": "Statement",
+          "text": "Synthetic inference statement with Größe 🙂.",
+          "span": {
+            "sectionId": "s-4",
+            "start": 0,
+            "end": 48
+          }
+        },
+        {
+          "id": "s-5",
+          "heading": "Statement",
+          "text": "Synthetic assumption statement with Größe 🙂.",
+          "span": {
+            "sectionId": "s-5",
+            "start": 0,
+            "end": 49
+          }
+        },
+        {
+          "id": "s-6",
+          "heading": "Statement",
+          "text": "Synthetic contradiction statement with Größe 🙂.",
+          "span": {
+            "sectionId": "s-6",
+            "start": 0,
+            "end": 52
+          }
+        },
+        {
+          "id": "s-7",
+          "heading": "Statement",
+          "text": "Synthetic open decision statement with Größe 🙂.",
+          "span": {
+            "sectionId": "s-7",
+            "start": 0,
+            "end": 52
+          }
+        }
+      ],
+      "discussion": [],
+      "images": [],
+      "revisions": []
+    },
+    "inferences": [
+      {
+        "span": {
+          "sectionId": "s-0",
+          "start": 0,
+          "end": 50
+        },
+        "class": "requirement",
+        "rationale": "Synthetic fixture classification: requirement."
+      },
+      {
+        "span": {
+          "sectionId": "s-1",
+          "start": 0,
+          "end": 46
+        },
+        "class": "example",
+        "rationale": "Synthetic fixture classification: example."
+      },
+      {
+        "span": {
+          "sectionId": "s-2",
+          "start": 0,
+          "end": 45
+        },
+        "class": "answer",
+        "rationale": "Synthetic fixture classification: answer."
+      },
+      {
+        "span": {
+          "sectionId": "s-3",
+          "start": 0,
+          "end": 67
+        },
+        "class": "current-behavior observation",
+        "rationale": "Synthetic fixture classification: current-behavior observation."
+      },
+      {
+        "span": {
+          "sectionId": "s-4",
+          "start": 0,
+          "end": 48
+        },
+        "class": "inference",
+        "rationale": "Synthetic fixture classification: inference."
+      },
+      {
+        "span": {
+          "sectionId": "s-5",
+          "start": 0,
+          "end": 49
+        },
+        "class": "assumption",
+        "rationale": "Synthetic fixture classification: assumption."
+      },
+      {
+        "span": {
+          "sectionId": "s-6",
+          "start": 0,
+          "end": 52
+        },
+        "class": "contradiction",
+        "rationale": "Synthetic fixture classification: contradiction."
+      },
+      {
+        "span": {
+          "sectionId": "s-7",
+          "start": 0,
+          "end": 52
+        },
+        "class": "open decision",
+        "rationale": "Synthetic fixture classification: open decision."
+      }
+    ],
+    "expected": [
+      [
+        "s-0",
+        "requirement",
+        "inferred"
+      ],
+      [
+        "s-1",
+        "example",
+        "inferred"
+      ],
+      [
+        "s-2",
+        "answer",
+        "inferred"
+      ],
+      [
+        "s-3",
+        "current-behavior observation",
+        "inferred"
+      ],
+      [
+        "s-4",
+        "inference",
+        "inferred"
+      ],
+      [
+        "s-5",
+        "assumption",
+        "inferred"
+      ],
+      [
+        "s-6",
+        "contradiction",
+        "inferred"
+      ],
+      [
+        "s-7",
+        "open decision",
+        "inferred"
+      ]
+    ]
+  },
+  "revision": {
+    "bundle": {
+      "bundleId": "synthetic-revision",
+      "sourceKind": "synthetic-issue",
+      "revisionId": "r1",
+      "sections": [
+        {
+          "id": "s-change",
+          "heading": "Requirements",
+          "text": "Keep data.\nPreserve logs.",
+          "span": {
+            "sectionId": "s-change",
+            "start": 0,
+            "end": 25
+          }
+        },
+        {
+          "id": "s-keep",
+          "heading": "Unchanged",
+          "text": "Retain the window.",
+          "span": {
+            "sectionId": "s-keep",
+            "start": 0,
+            "end": 18
+          }
+        }
+      ],
+      "discussion": [
+        {
+          "id": "e-q",
+          "author": "reporter",
+          "text": "Should we retain the window?",
+          "span": {
+            "entryId": "e-q",
+            "start": 0,
+            "end": 28
+          },
+          "createdAt": "2026-10-01T00:00:00Z"
+        },
+        {
+          "id": "e-a",
+          "author": "reviewer",
+          "text": "Yes, retain the window.",
+          "span": {
+            "entryId": "e-a",
+            "start": 0,
+            "end": 23
+          },
+          "createdAt": "2026-10-01T00:00:01Z"
+        }
+      ],
+      "images": [],
+      "revisions": []
+    },
+    "inferences": [
+      {
+        "span": {
+          "sectionId": "s-change",
+          "start": 0,
+          "end": 10
+        },
+        "class": "requirement",
+        "rationale": "Synthetic fixture classification: requirement."
+      },
+      {
+        "span": {
+          "sectionId": "s-change",
+          "start": 11,
+          "end": 25
+        },
+        "class": "requirement",
+        "rationale": "Synthetic fixture classification: requirement."
+      },
+      {
+        "span": {
+          "sectionId": "s-keep",
+          "start": 0,
+          "end": 18
+        },
+        "class": "requirement",
+        "rationale": "Synthetic fixture classification: requirement."
+      },
+      {
+        "span": {
+          "entryId": "e-a",
+          "start": 0,
+          "end": 23
+        },
+        "class": "answer",
+        "rationale": "Synthetic fixture classification: answer."
+      },
+      {
+        "span": {
+          "entryId": "e-a",
+          "start": 0,
+          "end": 23
+        },
+        "relation": "answers",
+        "target": {
+          "entryId": "e-q",
+          "start": 0,
+          "end": 28
+        },
+        "evidence": [
+          {
+            "sectionId": "s-keep",
+            "start": 0,
+            "end": 18
+          }
+        ],
+        "rationale": "The unchanged requirement supplies evidence for the answer."
+      }
+    ]
+  }
+}

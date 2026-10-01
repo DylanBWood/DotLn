@@ -202,7 +202,9 @@ or grant cross-tenant authority through a shared status view.
 
 The repository currently demonstrates a pure kernel, composition compiler,
 deterministic skeleton, and its own file-based work-order/control loop. The
-generated work-order index delivered by WO-026 improves navigation of that loop
+compiler derives classified StoryContract statements and criterion drafts from
+a SourceBundle, preserving provenance and marking affected items stale on revision.
+The generated work-order index delivered by WO-026 improves navigation of that loop
 with recorded lifecycle and release evidence.
 It does not implement an end-user portfolio, repository coordinator, or live
 external execution service.
