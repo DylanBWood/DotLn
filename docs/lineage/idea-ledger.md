@@ -40,6 +40,49 @@ are now declared above. The [decision record](../evidence/WO-084/decisions.md)
 records the legacy ledger write-back; `node scripts/lineage.mjs index` generates
 the index and `index --check` enforces this rule in `npm run test:docs`.
 
+## 2026-10-02 — Planning pass: REVIEW-005 consumed, stale triggers re-disposed, no new machinery order
+
+Source: the operator's `planning: entropy reducer` dispatch and direction
+to continue, captured in ignored intake
+(`docs/intake/notes/2026-10-02-entropy-review-005-planning.md`, SHA-256
+`c2f9652c43ed19b08849534392ac0a5c56151eaa5334c2403eba22ae0b11d637`);
+REVIEW-005 and its blinded REFUTATION-006; the current register, order
+decisions and executed entry measurements. Planner synthesis, clean-room
+screen passed. The complete record and NoOpIntent decisions are in
+[the planning document](../planning/entropy-review-005-2026-10-02.md).
+
+- **Timeout headroom is evidence, not an automatic limit increase** `deferred`
+  - ER5-001 survived refutation: REVIEW-004 used 92.3% of its deadline
+    with no warning row. REVIEW-005 used 58.5%; this pass leaves the
+    limits unchanged and declines a new listing order. Review again at
+    every entropy pass; reopen on an observed deadline loss or two
+    successive episodes of one kind above 80% of their limit.
+- **An observed reopening trigger must reach the register** `adopted`
+  - ER5-002 survived. The pass acknowledges and re-disposes FUP-0086,
+    FUP-0113 and FUP-ec75a4295bf36696: WO-117's live host does not yet
+    author patterns/builds; WO-062's deterministic adapter invokes no
+    model and its exposure candidate moves to the first consuming
+    invocation; WO-149/WO-159's live smokes do not re-qualify every
+    harness capability. New conditions replace the fired ones in the
+    register and source documents. The proposed four-row anchored prose
+    parser is declined; reconsider if a later pass misses a named fired
+    lifecycle trigger again.
+- **The current measurements do not select the earlier remedy** `preserved`
+  - The document gate is 39.984 s median and its console parity cases
+    dominate the current path; the latency row stays open, while a
+    history-parse cache is declined on the available evidence. Weekly
+    evidence growth crossed 10 MB; the two rows acknowledge it, retaining
+    immutable evidence and declining a ceiling or pruning. The release
+    table is refreshed from 138 local annotated tags. No claim of saved
+    runtime follows from these document changes.
+- **The next delivery order remains WO-123** `adopted`
+  - Fourteen closed entries leave; 26 remain in their existing order.
+    The REVIEW-004 note leaves with its last placed order, and the
+    standard pass's note retains WO-183's position after WO-118. No new
+    order or implementation obligation is added. Both surviving findings
+    and both packets receive decisions in this pass; their mechanisms
+    are not an undecided review handed to a later planner.
+
 ## 2026-09-30 — Planning pass: the operator's three items and WO-172's subject map taken up (WO-176 to WO-179; the queue and the boarded items disposed)
 
 Source: the operator's dispatch `planning: standard planning pass + small
